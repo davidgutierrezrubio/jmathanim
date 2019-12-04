@@ -5,19 +5,15 @@
  */
 package jmathanim;
 
+import Renderers.Java2DRenderer;
+import Renderers.Renderer;
 import Utils.ConfigUtils;
-import java.awt.Graphics2D;
-import java.awt.RenderingHints;
-import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.imageio.ImageIO;
 import mathobjects.MathObject;
-
 
 /**
  *
@@ -34,8 +30,7 @@ public abstract class JMathAnimScene {
     private final Properties cnf;
     ArrayList<MathObject> objects;
     private int frames;
-    private BufferedImage bufferedImage;
-    private Graphics2D g2d;
+    private Renderer renderer;
     private int frameCount;
 
     public JMathAnimScene() {
@@ -46,32 +41,25 @@ public abstract class JMathAnimScene {
         cnf = new Properties();
         objects = new ArrayList<>();
         ConfigUtils.digest_config(cnf, DEFAULT_CONFIG, configParam);
+        renderer=new Java2DRenderer(cnf);
         settings();
     }
 
     public final void settings() {
-        bufferedImage = new BufferedImage(800, 600, BufferedImage.TYPE_INT_RGB);
-        g2d = bufferedImage.createGraphics();
-        RenderingHints rh = new RenderingHints(
-                RenderingHints.KEY_ANTIALIASING,
-                RenderingHints.VALUE_ANTIALIAS_ON
-            );
-        rh.put(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
         
-        g2d.setRenderingHints(rh);
 
     }
 
-    /**
-     *
-     */
-    public final void runSketch() {
-        frames = 0;
-        mainLoop();
-        makeMovie();
-        System.exit(0);
-
-    }
+//    /**
+//     *
+//     */
+//    public final void runSketch() {
+//        frames = 0;
+//        mainLoop();
+//        makeMovie();
+//        System.exit(0);
+//
+//    }
 
     /**
      * Preparation code for the animation should go here
@@ -85,11 +73,11 @@ public abstract class JMathAnimScene {
         String nombre = this.getClass().getName();
         System.out.println("Run sketch: " + nombre);
         setupSketch();
-        mainLoop();
+        runSketch();
 
     }
 
-    public abstract void mainLoop();
+    public abstract void runSketch();
 
     public final MathObject add(MathObject obj) {
         objects.add(obj);
@@ -103,7 +91,7 @@ public abstract class JMathAnimScene {
 
     public final void doDraws() {
         for (MathObject obj : objects) {
-            obj.draw(g2d);
+            obj.draw(renderer);
         }
 
     }
@@ -114,14 +102,10 @@ public abstract class JMathAnimScene {
     }
 
     public void saveMPFrame() {
-        String fname = "c:\\media\\screen-" + String.format("%05d", frameCount) + ".png";
+        
+        renderer.saveFrame(frameCount);
         frameCount++;
-        File file = new File(fname);
-        try {
-            ImageIO.write(bufferedImage, "png", file);
-        } catch (IOException ex) {
-            Logger.getLogger(JMathAnimScene.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        
 
     }
 

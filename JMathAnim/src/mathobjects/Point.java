@@ -5,6 +5,7 @@
  */
 package mathobjects;
 
+import Renderers.Renderer;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.util.Properties;
@@ -77,10 +78,10 @@ public final class Point extends MathObject {
     }
 
     @Override
-    public void draw(Graphics2D g2d) {
-        int r = Integer.parseInt(cnf.getProperty("RADIUS"));
-        g2d.setColor(Color.WHITE);
-        g2d.fillOval((int)(x-.5*r), (int)(y-.5*r), r, r);
+    public void draw(Renderer r) {
+        int rad = Integer.parseInt(cnf.getProperty("RADIUS"));
+        r.setColor(Color.WHITE);
+        r.drawCircle((int)(x-.5*rad), (int)(y-.5*rad), rad);
         
     }
 

@@ -5,12 +5,12 @@
  */
 package mathobjects;
 
-import java.awt.Graphics2D;
+import Renderers.Renderer;
 
 /**
  * Anything that can be drawin in the canvas
  * @author David Gutiérrez Rubio <davidgutierrezrubio@gmail.com>
  */
 interface Drawable {
-    public void draw(Graphics2D g2d);
+    public void draw(Renderer r);
 }

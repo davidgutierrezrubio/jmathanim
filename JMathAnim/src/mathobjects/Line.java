@@ -5,6 +5,7 @@
  */
 package mathobjects;
 
+import Renderers.Renderer;
 import Utils.ConfigUtils;
 import Utils.Vec;
 import java.awt.Color;
@@ -45,11 +46,11 @@ public class Line extends MathObject {
     }
 
     @Override
-    public void draw(Graphics2D g2d) {
+    public void draw(Renderer r) {
         Vec v1 = p1.getCenter();
         Vec v2 = p2.getCenter();
-        g2d.setColor(Color.WHITE);
-        g2d.drawLine(v1.xi(), v1.yi(), v2.xi(), v2.yi());
+        r.setColor(Color.WHITE);
+        r.drawLine(v1.xi(), v1.yi(), v2.xi(), v2.yi());
 
     }
 

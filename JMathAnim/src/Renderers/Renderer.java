@@ -5,13 +5,39 @@
  */
 package Renderers;
 
+import java.awt.Color;
+import java.io.File;
+
 /**
+ * Coordinates x,y,z are always given in (0,0) to (w,h), where (0,0) is upper
+ * left corner.
  *
  * @author David
  */
-public interface Renderer {
-    public void drawArc();
-    public void drawLine();
-    public void drawPolygon();
-    
+public abstract class Renderer {
+
+    Color color;
+
+    public Renderer() {
+        color = Color.WHITE;//Default color
+
+    }
+
+    public Color getColor() {
+        return color;
+    }
+
+    public void setColor(Color color) {
+        this.color = color;
+    }
+
+    abstract public void drawArc();
+
+    abstract public void drawLine(int x1, int y1, int x2, int y2);
+
+    abstract public void drawPolygon();
+
+    abstract public void drawCircle(int x, int y, int radius);
+
+    abstract public void saveFrame(int frameCount);
 }

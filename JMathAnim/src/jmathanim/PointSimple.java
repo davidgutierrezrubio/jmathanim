@@ -21,7 +21,7 @@ public class PointSimple extends JMathAnimScene {
     }
 
     @Override
-    public void mainLoop() {
+    public void runSketch() {
 //        PGraphics gre = createGraphics(800, 600);
         Point po = new Point(400, 300);
         Point or=new Point(400,0);
