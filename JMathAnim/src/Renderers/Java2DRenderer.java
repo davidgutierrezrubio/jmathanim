@@ -5,6 +5,7 @@
  */
 package Renderers;
 
+import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
@@ -75,6 +76,12 @@ public class Java2DRenderer extends Renderer {
 
     @Override
     public void drawArc(double x, double y, double radius, double angle) {
+    }
+
+    @Override
+    public void clear() {
+        g2d.setColor(Color.BLACK);//TODO: Poner en opciones
+        g2d.fillRect(0, 0, width, height);
     }
 
 }

@@ -32,11 +32,10 @@ public class Arc extends MathObject {
 
     @Override
     public void draw(Renderer r) {
-        //TODO: Create function here to draw arc using many lines
-//        r.drawArc(x, y, radius, angle);
         double x0=x+radius;
         double y0=y;
         double x1,y1;
+        //Compute an optimal alpha, depending on the screen?
         for (double alpha=0;alpha<angle;alpha+=0.1)
         {
             x1=x+radius*Math.cos(alpha);

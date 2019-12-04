@@ -102,6 +102,7 @@ public abstract class JMathAnimScene {
     public final void advanceFrame() {
         frameCount++;
         saveMPFrame();
+        renderer.clear();
     }
 
     public void saveMPFrame() {

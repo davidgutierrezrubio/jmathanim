@@ -7,7 +7,6 @@ package Renderers;
 
 import Cameras.Camera;
 import java.awt.Color;
-import java.io.File;
 
 /**
  * Coordinates x,y,z are always given in (0,0) to (w,h), where (0,0) is upper
@@ -24,7 +23,7 @@ public abstract class Renderer {
 
     public Renderer() {
         color = Color.WHITE;//Default color
-        camera=new Camera(); //Default camera
+        camera = new Camera(); //Default camera
 
     }
 
@@ -78,4 +77,9 @@ public abstract class Renderer {
     abstract public void drawCircle(double x, double y, double radius);
 
     abstract public void saveFrame(int frameCount);
+
+    /**
+     * Clear current renderer, with the background color
+     */
+    abstract public void clear();
 }
