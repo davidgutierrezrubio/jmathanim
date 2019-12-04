@@ -13,30 +13,24 @@ import static java.lang.Math.sqrt;
  * @author David Gutiérrez Rubio <davidgutierrezrubio@gmail.com>
  */
 public class Vec {
-    public float x,y,z;
+    public double x,y,z;
     
-    public Vec(float x, float y) {
+    public Vec(double x, double y) {
         this(x,y,0);
     }
-    public Vec(float x, float y, float z) {
+    public Vec(double x, double y, double z) {
         this.x = x;
         this.y = y;
         this.z = z;
     }
-    public float dot(Vec a){
+    public double dot(Vec a){
         return x*a.x+y*a.y+z*a.z;
     }
     
-    public Vec mult(float r){
+    public Vec mult(double r){
         x*=r;
         y*=r;
         z*=r;
-        return this;
-    }
-    public Vec mult(double r){
-        x*=(float)r;
-        y*=(float)r;
-        z*=(float)r;
         return this;
     }
     public Vec add(Vec b){
@@ -52,8 +46,8 @@ public class Vec {
         return this;
     }
     
-    public float norm() {
-        return (float) sqrt(x*x+y*y+z*z);
+    public double norm() {
+        return (double) sqrt(x*x+y*y+z*z);
     }
     public int xi(){
         return (int)(x);

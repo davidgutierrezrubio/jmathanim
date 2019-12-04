@@ -24,12 +24,12 @@ public class Java2DRenderer extends Renderer {
 
     private final BufferedImage bufferedImage;
     private final Graphics2D g2d;
-    private final int width;
-    private final int height;
 
     public Java2DRenderer(Properties cnf) {
-        width=Integer.parseInt(cnf.getProperty("WIDTH"));
-        height=Integer.parseInt(cnf.getProperty("HEIGHT"));
+        int w = Integer.parseInt(cnf.getProperty("WIDTH"));
+        int h = Integer.parseInt(cnf.getProperty("HEIGHT"));
+        setSize(w, h);
+
         bufferedImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
         g2d = bufferedImage.createGraphics();
         RenderingHints rh = new RenderingHints(
@@ -42,25 +42,24 @@ public class Java2DRenderer extends Renderer {
     }
 
     @Override
-    public void drawArc() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
     public void drawPolygon() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public void drawCircle(int x, int y, int radius) {
+    public void drawCircle(double x, double y, double radius) {
         g2d.setColor(color);
-        g2d.drawOval(x, y, radius, radius);
+        int[] screenx = camera.mathToScreen(x, y);
+        int screenRadius = camera.mathToScreen(radius);
+        g2d.drawOval(screenx[0], screenx[1], screenRadius, screenRadius);
     }
 
     @Override
-    public void drawLine(int x1, int y1, int x2, int y2) {
+    public void drawLine(double x1, double y1, double x2, double y2) {
         g2d.setColor(color);
-        g2d.drawLine(x1, y1, x2, y2);
+        int[] screenx1 = camera.mathToScreen(x1, y1);
+        int[] screenx2 = camera.mathToScreen(x2, y2);
+        g2d.drawLine(screenx1[0], screenx1[1], screenx2[0], screenx2[1]);
     }
 
     @Override
@@ -72,6 +71,10 @@ public class Java2DRenderer extends Renderer {
         } catch (IOException ex) {
             Logger.getLogger(JMathAnimScene.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
+
+    @Override
+    public void drawArc(double x, double y, double radius, double angle) {
     }
 
 }

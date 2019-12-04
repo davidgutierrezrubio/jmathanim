@@ -19,12 +19,12 @@ import Utils.Vec;
  */
 public final class Point extends MathObject {
 
-    String[] DEFAULT_CONFIG = {
+    String[] DEFAULT_CONFIG_POINT = {
         "VISIBLE", "TRUE",
         "RADIUS", "10"
     };
 
-    public float x, y, z;
+    public double x, y, z;
 
     /**
      *
@@ -32,7 +32,7 @@ public final class Point extends MathObject {
      * @param y
      * @param z
      */
-    public Point(float x, float y, float z) {
+    public Point(double x, double y, double z) {
         this(x, y, z, null);
     }
 
@@ -41,7 +41,7 @@ public final class Point extends MathObject {
      * @param x
      * @param y
      */
-    public Point(float x, float y) {
+    public Point(double x, double y) {
         this(x, y, 0, null);
     }
 
@@ -51,7 +51,7 @@ public final class Point extends MathObject {
      * @param y
      * @param cnf
      */
-    public Point(float x, float y, Properties cnf) {
+    public Point(double x, double y, Properties cnf) {
         this(x, y, 0, cnf);
     }
 
@@ -62,12 +62,12 @@ public final class Point extends MathObject {
      * @param z
      * @param cnf
      */
-    public Point(float x, float y, float z, Properties configParam) {
+    public Point(double x, double y, double z, Properties configParam) {
         super(configParam);
         this.x = x;
         this.y = y;
         this.z = z;
-        ConfigUtils.digest_config(cnf, DEFAULT_CONFIG, configParam);
+        ConfigUtils.digest_config(cnf, DEFAULT_CONFIG_POINT, configParam);
 
     }
 
@@ -81,7 +81,7 @@ public final class Point extends MathObject {
     public void draw(Renderer r) {
         int rad = Integer.parseInt(cnf.getProperty("RADIUS"));
         r.setColor(Color.WHITE);
-        r.drawCircle((int)(x-.5*rad), (int)(y-.5*rad), rad);
+        r.drawCircle(x-.5*rad, y-.5*rad, rad);
         
     }
 

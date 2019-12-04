@@ -17,7 +17,6 @@ public class JMathAnim {
     public static void main(String[] args) {
         // TODO code application logic here
         JMathAnimScene scene=new PointSimple();
-        scene.setupSketch();
         scene.execute();
     }
     

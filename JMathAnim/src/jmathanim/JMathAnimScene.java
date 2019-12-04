@@ -5,6 +5,7 @@
  */
 package jmathanim;
 
+import Cameras.Camera;
 import Renderers.Java2DRenderer;
 import Renderers.Renderer;
 import Utils.ConfigUtils;
@@ -32,6 +33,7 @@ public abstract class JMathAnimScene {
     private int frames;
     private Renderer renderer;
     private int frameCount;
+    private Camera camera;
 
     public JMathAnimScene() {
         this(null);
@@ -41,12 +43,13 @@ public abstract class JMathAnimScene {
         cnf = new Properties();
         objects = new ArrayList<>();
         ConfigUtils.digest_config(cnf, DEFAULT_CONFIG, configParam);
-        renderer=new Java2DRenderer(cnf);
         settings();
     }
 
     public final void settings() {
-        
+        camera=new Camera();
+        renderer=new Java2DRenderer(cnf);
+        renderer.setCamera(camera);
 
     }
 

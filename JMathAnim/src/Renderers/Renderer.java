@@ -5,6 +5,7 @@
  */
 package Renderers;
 
+import Cameras.Camera;
 import java.awt.Color;
 import java.io.File;
 
@@ -16,11 +17,48 @@ import java.io.File;
  */
 public abstract class Renderer {
 
-    Color color;
+    protected Color color;
+    protected Camera camera;
+    protected int width;
+    protected int height;
 
     public Renderer() {
         color = Color.WHITE;//Default color
+        camera=new Camera(); //Default camera
 
+    }
+
+    public Camera getCamera() {
+        return camera;
+    }
+
+    public void setCamera(Camera camera) {
+        this.camera = camera;
+        camera.setSize(width, height);
+    }
+
+    public void setSize(int w, int h) {
+        width = w;
+        height = h;
+        camera.setSize(width, height);
+    }
+
+    public int getWidth() {
+        return width;
+    }
+
+    public void setWidth(int width) {
+        this.width = width;
+        camera.setSize(width, height);
+    }
+
+    public int getHeight() {
+        return height;
+    }
+
+    public void setHeight(int height) {
+        this.height = height;
+        camera.setSize(width, height);
     }
 
     public Color getColor() {
@@ -31,13 +69,13 @@ public abstract class Renderer {
         this.color = color;
     }
 
-    abstract public void drawArc();
+    abstract public void drawArc(double x, double y, double radius, double angle);
 
-    abstract public void drawLine(int x1, int y1, int x2, int y2);
+    abstract public void drawLine(double x1, double y1, double x2, double y2);
 
     abstract public void drawPolygon();
 
-    abstract public void drawCircle(int x, int y, int radius);
+    abstract public void drawCircle(double x, double y, double radius);
 
     abstract public void saveFrame(int frameCount);
 }

@@ -50,7 +50,7 @@ public class Line extends MathObject {
         Vec v1 = p1.getCenter();
         Vec v2 = p2.getCenter();
         r.setColor(Color.WHITE);
-        r.drawLine(v1.xi(), v1.yi(), v2.xi(), v2.yi());
+        r.drawLine(v1.x, v1.y, v2.x, v2.y);
 
     }
 
