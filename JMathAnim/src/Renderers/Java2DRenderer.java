@@ -88,8 +88,9 @@ public class Java2DRenderer extends Renderer {
     }
 
     @Override
-    public void setStroke(int size) {
-        g2d.setStroke(new BasicStroke(size,CAP_ROUND,JOIN_ROUND));
+    public void setStroke(double mathSize) {
+        int strokeSize = camera.mathToScreen(mathSize);
+        g2d.setStroke(new BasicStroke(strokeSize,CAP_ROUND,JOIN_ROUND));
     }
 
 }

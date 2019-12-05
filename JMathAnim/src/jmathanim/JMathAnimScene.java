@@ -23,8 +23,8 @@ import mathobjects.MathObject;
 public abstract class JMathAnimScene {
 
     String[] DEFAULT_CONFIG = {
-        "WIDTH", "800",
-        "HEIGHT", "600"
+        "WIDTH", "1920",
+        "HEIGHT", "1280"
     };
     int contador = 0;
     int x;

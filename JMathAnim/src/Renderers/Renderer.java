@@ -83,5 +83,5 @@ public abstract class Renderer {
      */
     abstract public void clear();
 
-    abstract public void setStroke(int i);
+    abstract public void setStroke(double st);
 }
