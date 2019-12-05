@@ -36,10 +36,12 @@ public class Arc extends MathObject {
         double y0=y;
         double x1,y1;
         //Compute an optimal alpha, depending on the screen?
-        for (double alpha=0;alpha<angle;alpha+=0.1)
+        for (double alpha=0;alpha<angle;alpha+=0.01)
         {
             x1=x+radius*Math.cos(alpha);
             y1=y+radius*Math.sin(alpha);
+            
+            r.setStroke(5);
             r.drawLine(x0, y0, x1, y1);
             x0=x1;
             y0=y1;

@@ -5,6 +5,9 @@
  */
 package Renderers;
 
+import java.awt.BasicStroke;
+import static java.awt.BasicStroke.CAP_ROUND;
+import static java.awt.BasicStroke.JOIN_ROUND;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
@@ -82,6 +85,11 @@ public class Java2DRenderer extends Renderer {
     public void clear() {
         g2d.setColor(Color.BLACK);//TODO: Poner en opciones
         g2d.fillRect(0, 0, width, height);
+    }
+
+    @Override
+    public void setStroke(int size) {
+        g2d.setStroke(new BasicStroke(size,CAP_ROUND,JOIN_ROUND));
     }
 
 }
