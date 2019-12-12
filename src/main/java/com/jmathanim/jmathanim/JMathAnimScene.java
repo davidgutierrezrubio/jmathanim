@@ -77,6 +77,7 @@ public abstract class JMathAnimScene {
         System.out.println("Run sketch: " + nombre);
         setupSketch();
         runSketch();
+        renderer.finish();//Finish rendering jobs
 
     }
 

@@ -77,7 +77,7 @@ public abstract class Renderer {
     abstract public void drawCircle(double x, double y, double radius);
 
     abstract public void saveFrame(int frameCount);
-
+    abstract public void finish();
     /**
      * Clear current renderer, with the background color
      */

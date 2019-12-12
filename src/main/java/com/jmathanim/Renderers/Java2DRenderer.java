@@ -5,7 +5,16 @@
  */
 package com.jmathanim.Renderers;
 
-import com.jmathanim.jmathanim.JMathAnimScene;
+import io.humble.video.Codec;
+import io.humble.video.Encoder;
+import io.humble.video.MediaPacket;
+import io.humble.video.MediaPicture;
+import io.humble.video.Muxer;
+import io.humble.video.MuxerFormat;
+import io.humble.video.PixelFormat;
+import io.humble.video.Rational;
+import io.humble.video.awt.MediaPictureConverter;
+import io.humble.video.awt.MediaPictureConverterFactory;
 import java.awt.BasicStroke;
 import static java.awt.BasicStroke.CAP_ROUND;
 import static java.awt.BasicStroke.JOIN_ROUND;
@@ -13,12 +22,10 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.imageio.ImageIO;
 
 /**
  *
@@ -28,11 +35,19 @@ public class Java2DRenderer extends Renderer {
 
     private final BufferedImage bufferedImage;
     private final Graphics2D g2d;
+    private Muxer muxer;
+    private MuxerFormat format;
+    private Codec codec;
+    private Encoder encoder;
+    private PixelFormat.Type pixelformat;
+    private Rational rationalFrameRate;
+    private MediaPacket packet;
+    private MediaPicture picture;
 
     public Java2DRenderer(Properties cnf) {
         int w = Integer.parseInt(cnf.getProperty("WIDTH"));
         int h = Integer.parseInt(cnf.getProperty("HEIGHT"));
-        setSize(w, h);
+        super.setSize(w, h);
 
         bufferedImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
         g2d = bufferedImage.createGraphics();
@@ -43,6 +58,48 @@ public class Java2DRenderer extends Renderer {
         rh.put(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
 
         g2d.setRenderingHints(rh);
+        prepareEncoder();
+
+    }
+
+    public final void prepareEncoder() {
+        muxer = Muxer.make("c:\\media\\pinicula.mp4", null, "mp4");
+        format = muxer.getFormat();
+        codec = Codec.findEncodingCodec(format.getDefaultVideoCodecId());
+        encoder = Encoder.make(codec);
+        encoder.setWidth(width);
+        encoder.setHeight(height);
+        pixelformat = PixelFormat.Type.PIX_FMT_YUV420P;
+        encoder.setPixelFormat(pixelformat);
+
+        rationalFrameRate = Rational.make(1, 12);
+        encoder.setTimeBase(rationalFrameRate);
+        if (format.getFlag(MuxerFormat.Flag.GLOBAL_HEADER)) {
+            encoder.setFlag(Encoder.Flag.FLAG_GLOBAL_HEADER, true);
+        }
+        /**
+         * Open the encoder.
+         */
+        encoder.open(null, null);
+        /**
+         * Add this stream to the muxer.
+         */
+        muxer.addNewStream(encoder);
+
+        try {
+            /**
+             * And open the muxer for business.
+             */
+            muxer.open(null, null);
+        } catch (InterruptedException | IOException ex) {
+            Logger.getLogger(Java2DRenderer.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        packet = MediaPacket.make();
+        picture = MediaPicture.make(
+                encoder.getWidth(),
+                encoder.getHeight(),
+                pixelformat);
+        picture.setTimeBase(rationalFrameRate);
     }
 
     @Override
@@ -68,13 +125,43 @@ public class Java2DRenderer extends Renderer {
 
     @Override
     public void saveFrame(int frameCount) {
-        String fname = "c:\\media\\screen-" + String.format("%05d", frameCount) + ".png";
-        File file = new File(fname);
-        try {
-            ImageIO.write(bufferedImage, "png", file);
-        } catch (IOException ex) {
-            Logger.getLogger(JMathAnimScene.class.getName()).log(Level.SEVERE, null, ex);
-        }
+//        String fname = "c:\\media\\screen-" + String.format("%05d", frameCount) + ".png";
+//        File file = new File(fname);
+//        try {
+//            ImageIO.write(bufferedImage, "png", file);
+//        } catch (IOException ex) {
+//            Logger.getLogger(JMathAnimScene.class.getName()).log(Level.SEVERE, null, ex);
+//        }
+        BufferedImage screen = MediaPictureConverterFactory.convertToType(bufferedImage, BufferedImage.TYPE_3BYTE_BGR);
+        MediaPictureConverter converter = MediaPictureConverterFactory.createConverter(screen, picture);
+        converter.toPicture(picture, screen, frameCount);
+        do {
+            encoder.encode(packet, picture);
+            if (packet.isComplete()) {
+                muxer.write(packet, false);
+            }
+        } while (packet.isComplete());
+    }
+
+    @Override
+    public void finish() {
+        /**
+         * Encoders, like decoders, sometimes cache pictures so it can do the
+         * right key-frame optimizations. So, they need to be flushed as well.
+         * As with the decoders, the convention is to pass in a null input until
+         * the output is not complete.
+         */
+        do {
+            encoder.encode(packet, null);
+            if (packet.isComplete()) {
+                muxer.write(packet, false);
+            }
+        } while (packet.isComplete());
+
+        /**
+         * Finally, let's clean up after ourselves.
+         */
+        muxer.close();
     }
 
     @Override
@@ -89,8 +176,8 @@ public class Java2DRenderer extends Renderer {
 
     @Override
     public void setStroke(double mathSize) {
-        int strokeSize = camera.mathToScreen(mathSize);
-        g2d.setStroke(new BasicStroke(strokeSize,CAP_ROUND,JOIN_ROUND));
+        int strokeSize = camera.mathToScreen(mathSize); //TODO: Another way to compute this
+        g2d.setStroke(new BasicStroke(strokeSize, CAP_ROUND, JOIN_ROUND));
     }
 
 }

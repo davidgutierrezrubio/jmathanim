@@ -14,7 +14,7 @@ import java.util.Properties;
  */
 public abstract class MathObject implements Drawable {
 
-    String[] DEFAULT_CONFIG = {
+    String[] DEFAULT_CONFIG_MATHOBJECT = {
         "VISIBLE", "TRUE",
         "ALPHA", "1",
         "COLOR","255"
@@ -27,7 +27,7 @@ public abstract class MathObject implements Drawable {
 
     public MathObject(Properties configParam) {
         cnf = new Properties();
-        ConfigUtils.digest_config(cnf, DEFAULT_CONFIG, configParam);
+        ConfigUtils.digest_config(cnf, DEFAULT_CONFIG_MATHOBJECT, configParam);
     }
 
     public abstract Vec getCenter();

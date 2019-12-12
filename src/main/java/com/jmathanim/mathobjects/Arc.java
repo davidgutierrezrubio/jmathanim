@@ -42,7 +42,7 @@ public class Arc extends MathObject {
             x1=x+radius*Math.cos(alpha);
             y1=y+radius*Math.sin(alpha);
             
-            r.setStroke(.1);
+            r.setStroke(.01);//TODO: COnfig stroke size
             r.drawLine(x0, y0, x1, y1);
             x0=x1;
             y0=y1;

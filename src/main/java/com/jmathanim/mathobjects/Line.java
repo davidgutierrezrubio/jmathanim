@@ -18,8 +18,7 @@ import java.util.Properties;
 public class Line extends MathObject {
 
     String[] DEFAULT_CONFIG = {
-        "THICKNESS", "1",
-        "RADIUS", "10",
+        "THICKNESS", ".01",
         "STROKEJOIN", "ROUND"
     };
     Point p1, p2;
@@ -48,7 +47,8 @@ public class Line extends MathObject {
     public void draw(Renderer r) {
         Vec v1 = p1.getCenter();
         Vec v2 = p2.getCenter();
-        r.setColor(Color.WHITE);
+        r.setColor(Color.BLUE);//TODO: Configs
+        r.setStroke(.01);//TODO: COnfig stroke size
         r.drawLine(v1.x, v1.y, v2.x, v2.y);
 
     }
