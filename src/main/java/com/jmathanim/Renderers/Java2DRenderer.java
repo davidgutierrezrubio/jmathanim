@@ -5,6 +5,7 @@
  */
 package com.jmathanim.Renderers;
 
+import com.jmathanim.Utils.ConfigUtils;
 import io.humble.video.Codec;
 import io.humble.video.Encoder;
 import io.humble.video.MediaPacket;
@@ -43,8 +44,16 @@ public class Java2DRenderer extends Renderer {
     private Rational rationalFrameRate;
     private MediaPacket packet;
     private MediaPicture picture;
+    private final Properties cnf;
+    String[] DEFAULT_CONFIG_JAVA2DRENDERER = {
+        "FPS", "25",
+        "ALPHA", "1",
+        "BACKGROUND_COLOR","0"
+    };
 
-    public Java2DRenderer(Properties cnf) {
+    public Java2DRenderer(Properties configParam) {
+        cnf = new Properties();
+        ConfigUtils.digest_config(cnf, DEFAULT_CONFIG_JAVA2DRENDERER, configParam);
         int w = Integer.parseInt(cnf.getProperty("WIDTH"));
         int h = Integer.parseInt(cnf.getProperty("HEIGHT"));
         super.setSize(w, h);
@@ -72,7 +81,7 @@ public class Java2DRenderer extends Renderer {
         pixelformat = PixelFormat.Type.PIX_FMT_YUV420P;
         encoder.setPixelFormat(pixelformat);
 
-        rationalFrameRate = Rational.make(1, 12);
+        rationalFrameRate = Rational.make(1, Integer.parseInt(cnf.getProperty("FPS")));
         encoder.setTimeBase(rationalFrameRate);
         if (format.getFlag(MuxerFormat.Flag.GLOBAL_HEADER)) {
             encoder.setFlag(Encoder.Flag.FLAG_GLOBAL_HEADER, true);
@@ -134,7 +143,11 @@ public class Java2DRenderer extends Renderer {
 //        }
         BufferedImage screen = MediaPictureConverterFactory.convertToType(bufferedImage, BufferedImage.TYPE_3BYTE_BGR);
         MediaPictureConverter converter = MediaPictureConverterFactory.createConverter(screen, picture);
-        converter.toPicture(picture, screen, frameCount);
+        //      @param timestamp the time stamp which should be attached to the the
+        //       video picture (in microseconds).
+        long rf = (long) (((double)frameCount)*rationalFrameRate.getDouble());
+        System.out.println("rf: "+rf);
+        converter.toPicture(picture, screen, rf);
         do {
             encoder.encode(packet, picture);
             if (packet.isComplete()) {

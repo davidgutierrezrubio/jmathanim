@@ -43,8 +43,8 @@ public class PointSimple extends JMathAnimScene {
         add(arc);
         Line li=new Line(po,or);
         add(li);
-        for (int i = 0; i < 10; i++) {
-            po.x += .2;
+        for (int i = 0; i < 1000; i++) {
+            po.x += .001;
             doDraws();
             advanceFrame();
             System.out.println(i);
