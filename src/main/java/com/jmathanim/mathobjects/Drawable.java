@@ -3,9 +3,10 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package mathobjects;
+package com.jmathanim.mathobjects;
 
-import Renderers.Renderer;
+import com.jmathanim.Renderers.Renderer;
+
 
 /**
  * Anything that can be drawin in the canvas

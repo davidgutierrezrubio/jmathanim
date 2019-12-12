@@ -3,12 +3,12 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package jmathanim;
+package com.jmathanim.jmathanim;
 
 import Cameras.Camera;
-import mathobjects.Arc;
-import mathobjects.Line;
-import mathobjects.Point;
+import com.jmathanim.mathobjects.Arc;
+import com.jmathanim.mathobjects.Line;
+import com.jmathanim.mathobjects.Point;
 
 
 /**

@@ -1,4 +1,4 @@
-package Utils;
+package com.jmathanim.Utils;
 
 /*
  * To change this license header, choose License Headers in Project Properties.

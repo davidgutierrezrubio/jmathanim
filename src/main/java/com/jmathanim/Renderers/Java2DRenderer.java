@@ -3,8 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package Renderers;
+package com.jmathanim.Renderers;
 
+import com.jmathanim.jmathanim.JMathAnimScene;
 import java.awt.BasicStroke;
 import static java.awt.BasicStroke.CAP_ROUND;
 import static java.awt.BasicStroke.JOIN_ROUND;
@@ -18,7 +19,6 @@ import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.imageio.ImageIO;
-import jmathanim.JMathAnimScene;
 
 /**
  *

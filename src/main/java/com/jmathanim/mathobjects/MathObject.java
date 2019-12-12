@@ -3,11 +3,11 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package mathobjects;
+package com.jmathanim.mathobjects;
 
+import com.jmathanim.Utils.ConfigUtils;
+import com.jmathanim.Utils.Vec;
 import java.util.Properties;
-import Utils.ConfigUtils;
-import Utils.Vec;
 /**
  *
  * @author David Gutiérrez Rubio <davidgutierrezrubio@gmail.com>

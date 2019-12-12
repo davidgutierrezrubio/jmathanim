@@ -3,14 +3,13 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package mathobjects;
+package com.jmathanim.mathobjects;
 
-import Renderers.Renderer;
 import java.awt.Color;
-import java.awt.Graphics2D;
 import java.util.Properties;
-import Utils.ConfigUtils;
-import Utils.Vec;
+import com.jmathanim.Renderers.Renderer;
+import com.jmathanim.Utils.ConfigUtils;
+import com.jmathanim.Utils.Vec;
 
 /**
  * This class represents a point

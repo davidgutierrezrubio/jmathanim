@@ -3,18 +3,18 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package jmathanim;
+package com.jmathanim.jmathanim;
 
 import Cameras.Camera;
-import Renderers.Java2DRenderer;
-import Renderers.Renderer;
-import Utils.ConfigUtils;
+import com.jmathanim.Renderers.Java2DRenderer;
+import com.jmathanim.Renderers.Renderer;
+import com.jmathanim.Utils.ConfigUtils;
+import com.jmathanim.mathobjects.MathObject;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import mathobjects.MathObject;
 
 /**
  *
