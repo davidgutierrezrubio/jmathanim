@@ -40,23 +40,25 @@ public class Line extends MathObject {
     public Vec getCenter() {
         Vec v1 = p1.getCenter();
         Vec v2 = p2.getCenter();
-        return v1.add(v2).mult(.5);
+        return v1.addInSite(v2).multInSite(.5);
     }
 
     @Override
     public void draw(Renderer r) {
         Vec v1 = p1.getCenter();
         Vec v2 = p2.getCenter();
+        Vec vd=v2.minus(v1);
+        Vec v3=v1.add(vd.mult(drawParam));
         r.setColor(Color.BLUE);//TODO: Configs
         r.setStroke(.01);//TODO: COnfig stroke size
-        r.drawLine(v1.x, v1.y, v2.x, v2.y);
+        r.drawLine(v1.x, v1.y, v3.x, v3.y);
 
     }
 
     @Override
     public void moveTo(Vec coords) {
         Vec v1 = p1.getCenter();
-        Vec shiftVector = coords.minusNew(v1);
+        Vec shiftVector = coords.minus(v1);
         shift(shiftVector);
         
     }

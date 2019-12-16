@@ -48,8 +48,8 @@ public abstract class JMathAnimScene {
     }
 
     public final void settings() {
-        camera=new Camera();
-        renderer=new Java2DRenderer(cnf);
+        camera = new Camera();
+        renderer = new Java2DRenderer(cnf);
         renderer.setCamera(camera);
 
     }
@@ -64,7 +64,6 @@ public abstract class JMathAnimScene {
 //        System.exit(0);
 //
 //    }
-
     /**
      * Preparation code for the animation should go here
      */
@@ -108,30 +107,43 @@ public abstract class JMathAnimScene {
     }
 
     private void saveMPFrame() {
-        
+
         renderer.saveFrame(frameCount);
     }
+
+    public void play(Animation anim) {
+        Animation[] anims = {anim};
+        this.play(anims);
+    }
+
+    public void play(Animation anim1, Animation anim2) {
+        Animation[] anims = {anim1, anim2};
+        this.play(anims);
+    }
+
+    public void play(Animation anim1, Animation anim2, Animation anim3) {
+        Animation[] anims = {anim1, anim2,anim3};
+        this.play(anims);
+    }
     
-    public void play(Animation anim)
-    {
-        for (double t=0;t<=1;t+=.01)
-        {
-            System.out.println("Play "+t);
-            anim.doAnim(t);
+    public void play(Animation[] anims) {
+        for (double t = 0; t <= 1; t += .01) {
+            System.out.println("Play " + t);
+            for (Animation anim : anims) {
+                anim.doAnim(t);
+            }
             doDraws();
             advanceFrame();
         }
     }
-    
-    public void wait(int frames)
-    {
-        for (int n=0;n<frames;n++)
-        {
-            System.out.println("Wait "+n);
+
+    public void wait(int frames) {
+        for (int n = 0; n < frames; n++) {
+            System.out.println("Wait " + n);
             doDraws();
             advanceFrame();
         }
-       
+
     }
 
 }

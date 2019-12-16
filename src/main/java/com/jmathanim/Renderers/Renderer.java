@@ -6,6 +6,7 @@
 package com.jmathanim.Renderers;
 
 import Cameras.Camera;
+import com.jmathanim.Utils.Vec;
 import java.awt.Color;
 
 /**
@@ -84,4 +85,9 @@ public abstract class Renderer {
     abstract public void clear();
 
     abstract public void setStroke(double st);
+
+    abstract public void createPath(double x,double y);
+    abstract public void addPointToPath(double x,double y);
+    abstract public void closePath();
+    abstract public void drawPath();
 }

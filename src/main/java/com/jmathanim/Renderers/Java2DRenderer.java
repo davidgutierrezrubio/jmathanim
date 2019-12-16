@@ -22,6 +22,7 @@ import static java.awt.BasicStroke.JOIN_ROUND;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
+import java.awt.geom.Path2D;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.Properties;
@@ -50,6 +51,7 @@ public class Java2DRenderer extends Renderer {
         "ALPHA", "1",
         "BACKGROUND_COLOR","0"
     };
+    protected Path2D.Double path;
 
     public Java2DRenderer(Properties configParam) {
         cnf = new Properties();
@@ -191,6 +193,29 @@ public class Java2DRenderer extends Renderer {
     public void setStroke(double mathSize) {
         int strokeSize = camera.mathToScreen(mathSize); //TODO: Another way to compute this
         g2d.setStroke(new BasicStroke(strokeSize, CAP_ROUND, JOIN_ROUND));
+    }
+
+    @Override
+    public void createPath(double xx,double yy) {
+        path=new Path2D.Double();
+        int[] scr = camera.mathToScreen(xx, yy);
+        path.moveTo(scr[0], scr[1]);
+    }
+
+    @Override
+    public void addPointToPath(double xx,double yy) {
+        int[] scr = camera.mathToScreen(xx, yy);
+        path.lineTo(scr[0], scr[1]);
+    }
+
+    @Override
+    public void closePath() {
+        path.closePath();
+    }
+    @Override
+    public void drawPath() {
+        g2d.setColor(color);
+        g2d.draw(path);
     }
 
 }

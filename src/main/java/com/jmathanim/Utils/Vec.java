@@ -30,31 +30,34 @@ public class Vec {
         return x * a.x + y * a.y + z * a.z;
     }
 
-    public Vec mult(double r) {
+    public Vec multInSite(double r) {
         x *= r;
         y *= r;
         z *= r;
         return this;
     }
+    public Vec mult(double r){
+        return new Vec(x*r,y*r,z*r);
+    }
 
-    public Vec add(Vec b) {
+    public Vec addInSite(Vec b) {
         x += b.x;
         y += b.y;
         z += b.z;
         return this;
     }
 
-    public Vec minus(Vec b) {
+    public Vec minusInSite(Vec b) {
         x -= b.x;
         y -= b.y;
         z -= b.z;
         return this;
     }
 
-    public Vec minusNew(Vec b) {
+    public Vec minus(Vec b) {
         return new Vec(x - b.x, y - b.y, z - b.z);
     }
-    public Vec addNew(Vec b) {
+    public Vec add(Vec b) {
         return new Vec(x + b.x, y + b.y, z + b.z);
     }
 

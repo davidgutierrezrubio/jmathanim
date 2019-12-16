@@ -54,8 +54,10 @@ public class PointSimple extends JMathAnimScene {
 //            System.out.println(i);
 //        }
         wait(40);
+        li.shift(new Vec(1,0,0));
         Animation anim=new ShowCreation(arc);
-        play(anim);
+        Animation anim2=new ShowCreation(li);
+        play(anim,anim2);
     }
 
 }

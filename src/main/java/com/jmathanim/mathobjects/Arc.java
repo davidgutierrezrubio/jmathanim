@@ -37,17 +37,21 @@ public class Arc extends MathObject {
         double x0=x+radius;
         double y0=y;
         double x1,y1;
+        r.setStroke(.01);//TODO: COnfig stroke size
+        r.createPath(x0,y0);
         //Compute an optimal alpha, depending on the screen?
         for (double alpha=0;alpha<angle*drawParam;alpha+=0.01)
         {
             x1=x+radius*Math.cos(alpha);
             y1=y+radius*Math.sin(alpha);
             
-            r.setStroke(.01);//TODO: COnfig stroke size
-            r.drawLine(x0, y0, x1, y1);
-            x0=x1;
-            y0=y1;
+            r.addPointToPath(x1, y1);
+//            r.drawLine(x0, y0, x1, y1); //TODO: Mejorar, crear poly en 2D
+//            x0=x1;
+//            y0=y1;
         }
+//        r.closePath();
+        r.drawPath();
     }
 
     @Override
