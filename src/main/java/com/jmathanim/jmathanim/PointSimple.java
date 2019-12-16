@@ -5,7 +5,10 @@
  */
 package com.jmathanim.jmathanim;
 
+import Animations.Animation;
+import Animations.ShowCreation;
 import Cameras.Camera;
+import com.jmathanim.Utils.Vec;
 import com.jmathanim.mathobjects.Arc;
 import com.jmathanim.mathobjects.Line;
 import com.jmathanim.mathobjects.Point;
@@ -24,6 +27,7 @@ public class PointSimple extends JMathAnimScene {
         testCamera(c, 2, 2);
         testCamera(c, -2, -2);
         testCamera(c, 2, -2);
+        
 
     }
 
@@ -43,20 +47,15 @@ public class PointSimple extends JMathAnimScene {
         add(arc);
         Line li=new Line(po,or);
         add(li);
-        for (int i = 0; i < 1000; i++) {
-            po.x += .001;
-            doDraws();
-            advanceFrame();
-            System.out.println(i);
-//            try {
-//
-//                Thread.sleep(300);
-//            } catch (InterruptedException ex) {
-//                Logger.getLogger(MathProcScene.class.getName()).log(Level.SEVERE, null, ex);
-//            }
-
-        }
-
+//        for (int i = 0; i < 100; i++) {
+//            li.shift(new Vec(.01,0,0));
+//            doDraws();
+//            advanceFrame();
+//            System.out.println(i);
+//        }
+        wait(40);
+        Animation anim=new ShowCreation(arc);
+        play(anim);
     }
 
 }

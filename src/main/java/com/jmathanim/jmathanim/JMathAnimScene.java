@@ -5,6 +5,7 @@
  */
 package com.jmathanim.jmathanim;
 
+import Animations.Animation;
 import Cameras.Camera;
 import com.jmathanim.Renderers.Java2DRenderer;
 import com.jmathanim.Renderers.Renderer;
@@ -106,20 +107,31 @@ public abstract class JMathAnimScene {
         renderer.clear();
     }
 
-    public void saveMPFrame() {
+    private void saveMPFrame() {
         
         renderer.saveFrame(frameCount);
-        frameCount++;
-        
-
     }
-
-    public void makeMovie() {
-        String cmd = "ffmpeg -r 13 -f image2 -i screen-%05d.tif" + " prueba.mp4";
-        try {
-            Process process = Runtime.getRuntime().exec(cmd);
-        } catch (IOException ex) {
-            Logger.getLogger(JMathAnimScene.class.getName()).log(Level.SEVERE, null, ex);
+    
+    public void play(Animation anim)
+    {
+        for (double t=0;t<=1;t+=.01)
+        {
+            System.out.println("Play "+t);
+            anim.doAnim(t);
+            doDraws();
+            advanceFrame();
         }
     }
+    
+    public void wait(int frames)
+    {
+        for (int n=0;n<frames;n++)
+        {
+            System.out.println("Wait "+n);
+            doDraws();
+            advanceFrame();
+        }
+       
+    }
+
 }

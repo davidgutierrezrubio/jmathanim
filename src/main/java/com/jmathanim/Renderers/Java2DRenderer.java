@@ -46,7 +46,7 @@ public class Java2DRenderer extends Renderer {
     private MediaPicture picture;
     private final Properties cnf;
     String[] DEFAULT_CONFIG_JAVA2DRENDERER = {
-        "FPS", "25",
+        "FPS", "5",//TODO: This option is too global, should'nt be here!
         "ALPHA", "1",
         "BACKGROUND_COLOR","0"
     };
@@ -146,7 +146,7 @@ public class Java2DRenderer extends Renderer {
         //      @param timestamp the time stamp which should be attached to the the
         //       video picture (in microseconds).
         long rf = (long) (((double)frameCount)*rationalFrameRate.getDouble());
-        System.out.println("rf: "+rf);
+        System.out.println("Saving frame: "+frameCount);
         converter.toPicture(picture, screen, rf);
         do {
             encoder.encode(packet, picture);

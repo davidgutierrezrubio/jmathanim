@@ -84,6 +84,21 @@ public final class Point extends MathObject {
         
     }
 
+    @Override
+    public void moveTo(Vec coords) {
+        x=coords.x;
+        y=coords.y;
+        z=coords.z;
+        
+    }
+
+    @Override
+    public void shift(Vec shiftVector) {
+        x+=shiftVector.x;
+        y+=shiftVector.y;
+        z+=shiftVector.z;
+    }
+
     
     
 

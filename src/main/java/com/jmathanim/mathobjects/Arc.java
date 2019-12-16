@@ -23,6 +23,7 @@ public class Arc extends MathObject {
         this.y = y;
         this.radius = radius;
         this.angle = angle;
+        setDrawParam(1);//Draw parameter to 1, draw the full arc
     }
 
     
@@ -37,7 +38,7 @@ public class Arc extends MathObject {
         double y0=y;
         double x1,y1;
         //Compute an optimal alpha, depending on the screen?
-        for (double alpha=0;alpha<angle;alpha+=0.01)
+        for (double alpha=0;alpha<angle*drawParam;alpha+=0.01)
         {
             x1=x+radius*Math.cos(alpha);
             y1=y+radius*Math.sin(alpha);
@@ -47,6 +48,18 @@ public class Arc extends MathObject {
             x0=x1;
             y0=y1;
         }
+    }
+
+    @Override
+    public void moveTo(Vec coords) {
+        x=coords.x;
+        y=coords.y;
+    }
+
+    @Override
+    public void shift(Vec shiftVector) {
+        x+=shiftVector.x;
+        y+=shiftVector.y;
     }
 
 }

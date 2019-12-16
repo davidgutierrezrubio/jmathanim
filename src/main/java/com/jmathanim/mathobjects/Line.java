@@ -53,4 +53,19 @@ public class Line extends MathObject {
 
     }
 
+    @Override
+    public void moveTo(Vec coords) {
+        Vec v1 = p1.getCenter();
+        Vec shiftVector = coords.minusNew(v1);
+        shift(shiftVector);
+        
+    }
+
+    @Override
+    public void shift(Vec shiftVector) {
+        p1.shift(shiftVector);
+        p2.shift(shiftVector);
+        
+    }
+
 }

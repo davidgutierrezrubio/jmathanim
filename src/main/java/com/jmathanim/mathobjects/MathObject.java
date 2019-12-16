@@ -8,6 +8,7 @@ package com.jmathanim.mathobjects;
 import com.jmathanim.Utils.ConfigUtils;
 import com.jmathanim.Utils.Vec;
 import java.util.Properties;
+
 /**
  *
  * @author David Gutiérrez Rubio <davidgutierrezrubio@gmail.com>
@@ -17,9 +18,10 @@ public abstract class MathObject implements Drawable {
     String[] DEFAULT_CONFIG_MATHOBJECT = {
         "VISIBLE", "TRUE",
         "ALPHA", "1",
-        "COLOR","255"
+        "COLOR", "255"
     };
     Properties cnf;
+    protected double drawParam;
 
     public MathObject() {
         this(null);
@@ -31,4 +33,15 @@ public abstract class MathObject implements Drawable {
     }
 
     public abstract Vec getCenter();
+    public abstract void moveTo(Vec coords);
+    public abstract void shift(Vec shiftVector);
+
+    public final double getDrawParam() {
+        return drawParam;
+    }
+
+    public final void setDrawParam(double drawParam) {
+        this.drawParam = drawParam;
+    }
+    
 }
