@@ -16,6 +16,7 @@ import io.humble.video.PixelFormat;
 import io.humble.video.Rational;
 import io.humble.video.awt.MediaPictureConverter;
 import io.humble.video.awt.MediaPictureConverterFactory;
+import java.awt.AlphaComposite;
 import java.awt.BasicStroke;
 import static java.awt.BasicStroke.CAP_ROUND;
 import static java.awt.BasicStroke.JOIN_ROUND;
@@ -49,7 +50,7 @@ public class Java2DRenderer extends Renderer {
     String[] DEFAULT_CONFIG_JAVA2DRENDERER = {
         "FPS", "5",//TODO: This option is too global, should'nt be here!
         "ALPHA", "1",
-        "BACKGROUND_COLOR","0"
+        "BACKGROUND_COLOR", "0"
     };
     protected Path2D.Double path;
 
@@ -147,8 +148,8 @@ public class Java2DRenderer extends Renderer {
         MediaPictureConverter converter = MediaPictureConverterFactory.createConverter(screen, picture);
         //      @param timestamp the time stamp which should be attached to the the
         //       video picture (in microseconds).
-        long rf = (long) (((double)frameCount)*rationalFrameRate.getDouble());
-        System.out.println("Saving frame: "+frameCount);
+        long rf = (long) (((double) frameCount) * rationalFrameRate.getDouble());
+        System.out.println("Saving frame: " + frameCount);
         converter.toPicture(picture, screen, rf);
         do {
             encoder.encode(packet, picture);
@@ -181,6 +182,7 @@ public class Java2DRenderer extends Renderer {
 
     @Override
     public void drawArc(double x, double y, double radius, double angle) {
+        g2d.setColor(color);
     }
 
     @Override
@@ -196,14 +198,14 @@ public class Java2DRenderer extends Renderer {
     }
 
     @Override
-    public void createPath(double xx,double yy) {
-        path=new Path2D.Double();
+    public void createPath(double xx, double yy) {
+        path = new Path2D.Double();
         int[] scr = camera.mathToScreen(xx, yy);
         path.moveTo(scr[0], scr[1]);
     }
 
     @Override
-    public void addPointToPath(double xx,double yy) {
+    public void addPointToPath(double xx, double yy) {
         int[] scr = camera.mathToScreen(xx, yy);
         path.lineTo(scr[0], scr[1]);
     }
@@ -212,10 +214,17 @@ public class Java2DRenderer extends Renderer {
     public void closePath() {
         path.closePath();
     }
+
     @Override
     public void drawPath() {
         g2d.setColor(color);
         g2d.draw(path);
+    }
+
+    @Override
+    public void setAlpha(double alpha) {
+        AlphaComposite alcom = AlphaComposite.getInstance(AlphaComposite.SRC_OVER, (float) alpha);
+        g2d.setComposite(alcom);
     }
 
 }

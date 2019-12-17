@@ -21,15 +21,22 @@ public abstract class MathObject implements Drawable {
         "COLOR", "255"
     };
     Properties cnf;
+    //This parameter specifies the amount of object to be drawn
+    //0=none, 1/2=draw half
     protected double drawParam;
+    protected double alpha;
 
     public MathObject() {
         this(null);
     }
 
+    
+
     public MathObject(Properties configParam) {
         cnf = new Properties();
         ConfigUtils.digest_config(cnf, DEFAULT_CONFIG_MATHOBJECT, configParam);
+        alpha=Float.parseFloat(cnf.getProperty("ALPHA"));
+        drawParam=1;
     }
 
     public abstract Vec getCenter();
@@ -42,6 +49,13 @@ public abstract class MathObject implements Drawable {
 
     public final void setDrawParam(double drawParam) {
         this.drawParam = drawParam;
+    }
+    public double getAlpha() {
+        return alpha;
+    }
+
+    public void setAlpha(double alpha) {
+        this.alpha = alpha;
     }
     
 }

@@ -90,4 +90,5 @@ public abstract class Renderer {
     abstract public void addPointToPath(double x,double y);
     abstract public void closePath();
     abstract public void drawPath();
+    abstract public void setAlpha(double alpha);
 }

@@ -19,11 +19,13 @@ public class Arc extends MathObject {
     public double radius, angle;
 
     public Arc(double x, double y, double radius, double angle) {
+        super();
         this.x = x;
         this.y = y;
         this.radius = radius;
         this.angle = angle;
         setDrawParam(1);//Draw parameter to 1, draw the full arc
+        
     }
 
     
@@ -38,6 +40,7 @@ public class Arc extends MathObject {
         double y0=y;
         double x1,y1;
         r.setStroke(.01);//TODO: COnfig stroke size
+        r.setAlpha(alpha);
         r.createPath(x0,y0);
         //Compute an optimal alpha, depending on the screen?
         for (double alpha=0;alpha<angle*drawParam;alpha+=0.01)

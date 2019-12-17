@@ -5,9 +5,10 @@
  */
 package com.jmathanim.jmathanim;
 
-import Animations.Animation;
-import Animations.ShowCreation;
+import com.jmathanim.Animations.Animation;
+import com.jmathanim.Animations.ShowCreation;
 import Cameras.Camera;
+import com.jmathanim.Animations.FadeIn;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.mathobjects.Arc;
 import com.jmathanim.mathobjects.Line;
@@ -54,10 +55,12 @@ public class PointSimple extends JMathAnimScene {
 //            System.out.println(i);
 //        }
         wait(40);
-        li.shift(new Vec(1,0,0));
+        //li.shift(new Vec(1,0,0));
         Animation anim=new ShowCreation(arc);
-        Animation anim2=new ShowCreation(li);
-        play(anim,anim2);
+        
+        play(anim);
+        Animation anim2=new FadeIn(li);
+        play(anim2);
     }
 
 }

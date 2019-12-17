@@ -51,6 +51,7 @@ public class Line extends MathObject {
         Vec v3=v1.add(vd.mult(drawParam));
         r.setColor(Color.BLUE);//TODO: Configs
         r.setStroke(.01);//TODO: COnfig stroke size
+        r.setAlpha(alpha);
         r.drawLine(v1.x, v1.y, v3.x, v3.y);
 
     }

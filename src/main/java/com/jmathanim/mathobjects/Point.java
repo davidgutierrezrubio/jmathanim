@@ -59,7 +59,7 @@ public final class Point extends MathObject {
      * @param x
      * @param y
      * @param z
-     * @param cnf
+     * @param configParam
      */
     public Point(double x, double y, double z, Properties configParam) {
         super(configParam);

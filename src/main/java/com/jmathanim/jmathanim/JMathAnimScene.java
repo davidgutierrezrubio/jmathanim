@@ -5,7 +5,7 @@
  */
 package com.jmathanim.jmathanim;
 
-import Animations.Animation;
+import com.jmathanim.Animations.Animation;
 import Cameras.Camera;
 import com.jmathanim.Renderers.Java2DRenderer;
 import com.jmathanim.Renderers.Renderer;
