@@ -48,7 +48,6 @@ public class Java2DRenderer extends Renderer {
     private MediaPicture picture;
     private final Properties cnf;
     String[] DEFAULT_CONFIG_JAVA2DRENDERER = {
-        "FPS", "5",//TODO: This option is too global, should'nt be here!
         "ALPHA", "1",
         "BACKGROUND_COLOR", "0"
     };

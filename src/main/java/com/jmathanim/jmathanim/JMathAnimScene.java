@@ -11,11 +11,8 @@ import com.jmathanim.Renderers.Java2DRenderer;
 import com.jmathanim.Renderers.Renderer;
 import com.jmathanim.Utils.ConfigUtils;
 import com.jmathanim.mathobjects.MathObject;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Properties;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
@@ -24,8 +21,9 @@ import java.util.logging.Logger;
 public abstract class JMathAnimScene {
 
     String[] DEFAULT_CONFIG = {
-        "WIDTH", "1920",
-        "HEIGHT", "1280"
+        "WIDTH", "800",
+        "HEIGHT", "600",
+        "FPS","25"
     };
     int contador = 0;
     int x;
