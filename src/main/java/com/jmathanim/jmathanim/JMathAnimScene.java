@@ -23,7 +23,7 @@ public abstract class JMathAnimScene {
     String[] DEFAULT_CONFIG = {
         "WIDTH", "800",
         "HEIGHT", "600",
-        "FPS","25"
+        "FPS", "25"
     };
     int contador = 0;
     int x;
@@ -33,6 +33,7 @@ public abstract class JMathAnimScene {
     private Renderer renderer;
     private int frameCount;
     private Camera camera;
+    private double fps;
 
     public JMathAnimScene() {
         this(null);
@@ -46,6 +47,7 @@ public abstract class JMathAnimScene {
     }
 
     public final void settings() {
+        fps = Double.parseDouble((String) cnf.get("FPS"));
         camera = new Camera();
         renderer = new Java2DRenderer(cnf);
         renderer.setCamera(camera);
@@ -120,24 +122,28 @@ public abstract class JMathAnimScene {
     }
 
     public void play(Animation anim1, Animation anim2, Animation anim3) {
-        Animation[] anims = {anim1, anim2,anim3};
+        Animation[] anims = {anim1, anim2, anim3};
         this.play(anims);
     }
-    
+
     public void play(Animation[] anims) {
-        for (double t = 0; t <= 1; t += .01) {
-            System.out.println("Play " + t);
+        for (Animation anim : anims) {
+            anim.setFps(fps);
+        }
+        boolean finished = false;
+        while (!finished) {
+            finished=true;
             for (Animation anim : anims) {
-                anim.doAnim(t);
+                finished=finished & anim.processAnimation();
             }
             doDraws();
             advanceFrame();
         }
     }
 
-    public void wait(int frames) {
-        for (int n = 0; n < frames; n++) {
-            System.out.println("Wait " + n);
+    public void waitSeconds(double time) {
+        int numFrames=(int) (time*fps);
+        for (int n = 0; n < numFrames; n++) {
             doDraws();
             advanceFrame();
         }

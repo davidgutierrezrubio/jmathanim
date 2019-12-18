@@ -11,15 +11,20 @@ import com.jmathanim.mathobjects.MathObject;
  *
  * @author David Gutiérrez Rubio <davidgutierrezrubio@gmail.com>
  */
-public class FadeIn extends Animation{
+public class FadeIn extends Animation {
 
     public FadeIn(MathObject mo) {
         super(mo);
     }
 
+    public FadeIn(MathObject mo, double runtime) {
+        super(mo, runtime);
+    }
+
     @Override
     public void doAnim(double t) {
+        System.out.println("Anim FadeIn "+t);
         mobj.setAlpha(t);
     }
-    
+
 }

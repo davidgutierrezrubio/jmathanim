@@ -147,9 +147,9 @@ public class Java2DRenderer extends Renderer {
         MediaPictureConverter converter = MediaPictureConverterFactory.createConverter(screen, picture);
         //      @param timestamp the time stamp which should be attached to the the
         //       video picture (in microseconds).
-        long rf = (long) (((double) frameCount) * rationalFrameRate.getDouble());
-        System.out.println("Saving frame: " + frameCount);
-        converter.toPicture(picture, screen, rf);
+//        long rf = (long) (((double) frameCount) * rationalFrameRate.getDouble());
+//        System.out.println("Saving frame: " + frameCount);
+        converter.toPicture(picture, screen, frameCount);
         do {
             encoder.encode(packet, picture);
             if (packet.isComplete()) {

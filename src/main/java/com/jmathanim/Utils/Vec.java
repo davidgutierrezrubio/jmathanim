@@ -64,4 +64,8 @@ public class Vec {
     public double norm() {
         return (double) sqrt(x * x + y * y + z * z);
     }
+    public double distanceTo(Vec point){
+        Vec c=this.minus(point);
+        return c.norm();
+    }
 }

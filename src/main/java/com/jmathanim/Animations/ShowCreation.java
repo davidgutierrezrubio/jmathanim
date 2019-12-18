@@ -17,9 +17,14 @@ public class ShowCreation extends Animation {
         super(mobj);
     }
 
+    public ShowCreation(MathObject mobj, double runtime) {
+        super(mobj, runtime);
+    }
+
     @Override
     public void doAnim(double t) {
+        System.out.println("Anim ShowCreation "+t);
         mobj.setDrawParam(t);
     }
-    
+
 }

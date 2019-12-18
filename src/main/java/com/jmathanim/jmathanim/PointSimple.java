@@ -8,6 +8,7 @@ package com.jmathanim.jmathanim;
 import com.jmathanim.Animations.Animation;
 import com.jmathanim.Animations.ShowCreation;
 import Cameras.Camera;
+import com.jmathanim.Animations.Circle;
 import com.jmathanim.Animations.FadeIn;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.mathobjects.Arc;
@@ -42,10 +43,10 @@ public class PointSimple extends JMathAnimScene {
 //        PGraphics gre = createGraphics(800, 600);
         Point po = new Point(0, 0);
         Point or=new Point(0,1.5);
-        Arc arc=new Arc(0, 0, 1, 3.14159);
+        Circle circ=new Circle(new Vec(0,0), new Vec(1,0));
         add(po);
         add(or);
-        add(arc);
+        add(circ);
         Line li=new Line(po,or);
         add(li);
 //        for (int i = 0; i < 100; i++) {
@@ -54,13 +55,13 @@ public class PointSimple extends JMathAnimScene {
 //            advanceFrame();
 //            System.out.println(i);
 //        }
-        wait(40);
+        waitSeconds(1);
         //li.shift(new Vec(1,0,0));
-        Animation anim=new ShowCreation(arc);
+        Animation anim=new ShowCreation(circ,1.);
         
-        play(anim);
-        Animation anim2=new FadeIn(li);
-        play(anim2);
+//        play(anim);
+        Animation anim2=new FadeIn(li,2);
+        play(anim,anim2);
     }
 
 }
