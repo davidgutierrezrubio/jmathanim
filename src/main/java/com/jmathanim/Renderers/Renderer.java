@@ -5,8 +5,7 @@
  */
 package com.jmathanim.Renderers;
 
-import Cameras.Camera;
-import com.jmathanim.Utils.Vec;
+import com.jmathanim.Cameras.Camera;
 import java.awt.Color;
 
 /**
@@ -18,30 +17,25 @@ import java.awt.Color;
 public abstract class Renderer {
 
     protected Color color;
-    protected Camera camera;
     protected int width;
     protected int height;
 
     public Renderer() {
         color = Color.WHITE;//Default color
-        camera = new Camera(); //Default camera
 
     }
 
-    public Camera getCamera() {
-        return camera;
-    }
+    public abstract void setCamera(Camera c);
 
-    public void setCamera(Camera camera) {
-        this.camera = camera;
-        camera.setSize(width, height);
-    }
+    public abstract Camera getCamera();
 
     public void setSize(int w, int h) {
         width = w;
         height = h;
-        camera.setSize(width, height);
+        setCameraSize(width, height);
     }
+
+    public abstract void setCameraSize(int w, int h);
 
     public int getWidth() {
         return width;
@@ -49,7 +43,7 @@ public abstract class Renderer {
 
     public void setWidth(int width) {
         this.width = width;
-        camera.setSize(width, height);
+        setCameraSize(width, height);
     }
 
     public int getHeight() {
@@ -58,7 +52,7 @@ public abstract class Renderer {
 
     public void setHeight(int height) {
         this.height = height;
-        camera.setSize(width, height);
+        setCameraSize(width, height);
     }
 
     public Color getColor() {
@@ -78,7 +72,9 @@ public abstract class Renderer {
     abstract public void drawCircle(double x, double y, double radius);
 
     abstract public void saveFrame(int frameCount);
+
     abstract public void finish();
+
     /**
      * Clear current renderer, with the background color
      */
@@ -86,9 +82,14 @@ public abstract class Renderer {
 
     abstract public void setStroke(double st);
 
-    abstract public void createPath(double x,double y);
-    abstract public void addPointToPath(double x,double y);
+    abstract public void createPath(double x, double y);
+
+    abstract public void addPointToPath(double x, double y);
+
     abstract public void closePath();
+
     abstract public void drawPath();
+
     abstract public void setAlpha(double alpha);
+
 }

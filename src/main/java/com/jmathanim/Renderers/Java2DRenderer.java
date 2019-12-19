@@ -5,6 +5,8 @@
  */
 package com.jmathanim.Renderers;
 
+import com.jmathanim.Cameras.Camera;
+import com.jmathanim.Cameras.Camera2D;
 import com.jmathanim.Utils.ConfigUtils;
 import io.humble.video.Codec;
 import io.humble.video.Encoder;
@@ -38,6 +40,7 @@ public class Java2DRenderer extends Renderer {
 
     private final BufferedImage bufferedImage;
     private final Graphics2D g2d;
+    public Camera2D camera;
     private Muxer muxer;
     private MuxerFormat format;
     private Codec codec;
@@ -58,6 +61,7 @@ public class Java2DRenderer extends Renderer {
         ConfigUtils.digest_config(cnf, DEFAULT_CONFIG_JAVA2DRENDERER, configParam);
         int w = Integer.parseInt(cnf.getProperty("WIDTH"));
         int h = Integer.parseInt(cnf.getProperty("HEIGHT"));
+        camera=new Camera2D(w,h);
         super.setSize(w, h);
 
         bufferedImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
@@ -70,9 +74,24 @@ public class Java2DRenderer extends Renderer {
 
         g2d.setRenderingHints(rh);
         prepareEncoder();
+        
 
     }
 
+    @Override
+    public Camera2D getCamera() {
+        return camera;
+    }
+
+    /**
+     *
+     * @param camera
+     */
+    public void setCamera(Camera camera) {
+        this.camera = (Camera2D) camera;
+        camera.setSize(width, height);
+    }
+    
     public final void prepareEncoder() {
         muxer = Muxer.make("c:\\media\\pinicula.mp4", null, "mp4");
         format = muxer.getFormat();
@@ -225,5 +244,10 @@ public class Java2DRenderer extends Renderer {
         AlphaComposite alcom = AlphaComposite.getInstance(AlphaComposite.SRC_OVER, (float) alpha);
         g2d.setComposite(alcom);
     }
+
+    @Override
+    public void setCameraSize(int w, int h) {
+        camera.setSize(w, h);
+        }
 
 }

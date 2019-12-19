@@ -7,11 +7,10 @@ package com.jmathanim.jmathanim;
 
 import com.jmathanim.Animations.Animation;
 import com.jmathanim.Animations.ShowCreation;
-import Cameras.Camera;
 import com.jmathanim.Animations.Circle;
 import com.jmathanim.Animations.FadeIn;
+import com.jmathanim.Cameras.Camera2D;
 import com.jmathanim.Utils.Vec;
-import com.jmathanim.mathobjects.Arc;
 import com.jmathanim.mathobjects.Line;
 import com.jmathanim.mathobjects.Point;
 
@@ -20,11 +19,11 @@ import com.jmathanim.mathobjects.Point;
  *
  * @author David Gutiérrez Rubio <davidgutierrezrubio@gmail.com>
  */
-public class PointSimple extends JMathAnimScene {
+public class PointSimple extends Scene2D {
 
     @Override
     public void setupSketch() {
-        Camera c=new Camera(800, 600);
+        Camera2D c=new Camera2D(800, 600);
         testCamera(c, -2, 2);
         testCamera(c, 2, 2);
         testCamera(c, -2, -2);
@@ -33,7 +32,7 @@ public class PointSimple extends JMathAnimScene {
 
     }
 
-    private void testCamera(Camera c, double xx, double yy) {
+    private void testCamera(Camera2D c, double xx, double yy) {
         int cxx[]=c.mathToScreen(xx,yy);
         System.out.println("[Test camera]: x,y="+xx+","+yy+"  sx="+cxx[0]+","+cxx[1]);
     }
@@ -58,7 +57,7 @@ public class PointSimple extends JMathAnimScene {
         waitSeconds(1);
         //li.shift(new Vec(1,0,0));
         Animation anim=new ShowCreation(circ,1.);
-        
+        camera.setCenter(1, 0);
 //        play(anim);
         Animation anim2=new FadeIn(li,2);
         play(anim,anim2);

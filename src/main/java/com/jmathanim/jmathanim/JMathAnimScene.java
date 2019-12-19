@@ -6,7 +6,7 @@
 package com.jmathanim.jmathanim;
 
 import com.jmathanim.Animations.Animation;
-import Cameras.Camera;
+import com.jmathanim.Cameras.Camera;
 import com.jmathanim.Renderers.Java2DRenderer;
 import com.jmathanim.Renderers.Renderer;
 import com.jmathanim.Utils.ConfigUtils;
@@ -27,13 +27,12 @@ public abstract class JMathAnimScene {
     };
     int contador = 0;
     int x;
-    private final Properties cnf;
+    protected final Properties cnf;
     ArrayList<MathObject> objects;
-    private int frames;
-    private Renderer renderer;
-    private int frameCount;
-    private Camera camera;
-    private double fps;
+    protected Renderer SCRenderer;
+    protected Camera SCCamera;
+    protected int frameCount;
+    protected double fps;
 
     public JMathAnimScene() {
         this(null);
@@ -43,17 +42,9 @@ public abstract class JMathAnimScene {
         cnf = new Properties();
         objects = new ArrayList<>();
         ConfigUtils.digest_config(cnf, DEFAULT_CONFIG, configParam);
-        settings();
     }
 
-    public final void settings() {
-        fps = Double.parseDouble((String) cnf.get("FPS"));
-        camera = new Camera();
-        renderer = new Java2DRenderer(cnf);
-        renderer.setCamera(camera);
-
-    }
-
+       
 //    /**
 //     *
 //     */
@@ -77,7 +68,7 @@ public abstract class JMathAnimScene {
         System.out.println("Run sketch: " + nombre);
         setupSketch();
         runSketch();
-        renderer.finish();//Finish rendering jobs
+        SCRenderer.finish();//Finish rendering jobs
 
     }
 
@@ -95,7 +86,7 @@ public abstract class JMathAnimScene {
 
     public final void doDraws() {
         for (MathObject obj : objects) {
-            obj.draw(renderer);
+            obj.draw(SCRenderer);
         }
 
     }
@@ -103,12 +94,12 @@ public abstract class JMathAnimScene {
     public final void advanceFrame() {
         frameCount++;
         saveMPFrame();
-        renderer.clear();
+        SCRenderer.clear();
     }
 
     private void saveMPFrame() {
 
-        renderer.saveFrame(frameCount);
+        SCRenderer.saveFrame(frameCount);
     }
 
     public void play(Animation anim) {
