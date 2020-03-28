@@ -14,13 +14,13 @@ import com.jmathanim.Utils.Vec;
 /**
  * This class represents a point
  *
- * @author David Gutiérrez Rubio <davidgutierrezrubio@gmail.com>
+ * @author David Gutierrez Rubio davidgutierrezrubio@gmail.com
  */
 public final class Point extends MathObject {
 
     String[] DEFAULT_CONFIG_POINT = {
         "VISIBLE", "TRUE",
-        "RADIUS", "10"
+        "RADIUS", ".01"//Radius relative to width screen
     };
 
     public double x, y, z;
@@ -70,38 +70,39 @@ public final class Point extends MathObject {
 
     }
 
-   
     @Override
     public Vec getCenter() {
-        return new Vec(x,y,z);
+        return new Vec(x, y, z);
     }
 
     @Override
     public void draw(Renderer r) {
-        int rad = Integer.parseInt(cnf.getProperty("RADIUS"));
+        double rad1 = Double.parseDouble(cnf.getProperty("RADIUS"));
         r.setColor(Color.WHITE);
-        r.drawCircle(x-.5*rad, y-.5*rad, rad);
-        
+//        double  w = (double) (.5*rad*r.getWidth());//Radius relative to screen width
+        double rad=r.getCamera().relScalarToWidth(rad1);
+        r.drawCircle(x , y , rad);
+
     }
 
     @Override
     public void moveTo(Vec coords) {
-        x=coords.x;
-        y=coords.y;
-        z=coords.z;
-        
+        x = coords.x;
+        y = coords.y;
+        z = coords.z;
+
     }
 
     @Override
     public void shift(Vec shiftVector) {
-        x+=shiftVector.x;
-        y+=shiftVector.y;
-        z+=shiftVector.z;
+        x += shiftVector.x;
+        y += shiftVector.y;
+        z += shiftVector.z;
     }
 
-    
-    
+    @Override
+    public MathObject copy() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
 
-
-    
 }

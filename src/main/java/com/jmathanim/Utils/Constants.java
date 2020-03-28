@@ -8,7 +8,7 @@ package com.jmathanim.Utils;
 
 /**
  *
- * @author David Gutiérrez Rubio <davidgutierrezrubio@gmail.com>
+ * @author David Gutierrez Rubio davidgutierrezrubio@gmail.com
  */
 public class Constants {
     public final double PI=3.141592653f; 

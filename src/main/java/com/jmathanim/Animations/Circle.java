@@ -11,7 +11,7 @@ import static java.lang.Math.PI;
 
 /**
  *
- * @author David Gutiérrez Rubio <davidgutierrezrubio@gmail.com>
+ * @author David Gutierrez Rubio davidgutierrezrubio@gmail.com
  */
 public class Circle extends Arc{
     

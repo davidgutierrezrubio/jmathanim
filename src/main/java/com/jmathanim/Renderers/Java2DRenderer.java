@@ -8,6 +8,8 @@ package com.jmathanim.Renderers;
 import com.jmathanim.Cameras.Camera;
 import com.jmathanim.Cameras.Camera2D;
 import com.jmathanim.Utils.ConfigUtils;
+import com.jmathanim.Utils.JMathAnimConfig;
+import com.jmathanim.jmathanim.JMathAnimScene;
 import io.humble.video.Codec;
 import io.humble.video.Encoder;
 import io.humble.video.MediaPacket;
@@ -34,7 +36,8 @@ import java.util.logging.Logger;
 
 /**
  *
- * @author David Gutiérrez Rubio <davidgutierrezrubio@gmail.com>
+ * @author David Gutierrez Rubio davidgutierrezrubio@gmail.com
+ * This class uses Java2D to render the image
  */
 public class Java2DRenderer extends Renderer {
 
@@ -49,20 +52,18 @@ public class Java2DRenderer extends Renderer {
     private Rational rationalFrameRate;
     private MediaPacket packet;
     private MediaPicture picture;
-    private final Properties cnf;
     String[] DEFAULT_CONFIG_JAVA2DRENDERER = {
         "ALPHA", "1",
         "BACKGROUND_COLOR", "0"
     };
     protected Path2D.Double path;
+    final String saveFilePath = "c:\\media\\pinicula.mp4";
+    private final JMathAnimConfig cnf;
 
-    public Java2DRenderer(Properties configParam) {
-        cnf = new Properties();
-        ConfigUtils.digest_config(cnf, DEFAULT_CONFIG_JAVA2DRENDERER, configParam);
-        int w = Integer.parseInt(cnf.getProperty("WIDTH"));
-        int h = Integer.parseInt(cnf.getProperty("HEIGHT"));
-        camera=new Camera2D(w,h);
-        super.setSize(w, h);
+    public Java2DRenderer(JMathAnimScene parentScene) {
+        cnf = parentScene.conf;
+        camera=new Camera2D(cnf.width,cnf.height);
+        super.setSize(cnf.width, cnf.height);
 
         bufferedImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
         g2d = bufferedImage.createGraphics();
@@ -93,7 +94,8 @@ public class Java2DRenderer extends Renderer {
     }
     
     public final void prepareEncoder() {
-        muxer = Muxer.make("c:\\media\\pinicula.mp4", null, "mp4");
+        
+        muxer = Muxer.make(saveFilePath, null, "mp4");
         format = muxer.getFormat();
         codec = Codec.findEncodingCodec(format.getDefaultVideoCodecId());
         encoder = Encoder.make(codec);
@@ -102,7 +104,8 @@ public class Java2DRenderer extends Renderer {
         pixelformat = PixelFormat.Type.PIX_FMT_YUV420P;
         encoder.setPixelFormat(pixelformat);
 
-        rationalFrameRate = Rational.make(1, Integer.parseInt(cnf.getProperty("FPS")));
+//        rationalFrameRate = Rational.make(1, Integer.parseInt(cnf.getProperty("FPS")));
+        rationalFrameRate = Rational.make(1, cnf.fps);
         encoder.setTimeBase(rationalFrameRate);
         if (format.getFlag(MuxerFormat.Flag.GLOBAL_HEADER)) {
             encoder.setFlag(Encoder.Flag.FLAG_GLOBAL_HEADER, true);
@@ -140,9 +143,12 @@ public class Java2DRenderer extends Renderer {
     @Override
     public void drawCircle(double x, double y, double radius) {
         g2d.setColor(color);
-        int[] screenx = camera.mathToScreen(x, y);
+        double mx=x-.5*radius;
+        double my=y+.5*radius;
+        int[] screenx = camera.mathToScreen(mx, my);
         int screenRadius = camera.mathToScreen(radius);
-        g2d.drawOval(screenx[0], screenx[1], screenRadius, screenRadius);
+        g2d.fillOval(screenx[0],screenx[1], screenRadius, screenRadius);
+//        g2d.drawRect(screenx[0],screenx[1], screenRadius, screenRadius);
     }
 
     @Override
@@ -196,6 +202,7 @@ public class Java2DRenderer extends Renderer {
          * Finally, let's clean up after ourselves.
          */
         muxer.close();
+        System.out.println("Movie created at "+saveFilePath);
     }
 
     @Override

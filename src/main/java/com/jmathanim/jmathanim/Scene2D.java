@@ -12,31 +12,27 @@ import java.util.Properties;
 
 /**
  *
- * @author David Gutiérrez Rubio <davidgutierrezrubio@gmail.com>
+ * @author David Gutierrez Rubio davidgutierrezrubio@gmail.com
  */
 public abstract class Scene2D extends JMathAnimScene {
 
-    String[] DEFAULT_CONFIG_2D = {
-        "WIDTH", "800",
-        "HEIGHT", "600",
-        "FPS", "25"
-    };
     protected Java2DRenderer renderer;
     protected Camera2D camera;
 
+
     public Scene2D() {
-        this(null);
+        super();
+        
+
     }
 
-    public Scene2D(Properties configParam) {
-        super(configParam);
-        ConfigUtils.digest_config(cnf, DEFAULT_CONFIG_2D, configParam);
-        fps = Double.parseDouble((String) cnf.get("FPS"));
-        renderer = new Java2DRenderer(cnf);
+    public void createRenderer(){
+        fps = conf.fps;
+        dt=1./fps;
+        renderer = new Java2DRenderer(this);
         camera=renderer.getCamera();
         SCRenderer=renderer;
         SCCamera=camera;
-
     }
-
+    
 }

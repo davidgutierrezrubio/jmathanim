@@ -12,7 +12,7 @@ import com.jmathanim.mathobjects.MathObject;
  * parameter t from 0 to 1. Each animation has its own t parameter, which steps
  * depending on fps
  *
- * @author David Gutiérrez Rubio <davidgutierrezrubio@gmail.com>
+ * @author David Gutierrez Rubio davidgutierrezrubio@gmail.com
  */
 public abstract class Animation {
 

@@ -13,7 +13,7 @@ import java.util.Properties;
 
 /**
  *
- * @author David Gutiérrez Rubio <davidgutierrezrubio@gmail.com>
+ * @author David Gutierrez Rubio davidgutierrezrubio@gmail.com
  */
 public class Line extends MathObject {
 
@@ -69,6 +69,11 @@ public class Line extends MathObject {
         p1.shift(shiftVector);
         p2.shift(shiftVector);
         
+    }
+
+    @Override
+    public MathObject copy() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
 }

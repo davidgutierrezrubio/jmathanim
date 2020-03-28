@@ -63,12 +63,34 @@ public abstract class Renderer {
         this.color = color;
     }
 
+    /**
+     * Draws an arc centered at x,y with given radius and angle
+     *
+     * @param x x in math coordinates
+     * @param y y in math coordinates
+     * @param radius radius in math coordinates
+     * @param angle angle in math coordinates
+     */
     abstract public void drawArc(double x, double y, double radius, double angle);
 
+    /**
+     * Draws a straight line from x1,y1 to x2,y2
+     * @param x1 x coordinate of first point in math coordinates
+     * @param y1 y coordinate of first point in math coordinates
+     * @param x2 x coordinate of second point in math coordinates
+     * @param y2 y coordinate of second point in math coordinates
+     */
     abstract public void drawLine(double x1, double y1, double x2, double y2);
 
     abstract public void drawPolygon();
 
+    /**
+     * Draws a circle centered at x,y with given radius
+     *
+     * @param x x in math coordinates
+     * @param y y in math coordinates
+     * @param radius radius in math coordinates
+     */
     abstract public void drawCircle(double x, double y, double radius);
 
     abstract public void saveFrame(int frameCount);

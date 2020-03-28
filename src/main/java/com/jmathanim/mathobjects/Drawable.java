@@ -10,7 +10,7 @@ import com.jmathanim.Renderers.Renderer;
 
 /**
  * Anything that can be drawin in the canvas
- * @author David Gutiérrez Rubio <davidgutierrezrubio@gmail.com>
+ * @author David Gutierrez Rubio davidgutierrezrubio@gmail.com
  */
 interface Drawable {
     public void draw(Renderer r);

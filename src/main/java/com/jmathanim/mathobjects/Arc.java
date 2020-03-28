@@ -10,7 +10,7 @@ import com.jmathanim.Utils.Vec;
 
 /**
  *
- * @author David Gutiérrez Rubio <davidgutierrezrubio@gmail.com>
+ * @author David Gutierrez Rubio davidgutierrezrubio@gmail.com
  */
 public class Arc extends MathObject {
 
@@ -71,6 +71,11 @@ public class Arc extends MathObject {
     public void shift(Vec shiftVector) {
         x += shiftVector.x;
         y += shiftVector.y;
+    }
+
+    @Override
+    public MathObject copy() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
 }

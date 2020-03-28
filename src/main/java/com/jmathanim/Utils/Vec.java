@@ -10,7 +10,7 @@ import static java.lang.Math.sqrt;
 /**
  * A vector in 3D
  *
- * @author David Gutiérrez Rubio <davidgutierrezrubio@gmail.com>
+ * @author David Gutierrez Rubio davidgutierrezrubio@gmail.com
  */
 public class Vec {
 

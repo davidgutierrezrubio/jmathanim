@@ -7,44 +7,41 @@ package com.jmathanim.jmathanim;
 
 import com.jmathanim.Animations.Animation;
 import com.jmathanim.Cameras.Camera;
-import com.jmathanim.Renderers.Java2DRenderer;
 import com.jmathanim.Renderers.Renderer;
 import com.jmathanim.Utils.ConfigUtils;
+import com.jmathanim.Utils.JMathAnimConfig;
 import com.jmathanim.mathobjects.MathObject;
 import java.util.ArrayList;
 import java.util.Properties;
 
 /**
  *
- * @author David Gutiérrez Rubio <davidgutierrezrubio@gmail.com>
+ * @author David Gutierrez Rubio davidgutierrezrubio@gmail.com
  */
 public abstract class JMathAnimScene {
 
     String[] DEFAULT_CONFIG = {
         "WIDTH", "800",
         "HEIGHT", "600",
-        "FPS", "25"
+        "FPS", "60"
     };
     int contador = 0;
     int x;
-    protected final Properties cnf;
     ArrayList<MathObject> objects;
     protected Renderer SCRenderer;
     protected Camera SCCamera;
     protected int frameCount;
     protected double fps;
+    protected double dt;
+    public JMathAnimConfig conf;
+
 
     public JMathAnimScene() {
-        this(null);
+        objects = new ArrayList<>(); //TODO: Extends this to include layers
+        conf=new JMathAnimConfig();
+        conf.setLowQuality();//by default, set low quality
     }
 
-    public JMathAnimScene(Properties configParam) {
-        cnf = new Properties();
-        objects = new ArrayList<>();
-        ConfigUtils.digest_config(cnf, DEFAULT_CONFIG, configParam);
-    }
-
-       
 //    /**
 //     *
 //     */
@@ -84,14 +81,21 @@ public abstract class JMathAnimScene {
         return obj;
     }
 
-    public final void doDraws() {
+    /**
+     * Call the draw method in all mathobjects
+     */
+    protected final void doDraws() {
         for (MathObject obj : objects) {
             obj.draw(SCRenderer);
         }
 
     }
 
+    /**
+     * Advance one frame, making all necessary drawings
+     */
     public final void advanceFrame() {
+        doDraws();
         frameCount++;
         saveMPFrame();
         SCRenderer.clear();
@@ -123,9 +127,9 @@ public abstract class JMathAnimScene {
         }
         boolean finished = false;
         while (!finished) {
-            finished=true;
+            finished = true;
             for (Animation anim : anims) {
-                finished=finished & anim.processAnimation();
+                finished = finished & anim.processAnimation();
             }
             doDraws();
             advanceFrame();
@@ -133,7 +137,7 @@ public abstract class JMathAnimScene {
     }
 
     public void waitSeconds(double time) {
-        int numFrames=(int) (time*fps);
+        int numFrames = (int) (time * fps);
         for (int n = 0; n < numFrames; n++) {
             doDraws();
             advanceFrame();

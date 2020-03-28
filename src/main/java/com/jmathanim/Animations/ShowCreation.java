@@ -9,7 +9,7 @@ import com.jmathanim.mathobjects.MathObject;
 
 /**
  *
- * @author David Gutiérrez Rubio <davidgutierrezrubio@gmail.com>
+ * @author David Gutierrez Rubio davidgutierrezrubio@gmail.com
  */
 public class ShowCreation extends Animation {
 
