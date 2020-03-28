@@ -26,12 +26,19 @@ public class JMathAnimConfig {
      */
     public int fps;
     
+    /**
+     * Set low quality settings (800,600, 30fps). These are the default settings
+     */
     public void setLowQuality(){
         width=800;
         height=600;
         fps=30;
         
     }
+
+    /**
+     * Set high quality settings (1920,1080, 60fps)
+     */
     public void setHighQuality(){
         width=1920;
         height=1080;

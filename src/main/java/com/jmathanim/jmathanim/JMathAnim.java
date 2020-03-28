@@ -11,12 +11,14 @@ package com.jmathanim.jmathanim;
  */
 public class JMathAnim {
 
-     /**
+    /**
+     * A launcher for the scene
+     *
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        JMathAnimScene scene=new PointSimple();
+        JMathAnimScene scene = new PointSimple();
         scene.execute();
     }
-    
+
 }
