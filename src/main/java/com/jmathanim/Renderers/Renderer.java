@@ -104,13 +104,13 @@ public abstract class Renderer {
 
     abstract public void setStroke(double st);
 
-    abstract public void createPath(double x, double y);
+//    abstract public void createPath(double x, double y);
+//
+//    abstract public void addPointToPath(double x, double y);
+//
+//    abstract public void closePath();
 
-    abstract public void addPointToPath(double x, double y);
-
-    abstract public void closePath();
-
-    abstract public void drawPath();
+    abstract public void drawPath(Curve c);
 
     abstract public void setAlpha(double alpha);
 

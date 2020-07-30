@@ -5,6 +5,8 @@
  */
 package com.jmathanim.Cameras;
 
+import com.jmathanim.Utils.Vec;
+
 /**
  * A Camera subclass designed to work with the Java2D library This class
  * converts math coordinates to screen cordinates. Screen coordinates are always
@@ -95,6 +97,10 @@ public class Camera2D extends Camera {
     public double screenToMath(double screenScalar) {
         //resul = (int) ((mathScalar - xmin) + mathScalar * screenWidth / xmax);
         return screenScalar*(xmax-xmin)/screenWidth;
+    }
+
+    public int[] mathToScreen(Vec p) {
+        return mathToScreen(p.x, p.y);
     }
 
 }

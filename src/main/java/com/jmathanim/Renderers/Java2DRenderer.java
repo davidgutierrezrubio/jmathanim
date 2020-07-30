@@ -9,6 +9,7 @@ import com.jmathanim.Cameras.Camera;
 import com.jmathanim.Cameras.Camera2D;
 import com.jmathanim.Utils.ConfigUtils;
 import com.jmathanim.Utils.JMathAnimConfig;
+import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import io.humble.video.Codec;
 import io.humble.video.Encoder;
@@ -30,14 +31,15 @@ import java.awt.RenderingHints;
 import java.awt.geom.Path2D;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
  *
- * @author David Gutierrez Rubio davidgutierrezrubio@gmail.com
- * This class uses Java2D to render the image
+ * @author David Gutierrez Rubio davidgutierrezrubio@gmail.com This class uses
+ * Java2D to render the image
  */
 public class Java2DRenderer extends Renderer {
 
@@ -59,10 +61,12 @@ public class Java2DRenderer extends Renderer {
     protected Path2D.Double path;
     final String saveFilePath = "c:\\media\\pinicula.mp4";
     private final JMathAnimConfig cnf;
+    private ArrayList<int[]> pointsList;
+    private boolean closePath;
 
     public Java2DRenderer(JMathAnimScene parentScene) {
         cnf = parentScene.conf;
-        camera=new Camera2D(cnf.width,cnf.height);
+        camera = new Camera2D(cnf.width, cnf.height);
         super.setSize(cnf.width, cnf.height);
 
         bufferedImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
@@ -75,7 +79,6 @@ public class Java2DRenderer extends Renderer {
 
         g2d.setRenderingHints(rh);
         prepareEncoder();
-        
 
     }
 
@@ -92,9 +95,9 @@ public class Java2DRenderer extends Renderer {
         this.camera = (Camera2D) camera;
         camera.setSize(width, height);
     }
-    
+
     public final void prepareEncoder() {
-        
+
         muxer = Muxer.make(saveFilePath, null, "mp4");
         format = muxer.getFormat();
         codec = Codec.findEncodingCodec(format.getDefaultVideoCodecId());
@@ -143,11 +146,11 @@ public class Java2DRenderer extends Renderer {
     @Override
     public void drawCircle(double x, double y, double radius) {
         g2d.setColor(color);
-        double mx=x-.5*radius;
-        double my=y+.5*radius;
+        double mx = x - .5 * radius;
+        double my = y + .5 * radius;
         int[] screenx = camera.mathToScreen(mx, my);
         int screenRadius = camera.mathToScreen(radius);
-        g2d.fillOval(screenx[0],screenx[1], screenRadius, screenRadius);
+        g2d.fillOval(screenx[0], screenx[1], screenRadius, screenRadius);
 //        g2d.drawRect(screenx[0],screenx[1], screenRadius, screenRadius);
     }
 
@@ -202,7 +205,7 @@ public class Java2DRenderer extends Renderer {
          * Finally, let's clean up after ourselves.
          */
         muxer.close();
-        System.out.println("Movie created at "+saveFilePath);
+        System.out.println("Movie created at " + saveFilePath);
     }
 
     @Override
@@ -222,38 +225,55 @@ public class Java2DRenderer extends Renderer {
         g2d.setStroke(new BasicStroke(strokeSize, CAP_ROUND, JOIN_ROUND));
     }
 
+//    @Override
+//    public void createPath(double xx, double yy) {
+//        closePath = false;
+//        pointsList = new ArrayList<int[]>();
+//        int[] scr = camera.mathToScreen(xx, yy);
+//        pointsList.add(scr);
+//    }
+//
+//    @Override
+//    public void addPointToPath(double xx, double yy) {
+//
+//        int[] scr = camera.mathToScreen(xx, yy);
+//        pointsList.add(scr);
+//    }
+//
+//    @Override
+//    public void closePath() {
+//        closePath = true;
+//    }
     @Override
-    public void createPath(double xx, double yy) {
+    public void drawPath(Curve c) {
         path = new Path2D.Double();
-        int[] scr = camera.mathToScreen(xx, yy);
+        int numPoints = c.size();
+        //First, I move the curve to the first point
+        Vec p = c.getPoint(0);
+        int[] scr = camera.mathToScreen(p);
         path.moveTo(scr[0], scr[1]);
-    }
+        //Now I iterate to get the next points
+        
+        
+        path.curveTo(cx1, cy1, cx2, cy2, x3, y3);
+//                path.lineTo(x3, y3);
 
-    @Override
-    public void addPointToPath(double xx, double yy) {
-        int[] scr = camera.mathToScreen(xx, yy);
-        path.lineTo(scr[0], scr[1]);
-    }
-
-    @Override
-    public void closePath() {
-        path.closePath();
-    }
-
-    @Override
-    public void drawPath() {
+        if (closePath) {
+            path.closePath();
+        }
         g2d.setColor(color);
         g2d.draw(path);
     }
 
-    @Override
-    public void setAlpha(double alpha) {
+
+@Override
+        public void setAlpha(double alpha) {
         AlphaComposite alcom = AlphaComposite.getInstance(AlphaComposite.SRC_OVER, (float) alpha);
         g2d.setComposite(alcom);
     }
 
     @Override
-    public void setCameraSize(int w, int h) {
+        public void setCameraSize(int w, int h) {
         camera.setSize(w, h);
         }
 

@@ -5,8 +5,11 @@
  */
 package com.jmathanim.mathobjects;
 
+import com.jmathanim.Renderers.Curve;
 import com.jmathanim.Renderers.Renderer;
+import com.jmathanim.Utils.JMC;
 import com.jmathanim.Utils.Vec;
+import java.util.ArrayList;
 
 /**
  *
@@ -44,21 +47,22 @@ public class Arc extends MathObject {
         double x1, y1;
         r.setStroke(.01);//TODO: COnfig stroke size
         r.setAlpha(alpha);
-        r.createPath(x0, y0);
+//        r.createPath(x0, y0);//QUITADO
         //Compute an optimal alpha, depending on the screen?
-        for (double alpha = 0; alpha < angle * drawParam; alpha += 0.01) {
+        Curve curve=new Curve();
+        for (double alpha = 0; alpha < angle * drawParam; alpha += 0.25) {
             x1 = x + radius * Math.cos(alpha);
             y1 = y + radius * Math.sin(alpha);
+            curve.add(new Vec(x1,y1));
 
-            r.addPointToPath(x1, y1);
-//            r.drawLine(x0, y0, x1, y1); //TODO: Mejorar, crear poly en 2D
-//            x0=x1;
-//            y0=y1;
+//            r.addPointToPath(x1, y1);//QUITADO
         }
         if (closePath & drawParam == 1) {
-            r.closePath();
+            curve.close();
         }
-        r.drawPath();
+        curve.setTension(.4d);
+        curve.computeControlPoints(JMC.CURVED);
+        r.drawPath(curve);
     }
 
     @Override
