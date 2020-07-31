@@ -44,7 +44,13 @@ public class Arc extends MathObject {
         if (drawParam >= 1) {
             drawParam = 1;
         }
-        Curve c=curve.getSlice(drawParam);
+
+        Curve c = curve.getSlice(drawParam);
+        if (drawParam < 1) {
+            c.open();
+        } else {
+            c.close();
+        }
         r.drawPath(c);
     }
 
@@ -54,7 +60,7 @@ public class Arc extends MathObject {
         double x1, y1;
         curve = new Curve();
         curve.close();
-        for (double alpha = 0; alpha < angle ; alpha += 0.25) {
+        for (double alpha = 0; alpha < angle; alpha += 0.25) {
             x1 = x + radius * Math.cos(alpha);
             y1 = y + radius * Math.sin(alpha);
             curve.add(new Vec(x1, y1));

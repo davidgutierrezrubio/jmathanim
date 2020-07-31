@@ -248,14 +248,26 @@ public class Java2DRenderer extends Renderer {
     public void drawPath(Curve c) {
         path = new Path2D.Double();
         int numPoints = c.size();
-        if (numPoints > 4 ) //At least 2 points to properly draaw
-                 {
+        int minimumPoints=0;
+        
+        switch (c.curveType)
+        {
+            case Curve.STRAIGHT:
+                minimumPoints=2;
+                break;
+            case Curve.CURVED:
+                minimumPoints=4;
+                break;
+        }
+        if (numPoints >= minimumPoints) 
+        {
+            //TODO: Convert this in its own reusable method
             //First, I move the curve to the first point
             Vec p = c.getPoint(0);
             int[] scr = camera.mathToScreen(p);
             path.moveTo(scr[0], scr[1]);
             //Now I iterate to get the next points
-            if (true) {
+            if (!c.isClosed()) {
                 numPoints--; //Don't draw last point
             }
             for (int n = 0; n < numPoints; n++) {
@@ -270,8 +282,13 @@ public class Java2DRenderer extends Renderer {
                 debugPoint(xy);
                 debugCPoint(cxy1);
                 debugCPoint(cxy2);
-                
-                path.curveTo(cxy1[0], cxy1[1], cxy2[0], cxy2[1], xy[0], xy[1]);
+
+                if (c.curveType == Curve.CURVED) {
+                    path.curveTo(cxy1[0], cxy1[1], cxy2[0], cxy2[1], xy[0], xy[1]);
+                }
+                if (c.curveType == Curve.STRAIGHT) {
+                    path.lineTo(xy[0], xy[1]);
+                }
 //                path.lineTo(x3, y3);
 
             }
@@ -295,16 +312,16 @@ public class Java2DRenderer extends Renderer {
         camera.setSize(w, h);
     }
 
-    public void debugPoint(int x,int y)
-    {
+    public void debugPoint(int x, int y) {
         g2d.drawOval(x, y, 5, 5);
     }
-    public void debugPoint(int[] xy)
-    {   g2d.setColor(Color.BLUE);
+
+    public void debugPoint(int[] xy) {
+        g2d.setColor(Color.BLUE);
         g2d.drawOval(xy[0], xy[1], 5, 5);
     }
-     public void debugCPoint(int[] xy)
-    {
+
+    public void debugCPoint(int[] xy) {
         g2d.setColor(Color.PINK);
         g2d.drawRect(xy[0], xy[1], 10, 10);
     }

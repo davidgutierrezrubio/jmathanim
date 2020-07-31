@@ -5,6 +5,7 @@
  */
 package com.jmathanim.mathobjects;
 
+import com.jmathanim.Renderers.Curve;
 import com.jmathanim.Renderers.Renderer;
 import com.jmathanim.Utils.ConfigUtils;
 import com.jmathanim.Utils.Vec;
@@ -22,6 +23,7 @@ public class Line extends MathObject {
         "STROKEJOIN", "ROUND"
     };
     Point p1, p2;
+    Curve curve;
 
     public Line(Point p1, Point p2) {
         this(p1, p2, null);
@@ -32,6 +34,7 @@ public class Line extends MathObject {
         this.p1 = p1;
         this.p2 = p2;
         ConfigUtils.digest_config(cnf, DEFAULT_CONFIG, configParam);
+        computeCurve();
     }
 
   
@@ -42,17 +45,24 @@ public class Line extends MathObject {
         Vec v2 = p2.getCenter();
         return v1.addInSite(v2).multInSite(.5);
     }
-
+    public void computeCurve()
+    {
+        curve=new Curve();
+        curve.add(p1);
+        curve.add(p2);
+        curve.computeControlPoints(Curve.STRAIGHT);
+    }
     @Override
     public void draw(Renderer r) {
-        Vec v1 = p1.getCenter();
-        Vec v2 = p2.getCenter();
-        Vec vd=v2.minus(v1);
-        Vec v3=v1.add(vd.mult(drawParam));
-        r.setColor(Color.BLUE);//TODO: Configs
-        r.setStroke(.01);//TODO: COnfig stroke size
-        r.setAlpha(alpha);
-        r.drawLine(v1.x, v1.y, v3.x, v3.y);
+        r.drawPath(curve);
+//        Vec v1 = p1.getCenter();
+//        Vec v2 = p2.getCenter();
+//        Vec vd=v2.minus(v1);
+//        Vec v3=v1.add(vd.mult(drawParam));
+//        r.setColor(Color.BLUE);//TODO: Configs
+//        r.setStroke(.01);//TODO: COnfig stroke size
+//        r.setAlpha(alpha);
+//        r.drawLine(v1.x, v1.y, v3.x, v3.y);
 
     }
 

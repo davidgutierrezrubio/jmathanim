@@ -7,6 +7,8 @@ package com.jmathanim.Renderers;
 
 import com.jmathanim.Utils.JMC;
 import com.jmathanim.Utils.Vec;
+import com.jmathanim.mathobjects.MathObject;
+import com.jmathanim.mathobjects.Point;
 import com.sun.corba.se.impl.orbutil.closure.Constant;
 import java.util.ArrayList;
 
@@ -26,6 +28,7 @@ public class Curve {
     private ArrayList<Vec> controlPoints2; //Control points (second)
     private boolean isClosed;
     double tension;
+    int curveType;
 
     public Curve() {
         this(new ArrayList<Vec>());
@@ -37,6 +40,7 @@ public class Curve {
         this.controlPoints2 = new ArrayList<>();
         isClosed = false;
         tension = 0.3d; //Default tension
+        curveType=Curve.CURVED;//Default
     }
 
     public Vec getPoint(int n) {
@@ -74,6 +78,10 @@ public class Curve {
     public boolean add(Vec e) {
         return points.add(e);
     }
+    public boolean add(MathObject p)
+    {
+        return points.add(p.getCenter());
+    }
 
     public boolean remove(Object o) {
         return points.remove(o);
@@ -99,6 +107,7 @@ public class Curve {
     {
         controlPoints1.clear();
         controlPoints2.clear();
+        this.curveType=curveType;
 
         if (curveType == Curve.CURVED) {
             int numPoints = points.size();
