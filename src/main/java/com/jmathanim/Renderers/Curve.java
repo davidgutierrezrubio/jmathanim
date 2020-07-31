@@ -18,6 +18,9 @@ import java.util.ArrayList;
  */
 public class Curve {
 
+    static public final int CURVED = 1; //Curved line
+    static public final int STRAIGHT = 2; //Straight line
+
     private ArrayList<Vec> points; //points from the curve
     private ArrayList<Vec> controlPoints1; //Control points (first)
     private ArrayList<Vec> controlPoints2; //Control points (second)
@@ -76,6 +79,14 @@ public class Curve {
         return points.remove(o);
     }
 
+    public void addCPoint1(Vec p) {
+        controlPoints1.add(p);
+    }
+
+    public void addCPoint2(Vec p) {
+        controlPoints2.add(p);
+    }
+
     public void clear() {
         points.clear();
     }
@@ -89,18 +100,19 @@ public class Curve {
         controlPoints1.clear();
         controlPoints2.clear();
 
-        if (curveType == JMC.CURVED) {
+        if (curveType == Curve.CURVED) {
             int numPoints = points.size();
             if (numPoints > 4) //I need minimum 2 points      
             {
                 if (!isClosed) {
-                    numPoints = numPoints - 3;
+                    numPoints = numPoints - 1;
                 }
                 for (int n = 0; n < numPoints; n++) {
-                    int i = (n - 1) % points.size();
+                    int i = (n - 1 + points.size()) % points.size();
                     int j = (n) % points.size();
                     int k = (n + 1) % points.size();
                     int L = (n + 2) % points.size();
+                    System.out.println("Size:" + points.size() + "-->" + i + " " + " " + j + " " + k + " " + L);
                     double x1 = points.get(i).x;
                     double y1 = points.get(i).y;
                     double x2 = points.get(j).x;
@@ -123,7 +135,7 @@ public class Curve {
             }
         } //End of if type==CURVED
 
-        if (curveType == JMC.STRAIGHT) {
+        if (curveType == Curve.STRAIGHT) {
             int numPoints = points.size();
             for (int n = 0; n < numPoints; n++) {
                 Vec p1 = points.get(n);
@@ -134,5 +146,30 @@ public class Curve {
 
         }//End of if type==STRAIGHT
 
+    }
+
+    boolean isClosed() {
+        return isClosed;
+    }
+
+    public Curve getSlice(double drawParam) {
+        Curve resul=new Curve();
+        
+        if (drawParam<1)
+        {
+        double sliceSize = points.size()*drawParam;
+        for (int n=0;n<sliceSize;n++)
+        {
+            resul.add(points.get(n));
+            resul.addCPoint1(controlPoints1.get(n));
+            resul.addCPoint2(controlPoints2.get(n));
+        }
+        resul.open();
+        }
+        else
+        {
+            resul=this;
+        }
+        return resul;
     }
 }

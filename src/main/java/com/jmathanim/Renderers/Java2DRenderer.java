@@ -248,33 +248,64 @@ public class Java2DRenderer extends Renderer {
     public void drawPath(Curve c) {
         path = new Path2D.Double();
         int numPoints = c.size();
-        //First, I move the curve to the first point
-        Vec p = c.getPoint(0);
-        int[] scr = camera.mathToScreen(p);
-        path.moveTo(scr[0], scr[1]);
-        //Now I iterate to get the next points
-        
-        
-        path.curveTo(cx1, cy1, cx2, cy2, x3, y3);
+        if (numPoints > 4 ) //At least 2 points to properly draaw
+                 {
+            //First, I move the curve to the first point
+            Vec p = c.getPoint(0);
+            int[] scr = camera.mathToScreen(p);
+            path.moveTo(scr[0], scr[1]);
+            //Now I iterate to get the next points
+            if (true) {
+                numPoints--; //Don't draw last point
+            }
+            for (int n = 0; n < numPoints; n++) {
+                int i = (n + 1) % c.size(); //Next point (first if actually we are in last)
+                Vec point = c.getPoint(i);
+                Vec cpoint1 = c.getControlPoint1(n);
+                Vec cpoint2 = c.getControlPoint2(n);
+
+                int[] xy = camera.mathToScreen(point);
+                int[] cxy1 = camera.mathToScreen(cpoint1);
+                int[] cxy2 = camera.mathToScreen(cpoint2);
+                debugPoint(xy);
+                debugCPoint(cxy1);
+                debugCPoint(cxy2);
+                
+                path.curveTo(cxy1[0], cxy1[1], cxy2[0], cxy2[1], xy[0], xy[1]);
 //                path.lineTo(x3, y3);
 
-        if (closePath) {
-            path.closePath();
+            }
+
+            if (c.isClosed()) {
+                path.closePath();
+            }
+            g2d.setColor(color);
+            g2d.draw(path);
         }
-        g2d.setColor(color);
-        g2d.draw(path);
     }
 
-
-@Override
-        public void setAlpha(double alpha) {
+    @Override
+    public void setAlpha(double alpha) {
         AlphaComposite alcom = AlphaComposite.getInstance(AlphaComposite.SRC_OVER, (float) alpha);
         g2d.setComposite(alcom);
     }
 
     @Override
-        public void setCameraSize(int w, int h) {
+    public void setCameraSize(int w, int h) {
         camera.setSize(w, h);
-        }
+    }
 
+    public void debugPoint(int x,int y)
+    {
+        g2d.drawOval(x, y, 5, 5);
+    }
+    public void debugPoint(int[] xy)
+    {   g2d.setColor(Color.BLUE);
+        g2d.drawOval(xy[0], xy[1], 5, 5);
+    }
+     public void debugCPoint(int[] xy)
+    {
+        g2d.setColor(Color.PINK);
+        g2d.drawRect(xy[0], xy[1], 10, 10);
+    }
 }

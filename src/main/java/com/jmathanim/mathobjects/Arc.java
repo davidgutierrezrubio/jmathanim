@@ -20,6 +20,7 @@ public class Arc extends MathObject {
     public double x, y, z;
     public double radius, angle;
     protected boolean closePath;
+    private Curve curve;
 
     public Arc(double x, double y, double radius, double angle) {
         super();
@@ -29,6 +30,7 @@ public class Arc extends MathObject {
         this.angle = angle;
         setDrawParam(1);//Draw parameter to 1, draw the full arc
         closePath = false;
+        computeCurve();
 
     }
 
@@ -42,27 +44,22 @@ public class Arc extends MathObject {
         if (drawParam >= 1) {
             drawParam = 1;
         }
+        Curve c=curve.getSlice(drawParam);
+        r.drawPath(c);
+    }
+
+    private void computeCurve() {
         double x0 = x + radius;
         double y0 = y;
         double x1, y1;
-        r.setStroke(.01);//TODO: COnfig stroke size
-        r.setAlpha(alpha);
-//        r.createPath(x0, y0);//QUITADO
-        //Compute an optimal alpha, depending on the screen?
-        Curve curve=new Curve();
-        for (double alpha = 0; alpha < angle * drawParam; alpha += 0.25) {
+        curve = new Curve();
+        curve.close();
+        for (double alpha = 0; alpha < angle ; alpha += 0.25) {
             x1 = x + radius * Math.cos(alpha);
             y1 = y + radius * Math.sin(alpha);
-            curve.add(new Vec(x1,y1));
-
-//            r.addPointToPath(x1, y1);//QUITADO
+            curve.add(new Vec(x1, y1));
         }
-        if (closePath & drawParam == 1) {
-            curve.close();
-        }
-        curve.setTension(.4d);
-        curve.computeControlPoints(JMC.CURVED);
-        r.drawPath(curve);
+        curve.computeControlPoints(Curve.CURVED);
     }
 
     @Override

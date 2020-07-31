@@ -12,7 +12,5 @@ package com.jmathanim.Utils;
 public class JMC {
 
     static public final double PI = 3.141592653f;
-    static public final int CURVED = 1; //Curved line
-    static public final int STRAIGHT = 2; //Straight line
-
+    
 }
