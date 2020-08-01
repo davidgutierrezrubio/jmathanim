@@ -5,22 +5,18 @@
  */
 package com.jmathanim.mathobjects;
 
-import com.jmathanim.Renderers.Curve;
 import com.jmathanim.Renderers.Renderer;
-import com.jmathanim.Utils.JMC;
 import com.jmathanim.Utils.Vec;
-import java.util.ArrayList;
 
 /**
  *
  * @author David Gutierrez Rubio davidgutierrezrubio@gmail.com
  */
-public class Arc extends MathObject {
+public class Arc extends JMPathMathObject {
 
     public double x, y, z;
     public double radius, angle;
     protected boolean closePath;
-    private Curve curve;
 
     public Arc(double x, double y, double radius, double angle) {
         super();
@@ -30,7 +26,7 @@ public class Arc extends MathObject {
         this.angle = angle;
         setDrawParam(1);//Draw parameter to 1, draw the full arc
         closePath = false;
-        computeCurve();
+        computeJMPath();
 
     }
 
@@ -45,7 +41,7 @@ public class Arc extends MathObject {
             drawParam = 1;
         }
 
-        Curve c = curve.getSlice(drawParam);
+        JMPath c = jmpath.getSlice(drawParam);
         if (drawParam < 1) {
             c.open();
         } else {
@@ -54,18 +50,19 @@ public class Arc extends MathObject {
         r.drawPath(c);
     }
 
-    private void computeCurve() {
+    @Override
+    public void computeJMPath() {
         double x0 = x + radius;
         double y0 = y;
         double x1, y1;
-        curve = new Curve();
-        curve.close();
+        jmpath = new JMPath();
+        jmpath.close();
         for (double alpha = 0; alpha < angle; alpha += 0.25) {
             x1 = x + radius * Math.cos(alpha);
             y1 = y + radius * Math.sin(alpha);
-            curve.add(new Vec(x1, y1));
+            jmpath.add(new Vec(x1, y1));
         }
-        curve.computeControlPoints(Curve.CURVED);
+        jmpath.computeControlPoints(JMPath.CURVED);
     }
 
     @Override

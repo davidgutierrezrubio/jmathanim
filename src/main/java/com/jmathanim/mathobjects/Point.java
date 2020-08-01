@@ -25,6 +25,11 @@ public final class Point extends MathObject {
 
     public double x, y, z;
 
+    
+    public Point(Vec v)
+    {
+        this(v.x,v.y,v.z);
+    }
     /**
      *
      * @param x

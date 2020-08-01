@@ -15,6 +15,7 @@ import com.jmathanim.mathobjects.Line;
 import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.MathObjectContainer;
 import com.jmathanim.mathobjects.Point;
+import com.jmathanim.mathobjects.Polygon;
 
 
 /**
@@ -34,7 +35,17 @@ public class PointSimple extends Scene2D {
     public void runSketch() {
 //        PGraphics gre = createGraphics(800, 600);
         Point po = new Point(0, 0);
-        Point or=new Point(0,1.5);
+        Point or=new Point(0,1);
+        
+        Point p2=new Point(2,0);
+        Point p3=new Point(2,1);
+        Polygon pol=new Polygon();
+        pol.add(po);
+        pol.add(or);
+        pol.add(p3);
+        pol.add(p2);
+        pol.close();
+        add(pol);
         Circle circ=new Circle(new Vec(0,0), new Vec(1,0));
         add(po);
         add(or);
@@ -50,7 +61,7 @@ public class PointSimple extends Scene2D {
 //        }
 //        waitSeconds(1);
         //li.shift(new Vec(1,0,0));
-        Animation anim=new ShowCreation(circ,.5);
+        Animation anim=new ShowCreation(pol,.5);
         camera.setCenter(1, 0);
         play(anim);
         Animation anim2=new FadeIn(li,2);

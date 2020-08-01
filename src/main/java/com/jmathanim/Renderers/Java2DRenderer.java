@@ -5,9 +5,9 @@
  */
 package com.jmathanim.Renderers;
 
+import com.jmathanim.mathobjects.JMPath;
 import com.jmathanim.Cameras.Camera;
 import com.jmathanim.Cameras.Camera2D;
-import com.jmathanim.Utils.ConfigUtils;
 import com.jmathanim.Utils.JMathAnimConfig;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
@@ -32,7 +32,6 @@ import java.awt.geom.Path2D;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -42,7 +41,7 @@ import java.util.logging.Logger;
  * Java2D to render the image
  */
 public class Java2DRenderer extends Renderer {
-
+    private static final boolean DEBUG=true;
     private final BufferedImage bufferedImage;
     private final Graphics2D g2d;
     public Camera2D camera;
@@ -164,19 +163,8 @@ public class Java2DRenderer extends Renderer {
 
     @Override
     public void saveFrame(int frameCount) {
-//        String fname = "c:\\media\\screen-" + String.format("%05d", frameCount) + ".png";
-//        File file = new File(fname);
-//        try {
-//            ImageIO.write(bufferedImage, "png", file);
-//        } catch (IOException ex) {
-//            Logger.getLogger(JMathAnimScene.class.getName()).log(Level.SEVERE, null, ex);
-//        }
         BufferedImage screen = MediaPictureConverterFactory.convertToType(bufferedImage, BufferedImage.TYPE_3BYTE_BGR);
         MediaPictureConverter converter = MediaPictureConverterFactory.createConverter(screen, picture);
-        //      @param timestamp the time stamp which should be attached to the the
-        //       video picture (in microseconds).
-//        long rf = (long) (((double) frameCount) * rationalFrameRate.getDouble());
-//        System.out.println("Saving frame: " + frameCount);
         converter.toPicture(picture, screen, frameCount);
         do {
             encoder.encode(packet, picture);
@@ -225,80 +213,65 @@ public class Java2DRenderer extends Renderer {
         g2d.setStroke(new BasicStroke(strokeSize, CAP_ROUND, JOIN_ROUND));
     }
 
-//    @Override
-//    public void createPath(double xx, double yy) {
-//        closePath = false;
-//        pointsList = new ArrayList<int[]>();
-//        int[] scr = camera.mathToScreen(xx, yy);
-//        pointsList.add(scr);
-//    }
-//
-//    @Override
-//    public void addPointToPath(double xx, double yy) {
-//
-//        int[] scr = camera.mathToScreen(xx, yy);
-//        pointsList.add(scr);
-//    }
-//
-//    @Override
-//    public void closePath() {
-//        closePath = true;
-//    }
     @Override
-    public void drawPath(Curve c) {
-        path = new Path2D.Double();
+    public void drawPath(JMPath c) {
+
         int numPoints = c.size();
-        int minimumPoints=0;
-        
-        switch (c.curveType)
-        {
-            case Curve.STRAIGHT:
-                minimumPoints=2;
+        int minimumPoints = 0;
+
+        switch (c.curveType) {
+            case JMPath.STRAIGHT:
+                minimumPoints = 2;
                 break;
-            case Curve.CURVED:
-                minimumPoints=4;
+            case JMPath.CURVED:
+                minimumPoints = 4;
                 break;
         }
-        if (numPoints >= minimumPoints) 
-        {
-            //TODO: Convert this in its own reusable method
-            //First, I move the curve to the first point
-            Vec p = c.getPoint(0);
-            int[] scr = camera.mathToScreen(p);
-            path.moveTo(scr[0], scr[1]);
-            //Now I iterate to get the next points
-            if (!c.isClosed()) {
-                numPoints--; //Don't draw last point
-            }
-            for (int n = 0; n < numPoints; n++) {
-                int i = (n + 1) % c.size(); //Next point (first if actually we are in last)
-                Vec point = c.getPoint(i);
-                Vec cpoint1 = c.getControlPoint1(n);
-                Vec cpoint2 = c.getControlPoint2(n);
-
-                int[] xy = camera.mathToScreen(point);
-                int[] cxy1 = camera.mathToScreen(cpoint1);
-                int[] cxy2 = camera.mathToScreen(cpoint2);
-                debugPoint(xy);
-                debugCPoint(cxy1);
-                debugCPoint(cxy2);
-
-                if (c.curveType == Curve.CURVED) {
-                    path.curveTo(cxy1[0], cxy1[1], cxy2[0], cxy2[1], xy[0], xy[1]);
-                }
-                if (c.curveType == Curve.STRAIGHT) {
-                    path.lineTo(xy[0], xy[1]);
-                }
-//                path.lineTo(x3, y3);
-
-            }
-
-            if (c.isClosed()) {
-                path.closePath();
-            }
+        if (numPoints >= minimumPoints) {
+            path = createPathFromCurve(c);
             g2d.setColor(color);
             g2d.draw(path);
         }
+    }
+
+    public Path2D.Double createPathFromCurve(JMPath c) {
+        Path2D.Double resul = new Path2D.Double();
+        int numPoints = c.size();
+        //TODO: Convert this in its own reusable method
+        //First, I move the curve to the first point
+        Vec p = c.getPoint(0);
+        int[] scr = camera.mathToScreen(p);
+        resul.moveTo(scr[0], scr[1]);
+        //Now I iterate to get the next points
+        if (!c.isClosed()) {
+            numPoints--; //Don't draw last point
+        }
+        for (int n = 0; n < numPoints; n++) {
+            int i = (n + 1) % c.size(); //Next point (first if actually we are in last)
+            Vec point = c.getPoint(i);
+            Vec cpoint1 = c.getControlPoint1(n);
+            Vec cpoint2 = c.getControlPoint2(n);
+
+            int[] xy = camera.mathToScreen(point);
+            int[] cxy1 = camera.mathToScreen(cpoint1);
+            int[] cxy2 = camera.mathToScreen(cpoint2);
+            if (DEBUG) {
+                debugPoint(xy);
+                debugCPoint(cxy1);
+                debugCPoint(cxy2);
+            }
+            if (c.curveType == JMPath.CURVED) {
+                resul.curveTo(cxy1[0], cxy1[1], cxy2[0], cxy2[1], xy[0], xy[1]);
+            }
+            if (c.curveType == JMPath.STRAIGHT) {
+                resul.lineTo(xy[0], xy[1]);
+            }
+        }
+
+        if (c.isClosed()) {
+            resul.closePath();
+        }
+        return resul;
     }
 
     @Override

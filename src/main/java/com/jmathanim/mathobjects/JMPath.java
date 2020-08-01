@@ -3,22 +3,19 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.jmathanim.Renderers;
+package com.jmathanim.mathobjects;
 
-import com.jmathanim.Utils.JMC;
 import com.jmathanim.Utils.Vec;
-import com.jmathanim.mathobjects.MathObject;
-import com.jmathanim.mathobjects.Point;
-import com.sun.corba.se.impl.orbutil.closure.Constant;
 import java.util.ArrayList;
 
 /**
  * This class stores info for drawing a curve with control points, tension...
- * This info should be passed to the renderer
+ * It's independent of the renderer, which should translate it to proper drawing
+ * commands
  *
  * @author David Gutiérrez <davidgutierrezrubio@gmail.com>
  */
-public class Curve {
+public class JMPath {
 
     static public final int CURVED = 1; //Curved line
     static public final int STRAIGHT = 2; //Straight line
@@ -28,19 +25,19 @@ public class Curve {
     private ArrayList<Vec> controlPoints2; //Control points (second)
     private boolean isClosed;
     double tension;
-    int curveType;
+    public int curveType;
 
-    public Curve() {
+    public JMPath() {
         this(new ArrayList<Vec>());
     }
 
-    public Curve(ArrayList<Vec> points) {
+    public JMPath(ArrayList<Vec> points) {
         this.points = points;
         this.controlPoints1 = new ArrayList<>();
         this.controlPoints2 = new ArrayList<>();
         isClosed = false;
         tension = 0.3d; //Default tension
-        curveType=Curve.CURVED;//Default
+        curveType=JMPath.CURVED;//Default
     }
 
     public Vec getPoint(int n) {
@@ -109,7 +106,7 @@ public class Curve {
         controlPoints2.clear();
         this.curveType=curveType;
 
-        if (curveType == Curve.CURVED) {
+        if (curveType == JMPath.CURVED) {
             int numPoints = points.size();
             if (numPoints > 4) //I need minimum 2 points      
             {
@@ -144,7 +141,7 @@ public class Curve {
             }
         } //End of if type==CURVED
 
-        if (curveType == Curve.STRAIGHT) {
+        if (curveType == JMPath.STRAIGHT) {
             int numPoints = points.size();
             for (int n = 0; n < numPoints; n++) {
                 Vec p1 = points.get(n);
@@ -157,12 +154,12 @@ public class Curve {
 
     }
 
-    boolean isClosed() {
+    public boolean isClosed() {
         return isClosed;
     }
 
-    public Curve getSlice(double drawParam) {
-        Curve resul=new Curve();
+    public JMPath getSlice(double drawParam) {
+        JMPath resul=new JMPath();
         
         if (drawParam<1)
         {
