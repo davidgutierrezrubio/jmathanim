@@ -21,14 +21,13 @@ public abstract class MathObject implements Drawable {
         "COLOR", "255"
     };
     Properties cnf;
-    
 
     /**
-     *This parameter specifies the amount of object to be drawn
-     * 0=none, 1/2=draw half
+     * This parameter specifies the amount of object to be drawn 0=none,
+     * 1/2=draw half
      */
     protected double drawParam;
-    
+
     /**
      * Transparency of object, 0=transparent, 1=opaque
      */
@@ -61,13 +60,38 @@ public abstract class MathObject implements Drawable {
 
     /**
      * Shift object with the given vector
+     *
      * @param shiftVector
      */
     public abstract void shift(Vec shiftVector);
 
     /**
-     * Return draw Parameter. This is used in animations like draw()
-     * 0=no drawn, 1=totally drawn
+     * Scale from center of object (2D version)
+     *
+     * @param sx
+     * @param sy
+     */
+    public void scale(double sx, double sy) {
+        scale(getCenter(), sx, sy, 1);
+    }
+
+    /**
+     * Scale from center of object (3D version)
+     *
+     * @param sx
+     * @param sy
+     * @param sz
+     */
+    public void scale(double sx, double sy, double sz) {
+        scale(getCenter(), sx, sy, sz);
+    }
+
+    public abstract void scale(Vec scaleCenter, double sx, double sy, double sz);
+
+    /**
+     * Return draw Parameter. This is used in animations like draw() 0=no drawn,
+     * 1=totally drawn
+     *
      * @return
      */
     public final double getDrawParam() {
@@ -76,6 +100,7 @@ public abstract class MathObject implements Drawable {
 
     /**
      * Set draw Parameter
+     *
      * @param drawParam
      */
     public final void setDrawParam(double drawParam) {
@@ -83,8 +108,8 @@ public abstract class MathObject implements Drawable {
     }
 
     /**
-     * Get Alpha parameter of transparency
-     * 0=full transparency, 1=opaque
+     * Get Alpha parameter of transparency 0=full transparency, 1=opaque
+     *
      * @return
      */
     public double getAlpha() {
@@ -93,6 +118,7 @@ public abstract class MathObject implements Drawable {
 
     /**
      * Set alpha parameter
+     *
      * @param alpha
      */
     public void setAlpha(double alpha) {
@@ -101,6 +127,7 @@ public abstract class MathObject implements Drawable {
 
     /**
      * Returns a copy of the object
+     *
      * @return copy of object, with identical properties
      */
     abstract public MathObject copy();

@@ -41,7 +41,7 @@ import java.util.logging.Logger;
  * Java2D to render the image
  */
 public class Java2DRenderer extends Renderer {
-    private static final boolean DEBUG=true;
+    private static final boolean DEBUG=false; //Draw control points and vertices
     private final BufferedImage bufferedImage;
     private final Graphics2D g2d;
     public Camera2D camera;

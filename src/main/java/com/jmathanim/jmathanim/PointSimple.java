@@ -26,7 +26,7 @@ public class PointSimple extends Scene2D {
 
     @Override
     public void setupSketch() {
-        conf.setLowQuality();
+        conf.setHighQuality();
         createRenderer();
     }
 
@@ -45,11 +45,16 @@ public class PointSimple extends Scene2D {
         pol.add(p3);
         pol.add(p2);
         pol.close();
-        add(pol);
+//        add(pol);
         Circle circ=new Circle(new Vec(0,0), new Vec(1,0));
+        Circle circ2=new Circle(new Vec(2,0), new Vec(1,0));
+        circ2.isCurved=false;
+        circ2.step=.01d;
+        circ2.computeJMPath();
         add(po);
         add(or);
         add(circ);
+        add(circ2);
         MathObject li=new MathObjectContainer(new Line(po,or));
         add(li);
 //        for (int i = 0; i < 1*fps; i++) {
@@ -61,11 +66,12 @@ public class PointSimple extends Scene2D {
 //        }
 //        waitSeconds(1);
         //li.shift(new Vec(1,0,0));
-        Animation anim=new ShowCreation(pol,.5);
+//        Animation anim=new ShowCreation(pol,.5);
         camera.setCenter(1, 0);
-        play(anim);
+//        play(anim);
         Animation anim2=new FadeIn(li,2);
-        play(anim,anim2);
+//        play(anim,anim2);
+        waitSeconds(3);
     }
 
 }
