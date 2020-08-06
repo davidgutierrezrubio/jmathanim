@@ -119,4 +119,11 @@ public class Polygon extends JMPathMathObject {
         needsRecalcControlPoints = false;
     }
 
+    @Override
+    public void scale(Vec scaleCenter, double sx, double sy, double sz) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+   
+
 }

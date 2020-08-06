@@ -26,7 +26,6 @@ public class PointSimple extends Scene2D {
     
     @Override
     public void setupSketch() {
-//        conf.setLowQuality();
         conf.setHighQuality();
         createRenderer();
     }
@@ -50,8 +49,6 @@ public class PointSimple extends Scene2D {
         add(po);
         add(or);
         add(circ);
-        MathObject li = new RegularPolygon(5,1.d);
-        add(li);
 //        for (int i = 0; i < 1*fps; i++) {
 //            double dx=dt/3.;
 //            po.shift(new Vec(dx,0,0));
@@ -61,13 +58,14 @@ public class PointSimple extends Scene2D {
 //        }
 //        waitSeconds(1);
         //li.shift(new Vec(1,0,0));
+        MathObject li = new RegularPolygon(5,1.d);
+        camera.setCenter(1, 0);
         Animation anim = new ShowCreation(pol, 2);
         Animation anim2 = new ShowCreation(circ, 2);
-        camera.setCenter(1, 0);
-        play(anim, anim2);
-//        Animation anim2=new FadeIn(pol,2);
-//        play(anim2);
         waitSeconds(3);
     }
     
 }
+//        play(anim, anim2);
+//        Animation anim2=new FadeIn(pol,2);
+//        play(anim2);
