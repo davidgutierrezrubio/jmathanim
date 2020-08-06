@@ -37,7 +37,7 @@ public class JMPath {
         this.controlPoints2 = new ArrayList<>();
         isClosed = false;
         tension = 0.3d; //Default tension
-        curveType=JMPath.CURVED;//Default
+        curveType = JMPath.CURVED;//Default
     }
 
     public Vec getPoint(int n) {
@@ -75,8 +75,8 @@ public class JMPath {
     public boolean add(Vec e) {
         return points.add(e);
     }
-    public boolean add(MathObject p)
-    {
+
+    public boolean add(MathObject p) {
         return points.add(p.getCenter());
     }
 
@@ -96,15 +96,22 @@ public class JMPath {
         points.clear();
     }
 
+    public void computeControlPoints() {
+        computeControlPoints(this.curveType);
+    }
+
     /**
      * Compute control points, using various methods This method should be
      * called once all points have been added
+     *
+     * @param curveType Curve type. STRAIGHT as a polygonal line with no control
+     * points. CURVED as a cubic Bezier curve.
      */
     public void computeControlPoints(int curveType) //For now, only one method
     {
         controlPoints1.clear();
         controlPoints2.clear();
-        this.curveType=curveType;
+        this.curveType = curveType;
 
         if (curveType == JMPath.CURVED) {
             int numPoints = points.size();
@@ -158,24 +165,68 @@ public class JMPath {
         return isClosed;
     }
 
+    /**
+     * Returns a subpath delimited by the given parameter
+     *
+     * @param drawParam From 0 to 1. 1 means the whole curve.
+     * @return A new JMPath representing the corresponding subpath
+     */
     public JMPath getSlice(double drawParam) {
-        JMPath resul=new JMPath();
-        
-        if (drawParam<1)
-        {
-        double sliceSize = points.size()*drawParam;
-        for (int n=0;n<sliceSize;n++)
-        {
-            resul.add(points.get(n));
-            resul.addCPoint1(controlPoints1.get(n));
-            resul.addCPoint2(controlPoints2.get(n));
-        }
-        resul.open();
-        }
-        else
-        {
-            resul=this;
+        JMPath resul = new JMPath();
+
+        if (drawParam < 1) {
+            double sliceSize = points.size() * drawParam;
+            for (int n = 0; n < sliceSize; n++) {
+                resul.add(points.get(n));
+                resul.addCPoint1(controlPoints1.get(n));
+                resul.addCPoint2(controlPoints2.get(n));
+            }
+            resul.open();
+        } else {
+            resul = this;
         }
         return resul;
     }
+
+    /**
+     * Interpolates a curve calculating intermediate points. If the original
+     * curve has n points, the new should have (n-1)*numDivs+1 for open curves
+     * and n*numDivs for closed ones.
+     *
+     * @param numDivs Between 2 given points, the number of new points to
+     * create. 0 leaves the curve unaltered. 1 computes the middle point
+     * @return new JMPath representing the interpolated curve
+     */
+    public JMPath interpolate(int numDivs) {
+        if (curveType == CURVED) {
+            throw new UnsupportedOperationException("Not supported interpolation for CURVED paths yet."); //To change body of generated methods, choose Tools | Templates.
+        }
+        JMPath resul = new JMPath();
+        int numPoints = points.size();
+        if (!isClosed) {//If curve is open, stop at n-1 point
+            numPoints--;
+        }
+
+        for (int n = 0; n < numPoints; n++) {
+            int k = (n + 1) % points.size(); //Next point, first if curve is closed
+            if (curveType == CURVED) {
+                //TODO: Implement curved Bezier interpolation
+            }
+            if (curveType == STRAIGHT) {
+                Vec v1 = getPoint(n);
+                Vec v2 = getPoint(k);
+                resul.add(v1); //Add the point of original curve
+                for (int j = 0; j < numDivs; j++) //Now compute the new ones
+                {
+                    resul.add(v1.interpolate(v2, ((double) j) / numDivs));
+                }
+            }
+        }
+        //Copy basic attributes of the original curve
+        resul.curveType = this.curveType;
+        resul.isClosed = this.isClosed;
+        resul.computeControlPoints(curveType);
+        return resul;
+    }
+
 }

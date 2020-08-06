@@ -57,7 +57,7 @@ public class Arc extends JMPathMathObject {
         double x1, y1;
         jmpath = new JMPath();
         jmpath.close();
-        for (double alpha = 0; alpha < angle; alpha += 0.25) {
+        for (double alpha = 0; alpha < angle; alpha += 0.05) {
             x1 = x + radius * Math.cos(alpha);
             y1 = y + radius * Math.sin(alpha);
             jmpath.add(new Vec(x1, y1));

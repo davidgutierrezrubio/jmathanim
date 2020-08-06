@@ -36,8 +36,9 @@ public class Vec {
         z *= r;
         return this;
     }
-    public Vec mult(double r){
-        return new Vec(x*r,y*r,z*r);
+
+    public Vec mult(double r) {
+        return new Vec(x * r, y * r, z * r);
     }
 
     public Vec addInSite(Vec b) {
@@ -57,6 +58,7 @@ public class Vec {
     public Vec minus(Vec b) {
         return new Vec(x - b.x, y - b.y, z - b.z);
     }
+
     public Vec add(Vec b) {
         return new Vec(x + b.x, y + b.y, z + b.z);
     }
@@ -64,8 +66,25 @@ public class Vec {
     public double norm() {
         return (double) sqrt(x * x + y * y + z * z);
     }
-    public double distanceTo(Vec point){
-        Vec c=this.minus(point);
+
+    public double distanceTo(Vec point) {
+        Vec c = this.minus(point);
         return c.norm();
+    }
+
+    /**
+     * Returns a new point between this and v2, given by the parameter
+     * @param v2 The other point to interpolate
+     * @param alpha Parameter of interpolation. 0 gives this point. 1 gives v2. 
+     * 0.5 returns the middle point
+     * @return The interpolated point
+     */
+    public Vec interpolate(Vec v2, double alpha) {
+        return new Vec(x + alpha * (v2.x - x), y + alpha * (v2.y - y));
+
+    }
+
+    public Vec copy() {
+        return new Vec(x,y);
     }
 }

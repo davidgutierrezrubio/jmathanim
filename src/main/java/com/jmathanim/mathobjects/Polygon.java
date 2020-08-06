@@ -7,6 +7,7 @@ package com.jmathanim.mathobjects;
 
 import com.jmathanim.Renderers.Renderer;
 import com.jmathanim.Utils.Vec;
+import java.awt.Color;
 import java.util.ArrayList;
 
 /**
@@ -29,7 +30,9 @@ public class Polygon extends JMPathMathObject {
     public Polygon(ArrayList<Point> vertices, boolean isClosed) {
         this.vertices = vertices;
         this.isClosed = isClosed;
-        computeJMPath();
+        if (!vertices.isEmpty()) {
+            computeJMPath();
+        }
     }
 
     public boolean add(Point e) {
@@ -92,23 +95,28 @@ public class Polygon extends JMPathMathObject {
         } else {
             c.close();
         }
+        r.setColor(Color.GREEN);//TODO: Configs
+        r.setStroke(.01);//TODO: COnfig stroke size
+        r.setAlpha(alpha);
         r.drawPath(c);
     }
 
-@Override
-        public void computeJMPath() {
+    @Override
+    public void computeJMPath() {
         //TODO: ¿Compute intermediate points?
-        jmpath = new JMPath();
+        JMPath jmpath2 = new JMPath();
         for (Point p : vertices) {
-            jmpath.add(p.getCenter());
+            jmpath2.add(p.getCenter());
         }
         if (isClosed) {
-            jmpath.close();
+            jmpath2.close();
         } else {
-            jmpath.open();
+            jmpath2.open();
         }
+        jmpath2.curveType = JMPath.STRAIGHT;
+        jmpath = jmpath2.interpolate(20);
         jmpath.computeControlPoints(JMPath.STRAIGHT);
-        needsRecalcControlPoints=false;
+        needsRecalcControlPoints = false;
     }
 
 }

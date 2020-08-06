@@ -16,41 +16,41 @@ import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.MathObjectContainer;
 import com.jmathanim.mathobjects.Point;
 import com.jmathanim.mathobjects.Polygon;
-
+import com.jmathanim.mathobjects.RegularPolygon;
 
 /**
  *
  * @author David Gutierrez Rubio davidgutierrezrubio@gmail.com
  */
 public class PointSimple extends Scene2D {
-
+    
     @Override
     public void setupSketch() {
-        conf.setLowQuality();
+//        conf.setLowQuality();
+        conf.setHighQuality();
         createRenderer();
     }
-
-
+    
     @Override
     public void runSketch() {
 //        PGraphics gre = createGraphics(800, 600);
         Point po = new Point(0, 0);
-        Point or=new Point(0,1);
+        Point or = new Point(0, 1);
         
-        Point p2=new Point(2,0);
-        Point p3=new Point(2,1);
-        Polygon pol=new Polygon();
+        Point p2 = new Point(2, 0);
+        Point p3 = new Point(2, 1);
+        Polygon pol = new Polygon();
         pol.add(po);
         pol.add(or);
         pol.add(p3);
         pol.add(p2);
         pol.close();
         add(pol);
-        Circle circ=new Circle(new Vec(0,0), new Vec(1,0));
+        Circle circ = new Circle(new Vec(0, 0), new Vec(1, 0));
         add(po);
         add(or);
         add(circ);
-        MathObject li=new MathObjectContainer(new Line(po,or));
+        MathObject li = new RegularPolygon(5,1.d);
         add(li);
 //        for (int i = 0; i < 1*fps; i++) {
 //            double dx=dt/3.;
@@ -61,11 +61,13 @@ public class PointSimple extends Scene2D {
 //        }
 //        waitSeconds(1);
         //li.shift(new Vec(1,0,0));
-        Animation anim=new ShowCreation(pol,.5);
+        Animation anim = new ShowCreation(pol, 2);
+        Animation anim2 = new ShowCreation(circ, 2);
         camera.setCenter(1, 0);
-        play(anim);
-        Animation anim2=new FadeIn(li,2);
-        play(anim,anim2);
+        play(anim, anim2);
+//        Animation anim2=new FadeIn(pol,2);
+//        play(anim2);
+        waitSeconds(3);
     }
-
+    
 }
