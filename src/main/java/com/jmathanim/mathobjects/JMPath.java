@@ -47,7 +47,7 @@ public class JMPath {
     public void setPoints(ArrayList<Vec> points) {
         this.points = points;
     }
-    
+
     public Vec getPoint(int n) {
         return points.get(n);
     }
@@ -93,10 +93,12 @@ public class JMPath {
     }
 
     public void addCPoint1(Vec p) {
+        p.type=Vec.TYPE_CONTROL_POINT;
         controlPoints1.add(p);
     }
 
     public void addCPoint2(Vec p) {
+        p.type=Vec.TYPE_CONTROL_POINT;
         controlPoints2.add(p);
     }
 
@@ -152,8 +154,12 @@ public class JMPath {
                     double cy1 = y2 + mod23 / mod31 * tension * (y3 - y1);
                     double cx2 = x3 - mod23 / mod42 * tension * (x4 - x2);
                     double cy2 = y3 - mod23 / mod42 * tension * (y4 - y2);
-                    controlPoints1.add(new Vec(cx1, cy1));
-                    controlPoints2.add(new Vec(cx2, cy2));
+                    Vec cp1 = new Vec(cx1, cy1);
+                    Vec cp2 = new Vec(cx2, cy2);
+                    cp1.type = Vec.TYPE_CONTROL_POINT;
+                    cp2.type = Vec.TYPE_CONTROL_POINT;
+                    controlPoints1.add(cp1);
+                    controlPoints2.add(cp2);
                 }
             }
         } //End of if type==CURVED
@@ -161,10 +167,12 @@ public class JMPath {
         if (curveType == JMPath.STRAIGHT) {
             int numPoints = points.size();
             for (int n = 0; n < numPoints; n++) {
-                Vec p1 = points.get(n);
-                Vec p2 = points.get((n + 1) % numPoints);
-                controlPoints1.add(p1);
-                controlPoints2.add(p2);
+                Vec cp1 = points.get(n).copy();
+                Vec cp2 = points.get((n + 1) % numPoints).copy();
+                cp1.type = Vec.TYPE_CONTROL_POINT;
+                cp2.type = Vec.TYPE_CONTROL_POINT;
+                controlPoints1.add(cp1);
+                controlPoints2.add(cp2);
             }
 
         }//End of if type==STRAIGHT
@@ -211,7 +219,7 @@ public class JMPath {
         if (curveType == CURVED) {
             throw new UnsupportedOperationException("Not supported interpolation for CURVED paths yet."); //To change body of generated methods, choose Tools | Templates.
         }
-        JMPath resul = new JMPath();
+        JMPath resul = new JMPath(); //New, interpolated path
         int numPoints = points.size();
         if (!isClosed) {//If curve is open, stop at n-1 point
             numPoints--;
@@ -225,10 +233,13 @@ public class JMPath {
             if (curveType == STRAIGHT) {
                 Vec v1 = getPoint(n);
                 Vec v2 = getPoint(k);
+                v1.type=Vec.TYPE_VERTEX;
                 resul.add(v1); //Add the point of original curve
                 for (int j = 0; j < numDivs; j++) //Now compute the new ones
                 {
-                    resul.add(v1.interpolate(v2, ((double) j) / numDivs));
+                    Vec interpolate = v1.interpolate(v2, ((double) j) / numDivs);
+                    interpolate.type=Vec.TYPE_INTERPOLATION_POINT;
+                    resul.add(interpolate);
                 }
             }
         }

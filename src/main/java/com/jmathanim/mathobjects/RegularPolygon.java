@@ -25,8 +25,8 @@ public class RegularPolygon extends Polygon {
         this.numVertices = numVertices;
         this.side = side;
         firstPoint = new Vec(side, 0);
-        radius=new ArrayList<Line>();
-        apothem=new ArrayList<Line>();
+        radius = new ArrayList<Line>();
+        apothem = new ArrayList<Line>();
         computeJMPath();
     }
 
@@ -38,12 +38,13 @@ public class RegularPolygon extends Polygon {
             double alpha = 2 * n * Math.PI / numVertices;
             Vec moveVector = new Vec(side * Math.cos(alpha), side * Math.sin(alpha));
             newPoint = newPoint.add(moveVector);
+            newPoint.type=Vec.TYPE_VERTEX;
             jmpath.add(newPoint);
         }
         jmpath.close();
         jmpath.curveType = JMPath.STRAIGHT;
         jmpath = jmpath.interpolate(20);
-        
+
         jmpath.computeControlPoints();
         computeRadiusAndApothems();
     }
@@ -59,9 +60,11 @@ public class RegularPolygon extends Polygon {
     private void computeRadiusAndApothems() {
         radius.clear();
         apothem.clear();
-        Vec center=getCenter();
+        Vec center = getCenter();
         for (Vec p : jmpath.getPoints()) {//Wrong, because considers interpolated points
-            radius.add(new Line(center,p));
+            if (p.type == Vec.TYPE_VERTEX) {
+                radius.add(new Line(center, p));
+            }
         }
     }
 

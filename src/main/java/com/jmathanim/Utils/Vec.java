@@ -14,6 +14,12 @@ import static java.lang.Math.sqrt;
  */
 public class Vec {
 
+    public static final int TYPE_NONE = 0;
+    public static final int TYPE_VERTEX = 1;
+    public static final int TYPE_INTERPOLATION_POINT = 2;
+    public static final int TYPE_CONTROL_POINT = 3;
+
+    public int type;
     public double x, y, z;
 
     public Vec(double x, double y) {
@@ -24,6 +30,7 @@ public class Vec {
         this.x = x;
         this.y = y;
         this.z = z;
+        type = TYPE_NONE;
     }
 
     public double dot(Vec a) {
@@ -74,8 +81,9 @@ public class Vec {
 
     /**
      * Returns a new point between this and v2, given by the parameter
+     *
      * @param v2 The other point to interpolate
-     * @param alpha Parameter of interpolation. 0 gives this point. 1 gives v2. 
+     * @param alpha Parameter of interpolation. 0 gives this point. 1 gives v2.
      * 0.5 returns the middle point
      * @return The interpolated point
      */
@@ -85,6 +93,8 @@ public class Vec {
     }
 
     public Vec copy() {
-        return new Vec(x,y);
+        Vec resul=new Vec(x, y);
+        resul.type=type;
+        return resul;
     }
 }

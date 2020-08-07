@@ -33,19 +33,19 @@ public class PointSimple extends Scene2D {
     @Override
     public void runSketch() {
 //        PGraphics gre = createGraphics(800, 600);
-        Point po = new Point(0, 0);
-        Point or = new Point(0, 1);
-        
-        Point p2 = new Point(2, 0);
-        Point p3 = new Point(2, 1);
-        Polygon pol = new Polygon();
-        pol.add(po);
-        pol.add(or);
-        pol.add(p3);
-        pol.add(p2);
-        pol.close();
-        add(pol);
-        Circle circ = new Circle(new Vec(0, 0), new Vec(1, 0));
+//        Point po = new Point(0, 0);
+//        Point or = new Point(0, 1);
+//        
+//        Point p2 = new Point(2, 0);
+//        Point p3 = new Point(2, 1);
+//        Polygon pol = new Polygon();
+//        pol.add(po);
+//        pol.add(or);
+//        pol.add(p3);
+//        pol.add(p2);
+//        pol.close();
+//        add(pol);
+//        Circle circ = new Circle(new Vec(0, 0), new Vec(1, 0));
 //        add(po);
 //        add(or);
 //        add(circ);
@@ -67,7 +67,7 @@ public class PointSimple extends Scene2D {
         add(li);
         camera.setCenter(1, 0);
         Animation anim = new ShowCreation(li, 2);
-        Animation anim2 = new ShowCreation(circ, 2);
+//        Animation anim2 = new ShowCreation(circ, 2);
         play(anim);
         waitSeconds(3);
     }
