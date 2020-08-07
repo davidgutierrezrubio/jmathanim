@@ -21,6 +21,7 @@ public abstract class JMPathMathObject extends MathObject{
 
     public JMPathMathObject(Properties configParam) {
         super(configParam);
+        jmpath=new JMPath();
         needsRecalcControlPoints=false;
     }
     

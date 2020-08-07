@@ -28,6 +28,7 @@ public class Polygon extends JMPathMathObject {
     }
 
     public Polygon(ArrayList<Point> vertices, boolean isClosed) {
+        super();
         this.vertices = vertices;
         this.isClosed = isClosed;
         if (!vertices.isEmpty()) {

@@ -94,6 +94,8 @@ public class JMPath {
 
     public void clear() {
         points.clear();
+        controlPoints1.clear();
+        controlPoints2.clear();
     }
 
     public void computeControlPoints() {

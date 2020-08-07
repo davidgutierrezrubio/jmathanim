@@ -28,6 +28,7 @@ public class RegularPolygon extends Polygon {
 
     @Override
     public void computeJMPath() {
+        jmpath.clear();
         Vec newPoint = firstPoint.copy();
         for (int n = 0; n < numVertices; n++) {
             double alpha = 2 * n * Math.PI / numVertices;
@@ -37,7 +38,9 @@ public class RegularPolygon extends Polygon {
         }
         jmpath.close();
         jmpath.curveType = JMPath.STRAIGHT;
-        computeJMPath();
+        jmpath = jmpath.interpolate(20);
+        
+        jmpath.computeControlPoints();
     }
 
 }
