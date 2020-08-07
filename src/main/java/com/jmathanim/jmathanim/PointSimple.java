@@ -58,7 +58,12 @@ public class PointSimple extends Scene2D {
 //        }
 //        waitSeconds(1);
         //li.shift(new Vec(1,0,0));
-        MathObject li = new RegularPolygon(6,1.d);
+        RegularPolygon li = new RegularPolygon(6,1.d);
+        Point centro=new Point(li.getCenter());
+        for (Line radio: li.getRadius()) {
+            add(radio);
+        }
+        add(centro);
         add(li);
         camera.setCenter(1, 0);
         Animation anim = new ShowCreation(li, 2);

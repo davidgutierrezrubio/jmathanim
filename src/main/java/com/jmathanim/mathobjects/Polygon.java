@@ -61,10 +61,7 @@ public class Polygon extends JMPathMathObject {
         isClosed = false;
     }
 
-    @Override
-    public Vec getCenter() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
+    
 
     @Override
     public void moveTo(Vec coords) {

@@ -17,12 +17,16 @@ public class RegularPolygon extends Polygon {
     int numVertices;
     double side;
     private final Vec firstPoint;
+    private ArrayList<Line> radius;
+    private ArrayList<Line> apothem;
 
     public RegularPolygon(int numVertices, double side) {
         super();
         this.numVertices = numVertices;
         this.side = side;
         firstPoint = new Vec(side, 0);
+        radius=new ArrayList<Line>();
+        apothem=new ArrayList<Line>();
         computeJMPath();
     }
 
@@ -41,6 +45,24 @@ public class RegularPolygon extends Polygon {
         jmpath = jmpath.interpolate(20);
         
         jmpath.computeControlPoints();
+        computeRadiusAndApothems();
+    }
+
+    public ArrayList<Line> getRadius() {
+        return radius;
+    }
+
+    public ArrayList<Line> getApothem() {
+        return apothem;
+    }
+
+    private void computeRadiusAndApothems() {
+        radius.clear();
+        apothem.clear();
+        Vec center=getCenter();
+        for (Vec p : jmpath.getPoints()) {//Wrong, because considers interpolated points
+            radius.add(new Line(center,p));
+        }
     }
 
 }

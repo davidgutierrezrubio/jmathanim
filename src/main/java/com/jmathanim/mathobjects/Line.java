@@ -24,6 +24,10 @@ public class Line extends MathObject {
     Point p1, p2;
     JMPath curve;
 
+    public Line(Vec v1, Vec v2) {
+        this(new Point(v1), new Point(v2), null);
+    }
+
     public Line(Point p1, Point p2) {
         this(p1, p2, null);
     }
@@ -54,8 +58,8 @@ public class Line extends MathObject {
     public void draw(Renderer r) {
         Vec v1 = p1.getCenter();
         Vec v2 = p2.getCenter();
-        Vec vd=v2.minus(v1);
-        Vec v3=v1.add(vd.mult(drawParam));
+        Vec vd = v2.minus(v1);
+        Vec v3 = v1.add(vd.mult(drawParam));
         r.setColor(Color.BLUE);//TODO: Configs
         r.setStroke(.01);//TODO: COnfig stroke size
         r.setAlpha(alpha);

@@ -40,6 +40,14 @@ public class JMPath {
         curveType = JMPath.CURVED;//Default
     }
 
+    public ArrayList<Vec> getPoints() {
+        return points;
+    }
+
+    public void setPoints(ArrayList<Vec> points) {
+        this.points = points;
+    }
+    
     public Vec getPoint(int n) {
         return points.get(n);
     }
