@@ -140,6 +140,12 @@ public final class Point extends MathObject {
         return "Point("+v.x+","+v.y+")";
                 
     }
+
+    @Override
+    public void update() {
+        //Nothing else to do
+        updateDependents();
+    }
     
     
 }

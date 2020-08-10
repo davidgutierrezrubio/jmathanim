@@ -7,7 +7,7 @@ package com.jmathanim.mathobjects;
 
 import com.jmathanim.Utils.ConfigUtils;
 import com.jmathanim.Utils.Vec;
-import java.util.ArrayList;
+import com.jmathanim.jmathanim.JMathAnimScene;
 import java.util.HashSet;
 import java.util.Properties;
 
@@ -22,8 +22,13 @@ public abstract class MathObject implements Drawable {
         "ALPHA", "1",
         "COLOR", "255"
     };
+     /**
+     * Scenes where this object belongs.
+     * 
+     */
+    private HashSet<JMathAnimScene> scenes;
     Properties cnf;
-
+    public boolean visible;
     /**
      * This parameter specifies the amount of object to be drawn 0=none,
      * 1/2=draw half
@@ -39,22 +44,26 @@ public abstract class MathObject implements Drawable {
      * Mathobjects dependent of this. These should be updated4
      * when this object changes
      */
-    public HashSet<MathObject> descendent;
+    public final HashSet<MathObject> descendent;
     
     /**
      * Mathobjects which this is dependent from. This object should be updated4
      * when any of this list changes.
      */
-    public HashSet<MathObject> ascendent;
+    public final HashSet<MathObject> ascendent;
     public MathObject() {
         this(null);
     }
 
     public MathObject(Properties configParam) {
         cnf = new Properties();
+        visible=true;
         ConfigUtils.digest_config(cnf, DEFAULT_CONFIG_MATHOBJECT, configParam);
         alpha = Float.parseFloat(cnf.getProperty("ALPHA"));
         drawParam = 1;
+        ascendent=new HashSet<>();
+        descendent=new HashSet<>();
+        scenes=new HashSet<>();
     }
 
     /**
@@ -169,6 +178,29 @@ public abstract class MathObject implements Drawable {
         for (MathObject mob:descendent)
         {
             mob.update();
+        }
+    }
+
+    public void addScene(JMathAnimScene scen) {
+        scenes.add(scen);
+        for (MathObject mob:descendent)
+        {
+            mob.addScene(scen);
+        }
+    }
+
+    public void removeScene(JMathAnimScene scen) {
+        scenes.remove(scen); 
+         for (MathObject mob:descendent)
+        {
+            mob.removeScene(scen);
+        }
+    }
+    public void addObjectToScene(MathObject mob)
+    {
+        for (JMathAnimScene sce:scenes)
+        {
+            mob.addScene(sce);
         }
     }
     

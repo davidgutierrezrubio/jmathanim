@@ -40,6 +40,8 @@ public class RegularPolygon extends Polygon {
             Vec moveVector = new Vec(side * Math.cos(alpha), side * Math.sin(alpha));
             newPoint = newPoint.add(moveVector);
             newPoint.type=Point.TYPE_VERTEX;
+            dependsOn(newPoint);
+            addObjectToScene(newPoint);
             this.vertices.add(newPoint);
             jmpath.add(newPoint);
         }
