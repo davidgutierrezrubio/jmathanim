@@ -20,18 +20,18 @@ public class JMPath {
     static public final int CURVED = 1; //Curved line
     static public final int STRAIGHT = 2; //Straight line
 
-    private ArrayList<Vec> points; //points from the curve
-    private ArrayList<Vec> controlPoints1; //Control points (first)
-    private ArrayList<Vec> controlPoints2; //Control points (second)
+    private ArrayList<Point> points; //points from the curve
+    private ArrayList<Point> controlPoints1; //Control points (first)
+    private ArrayList<Point> controlPoints2; //Control points (second)
     private boolean isClosed;
     double tension;
     public int curveType;
 
     public JMPath() {
-        this(new ArrayList<Vec>());
+        this(new ArrayList<Point>());
     }
 
-    public JMPath(ArrayList<Vec> points) {
+    public JMPath(ArrayList<Point> points) {
         this.points = points;
         this.controlPoints1 = new ArrayList<>();
         this.controlPoints2 = new ArrayList<>();
@@ -40,23 +40,23 @@ public class JMPath {
         curveType = JMPath.CURVED;//Default
     }
 
-    public ArrayList<Vec> getPoints() {
+    public ArrayList<Point> getPoints() {
         return points;
     }
 
-    public void setPoints(ArrayList<Vec> points) {
+    public void setPoints(ArrayList<Point> points) {
         this.points = points;
     }
 
-    public Vec getPoint(int n) {
+    public Point getPoint(int n) {
         return points.get(n);
     }
 
-    public Vec getControlPoint1(int n) {
+    public Point getControlPoint1(int n) {
         return controlPoints1.get(n);
     }
 
-    public Vec getControlPoint2(int n) {
+    public Point getControlPoint2(int n) {
         return controlPoints2.get(n);
     }
 
@@ -80,25 +80,25 @@ public class JMPath {
         isClosed = false;
     }
 
-    public boolean add(Vec e) {
+    public boolean add(Point e) {
         return points.add(e);
     }
 
-    public boolean add(MathObject p) {
-        return points.add(p.getCenter());
-    }
+//    public boolean add(MathObject p) {
+//        return points.add(p.getCenter());
+//    }
 
     public boolean remove(Object o) {
         return points.remove(o);
     }
 
-    public void addCPoint1(Vec p) {
-        p.type=Vec.TYPE_CONTROL_POINT;
+    public void addCPoint1(Point p) {
+        p.type=Point.TYPE_CONTROL_POINT;
         controlPoints1.add(p);
     }
 
-    public void addCPoint2(Vec p) {
-        p.type=Vec.TYPE_CONTROL_POINT;
+    public void addCPoint2(Point p) {
+        p.type=Point.TYPE_CONTROL_POINT;
         controlPoints2.add(p);
     }
 
@@ -138,14 +138,14 @@ public class JMPath {
                     int k = (n + 1) % points.size();
                     int L = (n + 2) % points.size();
                     System.out.println("Size:" + points.size() + "-->" + i + " " + " " + j + " " + k + " " + L);
-                    double x1 = points.get(i).x;
-                    double y1 = points.get(i).y;
-                    double x2 = points.get(j).x;
-                    double y2 = points.get(j).y;
-                    double x3 = points.get(k).x;
-                    double y3 = points.get(k).y;
-                    double x4 = points.get(L).x;
-                    double y4 = points.get(L).y;
+                    double x1 = points.get(i).v.x;
+                    double y1 = points.get(i).v.y;
+                    double x2 = points.get(j).v.x;
+                    double y2 = points.get(j).v.y;
+                    double x3 = points.get(k).v.x;
+                    double y3 = points.get(k).v.y;
+                    double x4 = points.get(L).v.x;
+                    double y4 = points.get(L).v.y;
                     double tension = 0.3d;
                     double mod31 = Math.sqrt((x3 - x1) * (x3 - x1) + (y3 - y1) * (y3 - y1));
                     double mod42 = Math.sqrt((x4 - x2) * (x4 - x2) + (y4 - y2) * (y4 - y2));
@@ -154,10 +154,10 @@ public class JMPath {
                     double cy1 = y2 + mod23 / mod31 * tension * (y3 - y1);
                     double cx2 = x3 - mod23 / mod42 * tension * (x4 - x2);
                     double cy2 = y3 - mod23 / mod42 * tension * (y4 - y2);
-                    Vec cp1 = new Vec(cx1, cy1);
-                    Vec cp2 = new Vec(cx2, cy2);
-                    cp1.type = Vec.TYPE_CONTROL_POINT;
-                    cp2.type = Vec.TYPE_CONTROL_POINT;
+                    Point cp1 = new Point(cx1, cy1);
+                    Point cp2 = new Point(cx2, cy2);
+                    cp1.type = Point.TYPE_CONTROL_POINT;
+                    cp2.type = Point.TYPE_CONTROL_POINT;
                     controlPoints1.add(cp1);
                     controlPoints2.add(cp2);
                 }
@@ -167,10 +167,10 @@ public class JMPath {
         if (curveType == JMPath.STRAIGHT) {
             int numPoints = points.size();
             for (int n = 0; n < numPoints; n++) {
-                Vec cp1 = points.get(n).copy();
-                Vec cp2 = points.get((n + 1) % numPoints).copy();
-                cp1.type = Vec.TYPE_CONTROL_POINT;
-                cp2.type = Vec.TYPE_CONTROL_POINT;
+                Point cp1 = (Point) points.get(n).copy();
+                Point cp2 = (Point) points.get((n + 1) % numPoints).copy();
+                cp1.type = Point.TYPE_CONTROL_POINT;
+                cp2.type = Point.TYPE_CONTROL_POINT;
                 controlPoints1.add(cp1);
                 controlPoints2.add(cp2);
             }
@@ -231,14 +231,14 @@ public class JMPath {
                 //TODO: Implement curved Bezier interpolation
             }
             if (curveType == STRAIGHT) {
-                Vec v1 = getPoint(n);
-                Vec v2 = getPoint(k);
-                v1.type=Vec.TYPE_VERTEX;
+                Point v1 = getPoint(n);
+                Point v2 = getPoint(k);
+                v1.type=Point.TYPE_VERTEX;
                 resul.add(v1); //Add the point of original curve
                 for (int j = 0; j < numDivs; j++) //Now compute the new ones
                 {
-                    Vec interpolate = v1.interpolate(v2, ((double) j) / numDivs);
-                    interpolate.type=Vec.TYPE_INTERPOLATION_POINT;
+                    Point interpolate = new Point(v1.v.interpolate(v2.v, ((double) j) / numDivs));
+                    interpolate.type=Point.TYPE_INTERPOLATION_POINT;
                     resul.add(interpolate);
                 }
             }

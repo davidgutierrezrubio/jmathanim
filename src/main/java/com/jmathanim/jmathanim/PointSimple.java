@@ -45,7 +45,7 @@ public class PointSimple extends Scene2D {
 //        pol.add(p2);
 //        pol.close();
 //        add(pol);
-//        Circle circ = new Circle(new Vec(0, 0), new Vec(1, 0));
+        Circle circ = new Circle(new Vec(0, 0), new Vec(1, 0));
 //        add(po);
 //        add(or);
 //        add(circ);
@@ -67,9 +67,18 @@ public class PointSimple extends Scene2D {
         add(li);
         camera.setCenter(1, 0);
         Animation anim = new ShowCreation(li, 2);
-//        Animation anim2 = new ShowCreation(circ, 2);
-        play(anim);
+        Animation anim2 = new ShowCreation(circ, 2);
+        play(anim,anim2);
+        
+                
         waitSeconds(3);
+//          for (int i = 0; i < 1*fps; i++) {
+//            double dx=dt/3.;
+//            po.shift(new Vec(dx,0,0));
+//            //TODO: Compute dt 
+//            advanceFrame();
+//            System.out.println("dx="+dx+"   i="+i);
+//        }
     }
     
 }

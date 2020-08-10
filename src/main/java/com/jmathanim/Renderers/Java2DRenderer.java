@@ -11,6 +11,7 @@ import com.jmathanim.Cameras.Camera2D;
 import com.jmathanim.Utils.JMathAnimConfig;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
+import com.jmathanim.mathobjects.Point;
 import io.humble.video.Codec;
 import io.humble.video.Encoder;
 import io.humble.video.MediaPacket;
@@ -228,18 +229,18 @@ public class Java2DRenderer extends Renderer {
                 break;
         }
         if (numPoints >= minimumPoints) {
-            path = createPathFromCurve(c);
+            path = createPathFromJMPath(c);
             g2d.setColor(color);
             g2d.draw(path);
         }
     }
 
-    public Path2D.Double createPathFromCurve(JMPath c) {
+    public Path2D.Double createPathFromJMPath(JMPath c) {
         Path2D.Double resul = new Path2D.Double();
         int numPoints = c.size();
         //TODO: Convert this in its own reusable method
         //First, I move the curve to the first point
-        Vec p = c.getPoint(0);
+        Vec p = c.getPoint(0).v;
         int[] scr = camera.mathToScreen(p);
         resul.moveTo(scr[0], scr[1]);
         //Now I iterate to get the next points
@@ -248,9 +249,9 @@ public class Java2DRenderer extends Renderer {
         }
         for (int n = 0; n < numPoints; n++) {
             int i = (n + 1) % c.size(); //Next point (first if actually we are in last)
-            Vec point = c.getPoint(i);
-            Vec cpoint1 = c.getControlPoint1(n);
-            Vec cpoint2 = c.getControlPoint2(n);
+            Vec point = c.getPoint(i).v;
+            Vec cpoint1 = c.getControlPoint1(n).v;
+            Vec cpoint2 = c.getControlPoint2(n).v;
 
             int[] xy = camera.mathToScreen(point);
             int[] cxy1 = camera.mathToScreen(cpoint1);

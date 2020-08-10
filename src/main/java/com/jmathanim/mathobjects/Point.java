@@ -22,14 +22,18 @@ public final class Point extends MathObject {
         "VISIBLE", "TRUE",
         "RADIUS", ".01"//Radius relative to width screen
     };
+    public static final int TYPE_NONE = 0;
+    public static final int TYPE_VERTEX = 1;
+    public static final int TYPE_INTERPOLATION_POINT = 2;
+    public static final int TYPE_CONTROL_POINT = 3;
 
-    public double x, y, z;
+    public int type;
+    public Vec v;
 
-    
-    public Point(Vec v)
-    {
-        this(v.x,v.y,v.z);
+    public Point(Vec v) {
+        this(v.x, v.y, v.z);
     }
+
     /**
      *
      * @param x
@@ -59,6 +63,11 @@ public final class Point extends MathObject {
         this(x, y, 0, cnf);
     }
 
+    public Point(double x, double y, double z, int type) {
+        this(x, y, z, null);
+        this.type = type;
+    }
+
     /**
      *
      * @param x
@@ -68,16 +77,14 @@ public final class Point extends MathObject {
      */
     public Point(double x, double y, double z, Properties configParam) {
         super(configParam);
-        this.x = x;
-        this.y = y;
-        this.z = z;
+        this.v=new Vec(x,y,z);
+        type = TYPE_NONE;
         ConfigUtils.digest_config(cnf, DEFAULT_CONFIG_POINT, configParam);
-
     }
 
     @Override
     public Vec getCenter() {
-        return new Vec(x, y, z);
+        return new Vec(v.x, v.y, v.z);
     }
 
     @Override
@@ -85,29 +92,29 @@ public final class Point extends MathObject {
         double rad1 = Double.parseDouble(cnf.getProperty("RADIUS"));
         r.setColor(Color.WHITE);
 //        double  w = (double) (.5*rad*r.getWidth());//Radius relative to screen width
-        double rad=r.getCamera().relScalarToWidth(rad1);
-        r.drawCircle(x , y , rad);
+        double rad = r.getCamera().relScalarToWidth(rad1);
+        r.drawCircle(v.x, v.y, rad);
 
     }
 
     @Override
     public void moveTo(Vec coords) {
-        x = coords.x;
-        y = coords.y;
-        z = coords.z;
+        v.x = coords.x;
+        v.y = coords.y;
+        v.z = coords.z;
 
     }
 
     @Override
     public void shift(Vec shiftVector) {
-        x += shiftVector.x;
-        y += shiftVector.y;
-        z += shiftVector.z;
+        v.x += shiftVector.x;
+        v.y += shiftVector.y;
+        v.z += shiftVector.z;
     }
 
     @Override
     public MathObject copy() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return new Point(v);
     }
 
     @Override
@@ -115,4 +122,16 @@ public final class Point extends MathObject {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
+    /**
+     * Return a new Point object which represents the original point plus a
+     * given vector
+     * @param addVector Vector to add
+     * @return Original point+addVector
+     */
+    public Point add(Vec addVector)
+    {
+        Point resul=(Point) this.copy();
+        resul.v.add(addVector);
+        return resul;
+    }
 }

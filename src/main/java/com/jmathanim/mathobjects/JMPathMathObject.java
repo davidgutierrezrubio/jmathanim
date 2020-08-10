@@ -32,8 +32,8 @@ public abstract class JMPathMathObject extends MathObject {
     @Override
     public Vec getCenter() {
         Vec resul = new Vec(0, 0);
-        for (Vec p : jmpath.getPoints()) {
-            resul.addInSite(p);
+        for (Point p : jmpath.getPoints()) {
+            resul.addInSite(p.v);
         }
         resul.multInSite(1./jmpath.size());
         return resul;

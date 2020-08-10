@@ -16,8 +16,8 @@ import java.util.ArrayList;
  */
 public class Polygon extends JMPathMathObject {
 
-    private ArrayList<Point> vertices;
-    private boolean isClosed;
+    protected ArrayList<Point> vertices;
+    protected boolean isClosed;
 
     public Polygon() {
         this(new ArrayList<Point>(), true);
@@ -104,7 +104,7 @@ public class Polygon extends JMPathMathObject {
         //TODO: ¿Compute intermediate points?
         JMPath jmpath2 = new JMPath();
         for (Point p : vertices) {
-            jmpath2.add(p.getCenter());
+            jmpath2.add(p);
         }
         if (isClosed) {
             jmpath2.close();

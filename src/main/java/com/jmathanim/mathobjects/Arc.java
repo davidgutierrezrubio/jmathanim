@@ -69,7 +69,7 @@ public class Arc extends JMPathMathObject {
         for (double alphaC = 0; alphaC < angle; alphaC += step) {
             x1 = x + radiusx * Math.cos(alphaC);
             y1 = y + radiusy * Math.sin(alphaC);
-            jmpath.add(new Vec(x1, y1));
+            jmpath.add(new Point(x1, y1));
         }
         if (isCurved) {
             jmpath.computeControlPoints(JMPath.CURVED);

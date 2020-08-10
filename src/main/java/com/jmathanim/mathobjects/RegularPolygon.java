@@ -16,7 +16,7 @@ public class RegularPolygon extends Polygon {
 
     int numVertices;
     double side;
-    private final Vec firstPoint;
+    private final Point firstPoint;
     private ArrayList<Line> radius;
     private ArrayList<Line> apothem;
 
@@ -24,7 +24,7 @@ public class RegularPolygon extends Polygon {
         super();
         this.numVertices = numVertices;
         this.side = side;
-        firstPoint = new Vec(side, 0);
+        firstPoint = new Point(side, 0);
         radius = new ArrayList<Line>();
         apothem = new ArrayList<Line>();
         computeJMPath();
@@ -32,13 +32,15 @@ public class RegularPolygon extends Polygon {
 
     @Override
     public void computeJMPath() {
+        this.vertices.clear();
         jmpath.clear();
-        Vec newPoint = firstPoint.copy();
+        Point newPoint = (Point) firstPoint.copy();
         for (int n = 0; n < numVertices; n++) {
             double alpha = 2 * n * Math.PI / numVertices;
             Vec moveVector = new Vec(side * Math.cos(alpha), side * Math.sin(alpha));
             newPoint = newPoint.add(moveVector);
-            newPoint.type=Vec.TYPE_VERTEX;
+            newPoint.type=Point.TYPE_VERTEX;
+            this.vertices.add(newPoint);
             jmpath.add(newPoint);
         }
         jmpath.close();
@@ -60,9 +62,9 @@ public class RegularPolygon extends Polygon {
     private void computeRadiusAndApothems() {
         radius.clear();
         apothem.clear();
-        Vec center = getCenter();
-        for (Vec p : jmpath.getPoints()) {//Wrong, because considers interpolated points
-            if (p.type == Vec.TYPE_VERTEX) {
+        Point center = new Point(getCenter());
+        for (Point p : jmpath.getPoints()) {//Wrong, because considers interpolated points
+            if (p.type == Point.TYPE_VERTEX) {
                 radius.add(new Line(center, p));
             }
         }
