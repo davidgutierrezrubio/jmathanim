@@ -43,6 +43,7 @@ import java.util.logging.Logger;
  */
 public class Java2DRenderer extends Renderer {
     private static final boolean DEBUG=false; //Draw control points and vertices
+    private static final boolean PRINT_DEBUG=false; //Draw control points and vertices
     private final BufferedImage bufferedImage;
     private final Graphics2D g2d;
     public Camera2D camera;
@@ -232,6 +233,10 @@ public class Java2DRenderer extends Renderer {
             path = createPathFromJMPath(c);
             g2d.setColor(color);
             g2d.draw(path);
+            if (PRINT_DEBUG) 
+            {
+                System.out.println("Drawing "+c);
+            }
         }
     }
 

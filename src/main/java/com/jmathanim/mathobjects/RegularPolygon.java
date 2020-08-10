@@ -17,8 +17,8 @@ public class RegularPolygon extends Polygon {
     int numVertices;
     double side;
     private final Point firstPoint;
-    private ArrayList<Line> radius;
-    private ArrayList<Line> apothem;
+    private final ArrayList<Line> radius;
+    private final ArrayList<Line> apothem;
 
     public RegularPolygon(int numVertices, double side) {
         super();

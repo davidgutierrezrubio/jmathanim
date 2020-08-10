@@ -250,4 +250,13 @@ public class JMPath {
         return resul;
     }
 
+    @Override
+    public String toString() {
+        String resul="JMPath[";
+        for (Point p:points)
+            resul+=", "+p;
+        return resul;
+    }
+    
+
 }

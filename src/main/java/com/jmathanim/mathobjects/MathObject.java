@@ -7,6 +7,8 @@ package com.jmathanim.mathobjects;
 
 import com.jmathanim.Utils.ConfigUtils;
 import com.jmathanim.Utils.Vec;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Properties;
 
 /**
@@ -33,6 +35,17 @@ public abstract class MathObject implements Drawable {
      */
     protected double alpha;
 
+    /**
+     * Mathobjects dependent of this. These should be updated4
+     * when this object changes
+     */
+    public HashSet<MathObject> descendent;
+    
+    /**
+     * Mathobjects which this is dependent from. This object should be updated4
+     * when any of this list changes.
+     */
+    public HashSet<MathObject> ascendent;
     public MathObject() {
         this(null);
     }
@@ -131,4 +144,32 @@ public abstract class MathObject implements Drawable {
      * @return copy of object, with identical properties
      */
     abstract public MathObject copy();
+    
+    /**
+     * Update all necessary componentes of this object to display properly
+     * This should be called when any of its subobjects (sides, vertices...)
+     * changes
+     */
+    abstract public void update();
+    
+    public void dependsOn(MathObject mob)
+    {
+        ascendent.add(mob);
+        mob.descendent.add(this);
+    }
+    
+    public void removeDependsOn(MathObject mob)
+        {
+        ascendent.remove(mob);
+        mob.descendent.remove(this);
+    }    
+    
+    public void updateDependents()
+    {
+        for (MathObject mob:descendent)
+        {
+            mob.update();
+        }
+    }
+    
 }

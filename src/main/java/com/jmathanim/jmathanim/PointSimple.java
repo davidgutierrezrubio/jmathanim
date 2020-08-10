@@ -26,7 +26,8 @@ public class PointSimple extends Scene2D {
     
     @Override
     public void setupSketch() {
-        conf.setHighQuality();
+//        conf.setHighQuality();
+        conf.setLowQuality();
         createRenderer();
     }
     

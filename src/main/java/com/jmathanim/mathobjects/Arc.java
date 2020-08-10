@@ -32,7 +32,7 @@ public class Arc extends JMPathMathObject {
         setDrawParam(1);//Draw parameter to 1, draw the full arc
         closePath = false;
         needsRecalcControlPoints = true;
-//        computeJMPath();
+        computeJMPath();
 
     }
 
@@ -98,7 +98,6 @@ public class Arc extends JMPathMathObject {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-    
     @Override
     public void scale(Vec scaleCenter, double sx, double sy, double sz) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
@@ -106,6 +105,12 @@ public class Arc extends JMPathMathObject {
 //        radiusx*=sx;
 //        radiusy*=sy;
 //        needsRecalcControlPoints=true;
+    }
+
+    @Override
+    public void update() {
+        computeJMPath();
+        updateDependents();
     }
 
 }

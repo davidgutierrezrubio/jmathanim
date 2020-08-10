@@ -131,7 +131,15 @@ public final class Point extends MathObject {
     public Point add(Vec addVector)
     {
         Point resul=(Point) this.copy();
-        resul.v.add(addVector);
+        resul.v.addInSite(addVector);
         return resul;
     }
+
+    @Override
+    public String toString() {
+        return "Point("+v.x+","+v.y+")";
+                
+    }
+    
+    
 }

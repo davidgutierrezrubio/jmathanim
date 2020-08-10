@@ -37,6 +37,8 @@ public class Line extends MathObject {
         this.p1 = p1;
         this.p2 = p2;
         ConfigUtils.digest_config(cnf, DEFAULT_CONFIG, configParam);
+        this.dependsOn(p1);
+        this.dependsOn(p2);
         computeCurve();
     }
 
@@ -44,7 +46,7 @@ public class Line extends MathObject {
     public Vec getCenter() {
         Vec v1 = p1.getCenter();
         Vec v2 = p2.getCenter();
-        return v1.addInSite(v2).multInSite(.5);
+        return v1.interpolate(v2,.5);
     }
 
     public void computeCurve() {
@@ -90,6 +92,12 @@ public class Line extends MathObject {
     @Override
     public void scale(Vec scaleCenter, double sx, double sy, double sz) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void update() {
+        computeCurve();
+        updateDependents();
     }
 
 }
