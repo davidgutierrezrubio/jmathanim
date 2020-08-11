@@ -6,6 +6,7 @@
 package com.jmathanim.mathobjects;
 
 import com.jmathanim.Utils.Vec;
+import java.util.ArrayList;
 import java.util.Properties;
 
 /**
@@ -16,6 +17,15 @@ public abstract class JMPathMathObject extends MathObject {
 
     protected JMPath jmpath;
     protected boolean needsRecalcControlPoints;
+    protected int numInterpolationPoints = 20;//TODO: Adaptative interpolation
+    protected boolean isClosed = false;
+    protected final ArrayList<Point> vertices;
+
+    /**
+     * Type of path, JMPath.STRAIGHT or JMPath.CURVED
+     */
+    protected int pathType;
+    protected final Point center;
 
     public JMPathMathObject() {
         this(null);
@@ -23,21 +33,58 @@ public abstract class JMPathMathObject extends MathObject {
 
     public JMPathMathObject(Properties configParam) {
         super(configParam);
+        vertices = new ArrayList<Point>();
         jmpath = new JMPath();
+        needsRecalcControlPoints = false;
+        center=new Point(0,0);
+    }
+
+    /**
+     * This method computes all necessary points to the path (interpolation and
+     * control)
+     */
+    protected final void computeJMPath() {
+        //TODO: ¿Compute intermediate points?
+        JMPath jmpathTemp = new JMPath();
+        for (Point p : vertices) {
+            jmpathTemp.add(p);
+        }
+        if (isClosed) {
+            jmpathTemp.close();
+        } else {
+            jmpathTemp.open();
+        }
+        jmpathTemp.curveType = pathType;
+        if (numInterpolationPoints > 1) {
+            jmpath = jmpathTemp.interpolate(numInterpolationPoints);//Interpolate points
+        }
+        //Compute center
+        Vec vecCenter = new Vec(0, 0);
+        for (Point p : jmpath.getPoints()) {
+            vecCenter.addInSite(p.v);
+        }
+        vecCenter.multInSite(1. / jmpath.size());
+        center.v=vecCenter;
+        
+        jmpath.computeControlPoints(pathType);
         needsRecalcControlPoints = false;
     }
 
-    abstract public void computeJMPath();
+    @Override
+    public Point getCenter() {
+       return center;
+
+    }
 
     @Override
-    public Vec getCenter() {
-        Vec resul = new Vec(0, 0);
-        for (Point p : jmpath.getPoints()) {
-            resul.addInSite(p.v);
+    public  void shift(Vec shiftVector)
+    {
+        for (Point p: vertices)
+        {
+            p.shift(shiftVector);
         }
-        resul.multInSite(1./jmpath.size());
-        return resul;
-
+        center.shift(shiftVector);
+        update();
     }
 
 }

@@ -35,7 +35,7 @@ public class MathObjectContainer extends MathObject {
     }
 
     @Override
-    public Vec getCenter() {
+    public Point getCenter() {
         return mathObject.getCenter();
     }
 
@@ -61,7 +61,7 @@ public class MathObjectContainer extends MathObject {
     }
 
     @Override
-    public void scale(Vec scaleCenter, double sx, double sy, double sz) {
+    public void scale(Point scaleCenter, double sx, double sy, double sz) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 

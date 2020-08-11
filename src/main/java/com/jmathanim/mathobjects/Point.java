@@ -83,8 +83,8 @@ public final class Point extends MathObject {
     }
 
     @Override
-    public Vec getCenter() {
-        return new Vec(v.x, v.y, v.z);
+    public Point getCenter() {
+        return this;
     }
 
     @Override
@@ -119,7 +119,7 @@ public final class Point extends MathObject {
     }
 
     @Override
-    public void scale(Vec scaleCenter, double sx, double sy, double sz) {
+    public void scale(Point scaleCenter, double sx, double sy, double sz) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
@@ -141,7 +141,11 @@ public final class Point extends MathObject {
         return "Point("+v.x+","+v.y+")";
                 
     }
+ public Point interpolate(Point p2, double alpha) {
+        Vec w = v.interpolate(p2.v, alpha);
+        return new Point(w);
 
+    }
     @Override
     public void update() {
         //Nothing else to do

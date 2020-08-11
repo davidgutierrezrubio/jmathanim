@@ -6,7 +6,7 @@
 package com.jmathanim.jmathanim;
 
 import com.jmathanim.Animations.Animation;
-import com.jmathanim.Animations.Circle;
+import com.jmathanim.mathobjects.Circle;
 import com.jmathanim.Animations.ShowCreation;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.mathobjects.Line;
@@ -56,12 +56,14 @@ public class PointSimple extends Scene2D {
 //        waitSeconds(1);
         //li.shift(new Vec(1,0,0));
         RegularPolygon regPolyg = new RegularPolygon(6,1.d);
-        Point centro=new Point(regPolyg.getCenter());
+        Point centro=regPolyg.getCenter();
         
         for (Line radio: regPolyg.getRadius()) {
             add(radio);
         }
-        
+        for (Line apotema: regPolyg.getApothem()) {
+            add(apotema);
+        }
         for (Point vertex: regPolyg.getVertices()) {
             add(vertex);
         }
@@ -80,10 +82,10 @@ public class PointSimple extends Scene2D {
         }
                 
         
-        Point puntoMola = regPolyg.getVertices().get(0);
+//        Point puntoMola = regPolyg.getVertices().get(0);
           for (int i = 0; i < 1*fps; i++) {
             double dx=dt/3.;
-            puntoMola.shift(new Vec(0,dx,0));
+            regPolyg.shift(new Vec(0,dx,0));
             //TODO: Compute dt 
             advanceFrame();
         }

@@ -73,7 +73,7 @@ public abstract class MathObject implements Drawable {
      *
      * @return Vec object with center
      */
-    public abstract Vec getCenter();
+    public abstract Point getCenter();
 
     /**
      * Move object so that center is the given coords
@@ -110,7 +110,7 @@ public abstract class MathObject implements Drawable {
         scale(getCenter(), sx, sy, sz);
     }
 
-    public abstract void scale(Vec scaleCenter, double sx, double sy, double sz);
+    public abstract void scale(Point scaleCenter, double sx, double sy, double sz);
 
     /**
      * Return draw Parameter. This is used in animations like draw() 0=no drawn,

@@ -16,8 +16,8 @@ import java.util.ArrayList;
  */
 public class Polygon extends JMPathMathObject {
 
-    protected ArrayList<Point> vertices;
-    protected boolean isClosed;
+    
+    
 
     public Polygon() {
         this(new ArrayList<Point>(), true);
@@ -29,7 +29,7 @@ public class Polygon extends JMPathMathObject {
 
     public Polygon(ArrayList<Point> vertices, boolean isClosed) {
         super();
-        this.vertices = vertices;
+        this.vertices.addAll(vertices);
         this.isClosed = isClosed;
         if (!vertices.isEmpty()) {
             computeJMPath();
@@ -68,10 +68,7 @@ public class Polygon extends JMPathMathObject {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-    @Override
-    public void shift(Vec shiftVector) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
+   
 
     @Override
     public MathObject copy() {
@@ -99,26 +96,26 @@ public class Polygon extends JMPathMathObject {
         r.drawPath(c);
     }
 
-    @Override
-    public void computeJMPath() {
-        //TODO: ¿Compute intermediate points?
-        JMPath jmpath2 = new JMPath();
-        for (Point p : vertices) {
-            jmpath2.add(p);
-        }
-        if (isClosed) {
-            jmpath2.close();
-        } else {
-            jmpath2.open();
-        }
-        jmpath2.curveType = JMPath.STRAIGHT;
-        jmpath = jmpath2.interpolate(20);
-        jmpath.computeControlPoints(JMPath.STRAIGHT);
-        needsRecalcControlPoints = false;
-    }
+//    @Override
+//    public void computeJMPath() {
+//        //TODO: ¿Compute intermediate points?
+//        JMPath jmpath2 = new JMPath();
+//        for (Point p : vertices) {
+//            jmpath2.add(p);
+//        }
+//        if (isClosed) {
+//            jmpath2.close();
+//        } else {
+//            jmpath2.open();
+//        }
+//        jmpath2.curveType = JMPath.STRAIGHT;
+//        jmpath = jmpath2.interpolate(20);
+//        jmpath.computeControlPoints(JMPath.STRAIGHT);
+//        needsRecalcControlPoints = false;
+//    }
 
     @Override
-    public void scale(Vec scaleCenter, double sx, double sy, double sz) {
+    public void scale(Point scaleCenter, double sx, double sy, double sz) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 

@@ -25,10 +25,12 @@ public class RegularPolygon extends Polygon {
         this.numVertices = numVertices;
         this.side = side;
         firstPoint = new Point(side, 0);
-        radius = new ArrayList<Line>();
-        apothem = new ArrayList<Line>();
+        radius = new ArrayList<>();
+        apothem = new ArrayList<>();
+        pathType = JMPath.STRAIGHT;
         computeVertices();
         computeJMPath();
+        computeRadiusAndApothems();
     }
 
     private void computeVertices() {
@@ -44,26 +46,25 @@ public class RegularPolygon extends Polygon {
 //            cousins.add(newPoint);
 //            addObjectToScene(newPoint);
             this.vertices.add(newPoint);
-            
+
         }
     }
 
-    @Override
-    public void computeJMPath() {
-        jmpath.clear();
-        for (Point p: vertices)
-        {
-          jmpath.add(p);  
-        }
-        
-        jmpath.close();
-        jmpath.curveType = JMPath.STRAIGHT;
-        jmpath = jmpath.interpolate(20);
-
-        jmpath.computeControlPoints();
-        computeRadiusAndApothems();
-    }
-
+//    @Override
+//    public void computeJMPath() {
+//        jmpath.clear();
+//        for (Point p: vertices)
+//        {
+//          jmpath.add(p);  
+//        }
+//        
+//        jmpath.close();
+//        jmpath.curveType = JMPath.STRAIGHT;
+//        jmpath = jmpath.interpolate(20);
+//
+//        jmpath.computeControlPoints();
+//        
+//    }
     public ArrayList<Line> getRadius() {
         return radius;
     }
@@ -74,13 +75,24 @@ public class RegularPolygon extends Polygon {
 
     private void computeRadiusAndApothems() {
         radius.clear();
-        apothem.clear();
-        Point center = new Point(getCenter());
         for (Point p : jmpath.getPoints()) {
             if (p.type == Point.TYPE_VERTEX) {
                 radius.add(new Line(center, p));
             }
         }
+
+        apothem.clear();
+        Point q = null;
+        for (Point p : jmpath.getPoints()) {
+            if (p.type == Point.TYPE_VERTEX) {
+                if (q != null) {
+                    apothem.add(new Line(center, p.interpolate(q, .5)));
+                }
+                q = p;
+            }
+        }
+//Now last apothem
+        apothem.add(new Line(center, vertices.get(0).interpolate(q, .5)));
     }
 
 }

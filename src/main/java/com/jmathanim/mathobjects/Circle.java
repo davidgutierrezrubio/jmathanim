@@ -3,10 +3,11 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.jmathanim.Animations;
+package com.jmathanim.mathobjects;
 
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.mathobjects.Arc;
+import com.jmathanim.mathobjects.Point;
 import static java.lang.Math.PI;
 
 /**
@@ -15,13 +16,13 @@ import static java.lang.Math.PI;
  */
 public class Circle extends Arc{
     
-    public Circle(double x, double y, double radius) {
-        super(x, y, radius, 2*PI);
+    public Circle(Point arcCenter, double radius) {
+        super(arcCenter, radius, 2*PI);
         closePath=true;
     }
     public Circle (Vec center, Vec point)
     {
-        this(center.x,center.y,center.distanceTo(point));
+        this(new Point(center),center.distanceTo(point));
     }
     
 }

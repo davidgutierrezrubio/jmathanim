@@ -43,10 +43,8 @@ public class Line extends MathObject {
     }
 
     @Override
-    public Vec getCenter() {
-        Vec v1 = p1.getCenter();
-        Vec v2 = p2.getCenter();
-        return v1.interpolate(v2,.5);
+    public Point getCenter() {
+        return p1.interpolate(p2,.5);
     }
 
     public void computeCurve() {
@@ -58,8 +56,8 @@ public class Line extends MathObject {
 
     @Override
     public void draw(Renderer r) {
-        Vec v1 = p1.getCenter();
-        Vec v2 = p2.getCenter();
+        Vec v1 = p1.v;
+        Vec v2 = p2.v;
         Vec vd = v2.minus(v1);
         Vec v3 = v1.add(vd.mult(drawParam));
         r.setColor(Color.BLUE);//TODO: Configs
@@ -71,7 +69,7 @@ public class Line extends MathObject {
 
     @Override
     public void moveTo(Vec coords) {
-        Vec v1 = p1.getCenter();
+        Vec v1 = p1.v;
         Vec shiftVector = coords.minus(v1);
         shift(shiftVector);
 
@@ -90,7 +88,7 @@ public class Line extends MathObject {
     }
 
     @Override
-    public void scale(Vec scaleCenter, double sx, double sy, double sz) {
+    public void scale(Point scaleCenter, double sx, double sy, double sz) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 

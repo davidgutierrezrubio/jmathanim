@@ -20,25 +20,28 @@ public class Arc extends JMPathMathObject {
     public boolean isCurved;
     public double step;
 
-    public Arc(double x, double y, double radius, double angle) {
+    public Arc(Point cen, double radius, double angle) {
         super();
         isCurved = true;//Default
         step = .1;//Default
-        this.x = x;
-        this.y = y;
+        this.x=cen.v.x;
+        this.y=cen.v.y;
         this.radiusx = radius;
         this.radiusy = radius;
         this.angle = angle;
         setDrawParam(1);//Draw parameter to 1, draw the full arc
         closePath = false;
+        pathType=JMPath.CURVED;
         needsRecalcControlPoints = true;
+        numInterpolationPoints=1;//For now, don't interpolate
+        computePoints();
         computeJMPath();
 
     }
 
     @Override
-    public Vec getCenter() {
-        return new Vec(x, y);
+    public Point getCenter() {
+        return new Point(x, y);
     }
 
     @Override
@@ -59,23 +62,17 @@ public class Arc extends JMPathMathObject {
         r.drawPath(c);
     }
 
-    @Override
-    public void computeJMPath() {
+    public void computePoints() {
+        vertices.clear();
         double x0 = x + radiusx;
         double y0 = y;
         double x1, y1;
-        jmpath = new JMPath();
-        jmpath.close();
         for (double alphaC = 0; alphaC < angle; alphaC += step) {
             x1 = x + radiusx * Math.cos(alphaC);
             y1 = y + radiusy * Math.sin(alphaC);
-            jmpath.add(new Point(x1, y1));
+            vertices.add(new Point(x1, y1));
         }
-        if (isCurved) {
-            jmpath.computeControlPoints(JMPath.CURVED);
-        } else {
-            jmpath.computeControlPoints(JMPath.STRAIGHT);
-        }
+        
     }
 
     @Override
@@ -99,7 +96,7 @@ public class Arc extends JMPathMathObject {
     }
 
     @Override
-    public void scale(Vec scaleCenter, double sx, double sy, double sz) {
+    public void scale(Point scaleCenter, double sx, double sy, double sz) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
         //TODO: Needs to recompute center around scaleCenter
 //        radiusx*=sx;
