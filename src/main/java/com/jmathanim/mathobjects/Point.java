@@ -110,6 +110,7 @@ public final class Point extends MathObject {
         v.x += shiftVector.x;
         v.y += shiftVector.y;
         v.z += shiftVector.z;
+        update();
     }
 
     @Override

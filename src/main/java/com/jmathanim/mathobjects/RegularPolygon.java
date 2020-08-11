@@ -27,24 +27,35 @@ public class RegularPolygon extends Polygon {
         firstPoint = new Point(side, 0);
         radius = new ArrayList<Line>();
         apothem = new ArrayList<Line>();
+        computeVertices();
         computeJMPath();
     }
 
-    @Override
-    public void computeJMPath() {
+    private void computeVertices() {
         this.vertices.clear();
-        jmpath.clear();
+
         Point newPoint = (Point) firstPoint.copy();
         for (int n = 0; n < numVertices; n++) {
             double alpha = 2 * n * Math.PI / numVertices;
             Vec moveVector = new Vec(side * Math.cos(alpha), side * Math.sin(alpha));
             newPoint = newPoint.add(moveVector);
-            newPoint.type=Point.TYPE_VERTEX;
+            newPoint.type = Point.TYPE_VERTEX;
             dependsOn(newPoint);
-            addObjectToScene(newPoint);
+//            cousins.add(newPoint);
+//            addObjectToScene(newPoint);
             this.vertices.add(newPoint);
-            jmpath.add(newPoint);
+            
         }
+    }
+
+    @Override
+    public void computeJMPath() {
+        jmpath.clear();
+        for (Point p: vertices)
+        {
+          jmpath.add(p);  
+        }
+        
         jmpath.close();
         jmpath.curveType = JMPath.STRAIGHT;
         jmpath = jmpath.interpolate(20);
@@ -65,7 +76,7 @@ public class RegularPolygon extends Polygon {
         radius.clear();
         apothem.clear();
         Point center = new Point(getCenter());
-        for (Point p : jmpath.getPoints()) {//Wrong, because considers interpolated points
+        for (Point p : jmpath.getPoints()) {
             if (p.type == Point.TYPE_VERTEX) {
                 radius.add(new Line(center, p));
             }

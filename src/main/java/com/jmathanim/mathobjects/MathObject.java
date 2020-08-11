@@ -51,6 +51,7 @@ public abstract class MathObject implements Drawable {
      * when any of this list changes.
      */
     public final HashSet<MathObject> ascendent;
+    public final HashSet<MathObject> cousins;
     public MathObject() {
         this(null);
     }
@@ -63,6 +64,7 @@ public abstract class MathObject implements Drawable {
         drawParam = 1;
         ascendent=new HashSet<>();
         descendent=new HashSet<>();
+        cousins=new HashSet<>();
         scenes=new HashSet<>();
     }
 
@@ -175,7 +177,8 @@ public abstract class MathObject implements Drawable {
     
     public void updateDependents()
     {
-        for (MathObject mob:descendent)
+        HashSet<MathObject> desC = (HashSet<MathObject>) descendent.clone();
+        for (MathObject mob:desC)
         {
             mob.update();
         }
@@ -183,9 +186,9 @@ public abstract class MathObject implements Drawable {
 
     public void addScene(JMathAnimScene scen) {
         scenes.add(scen);
-        for (MathObject mob:descendent)
+        for (MathObject mob:cousins)
         {
-            mob.addScene(scen);
+            scen.add(mob);
         }
     }
 

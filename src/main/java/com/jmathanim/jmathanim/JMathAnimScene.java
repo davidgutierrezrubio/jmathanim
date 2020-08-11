@@ -71,6 +71,13 @@ public abstract class JMathAnimScene {
 
     public abstract void runSketch();
 
+    public final void add(ArrayList<MathObject> objs)
+    {
+        for (MathObject obj: objs)
+        {
+            add(obj);
+        }
+    }
     public final MathObject add(MathObject obj) {
         objects.add(obj);
         obj.addScene(this);

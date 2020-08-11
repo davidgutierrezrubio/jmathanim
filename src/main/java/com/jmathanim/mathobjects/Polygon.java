@@ -128,6 +128,10 @@ public class Polygon extends JMPathMathObject {
         updateDependents();
     }
 
+    public ArrayList<Point> getVertices() {
+        return vertices;
+    }
+
    
 
 }

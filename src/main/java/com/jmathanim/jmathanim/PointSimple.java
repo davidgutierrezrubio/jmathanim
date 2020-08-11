@@ -57,9 +57,15 @@ public class PointSimple extends Scene2D {
         //li.shift(new Vec(1,0,0));
         RegularPolygon regPolyg = new RegularPolygon(6,1.d);
         Point centro=new Point(regPolyg.getCenter());
+        
         for (Line radio: regPolyg.getRadius()) {
             add(radio);
         }
+        
+        for (Point vertex: regPolyg.getVertices()) {
+            add(vertex);
+        }
+        
         add(centro);
         add(regPolyg);
         camera.setCenter(1, 0);
@@ -73,14 +79,16 @@ public class PointSimple extends Scene2D {
             System.out.println(ob);
         }
                 
-        waitSeconds(3);
-//          for (int i = 0; i < 1*fps; i++) {
-//            double dx=dt/3.;
-//            po.shift(new Vec(dx,0,0));
-//            //TODO: Compute dt 
-//            advanceFrame();
-//            System.out.println("dx="+dx+"   i="+i);
-//        }
+        
+        Point puntoMola = regPolyg.getVertices().get(0);
+          for (int i = 0; i < 1*fps; i++) {
+            double dx=dt/3.;
+            puntoMola.shift(new Vec(0,dx,0));
+            //TODO: Compute dt 
+            advanceFrame();
+        }
+          
+          waitSeconds(3);
     }
     
 }
