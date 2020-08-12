@@ -42,8 +42,9 @@ import java.util.logging.Logger;
  * Java2D to render the image
  */
 public class Java2DRenderer extends Renderer {
-    private static final boolean DEBUG=false; //Draw control points and vertices
-    private static final boolean PRINT_DEBUG=false; //Draw control points and vertices
+
+    private static final boolean DEBUG = false; //Draw control points and vertices
+    private static final boolean PRINT_DEBUG = false; //Draw control points and vertices
     private final BufferedImage bufferedImage;
     private final Graphics2D g2d;
     public Camera2D camera;
@@ -233,9 +234,8 @@ public class Java2DRenderer extends Renderer {
             path = createPathFromJMPath(c);
             g2d.setColor(color);
             g2d.draw(path);
-            if (PRINT_DEBUG) 
-            {
-                System.out.println("Drawing "+c);
+            if (PRINT_DEBUG) {
+                System.out.println("Drawing " + c);
             }
         }
     }
@@ -252,8 +252,10 @@ public class Java2DRenderer extends Renderer {
         if (!c.isClosed()) {
             numPoints--; //Don't draw last point
         }
+//        System.out.println(c.getPoints().size() + " " + c.controlPoints1.size() + " " + c.controlPoints2.size());
         for (int n = 0; n < numPoints; n++) {
             int i = (n + 1) % c.size(); //Next point (first if actually we are in last)
+
             Vec point = c.getPoint(i).v;
             Vec cpoint1 = c.getControlPoint1(n).v;
             Vec cpoint2 = c.getControlPoint2(n).v;

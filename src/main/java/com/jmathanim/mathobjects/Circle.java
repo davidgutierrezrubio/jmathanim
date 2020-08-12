@@ -6,8 +6,6 @@
 package com.jmathanim.mathobjects;
 
 import com.jmathanim.Utils.Vec;
-import com.jmathanim.mathobjects.Arc;
-import com.jmathanim.mathobjects.Point;
 import static java.lang.Math.PI;
 
 /**
@@ -17,7 +15,7 @@ import static java.lang.Math.PI;
 public class Circle extends Arc{
     
     public Circle(Point arcCenter, double radius) {
-        super(arcCenter, radius, 2*PI);
+        super(arcCenter, radius, 2*PI,true);
         closePath=true;
     }
     public Circle (Vec center, Vec point)

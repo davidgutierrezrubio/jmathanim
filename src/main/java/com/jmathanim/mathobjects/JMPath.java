@@ -20,9 +20,9 @@ public class JMPath {
     static public final int CURVED = 1; //Curved line
     static public final int STRAIGHT = 2; //Straight line
 
-    private ArrayList<Point> points; //points from the curve
-    private ArrayList<Point> controlPoints1; //Control points (first)
-    private ArrayList<Point> controlPoints2; //Control points (second)
+    public ArrayList<Point> points; //points from the curve
+    public ArrayList<Point> controlPoints1; //Control points (first)
+    public ArrayList<Point> controlPoints2; //Control points (second)
     private boolean isClosed;
     double tension;
     public int curveType;
@@ -137,7 +137,7 @@ public class JMPath {
                     int j = (n) % points.size();
                     int k = (n + 1) % points.size();
                     int L = (n + 2) % points.size();
-                    System.out.println("Size:" + points.size() + "-->" + i + " " + " " + j + " " + k + " " + L);
+//                    System.out.println("Size:" + points.size() + "-->" + i + " " + " " + j + " " + k + " " + L);
                     double x1 = points.get(i).v.x;
                     double y1 = points.get(i).v.y;
                     double x2 = points.get(j).v.x;
@@ -184,7 +184,8 @@ public class JMPath {
     }
 
     /**
-     * Returns a subpath delimited by the given parameter
+     * Returns a subpath delimited by the given parameter.
+     * From start to drawParam*length
      *
      * @param drawParam From 0 to 1. 1 means the whole curve.
      * @return A new JMPath representing the corresponding subpath
@@ -256,6 +257,15 @@ public class JMPath {
         for (Point p:points)
             resul+=", "+p;
         return resul;
+    }
+
+    void addPointsFrom(JMPath jmpathTemp) {
+        points.addAll(jmpathTemp.points);
+        controlPoints1.addAll(jmpathTemp.controlPoints1);
+        controlPoints2.addAll(jmpathTemp.controlPoints2);
+        
+        
+        
     }
     
 

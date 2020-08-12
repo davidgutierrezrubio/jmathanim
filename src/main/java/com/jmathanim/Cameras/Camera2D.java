@@ -6,6 +6,8 @@
 package com.jmathanim.Cameras;
 
 import com.jmathanim.Utils.Vec;
+import com.jmathanim.mathobjects.MathObject;
+import com.jmathanim.mathobjects.Point;
 
 /**
  * A Camera subclass designed to work with the Java2D library This class
@@ -53,6 +55,13 @@ public class Camera2D extends Camera {
 
     }
 
+    public void setCenter(MathObject obj) {
+        double xx=obj.getCenter().v.x;
+        double yy=obj.getCenter().v.y;
+        setCenter(xx,yy);
+    }
+    
+    
     public final void reset() {
         this.setMathXY(-2, 2, 0);
     }
@@ -102,5 +111,7 @@ public class Camera2D extends Camera {
     public int[] mathToScreen(Vec p) {
         return mathToScreen(p.x, p.y);
     }
+
+    
 
 }

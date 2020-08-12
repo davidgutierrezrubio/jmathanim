@@ -15,7 +15,7 @@ import java.util.Properties;
  */
 public abstract class JMPathMathObject extends MathObject {
 
-    protected JMPath jmpath;
+    protected final JMPath jmpath;
     protected boolean needsRecalcControlPoints;
     protected int numInterpolationPoints = 20;//TODO: Adaptative interpolation
     protected boolean isClosed = false;
@@ -36,7 +36,7 @@ public abstract class JMPathMathObject extends MathObject {
         vertices = new ArrayList<Point>();
         jmpath = new JMPath();
         needsRecalcControlPoints = false;
-        center=new Point(0,0);
+        center = new Point(0, 0);
     }
 
     /**
@@ -46,6 +46,7 @@ public abstract class JMPathMathObject extends MathObject {
     protected final void computeJMPath() {
         //TODO: ¿Compute intermediate points?
         JMPath jmpathTemp = new JMPath();
+        jmpath.clear();//clear points
         for (Point p : vertices) {
             jmpathTemp.add(p);
         }
@@ -56,7 +57,9 @@ public abstract class JMPathMathObject extends MathObject {
         }
         jmpathTemp.curveType = pathType;
         if (numInterpolationPoints > 1) {
-            jmpath = jmpathTemp.interpolate(numInterpolationPoints);//Interpolate points
+            jmpath.addPointsFrom(jmpathTemp.interpolate(numInterpolationPoints));//Interpolate points
+        } else {
+            jmpath.addPointsFrom(jmpathTemp);
         }
         //Compute center
         Vec vecCenter = new Vec(0, 0);
@@ -64,23 +67,21 @@ public abstract class JMPathMathObject extends MathObject {
             vecCenter.addInSite(p.v);
         }
         vecCenter.multInSite(1. / jmpath.size());
-        center.v=vecCenter;
-        
+        center.v = vecCenter;
+
         jmpath.computeControlPoints(pathType);
         needsRecalcControlPoints = false;
     }
 
     @Override
     public Point getCenter() {
-       return center;
+        return center;
 
     }
 
     @Override
-    public  void shift(Vec shiftVector)
-    {
-        for (Point p: vertices)
-        {
+    public void shift(Vec shiftVector) {
+        for (Point p : vertices) {
             p.shift(shiftVector);
         }
         center.shift(shiftVector);

@@ -16,9 +16,6 @@ import java.util.ArrayList;
  */
 public class Polygon extends JMPathMathObject {
 
-    
-    
-
     public Polygon() {
         this(new ArrayList<Point>(), true);
     }
@@ -27,10 +24,11 @@ public class Polygon extends JMPathMathObject {
         this(vertices, true);
     }
 
-    public Polygon(ArrayList<Point> vertices, boolean isClosed) {
+    public Polygon(ArrayList<Point> vertices, boolean close) {
         super();
         this.vertices.addAll(vertices);
-        this.isClosed = isClosed;
+        this.isClosed = close;
+        jmpath.curveType = JMPath.STRAIGHT;
         if (!vertices.isEmpty()) {
             computeJMPath();
         }
@@ -61,14 +59,10 @@ public class Polygon extends JMPathMathObject {
         isClosed = false;
     }
 
-    
-
     @Override
     public void moveTo(Vec coords) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-
-   
 
     @Override
     public MathObject copy() {
@@ -113,7 +107,6 @@ public class Polygon extends JMPathMathObject {
 //        jmpath.computeControlPoints(JMPath.STRAIGHT);
 //        needsRecalcControlPoints = false;
 //    }
-
     @Override
     public void scale(Point scaleCenter, double sx, double sy, double sz) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
@@ -128,7 +121,5 @@ public class Polygon extends JMPathMathObject {
     public ArrayList<Point> getVertices() {
         return vertices;
     }
-
-   
 
 }

@@ -163,7 +163,7 @@ public abstract class MathObject implements Drawable {
      */
     abstract public void update();
     
-    public void dependsOn(MathObject mob)
+    public final void dependsOn(MathObject mob)
     {
         ascendent.add(mob);
         mob.descendent.add(this);

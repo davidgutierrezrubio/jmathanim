@@ -15,7 +15,7 @@ import java.util.Properties;
  *
  * @author David Gutierrez Rubio davidgutierrezrubio@gmail.com
  */
-public class Line extends MathObject {
+public class Line extends JMPathMathObject {//TODO:Should extend Polygon class
 
     String[] DEFAULT_CONFIG = {
         "THICKNESS", ".01",
@@ -33,13 +33,19 @@ public class Line extends MathObject {
     }
 
     public Line(Point p1, Point p2, Properties configParam) {
-        super(configParam);
+        super();
         this.p1 = p1;
         this.p2 = p2;
+        vertices.add(p1);
+        vertices.add(p2);
         ConfigUtils.digest_config(cnf, DEFAULT_CONFIG, configParam);
         this.dependsOn(p1);
         this.dependsOn(p2);
         computeCurve();
+    }
+
+    private Line(Properties configParam) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
@@ -47,7 +53,7 @@ public class Line extends MathObject {
         return p1.interpolate(p2,.5);
     }
 
-    public void computeCurve() {
+    public final void computeCurve() {
         curve = new JMPath();
         curve.add(p1);
         curve.add(p2);
