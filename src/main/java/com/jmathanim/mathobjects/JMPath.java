@@ -192,7 +192,7 @@ public class JMPath {
      */
     public JMPath getSlice(double drawParam) {
         JMPath resul = new JMPath();
-
+        resul.curveType=this.curveType;
         if (drawParam < 1) {
             double sliceSize = points.size() * drawParam;
             for (int n = 0; n < sliceSize; n++) {

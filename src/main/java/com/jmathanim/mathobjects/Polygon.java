@@ -26,6 +26,7 @@ public class Polygon extends JMPathMathObject {
 
     public Polygon(ArrayList<Point> vertices, boolean close) {
         super();
+        numInterpolationPoints=1;
         this.vertices.addAll(vertices);
         this.isClosed = close;
         jmpath.curveType = JMPath.STRAIGHT;
@@ -50,13 +51,13 @@ public class Polygon extends JMPathMathObject {
     }
 
     public void close() {
+        jmpath.close();
         needsRecalcControlPoints = true;
-        isClosed = true;
     }
 
     public void open() {
+        jmpath.open();
         needsRecalcControlPoints = true;
-        isClosed = false;
     }
 
     @Override
@@ -79,6 +80,9 @@ public class Polygon extends JMPathMathObject {
         }
 
         JMPath c = jmpath.getSlice(drawParam);
+        
+        
+        
         if (drawParam < 1) {
             c.open();
         } else {

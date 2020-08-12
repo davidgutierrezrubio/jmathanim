@@ -20,12 +20,16 @@ public abstract class Animation {
     protected final MathObject mobj;
     protected double runTime;
     protected double fps;
+    private int numFrames; //Number of frames of animation
+    private int frame;
+    private boolean shouldSetFPSFirst;
 
     public Animation(MathObject mobj) {
         this(mobj, 1);
     }
 
     public Animation(MathObject mobj, double runTime) {
+        this.shouldSetFPSFirst = true;
         this.mobj = mobj;
         this.runTime = runTime;
     }
@@ -40,9 +44,11 @@ public abstract class Animation {
 
     public void setFps(double fps) {
         this.fps = fps;
-        double numFrames = runTime * fps;
-        dt = 1 / numFrames;
+        numFrames = (int) (runTime * fps)+3;//TODO: Check this!
+        dt = 1.d / (runTime * fps+3);
         t = 0;
+        frame = 0;
+        shouldSetFPSFirst=false;
     }
 
     /**
@@ -51,19 +57,21 @@ public abstract class Animation {
      *
      * @return True if animation has finished
      */
-    public boolean processAnimation() {
-        boolean resul=false;
-        if (t < 1) {
-            resul = false;
+    public boolean processAnimation(double fps) {
+        if (shouldSetFPSFirst)
+        {
+            setFps(fps);
         }
-
-        if (t >= 1) {
-            t = 1;
+        boolean resul = false;
+        if (frame < numFrames || t<1+dt) {
+            this.doAnim(t);
+            t += dt;
+            frame++;
+            resul = false;
+        } else {
             resul = true;
         }
 
-        this.doAnim(t);
-        t += dt;
         return resul;
     }
 

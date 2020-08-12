@@ -39,7 +39,7 @@ public class Arc extends JMPathMathObject {
         } else {
             jmpath.open();
         }
-        pathType = JMPath.CURVED;
+        setCurveType(JMPath.CURVED);
         needsRecalcControlPoints = true;
         numInterpolationPoints = 1;//For now, don't interpolate
         computePoints();

@@ -229,6 +229,9 @@ public class Java2DRenderer extends Renderer {
             case JMPath.CURVED:
                 minimumPoints = 4;
                 break;
+            default:
+                throw new UnsupportedOperationException("Error: Illegal type of JMPath: "+c.curveType);
+                
         }
         if (numPoints >= minimumPoints) {
             path = createPathFromJMPath(c);

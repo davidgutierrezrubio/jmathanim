@@ -43,9 +43,9 @@ public class PointSimple extends Scene2D {
         pol.add(p2);
         pol.close();
 
-//        Circle circ = new Circle(new Vec(0, 0), new Vec(1, 0));
+        Circle circ = new Circle(new Vec(0, 0), new Vec(1, 0));
 //      
-//        RegularPolygon regPolyg = new RegularPolygon(6, 1.d);
+        RegularPolygon regPolyg = new RegularPolygon(7, .3d);
 //        regPolyg.shift(new Vec(0, -2));
 //        Point centro = regPolyg.getCenter();
 
@@ -59,13 +59,13 @@ public class PointSimple extends Scene2D {
 //            add(vertex);
 //        }
 //        add(centro);
-        camera.setCenter(0,0);
+        camera.setCenter(0, 0);
         add(pol);
-//         add(regPolyg);
-//         add(circ);
-//        Animation anim = new ShowCreation(regPolyg, 2);
-//        Animation anim2 = new ShowCreation(circ, 2);
-//        Animation anim3 = new ShowCreation(pol, 2);
+        add(regPolyg);
+        add(circ);
+        Animation anim = new ShowCreation(regPolyg, 1);
+        Animation anim2 = new ShowCreation(circ, 1.5);
+        Animation anim3 = new ShowCreation(pol, 2);
 //        play(anim,anim2,anim3);
 
         System.out.println("Objects in this scene:");
@@ -74,12 +74,13 @@ public class PointSimple extends Scene2D {
         }
 
 //        Point puntoMola = regPolyg.getVertices().get(0);
-//        for (int i = 0; i < 1 * fps; i++) {
-//            double dx = dt / 3.;
-//            regPolyg.shift(new Vec(0, dx, 0));
-//            //TODO: Compute dt 
-//            advanceFrame();
-//        }
+        double dx = dt / 3.;
+
+        while (!anim2.processAnimation(fps)) {
+            regPolyg.shift(new Vec(0, dx, 0));
+            advanceFrame();
+        }
+        
         waitSeconds(3);
     }
 
@@ -87,3 +88,10 @@ public class PointSimple extends Scene2D {
 //        play(anim, anim2);
 //        Animation anim2=new FadeIn(pol,2);
 //        play(anim2);
+
+//Cookbook:
+//Procesa manualmente animacion y mueve al mismo tiempo una figura
+//while (!anim2.processAnimation(fps)) {
+//            regPolyg.shift(new Vec(0, dx, 0));
+//            advanceFrame();
+//        }

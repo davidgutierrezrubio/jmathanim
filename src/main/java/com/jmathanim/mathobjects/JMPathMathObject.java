@@ -24,7 +24,6 @@ public abstract class JMPathMathObject extends MathObject {
     /**
      * Type of path, JMPath.STRAIGHT or JMPath.CURVED
      */
-    protected int pathType;
     protected final Point center;
 
     public JMPathMathObject() {
@@ -55,7 +54,7 @@ public abstract class JMPathMathObject extends MathObject {
         } else {
             jmpathTemp.open();
         }
-        jmpathTemp.curveType = pathType;
+        jmpathTemp.curveType = jmpath.curveType;
         if (numInterpolationPoints > 1) {
             jmpath.addPointsFrom(jmpathTemp.interpolate(numInterpolationPoints));//Interpolate points
         } else {
@@ -69,7 +68,7 @@ public abstract class JMPathMathObject extends MathObject {
         vecCenter.multInSite(1. / jmpath.size());
         center.v = vecCenter;
 
-        jmpath.computeControlPoints(pathType);
+        jmpath.computeControlPoints();
         needsRecalcControlPoints = false;
     }
 
@@ -88,4 +87,12 @@ public abstract class JMPathMathObject extends MathObject {
         update();
     }
 
+    public void setCurveType(int type)
+    {
+        jmpath.curveType=type;
+    }
+    public int getCurveType()
+    {
+        return jmpath.curveType;
+    }
 }

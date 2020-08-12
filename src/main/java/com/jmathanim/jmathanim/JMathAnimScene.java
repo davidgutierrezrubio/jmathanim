@@ -131,16 +131,15 @@ public abstract class JMathAnimScene {
     }
 
     public void play(Animation[] anims) {
-        for (Animation anim : anims) {
-            anim.setFps(fps);
-        }
+//        for (Animation anim : anims) {
+//            anim.setFps(fps);
+//        }
         boolean finished = false;
         while (!finished) {
             finished = true;
             for (Animation anim : anims) {
-                finished = finished & anim.processAnimation();
+                finished = finished & anim.processAnimation(fps);
             }
-            doDraws();
             advanceFrame();
         }
     }
@@ -148,7 +147,6 @@ public abstract class JMathAnimScene {
     public void waitSeconds(double time) {
         int numFrames = (int) (time * fps);
         for (int n = 0; n < numFrames; n++) {
-            doDraws();
             advanceFrame();
         }
 
