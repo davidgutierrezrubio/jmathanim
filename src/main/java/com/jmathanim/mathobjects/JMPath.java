@@ -6,6 +6,7 @@
 package com.jmathanim.mathobjects;
 
 import com.jmathanim.Utils.CircularArrayList;
+import com.jmathanim.Utils.Vec;
 import java.util.ArrayList;
 
 /**
@@ -293,52 +294,30 @@ public class JMPath {
 
     public JMPath interpolateBetweenPaths(JMPath pathDst, double alpha) {
         JMPath resul = new JMPath(); //Interpolated path
-        JMPath path1 = this.copy();
-        JMPath path2 = pathDst.copy();
+//        JMPath path1 = this.copy();
+//        JMPath path2 = pathDst.copy();
         //Align path so they have same number of points
         //Also minimizing total distance from points, rotating path if closed
 
         //First, I ensure two paths have the same number of points.
-        alignPaths(path1, path2);
-        
-        
-        
+        alignPaths(pathDst);
+
         return resul;
     }
 
-    /**
-     * Creates a copy of the path, with all their attributes Point objects are
-     * not copied
-     *
-     * @return A copy of the path
-     */
-    private JMPath copy() {
-        JMPath resul = new JMPath();
-        resul.points.addAll(points);
-        resul.controlPoints1.addAll(controlPoints1);
-        resul.controlPoints2.addAll(controlPoints2);
-
-        resul.isClosed = isClosed;
-        resul.isInterpolated = isInterpolated;
-        resul.tension = tension;
-        resul.curveType = curveType;
-        return resul;
-
-    }
-
-    private void alignPaths(JMPath path1, JMPath path2) {
+    public void alignPaths(JMPath path2) {
         //For now, only STRAIGHT paths
         JMPath pathSmall;
         JMPath pathBig;
-        if (path1.size() == path2.size()) {
+        if (this.size() == path2.size()) {
             return;
         }
 
-        if (path1.size() < path2.size()) {
-            pathSmall = path1;
+        if (this.size() < path2.size()) {
+            pathSmall = this;
             pathBig = path2;
         } else {
-            pathSmall = path1;
+            pathSmall = this;
             pathBig = path2;
         }
 
@@ -374,14 +353,132 @@ public class JMPath {
                 }
             }
         }
-        //Now replace jmpathSmall with correct points
-        System.out.println("Before align: " + pathSmall.size() + ", " + pathBig.size());
-        System.out.println(pathSmall);
         pathSmall.clear();
         pathSmall.addPointsFrom(resul);
         pathSmall.computeControlPoints();
-        System.out.println("After align: " + pathSmall.size() + ", " + pathBig.size());
-        System.out.println(pathSmall);
+    }
+
+    public JMPath rawCopy() {
+        JMPath resul = new JMPath();
+
+        for (int n = 0; n < points.size(); n++) {
+            resul.add((Point) points.get(n).copy());
+            resul.addCPoint1((Point) controlPoints1.get(n).copy());
+            resul.addCPoint2((Point) controlPoints2.get(n).copy());
+        }
+
+        resul.isClosed = isClosed;
+        resul.isInterpolated = isInterpolated;
+        resul.tension = tension;
+        resul.curveType = curveType;
+        return resul;
+    }
+
+    /**
+     * Creates a copy of the path, with all their attributes Point objects are
+     * not copied
+     *
+     * @return A copy of the path
+     */
+    public JMPath copy() {
+        JMPath resul = new JMPath();
+        resul.points.addAll(points);
+        resul.controlPoints1.addAll(controlPoints1);
+        resul.controlPoints2.addAll(controlPoints2);
+
+        resul.isClosed = isClosed;
+        resul.isInterpolated = isInterpolated;
+        resul.tension = tension;
+        resul.curveType = curveType;
+        return resul;
+
+    }
+
+    /**
+     * Cycle points in path. Point(0) becomes Point(step), Point(1) becomes
+     * Point(step+1)... Useful to align paths minimizing distances
+     *
+     * @param step
+     */
+    public void cyclePoints(int step, int direction) {
+        JMPath tempPath = this.copy();
+        points.clear();
+        controlPoints1.clear();
+        controlPoints2.clear();
+
+        for (int n = 0; n < tempPath.size(); n++) {
+            points.add(tempPath.points.get(direction * n + step));
+            controlPoints1.add(tempPath.controlPoints1.get(direction * n + step));
+            controlPoints2.add(tempPath.controlPoints2.get(direction * n + step));
+        }
+
+    }
+
+    /**
+     * Compute the sum of distance of points from aligned paths This distance
+     * should be minimized in order to Transform more smoothly
+     *
+     * @param path2 The other path
+     * @return Distance
+     */
+    public Double varianceDistance(JMPath path2) {
+        double resul = 0;
+        double sumSq = 0;
+        double sum = 0;
+        for (int n = 0; n < this.size(); n++) {
+            Vec v1 = points.get(n).v;
+            Vec v2 = path2.points.get(n).v;
+            double dist = v1.distanceTo(v2);
+            sumSq += dist * dist;
+            sum += dist;
+        }
+        sum /= this.size();
+//        resul = sumSq / this.size() - (sum * sum);
+        resul = sum;
+        return resul;
+    }
+
+    public void minimizeDistanceVariance(JMPath path2) {
+        ArrayList<Double> distances = new ArrayList<Double>();
+        double minDistanceVarNoChangeDir = 999999999;
+        int minStepNoChangeDir = 0;
+
+        //First, without changing direction
+        for (int step = 0; step < this.size(); step++) {
+            JMPath tempPath = this.copy();
+            tempPath.cyclePoints(step, 1);
+            double distanceVar = tempPath.varianceDistance(path2);
+            distances.add(distanceVar);
+            System.out.println("Step: " + step + ", distanceVar: " + distanceVar);
+            if (distanceVar < minDistanceVarNoChangeDir) {
+                minDistanceVarNoChangeDir = distanceVar;
+                minStepNoChangeDir = step;
+            }
+
+        }
+        double minDistanceVarChangeDir = 999999999;
+        int minStepChangeDir = 0;
+        for (int step = 0; step < this.size(); step++) {
+            JMPath tempPath = this.copy();
+            tempPath.cyclePoints(step, -1);
+            double distanceVar = tempPath.varianceDistance(path2);
+            distances.add(distanceVar);
+            System.out.println("Step: " + step + ", distanceVar: " + distanceVar);
+            if (distanceVar < minDistanceVarChangeDir) {
+                minDistanceVarChangeDir = distanceVar;
+                minStepChangeDir = step;
+            }
+
+        }
+        System.out.println("Optimum Step: " + minStepNoChangeDir + ", distance: " + minDistanceVarNoChangeDir);
+        System.out.println("Optimum Step: " + minStepChangeDir + ", distance: " + minDistanceVarChangeDir);
+
+        if (minDistanceVarNoChangeDir < minDistanceVarChangeDir) {
+            this.cyclePoints(minStepNoChangeDir, 1);
+        } else {
+            this.cyclePoints(minStepChangeDir, -1);
+        }
+
     }
 
 }

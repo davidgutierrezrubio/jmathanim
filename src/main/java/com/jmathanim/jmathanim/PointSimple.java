@@ -6,11 +6,9 @@
 package com.jmathanim.jmathanim;
 
 import com.jmathanim.Animations.Animation;
-import com.jmathanim.mathobjects.Circle;
 import com.jmathanim.Animations.ShowCreation;
+import com.jmathanim.Animations.Transform;
 import com.jmathanim.Utils.Vec;
-import com.jmathanim.mathobjects.Line;
-import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.Point;
 import com.jmathanim.mathobjects.Polygon;
 import com.jmathanim.mathobjects.RegularPolygon;
@@ -45,7 +43,7 @@ public class PointSimple extends Scene2D {
 
 //        Circle circ = new Circle(new Vec(0, 0), new Vec(1, 0));
 //      
-        RegularPolygon regPolyg = new RegularPolygon(7, .3d);
+        RegularPolygon regPolyg = new RegularPolygon(15, .3d);
         regPolyg.shift(new Vec(-1, -1));
 //        Point centro = regPolyg.getCenter();
 
@@ -60,21 +58,15 @@ public class PointSimple extends Scene2D {
 //        }
 //        add(centro);
         camera.setCenter(0, 0);
-        add(pol);
-        add(regPolyg);
-//        add(circ);
-        Animation anim = new ShowCreation(regPolyg, 2);
-//        Animation anim2 = new ShowCreation(circ, 1.5);
-        Animation anim3 = new ShowCreation(pol, 2);
-//        play(anim,anim2,anim3);
+//        add(pol);
+//        add(regPolyg);
+////        add(circ);
+//        Animation anim = new ShowCreation(regPolyg, 2);
+////        Animation anim2 = new ShowCreation(circ, 1.5);
+//        Animation anim3 = new ShowCreation(pol, 2);
+////        play(anim,anim2,anim3);
 
-        System.out.println("Objects in this scene:");
-        for (MathObject ob : objects) {
-            System.out.println(ob);
-        }
-        waitSeconds(2);
-        pol.jmpath.interpolateBetweenPaths(regPolyg.jmpath, 1);
-        System.out.println(pol.jmpath);
+        waitSeconds(1);
 //        Point puntoMola = regPolyg.getVertices().get(0);
 //        double dx = dt / 3.;
 //        waitSeconds(2);
@@ -84,10 +76,15 @@ public class PointSimple extends Scene2D {
 //            advanceFrame();
 //        }
 //        regPolyg.processAfterNonLinearAnimation();
-
-        waitSeconds(3);
-        System.out.println("Finally:");
-        System.out.println(pol.jmpath);
+        RegularPolygon pol1 = new RegularPolygon(3, .3d);
+        RegularPolygon pol2 = new RegularPolygon(4, .3d);
+        RegularPolygon pol3 = new RegularPolygon(5, .3d);
+        RegularPolygon pol4 = new RegularPolygon(6, .3d);
+        add(pol1);
+        play(new Transform(pol1, pol2, 3));
+        play(new Transform(pol1, pol3, 3));
+        play(new Transform(pol1, pol4, 3));
+        waitSeconds(1);
     }
 
 }

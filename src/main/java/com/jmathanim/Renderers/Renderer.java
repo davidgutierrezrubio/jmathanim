@@ -113,5 +113,6 @@ public abstract class Renderer {
     abstract public void drawPath(JMPath c);
 
     abstract public void setAlpha(double alpha);
+    
 
 }

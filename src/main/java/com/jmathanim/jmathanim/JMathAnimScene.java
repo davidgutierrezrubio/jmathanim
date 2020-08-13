@@ -7,6 +7,7 @@ package com.jmathanim.jmathanim;
 
 import com.jmathanim.Animations.Animation;
 import com.jmathanim.Cameras.Camera;
+import com.jmathanim.Renderers.Java2DRenderer;
 import com.jmathanim.Renderers.Renderer;
 import com.jmathanim.Utils.ConfigUtils;
 import com.jmathanim.Utils.JMathAnimConfig;
@@ -140,6 +141,8 @@ public abstract class JMathAnimScene {
             for (Animation anim : anims) {
                 finished = finished & anim.processAnimation(fps);
             }
+            Java2DRenderer r=(Java2DRenderer) SCRenderer;
+            r.debugText("t: "+anims[0].getT(), 10, 10);
             advanceFrame();
         }
     }

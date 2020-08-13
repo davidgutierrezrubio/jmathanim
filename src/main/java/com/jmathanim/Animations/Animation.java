@@ -81,4 +81,8 @@ public abstract class Animation {
      * @param t double betwenn 0 and 1 0=start, 1=end
      */
     abstract public void doAnim(double t);
+
+    public double getT() {
+        return t;
+    }
 }

@@ -27,6 +27,7 @@ import java.awt.BasicStroke;
 import static java.awt.BasicStroke.CAP_ROUND;
 import static java.awt.BasicStroke.JOIN_ROUND;
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.geom.Path2D;
@@ -138,8 +139,6 @@ public class Java2DRenderer extends Renderer {
         picture.setTimeBase(rationalFrameRate);
     }
 
-    
-
     @Override
     public void drawCircle(double x, double y, double radius) {
         g2d.setColor(color);
@@ -225,8 +224,8 @@ public class Java2DRenderer extends Renderer {
                 minimumPoints = 4;
                 break;
             default:
-                throw new UnsupportedOperationException("Error: Illegal type of JMPath: "+c.curveType);
-                
+                throw new UnsupportedOperationException("Error: Illegal type of JMPath: " + c.curveType);
+
         }
         if (numPoints >= minimumPoints) {
             path = createPathFromJMPath(c);
@@ -293,16 +292,25 @@ public class Java2DRenderer extends Renderer {
     }
 
     public void debugPoint(int x, int y) {
-        g2d.drawOval(x-2, y-2, 4, 4);
+        g2d.drawOval(x - 2, y - 2, 4, 4);
     }
 
     public void debugPoint(int[] xy) {
         g2d.setColor(Color.BLUE);
-        g2d.drawOval(xy[0]-4, xy[1]-4, 8, 8);
+        g2d.drawOval(xy[0] - 4, xy[1] - 4, 8, 8);
     }
 
     public void debugCPoint(int[] xy) {
         g2d.setColor(Color.PINK);
-        g2d.drawRect(xy[0]-4, xy[1]-4, 8, 8);
+        g2d.drawRect(xy[0] - 4, xy[1] - 4, 8, 8);
     }
+
+    public void debugText(String texto,int x,int y) {
+        System.out.println("DEBUG TEXT: "+texto);
+        Font font = new Font("Serif", Font.PLAIN, 12);
+        g2d.setFont(font);
+        g2d.setColor(Color.WHITE);
+         g2d.drawString(texto, x, y);
+    }
+    
 }
