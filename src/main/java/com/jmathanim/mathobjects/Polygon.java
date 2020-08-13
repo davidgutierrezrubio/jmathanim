@@ -73,6 +73,7 @@ public class Polygon extends JMPathMathObject {
     @Override
     public void draw(Renderer r) {
         if (needsRecalcControlPoints) {
+            System.out.println("Update path en draw");
             computeJMPath();
         }
         if (drawParam >= 1) {
@@ -116,6 +117,7 @@ public class Polygon extends JMPathMathObject {
 
     @Override
     public void update() {
+        System.out.println("Update path en update");
         computeJMPath();
         updateDependents();
     }

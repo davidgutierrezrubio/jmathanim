@@ -291,28 +291,19 @@ public class JMPath {
         controlPoints2.addAll(jmpathTemp.controlPoints2);
     }
 
-    public JMPath interpolateBetweenPaths(JMPath path2, double alpha) {
-        JMPath resul = new JMPath();
+    public JMPath interpolateBetweenPaths(JMPath pathDst, double alpha) {
+        JMPath resul = new JMPath(); //Interpolated path
         JMPath path1 = this.copy();
+        JMPath path2 = pathDst.copy();
+        //Align path so they have same number of points
+        //Also minimizing total distance from points, rotating path if closed
 
         //First, I ensure two paths have the same number of points.
-        //MCM should do great.
-        int lcm = lcm(path1.size(), path2.size());
-
+        alignPaths(path1, path2);
+        
+        
+        
         return resul;
-    }
-
-    private int gcd(int a, int b) {
-        while (b > 0) {
-            int temp = b;
-            b = a % b; // % is remainder
-            a = temp;
-        }
-        return a;
-    }
-
-    private int lcm(int a, int b) {
-        return a * (b / gcd(a, b));
     }
 
     /**
@@ -333,6 +324,64 @@ public class JMPath {
         resul.curveType = curveType;
         return resul;
 
+    }
+
+    private void alignPaths(JMPath path1, JMPath path2) {
+        //For now, only STRAIGHT paths
+        JMPath pathSmall;
+        JMPath pathBig;
+        if (path1.size() == path2.size()) {
+            return;
+        }
+
+        if (path1.size() < path2.size()) {
+            pathSmall = path1;
+            pathBig = path2;
+        } else {
+            pathSmall = path1;
+            pathBig = path2;
+        }
+
+        int nSmall = pathSmall.size();
+        int nBig = pathBig.size();
+
+        JMPath resul = new JMPath();
+
+        int numDivs = (nBig / nSmall); //Euclidean quotient
+        int rest = nBig % nSmall;//Euclidean rest
+        int numDivForThisVertex;
+        for (int n = 0; n < nSmall; n++) {
+//                int k = (n + 1) % points.size(); //Next point, first if curve is closed
+            int k = n + 1;
+            if (curveType == CURVED) {
+                throw new UnsupportedOperationException("Don't know interpolate between CURVED paths yet,sorry!");
+            }
+            if (curveType == STRAIGHT) {
+                Point v1 = getPoint(n);
+                Point v2 = getPoint(k);
+                v1.type = Point.TYPE_VERTEX;
+                resul.add(v1); //Add the point of original curve
+                numDivForThisVertex = numDivs;
+                if (n < rest) { //The <rest> first vertex have an extra interpolation point
+                    numDivForThisVertex += 1;
+                }
+                for (int j = 1; j < numDivForThisVertex; j++) //Now compute the new ones
+                {
+                    //TODO: Improve alpha parameter
+                    Point interpolate = new Point(v1.v.interpolate(v2.v, ((double) j) / numDivForThisVertex));
+                    interpolate.type = Point.TYPE_INTERPOLATION_POINT;
+                    resul.add(interpolate);
+                }
+            }
+        }
+        //Now replace jmpathSmall with correct points
+        System.out.println("Before align: " + pathSmall.size() + ", " + pathBig.size());
+        System.out.println(pathSmall);
+        pathSmall.clear();
+        pathSmall.addPointsFrom(resul);
+        pathSmall.computeControlPoints();
+        System.out.println("After align: " + pathSmall.size() + ", " + pathBig.size());
+        System.out.println(pathSmall);
     }
 
 }

@@ -15,7 +15,7 @@ import java.util.Properties;
  */
 public abstract class JMPathMathObject extends MathObject {
 
-    protected final JMPath jmpath;
+    public final JMPath jmpath;
     protected boolean needsRecalcControlPoints;
     protected int numInterpolationPoints = 1;//TODO: Adaptative interpolation
     protected boolean isClosed = false;
