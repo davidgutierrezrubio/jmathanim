@@ -43,7 +43,7 @@ import java.util.logging.Logger;
  */
 public class Java2DRenderer extends Renderer {
 
-    private static final boolean DEBUG = false; //Draw control points and vertices
+    private static final boolean DEBUG = true; //Draw control points and vertices
     private static final boolean PRINT_DEBUG = false; //Draw control points and vertices
     private final BufferedImage bufferedImage;
     private final Graphics2D g2d;
@@ -63,8 +63,6 @@ public class Java2DRenderer extends Renderer {
     protected Path2D.Double path;
     final String saveFilePath = "c:\\media\\pinicula.mp4";
     private final JMathAnimConfig cnf;
-    private ArrayList<int[]> pointsList;
-    private boolean closePath;
 
     public Java2DRenderer(JMathAnimScene parentScene) {
         cnf = parentScene.conf;
@@ -140,10 +138,7 @@ public class Java2DRenderer extends Renderer {
         picture.setTimeBase(rationalFrameRate);
     }
 
-    @Override
-    public void drawPolygon() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
+    
 
     @Override
     public void drawCircle(double x, double y, double radius) {
@@ -297,16 +292,16 @@ public class Java2DRenderer extends Renderer {
     }
 
     public void debugPoint(int x, int y) {
-        g2d.drawOval(x, y, 5, 5);
+        g2d.drawOval(x-2, y-2, 4, 4);
     }
 
     public void debugPoint(int[] xy) {
         g2d.setColor(Color.BLUE);
-        g2d.drawOval(xy[0], xy[1], 5, 5);
+        g2d.drawOval(xy[0]-4, xy[1]-4, 8, 8);
     }
 
     public void debugCPoint(int[] xy) {
         g2d.setColor(Color.PINK);
-        g2d.drawRect(xy[0], xy[1], 10, 10);
+        g2d.drawRect(xy[0]-4, xy[1]-4, 8, 8);
     }
 }

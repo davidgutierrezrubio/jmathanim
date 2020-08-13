@@ -75,12 +75,14 @@ public class PointSimple extends Scene2D {
 
 //        Point puntoMola = regPolyg.getVertices().get(0);
         double dx = dt / 3.;
-
+        waitSeconds(2);
+        regPolyg.prepareForNonLinearAnimation();
         while (!anim2.processAnimation(fps)) {
             regPolyg.shift(new Vec(0, dx, 0));
             advanceFrame();
         }
-        
+        regPolyg.processAfterNonLinearAnimation();
+
         waitSeconds(3);
     }
 

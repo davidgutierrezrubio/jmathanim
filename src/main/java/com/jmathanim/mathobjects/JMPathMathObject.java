@@ -17,7 +17,7 @@ public abstract class JMPathMathObject extends MathObject {
 
     protected final JMPath jmpath;
     protected boolean needsRecalcControlPoints;
-    protected int numInterpolationPoints = 20;//TODO: Adaptative interpolation
+    protected int numInterpolationPoints = 1;//TODO: Adaptative interpolation
     protected boolean isClosed = false;
     protected final ArrayList<Point> vertices;
 
@@ -55,6 +55,7 @@ public abstract class JMPathMathObject extends MathObject {
             jmpathTemp.open();
         }
         jmpathTemp.curveType = jmpath.curveType;
+        //This should'nt be done unless necessary (an animation for example)
         if (numInterpolationPoints > 1) {
             jmpath.addPointsFrom(jmpathTemp.interpolate(numInterpolationPoints));//Interpolate points
         } else {

@@ -26,7 +26,7 @@ public class Polygon extends JMPathMathObject {
 
     public Polygon(ArrayList<Point> vertices, boolean close) {
         super();
-        numInterpolationPoints=1;
+        numInterpolationPoints = 1;//TODO: Make it adaptative
         this.vertices.addAll(vertices);
         this.isClosed = close;
         jmpath.curveType = JMPath.STRAIGHT;
@@ -80,9 +80,7 @@ public class Polygon extends JMPathMathObject {
         }
 
         JMPath c = jmpath.getSlice(drawParam);
-        
-        
-        
+
         if (drawParam < 1) {
             c.open();
         } else {
@@ -124,6 +122,27 @@ public class Polygon extends JMPathMathObject {
 
     public ArrayList<Point> getVertices() {
         return vertices;
+    }
+
+    @Override
+    public void prepareForNonLinearAnimation() {
+        JMPath jmpathTemp;
+        //If the path is not interpolated, do it now
+//        if (!jmpath.isInterpolated) {
+//            jmpathTemp = jmpath.interpolate(numInterpolationPoints);
+//            jmpath.clear();
+//            jmpath.addPointsFrom(jmpathTemp);
+//        }
+        numInterpolationPoints = 20;
+        update();
+
+    }
+
+    @Override
+    public void processAfterNonLinearAnimation() {
+//        jmpath.removeInterpolationPoints();//Remove interpolation points
+        numInterpolationPoints = 1;
+        update();
     }
 
 }

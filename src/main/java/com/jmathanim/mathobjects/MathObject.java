@@ -163,6 +163,9 @@ public abstract class MathObject implements Drawable {
      */
     abstract public void update();
     
+    
+    abstract public void prepareForNonLinearAnimation();
+    abstract public void processAfterNonLinearAnimation();
     public final void dependsOn(MathObject mob)
     {
         ascendent.add(mob);

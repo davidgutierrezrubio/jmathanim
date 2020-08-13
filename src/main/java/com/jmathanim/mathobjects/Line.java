@@ -104,4 +104,14 @@ public class Line extends JMPathMathObject {//TODO:Should extend Polygon class
         updateDependents();
     }
 
+    @Override
+    public void prepareForNonLinearAnimation() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void processAfterNonLinearAnimation() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
 }

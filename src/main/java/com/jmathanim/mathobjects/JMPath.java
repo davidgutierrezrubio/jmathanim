@@ -24,6 +24,7 @@ public class JMPath {
     public ArrayList<Point> controlPoints1; //Control points (first)
     public ArrayList<Point> controlPoints2; //Control points (second)
     private boolean isClosed;
+    public boolean isInterpolated;
     double tension;
     public int curveType;
 
@@ -38,6 +39,7 @@ public class JMPath {
         isClosed = false;
         tension = 0.3d; //Default tension
         curveType = JMPath.CURVED;//Default
+        isInterpolated = false;//By default, path hasn't interpolation points
     }
 
     public ArrayList<Point> getPoints() {
@@ -84,21 +86,17 @@ public class JMPath {
         return points.add(e);
     }
 
-//    public boolean add(MathObject p) {
-//        return points.add(p.getCenter());
-//    }
-
     public boolean remove(Object o) {
         return points.remove(o);
     }
 
     public void addCPoint1(Point p) {
-        p.type=Point.TYPE_CONTROL_POINT;
+        p.type = Point.TYPE_CONTROL_POINT;
         controlPoints1.add(p);
     }
 
     public void addCPoint2(Point p) {
-        p.type=Point.TYPE_CONTROL_POINT;
+        p.type = Point.TYPE_CONTROL_POINT;
         controlPoints2.add(p);
     }
 
@@ -137,7 +135,6 @@ public class JMPath {
                     int j = (n) % points.size();
                     int k = (n + 1) % points.size();
                     int L = (n + 2) % points.size();
-//                    System.out.println("Size:" + points.size() + "-->" + i + " " + " " + j + " " + k + " " + L);
                     double x1 = points.get(i).v.x;
                     double y1 = points.get(i).v.y;
                     double x2 = points.get(j).v.x;
@@ -184,15 +181,15 @@ public class JMPath {
     }
 
     /**
-     * Returns a subpath delimited by the given parameter.
-     * From start to drawParam*length
+     * Returns a subpath delimited by the given parameter. From start to
+     * drawParam*length
      *
      * @param drawParam From 0 to 1. 1 means the whole curve.
      * @return A new JMPath representing the corresponding subpath
      */
     public JMPath getSlice(double drawParam) {
         JMPath resul = new JMPath();
-        resul.curveType=this.curveType;
+        resul.curveType = this.curveType;
         if (drawParam < 1) {
             double sliceSize = points.size() * drawParam;
             for (int n = 0; n < sliceSize; n++) {
@@ -217,45 +214,66 @@ public class JMPath {
      * @return new JMPath representing the interpolated curve
      */
     public JMPath interpolate(int numDivs) {
-        if (curveType == CURVED) {
-            throw new UnsupportedOperationException("Not supported interpolation for CURVED paths yet."); //To change body of generated methods, choose Tools | Templates.
-        }
-        JMPath resul = new JMPath(); //New, interpolated path
-        int numPoints = points.size();
-        if (!isClosed) {//If curve is open, stop at n-1 point
-            numPoints--;
-        }
-
-        for (int n = 0; n < numPoints; n++) {
-            int k = (n + 1) % points.size(); //Next point, first if curve is closed
+        if (numDivs > 1) {
             if (curveType == CURVED) {
-                //TODO: Implement curved Bezier interpolation
+                throw new UnsupportedOperationException("Not supported interpolation for CURVED paths yet."); //To change body of generated methods, choose Tools | Templates.
             }
-            if (curveType == STRAIGHT) {
-                Point v1 = getPoint(n);
-                Point v2 = getPoint(k);
-                v1.type=Point.TYPE_VERTEX;
-                resul.add(v1); //Add the point of original curve
-                for (int j = 0; j < numDivs; j++) //Now compute the new ones
-                {
-                    Point interpolate = new Point(v1.v.interpolate(v2.v, ((double) j) / numDivs));
-                    interpolate.type=Point.TYPE_INTERPOLATION_POINT;
-                    resul.add(interpolate);
+            JMPath resul = new JMPath(); //New, interpolated path
+            int numPoints = points.size();
+            if (!isClosed) {//If curve is open, stop at n-1 point
+                numPoints--;
+            }
+
+            for (int n = 0; n < numPoints; n++) {
+                int k = (n + 1) % points.size(); //Next point, first if curve is closed
+                if (curveType == CURVED) {
+                    //TODO: Implement curved Bezier interpolation
+                }
+                if (curveType == STRAIGHT) {
+                    Point v1 = getPoint(n);
+                    Point v2 = getPoint(k);
+                    v1.type = Point.TYPE_VERTEX;
+                    resul.add(v1); //Add the point of original curve
+                    for (int j = 0; j < numDivs; j++) //Now compute the new ones
+                    {
+                        Point interpolate = new Point(v1.v.interpolate(v2.v, ((double) j) / numDivs));
+                        interpolate.type = Point.TYPE_INTERPOLATION_POINT;
+                        resul.add(interpolate);
+                    }
                 }
             }
+            //Copy basic attributes of the original curve
+            resul.curveType = this.curveType;
+            resul.isClosed = this.isClosed;
+            resul.computeControlPoints(curveType);
+            resul.isInterpolated = true;//Mark this path as interpolated
+            return resul;
+        } else {
+            return this;
         }
-        //Copy basic attributes of the original curve
-        resul.curveType = this.curveType;
-        resul.isClosed = this.isClosed;
-        resul.computeControlPoints(curveType);
-        return resul;
+    }
+
+    /**
+     * Remove interpolation points from path and mark it as no interpolated
+     */
+    public void removeInterpolationPoints() {
+        ArrayList<Point> toRemove = new ArrayList<>();
+        for (Point p : points) {
+            if (p.type == Point.TYPE_INTERPOLATION_POINT) {
+                toRemove.add(p);
+            }
+        }
+        points.removeAll(toRemove);//Remove all interpolation points
+        isInterpolated = false;//Mark this path as no interpolated
+        computeControlPoints();//Recompute control points
     }
 
     @Override
     public String toString() {
-        String resul="JMPath[";
-        for (Point p:points)
-            resul+=", "+p;
+        String resul = "JMPath[";
+        for (Point p : points) {
+            resul += ", " + p;
+        }
         return resul;
     }
 
@@ -263,10 +281,7 @@ public class JMPath {
         points.addAll(jmpathTemp.points);
         controlPoints1.addAll(jmpathTemp.controlPoints1);
         controlPoints2.addAll(jmpathTemp.controlPoints2);
-        
-        
-        
+
     }
-    
 
 }

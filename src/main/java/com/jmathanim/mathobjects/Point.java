@@ -151,6 +151,14 @@ public final class Point extends MathObject {
         //Nothing else to do
         updateDependents();
     }
+
+    @Override
+    public void prepareForNonLinearAnimation() {
+    }
+
+    @Override
+    public void processAfterNonLinearAnimation() {
+    }
     
     
 }

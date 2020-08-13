@@ -7,8 +7,6 @@ package com.jmathanim.jmathanim;
 
 import com.jmathanim.Cameras.Camera2D;
 import com.jmathanim.Renderers.Java2DRenderer;
-import com.jmathanim.Utils.ConfigUtils;
-import java.util.Properties;
 
 /**
  *

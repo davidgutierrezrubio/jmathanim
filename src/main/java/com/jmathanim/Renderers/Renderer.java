@@ -83,7 +83,6 @@ public abstract class Renderer {
      */
     abstract public void drawLine(double x1, double y1, double x2, double y2);
 
-    abstract public void drawPolygon();
 
     /**
      * Draws a circle centered at x,y with given radius
