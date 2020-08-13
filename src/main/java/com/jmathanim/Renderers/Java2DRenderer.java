@@ -252,7 +252,8 @@ public class Java2DRenderer extends Renderer {
         }
 //        System.out.println(c.getPoints().size() + " " + c.controlPoints1.size() + " " + c.controlPoints2.size());
         for (int n = 0; n < numPoints; n++) {
-            int i = (n + 1) % c.size(); //Next point (first if actually we are in last)
+//            int i = (n + 1) % c.size(); //Next point (first if actually we are in last)
+            int i = (n + 1);
 
             Vec point = c.getPoint(i).v;
             Vec cpoint1 = c.getControlPoint1(n).v;
