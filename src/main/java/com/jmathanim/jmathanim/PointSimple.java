@@ -76,14 +76,16 @@ public class PointSimple extends Scene2D {
 //            advanceFrame();
 //        }
 //        regPolyg.processAfterNonLinearAnimation();
-        RegularPolygon pol1 = new RegularPolygon(3, .3d);
-        RegularPolygon pol2 = new RegularPolygon(4, .3d);
-        RegularPolygon pol3 = new RegularPolygon(5, .3d);
-        RegularPolygon pol4 = new RegularPolygon(16, .3d);
-        add(pol1);
+        RegularPolygon pol1 = new RegularPolygon(3, 1d);
+        RegularPolygon pol2 = new RegularPolygon(4, 3.d/4);
+        RegularPolygon pol3 = new RegularPolygon(5, 3.d/5);
+        RegularPolygon pol4 = new RegularPolygon(16, 3.d/16);
+        add(pol4);
 //        play(new Transform(pol1, pol2, 3));
 //        play(new Transform(pol1, pol3, 3));
-        play(new Transform(pol1, pol4, 3));
+        play(new Transform(pol4, pol3, 3));
+        play(new Transform(pol4, pol2, 3));
+        play(new Transform(pol4, pol1, 3));
         waitSeconds(1);
     }
 
