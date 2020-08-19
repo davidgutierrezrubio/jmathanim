@@ -44,11 +44,11 @@ public abstract class Animation {
 
     public void setFps(double fps) {
         this.fps = fps;
-        numFrames = (int) (runTime * fps)+3;//TODO: Check this!
-        dt = 1.d / (runTime * fps+3);
+        numFrames = (int) (runTime * fps) + 3;//TODO: Check this!
+        dt = 1.d / (runTime * fps + 3);
         t = 0;
         frame = 0;
-        shouldSetFPSFirst=false;
+        shouldSetFPSFirst = false;
     }
 
     /**
@@ -58,14 +58,17 @@ public abstract class Animation {
      * @return True if animation has finished
      */
     public boolean processAnimation(double fps) {
-        if (shouldSetFPSFirst)
-        {
+        if (shouldSetFPSFirst) {
             setFps(fps);
         }
         boolean resul = false;
-        if (frame < numFrames || t<1+dt) {
+//        if (frame < numFrames || t < 1 + dt) {
+        if (t<1){
             this.doAnim(t);
             t += dt;
+            if (t > 1) {
+                t = 1;
+            }
             frame++;
             resul = false;
         } else {

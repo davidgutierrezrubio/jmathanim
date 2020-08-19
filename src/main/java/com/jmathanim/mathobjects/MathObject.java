@@ -6,8 +6,10 @@
 package com.jmathanim.mathobjects;
 
 import com.jmathanim.Utils.ConfigUtils;
+import com.jmathanim.Utils.MathObjectDrawingProperties;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
+import java.awt.Color;
 import java.util.HashSet;
 import java.util.Properties;
 
@@ -17,6 +19,7 @@ import java.util.Properties;
  */
 public abstract class MathObject implements Drawable {
 
+    public final MathObjectDrawingProperties mp;
     String[] DEFAULT_CONFIG_MATHOBJECT = {
         "VISIBLE", "TRUE",
         "ALPHA", "1",
@@ -27,7 +30,6 @@ public abstract class MathObject implements Drawable {
      * 
      */
     private HashSet<JMathAnimScene> scenes;
-    Properties cnf;
     public boolean visible;
     /**
      * This parameter specifies the amount of object to be drawn 0=none,
@@ -35,11 +37,7 @@ public abstract class MathObject implements Drawable {
      */
     protected double drawParam;
 
-    /**
-     * Transparency of object, 0=transparent, 1=opaque
-     */
-    protected double alpha;
-
+   
     /**
      * Mathobjects dependent of this. These should be updated4
      * when this object changes
@@ -56,11 +54,9 @@ public abstract class MathObject implements Drawable {
         this(null);
     }
 
-    public MathObject(Properties configParam) {
-        cnf = new Properties();
-        visible=true;
-        ConfigUtils.digest_config(cnf, DEFAULT_CONFIG_MATHOBJECT, configParam);
-        alpha = Float.parseFloat(cnf.getProperty("ALPHA"));
+    public MathObject(MathObjectDrawingProperties prop) {
+        mp=new MathObjectDrawingProperties();//Default
+        mp.digestFrom(prop);
         drawParam = 1;
         ascendent=new HashSet<>();
         descendent=new HashSet<>();
@@ -81,6 +77,10 @@ public abstract class MathObject implements Drawable {
      * @param coords Vec with coordinates of new center
      */
     public abstract void moveTo(Vec coords);
+    public void moveTo(Point p)
+    {
+        moveTo(p.v);
+    }
 
     /**
      * Shift object with the given vector
@@ -137,7 +137,7 @@ public abstract class MathObject implements Drawable {
      * @return
      */
     public double getAlpha() {
-        return alpha;
+        return mp.alpha;
     }
 
     /**
@@ -146,7 +146,7 @@ public abstract class MathObject implements Drawable {
      * @param alpha
      */
     public void setAlpha(double alpha) {
-        this.alpha = alpha;
+        this.mp.alpha = alpha;
     }
 
     /**

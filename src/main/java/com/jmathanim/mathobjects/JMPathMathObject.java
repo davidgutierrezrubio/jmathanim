@@ -5,6 +5,8 @@
  */
 package com.jmathanim.mathobjects;
 
+import com.jmathanim.Renderers.Renderer;
+import com.jmathanim.Utils.MathObjectDrawingProperties;
 import com.jmathanim.Utils.Vec;
 import java.util.ArrayList;
 import java.util.Properties;
@@ -30,10 +32,20 @@ public abstract class JMPathMathObject extends MathObject {
         this(null);
     }
 
-    public JMPathMathObject(Properties configParam) {
-        super(configParam);
+    public JMPathMathObject(JMPath jmpath, MathObjectDrawingProperties mp) {
+        super(mp);
         vertices = new ArrayList<Point>();
         jmpath = new JMPath();
+        needsRecalcControlPoints = false;
+        center = new Point(0, 0);
+        this.jmpath = jmpath;
+    }
+
+    public JMPathMathObject(MathObjectDrawingProperties mp) {//TODO: Fix this
+        super(mp);
+        vertices = new ArrayList<Point>();
+        jmpath = new JMPath();
+        computeVerticesFromPath();
         needsRecalcControlPoints = false;
         center = new Point(0, 0);
     }
@@ -42,7 +54,7 @@ public abstract class JMPathMathObject extends MathObject {
      * This method computes all necessary points to the path (interpolation and
      * control)
      */
-    protected final void computeJMPath() {
+    protected final void computeJMPathFromVertices() {
         //TODO: ¿Compute intermediate points?
         JMPath jmpathTemp = new JMPath();
         jmpath.clear();//clear points
@@ -73,6 +85,15 @@ public abstract class JMPathMathObject extends MathObject {
         needsRecalcControlPoints = false;
     }
 
+    protected final void computeVerticesFromPath() {
+        vertices.clear();
+        for (Point p : jmpath.points) {
+            if (p.type == Point.TYPE_VERTEX) {
+                vertices.add(p);
+            }
+        }
+    }
+
     @Override
     public Point getCenter() {
         return center;
@@ -88,12 +109,14 @@ public abstract class JMPathMathObject extends MathObject {
         update();
     }
 
-    public void setCurveType(int type)
-    {
-        jmpath.curveType=type;
+    public void setCurveType(int type) {
+        jmpath.curveType = type;
     }
-    public int getCurveType()
-    {
+
+    public int getCurveType() {
         return jmpath.curveType;
     }
+
+   
+    
 }

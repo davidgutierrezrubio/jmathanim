@@ -292,19 +292,12 @@ public class JMPath {
         controlPoints2.addAll(jmpathTemp.controlPoints2);
     }
 
-    public JMPath interpolateBetweenPaths(JMPath pathDst, double alpha) {
-        JMPath resul = new JMPath(); //Interpolated path
-//        JMPath path1 = this.copy();
-//        JMPath path2 = pathDst.copy();
-        //Align path so they have same number of points
-        //Also minimizing total distance from points, rotating path if closed
-
-        //First, I ensure two paths have the same number of points.
-        alignPaths(pathDst);
-
-        return resul;
-    }
-
+    /**
+     * Align the number of points of this path with the given one.
+     * Align the paths so that they have the same number of points, interpolating
+     * the smaller one if necessary.
+     * @param path2
+     */
     public void alignPaths(JMPath path2) {
         //For now, only STRAIGHT paths
         JMPath pathSmall;
@@ -317,10 +310,12 @@ public class JMPath {
             pathSmall = this;
             pathBig = path2;
         } else {
-            pathSmall = this;
-            pathBig = path2;
+            pathBig = this;
+            pathSmall = path2;
         }
-
+        
+        //At this point pathSmall points to the smaller path who is going to be
+        //interpolated
         int nSmall = pathSmall.size();
         int nBig = pathBig.size();
 
@@ -332,12 +327,12 @@ public class JMPath {
         for (int n = 0; n < nSmall; n++) {
 //                int k = (n + 1) % points.size(); //Next point, first if curve is closed
             int k = n + 1;
-            if (curveType == CURVED) {
+            if (pathSmall.curveType == CURVED) {
                 throw new UnsupportedOperationException("Don't know interpolate between CURVED paths yet,sorry!");
             }
-            if (curveType == STRAIGHT) {
-                Point v1 = getPoint(n);
-                Point v2 = getPoint(k);
+            if (pathSmall.curveType == STRAIGHT) {
+                Point v1 = pathSmall.getPoint(n);
+                Point v2 = pathSmall.getPoint(k);
                 v1.type = Point.TYPE_VERTEX;
                 resul.add(v1); //Add the point of original curve
                 numDivForThisVertex = numDivs;

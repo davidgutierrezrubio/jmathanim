@@ -5,13 +5,13 @@
  */
 package com.jmathanim.jmathanim;
 
-import com.jmathanim.Animations.Animation;
-import com.jmathanim.Animations.ShowCreation;
 import com.jmathanim.Animations.Transform;
 import com.jmathanim.Utils.Vec;
+import com.jmathanim.mathobjects.Circle;
 import com.jmathanim.mathobjects.Point;
 import com.jmathanim.mathobjects.Polygon;
 import com.jmathanim.mathobjects.RegularPolygon;
+import java.awt.Color;
 
 /**
  *
@@ -67,25 +67,46 @@ public class PointSimple extends Scene2D {
 ////        play(anim,anim2,anim3);
 
         waitSeconds(1);
-//        Point puntoMola = regPolyg.getVertices().get(0);
-//        double dx = dt / 3.;
-//        waitSeconds(2);
-//        regPolyg.prepareForNonLinearAnimation();
-//        while (!anim2.processAnimation(fps)) {
-//            regPolyg.shift(new Vec(0, dx, 0));
-//            advanceFrame();
-//        }
+        
 //        regPolyg.processAfterNonLinearAnimation();
-        RegularPolygon pol1 = new RegularPolygon(3, 1d);
-        RegularPolygon pol2 = new RegularPolygon(4, 3.d/4);
-        RegularPolygon pol3 = new RegularPolygon(5, 3.d/5);
-        RegularPolygon pol4 = new RegularPolygon(16, 3.d/16);
-        add(pol4);
-//        play(new Transform(pol1, pol2, 3));
-//        play(new Transform(pol1, pol3, 3));
-        play(new Transform(pol4, pol3, 3));
-        play(new Transform(pol4, pol2, 3));
-        play(new Transform(pol4, pol1, 3));
+//        RegularPolygon pol1 = new RegularPolygon(3, 1d);
+//        RegularPolygon pol2 = new RegularPolygon(4, 3.d/4);
+//        RegularPolygon pol3 = new RegularPolygon(5, 3.d/5);
+//        RegularPolygon pol4 = new RegularPolygon(16, 3.d/16);
+//        RegularPolygon pol5 = new RegularPolygon(16, 3.d/16);
+//        pol1.shift(new Vec(-1, 0));
+//        add(pol4);
+////        add(pol2);
+//        play(new Transform(pol4, pol3, 1));
+//        play(new Transform(pol4, pol2, 1));
+//        play(new Transform(pol4, pol1, 1));
+//        play(new Transform(pol4, pol5, 1));
+////        play(new Transform(pol4, pol1, 3));
+
+        Circle circ = new Circle(new Point(-1.2, 0), 1);
+        circ.mp.thickness = .02d;
+        circ.mp.color = Color.MAGENTA;
+        circ.mp.alpha = .7d;
+        circ.mp.layer = 2;
+        RegularPolygon pol1 = new RegularPolygon(3, 1);
+        RegularPolygon pol2 = new RegularPolygon(5, .6d);
+        pol2.shift(new Vec(-1, 0));
+
+        pol1.mp.color = Color.BLUE;
+        pol2.mp.color = Color.YELLOW;
+
+        add(pol2);
+//        add(circ);
+        add(pol1);
+//        play(new Transform(pol1, circ, 2));
+        Transform animat = new Transform(pol1, pol2, 5);
+        Point puntoMola = pol2.getVertices().get(0);
+        double dx = dt / 3.;
+        while (!animat.processAnimation(fps)) {
+//            puntoMola.shift(new Vec(0, -dx, 0));
+            advanceFrame();
+        }
+        remove(pol1);
         waitSeconds(1);
     }
 

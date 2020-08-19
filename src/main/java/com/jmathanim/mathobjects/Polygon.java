@@ -6,6 +6,7 @@
 package com.jmathanim.mathobjects;
 
 import com.jmathanim.Renderers.Renderer;
+import com.jmathanim.Utils.MathObjectDrawingProperties;
 import com.jmathanim.Utils.Vec;
 import java.awt.Color;
 import java.util.ArrayList;
@@ -17,23 +18,26 @@ import java.util.ArrayList;
 public class Polygon extends JMPathMathObject {
 
     public Polygon() {
-        this(new ArrayList<Point>(), true);
+        this(null);
     }
 
-    public Polygon(ArrayList<Point> vertices) {
-        this(vertices, true);
+    
+    public Polygon(MathObjectDrawingProperties mp) {
+        
+        this(new ArrayList<Point>(), true,mp);
     }
 
-    public Polygon(ArrayList<Point> vertices, boolean close) {
-        super();
+    public Polygon(ArrayList<Point> vertices, boolean close,MathObjectDrawingProperties mp) {
+        super(mp);
         numInterpolationPoints = 1;//TODO: Make it adaptative
         this.vertices.addAll(vertices);
         this.isClosed = close;
         jmpath.curveType = JMPath.STRAIGHT;
         if (!vertices.isEmpty()) {
-            computeJMPath();
+            computeJMPathFromVertices();
         }
     }
+
 
     public boolean add(Point e) {
         needsRecalcControlPoints = true;
@@ -67,14 +71,15 @@ public class Polygon extends JMPathMathObject {
 
     @Override
     public MathObject copy() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        Polygon resul=new Polygon();//FODO: FIX
+        return resul;
     }
 
     @Override
     public void draw(Renderer r) {
         if (needsRecalcControlPoints) {
             System.out.println("Update path en draw");
-            computeJMPath();
+            computeJMPathFromVertices();
         }
         if (drawParam >= 1) {
             drawParam = 1;
@@ -87,9 +92,9 @@ public class Polygon extends JMPathMathObject {
         } else {
             c.close();
         }
-        r.setColor(Color.WHITE);//TODO: Configs
-        r.setStroke(.01);//TODO: COnfig stroke size
-        r.setAlpha(alpha);
+        r.setColor(mp.color);
+        r.setStroke(mp.getThickness(r));
+        r.setAlpha(mp.alpha);
         r.drawPath(c);
     }
 
@@ -118,7 +123,7 @@ public class Polygon extends JMPathMathObject {
     @Override
     public void update() {
         System.out.println("Update path en update");
-        computeJMPath();
+        computeJMPathFromVertices();
         updateDependents();
     }
 

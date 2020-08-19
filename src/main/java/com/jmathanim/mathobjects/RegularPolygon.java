@@ -29,7 +29,7 @@ public class RegularPolygon extends Polygon {
         apothem = new ArrayList<>();
         setCurveType(JMPath.STRAIGHT);
         computeVertices();
-        computeJMPath();
+        computeJMPathFromVertices();
         computeRadiusAndApothems();
     }
 

@@ -6,6 +6,7 @@
 package com.jmathanim.mathobjects;
 
 import com.jmathanim.Renderers.Renderer;
+import com.jmathanim.Utils.MathObjectDrawingProperties;
 import com.jmathanim.Utils.Vec;
 import java.util.Properties;
 
@@ -29,8 +30,8 @@ public class MathObjectContainer extends MathObject {
         this.mathObject = mathObject;
     }
 
-    public MathObjectContainer(MathObject mathObject, Properties configParam) {
-        super(configParam);
+    public MathObjectContainer(MathObject mathObject, MathObjectDrawingProperties mp) {
+        super(mp);
         this.mathObject = mathObject;
     }
 

@@ -13,6 +13,7 @@ import com.jmathanim.Utils.ConfigUtils;
 import com.jmathanim.Utils.JMathAnimConfig;
 import com.jmathanim.mathobjects.MathObject;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Properties;
 
 /**
@@ -30,7 +31,6 @@ public abstract class JMathAnimScene {
     int x;
     ArrayList<MathObject> objects;
     protected Renderer SCRenderer;
-    protected Camera SCCamera;
     protected int frameCount;
     protected double fps;
     protected double dt;
@@ -95,6 +95,12 @@ public abstract class JMathAnimScene {
      * Call the draw method in all mathobjects
      */
     protected final void doDraws() {
+        objects.sort(new Comparator<MathObject>() {
+            @Override
+            public int compare(MathObject o1, MathObject o2) {
+                return (o1.mp.layer-o2.mp.layer);
+            }
+        });
         for (MathObject obj : objects) {
             obj.draw(SCRenderer);
         }

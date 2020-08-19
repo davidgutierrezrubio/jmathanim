@@ -27,7 +27,7 @@ public class Arc extends JMPathMathObject {
     public Arc(Point cen, double radius, double angle, boolean isClosed) {
         super();
         isCurved = true;//Default
-        step = .1;//Default
+        step = .05;//Default
         this.x = cen.v.x;
         this.y = cen.v.y;
         this.radiusx = radius;
@@ -43,7 +43,7 @@ public class Arc extends JMPathMathObject {
         needsRecalcControlPoints = true;
         numInterpolationPoints = 1;//For now, don't interpolate
         computePoints();
-        computeJMPath();
+        computeJMPathFromVertices();
     }
 
     @Override
@@ -53,8 +53,10 @@ public class Arc extends JMPathMathObject {
 
     @Override
     public void draw(Renderer r) {
+        r.setColor(mp.color);
+        double rad = mp.getThickness(r);
         if (needsRecalcControlPoints) {
-            computeJMPath();
+            computeJMPathFromVertices();
         }
         if (drawParam >= 1) {
             drawParam = 1;
@@ -66,6 +68,9 @@ public class Arc extends JMPathMathObject {
         } else {
             c.close();
         }
+        r.setColor(mp.color);
+        r.setStroke(mp.getThickness(r));
+        r.setAlpha(mp.alpha);
         r.drawPath(c);
     }
 
@@ -113,7 +118,7 @@ public class Arc extends JMPathMathObject {
 
     @Override
     public void update() {
-        computeJMPath();
+        computeJMPathFromVertices();
         updateDependents();
     }
 

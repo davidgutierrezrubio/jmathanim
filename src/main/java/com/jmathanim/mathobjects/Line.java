@@ -7,6 +7,7 @@ package com.jmathanim.mathobjects;
 
 import com.jmathanim.Renderers.Renderer;
 import com.jmathanim.Utils.ConfigUtils;
+import com.jmathanim.Utils.MathObjectDrawingProperties;
 import com.jmathanim.Utils.Vec;
 import java.awt.Color;
 import java.util.Properties;
@@ -32,21 +33,17 @@ public class Line extends JMPathMathObject {//TODO:Should extend Polygon class
         this(p1, p2, null);
     }
 
-    public Line(Point p1, Point p2, Properties configParam) {
-        super();
+    public Line(Point p1, Point p2, MathObjectDrawingProperties mp) {
+        super(mp);
         this.p1 = p1;
         this.p2 = p2;
         vertices.add(p1);
         vertices.add(p2);
-        ConfigUtils.digest_config(cnf, DEFAULT_CONFIG, configParam);
         this.dependsOn(p1);
         this.dependsOn(p2);
         computeCurve();
     }
 
-    private Line(Properties configParam) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
 
     @Override
     public Point getCenter() {
@@ -66,9 +63,9 @@ public class Line extends JMPathMathObject {//TODO:Should extend Polygon class
         Vec v2 = p2.v;
         Vec vd = v2.minus(v1);
         Vec v3 = v1.add(vd.mult(drawParam));
-        r.setColor(Color.BLUE);//TODO: Configs
-        r.setStroke(.01);//TODO: COnfig stroke size
-        r.setAlpha(alpha);
+        r.setColor(mp.color);
+        r.setStroke(mp.getThickness(r));
+        r.setAlpha(mp.alpha);
         r.drawLine(v1.x, v1.y, v3.x, v3.y);
 
     }

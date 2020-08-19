@@ -9,6 +9,7 @@ import java.awt.Color;
 import java.util.Properties;
 import com.jmathanim.Renderers.Renderer;
 import com.jmathanim.Utils.ConfigUtils;
+import com.jmathanim.Utils.MathObjectDrawingProperties;
 import com.jmathanim.Utils.Vec;
 
 /**
@@ -18,10 +19,7 @@ import com.jmathanim.Utils.Vec;
  */
 public final class Point extends MathObject {
 
-    String[] DEFAULT_CONFIG_POINT = {
-        "VISIBLE", "TRUE",
-        "RADIUS", ".01"//Radius relative to width screen
-    };
+   
     public static final int TYPE_NONE = 0;
     public static final int TYPE_VERTEX = 1;
     public static final int TYPE_INTERPOLATION_POINT = 2;
@@ -59,27 +57,22 @@ public final class Point extends MathObject {
      * @param y
      * @param cnf
      */
-    public Point(double x, double y, Properties cnf) {
-        this(x, y, 0, cnf);
+    public Point(double x, double y, MathObjectDrawingProperties mp) {
+        this(x, y, 0, mp);
     }
 
-    public Point(double x, double y, double z, int type) {
-        this(x, y, z, null);
-        this.type = type;
-    }
-
+   
     /**
      *
      * @param x
      * @param y
      * @param z
-     * @param configParam
+     * @param mp
      */
-    public Point(double x, double y, double z, Properties configParam) {
-        super(configParam);
-        this.v=new Vec(x,y,z);
-        type = TYPE_NONE;
-        ConfigUtils.digest_config(cnf, DEFAULT_CONFIG_POINT, configParam);
+    public Point(double x, double y, double z, MathObjectDrawingProperties mp) {
+        super(mp);
+        this.v = new Vec(x, y, z);
+        type = TYPE_NONE; //Default type of point
     }
 
     @Override
@@ -89,10 +82,8 @@ public final class Point extends MathObject {
 
     @Override
     public void draw(Renderer r) {
-        double rad1 = Double.parseDouble(cnf.getProperty("RADIUS"));
-        r.setColor(Color.WHITE);
-//        double  w = (double) (.5*rad*r.getWidth());//Radius relative to screen width
-        double rad = r.getCamera().relScalarToWidth(rad1);
+        r.setColor(mp.color);
+        double rad = mp.getThickness(r);
         r.drawCircle(v.x, v.y, rad);
 
     }
@@ -102,6 +93,7 @@ public final class Point extends MathObject {
         v.x = coords.x;
         v.y = coords.y;
         v.z = coords.z;
+        update();
 
     }
 
@@ -115,7 +107,7 @@ public final class Point extends MathObject {
 
     @Override
     public MathObject copy() {
-        return new Point(v);
+        return new Point(v);//TODO: Improve this
     }
 
     @Override
@@ -126,26 +118,28 @@ public final class Point extends MathObject {
     /**
      * Return a new Point object which represents the original point plus a
      * given vector
+     *
      * @param addVector Vector to add
      * @return Original point+addVector
      */
-    public Point add(Vec addVector)
-    {
-        Point resul=(Point) this.copy();
+    public Point add(Vec addVector) {
+        Point resul = (Point) this.copy();
         resul.v.addInSite(addVector);
         return resul;
     }
 
     @Override
     public String toString() {
-        return "Point("+v.x+","+v.y+")";
-                
+        return "Point(" + v.x + "," + v.y + ")";
+
     }
- public Point interpolate(Point p2, double alpha) {
+
+    public Point interpolate(Point p2, double alpha) {
         Vec w = v.interpolate(p2.v, alpha);
         return new Point(w);
 
     }
+
     @Override
     public void update() {
         //Nothing else to do
@@ -159,6 +153,5 @@ public final class Point extends MathObject {
     @Override
     public void processAfterNonLinearAnimation() {
     }
-    
-    
+
 }
