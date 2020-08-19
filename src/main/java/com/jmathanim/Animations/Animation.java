@@ -64,7 +64,7 @@ public abstract class Animation {
         boolean resul = false;
 //        if (frame < numFrames || t < 1 + dt) {
         if (t<1){
-            this.doAnim(t);
+            this.doAnim(lambda(t));
             t += dt;
             if (t > 1) {
                 t = 1;
@@ -87,5 +87,9 @@ public abstract class Animation {
 
     public double getT() {
         return t;
+    }
+
+    private double lambda(double t) {
+        return t*t*(3-2*t);
     }
 }

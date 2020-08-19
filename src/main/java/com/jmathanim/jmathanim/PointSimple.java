@@ -5,6 +5,8 @@
  */
 package com.jmathanim.jmathanim;
 
+import com.jmathanim.Animations.Animation;
+import com.jmathanim.Animations.ShowCreation;
 import com.jmathanim.Animations.Transform;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.mathobjects.Circle;
@@ -67,7 +69,7 @@ public class PointSimple extends Scene2D {
 ////        play(anim,anim2,anim3);
 
         waitSeconds(1);
-        
+
 //        regPolyg.processAfterNonLinearAnimation();
 //        RegularPolygon pol1 = new RegularPolygon(3, 1d);
 //        RegularPolygon pol2 = new RegularPolygon(4, 3.d/4);
@@ -82,7 +84,6 @@ public class PointSimple extends Scene2D {
 //        play(new Transform(pol4, pol1, 1));
 //        play(new Transform(pol4, pol5, 1));
 ////        play(new Transform(pol4, pol1, 3));
-
         Circle circ = new Circle(new Point(-1.2, 0), 1);
         circ.mp.thickness = .02d;
         circ.mp.color = Color.MAGENTA;
@@ -99,13 +100,18 @@ public class PointSimple extends Scene2D {
 //        add(circ);
         add(pol1);
 //        play(new Transform(pol1, circ, 2));
-        Transform animat = new Transform(pol1, pol2, 5);
-        Point puntoMola = pol2.getVertices().get(0);
-        double dx = dt / 3.;
-        while (!animat.processAnimation(fps)) {
-//            puntoMola.shift(new Vec(0, -dx, 0));
-            advanceFrame();
-        }
+        pol1.prepareForNonLinearAnimation();
+        Animation animat = new Transform(pol1, pol2, 2);
+        play(animat);
+//        Animation animat2 = new ShowCreation(pol1, 2);
+
+//        Point puntoMola = pol2.getVertices().get(0);
+//        double dx = dt / 3.;
+//        while (!animat.processAnimation(fps)) {
+////            animat2.processAnimation(fps);
+//            pol2.shift(new Vec(0, -dx, 0));
+//            advanceFrame();
+//        }
         remove(pol1);
         waitSeconds(1);
     }
