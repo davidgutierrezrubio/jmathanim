@@ -18,7 +18,6 @@ import com.jmathanim.mathobjects.Point;
  */
 public class Camera2D extends Camera {
 
-    public double xmin, xmax, ymin, ymax; //Size of math world seen by the camera
 
     public Camera2D() {
         this(0, 0);//To initialize after

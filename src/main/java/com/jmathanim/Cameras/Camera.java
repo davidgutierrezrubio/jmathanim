@@ -5,6 +5,8 @@
  */
 package com.jmathanim.Cameras;
 
+import com.jmathanim.Utils.Rect;
+
 /**
  * This class manages conversion between math coordinates (usually
  * (-2,-2)..(2,2) to screen coordinates (depending on renderer, usually (0,0) to
@@ -14,9 +16,21 @@ package com.jmathanim.Cameras;
  */
 public abstract class Camera {
 
-    public int screenWidth;//Screen size 800x600, 1920x1280, etc.
+    /**
+     *Screen width size to be displayed 800x600, 1920x1280, etc.
+     */
+    public int screenWidth;
+    
+
+    /**
+     *Screen height size to be displayed 800x600, 1920x1280, etc.
+     */
     public int screenHeight;
 
+    /**
+     * Boundaries of the view in the math world
+     */
+    protected double xmin,xmax,ymin,ymax;
     /**
      * Set size of the screen to which the camera will compute coordinates
      * Screen size usually is 800x600, 1920x1080, etc.
@@ -42,6 +56,14 @@ public abstract class Camera {
      */
     abstract public void setMathXY(double xmin, double xmax, double ycenter);
 
+    /**
+     * Return an array with the corners of the math world to display
+     * @return An array with the values {xmin,ymin,xmax,ymax}
+     */
+    public Rect getMathBoundaries()
+    {
+        return new Rect(xmin,ymin,xmax,ymax);
+    }
     /**
      * Do the necessary recalculations (xmin, xmax, etc) when needed to. It
      * depends on the type of camera, so this method is abstract to be

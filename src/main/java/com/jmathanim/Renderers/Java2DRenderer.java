@@ -42,7 +42,7 @@ import java.util.logging.Logger;
  */
 public class Java2DRenderer extends Renderer {
 
-    private static final boolean DEBUG = true; //Draw control points and vertices
+    private static final boolean DEBUG = false; //Draw control points and vertices
     private static final boolean PRINT_DEBUG = false; //Draw control points and vertices
     private final BufferedImage bufferedImage;
     private final Graphics2D g2d;
@@ -97,6 +97,7 @@ public class Java2DRenderer extends Renderer {
 
     public final void prepareEncoder() {
 
+        System.out.println("Prepare encoder...");
         muxer = Muxer.make(saveFilePath, null, "mp4");
         format = muxer.getFormat();
         codec = Codec.findEncodingCodec(format.getDefaultVideoCodecId());
@@ -177,6 +178,7 @@ public class Java2DRenderer extends Renderer {
          * As with the decoders, the convention is to pass in a null input until
          * the output is not complete.
          */
+        System.out.println("Finishing movie...");
         do {
             encoder.encode(packet, null);
             if (packet.isComplete()) {

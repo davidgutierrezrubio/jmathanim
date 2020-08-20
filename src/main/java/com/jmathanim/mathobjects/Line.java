@@ -6,83 +6,36 @@
 package com.jmathanim.mathobjects;
 
 import com.jmathanim.Renderers.Renderer;
-import com.jmathanim.Utils.ConfigUtils;
-import com.jmathanim.Utils.MathObjectDrawingProperties;
+import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.Vec;
-import java.awt.Color;
-import java.util.Properties;
 
 /**
+ * Represents an infinite line, given by 2 points.
  *
- * @author David Gutierrez Rubio davidgutierrezrubio@gmail.com
+ * @author David Gutiérrez Rubio <davidgutierrezrubio@gmail.com>
  */
-public class Line extends JMPathMathObject {//TODO:Should extend Polygon class
+public class Line extends Segment {
 
-    String[] DEFAULT_CONFIG = {
-        "THICKNESS", ".01",
-        "STROKEJOIN", "ROUND"
-    };
-    Point p1, p2;
-    JMPath curve;
+    final Point bp1, bp2;
 
-    public Line(Vec v1, Vec v2) {
-        this(new Point(v1), new Point(v2), null);
+    /**
+     * Creates a line that passes through p with direction v
+     * @param p
+     * @param v
+     */
+    public Line(Point p, Vec v) {
+        this(p, p.add(v));
     }
 
+    /**
+     * Creates a new line that passes through given points
+     * @param p1
+     * @param p2
+     */
     public Line(Point p1, Point p2) {
-        this(p1, p2, null);
-    }
-
-    public Line(Point p1, Point p2, MathObjectDrawingProperties mp) {
-        super(mp);
-        this.p1 = p1;
-        this.p2 = p2;
-        vertices.add(p1);
-        vertices.add(p2);
-        this.dependsOn(p1);
-        this.dependsOn(p2);
-        computeCurve();
-    }
-
-
-    @Override
-    public Point getCenter() {
-        return p1.interpolate(p2,.5);
-    }
-
-    public final void computeCurve() {
-        curve = new JMPath();
-        curve.add(p1);
-        curve.add(p2);
-        curve.computeControlPoints(JMPath.STRAIGHT);
-    }
-
-    @Override
-    public void draw(Renderer r) {
-        Vec v1 = p1.v;
-        Vec v2 = p2.v;
-        Vec vd = v2.minus(v1);
-        Vec v3 = v1.add(vd.mult(drawParam));
-        r.setColor(mp.color);
-        r.setStroke(mp.getThickness(r));
-        r.setAlpha(mp.alpha);
-        r.drawLine(v1.x, v1.y, v3.x, v3.y);
-
-    }
-
-    @Override
-    public void moveTo(Vec coords) {
-        Vec v1 = p1.v;
-        Vec shiftVector = coords.minus(v1);
-        shift(shiftVector);
-
-    }
-
-    @Override
-    public void shift(Vec shiftVector) {
-        p1.shift(shiftVector);
-        p2.shift(shiftVector);
-
+        super(p1, p2);
+        bp1 = new Point(0, 0);//trivial boundary points, just to initialize objects
+        bp2 = new Point(0, 0);
     }
 
     @Override
@@ -91,19 +44,7 @@ public class Line extends JMPathMathObject {//TODO:Should extend Polygon class
     }
 
     @Override
-    public void scale(Point scaleCenter, double sx, double sy, double sz) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
     public void update() {
-        computeCurve();
-        updateDependents();
-    }
-
-    @Override
-    public void prepareForNonLinearAnimation() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
@@ -111,4 +52,43 @@ public class Line extends JMPathMathObject {//TODO:Should extend Polygon class
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-}
+    @Override
+    public void draw(Renderer r) {
+        jmpath.clear();
+        computeBoundPoints(r);
+        jmpath.add(bp1);
+        jmpath.add(bp2);
+        r.setColor(mp.color);
+        r.setStroke(mp.getThickness(r));
+        r.setAlpha(mp.alpha);
+        r.drawLine(bp1.v.x, bp1.v.y, bp2.v.x, bp2.v.y);
+        p1.draw(r);
+        p2.draw(r);
+        bp1.draw(r);
+        bp2.draw(r);
+
+    }
+
+    public void computeBoundPoints(Renderer r) {
+    Rect rect=r.getCamera().getMathBoundaries();
+        double[] intersectLine = rect.intersectLine(p1.v.x, p1.v.y, p2.v.x, p2.v.y);
+        
+        if (intersectLine==null) {
+            //If there are no intersect points, take p1 and p2 (workaround)
+            bp1.v.x=p1.v.x;
+            bp1.v.y=p1.v.y;
+            bp2.v.x=p2.v.x;
+            bp2.v.y=p2.v.y;
+        }
+        else
+        {
+            bp1.v.x=intersectLine[0];
+            bp1.v.y=intersectLine[1];
+            bp2.v.x=intersectLine[2];
+            bp2.v.y=intersectLine[3];
+        }
+        
+    }
+    
+
+    }

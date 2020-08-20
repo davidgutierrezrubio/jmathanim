@@ -74,6 +74,8 @@ public class Transform extends Animation {
         }
         //Now interpolate properties from objects
         mobj1.mp.interpolateFrom(propBase, mobj2.mp, t);
+        //Update center from mobj1
+        mobj1.updateCenter();
     }
 
 }

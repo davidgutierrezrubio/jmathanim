@@ -17,8 +17,8 @@ public class RegularPolygon extends Polygon {
     int numVertices;
     double side;
     private final Point firstPoint;
-    private final ArrayList<Line> radius;
-    private final ArrayList<Line> apothem;
+    private final ArrayList<Segment> radius;
+    private final ArrayList<Segment> apothem;
 
     public RegularPolygon(int numVertices, double side) {
         super();
@@ -65,11 +65,11 @@ public class RegularPolygon extends Polygon {
 //        jmpath.computeControlPoints();
 //        
 //    }
-    public ArrayList<Line> getRadius() {
+    public ArrayList<Segment> getRadius() {
         return radius;
     }
 
-    public ArrayList<Line> getApothem() {
+    public ArrayList<Segment> getApothem() {
         return apothem;
     }
 
@@ -77,7 +77,7 @@ public class RegularPolygon extends Polygon {
         radius.clear();
         for (Point p : jmpath.getPoints()) {
             if (p.type == Point.TYPE_VERTEX) {
-                radius.add(new Line(center, p));
+                radius.add(new Segment(center, p));
             }
         }
 
@@ -86,13 +86,13 @@ public class RegularPolygon extends Polygon {
         for (Point p : jmpath.getPoints()) {
             if (p.type == Point.TYPE_VERTEX) {
                 if (q != null) {
-                    apothem.add(new Line(center, p.interpolate(q, .5)));
+                    apothem.add(new Segment(center, p.interpolate(q, .5)));
                 }
                 q = p;
             }
         }
 //Now last apothem
-        apothem.add(new Line(center, vertices.get(0).interpolate(q, .5)));
+        apothem.add(new Segment(center, vertices.get(0).interpolate(q, .5)));
     }
 
 }

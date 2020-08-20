@@ -73,6 +73,13 @@ public abstract class JMPathMathObject extends MathObject {
         } else {
             jmpath.addPointsFrom(jmpathTemp);
         }
+        updateCenter();
+
+        jmpath.computeControlPoints();
+        needsRecalcControlPoints = false;
+    }
+
+    public void updateCenter() {
         //Compute center
         Vec vecCenter = new Vec(0, 0);
         for (Point p : jmpath.getPoints()) {
@@ -80,9 +87,6 @@ public abstract class JMPathMathObject extends MathObject {
         }
         vecCenter.multInSite(1. / jmpath.size());
         center.v = vecCenter;
-
-        jmpath.computeControlPoints();
-        needsRecalcControlPoints = false;
     }
 
     protected final void computeVerticesFromPath() {

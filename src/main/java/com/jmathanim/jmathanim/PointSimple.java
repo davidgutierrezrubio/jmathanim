@@ -8,11 +8,14 @@ package com.jmathanim.jmathanim;
 import com.jmathanim.Animations.Animation;
 import com.jmathanim.Animations.ShowCreation;
 import com.jmathanim.Animations.Transform;
+import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.mathobjects.Circle;
+import com.jmathanim.mathobjects.Line;
 import com.jmathanim.mathobjects.Point;
 import com.jmathanim.mathobjects.Polygon;
 import com.jmathanim.mathobjects.RegularPolygon;
+import com.jmathanim.mathobjects.Segment;
 import java.awt.Color;
 
 /**
@@ -89,31 +92,70 @@ public class PointSimple extends Scene2D {
         circ.mp.color = Color.MAGENTA;
         circ.mp.alpha = .7d;
         circ.mp.layer = 2;
-        RegularPolygon pol1 = new RegularPolygon(3, 1);
+        RegularPolygon pol1 = new RegularPolygon(5, 1);
         RegularPolygon pol2 = new RegularPolygon(5, .6d);
         pol2.shift(new Vec(-1, 0));
-
-        pol1.mp.color = Color.BLUE;
-        pol2.mp.color = Color.YELLOW;
-
-        add(pol2);
-//        add(circ);
-        add(pol1);
-//        play(new Transform(pol1, circ, 2));
-        pol1.prepareForNonLinearAnimation();
-        Animation animat = new Transform(pol1, pol2, 2);
-        play(animat);
-//        Animation animat2 = new ShowCreation(pol1, 2);
-
-//        Point puntoMola = pol2.getVertices().get(0);
-//        double dx = dt / 3.;
-//        while (!animat.processAnimation(fps)) {
-////            animat2.processAnimation(fps);
-//            pol2.shift(new Vec(0, -dx, 0));
-//            advanceFrame();
+        
+//        for (Segment se: pol1.getRadius())
+//        {
+//            add(se);
 //        }
-        remove(pol1);
-        waitSeconds(1);
+        Point puntoLineaA = new Point(0,0);
+        Point puntoLineaB = new Point(1,0);
+        Line linea=new Line(puntoLineaA, puntoLineaB);
+        add(linea);
+        int steps = 60;
+        double h=0; //Draw line doesn't work for EXACTLY lines in boundaries
+        Rect r = renderer.camera.getMathBoundaries();
+        Line linea2 = new Line(new Point(r.xmin+h,0),new Point(r.xmin+h,1));
+        Line linea3 = new Line(new Point(r.xmax-h,0),new Point(r.xmax-h,1));
+        Line linea4 = new Line(new Point(0,r.ymax-h),new Point(1,r.ymax-h));
+        Line linea5 = new Line(new Point(0,r.ymin+h),new Point(1,r.ymin+h));
+        
+        linea2.mp.thickness=.1;
+        linea3.mp.thickness=.1;
+        linea4.mp.thickness=.1;
+        linea5.mp.thickness=.1;
+        
+        linea2.mp.color=Color.MAGENTA;
+        linea3.mp.color=Color.GREEN;
+        linea4.mp.color=Color.YELLOW;
+        linea5.mp.color=Color.CYAN;
+        
+        add(linea2);
+        add(linea3);
+        add(linea4);
+        add(linea5);
+        
+        for (int n=0;n<steps;n++)
+        {
+            puntoLineaB.v.x=Math.cos(n*6.28/steps);
+            puntoLineaB.v.y=Math.sin(n*6.28/steps);
+            System.out.println("n="+n);
+            advanceFrame();
+        }
+//        pol1.mp.color = Color.BLUE;
+//        pol2.mp.color = Color.YELLOW;
+//
+////        add(pol2);
+//        add(circ);
+//        add(pol1);
+////        play(new Transform(pol1, circ, 2));
+////        pol1.prepareForNonLinearAnimation();
+//        Animation animat = new Transform(pol1, circ, 2);
+//        play(animat);
+////        Animation animat2 = new ShowCreation(pol1, 2);
+//
+////        Point puntoMola = pol2.getVertices().get(0);
+////        double dx = dt / 3.;
+////        while (!animat.processAnimation(fps)) {
+//////            animat2.processAnimation(fps);
+////            pol2.shift(new Vec(0, -dx, 0));
+////            advanceFrame();
+////        }
+//
+//        remove(pol1);
+        waitSeconds(3);
     }
 
 }
