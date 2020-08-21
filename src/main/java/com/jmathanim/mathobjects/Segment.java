@@ -37,23 +37,18 @@ public class Segment extends JMPathMathObject {//TODO:Should extend Polygon clas
         super(mp);
         this.p1 = p1;
         this.p2 = p2;
-        vertices.add(p1);
-        vertices.add(p2);
-        this.dependsOn(p1);
-        this.dependsOn(p2);
         computeCurve();
     }
 
-
     @Override
     public Point getCenter() {
-        return p1.interpolate(p2,.5);
+        return p1.interpolate(p2, .5);
     }
 
     public final void computeCurve() {
         curve = new JMPath();
-        curve.add(p1);
-        curve.add(p2);
+        vertices.add(new JMPathPoint(p1, true, JMPathPoint.TYPE_VERTEX));
+        vertices.add(new JMPathPoint(p2, true, JMPathPoint.TYPE_VERTEX));
         curve.computeControlPoints(JMPath.STRAIGHT);
     }
 
@@ -62,7 +57,7 @@ public class Segment extends JMPathMathObject {//TODO:Should extend Polygon clas
         Vec v1 = p1.v;
         Vec v2 = p2.v;
         Vec vd = v2.minus(v1);
-        Vec v3 = v1.add(vd.mult(drawParam));
+        Vec v3 = v1.add(vd.mult(1));//TODO: FIX THIS
         r.setColor(mp.color);
         r.setStroke(mp.getThickness(r));
         r.setAlpha(mp.alpha);

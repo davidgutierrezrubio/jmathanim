@@ -21,16 +21,15 @@ public class Polygon extends JMPathMathObject {
         this(null);
     }
 
-    
     public Polygon(MathObjectDrawingProperties mp) {
-        
-        this(new ArrayList<Point>(), true,mp);
+
+        this(new ArrayList<Point>(), true, mp);
     }
 
-    public Polygon(ArrayList<Point> vertices, boolean close,MathObjectDrawingProperties mp) {
+    public Polygon(ArrayList<Point> vertices, boolean close, MathObjectDrawingProperties mp) {
         super(mp);
         numInterpolationPoints = 1;//TODO: Make it adaptative
-        this.vertices.addAll(vertices);
+        this.addVertices(vertices);
         this.isClosed = close;
         jmpath.curveType = JMPath.STRAIGHT;
         if (!vertices.isEmpty()) {
@@ -38,20 +37,26 @@ public class Polygon extends JMPathMathObject {
         }
     }
 
-
-    public boolean add(Point e) {
-        needsRecalcControlPoints = true;
-        return vertices.add(e);
+    public final void addVertices(ArrayList<Point> vertices) {
+        for (Point p : vertices) {
+            this.vertices.add(new JMPathPoint(p, true, JMPathPoint.TYPE_VERTEX));
+        }
     }
 
-    public boolean add(Double x, Double y) {
+    public boolean addVertex(Point p) {
         needsRecalcControlPoints = true;
-        return vertices.add(new Point(x, y));
+        return vertices.add(new JMPathPoint(p, true, JMPathPoint.TYPE_VERTEX));
     }
 
-    public boolean add(Double x, Double y, Double z) {
+    public boolean addVertex(Double x, Double y) {
         needsRecalcControlPoints = true;
-        return vertices.add(new Point(x, y, z));
+        return this.addVertex(new Point(x, y));
+    }
+
+    public boolean addVertex(Double x, Double y, Double z) {
+        needsRecalcControlPoints = true;
+        Point p=new Point(x, y, z);
+        return this.addVertex(p);
     }
 
     public void close() {
@@ -71,7 +76,7 @@ public class Polygon extends JMPathMathObject {
 
     @Override
     public MathObject copy() {
-        Polygon resul=new Polygon();//FODO: FIX
+        Polygon resul = new Polygon();//FODO: FIX
         return resul;
     }
 
@@ -81,21 +86,21 @@ public class Polygon extends JMPathMathObject {
             System.out.println("Update path en draw");
             computeJMPathFromVertices();
         }
-        if (drawParam >= 1) {
-            drawParam = 1;
-        }
+//        if (drawParam >= 1) {
+//            drawParam = 1;
+//        }
 
-        JMPath c = jmpath.getSlice(drawParam);
-
-        if (drawParam < 1) {
-            c.open();
-        } else {
-            c.close();
-        }
+//        JMPath c = jmpath.getSlice(drawParam);
+//
+//        if (drawParam < 1) {
+//            c.open();
+//        } else {
+//            c.close();
+//        }
         r.setColor(mp.color);
         r.setStroke(mp.getThickness(r));
         r.setAlpha(mp.alpha);
-        r.drawPath(c);
+        r.drawPath(jmpath);
     }
 
 //    @Override
@@ -128,7 +133,12 @@ public class Polygon extends JMPathMathObject {
     }
 
     public ArrayList<Point> getVertices() {
-        return vertices;
+        ArrayList<Point> resul=new ArrayList<>();
+        for (JMPathPoint jmp: vertices)
+        {
+            resul.add(jmp.p);
+        }
+        return resul;
     }
 
     @Override
@@ -151,5 +161,7 @@ public class Polygon extends JMPathMathObject {
         numInterpolationPoints = 1;
         update();
     }
+
+   
 
 }

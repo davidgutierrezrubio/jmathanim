@@ -16,8 +16,11 @@ public class CircularArrayList<E> extends ArrayList<E> {
     private static final long serialVersionUID = 1L;
 
     @Override
-    public E get(int index) {
+    public E get(int index) throws ArrayIndexOutOfBoundsException {
 
+        if (this.size() == 0) {
+            throw new ArrayIndexOutOfBoundsException("Circular array with no elements");
+        }
         while (index >= this.size()) {
             index -= this.size();
         }

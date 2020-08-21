@@ -35,7 +35,7 @@ public abstract class MathObject implements Drawable {
      * This parameter specifies the amount of object to be drawn 0=none,
      * 1/2=draw half
      */
-    protected double drawParam;
+//    protected double drawParam;
 
    
     /**
@@ -57,7 +57,6 @@ public abstract class MathObject implements Drawable {
     public MathObject(MathObjectDrawingProperties prop) {
         mp=new MathObjectDrawingProperties();//Default
         mp.digestFrom(prop);
-        drawParam = 1;
         ascendent=new HashSet<>();
         descendent=new HashSet<>();
         cousins=new HashSet<>();
@@ -111,43 +110,6 @@ public abstract class MathObject implements Drawable {
     }
 
     public abstract void scale(Point scaleCenter, double sx, double sy, double sz);
-
-    /**
-     * Return draw Parameter. This is used in animations like draw() 0=no drawn,
-     * 1=totally drawn
-     *
-     * @return
-     */
-    public final double getDrawParam() {
-        return drawParam;
-    }
-
-    /**
-     * Set draw Parameter
-     *
-     * @param drawParam
-     */
-    public final void setDrawParam(double drawParam) {
-        this.drawParam = drawParam;
-    }
-
-    /**
-     * Get Alpha parameter of transparency 0=full transparency, 1=opaque
-     *
-     * @return
-     */
-    public double getAlpha() {
-        return mp.alpha;
-    }
-
-    /**
-     * Set alpha parameter
-     *
-     * @param alpha
-     */
-    public void setAlpha(double alpha) {
-        this.mp.alpha = alpha;
-    }
 
     /**
      * Returns a copy of the object
@@ -209,5 +171,13 @@ public abstract class MathObject implements Drawable {
             mob.addScene(sce);
         }
     }
+
+    /**
+     * Sets the drawing parameter.
+     * This method alters the drawing parameters of the MathObject so that it displays
+     * only partially. It is used for animation ShowCreation, for example
+     * @param t Parameter to draw (0=nothing, 1=draw the entire object)
+     */
+    public abstract void setDrawParam(double t);
     
 }

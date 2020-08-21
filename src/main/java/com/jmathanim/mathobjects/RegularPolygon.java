@@ -41,11 +41,10 @@ public class RegularPolygon extends Polygon {
             double alpha = 2 * n * Math.PI / numVertices;
             Vec moveVector = new Vec(side * Math.cos(alpha), side * Math.sin(alpha));
             newPoint = newPoint.add(moveVector);
-            newPoint.type = Point.TYPE_VERTEX;
             dependsOn(newPoint);
 //            cousins.add(newPoint);
 //            addObjectToScene(newPoint);
-            this.vertices.add(newPoint);
+            this.addVertex(newPoint);
 
         }
     }
@@ -75,24 +74,24 @@ public class RegularPolygon extends Polygon {
 
     private void computeRadiusAndApothems() {
         radius.clear();
-        for (Point p : jmpath.getPoints()) {
-            if (p.type == Point.TYPE_VERTEX) {
-                radius.add(new Segment(center, p));
+        for (JMPathPoint p : jmpath.points) {
+            if (p.type == JMPathPoint.TYPE_VERTEX) {
+                radius.add(new Segment(center, p.p));
             }
         }
 
         apothem.clear();
         Point q = null;
-        for (Point p : jmpath.getPoints()) {
-            if (p.type == Point.TYPE_VERTEX) {
+        for (JMPathPoint p : jmpath.points) {
+            if (p.type == JMPathPoint.TYPE_VERTEX) {
                 if (q != null) {
-                    apothem.add(new Segment(center, p.interpolate(q, .5)));
+                    apothem.add(new Segment(center, p.p.interpolate(q, .5)));
                 }
-                q = p;
+                q = p.p;
             }
         }
 //Now last apothem
-        apothem.add(new Segment(center, vertices.get(0).interpolate(q, .5)));
+        apothem.add(new Segment(center, vertices.get(0).p.interpolate(q, .5)));
     }
 
 }

@@ -21,7 +21,7 @@ public abstract class JMPathMathObject extends MathObject {
     protected boolean needsRecalcControlPoints;
     protected int numInterpolationPoints = 1;//TODO: Adaptative interpolation
     protected boolean isClosed = false;
-    protected final ArrayList<Point> vertices;
+    protected final ArrayList<JMPathPoint> vertices;
 
     /**
      * Type of path, JMPath.STRAIGHT or JMPath.CURVED
@@ -34,7 +34,7 @@ public abstract class JMPathMathObject extends MathObject {
 
     public JMPathMathObject(JMPath jmpath, MathObjectDrawingProperties mp) {
         super(mp);
-        vertices = new ArrayList<Point>();
+        vertices = new ArrayList<JMPathPoint>();
         jmpath = new JMPath();
         needsRecalcControlPoints = false;
         center = new Point(0, 0);
@@ -43,7 +43,7 @@ public abstract class JMPathMathObject extends MathObject {
 
     public JMPathMathObject(MathObjectDrawingProperties mp) {//TODO: Fix this
         super(mp);
-        vertices = new ArrayList<Point>();
+        vertices = new ArrayList<JMPathPoint>();
         jmpath = new JMPath();
         computeVerticesFromPath();
         needsRecalcControlPoints = false;
@@ -58,8 +58,8 @@ public abstract class JMPathMathObject extends MathObject {
         //TODO: ¿Compute intermediate points?
         JMPath jmpathTemp = new JMPath();
         jmpath.clear();//clear points
-        for (Point p : vertices) {
-            jmpathTemp.add(p);
+        for (JMPathPoint p : vertices) {
+            jmpathTemp.addPoint(p);
         }
         if (isClosed) {
             jmpathTemp.close();
@@ -82,8 +82,8 @@ public abstract class JMPathMathObject extends MathObject {
     public void updateCenter() {
         //Compute center
         Vec vecCenter = new Vec(0, 0);
-        for (Point p : jmpath.getPoints()) {
-            vecCenter.addInSite(p.v);
+        for (JMPathPoint p : jmpath.points) {
+            vecCenter.addInSite(p.p.v);
         }
         vecCenter.multInSite(1. / jmpath.size());
         center.v = vecCenter;
@@ -91,8 +91,8 @@ public abstract class JMPathMathObject extends MathObject {
 
     protected final void computeVerticesFromPath() {
         vertices.clear();
-        for (Point p : jmpath.points) {
-            if (p.type == Point.TYPE_VERTEX) {
+        for (JMPathPoint p : jmpath.points) {
+            if (p.type == JMPathPoint.TYPE_VERTEX) {
                 vertices.add(p);
             }
         }
@@ -106,8 +106,8 @@ public abstract class JMPathMathObject extends MathObject {
 
     @Override
     public void shift(Vec shiftVector) {
-        for (Point p : vertices) {
-            p.shift(shiftVector);
+        for (JMPathPoint p : vertices) {
+            p.p.shift(shiftVector);
         }
         center.shift(shiftVector);
         update();
@@ -121,6 +121,9 @@ public abstract class JMPathMathObject extends MathObject {
         return jmpath.curveType;
     }
 
-   
+    @Override
+    public void setDrawParam(double t) {
+        System.out.println("DrawParam of JMPATHOBJECT needsto implement");
+    }
     
 }

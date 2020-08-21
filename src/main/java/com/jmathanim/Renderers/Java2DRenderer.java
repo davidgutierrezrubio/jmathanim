@@ -242,7 +242,7 @@ public class Java2DRenderer extends Renderer {
         int numPoints = c.size();
         //TODO: Convert this in its own reusable method
         //First, I move the curve to the first point
-        Vec p = c.getPoint(0).v;
+        Vec p = c.getPoint(0).p.v;
         int[] scr = camera.mathToScreen(p);
         resul.moveTo(scr[0], scr[1]);
         //Now I iterate to get the next points
@@ -254,9 +254,9 @@ public class Java2DRenderer extends Renderer {
 //            int i = (n + 1) % c.size(); //Next point (first if actually we are in last)
             int i = (n + 1);
 
-            Vec point = c.getPoint(i).v;
-            Vec cpoint1 = c.getControlPoint1(n).v;
-            Vec cpoint2 = c.getControlPoint2(n).v;
+            Vec point = c.getPoint(i).p.v;
+            Vec cpoint1 = c.getControlPoint1(n).p.v;
+            Vec cpoint2 = c.getControlPoint2(n).p.v;
 
             int[] xy = camera.mathToScreen(point);
             int[] cxy1 = camera.mathToScreen(cpoint1);

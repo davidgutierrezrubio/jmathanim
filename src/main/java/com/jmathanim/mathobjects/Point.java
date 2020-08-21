@@ -20,12 +20,8 @@ import com.jmathanim.Utils.Vec;
 public final class Point extends MathObject {
 
    
-    public static final int TYPE_NONE = 0;
-    public static final int TYPE_VERTEX = 1;
-    public static final int TYPE_INTERPOLATION_POINT = 2;
-    public static final int TYPE_CONTROL_POINT = 3;
+   
 
-    public int type;
     public Vec v;
 
     public Point(Vec v) {
@@ -72,7 +68,6 @@ public final class Point extends MathObject {
     public Point(double x, double y, double z, MathObjectDrawingProperties mp) {
         super(mp);
         this.v = new Vec(x, y, z);
-        type = TYPE_NONE; //Default type of point
     }
 
     @Override
@@ -106,7 +101,7 @@ public final class Point extends MathObject {
     }
 
     @Override
-    public MathObject copy() {
+    public Point copy() {
         return new Point(v);//TODO: Improve this
     }
 
@@ -152,6 +147,11 @@ public final class Point extends MathObject {
 
     @Override
     public void processAfterNonLinearAnimation() {
+    }
+
+    @Override
+    public void setDrawParam(double t) {
+        //Nothing to do here, it's just a point!!
     }
 
 }

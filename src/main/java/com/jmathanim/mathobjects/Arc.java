@@ -33,7 +33,6 @@ public class Arc extends JMPathMathObject {
         this.radiusx = radius;
         this.radiusy = radius;
         this.angle = angle;
-        setDrawParam(1);//Draw parameter to 1, draw the full arc
         if (isClosed) {
             jmpath.close();
         } else {
@@ -58,20 +57,17 @@ public class Arc extends JMPathMathObject {
         if (needsRecalcControlPoints) {
             computeJMPathFromVertices();
         }
-        if (drawParam >= 1) {
-            drawParam = 1;
-        }
 
-        JMPath c = jmpath.getSlice(drawParam);
-        if (drawParam < 1) {
-            c.open();
-        } else {
-            c.close();
-        }
+//        JMPath c = jmpath.getSlice(drawParam);
+//        if (drawParam < 1) {
+//            c.open();
+//        } else {
+//            c.close();
+//        }
         r.setColor(mp.color);
         r.setStroke(mp.getThickness(r));
         r.setAlpha(mp.alpha);
-        r.drawPath(c);
+        r.drawPath(jmpath);
     }
 
     public void computePoints() {
@@ -82,7 +78,8 @@ public class Arc extends JMPathMathObject {
         for (double alphaC = 0; alphaC < angle; alphaC += step) {
             x1 = x + radiusx * Math.cos(alphaC);
             y1 = y + radiusy * Math.sin(alphaC);
-            vertices.add(new Point(x1, y1));
+            Point p = new Point(x1, y1);
+            vertices.add(new JMPathPoint(p,true,JMPathPoint.TYPE_VERTEX));
         }
 
     }

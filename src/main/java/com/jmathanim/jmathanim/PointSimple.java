@@ -33,135 +33,108 @@ public class PointSimple extends Scene2D {
 
     @Override
     public void runSketch() {
-//        PGraphics gre = createGraphics(800, 600);
+
+        camera.setCenter(0, 0);
+        waitSeconds(1);
+
+        Circle circ = new Circle(new Point(-1.2, 0), 1);
+        circ.mp.thickness = .005d;
+        circ.mp.color = Color.MAGENTA;
+        circ.mp.alpha = .7d;
+        circ.mp.layer = 2;
+        add(circ);
+        play(new ShowCreation(circ));
+        waitSeconds(3);
+    }
+
+    public void pruebaTransform() {
+        RegularPolygon pol1 = new RegularPolygon(3, 1d);
+        RegularPolygon pol2 = new RegularPolygon(4, 3.d/4);
+        RegularPolygon pol3 = new RegularPolygon(5, 3.d/5);
+        RegularPolygon pol4 = new RegularPolygon(16, 3.d/16);
+        RegularPolygon pol5 = new RegularPolygon(16, 3.d/16);
+        pol1.shift(new Vec(-1, 0));
+        add(pol4);
+        add(pol2);
+        play(new Transform(pol4, pol3, 1));
+        play(new Transform(pol4, pol2, 1));
+        play(new Transform(pol4, pol1, 1));
+        play(new Transform(pol4, pol5, 1));
+    }
+
+    public void pruebaLine() {
+        //        for (Segment se: pol1.getRadius())
+//        {
+//            add(se);
+//        }
+Point puntoLineaA = new Point(0, 0);
+Point puntoLineaB = new Point(1, 0);
+Line linea = new Line(puntoLineaA, puntoLineaB);
+add(linea);
+int steps = 60;
+double h = 0; //Draw line doesn't work for EXACTLY lines in boundaries
+Rect r = renderer.camera.getMathBoundaries();
+Line linea2 = new Line(new Point(r.xmin + h, 0), new Point(r.xmin + h, 1));
+Line linea3 = new Line(new Point(r.xmax - h, 0), new Point(r.xmax - h, 1));
+Line linea4 = new Line(new Point(0, r.ymax - h), new Point(1, r.ymax - h));
+Line linea5 = new Line(new Point(0, r.ymin + h), new Point(1, r.ymin + h));
+
+linea2.mp.thickness = .1;
+linea3.mp.thickness = .1;
+linea4.mp.thickness = .1;
+linea5.mp.thickness = .1;
+
+linea2.mp.color = Color.MAGENTA;
+linea3.mp.color = Color.GREEN;
+linea4.mp.color = Color.YELLOW;
+linea5.mp.color = Color.CYAN;
+
+add(linea2);
+add(linea3);
+add(linea4);
+add(linea5);
+
+for (int n = 0; n < steps; n++) {
+    puntoLineaB.v.x = Math.cos(n * 6.28 / steps);
+    puntoLineaB.v.y = Math.sin(n * 6.28 / steps);
+    System.out.println("n=" + n);
+    advanceFrame();
+}
+    }
+
+    public void pruebaPoligono() {
+        //        PGraphics gre = createGraphics(800, 600);
         Point p0 = new Point(1, 0);
         Point p1 = new Point(0, 1);
 
         Point p2 = new Point(1.5, 0);
         Point p3 = new Point(1.8, 1);
         Polygon pol = new Polygon();
-        pol.add(p0);
-        pol.add(p1);
-        pol.add(p3);
-        pol.add(p2);
+        pol.addVertex(p0);
+        pol.addVertex(p1);
+        pol.addVertex(p3);
+        pol.addVertex(p2);
         pol.close();
 
 //        Circle circ = new Circle(new Vec(0, 0), new Vec(1, 0));
-//      
+//
         RegularPolygon regPolyg = new RegularPolygon(15, .3d);
         regPolyg.shift(new Vec(-1, -1));
-//        Point centro = regPolyg.getCenter();
-
-//        for (Line radio: regPolyg.getRadius()) {
-//            add(radio);
-//        }
-//        for (Line apotema: regPolyg.getApothem()) {
-//            add(apotema);
-//        }
-//        for (Point vertex: regPolyg.getVertices()) {
-//            add(vertex);
-//        }
-//        add(centro);
-        camera.setCenter(0, 0);
-//        add(pol);
-//        add(regPolyg);
-////        add(circ);
-//        Animation anim = new ShowCreation(regPolyg, 2);
-////        Animation anim2 = new ShowCreation(circ, 1.5);
-//        Animation anim3 = new ShowCreation(pol, 2);
-////        play(anim,anim2,anim3);
-
-        waitSeconds(1);
-
-//        regPolyg.processAfterNonLinearAnimation();
-//        RegularPolygon pol1 = new RegularPolygon(3, 1d);
-//        RegularPolygon pol2 = new RegularPolygon(4, 3.d/4);
-//        RegularPolygon pol3 = new RegularPolygon(5, 3.d/5);
-//        RegularPolygon pol4 = new RegularPolygon(16, 3.d/16);
-//        RegularPolygon pol5 = new RegularPolygon(16, 3.d/16);
-//        pol1.shift(new Vec(-1, 0));
-//        add(pol4);
-////        add(pol2);
-//        play(new Transform(pol4, pol3, 1));
-//        play(new Transform(pol4, pol2, 1));
-//        play(new Transform(pol4, pol1, 1));
-//        play(new Transform(pol4, pol5, 1));
-////        play(new Transform(pol4, pol1, 3));
-        Circle circ = new Circle(new Point(-1.2, 0), 1);
-        circ.mp.thickness = .02d;
-        circ.mp.color = Color.MAGENTA;
-        circ.mp.alpha = .7d;
-        circ.mp.layer = 2;
-        RegularPolygon pol1 = new RegularPolygon(5, 1);
-        RegularPolygon pol2 = new RegularPolygon(5, .6d);
-        pol2.shift(new Vec(-1, 0));
-        
-//        for (Segment se: pol1.getRadius())
-//        {
-//            add(se);
-//        }
-        Point puntoLineaA = new Point(0,0);
-        Point puntoLineaB = new Point(1,0);
-        Line linea=new Line(puntoLineaA, puntoLineaB);
-        add(linea);
-        int steps = 60;
-        double h=0; //Draw line doesn't work for EXACTLY lines in boundaries
-        Rect r = renderer.camera.getMathBoundaries();
-        Line linea2 = new Line(new Point(r.xmin+h,0),new Point(r.xmin+h,1));
-        Line linea3 = new Line(new Point(r.xmax-h,0),new Point(r.xmax-h,1));
-        Line linea4 = new Line(new Point(0,r.ymax-h),new Point(1,r.ymax-h));
-        Line linea5 = new Line(new Point(0,r.ymin+h),new Point(1,r.ymin+h));
-        
-        linea2.mp.thickness=.1;
-        linea3.mp.thickness=.1;
-        linea4.mp.thickness=.1;
-        linea5.mp.thickness=.1;
-        
-        linea2.mp.color=Color.MAGENTA;
-        linea3.mp.color=Color.GREEN;
-        linea4.mp.color=Color.YELLOW;
-        linea5.mp.color=Color.CYAN;
-        
-        add(linea2);
-        add(linea3);
-        add(linea4);
-        add(linea5);
-        
-        for (int n=0;n<steps;n++)
-        {
-            puntoLineaB.v.x=Math.cos(n*6.28/steps);
-            puntoLineaB.v.y=Math.sin(n*6.28/steps);
-            System.out.println("n="+n);
-            advanceFrame();
+        for (Segment radio : regPolyg.getRadius()) {
+            add(radio);
         }
-//        pol1.mp.color = Color.BLUE;
-//        pol2.mp.color = Color.YELLOW;
-//
-////        add(pol2);
-//        add(circ);
-//        add(pol1);
-////        play(new Transform(pol1, circ, 2));
-////        pol1.prepareForNonLinearAnimation();
-//        Animation animat = new Transform(pol1, circ, 2);
-//        play(animat);
-////        Animation animat2 = new ShowCreation(pol1, 2);
-//
-////        Point puntoMola = pol2.getVertices().get(0);
-////        double dx = dt / 3.;
-////        while (!animat.processAnimation(fps)) {
-//////            animat2.processAnimation(fps);
-////            pol2.shift(new Vec(0, -dx, 0));
-////            advanceFrame();
-////        }
-//
-//        remove(pol1);
-        waitSeconds(3);
+        for (Segment apotema : regPolyg.getApothem()) {
+            add(apotema);
+        }
+        for (Point vertex : regPolyg.getVertices()) {
+            add(vertex);
+        }
+
+        Point centro = regPolyg.getCenter();
+        add(centro);
     }
 
 }
-//        play(anim, anim2);
-//        Animation anim2=new FadeIn(pol,2);
-//        play(anim2);
 
 //Cookbook:
 //Procesa manualmente animacion y mueve al mismo tiempo una figura
