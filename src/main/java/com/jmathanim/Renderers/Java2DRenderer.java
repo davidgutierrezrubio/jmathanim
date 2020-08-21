@@ -266,11 +266,15 @@ public class Java2DRenderer extends Renderer {
                 debugCPoint(cxy1);
                 debugCPoint(cxy2);
             }
-            if (c.curveType == JMPath.CURVED) {
-                resul.curveTo(cxy1[0], cxy1[1], cxy2[0], cxy2[1], xy[0], xy[1]);
-            }
-            if (c.curveType == JMPath.STRAIGHT) {
-                resul.lineTo(xy[0], xy[1]);
+            if (c.getPoint(i).isVisible) {
+                if (c.curveType == JMPath.CURVED) {
+                    resul.curveTo(cxy1[0], cxy1[1], cxy2[0], cxy2[1], xy[0], xy[1]);
+                }
+                if (c.curveType == JMPath.STRAIGHT) {
+                    resul.lineTo(xy[0], xy[1]);
+                }
+            } else {
+                resul.moveTo(xy[0], xy[1]);
             }
         }
 
@@ -305,12 +309,12 @@ public class Java2DRenderer extends Renderer {
         g2d.drawRect(xy[0] - 4, xy[1] - 4, 8, 8);
     }
 
-    public void debugText(String texto,int x,int y) {
-        System.out.println("DEBUG TEXT: "+texto);
+    public void debugText(String texto, int x, int y) {
+        System.out.println("DEBUG TEXT: " + texto);
         Font font = new Font("Serif", Font.PLAIN, 12);
         g2d.setFont(font);
         g2d.setColor(Color.WHITE);
-         g2d.drawString(texto, x, y);
+        g2d.drawString(texto, x, y);
     }
-    
+
 }

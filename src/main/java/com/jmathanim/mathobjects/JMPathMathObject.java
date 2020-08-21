@@ -56,23 +56,20 @@ public abstract class JMPathMathObject extends MathObject {
      */
     protected final void computeJMPathFromVertices() {
         //TODO: ¿Compute intermediate points?
-        JMPath jmpathTemp = new JMPath();
         jmpath.clear();//clear points
         for (JMPathPoint p : vertices) {
-            jmpathTemp.addPoint(p);
+            jmpath.addPoint(p);
         }
         if (isClosed) {
-            jmpathTemp.close();
+            jmpath.close();
         } else {
-            jmpathTemp.open();
+            jmpath.open();
         }
-        jmpathTemp.curveType = jmpath.curveType;
+        jmpath.curveType = jmpath.curveType;
         //This should'nt be done unless necessary (an animation for example)
         if (numInterpolationPoints > 1) {
-            jmpath.addPointsFrom(jmpathTemp.interpolate(numInterpolationPoints));//Interpolate points
-        } else {
-            jmpath.addPointsFrom(jmpathTemp);
-        }
+            jmpath.interpolate(numInterpolationPoints);//Interpolate points
+        } 
         updateCenter();
 
         jmpath.computeControlPoints();
@@ -122,8 +119,12 @@ public abstract class JMPathMathObject extends MathObject {
     }
 
     @Override
-    public void setDrawParam(double t) {
-        System.out.println("DrawParam of JMPATHOBJECT needsto implement");
+    public void setDrawParam(double drawParam) {
+         double sliceSize = jmpath.points.size() * drawParam;
+            for (int n = 0; n < jmpath.points.size(); n++) {
+                jmpath.getPoint(n).isVisible=(n<=sliceSize);
+            }
+        
     }
     
 }

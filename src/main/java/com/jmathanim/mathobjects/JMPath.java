@@ -188,7 +188,7 @@ public class JMPath {
                 Point cp2 = (Point) points.get((n + 1)).p.copy();
 //                Point cp2 = (Point) points.get((n + 1) % numPoints).copy();
                 addCPoint1(cp1);
-                addCPoint1(cp2);
+                addCPoint2(cp2);
             }
 
         }//End of if type==STRAIGHT

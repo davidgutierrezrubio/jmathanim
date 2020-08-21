@@ -8,7 +8,6 @@ package com.jmathanim.mathobjects;
 import com.jmathanim.Renderers.Renderer;
 import com.jmathanim.Utils.MathObjectDrawingProperties;
 import com.jmathanim.Utils.Vec;
-import java.awt.Color;
 import java.util.ArrayList;
 
 /**

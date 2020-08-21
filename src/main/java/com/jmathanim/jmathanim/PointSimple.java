@@ -37,13 +37,15 @@ public class PointSimple extends Scene2D {
         camera.setCenter(0, 0);
         waitSeconds(1);
 
-        Circle circ = new Circle(new Point(-1.2, 0), 1);
+        Circle circ = new Circle(new Point(0, 0), 1);
         circ.mp.thickness = .005d;
         circ.mp.color = Color.MAGENTA;
         circ.mp.alpha = .7d;
         circ.mp.layer = 2;
         add(circ);
-        play(new ShowCreation(circ));
+        RegularPolygon pol=new RegularPolygon(7, .3);
+        add(pol);
+        play(new ShowCreation(circ),new ShowCreation(pol));
         waitSeconds(3);
     }
 
