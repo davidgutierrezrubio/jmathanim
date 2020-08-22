@@ -36,10 +36,9 @@ public abstract class JMathAnimScene {
     protected double dt;
     public JMathAnimConfig conf;
 
-
     public JMathAnimScene() {
         objects = new ArrayList<>(); //TODO: Extends this to include layers
-        conf=new JMathAnimConfig();
+        conf = new JMathAnimConfig();
         conf.setLowQuality();//by default, set low quality
     }
 
@@ -72,13 +71,12 @@ public abstract class JMathAnimScene {
 
     public abstract void runSketch();
 
-    public final void add(ArrayList<MathObject> objs)
-    {
-        for (MathObject obj: objs)
-        {
+    public final void add(ArrayList<MathObject> objs) {
+        for (MathObject obj : objs) {
             add(obj);
         }
     }
+
     public final MathObject add(MathObject obj) {
         objects.add(obj);
         obj.addScene(this);
@@ -98,7 +96,7 @@ public abstract class JMathAnimScene {
         objects.sort(new Comparator<MathObject>() {
             @Override
             public int compare(MathObject o1, MathObject o2) {
-                return (o1.mp.layer-o2.mp.layer);
+                return (o1.mp.layer - o2.mp.layer);
             }
         });
         for (MathObject obj : objects) {
@@ -123,21 +121,27 @@ public abstract class JMathAnimScene {
     }
 
     public void play(Animation anim) {
-        Animation[] anims = {anim};
+        ArrayList<Animation> anims = new ArrayList<>();
+        anims.add(anim);
         this.play(anims);
     }
 
     public void play(Animation anim1, Animation anim2) {
-        Animation[] anims = {anim1, anim2};
+        ArrayList<Animation> anims = new ArrayList<>();
+        anims.add(anim1);
+        anims.add(anim2);
         this.play(anims);
     }
 
     public void play(Animation anim1, Animation anim2, Animation anim3) {
-        Animation[] anims = {anim1, anim2, anim3};
+        ArrayList<Animation> anims = new ArrayList<>();
+        anims.add(anim1);
+        anims.add(anim2);
+        anims.add(anim3);
         this.play(anims);
     }
 
-    public void play(Animation[] anims) {
+    public void play(ArrayList<Animation> anims) {
 //        for (Animation anim : anims) {
 //            anim.setFps(fps);
 //        }
@@ -147,8 +151,8 @@ public abstract class JMathAnimScene {
             for (Animation anim : anims) {
                 finished = finished & anim.processAnimation(fps);
             }
-            Java2DRenderer r=(Java2DRenderer) SCRenderer;
-            r.debugText("t: "+anims[0].getT(), 10, 10);
+            Java2DRenderer r = (Java2DRenderer) SCRenderer;
+            r.debugText("t: " + anims.get(0).getT(), 10, 10);
             advanceFrame();
         }
     }

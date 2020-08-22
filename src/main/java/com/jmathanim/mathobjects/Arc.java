@@ -16,8 +16,6 @@ public class Arc extends JMPathMathObject {
 
     public double x, y, z;
     public double radiusx, radiusy, angle;
-    protected boolean closePath;
-    public boolean isCurved;
     public double step;
 
     public Arc(Point cen, double radius, double angle) {
@@ -26,19 +24,13 @@ public class Arc extends JMPathMathObject {
 
     public Arc(Point cen, double radius, double angle, boolean isClosed) {
         super();
-        isCurved = true;//Default
-        step = .05;//Default
+        step = .5;//Default
         this.x = cen.v.x;
         this.y = cen.v.y;
         this.radiusx = radius;
         this.radiusy = radius;
         this.angle = angle;
-        if (isClosed) {
-            jmpath.close();
-        } else {
-            jmpath.open();
-        }
-        setCurveType(JMPath.CURVED);
+        this.isClosed=isClosed;
         needsRecalcControlPoints = true;
         numInterpolationPoints = 1;//For now, don't interpolate
         computePoints();
@@ -79,7 +71,9 @@ public class Arc extends JMPathMathObject {
             x1 = x + radiusx * Math.cos(alphaC);
             y1 = y + radiusy * Math.sin(alphaC);
             Point p = new Point(x1, y1);
-            vertices.add(new JMPathPoint(p,true,JMPathPoint.TYPE_VERTEX));
+            JMPathPoint po = new JMPathPoint(p,true,JMPathPoint.TYPE_VERTEX);
+            po.isCurved=true;
+            vertices.add(po);
         }
 
     }

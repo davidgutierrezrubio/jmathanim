@@ -30,7 +30,6 @@ public class Polygon extends JMPathMathObject {
         numInterpolationPoints = 1;//TODO: Make it adaptative
         this.addVertices(vertices);
         this.isClosed = close;
-        jmpath.curveType = JMPath.STRAIGHT;
         if (!vertices.isEmpty()) {
             computeJMPathFromVertices();
         }
@@ -38,7 +37,9 @@ public class Polygon extends JMPathMathObject {
 
     public final void addVertices(ArrayList<Point> vertices) {
         for (Point p : vertices) {
-            this.vertices.add(new JMPathPoint(p, true, JMPathPoint.TYPE_VERTEX));
+            JMPathPoint jmPathPoint = new JMPathPoint(p, true, JMPathPoint.TYPE_VERTEX);
+            jmPathPoint.isCurved=false;
+            this.vertices.add(jmPathPoint);
         }
     }
 

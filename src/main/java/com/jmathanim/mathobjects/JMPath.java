@@ -18,17 +18,13 @@ import java.util.ArrayList;
  */
 public class JMPath {
 
-    static public final int CURVED = 1; //Curved line
-    static public final int STRAIGHT = 2; //Straight line
-
+//    static public final int CURVED = 1; //Curved line
+//    static public final int STRAIGHT = 2; //Straight line
     public final CircularArrayList<JMPathPoint> points; //points from the curve
-    public final CircularArrayList<JMPathPoint> controlPoints1; //Control points (first)
-    public final CircularArrayList<JMPathPoint> controlPoints2; //Control points (second)
     public final CircularArrayList<Boolean> visiblePoints;//Whether this point is visible or not
     private boolean isClosed;
     public boolean isInterpolated;
     double tension;
-    public int curveType;
 
     public JMPath() {
         this(new ArrayList<Point>());
@@ -37,19 +33,17 @@ public class JMPath {
     public JMPath(ArrayList<Point> points) {
         this.points = new CircularArrayList<>();
         this.setPoints(points);
-        this.controlPoints1 = new CircularArrayList<>();
-        this.controlPoints2 = new CircularArrayList<>();
+//        this.controlPoints1 = new CircularArrayList<>();
+//        this.controlPoints2 = new CircularArrayList<>();
         this.visiblePoints = new CircularArrayList<>();
         isClosed = false;
         tension = 0.3d; //Default tension
-        curveType = JMPath.CURVED;//Default
         isInterpolated = false;//By default, path hasn't interpolation points
     }
 
     public ArrayList<Point> getPoints() {
-        ArrayList<Point> resul=new ArrayList<>();
-        for (JMPathPoint jmp:points)
-        {
+        ArrayList<Point> resul = new ArrayList<>();
+        for (JMPathPoint jmp : points) {
             resul.add(jmp.p);
         }
         return resul;
@@ -66,12 +60,8 @@ public class JMPath {
         return points.get(n);
     }
 
-    public JMPathPoint getControlPoint1(int n) {
-        return controlPoints1.get(n);
-    }
-
-    public JMPathPoint getControlPoint2(int n) {
-        return controlPoints2.get(n);
+    public Point getControlPoint2(int n) {
+        return points.get(n).cp2;
     }
 
     public int size() {
@@ -102,125 +92,72 @@ public class JMPath {
         return points.add(e);
     }
 
-    public void addCPoint1(JMPathPoint e) {
-        controlPoints1.add(e);
+    public void addCPoint1(Point e) {
+        points.get(points.size() - 1).cp1.v = e.v.copy();
     }
 
-    public void addCPoint2(JMPathPoint e) {
-        controlPoints2.add(e);
-    }
-
-    public void addCPoint1(Point p) {
-        controlPoints1.add(new JMPathPoint(p, false, JMPathPoint.TYPE_CONTROL_POINT));
-    }
-
-    public void addCPoint2(Point p) {
-        controlPoints2.add(new JMPathPoint(p, false, JMPathPoint.TYPE_CONTROL_POINT));
+    public void addCPoint2(Point e) {
+        points.get(points.size() - 1).cp2.v = e.v.copy();
     }
 
     public void clear() {
         points.clear();
-        controlPoints1.clear();
-        controlPoints2.clear();
-    }
-
-    public void computeControlPoints() {
-        computeControlPoints(this.curveType);
     }
 
     /**
      * Compute control points, using various methods This method should be
      * called once all points have been added
      *
-     * @param curveType Curve type. STRAIGHT as a polygonal line with no control
-     * points. CURVED as a cubic Bezier curve.
      */
-    public void computeControlPoints(int curveType) //For now, only one method
+    public void computeControlPoints() //For now, only one method
     {
-        controlPoints1.clear();
-        controlPoints2.clear();
-        this.curveType = curveType;
-
-        if (curveType == JMPath.CURVED) {
-            int numPoints = points.size();
-            if (numPoints > 4) //I need minimum 2 points      
-            {
-                if (!isClosed) {
-                    numPoints = numPoints - 1;
-                }
-                for (int n = 0; n < numPoints; n++) {
-//                    int i = (n - 1 + points.size()) % points.size();
-//                    int j = (n) % points.size();
-//                    int k = (n + 1) % points.size();
-//                    int L = (n + 2) % points.size();
-                    int i = n - 1;
-                    int j = n;
-                    int k = n + 1;
-                    int L = n + 2;
-                    double x1 = points.get(i).p.v.x;
-                    double y1 = points.get(i).p.v.y;
-                    double x2 = points.get(j).p.v.x;
-                    double y2 = points.get(j).p.v.y;
-                    double x3 = points.get(k).p.v.x;
-                    double y3 = points.get(k).p.v.y;
-                    double x4 = points.get(L).p.v.x;
-                    double y4 = points.get(L).p.v.y;
-                    double tension = 0.3d;
-                    double mod31 = Math.sqrt((x3 - x1) * (x3 - x1) + (y3 - y1) * (y3 - y1));
-                    double mod42 = Math.sqrt((x4 - x2) * (x4 - x2) + (y4 - y2) * (y4 - y2));
-                    double mod23 = Math.sqrt((x3 - x2) * (x3 - x2) + (y3 - y2) * (y3 - y2));
-                    double cx1 = x2 + mod23 / mod31 * tension * (x3 - x1);
-                    double cy1 = y2 + mod23 / mod31 * tension * (y3 - y1);
-                    double cx2 = x3 - mod23 / mod42 * tension * (x4 - x2);
-                    double cy2 = y3 - mod23 / mod42 * tension * (y4 - y2);
-                    Point cp1 = new Point(cx1, cy1);
-                    Point cp2 = new Point(cx2, cy2);
-                    addCPoint1(cp1);
-                    addCPoint2(cp2);
-                }
-            }
-        } //End of if type==CURVED
-
-        if (curveType == JMPath.STRAIGHT) {
-            int numPoints = points.size();
-            for (int n = 0; n < numPoints; n++) {
-                Point cp1 = (Point) points.get(n).p.copy();
-                Point cp2 = (Point) points.get((n + 1)).p.copy();
-//                Point cp2 = (Point) points.get((n + 1) % numPoints).copy();
-                addCPoint1(cp1);
-                addCPoint2(cp2);
+        int numPoints = points.size();
+        if (!isClosed) {
+            numPoints = numPoints - 1;
+        }
+        for (int n = 0; n < numPoints; n++) {
+            int i = n - 1;
+            int k = n + 1;
+            int L = n + 2;
+            JMPathPoint p1 = points.get(i);
+            JMPathPoint p2 = points.get(n);//Compute cp2 for this
+            JMPathPoint p3 = points.get(k);//Compute cp2 for this
+            JMPathPoint p4 = points.get(L);
+            double x1 = p1.p.v.x;
+            double y1 = p1.p.v.y;
+            double x2 = p2.p.v.x;
+            double y2 = p2.p.v.y;
+            double x3 = p3.p.v.x;
+            double y3 = p3.p.v.y;
+            double x4 = p4.p.v.x;
+            double y4 = p4.p.v.y;
+            if (p3.isCurved) {
+                double tension = 0.3d;
+                double mod31 = Math.sqrt((x3 - x1) * (x3 - x1) + (y3 - y1) * (y3 - y1));
+                double mod42 = Math.sqrt((x4 - x2) * (x4 - x2) + (y4 - y2) * (y4 - y2));
+                double mod23 = Math.sqrt((x3 - x2) * (x3 - x2) + (y3 - y2) * (y3 - y2));
+                double cx1 = x2 + mod23 / mod31 * tension * (x3 - x1);
+                double cy1 = y2 + mod23 / mod31 * tension * (y3 - y1);
+                double cx2 = x3 - mod23 / mod42 * tension * (x4 - x2);
+                double cy2 = y3 - mod23 / mod42 * tension * (y4 - y2);
+                p2.cp1.v.x = cx1;
+                p2.cp1.v.y = cy1;
+                p3.cp2.v.x = cx2;
+                p3.cp2.v.y = cy2;
+            } else {
+                //If this path is straight, control points becomes vertices. Although this is not used
+                //when drawing straight paths, it becomes handy when doing transforms from STRAIGHT to CURVED paths
+                p2.cp1.v.x = p2.p.v.x;
+                p2.cp1.v.y = p2.p.v.y;
+                p3.cp2.v.x = p3.p.v.x;
+                p3.cp2.v.y = p3.p.v.y;
             }
 
-        }//End of if type==STRAIGHT
-
+        }
     }
 
     public boolean isClosed() {
         return isClosed;
-    }
-
-    /**
-     * Returns a subpath delimited by the given parameter. From start to
-     * drawParam*length
-     *
-     * @param drawParam From 0 to 1. 1 means the whole curve.
-     * @return A new JMPath representing the corresponding subpath
-     */
-    public JMPath getSlice_deleteTHIS(double drawParam) {
-        JMPath resul = new JMPath();
-        resul.curveType = this.curveType;
-        if (drawParam < 1) {
-            double sliceSize = points.size() * drawParam;
-            for (int n = 0; n < sliceSize; n++) {
-                resul.addPoint(points.get(n));
-                resul.addCPoint1(controlPoints1.get(n));
-                resul.addCPoint2(controlPoints2.get(n));
-            }
-            resul.open();
-        } else {
-            resul = this;
-        }
-        return resul;
     }
 
     /**
@@ -234,9 +171,7 @@ public class JMPath {
      */
     public JMPath interpolate(int numDivs) {
         if (numDivs > 1) {
-            if (curveType == CURVED) {
-                throw new UnsupportedOperationException("Not supported interpolation for CURVED paths yet."); //To change body of generated methods, choose Tools | Templates.
-            }
+
             JMPath resul = new JMPath(); //New, interpolated path
             int numPoints = points.size();
             if (!isClosed) {//If curve is open, stop at n-1 point
@@ -245,13 +180,12 @@ public class JMPath {
 
             for (int n = 0; n < numPoints; n++) {
 //                int k = (n + 1) % points.size(); //Next point, first if curve is closed
-                int k = n + 1;
-                if (curveType == CURVED) {
+                JMPathPoint v1 = getPoint(n);
+                JMPathPoint v2 = getPoint(n + 1);
+                if (v2.isCurved) {
                     //TODO: Implement curved Bezier interpolation
                 }
-                if (curveType == STRAIGHT) {
-                    JMPathPoint v1 = getPoint(n);
-                    JMPathPoint v2 = getPoint(k);
+                if (!v2.isCurved) {
                     v1.type = JMPathPoint.TYPE_VERTEX;
                     resul.addPoint(v1); //Add the point of original curve
                     for (int j = 1; j < numDivs; j++) //Now compute the new ones
@@ -263,9 +197,8 @@ public class JMPath {
                 }
             }
             //Copy basic attributes of the original curve
-            resul.curveType = this.curveType;
             resul.isClosed = this.isClosed;
-            resul.computeControlPoints(curveType);
+            resul.computeControlPoints();
             resul.isInterpolated = true;//Mark this path as interpolated
             return resul;
         } else {
@@ -299,8 +232,6 @@ public class JMPath {
 
     void addPointsFrom(JMPath jmpathTemp) {
         points.addAll(jmpathTemp.points);
-        controlPoints1.addAll(jmpathTemp.controlPoints1);
-        controlPoints2.addAll(jmpathTemp.controlPoints2);
     }
 
     /**
@@ -338,13 +269,12 @@ public class JMPath {
         int numDivForThisVertex;
         for (int n = 0; n < nSmall; n++) {
 //                int k = (n + 1) % points.size(); //Next point, first if curve is closed
-            int k = n + 1;
-            if (pathSmall.curveType == CURVED) {
+            JMPathPoint v1 = pathSmall.getPoint(n);
+            JMPathPoint v2 = pathSmall.getPoint(n + 1);
+            if (v2.isCurved) {
                 throw new UnsupportedOperationException("Don't know interpolate between CURVED paths yet,sorry!");
             }
-            if (pathSmall.curveType == STRAIGHT) {
-                JMPathPoint v1 = pathSmall.getPoint(n);
-                JMPathPoint v2 = pathSmall.getPoint(k);
+            if (!v2.isCurved) {
                 v1.type = JMPathPoint.TYPE_VERTEX;
                 resul.addPoint(v1); //Add the point of original curve
                 numDivForThisVertex = numDivs;
@@ -370,14 +300,11 @@ public class JMPath {
 
         for (int n = 0; n < points.size(); n++) {
             resul.addPoint(points.get(n).copy());
-            resul.addCPoint1(controlPoints1.get(n).copy());
-            resul.addCPoint2(controlPoints2.get(n).copy());
         }
 
         resul.isClosed = isClosed;
         resul.isInterpolated = isInterpolated;
         resul.tension = tension;
-        resul.curveType = curveType;
         return resul;
     }
 
@@ -390,13 +317,10 @@ public class JMPath {
     public JMPath copy() {
         JMPath resul = new JMPath();
         resul.points.addAll(points);
-        resul.controlPoints1.addAll(controlPoints1);
-        resul.controlPoints2.addAll(controlPoints2);
 
         resul.isClosed = isClosed;
         resul.isInterpolated = isInterpolated;
         resul.tension = tension;
-        resul.curveType = curveType;
         return resul;
 
     }
@@ -410,13 +334,9 @@ public class JMPath {
     public void cyclePoints(int step, int direction) {
         JMPath tempPath = this.copy();
         points.clear();
-        controlPoints1.clear();
-        controlPoints2.clear();
 
         for (int n = 0; n < tempPath.size(); n++) {
             points.add(tempPath.points.get(direction * n + step));
-            controlPoints1.add(tempPath.controlPoints1.get(direction * n + step));
-            controlPoints2.add(tempPath.controlPoints2.get(direction * n + step));
         }
 
     }
@@ -428,7 +348,7 @@ public class JMPath {
      * @param path2 The other path
      * @return Distance
      */
-    public Double varianceDistance(JMPath path2) {
+    public Double squaredSumDistance(JMPath path2) {
         double resul = 0;
         double sumSq = 0;
         double sum = 0;
@@ -445,7 +365,13 @@ public class JMPath {
         return resul;
     }
 
-    public void minimizeDistanceVariance(JMPath path2) {
+    /**
+     * Cycles the point of closed path (and inverts its orientation if necessary)
+     * in order to minimize the sum of squared distances from the points of two 
+     * paths with the same number of nodes
+     * @param path2
+     */
+    public void minimizeSquaredDistance(JMPath path2) {
         ArrayList<Double> distances = new ArrayList<Double>();
         double minDistanceVarNoChangeDir = 999999999;
         int minStepNoChangeDir = 0;
@@ -454,7 +380,7 @@ public class JMPath {
         for (int step = 0; step < this.size(); step++) {
             JMPath tempPath = this.copy();
             tempPath.cyclePoints(step, 1);
-            double distanceVar = tempPath.varianceDistance(path2);
+            double distanceVar = tempPath.squaredSumDistance(path2);
             distances.add(distanceVar);
             System.out.println("Step: " + step + ", distanceVar: " + distanceVar);
             if (distanceVar < minDistanceVarNoChangeDir) {
@@ -468,7 +394,7 @@ public class JMPath {
         for (int step = 0; step < this.size(); step++) {
             JMPath tempPath = this.copy();
             tempPath.cyclePoints(step, -1);
-            double distanceVar = tempPath.varianceDistance(path2);
+            double distanceVar = tempPath.squaredSumDistance(path2);
             distances.add(distanceVar);
             System.out.println("Step: " + step + ", distanceVar: " + distanceVar);
             if (distanceVar < minDistanceVarChangeDir) {

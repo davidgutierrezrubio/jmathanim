@@ -150,7 +150,7 @@ public final class Point extends MathObject {
     }
 
     @Override
-    public void setDrawParam(double t) {
+    public void setDrawParam(double t,int sliceType) {
         //Nothing to do here, it's just a point!!
     }
 

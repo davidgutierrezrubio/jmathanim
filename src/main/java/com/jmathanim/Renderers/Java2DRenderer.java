@@ -11,6 +11,7 @@ import com.jmathanim.Cameras.Camera2D;
 import com.jmathanim.Utils.JMathAnimConfig;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
+import com.jmathanim.mathobjects.JMPathPoint;
 import io.humble.video.Codec;
 import io.humble.video.Encoder;
 import io.humble.video.MediaPacket;
@@ -42,7 +43,7 @@ import java.util.logging.Logger;
  */
 public class Java2DRenderer extends Renderer {
 
-    private static final boolean DEBUG = false; //Draw control points and vertices
+    private static final boolean DEBUG = true; //Draw control points and vertices
     private static final boolean PRINT_DEBUG = false; //Draw control points and vertices
     private final BufferedImage bufferedImage;
     private final Graphics2D g2d;
@@ -214,19 +215,18 @@ public class Java2DRenderer extends Renderer {
     public void drawPath(JMPath c) {
 
         int numPoints = c.size();
-        int minimumPoints = 0;
+        int minimumPoints = 2;
 
-        switch (c.curveType) {
-            case JMPath.STRAIGHT:
-                minimumPoints = 2;
-                break;
-            case JMPath.CURVED:
-                minimumPoints = 4;
-                break;
-            default:
-                throw new UnsupportedOperationException("Error: Illegal type of JMPath: " + c.curveType);
-
-        }
+//        switch (c.curveType) {
+//            case JMPath.STRAIGHT:
+//                minimumPoints = 2;
+//                break;
+//            case JMPath.CURVED:
+//                minimumPoints = 4;
+//                break;
+//            default:
+//                throw new UnsupportedOperationException("Error: Illegal type of JMPath: " + c.curveType);
+//        }
         if (numPoints >= minimumPoints) {
             path = createPathFromJMPath(c);
             g2d.setColor(color);
@@ -249,28 +249,26 @@ public class Java2DRenderer extends Renderer {
         if (!c.isClosed()) {
             numPoints--; //Don't draw last point
         }
-//        System.out.println(c.getPoints().size() + " " + c.controlPoints1.size() + " " + c.controlPoints2.size());
+        //Draw from point [n] to point [n+1]
         for (int n = 0; n < numPoints; n++) {
-//            int i = (n + 1) % c.size(); //Next point (first if actually we are in last)
-            int i = (n + 1);
 
-            Vec point = c.getPoint(i).p.v;
-            Vec cpoint1 = c.getControlPoint1(n).p.v;
-            Vec cpoint2 = c.getControlPoint2(n).p.v;
+            Vec point = c.getPoint(n + 1).p.v;
+            Vec cpoint1 = c.getPoint(n).cp1.v;
+            Vec cpoint2 = c.getPoint(n + 1).cp2.v;
 
             int[] xy = camera.mathToScreen(point);
             int[] cxy1 = camera.mathToScreen(cpoint1);
             int[] cxy2 = camera.mathToScreen(cpoint2);
             if (DEBUG) {
-                debugPoint(xy);
-                debugCPoint(cxy1);
-                debugCPoint(cxy2);
+//                debugPoint(xy);
+//                debugCPoint(cxy1);
+//                debugCPoint(cxy2);
+                debugPathPoint(c.getPoint(n));
             }
-            if (c.getPoint(i).isVisible) {
-                if (c.curveType == JMPath.CURVED) {
+            if (c.getPoint(n + 1).isVisible) {
+                if (c.getPoint(n + 1).isCurved) {
                     resul.curveTo(cxy1[0], cxy1[1], cxy2[0], cxy2[1], xy[0], xy[1]);
-                }
-                if (c.curveType == JMPath.STRAIGHT) {
+                } else {
                     resul.lineTo(xy[0], xy[1]);
                 }
             } else {
@@ -293,6 +291,24 @@ public class Java2DRenderer extends Renderer {
     @Override
     public void setCameraSize(int w, int h) {
         camera.setSize(w, h);
+    }
+
+    public void debugPathPoint(JMPathPoint p) {
+        int[] x = camera.mathToScreen(p.p.v.x, p.p.v.y);
+
+        if (p.type == JMPathPoint.TYPE_VERTEX) {
+            g2d.setColor(Color.GREEN);
+            
+        }
+        if (p.type == JMPathPoint.TYPE_INTERPOLATION_POINT) {
+            g2d.setColor(Color.GRAY);
+            
+        }
+        if (p.isCurved) {
+            g2d.drawOval(x[0] - 4, x[1] - 4, 8, 8);
+        } else {
+            g2d.drawRect(x[0] - 2, x[1] - 2, 4, 4);
+        }
     }
 
     public void debugPoint(int x, int y) {

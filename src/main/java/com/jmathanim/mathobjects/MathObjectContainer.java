@@ -82,7 +82,7 @@ public class MathObjectContainer extends MathObject {
     }
 
     @Override
-    public void setDrawParam(double t) {
+    public void setDrawParam(double t,int sliceType) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 

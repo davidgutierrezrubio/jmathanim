@@ -5,13 +5,10 @@
  */
 package com.jmathanim.mathobjects;
 
-import com.jmathanim.Utils.ConfigUtils;
 import com.jmathanim.Utils.MathObjectDrawingProperties;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
-import java.awt.Color;
 import java.util.HashSet;
-import java.util.Properties;
 
 /**
  *
@@ -19,6 +16,10 @@ import java.util.Properties;
  */
 public abstract class MathObject implements Drawable {
 
+    public static final int SLICE_SIMPLE=1;
+    public static final int SLICE_DOUBLE=2;
+    public static final int SLICE_FOUR=3;
+    
     public final MathObjectDrawingProperties mp;
     String[] DEFAULT_CONFIG_MATHOBJECT = {
         "VISIBLE", "TRUE",
@@ -178,6 +179,6 @@ public abstract class MathObject implements Drawable {
      * only partially. It is used for animation ShowCreation, for example
      * @param t Parameter to draw (0=nothing, 1=draw the entire object)
      */
-    public abstract void setDrawParam(double t);
+    public abstract void setDrawParam(double t,int sliceType);
     
 }

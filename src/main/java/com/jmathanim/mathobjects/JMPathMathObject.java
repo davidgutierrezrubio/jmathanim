@@ -45,7 +45,6 @@ public abstract class JMPathMathObject extends MathObject {
         super(mp);
         vertices = new ArrayList<JMPathPoint>();
         jmpath = new JMPath();
-        computeVerticesFromPath();
         needsRecalcControlPoints = false;
         center = new Point(0, 0);
     }
@@ -65,11 +64,10 @@ public abstract class JMPathMathObject extends MathObject {
         } else {
             jmpath.open();
         }
-        jmpath.curveType = jmpath.curveType;
         //This should'nt be done unless necessary (an animation for example)
         if (numInterpolationPoints > 1) {
             jmpath.interpolate(numInterpolationPoints);//Interpolate points
-        } 
+        }
         updateCenter();
 
         jmpath.computeControlPoints();
@@ -110,21 +108,36 @@ public abstract class JMPathMathObject extends MathObject {
         update();
     }
 
-    public void setCurveType(int type) {
-        jmpath.curveType = type;
-    }
-
-    public int getCurveType() {
-        return jmpath.curveType;
-    }
-
     @Override
-    public void setDrawParam(double drawParam) {
-         double sliceSize = jmpath.points.size() * drawParam;
-            for (int n = 0; n < jmpath.points.size(); n++) {
-                jmpath.getPoint(n).isVisible=(n<=sliceSize);
-            }
-        
+    public void setDrawParam(double drawParam, int numSlices) {
+//        if (numSlices == MathObject.SLICE_SIMPLE) {
+//            double sliceSize = jmpath.points.size() * drawParam;
+//            for (int n = 0; n < jmpath.points.size(); n++) {
+//                jmpath.getPoint(n).isVisible = (n <= sliceSize);
+//            }
+//        }
+
+            double sliceSize = jmpath.points.size() * drawParam / numSlices;
+
+            for (int n = 0; n < jmpath.points.size() / numSlices; n++) {
+                for (int k = 0; k < numSlices; k++) {
+                    jmpath.getPoint(k * jmpath.points.size() / numSlices + n).isVisible = (n <= sliceSize);
+                }
+        }
+
     }
-    
+
+    public void removeInterpolationPoints() {
+        ArrayList<JMPathPoint> toRemove=new ArrayList<>();
+        for (JMPathPoint p:jmpath.points)
+        {
+            if (p.type==JMPathPoint.TYPE_INTERPOLATION_POINT)
+            {
+                toRemove.add(p);
+            }
+        }
+        jmpath.points.removeAll(toRemove);
+        jmpath.computeControlPoints();
+    }
+
 }

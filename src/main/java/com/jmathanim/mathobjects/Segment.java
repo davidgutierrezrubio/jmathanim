@@ -47,9 +47,13 @@ public class Segment extends JMPathMathObject {//TODO:Should extend Polygon clas
 
     public final void computeCurve() {
         curve = new JMPath();
-        vertices.add(new JMPathPoint(p1, true, JMPathPoint.TYPE_VERTEX));
-        vertices.add(new JMPathPoint(p2, true, JMPathPoint.TYPE_VERTEX));
-        curve.computeControlPoints(JMPath.STRAIGHT);
+        JMPathPoint jmp1 = new JMPathPoint(p1, true, JMPathPoint.TYPE_VERTEX);
+        jmp1.isCurved=false;
+        vertices.add(jmp1);
+        JMPathPoint jmp2 = new JMPathPoint(p2, true, JMPathPoint.TYPE_VERTEX);
+        jmp2.isCurved=false;
+        vertices.add(jmp2);
+        curve.computeControlPoints();
     }
 
     @Override
