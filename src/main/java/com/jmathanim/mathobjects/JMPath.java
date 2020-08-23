@@ -167,9 +167,8 @@ public class JMPath {
      *
      * @param numDivs Between 2 given points, the number of new points to
      * create. 0 leaves the curve unaltered. 1 computes the middle point
-     * @return new JMPath representing the interpolated curve
      */
-    public JMPath interpolate(int numDivs) {
+    public void interpolate(int numDivs) {
         if (numDivs > 1) {
 
             JMPath resul = new JMPath(); //New, interpolated path
@@ -182,27 +181,22 @@ public class JMPath {
 //                int k = (n + 1) % points.size(); //Next point, first if curve is closed
                 JMPathPoint v1 = getPoint(n);
                 JMPathPoint v2 = getPoint(n + 1);
-                if (v2.isCurved) {
-                    //TODO: Implement curved Bezier interpolation
-                }
-                if (!v2.isCurved) {
-                    v1.type = JMPathPoint.TYPE_VERTEX;
-                    resul.addPoint(v1); //Add the point of original curve
-                    for (int j = 1; j < numDivs; j++) //Now compute the new ones
-                    {
-                        Point interPoint = new Point(v1.p.v.interpolate(v2.p.v, ((double) j) / numDivs));
-                        JMPathPoint interpolate = new JMPathPoint(interPoint, true, JMPathPoint.TYPE_INTERPOLATION_POINT);
-                        resul.addPoint(interpolate);
-                    }
+
+                v1.type = JMPathPoint.TYPE_VERTEX;
+                resul.addPoint(v1); //Add the point of original curve
+                for (int j = 1; j < numDivs; j++) //Now compute the new ones
+                {
+                    double alpha = ((double) j) / numDivs;
+                    JMPathPoint interpolate = interpolateBetweenTwoPoints(v1, v2, alpha);
+                    resul.addPoint(interpolate);
                 }
             }
             //Copy basic attributes of the original curve
             resul.isClosed = this.isClosed;
             resul.computeControlPoints();
             resul.isInterpolated = true;//Mark this path as interpolated
-            return resul;
-        } else {
-            return this;
+            this.clear();
+            this.addPointsFrom(resul);
         }
     }
 
@@ -230,6 +224,11 @@ public class JMPath {
         return resul;
     }
 
+    /**
+     * Add all points from a given path
+     *
+     * @param jmpathTemp
+     */
     void addPointsFrom(JMPath jmpathTemp) {
         points.addAll(jmpathTemp.points);
     }
@@ -271,28 +270,47 @@ public class JMPath {
 //                int k = (n + 1) % points.size(); //Next point, first if curve is closed
             JMPathPoint v1 = pathSmall.getPoint(n);
             JMPathPoint v2 = pathSmall.getPoint(n + 1);
-            if (v2.isCurved) {
-                throw new UnsupportedOperationException("Don't know interpolate between CURVED paths yet,sorry!");
+            v1.type = JMPathPoint.TYPE_VERTEX;
+            resul.addPoint(v1); //Add the point of original curve
+            numDivForThisVertex = numDivs;
+            if (n < rest) { //The <rest> first vertex have an extra interpolation point
+                numDivForThisVertex += 1;
             }
-            if (!v2.isCurved) {
-                v1.type = JMPathPoint.TYPE_VERTEX;
-                resul.addPoint(v1); //Add the point of original curve
-                numDivForThisVertex = numDivs;
-                if (n < rest) { //The <rest> first vertex have an extra interpolation point
-                    numDivForThisVertex += 1;
-                }
-                for (int j = 1; j < numDivForThisVertex; j++) //Now compute the new ones
-                {
-                    //TODO: Improve alpha parameter
-                    Point interP = new Point(v1.p.v.interpolate(v2.p.v, ((double) j) / numDivForThisVertex));
-                    JMPathPoint interpolate = new JMPathPoint(interP, true, JMPathPoint.TYPE_INTERPOLATION_POINT);
-                    resul.addPoint(interpolate);
-                }
+            for (int j = 1; j < numDivForThisVertex; j++) //Now compute the new ones
+            {
+                double alpha = j * 1.d / numDivForThisVertex;
+                JMPathPoint interpolate = interpolateBetweenTwoPoints(v1, v2, alpha);
+                resul.addPoint(interpolate);
             }
         }
         pathSmall.clear();
         pathSmall.addPointsFrom(resul);
         pathSmall.computeControlPoints();
+    }
+
+    public JMPathPoint interpolateBetweenTwoPoints(JMPathPoint v1, JMPathPoint v2, double alpha) {
+
+        JMPathPoint interpolate;
+        if (v2.isCurved) {
+            double x0 = v1.p.v.x;
+            double y0 = v1.p.v.y;
+            double x1 = v1.cp1.v.x;
+            double y1 = v1.cp1.v.y;
+            double x2 = v2.cp2.v.x;
+            double y2 = v2.cp2.v.y;
+            double x3 = v2.p.v.x;
+            double y3 = v2.p.v.y;
+            double ix = x0 * (1 - alpha) * (1 - alpha) * (1 - alpha) + 3 * x1 * alpha * (1 - alpha) * (1 - alpha);
+            ix += 3 * x2 * alpha * alpha * (1 - alpha) + x3 * alpha * alpha * alpha;
+            double iy = y0 * (1 - alpha) * (1 - alpha) * (1 - alpha) + 3 * y1 * alpha * (1 - alpha) * (1 - alpha);
+            iy += 3 * y2 * alpha * alpha * (1 - alpha) + y3 * alpha * alpha * alpha;
+            interpolate = new JMPathPoint(new Point(ix, iy), true, JMPathPoint.TYPE_INTERPOLATION_POINT);
+        } else {
+            Point interP = new Point(v1.p.v.interpolate(v2.p.v, alpha));
+            interpolate = new JMPathPoint(interP, true, JMPathPoint.TYPE_INTERPOLATION_POINT);
+        }
+        interpolate.isCurved = v2.isCurved;
+        return interpolate;
     }
 
     public JMPath rawCopy() {
@@ -366,9 +384,10 @@ public class JMPath {
     }
 
     /**
-     * Cycles the point of closed path (and inverts its orientation if necessary)
-     * in order to minimize the sum of squared distances from the points of two 
-     * paths with the same number of nodes
+     * Cycles the point of closed path (and inverts its orientation if
+     * necessary) in order to minimize the sum of squared distances from the
+     * points of two paths with the same number of nodes
+     *
      * @param path2
      */
     public void minimizeSquaredDistance(JMPath path2) {

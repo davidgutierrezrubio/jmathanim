@@ -24,7 +24,7 @@ public class Arc extends JMPathMathObject {
 
     public Arc(Point cen, double radius, double angle, boolean isClosed) {
         super();
-        step = .5;//Default
+        step =Math.PI*2/5;//Default
         this.x = cen.v.x;
         this.y = cen.v.y;
         this.radiusx = radius;

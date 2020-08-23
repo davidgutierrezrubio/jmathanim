@@ -37,8 +37,6 @@ public class PointSimple extends Scene2D {
     public void runSketch() {
 
         camera.setCenter(0, 0);
-
-//        variosCirculos();
         pruebaTransform();
     }
 
@@ -69,26 +67,38 @@ public class PointSimple extends Scene2D {
         waitSeconds(2);
     }
 
+    public void pruebaInterpolateCircle() {
+        Circle circ = new Circle(new Point(-.5, -.5), 1);
+        add(circ);
+        waitSeconds(1);
+        circ.jmpath.interpolate(3);
+        waitSeconds(1);
+    }
+
     public void pruebaTransform() {
         RegularPolygon pol1 = new RegularPolygon(3, 1d);
         RegularPolygon pol2 = new RegularPolygon(4, 3.d / 4);
         RegularPolygon pol3 = new RegularPolygon(5, 3.d / 5);
         RegularPolygon pol4 = new RegularPolygon(16, 3.d / 16);
-        Circle circ = new Circle(new Point(-.5,-.5), 1);
+        Circle circ = new Circle(new Point(-.5, -.5), 1);
         pol1.shift(new Vec(-1, 0));
         add(pol1);
         add(pol2);
         add(pol3);
         add(pol4);
-//        add(circ);
-        play(new Transform(pol4, pol3, 3));
+        add(circ);
+        play(new Transform(pol1, pol2, 3));
+        remove(pol2);
+        waitSeconds(1);
+        play(new Transform(pol1, pol3, 3));
         remove(pol3);
         waitSeconds(1);
-        play(new Transform(pol4, pol2, 3));
+        play(new Transform(pol1, pol4, 3));
+        remove(pol4);
         waitSeconds(1);
-        play(new Transform(pol4, pol1, 3));
+        play(new Transform(pol1, circ, 3));
+        remove(circ);
         waitSeconds(1);
-//        play(new Transform(pol1, circ, 3));
     }
 
     public void pruebaLine() {
