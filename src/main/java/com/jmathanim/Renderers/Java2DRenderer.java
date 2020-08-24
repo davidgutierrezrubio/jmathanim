@@ -42,8 +42,8 @@ import java.util.logging.Logger;
  * Java2D to render the image
  */
 public class Java2DRenderer extends Renderer {
-
-    private static final boolean DEBUG = true; //Draw control points and vertices
+    
+    private static final boolean DEBUG = false; //Draw control points and vertices
     private static final boolean PRINT_DEBUG = false; //Draw control points and vertices
     private final BufferedImage bufferedImage;
     private final Graphics2D g2d;
@@ -63,12 +63,12 @@ public class Java2DRenderer extends Renderer {
     protected Path2D.Double path;
     final String saveFilePath = "c:\\media\\pinicula.mp4";
     private final JMathAnimConfig cnf;
-
+    
     public Java2DRenderer(JMathAnimScene parentScene) {
         cnf = parentScene.conf;
         camera = new Camera2D(cnf.width, cnf.height);
         super.setSize(cnf.width, cnf.height);
-
+        
         bufferedImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
         g2d = bufferedImage.createGraphics();
         RenderingHints rh = new RenderingHints(
@@ -76,12 +76,12 @@ public class Java2DRenderer extends Renderer {
                 RenderingHints.VALUE_ANTIALIAS_ON
         );
         rh.put(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
-
+        
         g2d.setRenderingHints(rh);
         prepareEncoder();
-
+        
     }
-
+    
     @Override
     public Camera2D getCamera() {
         return camera;
@@ -95,9 +95,9 @@ public class Java2DRenderer extends Renderer {
         this.camera = (Camera2D) camera;
         camera.setSize(width, height);
     }
-
+    
     public final void prepareEncoder() {
-
+        
         System.out.println("Prepare encoder...");
         muxer = Muxer.make(saveFilePath, null, "mp4");
         format = muxer.getFormat();
@@ -122,7 +122,7 @@ public class Java2DRenderer extends Renderer {
          * Add this stream to the muxer.
          */
         muxer.addNewStream(encoder);
-
+        
         try {
             /**
              * And open the muxer for business.
@@ -138,10 +138,10 @@ public class Java2DRenderer extends Renderer {
                 pixelformat);
         picture.setTimeBase(rationalFrameRate);
     }
-
+    
     @Override
     public void drawCircle(double x, double y, double radius) {
-        g2d.setColor(color);
+        g2d.setColor(borderColor);
         double mx = x - .5 * radius;
         double my = y + .5 * radius;
         int[] screenx = camera.mathToScreen(mx, my);
@@ -149,15 +149,15 @@ public class Java2DRenderer extends Renderer {
         g2d.fillOval(screenx[0], screenx[1], screenRadius, screenRadius);
 //        g2d.drawRect(screenx[0],screenx[1], screenRadius, screenRadius);
     }
-
+    
     @Override
     public void drawLine(double x1, double y1, double x2, double y2) {
-        g2d.setColor(color);
+        g2d.setColor(borderColor);
         int[] screenx1 = camera.mathToScreen(x1, y1);
         int[] screenx2 = camera.mathToScreen(x2, y2);
         g2d.drawLine(screenx1[0], screenx1[1], screenx2[0], screenx2[1]);
     }
-
+    
     @Override
     public void saveFrame(int frameCount) {
         BufferedImage screen = MediaPictureConverterFactory.convertToType(bufferedImage, BufferedImage.TYPE_3BYTE_BGR);
@@ -170,7 +170,7 @@ public class Java2DRenderer extends Renderer {
             }
         } while (packet.isComplete());
     }
-
+    
     @Override
     public void finish() {
         /**
@@ -193,27 +193,27 @@ public class Java2DRenderer extends Renderer {
         muxer.close();
         System.out.println("Movie created at " + saveFilePath);
     }
-
+    
     @Override
     public void drawArc(double x, double y, double radius, double angle) {
-        g2d.setColor(color);
+        g2d.setColor(borderColor);
     }
-
+    
     @Override
     public void clear() {
         g2d.setColor(Color.BLACK);//TODO: Poner en opciones
         g2d.fillRect(0, 0, width, height);
     }
-
+    
     @Override
     public void setStroke(double mathSize) {
         int strokeSize = camera.mathToScreen(mathSize); //TODO: Another way to compute this
         g2d.setStroke(new BasicStroke(strokeSize, CAP_ROUND, JOIN_ROUND));
     }
-
+    
     @Override
     public void drawPath(JMPath c) {
-
+        
         int numPoints = c.size();
         int minimumPoints = 2;
 
@@ -229,14 +229,21 @@ public class Java2DRenderer extends Renderer {
 //        }
         if (numPoints >= minimumPoints) {
             path = createPathFromJMPath(c);
-            g2d.setColor(color);
-            g2d.draw(path);
+            
+            if (c.isFilled) {
+                g2d.setPaint(fillColor);
+                g2d.fill(path);
+            }
+            if (c.isBorderDrawed) {
+                g2d.setColor(borderColor);
+                g2d.draw(path);
+            }
             if (PRINT_DEBUG) {
                 System.out.println("Drawing " + c);
             }
         }
     }
-
+    
     public Path2D.Double createPathFromJMPath(JMPath c) {
         Path2D.Double resul = new Path2D.Double();
         int numPoints = c.size();
@@ -251,51 +258,55 @@ public class Java2DRenderer extends Renderer {
         }
         //Draw from point [n] to point [n+1]
         for (int n = 0; n < numPoints; n++) {
-
-            Vec point = c.getPoint(n + 1).p.v;
-            Vec cpoint1 = c.getPoint(n).cp1.v;
-            Vec cpoint2 = c.getPoint(n + 1).cp2.v;
-
+            
+            Vec point = c.getPoint(n).p.v;
+            Vec cpoint1 = c.getPoint(n-1).cp1.v;
+            Vec cpoint2 = c.getPoint(n).cp2.v;
+            
             int[] xy = camera.mathToScreen(point);
             int[] cxy1 = camera.mathToScreen(cpoint1);
             int[] cxy2 = camera.mathToScreen(cpoint2);
             if (DEBUG) {
-//                debugPoint(xy);
-//                debugCPoint(cxy1);
-//                debugCPoint(cxy2);
                 debugPathPoint(c.getPoint(n));
             }
-            if (c.getPoint(n + 1).isVisible) {
-                if (c.getPoint(n + 1).isCurved) {
+            if (c.getPoint(n).isVisible) {
+                if (c.getPoint(n).isCurved) {
                     resul.curveTo(cxy1[0], cxy1[1], cxy2[0], cxy2[1], xy[0], xy[1]);
                 } else {
                     resul.lineTo(xy[0], xy[1]);
                 }
             } else {
                 resul.moveTo(xy[0], xy[1]);
+//                g2d.drawString("M", xy[0], xy[1]);
             }
         }
-
-        if (c.isClosed()) {
-            resul.closePath();
-        }
+        
+//        if (c.isClosed()) {
+//            if (c.getPoint(0).isVisible) {
+//                resul.closePath();
+//            } else {
+//                int[] xy = camera.mathToScreen(c.getPoint(0).p.v);
+//                resul.moveTo(xy[0], xy[1]);
+//            }
+//        }
         return resul;
     }
-
+    
     @Override
     public void setAlpha(double alpha) {
         AlphaComposite alcom = AlphaComposite.getInstance(AlphaComposite.SRC_OVER, (float) alpha);
         g2d.setComposite(alcom);
     }
-
+    
     @Override
     public void setCameraSize(int w, int h) {
         camera.setSize(w, h);
     }
-
+    
     public void debugPathPoint(JMPathPoint p) {
         int[] x = camera.mathToScreen(p.p.v.x, p.p.v.y);
-
+        debugCPoint(camera.mathToScreen(p.cp1.v.x, p.cp1.v.y));
+        debugCPoint(camera.mathToScreen(p.cp2.v.x, p.cp2.v.y));
         if (p.type == JMPathPoint.TYPE_VERTEX) {
             g2d.setColor(Color.GREEN);
             
@@ -309,22 +320,23 @@ public class Java2DRenderer extends Renderer {
         } else {
             g2d.drawRect(x[0] - 2, x[1] - 2, 4, 4);
         }
+        
     }
-
+    
     public void debugPoint(int x, int y) {
         g2d.drawOval(x - 2, y - 2, 4, 4);
     }
-
+    
     public void debugPoint(int[] xy) {
         g2d.setColor(Color.BLUE);
         g2d.drawOval(xy[0] - 4, xy[1] - 4, 8, 8);
     }
-
+    
     public void debugCPoint(int[] xy) {
         g2d.setColor(Color.PINK);
         g2d.drawRect(xy[0] - 4, xy[1] - 4, 8, 8);
     }
-
+    
     public void debugText(String texto, int x, int y) {
         System.out.println("DEBUG TEXT: " + texto);
         Font font = new Font("Serif", Font.PLAIN, 12);
@@ -332,5 +344,5 @@ public class Java2DRenderer extends Renderer {
         g2d.setColor(Color.WHITE);
         g2d.drawString(texto, x, y);
     }
-
+    
 }

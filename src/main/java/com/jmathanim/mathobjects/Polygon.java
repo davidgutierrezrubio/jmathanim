@@ -97,7 +97,7 @@ public class Polygon extends JMPathMathObject {
 //        } else {
 //            c.close();
 //        }
-        r.setColor(mp.color);
+        r.setBorderColor(mp.color);
         r.setStroke(mp.getThickness(r));
         r.setAlpha(mp.alpha);
         r.drawPath(jmpath);

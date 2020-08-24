@@ -44,7 +44,7 @@ public class Arc extends JMPathMathObject {
 
     @Override
     public void draw(Renderer r) {
-        r.setColor(mp.color);
+        r.setBorderColor(mp.color);
         double rad = mp.getThickness(r);
         if (needsRecalcControlPoints) {
             computeJMPathFromVertices();
@@ -56,7 +56,7 @@ public class Arc extends JMPathMathObject {
 //        } else {
 //            c.close();
 //        }
-        r.setColor(mp.color);
+        r.setBorderColor(mp.color);
         r.setStroke(mp.getThickness(r));
         r.setAlpha(mp.alpha);
         r.drawPath(jmpath);

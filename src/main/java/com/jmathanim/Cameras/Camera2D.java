@@ -61,8 +61,8 @@ public class Camera2D extends Camera {
     }
     
     
-    public final void reset() {
-        this.setMathXY(-2, 2, 0);
+    public final void reset() {//TODO: CHange this
+        this.setMathXY(-5, 5, 0);
     }
 
     @Override

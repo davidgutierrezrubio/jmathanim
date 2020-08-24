@@ -5,6 +5,8 @@
  */
 package com.jmathanim.mathobjects;
 
+import com.jmathanim.Utils.Vec;
+
 /**
  *
  * @author David Gutiérrez Rubio <davidgutierrezrubio@gmail.com>
@@ -38,6 +40,7 @@ public class JMPathPoint {
         resul.cp2.v.x = this.cp2.v.x;
         resul.cp2.v.y = this.cp2.v.y;
         resul.isCurved = this.isCurved;
+        resul.isVisible=this.isVisible;
         return resul;
     }
 
@@ -60,7 +63,15 @@ public class JMPathPoint {
         if (type == TYPE_VERTEX) {
             resul = "V" + resul;
         }
+        resul+="[" + cp1.v.x + ", " + cp1.v.y + ")]";
+        resul+="[" + cp2.v.x + ", " + cp2.v.y + ")]";
         return resul;
+    }
+
+    void shift(Vec shiftVector) {
+        p.shift(shiftVector);
+        cp1.shift(shiftVector);
+        cp2.shift(shiftVector);
     }
 
 }

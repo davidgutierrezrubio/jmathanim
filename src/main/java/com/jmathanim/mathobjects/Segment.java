@@ -62,7 +62,7 @@ public class Segment extends JMPathMathObject {//TODO:Should extend Polygon clas
         Vec v2 = p2.v;
         Vec vd = v2.minus(v1);
         Vec v3 = v1.add(vd.mult(1));//TODO: FIX THIS
-        r.setColor(mp.color);
+        r.setBorderColor(mp.color);
         r.setStroke(mp.getThickness(r));
         r.setAlpha(mp.alpha);
         r.drawLine(v1.x, v1.y, v3.x, v3.y);

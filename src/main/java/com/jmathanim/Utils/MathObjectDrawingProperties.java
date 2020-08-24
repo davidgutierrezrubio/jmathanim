@@ -17,6 +17,7 @@ import java.awt.Color;
 public class MathObjectDrawingProperties {
 
     public Color color;
+    public Color fillColor;
     public Double thickness;
     //If false, thickness is computed to be a percentage of the width
     //to ensure zoom or resolution doesn't affect the result
@@ -30,6 +31,7 @@ public class MathObjectDrawingProperties {
     public MathObjectDrawingProperties() {
         //Default, boring values
         this.color = Color.WHITE;
+        this.fillColor = Color.YELLOW;
         this.thickness = .005d;
         this.alpha = 1d;
         this.visible = true;

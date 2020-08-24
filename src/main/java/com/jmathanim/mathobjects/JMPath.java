@@ -24,6 +24,9 @@ public class JMPath {
     public final CircularArrayList<Boolean> visiblePoints;//Whether this point is visible or not
     private boolean isClosed;
     public boolean isInterpolated;
+    public boolean isFilled;
+    public boolean isBorderDrawed;
+
     double tension;
 
     public JMPath() {
@@ -37,6 +40,8 @@ public class JMPath {
 //        this.controlPoints2 = new CircularArrayList<>();
         this.visiblePoints = new CircularArrayList<>();
         isClosed = false;
+        isFilled = false;
+        isBorderDrawed = true;
         tension = 0.3d; //Default tension
         isInterpolated = false;//By default, path hasn't interpolation points
     }
@@ -77,6 +82,8 @@ public class JMPath {
     }
 
     public void close() {
+        //Add first point and mark as closed
+        addPoint(points.get(0).copy());//TODO: Mark this new point as dependent in case point0 moves
         isClosed = true;
     }
 
@@ -304,10 +311,11 @@ public class JMPath {
             ix += 3 * x2 * alpha * alpha * (1 - alpha) + x3 * alpha * alpha * alpha;
             double iy = y0 * (1 - alpha) * (1 - alpha) * (1 - alpha) + 3 * y1 * alpha * (1 - alpha) * (1 - alpha);
             iy += 3 * y2 * alpha * alpha * (1 - alpha) + y3 * alpha * alpha * alpha;
-            interpolate = new JMPathPoint(new Point(ix, iy), true, JMPathPoint.TYPE_INTERPOLATION_POINT);
+            interpolate = new JMPathPoint(new Point(ix, iy), v2.isVisible, JMPathPoint.TYPE_INTERPOLATION_POINT);
         } else {
             Point interP = new Point(v1.p.v.interpolate(v2.p.v, alpha));
-            interpolate = new JMPathPoint(interP, true, JMPathPoint.TYPE_INTERPOLATION_POINT);
+            //Interpolation point is visible iff v2 is visible
+            interpolate = new JMPathPoint(interP, v2.isVisible, JMPathPoint.TYPE_INTERPOLATION_POINT);
         }
         interpolate.isCurved = v2.isCurved;
         return interpolate;
@@ -321,14 +329,16 @@ public class JMPath {
         }
 
         resul.isClosed = isClosed;
+        resul.isFilled = isFilled;
+        resul.isBorderDrawed = isBorderDrawed;
         resul.isInterpolated = isInterpolated;
         resul.tension = tension;
         return resul;
     }
 
     /**
-     * Creates a copy of the path, with all their attributes Point objects are
-     * not copied
+     * Creates a copy of the path, with all their attributes JMPathPoint objects
+     * are referenced
      *
      * @return A copy of the path
      */
@@ -336,7 +346,10 @@ public class JMPath {
         JMPath resul = new JMPath();
         resul.points.addAll(points);
 
+        //Copy attributes
         resul.isClosed = isClosed;
+        resul.isFilled = isFilled;
+        resul.isBorderDrawed = isBorderDrawed;
         resul.isInterpolated = isInterpolated;
         resul.tension = tension;
         return resul;
@@ -431,6 +444,12 @@ public class JMPath {
             this.cyclePoints(minStepChangeDir, -1);
         }
 
+    }
+
+    void shift(Vec shiftVector) {
+        for (JMPathPoint p : points) {
+            p.shift(shiftVector);
+        }
     }
 
 }

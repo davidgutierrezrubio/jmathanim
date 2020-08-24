@@ -77,10 +77,11 @@ public abstract class JMathAnimScene {
         }
     }
 
-    public final MathObject add(MathObject obj) {
+    public final void add(MathObject ... objs) {
+        for (MathObject obj:objs){
         objects.add(obj);
         obj.addScene(this);
-        return obj;
+        }
     }
 
     public final MathObject remove(MathObject obj) {

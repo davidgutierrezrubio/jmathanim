@@ -77,7 +77,7 @@ public final class Point extends MathObject {
 
     @Override
     public void draw(Renderer r) {
-        r.setColor(mp.color);
+        r.setBorderColor(mp.color);
         double rad = mp.getThickness(r);
         r.drawCircle(v.x, v.y, rad);
 

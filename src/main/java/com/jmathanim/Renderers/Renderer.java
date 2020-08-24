@@ -17,12 +17,13 @@ import java.awt.Color;
  */
 public abstract class Renderer {
 
-    protected Color color;
+    protected Color borderColor;
+    protected Color fillColor;
     protected int width;
     protected int height;
 
     public Renderer() {
-        color = Color.WHITE;//Default color
+        borderColor = Color.WHITE;//Default color
 
     }
 
@@ -56,14 +57,23 @@ public abstract class Renderer {
         setCameraSize(width, height);
     }
 
-    public Color getColor() {
-        return color;
+    public Color getBorderColor() {
+        return borderColor;
     }
 
-    public void setColor(Color color) {
-        this.color = color;
+    public void setBorderColor(Color color) {
+        this.borderColor = color;
+    }
+  public Color getFillColor() {
+        return fillColor;
     }
 
+    public void setFillColor(Color fillColor) {
+        this.fillColor = fillColor;
+    }
+
+    
+    
     /**
      * Draws an arc centered at x,y with given radius and angle
      *

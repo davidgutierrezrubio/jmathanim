@@ -15,7 +15,7 @@ import java.util.Properties;
  *
  * @author David Gutiérrez Rubio <davidgutierrezrubio@gmail.com>
  */
-public abstract class JMPathMathObject extends MathObject {
+public class JMPathMathObject extends MathObject {
 
     public final JMPath jmpath;
     protected boolean needsRecalcControlPoints;
@@ -35,10 +35,9 @@ public abstract class JMPathMathObject extends MathObject {
     public JMPathMathObject(JMPath jmpath, MathObjectDrawingProperties mp) {
         super(mp);
         vertices = new ArrayList<JMPathPoint>();
-        jmpath = new JMPath();
+        this.jmpath = jmpath.copy();
         needsRecalcControlPoints = false;
         center = new Point(0, 0);
-        this.jmpath = jmpath;
     }
 
     public JMPathMathObject(MathObjectDrawingProperties mp) {//TODO: Fix this
@@ -101,11 +100,7 @@ public abstract class JMPathMathObject extends MathObject {
 
     @Override
     public void shift(Vec shiftVector) {
-        for (JMPathPoint p : vertices) {
-            p.p.shift(shiftVector);
-        }
-        center.shift(shiftVector);
-        update();
+        jmpath.shift(shiftVector);
     }
 
     @Override
@@ -117,27 +112,63 @@ public abstract class JMPathMathObject extends MathObject {
 //            }
 //        }
 
-            double sliceSize = jmpath.points.size() * drawParam / numSlices;
+        double sliceSize = jmpath.points.size() * drawParam / numSlices;
 
-            for (int n = 0; n < jmpath.points.size() / numSlices; n++) {
-                for (int k = 0; k < numSlices; k++) {
-                    jmpath.getPoint(k * jmpath.points.size() / numSlices + n).isVisible = (n <= sliceSize);
-                }
+        for (int n = 0; n < jmpath.points.size() / numSlices; n++) {
+            for (int k = 0; k < numSlices; k++) {
+                jmpath.getPoint(k * jmpath.points.size() / numSlices + n).isVisible = (n < sliceSize);
+            }
         }
-
+       
     }
 
     public void removeInterpolationPoints() {
-        ArrayList<JMPathPoint> toRemove=new ArrayList<>();
-        for (JMPathPoint p:jmpath.points)
-        {
-            if (p.type==JMPathPoint.TYPE_INTERPOLATION_POINT)
-            {
+        ArrayList<JMPathPoint> toRemove = new ArrayList<>();
+        for (JMPathPoint p : jmpath.points) {
+            if (p.type == JMPathPoint.TYPE_INTERPOLATION_POINT) {
                 toRemove.add(p);
             }
         }
         jmpath.points.removeAll(toRemove);
         jmpath.computeControlPoints();
+    }
+
+    @Override
+    public void moveTo(Vec coords) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void scale(Point scaleCenter, double sx, double sy, double sz) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public MathObject copy() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void update() {
+    }
+
+    @Override
+    public void prepareForNonLinearAnimation() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void processAfterNonLinearAnimation() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void draw(Renderer r) {
+        r.setBorderColor(mp.color);
+        r.setFillColor(mp.fillColor);
+        r.setStroke(mp.getThickness(r));
+        r.setAlpha(mp.alpha);
+        r.drawPath(jmpath);
     }
 
 }
