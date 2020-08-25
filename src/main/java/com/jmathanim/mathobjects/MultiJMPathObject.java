@@ -5,6 +5,7 @@
  */
 package com.jmathanim.mathobjects;
 
+import com.jmathanim.Renderers.Java2DRenderer;
 import com.jmathanim.Renderers.Renderer;
 import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.Vec;
@@ -39,7 +40,7 @@ public class MultiJMPathObject extends MathObject {
 
     @Override
     public Point getCenter() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return getBoundingBox().getCenter();
     }
 
     @Override
@@ -98,8 +99,15 @@ public class MultiJMPathObject extends MathObject {
 
     @Override
     public void draw(Renderer r) {
+        int n=0;
         for (JMPathMathObject jmp : jmps) {
+//            Rect re=jmp.getBoundingBox();
+//            double[] xx={re.xmin, re.ymax};
+//            int[] mx = r.getCamera().mathToScreen(xx[0], xx[1]);
+//            ((Java2DRenderer)r).debugText(Integer.toString(n), mx[0], mx[1]);
+//            n++;
             jmp.draw(r);
+            
         }
     }
 

@@ -23,6 +23,7 @@ public class JMPathPoint {
     public boolean isVisible;
     public boolean isCurved;
     public int type; //Vertex, interpolation point, etc.
+    public double alpha;
 
     public JMPathPoint(Point p, boolean isVisible, int type) {
         this.p = p;
@@ -31,6 +32,7 @@ public class JMPathPoint {
         isCurved = false;//By default, is not curved
         this.isVisible = isVisible;
         this.type = type;
+        this.alpha=1;//Full opacity
     }
 
     public JMPathPoint copy() {

@@ -144,8 +144,10 @@ public class LaTeXMathObject extends SVGMathObject {
     private void setColor(Color color) {
         for (JMPathMathObject p:jmps)
         {
-            p.jmpath.isBorderDrawed=false;
+            p.jmpath.isBorderDrawed=true;
+            p.mp.thickness=.0001;
             p.setColor(color);
+            p.jmpath.isFilled=false;
             p.setFillColor(color); //LaTeX Objects should have by default same fill and draw color
         }
     }

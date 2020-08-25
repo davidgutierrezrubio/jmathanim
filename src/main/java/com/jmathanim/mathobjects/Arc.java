@@ -59,7 +59,7 @@ public class Arc extends JMPathMathObject {
         r.setBorderColor(mp.color);
         r.setStroke(mp.getThickness(r));
         r.setAlpha(mp.alpha);
-        r.drawPath(jmpath);
+        r.drawPath(this,jmpath);
     }
 
     public void computePoints() {

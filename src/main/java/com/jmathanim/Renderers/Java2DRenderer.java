@@ -13,6 +13,7 @@ import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.JMPathPoint;
+import com.jmathanim.mathobjects.MathObject;
 import io.humble.video.Codec;
 import io.humble.video.Encoder;
 import io.humble.video.MediaPacket;
@@ -44,7 +45,7 @@ import java.util.logging.Logger;
  */
 public class Java2DRenderer extends Renderer {
     
-    private static final boolean DEBUG = false; //Draw control points and vertices
+    private static final boolean DEBUG_PATH_POINTS = true; //Draw control points and vertices
     private static final boolean PRINT_DEBUG = false; //Draw control points and vertices
     private static final boolean BOUNDING_BOX_DEBUG = false; //Draw bounding boxes
     private final BufferedImage bufferedImage;
@@ -214,7 +215,7 @@ public class Java2DRenderer extends Renderer {
     }
     
     @Override
-    public void drawPath(JMPath c) {
+    public void drawPath(MathObject mobj,JMPath c) {
         
         int numPoints = c.size();
         int minimumPoints = 2;
@@ -233,11 +234,11 @@ public class Java2DRenderer extends Renderer {
             path = createPathFromJMPath(c);
             
             if (c.isFilled) {
-                g2d.setPaint(fillColor);
+                g2d.setPaint(mobj.mp.fillColor);
                 g2d.fill(path);
             }
             if (c.isBorderDrawed) {
-                g2d.setColor(borderColor);
+                g2d.setColor(mobj.mp.color);
                 g2d.draw(path);
             }
             if (PRINT_DEBUG) {
@@ -269,7 +270,7 @@ public class Java2DRenderer extends Renderer {
             int[] xy = camera.mathToScreen(point);
             int[] cxy1 = camera.mathToScreen(cpoint1);
             int[] cxy2 = camera.mathToScreen(cpoint2);
-            if (DEBUG) {
+            if (DEBUG_PATH_POINTS) {
                 debugPathPoint(c.getPoint(n));
             }
             if (c.getPoint(n).isVisible) {

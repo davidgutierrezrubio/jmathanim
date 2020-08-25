@@ -10,6 +10,7 @@ import com.jmathanim.mathobjects.JMPath;
 import com.jmathanim.mathobjects.JMPathMathObject;
 import com.jmathanim.mathobjects.JMPathPoint;
 import com.jmathanim.mathobjects.Point;
+import javafx.scene.paint.Color;
 
 /**
  *
@@ -102,9 +103,11 @@ public class Transform extends Animation {
         for (int n=0;n<mobj1.jmpath.size();n++)
         {
                mobj1.jmpath.getPoint(n).type=mobj2.jmpath.getPoint(n).type;
+               mobj1.jmpath.getPoint(n).isCurved=mobj2.jmpath.getPoint(n).isCurved;
+               mobj1.jmpath.getPoint(n).isVisible=mobj2.jmpath.getPoint(n).isVisible;
         }
         //Now I should remove all interpolation auxilary points
-        mobj1.removeInterpolationPoints();
+//        mobj1.removeInterpolationPoints();
 //        mobj2.removeInterpolationPoints();
     }
 

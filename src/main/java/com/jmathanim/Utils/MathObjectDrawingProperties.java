@@ -70,28 +70,35 @@ public class MathObjectDrawingProperties {
      * @param pro
      * @param t Interpolation parameter
      */
-    public void interpolateFrom(MathObjectDrawingProperties a,MathObjectDrawingProperties b, double t) {
+    public void interpolateFrom(MathObjectDrawingProperties a, MathObjectDrawingProperties b, double t) {
         //Interpolate color
-        interpolateColor(a.color,b.color, t);
-        this.thickness=(1-t)*a.thickness+t*b.thickness;
+        interpolateColor(a.color, b.color, t);
+        this.thickness = (1 - t) * a.thickness + t * b.thickness;
 
     }
 
     /**
      * Replaces current color with an interpolated value of given colors
+     *
      * @param colA Color A to interpolate
      * @param colB Color B to interpolate
      * @param t Interpolation value (t=0 gives colA and t=1 gives colB)
      */
-    public void interpolateColor(Color colA, Color colB,double t) {
+    public void interpolateColor(Color colA, Color colB, double t) {
         int r = (int) ((1 - t) * colA.getRed() + t * colB.getRed());
         int g = (int) ((1 - t) * colA.getGreen() + t * colB.getGreen());
         int b = (int) ((1 - t) * colA.getBlue() + t * colB.getBlue());
+        int tr = (int) ((1 - t) * colA.getAlpha() + t * colB.getAlpha());
 
-        this.color=new Color(r, g,b);
-
+        this.color = new Color(r, g, b, tr);
     }
-
+    public void setFillAlpha(float alpha)
+    {
+        this.fillColor=new Color(this.fillColor.getRed(),this.fillColor.getGreen(),this.fillColor.getBlue(),(int)(255*alpha));
+    }
+    
+    
+    
     public double getThickness(Renderer r) {
         double resul;
         if (absoluteThickness) {
@@ -103,7 +110,7 @@ public class MathObjectDrawingProperties {
     }
 
     public MathObjectDrawingProperties copy() {
-        MathObjectDrawingProperties resul=new MathObjectDrawingProperties();
+        MathObjectDrawingProperties resul = new MathObjectDrawingProperties();
         resul.digestFrom(this);
         return resul;
     }

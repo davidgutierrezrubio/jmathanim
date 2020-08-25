@@ -62,7 +62,7 @@ public class Line extends Segment {
         r.setStroke(mp.getThickness(r));
         r.setAlpha(mp.alpha);
 //        r.drawLine(bp1.v.x, bp1.v.y, bp2.v.x, bp2.v.y);
-        r.drawPath(jmpath);
+        r.drawPath(this,jmpath);
         p1.draw(r);
         p2.draw(r);
         bp1.draw(r);

@@ -100,7 +100,7 @@ public class Polygon extends JMPathMathObject {
         r.setBorderColor(mp.color);
         r.setStroke(mp.getThickness(r));
         r.setAlpha(mp.alpha);
-        r.drawPath(jmpath);
+        r.drawPath(this,jmpath);
     }
 
 //    @Override

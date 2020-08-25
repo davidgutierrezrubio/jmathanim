@@ -13,16 +13,23 @@ import com.jmathanim.mathobjects.MathObject;
  */
 public class ShowCreation extends Animation {
 
-    private int numSlices;
+    private int numSlices=1;
 
-    public ShowCreation(MathObject mobj,int numSlices) {
+    public ShowCreation(MathObject mobj) {
         super(mobj);
         this.numSlices=numSlices;
     }
 
-    public ShowCreation(MathObject mobj,int numSlices, double runtime) {
+    public ShowCreation(MathObject mobj,double runtime) {
         super(mobj, runtime);
-        this.numSlices=numSlices;
+    }
+
+    public int getNumSlices() {
+        return numSlices;
+    }
+
+    public void setNumSlices(int numSlices) {
+        this.numSlices = numSlices;
     }
 
     @Override

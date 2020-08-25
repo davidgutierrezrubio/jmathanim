@@ -29,6 +29,7 @@ public class JMPathMathObject extends MathObject {
      * Type of path, JMPath.STRAIGHT or JMPath.CURVED
      */
     protected final Point center;
+    private ArrayList<Boolean> visibilityTemp;
 
     public JMPathMathObject() {
         this(null);
@@ -107,18 +108,26 @@ public class JMPathMathObject extends MathObject {
 
     @Override
     public void setDrawParam(double drawParam, int numSlices) {
-//        if (numSlices == MathObject.SLICE_SIMPLE) {
-//            double sliceSize = jmpath.points.size() * drawParam;
-//            for (int n = 0; n < jmpath.points.size(); n++) {
-//                jmpath.getPoint(n).isVisible = (n <= sliceSize);
-//            }
-//        }
 
+        //If this is the first call, be sure to store visibility status
+        if (drawParam == 0) {
+            visibilityTemp = new ArrayList<Boolean>();
+            for (int n = 0; n < jmpath.points.size(); n++) {
+                visibilityTemp.add(jmpath.points.get(n).isVisible);
+            }
+        }
+
+//        jmpath.isFilled = (drawParam >= 1);//Fill path if is completely drawn
         double sliceSize = jmpath.points.size() * drawParam / numSlices;
 
         for (int n = 0; n < jmpath.points.size() / numSlices; n++) {
-            for (int k = 0; k < numSlices; k++) {
-                jmpath.getPoint(k * jmpath.points.size() / numSlices + n).isVisible = (n < sliceSize);
+            for (int k = 0; k < numSlices; k++) {//TODO: Store initial visible in array
+                int h = k * jmpath.points.size() / numSlices + n;
+                if (n < sliceSize) {
+                    jmpath.getPoint(h).isVisible = visibilityTemp.get(h);
+                } else {
+                    jmpath.getPoint(h).isVisible = false;
+                }
             }
         }
 
@@ -147,7 +156,7 @@ public class JMPathMathObject extends MathObject {
 
     @Override
     public MathObject copy() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return new JMPathMathObject(jmpath.rawCopy(),mp.copy());
     }
 
     @Override
@@ -170,19 +179,20 @@ public class JMPathMathObject extends MathObject {
         r.setFillColor(mp.fillColor);
         r.setStroke(mp.getThickness(r));
         r.setAlpha(mp.alpha);
-        r.drawPath(jmpath);
+        r.drawPath(this,jmpath);
     }
 
     @Override
     public Rect getBoundingBox() {
-       return jmpath.getBoundingBox();
+        return jmpath.getBoundingBox();
     }
 
     void setColor(Color color) {
-        this.mp.color=color;
+        this.mp.color = color;
     }
-     void setFillColor(Color color) {
-        this.mp.fillColor=color;
+
+    void setFillColor(Color color) {
+        this.mp.fillColor = color;
     }
 
 }

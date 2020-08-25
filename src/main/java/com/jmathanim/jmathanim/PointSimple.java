@@ -17,6 +17,7 @@ import com.jmathanim.mathobjects.JMPathMathObject;
 import com.jmathanim.mathobjects.JMPathPoint;
 import com.jmathanim.mathobjects.LaTeXMathObject;
 import com.jmathanim.mathobjects.Line;
+import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.Point;
 import com.jmathanim.mathobjects.Polygon;
 import com.jmathanim.mathobjects.RegularPolygon;
@@ -33,15 +34,15 @@ public class PointSimple extends Scene2D {
 
     @Override
     public void setupSketch() {
-        conf.setHighQuality();
-//        conf.setLowQuality();
+//        conf.setHighQuality();
+        conf.setLowQuality();
         createRenderer();
     }
 
     @Override
     public void runSketch() {
         System.out.println("Running sketch...");
-        pruebaLaTeX();
+        pruebaRelleno();
     }
 
     public void pruebaSimpleJMPathObject() throws ArrayIndexOutOfBoundsException {
@@ -59,7 +60,7 @@ public class PointSimple extends Scene2D {
         pa.mp.color = Color.GREEN;
         add(pa);
         waitSeconds(3);
-        play(new ShowCreation(pa, 1, 3));
+        play(new ShowCreation(pa, 3));
         waitSeconds(3);
         pa.jmpath.points.get(2).isVisible = false;
         waitSeconds(3);
@@ -86,15 +87,15 @@ public class PointSimple extends Scene2D {
         p2.shift(new Vec(-xx, -yy + ymax * .5d));
         p3.shift(new Vec(-xx, -yy + ymax * .5d));
         pa1.isFilled = false;
-        play(new ShowCreation(p1, 1, .6));
+        play(new ShowCreation(p1, .6));
         pa1.isFilled = true;
 
         pa2.isFilled = false;
-        play(new ShowCreation(p2, 1, .6));
+        play(new ShowCreation(p2, .6));
         pa2.isFilled = true;
 
         pa3.isFilled = false;
-        play(new ShowCreation(p3, 1, .6));
+        play(new ShowCreation(p3, .6));
         pa3.isFilled = true;
 
         waitSeconds(3);
@@ -132,11 +133,11 @@ public class PointSimple extends Scene2D {
 //        add(pol);
 
         waitSeconds(1);
-        ArrayList<Animation> anims = new ArrayList<Animation>();
-        anims.add(new ShowCreation(c1, 1, 3));
-        anims.add(new ShowCreation(c2, 2, 3));
-        anims.add(new ShowCreation(c3, 3, 3));
-        anims.add(new ShowCreation(c4, 4, 3));
+        ArrayList<Animation> anims = new ArrayList<>();
+        anims.add(new ShowCreation(c1, 3));
+        anims.add(new ShowCreation(c2, 3));
+        anims.add(new ShowCreation(c3, 3));
+        anims.add(new ShowCreation(c4, 3));
         play(anims);
         waitSeconds(2);
     }
@@ -248,15 +249,37 @@ public class PointSimple extends Scene2D {
     }
 
     private void pruebaImportSVGFile() {
-        SVGMathObject svgObject = new SVGMathObject(this,"c:\\media\\tex\\o.svg");
+        SVGMathObject svgObject = new SVGMathObject(this, "c:\\media\\tex\\o.svg");
         add(svgObject);
         waitSeconds(3);
     }
-    private void pruebaLaTeX()
-    {
-        LaTeXMathObject lm=new LaTeXMathObject(this, "$\\int_0^\\infty x\\,dx=\\infty$");
-        add(lm);
-        waitSeconds(3);
+
+    private void pruebaRelleno() {
+        Circle circ = new Circle(new Point(0, 0), 1);
+        add(circ);
+        circ.mp.fill = true;
+        circ.jmpath.isFilled = true;
+        play(new ShowCreation(circ, 3));
+        for (float al = 0; al <= 1; al += .01) {
+            circ.mp.setFillAlpha(al);
+            advanceFrame();
+        }
+        waitSeconds(2);
+    }
+
+    private void pruebaLaTeX() {
+        LaTeXMathObject lm = new LaTeXMathObject(this, "$$\\int_0^\\infty x\\,dx=\\infty$$");
+        lm.scale(6, 6);
+//        add(lm);
+//        play(new ShowCreation(lm, 3));
+        JMPathMathObject xcopia = (JMPathMathObject) lm.jmps.get(3).copy();
+        JMPathMathObject xIgual = (JMPathMathObject) lm.jmps.get(6).copy();
+        JMPathMathObject xDst = (JMPathMathObject) lm.jmps.get(3);
+        xcopia.shift(new Vec(0, -1.5));
+        add(xcopia);
+        waitSeconds(2);
+        play(new Transform(xIgual, xDst, 5));
+        waitSeconds(2);
     }
 
 }

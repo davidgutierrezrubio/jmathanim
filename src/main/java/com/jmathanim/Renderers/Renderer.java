@@ -7,6 +7,7 @@ package com.jmathanim.Renderers;
 
 import com.jmathanim.mathobjects.JMPath;
 import com.jmathanim.Cameras.Camera;
+import com.jmathanim.mathobjects.MathObject;
 import java.awt.Color;
 
 /**
@@ -120,7 +121,7 @@ public abstract class Renderer {
 //
 //    abstract public void closePath();
 
-    abstract public void drawPath(JMPath c);
+    abstract public void drawPath(MathObject mobj,JMPath c);
 
     abstract public void setAlpha(double alpha);
     
