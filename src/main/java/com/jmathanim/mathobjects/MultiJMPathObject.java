@@ -6,10 +6,13 @@
 package com.jmathanim.mathobjects;
 
 import com.jmathanim.Renderers.Renderer;
+import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.Vec;
 import java.util.ArrayList;
 
 /**
+ * This class stores multiple JMPathObjects, and properly apply transforms and
+ * animations to them
  *
  * @author David Gutiérrez Rubio <davidgutierrezrubio@gmail.com>
  */
@@ -24,6 +27,14 @@ public class MultiJMPathObject extends MathObject {
     public MultiJMPathObject(ArrayList<JMPathMathObject> jmps) {
         super();
         this.jmps = jmps;
+    }
+
+    public boolean addJMPathObject(JMPathMathObject e) {
+        return jmps.add(e);
+    }
+
+    public boolean addJMPathObject(JMPath p) {
+        return jmps.add(new JMPathMathObject(p, null));
     }
 
     @Override
@@ -90,6 +101,15 @@ public class MultiJMPathObject extends MathObject {
         for (JMPathMathObject jmp : jmps) {
             jmp.draw(r);
         }
+    }
+
+    @Override
+    public Rect getBoundingBox() {
+        Rect resul = jmps.get(0).getBoundingBox();
+        for (JMPathMathObject jmp : jmps) {
+            resul = resul.union(jmp.getBoundingBox());
+        }
+        return resul;
     }
 
 }

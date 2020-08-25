@@ -6,6 +6,7 @@
 package com.jmathanim.mathobjects;
 
 import com.jmathanim.Utils.MathObjectDrawingProperties;
+import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import java.util.HashSet;
@@ -107,7 +108,7 @@ public abstract class MathObject implements Drawable {
      * @param sz
      */
     public void scale(double sx, double sy, double sz) {
-        scale(getCenter(), sx, sy, sz);
+        scale(getBoundingBox().getCenter(), sx, sy, sz);
     }
 
     public abstract void scale(Point scaleCenter, double sx, double sy, double sz);
@@ -181,4 +182,9 @@ public abstract class MathObject implements Drawable {
      */
     public abstract void setDrawParam(double t,int sliceType);
     
+    /**
+     * Returns the Bounding box with limits of the MathObject
+     * @return A Rect with (xmin,ymin,xmax,ymax)
+     */
+    public abstract Rect getBoundingBox();
 }

@@ -5,6 +5,8 @@
  */
 package com.jmathanim.Utils;
 
+import com.jmathanim.mathobjects.Point;
+
 /**
  * Encapsulates data about a rectangle
  *
@@ -145,4 +147,18 @@ public class Rect {
         return resul;
     }
 
+    public Rect union(Rect b) {
+        return new Rect(Math.min(xmin, b.xmin),Math.min(ymin, b.ymin),Math.max(xmax, b.xmax),Math.max(ymax, b.ymax));
+    }
+
+    public Point getCenter() {
+        return new Point(.5*(xmin+xmax),.5*(ymin+ymax));
+    }
+
+    public double getHeight(){
+        return ymax-ymin;
+    }
+    public double getWidth(){
+        return xmax-xmin;
+    }
 }

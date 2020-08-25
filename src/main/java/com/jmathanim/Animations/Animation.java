@@ -17,7 +17,7 @@ import com.jmathanim.mathobjects.MathObject;
 public abstract class Animation {
 
     private double t, dt;
-    protected final MathObject mobj;
+    public final MathObject mobj;
     protected double runTime;
     protected double fps;
     private int numFrames; //Number of frames of animation

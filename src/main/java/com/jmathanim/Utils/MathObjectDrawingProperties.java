@@ -27,6 +27,7 @@ public class MathObjectDrawingProperties {
     public Double alpha;
     public Integer layer;//Layer to draw. Slower means under.
     public Boolean absolutePosition;//If true, position comes in absolute screen coordinates
+    public Boolean drawPathBorder;
 
     public MathObjectDrawingProperties() {
         //Default, boring values
@@ -36,6 +37,7 @@ public class MathObjectDrawingProperties {
         this.alpha = 1d;
         this.visible = true;
         this.fill = false;
+        this.drawPathBorder = false;
         this.absoluteThickness = false;
         this.layer = 1;//Layer 0 should be reserved for background
         this.absolutePosition = false;
@@ -56,6 +58,7 @@ public class MathObjectDrawingProperties {
         alpha = (prop.alpha == null ? alpha : prop.alpha);
         visible = (prop.visible == null ? visible : prop.visible);
         fill = (prop.fill == null ? fill : prop.fill);
+        drawPathBorder = (prop.drawPathBorder == null ? drawPathBorder : prop.drawPathBorder);
         absoluteThickness = (prop.absoluteThickness == null ? absoluteThickness : prop.absoluteThickness);
         layer = (prop.layer == null ? layer : prop.layer);
         absolutePosition = (prop.absolutePosition == null ? absolutePosition : prop.absolutePosition);

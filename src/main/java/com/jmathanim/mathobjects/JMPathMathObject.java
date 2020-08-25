@@ -7,7 +7,9 @@ package com.jmathanim.mathobjects;
 
 import com.jmathanim.Renderers.Renderer;
 import com.jmathanim.Utils.MathObjectDrawingProperties;
+import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.Vec;
+import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Properties;
 
@@ -119,7 +121,7 @@ public class JMPathMathObject extends MathObject {
                 jmpath.getPoint(k * jmpath.points.size() / numSlices + n).isVisible = (n < sliceSize);
             }
         }
-       
+
     }
 
     public void removeInterpolationPoints() {
@@ -140,7 +142,7 @@ public class JMPathMathObject extends MathObject {
 
     @Override
     public void scale(Point scaleCenter, double sx, double sy, double sz) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        jmpath.scale(scaleCenter, sx, sy, sz);
     }
 
     @Override
@@ -169,6 +171,18 @@ public class JMPathMathObject extends MathObject {
         r.setStroke(mp.getThickness(r));
         r.setAlpha(mp.alpha);
         r.drawPath(jmpath);
+    }
+
+    @Override
+    public Rect getBoundingBox() {
+       return jmpath.getBoundingBox();
+    }
+
+    void setColor(Color color) {
+        this.mp.color=color;
+    }
+     void setFillColor(Color color) {
+        this.mp.fillColor=color;
     }
 
 }

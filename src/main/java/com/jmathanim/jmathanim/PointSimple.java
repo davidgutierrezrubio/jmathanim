@@ -15,11 +15,12 @@ import com.jmathanim.mathobjects.Circle;
 import com.jmathanim.mathobjects.JMPath;
 import com.jmathanim.mathobjects.JMPathMathObject;
 import com.jmathanim.mathobjects.JMPathPoint;
+import com.jmathanim.mathobjects.LaTeXMathObject;
 import com.jmathanim.mathobjects.Line;
-import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.Point;
 import com.jmathanim.mathobjects.Polygon;
 import com.jmathanim.mathobjects.RegularPolygon;
+import com.jmathanim.mathobjects.SVGMathObject;
 import com.jmathanim.mathobjects.Segment;
 import java.awt.Color;
 import java.util.ArrayList;
@@ -32,15 +33,15 @@ public class PointSimple extends Scene2D {
 
     @Override
     public void setupSketch() {
-//        conf.setHighQuality();
-        conf.setLowQuality();
+        conf.setHighQuality();
+//        conf.setLowQuality();
         createRenderer();
     }
 
     @Override
     public void runSketch() {
         System.out.println("Running sketch...");
-        pruebaSVGImporter();
+        pruebaLaTeX();
     }
 
     public void pruebaSimpleJMPathObject() throws ArrayIndexOutOfBoundsException {
@@ -65,32 +66,51 @@ public class PointSimple extends Scene2D {
     }
 
     public void pruebaSVGImporter() throws ArrayIndexOutOfBoundsException {
-        camera.setMathXY(-5, 5, 2);
+        camera.setMathXY(-25, 50, 2);
         double ymax = camera.getMathBoundaries().ymax;
-//        camera.setCenter(0, );
 
         SVGImporter svg = new SVGImporter();
-        JMPath pa1 = svg.PSVGtoPath("M174.11346 -2.719801C174.11346 -3.755915 173.416075 -4.403487 172.519438 -4.403487C171.184444 -4.403487 169.84945 -2.988792 169.84945 -1.574097C169.84945 -0.587796 170.516947 0.109589 171.443472 0.109589C172.768504 0.109589 174.11346 -1.265255 174.11346 -2.719801M171.453435 -0.109589C171.025042 -0.109589 170.586685 -0.418431 170.586685 -1.195517C170.586685 -1.683686 170.845714 -2.759651 171.164519 -3.267746C171.662651 -4.034869 172.230521 -4.184309 172.509475 -4.184309C173.087308 -4.184309 173.386187 -3.706102 173.386187 -3.108344C173.386187 -2.719801 173.186934 -1.673724 172.808354 -1.026152C172.459662 -0.448319 171.911717 -0.109589 171.453435 -0.109589Z");
-//        JMPath pa1 = svg.PSVGtoPath("M174.11346 -2.719801C174.11346 -3.755915 173.416075 -4.403487 172.519438 -4.403487C171.184444 -4.403487 169.84945 -2.988792 169.84945 -1.574097C169.84945 -0.587796 170.516947 0.109589 171.443472 0.109589C172.768504 0.109589 174.11346 -1.265255 174.11346 -2.719801ZM171.453435 -0.109589C171.025042 -0.109589 170.586685 -0.418431 170.586685 -1.195517C170.586685 -1.683686 170.845714 -2.759651 171.164519 -3.267746C171.662651 -4.034869 172.230521 -4.184309 172.509475 -4.184309C173.087308 -4.184309 173.386187 -3.706102 173.386187 -3.108344C173.386187 -2.719801 173.186934 -1.673724 172.808354 -1.026152C172.459662 -0.448319 171.911717 -0.109589 171.453435 -0.109589Z");
-        JMPath pa2 = svg.PSVGtoPath("M171.477434 -3.716065H172.603212C172.274445 -2.241594 172.184781 -1.8132 172.184781 -1.145704C172.184781 -0.996264 172.184781 -0.727273 172.264482 -0.388543C172.364109 0.049813 172.473698 0.109589 172.623137 0.109589C172.82239 0.109589 173.031606 -0.069738 173.031606 -0.268991C173.031606 -0.328767 173.031606 -0.348692 172.97183 -0.488169C172.682913 -1.205479 172.682913 -1.853051 172.682913 -2.132005C172.682913 -2.660025 172.752652 -3.198007 172.862241 -3.716065H173.997982C174.127496 -3.716065 174.486151 -3.716065 174.486151 -4.054795C174.486151 -4.293898 174.276936 -4.293898 174.087646 -4.293898H170.750161C170.530983 -4.293898 170.152403 -4.293898 169.714047 -3.825654C169.365354 -3.437111 169.106326 -2.978829 169.106326 -2.929016C169.106326 -2.919054 169.106326 -2.82939 169.225877 -2.82939C169.305578 -2.82939 169.325504 -2.86924 169.385279 -2.948941C169.873449 -3.716065 170.451282 -3.716065 170.650535 -3.716065H171.218405C170.899601 -2.510585 170.361618 -1.305106 169.943187 -0.398506C169.863486 -0.249066 169.863486 -0.229141 169.863486 -0.159402C169.863486 0.029888 170.022888 0.109589 170.152403 0.109589C170.451282 0.109589 170.530983 -0.169365 170.650535 -0.537983C170.790012 -0.996264 170.790012 -1.016189 170.919526 -1.514321L171.477434 -3.716065Z");
+        //TODO: Implement S command 
+        JMPath pa1 = svg.PSVGtoPath("M162.051224 -0.767123L163.107264 -1.793275C164.661436 -3.16812 165.259194 -3.706102 165.259194 -4.702366C165.259194 -5.838107 164.362556 -6.635118 163.147114 -6.635118C162.021336 -6.635118 161.284101 -5.718555 161.284101 -4.83188C161.284101 -4.273973 161.782233 -4.273973 161.812121 -4.273973C161.981485 -4.273973 162.330178 -4.393524 162.330178 -4.801993C162.330178 -5.061021 162.15085 -5.32005 161.802158 -5.32005C161.722457 -5.32005 161.702532 -5.32005 161.672644 -5.310087C161.901784 -5.957659 162.439767 -6.326276 163.0176 -6.326276C163.9242 -6.326276 164.352594 -5.519303 164.352594 -4.702366C164.352594 -3.905355 163.854462 -3.118306 163.306517 -2.500623L161.39369 -0.368618C161.284101 -0.259029 161.284101 -0.239103 161.284101 0H164.98024L165.259194 -1.733499H165.010128C164.960315 -1.43462 164.890576 -0.996264 164.79095 -0.846824C164.721211 -0.767123 164.063677 -0.767123 163.844499 -0.767123H162.051224Z");
+        JMPath pa2 = svg.PSVGtoPath("M172.055893 -2.291407H174.83547C174.974947 -2.291407 175.164237 -2.291407 175.164237 -2.49066S174.974947 -2.689913 174.83547 -2.689913H172.055893V-5.479452C172.055893 -5.618929 172.055893 -5.808219 171.856641 -5.808219S171.657388 -5.618929 171.657388 -5.479452V-2.689913H168.867849C168.728372 -2.689913 168.539082 -2.689913 168.539082 -2.49066S168.728372 -2.291407 168.867849 -2.291407H171.657388V0.498132C171.657388 0.637609 171.657388 0.826899 171.856641 0.826899S172.055893 0.637609 172.055893 0.498132V-2.291407Z");
+        JMPath pa3 = svg.PSVGtoPath("M179.209042 -0.767123L180.265082 -1.793275C181.819254 -3.16812 182.417013 -3.706102 182.417013 -4.702366C182.417013 -5.838107 181.520375 -6.635118 180.304933 -6.635118C179.179155 -6.635118 178.441919 -5.718555 178.441919 -4.83188C178.441919 -4.273973 178.940051 -4.273973 178.969939 -4.273973C179.139304 -4.273973 179.487996 -4.393524 179.487996 -4.801993C179.487996 -5.061021 179.308669 -5.32005 178.959976 -5.32005C178.880275 -5.32005 178.86035 -5.32005 178.830462 -5.310087C179.059603 -5.957659 179.597585 -6.326276 180.175419 -6.326276C181.082019 -6.326276 181.510412 -5.519303 181.510412 -4.702366C181.510412 -3.905355 181.01228 -3.118306 180.464335 -2.500623L178.551508 -0.368618C178.441919 -0.259029 178.441919 -0.239103 178.441919 0H182.138059L182.417013 -1.733499H182.167947C182.118133 -1.43462 182.048395 -0.996264 181.948768 -0.846824C181.87903 -0.767123 181.221496 -0.767123 181.002318 -0.767123H179.209042Z");
         System.out.println(pa1);
 
         JMPathMathObject p1 = new JMPathMathObject(pa1, null);
         JMPathMathObject p2 = new JMPathMathObject(pa2, null);
+        JMPathMathObject p3 = new JMPathMathObject(pa3, null);
         //Move path to center of the screen, upper
         double xx = pa1.points.get(0).p.v.x;
         double yy = pa1.points.get(0).p.v.y;
-        p1.shift(new Vec(-xx,-yy+ymax*.5d));
-        p2.shift(new Vec(-xx+5,-yy+ymax*.5d));
-        
-        pa1.isFilled=false;
-        pa2.isFilled=false;
-        add(p1);
+        p1.shift(new Vec(-xx, -yy + ymax * .5d));
+        p2.shift(new Vec(-xx, -yy + ymax * .5d));
+        p3.shift(new Vec(-xx, -yy + ymax * .5d));
+        pa1.isFilled = false;
+        play(new ShowCreation(p1, 1, .6));
+        pa1.isFilled = true;
+
+        pa2.isFilled = false;
+        play(new ShowCreation(p2, 1, .6));
+        pa2.isFilled = true;
+
+        pa3.isFilled = false;
+        play(new ShowCreation(p3, 1, .6));
+        pa3.isFilled = true;
+
         waitSeconds(3);
-        p1.jmpath.interpolate(20);
-        p2.jmpath.interpolate(20);
-        add(p2);
-        play(new ShowCreation(p1, 2,5),new ShowCreation(p2, 2,5));
+//        p1.jmpath.interpolate(20);
+//        p2.jmpath.interpolate(20);
+//        add(p2);
+//        play(new ShowCreation(p1, 2,5),new ShowCreation(p2, 2,5));
+//        waitSeconds(3);
+    }
+
+    public void pruebaBoundingBox() {
+        Circle circle = new Circle(new Point(-0, 0), 1);
+//        camera.setCenter(0, );
+        add(circle);
+        Rect r = circle.getBoundingBox();
+        add(new Segment(new Point(r.xmin, r.ymin), new Point(r.xmax, r.ymax)));
         waitSeconds(3);
     }
 
@@ -225,6 +245,18 @@ public class PointSimple extends Scene2D {
 
         Point centro = regPolyg.getCenter();
         add(centro);
+    }
+
+    private void pruebaImportSVGFile() {
+        SVGMathObject svgObject = new SVGMathObject(this,"c:\\media\\tex\\o.svg");
+        add(svgObject);
+        waitSeconds(3);
+    }
+    private void pruebaLaTeX()
+    {
+        LaTeXMathObject lm=new LaTeXMathObject(this, "$\\int_0^\\infty x\\,dx=\\infty$");
+        add(lm);
+        waitSeconds(3);
     }
 
 }

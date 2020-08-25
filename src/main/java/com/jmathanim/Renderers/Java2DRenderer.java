@@ -9,6 +9,7 @@ import com.jmathanim.mathobjects.JMPath;
 import com.jmathanim.Cameras.Camera;
 import com.jmathanim.Cameras.Camera2D;
 import com.jmathanim.Utils.JMathAnimConfig;
+import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.JMPathPoint;
@@ -45,6 +46,7 @@ public class Java2DRenderer extends Renderer {
     
     private static final boolean DEBUG = false; //Draw control points and vertices
     private static final boolean PRINT_DEBUG = false; //Draw control points and vertices
+    private static final boolean BOUNDING_BOX_DEBUG = false; //Draw bounding boxes
     private final BufferedImage bufferedImage;
     private final Graphics2D g2d;
     public Camera2D camera;
@@ -241,6 +243,7 @@ public class Java2DRenderer extends Renderer {
             if (PRINT_DEBUG) {
                 System.out.println("Drawing " + c);
             }
+            if (BOUNDING_BOX_DEBUG) debugBoundingBox(c.getBoundingBox());
         }
     }
     
@@ -344,5 +347,14 @@ public class Java2DRenderer extends Renderer {
         g2d.setColor(Color.WHITE);
         g2d.drawString(texto, x, y);
     }
-    
+    public void debugBoundingBox(Rect r)
+    {
+        double[] ULCorner={r.xmin,r.ymax};
+        double[] DRCorner={r.xmax,r.ymin};
+        int[] scUL = camera.mathToScreen(ULCorner[0], ULCorner[1]);
+        int[] scDR = camera.mathToScreen(DRCorner[0], DRCorner[1]);
+        g2d.setColor(Color.LIGHT_GRAY);
+        g2d.setStroke(new BasicStroke(1, CAP_ROUND, JOIN_ROUND));
+        g2d.drawRect(scUL[0], scUL[1], scDR[0]-scUL[0], scDR[1]-scUL[1]);
+    }
 }

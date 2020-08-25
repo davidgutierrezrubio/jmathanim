@@ -6,6 +6,7 @@
 package com.jmathanim.mathobjects;
 
 import com.jmathanim.Utils.CircularArrayList;
+import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.Vec;
 import java.util.ArrayList;
 
@@ -449,6 +450,44 @@ public class JMPath {
     void shift(Vec shiftVector) {
         for (JMPathPoint p : points) {
             p.shift(shiftVector);
+        }
+    }
+
+    public Rect getBoundingBox() {
+        //Initial values for min and max
+        double xmin = points.get(0).p.v.x;
+        double ymin = points.get(0).p.v.y;
+        double xmax = points.get(0).p.v.x;
+        double ymax = points.get(0).p.v.y;
+        for (JMPathPoint p : points) {
+            double x = p.p.v.x;
+            double y = p.p.v.y;
+            xmin = (x < xmin ? x : xmin);
+            ymin = (y < ymin ? y : ymin);
+            xmax = (x > xmax ? x : xmax);
+            ymax = (y > ymax ? y : ymax);
+            //Include also control points!
+            double cx1 = p.cp1.v.x;
+            double cy1 = p.cp1.v.y;
+            xmin = (cx1 < xmin ? cx1 : xmin);
+            ymin = (cy1 < ymin ? cy1 : ymin);
+            xmax = (cx1> xmax ? cx1 : xmax);
+            ymax = (cy1 > ymax ? cy1 : ymax);
+            double cx2 = p.cp2.v.x;
+            double cy2 = p.cp2.v.y;
+            xmin = (cx2 < xmin ? cx2 : xmin);
+            ymin = (cy2 < ymin ? cy2 : ymin);
+            xmax = (cx2> xmax ? cx2 : xmax);
+            ymax = (cy2 > ymax ? cy2 : ymax);
+        }
+        return new Rect(xmin, ymin, xmax, ymax);
+    }
+
+    void scale(Point point, double d,double e,double f) {
+        for (JMPathPoint p:points)
+        {
+            p.scale(point,d,e,f);
+            
         }
     }
 

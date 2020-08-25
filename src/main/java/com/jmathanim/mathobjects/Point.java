@@ -10,6 +10,7 @@ import java.util.Properties;
 import com.jmathanim.Renderers.Renderer;
 import com.jmathanim.Utils.ConfigUtils;
 import com.jmathanim.Utils.MathObjectDrawingProperties;
+import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.Vec;
 
 /**
@@ -107,7 +108,9 @@ public final class Point extends MathObject {
 
     @Override
     public void scale(Point scaleCenter, double sx, double sy, double sz) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        v.x=(1-sx)*scaleCenter.v.x+sx*v.x;
+        v.y=(1-sy)*scaleCenter.v.y+sy*v.y;
+        v.z=(1-sz)*scaleCenter.v.z+sz*v.z;
     }
 
     /**
@@ -152,6 +155,11 @@ public final class Point extends MathObject {
     @Override
     public void setDrawParam(double t,int sliceType) {
         //Nothing to do here, it's just a point!!
+    }
+
+    @Override
+    public Rect getBoundingBox() {
+        return new Rect(v.x,v.y,v.x,v.y);
     }
 
 }

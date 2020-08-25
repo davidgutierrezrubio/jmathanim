@@ -77,10 +77,12 @@ public abstract class JMathAnimScene {
         }
     }
 
-    public final void add(MathObject ... objs) {
-        for (MathObject obj:objs){
-        objects.add(obj);
-        obj.addScene(this);
+    public final void add(MathObject... objs) {
+        for (MathObject obj : objs) {
+            if (!objects.contains(obj)) {
+                objects.add(obj);
+                obj.addScene(this);
+            }
         }
     }
 
@@ -121,31 +123,18 @@ public abstract class JMathAnimScene {
         SCRenderer.saveFrame(frameCount);
     }
 
-    public void play(Animation anim) {
-        ArrayList<Animation> anims = new ArrayList<>();
-        anims.add(anim);
-        this.play(anims);
-    }
-
-    public void play(Animation anim1, Animation anim2) {
-        ArrayList<Animation> anims = new ArrayList<>();
-        anims.add(anim1);
-        anims.add(anim2);
-        this.play(anims);
-    }
-
-    public void play(Animation anim1, Animation anim2, Animation anim3) {
-        ArrayList<Animation> anims = new ArrayList<>();
-        anims.add(anim1);
-        anims.add(anim2);
-        anims.add(anim3);
-        this.play(anims);
+    public void play(Animation... anims) {
+        ArrayList<Animation> animArray = new ArrayList<>();
+        for (Animation anim : anims) {
+            animArray.add(anim);
+        }
+        this.play(animArray);
     }
 
     public void play(ArrayList<Animation> anims) {
-//        for (Animation anim : anims) {
-//            anim.setFps(fps);
-//        }
+        for (Animation anim : anims) {
+            add(anim.mobj);
+        }
         boolean finished = false;
         while (!finished) {
             finished = true;
@@ -166,4 +155,7 @@ public abstract class JMathAnimScene {
 
     }
 
+    public Camera getCamera() {
+        return SCRenderer.getCamera();
+    }
 }

@@ -74,4 +74,10 @@ public class JMPathPoint {
         cp2.shift(shiftVector);
     }
 
+    void scale(Point point, double d,double e,double f) {
+        this.p.scale(point,d,e,f);
+        this.cp1.scale(point,d,e,f);
+        this.cp2.scale(point,d,e,f);
+    }
+
 }

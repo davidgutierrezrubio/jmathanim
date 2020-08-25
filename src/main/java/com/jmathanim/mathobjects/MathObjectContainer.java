@@ -7,8 +7,8 @@ package com.jmathanim.mathobjects;
 
 import com.jmathanim.Renderers.Renderer;
 import com.jmathanim.Utils.MathObjectDrawingProperties;
+import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.Vec;
-import java.util.Properties;
 
 /**
  *
@@ -83,6 +83,11 @@ public class MathObjectContainer extends MathObject {
 
     @Override
     public void setDrawParam(double t,int sliceType) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public Rect getBoundingBox() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
