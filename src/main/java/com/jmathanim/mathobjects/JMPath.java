@@ -23,12 +23,10 @@ public class JMPath {
 //    static public final int STRAIGHT = 2; //Straight line
     public final CircularArrayList<JMPathPoint> points; //points from the curve
     public final CircularArrayList<Boolean> visiblePoints;//Whether this point is visible or not
-    private boolean isClosed;
+    public boolean isClosed;
     public boolean isInterpolated;
-    public boolean isFilled;
-    public boolean isBorderDrawed;
 
-    double tension;
+    double tension = .3d;
 
     public JMPath() {
         this(new ArrayList<Point>());
@@ -41,8 +39,6 @@ public class JMPath {
 //        this.controlPoints2 = new CircularArrayList<>();
         this.visiblePoints = new CircularArrayList<>();
         isClosed = false;
-        isFilled = false;
-        isBorderDrawed = true;
         tension = 0.3d; //Default tension
         isInterpolated = false;//By default, path hasn't interpolation points
     }
@@ -84,7 +80,8 @@ public class JMPath {
 
     public void close() {
         //Add first point and mark as closed
-        addPoint(points.get(0).copy());//TODO: Mark this new point as dependent in case point0 moves
+//        addPoint(points.get(0).copy());//TODO: Mark this new point as dependent in case point0 moves
+//        points.get(0).isCurved=false;
         isClosed = true;
     }
 
@@ -114,23 +111,29 @@ public class JMPath {
 
     /**
      * Compute control points, using various methods This method should be
-     * called once all points have been added
-     *
+     * called once all points have been added and only if there is generated
+     * shape (not to be used with SVG import, for example)
      */
-    public void computeControlPoints() //For now, only one method
+    public void generateControlPoints() //For now, only one method
     {
         int numPoints = points.size();
-        if (!isClosed) {
-            numPoints = numPoints - 1;
+        if (isClosed) {
+            numPoints = numPoints + 1;
         }
         for (int n = 0; n < numPoints; n++) {
             int i = n - 1;
             int k = n + 1;
             int L = n + 2;
             JMPathPoint p1 = points.get(i);
-            JMPathPoint p2 = points.get(n);//Compute cp2 for this
+            JMPathPoint p2 = points.get(n);//Compute cp1 for this
             JMPathPoint p3 = points.get(k);//Compute cp2 for this
             JMPathPoint p4 = points.get(L);
+
+            //If a SVG Point, don't compute new control points
+            if ((p2.type & JMPathPoint.TYPE_SVG)>0) {
+                continue;
+            }
+
             double x1 = p1.p.v.x;
             double y1 = p1.p.v.y;
             double x2 = p2.p.v.x;
@@ -140,7 +143,6 @@ public class JMPath {
             double x4 = p4.p.v.x;
             double y4 = p4.p.v.y;
             if (p3.isCurved) {
-                double tension = 0.3d;
                 double mod31 = Math.sqrt((x3 - x1) * (x3 - x1) + (y3 - y1) * (y3 - y1));
                 double mod42 = Math.sqrt((x4 - x2) * (x4 - x2) + (y4 - y2) * (y4 - y2));
                 double mod23 = Math.sqrt((x3 - x2) * (x3 - x2) + (y3 - y2) * (y3 - y2));
@@ -201,7 +203,7 @@ public class JMPath {
             }
             //Copy basic attributes of the original curve
             resul.isClosed = this.isClosed;
-            resul.computeControlPoints();
+            resul.generateControlPoints();//WARNING: THIS DOESN'T WORK WITH SVG
             resul.isInterpolated = true;//Mark this path as interpolated
             this.clear();
             this.addPointsFrom(resul);
@@ -220,14 +222,14 @@ public class JMPath {
         }
         points.removeAll(toRemove);//Remove all interpolation points
         isInterpolated = false;//Mark this path as no interpolated
-        computeControlPoints();//Recompute control points
+        generateControlPoints();//Recompute control points
     }
 
     @Override
     public String toString() {
-        String resul = "JMPath[";
+        String resul = "";
         for (JMPathPoint p : points) {
-            resul += ", " + p;
+            resul += (p.isCurved ? "C" : "R");
         }
         return resul;
     }
@@ -293,7 +295,7 @@ public class JMPath {
         }
         pathSmall.clear();
         pathSmall.addPointsFrom(resul);
-        pathSmall.computeControlPoints();
+        pathSmall.generateControlPoints();
     }
 
     public JMPathPoint interpolateBetweenTwoPoints(JMPathPoint v1, JMPathPoint v2, double alpha) {
@@ -330,8 +332,6 @@ public class JMPath {
         }
 
         resul.isClosed = isClosed;
-        resul.isFilled = isFilled;
-        resul.isBorderDrawed = isBorderDrawed;
         resul.isInterpolated = isInterpolated;
         resul.tension = tension;
         return resul;
@@ -349,8 +349,6 @@ public class JMPath {
 
         //Copy attributes
         resul.isClosed = isClosed;
-        resul.isFilled = isFilled;
-        resul.isBorderDrawed = isBorderDrawed;
         resul.isInterpolated = isInterpolated;
         resul.tension = tension;
         return resul;
@@ -368,7 +366,18 @@ public class JMPath {
         points.clear();
 
         for (int n = 0; n < tempPath.size(); n++) {
-            points.add(tempPath.points.get(direction * n + step));
+            JMPathPoint point = tempPath.points.get(direction * n + step);
+            if (direction < 0) //If reverse the path, we must swap control points
+            {
+
+                double cpTempX = point.cp1.v.x;
+                double cpTempY = point.cp1.v.y;
+                point.cp1.v.x = point.cp2.v.x;
+                point.cp1.v.y = point.cp2.v.y;
+                point.cp2.v.x = cpTempX;
+                point.cp2.v.y = cpTempY;
+            }
+            points.add(point);
         }
 
     }
@@ -424,18 +433,18 @@ public class JMPath {
         }
         double minDistanceVarChangeDir = 999999999;
         int minStepChangeDir = 0;
-        for (int step = 0; step < this.size(); step++) {
-            JMPath tempPath = this.copy();
-            tempPath.cyclePoints(step, -1);
-            double distanceVar = tempPath.squaredSumDistance(path2);
-            distances.add(distanceVar);
-            System.out.println("Step: " + step + ", distanceVar: " + distanceVar);
-            if (distanceVar < minDistanceVarChangeDir) {
-                minDistanceVarChangeDir = distanceVar;
-                minStepChangeDir = step;
-            }
-
-        }
+//        for (int step = 0; step < this.size(); step++) {
+//            JMPath tempPath = this.copy();
+//            tempPath.cyclePoints(step, -1);
+//            double distanceVar = tempPath.squaredSumDistance(path2);
+//            distances.add(distanceVar);
+//            System.out.println("Step: " + step + ", distanceVar: " + distanceVar);
+//            if (distanceVar < minDistanceVarChangeDir) {
+//                minDistanceVarChangeDir = distanceVar;
+//                minStepChangeDir = step;
+//            }
+//
+//        }
         System.out.println("Optimum Step: " + minStepNoChangeDir + ", distance: " + minDistanceVarNoChangeDir);
         System.out.println("Optimum Step: " + minStepChangeDir + ", distance: " + minDistanceVarChangeDir);
 
@@ -471,24 +480,33 @@ public class JMPath {
             double cy1 = p.cp1.v.y;
             xmin = (cx1 < xmin ? cx1 : xmin);
             ymin = (cy1 < ymin ? cy1 : ymin);
-            xmax = (cx1> xmax ? cx1 : xmax);
+            xmax = (cx1 > xmax ? cx1 : xmax);
             ymax = (cy1 > ymax ? cy1 : ymax);
             double cx2 = p.cp2.v.x;
             double cy2 = p.cp2.v.y;
             xmin = (cx2 < xmin ? cx2 : xmin);
             ymin = (cy2 < ymin ? cy2 : ymin);
-            xmax = (cx2> xmax ? cx2 : xmax);
+            xmax = (cx2 > xmax ? cx2 : xmax);
             ymax = (cy2 > ymax ? cy2 : ymax);
         }
         return new Rect(xmin, ymin, xmax, ymax);
     }
 
-    void scale(Point point, double d,double e,double f) {
-        for (JMPathPoint p:points)
-        {
-            p.scale(point,d,e,f);
-            
+    void scale(Point point, double d, double e, double f) {
+        for (JMPathPoint p : points) {
+            p.scale(point, d, e, f);
+
         }
+    }
+
+    /**
+     * Determine orientation of the path
+     *
+     * @return 1 if clockwise, -1 if counterwise
+     */
+    public int orientation() {
+        //https://stackoverflow.com/questions/1165647/how-to-determine-if-a-list-of-polygon-points-are-in-clockwise-order/1180256#1180256
+        return 1;
     }
 
 }

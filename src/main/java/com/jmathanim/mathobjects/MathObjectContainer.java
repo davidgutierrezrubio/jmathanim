@@ -91,4 +91,12 @@ public class MathObjectContainer extends MathObject {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
+    @Override
+    public void setDrawAlpha(double t) {
+        this.mathObject.setDrawAlpha(t);
+    }
+@Override
+    public void setFillAlpha(double t) {
+        this.mathObject.setFillAlpha(t);
+    }
 }

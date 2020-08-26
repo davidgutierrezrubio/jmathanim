@@ -30,6 +30,7 @@ public class JMPathMathObject extends MathObject {
      */
     protected final Point center;
     private ArrayList<Boolean> visibilityTemp;
+    private double fillAlphaTemp;
 
     public JMPathMathObject() {
         this(null);
@@ -72,7 +73,7 @@ public class JMPathMathObject extends MathObject {
         }
         updateCenter();
 
-        jmpath.computeControlPoints();
+        jmpath.generateControlPoints();
         needsRecalcControlPoints = false;
     }
 
@@ -111,11 +112,14 @@ public class JMPathMathObject extends MathObject {
 
         //If this is the first call, be sure to store visibility status
         if (drawParam == 0) {
+            fillAlphaTemp = mp.fillColor.getAlpha()/255.;
             visibilityTemp = new ArrayList<Boolean>();
             for (int n = 0; n < jmpath.points.size(); n++) {
                 visibilityTemp.add(jmpath.points.get(n).isVisible);
             }
         }
+        
+        mp.setFillAlpha((float) (fillAlphaTemp*drawParam));
 
 //        jmpath.isFilled = (drawParam >= 1);//Fill path if is completely drawn
         double sliceSize = jmpath.points.size() * drawParam / numSlices;
@@ -141,7 +145,7 @@ public class JMPathMathObject extends MathObject {
             }
         }
         jmpath.points.removeAll(toRemove);
-        jmpath.computeControlPoints();
+        jmpath.generateControlPoints();
     }
 
     @Override
@@ -156,7 +160,7 @@ public class JMPathMathObject extends MathObject {
 
     @Override
     public MathObject copy() {
-        return new JMPathMathObject(jmpath.rawCopy(),mp.copy());
+        return new JMPathMathObject(jmpath.rawCopy(), mp.copy());
     }
 
     @Override
@@ -175,11 +179,10 @@ public class JMPathMathObject extends MathObject {
 
     @Override
     public void draw(Renderer r) {
-        r.setBorderColor(mp.color);
+        r.setBorderColor(mp.drawColor);
         r.setFillColor(mp.fillColor);
         r.setStroke(mp.getThickness(r));
-        r.setAlpha(mp.alpha);
-        r.drawPath(this,jmpath);
+        r.drawPath(this, jmpath);
     }
 
     @Override
@@ -188,11 +191,26 @@ public class JMPathMathObject extends MathObject {
     }
 
     void setColor(Color color) {
-        this.mp.color = color;
+        this.mp.drawColor = color;
     }
 
     void setFillColor(Color color) {
         this.mp.fillColor = color;
+    }
+
+    @Override
+    public void setDrawAlpha(double t) {
+        this.mp.setDrawAlpha((float) t);
+    }
+
+    @Override
+    public void setFillAlpha(double t) {
+        this.mp.setFillAlpha((float) t);
+    }
+
+    @Override
+    public String toString() {
+        return jmpath.toString();
     }
 
 }

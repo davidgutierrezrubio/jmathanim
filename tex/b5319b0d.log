@@ -1,7 +1,7 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.20 (MiKTeX 2.9.7140 64-bit) (preloaded format=latex 2019.8.26)  26 AUG 2020 20:56
+This is pdfTeX, Version 3.14159265-2.6-1.40.20 (MiKTeX 2.9.7140 64-bit) (preloaded format=latex 2019.8.26)  26 AUG 2020 11:27
 entering extended mode
-**C:/Users/David/Documents/NetBeansProjects/jmathanim/tex/d459ec7c.tex
-(C:/Users/David/Documents/NetBeansProjects/jmathanim/tex/d459ec7c.tex
+**C:/Users/David/Documents/NetBeansProjects/jmathanim/tex/b5319b0d.tex
+(C:/Users/David/Documents/NetBeansProjects/jmathanim/tex/b5319b0d.tex
 LaTeX2e <2018-12-01>
 (C:\Users\David\AppData\Roaming\MiKTeX\2.9\tex/latex/standalone\standalone.cls
 Document Class: standalone 2018/03/26 v1.3a Class to compile TeX sub-files stan
@@ -67,8 +67,8 @@ Package: luatex85 2016/06/15 v1.4 pdftex aliases for luatex
 \pr@snippet=\count91
 \pr@box=\box27
 \pr@output=\toks16
-)) (d459ec7c.aux)
-\openout1 = `d459ec7c.aux'.
+)) (b5319b0d.aux)
+\openout1 = `b5319b0d.aux'.
 
 LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 2.
 LaTeX Font Info:    ... okay on input line 2.
@@ -89,7 +89,7 @@ LaTeX Font Info:    External font `cmex10' loaded for size
 LaTeX Font Info:    External font `cmex10' loaded for size
 (Font)              <5> on input line 3.
 Preview: Tightpage 0 0 0 0
-[1] (d459ec7c.aux) ) 
+[1] (b5319b0d.aux) ) 
 Here is how much of TeX's memory you used:
  821 strings out of 492896
  13307 string characters out of 3133505
@@ -99,5 +99,5 @@ Here is how much of TeX's memory you used:
  1141 hyphenation exceptions out of 8191
  34i,1n,56p,260b,95s stack positions out of 5000i,500n,10000p,200000b,50000s
 
-Output written on C:\Users\David\Documents\NetBeansProjects\jmathanim\tex\d459e
-c7c.dvi (1 page, 1848 bytes).
+Output written on C:\Users\David\Documents\NetBeansProjects\jmathanim\tex\b5319
+b0d.dvi (1 page, 1624 bytes).

@@ -6,6 +6,7 @@
 package com.jmathanim.jmathanim;
 
 import com.jmathanim.Animations.Animation;
+import com.jmathanim.Animations.FadeIn;
 import com.jmathanim.Animations.ShowCreation;
 import com.jmathanim.Animations.Transform;
 import com.jmathanim.Utils.Rect;
@@ -17,7 +18,6 @@ import com.jmathanim.mathobjects.JMPathMathObject;
 import com.jmathanim.mathobjects.JMPathPoint;
 import com.jmathanim.mathobjects.LaTeXMathObject;
 import com.jmathanim.mathobjects.Line;
-import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.Point;
 import com.jmathanim.mathobjects.Polygon;
 import com.jmathanim.mathobjects.RegularPolygon;
@@ -42,7 +42,7 @@ public class PointSimple extends Scene2D {
     @Override
     public void runSketch() {
         System.out.println("Running sketch...");
-        pruebaRelleno();
+        pruebaLaTeX();
     }
 
     public void pruebaSimpleJMPathObject() throws ArrayIndexOutOfBoundsException {
@@ -57,13 +57,13 @@ public class PointSimple extends Scene2D {
         p = new JMPathPoint(new Point(0, 1), true, JMPathPoint.TYPE_VERTEX);
         pa.jmpath.addPoint(p);
         pa.jmpath.close();
-        pa.mp.color = Color.GREEN;
+        pa.mp.drawColor = Color.GREEN;
         add(pa);
-        waitSeconds(3);
-        play(new ShowCreation(pa, 3));
-        waitSeconds(3);
+        waitSeconds(3d);
+        play(new ShowCreation(pa, 3d));
+        waitSeconds(3d);
         pa.jmpath.points.get(2).isVisible = false;
-        waitSeconds(3);
+        waitSeconds(3d);
     }
 
     public void pruebaSVGImporter() throws ArrayIndexOutOfBoundsException {
@@ -86,17 +86,11 @@ public class PointSimple extends Scene2D {
         p1.shift(new Vec(-xx, -yy + ymax * .5d));
         p2.shift(new Vec(-xx, -yy + ymax * .5d));
         p3.shift(new Vec(-xx, -yy + ymax * .5d));
-        pa1.isFilled = false;
         play(new ShowCreation(p1, .6));
-        pa1.isFilled = true;
 
-        pa2.isFilled = false;
         play(new ShowCreation(p2, .6));
-        pa2.isFilled = true;
 
-        pa3.isFilled = false;
         play(new ShowCreation(p3, .6));
-        pa3.isFilled = true;
 
         waitSeconds(3);
 //        p1.jmpath.interpolate(20);
@@ -118,8 +112,7 @@ public class PointSimple extends Scene2D {
     public void variosCirculos() {
         Circle c1 = new Circle(new Point(-1, 0), .5);
         c1.mp.thickness = .005d;
-        c1.mp.color = Color.MAGENTA;
-        c1.mp.alpha = .7d;
+        c1.mp.drawColor = Color.MAGENTA;
         c1.mp.layer = 2;
         add(c1);
 
@@ -148,6 +141,31 @@ public class PointSimple extends Scene2D {
         waitSeconds(1);
         circ.jmpath.interpolate(3);
         waitSeconds(1);
+    }
+
+    private void CircleToSquare() {
+        Circle c = new Circle(new Point(0, 0), 1);
+        RegularPolygon pol2 = new RegularPolygon(3, 1.5);
+        pol2.shift(1, 0);
+//        add(c);
+
+//        c.jmpath.alignPaths(pol2.jmpath);
+//        c.jmpath.minimizeSquaredDistance(pol2.jmpath);
+        Transform transform = new Transform(pol2, c, 5);
+        waitSeconds(.5);
+        play(transform);
+        waitSeconds(3);
+    }
+
+    public void pruebaCopia() {
+        Circle c = new Circle(new Point(0, 0), 1);
+        add(c);
+        waitSeconds(.5);
+        JMPath path = c.jmpath.rawCopy();
+        JMPathMathObject r = new JMPathMathObject(path, null);
+        add(r);
+        waitSeconds(.5);
+
     }
 
     public void pruebaTransform() {
@@ -198,10 +216,10 @@ public class PointSimple extends Scene2D {
         linea4.mp.thickness = .1;
         linea5.mp.thickness = .1;
 
-        linea2.mp.color = Color.MAGENTA;
-        linea3.mp.color = Color.GREEN;
-        linea4.mp.color = Color.YELLOW;
-        linea5.mp.color = Color.CYAN;
+        linea2.mp.drawColor = Color.MAGENTA;
+        linea3.mp.drawColor = Color.GREEN;
+        linea4.mp.drawColor = Color.YELLOW;
+        linea5.mp.drawColor = Color.CYAN;
 
         add(linea2);
         add(linea3);
@@ -250,36 +268,75 @@ public class PointSimple extends Scene2D {
 
     private void pruebaImportSVGFile() {
         SVGMathObject svgObject = new SVGMathObject(this, "c:\\media\\tex\\o.svg");
+        
         add(svgObject);
-        waitSeconds(3);
+           waitSeconds(3);
+//        for (JMPathMathObject p:svgObject.jmps)
+//        {
+//            p.jmpath.generateControlPoints();
+//        }
+           waitSeconds(1);
+        RegularPolygon pol=new RegularPolygon(5, 1d);
+        play(new Transform(svgObject.get(2), svgObject.get(0), 5d));
+        waitSeconds(3d);
     }
 
     private void pruebaRelleno() {
         Circle circ = new Circle(new Point(0, 0), 1);
-        add(circ);
         circ.mp.fill = true;
-        circ.jmpath.isFilled = true;
         play(new ShowCreation(circ, 3));
-        for (float al = 0; al <= 1; al += .01) {
-            circ.mp.setFillAlpha(al);
-            advanceFrame();
-        }
+        play(new FadeIn(circ, 3));
+//        for (float al = 0; al <= 1; al += .01) {
+//            circ.mp.setFillAlpha(al);
+//            advanceFrame();
+//        }
         waitSeconds(2);
     }
 
     private void pruebaLaTeX() {
         LaTeXMathObject lm = new LaTeXMathObject(this, "$$\\int_0^\\infty x\\,dx=\\infty$$");
-        lm.scale(6, 6);
-//        add(lm);
-//        play(new ShowCreation(lm, 3));
+//        lm.shift(-1, 0);
+        lm.scale(1, 1);
+        add(lm);
+        play(new ShowCreation(lm, 3d));
+         waitSeconds(2);
         JMPathMathObject xcopia = (JMPathMathObject) lm.jmps.get(3).copy();
         JMPathMathObject xIgual = (JMPathMathObject) lm.jmps.get(6).copy();
         JMPathMathObject xDst = (JMPathMathObject) lm.jmps.get(3);
-        xcopia.shift(new Vec(0, -1.5));
+        xcopia.shift(new Vec(0, -2));
         add(xcopia);
         waitSeconds(2);
-        play(new Transform(xIgual, xDst, 5));
+        play(new Transform(xIgual, xDst, 7));
         waitSeconds(2);
+    }
+
+    private void pruebaLaTeXEcuacion() {
+        LaTeXMathObject eq1 = new LaTeXMathObject(this, "$$x=2$$");
+        LaTeXMathObject eq2 = new LaTeXMathObject(this, "$$x=4$$");
+        LaTeXMathObject eq3 = new LaTeXMathObject(this, "$$x=8$$");
+        LaTeXMathObject eq4 = new LaTeXMathObject(this, "$$x=1$$");
+        double sc = 1;
+        eq1.scale(sc, sc);
+        eq2.scale(sc, sc);
+        eq3.scale(sc, sc);
+        eq4.scale(sc, sc);
+
+        eq1.shift(-1, 0);
+        eq2.shift(-1, 0);
+        eq3.shift(-1, 0);
+        eq4.shift(-1, 0);
+
+        play(new ShowCreation(eq1,2));
+//        waitSeconds(1);
+        JMPathMathObject x1 = eq1.jmps.get(2);
+        JMPathMathObject x2 = eq2.jmps.get(2);
+        JMPathMathObject x3 = eq3.jmps.get(2);
+        JMPathMathObject x4 = eq4.jmps.get(2);
+
+        play(new Transform(x1, x2, 1));
+        play(new Transform(x1, x3, 1));
+        play(new Transform(x1, x4, 1));
+        waitSeconds(3);
     }
 
 }

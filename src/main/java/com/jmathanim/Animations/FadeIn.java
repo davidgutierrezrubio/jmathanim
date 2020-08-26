@@ -24,7 +24,7 @@ public class FadeIn extends Animation {
     @Override
     public void doAnim(double t) {
         System.out.println("Anim FadeIn "+t);
-        mobj.mp.alpha=t;
+        mobj.setAlpha(t);
     }
 
 }

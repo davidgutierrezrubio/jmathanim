@@ -6,11 +6,8 @@
 package com.jmathanim.mathobjects;
 
 import com.jmathanim.Renderers.Renderer;
-import com.jmathanim.Utils.ConfigUtils;
 import com.jmathanim.Utils.MathObjectDrawingProperties;
 import com.jmathanim.Utils.Vec;
-import java.awt.Color;
-import java.util.Properties;
 
 /**
  *
@@ -53,7 +50,7 @@ public class Segment extends JMPathMathObject {//TODO:Should extend Polygon clas
         JMPathPoint jmp2 = new JMPathPoint(p2, true, JMPathPoint.TYPE_VERTEX);
         jmp2.isCurved=false;
         vertices.add(jmp2);
-        curve.computeControlPoints();
+        curve.generateControlPoints();
     }
 
     @Override
@@ -62,9 +59,8 @@ public class Segment extends JMPathMathObject {//TODO:Should extend Polygon clas
         Vec v2 = p2.v;
         Vec vd = v2.minus(v1);
         Vec v3 = v1.add(vd.mult(1));//TODO: FIX THIS
-        r.setBorderColor(mp.color);
+        r.setBorderColor(mp.drawColor);
         r.setStroke(mp.getThickness(r));
-        r.setAlpha(mp.alpha);
         r.drawLine(v1.x, v1.y, v3.x, v3.y);
 
     }

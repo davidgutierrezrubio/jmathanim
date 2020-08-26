@@ -90,6 +90,11 @@ public abstract class MathObject implements Drawable {
      */
     public abstract void shift(Vec shiftVector);
 
+     public void shift(double x, double y) {
+        shift(new Vec(x,y));
+    }
+    
+    
     /**
      * Scale from center of object (2D version)
      *
@@ -187,4 +192,11 @@ public abstract class MathObject implements Drawable {
      * @return A Rect with (xmin,ymin,xmax,ymax)
      */
     public abstract Rect getBoundingBox();
+
+    public void setAlpha(double t){
+        setDrawAlpha(t);
+        setFillAlpha(t);
+    }
+    public abstract void setDrawAlpha(double t);
+    public abstract void setFillAlpha(double t);
 }

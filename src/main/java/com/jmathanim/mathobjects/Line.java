@@ -58,9 +58,8 @@ public class Line extends Segment {
         computeBoundPoints(r);
         jmpath.addPoint(bp1);
         jmpath.addPoint(bp2);
-        r.setBorderColor(mp.color);
+        r.setBorderColor(mp.drawColor);
         r.setStroke(mp.getThickness(r));
-        r.setAlpha(mp.alpha);
 //        r.drawLine(bp1.v.x, bp1.v.y, bp2.v.x, bp2.v.y);
         r.drawPath(this,jmpath);
         p1.draw(r);

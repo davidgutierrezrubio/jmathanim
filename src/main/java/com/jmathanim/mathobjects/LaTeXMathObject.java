@@ -5,6 +5,7 @@
  */
 package com.jmathanim.mathobjects;
 
+import com.jmathanim.Utils.Rect;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import java.awt.Color;
 import java.io.BufferedReader;
@@ -52,6 +53,10 @@ public class LaTeXMathObject extends SVGMathObject {
             Logger.getLogger(LaTeXMathObject.class.getName()).log(Level.SEVERE, null, ex);
         } catch (Exception ex) {
             Logger.getLogger(LaTeXMathObject.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        if (jmps.size()>0)//Move to (0,0) by default
+        {   Rect r = getBoundingBox();
+            this.shift(-r.xmin,-r.ymax);
         }
         //Default color
         setColor(Color.WHITE);
@@ -144,12 +149,13 @@ public class LaTeXMathObject extends SVGMathObject {
     private void setColor(Color color) {
         for (JMPathMathObject p:jmps)
         {
-            p.jmpath.isBorderDrawed=true;
             p.mp.thickness=.0001;
             p.setColor(color);
-            p.jmpath.isFilled=false;
+            p.mp.fill=true;
             p.setFillColor(color); //LaTeX Objects should have by default same fill and draw color
         }
     }
+
+   
 
 }

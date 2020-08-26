@@ -99,7 +99,7 @@ public class MultiJMPathObject extends MathObject {
 
     @Override
     public void draw(Renderer r) {
-        int n=0;
+        int n = 0;
         for (JMPathMathObject jmp : jmps) {
 //            Rect re=jmp.getBoundingBox();
 //            double[] xx={re.xmin, re.ymax};
@@ -107,7 +107,7 @@ public class MultiJMPathObject extends MathObject {
 //            ((Java2DRenderer)r).debugText(Integer.toString(n), mx[0], mx[1]);
 //            n++;
             jmp.draw(r);
-            
+
         }
     }
 
@@ -120,4 +120,19 @@ public class MultiJMPathObject extends MathObject {
         return resul;
     }
 
+    public void setDrawAlpha(double t) {
+        for (JMPathMathObject jmp : jmps) {
+            jmp.setDrawAlpha(t);
+        }
+    }
+
+    public void setFillAlpha(double t) {
+        for (JMPathMathObject jmp : jmps) {
+            jmp.setFillAlpha(t);
+        }
+    }
+    public JMPathMathObject get(int n)
+    {
+        return jmps.get(n);
+    }
 }

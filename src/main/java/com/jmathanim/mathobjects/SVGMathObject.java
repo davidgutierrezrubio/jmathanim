@@ -70,9 +70,9 @@ public class SVGMathObject extends MultiJMPathObject {
                 JMPath path = processPathCommands(eElement.getAttribute("d"));
 
                 if (eElement.getAttribute("fill") == "none") {
-                    path.isFilled = false;
+                   mp.fill=false;
                 } else {
-                    path.isFilled = true;
+                   mp.fill=true;
                 }
 
                 addJMPathObject(path);
@@ -193,7 +193,7 @@ public class SVGMathObject extends MultiJMPathObject {
     }
 
     private JMPathPoint pathM(JMPath path, double x, double y) {
-        JMPathPoint point = new JMPathPoint(new Point(currentX, currentY), true, JMPathPoint.TYPE_VERTEX);
+        JMPathPoint point = new JMPathPoint(new Point(currentX, currentY), true,JMPathPoint.TYPE_VERTEX|JMPathPoint.TYPE_SVG);
         point.isCurved = false;
         point.isVisible = false;
         point.cp1.v.x = currentX;
@@ -205,7 +205,7 @@ public class SVGMathObject extends MultiJMPathObject {
     }
 
     private JMPathPoint pathCubicBezier(JMPath path, JMPathPoint previousPoint, double cx1, double cy1, double cx2, double cy2, double x, double y) {
-        JMPathPoint point = new JMPathPoint(new Point(currentX, currentY), true, JMPathPoint.TYPE_VERTEX);
+        JMPathPoint point = new JMPathPoint(new Point(currentX, currentY), true, JMPathPoint.TYPE_VERTEX|JMPathPoint.TYPE_SVG);
         point.isCurved = true;
         previousPoint.cp1.v.x = cx1;
         previousPoint.cp1.v.y = cy1;
@@ -217,7 +217,7 @@ public class SVGMathObject extends MultiJMPathObject {
 
     //Adds a simple point to the path, with control points equal to the point
     private JMPathPoint pathLineTo(JMPath path, double currentX, double currentY) {
-        JMPathPoint point = new JMPathPoint(new Point(currentX, currentY), true, JMPathPoint.TYPE_VERTEX);
+        JMPathPoint point = new JMPathPoint(new Point(currentX, currentY), true, JMPathPoint.TYPE_VERTEX|JMPathPoint.TYPE_SVG);
         point.isCurved = false;
         point.cp1.v.x = currentX;
         point.cp1.v.y = currentY;

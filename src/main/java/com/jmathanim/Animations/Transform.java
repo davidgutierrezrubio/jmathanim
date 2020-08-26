@@ -46,9 +46,9 @@ public class Transform extends Animation {
             JMPathPoint a = mobj1.jmpath.points.get(n);
             JMPathPoint b = mobj2.jmpath.points.get(n);
             if (b.isCurved) {
-                a.isCurved=true;
+                a.isCurved = true;
             }
-            
+            a.isCurved = true;
         }
     }
 
@@ -57,58 +57,53 @@ public class Transform extends Animation {
         if (t >= 1) {
             t = 1;
             finishAnimation();
-        }else
-        {
-        System.out.println("Anim Transform " + t);
-        Point p, a, b;
-        for (int n = 0; n < mobj1.jmpath.points.size(); n++) {
-            //Interpolate point
-            JMPathPoint puntoMierda=mobj1.jmpath.points.get(n);
-            p = mobj1.jmpath.points.get(n).p;
-            a = jmpathOrig.points.get(n).p;
-            b = mobj2.jmpath.points.get(n).p;
+        } else {
+            System.out.println("Anim Transform " + t);
+            JMPathPoint interPoint, basePoint, dstPoint;
+            for (int n = 0; n < mobj1.jmpath.points.size(); n++) {
+                interPoint = mobj1.jmpath.points.get(n);
+                basePoint = jmpathOrig.points.get(n);
+                dstPoint = mobj2.jmpath.points.get(n);
 
-            p.v.x = (1 - t) * a.v.x + t * b.v.x;
-            p.v.y = (1 - t) * a.v.y + t * b.v.y;
-            p.v.z = (1 - t) * a.v.z + t * b.v.z;
+                //Copy visibility attributes after t>.8
+                if (t > .8) {
+                    interPoint.isVisible = dstPoint.isVisible;
+                }
 
-            //Interpolate control point 1
-            p = mobj1.jmpath.getPoint(n).cp1;
-            a = jmpathOrig.getPoint(n).cp1;
-            b = mobj2.jmpath.getPoint(n).cp1;
+                //Interpolate point
+                interPoint.p.v.x = (1 - t) * basePoint.p.v.x + t * dstPoint.p.v.x;
+                interPoint.p.v.y = (1 - t) * basePoint.p.v.y + t * dstPoint.p.v.y;
+                interPoint.p.v.z = (1 - t) * basePoint.p.v.z + t * dstPoint.p.v.z;
 
-            p.v.x = (1 - t) * a.v.x + t * b.v.x;
-            p.v.y = (1 - t) * a.v.y + t * b.v.y;
-            p.v.z = (1 - t) * a.v.z + t * b.v.z;
+                //Interpolate control point 1
+                interPoint.cp1.v.x = (1 - t) * basePoint.cp1.v.x + t * dstPoint.cp1.v.x;
+                interPoint.cp1.v.y = (1 - t) * basePoint.cp1.v.y + t * dstPoint.cp1.v.y;
+                interPoint.cp1.v.z = (1 - t) * basePoint.cp1.v.z + t * dstPoint.cp1.v.z;
 
-            //Interpolate control point 2
-            p = mobj1.jmpath.getPoint(n).cp2;
-            a = jmpathOrig.getPoint(n).cp2;
-            b = mobj2.jmpath.getPoint(n).cp2;
-            
-            p.v.x = (1 - t) * a.v.x + t * b.v.x;
-            p.v.y = (1 - t) * a.v.y + t * b.v.y;
-            p.v.z = (1 - t) * a.v.z + t * b.v.z;
-        }
-        //Now interpolate properties from objects
-        mobj1.mp.interpolateFrom(propBase, mobj2.mp, t);
-        //Update center from mobj1
-        mobj1.updateCenter();
+                //Interpolate control point 2
+                interPoint.cp2.v.x = (1 - t) * basePoint.cp2.v.x + t * dstPoint.cp2.v.x;
+                interPoint.cp2.v.y = (1 - t) * basePoint.cp2.v.y + t * dstPoint.cp2.v.y;
+                interPoint.cp2.v.z = (1 - t) * basePoint.cp2.v.z + t * dstPoint.cp2.v.z;
+
+            }
+            //Now interpolate properties from objects
+            mobj1.mp.interpolateFrom(propBase, mobj2.mp, t);
+            //Update center from mobj1
+            mobj1.updateCenter();
         }
     }
 
     private void finishAnimation() {
         //Here it should remove unnecessary points
         //First mark as vertex points all mobj1 points who match with vertex from obj2
-        for (int n=0;n<mobj1.jmpath.size();n++)
-        {
-               mobj1.jmpath.getPoint(n).type=mobj2.jmpath.getPoint(n).type;
-               mobj1.jmpath.getPoint(n).isCurved=mobj2.jmpath.getPoint(n).isCurved;
-               mobj1.jmpath.getPoint(n).isVisible=mobj2.jmpath.getPoint(n).isVisible;
+        for (int n = 0; n < mobj1.jmpath.size(); n++) {
+            mobj1.jmpath.getPoint(n).type = mobj2.jmpath.getPoint(n).type;
+            mobj1.jmpath.getPoint(n).isCurved = mobj2.jmpath.getPoint(n).isCurved;
+            mobj1.jmpath.getPoint(n).isVisible = mobj2.jmpath.getPoint(n).isVisible;
         }
         //Now I should remove all interpolation auxilary points
-//        mobj1.removeInterpolationPoints();
-//        mobj2.removeInterpolationPoints();
+        mobj1.removeInterpolationPoints();
+        mobj2.removeInterpolationPoints();
     }
 
 }

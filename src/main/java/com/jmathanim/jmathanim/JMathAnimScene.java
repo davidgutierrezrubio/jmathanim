@@ -140,9 +140,10 @@ public abstract class JMathAnimScene {
             finished = true;
             for (Animation anim : anims) {
                 finished = finished & anim.processAnimation(fps);
+//                Java2DRenderer r = (Java2DRenderer) SCRenderer;
+//            r.debugText("t: " + anims.get(0).mobj, 10, 10);
             }
-            Java2DRenderer r = (Java2DRenderer) SCRenderer;
-            r.debugText("t: " + anims.get(0).getT(), 10, 10);
+            
             advanceFrame();
         }
     }

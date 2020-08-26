@@ -123,7 +123,6 @@ public abstract class Renderer {
 
     abstract public void drawPath(MathObject mobj,JMPath c);
 
-    abstract public void setAlpha(double alpha);
     
 
 }

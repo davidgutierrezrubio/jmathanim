@@ -17,13 +17,14 @@ public class JMPathPoint {
     public static final int TYPE_VERTEX = 1;
     public static final int TYPE_INTERPOLATION_POINT = 2;
     public static final int TYPE_CONTROL_POINT = 3;
+    public static final int TYPE_SVG=128;
 
     public final Point p;
     public final Point cp1, cp2; //Cómo debe entrar (cp2) y cómo debe salir (cp1)
     public boolean isVisible;
     public boolean isCurved;
     public int type; //Vertex, interpolation point, etc.
-    public double alpha;
+    public double drawAlpha;
 
     public JMPathPoint(Point p, boolean isVisible, int type) {
         this.p = p;
@@ -32,7 +33,7 @@ public class JMPathPoint {
         isCurved = false;//By default, is not curved
         this.isVisible = isVisible;
         this.type = type;
-        this.alpha=1;//Full opacity
+        this.drawAlpha=1;//Full opacity
     }
 
     public JMPathPoint copy() {
@@ -71,9 +72,9 @@ public class JMPathPoint {
     }
 
     void shift(Vec shiftVector) {
-        p.shift(shiftVector);
-        cp1.shift(shiftVector);
-        cp2.shift(shiftVector);
+        p.v.add(shiftVector);
+        cp1.v.add(shiftVector);
+        cp2.v.add(shiftVector);
     }
 
     void scale(Point point, double d,double e,double f) {
@@ -81,5 +82,6 @@ public class JMPathPoint {
         this.cp1.scale(point,d,e,f);
         this.cp2.scale(point,d,e,f);
     }
+
 
 }

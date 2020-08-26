@@ -16,7 +16,7 @@ import java.awt.Color;
  */
 public class MathObjectDrawingProperties {
 
-    public Color color;
+    public Color drawColor;
     public Color fillColor;
     public Double thickness;
     //If false, thickness is computed to be a percentage of the width
@@ -24,17 +24,15 @@ public class MathObjectDrawingProperties {
     public Boolean absoluteThickness;
     public Boolean fill;
     public Boolean visible;
-    public Double alpha;
     public Integer layer;//Layer to draw. Slower means under.
     public Boolean absolutePosition;//If true, position comes in absolute screen coordinates
     public Boolean drawPathBorder;
 
     public MathObjectDrawingProperties() {
         //Default, boring values
-        this.color = Color.WHITE;
+        this.drawColor = Color.WHITE;
         this.fillColor = Color.YELLOW;
         this.thickness = .005d;
-        this.alpha = 1d;
         this.visible = true;
         this.fill = false;
         this.drawPathBorder = false;
@@ -53,9 +51,8 @@ public class MathObjectDrawingProperties {
         if (prop == null) {//Nothing to do here!
             return;
         }
-        color = (prop.color == null ? color : new Color(prop.color.getRGB()));
+        drawColor = (prop.drawColor == null ? drawColor : new Color(prop.drawColor.getRGB()));
         thickness = (prop.thickness == null ? thickness : prop.thickness);
-        alpha = (prop.alpha == null ? alpha : prop.alpha);
         visible = (prop.visible == null ? visible : prop.visible);
         fill = (prop.fill == null ? fill : prop.fill);
         drawPathBorder = (prop.drawPathBorder == null ? drawPathBorder : prop.drawPathBorder);
@@ -72,7 +69,7 @@ public class MathObjectDrawingProperties {
      */
     public void interpolateFrom(MathObjectDrawingProperties a, MathObjectDrawingProperties b, double t) {
         //Interpolate color
-        interpolateColor(a.color, b.color, t);
+        interpolateColor(a.drawColor, b.drawColor, t);
         this.thickness = (1 - t) * a.thickness + t * b.thickness;
 
     }
@@ -90,13 +87,15 @@ public class MathObjectDrawingProperties {
         int b = (int) ((1 - t) * colA.getBlue() + t * colB.getBlue());
         int tr = (int) ((1 - t) * colA.getAlpha() + t * colB.getAlpha());
 
-        this.color = new Color(r, g, b, tr);
+        this.drawColor = new Color(r, g, b, tr);
     }
     public void setFillAlpha(float alpha)
     {
         this.fillColor=new Color(this.fillColor.getRed(),this.fillColor.getGreen(),this.fillColor.getBlue(),(int)(255*alpha));
     }
-    
+      public void setDrawAlpha(float alpha) {
+       this.drawColor=new Color(this.drawColor.getRed(),this.drawColor.getGreen(),this.drawColor.getBlue(),(int)(255*alpha));
+    }
     
     
     public double getThickness(Renderer r) {
@@ -114,4 +113,6 @@ public class MathObjectDrawingProperties {
         resul.digestFrom(this);
         return resul;
     }
+
+  
 }
