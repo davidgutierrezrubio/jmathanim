@@ -19,12 +19,13 @@ import java.util.ArrayList;
  */
 public class JMPath {
 
-//    static public final int CURVED = 1; //Curved line
-//    static public final int STRAIGHT = 2; //Straight line
+    static public final int MATHOBJECT = 1; //Arc, line, segment...
+    static public final int SVG_PATH = 2; //SVG import, LaTeX object...
     public final CircularArrayList<JMPathPoint> points; //points from the curve
     public final CircularArrayList<Boolean> visiblePoints;//Whether this point is visible or not
     public boolean isClosed;
     public boolean isInterpolated;
+    public int pathType; //Default value
 
     double tension = .3d;
 
@@ -41,6 +42,7 @@ public class JMPath {
         isClosed = false;
         tension = 0.3d; //Default tension
         isInterpolated = false;//By default, path hasn't interpolation points
+        pathType = JMPath.MATHOBJECT;//Default value
     }
 
     public ArrayList<Point> getPoints() {
@@ -116,6 +118,10 @@ public class JMPath {
      */
     public void generateControlPoints() //For now, only one method
     {
+        //If this is a SVG path, don't generate control points
+        if (this.pathType == JMPath.SVG_PATH) {
+            return;
+        }
         int numPoints = points.size();
         if (isClosed) {
             numPoints = numPoints + 1;
@@ -128,11 +134,6 @@ public class JMPath {
             JMPathPoint p2 = points.get(n);//Compute cp1 for this
             JMPathPoint p3 = points.get(k);//Compute cp2 for this
             JMPathPoint p4 = points.get(L);
-
-            //If a SVG Point, don't compute new control points
-            if ((p2.type & JMPathPoint.TYPE_SVG)>0) {
-                continue;
-            }
 
             double x1 = p1.p.v.x;
             double y1 = p1.p.v.y;
@@ -324,6 +325,10 @@ public class JMPath {
         return interpolate;
     }
 
+    /**
+     * Returns a full copy of the path. JMPathPoint objects are also copied
+     * @return A copy of the path
+     */
     public JMPath rawCopy() {
         JMPath resul = new JMPath();
 
@@ -334,12 +339,13 @@ public class JMPath {
         resul.isClosed = isClosed;
         resul.isInterpolated = isInterpolated;
         resul.tension = tension;
+        resul.pathType = pathType;
         return resul;
     }
 
     /**
-     * Creates a copy of the path, with all their attributes JMPathPoint objects
-     * are referenced
+     * Creates a copy of the path, with all their attributes. JMPathPoint objects
+     * are referenced instead of copied
      *
      * @return A copy of the path
      */
@@ -351,6 +357,7 @@ public class JMPath {
         resul.isClosed = isClosed;
         resul.isInterpolated = isInterpolated;
         resul.tension = tension;
+        resul.pathType = pathType;
         return resul;
 
     }

@@ -268,15 +268,15 @@ public class PointSimple extends Scene2D {
 
     private void pruebaImportSVGFile() {
         SVGMathObject svgObject = new SVGMathObject(this, "c:\\media\\tex\\o.svg");
-        
+
         add(svgObject);
-           waitSeconds(3);
+        waitSeconds(3);
 //        for (JMPathMathObject p:svgObject.jmps)
 //        {
 //            p.jmpath.generateControlPoints();
 //        }
-           waitSeconds(1);
-        RegularPolygon pol=new RegularPolygon(5, 1d);
+        waitSeconds(1);
+        RegularPolygon pol = new RegularPolygon(5, 1d);
         play(new Transform(svgObject.get(2), svgObject.get(0), 5d));
         waitSeconds(3d);
     }
@@ -298,15 +298,25 @@ public class PointSimple extends Scene2D {
 //        lm.shift(-1, 0);
         lm.scale(1, 1);
         add(lm);
-        play(new ShowCreation(lm, 3d));
-         waitSeconds(2);
-        JMPathMathObject xcopia = (JMPathMathObject) lm.jmps.get(3).copy();
-        JMPathMathObject xIgual = (JMPathMathObject) lm.jmps.get(6).copy();
-        JMPathMathObject xDst = (JMPathMathObject) lm.jmps.get(3);
-        xcopia.shift(new Vec(0, -2));
-        add(xcopia);
-        waitSeconds(2);
-        play(new Transform(xIgual, xDst, 7));
+        waitSeconds(1);
+//        camera.adjustToRect(lm.getBoundingBox());
+        waitSeconds(1);
+        Rect rOrigin = camera.getMathBoundaries();
+        Rect rDst = camera.getRectView(lm.getBoundingBox());
+        for (double t = 0; t < 1; t += .01) {
+            Rect r = rOrigin.interpolate(rDst, t);
+            camera.setMathXY(r);
+            advanceFrame();
+        }
+
+        waitSeconds(1);
+//        JMPathMathObject xcopia = (JMPathMathObject) lm.jmps.get(3).copy();
+//        JMPathMathObject xIgual = (JMPathMathObject) lm.jmps.get(6).copy();
+//        JMPathMathObject xDst = (JMPathMathObject) lm.jmps.get(3);
+//        xcopia.shift(new Vec(0, -2));
+//        add(xcopia);
+//        waitSeconds(2);
+//        play(new Transform(xIgual, xDst, 7));
         waitSeconds(2);
     }
 
@@ -326,7 +336,7 @@ public class PointSimple extends Scene2D {
         eq3.shift(-1, 0);
         eq4.shift(-1, 0);
 
-        play(new ShowCreation(eq1,2));
+        play(new ShowCreation(eq1, 2));
 //        waitSeconds(1);
         JMPathMathObject x1 = eq1.jmps.get(2);
         JMPathMathObject x2 = eq2.jmps.get(2);

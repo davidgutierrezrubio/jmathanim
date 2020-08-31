@@ -54,9 +54,12 @@ public class LaTeXMathObject extends SVGMathObject {
         } catch (Exception ex) {
             Logger.getLogger(LaTeXMathObject.class.getName()).log(Level.SEVERE, null, ex);
         }
-        if (jmps.size()>0)//Move to (0,0) by default
-        {   Rect r = getBoundingBox();
-            this.shift(-r.xmin,-r.ymax);
+        if (jmps.size() > 0)//Move to (0,0) by default
+        {
+            Rect r = getBoundingBox();
+            this.shift(-r.xmin, -r.ymax);
+            r = getBoundingBox();
+            System.out.println(r);
         }
         //Default color
         setColor(Color.WHITE);
@@ -147,15 +150,12 @@ public class LaTeXMathObject extends SVGMathObject {
     }
 
     private void setColor(Color color) {
-        for (JMPathMathObject p:jmps)
-        {
-            p.mp.thickness=.0001;
+        for (JMPathMathObject p : jmps) {
+            p.mp.thickness = .0001;
             p.setColor(color);
-            p.mp.fill=true;
+            p.mp.fill = true;
             p.setFillColor(color); //LaTeX Objects should have by default same fill and draw color
         }
     }
-
-   
 
 }

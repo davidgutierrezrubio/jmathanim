@@ -66,17 +66,18 @@ public class SVGMathObject extends MultiJMPathObject {
             if (nNode.getNodeType() == Node.ELEMENT_NODE) {
                 Element eElement = (Element) nNode;
 
-
                 JMPath path = processPathCommands(eElement.getAttribute("d"));
 
-                if (eElement.getAttribute("fill") == "none") {
-                   mp.fill=false;
-                } else {
-                   mp.fill=true;
-                }
-
-                addJMPathObject(path);
                 if (path.points.size() > 0) {
+                    path.pathType = JMPath.SVG_PATH; //Mark this as a SVG path
+
+                    if (eElement.getAttribute("fill") == "none") {
+                        mp.fill = false;
+                    } else {
+                        mp.fill = true;
+                    }
+
+                    addJMPathObject(path); //Add this path to the array of JMPathObjects
                     if (anchorX == null) //If this is the first path I encountered...
                     {
                         //Mark the UL corner of its boundingbox as the point of reference
@@ -92,7 +93,7 @@ public class SVGMathObject extends MultiJMPathObject {
         }
         //All paths imported
         double mathH = parentScene.getCamera().screenToMath(22);
-        double scale = 5*mathH / getBoundingBox().getHeight();//10% of screen
+        double scale = 5 * mathH / getBoundingBox().getHeight();//10% of screen
         scale(new Point(0, 0), scale, scale, scale);
     }
 
@@ -193,7 +194,7 @@ public class SVGMathObject extends MultiJMPathObject {
     }
 
     private JMPathPoint pathM(JMPath path, double x, double y) {
-        JMPathPoint point = new JMPathPoint(new Point(currentX, currentY), true,JMPathPoint.TYPE_VERTEX|JMPathPoint.TYPE_SVG);
+        JMPathPoint point = new JMPathPoint(new Point(currentX, currentY), true, JMPathPoint.TYPE_VERTEX);
         point.isCurved = false;
         point.isVisible = false;
         point.cp1.v.x = currentX;
@@ -205,7 +206,7 @@ public class SVGMathObject extends MultiJMPathObject {
     }
 
     private JMPathPoint pathCubicBezier(JMPath path, JMPathPoint previousPoint, double cx1, double cy1, double cx2, double cy2, double x, double y) {
-        JMPathPoint point = new JMPathPoint(new Point(currentX, currentY), true, JMPathPoint.TYPE_VERTEX|JMPathPoint.TYPE_SVG);
+        JMPathPoint point = new JMPathPoint(new Point(currentX, currentY), true, JMPathPoint.TYPE_VERTEX);
         point.isCurved = true;
         previousPoint.cp1.v.x = cx1;
         previousPoint.cp1.v.y = cy1;
@@ -217,7 +218,7 @@ public class SVGMathObject extends MultiJMPathObject {
 
     //Adds a simple point to the path, with control points equal to the point
     private JMPathPoint pathLineTo(JMPath path, double currentX, double currentY) {
-        JMPathPoint point = new JMPathPoint(new Point(currentX, currentY), true, JMPathPoint.TYPE_VERTEX|JMPathPoint.TYPE_SVG);
+        JMPathPoint point = new JMPathPoint(new Point(currentX, currentY), true, JMPathPoint.TYPE_VERTEX);
         point.isCurved = false;
         point.cp1.v.x = currentX;
         point.cp1.v.y = currentY;

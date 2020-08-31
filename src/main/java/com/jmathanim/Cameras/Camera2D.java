@@ -5,6 +5,7 @@
  */
 package com.jmathanim.Cameras;
 
+import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.Point;
@@ -110,6 +111,8 @@ public class Camera2D extends Camera {
     public int[] mathToScreen(Vec p) {
         return mathToScreen(p.x, p.y);
     }
+
+    
 
     
 

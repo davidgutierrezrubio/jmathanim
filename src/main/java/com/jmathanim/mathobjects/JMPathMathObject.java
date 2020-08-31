@@ -39,7 +39,7 @@ public class JMPathMathObject extends MathObject {
     public JMPathMathObject(JMPath jmpath, MathObjectDrawingProperties mp) {
         super(mp);
         vertices = new ArrayList<JMPathPoint>();
-        this.jmpath = jmpath.copy();
+        this.jmpath = jmpath;
         needsRecalcControlPoints = false;
         center = new Point(0, 0);
     }

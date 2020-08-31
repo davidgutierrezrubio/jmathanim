@@ -17,7 +17,6 @@ public class JMPathPoint {
     public static final int TYPE_VERTEX = 1;
     public static final int TYPE_INTERPOLATION_POINT = 2;
     public static final int TYPE_CONTROL_POINT = 3;
-    public static final int TYPE_SVG=128;
 
     public final Point p;
     public final Point cp1, cp2; //Cómo debe entrar (cp2) y cómo debe salir (cp1)
@@ -72,9 +71,9 @@ public class JMPathPoint {
     }
 
     void shift(Vec shiftVector) {
-        p.v.add(shiftVector);
-        cp1.v.add(shiftVector);
-        cp2.v.add(shiftVector);
+        p.v.addInSite(shiftVector);
+        cp1.v.addInSite(shiftVector);
+        cp2.v.addInSite(shiftVector);
     }
 
     void scale(Point point, double d,double e,double f) {

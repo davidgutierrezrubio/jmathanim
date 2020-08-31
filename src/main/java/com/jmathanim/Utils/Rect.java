@@ -161,4 +161,13 @@ public class Rect {
     public double getWidth(){
         return xmax-xmin;
     }
+
+    @Override
+    public String toString() {
+        return "Rect{" + "xmin=" + xmin + ", ymin=" + ymin + ", xmax=" + xmax + ", ymax=" + ymax + '}';
+    }
+
+    public Rect interpolate(Rect rDst, double t) {
+        return new Rect((1-t)*xmin+t*rDst.xmin,(1-t)*ymin+t*rDst.ymin,(1-t)*xmax+t*rDst.xmax,(1-t)*ymax+t*rDst.ymax);
+    }
 }
