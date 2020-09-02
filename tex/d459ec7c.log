@@ -1,88 +1,97 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.20 (MiKTeX 2.9.7140 64-bit) (preloaded format=latex 2019.8.26)  31 AUG 2020 13:47
+This is pdfTeX, Version 3.14159265-2.6-1.40.21 (MiKTeX 20.7) (preloaded format=latex 2020.9.2)  2 SEP 2020 09:57
 entering extended mode
 **C:/Users/David/Documents/NetBeansProjects/jmathanim/tex/d459ec7c.tex
 (C:/Users/David/Documents/NetBeansProjects/jmathanim/tex/d459ec7c.tex
-LaTeX2e <2018-12-01>
-(C:\Users\David\AppData\Roaming\MiKTeX\2.9\tex/latex/standalone\standalone.cls
+LaTeX2e <2020-02-02> patch level 5
+L3 programming layer <2020-08-07>
+(C:\MiKTeX\tex/latex/standalone\standalone.cls
 Document Class: standalone 2018/03/26 v1.3a Class to compile TeX sub-files stan
 dalone
-("C:\Program Files\MiKTeX 2.9\tex/latex/tools\shellesc.sty"
-Package: shellesc 2016/06/07 v0.02a unified shell escape interface for LaTeX
-Package shellesc Info: Restricted shell escape enabled on input line 69.
+(C:\MiKTeX\tex/latex/tools\shellesc.sty
+Package: shellesc 2019/11/08 v1.0c unified shell escape interface for LaTeX
+Package shellesc Info: Restricted shell escape enabled on input line 77.
 )
-("C:\Program Files\MiKTeX 2.9\tex/generic/oberdiek\ifluatex.sty"
-Package: ifluatex 2016/05/16 v1.4 Provides the ifluatex switch (HO)
-Package ifluatex Info: LuaTeX not detected.
-)
-("C:\Program Files\MiKTeX 2.9\tex/generic/oberdiek\ifpdf.sty"
-Package: ifpdf 2018/09/07 v3.3 Provides the ifpdf switch
-)
-("C:\Program Files\MiKTeX 2.9\tex/generic/ifxetex\ifxetex.sty"
-Package: ifxetex 2010/09/12 v0.6 Provides ifxetex conditional
-)
-("C:\Program Files\MiKTeX 2.9\tex/latex/xkeyval\xkeyval.sty"
+(C:\MiKTeX\tex/generic/iftex\ifluatex.sty
+Package: ifluatex 2019/10/25 v1.5 ifluatex legacy package. Use iftex instead.
+
+(C:\MiKTeX\tex/generic/iftex\iftex.sty
+Package: iftex 2020/03/06 v1.0d TeX engine tests
+))
+(C:\MiKTeX\tex/latex/xkeyval\xkeyval.sty
 Package: xkeyval 2014/12/03 v2.7a package option processing (HA)
 
-("C:\Program Files\MiKTeX 2.9\tex/generic/xkeyval\xkeyval.tex"
-("C:\Program Files\MiKTeX 2.9\tex/generic/xkeyval\xkvutils.tex"
-\XKV@toks=\toks14
-\XKV@tempa@toks=\toks15
+(C:\MiKTeX\tex/generic/xkeyval\xkeyval.tex
+(C:\MiKTeX\tex/generic/xkeyval\xkvutils.tex
+\XKV@toks=\toks15
+\XKV@tempa@toks=\toks16
 
-("C:\Program Files\MiKTeX 2.9\tex/generic/xkeyval\keyval.tex"))
-\XKV@depth=\count80
+(C:\MiKTeX\tex/generic/xkeyval\keyval.tex))
+\XKV@depth=\count168
 File: xkeyval.tex 2014/12/03 v2.7a key=value parser (HA)
 ))
-\sa@internal=\count81
-\c@sapage=\count82
+\sa@internal=\count169
+\c@sapage=\count170
 
-(C:\Users\David\AppData\Roaming\MiKTeX\2.9\tex/latex/standalone\standalone.cfg
+(C:\MiKTeX\tex/latex/standalone\standalone.cfg
 File: standalone.cfg 2018/03/26 v1.3a Default configuration file for 'standalon
 e' class
-) ("C:\Program Files\MiKTeX 2.9\tex/latex/base\article.cls"
-Document Class: article 2018/09/03 v1.4i Standard LaTeX document class
-("C:\Program Files\MiKTeX 2.9\tex/latex/base\size10.clo"
-File: size10.clo 2018/09/03 v1.4i Standard LaTeX file (size option)
 )
-\c@part=\count83
-\c@section=\count84
-\c@subsection=\count85
-\c@subsubsection=\count86
-\c@paragraph=\count87
-\c@subparagraph=\count88
-\c@figure=\count89
-\c@table=\count90
-\abovecaptionskip=\skip41
-\belowcaptionskip=\skip42
-\bibindent=\dimen102
+(C:\MiKTeX\tex/latex/base\article.cls
+Document Class: article 2019/12/20 v1.4l Standard LaTeX document class
+(C:\MiKTeX\tex/latex/base\size10.clo
+File: size10.clo 2019/12/20 v1.4l Standard LaTeX file (size option)
+)
+\c@part=\count171
+\c@section=\count172
+\c@subsection=\count173
+\c@subsubsection=\count174
+\c@paragraph=\count175
+\c@subparagraph=\count176
+\c@figure=\count177
+\c@table=\count178
+\abovecaptionskip=\skip47
+\belowcaptionskip=\skip48
+\bibindent=\dimen134
 )
 (C:\Users\David\AppData\Roaming\MiKTeX\2.9\tex/latex/preview\preview.sty
 Package: preview 2017/04/24 11.91 (AUCTeX/preview-latex)
 
-(C:\Users\David\AppData\Roaming\MiKTeX\2.9\tex/generic/luatex85\luatex85.sty
+(C:\MiKTeX\tex/generic/luatex85\luatex85.sty
 Package: luatex85 2016/06/15 v1.4 pdftex aliases for luatex
 )
 (C:\Users\David\AppData\Roaming\MiKTeX\2.9\tex/latex/preview\prtightpage.def
-\PreviewBorder=\dimen103
+\PreviewBorder=\dimen135
 )
-\pr@snippet=\count91
-\pr@box=\box27
-\pr@output=\toks16
-)) (d459ec7c.aux)
+\pr@snippet=\count179
+\pr@box=\box45
+\pr@output=\toks17
+)) (C:\MiKTeX\tex/latex/l3backend\l3backend-dvips.def
+File: l3backend-dvips.def 2020-08-07 L3 backend support: dvips
+\l__pdf_internal_box=\box46
+\g__pdf_backend_object_int=\count180
+\l__pdf_backend_content_box=\box47
+\l__pdf_backend_model_box=\box48
+\g__pdf_backend_annotation_int=\count181
+\g__pdf_backend_link_int=\count182
+\g__pdf_backend_link_sf_int=\count183
+)
+No file d459ec7c.aux.
 \openout1 = `d459ec7c.aux'.
 
 LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 2.
 LaTeX Font Info:    ... okay on input line 2.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 2.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 2.
 LaTeX Font Info:    ... okay on input line 2.
 LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 2.
 LaTeX Font Info:    ... okay on input line 2.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 2.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 2.
+LaTeX Font Info:    ... okay on input line 2.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 2.
 LaTeX Font Info:    ... okay on input line 2.
 LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 2.
 LaTeX Font Info:    ... okay on input line 2.
 LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 2.
 LaTeX Font Info:    ... okay on input line 2.
-
 Preview: Fontsize 10pt
 LaTeX Font Info:    External font `cmex10' loaded for size
 (Font)              <7> on input line 3.
@@ -91,13 +100,13 @@ LaTeX Font Info:    External font `cmex10' loaded for size
 Preview: Tightpage 0 0 0 0
 [1] (d459ec7c.aux) ) 
 Here is how much of TeX's memory you used:
- 821 strings out of 492896
- 13307 string characters out of 3133505
- 73807 words of memory out of 3000000
- 4777 multiletter control sequences out of 15000+200000
- 3640 words of font info for 14 fonts, out of 3000000 for 9000
+ 1018 strings out of 481213
+ 16906 string characters out of 2922298
+ 252880 words of memory out of 3000000
+ 16648 multiletter control sequences out of 15000+200000
+ 535088 words of font info for 29 fonts, out of 3000000 for 9000
  1141 hyphenation exceptions out of 8191
- 34i,1n,56p,260b,95s stack positions out of 5000i,500n,10000p,200000b,50000s
+ 36i,1n,60p,260b,95s stack positions out of 5000i,500n,10000p,200000b,50000s
 
 Output written on C:\Users\David\Documents\NetBeansProjects\jmathanim\tex\d459e
-c7c.dvi (1 page, 1848 bytes).
+c7c.dvi (1 page, 1876 bytes).

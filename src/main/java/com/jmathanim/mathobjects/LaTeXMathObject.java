@@ -12,18 +12,13 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import jdk.jfr.events.FileWriteEvent;
 
 /**
  *
@@ -54,7 +49,7 @@ public class LaTeXMathObject extends SVGMathObject {
         } catch (Exception ex) {
             Logger.getLogger(LaTeXMathObject.class.getName()).log(Level.SEVERE, null, ex);
         }
-        if (jmps.size() > 0)//Move to (0,0) by default
+        if (jmps.size() > 0)//Move UL to (0,0) by default
         {
             Rect r = getBoundingBox();
             this.shift(-r.xmin, -r.ymax);
@@ -69,16 +64,16 @@ public class LaTeXMathObject extends SVGMathObject {
      * Prepare LaTeX file and compile it
      */
     private void generateLaTeXDocument() throws IOException {
+        //TODO: Add necessary packages here (UTF8?)
+        //How to avoid having to write 2 backslashs??
         String beginDocument = "\\documentclass[preview]{standalone}\n"
                 + "\\begin{document}\n";
 
         String endDocument = "\\end{document}";
 
         String fullDocument = beginDocument + this.text + "\n" + endDocument;
-        System.out.println(fullDocument);
         String hash = getMd5(fullDocument);
         hash = hash.substring(hash.length() - 8);
-        System.out.println("Hash: " + hash);
         outputDir = new File("tex");
         baseFileName = outputDir.getCanonicalPath() + "\\" + hash;
         latexFile = new File(baseFileName + ".tex");
@@ -121,14 +116,17 @@ public class LaTeXMathObject extends SVGMathObject {
     }
 
     private String compileLaTeXFile() throws IOException, InterruptedException {
-        File dviFile = new File(baseFileName + ".dvi");
-        String od = outputDir.getCanonicalPath();
-        runExternalCommand("latex -output-directory=" + od + " " + this.latexFile.getCanonicalPath());
-        System.out.println("Done compiling " + latexFile.getCanonicalPath());
-        runExternalCommand("dvisvgm -n1 " + dviFile.getCanonicalPath());
-        System.out.println("Done converting " + dviFile.getCanonicalPath());
-
-        return baseFileName + ".svg";
+        String svgFilename = baseFileName + ".svg";
+        File svgFile = new File(svgFilename);
+        if (!svgFile.exists()) {//If file is already created, don't do it again
+            File dviFile = new File(baseFileName + ".dvi");
+            String od = outputDir.getCanonicalPath();
+            runExternalCommand("latex -output-directory=" + od + " " + this.latexFile.getCanonicalPath());
+            System.out.println("Done compiling " + latexFile.getCanonicalPath());
+            runExternalCommand("dvisvgm -n1 " + dviFile.getCanonicalPath());
+            System.out.println("Done converting " + dviFile.getCanonicalPath());
+        }
+        return svgFilename;
     }
 
     public void runExternalCommand(String command) throws IOException, InterruptedException {

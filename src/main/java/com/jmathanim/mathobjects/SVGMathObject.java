@@ -108,6 +108,7 @@ public class SVGMathObject extends MultiJMPathObject {
         JMPath resul = new JMPath();
         JMPathPoint previousPoint = new JMPathPoint(new Point(0, 0), true, 0);
         String t = s.replace("M", " M ");
+        t = t.replace("-", " -");//Avoid errors with strings like "142.11998-.948884"
         t = t.replace("H", " H ");
         t = t.replace("V", " V ");
         t = t.replace("C", " C ");
