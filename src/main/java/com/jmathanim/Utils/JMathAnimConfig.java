@@ -33,7 +33,6 @@ public class JMathAnimConfig {
         width=800;
         height=600;
         fps=30;
-        
     }
 
     /**

@@ -29,6 +29,7 @@ import static java.awt.BasicStroke.CAP_ROUND;
 import static java.awt.BasicStroke.JOIN_ROUND;
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.geom.Path2D;
@@ -36,6 +37,8 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
 
 /**
  *
@@ -47,6 +50,10 @@ public class Java2DRenderer extends Renderer {
     private static final boolean DEBUG_PATH_POINTS = false; //Draw control points and vertices
     private static final boolean PRINT_DEBUG = false; //Draw control points and vertices
     private static final boolean BOUNDING_BOX_DEBUG = false; //Draw bounding boxes
+
+    public boolean createMovie = true;
+    public boolean showDrawWindow = false;
+
     private final BufferedImage bufferedImage;
     private final Graphics2D g2d;
     public Camera2D camera;
@@ -65,6 +72,8 @@ public class Java2DRenderer extends Renderer {
     protected Path2D.Double path;
     final String saveFilePath = "c:\\media\\pinicula.mp4";
     private final JMathAnimConfig cnf;
+    private JFrame frame;
+    private JPanel panel;
 
     public Java2DRenderer(JMathAnimScene parentScene) {
         cnf = parentScene.conf;
@@ -101,44 +110,55 @@ public class Java2DRenderer extends Renderer {
     public final void prepareEncoder() {
 
         System.out.println("Prepare encoder...");
-        muxer = Muxer.make(saveFilePath, null, "mp4");
-        format = muxer.getFormat();
-        codec = Codec.findEncodingCodec(format.getDefaultVideoCodecId());
-        encoder = Encoder.make(codec);
-        encoder.setWidth(width);
-        encoder.setHeight(height);
-        pixelformat = PixelFormat.Type.PIX_FMT_YUV420P;
-        encoder.setPixelFormat(pixelformat);
+
+        if (showDrawWindow) {
+            frame = new JFrame("Previsualization");
+            frame.setSize(width, height);//TODO: Scale window to fixed size
+            panel = new JPanel();
+            frame.add(panel);
+            frame.setVisible(true);
+        }
+
+        if (createMovie) {
+            muxer = Muxer.make(saveFilePath, null, "mp4");
+            format = muxer.getFormat();
+            codec = Codec.findEncodingCodec(format.getDefaultVideoCodecId());
+            encoder = Encoder.make(codec);
+            encoder.setWidth(width);
+            encoder.setHeight(height);
+            pixelformat = PixelFormat.Type.PIX_FMT_YUV420P;
+            encoder.setPixelFormat(pixelformat);
 
 //        rationalFrameRate = Rational.make(1, Integer.parseInt(cnf.getProperty("FPS")));
-        rationalFrameRate = Rational.make(1, cnf.fps);
-        encoder.setTimeBase(rationalFrameRate);
-        if (format.getFlag(MuxerFormat.Flag.GLOBAL_HEADER)) {
-            encoder.setFlag(Encoder.Flag.FLAG_GLOBAL_HEADER, true);
-        }
-        /**
-         * Open the encoder.
-         */
-        encoder.open(null, null);
-        /**
-         * Add this stream to the muxer.
-         */
-        muxer.addNewStream(encoder);
-
-        try {
+            rationalFrameRate = Rational.make(1, cnf.fps);
+            encoder.setTimeBase(rationalFrameRate);
+            if (format.getFlag(MuxerFormat.Flag.GLOBAL_HEADER)) {
+                encoder.setFlag(Encoder.Flag.FLAG_GLOBAL_HEADER, true);
+            }
             /**
-             * And open the muxer for business.
+             * Open the encoder.
              */
-            muxer.open(null, null);
-        } catch (InterruptedException | IOException ex) {
-            Logger.getLogger(Java2DRenderer.class.getName()).log(Level.SEVERE, null, ex);
+            encoder.open(null, null);
+            /**
+             * Add this stream to the muxer.
+             */
+            muxer.addNewStream(encoder);
+
+            try {
+                /**
+                 * And open the muxer for business.
+                 */
+                muxer.open(null, null);
+            } catch (InterruptedException | IOException ex) {
+                Logger.getLogger(Java2DRenderer.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            packet = MediaPacket.make();
+            picture = MediaPicture.make(
+                    encoder.getWidth(),
+                    encoder.getHeight(),
+                    pixelformat);
+            picture.setTimeBase(rationalFrameRate);
         }
-        packet = MediaPacket.make();
-        picture = MediaPicture.make(
-                encoder.getWidth(),
-                encoder.getHeight(),
-                pixelformat);
-        picture.setTimeBase(rationalFrameRate);
     }
 
     @Override
@@ -162,38 +182,52 @@ public class Java2DRenderer extends Renderer {
 
     @Override
     public void saveFrame(int frameCount) {
-        BufferedImage screen = MediaPictureConverterFactory.convertToType(bufferedImage, BufferedImage.TYPE_3BYTE_BGR);
-        MediaPictureConverter converter = MediaPictureConverterFactory.createConverter(screen, picture);
-        converter.toPicture(picture, screen, frameCount);
-        do {
-            encoder.encode(packet, picture);
-            if (packet.isComplete()) {
-                muxer.write(packet, false);
-            }
-        } while (packet.isComplete());
+        if (showDrawWindow) {
+            //Draw into a window
+            Graphics gr = panel.getGraphics();
+            gr.drawImage(bufferedImage, 0, 0, null);
+        }
+        if (createMovie) {
+            BufferedImage screen = MediaPictureConverterFactory.convertToType(bufferedImage, BufferedImage.TYPE_3BYTE_BGR);
+            MediaPictureConverter converter = MediaPictureConverterFactory.createConverter(screen, picture);
+            converter.toPicture(picture, screen, frameCount);
+            do {
+                encoder.encode(packet, picture);
+                if (packet.isComplete()) {
+                    muxer.write(packet, false);
+                }
+            } while (packet.isComplete());
+        }
     }
 
     @Override
     public void finish() {
-        /**
-         * Encoders, like decoders, sometimes cache pictures so it can do the
-         * right key-frame optimizations. So, they need to be flushed as well.
-         * As with the decoders, the convention is to pass in a null input until
-         * the output is not complete.
-         */
-        System.out.println("Finishing movie...");
-        do {
-            encoder.encode(packet, null);
-            if (packet.isComplete()) {
-                muxer.write(packet, false);
-            }
-        } while (packet.isComplete());
+        if (createMovie) {
+            /**
+             * Encoders, like decoders, sometimes cache pictures so it can do
+             * the right key-frame optimizations. So, they need to be flushed as
+             * well. As with the decoders, the convention is to pass in a null
+             * input until the output is not complete.
+             */
+            System.out.println("Finishing movie...");
+            do {
+                encoder.encode(packet, null);
+                if (packet.isComplete()) {
+                    muxer.write(packet, false);
+                }
+            } while (packet.isComplete());
 
-        /**
-         * Finally, let's clean up after ourselves.
-         */
-        muxer.close();
-        System.out.println("Movie created at " + saveFilePath);
+            /**
+             * Finally, let's clean up after ourselves.
+             */
+            muxer.close();
+            System.out.println("Movie created at " + saveFilePath);
+        }
+        if (showDrawWindow) {
+            frame.setVisible(false);
+            frame.dispose();
+        }
+        System.exit(0);
     }
 
     @Override
