@@ -327,6 +327,7 @@ public class JMPath {
 
     /**
      * Returns a full copy of the path. JMPathPoint objects are also copied
+     *
      * @return A copy of the path
      */
     public JMPath rawCopy() {
@@ -344,8 +345,8 @@ public class JMPath {
     }
 
     /**
-     * Creates a copy of the path, with all their attributes. JMPathPoint objects
-     * are referenced instead of copied
+     * Creates a copy of the path, with all their attributes. JMPathPoint
+     * objects are referenced instead of copied
      *
      * @return A copy of the path
      */
@@ -391,12 +392,16 @@ public class JMPath {
 
     /**
      * Compute the sum of distance of points from aligned paths This distance
-     * should be minimized in order to Transform more smoothly
+     * should be minimized in order to Transform more smoothly. The paths should
+     * have the same number of points.
      *
      * @param path2 The other path
-     * @return Distance
+     * @return Distance. Null if paths have different number of points
      */
-    public Double squaredSumDistance(JMPath path2) {
+    public Double sumDistance(JMPath path2) {
+        if (this.size() != path2.size()) {
+            return null;
+        }
         double resul = 0;
         double sumSq = 0;
         double sum = 0;
@@ -404,7 +409,7 @@ public class JMPath {
             Vec v1 = points.get(n).p.v;
             Vec v2 = path2.points.get(n).p.v;
             double dist = v1.distanceTo(v2);
-            sumSq += dist * dist;
+            sumSq += dist;
             sum += dist;
         }
         sum /= this.size();
@@ -429,7 +434,7 @@ public class JMPath {
         for (int step = 0; step < this.size(); step++) {
             JMPath tempPath = this.copy();
             tempPath.cyclePoints(step, 1);
-            double distanceVar = tempPath.squaredSumDistance(path2);
+            double distanceVar = tempPath.sumDistance(path2);
             distances.add(distanceVar);
             System.out.println("Step: " + step + ", distanceVar: " + distanceVar);
             if (distanceVar < minDistanceVarNoChangeDir) {

@@ -51,8 +51,8 @@ public class Java2DRenderer extends Renderer {
     private static final boolean PRINT_DEBUG = false; //Draw control points and vertices
     private static final boolean BOUNDING_BOX_DEBUG = false; //Draw bounding boxes
 
-    public boolean createMovie = true;
-    public boolean showDrawWindow = false;
+    public boolean createMovie;
+    public boolean showPreview;
 
     private final BufferedImage bufferedImage;
     private final Graphics2D g2d;
@@ -74,9 +74,18 @@ public class Java2DRenderer extends Renderer {
     private final JMathAnimConfig cnf;
     private JFrame frame;
     private JPanel panel;
+    private JMathAnimScene parentScene;
 
     public Java2DRenderer(JMathAnimScene parentScene) {
+        this(parentScene,true,false);//default values
+    }
+
+    
+    public Java2DRenderer(JMathAnimScene parentScene,boolean createMovie,boolean showPreview) {
+        this.parentScene=parentScene;
         cnf = parentScene.conf;
+        this.createMovie=createMovie;
+        this.showPreview=showPreview;
         camera = new Camera2D(cnf.width, cnf.height);
         super.setSize(cnf.width, cnf.height);
 
@@ -111,7 +120,7 @@ public class Java2DRenderer extends Renderer {
 
         System.out.println("Prepare encoder...");
 
-        if (showDrawWindow) {
+        if (showPreview) {
             frame = new JFrame("Previsualization");
             frame.setSize(width, height);//TODO: Scale window to fixed size
             panel = new JPanel();
@@ -182,7 +191,7 @@ public class Java2DRenderer extends Renderer {
 
     @Override
     public void saveFrame(int frameCount) {
-        if (showDrawWindow) {
+        if (showPreview) {
             //Draw into a window
             Graphics gr = panel.getGraphics();
             gr.drawImage(bufferedImage, 0, 0, null);
@@ -223,7 +232,7 @@ public class Java2DRenderer extends Renderer {
             muxer.close();
             System.out.println("Movie created at " + saveFilePath);
         }
-        if (showDrawWindow) {
+        if (showPreview) {
             frame.setVisible(false);
             frame.dispose();
         }

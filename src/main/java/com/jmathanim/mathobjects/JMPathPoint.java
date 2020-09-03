@@ -70,13 +70,13 @@ public class JMPathPoint {
         return resul;
     }
 
-    void shift(Vec shiftVector) {
+    public void shift(Vec shiftVector) {
         p.v.addInSite(shiftVector);
         cp1.v.addInSite(shiftVector);
         cp2.v.addInSite(shiftVector);
     }
 
-    void scale(Point point, double d,double e,double f) {
+    public void scale(Point point, double d,double e,double f) {
         this.p.scale(point,d,e,f);
         this.cp1.scale(point,d,e,f);
         this.cp2.scale(point,d,e,f);
