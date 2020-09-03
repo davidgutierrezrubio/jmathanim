@@ -50,7 +50,7 @@ public class Segment extends JMPathMathObject {//TODO:Should extend Polygon clas
         JMPathPoint jmp2 = new JMPathPoint(p2, true, JMPathPoint.TYPE_VERTEX);
         jmp2.isCurved=false;
         vertices.add(jmp2);
-        curve.generateControlPoints();
+//        curve.generateControlPoints();
     }
 
     @Override

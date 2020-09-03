@@ -204,7 +204,7 @@ public class JMPath {
             }
             //Copy basic attributes of the original curve
             resul.isClosed = this.isClosed;
-            resul.generateControlPoints();//WARNING: THIS DOESN'T WORK WITH SVG
+            resul.generateControlPoints();//WARNING: THIS DOESN'T WORK WITH SVG NOR CURVED PATHS
             resul.isInterpolated = true;//Mark this path as interpolated
             this.clear();
             this.addPointsFrom(resul);
@@ -223,7 +223,17 @@ public class JMPath {
         }
         points.removeAll(toRemove);//Remove all interpolation points
         isInterpolated = false;//Mark this path as no interpolated
-        generateControlPoints();//Recompute control points
+        //Now, restore old control points
+        for (JMPathPoint p : points) {
+            if (p.cp1vBackup!=null) {
+                p.cp1.v=p.cp1vBackup;
+            }
+             if (p.cp2vBackup!=null) {
+                p.cp2.v=p.cp2vBackup;
+            }
+        }
+        
+//        generateControlPoints();//Recompute control points
     }
 
     @Override
@@ -296,29 +306,36 @@ public class JMPath {
         }
         pathSmall.clear();
         pathSmall.addPointsFrom(resul);
-        pathSmall.generateControlPoints();
+//        pathSmall.generateControlPoints();//Not necessary
     }
 
     public JMPathPoint interpolateBetweenTwoPoints(JMPathPoint v1, JMPathPoint v2, double alpha) {
 
         JMPathPoint interpolate;
         if (v2.isCurved) {
-            double x0 = v1.p.v.x;
-            double y0 = v1.p.v.y;
-            double x1 = v1.cp1.v.x;
-            double y1 = v1.cp1.v.y;
-            double x2 = v2.cp2.v.x;
-            double y2 = v2.cp2.v.y;
-            double x3 = v2.p.v.x;
-            double y3 = v2.p.v.y;
-            double ix = x0 * (1 - alpha) * (1 - alpha) * (1 - alpha) + 3 * x1 * alpha * (1 - alpha) * (1 - alpha);
-            ix += 3 * x2 * alpha * alpha * (1 - alpha) + x3 * alpha * alpha * alpha;
-            double iy = y0 * (1 - alpha) * (1 - alpha) * (1 - alpha) + 3 * y1 * alpha * (1 - alpha) * (1 - alpha);
-            iy += 3 * y2 * alpha * alpha * (1 - alpha) + y3 * alpha * alpha * alpha;
-            interpolate = new JMPathPoint(new Point(ix, iy), v2.isVisible, JMPathPoint.TYPE_INTERPOLATION_POINT);
+            //De Casteljau's Algorithm: https://en.wikipedia.org/wiki/De_Casteljau%27s_algorithm
+            Point E=v1.p.interpolate(v1.cp1, alpha); //New cp1 of v1
+            Point G=v2.p.interpolate(v2.cp2, alpha); //New cp2 of v2
+            Point F=v1.cp1.interpolate(v2.cp2, alpha);
+            Point H=E.interpolate(F, alpha);//cp2 of interpolation point
+            Point J=G.interpolate(F, alpha);//cp1 of interpolation point
+            Point K=H.interpolate(J, alpha); //Interpolation point
+            interpolate = new JMPathPoint(K, v2.isVisible, JMPathPoint.TYPE_INTERPOLATION_POINT);
+            interpolate.cp1.v=J.v;
+            interpolate.cp2.v=H.v;
+            //Change control points from v1 and v2,save
+            //backup values to restore after removing interpolation points
+            v1.cp1vBackup=v1.cp1.v;
+            v2.cp2vBackup=v2.cp2.v;
+            
+            v1.cp1.v=E.v;
+            v2.cp2.v=G.v;
+            
         } else {
+            //Straight interpolation
             Point interP = new Point(v1.p.v.interpolate(v2.p.v, alpha));
             //Interpolation point is visible iff v2 is visible
+            //Control points are by default the same as v1 and v2 (straight line)
             interpolate = new JMPathPoint(interP, v2.isVisible, JMPathPoint.TYPE_INTERPOLATION_POINT);
         }
         interpolate.isCurved = v2.isCurved;

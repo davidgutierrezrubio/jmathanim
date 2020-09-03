@@ -20,6 +20,7 @@ public class JMPathPoint {
 
     public final Point p;
     public final Point cp1, cp2; //Cómo debe entrar (cp2) y cómo debe salir (cp1)
+    public Vec cp1vBackup,cp2vBackup;//Backup values, to restore after removing interpolation points
     public boolean isVisible;
     public boolean isCurved;
     public int type; //Vertex, interpolation point, etc.

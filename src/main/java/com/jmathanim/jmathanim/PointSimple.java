@@ -34,8 +34,8 @@ public class PointSimple extends Scene2D {
 
     @Override
     public void setupSketch() {
-        conf.setHighQuality();
-//        conf.setLowQuality();
+//        conf.setHighQuality();
+        conf.setLowQuality();
         setCreateMovie(true);
         setShowPreviewWindow(true);
         createRenderer();
@@ -170,38 +170,42 @@ public class PointSimple extends Scene2D {
 
     }
 
+    
     public void pruebaTransform() {
-        RegularPolygon pol1 = new RegularPolygon(3, 1d);
-        pol1.mp.drawColor=Color.BLUE;
-        RegularPolygon pol2 = new RegularPolygon(4, 3.d / 4);
-        pol2.mp.drawColor=Color.GREEN;
+//        RegularPolygon pol1 = new RegularPolygon(3, 1d);
+//        pol1.mp.drawColor=Color.BLUE;
+//        RegularPolygon pol2 = new RegularPolygon(4, 3.d / 4);
+//        pol2.mp.drawColor=Color.GREEN;
         RegularPolygon pol3 = new RegularPolygon(5, 3.d / 5);
         pol3.mp.drawColor=Color.ORANGE;
-        RegularPolygon pol4 = new RegularPolygon(3, 3.d / 16);
+        RegularPolygon pol4 = new RegularPolygon(9, 3.d / 16);
         pol4.mp.drawColor=Color.PINK;
+        pol4.mp.thickness/=3;
         Circle circ = new Circle(new Point(-.5, -.5), 1);
+        circ.mp.thickness/=3;
         circ.mp.drawColor=Color.YELLOW;
         JMPathPoint pp = circ.jmpath.points.get(0);
         pp.shift(new Vec(-1,0));
-        pol1.shift(new Vec(-1, 0));
-        add(pol1);
-        add(pol2);
-        add(pol3);
+//        pol1.shift(new Vec(-1, 0));
+//        add(pol1);
+//        add(pol2);
+//        add(pol3);
         add(pol4);
         add(circ);
-        double tiempo=10;
-        play(new Transform(pol1, pol2, tiempo));
-        remove(pol2);
+        double tiempo=3;
+//        play(new Transform(pol1, pol2, tiempo));
+//        remove(pol2);
+//        waitSeconds(1);
+//        play(new Transform(pol1, pol3, tiempo));
+//        remove(pol3);
+//        waitSeconds(1);
+//        play(new Transform(pol1, pol4, tiempo));
+//        remove(pol4);
         waitSeconds(1);
-        play(new Transform(pol1, pol3, tiempo));
-        remove(pol3);
-        waitSeconds(1);
-        play(new Transform(pol1, pol4, tiempo));
-        remove(pol4);
-        waitSeconds(1);
-        play(new Transform(pol1, circ, tiempo));
+        play(new Transform(pol4, circ, tiempo));
         remove(circ);
         waitSeconds(1);
+        play(new Transform(pol4, pol3, tiempo));
     }
 
     public void pruebaLine() {

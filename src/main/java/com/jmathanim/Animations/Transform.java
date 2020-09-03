@@ -96,10 +96,15 @@ public class Transform extends Animation {
     private void finishAnimation() {
         //Here it should remove unnecessary points
         //First mark as vertex points all mobj1 points who match with vertex from obj2
+        //also copy backup values of control points 
         for (int n = 0; n < mobj1.jmpath.size(); n++) {
-            mobj1.jmpath.getPoint(n).type = mobj2.jmpath.getPoint(n).type;
-            mobj1.jmpath.getPoint(n).isCurved = mobj2.jmpath.getPoint(n).isCurved;
-            mobj1.jmpath.getPoint(n).isVisible = mobj2.jmpath.getPoint(n).isVisible;
+            JMPathPoint p1 = mobj1.jmpath.getPoint(n);
+            JMPathPoint p2 = mobj2.jmpath.getPoint(n);
+            p1.type = p2.type;
+            p1.isCurved = p2.isCurved;
+            p1.isVisible = p2.isVisible;
+            p1.cp1vBackup=p2.cp1vBackup;
+            p1.cp2vBackup=p2.cp2vBackup;
         }
         //Now I should remove all interpolation auxilary points
         mobj1.removeInterpolationPoints();

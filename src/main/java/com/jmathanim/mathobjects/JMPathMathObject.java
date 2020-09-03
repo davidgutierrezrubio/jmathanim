@@ -136,17 +136,20 @@ public class JMPathMathObject extends MathObject {
         }
 
     }
-
     public void removeInterpolationPoints() {
-        ArrayList<JMPathPoint> toRemove = new ArrayList<>();
-        for (JMPathPoint p : jmpath.points) {
-            if (p.type == JMPathPoint.TYPE_INTERPOLATION_POINT) {
-                toRemove.add(p);
-            }
-        }
-        jmpath.points.removeAll(toRemove);
-        jmpath.generateControlPoints();
+    jmpath.removeInterpolationPoints();
     }
+
+//    public void removeInterpolationPoints() {
+//        ArrayList<JMPathPoint> toRemove = new ArrayList<>();
+//        for (JMPathPoint p : jmpath.points) {
+//            if (p.type == JMPathPoint.TYPE_INTERPOLATION_POINT) {
+//                toRemove.add(p);
+//            }
+//        }
+//        jmpath.points.removeAll(toRemove);
+////        jmpath.generateControlPoints();
+//    }
 
     @Override
     public void moveTo(Vec coords) {
