@@ -224,6 +224,7 @@ public class JMPath {
         points.removeAll(toRemove);//Remove all interpolation points
         isInterpolated = false;//Mark this path as no interpolated
         //Now, restore old control points
+        //for curved paths control points are modified so that a backup is necessary
         for (JMPathPoint p : points) {
             if (p.cp1vBackup != null) {
                 p.cp1.v = p.cp1vBackup;
@@ -334,7 +335,7 @@ public class JMPath {
         if (v2.isCurved) {
             //De Casteljau's Algorithm: https://en.wikipedia.org/wiki/De_Casteljau%27s_algorithm
             Point E = v1.p.interpolate(v1.cp1, alpha); //New cp1 of v1
-            Point G = v2.p.interpolate(v2.cp2, alpha); //New cp2 of v2
+            Point G = v2.cp2.interpolate(v2.p, alpha); //New cp2 of v2
             Point F = v1.cp1.interpolate(v2.cp2, alpha);
             Point H = E.interpolate(F, alpha);//cp2 of interpolation point
             Point J = F.interpolate(G, alpha);//cp1 of interpolation point

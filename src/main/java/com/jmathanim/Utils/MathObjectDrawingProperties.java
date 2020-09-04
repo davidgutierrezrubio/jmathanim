@@ -89,15 +89,15 @@ public class MathObjectDrawingProperties {
 
         this.drawColor = new Color(r, g, b, tr);
     }
-    public void setFillAlpha(float alpha)
-    {
-        this.fillColor=new Color(this.fillColor.getRed(),this.fillColor.getGreen(),this.fillColor.getBlue(),(int)(255*alpha));
+
+    public void setFillAlpha(float alpha) {
+        this.fillColor = new Color(this.fillColor.getRed(), this.fillColor.getGreen(), this.fillColor.getBlue(), (int) (255 * alpha));
     }
-      public void setDrawAlpha(float alpha) {
-       this.drawColor=new Color(this.drawColor.getRed(),this.drawColor.getGreen(),this.drawColor.getBlue(),(int)(255*alpha));
+
+    public void setDrawAlpha(float alpha) {
+        this.drawColor = new Color(this.drawColor.getRed(), this.drawColor.getGreen(), this.drawColor.getBlue(), (int) (255 * alpha));
     }
-    
-    
+
     public double getThickness(Renderer r) {
         double resul;
         if (absoluteThickness) {
@@ -114,5 +114,23 @@ public class MathObjectDrawingProperties {
         return resul;
     }
 
-  
+    public void copyFrom(MathObjectDrawingProperties mp) {
+//        drawColor;
+//        fillColor;
+//        thickness;
+//        absoluteThickness;
+//        fill;
+//        visible;
+//        absolutePosition;
+//        drawPathBorder;
+        drawColor = mp.drawColor;
+        fillColor = mp.fillColor;
+        thickness = mp.thickness;
+        absoluteThickness = mp.absoluteThickness;
+        fill = mp.fill;
+        visible = mp.visible;
+        absolutePosition = mp.absolutePosition;
+        drawPathBorder = mp.drawPathBorder;
+    }
+//
 }

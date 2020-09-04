@@ -22,4 +22,13 @@ public class Circle extends Arc {
         super(arcCenter, radius, 2 * PI, true);
     }
 
+    @Override
+    public Circle copy() {
+        Circle resul=new Circle(this.center.copy(), radiusx);
+        resul.mp.copyFrom(mp);
+        resul.jmpath.clear();
+        resul.jmpath.addPointsFrom(jmpath.rawCopy());
+        return resul;
+    }
+
 }

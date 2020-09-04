@@ -34,8 +34,8 @@ public class PointSimple extends Scene2D {
 
     @Override
     public void setupSketch() {
-//        conf.setHighQuality();
-        conf.setLowQuality();
+        conf.setHighQuality();
+//        conf.setLowQuality();
         setCreateMovie(true);
         setShowPreviewWindow(true);
         createRenderer();
@@ -44,7 +44,7 @@ public class PointSimple extends Scene2D {
     @Override
     public void runSketch() {
         System.out.println("Running sketch...");
-        pruebaTransform();
+        pruebaTransform2Circles();
     }
 
     public void pruebaSimpleJMPathObject() throws ArrayIndexOutOfBoundsException {
@@ -170,6 +170,49 @@ public class PointSimple extends Scene2D {
 
     }
 
+    public void pruebaPuntosInterpolacion() {
+        Circle circ = new Circle(new Point(-.5, .5), 2);
+        circ.mp.thickness /= 3;
+        circ.mp.drawColor = Color.YELLOW;
+        
+        JMPathPoint pp = circ.jmpath.points.get(0);
+        pp.shift(new Vec(-2, 0));
+        Circle circ2 = circ.copy();
+        circ2.mp.drawColor = Color.GREEN;
+        add(circ2);
+        JMPathPoint p0 = circ.jmpath.points.get(0);
+        JMPathPoint p1 = circ.jmpath.points.get(1);
+        add(circ);
+        for (double alpha = .2; alpha < 1; alpha += .1) {
+            waitSeconds(1);
+            JMPathPoint po = circ.jmpath.interpolateBetweenTwoPoints(p0, p1, alpha);
+            add(po.p);
+        }
+        waitSeconds(30);
+    }
+
+    public void pruebaInterpolacion() {
+        Circle circ = new Circle(new Point(-.5, .5), 2);
+        circ.mp.thickness /= 3;
+        circ.mp.drawColor = Color.YELLOW;
+        JMPathPoint pp = circ.jmpath.points.get(0);
+        pp.shift(new Vec(-2, 0));
+        Circle circ2 = circ.copy();
+        circ2.mp.drawColor = Color.BLUE;
+        add(circ, circ2);
+        RegularPolygon pol4 = new RegularPolygon(12, 3.d / 16);
+        circ.jmpath.alignPaths(pol4.jmpath);
+        waitSeconds(30);
+    }
+
+    public void pruebaTransform2Circles()
+    {
+        Circle circ = new Circle(new Point(0, 0), 2);
+        Circle circ2 = new Circle(new Point(1.5, -.5), .5);
+        add(circ,circ2);
+        play(new Transform(circ, circ2, 5));
+    }
+    
     
     public void pruebaTransform() {
 //        RegularPolygon pol1 = new RegularPolygon(3, 1d);
@@ -177,22 +220,22 @@ public class PointSimple extends Scene2D {
 //        RegularPolygon pol2 = new RegularPolygon(4, 3.d / 4);
 //        pol2.mp.drawColor=Color.GREEN;
         RegularPolygon pol3 = new RegularPolygon(3, 3.d / 5);
-        pol3.mp.drawColor=Color.ORANGE;
+        pol3.mp.drawColor = Color.ORANGE;
         RegularPolygon pol4 = new RegularPolygon(12, 3.d / 16);
-        pol4.mp.drawColor=Color.PINK;
-        pol4.mp.thickness/=3;
+        pol4.mp.drawColor = Color.PINK;
+        pol4.mp.thickness /= 3;
         Circle circ = new Circle(new Point(-.5, -.5), 1);
-        circ.mp.thickness/=3;
-        circ.mp.drawColor=Color.YELLOW;
+        circ.mp.thickness /= 3;
+        circ.mp.drawColor = Color.YELLOW;
         JMPathPoint pp = circ.jmpath.points.get(0);
-        pp.shift(new Vec(-1,0));
+        pp.shift(new Vec(-1, 0));
 //        pol1.shift(new Vec(-1, 0));
 //        add(pol1);
 //        add(pol2);
 //        add(pol3);
         add(pol4);
         add(circ);
-        double tiempo=3;
+        double tiempo = 3;
 //        play(new Transform(pol1, pol2, tiempo));
 //        remove(pol2);
 //        waitSeconds(1);

@@ -24,7 +24,7 @@ public class Arc extends JMPathMathObject {
 
     public Arc(Point cen, double radius, double angle, boolean isClosed) {
         super();
-        step =Math.PI*2/5;//Default
+        step =Math.PI*2/20;//Default
         this.x = cen.v.x;
         this.y = cen.v.y;
         this.radiusx = radius;
@@ -92,10 +92,7 @@ public class Arc extends JMPathMathObject {
 
     }
 
-    @Override
-    public MathObject copy() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
+    
 
     @Override
     public void scale(Point scaleCenter, double sx, double sy, double sz) {

@@ -201,23 +201,23 @@ public class Java2DRenderer extends Renderer {
             Graphics gr = panel.getGraphics();
             gr.drawImage(bufferedImage, 0, 0, null);
 
-            //Ensure fps is set to movie
-            double next_game_tick = System.currentTimeMillis();
-            int loops;
-
-                loops = 0;
-                while (System.currentTimeMillis() > next_game_tick
-                        && loops < MAX_FRAMESKIP) {
-
-
-                    next_game_tick += SKIP_TICKS;
-                    loops++;
-                }
-            try {
-                Thread.sleep(10);
-            } catch (InterruptedException ex) {
-                Logger.getLogger(Java2DRenderer.class.getName()).log(Level.SEVERE, null, ex);
-            }
+//            //Ensure fps is set to movie
+//            double next_game_tick = System.currentTimeMillis();
+//            int loops;
+//
+//                loops = 0;
+//                while (System.currentTimeMillis() > next_game_tick
+//                        && loops < MAX_FRAMESKIP) {
+//
+//
+//                    next_game_tick += SKIP_TICKS;
+//                    loops++;
+//                }
+//            try {
+//                Thread.sleep(10);
+//            } catch (InterruptedException ex) {
+//                Logger.getLogger(Java2DRenderer.class.getName()).log(Level.SEVERE, null, ex);
+//            }
             }
             if (createMovie) {
                 BufferedImage screen = MediaPictureConverterFactory.convertToType(bufferedImage, BufferedImage.TYPE_3BYTE_BGR);
