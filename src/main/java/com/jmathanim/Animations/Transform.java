@@ -9,8 +9,6 @@ import com.jmathanim.Utils.MathObjectDrawingProperties;
 import com.jmathanim.mathobjects.JMPath;
 import com.jmathanim.mathobjects.JMPathMathObject;
 import com.jmathanim.mathobjects.JMPathPoint;
-import com.jmathanim.mathobjects.Point;
-import javafx.scene.paint.Color;
 
 /**
  *
