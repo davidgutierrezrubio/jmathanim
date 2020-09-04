@@ -42,4 +42,8 @@ public class ShowCreation extends Animation {
     public void finishAnimation() {
     }
 
+    @Override
+    public void initialize() {
+    }
+
 }

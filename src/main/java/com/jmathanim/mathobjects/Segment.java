@@ -13,7 +13,7 @@ import com.jmathanim.Utils.Vec;
  *
  * @author David Gutierrez Rubio davidgutierrezrubio@gmail.com
  */
-public class Segment extends JMPathMathObject {//TODO:Should extend Polygon class
+public class Segment extends JMPathMathObject {
 
     String[] DEFAULT_CONFIG = {
         "THICKNESS", ".01",
@@ -21,6 +21,7 @@ public class Segment extends JMPathMathObject {//TODO:Should extend Polygon clas
     };
     Point p1, p2;
     JMPath curve;
+
 
     public Segment(Vec v1, Vec v2) {
         this(new Point(v1), new Point(v2), null);
@@ -34,7 +35,9 @@ public class Segment extends JMPathMathObject {//TODO:Should extend Polygon clas
         super(mp);
         this.p1 = p1;
         this.p2 = p2;
-        computeCurve();
+        if (p1 != null && p2 != null) {
+            computeCurve();
+        }
     }
 
     @Override
@@ -45,26 +48,25 @@ public class Segment extends JMPathMathObject {//TODO:Should extend Polygon clas
     public final void computeCurve() {
         curve = new JMPath();
         JMPathPoint jmp1 = new JMPathPoint(p1, true, JMPathPoint.TYPE_VERTEX);
-        jmp1.isCurved=false;
-        vertices.add(jmp1);
+        jmp1.isCurved = false;
+        jmpath.addPoint(jmp1);
         JMPathPoint jmp2 = new JMPathPoint(p2, true, JMPathPoint.TYPE_VERTEX);
-        jmp2.isCurved=false;
-        vertices.add(jmp2);
+        jmp2.isCurved = false;
+        jmpath.addPoint(jmp2);
 //        curve.generateControlPoints();
     }
 
-    @Override
-    public void draw(Renderer r) {
-        Vec v1 = p1.v;
-        Vec v2 = p2.v;
-        Vec vd = v2.minus(v1);
-        Vec v3 = v1.add(vd.mult(1));//TODO: FIX THIS
-        r.setBorderColor(mp.drawColor);
-        r.setStroke(mp.getThickness(r));
-        r.drawLine(v1.x, v1.y, v3.x, v3.y);
-
-    }
-
+//    @Override
+//    public void draw(Renderer r) {
+//        Vec v1 = p1.v;
+//        Vec v2 = p2.v;
+//        Vec vd = v2.minus(v1);
+//        Vec v3 = v1.add(vd.mult(1));//TODO: FIX THIS
+//        r.setBorderColor(mp.drawColor);
+//        r.setStroke(mp.getThickness(r));
+//        r.drawLine(v1.x, v1.y, v3.x, v3.y);
+//
+//    }
     @Override
     public void moveTo(Vec coords) {
         Vec v1 = p1.v;

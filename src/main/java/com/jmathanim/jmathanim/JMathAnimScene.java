@@ -124,6 +124,10 @@ public abstract class JMathAnimScene {
         SCRenderer.saveFrame(frameCount);
     }
 
+    /**
+     * Overloaded function, to admit a variable number of parameters
+     * @param anims Animations to play
+     */
     public void play(Animation... anims) {
         ArrayList<Animation> animArray = new ArrayList<>();
         for (Animation anim : anims) {
@@ -132,10 +136,17 @@ public abstract class JMathAnimScene {
         this.play(animArray);
     }
 
+    /**
+     * Play the given animations, generating new frames automatically until
+     * all animations have finished. 
+     * @param anims An ArrayList with Animation objects.
+     */
     public void play(ArrayList<Animation> anims) {
         for (Animation anim : anims) {
-            add(anim.mobj);
+            add(anim.mobj); //Add main object if it's not already in the scene.
+            anim.initialize();//Perform needed steps immediately before playing
         }
+        
         boolean finished = false;
         while (!finished) {
             finished = true;

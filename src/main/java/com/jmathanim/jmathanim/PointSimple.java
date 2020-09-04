@@ -34,9 +34,9 @@ public class PointSimple extends Scene2D {
 
     @Override
     public void setupSketch() {
-        conf.setHighQuality();
-//        conf.setLowQuality();
-        setCreateMovie(true);
+//        conf.setHighQuality();
+        conf.setLowQuality();
+        setCreateMovie(false);
         setShowPreviewWindow(true);
         createRenderer();
     }
@@ -44,7 +44,7 @@ public class PointSimple extends Scene2D {
     @Override
     public void runSketch() {
         System.out.println("Running sketch...");
-        pruebaTransform2Circles();
+        pruebaTransformSegmentos();
     }
 
     public void pruebaSimpleJMPathObject() throws ArrayIndexOutOfBoundsException {
@@ -174,7 +174,7 @@ public class PointSimple extends Scene2D {
         Circle circ = new Circle(new Point(-.5, .5), 2);
         circ.mp.thickness /= 3;
         circ.mp.drawColor = Color.YELLOW;
-        
+
         JMPathPoint pp = circ.jmpath.points.get(0);
         pp.shift(new Vec(-2, 0));
         Circle circ2 = circ.copy();
@@ -205,15 +205,13 @@ public class PointSimple extends Scene2D {
         waitSeconds(30);
     }
 
-    public void pruebaTransform2Circles()
-    {
+    public void pruebaTransform2Circles() {
         Circle circ = new Circle(new Point(0, 0), 2);
         Circle circ2 = new Circle(new Point(1.5, -.5), .5);
-        add(circ,circ2);
+        add(circ, circ2);
         play(new Transform(circ, circ2, 5));
     }
-    
-    
+
     public void pruebaTransform() {
 //        RegularPolygon pol1 = new RegularPolygon(3, 1d);
 //        pol1.mp.drawColor=Color.BLUE;
@@ -405,6 +403,18 @@ public class PointSimple extends Scene2D {
         play(new Transform(x1, x3, 1));
         play(new Transform(x1, x4, 1));
         waitSeconds(3);
+    }
+
+    public void pruebaTransformSegmentos() {
+        Segment s1 = new Segment(new Point(-1, 1), new Point(0, .5));
+        RegularPolygon pol = new RegularPolygon(5, 1);
+        add(pol);
+        ArrayList<Segment> radius = pol.getApothem();
+        waitSeconds(3);
+        for (Segment s : radius) {
+            Transform tr = new Transform(s1, s, 3);
+            play(tr);
+        }
     }
 
 }

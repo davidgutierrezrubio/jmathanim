@@ -11,7 +11,6 @@ import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.Vec;
 import java.awt.Color;
 import java.util.ArrayList;
-import java.util.Properties;
 
 /**
  *

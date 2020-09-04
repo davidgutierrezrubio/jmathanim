@@ -31,4 +31,8 @@ public class FadeIn extends Animation {
     public void finishAnimation() {
     }
 
+    @Override
+    public void initialize() {
+    }
+
 }

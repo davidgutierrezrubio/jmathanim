@@ -244,6 +244,7 @@ public class JMPath {
         String resul = "";
         for (JMPathPoint p : points) {
             resul += (p.isCurved ? "C" : "R");
+            resul += (p.isVisible ? "" : "*");
         }
         return resul;
     }
@@ -325,7 +326,7 @@ public class JMPath {
         interpolate = interpolateBetweenTwoPoints(v1, v2, alpha);
         resul.addPoint(interpolate);
         if (numDivForThisVertex > 2) {
-            dividePathSegment(interpolate, v2, numDivForThisVertex-1, resul);
+            dividePathSegment(interpolate, v2, numDivForThisVertex - 1, resul);
         }
     }
 
@@ -411,6 +412,9 @@ public class JMPath {
      * @param step
      */
     public void cyclePoints(int step, int direction) {
+        if (!this.isClosed) {
+            return;
+        }
         JMPath tempPath = this.copy();
         points.clear();
 
@@ -466,18 +470,20 @@ public class JMPath {
      *
      * @param path2
      */
-    public void minimizeSquaredDistance(JMPath path2) {
+    public void minimizeSumDistance(JMPath path2) {
         ArrayList<Double> distances = new ArrayList<Double>();
         double minDistanceVarNoChangeDir = 999999999;
         int minStepNoChangeDir = 0;
 
+        //If the path is open, we can't cycle the path, so 
+        //we set numberOfCycles to 1
+        int numberOfCycles = (this.isClosed ? this.size() : 1);
         //First, without changing direction
-        for (int step = 0; step < this.size(); step++) {
+        for (int step = 0; step < numberOfCycles; step++) {
             JMPath tempPath = this.copy();
             tempPath.cyclePoints(step, 1);
             double distanceVar = tempPath.sumDistance(path2);
             distances.add(distanceVar);
-            System.out.println("Step: " + step + ", distanceVar: " + distanceVar);
             if (distanceVar < minDistanceVarNoChangeDir) {
                 minDistanceVarNoChangeDir = distanceVar;
                 minStepNoChangeDir = step;
@@ -486,27 +492,22 @@ public class JMPath {
         }
         double minDistanceVarChangeDir = 999999999;
         int minStepChangeDir = 0;
-//        for (int step = 0; step < this.size(); step++) {
-//            JMPath tempPath = this.copy();
-//            tempPath.cyclePoints(step, -1);
-//            double distanceVar = tempPath.squaredSumDistance(path2);
-//            distances.add(distanceVar);
-//            System.out.println("Step: " + step + ", distanceVar: " + distanceVar);
-//            if (distanceVar < minDistanceVarChangeDir) {
-//                minDistanceVarChangeDir = distanceVar;
-//                minStepChangeDir = step;
-//            }
-//
-//        }
-        System.out.println("Optimum Step: " + minStepNoChangeDir + ", distance: " + minDistanceVarNoChangeDir);
-        System.out.println("Optimum Step: " + minStepChangeDir + ", distance: " + minDistanceVarChangeDir);
+        for (int step = 0; step < numberOfCycles; step++) {
+            JMPath tempPath = this.copy();
+            tempPath.cyclePoints(step, -1);
+            double distanceVar = tempPath.sumDistance(path2);
+            distances.add(distanceVar);
+            if (distanceVar < minDistanceVarChangeDir) {
+                minDistanceVarChangeDir = distanceVar;
+                minStepChangeDir = step;
+            }
+            if (minDistanceVarNoChangeDir < minDistanceVarChangeDir) {
+                this.cyclePoints(minStepNoChangeDir, 1);
+            } else {
+                this.cyclePoints(minStepChangeDir, -1);
+            }
 
-        if (minDistanceVarNoChangeDir < minDistanceVarChangeDir) {
-            this.cyclePoints(minStepNoChangeDir, 1);
-        } else {
-            this.cyclePoints(minStepChangeDir, -1);
         }
-
     }
 
     void shift(Vec shiftVector) {
