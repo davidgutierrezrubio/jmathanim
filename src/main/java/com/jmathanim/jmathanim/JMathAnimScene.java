@@ -36,6 +36,7 @@ public abstract class JMathAnimScene {
     protected double dt;
     public JMathAnimConfig conf;
 
+    
     public JMathAnimScene() {
         objects = new ArrayList<>(); //TODO: Extends this to include layers
         conf = new JMathAnimConfig();
@@ -143,7 +144,7 @@ public abstract class JMathAnimScene {
 //                Java2DRenderer r = (Java2DRenderer) SCRenderer;
 //            r.debugText("t: " + anims.get(0).mobj, 10, 10);
             }
-            
+
             advanceFrame();
         }
     }

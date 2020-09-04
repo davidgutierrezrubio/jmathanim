@@ -176,9 +176,9 @@ public class PointSimple extends Scene2D {
 //        pol1.mp.drawColor=Color.BLUE;
 //        RegularPolygon pol2 = new RegularPolygon(4, 3.d / 4);
 //        pol2.mp.drawColor=Color.GREEN;
-        RegularPolygon pol3 = new RegularPolygon(5, 3.d / 5);
+        RegularPolygon pol3 = new RegularPolygon(3, 3.d / 5);
         pol3.mp.drawColor=Color.ORANGE;
-        RegularPolygon pol4 = new RegularPolygon(9, 3.d / 16);
+        RegularPolygon pol4 = new RegularPolygon(12, 3.d / 16);
         pol4.mp.drawColor=Color.PINK;
         pol4.mp.thickness/=3;
         Circle circ = new Circle(new Point(-.5, -.5), 1);
@@ -206,6 +206,7 @@ public class PointSimple extends Scene2D {
         remove(circ);
         waitSeconds(1);
         play(new Transform(pol4, pol3, tiempo));
+        waitSeconds(1);
     }
 
     public void pruebaLine() {

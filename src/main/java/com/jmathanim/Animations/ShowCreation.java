@@ -38,4 +38,8 @@ public class ShowCreation extends Animation {
         mobj.setDrawParam(t,this.numSlices);
     }
 
+    @Override
+    public void finishAnimation() {
+    }
+
 }

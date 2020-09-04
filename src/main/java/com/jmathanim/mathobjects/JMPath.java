@@ -225,14 +225,16 @@ public class JMPath {
         isInterpolated = false;//Mark this path as no interpolated
         //Now, restore old control points
         for (JMPathPoint p : points) {
-            if (p.cp1vBackup!=null) {
-                p.cp1.v=p.cp1vBackup;
+            if (p.cp1vBackup != null) {
+                p.cp1.v = p.cp1vBackup;
+                p.cp1vBackup = null;
             }
-             if (p.cp2vBackup!=null) {
-                p.cp2.v=p.cp2vBackup;
+            if (p.cp2vBackup != null) {
+                p.cp2.v = p.cp2vBackup;
+                p.cp2vBackup = null;
             }
         }
-        
+
 //        generateControlPoints();//Recompute control points
     }
 
@@ -293,20 +295,37 @@ public class JMPath {
             JMPathPoint v2 = pathSmall.getPoint(n + 1);
             v1.type = JMPathPoint.TYPE_VERTEX;
             resul.addPoint(v1); //Add the point of original curve
-            numDivForThisVertex = numDivs;
-            if (n < rest) { //The <rest> first vertex have an extra interpolation point
+            numDivForThisVertex = numDivs; //number of segments to divide, NOT number of intermediate new points
+            if (n < rest) { //The <rest> first vertex have an extra interpolation point (should distribute these along the path? maybe...)
                 numDivForThisVertex += 1;
             }
-            for (int j = 1; j < numDivForThisVertex; j++) //Now compute the new ones
-            {
-                double alpha = j * 1.d / numDivForThisVertex;
-                JMPathPoint interpolate = interpolateBetweenTwoPoints(v1, v2, alpha);
-                resul.addPoint(interpolate);
-            }
+            dividePathSegment(v1, v2, numDivForThisVertex, resul);
         }
         pathSmall.clear();
         pathSmall.addPointsFrom(resul);
 //        pathSmall.generateControlPoints();//Not necessary
+    }
+
+    /**
+     * Divide path into an equal number of parts. Stores new points in a new
+     * path
+     *
+     * @param v1 Starting point
+     * @param v2 Ending point
+     * @param numDivForThisVertex Number of subdivisions
+     * @param resul Path with new points to store
+     */
+    private void dividePathSegment(JMPathPoint v1, JMPathPoint v2, int numDivForThisVertex, JMPath resul) {
+        JMPathPoint interpolate;
+        if (numDivForThisVertex < 2) {
+            return;
+        }
+        double alpha = 1.0d / numDivForThisVertex;
+        interpolate = interpolateBetweenTwoPoints(v1, v2, alpha);
+        resul.addPoint(interpolate);
+        if (numDivForThisVertex > 2) {
+            dividePathSegment(interpolate, v2, numDivForThisVertex-1, resul);
+        }
     }
 
     public JMPathPoint interpolateBetweenTwoPoints(JMPathPoint v1, JMPathPoint v2, double alpha) {
@@ -314,23 +333,27 @@ public class JMPath {
         JMPathPoint interpolate;
         if (v2.isCurved) {
             //De Casteljau's Algorithm: https://en.wikipedia.org/wiki/De_Casteljau%27s_algorithm
-            Point E=v1.p.interpolate(v1.cp1, alpha); //New cp1 of v1
-            Point G=v2.p.interpolate(v2.cp2, alpha); //New cp2 of v2
-            Point F=v1.cp1.interpolate(v2.cp2, alpha);
-            Point H=E.interpolate(F, alpha);//cp2 of interpolation point
-            Point J=G.interpolate(F, alpha);//cp1 of interpolation point
-            Point K=H.interpolate(J, alpha); //Interpolation point
+            Point E = v1.p.interpolate(v1.cp1, alpha); //New cp1 of v1
+            Point G = v2.p.interpolate(v2.cp2, alpha); //New cp2 of v2
+            Point F = v1.cp1.interpolate(v2.cp2, alpha);
+            Point H = E.interpolate(F, alpha);//cp2 of interpolation point
+            Point J = F.interpolate(G, alpha);//cp1 of interpolation point
+            Point K = H.interpolate(J, alpha); //Interpolation point
             interpolate = new JMPathPoint(K, v2.isVisible, JMPathPoint.TYPE_INTERPOLATION_POINT);
-            interpolate.cp1.v=J.v;
-            interpolate.cp2.v=H.v;
+            interpolate.cp1.v = J.v;
+            interpolate.cp2.v = H.v;
             //Change control points from v1 and v2,save
             //backup values to restore after removing interpolation points
-            v1.cp1vBackup=v1.cp1.v;
-            v2.cp2vBackup=v2.cp2.v;
-            
-            v1.cp1.v=E.v;
-            v2.cp2.v=G.v;
-            
+            if (v1.cp1vBackup == null) {
+                v1.cp1vBackup = v1.cp1.v;
+            }
+            if (v2.cp2vBackup == null) {
+                v2.cp2vBackup = v2.cp2.v;
+            }
+
+            v1.cp1.v = E.v;
+            v2.cp2.v = G.v;
+
         } else {
             //Straight interpolation
             Point interP = new Point(v1.p.v.interpolate(v2.p.v, alpha));

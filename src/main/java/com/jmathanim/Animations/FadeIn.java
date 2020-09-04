@@ -27,4 +27,8 @@ public class FadeIn extends Animation {
         mobj.setAlpha(t);
     }
 
+    @Override
+    public void finishAnimation() {
+    }
+
 }

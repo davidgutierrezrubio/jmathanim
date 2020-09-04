@@ -54,10 +54,6 @@ public class Transform extends Animation {
 
     @Override
     public void doAnim(double t) {
-        if (t >= 1) {
-            t = 1;
-            finishAnimation();
-        } else {
             System.out.println("Anim Transform " + t);
             JMPathPoint interPoint, basePoint, dstPoint;
             for (int n = 0; n < mobj1.jmpath.points.size(); n++) {
@@ -90,10 +86,10 @@ public class Transform extends Animation {
             mobj1.mp.interpolateFrom(propBase, mobj2.mp, t);
             //Update center from mobj1
             mobj1.updateCenter();
-        }
     }
 
-    private void finishAnimation() {
+    @Override
+    public void finishAnimation() {
         //Here it should remove unnecessary points
         //First mark as vertex points all mobj1 points who match with vertex from obj2
         //also copy backup values of control points 
@@ -108,6 +104,7 @@ public class Transform extends Animation {
         }
         //Now I should remove all interpolation auxilary points
         mobj1.removeInterpolationPoints();
+        System.out.println(mobj1);
         mobj2.removeInterpolationPoints();
     }
 

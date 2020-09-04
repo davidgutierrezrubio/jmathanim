@@ -76,16 +76,21 @@ public class Java2DRenderer extends Renderer {
     private JPanel panel;
     private JMathAnimScene parentScene;
 
+    //To limit fps in preview window
+    double interpolation = 0;
+    final int TICKS_PER_SECOND = 5;
+    final int SKIP_TICKS = 1000 / TICKS_PER_SECOND;
+    final int MAX_FRAMESKIP = 5;
+
     public Java2DRenderer(JMathAnimScene parentScene) {
-        this(parentScene,true,false);//default values
+        this(parentScene, true, false);//default values
     }
 
-    
-    public Java2DRenderer(JMathAnimScene parentScene,boolean createMovie,boolean showPreview) {
-        this.parentScene=parentScene;
+    public Java2DRenderer(JMathAnimScene parentScene, boolean createMovie, boolean showPreview) {
+        this.parentScene = parentScene;
         cnf = parentScene.conf;
-        this.createMovie=createMovie;
-        this.showPreview=showPreview;
+        this.createMovie = createMovie;
+        this.showPreview = showPreview;
         camera = new Camera2D(cnf.width, cnf.height);
         super.setSize(cnf.width, cnf.height);
 
@@ -195,72 +200,103 @@ public class Java2DRenderer extends Renderer {
             //Draw into a window
             Graphics gr = panel.getGraphics();
             gr.drawImage(bufferedImage, 0, 0, null);
-        }
-        if (createMovie) {
-            BufferedImage screen = MediaPictureConverterFactory.convertToType(bufferedImage, BufferedImage.TYPE_3BYTE_BGR);
-            MediaPictureConverter converter = MediaPictureConverterFactory.createConverter(screen, picture);
-            converter.toPicture(picture, screen, frameCount);
-            do {
-                encoder.encode(packet, picture);
-                if (packet.isComplete()) {
-                    muxer.write(packet, false);
+
+            //Ensure fps is set to movie
+            double next_game_tick = System.currentTimeMillis();
+            int loops;
+
+                loops = 0;
+                while (System.currentTimeMillis() > next_game_tick
+                        && loops < MAX_FRAMESKIP) {
+
+
+                    next_game_tick += SKIP_TICKS;
+                    loops++;
                 }
-            } while (packet.isComplete());
+            try {
+                Thread.sleep(10);
+            } catch (InterruptedException ex) {
+                Logger.getLogger(Java2DRenderer.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            }
+            if (createMovie) {
+                BufferedImage screen = MediaPictureConverterFactory.convertToType(bufferedImage, BufferedImage.TYPE_3BYTE_BGR);
+                MediaPictureConverter converter = MediaPictureConverterFactory.createConverter(screen, picture);
+                converter.toPicture(picture, screen, frameCount);
+                do {
+                    encoder.encode(packet, picture);
+                    if (packet.isComplete()) {
+                        muxer.write(packet, false);
+                    }
+                } while (packet.isComplete());
+            }
         }
-    }
 
-    @Override
-    public void finish() {
+        @Override
+        public void finish
+        
+            () {
         if (createMovie) {
-            /**
-             * Encoders, like decoders, sometimes cache pictures so it can do
-             * the right key-frame optimizations. So, they need to be flushed as
-             * well. As with the decoders, the convention is to pass in a null
-             * input until the output is not complete.
-             */
-            System.out.println("Finishing movie...");
-            do {
-                encoder.encode(packet, null);
-                if (packet.isComplete()) {
-                    muxer.write(packet, false);
-                }
-            } while (packet.isComplete());
+                /**
+                 * Encoders, like decoders, sometimes cache pictures so it can
+                 * do the right key-frame optimizations. So, they need to be
+                 * flushed as well. As with the decoders, the convention is to
+                 * pass in a null input until the output is not complete.
+                 */
+                System.out.println("Finishing movie...");
+                do {
+                    encoder.encode(packet, null);
+                    if (packet.isComplete()) {
+                        muxer.write(packet, false);
+                    }
+                } while (packet.isComplete());
 
-            /**
-             * Finally, let's clean up after ourselves.
-             */
-            muxer.close();
-            System.out.println("Movie created at " + saveFilePath);
+                /**
+                 * Finally, let's clean up after ourselves.
+                 */
+                muxer.close();
+                System.out.println("Movie created at " + saveFilePath);
+            }
+            if (showPreview) {
+                frame.setVisible(false);
+                frame.dispose();
+            }
+            System.exit(0);
         }
-        if (showPreview) {
-            frame.setVisible(false);
-            frame.dispose();
-        }
-        System.exit(0);
-    }
 
-    @Override
-    public void drawArc(double x, double y, double radius, double angle) {
+        @Override
+        public void drawArc
+        (double x, double y, double radius, double angle
+        
+            ) {
         g2d.setColor(borderColor);
-    }
+        }
 
-    @Override
-    public void clear() {
+        @Override
+        public void clear
+        
+            () {
         g2d.setColor(Color.BLACK);//TODO: Poner en opciones
-        g2d.fillRect(0, 0, width, height);
-    }
+            g2d.fillRect(0, 0, width, height);
+        }
 
-    @Override
-    public void setStroke(double mathSize) {
+        @Override
+        public void setStroke
+        (double mathSize
+        
+            ) {
         int strokeSize = camera.mathToScreen(mathSize); //TODO: Another way to compute this
-        g2d.setStroke(new BasicStroke(strokeSize, CAP_ROUND, JOIN_ROUND));
-    }
+            g2d.setStroke(new BasicStroke(strokeSize, CAP_ROUND, JOIN_ROUND));
+        }
 
-    @Override
-    public void drawPath(MathObject mobj, JMPath c) {
+        @Override
+        public void drawPath
+        (MathObject mobj, JMPath c
+        
+            ) {
 
         int numPoints = c.size();
-        int minimumPoints = 2;
+            int minimumPoints = 2;
 
 //        switch (c.curveType) {
 //            case JMPath.STRAIGHT:
@@ -272,24 +308,26 @@ public class Java2DRenderer extends Renderer {
 //            default:
 //                throw new UnsupportedOperationException("Error: Illegal type of JMPath: " + c.curveType);
 //        }
-        if (numPoints >= minimumPoints) {
-            path = createPathFromJMPath(c);
+            if (numPoints >= minimumPoints) {
+                path = createPathFromJMPath(c);
 
-            if (mobj.mp.fill) {
-                g2d.setPaint(mobj.mp.fillColor);
-                g2d.fill(path);
-            }
-            //Border is always drawed
-            g2d.setColor(mobj.mp.drawColor);
-            g2d.draw(path);
-            if (PRINT_DEBUG) {
-                System.out.println("Drawing " + c);
-            }
-            if (BOUNDING_BOX_DEBUG) {
-                debugBoundingBox(c.getBoundingBox());
+                if (mobj.mp.fill) {
+                    g2d.setPaint(mobj.mp.fillColor);
+                    g2d.fill(path);
+                }
+                //Border is always drawed
+                g2d.setColor(mobj.mp.drawColor);
+                g2d.draw(path);
+                if (PRINT_DEBUG) {
+                    System.out.println("Drawing " + c);
+                }
+                if (BOUNDING_BOX_DEBUG) {
+                    debugBoundingBox(c.getBoundingBox());
+                }
             }
         }
-    }
+
+    
 
     public Path2D.Double createPathFromJMPath(JMPath c) {
         Path2D.Double resul = new Path2D.Double();

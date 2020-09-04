@@ -68,6 +68,7 @@ public abstract class Animation {
             t += dt;
             if (t > 1) {
                 t = 1;
+                this.finishAnimation();
             }
             frame++;
             resul = false;
@@ -84,7 +85,7 @@ public abstract class Animation {
      * @param t double betwenn 0 and 1 0=start, 1=end
      */
     abstract public void doAnim(double t);
-
+    abstract public void finishAnimation();
     public double getT() {
         return t;
     }
