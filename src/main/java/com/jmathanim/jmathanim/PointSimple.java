@@ -35,8 +35,8 @@ public class PointSimple extends Scene2D {
 
     @Override
     public void setupSketch() {
-//        conf.setHighQuality();
-        conf.setLowQuality();
+        conf.setHighQuality();
+//        conf.setLowQuality();
         setCreateMovie(false);
         setShowPreviewWindow(true);
         createRenderer();
@@ -427,10 +427,12 @@ public class PointSimple extends Scene2D {
         ArrayList<Segment> radius = pol.getRadius();
         waitSeconds(3);
         Segment s1=(Segment) radius.get(0).copy();
+        s1.mp.dashStyle=MathObjectDrawingProperties.DOTTED;
         play(new FadeIn(s1,5));
         for (Segment s : radius) {
             Transform tr = new Transform(s1, s, 3);
             play(tr);
+            s.mp.copyFrom(s1.mp);
             add(s);
         }
         remove(s1);
