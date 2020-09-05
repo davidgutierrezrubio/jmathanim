@@ -47,7 +47,7 @@ import javax.swing.JPanel;
  */
 public class Java2DRenderer extends Renderer {
 
-    private static final boolean DEBUG_PATH_POINTS = true; //Draw control points and vertices
+    private static final boolean DEBUG_PATH_POINTS = false; //Draw control points and vertices
     private static final boolean PRINT_DEBUG = false; //Draw control points and vertices
     private static final boolean BOUNDING_BOX_DEBUG = false; //Draw bounding boxes
 

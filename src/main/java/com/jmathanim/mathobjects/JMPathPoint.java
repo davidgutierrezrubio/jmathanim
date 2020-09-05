@@ -20,11 +20,10 @@ public class JMPathPoint {
 
     public final Point p;
     public final Point cp1, cp2; //Cómo debe entrar (cp2) y cómo debe salir (cp1)
-    public Vec cp1vBackup,cp2vBackup;//Backup values, to restore after removing interpolation points
+    public Vec cp1vBackup, cp2vBackup;//Backup values, to restore after removing interpolation points
     public boolean isVisible;
     public boolean isCurved;
     public int type; //Vertex, interpolation point, etc.
-    public double drawAlpha;
 
     public JMPathPoint(Point p, boolean isVisible, int type) {
         this.p = p;
@@ -33,7 +32,6 @@ public class JMPathPoint {
         isCurved = false;//By default, is not curved
         this.isVisible = isVisible;
         this.type = type;
-        this.drawAlpha=1;//Full opacity
     }
 
     public JMPathPoint copy() {
@@ -42,8 +40,14 @@ public class JMPathPoint {
         resul.cp1.v.y = this.cp1.v.y;
         resul.cp2.v.x = this.cp2.v.x;
         resul.cp2.v.y = this.cp2.v.y;
+
+        try { //cp1vBackup and cp2vBackup may be null, so I enclose with a try-catch
+            resul.cp1vBackup = cp1vBackup.copy();
+            resul.cp2vBackup = cp2vBackup.copy();
+        } catch (NullPointerException e) {
+        }
         resul.isCurved = this.isCurved;
-        resul.isVisible=this.isVisible;
+        resul.isVisible = this.isVisible;
         return resul;
     }
 
@@ -66,8 +70,8 @@ public class JMPathPoint {
         if (type == TYPE_VERTEX) {
             resul = "V" + resul;
         }
-        resul+="[" + cp1.v.x + ", " + cp1.v.y + ")]";
-        resul+="[" + cp2.v.x + ", " + cp2.v.y + ")]";
+        resul += "[" + cp1.v.x + ", " + cp1.v.y + ")]";
+        resul += "[" + cp2.v.x + ", " + cp2.v.y + ")]";
         return resul;
     }
 
@@ -77,11 +81,10 @@ public class JMPathPoint {
         cp2.v.addInSite(shiftVector);
     }
 
-    public void scale(Point point, double d,double e,double f) {
-        this.p.scale(point,d,e,f);
-        this.cp1.scale(point,d,e,f);
-        this.cp2.scale(point,d,e,f);
+    public void scale(Point point, double d, double e, double f) {
+        this.p.scale(point, d, e, f);
+        this.cp1.scale(point, d, e, f);
+        this.cp2.scale(point, d, e, f);
     }
-
 
 }
