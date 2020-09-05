@@ -31,7 +31,19 @@ public class Transform extends Animation {
 
     @Override
     public void initialize() {
-//Prepare paths. Firs, I ensure they have the same number of points
+        //Should determine optimal transformation
+        
+        //TODO: Should use an homotopy instead of point-to-point interpolation 
+        //in the following cases:
+        //2 segments/lines or segment/line
+        //2 circles/ellipses
+        //2 regular polygons with same number of sides
+        
+        
+        
+        
+        //This is the initialization for the point-to-point interpolation
+        //Prepare paths. Firs, I ensure they have the same number of points
         mobj1.jmpath.alignPaths(mobj2.jmpath);
         //Now, adjust the points of the first to minimize distance from point-to-point
         mobj1.jmpath.minimizeSumDistance(mobj2.jmpath);
