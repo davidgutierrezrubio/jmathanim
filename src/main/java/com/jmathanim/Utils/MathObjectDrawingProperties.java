@@ -16,6 +16,10 @@ import java.awt.Color;
  */
 public class MathObjectDrawingProperties {
 
+    public static final int SOLID = 1;
+    public static final int DASHED = 2;
+    public static final int DOTTED = 3;
+
     public Color drawColor;
     public Color fillColor;
     public Double thickness;
@@ -27,12 +31,14 @@ public class MathObjectDrawingProperties {
     public Integer layer;//Layer to draw. Slower means under.
     public Boolean absolutePosition;//If true, position comes in absolute screen coordinates
     public Boolean drawPathBorder;
+    public Integer dashStyle;
 
     public MathObjectDrawingProperties() {
         //Default, boring values
         this.drawColor = Color.WHITE;
-        this.fillColor = Color.YELLOW;
-        this.thickness = .005d;
+        this.fillColor = new Color(0, 0, 0, 0);//Transparent color
+        this.thickness = 1d;
+        this.dashStyle = SOLID;
         this.visible = true;
         this.fill = false;
         this.drawPathBorder = false;
@@ -54,6 +60,7 @@ public class MathObjectDrawingProperties {
         drawColor = (prop.drawColor == null ? drawColor : new Color(prop.drawColor.getRGB()));
         thickness = (prop.thickness == null ? thickness : prop.thickness);
         visible = (prop.visible == null ? visible : prop.visible);
+        dashStyle = (prop.dashStyle == null ? dashStyle : prop.dashStyle);
         fill = (prop.fill == null ? fill : prop.fill);
         drawPathBorder = (prop.drawPathBorder == null ? drawPathBorder : prop.drawPathBorder);
         absoluteThickness = (prop.absoluteThickness == null ? absoluteThickness : prop.absoluteThickness);
@@ -68,26 +75,30 @@ public class MathObjectDrawingProperties {
      * @param t Interpolation parameter
      */
     public void interpolateFrom(MathObjectDrawingProperties a, MathObjectDrawingProperties b, double t) {
-        //Interpolate color
-        interpolateColor(a.drawColor, b.drawColor, t);
+        //Interpolate colors
+        drawColor=interpolateColor(a.drawColor, b.drawColor, t);
+        fillColor=interpolateColor(a.fillColor, b.fillColor, t);
+//        interpolateColor(a.fillColor, b.fillColor, t);
         this.thickness = (1 - t) * a.thickness + t * b.thickness;
 
     }
 
     /**
-     * Replaces current color with an interpolated value of given colors
+     * Compute an interpolated value of given colors.
+     * Interpolates R,G,B and alpha
      *
      * @param colA Color A to interpolate
      * @param colB Color B to interpolate
      * @param t Interpolation value (t=0 gives colA and t=1 gives colB)
+     * @return The interpolated color
      */
-    public void interpolateColor(Color colA, Color colB, double t) {
+    public Color interpolateColor(Color colA, Color colB, double t) {
         int r = (int) ((1 - t) * colA.getRed() + t * colB.getRed());
         int g = (int) ((1 - t) * colA.getGreen() + t * colB.getGreen());
         int b = (int) ((1 - t) * colA.getBlue() + t * colB.getBlue());
         int tr = (int) ((1 - t) * colA.getAlpha() + t * colB.getAlpha());
 
-        this.drawColor = new Color(r, g, b, tr);
+        return new Color(r, g, b, tr);
     }
 
     public void setFillAlpha(float alpha) {
@@ -108,9 +119,9 @@ public class MathObjectDrawingProperties {
         return resul;
     }
 
-    public MathObjectDrawingProperties copy() {
+    public MathObjectDrawingProperties copy() {//TODO: FIX THIS
         MathObjectDrawingProperties resul = new MathObjectDrawingProperties();
-        resul.digestFrom(this);
+        resul.copyFrom(this);
         return resul;
     }
 
@@ -123,14 +134,17 @@ public class MathObjectDrawingProperties {
 //        visible;
 //        absolutePosition;
 //        drawPathBorder;
+//        dashStlye
         drawColor = mp.drawColor;
         fillColor = mp.fillColor;
         thickness = mp.thickness;
+        dashStyle = mp.dashStyle;
         absoluteThickness = mp.absoluteThickness;
         fill = mp.fill;
         visible = mp.visible;
         absolutePosition = mp.absolutePosition;
         drawPathBorder = mp.drawPathBorder;
+        dashStyle=mp.dashStyle;
     }
 //
 }

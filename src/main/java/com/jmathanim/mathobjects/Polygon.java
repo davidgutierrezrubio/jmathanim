@@ -76,31 +76,33 @@ public class Polygon extends JMPathMathObject {
 
     @Override
     public MathObject copy() {
-        Polygon resul = new Polygon();//FODO: FIX
+        Polygon resul = new Polygon();//TODO: FIX
+        resul.jmpath.clear();
+        resul.jmpath.addPointsFrom(jmpath.rawCopy());
         return resul;
     }
 
-    @Override
-    public void draw(Renderer r) {
-        if (needsRecalcControlPoints) {
-            System.out.println("Update path en draw");
-            computeJMPathFromVertices();
-        }
-//        if (drawParam >= 1) {
-//            drawParam = 1;
+//    @Override
+//    public void draw(Renderer r) {
+//        if (needsRecalcControlPoints) {
+//            System.out.println("Update path en draw");
+//            computeJMPathFromVertices();
 //        }
-
-//        JMPath c = jmpath.getSlice(drawParam);
+////        if (drawParam >= 1) {
+////            drawParam = 1;
+////        }
 //
-//        if (drawParam < 1) {
-//            c.open();
-//        } else {
-//            c.close();
-//        }
-        r.setBorderColor(mp.drawColor);
-        r.setStroke(mp.getThickness(r));
-        r.drawPath(this,jmpath);
-    }
+////        JMPath c = jmpath.getSlice(drawParam);
+////
+////        if (drawParam < 1) {
+////            c.open();
+////        } else {
+////            c.close();
+////        }
+//        r.setBorderColor(mp.drawColor);
+//        r.setStroke(this);
+//        r.drawPath(this);
+//    }
 
 //    @Override
 //    public void computeJMPath() {

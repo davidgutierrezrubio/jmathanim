@@ -15,10 +15,6 @@ import com.jmathanim.Utils.Vec;
  */
 public class Segment extends JMPathMathObject {
 
-    String[] DEFAULT_CONFIG = {
-        "THICKNESS", ".01",
-        "STROKEJOIN", "ROUND"
-    };
     Point p1, p2;
     JMPath curve;
 
@@ -84,7 +80,7 @@ public class Segment extends JMPathMathObject {
 
     @Override
     public MathObject copy() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return new Segment(p1.copy(), p2.copy(),mp.copy());
     }
 
     @Override

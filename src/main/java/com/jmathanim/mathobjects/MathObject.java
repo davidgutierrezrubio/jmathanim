@@ -22,11 +22,6 @@ public abstract class MathObject implements Drawable {
     public static final int SLICE_FOUR=3;
     
     public final MathObjectDrawingProperties mp;
-    String[] DEFAULT_CONFIG_MATHOBJECT = {
-        "VISIBLE", "TRUE",
-        "ALPHA", "1",
-        "COLOR", "255"
-    };
      /**
      * Scenes where this object belongs.
      * 

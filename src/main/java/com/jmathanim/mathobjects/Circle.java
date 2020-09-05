@@ -14,6 +14,12 @@ import static java.lang.Math.PI;
  */
 public class Circle extends Arc {
 
+    /**
+     * Default constructor, a circle with center (0,0) and radius 1
+     */
+    public Circle(){
+        this(new Point(0,0),1);
+    }
     public Circle(Vec center, Vec point) {
         this(new Point(center), center.distanceTo(point));
     }

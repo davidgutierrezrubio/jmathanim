@@ -9,6 +9,7 @@ import com.jmathanim.Animations.Animation;
 import com.jmathanim.Animations.FadeIn;
 import com.jmathanim.Animations.ShowCreation;
 import com.jmathanim.Animations.Transform;
+import com.jmathanim.Utils.MathObjectDrawingProperties;
 import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.SVGImporter;
 import com.jmathanim.Utils.Vec;
@@ -406,15 +407,39 @@ public class PointSimple extends Scene2D {
     }
 
     public void pruebaTransformSegmentos() {
-        Segment s1 = new Segment(new Point(-1, 1), new Point(0, .5));
+        Circle cir=new Circle();
+        cir.mp.fill=true;
+        cir.mp.fillColor=Color.yellow;
+        add(cir);
+        cir.shift(-1, -1);
+        
+        cir.mp.thickness=.5;
+        cir.mp.drawColor=Color.GREEN;
+//        Segment s1 = new Segment(new Point(-1, 1), new Point(0, .5));
         RegularPolygon pol = new RegularPolygon(5, 1);
+        pol.mp.dashStyle=MathObjectDrawingProperties.DOTTED;
+        pol.mp.thickness=.5;
+        pol.mp.drawColor=Color.blue;
+        pol.mp.fillColor=Color.magenta;
+        pol.mp.setFillAlpha(.5f);
+        pol.mp.fill=true;
         add(pol);
-        ArrayList<Segment> radius = pol.getApothem();
+        ArrayList<Segment> radius = pol.getRadius();
         waitSeconds(3);
+        Segment s1=(Segment) radius.get(0).copy();
+        play(new FadeIn(s1,5));
         for (Segment s : radius) {
             Transform tr = new Transform(s1, s, 3);
             play(tr);
+            add(s);
         }
+        remove(s1);
+        
+        
+        waitSeconds(10);
+        play(new Transform(pol, cir, 10));
+        waitSeconds(10);
+        
     }
 
 }

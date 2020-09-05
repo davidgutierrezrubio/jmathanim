@@ -85,7 +85,9 @@ public class JMPathMathObject extends MathObject {
         vecCenter.multInSite(1. / jmpath.size());
         center.v = vecCenter;
     }
-
+    public JMPath getPath() {
+        return jmpath;
+    }
     protected final void computeVerticesFromPath() {
         vertices.clear();
         for (JMPathPoint p : jmpath.points) {
@@ -183,8 +185,8 @@ public class JMPathMathObject extends MathObject {
     public void draw(Renderer r) {
         r.setBorderColor(mp.drawColor);
         r.setFillColor(mp.fillColor);
-        r.setStroke(mp.getThickness(r));
-        r.drawPath(this, jmpath);
+        r.setStroke(this);
+        r.drawPath(this);
     }
 
     @Override

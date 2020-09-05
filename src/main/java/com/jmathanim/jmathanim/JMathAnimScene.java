@@ -7,14 +7,11 @@ package com.jmathanim.jmathanim;
 
 import com.jmathanim.Animations.Animation;
 import com.jmathanim.Cameras.Camera;
-import com.jmathanim.Renderers.Java2DRenderer;
 import com.jmathanim.Renderers.Renderer;
-import com.jmathanim.Utils.ConfigUtils;
 import com.jmathanim.Utils.JMathAnimConfig;
 import com.jmathanim.mathobjects.MathObject;
 import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.Properties;
 
 /**
  *
