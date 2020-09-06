@@ -46,7 +46,7 @@ public class PointSimple extends Scene2D {
     @Override
     public void runSketch() {
         System.out.println("Running sketch...");
-        pruebaMatrix();
+        pruebaHomotopia();
     }
 
     public void pruebaSimpleJMPathObject() throws ArrayIndexOutOfBoundsException {
@@ -455,19 +455,39 @@ public class PointSimple extends Scene2D {
         add(pol, circ);
         JMPathMathObject circTrans = circ.copy();
         JMPathMathObject polTrans = pol.copy();
-        for (double alpha = 0; alpha < 2*Math.PI; alpha += Math.PI / 10) {
-            tr=AffineTransform.create2DRotationTransform(center, alpha);
+        for (double alpha = 0; alpha < 2 * Math.PI; alpha += Math.PI / 10) {
+            tr = AffineTransform.create2DRotationTransform(center, alpha);
             camera.setCenter(center);
             circTrans = tr.applyTransform(circ);
             polTrans = tr.applyTransform(pol);
             circTrans.mp.setRandomDrawColor();
             polTrans.mp.setRandomDrawColor();
-            add(polTrans,circTrans);
+            add(polTrans, circTrans);
 //            play(new ShowCreation(polTrans,1), new ShowCreation(circTrans,1));
 
         }
-            waitSeconds(10);
+        waitSeconds(10);
 
+    }
+
+    public void pruebaHomotopia() {
+        Point A = new Point(-1, -1);
+        Point B = new Point(0, -1);
+        Point C = new Point(1, 0);
+        Point D = new Point(1.4, 2);
+        A.mp.drawColor = Color.GREEN;
+        B.mp.drawColor = Color.GREEN;
+        C.mp.drawColor = Color.RED;
+        D.mp.drawColor = Color.RED;
+        add(A, B, C, D);
+        Segment s = new Segment(A, B);
+        add(s);
+        for (double t = 0; t <= 1; t += .1) {
+            AffineTransform tr = AffineTransform.createDirect2DHomotopy(A, B, C, D, t);
+            tr.applyTransform(s);
+            waitSeconds(2);
+        }
+        waitSeconds(10);
     }
 
 }

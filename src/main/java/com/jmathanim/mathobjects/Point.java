@@ -131,6 +131,10 @@ public final class Point extends MathObject {
 
     }
 
+    
+    public Vec to(Point B){
+        return new Vec(B.v.x-v.x,B.v.y-v.y,B.v.z-v.z);
+    }
     public Point interpolate(Point p2, double alpha) {
         Vec w = v.interpolate(p2.v, alpha);
         return new Point(w);

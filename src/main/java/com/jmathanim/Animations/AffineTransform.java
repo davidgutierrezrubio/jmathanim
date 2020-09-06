@@ -102,33 +102,33 @@ public class AffineTransform {
     public void setV3Img(double x, double y) {
         setV3Img(x, y, 0);
     }
- public JMPathMathObject applyTransform(JMPathMathObject obj) {
-     JMPathMathObject resul=obj.copy();
-     int size=obj.jmpath.size();
-     for (int n=0;n<size;n++)
-     {
-         JMPathPoint jmPDst = resul.getPoint(n);
-         JMPathPoint pSrc = obj.getPoint(n);
-         Point pDst = applyTransform(pSrc.p);
-         Point cp1Dst = applyTransform(pSrc.cp1);
-         Point cp2Dst = applyTransform(pSrc.cp2);
-         
-         jmPDst.p.v.x=pDst.v.x;
-         jmPDst.p.v.y=pDst.v.y;
-         jmPDst.p.v.z=pDst.v.z;
-         
-         jmPDst.cp1.v.x=cp1Dst.v.x;
-         jmPDst.cp1.v.y=cp1Dst.v.y;
-         jmPDst.cp1.v.z=cp1Dst.v.z;
-         
-         jmPDst.cp2.v.x=cp2Dst.v.x;
-         jmPDst.cp2.v.y=cp2Dst.v.y;
-         jmPDst.cp2.v.z=cp2Dst.v.z;
-     }
-     return resul;
-     
- }
-    
+
+    public JMPathMathObject applyTransform(JMPathMathObject obj) {
+        JMPathMathObject resul = obj.copy();
+        int size = obj.jmpath.size();
+        for (int n = 0; n < size; n++) {
+            JMPathPoint jmPDst = resul.getPoint(n);
+            JMPathPoint pSrc = obj.getPoint(n);
+            Point pDst = applyTransform(pSrc.p);
+            Point cp1Dst = applyTransform(pSrc.cp1);
+            Point cp2Dst = applyTransform(pSrc.cp2);
+
+            jmPDst.p.v.x = pDst.v.x;
+            jmPDst.p.v.y = pDst.v.y;
+            jmPDst.p.v.z = pDst.v.z;
+
+            jmPDst.cp1.v.x = cp1Dst.v.x;
+            jmPDst.cp1.v.y = cp1Dst.v.y;
+            jmPDst.cp1.v.z = cp1Dst.v.z;
+
+            jmPDst.cp2.v.x = cp2Dst.v.x;
+            jmPDst.cp2.v.y = cp2Dst.v.y;
+            jmPDst.cp2.v.z = cp2Dst.v.z;
+        }
+        return resul;
+
+    }
+
     public Point applyTransform(Point p) {
         RealMatrix pRow = new Array2DRowRealMatrix(new double[][]{{1d, p.v.x, p.v.y, p.v.z}});
         RealMatrix pNew = pRow.multiply(A);
@@ -142,7 +142,7 @@ public class AffineTransform {
     /**
      * Compose another Affine Transform and returns the new AffineTransform if
      * C=A.compose(B) The resulting transform C,applied to a point, will result
-     * in applying first A and then B
+     * in applying first A and then B. Mathematically C(x)=B(A(x))
      *
      * @param tr The AffintTransform to compose with
      * @return The composed AffineTransform
@@ -219,8 +219,33 @@ public class AffineTransform {
         resul.setV3Img(0, 0, scalez);
         AffineTransform tr1 = AffineTransform.createTranslationTransform(center.v.mult(-1));
         AffineTransform tr2 = AffineTransform.createTranslationTransform(center.v);
-
         return tr1.compose(resul.compose(tr2));
+    }
+
+    public static AffineTransform createDirect2DHomotopy(Point A, Point B, Point C, Point D, double alpha) {
+        AffineTransform resul = new AffineTransform();
+        double angle;//Angle between AB and CD
+        Vec v1 = A.to(B);//Vector AB
+        Vec v2 = C.to(D);//Vector CD
+        Vec v3 = A.to(C);//Vector AC
+        double d1 = v1.norm();
+        double d2 = v2.norm();
+        angle = Math.acos(v1.dot(v2) / d1 / d2);
+
+        //Need to compute also cross-product in order to stablish if clockwise or counterclockwise
+        if (v1.x * v2.y - v1.y * v2.x < 0) {
+            angle = -angle;
+        }
+        //The rotation part
+        AffineTransform rotation = AffineTransform.create2DRotationTransform(A, angle * alpha);
+
+        //The scale part
+        AffineTransform scale = AffineTransform.create2DScaleTransform(A, (1 - alpha) + d2 / d1 * alpha);
+
+        //The traslation part
+        AffineTransform traslation=AffineTransform.createTranslationTransform(v3.mult(alpha));
+        resul = rotation.compose(scale).compose(traslation);
+        return resul;
     }
 
 }
