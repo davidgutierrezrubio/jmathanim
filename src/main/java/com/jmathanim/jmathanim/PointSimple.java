@@ -5,6 +5,7 @@
  */
 package com.jmathanim.jmathanim;
 
+import com.jmathanim.Animations.AffineTransform;
 import com.jmathanim.Animations.Animation;
 import com.jmathanim.Animations.FadeIn;
 import com.jmathanim.Animations.ShowCreation;
@@ -26,6 +27,9 @@ import com.jmathanim.mathobjects.SVGMathObject;
 import com.jmathanim.mathobjects.Segment;
 import java.awt.Color;
 import java.util.ArrayList;
+import org.apache.commons.math3.linear.Array2DRowRealMatrix;
+import org.apache.commons.math3.linear.MatrixUtils;
+import org.apache.commons.math3.linear.RealMatrix;
 
 /**
  *
@@ -45,7 +49,7 @@ public class PointSimple extends Scene2D {
     @Override
     public void runSketch() {
         System.out.println("Running sketch...");
-        pruebaTransformSegmentos();
+        pruebaMatrix();
     }
 
     public void pruebaSimpleJMPathObject() throws ArrayIndexOutOfBoundsException {
@@ -407,41 +411,60 @@ public class PointSimple extends Scene2D {
     }
 
     public void pruebaTransformSegmentos() {
-        Circle cir=new Circle();
-        cir.mp.fill=true;
-        cir.mp.fillColor=Color.yellow;
+        Circle cir = new Circle();
+        cir.mp.fill = true;
+        cir.mp.fillColor = Color.yellow;
         add(cir);
         cir.shift(-1, -1);
-        
-        cir.mp.thickness=.5;
-        cir.mp.drawColor=Color.GREEN;
+
+        cir.mp.thickness = .5;
+        cir.mp.drawColor = Color.GREEN;
 //        Segment s1 = new Segment(new Point(-1, 1), new Point(0, .5));
         RegularPolygon pol = new RegularPolygon(5, 1);
-        pol.mp.dashStyle=MathObjectDrawingProperties.DOTTED;
-        pol.mp.thickness=.5;
-        pol.mp.drawColor=Color.blue;
-        pol.mp.fillColor=Color.magenta;
+        pol.mp.dashStyle = MathObjectDrawingProperties.DASHED;
+        pol.mp.thickness = .5;
+        pol.mp.drawColor = Color.blue;
+        pol.mp.fillColor = Color.magenta;
         pol.mp.setFillAlpha(.5f);
-        pol.mp.fill=true;
+        pol.mp.fill = true;
         add(pol);
         ArrayList<Segment> radius = pol.getRadius();
         waitSeconds(3);
-        Segment s1=(Segment) radius.get(0).copy();
-        s1.mp.dashStyle=MathObjectDrawingProperties.DOTTED;
-        play(new FadeIn(s1,5));
+        Segment s1 = (Segment) radius.get(0).copy();
+        s1.mp.thickness = .5;
+        s1.mp.dashStyle = MathObjectDrawingProperties.DOTTED;
+        play(new FadeIn(s1, 5));
         for (Segment s : radius) {
+            s.mp.copyFrom(s1.mp);
             Transform tr = new Transform(s1, s, 3);
             play(tr);
-            s.mp.copyFrom(s1.mp);
             add(s);
         }
         remove(s1);
-        
-        
         waitSeconds(10);
         play(new Transform(pol, cir, 10));
         waitSeconds(10);
-        
+    }
+
+    public void pruebaMatrix() {
+        AffineTransform tr = new AffineTransform();
+        tr.setOriginImg(1, 1);
+        tr.setV1Img(0, 1);
+        tr.setV2Img(-1, 0);
+
+        AffineTransform rotation = AffineTransform.create2DRotationTransform(new Point(0, 1), Math.PI / 3);
+        for (double y = 0; y < camera.getMathBoundaries().ymax; y += .1) {
+            Point p = new Point(0, y);
+            p.mp.drawColor = p.mp.randomColor();
+            add(p);
+
+            Point p2 = rotation.applyTransform(p);
+            p2.mp.copyFrom(p.mp);
+            add(p2);
+            waitSeconds(1);
+
+        }
+
     }
 
 }

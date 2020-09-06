@@ -16,6 +16,7 @@ import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.JMPathMathObject;
 import com.jmathanim.mathobjects.JMPathPoint;
 import com.jmathanim.mathobjects.MathObject;
+import com.jmathanim.mathobjects.Point;
 import io.humble.video.Codec;
 import io.humble.video.Encoder;
 import io.humble.video.MediaPacket;
@@ -180,13 +181,22 @@ public class Java2DRenderer extends Renderer {
 
     @Override
     public void drawCircle(double x, double y, double radius) {
+
         g2d.setColor(borderColor);
         double mx = x - .5 * radius;
         double my = y + .5 * radius;
         int[] screenx = camera.mathToScreen(mx, my);
         int screenRadius = camera.mathToScreen(radius);
         g2d.fillOval(screenx[0], screenx[1], screenRadius, screenRadius);
-//        g2d.drawRect(screenx[0],screenx[1], screenRadius, screenRadius);
+    }
+
+    @Override
+    public void drawDot(Point p) {
+        setStroke(p);
+        int[] xx = camera.mathToScreen(p.v.x, p.v.y);
+        
+        g2d.setColor(p.mp.drawColor);
+        g2d.drawLine(xx[0], xx[1], xx[0] , xx[1]);
     }
 
     @Override
@@ -265,20 +275,27 @@ public class Java2DRenderer extends Renderer {
 
     @Override
     public void setStroke(MathObject obj) {
-        int strokeSize = camera.mathToScreen(.005*obj.mp.getThickness(this)); //TODO: Another way to compute this
+        final double thickness = obj.mp.getThickness(this);
+        int strokeSize;
+        if (!obj.mp.absoluteThickness) {
+            strokeSize = camera.mathToScreen(.0025 * thickness); //TODO: Another way to compute this
+        } else {
+            strokeSize = (int) thickness;
+        }
+
         switch (obj.mp.dashStyle) {
             case MathObjectDrawingProperties.SOLID:
                 BasicStroke basicStroke = new BasicStroke(strokeSize, CAP_ROUND, JOIN_ROUND);
                 g2d.setStroke(basicStroke);
                 break;
             case MathObjectDrawingProperties.DASHED:
-                float[] dashedPattern = {10.0f, 5.0f};
+                float[] dashedPattern = {5.0f * strokeSize, 2.0f * strokeSize};
                 Stroke dashedStroke = new BasicStroke(strokeSize, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND, 10.0f, dashedPattern, 1.0f);
                 g2d.setStroke(dashedStroke);
                 break;
             case MathObjectDrawingProperties.DOTTED:
-                float[] dottedPattern = {1.0f, 5.0f};
-                Stroke dottedStroke = new BasicStroke(strokeSize, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND, 10.0f, dottedPattern, 1.0f);
+                float[] dottedPattern = {1f, 2.0f * strokeSize};
+                Stroke dottedStroke = new BasicStroke(strokeSize, BasicStroke.CAP_SQUARE, BasicStroke.JOIN_ROUND, 10.0f, dottedPattern, 1.0f);
                 g2d.setStroke(dottedStroke);
                 break;
         }

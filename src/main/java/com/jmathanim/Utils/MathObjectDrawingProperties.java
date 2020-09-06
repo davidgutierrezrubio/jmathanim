@@ -7,6 +7,7 @@ package com.jmathanim.Utils;
 
 import com.jmathanim.Renderers.Renderer;
 import java.awt.Color;
+import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * This class stores all drawing properties of a MathObject like color,
@@ -101,6 +102,15 @@ public class MathObjectDrawingProperties {
         return new Color(r, g, b, tr);
     }
 
+    
+    public Color randomColor()
+    {
+        int r= ThreadLocalRandom.current().nextInt(0, 255 + 1);
+        int g= ThreadLocalRandom.current().nextInt(0, 255 + 1);
+        int b= ThreadLocalRandom.current().nextInt(0, 255 + 1);
+        return new Color(r,g,b);
+    }
+    
     public void setFillAlpha(float alpha) {
         this.fillColor = new Color(this.fillColor.getRed(), this.fillColor.getGreen(), this.fillColor.getBlue(), (int) (255 * alpha));
     }

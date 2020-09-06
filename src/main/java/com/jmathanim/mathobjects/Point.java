@@ -19,6 +19,7 @@ import com.jmathanim.Utils.Vec;
  * @author David Gutierrez Rubio davidgutierrezrubio@gmail.com
  */
 public final class Point extends MathObject {
+
     public Vec v;
 
     public Point(Vec v) {
@@ -54,7 +55,6 @@ public final class Point extends MathObject {
         this(x, y, 0, mp);
     }
 
-   
     /**
      *
      * @param x
@@ -65,6 +65,8 @@ public final class Point extends MathObject {
     public Point(double x, double y, double z, MathObjectDrawingProperties mp) {
         super(mp);
         this.v = new Vec(x, y, z);
+        this.mp.absoluteThickness = true;
+        this.mp.thickness=8d;//default value
     }
 
     @Override
@@ -74,9 +76,10 @@ public final class Point extends MathObject {
 
     @Override
     public void draw(Renderer r) {
-        r.setBorderColor(mp.drawColor);
-        double rad = mp.getThickness(r);
-        r.drawCircle(v.x, v.y, rad);
+//        r.setBorderColor(mp.drawColor);
+//        double rad = mp.getThickness(r);
+//        r.drawCircle(v.x, v.y, rad);
+        r.drawDot(this);
 
     }
 
@@ -104,9 +107,9 @@ public final class Point extends MathObject {
 
     @Override
     public void scale(Point scaleCenter, double sx, double sy, double sz) {
-        v.x=(1-sx)*scaleCenter.v.x+sx*v.x;
-        v.y=(1-sy)*scaleCenter.v.y+sy*v.y;
-        v.z=(1-sz)*scaleCenter.v.z+sz*v.z;
+        v.x = (1 - sx) * scaleCenter.v.x + sx * v.x;
+        v.y = (1 - sy) * scaleCenter.v.y + sy * v.y;
+        v.z = (1 - sz) * scaleCenter.v.z + sz * v.z;
     }
 
     /**
@@ -149,18 +152,18 @@ public final class Point extends MathObject {
     }
 
     @Override
-    public void setDrawParam(double t,int sliceType) {
+    public void setDrawParam(double t, int sliceType) {
         //Nothing to do here, it's just a point!!
     }
 
     @Override
     public Rect getBoundingBox() {
-        return new Rect(v.x,v.y,v.x,v.y);
+        return new Rect(v.x, v.y, v.x, v.y);
     }
 
     @Override
     public void setDrawAlpha(double t) {
-        this.mp.setDrawAlpha((float)t);
+        this.mp.setDrawAlpha((float) t);
     }
 
     @Override
