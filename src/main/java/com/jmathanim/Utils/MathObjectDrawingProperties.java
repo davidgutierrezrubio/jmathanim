@@ -102,7 +102,10 @@ public class MathObjectDrawingProperties {
         return new Color(r, g, b, tr);
     }
 
-    
+    public void setRandomDrawColor()
+    {
+        drawColor=randomColor();
+    }
     public Color randomColor()
     {
         int r= ThreadLocalRandom.current().nextInt(0, 255 + 1);

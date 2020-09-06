@@ -27,9 +27,6 @@ import com.jmathanim.mathobjects.SVGMathObject;
 import com.jmathanim.mathobjects.Segment;
 import java.awt.Color;
 import java.util.ArrayList;
-import org.apache.commons.math3.linear.Array2DRowRealMatrix;
-import org.apache.commons.math3.linear.MatrixUtils;
-import org.apache.commons.math3.linear.RealMatrix;
 
 /**
  *
@@ -39,8 +36,8 @@ public class PointSimple extends Scene2D {
 
     @Override
     public void setupSketch() {
-        conf.setHighQuality();
-//        conf.setLowQuality();
+//        conf.setHighQuality();
+        conf.setLowQuality();
         setCreateMovie(false);
         setShowPreviewWindow(true);
         createRenderer();
@@ -447,23 +444,29 @@ public class PointSimple extends Scene2D {
     }
 
     public void pruebaMatrix() {
-        AffineTransform tr = new AffineTransform();
-        tr.setOriginImg(1, 1);
-        tr.setV1Img(0, 1);
-        tr.setV2Img(-1, 0);
+        Point center = new Point(2, 1);
+        add(center);
+        AffineTransform tr = AffineTransform.create2DScaleTransform(center, 1, 1);
+        tr = tr.compose(AffineTransform.create2DRotationTransform(center, Math.PI / 180 * 15));
+//        AffineTransform rotation = AffineTransform.create2DRotationTransform(new Point(0, 1), Math.PI / 3);
 
-        AffineTransform rotation = AffineTransform.create2DRotationTransform(new Point(0, 1), Math.PI / 3);
-        for (double y = 0; y < camera.getMathBoundaries().ymax; y += .1) {
-            Point p = new Point(0, y);
-            p.mp.drawColor = p.mp.randomColor();
-            add(p);
-
-            Point p2 = rotation.applyTransform(p);
-            p2.mp.copyFrom(p.mp);
-            add(p2);
-            waitSeconds(1);
+        Circle circ = new Circle();
+        RegularPolygon pol = new RegularPolygon(5, 1);
+        add(pol, circ);
+        JMPathMathObject circTrans = circ.copy();
+        JMPathMathObject polTrans = pol.copy();
+        for (double alpha = 0; alpha < 2*Math.PI; alpha += Math.PI / 10) {
+            tr=AffineTransform.create2DRotationTransform(center, alpha);
+            camera.setCenter(center);
+            circTrans = tr.applyTransform(circ);
+            polTrans = tr.applyTransform(pol);
+            circTrans.mp.setRandomDrawColor();
+            polTrans.mp.setRandomDrawColor();
+            add(polTrans,circTrans);
+//            play(new ShowCreation(polTrans,1), new ShowCreation(circTrans,1));
 
         }
+            waitSeconds(10);
 
     }
 

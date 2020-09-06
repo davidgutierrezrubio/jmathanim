@@ -74,13 +74,14 @@ public class Polygon extends JMPathMathObject {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-    @Override
-    public MathObject copy() {
-        Polygon resul = new Polygon();//TODO: FIX
-        resul.jmpath.clear();
-        resul.jmpath.addPointsFrom(jmpath.rawCopy());
-        return resul;
-    }
+//    @Override
+//    public Polygon copy() {
+//        Polygon resul = new Polygon();
+//        resul.mp.copyFrom(mp);
+//        resul.jmpath.clear();
+//        resul.jmpath.addPointsFrom(jmpath);
+//        return resul;
+//    }
 
 //    @Override
 //    public void draw(Renderer r) {

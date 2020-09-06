@@ -6,6 +6,8 @@
 package com.jmathanim.Animations;
 
 import com.jmathanim.Utils.Vec;
+import com.jmathanim.mathobjects.JMPathMathObject;
+import com.jmathanim.mathobjects.JMPathPoint;
 import com.jmathanim.mathobjects.Point;
 import org.apache.commons.math3.linear.Array2DRowRealMatrix;
 import org.apache.commons.math3.linear.LUDecomposition;
@@ -94,13 +96,39 @@ public class AffineTransform {
     }
 
     public void setV3Img(double x, double y, double z) {
-        A.setRow(2, new double[]{0, x, y, z});
+        A.setRow(3, new double[]{0, x, y, z});
     }
 
     public void setV3Img(double x, double y) {
         setV3Img(x, y, 0);
     }
-
+ public JMPathMathObject applyTransform(JMPathMathObject obj) {
+     JMPathMathObject resul=obj.copy();
+     int size=obj.jmpath.size();
+     for (int n=0;n<size;n++)
+     {
+         JMPathPoint jmPDst = resul.getPoint(n);
+         JMPathPoint pSrc = obj.getPoint(n);
+         Point pDst = applyTransform(pSrc.p);
+         Point cp1Dst = applyTransform(pSrc.cp1);
+         Point cp2Dst = applyTransform(pSrc.cp2);
+         
+         jmPDst.p.v.x=pDst.v.x;
+         jmPDst.p.v.y=pDst.v.y;
+         jmPDst.p.v.z=pDst.v.z;
+         
+         jmPDst.cp1.v.x=cp1Dst.v.x;
+         jmPDst.cp1.v.y=cp1Dst.v.y;
+         jmPDst.cp1.v.z=cp1Dst.v.z;
+         
+         jmPDst.cp2.v.x=cp2Dst.v.x;
+         jmPDst.cp2.v.y=cp2Dst.v.y;
+         jmPDst.cp2.v.z=cp2Dst.v.z;
+     }
+     return resul;
+     
+ }
+    
     public Point applyTransform(Point p) {
         RealMatrix pRow = new Array2DRowRealMatrix(new double[][]{{1d, p.v.x, p.v.y, p.v.z}});
         RealMatrix pNew = pRow.multiply(A);
@@ -133,13 +161,29 @@ public class AffineTransform {
         return new AffineTransform(B);
     }
 
-    
-    public static AffineTransform createTranslationTransform(Vec v)
-    {
+    /**
+     * Overloaded method. Creates an AffineTransform that moves a into b
+     *
+     * @param a Origin
+     * @param b Destiny
+     * @return A newAffineTransform with traslation
+     */
+    public static AffineTransform createTranslationTransform(Point a, Point b) {
+        return createTranslationTransform(new Vec(b.v.x - a.v.x, b.v.y - a.v.y, b.v.z - a.v.z));
+    }
+
+    /**
+     * Returns an AffineTransform that representes a traslation with vector v
+     *
+     * @param v The traslation vector
+     * @return A newAffineTransform with traslation
+     */
+    public static AffineTransform createTranslationTransform(Vec v) {
         AffineTransform resul = new AffineTransform();
         resul.setOriginImg(v);
         return resul;
     }
+
     /**
      * Returns a 2D rotation transform
      *
@@ -153,11 +197,29 @@ public class AffineTransform {
         final double cos = Math.cos(angle);
         resul.setV1Img(cos, sin);
         resul.setV2Img(-sin, cos);
-        
-        AffineTransform tr1=AffineTransform.createTranslationTransform(center.v.mult(-1));
-        AffineTransform tr2=AffineTransform.createTranslationTransform(center.v);
-        
-        
+
+        AffineTransform tr1 = AffineTransform.createTranslationTransform(center.v.mult(-1));
+        AffineTransform tr2 = AffineTransform.createTranslationTransform(center.v);
+
+        return tr1.compose(resul.compose(tr2));
+    }
+
+    public static AffineTransform create2DScaleTransform(Point center, double scale) {
+        return create2DScaleTransform(center, scale, scale, scale);
+    }
+
+    public static AffineTransform create2DScaleTransform(Point center, double scalex, double scaley) {
+        return create2DScaleTransform(center, scalex, scaley, 1);
+    }
+
+    public static AffineTransform create2DScaleTransform(Point center, double scalex, double scaley, double scalez) {
+        AffineTransform resul = new AffineTransform();
+        resul.setV1Img(scalex, 0, 0);
+        resul.setV2Img(0, scaley, 0);
+        resul.setV3Img(0, 0, scalez);
+        AffineTransform tr1 = AffineTransform.createTranslationTransform(center.v.mult(-1));
+        AffineTransform tr2 = AffineTransform.createTranslationTransform(center.v);
+
         return tr1.compose(resul.compose(tr2));
     }
 

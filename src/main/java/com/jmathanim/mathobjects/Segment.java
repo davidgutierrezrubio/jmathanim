@@ -5,7 +5,6 @@
  */
 package com.jmathanim.mathobjects;
 
-import com.jmathanim.Renderers.Renderer;
 import com.jmathanim.Utils.MathObjectDrawingProperties;
 import com.jmathanim.Utils.Vec;
 
@@ -65,7 +64,7 @@ public class Segment extends JMPathMathObject {
     }
 
     @Override
-    public MathObject copy() {
+    public Segment copy() {
         return new Segment(p1.copy(), p2.copy(),mp.copy());
     }
 

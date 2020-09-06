@@ -6,6 +6,7 @@
 package com.jmathanim.mathobjects;
 
 import com.jmathanim.Renderers.Renderer;
+import com.jmathanim.Utils.MathObjectDrawingProperties;
 import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.Vec;
 
@@ -28,14 +29,18 @@ public class Line extends Segment {
         this(p, p.add(v));
     }
 
+    public Line(Point p1, Point p2) {
+        this(p1, p2, null);
+    }
+
     /**
      * Creates a new line that passes through given points
      *
      * @param p1
      * @param p2
      */
-    public Line(Point p1, Point p2) {
-        super(p1,p2);
+    public Line(Point p1, Point p2, MathObjectDrawingProperties mp) {
+        super(p1, p2, mp);
         jmpath.clear(); //Super constructor adds p1, p2. Delete them
         bp1 = new JMPathPoint(new Point(0, 0), true, JMPathPoint.TYPE_VERTEX);//trivial boundary points, just to initialize objects
         bp2 = new JMPathPoint(new Point(0, 0), true, JMPathPoint.TYPE_VERTEX);//trivial boundary points, just to initialize objects
@@ -44,8 +49,10 @@ public class Line extends Segment {
     }
 
     @Override
-    public MathObject copy() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public Line copy() {
+        Line resul = new Line(p1.copy(), p2.copy());
+        resul.mp.copyFrom(mp);
+        return resul;
     }
 
     @Override

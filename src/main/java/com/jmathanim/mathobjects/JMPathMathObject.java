@@ -51,6 +51,10 @@ public class JMPathMathObject extends MathObject {
         center = new Point(0, 0);
     }
 
+    public JMPathPoint getPoint(int n)
+    {
+        return jmpath.getPoint(n);
+    }
     /**
      * This method computes all necessary points to the path (interpolation and
      * control)
@@ -163,8 +167,10 @@ public class JMPathMathObject extends MathObject {
     }
 
     @Override
-    public MathObject copy() {
-        return new JMPathMathObject(jmpath.rawCopy(), mp.copy());
+    public JMPathMathObject copy() {
+        JMPathMathObject resul = new JMPathMathObject(jmpath.rawCopy(), mp.copy());
+        resul.isClosed=this.isClosed;
+        return resul;
     }
 
     @Override
