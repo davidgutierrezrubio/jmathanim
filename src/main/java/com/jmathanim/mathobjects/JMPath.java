@@ -412,8 +412,11 @@ public class JMPath {
      * @param step
      */
     public void cyclePoints(int step, int direction) {
-        if (!this.isClosed) {
-            return;
+
+        if (!isClosed) {
+            if (direction == -1) {
+                step = this.size() - 1;
+            }
         }
         JMPath tempPath = this.copy();
         points.clear();

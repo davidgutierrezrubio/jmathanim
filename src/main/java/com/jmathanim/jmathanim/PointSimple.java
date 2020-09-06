@@ -471,22 +471,22 @@ public class PointSimple extends Scene2D {
     }
 
     public void pruebaHomotopia() {
-        Point A = new Point(-1, -1);
-        Point B = new Point(0, -1);
+        Point A = new Point(-2, -0);
+        Point B = new Point(-1, 1);
         Point C = new Point(1, 0);
-        Point D = new Point(1.4, 2);
+        Point D = new Point(1, 1);
         A.mp.drawColor = Color.GREEN;
         B.mp.drawColor = Color.GREEN;
         C.mp.drawColor = Color.RED;
         D.mp.drawColor = Color.RED;
         add(A, B, C, D);
-        Segment s = new Segment(A, B);
-        add(s);
-        for (double t = 0; t <= 1; t += .1) {
-            AffineTransform tr = AffineTransform.createDirect2DHomotopy(A, B, C, D, t);
-            tr.applyTransform(s);
-            waitSeconds(2);
-        }
+        Segment s1 = new Segment(B, A);
+        Segment s2 = new Segment(C, D);
+        add(s1, s2);
+        Transform tr = new Transform(s1, s2, 5);
+//        tr.setMethod(Transform.METHOD_INTERPOLATE_POINT_BY_POINT);
+        tr.shouldOptimizePathsFirst = false;
+        play(tr);
         waitSeconds(10);
     }
 

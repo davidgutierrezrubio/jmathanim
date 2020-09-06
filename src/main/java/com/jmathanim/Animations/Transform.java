@@ -10,7 +10,7 @@ import com.jmathanim.mathobjects.JMPath;
 import com.jmathanim.mathobjects.JMPathMathObject;
 import com.jmathanim.mathobjects.JMPathPoint;
 import com.jmathanim.mathobjects.Point;
-import javafx.scene.paint.Color;
+import com.jmathanim.mathobjects.Segment;
 
 /**
  *
@@ -18,48 +18,75 @@ import javafx.scene.paint.Color;
  */
 public class Transform extends Animation {
 
+    public static final int METHOD_INTERPOLATE_POINT_BY_POINT = 1;
+    public static final int METHOD_AFFINE_TRANSFORM = 2;
     private JMPath jmpathOrig;
     private JMPathMathObject mobj2;
     private JMPathMathObject mobj1;
     private MathObjectDrawingProperties propBase;
+    private int method;
+    public boolean shouldOptimizePathsFirst;
 
     public Transform(JMPathMathObject ob1, JMPathMathObject ob2, double runTime) {
         super(ob1, runTime);
         mobj1 = ob1;
         mobj2 = ob2;
+        method = METHOD_INTERPOLATE_POINT_BY_POINT;//Default method
+        shouldOptimizePathsFirst = true;
+        determineTransformMethod();
     }
 
     @Override
     public void initialize() {
-        //Should determine optimal transformation
-        
-        //TODO: Should use an homotopy instead of point-to-point interpolation 
+        //Determine optimal transformation
+
+        //Should use an homotopy instead of point-to-point interpolation 
         //in the following cases:
         //2 segments/lines or segment/line
         //2 circles/ellipses
         //2 regular polygons with same number of sides
         
-        
-        
-        
+
         //This is the initialization for the point-to-point interpolation
         //Prepare paths. Firs, I ensure they have the same number of points
         mobj1.jmpath.alignPaths(mobj2.jmpath);
-        //Now, adjust the points of the first to minimize distance from point-to-point
-        mobj1.jmpath.minimizeSumDistance(mobj2.jmpath);
+
+        if (shouldOptimizePathsFirst) {
+            //Now, adjust the points of the first to minimize distance from point-to-point
+            mobj1.jmpath.minimizeSumDistance(mobj2.jmpath);
+        }
+        //Base path and properties, to interpolate from
         jmpathOrig = mobj1.jmpath.rawCopy();
         //This copy of ob1 is necessary to compute interpolations between base and destiny
         propBase = mobj1.mp.copy();
-        //ob1=(1-t)*propBase+t*ob2
         for (int n = 0; n < mobj1.jmpath.points.size(); n++) {
             //Mark all point temporary as curved
             mobj1.jmpath.points.get(n).isCurved = true;
         }
     }
 
+    private void determineTransformMethod() {
+        if ((mobj1 instanceof Segment) && (mobj2 instanceof Segment)) {
+            method = METHOD_AFFINE_TRANSFORM;
+            shouldOptimizePathsFirst = true;
+        }
+
+    }
+
     @Override
     public void doAnim(double t) {
         System.out.println("Anim Transform " + t);
+        switch (method) {
+            case METHOD_INTERPOLATE_POINT_BY_POINT:
+                interpolateByPoint(t);
+                break;
+            case METHOD_AFFINE_TRANSFORM:
+                affineTransform(t);
+                break;
+        }
+    }
+
+    private void interpolateByPoint(double t) throws ArrayIndexOutOfBoundsException {
         JMPathPoint interPoint, basePoint, dstPoint;
         for (int n = 0; n < mobj1.jmpath.points.size(); n++) {
             interPoint = mobj1.jmpath.points.get(n);
@@ -112,5 +139,49 @@ public class Transform extends Animation {
         System.out.println(mobj1);
         mobj2.removeInterpolationPoints();
     }
+
+    private void affineTransform(double t) {
+        JMPathPoint interPoint, basePoint, dstPoint;
+        Point A = jmpathOrig.getPoint(0).p;
+        Point B = jmpathOrig.getPoint(1).p;
+        Point C = mobj2.getPoint(0).p;
+        Point D = mobj2.getPoint(1).p;
+
+        AffineTransform tr = AffineTransform.createDirect2DHomotopy(A, B, C, D, t);
+        for (int n = 0; n < mobj1.jmpath.points.size(); n++) {
+            interPoint = mobj1.jmpath.points.get(n);
+            basePoint = jmpathOrig.points.get(n);
+            dstPoint = mobj2.jmpath.points.get(n);
+
+            //Copy visibility attributes after t>.8
+            if (t > .8) {
+                interPoint.isVisible = dstPoint.isVisible;
+            }
+
+            //Interpolate point
+            interPoint.p.v = tr.applyTransform(basePoint.p).v;
+            
+            //Interpolate control point 1
+            interPoint.cp1.v = tr.applyTransform(basePoint.cp1).v;
+
+            //Interpolate control point 2
+            interPoint.cp2.v = tr.applyTransform(basePoint.cp2).v;
+
+        }
+        //Now interpolate properties from objects
+        mobj1.mp.interpolateFrom(propBase, mobj2.mp, t);
+        //Update center from mobj1
+        mobj1.updateCenter();
+    }
+
+    public int getMethod() {
+        return method;
+    }
+
+    public void setMethod(int method) {
+        this.method = method;
+    }
+    
+    
 
 }
