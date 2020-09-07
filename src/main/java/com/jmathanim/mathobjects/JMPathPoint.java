@@ -88,11 +88,17 @@ public class JMPathPoint implements Updateable{
     }
 
     @Override
-    public void updateFromParents() {
+    public void update() {
         //Update descendents from Point and control points
         p.updateDependents();
         cp1.updateDependents();
         cp2.updateDependents();
+    }
+
+
+    @Override
+    public int getUpdateLevel() {
+        return Math.max(Math.max(p.getUpdateLevel(), cp1.getUpdateLevel()),cp2.getUpdateLevel());
     }
 
 }

@@ -59,9 +59,9 @@ public class Transform extends Animation {
         jmpathOrig = mobj1.jmpath.rawCopy();
         //This copy of ob1 is necessary to compute interpolations between base and destiny
         propBase = mobj1.mp.copy();
-        for (int n = 0; n < mobj1.jmpath.points.size(); n++) {
+        for (int n = 0; n < mobj1.jmpath.jmPathPoints.size(); n++) {
             //Mark all point temporary as curved
-            mobj1.jmpath.points.get(n).isCurved = true;
+            mobj1.jmpath.jmPathPoints.get(n).isCurved = true;
         }
     }
 
@@ -88,10 +88,10 @@ public class Transform extends Animation {
 
     private void interpolateByPoint(double t) throws ArrayIndexOutOfBoundsException {
         JMPathPoint interPoint, basePoint, dstPoint;
-        for (int n = 0; n < mobj1.jmpath.points.size(); n++) {
-            interPoint = mobj1.jmpath.points.get(n);
-            basePoint = jmpathOrig.points.get(n);
-            dstPoint = mobj2.jmpath.points.get(n);
+        for (int n = 0; n < mobj1.jmpath.jmPathPoints.size(); n++) {
+            interPoint = mobj1.jmpath.jmPathPoints.get(n);
+            basePoint = jmpathOrig.jmPathPoints.get(n);
+            dstPoint = mobj2.jmpath.jmPathPoints.get(n);
 
             //Copy visibility attributes after t>.8
             if (t > .8) {
@@ -116,8 +116,6 @@ public class Transform extends Animation {
         }
         //Now interpolate properties from objects
         mobj1.mp.interpolateFrom(propBase, mobj2.mp, t);
-        //Update center from mobj1
-        mobj1.updateCenter();
     }
 
     @Override
@@ -148,10 +146,10 @@ public class Transform extends Animation {
         Point D = mobj2.getPoint(1).p;
 
         AffineTransform tr = AffineTransform.createDirect2DHomotopy(A, B, C, D, t);
-        for (int n = 0; n < mobj1.jmpath.points.size(); n++) {
-            interPoint = mobj1.jmpath.points.get(n);
-            basePoint = jmpathOrig.points.get(n);
-            dstPoint = mobj2.jmpath.points.get(n);
+        for (int n = 0; n < mobj1.jmpath.jmPathPoints.size(); n++) {
+            interPoint = mobj1.jmpath.jmPathPoints.get(n);
+            basePoint = jmpathOrig.jmPathPoints.get(n);
+            dstPoint = mobj2.jmpath.jmPathPoints.get(n);
 
             //Copy visibility attributes after t>.8
             if (t > .8) {
@@ -170,8 +168,6 @@ public class Transform extends Animation {
         }
         //Now interpolate properties from objects
         mobj1.mp.interpolateFrom(propBase, mobj2.mp, t);
-        //Update center from mobj1
-        mobj1.updateCenter();
     }
 
     public int getMethod() {

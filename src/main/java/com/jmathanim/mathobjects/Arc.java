@@ -103,11 +103,6 @@ public class Arc extends JMPathMathObject {
 //        needsRecalcControlPoints=true;
     }
 
-    @Override
-    public void update() {
-        computeJMPathFromVertices();
-        updateDependents();
-    }
 
     @Override
     public void prepareForNonLinearAnimation() {

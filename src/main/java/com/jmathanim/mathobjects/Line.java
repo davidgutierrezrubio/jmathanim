@@ -55,9 +55,6 @@ public class Line extends Segment {
         return resul;
     }
 
-    @Override
-    public void update() {
-    }
 
     @Override
     public void processAfterNonLinearAnimation() {

@@ -75,7 +75,7 @@ public class RegularPolygon extends Polygon {
 
     private void computeRadiusAndApothems() {
         radius.clear();
-        for (JMPathPoint p : jmpath.points) {
+        for (JMPathPoint p : jmpath.jmPathPoints) {
             if (p.type == JMPathPoint.TYPE_VERTEX) {
                 radius.add(new Segment(center, p.p));
             }
@@ -83,7 +83,7 @@ public class RegularPolygon extends Polygon {
 
         apothem.clear();
         Point q = null;
-        for (JMPathPoint p : jmpath.points) {
+        for (JMPathPoint p : jmpath.jmPathPoints) {
             if (p.type == JMPathPoint.TYPE_VERTEX) {
                 if (q != null) {
                     apothem.add(new Segment(center, new MiddlePoint(p.p, q)));

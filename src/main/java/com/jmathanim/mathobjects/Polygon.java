@@ -5,9 +5,9 @@
  */
 package com.jmathanim.mathobjects;
 
-import com.jmathanim.Renderers.Renderer;
 import com.jmathanim.Utils.MathObjectDrawingProperties;
 import com.jmathanim.Utils.Vec;
+import com.jmathanim.jmathanim.JMathAnimScene;
 import java.util.ArrayList;
 
 /**
@@ -15,6 +15,8 @@ import java.util.ArrayList;
  * @author David Gutiérrez Rubio <davidgutierrezrubio@gmail.com>
  */
 public class Polygon extends JMPathMathObject {
+
+    protected final AveragePoint center;
 
     public Polygon() {
         this(null);
@@ -33,12 +35,13 @@ public class Polygon extends JMPathMathObject {
         if (!vertices.isEmpty()) {
             computeJMPathFromVertices();
         }
+        center = new AveragePoint(jmpath);
     }
 
     public final void addVertices(ArrayList<Point> vertices) {
         for (Point p : vertices) {
             JMPathPoint jmPathPoint = new JMPathPoint(p, true, JMPathPoint.TYPE_VERTEX);
-            jmPathPoint.isCurved=false;
+            jmPathPoint.isCurved = false;
             this.vertices.add(jmPathPoint);
         }
     }
@@ -55,7 +58,7 @@ public class Polygon extends JMPathMathObject {
 
     public boolean addVertex(Double x, Double y, Double z) {
         needsRecalcControlPoints = true;
-        Point p=new Point(x, y, z);
+        Point p = new Point(x, y, z);
         return this.addVertex(p);
     }
 
@@ -82,7 +85,6 @@ public class Polygon extends JMPathMathObject {
 //        resul.jmpath.addPointsFrom(jmpath);
 //        return resul;
 //    }
-
 //    @Override
 //    public void draw(Renderer r) {
 //        if (needsRecalcControlPoints) {
@@ -104,7 +106,6 @@ public class Polygon extends JMPathMathObject {
 //        r.setStroke(this);
 //        r.drawPath(this);
 //    }
-
 //    @Override
 //    public void computeJMPath() {
 //        //TODO: ¿Compute intermediate points?
@@ -127,17 +128,9 @@ public class Polygon extends JMPathMathObject {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-    @Override
-    public void update() {
-        System.out.println("Update path en update");
-        computeJMPathFromVertices();
-        updateDependents();
-    }
-
     public ArrayList<Point> getVertices() {
-        ArrayList<Point> resul=new ArrayList<>();
-        for (JMPathPoint jmp: vertices)
-        {
+        ArrayList<Point> resul = new ArrayList<>();
+        for (JMPathPoint jmp : vertices) {
             resul.add(jmp.p);
         }
         return resul;
@@ -153,7 +146,6 @@ public class Polygon extends JMPathMathObject {
 //            jmpath.addPointsFrom(jmpathTemp);
 //        }
         numInterpolationPoints = 20;
-        update();
 
     }
 
@@ -161,9 +153,11 @@ public class Polygon extends JMPathMathObject {
     public void processAfterNonLinearAnimation() {
 //        jmpath.removeInterpolationPoints();//Remove interpolation points
         numInterpolationPoints = 1;
-        update();
     }
 
-   
+    @Override
+    public void registerChildrenToBeUpdated(JMathAnimScene scene) {
+        scene.registerObjectToBeUpdated(center);
+    }
 
 }

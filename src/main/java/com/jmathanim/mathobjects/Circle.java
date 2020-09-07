@@ -30,7 +30,7 @@ public class Circle extends Arc {
 
     @Override
     public Circle copy() {
-        Circle resul=new Circle(this.center.copy(), radiusx);
+        Circle resul=new Circle(new Point(x,y), radiusx);
         resul.mp.copyFrom(mp);
         resul.jmpath.clear();
         resul.jmpath.addPointsFrom(jmpath.rawCopy());

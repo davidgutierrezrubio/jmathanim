@@ -9,6 +9,7 @@ import com.jmathanim.Renderers.Renderer;
 import com.jmathanim.Utils.MathObjectDrawingProperties;
 import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.Vec;
+import com.jmathanim.jmathanim.JMathAnimScene;
 
 /**
  *
@@ -66,10 +67,7 @@ public class MathObjectContainer extends MathObject {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-    @Override
-    public void update() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
+    
 
     @Override
     public void prepareForNonLinearAnimation() {
@@ -98,5 +96,19 @@ public class MathObjectContainer extends MathObject {
 @Override
     public void setFillAlpha(double t) {
         this.mathObject.setFillAlpha(t);
+    }
+
+
+    @Override
+    public void registerChildrenToBeUpdated(JMathAnimScene scene) {
+        this.mathObject.registerChildrenToBeUpdated(scene);
+    }
+ @Override
+    public void unregisterChildrenToBeUpdated(JMathAnimScene scene) {
+        this.mathObject.unregisterChildrenToBeUpdated(scene);
+    }
+    @Override
+    public void update() {
+        this.mathObject.update();
     }
 }

@@ -68,7 +68,7 @@ public class SVGMathObject extends MultiJMPathObject {
 
                 JMPath path = processPathCommands(eElement.getAttribute("d"));
 
-                if (path.points.size() > 0) {
+                if (path.jmPathPoints.size() > 0) {
                     path.pathType = JMPath.SVG_PATH; //Mark this as a SVG path
 
                     if (eElement.getAttribute("fill") == "none") {

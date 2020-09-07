@@ -9,6 +9,7 @@ import com.jmathanim.Renderers.Java2DRenderer;
 import com.jmathanim.Renderers.Renderer;
 import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.Vec;
+import com.jmathanim.jmathanim.JMathAnimScene;
 import java.util.ArrayList;
 
 /**
@@ -69,13 +70,7 @@ public class MultiJMPathObject extends MathObject {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-    @Override
-    public void update() {
-        for (JMPathMathObject jmp : jmps) {
-            jmp.update();
-        }
-    }
-
+   
     @Override
     public void prepareForNonLinearAnimation() {
         for (JMPathMathObject jmp : jmps) {
@@ -131,8 +126,27 @@ public class MultiJMPathObject extends MathObject {
             jmp.setFillAlpha(t);
         }
     }
-    public JMPathMathObject get(int n)
-    {
+
+    public JMPathMathObject get(int n) {
         return jmps.get(n);
+    }
+
+    @Override
+    public void registerChildrenToBeUpdated(JMathAnimScene scene) {
+        for (JMPathMathObject o : jmps) {
+            o.registerChildrenToBeUpdated(scene);
+        }
+    }
+
+    @Override
+    public void update() {
+       //Nothing to do here
+    }
+
+    @Override
+    public void unregisterChildrenToBeUpdated(JMathAnimScene scene) {
+        for (JMPathMathObject o : jmps) {
+            o.unregisterChildrenToBeUpdated(scene);
+        }
     }
 }

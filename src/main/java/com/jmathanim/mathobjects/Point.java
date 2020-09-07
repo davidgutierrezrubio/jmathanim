@@ -12,16 +12,21 @@ import com.jmathanim.Utils.ConfigUtils;
 import com.jmathanim.Utils.MathObjectDrawingProperties;
 import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.Vec;
+import com.jmathanim.jmathanim.JMathAnimScene;
 
 /**
  * This class represents a point
  *
  * @author David Gutierrez Rubio davidgutierrezrubio@gmail.com
  */
-public class Point extends MathObject implements Updateable{
+public class Point extends MathObject {
 
     public Vec v;
 
+    public Point()
+    {
+        this(0,0,0);
+    }
     public Point(Point p) {
         this(p.v);
     }
@@ -92,7 +97,6 @@ public class Point extends MathObject implements Updateable{
         v.x = coords.x;
         v.y = coords.y;
         v.z = coords.z;
-        update();
 
     }
 
@@ -101,7 +105,6 @@ public class Point extends MathObject implements Updateable{
         v.x += shiftVector.x;
         v.y += shiftVector.y;
         v.z += shiftVector.z;
-        update();
     }
 
     @Override
@@ -153,11 +156,7 @@ public class Point extends MathObject implements Updateable{
 
     }
 
-    @Override
-    public void update() {
-        //Nothing else to do
-        updateDependents();
-    }
+   
 
     @Override
     public void prepareForNonLinearAnimation() {
@@ -187,9 +186,21 @@ public class Point extends MathObject implements Updateable{
         //Nothing to do  here
     }
 
+   
+
     @Override
-    public void updateFromParents() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public void registerChildrenToBeUpdated(JMathAnimScene scene) {
+        //Nothing to do  here
+    }
+
+    @Override
+    public void update() {
+        //Nothing to do  here
+    }
+
+    @Override
+    public void unregisterChildrenToBeUpdated(JMathAnimScene scene) {
+        //Nothing to do  here
     }
 
 }

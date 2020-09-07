@@ -15,7 +15,7 @@ import java.util.HashSet;
  *
  * @author David Gutierrez Rubio davidgutierrezrubio@gmail.com
  */
-public abstract class MathObject implements Drawable {
+public abstract class MathObject implements Drawable, Updateable{
 
     public static final int SLICE_SIMPLE = 1;
     public static final int SLICE_DOUBLE = 2;
@@ -35,10 +35,17 @@ public abstract class MathObject implements Drawable {
 //    protected double drawParam;
 
     /**
-     * Mathobjects dependent of this. These should be updated4 when this object
-     * changes
+     * Mathobjects dependent of this. These should be updated with its own method when this object
+     * changes. This is designed for Objects with its specific dependency function (MiddlePoint for example)
      */
-    public final HashSet<Updateable> descendent;
+    public final HashSet<Updateable> dependent;
+    
+    /**
+     * MathObjects children of this (for example: Polygon has Point as vertices)
+     */
+    public final HashSet<MathObject> children;
+    
+    public int updateLevel;
 
 //    /**
 //     * Mathobjects which this is dependent from. This object should be updated4
@@ -54,9 +61,11 @@ public abstract class MathObject implements Drawable {
         mp = new MathObjectDrawingProperties();//Default
         mp.digestFrom(prop);
 //        ascendent=new HashSet<>();
-        descendent = new HashSet<>();
+        dependent = new HashSet<>();
+        children = new HashSet<>();
 //        cousins=new HashSet<>();
         scenes = new HashSet<>();
+        updateLevel=0;
     }
 
     /**
@@ -122,7 +131,6 @@ public abstract class MathObject implements Drawable {
      * Update all necessary componentes of this object to display properly This
      * should be called when any of its subobjects (sides, vertices...) changes
      */
-    abstract public void update();
 
     abstract public void prepareForNonLinearAnimation();
 
@@ -139,17 +147,17 @@ public abstract class MathObject implements Drawable {
 //        mob.descendent.remove(this);
 //    }    
     public void addUpdateable(Updateable obj) {
-        descendent.add(obj);
+        dependent.add(obj);
     }
 
     public void removeUpdateable(Updateable obj) {
-        descendent.remove(obj);
+        dependent.remove(obj);
     }
 
     public void updateDependents() {
-        HashSet<Updateable> desC = (HashSet<Updateable>) descendent.clone();
+        HashSet<Updateable> desC = (HashSet<Updateable>) dependent.clone();
         for (Updateable mob : desC) {
-            mob.updateFromParents();
+            mob.update();
         }
     }
 
@@ -199,4 +207,12 @@ public abstract class MathObject implements Drawable {
     public abstract void setDrawAlpha(double t);
 
     public abstract void setFillAlpha(double t);
+    
+    public abstract void registerChildrenToBeUpdated(JMathAnimScene scene);
+    public abstract void unregisterChildrenToBeUpdated(JMathAnimScene scene);
+    
+    @Override
+    public int getUpdateLevel(){
+        return updateLevel;
+    }
 }

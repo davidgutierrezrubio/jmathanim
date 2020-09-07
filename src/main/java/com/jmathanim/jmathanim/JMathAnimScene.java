@@ -10,8 +10,10 @@ import com.jmathanim.Cameras.Camera;
 import com.jmathanim.Renderers.Renderer;
 import com.jmathanim.Utils.JMathAnimConfig;
 import com.jmathanim.mathobjects.MathObject;
+import com.jmathanim.mathobjects.Updateable;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashSet;
 
 /**
  *
@@ -26,18 +28,19 @@ public abstract class JMathAnimScene {
     };
     int contador = 0;
     int x;
-    ArrayList<MathObject> objects;
+    final ArrayList<MathObject> objects;
+    final ArrayList<Updateable> objectsToBeUpdated;
     protected Renderer SCRenderer;
     protected int frameCount;
     protected double fps;
     protected double dt;
     public JMathAnimConfig conf;
 
-    
     public JMathAnimScene() {
         objects = new ArrayList<>(); //TODO: Extends this to include layers
         conf = new JMathAnimConfig();
         conf.setLowQuality();//by default, set low quality
+        objectsToBeUpdated = new ArrayList<>();
     }
 
 //    /**
@@ -75,11 +78,32 @@ public abstract class JMathAnimScene {
         }
     }
 
+    public final void registerObjectToBeUpdated(MathObject obj) {
+        if (obj instanceof Updateable) {
+            System.out.println("Registered updateable " + obj);
+            if (!objectsToBeUpdated.contains(obj)) {
+                objectsToBeUpdated.add((Updateable) obj);
+            }
+        }
+    }
+
+    public final void unregisterObjectToBeUpdated(MathObject obj) {
+        if (obj instanceof Updateable) {
+            System.out.println("Unregistered updateable " + obj);
+            objectsToBeUpdated.remove((Updateable) obj);
+        }
+    }
+
     public final void add(MathObject... objs) {
         for (MathObject obj : objs) {
             if (!objects.contains(obj)) {
                 objects.add(obj);
                 obj.addScene(this);
+                //Check if this object is Updateable.
+                //This interface is present in every MathObject which needs to
+                //be updated every frame
+                registerObjectToBeUpdated(obj);
+                obj.registerChildrenToBeUpdated(this);
             }
         }
     }
@@ -87,6 +111,8 @@ public abstract class JMathAnimScene {
     public final MathObject remove(MathObject obj) {
         objects.remove(obj);
         obj.removeScene(this);
+        unregisterObjectToBeUpdated(obj);
+        obj.unregisterChildrenToBeUpdated(this);//TODO: Really unregister children??
         return obj;
     }
 
@@ -100,8 +126,10 @@ public abstract class JMathAnimScene {
                 return (o1.mp.layer - o2.mp.layer);
             }
         });
+        for (Updateable obj : objectsToBeUpdated) {
+            obj.update();
+        }
         for (MathObject obj : objects) {
-            obj.updateDependents();
             obj.draw(SCRenderer);
         }
 
@@ -124,6 +152,7 @@ public abstract class JMathAnimScene {
 
     /**
      * Overloaded function, to admit a variable number of parameters
+     *
      * @param anims Animations to play
      */
     public void play(Animation... anims) {
@@ -135,8 +164,9 @@ public abstract class JMathAnimScene {
     }
 
     /**
-     * Play the given animations, generating new frames automatically until
-     * all animations have finished. 
+     * Play the given animations, generating new frames automatically until all
+     * animations have finished.
+     *
      * @param anims An ArrayList with Animation objects.
      */
     public void play(ArrayList<Animation> anims) {
@@ -144,7 +174,7 @@ public abstract class JMathAnimScene {
             add(anim.mobj); //Add main object if it's not already in the scene.
             anim.initialize();//Perform needed steps immediately before playing
         }
-        
+
         boolean finished = false;
         while (!finished) {
             finished = true;

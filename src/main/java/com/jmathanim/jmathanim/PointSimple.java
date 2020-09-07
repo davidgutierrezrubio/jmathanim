@@ -21,6 +21,7 @@ import com.jmathanim.mathobjects.JMPathPoint;
 import com.jmathanim.mathobjects.LaTeXMathObject;
 import com.jmathanim.mathobjects.Line;
 import com.jmathanim.mathobjects.MiddlePoint;
+import com.jmathanim.mathobjects.AveragePoint;
 import com.jmathanim.mathobjects.Point;
 import com.jmathanim.mathobjects.Polygon;
 import com.jmathanim.mathobjects.RegularPolygon;
@@ -49,6 +50,7 @@ public class PointSimple extends Scene2D {
         System.out.println("Running sketch...");
 //        pruebaHomotopia();
         pruebaTransformSegmentos();
+//pruebaLaTeXEcuacion();
     }
 
     public void pruebaSimpleJMPathObject() throws ArrayIndexOutOfBoundsException {
@@ -68,7 +70,7 @@ public class PointSimple extends Scene2D {
         waitSeconds(3d);
         play(new ShowCreation(pa, 3d));
         waitSeconds(3d);
-        pa.jmpath.points.get(2).isVisible = false;
+        pa.jmpath.jmPathPoints.get(2).isVisible = false;
         waitSeconds(3d);
     }
 
@@ -87,8 +89,8 @@ public class PointSimple extends Scene2D {
         JMPathMathObject p2 = new JMPathMathObject(pa2, null);
         JMPathMathObject p3 = new JMPathMathObject(pa3, null);
         //Move path to center of the screen, upper
-        double xx = pa1.points.get(0).p.v.x;
-        double yy = pa1.points.get(0).p.v.y;
+        double xx = pa1.jmPathPoints.get(0).p.v.x;
+        double yy = pa1.jmPathPoints.get(0).p.v.y;
         p1.shift(new Vec(-xx, -yy + ymax * .5d));
         p2.shift(new Vec(-xx, -yy + ymax * .5d));
         p3.shift(new Vec(-xx, -yy + ymax * .5d));
@@ -179,13 +181,13 @@ public class PointSimple extends Scene2D {
         circ.mp.thickness /= 3;
         circ.mp.drawColor = Color.YELLOW;
 
-        JMPathPoint pp = circ.jmpath.points.get(0);
+        JMPathPoint pp = circ.jmpath.jmPathPoints.get(0);
         pp.shift(new Vec(-2, 0));
         Circle circ2 = circ.copy();
         circ2.mp.drawColor = Color.GREEN;
         add(circ2);
-        JMPathPoint p0 = circ.jmpath.points.get(0);
-        JMPathPoint p1 = circ.jmpath.points.get(1);
+        JMPathPoint p0 = circ.jmpath.jmPathPoints.get(0);
+        JMPathPoint p1 = circ.jmpath.jmPathPoints.get(1);
         add(circ);
         for (double alpha = .2; alpha < 1; alpha += .1) {
             waitSeconds(1);
@@ -199,7 +201,7 @@ public class PointSimple extends Scene2D {
         Circle circ = new Circle(new Point(-.5, .5), 2);
         circ.mp.thickness /= 3;
         circ.mp.drawColor = Color.YELLOW;
-        JMPathPoint pp = circ.jmpath.points.get(0);
+        JMPathPoint pp = circ.jmpath.jmPathPoints.get(0);
         pp.shift(new Vec(-2, 0));
         Circle circ2 = circ.copy();
         circ2.mp.drawColor = Color.BLUE;
@@ -229,7 +231,7 @@ public class PointSimple extends Scene2D {
         Circle circ = new Circle(new Point(-.5, -.5), 1);
         circ.mp.thickness /= 3;
         circ.mp.drawColor = Color.YELLOW;
-        JMPathPoint pp = circ.jmpath.points.get(0);
+        JMPathPoint pp = circ.jmpath.jmPathPoints.get(0);
         pp.shift(new Vec(-1, 0));
 //        pol1.shift(new Vec(-1, 0));
 //        add(pol1);
@@ -410,40 +412,40 @@ public class PointSimple extends Scene2D {
     }
 
     public void pruebaTransformSegmentos() {
-        Circle cir = new Circle();
-        cir.mp.fill = true;
+        RegularPolygon cir = new RegularPolygon(5, 1);
+//        cir.mp.fill = true;
         cir.mp.fillColor = Color.yellow;
         add(cir);
         cir.shift(-1, -1);
 
-        cir.mp.thickness = .5;
+//        cir.mp.thickness = .5;
         cir.mp.drawColor = Color.GREEN;
 //        Segment s1 = new Segment(new Point(-1, 1), new Point(0, .5));
         RegularPolygon pol = new RegularPolygon(5, 1);
         pol.mp.dashStyle = MathObjectDrawingProperties.DASHED;
-        pol.mp.thickness = .5;
+//        pol.mp.thickness = .5;
         pol.mp.drawColor = Color.blue;
         pol.mp.fillColor = Color.magenta;
         pol.mp.setFillAlpha(.5f);
         pol.mp.fill = false;
         add(pol);
         ArrayList<Segment> radius = pol.getApothem();
-        waitSeconds(3);
-        Segment s1 = (Segment) radius.get(0).copy();
-        s1.mp.thickness = .5;
-        s1.mp.dashStyle = MathObjectDrawingProperties.DOTTED;
-        play(new FadeIn(s1, 5));
+//        waitSeconds(3);
+//        Segment s1 = (Segment) radius.get(0).copy();
+//        s1.mp.thickness = .5;
+//        s1.mp.dashStyle = MathObjectDrawingProperties.DOTTED;
+//        play(new FadeIn(s1, 5));
         for (Segment s : radius) {
-            s.mp.copyFrom(s1.mp);
-            Transform tr = new Transform(s1, s, 30);
-//            tr.setMethod(Transform.METHOD_INTERPOLATE_POINT_BY_POINT);
-            play(tr);
+//            s.mp.copyFrom(s1.mp);
+//            Transform tr = new Transform(s1, s, 3);
+////            tr.setMethod(Transform.METHOD_INTERPOLATE_POINT_BY_POINT);
+//            play(tr);
             add(s);
         }
-        remove(s1);
-        waitSeconds(10);
+//        remove(s1);
+        waitSeconds(1);
         play(new Transform(pol, cir, 10));
-        waitSeconds(10);
+        waitSeconds(3);
     }
 
     public void pruebaMatrix() {
@@ -474,7 +476,7 @@ public class PointSimple extends Scene2D {
     }
 
     public void pruebaHomotopia() {
-        double tiempo = 100;
+        double tiempo = 20;
         Point A = new Point(1, -0);
         Point B = new Point(0, 0);
         Point C = new Point(1, 0);

@@ -10,5 +10,6 @@ package com.jmathanim.mathobjects;
  * @author David Gutiérrez Rubio <davidgutierrezrubio@gmail.com>
  */
 public interface Updateable {
-    public void updateFromParents();
+    public int getUpdateLevel();
+    public void update();
 }

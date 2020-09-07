@@ -36,15 +36,19 @@ public class Vec {
     {
         return new Vec(this.y*a.z-this.z*a.y, this.z*a.x-this.x*a.z, this.x*a.y-this.y*a.x);
     }
-    public Vec multInSite(double r) {
-        x *= r;
-        y *= r;
-        z *= r;
+    public Vec multInSite(double lambda) {
+        x *= lambda;
+        y *= lambda;
+        z *= lambda;
         return this;
     }
-
-    public Vec mult(double r) {
-        return new Vec(x * r, y * r, z * r);
+    /**
+     * Returns a new vector representing this vector scaled by a factor. The current vector is unaltered.
+     * @param lambda The factor
+     * @return The new vector
+     */
+    public Vec mult(double lambda) {
+        return new Vec(x * lambda, y * lambda, z * lambda);
     }
 
     public Vec addInSite(Vec b) {
