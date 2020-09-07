@@ -42,7 +42,7 @@ public class RegularPolygon extends Polygon {
             double alpha = 2 * n * Math.PI / numVertices;
             Vec moveVector = new Vec(side * Math.cos(alpha), side * Math.sin(alpha));
             newPoint = newPoint.add(moveVector);
-            dependsOn(newPoint);
+//            dependsOn(newPoint);
 //            cousins.add(newPoint);
 //            addObjectToScene(newPoint);
             this.addVertex(newPoint);
@@ -86,7 +86,7 @@ public class RegularPolygon extends Polygon {
         for (JMPathPoint p : jmpath.points) {
             if (p.type == JMPathPoint.TYPE_VERTEX) {
                 if (q != null) {
-                    apothem.add(new Segment(center, p.p.interpolate(q, .5)));
+                    apothem.add(new Segment(center, new MiddlePoint(p.p, q)));
                 }
                 q = p.p;
             }

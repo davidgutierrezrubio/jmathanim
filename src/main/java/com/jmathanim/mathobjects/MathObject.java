@@ -17,14 +17,14 @@ import java.util.HashSet;
  */
 public abstract class MathObject implements Drawable {
 
-    public static final int SLICE_SIMPLE=1;
-    public static final int SLICE_DOUBLE=2;
-    public static final int SLICE_FOUR=3;
-    
+    public static final int SLICE_SIMPLE = 1;
+    public static final int SLICE_DOUBLE = 2;
+    public static final int SLICE_FOUR = 3;
+
     public final MathObjectDrawingProperties mp;
-     /**
+    /**
      * Scenes where this object belongs.
-     * 
+     *
      */
     private HashSet<JMathAnimScene> scenes;
     public boolean visible;
@@ -34,30 +34,29 @@ public abstract class MathObject implements Drawable {
      */
 //    protected double drawParam;
 
-   
     /**
-     * Mathobjects dependent of this. These should be updated4
-     * when this object changes
+     * Mathobjects dependent of this. These should be updated4 when this object
+     * changes
      */
-    public final HashSet<MathObject> descendent;
-    
-    /**
-     * Mathobjects which this is dependent from. This object should be updated4
-     * when any of this list changes.
-     */
-    public final HashSet<MathObject> ascendent;
-    public final HashSet<MathObject> cousins;
+    public final HashSet<Updateable> descendent;
+
+//    /**
+//     * Mathobjects which this is dependent from. This object should be updated4
+//     * when any of this list changes.
+//     */
+//    public final HashSet<MathObject> ascendent;
+//    public final HashSet<MathObject> cousins;
     public MathObject() {
         this(null);
     }
 
     public MathObject(MathObjectDrawingProperties prop) {
-        mp=new MathObjectDrawingProperties();//Default
+        mp = new MathObjectDrawingProperties();//Default
         mp.digestFrom(prop);
-        ascendent=new HashSet<>();
-        descendent=new HashSet<>();
-        cousins=new HashSet<>();
-        scenes=new HashSet<>();
+//        ascendent=new HashSet<>();
+        descendent = new HashSet<>();
+//        cousins=new HashSet<>();
+        scenes = new HashSet<>();
     }
 
     /**
@@ -73,8 +72,8 @@ public abstract class MathObject implements Drawable {
      * @param coords Vec with coordinates of new center
      */
     public abstract void moveTo(Vec coords);
-    public void moveTo(Point p)
-    {
+
+    public void moveTo(Point p) {
         moveTo(p.v);
     }
 
@@ -85,11 +84,10 @@ public abstract class MathObject implements Drawable {
      */
     public abstract void shift(Vec shiftVector);
 
-     public void shift(double x, double y) {
-        shift(new Vec(x,y));
+    public void shift(double x, double y) {
+        shift(new Vec(x, y));
     }
-    
-    
+
     /**
      * Scale from center of object (2D version)
      *
@@ -119,79 +117,86 @@ public abstract class MathObject implements Drawable {
      * @return copy of object, with identical properties
      */
     abstract public MathObject copy();
-    
+
     /**
-     * Update all necessary componentes of this object to display properly
-     * This should be called when any of its subobjects (sides, vertices...)
-     * changes
+     * Update all necessary componentes of this object to display properly This
+     * should be called when any of its subobjects (sides, vertices...) changes
      */
     abstract public void update();
-    
-    
+
     abstract public void prepareForNonLinearAnimation();
+
     abstract public void processAfterNonLinearAnimation();
-    public final void dependsOn(MathObject mob)
-    {
-        ascendent.add(mob);
-        mob.descendent.add(this);
+//    public final void dependsOn(updateable mob)
+//    {
+//        ascendent.add(mob);
+//        mob.descendent.add(this);
+//    }
+
+//    public void removeDependsOn(MathObject mob)
+//        {
+//        ascendent.remove(mob);
+//        mob.descendent.remove(this);
+//    }    
+    public void addUpdateable(Updateable obj) {
+        descendent.add(obj);
     }
-    
-    public void removeDependsOn(MathObject mob)
-        {
-        ascendent.remove(mob);
-        mob.descendent.remove(this);
-    }    
-    
-    public void updateDependents()
-    {
-        HashSet<MathObject> desC = (HashSet<MathObject>) descendent.clone();
-        for (MathObject mob:desC)
-        {
-            mob.update();
+
+    public void removeUpdateable(Updateable obj) {
+        descendent.remove(obj);
+    }
+
+    public void updateDependents() {
+        HashSet<Updateable> desC = (HashSet<Updateable>) descendent.clone();
+        for (Updateable mob : desC) {
+            mob.updateFromParents();
         }
     }
 
     public void addScene(JMathAnimScene scen) {
         scenes.add(scen);
-        for (MathObject mob:cousins)
-        {
-            scen.add(mob);
-        }
+//        for (MathObject mob:cousins)
+//        {
+//            scen.add(mob);
+//        }
     }
 
     public void removeScene(JMathAnimScene scen) {
-        scenes.remove(scen); 
-         for (MathObject mob:descendent)
-        {
-            mob.removeScene(scen);
-        }
+        scenes.remove(scen);
+//         for (MathObject mob:descendent)
+//        {
+//            mob.removeScene(scen);
+//        }
     }
-    public void addObjectToScene(MathObject mob)
-    {
-        for (JMathAnimScene sce:scenes)
-        {
+
+    public void addObjectToScene(MathObject mob) {
+        for (JMathAnimScene sce : scenes) {
             mob.addScene(sce);
         }
     }
 
     /**
-     * Sets the drawing parameter.
-     * This method alters the drawing parameters of the MathObject so that it displays
-     * only partially. It is used for animation ShowCreation, for example
+     * Sets the drawing parameter. This method alters the drawing parameters of
+     * the MathObject so that it displays only partially. It is used for
+     * animation ShowCreation, for example
+     *
      * @param t Parameter to draw (0=nothing, 1=draw the entire object)
      */
-    public abstract void setDrawParam(double t,int sliceType);
-    
+    public abstract void setDrawParam(double t, int sliceType);
+
     /**
      * Returns the Bounding box with limits of the MathObject
+     *
      * @return A Rect with (xmin,ymin,xmax,ymax)
      */
     public abstract Rect getBoundingBox();
 
-    public void setAlpha(double t){
+    public void setAlpha(double t) {
         setDrawAlpha(t);
         setFillAlpha(t);
     }
+
     public abstract void setDrawAlpha(double t);
+
     public abstract void setFillAlpha(double t);
 }

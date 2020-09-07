@@ -20,6 +20,7 @@ import com.jmathanim.mathobjects.JMPathMathObject;
 import com.jmathanim.mathobjects.JMPathPoint;
 import com.jmathanim.mathobjects.LaTeXMathObject;
 import com.jmathanim.mathobjects.Line;
+import com.jmathanim.mathobjects.MiddlePoint;
 import com.jmathanim.mathobjects.Point;
 import com.jmathanim.mathobjects.Polygon;
 import com.jmathanim.mathobjects.RegularPolygon;
@@ -46,7 +47,8 @@ public class PointSimple extends Scene2D {
     @Override
     public void runSketch() {
         System.out.println("Running sketch...");
-        pruebaHomotopia();
+//        pruebaHomotopia();
+        pruebaTransformSegmentos();
     }
 
     public void pruebaSimpleJMPathObject() throws ArrayIndexOutOfBoundsException {
@@ -423,9 +425,9 @@ public class PointSimple extends Scene2D {
         pol.mp.drawColor = Color.blue;
         pol.mp.fillColor = Color.magenta;
         pol.mp.setFillAlpha(.5f);
-        pol.mp.fill = true;
+        pol.mp.fill = false;
         add(pol);
-        ArrayList<Segment> radius = pol.getRadius();
+        ArrayList<Segment> radius = pol.getApothem();
         waitSeconds(3);
         Segment s1 = (Segment) radius.get(0).copy();
         s1.mp.thickness = .5;
@@ -433,7 +435,8 @@ public class PointSimple extends Scene2D {
         play(new FadeIn(s1, 5));
         for (Segment s : radius) {
             s.mp.copyFrom(s1.mp);
-            Transform tr = new Transform(s1, s, 3);
+            Transform tr = new Transform(s1, s, 30);
+//            tr.setMethod(Transform.METHOD_INTERPOLATE_POINT_BY_POINT);
             play(tr);
             add(s);
         }
@@ -471,10 +474,14 @@ public class PointSimple extends Scene2D {
     }
 
     public void pruebaHomotopia() {
-        Point A = new Point(-2, -0);
-        Point B = new Point(-1, 1);
+        double tiempo = 100;
+        Point A = new Point(1, -0);
+        Point B = new Point(0, 0);
         Point C = new Point(1, 0);
         Point D = new Point(1, 1);
+        Point M=new MiddlePoint(A, B);
+        Point N=new MiddlePoint(A, M);
+        add(M,N);
         A.mp.drawColor = Color.GREEN;
         B.mp.drawColor = Color.GREEN;
         C.mp.drawColor = Color.RED;
@@ -483,13 +490,14 @@ public class PointSimple extends Scene2D {
         Segment s1 = new Segment(B, A);
         Segment s2 = new Segment(C, D);
         add(s1, s2);
-        Transform tr = new Transform(s1, s2, 5);
+        Transform tr = new Transform(s1, s2, tiempo);
 //        tr.setMethod(Transform.METHOD_INTERPOLATE_POINT_BY_POINT);
-        tr.shouldOptimizePathsFirst = false;
+//        tr.shouldOptimizePathsFirst = false;
         play(tr);
         waitSeconds(10);
     }
 
+    
 }
 
 //Cookbook:

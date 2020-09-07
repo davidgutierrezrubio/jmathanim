@@ -101,6 +101,7 @@ public abstract class JMathAnimScene {
             }
         });
         for (MathObject obj : objects) {
+            obj.updateDependents();
             obj.draw(SCRenderer);
         }
 

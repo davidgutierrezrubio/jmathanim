@@ -18,9 +18,13 @@ import com.jmathanim.Utils.Vec;
  *
  * @author David Gutierrez Rubio davidgutierrezrubio@gmail.com
  */
-public final class Point extends MathObject {
+public class Point extends MathObject {
 
     public Vec v;
+
+    public Point(Point p) {
+        this(p.v);
+    }
 
     public Point(Vec v) {
         this(v.x, v.y, v.z);
@@ -66,7 +70,7 @@ public final class Point extends MathObject {
         super(mp);
         this.v = new Vec(x, y, z);
         this.mp.absoluteThickness = true;
-        this.mp.thickness=8d;//default value
+        this.mp.thickness = 8d;//default value
     }
 
     @Override
@@ -131,10 +135,18 @@ public final class Point extends MathObject {
 
     }
 
-    
-    public Vec to(Point B){
-        return new Vec(B.v.x-v.x,B.v.y-v.y,B.v.z-v.z);
+    public Vec to(Point B) {
+        return new Vec(B.v.x - v.x, B.v.y - v.y, B.v.z - v.z);
     }
+
+    /**
+     * Returns a new Point, linearly interpolated between this and p2 with alpha
+     * parameter
+     *
+     * @param p2
+     * @param alpha
+     * @return The new Point
+     */
     public Point interpolate(Point p2, double alpha) {
         Vec w = v.interpolate(p2.v, alpha);
         return new Point(w);
