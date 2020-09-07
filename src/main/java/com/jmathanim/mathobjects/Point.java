@@ -18,7 +18,7 @@ import com.jmathanim.Utils.Vec;
  *
  * @author David Gutierrez Rubio davidgutierrezrubio@gmail.com
  */
-public class Point extends MathObject {
+public class Point extends MathObject implements Updateable{
 
     public Vec v;
 
@@ -185,6 +185,11 @@ public class Point extends MathObject {
     @Override
     public void setFillAlpha(double t) {
         //Nothing to do  here
+    }
+
+    @Override
+    public void updateFromParents() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
 }

@@ -11,7 +11,7 @@ import com.jmathanim.Utils.Vec;
  *
  * @author David Gutiérrez Rubio <davidgutierrezrubio@gmail.com>
  */
-public class JMPathPoint {
+public class JMPathPoint implements Updateable{
 
     public static final int TYPE_NONE = 0;
     public static final int TYPE_VERTEX = 1;
@@ -85,6 +85,14 @@ public class JMPathPoint {
         this.p.scale(point, d, e, f);
         this.cp1.scale(point, d, e, f);
         this.cp2.scale(point, d, e, f);
+    }
+
+    @Override
+    public void updateFromParents() {
+        //Update descendents from Point and control points
+        p.updateDependents();
+        cp1.updateDependents();
+        cp2.updateDependents();
     }
 
 }
