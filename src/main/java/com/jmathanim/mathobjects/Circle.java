@@ -25,7 +25,7 @@ public class Circle extends Arc {
     }
 
     public Circle(Point arcCenter, double radius) {
-        super(arcCenter, radius, 2 * PI, true);
+        super(arcCenter, radius, 2 * PI,Math.PI*2/40, true);
     }
 
     @Override
