@@ -157,13 +157,13 @@ public class Transform extends Animation {
             }
 
             //Interpolate point
-            interPoint.p.v = tr.applyTransform(basePoint.p).v;
+            interPoint.p.v = tr.getTransformedPoint(basePoint.p).v;
             
             //Interpolate control point 1
-            interPoint.cp1.v = tr.applyTransform(basePoint.cp1).v;
+            interPoint.cp1.v = tr.getTransformedPoint(basePoint.cp1).v;
 
             //Interpolate control point 2
-            interPoint.cp2.v = tr.applyTransform(basePoint.cp2).v;
+            interPoint.cp2.v = tr.getTransformedPoint(basePoint.cp2).v;
 
         }
         //Now interpolate properties from objects

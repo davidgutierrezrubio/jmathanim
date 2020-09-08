@@ -5,6 +5,8 @@
  */
 package com.jmathanim.mathobjects;
 
+import com.jmathanim.jmathanim.JMathAnimScene;
+
 /**
  *
  * @author David Gutiérrez Rubio <davidgutierrezrubio@gmail.com>
@@ -28,6 +30,12 @@ public class MiddlePoint extends Point {
     @Override
     public void update() {
         this.v = p1.v.interpolate(p2.v, lambda);
+    }
+
+    @Override
+    public void registerChildrenToBeUpdated(JMathAnimScene scene) {
+        scene.registerObjectToBeUpdated(p1);
+        scene.registerObjectToBeUpdated(p2);
     }
 
 }

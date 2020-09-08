@@ -17,7 +17,7 @@ import com.jmathanim.jmathanim.JMathAnimScene;
  */
 public class MathObjectContainer extends MathObject {
 
-    private MathObject mathObject;
+    protected MathObject mathObject;
 
     public MathObjectContainer(MathObject mathObject) {
         this.mathObject = mathObject;

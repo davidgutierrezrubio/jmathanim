@@ -30,11 +30,10 @@ public class Arc extends JMPathMathObject {
         this.radiusx = radius;
         this.radiusy = radius;
         this.angle = angle;
-        this.isClosed=isClosed;
         needsRecalcControlPoints = true;
         numInterpolationPoints = 1;//For now, don't interpolate
         computePoints();
-        computeJMPathFromVertices();
+        computeJMPathFromVertices(isClosed);
     }
 
     @Override

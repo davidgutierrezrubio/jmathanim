@@ -27,9 +27,8 @@ public class RegularPolygon extends Polygon {
         firstPoint = new Point(side, 0);
         radius = new ArrayList<>();
         apothem = new ArrayList<>();
-        isClosed=true;
         computeVertices();
-        computeJMPathFromVertices();
+        computeJMPathFromVertices(true);
         computeRadiusAndApothems();
         
     }

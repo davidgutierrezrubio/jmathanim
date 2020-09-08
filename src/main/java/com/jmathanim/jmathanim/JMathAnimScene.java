@@ -126,6 +126,18 @@ public abstract class JMathAnimScene {
                 return (o1.mp.layer - o2.mp.layer);
             }
         });
+        
+        //For the array of objects to be updated, I sort them by the updatelevel variable
+        //updatelevel 0 gets updated first.
+        //Objects with updatelevel n depend directly from those with level n-1
+        Comparator<Updateable> comp=new Comparator<Updateable>() {
+            @Override
+            public int compare(Updateable o1, Updateable o2) {
+                return o1.getUpdateLevel()-o2.getUpdateLevel();
+                
+            }
+        };
+        objectsToBeUpdated.sort(comp);
         for (Updateable obj : objectsToBeUpdated) {
             obj.update();
         }

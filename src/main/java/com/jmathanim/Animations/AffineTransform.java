@@ -8,6 +8,7 @@ package com.jmathanim.Animations;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.mathobjects.JMPathMathObject;
 import com.jmathanim.mathobjects.JMPathPoint;
+import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.Point;
 import org.apache.commons.math3.linear.Array2DRowRealMatrix;
 import org.apache.commons.math3.linear.LUDecomposition;
@@ -103,41 +104,66 @@ public class AffineTransform {
         setV3Img(x, y, 0);
     }
 
-    public JMPathMathObject applyTransform(JMPathMathObject obj) {
-        JMPathMathObject resul = obj.copy();
-        int size = obj.jmpath.size();
-        for (int n = 0; n < size; n++) {
-            JMPathPoint jmPDst = resul.getPoint(n);
-            JMPathPoint pSrc = obj.getPoint(n);
-            Point pDst = applyTransform(pSrc.p);
-            Point cp1Dst = applyTransform(pSrc.cp1);
-            Point cp2Dst = applyTransform(pSrc.cp2);
+    public void applyTransform(MathObject mObject) {
 
-            jmPDst.p.v.x = pDst.v.x;
-            jmPDst.p.v.y = pDst.v.y;
-            jmPDst.p.v.z = pDst.v.z;
+        if (mObject instanceof JMPathMathObject) {
+            JMPathMathObject mobj = (JMPathMathObject) mObject;
+            int size = mobj.jmpath.size();
+            for (int n = 0; n < size; n++) {
+                JMPathPoint jmPDst = mobj.getPoint(n);
+                JMPathPoint pSrc = jmPDst.copy();
+                Point pDst = getTransformedPoint(pSrc.p);
+                Point cp1Dst = getTransformedPoint(pSrc.cp1);
+                Point cp2Dst = getTransformedPoint(pSrc.cp2);
 
-            jmPDst.cp1.v.x = cp1Dst.v.x;
-            jmPDst.cp1.v.y = cp1Dst.v.y;
-            jmPDst.cp1.v.z = cp1Dst.v.z;
+                jmPDst.p.v.x = pDst.v.x;
+                jmPDst.p.v.y = pDst.v.y;
+                jmPDst.p.v.z = pDst.v.z;
 
-            jmPDst.cp2.v.x = cp2Dst.v.x;
-            jmPDst.cp2.v.y = cp2Dst.v.y;
-            jmPDst.cp2.v.z = cp2Dst.v.z;
+                jmPDst.cp1.v.x = cp1Dst.v.x;
+                jmPDst.cp1.v.y = cp1Dst.v.y;
+                jmPDst.cp1.v.z = cp1Dst.v.z;
+
+                jmPDst.cp2.v.x = cp2Dst.v.x;
+                jmPDst.cp2.v.y = cp2Dst.v.y;
+                jmPDst.cp2.v.z = cp2Dst.v.z;
+            }
         }
+        if (mObject instanceof Point) {
+            {
+                Point p = (Point) mObject;
+                RealMatrix pRow = new Array2DRowRealMatrix(new double[][]{{1d, p.v.x, p.v.y, p.v.z}});
+                RealMatrix pNew = pRow.multiply(A);
+
+                p.v.x = pNew.getEntry(0, 1);
+                p.v.y = pNew.getEntry(0, 2);
+                p.v.z = pNew.getEntry(0, 3);
+            }
+        }
+    }
+
+    public JMPathMathObject getTransformedObject(JMPathMathObject obj) {
+
+        JMPathMathObject resul = obj.copy();
+        applyTransform(resul);
         return resul;
 
     }
 
-    public Point applyTransform(Point p) {
-        RealMatrix pRow = new Array2DRowRealMatrix(new double[][]{{1d, p.v.x, p.v.y, p.v.z}});
-        RealMatrix pNew = pRow.multiply(A);
-
-        double xx = pNew.getEntry(0, 1);
-        double yy = pNew.getEntry(0, 2);
-        return new Point(xx, yy);
-
+    public Point getTransformedPoint(Point p) {
+        Point resul = p.copy();
+        applyTransform(resul);
+        return resul;
     }
+
+//    public void applyTransform(Point p) {
+//        RealMatrix pRow = new Array2DRowRealMatrix(new double[][]{{1d, p.v.x, p.v.y, p.v.z}});
+//        RealMatrix pNew = pRow.multiply(A);
+//
+//        p.v.x = pNew.getEntry(0, 1);
+//        p.v.y = pNew.getEntry(0, 2);
+//        p.v.z = pNew.getEntry(0, 3);
+//    }
 
     /**
      * Compose another Affine Transform and returns the new AffineTransform if
@@ -243,7 +269,7 @@ public class AffineTransform {
         AffineTransform scale = AffineTransform.create2DScaleTransform(A, (1 - alpha) + d2 / d1 * alpha);
 
         //The traslation part
-        AffineTransform traslation=AffineTransform.createTranslationTransform(v3.mult(alpha));
+        AffineTransform traslation = AffineTransform.createTranslationTransform(v3.mult(alpha));
         resul = rotation.compose(scale).compose(traslation);
         return resul;
     }

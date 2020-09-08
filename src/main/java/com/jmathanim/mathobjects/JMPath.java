@@ -581,4 +581,16 @@ public class JMPath implements Updateable{
         //This should do nothing, let their points to update by themselves
     }
 
+    public void copyFrom(JMPath path)
+    {
+        this.clear();
+        this.addPointsFrom(path.rawCopy());
+        this.isClosed=path.isClosed;
+        this.isInterpolated=path.isInterpolated;
+        this.pathType=path.pathType;
+        this.tension=path.tension;
+        this.visiblePoints.clear();
+        this.visiblePoints.addAll(path.visiblePoints);
+        
+    }
 }

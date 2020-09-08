@@ -9,6 +9,8 @@ import com.jmathanim.Utils.MathObjectDrawingProperties;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  *
@@ -19,7 +21,7 @@ public class Polygon extends JMPathMathObject {
     protected final AveragePoint center;
 
     public Polygon() {
-        this(null);
+        this(new MathObjectDrawingProperties());
     }
 
     public Polygon(MathObjectDrawingProperties mp) {
@@ -27,18 +29,25 @@ public class Polygon extends JMPathMathObject {
         this(new ArrayList<Point>(), true, mp);
     }
 
+    public Polygon(Point... vertices) {
+        super();
+            this.addVertices(Arrays.asList(vertices));
+            
+        computeJMPathFromVertices(true);
+        center = new AveragePoint(jmpath);
+    }
+
     public Polygon(ArrayList<Point> vertices, boolean close, MathObjectDrawingProperties mp) {
         super(mp);
         numInterpolationPoints = 1;//TODO: Make it adaptative
         this.addVertices(vertices);
-        this.isClosed = close;
         if (!vertices.isEmpty()) {
-            computeJMPathFromVertices();
+            computeJMPathFromVertices(close);
         }
         center = new AveragePoint(jmpath);
     }
 
-    public final void addVertices(ArrayList<Point> vertices) {
+    public final void addVertices(List<Point> vertices) {
         for (Point p : vertices) {
             JMPathPoint jmPathPoint = new JMPathPoint(p, true, JMPathPoint.TYPE_VERTEX);
             jmPathPoint.isCurved = false;
@@ -126,6 +135,11 @@ public class Polygon extends JMPathMathObject {
     @Override
     public void scale(Point scaleCenter, double sx, double sy, double sz) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public Point getCenter() {
+        return center;
     }
 
     public ArrayList<Point> getVertices() {

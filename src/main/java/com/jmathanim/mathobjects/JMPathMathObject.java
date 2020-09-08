@@ -22,7 +22,6 @@ public class JMPathMathObject extends MathObject {
     public final JMPath jmpath;
     protected boolean needsRecalcControlPoints;
     protected int numInterpolationPoints = 1;//TODO: Adaptative interpolation
-    protected boolean isClosed = false;
     protected final ArrayList<JMPathPoint> vertices;
 
     /**
@@ -59,13 +58,13 @@ public class JMPathMathObject extends MathObject {
      * This method computes all necessary points to the path (interpolation and
      * control)
      */
-    protected final void computeJMPathFromVertices() {
+    protected final void computeJMPathFromVertices(boolean close) {
         //TODO: ¿Compute intermediate points?
         jmpath.clear();//clear points
         for (JMPathPoint p : vertices) {
             jmpath.addPoint(p);
         }
-        if (isClosed) {
+        if (close) {
             jmpath.close();
         } else {
             jmpath.open();
@@ -163,7 +162,6 @@ public class JMPathMathObject extends MathObject {
     @Override
     public JMPathMathObject copy() {
         JMPathMathObject resul = new JMPathMathObject(jmpath.rawCopy(), mp.copy());
-        resul.isClosed = this.isClosed;
         return resul;
     }
 
@@ -233,6 +231,10 @@ public class JMPathMathObject extends MathObject {
 
     @Override
     public void update() {
-        //Nothing to do here
+         for (JMPathPoint p : jmpath.jmPathPoints) {
+             p.update();
+         }
     }
+    
+   
 }

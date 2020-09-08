@@ -22,11 +22,13 @@ import com.jmathanim.mathobjects.LaTeXMathObject;
 import com.jmathanim.mathobjects.Line;
 import com.jmathanim.mathobjects.MiddlePoint;
 import com.jmathanim.mathobjects.AveragePoint;
+import com.jmathanim.mathobjects.TransformedPoint;
 import com.jmathanim.mathobjects.Point;
 import com.jmathanim.mathobjects.Polygon;
 import com.jmathanim.mathobjects.RegularPolygon;
 import com.jmathanim.mathobjects.SVGMathObject;
 import com.jmathanim.mathobjects.Segment;
+import com.jmathanim.mathobjects.TransformedJMPath;
 import java.awt.Color;
 import java.util.ArrayList;
 
@@ -48,9 +50,7 @@ public class PointSimple extends Scene2D {
     @Override
     public void runSketch() {
         System.out.println("Running sketch...");
-//        pruebaHomotopia();
-        pruebaTransformSegmentos();
-//pruebaLaTeXEcuacion();
+        pruebaDependencias();
     }
 
     public void pruebaSimpleJMPathObject() throws ArrayIndexOutOfBoundsException {
@@ -444,7 +444,10 @@ public class PointSimple extends Scene2D {
         }
 //        remove(s1);
         waitSeconds(1);
-        play(new Transform(pol, cir, 10));
+        MiddlePoint mp1 = new MiddlePoint(pol.getCenter(), new Point(0, 0));
+//        MiddlePoint mp1=new MiddlePoint(radius.get(1).getPoint(1).p, new Point(0,0));
+        add(mp1);
+        play(new Transform(pol, cir, 30));
         waitSeconds(3);
     }
 
@@ -463,8 +466,8 @@ public class PointSimple extends Scene2D {
         for (double alpha = 0; alpha < 2 * Math.PI; alpha += Math.PI / 10) {
             tr = AffineTransform.create2DRotationTransform(center, alpha);
             camera.setCenter(center);
-            circTrans = tr.applyTransform(circ);
-            polTrans = tr.applyTransform(pol);
+            circTrans = tr.getTransformedObject(circ);
+            polTrans = tr.getTransformedObject(pol);
             circTrans.mp.setRandomDrawColor();
             polTrans.mp.setRandomDrawColor();
             add(polTrans, circTrans);
@@ -481,9 +484,9 @@ public class PointSimple extends Scene2D {
         Point B = new Point(0, 0);
         Point C = new Point(1, 0);
         Point D = new Point(1, 1);
-        Point M=new MiddlePoint(A, B);
-        Point N=new MiddlePoint(A, M);
-        add(M,N);
+        Point M = new MiddlePoint(A, B);
+        Point N = new MiddlePoint(A, M);
+        add(M, N);
         A.mp.drawColor = Color.GREEN;
         B.mp.drawColor = Color.GREEN;
         C.mp.drawColor = Color.RED;
@@ -499,7 +502,44 @@ public class PointSimple extends Scene2D {
         waitSeconds(10);
     }
 
-    
+    public void pruebaDependencias() {
+        //Muchos middlepoint
+        Point A = new Point(0, 0);
+        Point B = new Point(0, 1);
+        Point C = new Point(-1, 1);
+        add(A, B, C);
+        AffineTransform tr2=AffineTransform.createTranslationTransform(new Vec(1,0,0));
+        AffineTransform tr=AffineTransform.create2DRotationTransform(new Point(1,-1), Math.PI/180*45);
+        AffineTransform tr3=AffineTransform.create2DRotationTransform(new Point(0,0), -Math.PI/180*45);
+        TransformedPoint X=new TransformedPoint(A, tr);
+        TransformedPoint Y=new TransformedPoint(B, tr);
+        TransformedPoint Z=new TransformedPoint(C, tr);
+        X.mp.drawColor=Color.GREEN;
+        Y.mp.drawColor=Color.GREEN;
+        Z.mp.drawColor=Color.GREEN;
+        TransformedPoint T=new TransformedPoint(X, tr2);
+        T.mp.drawColor=Color.BLUE;
+        add(X,Y,Z);
+        add(T);
+        MiddlePoint W=new MiddlePoint(Y, Z);
+        W.mp.drawColor=Color.RED;
+        add(W);
+        Polygon pol=new Polygon(A,B,C);
+        add(pol);
+        TransformedJMPath pol2=new TransformedJMPath(pol, tr3);
+        add(pol2);
+        double dy=.01;
+        for (double y=0;y<1.5;y+=.01)
+        {
+            A.shift(0,dy);
+            B.shift(0,dy/2);
+            C.shift(0,dy/3);
+            advanceFrame();
+            waitSeconds(1);
+        }
+
+    }
+
 }
 
 //Cookbook:
