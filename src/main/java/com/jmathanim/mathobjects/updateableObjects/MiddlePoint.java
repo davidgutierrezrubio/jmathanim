@@ -3,9 +3,10 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.jmathanim.mathobjects;
+package com.jmathanim.mathobjects.updateableObjects;
 
 import com.jmathanim.jmathanim.JMathAnimScene;
+import com.jmathanim.mathobjects.Point;
 
 /**
  *

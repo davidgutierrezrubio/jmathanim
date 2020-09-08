@@ -5,6 +5,7 @@
  */
 package com.jmathanim.mathobjects;
 
+import com.jmathanim.mathobjects.updateableObjects.Updateable;
 import com.jmathanim.Utils.MathObjectDrawingProperties;
 import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.Vec;

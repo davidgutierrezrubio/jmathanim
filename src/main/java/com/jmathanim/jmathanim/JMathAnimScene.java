@@ -10,7 +10,7 @@ import com.jmathanim.Cameras.Camera;
 import com.jmathanim.Renderers.Renderer;
 import com.jmathanim.Utils.JMathAnimConfig;
 import com.jmathanim.mathobjects.MathObject;
-import com.jmathanim.mathobjects.Updateable;
+import com.jmathanim.mathobjects.updateableObjects.Updateable;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashSet;

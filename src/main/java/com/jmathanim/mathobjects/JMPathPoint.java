@@ -5,13 +5,14 @@
  */
 package com.jmathanim.mathobjects;
 
+import com.jmathanim.mathobjects.updateableObjects.Updateable;
 import com.jmathanim.Utils.Vec;
 
 /**
  *
  * @author David Gutiérrez Rubio <davidgutierrezrubio@gmail.com>
  */
-public class JMPathPoint implements Updateable{
+public class JMPathPoint implements Updateable {
 
     public static final int TYPE_NONE = 0;
     public static final int TYPE_VERTEX = 1;
@@ -75,6 +76,14 @@ public class JMPathPoint implements Updateable{
         return resul;
     }
 
+    public void shift(double x, double y, double z) {
+        shift(new Vec(x, y, z));
+    }
+
+    public void shift(double x, double y) {
+        shift(new Vec(x, y));
+    }
+
     public void shift(Vec shiftVector) {
         p.v.addInSite(shiftVector);
         cp1.v.addInSite(shiftVector);
@@ -95,10 +104,9 @@ public class JMPathPoint implements Updateable{
         cp2.updateDependents();
     }
 
-
     @Override
     public int getUpdateLevel() {
-        return Math.max(Math.max(p.getUpdateLevel(), cp1.getUpdateLevel()),cp2.getUpdateLevel());
+        return Math.max(Math.max(p.getUpdateLevel(), cp1.getUpdateLevel()), cp2.getUpdateLevel());
     }
 
 }

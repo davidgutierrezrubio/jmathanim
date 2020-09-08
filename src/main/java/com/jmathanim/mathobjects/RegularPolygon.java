@@ -5,6 +5,7 @@
  */
 package com.jmathanim.mathobjects;
 
+import com.jmathanim.mathobjects.updateableObjects.MiddlePoint;
 import com.jmathanim.Utils.Vec;
 import java.util.ArrayList;
 
