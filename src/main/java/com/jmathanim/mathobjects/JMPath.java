@@ -268,9 +268,24 @@ public class JMPath implements Updateable, Stateable {
      * @param path2
      */
     public void alignPaths(JMPath path2) {
-        //For now, only STRAIGHT paths
+        //TODO: What about open paths?
         JMPath pathSmall;
         JMPath pathBig;
+        
+        
+        //Experimental
+        if (this.isClosed && !path2.isClosed)
+        {
+            this.addPoint(this.getPoint(0).copy());
+            this.getPoint(0).isVisible=false;
+        }
+        
+         if (path2.isClosed && !this.isClosed)
+        {
+            path2.addPoint(path2.getPoint(0).copy());
+            path2.getPoint(0).isVisible=false;
+        }
+        
         if (this.size() == path2.size()) {
             return;
         }
@@ -599,6 +614,7 @@ public class JMPath implements Updateable, Stateable {
     public int getOrientation() {
         //https://stackoverflow.com/questions/1165647/how-to-determine-if-a-list-of-polygon-points-are-in-clockwise-order/1180256#1180256
 
+        
         //get the point with lowest y and, in case of tie, max x
         int nmax = 0;
         double ymin = jmPathPoints.get(0).p.v.y;
@@ -620,8 +636,9 @@ public class JMPath implements Updateable, Stateable {
         Vec AB = B.minus(A);
         Vec AC = C.minus(A);
         double cross = AB.cross(AC).z;
-        int resul = (int) Math.signum(cross);
+        int resul = (Math.signum(cross)<0 ? -1: 1);
 
+        
         return resul;
     }
 
@@ -667,7 +684,7 @@ public class JMPath implements Updateable, Stateable {
 
     @Override
     public void saveState() {
-        pathBackup=new JMPath();
+        pathBackup = new JMPath();
         for (JMPathPoint p : jmPathPoints) {
             p.saveState();
         }

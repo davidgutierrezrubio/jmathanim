@@ -31,6 +31,7 @@ import com.jmathanim.mathobjects.Polygon;
 import com.jmathanim.mathobjects.RegularPolygon;
 import com.jmathanim.mathobjects.SVGMathObject;
 import com.jmathanim.mathobjects.Segment;
+import com.jmathanim.mathobjects.Square;
 import com.jmathanim.mathobjects.updateableObjects.TransformedJMPath;
 import java.awt.Color;
 import java.util.ArrayList;
@@ -45,7 +46,7 @@ public class PointSimple extends Scene2D {
     public void setupSketch() {
 //        conf.setHighQuality();
         conf.setLowQuality();
-        setCreateMovie(false);
+        setCreateMovie(true);
         setShowPreviewWindow(true);
         createRenderer();
     }
@@ -584,12 +585,42 @@ public class PointSimple extends Scene2D {
     }
 
     public void pruebaShiftCommand() {
-        RegularPolygon P = new RegularPolygon(5, 1);
-        shift(P, new Vec(1, 0), 6);
+        Segment P = new Segment(new Point(0, 0), new Point(2, 1));
+        Line L = new Line(new Point(0, 0), new Point(1, -1));
+        add(P);
+        Square sq = new Square();
+        P.shift(1, 0);
+//        playShift(P, new Vec(.03, 0), 6);
 
-        scale(P, P.getPoint(0).p, 2d, 6);
-
-        rotate(P, P.getPoint(0).p, 2.5, 6);
+//        playScale(P, new Point(), .3d, 6);
+//        playRotate(P, new Point(), 2.5, 6);
+        add(sq);
+        advanceFrame();
+        advanceFrame();
+        advanceFrame();
+        advanceFrame();
+        advanceFrame();
+        advanceFrame();
+        advanceFrame();
+        advanceFrame();
+        advanceFrame();
+        advanceFrame();
+        advanceFrame();
+        advanceFrame();
+        advanceFrame();
+        advanceFrame();
+        advanceFrame();
+        advanceFrame();
+        advanceFrame();
+        advanceFrame();
+        advanceFrame();
+//        playTransform(new Circle(), sq, 15);
+        System.out.println("Orientation square "+sq.jmpath.getOrientation());
+        System.out.println("Orientation segment "+P.jmpath.getOrientation());
+        Transform tr = new Transform(P, sq, 15);
+//        Transform tr = new Transform(sq, P, 15);
+        tr.shouldOptimizePathsFirst=false;
+        play(tr);
         System.out.println("End!");
         waitSeconds(10);
     }

@@ -42,6 +42,7 @@ public class Segment extends JMPathMathObject {
     public final void computeCurve() {
         JMPathPoint jmp1 = new JMPathPoint(p1, true, JMPathPoint.TYPE_VERTEX);
         jmp1.isCurved = false;
+        jmp1.isVisible=false;
         jmpath.addPoint(jmp1);
         JMPathPoint jmp2 = new JMPathPoint(p2, true, JMPathPoint.TYPE_VERTEX);
         jmp2.isCurved = false;
@@ -66,11 +67,6 @@ public class Segment extends JMPathMathObject {
     @Override
     public Segment copy() {
         return new Segment(p1.copy(), p2.copy(),mp.copy());
-    }
-
-    @Override
-    public void scale(Point scaleCenter, double sx, double sy, double sz) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override

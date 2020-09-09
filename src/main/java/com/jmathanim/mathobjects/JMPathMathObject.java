@@ -27,8 +27,6 @@ public class JMPathMathObject extends MathObject {
     /**
      * Type of path, JMPath.STRAIGHT or JMPath.CURVED
      */
-    
-
     private ArrayList<Boolean> visibilityTemp;
     private double fillAlphaTemp;
 
@@ -48,7 +46,7 @@ public class JMPathMathObject extends MathObject {
         vertices = new ArrayList<JMPathPoint>();
         jmpath = new JMPath();
         needsRecalcControlPoints = false;
-            }
+    }
 
     public JMPathPoint getPoint(int n) {
         return jmpath.getPoint(n);
@@ -73,13 +71,10 @@ public class JMPathMathObject extends MathObject {
         if (numInterpolationPoints > 1) {
             jmpath.interpolate(numInterpolationPoints);//Interpolate points
         }
-        
 
         jmpath.generateControlPoints();
         needsRecalcControlPoints = false;
     }
-
-   
 
     public JMPath getPath() {
         return jmpath;
@@ -98,6 +93,11 @@ public class JMPathMathObject extends MathObject {
     public Point getCenter() {
         return getBoundingBox().getCenter();
 
+    }
+
+    @Override
+    public void shift(double x, double y) {
+        jmpath.shift(new Vec(x, y));
     }
 
     @Override
@@ -231,22 +231,21 @@ public class JMPathMathObject extends MathObject {
 
     @Override
     public void update() {
-         for (JMPathPoint p : jmpath.jmPathPoints) {
-             p.update();
-         }
+        for (JMPathPoint p : jmpath.jmPathPoints) {
+            p.update();
+        }
     }
 
     @Override
     public void restoreState() {
         super.restoreState();
-         jmpath.restoreState();
+        jmpath.restoreState();
     }
 
     @Override
     public void saveState() {
-        super.saveState(); 
+        super.saveState();
         jmpath.saveState();
     }
-    
-   
+
 }

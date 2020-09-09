@@ -22,8 +22,8 @@ public class Transform extends Animation {
     public static final int METHOD_INTERPOLATE_POINT_BY_POINT = 1;
     public static final int METHOD_AFFINE_TRANSFORM = 2;
     private JMPath jmpathOrig;
-    private final JMPathMathObject mobj2;
-    private final JMPathMathObject mobj1;
+    private final JMPathMathObject mobjDestiny;
+    private final JMPathMathObject mobjTransformed;
     private MathObjectDrawingProperties propBase;
     private int method;
     public boolean shouldOptimizePathsFirst;
@@ -31,8 +31,8 @@ public class Transform extends Animation {
 
     public Transform(JMPathMathObject ob1, JMPathMathObject ob2, double runTime) {
         super(runTime);
-        mobj1 = ob1;
-        mobj2 = ob2;
+        mobjTransformed = ob1;
+        mobjDestiny = ob2;
         method = METHOD_INTERPOLATE_POINT_BY_POINT;//Default method
         shouldOptimizePathsFirst = true;
         forceChangeDirection=false;
@@ -52,24 +52,24 @@ public class Transform extends Animation {
 
         //This is the initialization for the point-to-point interpolation
         //Prepare paths. Firs, I ensure they have the same number of points
-        mobj1.jmpath.alignPaths(mobj2.jmpath);
+        mobjTransformed.jmpath.alignPaths(mobjDestiny.jmpath);
 
         if (shouldOptimizePathsFirst) {
             //Now, adjust the points of the first to minimize distance from point-to-point
-            mobj1.jmpath.minimizeSumDistance(mobj2.jmpath,forceChangeDirection);
+            mobjTransformed.jmpath.minimizeSumDistance(mobjDestiny.jmpath,forceChangeDirection);
         }
         //Base path and properties, to interpolate from
-        jmpathOrig = mobj1.jmpath.rawCopy();
+        jmpathOrig = mobjTransformed.jmpath.rawCopy();
         //This copy of ob1 is necessary to compute interpolations between base and destiny
-        propBase = mobj1.mp.copy();
-        for (int n = 0; n < mobj1.jmpath.jmPathPoints.size(); n++) {
+        propBase = mobjTransformed.mp.copy();
+        for (int n = 0; n < mobjTransformed.jmpath.jmPathPoints.size(); n++) {
             //Mark all point temporary as curved
-            mobj1.jmpath.jmPathPoints.get(n).isCurved = true;
+            mobjTransformed.jmpath.jmPathPoints.get(n).isCurved = true;
         }
     }
 
     private void determineTransformMethod() {
-        if ((mobj1 instanceof Segment) && (mobj2 instanceof Segment)) {
+        if ((mobjTransformed instanceof Segment) && (mobjDestiny instanceof Segment)) {
             method = METHOD_AFFINE_TRANSFORM;
             shouldOptimizePathsFirst = true;
         }
@@ -91,10 +91,10 @@ public class Transform extends Animation {
 
     private void interpolateByPoint(double t) throws ArrayIndexOutOfBoundsException {
         JMPathPoint interPoint, basePoint, dstPoint;
-        for (int n = 0; n < mobj1.jmpath.jmPathPoints.size(); n++) {
-            interPoint = mobj1.jmpath.jmPathPoints.get(n);
+        for (int n = 0; n < mobjTransformed.jmpath.jmPathPoints.size(); n++) {
+            interPoint = mobjTransformed.jmpath.jmPathPoints.get(n);
             basePoint = jmpathOrig.jmPathPoints.get(n);
-            dstPoint = mobj2.jmpath.jmPathPoints.get(n);
+            dstPoint = mobjDestiny.jmpath.jmPathPoints.get(n);
 
             //Copy visibility attributes after t>.8
             if (t > .8) {
@@ -118,7 +118,7 @@ public class Transform extends Animation {
 
         }
         //Now interpolate properties from objects
-        mobj1.mp.interpolateFrom(propBase, mobj2.mp, t);
+        mobjTransformed.mp.interpolateFrom(propBase, mobjDestiny.mp, t);
     }
 
     @Override
@@ -126,9 +126,9 @@ public class Transform extends Animation {
         //Here it should remove unnecessary points
         //First mark as vertex points all mobj1 points who match with vertex from obj2
         //also copy backup values of control points 
-        for (int n = 0; n < mobj1.jmpath.size(); n++) {
-            JMPathPoint p1 = mobj1.jmpath.getPoint(n);
-            JMPathPoint p2 = mobj2.jmpath.getPoint(n);
+        for (int n = 0; n < mobjTransformed.jmpath.size(); n++) {
+            JMPathPoint p1 = mobjTransformed.jmpath.getPoint(n);
+            JMPathPoint p2 = mobjDestiny.jmpath.getPoint(n);
             p1.type = p2.type;
             p1.isCurved = p2.isCurved;
             p1.isVisible = p2.isVisible;
@@ -136,23 +136,23 @@ public class Transform extends Animation {
             p1.cp2vBackup = p2.cp2vBackup;
         }
         //Now I should remove all interpolation auxilary points
-        mobj1.removeInterpolationPoints();
-        System.out.println(mobj1);
-        mobj2.removeInterpolationPoints();
+        mobjTransformed.removeInterpolationPoints();
+        System.out.println(mobjTransformed);
+        mobjDestiny.removeInterpolationPoints();
     }
 
     private void affineTransform(double t) {
         JMPathPoint interPoint, basePoint, dstPoint;
         Point A = jmpathOrig.getPoint(0).p;
         Point B = jmpathOrig.getPoint(1).p;
-        Point C = mobj2.getPoint(0).p;
-        Point D = mobj2.getPoint(1).p;
+        Point C = mobjDestiny.getPoint(0).p;
+        Point D = mobjDestiny.getPoint(1).p;
 
         AffineTransform tr = AffineTransform.createDirect2DHomotopy(A, B, C, D, t);
-        for (int n = 0; n < mobj1.jmpath.jmPathPoints.size(); n++) {
-            interPoint = mobj1.jmpath.jmPathPoints.get(n);
+        for (int n = 0; n < mobjTransformed.jmpath.jmPathPoints.size(); n++) {
+            interPoint = mobjTransformed.jmpath.jmPathPoints.get(n);
             basePoint = jmpathOrig.jmPathPoints.get(n);
-            dstPoint = mobj2.jmpath.jmPathPoints.get(n);
+            dstPoint = mobjDestiny.jmpath.jmPathPoints.get(n);
 
             //Copy visibility attributes after t>.8
             if (t > .8) {
@@ -170,7 +170,7 @@ public class Transform extends Animation {
 
         }
         //Now interpolate properties from objects
-        mobj1.mp.interpolateFrom(propBase, mobj2.mp, t);
+        mobjTransformed.mp.interpolateFrom(propBase, mobjDestiny.mp, t);
     }
 
     public int getMethod() {
@@ -183,7 +183,7 @@ public class Transform extends Animation {
     
      @Override
     public void addObjectsToScene(JMathAnimScene scene) {
-        scene.add(mobj1);
+        scene.add(mobjTransformed);
     }
 
 }

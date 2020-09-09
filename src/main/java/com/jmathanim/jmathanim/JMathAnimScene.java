@@ -7,11 +7,13 @@ package com.jmathanim.jmathanim;
 
 import com.jmathanim.Animations.Animation;
 import com.jmathanim.Animations.ApplyCommand;
+import com.jmathanim.Animations.Transform;
 import com.jmathanim.Animations.commands.Commands;
 import com.jmathanim.Cameras.Camera;
 import com.jmathanim.Renderers.Renderer;
 import com.jmathanim.Utils.JMathAnimConfig;
 import com.jmathanim.Utils.Vec;
+import com.jmathanim.mathobjects.JMPathMathObject;
 import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.Point;
 import com.jmathanim.mathobjects.updateableObjects.Updateable;
@@ -222,12 +224,12 @@ public abstract class JMathAnimScene {
         play(new ApplyCommand(Commands.shift(obj, dx, dy), runTime));
     }
 
-    public void shift(MathObject obj, Vec v, double runTime) {
+    public void playShift(MathObject obj, Vec v, double runTime) {
 
         play(new ApplyCommand(Commands.shift(obj, v), runTime));
     }
 
-    public void scale(MathObject obj, Point center, double sc, double runTime) {
+    public void playScale(MathObject obj, Point center, double sc, double runTime) {
         scale(obj, center, sc, sc, sc, runTime);
     }
 
@@ -235,7 +237,11 @@ public abstract class JMathAnimScene {
         play(new ApplyCommand(Commands.scale(obj, center, scx, scy, scz), runTime));
     }
 
-    public void rotate(MathObject obj, Point center, double angle, double runTime) {
+    public void playRotate(MathObject obj, Point center, double angle, double runTime) {
         play(new ApplyCommand(Commands.rotate(obj, center, angle), runTime));
+    }
+    public void playTransform(JMPathMathObject obj1,JMPathMathObject obj2,double runTime)
+    {
+        play(new Transform(obj1, obj2, runTime));
     }
 }
