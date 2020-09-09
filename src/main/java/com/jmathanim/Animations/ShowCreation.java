@@ -5,6 +5,7 @@
  */
 package com.jmathanim.Animations;
 
+import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.MathObject;
 
 /**
@@ -13,15 +14,18 @@ import com.jmathanim.mathobjects.MathObject;
  */
 public class ShowCreation extends Animation {
 
-    private int numSlices=1;
+    private int numSlices = 1;
+    MathObject mobj;
 
     public ShowCreation(MathObject mobj) {
-        super(mobj);
-        this.numSlices=numSlices;
+        super();
+        this.mobj=mobj;
     }
 
-    public ShowCreation(MathObject mobj,double runtime) {
-        super(mobj, runtime);
+    public ShowCreation(MathObject mobj, double runtime) {
+        super(runtime);
+        this.mobj=mobj;
+        
     }
 
     public int getNumSlices() {
@@ -34,8 +38,8 @@ public class ShowCreation extends Animation {
 
     @Override
     public void doAnim(double t) {
-        System.out.println("Anim ShowCreation "+t);
-        mobj.setDrawParam(t,this.numSlices);
+        System.out.println("Anim ShowCreation " + t);
+        mobj.setDrawParam(t, this.numSlices);
     }
 
     @Override
@@ -46,4 +50,8 @@ public class ShowCreation extends Animation {
     public void initialize() {
     }
 
+   @Override
+    public void addObjectsToScene(JMathAnimScene scene) {
+        scene.add(mobj);
+    }
 }

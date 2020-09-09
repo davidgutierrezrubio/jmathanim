@@ -6,10 +6,14 @@
 package com.jmathanim.jmathanim;
 
 import com.jmathanim.Animations.Animation;
+import com.jmathanim.Animations.ApplyCommand;
+import com.jmathanim.Animations.commands.Commands;
 import com.jmathanim.Cameras.Camera;
 import com.jmathanim.Renderers.Renderer;
 import com.jmathanim.Utils.JMathAnimConfig;
+import com.jmathanim.Utils.Vec;
 import com.jmathanim.mathobjects.MathObject;
+import com.jmathanim.mathobjects.Point;
 import com.jmathanim.mathobjects.updateableObjects.Updateable;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -126,15 +130,15 @@ public abstract class JMathAnimScene {
                 return (o1.mp.layer - o2.mp.layer);
             }
         });
-        
+
         //For the array of objects to be updated, I sort them by the updatelevel variable
         //updatelevel 0 gets updated first.
         //Objects with updatelevel n depend directly from those with level n-1
-        Comparator<Updateable> comp=new Comparator<Updateable>() {
+        Comparator<Updateable> comp = new Comparator<Updateable>() {
             @Override
             public int compare(Updateable o1, Updateable o2) {
-                return o1.getUpdateLevel()-o2.getUpdateLevel();
-                
+                return o1.getUpdateLevel() - o2.getUpdateLevel();
+
             }
         };
         objectsToBeUpdated.sort(comp);
@@ -183,7 +187,7 @@ public abstract class JMathAnimScene {
      */
     public void play(ArrayList<Animation> anims) {
         for (Animation anim : anims) {
-            add(anim.mobj); //Add main object if it's not already in the scene.
+            anim.addObjectsToScene(this); //Add main object if it's not already in the scene.
             anim.initialize();//Perform needed steps immediately before playing
         }
 
@@ -210,5 +214,28 @@ public abstract class JMathAnimScene {
 
     public Camera getCamera() {
         return SCRenderer.getCamera();
+    }
+
+    //Convenience methods
+    //This methods allow easy and fast ways to shift, rotate, and scale objects
+    public void shift(MathObject obj, double dx, double dy, double runTime) {
+        play(new ApplyCommand(Commands.shift(obj, dx, dy), runTime));
+    }
+
+    public void shift(MathObject obj, Vec v, double runTime) {
+
+        play(new ApplyCommand(Commands.shift(obj, v), runTime));
+    }
+
+    public void scale(MathObject obj, Point center, double sc, double runTime) {
+        scale(obj, center, sc, sc, sc, runTime);
+    }
+
+    public void scale(MathObject obj, Point center, double scx, double scy, double scz, double runTime) {
+        play(new ApplyCommand(Commands.scale(obj, center, scx, scy, scz), runTime));
+    }
+
+    public void rotate(MathObject obj, Point center, double angle, double runTime) {
+        play(new ApplyCommand(Commands.rotate(obj, center, angle), runTime));
     }
 }

@@ -5,6 +5,7 @@
  */
 package com.jmathanim.Animations;
 
+import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.MathObject;
 
 /**
@@ -13,17 +14,21 @@ import com.jmathanim.mathobjects.MathObject;
  */
 public class FadeIn extends Animation {
 
+    MathObject mobj;
+
     public FadeIn(MathObject mo) {
-        super(mo);
+        super();
+        mobj = mo;
     }
 
     public FadeIn(MathObject mo, double runtime) {
-        super(mo, runtime);
+        super(runtime);
+        mobj = mo;
     }
 
     @Override
     public void doAnim(double t) {
-        System.out.println("Anim FadeIn "+t);
+        System.out.println("Anim FadeIn " + t);
         mobj.setAlpha(t);
     }
 
@@ -33,6 +38,11 @@ public class FadeIn extends Animation {
 
     @Override
     public void initialize() {
+    }
+
+    @Override
+    public void addObjectsToScene(JMathAnimScene scene) {
+        scene.add(mobj);
     }
 
 }

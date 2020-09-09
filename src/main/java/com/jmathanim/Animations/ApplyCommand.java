@@ -5,8 +5,8 @@
  */
 package com.jmathanim.Animations;
 
-import com.jmathanim.Animations.commands.Command;
-import com.jmathanim.mathobjects.MathObject;
+import com.jmathanim.Animations.commands.AbstractCommand;
+import com.jmathanim.jmathanim.JMathAnimScene;
 
 /**
  *
@@ -14,11 +14,11 @@ import com.jmathanim.mathobjects.MathObject;
  */
 public class ApplyCommand extends Animation{
 
-    private final Command command;
+    private final AbstractCommand command;
 
 
-    public ApplyCommand(MathObject mobj, Command command,double runTime) {
-        super(mobj, runTime);
+    public ApplyCommand(AbstractCommand command,double runTime) {
+        super(runTime);
         this.command=command;
     }
 
@@ -26,14 +26,22 @@ public class ApplyCommand extends Animation{
     
     @Override
     public void initialize() {
+        command.initialize();
     }
 
     @Override
     public void doAnim(double t) {
+        command.execute(t);
     }
 
     @Override
     public void finishAnimation() {
+        command.finish();
+    }
+
+     @Override
+    public void addObjectsToScene(JMathAnimScene scene) {
+        command.addObjectsToScene(scene);
     }
     
 }

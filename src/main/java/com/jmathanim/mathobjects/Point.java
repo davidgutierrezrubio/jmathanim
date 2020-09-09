@@ -5,10 +5,7 @@
  */
 package com.jmathanim.mathobjects;
 
-import java.awt.Color;
-import java.util.Properties;
 import com.jmathanim.Renderers.Renderer;
-import com.jmathanim.Utils.ConfigUtils;
 import com.jmathanim.Utils.MathObjectDrawingProperties;
 import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.Vec;

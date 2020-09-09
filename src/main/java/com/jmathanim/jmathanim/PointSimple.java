@@ -7,9 +7,12 @@ package com.jmathanim.jmathanim;
 
 import com.jmathanim.Animations.AffineTransform;
 import com.jmathanim.Animations.Animation;
+import com.jmathanim.Animations.ApplyCommand;
 import com.jmathanim.Animations.FadeIn;
 import com.jmathanim.Animations.ShowCreation;
 import com.jmathanim.Animations.Transform;
+import com.jmathanim.Animations.commands.AbstractCommand;
+import com.jmathanim.Animations.commands.Commands;
 import com.jmathanim.Utils.MathObjectDrawingProperties;
 import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.SVGImporter;
@@ -554,22 +557,23 @@ public class PointSimple extends Scene2D {
         add(pol);
         JMPath jmpathOrig = pol.getPath().rawCopy();
         for (double lambda = 0; lambda < 1; lambda += .001) {
-           affineTransform(jmpathOrig,pol,lambda);
+            affineTransform(jmpathOrig, pol, lambda);
 
             advanceFrame();
         }
         waitSeconds(300);
     }
-     private void affineTransform(JMPath jmpathOrig,JMPathMathObject mobj1,double t) {
+
+    private void affineTransform(JMPath jmpathOrig, JMPathMathObject mobj1, double t) {
         JMPathPoint interPoint, basePoint, dstPoint;
 
-       AffineTransform tr = AffineTransform.createReflection(new Point(1, 1), new Point(2, -1), t);
+        AffineTransform tr = AffineTransform.createReflection(new Point(1, 1), new Point(2, -1), t);
         for (int n = 0; n < mobj1.jmpath.jmPathPoints.size(); n++) {
             interPoint = mobj1.jmpath.jmPathPoints.get(n);
             basePoint = jmpathOrig.jmPathPoints.get(n);
             //Interpolate point
             interPoint.p.v = tr.getTransformedPoint(basePoint.p).v;
-            
+
             //Interpolate control point 1
             interPoint.cp1.v = tr.getTransformedPoint(basePoint.cp1).v;
 
@@ -578,23 +582,18 @@ public class PointSimple extends Scene2D {
 
         }
     }
-    
-     public void pruebaShiftCommand()
-     {
-         RegularPolygon P=new RegularPolygon(5, 1);
-         add(P);
-         P.saveState();
-         for (double dx=0;dx<2;dx+=.001)
-         {
-             P.restoreState();
-             P.shift(dx,0);
-             advanceFrame();
-         }
-         System.out.println("End!");
-          waitSeconds(10);
-     }
-    
-    
+
+    public void pruebaShiftCommand() {
+        RegularPolygon P = new RegularPolygon(5, 1);
+        shift(P, new Vec(1, 0), 6);
+
+        scale(P, P.getPoint(0).p, 2d, 6);
+
+        rotate(P, P.getPoint(0).p, 2.5, 6);
+        System.out.println("End!");
+        waitSeconds(10);
+    }
+
 }
 
 //Cookbook:

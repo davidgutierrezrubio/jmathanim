@@ -6,6 +6,7 @@
 package com.jmathanim.Animations;
 
 import com.jmathanim.Utils.MathObjectDrawingProperties;
+import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.JMPath;
 import com.jmathanim.mathobjects.JMPathMathObject;
 import com.jmathanim.mathobjects.JMPathPoint;
@@ -29,7 +30,7 @@ public class Transform extends Animation {
     public boolean forceChangeDirection;
 
     public Transform(JMPathMathObject ob1, JMPathMathObject ob2, double runTime) {
-        super(ob1, runTime);
+        super(runTime);
         mobj1 = ob1;
         mobj2 = ob2;
         method = METHOD_INTERPOLATE_POINT_BY_POINT;//Default method
@@ -180,6 +181,9 @@ public class Transform extends Animation {
         this.method = method;
     }
     
-    
+     @Override
+    public void addObjectsToScene(JMathAnimScene scene) {
+        scene.add(mobj1);
+    }
 
 }

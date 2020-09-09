@@ -132,10 +132,7 @@ public class Polygon extends JMPathMathObject {
 //        jmpath.computeControlPoints(JMPath.STRAIGHT);
 //        needsRecalcControlPoints = false;
 //    }
-    @Override
-    public void scale(Point scaleCenter, double sx, double sy, double sz) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
+   
 
     @Override
     public Point getCenter() {

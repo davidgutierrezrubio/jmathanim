@@ -5,6 +5,7 @@
  */
 package com.jmathanim.Animations;
 
+import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.MathObject;
 
 /**
@@ -16,25 +17,25 @@ import com.jmathanim.mathobjects.MathObject;
  */
 public abstract class Animation {
 
+    private static final double DEFAULT_TIME=1;
     private double t, dt;
-    public final MathObject mobj;
+//    public final MathObject mobj;
     protected double runTime;
     protected double fps;
 //    private int numFrames; //Number of frames of animation
 //    private int frame;
     private boolean isInitialized = false;
 
-    public Animation(MathObject mobj) {
-        this(mobj, 1);
+    public Animation() {
+        this(DEFAULT_TIME);
     }
 
-    public Animation(MathObject mobj, double runTime) {
-        this.mobj = mobj;
+    public Animation(double runTime) {
         this.runTime = runTime;
     }
 
-    public Animation(MathObject mobj, int runTime) {
-        this(mobj, (double) runTime);
+    public Animation(int runTime) {
+        this((double) runTime);
     }
 
     public double getFps() {
@@ -101,4 +102,5 @@ public abstract class Animation {
         return t * t * (3 - 2 * t);
     }
 
+    abstract public void addObjectsToScene(JMathAnimScene scene);
 }
