@@ -5,10 +5,10 @@
  */
 package com.jmathanim.mathobjects;
 
-import com.jmathanim.mathobjects.updateableObjects.Updateable;
 import com.jmathanim.Utils.CircularArrayList;
 import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.Vec;
+import com.jmathanim.mathobjects.updateableObjects.Updateable;
 import java.util.ArrayList;
 
 /**
@@ -18,7 +18,7 @@ import java.util.ArrayList;
  *
  * @author David Gutiérrez <davidgutierrezrubio@gmail.com>
  */
-public class JMPath implements Updateable{
+public class JMPath implements Updateable, Stateable {
 
     static public final int MATHOBJECT = 1; //Arc, line, segment...
     static public final int SVG_PATH = 2; //SVG import, LaTeX object...
@@ -29,6 +29,7 @@ public class JMPath implements Updateable{
     public int pathType; //Default value
 
     double tension = .3d;
+    private JMPath pathBackup;
 
     public JMPath() {
         this(new ArrayList<Point>());
@@ -474,7 +475,40 @@ public class JMPath implements Updateable{
      *
      * @param path2
      */
-    public void minimizeSumDistance(JMPath path2) {
+    public void minimizeSumDistance(JMPath path2, boolean forceChangeDirection) {
+        ArrayList<Double> distances = new ArrayList<Double>();
+        double minSumDistances = 999999999;
+        int optimalStep = 0;
+        //this variable is negative if both paths have different orientation
+        //so the transformed path reverses itself to better adjust
+        int changeDirection = this.getOrientation() * path2.getOrientation();
+        changeDirection = (forceChangeDirection ? -changeDirection : changeDirection);
+        //If the path is open, we can't cycle the path, so 
+        //we set numberOfCycles to 1
+        int numberOfCycles = (this.isClosed ? this.size() : 1);
+        //First, without changing direction
+        for (int step = 0; step < numberOfCycles; step++) {
+            JMPath tempPath = this.copy();
+            tempPath.cyclePoints(step, changeDirection);
+            double sumDistances = tempPath.sumDistance(path2);
+            distances.add(sumDistances);
+            if (sumDistances < minSumDistances) {
+                minSumDistances = sumDistances;
+                optimalStep = step;
+            }
+
+        }
+        this.cyclePoints(optimalStep, changeDirection);
+    }
+
+    /**
+     * Cycles the point of closed path (and inverts its orientation if
+     * necessary) in order to minimize the sum of squared distances from the
+     * points of two paths with the same number of nodes
+     *
+     * @param path2
+     */
+    public void minimizeSumDistance_old(JMPath path2) {
         ArrayList<Double> distances = new ArrayList<Double>();
         double minDistanceVarNoChangeDir = 999999999;
         int minStepNoChangeDir = 0;
@@ -562,17 +596,40 @@ public class JMPath implements Updateable{
      *
      * @return 1 if clockwise, -1 if counterwise
      */
-    public int orientation() {
+    public int getOrientation() {
         //https://stackoverflow.com/questions/1165647/how-to-determine-if-a-list-of-polygon-points-are-in-clockwise-order/1180256#1180256
-        return 1;
+
+        //get the point with lowest y and, in case of tie, max x
+        int nmax = 0;
+        double ymin = jmPathPoints.get(0).p.v.y;
+        double xmax = jmPathPoints.get(0).p.v.x;
+        for (int n = 0; n < jmPathPoints.size(); n++) {
+            double y0 = jmPathPoints.get(n).p.v.y;
+            double x0 = jmPathPoints.get(n).p.v.x;
+
+            if ((y0 < ymin) || ((ymin == y0) && (x0 > xmax))) {
+                ymin = y0;
+                xmax = x0;
+                nmax = n;
+            }
+        }
+        Vec A = jmPathPoints.get(nmax).p.v;
+        Vec B = jmPathPoints.get(nmax - 1).p.v;
+        Vec C = jmPathPoints.get(nmax + 1).p.v;
+
+        Vec AB = B.minus(A);
+        Vec AC = C.minus(A);
+        double cross = AB.cross(AC).z;
+        int resul = (int) Math.signum(cross);
+
+        return resul;
     }
 
     @Override
     public int getUpdateLevel() {
-        int resul=-1;
-        for (JMPathPoint p:jmPathPoints)
-        {
-            resul=Math.max(resul,p.getUpdateLevel());
+        int resul = -1;
+        for (JMPathPoint p : jmPathPoints) {
+            resul = Math.max(resul, p.getUpdateLevel());
         }
         return resul;
     }
@@ -582,16 +639,43 @@ public class JMPath implements Updateable{
         //This should do nothing, let their points to update by themselves
     }
 
-    public void copyFrom(JMPath path)
-    {
+    public void copyFrom(JMPath path) {
         this.clear();
         this.addPointsFrom(path.rawCopy());
-        this.isClosed=path.isClosed;
-        this.isInterpolated=path.isInterpolated;
-        this.pathType=path.pathType;
-        this.tension=path.tension;
+        this.isClosed = path.isClosed;
+        this.isInterpolated = path.isInterpolated;
+        this.pathType = path.pathType;
+        this.tension = path.tension;
         this.visiblePoints.clear();
         this.visiblePoints.addAll(path.visiblePoints);
-        
+
+    }
+
+    @Override
+    public void restoreState() {
+        for (JMPathPoint p : jmPathPoints) {
+            p.restoreState();
+        }
+        this.isClosed = pathBackup.isClosed;
+        this.isInterpolated = pathBackup.isInterpolated;
+        this.pathType = pathBackup.pathType;
+        this.tension = pathBackup.tension;
+        this.visiblePoints.clear();
+        this.visiblePoints.addAll(pathBackup.visiblePoints);
+
+    }
+
+    @Override
+    public void saveState() {
+        pathBackup=new JMPath();
+        for (JMPathPoint p : jmPathPoints) {
+            p.saveState();
+        }
+        pathBackup.isClosed = this.isClosed;
+        pathBackup.isInterpolated = this.isInterpolated;
+        pathBackup.pathType = this.pathType;
+        pathBackup.tension = this.tension;
+        pathBackup.visiblePoints.clear();
+        pathBackup.visiblePoints.addAll(pathBackup.visiblePoints);
     }
 }

@@ -22,11 +22,12 @@ import com.jmathanim.jmathanim.JMathAnimScene;
 public class Point extends MathObject {
 
     public Vec v;
+    private Vec vBackup;
 
-    public Point()
-    {
-        this(0,0,0);
+    public Point() {
+        this(0, 0, 0);
     }
+
     public Point(Point p) {
         this(p.v);
     }
@@ -156,8 +157,6 @@ public class Point extends MathObject {
 
     }
 
-   
-
     @Override
     public void prepareForNonLinearAnimation() {
     }
@@ -186,8 +185,6 @@ public class Point extends MathObject {
         //Nothing to do  here
     }
 
-   
-
     @Override
     public void registerChildrenToBeUpdated(JMathAnimScene scene) {
         //Nothing to do  here
@@ -201,6 +198,19 @@ public class Point extends MathObject {
     @Override
     public void unregisterChildrenToBeUpdated(JMathAnimScene scene) {
         //Nothing to do  here
+    }
+
+    @Override
+    public void saveState() {
+        super.saveState();
+       this.v.saveState();
+
+    }
+
+    @Override
+    public void restoreState() {
+        super.restoreState();
+       this.v.restoreState();
     }
 
 }

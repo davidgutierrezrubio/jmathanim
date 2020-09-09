@@ -5,24 +5,25 @@
  */
 package com.jmathanim.mathobjects;
 
-import com.jmathanim.mathobjects.updateableObjects.Updateable;
 import com.jmathanim.Utils.MathObjectDrawingProperties;
 import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
+import com.jmathanim.mathobjects.updateableObjects.Updateable;
 import java.util.HashSet;
 
 /**
  *
  * @author David Gutierrez Rubio davidgutierrezrubio@gmail.com
  */
-public abstract class MathObject implements Drawable, Updateable{
+public abstract class MathObject implements Drawable, Updateable,Stateable{
 
     public static final int SLICE_SIMPLE = 1;
     public static final int SLICE_DOUBLE = 2;
     public static final int SLICE_FOUR = 3;
 
     public final MathObjectDrawingProperties mp;
+    protected MathObjectDrawingProperties mpBackup;
     /**
      * Scenes where this object belongs.
      *
@@ -136,24 +137,7 @@ public abstract class MathObject implements Drawable, Updateable{
     abstract public void prepareForNonLinearAnimation();
 
     abstract public void processAfterNonLinearAnimation();
-//    public final void dependsOn(updateable mob)
-//    {
-//        ascendent.add(mob);
-//        mob.descendent.add(this);
-//    }
 
-//    public void removeDependsOn(MathObject mob)
-//        {
-//        ascendent.remove(mob);
-//        mob.descendent.remove(this);
-//    }    
-    public void addUpdateable(Updateable obj) {
-        dependent.add(obj);
-    }
-
-    public void removeUpdateable(Updateable obj) {
-        dependent.remove(obj);
-    }
 
     public void updateDependents() {
         HashSet<Updateable> desC = (HashSet<Updateable>) dependent.clone();
@@ -215,5 +199,15 @@ public abstract class MathObject implements Drawable, Updateable{
     @Override
     public int getUpdateLevel(){
         return updateLevel;
+    }
+    
+    @Override
+    public void saveState()
+    {
+        this.mpBackup=this.mp.copy();
+    }
+    @Override
+    public void restoreState(){
+        mp.copyFrom(mpBackup);
     }
 }

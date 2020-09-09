@@ -235,6 +235,18 @@ public class JMPathMathObject extends MathObject {
              p.update();
          }
     }
+
+    @Override
+    public void restoreState() {
+        super.restoreState();
+         jmpath.restoreState();
+    }
+
+    @Override
+    public void saveState() {
+        super.saveState(); 
+        jmpath.saveState();
+    }
     
    
 }

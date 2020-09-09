@@ -19,6 +19,15 @@ public class Line extends Segment {
 
     final JMPathPoint bp1, bp2;
 
+    
+    /**
+     * Creates a Line that contains the given Segment 
+     * @param s 
+     */
+    public Line(Segment s)
+    {
+        this(s.p1,s.p2);
+    }
     /**
      * Creates a line that passes through p with direction v
      *

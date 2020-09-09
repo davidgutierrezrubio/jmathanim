@@ -164,7 +164,6 @@ public class AffineTransform {
 //        p.v.y = pNew.getEntry(0, 2);
 //        p.v.z = pNew.getEntry(0, 3);
 //    }
-
     /**
      * Compose another Affine Transform and returns the new AffineTransform if
      * C=A.compose(B) The resulting transform C,applied to a point, will result
@@ -272,6 +271,22 @@ public class AffineTransform {
         AffineTransform traslation = AffineTransform.createTranslationTransform(v3.mult(alpha));
         resul = rotation.compose(scale).compose(traslation);
         return resul;
+    }
+
+    public static AffineTransform createReflection(Point A, Point B, double alpha) {
+        Point E1 = new Point(1, 0);
+        Point E2 = new Point(-1, 0);
+        AffineTransform canonize = AffineTransform.createDirect2DHomotopy(A, B, E1, E2, 1);
+        AffineTransform invCanonize = canonize.getInverse();
+        //A reflection from (1,0) to (-1,0) has a very simple form
+        AffineTransform canonizedReflection = new AffineTransform();
+        canonizedReflection.setV1Img(E1.interpolate(E2, alpha));
+
+        AffineTransform resul =canonize.compose(canonizedReflection).compose(invCanonize);
+
+        
+        return resul;
+
     }
 
 }

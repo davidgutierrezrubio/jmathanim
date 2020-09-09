@@ -21,11 +21,12 @@ public class Transform extends Animation {
     public static final int METHOD_INTERPOLATE_POINT_BY_POINT = 1;
     public static final int METHOD_AFFINE_TRANSFORM = 2;
     private JMPath jmpathOrig;
-    private JMPathMathObject mobj2;
-    private JMPathMathObject mobj1;
+    private final JMPathMathObject mobj2;
+    private final JMPathMathObject mobj1;
     private MathObjectDrawingProperties propBase;
     private int method;
     public boolean shouldOptimizePathsFirst;
+    public boolean forceChangeDirection;
 
     public Transform(JMPathMathObject ob1, JMPathMathObject ob2, double runTime) {
         super(ob1, runTime);
@@ -33,6 +34,7 @@ public class Transform extends Animation {
         mobj2 = ob2;
         method = METHOD_INTERPOLATE_POINT_BY_POINT;//Default method
         shouldOptimizePathsFirst = true;
+        forceChangeDirection=false;
         determineTransformMethod();
     }
 
@@ -53,7 +55,7 @@ public class Transform extends Animation {
 
         if (shouldOptimizePathsFirst) {
             //Now, adjust the points of the first to minimize distance from point-to-point
-            mobj1.jmpath.minimizeSumDistance(mobj2.jmpath);
+            mobj1.jmpath.minimizeSumDistance(mobj2.jmpath,forceChangeDirection);
         }
         //Base path and properties, to interpolate from
         jmpathOrig = mobj1.jmpath.rawCopy();

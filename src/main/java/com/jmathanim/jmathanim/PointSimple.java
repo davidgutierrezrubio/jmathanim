@@ -50,7 +50,7 @@ public class PointSimple extends Scene2D {
     @Override
     public void runSketch() {
         System.out.println("Running sketch...");
-        CircleToSquare();
+        pruebaShiftCommand();
     }
 
     public void pruebaSimpleJMPathObject() throws ArrayIndexOutOfBoundsException {
@@ -121,18 +121,23 @@ public class PointSimple extends Scene2D {
         Circle c = new Circle(new Point(0, 0), 1);
         RegularPolygon pol2 = new RegularPolygon(4, 1.5);
         pol2.shift(1, 0);
-        pol2.getPoint(0).shift(0d, .5d);
-        pol2.getPoint(0).isCurved=true;
-        pol2.getPoint(1).isCurved=true;
-        pol2.getPoint(2).isCurved=true;
-        pol2.getPoint(3).isCurved=true;
+        pol2.getPoint(0).shift(-2d, .5d);
+        pol2.getPoint(1).shift(-2d, 0);
+        pol2.getPoint(0).isCurved = true;
+        pol2.getPoint(1).isCurved = true;
+        pol2.getPoint(2).isCurved = true;
+        pol2.getPoint(3).isCurved = true;
         pol2.getPath().generateControlPoints();
         add(pol2);
 
+        System.out.println("Orientation of circle: " + c.getPath().getOrientation());
+        System.out.println("Orientation of polygon: " + pol2.getPath().getOrientation());
+
 //        c.jmpath.alignPaths(pol2.jmpath);
 //        c.jmpath.minimizeSquaredDistance(pol2.jmpath);
-        Transform transform = new Transform(pol2, c, 15);
-        transform.shouldOptimizePathsFirst=false;
+        Transform transform = new Transform(c, pol2, 15);
+        //        transform.shouldOptimizePathsFirst=false;
+        transform.forceChangeDirection = true;
         waitSeconds(2);
         play(transform);
         waitSeconds(3);
@@ -212,10 +217,10 @@ public class PointSimple extends Scene2D {
 //        add(pol3);
         add(pol4);
         add(circ);
-        AffineTransform tr=AffineTransform.create2DRotationTransform(new Point(1,0), Math.PI*1.2);
-        TransformedJMPath pol5=new TransformedJMPath(pol4, tr);
+        AffineTransform tr = AffineTransform.create2DRotationTransform(new Point(1, 0), Math.PI * 1.2);
+        TransformedJMPath pol5 = new TransformedJMPath(pol4, tr);
         add(pol5);
-        
+
         double tiempo = 3;
 //        play(new Transform(pol1, pol2, tiempo));
 //        remove(pol2);
@@ -485,38 +490,111 @@ public class PointSimple extends Scene2D {
         Point B = new Point(0, 1);
         Point C = new Point(-1, 1);
         add(A, B, C);
-        AffineTransform tr2=AffineTransform.createTranslationTransform(new Vec(1,0,0));
-        AffineTransform tr=AffineTransform.create2DRotationTransform(new Point(1,-1), Math.PI/180*45);
-        AffineTransform tr3=AffineTransform.create2DRotationTransform(new Point(0,0), -Math.PI/180*45);
-        TransformedPoint X=new TransformedPoint(A, tr);
-        TransformedPoint Y=new TransformedPoint(B, tr);
-        TransformedPoint Z=new TransformedPoint(C, tr);
-        X.mp.drawColor=Color.GREEN;
-        Y.mp.drawColor=Color.GREEN;
-        Z.mp.drawColor=Color.GREEN;
-        TransformedPoint T=new TransformedPoint(X, tr2);
-        T.mp.drawColor=Color.BLUE;
-        add(X,Y,Z);
+        AffineTransform tr2 = AffineTransform.createTranslationTransform(new Vec(1, 0, 0));
+        AffineTransform tr = AffineTransform.create2DRotationTransform(new Point(1, -1), Math.PI / 180 * 45);
+        AffineTransform tr3 = AffineTransform.create2DRotationTransform(new Point(0, 0), -Math.PI / 180 * 45);
+        TransformedPoint X = new TransformedPoint(A, tr);
+        TransformedPoint Y = new TransformedPoint(B, tr);
+        TransformedPoint Z = new TransformedPoint(C, tr);
+        X.mp.drawColor = Color.GREEN;
+        Y.mp.drawColor = Color.GREEN;
+        Z.mp.drawColor = Color.GREEN;
+        TransformedPoint T = new TransformedPoint(X, tr2);
+        T.mp.drawColor = Color.BLUE;
+        add(X, Y, Z);
         add(T);
-        MiddlePoint W=new MiddlePoint(Y, Z);
-        W.mp.drawColor=Color.RED;
+        MiddlePoint W = new MiddlePoint(Y, Z);
+        W.mp.drawColor = Color.RED;
         add(W);
-        Polygon pol=new Polygon(A,B,C);
+        Polygon pol = new Polygon(A, B, C);
         add(pol);
-        TransformedJMPath pol2=new TransformedJMPath(pol, tr3);
+        TransformedJMPath pol2 = new TransformedJMPath(pol, tr3);
         add(pol2);
-        double dy=.01;
-        for (double y=0;y<1.5;y+=.01)
-        {
-            A.shift(0,dy);
-            B.shift(0,dy/2);
-            C.shift(0,dy/3);
+        double dy = .01;
+        for (double y = 0; y < 1.5; y += .01) {
+            A.shift(0, dy);
+            B.shift(0, dy / 2);
+            C.shift(0, dy / 3);
             advanceFrame();
             waitSeconds(1);
         }
 
     }
 
+    public void pruebaReflection() {
+
+        RegularPolygon pol = new RegularPolygon(5, 1);
+        pol.shift(0, 1);
+        pol.mp.drawColor = Color.YELLOW;
+        add(pol);
+
+        AffineTransform tr = AffineTransform.createReflection(new Point(1, 1), new Point(2, -1), 1);
+
+        Point p = new Point(0, 0);
+        Point reflectedPoint = tr.getTransformedPoint(p);
+        reflectedPoint.mp.drawColor = Color.GREEN;
+        add(reflectedPoint, p);
+
+        TransformedJMPath pol2 = new TransformedJMPath(pol, tr);
+        pol2.mp.drawColor = Color.GRAY;
+        add(pol2);
+        for (double dx = 0; dx < 2; dx += .001) {
+            pol.shift(.001, 0);
+
+            advanceFrame();
+        }
+        waitSeconds(300);
+    }
+
+    public void pruebaReflectionLambda() {
+
+        RegularPolygon pol = new RegularPolygon(5, 1);
+        pol.shift(0, 1);
+        pol.mp.drawColor = Color.YELLOW;
+        add(pol);
+        JMPath jmpathOrig = pol.getPath().rawCopy();
+        for (double lambda = 0; lambda < 1; lambda += .001) {
+           affineTransform(jmpathOrig,pol,lambda);
+
+            advanceFrame();
+        }
+        waitSeconds(300);
+    }
+     private void affineTransform(JMPath jmpathOrig,JMPathMathObject mobj1,double t) {
+        JMPathPoint interPoint, basePoint, dstPoint;
+
+       AffineTransform tr = AffineTransform.createReflection(new Point(1, 1), new Point(2, -1), t);
+        for (int n = 0; n < mobj1.jmpath.jmPathPoints.size(); n++) {
+            interPoint = mobj1.jmpath.jmPathPoints.get(n);
+            basePoint = jmpathOrig.jmPathPoints.get(n);
+            //Interpolate point
+            interPoint.p.v = tr.getTransformedPoint(basePoint.p).v;
+            
+            //Interpolate control point 1
+            interPoint.cp1.v = tr.getTransformedPoint(basePoint.cp1).v;
+
+            //Interpolate control point 2
+            interPoint.cp2.v = tr.getTransformedPoint(basePoint.cp2).v;
+
+        }
+    }
+    
+     public void pruebaShiftCommand()
+     {
+         RegularPolygon P=new RegularPolygon(5, 1);
+         add(P);
+         P.saveState();
+         for (double dx=0;dx<2;dx+=.001)
+         {
+             P.restoreState();
+             P.shift(dx,0);
+             advanceFrame();
+         }
+         System.out.println("End!");
+          waitSeconds(10);
+     }
+    
+    
 }
 
 //Cookbook:

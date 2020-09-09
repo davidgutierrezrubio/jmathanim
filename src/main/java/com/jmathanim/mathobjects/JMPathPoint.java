@@ -12,7 +12,7 @@ import com.jmathanim.Utils.Vec;
  *
  * @author David Gutiérrez Rubio <davidgutierrezrubio@gmail.com>
  */
-public class JMPathPoint implements Updateable {
+public class JMPathPoint implements Updateable,Stateable {
 
     public static final int TYPE_NONE = 0;
     public static final int TYPE_VERTEX = 1;
@@ -26,6 +26,7 @@ public class JMPathPoint implements Updateable {
     public boolean isCurved;
     public int type; //Vertex, interpolation point, etc.
 
+    private JMPathPoint pState;
     public JMPathPoint(Point p, boolean isVisible, int type) {
         this.p = p;
         cp1 = p.copy();
@@ -98,15 +99,54 @@ public class JMPathPoint implements Updateable {
 
     @Override
     public void update() {
-        //Update descendents from Point and control points
-        p.updateDependents();
-        cp1.updateDependents();
-        cp2.updateDependents();
+//        //Update descendents from Point and control points
+//        p.updateDependents();
+//        cp1.updateDependents();
+//        cp2.updateDependents();
     }
 
     @Override
     public int getUpdateLevel() {
         return Math.max(Math.max(p.getUpdateLevel(), cp1.getUpdateLevel()), cp2.getUpdateLevel());
+    }
+
+    @Override
+    public void saveState() {
+        pState=new JMPathPoint(p, isVisible, type);
+        p.saveState();
+        cp1.saveState();
+        cp2.saveState();
+        
+        try {
+            pState.cp1vBackup.saveState();
+        } catch (NullPointerException e) {
+        }
+         try {
+            pState.cp2vBackup.saveState();
+        } catch (NullPointerException e) {
+        }
+        pState.isVisible=this.isVisible;
+        pState.isCurved=this.isCurved;
+        pState.type=this.type;
+    }
+
+    @Override
+    public void restoreState() {
+        p.restoreState();
+        cp1.restoreState();
+        cp2.restoreState();
+        
+        try {
+            pState.cp1vBackup.restoreState();
+        } catch (NullPointerException e) {
+        }
+         try {
+            pState.cp2vBackup.restoreState();
+        } catch (NullPointerException e) {
+        }
+        pState.isVisible=this.isVisible;
+        pState.isCurved=this.isCurved;
+        pState.type=this.type;
     }
 
 }

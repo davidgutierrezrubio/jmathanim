@@ -5,6 +5,7 @@
  */
 package com.jmathanim.Utils;
 
+import com.jmathanim.mathobjects.Stateable;
 import static java.lang.Math.sqrt;
 
 /**
@@ -12,10 +13,11 @@ import static java.lang.Math.sqrt;
  *
  * @author David Gutierrez Rubio davidgutierrezrubio@gmail.com
  */
-public class Vec {
+public class Vec implements Stateable{
 
     
     public double x, y, z;
+    public double xState, yState, zState;
 
     public Vec(double x, double y) {
         this(x, y, 0);
@@ -98,5 +100,20 @@ public class Vec {
     public Vec copy() {
         Vec resul=new Vec(x, y);
         return resul;
+    }
+
+    @Override
+    public void saveState() {
+        xState=x;
+        yState=y;
+        zState=z;
+    }
+
+    @Override
+    public void restoreState() {
+        x=xState;
+        y=yState;
+        z=zState;
+    
     }
 }
