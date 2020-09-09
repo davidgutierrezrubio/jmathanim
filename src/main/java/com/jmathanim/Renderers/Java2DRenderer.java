@@ -345,6 +345,9 @@ public class Java2DRenderer extends Renderer {
         //TODO: Convert this in its own reusable method
         //First, I move the curve to the first point
         Vec p = c.getPoint(0).p.v;
+        if (DEBUG_PATH_POINTS) {
+                debugPathPoint(c.getPoint(0),c);
+            }
         int[] scr = camera.mathToScreen(p);
         resul.moveTo(scr[0], scr[1]);
         //Now I iterate to get the next points
@@ -363,7 +366,7 @@ public class Java2DRenderer extends Renderer {
             int[] cxy1 = camera.mathToScreen(cpoint1);
             int[] cxy2 = camera.mathToScreen(cpoint2);
             if (DEBUG_PATH_POINTS) {
-                debugPathPoint(c.getPoint(n));
+                debugPathPoint(c.getPoint(n),c);
             }
             if (c.getPoint(n).isVisible) {
                 if (c.getPoint(n).isCurved) {
@@ -395,7 +398,7 @@ public class Java2DRenderer extends Renderer {
         camera.setSize(w, h);
     }
 
-    public void debugPathPoint(JMPathPoint p) {
+    public void debugPathPoint(JMPathPoint p,JMPath path) {
         int[] x = camera.mathToScreen(p.p.v.x, p.p.v.y);
         debugCPoint(camera.mathToScreen(p.cp1.v.x, p.cp1.v.y));
         debugCPoint(camera.mathToScreen(p.cp2.v.x, p.cp2.v.y));
@@ -412,6 +415,7 @@ public class Java2DRenderer extends Renderer {
         } else {
             g2d.drawRect(x[0] - 2, x[1] - 2, 4, 4);
         }
+        debugText(String.valueOf(path.jmPathPoints.indexOf(p)), x[0]+5, x[1]);
 
     }
 

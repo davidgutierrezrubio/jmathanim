@@ -247,6 +247,9 @@ public class JMPath implements Updateable, Stateable {
         for (JMPathPoint p : jmPathPoints) {
             resul += (p.isCurved ? "C" : "R");
             resul += (p.isVisible ? "" : "*");
+            resul += (p.type==JMPathPoint.TYPE_INTERPOLATION_POINT ? "I" : "*");
+            
+            resul+="_";
         }
         return resul;
     }
@@ -267,7 +270,7 @@ public class JMPath implements Updateable, Stateable {
      *
      * @param path2
      */
-    public void alignPaths(JMPath path2) {
+    public void alignPaths(JMPath path2) {//TODO: Move this to Transform
         //TODO: What about open paths?
         JMPath pathSmall;
         JMPath pathBig;
@@ -278,13 +281,15 @@ public class JMPath implements Updateable, Stateable {
         {
             this.addPoint(this.getPoint(0).copy());
             this.getPoint(0).isVisible=false;
+            this.getPoint(-1).type=JMPathPoint.TYPE_INTERPOLATION_POINT;
+            this.isClosed=false;
         }
         
-         if (path2.isClosed && !this.isClosed)
-        {
-            path2.addPoint(path2.getPoint(0).copy());
-            path2.getPoint(0).isVisible=false;
-        }
+//         if (path2.isClosed && !this.isClosed)
+//        {
+//            path2.addPoint(path2.getPoint(0).copy());
+//            path2.getPoint(0).isVisible=false;
+//        }
         
         if (this.size() == path2.size()) {
             return;
@@ -300,8 +305,9 @@ public class JMPath implements Updateable, Stateable {
 
         //At this point pathSmall points to the smaller path who is going to be
         //interpolated
-        int nSmall = pathSmall.size();
-        int nBig = pathBig.size();
+        int nSmall = (pathSmall.isClosed ? pathSmall.size():pathSmall.size()-1);
+        int nBig = (pathBig.isClosed ? pathBig.size():pathBig.size()-1);
+//        int nBig = pathBig.size();
 
         JMPath resul = new JMPath();
 
@@ -320,6 +326,7 @@ public class JMPath implements Updateable, Stateable {
             }
             dividePathSegment(v1, v2, numDivForThisVertex, resul);
         }
+        if (!pathSmall.isClosed) resul.addPoint(pathSmall.getPoint(-1));
         pathSmall.clear();
         pathSmall.addPointsFrom(resul);
 //        pathSmall.generateControlPoints();//Not necessary

@@ -58,7 +58,7 @@ public abstract class Animation {
      */
     public boolean processAnimation(double fps) {
         if (!isInitialized) { //If not initalized, do it now
-            initialize();
+//            initialize();
             isInitialized = true;
             setFps(fps);
         }

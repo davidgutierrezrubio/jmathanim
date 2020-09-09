@@ -31,4 +31,21 @@ public class CircularArrayList<E> extends ArrayList<E> {
 
         return super.get(index);
     }
+    
+     @Override
+    public E remove(int index) throws ArrayIndexOutOfBoundsException {
+
+        if (this.size() == 0) {
+            throw new ArrayIndexOutOfBoundsException("Circular array with no elements");
+        }
+        while (index >= this.size()) {
+            index -= this.size();
+        }
+
+        while (index < 0) {
+            index += this.size();
+        }
+
+        return super.remove(index);
+    }
 }

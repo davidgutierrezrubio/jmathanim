@@ -21,22 +21,25 @@ public class Transform extends Animation {
 
     public static final int METHOD_INTERPOLATE_POINT_BY_POINT = 1;
     public static final int METHOD_AFFINE_TRANSFORM = 2;
-    private JMPath jmpathOrig;
+    private JMPath jmpathOrig, jmpathDstBackup;
     private final JMPathMathObject mobjDestiny;
     private final JMPathMathObject mobjTransformed;
     private MathObjectDrawingProperties propBase;
     private int method;
     public boolean shouldOptimizePathsFirst;
     public boolean forceChangeDirection;
+    private boolean isFinished;
 
     public Transform(JMPathMathObject ob1, JMPathMathObject ob2, double runTime) {
         super(runTime);
         mobjTransformed = ob1;
         mobjDestiny = ob2;
+        jmpathDstBackup = ob2.jmpath.copy();
         method = METHOD_INTERPOLATE_POINT_BY_POINT;//Default method
         shouldOptimizePathsFirst = true;
-        forceChangeDirection=false;
+        forceChangeDirection = false;
         determineTransformMethod();
+        isFinished=false;
     }
 
     @Override
@@ -48,15 +51,13 @@ public class Transform extends Animation {
         //2 segments/lines or segment/line
         //2 circles/ellipses
         //2 regular polygons with same number of sides
-        
-
         //This is the initialization for the point-to-point interpolation
         //Prepare paths. Firs, I ensure they have the same number of points
         mobjTransformed.jmpath.alignPaths(mobjDestiny.jmpath);
 
         if (shouldOptimizePathsFirst) {
             //Now, adjust the points of the first to minimize distance from point-to-point
-            mobjTransformed.jmpath.minimizeSumDistance(mobjDestiny.jmpath,forceChangeDirection);
+            mobjTransformed.jmpath.minimizeSumDistance(mobjDestiny.jmpath, forceChangeDirection);
         }
         //Base path and properties, to interpolate from
         jmpathOrig = mobjTransformed.jmpath.rawCopy();
@@ -123,17 +124,30 @@ public class Transform extends Animation {
 
     @Override
     public void finishAnimation() {
-        //Here it should remove unnecessary points
+        if (isFinished) {
+            return;
+        }else
+            isFinished=true;
+        //TODO: If mobjTransformed is open and mobjDestiny,should fix that
+        //TODO: Works, but needs to be refined
+        if (!mobjTransformed.jmpath.isClosed && mobjDestiny.jmpath.isClosed) {
+            mobjTransformed.jmpath.jmPathPoints.remove(-1);
+            mobjTransformed.jmpath.jmPathPoints.get(0).isVisible=true;
+        }
+
+//Here it should remove unnecessary points
         //First mark as vertex points all mobj1 points who match with vertex from obj2
         //also copy backup values of control points 
-        for (int n = 0; n < mobjTransformed.jmpath.size(); n++) {
-            JMPathPoint p1 = mobjTransformed.jmpath.getPoint(n);
-            JMPathPoint p2 = mobjDestiny.jmpath.getPoint(n);
-            p1.type = p2.type;
-            p1.isCurved = p2.isCurved;
-            p1.isVisible = p2.isVisible;
-            p1.cp1vBackup = p2.cp1vBackup;
-            p1.cp2vBackup = p2.cp2vBackup;
+        {
+            for (int n = 0; n < mobjTransformed.jmpath.size(); n++) {
+                JMPathPoint p1 = mobjTransformed.jmpath.getPoint(n);
+                JMPathPoint p2 = mobjDestiny.jmpath.getPoint(n);
+                p1.type = p2.type;
+                p1.isCurved = p2.isCurved;
+                p1.isVisible = p2.isVisible;
+                p1.cp1vBackup = p2.cp1vBackup;
+                p1.cp2vBackup = p2.cp2vBackup;
+            }
         }
         //Now I should remove all interpolation auxilary points
         mobjTransformed.removeInterpolationPoints();
@@ -161,7 +175,7 @@ public class Transform extends Animation {
 
             //Interpolate point
             interPoint.p.v = tr.getTransformedPoint(basePoint.p).v;
-            
+
             //Interpolate control point 1
             interPoint.cp1.v = tr.getTransformedPoint(basePoint.cp1).v;
 
@@ -180,8 +194,8 @@ public class Transform extends Animation {
     public void setMethod(int method) {
         this.method = method;
     }
-    
-     @Override
+
+    @Override
     public void addObjectsToScene(JMathAnimScene scene) {
         scene.add(mobjTransformed);
     }

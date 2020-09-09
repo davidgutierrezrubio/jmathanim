@@ -46,7 +46,7 @@ public class PointSimple extends Scene2D {
     public void setupSketch() {
 //        conf.setHighQuality();
         conf.setLowQuality();
-        setCreateMovie(true);
+        setCreateMovie(false);
         setShowPreviewWindow(true);
         createRenderer();
     }
@@ -594,7 +594,7 @@ public class PointSimple extends Scene2D {
 
 //        playScale(P, new Point(), .3d, 6);
 //        playRotate(P, new Point(), 2.5, 6);
-        add(sq);
+//        add(sq);
         advanceFrame();
         advanceFrame();
         advanceFrame();
@@ -621,7 +621,7 @@ public class PointSimple extends Scene2D {
 //        Transform tr = new Transform(sq, P, 15);
         tr.shouldOptimizePathsFirst=false;
         play(tr);
-        System.out.println("End!");
+        System.out.println("End! "+P.jmpath);
         waitSeconds(10);
     }
 

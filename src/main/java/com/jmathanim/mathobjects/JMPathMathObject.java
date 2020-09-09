@@ -57,7 +57,6 @@ public class JMPathMathObject extends MathObject {
      * control)
      */
     protected final void computeJMPathFromVertices(boolean close) {
-        //TODO: ¿Compute intermediate points?
         jmpath.clear();//clear points
         for (JMPathPoint p : vertices) {
             jmpath.addPoint(p);

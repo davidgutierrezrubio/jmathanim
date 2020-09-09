@@ -126,27 +126,17 @@ public abstract class JMathAnimScene {
      * Call the draw method in all mathobjects
      */
     protected final void doDraws() {
-        objects.sort(new Comparator<MathObject>() {
-            @Override
-            public int compare(MathObject o1, MathObject o2) {
-                return (o1.mp.layer - o2.mp.layer);
-            }
-        });
+        
 
-        //For the array of objects to be updated, I sort them by the updatelevel variable
+        //For the array of objects to be updated (not necessarily drawn), I sort them by the updatelevel variable
         //updatelevel 0 gets updated first.
         //Objects with updatelevel n depend directly from those with level n-1
-        Comparator<Updateable> comp = new Comparator<Updateable>() {
-            @Override
-            public int compare(Updateable o1, Updateable o2) {
-                return o1.getUpdateLevel() - o2.getUpdateLevel();
-
-            }
-        };
-        objectsToBeUpdated.sort(comp);
+        objectsToBeUpdated.sort((Updateable o1, Updateable o2) -> o1.getUpdateLevel() - o2.getUpdateLevel());
         for (Updateable obj : objectsToBeUpdated) {
             obj.update();
         }
+        //Objects to be drawn on screen. Sort them by layer
+        objects.sort((MathObject o1, MathObject o2) -> (o1.mp.layer - o2.mp.layer));
         for (MathObject obj : objects) {
             obj.draw(SCRenderer);
         }

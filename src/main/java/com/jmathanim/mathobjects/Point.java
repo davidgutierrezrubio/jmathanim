@@ -107,7 +107,9 @@ public class Point extends MathObject {
 
     @Override
     public Point copy() {
-        return new Point(v);//TODO: Improve this
+        Point resul=new  Point(v);
+        resul.mp.copyFrom(mp);
+        return resul;
     }
 
     @Override
