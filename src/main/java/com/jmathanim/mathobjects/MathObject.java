@@ -24,6 +24,7 @@ public abstract class MathObject implements Drawable, Updateable,Stateable{
 
     public final MathObjectDrawingProperties mp;
     protected MathObjectDrawingProperties mpBackup;
+    public String label="";
     /**
      * Scenes where this object belongs.
      *

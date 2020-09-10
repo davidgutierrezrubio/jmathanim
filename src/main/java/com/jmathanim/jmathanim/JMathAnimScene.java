@@ -84,12 +84,9 @@ public abstract class JMathAnimScene {
         }
     }
 
-    public final void registerObjectToBeUpdated(MathObject obj) {
-        if (obj instanceof Updateable) {
-            System.out.println("Registered updateable " + obj);
-            if (!objectsToBeUpdated.contains(obj)) {
-                objectsToBeUpdated.add((Updateable) obj);
-            }
+    public final void registerObjectToBeUpdated(Updateable obj) {
+        if (!objectsToBeUpdated.contains(obj)) {
+            objectsToBeUpdated.add(obj);
         }
     }
 
@@ -126,7 +123,6 @@ public abstract class JMathAnimScene {
      * Call the draw method in all mathobjects
      */
     protected final void doDraws() {
-        
 
         //For the array of objects to be updated (not necessarily drawn), I sort them by the updatelevel variable
         //updatelevel 0 gets updated first.
@@ -230,8 +226,8 @@ public abstract class JMathAnimScene {
     public void playRotate(MathObject obj, Point center, double angle, double runTime) {
         play(new ApplyCommand(Commands.rotate(obj, center, angle), runTime));
     }
-    public void playTransform(JMPathMathObject obj1,JMPathMathObject obj2,double runTime)
-    {
+
+    public void playTransform(JMPathMathObject obj1, JMPathMathObject obj2, double runTime) {
         play(new Transform(obj1, obj2, runTime));
     }
 }

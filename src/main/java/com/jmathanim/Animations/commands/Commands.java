@@ -18,9 +18,9 @@ import com.jmathanim.mathobjects.Point;
 public class Commands {
 
     public static SingleMathObjectCommand shift(MathObject object, double dx, double dy) {
-        return shift(object, new Vec(dx,dy));
+        return shift(object, new Vec(dx, dy));
     }
-    
+
     public static SingleMathObjectCommand shift(MathObject object, Vec sv) {
         return new SingleMathObjectCommand(object) {
             Vec shiftVector = sv;
@@ -41,17 +41,17 @@ public class Commands {
             }
         };
     }//End of shift command
-    
-    
-    public static SingleMathObjectCommand scale(MathObject object, Point c, double sc){
-        return scale(object, c, sc,sc,sc);
+
+    public static SingleMathObjectCommand scale(MathObject object, Point c, double sc) {
+        return scale(object, c, sc, sc, sc);
     }
-     public static SingleMathObjectCommand scale(MathObject object, Point c, double scx,double scy,double scz) {
+
+    public static SingleMathObjectCommand scale(MathObject object, Point c, double scx, double scy, double scz) {
         return new SingleMathObjectCommand(object) {
-            double scalex=scx;
-            double scaley=scy;
-            double scalez=scz;
-            Point scaleCenter=c;
+            double scalex = scx;
+            double scaley = scy;
+            double scalez = scz;
+            Point scaleCenter = c;
 
             @Override
             public void initialize() {
@@ -61,9 +61,9 @@ public class Commands {
             @Override
             public void execute(double t) {
                 mathObject.restoreState();
-                double scax = 1-t+scalex*t;
-                double scay = 1-t+scaley*t;
-                double scaz = 1-t+scalez*t;
+                double scax = 1 - t + scalex * t;
+                double scay = 1 - t + scaley * t;
+                double scaz = 1 - t + scalez * t;
                 mathObject.scale(scaleCenter, scax, scay, scaz);
             }
 
@@ -72,22 +72,26 @@ public class Commands {
             }
         };
     }//End of scale command
-    
-     public static SingleMathObjectCommand rotate(MathObject object, Point c, double ang) {
+
+    public static SingleMathObjectCommand rotate(MathObject object, Point c, double ang) {
         return new SingleMathObjectCommand(object) {
-            double angle=ang;
-            Point rotationCenter=c;
+            double angle = ang;
+            double tPrevious;
+            Point rotationCenter = c;
+            Point rotationCenterPrevious;
             AffineTransform tr;
 
             @Override
             public void initialize() {
-                mathObject.saveState();
+                mathObject.saveState();//Easy way, but interferes with multiple animations (not easy to solve)
+                tPrevious = 0;
+                rotationCenterPrevious = rotationCenter.copy();
             }
 
             @Override
             public void execute(double t) {
                 mathObject.restoreState();
-                tr=AffineTransform.create2DRotationTransform(rotationCenter, angle*t);
+                tr = AffineTransform.create2DRotationTransform(rotationCenter, angle * t);
                 tr.applyTransform(mathObject);
             }
 

@@ -245,11 +245,8 @@ public class JMPath implements Updateable, Stateable {
     public String toString() {
         String resul = "";
         for (JMPathPoint p : jmPathPoints) {
-            resul += (p.isCurved ? "C" : "R");
-            resul += (p.isVisible ? "" : "*");
-            resul += (p.type==JMPathPoint.TYPE_INTERPOLATION_POINT ? "I" : "");
-            
-            resul+="_";
+            resul+=p.toString();
+           
         }
         return resul;
     }
@@ -401,38 +398,7 @@ public class JMPath implements Updateable, Stateable {
         return resul;
     }
 
-    /**
-     * Cycles the point of closed path (and inverts its orientation if
-     * necessary) in order to minimize the sum of squared distances from the
-     * points of two paths with the same number of nodes
-     *
-     * @param path2
-     */
-    public void minimizeSumDistance(JMPath path2, boolean forceChangeDirection) {
-        ArrayList<Double> distances = new ArrayList<Double>();
-        double minSumDistances = 999999999;
-        int optimalStep = 0;
-        //this variable is negative if both paths have different orientation
-        //so the transformed path reverses itself to better adjust
-        int changeDirection = this.getOrientation() * path2.getOrientation();
-        changeDirection = (forceChangeDirection ? -changeDirection : changeDirection);
-        //If the path is open, we can't cycle the path, so 
-        //we set numberOfCycles to 1
-        int numberOfCycles = (this.isClosed ? this.size() : 1);
-        //First, without changing direction
-        for (int step = 0; step < numberOfCycles; step++) {
-            JMPath tempPath = this.copy();
-            tempPath.cyclePoints(step, changeDirection);
-            double sumDistances = tempPath.sumDistance(path2);
-            distances.add(sumDistances);
-            if (sumDistances < minSumDistances) {
-                minSumDistances = sumDistances;
-                optimalStep = step;
-            }
-
-        }
-        this.cyclePoints(optimalStep, changeDirection);
-    }
+   
 
     /**
      * Cycles the point of closed path (and inverts its orientation if

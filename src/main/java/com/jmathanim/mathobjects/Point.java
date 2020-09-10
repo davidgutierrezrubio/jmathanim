@@ -10,6 +10,7 @@ import com.jmathanim.Utils.MathObjectDrawingProperties;
 import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
+import java.util.HashSet;
 
 /**
  * This class represents a point
@@ -20,6 +21,8 @@ public class Point extends MathObject {
 
     public Vec v;
     private Vec vBackup;
+
+    public final HashSet<JMPathPoint> jmPoints;
 
     public Point() {
         this(0, 0, 0);
@@ -60,6 +63,7 @@ public class Point extends MathObject {
      */
     public Point(double x, double y, MathObjectDrawingProperties mp) {
         this(x, y, 0, mp);
+
     }
 
     /**
@@ -74,6 +78,7 @@ public class Point extends MathObject {
         this.v = new Vec(x, y, z);
         this.mp.absoluteThickness = true;
         this.mp.thickness = 8d;//default value
+        jmPoints = new HashSet<>();
     }
 
     @Override
@@ -107,7 +112,7 @@ public class Point extends MathObject {
 
     @Override
     public Point copy() {
-        Point resul=new  Point(v);
+        Point resul = new Point(v);
         resul.mp.copyFrom(mp);
         return resul;
     }
@@ -134,10 +139,14 @@ public class Point extends MathObject {
 
     @Override
     public String toString() {
-        return "Point(" + v.x + "," + v.y + ")";
+        return label+"|Point(" + v.x + "," + v.y + ")";
 
     }
-
+/**
+ * Returns Vec object point from this Point to another one
+ * @param B The destination point
+ * @return The vector from this point to B
+ */
     public Vec to(Point B) {
         return new Vec(B.v.x - v.x, B.v.y - v.y, B.v.z - v.z);
     }
@@ -202,14 +211,14 @@ public class Point extends MathObject {
     @Override
     public void saveState() {
         super.saveState();
-       this.v.saveState();
+        this.v.saveState();
 
     }
 
     @Override
     public void restoreState() {
         super.restoreState();
-       this.v.restoreState();
+        this.v.restoreState();
     }
 
 }

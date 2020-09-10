@@ -5,14 +5,17 @@
  */
 package com.jmathanim.mathobjects;
 
+import com.jmathanim.Renderers.Renderer;
+import com.jmathanim.Utils.Rect;
 import com.jmathanim.mathobjects.updateableObjects.Updateable;
 import com.jmathanim.Utils.Vec;
+import com.jmathanim.jmathanim.JMathAnimScene;
 
 /**
  *
  * @author David Gutiérrez Rubio <davidgutierrezrubio@gmail.com>
  */
-public class JMPathPoint implements Updateable,Stateable {
+public class JMPathPoint extends MathObject implements Updateable, Stateable {
 
     public static final int TYPE_NONE = 0;
     public static final int TYPE_VERTEX = 1;
@@ -27,6 +30,7 @@ public class JMPathPoint implements Updateable,Stateable {
     public int type; //Vertex, interpolation point, etc.
 
     private JMPathPoint pState;
+
     public JMPathPoint(Point p, boolean isVisible, int type) {
         this.p = p;
         cp1 = p.copy();
@@ -34,10 +38,14 @@ public class JMPathPoint implements Updateable,Stateable {
         isCurved = false;//By default, is not curved
         this.isVisible = isVisible;
         this.type = type;
+        if (!p.jmPoints.contains(this)) {//TODO: Implement delete method in MathObject
+            p.jmPoints.add(this);
+        }
     }
 
     public JMPathPoint copy() {
-        JMPathPoint resul = new JMPathPoint(p.copy(), isVisible, type);
+        Point pCopy = p.copy();
+        JMPathPoint resul = new JMPathPoint(pCopy, isVisible, type);
         resul.cp1.v.x = this.cp1.v.x;
         resul.cp1.v.y = this.cp1.v.y;
         resul.cp2.v.x = this.cp2.v.x;
@@ -65,7 +73,13 @@ public class JMPathPoint implements Updateable,Stateable {
 
     @Override
     public String toString() {
-        String resul = "(" + p.v.x + ", " + p.v.y + ")";
+        String labelStr;
+        if (label != "") {
+             labelStr = "[" + label + "]";
+        } else {
+            labelStr = label;
+        }
+        String resul = labelStr + "(" + p.v.x + ", " + p.v.y + ")";
         if (type == TYPE_INTERPOLATION_POINT) {
             resul = "I" + resul;
         }
@@ -112,22 +126,22 @@ public class JMPathPoint implements Updateable,Stateable {
 
     @Override
     public void saveState() {
-        pState=new JMPathPoint(p, isVisible, type);
+        pState = new JMPathPoint(p, isVisible, type);
         p.saveState();
         cp1.saveState();
         cp2.saveState();
-        
+
         try {
             pState.cp1vBackup.saveState();
         } catch (NullPointerException e) {
         }
-         try {
+        try {
             pState.cp2vBackup.saveState();
         } catch (NullPointerException e) {
         }
-        pState.isVisible=this.isVisible;
-        pState.isCurved=this.isCurved;
-        pState.type=this.type;
+        pState.isVisible = this.isVisible;
+        pState.isCurved = this.isCurved;
+        pState.type = this.type;
     }
 
     @Override
@@ -135,18 +149,69 @@ public class JMPathPoint implements Updateable,Stateable {
         p.restoreState();
         cp1.restoreState();
         cp2.restoreState();
-        
+
         try {
             pState.cp1vBackup.restoreState();
         } catch (NullPointerException e) {
         }
-         try {
+        try {
             pState.cp2vBackup.restoreState();
         } catch (NullPointerException e) {
         }
-        pState.isVisible=this.isVisible;
-        pState.isCurved=this.isCurved;
-        pState.type=this.type;
+        pState.isVisible = this.isVisible;
+        pState.isCurved = this.isCurved;
+        pState.type = this.type;
     }
 
+    @Override
+    public Point getCenter() {
+        return p;
+    }
+
+    @Override
+    public void moveTo(Vec coords) {
+        p.moveTo(coords);
+        cp1.moveTo(coords);
+        cp2.moveTo(coords);
+    }
+
+    @Override
+    public void prepareForNonLinearAnimation() {
+    }
+
+    @Override
+    public void processAfterNonLinearAnimation() {
+    }
+
+    @Override
+    public void setDrawParam(double t, int sliceType) {
+    }
+
+    @Override
+    public Rect getBoundingBox() {
+        return p.getBoundingBox();
+    }
+
+    @Override
+    public void setDrawAlpha(double t) {
+        p.setDrawAlpha(t);
+    }
+
+    @Override
+    public void setFillAlpha(double t) {
+        p.setFillAlpha(t);
+    }
+
+    @Override
+    public void registerChildrenToBeUpdated(JMathAnimScene scene) {
+    }
+
+    @Override
+    public void unregisterChildrenToBeUpdated(JMathAnimScene scene) {
+    }
+
+    @Override
+    public void draw(Renderer r) {
+        p.draw(r);
+    }
 }

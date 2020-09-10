@@ -110,25 +110,30 @@ public class AffineTransform {
             JMPathMathObject mobj = (JMPathMathObject) mObject;
             int size = mobj.jmpath.size();
             for (int n = 0; n < size; n++) {
-                JMPathPoint jmPDst = mobj.getPoint(n);
-                JMPathPoint pSrc = jmPDst.copy();
-                Point pDst = getTransformedPoint(pSrc.p);
-                Point cp1Dst = getTransformedPoint(pSrc.cp1);
-                Point cp2Dst = getTransformedPoint(pSrc.cp2);
-
-                jmPDst.p.v.x = pDst.v.x;
-                jmPDst.p.v.y = pDst.v.y;
-                jmPDst.p.v.z = pDst.v.z;
-
-                jmPDst.cp1.v.x = cp1Dst.v.x;
-                jmPDst.cp1.v.y = cp1Dst.v.y;
-                jmPDst.cp1.v.z = cp1Dst.v.z;
-
-                jmPDst.cp2.v.x = cp2Dst.v.x;
-                jmPDst.cp2.v.y = cp2Dst.v.y;
-                jmPDst.cp2.v.z = cp2Dst.v.z;
+                applyTransform(mobj.getPoint(n));
             }
         }
+
+        if (mObject instanceof JMPathPoint) {
+            JMPathPoint jmPDst = (JMPathPoint) mObject;
+            JMPathPoint pSrc = jmPDst.copy();
+            Point pDst = getTransformedPoint(pSrc.p);
+            Point cp1Dst = getTransformedPoint(pSrc.cp1);
+            Point cp2Dst = getTransformedPoint(pSrc.cp2);
+
+            jmPDst.p.v.x = pDst.v.x;
+            jmPDst.p.v.y = pDst.v.y;
+            jmPDst.p.v.z = pDst.v.z;
+
+            jmPDst.cp1.v.x = cp1Dst.v.x;
+            jmPDst.cp1.v.y = cp1Dst.v.y;
+            jmPDst.cp1.v.z = cp1Dst.v.z;
+
+            jmPDst.cp2.v.x = cp2Dst.v.x;
+            jmPDst.cp2.v.y = cp2Dst.v.y;
+            jmPDst.cp2.v.z = cp2Dst.v.z;
+        }
+
         if (mObject instanceof Point) {
             {
                 Point p = (Point) mObject;
@@ -138,6 +143,12 @@ public class AffineTransform {
                 p.v.x = pNew.getEntry(0, 1);
                 p.v.y = pNew.getEntry(0, 2);
                 p.v.z = pNew.getEntry(0, 3);
+                //If the object to be transformed is a point, it will have several JMPathPoints associated
+                for (JMPathPoint jmp : p.jmPoints) {
+                    applyTransform(jmp.cp1);
+                    applyTransform(jmp.cp2);
+                }
+
             }
         }
     }
@@ -282,9 +293,8 @@ public class AffineTransform {
         AffineTransform canonizedReflection = new AffineTransform();
         canonizedReflection.setV1Img(E1.interpolate(E2, alpha));
 
-        AffineTransform resul =canonize.compose(canonizedReflection).compose(invCanonize);
+        AffineTransform resul = canonize.compose(canonizedReflection).compose(invCanonize);
 
-        
         return resul;
 
     }
