@@ -587,6 +587,7 @@ public class PointSimple extends Scene2D {
     public void pruebaShiftCommand() {
         Segment P = new Segment(new Point(0, 0), new Point(2, 1));
         Line L = new Line(new Point(0, 0), new Point(1, -1));
+        Segment P2 = P.copy();
         add(P);
         Square sq = new Square();
         P.shift(1, 0);
@@ -602,6 +603,9 @@ public class PointSimple extends Scene2D {
 //        Transform tr = new Transform(sq, P, 15);
         tr.shouldOptimizePathsFirst=false;
         play(tr);
+        Transform tr2= new Transform(P, P2, 55);
+        tr2.setMethod(Transform.METHOD_INTERPOLATE_POINT_BY_POINT);
+        play(tr2);
         System.out.println("End! "+P.jmpath);
         waitSeconds(40);
     }

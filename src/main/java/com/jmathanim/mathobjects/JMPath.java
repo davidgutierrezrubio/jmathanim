@@ -247,7 +247,7 @@ public class JMPath implements Updateable, Stateable {
         for (JMPathPoint p : jmPathPoints) {
             resul += (p.isCurved ? "C" : "R");
             resul += (p.isVisible ? "" : "*");
-            resul += (p.type==JMPathPoint.TYPE_INTERPOLATION_POINT ? "I" : "*");
+            resul += (p.type==JMPathPoint.TYPE_INTERPOLATION_POINT ? "I" : "");
             
             resul+="_";
         }

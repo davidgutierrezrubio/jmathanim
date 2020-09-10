@@ -153,6 +153,7 @@ public class Transform extends Animation {
         mobjTransformed.removeInterpolationPoints();
         System.out.println(mobjTransformed);
         mobjDestiny.removeInterpolationPoints();
+        mobjTransformed.jmpath.isClosed=mobjDestiny.jmpath.isClosed;
     }
 
     private void affineTransform(double t) {
