@@ -189,7 +189,7 @@ public class PointSimple extends Scene2D {
         circ2.mp.drawColor = Color.BLUE;
         add(circ, circ2);
         RegularPolygon pol4 = new RegularPolygon(12, 3.d / 16);
-        circ.jmpath.alignPaths(pol4.jmpath);
+//        circ.jmpath.alignPaths(pol4.jmpath);
         waitSeconds(30);
     }
 
@@ -595,34 +595,15 @@ public class PointSimple extends Scene2D {
 //        playScale(P, new Point(), .3d, 6);
 //        playRotate(P, new Point(), 2.5, 6);
 //        add(sq);
-        advanceFrame();
-        advanceFrame();
-        advanceFrame();
-        advanceFrame();
-        advanceFrame();
-        advanceFrame();
-        advanceFrame();
-        advanceFrame();
-        advanceFrame();
-        advanceFrame();
-        advanceFrame();
-        advanceFrame();
-        advanceFrame();
-        advanceFrame();
-        advanceFrame();
-        advanceFrame();
-        advanceFrame();
-        advanceFrame();
-        advanceFrame();
 //        playTransform(new Circle(), sq, 15);
         System.out.println("Orientation square "+sq.jmpath.getOrientation());
         System.out.println("Orientation segment "+P.jmpath.getOrientation());
-        Transform tr = new Transform(P, sq, 15);
+        Transform tr = new Transform(P, sq, 55);
 //        Transform tr = new Transform(sq, P, 15);
         tr.shouldOptimizePathsFirst=false;
         play(tr);
         System.out.println("End! "+P.jmpath);
-        waitSeconds(10);
+        waitSeconds(40);
     }
 
 }

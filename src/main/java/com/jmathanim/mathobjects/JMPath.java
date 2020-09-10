@@ -259,102 +259,13 @@ public class JMPath implements Updateable, Stateable {
      *
      * @param jmpathTemp
      */
-    void addPointsFrom(JMPath jmpathTemp) {
+    public void addPointsFrom(JMPath jmpathTemp) {
         jmPathPoints.addAll(jmpathTemp.jmPathPoints);
     }
 
-    /**
-     * Align the number of points of this path with the given one. Align the
-     * paths so that they have the same number of points, interpolating the
-     * smaller one if necessary.
-     *
-     * @param path2
-     */
-    public void alignPaths(JMPath path2) {//TODO: Move this to Transform
-        //TODO: What about open paths?
-        JMPath pathSmall;
-        JMPath pathBig;
-        
-        
-        //Experimental
-        if (this.isClosed && !path2.isClosed)
-        {
-            this.addPoint(this.getPoint(0).copy());
-            this.getPoint(0).isVisible=false;
-            this.getPoint(-1).type=JMPathPoint.TYPE_INTERPOLATION_POINT;
-            this.isClosed=false;
-        }
-        
-//         if (path2.isClosed && !this.isClosed)
-//        {
-//            path2.addPoint(path2.getPoint(0).copy());
-//            path2.getPoint(0).isVisible=false;
-//        }
-        
-        if (this.size() == path2.size()) {
-            return;
-        }
+   
 
-        if (this.size() < path2.size()) {
-            pathSmall = this;
-            pathBig = path2;
-        } else {
-            pathBig = this;
-            pathSmall = path2;
-        }
-
-        //At this point pathSmall points to the smaller path who is going to be
-        //interpolated
-        int nSmall = (pathSmall.isClosed ? pathSmall.size():pathSmall.size()-1);
-        int nBig = (pathBig.isClosed ? pathBig.size():pathBig.size()-1);
-//        int nBig = pathBig.size();
-
-        JMPath resul = new JMPath();
-
-        int numDivs = (nBig / nSmall); //Euclidean quotient
-        int rest = nBig % nSmall;//Euclidean rest
-        int numDivForThisVertex;
-        for (int n = 0; n < nSmall; n++) {
-//                int k = (n + 1) % points.size(); //Next point, first if curve is closed
-            JMPathPoint v1 = pathSmall.getPoint(n);
-            JMPathPoint v2 = pathSmall.getPoint(n + 1);
-            v1.type = JMPathPoint.TYPE_VERTEX;
-            resul.addPoint(v1); //Add the point of original curve
-            numDivForThisVertex = numDivs; //number of segments to divide, NOT number of intermediate new points
-            if (n < rest) { //The <rest> first vertex have an extra interpolation point (should distribute these along the path? maybe...)
-                numDivForThisVertex += 1;
-            }
-            dividePathSegment(v1, v2, numDivForThisVertex, resul);
-        }
-        if (!pathSmall.isClosed) resul.addPoint(pathSmall.getPoint(-1));
-        pathSmall.clear();
-        pathSmall.addPointsFrom(resul);
-//        pathSmall.generateControlPoints();//Not necessary
-    }
-
-    /**
-     * Divide path into an equal number of parts. Stores new points in a new
-     * path
-     *
-     * @param v1 Starting point
-     * @param v2 Ending point
-     * @param numDivForThisVertex Number of subdivisions
-     * @param resul Path with new points to store
-     */
-    private void dividePathSegment(JMPathPoint v1, JMPathPoint v2, int numDivForThisVertex, JMPath resul) {
-        JMPathPoint interpolate;
-        if (numDivForThisVertex < 2) {
-            return;
-        }
-        double alpha = 1.0d / numDivForThisVertex;
-        interpolate = interpolateBetweenTwoPoints(v1, v2, alpha);
-        resul.addPoint(interpolate);
-        if (numDivForThisVertex > 2) {
-            dividePathSegment(interpolate, v2, numDivForThisVertex - 1, resul);
-        }
-    }
-
-    public JMPathPoint interpolateBetweenTwoPoints(JMPathPoint v1, JMPathPoint v2, double alpha) {
+    public static JMPathPoint interpolateBetweenTwoPoints(JMPathPoint v1, JMPathPoint v2, double alpha) {
 
         JMPathPoint interpolate;
         if (v2.isCurved) {
