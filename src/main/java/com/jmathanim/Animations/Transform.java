@@ -192,8 +192,8 @@ public class Transform extends Animation {
         JMPathPoint interPoint, basePoint, dstPoint;
         Point A = jmpathOrig.getPoint(0).p;
         Point B = jmpathOrig.getPoint(1).p;
-        Point C = mobjDestiny.getPoint(0).p;
-        Point D = mobjDestiny.getPoint(1).p;
+        Point C = mobjDestiny.getJMPoint(0).p;
+        Point D = mobjDestiny.getJMPoint(1).p;
 
         AffineTransform tr = AffineTransform.createDirect2DHomotopy(A, B, C, D, t);
         for (int n = 0; n < mobjTransformed.jmpath.jmPathPoints.size(); n++) {

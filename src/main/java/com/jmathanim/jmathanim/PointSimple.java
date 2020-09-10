@@ -13,6 +13,7 @@ import com.jmathanim.Animations.ShowCreation;
 import com.jmathanim.Animations.Transform;
 import com.jmathanim.Animations.commands.AbstractCommand;
 import com.jmathanim.Animations.commands.Commands;
+import com.jmathanim.Animations.commands.SingleMathObjectCommand;
 import com.jmathanim.Utils.MathObjectDrawingProperties;
 import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.SVGImporter;
@@ -42,7 +43,7 @@ import java.util.ArrayList;
  * @author David Gutierrez Rubio davidgutierrezrubio@gmail.com
  */
 public class PointSimple extends Scene2D {
-    
+
     @Override
     public void setupSketch() {
 //        conf.setHighQuality();
@@ -51,13 +52,13 @@ public class PointSimple extends Scene2D {
         setShowPreviewWindow(true);
         createRenderer();
     }
-    
+
     @Override
     public void runSketch() {
         System.out.println("Running sketch...");
-        pruebaGirosCompuestos();
+        teselacionHexagonos();
     }
-    
+
     public void pruebaSimpleJMPathObject() throws ArrayIndexOutOfBoundsException {
         JMPathMathObject pa = new JMPathMathObject();
         JMPathPoint p;
@@ -78,7 +79,7 @@ public class PointSimple extends Scene2D {
         pa.jmpath.jmPathPoints.get(2).isVisible = false;
         waitSeconds(3d);
     }
-    
+
     public void pruebaBoundingBox() {
         Circle circle = new Circle(new Point(-0, 0), 1);
 //        camera.setCenter(0, );
@@ -87,14 +88,14 @@ public class PointSimple extends Scene2D {
         add(new Segment(new Point(r.xmin, r.ymin), new Point(r.xmax, r.ymax)));
         waitSeconds(3);
     }
-    
+
     public void variosCirculos() {
         Circle c1 = new Circle(new Point(-1, 0), .5);
         c1.mp.thickness = .005d;
         c1.mp.drawColor = Color.MAGENTA;
         c1.mp.layer = 2;
         add(c1);
-        
+
         Circle c2 = new Circle(new Point(0, 0), .5);
         add(c2);
         Circle c3 = new Circle(new Point(1, 0), .5);
@@ -113,7 +114,7 @@ public class PointSimple extends Scene2D {
         play(anims);
         waitSeconds(2);
     }
-    
+
     public void pruebaInterpolateCircle() {
         Circle circ = new Circle(new Point(-.5, -.5), 1);
         add(circ);
@@ -121,20 +122,20 @@ public class PointSimple extends Scene2D {
         circ.jmpath.interpolate(3);
         waitSeconds(1);
     }
-    
+
     private void CircleToSquare() {
         Circle c = new Circle(new Point(0, 0), 1);
         RegularPolygon pol2 = new RegularPolygon(4, 1.5);
         pol2.shift(1, 0);
-        pol2.getPoint(0).shift(-2d, .5d);
-        pol2.getPoint(1).shift(-2d, 0);
-        pol2.getPoint(0).isCurved = true;
-        pol2.getPoint(1).isCurved = true;
-        pol2.getPoint(2).isCurved = true;
-        pol2.getPoint(3).isCurved = true;
+        pol2.getJMPoint(0).shift(-2d, .5d);
+        pol2.getJMPoint(1).shift(-2d, 0);
+        pol2.getJMPoint(0).isCurved = true;
+        pol2.getJMPoint(1).isCurved = true;
+        pol2.getJMPoint(2).isCurved = true;
+        pol2.getJMPoint(3).isCurved = true;
         pol2.getPath().generateControlPoints();
         add(pol2);
-        
+
         System.out.println("Orientation of circle: " + c.getPath().getOrientation());
         System.out.println("Orientation of polygon: " + pol2.getPath().getOrientation());
 
@@ -147,7 +148,7 @@ public class PointSimple extends Scene2D {
         play(transform);
         waitSeconds(3);
     }
-    
+
     public void pruebaCopia() {
         Circle c = new Circle(new Point(0, 0), 1);
         add(c);
@@ -156,14 +157,14 @@ public class PointSimple extends Scene2D {
         JMPathMathObject r = new JMPathMathObject(path, null);
         add(r);
         waitSeconds(.5);
-        
+
     }
-    
+
     public void pruebaPuntosInterpolacion() {
         Circle circ = new Circle(new Point(-.5, .5), 2);
         circ.mp.thickness /= 3;
         circ.mp.drawColor = Color.YELLOW;
-        
+
         JMPathPoint pp = circ.jmpath.jmPathPoints.get(0);
         pp.shift(new Vec(-2, 0));
         Circle circ2 = circ.copy();
@@ -179,7 +180,7 @@ public class PointSimple extends Scene2D {
         }
         waitSeconds(30);
     }
-    
+
     public void pruebaInterpolacion() {
         Circle circ = new Circle(new Point(-.5, .5), 2);
         circ.mp.thickness /= 3;
@@ -193,14 +194,14 @@ public class PointSimple extends Scene2D {
 //        circ.jmpath.alignPaths(pol4.jmpath);
         waitSeconds(30);
     }
-    
+
     public void pruebaTransform2Circles() {
         Circle circ = new Circle(new Point(0, 0), 2);
         Circle circ2 = new Circle(new Point(1.5, -.5), .5);
         add(circ, circ2);
         play(new Transform(circ, circ2, 5));
     }
-    
+
     public void pruebaTransform() {
 //        RegularPolygon pol1 = new RegularPolygon(3, 1d);
 //        pol1.mp.drawColor=Color.BLUE;
@@ -225,7 +226,7 @@ public class PointSimple extends Scene2D {
         AffineTransform tr = AffineTransform.create2DRotationTransform(new Point(1, 0), Math.PI * 1.2);
         TransformedJMPath pol5 = new TransformedJMPath(pol4, tr);
         add(pol5);
-        
+
         double tiempo = 3;
 //        play(new Transform(pol1, pol2, tiempo));
 //        remove(pol2);
@@ -242,7 +243,7 @@ public class PointSimple extends Scene2D {
         play(new Transform(pol4, pol3, tiempo));
         waitSeconds(1);
     }
-    
+
     public void pruebaLine() {
         //        for (Segment se: pol1.getRadius())
 //        {
@@ -259,22 +260,22 @@ public class PointSimple extends Scene2D {
         Line linea3 = new Line(new Point(r.xmax - h, 0), new Point(r.xmax - h, 1));
         Line linea4 = new Line(new Point(0, r.ymax - h), new Point(1, r.ymax - h));
         Line linea5 = new Line(new Point(0, r.ymin + h), new Point(1, r.ymin + h));
-        
+
         linea2.mp.thickness = .1;
         linea3.mp.thickness = .1;
         linea4.mp.thickness = .1;
         linea5.mp.thickness = .1;
-        
+
         linea2.mp.drawColor = Color.MAGENTA;
         linea3.mp.drawColor = Color.GREEN;
         linea4.mp.drawColor = Color.YELLOW;
         linea5.mp.drawColor = Color.CYAN;
-        
+
         add(linea2);
         add(linea3);
         add(linea4);
         add(linea5);
-        
+
         for (int n = 0; n < steps; n++) {
             puntoLineaB.v.x = Math.cos(n * 6.28 / steps);
             puntoLineaB.v.y = Math.sin(n * 6.28 / steps);
@@ -282,12 +283,12 @@ public class PointSimple extends Scene2D {
             advanceFrame();
         }
     }
-    
+
     public void pruebaPoligono() {
         //        PGraphics gre = createGraphics(800, 600);
         Point p0 = new Point(1, 0);
         Point p1 = new Point(0, 1);
-        
+
         Point p2 = new Point(1.5, 0);
         Point p3 = new Point(1.8, 1);
         Polygon pol = new Polygon();
@@ -310,14 +311,14 @@ public class PointSimple extends Scene2D {
         for (Point vertex : regPolyg.getVertices()) {
             add(vertex);
         }
-        
+
         Point centro = regPolyg.getCenter();
         add(centro);
     }
-    
+
     private void pruebaImportSVGFile() {
         SVGMathObject svgObject = new SVGMathObject(this, "c:\\media\\tex\\o.svg");
-        
+
         add(svgObject);
         waitSeconds(3);
 //        for (JMPathMathObject p:svgObject.jmps)
@@ -329,7 +330,7 @@ public class PointSimple extends Scene2D {
         play(new Transform(svgObject.get(2), svgObject.get(0), 5d));
         waitSeconds(3d);
     }
-    
+
     private void pruebaRelleno() {
         Circle circ = new Circle(new Point(0, 0), 1);
         circ.mp.fill = true;
@@ -341,7 +342,7 @@ public class PointSimple extends Scene2D {
 //        }
         waitSeconds(2);
     }
-    
+
     private void pruebaLaTeX() {
         LaTeXMathObject lm = new LaTeXMathObject(this, "$$\\int_0^\\infty x\\,dx=\\infty$$");
 //        lm.shift(-1, 0);
@@ -357,7 +358,7 @@ public class PointSimple extends Scene2D {
             camera.setMathXY(r);
             advanceFrame();
         }
-        
+
         waitSeconds(1);
 //        JMPathMathObject xcopia = (JMPathMathObject) lm.jmps.get(3).copy();
 //        JMPathMathObject xIgual = (JMPathMathObject) lm.jmps.get(6).copy();
@@ -368,7 +369,7 @@ public class PointSimple extends Scene2D {
 //        play(new Transform(xIgual, xDst, 7));
         waitSeconds(2);
     }
-    
+
     private void pruebaLaTeXEcuacion() {
         LaTeXMathObject eq1 = new LaTeXMathObject(this, "$$x=2$$");
         LaTeXMathObject eq2 = new LaTeXMathObject(this, "$$x=4$$");
@@ -379,25 +380,25 @@ public class PointSimple extends Scene2D {
         eq2.scale(sc, sc);
         eq3.scale(sc, sc);
         eq4.scale(sc, sc);
-        
+
         eq1.shift(-1, 0);
         eq2.shift(-1, 0);
         eq3.shift(-1, 0);
         eq4.shift(-1, 0);
-        
+
         play(new ShowCreation(eq1, 2));
 //        waitSeconds(1);
         JMPathMathObject x1 = eq1.jmps.get(2);
         JMPathMathObject x2 = eq2.jmps.get(2);
         JMPathMathObject x3 = eq3.jmps.get(2);
         JMPathMathObject x4 = eq4.jmps.get(2);
-        
+
         play(new Transform(x1, x2, 1));
         play(new Transform(x1, x3, 1));
         play(new Transform(x1, x4, 1));
         waitSeconds(3);
     }
-    
+
     public void pruebaTransformSegmentos() {
         RegularPolygon cir = new RegularPolygon(5, 1);
 //        cir.mp.fill = true;
@@ -437,7 +438,7 @@ public class PointSimple extends Scene2D {
         play(new Transform(pol, cir, 30));
         waitSeconds(3);
     }
-    
+
     public void pruebaMatrix() {
         Point center = new Point(2, 1);
         add(center);
@@ -462,9 +463,9 @@ public class PointSimple extends Scene2D {
 
         }
         waitSeconds(10);
-        
+
     }
-    
+
     public void pruebaHomotopia() {
         double tiempo = 20;
         Point A = new Point(1, -0);
@@ -488,7 +489,7 @@ public class PointSimple extends Scene2D {
         play(tr);
         waitSeconds(10);
     }
-    
+
     public void pruebaDependencias() {
         //Muchos middlepoint
         Point A = new Point(0, 0);
@@ -523,36 +524,36 @@ public class PointSimple extends Scene2D {
             advanceFrame();
             waitSeconds(1);
         }
-        
+
     }
-    
+
     public void pruebaReflection() {
-        
+
         RegularPolygon pol = new RegularPolygon(5, 1);
         pol.shift(0, 1);
         pol.mp.drawColor = Color.YELLOW;
         add(pol);
-        
+
         AffineTransform tr = AffineTransform.createReflection(new Point(1, 1), new Point(2, -1), 1);
-        
+
         Point p = new Point(0, 0);
         Point reflectedPoint = tr.getTransformedPoint(p);
         reflectedPoint.mp.drawColor = Color.GREEN;
         add(reflectedPoint, p);
-        
+
         TransformedJMPath pol2 = new TransformedJMPath(pol, tr);
         pol2.mp.drawColor = Color.GRAY;
         add(pol2);
         for (double dx = 0; dx < 2; dx += .001) {
             pol.shift(.001, 0);
-            
+
             advanceFrame();
         }
         waitSeconds(300);
     }
-    
+
     public void pruebaReflectionLambda() {
-        
+
         RegularPolygon pol = new RegularPolygon(5, 1);
         pol.shift(0, 1);
         pol.mp.drawColor = Color.YELLOW;
@@ -560,15 +561,15 @@ public class PointSimple extends Scene2D {
         JMPath jmpathOrig = pol.getPath().rawCopy();
         for (double lambda = 0; lambda < 1; lambda += .001) {
             affineTransform(jmpathOrig, pol, lambda);
-            
+
             advanceFrame();
         }
         waitSeconds(300);
     }
-    
+
     private void affineTransform(JMPath jmpathOrig, JMPathMathObject mobj1, double t) {
         JMPathPoint interPoint, basePoint, dstPoint;
-        
+
         AffineTransform tr = AffineTransform.createReflection(new Point(1, 1), new Point(2, -1), t);
         for (int n = 0; n < mobj1.jmpath.jmPathPoints.size(); n++) {
             interPoint = mobj1.jmpath.jmPathPoints.get(n);
@@ -581,10 +582,10 @@ public class PointSimple extends Scene2D {
 
             //Interpolate control point 2
             interPoint.cp2.v = tr.getTransformedPoint(basePoint.cp2).v;
-            
+
         }
     }
-    
+
     public void pruebaShiftCommand() {
         Segment P = new Segment(new Point(0, 0), new Point(2, 1));
         Line L = new Line(new Point(0, 0), new Point(1, -1));
@@ -610,7 +611,7 @@ public class PointSimple extends Scene2D {
         System.out.println("End! " + P.jmpath);
         waitSeconds(20);
     }
-    
+
     public void pruebaGirosCompuestos() {
         Point p1 = new Point(0, 0);
         Point p2 = new Point(0, 1);
@@ -620,15 +621,78 @@ public class PointSimple extends Scene2D {
         LaTeXMathObject texto = new LaTeXMathObject(this, "$x^2$");
         add(texto);
         texto.scale(.2, .2);
+
+        Square sq = new Square();
+        add(sq);
         AnchoredMathObject anchor = new AnchoredMathObject(texto, AnchoredMathObject.ANCHOR_RIGHT, p2);
         AnchoredMathObject anchor2 = new AnchoredMathObject(pol, AnchoredMathObject.ANCHOR_BY_CENTER, texto, AnchoredMathObject.ANCHOR_LEFT);
+        AnchoredMathObject anchor3 = new AnchoredMathObject(sq, AnchoredMathObject.ANCHOR_LEFT, pol, AnchoredMathObject.ANCHOR_RIGHT);
         registerObjectToBeUpdated(anchor);
         registerObjectToBeUpdated(anchor2);
+        registerObjectToBeUpdated(anchor3);
         s1.label = "S1";
-        ApplyCommand cmd1 = new ApplyCommand(Commands.rotate(s1, p1, 2 * Math.PI), 20);
+        ApplyCommand cmd1 = Commands.rotate(s1, p1, 2 * Math.PI, 20);
         play(cmd1);
     }
-    
+
+    void teselacionHexagonos() {
+        RegularPolygon hex1 = new RegularPolygon(6, .3);
+        add(hex1);
+//        hex1.shift(-1,0);
+//        getCamera().setCenter(hex1.getCenter().v.x,hex1.getCenter().v.y);
+        JMPathMathObject hex2 = hex1.copy();
+        add(hex2);
+        Segment lado = new Segment(hex2.getPoint(0), hex2.getPoint(5));
+        ApplyCommand cmd = Commands.reflectionByAxis(hex2, lado, 3);
+        play(cmd);
+
+        int n1 = 0;
+        int n2 = 1;
+        for (int n = 0; n < 5; n++) {
+            hex2 = hex2.copy();
+//            lado = new Segment(hex2.getPoint(n1), hex2.getPoint(n2));
+            cmd = Commands.rotate(hex2, hex2.getPoint(n), Math.PI * 2 / 3, 1);
+            //            SingleMathObjectCommand tr = Commands.homotopy(hex2, hex2.getJMPoint(0).p, hex2.getJMPoint(1).p, hex1.getJMPoint(n).p, hex1.getJMPoint(n+1).p);
+            play(cmd);
+        }
+       
+         hex2=gira(hex2,6);
+         hex2=gira(hex2,7);
+         hex2=gira(hex2,8);
+         
+         hex2=gira(hex2,10);
+         hex2=gira(hex2,11);
+         
+         hex2=gira(hex2,13);
+         hex2=gira(hex2,14);
+         
+         hex2=gira(hex2,16);
+         hex2=gira(hex2,17);
+         
+         hex2=gira(hex2,19);
+         hex2=gira(hex2,20);
+         hex2=gira(hex2,22);
+         
+         hex2=gira(hex2,24);
+         hex2=gira(hex2,25);
+         
+         hex2=gira(hex2,27);
+         hex2=gira(hex2,28);
+         hex2=gira(hex2,29);
+         
+//         hex2=gira(hex2,10);
+//         hex2=gira(hex2,11);
+//         hex2=gira(hex2,12);
+        waitSeconds(10);
+    }
+
+    private JMPathMathObject gira(JMPathMathObject hex2,int n) {
+        ApplyCommand cmd;
+        hex2 = hex2.copy();
+        cmd = Commands.rotate(hex2, hex2.getPoint(n), Math.PI * 2 / 3, 1);
+        play(cmd);
+        return hex2.copy();
+    }
 }
 
 //Cookbook:

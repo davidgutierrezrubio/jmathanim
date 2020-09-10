@@ -84,9 +84,11 @@ public abstract class JMathAnimScene {
         }
     }
 
-    public final void registerObjectToBeUpdated(Updateable obj) {
-        if (!objectsToBeUpdated.contains(obj)) {
-            objectsToBeUpdated.add(obj);
+    public final void registerObjectToBeUpdated(Updateable... objs) {
+        for (Updateable obj : objs) {
+            if (!objectsToBeUpdated.contains(obj)) {
+                objectsToBeUpdated.add(obj);
+            }
         }
     }
 
@@ -207,12 +209,12 @@ public abstract class JMathAnimScene {
     //Convenience methods
     //This methods allow easy and fast ways to shift, rotate, and scale objects
     public void shift(MathObject obj, double dx, double dy, double runTime) {
-        play(new ApplyCommand(Commands.shift(obj, dx, dy), runTime));
+        play(Commands.shift(obj, dx, dy, runTime));
     }
 
     public void playShift(MathObject obj, Vec v, double runTime) {
 
-        play(new ApplyCommand(Commands.shift(obj, v), runTime));
+        play(Commands.shift(obj, v, runTime));
     }
 
     public void playScale(MathObject obj, Point center, double sc, double runTime) {
@@ -220,11 +222,11 @@ public abstract class JMathAnimScene {
     }
 
     public void scale(MathObject obj, Point center, double scx, double scy, double scz, double runTime) {
-        play(new ApplyCommand(Commands.scale(obj, center, scx, scy, scz), runTime));
+        play(Commands.scale(obj, center, scx, scy, scz, runTime));
     }
 
     public void playRotate(MathObject obj, Point center, double angle, double runTime) {
-        play(new ApplyCommand(Commands.rotate(obj, center, angle), runTime));
+        play(Commands.rotate(obj, center, angle, runTime));
     }
 
     public void playTransform(JMPathMathObject obj1, JMPathMathObject obj2, double runTime) {

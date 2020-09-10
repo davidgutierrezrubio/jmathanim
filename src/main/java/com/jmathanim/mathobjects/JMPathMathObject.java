@@ -48,8 +48,12 @@ public class JMPathMathObject extends MathObject {
         needsRecalcControlPoints = false;
     }
 
-    public JMPathPoint getPoint(int n) {
+    public JMPathPoint getJMPoint(int n) {
         return jmpath.getPoint(n);
+    }
+
+    public Point getPoint(int n) {
+        return jmpath.getPoint(n).p;
     }
 
     /**

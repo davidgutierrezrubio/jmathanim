@@ -31,8 +31,8 @@ public class TransformedJMPath extends JMPathMathObject{
     public void update() {
           int size = srcOBj.jmpath.size();
             for (int n = 0; n < size; n++) {
-                JMPathPoint jmPDst = getPoint(n);
-                JMPathPoint pSrc = srcOBj.getPoint(n);
+                JMPathPoint jmPDst = getJMPoint(n);
+                JMPathPoint pSrc = srcOBj.getJMPoint(n);
                 Point pDst = transform.getTransformedPoint(pSrc.p);
                 Point cp1Dst = transform.getTransformedPoint(pSrc.cp1);
                 Point cp2Dst = transform.getTransformedPoint(pSrc.cp2);

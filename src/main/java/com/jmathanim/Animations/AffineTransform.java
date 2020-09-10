@@ -10,6 +10,7 @@ import com.jmathanim.mathobjects.JMPathMathObject;
 import com.jmathanim.mathobjects.JMPathPoint;
 import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.Point;
+import com.jmathanim.mathobjects.Segment;
 import org.apache.commons.math3.linear.Array2DRowRealMatrix;
 import org.apache.commons.math3.linear.LUDecomposition;
 import org.apache.commons.math3.linear.MatrixUtils;
@@ -110,7 +111,7 @@ public class AffineTransform {
             JMPathMathObject mobj = (JMPathMathObject) mObject;
             int size = mobj.jmpath.size();
             for (int n = 0; n < size; n++) {
-                applyTransform(mobj.getPoint(n));
+                applyTransform(mobj.getJMPoint(n));
             }
         }
 
@@ -284,6 +285,14 @@ public class AffineTransform {
         return resul;
     }
 
+    
+    /**
+     * Create a Reflection that transforms A into B
+     * @param A
+     * @param B
+     * @param alpha Alpha parameter. 0 means unaltered, 1 fully reflection done
+     * @return The reflection
+     */
     public static AffineTransform createReflection(Point A, Point B, double alpha) {
         Point E1 = new Point(1, 0);
         Point E2 = new Point(-1, 0);
@@ -298,5 +307,18 @@ public class AffineTransform {
         return resul;
 
     }
+ public static AffineTransform createReflectionByAxis(Segment s, double alpha) {
+        Point E1 = s.getJMPoint(0).p;
+        Point E2 = s.getJMPoint(1).p;
+        AffineTransform canonize = AffineTransform.createDirect2DHomotopy(E1, E2, new Point(0,0), new Point(0,E2.v.norm()), 1);
+        AffineTransform invCanonize = canonize.getInverse();
+        //A reflection from (1,0) to (-1,0) has a very simple form
+        AffineTransform canonizedReflection = new AffineTransform();
+        canonizedReflection.setV1Img((1-alpha)-1*alpha,0,0);
 
+        AffineTransform resul = canonize.compose(canonizedReflection).compose(invCanonize);
+
+        return resul;
+
+    }
 }

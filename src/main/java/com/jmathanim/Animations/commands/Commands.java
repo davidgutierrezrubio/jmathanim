@@ -6,10 +6,13 @@
 package com.jmathanim.Animations.commands;
 
 import com.jmathanim.Animations.AffineTransform;
+import com.jmathanim.Animations.Animation;
+import com.jmathanim.Animations.ApplyCommand;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.Point;
+import com.jmathanim.mathobjects.Segment;
 
 /**
  *
@@ -17,12 +20,12 @@ import com.jmathanim.mathobjects.Point;
  */
 public class Commands {
 
-    public static SingleMathObjectCommand shift(MathObject object, double dx, double dy) {
-        return shift(object, new Vec(dx, dy));
+    public static ApplyCommand shift(MathObject object, double dx, double dy,double runtime) {
+        return shift(object, new Vec(dx,dy), runtime);
     }
 
-    public static SingleMathObjectCommand shift(MathObject object, Vec sv) {
-        return new SingleMathObjectCommand(object) {
+    public static ApplyCommand shift(MathObject object, Vec sv,double runtime) {
+        return new ApplyCommand(new SingleMathObjectCommand(object) {
             Vec shiftVector = sv;
 
             @Override
@@ -39,15 +42,15 @@ public class Commands {
             @Override
             public void finish() {
             }
-        };
+        },runtime);
     }//End of shift command
 
-    public static SingleMathObjectCommand scale(MathObject object, Point c, double sc) {
-        return scale(object, c, sc, sc, sc);
+    public static ApplyCommand scale(MathObject object, Point c, double sc,double runtime) {
+        return scale(object, c, sc, sc, sc,runtime);
     }
 
-    public static SingleMathObjectCommand scale(MathObject object, Point c, double scx, double scy, double scz) {
-        return new SingleMathObjectCommand(object) {
+    public static ApplyCommand scale(MathObject object, Point c, double scx, double scy, double scz,double runtime) {
+        return new ApplyCommand(new SingleMathObjectCommand(object) {
             double scalex = scx;
             double scaley = scy;
             double scalez = scz;
@@ -70,11 +73,11 @@ public class Commands {
             @Override
             public void finish() {
             }
-        };
+        },runtime);
     }//End of scale command
 
-    public static SingleMathObjectCommand rotate(MathObject object, Point c, double ang) {
-        return new SingleMathObjectCommand(object) {
+    public static ApplyCommand rotate(MathObject object, Point c, double ang,double runtime) {
+        return new ApplyCommand(new SingleMathObjectCommand(object) {
             double angle = ang;
             double tPrevious;
             Point rotationCenter = c;
@@ -98,6 +101,58 @@ public class Commands {
             @Override
             public void finish() {
             }
-        };
+        },runtime);
     }//End of scale command
+    
+    
+     public static ApplyCommand homotopy(MathObject object, Point a, Point b, Point c,Point d,double runtime) {
+        return new ApplyCommand(new SingleMathObjectCommand(object) {
+            double tPrevious;
+            Point A = a;
+            Point B = b;
+            Point C = c;
+            Point D = d;
+            AffineTransform tr;
+
+            @Override
+            public void initialize() {
+                mathObject.saveState();//Easy way, but interferes with multiple animations (not easy to solve)
+            }
+
+            @Override
+            public void execute(double t) {
+                mathObject.restoreState();
+                tr = AffineTransform.createDirect2DHomotopy(A,B,C,D,t);
+                tr.applyTransform(mathObject);
+            }
+
+            @Override
+            public void finish() {
+            }
+        },runtime);
+    }//End of homotopy command
+    public static ApplyCommand reflectionByAxis(MathObject object, Segment s,double runtime) {
+        return new ApplyCommand(new SingleMathObjectCommand(object) {
+            double tPrevious;
+            Segment S = s;
+            AffineTransform tr;
+
+            @Override
+            public void initialize() {
+                mathObject.saveState();//Easy way, but interferes with multiple animations (not easy to solve)
+            }
+
+            @Override
+            public void execute(double t) {
+                mathObject.restoreState();
+                tr = AffineTransform.createReflectionByAxis(S,t);
+                tr.applyTransform(mathObject);
+            }
+
+            @Override
+            public void finish() {
+            }
+        },runtime);
+    }//End of homotopy command
+     
 }
