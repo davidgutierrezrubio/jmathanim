@@ -285,9 +285,9 @@ public class AffineTransform {
         return resul;
     }
 
-    
     /**
      * Create a Reflection that transforms A into B
+     *
      * @param A
      * @param B
      * @param alpha Alpha parameter. 0 means unaltered, 1 fully reflection done
@@ -307,18 +307,83 @@ public class AffineTransform {
         return resul;
 
     }
- public static AffineTransform createReflectionByAxis(Segment s, double alpha) {
+
+    public static AffineTransform createReflectionByAxis(Segment s, double alpha) {
         Point E1 = s.getJMPoint(0).p;
         Point E2 = s.getJMPoint(1).p;
-        AffineTransform canonize = AffineTransform.createDirect2DHomotopy(E1, E2, new Point(0,0), new Point(0,E2.v.norm()), 1);
+        AffineTransform canonize = AffineTransform.createDirect2DHomotopy(E1, E2, new Point(0, 0), new Point(0, E2.v.norm()), 1);
         AffineTransform invCanonize = canonize.getInverse();
         //A reflection from (1,0) to (-1,0) has a very simple form
         AffineTransform canonizedReflection = new AffineTransform();
-        canonizedReflection.setV1Img((1-alpha)-1*alpha,0,0);
+        canonizedReflection.setV1Img((1 - alpha) - 1 * alpha, 0, 0);
 
         AffineTransform resul = canonize.compose(canonizedReflection).compose(invCanonize);
 
         return resul;
+
+    }
+
+    public AffineTransform interpolate(AffineTransform tr, double lambda) {
+//        AffineTransform resul = new AffineTransform();
+        double[] row1_1 = this.A.getRow(0);
+        double[] row1_2 = tr.A.getRow(0);
+        double interp11=(1-lambda)*row1_1[1]+lambda*row1_2[1];
+        double interp12=(1-lambda)*row1_1[2]+lambda*row1_2[2];
+        double interp13=(1-lambda)*row1_1[3]+lambda*row1_2[3];
+        
+        tr.setOriginImg(interp11, interp12, interp13);
+        
+        double[] row2_1 = this.A.getRow(1);
+        double[] row2_2 = tr.A.getRow(1);
+        double interp21=(1-lambda)*row2_1[1]+lambda*row2_2[1];
+        double interp22=(1-lambda)*row2_1[2]+lambda*row2_2[2];
+        double interp23=(1-lambda)*row2_1[3]+lambda*row2_2[3];
+        
+        tr.setV1Img(interp21, interp22, interp23);
+        
+        double[] row3_1 = this.A.getRow(2);
+        double[] row3_2 = tr.A.getRow(2);
+        double interp31=(1-lambda)*row3_1[1]+lambda*row3_2[1];
+        double interp32=(1-lambda)*row3_1[2]+lambda*row3_2[2];
+        double interp33=(1-lambda)*row3_1[3]+lambda*row3_2[3];
+        
+        tr.setV2Img(interp31, interp32, interp33);
+        
+        return tr;
+
+    }
+
+    /**
+     * Creates an affine transformation that maps A,B,C into D,E,F
+     *
+     * @param A
+     * @param B
+     * @param C
+     * @param D
+     * @param E
+     * @param F
+     * @param lambda Lambda parameter
+     * @return
+     */
+    public static AffineTransform createAffineTransformation(Point A, Point B, Point C, Point D, Point E, Point F, double lambda) {
+        //First I create a transformation that map O,e1,e2 into A,B,C
+        AffineTransform tr1 = new AffineTransform();
+        tr1.setOriginImg(A);
+        tr1.setV1Img(A.to(B));
+        tr1.setV2Img(A.to(C));
+        tr1=tr1.getInverse();
+
+//Now I create a transformation that map O,e1,e2 into D,E,F
+        AffineTransform tr2 = new AffineTransform();
+        tr2.setOriginImg(D);
+        tr2.setV1Img(D.to(E));
+        tr2.setV2Img(D.to(F));
+        
+        //The transformation I am looking for is X-> tr2(tr^-1(X))
+        AffineTransform tr = tr1.compose(tr2);
+        AffineTransform id = new AffineTransform();
+//        return tr;
+        return id.interpolate(tr, lambda);
 
     }
 }

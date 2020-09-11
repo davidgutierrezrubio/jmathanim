@@ -10,6 +10,7 @@ import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.JMPath;
 import com.jmathanim.mathobjects.Shape;
 import com.jmathanim.mathobjects.JMPathPoint;
+import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.Point;
 import com.jmathanim.mathobjects.Segment;
 import java.util.ArrayList;
@@ -21,7 +22,8 @@ import java.util.ArrayList;
 public class Transform extends Animation {
 
     public static final int METHOD_INTERPOLATE_POINT_BY_POINT = 1;
-    public static final int METHOD_AFFINE_TRANSFORM = 2;
+    public static final int METHOD_HOMOTOPY_TRANSFORM = 2;
+    public static final int METHOD_AFFINE_TRANSFORM = 3;
     private JMPath jmpathOrig, jmpathDstBackup;
     private final Shape mobjDestiny;
     private final Shape mobjTransformed;
@@ -39,8 +41,8 @@ public class Transform extends Animation {
         method = METHOD_INTERPOLATE_POINT_BY_POINT;//Default method
         shouldOptimizePathsFirst = true;
         forceChangeDirection = false;
-        determineTransformMethod();
-        isFinished=false;
+
+        isFinished = false;
     }
 
     @Override
@@ -52,13 +54,15 @@ public class Transform extends Animation {
         //2 segments/lines or segment/line
         //2 circles/ellipses
         //2 regular polygons with same number of sides
+        determineTransformMethod();
+
         //This is the initialization for the point-to-point interpolation
         //Prepare paths. Firs, I ensure they have the same number of points
-        alignPaths(mobjTransformed.jmpath,mobjDestiny.jmpath);
+        alignPaths(mobjTransformed.jmpath, mobjDestiny.jmpath);
 
         if (shouldOptimizePathsFirst) {
             //Now, adjust the points of the first to minimize distance from point-to-point
-            minimizeSumDistance(mobjTransformed.jmpath,mobjDestiny.jmpath, forceChangeDirection);
+            minimizeSumDistance(mobjTransformed.jmpath, mobjDestiny.jmpath, forceChangeDirection);
         }
         //Base path and properties, to interpolate from
         jmpathOrig = mobjTransformed.jmpath.rawCopy();
@@ -69,14 +73,15 @@ public class Transform extends Animation {
             mobjTransformed.jmpath.jmPathPoints.get(n).isCurved = true;
         }
     }
- /**
+
+    /**
      * Cycles the point of closed path (and inverts its orientation if
      * necessary) in order to minimize the sum of squared distances from the
      * points of two paths with the same number of nodes
      *
      * @param path2
      */
-    public void minimizeSumDistance(JMPath path1,JMPath path2, boolean forceChangeDirection) {
+    public void minimizeSumDistance(JMPath path1, JMPath path2, boolean forceChangeDirection) {
         ArrayList<Double> distances = new ArrayList<Double>();
         double minSumDistances = 999999999;
         int optimalStep = 0;
@@ -101,8 +106,14 @@ public class Transform extends Animation {
         }
         path1.cyclePoints(optimalStep, changeDirection);
     }
+
     private void determineTransformMethod() {
         if ((mobjTransformed instanceof Segment) && (mobjDestiny instanceof Segment)) {
+            method = METHOD_HOMOTOPY_TRANSFORM;
+            shouldOptimizePathsFirst = true;
+        }
+        if ((mobjTransformed.getObjectType() == MathObject.RECTANGLE) && (mobjDestiny.getObjectType() == MathObject.RECTANGLE)) {
+            //TODO: MEthod between rectangles should be better, compositing with a rotation
             method = METHOD_AFFINE_TRANSFORM;
             shouldOptimizePathsFirst = true;
         }
@@ -115,6 +126,9 @@ public class Transform extends Animation {
         switch (method) {
             case METHOD_INTERPOLATE_POINT_BY_POINT:
                 interpolateByPoint(t);
+                break;
+            case METHOD_HOMOTOPY_TRANSFORM:
+                homotopyTransform(t);
                 break;
             case METHOD_AFFINE_TRANSFORM:
                 affineTransform(t);
@@ -158,13 +172,14 @@ public class Transform extends Animation {
     public void finishAnimation() {
         if (isFinished) {
             return;
-        }else
-            isFinished=true;
+        } else {
+            isFinished = true;
+        }
         //TODO: If mobjTransformed is open and mobjDestiny,should fix that
         //TODO: Works, but needs to be refined
         if (!mobjTransformed.jmpath.isClosed && mobjDestiny.jmpath.isClosed) {
             mobjTransformed.jmpath.jmPathPoints.remove(-1);
-            mobjTransformed.jmpath.jmPathPoints.get(0).isVisible=true;
+            mobjTransformed.jmpath.jmPathPoints.get(0).isVisible = true;
         }
 
 //Here it should remove unnecessary points
@@ -185,10 +200,10 @@ public class Transform extends Animation {
         mobjTransformed.removeInterpolationPoints();
         System.out.println(mobjTransformed);
         mobjDestiny.removeInterpolationPoints();
-        mobjTransformed.jmpath.isClosed=mobjDestiny.jmpath.isClosed;
+        mobjTransformed.jmpath.isClosed = mobjDestiny.jmpath.isClosed;
     }
 
-    private void affineTransform(double t) {
+    private void homotopyTransform(double t) {
         JMPathPoint interPoint, basePoint, dstPoint;
         Point A = jmpathOrig.getPoint(0).p;
         Point B = jmpathOrig.getPoint(1).p;
@@ -196,6 +211,26 @@ public class Transform extends Animation {
         Point D = mobjDestiny.getJMPoint(1).p;
 
         AffineTransform tr = AffineTransform.createDirect2DHomotopy(A, B, C, D, t);
+        applyTransform(t, tr);
+    }
+
+    private void affineTransform(double t) {
+        JMPathPoint interPoint, basePoint, dstPoint;
+        Point A = jmpathOrig.getPoint(0).p;
+        Point B = jmpathOrig.getPoint(1).p;
+        Point C = jmpathOrig.getPoint(2).p;
+        Point D = mobjDestiny.getJMPoint(0).p;
+        Point E = mobjDestiny.getJMPoint(1).p;
+        Point F = mobjDestiny.getJMPoint(2).p;
+
+        AffineTransform tr = AffineTransform.createAffineTransformation(A, B, C, D, E, F, t);
+        applyTransform(t, tr);
+    }
+
+    private void applyTransform(double t, AffineTransform tr) throws ArrayIndexOutOfBoundsException {
+        JMPathPoint interPoint;
+        JMPathPoint basePoint;
+        JMPathPoint dstPoint;
         for (int n = 0; n < mobjTransformed.jmpath.jmPathPoints.size(); n++) {
             interPoint = mobjTransformed.jmpath.jmPathPoints.get(n);
             basePoint = jmpathOrig.jmPathPoints.get(n);
@@ -220,34 +255,31 @@ public class Transform extends Animation {
         mobjTransformed.mp.interpolateFrom(propBase, mobjDestiny.mp, t);
     }
 
-     /**
+    /**
      * Align the number of points of this path with the given one. Align the
      * paths so that they have the same number of points, interpolating the
      * smaller one if necessary.
      *
      * @param path2
      */
-    public void alignPaths(JMPath path1,JMPath path2) {//TODO: Move this to Transform
+    public void alignPaths(JMPath path1, JMPath path2) {//TODO: Move this to Transform
         //TODO: What about open paths?
         JMPath pathSmall;
         JMPath pathBig;
-        
-        
+
         //If path1 is closed but path2 is not, open path1, duplicating first vertex 
-        if (path1.isClosed && !path2.isClosed)
-        {
+        if (path1.isClosed && !path2.isClosed) {
             path1.addPoint(path1.getPoint(0).copy());
-            path1.getPoint(0).isVisible=false;
-            path1.getPoint(-1).type=JMPathPoint.TYPE_INTERPOLATION_POINT;
-            path1.isClosed=false;
+            path1.getPoint(0).isVisible = false;
+            path1.getPoint(-1).type = JMPathPoint.TYPE_INTERPOLATION_POINT;
+            path1.isClosed = false;
         }
-        
+
 //         if (path2.isClosed && !this.isClosed)
 //        {
 //            path2.addPoint(path2.getPoint(0).copy());
 //            path2.getPoint(0).isVisible=false;
 //        }
-        
         if (path1.size() == path2.size()) {
             return;
         }
@@ -262,8 +294,8 @@ public class Transform extends Animation {
 
         //At this point pathSmall points to the smaller path who is going to be
         //interpolated
-        int nSmall = (pathSmall.isClosed ? pathSmall.size():pathSmall.size()-1);
-        int nBig = (pathBig.isClosed ? pathBig.size():pathBig.size()-1);
+        int nSmall = (pathSmall.isClosed ? pathSmall.size() : pathSmall.size() - 1);
+        int nBig = (pathBig.isClosed ? pathBig.size() : pathBig.size() - 1);
 //        int nBig = pathBig.size();
 
         JMPath resul = new JMPath();
@@ -283,7 +315,9 @@ public class Transform extends Animation {
             }
             dividePathSegment(v1, v2, numDivForThisVertex, resul);
         }
-        if (!pathSmall.isClosed) resul.addPoint(pathSmall.getPoint(-1));
+        if (!pathSmall.isClosed) {
+            resul.addPoint(pathSmall.getPoint(-1));
+        }
         pathSmall.clear();
         pathSmall.addPointsFrom(resul);
 //        pathSmall.generateControlPoints();//Not necessary
@@ -310,14 +344,7 @@ public class Transform extends Animation {
             dividePathSegment(interpolate, v2, numDivForThisVertex - 1, resul);
         }
     }
-    
-    
-    
-    
-    
-    
-    
-    
+
     public int getMethod() {
         return method;
     }

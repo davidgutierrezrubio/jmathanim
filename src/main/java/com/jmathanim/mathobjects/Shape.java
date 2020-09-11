@@ -30,6 +30,7 @@ public class Shape extends MathObject {
      */
     private ArrayList<Boolean> visibilityTemp;
     private double fillAlphaTemp;
+    
 
     public Shape() {
         this(null);
@@ -252,18 +253,28 @@ public class Shape extends MathObject {
         jmpath.saveState();
     }
 
-    
+    public static Shape square()
+    {
+        return Shape.square(new Point(0,0),1);
+    }
+    public static Shape square(Point A,double side)
+    {
+        
+        return Shape.rectangle(A, A.add(new Vec(side,side)));
+    }
     //Static methods to build most commons shapes
-     public static Shape square()
+     public static Shape rectangle(Point A,Point B)
     {
         Shape obj=new Shape();
         JMathAnimConfig.getConfig().getScene();
-        JMPathPoint p1=JMPathPoint.lineTo(0,0);
-        JMPathPoint p2=JMPathPoint.lineTo(1,0);
-        JMPathPoint p3=JMPathPoint.lineTo(1,1);
-        JMPathPoint p4=JMPathPoint.lineTo(0,1);
+        JMPathPoint p1=JMPathPoint.lineTo(A);
+        JMPathPoint p2=JMPathPoint.lineTo(B.v.x,A.v.y);//TODO: Make it updateable
+        JMPathPoint p3=JMPathPoint.lineTo(B);
+        JMPathPoint p4=JMPathPoint.lineTo(A.v.x,B.v.y);
         obj.jmpath.addPoint(p1,p2,p3,p4);
         obj.jmpath.close();
+        obj.setObjectType(RECTANGLE);
         return obj;
     }
+     
 }

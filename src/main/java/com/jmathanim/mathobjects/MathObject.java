@@ -19,6 +19,16 @@ import java.util.HashSet;
  */
 public abstract class MathObject implements Drawable, Updateable,Stateable{
 
+    //Implemented types
+     public static final int OTHER = 0;
+     public static final int POINT = 1;
+     public static final int RECTANGLE = 2; //Includes square
+     public static final int CIRCLE = 3;
+     public static final int ELLIPSE = 4;
+     public static final int ARC = 5;
+     public static final int REGULAR_POLYGON = 6;
+     public static final int GENERAL_POLYGON = 7;
+    
     public static final int SLICE_SIMPLE = 1;
     public static final int SLICE_DOUBLE = 2;
     public static final int SLICE_FOUR = 3;
@@ -26,6 +36,8 @@ public abstract class MathObject implements Drawable, Updateable,Stateable{
     public final MathObjectDrawingProperties mp;
     protected MathObjectDrawingProperties mpBackup;
     public String label="";
+    
+    private int objectType;
     /**
      * Scenes where this object belongs.
      *
@@ -219,6 +231,14 @@ public abstract class MathObject implements Drawable, Updateable,Stateable{
 
     public void setMp(MathObjectDrawingProperties _mp) {
         this.mp.copyFrom(mp);
+    }
+
+    public int getObjectType() {
+        return objectType;
+    }
+
+    public void setObjectType(int objectType) {
+        this.objectType = objectType;
     }
     
 }

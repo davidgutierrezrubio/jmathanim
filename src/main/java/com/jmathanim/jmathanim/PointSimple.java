@@ -679,7 +679,7 @@ public class PointSimple extends Scene2D {
 
         hex2 = gira(hex2, 27);
         hex2 = gira(hex2, 28);
-        
+
         hex2 = gira(hex2, 30);
 
 //         hex2=gira(hex2,10);
@@ -690,7 +690,7 @@ public class PointSimple extends Scene2D {
 
     private Shape gira(Shape hex2, int n) {
         ApplyCommand cmd;
-        System.out.println("Rotating "+n);
+        System.out.println("Rotating " + n);
         hex2 = hex2.copy();
         cmd = Commands.rotate(hex2, hex2.getPoint(n), Math.PI * 2 / 3, 1);
         play(cmd);
@@ -699,9 +699,23 @@ public class PointSimple extends Scene2D {
 
     private void pruebaBuilders() {
         Shape sq = Shape.square();
-        add(sq);
+        Point A = new Point(1, 1);
+        Point B = new Point(0, -1);
+        Point C = new Point(1.5, -.7);
+        Shape sq2 = Shape.square(A, .5);
+        Shape rect = Shape.rectangle(B, C);
+        playRotate(rect, rect.getCenter(), Math.PI/3, 5);
+//        sq2.mp.drawColor=Color.GRAY;
+//        rect.mp.drawColor=Color.cyan;
+//        registerObjectToBeUpdated(new AnchoredMathObject(sq2,AnchoredMathObject.ANCHOR_BY_CENTER, sq.getPoint(2),AnchoredMathObject.ANCHOR_BY_POINT));
+        AffineTransform tr=AffineTransform.createAffineTransformation(rect.getPoint(0), rect.getPoint(1), rect.getPoint(2), sq2.getPoint(0), sq2.getPoint(1), sq2.getPoint(2), 1);
+        add(rect);
+        Shape rect2 = tr.getTransformedObject(rect);
+        rect2.mp.drawColor=Color.GREEN;
+//        add(rect2);
         waitSeconds(5);
-        playRotate(sq, new Point(0,0), Math.PI, 5);
+//        playRotate(sq, new Point(0,0), Math.PI, 5);
+        playTransform(rect, sq2, 10);
         waitSeconds(5);
     }
 }
