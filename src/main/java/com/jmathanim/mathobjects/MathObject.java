@@ -5,6 +5,7 @@
  */
 package com.jmathanim.mathobjects;
 
+import com.jmathanim.Utils.JMathAnimConfig;
 import com.jmathanim.Utils.MathObjectDrawingProperties;
 import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.Vec;
@@ -61,8 +62,8 @@ public abstract class MathObject implements Drawable, Updateable,Stateable{
     }
 
     public MathObject(MathObjectDrawingProperties prop) {
-        mp = new MathObjectDrawingProperties();//Default
-        mp.digestFrom(prop);
+        mp=JMathAnimConfig.getDefaultMP();//Default MP values
+        mp.digestFrom(prop);//Copy all non-null values from prop
 //        ascendent=new HashSet<>();
         dependent = new HashSet<>();
         children = new HashSet<>();
@@ -211,4 +212,13 @@ public abstract class MathObject implements Drawable, Updateable,Stateable{
     public void restoreState(){
         mp.copyFrom(mpBackup);
     }
+
+    public MathObjectDrawingProperties getMp() {
+        return mp;
+    }
+
+    public void setMp(MathObjectDrawingProperties _mp) {
+        this.mp.copyFrom(mp);
+    }
+    
 }

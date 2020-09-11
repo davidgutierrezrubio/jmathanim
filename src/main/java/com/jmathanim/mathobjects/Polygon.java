@@ -16,7 +16,7 @@ import java.util.List;
  *
  * @author David Gutiérrez Rubio <davidgutierrezrubio@gmail.com>
  */
-public class Polygon extends JMPathMathObject {
+public class Polygon extends Shape {
 
     protected final AveragePoint center;
 

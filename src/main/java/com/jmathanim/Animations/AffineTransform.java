@@ -6,7 +6,7 @@
 package com.jmathanim.Animations;
 
 import com.jmathanim.Utils.Vec;
-import com.jmathanim.mathobjects.JMPathMathObject;
+import com.jmathanim.mathobjects.Shape;
 import com.jmathanim.mathobjects.JMPathPoint;
 import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.Point;
@@ -107,8 +107,8 @@ public class AffineTransform {
 
     public void applyTransform(MathObject mObject) {
 
-        if (mObject instanceof JMPathMathObject) {
-            JMPathMathObject mobj = (JMPathMathObject) mObject;
+        if (mObject instanceof Shape) {
+            Shape mobj = (Shape) mObject;
             int size = mobj.jmpath.size();
             for (int n = 0; n < size; n++) {
                 applyTransform(mobj.getJMPoint(n));
@@ -154,9 +154,9 @@ public class AffineTransform {
         }
     }
 
-    public JMPathMathObject getTransformedObject(JMPathMathObject obj) {
+    public Shape getTransformedObject(Shape obj) {
 
-        JMPathMathObject resul = obj.copy();
+        Shape resul = obj.copy();
         applyTransform(resul);
         return resul;
 

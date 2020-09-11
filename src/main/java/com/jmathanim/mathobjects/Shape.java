@@ -6,6 +6,7 @@
 package com.jmathanim.mathobjects;
 
 import com.jmathanim.Renderers.Renderer;
+import com.jmathanim.Utils.JMathAnimConfig;
 import com.jmathanim.Utils.MathObjectDrawingProperties;
 import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.Vec;
@@ -17,7 +18,7 @@ import java.util.ArrayList;
  *
  * @author David Gutiérrez Rubio <davidgutierrezrubio@gmail.com>
  */
-public class JMPathMathObject extends MathObject {
+public class Shape extends MathObject {
 
     public final JMPath jmpath;
     protected boolean needsRecalcControlPoints;
@@ -30,18 +31,18 @@ public class JMPathMathObject extends MathObject {
     private ArrayList<Boolean> visibilityTemp;
     private double fillAlphaTemp;
 
-    public JMPathMathObject() {
+    public Shape() {
         this(null);
     }
 
-    public JMPathMathObject(JMPath jmpath, MathObjectDrawingProperties mp) {
+    public Shape(JMPath jmpath, MathObjectDrawingProperties mp) {
         super(mp);
         vertices = new ArrayList<JMPathPoint>();
         this.jmpath = jmpath;
         needsRecalcControlPoints = false;
     }
 
-    public JMPathMathObject(MathObjectDrawingProperties mp) {//TODO: Fix this
+    public Shape(MathObjectDrawingProperties mp) {//TODO: Fix this
         super(mp);
         vertices = new ArrayList<JMPathPoint>();
         jmpath = new JMPath();
@@ -163,8 +164,8 @@ public class JMPathMathObject extends MathObject {
     }
 
     @Override
-    public JMPathMathObject copy() {
-        JMPathMathObject resul = new JMPathMathObject(jmpath.rawCopy(), mp.copy());
+    public Shape copy() {
+        Shape resul = new Shape(jmpath.rawCopy(), mp.copy());
         return resul;
     }
 
@@ -251,4 +252,18 @@ public class JMPathMathObject extends MathObject {
         jmpath.saveState();
     }
 
+    
+    //Static methods to build most commons shapes
+     public static Shape square()
+    {
+        Shape obj=new Shape();
+        JMathAnimConfig.getConfig().getScene();
+        JMPathPoint p1=JMPathPoint.lineTo(0,0);
+        JMPathPoint p2=JMPathPoint.lineTo(1,0);
+        JMPathPoint p3=JMPathPoint.lineTo(1,1);
+        JMPathPoint p4=JMPathPoint.lineTo(0,1);
+        obj.jmpath.addPoint(p1,p2,p3,p4);
+        obj.jmpath.close();
+        return obj;
+    }
 }

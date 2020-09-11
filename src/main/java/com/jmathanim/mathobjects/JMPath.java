@@ -93,12 +93,13 @@ public class JMPath implements Updateable, Stateable {
         isClosed = false;
     }
 
-    public boolean addPoint(Point p) {
-        return jmPathPoints.add(new JMPathPoint(p, true, JMPathPoint.TYPE_VERTEX));
+    public void addPoint(Point p) {
+        jmPathPoints.add(new JMPathPoint(p, true, JMPathPoint.TYPE_VERTEX));
     }
 
-    public boolean addPoint(JMPathPoint e) {
-        return jmPathPoints.add(e);
+    public void addPoint(JMPathPoint...points) {
+        for (JMPathPoint e:points)
+        jmPathPoints.add(e);
     }
 
     public void addCPoint1(Point e) {

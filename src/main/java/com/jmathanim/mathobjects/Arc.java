@@ -12,7 +12,7 @@ import com.jmathanim.Utils.Vec;
  *
  * @author David Gutierrez Rubio davidgutierrezrubio@gmail.com
  */
-public class Arc extends JMPathMathObject {
+public class Arc extends Shape {
 
     public double radiusx, radiusy, angle;
     public double step;

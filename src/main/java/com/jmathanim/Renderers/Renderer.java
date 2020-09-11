@@ -8,7 +8,7 @@ package com.jmathanim.Renderers;
 import com.jmathanim.mathobjects.JMPath;
 import com.jmathanim.Cameras.Camera;
 import com.jmathanim.Utils.MathObjectDrawingProperties;
-import com.jmathanim.mathobjects.JMPathMathObject;
+import com.jmathanim.mathobjects.Shape;
 import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.Point;
 import java.awt.Color;
@@ -99,7 +99,7 @@ public abstract class Renderer {
      *
      * @param mobj The JMPathObject
      */
-    abstract public void drawPath(JMPathMathObject mobj);
+    abstract public void drawPath(Shape mobj);
 
     /**
      * Draw a circle Most of the drawings will be paths, but this method will

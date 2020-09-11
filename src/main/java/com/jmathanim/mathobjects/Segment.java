@@ -12,7 +12,7 @@ import com.jmathanim.Utils.Vec;
  *
  * @author David Gutierrez Rubio davidgutierrezrubio@gmail.com
  */
-public class Segment extends JMPathMathObject {
+public class Segment extends Shape {
 
     Point p1, p2;
 

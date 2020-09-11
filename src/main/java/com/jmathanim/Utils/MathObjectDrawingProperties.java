@@ -35,18 +35,6 @@ public class MathObjectDrawingProperties {
     public Integer dashStyle;
 
     public MathObjectDrawingProperties() {
-        //Default, boring values
-        this.drawColor = Color.WHITE;
-        this.fillColor = new Color(0, 0, 0, 0);//Transparent color
-        this.thickness = 1d;
-        this.dashStyle = SOLID;
-        this.visible = true;
-        this.fill = false;
-        this.drawPathBorder = false;
-        this.absoluteThickness = false;
-        this.layer = 1;//Layer 0 should be reserved for background
-        this.absolutePosition = false;
-
     }
 
     /**
@@ -148,8 +136,8 @@ public class MathObjectDrawingProperties {
 //        absolutePosition;
 //        drawPathBorder;
 //        dashStlye
-        drawColor = mp.drawColor;
-        fillColor = mp.fillColor;
+        drawColor = interpolateColor(mp.drawColor, mp.drawColor, 1);//Trick to make a copy
+        fillColor = interpolateColor(mp.fillColor, mp.fillColor, 1);//Trick to make a copy
         thickness = mp.thickness;
         dashStyle = mp.dashStyle;
         absoluteThickness = mp.absoluteThickness;

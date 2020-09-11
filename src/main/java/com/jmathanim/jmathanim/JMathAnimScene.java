@@ -13,7 +13,7 @@ import com.jmathanim.Cameras.Camera;
 import com.jmathanim.Renderers.Renderer;
 import com.jmathanim.Utils.JMathAnimConfig;
 import com.jmathanim.Utils.Vec;
-import com.jmathanim.mathobjects.JMPathMathObject;
+import com.jmathanim.mathobjects.Shape;
 import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.Point;
 import com.jmathanim.mathobjects.updateableObjects.Updateable;
@@ -44,7 +44,7 @@ public abstract class JMathAnimScene {
 
     public JMathAnimScene() {
         objects = new ArrayList<>(); //TODO: Extends this to include layers
-        conf = new JMathAnimConfig();
+        conf = JMathAnimConfig.getConfig();
         conf.setLowQuality();//by default, set low quality
         objectsToBeUpdated = new ArrayList<>();
     }
@@ -65,12 +65,21 @@ public abstract class JMathAnimScene {
     public abstract void setupSketch();
 
     /**
+     * This method handles the creation of the renderer(s)
+     * @return 
+     */
+    public abstract void createRenderer();
+    /**
      *
      */
     public final void execute() {
         String nombre = this.getClass().getName();
         System.out.println("Run sketch: " + nombre);
         setupSketch();
+        createRenderer();
+        
+        //In the global variable store Scene, Renderer and main Camera
+        conf.setScene(this);
         runSketch();
         SCRenderer.finish();//Finish rendering jobs
 
@@ -229,7 +238,7 @@ public abstract class JMathAnimScene {
         play(Commands.rotate(obj, center, angle, runTime));
     }
 
-    public void playTransform(JMPathMathObject obj1, JMPathMathObject obj2, double runTime) {
+    public void playTransform(Shape obj1, Shape obj2, double runTime) {
         play(new Transform(obj1, obj2, runTime));
     }
 }

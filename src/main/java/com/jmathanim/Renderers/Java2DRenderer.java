@@ -13,7 +13,7 @@ import com.jmathanim.Utils.MathObjectDrawingProperties;
 import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
-import com.jmathanim.mathobjects.JMPathMathObject;
+import com.jmathanim.mathobjects.Shape;
 import com.jmathanim.mathobjects.JMPathPoint;
 import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.Point;
@@ -95,8 +95,8 @@ public class Java2DRenderer extends Renderer {
         cnf = parentScene.conf;
         this.createMovie = createMovie;
         this.showPreview = showPreview;
-        camera = new Camera2D(cnf.width, cnf.height);
-        super.setSize(cnf.width, cnf.height);
+        camera = new Camera2D(cnf.mediaW, cnf.mediaH);
+        super.setSize(cnf.mediaW, cnf.mediaH);
 
         bufferedImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
         g2d = bufferedImage.createGraphics();
@@ -303,7 +303,7 @@ public class Java2DRenderer extends Renderer {
     }
 
     @Override
-    public void drawPath(JMPathMathObject mobj) {
+    public void drawPath(Shape mobj) {
 
         JMPath c = mobj.getPath();
         int numPoints = c.size();

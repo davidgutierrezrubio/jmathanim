@@ -148,7 +148,7 @@ public class LaTeXMathObject extends SVGMathObject {
     }
 
     private void setColor(Color color) {
-        for (JMPathMathObject p : jmps) {
+        for (Shape p : jmps) {
             p.mp.thickness = .0001;
             p.setColor(color);
             p.mp.fill = true;

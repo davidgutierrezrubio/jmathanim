@@ -20,23 +20,23 @@ import java.util.ArrayList;
  */
 public class MultiJMPathObject extends MathObject {
 
-    public final ArrayList<JMPathMathObject> jmps;
+    public final ArrayList<Shape> jmps;
 
     public MultiJMPathObject() {
-        this(new ArrayList<JMPathMathObject>());
+        this(new ArrayList<Shape>());
     }
 
-    public MultiJMPathObject(ArrayList<JMPathMathObject> jmps) {
+    public MultiJMPathObject(ArrayList<Shape> jmps) {
         super();
         this.jmps = jmps;
     }
 
-    public boolean addJMPathObject(JMPathMathObject e) {
+    public boolean addJMPathObject(Shape e) {
         return jmps.add(e);
     }
 
     public boolean addJMPathObject(JMPath p) {
-        return jmps.add(new JMPathMathObject(p, null));
+        return jmps.add(new Shape(p, null));
     }
 
     @Override
@@ -46,21 +46,21 @@ public class MultiJMPathObject extends MathObject {
 
     @Override
     public void moveTo(Vec coords) {
-        for (JMPathMathObject jmp : jmps) {
+        for (Shape jmp : jmps) {
             jmp.moveTo(coords);
         }
     }
 
     @Override
     public void shift(Vec shiftVector) {
-        for (JMPathMathObject jmp : jmps) {
+        for (Shape jmp : jmps) {
             jmp.shift(shiftVector);
         }
     }
 
     @Override
     public void scale(Point scaleCenter, double sx, double sy, double sz) {
-        for (JMPathMathObject jmp : jmps) {
+        for (Shape jmp : jmps) {
             jmp.scale(scaleCenter, sx, sy, sz);
         }
     }
@@ -73,21 +73,21 @@ public class MultiJMPathObject extends MathObject {
    
     @Override
     public void prepareForNonLinearAnimation() {
-        for (JMPathMathObject jmp : jmps) {
+        for (Shape jmp : jmps) {
             jmp.prepareForNonLinearAnimation();
         }
     }
 
     @Override
     public void processAfterNonLinearAnimation() {
-        for (JMPathMathObject jmp : jmps) {
+        for (Shape jmp : jmps) {
             jmp.processAfterNonLinearAnimation();
         }
     }
 
     @Override
     public void setDrawParam(double t, int sliceType) {
-        for (JMPathMathObject jmp : jmps) {
+        for (Shape jmp : jmps) {
             jmp.setDrawParam(t, sliceType);//TODO:Change this
         }
     }
@@ -95,7 +95,7 @@ public class MultiJMPathObject extends MathObject {
     @Override
     public void draw(Renderer r) {
         int n = 0;
-        for (JMPathMathObject jmp : jmps) {
+        for (Shape jmp : jmps) {
 //            Rect re=jmp.getBoundingBox();
 //            double[] xx={re.xmin, re.ymax};
 //            int[] mx = r.getCamera().mathToScreen(xx[0], xx[1]);
@@ -109,31 +109,31 @@ public class MultiJMPathObject extends MathObject {
     @Override
     public Rect getBoundingBox() {
         Rect resul = jmps.get(0).getBoundingBox();
-        for (JMPathMathObject jmp : jmps) {
+        for (Shape jmp : jmps) {
             resul = resul.union(jmp.getBoundingBox());
         }
         return resul;
     }
 
     public void setDrawAlpha(double t) {
-        for (JMPathMathObject jmp : jmps) {
+        for (Shape jmp : jmps) {
             jmp.setDrawAlpha(t);
         }
     }
 
     public void setFillAlpha(double t) {
-        for (JMPathMathObject jmp : jmps) {
+        for (Shape jmp : jmps) {
             jmp.setFillAlpha(t);
         }
     }
 
-    public JMPathMathObject get(int n) {
+    public Shape get(int n) {
         return jmps.get(n);
     }
 
     @Override
     public void registerChildrenToBeUpdated(JMathAnimScene scene) {
-        for (JMPathMathObject o : jmps) {
+        for (Shape o : jmps) {
             o.registerChildrenToBeUpdated(scene);
         }
     }
@@ -145,7 +145,7 @@ public class MultiJMPathObject extends MathObject {
 
     @Override
     public void unregisterChildrenToBeUpdated(JMathAnimScene scene) {
-        for (JMPathMathObject o : jmps) {
+        for (Shape o : jmps) {
             o.unregisterChildrenToBeUpdated(scene);
         }
     }

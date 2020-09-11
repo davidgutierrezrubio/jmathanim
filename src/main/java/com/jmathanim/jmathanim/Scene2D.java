@@ -24,6 +24,7 @@ public abstract class Scene2D extends JMathAnimScene {
         super();
     }
 
+    @Override
     public void createRenderer(){
         fps = conf.fps;
         dt=1./fps;

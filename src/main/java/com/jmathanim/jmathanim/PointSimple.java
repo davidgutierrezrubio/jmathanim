@@ -20,7 +20,7 @@ import com.jmathanim.Utils.SVGImporter;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.mathobjects.Circle;
 import com.jmathanim.mathobjects.JMPath;
-import com.jmathanim.mathobjects.JMPathMathObject;
+import com.jmathanim.mathobjects.Shape;
 import com.jmathanim.mathobjects.JMPathPoint;
 import com.jmathanim.mathobjects.LaTeXMathObject;
 import com.jmathanim.mathobjects.Line;
@@ -47,20 +47,21 @@ public class PointSimple extends Scene2D {
     @Override
     public void setupSketch() {
 //        conf.setHighQuality();
+//        conf.setMediumQuality();
         conf.setLowQuality();
+
         setCreateMovie(false);
         setShowPreviewWindow(true);
-        createRenderer();
     }
 
     @Override
     public void runSketch() {
         System.out.println("Running sketch...");
-        teselacionHexagonos();
+        pruebaBuilders();
     }
 
     public void pruebaSimpleJMPathObject() throws ArrayIndexOutOfBoundsException {
-        JMPathMathObject pa = new JMPathMathObject();
+        Shape pa = new Shape();
         JMPathPoint p;
         p = new JMPathPoint(new Point(0, 0), true, JMPathPoint.TYPE_VERTEX);
         pa.jmpath.addPoint(p);
@@ -154,7 +155,7 @@ public class PointSimple extends Scene2D {
         add(c);
         waitSeconds(.5);
         JMPath path = c.jmpath.rawCopy();
-        JMPathMathObject r = new JMPathMathObject(path, null);
+        Shape r = new Shape(path, null);
         add(r);
         waitSeconds(.5);
 
@@ -388,10 +389,10 @@ public class PointSimple extends Scene2D {
 
         play(new ShowCreation(eq1, 2));
 //        waitSeconds(1);
-        JMPathMathObject x1 = eq1.jmps.get(2);
-        JMPathMathObject x2 = eq2.jmps.get(2);
-        JMPathMathObject x3 = eq3.jmps.get(2);
-        JMPathMathObject x4 = eq4.jmps.get(2);
+        Shape x1 = eq1.jmps.get(2);
+        Shape x2 = eq2.jmps.get(2);
+        Shape x3 = eq3.jmps.get(2);
+        Shape x4 = eq4.jmps.get(2);
 
         play(new Transform(x1, x2, 1));
         play(new Transform(x1, x3, 1));
@@ -449,8 +450,8 @@ public class PointSimple extends Scene2D {
         Circle circ = new Circle();
         RegularPolygon pol = new RegularPolygon(5, 1);
         add(pol, circ);
-        JMPathMathObject circTrans = circ.copy();
-        JMPathMathObject polTrans = pol.copy();
+        Shape circTrans = circ.copy();
+        Shape polTrans = pol.copy();
         for (double alpha = 0; alpha < 2 * Math.PI; alpha += Math.PI / 10) {
             tr = AffineTransform.create2DRotationTransform(center, alpha);
             camera.setCenter(center);
@@ -567,7 +568,7 @@ public class PointSimple extends Scene2D {
         waitSeconds(300);
     }
 
-    private void affineTransform(JMPath jmpathOrig, JMPathMathObject mobj1, double t) {
+    private void affineTransform(JMPath jmpathOrig, Shape mobj1, double t) {
         JMPathPoint interPoint, basePoint, dstPoint;
 
         AffineTransform tr = AffineTransform.createReflection(new Point(1, 1), new Point(2, -1), t);
@@ -640,7 +641,7 @@ public class PointSimple extends Scene2D {
         add(hex1);
 //        hex1.shift(-1,0);
 //        getCamera().setCenter(hex1.getCenter().v.x,hex1.getCenter().v.y);
-        JMPathMathObject hex2 = hex1.copy();
+        Shape hex2 = hex1.copy();
         add(hex2);
         Segment lado = new Segment(hex2.getPoint(0), hex2.getPoint(5));
         ApplyCommand cmd = Commands.reflectionByAxis(hex2, lado, 3);
@@ -655,43 +656,53 @@ public class PointSimple extends Scene2D {
             //            SingleMathObjectCommand tr = Commands.homotopy(hex2, hex2.getJMPoint(0).p, hex2.getJMPoint(1).p, hex1.getJMPoint(n).p, hex1.getJMPoint(n+1).p);
             play(cmd);
         }
-       
-         hex2=gira(hex2,6);
-         hex2=gira(hex2,7);
-         hex2=gira(hex2,8);
-         
-         hex2=gira(hex2,10);
-         hex2=gira(hex2,11);
-         
-         hex2=gira(hex2,13);
-         hex2=gira(hex2,14);
-         
-         hex2=gira(hex2,16);
-         hex2=gira(hex2,17);
-         
-         hex2=gira(hex2,19);
-         hex2=gira(hex2,20);
-         hex2=gira(hex2,22);
-         
-         hex2=gira(hex2,24);
-         hex2=gira(hex2,25);
-         
-         hex2=gira(hex2,27);
-         hex2=gira(hex2,28);
-         hex2=gira(hex2,29);
-         
+
+        hex2 = gira(hex2, 6);
+        hex2 = gira(hex2, 7);
+        hex2 = gira(hex2, 8);
+
+        hex2 = gira(hex2, 10);
+        hex2 = gira(hex2, 11);
+
+        hex2 = gira(hex2, 13);
+        hex2 = gira(hex2, 14);
+
+        hex2 = gira(hex2, 16);
+        hex2 = gira(hex2, 17);
+
+        hex2 = gira(hex2, 19);
+        hex2 = gira(hex2, 20);
+        hex2 = gira(hex2, 22);
+
+        hex2 = gira(hex2, 24);
+        hex2 = gira(hex2, 25);
+
+        hex2 = gira(hex2, 27);
+        hex2 = gira(hex2, 28);
+        
+        hex2 = gira(hex2, 30);
+
 //         hex2=gira(hex2,10);
 //         hex2=gira(hex2,11);
 //         hex2=gira(hex2,12);
         waitSeconds(10);
     }
 
-    private JMPathMathObject gira(JMPathMathObject hex2,int n) {
+    private Shape gira(Shape hex2, int n) {
         ApplyCommand cmd;
+        System.out.println("Rotating "+n);
         hex2 = hex2.copy();
         cmd = Commands.rotate(hex2, hex2.getPoint(n), Math.PI * 2 / 3, 1);
         play(cmd);
         return hex2.copy();
+    }
+
+    private void pruebaBuilders() {
+        Shape sq = Shape.square();
+        add(sq);
+        waitSeconds(5);
+        playRotate(sq, new Point(0,0), Math.PI, 5);
+        waitSeconds(5);
     }
 }
 

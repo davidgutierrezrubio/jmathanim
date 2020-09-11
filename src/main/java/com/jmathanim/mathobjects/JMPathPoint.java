@@ -6,6 +6,7 @@
 package com.jmathanim.mathobjects;
 
 import com.jmathanim.Renderers.Renderer;
+import com.jmathanim.Utils.JMathAnimConfig;
 import com.jmathanim.Utils.Rect;
 import com.jmathanim.mathobjects.updateableObjects.Updateable;
 import com.jmathanim.Utils.Vec;
@@ -31,7 +32,29 @@ public class JMPathPoint extends MathObject implements Updateable, Stateable {
 
     private JMPathPoint pState;
 
+    //Builders
+    public static JMPathPoint lineTo(double x,double y)
+    {
+        return lineTo(new Point(x,y));
+    }
+    public static JMPathPoint lineTo(Point p)
+    {  
+        //Default values: visible, type vertex, straight
+        JMPathPoint jmp=new JMPathPoint(p, true, TYPE_VERTEX);
+        jmp.isCurved=false;
+        return jmp;
+    }
+    
+     public static JMPathPoint curveTo(Point p)
+    {  
+        //Default values: visible, type vertex, straight
+        JMPathPoint jmp=new JMPathPoint(p, true, TYPE_VERTEX);
+        jmp.isCurved=true;
+        return jmp;
+    }
+    
     public JMPathPoint(Point p, boolean isVisible, int type) {
+        super();
         this.p = p;
         cp1 = p.copy();
         cp2 = p.copy();

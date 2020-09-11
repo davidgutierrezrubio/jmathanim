@@ -8,7 +8,7 @@ package com.jmathanim.Animations;
 import com.jmathanim.Utils.MathObjectDrawingProperties;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.JMPath;
-import com.jmathanim.mathobjects.JMPathMathObject;
+import com.jmathanim.mathobjects.Shape;
 import com.jmathanim.mathobjects.JMPathPoint;
 import com.jmathanim.mathobjects.Point;
 import com.jmathanim.mathobjects.Segment;
@@ -23,15 +23,15 @@ public class Transform extends Animation {
     public static final int METHOD_INTERPOLATE_POINT_BY_POINT = 1;
     public static final int METHOD_AFFINE_TRANSFORM = 2;
     private JMPath jmpathOrig, jmpathDstBackup;
-    private final JMPathMathObject mobjDestiny;
-    private final JMPathMathObject mobjTransformed;
+    private final Shape mobjDestiny;
+    private final Shape mobjTransformed;
     private MathObjectDrawingProperties propBase;
     private int method;
     public boolean shouldOptimizePathsFirst;
     public boolean forceChangeDirection;
     private boolean isFinished;
 
-    public Transform(JMPathMathObject ob1, JMPathMathObject ob2, double runTime) {
+    public Transform(Shape ob1, Shape ob2, double runTime) {
         super(runTime);
         mobjTransformed = ob1;
         mobjDestiny = ob2;
