@@ -154,11 +154,11 @@ public class AffineTransform {
         }
     }
 
-    public Shape getTransformedObject(Shape obj) {
+    public <T extends MathObject> T getTransformedObject(MathObject obj) {
 
-        Shape resul = obj.copy();
+        T resul = obj.copy();
         applyTransform(resul);
-        return resul;
+        return (T) resul;
 
     }
 

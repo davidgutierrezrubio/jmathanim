@@ -18,6 +18,7 @@ import com.jmathanim.Utils.MathObjectDrawingProperties;
 import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.SVGImporter;
 import com.jmathanim.Utils.Vec;
+import com.jmathanim.mathobjects.Arrow2D;
 import com.jmathanim.mathobjects.Circle;
 import com.jmathanim.mathobjects.JMPath;
 import com.jmathanim.mathobjects.Shape;
@@ -51,14 +52,14 @@ public class PointSimple extends Scene2D {
 //        conf.setMediumQuality();
         conf.setLowQuality();
 
-        setCreateMovie(true);
+        setCreateMovie(false);
         setShowPreviewWindow(true);
     }
 
     @Override
     public void runSketch() {
         System.out.println("Running sketch...");
-        pruebaBuilders();
+        pruebaVectores();
     }
 
     public void pruebaSimpleJMPathObject() throws ArrayIndexOutOfBoundsException {
@@ -390,10 +391,10 @@ public class PointSimple extends Scene2D {
 
         play(new ShowCreation(eq1, 2));
 //        waitSeconds(1);
-        Shape x1 = eq1.jmps.get(2);
-        Shape x2 = eq2.jmps.get(2);
-        Shape x3 = eq3.jmps.get(2);
-        Shape x4 = eq4.jmps.get(2);
+        Shape x1 = eq1.shapes.get(2);
+        Shape x2 = eq2.shapes.get(2);
+        Shape x3 = eq3.shapes.get(2);
+        Shape x4 = eq4.shapes.get(2);
 
         play(new Transform(x1, x2, 1));
         play(new Transform(x1, x3, 1));
@@ -703,24 +704,46 @@ public class PointSimple extends Scene2D {
         Point A = new Point(1, 1);
         Point B = new Point(0, -1);
         Point C = new Point(1.5, -.7);
-        Shape sq2 = Shape.square(A, .5);
+        Shape sq2 = Shape.square(A, .5).drawColor(Color.RED).fillColor(Color.yellow);
+        Shape sq3 = sq.copy().drawColor(Color.BLUE).fillColor(Color.CYAN);
         Shape rect = Shape.rectangle(B, C);
         playRotate(rect, rect.getCenter(), Math.PI/3, 5);
 //        sq2.mp.drawColor=Color.GRAY;
 //        rect.mp.drawColor=Color.cyan;
 //        registerObjectToBeUpdated(new AnchoredMathObject(sq2,AnchoredMathObject.ANCHOR_BY_CENTER, sq.getPoint(2),AnchoredMathObject.ANCHOR_BY_POINT));
-        AffineTransform tr=AffineTransform.createAffineTransformation(rect.getPoint(0), rect.getPoint(1), rect.getPoint(2), sq2.getPoint(0), sq2.getPoint(1), sq2.getPoint(2), 1);
+//        AffineTransform tr=AffineTransform.createAffineTransformation(rect.getPoint(0), rect.getPoint(1), rect.getPoint(2), sq2.getPoint(0), sq2.getPoint(1), sq2.getPoint(2), 1);
         add(rect);
-        Shape rect2 = tr.getTransformedObject(rect);
-        rect2.mp.drawColor=Color.GREEN;
-        add(sq2);
+//        Shape rect2 = tr.getTransformedObject(rect);
+//        rect2.mp.drawColor=Color.GREEN;
+        add(sq2,rect);
         waitSeconds(5);
 //        playRotate(sq, new Point(0,0), Math.PI, 5);
         playTransform(sq, sq2, 10);
 //        sq.setObjectType(MathObject.OTHER);
         playTransform(sq, rect, 10);
+        playTransform(sq, sq3, 10);
 //        playTransform(rect, Shape.Circle(), dt);
         waitSeconds(5);
+    }
+
+    private void pruebaVectores() {
+        Arrow2D ar=new Arrow2D(new Point(0,0), new Point(2,1));
+        add(ar);
+        add(Shape.square().scale(.1, .1));
+        
+        
+        SVGMathObject svg=new SVGMathObject(this, "c:\\media\\flecha1.svg");
+        add(svg);
+        double yCenter = camera.getMathBoundaries().getCenter().v.y;
+        for (double dx=0;dx<1.8;dx+=.001)
+        {
+            camera.setMathXY(-2+dx,2-dx,yCenter );
+            advanceFrame();
+        }
+        
+        
+        waitSeconds(30);
+        
     }
 }
 

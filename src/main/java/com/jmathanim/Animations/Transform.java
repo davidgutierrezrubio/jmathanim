@@ -136,7 +136,7 @@ public class Transform extends Animation {
                 affineTransform(t);
                 break;
             case METHOD_ROTATE_AND_SCALEXY_TRANSFORM:
-                rotateScaleXY(t);
+                rotateScaleXYTransform(t);
                 break;
         }
     }
@@ -240,7 +240,7 @@ public class Transform extends Animation {
  * This method is useful to transform between rectangles, or circles/ellipses
  * @param t 
  */
-    private void rotateScaleXY(double t) {
+    private void rotateScaleXYTransform(double t) {
         Point A = jmpathOrig.getPoint(0).p;
         Point B = jmpathOrig.getPoint(1).p;
         Point C = jmpathOrig.getPoint(2).p;
@@ -262,7 +262,9 @@ public class Transform extends Animation {
         AffineTransform id = new AffineTransform();
         //The final transformation
         AffineTransform tr = tr1.compose(tr2).compose(tr1.getInverse()).compose(tr3);
-
+        Vec v1=B.to(C);
+        Vec v2=B.to(A);
+        System.out.println("dotprod "+v1.dot(v2));
         applyTransform(t, tr);
 
     }

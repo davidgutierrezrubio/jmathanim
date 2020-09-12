@@ -49,7 +49,7 @@ public class LaTeXMathObject extends SVGMathObject {
         } catch (Exception ex) {
             Logger.getLogger(LaTeXMathObject.class.getName()).log(Level.SEVERE, null, ex);
         }
-        if (jmps.size() > 0)//Move UL to (0,0) by default
+        if (shapes.size() > 0)//Move UL to (0,0) by default
         {
             Rect r = getBoundingBox();
             this.shift(-r.xmin, -r.ymax);
@@ -148,11 +148,11 @@ public class LaTeXMathObject extends SVGMathObject {
     }
 
     private void setColor(Color color) {
-        for (Shape p : jmps) {
+        for (Shape p : shapes) {
             p.mp.thickness = .0001;
-            p.setColor(color);
+            p.drawColor(color);
             p.mp.fill = true;
-            p.setFillColor(color); //LaTeX Objects should have by default same fill and draw color
+            p.fillColor(color); //LaTeX Objects should have by default same fill and draw color
         }
     }
 

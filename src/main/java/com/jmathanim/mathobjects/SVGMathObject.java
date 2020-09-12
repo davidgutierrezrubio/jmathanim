@@ -25,7 +25,7 @@ import org.w3c.dom.NodeList;
  *
  * @author David Gutiérrez Rubio <davidgutierrezrubio@gmail.com>
  */
-public class SVGMathObject extends MultiJMPathObject {
+public class SVGMathObject extends MultiShapeObject {
 
     protected String filename;
     double currentX = 0;
@@ -112,9 +112,11 @@ public class SVGMathObject extends MultiJMPathObject {
         t = t.replace("H", " H ");
         t = t.replace("V", " V ");
         t = t.replace("C", " C ");
+        t = t.replace("c", " c ");
         t = t.replace("S", " S ");
         t = t.replace("L", " L ");
         t = t.replace("Z", " Z ");
+        t = t.replace("z", " z ");
         t = t.replaceAll(",", " ");//Delete all commas
         t = t.replaceAll("^ +| +$|( )+", "$1");//Removes duplicate spaces
         String[] tokens = t.split(" ");
@@ -160,6 +162,21 @@ public class SVGMathObject extends MultiJMPathObject {
                     getPoint(it);
                     previousPoint = pathCubicBezier(resul, previousPoint, cx1, cy1, cx2, cy2, currentX, currentY);
                     break;
+                    //c 1,1 2,2 3,3 4,4 5,5 6,6 would become C 1,1 2,2 3,3 C 7,7 8,8 9,9
+                case "c": //Cubic Bezier
+                    double xx=previousPoint.p.v.x;
+                    double yy=previousPoint.p.v.y;
+                    cx1 = xx+Double.parseDouble(it.next());
+                    cy1 = yy-Double.parseDouble(it.next());
+                    cx2 =xx+Double.parseDouble(it.next());
+                    cy2 = yy-Double.parseDouble(it.next());
+                    getPoint(it);
+                    
+                    previousPoint.p.v.x+=xx;
+                    previousPoint.p.v.y+=yy;
+                    
+                    previousPoint = pathCubicBezier(resul, previousPoint, cx1, cy1, cx2, cy2, currentX, currentY);
+                    break;
                 case "S": //Simplified Cubic Bezier. Take first control point as a reflection of previous one
                     cx1 = previousPoint.p.v.x - (previousPoint.cp2.v.x - previousPoint.p.v.x);
                     cy1 = previousPoint.p.v.y - (previousPoint.cp2.v.y - previousPoint.p.v.y);
@@ -169,7 +186,9 @@ public class SVGMathObject extends MultiJMPathObject {
                     previousPoint = pathCubicBezier(resul, previousPoint, cx1, cy1, cx2, cy2, currentX, currentY);
                     break;
                 case "Z":
-//                    previousPoint = pathLineTo(path, initialX, initialY);
+                    resul.close();
+                    break;
+                case "z":
                     resul.close();
                     break;
                 default:

@@ -179,4 +179,6 @@ public abstract class Camera {
      */
     abstract public double relScalarToWidth(double scalar);
 
+
+    
 }

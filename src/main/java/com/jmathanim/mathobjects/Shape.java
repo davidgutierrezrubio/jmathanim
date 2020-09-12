@@ -166,6 +166,7 @@ public class Shape extends MathObject {
     @Override
     public Shape copy() {
         Shape resul = new Shape(jmpath.rawCopy(), mp.copy());
+        resul.setObjectType(this.getObjectType());//Copy object type
         return resul;
     }
 
@@ -190,14 +191,6 @@ public class Shape extends MathObject {
     @Override
     public Rect getBoundingBox() {
         return jmpath.getBoundingBox();
-    }
-
-    void setColor(Color color) {
-        this.mp.drawColor = color;
-    }
-
-    void setFillColor(Color color) {
-        this.mp.fillColor = color;
     }
 
     @Override
@@ -252,6 +245,20 @@ public class Shape extends MathObject {
         jmpath.saveState();
     }
 
+//    //Convenience methods to set drawing parameters
+//    @Override
+//    public Shape drawColor(Color dc)
+//    {
+//        mp.drawColor=dc;
+//        return this;
+//    }
+//    @Override
+//     public Shape fillColor(Color fc)
+//    {
+//        mp.fillColor=fc;
+//        mp.fill=true;
+//        return this;
+//    }
     public static Shape square() {
         return Shape.square(new Point(0, 0), 1);
     }
@@ -278,5 +285,4 @@ public class Shape extends MathObject {
 //    public static Shape arc() {
 //        
 //    }
-
 }

@@ -11,6 +11,7 @@ import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.updateableObjects.Updateable;
+import java.awt.Color;
 import java.util.HashSet;
 
 /**
@@ -119,8 +120,9 @@ public abstract class MathObject implements Drawable, Updateable,Stateable{
      * @param sx
      * @param sy
      */
-    public void scale(double sx, double sy) {
+    public <T extends MathObject> T scale(double sx, double sy) {
         scale(getCenter(), sx, sy, 1);
+        return (T) this;
     }
 
     /**
@@ -139,9 +141,10 @@ public abstract class MathObject implements Drawable, Updateable,Stateable{
     /**
      * Returns a copy of the object
      *
+     * @param <T>
      * @return copy of object, with identical properties
      */
-    abstract public MathObject copy();
+    abstract public <T extends MathObject> T copy();
 
     /**
      * Update all necessary componentes of this object to display properly This
@@ -241,4 +244,18 @@ public abstract class MathObject implements Drawable, Updateable,Stateable{
         this.objectType = objectType;
     }
     
+    
+    //Convenience methods to set drawing parameters
+    public <T extends MathObject> T drawColor(Color dc)
+    {
+        mp.drawColor=dc;
+        return (T) this;
+    }
+     public <T extends MathObject> T fillColor(Color fc)
+    {
+        mp.fillColor=fc;
+        mp.fill=true;
+        return (T) this;
+    }
+            
 }
