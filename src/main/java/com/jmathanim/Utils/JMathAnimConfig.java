@@ -107,11 +107,11 @@ public class JMathAnimConfig {
     }
 
     public Camera getCamera() {
-        return camera;
+        return renderer.getCamera();
     }
 
     public void setCamera(Camera camera) {
-        this.camera = camera;
+        this.renderer.setCamera(camera);
     }
     
     

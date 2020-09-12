@@ -5,6 +5,7 @@
  */
 package com.jmathanim.mathobjects;
 
+import com.jmathanim.Utils.JMathAnimConfig;
 import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
@@ -36,14 +37,11 @@ public class SVGMathObject extends MultiShapeObject {
     Double anchorY = null;
 
     JMPath importJMPathTemp;//Path to temporary import SVG Path commmands
-    protected JMathAnimScene parentScene;
 
-    public SVGMathObject(JMathAnimScene parentScene) {
-        this.parentScene = parentScene;
+    public SVGMathObject() {
     }
 
-    public SVGMathObject(JMathAnimScene scene, String fname) {
-        this.parentScene = scene;
+    public SVGMathObject(String fname) {
         filename = fname;
         if (filename != "")
         try {
@@ -92,7 +90,7 @@ public class SVGMathObject extends MultiShapeObject {
             }
         }
         //All paths imported
-        double mathH = parentScene.getCamera().screenToMath(22);
+        double mathH = JMathAnimConfig.getConfig().getCamera().screenToMath(22);
         double scale = 5 * mathH / getBoundingBox().getHeight();//10% of screen
         scale(new Point(0, 0), scale, scale, scale);
     }
@@ -173,10 +171,10 @@ public class SVGMathObject extends MultiShapeObject {
                     getPointY(it);
                     previousPoint = pathLineTo(resul, currentX, currentY);
                     break;
-                  case "v": //Vertical line
+                case "v": //Vertical line
                     yy = previousPoint.p.v.y;
                     getPointY(it);
-                    currentY+=yy;
+                    currentY += yy;
                     previousPoint = pathLineTo(resul, currentX, currentY);
                     break;
                 case "C": //Cubic Bezier

@@ -33,6 +33,11 @@ public class TransformedPoint extends Point{
     }
 
     @Override
+    public int getUpdateLevel() {
+        return dstPoint.getUpdateLevel()+1;
+    }
+
+    @Override
     public void update() {
         Point tempPoint = transform.getTransformedPoint(this.dstPoint);
         this.v.x=tempPoint.v.x;

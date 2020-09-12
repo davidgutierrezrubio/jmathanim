@@ -9,6 +9,7 @@ import com.jmathanim.Utils.Vec;
 import com.jmathanim.mathobjects.Shape;
 import com.jmathanim.mathobjects.JMPathPoint;
 import com.jmathanim.mathobjects.MathObject;
+import com.jmathanim.mathobjects.MultiShapeObject;
 import com.jmathanim.mathobjects.Point;
 import com.jmathanim.mathobjects.Segment;
 import org.apache.commons.math3.linear.Array2DRowRealMatrix;
@@ -107,6 +108,16 @@ public class AffineTransform {
 
     public void applyTransform(MathObject mObject) {
 
+        
+        if (mObject instanceof MultiShapeObject)
+        {
+           MultiShapeObject mobj = (MultiShapeObject) mObject;
+           for (Shape obj:mobj.shapes)
+           {
+               applyTransform(obj);
+           }
+        }
+        
         if (mObject instanceof Shape) {
             Shape mobj = (Shape) mObject;
             int size = mobj.jmpath.size();

@@ -182,7 +182,7 @@ public class Rect {//TODO: Adjust this to 3D coordinates
     
      public Point getUpper()
     {
-        return new Point(.5*(xmin+ymax),ymax);
+        return new Point(.5*(xmin+xmax),ymax);
     }
     public Point getLower()
     {

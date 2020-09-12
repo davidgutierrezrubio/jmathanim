@@ -28,6 +28,11 @@ public class TransformedJMPath extends Shape{
     }
 
     @Override
+    public int getUpdateLevel() {
+        return srcOBj.getUpdateLevel()+1;
+    }
+
+    @Override
     public void update() {
           int size = srcOBj.jmpath.size();
             for (int n = 0; n < size; n++) {

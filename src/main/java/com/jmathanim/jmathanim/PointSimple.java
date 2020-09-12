@@ -37,6 +37,7 @@ import com.jmathanim.mathobjects.Segment;
 import com.jmathanim.mathobjects.Square;
 import com.jmathanim.mathobjects.updateableObjects.AnchoredMathObject;
 import com.jmathanim.mathobjects.updateableObjects.TransformedJMPath;
+import com.jmathanim.mathobjects.updateableObjects.absoluteSize;
 import java.awt.Color;
 import java.util.ArrayList;
 
@@ -320,7 +321,7 @@ public class PointSimple extends Scene2D {
     }
 
     private void pruebaImportSVGFile() {
-        SVGMathObject svgObject = new SVGMathObject(this, "c:\\media\\tex\\o.svg");
+        SVGMathObject svgObject = new SVGMathObject("c:\\media\\tex\\o.svg");
 
         add(svgObject);
         waitSeconds(3);
@@ -347,7 +348,7 @@ public class PointSimple extends Scene2D {
     }
 
     private void pruebaLaTeX() {
-        LaTeXMathObject lm = new LaTeXMathObject(this, "$$\\int_0^\\infty x\\,dx=\\infty$$");
+        LaTeXMathObject lm = new LaTeXMathObject("$$\\int_0^\\infty x\\,dx=\\infty$$");
 //        lm.shift(-1, 0);
         lm.scale(1, 1);
         add(lm);
@@ -374,10 +375,10 @@ public class PointSimple extends Scene2D {
     }
 
     private void pruebaLaTeXEcuacion() {
-        LaTeXMathObject eq1 = new LaTeXMathObject(this, "$$x=2$$");
-        LaTeXMathObject eq2 = new LaTeXMathObject(this, "$$x=4$$");
-        LaTeXMathObject eq3 = new LaTeXMathObject(this, "$$x=8$$");
-        LaTeXMathObject eq4 = new LaTeXMathObject(this, "$$x=1$$");
+        LaTeXMathObject eq1 = new LaTeXMathObject("$$x=2$$");
+        LaTeXMathObject eq2 = new LaTeXMathObject("$$x=4$$");
+        LaTeXMathObject eq3 = new LaTeXMathObject("$$x=8$$");
+        LaTeXMathObject eq4 = new LaTeXMathObject("$$x=1$$");
         double sc = 1;
         eq1.scale(sc, sc);
         eq2.scale(sc, sc);
@@ -621,7 +622,7 @@ public class PointSimple extends Scene2D {
         Segment s1 = new Segment(p1, p2);
         RegularPolygon pol = new RegularPolygon(5, 1);
         add(pol);
-        LaTeXMathObject texto = new LaTeXMathObject(this, "$x^2$");
+        LaTeXMathObject texto = new LaTeXMathObject("$x^2$");
         add(texto);
         texto.scale(.2, .2);
 
@@ -707,7 +708,7 @@ public class PointSimple extends Scene2D {
         Shape sq2 = Shape.square(A, .5).drawColor(Color.RED).fillColor(Color.yellow);
         Shape sq3 = sq.copy().drawColor(Color.BLUE).fillColor(Color.CYAN);
         Shape rect = Shape.rectangle(B, C);
-        playRotate(rect, rect.getCenter(), Math.PI/3, 5);
+        playRotate(rect, rect.getCenter(), Math.PI / 3, 5);
 //        sq2.mp.drawColor=Color.GRAY;
 //        rect.mp.drawColor=Color.cyan;
 //        registerObjectToBeUpdated(new AnchoredMathObject(sq2,AnchoredMathObject.ANCHOR_BY_CENTER, sq.getPoint(2),AnchoredMathObject.ANCHOR_BY_POINT));
@@ -715,7 +716,7 @@ public class PointSimple extends Scene2D {
         add(rect);
 //        Shape rect2 = tr.getTransformedObject(rect);
 //        rect2.mp.drawColor=Color.GREEN;
-        add(sq2,rect);
+        add(sq2, rect);
         waitSeconds(5);
 //        playRotate(sq, new Point(0,0), Math.PI, 5);
         playTransform(sq, sq2, 10);
@@ -727,23 +728,27 @@ public class PointSimple extends Scene2D {
     }
 
     private void pruebaVectores() {
-        Arrow2D ar=new Arrow2D(new Point(0,0), new Point(2,1));
+        Point punto = new Point(.5, .3);
+        Arrow2D ar = new Arrow2D(new Point(0, 0), punto);
         add(ar);
         add(Shape.square().scale(.1, .1));
-        
-        
-        SVGMathObject svg=new SVGMathObject(this, "c:\\media\\flecha1.svg");
-        add(svg);
+
+//        SVGMathObject svg = new SVGMathObject("c:\\media\\flecha1.svg");
+//        svg.drawColor(Color.WHITE);
+//        svg.fillColor(Color.WHITE);
+//        add(svg);
+//        svg.shift(svg.getCenter().v.mult(-1));
+//        absoluteSize abs = new absoluteSize(svg, .02);
+//        registerObjectToBeUpdated(abs);
         double yCenter = camera.getMathBoundaries().getCenter().v.y;
-        for (double dx=0;dx<1.8;dx+=.001)
-        {
-            camera.setMathXY(-2+dx,2-dx,yCenter );
+        for (double dx = 0; dx < 1; dx += .001) {
+            camera.setMathXY(-2 + dx, 2 - dx, yCenter);
+            
+            punto.shift(-.001,0);
             advanceFrame();
         }
-        
-        
-        waitSeconds(30);
-        
+        waitSeconds(10);
+
     }
 }
 

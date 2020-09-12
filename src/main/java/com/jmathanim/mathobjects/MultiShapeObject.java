@@ -10,6 +10,7 @@ import com.jmathanim.Renderers.Renderer;
 import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
+import java.awt.Color;
 import java.util.ArrayList;
 
 /**
@@ -31,7 +32,7 @@ public class MultiShapeObject extends MathObject {
         this.shapes = jmps;
     }
 
-    public boolean addJMPathObject(Shape e) {
+    public boolean addShape(Shape e) {
         return shapes.add(e);
     }
 
@@ -52,6 +53,22 @@ public class MultiShapeObject extends MathObject {
     }
 
     @Override
+    public <T extends MathObject> T fillColor(Color fc) {
+        for (Shape jmp : shapes) {
+            jmp.fillColor(fc);
+        }
+        return super.fillColor(fc);
+    }
+
+    @Override
+    public <T extends MathObject> T drawColor(Color dc) {
+        for (Shape jmp : shapes) {
+            jmp.drawColor(dc);
+        }
+        return super.drawColor(dc);
+    }
+
+    @Override
     public void shift(Vec shiftVector) {
         for (Shape jmp : shapes) {
             jmp.shift(shiftVector);
@@ -67,10 +84,15 @@ public class MultiShapeObject extends MathObject {
 
     @Override
     public MathObject copy() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        MultiShapeObject resul=new MultiShapeObject();
+        for (Shape sh:shapes)
+        {
+            resul.addShape(sh.copy());
+        }
+        resul.mp.copyFrom(mp);
+        return resul;
     }
 
-   
     @Override
     public void prepareForNonLinearAnimation() {
         for (Shape jmp : shapes) {
@@ -140,7 +162,7 @@ public class MultiShapeObject extends MathObject {
 
     @Override
     public void update() {
-       //Nothing to do here
+        //Nothing to do here
     }
 
     @Override

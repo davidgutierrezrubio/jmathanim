@@ -73,10 +73,12 @@ public abstract class JMathAnimScene {
      *
      */
     public final void execute() {
+        
         String nombre = this.getClass().getName();
         System.out.println("Run sketch: " + nombre);
         setupSketch();
         createRenderer();
+        JMathAnimConfig.getConfig().setRenderer(SCRenderer);
         
         //In the global variable store Scene, Renderer and main Camera
         conf.setScene(this);

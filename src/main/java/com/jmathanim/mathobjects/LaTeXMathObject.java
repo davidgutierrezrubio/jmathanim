@@ -36,8 +36,8 @@ public class LaTeXMathObject extends SVGMathObject {
      * @param scene
      * @param text
      */
-    public LaTeXMathObject(JMathAnimScene scene, String text) {
-        super(scene);
+    public LaTeXMathObject(String text) {
+        super();
         this.text = text;
 
         try {

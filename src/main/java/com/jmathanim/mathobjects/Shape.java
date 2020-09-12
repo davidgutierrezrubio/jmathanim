@@ -24,7 +24,6 @@ public class Shape extends MathObject {
     protected boolean needsRecalcControlPoints;
     protected int numInterpolationPoints = 1;//TODO: Adaptative interpolation
     protected final ArrayList<JMPathPoint> vertices;
-    public boolean absoluteSize=false;
 
     /**
      * Type of path, JMPath.STRAIGHT or JMPath.CURVED

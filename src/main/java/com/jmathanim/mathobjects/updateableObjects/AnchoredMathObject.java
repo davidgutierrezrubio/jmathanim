@@ -62,7 +62,7 @@ public class AnchoredMathObject implements Updateable {
 
     @Override
     public int getUpdateLevel() {
-        return Math.max(Math.max(this.mobj.getUpdateLevel(), refPoint.getUpdateLevel()), dstObject.getUpdateLevel());
+        return Math.max(Math.max(this.mobj.getUpdateLevel(), refPoint.getUpdateLevel()), dstObject.getUpdateLevel())+1;
     }
 
     @Override
