@@ -111,10 +111,12 @@ public class SVGMathObject extends MultiShapeObject {
         t = t.replace("-", " -");//Avoid errors with strings like "142.11998-.948884"
         t = t.replace("H", " H ");
         t = t.replace("V", " V ");
+        t = t.replace("v", " v ");
         t = t.replace("C", " C ");
         t = t.replace("c", " c ");
         t = t.replace("S", " S ");
         t = t.replace("L", " L ");
+        t = t.replace("l", " l ");
         t = t.replace("Z", " Z ");
         t = t.replace("z", " z ");
         t = t.replaceAll(",", " ");//Delete all commas
@@ -124,6 +126,7 @@ public class SVGMathObject extends MultiShapeObject {
         int n = 0;
         int nmax = tokens.length;
         double cx1, cx2, cy1, cy2;
+        double xx, yy;
         Double initialX = null;
         Double initialY = null;
         while (it.hasNext()) {
@@ -146,12 +149,34 @@ public class SVGMathObject extends MultiShapeObject {
                     getPoint(it);
                     previousPoint = pathLineTo(resul, currentX, currentY);
                     break;
+                case "l": //Line
+                    xx = previousPoint.p.v.x;
+                    yy = previousPoint.p.v.y;
+                    getPoint(it);
+                    currentX += xx;
+                    currentY += yy;
+                    previousPoint = pathLineTo(resul, currentX, currentY);
+                    break;
+
                 case "H": //Horizontal line
                     getPointX(it);
                     previousPoint = pathLineTo(resul, currentX, currentY);
                     break;
+
+                case "h": //Horizontal line
+                    xx = previousPoint.p.v.x;
+                    getPointX(it);
+                    currentX += xx;
+                    previousPoint = pathLineTo(resul, currentX, currentY);
+                    break;
                 case "V": //Vertical line
                     getPointY(it);
+                    previousPoint = pathLineTo(resul, currentX, currentY);
+                    break;
+                  case "v": //Vertical line
+                    yy = previousPoint.p.v.y;
+                    getPointY(it);
+                    currentY+=yy;
                     previousPoint = pathLineTo(resul, currentX, currentY);
                     break;
                 case "C": //Cubic Bezier
@@ -162,19 +187,18 @@ public class SVGMathObject extends MultiShapeObject {
                     getPoint(it);
                     previousPoint = pathCubicBezier(resul, previousPoint, cx1, cy1, cx2, cy2, currentX, currentY);
                     break;
-                    //c 1,1 2,2 3,3 4,4 5,5 6,6 would become C 1,1 2,2 3,3 C 7,7 8,8 9,9
+                //c 1,1 2,2 3,3 4,4 5,5 6,6 would become C 1,1 2,2 3,3 C 7,7 8,8 9,9
                 case "c": //Cubic Bezier
-                    double xx=previousPoint.p.v.x;
-                    double yy=previousPoint.p.v.y;
-                    cx1 = xx+Double.parseDouble(it.next());
-                    cy1 = yy-Double.parseDouble(it.next());
-                    cx2 =xx+Double.parseDouble(it.next());
-                    cy2 = yy-Double.parseDouble(it.next());
+                    xx = previousPoint.p.v.x;
+                    yy = previousPoint.p.v.y;
+                    cx1 = xx + Double.parseDouble(it.next());
+                    cy1 = yy - Double.parseDouble(it.next());
+                    cx2 = xx + Double.parseDouble(it.next());
+                    cy2 = yy - Double.parseDouble(it.next());
                     getPoint(it);
-                    
-                    previousPoint.p.v.x+=xx;
-                    previousPoint.p.v.y+=yy;
-                    
+                    currentX += xx;
+                    currentY += yy;
+
                     previousPoint = pathCubicBezier(resul, previousPoint, cx1, cy1, cx2, cy2, currentX, currentY);
                     break;
                 case "S": //Simplified Cubic Bezier. Take first control point as a reflection of previous one
@@ -198,6 +222,11 @@ public class SVGMathObject extends MultiShapeObject {
         return resul;
     }
 
+    public void getRelPoint(double xx, double yy, Iterator<String> it) throws NumberFormatException {
+        getRelPointX(xx, it);
+        getRelPointY(yy, it);
+    }
+
     public void getPoint(Iterator<String> it) throws NumberFormatException {
         getPointX(it);
         getPointY(it);
@@ -211,6 +240,16 @@ public class SVGMathObject extends MultiShapeObject {
     public void getPointY(Iterator<String> it) throws NumberFormatException {
         previousY = currentY;
         currentY = -Double.parseDouble(it.next());
+    }
+
+    public void getRelPointX(double xx, Iterator<String> it) throws NumberFormatException {
+        previousX = currentX;
+        currentX = xx + Double.parseDouble(it.next());
+    }
+
+    public void getRelPointY(double yy, Iterator<String> it) throws NumberFormatException {
+        previousY = currentY;
+        currentY = yy - Double.parseDouble(it.next());
     }
 
     private JMPathPoint pathM(JMPath path, double x, double y) {
