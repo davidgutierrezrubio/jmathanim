@@ -6,6 +6,7 @@
 package com.jmathanim.Animations;
 
 import com.jmathanim.Utils.MathObjectDrawingProperties;
+import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.JMPath;
 import com.jmathanim.mathobjects.Shape;
@@ -24,6 +25,7 @@ public class Transform extends Animation {
     public static final int METHOD_INTERPOLATE_POINT_BY_POINT = 1;
     public static final int METHOD_HOMOTOPY_TRANSFORM = 2;
     public static final int METHOD_AFFINE_TRANSFORM = 3;
+    public static final int METHOD_ROTATE_AND_SCALEXY_TRANSFORM = 4;
     private JMPath jmpathOrig, jmpathDstBackup;
     private final Shape mobjDestiny;
     private final Shape mobjTransformed;
@@ -114,7 +116,7 @@ public class Transform extends Animation {
         }
         if ((mobjTransformed.getObjectType() == MathObject.RECTANGLE) && (mobjDestiny.getObjectType() == MathObject.RECTANGLE)) {
             //TODO: MEthod between rectangles should be better, compositing with a rotation
-            method = METHOD_AFFINE_TRANSFORM;
+            method = METHOD_ROTATE_AND_SCALEXY_TRANSFORM;
             shouldOptimizePathsFirst = true;
         }
 
@@ -132,6 +134,9 @@ public class Transform extends Animation {
                 break;
             case METHOD_AFFINE_TRANSFORM:
                 affineTransform(t);
+                break;
+            case METHOD_ROTATE_AND_SCALEXY_TRANSFORM:
+                rotateScaleXY(t);
                 break;
         }
     }
@@ -202,9 +207,11 @@ public class Transform extends Animation {
         mobjDestiny.removeInterpolationPoints();
         mobjTransformed.jmpath.isClosed = mobjDestiny.jmpath.isClosed;
     }
-
+/**
+ * A homotopy transform, which consists in a rotation combined with a homogeneus scale
+ * @param t 
+ */
     private void homotopyTransform(double t) {
-        JMPathPoint interPoint, basePoint, dstPoint;
         Point A = jmpathOrig.getPoint(0).p;
         Point B = jmpathOrig.getPoint(1).p;
         Point C = mobjDestiny.getJMPoint(0).p;
@@ -213,9 +220,11 @@ public class Transform extends Animation {
         AffineTransform tr = AffineTransform.createDirect2DHomotopy(A, B, C, D, t);
         applyTransform(t, tr);
     }
-
+/**
+ * Performs a general affine transformation
+ * @param t 
+ */
     private void affineTransform(double t) {
-        JMPathPoint interPoint, basePoint, dstPoint;
         Point A = jmpathOrig.getPoint(0).p;
         Point B = jmpathOrig.getPoint(1).p;
         Point C = jmpathOrig.getPoint(2).p;
@@ -225,6 +234,37 @@ public class Transform extends Animation {
 
         AffineTransform tr = AffineTransform.createAffineTransformation(A, B, C, D, E, F, t);
         applyTransform(t, tr);
+    }
+/**
+ * Performs a transformation between 2 MathObjects doing a rotation and a scale by x and y
+ * This method is useful to transform between rectangles, or circles/ellipses
+ * @param t 
+ */
+    private void rotateScaleXY(double t) {
+        Point A = jmpathOrig.getPoint(0).p;
+        Point B = jmpathOrig.getPoint(1).p;
+        Point C = jmpathOrig.getPoint(2).p;
+        Point D = mobjDestiny.getJMPoint(0).p;
+        Point E = mobjDestiny.getJMPoint(1).p;
+        Point F = mobjDestiny.getJMPoint(2).p;
+
+        //First map A,B into (0,0) and (1,0)
+        AffineTransform tr1 = AffineTransform.createDirect2DHomotopy(A, B, new Point(0, 0), new Point(1,0), 1);
+
+        //Now I create a transformation that adjust the y-scale, proportionally
+        //This transform will be applied inversely too
+        AffineTransform tr2 = new AffineTransform();
+        final double proportionalHeight = (F.to(E).norm() / D.to(E).norm())/(B.to(C).norm() / B.to(A).norm());
+        tr2.setV2Img(0, proportionalHeight* t + (1 - t) * 1); //Interpolated here
+
+        //Finally, and homotopy to carry A,B into D,E
+        AffineTransform tr3 = AffineTransform.createDirect2DHomotopy(A, B, D, E, t);//Interpolated here
+        AffineTransform id = new AffineTransform();
+        //The final transformation
+        AffineTransform tr = tr1.compose(tr2).compose(tr1.getInverse()).compose(tr3);
+
+        applyTransform(t, tr);
+
     }
 
     private void applyTransform(double t, AffineTransform tr) throws ArrayIndexOutOfBoundsException {
@@ -237,6 +277,7 @@ public class Transform extends Animation {
             dstPoint = mobjDestiny.jmpath.jmPathPoints.get(n);
 
             //Copy visibility attributes after t>.8
+            //TODO: Improve this
             if (t > .8) {
                 interPoint.isVisible = dstPoint.isVisible;
             }

@@ -26,6 +26,7 @@ import com.jmathanim.mathobjects.LaTeXMathObject;
 import com.jmathanim.mathobjects.Line;
 import com.jmathanim.mathobjects.updateableObjects.MiddlePoint;
 import com.jmathanim.mathobjects.AveragePoint;
+import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.updateableObjects.TransformedPoint;
 import com.jmathanim.mathobjects.Point;
 import com.jmathanim.mathobjects.Polygon;
@@ -50,7 +51,7 @@ public class PointSimple extends Scene2D {
 //        conf.setMediumQuality();
         conf.setLowQuality();
 
-        setCreateMovie(false);
+        setCreateMovie(true);
         setShowPreviewWindow(true);
     }
 
@@ -712,10 +713,13 @@ public class PointSimple extends Scene2D {
         add(rect);
         Shape rect2 = tr.getTransformedObject(rect);
         rect2.mp.drawColor=Color.GREEN;
-//        add(rect2);
+        add(sq2);
         waitSeconds(5);
 //        playRotate(sq, new Point(0,0), Math.PI, 5);
-        playTransform(rect, sq2, 10);
+        playTransform(sq, sq2, 10);
+//        sq.setObjectType(MathObject.OTHER);
+        playTransform(sq, rect, 10);
+//        playTransform(rect, Shape.Circle(), dt);
         waitSeconds(5);
     }
 }
