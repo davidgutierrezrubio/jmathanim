@@ -116,4 +116,9 @@ public class Vec implements Stateable{
         z=zState;
     
     }
+
+    public double getAngle() {
+        double angle=Math.atan2(this.y, this.x);
+        return angle;
+    }
 }

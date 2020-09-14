@@ -34,7 +34,7 @@ public abstract class MathObject implements Drawable, Updateable,Stateable{
     public static final int SLICE_DOUBLE = 2;
     public static final int SLICE_FOUR = 3;
 
-    public final MathObjectDrawingProperties mp;
+    public  MathObjectDrawingProperties mp;
     protected MathObjectDrawingProperties mpBackup;
     public String label="";
     
@@ -114,17 +114,32 @@ public abstract class MathObject implements Drawable, Updateable,Stateable{
         shift(new Vec(x, y));
     }
 
+    
+    
     /**
      * Scale from center of object (2D version)
      *
+     * @param <T>
      * @param sx
      * @param sy
      */
     public <T extends MathObject> T scale(double sx, double sy) {
-        scale(getCenter(), sx, sy, 1);
+        scale(getCenter(), sx, sy);
         return (T) this;
     }
-
+ /**
+     * Scale from center of object (2D version)
+     *
+     * @param <T>
+     * @param p
+     * @param sx
+     * @param sy
+     * @return 
+     */
+    public <T extends MathObject> T scale(Point p,double sx, double sy) {
+        scale(p, sx, sy, 1);
+        return (T) this;
+    }
     /**
      * Scale from center of object (3D version)
      *

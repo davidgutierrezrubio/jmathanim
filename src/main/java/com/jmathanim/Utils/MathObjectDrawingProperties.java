@@ -47,6 +47,7 @@ public class MathObjectDrawingProperties {
             return;
         }
         drawColor = (prop.drawColor == null ? drawColor : new Color(prop.drawColor.getRGB()));
+        fillColor = (prop.fillColor == null ? fillColor : new Color(prop.fillColor.getRGB()));
         thickness = (prop.thickness == null ? thickness : prop.thickness);
         visible = (prop.visible == null ? visible : prop.visible);
         dashStyle = (prop.dashStyle == null ? dashStyle : prop.dashStyle);
@@ -136,8 +137,8 @@ public class MathObjectDrawingProperties {
 //        absolutePosition;
 //        drawPathBorder;
 //        dashStlye
-        drawColor = interpolateColor(mp.drawColor, mp.drawColor, 1);//Trick to make a copy
-        fillColor = interpolateColor(mp.fillColor, mp.fillColor, 1);//Trick to make a copy
+        drawColor = new Color(mp.drawColor.getRGB());
+        fillColor = new Color(mp.fillColor.getRGB());
         thickness = mp.thickness;
         dashStyle = mp.dashStyle;
         absoluteThickness = mp.absoluteThickness;

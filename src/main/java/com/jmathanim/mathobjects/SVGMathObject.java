@@ -8,7 +8,6 @@ package com.jmathanim.mathobjects;
 import com.jmathanim.Utils.JMathAnimConfig;
 import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.Vec;
-import com.jmathanim.jmathanim.JMathAnimScene;
 import java.io.File;
 import java.util.Arrays;
 import java.util.Iterator;
@@ -108,11 +107,13 @@ public class SVGMathObject extends MultiShapeObject {
         String t = s.replace("M", " M ");
         t = t.replace("-", " -");//Avoid errors with strings like "142.11998-.948884"
         t = t.replace("H", " H ");
+        t = t.replace("h", " h ");
         t = t.replace("V", " V ");
         t = t.replace("v", " v ");
         t = t.replace("C", " C ");
         t = t.replace("c", " c ");
         t = t.replace("S", " S ");
+        t = t.replace("s", " s ");
         t = t.replace("L", " L ");
         t = t.replace("l", " l ");
         t = t.replace("Z", " Z ");
@@ -205,6 +206,19 @@ public class SVGMathObject extends MultiShapeObject {
                     cx2 = Double.parseDouble(it.next());
                     cy2 = -Double.parseDouble(it.next());
                     getPoint(it);
+                    previousPoint = pathCubicBezier(resul, previousPoint, cx1, cy1, cx2, cy2, currentX, currentY);
+                    break;
+
+                case "s": //Simplified relative Cubic Bezier. Take first control point as a reflection of previous one
+                    cx1 = previousPoint.p.v.x - (previousPoint.cp2.v.x - previousPoint.p.v.x);
+                    cy1 = previousPoint.p.v.y - (previousPoint.cp2.v.y - previousPoint.p.v.y);
+                    xx = previousPoint.p.v.x;
+                    yy = previousPoint.p.v.y;
+                    cx2 = xx + Double.parseDouble(it.next());
+                    cy2 = yy - Double.parseDouble(it.next());
+                    getPoint(it);
+                    currentX += xx;
+                    currentY += yy;
                     previousPoint = pathCubicBezier(resul, previousPoint, cx1, cy1, cx2, cy2, currentX, currentY);
                     break;
                 case "Z":

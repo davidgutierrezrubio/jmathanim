@@ -61,6 +61,7 @@ public class Java2DRenderer extends Renderer {
     private final BufferedImage bufferedImage;
     private final Graphics2D g2d;
     public Camera2D camera;
+    public Camera2D fixedCamera;
     private Muxer muxer;
     private MuxerFormat format;
     private Codec codec;
@@ -96,6 +97,10 @@ public class Java2DRenderer extends Renderer {
         this.createMovie = createMovie;
         this.showPreview = showPreview;
         camera = new Camera2D(cnf.mediaW, cnf.mediaH);
+        //The Fixed camera doesn't change. It is used to display fixed-size objects
+        //like heads of arrows or text
+        fixedCamera = new Camera2D(cnf.mediaW, cnf.mediaH);
+        fixedCamera.setMathXY(-2, 2, 0);
         super.setSize(cnf.mediaW, cnf.mediaH);
 
         bufferedImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
@@ -320,7 +325,7 @@ public class Java2DRenderer extends Renderer {
 //                throw new UnsupportedOperationException("Error: Illegal type of JMPath: " + c.curveType);
 //        }
         if (numPoints >= minimumPoints) {
-            path = createPathFromJMPath(c);
+            path = createPathFromJMPath(mobj);
 
             if (mobj.mp.fill) {
                 g2d.setPaint(mobj.mp.fillColor);
@@ -339,7 +344,8 @@ public class Java2DRenderer extends Renderer {
         }
     }
 
-    public Path2D.Double createPathFromJMPath(JMPath c) {
+    public Path2D.Double createPathFromJMPath(Shape mobj) {
+        JMPath c=mobj.getPath();
         Path2D.Double resul = new Path2D.Double();
 
         //TODO: Convert this in its own reusable method

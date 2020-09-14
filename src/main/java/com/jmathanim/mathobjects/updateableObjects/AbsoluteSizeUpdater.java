@@ -13,11 +13,11 @@ import com.jmathanim.mathobjects.MathObject;
  *
  * @author David Gutiérrez Rubio <davidgutierrezrubio@gmail.com>
  */
-public class absoluteSize implements Updateable{
+public class AbsoluteSizeUpdater implements Updateable{
     public MathObject obj;
     public double ratio;
 
-    public absoluteSize(MathObject obj, double ratio) {
+    public AbsoluteSizeUpdater(MathObject obj, double ratio) {
         this.obj = obj;
         this.ratio = ratio;
     }

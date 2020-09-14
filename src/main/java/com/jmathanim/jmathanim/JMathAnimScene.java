@@ -6,7 +6,6 @@
 package com.jmathanim.jmathanim;
 
 import com.jmathanim.Animations.Animation;
-import com.jmathanim.Animations.ApplyCommand;
 import com.jmathanim.Animations.Transform;
 import com.jmathanim.Animations.commands.Commands;
 import com.jmathanim.Cameras.Camera;
@@ -18,8 +17,6 @@ import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.Point;
 import com.jmathanim.mathobjects.updateableObjects.Updateable;
 import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.HashSet;
 
 /**
  *
@@ -49,16 +46,6 @@ public abstract class JMathAnimScene {
         objectsToBeUpdated = new ArrayList<>();
     }
 
-//    /**
-//     *
-//     */
-//    public final void runSketch() {
-//        frames = 0;
-//        mainLoop();
-//        makeMovie();
-//        System.exit(0);
-//
-//    }
     /**
      * Preparation code for the animation should go here
      */
@@ -66,7 +53,6 @@ public abstract class JMathAnimScene {
 
     /**
      * This method handles the creation of the renderer(s)
-     * @return 
      */
     public abstract void createRenderer();
     /**

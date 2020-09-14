@@ -28,6 +28,7 @@ import com.jmathanim.mathobjects.Line;
 import com.jmathanim.mathobjects.updateableObjects.MiddlePoint;
 import com.jmathanim.mathobjects.AveragePoint;
 import com.jmathanim.mathobjects.MathObject;
+import com.jmathanim.mathobjects.MultiShapeObject;
 import com.jmathanim.mathobjects.updateableObjects.TransformedPoint;
 import com.jmathanim.mathobjects.Point;
 import com.jmathanim.mathobjects.Polygon;
@@ -37,7 +38,7 @@ import com.jmathanim.mathobjects.Segment;
 import com.jmathanim.mathobjects.Square;
 import com.jmathanim.mathobjects.updateableObjects.AnchoredMathObject;
 import com.jmathanim.mathobjects.updateableObjects.TransformedJMPath;
-import com.jmathanim.mathobjects.updateableObjects.absoluteSize;
+import com.jmathanim.mathobjects.updateableObjects.AbsoluteSizeUpdater;
 import java.awt.Color;
 import java.util.ArrayList;
 
@@ -729,27 +730,44 @@ public class PointSimple extends Scene2D {
 
     private void pruebaVectores() {
         Point punto = new Point(.5, .3);
-        Arrow2D ar = new Arrow2D(new Point(0, 0), punto);
-        add(ar);
-        add(Shape.square().scale(.1, .1));
+        Arrow2D ar = new Arrow2D(new Point(0, 0), punto,"arrow1.svg");
+        Arrow2D ar2 = new Arrow2D(punto,new Point(.6, 0), "arrow2.svg");
+        add(ar,ar2);
+//        add(Shape.square().scale(new Point(0,0), .1,.1));
 
 //        SVGMathObject svg = new SVGMathObject("c:\\media\\flecha1.svg");
 //        svg.drawColor(Color.WHITE);
 //        svg.fillColor(Color.WHITE);
-//        add(svg);
+//        
+//        MultiShapeObject svg2 = svg.copy();
+//        svg2.shift(-1, 1);
+//        
+//        add(svg,svg2);
+        
 //        svg.shift(svg.getCenter().v.mult(-1));
 //        absoluteSize abs = new absoluteSize(svg, .02);
 //        registerObjectToBeUpdated(abs);
         double yCenter = camera.getMathBoundaries().getCenter().v.y;
-        for (double dx = 0; dx < 1; dx += .001) {
-            camera.setMathXY(-2 + dx, 2 - dx, yCenter);
+        for (double dx = 0; dx < Math.PI*2; dx += .001) {
+//            camera.setMathXY(-2 + .5*dx, 2 - .5*dx, yCenter);
             
-            punto.shift(-.001,0);
+            punto.v.x=.5*Math.cos(dx);
+            punto.v.y=.5*Math.sin(dx);
             advanceFrame();
         }
         waitSeconds(10);
 
     }
+    public void pruebaCopiaPath()
+    {
+        Shape sq = Shape.square();
+        sq.fillColor(Color.WHITE);
+        Shape sq2 = sq.copy();
+        sq.shift(-1,-1);
+        add(sq,sq2);
+        waitSeconds(50);
+    }
+    
 }
 
 //Cookbook:

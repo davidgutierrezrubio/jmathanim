@@ -83,14 +83,15 @@ public class MultiShapeObject extends MathObject {
     }
 
     @Override
-    public MathObject copy() {
+    public <T extends MathObject> T copy() {
         MultiShapeObject resul=new MultiShapeObject();
         for (Shape sh:shapes)
         {
-            resul.addShape(sh.copy());
+            final Shape copy = sh.copy();
+            resul.addShape(copy);
         }
         resul.mp.copyFrom(mp);
-        return resul;
+        return (T) resul;
     }
 
     @Override
@@ -130,11 +131,17 @@ public class MultiShapeObject extends MathObject {
 
     @Override
     public Rect getBoundingBox() {
+        if (shapes.size()>0){
         Rect resul = shapes.get(0).getBoundingBox();
         for (Shape jmp : shapes) {
             resul = resul.union(jmp.getBoundingBox());
         }
         return resul;
+        }
+        else
+        {
+            return null;
+        }
     }
 
     public void setDrawAlpha(double t) {
