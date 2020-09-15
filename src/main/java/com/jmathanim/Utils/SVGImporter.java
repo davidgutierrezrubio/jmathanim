@@ -133,7 +133,7 @@ public class SVGImporter {
         point.cp1.v.y = currentY;
         point.cp2.v.x = currentX;
         point.cp2.v.y = currentY;
-        path.addPoint(point);
+        path.addJMPoint(point);
         return point;
     }
 
@@ -144,7 +144,7 @@ public class SVGImporter {
         previousPoint.cp1.v.y = cy1;
         point.cp2.v.x = cx2;
         point.cp2.v.y = cy2;
-        path.addPoint(point);
+        path.addJMPoint(point);
         return point;
     }
 
@@ -156,7 +156,7 @@ public class SVGImporter {
         point.cp1.v.y = currentY;
         point.cp2.v.x = currentX;
         point.cp2.v.y = currentY;
-        path.addPoint(point);
+        path.addJMPoint(point);
         return point;
     }
 }

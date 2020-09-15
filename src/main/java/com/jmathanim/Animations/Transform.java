@@ -312,7 +312,7 @@ public class Transform extends Animation {
 
         //If path1 is closed but path2 is not, open path1, duplicating first vertex 
         if (path1.isClosed && !path2.isClosed) {
-            path1.addPoint(path1.getPoint(0).copy());
+            path1.addJMPoint(path1.getPoint(0).copy());
             path1.getPoint(0).isVisible = false;
             path1.getPoint(-1).type = JMPathPoint.TYPE_INTERPOLATION_POINT;
             path1.isClosed = false;
@@ -351,7 +351,7 @@ public class Transform extends Animation {
             JMPathPoint v1 = pathSmall.getPoint(n);
             JMPathPoint v2 = pathSmall.getPoint(n + 1);
             v1.type = JMPathPoint.TYPE_VERTEX;
-            resul.addPoint(v1); //Add the point of original curve
+            resul.addJMPoint(v1); //Add the point of original curve
             numDivForThisVertex = numDivs; //number of segments to divide, NOT number of intermediate new points
             if (n < rest) { //The <rest> first vertex have an extra interpolation point (should distribute these along the path? maybe...)
                 numDivForThisVertex += 1;
@@ -359,7 +359,7 @@ public class Transform extends Animation {
             dividePathSegment(v1, v2, numDivForThisVertex, resul);
         }
         if (!pathSmall.isClosed) {
-            resul.addPoint(pathSmall.getPoint(-1));
+            resul.addJMPoint(pathSmall.getPoint(-1));
         }
         pathSmall.clear();
         pathSmall.addPointsFrom(resul);
@@ -382,7 +382,7 @@ public class Transform extends Animation {
         }
         double alpha = 1.0d / numDivForThisVertex;
         interpolate = JMPath.interpolateBetweenTwoPoints(v1, v2, alpha);
-        resul.addPoint(interpolate);
+        resul.addJMPoint(interpolate);
         if (numDivForThisVertex > 2) {
             dividePathSegment(interpolate, v2, numDivForThisVertex - 1, resul);
         }

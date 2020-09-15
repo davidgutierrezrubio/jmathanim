@@ -64,7 +64,7 @@ public class Shape extends MathObject {
     protected final void computeJMPathFromVertices(boolean close) {
         jmpath.clear();//clear points
         for (JMPathPoint p : vertices) {
-            jmpath.addPoint(p);
+            jmpath.addJMPoint(p);
         }
         if (close) {
             jmpath.close();
@@ -276,7 +276,7 @@ public class Shape extends MathObject {
         JMPathPoint p2 = JMPathPoint.lineTo(B.v.x, A.v.y);//TODO: Make it updateable
         JMPathPoint p3 = JMPathPoint.lineTo(B);
         JMPathPoint p4 = JMPathPoint.lineTo(A.v.x, B.v.y);
-        obj.jmpath.addPoint(p1, p2, p3, p4);
+        obj.jmpath.addJMPoint(p1, p2, p3, p4);
         obj.jmpath.close();
         obj.setObjectType(RECTANGLE);
         return obj;

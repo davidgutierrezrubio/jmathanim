@@ -1,6 +1,6 @@
 /*
  * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
+ * To change this template file, choose Tools  Templates
  * and open the template in the editor.
  */
 package com.jmathanim.mathobjects;
@@ -106,7 +106,7 @@ public class SVGMathObject extends MultiShapeObject {
         JMPathPoint previousPoint = new JMPathPoint(new Point(0, 0), true, 0);
         String t = s.replace("M", " M ");
         t = t.replace("-", " -");//Avoid errors with strings like "142.11998-.948884"
-        t = t.replace("H", " H ");
+        t = t.replace("H", " H ");//Adding "" to all commmands helps me to differentiate easily from coordinates
         t = t.replace("h", " h ");
         t = t.replace("V", " V ");
         t = t.replace("v", " v ");
@@ -126,6 +126,7 @@ public class SVGMathObject extends MultiShapeObject {
         int nmax = tokens.length;
         double cx1, cx2, cy1, cy2;
         double xx, yy;
+        String previousCommand = "";
         Double initialX = null;
         Double initialY = null;
         while (it.hasNext()) {
@@ -135,7 +136,8 @@ public class SVGMathObject extends MultiShapeObject {
                 case "":
                     break;
                 case "M":
-                    getPoint(it);
+                    previousCommand = token;
+                    getPoint(it.next(), it.next());
                     initialX = currentX;
                     initialY = currentY;
                     //First point. Creatline do the same as a the first point
@@ -145,137 +147,224 @@ public class SVGMathObject extends MultiShapeObject {
                     break;
 
                 case "L": //Line
-                    getPoint(it);
+                    previousCommand = token;
+                    getPoint(it.next(), it.next());
                     previousPoint = pathLineTo(resul, currentX, currentY);
                     break;
                 case "l": //Line
+                    previousCommand = token;
                     xx = previousPoint.p.v.x;
                     yy = previousPoint.p.v.y;
-                    getPoint(it);
+                    getPoint(it.next(), it.next());
                     currentX += xx;
                     currentY += yy;
                     previousPoint = pathLineTo(resul, currentX, currentY);
                     break;
 
                 case "H": //Horizontal line
-                    getPointX(it);
+                    previousCommand = token;
+
+                    getPointX(it.next());
                     previousPoint = pathLineTo(resul, currentX, currentY);
                     break;
 
                 case "h": //Horizontal line
+                    previousCommand = token;
+
                     xx = previousPoint.p.v.x;
-                    getPointX(it);
+                    getPointX(it.next());
                     currentX += xx;
                     previousPoint = pathLineTo(resul, currentX, currentY);
                     break;
                 case "V": //Vertical line
-                    getPointY(it);
+                    previousCommand = token;
+
+                    getPointY(it.next());
                     previousPoint = pathLineTo(resul, currentX, currentY);
                     break;
                 case "v": //Vertical line
+                    previousCommand = token;
+
                     yy = previousPoint.p.v.y;
-                    getPointY(it);
+                    getPointY(it.next());
                     currentY += yy;
                     previousPoint = pathLineTo(resul, currentX, currentY);
                     break;
                 case "C": //Cubic Bezier
+                    previousCommand = token;
+
                     cx1 = Double.parseDouble(it.next());
                     cy1 = -Double.parseDouble(it.next());
                     cx2 = Double.parseDouble(it.next());
                     cy2 = -Double.parseDouble(it.next());
-                    getPoint(it);
+                    getPoint(it.next(), it.next());
                     previousPoint = pathCubicBezier(resul, previousPoint, cx1, cy1, cx2, cy2, currentX, currentY);
                     break;
                 //c 1,1 2,2 3,3 4,4 5,5 6,6 would become C 1,1 2,2 3,3 C 7,7 8,8 9,9
                 case "c": //Cubic Bezier
+                    previousCommand = token;
+
                     xx = previousPoint.p.v.x;
                     yy = previousPoint.p.v.y;
                     cx1 = xx + Double.parseDouble(it.next());
                     cy1 = yy - Double.parseDouble(it.next());
                     cx2 = xx + Double.parseDouble(it.next());
                     cy2 = yy - Double.parseDouble(it.next());
-                    getPoint(it);
+                    getPoint(it.next(), it.next());
                     currentX += xx;
                     currentY += yy;
 
                     previousPoint = pathCubicBezier(resul, previousPoint, cx1, cy1, cx2, cy2, currentX, currentY);
                     break;
                 case "S": //Simplified Cubic Bezier. Take first control point as a reflection of previous one
+                    previousCommand = token;
+
                     cx1 = previousPoint.p.v.x - (previousPoint.cp2.v.x - previousPoint.p.v.x);
                     cy1 = previousPoint.p.v.y - (previousPoint.cp2.v.y - previousPoint.p.v.y);
                     cx2 = Double.parseDouble(it.next());
                     cy2 = -Double.parseDouble(it.next());
-                    getPoint(it);
+                    getPoint(it.next(), it.next());
                     previousPoint = pathCubicBezier(resul, previousPoint, cx1, cy1, cx2, cy2, currentX, currentY);
                     break;
 
                 case "s": //Simplified relative Cubic Bezier. Take first control point as a reflection of previous one
+                    previousCommand = token;
+
                     cx1 = previousPoint.p.v.x - (previousPoint.cp2.v.x - previousPoint.p.v.x);
                     cy1 = previousPoint.p.v.y - (previousPoint.cp2.v.y - previousPoint.p.v.y);
                     xx = previousPoint.p.v.x;
                     yy = previousPoint.p.v.y;
                     cx2 = xx + Double.parseDouble(it.next());
                     cy2 = yy - Double.parseDouble(it.next());
-                    getPoint(it);
+                    getPoint(it.next(), it.next());
                     currentX += xx;
                     currentY += yy;
                     previousPoint = pathCubicBezier(resul, previousPoint, cx1, cy1, cx2, cy2, currentX, currentY);
                     break;
                 case "Z":
+                    previousCommand = token;
+
                     resul.close();
                     break;
                 case "z":
+                    previousCommand = token;
+
                     resul.close();
                     break;
                 default:
-                    System.out.println("Unknow command: <" + token + ">");
+                    if (token.substring(0, 1) != "") //Not a command, but a point!
+                    {
+                        switch (previousCommand) {
+                            case "M":
+                                previousCommand = "L";
+                                getPointX(token);
+                                getPointY(it.next());
+                                previousPoint = pathLineTo(resul, currentX, currentY);
+                                break;
+                            case "L":
+                                previousCommand = "L";
+                                getPointX(token);
+                                getPointY(it.next());
+                                previousPoint = pathLineTo(resul, currentX, currentY);
+                                break;
+                            case "m":
+                                previousCommand = "l";
+                                xx = previousPoint.p.v.x;
+                                yy = previousPoint.p.v.y;
+                                getPointX(token);
+                                getPointY(it.next());
+                                currentX += xx;
+                                currentY += yy;
+                                previousPoint = pathLineTo(resul, currentX, currentY);
+                                break;
+                             case "l":
+                                previousCommand = "l";
+                                xx = previousPoint.p.v.x;
+                                yy = previousPoint.p.v.y;
+                                getPointX(token);
+                                getPointY(it.next());
+                                currentX += xx;
+                                currentY += yy;
+                                previousPoint = pathLineTo(resul, currentX, currentY);
+                                break;
+                            case "C":
+                                cx1 = Double.parseDouble(token);
+                                cy1 = -Double.parseDouble(it.next());
+                                cx2 = Double.parseDouble(it.next());
+                                cy2 = -Double.parseDouble(it.next());
+                                getPoint(it.next(), it.next());
+                                previousPoint = pathCubicBezier(resul, previousPoint, cx1, cy1, cx2, cy2, currentX, currentY);
+                                break;
+                            case "c":
+                                xx = previousPoint.p.v.x;
+                                yy = previousPoint.p.v.y;
+                                cx1 = xx + Double.parseDouble(token);
+                                cy1 = yy - Double.parseDouble(it.next());
+                                cx2 = xx + Double.parseDouble(it.next());
+                                cy2 = yy - Double.parseDouble(it.next());
+                                getPoint(it.next(), it.next());
+                                currentX += xx;
+                                currentY += yy;
+                                previousPoint = pathCubicBezier(resul, previousPoint, cx1, cy1, cx2, cy2, currentX, currentY);
+                                break;
+                            case "S": //Simplified Cubic Bezier. Take first control point as a reflection of previous one
+                                cx1 = previousPoint.p.v.x - (previousPoint.cp2.v.x - previousPoint.p.v.x);
+                                cy1 = previousPoint.p.v.y - (previousPoint.cp2.v.y - previousPoint.p.v.y);
+                                cx2 = Double.parseDouble(token);
+                                cy2 = -Double.parseDouble(it.next());
+                                getPoint(it.next(), it.next());
+                                previousPoint = pathCubicBezier(resul, previousPoint, cx1, cy1, cx2, cy2, currentX, currentY);
+                                break;
+
+                            case "s": //Simplified relative Cubic Bezier. Take first control point as a reflection of previous one
+                                cx1 = previousPoint.p.v.x - (previousPoint.cp2.v.x - previousPoint.p.v.x);
+                                cy1 = previousPoint.p.v.y - (previousPoint.cp2.v.y - previousPoint.p.v.y);
+                                xx = previousPoint.p.v.x;
+                                yy = previousPoint.p.v.y;
+                                cx2 = xx + Double.parseDouble(token);
+                                cy2 = yy - Double.parseDouble(it.next());
+                                getPoint(it.next(), it.next());
+                                currentX += xx;
+                                currentY += yy;
+                                previousPoint = pathCubicBezier(resul, previousPoint, cx1, cy1, cx2, cy2, currentX, currentY);
+                                break;
+                            default:
+                                System.out.println("Unknow command: <" + token + ">");
+
+                        }
+
+                    } 
             }
         }
         return resul;
     }
 
-    public void getRelPoint(double xx, double yy, Iterator<String> it) throws NumberFormatException {
-        getRelPointX(xx, it);
-        getRelPointY(yy, it);
+    public void getPoint(String x, String y) throws NumberFormatException {
+        getPointX(x);
+        getPointY(y);
     }
 
-    public void getPoint(Iterator<String> it) throws NumberFormatException {
-        getPointX(it);
-        getPointY(it);
-    }
-
-    public void getPointX(Iterator<String> it) throws NumberFormatException {
+    public void getPointX(String x) throws NumberFormatException {
         previousX = currentX;
-        currentX = Double.parseDouble(it.next());
+        currentX = Double.parseDouble(x);
     }
 
-    public void getPointY(Iterator<String> it) throws NumberFormatException {
+    public void getPointY(String y) throws NumberFormatException {
         previousY = currentY;
-        currentY = -Double.parseDouble(it.next());
+        currentY = -Double.parseDouble(y);
     }
 
-    public void getRelPointX(double xx, Iterator<String> it) throws NumberFormatException {
-        previousX = currentX;
-        currentX = xx + Double.parseDouble(it.next());
-    }
-
-    public void getRelPointY(double yy, Iterator<String> it) throws NumberFormatException {
-        previousY = currentY;
-        currentY = yy - Double.parseDouble(it.next());
-    }
-
-    private JMPathPoint pathM(JMPath path, double x, double y) {
-        JMPathPoint point = new JMPathPoint(new Point(currentX, currentY), true, JMPathPoint.TYPE_VERTEX);
-        point.isCurved = false;
-        point.isVisible = false;
-        point.cp1.v.x = currentX;
-        point.cp1.v.y = currentY;
-        point.cp2.v.x = currentX;
-        point.cp2.v.y = currentY;
-        path.addPoint(point);
-        return point;
-    }
-
+//    private JMPathPoint pathM(JMPath path, double x, double y) {
+//        JMPathPoint point = new JMPathPoint(new Point(currentX, currentY), true, JMPathPoint.TYPE_VERTEX);
+//        point.isCurved = false;
+//        point.isVisible = false;
+//        point.cp1.v.x = currentX;
+//        point.cp1.v.y = currentY;
+//        point.cp2.v.x = currentX;
+//        point.cp2.v.y = currentY;
+//        path.addPoint(point);
+//        return point;
+//    }
     private JMPathPoint pathCubicBezier(JMPath path, JMPathPoint previousPoint, double cx1, double cy1, double cx2, double cy2, double x, double y) {
         JMPathPoint point = new JMPathPoint(new Point(currentX, currentY), true, JMPathPoint.TYPE_VERTEX);
         point.isCurved = true;
@@ -283,7 +372,7 @@ public class SVGMathObject extends MultiShapeObject {
         previousPoint.cp1.v.y = cy1;
         point.cp2.v.x = cx2;
         point.cp2.v.y = cy2;
-        path.addPoint(point);
+        path.addJMPoint(point);
         return point;
     }
 
@@ -295,7 +384,7 @@ public class SVGMathObject extends MultiShapeObject {
         point.cp1.v.y = currentY;
         point.cp2.v.x = currentX;
         point.cp2.v.y = currentY;
-        path.addPoint(point);
+        path.addJMPoint(point);
         return point;
     }
 }

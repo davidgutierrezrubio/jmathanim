@@ -66,25 +66,25 @@ public class PointSimple extends Scene2D {
     @Override
     public void runSketch() {
         System.out.println("Running sketch...");
-        pruebaVectores();
+        pruebaSVGImport();
     }
 
     public void clockTick(String mensaje) {
         nanotime = System.nanoTime() - nanotime;
-        System.out.println("[TIME] " + mensaje + " :  " +  (nanotime / 1000000000.d) + " s");
+        System.out.println("[TIME] " + mensaje + " :  " + (nanotime / 1000000000.d) + " s");
     }
 
     public void pruebaSimpleJMPathObject() throws ArrayIndexOutOfBoundsException {
         Shape pa = new Shape();
         JMPathPoint p;
         p = new JMPathPoint(new Point(0, 0), true, JMPathPoint.TYPE_VERTEX);
-        pa.jmpath.addPoint(p);
+        pa.jmpath.addJMPoint(p);
         p = new JMPathPoint(new Point(1, 0), true, JMPathPoint.TYPE_VERTEX);
-        pa.jmpath.addPoint(p);
+        pa.jmpath.addJMPoint(p);
         p = new JMPathPoint(new Point(1, 1), false, JMPathPoint.TYPE_VERTEX);
-        pa.jmpath.addPoint(p);
+        pa.jmpath.addJMPoint(p);
         p = new JMPathPoint(new Point(0, 1), true, JMPathPoint.TYPE_VERTEX);
-        pa.jmpath.addPoint(p);
+        pa.jmpath.addJMPoint(p);
         pa.jmpath.close();
         pa.mp.drawColor = Color.GREEN;
         add(pa);
@@ -790,6 +790,22 @@ public class PointSimple extends Scene2D {
         waitSeconds(50);
     }
 
+    public void pruebaSVGImport() {
+        SVGMathObject svg = new SVGMathObject("C:\\media\\inkscape.svg");
+        add(svg);
+        svg.drawColor(Color.WHITE);
+
+        Shape s = new Shape();
+        s.jmpath.addPoint(new Point(0, 0), new Point(1, 0), new Point(0, 1));
+        s.jmpath.close();
+        s.drawColor(Color.red);
+        add(s);
+        JMPath uno = s.jmpath;
+        JMPath dos = svg.shapes.get(0).jmpath;
+        waitSeconds(30);
+        playTransform(svg.get(0),s, 100);
+        waitSeconds(50);
+    }
 }
 
 //Cookbook:

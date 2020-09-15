@@ -43,10 +43,10 @@ public class Segment extends Shape {
         JMPathPoint jmp1 = new JMPathPoint(p1, true, JMPathPoint.TYPE_VERTEX);
         jmp1.isCurved = false;
         jmp1.isVisible=false;
-        jmpath.addPoint(jmp1);
+        jmpath.addJMPoint(jmp1);
         JMPathPoint jmp2 = new JMPathPoint(p2, true, JMPathPoint.TYPE_VERTEX);
         jmp2.isCurved = false;
-        jmpath.addPoint(jmp2);
+        jmpath.addJMPoint(jmp2);
     }
 
     @Override

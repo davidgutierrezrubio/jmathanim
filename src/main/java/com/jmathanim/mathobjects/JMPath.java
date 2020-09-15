@@ -87,19 +87,24 @@ public class JMPath implements Updateable, Stateable {
 //        addPoint(points.get(0).copy());//TODO: Mark this new point as dependent in case point0 moves
 //        points.get(0).isCurved=false;
         isClosed = true;
+        jmPathPoints.get(0).isVisible=true;
     }
 
     public void open() {
         isClosed = false;
+        jmPathPoints.get(0).isVisible=false;
     }
 
-    public void addPoint(Point p) {
-        jmPathPoints.add(new JMPathPoint(p, true, JMPathPoint.TYPE_VERTEX));
+    public void addPoint(Point... points) {
+        for (Point p : points) {
+            jmPathPoints.add(new JMPathPoint(p, true, JMPathPoint.TYPE_VERTEX));
+        }
     }
 
-    public void addPoint(JMPathPoint...points) {
-        for (JMPathPoint e:points)
-        jmPathPoints.add(e);
+    public void addJMPoint(JMPathPoint... points) {
+        for (JMPathPoint e : points) {
+            jmPathPoints.add(e);
+        }
     }
 
     public void addCPoint1(Point e) {
@@ -197,12 +202,12 @@ public class JMPath implements Updateable, Stateable {
                 JMPathPoint v2 = getPoint(n + 1);
 
                 v1.type = JMPathPoint.TYPE_VERTEX;
-                resul.addPoint(v1); //Add the point of original curve
+                resul.addJMPoint(v1); //Add the point of original curve
                 for (int j = 1; j < numDivs; j++) //Now compute the new ones
                 {
                     double alpha = ((double) j) / numDivs;
                     JMPathPoint interpolate = interpolateBetweenTwoPoints(v1, v2, alpha);
-                    resul.addPoint(interpolate);
+                    resul.addJMPoint(interpolate);
                 }
             }
             //Copy basic attributes of the original curve
@@ -246,8 +251,8 @@ public class JMPath implements Updateable, Stateable {
     public String toString() {
         String resul = "";
         for (JMPathPoint p : jmPathPoints) {
-            resul+=p.toString();
-           
+            resul += p.toString();
+
         }
         return resul;
     }
@@ -260,8 +265,6 @@ public class JMPath implements Updateable, Stateable {
     public void addPointsFrom(JMPath jmpathTemp) {
         jmPathPoints.addAll(jmpathTemp.jmPathPoints);
     }
-
-   
 
     public static JMPathPoint interpolateBetweenTwoPoints(JMPathPoint v1, JMPathPoint v2, double alpha) {
 
@@ -309,7 +312,7 @@ public class JMPath implements Updateable, Stateable {
         JMPath resul = new JMPath();
 
         for (int n = 0; n < jmPathPoints.size(); n++) {
-            resul.addPoint(jmPathPoints.get(n).copy());
+            resul.addJMPoint(jmPathPoints.get(n).copy());
         }
 
         resul.isClosed = isClosed;
@@ -398,8 +401,6 @@ public class JMPath implements Updateable, Stateable {
         resul = sum;
         return resul;
     }
-
-   
 
     /**
      * Cycles the point of closed path (and inverts its orientation if
@@ -499,7 +500,6 @@ public class JMPath implements Updateable, Stateable {
     public int getOrientation() {
         //https://stackoverflow.com/questions/1165647/how-to-determine-if-a-list-of-polygon-points-are-in-clockwise-order/1180256#1180256
 
-        
         //get the point with lowest y and, in case of tie, max x
         int nmax = 0;
         double ymin = jmPathPoints.get(0).p.v.y;
@@ -521,9 +521,8 @@ public class JMPath implements Updateable, Stateable {
         Vec AB = B.minus(A);
         Vec AC = C.minus(A);
         double cross = AB.cross(AC).z;
-        int resul = (Math.signum(cross)<0 ? -1: 1);
+        int resul = (Math.signum(cross) < 0 ? -1 : 1);
 
-        
         return resul;
     }
 

@@ -53,8 +53,8 @@ public class Line extends Segment {
         jmpath.clear(); //Super constructor adds p1, p2. Delete them
         bp1 = new JMPathPoint(new Point(0, 0), true, JMPathPoint.TYPE_VERTEX);//trivial boundary points, just to initialize objects
         bp2 = new JMPathPoint(new Point(0, 0), true, JMPathPoint.TYPE_VERTEX);//trivial boundary points, just to initialize objects
-        jmpath.addPoint(bp1);
-        jmpath.addPoint(bp2);
+        jmpath.addJMPoint(bp1);
+        jmpath.addJMPoint(bp2);
     }
 
     @Override
