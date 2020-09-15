@@ -9,6 +9,9 @@ import com.jmathanim.Utils.JMathAnimConfig;
 import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.Vec;
 import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
@@ -31,6 +34,8 @@ public class SVGMathObject extends MultiShapeObject {
     protected String filename;
     double currentX = 0;
     double currentY = 0;
+    double closeX=0;
+    double closeY=0;
     double previousX = 0;
     double previousY = 0;
     Double anchorX = null;
@@ -147,6 +152,7 @@ public class SVGMathObject extends MultiShapeObject {
             }
         }
 
+        debugSVG(tokens);
         Iterator<String> it = tokens.iterator();
         int n = 0;
         int nmax = tokens.size();
@@ -155,10 +161,10 @@ public class SVGMathObject extends MultiShapeObject {
         String previousCommand = "";
         Double initialX = null;
         Double initialY = null;
-        currentX=0;
-        currentY=0;
-        previousPoint.p.v.x=0;
-        previousPoint.p.v.y=0;
+        currentX = 0;
+        currentY = 0;
+        previousPoint.p.v.x = 0;
+        previousPoint.p.v.y = 0;
         while (it.hasNext()) {
             //Main loop, looking for commands
             String token = it.next().trim();
@@ -171,7 +177,9 @@ public class SVGMathObject extends MultiShapeObject {
                     initialX = currentX;
                     initialY = currentY;
                     //First point. Creatline do the same as a the first point
-                    previousPoint = pathLineTo(resul, currentX, currentY);
+                    previousPoint = pathLineTo(resul, currentX, currentY, false);
+                    closeX=currentX;
+                    closeY=currentY;
                     previousPoint.isVisible = false;
 //                    previousPoint = pathM(path, currentX, currentY);
                     break;
@@ -182,8 +190,10 @@ public class SVGMathObject extends MultiShapeObject {
                     getPoint(it.next(), it.next());
                     currentX += xx;
                     currentY += yy;
+                    closeX=currentX;
+                    closeY=currentY;
                     //First point. Creatline do the same as a the first point
-                    previousPoint = pathLineTo(resul, currentX, currentY);
+                    previousPoint = pathLineTo(resul, currentX, currentY, false);
                     previousPoint.isVisible = false;
 //                    previousPoint = pathM(path, currentX, currentY);
                     break;
@@ -191,7 +201,7 @@ public class SVGMathObject extends MultiShapeObject {
                 case "L": //Line
                     previousCommand = token;
                     getPoint(it.next(), it.next());
-                    previousPoint = pathLineTo(resul, currentX, currentY);
+                    previousPoint = pathLineTo(resul, currentX, currentY, true);
                     break;
                 case "l": //Line
                     previousCommand = token;
@@ -200,14 +210,14 @@ public class SVGMathObject extends MultiShapeObject {
                     getPoint(it.next(), it.next());
                     currentX += xx;
                     currentY += yy;
-                    previousPoint = pathLineTo(resul, currentX, currentY);
+                    previousPoint = pathLineTo(resul, currentX, currentY, true);
                     break;
 
                 case "H": //Horizontal line
                     previousCommand = token;
 
                     getPointX(it.next());
-                    previousPoint = pathLineTo(resul, currentX, currentY);
+                    previousPoint = pathLineTo(resul, currentX, currentY, true);
                     break;
 
                 case "h": //Horizontal line
@@ -216,13 +226,13 @@ public class SVGMathObject extends MultiShapeObject {
                     xx = previousPoint.p.v.x;
                     getPointX(it.next());
                     currentX += xx;
-                    previousPoint = pathLineTo(resul, currentX, currentY);
+                    previousPoint = pathLineTo(resul, currentX, currentY, true);
                     break;
                 case "V": //Vertical line
                     previousCommand = token;
 
                     getPointY(it.next());
-                    previousPoint = pathLineTo(resul, currentX, currentY);
+                    previousPoint = pathLineTo(resul, currentX, currentY, true);
                     break;
                 case "v": //Vertical line
                     previousCommand = token;
@@ -230,7 +240,7 @@ public class SVGMathObject extends MultiShapeObject {
                     yy = previousPoint.p.v.y;
                     getPointY(it.next());
                     currentY += yy;
-                    previousPoint = pathLineTo(resul, currentX, currentY);
+                    previousPoint = pathLineTo(resul, currentX, currentY, true);
                     break;
                 case "C": //Cubic Bezier
                     previousCommand = token;
@@ -285,12 +295,12 @@ public class SVGMathObject extends MultiShapeObject {
                     break;
                 case "Z":
                     previousCommand = token;
-
+                    previousPoint = pathLineTo(resul, closeX, closeY, true);
                     resul.close();
                     break;
                 case "z":
                     previousCommand = token;
-
+                    previousPoint = pathLineTo(resul, closeX, closeY, true);
                     resul.close();
                     break;
                 default:
@@ -301,13 +311,13 @@ public class SVGMathObject extends MultiShapeObject {
                                 previousCommand = "L";
                                 getPointX(token);
                                 getPointY(it.next());
-                                previousPoint = pathLineTo(resul, currentX, currentY);
+                                previousPoint = pathLineTo(resul, currentX, currentY, true);
                                 break;
                             case "L":
                                 previousCommand = "L";
                                 getPointX(token);
                                 getPointY(it.next());
-                                previousPoint = pathLineTo(resul, currentX, currentY);
+                                previousPoint = pathLineTo(resul, currentX, currentY, true);
                                 break;
                             case "m":
                                 previousCommand = "l";
@@ -317,7 +327,7 @@ public class SVGMathObject extends MultiShapeObject {
                                 getPointY(it.next());
                                 currentX += xx;
                                 currentY += yy;
-                                previousPoint = pathLineTo(resul, currentX, currentY);
+                                previousPoint = pathLineTo(resul, currentX, currentY, true);
                             case "l":
                                 previousCommand = "l";
                                 xx = previousPoint.p.v.x;
@@ -326,7 +336,7 @@ public class SVGMathObject extends MultiShapeObject {
                                 getPointY(it.next());
                                 currentX += xx;
                                 currentY += yy;
-                                previousPoint = pathLineTo(resul, currentX, currentY);
+                                previousPoint = pathLineTo(resul, currentX, currentY, true);
                                 break;
                             case "C":
                                 cx1 = Double.parseDouble(token);
@@ -418,8 +428,8 @@ public class SVGMathObject extends MultiShapeObject {
     }
 
     //Adds a simple point to the path, with control points equal to the point
-    private JMPathPoint pathLineTo(JMPath path, double currentX, double currentY) {
-        JMPathPoint point = new JMPathPoint(new Point(currentX, currentY), true, JMPathPoint.TYPE_VERTEX);
+    private JMPathPoint pathLineTo(JMPath path, double currentX, double currentY, boolean isVisible) {
+        JMPathPoint point = new JMPathPoint(new Point(currentX, currentY), isVisible, JMPathPoint.TYPE_VERTEX);
         point.isCurved = false;
         point.cp1.v.x = currentX;
         point.cp1.v.y = currentY;
@@ -427,5 +437,20 @@ public class SVGMathObject extends MultiShapeObject {
         point.cp2.v.y = currentY;
         path.addJMPoint(point);
         return point;
+    }
+
+    public void debugSVG(ArrayList<String> tokens) {
+        FileWriter fw;
+        PrintWriter pw;
+        try {
+            fw = new FileWriter("c:\\media\\debugsvg.txt");
+            pw = new PrintWriter(fw);
+            for (String tok : tokens) {
+                pw.print(tok + "\n");
+            }
+            pw.close();
+        } catch (IOException ex) {
+            Logger.getLogger(LaTeXMathObject.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 }

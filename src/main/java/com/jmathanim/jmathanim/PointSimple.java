@@ -57,7 +57,7 @@ public class PointSimple extends Scene2D {
 //        conf.setMediumQuality();
         conf.setLowQuality();
 
-        setCreateMovie(false);
+        setCreateMovie(true);
         clockTick("create movie");
         setShowPreviewWindow(true);
         clockTick("Show preview window");
@@ -66,7 +66,8 @@ public class PointSimple extends Scene2D {
     @Override
     public void runSketch() {
         System.out.println("Running sketch...");
-        pruebaSVGImport();
+//        pruebaLaTeXEcuacion();
+        pruebaVisible();
     }
 
     public void clockTick(String mensaje) {
@@ -791,24 +792,38 @@ public class PointSimple extends Scene2D {
     }
 
     public void pruebaSVGImport() {
-        SVGMathObject svg = new SVGMathObject("C:\\media\\cocacola.svg");
-        add(svg);
-//        add(svg.shapes.get(1));
-//        add(svg.shapes.get(2));
-        svg.drawColor(Color.WHITE);
+//        SVGMathObject svg = new SVGMathObject("C:\\media\\coca2.svg");
+//        add(svg);
+////        add(svg.shapes.get(1));
+////        add(svg.shapes.get(2));
+//        svg.drawColor(Color.WHITE);
 
         Shape s = new Shape();
-        s.jmpath.addPoint(new Point(0, 0), new Point(1, 0), new Point(0, 1));
+        s.jmpath.addPoint(new Point(0, 0), new Point(1, 0), new Point(0, 1), new Point(-1, -1));
         s.jmpath.close();
+        s.getJMPoint(1).isVisible = false;
         s.drawColor(Color.red);
         add(s);
-        JMPath uno = s.jmpath;
-        JMPath dos = svg.shapes.get(0).jmpath;
-        waitSeconds(30);
+//        JMPath uno = s.jmpath;
+//        JMPath dos = svg.shapes.get(0).jmpath;
+        waitSeconds(130);
+        s.getJMPoint(1).isVisible = true;
+        waitSeconds(130);
 //        playTransform(svg.get(0),s, 100); 
-        
-        waitSeconds(150);
+
     }
+
+    public void pruebaVisible() {
+        RegularPolygon pol = new RegularPolygon(6, 1);
+        RegularPolygon pol2 = new RegularPolygon(5, 1);
+        pol2.shift(-1,-1);
+        pol.jmpath.addPointsFrom(pol2.jmpath);
+        add(pol);
+        waitSeconds(5);
+        pol.getJMPoint(2).isVisible = false;
+        waitSeconds(5);
+    }
+
 }
 
 //Cookbook:
