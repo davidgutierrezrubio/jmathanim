@@ -9,11 +9,14 @@ import com.jmathanim.mathobjects.JMPath;
 import com.jmathanim.Cameras.Camera;
 import com.jmathanim.Cameras.Camera2D;
 import com.jmathanim.Utils.JMathAnimConfig;
+import com.jmathanim.Utils.MathObjectDrawingProperties;
 import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
+import com.jmathanim.mathobjects.Shape;
 import com.jmathanim.mathobjects.JMPathPoint;
 import com.jmathanim.mathobjects.MathObject;
+import com.jmathanim.mathobjects.Point;
 import io.humble.video.Codec;
 import io.humble.video.Encoder;
 import io.humble.video.MediaPacket;
@@ -32,6 +35,7 @@ import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
+import java.awt.Stroke;
 import java.awt.geom.Path2D;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
@@ -57,6 +61,7 @@ public class Java2DRenderer extends Renderer {
     private final BufferedImage bufferedImage;
     private final Graphics2D g2d;
     public Camera2D camera;
+    public Camera2D fixedCamera;
     private Muxer muxer;
     private MuxerFormat format;
     private Codec codec;
@@ -91,8 +96,12 @@ public class Java2DRenderer extends Renderer {
         cnf = parentScene.conf;
         this.createMovie = createMovie;
         this.showPreview = showPreview;
-        camera = new Camera2D(cnf.width, cnf.height);
-        super.setSize(cnf.width, cnf.height);
+        camera = new Camera2D(cnf.mediaW, cnf.mediaH);
+        //The Fixed camera doesn't change. It is used to display fixed-size objects
+        //like heads of arrows or text
+        fixedCamera = new Camera2D(cnf.mediaW, cnf.mediaH);
+        fixedCamera.setMathXY(-2, 2, 0);
+        super.setSize(cnf.mediaW, cnf.mediaH);
 
         bufferedImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
         g2d = bufferedImage.createGraphics();
@@ -177,21 +186,22 @@ public class Java2DRenderer extends Renderer {
 
     @Override
     public void drawCircle(double x, double y, double radius) {
+
         g2d.setColor(borderColor);
         double mx = x - .5 * radius;
         double my = y + .5 * radius;
         int[] screenx = camera.mathToScreen(mx, my);
         int screenRadius = camera.mathToScreen(radius);
         g2d.fillOval(screenx[0], screenx[1], screenRadius, screenRadius);
-//        g2d.drawRect(screenx[0],screenx[1], screenRadius, screenRadius);
     }
 
     @Override
-    public void drawLine(double x1, double y1, double x2, double y2) {
-        g2d.setColor(borderColor);
-        int[] screenx1 = camera.mathToScreen(x1, y1);
-        int[] screenx2 = camera.mathToScreen(x2, y2);
-        g2d.drawLine(screenx1[0], screenx1[1], screenx2[0], screenx2[1]);
+    public void drawDot(Point p) {
+        setStroke(p);
+        int[] xx = camera.mathToScreen(p.v.x, p.v.y);
+        
+        g2d.setColor(p.mp.drawColor);
+        g2d.drawLine(xx[0], xx[1], xx[0] , xx[1]);
     }
 
     @Override
@@ -201,102 +211,108 @@ public class Java2DRenderer extends Renderer {
             Graphics gr = panel.getGraphics();
             gr.drawImage(bufferedImage, 0, 0, null);
 
-            //Ensure fps is set to movie
-            double next_game_tick = System.currentTimeMillis();
-            int loops;
-
-                loops = 0;
-                while (System.currentTimeMillis() > next_game_tick
-                        && loops < MAX_FRAMESKIP) {
-
-
-                    next_game_tick += SKIP_TICKS;
-                    loops++;
-                }
-            try {
-                Thread.sleep(10);
-            } catch (InterruptedException ex) {
-                Logger.getLogger(Java2DRenderer.class.getName()).log(Level.SEVERE, null, ex);
-            }
-            }
-            if (createMovie) {
-                BufferedImage screen = MediaPictureConverterFactory.convertToType(bufferedImage, BufferedImage.TYPE_3BYTE_BGR);
-                MediaPictureConverter converter = MediaPictureConverterFactory.createConverter(screen, picture);
-                converter.toPicture(picture, screen, frameCount);
-                do {
-                    encoder.encode(packet, picture);
-                    if (packet.isComplete()) {
-                        muxer.write(packet, false);
-                    }
-                } while (packet.isComplete());
-            }
+//            //Ensure fps is set to movie
+//            double next_game_tick = System.currentTimeMillis();
+//            int loops;
+//
+//                loops = 0;
+//                while (System.currentTimeMillis() > next_game_tick
+//                        && loops < MAX_FRAMESKIP) {
+//
+//
+//                    next_game_tick += SKIP_TICKS;
+//                    loops++;
+//                }
+//            try {
+//                Thread.sleep(10);
+//            } catch (InterruptedException ex) {
+//                Logger.getLogger(Java2DRenderer.class.getName()).log(Level.SEVERE, null, ex);
+//            }
         }
-
-        @Override
-        public void finish
-        
-            () {
         if (createMovie) {
-                /**
-                 * Encoders, like decoders, sometimes cache pictures so it can
-                 * do the right key-frame optimizations. So, they need to be
-                 * flushed as well. As with the decoders, the convention is to
-                 * pass in a null input until the output is not complete.
-                 */
-                System.out.println("Finishing movie...");
-                do {
-                    encoder.encode(packet, null);
-                    if (packet.isComplete()) {
-                        muxer.write(packet, false);
-                    }
-                } while (packet.isComplete());
-
-                /**
-                 * Finally, let's clean up after ourselves.
-                 */
-                muxer.close();
-                System.out.println("Movie created at " + saveFilePath);
-            }
-            if (showPreview) {
-                frame.setVisible(false);
-                frame.dispose();
-            }
-            System.exit(0);
+            BufferedImage screen = MediaPictureConverterFactory.convertToType(bufferedImage, BufferedImage.TYPE_3BYTE_BGR);
+            MediaPictureConverter converter = MediaPictureConverterFactory.createConverter(screen, picture);
+            converter.toPicture(picture, screen, frameCount);
+            do {
+                encoder.encode(packet, picture);
+                if (packet.isComplete()) {
+                    muxer.write(packet, false);
+                }
+            } while (packet.isComplete());
         }
+    }
 
-        @Override
-        public void drawArc
-        (double x, double y, double radius, double angle
-        
-            ) {
-        g2d.setColor(borderColor);
+    @Override
+    public void finish() {
+        if (createMovie) {
+            /**
+             * Encoders, like decoders, sometimes cache pictures so it can do
+             * the right key-frame optimizations. So, they need to be flushed as
+             * well. As with the decoders, the convention is to pass in a null
+             * input until the output is not complete.
+             */
+            System.out.println("Finishing movie...");
+            do {
+                encoder.encode(packet, null);
+                if (packet.isComplete()) {
+                    muxer.write(packet, false);
+                }
+            } while (packet.isComplete());
+
+            /**
+             * Finally, let's clean up after ourselves.
+             */
+            muxer.close();
+            System.out.println("Movie created at " + saveFilePath);
         }
+        if (showPreview) {
+            frame.setVisible(false);
+            frame.dispose();
+        }
+        System.exit(0);
+    }
 
-        @Override
-        public void clear
-        
-            () {
+    @Override
+    public void clear() {
         g2d.setColor(Color.BLACK);//TODO: Poner en opciones
-            g2d.fillRect(0, 0, width, height);
+        g2d.fillRect(0, 0, width, height);
+    }
+
+    @Override
+    public void setStroke(MathObject obj) {
+        final double thickness = obj.mp.getThickness(this);
+        int strokeSize;
+        if (!obj.mp.absoluteThickness) {
+            strokeSize = camera.mathToScreen(.0025 * thickness); //TODO: Another way to compute this
+        } else {
+            strokeSize = (int) thickness;
         }
 
-        @Override
-        public void setStroke
-        (double mathSize
-        
-            ) {
-        int strokeSize = camera.mathToScreen(mathSize); //TODO: Another way to compute this
-            g2d.setStroke(new BasicStroke(strokeSize, CAP_ROUND, JOIN_ROUND));
+        switch (obj.mp.dashStyle) {
+            case MathObjectDrawingProperties.SOLID:
+                BasicStroke basicStroke = new BasicStroke(strokeSize, CAP_ROUND, JOIN_ROUND);
+                g2d.setStroke(basicStroke);
+                break;
+            case MathObjectDrawingProperties.DASHED:
+                float[] dashedPattern = {5.0f * strokeSize, 2.0f * strokeSize};
+                Stroke dashedStroke = new BasicStroke(strokeSize, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND, 10.0f, dashedPattern, 1.0f);
+                g2d.setStroke(dashedStroke);
+                break;
+            case MathObjectDrawingProperties.DOTTED:
+                float[] dottedPattern = {1f, 2.0f * strokeSize};
+                Stroke dottedStroke = new BasicStroke(strokeSize, BasicStroke.CAP_SQUARE, BasicStroke.JOIN_ROUND, 10.0f, dottedPattern, 1.0f);
+                g2d.setStroke(dottedStroke);
+                break;
         }
 
-        @Override
-        public void drawPath
-        (MathObject mobj, JMPath c
-        
-            ) {
+    }
 
+    @Override
+    public void drawPath(Shape mobj) {
+
+        JMPath c = mobj.getPath();
         int numPoints = c.size();
-            int minimumPoints = 2;
+        int minimumPoints = 2;
 
 //        switch (c.curveType) {
 //            case JMPath.STRAIGHT:
@@ -308,33 +324,36 @@ public class Java2DRenderer extends Renderer {
 //            default:
 //                throw new UnsupportedOperationException("Error: Illegal type of JMPath: " + c.curveType);
 //        }
-            if (numPoints >= minimumPoints) {
-                path = createPathFromJMPath(c);
+        if (numPoints >= minimumPoints) {
+            path = createPathFromJMPath(mobj);
 
-                if (mobj.mp.fill) {
-                    g2d.setPaint(mobj.mp.fillColor);
-                    g2d.fill(path);
-                }
-                //Border is always drawed
-                g2d.setColor(mobj.mp.drawColor);
-                g2d.draw(path);
-                if (PRINT_DEBUG) {
-                    System.out.println("Drawing " + c);
-                }
-                if (BOUNDING_BOX_DEBUG) {
-                    debugBoundingBox(c.getBoundingBox());
-                }
+            if (mobj.mp.fill) {
+                g2d.setPaint(mobj.mp.fillColor);
+                g2d.fill(path);
+            }
+            //Border is always drawed
+            g2d.setColor(mobj.mp.drawColor);
+            g2d.draw(path);
+            setStroke(mobj);
+            if (PRINT_DEBUG) {
+                System.out.println("Drawing " + c);
+            }
+            if (BOUNDING_BOX_DEBUG) {
+                debugBoundingBox(c.getBoundingBox());
             }
         }
+    }
 
-    
-
-    public Path2D.Double createPathFromJMPath(JMPath c) {
+    public Path2D.Double createPathFromJMPath(Shape mobj) {
+        JMPath c=mobj.getPath();
         Path2D.Double resul = new Path2D.Double();
 
         //TODO: Convert this in its own reusable method
         //First, I move the curve to the first point
         Vec p = c.getPoint(0).p.v;
+        if (DEBUG_PATH_POINTS) {
+                debugPathPoint(c.getPoint(0),c);
+            }
         int[] scr = camera.mathToScreen(p);
         resul.moveTo(scr[0], scr[1]);
         //Now I iterate to get the next points
@@ -353,7 +372,7 @@ public class Java2DRenderer extends Renderer {
             int[] cxy1 = camera.mathToScreen(cpoint1);
             int[] cxy2 = camera.mathToScreen(cpoint2);
             if (DEBUG_PATH_POINTS) {
-                debugPathPoint(c.getPoint(n));
+                debugPathPoint(c.getPoint(n),c);
             }
             if (c.getPoint(n).isVisible) {
                 if (c.getPoint(n).isCurved) {
@@ -385,7 +404,7 @@ public class Java2DRenderer extends Renderer {
         camera.setSize(w, h);
     }
 
-    public void debugPathPoint(JMPathPoint p) {
+    public void debugPathPoint(JMPathPoint p,JMPath path) {
         int[] x = camera.mathToScreen(p.p.v.x, p.p.v.y);
         debugCPoint(camera.mathToScreen(p.cp1.v.x, p.cp1.v.y));
         debugCPoint(camera.mathToScreen(p.cp2.v.x, p.cp2.v.y));
@@ -402,6 +421,7 @@ public class Java2DRenderer extends Renderer {
         } else {
             g2d.drawRect(x[0] - 2, x[1] - 2, 4, 4);
         }
+        debugText(String.valueOf(path.jmPathPoints.indexOf(p)), x[0]+5, x[1]);
 
     }
 

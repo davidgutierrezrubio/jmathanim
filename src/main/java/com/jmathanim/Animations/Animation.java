@@ -5,6 +5,7 @@
  */
 package com.jmathanim.Animations;
 
+import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.MathObject;
 
 /**
@@ -16,26 +17,25 @@ import com.jmathanim.mathobjects.MathObject;
  */
 public abstract class Animation {
 
+    private static final double DEFAULT_TIME=1;
     private double t, dt;
-    public final MathObject mobj;
+//    public final MathObject mobj;
     protected double runTime;
     protected double fps;
-    private int numFrames; //Number of frames of animation
-    private int frame;
-    private boolean shouldSetFPSFirst;
+//    private int numFrames; //Number of frames of animation
+//    private int frame;
+    private boolean isInitialized = false;
 
-    public Animation(MathObject mobj) {
-        this(mobj, 1);
+    public Animation() {
+        this(DEFAULT_TIME);
     }
 
-    public Animation(MathObject mobj, double runTime) {
-        this.shouldSetFPSFirst = true;
-        this.mobj = mobj;
+    public Animation(double runTime) {
         this.runTime = runTime;
     }
 
-    public Animation(MathObject mobj, int runTime) {
-        this(mobj, (double) runTime);
+    public Animation(int runTime) {
+        this((double) runTime);
     }
 
     public double getFps() {
@@ -44,11 +44,10 @@ public abstract class Animation {
 
     public void setFps(double fps) {
         this.fps = fps;
-        numFrames = (int) (runTime * fps) + 3;//TODO: Check this!
+//        numFrames = (int) (runTime * fps) + 3;//TODO: Check this!
         dt = 1.d / (runTime * fps + 3);
         t = 0;
-        frame = 0;
-        shouldSetFPSFirst = false;
+//        frame = 0;
     }
 
     /**
@@ -58,39 +57,50 @@ public abstract class Animation {
      * @return True if animation has finished
      */
     public boolean processAnimation(double fps) {
-        if (shouldSetFPSFirst) {
+        if (!isInitialized) { //If not initalized, do it now
+//            initialize();
+            isInitialized = true;
             setFps(fps);
         }
         boolean resul = false;
 //        if (frame < numFrames || t < 1 + dt) {
-        if (t<1){
+        if (t < 1 && t >= 0) {
             this.doAnim(lambda(t));
-            t += dt;
-            if (t > 1) {
-                t = 1;
-                this.finishAnimation();
-            }
-            frame++;
+
+//            frame++;
             resul = false;
         } else {
             resul = true;
         }
-
+        t += dt;
+        if (t > 1) {
+            t = 1;
+            this.finishAnimation();
+        }
         return resul;
     }
 
     /**
-     * Do animation
+     * Initialize animation. This method is immediately called before playing
+     */
+    abstract public void initialize();
+
+    /**
+     * Executes one frame of the animation, given by the time t, from 0 to 1
      *
      * @param t double betwenn 0 and 1 0=start, 1=end
      */
     abstract public void doAnim(double t);
+
     abstract public void finishAnimation();
+
     public double getT() {
         return t;
     }
 
     private double lambda(double t) {
-        return t*t*(3-2*t);
+        return t * t * (3 - 2 * t);
     }
+
+    abstract public void addObjectsToScene(JMathAnimScene scene);
 }

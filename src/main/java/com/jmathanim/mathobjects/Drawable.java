@@ -9,9 +9,9 @@ import com.jmathanim.Renderers.Renderer;
 
 
 /**
- * Anything that can be drawin in the canvas
+ * Anything that can be drawed in the canvas
  * @author David Gutierrez Rubio davidgutierrezrubio@gmail.com
  */
-interface Drawable {
+public interface Drawable {
     public void draw(Renderer r);
 }

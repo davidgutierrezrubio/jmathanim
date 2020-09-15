@@ -75,6 +75,10 @@ public class SVGImporter {
                     getPointX(it);
                     previousPoint = pathLineTo(path, currentX, currentY);
                     break;
+                case "h": //Horizontal line
+                    getPointX(it);
+                    previousPoint = pathLineTo(path, currentX, currentY);
+                    break;
                 case "V": //Vertical line
                     getPointY(it);
                     previousPoint = pathLineTo(path, currentX, currentY);

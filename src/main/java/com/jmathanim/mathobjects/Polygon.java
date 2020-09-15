@@ -5,19 +5,23 @@
  */
 package com.jmathanim.mathobjects;
 
-import com.jmathanim.Renderers.Renderer;
 import com.jmathanim.Utils.MathObjectDrawingProperties;
 import com.jmathanim.Utils.Vec;
+import com.jmathanim.jmathanim.JMathAnimScene;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  *
  * @author David Gutiérrez Rubio <davidgutierrezrubio@gmail.com>
  */
-public class Polygon extends JMPathMathObject {
+public class Polygon extends Shape {
+
+    protected final AveragePoint center;
 
     public Polygon() {
-        this(null);
+        this(new MathObjectDrawingProperties());
     }
 
     public Polygon(MathObjectDrawingProperties mp) {
@@ -25,20 +29,28 @@ public class Polygon extends JMPathMathObject {
         this(new ArrayList<Point>(), true, mp);
     }
 
+    public Polygon(Point... vertices) {
+        super();
+            this.addVertices(Arrays.asList(vertices));
+            
+        computeJMPathFromVertices(true);
+        center = new AveragePoint(jmpath);
+    }
+
     public Polygon(ArrayList<Point> vertices, boolean close, MathObjectDrawingProperties mp) {
         super(mp);
         numInterpolationPoints = 1;//TODO: Make it adaptative
         this.addVertices(vertices);
-        this.isClosed = close;
         if (!vertices.isEmpty()) {
-            computeJMPathFromVertices();
+            computeJMPathFromVertices(close);
         }
+        center = new AveragePoint(jmpath);
     }
 
-    public final void addVertices(ArrayList<Point> vertices) {
+    public final void addVertices(List<Point> vertices) {
         for (Point p : vertices) {
             JMPathPoint jmPathPoint = new JMPathPoint(p, true, JMPathPoint.TYPE_VERTEX);
-            jmPathPoint.isCurved=false;
+            jmPathPoint.isCurved = false;
             this.vertices.add(jmPathPoint);
         }
     }
@@ -55,7 +67,7 @@ public class Polygon extends JMPathMathObject {
 
     public boolean addVertex(Double x, Double y, Double z) {
         needsRecalcControlPoints = true;
-        Point p=new Point(x, y, z);
+        Point p = new Point(x, y, z);
         return this.addVertex(p);
     }
 
@@ -74,34 +86,35 @@ public class Polygon extends JMPathMathObject {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-    @Override
-    public MathObject copy() {
-        Polygon resul = new Polygon();//FODO: FIX
-        return resul;
-    }
-
-    @Override
-    public void draw(Renderer r) {
-        if (needsRecalcControlPoints) {
-            System.out.println("Update path en draw");
-            computeJMPathFromVertices();
-        }
-//        if (drawParam >= 1) {
-//            drawParam = 1;
+//    @Override
+//    public Polygon copy() {
+//        Polygon resul = new Polygon();
+//        resul.mp.copyFrom(mp);
+//        resul.jmpath.clear();
+//        resul.jmpath.addPointsFrom(jmpath);
+//        return resul;
+//    }
+//    @Override
+//    public void draw(Renderer r) {
+//        if (needsRecalcControlPoints) {
+//            System.out.println("Update path en draw");
+//            computeJMPathFromVertices();
 //        }
-
-//        JMPath c = jmpath.getSlice(drawParam);
+////        if (drawParam >= 1) {
+////            drawParam = 1;
+////        }
 //
-//        if (drawParam < 1) {
-//            c.open();
-//        } else {
-//            c.close();
-//        }
-        r.setBorderColor(mp.drawColor);
-        r.setStroke(mp.getThickness(r));
-        r.drawPath(this,jmpath);
-    }
-
+////        JMPath c = jmpath.getSlice(drawParam);
+////
+////        if (drawParam < 1) {
+////            c.open();
+////        } else {
+////            c.close();
+////        }
+//        r.setBorderColor(mp.drawColor);
+//        r.setStroke(this);
+//        r.drawPath(this);
+//    }
 //    @Override
 //    public void computeJMPath() {
 //        //TODO: ¿Compute intermediate points?
@@ -119,22 +132,16 @@ public class Polygon extends JMPathMathObject {
 //        jmpath.computeControlPoints(JMPath.STRAIGHT);
 //        needsRecalcControlPoints = false;
 //    }
-    @Override
-    public void scale(Point scaleCenter, double sx, double sy, double sz) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
+   
 
     @Override
-    public void update() {
-        System.out.println("Update path en update");
-        computeJMPathFromVertices();
-        updateDependents();
+    public Point getCenter() {
+        return center;
     }
 
     public ArrayList<Point> getVertices() {
-        ArrayList<Point> resul=new ArrayList<>();
-        for (JMPathPoint jmp: vertices)
-        {
+        ArrayList<Point> resul = new ArrayList<>();
+        for (JMPathPoint jmp : vertices) {
             resul.add(jmp.p);
         }
         return resul;
@@ -150,7 +157,6 @@ public class Polygon extends JMPathMathObject {
 //            jmpath.addPointsFrom(jmpathTemp);
 //        }
         numInterpolationPoints = 20;
-        update();
 
     }
 
@@ -158,9 +164,11 @@ public class Polygon extends JMPathMathObject {
     public void processAfterNonLinearAnimation() {
 //        jmpath.removeInterpolationPoints();//Remove interpolation points
         numInterpolationPoints = 1;
-        update();
     }
 
-   
+    @Override
+    public void registerChildrenToBeUpdated(JMathAnimScene scene) {
+        scene.registerObjectToBeUpdated(center);
+    }
 
 }

@@ -14,12 +14,27 @@ import static java.lang.Math.PI;
  */
 public class Circle extends Arc {
 
+    /**
+     * Default constructor, a circle with center (0,0) and radius 1
+     */
+    public Circle(){
+        this(new Point(0,0),1);
+    }
     public Circle(Vec center, Vec point) {
         this(new Point(center), center.distanceTo(point));
     }
 
     public Circle(Point arcCenter, double radius) {
-        super(arcCenter, radius, 2 * PI, true);
+        super(arcCenter, radius, 2 * PI,Math.PI*2/40, true);
+    }
+
+    @Override
+    public Circle copy() {
+        Circle resul=new Circle(center.copy(), radiusx);
+        resul.mp.copyFrom(mp);
+        resul.jmpath.clear();
+        resul.jmpath.addPointsFrom(jmpath.rawCopy());
+        return resul;
     }
 
 }

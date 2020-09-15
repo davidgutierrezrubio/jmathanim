@@ -6,15 +6,17 @@
 package com.jmathanim.jmathanim;
 
 import com.jmathanim.Animations.Animation;
+import com.jmathanim.Animations.Transform;
+import com.jmathanim.Animations.commands.Commands;
 import com.jmathanim.Cameras.Camera;
-import com.jmathanim.Renderers.Java2DRenderer;
 import com.jmathanim.Renderers.Renderer;
-import com.jmathanim.Utils.ConfigUtils;
 import com.jmathanim.Utils.JMathAnimConfig;
+import com.jmathanim.Utils.Vec;
+import com.jmathanim.mathobjects.Shape;
 import com.jmathanim.mathobjects.MathObject;
+import com.jmathanim.mathobjects.Point;
+import com.jmathanim.mathobjects.updateableObjects.Updateable;
 import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.Properties;
 
 /**
  *
@@ -29,42 +31,43 @@ public abstract class JMathAnimScene {
     };
     int contador = 0;
     int x;
-    ArrayList<MathObject> objects;
+    final ArrayList<MathObject> objects;
+    final ArrayList<Updateable> objectsToBeUpdated;
     protected Renderer SCRenderer;
     protected int frameCount;
     protected double fps;
     protected double dt;
     public JMathAnimConfig conf;
 
-    
     public JMathAnimScene() {
         objects = new ArrayList<>(); //TODO: Extends this to include layers
-        conf = new JMathAnimConfig();
+        conf = JMathAnimConfig.getConfig();
         conf.setLowQuality();//by default, set low quality
+        objectsToBeUpdated = new ArrayList<>();
     }
 
-//    /**
-//     *
-//     */
-//    public final void runSketch() {
-//        frames = 0;
-//        mainLoop();
-//        makeMovie();
-//        System.exit(0);
-//
-//    }
     /**
      * Preparation code for the animation should go here
      */
     public abstract void setupSketch();
 
     /**
+     * This method handles the creation of the renderer(s)
+     */
+    public abstract void createRenderer();
+    /**
      *
      */
     public final void execute() {
+        
         String nombre = this.getClass().getName();
         System.out.println("Run sketch: " + nombre);
         setupSketch();
+        createRenderer();
+        JMathAnimConfig.getConfig().setRenderer(SCRenderer);
+        
+        //In the global variable store Scene, Renderer and main Camera
+        conf.setScene(this);
         runSketch();
         SCRenderer.finish();//Finish rendering jobs
 
@@ -78,11 +81,31 @@ public abstract class JMathAnimScene {
         }
     }
 
+    public final void registerObjectToBeUpdated(Updateable... objs) {
+        for (Updateable obj : objs) {
+            if (!objectsToBeUpdated.contains(obj)) {
+                objectsToBeUpdated.add(obj);
+            }
+        }
+    }
+
+    public final void unregisterObjectToBeUpdated(MathObject obj) {
+        if (obj instanceof Updateable) {
+            System.out.println("Unregistered updateable " + obj);
+            objectsToBeUpdated.remove((Updateable) obj);
+        }
+    }
+
     public final void add(MathObject... objs) {
         for (MathObject obj : objs) {
             if (!objects.contains(obj)) {
                 objects.add(obj);
                 obj.addScene(this);
+                //Check if this object is Updateable.
+                //This interface is present in every MathObject which needs to
+                //be updated every frame
+                registerObjectToBeUpdated(obj);
+                obj.registerChildrenToBeUpdated(this);
             }
         }
     }
@@ -90,6 +113,8 @@ public abstract class JMathAnimScene {
     public final MathObject remove(MathObject obj) {
         objects.remove(obj);
         obj.removeScene(this);
+        unregisterObjectToBeUpdated(obj);
+        obj.unregisterChildrenToBeUpdated(this);//TODO: Really unregister children??
         return obj;
     }
 
@@ -97,12 +122,16 @@ public abstract class JMathAnimScene {
      * Call the draw method in all mathobjects
      */
     protected final void doDraws() {
-        objects.sort(new Comparator<MathObject>() {
-            @Override
-            public int compare(MathObject o1, MathObject o2) {
-                return (o1.mp.layer - o2.mp.layer);
-            }
-        });
+
+        //For the array of objects to be updated (not necessarily drawn), I sort them by the updatelevel variable
+        //updatelevel 0 gets updated first.
+        //Objects with updatelevel n depend directly from those with level n-1
+        objectsToBeUpdated.sort((Updateable o1, Updateable o2) -> o1.getUpdateLevel() - o2.getUpdateLevel());
+        for (Updateable obj : objectsToBeUpdated) {
+            obj.update();
+        }
+        //Objects to be drawn on screen. Sort them by layer
+        objects.sort((MathObject o1, MathObject o2) -> (o1.mp.layer - o2.mp.layer));
         for (MathObject obj : objects) {
             obj.draw(SCRenderer);
         }
@@ -124,6 +153,11 @@ public abstract class JMathAnimScene {
         SCRenderer.saveFrame(frameCount);
     }
 
+    /**
+     * Overloaded function, to admit a variable number of parameters
+     *
+     * @param anims Animations to play
+     */
     public void play(Animation... anims) {
         ArrayList<Animation> animArray = new ArrayList<>();
         for (Animation anim : anims) {
@@ -132,10 +166,18 @@ public abstract class JMathAnimScene {
         this.play(animArray);
     }
 
+    /**
+     * Play the given animations, generating new frames automatically until all
+     * animations have finished.
+     *
+     * @param anims An ArrayList with Animation objects.
+     */
     public void play(ArrayList<Animation> anims) {
         for (Animation anim : anims) {
-            add(anim.mobj);
+            anim.addObjectsToScene(this); //Add main object if it's not already in the scene.
+            anim.initialize();//Perform needed steps immediately before playing
         }
+
         boolean finished = false;
         while (!finished) {
             finished = true;
@@ -159,5 +201,32 @@ public abstract class JMathAnimScene {
 
     public Camera getCamera() {
         return SCRenderer.getCamera();
+    }
+
+    //Convenience methods
+    //This methods allow easy and fast ways to shift, rotate, and scale objects
+    public void shift(MathObject obj, double dx, double dy, double runTime) {
+        play(Commands.shift(obj, dx, dy, runTime));
+    }
+
+    public void playShift(MathObject obj, Vec v, double runTime) {
+
+        play(Commands.shift(obj, v, runTime));
+    }
+
+    public void playScale(MathObject obj, Point center, double sc, double runTime) {
+        scale(obj, center, sc, sc, sc, runTime);
+    }
+
+    public void scale(MathObject obj, Point center, double scx, double scy, double scz, double runTime) {
+        play(Commands.scale(obj, center, scx, scy, scz, runTime));
+    }
+
+    public void playRotate(MathObject obj, Point center, double angle, double runTime) {
+        play(Commands.rotate(obj, center, angle, runTime));
+    }
+
+    public void playTransform(Shape obj1, Shape obj2, double runTime) {
+        play(new Transform(obj1, obj2, runTime));
     }
 }

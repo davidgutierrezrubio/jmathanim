@@ -5,6 +5,7 @@
  */
 package com.jmathanim.Utils;
 
+import com.jmathanim.mathobjects.Stateable;
 import static java.lang.Math.sqrt;
 
 /**
@@ -12,10 +13,11 @@ import static java.lang.Math.sqrt;
  *
  * @author David Gutierrez Rubio davidgutierrezrubio@gmail.com
  */
-public class Vec {
+public class Vec implements Stateable{
 
     
     public double x, y, z;
+    public double xState, yState, zState;
 
     public Vec(double x, double y) {
         this(x, y, 0);
@@ -36,15 +38,19 @@ public class Vec {
     {
         return new Vec(this.y*a.z-this.z*a.y, this.z*a.x-this.x*a.z, this.x*a.y-this.y*a.x);
     }
-    public Vec multInSite(double r) {
-        x *= r;
-        y *= r;
-        z *= r;
+    public Vec multInSite(double lambda) {
+        x *= lambda;
+        y *= lambda;
+        z *= lambda;
         return this;
     }
-
-    public Vec mult(double r) {
-        return new Vec(x * r, y * r, z * r);
+    /**
+     * Returns a new vector representing this vector scaled by a factor. The current vector is unaltered.
+     * @param lambda The factor
+     * @return The new vector
+     */
+    public Vec mult(double lambda) {
+        return new Vec(x * lambda, y * lambda, z * lambda);
     }
 
     public Vec addInSite(Vec b) {
@@ -94,5 +100,25 @@ public class Vec {
     public Vec copy() {
         Vec resul=new Vec(x, y);
         return resul;
+    }
+
+    @Override
+    public void saveState() {
+        xState=x;
+        yState=y;
+        zState=z;
+    }
+
+    @Override
+    public void restoreState() {
+        x=xState;
+        y=yState;
+        z=zState;
+    
+    }
+
+    public double getAngle() {
+        double angle=Math.atan2(this.y, this.x);
+        return angle;
     }
 }

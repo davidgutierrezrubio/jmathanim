@@ -5,9 +5,10 @@
  */
 package com.jmathanim.Renderers;
 
-import com.jmathanim.mathobjects.JMPath;
 import com.jmathanim.Cameras.Camera;
+import com.jmathanim.mathobjects.Shape;
 import com.jmathanim.mathobjects.MathObject;
+import com.jmathanim.mathobjects.Point;
 import java.awt.Color;
 
 /**
@@ -65,44 +66,14 @@ public abstract class Renderer {
     public void setBorderColor(Color color) {
         this.borderColor = color;
     }
-  public Color getFillColor() {
+
+    public Color getFillColor() {
         return fillColor;
     }
 
     public void setFillColor(Color fillColor) {
         this.fillColor = fillColor;
     }
-
-    
-    
-    /**
-     * Draws an arc centered at x,y with given radius and angle
-     *
-     * @param x x in math coordinates
-     * @param y y in math coordinates
-     * @param radius radius in math coordinates
-     * @param angle angle in math coordinates
-     */
-    abstract public void drawArc(double x, double y, double radius, double angle);
-
-    /**
-     * Draws a straight line from x1,y1 to x2,y2
-     * @param x1 x coordinate of first point in math coordinates
-     * @param y1 y coordinate of first point in math coordinates
-     * @param x2 x coordinate of second point in math coordinates
-     * @param y2 y coordinate of second point in math coordinates
-     */
-    abstract public void drawLine(double x1, double y1, double x2, double y2);
-
-
-    /**
-     * Draws a circle centered at x,y with given radius
-     *
-     * @param x x in math coordinates
-     * @param y y in math coordinates
-     * @param radius radius in math coordinates
-     */
-    abstract public void drawCircle(double x, double y, double radius);
 
     abstract public void saveFrame(int frameCount);
 
@@ -113,16 +84,34 @@ public abstract class Renderer {
      */
     abstract public void clear();
 
-    abstract public void setStroke(double st);
+    /**
+     * Defines an appropiate stroke, from the Properties of the object to draw
+     *
+     * @param obj MathObject to be drawed
+     */
+    abstract public void setStroke(MathObject obj);
 
-//    abstract public void createPath(double x, double y);
-//
-//    abstract public void addPointToPath(double x, double y);
-//
-//    abstract public void closePath();
+    /**
+     * Draws the path of a JMPathObject This method will draw most of the
+     * objects in the screen
+     *
+     * @param mobj The JMPathObject
+     */
+    abstract public void drawPath(Shape mobj);
 
-    abstract public void drawPath(MathObject mobj,JMPath c);
+    /**
+     * Draw a circle Most of the drawings will be paths, but this method will
+     * basically draw points
+     *
+     * @param x x-coordinate (math scale)
+     * @param y y-coordinate (math scale)
+     * @param radius radius (math scale)
+     */
+    abstract public void drawCircle(double x, double y, double radius);
 
-    
+    public void drawDot(MathObject dot) {
+        drawDot(dot.getCenter());
+    }
 
+    abstract public void drawDot(Point p);
 }

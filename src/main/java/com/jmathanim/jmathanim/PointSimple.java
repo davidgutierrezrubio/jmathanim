@@ -5,24 +5,40 @@
  */
 package com.jmathanim.jmathanim;
 
+import com.jmathanim.Animations.AffineTransform;
 import com.jmathanim.Animations.Animation;
+import com.jmathanim.Animations.ApplyCommand;
 import com.jmathanim.Animations.FadeIn;
 import com.jmathanim.Animations.ShowCreation;
 import com.jmathanim.Animations.Transform;
+import com.jmathanim.Animations.commands.AbstractCommand;
+import com.jmathanim.Animations.commands.Commands;
+import com.jmathanim.Animations.commands.SingleMathObjectCommand;
+import com.jmathanim.Utils.MathObjectDrawingProperties;
 import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.SVGImporter;
 import com.jmathanim.Utils.Vec;
+import com.jmathanim.mathobjects.Arrow2D;
 import com.jmathanim.mathobjects.Circle;
 import com.jmathanim.mathobjects.JMPath;
-import com.jmathanim.mathobjects.JMPathMathObject;
+import com.jmathanim.mathobjects.Shape;
 import com.jmathanim.mathobjects.JMPathPoint;
 import com.jmathanim.mathobjects.LaTeXMathObject;
 import com.jmathanim.mathobjects.Line;
+import com.jmathanim.mathobjects.updateableObjects.MiddlePoint;
+import com.jmathanim.mathobjects.AveragePoint;
+import com.jmathanim.mathobjects.MathObject;
+import com.jmathanim.mathobjects.MultiShapeObject;
+import com.jmathanim.mathobjects.updateableObjects.TransformedPoint;
 import com.jmathanim.mathobjects.Point;
 import com.jmathanim.mathobjects.Polygon;
 import com.jmathanim.mathobjects.RegularPolygon;
 import com.jmathanim.mathobjects.SVGMathObject;
 import com.jmathanim.mathobjects.Segment;
+import com.jmathanim.mathobjects.Square;
+import com.jmathanim.mathobjects.updateableObjects.AnchoredMathObject;
+import com.jmathanim.mathobjects.updateableObjects.TransformedJMPath;
+import com.jmathanim.mathobjects.updateableObjects.AbsoluteSizeUpdater;
 import java.awt.Color;
 import java.util.ArrayList;
 
@@ -32,23 +48,34 @@ import java.util.ArrayList;
  */
 public class PointSimple extends Scene2D {
 
+    long nanotime;
+
     @Override
     public void setupSketch() {
+        nanotime = System.nanoTime();
 //        conf.setHighQuality();
+//        conf.setMediumQuality();
         conf.setLowQuality();
-        setCreateMovie(true);
+
+        setCreateMovie(false);
+        clockTick("create movie");
         setShowPreviewWindow(true);
-        createRenderer();
+        clockTick("Show preview window");
     }
 
     @Override
     public void runSketch() {
         System.out.println("Running sketch...");
-        pruebaTransform();
+        pruebaVectores();
+    }
+
+    public void clockTick(String mensaje) {
+        nanotime = System.nanoTime() - nanotime;
+        System.out.println("[TIME] " + mensaje + " :  " +  (nanotime / 1000000000.d) + " s");
     }
 
     public void pruebaSimpleJMPathObject() throws ArrayIndexOutOfBoundsException {
-        JMPathMathObject pa = new JMPathMathObject();
+        Shape pa = new Shape();
         JMPathPoint p;
         p = new JMPathPoint(new Point(0, 0), true, JMPathPoint.TYPE_VERTEX);
         pa.jmpath.addPoint(p);
@@ -64,42 +91,8 @@ public class PointSimple extends Scene2D {
         waitSeconds(3d);
         play(new ShowCreation(pa, 3d));
         waitSeconds(3d);
-        pa.jmpath.points.get(2).isVisible = false;
+        pa.jmpath.jmPathPoints.get(2).isVisible = false;
         waitSeconds(3d);
-    }
-
-    public void pruebaSVGImporter() throws ArrayIndexOutOfBoundsException {
-        camera.setMathXY(-25, 50, 2);
-        double ymax = camera.getMathBoundaries().ymax;
-
-        SVGImporter svg = new SVGImporter();
-        //TODO: Implement S command 
-        JMPath pa1 = svg.PSVGtoPath("M162.051224 -0.767123L163.107264 -1.793275C164.661436 -3.16812 165.259194 -3.706102 165.259194 -4.702366C165.259194 -5.838107 164.362556 -6.635118 163.147114 -6.635118C162.021336 -6.635118 161.284101 -5.718555 161.284101 -4.83188C161.284101 -4.273973 161.782233 -4.273973 161.812121 -4.273973C161.981485 -4.273973 162.330178 -4.393524 162.330178 -4.801993C162.330178 -5.061021 162.15085 -5.32005 161.802158 -5.32005C161.722457 -5.32005 161.702532 -5.32005 161.672644 -5.310087C161.901784 -5.957659 162.439767 -6.326276 163.0176 -6.326276C163.9242 -6.326276 164.352594 -5.519303 164.352594 -4.702366C164.352594 -3.905355 163.854462 -3.118306 163.306517 -2.500623L161.39369 -0.368618C161.284101 -0.259029 161.284101 -0.239103 161.284101 0H164.98024L165.259194 -1.733499H165.010128C164.960315 -1.43462 164.890576 -0.996264 164.79095 -0.846824C164.721211 -0.767123 164.063677 -0.767123 163.844499 -0.767123H162.051224Z");
-        JMPath pa2 = svg.PSVGtoPath("M172.055893 -2.291407H174.83547C174.974947 -2.291407 175.164237 -2.291407 175.164237 -2.49066S174.974947 -2.689913 174.83547 -2.689913H172.055893V-5.479452C172.055893 -5.618929 172.055893 -5.808219 171.856641 -5.808219S171.657388 -5.618929 171.657388 -5.479452V-2.689913H168.867849C168.728372 -2.689913 168.539082 -2.689913 168.539082 -2.49066S168.728372 -2.291407 168.867849 -2.291407H171.657388V0.498132C171.657388 0.637609 171.657388 0.826899 171.856641 0.826899S172.055893 0.637609 172.055893 0.498132V-2.291407Z");
-        JMPath pa3 = svg.PSVGtoPath("M179.209042 -0.767123L180.265082 -1.793275C181.819254 -3.16812 182.417013 -3.706102 182.417013 -4.702366C182.417013 -5.838107 181.520375 -6.635118 180.304933 -6.635118C179.179155 -6.635118 178.441919 -5.718555 178.441919 -4.83188C178.441919 -4.273973 178.940051 -4.273973 178.969939 -4.273973C179.139304 -4.273973 179.487996 -4.393524 179.487996 -4.801993C179.487996 -5.061021 179.308669 -5.32005 178.959976 -5.32005C178.880275 -5.32005 178.86035 -5.32005 178.830462 -5.310087C179.059603 -5.957659 179.597585 -6.326276 180.175419 -6.326276C181.082019 -6.326276 181.510412 -5.519303 181.510412 -4.702366C181.510412 -3.905355 181.01228 -3.118306 180.464335 -2.500623L178.551508 -0.368618C178.441919 -0.259029 178.441919 -0.239103 178.441919 0H182.138059L182.417013 -1.733499H182.167947C182.118133 -1.43462 182.048395 -0.996264 181.948768 -0.846824C181.87903 -0.767123 181.221496 -0.767123 181.002318 -0.767123H179.209042Z");
-        System.out.println(pa1);
-
-        JMPathMathObject p1 = new JMPathMathObject(pa1, null);
-        JMPathMathObject p2 = new JMPathMathObject(pa2, null);
-        JMPathMathObject p3 = new JMPathMathObject(pa3, null);
-        //Move path to center of the screen, upper
-        double xx = pa1.points.get(0).p.v.x;
-        double yy = pa1.points.get(0).p.v.y;
-        p1.shift(new Vec(-xx, -yy + ymax * .5d));
-        p2.shift(new Vec(-xx, -yy + ymax * .5d));
-        p3.shift(new Vec(-xx, -yy + ymax * .5d));
-        play(new ShowCreation(p1, .6));
-
-        play(new ShowCreation(p2, .6));
-
-        play(new ShowCreation(p3, .6));
-
-        waitSeconds(3);
-//        p1.jmpath.interpolate(20);
-//        p2.jmpath.interpolate(20);
-//        add(p2);
-//        play(new ShowCreation(p1, 2,5),new ShowCreation(p2, 2,5));
-//        waitSeconds(3);
     }
 
     public void pruebaBoundingBox() {
@@ -147,14 +140,26 @@ public class PointSimple extends Scene2D {
 
     private void CircleToSquare() {
         Circle c = new Circle(new Point(0, 0), 1);
-        RegularPolygon pol2 = new RegularPolygon(3, 1.5);
+        RegularPolygon pol2 = new RegularPolygon(4, 1.5);
         pol2.shift(1, 0);
-//        add(c);
+        pol2.getJMPoint(0).shift(-2d, .5d);
+        pol2.getJMPoint(1).shift(-2d, 0);
+        pol2.getJMPoint(0).isCurved = true;
+        pol2.getJMPoint(1).isCurved = true;
+        pol2.getJMPoint(2).isCurved = true;
+        pol2.getJMPoint(3).isCurved = true;
+        pol2.getPath().generateControlPoints();
+        add(pol2);
+
+        System.out.println("Orientation of circle: " + c.getPath().getOrientation());
+        System.out.println("Orientation of polygon: " + pol2.getPath().getOrientation());
 
 //        c.jmpath.alignPaths(pol2.jmpath);
 //        c.jmpath.minimizeSquaredDistance(pol2.jmpath);
-        Transform transform = new Transform(pol2, c, 5);
-        waitSeconds(.5);
+        Transform transform = new Transform(c, pol2, 15);
+        //        transform.shouldOptimizePathsFirst=false;
+        transform.forceChangeDirection = true;
+        waitSeconds(2);
         play(transform);
         waitSeconds(3);
     }
@@ -164,35 +169,80 @@ public class PointSimple extends Scene2D {
         add(c);
         waitSeconds(.5);
         JMPath path = c.jmpath.rawCopy();
-        JMPathMathObject r = new JMPathMathObject(path, null);
+        Shape r = new Shape(path, null);
         add(r);
         waitSeconds(.5);
 
     }
 
-    
+    public void pruebaPuntosInterpolacion() {
+        Circle circ = new Circle(new Point(-.5, .5), 2);
+        circ.mp.thickness /= 3;
+        circ.mp.drawColor = Color.YELLOW;
+
+        JMPathPoint pp = circ.jmpath.jmPathPoints.get(0);
+        pp.shift(new Vec(-2, 0));
+        Circle circ2 = circ.copy();
+        circ2.mp.drawColor = Color.GREEN;
+        add(circ2);
+        JMPathPoint p0 = circ.jmpath.jmPathPoints.get(0);
+        JMPathPoint p1 = circ.jmpath.jmPathPoints.get(1);
+        add(circ);
+        for (double alpha = .2; alpha < 1; alpha += .1) {
+            waitSeconds(1);
+            JMPathPoint po = circ.jmpath.interpolateBetweenTwoPoints(p0, p1, alpha);
+            add(po.p);
+        }
+        waitSeconds(30);
+    }
+
+    public void pruebaInterpolacion() {
+        Circle circ = new Circle(new Point(-.5, .5), 2);
+        circ.mp.thickness /= 3;
+        circ.mp.drawColor = Color.YELLOW;
+        JMPathPoint pp = circ.jmpath.jmPathPoints.get(0);
+        pp.shift(new Vec(-2, 0));
+        Circle circ2 = circ.copy();
+        circ2.mp.drawColor = Color.BLUE;
+        add(circ, circ2);
+        RegularPolygon pol4 = new RegularPolygon(12, 3.d / 16);
+//        circ.jmpath.alignPaths(pol4.jmpath);
+        waitSeconds(30);
+    }
+
+    public void pruebaTransform2Circles() {
+        Circle circ = new Circle(new Point(0, 0), 2);
+        Circle circ2 = new Circle(new Point(1.5, -.5), .5);
+        add(circ, circ2);
+        play(new Transform(circ, circ2, 5));
+    }
+
     public void pruebaTransform() {
 //        RegularPolygon pol1 = new RegularPolygon(3, 1d);
 //        pol1.mp.drawColor=Color.BLUE;
 //        RegularPolygon pol2 = new RegularPolygon(4, 3.d / 4);
 //        pol2.mp.drawColor=Color.GREEN;
         RegularPolygon pol3 = new RegularPolygon(3, 3.d / 5);
-        pol3.mp.drawColor=Color.ORANGE;
+        pol3.mp.drawColor = Color.ORANGE;
         RegularPolygon pol4 = new RegularPolygon(12, 3.d / 16);
-        pol4.mp.drawColor=Color.PINK;
-        pol4.mp.thickness/=3;
+        pol4.mp.drawColor = Color.PINK;
+        pol4.mp.thickness /= 3;
         Circle circ = new Circle(new Point(-.5, -.5), 1);
-        circ.mp.thickness/=3;
-        circ.mp.drawColor=Color.YELLOW;
-        JMPathPoint pp = circ.jmpath.points.get(0);
-        pp.shift(new Vec(-1,0));
+        circ.mp.thickness /= 3;
+        circ.mp.drawColor = Color.YELLOW;
+        JMPathPoint pp = circ.jmpath.jmPathPoints.get(0);
+        pp.shift(new Vec(-1, 0));
 //        pol1.shift(new Vec(-1, 0));
 //        add(pol1);
 //        add(pol2);
 //        add(pol3);
         add(pol4);
         add(circ);
-        double tiempo=3;
+        AffineTransform tr = AffineTransform.create2DRotationTransform(new Point(1, 0), Math.PI * 1.2);
+        TransformedJMPath pol5 = new TransformedJMPath(pol4, tr);
+        add(pol5);
+
+        double tiempo = 3;
 //        play(new Transform(pol1, pol2, tiempo));
 //        remove(pol2);
 //        waitSeconds(1);
@@ -282,7 +332,7 @@ public class PointSimple extends Scene2D {
     }
 
     private void pruebaImportSVGFile() {
-        SVGMathObject svgObject = new SVGMathObject(this, "c:\\media\\tex\\o.svg");
+        SVGMathObject svgObject = new SVGMathObject("c:\\media\\tex\\o.svg");
 
         add(svgObject);
         waitSeconds(3);
@@ -309,7 +359,7 @@ public class PointSimple extends Scene2D {
     }
 
     private void pruebaLaTeX() {
-        LaTeXMathObject lm = new LaTeXMathObject(this, "$$\\int_0^\\infty x\\,dx=\\infty$$");
+        LaTeXMathObject lm = new LaTeXMathObject("$$\\int_0^\\infty x\\,dx=\\infty$$");
 //        lm.shift(-1, 0);
         lm.scale(1, 1);
         add(lm);
@@ -336,10 +386,10 @@ public class PointSimple extends Scene2D {
     }
 
     private void pruebaLaTeXEcuacion() {
-        LaTeXMathObject eq1 = new LaTeXMathObject(this, "$$x=2$$");
-        LaTeXMathObject eq2 = new LaTeXMathObject(this, "$$x=4$$");
-        LaTeXMathObject eq3 = new LaTeXMathObject(this, "$$x=8$$");
-        LaTeXMathObject eq4 = new LaTeXMathObject(this, "$$x=1$$");
+        LaTeXMathObject eq1 = new LaTeXMathObject("$$x=2$$");
+        LaTeXMathObject eq2 = new LaTeXMathObject("$$x=4$$");
+        LaTeXMathObject eq3 = new LaTeXMathObject("$$x=8$$");
+        LaTeXMathObject eq4 = new LaTeXMathObject("$$x=1$$");
         double sc = 1;
         eq1.scale(sc, sc);
         eq2.scale(sc, sc);
@@ -353,15 +403,391 @@ public class PointSimple extends Scene2D {
 
         play(new ShowCreation(eq1, 2));
 //        waitSeconds(1);
-        JMPathMathObject x1 = eq1.jmps.get(2);
-        JMPathMathObject x2 = eq2.jmps.get(2);
-        JMPathMathObject x3 = eq3.jmps.get(2);
-        JMPathMathObject x4 = eq4.jmps.get(2);
+        Shape x1 = eq1.shapes.get(2);
+        Shape x2 = eq2.shapes.get(2);
+        Shape x3 = eq3.shapes.get(2);
+        Shape x4 = eq4.shapes.get(2);
 
         play(new Transform(x1, x2, 1));
         play(new Transform(x1, x3, 1));
         play(new Transform(x1, x4, 1));
         waitSeconds(3);
+    }
+
+    public void pruebaTransformSegmentos() {
+        RegularPolygon cir = new RegularPolygon(5, 1);
+//        cir.mp.fill = true;
+        cir.mp.fillColor = Color.yellow;
+        add(cir);
+        cir.shift(-1, -1);
+
+//        cir.mp.thickness = .5;
+        cir.mp.drawColor = Color.GREEN;
+//        Segment s1 = new Segment(new Point(-1, 1), new Point(0, .5));
+        RegularPolygon pol = new RegularPolygon(5, 1);
+        pol.mp.dashStyle = MathObjectDrawingProperties.DASHED;
+//        pol.mp.thickness = .5;
+        pol.mp.drawColor = Color.blue;
+        pol.mp.fillColor = Color.magenta;
+        pol.mp.setFillAlpha(.5f);
+        pol.mp.fill = false;
+        add(pol);
+        ArrayList<Segment> radius = pol.getApothem();
+//        waitSeconds(3);
+//        Segment s1 = (Segment) radius.get(0).copy();
+//        s1.mp.thickness = .5;
+//        s1.mp.dashStyle = MathObjectDrawingProperties.DOTTED;
+//        play(new FadeIn(s1, 5));
+        for (Segment s : radius) {
+//            s.mp.copyFrom(s1.mp);
+//            Transform tr = new Transform(s1, s, 3);
+////            tr.setMethod(Transform.METHOD_INTERPOLATE_POINT_BY_POINT);
+//            play(tr);
+            add(s);
+        }
+//        remove(s1);
+        waitSeconds(1);
+        MiddlePoint mp1 = new MiddlePoint(pol.getCenter(), new Point(0, 0));
+//        MiddlePoint mp1=new MiddlePoint(radius.get(1).getPoint(1).p, new Point(0,0));
+        add(mp1);
+        play(new Transform(pol, cir, 30));
+        waitSeconds(3);
+    }
+
+    public void pruebaMatrix() {
+        Point center = new Point(2, 1);
+        add(center);
+        AffineTransform tr = AffineTransform.create2DScaleTransform(center, 1, 1);
+        tr = tr.compose(AffineTransform.create2DRotationTransform(center, Math.PI / 180 * 15));
+//        AffineTransform rotation = AffineTransform.create2DRotationTransform(new Point(0, 1), Math.PI / 3);
+
+        Circle circ = new Circle();
+        RegularPolygon pol = new RegularPolygon(5, 1);
+        add(pol, circ);
+        Shape circTrans = circ.copy();
+        Shape polTrans = pol.copy();
+        for (double alpha = 0; alpha < 2 * Math.PI; alpha += Math.PI / 10) {
+            tr = AffineTransform.create2DRotationTransform(center, alpha);
+            camera.setCenter(center);
+            circTrans = tr.getTransformedObject(circ);
+            polTrans = tr.getTransformedObject(pol);
+            circTrans.mp.setRandomDrawColor();
+            polTrans.mp.setRandomDrawColor();
+            add(polTrans, circTrans);
+//            play(new ShowCreation(polTrans,1), new ShowCreation(circTrans,1));
+
+        }
+        waitSeconds(10);
+
+    }
+
+    public void pruebaHomotopia() {
+        double tiempo = 20;
+        Point A = new Point(1, -0);
+        Point B = new Point(0, 0);
+        Point C = new Point(1, 0);
+        Point D = new Point(1, 1);
+        Point M = new MiddlePoint(A, B);
+        Point N = new MiddlePoint(A, M);
+        add(M, N);
+        A.mp.drawColor = Color.GREEN;
+        B.mp.drawColor = Color.GREEN;
+        C.mp.drawColor = Color.RED;
+        D.mp.drawColor = Color.RED;
+        add(A, B, C, D);
+        Segment s1 = new Segment(B, A);
+        Segment s2 = new Segment(C, D);
+        add(s1, s2);
+        Transform tr = new Transform(s1, s2, tiempo);
+//        tr.setMethod(Transform.METHOD_INTERPOLATE_POINT_BY_POINT);
+//        tr.shouldOptimizePathsFirst = false;
+        play(tr);
+        waitSeconds(10);
+    }
+
+    public void pruebaDependencias() {
+        //Muchos middlepoint
+        Point A = new Point(0, 0);
+        Point B = new Point(0, 1);
+        Point C = new Point(-1, 1);
+        add(A, B, C);
+        AffineTransform tr2 = AffineTransform.createTranslationTransform(new Vec(1, 0, 0));
+        AffineTransform tr = AffineTransform.create2DRotationTransform(new Point(1, -1), Math.PI / 180 * 45);
+        AffineTransform tr3 = AffineTransform.create2DRotationTransform(new Point(0, 0), -Math.PI / 180 * 45);
+        TransformedPoint X = new TransformedPoint(A, tr);
+        TransformedPoint Y = new TransformedPoint(B, tr);
+        TransformedPoint Z = new TransformedPoint(C, tr);
+        X.mp.drawColor = Color.GREEN;
+        Y.mp.drawColor = Color.GREEN;
+        Z.mp.drawColor = Color.GREEN;
+        TransformedPoint T = new TransformedPoint(X, tr2);
+        T.mp.drawColor = Color.BLUE;
+        add(X, Y, Z);
+        add(T);
+        MiddlePoint W = new MiddlePoint(Y, Z);
+        W.mp.drawColor = Color.RED;
+        add(W);
+        Polygon pol = new Polygon(A, B, C);
+        add(pol);
+        TransformedJMPath pol2 = new TransformedJMPath(pol, tr3);
+        add(pol2);
+        double dy = .01;
+        for (double y = 0; y < 1.5; y += .01) {
+            A.shift(0, dy);
+            B.shift(0, dy / 2);
+            C.shift(0, dy / 3);
+            advanceFrame();
+            waitSeconds(1);
+        }
+
+    }
+
+    public void pruebaReflection() {
+
+        RegularPolygon pol = new RegularPolygon(5, 1);
+        pol.shift(0, 1);
+        pol.mp.drawColor = Color.YELLOW;
+        add(pol);
+
+        AffineTransform tr = AffineTransform.createReflection(new Point(1, 1), new Point(2, -1), 1);
+
+        Point p = new Point(0, 0);
+        Point reflectedPoint = tr.getTransformedPoint(p);
+        reflectedPoint.mp.drawColor = Color.GREEN;
+        add(reflectedPoint, p);
+
+        TransformedJMPath pol2 = new TransformedJMPath(pol, tr);
+        pol2.mp.drawColor = Color.GRAY;
+        add(pol2);
+        for (double dx = 0; dx < 2; dx += .001) {
+            pol.shift(.001, 0);
+
+            advanceFrame();
+        }
+        waitSeconds(300);
+    }
+
+    public void pruebaReflectionLambda() {
+
+        RegularPolygon pol = new RegularPolygon(5, 1);
+        pol.shift(0, 1);
+        pol.mp.drawColor = Color.YELLOW;
+        add(pol);
+        JMPath jmpathOrig = pol.getPath().rawCopy();
+        for (double lambda = 0; lambda < 1; lambda += .001) {
+            affineTransform(jmpathOrig, pol, lambda);
+
+            advanceFrame();
+        }
+        waitSeconds(300);
+    }
+
+    private void affineTransform(JMPath jmpathOrig, Shape mobj1, double t) {
+        JMPathPoint interPoint, basePoint, dstPoint;
+
+        AffineTransform tr = AffineTransform.createReflection(new Point(1, 1), new Point(2, -1), t);
+        for (int n = 0; n < mobj1.jmpath.jmPathPoints.size(); n++) {
+            interPoint = mobj1.jmpath.jmPathPoints.get(n);
+            basePoint = jmpathOrig.jmPathPoints.get(n);
+            //Interpolate point
+            interPoint.p.v = tr.getTransformedPoint(basePoint.p).v;
+
+            //Interpolate control point 1
+            interPoint.cp1.v = tr.getTransformedPoint(basePoint.cp1).v;
+
+            //Interpolate control point 2
+            interPoint.cp2.v = tr.getTransformedPoint(basePoint.cp2).v;
+
+        }
+    }
+
+    public void pruebaShiftCommand() {
+        Segment P = new Segment(new Point(0, 0), new Point(2, 1));
+        Line L = new Line(new Point(0, 0), new Point(1, -1));
+        Segment P2 = P.copy();
+        add(P);
+        Square sq = new Square();
+        P.shift(1, 0);
+//        playShift(P, new Vec(.03, 0), 6);
+
+//        playScale(P, new Point(), .3d, 6);
+//        playRotate(P, new Point(), 2.5, 6);
+//        add(sq);
+//        playTransform(new Circle(), sq, 15);
+        System.out.println("Orientation square " + sq.jmpath.getOrientation());
+        System.out.println("Orientation segment " + P.jmpath.getOrientation());
+        Transform tr = new Transform(P, sq, 15);
+//        Transform tr = new Transform(sq, P, 15);
+        tr.shouldOptimizePathsFirst = false;
+        play(tr);
+        Transform tr2 = new Transform(P, P2, 15);
+        tr2.setMethod(Transform.METHOD_INTERPOLATE_POINT_BY_POINT);
+        play(tr2);
+        System.out.println("End! " + P.jmpath);
+        waitSeconds(20);
+    }
+
+    public void pruebaGirosCompuestos() {
+        Point p1 = new Point(0, 0);
+        Point p2 = new Point(0, 1);
+        Segment s1 = new Segment(p1, p2);
+        RegularPolygon pol = new RegularPolygon(5, 1);
+        add(pol);
+        LaTeXMathObject texto = new LaTeXMathObject("$x^2$");
+        add(texto);
+        texto.scale(.2, .2);
+
+        Square sq = new Square();
+        add(sq);
+        AnchoredMathObject anchor = new AnchoredMathObject(texto, AnchoredMathObject.ANCHOR_RIGHT, p2);
+        AnchoredMathObject anchor2 = new AnchoredMathObject(pol, AnchoredMathObject.ANCHOR_BY_CENTER, texto, AnchoredMathObject.ANCHOR_LEFT);
+        AnchoredMathObject anchor3 = new AnchoredMathObject(sq, AnchoredMathObject.ANCHOR_LEFT, pol, AnchoredMathObject.ANCHOR_RIGHT);
+        registerObjectToBeUpdated(anchor);
+        registerObjectToBeUpdated(anchor2);
+        registerObjectToBeUpdated(anchor3);
+        s1.label = "S1";
+        ApplyCommand cmd1 = Commands.rotate(s1, p1, 2 * Math.PI, 20);
+        play(cmd1);
+    }
+
+    void teselacionHexagonos() {
+        RegularPolygon hex1 = new RegularPolygon(6, .3);
+        add(hex1);
+//        hex1.shift(-1,0);
+//        getCamera().setCenter(hex1.getCenter().v.x,hex1.getCenter().v.y);
+        Shape hex2 = hex1.copy();
+        add(hex2);
+        Segment lado = new Segment(hex2.getPoint(0), hex2.getPoint(5));
+        ApplyCommand cmd = Commands.reflectionByAxis(hex2, lado, 3);
+        play(cmd);
+
+        int n1 = 0;
+        int n2 = 1;
+        for (int n = 0; n < 5; n++) {
+            hex2 = hex2.copy();
+//            lado = new Segment(hex2.getPoint(n1), hex2.getPoint(n2));
+            cmd = Commands.rotate(hex2, hex2.getPoint(n), Math.PI * 2 / 3, 1);
+            //            SingleMathObjectCommand tr = Commands.homotopy(hex2, hex2.getJMPoint(0).p, hex2.getJMPoint(1).p, hex1.getJMPoint(n).p, hex1.getJMPoint(n+1).p);
+            play(cmd);
+        }
+
+        hex2 = gira(hex2, 6);
+        hex2 = gira(hex2, 7);
+        hex2 = gira(hex2, 8);
+
+        hex2 = gira(hex2, 10);
+        hex2 = gira(hex2, 11);
+
+        hex2 = gira(hex2, 13);
+        hex2 = gira(hex2, 14);
+
+        hex2 = gira(hex2, 16);
+        hex2 = gira(hex2, 17);
+
+        hex2 = gira(hex2, 19);
+        hex2 = gira(hex2, 20);
+        hex2 = gira(hex2, 22);
+
+        hex2 = gira(hex2, 24);
+        hex2 = gira(hex2, 25);
+
+        hex2 = gira(hex2, 27);
+        hex2 = gira(hex2, 28);
+
+        hex2 = gira(hex2, 30);
+
+//         hex2=gira(hex2,10);
+//         hex2=gira(hex2,11);
+//         hex2=gira(hex2,12);
+        waitSeconds(10);
+    }
+
+    private Shape gira(Shape hex2, int n) {
+        ApplyCommand cmd;
+        System.out.println("Rotating " + n);
+        hex2 = hex2.copy();
+        cmd = Commands.rotate(hex2, hex2.getPoint(n), Math.PI * 2 / 3, 1);
+        play(cmd);
+        return hex2.copy();
+    }
+
+    private void pruebaBuilders() {
+        Shape sq = Shape.square();
+        Point A = new Point(1, 1);
+        Point B = new Point(0, -1);
+        Point C = new Point(1.5, -.7);
+        Shape sq2 = Shape.square(A, .5).drawColor(Color.RED).fillColor(Color.yellow);
+        Shape sq3 = sq.copy().drawColor(Color.BLUE).fillColor(Color.CYAN);
+        Shape rect = Shape.rectangle(B, C);
+        playRotate(rect, rect.getCenter(), Math.PI / 3, 5);
+//        sq2.mp.drawColor=Color.GRAY;
+//        rect.mp.drawColor=Color.cyan;
+//        registerObjectToBeUpdated(new AnchoredMathObject(sq2,AnchoredMathObject.ANCHOR_BY_CENTER, sq.getPoint(2),AnchoredMathObject.ANCHOR_BY_POINT));
+//        AffineTransform tr=AffineTransform.createAffineTransformation(rect.getPoint(0), rect.getPoint(1), rect.getPoint(2), sq2.getPoint(0), sq2.getPoint(1), sq2.getPoint(2), 1);
+        add(rect);
+//        Shape rect2 = tr.getTransformedObject(rect);
+//        rect2.mp.drawColor=Color.GREEN;
+        add(sq2, rect);
+        waitSeconds(5);
+//        playRotate(sq, new Point(0,0), Math.PI, 5);
+        playTransform(sq, sq2, 10);
+//        sq.setObjectType(MathObject.OTHER);
+        playTransform(sq, rect, 10);
+        playTransform(sq, sq3, 10);
+//        playTransform(rect, Shape.Circle(), dt);
+        waitSeconds(5);
+    }
+
+    private void pruebaVectores() {
+        Point punto = new Point(.5, .3);
+        add(punto);
+        long nanoTime = System.nanoTime();
+//        Arrow2D ar = Arrow2D.makeSimpleArrow2D(new Point(0, 0), punto, Arrow2D.TYPE_1);
+        SVGMathObject svg = new SVGMathObject("C:\\Users\\David\\Documents\\NetBeansProjects\\jmathanim\\resources\\arrow1.svg");
+        Arrow2D ar = new Arrow2D(new Point(0, 0), punto, svg);
+        clockTick("Create arrow1");
+
+        add(ar);
+        clockTick("Add arrow1");
+
+        Arrow2D ar2 = Arrow2D.makeSimpleArrow2D(punto, new Point(.6, 0), Arrow2D.TYPE_1).arrowSize(.5);
+        clockTick("Create arrow2");
+
+        add(ar);
+        clockTick("Add arrow2");
+
+//        add(Shape.square().scale(new Point(0,0), .1,.1));
+//        SVGMathObject svg = new SVGMathObject("c:\\media\\flecha1.svg");
+//        svg.drawColor(Color.WHITE);
+//        svg.fillColor(Color.WHITE);
+//        
+//        MultiShapeObject svg2 = svg.copy();
+//        svg2.shift(-1, 1);
+//        
+//        add(svg,svg2);
+//        svg.shift(svg.getCenter().v.mult(-1));
+//        absoluteSize abs = new absoluteSize(svg, .02);
+//        registerObjectToBeUpdated(abs);
+        double yCenter = camera.getMathBoundaries().getCenter().v.y;
+        for (double dx = 0; dx < Math.PI * 2; dx += .001) {
+//            camera.setMathXY(-2 + .5*dx, 2 - .5*dx, yCenter);
+
+            punto.v.x = .5 * Math.cos(dx);
+            punto.v.y = .5 * Math.sin(dx);
+            advanceFrame();
+//            clockTick("Frame!");
+        }
+        waitSeconds(10);
+
+    }
+
+    public void pruebaCopiaPath() {
+        Shape sq = Shape.square();
+        sq.fillColor(Color.WHITE);
+        Shape sq2 = sq.copy();
+        sq.shift(-1, -1);
+        add(sq, sq2);
+        waitSeconds(50);
     }
 
 }

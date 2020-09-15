@@ -12,7 +12,7 @@ import com.jmathanim.mathobjects.Point;
  *
  * @author David Gutiérrez Rubio <davidgutierrezrubio@gmail.com>
  */
-public class Rect {
+public class Rect {//TODO: Adjust this to 3D coordinates
 
     public double xmin, ymin, xmax, ymax;
 
@@ -169,5 +169,40 @@ public class Rect {
 
     public Rect interpolate(Rect rDst, double t) {
         return new Rect((1-t)*xmin+t*rDst.xmin,(1-t)*ymin+t*rDst.ymin,(1-t)*xmax+t*rDst.xmax,(1-t)*ymax+t*rDst.ymax);
+    }
+    
+    public Point getLeft()
+    {
+        return new Point(xmin,.5*(ymin+ymax));
+    }
+    public Point getRight()
+    {
+        return new Point(xmax,.5*(ymin+ymax));
+    }
+    
+     public Point getUpper()
+    {
+        return new Point(.5*(xmin+xmax),ymax);
+    }
+    public Point getLower()
+    {
+          return new Point(.5*(xmin+ymax),ymin);
+    }
+    
+    public Point getUL()
+    {
+        return new Point(xmin,ymax);
+    }
+    public Point getUR()
+    {
+        return new Point(xmax,ymax);
+    }
+    public Point getDL()
+    {
+        return new Point(xmin,ymin);
+    }
+    public Point getDR()
+    {
+        return new Point(xmax,ymin);
     }
 }

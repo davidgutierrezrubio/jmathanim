@@ -17,7 +17,6 @@ import com.jmathanim.mathobjects.MathObject;
  */
 public class Camera2D extends Camera {
 
-
     public Camera2D() {
         this(0, 0);//To initialize after
     }
@@ -54,19 +53,22 @@ public class Camera2D extends Camera {
     }
 
     public void setCenter(MathObject obj) {
-        double xx=obj.getCenter().v.x;
-        double yy=obj.getCenter().v.y;
-        setCenter(xx,yy);
+        double xx = obj.getCenter().v.x;
+        double yy = obj.getCenter().v.y;
+        setCenter(xx, yy);
     }
-    
-    
-    public final void reset() {//TODO: CHange this
+
+    public final void reset() {// TODO: CHange this
         this.setMathXY(-5, 5, 0);
     }
 
     @Override
     public void setMathXY(double xmin, double xmax, double ycenter) {
-        this.xmin = xmin;//Centered at (0,0)
+        
+        if (xmax <= xmin) {
+            return;
+        }
+        this.xmin = xmin;
         this.xmax = xmax;
         //Compute y so that proportion is the same as the screen
         double ratioScreen = ((double) screenWidth) / ((double) screenHeight);
@@ -80,7 +82,7 @@ public class Camera2D extends Camera {
         //xmin,ymin->(0,0)
         //xmax, ymax->(screenWidth,screenHeight)
 //        resul = (int) ((mathScalar - xmin) + mathScalar * screenWidth / xmax);
-        return (int)(mathScalar*screenWidth/(xmax-xmin));
+        return (int) (mathScalar * screenWidth / (xmax - xmin));
     }
 
     @Override
@@ -94,7 +96,6 @@ public class Camera2D extends Camera {
         return new int[]{x, y};
     }
 
-
     @Override
     public double relScalarToWidth(double scalar) {
         return screenToMath(scalar * screenWidth);
@@ -103,15 +104,11 @@ public class Camera2D extends Camera {
     @Override
     public double screenToMath(double screenScalar) {
         //resul = (int) ((mathScalar - xmin) + mathScalar * screenWidth / xmax);
-        return screenScalar*(xmax-xmin)/screenWidth;
+        return screenScalar * (xmax - xmin) / screenWidth;
     }
 
     public int[] mathToScreen(Vec p) {
         return mathToScreen(p.x, p.y);
     }
-
-    
-
-    
 
 }
