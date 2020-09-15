@@ -57,7 +57,7 @@ public class PointSimple extends Scene2D {
 //        conf.setMediumQuality();
         conf.setLowQuality();
 
-        setCreateMovie(true);
+        setCreateMovie(false);
         clockTick("create movie");
         setShowPreviewWindow(true);
         clockTick("Show preview window");
@@ -67,7 +67,10 @@ public class PointSimple extends Scene2D {
     public void runSketch() {
         System.out.println("Running sketch...");
 //        pruebaLaTeXEcuacion();
-        pruebaVisible();
+//        pruebaVisible();
+        pruebaSVGImport();
+//        pruebaTransform();
+//        pruebaLaTeX();
     }
 
     public void clockTick(String mensaje) {
@@ -243,7 +246,7 @@ public class PointSimple extends Scene2D {
         TransformedJMPath pol5 = new TransformedJMPath(pol4, tr);
         add(pol5);
 
-        double tiempo = 3;
+        double tiempo = 30;
 //        play(new Transform(pol1, pol2, tiempo));
 //        remove(pol2);
 //        waitSeconds(1);
@@ -401,17 +404,17 @@ public class PointSimple extends Scene2D {
         eq2.shift(-1, 0);
         eq3.shift(-1, 0);
         eq4.shift(-1, 0);
-
-        play(new ShowCreation(eq1, 2));
+        double tiempo = 20;
+        play(new ShowCreation(eq1, 5));
 //        waitSeconds(1);
         Shape x1 = eq1.shapes.get(2);
         Shape x2 = eq2.shapes.get(2);
         Shape x3 = eq3.shapes.get(2);
         Shape x4 = eq4.shapes.get(2);
 
-        play(new Transform(x1, x2, 1));
-        play(new Transform(x1, x3, 1));
-        play(new Transform(x1, x4, 1));
+        play(new Transform(x1, x2, tiempo));
+        play(new Transform(x1, x3, tiempo));
+        play(new Transform(x1, x4, tiempo));
         waitSeconds(3);
     }
 
@@ -792,22 +795,18 @@ public class PointSimple extends Scene2D {
     }
 
     public void pruebaSVGImport() {
-//        SVGMathObject svg = new SVGMathObject("C:\\media\\coca2.svg");
-//        add(svg);
-////        add(svg.shapes.get(1));
-////        add(svg.shapes.get(2));
-//        svg.drawColor(Color.WHITE);
+        SVGMathObject svg = new SVGMathObject("C:\\media\\cocacola.svg");
+        add(svg.get(0));
+//        add(svg.shapes.get(1));
+//        add(svg.shapes.get(2));
+        svg.drawColor(Color.WHITE);
 
-        Shape s = new Shape();
-        s.jmpath.addPoint(new Point(0, 0), new Point(1, 0), new Point(0, 1), new Point(-1, -1));
-        s.jmpath.close();
-        s.getJMPoint(1).isVisible = false;
-        s.drawColor(Color.red);
+        Shape s = Shape.square();
         add(s);
 //        JMPath uno = s.jmpath;
 //        JMPath dos = svg.shapes.get(0).jmpath;
-        waitSeconds(130);
-        s.getJMPoint(1).isVisible = true;
+        waitSeconds(30);
+        playTransform(svg.get(0), s, 30);
         waitSeconds(130);
 //        playTransform(svg.get(0),s, 100); 
 
@@ -815,13 +814,16 @@ public class PointSimple extends Scene2D {
 
     public void pruebaVisible() {
         RegularPolygon pol = new RegularPolygon(6, 1);
+        pol.jmpath.addJMPoint(pol.getJMPoint(0).copy());
+
         RegularPolygon pol2 = new RegularPolygon(5, 1);
-        pol2.shift(-1,-1);
+        pol2.shift(-1, -1);
+        pol2.jmpath.getPoint(0).isVisible = false;
         pol.jmpath.addPointsFrom(pol2.jmpath);
         add(pol);
-        waitSeconds(5);
+        waitSeconds(15);
         pol.getJMPoint(2).isVisible = false;
-        waitSeconds(5);
+        waitSeconds(55);
     }
 
 }

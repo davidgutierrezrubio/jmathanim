@@ -132,6 +132,7 @@ public class SVGMathObject extends MultiShapeObject {
         //TODO: Do it in a more efficient way, maybe with regex patterns
         String[] tokens_1 = t.split(" ");
         ArrayList<String> tokens = new ArrayList<>();
+        boolean closeAtTheEnd=false;
         for (String tok : tokens_1) {
             StringBuilder st = new StringBuilder(tok);
             String tok2 = tok;
@@ -296,12 +297,14 @@ public class SVGMathObject extends MultiShapeObject {
                 case "Z":
                     previousCommand = token;
                     previousPoint = pathLineTo(resul, closeX, closeY, true);
-                    resul.close();
+                    closeAtTheEnd=true;
+//                    resul.close();
                     break;
                 case "z":
                     previousCommand = token;
                     previousPoint = pathLineTo(resul, closeX, closeY, true);
-                    resul.close();
+                    closeAtTheEnd=true;
+//                    resul.close();
                     break;
                 default:
                     if (token.substring(0, 1) != "") //Not a command, but a point!

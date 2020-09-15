@@ -385,11 +385,10 @@ public class Java2DRenderer extends Renderer {
 //                g2d.drawString("M", xy[0], xy[1]);
             }
         }
-        resul.moveTo(scr[0], scr[1]);
         if (c.isClosed()) {
             //closePath method draws a straight line to the last moveTo, so we
             //have to move first to the first point of our path
-            
+            resul.moveTo(scr[0], scr[1]);
             resul.closePath();
         }
 //        if (c.isClosed()) {
