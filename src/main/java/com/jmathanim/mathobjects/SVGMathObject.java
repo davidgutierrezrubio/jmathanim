@@ -9,6 +9,7 @@ import com.jmathanim.Utils.JMathAnimConfig;
 import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.Vec;
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.logging.Level;
@@ -105,6 +106,7 @@ public class SVGMathObject extends MultiShapeObject {
         JMPath resul = new JMPath();
         JMPathPoint previousPoint = new JMPathPoint(new Point(0, 0), true, 0);
         String t = s.replace("M", " M ");
+        t = t.replace("m", " m ");
         t = t.replace("-", " -");//Avoid errors with strings like "142.11998-.948884"
         t = t.replace("H", " H ");//Adding "" to all commmands helps me to differentiate easily from coordinates
         t = t.replace("h", " h ");
@@ -120,15 +122,43 @@ public class SVGMathObject extends MultiShapeObject {
         t = t.replace("z", " z ");
         t = t.replaceAll(",", " ");//Delete all commas
         t = t.replaceAll("^ +| +$|( )+", "$1");//Removes duplicate spaces
-        String[] tokens = t.split(" ");
-        Iterator<String> it = Arrays.stream(tokens).iterator();
+
+        //Look for second decimal points and add a space. Chains like this "-.5.4" should change to "-.5 .4"
+        //TODO: Do it in a more efficient way, maybe with regex patterns
+        String[] tokens_1 = t.split(" ");
+        ArrayList<String> tokens = new ArrayList<>();
+        for (String tok : tokens_1) {
+            StringBuilder st = new StringBuilder(tok);
+            String tok2 = tok;
+            int index = st.indexOf(".");
+            if (index > -1) {
+                if (st.indexOf(".", index + 1) > -1) {//If there is a second point
+
+                    st.setCharAt(index, '|');//Replace first decimal point by '|'
+
+                    tok2 = st.toString();
+                    tok2 = tok2.replace(".", " .");
+                    tok2 = tok2.replace("- .", "-.");
+                    tok2 = tok2.replace("|", ".");
+                }
+            }
+            for (String tAdd : tok2.split(" ")) {
+                tokens.add(tAdd);
+            }
+        }
+
+        Iterator<String> it = tokens.iterator();
         int n = 0;
-        int nmax = tokens.length;
+        int nmax = tokens.size();
         double cx1, cx2, cy1, cy2;
         double xx, yy;
         String previousCommand = "";
         Double initialX = null;
         Double initialY = null;
+        currentX=0;
+        currentY=0;
+        previousPoint.p.v.x=0;
+        previousPoint.p.v.y=0;
         while (it.hasNext()) {
             //Main loop, looking for commands
             String token = it.next().trim();
@@ -140,6 +170,18 @@ public class SVGMathObject extends MultiShapeObject {
                     getPoint(it.next(), it.next());
                     initialX = currentX;
                     initialY = currentY;
+                    //First point. Creatline do the same as a the first point
+                    previousPoint = pathLineTo(resul, currentX, currentY);
+                    previousPoint.isVisible = false;
+//                    previousPoint = pathM(path, currentX, currentY);
+                    break;
+                case "m":
+                    previousCommand = token;
+                    xx = previousPoint.p.v.x;
+                    yy = previousPoint.p.v.y;
+                    getPoint(it.next(), it.next());
+                    currentX += xx;
+                    currentY += yy;
                     //First point. Creatline do the same as a the first point
                     previousPoint = pathLineTo(resul, currentX, currentY);
                     previousPoint.isVisible = false;
@@ -276,8 +318,7 @@ public class SVGMathObject extends MultiShapeObject {
                                 currentX += xx;
                                 currentY += yy;
                                 previousPoint = pathLineTo(resul, currentX, currentY);
-                                break;
-                             case "l":
+                            case "l":
                                 previousCommand = "l";
                                 xx = previousPoint.p.v.x;
                                 yy = previousPoint.p.v.y;
@@ -329,11 +370,11 @@ public class SVGMathObject extends MultiShapeObject {
                                 previousPoint = pathCubicBezier(resul, previousPoint, cx1, cy1, cx2, cy2, currentX, currentY);
                                 break;
                             default:
-                                System.out.println("Unknow command: <" + token + ">");
+                                System.out.println("Unknow repeated command: <" + token + ">");
 
                         }
 
-                    } 
+                    }
             }
         }
         return resul;
