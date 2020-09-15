@@ -730,8 +730,8 @@ public class PointSimple extends Scene2D {
 
     private void pruebaVectores() {
         Point punto = new Point(.5, .3);
-        Arrow2D ar = new Arrow2D(new Point(0, 0), punto,"arrow1.svg");
-        Arrow2D ar2 = new Arrow2D(punto,new Point(.6, 0), "arrow2.svg");
+        Arrow2D ar = Arrow2D.makeSimpleArrow2D(new Point(0, 0), punto,Arrow2D.TYPE_1).arrowSize(.5);
+        Arrow2D ar2 = Arrow2D.makeSimpleArrow2D(punto,new Point(.6, 0), Arrow2D.TYPE_1);
         add(ar,ar2);
 //        add(Shape.square().scale(new Point(0,0), .1,.1));
 

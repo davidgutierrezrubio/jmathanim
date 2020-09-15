@@ -22,25 +22,41 @@ import java.util.logging.Logger;
  */
 public class Arrow2D extends MultiShapeObject {
 
+    public static final int TYPE_1=1;
+    public static final int TYPE_2=2;
+    public static final int TYPE_3=3;
+    
     public Point p1, p2;
     public int arrowType = 0;
     public SVGMathObject arrowHead;
-    private final File outputDir;
+//    private final File outputDir;
     private final AbsoluteSizeUpdater absoluteSizeUpdater;
-    private static final double DEFAULT_ARROW_HEAD_SIZE=.02;
+    private static final double DEFAULT_ARROW_HEAD_SIZE=.01;
 
-    public Arrow2D(Point p1, Point p2,String name) {
-        this.p1 = p1;
-        this.p2 = p2;
-        shapes.add(new Segment(p1, p2));
-        outputDir = new File("resources");
+    public static Arrow2D makeSimpleArrow2D(Point p1,Point p2,int type)
+    {
+        Arrow2D resul=null;
+        SVGMathObject svg;
+        File outputDir = new File("resources");
+        
+        String name = "arrow"+type+".svg";
+        
         String baseFileName;
         try {
             baseFileName = outputDir.getCanonicalPath() + "\\" + name;
-            arrowHead = new SVGMathObject(baseFileName);
+             svg = new SVGMathObject(baseFileName);
+             resul=new Arrow2D(p1, p2,svg);
         } catch (IOException ex) {
             Logger.getLogger(Arrow2D.class.getName()).log(Level.SEVERE, null, ex);
         }
+        return resul;
+    }
+    
+    public Arrow2D(Point p1, Point p2,SVGMathObject svg) {
+        this.p1 = p1;
+        this.p2 = p2;
+        shapes.add(new Segment(p1, p2));
+        this.arrowHead=svg;
         
         arrowHead.drawColor(shapes.get(0).mp.drawColor);
         arrowHead.fillColor(shapes.get(0).mp.drawColor);
@@ -63,15 +79,16 @@ public class Arrow2D extends MultiShapeObject {
         tr.applyTransform(arrowHeadCopy);
         super.draw(r);
         arrowHeadCopy.draw(r);
-        head.draw(r);
+//        head.draw(r);
     }
 
     public double getArrowSize() {
         return absoluteSizeUpdater.ratio/DEFAULT_ARROW_HEAD_SIZE;
     }
 
-    public void setArrowSize(double arrowSize) {
+    public Arrow2D arrowSize(double arrowSize) {
         absoluteSizeUpdater.ratio=arrowSize*DEFAULT_ARROW_HEAD_SIZE;
+        return this;
     }
 
 }
