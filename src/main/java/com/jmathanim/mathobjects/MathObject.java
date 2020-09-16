@@ -5,6 +5,7 @@
  */
 package com.jmathanim.mathobjects;
 
+import com.jmathanim.Utils.Anchor;
 import com.jmathanim.Utils.JMathAnimConfig;
 import com.jmathanim.Utils.MathObjectDrawingProperties;
 import com.jmathanim.Utils.Rect;
@@ -34,19 +35,7 @@ public abstract class MathObject implements Drawable, Updateable, Stateable {
     public static final int SLICE_DOUBLE = 2;
     public static final int SLICE_FOUR = 3;
 
-    //Anchor types
-    public static final int ANCHOR_BY_POINT = 1;
-    public static final int ANCHOR_BY_CENTER = 2;
-
-    public static final int ANCHOR_LEFT = 3;
-    public static final int ANCHOR_RIGHT = 4;
-    public static final int ANCHOR_UPPER = 5;
-    public static final int ANCHOR_LOWER = 6;
-
-    public static final int ANCHOR_UL = 7;
-    public static final int ANCHOR_UR = 8;
-    public static final int ANCHOR_DL = 9;
-    public static final int ANCHOR_DR = 10;
+   
 
     public MathObjectDrawingProperties mp;
     protected MathObjectDrawingProperties mpBackup;
@@ -82,7 +71,7 @@ public abstract class MathObject implements Drawable, Updateable, Stateable {
     public int updateLevel;
 //    private Point anchorPoint;
     public Point absoluteAnchorPoint;
-    private int absoluteAnchorType=ANCHOR_BY_CENTER;
+    private int absoluteAnchorType=Anchor.BY_CENTER;
 
 //    /**
 //     * Mathobjects which this is dependent from. This object should be updated4
@@ -291,7 +280,7 @@ public abstract class MathObject implements Drawable, Updateable, Stateable {
     }
 
     public Point getAbsoluteAnchorPoint() {
-        return getAnchorPoint(absoluteAnchorType);
+        return Anchor.getAnchorPoint(this,absoluteAnchorType);
     }
 
     public void setAbsolutAnchorPoint(int anchor) {
@@ -300,53 +289,18 @@ public abstract class MathObject implements Drawable, Updateable, Stateable {
     }
     public void setAbsolutAnchorPoint(Point p) {
         this.absoluteAnchorPoint=p;
-        absoluteAnchorType=ANCHOR_BY_POINT;
+        absoluteAnchorType=Anchor.BY_POINT;
 
     }
 
-    public Point getAnchorPoint(int anchor) {
-        Point resul = new Point();
-        switch (anchor) {
-            case ANCHOR_BY_POINT:
-                resul = absoluteAnchorPoint;
-                break;
-            case ANCHOR_BY_CENTER:
-                resul = getCenter();
-                break;
-
-            case ANCHOR_LEFT:
-                resul = getBoundingBox().getLeft();
-                break;
-            case ANCHOR_RIGHT:
-                resul = getBoundingBox().getRight();
-                break;
-            case ANCHOR_LOWER:
-                resul = getBoundingBox().getLower();
-                break;
-            case ANCHOR_UPPER:
-                resul = getBoundingBox().getUpper();
-                break;
-
-            case ANCHOR_UL:
-                resul = getBoundingBox().getUL();
-                break;
-            case ANCHOR_UR:
-                resul = getBoundingBox().getUR();
-                break;
-            case ANCHOR_DL:
-                resul = getBoundingBox().getDL();
-                break;
-            case ANCHOR_DR:
-                resul = getBoundingBox().getDR();
-                break;
-
-        }
-        return resul;
-    }
-    
     public void putAt(Point p, int anchorType)
     {
-        Point anchorPoint = getAnchorPoint(anchorType);
+        putAt(p,anchorType,0);
+    }
+    
+    public void putAt(Point p, int anchorType,double gap)
+    {
+        Point anchorPoint = Anchor.getAnchorPoint(this,anchorType,gap);
         this.shift(anchorPoint.to(p));
     }
     
@@ -354,7 +308,7 @@ public abstract class MathObject implements Drawable, Updateable, Stateable {
     public <T extends MathObject> T setAbsoluteSize()
     {
         absoluteSize=true;
-        absoluteAnchorType=ANCHOR_BY_CENTER;
+        absoluteAnchorType=Anchor.BY_CENTER;//Default anchor
         return (T) this;
     }
     public <T extends MathObject> T setAbsoluteSize(int anchorType)

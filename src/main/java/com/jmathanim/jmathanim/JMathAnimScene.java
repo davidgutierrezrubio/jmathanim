@@ -17,16 +17,6 @@ import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.Point;
 import com.jmathanim.mathobjects.updateableObjects.Updateable;
 import java.util.ArrayList;
-import static com.jmathanim.mathobjects.MathObject.ANCHOR_BY_CENTER;
-import static com.jmathanim.mathobjects.MathObject.ANCHOR_BY_POINT;
-import static com.jmathanim.mathobjects.MathObject.ANCHOR_DL;
-import static com.jmathanim.mathobjects.MathObject.ANCHOR_DR;
-import static com.jmathanim.mathobjects.MathObject.ANCHOR_LEFT;
-import static com.jmathanim.mathobjects.MathObject.ANCHOR_LOWER;
-import static com.jmathanim.mathobjects.MathObject.ANCHOR_RIGHT;
-import static com.jmathanim.mathobjects.MathObject.ANCHOR_UL;
-import static com.jmathanim.mathobjects.MathObject.ANCHOR_UPPER;
-import static com.jmathanim.mathobjects.MathObject.ANCHOR_UR;
 /**
  *
  * @author David Gutierrez Rubio davidgutierrezrubio@gmail.com

@@ -186,7 +186,7 @@ public class Rect {//TODO: Adjust this to 3D coordinates
     }
     public Point getLower()
     {
-          return new Point(.5*(xmin+ymax),ymin);
+          return new Point(.5*(xmin+xmax),ymin);
     }
     
     public Point getUL()
@@ -204,5 +204,9 @@ public class Rect {//TODO: Adjust this to 3D coordinates
     public Point getDR()
     {
         return new Point(xmax,ymin);
+    }
+    public Rect addGap(double xgap,double ygap)
+    {
+        return new Rect(xmin-xgap,ymin-ygap,xmax+xgap,ymax+ygap);
     }
 }

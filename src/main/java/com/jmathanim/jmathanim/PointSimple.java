@@ -14,6 +14,7 @@ import com.jmathanim.Animations.Transform;
 import com.jmathanim.Animations.commands.AbstractCommand;
 import com.jmathanim.Animations.commands.Commands;
 import com.jmathanim.Animations.commands.SingleMathObjectCommand;
+import com.jmathanim.Utils.Anchor;
 import com.jmathanim.Utils.MathObjectDrawingProperties;
 import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.SVGImporter;
@@ -53,12 +54,12 @@ public class PointSimple extends Scene2D {
     @Override
     public void setupSketch() {
         nanotime = System.nanoTime();
-//        conf.setHighQuality();
+        conf.setHighQuality();
 //        conf.setMediumQuality();
-        conf.setLowQuality();
+//        conf.setLowQuality();
 
 //        setCreateMovie(true);
-        setCreateMovie(false);
+        setCreateMovie(true);
         clockTick("create movie");
         setShowPreviewWindow(true);
         clockTick("Show preview window");
@@ -640,9 +641,9 @@ public class PointSimple extends Scene2D {
 
         Square sq = new Square();
         add(sq);
-        AnchoredMathObject anchor = new AnchoredMathObject(texto, MathObject.ANCHOR_RIGHT, p2);
-        AnchoredMathObject anchor2 = new AnchoredMathObject(pol, MathObject.ANCHOR_BY_CENTER, texto, MathObject.ANCHOR_LEFT);
-        AnchoredMathObject anchor3 = new AnchoredMathObject(sq, MathObject.ANCHOR_LEFT, pol, MathObject.ANCHOR_RIGHT);
+        AnchoredMathObject anchor = new AnchoredMathObject(texto, Anchor.RIGHT, p2);
+        AnchoredMathObject anchor2 = new AnchoredMathObject(pol,Anchor.BY_CENTER, texto, Anchor.LEFT);
+        AnchoredMathObject anchor3 = new AnchoredMathObject(sq, Anchor.LEFT, pol, Anchor.RIGHT);
         registerObjectToBeUpdated(anchor);
         registerObjectToBeUpdated(anchor2);
         registerObjectToBeUpdated(anchor3);
@@ -764,26 +765,26 @@ public class PointSimple extends Scene2D {
         la3.scale(sca, sca);
         la4.scale(sca, sca);
         la5.scale(sca, sca);
-        
-        la1.putAt(pol.getPoint(0), MathObject.ANCHOR_UPPER);//TODO: Add a space gap to this
-        la2.putAt(pol.getPoint(1), MathObject.ANCHOR_UPPER);//TODO: Move this constants to Anchor class
-        la3.putAt(pol.getPoint(2), MathObject.ANCHOR_UPPER);
-        la4.putAt(pol.getPoint(3), MathObject.ANCHOR_UPPER);
-        la5.putAt(pol.getPoint(4), MathObject.ANCHOR_UPPER);
+        double gap=.1;
+        la1.putAt(pol.getPoint(0), Anchor.UL,gap);//TODO: Add a space gap to this
+        la2.putAt(pol.getPoint(1), Anchor.LEFT,gap);//TODO: Move this constants to Anchor class
+        la3.putAt(pol.getPoint(2), Anchor.LOWER,gap);
+        la4.putAt(pol.getPoint(3), Anchor.RIGHT,gap);
+        la5.putAt(pol.getPoint(4), Anchor.UR,gap);
 
         add(pol, la1, la2, la3, la4, la5);
 
         System.out.println("C : " + camera.getMathBoundaries());
         System.out.println("FC: " + renderer.fixedCamera.getMathBoundaries());
         waitSeconds(10);
-        la1.setAbsoluteSize();
-        la2.setAbsoluteSize();
-        la3.setAbsoluteSize();
-        la4.setAbsoluteSize();
-        la5.setAbsoluteSize();
+//        la1.setAbsoluteSize();
+//        la2.setAbsoluteSize();
+//        la3.setAbsoluteSize();
+//        la4.setAbsoluteSize();
+//        la5.setAbsoluteSize();
 
         double yCenter = camera.getMathBoundaries().getCenter().v.y;
-        for (double dx = 0; dx < 2; dx += .001) {
+        for (double dx = 0; dx < 2; dx += .01) {
             camera.setMathXY(-5 + .5 * dx, 5 - .5 * dx, yCenter);
             advanceFrame();
         }

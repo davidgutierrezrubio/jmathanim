@@ -6,18 +6,9 @@
 package com.jmathanim.mathobjects.updateableObjects;
 
 import com.jmathanim.Renderers.Renderer;
+import com.jmathanim.Utils.Anchor;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.mathobjects.MathObject;
-import static com.jmathanim.mathobjects.MathObject.ANCHOR_BY_CENTER;
-import static com.jmathanim.mathobjects.MathObject.ANCHOR_BY_POINT;
-import static com.jmathanim.mathobjects.MathObject.ANCHOR_DL;
-import static com.jmathanim.mathobjects.MathObject.ANCHOR_DR;
-import static com.jmathanim.mathobjects.MathObject.ANCHOR_LEFT;
-import static com.jmathanim.mathobjects.MathObject.ANCHOR_LOWER;
-import static com.jmathanim.mathobjects.MathObject.ANCHOR_RIGHT;
-import static com.jmathanim.mathobjects.MathObject.ANCHOR_UL;
-import static com.jmathanim.mathobjects.MathObject.ANCHOR_UPPER;
-import static com.jmathanim.mathobjects.MathObject.ANCHOR_UR;
 import com.jmathanim.mathobjects.Point;
 
 /**
@@ -35,11 +26,11 @@ public class AnchoredMathObject implements Updateable {
     private int anchorMethodTo;
 
     public AnchoredMathObject(MathObject mobj, Point refPoint, MathObject dstObject) {
-        this(mobj, refPoint, dstObject, ANCHOR_BY_CENTER);
+        this(mobj, refPoint, dstObject, Anchor.BY_CENTER);
     }
 
     public AnchoredMathObject(MathObject mobj, int method, Point dstPoint) {
-        this(mobj, method, dstPoint, ANCHOR_BY_POINT);
+        this(mobj, method, dstPoint, Anchor.BY_POINT);
 
     }
 
@@ -47,7 +38,7 @@ public class AnchoredMathObject implements Updateable {
         this.mobj = mobj;
         this.refPoint = refPoint;
         this.dstObject = dstPoint;
-        anchorMethodFrom = ANCHOR_BY_POINT;
+        anchorMethodFrom = Anchor.BY_POINT;
         anchorMethodTo = methodTo;
     }
 
@@ -67,56 +58,56 @@ public class AnchoredMathObject implements Updateable {
     @Override
     public void update() {
 
-        Point dst = getAnchorFromObject(dstObject, anchorMethodTo);
+        Point dst = Anchor.getAnchorPoint(dstObject, anchorMethodTo);
 
         Point src = new Point();
-        if (anchorMethodFrom == ANCHOR_BY_POINT) {
+        if (anchorMethodFrom == Anchor.BY_POINT) {
             src = refPoint;
         } else {
-            src = getAnchorFromObject(mobj, anchorMethodFrom);
+            src = Anchor.getAnchorPoint(mobj, anchorMethodFrom);
         }
         Vec v = src.to(dst);
 
         mobj.shift(v);
     }
 
-    public Point getAnchorFromObject(MathObject obj, int anchor) {
-        Point resul = new Point();
-        switch (anchor) {
-            case ANCHOR_BY_POINT:
-                resul = (Point) obj;
-                break;
-            case ANCHOR_BY_CENTER:
-                resul = obj.getCenter();
-                break;
-
-            case ANCHOR_LEFT:
-                resul = obj.getBoundingBox().getLeft();
-                break;
-            case ANCHOR_RIGHT:
-                resul = obj.getBoundingBox().getRight();
-                break;
-            case ANCHOR_LOWER:
-                resul = obj.getBoundingBox().getLower();
-                break;
-            case ANCHOR_UPPER:
-                resul = obj.getBoundingBox().getUpper();
-                break;
-
-            case ANCHOR_UL:
-                resul = obj.getBoundingBox().getUL();
-                break;
-            case ANCHOR_UR:
-                resul = obj.getBoundingBox().getUR();
-                break;
-            case ANCHOR_DL:
-                resul = obj.getBoundingBox().getDL();
-                break;
-            case ANCHOR_DR:
-                resul = obj.getBoundingBox().getDR();
-                break;
-
-        }
-        return resul;
-    }
+//    public Point getAnchorFromObject(MathObject obj, int anchor) {
+//        Point resul = new Point();
+//        switch (anchor) {
+//            case Anchor.BY_POINT:
+//                resul = (Point) obj;
+//                break;
+//            case Anchor.BY_CENTER:
+//                resul = obj.getCenter();
+//                break;
+//
+//            case Anchor.LEFT:
+//                resul = obj.getBoundingBox().getLeft();
+//                break;
+//            case Anchor.RIGHT:
+//                resul = obj.getBoundingBox().getRight();
+//                break;
+//            case Anchor.LOWER:
+//                resul = obj.getBoundingBox().getLower();
+//                break;
+//            case Anchor.UPPER:
+//                resul = obj.getBoundingBox().getUpper();
+//                break;
+//
+//            case Anchor.UL:
+//                resul = obj.getBoundingBox().getUL();
+//                break;
+//            case Anchor.UR:
+//                resul = obj.getBoundingBox().getUR();
+//                break;
+//            case Anchor.DL:
+//                resul = obj.getBoundingBox().getDL();
+//                break;
+//            case Anchor.DR:
+//                resul = obj.getBoundingBox().getDR();
+//                break;
+//
+//        }
+//        return resul;
+//    }
 }
