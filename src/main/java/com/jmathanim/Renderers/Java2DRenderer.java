@@ -100,7 +100,7 @@ public class Java2DRenderer extends Renderer {
         //The Fixed camera doesn't change. It is used to display fixed-size objects
         //like heads of arrows or text
         fixedCamera = new Camera2D(cnf.mediaW, cnf.mediaH);
-        fixedCamera.setMathXY(-2, 2, 0);
+        fixedCamera.setMathXY(-5, 5, 0);
         super.setSize(cnf.mediaW, cnf.mediaH);
 
         bufferedImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);

@@ -344,6 +344,13 @@ public abstract class MathObject implements Drawable, Updateable, Stateable {
         return resul;
     }
     
+    public void putAt(Point p, int anchorType)
+    {
+        Point anchorPoint = getAnchorPoint(anchorType);
+        this.shift(anchorPoint.to(p));
+    }
+    
+    
     public <T extends MathObject> T setAbsoluteSize()
     {
         absoluteSize=true;

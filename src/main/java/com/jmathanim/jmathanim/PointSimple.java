@@ -740,34 +740,51 @@ public class PointSimple extends Scene2D {
     }
 
     private void pruebaFixedCamera() {
-        
-        for (double x=-3;x<3;x+=.5)
-        {
-            Line l = new Line(new Point(x,0),new Point(x,1));
-            l.mp.dashStyle=MathObjectDrawingProperties.DOTTED;
-            l.drawColor(Color.gray);
-            Line l2 = new Line(new Point(0,x),new Point(1,x));
-            l2.mp.dashStyle=MathObjectDrawingProperties.DOTTED;
-            l2.drawColor(Color.gray);
-            add(l,l2);
-        }
-        
-        
-        add(Shape.square().setAbsoluteSize(MathObject.ANCHOR_UR).drawColor(Color.YELLOW));
-        Circle c = new Circle(new Point(0, 0), .5);
-        add(c,c.copy());
-        c.absoluteSize = true;
-        c.setAbsolutAnchorPoint(MathObject.ANCHOR_LEFT);
-        c.mp.drawColor = Color.yellow;
 
-        LaTeXMathObject la=new LaTeXMathObject("$\\pi r^2$");
-        add(la);
-        la.shift(0,1);
-        la.setAbsoluteSize(MathObject.ANCHOR_LEFT);
+        for (double x = -3; x < 3; x += .5) {
+            Line l = new Line(new Point(x, 0), new Point(x, 1));
+            l.mp.dashStyle = MathObjectDrawingProperties.DOTTED;
+            l.drawColor(Color.gray);
+            Line l2 = new Line(new Point(0, x), new Point(1, x));
+            l2.mp.dashStyle = MathObjectDrawingProperties.DOTTED;
+            l2.drawColor(Color.gray);
+            add(l, l2);
+        }
+
+        RegularPolygon pol = new RegularPolygon(5, 1);
+
+        LaTeXMathObject la1 = new LaTeXMathObject("$P_1$");
+        LaTeXMathObject la2 = new LaTeXMathObject("$P_2$");
+        LaTeXMathObject la3 = new LaTeXMathObject("$P_3$");
+        LaTeXMathObject la4 = new LaTeXMathObject("$P_4$");
+        LaTeXMathObject la5 = new LaTeXMathObject("$P_5$");
+        double sca=.3;
+        la1.scale(sca, sca);
+        la2.scale(sca, sca);
+        la3.scale(sca, sca);
+        la4.scale(sca, sca);
+        la5.scale(sca, sca);
         
+        la1.putAt(pol.getPoint(0), MathObject.ANCHOR_UPPER);//TODO: Add a space gap to this
+        la2.putAt(pol.getPoint(1), MathObject.ANCHOR_UPPER);//TODO: Move this constants to Anchor class
+        la3.putAt(pol.getPoint(2), MathObject.ANCHOR_UPPER);
+        la4.putAt(pol.getPoint(3), MathObject.ANCHOR_UPPER);
+        la5.putAt(pol.getPoint(4), MathObject.ANCHOR_UPPER);
+
+        add(pol, la1, la2, la3, la4, la5);
+
+        System.out.println("C : " + camera.getMathBoundaries());
+        System.out.println("FC: " + renderer.fixedCamera.getMathBoundaries());
+        waitSeconds(10);
+        la1.setAbsoluteSize();
+        la2.setAbsoluteSize();
+        la3.setAbsoluteSize();
+        la4.setAbsoluteSize();
+        la5.setAbsoluteSize();
+
         double yCenter = camera.getMathBoundaries().getCenter().v.y;
-        for (double dx = 0; dx <  2; dx += .001) {
-            camera.setMathXY(-2 + .5 * dx, 2 - .5 * dx, yCenter);
+        for (double dx = 0; dx < 2; dx += .001) {
+            camera.setMathXY(-5 + .5 * dx, 5 - .5 * dx, yCenter);
             advanceFrame();
         }
         waitSeconds(10);

@@ -84,9 +84,8 @@ public class MultiShapeObject extends MathObject {
 
     @Override
     public <T extends MathObject> T copy() {
-        MultiShapeObject resul=new MultiShapeObject();
-        for (Shape sh:shapes)
-        {
+        MultiShapeObject resul = new MultiShapeObject();
+        for (Shape sh : shapes) {
             final Shape copy = sh.copy();
             resul.addShape(copy);
         }
@@ -117,6 +116,7 @@ public class MultiShapeObject extends MathObject {
 
     @Override
     public void draw(Renderer r) {
+
         int n = 0;
         for (Shape jmp : shapes) {
 //            Rect re=jmp.getBoundingBox();
@@ -124,22 +124,27 @@ public class MultiShapeObject extends MathObject {
 //            int[] mx = r.getCamera().mathToScreen(xx[0], xx[1]);
 //            ((Java2DRenderer)r).debugText(Integer.toString(n), mx[0], mx[1]);
 //            n++;
-            jmp.draw(r);
+             r.setBorderColor(jmp.mp.drawColor);
+        r.setFillColor(jmp.mp.fillColor);
+        r.setStroke(jmp);
+        if (absoluteSize) {
+            r.drawAbsoluteCopy(jmp, getAbsoluteAnchorPoint().v);
+        } else {
+            r.drawPath(jmp);
+        }
 
         }
     }
 
     @Override
     public Rect getBoundingBox() {
-        if (shapes.size()>0){
-        Rect resul = shapes.get(0).getBoundingBox();
-        for (Shape jmp : shapes) {
-            resul = resul.union(jmp.getBoundingBox());
-        }
-        return resul;
-        }
-        else
-        {
+        if (shapes.size() > 0) {
+            Rect resul = shapes.get(0).getBoundingBox();
+            for (Shape jmp : shapes) {
+                resul = resul.union(jmp.getBoundingBox());
+            }
+            return resul;
+        } else {
             return null;
         }
     }
