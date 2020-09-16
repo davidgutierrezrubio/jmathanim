@@ -67,11 +67,7 @@ public class PointSimple extends Scene2D {
     @Override
     public void runSketch() {
         System.out.println("Running sketch...");
-//        pruebaLaTeXEcuacion();
-//        pruebaVisible();
-        pruebaSVGImport();
-//        pruebaTransform();
-//        pruebaLaTeX();
+        pruebaFixedCamera();
     }
 
     public void clockTick(String mensaje) {
@@ -644,9 +640,9 @@ public class PointSimple extends Scene2D {
 
         Square sq = new Square();
         add(sq);
-        AnchoredMathObject anchor = new AnchoredMathObject(texto, AnchoredMathObject.ANCHOR_RIGHT, p2);
-        AnchoredMathObject anchor2 = new AnchoredMathObject(pol, AnchoredMathObject.ANCHOR_BY_CENTER, texto, AnchoredMathObject.ANCHOR_LEFT);
-        AnchoredMathObject anchor3 = new AnchoredMathObject(sq, AnchoredMathObject.ANCHOR_LEFT, pol, AnchoredMathObject.ANCHOR_RIGHT);
+        AnchoredMathObject anchor = new AnchoredMathObject(texto, MathObject.ANCHOR_RIGHT, p2);
+        AnchoredMathObject anchor2 = new AnchoredMathObject(pol, MathObject.ANCHOR_BY_CENTER, texto, MathObject.ANCHOR_LEFT);
+        AnchoredMathObject anchor3 = new AnchoredMathObject(sq, MathObject.ANCHOR_LEFT, pol, MathObject.ANCHOR_RIGHT);
         registerObjectToBeUpdated(anchor);
         registerObjectToBeUpdated(anchor2);
         registerObjectToBeUpdated(anchor3);
@@ -743,44 +739,36 @@ public class PointSimple extends Scene2D {
         waitSeconds(5);
     }
 
-    private void pruebaVectores() {
-        Point punto = new Point(.5, .3);
-        add(punto);
-        long nanoTime = System.nanoTime();
-//        Arrow2D ar = Arrow2D.makeSimpleArrow2D(new Point(0, 0), punto, Arrow2D.TYPE_1);
-        SVGMathObject svg = new SVGMathObject("C:\\Users\\David\\Documents\\NetBeansProjects\\jmathanim\\resources\\arrow1.svg");
-        Arrow2D ar = new Arrow2D(new Point(0, 0), punto, svg);
-        clockTick("Create arrow1");
+    private void pruebaFixedCamera() {
+        
+        for (double x=-3;x<3;x+=.5)
+        {
+            Line l = new Line(new Point(x,0),new Point(x,1));
+            l.mp.dashStyle=MathObjectDrawingProperties.DOTTED;
+            l.drawColor(Color.gray);
+            Line l2 = new Line(new Point(0,x),new Point(1,x));
+            l2.mp.dashStyle=MathObjectDrawingProperties.DOTTED;
+            l2.drawColor(Color.gray);
+            add(l,l2);
+        }
+        
+        
+        add(Shape.square().setAbsoluteSize(MathObject.ANCHOR_UR).drawColor(Color.YELLOW));
+        Circle c = new Circle(new Point(0, 0), .5);
+        add(c,c.copy());
+        c.absoluteSize = true;
+        c.setAbsolutAnchorPoint(MathObject.ANCHOR_LEFT);
+        c.mp.drawColor = Color.yellow;
 
-        add(ar);
-        clockTick("Add arrow1");
-
-        Arrow2D ar2 = Arrow2D.makeSimpleArrow2D(punto, new Point(.6, 0), Arrow2D.TYPE_1).arrowSize(.5);
-        clockTick("Create arrow2");
-
-        add(ar);
-        clockTick("Add arrow2");
-
-//        add(Shape.square().scale(new Point(0,0), .1,.1));
-//        SVGMathObject svg = new SVGMathObject("c:\\media\\flecha1.svg");
-//        svg.drawColor(Color.WHITE);
-//        svg.fillColor(Color.WHITE);
-//        
-//        MultiShapeObject svg2 = svg.copy();
-//        svg2.shift(-1, 1);
-//        
-//        add(svg,svg2);
-//        svg.shift(svg.getCenter().v.mult(-1));
-//        absoluteSize abs = new absoluteSize(svg, .02);
-//        registerObjectToBeUpdated(abs);
+        LaTeXMathObject la=new LaTeXMathObject("$\\pi r^2$");
+        add(la);
+        la.shift(0,1);
+        la.setAbsoluteSize(MathObject.ANCHOR_LEFT);
+        
         double yCenter = camera.getMathBoundaries().getCenter().v.y;
-        for (double dx = 0; dx < Math.PI * 2; dx += .001) {
-//            camera.setMathXY(-2 + .5*dx, 2 - .5*dx, yCenter);
-
-            punto.v.x = .5 * Math.cos(dx);
-            punto.v.y = .5 * Math.sin(dx);
+        for (double dx = 0; dx <  2; dx += .001) {
+            camera.setMathXY(-2 + .5 * dx, 2 - .5 * dx, yCenter);
             advanceFrame();
-//            clockTick("Frame!");
         }
         waitSeconds(10);
 
@@ -819,7 +807,7 @@ public class PointSimple extends Scene2D {
         advanceFrame();
         waitSeconds(15);
         for (int n = 0; n < 12; n++) {
-            pol.getJMPoint(n-1).isVisible = true;
+            pol.getJMPoint(n - 1).isVisible = true;
             pol.getJMPoint(n).isVisible = false;
             waitSeconds(15);
         }

@@ -6,6 +6,7 @@
 package com.jmathanim.Renderers;
 
 import com.jmathanim.Cameras.Camera;
+import com.jmathanim.Utils.Vec;
 import com.jmathanim.mathobjects.Shape;
 import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.Point;
@@ -114,4 +115,6 @@ public abstract class Renderer {
     }
 
     abstract public void drawDot(Point p);
+
+    abstract public void drawAbsoluteCopy(Shape sh,Vec anchor);
 }

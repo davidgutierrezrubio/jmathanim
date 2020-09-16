@@ -64,7 +64,7 @@ public class Camera2D extends Camera {
 
     @Override
     public void setMathXY(double xmin, double xmax, double ycenter) {
-        
+
         if (xmax <= xmin) {
             return;
         }
@@ -94,6 +94,12 @@ public class Camera2D extends Camera {
         x = (int) ((mathX - xmin) * screenWidth / (xmax - xmin));
         y = (int) ((ymax - mathY) * screenHeight / (ymax - ymin));
         return new int[]{x, y};
+    }
+
+    public double[] screenToMath(int x, int y) {
+        double mx=(double)(x*(xmax-xmin)/screenWidth+xmin);
+        double my=-(double)(y*(ymax-ymin)/screenHeight-ymax);
+        return new double[]{mx,my};
     }
 
     @Override

@@ -182,10 +182,15 @@ public class Shape extends MathObject {
 
     @Override
     public void draw(Renderer r) {
+
         r.setBorderColor(mp.drawColor);
         r.setFillColor(mp.fillColor);
         r.setStroke(this);
-        r.drawPath(this);
+        if (absoluteSize) {
+            r.drawAbsoluteCopy(this, getAbsoluteAnchorPoint().v);
+        } else {
+            r.drawPath(this);
+        }
     }
 
     @Override
@@ -282,7 +287,6 @@ public class Shape extends MathObject {
         return obj;
     }
 
-    
 //    public static Shape arc() {
 //        
 //    }

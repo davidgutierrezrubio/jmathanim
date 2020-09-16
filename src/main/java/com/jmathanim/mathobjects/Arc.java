@@ -40,24 +40,24 @@ public class Arc extends Shape {
         return center;
     }
 
-    @Override
-    public void draw(Renderer r) {
-        r.setBorderColor(mp.drawColor);
-        double rad = mp.getThickness(r);
-//        if (needsRecalcControlPoints) {
-//            computeJMPathFromVertices();
-//        }
-
-//        JMPath c = jmpath.getSlice(drawParam);
-//        if (drawParam < 1) {
-//            c.open();
-//        } else {
-//            c.close();
-//        }
-        r.setBorderColor(mp.drawColor);
-        r.setStroke(this);
-        r.drawPath(this);
-    }
+//    @Override
+//    public void draw(Renderer r) {
+//        r.setBorderColor(mp.drawColor);
+//        double rad = mp.getThickness(r);
+////        if (needsRecalcControlPoints) {
+////            computeJMPathFromVertices();
+////        }
+//
+////        JMPath c = jmpath.getSlice(drawParam);
+////        if (drawParam < 1) {
+////            c.open();
+////        } else {
+////            c.close();
+////        }
+//        r.setBorderColor(mp.drawColor);
+//        r.setStroke(this);
+//        r.drawPath(this);
+//    }
 
     public void computePoints() {
         vertices.clear();

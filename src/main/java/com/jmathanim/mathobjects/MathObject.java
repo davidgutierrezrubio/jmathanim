@@ -18,25 +18,41 @@ import java.util.HashSet;
  *
  * @author David Gutierrez Rubio davidgutierrezrubio@gmail.com
  */
-public abstract class MathObject implements Drawable, Updateable,Stateable{
+public abstract class MathObject implements Drawable, Updateable, Stateable {
 
     //Implemented types
-     public static final int OTHER = 0;
-     public static final int POINT = 1;
-     public static final int RECTANGLE = 2; //Includes square
-     public static final int CIRCLE = 3;
-     public static final int ELLIPSE = 4;
-     public static final int ARC = 5;
-     public static final int REGULAR_POLYGON = 6;
-     public static final int GENERAL_POLYGON = 7;
-    
+    public static final int OTHER = 0;
+    public static final int POINT = 1;
+    public static final int RECTANGLE = 2; //Includes square
+    public static final int CIRCLE = 3;
+    public static final int ELLIPSE = 4;
+    public static final int ARC = 5;
+    public static final int REGULAR_POLYGON = 6;
+    public static final int GENERAL_POLYGON = 7;
+
     public static final int SLICE_SIMPLE = 1;
     public static final int SLICE_DOUBLE = 2;
     public static final int SLICE_FOUR = 3;
 
-    public  MathObjectDrawingProperties mp;
+    //Anchor types
+    public static final int ANCHOR_BY_POINT = 1;
+    public static final int ANCHOR_BY_CENTER = 2;
+
+    public static final int ANCHOR_LEFT = 3;
+    public static final int ANCHOR_RIGHT = 4;
+    public static final int ANCHOR_UPPER = 5;
+    public static final int ANCHOR_LOWER = 6;
+
+    public static final int ANCHOR_UL = 7;
+    public static final int ANCHOR_UR = 8;
+    public static final int ANCHOR_DL = 9;
+    public static final int ANCHOR_DR = 10;
+
+    public MathObjectDrawingProperties mp;
     protected MathObjectDrawingProperties mpBackup;
-    public String label="";
+    public String label = "";
+
+    public boolean absoluteSize = false;
     
     private int objectType;
     /**
@@ -52,17 +68,21 @@ public abstract class MathObject implements Drawable, Updateable,Stateable{
 //    protected double drawParam;
 
     /**
-     * Mathobjects dependent of this. These should be updated with its own method when this object
-     * changes. This is designed for Objects with its specific dependency function (MiddlePoint for example)
+     * Mathobjects dependent of this. These should be updated with its own
+     * method when this object changes. This is designed for Objects with its
+     * specific dependency function (MiddlePoint for example)
      */
     public final HashSet<Updateable> dependent;
-    
+
     /**
      * MathObjects children of this (for example: Polygon has Point as vertices)
      */
     public final HashSet<MathObject> children;
-    
+
     public int updateLevel;
+//    private Point anchorPoint;
+    public Point absoluteAnchorPoint;
+    private int absoluteAnchorType=ANCHOR_BY_CENTER;
 
 //    /**
 //     * Mathobjects which this is dependent from. This object should be updated4
@@ -75,14 +95,14 @@ public abstract class MathObject implements Drawable, Updateable,Stateable{
     }
 
     public MathObject(MathObjectDrawingProperties prop) {
-        mp=JMathAnimConfig.getDefaultMP();//Default MP values
+        mp = JMathAnimConfig.getDefaultMP();//Default MP values
         mp.digestFrom(prop);//Copy all non-null values from prop
 //        ascendent=new HashSet<>();
         dependent = new HashSet<>();
         children = new HashSet<>();
 //        cousins=new HashSet<>();
         scenes = new HashSet<>();
-        updateLevel=0;
+        updateLevel = 0;
     }
 
     /**
@@ -114,8 +134,6 @@ public abstract class MathObject implements Drawable, Updateable,Stateable{
         shift(new Vec(x, y));
     }
 
-    
-    
     /**
      * Scale from center of object (2D version)
      *
@@ -127,19 +145,21 @@ public abstract class MathObject implements Drawable, Updateable,Stateable{
         scale(getCenter(), sx, sy);
         return (T) this;
     }
- /**
+
+    /**
      * Scale from center of object (2D version)
      *
      * @param <T>
      * @param p
      * @param sx
      * @param sy
-     * @return 
+     * @return
      */
-    public <T extends MathObject> T scale(Point p,double sx, double sy) {
+    public <T extends MathObject> T scale(Point p, double sx, double sy) {
         scale(p, sx, sy, 1);
         return (T) this;
     }
+
     /**
      * Scale from center of object (3D version)
      *
@@ -165,11 +185,9 @@ public abstract class MathObject implements Drawable, Updateable,Stateable{
      * Update all necessary componentes of this object to display properly This
      * should be called when any of its subobjects (sides, vertices...) changes
      */
-
     abstract public void prepareForNonLinearAnimation();
 
     abstract public void processAfterNonLinearAnimation();
-
 
     public void updateDependents() {
         HashSet<Updateable> desC = (HashSet<Updateable>) dependent.clone();
@@ -224,22 +242,23 @@ public abstract class MathObject implements Drawable, Updateable,Stateable{
     public abstract void setDrawAlpha(double t);
 
     public abstract void setFillAlpha(double t);
-    
+
     public abstract void registerChildrenToBeUpdated(JMathAnimScene scene);
+
     public abstract void unregisterChildrenToBeUpdated(JMathAnimScene scene);
-    
+
     @Override
-    public int getUpdateLevel(){
+    public int getUpdateLevel() {
         return updateLevel;
     }
-    
+
     @Override
-    public void saveState()
-    {
-        this.mpBackup=this.mp.copy();
+    public void saveState() {
+        this.mpBackup = this.mp.copy();
     }
+
     @Override
-    public void restoreState(){
+    public void restoreState() {
         mp.copyFrom(mpBackup);
     }
 
@@ -258,19 +277,90 @@ public abstract class MathObject implements Drawable, Updateable,Stateable{
     public void setObjectType(int objectType) {
         this.objectType = objectType;
     }
-    
-    
+
     //Convenience methods to set drawing parameters
-    public <T extends MathObject> T drawColor(Color dc)
-    {
-        mp.drawColor=dc;
+    public <T extends MathObject> T drawColor(Color dc) {
+        mp.drawColor = dc;
         return (T) this;
     }
-     public <T extends MathObject> T fillColor(Color fc)
-    {
-        mp.fillColor=fc;
-        mp.fill=true;
+
+    public <T extends MathObject> T fillColor(Color fc) {
+        mp.fillColor = fc;
+        mp.fill = true;
         return (T) this;
     }
-            
+
+    public Point getAbsoluteAnchorPoint() {
+        return getAnchorPoint(absoluteAnchorType);
+    }
+
+    public void setAbsolutAnchorPoint(int anchor) {
+        absoluteAnchorType=anchor;
+
+    }
+    public void setAbsolutAnchorPoint(Point p) {
+        this.absoluteAnchorPoint=p;
+        absoluteAnchorType=ANCHOR_BY_POINT;
+
+    }
+
+    public Point getAnchorPoint(int anchor) {
+        Point resul = new Point();
+        switch (anchor) {
+            case ANCHOR_BY_POINT:
+                resul = absoluteAnchorPoint;
+                break;
+            case ANCHOR_BY_CENTER:
+                resul = getCenter();
+                break;
+
+            case ANCHOR_LEFT:
+                resul = getBoundingBox().getLeft();
+                break;
+            case ANCHOR_RIGHT:
+                resul = getBoundingBox().getRight();
+                break;
+            case ANCHOR_LOWER:
+                resul = getBoundingBox().getLower();
+                break;
+            case ANCHOR_UPPER:
+                resul = getBoundingBox().getUpper();
+                break;
+
+            case ANCHOR_UL:
+                resul = getBoundingBox().getUL();
+                break;
+            case ANCHOR_UR:
+                resul = getBoundingBox().getUR();
+                break;
+            case ANCHOR_DL:
+                resul = getBoundingBox().getDL();
+                break;
+            case ANCHOR_DR:
+                resul = getBoundingBox().getDR();
+                break;
+
+        }
+        return resul;
+    }
+    
+    public <T extends MathObject> T setAbsoluteSize()
+    {
+        absoluteSize=true;
+        absoluteAnchorType=ANCHOR_BY_CENTER;
+        return (T) this;
+    }
+    public <T extends MathObject> T setAbsoluteSize(int anchorType)
+    {
+        absoluteSize=true;
+        absoluteAnchorType=anchorType;
+        return (T) this;
+    }
+     public <T extends MathObject> T setRelativeSize()
+    {
+        absoluteSize=false;
+        return (T) this;
+    }
+    
+    
 }

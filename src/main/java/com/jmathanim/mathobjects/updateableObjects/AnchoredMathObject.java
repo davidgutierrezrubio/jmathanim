@@ -8,6 +8,16 @@ package com.jmathanim.mathobjects.updateableObjects;
 import com.jmathanim.Renderers.Renderer;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.mathobjects.MathObject;
+import static com.jmathanim.mathobjects.MathObject.ANCHOR_BY_CENTER;
+import static com.jmathanim.mathobjects.MathObject.ANCHOR_BY_POINT;
+import static com.jmathanim.mathobjects.MathObject.ANCHOR_DL;
+import static com.jmathanim.mathobjects.MathObject.ANCHOR_DR;
+import static com.jmathanim.mathobjects.MathObject.ANCHOR_LEFT;
+import static com.jmathanim.mathobjects.MathObject.ANCHOR_LOWER;
+import static com.jmathanim.mathobjects.MathObject.ANCHOR_RIGHT;
+import static com.jmathanim.mathobjects.MathObject.ANCHOR_UL;
+import static com.jmathanim.mathobjects.MathObject.ANCHOR_UPPER;
+import static com.jmathanim.mathobjects.MathObject.ANCHOR_UR;
 import com.jmathanim.mathobjects.Point;
 
 /**
@@ -16,18 +26,7 @@ import com.jmathanim.mathobjects.Point;
  */
 public class AnchoredMathObject implements Updateable {
 
-    public static final int ANCHOR_BY_POINT = 1;
-    public static final int ANCHOR_BY_CENTER = 2;
-
-    public static final int ANCHOR_LEFT = 3;
-    public static final int ANCHOR_RIGHT = 4;
-    public static final int ANCHOR_UPPER = 5;
-    public static final int ANCHOR_LOWER = 6;
-
-    public static final int ANCHOR_UL = 7;
-    public static final int ANCHOR_UR = 8;
-    public static final int ANCHOR_DL = 9;
-    public static final int ANCHOR_DR = 10;
+   
 
     private MathObject mobj;
     private Point refPoint;

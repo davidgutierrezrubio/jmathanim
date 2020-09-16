@@ -155,6 +155,11 @@ public class Vec implements Stateable{
         return true;
     }
 
+    @Override
+    public String toString() {
+        return "Vec(" +  x + ", " + y + ')';
+    }
+
   
     
     

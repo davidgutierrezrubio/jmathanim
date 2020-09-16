@@ -309,6 +309,10 @@ public class Java2DRenderer extends Renderer {
 
     @Override
     public void drawPath(Shape mobj) {
+        drawPath(mobj, camera);
+    }
+
+    public void drawPath(Shape mobj, Camera2D cam) {
 
         JMPath c = mobj.getPath();
         int numPoints = c.size();
@@ -325,7 +329,7 @@ public class Java2DRenderer extends Renderer {
 //                throw new UnsupportedOperationException("Error: Illegal type of JMPath: " + c.curveType);
 //        }
         if (numPoints >= minimumPoints) {
-            path = createPathFromJMPath(mobj);
+            path = createPathFromJMPath(mobj, cam);
 
             if (mobj.mp.fill) {
                 g2d.setPaint(mobj.mp.fillColor);
@@ -344,7 +348,7 @@ public class Java2DRenderer extends Renderer {
         }
     }
 
-    public Path2D.Double createPathFromJMPath(Shape mobj) {
+    public Path2D.Double createPathFromJMPath(Shape mobj, Camera2D cam) {
         JMPath c = mobj.getPath();
         Path2D.Double resul = new Path2D.Double();
 
@@ -354,7 +358,7 @@ public class Java2DRenderer extends Renderer {
         if (DEBUG_PATH_POINTS) {
             debugPathPoint(c.getPoint(0), c);
         }
-        int[] scr = camera.mathToScreen(p);
+        int[] scr = cam.mathToScreen(p);
         resul.moveTo(scr[0], scr[1]);
         //Now I iterate to get the next points
         int numPoints = c.size();
@@ -372,26 +376,27 @@ public class Java2DRenderer extends Renderer {
             Vec cpoint2 = c.getPoint(n).cp2.v;
             prev[0] = xy[0];
             prev[1] = xy[1];
-            xy = camera.mathToScreen(point);
+            xy = cam.mathToScreen(point);
 
-            int[] cxy1 = camera.mathToScreen(cpoint1);
-            int[] cxy2 = camera.mathToScreen(cpoint2);
+            int[] cxy1 = cam.mathToScreen(cpoint1);
+            int[] cxy2 = cam.mathToScreen(cpoint2);
             if (DEBUG_PATH_POINTS) {
                 debugPathPoint(c.getPoint(n), c);
             }
 //            if ((prev[0]!=xy[0]) | (prev[1]!=xy[1])){
-                if (true){
+            if (true) {
                 if (c.getPoint(n).isVisible) {
                     if (c.getPoint(n).isCurved) {
                         resul.curveTo(cxy1[0], cxy1[1], cxy2[0], cxy2[1], xy[0], xy[1]);
                     } else {
                         resul.lineTo(xy[0], xy[1]);
-                        System.out.println("Line from "+prev[0]+", "+prev[1]+" to "+xy[0]+","+xy[1]);
+//                        System.out.println("Line from "+prev[0]+", "+prev[1]+" to "+xy[0]+","+xy[1]);
                     }
                 } else {
                     resul.moveTo(xy[0], xy[1]);
 //                g2d.drawString("M", xy[0], xy[1]);
-                }}
+                }
+            }
         }
         if (c.isClosed()) {
             //closePath method draws a straight line to the last moveTo, so we
@@ -465,5 +470,29 @@ public class Java2DRenderer extends Renderer {
         g2d.setColor(Color.LIGHT_GRAY);
         g2d.setStroke(new BasicStroke(1, CAP_ROUND, JOIN_ROUND));
         g2d.drawRect(scUL[0], scUL[1], scDR[0] - scUL[0], scDR[1] - scUL[1]);
+    }
+
+    /**
+     * Returns equivalent position from default camera to fixed camera.
+     *
+     * @param v
+     * @return
+     */
+    public Vec defaultToFixedCamera(Vec v) {
+        double width1 = camera.getMathBoundaries().getWidth();
+        int[] ms = camera.mathToScreen(v);
+        double[] coords = fixedCamera.screenToMath(ms[0], ms[1]);
+//        System.out.println(width1 + ",   " + v + "    MS(" + ms[0] + ", " + ms[1] + ")");
+
+        return new Vec(coords[0], coords[1]);
+
+    }
+
+    @Override
+    public void drawAbsoluteCopy(Shape sh,Vec v) {
+        Shape shape = sh.copy();
+        Vec vFixed = defaultToFixedCamera(v);
+        shape.shift(vFixed.minus(v));
+        drawPath(shape, fixedCamera);
     }
 }
