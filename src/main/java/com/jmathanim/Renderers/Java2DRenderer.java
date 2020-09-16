@@ -199,9 +199,9 @@ public class Java2DRenderer extends Renderer {
     public void drawDot(Point p) {
         setStroke(p);
         int[] xx = camera.mathToScreen(p.v.x, p.v.y);
-        
+
         g2d.setColor(p.mp.drawColor);
-        g2d.drawLine(xx[0], xx[1], xx[0] , xx[1]);
+        g2d.drawLine(xx[0], xx[1], xx[0], xx[1]);
     }
 
     @Override
@@ -345,15 +345,15 @@ public class Java2DRenderer extends Renderer {
     }
 
     public Path2D.Double createPathFromJMPath(Shape mobj) {
-        JMPath c=mobj.getPath();
+        JMPath c = mobj.getPath();
         Path2D.Double resul = new Path2D.Double();
 
         //TODO: Convert this in its own reusable method
         //First, I move the curve to the first point
         Vec p = c.getPoint(0).p.v;
         if (DEBUG_PATH_POINTS) {
-                debugPathPoint(c.getPoint(0),c);
-            }
+            debugPathPoint(c.getPoint(0), c);
+        }
         int[] scr = camera.mathToScreen(p);
         resul.moveTo(scr[0], scr[1]);
         //Now I iterate to get the next points
@@ -362,33 +362,41 @@ public class Java2DRenderer extends Renderer {
             numPoints++; //Draw fron n to 0 
         }
         //Draw from point [n] to point [n+1]
+        int prev[] = {scr[0], scr[1]};
+        int xy[] = {scr[0], scr[1]};
+
         for (int n = 1; n < numPoints; n++) {
 
             Vec point = c.getPoint(n).p.v;
             Vec cpoint1 = c.getPoint(n - 1).cp1.v;
             Vec cpoint2 = c.getPoint(n).cp2.v;
+            prev[0] = xy[0];
+            prev[1] = xy[1];
+            xy = camera.mathToScreen(point);
 
-            int[] xy = camera.mathToScreen(point);
             int[] cxy1 = camera.mathToScreen(cpoint1);
             int[] cxy2 = camera.mathToScreen(cpoint2);
             if (DEBUG_PATH_POINTS) {
-                debugPathPoint(c.getPoint(n),c);
+                debugPathPoint(c.getPoint(n), c);
             }
-            if (c.getPoint(n).isVisible) {
-                if (c.getPoint(n).isCurved) {
-                    resul.curveTo(cxy1[0], cxy1[1], cxy2[0], cxy2[1], xy[0], xy[1]);
+//            if ((prev[0]!=xy[0]) | (prev[1]!=xy[1])){
+                if (true){
+                if (c.getPoint(n).isVisible) {
+                    if (c.getPoint(n).isCurved) {
+                        resul.curveTo(cxy1[0], cxy1[1], cxy2[0], cxy2[1], xy[0], xy[1]);
+                    } else {
+                        resul.lineTo(xy[0], xy[1]);
+                        System.out.println("Line from "+prev[0]+", "+prev[1]+" to "+xy[0]+","+xy[1]);
+                    }
                 } else {
-                    resul.lineTo(xy[0], xy[1]);
-                }
-            } else {
-                resul.moveTo(xy[0], xy[1]);
+                    resul.moveTo(xy[0], xy[1]);
 //                g2d.drawString("M", xy[0], xy[1]);
-            }
+                }}
         }
         if (c.isClosed()) {
             //closePath method draws a straight line to the last moveTo, so we
             //have to move first to the first point of our path
-            resul.moveTo(scr[0], scr[1]);
+//            resul.moveTo(scr[0], scr[1]);
             resul.closePath();
         }
 //        if (c.isClosed()) {
@@ -407,7 +415,7 @@ public class Java2DRenderer extends Renderer {
         camera.setSize(w, h);
     }
 
-    public void debugPathPoint(JMPathPoint p,JMPath path) {
+    public void debugPathPoint(JMPathPoint p, JMPath path) {
         int[] x = camera.mathToScreen(p.p.v.x, p.p.v.y);
         debugCPoint(camera.mathToScreen(p.cp1.v.x, p.cp1.v.y));
         debugCPoint(camera.mathToScreen(p.cp2.v.x, p.cp2.v.y));
@@ -424,7 +432,7 @@ public class Java2DRenderer extends Renderer {
         } else {
             g2d.drawRect(x[0] - 2, x[1] - 2, 4, 4);
         }
-        debugText(String.valueOf(path.jmPathPoints.indexOf(p)), x[0]+5, x[1]);
+        debugText(String.valueOf(path.jmPathPoints.indexOf(p)), x[0] + 5, x[1]);
 
     }
 

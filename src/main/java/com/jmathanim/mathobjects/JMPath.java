@@ -87,7 +87,7 @@ public class JMPath implements Updateable, Stateable {
 //        addPoint(points.get(0).copy());//TODO: Mark this new point as dependent in case point0 moves
 //        points.get(0).isCurved=false;
         isClosed = true;
-        jmPathPoints.get(0).isVisible=true;
+//        jmPathPoints.get(0).isVisible=true;
     }
 
     public void open() {

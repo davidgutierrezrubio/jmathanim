@@ -57,6 +57,7 @@ public class PointSimple extends Scene2D {
 //        conf.setMediumQuality();
         conf.setLowQuality();
 
+//        setCreateMovie(true);
         setCreateMovie(false);
         clockTick("create movie");
         setShowPreviewWindow(true);
@@ -802,27 +803,26 @@ public class PointSimple extends Scene2D {
         svg.drawColor(Color.WHITE);
 
         Shape s = Shape.square();
-        add(s);
+//        add(s);
 //        JMPath uno = s.jmpath;
 //        JMPath dos = svg.shapes.get(0).jmpath;
-        waitSeconds(30);
-        playTransform(svg.get(0), s, 30);
-        waitSeconds(130);
+        waitSeconds(3);
+        playTransform(svg.get(0), s, 26);
+        waitSeconds(3);
 //        playTransform(svg.get(0),s, 100); 
 
     }
 
     public void pruebaVisible() {
         RegularPolygon pol = new RegularPolygon(6, 1);
-        pol.jmpath.addJMPoint(pol.getJMPoint(0).copy());
-
-        RegularPolygon pol2 = new RegularPolygon(5, 1);
-        pol2.shift(-1, -1);
-        pol2.jmpath.getPoint(0).isVisible = false;
-        pol.jmpath.addPointsFrom(pol2.jmpath);
         add(pol);
+        advanceFrame();
         waitSeconds(15);
-        pol.getJMPoint(2).isVisible = false;
+        for (int n = 0; n < 12; n++) {
+            pol.getJMPoint(n-1).isVisible = true;
+            pol.getJMPoint(n).isVisible = false;
+            waitSeconds(15);
+        }
         waitSeconds(55);
     }
 

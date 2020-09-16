@@ -34,8 +34,8 @@ public class SVGMathObject extends MultiShapeObject {
     protected String filename;
     double currentX = 0;
     double currentY = 0;
-    double closeX=0;
-    double closeY=0;
+    double closeX = 0;
+    double closeY = 0;
     double previousX = 0;
     double previousY = 0;
     Double anchorX = null;
@@ -132,7 +132,7 @@ public class SVGMathObject extends MultiShapeObject {
         //TODO: Do it in a more efficient way, maybe with regex patterns
         String[] tokens_1 = t.split(" ");
         ArrayList<String> tokens = new ArrayList<>();
-        boolean closeAtTheEnd=false;
+        boolean closeAtTheEnd = false;
         for (String tok : tokens_1) {
             StringBuilder st = new StringBuilder(tok);
             String tok2 = tok;
@@ -179,8 +179,8 @@ public class SVGMathObject extends MultiShapeObject {
                     initialY = currentY;
                     //First point. Creatline do the same as a the first point
                     previousPoint = pathLineTo(resul, currentX, currentY, false);
-                    closeX=currentX;
-                    closeY=currentY;
+                    closeX = currentX;
+                    closeY = currentY;
                     previousPoint.isVisible = false;
 //                    previousPoint = pathM(path, currentX, currentY);
                     break;
@@ -191,8 +191,8 @@ public class SVGMathObject extends MultiShapeObject {
                     getPoint(it.next(), it.next());
                     currentX += xx;
                     currentY += yy;
-                    closeX=currentX;
-                    closeY=currentY;
+                    closeX = currentX;
+                    closeY = currentY;
                     //First point. Creatline do the same as a the first point
                     previousPoint = pathLineTo(resul, currentX, currentY, false);
                     previousPoint.isVisible = false;
@@ -297,13 +297,13 @@ public class SVGMathObject extends MultiShapeObject {
                 case "Z":
                     previousCommand = token;
                     previousPoint = pathLineTo(resul, closeX, closeY, true);
-                    closeAtTheEnd=true;
+                    closeAtTheEnd = true;
 //                    resul.close();
                     break;
                 case "z":
                     previousCommand = token;
                     previousPoint = pathLineTo(resul, closeX, closeY, true);
-                    closeAtTheEnd=true;
+                    closeAtTheEnd = true;
 //                    resul.close();
                     break;
                 default:
@@ -389,6 +389,9 @@ public class SVGMathObject extends MultiShapeObject {
 
                     }
             }
+        }
+        if (closeAtTheEnd) {
+            resul.close();
         }
         return resul;
     }
