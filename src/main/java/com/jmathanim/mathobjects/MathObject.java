@@ -35,14 +35,12 @@ public abstract class MathObject implements Drawable, Updateable, Stateable {
     public static final int SLICE_DOUBLE = 2;
     public static final int SLICE_FOUR = 3;
 
-   
-
     public MathObjectDrawingProperties mp;
     protected MathObjectDrawingProperties mpBackup;
     public String label = "";
 
     public boolean absoluteSize = false;
-    
+
     private int objectType;
     /**
      * Scenes where this object belongs.
@@ -71,7 +69,7 @@ public abstract class MathObject implements Drawable, Updateable, Stateable {
     public int updateLevel;
 //    private Point anchorPoint;
     public Point absoluteAnchorPoint;
-    private int absoluteAnchorType=Anchor.BY_CENTER;
+    private int absoluteAnchorType = Anchor.BY_CENTER;
 
 //    /**
 //     * Mathobjects which this is dependent from. This object should be updated4
@@ -106,21 +104,22 @@ public abstract class MathObject implements Drawable, Updateable, Stateable {
      *
      * @param coords Vec with coordinates of new center
      */
-    public abstract void moveTo(Vec coords);
+    public abstract <T extends MathObject> T moveTo(Vec coords);
 
-    public void moveTo(Point p) {
-        moveTo(p.v);
+    public <T extends MathObject> T moveTo(Point p) {
+        return moveTo(p.v);
     }
 
     /**
      * Shift object with the given vector
      *
+     * @param <T>
      * @param shiftVector
      */
-    public abstract void shift(Vec shiftVector);
+    public abstract <T extends MathObject> T shift(Vec shiftVector);
 
-    public void shift(double x, double y) {
-        shift(new Vec(x, y));
+    public <T extends MathObject> T shift(double x, double y) {
+        return shift(new Vec(x, y));
     }
 
     /**
@@ -133,6 +132,10 @@ public abstract class MathObject implements Drawable, Updateable, Stateable {
     public <T extends MathObject> T scale(double sx, double sy) {
         scale(getCenter(), sx, sy);
         return (T) this;
+    }
+
+    public <T extends MathObject> T scale(double s) {
+        return scale(getCenter(), s, s);
     }
 
     /**
@@ -280,48 +283,44 @@ public abstract class MathObject implements Drawable, Updateable, Stateable {
     }
 
     public Point getAbsoluteAnchorPoint() {
-        return Anchor.getAnchorPoint(this,absoluteAnchorType);
+        return Anchor.getAnchorPoint(this, absoluteAnchorType);
     }
 
     public void setAbsolutAnchorPoint(int anchor) {
-        absoluteAnchorType=anchor;
+        absoluteAnchorType = anchor;
 
     }
+
     public void setAbsolutAnchorPoint(Point p) {
-        this.absoluteAnchorPoint=p;
-        absoluteAnchorType=Anchor.BY_POINT;
+        this.absoluteAnchorPoint = p;
+        absoluteAnchorType = Anchor.BY_POINT;
 
     }
 
-    public void putAt(Point p, int anchorType)
-    {
-        putAt(p,anchorType,0);
+    public void putAt(Point p, int anchorType) {
+        putAt(p, anchorType, 0);
     }
-    
-    public void putAt(Point p, int anchorType,double gap)
-    {
-        Point anchorPoint = Anchor.getAnchorPoint(this,anchorType,gap);
-        this.shift(anchorPoint.to(p));
+
+    public <T extends MathObject> T putAt(Point p, int anchorType, double gap) {
+        Point anchorPoint = Anchor.getAnchorPoint(this, anchorType, gap);
+        return shift(anchorPoint.to(p));
     }
-    
-    
-    public <T extends MathObject> T setAbsoluteSize()
-    {
-        absoluteSize=true;
-        absoluteAnchorType=Anchor.BY_CENTER;//Default anchor
+
+    public <T extends MathObject> T setAbsoluteSize() {
+        absoluteSize = true;
+        absoluteAnchorType = Anchor.BY_CENTER;//Default anchor
         return (T) this;
     }
-    public <T extends MathObject> T setAbsoluteSize(int anchorType)
-    {
-        absoluteSize=true;
-        absoluteAnchorType=anchorType;
+
+    public <T extends MathObject> T setAbsoluteSize(int anchorType) {
+        absoluteSize = true;
+        absoluteAnchorType = anchorType;
         return (T) this;
     }
-     public <T extends MathObject> T setRelativeSize()
-    {
-        absoluteSize=false;
+
+    public <T extends MathObject> T setRelativeSize() {
+        absoluteSize = false;
         return (T) this;
     }
-    
-    
+
 }

@@ -17,7 +17,7 @@ import com.jmathanim.mathobjects.MathObject;
  */
 public abstract class Animation {
 
-    private static final double DEFAULT_TIME=1;
+    private static final double DEFAULT_TIME = 1;
     private double t, dt;
 //    public final MathObject mobj;
     protected double runTime;
@@ -98,8 +98,20 @@ public abstract class Animation {
         return t;
     }
 
+    private double hh(double t) {
+        return (t==0 ? 0: Math.exp(-1/t));
+    }
+    
+    //Smooth function from https://math.stackexchange.com/questions/328868/how-to-build-a-smooth-transition-function-explicitly
+    //TODO: Adapt this to use Cubic Bezier splines
     private double lambda(double t) {
-        return t * t * (3 - 2 * t);
+        double h=hh(t);
+        double h2=hh(1-t);
+        return h/(h+h2);
+        
+        
+//        return t * t * (3 - 2 * t);
+//        return t;
     }
 
     abstract public void addObjectsToScene(JMathAnimScene scene);

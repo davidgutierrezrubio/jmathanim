@@ -73,18 +73,6 @@ public class Arc extends Shape {
 
     }
 
-    @Override
-    public void moveTo(Vec coords) {
-        super.moveTo(center);//TODO: This doens't work
-        center.moveTo(center);
-    }
-
-    @Override
-    public void shift(Vec shiftVector) {
-        super.shift(shiftVector);
-        center.shift(shiftVector);
-    }
-
     
 
     @Override

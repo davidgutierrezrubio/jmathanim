@@ -82,7 +82,7 @@ public class Polygon extends Shape {
     }
 
     @Override
-    public void moveTo(Vec coords) {
+    public <T extends MathObject> T moveTo(Vec coords) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 

@@ -22,49 +22,59 @@ import java.util.logging.Logger;
  */
 public class Arrow2D extends MultiShapeObject {
 
-    public static final int TYPE_1=1;
-    public static final int TYPE_2=2;
-    public static final int TYPE_3=3;
-    
+    public static final int TYPE_1 = 1;
+    public static final int TYPE_2 = 2;
+    public static final int TYPE_3 = 3;
+
     public Point p1, p2;
     public int arrowType = 0;
     public SVGMathObject arrowHead;
 //    private final File outputDir;
-    private final AbsoluteSizeUpdater absoluteSizeUpdater;
-    private static final double DEFAULT_ARROW_HEAD_SIZE=.01;
+    private AbsoluteSizeUpdater absoluteSizeUpdater;
+    private static final double DEFAULT_ARROW_HEAD_SIZE = .005;
 
-    public static Arrow2D makeSimpleArrow2D(Point p1,Point p2,int type)
-    {
-        Arrow2D resul=null;
+    public static Arrow2D makeSimpleArrow2D(Point p1, Point p2, int type) {
+        Arrow2D resul = null;
         SVGMathObject svg;
         File outputDir = new File("resources");
-        
-        String name = "arrow"+type+".svg";
-        
+
+        String name = "arrow" + type + ".svg";
+
         String baseFileName;
         try {
             baseFileName = outputDir.getCanonicalPath() + "\\" + name;
-             svg = new SVGMathObject(baseFileName);
-             resul=new Arrow2D(p1, p2,svg);
+            svg = new SVGMathObject(baseFileName);
+            resul = new Arrow2D(p1, p2, svg);
         } catch (IOException ex) {
             Logger.getLogger(Arrow2D.class.getName()).log(Level.SEVERE, null, ex);
         }
         return resul;
     }
-    
-    public Arrow2D(Point p1, Point p2,SVGMathObject svg) {
+
+    public Arrow2D(Point p1, Point p2, SVGMathObject svg) {
         this.p1 = p1;
         this.p2 = p2;
         shapes.add(new Segment(p1, p2));
-        this.arrowHead=svg;
-        
+        this.arrowHead = svg;
+
         arrowHead.drawColor(shapes.get(0).mp.drawColor);
         arrowHead.fillColor(shapes.get(0).mp.drawColor);
-        
-        
+
 //        shapes.get(0).mp = arrowHead.mp;
-        absoluteSizeUpdater = new AbsoluteSizeUpdater(arrowHead, DEFAULT_ARROW_HEAD_SIZE);
-        JMathAnimConfig.getConfig().getScene().registerObjectToBeUpdated(absoluteSizeUpdater);
+//        absoluteSizeUpdater = new AbsoluteSizeUpdater(arrowHead, DEFAULT_ARROW_HEAD_SIZE);
+        //Default scale of arrowHead: width .5% of fixed camera width
+        scaleArrowHead(1);
+        arrowHead.setAbsoluteSize();
+        arrowHead.setAbsolutAnchorPoint(p2);
+
+//        JMathAnimConfig.getConfig().getScene().registerObjectToBeUpdated(absoluteSizeUpdater);
+    }
+
+    private void scaleArrowHead(double sc) {
+        double mw = JMathAnimConfig.getConfig().getFixedCamera().getMathBoundaries().getWidth();
+        double scaleFactor = sc * DEFAULT_ARROW_HEAD_SIZE * mw / arrowHead.getBoundingBox().getWidth();
+
+        arrowHead.scale(scaleFactor);
     }
 
     @Override
@@ -82,12 +92,11 @@ public class Arrow2D extends MultiShapeObject {
 //        head.draw(r);
     }
 
-    public double getArrowSize() {
-        return absoluteSizeUpdater.ratio/DEFAULT_ARROW_HEAD_SIZE;
-    }
+   
 
-    public Arrow2D arrowSize(double arrowSize) {
-        absoluteSizeUpdater.ratio=arrowSize*DEFAULT_ARROW_HEAD_SIZE;
+
+    public Arrow2D scale(double arrowSize) {
+        scaleArrowHead(arrowSize);
         return this;
     }
 

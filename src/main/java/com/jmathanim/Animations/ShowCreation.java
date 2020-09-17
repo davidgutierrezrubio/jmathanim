@@ -32,8 +32,9 @@ public class ShowCreation extends Animation {
         return numSlices;
     }
 
-    public void setNumSlices(int numSlices) {
+    public ShowCreation numSlices(int numSlices) {
         this.numSlices = numSlices;
+        return this;
     }
 
     @Override

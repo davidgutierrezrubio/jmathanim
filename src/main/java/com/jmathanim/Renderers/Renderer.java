@@ -34,6 +34,8 @@ public abstract class Renderer {
 
     public abstract Camera getCamera();
 
+    public abstract Camera getFixedCamera();
+
     public void setSize(int w, int h) {
         width = w;
         height = h;
@@ -116,5 +118,6 @@ public abstract class Renderer {
 
     abstract public void drawDot(Point p);
 
-    abstract public void drawAbsoluteCopy(Shape sh,Vec anchor);
+    abstract public void drawAbsoluteCopy(Shape sh, Vec anchor);
+
 }

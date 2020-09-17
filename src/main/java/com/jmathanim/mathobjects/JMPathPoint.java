@@ -118,14 +118,15 @@ public class JMPathPoint extends MathObject implements Updateable, Stateable {
         shift(new Vec(x, y, z));
     }
 
-    public void shift(double x, double y) {
-        shift(new Vec(x, y));
+    public <T extends MathObject> T  shift(double x, double y) {
+        return shift(new Vec(x, y));
     }
 
-    public void shift(Vec shiftVector) {
+    public <T extends MathObject> T  shift(Vec shiftVector) {
         p.v.addInSite(shiftVector);
         cp1.v.addInSite(shiftVector);
         cp2.v.addInSite(shiftVector);
+        return (T) this;
     }
 
     public void scale(Point point, double d, double e, double f) {
@@ -192,10 +193,11 @@ public class JMPathPoint extends MathObject implements Updateable, Stateable {
     }
 
     @Override
-    public void moveTo(Vec coords) {
+    public <T extends MathObject> T  moveTo(Vec coords) {
         p.moveTo(coords);
         cp1.moveTo(coords);
         cp2.moveTo(coords);
+        return (T) this;
     }
 
     @Override

@@ -5,6 +5,9 @@
  */
 package com.jmathanim.mathobjects;
 
+import com.jmathanim.Cameras.Camera;
+import com.jmathanim.Utils.Anchor;
+import com.jmathanim.Utils.JMathAnimConfig;
 import com.jmathanim.Utils.Rect;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import java.awt.Color;
@@ -30,7 +33,9 @@ public class LaTeXMathObject extends SVGMathObject {
     private File latexFile;
     private String baseFileName;
     private File outputDir;
-    public static final double DEFAULT_SCALE_FACTOR=1;//Default scale for latex objects
+    //Default scale for latex objects (relative to screen height)
+    //This factor represents % of height relative to the screen that a "X" character has
+    public static final double DEFAULT_SCALE_FACTOR=.025;
 
     /**
      *
@@ -52,14 +57,27 @@ public class LaTeXMathObject extends SVGMathObject {
         }
         if (shapes.size() > 0)//Move UL to (0,0) by default
         {
-            Rect r = getBoundingBox();
-            this.shift(-r.xmin, -r.ymax);
-            r = getBoundingBox();
-            System.out.println(r);
+//            Rect r = getBoundingBox();
+//            this.shift(-r.xmin, -r.ymax);
+//            r = getBoundingBox();
+            putAt(new Point(0,0), Anchor.UL);
         }
         //Default color
         setColor(Color.WHITE);
-        scale(DEFAULT_SCALE_FACTOR,DEFAULT_SCALE_FACTOR);
+        this.setAbsoluteSize();
+        this.setAbsolutAnchorPoint(Anchor.UL);//Default
+        
+        //Scale
+        //An "X" character in LaTeX has 110 pixels height.
+        //This object should be scaled by default to extend over 10% of the screen
+        //use screen sizes as this object has an absolute size by default
+        Camera cam=JMathAnimConfig.getConfig().getFixedCamera();
+        int h=cam.screenHeight;
+        double hm=cam.getMathBoundaries().getHeight();
+        double sc=DEFAULT_SCALE_FACTOR * 10 / 6.807795;
+        this.scale(getBoundingBox().getUL(),sc,sc);
+        
+        
     }
 
     /**

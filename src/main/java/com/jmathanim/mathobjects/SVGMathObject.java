@@ -97,7 +97,7 @@ public class SVGMathObject extends MultiShapeObject {
         //All paths imported
         double mathH = JMathAnimConfig.getConfig().getCamera().screenToMath(22);
         double scale = 5 * mathH / getBoundingBox().getHeight();//10% of screen
-        scale(new Point(0, 0), scale, scale, scale);
+//        scale(new Point(0, 0), scale, scale, scale);
     }
 
     /**

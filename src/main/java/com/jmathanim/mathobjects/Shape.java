@@ -100,13 +100,14 @@ public class Shape extends MathObject {
     }
 
     @Override
-    public void shift(double x, double y) {
-        jmpath.shift(new Vec(x, y));
+    public <T extends MathObject> T shift(double x, double y) {
+        return shift(new Vec(x, y));
     }
 
     @Override
-    public void shift(Vec shiftVector) {
+    public <T extends MathObject> T shift(Vec shiftVector) {
         jmpath.shift(shiftVector);
+        return (T) this;
     }
 
     @Override
@@ -153,10 +154,6 @@ public class Shape extends MathObject {
 //        jmpath.points.removeAll(toRemove);
 ////        jmpath.generateControlPoints();
 //    }
-    @Override
-    public void moveTo(Vec coords) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
 
     @Override
     public void scale(Point scaleCenter, double sx, double sy, double sz) {
@@ -294,4 +291,9 @@ public class Shape extends MathObject {
 //    public static Shape arc() {
 //        
 //    }
+
+    @Override
+    public <T extends MathObject> T moveTo(Vec coords) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
 }

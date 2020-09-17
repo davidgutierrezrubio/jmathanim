@@ -20,10 +20,11 @@ public abstract class SingleMathObjectCommand extends AbstractCommand {
         this.mathObject = mathObject;
     }
 
-    
     @Override
     public void addObjectsToScene(JMathAnimScene scene) {
-        scene.add(mathObject);
+            scene.add(mathObject);
     }
+
+   
 
 }

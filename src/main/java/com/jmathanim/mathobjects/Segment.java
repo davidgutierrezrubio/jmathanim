@@ -16,7 +16,6 @@ public class Segment extends Shape {
 
     Point p1, p2;
 
-
     public Segment(Vec v1, Vec v2) {
         this(new Point(v1), new Point(v2), null);
     }
@@ -42,7 +41,7 @@ public class Segment extends Shape {
     public final void computeCurve() {
         JMPathPoint jmp1 = new JMPathPoint(p1, true, JMPathPoint.TYPE_VERTEX);
         jmp1.isCurved = false;
-        jmp1.isVisible=false;
+        jmp1.isVisible = false;
         jmpath.addJMPoint(jmp1);
         JMPathPoint jmp2 = new JMPathPoint(p2, true, JMPathPoint.TYPE_VERTEX);
         jmp2.isCurved = false;
@@ -50,23 +49,21 @@ public class Segment extends Shape {
     }
 
     @Override
-    public void moveTo(Vec coords) {
-        Vec v1 = p1.v;
-        Vec shiftVector = coords.minus(v1);
-        shift(shiftVector);
-
+    public <T extends MathObject> T moveTo(Vec coords) {
+        shift(coords.minus(p1.v));
+        return (T) this;
     }
 
     @Override
-    public void shift(Vec shiftVector) {
+    public <T extends MathObject> T shift(Vec shiftVector) {
         p1.shift(shiftVector);
         p2.shift(shiftVector);
-
+        return (T) this;
     }
 
     @Override
     public Segment copy() {
-        return new Segment(p1.copy(), p2.copy(),mp.copy());
+        return new Segment(p1.copy(), p2.copy(), mp.copy());
     }
 
     @Override

@@ -17,7 +17,6 @@ import com.jmathanim.Animations.commands.SingleMathObjectCommand;
 import com.jmathanim.Utils.Anchor;
 import com.jmathanim.Utils.MathObjectDrawingProperties;
 import com.jmathanim.Utils.Rect;
-import com.jmathanim.Utils.SVGImporter;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.mathobjects.Arrow2D;
 import com.jmathanim.mathobjects.Circle;
@@ -54,9 +53,9 @@ public class PointSimple extends Scene2D {
     @Override
     public void setupSketch() {
         nanotime = System.nanoTime();
-//        conf.setHighQuality();
+        conf.setHighQuality();
 //        conf.setMediumQuality();
-        conf.setLowQuality();
+//        conf.setLowQuality();
 
 //        setCreateMovie(true);
         setCreateMovie(false);
@@ -68,7 +67,8 @@ public class PointSimple extends Scene2D {
     @Override
     public void runSketch() {
         System.out.println("Running sketch...");
-        pruebaFixedCamera();
+//        pruebaFixedCamera();
+        pruebaSizeLaTeX();
     }
 
     public void clockTick(String mensaje) {
@@ -132,15 +132,8 @@ public class PointSimple extends Scene2D {
         waitSeconds(2);
     }
 
-    public void pruebaInterpolateCircle() {
-        Circle circ = new Circle(new Point(-.5, -.5), 1);
-        add(circ);
-        waitSeconds(1);
-        circ.jmpath.interpolate(3);
-        waitSeconds(1);
-    }
-
     private void CircleToSquare() {
+
         Circle c = new Circle(new Point(0, 0), 1);
         RegularPolygon pol2 = new RegularPolygon(4, 1.5);
         pol2.shift(1, 0);
@@ -151,16 +144,16 @@ public class PointSimple extends Scene2D {
         pol2.getJMPoint(2).isCurved = true;
         pol2.getJMPoint(3).isCurved = true;
         pol2.getPath().generateControlPoints();
-        add(pol2);
-
+        add(c, pol2);
+        playScaleCamera(2, 10);
         System.out.println("Orientation of circle: " + c.getPath().getOrientation());
         System.out.println("Orientation of polygon: " + pol2.getPath().getOrientation());
 
 //        c.jmpath.alignPaths(pol2.jmpath);
 //        c.jmpath.minimizeSquaredDistance(pol2.jmpath);
-        Transform transform = new Transform(c, pol2, 15);
+        Transform transform = new Transform(c, pol2, 45);
         //        transform.shouldOptimizePathsFirst=false;
-        transform.forceChangeDirection = true;
+//        transform.forceChangeDirection = true;
         waitSeconds(2);
         play(transform);
         waitSeconds(3);
@@ -751,7 +744,6 @@ public class PointSimple extends Scene2D {
 //            l2.drawColor(Color.gray);
 //            add(l, l2);
 //        }
-
         RegularPolygon pol = new RegularPolygon(5, 1);
 
         LaTeXMathObject la1 = new LaTeXMathObject("$P_1$");
@@ -778,32 +770,31 @@ public class PointSimple extends Scene2D {
 
         add(pol, la1, la2, la3, la4, la5);
 
-        la1.setAbsoluteSize();
-        la2.setAbsoluteSize();
-        la3.setAbsoluteSize();
+//        la1.setAbsoluteSize();
+//        la2.setAbsoluteSize();
+//        la3.setAbsoluteSize();
         la4.setAbsoluteSize();
         la5.setAbsoluteSize();
-        int timeScale=10;
+        int timeScale = 10;
         waitSeconds(timeScale);
         Rect rr = camera.getRectView(pol.getBoundingBox());
         add(Shape.rectangle(rr).drawColor(Color.RED));
-        
-        
-        playZoomToRect(pol.getBoundingBox(), 3*timeScale);
+
+        playZoomToRect(pol.getBoundingBox(), 3 * timeScale);
 
 //        double yCenter = camera.getMathBoundaries().getCenter().v.y;
 //        for (double dx = 0; dx < 2; dx += .01) {
 //            camera.setMathXY(-5 + .5 * dx, 5 - .5 * dx, yCenter);
 //            advanceFrame();
 //        }
-        waitSeconds(3*timeScale);
+        waitSeconds(3 * timeScale);
         playScaleCamera(1.2, 10);
-        
-        playRotate(pol, pol.getCenter(), Math.PI/3, 10);
+
+        playRotate(pol, pol.getCenter(), Math.PI / 3, 10);
         playScaleCamera(.9, 10);
         playScaleCamera(2, 10);
         playScaleCamera(5, 10);
-        waitSeconds(3*timeScale);
+        waitSeconds(3 * timeScale);
     }
 
     public void pruebaCopiaPath() {
@@ -844,6 +835,31 @@ public class PointSimple extends Scene2D {
             waitSeconds(15);
         }
         waitSeconds(55);
+    }
+
+    private void pruebaSizeLaTeX() {
+
+        Point p=new Point(0,0);
+        LaTeXMathObject la = new LaTeXMathObject("X");
+        add(la);
+        int v = camera.screenHeight;//Numero de puntos
+        double vm = camera.getMathBoundaries().getHeight();//Altura math
+        //v---vm
+        //10---tamaño        
+
+        //Tamaño de X en puntos 6.807795
+        double size = .025 * vm / 6.807795;
+        final double escalaFinal = size;
+//        la.scale(new Point(0,0),escalaFinal,escalaFinal);
+        System.out.println("XRect: " + la.getBoundingBox());
+        System.out.println("Tamaño X:" + la.getBoundingBox().getHeight());
+        System.out.println("Tamaño X en puntos:" + camera.mathToScreen(la.getBoundingBox().getHeight()));
+        System.out.println("Need to scale 14*vm/v/" + la.getBoundingBox().getHeight());
+        
+        add(Arrow2D.makeSimpleArrow2D(new Point(-1,.5), p, Arrow2D.TYPE_2).scale(3));
+        
+        playShift(p,new  Vec(0,2),15);//TODO: How to easily specify that don't show this object?
+        waitSeconds(30);
     }
 
 }

@@ -19,7 +19,7 @@ import java.awt.Color;
 public class JMathAnimConfig {
 
     public static MathObjectDrawingProperties getDefaultMP() {
-        MathObjectDrawingProperties defaultMP=new MathObjectDrawingProperties();
+        MathObjectDrawingProperties defaultMP = new MathObjectDrawingProperties();
         //Default, boring values
         defaultMP.drawColor = Color.WHITE;
 //        defaultMP.fillColor = new Color(0, 0, 0, 0);//Transparent color
@@ -73,7 +73,8 @@ public class JMathAnimConfig {
         mediaH = 600;
         fps = 30;
     }
- /**
+
+    /**
      * Set high quality settings (1920,1080, 60fps)
      */
     public void setMediumQuality() {
@@ -81,6 +82,7 @@ public class JMathAnimConfig {
         mediaH = 1024;
         fps = 30;
     }
+
     /**
      * Set high quality settings (1920,1080, 60fps)
      */
@@ -106,6 +108,10 @@ public class JMathAnimConfig {
         this.renderer = renderer;
     }
 
+    public Camera getFixedCamera() {
+        return renderer.getFixedCamera();
+    }
+
     public Camera getCamera() {
         return renderer.getCamera();
     }
@@ -113,6 +119,5 @@ public class JMathAnimConfig {
     public void setCamera(Camera camera) {
         this.renderer.setCamera(camera);
     }
-    
-    
+
 }

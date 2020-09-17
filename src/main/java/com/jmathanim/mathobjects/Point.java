@@ -96,18 +96,17 @@ public class Point extends MathObject {
     }
 
     @Override
-    public void moveTo(Vec coords) {
-        v.x = coords.x;
-        v.y = coords.y;
-        v.z = coords.z;
+    public <T extends MathObject> T moveTo(Vec coords) {
+        return shift(coords.minus(v));
 
     }
 
     @Override
-    public void shift(Vec shiftVector) {
+    public <T extends MathObject> T shift(Vec shiftVector) {
         v.x += shiftVector.x;
         v.y += shiftVector.y;
         v.z += shiftVector.z;
+        return (T) this;
     }
 
     @Override

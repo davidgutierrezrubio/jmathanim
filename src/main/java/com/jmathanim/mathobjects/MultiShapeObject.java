@@ -46,10 +46,11 @@ public class MultiShapeObject extends MathObject {
     }
 
     @Override
-    public void moveTo(Vec coords) {
+    public <T extends MathObject> T moveTo(Vec coords) {
         for (Shape jmp : shapes) {
             jmp.moveTo(coords);
         }
+        return (T) this;
     }
 
     @Override
@@ -69,10 +70,11 @@ public class MultiShapeObject extends MathObject {
     }
 
     @Override
-    public void shift(Vec shiftVector) {
+    public <T extends MathObject> T shift(Vec shiftVector) {
         for (Shape jmp : shapes) {
             jmp.shift(shiftVector);
         }
+        return (T) this;
     }
 
     @Override
