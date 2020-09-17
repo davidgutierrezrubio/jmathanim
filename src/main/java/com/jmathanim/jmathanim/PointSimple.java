@@ -54,12 +54,12 @@ public class PointSimple extends Scene2D {
     @Override
     public void setupSketch() {
         nanotime = System.nanoTime();
-        conf.setHighQuality();
+//        conf.setHighQuality();
 //        conf.setMediumQuality();
-//        conf.setLowQuality();
+        conf.setLowQuality();
 
 //        setCreateMovie(true);
-        setCreateMovie(true);
+        setCreateMovie(false);
         clockTick("create movie");
         setShowPreviewWindow(true);
         clockTick("Show preview window");
@@ -642,7 +642,7 @@ public class PointSimple extends Scene2D {
         Square sq = new Square();
         add(sq);
         AnchoredMathObject anchor = new AnchoredMathObject(texto, Anchor.RIGHT, p2);
-        AnchoredMathObject anchor2 = new AnchoredMathObject(pol,Anchor.BY_CENTER, texto, Anchor.LEFT);
+        AnchoredMathObject anchor2 = new AnchoredMathObject(pol, Anchor.BY_CENTER, texto, Anchor.LEFT);
         AnchoredMathObject anchor3 = new AnchoredMathObject(sq, Anchor.LEFT, pol, Anchor.RIGHT);
         registerObjectToBeUpdated(anchor);
         registerObjectToBeUpdated(anchor2);
@@ -742,15 +742,15 @@ public class PointSimple extends Scene2D {
 
     private void pruebaFixedCamera() {
 
-        for (double x = -3; x < 3; x += .5) {
-            Line l = new Line(new Point(x, 0), new Point(x, 1));
-            l.mp.dashStyle = MathObjectDrawingProperties.DOTTED;
-            l.drawColor(Color.gray);
-            Line l2 = new Line(new Point(0, x), new Point(1, x));
-            l2.mp.dashStyle = MathObjectDrawingProperties.DOTTED;
-            l2.drawColor(Color.gray);
-            add(l, l2);
-        }
+//        for (double x = -3; x < 3; x += .5) {
+//            Line l = new Line(new Point(x, 0), new Point(x, 1));
+//            l.mp.dashStyle = MathObjectDrawingProperties.DOTTED;
+//            l.drawColor(Color.gray);
+//            Line l2 = new Line(new Point(0, x), new Point(1, x));
+//            l2.mp.dashStyle = MathObjectDrawingProperties.DOTTED;
+//            l2.drawColor(Color.gray);
+//            add(l, l2);
+//        }
 
         RegularPolygon pol = new RegularPolygon(5, 1);
 
@@ -759,37 +759,51 @@ public class PointSimple extends Scene2D {
         LaTeXMathObject la3 = new LaTeXMathObject("$P_3$");
         LaTeXMathObject la4 = new LaTeXMathObject("$P_4$");
         LaTeXMathObject la5 = new LaTeXMathObject("$P_5$");
-        double sca=.3;
-        la1.scale(sca, sca);
-        la2.scale(sca, sca);
-        la3.scale(sca, sca);
-        la4.scale(sca, sca);
-        la5.scale(sca, sca);
-        double gap=.1;
-        la1.putAt(pol.getPoint(0), Anchor.UL,gap);//TODO: Add a space gap to this
-        la2.putAt(pol.getPoint(1), Anchor.LEFT,gap);//TODO: Move this constants to Anchor class
-        la3.putAt(pol.getPoint(2), Anchor.LOWER,gap);
-        la4.putAt(pol.getPoint(3), Anchor.RIGHT,gap);
-        la5.putAt(pol.getPoint(4), Anchor.UR,gap);
+//        double sca=.2;
+//        la1.scale(sca, sca);
+//        la2.scale(sca, sca);
+//        la3.scale(sca, sca);
+//        la4.scale(sca, sca);
+//        la5.scale(sca, sca);
+        double gap = .1;
+        la1.putAt(pol.getPoint(0), Anchor.UL, gap);//TODO: Add a space gap to this
+        la2.putAt(pol.getPoint(1), Anchor.LEFT, gap);//TODO: Move this constants to Anchor class
+        la3.putAt(pol.getPoint(2), Anchor.LOWER, gap);
+        la4.putAt(pol.getPoint(3), Anchor.RIGHT, gap);
+        la5.putAt(pol.getPoint(4), Anchor.UR, gap);
+        camera.adjustToRect(pol.getBoundingBox().addGap(1, 1));
+        for (Point p : pol.jmpath.getPoints()) {
+            add(Arrow2D.makeSimpleArrow2D(pol.getCenter(), p, Arrow2D.TYPE_1));
+        }
 
         add(pol, la1, la2, la3, la4, la5);
 
-        System.out.println("C : " + camera.getMathBoundaries());
-        System.out.println("FC: " + renderer.fixedCamera.getMathBoundaries());
-        waitSeconds(10);
-//        la1.setAbsoluteSize();
-//        la2.setAbsoluteSize();
-//        la3.setAbsoluteSize();
-//        la4.setAbsoluteSize();
-//        la5.setAbsoluteSize();
+        la1.setAbsoluteSize();
+        la2.setAbsoluteSize();
+        la3.setAbsoluteSize();
+        la4.setAbsoluteSize();
+        la5.setAbsoluteSize();
+        int timeScale=10;
+        waitSeconds(timeScale);
+        Rect rr = camera.getRectView(pol.getBoundingBox());
+        add(Shape.rectangle(rr).drawColor(Color.RED));
+        
+        
+        playZoomToRect(pol.getBoundingBox(), 3*timeScale);
 
-        double yCenter = camera.getMathBoundaries().getCenter().v.y;
-        for (double dx = 0; dx < 2; dx += .01) {
-            camera.setMathXY(-5 + .5 * dx, 5 - .5 * dx, yCenter);
-            advanceFrame();
-        }
-        waitSeconds(10);
-
+//        double yCenter = camera.getMathBoundaries().getCenter().v.y;
+//        for (double dx = 0; dx < 2; dx += .01) {
+//            camera.setMathXY(-5 + .5 * dx, 5 - .5 * dx, yCenter);
+//            advanceFrame();
+//        }
+        waitSeconds(3*timeScale);
+        playScaleCamera(1.2, 10);
+        
+        playRotate(pol, pol.getCenter(), Math.PI/3, 10);
+        playScaleCamera(.9, 10);
+        playScaleCamera(2, 10);
+        playScaleCamera(5, 10);
+        waitSeconds(3*timeScale);
     }
 
     public void pruebaCopiaPath() {

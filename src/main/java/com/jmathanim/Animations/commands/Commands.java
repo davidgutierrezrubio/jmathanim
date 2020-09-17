@@ -8,6 +8,8 @@ package com.jmathanim.Animations.commands;
 import com.jmathanim.Animations.AffineTransform;
 import com.jmathanim.Animations.Animation;
 import com.jmathanim.Animations.ApplyCommand;
+import com.jmathanim.Cameras.Camera;
+import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.MathObject;
@@ -154,5 +156,29 @@ public class Commands {
             }
         },runtime);
     }//End of homotopy command
-     
+     public static ApplyCommand cameraFocusToRect(Camera camera,Rect rd,double runtime) {
+         return new ApplyCommand(new AbstractCommand() {
+             Camera cam=camera;
+             Rect rDst=cam.getRectView(rd);
+             Rect rSource;
+             @Override
+             public void initialize() {
+                 rSource=cam.getMathBoundaries();
+             }
+
+             @Override
+             public void execute(double t) {
+                 Rect r=rSource.interpolate(rDst, t);
+                 cam.setMathXY(r);
+             }
+
+             @Override
+             public void finish() {
+             }
+
+             @Override
+             public void addObjectsToScene(JMathAnimScene scene) {
+             }
+         },runtime);
+     }
 }

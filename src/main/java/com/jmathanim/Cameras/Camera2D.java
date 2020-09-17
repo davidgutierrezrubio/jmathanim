@@ -17,6 +17,8 @@ import com.jmathanim.mathobjects.MathObject;
  */
 public class Camera2D extends Camera {
 
+    private double xminB, xmaxB, yminB, ymaxB;//Backup values for saveState()
+
     public Camera2D() {
         this(0, 0);//To initialize after
     }
@@ -59,7 +61,7 @@ public class Camera2D extends Camera {
     }
 
     public final void reset() {// TODO: CHange this
-        this.setMathXY(-5, 5, 0);
+        this.setMathXY(-2, 2, 0);
     }
 
     @Override
@@ -97,9 +99,9 @@ public class Camera2D extends Camera {
     }
 
     public double[] screenToMath(int x, int y) {
-        double mx=(double)(x*(xmax-xmin)/screenWidth+xmin);
-        double my=-(double)(y*(ymax-ymin)/screenHeight-ymax);
-        return new double[]{mx,my};
+        double mx = (double) (x * (xmax - xmin) / screenWidth + xmin);
+        double my = -(double) (y * (ymax - ymin) / screenHeight - ymax);
+        return new double[]{mx, my};
     }
 
     @Override
@@ -115,6 +117,22 @@ public class Camera2D extends Camera {
 
     public int[] mathToScreen(Vec p) {
         return mathToScreen(p.x, p.y);
+    }
+
+    @Override
+    public void saveState() {
+        xminB=xmin;
+        xmaxB=xmax;
+        yminB=ymin;
+        ymaxB=ymax;
+    }
+
+    @Override
+    public void restoreState() {
+        xmin=xminB;
+        xmax=xmaxB;
+        ymin=yminB;
+        ymax=ymaxB;
     }
 
 }

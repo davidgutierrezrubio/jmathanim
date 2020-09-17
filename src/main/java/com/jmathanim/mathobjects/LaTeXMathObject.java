@@ -30,6 +30,7 @@ public class LaTeXMathObject extends SVGMathObject {
     private File latexFile;
     private String baseFileName;
     private File outputDir;
+    public static final double DEFAULT_SCALE_FACTOR=1;//Default scale for latex objects
 
     /**
      *
@@ -58,6 +59,7 @@ public class LaTeXMathObject extends SVGMathObject {
         }
         //Default color
         setColor(Color.WHITE);
+        scale(DEFAULT_SCALE_FACTOR,DEFAULT_SCALE_FACTOR);
     }
 
     /**

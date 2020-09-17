@@ -273,6 +273,10 @@ public class Shape extends MathObject {
         return Shape.rectangle(A, A.add(new Vec(side, side)));
     }
 
+    public static Shape rectangle(Rect r) {
+        return Shape.rectangle(r.getDL(), r.getUR());
+    }
+
     //Static methods to build most commons shapes
     public static Shape rectangle(Point A, Point B) {
         Shape obj = new Shape();

@@ -209,4 +209,20 @@ public class Rect {//TODO: Adjust this to 3D coordinates
     {
         return new Rect(xmin-xgap,ymin-ygap,xmax+xgap,ymax+ygap);
     }
+    /**
+     * Scale the rectangle around center, and return a new one with the result.
+     * Does not affect the current rect.
+     * @param xs x scale
+     * @param ys y scale
+     * @return The scaled rectangle.
+     */
+    public Rect scaled(double xs,double ys)
+    {
+        Point p=getCenter();
+        double xminNew=p.v.x-.5*getWidth()*xs;
+        double xmaxNew=p.v.x+.5*getWidth()*xs;
+        double yminNew=p.v.y-.5*getHeight()*ys;
+        double ymaxNew=p.v.y+.5*getHeight()*ys;
+        return new Rect(xminNew,yminNew,xmaxNew,ymaxNew);
+    }
 }

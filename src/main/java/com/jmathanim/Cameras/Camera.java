@@ -179,6 +179,8 @@ public abstract class Camera {
      */
     abstract public double relScalarToWidth(double scalar);
 
+    abstract public void saveState();
+    abstract public void restoreState();
 
     
 }

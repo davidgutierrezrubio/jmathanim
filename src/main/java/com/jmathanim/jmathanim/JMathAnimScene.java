@@ -11,12 +11,14 @@ import com.jmathanim.Animations.commands.Commands;
 import com.jmathanim.Cameras.Camera;
 import com.jmathanim.Renderers.Renderer;
 import com.jmathanim.Utils.JMathAnimConfig;
+import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.mathobjects.Shape;
 import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.Point;
 import com.jmathanim.mathobjects.updateableObjects.Updateable;
 import java.util.ArrayList;
+
 /**
  *
  * @author David Gutierrez Rubio davidgutierrezrubio@gmail.com
@@ -54,17 +56,18 @@ public abstract class JMathAnimScene {
      * This method handles the creation of the renderer(s)
      */
     public abstract void createRenderer();
+
     /**
      *
      */
     public final void execute() {
-        
+
         String nombre = this.getClass().getName();
         System.out.println("Run sketch: " + nombre);
         setupSketch();
         createRenderer();
         JMathAnimConfig.getConfig().setRenderer(SCRenderer);
-        
+
         //In the global variable store Scene, Renderer and main Camera
         conf.setScene(this);
         runSketch();
@@ -228,4 +231,14 @@ public abstract class JMathAnimScene {
     public void playTransform(Shape obj1, Shape obj2, double runTime) {
         play(new Transform(obj1, obj2, runTime));
     }
+
+    public void playZoomToRect(Rect r, double runTime) {
+        play(Commands.cameraFocusToRect(getCamera(), r, runTime));
+    }
+
+    public void playScaleCamera(double scale, double runTime) {
+        Camera cam = getCamera();
+        play(Commands.cameraFocusToRect(cam, cam.getMathBoundaries().scaled(scale, scale), runTime));
+    }
+
 }
