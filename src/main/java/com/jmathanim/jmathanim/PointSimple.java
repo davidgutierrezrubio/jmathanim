@@ -53,9 +53,9 @@ public class PointSimple extends Scene2D {
     @Override
     public void setupSketch() {
         nanotime = System.nanoTime();
-        conf.setHighQuality();
+//        conf.setHighQuality();
 //        conf.setMediumQuality();
-//        conf.setLowQuality();
+        conf.setLowQuality();
 
 //        setCreateMovie(true);
         setCreateMovie(false);
@@ -68,7 +68,7 @@ public class PointSimple extends Scene2D {
     public void runSketch() {
         System.out.println("Running sketch...");
 //        pruebaFixedCamera();
-        pruebaSizeLaTeX();
+        pruebaTransformPathsWithHiddenElements();
     }
 
     public void clockTick(String mensaje) {
@@ -76,6 +76,23 @@ public class PointSimple extends Scene2D {
         System.out.println("[TIME] " + mensaje + " :  " + (nanotime / 1000000000.d) + " s");
     }
 
+    public void pruebaTransformPathsWithHiddenElements(){
+        Shape sh=new Shape();
+        sh.jmpath.addJMPoint(new JMPathPoint(new Point(0, 0), true, JMPathPoint.TYPE_VERTEX));
+        sh.jmpath.addJMPoint(new JMPathPoint(new Point(1, 0), true, JMPathPoint.TYPE_VERTEX));
+        sh.jmpath.addJMPoint(new JMPathPoint(new Point(1, 1), true, JMPathPoint.TYPE_VERTEX));
+        sh.jmpath.addJMPoint(new JMPathPoint(new Point(.6, 1.2), true, JMPathPoint.TYPE_VERTEX));
+        sh.jmpath.addJMPoint(new JMPathPoint(new Point(-.2, .4), true, JMPathPoint.TYPE_VERTEX));
+        
+        Shape sq=Shape.square();
+        add(sh.scale(.5,.5).shift(-1,0).drawColor(Color.red),sq);
+        waitSeconds(10);
+        playTransform(sh, sq, 30);
+        waitSeconds(20);
+    }
+    
+    
+    
     public void pruebaSimpleJMPathObject() throws ArrayIndexOutOfBoundsException {
         Shape pa = new Shape();
         JMPathPoint p;

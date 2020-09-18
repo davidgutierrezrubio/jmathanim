@@ -249,7 +249,7 @@ public class JMPath implements Updateable, Stateable {
 
     @Override
     public String toString() {
-        String resul = "";
+        String resul = "#"+jmPathPoints.size()+":  ";
         for (JMPathPoint p : jmPathPoints) {
             resul += p.toString();
 

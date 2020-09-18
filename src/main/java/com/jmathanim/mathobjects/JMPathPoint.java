@@ -33,26 +33,24 @@ public class JMPathPoint extends MathObject implements Updateable, Stateable {
     private JMPathPoint pState;
 
     //Builders
-    public static JMPathPoint lineTo(double x,double y)
-    {
-        return lineTo(new Point(x,y));
+    public static JMPathPoint lineTo(double x, double y) {
+        return lineTo(new Point(x, y));
     }
-    public static JMPathPoint lineTo(Point p)
-    {  
+
+    public static JMPathPoint lineTo(Point p) {
         //Default values: visible, type vertex, straight
-        JMPathPoint jmp=new JMPathPoint(p, true, TYPE_VERTEX);
-        jmp.isCurved=false;
+        JMPathPoint jmp = new JMPathPoint(p, true, TYPE_VERTEX);
+        jmp.isCurved = false;
         return jmp;
     }
-    
-     public static JMPathPoint curveTo(Point p)
-    {  
+
+    public static JMPathPoint curveTo(Point p) {
         //Default values: visible, type vertex, straight
-        JMPathPoint jmp=new JMPathPoint(p, true, TYPE_VERTEX);
-        jmp.isCurved=true;
+        JMPathPoint jmp = new JMPathPoint(p, true, TYPE_VERTEX);
+        jmp.isCurved = true;
         return jmp;
     }
-    
+
     public JMPathPoint(Point p, boolean isVisible, int type) {
         super();
         this.p = p;
@@ -98,7 +96,7 @@ public class JMPathPoint extends MathObject implements Updateable, Stateable {
     public String toString() {
         String labelStr;
         if (label != "") {
-             labelStr = "[" + label + "]";
+            labelStr = "[" + label + "]";
         } else {
             labelStr = label;
         }
@@ -109,8 +107,9 @@ public class JMPathPoint extends MathObject implements Updateable, Stateable {
         if (type == TYPE_VERTEX) {
             resul = "V" + resul;
         }
-        resul += "[" + cp1.v.x + ", " + cp1.v.y + ")]";
-        resul += "[" + cp2.v.x + ", " + cp2.v.y + ")]";
+        if (!isVisible) {
+            resul += "*";
+        }
         return resul;
     }
 
@@ -118,11 +117,11 @@ public class JMPathPoint extends MathObject implements Updateable, Stateable {
         shift(new Vec(x, y, z));
     }
 
-    public <T extends MathObject> T  shift(double x, double y) {
+    public <T extends MathObject> T shift(double x, double y) {
         return shift(new Vec(x, y));
     }
 
-    public <T extends MathObject> T  shift(Vec shiftVector) {
+    public <T extends MathObject> T shift(Vec shiftVector) {
         p.v.addInSite(shiftVector);
         cp1.v.addInSite(shiftVector);
         cp2.v.addInSite(shiftVector);
@@ -193,7 +192,7 @@ public class JMPathPoint extends MathObject implements Updateable, Stateable {
     }
 
     @Override
-    public <T extends MathObject> T  moveTo(Vec coords) {
+    public <T extends MathObject> T moveTo(Vec coords) {
         p.moveTo(coords);
         cp1.moveTo(coords);
         cp2.moveTo(coords);
