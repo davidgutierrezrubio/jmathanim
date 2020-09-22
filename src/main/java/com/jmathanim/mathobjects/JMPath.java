@@ -211,8 +211,10 @@ public class JMPath implements Updateable, Stateable {
     @Override
     public String toString() {
         String resul = "#" + jmPathPoints.size() + ":  ";
+        int counter=0;
         for (JMPathPoint p : jmPathPoints) {
-            resul += p.toString();
+            resul += "< "+counter+" "+p.toString()+"> ";
+            counter++;
 
         }
         return resul;
@@ -633,7 +635,7 @@ public class JMPath implements Updateable, Stateable {
             //Ok, we have a CLOSED path with no invisible segments
             workPath.isClosed = false;
             workPath.separate(0);
-            offset = 1;
+            offset = -1;
         }
 
         //A new path always begins with invisible point (that is, invisible segment TO that point) 
@@ -641,7 +643,7 @@ public class JMPath implements Updateable, Stateable {
         JMPath connectedComponent = new JMPath();
         connectedComponent.pathType = JMPath.CONNECTED_COMPONENT;
         for (int n = 0; n < workPath.size(); n++) {
-            JMPathPoint p = workPath.jmPathPoints.get(n + offset);
+            JMPathPoint p = workPath.jmPathPoints.get(n - offset);
             if (!p.isVisible && connectedComponent.size() > 0) {
                 resul.add(connectedComponent);
                 connectedComponent = new JMPath();

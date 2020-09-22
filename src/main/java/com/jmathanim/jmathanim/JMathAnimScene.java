@@ -77,13 +77,13 @@ public abstract class JMathAnimScene {
 
     public abstract void runSketch();
 
-    public final void add(ArrayList<MathObject> objs) {
+    public synchronized final void add(ArrayList<MathObject> objs) {
         for (MathObject obj : objs) {
             add(obj);
         }
     }
 
-    public final void registerObjectToBeUpdated(Updateable... objs) {
+    public synchronized final void registerObjectToBeUpdated(Updateable... objs) {
         for (Updateable obj : objs) {
             if (!objectsToBeUpdated.contains(obj)) {
                 objectsToBeUpdated.add(obj);
@@ -91,14 +91,14 @@ public abstract class JMathAnimScene {
         }
     }
 
-    public final void unregisterObjectToBeUpdated(MathObject obj) {
+    public synchronized final void unregisterObjectToBeUpdated(Updateable obj) {
         if (obj instanceof Updateable) {
             System.out.println("Unregistered updateable " + obj);
             objectsToBeUpdated.remove((Updateable) obj);
         }
     }
 
-    public final void add(MathObject... objs) {
+    public synchronized final void add(MathObject... objs) {
         for (MathObject obj : objs) {
             if (!objects.contains(obj)) {
                 objects.add(obj);
@@ -112,7 +112,7 @@ public abstract class JMathAnimScene {
         }
     }
 
-    public final MathObject remove(MathObject obj) {
+    public synchronized final MathObject remove(MathObject obj) {
         objects.remove(obj);
         obj.removeScene(this);
         unregisterObjectToBeUpdated(obj);

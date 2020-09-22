@@ -15,6 +15,7 @@ import com.jmathanim.Animations.commands.AbstractCommand;
 import com.jmathanim.Animations.commands.Commands;
 import com.jmathanim.Animations.commands.SingleMathObjectCommand;
 import com.jmathanim.Utils.Anchor;
+import com.jmathanim.Utils.JMathAnimConfig;
 import com.jmathanim.Utils.MathObjectDrawingProperties;
 import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.Vec;
@@ -39,6 +40,7 @@ import com.jmathanim.mathobjects.Square;
 import com.jmathanim.mathobjects.updateableObjects.AnchoredMathObject;
 import com.jmathanim.mathobjects.updateableObjects.TransformedJMPath;
 import com.jmathanim.mathobjects.updateableObjects.AbsoluteSizeUpdater;
+import com.jmathanim.mathobjects.updateableObjects.Updateable;
 import java.awt.Color;
 import java.util.ArrayList;
 import static javafx.scene.paint.Color.color;
@@ -68,8 +70,34 @@ public class PointSimple extends Scene2D {
     @Override
     public void runSketch() {
         System.out.println("Running sketch...");
-//        pruebaFixedCamera();
+        pruebaFixedCamera();
+        resetScene();
         pruebaNewTransform2();
+        resetScene();
+        pruebaLaTeX();
+        resetScene();
+        pruebaTransformPathsWithHiddenElements();
+        resetScene();
+        pruebaSimpleJMPathObject();
+        resetScene();
+        pruebaBoundingBox();
+        resetScene();
+        pruebaAlignNew();
+        resetScene();
+        pruebaLaTeXEcuacion();
+        resetScene();
+        pruebaSizeLaTeX();
+        resetScene();
+        pruebaTransform2Circles();
+        
+    }
+
+    public synchronized void resetScene() {
+        waitSeconds(3);
+        JMathAnimScene scene = JMathAnimConfig.getConfig().getScene();
+        scene.objects.clear();
+        scene.objectsToBeUpdated.clear();
+
     }
 
     public void clockTick(String mensaje) {
@@ -213,36 +241,28 @@ public class PointSimple extends Scene2D {
     }
 
     public void pruebaNewTransform2() {
-        RegularPolygon pol = new RegularPolygon(8, .3);
-        pol.getJMPoint(2).isVisible = false;
-        pol.getJMPoint(6).isVisible = false;
-        pol.getJMPoint(4).isVisible = false;
-        
-        
-//        Shape sq = Shape.square().shift(-1, -1);
-        Shape sq = Shape.regularPolygon(6, new Point(0,0), .5);
-        add(pol,sq);
-//        add(pol,sq);
-        double tiempo=30;
-        waitSeconds(tiempo);
-        
-        Transform tr2 = new Transform(sq, pol, tiempo*4);
-        Transform tr = new Transform(sq, pol, tiempo*4);
-        tr.initialize();
-        ArrayList<JMPath> connectedDst = tr.connectedDst;
-        ArrayList<JMPath> connectedOrigin = tr.connectedOriginaRawCopy;
+        RegularPolygon pol = new RegularPolygon(5, 1).shift(-1, -1);
+//        pol.getJMPoint(0).isCurved=true;
+//        pol.getJMPoint(1).isCurved=true;
+//        pol.getJMPoint(2).isCurved=true;
+//        pol.getJMPoint(3).isCurved=true;
+//        pol.getJMPoint(4).isCurved=true;
+//        pol.jmpath.generateControlPoints();
+//        pol.getJMPoint(2).isVisible = false;
+////        pol.getJMPoint(6).isVisible = false;
+//        pol.getJMPoint(4).isVisible = false;
 
-        for (int n = 0; n < connectedOrigin.size(); n++) {
-            Color color = MathObjectDrawingProperties.randomColor();
-            Shape sh = new Shape(connectedOrigin.get(n), null);
-            Shape sh2 = new Shape(connectedDst.get(n), null);
-            sh.drawColor(color);
-            sh2.drawColor(color);
-            add(sh, sh2);
-        }
-        play(tr2);
-        
+//        Shape sq = Shape.square().shift(-1, -1);
+        Shape sq = Shape.regularPolygon(4, new Point(0, 0), .5).shift(-1, -1);
+        add(pol, sq);
+//        add(pol,sq);
+        double tiempo = 30;
         waitSeconds(tiempo);
+        Transform tr = new Transform(sq, pol, tiempo * 4);
+        play(tr);
+
+        waitSeconds(tiempo);
+
         waitSeconds(tiempo);
         waitSeconds(tiempo);
         waitSeconds(tiempo);
@@ -259,7 +279,6 @@ public class PointSimple extends Scene2D {
 //        add(sq);
         double tiempo = 40;
         waitSeconds(tiempo);
-        
 
         waitSeconds(tiempo);
         waitSeconds(tiempo);

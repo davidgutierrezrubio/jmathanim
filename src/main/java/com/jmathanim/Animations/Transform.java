@@ -5,6 +5,7 @@
  */
 package com.jmathanim.Animations;
 
+import com.jmathanim.Utils.JMathAnimConfig;
 import com.jmathanim.Utils.MathObjectDrawingProperties;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
@@ -14,6 +15,7 @@ import com.jmathanim.mathobjects.JMPathPoint;
 import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.Point;
 import com.jmathanim.mathobjects.Segment;
+import java.awt.Color;
 import java.util.ArrayList;
 
 /**
@@ -35,6 +37,9 @@ public class Transform extends Animation {
     public boolean shouldOptimizePathsFirst;
     public boolean forceChangeDirection;
     private boolean isFinished;
+    private JMathAnimScene scene;
+    
+    private final ArrayList<Shape> addedAuxiliaryObjectsToScene;
 
     public Transform(Shape ob1, Shape ob2, double runTime) {
         super(runTime);
@@ -46,6 +51,7 @@ public class Transform extends Animation {
         shouldOptimizePathsFirst = true;
         forceChangeDirection = false;
         isFinished = false;
+        addedAuxiliaryObjectsToScene=new ArrayList<>();
     }
 
     @Override
@@ -63,7 +69,19 @@ public class Transform extends Animation {
         //Prepare paths. Firs, I ensure they have the same number of points
         //and be in connected components form.
         preparePaths(mobjTransformed.jmpath, mobjDestiny.jmpath);
-
+         scene = JMathAnimConfig.getConfig().getScene();
+        scene.remove(mobjTransformed);
+         for (int n = 0; n < connectedOrigin.size(); n++) {
+//            Color color = MathObjectDrawingProperties.randomColor();
+            Color color=mobjTransformed.mp.drawColor;
+            Shape sh = new Shape(connectedOrigin.get(n), null);
+            Shape sh2 = new Shape(connectedDst.get(n), null);
+            sh.drawColor(color);
+            sh2.drawColor(color);
+            scene.add(sh, sh2);
+            addedAuxiliaryObjectsToScene.add(sh);
+            addedAuxiliaryObjectsToScene.add(sh2);
+        }
 //        if (shouldOptimizePathsFirst) {
 //            //Now, adjust the points of the first to minimize distance from point-to-point
 //            minimizeSumDistance(mobjTransformed.jmpath, mobjDestiny.jmpath, forceChangeDirection);
@@ -210,11 +228,30 @@ public class Transform extends Animation {
                 p1.cp2vBackup = p2.cp2vBackup;
             }
         }
-        //Now I should remove all interpolation auxilary points
-        mobjTransformed.removeInterpolationPoints();
-        System.out.println(mobjTransformed);
-        mobjDestiny.removeInterpolationPoints();
+//        //Now I should remove all interpolation auxilary points
+//        mobjTransformed.removeInterpolationPoints();
+//        System.out.println(mobjTransformed);
+//        mobjDestiny.removeInterpolationPoints();
         mobjTransformed.jmpath.isClosed = mobjDestiny.jmpath.isClosed;
+        
+        ArrayList<JMPath> co = connectedDst;
+        JMPath pa=new JMPath();
+        for (JMPath p:co)
+        {
+            pa.addPointsFrom(p);
+        }
+        pa.removeInterpolationPoints();
+        mobjTransformed.jmpath.clear();
+        mobjTransformed.jmpath.addPointsFrom(pa);
+        scene.add(mobjTransformed);
+        for (Shape shapesToRemove:addedAuxiliaryObjectsToScene)
+        {
+            scene.remove(shapesToRemove);
+        }
+        
+        
+        
+        
     }
 
     /**
@@ -404,7 +441,17 @@ public class Transform extends Animation {
         for (JMPath p : connectedOrigin) {
             connectedOriginaRawCopy.add(p.rawCopy());
         }
-
+        //Mark all points as curved during the transform
+         for (int numConnected = 0; numConnected < this.connectedDst.size(); numConnected++) {
+//        for (int numConnected = 0; numConnected < 1; numConnected++) {
+            JMPath convertedPath = connectedOrigin.get(numConnected);
+            for (JMPathPoint p:convertedPath.jmPathPoints)
+            {
+                p.isCurved=true;
+            }
+            
+         }
+        
     }
 
     private void alignNumberOfElements(JMPath path1, JMPath path2) {
