@@ -27,8 +27,9 @@ public class Transform extends Animation {
     public static final int METHOD_AFFINE_TRANSFORM = 3;
     public static final int METHOD_ROTATE_AND_SCALEXY_TRANSFORM = 4;
     private JMPath jmpathOrig, jmpathDstBackup;
-    private final Shape mobjDestiny;
-    private final Shape mobjTransformed;
+    public ArrayList<JMPath> connectedOrigin, connectedDst, connectedOriginaRawCopy;
+    public final Shape mobjDestiny;
+    public final Shape mobjTransformed;
     private MathObjectDrawingProperties propBase;
     private int method;
     public boolean shouldOptimizePathsFirst;
@@ -38,12 +39,12 @@ public class Transform extends Animation {
     public Transform(Shape ob1, Shape ob2, double runTime) {
         super(runTime);
         mobjTransformed = ob1;
-        mobjDestiny = ob2;
-        jmpathDstBackup = ob2.jmpath.copy();
+        mobjDestiny = ob2.copy();
+        jmpathDstBackup = ob2.jmpath.rawCopy();
+        propBase = ob2.mp;
         method = METHOD_INTERPOLATE_POINT_BY_POINT;//Default method
         shouldOptimizePathsFirst = true;
         forceChangeDirection = false;
-
         isFinished = false;
     }
 
@@ -60,20 +61,21 @@ public class Transform extends Animation {
 
         //This is the initialization for the point-to-point interpolation
         //Prepare paths. Firs, I ensure they have the same number of points
-        alignPaths(mobjTransformed.jmpath, mobjDestiny.jmpath);
+        //and be in connected components form.
+        preparePaths(mobjTransformed.jmpath, mobjDestiny.jmpath);
 
-        if (shouldOptimizePathsFirst) {
-            //Now, adjust the points of the first to minimize distance from point-to-point
-            minimizeSumDistance(mobjTransformed.jmpath, mobjDestiny.jmpath, forceChangeDirection);
-        }
-        //Base path and properties, to interpolate from
-        jmpathOrig = mobjTransformed.jmpath.rawCopy();
-        //This copy of ob1 is necessary to compute interpolations between base and destiny
-        propBase = mobjTransformed.mp.copy();
-        for (int n = 0; n < mobjTransformed.jmpath.jmPathPoints.size(); n++) {
-            //Mark all point temporary as curved
-            mobjTransformed.jmpath.jmPathPoints.get(n).isCurved = true;
-        }
+//        if (shouldOptimizePathsFirst) {
+//            //Now, adjust the points of the first to minimize distance from point-to-point
+//            minimizeSumDistance(mobjTransformed.jmpath, mobjDestiny.jmpath, forceChangeDirection);
+//        }
+//        //Base path and properties, to interpolate from
+//        jmpathOrig = mobjTransformed.jmpath.rawCopy();
+//        //This copy of ob1 is necessary to compute interpolations between base and destiny
+//        propBase = mobjTransformed.mp.copy();
+//        for (int n = 0; n < mobjTransformed.jmpath.jmPathPoints.size(); n++) {
+//            //Mark all point temporary as curved
+//            mobjTransformed.jmpath.jmPathPoints.get(n).isCurved = true;
+//        }
     }
 
     /**
@@ -143,34 +145,37 @@ public class Transform extends Animation {
 
     private void interpolateByPoint(double t) throws ArrayIndexOutOfBoundsException {
         JMPathPoint interPoint, basePoint, dstPoint;
-        for (int n = 0; n < mobjTransformed.jmpath.jmPathPoints.size(); n++) {
-            interPoint = mobjTransformed.jmpath.jmPathPoints.get(n);
-            basePoint = jmpathOrig.jmPathPoints.get(n);
-            dstPoint = mobjDestiny.jmpath.jmPathPoints.get(n);
 
-            //Copy visibility attributes after t>.8
-            if (t > .8) {
-                interPoint.isVisible = dstPoint.isVisible;
+        for (int numConnected = 0; numConnected < this.connectedDst.size(); numConnected++) {
+//        for (int numConnected = 0; numConnected < 1; numConnected++) {
+            JMPath convertedPath = connectedOrigin.get(numConnected);
+            JMPath fromPath = connectedOriginaRawCopy.get(numConnected);
+            JMPath toPath = connectedDst.get(numConnected);
+            for (int n = 0; n < convertedPath.size(); n++) {
+                interPoint = convertedPath.getPoint(n);
+                basePoint = fromPath.getPoint(n);
+                dstPoint = toPath.getPoint(n);
+
+                //Interpolate point
+                interPoint.p.v.x = (1 - t) * basePoint.p.v.x + t * dstPoint.p.v.x;
+                interPoint.p.v.y = (1 - t) * basePoint.p.v.y + t * dstPoint.p.v.y;
+                interPoint.p.v.z = (1 - t) * basePoint.p.v.z + t * dstPoint.p.v.z;
+
+                //Interpolate control point 1
+                interPoint.cp1.v.x = (1 - t) * basePoint.cp1.v.x + t * dstPoint.cp1.v.x;
+                interPoint.cp1.v.y = (1 - t) * basePoint.cp1.v.y + t * dstPoint.cp1.v.y;
+                interPoint.cp1.v.z = (1 - t) * basePoint.cp1.v.z + t * dstPoint.cp1.v.z;
+
+                //Interpolate control point 2
+                interPoint.cp2.v.x = (1 - t) * basePoint.cp2.v.x + t * dstPoint.cp2.v.x;
+                interPoint.cp2.v.y = (1 - t) * basePoint.cp2.v.y + t * dstPoint.cp2.v.y;
+                interPoint.cp2.v.z = (1 - t) * basePoint.cp2.v.z + t * dstPoint.cp2.v.z;
+
             }
-
-            //Interpolate point
-            interPoint.p.v.x = (1 - t) * basePoint.p.v.x + t * dstPoint.p.v.x;
-            interPoint.p.v.y = (1 - t) * basePoint.p.v.y + t * dstPoint.p.v.y;
-            interPoint.p.v.z = (1 - t) * basePoint.p.v.z + t * dstPoint.p.v.z;
-
-            //Interpolate control point 1
-            interPoint.cp1.v.x = (1 - t) * basePoint.cp1.v.x + t * dstPoint.cp1.v.x;
-            interPoint.cp1.v.y = (1 - t) * basePoint.cp1.v.y + t * dstPoint.cp1.v.y;
-            interPoint.cp1.v.z = (1 - t) * basePoint.cp1.v.z + t * dstPoint.cp1.v.z;
-
-            //Interpolate control point 2
-            interPoint.cp2.v.x = (1 - t) * basePoint.cp2.v.x + t * dstPoint.cp2.v.x;
-            interPoint.cp2.v.y = (1 - t) * basePoint.cp2.v.y + t * dstPoint.cp2.v.y;
-            interPoint.cp2.v.z = (1 - t) * basePoint.cp2.v.z + t * dstPoint.cp2.v.z;
-
         }
         //Now interpolate properties from objects
         mobjTransformed.mp.interpolateFrom(propBase, mobjDestiny.mp, t);
+
     }
 
     @Override
@@ -182,18 +187,22 @@ public class Transform extends Animation {
         }
         //TODO: If mobjTransformed is open and mobjDestiny,should fix that
         //TODO: Works, but needs to be refined
-        if (!mobjTransformed.jmpath.isClosed && mobjDestiny.jmpath.isClosed) {
-            mobjTransformed.jmpath.jmPathPoints.remove(-1);
-            mobjTransformed.jmpath.jmPathPoints.get(0).isVisible = true;
-        }
+//        if (!mobjTransformed.jmpath.isClosed && mobjDestiny.jmpath.isClosed) {
+//            mobjTransformed.jmpath.jmPathPoints.remove(-1);
+//            mobjTransformed.jmpath.jmPathPoints.get(0).isVisible = true;
+//        }
 
 //Here it should remove unnecessary points
         //First mark as vertex points all mobj1 points who match with vertex from obj2
         //also copy backup values of control points 
-        {
-            for (int n = 0; n < mobjTransformed.jmpath.size(); n++) {
-                JMPathPoint p1 = mobjTransformed.jmpath.getPoint(n);
-                JMPathPoint p2 = mobjDestiny.jmpath.getPoint(n);
+        for (int numConnected = 0; numConnected < this.connectedDst.size(); numConnected++) {
+//        for (int numConnected = 0; numConnected < 1; numConnected++) {
+            JMPath convertedPath = connectedOrigin.get(numConnected);
+            JMPath toPath = connectedDst.get(numConnected);
+
+            for (int n = 0; n < convertedPath.size(); n++) {
+                JMPathPoint p1 = convertedPath.getPoint(n);
+                JMPathPoint p2 = toPath.getPoint(n);
                 p1.type = p2.type;
                 p1.isCurved = p2.isCurved;
                 p1.isVisible = p2.isVisible;
@@ -207,10 +216,13 @@ public class Transform extends Animation {
         mobjDestiny.removeInterpolationPoints();
         mobjTransformed.jmpath.isClosed = mobjDestiny.jmpath.isClosed;
     }
-/**
- * A homotopy transform, which consists in a rotation combined with a homogeneus scale
- * @param t 
- */
+
+    /**
+     * A homotopy transform, which consists in a rotation combined with a
+     * homogeneus scale
+     *
+     * @param t
+     */
     private void homotopyTransform(double t) {
         Point A = jmpathOrig.getPoint(0).p;
         Point B = jmpathOrig.getPoint(1).p;
@@ -220,10 +232,12 @@ public class Transform extends Animation {
         AffineTransform tr = AffineTransform.createDirect2DHomotopy(A, B, C, D, t);
         applyTransform(t, tr);
     }
-/**
- * Performs a general affine transformation
- * @param t 
- */
+
+    /**
+     * Performs a general affine transformation
+     *
+     * @param t
+     */
     private void affineTransform(double t) {
         Point A = jmpathOrig.getPoint(0).p;
         Point B = jmpathOrig.getPoint(1).p;
@@ -235,11 +249,14 @@ public class Transform extends Animation {
         AffineTransform tr = AffineTransform.createAffineTransformation(A, B, C, D, E, F, t);
         applyTransform(t, tr);
     }
-/**
- * Performs a transformation between 2 MathObjects doing a rotation and a scale by x and y
- * This method is useful to transform between rectangles, or circles/ellipses
- * @param t 
- */
+
+    /**
+     * Performs a transformation between 2 MathObjects doing a rotation and a
+     * scale by x and y This method is useful to transform between rectangles,
+     * or circles/ellipses
+     *
+     * @param t
+     */
     private void rotateScaleXYTransform(double t) {
         Point A = jmpathOrig.getPoint(0).p;
         Point B = jmpathOrig.getPoint(1).p;
@@ -249,22 +266,22 @@ public class Transform extends Animation {
         Point F = mobjDestiny.getJMPoint(2).p;
 
         //First map A,B into (0,0) and (1,0)
-        AffineTransform tr1 = AffineTransform.createDirect2DHomotopy(A, B, new Point(0, 0), new Point(1,0), 1);
+        AffineTransform tr1 = AffineTransform.createDirect2DHomotopy(A, B, new Point(0, 0), new Point(1, 0), 1);
 
         //Now I create a transformation that adjust the y-scale, proportionally
         //This transform will be applied inversely too
         AffineTransform tr2 = new AffineTransform();
-        final double proportionalHeight = (F.to(E).norm() / D.to(E).norm())/(B.to(C).norm() / B.to(A).norm());
-        tr2.setV2Img(0, proportionalHeight* t + (1 - t) * 1); //Interpolated here
+        final double proportionalHeight = (F.to(E).norm() / D.to(E).norm()) / (B.to(C).norm() / B.to(A).norm());
+        tr2.setV2Img(0, proportionalHeight * t + (1 - t) * 1); //Interpolated here
 
         //Finally, and homotopy to carry A,B into D,E
         AffineTransform tr3 = AffineTransform.createDirect2DHomotopy(A, B, D, E, t);//Interpolated here
         AffineTransform id = new AffineTransform();
         //The final transformation
         AffineTransform tr = tr1.compose(tr2).compose(tr1.getInverse()).compose(tr3);
-        Vec v1=B.to(C);
-        Vec v2=B.to(A);
-        System.out.println("dotprod "+v1.dot(v2));
+        Vec v1 = B.to(C);
+        Vec v2 = B.to(A);
+        System.out.println("dotprod " + v1.dot(v2));
         applyTransform(t, tr);
 
     }
@@ -305,89 +322,66 @@ public class Transform extends Animation {
      *
      * @param path2
      */
-    public void alignPaths(JMPath path1, JMPath path2) {//TODO: Move this to Transform
-        //TODO: What about open paths?
-        JMPath pathSmall;
-        JMPath pathBig;
-
-        //If path1 is closed but path2 is not, open path1, duplicating first vertex 
-        if (path1.isClosed && !path2.isClosed) {
-            path1.addJMPoint(path1.getPoint(0).copy());
-            path1.getPoint(0).isVisible = false;
-            path1.getPoint(-1).type = JMPathPoint.TYPE_INTERPOLATION_POINT;
-            path1.isClosed = false;
-        }
-
-//         if (path2.isClosed && !this.isClosed)
-//        {
-//            path2.addPoint(path2.getPoint(0).copy());
-//            path2.getPoint(0).isVisible=false;
+//    public void alignPaths(JMPath path1, JMPath path2) {//TODO: Move this to Transform
+//        //TODO: What about open paths?
+//        JMPath pathSmall;
+//        JMPath pathBig;
+//
+//        //If path1 is closed but path2 is not, open path1, duplicating first vertex 
+//        if (path1.isClosed && !path2.isClosed) {
+//            path1.addJMPoint(path1.getPoint(0).copy());
+//            path1.getPoint(0).isVisible = false;
+//            path1.getPoint(-1).type = JMPathPoint.TYPE_INTERPOLATION_POINT;
+//            path1.isClosed = false;
 //        }
-        if (path1.size() == path2.size()) {
-            return;
-        }
-
-        if (path1.size() < path2.size()) {
-            pathSmall = path1;
-            pathBig = path2;
-        } else {
-            pathBig = path1;
-            pathSmall = path2;
-        }
-
-        //At this point pathSmall points to the smaller path who is going to be
-        //interpolated
-        int nSmall = (pathSmall.isClosed ? pathSmall.size() : pathSmall.size() - 1);
-        int nBig = (pathBig.isClosed ? pathBig.size() : pathBig.size() - 1);
-//        int nBig = pathBig.size();
-
-        JMPath resul = new JMPath();
-
-        int numDivs = (nBig / nSmall); //Euclidean quotient
-        int rest = nBig % nSmall;//Euclidean rest
-        int numDivForThisVertex;
-        for (int n = 0; n < nSmall; n++) {
-//                int k = (n + 1) % points.size(); //Next point, first if curve is closed
-            JMPathPoint v1 = pathSmall.getPoint(n);
-            JMPathPoint v2 = pathSmall.getPoint(n + 1);
-            v1.type = JMPathPoint.TYPE_VERTEX;
-            resul.addJMPoint(v1); //Add the point of original curve
-            numDivForThisVertex = numDivs; //number of segments to divide, NOT number of intermediate new points
-            if (n < rest) { //The <rest> first vertex have an extra interpolation point (should distribute these along the path? maybe...)
-                numDivForThisVertex += 1;
-            }
-            dividePathSegment(v1, v2, numDivForThisVertex, resul);
-        }
-        if (!pathSmall.isClosed) {
-            resul.addJMPoint(pathSmall.getPoint(-1));
-        }
-        pathSmall.clear();
-        pathSmall.addPointsFrom(resul);
-//        pathSmall.generateControlPoints();//Not necessary
-    }
-
-    /**
-     * Divide path into an equal number of parts. Stores new points in a new
-     * path
-     *
-     * @param v1 Starting point
-     * @param v2 Ending point
-     * @param numDivForThisVertex Number of subdivisions
-     * @param resul Path with new points to store
-     */
-    private void dividePathSegment(JMPathPoint v1, JMPathPoint v2, int numDivForThisVertex, JMPath resul) {
-        JMPathPoint interpolate;
-        if (numDivForThisVertex < 2) {
-            return;
-        }
-        double alpha = 1.0d / numDivForThisVertex;
-        interpolate = JMPath.interpolateBetweenTwoPoints(v1, v2, alpha);
-        resul.addJMPoint(interpolate);
-        if (numDivForThisVertex > 2) {
-            dividePathSegment(interpolate, v2, numDivForThisVertex - 1, resul);
-        }
-    }
-
+//
+////         if (path2.isClosed && !this.isClosed)
+////        {
+////            path2.addPoint(path2.getPoint(0).copy());
+////            path2.getPoint(0).isVisible=false;
+////        }
+//        if (path1.size() == path2.size()) {
+//            return;
+//        }
+//
+//        if (path1.size() < path2.size()) {
+//            pathSmall = path1;
+//            pathBig = path2;
+//        } else {
+//            pathBig = path1;
+//            pathSmall = path2;
+//        }
+//
+//        //At this point pathSmall points to the smaller path who is going to be
+//        //interpolated
+//        int nSmall = (pathSmall.isClosed ? pathSmall.size() : pathSmall.size() - 1);
+//        int nBig = (pathBig.isClosed ? pathBig.size() : pathBig.size() - 1);
+////        int nBig = pathBig.size();
+//
+//        JMPath resul = new JMPath();
+//
+//        int numDivs = (nBig / nSmall); //Euclidean quotient
+//        int rest = nBig % nSmall;//Euclidean rest
+//        int numDivForThisVertex;
+//        for (int n = 0; n < nSmall; n++) {
+////                int k = (n + 1) % points.size(); //Next point, first if curve is closed
+//            JMPathPoint v1 = pathSmall.getPoint(n);
+//            JMPathPoint v2 = pathSmall.getPoint(n + 1);
+//            v1.type = JMPathPoint.TYPE_VERTEX;
+//            resul.addJMPoint(v1); //Add the point of original curve
+//            numDivForThisVertex = numDivs; //number of segments to divide, NOT number of intermediate new points
+//            if (n < rest) { //The <rest> first vertex have an extra interpolation point (should distribute these along the path? maybe...)
+//                numDivForThisVertex += 1;
+//            }
+//            dividePathSegment(v1, v2, numDivForThisVertex, resul);
+//        }
+//        if (!pathSmall.isClosed) {
+//            resul.addJMPoint(pathSmall.getPoint(-1));
+//        }
+//        pathSmall.clear();
+//        pathSmall.addPointsFrom(resul);
+////        pathSmall.generateControlPoints();//Not necessary
+//    }
     public int getMethod() {
         return method;
     }
@@ -399,6 +393,88 @@ public class Transform extends Animation {
     @Override
     public void addObjectsToScene(JMathAnimScene scene) {
         scene.add(mobjTransformed);
+    }
+
+    private void preparePaths(JMPath path1, JMPath path2) {
+
+        connectedOrigin = path1.canonicalForm();
+        connectedDst = path2.canonicalForm();
+        alignNumberOfComponents(connectedOrigin, connectedDst);
+        connectedOriginaRawCopy = new ArrayList<>();
+        for (JMPath p : connectedOrigin) {
+            connectedOriginaRawCopy.add(p.rawCopy());
+        }
+
+    }
+
+    private void alignNumberOfElements(JMPath path1, JMPath path2) {
+        JMPath pathSmall, pathBig;
+        if (path1.size() < path2.size()) {
+            pathSmall = path1;
+            pathBig = path2;
+        } else {
+            pathBig = path1;
+            pathSmall = path2;
+        }
+        pathSmall.alignPathsToGivenNumberOfElements(pathBig.size());
+    }
+
+    private void alignNumberOfComponents(ArrayList<JMPath> con1, ArrayList<JMPath> con2) {
+        ArrayList<JMPath> conBig, conSmall;
+        if (con1.size() < con2.size()) {
+            conSmall = con1;
+            conBig = con2;
+        } else {
+            conBig = con1;
+            conSmall = con2;
+        }
+
+        int numDivs = (conBig.size() / conSmall.size()); //Euclidean quotient
+        int rest = conBig.size() % conSmall.size();//Euclidean rest
+
+        //Should divide the connect components in numDivs pieces (+1 if n<rest)
+        ArrayList<JMPath> tempCon = new ArrayList<>();
+        for (int n = 0; n < conSmall.size(); n++) {
+            JMPath pathToDivide = conSmall.get(n);
+            int numberOfDivisions = numDivs + (n < rest ? 1 : 0);
+            ArrayList<JMPath> divisionResult = divideConnectedComponent(pathToDivide, numberOfDivisions);
+            tempCon.addAll(divisionResult);
+        }
+        conSmall.clear();
+        conSmall.addAll(tempCon);
+
+        //Now that I am sure we have the same number of connected components, let's align the number in each one
+        for (int n = 0; n < conSmall.size(); n++) {
+            alignNumberOfElements(conSmall.get(n), conBig.get(n));
+        }
+
+    }
+
+    private ArrayList<JMPath> divideConnectedComponent(JMPath pathToDivide, int numberOfDivisions) {
+        ArrayList<JMPath> resul = new ArrayList<>();
+        if (pathToDivide.size() < numberOfDivisions + 1) {
+            //I must ensure they have at least numDivs+1 points! (+1 if n<rest)
+            pathToDivide.alignPathsToGivenNumberOfElements(numberOfDivisions + 1);
+        }
+        //Length of each SEGMENT
+        int stepDiv = ((pathToDivide.size() - 1) / (numberOfDivisions)); //Euclidean quotient
+        int rest = ((pathToDivide.size() - 1) % (numberOfDivisions));//Euclidean rest
+
+        //Now separate appropiate vertices
+        int step = stepDiv;
+        ArrayList<JMPathPoint> pointsToSeparate = new ArrayList<>();
+        for (int k = 1; k < numberOfDivisions; k++) {
+            pointsToSeparate.add(pathToDivide.getPoint(step));
+            step += stepDiv;
+            step += (k < rest ? 1 : 0);
+        }
+        //Now that I marked correspondent points to separate, do the separation
+        for (JMPathPoint p : pointsToSeparate) {
+            int k = pathToDivide.jmPathPoints.indexOf(p);
+            pathToDivide.separate(k);
+        }
+
+        return pathToDivide.canonicalForm();
     }
 
 }

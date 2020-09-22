@@ -51,7 +51,7 @@ import javax.swing.JPanel;
  */
 public class Java2DRenderer extends Renderer {
     
-    private static final boolean DEBUG_PATH_POINTS = false; //Draw control points and vertices
+    private static final boolean DEBUG_PATH_POINTS = true; //Draw control points and vertices
     private static final boolean PRINT_DEBUG = false; //Draw control points and vertices
     private static final boolean BOUNDING_BOX_DEBUG = false; //Draw bounding boxes
 
@@ -402,7 +402,7 @@ public class Java2DRenderer extends Renderer {
         if (c.isClosed()) {
             //closePath method draws a straight line to the last moveTo, so we
             //have to move first to the first point of our path
-//            resul.moveTo(scr[0], scr[1]);
+            resul.moveTo(scr[0], scr[1]);
             resul.closePath();
         }
 //        if (c.isClosed()) {

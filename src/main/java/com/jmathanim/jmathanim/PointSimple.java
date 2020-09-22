@@ -41,6 +41,7 @@ import com.jmathanim.mathobjects.updateableObjects.TransformedJMPath;
 import com.jmathanim.mathobjects.updateableObjects.AbsoluteSizeUpdater;
 import java.awt.Color;
 import java.util.ArrayList;
+import static javafx.scene.paint.Color.color;
 
 /**
  *
@@ -68,7 +69,7 @@ public class PointSimple extends Scene2D {
     public void runSketch() {
         System.out.println("Running sketch...");
 //        pruebaFixedCamera();
-        pruebaTransformPathsWithHiddenElements();
+        pruebaNewTransform2();
     }
 
     public void clockTick(String mensaje) {
@@ -76,23 +77,21 @@ public class PointSimple extends Scene2D {
         System.out.println("[TIME] " + mensaje + " :  " + (nanotime / 1000000000.d) + " s");
     }
 
-    public void pruebaTransformPathsWithHiddenElements(){
-        Shape sh=new Shape();
+    public void pruebaTransformPathsWithHiddenElements() {
+        Shape sh = new Shape();
         sh.jmpath.addJMPoint(new JMPathPoint(new Point(0, 0), true, JMPathPoint.TYPE_VERTEX));
         sh.jmpath.addJMPoint(new JMPathPoint(new Point(1, 0), true, JMPathPoint.TYPE_VERTEX));
         sh.jmpath.addJMPoint(new JMPathPoint(new Point(1, 1), true, JMPathPoint.TYPE_VERTEX));
         sh.jmpath.addJMPoint(new JMPathPoint(new Point(.6, 1.2), true, JMPathPoint.TYPE_VERTEX));
         sh.jmpath.addJMPoint(new JMPathPoint(new Point(-.2, .4), true, JMPathPoint.TYPE_VERTEX));
-        
-        Shape sq=Shape.square();
-        add(sh.scale(.5,.5).shift(-1,0).drawColor(Color.red),sq);
+
+        Shape sq = Shape.square();
+        add(sh.scale(.5, .5).shift(-1, 0).drawColor(Color.red), sq);
         waitSeconds(10);
         playTransform(sh, sq, 30);
         waitSeconds(20);
     }
-    
-    
-    
+
     public void pruebaSimpleJMPathObject() throws ArrayIndexOutOfBoundsException {
         Shape pa = new Shape();
         JMPathPoint p;
@@ -188,24 +187,107 @@ public class PointSimple extends Scene2D {
     }
 
     public void pruebaPuntosInterpolacion() {
-        Circle circ = new Circle(new Point(-.5, .5), 2);
-        circ.mp.thickness /= 3;
-        circ.mp.drawColor = Color.YELLOW;
+        Shape sq = Shape.square();
+        add(sq);
+        double tiempo = 40;
+        waitSeconds(tiempo);
+        sq.jmpath.dividePathSegment(1, 3);
+        waitSeconds(tiempo);
+        sq.jmpath.dividePathSegment(5, 4);
+        waitSeconds(tiempo);
+        sq.jmpath.dividePathSegment(3, 4);
+        waitSeconds(tiempo);
+    }
 
-        JMPathPoint pp = circ.jmpath.jmPathPoints.get(0);
-        pp.shift(new Vec(-2, 0));
-        Circle circ2 = circ.copy();
-        circ2.mp.drawColor = Color.GREEN;
-        add(circ2);
-        JMPathPoint p0 = circ.jmpath.jmPathPoints.get(0);
-        JMPathPoint p1 = circ.jmpath.jmPathPoints.get(1);
-        add(circ);
-        for (double alpha = .2; alpha < 1; alpha += .1) {
-            waitSeconds(1);
-            JMPathPoint po = circ.jmpath.interpolateBetweenTwoPoints(p0, p1, alpha);
-            add(po.p);
+    public void pruebaAlignNew() {
+        RegularPolygon sq = new RegularPolygon(6, .3);
+        sq.getJMPoint(0).isVisible = false;
+        sq.getJMPoint(4).isVisible = false;
+        add(sq);
+        double tiempo = 40;
+        waitSeconds(tiempo);
+        sq.jmpath.alignPathsToGivenNumberOfElements(11);
+        waitSeconds(tiempo);
+        waitSeconds(tiempo);
+        waitSeconds(tiempo);
+    }
+
+    public void pruebaNewTransform2() {
+        RegularPolygon pol = new RegularPolygon(8, .3);
+        pol.getJMPoint(2).isVisible = false;
+        pol.getJMPoint(6).isVisible = false;
+        pol.getJMPoint(4).isVisible = false;
+        
+        
+//        Shape sq = Shape.square().shift(-1, -1);
+        Shape sq = Shape.regularPolygon(6, new Point(0,0), .5);
+        add(pol,sq);
+//        add(pol,sq);
+        double tiempo=30;
+        waitSeconds(tiempo);
+        
+        Transform tr2 = new Transform(sq, pol, tiempo*4);
+        Transform tr = new Transform(sq, pol, tiempo*4);
+        tr.initialize();
+        ArrayList<JMPath> connectedDst = tr.connectedDst;
+        ArrayList<JMPath> connectedOrigin = tr.connectedOriginaRawCopy;
+
+        for (int n = 0; n < connectedOrigin.size(); n++) {
+            Color color = MathObjectDrawingProperties.randomColor();
+            Shape sh = new Shape(connectedOrigin.get(n), null);
+            Shape sh2 = new Shape(connectedDst.get(n), null);
+            sh.drawColor(color);
+            sh2.drawColor(color);
+            add(sh, sh2);
         }
-        waitSeconds(30);
+        play(tr2);
+        
+        waitSeconds(tiempo);
+        waitSeconds(tiempo);
+        waitSeconds(tiempo);
+        waitSeconds(tiempo);
+        waitSeconds(tiempo);
+    }
+
+    public void pruebaNewTransform() {
+        RegularPolygon pol = new RegularPolygon(8, .3);
+        pol.getJMPoint(2).isVisible = false;
+        pol.getJMPoint(6).isVisible = false;
+        pol.getJMPoint(4).isVisible = false;
+        add(pol);
+        Shape sq = Shape.square().shift(-1, -1);
+//        add(sq);
+        double tiempo = 40;
+        waitSeconds(tiempo);
+        
+
+        waitSeconds(tiempo);
+        waitSeconds(tiempo);
+        waitSeconds(tiempo);
+        waitSeconds(tiempo);
+        waitSeconds(tiempo);
+        waitSeconds(tiempo);
+        waitSeconds(tiempo);
+    }
+
+    public void pruebaConnectedComponents() {
+        RegularPolygon sq = new RegularPolygon(8, .3);
+        sq.getJMPoint(2).isVisible = false;
+        sq.getJMPoint(6).isVisible = false;
+        sq.getJMPoint(4).isVisible = false;
+        add(sq);
+        double tiempo = 40;
+        waitSeconds(tiempo);
+        ArrayList<JMPath> canonicalForm = sq.jmpath.canonicalForm();
+
+        for (JMPath pa : canonicalForm) {
+            Shape sh1 = new Shape(pa, null);
+            playShift(sh1, new Vec(-1, 0), tiempo / 2);
+        }
+
+        waitSeconds(tiempo);
+        waitSeconds(tiempo);
+        waitSeconds(tiempo);
     }
 
     public void pruebaInterpolacion() {
@@ -856,7 +938,7 @@ public class PointSimple extends Scene2D {
 
     private void pruebaSizeLaTeX() {
 
-        Point p=new Point(0,0);
+        Point p = new Point(0, 0);
         LaTeXMathObject la = new LaTeXMathObject("X");
         add(la);
         int v = camera.screenHeight;//Numero de puntos
@@ -872,10 +954,10 @@ public class PointSimple extends Scene2D {
         System.out.println("Tamaño X:" + la.getBoundingBox().getHeight());
         System.out.println("Tamaño X en puntos:" + camera.mathToScreen(la.getBoundingBox().getHeight()));
         System.out.println("Need to scale 14*vm/v/" + la.getBoundingBox().getHeight());
-        
-        add(Arrow2D.makeSimpleArrow2D(new Point(-1,.5), p, Arrow2D.TYPE_2).scale(3));
-        
-        playShift(p,new  Vec(0,2),15);//TODO: How to easily specify that don't show this object?
+
+        add(Arrow2D.makeSimpleArrow2D(new Point(-1, .5), p, Arrow2D.TYPE_2).scale(3));
+
+        playShift(p, new Vec(0, 2), 15);//TODO: How to easily specify that don't show this object?
         waitSeconds(30);
     }
 

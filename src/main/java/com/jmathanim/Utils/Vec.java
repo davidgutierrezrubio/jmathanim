@@ -13,9 +13,8 @@ import static java.lang.Math.sqrt;
  *
  * @author David Gutierrez Rubio davidgutierrezrubio@gmail.com
  */
-public class Vec implements Stateable{
+public class Vec implements Stateable {
 
-    
     public double x, y, z;
     public double xState, yState, zState;
 
@@ -27,25 +26,28 @@ public class Vec implements Stateable{
         this.x = x;
         this.y = y;
         this.z = z;
-        
+
     }
 
     public double dot(Vec a) {
         return x * a.x + y * a.y + z * a.z;
     }
 
-    public Vec cross(Vec a)
-    {
-        return new Vec(this.y*a.z-this.z*a.y, this.z*a.x-this.x*a.z, this.x*a.y-this.y*a.x);
+    public Vec cross(Vec a) {
+        return new Vec(this.y * a.z - this.z * a.y, this.z * a.x - this.x * a.z, this.x * a.y - this.y * a.x);
     }
+
     public Vec multInSite(double lambda) {
         x *= lambda;
         y *= lambda;
         z *= lambda;
         return this;
     }
+
     /**
-     * Returns a new vector representing this vector scaled by a factor. The current vector is unaltered.
+     * Returns a new vector representing this vector scaled by a factor. The
+     * current vector is unaltered.
+     *
      * @param lambda The factor
      * @return The new vector
      */
@@ -98,27 +100,35 @@ public class Vec implements Stateable{
     }
 
     public Vec copy() {
-        Vec resul=new Vec(x, y);
+        Vec resul = new Vec(x, y);
         return resul;
+    }
+
+    public void copyFrom(Vec v) {
+        if (v != null) {
+            this.x = v.x;
+            this.y = v.y;
+            this.z = v.z;
+        }
     }
 
     @Override
     public void saveState() {
-        xState=x;
-        yState=y;
-        zState=z;
+        xState = x;
+        yState = y;
+        zState = z;
     }
 
     @Override
     public void restoreState() {
-        x=xState;
-        y=yState;
-        z=zState;
-    
+        x = xState;
+        y = yState;
+        z = zState;
+
     }
 
     public double getAngle() {
-        double angle=Math.atan2(this.y, this.x);
+        double angle = Math.atan2(this.y, this.x);
         return angle;
     }
 
@@ -157,10 +167,7 @@ public class Vec implements Stateable{
 
     @Override
     public String toString() {
-        return "Vec(" +  x + ", " + y + ')';
+        return "Vec(" + x + ", " + y + ')';
     }
 
-  
-    
-    
 }

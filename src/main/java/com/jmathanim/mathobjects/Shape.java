@@ -71,10 +71,6 @@ public class Shape extends MathObject {
         } else {
             jmpath.open();
         }
-        //This should'nt be done unless necessary (an animation for example)
-        if (numInterpolationPoints > 1) {
-            jmpath.interpolate(numInterpolationPoints);//Interpolate points
-        }
 
         jmpath.generateControlPoints();
         needsRecalcControlPoints = false;
@@ -154,7 +150,6 @@ public class Shape extends MathObject {
 //        jmpath.points.removeAll(toRemove);
 ////        jmpath.generateControlPoints();
 //    }
-
     @Override
     public void scale(Point scaleCenter, double sx, double sy, double sz) {
         jmpath.scale(scaleCenter, sx, sy, sz);
@@ -288,12 +283,25 @@ public class Shape extends MathObject {
         return obj;
     }
 
-//    public static Shape arc() {
-//        
-//    }
-
-    @Override
-    public <T extends MathObject> T moveTo(Vec coords) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public static Shape regularPolygon(int numsides, Point A, double side) {
+        Shape obj = new Shape();
+        Point newPoint = (Point) A.copy();
+        for (int n = 0; n < numsides; n++) {
+            double alpha = 2 * n * Math.PI / numsides;
+            Vec moveVector = new Vec(side * Math.cos(alpha), side * Math.sin(alpha));
+            newPoint = newPoint.add(moveVector);
+            JMPathPoint p = JMPathPoint.lineTo(newPoint);
+            obj.jmpath.addJMPoint(p);
+        }
+        obj.setObjectType(REGULAR_POLYGON);
+        obj.jmpath.close();
+        return obj;
     }
-}
+
+        @Override
+        public <T extends MathObject > T moveTo(Vec coords
+        
+            ) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        }
+    }

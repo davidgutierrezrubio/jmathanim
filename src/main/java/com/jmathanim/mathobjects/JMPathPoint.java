@@ -11,6 +11,7 @@ import com.jmathanim.Utils.Rect;
 import com.jmathanim.mathobjects.updateableObjects.Updateable;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
+import java.text.DecimalFormat;
 
 /**
  *
@@ -30,6 +31,7 @@ public class JMPathPoint extends MathObject implements Updateable, Stateable {
     public boolean isCurved;
     public int type; //Vertex, interpolation point, etc.
 
+    public int numDivisions = 0;//This number is used for convenience to store easily number of divisions when subdiving a path
     private JMPathPoint pState;
 
     //Builders
@@ -94,13 +96,15 @@ public class JMPathPoint extends MathObject implements Updateable, Stateable {
 
     @Override
     public String toString() {
+        String pattern = "##0.##";
+        DecimalFormat decimalFormat = new DecimalFormat(pattern);
         String labelStr;
         if (label != "") {
             labelStr = "[" + label + "]";
         } else {
             labelStr = label;
         }
-        String resul = labelStr + "(" + p.v.x + ", " + p.v.y + ")";
+        String resul = labelStr + "(" + decimalFormat.format(p.v.x) + ", " + decimalFormat.format(p.v.y) + ")";
         if (type == TYPE_INTERPOLATION_POINT) {
             resul = "I" + resul;
         }

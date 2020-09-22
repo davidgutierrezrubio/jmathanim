@@ -22,6 +22,7 @@ public class JMPath implements Updateable, Stateable {
 
     static public final int MATHOBJECT = 1; //Arc, line, segment...
     static public final int SVG_PATH = 2; //SVG import, LaTeX object...
+    static public final int CONNECTED_COMPONENT = 3; //Connected, open component. Every path should be able to put in this way
     public final CircularArrayList<JMPathPoint> jmPathPoints; //points from the curve
     public final CircularArrayList<Boolean> visiblePoints;//Whether this point is visible or not
     public boolean isClosed;
@@ -92,7 +93,7 @@ public class JMPath implements Updateable, Stateable {
 
     public void open() {
         isClosed = false;
-        jmPathPoints.get(0).isVisible=false;
+        jmPathPoints.get(0).isVisible = false;
     }
 
     public void addPoint(Point... points) {
@@ -180,46 +181,6 @@ public class JMPath implements Updateable, Stateable {
     }
 
     /**
-     * Interpolates a curve calculating intermediate points. If the original
-     * curve has n points, the new should have (n-1)*numDivs+1 for open curves
-     * and n*numDivs for closed ones.
-     *
-     * @param numDivs Between 2 given points, the number of new points to
-     * create. 0 leaves the curve unaltered. 1 computes the middle point
-     */
-    public void interpolate(int numDivs) {
-        if (numDivs > 1) {
-
-            JMPath resul = new JMPath(); //New, interpolated path
-            int numPoints = jmPathPoints.size();
-            if (!isClosed) {//If curve is open, stop at n-1 point
-                numPoints--;
-            }
-
-            for (int n = 0; n < numPoints; n++) {
-//                int k = (n + 1) % points.size(); //Next point, first if curve is closed
-                JMPathPoint v1 = getPoint(n);
-                JMPathPoint v2 = getPoint(n + 1);
-
-                v1.type = JMPathPoint.TYPE_VERTEX;
-                resul.addJMPoint(v1); //Add the point of original curve
-                for (int j = 1; j < numDivs; j++) //Now compute the new ones
-                {
-                    double alpha = ((double) j) / numDivs;
-                    JMPathPoint interpolate = interpolateBetweenTwoPoints(v1, v2, alpha);
-                    resul.addJMPoint(interpolate);
-                }
-            }
-            //Copy basic attributes of the original curve
-            resul.isClosed = this.isClosed;
-            resul.generateControlPoints();//WARNING: THIS DOESN'T WORK WITH SVG NOR CURVED PATHS
-            resul.isInterpolated = true;//Mark this path as interpolated
-            this.clear();
-            this.addPointsFrom(resul);
-        }
-    }
-
-    /**
      * Remove interpolation points from path and mark it as no interpolated
      */
     public void removeInterpolationPoints() {
@@ -249,7 +210,7 @@ public class JMPath implements Updateable, Stateable {
 
     @Override
     public String toString() {
-        String resul = "#"+jmPathPoints.size()+":  ";
+        String resul = "#" + jmPathPoints.size() + ":  ";
         for (JMPathPoint p : jmPathPoints) {
             resul += p.toString();
 
@@ -266,8 +227,74 @@ public class JMPath implements Updateable, Stateable {
         jmPathPoints.addAll(jmpathTemp.jmPathPoints);
     }
 
-    public static JMPathPoint interpolateBetweenTwoPoints(JMPathPoint v1, JMPathPoint v2, double alpha) {
+    /**
+     * Proceeds to subdidivide paths to ensure the path has exactly the given
+     * number of elements Invisible pieces of path are not interpolated. New
+     * generated points are marked as INTERPOLATION_POINT
+     *
+     * @param newNumPoints New number of points
+     */
+    public void alignPathsToGivenNumberOfElements(int newNumPoints) {
+        if (newNumPoints == this.size()) {
+            return; //Nothing to do here!
+        }
+        //First compute how many visible segments are
+        ArrayList<JMPathPoint> pointsToInterpolate = new ArrayList<>();
+        //Loop is from 1 because I want to add extra point to the first segment (point 1) and not the last (point 0)
+        for (int n = 1; n < 1 + jmPathPoints.size(); n++) {
+            JMPathPoint p = jmPathPoints.get(n);
+            if (p.isVisible) {
+                pointsToInterpolate.add(p);
+            }
+        }
+        int numVisibleSegments = pointsToInterpolate.size();
+        int numPoints = jmPathPoints.size();
+        int toCreate = newNumPoints - numPoints;//Number of points to create, to put in the numVisibleSegments segments
 
+        int numDivs = (toCreate / numVisibleSegments); //Euclidean quotient
+        int rest = toCreate % numVisibleSegments;//Euclidean rest
+
+        for (int n = 0; n < pointsToInterpolate.size(); n++) {
+            JMPathPoint p = pointsToInterpolate.get(n);
+            p.numDivisions = numDivs + 1;//it is number of divisions, not number of points to be created. 1 new point means divide in 2
+            p.numDivisions += (n < rest ? 1 : 0);
+        }
+        //Once I have the number of segments to interpolate, subdivide all visible segments
+
+        for (JMPathPoint p : pointsToInterpolate) {
+            int k = jmPathPoints.indexOf(p);//Position of this point in the path
+            dividePathSegment(k, p.numDivisions);
+        }
+
+    }
+
+    /**
+     * Divide path from point(k) to point(k-1) into an equal number of parts.
+     *
+     * @param k index of end point
+     * @param numDivForThisVertex Number of subdivisions
+     */
+    public synchronized void dividePathSegment(int k, int numDivForThisVertex) {
+        if (numDivForThisVertex < 2) {
+            return;
+        }
+        double alpha = 1.0d / numDivForThisVertex;
+        interpolateBetweenTwoPoints(k, alpha);
+        dividePathSegment(k + 1, numDivForThisVertex - 1);//Keep subdividing until numDivForThisVertex=1
+    }
+
+    /**
+     * Adds an interpolation point at alpha parameter between point(k-1) and
+     * point(k) This method alters the control points of the points k-1 and k,
+     * storing them into cp1vbackup and cp2vbackup
+     *
+     * @param k inded of the point to be interpolated
+     * @param alpha Alpha parameter
+     * @return The new JMPathPoint generated, and added to the Path
+     */
+    public JMPathPoint interpolateBetweenTwoPoints(int k, double alpha) {
+        JMPathPoint v1 = getPoint(k - 1);
+        JMPathPoint v2 = getPoint(k);
         JMPathPoint interpolate;
         if (v2.isCurved) {
             //De Casteljau's Algorithm: https://en.wikipedia.org/wiki/De_Casteljau%27s_algorithm
@@ -299,7 +326,8 @@ public class JMPath implements Updateable, Stateable {
             //Control points are by default the same as v1 and v2 (straight line)
             interpolate = new JMPathPoint(interP, v2.isVisible, JMPathPoint.TYPE_INTERPOLATION_POINT);
         }
-        interpolate.isCurved = v2.isCurved;
+        interpolate.isCurved = v2.isCurved; //The new point is curved iff v2 is
+        jmPathPoints.add(k, interpolate); //Now v2 is in position k+1!
         return interpolate;
     }
 
@@ -579,4 +607,64 @@ public class JMPath implements Updateable, Stateable {
         pathBackup.visiblePoints.clear();
         pathBackup.visiblePoints.addAll(pathBackup.visiblePoints);
     }
+
+    /**
+     * Compute and returns a copy of the path (points referenced), given in
+     * canonical form. The canonical form is an array of open, connected paths.
+     * If the original path is closed, duplicates first vertex and opens it For
+     * each invisible segment, separate the path in two. This method allows
+     * better handling for Transform animations
+     *
+     * @return The array of paths
+     */
+    public ArrayList<JMPath> canonicalForm() {
+        ArrayList<JMPath> resul = new ArrayList<>();
+        JMPath workPath = this.copy();
+        Integer offset = null;
+        //Find backwards first invisible segment, if there is not, we have a closed path, so open it
+        for (int n = 0; n < jmPathPoints.size(); n++) {
+            JMPathPoint p = jmPathPoints.get(-n);
+            if (!p.isVisible) {
+                offset = n;
+                break;
+            }
+        }
+        if (offset == null) {
+            //Ok, we have a CLOSED path with no invisible segments
+            workPath.isClosed = false;
+            workPath.separate(0);
+            offset = 1;
+        }
+
+        //A new path always begins with invisible point (that is, invisible segment TO that point) 
+        //and ends with the previous to an invisible point
+        JMPath connectedComponent = new JMPath();
+        connectedComponent.pathType = JMPath.CONNECTED_COMPONENT;
+        for (int n = 0; n < workPath.size(); n++) {
+            JMPathPoint p = workPath.jmPathPoints.get(n + offset);
+            if (!p.isVisible && connectedComponent.size() > 0) {
+                resul.add(connectedComponent);
+                connectedComponent = new JMPath();
+                connectedComponent.pathType = JMPath.CONNECTED_COMPONENT;
+            }
+            connectedComponent.addJMPoint(p);
+        }
+        //add last component
+        resul.add(connectedComponent);
+        return resul;
+    }
+
+    public void separate(int k) {
+        JMPathPoint p = getPoint(k);
+        JMPathPoint pnew = p.copy();
+
+        pnew.isVisible = false;
+        pnew.cp2.v.copyFrom(p.cp2.v);
+        pnew.type = JMPathPoint.TYPE_INTERPOLATION_POINT;
+        p.cp2.v.copyFrom(p.p.v);
+
+        jmPathPoints.add(k+1, pnew);
+
+    }
+
 }

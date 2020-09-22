@@ -31,8 +31,8 @@ public class CircularArrayList<E> extends ArrayList<E> {
 
         return super.get(index);
     }
-    
-     @Override
+
+    @Override
     public E remove(int index) throws ArrayIndexOutOfBoundsException {
 
         if (this.size() == 0) {
@@ -48,4 +48,22 @@ public class CircularArrayList<E> extends ArrayList<E> {
 
         return super.remove(index);
     }
+
+    @Override
+    public void add(int index, E element) {
+
+        if (this.size() != 0) {
+
+            while (index >= this.size()) {
+                index -= this.size();
+            }
+
+            while (index < 0) {
+                index += this.size();
+            }
+        }
+
+        super.add(index, element); //To change body of generated methods, choose Tools | Templates.
+    }
+
 }

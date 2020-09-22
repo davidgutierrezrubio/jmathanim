@@ -95,7 +95,7 @@ public class MathObjectDrawingProperties {
     {
         drawColor=randomColor();
     }
-    public Color randomColor()
+    public static Color randomColor()
     {
         int r= ThreadLocalRandom.current().nextInt(0, 255 + 1);
         int g= ThreadLocalRandom.current().nextInt(0, 255 + 1);
