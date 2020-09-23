@@ -37,7 +37,7 @@ public class Transform extends Animation {
     public final Shape mobjDestiny;
     public final Shape mobjTransformed;
     private MathObjectDrawingProperties propBase;
-    private int method;
+    private Integer method;
     public boolean shouldOptimizePathsFirst;
     public boolean forceChangeDirection;
     private boolean isFinished;
@@ -48,7 +48,7 @@ public class Transform extends Animation {
         super(runTime);
         mobjTransformed = ob1;
         mobjDestiny = ob2.copy();
-        method = METHOD_INTERPOLATE_POINT_BY_POINT;//Default method
+        method = null;
         shouldOptimizePathsFirst = true;
         forceChangeDirection = false;
         isFinished = false;
@@ -63,11 +63,14 @@ public class Transform extends Animation {
         //2 segments/lines or segment/line
         //2 circles/ellipses
         //2 regular polygons with same number of sides
-        determineTransformMethod();
+        if (method == null) {
+            determineTransformMethod();
+        }
+        createStrategy();
 
         //Variable strategy should have proper strategy to transform
-        strategy.prepareObjects(mobjTransformed, mobjDestiny);
-
+        //If method is null means that user didn't force one
+            strategy.prepareObjects(mobjTransformed, mobjDestiny);
     }
 
     /**
@@ -104,6 +107,7 @@ public class Transform extends Animation {
     }
 
     private void determineTransformMethod() {
+        method = METHOD_INTERPOLATE_POINT_BY_POINT;//Default method if not specified
         if ((mobjTransformed instanceof Segment) && (mobjDestiny instanceof Segment)) {
             method = METHOD_HOMOTOPY_TRANSFORM;
             shouldOptimizePathsFirst = true;
@@ -115,6 +119,11 @@ public class Transform extends Animation {
             shouldOptimizePathsFirst = true;
         }
 
+        
+
+    }
+
+    private void createStrategy() {
         //Now I choose strategy
         switch (method) {
             case METHOD_INTERPOLATE_POINT_BY_POINT:
@@ -130,7 +139,6 @@ public class Transform extends Animation {
                 strategy = new RotateAndScaleXYStrategyTransform();
                 break;
         }
-
     }
 
     @Override
@@ -147,7 +155,8 @@ public class Transform extends Animation {
             isFinished = true;
         }
         strategy.finish();
-
+        //Copy type of destiny object to transformed one
+        mobjTransformed.setObjectType(mobjDestiny.getObjectType());
     }
 
     /**

@@ -140,20 +140,7 @@ public class Shape extends MathObject {
         jmpath.removeInterpolationPoints();
     }
 
-//    public void removeInterpolationPoints() {
-//        ArrayList<JMPathPoint> toRemove = new ArrayList<>();
-//        for (JMPathPoint p : jmpath.points) {
-//            if (p.type == JMPathPoint.TYPE_INTERPOLATION_POINT) {
-//                toRemove.add(p);
-//            }
-//        }
-//        jmpath.points.removeAll(toRemove);
-////        jmpath.generateControlPoints();
-//    }
-    @Override
-    public void scale(Point scaleCenter, double sx, double sy, double sz) {
-        jmpath.scale(scaleCenter, sx, sy, sz);
-    }
+
 
     @Override
     public Shape copy() {

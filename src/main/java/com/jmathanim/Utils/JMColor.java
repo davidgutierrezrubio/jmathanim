@@ -19,7 +19,7 @@ public class JMColor {
     public static JMColor GREEN = new JMColor(0, 1, 0, 1);
     public static JMColor BLUE = new JMColor(0, 0, 1, 1);
     public static JMColor GRAY = new JMColor(.5, .5, .5, 1);
-    
+
     public double r, g, b, alpha;
 
     public JMColor(double r, double g, double b, double alpha) {
@@ -27,6 +27,35 @@ public class JMColor {
         this.g = g;
         this.b = b;
         this.alpha = alpha;
+    }
+
+    public static JMColor rgbInt(int r, int g, int b, int alpha) {
+        return new JMColor(r * 1.f / 255, g * 1.f / 255, b * 1.f / 255, alpha * 1.f / 255);
+    }
+
+    public static JMColor rgbInt(int r, int g, int b) {
+        return JMColor.rgbInt(r, g, b, 255);
+    }
+
+    //https://stackoverflow.com/questions/4129666/how-to-convert-hex-to-rgb-using-java
+    public static JMColor hex(String hex) {
+        int rr, gg, bb, aa;
+        hex = hex.replace("#", "");
+        switch (hex.length()) {
+            case 6:
+                rr = Integer.valueOf(hex.substring(0, 2), 16);
+                gg = Integer.valueOf(hex.substring(2, 4), 16);
+                bb = Integer.valueOf(hex.substring(4, 6), 16);
+                return JMColor.rgbInt(rr, gg, bb);
+            case 8:
+                rr = Integer.valueOf(hex.substring(0, 2), 16);
+                gg = Integer.valueOf(hex.substring(2, 4), 16);
+                bb = Integer.valueOf(hex.substring(4, 6), 16);
+                aa = Integer.valueOf(hex.substring(6, 8), 16);
+                return JMColor.rgbInt(rr, gg, bb,aa);
+            default:
+                return null;
+        }
     }
 
     public Color getColor() {

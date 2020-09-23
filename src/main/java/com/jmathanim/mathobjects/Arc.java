@@ -75,13 +75,6 @@ public class Arc extends Shape {
 
     
 
-    @Override
-    public void scale(Point scaleCenter, double sx, double sy, double sz) {
-        super.scale(scaleCenter, sx, sy, sz);
-        center.scale(scaleCenter, sx, sy, sz);
-        radiusx*=sx;
-        radiusy*=sy;
-    }
 
 
     @Override

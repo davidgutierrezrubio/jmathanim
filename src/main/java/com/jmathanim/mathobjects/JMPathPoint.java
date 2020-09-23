@@ -132,11 +132,6 @@ public class JMPathPoint extends MathObject implements Updateable, Stateable {
         return (T) this;
     }
 
-    public void scale(Point point, double d, double e, double f) {
-        this.p.scale(point, d, e, f);
-        this.cp1.scale(point, d, e, f);
-        this.cp2.scale(point, d, e, f);
-    }
 
     @Override
     public void update() {

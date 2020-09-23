@@ -116,12 +116,7 @@ public class Point extends MathObject {
         return resul;
     }
 
-    @Override
-    public void scale(Point scaleCenter, double sx, double sy, double sz) {
-        v.x = (1 - sx) * scaleCenter.v.x + sx * v.x;
-        v.y = (1 - sy) * scaleCenter.v.y + sy * v.y;
-        v.z = (1 - sz) * scaleCenter.v.z + sz * v.z;
-    }
+   
 
     /**
      * Return a new Point object which represents the original point plus a

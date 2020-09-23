@@ -12,6 +12,8 @@ import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.MultiShapeObject;
 import com.jmathanim.mathobjects.Point;
 import com.jmathanim.mathobjects.Segment;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.apache.commons.math3.linear.Array2DRowRealMatrix;
 import org.apache.commons.math3.linear.LUDecomposition;
 import org.apache.commons.math3.linear.MatrixUtils;
@@ -108,22 +110,21 @@ public class AffineTransform {
 
     public void applyTransform(MathObject mObject) {
 
-        
-        if (mObject instanceof MultiShapeObject)
-        {
-           MultiShapeObject mobj = (MultiShapeObject) mObject;
-           for (Shape obj:mobj.shapes)
-           {
-               applyTransform(obj);
-           }
+        if (mObject instanceof MultiShapeObject) {
+            MultiShapeObject mobj = (MultiShapeObject) mObject;
+            for (Shape obj : mobj.shapes) {
+                applyTransform(obj);
+            }
+            return;
         }
-        
+
         if (mObject instanceof Shape) {
             Shape mobj = (Shape) mObject;
             int size = mobj.jmpath.size();
             for (int n = 0; n < size; n++) {
                 applyTransform(mobj.getJMPoint(n));
             }
+            return;
         }
 
         if (mObject instanceof JMPathPoint) {
@@ -144,25 +145,25 @@ public class AffineTransform {
             jmPDst.cp2.v.x = cp2Dst.v.x;
             jmPDst.cp2.v.y = cp2Dst.v.y;
             jmPDst.cp2.v.z = cp2Dst.v.z;
+            return;
         }
 
         if (mObject instanceof Point) {
-            {
-                Point p = (Point) mObject;
-                RealMatrix pRow = new Array2DRowRealMatrix(new double[][]{{1d, p.v.x, p.v.y, p.v.z}});
-                RealMatrix pNew = pRow.multiply(A);
+            Point p = (Point) mObject;
+            RealMatrix pRow = new Array2DRowRealMatrix(new double[][]{{1d, p.v.x, p.v.y, p.v.z}});
+            RealMatrix pNew = pRow.multiply(A);
 
-                p.v.x = pNew.getEntry(0, 1);
-                p.v.y = pNew.getEntry(0, 2);
-                p.v.z = pNew.getEntry(0, 3);
-                //If the object to be transformed is a point, it will have several JMPathPoints associated
-                for (JMPathPoint jmp : p.jmPoints) {
-                    applyTransform(jmp.cp1);
-                    applyTransform(jmp.cp2);
-                }
-
+            p.v.x = pNew.getEntry(0, 1);
+            p.v.y = pNew.getEntry(0, 2);
+            p.v.z = pNew.getEntry(0, 3);
+            //If the object to be transformed is a point, it will have several JMPathPoints associated
+            for (JMPathPoint jmp : p.jmPoints) {
+                applyTransform(jmp.cp1);
+                applyTransform(jmp.cp2);
             }
+            return;
         }
+            System.out.println("WARNING: Don't know how to perform an Affine Transform on object "+mObject.getClass().getName());
     }
 
     public <T extends MathObject> T getTransformedObject(MathObject obj) {
@@ -338,28 +339,28 @@ public class AffineTransform {
 //        AffineTransform resul = new AffineTransform();
         double[] row1_1 = this.A.getRow(0);
         double[] row1_2 = tr.A.getRow(0);
-        double interp11=(1-lambda)*row1_1[1]+lambda*row1_2[1];
-        double interp12=(1-lambda)*row1_1[2]+lambda*row1_2[2];
-        double interp13=(1-lambda)*row1_1[3]+lambda*row1_2[3];
-        
+        double interp11 = (1 - lambda) * row1_1[1] + lambda * row1_2[1];
+        double interp12 = (1 - lambda) * row1_1[2] + lambda * row1_2[2];
+        double interp13 = (1 - lambda) * row1_1[3] + lambda * row1_2[3];
+
         tr.setOriginImg(interp11, interp12, interp13);
-        
+
         double[] row2_1 = this.A.getRow(1);
         double[] row2_2 = tr.A.getRow(1);
-        double interp21=(1-lambda)*row2_1[1]+lambda*row2_2[1];
-        double interp22=(1-lambda)*row2_1[2]+lambda*row2_2[2];
-        double interp23=(1-lambda)*row2_1[3]+lambda*row2_2[3];
-        
+        double interp21 = (1 - lambda) * row2_1[1] + lambda * row2_2[1];
+        double interp22 = (1 - lambda) * row2_1[2] + lambda * row2_2[2];
+        double interp23 = (1 - lambda) * row2_1[3] + lambda * row2_2[3];
+
         tr.setV1Img(interp21, interp22, interp23);
-        
+
         double[] row3_1 = this.A.getRow(2);
         double[] row3_2 = tr.A.getRow(2);
-        double interp31=(1-lambda)*row3_1[1]+lambda*row3_2[1];
-        double interp32=(1-lambda)*row3_1[2]+lambda*row3_2[2];
-        double interp33=(1-lambda)*row3_1[3]+lambda*row3_2[3];
-        
+        double interp31 = (1 - lambda) * row3_1[1] + lambda * row3_2[1];
+        double interp32 = (1 - lambda) * row3_1[2] + lambda * row3_2[2];
+        double interp33 = (1 - lambda) * row3_1[3] + lambda * row3_2[3];
+
         tr.setV2Img(interp31, interp32, interp33);
-        
+
         return tr;
 
     }
@@ -382,14 +383,14 @@ public class AffineTransform {
         tr1.setOriginImg(A);
         tr1.setV1Img(A.to(B));
         tr1.setV2Img(A.to(C));
-        tr1=tr1.getInverse();
+        tr1 = tr1.getInverse();
 
 //Now I create a transformation that map O,e1,e2 into D,E,F
         AffineTransform tr2 = new AffineTransform();
         tr2.setOriginImg(D);
         tr2.setV1Img(D.to(E));
         tr2.setV2Img(D.to(F));
-        
+
         //The transformation I am looking for is X-> tr2(tr^-1(X))
         AffineTransform tr = tr1.compose(tr2);
         AffineTransform id = new AffineTransform();

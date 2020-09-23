@@ -5,6 +5,7 @@
  */
 package com.jmathanim.mathobjects;
 
+import com.jmathanim.Animations.AffineTransform;
 import com.jmathanim.Utils.Anchor;
 import com.jmathanim.Utils.JMColor;
 import com.jmathanim.Utils.JMathAnimConfig;
@@ -149,8 +150,7 @@ public abstract class MathObject implements Drawable, Updateable, Stateable {
      * @return
      */
     public <T extends MathObject> T scale(Point p, double sx, double sy) {
-        scale(p, sx, sy, 1);
-        return (T) this;
+        return scale(p, sx, sy, 1);
     }
 
     /**
@@ -160,11 +160,26 @@ public abstract class MathObject implements Drawable, Updateable, Stateable {
      * @param sy
      * @param sz
      */
-    public void scale(double sx, double sy, double sz) {
+    public <T extends MathObject> T scale(double sx, double sy, double sz) {
         scale(getBoundingBox().getCenter(), sx, sy, sz);
+        return (T) this;
     }
 
-    public abstract void scale(Point scaleCenter, double sx, double sy, double sz);
+    public <T extends MathObject> T scale(Point scaleCenter, double sx, double sy, double sz) {
+        AffineTransform tr = AffineTransform.create2DScaleTransform(scaleCenter, sx, sy, sz);
+        tr.applyTransform(this);
+        return (T) this;
+    }
+
+    public <T extends MathObject> T rotate(Point center, double angle) {
+        AffineTransform tr = AffineTransform.create2DRotationTransform(center, angle);
+        tr.applyTransform(this);
+        return (T) this;
+    }
+
+    public <T extends MathObject> T rotate(double angle) {
+        return rotate(this.getCenter(), angle);
+    }
 
     /**
      * Returns a copy of the object

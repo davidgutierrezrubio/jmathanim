@@ -61,6 +61,8 @@ public class JMathAnimConfig {
         }
         return singletonConfig;
     }
+    //Background color, default black
+    private JMColor backgroundColor=JMColor.BLACK;
 
     private JMathAnimConfig() {//Private constructor
     }
@@ -118,6 +120,14 @@ public class JMathAnimConfig {
 
     public void setCamera(Camera camera) {
         this.renderer.setCamera(camera);
+    }
+
+    public JMColor getBakcgroundColor() {
+        return backgroundColor;
+    }
+
+    public void setBackgroundColor(JMColor bakcgroundColor) {
+        this.backgroundColor = bakcgroundColor;
     }
 
 }

@@ -66,13 +66,14 @@ public class PointSimple extends Scene2D {
         clockTick("create movie");
         setShowPreviewWindow(true);
         clockTick("Show preview window");
+        conf.setBackgroundColor(JMColor.hex("#192841"));
     }
 
     @Override
     public void runSketch() {
         System.out.println("Running sketch...");
 //       pruebaTransformHomotopy();
-        pruebaTransformRotateXY();
+        pruebaVariosTransforms();
     }
 
     public void testAll() {
@@ -97,6 +98,20 @@ public class PointSimple extends Scene2D {
         pruebaTransform2Circles();
     }
 
+    public void pruebaVariosTransforms(){
+        Shape reg=Shape.regularPolygon(5, new Point(0,0), .3).scale(-.3, 1.6).rotate(-Math.PI/3).drawColor(JMColor.BLACK);
+        Shape sq=Shape.regularPolygon(5, new Point(0,0), .3).shift(1,0).fillColor(JMColor.RED);
+        add(sq.drawColor(JMColor.BLACK));
+        double tiempo=60;
+        waitSeconds(tiempo);
+        Transform tr = new Transform(reg, sq, tiempo);
+//        tr.setMethod(Transform.METHOD_INTERPOLATE_POINT_BY_POINT);
+        play(tr);
+        waitSeconds(tiempo);
+    }
+    
+    
+    
     public synchronized void resetScene() {
         waitSeconds(3);
         JMathAnimScene scene = JMathAnimConfig.getConfig().getScene();

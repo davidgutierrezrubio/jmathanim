@@ -78,12 +78,7 @@ public class MultiShapeObject extends MathObject {
         return (T) this;
     }
 
-    @Override
-    public void scale(Point scaleCenter, double sx, double sy, double sz) {
-        for (Shape jmp : shapes) {
-            jmp.scale(scaleCenter, sx, sy, sz);
-        }
-    }
+   
 
     @Override
     public <T extends MathObject> T copy() {
