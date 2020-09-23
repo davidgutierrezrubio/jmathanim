@@ -7,6 +7,7 @@ package com.jmathanim.mathobjects;
 
 import com.jmathanim.Cameras.Camera;
 import com.jmathanim.Utils.Anchor;
+import com.jmathanim.Utils.JMColor;
 import com.jmathanim.Utils.JMathAnimConfig;
 import com.jmathanim.Utils.Rect;
 import com.jmathanim.jmathanim.JMathAnimScene;
@@ -63,7 +64,7 @@ public class LaTeXMathObject extends SVGMathObject {
             putAt(new Point(0,0), Anchor.UL);
         }
         //Default color
-        setColor(Color.WHITE);
+        setColor(JMColor.WHITE);
         this.setAbsoluteSize();
         this.setAbsolutAnchorPoint(Anchor.UL);//Default
         
@@ -167,11 +168,11 @@ public class LaTeXMathObject extends SVGMathObject {
 
     }
 
-    private void setColor(Color color) {
+    private void setColor(JMColor color) {
         for (Shape p : shapes) {
             p.mp.thickness = .0001;
             p.drawColor(color);
-            p.mp.fill = true;
+            p.mp.setFillAlpha(1);
             p.fillColor(color); //LaTeX Objects should have by default same fill and draw color
         }
     }

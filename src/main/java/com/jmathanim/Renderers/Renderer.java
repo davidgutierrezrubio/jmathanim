@@ -6,6 +6,7 @@
 package com.jmathanim.Renderers;
 
 import com.jmathanim.Cameras.Camera;
+import com.jmathanim.Utils.JMColor;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.mathobjects.Shape;
 import com.jmathanim.mathobjects.MathObject;
@@ -20,13 +21,13 @@ import java.awt.Color;
  */
 public abstract class Renderer {
 
-    protected Color borderColor;
-    protected Color fillColor;
+    protected JMColor borderColor;
+    protected JMColor fillColor;
     protected int width;
     protected int height;
 
     public Renderer() {
-        borderColor = Color.WHITE;//Default color
+        borderColor = JMColor.WHITE;//Default color
 
     }
 
@@ -62,19 +63,19 @@ public abstract class Renderer {
         setCameraSize(width, height);
     }
 
-    public Color getBorderColor() {
+    public JMColor getBorderColor() {
         return borderColor;
     }
 
-    public void setBorderColor(Color color) {
+    public void setBorderColor(JMColor color) {
         this.borderColor = color;
     }
 
-    public Color getFillColor() {
+    public JMColor getFillColor() {
         return fillColor;
     }
 
-    public void setFillColor(Color fillColor) {
+    public void setFillColor(JMColor fillColor) {
         this.fillColor = fillColor;
     }
 

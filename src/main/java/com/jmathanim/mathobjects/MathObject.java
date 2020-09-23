@@ -6,6 +6,7 @@
 package com.jmathanim.mathobjects;
 
 import com.jmathanim.Utils.Anchor;
+import com.jmathanim.Utils.JMColor;
 import com.jmathanim.Utils.JMathAnimConfig;
 import com.jmathanim.Utils.MathObjectDrawingProperties;
 import com.jmathanim.Utils.Rect;
@@ -271,14 +272,13 @@ public abstract class MathObject implements Drawable, Updateable, Stateable {
     }
 
     //Convenience methods to set drawing parameters
-    public <T extends MathObject> T drawColor(Color dc) {
-        mp.drawColor = dc;
+    public <T extends MathObject> T drawColor(JMColor dc) {
+        mp.drawColor.set(dc);
         return (T) this;
     }
 
-    public <T extends MathObject> T fillColor(Color fc) {
-        mp.fillColor = fc;
-        mp.fill = true;
+    public <T extends MathObject> T fillColor(JMColor fc) {
+        mp.fillColor.set(fc);
         return (T) this;
     }
 

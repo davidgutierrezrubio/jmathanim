@@ -50,11 +50,11 @@ public class Shape extends MathObject {
     }
 
     public JMPathPoint getJMPoint(int n) {
-        return jmpath.getPoint(n);
+        return jmpath.getJMPoint(n);
     }
 
     public Point getPoint(int n) {
-        return jmpath.getPoint(n).p;
+        return jmpath.getJMPoint(n).p;
     }
 
     /**
@@ -111,7 +111,7 @@ public class Shape extends MathObject {
 
         //If this is the first call, be sure to store visibility status
         if (drawParam == 0) {
-            fillAlphaTemp = mp.fillColor.getAlpha() / 255.;
+            fillAlphaTemp = mp.fillColor.alpha;
             visibilityTemp = new ArrayList<Boolean>();
             for (int n = 0; n < jmpath.jmPathPoints.size(); n++) {
                 visibilityTemp.add(jmpath.jmPathPoints.get(n).isVisible);
@@ -127,9 +127,9 @@ public class Shape extends MathObject {
             for (int k = 0; k < numSlices; k++) {//TODO: Store initial visible in array
                 int h = k * jmpath.jmPathPoints.size() / numSlices + n;
                 if (n < sliceSize) {
-                    jmpath.getPoint(h).isVisible = visibilityTemp.get(h);
+                    jmpath.getJMPoint(h).isVisible = visibilityTemp.get(h);
                 } else {
-                    jmpath.getPoint(h).isVisible = false;
+                    jmpath.getJMPoint(h).isVisible = false;
                 }
             }
         }
@@ -157,7 +157,8 @@ public class Shape extends MathObject {
 
     @Override
     public Shape copy() {
-        Shape resul = new Shape(jmpath.rawCopy(), mp.copy());
+        final MathObjectDrawingProperties copy = mp.copy();
+        Shape resul = new Shape(jmpath.rawCopy(), copy);
         resul.setObjectType(this.getObjectType());//Copy object type
         return resul;
     }

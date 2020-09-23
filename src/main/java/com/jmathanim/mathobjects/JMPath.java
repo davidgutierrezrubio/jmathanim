@@ -63,7 +63,7 @@ public class JMPath implements Updateable, Stateable {
         }
     }
 
-    public JMPathPoint getPoint(int n) {
+    public JMPathPoint getJMPoint(int n) {
         return jmPathPoints.get(n);
     }
 
@@ -295,8 +295,8 @@ public class JMPath implements Updateable, Stateable {
      * @return The new JMPathPoint generated, and added to the Path
      */
     public JMPathPoint interpolateBetweenTwoPoints(int k, double alpha) {
-        JMPathPoint v1 = getPoint(k - 1);
-        JMPathPoint v2 = getPoint(k);
+        JMPathPoint v1 = getJMPoint(k - 1);
+        JMPathPoint v2 = getJMPoint(k);
         JMPathPoint interpolate;
         if (v2.isCurved) {
             //De Casteljau's Algorithm: https://en.wikipedia.org/wiki/De_Casteljau%27s_algorithm
@@ -657,7 +657,7 @@ public class JMPath implements Updateable, Stateable {
     }
 
     public void separate(int k) {
-        JMPathPoint p = getPoint(k);
+        JMPathPoint p = getJMPoint(k);
         JMPathPoint pnew = p.copy();
 
         pnew.isVisible = false;

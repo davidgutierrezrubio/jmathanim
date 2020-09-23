@@ -15,7 +15,7 @@ public class Square extends RegularPolygon {
 
     public Square() {
         super(4, 1);
-        Vec v=jmpath.getPoint(0).p.v;
+        Vec v=jmpath.getJMPoint(0).p.v;
         this.shift(v.mult(-1));
     }
 

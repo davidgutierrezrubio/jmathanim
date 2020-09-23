@@ -21,13 +21,13 @@ public class MathObjectDrawingProperties {
     public static final int DASHED = 2;
     public static final int DOTTED = 3;
 
-    public Color drawColor;
-    public Color fillColor;
+    public final JMColor drawColor;
+    public final JMColor fillColor;
     public Double thickness;
     //If false, thickness is computed to be a percentage of the width
     //to ensure zoom or resolution doesn't affect the result
     public Boolean absoluteThickness;
-    public Boolean fill;
+//    public Boolean fill;
     public Boolean visible;
     public Integer layer;//Layer to draw. Slower means under.
     public Boolean absolutePosition;//If true, position comes in absolute screen coordinates
@@ -35,6 +35,8 @@ public class MathObjectDrawingProperties {
     public Integer dashStyle;
 
     public MathObjectDrawingProperties() {
+        drawColor = new JMColor(0, 0, 0, 0);
+        fillColor = new JMColor(0, 0, 0, 0);
     }
 
     /**
@@ -46,12 +48,12 @@ public class MathObjectDrawingProperties {
         if (prop == null) {//Nothing to do here!
             return;
         }
-        drawColor = (prop.drawColor == null ? drawColor : new Color(prop.drawColor.getRGB()));
-        fillColor = (prop.fillColor == null ? fillColor : new Color(prop.fillColor.getRGB()));
+        drawColor.set(prop.drawColor);
+        fillColor.set(prop.fillColor);
         thickness = (prop.thickness == null ? thickness : prop.thickness);
         visible = (prop.visible == null ? visible : prop.visible);
         dashStyle = (prop.dashStyle == null ? dashStyle : prop.dashStyle);
-        fill = (prop.fill == null ? fill : prop.fill);
+//        fill = (prop.fill == null ? fill : prop.fill);
         drawPathBorder = (prop.drawPathBorder == null ? drawPathBorder : prop.drawPathBorder);
         absoluteThickness = (prop.absoluteThickness == null ? absoluteThickness : prop.absoluteThickness);
         layer = (prop.layer == null ? layer : prop.layer);
@@ -66,49 +68,44 @@ public class MathObjectDrawingProperties {
      */
     public void interpolateFrom(MathObjectDrawingProperties a, MathObjectDrawingProperties b, double t) {
         //Interpolate colors
-        drawColor=interpolateColor(a.drawColor, b.drawColor, t);
-        fillColor=interpolateColor(a.fillColor, b.fillColor, t);
+        drawColor.set(a.drawColor.interpolate(b.drawColor, t));
+        fillColor.set(a.fillColor.interpolate(b.fillColor, t));
+
 //        interpolateColor(a.fillColor, b.fillColor, t);
         this.thickness = (1 - t) * a.thickness + t * b.thickness;
 
     }
 
-    /**
-     * Compute an interpolated value of given colors.
-     * Interpolates R,G,B and alpha
-     *
-     * @param colA Color A to interpolate
-     * @param colB Color B to interpolate
-     * @param t Interpolation value (t=0 gives colA and t=1 gives colB)
-     * @return The interpolated color
-     */
-    public Color interpolateColor(Color colA, Color colB, double t) {
-        int r = (int) ((1 - t) * colA.getRed() + t * colB.getRed());
-        int g = (int) ((1 - t) * colA.getGreen() + t * colB.getGreen());
-        int b = (int) ((1 - t) * colA.getBlue() + t * colB.getBlue());
-        int tr = (int) ((1 - t) * colA.getAlpha() + t * colB.getAlpha());
-
-        return new Color(r, g, b, tr);
+    public void setRandomDrawColor() {
+        drawColor.set(JMColor.random());
     }
 
-    public void setRandomDrawColor()
-    {
-        drawColor=randomColor();
+    public static Color randomColor() {
+        int r = ThreadLocalRandom.current().nextInt(0, 255 + 1);
+        int g = ThreadLocalRandom.current().nextInt(0, 255 + 1);
+        int b = ThreadLocalRandom.current().nextInt(0, 255 + 1);
+        return new Color(r, g, b);
     }
-    public static Color randomColor()
-    {
-        int r= ThreadLocalRandom.current().nextInt(0, 255 + 1);
-        int g= ThreadLocalRandom.current().nextInt(0, 255 + 1);
-        int b= ThreadLocalRandom.current().nextInt(0, 255 + 1);
-        return new Color(r,g,b);
-    }
-    
+
     public void setFillAlpha(float alpha) {
-        this.fillColor = new Color(this.fillColor.getRed(), this.fillColor.getGreen(), this.fillColor.getBlue(), (int) (255 * alpha));
+        this.fillColor.alpha = alpha;
     }
 
     public void setDrawAlpha(float alpha) {
-        this.drawColor = new Color(this.drawColor.getRed(), this.drawColor.getGreen(), this.drawColor.getBlue(), (int) (255 * alpha));
+        this.drawColor.alpha = alpha;
+    }
+
+    public boolean isFilled() {
+        return (this.fillColor.alpha > 0);
+    }
+
+    public void setFilled(boolean fill) {
+        if (fill && fillColor.alpha == 0) {
+            setFillAlpha(1);
+        }
+        if (!fill) {
+            setFillAlpha(0);
+        }
     }
 
     public double getThickness(Renderer r) {
@@ -137,16 +134,17 @@ public class MathObjectDrawingProperties {
 //        absolutePosition;
 //        drawPathBorder;
 //        dashStlye
-        drawColor = new Color(mp.drawColor.getRGB());
-        fillColor = new Color(mp.fillColor.getRGB());
+        drawColor.set(mp.drawColor);
+        fillColor.set(mp.fillColor);
+
         thickness = mp.thickness;
         dashStyle = mp.dashStyle;
         absoluteThickness = mp.absoluteThickness;
-        fill = mp.fill;
+//        fill = mp.fill;
         visible = mp.visible;
         absolutePosition = mp.absolutePosition;
         drawPathBorder = mp.drawPathBorder;
-        dashStyle=mp.dashStyle;
+        dashStyle = mp.dashStyle;
     }
 //
 }

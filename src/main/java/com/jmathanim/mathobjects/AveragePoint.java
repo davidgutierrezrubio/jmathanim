@@ -29,7 +29,7 @@ public class AveragePoint extends Point implements Updateable {
     public void update() {
         Vec resul = new Vec(0, 0);
         for (int n = 0; n < path.size(); n++) {
-            resul.addInSite(path.getPoint(n).p.v);
+            resul.addInSite(path.getJMPoint(n).p.v);
         }
         resul.multInSite(1.0d / path.size());
         this.v = resul;

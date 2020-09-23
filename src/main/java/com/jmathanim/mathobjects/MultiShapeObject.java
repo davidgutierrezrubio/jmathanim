@@ -7,6 +7,7 @@ package com.jmathanim.mathobjects;
 
 import com.jmathanim.Renderers.Java2DRenderer;
 import com.jmathanim.Renderers.Renderer;
+import com.jmathanim.Utils.JMColor;
 import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
@@ -54,7 +55,7 @@ public class MultiShapeObject extends MathObject {
     }
 
     @Override
-    public <T extends MathObject> T fillColor(Color fc) {
+    public <T extends MathObject> T fillColor(JMColor fc) {
         for (Shape jmp : shapes) {
             jmp.fillColor(fc);
         }
@@ -62,7 +63,7 @@ public class MultiShapeObject extends MathObject {
     }
 
     @Override
-    public <T extends MathObject> T drawColor(Color dc) {
+    public <T extends MathObject> T drawColor(JMColor dc) {
         for (Shape jmp : shapes) {
             jmp.drawColor(dc);
         }

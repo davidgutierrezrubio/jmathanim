@@ -15,6 +15,7 @@ import com.jmathanim.Animations.commands.AbstractCommand;
 import com.jmathanim.Animations.commands.Commands;
 import com.jmathanim.Animations.commands.SingleMathObjectCommand;
 import com.jmathanim.Utils.Anchor;
+import com.jmathanim.Utils.JMColor;
 import com.jmathanim.Utils.JMathAnimConfig;
 import com.jmathanim.Utils.MathObjectDrawingProperties;
 import com.jmathanim.Utils.Rect;
@@ -70,6 +71,11 @@ public class PointSimple extends Scene2D {
     @Override
     public void runSketch() {
         System.out.println("Running sketch...");
+//       pruebaTransformHomotopy();
+        pruebaTransformRotateXY();
+    }
+
+    public void testAll() {
         pruebaFixedCamera();
         resetScene();
         pruebaNewTransform2();
@@ -89,7 +95,6 @@ public class PointSimple extends Scene2D {
         pruebaSizeLaTeX();
         resetScene();
         pruebaTransform2Circles();
-        
     }
 
     public synchronized void resetScene() {
@@ -114,7 +119,7 @@ public class PointSimple extends Scene2D {
         sh.jmpath.addJMPoint(new JMPathPoint(new Point(-.2, .4), true, JMPathPoint.TYPE_VERTEX));
 
         Shape sq = Shape.square();
-        add(sh.scale(.5, .5).shift(-1, 0).drawColor(Color.red), sq);
+        add(sh.scale(.5, .5).shift(-1, 0).drawColor(JMColor.RED), sq);
         waitSeconds(10);
         playTransform(sh, sq, 30);
         waitSeconds(20);
@@ -132,7 +137,7 @@ public class PointSimple extends Scene2D {
         p = new JMPathPoint(new Point(0, 1), true, JMPathPoint.TYPE_VERTEX);
         pa.jmpath.addJMPoint(p);
         pa.jmpath.close();
-        pa.mp.drawColor = Color.GREEN;
+        pa.drawColor(JMColor.GREEN);
         add(pa);
         waitSeconds(3d);
         play(new ShowCreation(pa, 3d));
@@ -153,7 +158,7 @@ public class PointSimple extends Scene2D {
     public void variosCirculos() {
         Circle c1 = new Circle(new Point(-1, 0), .5);
         c1.mp.thickness = .005d;
-        c1.mp.drawColor = Color.MAGENTA;
+        c1.drawColor(JMColor.GREEN);
         c1.mp.layer = 2;
         add(c1);
 
@@ -274,18 +279,15 @@ public class PointSimple extends Scene2D {
         pol.getJMPoint(2).isVisible = false;
         pol.getJMPoint(6).isVisible = false;
         pol.getJMPoint(4).isVisible = false;
-        add(pol);
-        Shape sq = Shape.square().shift(-1, -1);
+        add(pol.drawColor(JMColor.RED));
+        Shape sq = Shape.square().shift(-1, -1).drawColor(JMColor.BLUE);
 //        add(sq);
         double tiempo = 40;
         waitSeconds(tiempo);
+        playTransform(pol, sq, tiempo);
 
-        waitSeconds(tiempo);
-        waitSeconds(tiempo);
-        waitSeconds(tiempo);
-        waitSeconds(tiempo);
-        waitSeconds(tiempo);
-        waitSeconds(tiempo);
+        playTransform(pol, Shape.regularPolygon(8, new Point(0, 0), .3).drawColor(JMColor.GREEN).fillColor(JMColor.RED), tiempo);
+        System.out.println("Pol:" + pol);
         waitSeconds(tiempo);
     }
 
@@ -312,11 +314,11 @@ public class PointSimple extends Scene2D {
     public void pruebaInterpolacion() {
         Circle circ = new Circle(new Point(-.5, .5), 2);
         circ.mp.thickness /= 3;
-        circ.mp.drawColor = Color.YELLOW;
+        circ.drawColor(JMColor.GREEN);
         JMPathPoint pp = circ.jmpath.jmPathPoints.get(0);
         pp.shift(new Vec(-2, 0));
         Circle circ2 = circ.copy();
-        circ2.mp.drawColor = Color.BLUE;
+        circ2.drawColor(JMColor.BLUE);
         add(circ, circ2);
         RegularPolygon pol4 = new RegularPolygon(12, 3.d / 16);
 //        circ.jmpath.alignPaths(pol4.jmpath);
@@ -336,13 +338,10 @@ public class PointSimple extends Scene2D {
 //        RegularPolygon pol2 = new RegularPolygon(4, 3.d / 4);
 //        pol2.mp.drawColor=Color.GREEN;
         RegularPolygon pol3 = new RegularPolygon(3, 3.d / 5);
-        pol3.mp.drawColor = Color.ORANGE;
         RegularPolygon pol4 = new RegularPolygon(12, 3.d / 16);
-        pol4.mp.drawColor = Color.PINK;
         pol4.mp.thickness /= 3;
         Circle circ = new Circle(new Point(-.5, -.5), 1);
         circ.mp.thickness /= 3;
-        circ.mp.drawColor = Color.YELLOW;
         JMPathPoint pp = circ.jmpath.jmPathPoints.get(0);
         pp.shift(new Vec(-1, 0));
 //        pol1.shift(new Vec(-1, 0));
@@ -393,11 +392,6 @@ public class PointSimple extends Scene2D {
         linea3.mp.thickness = .1;
         linea4.mp.thickness = .1;
         linea5.mp.thickness = .1;
-
-        linea2.mp.drawColor = Color.MAGENTA;
-        linea3.mp.drawColor = Color.GREEN;
-        linea4.mp.drawColor = Color.YELLOW;
-        linea5.mp.drawColor = Color.CYAN;
 
         add(linea2);
         add(linea3);
@@ -461,7 +455,7 @@ public class PointSimple extends Scene2D {
 
     private void pruebaRelleno() {
         Circle circ = new Circle(new Point(0, 0), 1);
-        circ.mp.fill = true;
+        circ.mp.setFillAlpha(1);
         play(new ShowCreation(circ, 3));
         play(new FadeIn(circ, 3));
 //        for (float al = 0; al <= 1; al += .01) {
@@ -530,20 +524,16 @@ public class PointSimple extends Scene2D {
     public void pruebaTransformSegmentos() {
         RegularPolygon cir = new RegularPolygon(5, 1);
 //        cir.mp.fill = true;
-        cir.mp.fillColor = Color.yellow;
         add(cir);
         cir.shift(-1, -1);
 
 //        cir.mp.thickness = .5;
-        cir.mp.drawColor = Color.GREEN;
 //        Segment s1 = new Segment(new Point(-1, 1), new Point(0, .5));
         RegularPolygon pol = new RegularPolygon(5, 1);
         pol.mp.dashStyle = MathObjectDrawingProperties.DASHED;
 //        pol.mp.thickness = .5;
-        pol.mp.drawColor = Color.blue;
-        pol.mp.fillColor = Color.magenta;
         pol.mp.setFillAlpha(.5f);
-        pol.mp.fill = false;
+        pol.mp.setFilled(true);
         add(pol);
         ArrayList<Segment> radius = pol.getApothem();
 //        waitSeconds(3);
@@ -594,7 +584,7 @@ public class PointSimple extends Scene2D {
 
     }
 
-    public void pruebaHomotopia() {
+    public void pruebaTransformHomotopy() {
         double tiempo = 20;
         Point A = new Point(1, -0);
         Point B = new Point(0, 0);
@@ -603,10 +593,6 @@ public class PointSimple extends Scene2D {
         Point M = new MiddlePoint(A, B);
         Point N = new MiddlePoint(A, M);
         add(M, N);
-        A.mp.drawColor = Color.GREEN;
-        B.mp.drawColor = Color.GREEN;
-        C.mp.drawColor = Color.RED;
-        D.mp.drawColor = Color.RED;
         add(A, B, C, D);
         Segment s1 = new Segment(B, A);
         Segment s2 = new Segment(C, D);
@@ -630,15 +616,10 @@ public class PointSimple extends Scene2D {
         TransformedPoint X = new TransformedPoint(A, tr);
         TransformedPoint Y = new TransformedPoint(B, tr);
         TransformedPoint Z = new TransformedPoint(C, tr);
-        X.mp.drawColor = Color.GREEN;
-        Y.mp.drawColor = Color.GREEN;
-        Z.mp.drawColor = Color.GREEN;
         TransformedPoint T = new TransformedPoint(X, tr2);
-        T.mp.drawColor = Color.BLUE;
         add(X, Y, Z);
         add(T);
         MiddlePoint W = new MiddlePoint(Y, Z);
-        W.mp.drawColor = Color.RED;
         add(W);
         Polygon pol = new Polygon(A, B, C);
         add(pol);
@@ -659,18 +640,15 @@ public class PointSimple extends Scene2D {
 
         RegularPolygon pol = new RegularPolygon(5, 1);
         pol.shift(0, 1);
-        pol.mp.drawColor = Color.YELLOW;
         add(pol);
 
         AffineTransform tr = AffineTransform.createReflection(new Point(1, 1), new Point(2, -1), 1);
 
         Point p = new Point(0, 0);
         Point reflectedPoint = tr.getTransformedPoint(p);
-        reflectedPoint.mp.drawColor = Color.GREEN;
         add(reflectedPoint, p);
 
         TransformedJMPath pol2 = new TransformedJMPath(pol, tr);
-        pol2.mp.drawColor = Color.GRAY;
         add(pol2);
         for (double dx = 0; dx < 2; dx += .001) {
             pol.shift(.001, 0);
@@ -684,7 +662,6 @@ public class PointSimple extends Scene2D {
 
         RegularPolygon pol = new RegularPolygon(5, 1);
         pol.shift(0, 1);
-        pol.mp.drawColor = Color.YELLOW;
         add(pol);
         JMPath jmpathOrig = pol.getPath().rawCopy();
         for (double lambda = 0; lambda < 1; lambda += .001) {
@@ -824,28 +801,25 @@ public class PointSimple extends Scene2D {
         return hex2.copy();
     }
 
-    private void pruebaBuilders() {
+    private void pruebaTransformRotateXY() {
         Shape sq = Shape.square();
         Point A = new Point(1, 1);
         Point B = new Point(0, -1);
         Point C = new Point(1.5, -.7);
-        Shape sq2 = Shape.square(A, .5).drawColor(Color.RED).fillColor(Color.yellow);
-        Shape sq3 = sq.copy().drawColor(Color.BLUE).fillColor(Color.CYAN);
+        Shape sq2 = Shape.square(A, .5).drawColor(JMColor.RED).fillColor(JMColor.GREEN);
+        Shape sq3 = sq.copy().drawColor(JMColor.BLUE).fillColor(JMColor.RED);
         Shape rect = Shape.rectangle(B, C);
+
+        rect.setFillAlpha(0);
+        sq.setFillAlpha(1);
+        add(rect, sq);
+        waitSeconds(35);
+        waitSeconds(35);
         playRotate(rect, rect.getCenter(), Math.PI / 3, 5);
-//        sq2.mp.drawColor=Color.GRAY;
-//        rect.mp.drawColor=Color.cyan;
-//        registerObjectToBeUpdated(new AnchoredMathObject(sq2,AnchoredMathObject.ANCHOR_BY_CENTER, sq.getPoint(2),AnchoredMathObject.ANCHOR_BY_POINT));
-//        AffineTransform tr=AffineTransform.createAffineTransformation(rect.getPoint(0), rect.getPoint(1), rect.getPoint(2), sq2.getPoint(0), sq2.getPoint(1), sq2.getPoint(2), 1);
-        add(rect);
-//        Shape rect2 = tr.getTransformedObject(rect);
-//        rect2.mp.drawColor=Color.GREEN;
-        add(sq2, rect);
-        waitSeconds(5);
-//        playRotate(sq, new Point(0,0), Math.PI, 5);
-        playTransform(sq, sq2, 10);
+//      
+//        playTransform(sq, sq2, 10);
 //        sq.setObjectType(MathObject.OTHER);
-        playTransform(sq, rect, 10);
+        playTransform(sq, rect, 40);
         playTransform(sq, sq3, 10);
 //        playTransform(rect, Shape.Circle(), dt);
         waitSeconds(5);
@@ -896,7 +870,7 @@ public class PointSimple extends Scene2D {
         int timeScale = 10;
         waitSeconds(timeScale);
         Rect rr = camera.getRectView(pol.getBoundingBox());
-        add(Shape.rectangle(rr).drawColor(Color.RED));
+        add(Shape.rectangle(rr).drawColor(JMColor.RED));
 
         playZoomToRect(pol.getBoundingBox(), 3 * timeScale);
 
@@ -917,7 +891,7 @@ public class PointSimple extends Scene2D {
 
     public void pruebaCopiaPath() {
         Shape sq = Shape.square();
-        sq.fillColor(Color.WHITE);
+        sq.fillColor(JMColor.WHITE);
         Shape sq2 = sq.copy();
         sq.shift(-1, -1);
         add(sq, sq2);
@@ -929,7 +903,7 @@ public class PointSimple extends Scene2D {
         add(svg.get(0));
 //        add(svg.shapes.get(1));
 //        add(svg.shapes.get(2));
-        svg.drawColor(Color.WHITE);
+        svg.drawColor(JMColor.WHITE);
 
         Shape s = Shape.square();
 //        add(s);

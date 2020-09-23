@@ -75,9 +75,9 @@ public class SVGMathObject extends MultiShapeObject {
                     path.pathType = JMPath.SVG_PATH; //Mark this as a SVG path
 
                     if (eElement.getAttribute("fill") == "none") {
-                        mp.fill = false;
+                        mp.setFilled(false);//TODO: THIS IS NOT WORKING
                     } else {
-                        mp.fill = true;
+                        mp.setFilled(false);
                     }
 
                     addJMPathObject(path); //Add this path to the array of JMPathObjects

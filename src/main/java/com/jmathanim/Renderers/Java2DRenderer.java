@@ -188,7 +188,7 @@ public class Java2DRenderer extends Renderer {
     @Override
     public void drawCircle(double x, double y, double radius) {
         
-        g2d.setColor(borderColor);
+        g2d.setColor(borderColor.getColor());
         double mx = x - .5 * radius;
         double my = y + .5 * radius;
         int[] screenx = camera.mathToScreen(mx, my);
@@ -201,7 +201,7 @@ public class Java2DRenderer extends Renderer {
         setStroke(p);
         int[] xx = camera.mathToScreen(p.v.x, p.v.y);
         
-        g2d.setColor(p.mp.drawColor);
+        g2d.setColor(p.mp.drawColor.getColor());
         g2d.drawLine(xx[0], xx[1], xx[0], xx[1]);
     }
     
@@ -332,12 +332,12 @@ public class Java2DRenderer extends Renderer {
         if (numPoints >= minimumPoints) {
             path = createPathFromJMPath(mobj, cam);
             
-            if (mobj.mp.fill) {
-                g2d.setPaint(mobj.mp.fillColor);
+            if (mobj.mp.isFilled()) {
+                g2d.setPaint(mobj.mp.fillColor.getColor());
                 g2d.fill(path);
             }
             //Border is always drawed
-            g2d.setColor(mobj.mp.drawColor);
+            g2d.setColor(mobj.mp.drawColor.getColor());
             g2d.draw(path);
             setStroke(mobj);
             if (PRINT_DEBUG) {
@@ -355,9 +355,9 @@ public class Java2DRenderer extends Renderer {
 
         //TODO: Convert this in its own reusable method
         //First, I move the curve to the first point
-        Vec p = c.getPoint(0).p.v;
+        Vec p = c.getJMPoint(0).p.v;
         if (DEBUG_PATH_POINTS) {
-            debugPathPoint(c.getPoint(0), c);
+            debugPathPoint(c.getJMPoint(0), c);
         }
         int[] scr = cam.mathToScreen(p);
         resul.moveTo(scr[0], scr[1]);
@@ -372,9 +372,9 @@ public class Java2DRenderer extends Renderer {
         
         for (int n = 1; n < numPoints; n++) {
             
-            Vec point = c.getPoint(n).p.v;
-            Vec cpoint1 = c.getPoint(n - 1).cp1.v;
-            Vec cpoint2 = c.getPoint(n).cp2.v;
+            Vec point = c.getJMPoint(n).p.v;
+            Vec cpoint1 = c.getJMPoint(n - 1).cp1.v;
+            Vec cpoint2 = c.getJMPoint(n).cp2.v;
             prev[0] = xy[0];
             prev[1] = xy[1];
             xy = cam.mathToScreen(point);
@@ -382,12 +382,12 @@ public class Java2DRenderer extends Renderer {
             int[] cxy1 = cam.mathToScreen(cpoint1);
             int[] cxy2 = cam.mathToScreen(cpoint2);
             if (DEBUG_PATH_POINTS) {
-                debugPathPoint(c.getPoint(n), c);
+                debugPathPoint(c.getJMPoint(n), c);
             }
 //            if ((prev[0]!=xy[0]) | (prev[1]!=xy[1])){
             if (true) {
-                if (c.getPoint(n).isVisible) {
-                    if (c.getPoint(n).isCurved) {
+                if (c.getJMPoint(n).isVisible) {
+                    if (c.getJMPoint(n).isCurved) {
                         resul.curveTo(cxy1[0], cxy1[1], cxy2[0], cxy2[1], xy[0], xy[1]);
                     } else {
                         resul.lineTo(xy[0], xy[1]);

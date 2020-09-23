@@ -21,13 +21,13 @@ public class JMathAnimConfig {
     public static MathObjectDrawingProperties getDefaultMP() {
         MathObjectDrawingProperties defaultMP = new MathObjectDrawingProperties();
         //Default, boring values
-        defaultMP.drawColor = Color.WHITE;
+        defaultMP.drawColor.set(JMColor.WHITE);
 //        defaultMP.fillColor = new Color(0, 0, 0, 0);//Transparent color
-        defaultMP.fillColor = Color.GRAY;
+        defaultMP.fillColor.set(JMColor.GRAY);
         defaultMP.thickness = 1d;
         defaultMP.dashStyle = MathObjectDrawingProperties.SOLID;
         defaultMP.visible = true;
-        defaultMP.fill = false;
+        defaultMP.setFillAlpha(0);
         defaultMP.drawPathBorder = false;
         defaultMP.absoluteThickness = false;
         defaultMP.layer = 1;//Layer 0 should be reserved for background
