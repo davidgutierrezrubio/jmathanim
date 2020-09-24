@@ -181,7 +181,7 @@ public class SVGMathObject extends MultiShapeObject {
                     previousPoint = pathLineTo(resul, currentX, currentY, false);
                     closeX = currentX;
                     closeY = currentY;
-                    previousPoint.isVisible = false;
+                    previousPoint.isThisSegmentVisible = false;
 //                    previousPoint = pathM(path, currentX, currentY);
                     break;
                 case "m":
@@ -195,7 +195,7 @@ public class SVGMathObject extends MultiShapeObject {
                     closeY = currentY;
                     //First point. Creatline do the same as a the first point
                     previousPoint = pathLineTo(resul, currentX, currentY, false);
-                    previousPoint.isVisible = false;
+                    previousPoint.isThisSegmentVisible = false;
 //                    previousPoint = pathM(path, currentX, currentY);
                     break;
 

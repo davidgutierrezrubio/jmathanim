@@ -93,7 +93,7 @@ public class JMPath implements Updateable, Stateable {
 
     public void open() {
         isClosed = false;
-        jmPathPoints.get(0).isVisible = false;
+        jmPathPoints.get(0).isThisSegmentVisible = false;
     }
 
     public void addPoint(Point... points) {
@@ -245,7 +245,7 @@ public class JMPath implements Updateable, Stateable {
         //Loop is from 1 because I want to add extra point to the first segment (point 1) and not the last (point 0)
         for (int n = 1; n < 1 + jmPathPoints.size(); n++) {
             JMPathPoint p = jmPathPoints.get(n);
-            if (p.isVisible) {
+            if (p.isThisSegmentVisible) {
                 pointsToInterpolate.add(p);
             }
         }
@@ -306,7 +306,7 @@ public class JMPath implements Updateable, Stateable {
             Point H = E.interpolate(F, alpha);//cp2 of interpolation point
             Point J = F.interpolate(G, alpha);//cp1 of interpolation point
             Point K = H.interpolate(J, alpha); //Interpolation point
-            interpolate = new JMPathPoint(K, v2.isVisible, JMPathPoint.TYPE_INTERPOLATION_POINT);
+            interpolate = new JMPathPoint(K, v2.isThisSegmentVisible, JMPathPoint.TYPE_INTERPOLATION_POINT);
             interpolate.cp1.v = J.v;
             interpolate.cp2.v = H.v;
             //Change control points from v1 and v2,save
@@ -326,7 +326,7 @@ public class JMPath implements Updateable, Stateable {
             Point interP = new Point(v1.p.v.interpolate(v2.p.v, alpha));
             //Interpolation point is visible iff v2 is visible
             //Control points are by default the same as v1 and v2 (straight line)
-            interpolate = new JMPathPoint(interP, v2.isVisible, JMPathPoint.TYPE_INTERPOLATION_POINT);
+            interpolate = new JMPathPoint(interP, v2.isThisSegmentVisible, JMPathPoint.TYPE_INTERPOLATION_POINT);
         }
         interpolate.isCurved = v2.isCurved; //The new point is curved iff v2 is
         jmPathPoints.add(k, interpolate); //Now v2 is in position k+1!
@@ -626,7 +626,7 @@ public class JMPath implements Updateable, Stateable {
         //Find backwards first invisible segment, if there is not, we have a closed path, so open it
         for (int n = 0; n < jmPathPoints.size(); n++) {
             JMPathPoint p = jmPathPoints.get(-n);
-            if (!p.isVisible) {
+            if (!p.isThisSegmentVisible) {
                 offset = n;
                 break;
             }
@@ -644,7 +644,7 @@ public class JMPath implements Updateable, Stateable {
         connectedComponent.pathType = JMPath.CONNECTED_COMPONENT;
         for (int n = 0; n < workPath.size(); n++) {
             JMPathPoint p = workPath.jmPathPoints.get(n - offset);
-            if (!p.isVisible && connectedComponent.size() > 0) {
+            if (!p.isThisSegmentVisible && connectedComponent.size() > 0) {
                 resul.add(connectedComponent);
                 connectedComponent = new JMPath();
                 connectedComponent.pathType = JMPath.CONNECTED_COMPONENT;
@@ -660,7 +660,7 @@ public class JMPath implements Updateable, Stateable {
         JMPathPoint p = getJMPoint(k);
         JMPathPoint pnew = p.copy();
 
-        pnew.isVisible = false;
+        pnew.isThisSegmentVisible = false;
 //        pnew.cp2.v.copyFrom(p.cp2.v);
         pnew.type = JMPathPoint.TYPE_INTERPOLATION_POINT;
 //        pnew.cp1.v.copyFrom(p.cp1.v);

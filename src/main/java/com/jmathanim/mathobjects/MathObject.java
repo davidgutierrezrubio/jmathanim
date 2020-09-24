@@ -49,7 +49,7 @@ public abstract class MathObject implements Drawable, Updateable, Stateable {
      *
      */
     private HashSet<JMathAnimScene> scenes;
-    public boolean visible;
+    public boolean visible=true;
     /**
      * This parameter specifies the amount of object to be drawn 0=none,
      * 1/2=draw half
@@ -324,6 +324,15 @@ public abstract class MathObject implements Drawable, Updateable, Stateable {
 
     }
 
+    public void stackTo(MathObject obj,int anchorType)
+    {
+        Point B = Anchor.getAnchorPoint(obj, anchorType);
+        Point A = Anchor.getAnchorPoint(this, Anchor.reverseAnchorPoint(anchorType));
+        this.shift(A.to(B));
+    }
+    
+    
+    
     public void putAt(Point p, int anchorType) {
         putAt(p, anchorType, 0);
     }

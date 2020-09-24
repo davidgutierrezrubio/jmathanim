@@ -450,7 +450,7 @@ public class Java2DRenderer extends Renderer {
                 debugPathPoint(c.getJMPoint(n), c);
             }
 //            if ((prev[0]!=xy[0]) | (prev[1]!=xy[1])){
-            if (c.getJMPoint(n).isVisible) {
+            if (c.getJMPoint(n).isThisSegmentVisible) {
                 if (c.getJMPoint(n).isCurved) {
                     resul.curveTo(cxy1[0], cxy1[1], cxy2[0], cxy2[1], xy[0], xy[1]);
                 } else {

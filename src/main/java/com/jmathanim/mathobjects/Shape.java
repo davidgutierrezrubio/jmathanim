@@ -114,7 +114,7 @@ public class Shape extends MathObject {
             fillAlphaTemp = mp.fillColor.alpha;
             visibilityTemp = new ArrayList<Boolean>();
             for (int n = 0; n < jmpath.jmPathPoints.size(); n++) {
-                visibilityTemp.add(jmpath.jmPathPoints.get(n).isVisible);
+                visibilityTemp.add(jmpath.jmPathPoints.get(n).isThisSegmentVisible);
             }
         }
 
@@ -127,9 +127,9 @@ public class Shape extends MathObject {
             for (int k = 0; k < numSlices; k++) {//TODO: Store initial visible in array
                 int h = k * jmpath.jmPathPoints.size() / numSlices + n;
                 if (n < sliceSize) {
-                    jmpath.getJMPoint(h).isVisible = visibilityTemp.get(h);
+                    jmpath.getJMPoint(h).isThisSegmentVisible = visibilityTemp.get(h);
                 } else {
-                    jmpath.getJMPoint(h).isVisible = false;
+                    jmpath.getJMPoint(h).isThisSegmentVisible = false;
                 }
             }
         }
@@ -252,6 +252,10 @@ public class Shape extends MathObject {
         return obj;
     }
 
+    public static Shape regularPolygon(int numsides) {
+        return regularPolygon(numsides, new Point(0, 0), 1);
+    }
+
     public static Shape regularPolygon(int numsides, Point A, double side) {
         Shape obj = new Shape();
         Point newPoint = (Point) A.copy();
@@ -283,15 +287,15 @@ public class Shape extends MathObject {
         obj.setObjectType(ARC);
         obj.jmpath.jmPathPoints.remove(0);
         obj.jmpath.jmPathPoints.remove(-1);
-        obj.jmpath.getJMPoint(0).isVisible = false;//Open path
+        obj.jmpath.getJMPoint(0).isThisSegmentVisible = false;//Open path
         return obj;
     }
 
     public static Shape circle() {
-         Shape obj = new Shape();
+        Shape obj = new Shape();
         double x1, y1;
-        double step = Math.PI * 2 / 4;
-        for (double alphaC = 0; alphaC < 2*Math.PI; alphaC += step) {
+        double step = Math.PI * 2 / 40;
+        for (double alphaC = 0; alphaC < 2 * Math.PI; alphaC += step) {
             x1 = Math.cos(alphaC);
             y1 = Math.sin(alphaC);
             Point newPoint = new Point(x1, y1);

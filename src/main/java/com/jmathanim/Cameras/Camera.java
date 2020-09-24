@@ -69,7 +69,7 @@ public abstract class Camera {
      * @param rAdjust Rectangle to adjust
      */
     public void adjustToRect(Rect rAdjust) {
-        Rect r = getRectView(rAdjust);
+        Rect r = getRectThatContains(rAdjust);
         setMathXY(r.xmin, r.xmax, .5 * (r.ymax + r.ymin));
     }
 
@@ -94,7 +94,7 @@ public abstract class Camera {
      * @param r A Rect object, rectangle to contain
      * @return The rectangle which contains r, with the screen proportions
      */
-    public Rect getRectView(Rect r) {
+    public Rect getRectThatContains(Rect r) {
         Rect resul = new Rect(0, 0, 0, 0);
         double ratio = ((double) screenWidth) / screenHeight; //Ratio W/H
 

@@ -41,7 +41,7 @@ public class Segment extends Shape {
     public final void computeCurve() {
         JMPathPoint jmp1 = new JMPathPoint(p1, true, JMPathPoint.TYPE_VERTEX);
         jmp1.isCurved = false;
-        jmp1.isVisible = false;
+        jmp1.isThisSegmentVisible = false;
         jmpath.addJMPoint(jmp1);
         JMPathPoint jmp2 = new JMPathPoint(p2, true, JMPathPoint.TYPE_VERTEX);
         jmp2.isCurved = false;

@@ -43,7 +43,7 @@ public class RotateAndScaleXYStrategyTransform extends MatrixTransformStrategy{
         //The final transformation
         AffineTransform tr = tr1.compose(tr2).compose(tr1.getInverse()).compose(tr3);
 
-        System.out.println("RotateXY Transform "+t);
+//        System.out.println("RotateXY Transform "+t);
         applyMatrixTransform(tr, t);
     }
 

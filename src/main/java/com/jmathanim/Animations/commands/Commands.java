@@ -159,7 +159,7 @@ public class Commands {
      public static ApplyCommand cameraFocusToRect(Camera camera,Rect rd,double runtime) {
          return new ApplyCommand(new AbstractCommand() {
              Camera cam=camera;
-             Rect rDst=cam.getRectView(rd);
+             Rect rDst=cam.getRectThatContains(rd);
              Rect rSource;
              @Override
              public void initialize() {

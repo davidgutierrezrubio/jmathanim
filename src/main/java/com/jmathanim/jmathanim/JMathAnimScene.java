@@ -47,7 +47,7 @@ public abstract class JMathAnimScene {
         conf = JMathAnimConfig.getConfig();
         conf.setLowQuality();//by default, set low quality
         objectsToBeUpdated = new ArrayList<>();
-        playAnim=new PlayAnim(this);
+        playAnim = new PlayAnim(this);
     }
 
     /**
@@ -137,7 +137,9 @@ public abstract class JMathAnimScene {
         //Objects to be drawn on screen. Sort them by layer
         objects.sort((MathObject o1, MathObject o2) -> (o1.mp.layer - o2.mp.layer));
         for (MathObject obj : objects) {
-            obj.draw(SCRenderer);
+            if (obj.visible) {
+                obj.draw(SCRenderer);
+            }
         }
 
     }
@@ -150,7 +152,7 @@ public abstract class JMathAnimScene {
         doDraws();
         frameCount++;
         saveMPFrame();
-        
+
     }
 
     private void saveMPFrame() {
@@ -207,7 +209,5 @@ public abstract class JMathAnimScene {
     public Camera getCamera() {
         return SCRenderer.getCamera();
     }
-
-   
 
 }

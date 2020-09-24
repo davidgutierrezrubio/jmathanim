@@ -70,7 +70,7 @@ public class Transform extends Animation {
 
         //Variable strategy should have proper strategy to transform
         //If method is null means that user didn't force one
-            strategy.prepareObjects(mobjTransformed, mobjDestiny);
+        strategy.prepareObjects(mobjTransformed, mobjDestiny);
     }
 
     /**
@@ -107,37 +107,41 @@ public class Transform extends Animation {
     }
 
     private void determineTransformMethod() {
-        String methodTextOutput="Transform method: By point";
-        
+        String methodTextOutput = "Transform method: By point";
+
         //Segment & Segment
         method = METHOD_INTERPOLATE_POINT_BY_POINT;//Default method if not specified
         if ((mobjTransformed instanceof Segment) && (mobjDestiny instanceof Segment)) {
             method = METHOD_HOMOTOPY_TRANSFORM;
             shouldOptimizePathsFirst = true;
-            methodTextOutput="Transform method: Homotopy";
+            methodTextOutput = "Transform method: Homotopy";
         }
-        
-        
-         //Circle & Circle
-        method = METHOD_INTERPOLATE_POINT_BY_POINT;//Default method if not specified
+
+        //Circle & Circle
         if ((mobjTransformed.getObjectType() == MathObject.CIRCLE) && (mobjDestiny.getObjectType() == MathObject.CIRCLE)) {
             method = METHOD_HOMOTOPY_TRANSFORM;
             shouldOptimizePathsFirst = true;
-            methodTextOutput="Transform method: Homotopy";
+            methodTextOutput = "Transform method: Homotopy";
         }
-        
-        
-        
-        
-        
-        
-        
+
         //Rectangle & Rectangle
         if ((mobjTransformed.getObjectType() == MathObject.RECTANGLE) && (mobjDestiny.getObjectType() == MathObject.RECTANGLE)) {
-            //TODO: MEthod between rectangles should be better, compositing with a rotation
             method = METHOD_ROTATE_AND_SCALEXY_TRANSFORM;
             shouldOptimizePathsFirst = true;
-            methodTextOutput="Transform method: Rotate and Scale XY";
+            methodTextOutput = "Transform method: Rotate and Scale XY";
+        }
+
+        //Regular Polygons with the same number of vertices
+        if ((mobjTransformed.getObjectType() == MathObject.REGULAR_POLYGON) && (mobjDestiny.getObjectType() == MathObject.REGULAR_POLYGON)) {
+            if (mobjTransformed.jmpath.size() == mobjDestiny.jmpath.size()) {
+                method = METHOD_ROTATE_AND_SCALEXY_TRANSFORM;
+                shouldOptimizePathsFirst = true;
+                methodTextOutput = "Transform method: Rotate and Scale XY";
+            } else {
+                method = METHOD_INTERPOLATE_POINT_BY_POINT;
+                 methodTextOutput = "Transform method: By point";
+            }
+
         }
 
         System.out.println(methodTextOutput);

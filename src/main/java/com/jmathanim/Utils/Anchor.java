@@ -18,15 +18,16 @@ public class Anchor {
     public static final int BY_POINT = 1;
     public static final int BY_CENTER = 2;
 
-    public static final int LEFT = 3;
-    public static final int RIGHT = 4;
-    public static final int UPPER = 5;
+    
+    public static final int RIGHT = 3;
+    public static final int UPPER = 4;
+    public static final int LEFT = 5;
     public static final int LOWER = 6;
 
-    public static final int UL = 7;
+    public static final int DR = 7;
     public static final int UR = 8;
-    public static final int DL = 9;
-    public static final int DR = 10;
+    public static final int UL = 9;
+    public static final int DL = 10;
 
     public static Point getAnchorPoint(MathObject obj, int anchor) {
         return getAnchorPoint(obj, anchor, 0, 0);
@@ -47,32 +48,72 @@ public class Anchor {
                 break;
 
             case LEFT:
-                resul = obj.getBoundingBox().addGap(xgap,ygap).getLeft();
+                resul = obj.getBoundingBox().addGap(xgap, ygap).getLeft();
                 break;
             case RIGHT:
-                resul = obj.getBoundingBox().addGap(xgap,ygap).getRight();
+                resul = obj.getBoundingBox().addGap(xgap, ygap).getRight();
                 break;
             case LOWER:
-                resul = obj.getBoundingBox().addGap(xgap,ygap).getLower();
+                resul = obj.getBoundingBox().addGap(xgap, ygap).getLower();
                 break;
             case UPPER:
-                resul = obj.getBoundingBox().addGap(xgap,ygap).getUpper();
+                resul = obj.getBoundingBox().addGap(xgap, ygap).getUpper();
                 break;
 
             case UL:
-                resul = obj.getBoundingBox().addGap(xgap,ygap).getUL();
+                resul = obj.getBoundingBox().addGap(xgap, ygap).getUL();
                 break;
             case UR:
-                resul = obj.getBoundingBox().addGap(xgap,ygap).getUR();
+                resul = obj.getBoundingBox().addGap(xgap, ygap).getUR();
                 break;
             case DL:
-                resul = obj.getBoundingBox().addGap(xgap,ygap).getDL();
+                resul = obj.getBoundingBox().addGap(xgap, ygap).getDL();
                 break;
             case DR:
-                resul = obj.getBoundingBox().addGap(xgap,ygap).getDR();
+                resul = obj.getBoundingBox().addGap(xgap, ygap).getDR();
                 break;
 
         }
         return resul;
     }
+
+    public static int reverseAnchorPoint(int anchorPoint) {
+        int resul=BY_CENTER;//Default
+        switch (anchorPoint) {
+            case BY_POINT:
+                resul = BY_POINT;
+                break;
+            case BY_CENTER:
+                resul = BY_CENTER;
+                break;
+
+            case LEFT:
+                resul = RIGHT;
+                break;
+            case RIGHT:
+                resul = LEFT;
+                break;
+            case LOWER:
+                resul = UPPER;
+                break;
+            case UPPER:
+                resul = LOWER;
+                break;
+
+            case UL:
+                resul = DR;
+                break;
+            case UR:
+                resul = DL;
+                break;
+            case DL:
+                resul = UR;
+                break;
+            case DR:
+                resul = UL;
+                break;
+        }
+        return resul;
+    }
+
 }

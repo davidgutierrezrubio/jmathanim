@@ -57,14 +57,14 @@ public class PointSimple extends Scene2D {
     @Override
     public void setupSketch() {
         nanotime = System.nanoTime();
-//        conf.setHighQuality();
+        conf.setHighQuality();
 //        conf.setMediumQuality();
-        conf.setLowQuality();
+//        conf.setLowQuality();
 
-//        setCreateMovie(true);
-        setCreateMovie(false);
+        setCreateMovie(true);
+//        setCreateMovie(false);
         clockTick("create movie");
-        setShowPreviewWindow(true);
+//        setShowPreviewWindow(true);
         clockTick("Show preview window");
         conf.setBackgroundColor(JMColor.hex("#192841"));
     }
@@ -72,10 +72,11 @@ public class PointSimple extends Scene2D {
     @Override
     public void runSketch() {
         System.out.println("Running sketch...");
-//       pruebaTransformHomotopy();
-//        pentagonBuild();
-//        pruebaShapeClosedToCanonicalForm();
-        pruebaTransform2Circles();
+        //       pruebaTransformHomotopy();
+        //        pentagonBuild();
+        //        pruebaShapeClosedToCanonicalForm();
+        //        pruebaTransformRegularPolygons();
+        muchosCuadradosApilados();
     }
 
     public void testAll() {
@@ -180,7 +181,7 @@ public class PointSimple extends Scene2D {
         waitSeconds(3d);
         play(new ShowCreation(pa, 3d));
         waitSeconds(3d);
-        pa.jmpath.jmPathPoints.get(2).isVisible = false;
+        pa.jmpath.jmPathPoints.get(2).isThisSegmentVisible = false;
         waitSeconds(3d);
     }
 
@@ -272,8 +273,8 @@ public class PointSimple extends Scene2D {
 
     public void pruebaAlignNew() {
         RegularPolygon sq = new RegularPolygon(6, .3);
-        sq.getJMPoint(0).isVisible = false;
-        sq.getJMPoint(4).isVisible = false;
+        sq.getJMPoint(0).isThisSegmentVisible = false;
+        sq.getJMPoint(4).isThisSegmentVisible = false;
         add(sq);
         double tiempo = 40;
         waitSeconds(tiempo);
@@ -314,9 +315,9 @@ public class PointSimple extends Scene2D {
 
     public void pruebaNewTransform() {
         RegularPolygon pol = new RegularPolygon(8, .3);
-        pol.getJMPoint(2).isVisible = false;
-        pol.getJMPoint(6).isVisible = false;
-        pol.getJMPoint(4).isVisible = false;
+        pol.getJMPoint(2).isThisSegmentVisible = false;
+        pol.getJMPoint(6).isThisSegmentVisible = false;
+        pol.getJMPoint(4).isThisSegmentVisible = false;
         add(pol.drawColor(JMColor.RED));
         Shape sq = Shape.square().shift(-1, -1).drawColor(JMColor.BLUE);
 //        add(sq);
@@ -331,9 +332,9 @@ public class PointSimple extends Scene2D {
 
     public void pruebaConnectedComponents() {
         RegularPolygon sq = new RegularPolygon(8, .3);
-        sq.getJMPoint(2).isVisible = false;
-        sq.getJMPoint(6).isVisible = false;
-        sq.getJMPoint(4).isVisible = false;
+        sq.getJMPoint(2).isThisSegmentVisible = false;
+        sq.getJMPoint(6).isThisSegmentVisible = false;
+        sq.getJMPoint(4).isThisSegmentVisible = false;
         add(sq);
         double tiempo = 40;
         waitSeconds(tiempo);
@@ -367,20 +368,16 @@ public class PointSimple extends Scene2D {
         Shape circ = Shape.arc(Math.PI).scale(.5).drawColor(JMColor.GRAY).shift(-.5, 0);
         add(circ);
 
-        drawControlPoint(circ,0);
-        drawControlPoint(circ,-1);
+        drawControlPoint(circ, 0);
+        drawControlPoint(circ, -1);
 
         waitSeconds(30);
         ArrayList<JMPath> cf = circ.copy().jmpath.canonicalForm();
 
         Shape can = new Shape(cf.get(0), null);
 
-       drawControlPoint(can,0);
-       drawControlPoint(can,-1);
-        
-        
-        
-        
+        drawControlPoint(can, 0);
+        drawControlPoint(can, -1);
 
         can.shift(.5, 0);
         add(can, circ);
@@ -388,11 +385,11 @@ public class PointSimple extends Scene2D {
 
     }
 
-    private void drawControlPoint(Shape circ,int n) {
+    private void drawControlPoint(Shape circ, int n) {
         Point p = circ.getJMPoint(n).p;
         Point cp1 = circ.getJMPoint(n).cp1;
         Point cp2 = circ.getJMPoint(n).cp2;
-        
+
         Segment s1 = new Segment(p, cp1);
         s1.drawColor(JMColor.GREEN);
         Segment s2 = new Segment(p, cp2);
@@ -414,43 +411,47 @@ public class PointSimple extends Scene2D {
         waitSeconds(30);
     }
 
-    public void pruebaTransform() {
-//        RegularPolygon pol1 = new RegularPolygon(3, 1d);
-//        pol1.mp.drawColor=Color.BLUE;
-//        RegularPolygon pol2 = new RegularPolygon(4, 3.d / 4);
-//        pol2.mp.drawColor=Color.GREEN;
-        RegularPolygon pol3 = new RegularPolygon(3, 3.d / 5);
-        RegularPolygon pol4 = new RegularPolygon(12, 3.d / 16);
-        pol4.mp.thickness /= 3;
-        Circle circ = new Circle(new Point(-.5, -.5), 1);
-        circ.mp.thickness /= 3;
-        JMPathPoint pp = circ.jmpath.jmPathPoints.get(0);
-        pp.shift(new Vec(-1, 0));
-//        pol1.shift(new Vec(-1, 0));
-//        add(pol1);
-//        add(pol2);
-//        add(pol3);
-        add(pol4);
-        add(circ);
-        AffineTransform tr = AffineTransform.create2DRotationTransform(new Point(1, 0), Math.PI * 1.2);
-        TransformedJMPath pol5 = new TransformedJMPath(pol4, tr);
-        add(pol5);
+    public void muchosCuadradosApilados() {
+        Shape previous = null;
+        int[] anchors = {Anchor.RIGHT, Anchor.LEFT, Anchor.UPPER, Anchor.LOWER};
+        int anchor = -1;
+        ArrayList objectsToZoomAt = new ArrayList();
+        for (int n = 0; n < 20; n++) {
+            Shape sq = Shape.circle().drawColor(JMColor.BLACK).fillColor(JMColor.random()).scale(.3);
+            if (previous != null) {
 
-        double tiempo = 30;
-//        play(new Transform(pol1, pol2, tiempo));
-//        remove(pol2);
-//        waitSeconds(1);
-//        play(new Transform(pol1, pol3, tiempo));
-//        remove(pol3);
-//        waitSeconds(1);
-//        play(new Transform(pol1, pol4, tiempo));
-//        remove(pol4);
-        waitSeconds(1);
-        play(new Transform(pol4, circ, tiempo));
-        remove(circ);
-        waitSeconds(1);
-        play(new Transform(pol4, pol3, tiempo));
-        waitSeconds(1);
+                int kk = (int) (Math.random() * 4);
+                while (anchors[kk] == Anchor.reverseAnchorPoint(anchor)) {
+                    System.out.println("kk=" + anchors[kk]+ ", Anchor: " + anchor);
+                     kk = (int) (Math.random() * 4);
+
+                }
+                anchor = anchors[kk];
+                
+                sq.stackTo(previous, anchor);
+                add(sq);
+                objectsToZoomAt.add(sq);
+                anchor++;
+                if (anchor > 4) {
+                    anchor = 3;
+                }
+                playAnim.adjustToObjects(objectsToZoomAt, 1);
+                waitSeconds(1);
+            }
+            previous = sq;
+        }
+        waitSeconds(3);
+    }
+
+    public void pruebaTransformRegularPolygons() {
+//        add(Shape.circle());
+        Shape pol1 = Shape.regularPolygon(5).scale(-.4, .4).drawColor(JMColor.RED).thickness(3);
+        Shape pol2 = Shape.regularPolygon(6).shift(2, 0).rotate(Math.PI / 5).drawColor(JMColor.GRAY);
+        add(pol1, pol2);
+        camera.adjustToObjects(pol1, pol2);
+        waitSeconds(3);
+        playAnim.transform(pol1, pol2, 5);
+        waitSeconds(3);
     }
 
     public void pruebaLine() {
@@ -556,7 +557,7 @@ public class PointSimple extends Scene2D {
 //        camera.adjustToRect(lm.getBoundingBox());
         waitSeconds(1);
         Rect rOrigin = camera.getMathView();
-        Rect rDst = camera.getRectView(lm.getBoundingBox());
+        Rect rDst = camera.getRectThatContains(lm.getBoundingBox());
         for (double t = 0; t < 1; t += .01) {
             Rect r = rOrigin.interpolate(rDst, t);
             camera.setMathView(r);
@@ -951,7 +952,7 @@ public class PointSimple extends Scene2D {
         la5.setAbsoluteSize();
         int timeScale = 10;
         waitSeconds(timeScale);
-        Rect rr = camera.getRectView(pol.getBoundingBox());
+        Rect rr = camera.getRectThatContains(pol.getBoundingBox());
         add(Shape.rectangle(rr).drawColor(JMColor.RED));
 
         playAnim.zoomToRect(pol.getBoundingBox(), 3 * timeScale);
@@ -1004,8 +1005,8 @@ public class PointSimple extends Scene2D {
         advanceFrame();
         waitSeconds(15);
         for (int n = 0; n < 12; n++) {
-            pol.getJMPoint(n - 1).isVisible = true;
-            pol.getJMPoint(n).isVisible = false;
+            pol.getJMPoint(n - 1).isThisSegmentVisible = true;
+            pol.getJMPoint(n).isThisSegmentVisible = false;
             waitSeconds(15);
         }
         waitSeconds(55);

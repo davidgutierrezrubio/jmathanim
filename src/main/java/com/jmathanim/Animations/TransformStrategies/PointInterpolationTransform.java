@@ -104,7 +104,7 @@ public class PointInterpolationTransform implements TransformStrategy {
                 JMPathPoint p2 = toPath.getJMPoint(n);
                 p1.type = p2.type;
                 p1.isCurved = p2.isCurved;
-                p1.isVisible = p2.isVisible;
+                p1.isThisSegmentVisible = p2.isThisSegmentVisible;
                 p1.cp1vBackup = p2.cp1vBackup;
                 p1.cp2vBackup = p2.cp2vBackup;
             }
