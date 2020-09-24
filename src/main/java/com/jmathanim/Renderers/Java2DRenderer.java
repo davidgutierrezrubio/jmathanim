@@ -92,7 +92,7 @@ public class Java2DRenderer extends Renderer {
     final int TICKS_PER_SECOND = 5;
     final int SKIP_TICKS = 1000 / TICKS_PER_SECOND;
     final int MAX_FRAMESKIP = 5;
-    private final Image img;
+    private Image img;
 
     public Java2DRenderer(JMathAnimScene parentScene) {
         this(parentScene, true, false);//default values
@@ -121,19 +121,18 @@ public class Java2DRenderer extends Renderer {
 
         g2d.setRenderingHints(rh);
         prepareEncoder();
-        parentScene=JMathAnimConfig.getConfig().getScene();
+        parentScene = JMathAnimConfig.getConfig().getScene();
 
         //Proofs
-        img = Toolkit.getDefaultToolkit().getImage("c:\\media\\hoja.png");
+//        img = Toolkit.getDefaultToolkit().getImage("c:\\media\\hoja.png");
         //This tracker waits for image to be fully loaded
-        MediaTracker tracker=new MediaTracker(new JLabel());
-        tracker.addImage(img, 1);
-        try {
-            tracker.waitForID(1);
-        } catch (InterruptedException ex) {
-            Logger.getLogger(Java2DRenderer.class.getName()).log(Level.SEVERE, null, ex);
-        }
-
+//        MediaTracker tracker = new MediaTracker(new JLabel());
+//        tracker.addImage(img, 1);
+//        try {
+//            tracker.waitForID(1);
+//        } catch (InterruptedException ex) {
+//            Logger.getLogger(Java2DRenderer.class.getName()).log(Level.SEVERE, null, ex);
+//        }
     }
 
     @Override
@@ -297,32 +296,34 @@ public class Java2DRenderer extends Renderer {
         g2d.setColor(JMathAnimConfig.getConfig().getBackgroundColor().getColor());//TODO: Poner en opciones
         g2d.fillRect(0, 0, width, height);
 //        g2d.drawImage(img, 0, 0, null);
-        drawScaledImage(img, g2d);
+        if (img != null) {
+            drawScaledImage(img, g2d);
+        }
     }
 
-    public  void drawScaledImage(Image image, Graphics g) {
+    public void drawScaledImage(Image image, Graphics g) {
         int imgWidth = image.getWidth(null);
         int imgHeight = image.getHeight(null);
-         
+
         double imgAspect = (double) imgHeight / imgWidth;
- 
+
         int canvasWidth = width;
         int canvasHeight = height;
-         
+
         double canvasAspect = (double) canvasHeight / canvasWidth;
- 
+
         int x1 = 0; // top left X position
         int y1 = 0; // top left Y position
         int x2 = 0; // bottom right X position
         int y2 = 0; // bottom right Y position
-         
+
         if (imgWidth < canvasWidth && imgHeight < canvasHeight) {
             // the image is smaller than the canvas
-            x1 = (canvasWidth - imgWidth)  / 2;
+            x1 = (canvasWidth - imgWidth) / 2;
             y1 = (canvasHeight - imgHeight) / 2;
             x2 = imgWidth + x1;
             y2 = imgHeight + y1;
-              g.drawImage(image, x1, y1, x2, y2, 0, 0, imgWidth, imgHeight, null);
+            g.drawImage(image, x1, y1, x2, y2, 0, 0, imgWidth, imgHeight, null);
         } else {
             if (canvasAspect > imgAspect) {
                 y1 = canvasHeight;
@@ -338,17 +339,11 @@ public class Java2DRenderer extends Renderer {
             x2 = canvasWidth + x1;
             y2 = canvasHeight + y1;
 //            g.drawImage(img, 9, 9, null);
- g.drawImage(image, x1, y1, x2, y2, 0, 0, imgWidth, imgHeight, null);
+            g.drawImage(image, x1, y1, x2, y2, 0, 0, imgWidth, imgHeight, null);
         }
- 
-       
+
     }
-    
-    
-    
-    
-    
-    
+
     @Override
     public void setStroke(MathObject obj) {
         final double thickness = obj.mp.getThickness(this);
@@ -440,7 +435,7 @@ public class Java2DRenderer extends Renderer {
         int prev[] = {scr[0], scr[1]};
         int xy[] = {scr[0], scr[1]};
 
-        for (int n = 1; n < numPoints+1; n++) {
+        for (int n = 1; n < numPoints + 1; n++) {
 
             Vec point = c.getJMPoint(n).p.v;
             Vec cpoint1 = c.getJMPoint(n - 1).cp1.v;
@@ -455,18 +450,23 @@ public class Java2DRenderer extends Renderer {
                 debugPathPoint(c.getJMPoint(n), c);
             }
 //            if ((prev[0]!=xy[0]) | (prev[1]!=xy[1])){
-            if (true) {
-                if (c.getJMPoint(n).isVisible) {
-                    if (c.getJMPoint(n).isCurved) {
-                        resul.curveTo(cxy1[0], cxy1[1], cxy2[0], cxy2[1], xy[0], xy[1]);
-                    } else {
-                        resul.lineTo(xy[0], xy[1]);
-//                        System.out.println("Line from "+prev[0]+", "+prev[1]+" to "+xy[0]+","+xy[1]);
-                    }
+            if (c.getJMPoint(n).isVisible) {
+                if (c.getJMPoint(n).isCurved) {
+                    resul.curveTo(cxy1[0], cxy1[1], cxy2[0], cxy2[1], xy[0], xy[1]);
                 } else {
-                    resul.moveTo(xy[0], xy[1]);
-//                g2d.drawString("M", xy[0], xy[1]);
+                    resul.lineTo(xy[0], xy[1]);
+//                        System.out.println("Line from "+prev[0]+", "+prev[1]+" to "+xy[0]+","+xy[1]);
                 }
+                //If we are drawing the last point and is visible...
+                if (n == numPoints) {
+                    resul.closePath();
+                }
+
+            } else {
+                if (n < numPoints) {//If it is the last point, don't move (it creates a strange point at the beginning)
+                    resul.moveTo(xy[0], xy[1]);
+                }
+//                g2d.drawString("M", xy[0], xy[1]);
             }
         }
 //        if (c.isClosed()) {

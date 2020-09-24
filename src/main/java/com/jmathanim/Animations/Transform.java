@@ -117,6 +117,21 @@ public class Transform extends Animation {
             methodTextOutput="Transform method: Homotopy";
         }
         
+        
+         //Circle & Circle
+        method = METHOD_INTERPOLATE_POINT_BY_POINT;//Default method if not specified
+        if ((mobjTransformed.getObjectType() == MathObject.CIRCLE) && (mobjDestiny.getObjectType() == MathObject.CIRCLE)) {
+            method = METHOD_HOMOTOPY_TRANSFORM;
+            shouldOptimizePathsFirst = true;
+            methodTextOutput="Transform method: Homotopy";
+        }
+        
+        
+        
+        
+        
+        
+        
         //Rectangle & Rectangle
         if ((mobjTransformed.getObjectType() == MathObject.RECTANGLE) && (mobjDestiny.getObjectType() == MathObject.RECTANGLE)) {
             //TODO: MEthod between rectangles should be better, compositing with a rotation

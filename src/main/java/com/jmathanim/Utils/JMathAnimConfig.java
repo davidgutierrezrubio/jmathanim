@@ -21,7 +21,7 @@ public class JMathAnimConfig {
     public static MathObjectDrawingProperties getDefaultMP() {
         MathObjectDrawingProperties defaultMP = new MathObjectDrawingProperties();
         //Default, boring values
-        defaultMP.drawColor.set(JMColor.BLACK);
+        defaultMP.drawColor.set(JMColor.WHITE);
 //        defaultMP.fillColor = new Color(0, 0, 0, 0);//Transparent color
         defaultMP.fillColor.set(JMColor.GRAY);
         defaultMP.setFillAlpha(0);//No filling by default

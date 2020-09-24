@@ -661,9 +661,9 @@ public class JMPath implements Updateable, Stateable {
         JMPathPoint pnew = p.copy();
 
         pnew.isVisible = false;
-        pnew.cp2.v.copyFrom(p.cp2.v);
+//        pnew.cp2.v.copyFrom(p.cp2.v);
         pnew.type = JMPathPoint.TYPE_INTERPOLATION_POINT;
-        p.cp2.v.copyFrom(p.p.v);
+//        pnew.cp1.v.copyFrom(p.cp1.v);
 
         jmPathPoints.add(k+1, pnew);
 

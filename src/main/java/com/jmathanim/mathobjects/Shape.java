@@ -270,8 +270,8 @@ public class Shape extends MathObject {
     public static Shape arc(double angle) {
         Shape obj = new Shape();
         double x1, y1;
-        double step = Math.PI * 2 / 5;
-        for (double alphaC = 0; alphaC < angle; alphaC += step) {
+        double step = Math.PI * 2 / 4;
+        for (double alphaC = -step; alphaC < angle + step; alphaC += step) {//generate one extra point at each end
             x1 = Math.cos(alphaC);
             y1 = Math.sin(alphaC);
             Point newPoint = new Point(x1, y1);
@@ -281,14 +281,26 @@ public class Shape extends MathObject {
         }
         obj.jmpath.generateControlPoints();
         obj.setObjectType(ARC);
+        obj.jmpath.jmPathPoints.remove(0);
+        obj.jmpath.jmPathPoints.remove(-1);
         obj.jmpath.getJMPoint(0).isVisible = false;//Open path
         return obj;
     }
 
     public static Shape circle() {
-        Shape obj = arc(Math.PI * 2);
-        obj.jmpath.close();
-        obj.getJMPoint(0).isVisible = true;
+         Shape obj = new Shape();
+        double x1, y1;
+        double step = Math.PI * 2 / 4;
+        for (double alphaC = 0; alphaC < 2*Math.PI; alphaC += step) {
+            x1 = Math.cos(alphaC);
+            y1 = Math.sin(alphaC);
+            Point newPoint = new Point(x1, y1);
+            JMPathPoint p = JMPathPoint.curveTo(newPoint);
+            p.isCurved = true;
+            obj.jmpath.addJMPoint(p);
+        }
+        obj.jmpath.generateControlPoints();
+//        obj.jmpath.close();
         obj.setObjectType(CIRCLE);
         return obj;
     }

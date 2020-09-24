@@ -10,6 +10,7 @@ import com.jmathanim.Utils.MathObjectDrawingProperties;
 import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
+import java.text.DecimalFormat;
 import java.util.HashSet;
 
 /**
@@ -133,7 +134,9 @@ public class Point extends MathObject {
 
     @Override
     public String toString() {
-        return label+"|Point(" + v.x + "," + v.y + ")";
+        String pattern = "##0.##";
+        DecimalFormat decimalFormat = new DecimalFormat(pattern);
+        return label+"|Point(" + decimalFormat.format(v.x) + "," + decimalFormat.format(v.y) + ")";
 
     }
 /**
