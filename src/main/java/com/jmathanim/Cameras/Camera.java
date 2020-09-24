@@ -6,6 +6,7 @@
 package com.jmathanim.Cameras;
 
 import com.jmathanim.Utils.Rect;
+import com.jmathanim.mathobjects.MathObject;
 
 /**
  * This class manages conversion between math coordinates (usually
@@ -56,8 +57,8 @@ public abstract class Camera {
      */
     abstract public void setMathXY(double xmin, double xmax, double ycenter);
 
-    public void setMathXY(Rect r) {
-        setMathXY(r.xmin,r.xmax,.5*(r.ymin+r.ymax));
+    public void setMathView(Rect r) {
+        setMathXY(r.xmin, r.xmax, .5 * (r.ymin + r.ymax));
     }
 
     /**
@@ -70,6 +71,20 @@ public abstract class Camera {
     public void adjustToRect(Rect rAdjust) {
         Rect r = getRectView(rAdjust);
         setMathXY(r.xmin, r.xmax, .5 * (r.ymax + r.ymin));
+    }
+
+    public void adjustToObjects(MathObject... objs) {
+        Rect r=objs[0].getBoundingBox();
+        for (MathObject obj:objs)
+        {
+            r=r.union(obj.getBoundingBox());
+        }
+        adjustToRect(r);
+    }
+    
+    public void scale(double scale)
+    {
+        setMathView(getMathView().scaled(scale, scale));
     }
 
     /**
@@ -114,7 +129,7 @@ public abstract class Camera {
      *
      * @return An array with the values {xmin,ymin,xmax,ymax}
      */
-    public Rect getMathBoundaries() {
+    public Rect getMathView() {
         return new Rect(xmin, ymin, xmax, ymax);
     }
 
@@ -180,7 +195,7 @@ public abstract class Camera {
     abstract public double relScalarToWidth(double scalar);
 
     abstract public void saveState();
+
     abstract public void restoreState();
 
-    
 }

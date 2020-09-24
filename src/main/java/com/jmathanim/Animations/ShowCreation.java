@@ -39,7 +39,7 @@ public class ShowCreation extends Animation {
 
     @Override
     public void doAnim(double t) {
-        System.out.println("Anim ShowCreation " + t);
+//        System.out.println("Anim ShowCreation " + t);
         mobj.setDrawParam(t, this.numSlices);
     }
 

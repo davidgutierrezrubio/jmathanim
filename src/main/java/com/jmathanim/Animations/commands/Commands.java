@@ -163,13 +163,13 @@ public class Commands {
              Rect rSource;
              @Override
              public void initialize() {
-                 rSource=cam.getMathBoundaries();
+                 rSource=cam.getMathView();
              }
 
              @Override
              public void execute(double t) {
                  Rect r=rSource.interpolate(rDst, t);
-                 cam.setMathXY(r);
+                 cam.setMathView(r);
              }
 
              @Override
@@ -181,4 +181,11 @@ public class Commands {
              }
          },runtime);
      }
+       public static ApplyCommand cameraShift(Camera camera,Vec v,double runtime) {
+           Rect r=camera.getMathView().shifted(v);
+           return cameraFocusToRect(camera, r, runtime);
+           
+       }
+     
+     
 }

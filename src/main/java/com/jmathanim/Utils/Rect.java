@@ -225,4 +225,9 @@ public class Rect {//TODO: Adjust this to 3D coordinates
         double ymaxNew=p.v.y+.5*getHeight()*ys;
         return new Rect(xminNew,yminNew,xmaxNew,ymaxNew);
     }
+    
+     public Rect shifted(Vec v)
+    {
+       return new Rect(xmin+v.x,ymin+v.y,xmax+v.x,ymax+v.y);
+    }
 }

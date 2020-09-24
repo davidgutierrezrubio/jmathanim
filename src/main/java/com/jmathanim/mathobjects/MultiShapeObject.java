@@ -78,8 +78,6 @@ public class MultiShapeObject extends MathObject {
         return (T) this;
     }
 
-   
-
     @Override
     public <T extends MathObject> T copy() {
         MultiShapeObject resul = new MultiShapeObject();
@@ -122,14 +120,14 @@ public class MultiShapeObject extends MathObject {
 //            int[] mx = r.getCamera().mathToScreen(xx[0], xx[1]);
 //            ((Java2DRenderer)r).debugText(Integer.toString(n), mx[0], mx[1]);
 //            n++;
-             r.setBorderColor(jmp.mp.drawColor);
-        r.setFillColor(jmp.mp.fillColor);
-        r.setStroke(jmp);
-        if (absoluteSize) {
-            r.drawAbsoluteCopy(jmp, getAbsoluteAnchorPoint().v);
-        } else {
-            r.drawPath(jmp);
-        }
+            r.setBorderColor(jmp.mp.drawColor);
+            r.setFillColor(jmp.mp.fillColor);
+            r.setStroke(jmp);
+            if (absoluteSize) {
+                r.drawAbsoluteCopy(jmp, getAbsoluteAnchorPoint().v);
+            } else {
+                r.drawPath(jmp);
+            }
 
         }
     }
@@ -147,16 +145,20 @@ public class MultiShapeObject extends MathObject {
         }
     }
 
-    public void setDrawAlpha(double t) {
+    @Override
+    public <T extends MathObject> T drawAlpha(double t) {
         for (Shape jmp : shapes) {
-            jmp.setDrawAlpha(t);
+            jmp.drawAlpha(t);
         }
+        return (T) this;
     }
 
-    public void setFillAlpha(double t) {
+    @Override
+    public <T extends MathObject> T fillAlpha(double t) {
         for (Shape jmp : shapes) {
-            jmp.setFillAlpha(t);
+            jmp.fillAlpha(t);
         }
+        return (T) this;
     }
 
     public Shape get(int n) {

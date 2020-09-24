@@ -6,6 +6,7 @@
 package com.jmathanim.jmathanim;
 
 import com.jmathanim.Animations.Animation;
+import com.jmathanim.Animations.PlayAnim;
 import com.jmathanim.Animations.Transform;
 import com.jmathanim.Animations.commands.Commands;
 import com.jmathanim.Cameras.Camera;
@@ -39,12 +40,14 @@ public abstract class JMathAnimScene {
     protected double fps;
     protected double dt;
     public JMathAnimConfig conf;
+    protected final PlayAnim playAnim;
 
     public JMathAnimScene() {
         objects = new ArrayList<>(); //TODO: Extends this to include layers
         conf = JMathAnimConfig.getConfig();
         conf.setLowQuality();//by default, set low quality
         objectsToBeUpdated = new ArrayList<>();
+        playAnim=new PlayAnim(this);
     }
 
     /**
@@ -93,7 +96,6 @@ public abstract class JMathAnimScene {
 
     public synchronized final void unregisterObjectToBeUpdated(Updateable obj) {
         if (obj instanceof Updateable) {
-            System.out.println("Unregistered updateable " + obj);
             objectsToBeUpdated.remove((Updateable) obj);
         }
     }
@@ -144,10 +146,11 @@ public abstract class JMathAnimScene {
      * Advance one frame, making all necessary drawings
      */
     public final void advanceFrame() {
+        SCRenderer.clear();
         doDraws();
         frameCount++;
         saveMPFrame();
-        SCRenderer.clear();
+        
     }
 
     private void saveMPFrame() {
@@ -205,40 +208,6 @@ public abstract class JMathAnimScene {
         return SCRenderer.getCamera();
     }
 
-    //Convenience methods
-    //This methods allow easy and fast ways to shift, rotate, and scale objects
-    public void shift(MathObject obj, double dx, double dy, double runTime) {
-        play(Commands.shift(obj, dx, dy, runTime));
-    }
-
-    public void playShift(MathObject obj, Vec v, double runTime) {
-
-        play(Commands.shift(obj, v, runTime));
-    }
-
-    public void playScale(MathObject obj, Point center, double sc, double runTime) {
-        scale(obj, center, sc, sc, sc, runTime);
-    }
-
-    public void scale(MathObject obj, Point center, double scx, double scy, double scz, double runTime) {
-        play(Commands.scale(obj, center, scx, scy, scz, runTime));
-    }
-
-    public void playRotate(MathObject obj, Point center, double angle, double runTime) {
-        play(Commands.rotate(obj, center, angle, runTime));
-    }
-
-    public void playTransform(Shape obj1, Shape obj2, double runTime) {
-        play(new Transform(obj1, obj2, runTime));
-    }
-
-    public void playZoomToRect(Rect r, double runTime) {
-        play(Commands.cameraFocusToRect(getCamera(), r, runTime));
-    }
-
-    public void playScaleCamera(double scale, double runTime) {
-        Camera cam = getCamera();
-        play(Commands.cameraFocusToRect(cam, cam.getMathBoundaries().scaled(scale, scale), runTime));
-    }
+   
 
 }

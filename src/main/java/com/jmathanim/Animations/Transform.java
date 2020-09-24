@@ -107,19 +107,25 @@ public class Transform extends Animation {
     }
 
     private void determineTransformMethod() {
+        String methodTextOutput="Transform method: By point";
+        
+        //Segment & Segment
         method = METHOD_INTERPOLATE_POINT_BY_POINT;//Default method if not specified
         if ((mobjTransformed instanceof Segment) && (mobjDestiny instanceof Segment)) {
             method = METHOD_HOMOTOPY_TRANSFORM;
             shouldOptimizePathsFirst = true;
-
+            methodTextOutput="Transform method: Homotopy";
         }
+        
+        //Rectangle & Rectangle
         if ((mobjTransformed.getObjectType() == MathObject.RECTANGLE) && (mobjDestiny.getObjectType() == MathObject.RECTANGLE)) {
             //TODO: MEthod between rectangles should be better, compositing with a rotation
             method = METHOD_ROTATE_AND_SCALEXY_TRANSFORM;
             shouldOptimizePathsFirst = true;
+            methodTextOutput="Transform method: Rotate and Scale XY";
         }
 
-        
+        System.out.println(methodTextOutput);
 
     }
 

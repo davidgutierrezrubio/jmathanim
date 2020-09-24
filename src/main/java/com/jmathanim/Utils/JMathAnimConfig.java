@@ -21,13 +21,14 @@ public class JMathAnimConfig {
     public static MathObjectDrawingProperties getDefaultMP() {
         MathObjectDrawingProperties defaultMP = new MathObjectDrawingProperties();
         //Default, boring values
-        defaultMP.drawColor.set(JMColor.WHITE);
+        defaultMP.drawColor.set(JMColor.BLACK);
 //        defaultMP.fillColor = new Color(0, 0, 0, 0);//Transparent color
         defaultMP.fillColor.set(JMColor.GRAY);
+        defaultMP.setFillAlpha(0);//No filling by default
         defaultMP.thickness = 1d;
         defaultMP.dashStyle = MathObjectDrawingProperties.SOLID;
         defaultMP.visible = true;
-        defaultMP.setFillAlpha(0);
+        
         defaultMP.drawPathBorder = false;
         defaultMP.absoluteThickness = false;
         defaultMP.layer = 1;//Layer 0 should be reserved for background
@@ -68,11 +69,11 @@ public class JMathAnimConfig {
     }
 
     /**
-     * Set low quality settings (800,600, 30fps). These are the default settings
+     * Set low quality settings (854,480, 30fps). These are the default settings
      */
     public void setLowQuality() {
-        mediaW = 800;
-        mediaH = 600;
+        mediaW = 854;
+        mediaH = 480;
         fps = 30;
     }
 
@@ -122,7 +123,7 @@ public class JMathAnimConfig {
         this.renderer.setCamera(camera);
     }
 
-    public JMColor getBakcgroundColor() {
+    public JMColor getBackgroundColor() {
         return backgroundColor;
     }
 

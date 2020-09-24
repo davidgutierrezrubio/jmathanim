@@ -77,7 +77,7 @@ public class Line extends Segment {
     }
 
     public void computeBoundPoints(Renderer r) {
-        Rect rect = r.getCamera().getMathBoundaries();
+        Rect rect = r.getCamera().getMathView();
         double[] intersectLine = rect.intersectLine(p1.v.x, p1.v.y, p2.v.x, p2.v.y);
 
         if (intersectLine == null) {

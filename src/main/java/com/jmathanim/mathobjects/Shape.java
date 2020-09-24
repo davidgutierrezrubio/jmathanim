@@ -140,8 +140,6 @@ public class Shape extends MathObject {
         jmpath.removeInterpolationPoints();
     }
 
-
-
     @Override
     public Shape copy() {
         final MathObjectDrawingProperties copy = mp.copy();
@@ -176,16 +174,6 @@ public class Shape extends MathObject {
     @Override
     public Rect getBoundingBox() {
         return jmpath.getBoundingBox();
-    }
-
-    @Override
-    public void setDrawAlpha(double t) {
-        this.mp.setDrawAlpha((float) t);
-    }
-
-    @Override
-    public void setFillAlpha(double t) {
-        this.mp.setFillAlpha((float) t);
     }
 
     @Override
@@ -230,20 +218,13 @@ public class Shape extends MathObject {
         jmpath.saveState();
     }
 
-//    //Convenience methods to set drawing parameters
-//    @Override
-//    public Shape drawColor(Color dc)
-//    {
-//        mp.drawColor=dc;
-//        return this;
-//    }
-//    @Override
-//     public Shape fillColor(Color fc)
-//    {
-//        mp.fillColor=fc;
-//        mp.fill=true;
-//        return this;
-//    }
+    @Override
+    public <T extends MathObject> T moveTo(Vec coords
+    ) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    //Static methods to build most used shapes
     public static Shape square() {
         return Shape.square(new Point(0, 0), 1);
     }
@@ -286,10 +267,30 @@ public class Shape extends MathObject {
         return obj;
     }
 
-        @Override
-        public <T extends MathObject > T moveTo(Vec coords
-        
-            ) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public static Shape arc(double angle) {
+        Shape obj = new Shape();
+        double x1, y1;
+        double step = Math.PI * 2 / 5;
+        for (double alphaC = 0; alphaC < angle; alphaC += step) {
+            x1 = Math.cos(alphaC);
+            y1 = Math.sin(alphaC);
+            Point newPoint = new Point(x1, y1);
+            JMPathPoint p = JMPathPoint.curveTo(newPoint);
+            p.isCurved = true;
+            obj.jmpath.addJMPoint(p);
         }
+        obj.jmpath.generateControlPoints();
+        obj.setObjectType(ARC);
+        obj.jmpath.getJMPoint(0).isVisible = false;//Open path
+        return obj;
     }
+
+    public static Shape circle() {
+        Shape obj = arc(Math.PI * 2);
+        obj.jmpath.close();
+        obj.getJMPoint(0).isVisible = true;
+        obj.setObjectType(CIRCLE);
+        return obj;
+    }
+
+}

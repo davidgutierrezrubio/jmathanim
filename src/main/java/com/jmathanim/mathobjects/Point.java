@@ -177,15 +177,7 @@ public class Point extends MathObject {
         return new Rect(v.x, v.y, v.x, v.y);
     }
 
-    @Override
-    public void setDrawAlpha(double t) {
-        this.mp.setDrawAlpha((float) t);
-    }
-
-    @Override
-    public void setFillAlpha(double t) {
-        //Nothing to do  here
-    }
+   
 
     @Override
     public void registerChildrenToBeUpdated(JMathAnimScene scene) {

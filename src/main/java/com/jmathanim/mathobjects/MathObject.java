@@ -243,14 +243,11 @@ public abstract class MathObject implements Drawable, Updateable, Stateable {
     public abstract Rect getBoundingBox();
 
     public void setAlpha(double t) {
-        setDrawAlpha(t);
-        setFillAlpha(t);
+        drawAlpha(t);
+        fillAlpha(t);
     }
 
-    public abstract void setDrawAlpha(double t);
-
-    public abstract void setFillAlpha(double t);
-
+   
     public abstract void registerChildrenToBeUpdated(JMathAnimScene scene);
 
     public abstract void unregisterChildrenToBeUpdated(JMathAnimScene scene);
@@ -294,6 +291,21 @@ public abstract class MathObject implements Drawable, Updateable, Stateable {
 
     public <T extends MathObject> T fillColor(JMColor fc) {
         mp.fillColor.set(fc);
+        return (T) this;
+    }
+    
+     public <T extends MathObject> T drawAlpha(double alpha) {
+        mp.drawColor.alpha=alpha;
+        return (T) this;
+    }
+
+    public <T extends MathObject> T fillAlpha(double alpha) {
+        mp.fillColor.alpha=alpha;
+        return (T) this;
+    }
+    
+     public <T extends MathObject> T thickness(double th) {
+        mp.thickness=th;
         return (T) this;
     }
 

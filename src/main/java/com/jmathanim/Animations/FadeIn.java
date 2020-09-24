@@ -15,6 +15,8 @@ import com.jmathanim.mathobjects.MathObject;
 public class FadeIn extends Animation {
 
     MathObject mobj;
+    private double alphaDraw;
+    private double fillDraw;
 
     public FadeIn(MathObject mo) {
         super();
@@ -28,8 +30,9 @@ public class FadeIn extends Animation {
 
     @Override
     public void doAnim(double t) {
-        System.out.println("Anim FadeIn " + t);
-        mobj.setAlpha(t);
+//        System.out.println("Anim FadeIn " + t);
+        mobj.drawAlpha(alphaDraw*t);
+        mobj.fillAlpha(fillDraw*t);
     }
 
     @Override
@@ -38,6 +41,9 @@ public class FadeIn extends Animation {
 
     @Override
     public void initialize() {
+        //Store alpha values 
+        alphaDraw=mobj.mp.drawColor.alpha;
+        fillDraw=mobj.mp.fillColor.alpha;
     }
 
     @Override

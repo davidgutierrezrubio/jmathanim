@@ -215,15 +215,6 @@ public class JMPathPoint extends MathObject implements Updateable, Stateable {
         return p.getBoundingBox();
     }
 
-    @Override
-    public void setDrawAlpha(double t) {
-        p.setDrawAlpha(t);
-    }
-
-    @Override
-    public void setFillAlpha(double t) {
-        p.setFillAlpha(t);
-    }
 
     @Override
     public void registerChildrenToBeUpdated(JMathAnimScene scene) {

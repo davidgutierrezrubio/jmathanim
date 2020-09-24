@@ -74,7 +74,7 @@ public class LaTeXMathObject extends SVGMathObject {
         //use screen sizes as this object has an absolute size by default
         Camera cam=JMathAnimConfig.getConfig().getFixedCamera();
         int h=cam.screenHeight;
-        double hm=cam.getMathBoundaries().getHeight();
+        double hm=cam.getMathView().getHeight();
         double sc=DEFAULT_SCALE_FACTOR * 10 / 6.807795;
         this.scale(getBoundingBox().getUL(),sc,sc);
         

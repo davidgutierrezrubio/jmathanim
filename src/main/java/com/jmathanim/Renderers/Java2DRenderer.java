@@ -36,6 +36,7 @@ import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
+import java.awt.MediaTracker;
 import java.awt.RenderingHints;
 import java.awt.Stroke;
 import java.awt.Toolkit;
@@ -46,6 +47,7 @@ import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 /**
@@ -122,7 +124,15 @@ public class Java2DRenderer extends Renderer {
         parentScene=JMathAnimConfig.getConfig().getScene();
 
         //Proofs
-        img = Toolkit.getDefaultToolkit().getImage("c:\\media\\hoja.jpg");
+        img = Toolkit.getDefaultToolkit().getImage("c:\\media\\hoja.png");
+        //This tracker waits for image to be fully loaded
+        MediaTracker tracker=new MediaTracker(new JLabel());
+        tracker.addImage(img, 1);
+        try {
+            tracker.waitForID(1);
+        } catch (InterruptedException ex) {
+            Logger.getLogger(Java2DRenderer.class.getName()).log(Level.SEVERE, null, ex);
+        }
 
     }
 
@@ -284,11 +294,61 @@ public class Java2DRenderer extends Renderer {
 
     @Override
     public void clear() {
-        g2d.setColor(JMathAnimConfig.getConfig().getBakcgroundColor().getColor());//TODO: Poner en opciones
+        g2d.setColor(JMathAnimConfig.getConfig().getBackgroundColor().getColor());//TODO: Poner en opciones
         g2d.fillRect(0, 0, width, height);
 //        g2d.drawImage(img, 0, 0, null);
+        drawScaledImage(img, g2d);
     }
 
+    public  void drawScaledImage(Image image, Graphics g) {
+        int imgWidth = image.getWidth(null);
+        int imgHeight = image.getHeight(null);
+         
+        double imgAspect = (double) imgHeight / imgWidth;
+ 
+        int canvasWidth = width;
+        int canvasHeight = height;
+         
+        double canvasAspect = (double) canvasHeight / canvasWidth;
+ 
+        int x1 = 0; // top left X position
+        int y1 = 0; // top left Y position
+        int x2 = 0; // bottom right X position
+        int y2 = 0; // bottom right Y position
+         
+        if (imgWidth < canvasWidth && imgHeight < canvasHeight) {
+            // the image is smaller than the canvas
+            x1 = (canvasWidth - imgWidth)  / 2;
+            y1 = (canvasHeight - imgHeight) / 2;
+            x2 = imgWidth + x1;
+            y2 = imgHeight + y1;
+              g.drawImage(image, x1, y1, x2, y2, 0, 0, imgWidth, imgHeight, null);
+        } else {
+            if (canvasAspect > imgAspect) {
+                y1 = canvasHeight;
+                // keep image aspect ratio
+                canvasHeight = (int) (canvasWidth * imgAspect);
+                y1 = (y1 - canvasHeight) / 2;
+            } else {
+                x1 = canvasWidth;
+                // keep image aspect ratio
+                canvasWidth = (int) (canvasHeight / imgAspect);
+                x1 = (x1 - canvasWidth) / 2;
+            }
+            x2 = canvasWidth + x1;
+            y2 = canvasHeight + y1;
+//            g.drawImage(img, 9, 9, null);
+ g.drawImage(image, x1, y1, x2, y2, 0, 0, imgWidth, imgHeight, null);
+        }
+ 
+       
+    }
+    
+    
+    
+    
+    
+    
     @Override
     public void setStroke(MathObject obj) {
         final double thickness = obj.mp.getThickness(this);
@@ -380,7 +440,7 @@ public class Java2DRenderer extends Renderer {
         int prev[] = {scr[0], scr[1]};
         int xy[] = {scr[0], scr[1]};
 
-        for (int n = 1; n < numPoints; n++) {
+        for (int n = 1; n < numPoints+1; n++) {
 
             Vec point = c.getJMPoint(n).p.v;
             Vec cpoint1 = c.getJMPoint(n - 1).cp1.v;
@@ -409,12 +469,12 @@ public class Java2DRenderer extends Renderer {
                 }
             }
         }
-        if (c.isClosed()) {
-            //closePath method draws a straight line to the last moveTo, so we
-            //have to move first to the first point of our path
-            resul.moveTo(scr[0], scr[1]);
-            resul.closePath();
-        }
+//        if (c.isClosed()) {
+//            //closePath method draws a straight line to the last moveTo, so we
+//            //have to move first to the first point of our path
+//            resul.moveTo(scr[0], scr[1]);
+//            resul.closePath();
+//        }
 //        if (c.isClosed()) {
 //            if (c.getPoint(0).isVisible) {
 //                resul.closePath();
@@ -490,7 +550,7 @@ public class Java2DRenderer extends Renderer {
      * @return
      */
     public Vec defaultToFixedCamera(Vec v) {
-        double width1 = camera.getMathBoundaries().getWidth();
+        double width1 = camera.getMathView().getWidth();
         int[] ms = camera.mathToScreen(v);
         double[] coords = fixedCamera.screenToMath(ms[0], ms[1]);
 //        System.out.println(width1 + ",   " + v + "    MS(" + ms[0] + ", " + ms[1] + ")");

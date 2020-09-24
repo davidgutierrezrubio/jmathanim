@@ -31,7 +31,7 @@ public class AbsoluteSizeUpdater implements Updateable{
     @Override
     public void update() {
         Camera camera = JMathAnimConfig.getConfig().getCamera();
-        double screenMathWidth=camera.getMathBoundaries().getWidth();
+        double screenMathWidth=camera.getMathView().getWidth();
         double objectWidth=obj.getBoundingBox().getWidth();
         
         //ObjectWidth should be ratio*screenMathWidth

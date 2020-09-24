@@ -71,7 +71,7 @@ public class Arrow2D extends MultiShapeObject {
     }
 
     private void scaleArrowHead(double sc) {
-        double mw = JMathAnimConfig.getConfig().getFixedCamera().getMathBoundaries().getWidth();
+        double mw = JMathAnimConfig.getConfig().getFixedCamera().getMathView().getWidth();
         double scaleFactor = sc * DEFAULT_ARROW_HEAD_SIZE * mw / arrowHead.getBoundingBox().getWidth();
 
         arrowHead.scale(scaleFactor);
