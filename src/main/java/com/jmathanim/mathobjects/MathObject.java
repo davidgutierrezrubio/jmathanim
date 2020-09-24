@@ -49,7 +49,7 @@ public abstract class MathObject implements Drawable, Updateable, Stateable {
      *
      */
     private HashSet<JMathAnimScene> scenes;
-    public boolean visible=true;
+    public boolean visible = true;
     /**
      * This parameter specifies the amount of object to be drawn 0=none,
      * 1/2=draw half
@@ -72,13 +72,8 @@ public abstract class MathObject implements Drawable, Updateable, Stateable {
 //    private Point anchorPoint;
     public Point absoluteAnchorPoint;
     private int absoluteAnchorType = Anchor.BY_CENTER;
+    private int layer = 0;
 
-//    /**
-//     * Mathobjects which this is dependent from. This object should be updated4
-//     * when any of this list changes.
-//     */
-//    public final HashSet<MathObject> ascendent;
-//    public final HashSet<MathObject> cousins;
     public MathObject() {
         this(null);
     }
@@ -220,12 +215,6 @@ public abstract class MathObject implements Drawable, Updateable, Stateable {
 //        }
     }
 
-    public void addObjectToScene(MathObject mob) {
-        for (JMathAnimScene sce : scenes) {
-            mob.addScene(sce);
-        }
-    }
-
     /**
      * Sets the drawing parameter. This method alters the drawing parameters of
      * the MathObject so that it displays only partially. It is used for
@@ -247,7 +236,6 @@ public abstract class MathObject implements Drawable, Updateable, Stateable {
         fillAlpha(t);
     }
 
-   
     public abstract void registerChildrenToBeUpdated(JMathAnimScene scene);
 
     public abstract void unregisterChildrenToBeUpdated(JMathAnimScene scene);
@@ -293,19 +281,19 @@ public abstract class MathObject implements Drawable, Updateable, Stateable {
         mp.fillColor.set(fc);
         return (T) this;
     }
-    
-     public <T extends MathObject> T drawAlpha(double alpha) {
-        mp.drawColor.alpha=alpha;
+
+    public <T extends MathObject> T drawAlpha(double alpha) {
+        mp.drawColor.alpha = alpha;
         return (T) this;
     }
 
     public <T extends MathObject> T fillAlpha(double alpha) {
-        mp.fillColor.alpha=alpha;
+        mp.fillColor.alpha = alpha;
         return (T) this;
     }
-    
-     public <T extends MathObject> T thickness(double th) {
-        mp.thickness=th;
+
+    public <T extends MathObject> T thickness(double th) {
+        mp.thickness = th;
         return (T) this;
     }
 
@@ -324,15 +312,12 @@ public abstract class MathObject implements Drawable, Updateable, Stateable {
 
     }
 
-    public void stackTo(MathObject obj,int anchorType)
-    {
+    public void stackTo(MathObject obj, int anchorType) {
         Point B = Anchor.getAnchorPoint(obj, anchorType);
         Point A = Anchor.getAnchorPoint(this, Anchor.reverseAnchorPoint(anchorType));
         this.shift(A.to(B));
     }
-    
-    
-    
+
     public void putAt(Point p, int anchorType) {
         putAt(p, anchorType, 0);
     }
@@ -359,4 +344,12 @@ public abstract class MathObject implements Drawable, Updateable, Stateable {
         return (T) this;
     }
 
+    public <T extends MathObject> T setLayer(int layer) {
+        this.layer = layer;
+        return (T) this;
+    }
+
+    public int getLayer() {
+        return layer;
+    }
 }

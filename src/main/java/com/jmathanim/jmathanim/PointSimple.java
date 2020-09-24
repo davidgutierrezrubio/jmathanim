@@ -57,14 +57,14 @@ public class PointSimple extends Scene2D {
     @Override
     public void setupSketch() {
         nanotime = System.nanoTime();
-        conf.setHighQuality();
+//        conf.setHighQuality();
 //        conf.setMediumQuality();
-//        conf.setLowQuality();
+        conf.setLowQuality();
 
-        setCreateMovie(true);
-//        setCreateMovie(false);
+//        setCreateMovie(true);
+        setCreateMovie(false);
         clockTick("create movie");
-//        setShowPreviewWindow(true);
+        setShowPreviewWindow(true);
         clockTick("Show preview window");
         conf.setBackgroundColor(JMColor.hex("#192841"));
     }
@@ -76,7 +76,20 @@ public class PointSimple extends Scene2D {
         //        pentagonBuild();
         //        pruebaShapeClosedToCanonicalForm();
         //        pruebaTransformRegularPolygons();
-        muchosCuadradosApilados();
+//        muchosCuadradosApilados();
+        pruebaSubPath();
+    }
+
+    public void pruebaSubPath() {
+        Shape sq = Shape.arc(Math.PI*1.3);
+        JMPath subpath = sq.jmpath.subpath(.99);
+        for (double t=0;t<=1;t+=.01){
+        Shape a = new Shape(sq.jmpath.subpath(t),null);
+        add(a);
+            waitSeconds(2);
+        remove(a);
+        }
+        waitSeconds(150);
     }
 
     public void testAll() {
@@ -198,7 +211,6 @@ public class PointSimple extends Scene2D {
         Circle c1 = new Circle(new Point(-1, 0), .5);
         c1.mp.thickness = .005d;
         c1.drawColor(JMColor.GREEN);
-        c1.mp.layer = 2;
         add(c1);
 
         Circle c2 = new Circle(new Point(0, 0), .5);
@@ -422,12 +434,12 @@ public class PointSimple extends Scene2D {
 
                 int kk = (int) (Math.random() * 4);
                 while (anchors[kk] == Anchor.reverseAnchorPoint(anchor)) {
-                    System.out.println("kk=" + anchors[kk]+ ", Anchor: " + anchor);
-                     kk = (int) (Math.random() * 4);
 
+                    kk = (int) (Math.random() * 4);
                 }
+                System.out.println("kk=" + anchors[kk] + ", Anchor: " + anchor);
                 anchor = anchors[kk];
-                
+
                 sq.stackTo(previous, anchor);
                 add(sq);
                 objectsToZoomAt.add(sq);

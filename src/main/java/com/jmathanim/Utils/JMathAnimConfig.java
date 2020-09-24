@@ -31,7 +31,6 @@ public class JMathAnimConfig {
         
         defaultMP.drawPathBorder = false;
         defaultMP.absoluteThickness = false;
-        defaultMP.layer = 1;//Layer 0 should be reserved for background
         defaultMP.absolutePosition = false;
         return defaultMP;
     }

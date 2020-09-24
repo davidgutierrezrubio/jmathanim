@@ -7,16 +7,10 @@ package com.jmathanim.jmathanim;
 
 import com.jmathanim.Animations.Animation;
 import com.jmathanim.Animations.PlayAnim;
-import com.jmathanim.Animations.Transform;
-import com.jmathanim.Animations.commands.Commands;
 import com.jmathanim.Cameras.Camera;
 import com.jmathanim.Renderers.Renderer;
 import com.jmathanim.Utils.JMathAnimConfig;
-import com.jmathanim.Utils.Rect;
-import com.jmathanim.Utils.Vec;
-import com.jmathanim.mathobjects.Shape;
 import com.jmathanim.mathobjects.MathObject;
-import com.jmathanim.mathobjects.Point;
 import com.jmathanim.mathobjects.updateableObjects.Updateable;
 import java.util.ArrayList;
 
@@ -135,7 +129,7 @@ public abstract class JMathAnimScene {
             obj.update();
         }
         //Objects to be drawn on screen. Sort them by layer
-        objects.sort((MathObject o1, MathObject o2) -> (o1.mp.layer - o2.mp.layer));
+        objects.sort((MathObject o1, MathObject o2) -> (o1.getLayer()- o2.getLayer()));
         for (MathObject obj : objects) {
             if (obj.visible) {
                 obj.draw(SCRenderer);

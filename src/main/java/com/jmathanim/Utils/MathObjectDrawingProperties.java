@@ -29,7 +29,6 @@ public class MathObjectDrawingProperties {
     public Boolean absoluteThickness;
 //    public Boolean fill;
     public Boolean visible;
-    public Integer layer;//Layer to draw. Slower means under.
     public Boolean absolutePosition;//If true, position comes in absolute screen coordinates
     public Boolean drawPathBorder;
     public Integer dashStyle;
@@ -56,7 +55,6 @@ public class MathObjectDrawingProperties {
 //        fill = (prop.fill == null ? fill : prop.fill);
         drawPathBorder = (prop.drawPathBorder == null ? drawPathBorder : prop.drawPathBorder);
         absoluteThickness = (prop.absoluteThickness == null ? absoluteThickness : prop.absoluteThickness);
-        layer = (prop.layer == null ? layer : prop.layer);
         absolutePosition = (prop.absolutePosition == null ? absolutePosition : prop.absolutePosition);
     }
 
