@@ -81,7 +81,7 @@ public abstract class Renderer {
 
     abstract public void saveFrame(int frameCount);
 
-    abstract public void finish();
+    abstract public void finish(int frameCount);
 
     /**
      * Clear current renderer, with the background color

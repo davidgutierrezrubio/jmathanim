@@ -77,7 +77,7 @@ public class PointSimple extends Scene2D {
         //        pruebaShapeClosedToCanonicalForm();
         //        pruebaTransformRegularPolygons();
 //        muchosCuadradosApilados();
-        pruebaSubPath();
+        pruebaVariosTransforms();
     }
 
     public void pruebaSubPath() {
@@ -140,8 +140,8 @@ public class PointSimple extends Scene2D {
         Shape sq = Shape.regularPolygon(5, new Point(0, 0), .3).shift(1, 0).thickness(2);
         add(sq.drawColor(JMColor.BLACK));
         double tiempo = 30;
-        waitSeconds(tiempo);
-        play(new FadeIn(reg, tiempo));
+//        waitSeconds(tiempo);
+//        play(new FadeIn(reg, tiempo));
 //        add(reg);
         Transform tr = new Transform(reg, sq, tiempo);
 //        tr.setMethod(Transform.METHOD_INTERPOLATE_POINT_BY_POINT);

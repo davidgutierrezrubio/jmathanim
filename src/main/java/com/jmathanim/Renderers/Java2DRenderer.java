@@ -31,7 +31,10 @@ import io.humble.video.awt.MediaPictureConverterFactory;
 import java.awt.BasicStroke;
 import static java.awt.BasicStroke.CAP_ROUND;
 import static java.awt.BasicStroke.JOIN_ROUND;
+import java.awt.BorderLayout;
+import java.awt.Button;
 import java.awt.Color;
+import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -44,12 +47,14 @@ import java.awt.geom.Path2D;
 import java.awt.image.BufferedImage;
 import java.awt.image.RescaleOp;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.BoxLayout;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JToggleButton;
 import javax.swing.SwingUtilities;
 import javax.swing.plaf.basic.BasicSplitPaneUI;
 
@@ -87,7 +92,7 @@ public class Java2DRenderer extends Renderer {
     final String saveFilePath = "c:\\media\\pinicula.mp4";
     private final JMathAnimConfig cnf;
     private JFrame frame;
-    private JPanel panel;
+    private JPanel drawPanel;
     private final JMathAnimScene parentScene;
 
     //To limit fps in preview window
@@ -96,6 +101,9 @@ public class Java2DRenderer extends Renderer {
     final int SKIP_TICKS = 1000 / TICKS_PER_SECOND;
     final int MAX_FRAMESKIP = 5;
     private Image img;
+    private JPanel buttonsPanel;
+    private JToggleButton stepButton;
+    private JLabel statusLabel;
 
     public Java2DRenderer(JMathAnimScene parentScene) {
         this(parentScene, true, false);//default values
@@ -157,21 +165,38 @@ public class Java2DRenderer extends Renderer {
         System.out.println("Prepare encoder...");
 
         if (showPreview) {
+            //TODO: Move this to its own class
             frame = new JFrame("Previsualization");
-            frame.setSize(width+20, height+20);//TODO: Scale window to fixed size
-//            frame.setLayout(new BoxLayout(frame, BoxLayout.PAGE_AXIS));
-            panel = new JPanel();
-            panel.setBounds(0,0,width, height);//x axis, y axis, width, height  
-            frame.add(panel);
-            JLabel jLabel = new JLabel("Hello!");
-            jLabel.setBounds(width, height,10,10);
-            frame.add(jLabel);
-                   SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-                frame.setVisible(true);
-            }
-        });
+            frame.setSize(width + 20, height + 20);//TODO: Scale window to fixed size
+//            frame.setLayout(new BasicSplitPaneUI.BasicVerticalLayoutManager());
+            frame.setLayout(new BorderLayout(0,10));
+            drawPanel = new JPanel();
+            buttonsPanel = new JPanel();
+            drawPanel.setBounds(0, 0, width, height);//x axis, y axis, width, height  
+            frame.add(drawPanel, BorderLayout.CENTER);
+            statusLabel = new JLabel("Status goes here");
             
+            pauseToggleButton = new JToggleButton("Pause");
+            stepButton = new JToggleButton("Step");
+            buttonsPanel.add(pauseToggleButton);
+            
+            buttonsPanel.add(statusLabel);
+//            buttonsPanel.add(stepButton);
+//            stepButton.setEnabled(false);
+
+            frame.add(buttonsPanel, BorderLayout.SOUTH);
+            try {
+                SwingUtilities.invokeAndWait(new Runnable() {
+                    public void run() {
+                        frame.setVisible(true);
+                    }
+                });
+            } catch (InterruptedException ex) {
+                Logger.getLogger(Java2DRenderer.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (InvocationTargetException ex) {
+                Logger.getLogger(Java2DRenderer.class.getName()).log(Level.SEVERE, null, ex);
+            }
+
         }
 
         if (createMovie) {
@@ -215,6 +240,7 @@ public class Java2DRenderer extends Renderer {
             picture.setTimeBase(rationalFrameRate);
         }
     }
+    private JToggleButton pauseToggleButton;
 
     @Override
     public void drawCircle(double x, double y, double radius) {
@@ -240,8 +266,13 @@ public class Java2DRenderer extends Renderer {
     public void saveFrame(int frameCount) {
         if (showPreview) {
             //Draw into a window
-            Graphics gr = panel.getGraphics();
+            Graphics gr = drawPanel.getGraphics();
             gr.drawImage(bufferedImage, 0, 0, null);
+            String statusText=String.format("frame=%d   t=%.2fs",frameCount,(1f*frameCount)/cnf.fps);
+            statusLabel.setText(statusText);
+            while (pauseToggleButton.isSelected()) {
+                System.out.println("pausa");
+            }
 
 //            //Ensure fps is set to movie
 //            double next_game_tick = System.currentTimeMillis();
@@ -275,7 +306,8 @@ public class Java2DRenderer extends Renderer {
     }
 
     @Override
-    public void finish() {
+    public void finish(int frameCount) {
+        System.out.println(String.format("%d frames created, %.2fs total time", frameCount,(1.f*frameCount)/cnf.fps));
         if (createMovie) {
             /**
              * Encoders, like decoders, sometimes cache pictures so it can do
@@ -296,6 +328,7 @@ public class Java2DRenderer extends Renderer {
              */
             muxer.close();
             System.out.println("Movie created at " + saveFilePath);
+            
         }
         if (showPreview) {
             frame.setVisible(false);

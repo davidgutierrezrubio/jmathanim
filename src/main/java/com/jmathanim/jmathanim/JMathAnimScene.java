@@ -68,7 +68,7 @@ public abstract class JMathAnimScene {
         //In the global variable store Scene, Renderer and main Camera
         conf.setScene(this);
         runSketch();
-        SCRenderer.finish();//Finish rendering jobs
+        SCRenderer.finish(frameCount);//Finish rendering jobs
 
     }
 
