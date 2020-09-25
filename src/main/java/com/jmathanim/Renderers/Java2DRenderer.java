@@ -46,9 +46,12 @@ import java.awt.image.RescaleOp;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.BoxLayout;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
+import javax.swing.plaf.basic.BasicSplitPaneUI;
 
 /**
  *
@@ -155,10 +158,20 @@ public class Java2DRenderer extends Renderer {
 
         if (showPreview) {
             frame = new JFrame("Previsualization");
-            frame.setSize(width, height);//TODO: Scale window to fixed size
+            frame.setSize(width+20, height+20);//TODO: Scale window to fixed size
+//            frame.setLayout(new BoxLayout(frame, BoxLayout.PAGE_AXIS));
             panel = new JPanel();
+            panel.setBounds(0,0,width, height);//x axis, y axis, width, height  
             frame.add(panel);
-            frame.setVisible(true);
+            JLabel jLabel = new JLabel("Hello!");
+            jLabel.setBounds(width, height,10,10);
+            frame.add(jLabel);
+                   SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                frame.setVisible(true);
+            }
+        });
+            
         }
 
         if (createMovie) {

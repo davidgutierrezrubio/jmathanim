@@ -83,13 +83,13 @@ public class PointSimple extends Scene2D {
     public void pruebaSubPath() {
         Shape sq = Shape.arc(Math.PI*1.3);
         JMPath subpath = sq.jmpath.subpath(.99);
-        for (double t=0;t<=1;t+=.01){
+        for (double t=0;t<=1;t+=.1){
         Shape a = new Shape(sq.jmpath.subpath(t),null);
         add(a);
             waitSeconds(2);
         remove(a);
         }
-        waitSeconds(150);
+        waitSeconds(10);
     }
 
     public void testAll() {
