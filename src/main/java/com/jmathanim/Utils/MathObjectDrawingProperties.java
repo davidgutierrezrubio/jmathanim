@@ -27,10 +27,6 @@ public class MathObjectDrawingProperties {
     //If false, thickness is computed to be a percentage of the width
     //to ensure zoom or resolution doesn't affect the result
     public Boolean absoluteThickness;
-//    public Boolean fill;
-    public Boolean visible;
-    public Boolean absolutePosition;//If true, position comes in absolute screen coordinates
-    public Boolean drawPathBorder;
     public Integer dashStyle;
 
     public MathObjectDrawingProperties() {
@@ -50,12 +46,8 @@ public class MathObjectDrawingProperties {
         drawColor.set(prop.drawColor);
         fillColor.set(prop.fillColor);
         thickness = (prop.thickness == null ? thickness : prop.thickness);
-        visible = (prop.visible == null ? visible : prop.visible);
         dashStyle = (prop.dashStyle == null ? dashStyle : prop.dashStyle);
-//        fill = (prop.fill == null ? fill : prop.fill);
-        drawPathBorder = (prop.drawPathBorder == null ? drawPathBorder : prop.drawPathBorder);
         absoluteThickness = (prop.absoluteThickness == null ? absoluteThickness : prop.absoluteThickness);
-        absolutePosition = (prop.absolutePosition == null ? absolutePosition : prop.absolutePosition);
     }
 
     /**
@@ -127,21 +119,13 @@ public class MathObjectDrawingProperties {
 //        fillColor;
 //        thickness;
 //        absoluteThickness;
-//        fill;
-//        visible;
 //        absolutePosition;
-//        drawPathBorder;
 //        dashStlye
         drawColor.set(mp.drawColor);
         fillColor.set(mp.fillColor);
-
         thickness = mp.thickness;
         dashStyle = mp.dashStyle;
         absoluteThickness = mp.absoluteThickness;
-//        fill = mp.fill;
-        visible = mp.visible;
-        absolutePosition = mp.absolutePosition;
-        drawPathBorder = mp.drawPathBorder;
         dashStyle = mp.dashStyle;
     }
 //

@@ -16,8 +16,6 @@ public abstract class Scene2D extends JMathAnimScene {
 
     protected Java2DRenderer renderer;
     protected Camera2D camera;
-    private boolean createMovie=true;
-    private boolean showPreviewWindow=false;
 
 
     public Scene2D() {
@@ -28,25 +26,11 @@ public abstract class Scene2D extends JMathAnimScene {
     public void createRenderer(){
         fps = conf.fps;
         dt=1./fps;
-        renderer = new Java2DRenderer(this,createMovie,showPreviewWindow);
+        renderer = new Java2DRenderer(this);
         camera=renderer.getCamera();
         SCRenderer=renderer;
     }
 
-    public boolean isCreateMovie() {
-        return createMovie;
-    }
-
-    public void setCreateMovie(boolean createMovie) {
-        this.createMovie = createMovie;
-    }
-
-    public boolean isShowPreviewWindow() {
-        return showPreviewWindow;
-    }
-
-    public void setShowPreviewWindow(boolean showPreviewWindow) {
-        this.showPreviewWindow = showPreviewWindow;
-    }
+   
     
 }

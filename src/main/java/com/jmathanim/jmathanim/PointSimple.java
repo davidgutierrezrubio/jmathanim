@@ -61,10 +61,12 @@ public class PointSimple extends Scene2D {
 //        conf.setMediumQuality();
         conf.setLowQuality();
 
-        setCreateMovie(true);
-//        setCreateMovie(false);
+//        setCreateMovie(true);
+        conf.setCreateMovie(false);
+        conf.setAdjustPreviewToFPS(true);
+//        conf.setAdjustPreviewToFPS(false);
         clockTick("create movie");
-        setShowPreviewWindow(true);
+        conf.setShowPreviewWindow(true);
         clockTick("Show preview window");
         conf.setBackgroundColor(JMColor.hex("#192841"));
     }
@@ -73,11 +75,11 @@ public class PointSimple extends Scene2D {
     public void runSketch() {
         System.out.println("Running sketch...");
         //       pruebaTransformHomotopy();
-        //        pentagonBuild();
+                pentagonBuild();
         //        pruebaShapeClosedToCanonicalForm();
         //        pruebaTransformRegularPolygons();
 //        muchosCuadradosApilados();
-        pruebaVariosTransforms();
+//        pruebaVariosTransforms();
     }
 
     public void pruebaSubPath() {
@@ -115,8 +117,10 @@ public class PointSimple extends Scene2D {
     }
 
     public void pentagonBuild() {
-        Shape pentagon = Shape.regularPolygon(5, new Point(0, 0), .3).thickness(2).drawColor(JMColor.BLUE);
+        Shape pentagon = Shape.square();
+        Shape pentagonDst = Shape.regularPolygon(5, new Point(0, 0), .3).thickness(2).drawColor(JMColor.BLUE);
         add(pentagon);
+        playAnim.transform(pentagon, pentagonDst, 10);
         waitSeconds(10);
         playAnim.zoomToRect(pentagon.getBoundingBox().addGap(.3, .3), 3);
         for (Point p : pentagon.jmpath.getPoints()) {

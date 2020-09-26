@@ -8,7 +8,6 @@ package com.jmathanim.Utils;
 import com.jmathanim.Cameras.Camera;
 import com.jmathanim.Renderers.Renderer;
 import com.jmathanim.jmathanim.JMathAnimScene;
-import java.awt.Color;
 
 /**
  * Stores all the data related to global configuration, to be accessed from any
@@ -22,16 +21,11 @@ public class JMathAnimConfig {
         MathObjectDrawingProperties defaultMP = new MathObjectDrawingProperties();
         //Default, boring values
         defaultMP.drawColor.set(JMColor.WHITE);
-//        defaultMP.fillColor = new Color(0, 0, 0, 0);//Transparent color
         defaultMP.fillColor.set(JMColor.GRAY);
         defaultMP.setFillAlpha(0);//No filling by default
         defaultMP.thickness = 1d;
         defaultMP.dashStyle = MathObjectDrawingProperties.SOLID;
-        defaultMP.visible = true;
-        
-        defaultMP.drawPathBorder = false;
         defaultMP.absoluteThickness = false;
-        defaultMP.absolutePosition = false;
         return defaultMP;
     }
 
@@ -54,6 +48,9 @@ public class JMathAnimConfig {
     private Renderer renderer;
     private Camera camera;
 
+    public boolean createMovie;
+    public boolean showPreview;
+
     public static JMathAnimConfig getConfig() {
         if (singletonConfig == null) {
 
@@ -62,7 +59,8 @@ public class JMathAnimConfig {
         return singletonConfig;
     }
     //Background color, default black
-    private JMColor backgroundColor=JMColor.BLACK;
+    private JMColor backgroundColor = JMColor.BLACK;
+    public boolean delay = true;
 
     private JMathAnimConfig() {//Private constructor
     }
@@ -83,6 +81,10 @@ public class JMathAnimConfig {
         mediaW = 1280;
         mediaH = 1024;
         fps = 30;
+    }
+
+    public void setAdjustPreviewToFPS(boolean delay) {
+        this.delay = delay;
     }
 
     /**
@@ -128,6 +130,14 @@ public class JMathAnimConfig {
 
     public void setBackgroundColor(JMColor bakcgroundColor) {
         this.backgroundColor = bakcgroundColor;
+    }
+
+    public void setCreateMovie(boolean createMovie) {
+        this.createMovie = createMovie;
+    }
+
+    public void setShowPreviewWindow(boolean showPreviewWindow) {
+        this.showPreview = showPreviewWindow;
     }
 
 }
