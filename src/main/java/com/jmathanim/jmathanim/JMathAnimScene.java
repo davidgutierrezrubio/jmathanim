@@ -35,6 +35,8 @@ public abstract class JMathAnimScene {
     protected double dt;
     public JMathAnimConfig conf;
     protected final PlayAnim playAnim;
+    public long nanoTime;
+    public long previousNanoTime;
 
     public JMathAnimScene() {
         objects = new ArrayList<>(); //TODO: Extends this to include layers
@@ -146,6 +148,8 @@ public abstract class JMathAnimScene {
         doDraws();
         frameCount++;
         saveMPFrame();
+        previousNanoTime=nanoTime;
+           nanoTime = System.nanoTime();
 
     }
 

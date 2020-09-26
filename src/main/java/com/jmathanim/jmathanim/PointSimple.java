@@ -61,8 +61,8 @@ public class PointSimple extends Scene2D {
 //        conf.setMediumQuality();
         conf.setLowQuality();
 
-//        setCreateMovie(true);
-        setCreateMovie(false);
+        setCreateMovie(true);
+//        setCreateMovie(false);
         clockTick("create movie");
         setShowPreviewWindow(true);
         clockTick("Show preview window");
@@ -139,14 +139,14 @@ public class PointSimple extends Scene2D {
         Shape reg = Shape.regularPolygon(5, new Point(0, 0), .3).scale(-1, 1).rotate(-Math.PI / 3).drawColor(JMColor.BLACK);
         Shape sq = Shape.regularPolygon(5, new Point(0, 0), .3).shift(1, 0).thickness(2);
         add(sq.drawColor(JMColor.BLACK));
-        double tiempo = 30;
+        double tiempo = 10;
 //        waitSeconds(tiempo);
 //        play(new FadeIn(reg, tiempo));
 //        add(reg);
         Transform tr = new Transform(reg, sq, tiempo);
 //        tr.setMethod(Transform.METHOD_INTERPOLATE_POINT_BY_POINT);
         play(tr);
-        waitSeconds(tiempo);
+//        waitSeconds(tiempo);
     }
 
     public synchronized void resetScene() {

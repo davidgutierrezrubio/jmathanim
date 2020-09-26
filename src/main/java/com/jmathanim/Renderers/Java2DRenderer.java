@@ -14,6 +14,7 @@ import com.jmathanim.Utils.MathObjectDrawingProperties;
 import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
+import com.jmathanim.jmathanim.PreviewWindow;
 import com.jmathanim.mathobjects.Shape;
 import com.jmathanim.mathobjects.JMPathPoint;
 import com.jmathanim.mathobjects.MathObject;
@@ -64,14 +65,14 @@ import javax.swing.plaf.basic.BasicSplitPaneUI;
  * Java2D to render the image
  */
 public class Java2DRenderer extends Renderer {
-
+    
     private static final boolean DEBUG_PATH_POINTS = false; //Draw control points and vertices
     private static final boolean PRINT_DEBUG = false; //Draw control points and vertices
     private static final boolean BOUNDING_BOX_DEBUG = false; //Draw bounding boxes
 
     public boolean createMovie;
     public boolean showPreview;
-
+    
     private final BufferedImage bufferedImage;
     private final Graphics2D g2d;
     public Camera2D camera;
@@ -91,9 +92,7 @@ public class Java2DRenderer extends Renderer {
     protected Path2D.Double path;
     final String saveFilePath = "c:\\media\\pinicula.mp4";
     private final JMathAnimConfig cnf;
-    private JFrame frame;
-    private JPanel drawPanel;
-    private final JMathAnimScene parentScene;
+    private final JMathAnimScene scene;
 
     //To limit fps in preview window
     double interpolation = 0;
@@ -101,16 +100,14 @@ public class Java2DRenderer extends Renderer {
     final int SKIP_TICKS = 1000 / TICKS_PER_SECOND;
     final int MAX_FRAMESKIP = 5;
     private Image img;
-    private JPanel buttonsPanel;
-    private JToggleButton stepButton;
-    private JLabel statusLabel;
-
+    private PreviewWindow previewWindow;
+    
     public Java2DRenderer(JMathAnimScene parentScene) {
         this(parentScene, true, false);//default values
     }
-
+    
     public Java2DRenderer(JMathAnimScene parentScene, boolean createMovie, boolean showPreview) {
-        this.parentScene = parentScene;
+        this.scene = parentScene;
         cnf = parentScene.conf;
         this.createMovie = createMovie;
         this.showPreview = showPreview;
@@ -118,10 +115,10 @@ public class Java2DRenderer extends Renderer {
         //The Fixed camera doesn't change. It is used to display fixed-size objects
         //like heads of arrows or text
         fixedCamera = new Camera2D(cnf.mediaW, cnf.mediaH);
-
+        
         fixedCamera.setMathXY(-5, 5, 0);//Fixed camera is 10 units by default
         super.setSize(cnf.mediaW, cnf.mediaH);
-
+        
         bufferedImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
         g2d = bufferedImage.createGraphics();
         RenderingHints rh = new RenderingHints(
@@ -129,7 +126,7 @@ public class Java2DRenderer extends Renderer {
                 RenderingHints.VALUE_ANTIALIAS_ON
         );
         rh.put(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
-
+        
         g2d.setRenderingHints(rh);
         prepareEncoder();
         parentScene = JMathAnimConfig.getConfig().getScene();
@@ -145,7 +142,7 @@ public class Java2DRenderer extends Renderer {
 //            Logger.getLogger(Java2DRenderer.class.getName()).log(Level.SEVERE, null, ex);
 //        }
     }
-
+    
     @Override
     public Camera2D getCamera() {
         return camera;
@@ -159,36 +156,20 @@ public class Java2DRenderer extends Renderer {
         this.camera = (Camera2D) camera;
         camera.setSize(width, height);
     }
-
+    
     public final void prepareEncoder() {
-
+        
         System.out.println("Prepare encoder...");
-
+        
         if (showPreview) {
             //TODO: Move this to its own class
-            frame = new JFrame("Previsualization");
-            frame.setSize(width + 20, height + 20);//TODO: Scale window to fixed size
-//            frame.setLayout(new BasicSplitPaneUI.BasicVerticalLayoutManager());
-            frame.setLayout(new BorderLayout(0,10));
-            drawPanel = new JPanel();
-            buttonsPanel = new JPanel();
-            drawPanel.setBounds(0, 0, width, height);//x axis, y axis, width, height  
-            frame.add(drawPanel, BorderLayout.CENTER);
-            statusLabel = new JLabel("Status goes here");
+            previewWindow = new PreviewWindow(this);
+            previewWindow.buildGUI();
             
-            pauseToggleButton = new JToggleButton("Pause");
-            stepButton = new JToggleButton("Step");
-            buttonsPanel.add(pauseToggleButton);
-            
-            buttonsPanel.add(statusLabel);
-//            buttonsPanel.add(stepButton);
-//            stepButton.setEnabled(false);
-
-            frame.add(buttonsPanel, BorderLayout.SOUTH);
             try {
                 SwingUtilities.invokeAndWait(new Runnable() {
                     public void run() {
-                        frame.setVisible(true);
+                        previewWindow.setVisible(true);
                     }
                 });
             } catch (InterruptedException ex) {
@@ -196,9 +177,9 @@ public class Java2DRenderer extends Renderer {
             } catch (InvocationTargetException ex) {
                 Logger.getLogger(Java2DRenderer.class.getName()).log(Level.SEVERE, null, ex);
             }
-
+            
         }
-
+        
         if (createMovie) {
             muxer = Muxer.make(saveFilePath, null, "mp4");
             format = muxer.getFormat();
@@ -223,7 +204,7 @@ public class Java2DRenderer extends Renderer {
              * Add this stream to the muxer.
              */
             muxer.addNewStream(encoder);
-
+            
             try {
                 /**
                  * And open the muxer for business.
@@ -240,11 +221,10 @@ public class Java2DRenderer extends Renderer {
             picture.setTimeBase(rationalFrameRate);
         }
     }
-    private JToggleButton pauseToggleButton;
-
+    
     @Override
     public void drawCircle(double x, double y, double radius) {
-
+        
         g2d.setColor(borderColor.getColor());
         double mx = x - .5 * radius;
         double my = y + .5 * radius;
@@ -252,26 +232,38 @@ public class Java2DRenderer extends Renderer {
         int screenRadius = camera.mathToScreen(radius);
         g2d.fillOval(screenx[0], screenx[1], screenRadius, screenRadius);
     }
-
+    
     @Override
     public void drawDot(Point p) {
         setStroke(p);
         int[] xx = camera.mathToScreen(p.v.x, p.v.y);
-
+        
         g2d.setColor(p.mp.drawColor.getColor());
         g2d.drawLine(xx[0], xx[1], xx[0], xx[1]);
     }
-
+    
     @Override
     public void saveFrame(int frameCount) {
         if (showPreview) {
+            long fpsComputed;
             //Draw into a window
-            Graphics gr = drawPanel.getGraphics();
+            Graphics gr = previewWindow.drawPanel.getGraphics();
             gr.drawImage(bufferedImage, 0, 0, null);
-            String statusText=String.format("frame=%d   t=%.2fs",frameCount,(1f*frameCount)/cnf.fps);
-            statusLabel.setText(statusText);
-            while (pauseToggleButton.isSelected()) {
-                System.out.println("pausa");
+            long timeElapsedInNanoSeconds = scene.nanoTime - scene.previousNanoTime;
+            if (timeElapsedInNanoSeconds > 0) {
+                fpsComputed = 100000000 / (timeElapsedInNanoSeconds);
+            } else {
+                fpsComputed = 0;
+            }
+            
+            String statusText = String.format("frame=%d   t=%.2fs    fps=%d", frameCount, (1f * frameCount) / cnf.fps, fpsComputed);
+            previewWindow.statusLabel.setText(statusText);
+            while (previewWindow.pauseToggleButton.isSelected()) {
+                try {
+                    Thread.sleep(100);
+                } catch (InterruptedException ex) {
+                    Logger.getLogger(Java2DRenderer.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
 
 //            //Ensure fps is set to movie
@@ -304,10 +296,10 @@ public class Java2DRenderer extends Renderer {
             } while (packet.isComplete());
         }
     }
-
+    
     @Override
     public void finish(int frameCount) {
-        System.out.println(String.format("%d frames created, %.2fs total time", frameCount,(1.f*frameCount)/cnf.fps));
+        System.out.println(String.format("%d frames created, %.2fs total time", frameCount, (1.f * frameCount) / cnf.fps));
         if (createMovie) {
             /**
              * Encoders, like decoders, sometimes cache pictures so it can do
@@ -331,12 +323,12 @@ public class Java2DRenderer extends Renderer {
             
         }
         if (showPreview) {
-            frame.setVisible(false);
-            frame.dispose();
+            previewWindow.setVisible(false);
+            previewWindow.dispose();
         }
         System.exit(0);
     }
-
+    
     @Override
     public void clear() {
         g2d.setColor(JMathAnimConfig.getConfig().getBackgroundColor().getColor());//TODO: Poner en opciones
@@ -346,18 +338,18 @@ public class Java2DRenderer extends Renderer {
             drawScaledImage(img, g2d);
         }
     }
-
+    
     public void drawScaledImage(Image image, Graphics g) {
         int imgWidth = image.getWidth(null);
         int imgHeight = image.getHeight(null);
-
+        
         double imgAspect = (double) imgHeight / imgWidth;
-
+        
         int canvasWidth = width;
         int canvasHeight = height;
-
+        
         double canvasAspect = (double) canvasHeight / canvasWidth;
-
+        
         int x1 = 0; // top left X position
         int y1 = 0; // top left Y position
         int x2 = 0; // bottom right X position
@@ -387,9 +379,9 @@ public class Java2DRenderer extends Renderer {
 //            g.drawImage(img, 9, 9, null);
             g.drawImage(image, x1, y1, x2, y2, 0, 0, imgWidth, imgHeight, null);
         }
-
+        
     }
-
+    
     @Override
     public void setStroke(MathObject obj) {
         final double thickness = obj.mp.getThickness(this);
@@ -399,7 +391,7 @@ public class Java2DRenderer extends Renderer {
         } else {
             strokeSize = (int) thickness;
         }
-
+        
         switch (obj.mp.dashStyle) {
             case MathObjectDrawingProperties.SOLID:
                 BasicStroke basicStroke = new BasicStroke(strokeSize, CAP_ROUND, JOIN_ROUND);
@@ -416,16 +408,16 @@ public class Java2DRenderer extends Renderer {
                 g2d.setStroke(dottedStroke);
                 break;
         }
-
+        
     }
-
+    
     @Override
     public void drawPath(Shape mobj) {
         drawPath(mobj, camera);
     }
-
+    
     public void drawPath(Shape mobj, Camera2D cam) {
-
+        
         JMPath c = mobj.getPath();
         int numPoints = c.size();
         int minimumPoints = 2;
@@ -442,7 +434,7 @@ public class Java2DRenderer extends Renderer {
 //        }
         if (numPoints >= minimumPoints) {
             path = createPathFromJMPath(mobj, cam);
-
+            
             if (mobj.mp.isFilled()) {
                 g2d.setPaint(mobj.mp.fillColor.getColor());
                 g2d.fill(path);
@@ -459,7 +451,7 @@ public class Java2DRenderer extends Renderer {
             }
         }
     }
-
+    
     public Path2D.Double createPathFromJMPath(Shape mobj, Camera2D cam) {
         JMPath c = mobj.getPath();
         Path2D.Double resul = new Path2D.Double();
@@ -480,16 +472,16 @@ public class Java2DRenderer extends Renderer {
         //Draw from point [n] to point [n+1]
         int prev[] = {scr[0], scr[1]};
         int xy[] = {scr[0], scr[1]};
-
+        
         for (int n = 1; n < numPoints + 1; n++) {
-
+            
             Vec point = c.getJMPoint(n).p.v;
             Vec cpoint1 = c.getJMPoint(n - 1).cp1.v;
             Vec cpoint2 = c.getJMPoint(n).cp2.v;
             prev[0] = xy[0];
             prev[1] = xy[1];
             xy = cam.mathToScreen(point);
-
+            
             int[] cxy1 = cam.mathToScreen(cpoint1);
             int[] cxy2 = cam.mathToScreen(cpoint2);
             if (DEBUG_PATH_POINTS) {
@@ -507,7 +499,7 @@ public class Java2DRenderer extends Renderer {
                 if (n == numPoints) {
                     resul.closePath();
                 }
-
+                
             } else {
                 if (n < numPoints) {//If it is the last point, don't move (it creates a strange point at the beginning)
                     resul.moveTo(xy[0], xy[1]);
@@ -531,23 +523,23 @@ public class Java2DRenderer extends Renderer {
 //        }
         return resul;
     }
-
+    
     @Override
     public void setCameraSize(int w, int h) {
         camera.setSize(w, h);
     }
-
+    
     public void debugPathPoint(JMPathPoint p, JMPath path) {
         int[] x = camera.mathToScreen(p.p.v.x, p.p.v.y);
         debugCPoint(camera.mathToScreen(p.cp1.v.x, p.cp1.v.y));
         debugCPoint(camera.mathToScreen(p.cp2.v.x, p.cp2.v.y));
         if (p.type == JMPathPoint.TYPE_VERTEX) {
             g2d.setColor(Color.GREEN);
-
+            
         }
         if (p.type == JMPathPoint.TYPE_INTERPOLATION_POINT) {
             g2d.setColor(Color.GRAY);
-
+            
         }
         if (p.isCurved) {
             g2d.drawOval(x[0] - 4, x[1] - 4, 8, 8);
@@ -555,30 +547,30 @@ public class Java2DRenderer extends Renderer {
             g2d.drawRect(x[0] - 2, x[1] - 2, 4, 4);
         }
         debugText(String.valueOf(path.jmPathPoints.indexOf(p)), x[0] + 5, x[1]);
-
+        
     }
-
+    
     public void debugPoint(int x, int y) {
         g2d.drawOval(x - 2, y - 2, 4, 4);
     }
-
+    
     public void debugPoint(int[] xy) {
         g2d.setColor(Color.BLUE);
         g2d.drawOval(xy[0] - 4, xy[1] - 4, 8, 8);
     }
-
+    
     public void debugCPoint(int[] xy) {
         g2d.setColor(Color.PINK);
         g2d.drawRect(xy[0] - 4, xy[1] - 4, 8, 8);
     }
-
+    
     public void debugText(String texto, int x, int y) {
         Font font = new Font("Serif", Font.PLAIN, 12);
         g2d.setFont(font);
         g2d.setColor(Color.WHITE);
         g2d.drawString(texto, x, y);
     }
-
+    
     public void debugBoundingBox(Rect r) {
         double[] ULCorner = {r.xmin, r.ymax};
         double[] DRCorner = {r.xmax, r.ymin};
@@ -602,9 +594,9 @@ public class Java2DRenderer extends Renderer {
 //        System.out.println(width1 + ",   " + v + "    MS(" + ms[0] + ", " + ms[1] + ")");
 
         return new Vec(coords[0], coords[1]);
-
+        
     }
-
+    
     @Override
     public void drawAbsoluteCopy(Shape sh, Vec v) {
         Shape shape = sh.copy();
@@ -612,7 +604,7 @@ public class Java2DRenderer extends Renderer {
         shape.shift(vFixed.minus(v));
         drawPath(shape, fixedCamera);
     }
-
+    
     @Override
     public Camera getFixedCamera() {
         return fixedCamera;
