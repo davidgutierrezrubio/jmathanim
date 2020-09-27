@@ -70,10 +70,10 @@ public class Java2DRenderer extends Renderer {
     private static final boolean PRINT_DEBUG = false; //Draw control points and vertices
     private static final boolean BOUNDING_BOX_DEBUG = false; //Draw bounding boxes
 
-
-
-    private final BufferedImage bufferedImage;
-    private final Graphics2D g2d;
+    private BufferedImage drawBufferImage;
+    private BufferedImage finalImage;
+    private Graphics2D g2draw;
+    private final Graphics2D g2dFinalImage;
     public Camera2D camera;
     public Camera2D fixedCamera;
     private Muxer muxer;
@@ -100,7 +100,7 @@ public class Java2DRenderer extends Renderer {
     final int MAX_FRAMESKIP = 5;
     private Image img;
     private PreviewWindow previewWindow;
-
+    private final RenderingHints rh;
 
     public Java2DRenderer(JMathAnimScene parentScene) {
         this.scene = parentScene;
@@ -113,15 +113,18 @@ public class Java2DRenderer extends Renderer {
         fixedCamera.setMathXY(-5, 5, 0);//Fixed camera is 10 units by default
         super.setSize(cnf.mediaW, cnf.mediaH);
 
-        bufferedImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
-        g2d = bufferedImage.createGraphics();
-        RenderingHints rh = new RenderingHints(
+        drawBufferImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+        finalImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
+        g2draw = drawBufferImage.createGraphics();
+        g2dFinalImage = finalImage.createGraphics();
+        rh = new RenderingHints(
                 RenderingHints.KEY_ANTIALIASING,
                 RenderingHints.VALUE_ANTIALIAS_ON
         );
         rh.put(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
 
-        g2d.setRenderingHints(rh);
+        g2draw.setRenderingHints(rh);
+        g2dFinalImage.setRenderingHints(rh);
         prepareEncoder();
         parentScene = JMathAnimConfig.getConfig().getScene();
 
@@ -219,12 +222,12 @@ public class Java2DRenderer extends Renderer {
     @Override
     public void drawCircle(double x, double y, double radius) {
 
-        g2d.setColor(borderColor.getColor());
+        g2draw.setColor(borderColor.getColor());
         double mx = x - .5 * radius;
         double my = y + .5 * radius;
         int[] screenx = camera.mathToScreen(mx, my);
         int screenRadius = camera.mathToScreen(radius);
-        g2d.fillOval(screenx[0], screenx[1], screenRadius, screenRadius);
+        g2draw.fillOval(screenx[0], screenx[1], screenRadius, screenRadius);
     }
 
     @Override
@@ -232,26 +235,54 @@ public class Java2DRenderer extends Renderer {
         setStroke(p);
         int[] xx = camera.mathToScreen(p.v.x, p.v.y);
 
-        g2d.setColor(p.mp.drawColor.getColor());
-        g2d.drawLine(xx[0], xx[1], xx[0], xx[1]);
+        g2draw.setColor(p.mp.drawColor.getColor());
+        g2draw.drawLine(xx[0], xx[1], xx[0], xx[1]);
     }
 
     @Override
     public void saveFrame(int frameCount) {
-        if (cnf.showPreview) {
-            long fpsComputed;
-            //Draw into a window
-            Graphics gr = previewWindow.drawPanel.getGraphics();
-            gr.drawImage(bufferedImage, 0, 0, null);
-            long timeElapsedInNanoSeconds = scene.nanoTime - scene.previousNanoTime;
-            if (timeElapsedInNanoSeconds > 0) {
-                fpsComputed = 1000000000 / (timeElapsedInNanoSeconds);
-            } else {
-                fpsComputed = 0;
-            }
+        //Draw all layers into finalimage
+        g2dFinalImage.drawImage(drawBufferImage, 0, 0, null);
 
-            String statusText = String.format("frame=%d   t=%.2fs    fps=%d", frameCount, (1f * frameCount) / cnf.fps, fpsComputed);
-            previewWindow.statusLabel.setText(statusText);
+        if (cnf.showPreview) {
+
+            //Draw into a window
+            try {
+                SwingUtilities.invokeAndWait(new Runnable() {
+                    public void run() {
+                        Graphics gr = previewWindow.drawPanel.getGraphics();
+                        gr.drawImage(finalImage, 0, 0, null);
+                        long timeElapsedInNanoSeconds = scene.nanoTime - scene.previousNanoTime;
+                        long fpsComputed;
+                        if (timeElapsedInNanoSeconds > 0) {
+                            fpsComputed = 1000000000 / (timeElapsedInNanoSeconds);
+                        } else {
+                            fpsComputed = 0;
+                        }
+
+                        String statusText = String.format("frame=%d   t=%.2fs    fps=%d", frameCount, (1f * frameCount) / cnf.fps, fpsComputed);
+                        previewWindow.statusLabel.setText(statusText);
+
+                        if (cnf.delay) {
+                            double tiempo = (1.d / cnf.fps) * 1000;
+                            try {
+                                long tiempoPasado = timeElapsedInNanoSeconds / 1000000;
+//                System.out.println("Tiempo pasado en milisegundos: " + tiempoPasado);
+                                long delay = (long) (tiempo - tiempoPasado);
+//                System.out.println("delay " + delay);
+                                if (delay > 0) {
+                                    Thread.sleep(delay);
+                                }
+                            } catch (InterruptedException ex) {
+                                Logger.getLogger(Java2DRenderer.class.getName()).log(Level.SEVERE, null, ex);
+                            }
+                        }
+
+                    }
+                });
+            } catch (InterruptedException ex) {
+            } catch (InvocationTargetException ex) {
+            }
             while (previewWindow.pauseToggleButton.isSelected()) {
                 try {
                     Thread.sleep(100);
@@ -259,23 +290,10 @@ public class Java2DRenderer extends Renderer {
                     Logger.getLogger(Java2DRenderer.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
-            if (cnf.delay) {
-                double tiempo = (1.d / cnf.fps) * 1000;
-                try {
-                    long tiempoPasado = timeElapsedInNanoSeconds / 1000000;
-//                System.out.println("Tiempo pasado en milisegundos: " + tiempoPasado);
-                    long delay = (long) (tiempo - tiempoPasado);
-//                System.out.println("delay " + delay);
-                    if (delay > 0) {
-                        Thread.sleep(delay);
-                    }
-                } catch (InterruptedException ex) {
-                    Logger.getLogger(Java2DRenderer.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
+
         }
         if (cnf.createMovie) {
-            BufferedImage screen = MediaPictureConverterFactory.convertToType(bufferedImage, BufferedImage.TYPE_3BYTE_BGR);
+            BufferedImage screen = MediaPictureConverterFactory.convertToType(finalImage, BufferedImage.TYPE_3BYTE_BGR);
             MediaPictureConverter converter = MediaPictureConverterFactory.createConverter(screen, picture);
             converter.toPicture(picture, screen, frameCount);
             do {
@@ -321,12 +339,17 @@ public class Java2DRenderer extends Renderer {
 
     @Override
     public void clear() {
-        g2d.setColor(JMathAnimConfig.getConfig().getBackgroundColor().getColor());//TODO: Poner en opciones
-        g2d.fillRect(0, 0, width, height);
+        g2dFinalImage.setColor(JMathAnimConfig.getConfig().getBackgroundColor().getColor());//TODO: Poner en opciones
+        g2dFinalImage.fillRect(0, 0, width, height);
 //        g2d.drawImage(img, 0, 0, null);
         if (img != null) {
-            drawScaledImage(img, g2d);
+            drawScaledImage(img, g2dFinalImage);
         }
+        //TODO: Find a more efficient way to erase a Alpha image
+        drawBufferImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+        g2draw = drawBufferImage.createGraphics();
+        g2draw.setRenderingHints(rh);
+
     }
 
     public void drawScaledImage(Image image, Graphics g) {
@@ -385,17 +408,17 @@ public class Java2DRenderer extends Renderer {
         switch (obj.mp.dashStyle) {
             case MathObjectDrawingProperties.SOLID:
                 BasicStroke basicStroke = new BasicStroke(strokeSize, CAP_ROUND, JOIN_ROUND);
-                g2d.setStroke(basicStroke);
+                g2draw.setStroke(basicStroke);
                 break;
             case MathObjectDrawingProperties.DASHED:
                 float[] dashedPattern = {5.0f * strokeSize, 2.0f * strokeSize};
                 Stroke dashedStroke = new BasicStroke(strokeSize, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND, 10.0f, dashedPattern, 1.0f);
-                g2d.setStroke(dashedStroke);
+                g2draw.setStroke(dashedStroke);
                 break;
             case MathObjectDrawingProperties.DOTTED:
                 float[] dottedPattern = {1f, 2.0f * strokeSize};
                 Stroke dottedStroke = new BasicStroke(strokeSize, BasicStroke.CAP_SQUARE, BasicStroke.JOIN_ROUND, 10.0f, dottedPattern, 1.0f);
-                g2d.setStroke(dottedStroke);
+                g2draw.setStroke(dottedStroke);
                 break;
         }
 
@@ -426,12 +449,12 @@ public class Java2DRenderer extends Renderer {
             path = createPathFromJMPath(mobj, cam);
 
             if (mobj.mp.isFilled()) {
-                g2d.setPaint(mobj.mp.fillColor.getColor());
-                g2d.fill(path);
+                g2draw.setPaint(mobj.mp.fillColor.getColor());
+                g2draw.fill(path);
             }
             //Border is always drawed
-            g2d.setColor(mobj.mp.drawColor.getColor());
-            g2d.draw(path);
+            g2draw.setColor(mobj.mp.drawColor.getColor());
+            g2draw.draw(path);
             setStroke(mobj);
             if (PRINT_DEBUG) {
                 System.out.println("Drawing " + c);
@@ -524,41 +547,41 @@ public class Java2DRenderer extends Renderer {
         debugCPoint(camera.mathToScreen(p.cp1.v.x, p.cp1.v.y));
         debugCPoint(camera.mathToScreen(p.cp2.v.x, p.cp2.v.y));
         if (p.type == JMPathPoint.TYPE_VERTEX) {
-            g2d.setColor(Color.GREEN);
+            g2draw.setColor(Color.GREEN);
 
         }
         if (p.type == JMPathPoint.TYPE_INTERPOLATION_POINT) {
-            g2d.setColor(Color.GRAY);
+            g2draw.setColor(Color.GRAY);
 
         }
         if (p.isCurved) {
-            g2d.drawOval(x[0] - 4, x[1] - 4, 8, 8);
+            g2draw.drawOval(x[0] - 4, x[1] - 4, 8, 8);
         } else {
-            g2d.drawRect(x[0] - 2, x[1] - 2, 4, 4);
+            g2draw.drawRect(x[0] - 2, x[1] - 2, 4, 4);
         }
         debugText(String.valueOf(path.jmPathPoints.indexOf(p)), x[0] + 5, x[1]);
 
     }
 
     public void debugPoint(int x, int y) {
-        g2d.drawOval(x - 2, y - 2, 4, 4);
+        g2draw.drawOval(x - 2, y - 2, 4, 4);
     }
 
     public void debugPoint(int[] xy) {
-        g2d.setColor(Color.BLUE);
-        g2d.drawOval(xy[0] - 4, xy[1] - 4, 8, 8);
+        g2draw.setColor(Color.BLUE);
+        g2draw.drawOval(xy[0] - 4, xy[1] - 4, 8, 8);
     }
 
     public void debugCPoint(int[] xy) {
-        g2d.setColor(Color.PINK);
-        g2d.drawRect(xy[0] - 4, xy[1] - 4, 8, 8);
+        g2draw.setColor(Color.PINK);
+        g2draw.drawRect(xy[0] - 4, xy[1] - 4, 8, 8);
     }
 
     public void debugText(String texto, int x, int y) {
         Font font = new Font("Serif", Font.PLAIN, 12);
-        g2d.setFont(font);
-        g2d.setColor(Color.WHITE);
-        g2d.drawString(texto, x, y);
+        g2draw.setFont(font);
+        g2draw.setColor(Color.WHITE);
+        g2draw.drawString(texto, x, y);
     }
 
     public void debugBoundingBox(Rect r) {
@@ -566,9 +589,9 @@ public class Java2DRenderer extends Renderer {
         double[] DRCorner = {r.xmax, r.ymin};
         int[] scUL = camera.mathToScreen(ULCorner[0], ULCorner[1]);
         int[] scDR = camera.mathToScreen(DRCorner[0], DRCorner[1]);
-        g2d.setColor(Color.LIGHT_GRAY);
-        g2d.setStroke(new BasicStroke(1, CAP_ROUND, JOIN_ROUND));
-        g2d.drawRect(scUL[0], scUL[1], scDR[0] - scUL[0], scDR[1] - scUL[1]);
+        g2draw.setColor(Color.LIGHT_GRAY);
+        g2draw.setStroke(new BasicStroke(1, CAP_ROUND, JOIN_ROUND));
+        g2draw.drawRect(scUL[0], scUL[1], scDR[0] - scUL[0], scDR[1] - scUL[1]);
     }
 
     /**

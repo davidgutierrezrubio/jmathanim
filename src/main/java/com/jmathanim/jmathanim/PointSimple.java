@@ -63,8 +63,8 @@ public class PointSimple extends Scene2D {
 
 //        setCreateMovie(true);
         conf.setCreateMovie(false);
-        conf.setAdjustPreviewToFPS(true);
-//        conf.setAdjustPreviewToFPS(false);
+//        conf.setAdjustPreviewToFPS(true);
+        conf.setAdjustPreviewToFPS(false);
         clockTick("create movie");
         conf.setShowPreviewWindow(true);
         clockTick("Show preview window");
