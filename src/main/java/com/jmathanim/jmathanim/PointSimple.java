@@ -61,7 +61,7 @@ public class PointSimple extends Scene2D {
 //        conf.setMediumQuality();
         conf.setLowQuality();
 
-//        setCreateMovie(true);
+//        conf.setCreateMovie(true);
         conf.setCreateMovie(false);
 //        conf.setAdjustPreviewToFPS(true);
         conf.setAdjustPreviewToFPS(false);
@@ -117,9 +117,12 @@ public class PointSimple extends Scene2D {
     }
 
     public void pentagonBuild() {
-        Shape pentagon = Shape.square();
+        Shape pentagon = Shape.square().fillColor(JMColor.BLUE);
         Shape pentagonDst = Shape.regularPolygon(5, new Point(0, 0), .3).thickness(2).drawColor(JMColor.BLUE);
         add(pentagon);
+        LaTeXMathObject texto=new LaTeXMathObject("Esto es un pentagono");
+        texto.setRelativeSize();//TODO: Doesnt show anything
+        texto.stackTo(pentagon, Anchor.LEFT);
         playAnim.transform(pentagon, pentagonDst, 10);
         waitSeconds(10);
         playAnim.zoomToRect(pentagon.getBoundingBox().addGap(.3, .3), 3);

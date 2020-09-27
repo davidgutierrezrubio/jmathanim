@@ -46,11 +46,18 @@ import java.awt.Stroke;
 import java.awt.Toolkit;
 import java.awt.geom.Path2D;
 import java.awt.image.BufferedImage;
+import java.awt.image.BufferedImageOp;
+import java.awt.image.ColorModel;
+import java.awt.image.ConvolveOp;
+import java.awt.image.DataBufferInt;
+import java.awt.image.Kernel;
 import java.awt.image.RescaleOp;
+import java.awt.image.WritableRaster;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import static javafx.scene.paint.Color.color;
 import javax.swing.BoxLayout;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -129,15 +136,15 @@ public class Java2DRenderer extends Renderer {
         parentScene = JMathAnimConfig.getConfig().getScene();
 
         //Proofs
-//        img = Toolkit.getDefaultToolkit().getImage("c:\\media\\hoja.png");
-        //This tracker waits for image to be fully loaded
-//        MediaTracker tracker = new MediaTracker(new JLabel());
-//        tracker.addImage(img, 1);
-//        try {
-//            tracker.waitForID(1);
-//        } catch (InterruptedException ex) {
-//            Logger.getLogger(Java2DRenderer.class.getName()).log(Level.SEVERE, null, ex);
-//        }
+        img = Toolkit.getDefaultToolkit().getImage("c:\\media\\hoja.jpg");
+//        This tracker waits for image to be fully loaded
+        MediaTracker tracker = new MediaTracker(new JLabel());
+        tracker.addImage(img, 1);
+        try {
+            tracker.waitForID(1);
+        } catch (InterruptedException ex) {
+            Logger.getLogger(Java2DRenderer.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     @Override
@@ -242,8 +249,11 @@ public class Java2DRenderer extends Renderer {
     @Override
     public void saveFrame(int frameCount) {
         //Draw all layers into finalimage
-        g2dFinalImage.drawImage(drawBufferImage, 0, 0, null);
 
+        BufferedImage shadowImage = computeShadow(drawBufferImage);
+        g2dFinalImage.drawImage(shadowImage, 4, 4, null);
+
+        g2dFinalImage.drawImage(drawBufferImage, 0, 0, null);
         if (cnf.showPreview) {
 
             //Draw into a window
@@ -350,6 +360,29 @@ public class Java2DRenderer extends Renderer {
         g2draw = drawBufferImage.createGraphics();
         g2draw.setRenderingHints(rh);
 
+    }
+
+    public BufferedImage computeShadow(BufferedImage img) {
+        BufferedImage resul = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+//        ColorModel cm = img.getColorModel();
+//        boolean isAlphaPremultiplied = cm.isAlphaPremultiplied();
+//        WritableRaster raster = img.copyData(null);
+//        resul = new BufferedImage(cm, raster, isAlphaPremultiplied, null);
+
+        int[] imagePixels = img.getRGB(0, 0, width, height, null, 0, width);
+        for (int i = 0; i < imagePixels.length; i++) {
+            int color = imagePixels[i] & 0xff000000;
+            imagePixels[i] = color;
+        }
+
+        resul.setRGB(0, 0, width, height, imagePixels, 0, width);
+        Kernel kernel = new Kernel(3, 3, new float[]{1f / 9f, 1f / 9f, 1f / 9f,
+            1f / 9f, 1f / 9f, 1f / 9f, 1f / 9f, 1f / 9f, 1f / 9f});
+        BufferedImageOp op = new ConvolveOp(kernel);
+        for (int n = 0; n < 1; n++) {
+            resul = op.filter(resul, null);
+        }
+        return resul;
     }
 
     public void drawScaledImage(Image image, Graphics g) {
