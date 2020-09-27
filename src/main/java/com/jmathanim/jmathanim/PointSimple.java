@@ -65,6 +65,7 @@ public class PointSimple extends Scene2D {
         conf.setCreateMovie(false);
 //        conf.setAdjustPreviewToFPS(true);
         conf.setAdjustPreviewToFPS(false);
+        conf.drawShadow=true;
         clockTick("create movie");
         conf.setShowPreviewWindow(true);
         clockTick("Show preview window");
@@ -75,21 +76,22 @@ public class PointSimple extends Scene2D {
     public void runSketch() {
         System.out.println("Running sketch...");
         //       pruebaTransformHomotopy();
-                pentagonBuild();
+//                pentagonBuild();
         //        pruebaShapeClosedToCanonicalForm();
         //        pruebaTransformRegularPolygons();
 //        muchosCuadradosApilados();
 //        pruebaVariosTransforms();
+        pruebaRelleno();
     }
 
     public void pruebaSubPath() {
-        Shape sq = Shape.arc(Math.PI*1.3);
+        Shape sq = Shape.arc(Math.PI * 1.3);
         JMPath subpath = sq.jmpath.subpath(.99);
-        for (double t=0;t<=1;t+=.1){
-        Shape a = new Shape(sq.jmpath.subpath(t),null);
-        add(a);
+        for (double t = 0; t <= 1; t += .1) {
+            Shape a = new Shape(sq.jmpath.subpath(t), null);
+            add(a);
             waitSeconds(2);
-        remove(a);
+            remove(a);
         }
         waitSeconds(10);
     }
@@ -120,15 +122,15 @@ public class PointSimple extends Scene2D {
         Shape pentagon = Shape.square().fillColor(JMColor.BLUE);
         Shape pentagonDst = Shape.regularPolygon(5, new Point(0, 0), .3).thickness(2).drawColor(JMColor.BLUE);
         add(pentagon);
-        LaTeXMathObject texto=new LaTeXMathObject("Esto es un pentagono");
+        LaTeXMathObject texto = new LaTeXMathObject("Esto es un pentagono");
         texto.setRelativeSize();//TODO: Doesnt show anything
         texto.stackTo(pentagon, Anchor.LEFT);
-        playAnim.transform(pentagon, pentagonDst, 10);
-        waitSeconds(10);
-        playAnim.zoomToRect(pentagon.getBoundingBox().addGap(.3, .3), 3);
+        playAnim.transform(pentagon, pentagonDst, 2);
+        waitSeconds(1);
+        playAnim.zoomToRect(pentagon.getBoundingBox().addGap(.3, .3), 2);
         for (Point p : pentagon.jmpath.getPoints()) {
 //            p.thickness(3);
-            playAnim.fadein(p, 1);
+            playAnim.fadein(p, .3);
         }
         waitSeconds(5);
         for (int n = 0; n < 10; n += 2) {
@@ -138,8 +140,8 @@ public class PointSimple extends Scene2D {
             playAnim.fadein(s, 1);
         }
         waitSeconds(2);
-        playAnim.rotate(pentagon, Math.PI / 4, 5);
-        waitSeconds(5);
+        playAnim.rotate(pentagon, Math.PI / 4, 2);
+        waitSeconds(1);
     }
 
     public void pruebaVariosTransforms() {
@@ -569,10 +571,12 @@ public class PointSimple extends Scene2D {
 
     private void pruebaLaTeX() {
         LaTeXMathObject lm = new LaTeXMathObject("$$\\int_0^\\infty x\\,dx=\\infty$$");
+        lm.drawColor(JMColor.BLACK).fillColor(JMColor.BLACK);
 //        lm.shift(-1, 0);
-        lm.scale(1, 1);
+        lm.scale(2, 2);
         add(lm);
         waitSeconds(1);
+        add(Shape.circle().drawColor(JMColor.RED));
 //        camera.adjustToRect(lm.getBoundingBox());
         waitSeconds(1);
         Rect rOrigin = camera.getMathView();

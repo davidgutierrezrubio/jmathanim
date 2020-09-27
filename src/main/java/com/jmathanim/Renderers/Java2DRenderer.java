@@ -55,6 +55,8 @@ import java.awt.image.RescaleOp;
 import java.awt.image.WritableRaster;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import static javafx.scene.paint.Color.color;
@@ -108,6 +110,7 @@ public class Java2DRenderer extends Renderer {
     private Image img;
     private PreviewWindow previewWindow;
     private final RenderingHints rh;
+    private ConvolveOp ConvolveShadowOp;
 
     public Java2DRenderer(JMathAnimScene parentScene) {
         this.scene = parentScene;
@@ -224,6 +227,11 @@ public class Java2DRenderer extends Renderer {
                     pixelformat);
             picture.setTimeBase(rationalFrameRate);
         }
+
+        if (cnf.drawShadow) {
+            computeShadowKernel();
+        }
+
     }
 
     @Override
@@ -249,9 +257,10 @@ public class Java2DRenderer extends Renderer {
     @Override
     public void saveFrame(int frameCount) {
         //Draw all layers into finalimage
-
-        BufferedImage shadowImage = computeShadow(drawBufferImage);
-        g2dFinalImage.drawImage(shadowImage, 4, 4, null);
+        if (cnf.drawShadow) {
+            BufferedImage shadowImage = computeShadow(drawBufferImage);
+            g2dFinalImage.drawImage(shadowImage, cnf.shadowOffsetX, cnf.shadowOffsetY, null);
+        }
 
         g2dFinalImage.drawImage(drawBufferImage, 0, 0, null);
         if (cnf.showPreview) {
@@ -351,9 +360,10 @@ public class Java2DRenderer extends Renderer {
     public void clear() {
         g2dFinalImage.setColor(JMathAnimConfig.getConfig().getBackgroundColor().getColor());//TODO: Poner en opciones
         g2dFinalImage.fillRect(0, 0, width, height);
-//        g2d.drawImage(img, 0, 0, null);
+
         if (img != null) {
-            drawScaledImage(img, g2dFinalImage);
+//            drawScaledImage(img, g2dFinalImage);
+            g2dFinalImage.drawImage(img, 0, 0, null);
         }
         //TODO: Find a more efficient way to erase a Alpha image
         drawBufferImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
@@ -362,8 +372,22 @@ public class Java2DRenderer extends Renderer {
 
     }
 
+    public void computeShadowKernel() {
+        int dimension = cnf.shadowKernelSize;
+        if (dimension > 0) {
+            float valor = 1f / (dimension * dimension);
+            float[] k = new float[dimension * dimension];
+            for (int i = 0; i < dimension * dimension; i++) {
+                k[i] = valor;
+            }
+
+            Kernel kernel = new Kernel(dimension, dimension, k);
+            ConvolveShadowOp = new ConvolveOp(kernel,ConvolveOp.EDGE_ZERO_FILL,rh);
+        }
+    }
+
     public BufferedImage computeShadow(BufferedImage img) {
-        BufferedImage resul = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+        BufferedImage resul = new BufferedImage(width, height, BufferedImage.TRANSLUCENT);
 //        ColorModel cm = img.getColorModel();
 //        boolean isAlphaPremultiplied = cm.isAlphaPremultiplied();
 //        WritableRaster raster = img.copyData(null);
@@ -371,16 +395,15 @@ public class Java2DRenderer extends Renderer {
 
         int[] imagePixels = img.getRGB(0, 0, width, height, null, 0, width);
         for (int i = 0; i < imagePixels.length; i++) {
-            int color = imagePixels[i] & 0xff000000;
+            int color = imagePixels[i];// & 0xff000000;//TODO: Check this
+            color = (int) ((color >> 56) * cnf.alphaShadowMultiplier) << 56;
+
             imagePixels[i] = color;
         }
 
         resul.setRGB(0, 0, width, height, imagePixels, 0, width);
-        Kernel kernel = new Kernel(3, 3, new float[]{1f / 9f, 1f / 9f, 1f / 9f,
-            1f / 9f, 1f / 9f, 1f / 9f, 1f / 9f, 1f / 9f, 1f / 9f});
-        BufferedImageOp op = new ConvolveOp(kernel);
-        for (int n = 0; n < 1; n++) {
-            resul = op.filter(resul, null);
+        if (ConvolveShadowOp != null) {
+            resul = ConvolveShadowOp.filter(resul, null);
         }
         return resul;
     }

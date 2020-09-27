@@ -61,6 +61,30 @@ public class JMathAnimConfig {
     //Background color, default black
     private JMColor backgroundColor = JMColor.BLACK;
     public boolean delay = true;
+    
+    //Shadow parameters
+    /**
+     * If true, draw a shadow of objects over the background image
+     */
+    public boolean drawShadow=false;
+    /**
+     * Amount of blurring. Bigger es more blurred (and more cpu expensive)
+     * a value of 0 means no blurring
+     */
+    public int shadowKernelSize=10;
+    /**
+     * XOffset for shadow
+     */
+    public int shadowOffsetX=5;
+    /**
+     * YOffset for shadow
+     */
+    public int shadowOffsetY=5;
+    /**
+     * alpha shadow multiplier. A value of .5 lets alpha shadow in 50% 
+     */
+    public float alphaShadowMultiplier=1f;//TODO: Doesn't work as expected
+    
 
     private JMathAnimConfig() {//Private constructor
     }
