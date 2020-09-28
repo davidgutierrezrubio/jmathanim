@@ -9,6 +9,7 @@ import com.jmathanim.Animations.AffineTransform;
 import com.jmathanim.Animations.Animation;
 import com.jmathanim.Animations.ApplyCommand;
 import com.jmathanim.Animations.FadeIn;
+import com.jmathanim.Animations.FadeOut;
 import com.jmathanim.Animations.ShowCreation;
 import com.jmathanim.Animations.Transform;
 import com.jmathanim.Animations.commands.AbstractCommand;
@@ -29,6 +30,7 @@ import com.jmathanim.mathobjects.LaTeXMathObject;
 import com.jmathanim.mathobjects.Line;
 import com.jmathanim.mathobjects.updateableObjects.MiddlePoint;
 import com.jmathanim.mathobjects.AveragePoint;
+import com.jmathanim.mathobjects.CanonicalJMPath;
 import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.MultiShapeObject;
 import com.jmathanim.mathobjects.updateableObjects.TransformedPoint;
@@ -60,16 +62,19 @@ public class PointSimple extends Scene2D {
 //        conf.setHighQuality();
 //        conf.setMediumQuality();
         conf.setLowQuality();
-
-//        conf.setCreateMovie(true);
         conf.setCreateMovie(false);
-//        conf.setAdjustPreviewToFPS(true);
-        conf.setAdjustPreviewToFPS(false);
-        conf.drawShadow=true;
-        clockTick("create movie");
+//        conf.setCreateMovie(true);
+
+        conf.setAdjustPreviewToFPS(true);
+//        conf.setAdjustPreviewToFPS(false);
+
+//        conf.setShowPreviewWindow(false);
         conf.setShowPreviewWindow(true);
         clockTick("Show preview window");
+
+//        conf.drawShadow = true;
         conf.setBackgroundColor(JMColor.hex("#192841"));
+//        conf.backGroundImage="c:\\media\\hoja.jpg";
     }
 
     @Override
@@ -81,19 +86,20 @@ public class PointSimple extends Scene2D {
         //        pruebaTransformRegularPolygons();
 //        muchosCuadradosApilados();
 //        pruebaVariosTransforms();
-        pruebaRelleno();
+//        pruebaRelleno();
+//        pruebaSubpathCanon();
+        pruebaDosPentagonos1Estrella();
     }
 
-    public void pruebaSubPath() {
-        Shape sq = Shape.arc(Math.PI * 1.3);
-        JMPath subpath = sq.jmpath.subpath(.99);
-        for (double t = 0; t <= 1; t += .1) {
-            Shape a = new Shape(sq.jmpath.subpath(t), null);
-            add(a);
-            waitSeconds(2);
-            remove(a);
+    public void pruebaSubpathCanon() {
+        Shape sh = Shape.circle();
+        CanonicalJMPath can = sh.jmpath.canonicalForm();
+        System.out.println("Path " + sh.jmpath);
+        for (double t = 0; t < 1; t += .1) {
+            JMPath sb = can.subpath(0, t);
+            System.out.println("Subpath " + t + "  :" + sb);
         }
-        waitSeconds(10);
+
     }
 
     public void testAll() {
@@ -359,9 +365,9 @@ public class PointSimple extends Scene2D {
         add(sq);
         double tiempo = 40;
         waitSeconds(tiempo);
-        ArrayList<JMPath> canonicalForm = sq.jmpath.canonicalForm();
+        CanonicalJMPath canonicalForm = sq.jmpath.canonicalForm();
 
-        for (JMPath pa : canonicalForm) {
+        for (JMPath pa : canonicalForm.getPaths()) {
             Shape sh1 = new Shape(pa, null);
             playAnim.shift(sh1, new Vec(-1, 0), tiempo / 2);
         }
@@ -393,7 +399,7 @@ public class PointSimple extends Scene2D {
         drawControlPoint(circ, -1);
 
         waitSeconds(30);
-        ArrayList<JMPath> cf = circ.copy().jmpath.canonicalForm();
+        CanonicalJMPath cf = circ.copy().jmpath.canonicalForm();
 
         Shape can = new Shape(cf.get(0), null);
 
@@ -557,16 +563,58 @@ public class PointSimple extends Scene2D {
         waitSeconds(3d);
     }
 
+    public void pruebaDosPentagonos1Estrella() {
+        Shape p1 = Shape.regularPolygon(5).drawColor(JMColor.GRAY);
+        Shape p2 = Shape.regularPolygon(5).copy().scale(1).drawColor(JMColor.GRAY);;
+        Point centro=p1.getCenter().copy();
+        add(centro);
+        add(p1, p2);
+        p2.putAt(centro, Anchor.BY_CENTER);
+        camera.adjustToObjects(p1, p2);
+        camera.scale(1.8);
+        waitSeconds(1);
+
+        waitSeconds(1);
+        Shape sh = new Shape();
+        sh.drawColor(JMColor.BLACK).thickness(2);
+        for (int n = 0; n < 5; n++) {
+            sh.jmpath.addJMPoint(p1.getJMPoint(n));
+            sh.jmpath.addJMPoint(p2.getJMPoint(n));
+        }
+        ShowCreation anim = new ShowCreation(sh, 3);
+        play(anim);
+        waitSeconds(1);
+        playAnim.rotate(p2,centro, Math.PI * .2, 5);
+        add(p2.getCenter().drawColor(JMColor.RED));
+        waitSeconds(1);
+        playAnim.scale(p2, centro, .40, 2);
+        waitSeconds(1);
+        FadeOut f1 = new FadeOut(p1, 1);
+        FadeOut f2 = new FadeOut(p2, 1);
+        play(f1, f2);
+        waitSeconds(5);
+    }
+
     private void pruebaRelleno() {
-        Circle circ = new Circle(new Point(0, 0), 1);
-        circ.mp.setFillAlpha(1);
-        play(new ShowCreation(circ, 3));
-        play(new FadeIn(circ, 3));
+//        Shape circ = Shape.circle().drawColor(JMColor.BLACK);
+        Shape circ = Shape.regularPolygon(8).drawColor(JMColor.BLACK);
+        circ.getJMPoint(3).isThisSegmentVisible = false;
+        circ.getJMPoint(6).isThisSegmentVisible = false;
+//        Shape circ = Shape.square().drawColor(JMColor.BLACK);
+//        circ.mp.setFillAlpha(1);
+        add(circ);
+        camera.adjustToObjects(circ);
+        camera.scale(1.8);
+        camera.setCenter(circ);
+        waitSeconds(1);
+        play(new ShowCreation(circ, 6));
+        circ.drawColor(JMColor.RED);
+//        play(new FadeIn(circ, 1));
 //        for (float al = 0; al <= 1; al += .01) {
 //            circ.mp.setFillAlpha(al);
 //            advanceFrame();
 //        }
-        waitSeconds(2);
+        waitSeconds(5);
     }
 
     private void pruebaLaTeX() {
@@ -614,7 +662,7 @@ public class PointSimple extends Scene2D {
         eq3.shift(-1, 0);
         eq4.shift(-1, 0);
         double tiempo = 20;
-        play(new ShowCreation(eq1, 5));
+//        play(new ShowCreation(eq1, 5));
 //        waitSeconds(1);
         Shape x1 = eq1.shapes.get(2);
         Shape x2 = eq2.shapes.get(2);

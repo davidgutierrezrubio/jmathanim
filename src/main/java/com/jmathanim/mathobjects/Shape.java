@@ -91,8 +91,17 @@ public class Shape extends MathObject {
 
     @Override
     public Point getCenter() {
-        return getBoundingBox().getCenter();
-
+//        return getBoundingBox().getCenter();
+        Point resul = new Point(0, 0, 0);
+        for (JMPathPoint p : jmpath.jmPathPoints) {
+            resul.v.x += p.p.v.x;
+            resul.v.y += p.p.v.y;
+            resul.v.z += p.p.v.z;
+        }
+        resul.v.x /= jmpath.size();
+        resul.v.y /= jmpath.size();
+        resul.v.z /= jmpath.size();
+        return resul;
     }
 
     @Override

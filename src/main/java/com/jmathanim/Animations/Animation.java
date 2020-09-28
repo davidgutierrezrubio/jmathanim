@@ -5,6 +5,7 @@
  */
 package com.jmathanim.Animations;
 
+import com.jmathanim.Utils.JMathAnimConfig;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.MathObject;
 
@@ -25,17 +26,19 @@ public abstract class Animation {
 //    private int numFrames; //Number of frames of animation
 //    private int frame;
     private boolean isInitialized = false;
+    protected final JMathAnimScene scene;
 
     public Animation() {
         this(DEFAULT_TIME);
     }
 
-    public Animation(double runTime) {
-        this.runTime = runTime;
-    }
-
     public Animation(int runTime) {
         this((double) runTime);
+    }
+
+    public Animation(double runTime) {
+        this.runTime = runTime;
+        scene = JMathAnimConfig.getConfig().getScene();
     }
 
     public double getFps() {
@@ -64,8 +67,9 @@ public abstract class Animation {
         }
         boolean resul = false;
 //        if (frame < numFrames || t < 1 + dt) {
-        if (t < 1 && t >= 0) {
-            this.doAnim(lambda(t));
+        double lt = lambda(t);
+        if (lt < 1 && lt >= 0) {
+            this.doAnim((lt));
 
 //            frame++;
             resul = false;
@@ -73,7 +77,7 @@ public abstract class Animation {
             resul = true;
         }
         t += dt;
-        if (t > 1) {
+        if (resul) {
             t = 1;
             this.finishAnimation();
         }
@@ -99,17 +103,16 @@ public abstract class Animation {
     }
 
     private double hh(double t) {
-        return (t==0 ? 0: Math.exp(-1/t));
+        return (t == 0 ? 0 : Math.exp(-1 / t));
     }
-    
+
     //Smooth function from https://math.stackexchange.com/questions/328868/how-to-build-a-smooth-transition-function-explicitly
     //TODO: Adapt this to use Cubic Bezier splines
     private double lambda(double t) {
-        double h=hh(t);
-        double h2=hh(1-t);
-        return h/(h+h2);
-        
-        
+        double h = hh(t);
+        double h2 = hh(1 - t);
+        return h / (h + h2);
+
 //        return t * t * (3 - 2 * t);
 //        return t;
     }

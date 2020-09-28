@@ -139,7 +139,8 @@ public class Java2DRenderer extends Renderer {
         parentScene = JMathAnimConfig.getConfig().getScene();
 
         //Proofs
-        img = Toolkit.getDefaultToolkit().getImage("c:\\media\\hoja.jpg");
+        if (cnf.backGroundImage!=null)
+        img = Toolkit.getDefaultToolkit().getImage(cnf.backGroundImage);
 //        This tracker waits for image to be fully loaded
         MediaTracker tracker = new MediaTracker(new JLabel());
         tracker.addImage(img, 1);
@@ -565,9 +566,9 @@ public class Java2DRenderer extends Renderer {
 //                        System.out.println("Line from "+prev[0]+", "+prev[1]+" to "+xy[0]+","+xy[1]);
                 }
                 //If we are drawing the last point and is visible...
-                if (n == numPoints) {
-                    resul.closePath();
-                }
+//                if (n == numPoints) {
+//                    resul.closePath();
+//                }
 
             } else {
                 if (n < numPoints) {//If it is the last point, don't move (it creates a strange point at the beginning)

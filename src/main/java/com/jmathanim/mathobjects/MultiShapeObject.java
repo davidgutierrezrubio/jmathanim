@@ -115,20 +115,16 @@ public class MultiShapeObject extends MathObject {
 
         int n = 0;
         for (Shape jmp : shapes) {
-//            Rect re=jmp.getBoundingBox();
-//            double[] xx={re.xmin, re.ymax};
-//            int[] mx = r.getCamera().mathToScreen(xx[0], xx[1]);
-//            ((Java2DRenderer)r).debugText(Integer.toString(n), mx[0], mx[1]);
-//            n++;
-            r.setBorderColor(jmp.mp.drawColor);
-            r.setFillColor(jmp.mp.fillColor);
-            r.setStroke(jmp);
-            if (absoluteSize) {
-                r.drawAbsoluteCopy(jmp, getAbsoluteAnchorPoint().v);
-            } else {
-                r.drawPath(jmp);
+            if (jmp.visible) {
+                r.setBorderColor(jmp.mp.drawColor);
+                r.setFillColor(jmp.mp.fillColor);
+                r.setStroke(jmp);
+                if (absoluteSize) {
+                    r.drawAbsoluteCopy(jmp, getAbsoluteAnchorPoint().v);
+                } else {
+                    r.drawPath(jmp);
+                }
             }
-
         }
     }
 

@@ -110,12 +110,14 @@ public abstract class JMathAnimScene {
         }
     }
 
-    public synchronized final MathObject remove(MathObject obj) {
+    public synchronized final MathObject[] remove(MathObject...objs) {
+        for (MathObject obj:objs){
         objects.remove(obj);
         obj.removeScene(this);
         unregisterObjectToBeUpdated(obj);
         obj.unregisterChildrenToBeUpdated(this);//TODO: Really unregister children??
-        return obj;
+        }
+        return objs;
     }
 
     /**

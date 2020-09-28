@@ -31,19 +31,21 @@ public class FadeIn extends Animation {
     @Override
     public void doAnim(double t) {
 //        System.out.println("Anim FadeIn " + t);
-        mobj.drawAlpha(alphaDraw*t);
-        mobj.fillAlpha(fillDraw*t);
+        mobj.drawAlpha(alphaDraw * t);
+        mobj.fillAlpha(fillDraw * t);
     }
 
     @Override
     public void finishAnimation() {
+        mobj.mp.drawColor.alpha = alphaDraw;
+        mobj.mp.fillColor.alpha = fillDraw;
     }
 
     @Override
     public void initialize() {
         //Store alpha values 
-        alphaDraw=mobj.mp.drawColor.alpha;
-        fillDraw=mobj.mp.fillColor.alpha;
+        alphaDraw = mobj.mp.drawColor.alpha;
+        fillDraw = mobj.mp.fillColor.alpha;
     }
 
     @Override

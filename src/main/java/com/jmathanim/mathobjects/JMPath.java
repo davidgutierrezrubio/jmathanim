@@ -620,7 +620,7 @@ public class JMPath implements Updateable, Stateable {
      *
      * @return The array of paths
      */
-    public ArrayList<JMPath> canonicalForm() {
+    public CanonicalJMPath canonicalForm() {
         ArrayList<JMPath> resul = new ArrayList<>();
         JMPath workPath = this.copy();
         Integer offset = null;
@@ -654,7 +654,7 @@ public class JMPath implements Updateable, Stateable {
         }
         //add last component
         resul.add(connectedComponent);
-        return resul;
+        return new CanonicalJMPath(resul);
     }
 
     public void separate(int k) {
@@ -670,42 +670,6 @@ public class JMPath implements Updateable, Stateable {
 
     }
 
-    /**
-     * Generates a subpath from 0 to t, where t=1 returns the whole path
-     *
-     * @param t
-     * @return A copy of the path (deep copy, points are not referenced)
-     */
-    public JMPath subpath(double t) {
-        JMPath resul = this.rawCopy();
-        if (t < 1) {
-            
-            resul.getJMPoint(0).isThisSegmentVisible = false;//open
-            
-            double a = t*resul.size(); //Inverse of number of segments
-            
-            int k=(int) Math.floor(a);
-            double alpha=a-k;
-            k++;
-
-            if (alpha > 0 && alpha < 1) {
-                //Interpolate
-                JMPathPoint interp = resul.interpolateBetweenTwoPoints(k, alpha);
-                interp.isThisSegmentVisible=true;
-            }
-            
-            ArrayList<JMPathPoint> subList = new ArrayList<>();
-            if (alpha == 0) {
-                k--;
-            }
-            for (int n = 0; n < k + 1; n++) {
-                subList.add(resul.jmPathPoints.get(n));
-            }
-            resul.jmPathPoints.clear();
-            resul.jmPathPoints.addAll(subList);
-        }
-        return resul;
-
-    }
+   
 
 }
