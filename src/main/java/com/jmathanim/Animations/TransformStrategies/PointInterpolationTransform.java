@@ -14,6 +14,7 @@ import com.jmathanim.mathobjects.JMPathPoint;
 import com.jmathanim.mathobjects.Shape;
 import java.awt.Color;
 import java.util.ArrayList;
+import javax.swing.JComboBox;
 
 /**
  *
@@ -27,6 +28,7 @@ public class PointInterpolationTransform implements TransformStrategy {
     private Shape mobjTransformed;
     private Shape mobjDestiny;
     private Shape originalShapeBaseCopy;
+    private static boolean DEBUG_COLORS = true;
 
     public PointInterpolationTransform() {
         this.addedAuxiliaryObjectsToScene = new ArrayList<>();
@@ -47,7 +49,11 @@ public class PointInterpolationTransform implements TransformStrategy {
             JMColor color = mobjTransformed.mp.drawColor.copy();
             Shape sh = new Shape(connectedOrigin.get(n), null);
 //            Shape sh2 = new Shape(connectedDst.get(n), null);
-            sh.drawColor(color);
+            if (DEBUG_COLORS) {
+                sh.drawColor(JMColor.random());
+            } else {
+                sh.drawColor(color);
+            }
 //            sh2.drawColor(color);
             scene.add(sh);
             addedAuxiliaryObjectsToScene.add(sh);
@@ -87,8 +93,10 @@ public class PointInterpolationTransform implements TransformStrategy {
             //Now interpolate properties from objects
 
         }
-        for (Shape sh : addedAuxiliaryObjectsToScene) {
-            sh.mp.interpolateFrom(originalShapeBaseCopy.mp, mobjDestiny.mp, t);
+        if (!DEBUG_COLORS) {
+            for (Shape sh : addedAuxiliaryObjectsToScene) {
+                sh.mp.interpolateFrom(originalShapeBaseCopy.mp, mobjDestiny.mp, t);
+            }
         }
 
     }
@@ -116,7 +124,7 @@ public class PointInterpolationTransform implements TransformStrategy {
 //        mobjDestiny.removeInterpolationPoints();
         mobjTransformed.jmpath.isClosed = mobjDestiny.jmpath.isClosed;
 
-        JMPath pa=connectedDst.toJMPath();
+        JMPath pa = connectedDst.toJMPath();
         pa.removeInterpolationPoints();
         mobjTransformed.jmpath.clear();
         mobjTransformed.jmpath.addPointsFrom(pa);

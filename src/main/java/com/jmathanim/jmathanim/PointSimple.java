@@ -59,11 +59,11 @@ public class PointSimple extends Scene2D {
     @Override
     public void setupSketch() {
         nanotime = System.nanoTime();
-//        conf.setHighQuality();
+        conf.setHighQuality();
 //        conf.setMediumQuality();
-        conf.setLowQuality();
+//        conf.setLowQuality();
         conf.setCreateMovie(false);
-//        conf.setCreateMovie(true);
+        conf.setCreateMovie(true);
 
         conf.setAdjustPreviewToFPS(true);
 //        conf.setAdjustPreviewToFPS(false);
@@ -88,7 +88,8 @@ public class PointSimple extends Scene2D {
 //        pruebaVariosTransforms();
 //        pruebaRelleno();
 //        pruebaSubpathCanon();
-        pruebaDosPentagonos1Estrella();
+//        pruebaDosPentagonos1Estrella();
+        pruebaSimpleLatex();
     }
 
     public void pruebaSubpathCanon() {
@@ -646,6 +647,21 @@ public class PointSimple extends Scene2D {
         waitSeconds(2);
     }
 
+    public void pruebaSimpleLatex()
+    {
+     LaTeXMathObject eq1 = new LaTeXMathObject("$$8$$");  
+     LaTeXMathObject eq2 = new LaTeXMathObject("$$\\infty$$");  
+//     eq1.fillAlpha(0);
+//     eq2.fillAlpha(0);
+     eq1.setRelativeSize();
+     eq2.setRelativeSize();
+     eq1.scale(3);
+     eq2.scale(3).shift(1,0);
+     add(eq1,eq2);
+        waitSeconds(1);
+        playAnim.transform(eq2.get(0), eq1.get(0), 5);
+        waitSeconds(1);
+    }
     private void pruebaLaTeXEcuacion() {
         LaTeXMathObject eq1 = new LaTeXMathObject("$$x=2$$");
         LaTeXMathObject eq2 = new LaTeXMathObject("$$x=4$$");

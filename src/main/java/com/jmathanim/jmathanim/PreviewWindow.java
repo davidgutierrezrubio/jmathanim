@@ -33,7 +33,7 @@ public class PreviewWindow extends Frame {
     }
 
     public void buildGUI() {
-        this.setSize(renderer.getWidth() + 20, renderer.getHeight() + 20);//TODO: Scale window to fixed size
+        this.setSize(renderer.getWidth() + 20, renderer.getHeight() + 60);//TODO: Scale window to fixed size
 //            frame.setLayout(new BasicSplitPaneUI.BasicVerticalLayoutManager());
         this.setLayout(new BorderLayout(0, 10));
         drawPanel = new JPanel();

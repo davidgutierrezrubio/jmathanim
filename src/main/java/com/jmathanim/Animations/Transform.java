@@ -43,6 +43,7 @@ public class Transform extends Animation {
     private boolean isFinished;
     private JMathAnimScene scene;
     private TransformStrategy strategy;
+    
 
     public Transform(Shape ob1, Shape ob2, double runTime) {
         super(runTime);
