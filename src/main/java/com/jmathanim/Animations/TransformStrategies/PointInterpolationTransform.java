@@ -8,6 +8,7 @@ package com.jmathanim.Animations.TransformStrategies;
 import com.jmathanim.Utils.JMColor;
 import com.jmathanim.Utils.JMathAnimConfig;
 import com.jmathanim.jmathanim.JMathAnimScene;
+import com.jmathanim.mathobjects.CanonicalJMPath;
 import com.jmathanim.mathobjects.JMPath;
 import com.jmathanim.mathobjects.JMPathPoint;
 import com.jmathanim.mathobjects.Shape;
@@ -21,7 +22,7 @@ import java.util.ArrayList;
 public class PointInterpolationTransform implements TransformStrategy {
 
     private JMathAnimScene scene;
-    public ArrayList<JMPath> connectedOrigin, connectedDst, connectedOriginaRawCopy;
+    public CanonicalJMPath connectedOrigin, connectedDst, connectedOriginaRawCopy;
     private final ArrayList<Shape> addedAuxiliaryObjectsToScene;
     private Shape mobjTransformed;
     private Shape mobjDestiny;
@@ -42,7 +43,7 @@ public class PointInterpolationTransform implements TransformStrategy {
         preparePaths(mobjTransformed.jmpath, mobjDestiny.jmpath);
         scene = JMathAnimConfig.getConfig().getScene();
 
-        for (int n = 0; n < connectedOrigin.size(); n++) {
+        for (int n = 0; n < connectedOrigin.getNumberOfPaths(); n++) {
             JMColor color = mobjTransformed.mp.drawColor.copy();
             Shape sh = new Shape(connectedOrigin.get(n), null);
 //            Shape sh2 = new Shape(connectedDst.get(n), null);
@@ -59,7 +60,7 @@ public class PointInterpolationTransform implements TransformStrategy {
     public void applyTransform(double t) {
         JMPathPoint interPoint, basePoint, dstPoint;
 
-        for (int numConnected = 0; numConnected < this.connectedDst.size(); numConnected++) {
+        for (int numConnected = 0; numConnected < this.connectedDst.getNumberOfPaths(); numConnected++) {
             JMPath convertedPath = connectedOrigin.get(numConnected);
             JMPath fromPath = connectedOriginaRawCopy.get(numConnected);
             JMPath toPath = connectedDst.get(numConnected);
@@ -94,7 +95,7 @@ public class PointInterpolationTransform implements TransformStrategy {
 
     @Override
     public void finish() {
-        for (int numConnected = 0; numConnected < this.connectedDst.size(); numConnected++) {
+        for (int numConnected = 0; numConnected < this.connectedDst.getNumberOfPaths(); numConnected++) {
 //        for (int numConnected = 0; numConnected < 1; numConnected++) {
             JMPath convertedPath = connectedOrigin.get(numConnected);
             JMPath toPath = connectedDst.get(numConnected);
@@ -115,11 +116,7 @@ public class PointInterpolationTransform implements TransformStrategy {
 //        mobjDestiny.removeInterpolationPoints();
         mobjTransformed.jmpath.isClosed = mobjDestiny.jmpath.isClosed;
 
-        ArrayList<JMPath> co = connectedDst;
-        JMPath pa = new JMPath();
-        for (JMPath p : co) {
-            pa.addPointsFrom(p);
-        }
+        JMPath pa=connectedDst.toJMPath();
         pa.removeInterpolationPoints();
         mobjTransformed.jmpath.clear();
         mobjTransformed.jmpath.addPointsFrom(pa);
@@ -135,12 +132,12 @@ public class PointInterpolationTransform implements TransformStrategy {
         connectedOrigin = path1.canonicalForm();
         connectedDst = path2.canonicalForm();
         alignNumberOfComponents(connectedOrigin, connectedDst);
-        connectedOriginaRawCopy = new ArrayList<>();
-        for (JMPath p : connectedOrigin) {
+        connectedOriginaRawCopy = new CanonicalJMPath();
+        for (JMPath p : connectedOrigin.getPaths()) {
             connectedOriginaRawCopy.add(p.rawCopy());
         }
         //Mark all points as curved during the transform
-        for (int numConnected = 0; numConnected < this.connectedDst.size(); numConnected++) {
+        for (int numConnected = 0; numConnected < this.connectedDst.getNumberOfPaths(); numConnected++) {
 //        for (int numConnected = 0; numConnected < 1; numConnected++) {
             JMPath convertedPath = connectedOrigin.get(numConnected);
             for (JMPathPoint p : convertedPath.jmPathPoints) {
@@ -163,9 +160,9 @@ public class PointInterpolationTransform implements TransformStrategy {
         pathSmall.alignPathsToGivenNumberOfElements(pathBig.size());
     }
 
-    private void alignNumberOfComponents(ArrayList<JMPath> con1, ArrayList<JMPath> con2) {
-        ArrayList<JMPath> conBig, conSmall;
-        if (con1.size() < con2.size()) {
+    private void alignNumberOfComponents(CanonicalJMPath con1, CanonicalJMPath con2) {
+        CanonicalJMPath conBig, conSmall;
+        if (con1.getNumberOfPaths() < con2.getNumberOfPaths()) {
             conSmall = con1;
             conBig = con2;
         } else {
@@ -173,28 +170,28 @@ public class PointInterpolationTransform implements TransformStrategy {
             conSmall = con2;
         }
 
-        int numDivs = (conBig.size() / conSmall.size()); //Euclidean quotient
-        int rest = conBig.size() % conSmall.size();//Euclidean rest
+        int numDivs = (conBig.getNumberOfPaths() / conSmall.getNumberOfPaths()); //Euclidean quotient
+        int rest = conBig.getNumberOfPaths() % conSmall.getNumberOfPaths();//Euclidean rest
 
         //Should divide the connect components in numDivs pieces (+1 if n<rest)
-        ArrayList<JMPath> tempCon = new ArrayList<>();
-        for (int n = 0; n < conSmall.size(); n++) {
+        CanonicalJMPath tempCon = new CanonicalJMPath();
+        for (int n = 0; n < conSmall.getNumberOfPaths(); n++) {
             JMPath pathToDivide = conSmall.get(n);
             int numberOfDivisions = numDivs + (n < rest ? 1 : 0);
-            ArrayList<JMPath> divisionResult = divideConnectedComponent(pathToDivide, numberOfDivisions);
+            CanonicalJMPath divisionResult = divideConnectedComponent(pathToDivide, numberOfDivisions);
             tempCon.addAll(divisionResult);
         }
         conSmall.clear();
         conSmall.addAll(tempCon);
 
         //Now that I am sure we have the same number of connected components, let's align the number in each one
-        for (int n = 0; n < conSmall.size(); n++) {
+        for (int n = 0; n < conSmall.getNumberOfPaths(); n++) {
             alignNumberOfElements(conSmall.get(n), conBig.get(n));
         }
 
     }
 
-    private ArrayList<JMPath> divideConnectedComponent(JMPath pathToDivide, int numberOfDivisions) {
+    private CanonicalJMPath divideConnectedComponent(JMPath pathToDivide, int numberOfDivisions) {
         if (pathToDivide.size() < numberOfDivisions + 1) {
             //I must ensure they have at least numDivs+1 points! (+1 if n<rest)
             pathToDivide.alignPathsToGivenNumberOfElements(numberOfDivisions + 1);

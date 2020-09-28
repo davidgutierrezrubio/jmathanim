@@ -7,6 +7,7 @@ package com.jmathanim.mathobjects;
 
 import com.jmathanim.Utils.MathObjectDrawingProperties;
 import java.util.ArrayList;
+import java.util.Collection;
 
 /**
  *
@@ -29,6 +30,21 @@ public class CanonicalJMPath {
         return msh;
     }
 
+    public void clear() {
+        paths.clear();
+    }
+
+    public boolean add(JMPath e) {
+        return paths.add(e);
+    }
+
+    public boolean addAll(Collection<? extends JMPath> c) {
+        return paths.addAll(c);
+    }
+    public boolean addAll(CanonicalJMPath c) {
+        return paths.addAll(c.getPaths());
+    }
+
     public CanonicalJMPath() {
         this(new ArrayList<JMPath>());
     }
@@ -37,7 +53,7 @@ public class CanonicalJMPath {
         return paths;
     }
 
-    public int getNumberPaths() {
+    public int getNumberOfPaths() {
         return paths.size();
     }
 
@@ -116,5 +132,12 @@ public class CanonicalJMPath {
         return resul;
 
     }
-
+ public JMPath toJMPath()
+ {
+        JMPath resul = new JMPath();
+        for (JMPath p : paths) {
+            resul.addPointsFrom(p);
+        }
+        return resul;
+ }
 }
