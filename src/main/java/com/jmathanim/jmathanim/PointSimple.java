@@ -59,11 +59,11 @@ public class PointSimple extends Scene2D {
     @Override
     public void setupSketch() {
         nanotime = System.nanoTime();
-        conf.setHighQuality();
+//        conf.setHighQuality();
 //        conf.setMediumQuality();
-//        conf.setLowQuality();
+        conf.setLowQuality();
         conf.setCreateMovie(false);
-        conf.setCreateMovie(true);
+//        conf.setCreateMovie(true);
 
         conf.setAdjustPreviewToFPS(true);
 //        conf.setAdjustPreviewToFPS(false);
@@ -658,9 +658,19 @@ public class PointSimple extends Scene2D {
      eq1.scale(3);
      eq2.scale(3).shift(1,0);
      add(eq1,eq2);
-        waitSeconds(1);
+        waitSeconds(3);
+        CanonicalJMPath c1=eq1.get(0).jmpath.canonicalForm();
+        CanonicalJMPath c2=eq2.get(0).jmpath.canonicalForm();
+        waitSeconds(3);
+//        Shape sh0=new Shape(c.get(0),null);
+//        Shape sh1=new Shape(c.get(1),null);
+//        Shape sh2=new Shape(c.get(2),null);
+//        sh0.fillColor(JMColor.GREEN);
+//        sh1.fillColor(JMColor.BLUE);
+//        sh2.fillColor(JMColor.RED);
+//        add(sh0,sh1,sh2);
         playAnim.transform(eq2.get(0), eq1.get(0), 5);
-        waitSeconds(1);
+        waitSeconds(10);
     }
     private void pruebaLaTeXEcuacion() {
         LaTeXMathObject eq1 = new LaTeXMathObject("$$x=2$$");

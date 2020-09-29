@@ -20,7 +20,7 @@ import javax.swing.JComboBox;
  *
  * @author David Gutiérrez Rubio <davidgutierrezrubio@gmail.com>
  */
-public class PointInterpolationTransform implements TransformStrategy {
+public class PointInterpolationCanonical implements TransformStrategy {
 
     private JMathAnimScene scene;
     public CanonicalJMPath connectedOrigin, connectedDst, connectedOriginaRawCopy;
@@ -28,9 +28,10 @@ public class PointInterpolationTransform implements TransformStrategy {
     private Shape mobjTransformed;
     private Shape mobjDestiny;
     private Shape originalShapeBaseCopy;
-    private static boolean DEBUG_COLORS = true;
+    private static boolean DEBUG_COLORS = false;
+    private static boolean SHOW_CANONICAL_INSTEAD_OF_ORIGINAL = false;
 
-    public PointInterpolationTransform() {
+    public PointInterpolationCanonical() {
         this.addedAuxiliaryObjectsToScene = new ArrayList<>();
     }
 
@@ -55,11 +56,15 @@ public class PointInterpolationTransform implements TransformStrategy {
                 sh.drawColor(color);
             }
 //            sh2.drawColor(color);
-            scene.add(sh);
+            if (SHOW_CANONICAL_INSTEAD_OF_ORIGINAL) {
+                scene.add(sh);
+            }
             addedAuxiliaryObjectsToScene.add(sh);
 //            addedAuxiliaryObjectsToScene.add(sh2);
         }
-        scene.remove(mobjTransformed); //Remove original object to be transformed
+        if (SHOW_CANONICAL_INSTEAD_OF_ORIGINAL) {
+            scene.remove(mobjTransformed); //Remove original object to be transformed
+        }
     }
 
     @Override

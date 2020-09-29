@@ -5,7 +5,7 @@
  */
 package com.jmathanim.Animations;
 
-import com.jmathanim.Animations.TransformStrategies.PointInterpolationTransform;
+import com.jmathanim.Animations.TransformStrategies.PointInterpolationCanonical;
 import com.jmathanim.Animations.TransformStrategies.AffineStrategyTransform;
 import com.jmathanim.Animations.TransformStrategies.HomotopyStrategyTransform;
 import com.jmathanim.Animations.TransformStrategies.RotateAndScaleXYStrategyTransform;
@@ -153,7 +153,7 @@ public class Transform extends Animation {
         //Now I choose strategy
         switch (method) {
             case METHOD_INTERPOLATE_POINT_BY_POINT:
-                strategy = new PointInterpolationTransform();
+                strategy = new PointInterpolationCanonical();
                 break;
             case METHOD_HOMOTOPY_TRANSFORM:
                 strategy = new HomotopyStrategyTransform();
