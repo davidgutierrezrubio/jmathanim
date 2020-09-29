@@ -535,10 +535,8 @@ public class Java2DRenderer extends Renderer {
         int[] scr = cam.mathToScreen(p);
         resul.moveTo(scr[0], scr[1]);
         //Now I iterate to get the next points
-        int numPoints = c.size();
-        if (c.isClosed()) {
-            numPoints++; //Draw fron n to 0 
-        }
+        int numPoints = c.size()+1;
+       
         //Draw from point [n] to point [n+1]
         int prev[] = {scr[0], scr[1]};
         int xy[] = {scr[0], scr[1]};

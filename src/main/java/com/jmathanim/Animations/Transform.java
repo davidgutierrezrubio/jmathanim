@@ -91,7 +91,7 @@ public class Transform extends Animation {
         changeDirection = (forceChangeDirection ? -changeDirection : changeDirection);
         //If the path is open, we can't cycle the path, so 
         //we set numberOfCycles to 1
-        int numberOfCycles = (path1.isClosed ? path1.size() : 1);
+        int numberOfCycles = path1.size();//(path1.isClosed ? path1.size() : 1);
         //First, without changing direction
         for (int step = 0; step < numberOfCycles; step++) {
             JMPath tempPath = path1.copy();

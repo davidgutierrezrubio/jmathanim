@@ -28,8 +28,7 @@ public class PointInterpolationCanonical implements TransformStrategy {
     private Shape mobjTransformed;
     private Shape mobjDestiny;
     private Shape originalShapeBaseCopy;
-    private static boolean DEBUG_COLORS = false;
-    private static boolean SHOW_CANONICAL_INSTEAD_OF_ORIGINAL = false;
+    private static boolean DEBUG_COLORS = true;
 
     public PointInterpolationCanonical() {
         this.addedAuxiliaryObjectsToScene = new ArrayList<>();
@@ -45,26 +44,20 @@ public class PointInterpolationCanonical implements TransformStrategy {
         originalShapeBaseCopy = mobjTransformed.copy();
         preparePaths(mobjTransformed.jmpath, mobjDestiny.jmpath);
         scene = JMathAnimConfig.getConfig().getScene();
-
-        for (int n = 0; n < connectedOrigin.getNumberOfPaths(); n++) {
-            JMColor color = mobjTransformed.mp.drawColor.copy();
-            Shape sh = new Shape(connectedOrigin.get(n), null);
+        if (DEBUG_COLORS) {
+            for (int n = 0; n < connectedOrigin.getNumberOfPaths(); n++) {
+                JMColor color = mobjTransformed.mp.drawColor.copy();
+                Shape sh = new Shape(connectedOrigin.get(n), null);
 //            Shape sh2 = new Shape(connectedDst.get(n), null);
-            if (DEBUG_COLORS) {
+
                 sh.drawColor(JMColor.random());
-            } else {
-                sh.drawColor(color);
-            }
-//            sh2.drawColor(color);
-            if (SHOW_CANONICAL_INSTEAD_OF_ORIGINAL) {
                 scene.add(sh);
+                addedAuxiliaryObjectsToScene.add(sh);
             }
-            addedAuxiliaryObjectsToScene.add(sh);
-//            addedAuxiliaryObjectsToScene.add(sh2);
+
         }
-        if (SHOW_CANONICAL_INSTEAD_OF_ORIGINAL) {
-            scene.remove(mobjTransformed); //Remove original object to be transformed
-        }
+        mobjTransformed.getPath().clear();
+        mobjTransformed.getPath().addPointsFrom(connectedOrigin.toJMPath());
     }
 
     @Override
@@ -127,7 +120,6 @@ public class PointInterpolationCanonical implements TransformStrategy {
 //        mobjTransformed.removeInterpolationPoints();
 //        System.out.println(mobjTransformed);
 //        mobjDestiny.removeInterpolationPoints();
-        mobjTransformed.jmpath.isClosed = mobjDestiny.jmpath.isClosed;
 
         JMPath pa = connectedDst.toJMPath();
         pa.removeInterpolationPoints();

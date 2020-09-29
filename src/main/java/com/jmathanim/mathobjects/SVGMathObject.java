@@ -297,14 +297,10 @@ public class SVGMathObject extends MultiShapeObject {
                 case "Z":
                     previousCommand = token;
                     previousPoint = pathLineTo(resul, closeX, closeY, true);
-//                    closeAtTheEnd = true;
-//                    resul.close();
                     break;
                 case "z":
                     previousCommand = token;
                     previousPoint = pathLineTo(resul, closeX, closeY, true);
-//                    closeAtTheEnd = true;
-//                    resul.close();
                     break;
                 default:
                     if (token.substring(0, 1) != "") //Not a command, but a point!

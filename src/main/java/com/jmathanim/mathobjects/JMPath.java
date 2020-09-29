@@ -26,8 +26,6 @@ public class JMPath implements Updateable, Stateable {
     static public final int CONNECTED_COMPONENT = 3; //Connected, open component. Every path should be able to put in this way
     public final CircularArrayList<JMPathPoint> jmPathPoints; //points from the curve
     public final CircularArrayList<Boolean> visiblePoints;//Whether this point is visible or not
-    public boolean isClosed;
-    public boolean isInterpolated;
     public int pathType; //Default value
 
     double tension = .3d;
@@ -43,9 +41,7 @@ public class JMPath implements Updateable, Stateable {
 //        this.controlPoints1 = new CircularArrayList<>();
 //        this.controlPoints2 = new CircularArrayList<>();
         this.visiblePoints = new CircularArrayList<>();
-        isClosed = false;
         tension = 0.3d; //Default tension
-        isInterpolated = false;//By default, path hasn't interpolation points
         pathType = JMPath.MATHOBJECT;//Default value
     }
 
@@ -85,15 +81,10 @@ public class JMPath implements Updateable, Stateable {
     }
 
     public void close() {
-        //Add first point and mark as closed
-//        addPoint(points.get(0).copy());//TODO: Mark this new point as dependent in case point0 moves
-//        points.get(0).isCurved=false;
-        isClosed = true;
-//        jmPathPoints.get(0).isVisible=true;
+        jmPathPoints.get(0).isThisSegmentVisible = true;
     }
 
     public void open() {
-        isClosed = false;
         jmPathPoints.get(0).isThisSegmentVisible = false;
     }
 
@@ -133,10 +124,8 @@ public class JMPath implements Updateable, Stateable {
             return;
         }
         int numPoints = jmPathPoints.size();
-        if (isClosed) {
-            numPoints = numPoints + 1;
-        }
-        for (int n = 0; n < numPoints; n++) {
+
+        for (int n = 0; n < numPoints + 1; n++) {
             int i = n - 1;
             int k = n + 1;
             int L = n + 2;
@@ -161,24 +150,18 @@ public class JMPath implements Updateable, Stateable {
                 double cy1 = y2 + mod23 / mod31 * tension * (y3 - y1);
                 double cx2 = x3 - mod23 / mod42 * tension * (x4 - x2);
                 double cy2 = y3 - mod23 / mod42 * tension * (y4 - y2);
-                p2.cp1.v.x = cx1;
+                p2.cp1.v.x = cx1;//TODO: Add z-coordinate too
                 p2.cp1.v.y = cy1;
                 p3.cp2.v.x = cx2;
                 p3.cp2.v.y = cy2;
             } else {
                 //If this path is straight, control points becomes vertices. Although this is not used
                 //when drawing straight paths, it becomes handy when doing transforms from STRAIGHT to CURVED paths
-                p2.cp1.v.x = p2.p.v.x;
-                p2.cp1.v.y = p2.p.v.y;
-                p3.cp2.v.x = p3.p.v.x;
-                p3.cp2.v.y = p3.p.v.y;
+                p2.cp1.v.copyFrom(p2.p.v);
+                p3.cp2.v.copyFrom(p3.p.v);
             }
 
         }
-    }
-
-    public boolean isClosed() {
-        return isClosed;
     }
 
     /**
@@ -192,7 +175,6 @@ public class JMPath implements Updateable, Stateable {
             }
         }
         jmPathPoints.removeAll(toRemove);//Remove all interpolation points
-        isInterpolated = false;//Mark this path as no interpolated
         //Now, restore old control points
         //for curved paths control points are modified so that a backup is necessary
         for (JMPathPoint p : jmPathPoints) {
@@ -345,9 +327,6 @@ public class JMPath implements Updateable, Stateable {
         for (int n = 0; n < jmPathPoints.size(); n++) {
             resul.addJMPoint(jmPathPoints.get(n).copy());
         }
-
-        resul.isClosed = isClosed;
-        resul.isInterpolated = isInterpolated;
         resul.tension = tension;
         resul.pathType = pathType;
         return resul;
@@ -364,8 +343,6 @@ public class JMPath implements Updateable, Stateable {
         resul.jmPathPoints.addAll(jmPathPoints);
 
         //Copy attributes
-        resul.isClosed = isClosed;
-        resul.isInterpolated = isInterpolated;
         resul.tension = tension;
         resul.pathType = pathType;
         return resul;
@@ -380,11 +357,11 @@ public class JMPath implements Updateable, Stateable {
      */
     public void cyclePoints(int step, int direction) {
 
-        if (!isClosed) {
-            if (direction == -1) {
-                step = this.size() - 1;
-            }
-        }
+//        if (!isClosed) {
+//            if (direction == -1) {
+//                step = this.size() - 1;
+//            }
+//        }
         JMPath tempPath = this.copy();
         jmPathPoints.clear();
 
@@ -447,7 +424,7 @@ public class JMPath implements Updateable, Stateable {
 
         //If the path is open, we can't cycle the path, so 
         //we set numberOfCycles to 1
-        int numberOfCycles = (this.isClosed ? this.size() : 1);
+        int numberOfCycles = this.size();// (this.isClosed ? this.size() : 1);
         //First, without changing direction
         for (int step = 0; step < numberOfCycles; step++) {
             JMPath tempPath = this.copy();
@@ -571,11 +548,9 @@ public class JMPath implements Updateable, Stateable {
         //This should do nothing, let their points to update by themselves
     }
 
-    public void copyFrom(JMPath path) {
+    public void addJMPoints(JMPath path) {
         this.clear();
         this.addPointsFrom(path.rawCopy());
-        this.isClosed = path.isClosed;
-        this.isInterpolated = path.isInterpolated;
         this.pathType = path.pathType;
         this.tension = path.tension;
         this.visiblePoints.clear();
@@ -588,8 +563,6 @@ public class JMPath implements Updateable, Stateable {
         for (JMPathPoint p : jmPathPoints) {
             p.restoreState();
         }
-        this.isClosed = pathBackup.isClosed;
-        this.isInterpolated = pathBackup.isInterpolated;
         this.pathType = pathBackup.pathType;
         this.tension = pathBackup.tension;
         this.visiblePoints.clear();
@@ -603,8 +576,6 @@ public class JMPath implements Updateable, Stateable {
         for (JMPathPoint p : jmPathPoints) {
             p.saveState();
         }
-        pathBackup.isClosed = this.isClosed;
-        pathBackup.isInterpolated = this.isInterpolated;
         pathBackup.pathType = this.pathType;
         pathBackup.tension = this.tension;
         pathBackup.visiblePoints.clear();
@@ -634,7 +605,6 @@ public class JMPath implements Updateable, Stateable {
         }
         if (offset == null) {
             //Ok, we have a CLOSED path with no invisible segments
-            workPath.isClosed = false;
             workPath.separate(0);
             offset = -1;
         }
@@ -657,6 +627,13 @@ public class JMPath implements Updateable, Stateable {
         return new CanonicalJMPath(resul);
     }
 
+    /**
+     * Separate the path in 2 disconnected components at point k Creates a new
+     * point a position k+1 Point k and k+1 share the same coordinates, k+1 is
+     * not visible.
+     *
+     * @param k Where to separate path
+     */
     public void separate(int k) {
         JMPathPoint p = getJMPoint(k);
         JMPathPoint pnew = p.copy();
@@ -670,6 +647,21 @@ public class JMPath implements Updateable, Stateable {
 
     }
 
-   
+    /**
+     * Return the number of connected components. A circle has number 0, which means a closed curve.
+     * An arc or segment has number 1 (an open curve)
+     * A figure with 2 separate curves has number 2, etc.
+     *
+     * @return The number of connected components.
+     */
+    public int getNumberOfConnectedComponents() {
+        int resul = 1;
+        for (JMPathPoint p : jmPathPoints) {
+            if (!p.isThisSegmentVisible) {
+                resul++;
+            }
+        }
+        return resul;
+    }
 
 }

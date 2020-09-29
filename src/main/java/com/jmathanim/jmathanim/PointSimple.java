@@ -12,6 +12,7 @@ import com.jmathanim.Animations.FadeIn;
 import com.jmathanim.Animations.FadeOut;
 import com.jmathanim.Animations.ShowCreation;
 import com.jmathanim.Animations.Transform;
+import com.jmathanim.Animations.TransformStrategies.PointInterpolationCanonical;
 import com.jmathanim.Animations.commands.AbstractCommand;
 import com.jmathanim.Animations.commands.Commands;
 import com.jmathanim.Animations.commands.SingleMathObjectCommand;
@@ -59,7 +60,7 @@ public class PointSimple extends Scene2D {
     @Override
     public void setupSketch() {
         nanotime = System.nanoTime();
-//        conf.setHighQuality();
+//        conf.setHighQuality();r
 //        conf.setMediumQuality();
         conf.setLowQuality();
         conf.setCreateMovie(false);
@@ -81,46 +82,30 @@ public class PointSimple extends Scene2D {
     public void runSketch() {
         System.out.println("Running sketch...");
         //       pruebaTransformHomotopy();
-//                pentagonBuild();
+        //                pentagonBuild();
         //        pruebaShapeClosedToCanonicalForm();
         //        pruebaTransformRegularPolygons();
-//        muchosCuadradosApilados();
-//        pruebaVariosTransforms();
-//        pruebaRelleno();
-//        pruebaSubpathCanon();
-//        pruebaDosPentagonos1Estrella();
-        pruebaSimpleLatex();
-    }
-
-    public void pruebaSubpathCanon() {
-        Shape sh = Shape.circle();
-        CanonicalJMPath can = sh.jmpath.canonicalForm();
-        System.out.println("Path " + sh.jmpath);
-        for (double t = 0; t < 1; t += .1) {
-            JMPath sb = can.subpath(0, t);
-            System.out.println("Subpath " + t + "  :" + sb);
-        }
-
+        //        muchosCuadradosApilados();
+        //        pruebaVariosTransforms();
+        //        pruebaRelleno();
+        //        pruebaSubpathCanon();
+        //        pruebaDosPentagonos1Estrella();
+        //        pruebaSimpleLatex();
+        //        pruebaSimpleLatexOld();
+        //        testAll();
+//        pruebaLaTeXVariasEcuaciones();
+        pruebaSimpleEcuacionEstatica();
+//        pruebaSVGImport();
     }
 
     public void testAll() {
-        pruebaFixedCamera();
-        resetScene();
         pruebaNewTransform2();
         resetScene();
-        pruebaLaTeX();
+        pruebaNewTransform();
+        resetScene();
+        pruebaSimpleLatex();
         resetScene();
         pruebaTransformPathsWithHiddenElements();
-        resetScene();
-        pruebaSimpleJMPathObject();
-        resetScene();
-        pruebaBoundingBox();
-        resetScene();
-        pruebaAlignNew();
-        resetScene();
-        pruebaLaTeXEcuacion();
-        resetScene();
-        pruebaSizeLaTeX();
         resetScene();
         pruebaTransform2Circles();
     }
@@ -188,9 +173,9 @@ public class PointSimple extends Scene2D {
 
         Shape sq = Shape.square();
         add(sh.scale(.5, .5).shift(-1, 0).drawColor(JMColor.RED), sq);
-        waitSeconds(10);
-        playAnim.transform(sh, sq, 30);
-        waitSeconds(20);
+        waitSeconds(1);
+        playAnim.transform(sh, sq, 3);
+        waitSeconds(2);
     }
 
     public void pruebaSimpleJMPathObject() throws ArrayIndexOutOfBoundsException {
@@ -328,16 +313,11 @@ public class PointSimple extends Scene2D {
         Shape sq = Shape.regularPolygon(4, new Point(0, 0), .5).shift(-1, -1);
         add(pol, sq);
 //        add(pol,sq);
-        double tiempo = 30;
+        double tiempo = 2;
         waitSeconds(tiempo);
         Transform tr = new Transform(sq, pol, tiempo * 4);
         play(tr);
 
-        waitSeconds(tiempo);
-
-        waitSeconds(tiempo);
-        waitSeconds(tiempo);
-        waitSeconds(tiempo);
         waitSeconds(tiempo);
     }
 
@@ -349,7 +329,7 @@ public class PointSimple extends Scene2D {
         add(pol.drawColor(JMColor.RED));
         Shape sq = Shape.square().shift(-1, -1).drawColor(JMColor.BLUE);
 //        add(sq);
-        double tiempo = 40;
+        double tiempo = 2;
         waitSeconds(tiempo);
         playAnim.transform(pol, sq, tiempo);
 
@@ -434,9 +414,9 @@ public class PointSimple extends Scene2D {
         camera.scale(1.5);
 //        drawControlPoint(circ2, 0);
 //        drawControlPoint(circ2, -1);
-        waitSeconds(30);
-        play(new Transform(circ, circ2, 90));
-        waitSeconds(30);
+        waitSeconds(1);
+        play(new Transform(circ, circ2, 3));
+        waitSeconds(2);
     }
 
     public void muchosCuadradosApilados() {
@@ -567,7 +547,7 @@ public class PointSimple extends Scene2D {
     public void pruebaDosPentagonos1Estrella() {
         Shape p1 = Shape.regularPolygon(5).drawColor(JMColor.GRAY);
         Shape p2 = Shape.regularPolygon(5).copy().scale(1).drawColor(JMColor.GRAY);;
-        Point centro=p1.getCenter().copy();
+        Point centro = p1.getCenter().copy();
         add(centro);
         add(p1, p2);
         p2.putAt(centro, Anchor.BY_CENTER);
@@ -585,7 +565,7 @@ public class PointSimple extends Scene2D {
         ShowCreation anim = new ShowCreation(sh, 3);
         play(anim);
         waitSeconds(1);
-        playAnim.rotate(p2,centro, Math.PI * .2, 5);
+        playAnim.rotate(p2, centro, Math.PI * .2, 5);
         add(p2.getCenter().drawColor(JMColor.RED));
         waitSeconds(1);
         playAnim.scale(p2, centro, .40, 2);
@@ -647,31 +627,56 @@ public class PointSimple extends Scene2D {
         waitSeconds(2);
     }
 
-    public void pruebaSimpleLatex()
-    {
-     LaTeXMathObject eq1 = new LaTeXMathObject("$$8$$");  
-     LaTeXMathObject eq2 = new LaTeXMathObject("$$\\infty$$");  
-//     eq1.fillAlpha(0);
-//     eq2.fillAlpha(0);
-     eq1.setRelativeSize();
-     eq2.setRelativeSize();
-     eq1.scale(3);
-     eq2.scale(3).shift(1,0);
-     add(eq1,eq2);
-        waitSeconds(3);
-        CanonicalJMPath c1=eq1.get(0).jmpath.canonicalForm();
-        CanonicalJMPath c2=eq2.get(0).jmpath.canonicalForm();
-        waitSeconds(3);
-//        Shape sh0=new Shape(c.get(0),null);
-//        Shape sh1=new Shape(c.get(1),null);
-//        Shape sh2=new Shape(c.get(2),null);
-//        sh0.fillColor(JMColor.GREEN);
-//        sh1.fillColor(JMColor.BLUE);
-//        sh2.fillColor(JMColor.RED);
-//        add(sh0,sh1,sh2);
-        playAnim.transform(eq2.get(0), eq1.get(0), 5);
+    public void pruebaSimpleEcuacionEstatica() {
+        LaTeXMathObject eq3 = new LaTeXMathObject("$$x=8$$");
+        eq3.fillAlpha(0);
+        add(eq3.scale(5));
+        waitSeconds(5);
+    }
+
+    public void pruebaLaTeXVariasEcuaciones() {
+        LaTeXMathObject eq1 = new LaTeXMathObject("$$x=3$$");
+        LaTeXMathObject eq2 = new LaTeXMathObject("$$x=6$$");
+        LaTeXMathObject eq3 = new LaTeXMathObject("$$x=8$$");
+        add(eq1);
+        eq1.setRelativeSize();
+        eq2.setRelativeSize();
+        eq3.setRelativeSize();
+        camera.setGaps(.2, .2);
+        camera.adjustToObjects(eq1);
+        waitSeconds(1);
+        playAnim.transform(eq1.get(2), eq2.get(2), 2);
+        waitSeconds(1);
+        playAnim.transform(eq1.get(2), eq3.get(2), 2);
+        waitSeconds(1);
+    }
+
+    public void pruebaSimpleLatex() {
+        LaTeXMathObject eq1 = new LaTeXMathObject("$$8$$");
+        LaTeXMathObject eq2 = new LaTeXMathObject("$$\\infty$$");
+        add(eq1, eq2);
+        eq1.setRelativeSize();
+        eq2.setRelativeSize();
+        eq1.scale(3);
+        eq2.scale(3).shift(1, 0);
+        waitSeconds(1);
+        playAnim.transform(eq1.get(0), eq2.get(0), 5);
         waitSeconds(10);
     }
+
+    public void pruebaSimpleLatexOld() {
+        LaTeXMathObject eq1 = new LaTeXMathObject("$$8$$");
+        LaTeXMathObject eq2 = new LaTeXMathObject("$$\\infty$$");
+        CanonicalJMPath c1 = eq1.get(0).jmpath.canonicalForm();
+        CanonicalJMPath c2 = eq2.get(0).jmpath.canonicalForm();
+        PointInterpolationCanonical tr = new PointInterpolationCanonical();
+//        tr.alignNumberOfComponents(c1, c2);
+        Shape sh1 = new Shape(c1.toJMPath(), null).scale(3);
+        sh1.fillColor(JMColor.WHITE);
+        add(sh1);
+        waitSeconds(10);
+    }
+
     private void pruebaLaTeXEcuacion() {
         LaTeXMathObject eq1 = new LaTeXMathObject("$$x=2$$");
         LaTeXMathObject eq2 = new LaTeXMathObject("$$x=4$$");
@@ -1079,14 +1084,17 @@ public class PointSimple extends Scene2D {
     }
 
     public void pruebaSVGImport() {
-        SVGMathObject svg = new SVGMathObject("C:\\media\\cocacola.svg");
+        SVGMathObject svg = new SVGMathObject("C:\\media\\bolondro.svg");
         add(svg.get(0));
+        svg.get(0).fillColor(JMColor.RED);
+        svg.putAt(new Point(0,0), Anchor.BY_CENTER);
+        camera.adjustToObjects(svg);
 //        add(svg.shapes.get(1));
 //        add(svg.shapes.get(2));
         svg.drawColor(JMColor.WHITE);
 
         Shape s = Shape.square();
-//        add(s);
+        add(s);
 //        JMPath uno = s.jmpath;
 //        JMPath dos = svg.shapes.get(0).jmpath;
         waitSeconds(3);

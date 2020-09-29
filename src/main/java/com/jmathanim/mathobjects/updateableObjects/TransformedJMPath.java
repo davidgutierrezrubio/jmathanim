@@ -24,7 +24,7 @@ public class TransformedJMPath extends Shape{
         super();
         this.transform=tr;
         this.srcOBj=jmpobj;
-        this.jmpath.copyFrom(jmpobj.jmpath);
+        this.jmpath.addJMPoints(jmpobj.jmpath);
     }
 
     @Override

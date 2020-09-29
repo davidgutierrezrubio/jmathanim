@@ -33,6 +33,11 @@ public abstract class Camera {
     protected double xmin, xmax, ymin, ymax;
 
     /**
+     * Gaps to add when adjusting view to an object or Rect
+     */
+    protected double hgap, vgap;
+
+    /**
      * Set size of the screen to which the camera will compute coordinates
      * Screen size usually is 800x600, 1920x1080, etc.
      *
@@ -44,6 +49,11 @@ public abstract class Camera {
         screenHeight = h;
         reset();
 
+    }
+
+    public void setGaps(double h, double v) {
+        hgap = h;
+        vgap = v;
     }
 
     /**
@@ -74,16 +84,14 @@ public abstract class Camera {
     }
 
     public void adjustToObjects(MathObject... objs) {
-        Rect r=objs[0].getBoundingBox();
-        for (MathObject obj:objs)
-        {
-            r=r.union(obj.getBoundingBox());
+        Rect r = objs[0].getBoundingBox();
+        for (MathObject obj : objs) {
+            r = r.union(obj.getBoundingBox());
         }
-        adjustToRect(r);
+        adjustToRect(r.addGap(hgap, hgap));
     }
-    
-    public void scale(double scale)
-    {
+
+    public void scale(double scale) {
         setMathView(getMathView().scaled(scale, scale));
     }
 
