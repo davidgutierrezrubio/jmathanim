@@ -43,6 +43,7 @@ public class Commands {
 
             @Override
             public void finish() {
+                execute(1);//Ensure that the object is well-located
             }
         },runtime);
     }//End of shift command
@@ -74,6 +75,7 @@ public class Commands {
 
             @Override
             public void finish() {
+                execute(1);
             }
         },runtime);
     }//End of scale command
@@ -102,6 +104,7 @@ public class Commands {
 
             @Override
             public void finish() {
+                execute(1);
             }
         },runtime);
     }//End of scale command
@@ -130,6 +133,7 @@ public class Commands {
 
             @Override
             public void finish() {
+                execute(1);
             }
         },runtime);
     }//End of homotopy command
@@ -153,6 +157,7 @@ public class Commands {
 
             @Override
             public void finish() {
+                execute(1);
             }
         },runtime);
     }//End of homotopy command
@@ -174,6 +179,7 @@ public class Commands {
 
              @Override
              public void finish() {
+                 execute(1);
              }
 
              @Override

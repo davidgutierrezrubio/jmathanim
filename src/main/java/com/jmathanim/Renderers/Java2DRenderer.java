@@ -75,13 +75,16 @@ import javax.swing.plaf.basic.BasicSplitPaneUI;
  */
 public class Java2DRenderer extends Renderer {
 
+    private static final boolean DEBUG_LABELS = true; //Draw label objects
     private static final boolean DEBUG_PATH_POINTS = false; //Draw control points and vertices
     private static final boolean PRINT_DEBUG = false; //Draw control points and vertices
     private static final boolean BOUNDING_BOX_DEBUG = false; //Draw bounding boxes
 
     private BufferedImage drawBufferImage;
     private BufferedImage finalImage;
+    private BufferedImage debugImage;
     private Graphics2D g2draw;
+    private Graphics2D g2debug;
     private final Graphics2D g2dFinalImage;
     public Camera2D camera;
     public Camera2D fixedCamera;
@@ -125,7 +128,9 @@ public class Java2DRenderer extends Renderer {
 
         drawBufferImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
         finalImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
+        debugImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
         g2draw = drawBufferImage.createGraphics();
+        g2debug= debugImage.createGraphics();
         g2dFinalImage = finalImage.createGraphics();
         rh = new RenderingHints(
                 RenderingHints.KEY_ANTIALIASING,
@@ -261,9 +266,12 @@ public class Java2DRenderer extends Renderer {
         if (cnf.drawShadow) {
             BufferedImage shadowImage = computeShadow(drawBufferImage);
             g2dFinalImage.drawImage(shadowImage, cnf.shadowOffsetX, cnf.shadowOffsetY, null);
+            
         }
 
         g2dFinalImage.drawImage(drawBufferImage, 0, 0, null);
+        //This layer is on top of everything, for debugging purposes
+        g2dFinalImage.drawImage(debugImage, 0, 0, null);
         if (cnf.showPreview) {
 
             //Draw into a window
@@ -368,7 +376,9 @@ public class Java2DRenderer extends Renderer {
         }
         //TODO: Find a more efficient way to erase a Alpha image
         drawBufferImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+        debugImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
         g2draw = drawBufferImage.createGraphics();
+        g2debug = debugImage.createGraphics();
         g2draw.setRenderingHints(rh);
 
     }
@@ -525,19 +535,23 @@ public class Java2DRenderer extends Renderer {
     public Path2D.Double createPathFromJMPath(Shape mobj, Camera2D cam) {
         JMPath c = mobj.getPath();
         Path2D.Double resul = new Path2D.Double();
-
-        //TODO: Convert this in its own reusable method
-        //First, I move the curve to the first point
         Vec p = c.getJMPoint(0).p.v;
+       
+        
         if (DEBUG_PATH_POINTS) {
             debugPathPoint(c.getJMPoint(0), c);
         }
         int[] scr = cam.mathToScreen(p);
+         if (DEBUG_LABELS)
+        {
+            g2debug.setColor(mobj.mp.drawColor.getInverse().getColor());
+            g2debug.fillRect(scr[0]-5, scr[1]-10,15,15);
+            g2debug.setColor(mobj.mp.drawColor.getColor());
+            g2debug.drawString(mobj.label, scr[0], scr[1]);
+        }
         resul.moveTo(scr[0], scr[1]);
         //Now I iterate to get the next points
-        int numPoints = c.size()+1;
-       
-        //Draw from point [n] to point [n+1]
+        int numPoints = c.size();
         int prev[] = {scr[0], scr[1]};
         int xy[] = {scr[0], scr[1]};
 
@@ -555,40 +569,18 @@ public class Java2DRenderer extends Renderer {
             if (DEBUG_PATH_POINTS) {
                 debugPathPoint(c.getJMPoint(n), c);
             }
-//            if ((prev[0]!=xy[0]) | (prev[1]!=xy[1])){
             if (c.getJMPoint(n).isThisSegmentVisible) {
                 if (c.getJMPoint(n).isCurved) {
                     resul.curveTo(cxy1[0], cxy1[1], cxy2[0], cxy2[1], xy[0], xy[1]);
                 } else {
                     resul.lineTo(xy[0], xy[1]);
-//                        System.out.println("Line from "+prev[0]+", "+prev[1]+" to "+xy[0]+","+xy[1]);
                 }
-                //If we are drawing the last point and is visible...
-//                if (n == numPoints) {
-//                    resul.closePath();
-//                }
-
             } else {
                 if (n < numPoints) {//If it is the last point, don't move (it creates a strange point at the beginning)
                     resul.moveTo(xy[0], xy[1]);
                 }
-//                g2d.drawString("M", xy[0], xy[1]);
             }
         }
-//        if (c.isClosed()) {
-//            //closePath method draws a straight line to the last moveTo, so we
-//            //have to move first to the first point of our path
-//            resul.moveTo(scr[0], scr[1]);
-//            resul.closePath();
-//        }
-//        if (c.isClosed()) {
-//            if (c.getPoint(0).isVisible) {
-//                resul.closePath();
-//            } else {
-//                int[] xy = camera.mathToScreen(c.getPoint(0).p.v);
-//                resul.moveTo(xy[0], xy[1]);
-//            }
-//        }
         return resul;
     }
 
@@ -602,24 +594,24 @@ public class Java2DRenderer extends Renderer {
         debugCPoint(camera.mathToScreen(p.cp1.v.x, p.cp1.v.y));
         debugCPoint(camera.mathToScreen(p.cp2.v.x, p.cp2.v.y));
         if (p.type == JMPathPoint.TYPE_VERTEX) {
-            g2draw.setColor(Color.GREEN);
+            g2debug.setColor(Color.GREEN);
 
         }
         if (p.type == JMPathPoint.TYPE_INTERPOLATION_POINT) {
-            g2draw.setColor(Color.GRAY);
+            g2debug.setColor(Color.GRAY);
 
         }
         if (p.isCurved) {
-            g2draw.drawOval(x[0] - 4, x[1] - 4, 8, 8);
+            g2debug.drawOval(x[0] - 4, x[1] - 4, 8, 8);
         } else {
-            g2draw.drawRect(x[0] - 2, x[1] - 2, 4, 4);
+            g2debug.drawRect(x[0] - 2, x[1] - 2, 4, 4);
         }
         debugText(String.valueOf(path.jmPathPoints.indexOf(p)), x[0] + 5, x[1]);
 
     }
 
     public void debugPoint(int x, int y) {
-        g2draw.drawOval(x - 2, y - 2, 4, 4);
+        g2debug.drawOval(x - 2, y - 2, 4, 4);
     }
 
     public void debugPoint(int[] xy) {

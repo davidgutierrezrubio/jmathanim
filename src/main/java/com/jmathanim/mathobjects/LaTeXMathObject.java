@@ -36,7 +36,7 @@ public class LaTeXMathObject extends SVGMathObject {
     private File outputDir;
     //Default scale for latex objects (relative to screen height)
     //This factor represents % of height relative to the screen that a "X" character has
-    public static final double DEFAULT_SCALE_FACTOR=.025;
+    public static final double DEFAULT_SCALE_FACTOR = .025;
 
     /**
      *
@@ -61,24 +61,28 @@ public class LaTeXMathObject extends SVGMathObject {
 //            Rect r = getBoundingBox();
 //            this.shift(-r.xmin, -r.ymax);
 //            r = getBoundingBox();
-            putAt(new Point(0,0), Anchor.UL);
+            putAt(new Point(0, 0), Anchor.UL);
+        }
+        int n = 0;
+        for (Shape sh : shapes) {//label them
+            sh.label = String.valueOf(n);
+            n++;
         }
         //Default color
-        setColor(JMColor.WHITE);
-        this.setAbsoluteSize();
-        this.setAbsolutAnchorPoint(Anchor.UL);//Default
-        
+        setColor(mp.drawColor);
+//        this.setAbsoluteSize();
+//        this.setAbsolutAnchorPoint(Anchor.UL);//Default
+
         //Scale
         //An "X" character in LaTeX has 110 pixels height.
         //This object should be scaled by default to extend over 10% of the screen
         //use screen sizes as this object has an absolute size by default
-        Camera cam=JMathAnimConfig.getConfig().getFixedCamera();
-        int h=cam.screenHeight;
-        double hm=cam.getMathView().getHeight();
-        double sc=DEFAULT_SCALE_FACTOR * 10 / 6.807795;
-        this.scale(getBoundingBox().getUL(),sc,sc);
-        
-        
+        Camera cam = JMathAnimConfig.getConfig().getFixedCamera();
+        int h = cam.screenHeight;
+        double hm = cam.getMathView().getHeight();
+        double sc = DEFAULT_SCALE_FACTOR * 10 / 6.807795;
+        this.scale(getBoundingBox().getUL(), sc, sc);
+
     }
 
     /**

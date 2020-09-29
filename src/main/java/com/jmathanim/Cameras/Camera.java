@@ -90,7 +90,13 @@ public abstract class Camera {
         }
         adjustToRect(r.addGap(hgap, hgap));
     }
-
+  public void zoomToObjects(MathObject... objs) {
+        Rect r = objs[0].getBoundingBox();
+        for (MathObject obj : objs) {
+            r = r.union(obj.getBoundingBox());
+        }
+        adjustToRect(r.addGap(hgap, hgap));
+    }
     public void scale(double scale) {
         setMathView(getMathView().scaled(scale, scale));
     }

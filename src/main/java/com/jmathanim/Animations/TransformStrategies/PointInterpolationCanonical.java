@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import javax.swing.JComboBox;
 
 /**
+ * Separates paths into canonical forms to interpolate point by point
  *
  * @author David Gutiérrez Rubio <davidgutierrezrubio@gmail.com>
  */
@@ -28,7 +29,7 @@ public class PointInterpolationCanonical implements TransformStrategy {
     private Shape mobjTransformed;
     private Shape mobjDestiny;
     private Shape originalShapeBaseCopy;
-    private static boolean DEBUG_COLORS = true;
+    private static boolean DEBUG_COLORS = false;
 
     public PointInterpolationCanonical() {
         this.addedAuxiliaryObjectsToScene = new ArrayList<>();
@@ -91,11 +92,8 @@ public class PointInterpolationCanonical implements TransformStrategy {
             //Now interpolate properties from objects
 
         }
-        if (!DEBUG_COLORS) {
-            for (Shape sh : addedAuxiliaryObjectsToScene) {
-                sh.mp.interpolateFrom(originalShapeBaseCopy.mp, mobjDestiny.mp, t);
-            }
-        }
+        mobjTransformed.mp.interpolateFrom(originalShapeBaseCopy.mp, mobjDestiny.mp, t);
+        
 
     }
 
@@ -126,7 +124,8 @@ public class PointInterpolationCanonical implements TransformStrategy {
         mobjTransformed.jmpath.clear();
         mobjTransformed.jmpath.addPointsFrom(pa);
         mobjTransformed.mp.copyFrom(mobjDestiny.mp);
-        scene.add(mobjTransformed);
+        mobjTransformed.absoluteSize=mobjDestiny.absoluteSize;
+//        scene.add(mobjTransformed);
         for (Shape shapesToRemove : addedAuxiliaryObjectsToScene) {
             scene.remove(shapesToRemove);
         }

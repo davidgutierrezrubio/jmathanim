@@ -8,9 +8,11 @@ package com.jmathanim.jmathanim;
 import com.jmathanim.Animations.AffineTransform;
 import com.jmathanim.Animations.Animation;
 import com.jmathanim.Animations.ApplyCommand;
+import com.jmathanim.Animations.Concatenate;
 import com.jmathanim.Animations.FadeIn;
 import com.jmathanim.Animations.FadeOut;
 import com.jmathanim.Animations.ShowCreation;
+import com.jmathanim.Animations.Highlight;
 import com.jmathanim.Animations.Transform;
 import com.jmathanim.Animations.TransformStrategies.PointInterpolationCanonical;
 import com.jmathanim.Animations.commands.AbstractCommand;
@@ -84,7 +86,7 @@ public class PointSimple extends Scene2D {
         //       pruebaTransformHomotopy();
         //                pentagonBuild();
         //        pruebaShapeClosedToCanonicalForm();
-        //        pruebaTransformRegularPolygons();
+//                pruebaTransformRegularPolygons();
         //        muchosCuadradosApilados();
         //        pruebaVariosTransforms();
         //        pruebaRelleno();
@@ -93,9 +95,10 @@ public class PointSimple extends Scene2D {
         //        pruebaSimpleLatex();
         //        pruebaSimpleLatexOld();
         //        testAll();
-//        pruebaLaTeXVariasEcuaciones();
-        pruebaSimpleEcuacionEstatica();
+        pruebaLaTeXVariasEcuaciones();
+//        pruebaSimpleEcuacionEstatica();
 //        pruebaSVGImport();
+//        pruebaConcatAnimations();
     }
 
     public void testAll() {
@@ -108,6 +111,19 @@ public class PointSimple extends Scene2D {
         pruebaTransformPathsWithHiddenElements();
         resetScene();
         pruebaTransform2Circles();
+    }
+
+    public void pruebaConcatAnimations() {
+        Shape sh = Shape.square().fillColor(JMColor.BLUE);
+        Shape sh2=sh.copy().shift(1,0);
+        add(sh,sh2);
+        waitSeconds(2);
+        ApplyCommand sc = Commands.scale(sh,sh.getCenter(),1.2,1);
+        sc.initialize();
+        playAnim.highlight(sh);
+        play(new Highlight(sh2));
+        sh.drawColor(JMColor.RED);
+        waitSeconds(2);
     }
 
     public void pentagonBuild() {
@@ -628,26 +644,47 @@ public class PointSimple extends Scene2D {
     }
 
     public void pruebaSimpleEcuacionEstatica() {
-        LaTeXMathObject eq3 = new LaTeXMathObject("$$x=8$$");
-        eq3.fillAlpha(0);
-        add(eq3.scale(5));
+        LaTeXMathObject eq3 = new LaTeXMathObject("$$\\int_0^\\infty \\exp(-x)=1$$");
+        camera.setGaps(.1, .1);
+        eq3.setRelativeSize();
+        eq3.get(0).fillAlpha(0);
+        add(eq3);
+//        final Rect boundingBox = eq3.getBoundingBox();
+//        add(Shape.rectangle(boundingBox));
+        camera.zoomToObjects(eq3);
+//        eq3.fillAlpha(0);
+        
         waitSeconds(5);
     }
 
     public void pruebaLaTeXVariasEcuaciones() {
-        LaTeXMathObject eq1 = new LaTeXMathObject("$$x=3$$");
-        LaTeXMathObject eq2 = new LaTeXMathObject("$$x=6$$");
-        LaTeXMathObject eq3 = new LaTeXMathObject("$$x=8$$");
+        LaTeXMathObject eq1 = new LaTeXMathObject("$$\\int_0^\\infty \\exp(-x)\\,dx=1$$");
+        LaTeXMathObject eq2 = new LaTeXMathObject("$$\\int_0^\\infty \\exp(-y)\\,dy=1$$");
+        LaTeXMathObject eq3 = new LaTeXMathObject("$$\\int_0^\\infty \\exp(-z)\\,dz=1$$");
         add(eq1);
-        eq1.setRelativeSize();
-        eq2.setRelativeSize();
-        eq3.setRelativeSize();
+//        eq1.setRelativeSize();
+//        eq2.setRelativeSize();
+//        eq3.setRelativeSize();
         camera.setGaps(.2, .2);
         camera.adjustToObjects(eq1);
         waitSeconds(1);
-        playAnim.transform(eq1.get(2), eq2.get(2), 2);
+        eq1.get(11).fillColor(JMColor.GREEN);
+        eq1.get(8).fillColor(JMColor.GREEN);
+        eq2.get(11).fillColor(JMColor.BLUE);
+        eq2.get(8).fillColor(JMColor.BLUE);
+         eq3.get(11).fillColor(JMColor.RED);
+        eq3.get(8).fillColor(JMColor.RED);
+        Transform tr1 = new Transform(eq1.get(11), eq2.get(11), 2);
+        Transform tr2 = new Transform(eq1.get(8), eq2.get(8), 2);
+        play(tr1,tr2);
         waitSeconds(1);
-        playAnim.transform(eq1.get(2), eq3.get(2), 2);
+         tr1 = new Transform(eq1.get(11), eq3.get(11), 2);
+         tr2 = new Transform(eq1.get(8), eq3.get(8), 2);
+        play(tr1,tr2);
+        waitSeconds(1);
+        playAnim.scaleCamera(2, 2);
+        waitSeconds(1);
+        playAnim.highlight(eq1);
         waitSeconds(1);
     }
 
@@ -1087,7 +1124,7 @@ public class PointSimple extends Scene2D {
         SVGMathObject svg = new SVGMathObject("C:\\media\\bolondro.svg");
         add(svg.get(0));
         svg.get(0).fillColor(JMColor.RED);
-        svg.putAt(new Point(0,0), Anchor.BY_CENTER);
+        svg.putAt(new Point(0, 0), Anchor.BY_CENTER);
         camera.adjustToObjects(svg);
 //        add(svg.shapes.get(1));
 //        add(svg.shapes.get(2));

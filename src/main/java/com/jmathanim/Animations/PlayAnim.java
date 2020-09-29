@@ -108,4 +108,12 @@ public class PlayAnim {
     public void shiftCamera(double x, double y, double runTime) {
         scene.play(Commands.cameraShift(scene.getCamera(), new Vec(x, y), runTime));
     }
+    public void highlight(MathObject mobj)
+    {
+        scene.play(new Highlight(mobj));
+    }
+    public void highlight(MathObject mobj,double runTime)
+    {
+        scene.play(new Highlight(mobj,runTime));
+    }
 }

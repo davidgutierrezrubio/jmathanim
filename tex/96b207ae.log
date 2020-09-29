@@ -1,7 +1,7 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.21 (MiKTeX 20.7) (preloaded format=latex 2020.9.16)  29 SEP 2020 13:35
+This is pdfTeX, Version 3.14159265-2.6-1.40.21 (MiKTeX 20.7) (preloaded format=latex 2020.9.29)  29 SEP 2020 18:38
 entering extended mode
-**C:/Users/David/Documents/NetBeansProjects/jmathanim/tex/50474d3a.tex
-(C:/Users/David/Documents/NetBeansProjects/jmathanim/tex/50474d3a.tex
+**C:/Users/David/Documents/NetBeansProjects/jmathanim/tex/96b207ae.tex
+(C:/Users/David/Documents/NetBeansProjects/jmathanim/tex/96b207ae.tex
 LaTeX2e <2020-02-02> patch level 5
 L3 programming layer <2020-09-03>
 (C:\MiKTeX\tex/latex/standalone\standalone.cls
@@ -75,8 +75,8 @@ File: l3backend-dvips.def 2020-09-01 L3 backend support: dvips
 \g__pdf_backend_link_int=\count182
 \g__pdf_backend_link_sf_int=\count183
 )
-No file 50474d3a.aux.
-\openout1 = `50474d3a.aux'.
+No file 96b207ae.aux.
+\openout1 = `96b207ae.aux'.
 
 LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 2.
 LaTeX Font Info:    ... okay on input line 2.
@@ -98,7 +98,7 @@ LaTeX Font Info:    External font `cmex10' loaded for size
 LaTeX Font Info:    External font `cmex10' loaded for size
 (Font)              <5> on input line 3.
 Preview: Tightpage 0 0 0 0
-[1] (50474d3a.aux) ) 
+[1] (96b207ae.aux) ) 
 Here is how much of TeX's memory you used:
  1025 strings out of 481200
  17151 string characters out of 2921919
@@ -106,7 +106,7 @@ Here is how much of TeX's memory you used:
  16668 multiletter control sequences out of 15000+200000
  535088 words of font info for 29 fonts, out of 3000000 for 9000
  1141 hyphenation exceptions out of 8191
- 36i,1n,60p,260b,95s stack positions out of 5000i,500n,10000p,200000b,50000s
+ 36i,2n,60p,260b,95s stack positions out of 5000i,500n,10000p,200000b,50000s
 
-Output written on C:\Users\David\Documents\NetBeansProjects\jmathanim\tex\50474
-d3a.dvi (1 page, 1600 bytes).
+Output written on C:\Users\David\Documents\NetBeansProjects\jmathanim\tex\96b20
+7ae.dvi (1 page, 1892 bytes).

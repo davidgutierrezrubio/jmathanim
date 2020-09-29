@@ -62,6 +62,9 @@ public class JMColor {
         return new Color((float) r, (float) g, (float) b, (float) alpha);
     }
 
+    public JMColor getInverse(){
+        return new JMColor(1-r, 1-g, 1-b, alpha);
+    }
     public JMColor copy() {
         return new JMColor(r, g, b, alpha);
     }
