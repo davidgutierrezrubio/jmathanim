@@ -68,13 +68,16 @@ public class JMColor {
     public JMColor copy() {
         return new JMColor(r, g, b, alpha);
     }
-
-    public void set(JMColor B) {
-        if (B != null) {
-            r = B.r;
-            g = B.g;
-            b = B.b;
-            alpha = B.alpha;
+/**
+ * Set the RGBA values of those given by the parameter
+ * @param jmcolor The JMColor to copy values from
+ */
+    public void set(JMColor jmcolor) {
+        if (jmcolor != null) {
+            r = jmcolor.r;
+            g = jmcolor.g;
+            b = jmcolor.b;
+            alpha = jmcolor.alpha;
         }
     }
 
@@ -91,4 +94,15 @@ public class JMColor {
         return new JMColor(Math.random(), Math.random(), Math.random(), 1);
     }
 
+    public static JMColor parseColorID(String str)
+    { JMColor resul=null;
+        if (str.startsWith("#"))//Hex
+        {
+            resul=JMColor.hex(str);
+        }
+        
+        return resul;
+    }
+    
+    
 }

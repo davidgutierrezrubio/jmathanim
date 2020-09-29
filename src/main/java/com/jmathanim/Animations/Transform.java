@@ -19,7 +19,6 @@ import com.jmathanim.mathobjects.Shape;
 import com.jmathanim.mathobjects.JMPathPoint;
 import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.Point;
-import com.jmathanim.mathobjects.Segment;
 import java.awt.Color;
 import java.util.ArrayList;
 
@@ -112,7 +111,7 @@ public class Transform extends Animation {
 
         //Segment & Segment
         method = METHOD_INTERPOLATE_POINT_BY_POINT;//Default method if not specified
-        if ((mobjTransformed instanceof Segment) && (mobjDestiny instanceof Segment)) {
+        if ((mobjTransformed.getObjectType() == MathObject.SEGMENT) && (mobjDestiny.getObjectType() == MathObject.SEGMENT)) {
             method = METHOD_HOMOTOPY_TRANSFORM;
             shouldOptimizePathsFirst = true;
             methodTextOutput = "Transform method: Homotopy";

@@ -23,14 +23,14 @@ public class MathObjectDrawingProperties {
 
     public final JMColor drawColor;
     public final JMColor fillColor;
-    public Double thickness;
+    public Double thickness=1d;
     //If false, thickness is computed to be a percentage of the width
     //to ensure zoom or resolution doesn't affect the result
-    public Boolean absoluteThickness;
-    public Integer dashStyle;
+    public Boolean absoluteThickness=false;
+    public Integer dashStyle=1;
 
     public MathObjectDrawingProperties() {
-        drawColor = new JMColor(0, 0, 0, 0);
+        drawColor = new JMColor(1, 1, 1, 1);
         fillColor = new JMColor(0, 0, 0, 0);
     }
 

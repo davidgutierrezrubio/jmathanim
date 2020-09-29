@@ -66,11 +66,11 @@ public class Shape extends MathObject {
         for (JMPathPoint p : vertices) {
             jmpath.addJMPoint(p);
         }
-        if (close) {
-            jmpath.close();
-        } else {
-            jmpath.open();
-        }
+//        if (close) {
+//            jmpath.close();
+//        } else {
+//            jmpath.open();
+//        }
 
         jmpath.generateControlPoints();
         needsRecalcControlPoints = false;
@@ -170,9 +170,6 @@ public class Shape extends MathObject {
     @Override
     public void draw(Renderer r) {
 
-        r.setBorderColor(mp.drawColor);
-        r.setFillColor(mp.fillColor);
-        r.setStroke(this);
         if (absoluteSize) {
             r.drawAbsoluteCopy(this, getAbsoluteAnchorPoint().v);
         } else {
@@ -248,6 +245,19 @@ public class Shape extends MathObject {
     }
 
     //Static methods to build most commons shapes
+    public static Shape segment(Point A, Point B) {
+        Shape obj = new Shape();
+        JMathAnimConfig.getConfig().getScene();
+        JMPathPoint p1 = JMPathPoint.lineTo(A);
+        p1.isThisSegmentVisible = false;
+        JMPathPoint p2 = JMPathPoint.lineTo(B);
+        obj.jmpath.addJMPoint(p1, p2);
+        obj.setObjectType(SEGMENT);
+        return obj;
+    }
+    public static Shape line(Point A, Point B) {
+        return new Line(A,B);
+    }
     public static Shape rectangle(Point A, Point B) {
         Shape obj = new Shape();
         JMathAnimConfig.getConfig().getScene();
@@ -256,8 +266,16 @@ public class Shape extends MathObject {
         JMPathPoint p3 = JMPathPoint.lineTo(B);
         JMPathPoint p4 = JMPathPoint.lineTo(A.v.x, B.v.y);
         obj.jmpath.addJMPoint(p1, p2, p3, p4);
-        obj.jmpath.close();
         obj.setObjectType(RECTANGLE);
+        return obj;
+    }
+
+    public static Shape polygon(Point... points) {
+        Shape obj = new Shape();
+        for (Point newPoint : points) {
+            JMPathPoint p = JMPathPoint.lineTo(newPoint);
+            obj.getPath().addJMPoint(p);
+        }
         return obj;
     }
 
@@ -273,10 +291,9 @@ public class Shape extends MathObject {
             Vec moveVector = new Vec(side * Math.cos(alpha), side * Math.sin(alpha));
             newPoint = newPoint.add(moveVector);
             JMPathPoint p = JMPathPoint.lineTo(newPoint);
-            obj.jmpath.addJMPoint(p);
+            obj.getPath().addJMPoint(p);
         }
         obj.setObjectType(REGULAR_POLYGON);
-        obj.jmpath.close();
         return obj;
     }
 
@@ -316,6 +333,10 @@ public class Shape extends MathObject {
 //        obj.jmpath.close();
         obj.setObjectType(CIRCLE);
         return obj;
+    }
+    public static Shape circle(Point center,double radius)
+    {
+        return circle().scale(radius).shift(center.v);
     }
 
 }

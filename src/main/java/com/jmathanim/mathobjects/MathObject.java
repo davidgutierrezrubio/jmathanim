@@ -15,6 +15,7 @@ import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.updateableObjects.Updateable;
 import java.awt.Color;
+import java.util.HashMap;
 import java.util.HashSet;
 
 /**
@@ -32,6 +33,7 @@ public abstract class MathObject implements Drawable, Updateable, Stateable {
     public static final int ARC = 5;
     public static final int REGULAR_POLYGON = 6;
     public static final int GENERAL_POLYGON = 7;
+    public static final int SEGMENT = 9;
 
     public static final int SLICE_SIMPLE = 1;
     public static final int SLICE_DOUBLE = 2;
@@ -79,7 +81,7 @@ public abstract class MathObject implements Drawable, Updateable, Stateable {
     }
 
     public MathObject(MathObjectDrawingProperties prop) {
-        mp = JMathAnimConfig.getDefaultMP();//Default MP values
+        mp = JMathAnimConfig.getConfig().getDefaultMP();//Default MP values
         mp.digestFrom(prop);//Copy all non-null values from prop
 //        ascendent=new HashSet<>();
         dependent = new HashSet<>();
@@ -351,5 +353,12 @@ public abstract class MathObject implements Drawable, Updateable, Stateable {
 
     public int getLayer() {
         return layer;
+    }
+    public void applyTemplate(String name){
+        HashMap<String, MathObjectDrawingProperties> templates = JMathAnimConfig.getConfig().templates;
+        if (templates.containsKey(name))
+        {
+            mp.digestFrom(templates.get(name));
+        }
     }
 }

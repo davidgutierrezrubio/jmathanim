@@ -14,7 +14,7 @@ import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.Point;
-import com.jmathanim.mathobjects.Segment;
+import com.jmathanim.mathobjects.Shape;
 
 /**
  *
@@ -137,10 +137,10 @@ public class Commands {
             }
         },runtime);
     }//End of homotopy command
-    public static ApplyCommand reflectionByAxis(MathObject object, Segment s,double runtime) {
+    public static ApplyCommand reflectionByAxis(MathObject object, Shape s,double runtime) {
         return new ApplyCommand(new SingleMathObjectCommand(object) {
             double tPrevious;
-            Segment S = s;
+            Shape S = s;
             AffineTransform tr;
 
             @Override

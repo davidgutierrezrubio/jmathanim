@@ -11,9 +11,6 @@ import com.jmathanim.mathobjects.JMPathPoint;
 import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.MultiShapeObject;
 import com.jmathanim.mathobjects.Point;
-import com.jmathanim.mathobjects.Segment;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.apache.commons.math3.linear.Array2DRowRealMatrix;
 import org.apache.commons.math3.linear.LUDecomposition;
 import org.apache.commons.math3.linear.MatrixUtils;
@@ -320,7 +317,7 @@ public class AffineTransform {
 
     }
 
-    public static AffineTransform createReflectionByAxis(Segment s, double alpha) {
+    public static AffineTransform createReflectionByAxis(Shape s, double alpha) {
         Point E1 = s.getJMPoint(0).p;
         Point E2 = s.getJMPoint(1).p;
         AffineTransform canonize = AffineTransform.createDirect2DHomotopy(E1, E2, new Point(0, 0), new Point(0, E2.v.norm()), 1);

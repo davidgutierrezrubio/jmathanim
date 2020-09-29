@@ -386,9 +386,7 @@ public class SVGMathObject extends MultiShapeObject {
                     }
             }
         }
-        if (closeAtTheEnd) {
-            resul.close();
-        }
+       
         return resul;
     }
 

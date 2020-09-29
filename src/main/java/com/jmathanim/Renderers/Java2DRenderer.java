@@ -75,7 +75,7 @@ import javax.swing.plaf.basic.BasicSplitPaneUI;
  */
 public class Java2DRenderer extends Renderer {
 
-    private static final boolean DEBUG_LABELS = true; //Draw label objects
+    private static final boolean DEBUG_LABELS = false; //Draw label objects
     private static final boolean DEBUG_PATH_POINTS = false; //Draw control points and vertices
     private static final boolean PRINT_DEBUG = false; //Draw control points and vertices
     private static final boolean BOUNDING_BOX_DEBUG = false; //Draw bounding boxes
@@ -130,7 +130,7 @@ public class Java2DRenderer extends Renderer {
         finalImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
         debugImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
         g2draw = drawBufferImage.createGraphics();
-        g2debug= debugImage.createGraphics();
+        g2debug = debugImage.createGraphics();
         g2dFinalImage = finalImage.createGraphics();
         rh = new RenderingHints(
                 RenderingHints.KEY_ANTIALIASING,
@@ -144,8 +144,9 @@ public class Java2DRenderer extends Renderer {
         parentScene = JMathAnimConfig.getConfig().getScene();
 
         //Proofs
-        if (cnf.backGroundImage!=null)
-        img = Toolkit.getDefaultToolkit().getImage(cnf.backGroundImage);
+        if (cnf.backGroundImage != null) {
+            img = Toolkit.getDefaultToolkit().getImage(cnf.backGroundImage);
+        }
 //        This tracker waits for image to be fully loaded
         MediaTracker tracker = new MediaTracker(new JLabel());
         tracker.addImage(img, 1);
@@ -243,7 +244,7 @@ public class Java2DRenderer extends Renderer {
     @Override
     public void drawCircle(double x, double y, double radius) {
 
-        g2draw.setColor(borderColor.getColor());
+//        g2draw.setColor(borderColor.getColor());
         double mx = x - .5 * radius;
         double my = y + .5 * radius;
         int[] screenx = camera.mathToScreen(mx, my);
@@ -253,7 +254,7 @@ public class Java2DRenderer extends Renderer {
 
     @Override
     public void drawDot(Point p) {
-        setStroke(p);
+        setStroke(g2draw, p);
         int[] xx = camera.mathToScreen(p.v.x, p.v.y);
 
         g2draw.setColor(p.mp.drawColor.getColor());
@@ -266,7 +267,7 @@ public class Java2DRenderer extends Renderer {
         if (cnf.drawShadow) {
             BufferedImage shadowImage = computeShadow(drawBufferImage);
             g2dFinalImage.drawImage(shadowImage, cnf.shadowOffsetX, cnf.shadowOffsetY, null);
-            
+
         }
 
         g2dFinalImage.drawImage(drawBufferImage, 0, 0, null);
@@ -393,7 +394,7 @@ public class Java2DRenderer extends Renderer {
             }
 
             Kernel kernel = new Kernel(dimension, dimension, k);
-            ConvolveShadowOp = new ConvolveOp(kernel,ConvolveOp.EDGE_ZERO_FILL,rh);
+            ConvolveShadowOp = new ConvolveOp(kernel, ConvolveOp.EDGE_ZERO_FILL, rh);
         }
     }
 
@@ -462,8 +463,7 @@ public class Java2DRenderer extends Renderer {
 
     }
 
-    @Override
-    public void setStroke(MathObject obj) {
+    public void setStroke(Graphics2D g2d, MathObject obj) {
         final double thickness = obj.mp.getThickness(this);
         int strokeSize;
         if (!obj.mp.absoluteThickness) {
@@ -475,17 +475,17 @@ public class Java2DRenderer extends Renderer {
         switch (obj.mp.dashStyle) {
             case MathObjectDrawingProperties.SOLID:
                 BasicStroke basicStroke = new BasicStroke(strokeSize, CAP_ROUND, JOIN_ROUND);
-                g2draw.setStroke(basicStroke);
+                g2d.setStroke(basicStroke);
                 break;
             case MathObjectDrawingProperties.DASHED:
                 float[] dashedPattern = {5.0f * strokeSize, 2.0f * strokeSize};
                 Stroke dashedStroke = new BasicStroke(strokeSize, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND, 10.0f, dashedPattern, 1.0f);
-                g2draw.setStroke(dashedStroke);
+                g2d.setStroke(dashedStroke);
                 break;
             case MathObjectDrawingProperties.DOTTED:
                 float[] dottedPattern = {1f, 2.0f * strokeSize};
                 Stroke dottedStroke = new BasicStroke(strokeSize, BasicStroke.CAP_SQUARE, BasicStroke.JOIN_ROUND, 10.0f, dottedPattern, 1.0f);
-                g2draw.setStroke(dottedStroke);
+                g2d.setStroke(dottedStroke);
                 break;
         }
 
@@ -516,13 +516,14 @@ public class Java2DRenderer extends Renderer {
             path = createPathFromJMPath(mobj, cam);
 
             if (mobj.mp.isFilled()) {
-                g2draw.setPaint(mobj.mp.fillColor.getColor());
+                g2draw.setColor(mobj.mp.fillColor.getColor());
                 g2draw.fill(path);
             }
             //Border is always drawed
             g2draw.setColor(mobj.mp.drawColor.getColor());
+            setStroke(g2draw, mobj);
             g2draw.draw(path);
-            setStroke(mobj);
+            
             if (PRINT_DEBUG) {
                 System.out.println("Drawing " + c);
             }
@@ -536,18 +537,16 @@ public class Java2DRenderer extends Renderer {
         JMPath c = mobj.getPath();
         Path2D.Double resul = new Path2D.Double();
         Vec p = c.getJMPoint(0).p.v;
-       
-        
+
         if (DEBUG_PATH_POINTS) {
             debugPathPoint(c.getJMPoint(0), c);
         }
         int[] scr = cam.mathToScreen(p);
-         if (DEBUG_LABELS)
-        {
-            g2debug.setColor(mobj.mp.drawColor.getInverse().getColor());
-            g2debug.fillRect(scr[0]-5, scr[1]-10,15,15);
-            g2debug.setColor(mobj.mp.drawColor.getColor());
+        if (DEBUG_LABELS) {
+            g2debug.setColor(Color.BLACK);
             g2debug.drawString(mobj.label, scr[0], scr[1]);
+            g2debug.setColor(Color.WHITE);
+            g2debug.drawString(mobj.label, scr[0]+2, scr[1]+2);
         }
         resul.moveTo(scr[0], scr[1]);
         //Now I iterate to get the next points

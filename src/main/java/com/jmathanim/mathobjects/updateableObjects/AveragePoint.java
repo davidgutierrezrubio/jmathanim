@@ -3,11 +3,12 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.jmathanim.mathobjects;
+package com.jmathanim.mathobjects.updateableObjects;
 
-import com.jmathanim.mathobjects.updateableObjects.Updateable;
 import com.jmathanim.Utils.Vec;
-import java.util.ArrayList;
+import com.jmathanim.mathobjects.JMPath;
+import com.jmathanim.mathobjects.JMPathPoint;
+import com.jmathanim.mathobjects.Point;
 
 /**
  * This class represents middle point computed from 2 given ones. This class

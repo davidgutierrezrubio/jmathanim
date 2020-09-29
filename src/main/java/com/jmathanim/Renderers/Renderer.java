@@ -21,14 +21,10 @@ import java.awt.Color;
  */
 public abstract class Renderer {
 
-    protected JMColor borderColor;
-    protected JMColor fillColor;
     protected int width;
     protected int height;
 
     public Renderer() {
-        borderColor = JMColor.WHITE;//Default color
-
     }
 
     public abstract void setCamera(Camera c);
@@ -63,21 +59,7 @@ public abstract class Renderer {
         setCameraSize(width, height);
     }
 
-    public JMColor getBorderColor() {
-        return borderColor;
-    }
 
-    public void setBorderColor(JMColor color) {
-        this.borderColor = color;
-    }
-
-    public JMColor getFillColor() {
-        return fillColor;
-    }
-
-    public void setFillColor(JMColor fillColor) {
-        this.fillColor = fillColor;
-    }
 
     abstract public void saveFrame(int frameCount);
 
@@ -88,12 +70,6 @@ public abstract class Renderer {
      */
     abstract public void clear();
 
-    /**
-     * Defines an appropiate stroke, from the Properties of the object to draw
-     *
-     * @param obj MathObject to be drawed
-     */
-    abstract public void setStroke(MathObject obj);
 
     /**
      * Draws the path of a JMPathObject This method will draw most of the

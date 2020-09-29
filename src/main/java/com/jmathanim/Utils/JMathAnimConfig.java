@@ -8,6 +8,10 @@ package com.jmathanim.Utils;
 import com.jmathanim.Cameras.Camera;
 import com.jmathanim.Renderers.Renderer;
 import com.jmathanim.jmathanim.JMathAnimScene;
+import java.io.File;
+import java.util.Dictionary;
+import java.util.HashMap;
+import java.util.HashSet;
 
 /**
  * Stores all the data related to global configuration, to be accessed from any
@@ -17,18 +21,7 @@ import com.jmathanim.jmathanim.JMathAnimScene;
  */
 public class JMathAnimConfig {
 
-    public static MathObjectDrawingProperties getDefaultMP() {
-        MathObjectDrawingProperties defaultMP = new MathObjectDrawingProperties();
-        //Default, boring values
-        defaultMP.drawColor.set(JMColor.WHITE);
-        defaultMP.fillColor.set(JMColor.GRAY);
-        defaultMP.setFillAlpha(0);//No filling by default
-        defaultMP.thickness = 1d;
-        defaultMP.dashStyle = MathObjectDrawingProperties.SOLID;
-        defaultMP.absoluteThickness = false;
-        return defaultMP;
-    }
-
+    public File resourcesDir;
     /**
      * Width of media screen. Typically 800 or 1920.
      */
@@ -50,6 +43,7 @@ public class JMathAnimConfig {
 
     public boolean createMovie;
     public boolean showPreview;
+    public final HashMap<String,MathObjectDrawingProperties> templates;
 
     public static JMathAnimConfig getConfig() {
         if (singletonConfig == null) {
@@ -61,33 +55,34 @@ public class JMathAnimConfig {
     //Background color, default black
     private JMColor backgroundColor = JMColor.BLACK;
     public boolean delay = true;
-    
+
     //Shadow parameters
     /**
      * If true, draw a shadow of objects over the background image
      */
-    public boolean drawShadow=false;
+    public boolean drawShadow = false;
     /**
-     * Amount of blurring. Bigger es more blurred (and more cpu expensive)
-     * a value of 0 means no blurring
+     * Amount of blurring. Bigger es more blurred (and more cpu expensive) a
+     * value of 0 means no blurring
      */
-    public int shadowKernelSize=10;
+    public int shadowKernelSize = 10;
     /**
      * XOffset for shadow
      */
-    public int shadowOffsetX=5;
+    public int shadowOffsetX = 5;
     /**
      * YOffset for shadow
      */
-    public int shadowOffsetY=5;
+    public int shadowOffsetY = 5;
     /**
-     * alpha shadow multiplier. A value of .5 lets alpha shadow in 50% 
+     * alpha shadow multiplier. A value of .5 lets alpha shadow in 50%
      */
-    public float alphaShadowMultiplier=1f;//TODO: Doesn't work as expected
-    public String backGroundImage=null;//"c:\\media\\hoja.jpg"
-    
+    public float alphaShadowMultiplier = 1f;//TODO: Doesn't work as expected
+    public String backGroundImage = null;//"c:\\media\\hoja.jpg"
 
     private JMathAnimConfig() {//Private constructor
+        templates=new HashMap<>();
+        setDefaultMP();//Load "default" drawing style in dictionary
     }
 
     /**
@@ -163,6 +158,26 @@ public class JMathAnimConfig {
 
     public void setShowPreviewWindow(boolean showPreviewWindow) {
         this.showPreview = showPreviewWindow;
+    }
+
+    //MathObjectDrawingProperties
+    /**
+     * Set default values, in case no xml config file is loaded
+     */
+    public final void setDefaultMP() {
+        MathObjectDrawingProperties defaultMP = new MathObjectDrawingProperties();
+        //Default, boring values
+        defaultMP.drawColor.set(JMColor.WHITE);
+        defaultMP.fillColor.set(JMColor.GRAY);
+        defaultMP.setFillAlpha(0);//No filling by default
+        defaultMP.thickness = 1d;
+        defaultMP.dashStyle = MathObjectDrawingProperties.SOLID;
+        defaultMP.absoluteThickness = false;
+        templates.put("default", defaultMP);
+    }
+
+    public MathObjectDrawingProperties getDefaultMP() {
+        return templates.get("default");
     }
 
 }

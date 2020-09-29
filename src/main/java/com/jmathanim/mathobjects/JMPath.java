@@ -80,13 +80,6 @@ public class JMPath implements Updateable, Stateable {
         this.tension = tension;
     }
 
-    public void close() {
-        jmPathPoints.get(0).isThisSegmentVisible = true;
-    }
-
-    public void open() {
-        jmPathPoints.get(0).isThisSegmentVisible = false;
-    }
 
     public void addPoint(Point... points) {
         for (Point p : points) {

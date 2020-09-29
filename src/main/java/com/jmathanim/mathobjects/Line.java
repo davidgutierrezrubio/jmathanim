@@ -15,19 +15,12 @@ import com.jmathanim.Utils.Vec;
  *
  * @author David Gutiérrez Rubio <davidgutierrezrubio@gmail.com>
  */
-public class Line extends Segment {
+public class Line extends Shape {
 
     final JMPathPoint bp1, bp2;
-
+    final Point p1,p2;
     
-    /**
-     * Creates a Line that contains the given Segment 
-     * @param s 
-     */
-    public Line(Segment s)
-    {
-        this(s.p1,s.p2);
-    }
+    
     /**
      * Creates a line that passes through p with direction v
      *
@@ -49,7 +42,9 @@ public class Line extends Segment {
      * @param p2
      */
     public Line(Point p1, Point p2, MathObjectDrawingProperties mp) {
-        super(p1, p2, mp);
+        super(mp);
+        this.p1=p1;
+        this.p2=p2;
         jmpath.clear(); //Super constructor adds p1, p2. Delete them
         bp1 = new JMPathPoint(new Point(0, 0), true, JMPathPoint.TYPE_VERTEX);//trivial boundary points, just to initialize objects
         bp2 = new JMPathPoint(new Point(0, 0), true, JMPathPoint.TYPE_VERTEX);//trivial boundary points, just to initialize objects

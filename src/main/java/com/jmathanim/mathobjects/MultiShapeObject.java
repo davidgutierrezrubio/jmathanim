@@ -116,9 +116,6 @@ public class MultiShapeObject extends MathObject {
         int n = 0;
         for (Shape jmp : shapes) {
             if (jmp.visible) {
-                r.setBorderColor(jmp.mp.drawColor);
-                r.setFillColor(jmp.mp.fillColor);
-                r.setStroke(jmp);
                 if (absoluteSize) {
                     r.drawAbsoluteCopy(jmp, getAbsoluteAnchorPoint().v);
                 } else {

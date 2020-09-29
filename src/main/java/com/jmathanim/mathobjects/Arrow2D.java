@@ -54,7 +54,7 @@ public class Arrow2D extends MultiShapeObject {
     public Arrow2D(Point p1, Point p2, SVGMathObject svg) {
         this.p1 = p1;
         this.p2 = p2;
-        shapes.add(new Segment(p1, p2));
+        shapes.add(Shape.segment(p1, p2));
         this.arrowHead = svg;
 
         arrowHead.drawColor(shapes.get(0).mp.drawColor);

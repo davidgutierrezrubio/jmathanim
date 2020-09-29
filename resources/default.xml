@@ -1,0 +1,28 @@
+<JMathAnimConfig>
+    <video>
+        <size width="800" height="600" fps="30"/>
+        <createMovie>false</createMovie>
+        <showPreviewWindow>true</showPreviewWindow>
+    </video>
+    <background>
+        <color>#192841</color>
+        <shadows>false</shadows>
+        <image></image>
+    </background>
+    <templates>
+        <template name="default">
+            <drawColor>#FFFFFFFF</drawColor>
+            <fillColor>#FF000000</fillColor>
+            <thickness>1</thickness>
+            <dashStyle>1</dashStyle>
+            <absoluteThickness>false</absoluteThickness>
+        </template>
+        <template name="rojo">
+            <drawColor>#FF0000FF</drawColor>
+            <fillColor>#FF000000</fillColor>
+            <thickness>4</thickness>
+            <dashStyle>1</dashStyle>
+            <absoluteThickness>false</absoluteThickness>
+        </template>
+    </templates>
+</JMathAnimConfig>
