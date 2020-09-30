@@ -56,6 +56,7 @@ public class Transform extends Animation {
 
     @Override
     public void initialize() {
+        System.out.println("Before: "+mobjTransformed.getPath());
         //Determine optimal transformation
 
         //Should use an homotopy instead of point-to-point interpolation 
@@ -71,6 +72,7 @@ public class Transform extends Animation {
         //Variable strategy should have proper strategy to transform
         //If method is null means that user didn't force one
         strategy.prepareObjects(mobjTransformed, mobjDestiny);
+        System.out.println("After: "+mobjTransformed.getPath());
     }
 
     /**

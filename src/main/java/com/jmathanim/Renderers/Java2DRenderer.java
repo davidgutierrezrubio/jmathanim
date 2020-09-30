@@ -525,8 +525,9 @@ public class Java2DRenderer extends Renderer {
             path = createPathFromJMPath(mobj, cam);
 
             if (mobj.mp.isFilled()) {
+                Path2D.Double pathToFill = createPathFromJMPath(mobj, mobj.getPath().allVisible(),cam);
                 g2draw.setColor(mobj.mp.fillColor.getColor());
-                g2draw.fill(path);
+                g2draw.fill(pathToFill);
             }
             //Border is always drawed
             g2draw.setColor(mobj.mp.drawColor.getColor());
@@ -543,7 +544,10 @@ public class Java2DRenderer extends Renderer {
     }
 
     public Path2D.Double createPathFromJMPath(Shape mobj, Camera2D cam) {
-        JMPath c = mobj.getPath();
+        return createPathFromJMPath(mobj, mobj.getPath(), cam);
+    }
+
+    public Path2D.Double createPathFromJMPath(Shape mobj, JMPath c, Camera2D cam) {
         Path2D.Double resul = new Path2D.Double();
         Vec p = c.getJMPoint(0).p.v;
 

@@ -657,9 +657,9 @@ public class JMPath implements Updateable, Stateable {
     }
 
     /**
-     * Remove all hidden points followed by another hidden point
-     * This case may lead to 0-length segments, which can cause errors
-     * when transforming, so these (unnecessary) points are removed.
+     * Remove all hidden points followed by another hidden point This case may
+     * lead to 0-length segments, which can cause errors when transforming, so
+     * these (unnecessary) points are removed.
      */
     public void removeConsecutiveHiddenVertices() {
         ArrayList<JMPathPoint> toRemove = new ArrayList<>();
@@ -673,4 +673,19 @@ public class JMPath implements Updateable, Stateable {
         jmPathPoints.removeAll(toRemove);
     }
 
+    /**
+     * Returns a path with all points visible. This is used mainly for filling
+     * it properly
+     *
+     * @return A raw copy of the path with all points visible
+     */
+    public JMPath allVisible() {
+        JMPath resul = new JMPath();
+        for (JMPathPoint p : jmPathPoints) {
+            JMPathPoint pNew = p.copy();
+            pNew.isThisSegmentVisible = true;
+            resul.addJMPoint(pNew);
+        }
+        return resul;
+    }
 }

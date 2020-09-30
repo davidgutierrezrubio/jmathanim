@@ -175,11 +175,14 @@ public class PointSimple extends Scene2D {
         sh.jmpath.addJMPoint(new JMPathPoint(new Point(1, 1), true, JMPathPoint.TYPE_VERTEX));
         sh.jmpath.addJMPoint(new JMPathPoint(new Point(.6, 1.2), false, JMPathPoint.TYPE_VERTEX));
         sh.jmpath.addJMPoint(new JMPathPoint(new Point(-.2, .4), true, JMPathPoint.TYPE_VERTEX));
-
-        Shape sq = Shape.square();
-        add(sh.scale(.5, .5).shift(-1, 0).drawColor(JMColor.RED), sq);
-        waitSeconds(1);
+        sh.jmpath.removeConsecutiveHiddenVertices();
+        Shape sq = Shape.square().template("solidred");
+        
+        add(sh.scale(.5, .5).shift(-1, 0).template("solidblue"));
+        Shape sh2=sh.copy();
+        waitSeconds(3);
         playAnim.transform(sh, sq, 3);
+        playAnim.transform(sh, sh2, 3);
         waitSeconds(2);
     }
 
