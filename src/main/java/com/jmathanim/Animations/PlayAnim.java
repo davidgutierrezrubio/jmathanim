@@ -30,17 +30,17 @@ public class PlayAnim {
     }
 
     public void fadein(MathObject obj, double runTime) {
-        scene.play(new FadeIn(obj, runTime));
+        scene.playAnimation(new FadeIn(obj, runTime));
     }
 
     //Convenience methods
     //This methods allow easy and fast ways to shift, rotate, and scale objects
     public void shift(MathObject obj, double dx, double dy, double runTime) {
-        scene.play(Commands.shift(obj, dx, dy, runTime));
+        scene.playAnimation(Commands.shift(obj, dx, dy, runTime));
     }
 
     public void shift(MathObject obj, Vec v, double runTime) {
-        scene.play(Commands.shift(obj, v, runTime));
+        scene.playAnimation(Commands.shift(obj, v, runTime));
     }
 
     public void scale(MathObject obj, Point center, double sc, double runTime) {
@@ -48,31 +48,29 @@ public class PlayAnim {
     }
 
     public void scale(MathObject obj, Point center, double scx, double scy, double scz, double runTime) {
-        scene.play(Commands.scale(obj, center, scx, scy, scz, runTime));
+        scene.playAnimation(Commands.scale(obj, center, scx, scy, scz, runTime));
     }
 
     public void rotate(MathObject obj, double angle, double runTime) {
-        scene.play(Commands.rotate(obj, obj.getCenter(), angle, runTime));
+        scene.playAnimation(Commands.rotate(obj, obj.getCenter(), angle, runTime));
     }
 
     public void rotate(MathObject obj, Point center, double angle, double runTime) {
-        scene.play(Commands.rotate(obj, center, angle, runTime));
+        scene.playAnimation(Commands.rotate(obj, center, angle, runTime));
     }
 
     public void transform(Shape obj1, Shape obj2, double runTime) {
-        scene.play(new Transform(obj1, obj2, runTime));
+        scene.playAnimation(new Transform(obj1, obj2, runTime));
     }
 
-     public void adjustToObjects(ArrayList<MathObject> objs, double runTime) {
+    public void adjustToObjects(ArrayList<MathObject> objs, double runTime) {
         Rect r = scene.getCamera().getMathView();
         for (MathObject obj : objs) {
             r = r.union(obj.getBoundingBox().addGap(.1, .1));
         }
         zoomToRect(r, runTime);
     }
-    
-    
-    
+
     public void zoomToObjects(ArrayList<MathObject> objs, double runTime) {
         Rect r = objs.get(0).getBoundingBox();
         for (MathObject obj : objs) {
@@ -82,7 +80,7 @@ public class PlayAnim {
     }
 
     public void zoomToRect(Camera cam, Rect r, double runTime) {
-        scene.play(Commands.cameraFocusToRect(cam, r, runTime));
+        scene.playAnimation(Commands.cameraFocusToRect(cam, r, runTime));
     }
 
     public void zoomToRect(Rect r, double runTime) {
@@ -94,26 +92,42 @@ public class PlayAnim {
     }
 
     public void scaleCamera(Camera cam, double scale, double runTime) {
-        scene.play(Commands.cameraFocusToRect(cam, cam.getMathView().scaled(scale, scale), runTime));
+        scene.playAnimation(Commands.cameraFocusToRect(cam, cam.getMathView().scaled(scale, scale), runTime));
     }
 
     public void shiftCamera(Camera cam, Vec v, double runTime) {
-        scene.play(Commands.cameraShift(cam, v, runTime));
+        scene.playAnimation(Commands.cameraShift(cam, v, runTime));
     }
 
     public void shiftCamera(Vec v, double runTime) {
-        scene.play(Commands.cameraShift(scene.getCamera(), v, runTime));
+        scene.playAnimation(Commands.cameraShift(scene.getCamera(), v, runTime));
     }
 
     public void shiftCamera(double x, double y, double runTime) {
-        scene.play(Commands.cameraShift(scene.getCamera(), new Vec(x, y), runTime));
+        scene.playAnimation(Commands.cameraShift(scene.getCamera(), new Vec(x, y), runTime));
     }
-    public void highlight(MathObject mobj)
-    {
-        scene.play(new Highlight(mobj));
+
+    public void highlight(MathObject mobj) {
+        scene.playAnimation(new Highlight(mobj));
     }
-    public void highlight(MathObject mobj,double runTime)
-    {
-        scene.play(new Highlight(mobj,runTime));
+
+    public void highlight(MathObject mobj, double runTime) {
+        scene.playAnimation(new Highlight(mobj, runTime));
+    }
+
+    public void growIn(MathObject mobj, double runTime) {
+        scene.playAnimation(Commands.growIn(mobj, runTime));
+    }
+
+    public void growIn(MathObject mobj) {
+        growIn(mobj, 1);
+    }
+
+    public void shrinkOut(MathObject mobj, double runTime) {
+        scene.playAnimation(Commands.shrinkOut(mobj, runTime));
+    }
+
+    public void shrinkOut(MathObject mobj) {
+        shrinkOut(mobj, 1);
     }
 }

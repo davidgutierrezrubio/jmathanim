@@ -171,6 +171,25 @@ public class MultiShapeObject extends MathObject {
     }
 
     @Override
+    public void restoreState() {
+        super.restoreState(); 
+        for (Shape o : shapes) {
+            o.restoreState();
+        }
+    }
+
+    @Override
+    public void saveState() {
+        super.saveState(); 
+        for (Shape o : shapes) {
+            o.saveState();
+        }
+    }
+
+    
+    
+    
+    @Override
     public void unregisterChildrenToBeUpdated(JMathAnimScene scene) {
         for (Shape o : shapes) {
             o.unregisterChildrenToBeUpdated(scene);

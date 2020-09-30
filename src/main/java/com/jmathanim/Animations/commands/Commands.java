@@ -10,6 +10,7 @@ import com.jmathanim.Animations.Animation;
 import com.jmathanim.Animations.ApplyCommand;
 import com.jmathanim.Cameras.Camera;
 import com.jmathanim.Utils.JMColor;
+import com.jmathanim.Utils.JMathAnimConfig;
 import com.jmathanim.Utils.MathObjectDrawingProperties;
 import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.Vec;
@@ -17,6 +18,7 @@ import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.Point;
 import com.jmathanim.mathobjects.Shape;
+import static java.lang.Math.PI;
 
 /**
  *
@@ -185,9 +187,8 @@ public class Commands {
             }
         }, runtime);
     }//End of setMP command
-    
-    
-    public static ApplyCommand setTemplate(MathObject object,String templateName,double runtime){
+
+    public static ApplyCommand setTemplate(MathObject object, String templateName, double runtime) {
         return setMP(object, MathObjectDrawingProperties.createFromTemplate(templateName), runtime);
     }
 
@@ -225,4 +226,59 @@ public class Commands {
 
     }
 
+    public static ApplyCommand shrinkOut(MathObject object, double runtime) {
+        return shrinkOut(object, 0, runtime);
+    }
+
+    public static ApplyCommand shrinkOut(MathObject object, double angle, double runtime) {
+        return new ApplyCommand(new SingleMathObjectCommand(object) {
+
+            @Override
+            public void initialize() {
+                mathObject.saveState();
+            }
+
+            @Override
+            public void execute(double t) {
+                mathObject.restoreState();
+                mathObject.scale(1 - t);
+                mathObject.drawAlpha(mathObject.mp.drawColor.alpha * (1 - t));
+                mathObject.fillAlpha(mathObject.mp.fillColor.alpha * (1 - t));
+                mathObject.rotate(t * angle);
+            }
+
+            @Override
+            public void finish() {
+                JMathAnimConfig.getConfig().getScene().remove(mathObject);
+            }
+        }, runtime);
+    }//End of shrinkOut command
+
+    public static ApplyCommand growIn(MathObject object, double runtime) {
+        return growIn(object, 0, runtime);
+    }
+
+    public static ApplyCommand growIn(MathObject object, double angle, double runtime) {
+        return new ApplyCommand(new SingleMathObjectCommand(object) {
+
+            @Override
+            public void initialize() {
+                mathObject.saveState();
+            }
+
+            @Override
+            public void execute(double t) {
+                mathObject.restoreState();
+                mathObject.scale(t);
+                mathObject.drawAlpha(mathObject.mp.drawColor.alpha * t);
+                mathObject.fillAlpha(mathObject.mp.fillColor.alpha * t);
+                mathObject.rotate((1 - t) * angle);
+            }
+
+            @Override
+            public void finish() {
+                execute(1);
+            }
+        }, runtime);
+    }//End of growIn command
 }

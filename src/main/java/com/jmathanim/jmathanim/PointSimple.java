@@ -34,10 +34,7 @@ import com.jmathanim.mathobjects.Point;
 import com.jmathanim.mathobjects.SVGMathObject;
 import com.jmathanim.mathobjects.updateableObjects.AnchoredMathObject;
 import com.jmathanim.mathobjects.updateableObjects.TransformedJMPath;
-import java.lang.reflect.Field;
 import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
@@ -49,8 +46,8 @@ public class PointSimple extends Scene2D {
 
     @Override
     public void setupSketch() {
-//        ConfigLoader.parseFile("preview.xml");
-        ConfigLoader.parseFile("production.xml");
+        ConfigLoader.parseFile("preview.xml");
+//        ConfigLoader.parseFile("production.xml");
         ConfigLoader.parseFile("light.xml");
     }
 
@@ -73,20 +70,30 @@ public class PointSimple extends Scene2D {
 //        pruebaSVGImport();
 //        pruebaConcatAnimations();
 //        arcoYCirculo();
-        vectores();
+//        vectores();
+//        pruebaShrinkOut();
+        muchosCuadradosApilados();
+
+    }
+
+    public void pruebaShrinkOut() {
+        Shape sq = Shape.square().style("solidblue");
+//        add(sq);
+        waitSeconds(1);
+        playAnimation(Commands.growIn(sq,1));
+        waitSeconds(1);
     }
 
     public void vectores() {
         Point p1 = new Point(0, 0);
         Point p2 = new Point(1, 1);
-        p2.visible=false;
-        Arrow2D ar = Arrow2D.makeSimpleArrow2D(p1, p2, Arrow2D.TYPE_3);
-        Shape c=Shape.circle();
-        add(ar,c);
+        p2.visible = false;
+        Arrow2D ar = Arrow2D.makeSimpleArrow2D(p1, p2, Arrow2D.TYPE_1);
+        Shape c = Shape.circle();
+        add(ar, c);
 //        playAnim.shift(p2, -2, 0,3);
-        for (int n=0;n<=100;n++)
-        {
-            Vec v= c.getPath().getPointAt((n*1d)/100).v;
+        for (int n = 0; n <= 100; n++) {
+            Vec v = c.getPath().getPointAt((n * 1d) / 100).v;
             p2.v.copyFrom(v);
             advanceFrame();
         }
@@ -105,17 +112,17 @@ public class PointSimple extends Scene2D {
     public void pruebaLinea() {
         Point p1 = new Point(0, 0);
         Point p2 = new Point(0, 1);
-        Shape line = Shape.line(p1, p2).template("solidred");
+        Shape line = Shape.line(p1, p2).style("solidred");
         add(line);
         Shape circle = Shape.circle(p1, 1).setLayer(-1);
-        add(circle.template("solidred"));
+        add(circle.style("solidred"));
 
         p1.visible = false;
         p2.visible = false;
-        playAnim.shift(p2, 1, 0, 3);
-        play(Commands.setTemplate(circle, "solidblue", 3));
-        play(Commands.setTemplate(circle, "default", 3));
-        playAnim.shift(p1, 0, 1.5, 3);
+        play.shift(p2, 1, 0, 3);
+        playAnimation(Commands.setTemplate(circle, "solidblue", 3));
+        playAnimation(Commands.setTemplate(circle, "default", 3));
+        play.shift(p1, 0, 1.5, 3);
         waitSeconds(3);
     }
 
@@ -126,8 +133,8 @@ public class PointSimple extends Scene2D {
         waitSeconds(2);
         ApplyCommand sc = Commands.scale(sh, sh.getCenter(), 1.2, 1);
         sc.initialize();
-        playAnim.highlight(sh);
-        play(new Highlight(sh2));
+        play.highlight(sh);
+        playAnimation(new Highlight(sh2));
         sh.drawColor(JMColor.RED);
         waitSeconds(2);
     }
@@ -139,22 +146,22 @@ public class PointSimple extends Scene2D {
         LaTeXMathObject texto = new LaTeXMathObject("Esto es un pentagono");
         texto.setRelativeSize();//TODO: Doesnt show anything
         texto.stackTo(pentagon, Anchor.LEFT);
-        playAnim.transform(pentagon, pentagonDst, 2);
+        play.transform(pentagon, pentagonDst, 2);
         waitSeconds(1);
-        playAnim.zoomToRect(pentagon.getBoundingBox().addGap(.3, .3), 2);
+        play.zoomToRect(pentagon.getBoundingBox().addGap(.3, .3), 2);
         for (Point p : pentagon.jmpath.getPoints()) {
 //            p.thickness(3);
-            playAnim.fadein(p, .3);
+            play.fadein(p, .3);
         }
         waitSeconds(5);
         for (int n = 0; n < 10; n += 2) {
             Shape s = Shape.segment(pentagon.getPoint(n), pentagon.getPoint(n + 2));
             s.thickness(2).drawColor(JMColor.RED);
             s.mp.dashStyle = MathObjectDrawingProperties.DASHED;
-            playAnim.fadein(s, 1);
+            play.fadein(s, 1);
         }
         waitSeconds(2);
-        playAnim.rotate(pentagon, Math.PI / 4, 2);
+        play.rotate(pentagon, Math.PI / 4, 2);
         waitSeconds(1);
     }
 
@@ -168,7 +175,7 @@ public class PointSimple extends Scene2D {
 //        add(reg);
         Transform tr = new Transform(reg, sq, tiempo);
 //        tr.setMethod(Transform.METHOD_INTERPOLATE_POINT_BY_POINT);
-        play(tr);
+        playAnimation(tr);
 //        waitSeconds(tiempo);
     }
 
@@ -193,15 +200,15 @@ public class PointSimple extends Scene2D {
         sh.jmpath.addJMPoint(new JMPathPoint(new Point(.6, 1.2), false, JMPathPoint.TYPE_VERTEX));
         sh.jmpath.addJMPoint(new JMPathPoint(new Point(-.2, .4), true, JMPathPoint.TYPE_VERTEX));
         sh.jmpath.removeConsecutiveHiddenVertices();
-        Shape sq = Shape.square().template("solidred");
-        Shape arc = Shape.arc(Math.PI).template("solidred");
-        play(new ShowCreation(arc, 3));
+        Shape sq = Shape.square().style("solidred");
+        Shape arc = Shape.arc(Math.PI).style("solidred");
+        playAnimation(new ShowCreation(arc, 3));
         waitSeconds(7);
-        add(sh.scale(.5, .5).shift(-1, 0).template("solidblue"));
+        add(sh.scale(.5, .5).shift(-1, 0).style("solidblue"));
         Shape sh2 = sh.copy();
         waitSeconds(3);
-        playAnim.transform(sh, arc, 3);
-        playAnim.transform(sh, sh2, 3);
+        play.transform(sh, arc, 3);
+        play.transform(sh, sh2, 3);
         waitSeconds(2);
     }
 
@@ -219,7 +226,7 @@ public class PointSimple extends Scene2D {
         pa.drawColor(JMColor.GREEN);
         add(pa);
         waitSeconds(3d);
-        play(new ShowCreation(pa, 3d));
+        playAnimation(new ShowCreation(pa, 3d));
         waitSeconds(3d);
         pa.jmpath.jmPathPoints.get(2).isThisSegmentVisible = false;
         waitSeconds(3d);
@@ -258,7 +265,7 @@ public class PointSimple extends Scene2D {
         anims.add(new ShowCreation(c2, 3));
         anims.add(new ShowCreation(c3, 3));
         anims.add(new ShowCreation(c4, 3));
-        play(anims);
+        playAnimation(anims);
         waitSeconds(2);
     }
 
@@ -275,7 +282,7 @@ public class PointSimple extends Scene2D {
         pol2.getJMPoint(3).isCurved = true;
         pol2.getPath().generateControlPoints();
         add(c, pol2);
-        playAnim.scaleCamera(2, 10);
+        play.scaleCamera(2, 10);
         System.out.println("Orientation of circle: " + c.getPath().getOrientation());
         System.out.println("Orientation of polygon: " + pol2.getPath().getOrientation());
 
@@ -285,7 +292,7 @@ public class PointSimple extends Scene2D {
         //        transform.shouldOptimizePathsFirst=false;
 //        transform.forceChangeDirection = true;
         waitSeconds(2);
-        play(transform);
+        playAnimation(transform);
         waitSeconds(3);
     }
 
@@ -332,7 +339,7 @@ public class PointSimple extends Scene2D {
         double tiempo = 2;
         waitSeconds(tiempo);
         Transform tr = new Transform(sq, pol, tiempo * 4);
-        play(tr);
+        playAnimation(tr);
 
         waitSeconds(tiempo);
     }
@@ -347,9 +354,9 @@ public class PointSimple extends Scene2D {
 //        add(sq);
         double tiempo = 2;
         waitSeconds(tiempo);
-        playAnim.transform(pol, sq, tiempo);
+        play.transform(pol, sq, tiempo);
 
-        playAnim.transform(pol, Shape.regularPolygon(8, new Point(0, 0), .3).drawColor(JMColor.GREEN).fillColor(JMColor.RED), tiempo);
+        play.transform(pol, Shape.regularPolygon(8, new Point(0, 0), .3).drawColor(JMColor.GREEN).fillColor(JMColor.RED), tiempo);
         System.out.println("Pol:" + pol);
         waitSeconds(tiempo);
     }
@@ -366,7 +373,7 @@ public class PointSimple extends Scene2D {
 
         for (JMPath pa : canonicalForm.getPaths()) {
             Shape sh1 = new Shape(pa, null);
-            playAnim.shift(sh1, new Vec(-1, 0), tiempo / 2);
+            play.shift(sh1, new Vec(-1, 0), tiempo / 2);
         }
 
         waitSeconds(tiempo);
@@ -384,7 +391,7 @@ public class PointSimple extends Scene2D {
 //        drawControlPoint(circ2, 0);
 //        drawControlPoint(circ2, -1);
         waitSeconds(1);
-        play(new Transform(circ, circ2, 3));
+        playAnimation(new Transform(circ, circ2, 3));
         waitSeconds(2);
     }
 
@@ -394,7 +401,7 @@ public class PointSimple extends Scene2D {
         int anchor = -1;
         ArrayList objectsToZoomAt = new ArrayList();
         for (int n = 0; n < 20; n++) {
-            Shape sq = Shape.circle().drawColor(JMColor.BLACK).fillColor(JMColor.random()).scale(.3);
+            Shape sq = Shape.square().drawColor(JMColor.BLACK).fillColor(JMColor.random()).scale(.3);
             if (previous != null) {
 
                 int kk = (int) (Math.random() * 4);
@@ -406,14 +413,14 @@ public class PointSimple extends Scene2D {
                 anchor = anchors[kk];
 
                 sq.stackTo(previous, anchor);
-                add(sq);
+                playAnimation(Commands.growIn(sq, 1));
                 objectsToZoomAt.add(sq);
                 anchor++;
                 if (anchor > 4) {
                     anchor = 3;
                 }
-                playAnim.adjustToObjects(objectsToZoomAt, 1);
-                waitSeconds(1);
+                play.adjustToObjects(objectsToZoomAt, 1);
+//                waitSeconds(1);
             }
             previous = sq;
         }
@@ -427,7 +434,7 @@ public class PointSimple extends Scene2D {
         add(pol1, pol2);
         camera.adjustToObjects(pol1, pol2);
         waitSeconds(3);
-        playAnim.transform(pol1, pol2, 5);
+        play.transform(pol1, pol2, 5);
         waitSeconds(3);
     }
 
@@ -450,16 +457,16 @@ public class PointSimple extends Scene2D {
             sh.jmpath.addJMPoint(p2.getJMPoint(n));
         }
         ShowCreation anim = new ShowCreation(sh, 3);
-        play(anim);
+        playAnimation(anim);
         waitSeconds(1);
-        playAnim.rotate(p2, centro, Math.PI * .2, 5);
+        play.rotate(p2, centro, Math.PI * .2, 5);
         add(p2.getCenter().drawColor(JMColor.RED));
         waitSeconds(1);
-        playAnim.scale(p2, centro, .40, 2);
+        play.scale(p2, centro, .40, 2);
         waitSeconds(1);
         FadeOut f1 = new FadeOut(p1, 1);
         FadeOut f2 = new FadeOut(p2, 1);
-        play(f1, f2);
+        playAnimation(f1, f2);
         waitSeconds(5);
     }
 
@@ -525,15 +532,15 @@ public class PointSimple extends Scene2D {
         eq3.get(8).fillColor(JMColor.RED);
         Transform tr1 = new Transform(eq1.get(11), eq2.get(11), 2);
         Transform tr2 = new Transform(eq1.get(8), eq2.get(8), 2);
-        play(tr1, tr2);
+        playAnimation(tr1, tr2);
         waitSeconds(1);
         tr1 = new Transform(eq1.get(11), eq3.get(11), 2);
         tr2 = new Transform(eq1.get(8), eq3.get(8), 2);
-        play(tr1, tr2);
+        playAnimation(tr1, tr2);
         waitSeconds(1);
-        playAnim.scaleCamera(2, 2);
+        play.scaleCamera(2, 2);
         waitSeconds(1);
-        playAnim.highlight(eq1);
+        play.highlight(eq1);
         waitSeconds(1);
     }
 
@@ -546,7 +553,7 @@ public class PointSimple extends Scene2D {
         eq1.scale(3);
         eq2.scale(3).shift(1, 0);
         waitSeconds(1);
-        playAnim.transform(eq1.get(0), eq2.get(0), 5);
+        play.transform(eq1.get(0), eq2.get(0), 5);
         waitSeconds(10);
     }
 
@@ -586,9 +593,9 @@ public class PointSimple extends Scene2D {
         Shape x3 = eq3.shapes.get(2);
         Shape x4 = eq4.shapes.get(2);
 
-        play(new Transform(x1, x2, tiempo));
-        play(new Transform(x1, x3, tiempo));
-        play(new Transform(x1, x4, tiempo));
+        playAnimation(new Transform(x1, x2, tiempo));
+        playAnimation(new Transform(x1, x3, tiempo));
+        playAnimation(new Transform(x1, x4, tiempo));
         waitSeconds(3);
     }
 
@@ -608,7 +615,7 @@ public class PointSimple extends Scene2D {
         Transform tr = new Transform(s1, s2, tiempo);
 //        tr.setMethod(Transform.METHOD_INTERPOLATE_POINT_BY_POINT);
 //        tr.shouldOptimizePathsFirst = false;
-        play(tr);
+        playAnimation(tr);
         waitSeconds(10);
     }
 
@@ -703,10 +710,10 @@ public class PointSimple extends Scene2D {
         Transform tr = new Transform(P, sq, 15);
 //        Transform tr = new Transform(sq, P, 15);
         tr.shouldOptimizePathsFirst = false;
-        play(tr);
+        playAnimation(tr);
         Transform tr2 = new Transform(P, P2, 15);
         tr2.setMethod(Transform.METHOD_INTERPOLATE_POINT_BY_POINT);
-        play(tr2);
+        playAnimation(tr2);
         System.out.println("End! " + P.jmpath);
         waitSeconds(20);
     }
@@ -731,7 +738,7 @@ public class PointSimple extends Scene2D {
         registerObjectToBeUpdated(anchor3);
         s1.label = "S1";
         ApplyCommand cmd1 = Commands.rotate(s1, p1, 2 * Math.PI, 20);
-        play(cmd1);
+        playAnimation(cmd1);
     }
 
     void teselacionHexagonos() {
@@ -743,7 +750,7 @@ public class PointSimple extends Scene2D {
         add(hex2);
         Shape lado = Shape.segment(hex2.getPoint(0), hex2.getPoint(5));
         ApplyCommand cmd = Commands.reflectionByAxis(hex2, lado, 3);
-        play(cmd);
+        playAnimation(cmd);
 
         int n1 = 0;
         int n2 = 1;
@@ -752,7 +759,7 @@ public class PointSimple extends Scene2D {
 //            lado = new Segment(hex2.getPoint(n1), hex2.getPoint(n2));
             cmd = Commands.rotate(hex2, hex2.getPoint(n), Math.PI * 2 / 3, 1);
             //            SingleMathObjectCommand tr = Commands.homotopy(hex2, hex2.getJMPoint(0).p, hex2.getJMPoint(1).p, hex1.getJMPoint(n).p, hex1.getJMPoint(n+1).p);
-            play(cmd);
+            playAnimation(cmd);
         }
 
         hex2 = gira(hex2, 6);
@@ -791,7 +798,7 @@ public class PointSimple extends Scene2D {
         System.out.println("Rotating " + n);
         hex2 = hex2.copy();
         cmd = Commands.rotate(hex2, hex2.getPoint(n), Math.PI * 2 / 3, 1);
-        play(cmd);
+        playAnimation(cmd);
         return hex2.copy();
     }
 
@@ -809,12 +816,12 @@ public class PointSimple extends Scene2D {
         add(rect, sq);
         waitSeconds(35);
         waitSeconds(35);
-        playAnim.rotate(rect, rect.getCenter(), Math.PI / 3, 5);
+        play.rotate(rect, rect.getCenter(), Math.PI / 3, 5);
 //      
 //        playAnim.transform(sq, sq2, 10);
 //        sq.setObjectType(MathObject.OTHER);
-        playAnim.transform(sq, rect, 40);
-        playAnim.transform(sq, sq3, 10);
+        play.transform(sq, rect, 40);
+        play.transform(sq, sq3, 10);
 //        playAnim.transform(rect, Shape.Circle(), dt);
         waitSeconds(5);
     }
@@ -866,7 +873,7 @@ public class PointSimple extends Scene2D {
         Rect rr = camera.getRectThatContains(pol.getBoundingBox());
         add(Shape.rectangle(rr).drawColor(JMColor.RED));
 
-        playAnim.zoomToRect(pol.getBoundingBox(), 3 * timeScale);
+        play.zoomToRect(pol.getBoundingBox(), 3 * timeScale);
 
 //        double yCenter = camera.getMathBoundaries().getCenter().v.y;
 //        for (double dx = 0; dx < 2; dx += .01) {
@@ -874,12 +881,12 @@ public class PointSimple extends Scene2D {
 //            advanceFrame();
 //        }
         waitSeconds(3 * timeScale);
-        playAnim.scaleCamera(1.2, 10);
+        play.scaleCamera(1.2, 10);
 
-        playAnim.rotate(pol, pol.getCenter(), Math.PI / 3, 10);
-        playAnim.scaleCamera(.9, 10);
-        playAnim.scaleCamera(2, 10);
-        playAnim.scaleCamera(5, 10);
+        play.rotate(pol, pol.getCenter(), Math.PI / 3, 10);
+        play.scaleCamera(.9, 10);
+        play.scaleCamera(2, 10);
+        play.scaleCamera(5, 10);
         waitSeconds(3 * timeScale);
     }
 
@@ -907,7 +914,7 @@ public class PointSimple extends Scene2D {
 //        JMPath uno = s.jmpath;
 //        JMPath dos = svg.shapes.get(0).jmpath;
         waitSeconds(3);
-        playAnim.transform(svg.get(0), s, 26);
+        play.transform(svg.get(0), s, 26);
         waitSeconds(3);
 //        playAnim.transform(svg.get(0),s, 100); 
 
@@ -947,7 +954,7 @@ public class PointSimple extends Scene2D {
 
         add(Arrow2D.makeSimpleArrow2D(new Point(-1, .5), p, Arrow2D.TYPE_2).scale(3));
 
-        playAnim.shift(p, new Vec(0, 2), 15);//TODO: How to easily specify that don't show this object?
+        play.shift(p, new Vec(0, 2), 15);//TODO: How to easily specify that don't show this object?
         waitSeconds(30);
     }
 

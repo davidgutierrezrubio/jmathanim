@@ -19,7 +19,7 @@ import java.util.ArrayList;
  * @author David Gutierrez Rubio davidgutierrezrubio@gmail.com
  */
 public abstract class JMathAnimScene {
-
+    public static final double PI = 3.14159265358979323846;
     String[] DEFAULT_CONFIG = {
         "WIDTH", "800",
         "HEIGHT", "600",
@@ -34,7 +34,7 @@ public abstract class JMathAnimScene {
     protected double fps;
     protected double dt;
     public JMathAnimConfig conf;
-    protected final PlayAnim playAnim;
+    protected final PlayAnim play;
     public long nanoTime;
     public long previousNanoTime;
 
@@ -43,7 +43,7 @@ public abstract class JMathAnimScene {
         conf = JMathAnimConfig.getConfig();
         conf.setLowQuality();//by default, set low quality
         objectsToBeUpdated = new ArrayList<>();
-        playAnim = new PlayAnim(this);
+        play = new PlayAnim(this);//Convenience class for fast access to common animations
     }
 
     /**
@@ -165,12 +165,12 @@ public abstract class JMathAnimScene {
      *
      * @param anims Animations to play
      */
-    public void play(Animation... anims) {
+    public void playAnimation(Animation... anims) {
         ArrayList<Animation> animArray = new ArrayList<>();
         for (Animation anim : anims) {
             animArray.add(anim);
         }
-        this.play(animArray);
+        this.playAnimation(animArray);
     }
 
     /**
@@ -179,7 +179,7 @@ public abstract class JMathAnimScene {
      *
      * @param anims An ArrayList with Animation objects.
      */
-    public void play(ArrayList<Animation> anims) {
+    public void playAnimation(ArrayList<Animation> anims) {
         for (Animation anim : anims) {
             anim.addObjectsToScene(this); //Add main object if it's not already in the scene.
             anim.initialize();//Perform needed steps immediately before playing

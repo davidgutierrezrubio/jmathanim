@@ -354,7 +354,7 @@ public abstract class MathObject implements Drawable, Updateable, Stateable {
     public int getLayer() {
         return layer;
     }
-    public <T extends MathObject> T template(String name){
+    public <T extends MathObject> T style(String name){
         mp.loadFromTemplate(name);
         return (T) this;
     }
