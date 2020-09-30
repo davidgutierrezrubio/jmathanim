@@ -49,7 +49,9 @@ public class PointSimple extends Scene2D {
 
     @Override
     public void setupSketch() {
-        ConfigLoader.parseFile("default.xml");
+        ConfigLoader.parseFile("preview.xml");
+//        ConfigLoader.parseFile("production.xml");
+        ConfigLoader.parseFile("dark.xml");
     }
 
     @Override
@@ -57,10 +59,9 @@ public class PointSimple extends Scene2D {
         System.out.println("Running sketch...");
         //       pruebaTransformHomotopy();
 //        pentagonBuild();
-        //        pruebaShapeClosedToCanonicalForm();
 //                pruebaTransformRegularPolygons();
         //        muchosCuadradosApilados();
-        //        pruebaVariosTransforms();
+                pruebaTransformPathsWithHiddenElements();
         //        pruebaRelleno();
         //        pruebaSubpathCanon();
         //        pruebaDosPentagonos1Estrella();
@@ -71,22 +72,32 @@ public class PointSimple extends Scene2D {
 //        pruebaSimpleEcuacionEstatica();
 //        pruebaSVGImport();
 //        pruebaConcatAnimations();
-        pruebaLinea();
+//        arcoYCirculo();
     }
 
+    public void arcoYCirculo()
+    {
+        Shape circle=Shape.circle().shift(.7,0);
+        Shape pol=Shape.regularPolygon(5).scale(.3);
+        pol.getPath().getJMPoint(2).isThisSegmentVisible=false;
+        add(circle,pol);
+        waitSeconds(5);
+        
+    }
+    
     public void pruebaLinea()  {
         Point p1 = new Point(0, 0);
         Point p2 = new Point(0, 1);
-        Shape line = Shape.line(p1, p2);
+        Shape line = Shape.line(p1, p2).template("solidred");
         add(line);
-        Shape circle=Shape.circle(p1, 1);
-        add(circle.template("red"));
+        Shape circle=Shape.circle(p1, 1).setLayer(-1);
+        add(circle.template("solidred"));
         
         p1.visible = false;
         p2.visible = false;
         playAnim.shift(p2, 1, 0, 3);
-        line.template("rojo");
-        circle.template("default");
+        play(Commands.setTemplate(circle, "solidblue", 3));
+        play(Commands.setTemplate(circle, "default", 3));
         playAnim.shift(p1, 0, 1.5, 3);
         waitSeconds(3);
     }
@@ -162,7 +173,7 @@ public class PointSimple extends Scene2D {
         sh.jmpath.addJMPoint(new JMPathPoint(new Point(0, 0), true, JMPathPoint.TYPE_VERTEX));
         sh.jmpath.addJMPoint(new JMPathPoint(new Point(1, 0), true, JMPathPoint.TYPE_VERTEX));
         sh.jmpath.addJMPoint(new JMPathPoint(new Point(1, 1), true, JMPathPoint.TYPE_VERTEX));
-        sh.jmpath.addJMPoint(new JMPathPoint(new Point(.6, 1.2), true, JMPathPoint.TYPE_VERTEX));
+        sh.jmpath.addJMPoint(new JMPathPoint(new Point(.6, 1.2), false, JMPathPoint.TYPE_VERTEX));
         sh.jmpath.addJMPoint(new JMPathPoint(new Point(-.2, .4), true, JMPathPoint.TYPE_VERTEX));
 
         Shape sq = Shape.square();

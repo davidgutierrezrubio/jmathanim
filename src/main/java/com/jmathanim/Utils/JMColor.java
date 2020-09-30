@@ -26,6 +26,10 @@ public class JMColor {
 
     public double r, g, b, alpha;
 
+    public JMColor(JMColor c)
+    {
+        set(c);
+    }
     public JMColor(double r, double g, double b, double alpha) {
         this.r = r;
         this.g = g;
@@ -79,7 +83,7 @@ public class JMColor {
      *
      * @param jmcolor The JMColor to copy values from
      */
-    public void set(JMColor jmcolor) {
+    public final void set(JMColor jmcolor) {
         if (jmcolor != null) {
             r = jmcolor.r;
             g = jmcolor.g;
@@ -109,7 +113,7 @@ public class JMColor {
             resul = JMColor.hex(str);
         } else {
             try {
-                Field field = JMColor.class.getField(str);
+                Field field = JMColor.class.getField(str.toUpperCase());
                 resul = (JMColor) field.get(JMColor.class);
             } catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException ex) {
                 JMathAnim.logger.warn("Color {} not recognized ",str);

@@ -42,6 +42,11 @@ public class PointInterpolationCanonical implements TransformStrategy {
         //and be in connected components form.
         this.mobjTransformed = mobjTransformed;
         this.mobjDestiny = mobjDestiny;
+        
+        //Remove consecutive hidden vertices, in case.
+        this.mobjTransformed.getPath().removeConsecutiveHiddenVertices();
+        this.mobjDestiny.getPath().removeConsecutiveHiddenVertices();
+        
         originalShapeBaseCopy = mobjTransformed.copy();
         preparePaths(mobjTransformed.jmpath, mobjDestiny.jmpath);
         scene = JMathAnimConfig.getConfig().getScene();

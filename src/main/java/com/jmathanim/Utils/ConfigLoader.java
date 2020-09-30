@@ -50,11 +50,9 @@ public class ConfigLoader {
                 }
             }
 
-            parseVideoOptions(config, root.getElementsByTagName("video").item(0));
-            parseBackgroundOptions(config, root.getElementsByTagName("background").item(0));
-            final Element item = (Element) root.getElementsByTagName("templates").item(0);
-            System.out.println("Parsing " + item.getNodeName());
-            parseTemplates(config, item);
+            parseVideoOptions(config, root.getElementsByTagName("video"));
+            parseBackgroundOptions(config, root.getElementsByTagName("background"));
+            parseTemplates(config, root.getElementsByTagName("templates"));
 
         } catch (IOException ex) {
             Logger.getLogger(ConfigLoader.class.getName()).log(Level.SEVERE, null, ex);
@@ -65,29 +63,34 @@ public class ConfigLoader {
         }
     }
 
-    public static void parseVideoOptions(JMathAnimConfig config, Node video) {
-        NodeList videoChilds = video.getChildNodes();
-        for (int n = 0; n < videoChilds.getLength(); n++) {
-            Node item = videoChilds.item(n);
-            switch (item.getNodeName()) {
-                case "size":
-                    Element el = (Element) item;
-                    config.mediaW = Integer.parseInt(el.getAttribute("width"));
-                    config.mediaH = Integer.parseInt(el.getAttribute("height"));
-                    config.fps = Integer.parseInt(el.getAttribute("fps"));
-                    break;
-                case "createMovie":
-                    config.setCreateMovie(Boolean.parseBoolean(item.getTextContent()));
-                    break;
-                case "showPreviewWindow":
-                    config.setShowPreviewWindow(Boolean.parseBoolean(item.getTextContent()));
-                    break;
+    public static void parseVideoOptions(JMathAnimConfig config, NodeList videos) {
+        for (int k = 0; k < videos.getLength(); k++) {
+            NodeList videoChilds = videos.item(k).getChildNodes();
+            for (int n = 0; n < videoChilds.getLength(); n++) {
+                Node item = videoChilds.item(n);
+                switch (item.getNodeName()) {
+                    case "size":
+                        Element el = (Element) item;
+                        config.mediaW = Integer.parseInt(el.getAttribute("width"));
+                        config.mediaH = Integer.parseInt(el.getAttribute("height"));
+                        config.fps = Integer.parseInt(el.getAttribute("fps"));
+                        break;
+                    case "createMovie":
+                        config.setCreateMovie(Boolean.parseBoolean(item.getTextContent()));
+                        break;
+                    case "showPreviewWindow":
+                        config.setShowPreviewWindow(Boolean.parseBoolean(item.getTextContent()));
+                        break;
+                }
             }
-
         }
     }
 
-    private static void parseBackgroundOptions(JMathAnimConfig config, Node background) throws IOException {
+    private static void parseBackgroundOptions(JMathAnimConfig config, NodeList backgrounds) throws IOException {
+        if (backgrounds.getLength() == 0) {
+            return;
+        }
+        Node background = backgrounds.item(backgrounds.getLength() - 1);//Load only last item 
         NodeList bgChilds = background.getChildNodes();
         for (int n = 0; n < bgChilds.getLength(); n++) {
             Node item = bgChilds.item(n);
@@ -99,10 +102,10 @@ public class ConfigLoader {
                 case "shadows":
                     config.drawShadow = Boolean.parseBoolean(item.getTextContent());
                     Element el = (Element) item;
-                    config.shadowKernelSize=Integer.parseInt(el.getAttribute("kernelSize"));
-                    config.shadowOffsetX=Integer.parseInt(el.getAttribute("offsetX"));
-                    config.shadowOffsetY=Integer.parseInt(el.getAttribute("offsetY"));
-                    config.shadowAlpha=Float.parseFloat(el.getAttribute("alpha"));
+                    config.shadowKernelSize = Integer.parseInt(el.getAttribute("kernelSize"));
+                    config.shadowOffsetX = Integer.parseInt(el.getAttribute("offsetX"));
+                    config.shadowOffsetY = Integer.parseInt(el.getAttribute("offsetY"));
+                    config.shadowAlpha = Float.parseFloat(el.getAttribute("alpha"));
                     break;
                 case "image":
                     String backgroundFilename = item.getTextContent();
@@ -115,18 +118,20 @@ public class ConfigLoader {
         }
     }
 
-    public static void parseTemplates(JMathAnimConfig config, Element templates) {
-        NodeList templChilds = templates.getElementsByTagName("template");
-        for (int n = 0; n < templChilds.getLength(); n++) {
-            Node item = templChilds.item(n);
-            MathObjectDrawingProperties mp = parseMathObjectDrawingProperties(item);
-            if (item.getNodeType() == Node.ELEMENT_NODE) {
-                Element el = (Element) item;
-                config.templates.put(el.getAttribute("name"), mp);
+    public static void parseTemplates(JMathAnimConfig config, NodeList templates) {
+        for (int k = 0; k < templates.getLength(); k++) {
+            Element elTemplate = (Element) templates.item(k);
+            NodeList templChilds = elTemplate.getElementsByTagName("template");
+            for (int n = 0; n < templChilds.getLength(); n++) {
+                Node item = templChilds.item(n);
+                MathObjectDrawingProperties mp = parseMathObjectDrawingProperties(item);
+                if (item.getNodeType() == Node.ELEMENT_NODE) {
+                    Element el = (Element) item;
+                    config.templates.put(el.getAttribute("name"), mp);
+                }
+
             }
-
         }
-
     }
 
     public static MathObjectDrawingProperties parseMathObjectDrawingProperties(Node template) {
@@ -145,7 +150,7 @@ public class ConfigLoader {
                     mp.thickness = Double.parseDouble(item.getTextContent());
                     break;
                 case "dashStyle":
-                    mp.dashStyle = Integer.parseInt(item.getTextContent());
+                    mp.dashStyle = MathObjectDrawingProperties.parseDashStyle(item.getTextContent());
                     break;
                 case "absoluteThickness":
                     mp.absoluteThickness = Boolean.parseBoolean(item.getTextContent());
@@ -154,4 +159,5 @@ public class ConfigLoader {
         }
         return mp;
     }
+
 }

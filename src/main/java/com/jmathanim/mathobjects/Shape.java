@@ -320,7 +320,7 @@ public class Shape extends MathObject {
     public static Shape circle() {
         Shape obj = new Shape();
         double x1, y1;
-        double step = Math.PI * 2 / 40;
+        double step = Math.PI * 2 / 4;
         for (double alphaC = 0; alphaC < 2 * Math.PI; alphaC += step) {
             x1 = Math.cos(alphaC);
             y1 = Math.sin(alphaC);

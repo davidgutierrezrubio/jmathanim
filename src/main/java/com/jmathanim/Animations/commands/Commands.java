@@ -9,6 +9,8 @@ import com.jmathanim.Animations.AffineTransform;
 import com.jmathanim.Animations.Animation;
 import com.jmathanim.Animations.ApplyCommand;
 import com.jmathanim.Cameras.Camera;
+import com.jmathanim.Utils.JMColor;
+import com.jmathanim.Utils.MathObjectDrawingProperties;
 import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
@@ -22,11 +24,11 @@ import com.jmathanim.mathobjects.Shape;
  */
 public class Commands {
 
-    public static ApplyCommand shift(MathObject object, double dx, double dy,double runtime) {
-        return shift(object, new Vec(dx,dy), runtime);
+    public static ApplyCommand shift(MathObject object, double dx, double dy, double runtime) {
+        return shift(object, new Vec(dx, dy), runtime);
     }
 
-    public static ApplyCommand shift(MathObject object, Vec sv,double runtime) {
+    public static ApplyCommand shift(MathObject object, Vec sv, double runtime) {
         return new ApplyCommand(new SingleMathObjectCommand(object) {
             Vec shiftVector = sv;
 
@@ -45,14 +47,14 @@ public class Commands {
             public void finish() {
                 execute(1);//Ensure that the object is well-located
             }
-        },runtime);
+        }, runtime);
     }//End of shift command
 
-    public static ApplyCommand scale(MathObject object, Point c, double sc,double runtime) {
-        return scale(object, c, sc, sc, sc,runtime);
+    public static ApplyCommand scale(MathObject object, Point c, double sc, double runtime) {
+        return scale(object, c, sc, sc, sc, runtime);
     }
 
-    public static ApplyCommand scale(MathObject object, Point c, double scx, double scy, double scz,double runtime) {
+    public static ApplyCommand scale(MathObject object, Point c, double scx, double scy, double scz, double runtime) {
         return new ApplyCommand(new SingleMathObjectCommand(object) {
             double scalex = scx;
             double scaley = scy;
@@ -77,10 +79,10 @@ public class Commands {
             public void finish() {
                 execute(1);
             }
-        },runtime);
+        }, runtime);
     }//End of scale command
 
-    public static ApplyCommand rotate(MathObject object, Point c, double ang,double runtime) {
+    public static ApplyCommand rotate(MathObject object, Point c, double ang, double runtime) {
         return new ApplyCommand(new SingleMathObjectCommand(object) {
             double angle = ang;
             double tPrevious;
@@ -106,11 +108,10 @@ public class Commands {
             public void finish() {
                 execute(1);
             }
-        },runtime);
+        }, runtime);
     }//End of scale command
-    
-    
-     public static ApplyCommand homotopy(MathObject object, Point a, Point b, Point c,Point d,double runtime) {
+
+    public static ApplyCommand homotopy(MathObject object, Point a, Point b, Point c, Point d, double runtime) {
         return new ApplyCommand(new SingleMathObjectCommand(object) {
             double tPrevious;
             Point A = a;
@@ -127,7 +128,7 @@ public class Commands {
             @Override
             public void execute(double t) {
                 mathObject.restoreState();
-                tr = AffineTransform.createDirect2DHomotopy(A,B,C,D,t);
+                tr = AffineTransform.createDirect2DHomotopy(A, B, C, D, t);
                 tr.applyTransform(mathObject);
             }
 
@@ -135,9 +136,10 @@ public class Commands {
             public void finish() {
                 execute(1);
             }
-        },runtime);
+        }, runtime);
     }//End of homotopy command
-    public static ApplyCommand reflectionByAxis(MathObject object, Shape s,double runtime) {
+
+    public static ApplyCommand reflectionByAxis(MathObject object, Shape s, double runtime) {
         return new ApplyCommand(new SingleMathObjectCommand(object) {
             double tPrevious;
             Shape S = s;
@@ -151,7 +153,7 @@ public class Commands {
             @Override
             public void execute(double t) {
                 mathObject.restoreState();
-                tr = AffineTransform.createReflectionByAxis(S,t);
+                tr = AffineTransform.createReflectionByAxis(S, t);
                 tr.applyTransform(mathObject);
             }
 
@@ -159,39 +161,68 @@ public class Commands {
             public void finish() {
                 execute(1);
             }
-        },runtime);
+        }, runtime);
     }//End of homotopy command
-     public static ApplyCommand cameraFocusToRect(Camera camera,Rect rd,double runtime) {
-         return new ApplyCommand(new AbstractCommand() {
-             Camera cam=camera;
-             Rect rDst=cam.getRectThatContains(rd);
-             Rect rSource;
-             @Override
-             public void initialize() {
-                 rSource=cam.getMathView();
-             }
 
-             @Override
-             public void execute(double t) {
-                 Rect r=rSource.interpolate(rDst, t);
-                 cam.setMathView(r);
-             }
+    public static ApplyCommand setMP(MathObject object, MathObjectDrawingProperties mp, double runtime) {
+        return new ApplyCommand(new SingleMathObjectCommand(object) {
+            MathObjectDrawingProperties mpDst = mp;
+            MathObjectDrawingProperties mpBase;
 
-             @Override
-             public void finish() {
-                 execute(1);
-             }
+            @Override
+            public void initialize() {
+                mpBase = mathObject.mp.copy();
+            }
 
-             @Override
-             public void addObjectsToScene(JMathAnimScene scene) {
-             }
-         },runtime);
-     }
-       public static ApplyCommand cameraShift(Camera camera,Vec v,double runtime) {
-           Rect r=camera.getMathView().shifted(v);
-           return cameraFocusToRect(camera, r, runtime);
-           
-       }
-     
-     
+            @Override
+            public void execute(double t) {
+                mathObject.mp.interpolateFrom(mpBase, mpDst, t);
+            }
+
+            @Override
+            public void finish() {
+                execute(1);
+            }
+        }, runtime);
+    }//End of setMP command
+    
+    
+    public static ApplyCommand setTemplate(MathObject object,String templateName,double runtime){
+        return setMP(object, MathObjectDrawingProperties.createFromTemplate(templateName), runtime);
+    }
+
+    public static ApplyCommand cameraFocusToRect(Camera camera, Rect rd, double runtime) {
+        return new ApplyCommand(new AbstractCommand() {
+            Camera cam = camera;
+            Rect rDst = cam.getRectThatContains(rd);
+            Rect rSource;
+
+            @Override
+            public void initialize() {
+                rSource = cam.getMathView();
+            }
+
+            @Override
+            public void execute(double t) {
+                Rect r = rSource.interpolate(rDst, t);
+                cam.setMathView(r);
+            }
+
+            @Override
+            public void finish() {
+                execute(1);
+            }
+
+            @Override
+            public void addObjectsToScene(JMathAnimScene scene) {
+            }
+        }, runtime);
+    }
+
+    public static ApplyCommand cameraShift(Camera camera, Vec v, double runtime) {
+        Rect r = camera.getMathView().shifted(v);
+        return cameraFocusToRect(camera, r, runtime);
+
+    }
+
 }

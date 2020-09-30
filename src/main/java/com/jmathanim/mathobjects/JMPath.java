@@ -80,7 +80,6 @@ public class JMPath implements Updateable, Stateable {
         this.tension = tension;
     }
 
-
     public void addPoint(Point... points) {
         for (Point p : points) {
             jmPathPoints.add(new JMPathPoint(p, true, JMPathPoint.TYPE_VERTEX));
@@ -641,20 +640,37 @@ public class JMPath implements Updateable, Stateable {
     }
 
     /**
-     * Return the number of connected components. A circle has number 0, which means a closed curve.
-     * An arc or segment has number 1 (an open curve)
-     * A figure with 2 separate curves has number 2, etc.
+     * Return the number of connected components. A circle has number 0, which
+     * means a closed curve. An arc or segment has number 1 (an open curve) A
+     * figure with 2 separate curves has number 2, etc.
      *
      * @return The number of connected components.
      */
     public int getNumberOfConnectedComponents() {
-        int resul = 1;
+        int resul = 0;
         for (JMPathPoint p : jmPathPoints) {
             if (!p.isThisSegmentVisible) {
                 resul++;
             }
         }
         return resul;
+    }
+
+    /**
+     * Remove all hidden points followed by another hidden point
+     * This case may lead to 0-length segments, which can cause errors
+     * when transforming, so these (unnecessary) points are removed.
+     */
+    public void removeConsecutiveHiddenVertices() {
+        ArrayList<JMPathPoint> toRemove = new ArrayList<>();
+        for (int n = 0; n < jmPathPoints.size(); n++) {
+            JMPathPoint p1 = jmPathPoints.get(n);
+            JMPathPoint p2 = jmPathPoints.get(n + 1);
+            if (!p1.isThisSegmentVisible & !p2.isThisSegmentVisible) {
+                toRemove.add(p1);
+            }
+        }
+        jmPathPoints.removeAll(toRemove);
     }
 
 }

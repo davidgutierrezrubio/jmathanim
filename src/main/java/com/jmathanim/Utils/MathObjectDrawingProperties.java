@@ -6,7 +6,10 @@
 package com.jmathanim.Utils;
 
 import com.jmathanim.Renderers.Renderer;
+import com.jmathanim.jmathanim.JMathAnim;
 import java.awt.Color;
+import java.lang.reflect.Field;
+import java.util.HashMap;
 import java.util.concurrent.ThreadLocalRandom;
 
 /**
@@ -23,11 +26,11 @@ public class MathObjectDrawingProperties {
 
     public final JMColor drawColor;
     public final JMColor fillColor;
-    public Double thickness=1d;
+    public Double thickness = 1d;
     //If false, thickness is computed to be a percentage of the width
     //to ensure zoom or resolution doesn't affect the result
-    public Boolean absoluteThickness=false;
-    public Integer dashStyle=1;
+    public Boolean absoluteThickness = false;
+    public Integer dashStyle = 1;
 
     public MathObjectDrawingProperties() {
         drawColor = new JMColor(1, 1, 1, 1);
@@ -128,5 +131,36 @@ public class MathObjectDrawingProperties {
         absoluteThickness = mp.absoluteThickness;
         dashStyle = mp.dashStyle;
     }
-//
+
+    /**
+     * Returns Dash Style, from its name, using reflection. Used when loading
+     * config files.
+     *
+     * @param textContent Name of the dash patterns
+     * @return
+     */
+    static Integer parseDashStyle(String str) {
+        int resul = SOLID; //default dash
+        try {
+            Field field = MathObjectDrawingProperties.class.getField(str.toUpperCase());
+            resul = field.getInt(field);
+        } catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException ex) {
+            JMathAnim.logger.warn("Dash pattern {} not recognized ", str);
+        }
+        return resul;
+    }
+
+    public void loadFromTemplate(String name) {
+        HashMap<String, MathObjectDrawingProperties> templates = JMathAnimConfig.getConfig().templates;
+        if (templates.containsKey(name)) {
+            this.digestFrom(templates.get(name));
+        }
+    }
+    
+    public static MathObjectDrawingProperties createFromTemplate(String name)
+    {
+        MathObjectDrawingProperties resul=new MathObjectDrawingProperties();
+        resul.loadFromTemplate(name);
+        return resul;
+    }
 }

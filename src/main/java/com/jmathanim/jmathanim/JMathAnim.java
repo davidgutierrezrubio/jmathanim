@@ -25,7 +25,7 @@ public class JMathAnim {
     public static void main(String[] args) {
         JMathAnimScene scene = new PointSimple();
         ch.qos.logback.classic.Logger root = (ch.qos.logback.classic.Logger) org.slf4j.LoggerFactory.getLogger(ch.qos.logback.classic.Logger.ROOT_LOGGER_NAME);
-        root.setLevel(Level.WARN);
+        root.setLevel(Level.INFO);
         logger.debug("Loading scene " + scene.getClass().getName());
 
         scene.execute();

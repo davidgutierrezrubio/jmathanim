@@ -199,7 +199,7 @@ public class Java2DRenderer extends Renderer {
         }
 
         if (cnf.createMovie) {
-            JMathAnim.logger.debug("Creating movie encoder for {}",saveFilePath);
+            JMathAnim.logger.debug("Creating movie encoder for {}", saveFilePath);
             muxer = Muxer.make(saveFilePath, null, "mp4");
             format = muxer.getFormat();
             codec = Codec.findEncodingCodec(format.getDefaultVideoCodecId());
@@ -422,7 +422,7 @@ public class Java2DRenderer extends Renderer {
 //        if (ConvolveShadowOp != null) {
 //            resul = ConvolveShadowOp.filter(resul, null);
 //        }
-        ShadowFilter fil=new ShadowFilter(cnf.shadowKernelSize, cnf.shadowOffsetX, cnf.shadowOffsetY, cnf.shadowAlpha);
+        ShadowFilter fil = new ShadowFilter(cnf.shadowKernelSize, cnf.shadowOffsetX, cnf.shadowOffsetY, cnf.shadowAlpha);
         fil.setShadowOnly(true);
 //        GaussianFilter fil = new GaussianFilter(cnf.shadowKernelSize);
         resul = fil.filter(img, null);
@@ -588,6 +588,15 @@ public class Java2DRenderer extends Renderer {
                     resul.moveTo(xy[0], xy[1]);
                 }
             }
+        }
+//        if (c.getJMPoint(0).isThisSegmentVisible) {
+//            if (xy[0] != scr[0] | xy[1] != scr[1]) {
+//                resul.moveTo(scr[0], scr[1]);
+//            }
+//            resul.closePath();
+//        }
+        if (c.getNumberOfConnectedComponents() == 0) {
+            resul.closePath();
         }
         return resul;
     }

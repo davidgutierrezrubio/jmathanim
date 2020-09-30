@@ -355,11 +355,7 @@ public abstract class MathObject implements Drawable, Updateable, Stateable {
         return layer;
     }
     public <T extends MathObject> T template(String name){
-        HashMap<String, MathObjectDrawingProperties> templates = JMathAnimConfig.getConfig().templates;
-        if (templates.containsKey(name))
-        {
-            mp.digestFrom(templates.get(name));
-        }
+        mp.loadFromTemplate(name);
         return (T) this;
     }
 }
