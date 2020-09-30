@@ -1,19 +1,12 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.jmathanim.Renderers;
 
 import com.jmathanim.mathobjects.JMPath;
 import com.jmathanim.Cameras.Camera;
 import com.jmathanim.Cameras.Camera2D;
-import com.jmathanim.Utils.JMColor;
 import com.jmathanim.Utils.JMathAnimConfig;
 import com.jmathanim.Utils.MathObjectDrawingProperties;
 import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.Vec;
-import com.jmathanim.Utils.jhlabs.GaussianFilter;
 import com.jmathanim.Utils.jhlabs.ShadowFilter;
 import com.jmathanim.jmathanim.JMathAnim;
 import com.jmathanim.jmathanim.JMathAnimScene;
@@ -35,10 +28,7 @@ import io.humble.video.awt.MediaPictureConverterFactory;
 import java.awt.BasicStroke;
 import static java.awt.BasicStroke.CAP_ROUND;
 import static java.awt.BasicStroke.JOIN_ROUND;
-import java.awt.BorderLayout;
-import java.awt.Button;
 import java.awt.Color;
-import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -49,32 +39,19 @@ import java.awt.Stroke;
 import java.awt.Toolkit;
 import java.awt.geom.Path2D;
 import java.awt.image.BufferedImage;
-import java.awt.image.BufferedImageOp;
-import java.awt.image.ColorModel;
 import java.awt.image.ConvolveOp;
-import java.awt.image.DataBufferInt;
 import java.awt.image.Kernel;
-import java.awt.image.RescaleOp;
-import java.awt.image.WritableRaster;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import static javafx.scene.paint.Color.color;
-import javax.swing.BoxLayout;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JToggleButton;
 import javax.swing.SwingUtilities;
-import javax.swing.plaf.basic.BasicSplitPaneUI;
 
 /**
+ * This class uses Java2D to render the image.
  *
- * @author David Gutierrez Rubio davidgutierrezrubio@gmail.com This class uses
- * Java2D to render the image
+ * @author David Gutierrez Rubio davidgutierrezrubio@gmail.com
  */
 public class Java2DRenderer extends Renderer {
 
@@ -99,10 +76,6 @@ public class Java2DRenderer extends Renderer {
     private Rational rationalFrameRate;
     private MediaPacket packet;
     private MediaPicture picture;
-    String[] DEFAULT_CONFIG_JAVA2DRENDERER = {
-        "ALPHA", "1",
-        "BACKGROUND_COLOR", "0"
-    };
     protected Path2D.Double path;
     final String saveFilePath = "c:\\media\\pinicula.mp4";
     private final JMathAnimConfig cnf;
@@ -525,7 +498,8 @@ public class Java2DRenderer extends Renderer {
             path = createPathFromJMPath(mobj, cam);
 
             if (mobj.mp.isFilled()) {
-                Path2D.Double pathToFill = createPathFromJMPath(mobj, mobj.getPath().allVisible(),cam);
+                //Filled paths are better drawn supposing all points are visible...
+                Path2D.Double pathToFill = createPathFromJMPath(mobj, mobj.getPath().allVisible(), cam);
                 g2draw.setColor(mobj.mp.fillColor.getColor());
                 g2draw.fill(pathToFill);
             }

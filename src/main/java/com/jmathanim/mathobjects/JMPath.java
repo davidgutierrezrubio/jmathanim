@@ -309,6 +309,35 @@ public class JMPath implements Updateable, Stateable {
     }
 
     /**
+     * Get point (interpolated if necessary) that lies at position alpha where
+     * alpha=0 denotes beginning of path and alpha=1 denotes the end
+     *
+     * @param alpha from 0 to 1, relative position inside the path
+     * @return A (copy of) point that lies in the curve at relative position
+     * alpha.
+     */
+    public Point getPointAt(double alpha) {
+        Point resul;
+        int k = (int) Math.floor(alpha * size());
+        double t = alpha * size() - k;
+        JMPathPoint v1 = getJMPoint(k);
+        JMPathPoint v2 = getJMPoint(k + 1);
+        if (v2.isCurved) {
+            //De Casteljau's Algorithm: https://en.wikipedia.org/wiki/De_Casteljau%27s_algorithm
+            Point E = v1.p.interpolate(v1.cp1, t); //New cp1 of v1
+            Point G = v2.cp2.interpolate(v2.p, t); //New cp2 of v2
+            Point F = v1.cp1.interpolate(v2.cp2, t);
+            Point H = E.interpolate(F, t);//cp2 of interpolation point
+            Point J = F.interpolate(G, t);//cp1 of interpolation point
+            resul = H.interpolate(J, t); //Interpolation point
+        } else {
+            //Straight interpolation
+            resul = new Point(v1.p.v.interpolate(v2.p.v, t));
+        }
+        return resul;
+    }
+
+    /**
      * Returns a full copy of the path. JMPathPoint objects are also copied
      *
      * @return A copy of the path

@@ -65,7 +65,7 @@ public class Arrow2D extends MultiShapeObject {
         //Default scale of arrowHead: width .5% of fixed camera width
         scaleArrowHead(1);
         arrowHead.setAbsoluteSize();
-        arrowHead.setAbsolutAnchorPoint(p2);
+        arrowHead.setAbsoluteAnchorPoint(p2);
 
 //        JMathAnimConfig.getConfig().getScene().registerObjectToBeUpdated(absoluteSizeUpdater);
     }
@@ -85,12 +85,14 @@ public class Arrow2D extends MultiShapeObject {
         Vec v = p1.to(p2);
         double angle = v.getAngle();
 
-        AffineTransform tr = AffineTransform.create2DRotationTransform(head, -Math.PI / 2 + angle);
+        AffineTransform tr = AffineTransform.create2DRotationTransform(p2, -Math.PI / 2 + angle);
         tr.applyTransform(arrowHeadCopy);
         super.draw(r);
         arrowHeadCopy.draw(r);
 //        head.draw(r);
     }
+
+   
 
    
 

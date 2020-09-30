@@ -57,8 +57,8 @@ public class ShowCreation extends Animation {
         for (int n = 0; n < msh.shapes.size(); n++) {
             //Restore all paths because in each loop there will be modified
             msh.shapes.get(n).jmpath.clear();
-            final JMPath mierda = canonPath.get(n);
-            msh.shapes.get(n).jmpath.addPointsFrom(mierda);
+            final JMPath path = canonPath.get(n);
+            msh.shapes.get(n).jmpath.addPointsFrom(path);
 
             if (n < pathNumber) {
                 msh.shapes.get(n).visible = true;//Draw whole path

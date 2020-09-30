@@ -308,7 +308,7 @@ public abstract class MathObject implements Drawable, Updateable, Stateable {
 
     }
 
-    public void setAbsolutAnchorPoint(Point p) {
+    public void setAbsoluteAnchorPoint(Point p) {
         this.absoluteAnchorPoint = p;
         absoluteAnchorType = Anchor.BY_POINT;
 

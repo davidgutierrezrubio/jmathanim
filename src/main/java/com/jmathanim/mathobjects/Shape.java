@@ -300,8 +300,8 @@ public class Shape extends MathObject {
     public static Shape arc(double angle) {
         Shape obj = new Shape();
         double x1, y1;
-        double step = Math.PI * 2 / 4;
-        for (double alphaC = -step; alphaC < angle + step; alphaC += step) {//generate one extra point at each end
+        double step = Math.PI * 2 / 40;
+        for (double alphaC = -step; alphaC <= angle + step; alphaC += step) {//generate one extra point at each end
             x1 = Math.cos(alphaC);
             y1 = Math.sin(alphaC);
             Point newPoint = new Point(x1, y1);
@@ -309,18 +309,20 @@ public class Shape extends MathObject {
             p.isCurved = true;
             obj.jmpath.addJMPoint(p);
         }
-        obj.jmpath.generateControlPoints();
+        obj.getPath().generateControlPoints();
         obj.setObjectType(ARC);
-        obj.jmpath.jmPathPoints.remove(0);
-        obj.jmpath.jmPathPoints.remove(-1);
-        obj.jmpath.getJMPoint(0).isThisSegmentVisible = false;//Open path
+        obj.getPath().jmPathPoints.remove(0);
+        obj.getPath().jmPathPoints.remove(-1);
+        obj.getPath().getJMPoint(0).isThisSegmentVisible = false;//Open path
+        obj.getJMPoint(0).cp1.v.copyFrom(obj.getJMPoint(0).p.v);
+        obj.getJMPoint(-1).cp2.v.copyFrom(obj.getJMPoint(-1).p.v);
         return obj;
     }
 
     public static Shape circle() {
         Shape obj = new Shape();
         double x1, y1;
-        double step = Math.PI * 2 / 4;
+        double step = Math.PI * 2 / 40;
         for (double alphaC = 0; alphaC < 2 * Math.PI; alphaC += step) {
             x1 = Math.cos(alphaC);
             y1 = Math.sin(alphaC);
