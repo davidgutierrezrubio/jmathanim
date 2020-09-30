@@ -5,7 +5,11 @@
  */
 package com.jmathanim.Utils;
 
+import com.jmathanim.jmathanim.JMathAnim;
 import java.awt.Color;
+import java.lang.reflect.Field;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -52,7 +56,7 @@ public class JMColor {
                 gg = Integer.valueOf(hex.substring(2, 4), 16);
                 bb = Integer.valueOf(hex.substring(4, 6), 16);
                 aa = Integer.valueOf(hex.substring(6, 8), 16);
-                return JMColor.rgbInt(rr, gg, bb,aa);
+                return JMColor.rgbInt(rr, gg, bb, aa);
             default:
                 return null;
         }
@@ -62,16 +66,19 @@ public class JMColor {
         return new Color((float) r, (float) g, (float) b, (float) alpha);
     }
 
-    public JMColor getInverse(){
-        return new JMColor(1-r, 1-g, 1-b, alpha);
+    public JMColor getInverse() {
+        return new JMColor(1 - r, 1 - g, 1 - b, alpha);
     }
+
     public JMColor copy() {
         return new JMColor(r, g, b, alpha);
     }
-/**
- * Set the RGBA values of those given by the parameter
- * @param jmcolor The JMColor to copy values from
- */
+
+    /**
+     * Set the RGBA values of those given by the parameter
+     *
+     * @param jmcolor The JMColor to copy values from
+     */
     public void set(JMColor jmcolor) {
         if (jmcolor != null) {
             r = jmcolor.r;
@@ -94,15 +101,21 @@ public class JMColor {
         return new JMColor(Math.random(), Math.random(), Math.random(), 1);
     }
 
-    public static JMColor parseColorID(String str)
-    { JMColor resul=null;
+    public static JMColor parseColorID(String str) {
+        str=str.toUpperCase();
+        JMColor resul = null;
         if (str.startsWith("#"))//Hex
         {
-            resul=JMColor.hex(str);
+            resul = JMColor.hex(str);
+        } else {
+            try {
+                Field field = JMColor.class.getField(str);
+                resul = (JMColor) field.get(JMColor.class);
+            } catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException ex) {
+                JMathAnim.logger.warn("Color {} not recognized ",str);
+            }
         }
-        
         return resul;
     }
-    
-    
+
 }

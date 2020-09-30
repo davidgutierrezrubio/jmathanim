@@ -5,11 +5,17 @@
  */
 package com.jmathanim.jmathanim;
 
+import ch.qos.logback.classic.Level;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  *
  * @author David
  */
 public class JMathAnim {
+
+    public final static Logger logger = LoggerFactory.getLogger("com.jmathanim.jmathanim.JMathAnim");
 
     /**
      * A launcher for the scene
@@ -18,6 +24,10 @@ public class JMathAnim {
      */
     public static void main(String[] args) {
         JMathAnimScene scene = new PointSimple();
+        ch.qos.logback.classic.Logger root = (ch.qos.logback.classic.Logger) org.slf4j.LoggerFactory.getLogger(ch.qos.logback.classic.Logger.ROOT_LOGGER_NAME);
+        root.setLevel(Level.WARN);
+        logger.debug("Loading scene " + scene.getClass().getName());
+
         scene.execute();
     }
 

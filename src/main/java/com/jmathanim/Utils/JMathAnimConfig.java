@@ -77,7 +77,7 @@ public class JMathAnimConfig {
     /**
      * alpha shadow multiplier. A value of .5 lets alpha shadow in 50%
      */
-    public float alphaShadowMultiplier = 1f;//TODO: Doesn't work as expected
+    public float shadowAlpha = 1f;//TODO: Doesn't work as expected
     public String backGroundImage = null;//"c:\\media\\hoja.jpg"
 
     private JMathAnimConfig() {//Private constructor
@@ -177,7 +177,7 @@ public class JMathAnimConfig {
     }
 
     public MathObjectDrawingProperties getDefaultMP() {
-        return templates.get("default");
+        return templates.get("default").copy();
     }
 
 }

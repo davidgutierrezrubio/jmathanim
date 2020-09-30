@@ -34,7 +34,10 @@ import com.jmathanim.mathobjects.Point;
 import com.jmathanim.mathobjects.SVGMathObject;
 import com.jmathanim.mathobjects.updateableObjects.AnchoredMathObject;
 import com.jmathanim.mathobjects.updateableObjects.TransformedJMPath;
+import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -71,16 +74,19 @@ public class PointSimple extends Scene2D {
         pruebaLinea();
     }
 
-    public void pruebaLinea() {
+    public void pruebaLinea()  {
         Point p1 = new Point(0, 0);
         Point p2 = new Point(0, 1);
         Shape line = Shape.line(p1, p2);
         add(line);
+        Shape circle=Shape.circle(p1, 1);
+        add(circle.template("red"));
         
         p1.visible = false;
         p2.visible = false;
         playAnim.shift(p2, 1, 0, 3);
-        line.applyTemplate("rojo");
+        line.template("rojo");
+        circle.template("default");
         playAnim.shift(p1, 0, 1.5, 3);
         waitSeconds(3);
     }

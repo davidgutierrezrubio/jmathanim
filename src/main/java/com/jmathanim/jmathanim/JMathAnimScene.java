@@ -62,7 +62,7 @@ public abstract class JMathAnimScene {
     public final void execute() {
 
         String nombre = this.getClass().getName();
-        System.out.println("Run sketch: " + nombre);
+        JMathAnim.logger.info("Running sketch: " + nombre);
         setupSketch();
         createRenderer();
         JMathAnimConfig.getConfig().setRenderer(SCRenderer);

@@ -13,6 +13,9 @@ import com.jmathanim.Utils.JMathAnimConfig;
 import com.jmathanim.Utils.MathObjectDrawingProperties;
 import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.Vec;
+import com.jmathanim.Utils.jhlabs.GaussianFilter;
+import com.jmathanim.Utils.jhlabs.ShadowFilter;
+import com.jmathanim.jmathanim.JMathAnim;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.jmathanim.PreviewWindow;
 import com.jmathanim.mathobjects.Shape;
@@ -173,9 +176,10 @@ public class Java2DRenderer extends Renderer {
 
     public final void prepareEncoder() {
 
-        System.out.println("Prepare encoder...");
+        JMathAnim.logger.info("Preparing encoder");
 
         if (cnf.showPreview) {
+            JMathAnim.logger.debug("Creating preview window");
             //TODO: Move this to its own class
             previewWindow = new PreviewWindow(this);
             previewWindow.buildGUI();
@@ -195,6 +199,7 @@ public class Java2DRenderer extends Renderer {
         }
 
         if (cnf.createMovie) {
+            JMathAnim.logger.debug("Creating movie encoder for {}",saveFilePath);
             muxer = Muxer.make(saveFilePath, null, "mp4");
             format = muxer.getFormat();
             codec = Codec.findEncodingCodec(format.getDefaultVideoCodecId());
@@ -408,15 +413,19 @@ public class Java2DRenderer extends Renderer {
         int[] imagePixels = img.getRGB(0, 0, width, height, null, 0, width);
         for (int i = 0; i < imagePixels.length; i++) {
             int color = imagePixels[i];// & 0xff000000;//TODO: Check this
-            color = (int) ((color >> 56) * cnf.alphaShadowMultiplier) << 56;
+            color = (int) ((color >> 56) * cnf.shadowAlpha) << 56;
 
             imagePixels[i] = color;
         }
 
         resul.setRGB(0, 0, width, height, imagePixels, 0, width);
-        if (ConvolveShadowOp != null) {
-            resul = ConvolveShadowOp.filter(resul, null);
-        }
+//        if (ConvolveShadowOp != null) {
+//            resul = ConvolveShadowOp.filter(resul, null);
+//        }
+        ShadowFilter fil=new ShadowFilter(cnf.shadowKernelSize, cnf.shadowOffsetX, cnf.shadowOffsetY, cnf.shadowAlpha);
+        fil.setShadowOnly(true);
+//        GaussianFilter fil = new GaussianFilter(cnf.shadowKernelSize);
+        resul = fil.filter(img, null);
         return resul;
     }
 
@@ -523,7 +532,7 @@ public class Java2DRenderer extends Renderer {
             g2draw.setColor(mobj.mp.drawColor.getColor());
             setStroke(g2draw, mobj);
             g2draw.draw(path);
-            
+
             if (PRINT_DEBUG) {
                 System.out.println("Drawing " + c);
             }
@@ -546,7 +555,7 @@ public class Java2DRenderer extends Renderer {
             g2debug.setColor(Color.BLACK);
             g2debug.drawString(mobj.label, scr[0], scr[1]);
             g2debug.setColor(Color.WHITE);
-            g2debug.drawString(mobj.label, scr[0]+2, scr[1]+2);
+            g2debug.drawString(mobj.label, scr[0] + 2, scr[1] + 2);
         }
         resul.moveTo(scr[0], scr[1]);
         //Now I iterate to get the next points

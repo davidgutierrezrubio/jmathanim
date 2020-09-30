@@ -98,6 +98,11 @@ public class ConfigLoader {
                     break;
                 case "shadows":
                     config.drawShadow = Boolean.parseBoolean(item.getTextContent());
+                    Element el = (Element) item;
+                    config.shadowKernelSize=Integer.parseInt(el.getAttribute("kernelSize"));
+                    config.shadowOffsetX=Integer.parseInt(el.getAttribute("offsetX"));
+                    config.shadowOffsetY=Integer.parseInt(el.getAttribute("offsetY"));
+                    config.shadowAlpha=Float.parseFloat(el.getAttribute("alpha"));
                     break;
                 case "image":
                     String backgroundFilename = item.getTextContent();

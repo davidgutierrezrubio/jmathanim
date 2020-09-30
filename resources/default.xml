@@ -6,8 +6,8 @@
     </video>
     <background>
         <color>#192841</color>
-        <shadows>false</shadows>
-        <image></image>
+        <shadows kernelSize="8" offsetX="5" offsetY="5" alpha=".7">false</shadows>
+        <image>fondo.png</image>
     </background>
     <templates>
         <template name="default">
@@ -17,11 +17,11 @@
             <dashStyle>1</dashStyle>
             <absoluteThickness>false</absoluteThickness>
         </template>
-        <template name="rojo">
-            <drawColor>#FF0000FF</drawColor>
+        <template name="red">
+            <drawColor>RED</drawColor>
             <fillColor>#FF000000</fillColor>
-            <thickness>4</thickness>
-            <dashStyle>1</dashStyle>
+            <thickness>2</thickness>
+            <dashStyle>2</dashStyle>
             <absoluteThickness>false</absoluteThickness>
         </template>
     </templates>
