@@ -7,6 +7,7 @@ package tests;
 
 import com.jmathanim.Utils.Anchor;
 import com.jmathanim.Utils.ConfigLoader;
+import com.jmathanim.Utils.JMathAnimConfig;
 import com.jmathanim.jmathanim.Scene2D;
 import com.jmathanim.mathobjects.Arrow2D;
 import com.jmathanim.mathobjects.LaTeXMathObject;
@@ -20,8 +21,11 @@ public class myScene extends Scene2D {
 
     @Override
     public void setupSketch() {
-        ConfigLoader.parseFile("preview.xml");
+//        conf.setResourcesDir(".");
+//        conf.setOutputDir("c:\\media");
+        ConfigLoader.parseFile("production.xml");
         ConfigLoader.parseFile("dark.xml");
+        conf.setCreateMovie(true);
     }
 
     @Override
@@ -41,7 +45,7 @@ public class myScene extends Scene2D {
         play.fadeIn(sq);
         waitSeconds(1);
         play.rotate(sq, PI / 3, 3);
-        play.shift(sq, .5,-.3, 3);
+        play.shift(sq, .5, -.3, 3);
         waitSeconds(1);
         play.fadeOut(sq);
         waitSeconds(1);

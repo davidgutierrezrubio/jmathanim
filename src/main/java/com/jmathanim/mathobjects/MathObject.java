@@ -426,7 +426,7 @@ public abstract class MathObject implements Drawable, Updateable, Stateable {
      * @return The object
      */
     public <T extends MathObject> T style(String name) {
-        mp.loadFromTemplate(name);
+        mp.loadFromStyle(name);
         return (T) this;
     }
 }

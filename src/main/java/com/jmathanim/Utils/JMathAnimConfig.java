@@ -19,7 +19,9 @@ import java.util.HashMap;
  */
 public class JMathAnimConfig {
 
-    public File resourcesDir;
+    private String outputFileName;
+    private File resourcesDir;
+    private File outputDir;
     /**
      * Width of media screen. Typically 800 or 1920.
      */
@@ -41,7 +43,7 @@ public class JMathAnimConfig {
 
     public boolean createMovie;
     public boolean showPreview;
-    public final HashMap<String,MathObjectDrawingProperties> templates;
+    private final HashMap<String, MathObjectDrawingProperties> styles;
 
     public static JMathAnimConfig getConfig() {
         if (singletonConfig == null) {
@@ -79,8 +81,10 @@ public class JMathAnimConfig {
     public String backGroundImage = null;//"c:\\media\\hoja.jpg"
 
     private JMathAnimConfig() {//Private constructor
-        templates=new HashMap<>();
+        styles = new HashMap<>();
         setDefaultMP();//Load "default" drawing style in dictionary
+        resourcesDir = new File(".\\resources");
+        outputDir = new File(".\\media");
     }
 
     /**
@@ -171,11 +175,47 @@ public class JMathAnimConfig {
         defaultMP.thickness = 1d;
         defaultMP.dashStyle = MathObjectDrawingProperties.SOLID;
         defaultMP.absoluteThickness = false;
-        templates.put("default", defaultMP);
+        styles.put("default", defaultMP);
     }
 
     public MathObjectDrawingProperties getDefaultMP() {
-        return templates.get("default").copy();
+        return styles.get("default").copy();
+    }
+
+    public File getResourcesDir() {
+        return resourcesDir;
+    }
+
+    public void setResourcesDir(File resourcesDir) {
+        this.resourcesDir = resourcesDir;
+    }
+
+    public void setResourcesDir(String path) {
+        this.resourcesDir = new File(path);
+    }
+
+    public String getOutputFileName() {
+        return outputFileName;
+    }
+
+    public void setOutputFileName(String outputFileName) {
+        this.outputFileName = outputFileName;
+    }
+
+    public File getOutputDir() {
+        return outputDir;
+    }
+
+    public void setOutputDir(String str) {
+        this.outputDir = new File(str);
+    }
+
+    public void setOutputDir(File outputDir) {
+        this.outputDir = outputDir;
+    }
+
+    public HashMap<String, MathObjectDrawingProperties> getStyles() {
+        return styles;
     }
 
 }

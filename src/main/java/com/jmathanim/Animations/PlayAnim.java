@@ -91,7 +91,7 @@ public class PlayAnim {
     }
 
     public void zoomToRect(Camera cam, Rect r, double runTime) {
-        scene.playAnimation(Commands.cameraFocusToRect(cam, r, runTime));
+        scene.playAnimation(Commands.cameraZoomToRect(cam, r, runTime));
     }
 
     public void zoomToRect(Rect r, double runTime) {
@@ -103,7 +103,7 @@ public class PlayAnim {
     }
 
     public void scaleCamera(Camera cam, double scale, double runTime) {
-        scene.playAnimation(Commands.cameraFocusToRect(cam, cam.getMathView().scaled(scale, scale), runTime));
+        scene.playAnimation(Commands.cameraZoomToRect(cam, cam.getMathView().scaled(scale, scale), runTime));
     }
 
     public void shiftCamera(Camera cam, Vec v, double runTime) {

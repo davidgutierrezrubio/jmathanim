@@ -151,18 +151,18 @@ public class MathObjectDrawingProperties {
         return resul;
     }
     
-    public void loadFromTemplate(String name) {
-        HashMap<String, MathObjectDrawingProperties> templates = JMathAnimConfig.getConfig().templates;
-        if (templates.containsKey(name)) {
-            this.digestFrom(templates.get(name));
+    public void loadFromStyle(String name) {
+        HashMap<String, MathObjectDrawingProperties> styles = JMathAnimConfig.getConfig().getStyles();
+        if (styles.containsKey(name)) {
+            this.digestFrom(styles.get(name));
         } else {
-            JMathAnimScene.logger.warn("No template with name {} found", name);
+            JMathAnimScene.logger.warn("No style with name {} found", name);
         }
     }
     
-    public static MathObjectDrawingProperties createFromTemplate(String name) {
+    public static MathObjectDrawingProperties createFromStyle(String name) {
         MathObjectDrawingProperties resul = new MathObjectDrawingProperties();
-        resul.loadFromTemplate(name);
+        resul.loadFromStyle(name);
         return resul;
     }
 }

@@ -40,6 +40,7 @@ import java.awt.geom.Path2D;
 import java.awt.image.BufferedImage;
 import java.awt.image.ConvolveOp;
 import java.awt.image.Kernel;
+import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.logging.Level;
@@ -76,10 +77,9 @@ public class Java2DRenderer extends Renderer {
     private MediaPacket packet;
     private MediaPicture picture;
     protected Path2D.Double path;
-    final String saveFilePath = "c:\\media\\pinicula.mp4";
     private final JMathAnimConfig cnf;
     private final JMathAnimScene scene;
-
+    private File saveFilePath;
     //To limit fps in preview window
     double interpolation = 0;
     final int TICKS_PER_SECOND = 5;
@@ -170,8 +170,16 @@ public class Java2DRenderer extends Renderer {
         }
 
         if (cnf.createMovie) {
-            JMathAnimScene.logger.debug("Creating movie encoder for {}", saveFilePath);
-            muxer = Muxer.make(saveFilePath, null, "mp4");
+            try {
+                File tempPath = new File(cnf.getOutputDir().getCanonicalPath());
+                tempPath.mkdirs();
+                saveFilePath = new File(cnf.getOutputDir().getCanonicalPath() + File.separator + cnf.getOutputFileName() +"_"+cnf.mediaH+ ".mp4");
+                JMathAnimScene.logger.info("Creating movie encoder for {}", saveFilePath);
+                muxer = Muxer.make(saveFilePath.getCanonicalPath(), null, "mp4");
+            } catch (IOException ex) {
+                Logger.getLogger(Java2DRenderer.class.getName()).log(Level.SEVERE, null, ex);
+            }
+
             format = muxer.getFormat();
             codec = Codec.findEncodingCodec(format.getDefaultVideoCodecId());
             encoder = Encoder.make(codec);

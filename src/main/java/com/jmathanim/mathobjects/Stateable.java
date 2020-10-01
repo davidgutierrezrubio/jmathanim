@@ -6,10 +6,19 @@
 package com.jmathanim.mathobjects;
 
 /**
+ * Represents and object which can save and restore its state
  *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
 public interface Stateable {
+
+    /**
+     * Save the state of the current object
+     */
     public void saveState();
+
+    /**
+     * Restore the previously saved state
+     */
     public void restoreState();
 }

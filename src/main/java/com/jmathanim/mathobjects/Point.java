@@ -14,7 +14,7 @@ import java.text.DecimalFormat;
 import java.util.HashSet;
 
 /**
- * This class represents a point
+ * This class represents a point in 2D or 3D space
  *
  * @author David Gutierrez Rubio davidgutierrezrubio@gmail.com
  */
@@ -169,14 +169,10 @@ public class Point extends MathObject {
     @Override
     public void processAfterNonLinearAnimation() {
     }
-
-
     @Override
     public Rect getBoundingBox() {
         return new Rect(v.x, v.y, v.x, v.y);
     }
-
-   
 
     @Override
     public void registerChildrenToBeUpdated(JMathAnimScene scene) {
@@ -197,7 +193,6 @@ public class Point extends MathObject {
     public void saveState() {
         super.saveState();
         this.v.saveState();
-
     }
 
     @Override

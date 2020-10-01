@@ -121,8 +121,8 @@ public class PointSimple extends Scene2D {
         p1.visible = false;
         p2.visible = false;
         play.shift(p2, 1, 0, 3);
-        playAnimation(Commands.setTemplate(circle, "solidblue", 3));
-        playAnimation(Commands.setTemplate(circle, "default", 3));
+        playAnimation(Commands.setStyle(circle, "solidblue", 3));
+        playAnimation(Commands.setStyle(circle, "default", 3));
         play.shift(p1, 0, 1.5, 3);
         waitSeconds(3);
     }

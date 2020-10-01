@@ -38,13 +38,13 @@ public class Arrow2D extends MathObject {
     public static Arrow2D makeSimpleArrow2D(Point p1, Point p2, int type) {
         Arrow2D resul = null;
         SVGMathObject svg;
-        File outputDir = new File("resources");
+        File outputDir = JMathAnimConfig.getConfig().getResourcesDir();
 
         String name = "arrow" + type + ".svg";
 
         String baseFileName;
         try {
-            baseFileName = outputDir.getCanonicalPath() + "\\" + name;
+            baseFileName = outputDir.getCanonicalPath() + File.separator + "arrows" + File.separator + name;
             svg = new SVGMathObject(baseFileName);
             resul = new Arrow2D(p1, p2, svg);
         } catch (IOException ex) {

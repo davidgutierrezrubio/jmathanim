@@ -25,11 +25,6 @@ public abstract class JMathAnimScene {
 
     public final static Logger logger = LoggerFactory.getLogger("com.jmathanim.jmathanim.JMathAnimScene");
     public static final double PI = 3.14159265358979323846;
-    String[] DEFAULT_CONFIG = {
-        "WIDTH", "800",
-        "HEIGHT", "600",
-        "FPS", "60"
-    };
     int contador = 0;
     int x;
     final ArrayList<MathObject> objects;
@@ -49,6 +44,7 @@ public abstract class JMathAnimScene {
         conf.setLowQuality();//by default, set low quality
         objectsToBeUpdated = new ArrayList<>();
         play = new PlayAnim(this);//Convenience class for fast access to common animations
+        conf.setOutputFileName(this.getClass().getSimpleName());
     }
 
     /**
@@ -185,9 +181,10 @@ public abstract class JMathAnimScene {
     }
 
     /**
-     * Overloaded function, to admit a variable number of parameters
+     * Play the given animations, generating new frames automatically until all
+     * animations have finished.
      *
-     * @param anims Animations to play
+     * @param anims Animations to play, with a variable number or arguments
      */
     public void playAnimation(Animation... anims) {
         ArrayList<Animation> animArray = new ArrayList<>();

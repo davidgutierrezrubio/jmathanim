@@ -110,6 +110,20 @@ public class Commands {
         }, runtime);
     }//End of scale command
 
+    /**
+     * Animation command that transforms a MathObject through an Homotopy.
+     * Homotopy is specified by 2 pairs of points (origin-destiny)
+     *
+     * @param object Object to transform
+     * @param a First origin point
+     * @param b Second origin point
+     * @param c First destiny point
+     * @param d Second destiny point
+     * @param runtime Duration in seconds
+     * @return Animation to run with
+     * {@link JMathAnimScene#playAnimation(com.jmathanim.Animations.Animation...) playAnimation}
+     * method
+     */
     public static ApplyCommand homotopy(MathObject object, Point a, Point b, Point c, Point d, double runtime) {
         return new ApplyCommand(new SingleMathObjectCommand(object) {
             double tPrevious;
@@ -138,10 +152,21 @@ public class Commands {
         }, runtime);
     }//End of homotopy command
 
-    public static ApplyCommand reflectionByAxis(MathObject object, Shape s, double runtime) {
+    /**
+     * Animation command that perfoms a reflection specified by a {@link Shape}
+     *
+     * @param object {@link MathObject} to reflect
+     * @param axis Axis. Only the first 2 points of the {@link Shape} are used
+     * to determine axis
+     * @param runtime Duration in seconds
+     * @return Animation to run with
+     * {@link JMathAnimScene#playAnimation(com.jmathanim.Animations.Animation...) playAnimation}
+     * method
+     */
+    public static ApplyCommand reflectionByAxis(MathObject object, Shape axis, double runtime) {
         return new ApplyCommand(new SingleMathObjectCommand(object) {
             double tPrevious;
-            Shape S = s;
+            Shape S = axis;
             AffineTransform tr;
 
             @Override
@@ -163,6 +188,17 @@ public class Commands {
         }, runtime);
     }//End of homotopy command
 
+    /**
+     * Animation command that changes the math drawing properties of given
+     * object, interpolating
+     *
+     * @param object Object to animate
+     * @param mp Destination {@link MathObjectDrawingProperties}
+     * @param runtime Time duration in seconds
+     * @return Animation to run with
+     * {@link JMathAnimScene#playAnimation(com.jmathanim.Animations.Animation...) playAnimation}
+     * method
+     */
     public static ApplyCommand setMP(MathObject object, MathObjectDrawingProperties mp, double runtime) {
         return new ApplyCommand(new SingleMathObjectCommand(object) {
             MathObjectDrawingProperties mpDst = mp;
@@ -185,14 +221,35 @@ public class Commands {
         }, runtime);
     }//End of setMP command
 
-    public static ApplyCommand setTemplate(MathObject object, String templateName, double runtime) {
-        return setMP(object, MathObjectDrawingProperties.createFromTemplate(templateName), runtime);
+    /**
+     * Animation command that changes the style of given object, interpolating
+     *
+     * @param object Object to animate
+     * @param styleName Name of destination style
+     * @param runtime Time duration in seconds
+     * @return Animation to run with
+     * {@link JMathAnimScene#playAnimation(com.jmathanim.Animations.Animation...) playAnimation}
+     * method
+     */
+    public static ApplyCommand setStyle(MathObject object, String styleName, double runtime) {
+        return setMP(object, MathObjectDrawingProperties.createFromStyle(styleName), runtime);
     }
 
-    public static ApplyCommand cameraFocusToRect(Camera camera, Rect rd, double runtime) {
+    /**
+     * Animation command that zooms the camera to a given area specified by a
+     * {@link Rect}
+     *
+     * @param camera Camera to zoom
+     * @param rectToZoom Area to zoom
+     * @param runtime Time duration in seconds
+     * @return Animation to run with
+     * {@link JMathAnimScene#playAnimation(com.jmathanim.Animations.Animation...) playAnimation}
+     * method
+     */
+    public static ApplyCommand cameraZoomToRect(Camera camera, Rect rectToZoom, double runtime) {
         return new ApplyCommand(new AbstractCommand() {
             Camera cam = camera;
-            Rect rDst = cam.getRectThatContains(rd);
+            Rect rDst = cam.getRectThatContains(rectToZoom);
             Rect rSource;
 
             @Override
@@ -217,16 +274,48 @@ public class Commands {
         }, runtime);
     }
 
-    public static ApplyCommand cameraShift(Camera camera, Vec v, double runtime) {
-        Rect r = camera.getMathView().shifted(v);
-        return cameraFocusToRect(camera, r, runtime);
+    /**
+     * Animation that pans the {@link Camera} by a given vector
+     *
+     * @param camera Camera to pan
+     * @param shiftVector Shift vector
+     * @param runtime Time duration in seconds
+     * @return Animation to run with
+     * {@link JMathAnimScene#playAnimation(com.jmathanim.Animations.Animation...) playAnimation}
+     * method
+     */
+    public static ApplyCommand cameraShift(Camera camera, Vec shiftVector, double runtime) {
+        Rect r = camera.getMathView().shifted(shiftVector);
+        return cameraZoomToRect(camera, r, runtime);
 
     }
 
+    /**
+     * Animation command that reduces the size and alpha of the
+     * {@link MathObject}. After finishing the animation, object is removed from
+     * the current scene.
+     *
+     * @param object Object to animate
+     * @return Animation to run with
+     * {@link JMathAnimScene#playAnimation(com.jmathanim.Animations.Animation...) playAnimation}
+     * method
+     */
     public static ApplyCommand shrinkOut(MathObject object, double runtime) {
         return shrinkOut(object, 0, runtime);
     }
 
+    /**
+     * Animation command that reduces the size and alpha of the
+     * {@link MathObject}.A rotation of a given angle is performed meanwhile.
+     * After finishing the animation, object is removed from the current scene.
+     *
+     * @param object Object to animate
+     * @param angle Angle to rotate, in radians
+     * @param runtime Duration time in seconds
+     * @return Animation to run with
+     * {@link JMathAnimScene#playAnimation(com.jmathanim.Animations.Animation...) playAnimation}
+     * method
+     */
     public static ApplyCommand shrinkOut(MathObject object, double angle, double runtime) {
         return new ApplyCommand(new SingleMathObjectCommand(object) {
 
@@ -251,10 +340,32 @@ public class Commands {
         }, runtime);
     }//End of shrinkOut command
 
+    /**
+     * Performs the inverse animation than {@link shrinkOut}, that its, scale
+     * the size and alpha of the object from zero.
+     *
+     * @param object Object to animate
+     * @param runtime Duration time in seconds
+     * @return Animation to run with
+     * {@link JMathAnimScene#playAnimation(com.jmathanim.Animations.Animation...) playAnimation}
+     * method
+     */
     public static ApplyCommand growIn(MathObject object, double runtime) {
         return growIn(object, 0, runtime);
     }
 
+    /**
+     * Performs the inverse animation than {@link shrinkOut}, that its, scale
+     * the size and alpha of the object from zero. An inverse rotation from
+     * given angle to 0 is performed.
+     *
+     * @param object Object to animate
+     * @param angle Rotation angle
+     * @param runtime Duration time in seconds
+     * @return Animation to run with
+     * {@link JMathAnimScene#playAnimation(com.jmathanim.Animations.Animation...) playAnimation}
+     * method
+     */
     public static ApplyCommand growIn(MathObject object, double angle, double runtime) {
         return new ApplyCommand(new SingleMathObjectCommand(object) {
 
@@ -279,6 +390,16 @@ public class Commands {
         }, runtime);
     }//End of growIn command
 
+    /**
+     * Performs an animation modifying the alpha of the object from 0 to the
+     * original alpha of object. Both drawAlpha and fillAlpha are animated.
+     *
+     * @param object Object to animate
+     * @param runtime Duration time in seconds
+     * @return Animation to run with
+     * {@link JMathAnimScene#playAnimation(com.jmathanim.Animations.Animation...) playAnimation}
+     * method
+     */
     public static ApplyCommand fadeIn(MathObject object, double runtime) {
         return new ApplyCommand(new SingleMathObjectCommand(object) {
 
@@ -301,6 +422,17 @@ public class Commands {
         }, runtime);
     }//End of fadeIn command
 
+    /**
+     * Performs an animation modifying the alpha of the object to 0. Both
+     * drawAlpha and fillAlpha are animated. Object is removed from current
+     * scene after finishing animation.
+     *
+     * @param object Object to animate
+     * @param runtime Duration time in seconds
+     * @return Animation to run with
+     * {@link JMathAnimScene#playAnimation(com.jmathanim.Animations.Animation...) playAnimation}
+     * method
+     */
     public static ApplyCommand fadeOut(MathObject object, double runtime) {
         return new ApplyCommand(new SingleMathObjectCommand(object) {
 

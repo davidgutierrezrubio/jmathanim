@@ -5,6 +5,7 @@
  */
 package com.jmathanim.Utils;
 
+import com.jmathanim.jmathanim.JMathAnimScene;
 import java.io.File;
 import java.io.IOException;
 import java.util.logging.Level;
@@ -17,6 +18,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
+import tests.JMathAnim;
 
 /**
  *
@@ -27,9 +29,9 @@ public class ConfigLoader {
     public static void parseFile(String filename) {
         try {
             JMathAnimConfig config = JMathAnimConfig.getConfig();
-            File resourcesDir = new File("resources");
-            config.resourcesDir = resourcesDir;
-            String baseFileName = resourcesDir.getCanonicalPath() + "\\" + filename;
+            File resourcesDir = JMathAnimConfig.getConfig().getResourcesDir();
+            String baseFileName = resourcesDir.getCanonicalPath() + File.separator + "config" + File.separator + filename;
+            JMathAnimScene.logger.info("Loading config file {}", baseFileName);
             File inputFile = new File(baseFileName);
             DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
             DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
@@ -43,12 +45,13 @@ public class ConfigLoader {
                     throw new Exception("XML File doesn't contain a valid config file");
                 } catch (Exception ex) {
                     Logger.getLogger(ConfigLoader.class.getName()).log(Level.SEVERE, null, ex);
+                    System.exit(1);
                 }
             }
 
             parseVideoOptions(config, root.getElementsByTagName("video"));
             parseBackgroundOptions(config, root.getElementsByTagName("background"));
-            parseTemplates(config, root.getElementsByTagName("templates"));
+            parseStyles(config, root.getElementsByTagName("styles"));
 
         } catch (IOException | SAXException | ParserConfigurationException ex) {
             Logger.getLogger(ConfigLoader.class.getName()).log(Level.SEVERE, null, ex);
@@ -66,12 +69,21 @@ public class ConfigLoader {
                         config.mediaW = Integer.parseInt(el.getAttribute("width"));
                         config.mediaH = Integer.parseInt(el.getAttribute("height"));
                         config.fps = Integer.parseInt(el.getAttribute("fps"));
+                        JMathAnimScene.logger.debug("Config read: Dimensions set to ({},{}), {} fps", config.mediaW, config.mediaH, config.fps);
                         break;
                     case "createMovie":
-                        config.setCreateMovie(Boolean.parseBoolean(item.getTextContent()));
+                        final boolean createMovie = Boolean.parseBoolean(item.getTextContent());
+                        config.setCreateMovie(createMovie);
+                        JMathAnimScene.logger.debug("Config read: Create movie set to {}", createMovie);
                         break;
                     case "showPreviewWindow":
-                        config.setShowPreviewWindow(Boolean.parseBoolean(item.getTextContent()));
+                        final boolean previewWindow = Boolean.parseBoolean(item.getTextContent());
+                        config.setShowPreviewWindow(previewWindow);
+                        JMathAnimScene.logger.debug("Config read: Show preview window set to {}", previewWindow);
+                        break;
+                    case "outputDir":
+                        config.setOutputDir(item.getTextContent());
+                        JMathAnimScene.logger.debug("Config read: Output dir set to {}", item.getTextContent());
                         break;
                 }
             }
@@ -90,6 +102,7 @@ public class ConfigLoader {
                 case "color":
                     String colorId = item.getTextContent();
                     config.setBackgroundColor(JMColor.parseColorID(colorId));
+                    JMathAnimScene.logger.debug("Config read: Background color set to {}", colorId);
                     break;
                 case "shadows":
                     config.drawShadow = Boolean.parseBoolean(item.getTextContent());
@@ -98,11 +111,13 @@ public class ConfigLoader {
                     config.shadowOffsetX = Integer.parseInt(el.getAttribute("offsetX"));
                     config.shadowOffsetY = Integer.parseInt(el.getAttribute("offsetY"));
                     config.shadowAlpha = Float.parseFloat(el.getAttribute("alpha"));
+                    JMathAnimScene.logger.debug("Config read: Draw shadows set to {}", config.drawShadow);
                     break;
                 case "image":
                     String backgroundFilename = item.getTextContent();
                     if (!"".equals(backgroundFilename)) {
-                        config.backGroundImage = config.resourcesDir.getCanonicalPath() + "\\" + backgroundFilename;
+                        config.backGroundImage = config.getResourcesDir().getCanonicalPath() + "\\" + backgroundFilename;
+                        JMathAnimScene.logger.debug("Config read: Background image set to {}", backgroundFilename);
                     }
                     break;
             }
@@ -110,16 +125,16 @@ public class ConfigLoader {
         }
     }
 
-    public static void parseTemplates(JMathAnimConfig config, NodeList templates) {
-        for (int k = 0; k < templates.getLength(); k++) {
-            Element elTemplate = (Element) templates.item(k);
-            NodeList templChilds = elTemplate.getElementsByTagName("template");
+    public static void parseStyles(JMathAnimConfig config, NodeList styles) {
+        for (int k = 0; k < styles.getLength(); k++) {
+            Element elStyle = (Element) styles.item(k);
+            NodeList templChilds = elStyle.getElementsByTagName("style");
             for (int n = 0; n < templChilds.getLength(); n++) {
                 Node item = templChilds.item(n);
                 MathObjectDrawingProperties mp = parseMathObjectDrawingProperties(item);
                 if (item.getNodeType() == Node.ELEMENT_NODE) {
                     Element el = (Element) item;
-                    config.templates.put(el.getAttribute("name"), mp);
+                    config.getStyles().put(el.getAttribute("name"), mp);
                 }
 
             }

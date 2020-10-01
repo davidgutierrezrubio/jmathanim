@@ -9,20 +9,20 @@
 <!--        <shadows kernelSize="8" offsetX="5" offsetY="5" alpha=".7">false</shadows>
         <image>fondo.png</image>-->
     </background>
-    <templates>
-        <template name="default">
+    <styles>
+        <style name="default">
             <drawColor>#FFFFFFFF</drawColor>
             <fillColor>#FF000000</fillColor>
             <thickness>1</thickness>
             <dashStyle>solid</dashStyle>
             <absoluteThickness>false</absoluteThickness>
-        </template>
-        <template name="red">
+        </style>
+        <style name="red">
             <drawColor>RED</drawColor>
             <fillColor>#FF000000</fillColor>
             <thickness>1</thickness>
             <dashStyle>dotted</dashStyle>
             <absoluteThickness>false</absoluteThickness>
-        </template>
-    </templates>
+        </style>
+    </styles>
 </JMathAnimConfig>

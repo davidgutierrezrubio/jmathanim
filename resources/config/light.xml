@@ -2,21 +2,21 @@
      <background>
         <color>#F0F0F0</color>
     </background>
-    <templates>
-        <template name="default">
+    <styles>
+        <style name="default">
             <drawColor>black</drawColor>
             <fillColor>#00000000</fillColor>
             <thickness>1</thickness>
-        </template>
-        <template name="solidred">
+        </style>
+        <style name="solidred">
             <drawColor>black</drawColor>
             <fillColor>red</fillColor>
             <thickness>2</thickness>
-        </template>
-         <template name="solidblue">
+        </style>
+         <style name="solidblue">
             <drawColor>black</drawColor>
             <fillColor>blue</fillColor>
             <thickness>2</thickness>
-        </template>
-    </templates>
+        </style>
+    </styles>
 </JMathAnimConfig>
