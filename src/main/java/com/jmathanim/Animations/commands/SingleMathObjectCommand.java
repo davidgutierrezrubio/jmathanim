@@ -9,6 +9,7 @@ import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.MathObject;
 
 /**
+ * Represents an Animation command performed on a single object
  *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
@@ -22,9 +23,7 @@ public abstract class SingleMathObjectCommand extends AbstractCommand {
 
     @Override
     public void addObjectsToScene(JMathAnimScene scene) {
-            scene.add(mathObject);
+        scene.add(mathObject);
     }
-
-   
 
 }

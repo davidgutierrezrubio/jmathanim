@@ -29,7 +29,7 @@ public abstract class JMathAnimScene {
     int x;
     final ArrayList<MathObject> objects;
     final ArrayList<Updateable> objectsToBeUpdated;
-    protected Renderer SCRenderer;
+    protected Renderer renderer;
     protected int frameCount;
     protected double fps;
     protected double dt;
@@ -63,15 +63,15 @@ public abstract class JMathAnimScene {
     public final void execute() {
 
         String nombre = this.getClass().getName();
-        logger.info("Running sketch: " + nombre);
+        logger.info("Running sketch {} ", nombre);
         setupSketch();
         createRenderer();
-        JMathAnimConfig.getConfig().setRenderer(SCRenderer);
+        JMathAnimConfig.getConfig().setRenderer(renderer);
 
         //In the global variable store Scene, Renderer and main Camera
         conf.setScene(this);
         runSketch();
-        SCRenderer.finish(frameCount);//Finish rendering jobs
+        renderer.finish(frameCount);//Finish rendering jobs
 
     }
 
@@ -156,7 +156,7 @@ public abstract class JMathAnimScene {
         objects.sort((MathObject o1, MathObject o2) -> (o1.getLayer() - o2.getLayer()));
         for (MathObject obj : objects) {
             if (obj.visible) {
-                obj.draw(SCRenderer);
+                obj.draw(renderer);
             }
         }
 
@@ -166,7 +166,7 @@ public abstract class JMathAnimScene {
      * Advance one frame, making all necessary drawings
      */
     public final void advanceFrame() {
-        SCRenderer.clear();
+        renderer.clear();
         doDraws();
         frameCount++;
         saveMPFrame();
@@ -177,7 +177,7 @@ public abstract class JMathAnimScene {
 
     private void saveMPFrame() {
 
-        SCRenderer.saveFrame(frameCount);
+        renderer.saveFrame(frameCount);
     }
 
     /**
@@ -226,7 +226,7 @@ public abstract class JMathAnimScene {
     }
 
     public Camera getCamera() {
-        return SCRenderer.getCamera();
+        return renderer.getCamera();
     }
 
 }

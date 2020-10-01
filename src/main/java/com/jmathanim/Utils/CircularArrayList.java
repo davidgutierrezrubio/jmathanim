@@ -6,6 +6,8 @@
 package com.jmathanim.Utils;
 
 /**
+ * An ArrayList where elements can be accesed cyclicly. get(size()+k) returns
+ * get(k)
  *
  * @author David
  */

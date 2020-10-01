@@ -28,7 +28,7 @@ public abstract class Scene2D extends JMathAnimScene {
         dt=1./fps;
         renderer = new Java2DRenderer(this);
         camera=renderer.getCamera();
-        SCRenderer=renderer;
+        super.renderer=renderer;
     }
 
    
