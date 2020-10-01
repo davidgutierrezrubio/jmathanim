@@ -80,7 +80,7 @@ public class MathObjectDrawingProperties {
         int b = ThreadLocalRandom.current().nextInt(0, 255 + 1);
         return new Color(r, g, b);
     }
-    
+   
     public void setFillAlpha(float alpha) {
         this.fillColor.alpha = alpha;
     }

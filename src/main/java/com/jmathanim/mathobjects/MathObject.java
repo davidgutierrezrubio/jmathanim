@@ -52,7 +52,6 @@ public abstract class MathObject implements Drawable, Updateable, Stateable {
      */
 //    protected double drawParam;
 
-
     public int updateLevel;
 //    private Point anchorPoint;
     public Point absoluteAnchorPoint;
@@ -320,6 +319,26 @@ public abstract class MathObject implements Drawable, Updateable, Stateable {
 
     public <T extends MathObject> T fillAlpha(double alpha) {
         mp.fillColor.alpha = alpha;
+        return (T) this;
+    }
+
+    /**
+     * Multiplies alpha Fill color by a scale
+     *
+     * @param t Scale to multiply alpha
+     */
+    public <T extends MathObject> T multFillAlpha(double t) {
+        this.mp.fillColor.alpha *= t;
+        return (T) this;
+    }
+
+    /**
+     * Multiplies alph Draw color by a scale
+     *
+     * @param t Scale to multiply alpha
+     */
+    public <T extends MathObject> T multDrawAlpha(double t) {
+        this.mp.drawColor.alpha *= t;
         return (T) this;
     }
 

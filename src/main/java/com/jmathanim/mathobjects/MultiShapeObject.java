@@ -103,8 +103,6 @@ public class MultiShapeObject extends MathObject {
         }
     }
 
-
-
     @Override
     public void draw(Renderer r) {
 
@@ -149,6 +147,22 @@ public class MultiShapeObject extends MathObject {
         return (T) this;
     }
 
+    @Override
+    public <T extends MathObject> T multDrawAlpha(double t) {
+        for (Shape jmp : shapes) {
+            jmp.multDrawAlpha(t);
+        }
+        return (T) this;
+    }
+
+    @Override
+    public <T extends MathObject> T multFillAlpha(double t) {
+        for (Shape jmp : shapes) {
+            jmp.multFillAlpha(t);
+        }
+        return (T) this;
+    }
+
     public Shape get(int n) {
         return shapes.get(n);
     }
@@ -167,7 +181,7 @@ public class MultiShapeObject extends MathObject {
 
     @Override
     public void restoreState() {
-        super.restoreState(); 
+        super.restoreState();
         for (Shape o : shapes) {
             o.restoreState();
         }
@@ -175,15 +189,12 @@ public class MultiShapeObject extends MathObject {
 
     @Override
     public void saveState() {
-        super.saveState(); 
+        super.saveState();
         for (Shape o : shapes) {
             o.saveState();
         }
     }
 
-    
-    
-    
     @Override
     public void unregisterChildrenToBeUpdated(JMathAnimScene scene) {
         for (Shape o : shapes) {

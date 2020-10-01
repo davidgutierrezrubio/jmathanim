@@ -120,4 +120,9 @@ public class JMColor {
         return resul;
     }
 
+    @Override
+    public String toString() {
+        return "(" +  r + ", " + g + "," + b + ", " + alpha + ')';
+    }
+
 }

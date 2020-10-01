@@ -7,7 +7,6 @@ package tests;
 
 import ch.qos.logback.classic.Level;
 import com.jmathanim.jmathanim.JMathAnimScene;
-import com.jmathanim.jmathanim.myScene;
 
 /**
  *

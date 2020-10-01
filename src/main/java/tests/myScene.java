@@ -3,10 +3,12 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.jmathanim.jmathanim;
+package tests;
 
 import com.jmathanim.Utils.Anchor;
 import com.jmathanim.Utils.ConfigLoader;
+import com.jmathanim.jmathanim.Scene2D;
+import com.jmathanim.mathobjects.Arrow2D;
 import com.jmathanim.mathobjects.LaTeXMathObject;
 import com.jmathanim.mathobjects.Point;
 
@@ -25,10 +27,14 @@ public class myScene extends Scene2D {
     @Override
     public void runSketch() {
 //        Shape sq=Shape.square().style("solidblue");
-        LaTeXMathObject sq = new LaTeXMathObject("$$x=\\pi$$");
-        sq.putAt(new Point(0,0), Anchor.BY_CENTER);
+//        LaTeXMathObject sq = new LaTeXMathObject("$$x=\\pi$$");
+//        sq.putAt(new Point(0,0), Anchor.BY_CENTER);
+        Arrow2D sq = Arrow2D.makeSimpleArrow2D(new Point(0, 0), new Point(1, .4), Arrow2D.TYPE_1);
         add(sq);
-        camera.adjustToObjects(sq);
+        waitSeconds(3);
+        sq.scale(.3);
+        waitSeconds(3);
+//        camera.adjustToObjects(sq);
         //TODO: Create default styles:
         //default: shapes
         //defaultEq: Equations

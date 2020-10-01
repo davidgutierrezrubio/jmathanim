@@ -239,8 +239,8 @@ public class Commands {
             public void execute(double t) {
                 mathObject.restoreState();
                 mathObject.scale(1 - t);
-                mathObject.drawAlpha(mathObject.mp.drawColor.alpha * (1 - t));
-                mathObject.fillAlpha(mathObject.mp.fillColor.alpha * (1 - t));
+                mathObject.multDrawAlpha(1 - t);
+                mathObject.multFillAlpha(1 - t);
                 mathObject.rotate(t * angle);
             }
 
@@ -267,8 +267,8 @@ public class Commands {
             public void execute(double t) {
                 mathObject.restoreState();
                 mathObject.scale(t);
-                mathObject.drawAlpha(mathObject.mp.drawColor.alpha * t);
-                mathObject.fillAlpha(mathObject.mp.fillColor.alpha * t);
+                mathObject.multDrawAlpha(t);
+                mathObject.multFillAlpha(t);
                 mathObject.rotate((1 - t) * angle);
             }
 

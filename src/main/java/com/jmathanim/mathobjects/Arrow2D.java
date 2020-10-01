@@ -98,7 +98,7 @@ public class Arrow2D extends MultiShapeObject {
 
     @Override
     public Arrow2D scale(double arrowSize) {
-        scaleArrowHead(arrowSize);
+        scaleArrowHead(arrowSize);//Class needs to be redefined as Shape, as Arrow cannot be scaled!
         return this;
     }
 
