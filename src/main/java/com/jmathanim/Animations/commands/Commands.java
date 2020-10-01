@@ -278,4 +278,49 @@ public class Commands {
             }
         }, runtime);
     }//End of growIn command
+
+    public static ApplyCommand fadeIn(MathObject object, double runtime) {
+        return new ApplyCommand(new SingleMathObjectCommand(object) {
+
+            @Override
+            public void initialize() {
+                mathObject.saveState();
+            }
+
+            @Override
+            public void execute(double t) {
+                mathObject.restoreState();
+                mathObject.multDrawAlpha(t);
+                mathObject.multFillAlpha(t);
+            }
+
+            @Override
+            public void finish() {
+                execute(1);
+            }
+        }, runtime);
+    }//End of fadeIn command
+
+    public static ApplyCommand fadeOut(MathObject object, double runtime) {
+        return new ApplyCommand(new SingleMathObjectCommand(object) {
+
+            @Override
+            public void initialize() {
+                mathObject.saveState();
+            }
+
+            @Override
+            public void execute(double t) {
+                mathObject.restoreState();
+                mathObject.multDrawAlpha(1 - t);
+                mathObject.multFillAlpha(1 - t);
+            }
+
+            @Override
+            public void finish() {
+                execute(0);
+                JMathAnimConfig.getConfig().getScene().remove(mathObject);
+            }
+        }, runtime);
+    }//End of fadeOut command
 }

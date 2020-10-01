@@ -8,7 +8,6 @@ package tests;
 import com.jmathanim.Animations.AffineTransform;
 import com.jmathanim.Animations.Animation;
 import com.jmathanim.Animations.ApplyCommand;
-import com.jmathanim.Animations.FadeOut;
 import com.jmathanim.Animations.ShowCreation;
 import com.jmathanim.Animations.Highlight;
 import com.jmathanim.Animations.Transform;
@@ -153,14 +152,14 @@ public class PointSimple extends Scene2D {
         play.zoomToRect(pentagon.getBoundingBox().addGap(.3, .3), 2);
         for (Point p : pentagon.jmpath.getPoints()) {
 //            p.thickness(3);
-            play.fadein(p, .3);
+            play.fadeIn(p, .3);
         }
         waitSeconds(5);
         for (int n = 0; n < 10; n += 2) {
             Shape s = Shape.segment(pentagon.getPoint(n), pentagon.getPoint(n + 2));
             s.thickness(2).drawColor(JMColor.RED);
             s.mp.dashStyle = MathObjectDrawingProperties.DASHED;
-            play.fadein(s, 1);
+            play.fadeIn(s, 1);
         }
         waitSeconds(2);
         play.rotate(pentagon, Math.PI / 4, 2);
@@ -466,8 +465,8 @@ public class PointSimple extends Scene2D {
         waitSeconds(1);
         play.scale(p2, centro, .40, 2);
         waitSeconds(1);
-        FadeOut f1 = new FadeOut(p1, 1);
-        FadeOut f2 = new FadeOut(p2, 1);
+        ApplyCommand f1 = Commands.fadeOut(p1,1);
+        ApplyCommand f2 = Commands.fadeOut(p2,1);
         playAnimation(f1, f2);
         waitSeconds(5);
     }

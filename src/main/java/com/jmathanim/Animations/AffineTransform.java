@@ -6,6 +6,8 @@
 package com.jmathanim.Animations;
 
 import com.jmathanim.Utils.Vec;
+import com.jmathanim.jmathanim.JMathAnimScene;
+import com.jmathanim.mathobjects.Arrow2D;
 import com.jmathanim.mathobjects.Shape;
 import com.jmathanim.mathobjects.JMPathPoint;
 import com.jmathanim.mathobjects.MathObject;
@@ -124,6 +126,12 @@ public class AffineTransform {
             return;
         }
 
+        if (mObject instanceof Arrow2D) {
+            applyTransform(((Arrow2D) mObject).getBody());
+            return;
+        }
+        
+        
         if (mObject instanceof JMPathPoint) {
             JMPathPoint jmPDst = (JMPathPoint) mObject;
             JMPathPoint pSrc = jmPDst.copy();
@@ -160,7 +168,7 @@ public class AffineTransform {
             }
             return;
         }
-            System.out.println("WARNING: Don't know how to perform an Affine Transform on object "+mObject.getClass().getName());
+        JMathAnimScene.logger.warn("Don't know how to perform an Affine Transform on object " + mObject.getClass().getName());
     }
 
     public <T extends MathObject> T getTransformedObject(MathObject obj) {

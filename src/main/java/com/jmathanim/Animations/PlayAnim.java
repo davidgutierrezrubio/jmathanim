@@ -28,8 +28,20 @@ public class PlayAnim {
         this.scene = scene;
     }
 
-    public void fadein(MathObject obj, double runTime) {
-        scene.playAnimation(new FadeIn(obj, runTime));
+    public void fadeIn(MathObject obj) {
+        scene.playAnimation(Commands.fadeIn(obj, 1));
+    }
+
+    public void fadeIn(MathObject obj, double runTime) {
+        scene.playAnimation(Commands.fadeIn(obj, runTime));
+    }
+
+    public void fadeOut(MathObject obj) {
+        scene.playAnimation(Commands.fadeOut(obj, 1));
+    }
+
+    public void fadeOut(MathObject obj, double runTime) {
+        scene.playAnimation(Commands.fadeOut(obj, runTime));
     }
 
     //Convenience methods

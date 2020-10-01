@@ -31,18 +31,19 @@ public class myScene extends Scene2D {
 //        sq.putAt(new Point(0,0), Anchor.BY_CENTER);
         Arrow2D sq = Arrow2D.makeSimpleArrow2D(new Point(0, 0), new Point(1, .4), Arrow2D.TYPE_1);
         add(sq);
-        waitSeconds(3);
-        sq.scale(.3);
-        waitSeconds(3);
+//        waitSeconds(3);
+//        sq.scale(.3);
+//        waitSeconds(3);
 //        camera.adjustToObjects(sq);
         //TODO: Create default styles:
         //default: shapes
         //defaultEq: Equations
-        play.growIn(sq);
+        play.fadeIn(sq);
         waitSeconds(1);
-        play.rotate(sq, PI / 3, 10);
+        play.rotate(sq, PI / 3, 3);
+        play.shift(sq, .5,-.3, 3);
         waitSeconds(1);
-        play.shrinkOut(sq);
+        play.fadeOut(sq);
         waitSeconds(1);
     }
 
