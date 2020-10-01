@@ -6,14 +6,11 @@
 package com.jmathanim.Animations.TransformStrategies;
 
 import com.jmathanim.Animations.AffineTransform;
-import com.jmathanim.Utils.Vec;
-import com.jmathanim.mathobjects.JMPathPoint;
 import com.jmathanim.mathobjects.Point;
-import com.jmathanim.mathobjects.Shape;
 
 /**
  *
- * @author David Gutiérrez Rubio <davidgutierrezrubio@gmail.com>
+ * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
 public class RotateAndScaleXYStrategyTransform extends MatrixTransformStrategy{
 

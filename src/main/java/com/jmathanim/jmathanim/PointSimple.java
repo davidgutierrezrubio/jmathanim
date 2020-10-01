@@ -440,7 +440,7 @@ public class PointSimple extends Scene2D {
 
     public void pruebaDosPentagonos1Estrella() {
         Shape p1 = Shape.regularPolygon(5).drawColor(JMColor.GRAY);
-        Shape p2 = Shape.regularPolygon(5).copy().scale(1).drawColor(JMColor.GRAY);;
+        Shape p2 = Shape.regularPolygon(5).copy().scale(1).drawColor(JMColor.GRAY);
         Point centro = p1.getCenter().copy();
         add(centro);
         add(p1, p2);

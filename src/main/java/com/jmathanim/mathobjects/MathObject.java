@@ -14,8 +14,6 @@ import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.updateableObjects.Updateable;
-import java.awt.Color;
-import java.util.HashMap;
 import java.util.HashSet;
 
 /**
@@ -34,10 +32,6 @@ public abstract class MathObject implements Drawable, Updateable, Stateable {
     public static final int REGULAR_POLYGON = 6;
     public static final int GENERAL_POLYGON = 7;
     public static final int SEGMENT = 9;
-
-    public static final int SLICE_SIMPLE = 1;
-    public static final int SLICE_DOUBLE = 2;
-    public static final int SLICE_FOUR = 3;
 
     public MathObjectDrawingProperties mp;
     protected MathObjectDrawingProperties mpBackup;
@@ -58,17 +52,6 @@ public abstract class MathObject implements Drawable, Updateable, Stateable {
      */
 //    protected double drawParam;
 
-    /**
-     * Mathobjects dependent of this. These should be updated with its own
-     * method when this object changes. This is designed for Objects with its
-     * specific dependency function (MiddlePoint for example)
-     */
-    public final HashSet<Updateable> dependent;
-
-    /**
-     * MathObjects children of this (for example: Polygon has Point as vertices)
-     */
-    public final HashSet<MathObject> children;
 
     public int updateLevel;
 //    private Point anchorPoint;
@@ -83,10 +66,6 @@ public abstract class MathObject implements Drawable, Updateable, Stateable {
     public MathObject(MathObjectDrawingProperties prop) {
         mp = JMathAnimConfig.getConfig().getDefaultMP();//Default MP values
         mp.digestFrom(prop);//Copy all non-null values from prop
-//        ascendent=new HashSet<>();
-        dependent = new HashSet<>();
-        children = new HashSet<>();
-//        cousins=new HashSet<>();
         scenes = new HashSet<>();
         updateLevel = 0;
     }
@@ -101,10 +80,19 @@ public abstract class MathObject implements Drawable, Updateable, Stateable {
     /**
      * Move object so that center is the given coords
      *
+     * @param <T> MathObject subclass
      * @param coords Vec with coordinates of new center
+     * @return The same object, after moving
      */
     public abstract <T extends MathObject> T moveTo(Vec coords);
 
+    /**
+     * Move object so that center is the given point
+     *
+     * @param <T> MathObject subclass
+     * @param p Point with coordinates of new center
+     * @return The same object, after moving
+     */
     public <T extends MathObject> T moveTo(Point p) {
         return moveTo(p.v);
     }
@@ -112,11 +100,20 @@ public abstract class MathObject implements Drawable, Updateable, Stateable {
     /**
      * Shift object with the given vector
      *
-     * @param <T>
-     * @param shiftVector
+     * @param <T> MathObject subclass
+     * @param shiftVector Amount of shifting
+     * @return The same object, after shifting
      */
     public abstract <T extends MathObject> T shift(Vec shiftVector);
 
+    /**
+     * Scale from center of object (2D version)
+     *
+     * @param <T> MathObject subclass
+     * @param x x-coordinate of shift vector
+     * @param y y-coordinate of shift vector
+     * @return The same object, after shifting
+     */
     public <T extends MathObject> T shift(double x, double y) {
         return shift(new Vec(x, y));
     }
@@ -124,56 +121,91 @@ public abstract class MathObject implements Drawable, Updateable, Stateable {
     /**
      * Scale from center of object (2D version)
      *
-     * @param <T>
-     * @param sx
-     * @param sy
+     * @param <T> MathObject subclass
+     * @param sx x-scale factor
+     * @param sy y-scale factor
+     * @return The same object, after scaling
      */
     public <T extends MathObject> T scale(double sx, double sy) {
         scale(getCenter(), sx, sy);
         return (T) this;
     }
 
+    /**
+     * Scale from center of object (2D version) in a uniform scale
+     *
+     * @param <T> MathObject subclass
+     * @param s scale factor
+     * @return The same object, after scaling
+     */
     public <T extends MathObject> T scale(double s) {
         return scale(getCenter(), s, s);
     }
 
     /**
-     * Scale from center of object (2D version)
+     * Scale from a given center (2D version)
      *
-     * @param <T>
-     * @param p
-     * @param sx
-     * @param sy
-     * @return
+     * @param <T> MathObject subclass
+     * @param p Scale center
+     * @param sx x-scale factor
+     * @param sy y-scale factor
+     * @return The same object, after scaling
      */
     public <T extends MathObject> T scale(Point p, double sx, double sy) {
         return scale(p, sx, sy, 1);
     }
 
     /**
-     * Scale from center of object (3D version)
+     * Scale from the center of object (3D version)
      *
-     * @param sx
-     * @param sy
-     * @param sz
+     * @param <T> MathObject subclass
+     * @param sx x-scale factor
+     * @param sy y-scale factor
+     * @param sz z-scale factor
+     * @return The same object, after scaling
      */
     public <T extends MathObject> T scale(double sx, double sy, double sz) {
         scale(getBoundingBox().getCenter(), sx, sy, sz);
         return (T) this;
     }
 
+    /**
+     * Scale from a given center (3D version)
+     *
+     * @param <T> MathObject subclass
+     * @param scaleCenter Scale center
+     * @param sx x-scale factor
+     * @param sy y-scale factor
+     * @param sz z-scale factor
+     * @return The same object, after scaling
+     */
     public <T extends MathObject> T scale(Point scaleCenter, double sx, double sy, double sz) {
         AffineTransform tr = AffineTransform.create2DScaleTransform(scaleCenter, sx, sy, sz);
         tr.applyTransform(this);
         return (T) this;
     }
 
+    /**
+     * Performs a 2D-Rotation of the MathObject around the given rotation center
+     *
+     * @param <T> MathObject subclass
+     * @param center Rotation center
+     * @param angle Angle, in radism
+     * @return The same object, after rotating
+     */
     public <T extends MathObject> T rotate(Point center, double angle) {
         AffineTransform tr = AffineTransform.create2DRotationTransform(center, angle);
         tr.applyTransform(this);
         return (T) this;
     }
 
+    /**
+     * Performs a 2D-Rotation of the MathObject around the center of the object
+     *
+     * @param <T> MathObject subclass
+     * @param angle Angle, in radism
+     * @return The same object, after rotating
+     */
     public <T extends MathObject> T rotate(double angle) {
         return rotate(this.getCenter(), angle);
     }
@@ -181,8 +213,9 @@ public abstract class MathObject implements Drawable, Updateable, Stateable {
     /**
      * Returns a copy of the object
      *
-     * @param <T>
-     * @return copy of object, with identical properties
+     * @param <T> MathObject subclass
+     * @return copy of object, with identical properties. A deep copy is
+     * performed.
      */
     abstract public <T extends MathObject> T copy();
 
@@ -194,37 +227,33 @@ public abstract class MathObject implements Drawable, Updateable, Stateable {
 
     abstract public void processAfterNonLinearAnimation();
 
-    public void updateDependents() {
-        HashSet<Updateable> desC = (HashSet<Updateable>) dependent.clone();
-        for (Updateable mob : desC) {
-            mob.update();
-        }
-    }
-
-    public void addScene(JMathAnimScene scen) {
-        scenes.add(scen);
+    /**
+     * Add the given scene to the collection of scenes which this object has
+     * been added to.
+     *
+     * @param scene Scene
+     */
+    public void addScene(JMathAnimScene scene) {
+        scenes.add(scene);
 //        for (MathObject mob:cousins)
 //        {
 //            scen.add(mob);
 //        }
     }
 
-    public void removeScene(JMathAnimScene scen) {
-        scenes.remove(scen);
+    /**
+     * Remove the given scene from the collection of scenes which this object
+     * has been added to.
+     *
+     * @param scene Scene
+     */
+    public void removeScene(JMathAnimScene scene) {
+        scenes.remove(scene);
 //         for (MathObject mob:descendent)
 //        {
 //            mob.removeScene(scen);
 //        }
     }
-
-    /**
-     * Sets the drawing parameter. This method alters the drawing parameters of
-     * the MathObject so that it displays only partially. It is used for
-     * animation ShowCreation, for example
-     *
-     * @param t Parameter to draw (0=nothing, 1=draw the entire object)
-     */
-    public abstract void setDrawParam(double t, int sliceType);
 
     /**
      * Returns the Bounding box with limits of the MathObject
@@ -346,15 +375,38 @@ public abstract class MathObject implements Drawable, Updateable, Stateable {
         return (T) this;
     }
 
+    /**
+     * Sets the layer where this object belongs. Lower layers means that the
+     * object will be drawed first and appear under other objects. The number
+     * can be any integer
+     *
+     * @param <T> MathObject subclass
+     * @param layer Layer number
+     * @return The object
+     */
     public <T extends MathObject> T setLayer(int layer) {
         this.layer = layer;
         return (T) this;
     }
 
+    /**
+     * Returns the layer where this object belongs to
+     *
+     * @return The layer number
+     */
     public int getLayer() {
         return layer;
     }
-    public <T extends MathObject> T style(String name){
+
+    /**
+     * Sets the given style, as defined in config files. If no such style
+     * exists, there is no effect, apart from a warning message
+     *
+     * @param <T> MathObject subclass
+     * @param name Name of the style being applied
+     * @return The object
+     */
+    public <T extends MathObject> T style(String name) {
         mp.loadFromTemplate(name);
         return (T) this;
     }

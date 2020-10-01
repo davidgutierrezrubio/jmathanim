@@ -11,12 +11,11 @@ import com.jmathanim.Utils.MathObjectDrawingProperties;
 import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
-import java.awt.Color;
 import java.util.ArrayList;
 
 /**
  *
- * @author David Gutiérrez Rubio <davidgutierrezrubio@gmail.com>
+ * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
 public class Shape extends MathObject {
 
@@ -37,14 +36,14 @@ public class Shape extends MathObject {
 
     public Shape(JMPath jmpath, MathObjectDrawingProperties mp) {
         super(mp);
-        vertices = new ArrayList<JMPathPoint>();
+        vertices = new ArrayList<>();
         this.jmpath = jmpath;
         needsRecalcControlPoints = false;
     }
 
     public Shape(MathObjectDrawingProperties mp) {//TODO: Fix this
         super(mp);
-        vertices = new ArrayList<JMPathPoint>();
+        vertices = new ArrayList<>();
         jmpath = new JMPath();
         needsRecalcControlPoints = false;
     }
@@ -55,25 +54,6 @@ public class Shape extends MathObject {
 
     public Point getPoint(int n) {
         return jmpath.getJMPoint(n).p;
-    }
-
-    /**
-     * This method computes all necessary points to the path (interpolation and
-     * control)
-     */
-    protected final void computeJMPathFromVertices(boolean close) {
-        jmpath.clear();//clear points
-        for (JMPathPoint p : vertices) {
-            jmpath.addJMPoint(p);
-        }
-//        if (close) {
-//            jmpath.close();
-//        } else {
-//            jmpath.open();
-//        }
-
-        jmpath.generateControlPoints();
-        needsRecalcControlPoints = false;
     }
 
     public JMPath getPath() {
@@ -115,35 +95,7 @@ public class Shape extends MathObject {
         return (T) this;
     }
 
-    @Override
-    public void setDrawParam(double drawParam, int numSlices) {
-
-        //If this is the first call, be sure to store visibility status
-        if (drawParam == 0) {
-            fillAlphaTemp = mp.fillColor.alpha;
-            visibilityTemp = new ArrayList<Boolean>();
-            for (int n = 0; n < jmpath.jmPathPoints.size(); n++) {
-                visibilityTemp.add(jmpath.jmPathPoints.get(n).isThisSegmentVisible);
-            }
-        }
-
-        mp.setFillAlpha((float) (fillAlphaTemp * drawParam));
-
-//        jmpath.isFilled = (drawParam >= 1);//Fill path if is completely drawn
-        double sliceSize = jmpath.jmPathPoints.size() * drawParam / numSlices;
-
-        for (int n = 0; n < jmpath.jmPathPoints.size() / numSlices; n++) {
-            for (int k = 0; k < numSlices; k++) {//TODO: Store initial visible in array
-                int h = k * jmpath.jmPathPoints.size() / numSlices + n;
-                if (n < sliceSize) {
-                    jmpath.getJMPoint(h).isThisSegmentVisible = visibilityTemp.get(h);
-                } else {
-                    jmpath.getJMPoint(h).isThisSegmentVisible = false;
-                }
-            }
-        }
-
-    }
+  
 
     public void removeInterpolationPoints() {
         jmpath.removeInterpolationPoints();

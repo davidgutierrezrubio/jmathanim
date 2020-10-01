@@ -10,7 +10,7 @@ import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.mathobjects.updateableObjects.Updateable;
 import java.util.ArrayList;
-import java.util.List;
+import java.util.Arrays;
 
 /**
  * This class stores info for drawing a curve with control points, tension...
@@ -53,7 +53,7 @@ public class JMPath implements Updateable, Stateable {
         return resul;
     }
 
-    public void setPoints(ArrayList<Point> points) {
+    public final void setPoints(ArrayList<Point> points) {
         this.jmPathPoints.clear();
         for (Point p : points) {
             this.jmPathPoints.add(new JMPathPoint(p, true, JMPathPoint.TYPE_VERTEX));
@@ -87,9 +87,7 @@ public class JMPath implements Updateable, Stateable {
     }
 
     public void addJMPoint(JMPathPoint... points) {
-        for (JMPathPoint e : points) {
-            jmPathPoints.add(e);
-        }
+        jmPathPoints.addAll(Arrays.asList(points));
     }
 
     public void addCPoint1(Point e) {
@@ -371,10 +369,11 @@ public class JMPath implements Updateable, Stateable {
     }
 
     /**
-     * Cycle points in path. Point(0) becomes Point(step), Point(1) becomes
-     * Point(step+1)... Useful to align paths minimizing distances
+     * Cycle points in path.Point(0) becomes Point(step), Point(1) becomes
+ Point(step+1)... Useful to align paths minimizing distances
      *
      * @param step
+     * @param direction
      */
     public void cyclePoints(int step, int direction) {
 
@@ -431,52 +430,52 @@ public class JMPath implements Updateable, Stateable {
         return resul;
     }
 
-    /**
-     * Cycles the point of closed path (and inverts its orientation if
-     * necessary) in order to minimize the sum of squared distances from the
-     * points of two paths with the same number of nodes
-     *
-     * @param path2
-     */
-    public void minimizeSumDistance_old(JMPath path2) {
-        ArrayList<Double> distances = new ArrayList<Double>();
-        double minDistanceVarNoChangeDir = 999999999;
-        int minStepNoChangeDir = 0;
-
-        //If the path is open, we can't cycle the path, so 
-        //we set numberOfCycles to 1
-        int numberOfCycles = this.size();// (this.isClosed ? this.size() : 1);
-        //First, without changing direction
-        for (int step = 0; step < numberOfCycles; step++) {
-            JMPath tempPath = this.copy();
-            tempPath.cyclePoints(step, 1);
-            double distanceVar = tempPath.sumDistance(path2);
-            distances.add(distanceVar);
-            if (distanceVar < minDistanceVarNoChangeDir) {
-                minDistanceVarNoChangeDir = distanceVar;
-                minStepNoChangeDir = step;
-            }
-
-        }
-        double minDistanceVarChangeDir = 999999999;
-        int minStepChangeDir = 0;
-        for (int step = 0; step < numberOfCycles; step++) {
-            JMPath tempPath = this.copy();
-            tempPath.cyclePoints(step, -1);
-            double distanceVar = tempPath.sumDistance(path2);
-            distances.add(distanceVar);
-            if (distanceVar < minDistanceVarChangeDir) {
-                minDistanceVarChangeDir = distanceVar;
-                minStepChangeDir = step;
-            }
-            if (minDistanceVarNoChangeDir < minDistanceVarChangeDir) {
-                this.cyclePoints(minStepNoChangeDir, 1);
-            } else {
-                this.cyclePoints(minStepChangeDir, -1);
-            }
-
-        }
-    }
+//    /**
+//     * Cycles the point of closed path (and inverts its orientation if
+//     * necessary) in order to minimize the sum of squared distances from the
+//     * points of two paths with the same number of nodes
+//     *
+//     * @param path2
+//     */
+//    public void minimizeSumDistance_old(JMPath path2) {
+//        ArrayList<Double> distances = new ArrayList<Double>();
+//        double minDistanceVarNoChangeDir = 999999999;
+//        int minStepNoChangeDir = 0;
+//
+//        //If the path is open, we can't cycle the path, so 
+//        //we set numberOfCycles to 1
+//        int numberOfCycles = this.size();// (this.isClosed ? this.size() : 1);
+//        //First, without changing direction
+//        for (int step = 0; step < numberOfCycles; step++) {
+//            JMPath tempPath = this.copy();
+//            tempPath.cyclePoints(step, 1);
+//            double distanceVar = tempPath.sumDistance(path2);
+//            distances.add(distanceVar);
+//            if (distanceVar < minDistanceVarNoChangeDir) {
+//                minDistanceVarNoChangeDir = distanceVar;
+//                minStepNoChangeDir = step;
+//            }
+//
+//        }
+//        double minDistanceVarChangeDir = 999999999;
+//        int minStepChangeDir = 0;
+//        for (int step = 0; step < numberOfCycles; step++) {
+//            JMPath tempPath = this.copy();
+//            tempPath.cyclePoints(step, -1);
+//            double distanceVar = tempPath.sumDistance(path2);
+//            distances.add(distanceVar);
+//            if (distanceVar < minDistanceVarChangeDir) {
+//                minDistanceVarChangeDir = distanceVar;
+//                minStepChangeDir = step;
+//            }
+//            if (minDistanceVarNoChangeDir < minDistanceVarChangeDir) {
+//                this.cyclePoints(minStepNoChangeDir, 1);
+//            } else {
+//                this.cyclePoints(minStepChangeDir, -1);
+//            }
+//
+//        }
+//    }
 
     void shift(Vec shiftVector) {
         for (JMPathPoint p : jmPathPoints) {

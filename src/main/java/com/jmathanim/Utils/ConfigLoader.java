@@ -5,11 +5,8 @@
  */
 package com.jmathanim.Utils;
 
-import com.jmathanim.mathobjects.Arrow2D;
-import com.jmathanim.mathobjects.SVGMathObject;
 import java.io.File;
 import java.io.IOException;
-import static java.lang.Boolean.parseBoolean;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.xml.parsers.DocumentBuilder;
@@ -17,14 +14,13 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 /**
  *
- * @author David Gutiérrez Rubio <davidgutierrezrubio@gmail.com>
+ * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
 public class ConfigLoader {
 
@@ -42,7 +38,7 @@ public class ConfigLoader {
 
             Element root = doc.getDocumentElement();
             String n = root.getNodeName();
-            if (root.getNodeName() != "JMathAnimConfig") {
+            if (!"JMathAnimConfig".equals(root.getNodeName())) {
                 try {
                     throw new Exception("XML File doesn't contain a valid config file");
                 } catch (Exception ex) {
@@ -54,11 +50,7 @@ public class ConfigLoader {
             parseBackgroundOptions(config, root.getElementsByTagName("background"));
             parseTemplates(config, root.getElementsByTagName("templates"));
 
-        } catch (IOException ex) {
-            Logger.getLogger(ConfigLoader.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (SAXException ex) {
-            Logger.getLogger(ConfigLoader.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (ParserConfigurationException ex) {
+        } catch (IOException | SAXException | ParserConfigurationException ex) {
             Logger.getLogger(ConfigLoader.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
@@ -109,7 +101,7 @@ public class ConfigLoader {
                     break;
                 case "image":
                     String backgroundFilename = item.getTextContent();
-                    if (backgroundFilename != "") {
+                    if (!"".equals(backgroundFilename)) {
                         config.backGroundImage = config.resourcesDir.getCanonicalPath() + "\\" + backgroundFilename;
                     }
                     break;

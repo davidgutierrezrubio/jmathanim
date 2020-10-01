@@ -13,6 +13,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -26,7 +27,7 @@ import org.w3c.dom.NodeList;
  * This class manages import from SVG files and converting them into multipath
  * objects
  *
- * @author David Gutiérrez Rubio <davidgutierrezrubio@gmail.com>
+ * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
 public class SVGMathObject extends MultiShapeObject {
 
@@ -47,7 +48,7 @@ public class SVGMathObject extends MultiShapeObject {
 
     public SVGMathObject(String fname) {
         filename = fname;
-        if (filename != "")
+        if (!"".equals(filename))
         try {
             importSVG(new File(filename));
         } catch (Exception ex) {
@@ -56,7 +57,7 @@ public class SVGMathObject extends MultiShapeObject {
        
     }
 
-    protected void importSVG(File file) throws Exception {
+    protected final void importSVG(File file) throws Exception {
         DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
         DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
         org.w3c.dom.Document doc = dBuilder.parse(file);
@@ -74,7 +75,7 @@ public class SVGMathObject extends MultiShapeObject {
                 if (path.jmPathPoints.size() > 0) {
                     path.pathType = JMPath.SVG_PATH; //Mark this as a SVG path
 
-                    if (eElement.getAttribute("fill") == "none") {
+                    if ("none".equals(eElement.getAttribute("fill"))) {
                         mp.setFilled(false);//TODO: THIS IS NOT WORKING
                     } else {
                         mp.setFilled(false);
@@ -148,9 +149,7 @@ public class SVGMathObject extends MultiShapeObject {
                     tok2 = tok2.replace("|", ".");
                 }
             }
-            for (String tAdd : tok2.split(" ")) {
-                tokens.add(tAdd);
-            }
+            tokens.addAll(Arrays.asList(tok2.split(" ")));
         }
 
         debugSVG(tokens);
@@ -303,7 +302,7 @@ public class SVGMathObject extends MultiShapeObject {
                     previousPoint = pathLineTo(resul, closeX, closeY, true);
                     break;
                 default:
-                    if (token.substring(0, 1) != "") //Not a command, but a point!
+                    if (!"".equals(token.substring(0, 1))) //Not a command, but a point!
                     {
                         switch (previousCommand) {
                             case "M":

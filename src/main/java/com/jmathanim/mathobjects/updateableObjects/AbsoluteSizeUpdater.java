@@ -11,7 +11,7 @@ import com.jmathanim.mathobjects.MathObject;
 
 /**
  *
- * @author David Gutiérrez Rubio <davidgutierrezrubio@gmail.com>
+ * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
 public class AbsoluteSizeUpdater implements Updateable{
     public MathObject obj;

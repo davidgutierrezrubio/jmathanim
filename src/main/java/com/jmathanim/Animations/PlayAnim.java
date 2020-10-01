@@ -7,7 +7,6 @@ package com.jmathanim.Animations;
 
 import com.jmathanim.Animations.commands.Commands;
 import com.jmathanim.Cameras.Camera;
-import com.jmathanim.Utils.JMathAnimConfig;
 import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
@@ -19,7 +18,7 @@ import java.util.ArrayList;
 /**
  * Several static methods to easily perform most common animations
  *
- * @author David Gutiérrez Rubio <davidgutierrezrubio@gmail.com>
+ * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
 public class PlayAnim {
 

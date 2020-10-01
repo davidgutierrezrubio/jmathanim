@@ -13,6 +13,7 @@ import com.jmathanim.Utils.JMathAnimConfig;
 import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.updateableObjects.Updateable;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 /**
  *
@@ -167,9 +168,7 @@ public abstract class JMathAnimScene {
      */
     public void playAnimation(Animation... anims) {
         ArrayList<Animation> animArray = new ArrayList<>();
-        for (Animation anim : anims) {
-            animArray.add(anim);
-        }
+        animArray.addAll(Arrays.asList(anims));
         this.playAnimation(animArray);
     }
 

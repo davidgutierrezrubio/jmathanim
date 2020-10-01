@@ -16,14 +16,14 @@ import java.util.concurrent.ThreadLocalRandom;
  * This class stores all drawing properties of a MathObject like color,
  * thickness, alpha, etc.
  *
- * @author David Gutiérrez Rubio <davidgutierrezrubio@gmail.com>
+ * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
 public class MathObjectDrawingProperties {
-
+    
     public static final int SOLID = 1;
     public static final int DASHED = 2;
     public static final int DOTTED = 3;
-
+    
     public final JMColor drawColor;
     public final JMColor fillColor;
     public Double thickness = 1d;
@@ -31,7 +31,7 @@ public class MathObjectDrawingProperties {
     //to ensure zoom or resolution doesn't affect the result
     public Boolean absoluteThickness = false;
     public Integer dashStyle = 1;
-
+    
     public MathObjectDrawingProperties() {
         drawColor = new JMColor(1, 1, 1, 1);
         fillColor = new JMColor(0, 0, 0, 0);
@@ -56,7 +56,8 @@ public class MathObjectDrawingProperties {
     /**
      * Interpolate values from another MathObjecDrawingProperties
      *
-     * @param pro
+     * @param a
+     * @param b
      * @param t Interpolation parameter
      */
     public void interpolateFrom(MathObjectDrawingProperties a, MathObjectDrawingProperties b, double t) {
@@ -66,32 +67,32 @@ public class MathObjectDrawingProperties {
 
 //        interpolateColor(a.fillColor, b.fillColor, t);
         this.thickness = (1 - t) * a.thickness + t * b.thickness;
-
+        
     }
-
+    
     public void setRandomDrawColor() {
         drawColor.set(JMColor.random());
     }
-
+    
     public static Color randomColor() {
         int r = ThreadLocalRandom.current().nextInt(0, 255 + 1);
         int g = ThreadLocalRandom.current().nextInt(0, 255 + 1);
         int b = ThreadLocalRandom.current().nextInt(0, 255 + 1);
         return new Color(r, g, b);
     }
-
+    
     public void setFillAlpha(float alpha) {
         this.fillColor.alpha = alpha;
     }
-
+    
     public void setDrawAlpha(float alpha) {
         this.drawColor.alpha = alpha;
     }
-
+    
     public boolean isFilled() {
         return (this.fillColor.alpha > 0);
     }
-
+    
     public void setFilled(boolean fill) {
         if (fill && fillColor.alpha == 0) {
             setFillAlpha(1);
@@ -100,7 +101,7 @@ public class MathObjectDrawingProperties {
             setFillAlpha(0);
         }
     }
-
+    
     public double getThickness(Renderer r) {
         double resul;
         if (absoluteThickness) {
@@ -110,13 +111,13 @@ public class MathObjectDrawingProperties {
         }
         return resul;
     }
-
+    
     public MathObjectDrawingProperties copy() {//TODO: FIX THIS
         MathObjectDrawingProperties resul = new MathObjectDrawingProperties();
         resul.copyFrom(this);
         return resul;
     }
-
+    
     public void copyFrom(MathObjectDrawingProperties mp) {
 //        drawColor;
 //        fillColor;
@@ -149,17 +150,18 @@ public class MathObjectDrawingProperties {
         }
         return resul;
     }
-
+    
     public void loadFromTemplate(String name) {
         HashMap<String, MathObjectDrawingProperties> templates = JMathAnimConfig.getConfig().templates;
         if (templates.containsKey(name)) {
             this.digestFrom(templates.get(name));
+        } else {
+            JMathAnim.logger.warn("No template with name {} found", name);
         }
     }
     
-    public static MathObjectDrawingProperties createFromTemplate(String name)
-    {
-        MathObjectDrawingProperties resul=new MathObjectDrawingProperties();
+    public static MathObjectDrawingProperties createFromTemplate(String name) {
+        MathObjectDrawingProperties resul = new MathObjectDrawingProperties();
         resul.loadFromTemplate(name);
         return resul;
     }

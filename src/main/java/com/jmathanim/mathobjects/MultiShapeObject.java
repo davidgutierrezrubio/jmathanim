@@ -18,7 +18,7 @@ import java.util.ArrayList;
  * This class stores multiple JMPathObjects, and properly apply transforms and
  * animations to them
  *
- * @author David Gutiérrez Rubio <davidgutierrezrubio@gmail.com>
+ * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
 public class MultiShapeObject extends MathObject {
 
@@ -103,12 +103,7 @@ public class MultiShapeObject extends MathObject {
         }
     }
 
-    @Override
-    public void setDrawParam(double t, int sliceType) {
-        for (Shape jmp : shapes) {
-            jmp.setDrawParam(t, sliceType);//TODO:Change this
-        }
-    }
+
 
     @Override
     public void draw(Renderer r) {

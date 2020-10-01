@@ -9,9 +9,7 @@ import com.jmathanim.Cameras.Camera;
 import com.jmathanim.Renderers.Renderer;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import java.io.File;
-import java.util.Dictionary;
 import java.util.HashMap;
-import java.util.HashSet;
 
 /**
  * Stores all the data related to global configuration, to be accessed from any

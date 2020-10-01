@@ -7,7 +7,6 @@ package com.jmathanim.Animations;
 
 import com.jmathanim.Utils.JMathAnimConfig;
 import com.jmathanim.jmathanim.JMathAnimScene;
-import com.jmathanim.mathobjects.MathObject;
 
 /**
  * This abstract class stores an Animation Animations are always played using a
@@ -57,6 +56,7 @@ public abstract class Animation {
      * Process one frame of current animation If calling when finished, does
      * nothing
      *
+     * @param fps
      * @return True if animation has finished
      */
     public boolean processAnimation(double fps) {
@@ -65,7 +65,7 @@ public abstract class Animation {
             isInitialized = true;
             setFps(fps);
         }
-        boolean resul = false;
+        boolean resul;
 //        if (frame < numFrames || t < 1 + dt) {
         double lt = lambda(t);
         if (lt < 1 && lt >= 0) {

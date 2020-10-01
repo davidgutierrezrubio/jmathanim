@@ -117,7 +117,6 @@ public class Java2DRenderer extends Renderer {
         g2draw.setRenderingHints(rh);
         g2dFinalImage.setRenderingHints(rh);
         prepareEncoder();
-        parentScene = JMathAnimConfig.getConfig().getScene();
 
         //Proofs
         if (cnf.backGroundImage != null) {
@@ -142,6 +141,7 @@ public class Java2DRenderer extends Renderer {
      *
      * @param camera
      */
+    @Override
     public void setCamera(Camera camera) {
         this.camera = (Camera2D) camera;
         camera.setSize(width, height);
@@ -159,13 +159,12 @@ public class Java2DRenderer extends Renderer {
 
             try {
                 SwingUtilities.invokeAndWait(new Runnable() {
+                    @Override
                     public void run() {
                         previewWindow.setVisible(true);
                     }
                 });
-            } catch (InterruptedException ex) {
-                Logger.getLogger(Java2DRenderer.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (InvocationTargetException ex) {
+            } catch (InterruptedException | InvocationTargetException ex) {
                 Logger.getLogger(Java2DRenderer.class.getName()).log(Level.SEVERE, null, ex);
             }
 
@@ -256,6 +255,7 @@ public class Java2DRenderer extends Renderer {
             //Draw into a window
             try {
                 SwingUtilities.invokeAndWait(new Runnable() {
+                    @Override
                     public void run() {
                         Graphics gr = previewWindow.drawPanel.getGraphics();
                         gr.drawImage(finalImage, 0, 0, null);
@@ -287,12 +287,11 @@ public class Java2DRenderer extends Renderer {
 
                     }
                 });
-            } catch (InterruptedException ex) {
-            } catch (InvocationTargetException ex) {
+            } catch (InterruptedException | InvocationTargetException ex) {
             }
             while (previewWindow.pauseToggleButton.isSelected()) {
                 try {
-                    Thread.sleep(100);
+                    Thread.sleep(100);//TODO: Improve this
                 } catch (InterruptedException ex) {
                     Logger.getLogger(Java2DRenderer.class.getName()).log(Level.SEVERE, null, ex);
                 }
@@ -385,8 +384,8 @@ public class Java2DRenderer extends Renderer {
 
         int[] imagePixels = img.getRGB(0, 0, width, height, null, 0, width);
         for (int i = 0; i < imagePixels.length; i++) {
-            int color = imagePixels[i];// & 0xff000000;//TODO: Check this
-            color = (int) ((color >> 56) * cnf.shadowAlpha) << 56;
+            int color = imagePixels[i];// & 0xff000000;
+            color = (int) ((color >> 56) * cnf.shadowAlpha) << 56;//TODO: Check this
 
             imagePixels[i] = color;
         }
@@ -538,7 +537,7 @@ public class Java2DRenderer extends Renderer {
         resul.moveTo(scr[0], scr[1]);
         //Now I iterate to get the next points
         int numPoints = c.size();
-        int prev[] = {scr[0], scr[1]};
+//        int prev[] = {scr[0], scr[1]};
         int xy[] = {scr[0], scr[1]};
 
         for (int n = 1; n < numPoints + 1; n++) {
@@ -546,8 +545,8 @@ public class Java2DRenderer extends Renderer {
             Vec point = c.getJMPoint(n).p.v;
             Vec cpoint1 = c.getJMPoint(n - 1).cp1.v;
             Vec cpoint2 = c.getJMPoint(n).cp2.v;
-            prev[0] = xy[0];
-            prev[1] = xy[1];
+//            prev[0] = xy[0];
+//            prev[1] = xy[1];
             xy = cam.mathToScreen(point);
 
             int[] cxy1 = cam.mathToScreen(cpoint1);

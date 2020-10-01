@@ -12,14 +12,12 @@ import com.jmathanim.mathobjects.CanonicalJMPath;
 import com.jmathanim.mathobjects.JMPath;
 import com.jmathanim.mathobjects.JMPathPoint;
 import com.jmathanim.mathobjects.Shape;
-import java.awt.Color;
 import java.util.ArrayList;
-import javax.swing.JComboBox;
 
 /**
  * Separates paths into canonical forms to interpolate point by point
  *
- * @author David Gutiérrez Rubio <davidgutierrezrubio@gmail.com>
+ * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
 public class PointInterpolationCanonical implements TransformStrategy {
 
@@ -29,7 +27,7 @@ public class PointInterpolationCanonical implements TransformStrategy {
     private Shape mobjTransformed;
     private Shape mobjDestiny;
     private Shape originalShapeBaseCopy;
-    private static boolean DEBUG_COLORS = false;
+    private static final boolean DEBUG_COLORS = false;
 
     public PointInterpolationCanonical() {
         this.addedAuxiliaryObjectsToScene = new ArrayList<>();

@@ -15,7 +15,7 @@ import com.jmathanim.mathobjects.Point;
  * implements the interface updateable, which automatically updates its
  * components.
  *
- * @author David Gutiérrez Rubio <davidgutierrezrubio@gmail.com>
+ * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
 public class AveragePoint extends Point implements Updateable {
 

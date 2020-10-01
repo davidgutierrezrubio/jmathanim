@@ -10,7 +10,7 @@ import com.jmathanim.jmathanim.JMathAnimScene;
 
 /**
  *
- * @author David Gutiérrez Rubio <davidgutierrezrubio@gmail.com>
+ * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
 public class ApplyCommand extends Animation{
 

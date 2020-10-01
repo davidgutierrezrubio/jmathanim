@@ -6,12 +6,10 @@
 package com.jmathanim.Renderers;
 
 import com.jmathanim.Cameras.Camera;
-import com.jmathanim.Utils.JMColor;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.mathobjects.Shape;
 import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.Point;
-import java.awt.Color;
 
 /**
  * Coordinates x,y,z are always given in (0,0) to (w,h), where (0,0) is upper

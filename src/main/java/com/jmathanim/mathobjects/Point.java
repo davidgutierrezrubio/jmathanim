@@ -38,10 +38,10 @@ public class Point extends MathObject {
     }
 
     /**
-     *
-     * @param x
-     * @param y
-     * @param z
+     * Creates a new Point with coordinates x,y,z
+     * @param x x coordinate
+     * @param y y coordinate
+     * @param z z coordinate
      */
     public Point(double x, double y, double z) {
         this(x, y, z, null);
@@ -60,7 +60,7 @@ public class Point extends MathObject {
      *
      * @param x
      * @param y
-     * @param cnf
+     * @param mp
      */
     public Point(double x, double y, MathObjectDrawingProperties mp) {
         this(x, y, 0, mp);
@@ -170,10 +170,6 @@ public class Point extends MathObject {
     public void processAfterNonLinearAnimation() {
     }
 
-    @Override
-    public void setDrawParam(double t, int sliceType) {
-        //Nothing to do here, it's just a point!!
-    }
 
     @Override
     public Rect getBoundingBox() {

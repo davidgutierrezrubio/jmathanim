@@ -10,7 +10,7 @@ import com.jmathanim.jmathanim.JMathAnimScene;
 /**
  * A command to execute to perform some action in a single Object
  *
- * @author David Gutiérrez Rubio <davidgutierrezrubio@gmail.com>
+ * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
 public abstract class AbstractCommand {
 

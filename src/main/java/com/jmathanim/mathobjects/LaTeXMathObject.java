@@ -9,9 +9,6 @@ import com.jmathanim.Cameras.Camera;
 import com.jmathanim.Utils.Anchor;
 import com.jmathanim.Utils.JMColor;
 import com.jmathanim.Utils.JMathAnimConfig;
-import com.jmathanim.Utils.Rect;
-import com.jmathanim.jmathanim.JMathAnimScene;
-import java.awt.Color;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileWriter;
@@ -26,7 +23,7 @@ import java.util.logging.Logger;
 
 /**
  *
- * @author David Gutiérrez Rubio <davidgutierrezrubio@gmail.com>
+ * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
 public class LaTeXMathObject extends SVGMathObject {
 
@@ -39,9 +36,10 @@ public class LaTeXMathObject extends SVGMathObject {
     public static final double DEFAULT_SCALE_FACTOR = .025;
 
     /**
+     * Creates a new LaTeX generated text
      *
-     * @param scene
-     * @param text
+     * @param text The text to be compiled. Backslashes in Java strings should
+     * be writen with "\\"
      */
     public LaTeXMathObject(String text) {
         super();
@@ -158,12 +156,13 @@ public class LaTeXMathObject extends SVGMathObject {
         String line;
         String[] ar = {};
         Process p = Runtime.getRuntime().exec(command, null, outputDir);
-        BufferedReader bri = new BufferedReader(new InputStreamReader(p.getInputStream()));
-        BufferedReader bre = new BufferedReader(new InputStreamReader(p.getErrorStream()));
-        while ((line = bri.readLine()) != null) {
-            System.out.println(line);
+        BufferedReader bre;
+        try (BufferedReader bri = new BufferedReader(new InputStreamReader(p.getInputStream()))) {
+            bre = new BufferedReader(new InputStreamReader(p.getErrorStream()));
+            while ((line = bri.readLine()) != null) {
+                System.out.println(line);
+            }
         }
-        bri.close();
         while ((line = bre.readLine()) != null) {
             System.out.println(line);
         }

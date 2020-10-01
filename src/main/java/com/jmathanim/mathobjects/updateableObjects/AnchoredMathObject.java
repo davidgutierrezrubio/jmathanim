@@ -13,7 +13,7 @@ import com.jmathanim.mathobjects.Point;
 
 /**
  *
- * @author David Gutiérrez Rubio <davidgutierrezrubio@gmail.com>
+ * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
 public class AnchoredMathObject implements Updateable {
 

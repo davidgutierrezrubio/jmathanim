@@ -23,7 +23,7 @@ import org.apache.commons.math3.linear.RealMatrix;
  * 0 tx ty tz Where x,y,z is the image of (0,0,0) and v,w,z are the images of
  * canonical vectors
  *
- * @author David Gutiérrez Rubio <davidgutierrezrubio@gmail.com>
+ * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
 public class AffineTransform {
 

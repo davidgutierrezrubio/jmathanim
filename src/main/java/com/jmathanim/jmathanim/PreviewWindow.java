@@ -5,7 +5,6 @@
  */
 package com.jmathanim.jmathanim;
 
-import com.jmathanim.Renderers.Java2DRenderer;
 import com.jmathanim.Renderers.Renderer;
 import java.awt.BorderLayout;
 import java.awt.Frame;
@@ -16,7 +15,7 @@ import javax.swing.JToggleButton;
 
 /**
  *
- * @author David Gutiérrez Rubio <davidgutierrezrubio@gmail.com>
+ * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
 public class PreviewWindow extends Frame {
 

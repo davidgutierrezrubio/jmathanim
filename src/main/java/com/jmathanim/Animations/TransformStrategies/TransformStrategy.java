@@ -9,7 +9,7 @@ import com.jmathanim.mathobjects.Shape;
 
 /**
  *
- * @author David Gutiérrez Rubio <davidgutierrezrubio@gmail.com>
+ * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
 public interface TransformStrategy {
     

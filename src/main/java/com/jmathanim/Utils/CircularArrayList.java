@@ -18,7 +18,7 @@ public class CircularArrayList<E> extends ArrayList<E> {
     @Override
     public E get(int index) throws ArrayIndexOutOfBoundsException {
 
-        if (this.size() == 0) {
+        if (this.isEmpty()) {
             throw new ArrayIndexOutOfBoundsException("Circular array with no elements");
         }
         while (index >= this.size()) {
@@ -35,7 +35,7 @@ public class CircularArrayList<E> extends ArrayList<E> {
     @Override
     public E remove(int index) throws ArrayIndexOutOfBoundsException {
 
-        if (this.size() == 0) {
+        if (this.isEmpty()) {
             throw new ArrayIndexOutOfBoundsException("Circular array with no elements");
         }
         while (index >= this.size()) {
@@ -52,7 +52,7 @@ public class CircularArrayList<E> extends ArrayList<E> {
     @Override
     public void add(int index, E element) {
 
-        if (this.size() != 0) {
+        if (!this.isEmpty()) {
 
             while (index >= this.size()) {
                 index -= this.size();

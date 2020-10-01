@@ -10,7 +10,7 @@ import com.jmathanim.mathobjects.MathObject;
 
 /**
  *
- * @author David Gutiérrez Rubio <davidgutierrezrubio@gmail.com>
+ * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
 public abstract class SingleMathObjectCommand extends AbstractCommand {
 

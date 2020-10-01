@@ -8,12 +8,10 @@ package com.jmathanim.Utils;
 import com.jmathanim.jmathanim.JMathAnim;
 import java.awt.Color;
 import java.lang.reflect.Field;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
- * @author David Gutiérrez Rubio <davidgutierrezrubio@gmail.com>
+ * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
 public class JMColor {
 

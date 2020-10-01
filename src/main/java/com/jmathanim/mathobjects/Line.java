@@ -13,38 +13,45 @@ import com.jmathanim.Utils.Vec;
 /**
  * Represents an infinite line, given by 2 points.
  *
- * @author David Gutiérrez Rubio <davidgutierrezrubio@gmail.com>
+ * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
 public class Line extends Shape {
 
     final JMPathPoint bp1, bp2;
-    final Point p1,p2;
-    
-    
+    final Point p1, p2;
+
     /**
      * Creates a line that passes through p with direction v
      *
-     * @param p
-     * @param v
+     * @param p Point
+     * @param v Direction vector
      */
     public Line(Point p, Vec v) {
         this(p, p.add(v));
     }
 
+    /**
+     * Creates a line that passes through p1 and p2
+     *
+     * @param p1 First point
+     * @param p2 Second point
+     */
     public Line(Point p1, Point p2) {
         this(p1, p2, null);
     }
 
     /**
-     * Creates a new line that passes through given points
+     * Creates a new line that passes through given points, with specified
+     * MathDrawingProperties
      *
-     * @param p1
-     * @param p2
+     * @param p1 First point
+     * @param p2 Second point
+     * @param mp MathDrawingProperties
      */
     public Line(Point p1, Point p2, MathObjectDrawingProperties mp) {
         super(mp);
-        this.p1=p1;
-        this.p2=p2;
+        this.p1 = p1;
+        this.p2 = p2;
         jmpath.clear(); //Super constructor adds p1, p2. Delete them
         bp1 = new JMPathPoint(new Point(0, 0), true, JMPathPoint.TYPE_VERTEX);//trivial boundary points, just to initialize objects
         bp2 = new JMPathPoint(new Point(0, 0), true, JMPathPoint.TYPE_VERTEX);//trivial boundary points, just to initialize objects
@@ -59,7 +66,6 @@ public class Line extends Shape {
         return resul;
     }
 
-
     @Override
     public void processAfterNonLinearAnimation() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
@@ -70,7 +76,13 @@ public class Line extends Shape {
         computeBoundPoints(r);
         super.draw(r);
     }
-
+ /**
+  * Compute border points in the view area of the given renderer.
+  * This is need in order to draw an "infinite" line which always extend to the 
+  * whole visible area. 
+  * The border points are stored in bp1 and bp2
+  * @param r The renderer
+  */
     public void computeBoundPoints(Renderer r) {
         Rect rect = r.getCamera().getMathView();
         double[] intersectLine = rect.intersectLine(p1.v.x, p1.v.y, p2.v.x, p2.v.y);

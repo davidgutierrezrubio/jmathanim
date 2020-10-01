@@ -10,21 +10,16 @@ import com.jmathanim.Animations.TransformStrategies.AffineStrategyTransform;
 import com.jmathanim.Animations.TransformStrategies.HomotopyStrategyTransform;
 import com.jmathanim.Animations.TransformStrategies.RotateAndScaleXYStrategyTransform;
 import com.jmathanim.Animations.TransformStrategies.TransformStrategy;
-import com.jmathanim.Utils.JMathAnimConfig;
 import com.jmathanim.Utils.MathObjectDrawingProperties;
-import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.JMPath;
 import com.jmathanim.mathobjects.Shape;
-import com.jmathanim.mathobjects.JMPathPoint;
 import com.jmathanim.mathobjects.MathObject;
-import com.jmathanim.mathobjects.Point;
-import java.awt.Color;
 import java.util.ArrayList;
 
 /**
  *
- * @author David Gutiérrez Rubio <davidgutierrezrubio@gmail.com>
+ * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
 public class Transform extends Animation {
 
@@ -80,7 +75,9 @@ public class Transform extends Animation {
      * necessary) in order to minimize the sum of squared distances from the
      * points of two paths with the same number of nodes
      *
+     * @param path1
      * @param path2
+     * @param forceChangeDirection
      */
     public void minimizeSumDistance(JMPath path1, JMPath path2, boolean forceChangeDirection) {
         ArrayList<Double> distances = new ArrayList<Double>();
@@ -186,13 +183,11 @@ public class Transform extends Animation {
         mobjTransformed.setObjectType(mobjDestiny.getObjectType());
     }
 
-    /**
-     * Align the number of points of this path with the given one. Align the
-     * paths so that they have the same number of points, interpolating the
-     * smaller one if necessary.
+    /*
+     * Align the number of points of this path with the given one.Align the
+ paths so that they have the same number of points, interpolating the
+ smaller one if necessary.
      *
-     * @param path2
-     */
 //    public void alignPaths(JMPath path1, JMPath path2) {//TODO: Move this to Transform
 //        //TODO: What about open paths?
 //        JMPath pathSmall;
@@ -253,6 +248,9 @@ public class Transform extends Animation {
 //        pathSmall.addPointsFrom(resul);
 ////        pathSmall.generateControlPoints();//Not necessary
 //    }
+    */
+    
+    
     public int getMethod() {
         return method;
     }

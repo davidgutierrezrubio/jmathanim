@@ -12,7 +12,7 @@ import com.jmathanim.mathobjects.Shape;
 
 /**
  *
- * @author David Gutiérrez Rubio <davidgutierrezrubio@gmail.com>
+ * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
 public abstract class MatrixTransformStrategy implements TransformStrategy {
 

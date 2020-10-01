@@ -60,6 +60,7 @@ public class Camera2D extends Camera {
         setCenter(xx, yy);
     }
 
+    @Override
     public final void reset() {// TODO: CHange this
         this.setMathXY(-2, 2, 0);
     }

@@ -11,7 +11,7 @@ import java.util.ArrayList;
 /**
  * Stores 2 or more animations and play them in sequential order
  *
- * @author David Gutiérrez Rubio <davidgutierrezrubio@gmail.com>
+ * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
 public class Concatenate extends Animation {
 

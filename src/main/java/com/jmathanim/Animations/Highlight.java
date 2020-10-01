@@ -12,7 +12,7 @@ import com.jmathanim.mathobjects.MathObject;
 /**
  * Performs a short scale up and down to highlight an object
  *
- * @author David Gutiérrez Rubio <davidgutierrezrubio@gmail.com>
+ * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
 public class Highlight extends Animation {
 

@@ -7,7 +7,7 @@ package com.jmathanim.mathobjects.updateableObjects;
 
 /**
  *
- * @author David Gutiérrez Rubio <davidgutierrezrubio@gmail.com>
+ * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
 public interface Updateable {
     public int getUpdateLevel();

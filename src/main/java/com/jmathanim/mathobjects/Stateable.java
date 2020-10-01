@@ -7,7 +7,7 @@ package com.jmathanim.mathobjects;
 
 /**
  *
- * @author David Gutiérrez Rubio <davidgutierrezrubio@gmail.com>
+ * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
 public interface Stateable {
     public void saveState();

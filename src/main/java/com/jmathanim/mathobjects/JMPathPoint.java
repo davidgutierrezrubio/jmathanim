@@ -6,7 +6,6 @@
 package com.jmathanim.mathobjects;
 
 import com.jmathanim.Renderers.Renderer;
-import com.jmathanim.Utils.JMathAnimConfig;
 import com.jmathanim.Utils.Rect;
 import com.jmathanim.mathobjects.updateableObjects.Updateable;
 import com.jmathanim.Utils.Vec;
@@ -15,7 +14,7 @@ import java.text.DecimalFormat;
 
 /**
  *
- * @author David Gutiérrez Rubio <davidgutierrezrubio@gmail.com>
+ * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
 public class JMPathPoint extends MathObject implements Updateable, Stateable {
 
@@ -66,6 +65,7 @@ public class JMPathPoint extends MathObject implements Updateable, Stateable {
         }
     }
 
+    @Override
     public JMPathPoint copy() {
         Point pCopy = p.copy();
         JMPathPoint resul = new JMPathPoint(pCopy, isThisSegmentVisible, type);
@@ -99,7 +99,7 @@ public class JMPathPoint extends MathObject implements Updateable, Stateable {
         String pattern = "##0.##";
         DecimalFormat decimalFormat = new DecimalFormat(pattern);
         String labelStr;
-        if (label != "") {
+        if (!"".equals(label)) {
             labelStr = "[" + label + "]";
         } else {
             labelStr = label;
@@ -121,10 +121,12 @@ public class JMPathPoint extends MathObject implements Updateable, Stateable {
         shift(new Vec(x, y, z));
     }
 
+    @Override
     public <T extends MathObject> T shift(double x, double y) {
         return shift(new Vec(x, y));
     }
 
+    @Override
     public <T extends MathObject> T shift(Vec shiftVector) {
         p.v.addInSite(shiftVector);
         cp1.v.addInSite(shiftVector);
@@ -206,10 +208,7 @@ public class JMPathPoint extends MathObject implements Updateable, Stateable {
     public void processAfterNonLinearAnimation() {
     }
 
-    @Override
-    public void setDrawParam(double t, int sliceType) {
-    }
-
+   
     @Override
     public Rect getBoundingBox() {
         return p.getBoundingBox();

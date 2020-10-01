@@ -10,7 +10,7 @@ import com.jmathanim.mathobjects.Point;
 /**
  * Encapsulates data about a rectangle
  *
- * @author David Gutiérrez Rubio <davidgutierrezrubio@gmail.com>
+ * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
 public class Rect {//TODO: Adjust this to 3D coordinates
 

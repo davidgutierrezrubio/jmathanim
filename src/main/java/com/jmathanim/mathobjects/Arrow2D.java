@@ -10,7 +10,6 @@ import com.jmathanim.Renderers.Renderer;
 import com.jmathanim.Utils.JMathAnimConfig;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.mathobjects.updateableObjects.AbsoluteSizeUpdater;
-import java.awt.Color;
 import java.io.File;
 import java.io.IOException;
 import java.util.logging.Level;
@@ -18,7 +17,7 @@ import java.util.logging.Logger;
 
 /**
  *
- * @author David Gutiérrez Rubio <davidgutierrezrubio@gmail.com>
+ * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
 public class Arrow2D extends MultiShapeObject {
 
@@ -97,6 +96,7 @@ public class Arrow2D extends MultiShapeObject {
    
 
 
+    @Override
     public Arrow2D scale(double arrowSize) {
         scaleArrowHead(arrowSize);
         return this;

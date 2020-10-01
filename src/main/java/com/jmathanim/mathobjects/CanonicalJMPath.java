@@ -11,7 +11,7 @@ import java.util.Collection;
 
 /**
  *
- * @author David Gutiérrez Rubio <davidgutierrezrubio@gmail.com>
+ * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
 public class CanonicalJMPath {
 
