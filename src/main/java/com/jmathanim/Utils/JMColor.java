@@ -5,7 +5,7 @@
  */
 package com.jmathanim.Utils;
 
-import com.jmathanim.jmathanim.JMathAnim;
+import com.jmathanim.jmathanim.JMathAnimScene;
 import java.awt.Color;
 import java.lang.reflect.Field;
 
@@ -114,7 +114,7 @@ public class JMColor {
                 Field field = JMColor.class.getField(str.toUpperCase());
                 resul = (JMColor) field.get(JMColor.class);
             } catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException ex) {
-                JMathAnim.logger.warn("Color {} not recognized ",str);
+                JMathAnimScene.logger.warn("Color {} not recognized ",str);
             }
         }
         return resul;

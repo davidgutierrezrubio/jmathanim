@@ -6,7 +6,7 @@
 package com.jmathanim.Utils;
 
 import com.jmathanim.Renderers.Renderer;
-import com.jmathanim.jmathanim.JMathAnim;
+import com.jmathanim.jmathanim.JMathAnimScene;
 import java.awt.Color;
 import java.lang.reflect.Field;
 import java.util.HashMap;
@@ -146,7 +146,7 @@ public class MathObjectDrawingProperties {
             Field field = MathObjectDrawingProperties.class.getField(str.toUpperCase());
             resul = field.getInt(field);
         } catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException ex) {
-            JMathAnim.logger.warn("Dash pattern {} not recognized ", str);
+            JMathAnimScene.logger.warn("Dash pattern {} not recognized ", str);
         }
         return resul;
     }
@@ -156,7 +156,7 @@ public class MathObjectDrawingProperties {
         if (templates.containsKey(name)) {
             this.digestFrom(templates.get(name));
         } else {
-            JMathAnim.logger.warn("No template with name {} found", name);
+            JMathAnimScene.logger.warn("No template with name {} found", name);
         }
     }
     

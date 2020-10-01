@@ -8,7 +8,6 @@ import com.jmathanim.Utils.MathObjectDrawingProperties;
 import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.Utils.jhlabs.ShadowFilter;
-import com.jmathanim.jmathanim.JMathAnim;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.jmathanim.PreviewWindow;
 import com.jmathanim.mathobjects.Shape;
@@ -149,10 +148,10 @@ public class Java2DRenderer extends Renderer {
 
     public final void prepareEncoder() {
 
-        JMathAnim.logger.info("Preparing encoder");
+        JMathAnimScene.logger.info("Preparing encoder");
 
         if (cnf.showPreview) {
-            JMathAnim.logger.debug("Creating preview window");
+            JMathAnimScene.logger.debug("Creating preview window");
             //TODO: Move this to its own class
             previewWindow = new PreviewWindow(this);
             previewWindow.buildGUI();
@@ -171,7 +170,7 @@ public class Java2DRenderer extends Renderer {
         }
 
         if (cnf.createMovie) {
-            JMathAnim.logger.debug("Creating movie encoder for {}", saveFilePath);
+            JMathAnimScene.logger.debug("Creating movie encoder for {}", saveFilePath);
             muxer = Muxer.make(saveFilePath, null, "mp4");
             format = muxer.getFormat();
             codec = Codec.findEncodingCodec(format.getDefaultVideoCodecId());

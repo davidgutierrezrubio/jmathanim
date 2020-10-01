@@ -14,12 +14,16 @@ import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.updateableObjects.Updateable;
 import java.util.ArrayList;
 import java.util.Arrays;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
  * @author David Gutierrez Rubio davidgutierrezrubio@gmail.com
  */
 public abstract class JMathAnimScene {
+
+    public final static Logger logger = LoggerFactory.getLogger("com.jmathanim.jmathanim.JMathAnimScene");
     public static final double PI = 3.14159265358979323846;
     String[] DEFAULT_CONFIG = {
         "WIDTH", "800",
@@ -63,7 +67,7 @@ public abstract class JMathAnimScene {
     public final void execute() {
 
         String nombre = this.getClass().getName();
-        JMathAnim.logger.info("Running sketch: " + nombre);
+        logger.info("Running sketch: " + nombre);
         setupSketch();
         createRenderer();
         JMathAnimConfig.getConfig().setRenderer(SCRenderer);
@@ -73,6 +77,25 @@ public abstract class JMathAnimScene {
         runSketch();
         SCRenderer.finish(frameCount);//Finish rendering jobs
 
+    }
+
+    /**
+     * Returns the list of objects to be drawn
+     *
+     * @return An ArrayList of MathObject
+     */
+    public ArrayList<MathObject> getObjects() {
+        return objects;
+    }
+
+    /**
+     * Returns the list of objects to be updated. Note that this doesn't
+     * necessarily matchs with objects drawn
+     *
+     * @return An ArrayList of MathObject
+     */
+    public ArrayList<Updateable> getObjectsToBeUpdated() {
+        return objectsToBeUpdated;
     }
 
     public abstract void runSketch();
@@ -111,12 +134,12 @@ public abstract class JMathAnimScene {
         }
     }
 
-    public synchronized final MathObject[] remove(MathObject...objs) {
-        for (MathObject obj:objs){
-        objects.remove(obj);
-        obj.removeScene(this);
-        unregisterObjectToBeUpdated(obj);
-        obj.unregisterChildrenToBeUpdated(this);//TODO: Really unregister children??
+    public synchronized final MathObject[] remove(MathObject... objs) {
+        for (MathObject obj : objs) {
+            objects.remove(obj);
+            obj.removeScene(this);
+            unregisterObjectToBeUpdated(obj);
+            obj.unregisterChildrenToBeUpdated(this);//TODO: Really unregister children??
         }
         return objs;
     }
@@ -134,7 +157,7 @@ public abstract class JMathAnimScene {
             obj.update();
         }
         //Objects to be drawn on screen. Sort them by layer
-        objects.sort((MathObject o1, MathObject o2) -> (o1.getLayer()- o2.getLayer()));
+        objects.sort((MathObject o1, MathObject o2) -> (o1.getLayer() - o2.getLayer()));
         for (MathObject obj : objects) {
             if (obj.visible) {
                 obj.draw(SCRenderer);
@@ -151,8 +174,8 @@ public abstract class JMathAnimScene {
         doDraws();
         frameCount++;
         saveMPFrame();
-        previousNanoTime=nanoTime;
-           nanoTime = System.nanoTime();
+        previousNanoTime = nanoTime;
+        nanoTime = System.nanoTime();
 
     }
 

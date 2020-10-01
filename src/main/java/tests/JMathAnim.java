@@ -3,11 +3,11 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.jmathanim.jmathanim;
+package tests;
 
 import ch.qos.logback.classic.Level;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.jmathanim.jmathanim.JMathAnimScene;
+import com.jmathanim.jmathanim.myScene;
 
 /**
  *
@@ -15,7 +15,7 @@ import org.slf4j.LoggerFactory;
  */
 public class JMathAnim {
 
-    public final static Logger logger = LoggerFactory.getLogger("com.jmathanim.jmathanim.JMathAnim");
+    
 
     /**
      * A launcher for the scene
@@ -26,7 +26,6 @@ public class JMathAnim {
         JMathAnimScene scene = new myScene();
         ch.qos.logback.classic.Logger root = (ch.qos.logback.classic.Logger) org.slf4j.LoggerFactory.getLogger(ch.qos.logback.classic.Logger.ROOT_LOGGER_NAME);
         root.setLevel(Level.INFO);
-        logger.debug("Loading scene " + scene.getClass().getName());
 
         scene.execute();
     }

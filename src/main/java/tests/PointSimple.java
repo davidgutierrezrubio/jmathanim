@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.jmathanim.jmathanim;
+package tests;
 
 import com.jmathanim.Animations.AffineTransform;
 import com.jmathanim.Animations.Animation;
@@ -21,6 +21,8 @@ import com.jmathanim.Utils.JMathAnimConfig;
 import com.jmathanim.Utils.MathObjectDrawingProperties;
 import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.Vec;
+import com.jmathanim.jmathanim.JMathAnimScene;
+import com.jmathanim.jmathanim.Scene2D;
 import com.jmathanim.mathobjects.Arrow2D;
 import com.jmathanim.mathobjects.JMPath;
 import com.jmathanim.mathobjects.Shape;
@@ -182,8 +184,8 @@ public class PointSimple extends Scene2D {
     public synchronized void resetScene() {
         waitSeconds(3);
         JMathAnimScene scene = JMathAnimConfig.getConfig().getScene();
-        scene.objects.clear();
-        scene.objectsToBeUpdated.clear();
+        scene.getObjects().clear();
+        scene.getObjectsToBeUpdated().clear();
 
     }
 
