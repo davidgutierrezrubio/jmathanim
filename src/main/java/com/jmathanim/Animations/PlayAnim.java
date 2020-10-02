@@ -164,6 +164,18 @@ public class PlayAnim {
     }
 
     /**
+     * Plays an animation to introduce an object into scene.Scaling, rotating
+     * and applying alpha from 0 to current.
+     *
+     * @param mobj Object to animate
+     * @param angle Angle in radians
+     * @param runTime Duration in seconds
+     */
+    public void growIn(MathObject mobj, double angle, double runTime) {
+        scene.playAnimation(Commands.growIn(mobj, angle, runTime));
+    }
+
+    /**
      * Plays an animation to introduce an object into scene. Scaling and
      * applying alpha from 0 to current.
      *
@@ -177,12 +189,25 @@ public class PlayAnim {
     /**
      * Convenience method. Plays an animation to introduce an object into scene.
      * Scaling and applying alpha from 0 to current. Duration of the animation
-     * is 1 second.
+     * is 2 seconds.
      *
      * @param mobj Object to animate
      */
     public void growIn(MathObject mobj) {
-        growIn(mobj, 1);
+        growIn(mobj, 2);
+    }
+
+    /**
+     * Plays an animation to remove an object from a scene. Scaling and applying
+     * alpha from current to 0. Object is removed from scene after finishing
+     * animation.
+     *
+     * @param mobj Object to animate
+     * @param angle Angle in radians
+     * @param runTime Duration in seconds
+     */
+    public void shrinkOut(MathObject mobj, double angle, double runTime) {
+        scene.playAnimation(Commands.shrinkOut(mobj, angle, runTime));
     }
 
     /**
@@ -196,10 +221,11 @@ public class PlayAnim {
     public void shrinkOut(MathObject mobj, double runTime) {
         scene.playAnimation(Commands.shrinkOut(mobj, runTime));
     }
+
     /**
-     * Convenience method. Plays an animation to remove an object from a scene. Scaling and applying
-     * alpha from current to 0, with 1 second duration. Object is removed from scene after finishing
-     * animation.
+     * Convenience method. Plays an animation to remove an object from a scene.
+     * Scaling and applying alpha from current to 0, with 1 second duration.
+     * Object is removed from scene after finishing animation.
      *
      * @param mobj Object to animate
      */

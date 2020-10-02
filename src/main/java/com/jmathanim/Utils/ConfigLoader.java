@@ -58,7 +58,7 @@ public class ConfigLoader {
         }
     }
 
-    public static void parseVideoOptions(JMathAnimConfig config, NodeList videos) {
+    private static void parseVideoOptions(JMathAnimConfig config, NodeList videos) {
         for (int k = 0; k < videos.getLength(); k++) {
             NodeList videoChilds = videos.item(k).getChildNodes();
             for (int n = 0; n < videoChilds.getLength(); n++) {
@@ -125,7 +125,7 @@ public class ConfigLoader {
         }
     }
 
-    public static void parseStyles(JMathAnimConfig config, NodeList styles) {
+    private static void parseStyles(JMathAnimConfig config, NodeList styles) {
         for (int k = 0; k < styles.getLength(); k++) {
             Element elStyle = (Element) styles.item(k);
             NodeList templChilds = elStyle.getElementsByTagName("style");
@@ -141,7 +141,7 @@ public class ConfigLoader {
         }
     }
 
-    public static MathObjectDrawingProperties parseMathObjectDrawingProperties(Node template) {
+    private static MathObjectDrawingProperties parseMathObjectDrawingProperties(Node template) {
         MathObjectDrawingProperties mp = new MathObjectDrawingProperties();
         NodeList childs = template.getChildNodes();
         for (int n = 0; n < childs.getLength(); n++) {

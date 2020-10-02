@@ -34,6 +34,16 @@ public class myScene extends Scene2D {
 
     @Override
     public void runSketch() {
+        LaTeXMathObject B=new LaTeXMathObject("B");
+        Shape s=new Shape(B.shapes.get(0).getPath().allVisible(),null);
+        add(B);
+        B.fillAlpha(0.5);
+        camera.adjustToObjects(B);
+        camera.scale(1.5);
+        waitSeconds(5);
+    }
+
+    private void transformAxes() {
         //Create axis
         MultiShapeObject axes = new MultiShapeObject();
         for (double xx = -10; xx < 10; xx += .3) {
@@ -44,21 +54,21 @@ public class myScene extends Scene2D {
         }
 //        add(axes);
 //        add(Shape.circle());
-        Shape lineaPrueba = Shape.line(Point.make(0, -1.5), Point.make(2, -1.5)).drawColor(JMColor.RED);
+Shape lineaPrueba = Shape.line(Point.make(0, -1.5), Point.make(2, -1.5)).drawColor(JMColor.RED);
 //        waitSeconds(3);
-        Point a = Point.make(0, 0);
-        Point b = Point.make(1, 0);
-        Point c = Point.make(0, 1);
-        Point d = Point.make(0, 0);
-        Point e = Point.make(1, 0);
-        Point f = Point.make(1, 1);
-        playAnimation(Commands.affineTransform(axes, a, b, c, d, e, f, 5));
-        play.rotate(axes, PI / 3, 5);
-        play.scaleCamera(.5, 3);
-        playAnimation(Commands.reflectionByAxis(axes, new Point(0, 0), new Point(0, 1), 5));
-        // Lineas chungas
+Point a = Point.make(0, 0);
+Point b = Point.make(1, 0);
+Point c = Point.make(0, 1);
+Point d = Point.make(0, 0);
+Point e = Point.make(1, 0);
+Point f = Point.make(1, 1);
+playAnimation(Commands.affineTransform(axes, a, b, c, d, e, f, 5));
+play.rotate(axes, PI / 3, 5);
+play.scaleCamera(.5, 3);
+playAnimation(Commands.reflectionByAxis(axes, new Point(0, 0), new Point(0, 1), 5));
+// Lineas chungas
 
-        waitSeconds(3);
+waitSeconds(3);
     }
 
 }

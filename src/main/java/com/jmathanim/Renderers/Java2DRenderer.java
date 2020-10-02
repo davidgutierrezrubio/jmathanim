@@ -173,7 +173,7 @@ public class Java2DRenderer extends Renderer {
             try {
                 File tempPath = new File(cnf.getOutputDir().getCanonicalPath());
                 tempPath.mkdirs();
-                saveFilePath = new File(cnf.getOutputDir().getCanonicalPath() + File.separator + cnf.getOutputFileName() +"_"+cnf.mediaH+ ".mp4");
+                saveFilePath = new File(cnf.getOutputDir().getCanonicalPath() + File.separator + cnf.getOutputFileName() + "_" + cnf.mediaH + ".mp4");
                 JMathAnimScene.logger.info("Creating movie encoder for {}", saveFilePath);
                 muxer = Muxer.make(saveFilePath.getCanonicalPath(), null, "mp4");
             } catch (IOException ex) {
@@ -505,9 +505,14 @@ public class Java2DRenderer extends Renderer {
 
             if (mobj.mp.isFilled()) {
                 //Filled paths are better drawn supposing all points are visible...
-                Path2D.Double pathToFill = createPathFromJMPath(mobj, mobj.getPath().allVisible(), cam);
+                //This works well on simply paths, but not path with multiple holes (like letter "B")
+//                Path2D.Double pathToFill = createPathFromJMPath(mobj, mobj.getPath().allVisible(), cam);
+//                g2draw.setColor(mobj.mp.fillColor.getColor());
+//                g2draw.fill(pathToFill);
+
                 g2draw.setColor(mobj.mp.fillColor.getColor());
-                g2draw.fill(pathToFill);
+                g2draw.fill(path);
+
             }
             //Border is always drawed
             g2draw.setColor(mobj.mp.drawColor.getColor());

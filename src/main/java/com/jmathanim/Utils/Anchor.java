@@ -5,6 +5,7 @@
  */
 package com.jmathanim.Utils;
 
+import com.jmathanim.Cameras.Camera;
 import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.Point;
 
@@ -64,7 +65,7 @@ public class Anchor {
      * object (determined by its bounding box)
      *
      * @param obj Object to get anchor point
-     * @param anchor Type of anchor point null null null null null null null     {@link BY_POINT}, {@link BY_CENTER}, {@link RIGHT}, {@link UPPER},
+     * @param anchor Type of anchor point null null null null null null null null     {@link BY_POINT}, {@link BY_CENTER}, {@link RIGHT}, {@link UPPER},
      * {@link LEFT}, {@link LOWER}, {@link DR}, {@link UR},
      * {@link UL}, {@link DL}
      * @return The anchor point
@@ -80,7 +81,8 @@ public class Anchor {
      * added, equal in x and y direction.
      *
      * @param obj Object to get anchor point
-     * @param anchor Type of anchor point null null null null null null null null     {@link BY_POINT}, {@link BY_CENTER}, {@link RIGHT}, {@link UPPER},
+     * @param anchor Type of anchor point null null null null null null null
+     * null null     {@link BY_POINT}, {@link BY_CENTER}, {@link RIGHT}, {@link UPPER},
      * {@link LEFT}, {@link LOWER}, {@link DR}, {@link UR},
      * {@link UL}, {@link DL}
      * @param gap Gap to add to the anchor
@@ -97,7 +99,7 @@ public class Anchor {
      * added, specified both by its x component and y component.
      *
      * @param obj Object to get anchor point
-     * @param anchor Type of anchor point null null null null null null null     {@link BY_POINT}, {@link BY_CENTER}, {@link RIGHT}, {@link UPPER},
+     * @param anchor Type of anchor point null null null null null null null null     {@link BY_POINT}, {@link BY_CENTER}, {@link RIGHT}, {@link UPPER},
      * {@link LEFT}, {@link LOWER}, {@link DR}, {@link UR},
      * {@link UL}, {@link DL}
      * @param xgap Horizontal gap
@@ -185,6 +187,43 @@ public class Anchor {
             case DR:
                 resul = UL;
                 break;
+        }
+        return resul;
+    }
+
+    public static Point getScreenAnchorPoint(int anchor, double xMargin, double yMargin) {
+        Point resul = new Point();
+        Rect mathViewWithGap = JMathAnimConfig.getConfig().getCamera().getMathView().addGap(-xMargin, -yMargin);
+        switch (anchor) {
+            case BY_CENTER:
+                resul = mathViewWithGap.getCenter();
+                break;
+            case LEFT:
+                resul = mathViewWithGap.getLeft();
+                break;
+            case RIGHT:
+                resul = mathViewWithGap.getRight();
+                break;
+            case LOWER:
+                resul = mathViewWithGap.getLower();
+                break;
+            case UPPER:
+                resul = mathViewWithGap.getUpper();
+                break;
+
+            case UL:
+                resul = mathViewWithGap.getUL();
+                break;
+            case UR:
+                resul = mathViewWithGap.getUR();
+                break;
+            case DL:
+                resul = mathViewWithGap.getDL();
+                break;
+            case DR:
+                resul = mathViewWithGap.getDR();
+                break;
+
         }
         return resul;
     }

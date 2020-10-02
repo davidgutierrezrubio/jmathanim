@@ -368,6 +368,16 @@ public abstract class MathObject implements Drawable, Updateable, Stateable {
         this.shift(A.to(B));
     }
 
+    public <T extends MathObject> T stackTo(int anchorType) {
+        return stackTo(anchorType, 0, 0);
+    }
+
+    public <T extends MathObject> T stackTo(int anchorType, double xMargin, double yMargin) {
+        Point B = Anchor.getScreenAnchorPoint(anchorType, xMargin, yMargin);
+        Point A = Anchor.getAnchorPoint(this, anchorType);
+        return this.shift(A.to(B));
+    }
+
     public void putAt(Point p, int anchorType) {
         putAt(p, anchorType, 0);
     }
