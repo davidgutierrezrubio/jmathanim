@@ -19,7 +19,7 @@ maven code goes here
 
 This library uses the following 3rd party libraries:
 
-* [HUmble video encoder](https://github.com/artclarke/humble-video) For creating videos.
+* [Humble video encoder](https://github.com/artclarke/humble-video) For creating videos.
 
 
 
