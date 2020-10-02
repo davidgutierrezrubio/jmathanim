@@ -5,13 +5,17 @@
  */
 package tests;
 
+import com.jmathanim.Animations.commands.Commands;
 import com.jmathanim.Utils.Anchor;
 import com.jmathanim.Utils.ConfigLoader;
+import com.jmathanim.Utils.JMColor;
 import com.jmathanim.Utils.JMathAnimConfig;
 import com.jmathanim.jmathanim.Scene2D;
 import com.jmathanim.mathobjects.Arrow2D;
 import com.jmathanim.mathobjects.LaTeXMathObject;
+import com.jmathanim.mathobjects.MultiShapeObject;
 import com.jmathanim.mathobjects.Point;
+import com.jmathanim.mathobjects.Shape;
 
 /**
  *
@@ -23,32 +27,38 @@ public class myScene extends Scene2D {
     public void setupSketch() {
 //        conf.setResourcesDir(".");
 //        conf.setOutputDir("c:\\media");
-        ConfigLoader.parseFile("production.xml");
+//        ConfigLoader.parseFile("production.xml");
+        ConfigLoader.parseFile("preview.xml");
         ConfigLoader.parseFile("dark.xml");
-        conf.setCreateMovie(true);
     }
 
     @Override
     public void runSketch() {
-//        Shape sq=Shape.square().style("solidblue");
-//        LaTeXMathObject sq = new LaTeXMathObject("$$x=\\pi$$");
-//        sq.putAt(new Point(0,0), Anchor.BY_CENTER);
-        Arrow2D sq = Arrow2D.makeSimpleArrow2D(new Point(0, 0), new Point(1, .4), Arrow2D.TYPE_1);
-        add(sq);
+        //Create axis
+        MultiShapeObject axes = new MultiShapeObject();
+        for (double xx = -10; xx < 10; xx += .3) {
+            final Shape lineaV = Shape.line(Point.make(xx, 0), Point.make(xx, 1)).style("axisblue1");
+            axes.addShape(lineaV);
+            final Shape lineaH = Shape.line(Point.make(0, xx), Point.make(1, xx)).style("axisblue2");
+            axes.addShape(lineaH);
+        }
+//        add(axes);
+//        add(Shape.circle());
+        Shape lineaPrueba = Shape.line(Point.make(0, -1.5), Point.make(2, -1.5)).drawColor(JMColor.RED);
 //        waitSeconds(3);
-//        sq.scale(.3);
-//        waitSeconds(3);
-//        camera.adjustToObjects(sq);
-        //TODO: Create default styles:
-        //default: shapes
-        //defaultEq: Equations
-        play.fadeIn(sq);
-        waitSeconds(1);
-        play.rotate(sq, PI / 3, 3);
-        play.shift(sq, .5, -.3, 3);
-        waitSeconds(1);
-        play.fadeOut(sq);
-        waitSeconds(1);
+        Point a = Point.make(0, 0);
+        Point b = Point.make(1, 0);
+        Point c = Point.make(0, 1);
+        Point d = Point.make(0, 0);
+        Point e = Point.make(1, 0);
+        Point f = Point.make(1, 1);
+        playAnimation(Commands.affineTransform(axes, a, b, c, d, e, f, 5));
+        play.rotate(axes, PI / 3, 5);
+        play.scaleCamera(.5, 3);
+        playAnimation(Commands.reflectionByAxis(axes, new Point(0, 0), new Point(0, 1), 5));
+        // Lineas chungas
+
+        waitSeconds(3);
     }
 
 }

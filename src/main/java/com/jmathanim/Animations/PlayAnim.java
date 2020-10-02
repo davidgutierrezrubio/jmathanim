@@ -98,6 +98,14 @@ public class PlayAnim {
         zoomToRect(scene.getCamera(), r, runTime);
     }
 
+    /**
+     * Animate a zoom over the current area. Rect view is multiplied by scale
+     * factor
+     *
+     * @param scale Scale factor. A scale of value .5 means applying a x2 zoom
+     * factor
+     * @param runTime Duration in seconds
+     */
     public void scaleCamera(double scale, double runTime) {
         scaleCamera(scene.getCamera(), scale, runTime);
     }
@@ -110,34 +118,91 @@ public class PlayAnim {
         scene.playAnimation(Commands.cameraShift(cam, v, runTime));
     }
 
+    /**
+     * Animates a camera pan with the given shift vector
+     *
+     * @param v Shift vector
+     * @param runTime Duration in seconds
+     */
     public void shiftCamera(Vec v, double runTime) {
         scene.playAnimation(Commands.cameraShift(scene.getCamera(), v, runTime));
     }
 
+    /**
+     * Convenience method. Animates a camera pan with the given shift vector,
+     * specified by x and y coordinates
+     *
+     * @param x x coordinate of shift vector
+     * @param y y coordinate of shift vector
+     * @param runTime Duration in seconds
+     */
     public void shiftCamera(double x, double y, double runTime) {
         scene.playAnimation(Commands.cameraShift(scene.getCamera(), new Vec(x, y), runTime));
     }
 
+    /**
+     * Plays an animation highlighting an object. Scales and unscales this
+     * object for a second. Objects not scalable ({@link Point} for example) are
+     * not affected.
+     *
+     * @param mobj Object to highlight
+     */
     public void highlight(MathObject mobj) {
         scene.playAnimation(new Highlight(mobj));
     }
 
+    /**
+     * Plays an animation highlighting an object. Scales and unscales this
+     * object for given time. Objects not scalable ({@link Point} for example)
+     * are not affected.
+     *
+     * @param mobj Object to highlight
+     * @param runTime Duration in seconds
+     */
     public void highlight(MathObject mobj, double runTime) {
         scene.playAnimation(new Highlight(mobj, runTime));
     }
 
+    /**
+     * Plays an animation to introduce an object into scene. Scaling and
+     * applying alpha from 0 to current.
+     *
+     * @param mobj Object to animate
+     * @param runTime Duration in seconds
+     */
     public void growIn(MathObject mobj, double runTime) {
         scene.playAnimation(Commands.growIn(mobj, runTime));
     }
 
+    /**
+     * Convenience method. Plays an animation to introduce an object into scene.
+     * Scaling and applying alpha from 0 to current. Duration of the animation
+     * is 1 second.
+     *
+     * @param mobj Object to animate
+     */
     public void growIn(MathObject mobj) {
         growIn(mobj, 1);
     }
 
+    /**
+     * Plays an animation to remove an object from a scene. Scaling and applying
+     * alpha from current to 0. Object is removed from scene after finishing
+     * animation.
+     *
+     * @param mobj Object to animate
+     * @param runTime Duration in seconds
+     */
     public void shrinkOut(MathObject mobj, double runTime) {
         scene.playAnimation(Commands.shrinkOut(mobj, runTime));
     }
-
+    /**
+     * Convenience method. Plays an animation to remove an object from a scene. Scaling and applying
+     * alpha from current to 0, with 1 second duration. Object is removed from scene after finishing
+     * animation.
+     *
+     * @param mobj Object to animate
+     */
     public void shrinkOut(MathObject mobj) {
         shrinkOut(mobj, 1);
     }

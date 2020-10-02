@@ -18,5 +18,15 @@
             <fillColor>BLUE</fillColor>
             <thickness>2</thickness>
         </style>
+         <style name="axisblue1">
+            <drawColor>#2565AE</drawColor>
+            <fillColor>NONE</fillColor>
+            <thickness>.5</thickness>
+        </style>
+                 <style name="axisblue2">
+            <drawColor>#6ca2e0</drawColor>
+            <fillColor>NONE</fillColor>
+            <thickness>.5</thickness>
+        </style>
     </styles>
 </JMathAnimConfig>

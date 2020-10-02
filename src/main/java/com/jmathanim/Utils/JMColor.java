@@ -15,6 +15,7 @@ import java.lang.reflect.Field;
  */
 public class JMColor {
 
+    public static JMColor NONE = new JMColor(0, 0, 0, 0);
     public static JMColor WHITE = new JMColor(1, 1, 1, 1);
     public static JMColor BLACK = new JMColor(0, 0, 0, 1);
     public static JMColor RED = new JMColor(1, 0, 0, 1);

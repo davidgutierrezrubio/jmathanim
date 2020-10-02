@@ -86,14 +86,11 @@ public class Commands {
             double angle = ang;
             double tPrevious;
             Point rotationCenter = c;
-            Point rotationCenterPrevious;
             AffineTransform tr;
 
             @Override
             public void initialize() {
                 mathObject.saveState();//Easy way, but interferes with multiple animations (not easy to solve)
-                tPrevious = 0;
-                rotationCenterPrevious = rotationCenter.copy();
             }
 
             @Override
@@ -108,7 +105,37 @@ public class Commands {
                 execute(1);
             }
         }, runtime);
-    }//End of scale command
+    }//End of rotate command
+
+    public static ApplyCommand affineTransform(MathObject object, Point a, Point b, Point c, Point d, Point e, Point f, double runtime) {
+        return new ApplyCommand(new SingleMathObjectCommand(object) {
+            double tPrevious;
+            Point orig1 = a;
+            Point orig2 = b;
+            Point orig3 = c;
+            Point dst1 = d;
+            Point dst2 = e;
+            Point dst3 = f;
+            AffineTransform tr;
+
+            @Override
+            public void initialize() {
+                mathObject.saveState();//Easy way, but interferes with multiple animations (not easy to solve)
+            }
+
+            @Override
+            public void execute(double t) {
+                mathObject.restoreState();
+                tr = AffineTransform.createAffineTransformation(orig1, orig2, orig3, dst1, dst2, dst3, t);
+                tr.applyTransform(mathObject);
+            }
+
+            @Override
+            public void finish() {
+                execute(1);
+            }
+        }, runtime);
+    }//End of affineTransform command
 
     /**
      * Animation command that transforms a MathObject through an Homotopy.
@@ -152,21 +179,22 @@ public class Commands {
         }, runtime);
     }//End of homotopy command
 
-    /**
-     * Animation command that perfoms a reflection specified by a {@link Shape}
+     /**
+     * Animation command that perfoms a reflection that maps A into B
      *
      * @param object {@link MathObject} to reflect
-     * @param axis Axis. Only the first 2 points of the {@link Shape} are used
-     * to determine axis
+     * @param A Origin point
+     * @param B Destiny point
      * @param runtime Duration in seconds
      * @return Animation to run with
      * {@link JMathAnimScene#playAnimation(com.jmathanim.Animations.Animation...) playAnimation}
      * method
      */
-    public static ApplyCommand reflectionByAxis(MathObject object, Shape axis, double runtime) {
+    public static ApplyCommand reflection(MathObject object, Point A,Point B, double runtime) {
         return new ApplyCommand(new SingleMathObjectCommand(object) {
             double tPrevious;
-            Shape S = axis;
+            Point axis1 = A;
+            Point axis2 = B;
             AffineTransform tr;
 
             @Override
@@ -177,7 +205,7 @@ public class Commands {
             @Override
             public void execute(double t) {
                 mathObject.restoreState();
-                tr = AffineTransform.createReflectionByAxis(S, t);
+                tr = AffineTransform.createReflection(axis1, axis2, t);
                 tr.applyTransform(mathObject);
             }
 
@@ -186,7 +214,45 @@ public class Commands {
                 execute(1);
             }
         }, runtime);
-    }//End of homotopy command
+    }//End of reflectionByAxis command
+    
+    
+    /**
+     * Animation command that perfoms a reflection specified by 2 points
+     *
+     * @param object {@link MathObject} to reflect
+     * @param a first axis point
+     * @param b second axis point
+     * @param runtime Duration in seconds
+     * @return Animation to run with
+     * {@link JMathAnimScene#playAnimation(com.jmathanim.Animations.Animation...) playAnimation}
+     * method
+     */
+    public static ApplyCommand reflectionByAxis(MathObject object, Point a,Point b, double runtime) {
+        return new ApplyCommand(new SingleMathObjectCommand(object) {
+            double tPrevious;
+            Point axis1 = a;
+            Point axis2 = b;
+            AffineTransform tr;
+
+            @Override
+            public void initialize() {
+                mathObject.saveState();//Easy way, but interferes with multiple animations (not easy to solve)
+            }
+
+            @Override
+            public void execute(double t) {
+                mathObject.restoreState();
+                tr = AffineTransform.createReflectionByAxis(axis1, axis2, t);
+                tr.applyTransform(mathObject);
+            }
+
+            @Override
+            public void finish() {
+                execute(1);
+            }
+        }, runtime);
+    }//End of reflectionByAxis command
 
     /**
      * Animation command that changes the math drawing properties of given

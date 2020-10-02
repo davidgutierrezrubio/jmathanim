@@ -10,6 +10,7 @@ import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.Arrow2D;
 import com.jmathanim.mathobjects.Shape;
 import com.jmathanim.mathobjects.JMPathPoint;
+import com.jmathanim.mathobjects.Line;
 import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.MultiShapeObject;
 import com.jmathanim.mathobjects.Point;
@@ -116,7 +117,12 @@ public class AffineTransform {
             }
             return;
         }
-
+        if (mObject instanceof Line) {
+            Line mobj = (Line) mObject;
+            applyTransform(mobj.getP1());
+            applyTransform(mobj.getP2());
+            return;
+        }
         if (mObject instanceof Shape) {
             Shape mobj = (Shape) mObject;
             int size = mobj.jmpath.size();
@@ -130,8 +136,7 @@ public class AffineTransform {
             applyTransform(((Arrow2D) mObject).getBody());
             return;
         }
-        
-        
+
         if (mObject instanceof JMPathPoint) {
             JMPathPoint jmPDst = (JMPathPoint) mObject;
             JMPathPoint pSrc = jmPDst.copy();
@@ -318,16 +323,19 @@ public class AffineTransform {
         //A reflection from (1,0) to (-1,0) has a very simple form
         AffineTransform canonizedReflection = new AffineTransform();
         canonizedReflection.setV1Img(E1.interpolate(E2, alpha));
-
         AffineTransform resul = canonize.compose(canonizedReflection).compose(invCanonize);
-
         return resul;
-
     }
 
-    public static AffineTransform createReflectionByAxis(Shape s, double alpha) {
-        Point E1 = s.getJMPoint(0).p;
-        Point E2 = s.getJMPoint(1).p;
+    /**
+     * Create a reflexion with axis specified by 2 points.
+     *
+     * @param E1 First point of simmetry axis
+     * @param E2 Second point of simmetry axis
+     * @param alpha parameter. 0 means unaltered, 1 fully reflection done
+     * @return The reflection
+     */
+    public static AffineTransform createReflectionByAxis(Point E1, Point E2, double alpha) {
         AffineTransform canonize = AffineTransform.createDirect2DHomotopy(E1, E2, new Point(0, 0), new Point(0, E2.v.norm()), 1);
         AffineTransform invCanonize = canonize.getInverse();
         //A reflection from (1,0) to (-1,0) has a very simple form

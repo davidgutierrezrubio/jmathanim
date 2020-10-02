@@ -5,13 +5,11 @@
  */
 package com.jmathanim.mathobjects;
 
-import com.jmathanim.Renderers.Java2DRenderer;
 import com.jmathanim.Renderers.Renderer;
 import com.jmathanim.Utils.JMColor;
 import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
-import java.awt.Color;
 import java.util.ArrayList;
 
 /**
@@ -110,9 +108,9 @@ public class MultiShapeObject extends MathObject {
         for (Shape jmp : shapes) {
             if (jmp.visible) {
                 if (absoluteSize) {
-                    r.drawAbsoluteCopy(jmp, getAbsoluteAnchorPoint().v);
+                    r.drawAbsoluteCopy(jmp, getAbsoluteAnchorPoint().v);//TODO: This doesnt work for overrided methods (e.g.: line)
                 } else {
-                    r.drawPath(jmp);
+                    jmp.draw(r);
                 }
             }
         }

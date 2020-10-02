@@ -39,6 +39,7 @@ public class Point extends MathObject {
 
     /**
      * Creates a new Point with coordinates x,y,z
+     *
      * @param x x coordinate
      * @param y y coordinate
      * @param z z coordinate
@@ -82,6 +83,17 @@ public class Point extends MathObject {
         jmPoints = new HashSet<>();
     }
 
+    /**
+     * Static builder
+     *
+     * @param x x coordinate
+     * @param y y coordinate
+     * @return
+     */
+    public static Point make(double x, double y) {
+        return new Point(x, y);
+    }
+
     @Override
     public Point getCenter() {
         return this;
@@ -117,8 +129,6 @@ public class Point extends MathObject {
         return resul;
     }
 
-   
-
     /**
      * Return a new Point object which represents the original point plus a
      * given vector
@@ -136,14 +146,16 @@ public class Point extends MathObject {
     public String toString() {
         String pattern = "##0.##";
         DecimalFormat decimalFormat = new DecimalFormat(pattern);
-        return label+"|Point(" + decimalFormat.format(v.x) + "," + decimalFormat.format(v.y) + ")";
+        return label + "|Point(" + decimalFormat.format(v.x) + "," + decimalFormat.format(v.y) + ")";
 
     }
-/**
- * Returns Vec object point from this Point to another one
- * @param B The destination point
- * @return The vector from this point to B
- */
+
+    /**
+     * Returns Vec object point from this Point to another one
+     *
+     * @param B The destination point
+     * @return The vector from this point to B
+     */
     public Vec to(Point B) {
         return new Vec(B.v.x - v.x, B.v.y - v.y, B.v.z - v.z);
     }
@@ -169,6 +181,7 @@ public class Point extends MathObject {
     @Override
     public void processAfterNonLinearAnimation() {
     }
+
     @Override
     public Rect getBoundingBox() {
         return new Rect(v.x, v.y, v.x, v.y);

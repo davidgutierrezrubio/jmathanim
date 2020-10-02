@@ -18,7 +18,8 @@ import com.jmathanim.Utils.Vec;
 public class Line extends Shape {
 
     final JMPathPoint bp1, bp2;
-    final Point p1, p2;
+    private final Shape visiblePiece;
+    private Point p1, p2;
 
     /**
      * Creates a line that passes through p with direction v
@@ -55,8 +56,10 @@ public class Line extends Shape {
         jmpath.clear(); //Super constructor adds p1, p2. Delete them
         bp1 = new JMPathPoint(new Point(0, 0), true, JMPathPoint.TYPE_VERTEX);//trivial boundary points, just to initialize objects
         bp2 = new JMPathPoint(new Point(0, 0), true, JMPathPoint.TYPE_VERTEX);//trivial boundary points, just to initialize objects
-        jmpath.addJMPoint(bp1);
-        jmpath.addJMPoint(bp2);
+        visiblePiece=new Shape();
+        visiblePiece.jmpath.addJMPoint(bp1,bp2);
+        visiblePiece.mp=this.mp;
+        jmpath.addPoint(p1,p2);
     }
 
     @Override
@@ -74,7 +77,8 @@ public class Line extends Shape {
     @Override
     public void draw(Renderer r) {
         computeBoundPoints(r);
-        super.draw(r);
+        visiblePiece.draw(r);
+        
     }
  /**
   * Compute border points in the view area of the given renderer.
@@ -109,5 +113,34 @@ public class Line extends Shape {
         bp2.cp2.v.y = bp2.p.v.y;
 
     }
+
+//    @Override
+//    public void saveState() {
+//        super.saveState(); 
+//        p1.saveState(); 
+//        p2.saveState(); 
+//    }
+//
+//    @Override
+//    public void restoreState() {
+//        super.restoreState();
+//        p1.restoreState();
+//        p2.restoreState();
+//    }
+
+    public Point getP1() {
+        return p1;
+    }
+
+    public Point getP2() {
+        return p2;
+    }
+
+    @Override
+    public Point getCenter() {
+        //Center of an infinite line doesn't exists. Take first point instead.
+        return p1;
+    }
+    
 
 }

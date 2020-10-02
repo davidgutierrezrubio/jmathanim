@@ -8,7 +8,7 @@
     <background>
          <background>
         <shadows kernelSize="8" offsetX="5" offsetY="5" alpha=".7">false</shadows>
-        <image>fondo.png</image>
+        <!--<image>fondo.png</image>-->
     </background>
     </background>
 </JMathAnimConfig>

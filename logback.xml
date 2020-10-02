@@ -1,4 +1,4 @@
-<configuration>
+<configuration debug="true">
 
     <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
         <layout class="ch.qos.logback.classic.PatternLayout">
@@ -8,10 +8,12 @@
         </layout>
     </appender>
 
-    <logger name="com.jmathanim" level="DEBUG" additivity="false">
+    <logger name="com.jmathanim" level="TRACE" additivity="false">
         <appender-ref ref="CONSOLE"/>
     </logger>
-
+    <root level="debug">
+        <appender-ref ref="STDOUT" />
+    </root>
     <root level="error">
         <appender-ref ref="CONSOLE"/>
     </root>

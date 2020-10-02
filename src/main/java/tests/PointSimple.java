@@ -749,8 +749,7 @@ public class PointSimple extends Scene2D {
 //        getCamera().setCenter(hex1.getCenter().v.x,hex1.getCenter().v.y);
         Shape hex2 = hex1.copy();
         add(hex2);
-        Shape lado = Shape.segment(hex2.getPoint(0), hex2.getPoint(5));
-        ApplyCommand cmd = Commands.reflectionByAxis(hex2, lado, 3);
+        ApplyCommand cmd = Commands.reflectionByAxis(hex2, hex2.getPoint(0), hex2.getPoint(5), 3);
         playAnimation(cmd);
 
         int n1 = 0;
