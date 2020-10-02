@@ -22,8 +22,8 @@ public class JMathAnim {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        JMathAnimScene scene = new myScene();
-//        JMathAnimScene scene = new DemoScene();
+//        JMathAnimScene scene = new myScene();
+        JMathAnimScene scene = new DemoScene();
         ch.qos.logback.classic.Logger root = (ch.qos.logback.classic.Logger) org.slf4j.LoggerFactory.getLogger(ch.qos.logback.classic.Logger.ROOT_LOGGER_NAME);
         root.setLevel(Level.INFO);
 
