@@ -69,10 +69,8 @@ public class JMPathPoint extends MathObject implements Updateable, Stateable {
     public JMPathPoint copy() {
         Point pCopy = p.copy();
         JMPathPoint resul = new JMPathPoint(pCopy, isThisSegmentVisible, type);
-        resul.cp1.v.x = this.cp1.v.x;
-        resul.cp1.v.y = this.cp1.v.y;
-        resul.cp2.v.x = this.cp2.v.x;
-        resul.cp2.v.y = this.cp2.v.y;
+        resul.cp1.v = cp1.v.copy();
+        resul.cp2.v = cp2.v.copy();
 
         try { //cp1vBackup and cp2vBackup may be null, so I enclose with a try-catch
             resul.cp1vBackup = cp1vBackup.copy();

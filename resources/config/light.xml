@@ -1,5 +1,5 @@
 <JMathAnimConfig>
-     <background>
+    <background>
         <color>#F0F0F0</color>
     </background>
     <styles>
@@ -8,12 +8,17 @@
             <fillColor>#00000000</fillColor>
             <thickness>1</thickness>
         </style>
+        <style name="latexdefault">
+            <drawColor>black</drawColor>
+            <fillColor>black</fillColor>
+            <thickness>.01</thickness>
+        </style>
         <style name="solidred">
             <drawColor>black</drawColor>
             <fillColor>red</fillColor>
             <thickness>2</thickness>
         </style>
-         <style name="solidblue">
+        <style name="solidblue">
             <drawColor>black</drawColor>
             <fillColor>blue</fillColor>
             <thickness>2</thickness>

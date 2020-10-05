@@ -43,6 +43,7 @@ public class LaTeXMathObject extends SVGMathObject {
      */
     public LaTeXMathObject(String text) {
         super();
+        mp.loadFromStyle("latexdefault");
         this.text = text;
 
         try {
@@ -67,7 +68,7 @@ public class LaTeXMathObject extends SVGMathObject {
             n++;
         }
         //Default color
-        setColor(mp.drawColor);
+//        setColor(mp.drawColor);
 //        this.setAbsoluteSize();
 //        this.setAbsolutAnchorPoint(Anchor.UL);//Default
 
@@ -90,6 +91,7 @@ public class LaTeXMathObject extends SVGMathObject {
         //TODO: Add necessary packages here (UTF8?)
         //How to avoid having to write 2 backslashs??
         String beginDocument = "\\documentclass[preview]{standalone}\n"
+                +"\\usepackage{xcolor}\n"
                 + "\\begin{document}\n";
 
         String endDocument = "\\end{document}";

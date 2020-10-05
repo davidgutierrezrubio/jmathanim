@@ -28,15 +28,15 @@ import org.apache.commons.math3.linear.RealMatrix;
  *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
-public class AffineTransform {
+public class AffineJTransform {
 
     public RealMatrix A;
 
-    public AffineTransform() {
+    public AffineJTransform() {
         this(MatrixUtils.createRealIdentityMatrix(4));
     }
 
-    public AffineTransform(RealMatrix A) {
+    public AffineJTransform(RealMatrix A) {
         this.A = A;
     }
 
@@ -206,8 +206,8 @@ public class AffineTransform {
      * @param tr The AffintTransform to compose with
      * @return The composed AffineTransform
      */
-    public AffineTransform compose(AffineTransform tr) {
-        return new AffineTransform(A.multiply(tr.A));
+    public AffineJTransform compose(AffineJTransform tr) {
+        return new AffineJTransform(A.multiply(tr.A));
     }
 
     /**
@@ -215,9 +215,9 @@ public class AffineTransform {
      *
      * @return The inverse transform
      */
-    public AffineTransform getInverse() {
+    public AffineJTransform getInverse() {
         RealMatrix B = new LUDecomposition(A).getSolver().getInverse();
-        return new AffineTransform(B);
+        return new AffineJTransform(B);
     }
 
     /**
@@ -227,7 +227,7 @@ public class AffineTransform {
      * @param b Destiny
      * @return A newAffineTransform with traslation
      */
-    public static AffineTransform createTranslationTransform(Point a, Point b) {
+    public static AffineJTransform createTranslationTransform(Point a, Point b) {
         return createTranslationTransform(new Vec(b.v.x - a.v.x, b.v.y - a.v.y, b.v.z - a.v.z));
     }
 
@@ -237,8 +237,8 @@ public class AffineTransform {
      * @param v The traslation vector
      * @return A newAffineTransform with traslation
      */
-    public static AffineTransform createTranslationTransform(Vec v) {
-        AffineTransform resul = new AffineTransform();
+    public static AffineJTransform createTranslationTransform(Vec v) {
+        AffineJTransform resul = new AffineJTransform();
         resul.setOriginImg(v);
         return resul;
     }
@@ -250,39 +250,39 @@ public class AffineTransform {
      * @param angle Angle (in radians)
      * @return A new AffineTransform with the rotation
      */
-    public static AffineTransform create2DRotationTransform(Point center, double angle) {
-        AffineTransform resul = new AffineTransform();
+    public static AffineJTransform create2DRotationTransform(Point center, double angle) {
+        AffineJTransform resul = new AffineJTransform();
         final double sin = Math.sin(angle);
         final double cos = Math.cos(angle);
         resul.setV1Img(cos, sin);
         resul.setV2Img(-sin, cos);
 
-        AffineTransform tr1 = AffineTransform.createTranslationTransform(center.v.mult(-1));
-        AffineTransform tr2 = AffineTransform.createTranslationTransform(center.v);
+        AffineJTransform tr1 = AffineJTransform.createTranslationTransform(center.v.mult(-1));
+        AffineJTransform tr2 = AffineJTransform.createTranslationTransform(center.v);
 
         return tr1.compose(resul.compose(tr2));
     }
 
-    public static AffineTransform create2DScaleTransform(Point center, double scale) {
+    public static AffineJTransform create2DScaleTransform(Point center, double scale) {
         return create2DScaleTransform(center, scale, scale, scale);
     }
 
-    public static AffineTransform create2DScaleTransform(Point center, double scalex, double scaley) {
+    public static AffineJTransform create2DScaleTransform(Point center, double scalex, double scaley) {
         return create2DScaleTransform(center, scalex, scaley, 1);
     }
 
-    public static AffineTransform create2DScaleTransform(Point center, double scalex, double scaley, double scalez) {
-        AffineTransform resul = new AffineTransform();
+    public static AffineJTransform create2DScaleTransform(Point center, double scalex, double scaley, double scalez) {
+        AffineJTransform resul = new AffineJTransform();
         resul.setV1Img(scalex, 0, 0);
         resul.setV2Img(0, scaley, 0);
         resul.setV3Img(0, 0, scalez);
-        AffineTransform tr1 = AffineTransform.createTranslationTransform(center.v.mult(-1));
-        AffineTransform tr2 = AffineTransform.createTranslationTransform(center.v);
+        AffineJTransform tr1 = AffineJTransform.createTranslationTransform(center.v.mult(-1));
+        AffineJTransform tr2 = AffineJTransform.createTranslationTransform(center.v);
         return tr1.compose(resul.compose(tr2));
     }
 
-    public static AffineTransform createDirect2DHomotopy(Point A, Point B, Point C, Point D, double alpha) {
-        AffineTransform resul = new AffineTransform();
+    public static AffineJTransform createDirect2DHomotopy(Point A, Point B, Point C, Point D, double alpha) {
+        AffineJTransform resul = new AffineJTransform();
         double angle;//Angle between AB and CD
         Vec v1 = A.to(B);//Vector AB
         Vec v2 = C.to(D);//Vector CD
@@ -296,13 +296,13 @@ public class AffineTransform {
             angle = -angle;
         }
         //The rotation part
-        AffineTransform rotation = AffineTransform.create2DRotationTransform(A, angle * alpha);
+        AffineJTransform rotation = AffineJTransform.create2DRotationTransform(A, angle * alpha);
 
         //The scale part
-        AffineTransform scale = AffineTransform.create2DScaleTransform(A, (1 - alpha) + d2 / d1 * alpha);
+        AffineJTransform scale = AffineJTransform.create2DScaleTransform(A, (1 - alpha) + d2 / d1 * alpha);
 
         //The traslation part
-        AffineTransform traslation = AffineTransform.createTranslationTransform(v3.mult(alpha));
+        AffineJTransform traslation = AffineJTransform.createTranslationTransform(v3.mult(alpha));
         resul = rotation.compose(scale).compose(traslation);
         return resul;
     }
@@ -315,15 +315,15 @@ public class AffineTransform {
      * @param alpha Alpha parameter. 0 means unaltered, 1 fully reflection done
      * @return The reflection
      */
-    public static AffineTransform createReflection(Point A, Point B, double alpha) {
+    public static AffineJTransform createReflection(Point A, Point B, double alpha) {
         Point E1 = new Point(1, 0);
         Point E2 = new Point(-1, 0);
-        AffineTransform canonize = AffineTransform.createDirect2DHomotopy(A, B, E1, E2, 1);
-        AffineTransform invCanonize = canonize.getInverse();
+        AffineJTransform canonize = AffineJTransform.createDirect2DHomotopy(A, B, E1, E2, 1);
+        AffineJTransform invCanonize = canonize.getInverse();
         //A reflection from (1,0) to (-1,0) has a very simple form
-        AffineTransform canonizedReflection = new AffineTransform();
+        AffineJTransform canonizedReflection = new AffineJTransform();
         canonizedReflection.setV1Img(E1.interpolate(E2, alpha));
-        AffineTransform resul = canonize.compose(canonizedReflection).compose(invCanonize);
+        AffineJTransform resul = canonize.compose(canonizedReflection).compose(invCanonize);
         return resul;
     }
 
@@ -335,20 +335,20 @@ public class AffineTransform {
      * @param alpha parameter. 0 means unaltered, 1 fully reflection done
      * @return The reflection
      */
-    public static AffineTransform createReflectionByAxis(Point E1, Point E2, double alpha) {
-        AffineTransform canonize = AffineTransform.createDirect2DHomotopy(E1, E2, new Point(0, 0), new Point(0, E2.v.norm()), 1);
-        AffineTransform invCanonize = canonize.getInverse();
+    public static AffineJTransform createReflectionByAxis(Point E1, Point E2, double alpha) {
+        AffineJTransform canonize = AffineJTransform.createDirect2DHomotopy(E1, E2, new Point(0, 0), new Point(0, E2.v.norm()), 1);
+        AffineJTransform invCanonize = canonize.getInverse();
         //A reflection from (1,0) to (-1,0) has a very simple form
-        AffineTransform canonizedReflection = new AffineTransform();
+        AffineJTransform canonizedReflection = new AffineJTransform();
         canonizedReflection.setV1Img((1 - alpha) - 1 * alpha, 0, 0);
 
-        AffineTransform resul = canonize.compose(canonizedReflection).compose(invCanonize);
+        AffineJTransform resul = canonize.compose(canonizedReflection).compose(invCanonize);
 
         return resul;
 
     }
 
-    public AffineTransform interpolate(AffineTransform tr, double lambda) {
+    public AffineJTransform interpolate(AffineJTransform tr, double lambda) {
 //        AffineTransform resul = new AffineTransform();
         double[] row1_1 = this.A.getRow(0);
         double[] row1_2 = tr.A.getRow(0);
@@ -390,23 +390,23 @@ public class AffineTransform {
      * @param lambda Lambda parameter
      * @return
      */
-    public static AffineTransform createAffineTransformation(Point A, Point B, Point C, Point D, Point E, Point F, double lambda) {
+    public static AffineJTransform createAffineTransformation(Point A, Point B, Point C, Point D, Point E, Point F, double lambda) {
         //First I create a transformation that map O,e1,e2 into A,B,C
-        AffineTransform tr1 = new AffineTransform();
+        AffineJTransform tr1 = new AffineJTransform();
         tr1.setOriginImg(A);
         tr1.setV1Img(A.to(B));
         tr1.setV2Img(A.to(C));
         tr1 = tr1.getInverse();
 
 //Now I create a transformation that map O,e1,e2 into D,E,F
-        AffineTransform tr2 = new AffineTransform();
+        AffineJTransform tr2 = new AffineJTransform();
         tr2.setOriginImg(D);
         tr2.setV1Img(D.to(E));
         tr2.setV2Img(D.to(F));
 
         //The transformation I am looking for is X-> tr2(tr^-1(X))
-        AffineTransform tr = tr1.compose(tr2);
-        AffineTransform id = new AffineTransform();
+        AffineJTransform tr = tr1.compose(tr2);
+        AffineJTransform id = new AffineJTransform();
 //        return tr;
         return id.interpolate(tr, lambda);
 

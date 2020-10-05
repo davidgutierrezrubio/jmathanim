@@ -3,10 +3,12 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.jmathanim.Animations.TransformStrategies;
+package com.jmathanim.Animations.Strategies.Transform;
 
-import com.jmathanim.Animations.AffineTransform;
+import com.jmathanim.Animations.AffineJTransform;
+import com.jmathanim.Animations.Strategies.TransformStrategy;
 import com.jmathanim.Utils.JMathAnimConfig;
+import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.JMPathPoint;
 import com.jmathanim.mathobjects.Shape;
 
@@ -14,21 +16,25 @@ import com.jmathanim.mathobjects.Shape;
  *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
-public abstract class MatrixTransformStrategy implements TransformStrategy {
+public abstract class MatrixTransformStrategy extends TransformStrategy {
 
     protected Shape mobjTransformed;
     protected Shape mobjDestiny;
     protected Shape originalShapeBaseCopy;
 
+    public MatrixTransformStrategy(Shape mobjTransformed, Shape mobjDestiny,JMathAnimScene scene) {
+        super(scene);
+        this.mobjTransformed = mobjTransformed;
+        this.mobjDestiny = mobjDestiny;
+    }
+
     @Override
-    public void prepareObjects(Shape ob1, Shape ob2) {
-        mobjTransformed = ob1;
-        mobjDestiny = ob2;
-        originalShapeBaseCopy = ob1.copy();
+    public void prepareObjects() {
+        originalShapeBaseCopy = mobjTransformed.copy();
         JMathAnimConfig.getConfig().getScene().add(mobjTransformed);
     }
 
-    public void applyMatrixTransform(AffineTransform tr, double t) {
+    public void applyMatrixTransform(AffineJTransform tr, double t) {
         JMPathPoint interPoint;
         JMPathPoint basePoint;
         JMPathPoint dstPoint;

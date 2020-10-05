@@ -5,7 +5,10 @@
  */
 package com.jmathanim.mathobjects;
 
+import com.jmathanim.Utils.Anchor;
+import com.jmathanim.Utils.JMColor;
 import com.jmathanim.Utils.JMathAnimConfig;
+import com.jmathanim.Utils.MathObjectDrawingProperties;
 import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.Vec;
 import java.io.File;
@@ -19,6 +22,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -42,6 +46,7 @@ public class SVGMathObject extends MultiShapeObject {
     Double anchorY = null;
 
     JMPath importJMPathTemp;//Path to temporary import SVG Path commmands
+    private JMColor currentFillColor;
 
     public SVGMathObject() {
     }
@@ -54,51 +59,52 @@ public class SVGMathObject extends MultiShapeObject {
         } catch (Exception ex) {
             Logger.getLogger(SVGMathObject.class.getName()).log(Level.SEVERE, null, ex);
         }
-       
+
     }
 
     protected final void importSVG(File file) throws Exception {
         DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
         DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
         org.w3c.dom.Document doc = dBuilder.parse(file);
+        NodeList listGroups = doc.getElementsByTagName("g");
+        for (int n = 0; n < listGroups.getLength(); n++) {
 
-        NodeList nList = doc.getElementsByTagName("path");
+            Element nNode = (Element) listGroups.item(n);
+            String fillColor = nNode.getAttribute("fill");
+            if (!"".equals(fillColor)) {
+                currentFillColor = JMColor.hex(fillColor);
+            } else {
+                currentFillColor = mp.fillColor.copy();
+            }
+
+            processPathList(nNode);
+        }
+        putAt(new Point(0, 0), Anchor.UL);
+    }
+
+    private void processPathList(Element doc) {
+        NodeList nList = doc.getChildNodes();
 
         for (int temp = 0; temp < nList.getLength(); temp++) {
             Node nNode = nList.item(temp);
 
             if (nNode.getNodeType() == Node.ELEMENT_NODE) {
                 Element eElement = (Element) nNode;
+                if (eElement.getTagName() == "path") {
 
-                JMPath path = processPathCommands(eElement.getAttribute("d"));
+                    JMPath path = processPathCommands(eElement.getAttribute("d"));
 
-                if (path.jmPathPoints.size() > 0) {
-                    path.pathType = JMPath.SVG_PATH; //Mark this as a SVG path
-
-                    if ("none".equals(eElement.getAttribute("fill"))) {
-                        mp.setFilled(false);//TODO: THIS IS NOT WORKING
-                    } else {
-                        mp.setFilled(false);
-                    }
-
-                    addJMPathObject(path); //Add this path to the array of JMPathObjects
-                    if (anchorX == null) //If this is the first path I encountered...
-                    {
-                        //Mark the UL corner of its boundingbox as the point of reference
-                        //This corner will become (0,0)
-                        Rect r = path.getBoundingBox();
-                        anchorX = r.xmin;
-                        anchorY = r.ymax;
+                    if (path.jmPathPoints.size() > 0) {
+                        path.pathType = JMPath.SVG_PATH; //Mark this as a SVG path
+                        MathObjectDrawingProperties ShMp = this.mp.copy();
+                        ShMp.fillColor.set(currentFillColor);
+                        ShMp.drawColor.set(currentFillColor);
+                        addJMPathObject(path,ShMp); //Add this path to the array of JMPathObjects
+                        //By default scale sizes so that SVG points matches Screen points
                     }
                 }
-                path.shift(new Vec(-anchorX, -anchorY));//
-                //By default scale sizes so that SVG points matches Screen points
             }
         }
-        //All paths imported
-        double mathH = JMathAnimConfig.getConfig().getCamera().screenToMath(22);
-        double scale = 5 * mathH / getBoundingBox().getHeight();//10% of screen
-//        scale(new Point(0, 0), scale, scale, scale);
     }
 
     /**
@@ -385,7 +391,7 @@ public class SVGMathObject extends MultiShapeObject {
                     }
             }
         }
-       
+
         return resul;
     }
 

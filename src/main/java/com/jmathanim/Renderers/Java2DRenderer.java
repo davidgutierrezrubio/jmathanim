@@ -36,6 +36,7 @@ import java.awt.MediaTracker;
 import java.awt.RenderingHints;
 import java.awt.Stroke;
 import java.awt.Toolkit;
+import java.awt.geom.AffineTransform;
 import java.awt.geom.Path2D;
 import java.awt.image.BufferedImage;
 import java.awt.image.ConvolveOp;
@@ -239,10 +240,16 @@ public class Java2DRenderer extends Renderer {
     @Override
     public void drawDot(Point p) {
         setStroke(g2draw, p);
-        int[] xx = camera.mathToScreen(p.v.x, p.v.y);
-
-        g2draw.setColor(p.mp.drawColor.getColor());
-        g2draw.drawLine(xx[0], xx[1], xx[0], xx[1]);
+//        int[] xx = camera.mathToScreen(p.v.x, p.v.y);
+        Path2D.Double resul = new Path2D.Double();
+        resul.moveTo(p.v.x, p.v.y);
+        resul.lineTo(p.v.x, p.v.y);
+        AffineTransform bTr = g2draw.getTransform();
+        g2draw.setTransform(getCameratoG2DTransform(camera));
+        g2draw.setColor(p.mp.fillColor.getColor());
+        g2draw.draw(resul);
+        g2draw.fill(resul);
+        g2draw.setTransform(bTr);
     }
 
     @Override
@@ -452,13 +459,14 @@ public class Java2DRenderer extends Renderer {
     }
 
     public void setStroke(Graphics2D g2d, MathObject obj) {
-        final double thickness = obj.mp.getThickness(this);
-        int strokeSize;
-        if (!obj.mp.absoluteThickness) {
-            strokeSize = camera.mathToScreen(.0025 * thickness); //TODO: Another way to compute this
-        } else {
-            strokeSize = (int) thickness;
-        }
+        final double thickness = obj.mp.getThickness(this) / 200;
+//        int strokeSize;
+//        if (!obj.mp.absoluteThickness) {
+//            strokeSize = camera.mathToScreen(.0025 * thickness); //TODO: Another way to compute this
+//        } else {
+//            strokeSize = (int) thickness;
+//        }
+        float strokeSize = (float) thickness;
 
         switch (obj.mp.dashStyle) {
             case MathObjectDrawingProperties.SOLID:
@@ -509,15 +517,22 @@ public class Java2DRenderer extends Renderer {
 //                Path2D.Double pathToFill = createPathFromJMPath(mobj, mobj.getPath().allVisible(), cam);
 //                g2draw.setColor(mobj.mp.fillColor.getColor());
 //                g2draw.fill(pathToFill);
-
+                AffineTransform bTr = g2draw.getTransform();
+                g2draw.setTransform(getCameratoG2DTransform(cam));
                 g2draw.setColor(mobj.mp.fillColor.getColor());
                 g2draw.fill(path);
+                g2draw.setTransform(bTr);
 
             }
             //Border is always drawed
+            AffineTransform bTr = g2draw.getTransform();
+            final AffineTransform cameratoG2DTransform = getCameratoG2DTransform(cam);
+
             g2draw.setColor(mobj.mp.drawColor.getColor());
             setStroke(g2draw, mobj);
+            g2draw.setTransform(cameratoG2DTransform);
             g2draw.draw(path);
+            g2draw.setTransform(bTr);
 
             if (PRINT_DEBUG) {
                 System.out.println("Drawing " + c);
@@ -526,6 +541,16 @@ public class Java2DRenderer extends Renderer {
                 debugBoundingBox(c.getBoundingBox());
             }
         }
+    }
+
+    public AffineTransform getCameratoG2DTransform(Camera cam) {
+        Rect r = cam.getMathView();
+        //First, move UL math corner to screen (0,0)
+        AffineTransform tr = AffineTransform.getTranslateInstance(-r.xmin, -r.ymax);
+        //Now, scale it so that (xmax-xmin, ymax-ymin) goes to (W,H)
+        AffineTransform sc = AffineTransform.getScaleInstance(width / (r.xmax - r.xmin), -height / (r.ymax - r.ymin));
+        sc.concatenate(tr);
+        return sc;
     }
 
     public Path2D.Double createPathFromJMPath(Shape mobj, Camera2D cam) {
@@ -539,18 +564,18 @@ public class Java2DRenderer extends Renderer {
         if (DEBUG_PATH_POINTS) {
             debugPathPoint(c.getJMPoint(0), c);
         }
-        int[] scr = cam.mathToScreen(p);
+        double[] scr = {p.x, p.y};
         if (DEBUG_LABELS) {
             g2debug.setColor(Color.BLACK);
-            g2debug.drawString(mobj.label, scr[0], scr[1]);
+            g2debug.drawString(mobj.label, (float) scr[0], (float) scr[1]);
             g2debug.setColor(Color.WHITE);
-            g2debug.drawString(mobj.label, scr[0] + 2, scr[1] + 2);
+            g2debug.drawString(mobj.label, (float) scr[0] + 2, (float) scr[1] + 2);
         }
         resul.moveTo(scr[0], scr[1]);
         //Now I iterate to get the next points
         int numPoints = c.size();
 //        int prev[] = {scr[0], scr[1]};
-        int xy[] = {scr[0], scr[1]};
+        double xy[] = {scr[0], scr[1]};
 
         for (int n = 1; n < numPoints + 1; n++) {
 
@@ -559,10 +584,14 @@ public class Java2DRenderer extends Renderer {
             Vec cpoint2 = c.getJMPoint(n).cp2.v;
 //            prev[0] = xy[0];
 //            prev[1] = xy[1];
-            xy = cam.mathToScreen(point);
+//            xy = cam.mathToScreen(point);
+            xy[0] = point.x;
+            xy[1] = point.y;
 
-            int[] cxy1 = cam.mathToScreen(cpoint1);
-            int[] cxy2 = cam.mathToScreen(cpoint2);
+//            int[] cxy1 = cam.mathToScreen(cpoint1);
+//            int[] cxy2 = cam.mathToScreen(cpoint2);
+            double cxy1[] = {cpoint1.x, cpoint1.y};
+            double cxy2[] = {cpoint2.x, cpoint2.y};
             if (DEBUG_PATH_POINTS) {
                 debugPathPoint(c.getJMPoint(n), c);
             }

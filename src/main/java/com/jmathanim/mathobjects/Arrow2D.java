@@ -5,7 +5,7 @@
  */
 package com.jmathanim.mathobjects;
 
-import com.jmathanim.Animations.AffineTransform;
+import com.jmathanim.Animations.AffineJTransform;
 import com.jmathanim.Renderers.Renderer;
 import com.jmathanim.Utils.JMathAnimConfig;
 import com.jmathanim.Utils.Rect;
@@ -137,7 +137,7 @@ public class Arrow2D extends MathObject {
         MathObject arrowHeadCopy = this.head.copy();
         Vec v = p1.to(p2);
         double angle = v.getAngle();
-        AffineTransform tr = AffineTransform.create2DRotationTransform(p2, -Math.PI / 2 + angle);
+        AffineJTransform tr = AffineJTransform.create2DRotationTransform(p2, -Math.PI / 2 + angle);
         tr.applyTransform(arrowHeadCopy);
 
         body.draw(r);

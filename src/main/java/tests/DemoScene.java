@@ -23,8 +23,8 @@ public class DemoScene extends Scene2D {
 
     @Override
     public void setupSketch() {
-        ConfigLoader.parseFile("production.xml");
-//        ConfigLoader.parseFile("preview.xml");
+//        ConfigLoader.parseFile("production.xml");
+        ConfigLoader.parseFile("preview.xml");
         ConfigLoader.parseFile("dark.xml");
     }
 
@@ -34,42 +34,42 @@ public class DemoScene extends Scene2D {
         LaTeXMathObject description, commandText;
         Shape reg1, reg2;
         //Title
-        makeTitle();
-
-        //Slide 1
-        System.out.println("Slide 1");
-        Shape circle = Shape.circle().scale(.5).shift(-1, 0);
-        Shape square = Shape.square().scale(1).shift(1, -1).drawColor(JMColor.BLUE);
-        sc1 = new ShowCreation(circle, 2);
-        sc2 = new ShowCreation(square, 2);
-        playAnimation(sc1, sc2);
-        description = createDescription("Basic shapes");
-        commandText = createCommandText("{\\tt Shape.circle()} or {\\tt Shape.square()}");
-        waitSeconds(5);
-        play.fadeOut(description);
-        play.fadeOut(commandText);//TODO: Add fadeOutAll animation
-
-        //Slide 2
-        System.out.println("Slide 2");
-        description = createDescription("Supports named styles and animated changes");
-        commandText = createCommandText("{\\tt play.setStyle(circle,'solidblue',3)}");
-        playAnimation(Commands.setStyle(circle, "solidblue", 3));
-        waitSeconds(5);
-        play.fadeOut(description);
-        play.fadeOut(commandText);
-
-        //Slide 3
-        System.out.println("Slide 3");
-        description = createDescription("Animated transformation point-to-point");
-        commandText = createCommandText("{\\tt play.transform(circle,square,3)}");
-        play.transform(circle, square, 3);
-        waitSeconds(5);
-        play.fadeOut(description);
-        play.fadeOut(commandText);
-
-        play.fadeOut(circle);
-        play.fadeOut(square);
-        
+//        makeTitle();
+//
+//        //Slide 1
+//        System.out.println("Slide 1");
+//        Shape circle = Shape.circle().scale(.5).shift(-1, 0);
+//        Shape square = Shape.square().scale(1).shift(1, -1).drawColor(JMColor.BLUE);
+//        sc1 = new ShowCreation(circle, 2);
+//        sc2 = new ShowCreation(square, 2);
+//        playAnimation(sc1, sc2);
+//        description = createDescription("Basic shapes");
+//        commandText = createCommandText("{\\tt Shape.circle()} or {\\tt Shape.square()}");
+//        waitSeconds(5);
+//        play.fadeOut(description);
+//        play.fadeOut(commandText);//TODO: Add fadeOutAll animation
+//
+//        //Slide 2
+//        System.out.println("Slide 2");
+//        description = createDescription("Supports named styles and animated changes");
+//        commandText = createCommandText("{\\tt play.setStyle(circle,'solidblue',3)}");
+//        playAnimation(Commands.setStyle(circle, "solidblue", 3));
+//        waitSeconds(5);
+//        play.fadeOut(description);
+//        play.fadeOut(commandText);
+//
+//        //Slide 3
+//        System.out.println("Slide 3");
+//        description = createDescription("Animated transformation point-to-point");
+//        commandText = createCommandText("{\\tt play.transform(circle,square,3)}");
+//        play.transform(circle, square, 3);
+//        waitSeconds(5);
+//        play.fadeOut(description);
+//        play.fadeOut(commandText);
+//
+//        play.fadeOut(circle);
+//        play.fadeOut(square);
+//        
         //Slide 4
         System.out.println("Slide 4");
         waitSeconds(2);

@@ -31,7 +31,10 @@ public class Shape extends MathObject {
     private double fillAlphaTemp;
 
     public Shape() {
-        this(null);
+        this(new JMPath(),null);
+    }
+    public Shape(JMPath jmpath) {
+        this(jmpath,null);
     }
 
     public Shape(JMPath jmpath, MathObjectDrawingProperties mp) {
@@ -207,9 +210,15 @@ public class Shape extends MathObject {
         obj.setObjectType(SEGMENT);
         return obj;
     }
-    public static Shape line(Point A, Point B) {
-        return new Line(A,B);
+    
+    
+    public static Shape segment(Line line) {
+        //Compute bound points in case they still hasn't computed yet
+        line.computeBoundPoints(JMathAnimConfig.getConfig().getRenderer());
+        return segment(line.bp1.p.copy(),line.bp2.p.copy());
     }
+    
+    
     public static Shape rectangle(Point A, Point B) {
         Shape obj = new Shape();
         JMathAnimConfig.getConfig().getScene();
@@ -274,17 +283,26 @@ public class Shape extends MathObject {
     public static Shape circle() {
         Shape obj = new Shape();
         double x1, y1;
-        double step = Math.PI * 2 / 40;
+        int numSegments=4;
+        double step = Math.PI * 2 / numSegments;
+        double cte = 4d/3*Math.tan(.5*Math.PI/numSegments);
         for (double alphaC = 0; alphaC < 2 * Math.PI; alphaC += step) {
-            x1 = Math.cos(alphaC);
-            y1 = Math.sin(alphaC);
-            Point newPoint = new Point(x1, y1);
-            JMPathPoint p = JMPathPoint.curveTo(newPoint);
-            p.isCurved = true;
-            obj.jmpath.addJMPoint(p);
+            x1 = Math.cos(alphaC+Math.PI/2);
+            y1 = Math.sin(alphaC+Math.PI/2);
+            Point p = new Point(x1, y1);
+            Vec v1=new Vec(-y1,x1);
+            
+            v1.multInSite(cte);
+            Point cp1=p.add(v1);
+            Point cp2=p.add(v1.multInSite(-1));
+            JMPathPoint jmp = JMPathPoint.curveTo(p);
+            jmp.cp1.copyFrom(cp1);
+            jmp.cp2.copyFrom(cp2);
+            obj.jmpath.addJMPoint(jmp);
         }
-        obj.jmpath.generateControlPoints();
-//        obj.jmpath.close();
+//        obj.jmpath.generateControlPoints();
+//        obj.rotate(Math.PI/2);
+
         obj.setObjectType(CIRCLE);
         return obj;
     }

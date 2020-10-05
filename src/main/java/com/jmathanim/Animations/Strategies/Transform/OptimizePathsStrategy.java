@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.jmathanim.Animations.TransformStrategies;
+package com.jmathanim.Animations.Strategies.Transform;
 
 import com.jmathanim.mathobjects.Shape;
 
@@ -11,10 +11,7 @@ import com.jmathanim.mathobjects.Shape;
  *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
-public interface TransformStrategy {
-    
-    public void prepareObjects(Shape ob1,Shape ob2);
-    public void applyTransform(double t);
-    public void finish();
+public interface OptimizePathsStrategy {
+    public void optimize(Shape sh1,Shape sh2);
     
 }

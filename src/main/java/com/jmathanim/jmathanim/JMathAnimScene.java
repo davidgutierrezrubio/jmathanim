@@ -25,6 +25,7 @@ public abstract class JMathAnimScene {
 
     public final static Logger logger = LoggerFactory.getLogger("com.jmathanim.jmathanim.JMathAnimScene");
     public static final double PI = 3.14159265358979323846;
+    public static final double DEGREES=PI/180;
     int contador = 0;
     int x;
     final ArrayList<MathObject> objects;

@@ -25,10 +25,10 @@ public class JMColor {
 
     public double r, g, b, alpha;
 
-    public JMColor(JMColor c)
-    {
+    public JMColor(JMColor c) {
         set(c);
     }
+
     public JMColor(double r, double g, double b, double alpha) {
         this.r = r;
         this.g = g;
@@ -60,6 +60,11 @@ public class JMColor {
                 bb = Integer.valueOf(hex.substring(4, 6), 16);
                 aa = Integer.valueOf(hex.substring(6, 8), 16);
                 return JMColor.rgbInt(rr, gg, bb, aa);
+            case 3: //Case https://www.quackit.com/css/color/values/css_hex_color_notation_3_digits.cfm
+                rr = Integer.valueOf(hex.substring(0, 1) + hex.substring(0, 1), 16);
+                gg = Integer.valueOf(hex.substring(1, 2) + hex.substring(1, 2), 16);
+                bb = Integer.valueOf(hex.substring(2, 3) + hex.substring(2, 3), 16);
+                return JMColor.rgbInt(rr, gg, bb);
             default:
                 return null;
         }
@@ -105,7 +110,7 @@ public class JMColor {
     }
 
     public static JMColor parseColorID(String str) {
-        str=str.toUpperCase();
+        str = str.toUpperCase();
         JMColor resul = null;
         if (str.startsWith("#"))//Hex
         {
@@ -115,7 +120,7 @@ public class JMColor {
                 Field field = JMColor.class.getField(str.toUpperCase());
                 resul = (JMColor) field.get(JMColor.class);
             } catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException ex) {
-                JMathAnimScene.logger.warn("Color {} not recognized ",str);
+                JMathAnimScene.logger.warn("Color {} not recognized ", str);
             }
         }
         return resul;
@@ -123,7 +128,7 @@ public class JMColor {
 
     @Override
     public String toString() {
-        return "(" +  r + ", " + g + "," + b + ", " + alpha + ')';
+        return "(" + r + ", " + g + "," + b + ", " + alpha + ')';
     }
 
 }

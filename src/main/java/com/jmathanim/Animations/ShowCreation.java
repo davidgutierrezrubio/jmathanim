@@ -5,9 +5,11 @@
  */
 package com.jmathanim.Animations;
 
+import com.jmathanim.Animations.Strategies.ShowCreation.SimpleShapeCreation;
+import com.jmathanim.Animations.Strategies.TransformStrategy;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.CanonicalJMPath;
-import com.jmathanim.mathobjects.JMPath;
+import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.MultiShapeObject;
 import com.jmathanim.mathobjects.Shape;
 
@@ -17,75 +19,54 @@ import com.jmathanim.mathobjects.Shape;
  */
 public class ShowCreation extends Animation {
 
-    Shape mobj;
+    MathObject mobj;
     CanonicalJMPath canonPath;
     private MultiShapeObject msh;
-    private int numberOfSegments;
+    TransformStrategy strategy;
 
     public ShowCreation(Shape mobj) {
         super();
         this.mobj = mobj;
     }
 
-    public ShowCreation(Shape mobj, double runtime) {
+    public ShowCreation(MathObject mobj, double runtime) {
         super(runtime);
         this.mobj = mobj;
     }
 
     @Override
     public void initialize() {
-        canonPath = mobj.jmpath.canonicalForm();
-        //Create multishape with all canonical components and a copy of drawing attributes
-        //This will be drawed instead of mobj during the ShowCreation animation
-        msh = canonPath.createMultiShape(this.mobj.mp);
-        mobj.visible = false;
-        this.scene.add(msh);
-        numberOfSegments = canonPath.getTotalNumberOfSegments();
-
+        determineCreationStrategy(this.mobj);
+        if (strategy != null) {
+            strategy.prepareObjects();
+        }
     }
 
     @Override
     public void doAnim(double t) {
-        double po = t * numberOfSegments;
-        int k = (int) Math.floor(po); //Number of segment
-
-        double alpha = po - k; //Alpha stores the 0-1 parameter inside the segment
-        int[] pl = canonPath.getSegmentLocation(k);
-        int pathNumber = pl[0];
-        k = pl[1];
-        for (int n = 0; n < msh.shapes.size(); n++) {
-            //Restore all paths because in each loop there will be modified
-            msh.shapes.get(n).jmpath.clear();
-            final JMPath path = canonPath.get(n);
-            msh.shapes.get(n).jmpath.addPointsFrom(path);
-
-            if (n < pathNumber) {
-                msh.shapes.get(n).visible = true;//Draw whole path
-            }
-            if (n > pathNumber) {
-                msh.shapes.get(n).visible = false;//Still don't draw
-            }
-            if (n == pathNumber) {//This path should be drawn partly
-                msh.shapes.get(n).visible = true;
-                //k=point in this path, and alpha 0-1 relative position between k-1 and k
-                final double alphaInThisPath = (k + alpha) / (msh.shapes.get(n).jmpath.size()-1);
-                JMPath subpath = canonPath.subpath(n, alphaInThisPath);
-                msh.shapes.get(n).jmpath.clear();
-                msh.shapes.get(n).jmpath.addPointsFrom(subpath);
-//                System.out.println("subpath lenght "+subpath.size());
-            }
-
+        if (strategy != null) {
+            strategy.applyTransform(t);
         }
     }
 
     @Override
     public void finishAnimation() {
-        this.scene.remove(msh);
-        this.mobj.visible = true;
+        if (strategy != null) {
+            strategy.finish();
+        }
     }
 
     @Override
     public void addObjectsToScene(JMathAnimScene scene) {
         scene.add(mobj);
     }
+
+    public TransformStrategy determineCreationStrategy(MathObject mobj) {
+
+        if (mobj instanceof Shape) {
+            strategy = new SimpleShapeCreation((Shape) mobj, this.scene);
+        }
+        return strategy;
+    }
+
 }

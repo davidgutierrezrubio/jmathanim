@@ -7,16 +7,21 @@
             <drawColor>#FFFFFFFF</drawColor>
             <fillColor>#FF000000</fillColor>
             <thickness>1</thickness>
+        </style>  
+        <style name="latexdefault">
+            <drawColor>#FFFFFFFF</drawColor>
+            <fillColor>#FFFFFFFF</fillColor>
+            <thickness>.01</thickness>
         </style>
         <style name="solidred">
             <drawColor>WHITE</drawColor>
             <fillColor>RED</fillColor>
-            <thickness>2</thickness>
+            <thickness>1.5</thickness>
         </style>
          <style name="solidblue">
             <drawColor>WHITE</drawColor>
             <fillColor>BLUE</fillColor>
-            <thickness>2</thickness>
+            <thickness>1.5</thickness>
         </style>
          <style name="axisblue1">
             <drawColor>#2565AE</drawColor>

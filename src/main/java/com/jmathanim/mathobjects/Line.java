@@ -56,10 +56,10 @@ public class Line extends Shape {
         jmpath.clear(); //Super constructor adds p1, p2. Delete them
         bp1 = new JMPathPoint(new Point(0, 0), true, JMPathPoint.TYPE_VERTEX);//trivial boundary points, just to initialize objects
         bp2 = new JMPathPoint(new Point(0, 0), true, JMPathPoint.TYPE_VERTEX);//trivial boundary points, just to initialize objects
-        visiblePiece=new Shape();
-        visiblePiece.jmpath.addJMPoint(bp1,bp2);
-        visiblePiece.mp=this.mp;
-        jmpath.addPoint(p1,p2);
+        visiblePiece = new Shape();
+        visiblePiece.jmpath.addJMPoint(bp1, bp2);
+        visiblePiece.mp = this.mp;
+        jmpath.addPoint(p1, p2);
     }
 
     @Override
@@ -78,16 +78,17 @@ public class Line extends Shape {
     public void draw(Renderer r) {
         computeBoundPoints(r);
         visiblePiece.draw(r);
-        
+
     }
- /**
-  * Compute border points in the view area of the given renderer.
-  * This is need in order to draw an "infinite" line which always extend to the 
-  * whole visible area. 
-  * The border points are stored in bp1 and bp2
-  * @param r The renderer
-  */
-    public void computeBoundPoints(Renderer r) {
+
+    /**
+     * Compute border points in the view area of the given renderer. This is
+     * need in order to draw an "infinite" line which always extend to the whole
+     * visible area. The border points are stored in bp1 and bp2
+     *
+     * @param r The renderer
+     */
+    public final void computeBoundPoints(Renderer r) {
         Rect rect = r.getCamera().getMathView();
         double[] intersectLine = rect.intersectLine(p1.v.x, p1.v.y, p2.v.x, p2.v.y);
 
@@ -127,7 +128,6 @@ public class Line extends Shape {
 //        p1.restoreState();
 //        p2.restoreState();
 //    }
-
     public Point getP1() {
         return p1;
     }
@@ -141,6 +141,16 @@ public class Line extends Shape {
         //Center of an infinite line doesn't exists. Take first point instead.
         return p1;
     }
-    
 
+    public static Line XAxis() {
+        return new Line(new Point(0, 0), new Point(1, 0));
+    }
+
+    public static Line YAxis() {
+        return new Line(new Point(0, 0), new Point(1, 0));
+    }
+    public static Line XYBisector()
+{
+    return new Line(new Point(0,0),new Point(1,1));
+}
 }

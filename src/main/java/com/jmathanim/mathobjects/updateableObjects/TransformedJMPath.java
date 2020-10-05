@@ -5,7 +5,7 @@
  */
 package com.jmathanim.mathobjects.updateableObjects;
 
-import com.jmathanim.Animations.AffineTransform;
+import com.jmathanim.Animations.AffineJTransform;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.Shape;
 import com.jmathanim.mathobjects.JMPathPoint;
@@ -17,10 +17,10 @@ import com.jmathanim.mathobjects.Point;
  */
 public class TransformedJMPath extends Shape{
 
-    private final AffineTransform transform;
+    private final AffineJTransform transform;
     private final Shape srcOBj;
 
-    public TransformedJMPath(Shape jmpobj, AffineTransform tr) {
+    public TransformedJMPath(Shape jmpobj, AffineJTransform tr) {
         super();
         this.transform=tr;
         this.srcOBj=jmpobj;

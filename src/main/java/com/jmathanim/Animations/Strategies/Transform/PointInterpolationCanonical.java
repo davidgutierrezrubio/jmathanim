@@ -3,8 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.jmathanim.Animations.TransformStrategies;
+package com.jmathanim.Animations.Strategies.Transform;
 
+import com.jmathanim.Animations.Strategies.TransformStrategy;
 import com.jmathanim.Utils.JMColor;
 import com.jmathanim.Utils.JMathAnimConfig;
 import com.jmathanim.jmathanim.JMathAnimScene;
@@ -19,9 +20,8 @@ import java.util.ArrayList;
  *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
-public class PointInterpolationCanonical implements TransformStrategy {
+public class PointInterpolationCanonical extends TransformStrategy {
 
-    private JMathAnimScene scene;
     public CanonicalJMPath connectedOrigin, connectedDst, connectedOriginaRawCopy;
     private final ArrayList<Shape> addedAuxiliaryObjectsToScene;
     private Shape mobjTransformed;
@@ -29,17 +29,18 @@ public class PointInterpolationCanonical implements TransformStrategy {
     private Shape originalShapeBaseCopy;
     private static final boolean DEBUG_COLORS = false;
 
-    public PointInterpolationCanonical() {
+    public PointInterpolationCanonical(Shape mobjTransformed, Shape mobjDestiny,JMathAnimScene scene) {
+        super(scene);
+        this.mobjTransformed=mobjTransformed;
+        this.mobjDestiny=mobjDestiny;
         this.addedAuxiliaryObjectsToScene = new ArrayList<>();
     }
 
     @Override
-    public void prepareObjects(Shape mobjTransformed, Shape mobjDestiny) {
+    public void prepareObjects() {
         //This is the initialization for the point-to-point interpolation
         //Prepare paths. Firs, I ensure they have the same number of points
         //and be in connected components form.
-        this.mobjTransformed = mobjTransformed;
-        this.mobjDestiny = mobjDestiny;
         
         //Remove consecutive hidden vertices, in case.
         this.mobjTransformed.getPath().removeConsecutiveHiddenVertices();
@@ -47,7 +48,6 @@ public class PointInterpolationCanonical implements TransformStrategy {
         
         originalShapeBaseCopy = mobjTransformed.copy();
         preparePaths(mobjTransformed.jmpath, mobjDestiny.jmpath);
-        scene = JMathAnimConfig.getConfig().getScene();
         if (DEBUG_COLORS) {
             for (int n = 0; n < connectedOrigin.getNumberOfPaths(); n++) {
                 JMColor color = mobjTransformed.mp.drawColor.copy();

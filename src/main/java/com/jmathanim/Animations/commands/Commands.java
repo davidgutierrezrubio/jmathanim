@@ -5,7 +5,7 @@
  */
 package com.jmathanim.Animations.commands;
 
-import com.jmathanim.Animations.AffineTransform;
+import com.jmathanim.Animations.AffineJTransform;
 import com.jmathanim.Animations.ApplyCommand;
 import com.jmathanim.Cameras.Camera;
 import com.jmathanim.Utils.JMathAnimConfig;
@@ -86,7 +86,7 @@ public class Commands {
             double angle = ang;
             double tPrevious;
             Point rotationCenter = c;
-            AffineTransform tr;
+            AffineJTransform tr;
 
             @Override
             public void initialize() {
@@ -96,7 +96,7 @@ public class Commands {
             @Override
             public void execute(double t) {
                 mathObject.restoreState();
-                tr = AffineTransform.create2DRotationTransform(rotationCenter, angle * t);
+                tr = AffineJTransform.create2DRotationTransform(rotationCenter, angle * t);
                 tr.applyTransform(mathObject);
             }
 
@@ -116,7 +116,7 @@ public class Commands {
             Point dst1 = d;
             Point dst2 = e;
             Point dst3 = f;
-            AffineTransform tr;
+            AffineJTransform tr;
 
             @Override
             public void initialize() {
@@ -126,7 +126,7 @@ public class Commands {
             @Override
             public void execute(double t) {
                 mathObject.restoreState();
-                tr = AffineTransform.createAffineTransformation(orig1, orig2, orig3, dst1, dst2, dst3, t);
+                tr = AffineJTransform.createAffineTransformation(orig1, orig2, orig3, dst1, dst2, dst3, t);
                 tr.applyTransform(mathObject);
             }
 
@@ -158,7 +158,7 @@ public class Commands {
             Point B = b;
             Point C = c;
             Point D = d;
-            AffineTransform tr;
+            AffineJTransform tr;
 
             @Override
             public void initialize() {
@@ -168,7 +168,7 @@ public class Commands {
             @Override
             public void execute(double t) {
                 mathObject.restoreState();
-                tr = AffineTransform.createDirect2DHomotopy(A, B, C, D, t);
+                tr = AffineJTransform.createDirect2DHomotopy(A, B, C, D, t);
                 tr.applyTransform(mathObject);
             }
 
@@ -195,7 +195,7 @@ public class Commands {
             double tPrevious;
             Point axis1 = A;
             Point axis2 = B;
-            AffineTransform tr;
+            AffineJTransform tr;
 
             @Override
             public void initialize() {
@@ -205,7 +205,7 @@ public class Commands {
             @Override
             public void execute(double t) {
                 mathObject.restoreState();
-                tr = AffineTransform.createReflection(axis1, axis2, t);
+                tr = AffineJTransform.createReflection(axis1, axis2, t);
                 tr.applyTransform(mathObject);
             }
 
@@ -233,7 +233,7 @@ public class Commands {
             double tPrevious;
             Point axis1 = a;
             Point axis2 = b;
-            AffineTransform tr;
+            AffineJTransform tr;
 
             @Override
             public void initialize() {
@@ -243,7 +243,7 @@ public class Commands {
             @Override
             public void execute(double t) {
                 mathObject.restoreState();
-                tr = AffineTransform.createReflectionByAxis(axis1, axis2, t);
+                tr = AffineJTransform.createReflectionByAxis(axis1, axis2, t);
                 tr.applyTransform(mathObject);
             }
 

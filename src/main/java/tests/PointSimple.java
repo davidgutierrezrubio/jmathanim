@@ -5,13 +5,13 @@
  */
 package tests;
 
-import com.jmathanim.Animations.AffineTransform;
+import com.jmathanim.Animations.AffineJTransform;
 import com.jmathanim.Animations.Animation;
 import com.jmathanim.Animations.ApplyCommand;
 import com.jmathanim.Animations.ShowCreation;
 import com.jmathanim.Animations.Highlight;
 import com.jmathanim.Animations.Transform;
-import com.jmathanim.Animations.TransformStrategies.PointInterpolationCanonical;
+import com.jmathanim.Animations.Strategies.Transform.PointInterpolationCanonical;
 import com.jmathanim.Animations.commands.Commands;
 import com.jmathanim.Utils.Anchor;
 import com.jmathanim.Utils.ConfigLoader;
@@ -113,7 +113,7 @@ public class PointSimple extends Scene2D {
     public void pruebaLinea() {
         Point p1 = new Point(0, 0);
         Point p2 = new Point(0, 1);
-        Shape line = Shape.line(p1, p2).style("solidred");
+        Shape line = new Line(p1, p2).style("solidred");
         add(line);
         Shape circle = Shape.circle(p1, 1).setLayer(-1);
         add(circle.style("solidred"));
@@ -563,7 +563,7 @@ public class PointSimple extends Scene2D {
         LaTeXMathObject eq2 = new LaTeXMathObject("$$\\infty$$");
         CanonicalJMPath c1 = eq1.get(0).jmpath.canonicalForm();
         CanonicalJMPath c2 = eq2.get(0).jmpath.canonicalForm();
-        PointInterpolationCanonical tr = new PointInterpolationCanonical();
+//        PointInterpolationCanonical tr = new PointInterpolationCanonical();
 //        tr.alignNumberOfComponents(c1, c2);
         Shape sh1 = new Shape(c1.toJMPath(), null).scale(3);
         sh1.fillColor(JMColor.WHITE);
@@ -626,9 +626,9 @@ public class PointSimple extends Scene2D {
         Point B = new Point(0, 1);
         Point C = new Point(-1, 1);
         add(A, B, C);
-        AffineTransform tr2 = AffineTransform.createTranslationTransform(new Vec(1, 0, 0));
-        AffineTransform tr = AffineTransform.create2DRotationTransform(new Point(1, -1), Math.PI / 180 * 45);
-        AffineTransform tr3 = AffineTransform.create2DRotationTransform(new Point(0, 0), -Math.PI / 180 * 45);
+        AffineJTransform tr2 = AffineJTransform.createTranslationTransform(new Vec(1, 0, 0));
+        AffineJTransform tr = AffineJTransform.create2DRotationTransform(new Point(1, -1), Math.PI / 180 * 45);
+        AffineJTransform tr3 = AffineJTransform.create2DRotationTransform(new Point(0, 0), -Math.PI / 180 * 45);
         TransformedPoint X = new TransformedPoint(A, tr);
         TransformedPoint Y = new TransformedPoint(B, tr);
         TransformedPoint Z = new TransformedPoint(C, tr);
@@ -658,7 +658,7 @@ public class PointSimple extends Scene2D {
         pol.shift(0, 1);
         add(pol);
 
-        AffineTransform tr = AffineTransform.createReflection(new Point(1, 1), new Point(2, -1), 1);
+        AffineJTransform tr = AffineJTransform.createReflection(new Point(1, 1), new Point(2, -1), 1);
 
         Point p = new Point(0, 0);
         Point reflectedPoint = tr.getTransformedPoint(p);
@@ -677,7 +677,7 @@ public class PointSimple extends Scene2D {
     private void affineTransform(JMPath jmpathOrig, Shape mobj1, double t) {
         JMPathPoint interPoint, basePoint, dstPoint;
 
-        AffineTransform tr = AffineTransform.createReflection(new Point(1, 1), new Point(2, -1), t);
+        AffineJTransform tr = AffineJTransform.createReflection(new Point(1, 1), new Point(2, -1), t);
         for (int n = 0; n < mobj1.jmpath.jmPathPoints.size(); n++) {
             interPoint = mobj1.jmpath.jmPathPoints.get(n);
             basePoint = jmpathOrig.jmPathPoints.get(n);

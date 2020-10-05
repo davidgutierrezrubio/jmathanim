@@ -3,16 +3,22 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.jmathanim.Animations.TransformStrategies;
+package com.jmathanim.Animations.Strategies.Transform;
 
-import com.jmathanim.Animations.AffineTransform;
+import com.jmathanim.Animations.AffineJTransform;
+import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.Point;
+import com.jmathanim.mathobjects.Shape;
 
 /**
  *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
 public class HomotopyStrategyTransform extends MatrixTransformStrategy {
+
+    public HomotopyStrategyTransform(Shape mobjTransformed, Shape mobjDestiny,JMathAnimScene scene) {
+        super(mobjTransformed, mobjDestiny,scene);
+    }
 
     @Override
     public void applyTransform(double t) {
@@ -22,7 +28,7 @@ public class HomotopyStrategyTransform extends MatrixTransformStrategy {
         Point C = mobjDestiny.jmpath.getJMPoint(0).p;
         Point D = mobjDestiny.jmpath.getJMPoint(1).p;
 
-        AffineTransform tr = AffineTransform.createDirect2DHomotopy(A, B, C, D, t);
+        AffineJTransform tr = AffineJTransform.createDirect2DHomotopy(A, B, C, D, t);
 
         applyMatrixTransform(tr, t);
     }

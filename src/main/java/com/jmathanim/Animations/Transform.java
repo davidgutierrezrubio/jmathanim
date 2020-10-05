@@ -5,11 +5,11 @@
  */
 package com.jmathanim.Animations;
 
-import com.jmathanim.Animations.TransformStrategies.PointInterpolationCanonical;
-import com.jmathanim.Animations.TransformStrategies.AffineStrategyTransform;
-import com.jmathanim.Animations.TransformStrategies.HomotopyStrategyTransform;
-import com.jmathanim.Animations.TransformStrategies.RotateAndScaleXYStrategyTransform;
-import com.jmathanim.Animations.TransformStrategies.TransformStrategy;
+import com.jmathanim.Animations.Strategies.Transform.PointInterpolationCanonical;
+import com.jmathanim.Animations.Strategies.Transform.AffineStrategyTransform;
+import com.jmathanim.Animations.Strategies.Transform.HomotopyStrategyTransform;
+import com.jmathanim.Animations.Strategies.Transform.RotateAndScaleXYStrategyTransform;
+import com.jmathanim.Animations.Strategies.TransformStrategy;
 import com.jmathanim.Utils.MathObjectDrawingProperties;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.JMPath;
@@ -65,7 +65,7 @@ public class Transform extends Animation {
 
         //Variable strategy should have proper strategy to transform
         //If method is null means that user didn't force one
-        strategy.prepareObjects(mobjTransformed, mobjDestiny);
+        strategy.prepareObjects();
     }
 
     /**
@@ -149,16 +149,16 @@ public class Transform extends Animation {
         //Now I choose strategy
         switch (method) {
             case METHOD_INTERPOLATE_POINT_BY_POINT:
-                strategy = new PointInterpolationCanonical();
+                strategy = new PointInterpolationCanonical(mobjTransformed, mobjDestiny,scene);
                 break;
             case METHOD_HOMOTOPY_TRANSFORM:
-                strategy = new HomotopyStrategyTransform();
+                strategy = new HomotopyStrategyTransform(mobjTransformed, mobjDestiny,scene);
                 break;
             case METHOD_AFFINE_TRANSFORM:
-                strategy = new AffineStrategyTransform();
+                strategy = new AffineStrategyTransform(mobjTransformed, mobjDestiny,scene);
                 break;
             case METHOD_ROTATE_AND_SCALEXY_TRANSFORM:
-                strategy = new RotateAndScaleXYStrategyTransform();
+                strategy = new RotateAndScaleXYStrategyTransform(mobjTransformed, mobjDestiny,scene);
                 break;
         }
     }

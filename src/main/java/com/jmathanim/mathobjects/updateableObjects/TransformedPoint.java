@@ -5,7 +5,7 @@
  */
 package com.jmathanim.mathobjects.updateableObjects;
 
-import com.jmathanim.Animations.AffineTransform;
+import com.jmathanim.Animations.AffineJTransform;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.Point;
 
@@ -15,20 +15,20 @@ import com.jmathanim.mathobjects.Point;
  */
 public class TransformedPoint extends Point{
 
-    private AffineTransform transform;
+    private AffineJTransform transform;
     private final Point dstPoint;
     
-    public TransformedPoint(Point p,AffineTransform tr) {
+    public TransformedPoint(Point p,AffineJTransform tr) {
         super();
         this.dstPoint=p;
         this.transform=tr;
     }
 
-    public AffineTransform getTransform() {
+    public AffineJTransform getTransform() {
         return transform;
     }
 
-    public void setTransform(AffineTransform transform) {
+    public void setTransform(AffineJTransform transform) {
         this.transform = transform;
     }
 
