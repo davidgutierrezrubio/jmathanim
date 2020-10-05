@@ -59,7 +59,7 @@ public class Transform extends Animation {
         //2 circles/ellipses
         //2 regular polygons with same number of sides
         if (method == null) {
-            determineTransformMethod();
+            determineTransformStrategy();
         }
         createStrategy();
 
@@ -103,7 +103,7 @@ public class Transform extends Animation {
         path1.cyclePoints(optimalStep, changeDirection);
     }
 
-    private void determineTransformMethod() {
+    private void determineTransformStrategy() {
         String methodTextOutput = "Transform method: By point";
 
         //Segment & Segment
@@ -134,14 +134,14 @@ public class Transform extends Animation {
                 method = METHOD_ROTATE_AND_SCALEXY_TRANSFORM;
                 shouldOptimizePathsFirst = true;
                 methodTextOutput = "Transform method: Rotate and Scale XY";
-            } else {
+            } else { //Different number of vertices
                 method = METHOD_INTERPOLATE_POINT_BY_POINT;
                  methodTextOutput = "Transform method: By point";
             }
 
         }
 
-        System.out.println(methodTextOutput);
+        JMathAnimScene.logger.info("{}"+methodTextOutput);
 
     }
 
@@ -181,73 +181,6 @@ public class Transform extends Animation {
         mobjTransformed.setObjectType(mobjDestiny.getObjectType());
     }
 
-    /*
-     * Align the number of points of this path with the given one.Align the
- paths so that they have the same number of points, interpolating the
- smaller one if necessary.
-     *
-//    public void alignPaths(JMPath path1, JMPath path2) {//TODO: Move this to Transform
-//        //TODO: What about open paths?
-//        JMPath pathSmall;
-//        JMPath pathBig;
-//
-//        //If path1 is closed but path2 is not, open path1, duplicating first vertex 
-//        if (path1.isClosed && !path2.isClosed) {
-//            path1.addJMPoint(path1.getPoint(0).copy());
-//            path1.getPoint(0).isVisible = false;
-//            path1.getPoint(-1).type = JMPathPoint.TYPE_INTERPOLATION_POINT;
-//            path1.isClosed = false;
-//        }
-//
-////         if (path2.isClosed && !this.isClosed)
-////        {
-////            path2.addPoint(path2.getPoint(0).copy());
-////            path2.getPoint(0).isVisible=false;
-////        }
-//        if (path1.size() == path2.size()) {
-//            return;
-//        }
-//
-//        if (path1.size() < path2.size()) {
-//            pathSmall = path1;
-//            pathBig = path2;
-//        } else {
-//            pathBig = path1;
-//            pathSmall = path2;
-//        }
-//
-//        //At this point pathSmall points to the smaller path who is going to be
-//        //interpolated
-//        int nSmall = (pathSmall.isClosed ? pathSmall.size() : pathSmall.size() - 1);
-//        int nBig = (pathBig.isClosed ? pathBig.size() : pathBig.size() - 1);
-////        int nBig = pathBig.size();
-//
-//        JMPath resul = new JMPath();
-//
-//        int numDivs = (nBig / nSmall); //Euclidean quotient
-//        int rest = nBig % nSmall;//Euclidean rest
-//        int numDivForThisVertex;
-//        for (int n = 0; n < nSmall; n++) {
-////                int k = (n + 1) % points.size(); //Next point, first if curve is closed
-//            JMPathPoint v1 = pathSmall.getPoint(n);
-//            JMPathPoint v2 = pathSmall.getPoint(n + 1);
-//            v1.type = JMPathPoint.TYPE_VERTEX;
-//            resul.addJMPoint(v1); //Add the point of original curve
-//            numDivForThisVertex = numDivs; //number of segments to divide, NOT number of intermediate new points
-//            if (n < rest) { //The <rest> first vertex have an extra interpolation point (should distribute these along the path? maybe...)
-//                numDivForThisVertex += 1;
-//            }
-//            dividePathSegment(v1, v2, numDivForThisVertex, resul);
-//        }
-//        if (!pathSmall.isClosed) {
-//            resul.addJMPoint(pathSmall.getPoint(-1));
-//        }
-//        pathSmall.clear();
-//        pathSmall.addPointsFrom(resul);
-////        pathSmall.generateControlPoints();//Not necessary
-//    }
-    */
-    
     
     public int getMethod() {
         return method;

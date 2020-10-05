@@ -201,8 +201,8 @@ public abstract class JMathAnimScene {
      */
     public void playAnimation(ArrayList<Animation> anims) {
         for (Animation anim : anims) {
-            anim.addObjectsToScene(this); //Add main object if it's not already in the scene.
             anim.initialize();//Perform needed steps immediately before playing
+            anim.addObjectsToScene(this); //Add necessary objects if not already in the scene.
         }
 
         boolean finished = false;

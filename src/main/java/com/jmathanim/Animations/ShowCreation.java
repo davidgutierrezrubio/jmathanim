@@ -5,10 +5,13 @@
  */
 package com.jmathanim.Animations;
 
-import com.jmathanim.Animations.Strategies.ShowCreation.SimpleShapeCreation;
+import com.jmathanim.Animations.Strategies.ShowCreation.LateXObjectCreationStrategy;
+import com.jmathanim.Animations.Strategies.ShowCreation.MultiShapeCreationStrategy;
+import com.jmathanim.Animations.Strategies.ShowCreation.SimpleShapeCreationStrategy;
 import com.jmathanim.Animations.Strategies.TransformStrategy;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.CanonicalJMPath;
+import com.jmathanim.mathobjects.LaTeXMathObject;
 import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.MultiShapeObject;
 import com.jmathanim.mathobjects.Shape;
@@ -58,15 +61,25 @@ public class ShowCreation extends Animation {
 
     @Override
     public void addObjectsToScene(JMathAnimScene scene) {
-        scene.add(mobj);
+        strategy.addObjectsToScene();
     }
 
     public TransformStrategy determineCreationStrategy(MathObject mobj) {
 
+        if (mobj instanceof LaTeXMathObject) {
+            strategy = new LateXObjectCreationStrategy((LaTeXMathObject) mobj, this.runTime, this.scene);
+            return strategy;
+        }
         if (mobj instanceof Shape) {
-            strategy = new SimpleShapeCreation((Shape) mobj, this.scene);
+            strategy = new SimpleShapeCreationStrategy((Shape) mobj, this.scene);
+            return strategy;
+        }
+        if (mobj instanceof MultiShapeObject) {
+            strategy = new MultiShapeCreationStrategy((MultiShapeObject) mobj, this.runTime, .5, this.scene);
+            return strategy;
         }
         return strategy;
+
     }
 
 }

@@ -24,5 +24,6 @@ public abstract class TransformStrategy {
     abstract public void applyTransform(double t);
 
     abstract public void finish();
+    abstract public void addObjectsToScene();
 
 }

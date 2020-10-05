@@ -61,7 +61,6 @@ public class Concatenate extends Animation {
         double l=anims.get(currentAnim).runTime;
         // (x-ct)/l where x=t*totalTime
         double tForThisAnim = (t*this.runTime-ct)/l;
-        System.out.println("Anim "+currentAnim+", t="+tForThisAnim);
         
         anims.get(currentAnim).doAnim(tForThisAnim);
         if (tForThisAnim>=1) {

@@ -224,4 +224,8 @@ public class PointInterpolationCanonical extends TransformStrategy {
         return pathToDivide.canonicalForm();
     }
 
+    @Override
+    public void addObjectsToScene() {
+    }
+
 }

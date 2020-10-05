@@ -50,6 +50,10 @@ public class RotateAndScaleXYStrategyTransform extends MatrixTransformStrategy{
         applyMatrixTransform(tr, t);
     }
 
+    @Override
+    public void addObjectsToScene() {
+    }
+
     
 
 }

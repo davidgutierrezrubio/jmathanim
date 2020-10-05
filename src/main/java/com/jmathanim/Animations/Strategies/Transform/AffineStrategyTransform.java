@@ -34,6 +34,10 @@ public class AffineStrategyTransform extends MatrixTransformStrategy{
         
     }
 
+    @Override
+    public void addObjectsToScene() {
+    }
+
    
 
 }

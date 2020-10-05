@@ -17,14 +17,14 @@ import com.jmathanim.mathobjects.Shape;
  *
  * @author David Gutiérrez Rubio <davidgutierrezrubio@gmail.com>
  */
-public class SimpleShapeCreation extends TransformStrategy {
+public class SimpleShapeCreationStrategy extends TransformStrategy {
 
     private final Shape mobj;
     private MultiShapeObject msh;
     private CanonicalJMPath canonPath;
     private int numberOfSegments;
 
-    public SimpleShapeCreation(Shape mobj, JMathAnimScene scene) {
+    public SimpleShapeCreationStrategy(Shape mobj, JMathAnimScene scene) {
         super(scene);
         this.mobj = mobj;
     }
@@ -35,8 +35,9 @@ public class SimpleShapeCreation extends TransformStrategy {
         //Create multishape with all canonical components and a copy of drawing attributes
         //This will be drawed instead of mobj during the ShowCreation animation
         msh = canonPath.createMultiShape(this.mobj.mp);
-        mobj.visible = false;
+        scene.remove(mobj);
         scene.add(msh);
+        applyTransform(0);
         numberOfSegments = canonPath.getTotalNumberOfSegments();
     }
 
@@ -76,7 +77,11 @@ public class SimpleShapeCreation extends TransformStrategy {
     @Override
     public void finish() {
         this.scene.remove(msh);
-        this.mobj.visible = true;
+        scene.add(mobj);
+    }
+
+    @Override
+    public void addObjectsToScene() {
     }
 
 }

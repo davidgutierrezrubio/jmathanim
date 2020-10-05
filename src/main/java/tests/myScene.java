@@ -6,6 +6,7 @@
 package tests;
 
 import com.jmathanim.Animations.ShowCreation;
+import com.jmathanim.Animations.WaitAnimation;
 import com.jmathanim.Animations.commands.Commands;
 import com.jmathanim.Utils.Anchor;
 import com.jmathanim.Utils.ConfigLoader;
@@ -40,8 +41,28 @@ public class myScene extends Scene2D {
 
     @Override
     public void runSketch() {
-        LaTeXMathObject t=new LaTeXMathObject("$${\\color{red}x}+\\color{blue}1$$");
-        add(t);
+        createLatex();
+    }
+
+    private void creationMultishape() {
+        Shape c = Shape.circle();
+        Shape sq = Shape.square();
+        Shape tr = Shape.regularPolygon(3);
+        MultiShapeObject m = new MultiShapeObject();
+        m.addShape(c);
+        m.addShape(sq);
+        m.addShape(tr);
+        playAnimation(new ShowCreation(m, 2));
+
+        waitSeconds(5);
+    }
+
+    private void createLatex() {
+        LaTeXMathObject t = new LaTeXMathObject("$$\\int_0^\\infty x\\,dx\\geq\\pi$$");
+//        LaTeXMathObject t=new LaTeXMathObject("$${\\color{red}x}+\\color{blue}1$$");
+        t.stackTo(Anchor.LEFT, .2, .2);
+        ShowCreation sc = new ShowCreation(t, 5);
+        playAnimation(sc);
         waitSeconds(5);
     }
 
@@ -51,13 +72,13 @@ public class myScene extends Scene2D {
         final JMPath pa = c.getPath().canonicalForm().subpath(0, .9995);
         Shape s = new Shape(pa);
         add(s);
-        s.rotate(90*DEGREES);
+        s.rotate(90 * DEGREES);
 //        s.getPoint(4).shift(-.5,0);
 //        play.rotate(s, 2*PI, 20);
         ArrayList<Point> points = s.getPath().getPoints();
         for (Point p : points) {
             add(Shape.circle().scale(.005).shift(p.v).fillColor(JMColor.RED).drawColor(JMColor.random()));
-            System.out.println(""+p.v.x+", "+p.v.y);
+            System.out.println("" + p.v.x + ", " + p.v.y);
         }
         waitSeconds(5);
     }

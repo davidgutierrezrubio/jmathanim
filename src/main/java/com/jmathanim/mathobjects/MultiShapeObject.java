@@ -30,6 +30,7 @@ public class MultiShapeObject extends MathObject {
     public MultiShapeObject(ArrayList<Shape> jmps) {
         super();
         this.shapes = jmps;
+        this.setObjectType(MathObject.MULTISHAPE);
     }
 
     public boolean addShape(Shape e) {

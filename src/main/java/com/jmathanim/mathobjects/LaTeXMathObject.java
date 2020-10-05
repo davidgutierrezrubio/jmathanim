@@ -43,6 +43,7 @@ public class LaTeXMathObject extends SVGMathObject {
      */
     public LaTeXMathObject(String text) {
         super();
+        this.setObjectType(MathObject.LATEX);
         mp.loadFromStyle("latexdefault");
         this.text = text;
 

@@ -32,6 +32,10 @@ public abstract class MathObject implements Drawable, Updateable, Stateable {
     public static final int REGULAR_POLYGON = 6;
     public static final int GENERAL_POLYGON = 7;
     public static final int SEGMENT = 9;
+    public static final int LINE = 10;
+    public static final int MULTISHAPE = 11;
+    public static final int LATEX = 11;
+    public static final int SVG = 12;
 
     public MathObjectDrawingProperties mp;
     protected MathObjectDrawingProperties mpBackup;
@@ -368,10 +372,27 @@ public abstract class MathObject implements Drawable, Updateable, Stateable {
         this.shift(A.to(B));
     }
 
+    /**
+     * Stack the object to the given anchor, relative to the current camera view
+     *
+     * @param <T> Mathobject to stack
+     * @param anchorType {@link Anchor} type
+     * @return The current object
+     */
     public <T extends MathObject> T stackTo(int anchorType) {
         return stackTo(anchorType, 0, 0);
     }
 
+    /**
+     * Stack the object to the given anchor, relative to the current camera
+     * view, applying the specified margins.
+     *
+     * @param <T> Mathobject to stack
+     * @param anchorType {@link Anchor} type
+     * @param xMargin x margin
+     * @param yMargin y margin
+     * @return The current object
+     */
     public <T extends MathObject> T stackTo(int anchorType, double xMargin, double yMargin) {
         Point B = Anchor.getScreenAnchorPoint(anchorType, xMargin, yMargin);
         Point A = Anchor.getAnchorPoint(this, anchorType);

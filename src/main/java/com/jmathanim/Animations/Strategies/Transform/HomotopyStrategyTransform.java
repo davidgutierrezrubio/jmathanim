@@ -33,4 +33,8 @@ public class HomotopyStrategyTransform extends MatrixTransformStrategy {
         applyMatrixTransform(tr, t);
     }
 
+    @Override
+    public void addObjectsToScene() {
+    }
+
 }
