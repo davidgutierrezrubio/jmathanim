@@ -14,6 +14,8 @@ import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.Point;
 import com.jmathanim.mathobjects.Shape;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * Several static methods to easily perform most common animations
@@ -85,8 +87,10 @@ public class PlayAnim {
     public void transform(Shape obj1, Shape obj2, double runTime) {
         scene.playAnimation(new Transform(obj1, obj2, runTime));
     }
-    
-    public void adjustToObjects(ArrayList<MathObject> objs, double runTime) {
+    public void adjustToObjects(MathObject...objs) {
+        adjustToObjects(Arrays.asList(objs),2);
+    }
+    public void adjustToObjects(List<MathObject> objs, double runTime) {
         Rect r = scene.getCamera().getMathView();
         for (MathObject obj : objs) {
             r = r.union(obj.getBoundingBox().addGap(.1, .1));
@@ -94,7 +98,7 @@ public class PlayAnim {
         zoomToRect(r, runTime);
     }
     
-    public void zoomToObjects(ArrayList<MathObject> objs, double runTime) {
+    public void zoomToObjects(List<MathObject> objs, double runTime) {
         Rect r = objs.get(0).getBoundingBox();
         for (MathObject obj : objs) {
             r = r.union(obj.getBoundingBox());

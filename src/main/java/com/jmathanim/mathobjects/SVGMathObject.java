@@ -7,10 +7,7 @@ package com.jmathanim.mathobjects;
 
 import com.jmathanim.Utils.Anchor;
 import com.jmathanim.Utils.JMColor;
-import com.jmathanim.Utils.JMathAnimConfig;
 import com.jmathanim.Utils.MathObjectDrawingProperties;
-import com.jmathanim.Utils.Rect;
-import com.jmathanim.Utils.Vec;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -22,7 +19,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -70,42 +66,61 @@ public class SVGMathObject extends MultiShapeObject {
         NodeList listGroups = doc.getElementsByTagName("g");
         for (int n = 0; n < listGroups.getLength(); n++) {
 
-            Element nNode = (Element) listGroups.item(n);
-            String fillColor = nNode.getAttribute("fill");
+            Element gNode = (Element) listGroups.item(n);
+            String fillColor = gNode.getAttribute("fill");
             if (!"".equals(fillColor)) {
                 currentFillColor = JMColor.hex(fillColor);
             } else {
                 currentFillColor = mp.fillColor.copy();
             }
+            NodeList nList = gNode.getChildNodes();
 
-            processPathList(nNode);
-        }
-        putAt(new Point(0, 0), Anchor.UL);
-    }
+            for (int nchild = 0; nchild < nList.getLength(); nchild++) {
+                Node node = nList.item(nchild);
+                if (node.getNodeType() == Node.ELEMENT_NODE) {
+                    Element el = (Element) node;
+                    Shape sh;
+                    MathObjectDrawingProperties ShMp = this.mp.copy();
+                    ShMp.fillColor.set(JMColor.random());
+                    switch (el.getTagName()) {
+                        case "path":
+                            //Needs to parse style options too
+                            JMPath path = processPathCommands(el.getAttribute("d"));
+                            if (path.jmPathPoints.size() > 0) {
+                                path.pathType = JMPath.SVG_PATH; //Mark this as a SVG path
+//                        ShMp.fillColor.set(currentFillColor);//This makes possible latex color fonts but not usual svg
+//                        ShMp.drawColor.set(currentFillColor);
+                                addJMPathObject(path, ShMp); //Add this path to the array of JMPathObjects
+                                //By default scale sizes so that SVG points matches Screen points
+                            }
+                            break;
+                        case "rect":
+                            double x = Double.parseDouble(el.getAttribute("x"));
+                            double y = -Double.parseDouble(el.getAttribute("y"));
+                            double w = Double.parseDouble(el.getAttribute("width"));
+                            double h = -Double.parseDouble(el.getAttribute("height"));
+                            shapes.add(Shape.rectangle(new Point(x, y), new Point(x + w, y + h)).setMp(ShMp));
+                            break;
+                        case "circle":
+                            double cx = Double.parseDouble(el.getAttribute("cx"));
+                            double cy = -Double.parseDouble(el.getAttribute("cy"));
+                            double radius = Double.parseDouble(el.getAttribute("r"));
+                            shapes.add(Shape.circle().scale(radius).shift(cx, cy).setMp(ShMp));
+                            break;
+                        case "ellipse":
+                            double cxe = Double.parseDouble(el.getAttribute("cx"));
+                            double cye = -Double.parseDouble(el.getAttribute("cy"));
+                            double rxe = Double.parseDouble(el.getAttribute("rx"));
+                            double rye = -Double.parseDouble(el.getAttribute("ry"));
+                            shapes.add(Shape.circle().scale(rxe, rye).shift(cxe, cye).setMp(ShMp));
+                            break;
 
-    private void processPathList(Element doc) {
-        NodeList nList = doc.getChildNodes();
-
-        for (int temp = 0; temp < nList.getLength(); temp++) {
-            Node nNode = nList.item(temp);
-
-            if (nNode.getNodeType() == Node.ELEMENT_NODE) {
-                Element eElement = (Element) nNode;
-                if (eElement.getTagName() == "path") {
-
-                    JMPath path = processPathCommands(eElement.getAttribute("d"));
-
-                    if (path.jmPathPoints.size() > 0) {
-                        path.pathType = JMPath.SVG_PATH; //Mark this as a SVG path
-                        MathObjectDrawingProperties ShMp = this.mp.copy();
-                        ShMp.fillColor.set(currentFillColor);
-                        ShMp.drawColor.set(currentFillColor);
-                        addJMPathObject(path,ShMp); //Add this path to the array of JMPathObjects
-                        //By default scale sizes so that SVG points matches Screen points
                     }
+
                 }
             }
         }
+        putAt(new Point(0, 0), Anchor.UL);
     }
 
     /**
@@ -333,6 +348,7 @@ public class SVGMathObject extends MultiShapeObject {
                                 currentX += xx;
                                 currentY += yy;
                                 previousPoint = pathLineTo(resul, currentX, currentY, true);
+                                break;
                             case "l":
                                 previousCommand = "l";
                                 xx = previousPoint.p.v.x;
@@ -371,7 +387,6 @@ public class SVGMathObject extends MultiShapeObject {
                                 getPoint(it.next(), it.next());
                                 previousPoint = pathCubicBezier(resul, previousPoint, cx1, cy1, cx2, cy2, currentX, currentY);
                                 break;
-
                             case "s": //Simplified relative Cubic Bezier. Take first control point as a reflection of previous one
                                 cx1 = previousPoint.p.v.x - (previousPoint.cp2.v.x - previousPoint.p.v.x);
                                 cy1 = previousPoint.p.v.y - (previousPoint.cp2.v.y - previousPoint.p.v.y);
@@ -456,7 +471,8 @@ public class SVGMathObject extends MultiShapeObject {
             }
             pw.close();
         } catch (IOException ex) {
-            Logger.getLogger(LaTeXMathObject.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(LaTeXMathObject.class
+                    .getName()).log(Level.SEVERE, null, ex);
         }
     }
 }

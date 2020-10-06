@@ -293,16 +293,18 @@ public abstract class MathObject implements Drawable, Updateable, Stateable {
         return mp;
     }
 
-    public void setMp(MathObjectDrawingProperties _mp) {
-        this.mp.copyFrom(mp);
+    public <T extends MathObject> T setMp(MathObjectDrawingProperties newMp) {
+        this.mp.copyFrom(newMp);
+        return (T) this;
     }
 
     public int getObjectType() {
         return objectType;
     }
 
-    public final void setObjectType(int objectType) {
+    public final <T extends MathObject> T setObjectType(int objectType) {
         this.objectType = objectType;
+        return (T) this;
     }
 
     //Convenience methods to set drawing parameters

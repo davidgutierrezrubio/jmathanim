@@ -24,6 +24,7 @@ import com.jmathanim.mathobjects.LaTeXMathObject;
 import com.jmathanim.mathobjects.Line;
 import com.jmathanim.mathobjects.MultiShapeObject;
 import com.jmathanim.mathobjects.Point;
+import com.jmathanim.mathobjects.SVGMathObject;
 import com.jmathanim.mathobjects.Shape;
 import java.util.ArrayList;
 
@@ -45,21 +46,14 @@ public class myScene extends Scene2D {
 
     @Override
     public void runSketch() {
-        createLatex();
-//        Concatenate con = new Concatenate();
-//        Shape s = Shape.circle().style("solidblue");
-//        ShowCreation cr = new ShowCreation(s, 3);
-//        MathObjectDrawingProperties mpBase = s.mp.copy();
-//        s.mp.fillColor.alpha = 0;
-////        final ApplyCommand st = Commands.setMP(s, mpBase, 3);
-//        final ApplyCommand st = Commands.shift(s, 1,0, 3);
-//        
-//        
-//        con.add(cr);
-//        con.add(st);
-//        
-//        playAnimation(con);
-//        waitSeconds(3);
+        SVGMathObject s=new SVGMathObject("c:\\media\\inkscape\\dibujo.svg");
+        s.stackTo(Anchor.BY_CENTER);
+        JMPath c = s.get(0).getPath();
+//        s.get(0).style("default");
+        add(s);
+        play.adjustToObjects(s);
+//        camera.scale(3);
+        waitSeconds(5);
     }
 
     private void creationMultishape() {
