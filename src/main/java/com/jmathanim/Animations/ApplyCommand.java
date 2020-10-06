@@ -30,8 +30,8 @@ public class ApplyCommand extends Animation{
     }
 
     @Override
-    public void doAnim(double t) {
-        command.execute(t);
+    public void doAnim(double t,double lt) {
+        command.execute(lt);
     }
 
     @Override

@@ -37,13 +37,23 @@ public class SimpleShapeCreationStrategy extends TransformStrategy {
         msh = canonPath.createMultiShape(this.mobj.mp);
         scene.remove(mobj);
         scene.add(msh);
-        applyTransform(0);
+        applyTransform(0, 0);
         numberOfSegments = canonPath.getTotalNumberOfSegments();
     }
 
     @Override
-    public void applyTransform(double t) {
-        double po = t * numberOfSegments;
+    public void applyTransform(double t, double lt) {
+        if (lt == 1) {
+            for (int n = 0; n < msh.shapes.size(); n++) {
+                //Restore all paths because in each loop there will be modified
+                msh.shapes.get(n).jmpath.clear();
+                final JMPath path = canonPath.get(n);
+                msh.shapes.get(n).jmpath.addPointsFrom(path);
+            }
+            return;
+        }
+
+        double po = lt * numberOfSegments;
         int k = (int) Math.floor(po); //Number of segment
 
         double alpha = po - k; //Alpha stores the 0-1 parameter inside the segment
@@ -76,6 +86,7 @@ public class SimpleShapeCreationStrategy extends TransformStrategy {
 
     @Override
     public void finish() {
+        applyTransform(1, 1);
         this.scene.remove(msh);
         scene.add(mobj);
     }

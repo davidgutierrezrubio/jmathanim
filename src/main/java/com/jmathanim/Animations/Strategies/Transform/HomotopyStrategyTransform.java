@@ -21,16 +21,16 @@ public class HomotopyStrategyTransform extends MatrixTransformStrategy {
     }
 
     @Override
-    public void applyTransform(double t) {
+    public void applyTransform(double t,double lt) {
 
         Point A = originalShapeBaseCopy.jmpath.getJMPoint(0).p;
         Point B = originalShapeBaseCopy.jmpath.getJMPoint(1).p;
         Point C = mobjDestiny.jmpath.getJMPoint(0).p;
         Point D = mobjDestiny.jmpath.getJMPoint(1).p;
 
-        AffineJTransform tr = AffineJTransform.createDirect2DHomotopy(A, B, C, D, t);
+        AffineJTransform tr = AffineJTransform.createDirect2DHomotopy(A, B, C, D, lt);
 
-        applyMatrixTransform(tr, t);
+        applyMatrixTransform(tr, lt);
     }
 
     @Override

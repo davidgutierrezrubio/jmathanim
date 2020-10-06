@@ -5,7 +5,10 @@
  */
 package tests;
 
+import com.jmathanim.Animations.ApplyCommand;
+import com.jmathanim.Animations.Concatenate;
 import com.jmathanim.Animations.ShowCreation;
+import static com.jmathanim.Animations.Strategies.ShowCreation.LateXObjectCreationStrategy.PERCENT_TO_DIVIDE_ANIMATION;
 import com.jmathanim.Animations.WaitAnimation;
 import com.jmathanim.Animations.commands.Commands;
 import com.jmathanim.Utils.Anchor;
@@ -37,11 +40,26 @@ public class myScene extends Scene2D {
 //        ConfigLoader.parseFile("production.xml");
         ConfigLoader.parseFile("preview.xml");
         ConfigLoader.parseFile("dark.xml");
+//        conf.setHighQuality();
     }
 
     @Override
     public void runSketch() {
         createLatex();
+//        Concatenate con = new Concatenate();
+//        Shape s = Shape.circle().style("solidblue");
+//        ShowCreation cr = new ShowCreation(s, 3);
+//        MathObjectDrawingProperties mpBase = s.mp.copy();
+//        s.mp.fillColor.alpha = 0;
+////        final ApplyCommand st = Commands.setMP(s, mpBase, 3);
+//        final ApplyCommand st = Commands.shift(s, 1,0, 3);
+//        
+//        
+//        con.add(cr);
+//        con.add(st);
+//        
+//        playAnimation(con);
+//        waitSeconds(3);
     }
 
     private void creationMultishape() {
@@ -58,10 +76,11 @@ public class myScene extends Scene2D {
     }
 
     private void createLatex() {
-        LaTeXMathObject t = new LaTeXMathObject("$$\\int_0^\\infty x\\,dx\\geq\\pi$$");
+        LaTeXMathObject t = new LaTeXMathObject("This is a test of how much a long paragraph should be drawn");
+//        LaTeXMathObject t = new LaTeXMathObject("$$\\int_0^\\infty x\\,dx\\geq\\pi$$");
 //        LaTeXMathObject t=new LaTeXMathObject("$${\\color{red}x}+\\color{blue}1$$");
-        t.stackTo(Anchor.LEFT, .2, .2);
-        ShowCreation sc = new ShowCreation(t, 5);
+        t.scale(1).stackTo(Anchor.LEFT, .2, .2);
+        ShowCreation sc = new ShowCreation(t, 10);
         playAnimation(sc);
         waitSeconds(5);
     }

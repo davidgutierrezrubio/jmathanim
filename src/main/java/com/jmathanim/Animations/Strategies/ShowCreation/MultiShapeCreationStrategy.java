@@ -53,10 +53,10 @@ public class MultiShapeCreationStrategy extends TransformStrategy {
     }
 
     @Override
-    public void applyTransform(double t) {
+    public void applyTransform(double t,double lt) {
         for (Animation anim:creators)
         {
-            anim.doAnim(t);
+            anim.doAnim(t,lt);
         }
     }
 

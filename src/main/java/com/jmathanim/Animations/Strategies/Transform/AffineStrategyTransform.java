@@ -21,7 +21,7 @@ public class AffineStrategyTransform extends MatrixTransformStrategy{
     }
 
     @Override
-    public void applyTransform(double t) {
+    public void applyTransform(double t,double lt) {
         Point A = originalShapeBaseCopy.getJMPoint(0).p;
         Point B = originalShapeBaseCopy.getJMPoint(1).p;
         Point C = originalShapeBaseCopy.getJMPoint(2).p;
@@ -29,8 +29,8 @@ public class AffineStrategyTransform extends MatrixTransformStrategy{
         Point E = mobjDestiny.getJMPoint(1).p;
         Point F = mobjDestiny.getJMPoint(2).p;
 
-        AffineJTransform tr = AffineJTransform.createAffineTransformation(A, B, C, D, E, F, t);
-        applyMatrixTransform(tr, t);
+        AffineJTransform tr = AffineJTransform.createAffineTransformation(A, B, C, D, E, F, lt);
+        applyMatrixTransform(tr, lt);
         
     }
 

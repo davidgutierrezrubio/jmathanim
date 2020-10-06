@@ -21,27 +21,39 @@ import java.util.ArrayList;
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
 public class PlayAnim {
-
+    
     JMathAnimScene scene;
-
+    
     public PlayAnim(JMathAnimScene scene) {
         this.scene = scene;
     }
-
+    
     public void fadeIn(MathObject obj) {
-        scene.playAnimation(Commands.fadeIn(obj, 1));
+        fadeIn(obj, 1);
     }
-
+    
     public void fadeIn(MathObject obj, double runTime) {
         scene.playAnimation(Commands.fadeIn(obj, runTime));
     }
-
+    
     public void fadeOut(MathObject obj) {
-        scene.playAnimation(Commands.fadeOut(obj, 1));
+        fadeOut(obj, 1);
     }
-
+    
     public void fadeOut(MathObject obj, double runTime) {
         scene.playAnimation(Commands.fadeOut(obj, runTime));
+    }
+    
+    public void fadeOutAll() {
+        fadeOutAll(1);
+    }
+    
+    public void fadeOutAll(double runTime) {
+        ArrayList<Animation> anims = new ArrayList<>();
+        for (MathObject ob : scene.getObjects()) {
+            anims.add(Commands.fadeOut(ob, runTime));
+        }
+        scene.playAnimation(anims);
     }
 
     //Convenience methods
@@ -49,31 +61,31 @@ public class PlayAnim {
     public void shift(MathObject obj, double dx, double dy, double runTime) {
         scene.playAnimation(Commands.shift(obj, dx, dy, runTime));
     }
-
+    
     public void shift(MathObject obj, Vec v, double runTime) {
         scene.playAnimation(Commands.shift(obj, v, runTime));
     }
-
+    
     public void scale(MathObject obj, Point center, double sc, double runTime) {
         scale(obj, center, sc, sc, sc, runTime);
     }
-
+    
     public void scale(MathObject obj, Point center, double scx, double scy, double scz, double runTime) {
         scene.playAnimation(Commands.scale(obj, center, scx, scy, scz, runTime));
     }
-
+    
     public void rotate(MathObject obj, double angle, double runTime) {
         scene.playAnimation(Commands.rotate(obj, obj.getCenter(), angle, runTime));
     }
-
+    
     public void rotate(MathObject obj, Point center, double angle, double runTime) {
         scene.playAnimation(Commands.rotate(obj, center, angle, runTime));
     }
-
+    
     public void transform(Shape obj1, Shape obj2, double runTime) {
         scene.playAnimation(new Transform(obj1, obj2, runTime));
     }
-
+    
     public void adjustToObjects(ArrayList<MathObject> objs, double runTime) {
         Rect r = scene.getCamera().getMathView();
         for (MathObject obj : objs) {
@@ -81,7 +93,7 @@ public class PlayAnim {
         }
         zoomToRect(r, runTime);
     }
-
+    
     public void zoomToObjects(ArrayList<MathObject> objs, double runTime) {
         Rect r = objs.get(0).getBoundingBox();
         for (MathObject obj : objs) {
@@ -89,11 +101,11 @@ public class PlayAnim {
         }
         zoomToRect(r, runTime);
     }
-
+    
     public void zoomToRect(Camera cam, Rect r, double runTime) {
         scene.playAnimation(Commands.cameraZoomToRect(cam, r, runTime));
     }
-
+    
     public void zoomToRect(Rect r, double runTime) {
         zoomToRect(scene.getCamera(), r, runTime);
     }
@@ -109,11 +121,11 @@ public class PlayAnim {
     public void scaleCamera(double scale, double runTime) {
         scaleCamera(scene.getCamera(), scale, runTime);
     }
-
+    
     public void scaleCamera(Camera cam, double scale, double runTime) {
         scene.playAnimation(Commands.cameraZoomToRect(cam, cam.getMathView().scaled(scale, scale), runTime));
     }
-
+    
     public void shiftCamera(Camera cam, Vec v, double runTime) {
         scene.playAnimation(Commands.cameraShift(cam, v, runTime));
     }

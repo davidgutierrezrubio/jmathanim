@@ -141,7 +141,7 @@ public class Transform extends Animation {
 
         }
 
-        JMathAnimScene.logger.info("{}"+methodTextOutput);
+        JMathAnimScene.logger.info(methodTextOutput);
 
     }
 
@@ -164,8 +164,8 @@ public class Transform extends Animation {
     }
 
     @Override
-    public void doAnim(double t) {
-        strategy.applyTransform(t);
+    public void doAnim(double t,double lt) {
+        strategy.applyTransform(t,lt);
 
     }
 

@@ -22,7 +22,7 @@ public class WaitAnimation extends Animation{
     }
 
     @Override
-    public void doAnim(double t) {
+    public void doAnim(double t,double lt) {
     }
 
     @Override

@@ -23,7 +23,7 @@ public class RotateAndScaleXYStrategyTransform extends MatrixTransformStrategy{
   
 
     @Override
-    public void applyTransform(double t) {
+    public void applyTransform(double t,double lt) {
         Point A = originalShapeBaseCopy.getJMPoint(0).p;
         Point B = originalShapeBaseCopy.getJMPoint(1).p;
         Point C = originalShapeBaseCopy.getJMPoint(2).p;
@@ -38,16 +38,16 @@ public class RotateAndScaleXYStrategyTransform extends MatrixTransformStrategy{
         //This transform will be applied inversely too
         AffineJTransform tr2 = new AffineJTransform();
         final double proportionalHeight = (F.to(E).norm() / D.to(E).norm()) / (B.to(C).norm() / B.to(A).norm());
-        tr2.setV2Img(0, proportionalHeight * t + (1 - t) * 1); //Interpolated here
+        tr2.setV2Img(0, proportionalHeight * lt + (1 - lt) * 1); //Interpolated here
 
         //Finally, and homotopy to carry A,B into D,E
-        AffineJTransform tr3 = AffineJTransform.createDirect2DHomotopy(A, B, D, E, t);//Interpolated here
+        AffineJTransform tr3 = AffineJTransform.createDirect2DHomotopy(A, B, D, E, lt);//Interpolated here
         AffineJTransform id = new AffineJTransform();
         //The final transformation
         AffineJTransform tr = tr1.compose(tr2).compose(tr1.getInverse()).compose(tr3);
 
 //        System.out.println("RotateXY Transform "+t);
-        applyMatrixTransform(tr, t);
+        applyMatrixTransform(tr, lt);
     }
 
     @Override

@@ -1,0 +1,14 @@
+<JMathAnimConfig>
+    <video>
+        <size width="1920" height="1080" fps="60"/>
+        <createMovie>true</createMovie>
+        <outputDir>c:\media</outputDir>
+        <showPreviewWindow>true</showPreviewWindow>
+    </video>
+    <background>
+         <background>
+        <shadows kernelSize="8" offsetX="5" offsetY="5" alpha=".7">true</shadows>
+        <image>paperDraft.png</image>
+    </background>
+    </background>
+</JMathAnimConfig>

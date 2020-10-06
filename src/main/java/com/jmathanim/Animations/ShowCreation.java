@@ -46,9 +46,9 @@ public class ShowCreation extends Animation {
     }
 
     @Override
-    public void doAnim(double t) {
+    public void doAnim(double t,double lt) {
         if (strategy != null) {
-            strategy.applyTransform(t);
+            strategy.applyTransform(t,lt);
         }
     }
 

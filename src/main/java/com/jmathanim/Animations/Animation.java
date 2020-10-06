@@ -69,7 +69,7 @@ public abstract class Animation {
 //        if (frame < numFrames || t < 1 + dt) {
         double lt = lambda(t);
         if (lt < 1 && lt >= 0) {
-            this.doAnim((lt));
+            this.doAnim(t,lt);
 
 //            frame++;
             resul = false;
@@ -94,7 +94,7 @@ public abstract class Animation {
      *
      * @param t double betwenn 0 and 1 0=start, 1=end
      */
-    abstract public void doAnim(double t);
+    abstract public void doAnim(double t,double lt);
 
     abstract public void finishAnimation();
 
@@ -108,7 +108,7 @@ public abstract class Animation {
 
     //Smooth function from https://math.stackexchange.com/questions/328868/how-to-build-a-smooth-transition-function-explicitly
     //TODO: Adapt this to use Cubic Bezier splines
-    private double lambda(double t) {
+    protected double lambda(double t) {
         double h = hh(t);
         double h2 = hh(1 - t);
         return h / (h + h2);

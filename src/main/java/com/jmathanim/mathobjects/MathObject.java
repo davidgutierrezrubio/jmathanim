@@ -301,7 +301,7 @@ public abstract class MathObject implements Drawable, Updateable, Stateable {
         return objectType;
     }
 
-    public void setObjectType(int objectType) {
+    public final void setObjectType(int objectType) {
         this.objectType = objectType;
     }
 

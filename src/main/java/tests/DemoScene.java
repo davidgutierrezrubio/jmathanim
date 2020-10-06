@@ -5,6 +5,7 @@
  */
 package tests;
 
+import com.jmathanim.Animations.ApplyCommand;
 import com.jmathanim.Animations.ShowCreation;
 import com.jmathanim.Animations.commands.Commands;
 import com.jmathanim.Utils.Anchor;
@@ -24,8 +25,10 @@ public class DemoScene extends Scene2D {
     @Override
     public void setupSketch() {
 //        ConfigLoader.parseFile("production.xml");
-        ConfigLoader.parseFile("preview.xml");
-        ConfigLoader.parseFile("dark.xml");
+        ConfigLoader.parseFile("production_shadow.xml");
+//        ConfigLoader.parseFile("preview.xml");
+        ConfigLoader.parseFile("light.xml");
+//        ConfigLoader.parseFile("dark.xml");
     }
 
     @Override
@@ -39,15 +42,14 @@ public class DemoScene extends Scene2D {
 //        //Slide 1
 //        System.out.println("Slide 1");
 //        Shape circle = Shape.circle().scale(.5).shift(-1, 0);
-//        Shape square = Shape.square().scale(1).shift(1, -1).drawColor(JMColor.BLUE);
+//        Shape square = Shape.square().scale(1).shift(.4, -1).drawColor(JMColor.BLUE).rotate(-30*DEGREES);
 //        sc1 = new ShowCreation(circle, 2);
 //        sc2 = new ShowCreation(square, 2);
 //        playAnimation(sc1, sc2);
 //        description = createDescription("Basic shapes");
 //        commandText = createCommandText("{\\tt Shape.circle()} or {\\tt Shape.square()}");
 //        waitSeconds(5);
-//        play.fadeOut(description);
-//        play.fadeOut(commandText);//TODO: Add fadeOutAll animation
+//        play.fadeOutAll();
 //
 //        //Slide 2
 //        System.out.println("Slide 2");
@@ -64,46 +66,64 @@ public class DemoScene extends Scene2D {
 //        commandText = createCommandText("{\\tt play.transform(circle,square,3)}");
 //        play.transform(circle, square, 3);
 //        waitSeconds(5);
-//        play.fadeOut(description);
-//        play.fadeOut(commandText);
+//        play.fadeOutAll();
 //
-//        play.fadeOut(circle);
-//        play.fadeOut(square);
-//        
-        //Slide 4
-        System.out.println("Slide 4");
-        waitSeconds(2);
-         reg1 = Shape.regularPolygon(5).style("solidred").scale(.7).shift(-1, -.5).rotate(PI / 5);
-        reg2 = Shape.regularPolygon(5).style("solidblue").scale(.4).shift(1, 0);
-        sc1 = new ShowCreation(reg1, 2);
-        sc2 = new ShowCreation(reg2, 2);
-        playAnimation(sc1, sc2);
-
-        description = createDescription("Type of transform is automatically selected, using homotopys if applicable");
-        commandText = createCommandText("{\\tt play.transform(reg1,reg2,3)}");
-        play.transform(reg2, reg1, 3);
-        waitSeconds(5);
-        play.fadeOut(description);
-        play.fadeOut(commandText);
-        remove(reg2);
-        play.fadeOut(reg1);
-
-        //Slide 5
-        System.out.println("Slide 5");
-        waitSeconds(2);
-        reg1 = Shape.regularPolygon(6).style("solidred").scale(.7).shift(-1, -1.1).rotate(PI / 5);
-        reg2 = Shape.regularPolygon(5).style("solidblue").scale(.4).shift(1, 0);
-        sc1 = new ShowCreation(reg1, 2);
-        sc2 = new ShowCreation(reg2, 2);
-        playAnimation(sc1, sc2);
+//        //Slide 4
+//        System.out.println("Slide 4");
+//        waitSeconds(2);
+//        reg1 = Shape.regularPolygon(5).style("solidred").scale(.7).shift(-1, -.5).rotate(PI / 5);
+//        reg2 = Shape.regularPolygon(5).style("solidblue").scale(.4).shift(1, 0);
+//        sc1 = new ShowCreation(reg1, 2);
+//        sc2 = new ShowCreation(reg2, 2);
+//        playAnimation(sc1, sc2);
+//
+//        description = createDescription("Type of transform is automatically selected, using affine if applicable");
+//        commandText = createCommandText("{\\tt play.transform(reg1,reg2,3)}");
+//        play.transform(reg2, reg1, 3);
+//        waitSeconds(5);
+//        play.fadeOutAll();
+//
+//        //Slide 5
+//        System.out.println("Slide 5");
+//        waitSeconds(2);
+//        reg1 = Shape.regularPolygon(6).style("solidred").scale(.7).shift(-1, -1.1).rotate(PI / 5);
+//        reg2 = Shape.regularPolygon(5).style("solidblue").scale(.4).shift(1, 0);
+//        sc1 = new ShowCreation(reg1, 2);
+//        sc2 = new ShowCreation(reg2, 2);
+//        playAnimation(sc1, sc2);
+//
+//        description = createDescription("In this case, a point-to-point transform is chosen");
+//        commandText = createCommandText("{\\tt play.transform(reg1,reg2,5)}");
+//        play.transform(reg2, reg1, 5);
+//        waitSeconds(5);
+//        play.fadeOutAll();
+//
+//        //Slide 6
+//        System.out.println("Slide 6");
+//        Shape c = Shape.circle();
+//        Shape r = Shape.regularPolygon(5).stackTo(Anchor.BY_CENTER);
+//        add(c);
+//        description = createDescription("Global styles can be loaded from config files");
+//        commandText = createCommandText("{\\tt dark.xml vs light.xml}");
+//        play.transform(c, r, 3);
+//        waitSeconds(5);
+//        play.fadeOutAll();
         
-
-        description = createDescription("In this case, a point-to-point transform is chosen");
-        commandText = createCommandText("{\\tt play.transform(reg1,reg2,5)}");
-        play.transform(reg2, reg1, 5);
+        //Slide 7
+        System.out.println("Slide 7");
+//        commandText = createCommandText("{\\tt dark.xml vs light.xml}");
+         Shape r1= Shape.regularPolygon(5).stackTo(Anchor.BY_CENTER).thickness(2).drawColor(JMColor.hex("#008891"));
+         Shape r2 = Shape.regularPolygon(5).scale(.5).stackTo(Anchor.BY_CENTER).thickness(2).drawColor(JMColor.hex("#00587a"));
+        play.growIn(r1);
+        sc2 = new ShowCreation(r2, 2);
+        playAnimation(sc2);
+        description = createDescription("A shadow effect is included (CPU expensive though!)");
+        ApplyCommand rot1 = Commands.rotate(r1, new Point(0,0), PI, 10);
+        ApplyCommand rot2 = Commands.rotate(r2, new Point(0,0), -PI, 10);
+        playAnimation(rot1,rot2);
         waitSeconds(5);
-        play.fadeOut(description);
-        play.fadeOut(commandText);
+        play.fadeOutAll();
+
     }
 
     private void makeTitle() {
@@ -117,13 +137,13 @@ public class DemoScene extends Scene2D {
 
     private LaTeXMathObject createDescription(String text) {
         LaTeXMathObject latex = new LaTeXMathObject(text);
-        play.fadeIn(latex.scale(.3).stackTo(Anchor.UPPER, .1, .1));
+        playAnimation(new ShowCreation(latex.scale(.5).stackTo(Anchor.UPPER, .1, .1), 2));
         return latex;
     }
 
     private LaTeXMathObject createCommandText(String text) {
         LaTeXMathObject latex = new LaTeXMathObject(text);
-        play.fadeIn(latex.scale(.3).stackTo(Anchor.LOWER, .1, .1));
+        play.fadeIn(latex.scale(.5).stackTo(Anchor.LOWER, .1, .1));
         return latex;
     }
 }

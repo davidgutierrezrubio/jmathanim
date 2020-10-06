@@ -9,6 +9,7 @@ import com.jmathanim.Cameras.Camera;
 import com.jmathanim.Utils.Anchor;
 import com.jmathanim.Utils.JMColor;
 import com.jmathanim.Utils.JMathAnimConfig;
+import com.jmathanim.jmathanim.JMathAnimScene;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileWriter;
@@ -33,7 +34,7 @@ public class LaTeXMathObject extends SVGMathObject {
     private File outputDir;
     //Default scale for latex objects (relative to screen height)
     //This factor represents % of height relative to the screen that a "X" character has
-    public static final double DEFAULT_SCALE_FACTOR = .025;
+    public static final double DEFAULT_SCALE_FACTOR = .05;
 
     /**
      * Creates a new LaTeX generated text
@@ -68,20 +69,16 @@ public class LaTeXMathObject extends SVGMathObject {
             sh.label = String.valueOf(n);
             n++;
         }
-        //Default color
-//        setColor(mp.drawColor);
-//        this.setAbsoluteSize();
-//        this.setAbsolutAnchorPoint(Anchor.UL);//Default
 
         //Scale
-        //An "X" character in LaTeX has 110 pixels height.
-        //This object should be scaled by default to extend over 10% of the screen
-        //use screen sizes as this object has an absolute size by default
+        //An "X" character in LaTeX has 6.8 (svg units) pixels height.
+        //This object should be scaled by default to extend over
+        //DEFAULT_SCALE_FACTOR% of the screen
         Camera cam = JMathAnimConfig.getConfig().getFixedCamera();
-        int h = cam.screenHeight;
-        double hm = cam.getMathView().getHeight();
-        double sc = DEFAULT_SCALE_FACTOR * 10 / 6.807795;
-        this.scale(getBoundingBox().getUL(), sc, sc);
+//        double hm = cam.getMathView().getHeight();
+        double hm = cam.screenToMath(cam.screenHeight);
+        double sc = DEFAULT_SCALE_FACTOR * .4 * hm / 6.8;
+        this.scale(getBoundingBox().getUL(), sc, sc, 1);
 
     }
 
@@ -92,7 +89,7 @@ public class LaTeXMathObject extends SVGMathObject {
         //TODO: Add necessary packages here (UTF8?)
         //How to avoid having to write 2 backslashs??
         String beginDocument = "\\documentclass[preview]{standalone}\n"
-                +"\\usepackage{xcolor}\n"
+                + "\\usepackage{xcolor}\n"
                 + "\\begin{document}\n";
 
         String endDocument = "\\end{document}";
@@ -118,25 +115,15 @@ public class LaTeXMathObject extends SVGMathObject {
 
     public String getMd5(String input) {
         try {
-
-            // Static getInstance method is called with hashing MD5 
             MessageDigest md = MessageDigest.getInstance("MD5");
-
-            // digest() method is called to calculate message digest 
-            //  of an input digest() return array of byte 
             byte[] messageDigest = md.digest(input.getBytes());
-
-            // Convert byte array into signum representation 
-            BigInteger no = new BigInteger(1, messageDigest);
-
-            // Convert message digest into hex value 
-            String hashtext = no.toString(16);
-            while (hashtext.length() < 32) {
-                hashtext = "0" + hashtext;
+            BigInteger bi = new BigInteger(1, messageDigest);
+            String hash = bi.toString(16);
+            while (hash.length() < 32) {
+                hash = "0" + hash;
             }
-            return hashtext;
-        } // For specifying wrong message digest algorithms 
-        catch (NoSuchAlgorithmException e) {
+            return hash;
+        } catch (NoSuchAlgorithmException e) {
             throw new RuntimeException(e);
         }
     }
@@ -148,9 +135,9 @@ public class LaTeXMathObject extends SVGMathObject {
             File dviFile = new File(baseFileName + ".dvi");
             String od = outputDir.getCanonicalPath();
             runExternalCommand("latex -output-directory=" + od + " " + this.latexFile.getCanonicalPath());
-            System.out.println("Done compiling " + latexFile.getCanonicalPath());
+            JMathAnimScene.logger.info("Done compiling {}", latexFile.getCanonicalPath());
             runExternalCommand("dvisvgm -n1 " + dviFile.getCanonicalPath());
-            System.out.println("Done converting " + dviFile.getCanonicalPath());
+            JMathAnimScene.logger.info("Done converting {}", dviFile.getCanonicalPath());
         }
         return svgFilename;
     }
@@ -174,13 +161,12 @@ public class LaTeXMathObject extends SVGMathObject {
 
     }
 
-    private void setColor(JMColor color) {
-        for (Shape p : shapes) {
-            p.mp.thickness = .0001;
-            p.drawColor(color);
-            p.mp.setFillAlpha(1);
-            p.fillColor(color); //LaTeX Objects should have by default same fill and draw color
-        }
-    }
-
+//    private void setColor(JMColor color) {
+//        for (Shape p : shapes) {
+//            p.mp.thickness = .0001;
+//            p.drawColor(color);
+//            p.mp.setFillAlpha(1);
+//            p.fillColor(color); //LaTeX Objects should have by default same fill and draw color
+//        }
+//    }
 }

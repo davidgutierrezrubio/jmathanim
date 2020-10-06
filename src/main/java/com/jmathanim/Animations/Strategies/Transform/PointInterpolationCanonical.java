@@ -65,7 +65,7 @@ public class PointInterpolationCanonical extends TransformStrategy {
     }
 
     @Override
-    public void applyTransform(double t) {
+    public void applyTransform(double t,double lt) {
         JMPathPoint interPoint, basePoint, dstPoint;
 
         for (int numConnected = 0; numConnected < this.connectedDst.getNumberOfPaths(); numConnected++) {
@@ -78,19 +78,19 @@ public class PointInterpolationCanonical extends TransformStrategy {
                 dstPoint = toPath.getJMPoint(n);
 
                 //Interpolate point
-                interPoint.p.v.x = (1 - t) * basePoint.p.v.x + t * dstPoint.p.v.x;
-                interPoint.p.v.y = (1 - t) * basePoint.p.v.y + t * dstPoint.p.v.y;
-                interPoint.p.v.z = (1 - t) * basePoint.p.v.z + t * dstPoint.p.v.z;
+                interPoint.p.v.x = (1 - lt) * basePoint.p.v.x + lt * dstPoint.p.v.x;
+                interPoint.p.v.y = (1 - lt) * basePoint.p.v.y + lt * dstPoint.p.v.y;
+                interPoint.p.v.z = (1 - lt) * basePoint.p.v.z + lt * dstPoint.p.v.z;
 
                 //Interpolate control point 1
-                interPoint.cp1.v.x = (1 - t) * basePoint.cp1.v.x + t * dstPoint.cp1.v.x;
-                interPoint.cp1.v.y = (1 - t) * basePoint.cp1.v.y + t * dstPoint.cp1.v.y;
-                interPoint.cp1.v.z = (1 - t) * basePoint.cp1.v.z + t * dstPoint.cp1.v.z;
+                interPoint.cp1.v.x = (1 - lt) * basePoint.cp1.v.x + lt * dstPoint.cp1.v.x;
+                interPoint.cp1.v.y = (1 - lt) * basePoint.cp1.v.y + lt * dstPoint.cp1.v.y;
+                interPoint.cp1.v.z = (1 - lt) * basePoint.cp1.v.z + lt * dstPoint.cp1.v.z;
 
                 //Interpolate control point 2
-                interPoint.cp2.v.x = (1 - t) * basePoint.cp2.v.x + t * dstPoint.cp2.v.x;
-                interPoint.cp2.v.y = (1 - t) * basePoint.cp2.v.y + t * dstPoint.cp2.v.y;
-                interPoint.cp2.v.z = (1 - t) * basePoint.cp2.v.z + t * dstPoint.cp2.v.z;
+                interPoint.cp2.v.x = (1 - lt) * basePoint.cp2.v.x + lt * dstPoint.cp2.v.x;
+                interPoint.cp2.v.y = (1 - lt) * basePoint.cp2.v.y + lt * dstPoint.cp2.v.y;
+                interPoint.cp2.v.z = (1 - lt) * basePoint.cp2.v.z + lt * dstPoint.cp2.v.z;
             }
             //Now interpolate properties from objects
 

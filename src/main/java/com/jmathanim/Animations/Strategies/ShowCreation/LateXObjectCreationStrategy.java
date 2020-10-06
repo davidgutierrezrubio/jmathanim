@@ -40,12 +40,13 @@ public class LateXObjectCreationStrategy extends TransformStrategy {
         this.obj = obj;
         animations = new ArrayList<>();
         this.runtime = runtime;
-        this.timegap = .7 * this.runtime / obj.shapes.size();
+        this.timegap = .5 * this.runtime / obj.shapes.size();
     }
 
     @Override
     public void prepareObjects() {
         this.realRuntime = this.runtime - this.timegap * obj.shapes.size();
+        System.out.println("real runtime "+this.realRuntime);
         double dt = 0;
         for (Shape s : obj.shapes) {
             Concatenate anim = new Concatenate();
@@ -65,9 +66,9 @@ public class LateXObjectCreationStrategy extends TransformStrategy {
     }
 
     @Override
-    public void applyTransform(double t) {
+    public void applyTransform(double t,double lt) {
         for (Animation anim : animations) {
-            anim.doAnim(t);
+            anim.doAnim(t,lt);
         }
     }
 
@@ -76,6 +77,11 @@ public class LateXObjectCreationStrategy extends TransformStrategy {
         for (Animation anim : animations) {
             anim.finishAnimation();
         }
+        //Remove all subelements and returns to the whole multipath object
+         for (Shape s : obj.shapes) {
+             scene.remove(s);
+         }
+         scene.add(obj);
     }
 
     @Override

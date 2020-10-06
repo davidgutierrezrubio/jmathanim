@@ -27,21 +27,20 @@ public class Concatenate extends Animation {
     public Concatenate(ArrayList<Animation> anims) {
         super();
         this.anims = anims;
-        this.cumulativeTimes=new ArrayList<>();
-        this.relCumulativeTimes=new ArrayList<>();
-        currentAnim=0;
-        
+        this.cumulativeTimes = new ArrayList<>();
+        this.relCumulativeTimes = new ArrayList<>();
+        currentAnim = 0;
+
     }
 
     public boolean add(Animation e) {
         return anims.add(e);
     }
 
-    
     @Override
     public void initialize() {
         //Total runtime
-        this.runTime=0;
+        this.runTime = 0;
         this.cumulativeTimes.add(0d);
         for (Animation anim : anims) {
             this.runTime += anim.runTime;
@@ -56,14 +55,15 @@ public class Concatenate extends Animation {
     }
 
     @Override
-    public void doAnim(double t) {
+    public void doAnim(double t, double lt) {
         double ct = this.cumulativeTimes.get(currentAnim);
-        double l=anims.get(currentAnim).runTime;
+        double l = anims.get(currentAnim).runTime;
         // (x-ct)/l where x=t*totalTime
-        double tForThisAnim = (t*this.runTime-ct)/l;
-        
-        anims.get(currentAnim).doAnim(tForThisAnim);
-        if (tForThisAnim>=1) {
+        double tForThisAnim = (t * this.runTime - ct) / l;
+        double ltForThisAnim = lambda(tForThisAnim);
+
+        anims.get(currentAnim).doAnim(tForThisAnim, ltForThisAnim);
+        if (tForThisAnim >= 1) {
             anims.get(currentAnim).finishAnimation();
             currentAnim++;
             anims.get(currentAnim).initialize();
@@ -72,7 +72,7 @@ public class Concatenate extends Animation {
 
     @Override
     public void finishAnimation() {
-       anims.get(currentAnim).finishAnimation();
+        anims.get(currentAnim).finishAnimation();
     }
 
     @Override

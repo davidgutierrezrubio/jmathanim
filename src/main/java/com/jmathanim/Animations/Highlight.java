@@ -35,14 +35,15 @@ public class Highlight extends Animation {
     }
 
     @Override
-    public void doAnim(double t) {
+    public void doAnim(double t,double lt) {
         double tt = 4 * t * (1 - t);
-        scale.doAnim(tt);
+        double ltt = 4 * lt * (1 - lt);
+        scale.doAnim(tt,ltt);
     }
 
     @Override
     public void finishAnimation() {
-        scale.doAnim(0);
+        scale.doAnim(0,0);
     }
 
     @Override
