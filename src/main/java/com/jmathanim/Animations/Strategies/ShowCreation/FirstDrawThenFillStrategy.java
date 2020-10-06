@@ -15,6 +15,7 @@ import com.jmathanim.Animations.WaitAnimation;
 import com.jmathanim.Utils.MathObjectDrawingProperties;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.LaTeXMathObject;
+import com.jmathanim.mathobjects.MultiShapeObject;
 import com.jmathanim.mathobjects.Shape;
 import java.util.ArrayList;
 
@@ -22,31 +23,34 @@ import java.util.ArrayList;
  *
  * @author David Gutiérrez Rubio <davidgutierrezrubio@gmail.com>
  */
-public class LateXObjectCreationStrategy extends TransformStrategy {
+public class FirstDrawThenFillStrategy extends TransformStrategy {
 
     /**
      * Percentage (0 to 1) of time dedicated to drawing the path. The rest of
      * time is dedicated to fill the paths.
      */
     public static final double PERCENT_TO_DIVIDE_ANIMATION = .6;
-    private final LaTeXMathObject obj;
+    private final MultiShapeObject obj;
     final ArrayList<Animation> animations;
     private final double runtime;
     private final double timegap;
     private double realRuntime;
 
-    public LateXObjectCreationStrategy(LaTeXMathObject obj, double runtime, JMathAnimScene scene) {
+    public FirstDrawThenFillStrategy(MultiShapeObject obj, double percentGap,double runtime, JMathAnimScene scene) {
         super(scene);
         this.obj = obj;
         animations = new ArrayList<>();
         this.runtime = runtime;
-        this.timegap = .5 * this.runtime / obj.shapes.size();
+        this.timegap = percentGap * this.runtime / obj.shapes.size();
     }
 
     @Override
     public void prepareObjects() {
         this.realRuntime = this.runtime - this.timegap * obj.shapes.size();
-        System.out.println("real runtime "+this.realRuntime);
+        if (this.realRuntime<=0)
+        {
+            JMathAnimScene.logger.warn("Warning, computed runtime negative for FirstDrawThenFillStrategy. Nothing will be shown");
+        }
         double dt = 0;
         for (Shape s : obj.shapes) {
             Concatenate anim = new Concatenate();

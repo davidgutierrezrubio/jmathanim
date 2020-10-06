@@ -26,7 +26,7 @@ public class MultiShapeCreationStrategy extends TransformStrategy {
     private final MultiShapeObject shapes;
     private final ArrayList<Concatenate> creators;
 
-    public MultiShapeCreationStrategy(MultiShapeObject shapes, double runtime, double timegap, JMathAnimScene scene) {
+    public MultiShapeCreationStrategy(MultiShapeObject shapes,  double timegap, double runtime,JMathAnimScene scene) {
         super(scene);
         this.timegap = timegap;
         this.runtime = runtime;

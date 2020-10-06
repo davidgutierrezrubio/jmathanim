@@ -8,7 +8,8 @@ package tests;
 import com.jmathanim.Animations.ApplyCommand;
 import com.jmathanim.Animations.Concatenate;
 import com.jmathanim.Animations.ShowCreation;
-import static com.jmathanim.Animations.Strategies.ShowCreation.LateXObjectCreationStrategy.PERCENT_TO_DIVIDE_ANIMATION;
+import com.jmathanim.Animations.Strategies.ShowCreation.FirstDrawThenFillStrategy;
+import static com.jmathanim.Animations.Strategies.ShowCreation.FirstDrawThenFillStrategy.PERCENT_TO_DIVIDE_ANIMATION;
 import com.jmathanim.Animations.WaitAnimation;
 import com.jmathanim.Animations.commands.Commands;
 import com.jmathanim.Utils.Anchor;
@@ -52,6 +53,9 @@ public class myScene extends Scene2D {
 //        s.get(0).style("default");
         add(s);
         play.adjustToObjects(s);
+        final ShowCreation sc = new ShowCreation(s,5);
+//        sc.setStrategy(new FirstDrawThenFillStrategy(s, .5, 5, this));
+        playAnimation(sc);
 //        camera.scale(3);
         waitSeconds(5);
     }
@@ -64,7 +68,9 @@ public class myScene extends Scene2D {
         m.addShape(c);
         m.addShape(sq);
         m.addShape(tr);
-        playAnimation(new ShowCreation(m, 2));
+        final ShowCreation sc = new ShowCreation(m, 2);
+        
+        playAnimation(sc);
 
         waitSeconds(5);
     }
