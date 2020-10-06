@@ -25,10 +25,10 @@ public class DemoScene extends Scene2D {
     @Override
     public void setupSketch() {
 //        ConfigLoader.parseFile("production.xml");
-        ConfigLoader.parseFile("production_shadow.xml");
-//        ConfigLoader.parseFile("preview.xml");
-        ConfigLoader.parseFile("light.xml");
-//        ConfigLoader.parseFile("dark.xml");
+//        ConfigLoader.parseFile("production_shadow.xml");
+        ConfigLoader.parseFile("preview.xml");
+//        ConfigLoader.parseFile("light.xml");
+        ConfigLoader.parseFile("dark.xml");
     }
 
     @Override
