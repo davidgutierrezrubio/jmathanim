@@ -32,7 +32,7 @@ public class RotateAndScaleXYStrategyTransform extends MatrixTransformStrategy{
         Point F = mobjDestiny.getJMPoint(2).p;
 
         //First map A,B into (0,0) and (1,0)
-        AffineJTransform tr1 = AffineJTransform.createDirect2DHomotopy(A, B, new Point(0, 0), new Point(1, 0), 1);
+        AffineJTransform tr1 = AffineJTransform.createDirect2DHomothecy(A, B, new Point(0, 0), new Point(1, 0), 1);
 
         //Now I create a transformation that adjust the y-scale, proportionally
         //This transform will be applied inversely too
@@ -41,7 +41,7 @@ public class RotateAndScaleXYStrategyTransform extends MatrixTransformStrategy{
         tr2.setV2Img(0, proportionalHeight * lt + (1 - lt) * 1); //Interpolated here
 
         //Finally, and homotopy to carry A,B into D,E
-        AffineJTransform tr3 = AffineJTransform.createDirect2DHomotopy(A, B, D, E, lt);//Interpolated here
+        AffineJTransform tr3 = AffineJTransform.createDirect2DHomothecy(A, B, D, E, lt);//Interpolated here
         AffineJTransform id = new AffineJTransform();
         //The final transformation
         AffineJTransform tr = tr1.compose(tr2).compose(tr1.getInverse()).compose(tr3);

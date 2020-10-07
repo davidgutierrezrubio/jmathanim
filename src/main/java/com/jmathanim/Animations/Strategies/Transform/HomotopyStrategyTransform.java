@@ -28,7 +28,7 @@ public class HomotopyStrategyTransform extends MatrixTransformStrategy {
         Point C = mobjDestiny.jmpath.getJMPoint(0).p;
         Point D = mobjDestiny.jmpath.getJMPoint(1).p;
 
-        AffineJTransform tr = AffineJTransform.createDirect2DHomotopy(A, B, C, D, lt);
+        AffineJTransform tr = AffineJTransform.createDirect2DHomothecy(A, B, C, D, lt);
 
         applyMatrixTransform(tr, lt);
     }

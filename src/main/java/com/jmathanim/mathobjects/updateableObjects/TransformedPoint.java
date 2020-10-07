@@ -39,7 +39,7 @@ public class TransformedPoint extends Point{
 
     @Override
     public void update() {
-        Point tempPoint = transform.getTransformedPoint(this.dstPoint);
+        Point tempPoint = transform.getTransformedObject(this.dstPoint);
         this.v.x=tempPoint.v.x;
         this.v.y=tempPoint.v.y;
         this.v.z=tempPoint.v.z;

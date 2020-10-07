@@ -168,7 +168,7 @@ public class PlayAnim {
      * object for 1 second. Objects not scalable ({@link Point} for example) are
      * not affected.
      *
-     * @param mobj Object to highlight
+     * @param mobjs Objects to highlight (varargs)
      */
     public void highlight(MathObject... mobjs) {
         scene.playAnimation(new Highlight(defaultRunTimeHighlight, mobjs));
@@ -260,15 +260,16 @@ public class PlayAnim {
     }
 
     /**
-     * Plays an animation drawing a {@link MathObject}. The object drawn is
-     * added to the current scene. Several strategies to create the object are
-     * automatically chosen: For a simple shape, draws the shape. For a
-     * {@link MultiShapeObject} performs a simple shape creation for each shape,
+     * Plays an animation drawing a {@link MathObject}.The object drawn is
+ added to the current scene. Several strategies to create the object are
+ automatically chosen: For a simple shape, draws the shape. For a
+ {@link MultiShapeObject} performs a simple shape creation for each shape,
      * with a time gap between one and the next. For a {@link SVGMathObject}
      * (which includes {@link LaTeXMathObject}) a "first draw, then fill"
      * strategy is chosen.
      *
-     * @param mobj
+     * @param runtime Run time (in seconds)
+     * @param mobjects Objects to highlight (varargs)
      */
     public void showCreation(double runtime, MathObject... mobjects) {
         ArrayList<Animation> anims = new ArrayList<>();
@@ -282,7 +283,7 @@ public class PlayAnim {
      * Convenience overloaded method. Plays an animation drawing a
      * {@link MathObject} with runtime of 2 seconds.
      *
-     * @param mobj
+     * @param mobjs Objects to highlight (varargs)
      */
     public void showCreation(MathObject... mobjs) {
         showCreation(defaultRunTimeshowCreation, mobjs);

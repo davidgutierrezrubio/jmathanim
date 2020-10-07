@@ -25,27 +25,71 @@ import org.slf4j.LoggerFactory;
  */
 public abstract class JMathAnimScene {
 
+    /**
+     * Logger class
+     */
     public final static Logger logger = LoggerFactory.getLogger("com.jmathanim.jmathanim.JMathAnimScene");
+    /**
+     * Our loved constant PI
+     */
     public static final double PI = 3.14159265358979323846;
+    /**
+     * Constant to specify easily angles by degrees, like 45*DEGREES
+     */
     public static final double DEGREES = PI / 180;
-    int contador = 0;
-    int x;
+    /**
+     * List of objects which needs to be drawn on the screen
+     */
     final ArrayList<MathObject> objects;
+    /**
+     * List of objects which needs to be updated (not necessarily drawn)
+     */
     final ArrayList<Updateable> objectsToBeUpdated;
+    /**
+     * Renderer to perform drawings
+     */
     protected Renderer renderer;
+    /**
+     * Number of frames
+     */
     protected int frameCount;
+    /**
+     * Frames per second used in the animation
+     */
     protected double fps;
+    /**
+     * Time step.
+     */
     protected double dt;
+    /**
+     * Configuration
+     */
     public JMathAnimConfig conf;
+    /**
+     * This class is used to easily access to most common animations
+     */
     protected final PlayAnim play;
+    /**
+     * Nanotime, used to control frame rate in preview window
+     */
     public long nanoTime;
+    /**
+     * Previous nanotime in the last measure, used to control frame rate in
+     * preview window
+     */
     public long previousNanoTime;
+    /**
+     * Exit code of program
+     */
     private int exitCode;
 
+    /**
+     * Creates a new Scene with default settings.
+     */
     public JMathAnimScene() {
         objects = new ArrayList<>(); //TODO: Extends this to include layers
         conf = JMathAnimConfig.getConfig();
-        conf.setLowQuality();//by default, set low quality
+        conf.setLowQuality();
         objectsToBeUpdated = new ArrayList<>();
         play = new PlayAnim(this);//Convenience class for fast access to common animations
         conf.setOutputFileName(this.getClass().getSimpleName());
@@ -62,7 +106,7 @@ public abstract class JMathAnimScene {
     public abstract void createRenderer();
 
     /**
-     *
+     * Execute the current scene
      */
     public final void execute() {
 
@@ -71,13 +115,13 @@ public abstract class JMathAnimScene {
         setupSketch();
         createRenderer();
         JMathAnimConfig.getConfig().setRenderer(renderer);
-        exitCode=0;
+        exitCode = 0;
         //In the global variable store Scene, Renderer and main Camera
         conf.setScene(this);
         try {
             runSketch();
         } catch (Exception ex) {
-            exitCode=1;
+            exitCode = 1;
             logger.error(ex.toString());
             ex.printStackTrace();
             if (renderer instanceof Java2DRenderer) {
@@ -90,8 +134,7 @@ public abstract class JMathAnimScene {
             //Try anyway to finish the rendering
             renderer.finish(frameCount);//Finish rendering jobs
         }
-        if (exitCode!=0)
-        {
+        if (exitCode != 0) {
             logger.error("An error ocurred. Check the logs.");
         }
         System.exit(0);
@@ -116,14 +159,21 @@ public abstract class JMathAnimScene {
         return objectsToBeUpdated;
     }
 
+    /**
+     * An abstract method to be overriden. Actual animations are implemented
+     * here.
+     *
+     * @throws Exception Any expecption which may occur while performing the
+     * animations
+     */
     public abstract void runSketch() throws Exception;
 
-    public synchronized final void add(ArrayList<MathObject> objs) {
-        for (MathObject obj : objs) {
-            add(obj);
-        }
-    }
-
+    /**
+     * Register the given objects to be updated. Any class that implements the
+     * interface {@link Updateable} may be added here.
+     *
+     * @param objs {@link Updateable} objects (varargs)
+     */
     public synchronized final void registerObjectToBeUpdated(Updateable... objs) {
         for (Updateable obj : objs) {
             if (!objectsToBeUpdated.contains(obj)) {
@@ -132,12 +182,21 @@ public abstract class JMathAnimScene {
         }
     }
 
-    public synchronized final void unregisterObjectToBeUpdated(Updateable obj) {
-        if (obj instanceof Updateable) {
-            objectsToBeUpdated.remove((Updateable) obj);
-        }
+    /**
+     * Unregister the given objects to be updated. Any class that implements the
+     * interface {@link Updateable} may be added here.
+     *
+     * @param objs {@link Updateable} objects (varargs)
+     */
+    public synchronized final void unregisterObjectToBeUpdated(Updateable... objs) {
+        objectsToBeUpdated.removeAll(Arrays.asList(objs));
     }
 
+    /**
+     * Add the specified {@link Mathobject}s to the scene
+     *
+     * @param objs Mathobjects (varargs)
+     */
     public synchronized final void add(MathObject... objs) {
         for (MathObject obj : objs) {
             if (!objects.contains(obj)) {
@@ -152,18 +211,24 @@ public abstract class JMathAnimScene {
         }
     }
 
-    public synchronized final MathObject[] remove(MathObject... objs) {
+    /**
+     * Remove the specified {@link Mathobject}s from the scene
+     *
+     * @param objs Mathobjects (varargs)
+     */
+    public synchronized final void remove(MathObject... objs) {
         for (MathObject obj : objs) {
             objects.remove(obj);
             obj.removeScene(this);
             unregisterObjectToBeUpdated(obj);
             obj.unregisterChildrenToBeUpdated(this);//TODO: Really unregister children??
         }
-        return objs;
     }
 
     /**
-     * Call the draw method in all mathobjects
+     * This method performs the necessary drawing methods. First updates all
+     * updateable objects and then draw all objects added to the scene. Objects
+     * are sorted by layer, so that lower layers means drawing under.
      */
     protected final void doDraws() {
 
@@ -185,7 +250,7 @@ public abstract class JMathAnimScene {
     }
 
     /**
-     * Advance one frame, making all necessary drawings
+     * Advance one frame, making all necessary drawings and saving frame
      */
     public final void advanceFrame() {
         renderer.clear();
@@ -197,6 +262,10 @@ public abstract class JMathAnimScene {
 
     }
 
+    /**
+     * Save the current frame using the renderer. Renderer should save the frame
+     * to video, or any other format.
+     */
     private void saveMPFrame() {
 
         renderer.saveFrame(frameCount);
@@ -241,6 +310,11 @@ public abstract class JMathAnimScene {
         }
     }
 
+    /**
+     * Wait the specified time, generating the frames.
+     *
+     * @param time Time in seconds.
+     */
     public void waitSeconds(double time) {
         int numFrames = (int) (time * fps);
         for (int n = 0; n < numFrames; n++) {
@@ -249,6 +323,11 @@ public abstract class JMathAnimScene {
 
     }
 
+    /**
+     * Returns the current camera used in the scene
+     *
+     * @return The camera
+     */
     public Camera getCamera() {
         return renderer.getCamera();
     }

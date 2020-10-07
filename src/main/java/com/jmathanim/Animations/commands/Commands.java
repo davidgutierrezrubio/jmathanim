@@ -199,7 +199,7 @@ public class Commands {
             public void execute(double t) {
                 for (MathObject obj : mathObjects) {
                     obj.restoreState();
-                    tr = AffineJTransform.createDirect2DHomotopy(A, B, C, D, t);
+                    tr = AffineJTransform.createDirect2DHomothecy(A, B, C, D, t);
                     tr.applyTransform(obj);
                 }
             }

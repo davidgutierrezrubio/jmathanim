@@ -38,9 +38,9 @@ public class TransformedJMPath extends Shape{
             for (int n = 0; n < size; n++) {
                 JMPathPoint jmPDst = getJMPoint(n);
                 JMPathPoint pSrc = srcOBj.getJMPoint(n);
-                Point pDst = transform.getTransformedPoint(pSrc.p);
-                Point cp1Dst = transform.getTransformedPoint(pSrc.cp1);
-                Point cp2Dst = transform.getTransformedPoint(pSrc.cp2);
+                Point pDst = transform.getTransformedObject(pSrc.p);
+                Point cp1Dst = transform.getTransformedObject(pSrc.cp1);
+                Point cp2Dst = transform.getTransformedObject(pSrc.cp2);
 
                 jmPDst.p.v.x = pDst.v.x;
                 jmPDst.p.v.y = pDst.v.y;

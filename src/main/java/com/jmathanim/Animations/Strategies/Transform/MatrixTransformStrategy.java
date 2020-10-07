@@ -10,6 +10,8 @@ import com.jmathanim.Animations.Strategies.TransformStrategy;
 import com.jmathanim.Utils.JMathAnimConfig;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.JMPathPoint;
+import com.jmathanim.mathobjects.MathObject;
+import com.jmathanim.mathobjects.Point;
 import com.jmathanim.mathobjects.Shape;
 
 /**
@@ -22,7 +24,7 @@ public abstract class MatrixTransformStrategy extends TransformStrategy {
     protected Shape mobjDestiny;
     protected Shape originalShapeBaseCopy;
 
-    public MatrixTransformStrategy(Shape mobjTransformed, Shape mobjDestiny,JMathAnimScene scene) {
+    public MatrixTransformStrategy(Shape mobjTransformed, Shape mobjDestiny, JMathAnimScene scene) {
         super(scene);
         this.mobjTransformed = mobjTransformed;
         this.mobjDestiny = mobjDestiny;
@@ -44,13 +46,16 @@ public abstract class MatrixTransformStrategy extends TransformStrategy {
             dstPoint = mobjDestiny.getJMPoint(n);
 
             //Interpolate point
-            interPoint.p.v = tr.getTransformedPoint(basePoint.p).v;
+            Point transformedPoint = tr.getTransformedObject(basePoint.p);
+            interPoint.p.v = transformedPoint.v;
 
             //Interpolate control point 1
-            interPoint.cp1.v = tr.getTransformedPoint(basePoint.cp1).v;
+            transformedPoint = tr.getTransformedObject(basePoint.cp1);
+            interPoint.cp1.v = transformedPoint.v;
 
             //Interpolate control point 2
-            interPoint.cp2.v = tr.getTransformedPoint(basePoint.cp2).v;
+            transformedPoint = tr.getTransformedObject(basePoint.cp2);
+            interPoint.cp2.v = transformedPoint.v;
 
         }
         //Now interpolate properties from objects

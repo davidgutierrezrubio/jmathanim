@@ -25,26 +25,50 @@ public class JMathAnimConfig {
     /**
      * Width of media screen. Typically 800 or 1920.
      */
-    public int mediaW;
+    public int mediaW = 800;
     /**
      * Height of media screen. Typically 600 or 1080.
      */
-    public int mediaH;
+    public int mediaH = 600;
 
     /**
      * Frames per second to use in the video. Typically 30 or 60.
      */
-    public int fps;
-
+    public int fps = 30;
+    /**
+     * Singleton pattern to ensure there is a common config class for whole
+     * execution
+     */
     private static JMathAnimConfig singletonConfig;
+    /**
+     * The scene used
+     */
     private JMathAnimScene scene;
+    /**
+     * The renderer used
+     */
     private Renderer renderer;
+    /**
+     * The camera used in the scene
+     */
     private Camera camera;
-
-    public boolean createMovie=false;
-    public boolean showPreview=true;
+    /**
+     * If true, the current renderer should render the result into a movie
+     */
+    public boolean createMovie = false;
+    /**
+     * If true, the current renderer should show a preview of the result
+     */
+    public boolean showPreview = true;
+    /**
+     * A dictionary of the styles to be used in the objects
+     */
     private final HashMap<String, MathObjectDrawingProperties> styles;
 
+    /**
+     * Returns the config, using the singleton pattern.
+     * @return The config object, global scope.
+     */
     public static JMathAnimConfig getConfig() {
         if (singletonConfig == null) {
 

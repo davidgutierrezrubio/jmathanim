@@ -92,7 +92,8 @@ public abstract class Animation {
     /**
      * Executes one frame of the animation, given by the time t, from 0 to 1
      *
-     * @param t double betwenn 0 and 1 0=start, 1=end
+     * @param t double between 0 and 1 0=start, 1=end. This value is passed as needed by some special animations
+     * @param lt lambda(t) where lambda is a "smooth" function. this value is used to compute the actual animation state.
      */
     abstract public void doAnim(double t,double lt);
 

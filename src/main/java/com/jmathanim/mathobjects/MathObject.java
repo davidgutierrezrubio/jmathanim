@@ -183,7 +183,7 @@ public abstract class MathObject implements Drawable, Updateable, Stateable {
      * @return The same object, after scaling
      */
     public <T extends MathObject> T scale(Point scaleCenter, double sx, double sy, double sz) {
-        AffineJTransform tr = AffineJTransform.create2DScaleTransform(scaleCenter, sx, sy, sz);
+        AffineJTransform tr = AffineJTransform.createScaleTransform(scaleCenter, sx, sy, sz);
         tr.applyTransform(this);
         return (T) this;
     }
@@ -331,7 +331,9 @@ public abstract class MathObject implements Drawable, Updateable, Stateable {
     /**
      * Multiplies alpha Fill color by a scale
      *
+     * @param <T> MathObject type
      * @param t Scale to multiply alpha
+     * @return This object
      */
     public <T extends MathObject> T multFillAlpha(double t) {
         this.mp.fillColor.alpha *= t;
@@ -341,7 +343,9 @@ public abstract class MathObject implements Drawable, Updateable, Stateable {
     /**
      * Multiplies alph Draw color by a scale
      *
+     * @param <T> MathObject type
      * @param t Scale to multiply alpha
+     * @return This object
      */
     public <T extends MathObject> T multDrawAlpha(double t) {
         this.mp.drawColor.alpha *= t;
