@@ -27,7 +27,7 @@ public class myFirstScene extends Scene2D {
     public void runSketch() {
         Shape s = Shape.square();
         play.showCreation(s);
-		play.rotate(s,30*DEGREES);
+	play.rotate(s,30*DEGREES);
         waitSeconds(5);
     }
 	
