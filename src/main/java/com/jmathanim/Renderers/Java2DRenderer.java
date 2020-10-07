@@ -6,6 +6,7 @@ import com.jmathanim.Cameras.Camera2D;
 import com.jmathanim.Renderers.MovieEncoders.HumbleVideoEncoder;
 import com.jmathanim.Renderers.MovieEncoders.JCodecVideoEncoder;
 import com.jmathanim.Renderers.MovieEncoders.VideoEncoder;
+import com.jmathanim.Renderers.MovieEncoders.XugglerVideoEncoder;
 import com.jmathanim.Utils.JMathAnimConfig;
 import com.jmathanim.Utils.MathObjectDrawingProperties;
 import com.jmathanim.Utils.Rect;
@@ -163,7 +164,8 @@ public class Java2DRenderer extends Renderer {
 
         if (cnf.createMovie) {
 //            videoEncoder=new JCodecVideoEncoder();
-            videoEncoder=new HumbleVideoEncoder();
+            videoEncoder=new XugglerVideoEncoder();
+//            videoEncoder=new HumbleVideoEncoder();
             try {
                 File tempPath = new File(cnf.getOutputDir().getCanonicalPath());
                 tempPath.mkdirs();
