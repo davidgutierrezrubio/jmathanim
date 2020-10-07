@@ -53,7 +53,7 @@ The following command works in a similar way, except in this case it animates a 
 ```java
 play.rotate(s,30*DEGREES);
 ```
-The next command simply waits for the specified amount of seconds, adding this frozen frames to the final output:
+The `waitSeconds` method simply waits for the specified amount of seconds, adding this frozen frames to the final output:
 ```java
 waitSeconds(5);
 ```
