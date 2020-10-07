@@ -56,6 +56,8 @@ public class myScene extends Scene2D {
 //        play.adjustToObjects(s);
 //        camera.scale(3);
         play.showCreation(s);
+                Shape a=null;
+        a.draw(renderer);
         waitSeconds(5);
     }
     
@@ -106,6 +108,7 @@ public class myScene extends Scene2D {
 //        add(l);
         Shape s = Shape.segment(new Point(1, -.6), new Point(1.3, 0));
         add(s.drawColor(JMColor.RED));
+
         play.transform(Shape.segment(l), s, 5);
         waitSeconds(3);
     }

@@ -353,7 +353,7 @@ public class Java2DRenderer extends Renderer {
             previewWindow.setVisible(false);
             previewWindow.dispose();
         }
-        System.exit(0);
+        
     }
 
     @Override
@@ -703,4 +703,9 @@ public class Java2DRenderer extends Renderer {
     public Camera getFixedCamera() {
         return fixedCamera;
     }
+
+    public PreviewWindow getPreviewWindow() {
+        return previewWindow;
+    }
+    
 }

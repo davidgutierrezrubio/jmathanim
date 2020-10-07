@@ -9,6 +9,7 @@ import ch.qos.logback.classic.Level;
 import com.jmathanim.Animations.Animation;
 import com.jmathanim.Animations.PlayAnim;
 import com.jmathanim.Cameras.Camera;
+import com.jmathanim.Renderers.Java2DRenderer;
 import com.jmathanim.Renderers.Renderer;
 import com.jmathanim.Utils.JMathAnimConfig;
 import com.jmathanim.mathobjects.MathObject;
@@ -39,6 +40,7 @@ public abstract class JMathAnimScene {
     protected final PlayAnim play;
     public long nanoTime;
     public long previousNanoTime;
+    private int exitCode;
 
     public JMathAnimScene() {
         objects = new ArrayList<>(); //TODO: Extends this to include layers
@@ -69,12 +71,30 @@ public abstract class JMathAnimScene {
         setupSketch();
         createRenderer();
         JMathAnimConfig.getConfig().setRenderer(renderer);
-
+        exitCode=0;
         //In the global variable store Scene, Renderer and main Camera
         conf.setScene(this);
-        runSketch();
-        renderer.finish(frameCount);//Finish rendering jobs
-
+        try {
+            runSketch();
+        } catch (Exception ex) {
+            exitCode=1;
+            logger.error(ex.toString());
+            ex.printStackTrace();
+            if (renderer instanceof Java2DRenderer) {
+                Java2DRenderer ren = (Java2DRenderer) renderer;
+                if (ren.getPreviewWindow() != null) {
+                    ren.getPreviewWindow().setVisible(true);
+                }
+            }
+        } finally {
+            //Try anyway to finish the rendering
+            renderer.finish(frameCount);//Finish rendering jobs
+        }
+        if (exitCode!=0)
+        {
+            logger.error("An error ocurred. Check the logs.");
+        }
+        System.exit(0);
     }
 
     /**
@@ -96,7 +116,7 @@ public abstract class JMathAnimScene {
         return objectsToBeUpdated;
     }
 
-    public abstract void runSketch();
+    public abstract void runSketch() throws Exception;
 
     public synchronized final void add(ArrayList<MathObject> objs) {
         for (MathObject obj : objs) {
