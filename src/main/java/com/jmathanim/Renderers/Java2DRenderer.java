@@ -3,6 +3,9 @@ package com.jmathanim.Renderers;
 import com.jmathanim.mathobjects.JMPath;
 import com.jmathanim.Cameras.Camera;
 import com.jmathanim.Cameras.Camera2D;
+import com.jmathanim.Renderers.MovieEncoders.HumbleVideoEncoder;
+import com.jmathanim.Renderers.MovieEncoders.JCodecVideoEncoder;
+import com.jmathanim.Renderers.MovieEncoders.VideoEncoder;
 import com.jmathanim.Utils.JMathAnimConfig;
 import com.jmathanim.Utils.MathObjectDrawingProperties;
 import com.jmathanim.Utils.Rect;
@@ -68,14 +71,8 @@ public class Java2DRenderer extends Renderer {
     private final Graphics2D g2dFinalImage;
     public Camera2D camera;
     public Camera2D fixedCamera;
-    private Muxer muxer;
-    private MuxerFormat format;
-    private Codec codec;
-    private Encoder encoder;
-    private PixelFormat.Type pixelformat;
-    private Rational rationalFrameRate;
-    private MediaPacket packet;
-    private MediaPicture picture;
+
+    private VideoEncoder videoEncoder;
     protected Path2D.Double path;
     private final JMathAnimConfig cnf;
     private final JMathAnimScene scene;
@@ -131,8 +128,6 @@ public class Java2DRenderer extends Renderer {
         }
     }
 
-
-
     /**
      *
      * @param camera
@@ -167,59 +162,24 @@ public class Java2DRenderer extends Renderer {
         }
 
         if (cnf.createMovie) {
+//            videoEncoder=new JCodecVideoEncoder();
+            videoEncoder=new HumbleVideoEncoder();
             try {
                 File tempPath = new File(cnf.getOutputDir().getCanonicalPath());
                 tempPath.mkdirs();
                 saveFilePath = new File(cnf.getOutputDir().getCanonicalPath() + File.separator + cnf.getOutputFileName() + "_" + cnf.mediaH + ".mp4");
                 JMathAnimScene.logger.info("Creating movie encoder for {}", saveFilePath);
-                muxer = Muxer.make(saveFilePath.getCanonicalPath(), null, "mp4");
+//                muxer = Muxer.make(saveFilePath.getCanonicalPath(), null, "mp4");
+                videoEncoder.createEncoder(saveFilePath, cnf);
             } catch (IOException ex) {
                 Logger.getLogger(Java2DRenderer.class.getName()).log(Level.SEVERE, null, ex);
             }
 
-            format = muxer.getFormat();
-            codec = Codec.findEncodingCodec(format.getDefaultVideoCodecId());
-            encoder = Encoder.make(codec);
-            encoder.setWidth(width);
-            encoder.setHeight(height);
-            pixelformat = PixelFormat.Type.PIX_FMT_YUV420P;
-            encoder.setPixelFormat(pixelformat);
-
-//        rationalFrameRate = Rational.make(1, Integer.parseInt(cnf.getProperty("FPS")));
-            rationalFrameRate = Rational.make(1, cnf.fps);
-            encoder.setTimeBase(rationalFrameRate);
-            if (format.getFlag(MuxerFormat.Flag.GLOBAL_HEADER)) {
-                encoder.setFlag(Encoder.Flag.FLAG_GLOBAL_HEADER, true);
+            if (cnf.drawShadow) {
+                computeShadowKernel();
             }
-            /**
-             * Open the encoder.
-             */
-            encoder.open(null, null);
-            /**
-             * Add this stream to the muxer.
-             */
-            muxer.addNewStream(encoder);
 
-            try {
-                /**
-                 * And open the muxer for business.
-                 */
-                muxer.open(null, null);
-            } catch (InterruptedException | IOException ex) {
-                Logger.getLogger(Java2DRenderer.class.getName()).log(Level.SEVERE, null, ex);
-            }
-            packet = MediaPacket.make();
-            picture = MediaPicture.make(
-                    encoder.getWidth(),
-                    encoder.getHeight(),
-                    pixelformat);
-            picture.setTimeBase(rationalFrameRate);
         }
-
-        if (cnf.drawShadow) {
-            computeShadowKernel();
-        }
-
     }
 
     @Override
@@ -309,21 +269,13 @@ public class Java2DRenderer extends Renderer {
 
         }
         if (cnf.createMovie) {
-            BufferedImage screen = MediaPictureConverterFactory.convertToType(finalImage, BufferedImage.TYPE_3BYTE_BGR);
-            MediaPictureConverter converter = MediaPictureConverterFactory.createConverter(screen, picture);
-            converter.toPicture(picture, screen, frameCount);
-            do {
-                encoder.encode(packet, picture);
-                if (packet.isComplete()) {
-                    muxer.write(packet, false);
-                }
-            } while (packet.isComplete());
+            videoEncoder.writeFrame(finalImage, frameCount);
         }
     }
 
     @Override
     public void finish(int frameCount) {
-        System.out.println(String.format("%d frames created, %.2fs total time", frameCount, (1.f * frameCount) / cnf.fps));
+        JMathAnimScene.logger.info(String.format("%d frames created, %.2fs total time", frameCount, (1.f * frameCount) / cnf.fps));
         if (cnf.createMovie) {
             /**
              * Encoders, like decoders, sometimes cache pictures so it can do
@@ -331,26 +283,16 @@ public class Java2DRenderer extends Renderer {
              * well. As with the decoders, the convention is to pass in a null
              * input until the output is not complete.
              */
-            System.out.println("Finishing movie...");
-            do {
-                encoder.encode(packet, null);
-                if (packet.isComplete()) {
-                    muxer.write(packet, false);
-                }
-            } while (packet.isComplete());
-
-            /**
-             * Finally, let's clean up after ourselves.
-             */
-            muxer.close();
-            System.out.println("Movie created at " + saveFilePath);
+            JMathAnimScene.logger.info("Finishing movie...");
+           videoEncoder.finish();
+            JMathAnimScene.logger.info("Movie created at " + saveFilePath);
 
         }
         if (cnf.showPreview) {
             previewWindow.setVisible(false);
             previewWindow.dispose();
         }
-        
+
     }
 
     @Override
@@ -709,5 +651,5 @@ public class Java2DRenderer extends Renderer {
     public <T extends Camera> T getCamera() {
         return (T) camera;
     }
-    
+
 }

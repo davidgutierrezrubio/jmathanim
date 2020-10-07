@@ -67,6 +67,7 @@ public class JMathAnimConfig {
 
     /**
      * Returns the config, using the singleton pattern.
+     *
      * @return The config object, global scope.
      */
     public static JMathAnimConfig getConfig() {
@@ -107,8 +108,8 @@ public class JMathAnimConfig {
     private JMathAnimConfig() {//Private constructor
         styles = new HashMap<>();
         setDefaultMP();//Load "default" drawing style in dictionary
-        resourcesDir = new File(".\\resources");
-        outputDir = new File(".\\media");
+        resourcesDir = new File("." + File.separator + "resources");
+        outputDir = new File("." + File.separator + "media");
     }
 
     /**
@@ -210,10 +211,12 @@ public class JMathAnimConfig {
         return resourcesDir;
     }
 
-    public void setResourcesDir(File resourcesDir) {
-        this.resourcesDir = resourcesDir;
-    }
-
+    /**
+     * Sets the resources path. When a relative path, it refers to the current
+     * execution directory.
+     *
+     * @param path A string with the resources path
+     */
     public void setResourcesDir(String path) {
         this.resourcesDir = new File(path);
     }

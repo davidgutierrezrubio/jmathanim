@@ -7,6 +7,7 @@ package tests;
 
 import com.jmathanim.Animations.commands.Commands;
 import com.jmathanim.Utils.Anchor;
+import com.jmathanim.Utils.ConfigLoader;
 import com.jmathanim.Utils.JMColor;
 import com.jmathanim.Utils.JMathAnimConfig;
 import com.jmathanim.jmathanim.Scene2D;
@@ -16,6 +17,7 @@ import com.jmathanim.mathobjects.LaTeXMathObject;
 import com.jmathanim.mathobjects.Line;
 import com.jmathanim.mathobjects.MultiShapeObject;
 import com.jmathanim.mathobjects.Point;
+import com.jmathanim.mathobjects.SVGMathObject;
 import com.jmathanim.mathobjects.Shape;
 import java.util.ArrayList;
 
@@ -29,25 +31,28 @@ public class myScene extends Scene2D {
     public void setupSketch() {
 //        conf.setResourcesDir(".");
 //        conf.setOutputDir("c:\\media");
-//        ConfigLoader.parseFile("production.xml");
+        ConfigLoader.parseFile("production.xml");
 //        ConfigLoader.parseFile("preview.xml");
 //        ConfigLoader.parseFile("dark.xml");
 //        conf.setHighQuality();
+//        conf.setCreateMovie(true);
     }
 
     @Override
     public void runSketch() {
-//        SVGMathObject s = new SVGMathObject("c:\\media\\inkscape\\dibujo.svg");
+        SVGMathObject svg = new SVGMathObject("c:\\media\\cocacola.svg");
         Shape s = Shape.square();
-        Shape c = Shape.circle().shift(1,0);
+        Shape c = Shape.circle().shift(1, 0);
 //        s.stackTo(Anchor.BY_CENTER);
 //        JMPath c = s.get(0).getPath();
 //        s.get(0).style("default");
 //        add(s);
 //        play.adjustToObjects(s);
 //        camera.scale(3);
-        play.showCreation(s,c);
-        play.rotate(2, 30 * DEGREES, s,c);
+        play.adjustToObjects(svg);
+        play.showCreation(svg);
+//        play.rotate(2, new Point(1,0),30 * DEGREES, s, c);
+        System.out.println("R " + getCamera().getMathView());
         waitSeconds(5);
     }
 
@@ -96,7 +101,7 @@ public class myScene extends Scene2D {
         Shape s = Shape.segment(new Point(1, -.6), new Point(1.3, 0));
         add(s.drawColor(JMColor.RED));
 
-        play.transform(5,Shape.segment(l), s);
+        play.transform(5, Shape.segment(l), s);
         waitSeconds(3);
     }
 

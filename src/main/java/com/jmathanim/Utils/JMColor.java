@@ -25,10 +25,15 @@ public class JMColor {
 
     public double r, g, b, alpha;
 
-    public JMColor(JMColor c) {
-        set(c);
-    }
-
+    /**
+     * Creates a new JMColor with the specified red, green, blue, and alha
+     * componentes, from 0 to 1.
+     *
+     * @param r Red component 0-1
+     * @param g Green component 0-1
+     * @param b Blue component 0-1
+     * @param alpha Alpha component 0-1
+     */
     public JMColor(double r, double g, double b, double alpha) {
         this.r = r;
         this.g = g;
@@ -36,12 +41,18 @@ public class JMColor {
         this.alpha = alpha;
     }
 
+    /**
+     * Creates a new JMColor with the specified red, green, blue, and alha
+     * componentes, from 0 to 256.
+     *
+     * @param r Red component 0-255
+     * @param g Green component 0-255
+     * @param b Blue component 0-255
+     * @param alpha Alpha component 0-255
+     * @return The new JMcolor
+     */
     public static JMColor rgbInt(int r, int g, int b, int alpha) {
         return new JMColor(r * 1.f / 255, g * 1.f / 255, b * 1.f / 255, alpha * 1.f / 255);
-    }
-
-    public static JMColor rgbInt(int r, int g, int b) {
-        return JMColor.rgbInt(r, g, b, 255);
     }
 
     //https://stackoverflow.com/questions/4129666/how-to-convert-hex-to-rgb-using-java
@@ -53,7 +64,7 @@ public class JMColor {
                 rr = Integer.valueOf(hex.substring(0, 2), 16);
                 gg = Integer.valueOf(hex.substring(2, 4), 16);
                 bb = Integer.valueOf(hex.substring(4, 6), 16);
-                return JMColor.rgbInt(rr, gg, bb);
+                return JMColor.rgbInt(rr, gg, bb, 255);
             case 8:
                 rr = Integer.valueOf(hex.substring(0, 2), 16);
                 gg = Integer.valueOf(hex.substring(2, 4), 16);
@@ -64,20 +75,35 @@ public class JMColor {
                 rr = Integer.valueOf(hex.substring(0, 1) + hex.substring(0, 1), 16);
                 gg = Integer.valueOf(hex.substring(1, 2) + hex.substring(1, 2), 16);
                 bb = Integer.valueOf(hex.substring(2, 3) + hex.substring(2, 3), 16);
-                return JMColor.rgbInt(rr, gg, bb);
+                return JMColor.rgbInt(rr, gg, bb, 255);
             default:
                 return null;
         }
     }
 
+    /**
+     * Return a {@link Color} object representing the color.
+     *
+     * @return Color
+     */
     public Color getColor() {
         return new Color((float) r, (float) g, (float) b, (float) alpha);
     }
 
+    /**
+     * Computes the inverse color
+     *
+     * @return The inverse color
+     */
     public JMColor getInverse() {
         return new JMColor(1 - r, 1 - g, 1 - b, alpha);
     }
 
+    /**
+     * Returns a copy of this object
+     *
+     * @return A raw copy of the JMColor, with identical attributes.
+     */
     public JMColor copy() {
         return new JMColor(r, g, b, alpha);
     }
@@ -96,6 +122,14 @@ public class JMColor {
         }
     }
 
+    /**
+     * Interpolates this JMColor with another given
+     *
+     * @param B JMColor to interpolate
+     * @param t Interpolation parameter. 0 means this object, 1 means the given
+     * color
+     * @return A JMcolor with components interpolated
+     */
     public JMColor interpolate(JMColor B, double t) {
         double rr = (1 - t) * r + t * B.r;
         double gg = (1 - t) * g + t * B.g;
@@ -105,10 +139,24 @@ public class JMColor {
     }
 
     //Static methods
+    /**
+     * Returns a new JMColor with random r,g,b components. Alpha component is 1.
+     *
+     * @return The new JMColor
+     */
     public static JMColor random() {
         return new JMColor(Math.random(), Math.random(), Math.random(), 1);
     }
 
+    /**
+     * Parse a string with color information and returns the JMColor associated.
+     * If the string begins with "#" parses hexadecimal numbers in 3, 6 or 8
+     * digits. If the string equals one of the defined names ("white", "blue",
+     * etc.), returns this color. The names are case-insensitive.
+     *
+     * @param str The string with the hex digits or the color name
+     * @return A new JMColor with given parameters.
+     */
     public static JMColor parseColorID(String str) {
         str = str.toUpperCase();
         JMColor resul = null;
@@ -128,7 +176,7 @@ public class JMColor {
 
     @Override
     public String toString() {
-        return "(" + r + ", " + g + "," + b + ", " + alpha + ')';
+        return "JMcolor(" + r + ", " + g + "," + b + ", " + alpha + ')';
     }
 
 }

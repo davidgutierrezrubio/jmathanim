@@ -39,7 +39,7 @@ public class Rect {//TODO: Adjust this to 3D coordinates
 
         Vec v1, v2, v3, v4;
         double sc1, sc2, sc3, sc4;
-        Vec vRecta = new Vec(x2 - x1, y2 - y1);
+        Vec vRect = new Vec(x2 - x1, y2 - y1);
         double lambda1, lambda2;
         //Particular cases:
         //Line lines in the left side
@@ -71,10 +71,10 @@ public class Rect {//TODO: Adjust this to 3D coordinates
         v2 = new Vec(xmin - x1, ymax - y1);
         v3 = new Vec(xmax - x1, ymax - y1);
         v4 = new Vec(xmax - x1, ymin - y1);
-        sc1 = vRecta.cross(v1).z;
-        sc2 = vRecta.cross(v2).z;
-        sc3 = vRecta.cross(v3).z;
-        sc4 = vRecta.cross(v4).z;
+        sc1 = vRect.cross(v1).z;
+        sc2 = vRect.cross(v2).z;
+        sc3 = vRect.cross(v3).z;
+        sc4 = vRect.cross(v4).z;
         if (sc1 < 0) {//Ensure sc1 is always >0
             sc1 = -sc1;
             sc2 = -sc2;
@@ -84,98 +84,98 @@ public class Rect {//TODO: Adjust this to 3D coordinates
 
         //Now I test all possible cases:
         //Case 1:
-        if (sc1>0 & sc2 > 0 && sc3 > 0 && sc4 > 0) {   //There are no interesection points
+        if (sc1 > 0 & sc2 > 0 && sc3 > 0 && sc4 > 0) {   //There are no interesection points
             return null;
         }
         //Case 2:
-        if (sc1>0 & sc2 < 0 && sc3 < 0 && sc4 < 0) {   //Line cross at L and D
+        if (sc1 > 0 & sc2 < 0 && sc3 < 0 && sc4 < 0) {   //Line cross at L and D
             //intersect with xmin:
             //x1+lambda*vRecta.x=xmin;
-            lambda1 = (xmin - x1) / vRecta.x;
+            lambda1 = (xmin - x1) / vRect.x;
             interx1 = xmin;
-            intery1 = y1 + lambda1 * vRecta.y;
+            intery1 = y1 + lambda1 * vRect.y;
             //intersect with ymin:
             //y1+lambda*vRecta.y=ymin;
-            lambda2 = (ymin - y1) / vRecta.y;
-            interx2 = x1 + lambda2 * vRecta.x;
+            lambda2 = (ymin - y1) / vRect.y;
+            interx2 = x1 + lambda2 * vRect.x;
             intery2 = ymin;
         }
         //Case 3:
-        if (sc1>0 & sc2 < 0 && sc3 > 0 && sc4 > 0) {   //Line cross at L and U
+        if (sc1 > 0 & sc2 < 0 && sc3 > 0 && sc4 > 0) {   //Line cross at L and U
             //intersect with xmin:
             //x1+lambda*vRecta.x=xmin;
-            lambda1 = (xmin - x1) / vRecta.x;
+            lambda1 = (xmin - x1) / vRect.x;
             interx1 = xmin;
-            intery1 = y1 + lambda1 * vRecta.y;
+            intery1 = y1 + lambda1 * vRect.y;
             //intersect with ymax:
             //y1+lambda*vRecta.y=ymax;
-            lambda2 = (ymax - y1) / vRecta.y;
-            interx2 = x1 + lambda2 * vRecta.x;
+            lambda2 = (ymax - y1) / vRect.y;
+            interx2 = x1 + lambda2 * vRect.x;
             intery2 = ymax;
         }
         //Case 4:
-        if (sc1>0 & sc2 > 0 && sc3 < 0 && sc4 > 0) {   //Line cross at R and U
+        if (sc1 > 0 & sc2 > 0 && sc3 < 0 && sc4 > 0) {   //Line cross at R and U
             //intersect with xmax:
             //x1+lambda*vRecta.x=xmax;
-            lambda1 = (xmax - x1) / vRecta.x;
+            lambda1 = (xmax - x1) / vRect.x;
             interx1 = xmax;
-            intery1 = y1 + lambda1 * vRecta.y;
+            intery1 = y1 + lambda1 * vRect.y;
             //intersect with ymax:
             //y1+lambda*vRecta.y=ymax;
-            lambda2 = (ymax - y1) / vRecta.y;
-            interx2 = x1 + lambda2 * vRecta.x;
+            lambda2 = (ymax - y1) / vRect.y;
+            interx2 = x1 + lambda2 * vRect.x;
             intery2 = ymax;
         }
 
         //Case 5:
-        if (sc1>0 & sc2 > 0 && sc3 > 0 && sc4 < 0) {   //Line cross at R and D
+        if (sc1 > 0 & sc2 > 0 && sc3 > 0 && sc4 < 0) {   //Line cross at R and D
             //intersect with xmax:
             //x1+lambda*vRecta.x=xmax;
-            lambda1 = (xmax - x1) / vRecta.x;
+            lambda1 = (xmax - x1) / vRect.x;
             interx1 = xmax;
-            intery1 = y1 + lambda1 * vRecta.y;
+            intery1 = y1 + lambda1 * vRect.y;
             //intersect with ymin:
             //y1+lambda*vRecta.y=ymin;
-            lambda2 = (ymin - y1) / vRecta.y;
-            interx2 = x1 + lambda2 * vRecta.x;
+            lambda2 = (ymin - y1) / vRect.y;
+            interx2 = x1 + lambda2 * vRect.x;
             intery2 = ymin;
         }
         //Case 6:
-        if (sc1>0 & sc2 < 0 && sc3 < 0 && sc4 > 0) {   //Line cross at L and R
+        if (sc1 > 0 & sc2 < 0 && sc3 < 0 && sc4 > 0) {   //Line cross at L and R
             //intersect with xmin:
             //x1+lambda*vRecta.x=xmin;
-            lambda1 = (xmin - x1) / vRecta.x;
+            lambda1 = (xmin - x1) / vRect.x;
             interx1 = xmin;
-            intery1 = y1 + lambda1 * vRecta.y;
+            intery1 = y1 + lambda1 * vRect.y;
             //intersect with xmax:
             //x1+lambda*vRecta.x=xmin;
-            lambda2 = (xmax - x1) / vRecta.x;
+            lambda2 = (xmax - x1) / vRect.x;
             interx2 = xmax;
-            intery2 = y1 + lambda2 * vRecta.y;
+            intery2 = y1 + lambda2 * vRect.y;
         }
         //Case 7:
-        if (sc1>0 & sc2 > 0 && sc3 < 0 && sc4 < 0) {   //Line cross at D and U
+        if (sc1 > 0 & sc2 > 0 && sc3 < 0 && sc4 < 0) {   //Line cross at D and U
             //intersect with ymin:
             //y1+lambda*vRecta.y=ymin;
-            lambda1 = (ymin - y1) / vRecta.y;
-            interx1 = x1 + lambda1 * vRecta.x;
+            lambda1 = (ymin - y1) / vRect.y;
+            interx1 = x1 + lambda1 * vRect.x;
             intery1 = ymin;
             //intersect with ymax:
             //y1+lambda*vRecta.y=ymax;
-            lambda2 = (ymax - y1) / vRecta.y;
-            interx2 = x1 + lambda2 * vRecta.x;
+            lambda2 = (ymax - y1) / vRect.y;
+            interx2 = x1 + lambda2 * vRect.x;
             intery2 = ymax;
         }
         //Case 8: 
-        if (sc4 == 0 & sc1>0 & sc2 > 0 && sc3 > 0) { //Exterior line that intersects only at (xmax,ymin)
+        if (sc4 == 0 & sc1 > 0 & sc2 > 0 && sc3 > 0) { //Exterior line that intersects only at (xmax,ymin)
             return new double[]{xmax, ymin, xmax, ymin};
         }
         //Case 9: 
-        if (sc3 == 0 & sc1>0 & sc2 > 0 && sc4 > 0) { //Exterior line that intersects only at (xmax,ymax)
+        if (sc3 == 0 & sc1 > 0 & sc2 > 0 && sc4 > 0) { //Exterior line that intersects only at (xmax,ymax)
             return new double[]{xmax, ymax, xmax, ymax};
         }
         //Case 10: 
-        if (sc2 == 0 & sc1>0 & sc3 > 0 && sc4 > 0) { //Exterior line that intersects only at (xmin,ymax)
+        if (sc2 == 0 & sc1 > 0 & sc3 > 0 && sc4 > 0) { //Exterior line that intersects only at (xmin,ymax)
             return new double[]{xmin, ymax, xmin, ymax};
         }
         //Case 11: 
@@ -189,7 +189,7 @@ public class Rect {//TODO: Adjust this to 3D coordinates
         double[] resul;
         v1 = new Vec(interx1 - x1, intery1 - y1);
         v2 = new Vec(interx2 - x1, intery2 - y1);
-        if (vRecta.dot(v1) > 0) {
+        if (vRect.dot(v1) > 0) {
             //In this case, interx1,intery2 is closer to x2,y2
             resul = new double[]{interx2, intery2, interx1, intery1};
         } else {
@@ -199,18 +199,39 @@ public class Rect {//TODO: Adjust this to 3D coordinates
         return resul;
     }
 
+    /**
+     * Returns the smallest {@link Rect} which contains this and the given one
+     *
+     * @param b The another {@link Rect}
+     * @return A new {@link Rect} with the union of both rects
+     */
     public Rect union(Rect b) {
         return new Rect(Math.min(xmin, b.xmin), Math.min(ymin, b.ymin), Math.max(xmax, b.xmax), Math.max(ymax, b.ymax));
     }
 
+    /**
+     * Returns the center of this Rect
+     *
+     * @return A {@link Point} representing the rect center
+     */
     public Point getCenter() {
         return new Point(.5 * (xmin + xmax), .5 * (ymin + ymax));
     }
 
+    /**
+     * Computes the height of the rect
+     *
+     * @return Height of the rect
+     */
     public double getHeight() {
         return ymax - ymin;
     }
 
+    /**
+     * Computes the width of the rect
+     *
+     * @return Width of the rect
+     */
     public double getWidth() {
         return xmax - xmin;
     }
@@ -220,6 +241,14 @@ public class Rect {//TODO: Adjust this to 3D coordinates
         return "Rect{" + "xmin=" + xmin + ", ymin=" + ymin + ", xmax=" + xmax + ", ymax=" + ymax + '}';
     }
 
+    /**
+     * Interpolates this rect with another given
+     *
+     * @param rDst The other rect to interpolate
+     * @param t Inerpolation parameter. 0 corresponds to this rect, and 1 to
+     * rDst
+     * @return The interpolated rect
+     */
     public Rect interpolate(Rect rDst, double t) {
         return new Rect((1 - t) * xmin + t * rDst.xmin, (1 - t) * ymin + t * rDst.ymin, (1 - t) * xmax + t * rDst.xmax, (1 - t) * ymax + t * rDst.ymax);
     }
@@ -256,6 +285,14 @@ public class Rect {//TODO: Adjust this to 3D coordinates
         return new Point(xmax, ymin);
     }
 
+    /**
+     * Computes a new Rect which is the original grown by a horizontal and
+     * vertical gap
+     *
+     * @param xgap Horizontal gap
+     * @param ygap Vertical gap
+     * @return A new {@link Rect} with the gaps applied
+     */
     public Rect addGap(double xgap, double ygap) {
         return new Rect(xmin - xgap, ymin - ygap, xmax + xgap, ymax + ygap);
     }
@@ -277,6 +314,13 @@ public class Rect {//TODO: Adjust this to 3D coordinates
         return new Rect(xminNew, yminNew, xmaxNew, ymaxNew);
     }
 
+    /**
+     * Computes the {@link Rect} shifted by a given vector. Original Rect is not
+     * modified
+     *
+     * @param v Shift vector
+     * @return A copy of this Rect, shifted.
+     */
     public Rect shifted(Vec v) {
         return new Rect(xmin + v.x, ymin + v.y, xmax + v.x, ymax + v.y);
     }
