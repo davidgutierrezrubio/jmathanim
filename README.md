@@ -63,7 +63,7 @@ waitSeconds(5);
 This library uses the following 3rd party libraries:
 
 * [Humble video encoder](https://github.com/artclarke/humble-video) For creating videos.
-* [Logback Project] (http://logback.qos.ch/) For logging purposes.
+* [Logback Project](http://logback.qos.ch/) For logging purposes.
 
 
 ## License
