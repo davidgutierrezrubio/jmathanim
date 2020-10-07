@@ -65,7 +65,8 @@ public class Anchor {
      * object (determined by its bounding box)
      *
      * @param obj Object to get anchor point
-     * @param anchor Type of anchor point null null null null null null null null     {@link BY_POINT}, {@link BY_CENTER}, {@link RIGHT}, {@link UPPER},
+     * @param anchor Type of anchor point null null null null null null null
+     * null null null     {@link BY_POINT}, {@link BY_CENTER}, {@link RIGHT}, {@link UPPER},
      * {@link LEFT}, {@link LOWER}, {@link DR}, {@link UR},
      * {@link UL}, {@link DL}
      * @return The anchor point
@@ -82,7 +83,7 @@ public class Anchor {
      *
      * @param obj Object to get anchor point
      * @param anchor Type of anchor point null null null null null null null
-     * null null     {@link BY_POINT}, {@link BY_CENTER}, {@link RIGHT}, {@link UPPER},
+     * null null null null     {@link BY_POINT}, {@link BY_CENTER}, {@link RIGHT}, {@link UPPER},
      * {@link LEFT}, {@link LOWER}, {@link DR}, {@link UR},
      * {@link UL}, {@link DL}
      * @param gap Gap to add to the anchor
@@ -99,7 +100,8 @@ public class Anchor {
      * added, specified both by its x component and y component.
      *
      * @param obj Object to get anchor point
-     * @param anchor Type of anchor point null null null null null null null null     {@link BY_POINT}, {@link BY_CENTER}, {@link RIGHT}, {@link UPPER},
+     * @param anchor Type of anchor point null null null null null null null
+     * null null null     {@link BY_POINT}, {@link BY_CENTER}, {@link RIGHT}, {@link UPPER},
      * {@link LEFT}, {@link LOWER}, {@link DR}, {@link UR},
      * {@link UL}, {@link DL}
      * @param xgap Horizontal gap
@@ -191,6 +193,15 @@ public class Anchor {
         return resul;
     }
 
+    /**
+     * Returns an anchor point relative to the current screen, in math
+     * coordinates
+     *
+     * @param anchor Anchor type
+     * @param xMargin x margin to apply to the anchor
+     * @param yMargin y margin to apply to the anchor
+     * @return A {@link Point} located at the current anchor
+     */
     public static Point getScreenAnchorPoint(int anchor, double xMargin, double yMargin) {
         Point resul = new Point();
         Rect mathViewWithGap = JMathAnimConfig.getConfig().getCamera().getMathView().addGap(-xMargin, -yMargin);
@@ -223,7 +234,6 @@ public class Anchor {
             case DR:
                 resul = mathViewWithGap.getDR();
                 break;
-
         }
         return resul;
     }

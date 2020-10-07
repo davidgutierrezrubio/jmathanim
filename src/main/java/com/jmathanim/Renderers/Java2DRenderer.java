@@ -131,10 +131,7 @@ public class Java2DRenderer extends Renderer {
         }
     }
 
-    @Override
-    public Camera2D getCamera() {
-        return camera;
-    }
+
 
     /**
      *
@@ -706,6 +703,11 @@ public class Java2DRenderer extends Renderer {
 
     public PreviewWindow getPreviewWindow() {
         return previewWindow;
+    }
+
+    @Override
+    public <T extends Camera> T getCamera() {
+        return (T) camera;
     }
     
 }

@@ -11,7 +11,6 @@ import com.jmathanim.Animations.Strategies.ShowCreation.SimpleShapeCreationStrat
 import com.jmathanim.Animations.Strategies.TransformStrategy;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.CanonicalJMPath;
-import com.jmathanim.mathobjects.LaTeXMathObject;
 import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.MultiShapeObject;
 import com.jmathanim.mathobjects.SVGMathObject;
@@ -33,8 +32,14 @@ public class ShowCreation extends Animation {
     private TransformStrategy strategy;
     private int strategyType = METHOD_NONE;
 
-
-    public ShowCreation( double runtime,MathObject mobj) {
+    /**
+     * Creates an animation that shows the creation of the specified
+     * {@link MathObject}
+     *
+     * @param runtime Run time in seconds
+     * @param mobj Mathobject to animate
+     */
+    public ShowCreation(double runtime, MathObject mobj) {
         super(runtime);
         this.mobj = mobj;
     }
@@ -73,7 +78,13 @@ public class ShowCreation extends Animation {
         }
     }
 
-    public void determineCreationStrategy(MathObject mobj) throws NullPointerException, ClassCastException {
+    /**
+     * Determines the strategy to animate the creation of the object
+     *
+     * @param mobj {@link MathObject} which will be animated. Its type
+     * determines the type of animation to perform.
+     */
+    public void determineCreationStrategy(MathObject mobj) {
 
         if (mobj instanceof SVGMathObject) {
             this.strategyType = METHOD_FIRST_DRAW_AND_THEN_FILL;
@@ -85,16 +96,26 @@ public class ShowCreation extends Animation {
         }
         if (mobj instanceof MultiShapeObject) {
             this.strategyType = METHOD_MULTISHAPE_CREATION;
-            return;
         }
 
     }
 
+    /**
+     * Sets the animation strategy
+     *
+     * @param strategyType Strategy, chosen from
+     * {@link METHOD_NONE},{@link METHOD_FIRST_DRAW_AND_THEN_FILL},{@link METHOD_SIMPLE_SHAPE_CREATION}, {@link METHOD_MULTISHAPE_CREATION}
+     */
     public void setStrategy(int strategyType) {
         this.strategyType = strategyType;
     }
 
-    private void createStrategy() {
+    /**
+     * Creates the strategy object
+     *
+     * @throws ClassCastException If the current object cannot be cast to the required class.
+     */
+    private void createStrategy() throws ClassCastException {
         switch (this.strategyType) {
             case METHOD_SIMPLE_SHAPE_CREATION:
                 strategy = new SimpleShapeCreationStrategy((Shape) mobj, this.scene);

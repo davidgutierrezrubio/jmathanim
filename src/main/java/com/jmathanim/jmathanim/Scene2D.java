@@ -14,7 +14,7 @@ import com.jmathanim.Renderers.Java2DRenderer;
  */
 public abstract class Scene2D extends JMathAnimScene {
 
-    protected Java2DRenderer renderer;
+    protected Java2DRenderer renderer2d;
     protected Camera2D camera;
 
 
@@ -26,9 +26,9 @@ public abstract class Scene2D extends JMathAnimScene {
     public void createRenderer(){
         fps = conf.fps;
         dt=1./fps;
-        renderer = new Java2DRenderer(this);
-        camera=renderer.getCamera();
-        super.renderer=renderer;
+        renderer2d = new Java2DRenderer(this);
+        camera=renderer2d.getCamera();
+        super.renderer=renderer2d;
     }
 
    

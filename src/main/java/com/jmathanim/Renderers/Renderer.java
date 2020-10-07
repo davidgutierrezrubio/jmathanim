@@ -27,7 +27,7 @@ public abstract class Renderer {
 
     public abstract void setCamera(Camera c);
 
-    public abstract Camera getCamera();
+    abstract public <T extends Camera> T getCamera();
 
     public abstract Camera getFixedCamera();
 
