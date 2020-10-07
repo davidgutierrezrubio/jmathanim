@@ -43,12 +43,12 @@ In this example, the `setupSketch` method is empty, so the default configuration
 ```java
 Shape s = Shape.square();
 ```
-This command creates a `Shape` object which represents a 2D figure, closed or not. This class has several static, convenience methods to easily create most common shapes.With the method `square`, we create an unit square with lower left corner at (0,0). Note that defining this doesn't add the square to the scene, so for now it won't be drawed.
+This command creates a `Shape` object which represents a 2D figure, closed or not. This class has several static, convenience methods to easily create most common shapes. With the method `square`, we create an unit square with lower left corner at (0,0). Note that defining this doesn't add the square to the scene, so for now it won't be drawed.
 The following method performs most of what is shown when running the program:
 ```java
 play.showCreation(s);
 ```
-This method plays an animation where the square is created. The default duration of this animation is 2 seconds. After the animation ends, the square is added to the scene.
+This method plays an animation showing the square being created, with a default duration of 2 seconds. After the animation ends, the square is added to the scene.
 The following command works in a similar way, except in this case it animates a rotation of the square, rotating it 30 degrees clockwise.
 ```java
 play.rotate(s,30*DEGREES);
