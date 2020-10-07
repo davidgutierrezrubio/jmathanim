@@ -28,95 +28,97 @@ import java.util.List;
 public class PlayAnim {
 
     JMathAnimScene scene;
+    public double defaultRunTimeshowCreation = 2;
+    public double defaultRunTimefadeIn = 1;
+    public double defaultRunTimefadeOut = 1;
+    public double defaultRunTimeGrowIn = 1;
+    public double defaultRunTimeShrinkOut = 1;
+    public double defaultRunTimeHighlight = 2;
 
     public PlayAnim(JMathAnimScene scene) {
         this.scene = scene;
     }
 
-    public void fadeIn(MathObject obj) {
-        fadeIn(obj, 1);
+    public void fadeIn(MathObject... objs) {
+        fadeIn(defaultRunTimefadeIn, objs);
     }
 
-    public void fadeIn(MathObject obj, double runTime) {
-        scene.playAnimation(Commands.fadeIn(obj, runTime));
+    public void fadeIn(double runtime, MathObject... objs) {
+        scene.playAnimation(Commands.fadeIn(runtime, objs));
     }
 
-    public void fadeOut(MathObject obj) {
-        fadeOut(obj, 1);
+    public void fadeOut(MathObject... objs) {
+        fadeOut(defaultRunTimefadeOut, objs);
     }
 
-    public void fadeOut(MathObject obj, double runTime) {
-        scene.playAnimation(Commands.fadeOut(obj, runTime));
+    public void fadeOut(double runtime, MathObject... objs) {
+        scene.playAnimation(Commands.fadeOut(runtime, objs));
     }
 
     public void fadeOutAll() {
-        fadeOutAll(1);
+        fadeOutAll(defaultRunTimefadeOut);
     }
 
-    public void fadeOutAll(double runTime) {
-        ArrayList<Animation> anims = new ArrayList<>();
-        for (MathObject ob : scene.getObjects()) {
-            anims.add(Commands.fadeOut(ob, runTime));
-        }
-        scene.playAnimation(anims);
+    public void fadeOutAll(double runtime) {
+        scene.playAnimation(Commands.fadeOut(runtime, (MathObject[]) scene.getObjects().toArray()));
     }
 
     //Convenience methods
     //This methods allow easy and fast ways to shift, rotate, and scale objects
-    public void shift(MathObject obj, double dx, double dy, double runTime) {
-        scene.playAnimation(Commands.shift(obj, dx, dy, runTime));
+    public void shift(double runtime, double dx, double dy, MathObject... objs) {
+        scene.playAnimation(Commands.shift(runtime, dx, dy, objs));
     }
 
-    public void shift(MathObject obj, Vec v, double runTime) {
-        scene.playAnimation(Commands.shift(obj, v, runTime));
+    public void shift(double runTime, Vec v, MathObject... objs) {
+        scene.playAnimation(Commands.shift(runTime, v, objs));
     }
 
-    public void scale(MathObject obj, Point center, double sc, double runTime) {
-        scale(obj, center, sc, sc, sc, runTime);
+    public void scale(double runTime, Point center, double sc, MathObject... objs) {
+        scale(runTime, center, sc, sc, sc, objs);
     }
 
-    public void scale(MathObject obj, Point center, double scx, double scy, double scz, double runTime) {
-        scene.playAnimation(Commands.scale(obj, center, scx, scy, scz, runTime));
+    public void scale(double runTime, Point center, double scx, double scy, double scz, MathObject... objs) {
+        scene.playAnimation(Commands.scale(runTime, center, scx, scy, scz, objs));
     }
 
-    public void rotate(MathObject obj, double angle, double runTime) {
-        scene.playAnimation(Commands.rotate(obj, obj.getCenter(), angle, runTime));
+    public void rotate(double runTime, double angle, MathObject... objs) {
+        scene.playAnimation(Commands.rotate(runTime, angle, objs));
     }
 
-    public void rotate(MathObject obj, Point center, double angle, double runTime) {
-        scene.playAnimation(Commands.rotate(obj, center, angle, runTime));
+    public void rotate(double runTime, Point center, double angle, MathObject... objs) {
+        scene.playAnimation(Commands.rotate(runTime, center, angle, objs));
     }
 
-    public void transform(Shape obj1, Shape obj2, double runTime) {
-        scene.playAnimation(new Transform(obj1, obj2, runTime));
+    public void transform(double runTime, Shape obj1, Shape obj2) {
+        scene.playAnimation(new Transform(runTime, obj1, obj2));
     }
 
     public void adjustToObjects(MathObject... objs) {
-        adjustToObjects(Arrays.asList(objs), 2);
+        adjustToObjects(2, objs);
     }
 
-    public void adjustToObjects(List<MathObject> objs, double runTime) {
+    public void adjustToObjects(double runTime, MathObject... objs) {
         Rect r = scene.getCamera().getMathView();
         for (MathObject obj : objs) {
-            r = r.union(obj.getBoundingBox().addGap(.1, .1));
+            r = r.union(obj.getBoundingBox().addGap(.1, .1));//TODO: personalize GAP
         }
-        zoomToRect(r, runTime);
+        zoomToRect(runTime, r);
     }
 
-    public void zoomToObjects(List<MathObject> objs, double runTime) {
-        Rect r = objs.get(0).getBoundingBox();
+    public void zoomToObjects(double runTime, MathObject... objs) {
+        Rect r = objs[0].getBoundingBox();
         for (MathObject obj : objs) {
             r = r.union(obj.getBoundingBox());
         }
-        zoomToRect(r, runTime);
+        zoomToRect(runTime, r);
     }
 
-    public void zoomToRect(Camera cam, Rect r, double runTime) {
-        scene.playAnimation(Commands.cameraZoomToRect(cam, r, runTime));
+    public void zoomToRect(double runTime, Camera cam, Rect r) {
+        scene.playAnimation(Commands.cameraZoomToRect(runTime, cam, r));
     }
 
-    public void zoomToRect(Rect r, double runTime) {
-        zoomToRect(scene.getCamera(), r, runTime);
+    public void zoomToRect(double runTime, Rect r) {
+        zoomToRect(runTime, scene.getCamera(), r);
     }
 
     /**
@@ -127,16 +129,16 @@ public class PlayAnim {
      * factor
      * @param runTime Duration in seconds
      */
-    public void scaleCamera(double scale, double runTime) {
-        scaleCamera(scene.getCamera(), scale, runTime);
+    public void scaleCamera(double runTime, double scale) {
+        scaleCamera(runTime, scene.getCamera(), scale);
     }
 
-    public void scaleCamera(Camera cam, double scale, double runTime) {
-        scene.playAnimation(Commands.cameraZoomToRect(cam, cam.getMathView().scaled(scale, scale), runTime));
+    public void scaleCamera(double runTime, Camera cam, double scale) {
+        scene.playAnimation(Commands.cameraZoomToRect(runTime, cam, cam.getMathView().scaled(scale, scale)));
     }
 
     public void shiftCamera(Camera cam, Vec v, double runTime) {
-        scene.playAnimation(Commands.cameraShift(cam, v, runTime));
+        scene.playAnimation(Commands.cameraShift(runTime, cam, v));
     }
 
     /**
@@ -146,7 +148,7 @@ public class PlayAnim {
      * @param runTime Duration in seconds
      */
     public void shiftCamera(Vec v, double runTime) {
-        scene.playAnimation(Commands.cameraShift(scene.getCamera(), v, runTime));
+        scene.playAnimation(Commands.cameraShift(runTime, scene.getCamera(), v));
     }
 
     /**
@@ -158,100 +160,103 @@ public class PlayAnim {
      * @param runTime Duration in seconds
      */
     public void shiftCamera(double x, double y, double runTime) {
-        scene.playAnimation(Commands.cameraShift(scene.getCamera(), new Vec(x, y), runTime));
+        scene.playAnimation(Commands.cameraShift(runTime, scene.getCamera(), new Vec(x, y)));
     }
 
     /**
      * Plays an animation highlighting an object. Scales and unscales this
-     * object for a second. Objects not scalable ({@link Point} for example) are
+     * object for 1 second. Objects not scalable ({@link Point} for example) are
      * not affected.
      *
      * @param mobj Object to highlight
      */
-    public void highlight(MathObject mobj) {
-        scene.playAnimation(new Highlight(mobj));
+    public void highlight(MathObject... mobjs) {
+        scene.playAnimation(new Highlight(defaultRunTimeHighlight, mobjs));
     }
 
     /**
-     * Plays an animation highlighting an object. Scales and unscales this
-     * object for given time. Objects not scalable ({@link Point} for example)
-     * are not affected.
+     * Plays an animation highlighting an object.Scales and unscales this object
+     * for given time. Objects not scalable ({@link Point} for example) are not
+     * affected.
      *
-     * @param mobj Object to highlight
      * @param runTime Duration in seconds
+     * @param mobjs Objects to highlight (varargs)
      */
-    public void highlight(MathObject mobj, double runTime) {
-        scene.playAnimation(new Highlight(mobj, runTime));
+    public void highlight(double runTime, MathObject... mobjs) {
+        scene.playAnimation(new Highlight(runTime, mobjs));
     }
 
     /**
      * Plays an animation to introduce an object into scene.Scaling, rotating
      * and applying alpha from 0 to current.
      *
-     * @param mobj Object to animate
      * @param angle Angle in radians
+     * @param mobjs Objects to animate (varargs)
      * @param runTime Duration in seconds
      */
-    public void growIn(MathObject mobj, double angle, double runTime) {
-        scene.playAnimation(Commands.growIn(mobj, angle, runTime));
+    public void growIn(double runTime, double angle, MathObject... mobjs) {
+        scene.playAnimation(Commands.growIn(runTime, angle, mobjs));
     }
 
     /**
-     * Plays an animation to introduce an object into scene. Scaling and
-     * applying alpha from 0 to current.
+     * Plays an animation to introduce an object into scene.Scaling and applying
+     * alpha from 0 to current.
      *
-     * @param mobj Object to animate
+     * @param mobjs Objects to animate (varargs)
      * @param runTime Duration in seconds
      */
-    public void growIn(MathObject mobj, double runTime) {
-        scene.playAnimation(Commands.growIn(mobj, runTime));
+    public void growIn(double runTime, MathObject... mobjs) {
+        scene.playAnimation(Commands.growIn(runTime, mobjs));
     }
 
     /**
-     * Convenience method. Plays an animation to introduce an object into scene.
+     * Convenience method.Plays an animation to introduce an object into scene.
      * Scaling and applying alpha from 0 to current. Duration of the animation
      * is 2 seconds.
      *
-     * @param mobj Object to animate
+     * @param mobjs Objects to animate (varargs)
      */
-    public void growIn(MathObject mobj) {
-        growIn(mobj, 2);
+    public void growIn(MathObject... mobjs) {
+        growIn(defaultRunTimeGrowIn, mobjs);
     }
 
     /**
-     * Plays an animation to remove an object from a scene. Scaling and applying
-     * alpha from current to 0. Object is removed from scene after finishing
-     * animation.
+     * Plays an animation that reduces the size and alpha of the
+     * {@link MathObject}.A rotation of a given angle is performed
+     * meanwhile.After finishing the animation, object is removed from the
+     * current scene.
      *
-     * @param mobj Object to animate
+     * @param runTime Duration in seconds
      * @param angle Angle in radians
-     * @param runTime Duration in seconds
-     */
-    public void shrinkOut(MathObject mobj, double angle, double runTime) {
-        scene.playAnimation(Commands.shrinkOut(mobj, angle, runTime));
-    }
-
-    /**
-     * Plays an animation to remove an object from a scene. Scaling and applying
-     * alpha from current to 0. Object is removed from scene after finishing
-     * animation.
+     * @param mobjs Objects to animate (varargs)
      *
-     * @param mobj Object to animate
-     * @param runTime Duration in seconds
      */
-    public void shrinkOut(MathObject mobj, double runTime) {
-        scene.playAnimation(Commands.shrinkOut(mobj, runTime));
+    public void shrinkOut(double runTime, double angle, MathObject... mobjs) {
+        scene.playAnimation(Commands.shrinkOut(runTime, angle, mobjs));
     }
 
     /**
-     * Convenience method. Plays an animation to remove an object from a scene.
-     * Scaling and applying alpha from current to 0, with 1 second duration.
-     * Object is removed from scene after finishing animation.
+     * Plays an animation that reduces the size and alpha of the
+     * {@link MathObject}.After finishing the animation, object is removed from
+     * the current scene.
+     *
+     * @param runTime Duration in seconds
+     * @param mobjs Objects to animate (varargs)
+     */
+    public void shrinkOut(double runTime, MathObject... mobjs) {
+        scene.playAnimation(Commands.shrinkOut(runTime, 0, mobjs));
+    }
+
+    /**
+     * Convenience method. Plays an animation that reduces the size and alpha of
+     * the {@link MathObject}, with a duration of 1 second.After finishing the
+     * animation, object is removed from the current scene.
      *
      * @param mobj Object to animate
      */
     public void shrinkOut(MathObject mobj) {
-        shrinkOut(mobj, 1);
+        shrinkOut(defaultRunTimeShrinkOut, mobj);
+
     }
 
     /**
@@ -265,8 +270,12 @@ public class PlayAnim {
      *
      * @param mobj
      */
-    public void showCreation(MathObject mobj, double runtime) {
-        scene.playAnimation(new ShowCreation(mobj, runtime));
+    public void showCreation(double runtime, MathObject... mobjects) {
+        ArrayList<Animation> anims = new ArrayList<>();
+        for (MathObject obj : mobjects) {
+            anims.add(new ShowCreation(runtime, obj));
+        }
+        scene.playAnimation(anims);
     }
 
     /**
@@ -275,7 +284,7 @@ public class PlayAnim {
      *
      * @param mobj
      */
-    public void showCreation(MathObject mobj) {
-        scene.playAnimation(new ShowCreation(mobj, 2));
+    public void showCreation(MathObject... mobjs) {
+        showCreation(defaultRunTimeshowCreation, mobjs);
     }
 }

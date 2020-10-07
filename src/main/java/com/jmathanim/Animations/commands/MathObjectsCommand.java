@@ -13,17 +13,17 @@ import com.jmathanim.mathobjects.MathObject;
  *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
-public abstract class SingleMathObjectCommand extends AbstractCommand {
+public abstract class MathObjectsCommand extends AbstractCommand {
 
-    protected MathObject mathObject;
+    protected MathObject[] mathObjects;
 
-    public SingleMathObjectCommand(MathObject mathObject) {
-        this.mathObject = mathObject;
+    public MathObjectsCommand(MathObject...mathObjects) {
+        this.mathObjects = mathObjects;
     }
 
     @Override
     public void addObjectsToScene(JMathAnimScene scene) {
-        scene.add(mathObject);
+        scene.add(mathObjects);
     }
 
 }

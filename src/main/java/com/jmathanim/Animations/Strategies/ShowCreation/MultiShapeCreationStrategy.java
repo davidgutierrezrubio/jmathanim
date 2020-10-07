@@ -26,7 +26,7 @@ public class MultiShapeCreationStrategy extends TransformStrategy {
     private final MultiShapeObject shapes;
     private final ArrayList<Concatenate> creators;
 
-    public MultiShapeCreationStrategy(MultiShapeObject shapes,  double timegap, double runtime,JMathAnimScene scene) {
+    public MultiShapeCreationStrategy(MultiShapeObject shapes, double timegap, double runtime, JMathAnimScene scene) {
         super(scene);
         this.timegap = timegap;
         this.runtime = runtime;
@@ -42,7 +42,7 @@ public class MultiShapeCreationStrategy extends TransformStrategy {
         for (Shape sh : shapes.shapes) {
             this.scene.remove(sh);
             WaitAnimation wait = new WaitAnimation(this.timegap * n);
-            ShowCreation cr = new ShowCreation(sh, realRuntime);
+            ShowCreation cr = new ShowCreation(realRuntime, sh);
             Concatenate anim = new Concatenate();
             anim.add(wait);
             anim.add(cr);
@@ -53,10 +53,9 @@ public class MultiShapeCreationStrategy extends TransformStrategy {
     }
 
     @Override
-    public void applyTransform(double t,double lt) {
-        for (Animation anim:creators)
-        {
-            anim.doAnim(t,lt);
+    public void applyTransform(double t, double lt) {
+        for (Animation anim : creators) {
+            anim.doAnim(t, lt);
         }
     }
 
@@ -66,7 +65,7 @@ public class MultiShapeCreationStrategy extends TransformStrategy {
 //        {
 //            anim.finishAnimation();
 //        }
-       scene.add(shapes);
+        scene.add(shapes);
     }
 
     @Override

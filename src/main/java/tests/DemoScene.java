@@ -108,19 +108,18 @@ public class DemoScene extends Scene2D {
 //        play.transform(c, r, 3);
 //        waitSeconds(5);
 //        play.fadeOutAll();
-        
+
         //Slide 7
         System.out.println("Slide 7");
 //        commandText = createCommandText("{\\tt dark.xml vs light.xml}");
-         Shape r1= Shape.regularPolygon(5).stackTo(Anchor.BY_CENTER).thickness(2).drawColor(JMColor.hex("#008891"));
-         Shape r2 = Shape.regularPolygon(5).scale(.5).stackTo(Anchor.BY_CENTER).thickness(2).drawColor(JMColor.hex("#00587a"));
+        Shape r1 = Shape.regularPolygon(5).stackTo(Anchor.BY_CENTER).thickness(2).drawColor(JMColor.hex("#008891"));
+        Shape r2 = Shape.regularPolygon(5).scale(.5).stackTo(Anchor.BY_CENTER).thickness(2).drawColor(JMColor.hex("#00587a"));
         play.growIn(r1);
-        sc2 = new ShowCreation(r2, 2);
-        playAnimation(sc2);
+        play.showCreation(r2);
         description = createDescription("A shadow effect is included (CPU expensive though!)");
-        ApplyCommand rot1 = Commands.rotate(r1, new Point(0,0), PI, 10);
-        ApplyCommand rot2 = Commands.rotate(r2, new Point(0,0), -PI, 10);
-        playAnimation(rot1,rot2);
+        ApplyCommand rot1 = Commands.rotate(10, new Point(0, 0), PI, r1);
+        ApplyCommand rot2 = Commands.rotate(10, new Point(0, 0), -PI, r2);
+        playAnimation(rot1, rot2);
         waitSeconds(5);
         play.fadeOutAll();
 
@@ -129,15 +128,15 @@ public class DemoScene extends Scene2D {
     private void makeTitle() {
         LaTeXMathObject title = new LaTeXMathObject("JMathAnim demo");
         title.stackTo(Anchor.BY_CENTER);
-        play.growIn(title, PI / 10, 2);
+        play.growIn(2, PI / 10, title);
         waitSeconds(3);
-        play.shrinkOut(title, -PI / 10, 2);
+        play.shrinkOut(2, -PI / 10, title);
         waitSeconds(1);
     }
 
     private LaTeXMathObject createDescription(String text) {
         LaTeXMathObject latex = new LaTeXMathObject(text);
-        playAnimation(new ShowCreation(latex.scale(.5).stackTo(Anchor.UPPER, .1, .1), 2));
+        play.showCreation(latex.scale(.5).stackTo(Anchor.UPPER, .1, .1));
         return latex;
     }
 

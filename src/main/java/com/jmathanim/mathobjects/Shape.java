@@ -283,7 +283,7 @@ public class Shape extends MathObject {
     public static Shape circle() {
         Shape obj = new Shape();
         double x1, y1;
-        int numSegments=4;
+        int numSegments=20;
         double step = Math.PI * 2 / numSegments;
         double cte = 4d/3*Math.tan(.5*Math.PI/numSegments);
         for (double alphaC = 0; alphaC < 2 * Math.PI; alphaC += step) {

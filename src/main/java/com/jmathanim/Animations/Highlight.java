@@ -18,15 +18,10 @@ public class Highlight extends Animation {
 
     ApplyCommand scale;
     public double standOutFactor = 1.1;
-    public static double defaultStandOutTime = 2;
 
-    public Highlight(MathObject obj, double runTime) {
+    public Highlight(double runTime, MathObject... objs) {
         super(runTime);
-        scale = Commands.scale(obj, obj.getCenter(), standOutFactor, 1);
-    }
-
-    public Highlight(MathObject obj) {
-        this(obj, defaultStandOutTime);
+        scale = Commands.scale(1, null, standOutFactor, objs);
     }
 
     @Override
@@ -35,15 +30,15 @@ public class Highlight extends Animation {
     }
 
     @Override
-    public void doAnim(double t,double lt) {
+    public void doAnim(double t, double lt) {
         double tt = 4 * t * (1 - t);
         double ltt = 4 * lt * (1 - lt);
-        scale.doAnim(tt,ltt);
+        scale.doAnim(tt, ltt);
     }
 
     @Override
     public void finishAnimation() {
-        scale.doAnim(0,0);
+        scale.doAnim(0, 0);
     }
 
     @Override

@@ -39,7 +39,7 @@ public class Transform extends Animation {
     private TransformStrategy strategy;
     
 
-    public Transform(Shape ob1, Shape ob2, double runTime) {
+    public Transform( double runTime,Shape ob1, Shape ob2) {
         super(runTime);
         mobjTransformed = ob1;
         mobjDestiny = ob2.copy();

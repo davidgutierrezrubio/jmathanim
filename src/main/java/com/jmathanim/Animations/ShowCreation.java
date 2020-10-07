@@ -33,11 +33,8 @@ public class ShowCreation extends Animation {
     private TransformStrategy strategy;
     private int strategyType = METHOD_NONE;
 
-    public ShowCreation(MathObject mobj) {
-        this(mobj,2);
-    }
 
-    public ShowCreation(MathObject mobj, double runtime) {
+    public ShowCreation( double runtime,MathObject mobj) {
         super(runtime);
         this.mobj = mobj;
     }

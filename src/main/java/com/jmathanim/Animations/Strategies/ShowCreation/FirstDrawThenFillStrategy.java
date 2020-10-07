@@ -14,7 +14,6 @@ import com.jmathanim.Animations.commands.Commands;
 import com.jmathanim.Animations.WaitAnimation;
 import com.jmathanim.Utils.MathObjectDrawingProperties;
 import com.jmathanim.jmathanim.JMathAnimScene;
-import com.jmathanim.mathobjects.LaTeXMathObject;
 import com.jmathanim.mathobjects.MultiShapeObject;
 import com.jmathanim.mathobjects.Shape;
 import java.util.ArrayList;
@@ -36,7 +35,7 @@ public class FirstDrawThenFillStrategy extends TransformStrategy {
     private final double timegap;
     private double realRuntime;
 
-    public FirstDrawThenFillStrategy(MultiShapeObject obj, double percentGap,double runtime, JMathAnimScene scene) {
+    public FirstDrawThenFillStrategy(MultiShapeObject obj, double percentGap, double runtime, JMathAnimScene scene) {
         super(scene);
         this.obj = obj;
         animations = new ArrayList<>();
@@ -47,8 +46,7 @@ public class FirstDrawThenFillStrategy extends TransformStrategy {
     @Override
     public void prepareObjects() {
         this.realRuntime = this.runtime - this.timegap * obj.shapes.size();
-        if (this.realRuntime<=0)
-        {
+        if (this.realRuntime <= 0) {
             JMathAnimScene.logger.warn("Warning, computed runtime negative for FirstDrawThenFillStrategy. Nothing will be shown");
         }
         double dt = 0;
@@ -56,11 +54,11 @@ public class FirstDrawThenFillStrategy extends TransformStrategy {
             Concatenate anim = new Concatenate();
             anim.add(new WaitAnimation(dt));
             dt += this.timegap;
-            final ShowCreation cr = new ShowCreation(s, PERCENT_TO_DIVIDE_ANIMATION * realRuntime);
+            final ShowCreation cr = new ShowCreation(PERCENT_TO_DIVIDE_ANIMATION * realRuntime,s);
             anim.add(cr);
             MathObjectDrawingProperties mpBase = s.mp.copy();
             s.mp.fillColor.alpha = 0;
-            final ApplyCommand st = Commands.setMP(s, mpBase, (1 - PERCENT_TO_DIVIDE_ANIMATION) * realRuntime);
+            final ApplyCommand st = Commands.setMP((1 - PERCENT_TO_DIVIDE_ANIMATION) * realRuntime, mpBase, s);
             anim.add(st);
             animations.add(anim);
             anim.initialize();
@@ -70,9 +68,9 @@ public class FirstDrawThenFillStrategy extends TransformStrategy {
     }
 
     @Override
-    public void applyTransform(double t,double lt) {
+    public void applyTransform(double t, double lt) {
         for (Animation anim : animations) {
-            anim.doAnim(t,lt);
+            anim.doAnim(t, lt);
         }
     }
 
@@ -82,10 +80,10 @@ public class FirstDrawThenFillStrategy extends TransformStrategy {
             anim.finishAnimation();
         }
         //Remove all subelements and returns to the whole multipath object
-         for (Shape s : obj.shapes) {
-             scene.remove(s);
-         }
-         scene.add(obj);
+        for (Shape s : obj.shapes) {
+            scene.remove(s);
+        }
+        scene.add(obj);
     }
 
     @Override
