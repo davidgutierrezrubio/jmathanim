@@ -5,27 +5,17 @@
  */
 package tests;
 
-import com.jmathanim.Animations.ApplyCommand;
-import com.jmathanim.Animations.Concatenate;
-import com.jmathanim.Animations.ShowCreation;
-import com.jmathanim.Animations.Strategies.ShowCreation.FirstDrawThenFillStrategy;
-import static com.jmathanim.Animations.Strategies.ShowCreation.FirstDrawThenFillStrategy.PERCENT_TO_DIVIDE_ANIMATION;
-import com.jmathanim.Animations.WaitAnimation;
 import com.jmathanim.Animations.commands.Commands;
 import com.jmathanim.Utils.Anchor;
-import com.jmathanim.Utils.ConfigLoader;
 import com.jmathanim.Utils.JMColor;
 import com.jmathanim.Utils.JMathAnimConfig;
-import com.jmathanim.Utils.MathObjectDrawingProperties;
 import com.jmathanim.jmathanim.Scene2D;
-import com.jmathanim.mathobjects.Arrow2D;
 import com.jmathanim.mathobjects.CanonicalJMPath;
 import com.jmathanim.mathobjects.JMPath;
 import com.jmathanim.mathobjects.LaTeXMathObject;
 import com.jmathanim.mathobjects.Line;
 import com.jmathanim.mathobjects.MultiShapeObject;
 import com.jmathanim.mathobjects.Point;
-import com.jmathanim.mathobjects.SVGMathObject;
 import com.jmathanim.mathobjects.Shape;
 import java.util.ArrayList;
 
