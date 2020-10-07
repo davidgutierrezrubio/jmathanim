@@ -34,32 +34,31 @@ import java.util.ArrayList;
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
 public class myScene extends Scene2D {
-
+    
     @Override
     public void setupSketch() {
 //        conf.setResourcesDir(".");
-        conf.setOutputDir("c:\\media");
+//        conf.setOutputDir("c:\\media");
 //        ConfigLoader.parseFile("production.xml");
-        ConfigLoader.parseFile("preview.xml");
-        ConfigLoader.parseFile("dark.xml");
+//        ConfigLoader.parseFile("preview.xml");
+//        ConfigLoader.parseFile("dark.xml");
 //        conf.setHighQuality();
     }
-
+    
     @Override
     public void runSketch() {
-        SVGMathObject s = new SVGMathObject("c:\\media\\inkscape\\dibujo.svg");
-        s.stackTo(Anchor.BY_CENTER);
-        JMPath c = s.get(0).getPath();
+//        SVGMathObject s = new SVGMathObject("c:\\media\\inkscape\\dibujo.svg");
+        Shape s = Shape.square();
+//        s.stackTo(Anchor.BY_CENTER);
+//        JMPath c = s.get(0).getPath();
 //        s.get(0).style("default");
-        add(s);
-        play.adjustToObjects(s);
-        final ShowCreation sc = new ShowCreation(s, 5);
-//        sc.setStrategy(ShowCreation.METHOD_SIMPLE_SHAPE_CREATION);
-        playAnimation(sc);
+//        add(s);
+//        play.adjustToObjects(s);
 //        camera.scale(3);
+        play.showCreation(s);
         waitSeconds(5);
     }
-
+    
     private void creationMultishape() {
         Shape c = Shape.circle();
         Shape sq = Shape.square();
@@ -69,12 +68,12 @@ public class myScene extends Scene2D {
         m.addShape(sq);
         m.addShape(tr);
         final ShowCreation sc = new ShowCreation(m, 2);
-
+        
         playAnimation(sc);
-
+        
         waitSeconds(5);
     }
-
+    
     private void createLatex() {
         LaTeXMathObject t = new LaTeXMathObject("This is a test of how much a long paragraph should be drawn");
 //        LaTeXMathObject t = new LaTeXMathObject("$$\\int_0^\\infty x\\,dx\\geq\\pi$$");
@@ -84,7 +83,7 @@ public class myScene extends Scene2D {
         playAnimation(sc);
         waitSeconds(5);
     }
-
+    
     public void circuloCanonical() {
         Shape c = Shape.circle();//.rotate(180*DEGREES);
         CanonicalJMPath canonicalForm = c.getPath().canonicalForm();
@@ -101,7 +100,7 @@ public class myScene extends Scene2D {
         }
         waitSeconds(5);
     }
-
+    
     private void lineToSegment() {
         Line l = Line.XYBisector();
 //        add(l);
@@ -110,7 +109,7 @@ public class myScene extends Scene2D {
         play.transform(Shape.segment(l), s, 5);
         waitSeconds(3);
     }
-
+    
     public void theBigB() {
         LaTeXMathObject B = new LaTeXMathObject("B");
         CanonicalJMPath ms = B.shapes.get(0).getPath().canonicalForm();//.createMultiShape(B.mp.copy());
@@ -137,7 +136,7 @@ public class myScene extends Scene2D {
 //        }
         waitSeconds(5);
     }
-
+    
     private void transformAxes() {
         //Create axis
         MultiShapeObject axes = new MultiShapeObject();
@@ -165,5 +164,5 @@ public class myScene extends Scene2D {
 
         waitSeconds(3);
     }
-
+    
 }

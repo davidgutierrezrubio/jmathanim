@@ -10,8 +10,11 @@ import com.jmathanim.Cameras.Camera;
 import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
+import com.jmathanim.mathobjects.LaTeXMathObject;
 import com.jmathanim.mathobjects.MathObject;
+import com.jmathanim.mathobjects.MultiShapeObject;
 import com.jmathanim.mathobjects.Point;
+import com.jmathanim.mathobjects.SVGMathObject;
 import com.jmathanim.mathobjects.Shape;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -23,33 +26,33 @@ import java.util.List;
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
 public class PlayAnim {
-    
+
     JMathAnimScene scene;
-    
+
     public PlayAnim(JMathAnimScene scene) {
         this.scene = scene;
     }
-    
+
     public void fadeIn(MathObject obj) {
         fadeIn(obj, 1);
     }
-    
+
     public void fadeIn(MathObject obj, double runTime) {
         scene.playAnimation(Commands.fadeIn(obj, runTime));
     }
-    
+
     public void fadeOut(MathObject obj) {
         fadeOut(obj, 1);
     }
-    
+
     public void fadeOut(MathObject obj, double runTime) {
         scene.playAnimation(Commands.fadeOut(obj, runTime));
     }
-    
+
     public void fadeOutAll() {
         fadeOutAll(1);
     }
-    
+
     public void fadeOutAll(double runTime) {
         ArrayList<Animation> anims = new ArrayList<>();
         for (MathObject ob : scene.getObjects()) {
@@ -63,33 +66,35 @@ public class PlayAnim {
     public void shift(MathObject obj, double dx, double dy, double runTime) {
         scene.playAnimation(Commands.shift(obj, dx, dy, runTime));
     }
-    
+
     public void shift(MathObject obj, Vec v, double runTime) {
         scene.playAnimation(Commands.shift(obj, v, runTime));
     }
-    
+
     public void scale(MathObject obj, Point center, double sc, double runTime) {
         scale(obj, center, sc, sc, sc, runTime);
     }
-    
+
     public void scale(MathObject obj, Point center, double scx, double scy, double scz, double runTime) {
         scene.playAnimation(Commands.scale(obj, center, scx, scy, scz, runTime));
     }
-    
+
     public void rotate(MathObject obj, double angle, double runTime) {
         scene.playAnimation(Commands.rotate(obj, obj.getCenter(), angle, runTime));
     }
-    
+
     public void rotate(MathObject obj, Point center, double angle, double runTime) {
         scene.playAnimation(Commands.rotate(obj, center, angle, runTime));
     }
-    
+
     public void transform(Shape obj1, Shape obj2, double runTime) {
         scene.playAnimation(new Transform(obj1, obj2, runTime));
     }
-    public void adjustToObjects(MathObject...objs) {
-        adjustToObjects(Arrays.asList(objs),2);
+
+    public void adjustToObjects(MathObject... objs) {
+        adjustToObjects(Arrays.asList(objs), 2);
     }
+
     public void adjustToObjects(List<MathObject> objs, double runTime) {
         Rect r = scene.getCamera().getMathView();
         for (MathObject obj : objs) {
@@ -97,7 +102,7 @@ public class PlayAnim {
         }
         zoomToRect(r, runTime);
     }
-    
+
     public void zoomToObjects(List<MathObject> objs, double runTime) {
         Rect r = objs.get(0).getBoundingBox();
         for (MathObject obj : objs) {
@@ -105,11 +110,11 @@ public class PlayAnim {
         }
         zoomToRect(r, runTime);
     }
-    
+
     public void zoomToRect(Camera cam, Rect r, double runTime) {
         scene.playAnimation(Commands.cameraZoomToRect(cam, r, runTime));
     }
-    
+
     public void zoomToRect(Rect r, double runTime) {
         zoomToRect(scene.getCamera(), r, runTime);
     }
@@ -125,11 +130,11 @@ public class PlayAnim {
     public void scaleCamera(double scale, double runTime) {
         scaleCamera(scene.getCamera(), scale, runTime);
     }
-    
+
     public void scaleCamera(Camera cam, double scale, double runTime) {
         scene.playAnimation(Commands.cameraZoomToRect(cam, cam.getMathView().scaled(scale, scale), runTime));
     }
-    
+
     public void shiftCamera(Camera cam, Vec v, double runTime) {
         scene.playAnimation(Commands.cameraShift(cam, v, runTime));
     }
@@ -247,5 +252,30 @@ public class PlayAnim {
      */
     public void shrinkOut(MathObject mobj) {
         shrinkOut(mobj, 1);
+    }
+
+    /**
+     * Plays an animation drawing a {@link MathObject}. The object drawn is
+     * added to the current scene. Several strategies to create the object are
+     * automatically chosen: For a simple shape, draws the shape. For a
+     * {@link MultiShapeObject} performs a simple shape creation for each shape,
+     * with a time gap between one and the next. For a {@link SVGMathObject}
+     * (which includes {@link LaTeXMathObject}) a "first draw, then fill"
+     * strategy is chosen.
+     *
+     * @param mobj
+     */
+    public void showCreation(MathObject mobj, double runtime) {
+        scene.playAnimation(new ShowCreation(mobj, runtime));
+    }
+
+    /**
+     * Convenience overloaded method. Plays an animation drawing a
+     * {@link MathObject} with runtime of 2 seconds.
+     *
+     * @param mobj
+     */
+    public void showCreation(MathObject mobj) {
+        scene.playAnimation(new ShowCreation(mobj, 2));
     }
 }

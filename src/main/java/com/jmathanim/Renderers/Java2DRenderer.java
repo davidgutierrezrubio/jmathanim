@@ -7,7 +7,6 @@ import com.jmathanim.Utils.JMathAnimConfig;
 import com.jmathanim.Utils.MathObjectDrawingProperties;
 import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.Vec;
-import com.jmathanim.Utils.jhlabs.ShadowFilter;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.jmathanim.PreviewWindow;
 import com.jmathanim.mathobjects.Shape;
@@ -391,27 +390,27 @@ public class Java2DRenderer extends Renderer {
 
     public BufferedImage computeShadow(BufferedImage img) {
         BufferedImage resul = new BufferedImage(width, height, BufferedImage.TRANSLUCENT);
-//        ColorModel cm = img.getColorModel();
-//        boolean isAlphaPremultiplied = cm.isAlphaPremultiplied();
-//        WritableRaster raster = img.copyData(null);
-//        resul = new BufferedImage(cm, raster, isAlphaPremultiplied, null);
-
-        int[] imagePixels = img.getRGB(0, 0, width, height, null, 0, width);
-        for (int i = 0; i < imagePixels.length; i++) {
-            int color = imagePixels[i];// & 0xff000000;
-            color = (int) ((color >> 56) * cnf.shadowAlpha) << 56;//TODO: Check this
-
-            imagePixels[i] = color;
-        }
-
-        resul.setRGB(0, 0, width, height, imagePixels, 0, width);
-//        if (ConvolveShadowOp != null) {
-//            resul = ConvolveShadowOp.filter(resul, null);
+////        ColorModel cm = img.getColorModel();
+////        boolean isAlphaPremultiplied = cm.isAlphaPremultiplied();
+////        WritableRaster raster = img.copyData(null);
+////        resul = new BufferedImage(cm, raster, isAlphaPremultiplied, null);
+//
+//        int[] imagePixels = img.getRGB(0, 0, width, height, null, 0, width);
+//        for (int i = 0; i < imagePixels.length; i++) {
+//            int color = imagePixels[i];// & 0xff000000;
+//            color = (int) ((color >> 56) * cnf.shadowAlpha) << 56;//TODO: Check this
+//
+//            imagePixels[i] = color;
 //        }
-        ShadowFilter fil = new ShadowFilter(cnf.shadowKernelSize, cnf.shadowOffsetX, cnf.shadowOffsetY, cnf.shadowAlpha);
-        fil.setShadowOnly(true);
-//        GaussianFilter fil = new GaussianFilter(cnf.shadowKernelSize);
-        resul = fil.filter(img, null);
+//
+//        resul.setRGB(0, 0, width, height, imagePixels, 0, width);
+////        if (ConvolveShadowOp != null) {
+////            resul = ConvolveShadowOp.filter(resul, null);
+////        }
+//        ShadowFilter fil = new ShadowFilter(cnf.shadowKernelSize, cnf.shadowOffsetX, cnf.shadowOffsetY, cnf.shadowAlpha);
+//        fil.setShadowOnly(true);
+////        GaussianFilter fil = new GaussianFilter(cnf.shadowKernelSize);
+//        resul = fil.filter(img, null);
         return resul;
     }
 

@@ -41,8 +41,8 @@ public class JMathAnimConfig {
     private Renderer renderer;
     private Camera camera;
 
-    public boolean createMovie;
-    public boolean showPreview;
+    public boolean createMovie=false;
+    public boolean showPreview=true;
     private final HashMap<String, MathObjectDrawingProperties> styles;
 
     public static JMathAnimConfig getConfig() {

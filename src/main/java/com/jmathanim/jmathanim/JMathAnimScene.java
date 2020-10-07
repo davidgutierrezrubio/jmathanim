@@ -5,6 +5,7 @@
  */
 package com.jmathanim.jmathanim;
 
+import ch.qos.logback.classic.Level;
 import com.jmathanim.Animations.Animation;
 import com.jmathanim.Animations.PlayAnim;
 import com.jmathanim.Cameras.Camera;
