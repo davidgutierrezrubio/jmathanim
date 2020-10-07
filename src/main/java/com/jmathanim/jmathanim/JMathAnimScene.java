@@ -25,7 +25,7 @@ public abstract class JMathAnimScene {
 
     public final static Logger logger = LoggerFactory.getLogger("com.jmathanim.jmathanim.JMathAnimScene");
     public static final double PI = 3.14159265358979323846;
-    public static final double DEGREES=PI/180;
+    public static final double DEGREES = PI / 180;
     int contador = 0;
     int x;
     final ArrayList<MathObject> objects;
@@ -201,17 +201,19 @@ public abstract class JMathAnimScene {
      */
     public void playAnimation(ArrayList<Animation> anims) {
         for (Animation anim : anims) {
-            anim.initialize();//Perform needed steps immediately before playing
-            anim.addObjectsToScene(this); //Add necessary objects if not already in the scene.
+            if (anim != null) {
+                anim.initialize();//Perform needed steps immediately before playing
+                anim.addObjectsToScene(this); //Add necessary objects if not already in the scene.
+            }
         }
 
         boolean finished = false;
         while (!finished) {
             finished = true;
             for (Animation anim : anims) {
-                finished = finished & anim.processAnimation(fps);
-//                Java2DRenderer r = (Java2DRenderer) SCRenderer;
-//            r.debugText("t: " + anims.get(0).mobj, 10, 10);
+                if (anim != null) {
+                    finished = finished & anim.processAnimation(fps);
+                }
             }
 
             advanceFrame();

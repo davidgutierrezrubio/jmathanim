@@ -47,14 +47,14 @@ public class myScene extends Scene2D {
 
     @Override
     public void runSketch() {
-        SVGMathObject s=new SVGMathObject("c:\\media\\inkscape\\dibujo.svg");
+        SVGMathObject s = new SVGMathObject("c:\\media\\inkscape\\dibujo.svg");
         s.stackTo(Anchor.BY_CENTER);
         JMPath c = s.get(0).getPath();
 //        s.get(0).style("default");
         add(s);
         play.adjustToObjects(s);
-        final ShowCreation sc = new ShowCreation(s,5);
-//        sc.setStrategy(new FirstDrawThenFillStrategy(s, .5, 5, this));
+        final ShowCreation sc = new ShowCreation(s, 5);
+//        sc.setStrategy(ShowCreation.METHOD_SIMPLE_SHAPE_CREATION);
         playAnimation(sc);
 //        camera.scale(3);
         waitSeconds(5);
@@ -69,7 +69,7 @@ public class myScene extends Scene2D {
         m.addShape(sq);
         m.addShape(tr);
         final ShowCreation sc = new ShowCreation(m, 2);
-        
+
         playAnimation(sc);
 
         waitSeconds(5);

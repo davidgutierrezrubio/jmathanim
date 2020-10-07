@@ -23,10 +23,15 @@ import com.jmathanim.mathobjects.Shape;
  */
 public class ShowCreation extends Animation {
 
+    public static final int METHOD_NONE = 0;
+    public static final int METHOD_FIRST_DRAW_AND_THEN_FILL = 1;
+    public static final int METHOD_SIMPLE_SHAPE_CREATION = 2;
+    public static final int METHOD_MULTISHAPE_CREATION = 3;
     MathObject mobj;
     CanonicalJMPath canonPath;
     private MultiShapeObject msh;
     private TransformStrategy strategy;
+    private int strategyType = METHOD_NONE;
 
     public ShowCreation(Shape mobj) {
         super();
@@ -40,11 +45,14 @@ public class ShowCreation extends Animation {
 
     @Override
     public void initialize() {
-        if (strategy == null) {
-            determineCreationStrategy(this.mobj);
-        }
-        if (strategy != null) {
+        try {
+            if (strategyType == METHOD_NONE) {
+                determineCreationStrategy(this.mobj);
+                createStrategy();
+            }
             strategy.prepareObjects();
+        } catch (NullPointerException | ClassCastException e) {
+            JMathAnimScene.logger.error("Couldn't create ShowCreation strategy. Animation will not be done." + e.getLocalizedMessage());
         }
     }
 
@@ -64,32 +72,49 @@ public class ShowCreation extends Animation {
 
     @Override
     public void addObjectsToScene(JMathAnimScene scene) {
-        strategy.addObjectsToScene();
+        if (strategy != null) {
+            strategy.addObjectsToScene();
+        }
     }
 
-    public TransformStrategy determineCreationStrategy(MathObject mobj) {
+    public void determineCreationStrategy(MathObject mobj) throws NullPointerException, ClassCastException {
 
         if (mobj instanceof SVGMathObject) {
-            strategy = new FirstDrawThenFillStrategy((MultiShapeObject) mobj, .5, this.runTime, this.scene);
-            JMathAnimScene.logger.info("ShowCreation method: FirstDrawThenFillStrategy");
-            return strategy;
+            this.strategyType = METHOD_FIRST_DRAW_AND_THEN_FILL;
+            return;
         }
         if (mobj instanceof Shape) {
-            strategy = new SimpleShapeCreationStrategy((Shape) mobj, this.scene);
-            JMathAnimScene.logger.info("ShowCreation method: SimpleShapeCreationStrategy");
-            return strategy;
+            this.strategyType = METHOD_SIMPLE_SHAPE_CREATION;
+            return;
         }
         if (mobj instanceof MultiShapeObject) {
-            strategy = new MultiShapeCreationStrategy((MultiShapeObject) mobj, .5, this.runTime, this.scene);
-            JMathAnimScene.logger.info("ShowCreation method: MultiShapeCreationStrategy");
-            return strategy;
+            this.strategyType = METHOD_MULTISHAPE_CREATION;
+            return;
         }
-        return strategy;
 
     }
 
-    public void setStrategy(TransformStrategy strategy) {
-        this.strategy = strategy;
+    public void setStrategy(int strategyType) {
+        this.strategyType = strategyType;
+    }
+
+    private void createStrategy() {
+        switch (this.strategyType) {
+            case METHOD_SIMPLE_SHAPE_CREATION:
+                strategy = new SimpleShapeCreationStrategy((Shape) mobj, this.scene);
+                JMathAnimScene.logger.info("ShowCreation method: SimpleShapeCreationStrategy");
+                break;
+            case METHOD_MULTISHAPE_CREATION:
+                strategy = new MultiShapeCreationStrategy((MultiShapeObject) mobj, .5, this.runTime, this.scene);
+                JMathAnimScene.logger.info("ShowCreation method: MultiShapeCreationStrategy");
+                break;
+            case METHOD_FIRST_DRAW_AND_THEN_FILL:
+                strategy = new FirstDrawThenFillStrategy((MultiShapeObject) mobj, .5, this.runTime, this.scene);
+                JMathAnimScene.logger.info("ShowCreation method: FirstDrawThenFillStrategy");
+                break;
+            default:
+                break;
+        }
     }
 
 }
