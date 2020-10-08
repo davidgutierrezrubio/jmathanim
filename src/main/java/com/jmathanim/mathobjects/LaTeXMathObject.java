@@ -36,6 +36,16 @@ public class LaTeXMathObject extends SVGMathObject {
     //This factor represents % of height relative to the screen that a "X" character has
     public static final double DEFAULT_SCALE_FACTOR = .05;
 
+    
+    /**
+     * Static constructor
+     * @param text LaTex text to compile
+     * @return  The LaTexMathObject
+     */
+    public static LaTeXMathObject make(String text)
+    {
+        return new LaTeXMathObject(text);
+    }
     /**
      * Creates a new LaTeX generated text
      *

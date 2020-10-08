@@ -5,7 +5,6 @@
  */
 package tests;
 
-import ch.qos.logback.classic.Level;
 import com.jmathanim.jmathanim.JMathAnimScene;
 
 /**
@@ -22,7 +21,7 @@ public class JMathAnim {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        JMathAnimScene scene = new myScene();
+        JMathAnimScene scene = new TesterShowCreation();
         scene.execute();
     }
 

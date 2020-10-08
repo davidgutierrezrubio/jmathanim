@@ -6,6 +6,7 @@
 package com.jmathanim.mathobjects;
 
 import com.jmathanim.Renderers.Renderer;
+import com.jmathanim.Utils.JMathAnimConfig;
 import com.jmathanim.Utils.MathObjectDrawingProperties;
 import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.Vec;
@@ -90,10 +91,19 @@ public class Point extends MathObject {
      * @param y y coordinate
      * @return
      */
-    public static Point make(double x, double y) {
+    public static Point at(double x, double y) {
         return new Point(x, y);
     }
 
+    public static Point random()
+    {
+        Rect r=JMathAnimConfig.getConfig().getCamera().getMathView();
+        double x=r.xmin+(r.xmax-r.xmin)*Math.random();
+        double y=r.ymin+(r.ymax-r.ymin)*Math.random();
+        return new Point(x,y);
+    }
+    
+    
     @Override
     public Point getCenter() {
         return this;

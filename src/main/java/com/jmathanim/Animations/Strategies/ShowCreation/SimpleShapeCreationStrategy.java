@@ -34,7 +34,7 @@ public class SimpleShapeCreationStrategy extends TransformStrategy {
         canonPath = mobj.jmpath.canonicalForm();
         //Create multishape with all canonical components and a copy of drawing attributes
         //This will be drawed instead of mobj during the ShowCreation animation
-        msh = canonPath.createMultiShape(this.mobj.mp);
+        msh = canonPath.createMultiShape(this.mobj);
         scene.remove(mobj);
         scene.add(msh);
         applyTransform(0, 0);

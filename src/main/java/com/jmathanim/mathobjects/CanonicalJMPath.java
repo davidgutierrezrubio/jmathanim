@@ -21,12 +21,14 @@ public class CanonicalJMPath {
         this.paths = paths;
     }
 
-    public MultiShapeObject createMultiShape(MathObjectDrawingProperties mp) {
-        MathObjectDrawingProperties mpCopy = mp.copy();
+    public MultiShapeObject createMultiShape(MathObject obj) {
+        MathObjectDrawingProperties mpCopy = obj.mp.copy();
         MultiShapeObject msh = new MultiShapeObject();
         for (JMPath p : paths) {
-            msh.addShape(new Shape(p.copy(), mp));
+            final Shape shape = new Shape(p.copy(), mpCopy);
+            msh.addShape(shape);
         }
+        msh.layer(obj.getLayer());
         return msh;
     }
 

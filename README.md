@@ -24,7 +24,7 @@ public class myFirstScene extends Scene2D {
     }
     
     @Override
-    public void runSketch() {
+    public void runSketch() throws Exception {
         Shape s = Shape.square();
         play.showCreation(s);
 	play.rotate(s,30*DEGREES);

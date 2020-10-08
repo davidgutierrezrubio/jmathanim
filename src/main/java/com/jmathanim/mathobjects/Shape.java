@@ -31,10 +31,11 @@ public class Shape extends MathObject {
     private double fillAlphaTemp;
 
     public Shape() {
-        this(new JMPath(),null);
+        this(new JMPath(), null);
     }
+
     public Shape(JMPath jmpath) {
-        this(jmpath,null);
+        this(jmpath, null);
     }
 
     public Shape(JMPath jmpath, MathObjectDrawingProperties mp) {
@@ -97,8 +98,6 @@ public class Shape extends MathObject {
         jmpath.shift(shiftVector);
         return (T) this;
     }
-
-  
 
     public void removeInterpolationPoints() {
         jmpath.removeInterpolationPoints();
@@ -210,15 +209,13 @@ public class Shape extends MathObject {
         obj.setObjectType(SEGMENT);
         return obj;
     }
-    
-    
+
     public static Shape segment(Line line) {
         //Compute bound points in case they still hasn't computed yet
         line.computeBoundPoints(JMathAnimConfig.getConfig().getRenderer());
-        return segment(line.bp1.p.copy(),line.bp2.p.copy());
+        return segment(line.bp1.p.copy(), line.bp2.p.copy());
     }
-    
-    
+
     public static Shape rectangle(Point A, Point B) {
         Shape obj = new Shape();
         JMathAnimConfig.getConfig().getScene();
@@ -283,18 +280,18 @@ public class Shape extends MathObject {
     public static Shape circle() {
         Shape obj = new Shape();
         double x1, y1;
-        int numSegments=20;
+        int numSegments = 20;
         double step = Math.PI * 2 / numSegments;
-        double cte = 4d/3*Math.tan(.5*Math.PI/numSegments);
+        double cte = 4d / 3 * Math.tan(.5 * Math.PI / numSegments);
         for (double alphaC = 0; alphaC < 2 * Math.PI; alphaC += step) {
-            x1 = Math.cos(alphaC+Math.PI/2);
-            y1 = Math.sin(alphaC+Math.PI/2);
+            x1 = Math.cos(alphaC + Math.PI / 2);
+            y1 = Math.sin(alphaC + Math.PI / 2);
             Point p = new Point(x1, y1);
-            Vec v1=new Vec(-y1,x1);
-            
+            Vec v1 = new Vec(-y1, x1);
+
             v1.multInSite(cte);
-            Point cp1=p.add(v1);
-            Point cp2=p.add(v1.multInSite(-1));
+            Point cp1 = p.add(v1);
+            Point cp2 = p.add(v1.multInSite(-1));
             JMPathPoint jmp = JMPathPoint.curveTo(p);
             jmp.cp1.copyFrom(cp1);
             jmp.cp2.copyFrom(cp2);
@@ -306,9 +303,21 @@ public class Shape extends MathObject {
         obj.setObjectType(CIRCLE);
         return obj;
     }
-    public static Shape circle(Point center,double radius)
-    {
+
+    public static Shape circle(Point center, double radius) {
         return circle().scale(radius).shift(center.v);
     }
 
+    /**
+     * Creates a new {@link Line} object. Line is a {@link Shape} object with 2
+     * points, as a {@link Segment} but it overrides the draw method so that it
+     * extends itself to all the view, to look like an infinite line.
+     *
+     * @param a First point
+     * @param b Second point
+     * @return The line object
+     */
+    public static Line line(Point a, Point b) {
+        return new Line(a, b);
+    }
 }

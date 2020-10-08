@@ -63,6 +63,8 @@ public class SVGMathObject extends MultiShapeObject {
         DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
         DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
         org.w3c.dom.Document doc = dBuilder.parse(file);
+        //Look for svg elements in the root document
+        processChildNodes((doc.getDocumentElement()));
         NodeList listGroups = doc.getElementsByTagName("g");
         for (int n = 0; n < listGroups.getLength(); n++) {
 
@@ -73,54 +75,59 @@ public class SVGMathObject extends MultiShapeObject {
             } else {
                 currentFillColor = mp.fillColor.copy();
             }
-            NodeList nList = gNode.getChildNodes();
-
-            for (int nchild = 0; nchild < nList.getLength(); nchild++) {
-                Node node = nList.item(nchild);
-                if (node.getNodeType() == Node.ELEMENT_NODE) {
-                    Element el = (Element) node;
-                    Shape sh;
-                    MathObjectDrawingProperties ShMp = this.mp.copy();
-                    ShMp.fillColor.set(JMColor.random());
-                    switch (el.getTagName()) {
-                        case "path":
-                            //Needs to parse style options too
-                            JMPath path = processPathCommands(el.getAttribute("d"));
-                            if (path.jmPathPoints.size() > 0) {
-                                path.pathType = JMPath.SVG_PATH; //Mark this as a SVG path
-//                        ShMp.fillColor.set(currentFillColor);//This makes possible latex color fonts but not usual svg
-//                        ShMp.drawColor.set(currentFillColor);
-                                addJMPathObject(path, ShMp); //Add this path to the array of JMPathObjects
-                                //By default scale sizes so that SVG points matches Screen points
-                            }
-                            break;
-                        case "rect":
-                            double x = Double.parseDouble(el.getAttribute("x"));
-                            double y = -Double.parseDouble(el.getAttribute("y"));
-                            double w = Double.parseDouble(el.getAttribute("width"));
-                            double h = -Double.parseDouble(el.getAttribute("height"));
-                            shapes.add(Shape.rectangle(new Point(x, y), new Point(x + w, y + h)).setMp(ShMp));
-                            break;
-                        case "circle":
-                            double cx = Double.parseDouble(el.getAttribute("cx"));
-                            double cy = -Double.parseDouble(el.getAttribute("cy"));
-                            double radius = Double.parseDouble(el.getAttribute("r"));
-                            shapes.add(Shape.circle().scale(radius).shift(cx, cy).setMp(ShMp));
-                            break;
-                        case "ellipse":
-                            double cxe = Double.parseDouble(el.getAttribute("cx"));
-                            double cye = -Double.parseDouble(el.getAttribute("cy"));
-                            double rxe = Double.parseDouble(el.getAttribute("rx"));
-                            double rye = -Double.parseDouble(el.getAttribute("ry"));
-                            shapes.add(Shape.circle().scale(rxe, rye).shift(cxe, cye).setMp(ShMp));
-                            break;
-
-                    }
-
-                }
-            }
+            //Look for svg elements inside this group
+            processChildNodes(gNode);
         }
         putAt(new Point(0, 0), Anchor.UL);
+    }
+
+    private void processChildNodes(Element gNode) throws NumberFormatException {
+        NodeList nList = gNode.getChildNodes();
+        
+        for (int nchild = 0; nchild < nList.getLength(); nchild++) {
+            Node node = nList.item(nchild);
+            if (node.getNodeType() == Node.ELEMENT_NODE) {
+                Element el = (Element) node;
+                Shape sh;
+                MathObjectDrawingProperties ShMp = this.mp.copy();
+//                    ShMp.fillColor.set(JMColor.random());
+switch (el.getTagName()) {
+    case "path":
+        //Needs to parse style options too
+        JMPath path = processPathCommands(el.getAttribute("d"));
+        if (path.jmPathPoints.size() > 0) {
+            path.pathType = JMPath.SVG_PATH; //Mark this as a SVG path
+//                        ShMp.fillColor.set(currentFillColor);//This makes possible latex color fonts but not usual svg
+//                        ShMp.drawColor.set(currentFillColor);
+addJMPathObject(path, ShMp); //Add this path to the array of JMPathObjects
+//By default scale sizes so that SVG points matches Screen points
+        }
+        break;
+    case "rect":
+        double x = Double.parseDouble(el.getAttribute("x"));
+        double y = -Double.parseDouble(el.getAttribute("y"));
+        double w = Double.parseDouble(el.getAttribute("width"));
+        double h = -Double.parseDouble(el.getAttribute("height"));
+        shapes.add(Shape.rectangle(new Point(x, y), new Point(x + w, y + h)).setMp(ShMp));
+        break;
+    case "circle":
+        double cx = Double.parseDouble(el.getAttribute("cx"));
+        double cy = -Double.parseDouble(el.getAttribute("cy"));
+        double radius = Double.parseDouble(el.getAttribute("r"));
+        shapes.add(Shape.circle().scale(radius).shift(cx, cy).setMp(ShMp));
+        break;
+    case "ellipse":
+        double cxe = Double.parseDouble(el.getAttribute("cx"));
+        double cye = -Double.parseDouble(el.getAttribute("cy"));
+        double rxe = Double.parseDouble(el.getAttribute("rx"));
+        double rye = -Double.parseDouble(el.getAttribute("ry"));
+        shapes.add(Shape.circle().scale(rxe, rye).shift(cxe, cye).setMp(ShMp));
+        break;
+        
+}
+
+            }
+        }
     }
 
     /**

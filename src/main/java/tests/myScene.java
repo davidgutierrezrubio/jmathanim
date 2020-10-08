@@ -136,21 +136,21 @@ public class myScene extends Scene2D {
         //Create axis
         MultiShapeObject axes = new MultiShapeObject();
         for (double xx = -10; xx < 10; xx += .3) {
-            final Shape lineaV = new Line(Point.make(xx, 0), Point.make(xx, 1)).style("axisblue1");
+            final Shape lineaV = new Line(Point.at(xx, 0), Point.at(xx, 1)).style("axisblue1");
             axes.addShape(lineaV);
-            final Shape lineaH = new Line(Point.make(0, xx), Point.make(1, xx)).style("axisblue2");
+            final Shape lineaH = new Line(Point.at(0, xx), Point.at(1, xx)).style("axisblue2");
             axes.addShape(lineaH);
         }
 //        add(axes);
 //        add(Shape.circle());
-        Shape lineaPrueba = new Line(Point.make(0, -1.5), Point.make(2, -1.5)).drawColor(JMColor.RED);
+        Shape lineaPrueba = new Line(Point.at(0, -1.5), Point.at(2, -1.5)).drawColor(JMColor.RED);
 //        waitSeconds(3);
-        Point a = Point.make(0, 0);
-        Point b = Point.make(1, 0);
-        Point c = Point.make(0, 1);
-        Point d = Point.make(0, 0);
-        Point e = Point.make(1, 0);
-        Point f = Point.make(1, 1);
+        Point a = Point.at(0, 0);
+        Point b = Point.at(1, 0);
+        Point c = Point.at(0, 1);
+        Point d = Point.at(0, 0);
+        Point e = Point.at(1, 0);
+        Point f = Point.at(1, 1);
         playAnimation(Commands.affineTransform(5, a, b, c, d, e, f, axes));
         play.rotate(5, PI / 3, axes);
         play.scaleCamera(.5, 3);

@@ -60,7 +60,8 @@ public class PlayAnim {
     }
 
     public void fadeOutAll(double runtime) {
-        scene.playAnimation(Commands.fadeOut(runtime, (MathObject[]) scene.getObjects().toArray()));
+        MathObject[] objects=scene.getObjects().toArray(new MathObject[scene.getObjects().size()]);
+        scene.playAnimation(Commands.fadeOut(runtime, objects));
     }
 
     //Convenience methods

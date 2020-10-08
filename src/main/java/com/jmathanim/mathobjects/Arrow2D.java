@@ -35,6 +35,10 @@ public class Arrow2D extends MathObject {
     private AbsoluteSizeUpdater absoluteSizeUpdater;
     private static final double DEFAULT_ARROW_HEAD_SIZE = .005;
 
+    public static Arrow2D makeSimpleArrow2D(Point p1, Point p2) {
+        return makeSimpleArrow2D(p1, p2,TYPE_1);
+    }
+    
     public static Arrow2D makeSimpleArrow2D(Point p1, Point p2, int type) {
         Arrow2D resul = null;
         SVGMathObject svg;
@@ -108,7 +112,7 @@ public class Arrow2D extends MathObject {
         return p2;
     }
 
-    private void scaleArrowHead(double sc) {
+    public void scaleArrowHead(double sc) {
         double mw = JMathAnimConfig.getConfig().getFixedCamera().getMathView().getWidth();
         double scaleFactor = sc * DEFAULT_ARROW_HEAD_SIZE * mw / head.getBoundingBox().getWidth();
 
@@ -139,8 +143,9 @@ public class Arrow2D extends MathObject {
         double angle = v.getAngle();
         AffineJTransform tr = AffineJTransform.create2DRotationTransform(p2, -Math.PI / 2 + angle);
         tr.applyTransform(arrowHeadCopy);
-
-        body.draw(r);
+        //TODO: Needs to get the real height of arrow head to substract 
+        Shape bodyToDraw=body.copy();//.scale(body.getPoint(0), .95, .95);
+        bodyToDraw.draw(r);
         arrowHeadCopy.draw(r);
 //        head.draw(r);
     }
@@ -176,9 +181,9 @@ public class Arrow2D extends MathObject {
     }
 
     @Override
-    public <T extends MathObject> T setLayer(int layer) {
-        head.setLayer(layer);
-        body.setLayer(layer);
+    public <T extends MathObject> T layer(int layer) {
+        head.layer(layer);
+        body.layer(layer);
         return (T) this;
     }
 

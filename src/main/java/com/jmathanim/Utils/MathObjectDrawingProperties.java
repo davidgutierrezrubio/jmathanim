@@ -31,6 +31,7 @@ public class MathObjectDrawingProperties {
     //to ensure zoom or resolution doesn't affect the result
     public Boolean absoluteThickness = false;
     public Integer dashStyle = 1;
+    private int layer = 0;
 
     public MathObjectDrawingProperties() {
         drawColor = new JMColor(1, 1, 1, 1);
@@ -129,17 +130,13 @@ public class MathObjectDrawingProperties {
      * @param mp The object to copy attributes from.
      */
     public void copyFrom(MathObjectDrawingProperties mp) {
-//        drawColor;
-//        fillColor;
-//        thickness;
-//        absoluteThickness;
-//        dashStlye
         drawColor.set(mp.drawColor);
         fillColor.set(mp.fillColor);
         thickness = mp.thickness;
         dashStyle = mp.dashStyle;
         absoluteThickness = mp.absoluteThickness;
         dashStyle = mp.dashStyle;
+        layer = mp.layer;
     }
 
     /**
@@ -189,4 +186,13 @@ public class MathObjectDrawingProperties {
         resul.loadFromStyle(name);
         return resul;
     }
+
+    public int getLayer() {
+        return layer;
+    }
+
+    public void setLayer(int layer) {
+        this.layer = layer;
+    }
+
 }

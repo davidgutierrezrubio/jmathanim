@@ -5,12 +5,16 @@
  */
 package com.jmathanim.Animations;
 
+import com.jmathanim.Animations.Strategies.ShowCreation.ArrowCreationStrategy;
 import com.jmathanim.Animations.Strategies.ShowCreation.FirstDrawThenFillStrategy;
+import com.jmathanim.Animations.Strategies.ShowCreation.LineCreationStrategy;
 import com.jmathanim.Animations.Strategies.ShowCreation.MultiShapeCreationStrategy;
 import com.jmathanim.Animations.Strategies.ShowCreation.SimpleShapeCreationStrategy;
 import com.jmathanim.Animations.Strategies.TransformStrategy;
 import com.jmathanim.jmathanim.JMathAnimScene;
+import com.jmathanim.mathobjects.Arrow2D;
 import com.jmathanim.mathobjects.CanonicalJMPath;
+import com.jmathanim.mathobjects.Line;
 import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.MultiShapeObject;
 import com.jmathanim.mathobjects.SVGMathObject;
@@ -26,6 +30,8 @@ public class ShowCreation extends Animation {
     public static final int METHOD_FIRST_DRAW_AND_THEN_FILL = 1;
     public static final int METHOD_SIMPLE_SHAPE_CREATION = 2;
     public static final int METHOD_MULTISHAPE_CREATION = 3;
+    public static final int METHOD_LINE_CREATION = 4;
+    public static final int METHOD_ARROW_CREATION = 5;
     MathObject mobj;
     CanonicalJMPath canonPath;
     private MultiShapeObject msh;
@@ -90,12 +96,21 @@ public class ShowCreation extends Animation {
             this.strategyType = METHOD_FIRST_DRAW_AND_THEN_FILL;
             return;
         }
-        if (mobj instanceof Shape) {
-            this.strategyType = METHOD_SIMPLE_SHAPE_CREATION;
+        if (mobj instanceof Arrow2D) {
+            this.strategyType = METHOD_ARROW_CREATION;
             return;
         }
         if (mobj instanceof MultiShapeObject) {
             this.strategyType = METHOD_MULTISHAPE_CREATION;
+            return;
+        }
+        if (mobj instanceof Line) {
+            this.strategyType = METHOD_LINE_CREATION;
+            return;
+        }
+        if (mobj instanceof Shape) {
+            this.strategyType = METHOD_SIMPLE_SHAPE_CREATION;
+            return;
         }
 
     }
@@ -113,10 +128,19 @@ public class ShowCreation extends Animation {
     /**
      * Creates the strategy object
      *
-     * @throws ClassCastException If the current object cannot be cast to the required class.
+     * @throws ClassCastException If the current object cannot be cast to the
+     * required class.
      */
     private void createStrategy() throws ClassCastException {
         switch (this.strategyType) {
+            case METHOD_LINE_CREATION:
+                strategy = new LineCreationStrategy((Line) mobj, this.scene);
+                JMathAnimScene.logger.info("ShowCreation method: LineCreationStrategy");
+                break;
+            case METHOD_ARROW_CREATION:
+                strategy = new ArrowCreationStrategy((Arrow2D) mobj, this.runTime,this.scene);
+                JMathAnimScene.logger.info("ShowCreation method: ArrowCreationStrategy");
+                break;
             case METHOD_SIMPLE_SHAPE_CREATION:
                 strategy = new SimpleShapeCreationStrategy((Shape) mobj, this.scene);
                 JMathAnimScene.logger.info("ShowCreation method: SimpleShapeCreationStrategy");
