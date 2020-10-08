@@ -7,6 +7,7 @@ package com.jmathanim.mathobjects;
 
 import com.jmathanim.Animations.AffineJTransform;
 import com.jmathanim.Renderers.Renderer;
+import com.jmathanim.Utils.JMColor;
 import com.jmathanim.Utils.JMathAnimConfig;
 import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.Vec;
@@ -36,9 +37,9 @@ public class Arrow2D extends MathObject {
     private static final double DEFAULT_ARROW_HEAD_SIZE = .005;
 
     public static Arrow2D makeSimpleArrow2D(Point p1, Point p2) {
-        return makeSimpleArrow2D(p1, p2,TYPE_1);
+        return makeSimpleArrow2D(p1, p2, TYPE_1);
     }
-    
+
     public static Arrow2D makeSimpleArrow2D(Point p1, Point p2, int type) {
         Arrow2D resul = null;
         SVGMathObject svg;
@@ -112,7 +113,7 @@ public class Arrow2D extends MathObject {
         return p2;
     }
 
-    public void scaleArrowHead(double sc) {
+    public final void scaleArrowHead(double sc) {
         double mw = JMathAnimConfig.getConfig().getFixedCamera().getMathView().getWidth();
         double scaleFactor = sc * DEFAULT_ARROW_HEAD_SIZE * mw / head.getBoundingBox().getWidth();
 
@@ -144,9 +145,12 @@ public class Arrow2D extends MathObject {
         AffineJTransform tr = AffineJTransform.create2DRotationTransform(p2, -Math.PI / 2 + angle);
         tr.applyTransform(arrowHeadCopy);
         //TODO: Needs to get the real height of arrow head to substract 
-        Shape bodyToDraw=body.copy();//.scale(body.getPoint(0), .95, .95);
+        double vecLength = p1.to(p2).norm();
+        double alpha = 1 - head.getBoundingBox().getHeight() / vecLength;
+        Shape bodyToDraw = body.copy().scale(body.getPoint(0), alpha, alpha);
         bodyToDraw.draw(r);
         arrowHeadCopy.draw(r);
+
 //        head.draw(r);
     }
 
@@ -227,6 +231,20 @@ public class Arrow2D extends MathObject {
     public <T extends MathObject> T copy() {
         return (T) Arrow2D.makeSimpleArrow2D(p1.copy(), p2.copy(), arrowType);
 
+    }
+
+    @Override
+    public <T extends MathObject> T fillColor(JMColor fc) {
+        return drawColor(fc); //Fill and draw color should be the same
+    }
+
+    @Override
+    public <T extends MathObject> T drawColor(JMColor dc) {
+        head.drawColor(dc);
+        head.fillColor(dc);
+        body.drawColor(dc);
+
+        return (T) this;
     }
 
     @Override

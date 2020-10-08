@@ -10,7 +10,9 @@ import com.jmathanim.Utils.Anchor;
 import com.jmathanim.Utils.ConfigLoader;
 import com.jmathanim.Utils.JMColor;
 import com.jmathanim.Utils.JMathAnimConfig;
+import com.jmathanim.Utils.Rect;
 import com.jmathanim.jmathanim.Scene2D;
+import com.jmathanim.mathobjects.Arrow2D;
 import com.jmathanim.mathobjects.CanonicalJMPath;
 import com.jmathanim.mathobjects.JMPath;
 import com.jmathanim.mathobjects.LaTeXMathObject;
@@ -40,19 +42,15 @@ public class myScene extends Scene2D {
 
     @Override
     public void runSketch() {
-        SVGMathObject svg = new SVGMathObject("c:\\media\\cocacola.svg");
-        Shape s = Shape.square();
-        Shape c = Shape.circle().shift(1, 0);
-//        s.stackTo(Anchor.BY_CENTER);
-//        JMPath c = s.get(0).getPath();
-//        s.get(0).style("default");
-//        add(s);
-//        play.adjustToObjects(s);
-//        camera.scale(3);
-        play.adjustToObjects(svg);
-        play.showCreation(svg);
-//        play.rotate(2, new Point(1,0),30 * DEGREES, s, c);
-        System.out.println("R " + getCamera().getMathView());
+        Arrow2D ar=Arrow2D.makeSimpleArrow2D(Point.at(1.3,1), Point.at(0,0));
+        add(ar);
+        advanceFrame();
+        final Rect bb = ar.getArrowHead().getBoundingBox();
+        System.out.println("bb "+bb);
+        Shape r=Shape.rectangle(bb).drawColor("RED");
+        add(r);
+        waitSeconds(2);
+        play.scaleCamera(5, .6);
         waitSeconds(5);
     }
 

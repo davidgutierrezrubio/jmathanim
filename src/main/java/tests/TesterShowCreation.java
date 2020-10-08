@@ -32,17 +32,17 @@ public class TesterShowCreation extends Scene2D {
 
     @Override
     public void runSketch() {
-        test1();
-        test2();
-        test3();//Lines
-        test4();//latex
-        test5();//Polygons
+//        test1();
+//        test2();
+//        test3();//Lines
+//        test4();//latex
+//        test5();//Polygons
         test6();//Arrows
-        test7();//Circle
+//        test7();//Circle
 //Rect{xmin=-2.0, ymin=-1.125, xmax=2.0, ymax=1.125}
-    Shape s=Shape.segment(Point.at(-1.87,1.125),Point.at(2,.83));
-    play.showCreation(2,s);
-        waitSeconds(1);
+//    Shape s=Shape.segment(Point.at(-1.87,1.125),Point.at(2,.83));
+//    play.showCreation(2,s);
+//        waitSeconds(1);
     }
 
     private void test7() {
@@ -59,7 +59,9 @@ public class TesterShowCreation extends Scene2D {
         for (int n = 0; n < numberOfLines; n++) {
             int numsides = (int) (3 + Math.random() * 7);
             double scale = Math.random();
-            Arrow2D r = Arrow2D.makeSimpleArrow2D(Point.random(), Point.random());//.drawColor(JMColor.random());
+            
+            int randomType=(int) (1+Math.random()*2.9);
+            Arrow2D r = Arrow2D.makeSimpleArrow2D(Point.random(), Point.random(),randomType).drawColor(JMColor.random());
             objs[n] = r;
         }
         play.showCreation(2, objs);
