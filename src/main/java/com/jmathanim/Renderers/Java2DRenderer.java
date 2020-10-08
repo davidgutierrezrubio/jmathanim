@@ -30,6 +30,7 @@ import java.awt.Stroke;
 import java.awt.Toolkit;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Path2D;
+import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
 import java.awt.image.ConvolveOp;
 import java.awt.image.Kernel;
@@ -64,8 +65,7 @@ public class Java2DRenderer extends Renderer {
 
     private VideoEncoder videoEncoder;
     protected Path2D.Double path;
-    private final JMathAnimConfig cnf;
-    private final JMathAnimScene scene;
+
     private File saveFilePath;
     //To limit fps in preview window
     double interpolation = 0;
@@ -76,21 +76,20 @@ public class Java2DRenderer extends Renderer {
     private PreviewWindow previewWindow;
     private final RenderingHints rh;
     private ConvolveOp ConvolveShadowOp;
+    private int scaleBufferedImage = 1;
 
     public Java2DRenderer(JMathAnimScene parentScene) {
-        this.scene = parentScene;
-        cnf = parentScene.conf;
-        camera = new Camera2D(cnf.mediaW, cnf.mediaH);
+        super(parentScene);
+        camera = new Camera2D(cnf.mediaW * scaleBufferedImage, cnf.mediaH * scaleBufferedImage);
         //The Fixed camera doesn't change. It is used to display fixed-size objects
         //like heads of arrows or text
-        fixedCamera = new Camera2D(cnf.mediaW, cnf.mediaH);
+        fixedCamera = new Camera2D(cnf.mediaW * scaleBufferedImage, cnf.mediaH * scaleBufferedImage);
 
         fixedCamera.setMathXY(-5, 5, 0);//Fixed camera is 10 units by default
-        super.setSize(cnf.mediaW, cnf.mediaH);
 
-        drawBufferImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
-        finalImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
-        debugImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+        drawBufferImage = new BufferedImage(cnf.mediaW * scaleBufferedImage, cnf.mediaH * scaleBufferedImage, BufferedImage.TYPE_INT_ARGB);
+        finalImage = new BufferedImage(cnf.mediaW, cnf.mediaH, BufferedImage.TYPE_INT_RGB);
+        debugImage = new BufferedImage(cnf.mediaW * scaleBufferedImage, cnf.mediaH * scaleBufferedImage, BufferedImage.TYPE_INT_ARGB);
         g2draw = drawBufferImage.createGraphics();
         g2debug = debugImage.createGraphics();
         g2dFinalImage = finalImage.createGraphics();
@@ -125,7 +124,7 @@ public class Java2DRenderer extends Renderer {
     @Override
     public void setCamera(Camera camera) {
         this.camera = (Camera2D) camera;
-        camera.setSize(width, height);
+        camera.setSize(cnf.mediaW, cnf.mediaH);
     }
 
     public final void prepareEncoder() {
@@ -153,7 +152,7 @@ public class Java2DRenderer extends Renderer {
 
         if (cnf.createMovie) {
 //            videoEncoder=new JCodecVideoEncoder();
-            videoEncoder=new XugglerVideoEncoder();
+            videoEncoder = new XugglerVideoEncoder();
 //            videoEncoder=new HumbleVideoEncoder();
             try {
                 File tempPath = new File(cnf.getOutputDir().getCanonicalPath());
@@ -208,9 +207,30 @@ public class Java2DRenderer extends Renderer {
 
         }
 
-        g2dFinalImage.drawImage(drawBufferImage, 0, 0, null);
-        //This layer is on top of everything, for debugging purposes
-        g2dFinalImage.drawImage(debugImage, 0, 0, null);
+        //Draw the objects drawn into the drawBufferImage
+        AffineTransform tr = g2dFinalImage.getTransform();
+
+        if (scaleBufferedImage > 1) {//Scaled draw
+
+            AffineTransform scaleTransformToFinal = AffineTransform.getScaleInstance(1d / scaleBufferedImage, 1d / scaleBufferedImage);
+//            AffineTransformOp afop = new AffineTransformOp(tr, AffineTransformOp.TYPE_BILINEAR);
+            g2dFinalImage.setTransform(scaleTransformToFinal);
+//            BufferedImage draw=new BufferedImage(cnf.mediaW , cnf.mediaH, BufferedImage.TYPE_INT_ARGB);
+//            draw=afop.filter(drawBufferImage, draw);
+//            g2dFinalImage.drawImage(draw, 0, 0, null);
+            g2dFinalImage.drawImage(drawBufferImage, 0, 0, null);
+            //This layer is on top of everything, for debugging purposes
+            g2dFinalImage.drawImage(debugImage, 0, 0, null);
+            g2dFinalImage.setTransform(tr);
+
+        } else {//Normal draw
+
+            g2dFinalImage.drawImage(drawBufferImage, 0, 0, null);
+            //This layer is on top of everything, for debugging purposes
+
+            g2dFinalImage.drawImage(debugImage, 0, 0, null);
+        }
+
         if (cnf.showPreview) {
 
             //Draw into a window
@@ -265,7 +285,8 @@ public class Java2DRenderer extends Renderer {
     }
 
     @Override
-    public void finish(int frameCount) {
+    public void finish(int frameCount
+    ) {
         JMathAnimScene.logger.info(String.format("%d frames created, %.2fs total time", frameCount, (1.f * frameCount) / cnf.fps));
         if (cnf.createMovie) {
             /**
@@ -275,7 +296,7 @@ public class Java2DRenderer extends Renderer {
              * input until the output is not complete.
              */
             JMathAnimScene.logger.info("Finishing movie...");
-           videoEncoder.finish();
+            videoEncoder.finish();
             JMathAnimScene.logger.info("Movie created at " + saveFilePath);
 
         }
@@ -288,16 +309,17 @@ public class Java2DRenderer extends Renderer {
 
     @Override
     public void clear() {
-        g2dFinalImage.setColor(JMathAnimConfig.getConfig().getBackgroundColor().getColor());//TODO: Poner en opciones
-        g2dFinalImage.fillRect(0, 0, width, height);
+        g2dFinalImage.setColor(JMathAnimConfig.getConfig().getBackgroundColor().getColor());
+        g2dFinalImage.fillRect(0, 0, cnf.mediaW, cnf.mediaH);
 
+        //Draw background image, if any
         if (img != null) {
 //            drawScaledImage(img, g2dFinalImage);
             g2dFinalImage.drawImage(img, 0, 0, null);
         }
         //TODO: Find a more efficient way to erase a Alpha image
-        drawBufferImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
-        debugImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+        drawBufferImage = new BufferedImage(cnf.mediaW * scaleBufferedImage, cnf.mediaH * scaleBufferedImage, BufferedImage.TYPE_INT_ARGB);
+        debugImage = new BufferedImage(cnf.mediaW * scaleBufferedImage, cnf.mediaH * scaleBufferedImage, BufferedImage.TYPE_INT_ARGB);
         g2draw = drawBufferImage.createGraphics();
         g2debug = debugImage.createGraphics();
         g2draw.setRenderingHints(rh);
@@ -319,7 +341,7 @@ public class Java2DRenderer extends Renderer {
     }
 
     public BufferedImage computeShadow(BufferedImage img) {
-        BufferedImage resul = new BufferedImage(width, height, BufferedImage.TRANSLUCENT);
+        BufferedImage resul = new BufferedImage(cnf.mediaW * scaleBufferedImage, cnf.mediaH * scaleBufferedImage, BufferedImage.TRANSLUCENT);
 ////        ColorModel cm = img.getColorModel();
 ////        boolean isAlphaPremultiplied = cm.isAlphaPremultiplied();
 ////        WritableRaster raster = img.copyData(null);
@@ -350,8 +372,8 @@ public class Java2DRenderer extends Renderer {
 
         double imgAspect = (double) imgHeight / imgWidth;
 
-        int canvasWidth = width;
-        int canvasHeight = height;
+        int canvasWidth = cnf.mediaW * scaleBufferedImage;
+        int canvasHeight = cnf.mediaH * scaleBufferedImage;
 
         double canvasAspect = (double) canvasHeight / canvasWidth;
 
@@ -466,7 +488,9 @@ public class Java2DRenderer extends Renderer {
         //First, move UL math corner to screen (0,0)
         AffineTransform tr = AffineTransform.getTranslateInstance(-r.xmin, -r.ymax);
         //Now, scale it so that (xmax-xmin, ymax-ymin) goes to (W,H)
-        AffineTransform sc = AffineTransform.getScaleInstance(width / (r.xmax - r.xmin), -height / (r.ymax - r.ymin));
+        double w = cnf.mediaW * scaleBufferedImage / (r.xmax - r.xmin);
+        double h = -cnf.mediaH * scaleBufferedImage / (r.ymax - r.ymin);
+        AffineTransform sc = AffineTransform.getScaleInstance(w, h);
         sc.concatenate(tr);
         return sc;
     }

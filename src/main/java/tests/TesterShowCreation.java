@@ -25,8 +25,8 @@ public class TesterShowCreation extends Scene2D {
 
     @Override
     public void setupSketch() {
-//        ConfigLoader.parseFile("preview.xml");
-        ConfigLoader.parseFile("production.xml");
+        ConfigLoader.parseFile("preview.xml");
+//        ConfigLoader.parseFile("production.xml");
         ConfigLoader.parseFile("dark.xml");
     }
 
@@ -38,23 +38,30 @@ public class TesterShowCreation extends Scene2D {
 //        test4();//latex
 //        test5();//Polygons
 //        test6();//Arrows
+        test7();//Circle
 //Rect{xmin=-2.0, ymin=-1.125, xmax=2.0, ymax=1.125}
-    Shape s=Shape.segment(Point.at(-1.87,1.125),Point.at(2,.83));
-    play.showCreation(2,s);
-        waitSeconds(1);
+//    Shape s=Shape.segment(Point.at(-1.87,1.125),Point.at(2,.83));
+//    play.showCreation(2,s);
+//        waitSeconds(1);
+    }
+
+    private void test7() {
+        Shape c = Shape.circle();
+        play.showCreation(c);
+        waitSeconds(3);
     }
 
     private void test6() {
-        Arrow2D arrow = Arrow2D.makeSimpleArrow2D(Point.at(0,0), Point.at(1,1), Arrow2D.TYPE_1);
+        Arrow2D arrow = Arrow2D.makeSimpleArrow2D(Point.at(0, 0), Point.at(1, 1), Arrow2D.TYPE_1);
         int numberOfLines = 15;
         MathObject[] objs = new MathObject[numberOfLines];
         for (int n = 0; n < numberOfLines; n++) {
             int numsides = (int) (3 + Math.random() * 7);
             double scale = Math.random();
-            Arrow2D r = Arrow2D.makeSimpleArrow2D(Point.random(),Point.random());//.drawColor(JMColor.random());
+            Arrow2D r = Arrow2D.makeSimpleArrow2D(Point.random(), Point.random());//.drawColor(JMColor.random());
             objs[n] = r;
         }
-        play.showCreation(2,objs);
+        play.showCreation(2, objs);
         waitSeconds(1);
         play.fadeOutAll();
     }
@@ -88,7 +95,7 @@ public class TesterShowCreation extends Scene2D {
         MathObject[] objs = new MathObject[numberOfLines];
         for (int n = 0; n < numberOfLines; n++) {
             Line r = Shape.line(Point.random(), Point.random()).drawColor(JMColor.random());
-            objs[n] = Shape.segment(r);
+            objs[n] = r;
         }
         play.showCreation(objs);
         waitSeconds(1);

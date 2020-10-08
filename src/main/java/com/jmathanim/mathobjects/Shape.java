@@ -284,8 +284,8 @@ public class Shape extends MathObject {
         double step = Math.PI * 2 / numSegments;
         double cte = 4d / 3 * Math.tan(.5 * Math.PI / numSegments);
         for (double alphaC = 0; alphaC < 2 * Math.PI; alphaC += step) {
-            x1 = Math.cos(alphaC + Math.PI / 2);
-            y1 = Math.sin(alphaC + Math.PI / 2);
+            x1 = Math.cos(alphaC);
+            y1 = Math.sin(alphaC);
             Point p = new Point(x1, y1);
             Vec v1 = new Vec(-y1, x1);
 

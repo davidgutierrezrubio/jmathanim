@@ -6,7 +6,9 @@
 package com.jmathanim.Renderers;
 
 import com.jmathanim.Cameras.Camera;
+import com.jmathanim.Utils.JMathAnimConfig;
 import com.jmathanim.Utils.Vec;
+import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.Shape;
 import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.Point;
@@ -19,10 +21,11 @@ import com.jmathanim.mathobjects.Point;
  */
 public abstract class Renderer {
 
-    protected int width;
-    protected int height;
-
-    public Renderer() {
+    protected final JMathAnimConfig cnf;
+    protected final JMathAnimScene scene;
+    public Renderer(JMathAnimScene parentScene) {
+        this.scene=parentScene;
+        this.cnf=JMathAnimConfig.getConfig();
     }
 
     public abstract void setCamera(Camera c);
@@ -31,33 +34,16 @@ public abstract class Renderer {
 
     public abstract Camera getFixedCamera();
 
-    public void setSize(int w, int h) {
-        width = w;
-        height = h;
-        setCameraSize(width, height);
-    }
 
     public abstract void setCameraSize(int w, int h);
 
     public int getWidth() {
-        return width;
-    }
-
-    public void setWidth(int width) {
-        this.width = width;
-        setCameraSize(width, height);
+        return cnf.mediaW;
     }
 
     public int getHeight() {
-        return height;
+       return cnf.mediaH;
     }
-
-    public void setHeight(int height) {
-        this.height = height;
-        setCameraSize(width, height);
-    }
-
-
 
     abstract public void saveFrame(int frameCount);
 
