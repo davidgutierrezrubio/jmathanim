@@ -85,7 +85,7 @@ public class Camera2D extends Camera {
         //xmin,ymin->(0,0)
         //xmax, ymax->(screenWidth,screenHeight)
 //        resul = (int) ((mathScalar - xmin) + mathScalar * screenWidth / xmax);
-        return (int) (mathScalar * screenWidth / (xmax - xmin));
+        return (int) Math.round(mathScalar * screenWidth / (xmax - xmin));
     }
 
     @Override
@@ -94,8 +94,8 @@ public class Camera2D extends Camera {
         //xmax, ymax->(screenWidth,screenHeight)
         int x;
         int y;
-        x = (int) ((mathX - xmin) * screenWidth / (xmax - xmin));
-        y = (int) ((ymax - mathY) * screenHeight / (ymax - ymin));
+        x = (int) (Math.round((mathX - xmin) * screenWidth / (xmax - xmin)));
+        y = (int) (Math.round((ymax - mathY) * screenHeight / (ymax - ymin)));
         return new int[]{x, y};
     }
 

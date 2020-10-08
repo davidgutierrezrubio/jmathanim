@@ -80,7 +80,6 @@ public class SimpleShapeCreationStrategy extends TransformStrategy {
                 msh.shapes.get(n).jmpath.clear();
                 msh.shapes.get(n).jmpath.addPointsFrom(subpath);
             }
-
         }
     }
 

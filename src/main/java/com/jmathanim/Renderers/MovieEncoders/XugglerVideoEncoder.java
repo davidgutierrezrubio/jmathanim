@@ -22,19 +22,22 @@ public class XugglerVideoEncoder extends VideoEncoder {
 
     IMediaWriter writer;
     private long startTime;
+    private double fps;
 
     @Override
     public void createEncoder(File output, JMathAnimConfig config) throws IOException {
         writer = ToolFactory.makeWriter(output.getCanonicalPath());
-        writer.addVideoStream(0, 0, ICodec.ID.CODEC_ID_MPEG4, config.mediaW, config.mediaH);
-        startTime = System.nanoTime();
+        writer.addVideoStream(0, 0, ICodec.ID.CODEC_ID_H264, config.mediaW, config.mediaH);
+        fps=config.fps;
     }
 
     @Override
     public void writeFrame(BufferedImage image, int frameCount) {
 
         BufferedImage bgrScreen = convertToType(image, BufferedImage.TYPE_3BYTE_BGR);
-        writer.encodeVideo(0, bgrScreen, System.nanoTime() - startTime, TimeUnit.NANOSECONDS);
+        long nanosecondsElapsed=(long) (1000000000d*frameCount/fps);
+        writer.encodeVideo(0, bgrScreen, nanosecondsElapsed, TimeUnit.NANOSECONDS);
+        
     }
 
     @Override

@@ -95,7 +95,7 @@ public class Vec implements Stateable {
      * @return The interpolated point
      */
     public Vec interpolate(Vec v2, double alpha) {
-        return new Vec(x + alpha * (v2.x - x), y + alpha * (v2.y - y));
+        return new Vec((1-alpha)*x + alpha * v2.x, (1-alpha)*y + alpha * v2.y);
 
     }
 

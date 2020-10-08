@@ -11,6 +11,7 @@ import com.jmathanim.Utils.JMColor;
 import com.jmathanim.jmathanim.Scene2D;
 import com.jmathanim.mathobjects.Arrow2D;
 import com.jmathanim.mathobjects.LaTeXMathObject;
+import com.jmathanim.mathobjects.Line;
 import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.Point;
 import com.jmathanim.mathobjects.Shape;
@@ -24,7 +25,8 @@ public class TesterShowCreation extends Scene2D {
 
     @Override
     public void setupSketch() {
-        ConfigLoader.parseFile("preview.xml");
+//        ConfigLoader.parseFile("preview.xml");
+        ConfigLoader.parseFile("production.xml");
         ConfigLoader.parseFile("dark.xml");
     }
 
@@ -32,11 +34,19 @@ public class TesterShowCreation extends Scene2D {
     public void runSketch() {
 //        test1();
 //        test2();
-//        test3();
-//        test4();
-//        test5();
+        test3();//Lines
+//        test4();//latex
+//        test5();//Polygons
+//        test6();//Arrows
+//Rect{xmin=-2.0, ymin=-1.125, xmax=2.0, ymax=1.125}
+    Shape s=Shape.segment(Point.at(-1.87,1.125),Point.at(2,.83));
+    play.showCreation(2,s);
+        waitSeconds(1);
+    }
+
+    private void test6() {
         Arrow2D arrow = Arrow2D.makeSimpleArrow2D(Point.at(0,0), Point.at(1,1), Arrow2D.TYPE_1);
-int numberOfLines = 15;
+        int numberOfLines = 15;
         MathObject[] objs = new MathObject[numberOfLines];
         for (int n = 0; n < numberOfLines; n++) {
             int numsides = (int) (3 + Math.random() * 7);
@@ -44,8 +54,8 @@ int numberOfLines = 15;
             Arrow2D r = Arrow2D.makeSimpleArrow2D(Point.random(),Point.random());//.drawColor(JMColor.random());
             objs[n] = r;
         }
-        play.showCreation(objs);
-        waitSeconds(3);
+        play.showCreation(2,objs);
+        waitSeconds(1);
         play.fadeOutAll();
     }
 
@@ -69,7 +79,7 @@ int numberOfLines = 15;
         LaTeXMathObject lat = LaTeXMathObject.make("This is a test").stackTo(Anchor.BY_CENTER).layer(1);
         Shape r = Shape.rectangle(lat.getBoundingBox().addGap(.2, .2)).layer(0).style("solidblue").fillAlpha(.6).drawColor(JMColor.RED);
         play.showCreation(lat, r);
-        waitSeconds(3);
+        waitSeconds(1);
         play.fadeOutAll();
     }
 
@@ -77,11 +87,11 @@ int numberOfLines = 15;
         int numberOfLines = 45;
         MathObject[] objs = new MathObject[numberOfLines];
         for (int n = 0; n < numberOfLines; n++) {
-            Shape r = Shape.line(Point.random(), Point.random()).drawColor(JMColor.random());
-            objs[n] = r;
+            Line r = Shape.line(Point.random(), Point.random()).drawColor(JMColor.random());
+            objs[n] = Shape.segment(r);
         }
         play.showCreation(objs);
-        waitSeconds(3);
+        waitSeconds(1);
         play.fadeOutAll();
     }
 
@@ -89,7 +99,7 @@ int numberOfLines = 15;
         Shape s = Shape.square().stackTo(Anchor.BY_CENTER).style("solidred").layer(1);
         Shape c = Shape.circle().stackTo(Anchor.BY_CENTER).style("solidblue").layer(0);
         play.showCreation(s, c);
-        waitSeconds(3);
+        waitSeconds(1);
         play.fadeOutAll();
     }
 

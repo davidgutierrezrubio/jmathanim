@@ -4,7 +4,6 @@ import com.jmathanim.mathobjects.JMPath;
 import com.jmathanim.Cameras.Camera;
 import com.jmathanim.Cameras.Camera2D;
 import com.jmathanim.Renderers.MovieEncoders.HumbleVideoEncoder;
-import com.jmathanim.Renderers.MovieEncoders.JCodecVideoEncoder;
 import com.jmathanim.Renderers.MovieEncoders.VideoEncoder;
 import com.jmathanim.Renderers.MovieEncoders.XugglerVideoEncoder;
 import com.jmathanim.Utils.JMathAnimConfig;
@@ -17,16 +16,6 @@ import com.jmathanim.mathobjects.Shape;
 import com.jmathanim.mathobjects.JMPathPoint;
 import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.Point;
-import io.humble.video.Codec;
-import io.humble.video.Encoder;
-import io.humble.video.MediaPacket;
-import io.humble.video.MediaPicture;
-import io.humble.video.Muxer;
-import io.humble.video.MuxerFormat;
-import io.humble.video.PixelFormat;
-import io.humble.video.Rational;
-import io.humble.video.awt.MediaPictureConverter;
-import io.humble.video.awt.MediaPictureConverterFactory;
 import java.awt.BasicStroke;
 import static java.awt.BasicStroke.CAP_ROUND;
 import static java.awt.BasicStroke.JOIN_ROUND;
@@ -436,19 +425,8 @@ public class Java2DRenderer extends Renderer {
 
         JMPath c = mobj.getPath();
         int numPoints = c.size();
-        int minimumPoints = 2;
 
-//        switch (c.curveType) {
-//            case JMPath.STRAIGHT:
-//                minimumPoints = 2;
-//                break;
-//            case JMPath.CURVED:
-//                minimumPoints = 4;
-//                break;
-//            default:
-//                throw new UnsupportedOperationException("Error: Illegal type of JMPath: " + c.curveType);
-//        }
-        if (numPoints >= minimumPoints) {
+        if (numPoints >= 2) {
             path = createPathFromJMPath(mobj, cam);
 
             if (mobj.mp.isFilled()) {
