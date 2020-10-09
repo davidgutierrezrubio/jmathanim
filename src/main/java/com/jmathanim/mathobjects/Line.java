@@ -60,6 +60,7 @@ public class Line extends Shape {
         visiblePiece.jmpath.addJMPoint(bp1, bp2);
         visiblePiece.mp = this.mp;
         jmpath.addPoint(p1, p2);
+        jmpath.getJMPoint(0).isThisSegmentVisible=false;
     }
 
     @Override

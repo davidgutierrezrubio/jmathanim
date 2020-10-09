@@ -21,7 +21,7 @@ public class JMathAnim {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        JMathAnimScene scene = new TesterShowCreation();
+        JMathAnimScene scene = new TesterTransform();
         scene.execute();
     }
 
