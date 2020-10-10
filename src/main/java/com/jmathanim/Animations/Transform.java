@@ -7,7 +7,7 @@ package com.jmathanim.Animations;
 
 import com.jmathanim.Animations.Strategies.Transform.PointInterpolationCanonical;
 import com.jmathanim.Animations.Strategies.Transform.AffineStrategyTransform;
-import com.jmathanim.Animations.Strategies.Transform.HomotopyStrategyTransform;
+import com.jmathanim.Animations.Strategies.Transform.HomothecyStrategyTransform;
 import com.jmathanim.Animations.Strategies.Transform.RotateAndScaleXYStrategyTransform;
 import com.jmathanim.Animations.Strategies.TransformStrategy;
 import com.jmathanim.Utils.MathObjectDrawingProperties;
@@ -152,7 +152,7 @@ public class Transform extends Animation {
                 strategy = new PointInterpolationCanonical(mobjTransformed, mobjDestiny,scene);
                 break;
             case METHOD_HOMOTOPY_TRANSFORM:
-                strategy = new HomotopyStrategyTransform(mobjTransformed, mobjDestiny,scene);
+                strategy = new HomothecyStrategyTransform(mobjTransformed, mobjDestiny,scene);
                 break;
             case METHOD_AFFINE_TRANSFORM:
                 strategy = new AffineStrategyTransform(mobjTransformed, mobjDestiny,scene);

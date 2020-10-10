@@ -13,6 +13,7 @@ import com.jmathanim.Utils.JMColor;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.Scene2D;
 import com.jmathanim.mathobjects.Line;
+import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.Point;
 import com.jmathanim.mathobjects.Shape;
 
@@ -36,7 +37,8 @@ public class TesterTransform extends Scene2D {
 //        test3(); //Circle to segment, back and forth
 //        test4(); //Circle to line, back and forth
 //        test5a();
-        test5();
+//        test5();
+        test7();
     }
 
     public void test1() {
@@ -91,16 +93,16 @@ public class TesterTransform extends Scene2D {
         play.fadeOutAll();
     }
 
-    public void test5a(){
+    public void test5a() {
         Shape circ = Shape.circle().drawColor("#de4463").thickness(2).scale(.7);
         Line l = Shape.line(Point.at(.3, 1), Point.at(1, -1)).shift(.6, .8).drawColor("#edc988").thickness(2);
-        Shape seg=Shape.segment(l).scale(2);
+        Shape seg = Shape.segment(l).scale(2);
         add(circ, seg);
         play.transform(5, circ, seg);
         waitSeconds(3);
         play.fadeOutAll();
     }
-    
+
     public void test5() {
         Shape circ = Shape.circle().drawColor("#de4463").thickness(2).scale(.7);
         Shape seg = Shape.line(Point.at(.3, 1), Point.at(1, -1)).shift(.6, .8).drawColor("#edc988").thickness(2);
@@ -150,5 +152,35 @@ public class TesterTransform extends Scene2D {
         }
 
         waitSeconds(3);
+    }
+
+    private void test6() {
+        double ang = 360 * DEGREES;
+        double ang2 = 180 * DEGREES;
+        Shape arc = Shape.arc(ang).rotate(Point.at(0, 0), -.5 * ang);
+        Shape seg = Shape.segment(Point.at(1, -.5 * ang), Point.at(1, .5 * ang));
+        play.showCreation(arc, seg);
+        play.adjustToObjects(arc, seg);
+        waitSeconds(1);
+//        play.transform(6, arc, arc2);
+//TODO: Make an animation that rectifies an arc into a segment with equal length
+        play.transform(6, arc, seg);
+        waitSeconds(3);
+    }
+
+    private void test7() {
+        double ang = 120 * DEGREES;
+        double scal = 1;
+        add(Shape.segment(Point.at(.5, -ang * .5), Point.at(.5, ang * .5)));
+        for (int n = 1; n < 15; n++) {
+//            Shape arc = Shape.arc(ang / n).rotate(Point.at(0, 0), -.5 * ang / n).scale(Point.at(0, 0), scal * n, scal * n).shift(-n, 0).drawColor(JMColor.random());
+            Shape arc = Shape.arc(ang/n).scale(Point.at(0, 0), scal*n,scal*n).shift(-n,-1).drawColor(JMColor.random());
+//            add(arc);
+            arc.thickness(.5);
+            play.showCreation(arc);
+        }
+        camera.adjustToAllObjects();
+        waitSeconds(20);
+
     }
 }

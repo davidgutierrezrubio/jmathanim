@@ -14,9 +14,9 @@ import com.jmathanim.mathobjects.Shape;
  *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
-public class HomotopyStrategyTransform extends MatrixTransformStrategy {
+public class HomothecyStrategyTransform extends MatrixTransformStrategy {
 
-    public HomotopyStrategyTransform(Shape mobjTransformed, Shape mobjDestiny,JMathAnimScene scene) {
+    public HomothecyStrategyTransform(Shape mobjTransformed, Shape mobjDestiny,JMathAnimScene scene) {
         super(mobjTransformed, mobjDestiny,scene);
     }
 

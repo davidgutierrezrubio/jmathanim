@@ -5,7 +5,9 @@
  */
 package com.jmathanim.Cameras;
 
+import com.jmathanim.Utils.JMathAnimConfig;
 import com.jmathanim.Utils.Rect;
+import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.MathObject;
 
 /**
@@ -48,9 +50,9 @@ public abstract class Camera {
         screenWidth = w;
         screenHeight = h;
         reset();
-
+        
     }
-
+    
     public void setGaps(double h, double v) {
         hgap = h;
         vgap = v;
@@ -66,7 +68,7 @@ public abstract class Camera {
      * @param ycenter y-center coordinate
      */
     abstract public void setMathXY(double xmin, double xmax, double ycenter);
-
+    
     public void setMathView(Rect r) {
         setMathXY(r.xmin, r.xmax, .5 * (r.ymin + r.ymax));
     }
@@ -83,6 +85,12 @@ public abstract class Camera {
         setMathXY(r.xmin, r.xmax, .5 * (r.ymax + r.ymin));
     }
 
+    public void adjustToAllObjects() {
+        final JMathAnimScene scene = JMathAnimConfig.getConfig().getScene();
+        MathObject[] objs = scene.getObjects().toArray(new MathObject[scene.getObjects().size()]);
+        adjustToObjects(objs);
+    }
+
     public void adjustToObjects(MathObject... objs) {
         Rect r = objs[0].getBoundingBox();
         for (MathObject obj : objs) {
@@ -90,13 +98,15 @@ public abstract class Camera {
         }
         adjustToRect(r.addGap(hgap, hgap));
     }
-  public void zoomToObjects(MathObject... objs) {
+
+    public void zoomToObjects(MathObject... objs) {
         Rect r = objs[0].getBoundingBox();
         for (MathObject obj : objs) {
             r = r.union(obj.getBoundingBox());
         }
         adjustToRect(r.addGap(hgap, hgap));
     }
+
     public void scale(double scale) {
         setMathView(getMathView().scaled(scale, scale));
     }
@@ -113,7 +123,7 @@ public abstract class Camera {
         double ratio = ((double) screenWidth) / screenHeight; //Ratio W/H
 
         double ratioR = (r.xmax - r.xmin) / (r.ymax - r.ymin);
-
+        
         if (ratio <= ratioR) //If R is wider than the screen...
         {
 //            
@@ -124,7 +134,7 @@ public abstract class Camera {
             resul.xmax = r.xmax;
             resul.ymin = minY;
             resul.ymax = maxY;
-
+            
         } else //If the screen is wider than R...
         {
             double camWidth = (r.ymax - r.ymin) * ratio;
@@ -207,9 +217,9 @@ public abstract class Camera {
      * @return The scalar in math coordinates
      */
     abstract public double relScalarToWidth(double scalar);
-
+    
     abstract public void saveState();
-
+    
     abstract public void restoreState();
-
+    
 }

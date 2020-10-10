@@ -11,6 +11,7 @@ import com.jmathanim.Utils.MathObjectDrawingProperties;
 import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
+import static com.jmathanim.jmathanim.JMathAnimScene.PI;
 import java.util.ArrayList;
 
 /**
@@ -258,22 +259,31 @@ public class Shape extends MathObject {
     public static Shape arc(double angle) {
         Shape obj = new Shape();
         double x1, y1;
-        double step = Math.PI * 2 / 40;
-        for (double alphaC = -step; alphaC <= angle + step; alphaC += step) {//generate one extra point at each end
+        int  nSegs = 4;
+        int segsForFullCircle=(int) (2*PI*nSegs/angle);
+        double cte = 4d / 3 * Math.tan(.5 * Math.PI / segsForFullCircle);
+        for (int n=0;n<nSegs+1;n++){
+            double alphaC=angle*n/nSegs;
             x1 = Math.cos(alphaC);
             y1 = Math.sin(alphaC);
-            Point newPoint = new Point(x1, y1);
-            JMPathPoint p = JMPathPoint.curveTo(newPoint);
-            p.isCurved = true;
-            obj.jmpath.addJMPoint(p);
+            Point p = new Point(x1, y1);
+            Vec v1 = new Vec(-y1, x1);
+
+            v1.multInSite(cte);
+            Point cp1 = p.add(v1);
+            Point cp2 = p.add(v1.multInSite(-1));
+            JMPathPoint jmp = JMPathPoint.curveTo(p);
+            jmp.cp1.copyFrom(cp1);
+            jmp.cp2.copyFrom(cp2);
+            obj.jmpath.addJMPoint(jmp);
         }
-        obj.getPath().generateControlPoints();
+//        obj.getPath().generateControlPoints();
         obj.setObjectType(ARC);
-        obj.getPath().jmPathPoints.remove(0);
-        obj.getPath().jmPathPoints.remove(-1);
+//        obj.getPath().jmPathPoints.remove(0);
+//        obj.getPath().jmPathPoints.remove(-1);
         obj.getPath().getJMPoint(0).isThisSegmentVisible = false;//Open path
-        obj.getJMPoint(0).cp1.v.copyFrom(obj.getJMPoint(0).p.v);
-        obj.getJMPoint(-1).cp2.v.copyFrom(obj.getJMPoint(-1).p.v);
+//        obj.getJMPoint(0).cp1.v.copyFrom(obj.getJMPoint(0).p.v);
+//        obj.getJMPoint(-1).cp2.v.copyFrom(obj.getJMPoint(-1).p.v);
         return obj;
     }
 
