@@ -29,10 +29,10 @@ public class PointInterpolationCanonical extends TransformStrategy {
     private Shape originalShapeBaseCopy;
     private static final boolean DEBUG_COLORS = false;
 
-    public PointInterpolationCanonical(Shape mobjTransformed, Shape mobjDestiny,JMathAnimScene scene) {
+    public PointInterpolationCanonical(Shape mobjTransformed, Shape mobjDestiny, JMathAnimScene scene) {
         super(scene);
-        this.mobjTransformed=mobjTransformed;
-        this.mobjDestiny=mobjDestiny;
+        this.mobjTransformed = mobjTransformed;
+        this.mobjDestiny = mobjDestiny;
         this.addedAuxiliaryObjectsToScene = new ArrayList<>();
     }
 
@@ -41,11 +41,11 @@ public class PointInterpolationCanonical extends TransformStrategy {
         //This is the initialization for the point-to-point interpolation
         //Prepare paths. Firs, I ensure they have the same number of points
         //and be in connected components form.
-        
+
         //Remove consecutive hidden vertices, in case.
         this.mobjTransformed.getPath().removeConsecutiveHiddenVertices();
         this.mobjDestiny.getPath().removeConsecutiveHiddenVertices();
-        
+
         originalShapeBaseCopy = mobjTransformed.copy();
         preparePaths(mobjTransformed.jmpath, mobjDestiny.jmpath);
         if (DEBUG_COLORS) {
@@ -65,7 +65,7 @@ public class PointInterpolationCanonical extends TransformStrategy {
     }
 
     @Override
-    public void applyTransform(double t,double lt) {
+    public void applyTransform(double t, double lt) {
         JMPathPoint interPoint, basePoint, dstPoint;
 
         for (int numConnected = 0; numConnected < this.connectedDst.getNumberOfPaths(); numConnected++) {
@@ -92,11 +92,9 @@ public class PointInterpolationCanonical extends TransformStrategy {
                 interPoint.cp2.v.y = (1 - lt) * basePoint.cp2.v.y + lt * dstPoint.cp2.v.y;
                 interPoint.cp2.v.z = (1 - lt) * basePoint.cp2.v.z + lt * dstPoint.cp2.v.z;
             }
-            //Now interpolate properties from objects
 
         }
         mobjTransformed.mp.interpolateFrom(originalShapeBaseCopy.mp, mobjDestiny.mp, t);
-        
 
     }
 
@@ -127,7 +125,7 @@ public class PointInterpolationCanonical extends TransformStrategy {
         mobjTransformed.jmpath.clear();
         mobjTransformed.jmpath.addPointsFrom(pa);
         mobjTransformed.mp.copyFrom(mobjDestiny.mp);
-        mobjTransformed.absoluteSize=mobjDestiny.absoluteSize;
+        mobjTransformed.absoluteSize = mobjDestiny.absoluteSize;
 //        scene.add(mobjTransformed);
         for (Shape shapesToRemove : addedAuxiliaryObjectsToScene) {
             scene.remove(shapesToRemove);
