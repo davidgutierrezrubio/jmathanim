@@ -13,6 +13,7 @@ import com.jmathanim.Utils.JMColor;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.Scene2D;
 import com.jmathanim.mathobjects.Line;
+import com.jmathanim.mathobjects.MOProperties.ArcAttributes;
 import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.Point;
 import com.jmathanim.mathobjects.Shape;
@@ -38,7 +39,8 @@ public class TesterTransform extends Scene2D {
 //        test4(); //Circle to line, back and forth
 //        test5a();
 //        test5();
-        test7();
+//        test7();
+        test8();//Arcs and center
     }
 
     public void test1() {
@@ -182,5 +184,15 @@ public class TesterTransform extends Scene2D {
         camera.adjustToAllObjects();
         waitSeconds(20);
 
+    }
+
+    private void test8() {
+        Shape arc=Shape.arc(120*DEGREES);
+        add(arc);
+        Point c=((ArcAttributes)arc.attrs).center;
+        System.out.println(c);
+        add(Shape.segment(c,c.shift(.1,0)));
+        play.rotate(5, Point.at(-1,0),PI/3, arc);
+        waitSeconds(3);
     }
 }

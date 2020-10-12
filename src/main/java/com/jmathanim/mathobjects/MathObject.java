@@ -13,6 +13,7 @@ import com.jmathanim.Utils.MathObjectDrawingProperties;
 import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
+import com.jmathanim.mathobjects.MOProperties.MathObjectAttributes;
 import com.jmathanim.mathobjects.updateableObjects.Updateable;
 import java.util.HashSet;
 
@@ -36,13 +37,15 @@ public abstract class MathObject implements Drawable, Updateable, Stateable {
     public static final int MULTISHAPE = 11;
     public static final int LATEX = 11;
     public static final int SVG = 12;
-    
+
     public MathObjectDrawingProperties mp;
     protected MathObjectDrawingProperties mpBackup;
     public String label = "";
-    
+
+    public MathObjectAttributes attrs;
+
     public boolean absoluteSize = false;
-    
+
     private int objectType;
     /**
      * Scenes where this object belongs.
@@ -60,11 +63,11 @@ public abstract class MathObject implements Drawable, Updateable, Stateable {
 //    private Point anchorPoint;
     public Point absoluteAnchorPoint;
     private int absoluteAnchorType = Anchor.BY_CENTER;
-    
+
     public MathObject() {
         this(null);
     }
-    
+
     public MathObject(MathObjectDrawingProperties prop) {
         mp = JMathAnimConfig.getConfig().getDefaultMP();//Default MP values
         mp.digestFrom(prop);//Copy all non-null values from prop
@@ -106,7 +109,11 @@ public abstract class MathObject implements Drawable, Updateable, Stateable {
      * @param shiftVector Amount of shifting
      * @return The same object, after shifting
      */
-    public abstract <T extends MathObject> T shift(Vec shiftVector);
+    public <T extends MathObject> T shift(Vec shiftVector) {
+        AffineJTransform tr = AffineJTransform.createTranslationTransform(shiftVector);
+        tr.applyTransform(this);
+        return (T) this;
+    }
 
     /**
      * Scale from center of object (2D version)
@@ -226,7 +233,7 @@ public abstract class MathObject implements Drawable, Updateable, Stateable {
      * should be called when any of its subobjects (sides, vertices...) changes
      */
     abstract public void prepareForNonLinearAnimation();
-    
+
     abstract public void processAfterNonLinearAnimation();
 
     /**
@@ -263,51 +270,56 @@ public abstract class MathObject implements Drawable, Updateable, Stateable {
      * @return A Rect with (xmin,ymin,xmax,ymax)
      */
     public abstract Rect getBoundingBox();
-    
+
     public void setAlpha(double t) {
         drawAlpha(t);
         fillAlpha(t);
     }
-    
+
     public abstract void registerChildrenToBeUpdated(JMathAnimScene scene);
-    
+
     public abstract void unregisterChildrenToBeUpdated(JMathAnimScene scene);
-    
+
     @Override
     public int getUpdateLevel() {
         return updateLevel;
     }
-    
+
     @Override
     public void saveState() {
         this.mpBackup = this.mp.copy();
+        if (this.attrs != null) {
+            this.attrs.saveState();
+        }
     }
-    
+
     @Override
     public void restoreState() {
         mp.copyFrom(mpBackup);
+        if (this.attrs != null) {
+            this.attrs.restoreState();
+        }
     }
-    
+
     public MathObjectDrawingProperties getMp() {
         return mp;
     }
-    
+
     public <T extends MathObject> T setMp(MathObjectDrawingProperties newMp) {
         this.mp.copyFrom(newMp);
         return (T) this;
     }
-    
+
     public int getObjectType() {
         return objectType;
     }
-    
+
     public final <T extends MathObject> T setObjectType(int objectType) {
         this.objectType = objectType;
         return (T) this;
     }
 
     //Convenience methods to set drawing parameters
-    
     public <T extends MathObject> T drawColor(JMColor dc) {
         mp.drawColor.set(dc);
         return (T) this;
@@ -322,12 +334,12 @@ public abstract class MathObject implements Drawable, Updateable, Stateable {
         mp.fillColor.set(fc);
         return (T) this;
     }
-    
+
     public <T extends MathObject> T drawAlpha(double alpha) {
         mp.drawColor.alpha = alpha;
         return (T) this;
     }
-    
+
     public <T extends MathObject> T fillAlpha(double alpha) {
         mp.fillColor.alpha = alpha;
         return (T) this;
@@ -356,27 +368,27 @@ public abstract class MathObject implements Drawable, Updateable, Stateable {
         this.mp.drawColor.alpha *= t;
         return (T) this;
     }
-    
+
     public <T extends MathObject> T thickness(double th) {
         mp.thickness = th;
         return (T) this;
     }
-    
+
     public Point getAbsoluteAnchorPoint() {
         return Anchor.getAnchorPoint(this, absoluteAnchorType);
     }
-    
+
     public void setAbsolutAnchorPoint(int anchor) {
         absoluteAnchorType = anchor;
-        
+
     }
-    
+
     public void setAbsoluteAnchorPoint(Point p) {
         this.absoluteAnchorPoint = p;
         absoluteAnchorType = Anchor.BY_POINT;
-        
+
     }
-    
+
     public void stackTo(MathObject obj, int anchorType) {
         Point B = Anchor.getAnchorPoint(obj, anchorType);
         Point A = Anchor.getAnchorPoint(this, Anchor.reverseAnchorPoint(anchorType));
@@ -409,28 +421,28 @@ public abstract class MathObject implements Drawable, Updateable, Stateable {
         Point A = Anchor.getAnchorPoint(this, anchorType);
         return this.shift(A.to(B));
     }
-    
+
     public void putAt(Point p, int anchorType) {
         putAt(p, anchorType, 0);
     }
-    
+
     public <T extends MathObject> T putAt(Point p, int anchorType, double gap) {
         Point anchorPoint = Anchor.getAnchorPoint(this, anchorType, gap);
         return shift(anchorPoint.to(p));
     }
-    
+
     public <T extends MathObject> T setAbsoluteSize() {
         absoluteSize = true;
         absoluteAnchorType = Anchor.BY_CENTER;//Default anchor
         return (T) this;
     }
-    
+
     public <T extends MathObject> T setAbsoluteSize(int anchorType) {
         absoluteSize = true;
         absoluteAnchorType = anchorType;
         return (T) this;
     }
-    
+
     public <T extends MathObject> T setRelativeSize() {
         absoluteSize = false;
         return (T) this;

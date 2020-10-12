@@ -124,13 +124,13 @@ public class Point extends MathObject {
 
     }
 
-    @Override
-    public <T extends MathObject> T shift(Vec shiftVector) {
-        v.x += shiftVector.x;
-        v.y += shiftVector.y;
-        v.z += shiftVector.z;
-        return (T) this;
-    }
+//    @Override
+//    public <T extends MathObject> T shift(Vec shiftVector) {
+//        v.x += shiftVector.x;
+//        v.y += shiftVector.y;
+//        v.z += shiftVector.z;
+//        return (T) this;
+//    }
 
     @Override
     public Point copy() {

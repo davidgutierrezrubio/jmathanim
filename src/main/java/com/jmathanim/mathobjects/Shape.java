@@ -12,6 +12,7 @@ import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import static com.jmathanim.jmathanim.JMathAnimScene.PI;
+import com.jmathanim.mathobjects.MOProperties.ArcAttributes;
 import java.util.ArrayList;
 
 /**
@@ -94,11 +95,11 @@ public class Shape extends MathObject {
         return shift(new Vec(x, y));
     }
 
-    @Override
-    public <T extends MathObject> T shift(Vec shiftVector) {
-        jmpath.shift(shiftVector);
-        return (T) this;
-    }
+//    @Override
+//    public <T extends MathObject> T shift(Vec shiftVector) {
+//        jmpath.shift(shiftVector);
+//        return (T) this;
+//    }
 
     public void removeInterpolationPoints() {
         jmpath.removeInterpolationPoints();
@@ -258,6 +259,7 @@ public class Shape extends MathObject {
 
     public static Shape arc(double angle) {
         Shape obj = new Shape();
+        obj.attrs=new ArcAttributes(Point.at(0,0),1,obj);
         double x1, y1;
         int  nSegs = 4;
         int segsForFullCircle=(int) (2*PI*nSegs/angle);
