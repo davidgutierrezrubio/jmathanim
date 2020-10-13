@@ -37,7 +37,7 @@ public abstract class Camera {
     /**
      * Gaps to add when adjusting view to an object or Rect
      */
-    protected double hgap, vgap;
+    protected double hgap=.1, vgap=.1;
 
     /**
      * Set size of the screen to which the camera will compute coordinates

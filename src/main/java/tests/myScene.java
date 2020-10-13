@@ -35,22 +35,28 @@ public class myScene extends Scene2D {
 //        conf.setOutputDir("c:\\media");
 //        ConfigLoader.parseFile("production.xml");
         ConfigLoader.parseFile("preview.xml");
-//        ConfigLoader.parseFile("dark.xml");
+        ConfigLoader.parseFile("light.xml");
 //        conf.setHighQuality();
 //        conf.setCreateMovie(true);
     }
 
     @Override
     public void runSketch() {
-        Arrow2D ar=Arrow2D.makeSimpleArrow2D(Point.at(1.3,1), Point.at(0,0));
-        add(ar);
-        advanceFrame();
-        final Rect bb = ar.getArrowHead().getBoundingBox();
-        System.out.println("bb "+bb);
-        Shape r=Shape.rectangle(bb).drawColor("RED");
-        add(r);
-        waitSeconds(2);
-        play.scaleCamera(5, .6);
+        LaTeXMathObject lat = new LaTeXMathObject("$5$");
+        lat.stackTo(Anchor.BY_CENTER);
+        final JMPath pa = lat.get(0).getPath().rawCopy();
+//       add(lat);
+        Shape sh = new Shape();
+        sh.jmpath.jmPathPoints.add(pa.jmPathPoints.get(14));
+        sh.jmpath.jmPathPoints.add(pa.jmPathPoints.get(15));
+        sh.jmpath.jmPathPoints.add(pa.jmPathPoints.get(16));
+//        sh.scale(30);
+    camera.zoomToObjects(sh);
+        System.out.println("Sh "+sh.jmpath);
+        add(sh.thickness(1));
+//        camera.scale(.05);
+//        camera.adjustToAllObjects();
+    play.scale(10, sh.getCenter(), 10, sh);
         waitSeconds(5);
     }
 

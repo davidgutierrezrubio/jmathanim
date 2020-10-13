@@ -384,7 +384,7 @@ public class Java2DRenderer extends Renderer {
     }
 
     public void setStroke(Graphics2D g2d, MathObject obj) {
-        double thickness = getStrokeThickness(obj);
+        double thickness = obj.mp.getThickness(this)*10;
 //        int strokeSize;
 //        if (!obj.mp.absoluteThickness) {
 //            strokeSize = camera.mathToScreen(.0025 * thickness); //TODO: Another way to compute this
@@ -412,11 +412,7 @@ public class Java2DRenderer extends Renderer {
 
     }
 
-    @Override
-    public double getStrokeThickness(MathObject obj) {
-        final double thickness = obj.mp.getThickness(this) / 200;
-        return thickness;
-    }
+    
 
     @Override
     public void drawPath(Shape mobj) {
@@ -437,22 +433,22 @@ public class Java2DRenderer extends Renderer {
 //                Path2D.Double pathToFill = createPathFromJMPath(mobj, mobj.getPath().allVisible(), cam);
 //                g2draw.setColor(mobj.mp.fillColor.getColor());
 //                g2draw.fill(pathToFill);
-                AffineTransform bTr = g2draw.getTransform();
-                g2draw.setTransform(getCameratoG2DTransform(cam));
+//                AffineTransform bTr = g2draw.getTransform();
+//                g2draw.setTransform(getCameratoG2DTransform(cam));
                 g2draw.setColor(mobj.mp.fillColor.getColor());
                 g2draw.fill(path);
-                g2draw.setTransform(bTr);
+//                g2draw.setTransform(bTr);
 
             }
             //Border is always drawed
-            AffineTransform bTr = g2draw.getTransform();
-            final AffineTransform cameratoG2DTransform = getCameratoG2DTransform(cam);
+//            AffineTransform bTr = g2draw.getTransform();
+//            final AffineTransform cameratoG2DTransform = getCameratoG2DTransform(cam);
 
             g2draw.setColor(mobj.mp.drawColor.getColor());
             setStroke(g2draw, mobj);
-            g2draw.setTransform(cameratoG2DTransform);
+//            g2draw.setTransform(cameratoG2DTransform);
             g2draw.draw(path);
-            g2draw.setTransform(bTr);
+//            g2draw.setTransform(bTr);
 
             if (PRINT_DEBUG) {
                 System.out.println("Drawing " + c);
@@ -465,23 +461,10 @@ public class Java2DRenderer extends Renderer {
 
     @Override
     public void drawCircle(double x, double y, double radius) {
-
-//        g2draw.setColor(borderColor.getColor());
-        double mx = x - .5 * radius;
-        double my = y + .5 * radius;
-        int[] screenx = camera.mathToScreen(mx, my);
-        int screenRadius = camera.mathToScreen(radius);
-        g2draw.fillRect(screenx[0], screenx[1], screenRadius, screenRadius);
-//        g2draw.fillOval(screenx[0], screenx[1], screenRadius, screenRadius);
     }
 
     @Override
     public void drawDot(Point p) {
-        setStroke(g2draw, p);
-//        int[] xx = camera.mathToScreen(p.v.x, p.v.y);
-        g2draw.setColor(p.mp.fillColor.getColor());
-        drawCircle(p.v.x, p.v.y, .4);
-        drawCircle(p.v.x, p.v.y, .4);
     }
 
     public AffineTransform getCameratoG2DTransform(Camera cam) {
@@ -507,7 +490,7 @@ public class Java2DRenderer extends Renderer {
         if (DEBUG_PATH_POINTS) {
             debugPathPoint(c.getJMPoint(0), c);
         }
-        double[] scr = {p.x, p.y};
+        int[] scr = camera.mathToScreen(p.x, p.y);
         if (DEBUG_LABELS) {
             g2debug.setColor(Color.BLACK);
             g2debug.drawString(mobj.label, (float) scr[0], (float) scr[1]);
@@ -518,23 +501,17 @@ public class Java2DRenderer extends Renderer {
         //Now I iterate to get the next points
         int numPoints = c.size();
 //        int prev[] = {scr[0], scr[1]};
-        double xy[] = {scr[0], scr[1]};
+//        int xy[] = camera.mathToScreen(scr[0], scr[1]);
 
         for (int n = 1; n < numPoints + 1; n++) {
 
             Vec point = c.getJMPoint(n).p.v;
             Vec cpoint1 = c.getJMPoint(n - 1).cp1.v;
             Vec cpoint2 = c.getJMPoint(n).cp2.v;
-//            prev[0] = xy[0];
-//            prev[1] = xy[1];
-//            xy = cam.mathToScreen(point);
-            xy[0] = point.x;
-            xy[1] = point.y;
+            int[] xy = cam.mathToScreen(point);
 
-//            int[] cxy1 = cam.mathToScreen(cpoint1);
-//            int[] cxy2 = cam.mathToScreen(cpoint2);
-            double cxy1[] = {cpoint1.x, cpoint1.y};
-            double cxy2[] = {cpoint2.x, cpoint2.y};
+            int[] cxy1 = camera.mathToScreen(cpoint1);
+            int[] cxy2 = camera.mathToScreen(cpoint2);
             if (DEBUG_PATH_POINTS) {
                 debugPathPoint(c.getJMPoint(n), c);
             }

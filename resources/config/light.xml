@@ -10,7 +10,7 @@
         </style>
         <style name="latexdefault">
             <drawColor>black</drawColor>
-            <fillColor>black</fillColor>
+            <fillColor>#00000000</fillColor>
             <thickness>.01</thickness>
         </style>
         <style name="solidred">

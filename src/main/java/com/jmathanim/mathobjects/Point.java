@@ -121,12 +121,12 @@ public class Point extends MathObject {
 //        
         double st;
         switch (dotStyle) {
-            case DOT_STYLE_CIRCLE:
-                st = r.getStrokeThickness(this)*.5;
+            case DOT_STYLE_CIRCLE://TODO: Draw this with fixed camera
+                st = mp.thickness;
                 Shape.circle().shift(v).scale(st).drawColor(mp.drawColor).fillColor(mp.drawColor).draw(r);
                 break;
             case DOT_STYLE_CROSS:
-                st = r.getStrokeThickness(this) *5;
+                st = mp.thickness;
                 Shape cross = new Shape();
                 cross.getPath().addPoint(Point.at(-st / 2, st / 2), Point.at(st / 2, -st / 2), Point.at(st / 2, st / 2), Point.at(-st / 2, -st / 2));
                 cross.getJMPoint(0).isThisSegmentVisible = false;
@@ -134,7 +134,7 @@ public class Point extends MathObject {
                 cross.shift(v).scale(st).drawColor(mp.drawColor).draw(r);
                 break;
             case DOT_STYLE_PLUS:
-                st = r.getStrokeThickness(this) * 5;
+                st = mp.thickness;
                 Shape plus = new Shape();
                 plus.getPath().addPoint(Point.at(0, st / 2), Point.at(0, -st / 2), Point.at(st / 2, 0), Point.at(-st / 2, 0));
                 plus.getJMPoint(0).isThisSegmentVisible = false;
