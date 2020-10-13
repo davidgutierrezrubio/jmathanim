@@ -81,4 +81,7 @@ public abstract class Renderer {
 
     abstract public void drawAbsoluteCopy(Shape sh, Vec anchor);
 
+    
+    abstract public  double getStrokeThickness(MathObject obj);
+
 }

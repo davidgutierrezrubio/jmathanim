@@ -124,13 +124,13 @@ public class JMPathPoint extends MathObject implements Updateable, Stateable {
         return shift(new Vec(x, y));
     }
 
-    @Override
-    public <T extends MathObject> T shift(Vec shiftVector) {
-        p.v.addInSite(shiftVector);
-        cp1.v.addInSite(shiftVector);
-        cp2.v.addInSite(shiftVector);
-        return (T) this;
-    }
+//    @Override
+//    public <T extends MathObject> T shift(Vec shiftVector) {
+//        p.v.addInSite(shiftVector);
+//        cp1.v.addInSite(shiftVector);
+//        cp2.v.addInSite(shiftVector);
+//        return (T) this;
+//    }
 
 
     @Override
@@ -224,5 +224,11 @@ public class JMPathPoint extends MathObject implements Updateable, Stateable {
     @Override
     public void draw(Renderer r) {
         p.draw(r);
+    }
+
+    public void copyFrom(JMPathPoint jmPoint) {
+        this.p.copyFrom(jmPoint.p);
+        this.cp1.copyFrom(jmPoint.cp1);
+        this.cp2.copyFrom(jmPoint.cp2);
     }
 }

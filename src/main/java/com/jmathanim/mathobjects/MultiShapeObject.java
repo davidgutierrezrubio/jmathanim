@@ -72,13 +72,13 @@ public class MultiShapeObject extends MathObject {
         return super.drawColor(dc);
     }
 
-    @Override
-    public <T extends MathObject> T shift(Vec shiftVector) {
-        for (Shape jmp : shapes) {
-            jmp.shift(shiftVector);
-        }
-        return (T) this;
-    }
+//    @Override
+//    public <T extends MathObject> T shift(Vec shiftVector) {
+//        for (Shape jmp : shapes) {
+//            jmp.shift(shiftVector);
+//        }
+//        return (T) this;
+//    }
 
     @Override
     public <T extends MathObject> T copy() {

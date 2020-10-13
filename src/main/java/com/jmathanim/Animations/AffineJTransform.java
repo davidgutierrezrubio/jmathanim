@@ -11,6 +11,7 @@ import com.jmathanim.mathobjects.Arrow2D;
 import com.jmathanim.mathobjects.Shape;
 import com.jmathanim.mathobjects.JMPathPoint;
 import com.jmathanim.mathobjects.Line;
+import com.jmathanim.mathobjects.MOProperties.MathObjectAttributes;
 import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.MultiShapeObject;
 import com.jmathanim.mathobjects.Point;
@@ -30,6 +31,8 @@ import org.apache.commons.math3.linear.RealMatrix;
  */
 public class AffineJTransform {
 
+    public boolean preserveDistances=true;
+    
     /**
      * Matrix that stores the transform, with the following form: {{1, x, y, z},
      * {0, vx, vy, vz},{0, wx, wy, wz},{0 tx ty tz}} Where x,y,z is the image of
@@ -238,12 +241,14 @@ public class AffineJTransform {
             for (Shape obj : mobj.shapes) {
                 applyTransform(obj);
             }
+            applyTransformToAttributes(mObject);
             return;
         }
         if (mObject instanceof Line) {
             Line mobj = (Line) mObject;
             applyTransform(mobj.getP1());
             applyTransform(mobj.getP2());
+            applyTransformToAttributes(mObject);
             return;
         }
         if (mObject instanceof Shape) {
@@ -252,11 +257,13 @@ public class AffineJTransform {
             for (int n = 0; n < size; n++) {
                 applyTransform(mobj.getJMPoint(n));
             }
+            applyTransformToAttributes(mObject);
             return;
         }
 
         if (mObject instanceof Arrow2D) {
             applyTransform(((Arrow2D) mObject).getBody());
+            applyTransformToAttributes(mObject);
             return;
         }
 
@@ -278,6 +285,7 @@ public class AffineJTransform {
             jmPDst.cp2.v.x = cp2Dst.v.x;
             jmPDst.cp2.v.y = cp2Dst.v.y;
             jmPDst.cp2.v.z = cp2Dst.v.z;
+            applyTransformToAttributes(mObject);
             return;
         }
 
@@ -294,11 +302,19 @@ public class AffineJTransform {
                 applyTransform(jmp.cp1);
                 applyTransform(jmp.cp2);
             }
+            applyTransformToAttributes(mObject);
             return;
         }
         JMathAnimScene.logger.warn("Don't know how to perform an Affine Transform on object " + mObject.getClass().getName());
     }
 
+    private void applyTransformToAttributes(MathObject mob){
+        MathObjectAttributes mo=mob.attrs;
+        if (mo!=null)
+        {
+            mo.applyTransform(this);
+        }
+    }
     /**
      * Returns a copy of the transformed object. Original object is not
      * modified.
