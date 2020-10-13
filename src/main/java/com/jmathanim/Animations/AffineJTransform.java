@@ -31,6 +31,8 @@ import org.apache.commons.math3.linear.RealMatrix;
  */
 public class AffineJTransform {
 
+    public boolean preserveDistances=true;
+    
     /**
      * Matrix that stores the transform, with the following form: {{1, x, y, z},
      * {0, vx, vy, vz},{0, wx, wy, wz},{0 tx ty tz}} Where x,y,z is the image of

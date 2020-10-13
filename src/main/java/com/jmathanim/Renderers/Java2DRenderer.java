@@ -173,32 +173,6 @@ public class Java2DRenderer extends Renderer {
     }
 
     @Override
-    public void drawCircle(double x, double y, double radius) {
-
-//        g2draw.setColor(borderColor.getColor());
-        double mx = x - .5 * radius;
-        double my = y + .5 * radius;
-        int[] screenx = camera.mathToScreen(mx, my);
-        int screenRadius = camera.mathToScreen(radius);
-        g2draw.fillOval(screenx[0], screenx[1], screenRadius, screenRadius);
-    }
-
-    @Override
-    public void drawDot(Point p) {
-        setStroke(g2draw, p);
-//        int[] xx = camera.mathToScreen(p.v.x, p.v.y);
-        Path2D.Double resul = new Path2D.Double();
-        resul.moveTo(p.v.x, p.v.y);
-        resul.lineTo(p.v.x, p.v.y);
-        AffineTransform bTr = g2draw.getTransform();
-        g2draw.setTransform(getCameratoG2DTransform(camera));
-        g2draw.setColor(p.mp.fillColor.getColor());
-        g2draw.draw(resul);
-        g2draw.fill(resul);
-        g2draw.setTransform(bTr);
-    }
-
-    @Override
     public void saveFrame(int frameCount) {
         //Draw all layers into finalimage
         if (cnf.drawShadow) {
@@ -208,7 +182,7 @@ public class Java2DRenderer extends Renderer {
         }
 
         //Draw the objects drawn into the drawBufferImage
-        AffineTransform tr = g2dFinalImage.getTransform();
+        AffineTransform trBackup = g2dFinalImage.getTransform();
 
         if (scaleBufferedImage > 1) {//Scaled draw
 
@@ -221,7 +195,7 @@ public class Java2DRenderer extends Renderer {
             g2dFinalImage.drawImage(drawBufferImage, 0, 0, null);
             //This layer is on top of everything, for debugging purposes
             g2dFinalImage.drawImage(debugImage, 0, 0, null);
-            g2dFinalImage.setTransform(tr);
+            g2dFinalImage.setTransform(trBackup);
 
         } else {//Normal draw
 
@@ -410,7 +384,7 @@ public class Java2DRenderer extends Renderer {
     }
 
     public void setStroke(Graphics2D g2d, MathObject obj) {
-        final double thickness = obj.mp.getThickness(this) / 200;
+        double thickness = getStrokeThickness(obj);
 //        int strokeSize;
 //        if (!obj.mp.absoluteThickness) {
 //            strokeSize = camera.mathToScreen(.0025 * thickness); //TODO: Another way to compute this
@@ -436,6 +410,12 @@ public class Java2DRenderer extends Renderer {
                 break;
         }
 
+    }
+
+    @Override
+    public double getStrokeThickness(MathObject obj) {
+        final double thickness = obj.mp.getThickness(this) / 200;
+        return thickness;
     }
 
     @Override
@@ -481,6 +461,27 @@ public class Java2DRenderer extends Renderer {
                 debugBoundingBox(c.getBoundingBox());
             }
         }
+    }
+
+    @Override
+    public void drawCircle(double x, double y, double radius) {
+
+//        g2draw.setColor(borderColor.getColor());
+        double mx = x - .5 * radius;
+        double my = y + .5 * radius;
+        int[] screenx = camera.mathToScreen(mx, my);
+        int screenRadius = camera.mathToScreen(radius);
+        g2draw.fillRect(screenx[0], screenx[1], screenRadius, screenRadius);
+//        g2draw.fillOval(screenx[0], screenx[1], screenRadius, screenRadius);
+    }
+
+    @Override
+    public void drawDot(Point p) {
+        setStroke(g2draw, p);
+//        int[] xx = camera.mathToScreen(p.v.x, p.v.y);
+        g2draw.setColor(p.mp.fillColor.getColor());
+        drawCircle(p.v.x, p.v.y, .4);
+        drawCircle(p.v.x, p.v.y, .4);
     }
 
     public AffineTransform getCameratoG2DTransform(Camera cam) {

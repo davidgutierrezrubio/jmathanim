@@ -6,6 +6,7 @@
 package com.jmathanim.mathobjects.MOProperties;
 
 import com.jmathanim.Animations.AffineJTransform;
+import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.Point;
 import com.jmathanim.mathobjects.Shape;
 
@@ -13,35 +14,53 @@ import com.jmathanim.mathobjects.Shape;
  *
  * @author David Gutiérrez Rubio <davidgutierrezrubio@gmail.com>
  */
-public class ArcAttributes extends MathObjectAttributes{
-    
-    public Point center;
-    public double radius,radiusState;
-    public Shape arc;
+public class ArcAttributes extends MathObjectAttributes {
 
-    public ArcAttributes(Point center, double radius,Shape arc) {
+    public Point center;
+    public double radius, angle;
+    public Shape arc;
+    private double radiusState, angleState;
+
+    public ArcAttributes(Point center, double radius, double angle, Shape arc) {
+        super(arc);
         this.center = center;
         this.radius = radius;
-        this.arc=arc;
+        this.angle = angle;
+        this.arc = arc;
     }
 
-    
     @Override
     public void applyTransform(AffineJTransform tr) {
         tr.applyTransform(center);
-        this.radius=center.to(arc.getPoint(0)).norm();
+        double sum = 0;
+        for (Point p : arc.getPath().getPoints()) {
+            sum += center.to(p).norm();
+        }
+        radius = sum / arc.getPath().size();
     }
 
     @Override
     public void saveState() {
         center.saveState();
-        radiusState=radius;
-        
+        radiusState = radius;
+        angleState = angle;
+
     }
 
     @Override
     public void restoreState() {
         center.restoreState();
-        radius=radiusState;
+        radius = radiusState;
+        angle = angleState;
+    }
+
+    @Override
+    public MathObjectAttributes copy() {
+        return new ArcAttributes(center.copy(), radius, angle, null);
+    }
+
+    @Override
+    public void setParent(MathObject parent) {
+        arc = (Shape) parent;
     }
 }

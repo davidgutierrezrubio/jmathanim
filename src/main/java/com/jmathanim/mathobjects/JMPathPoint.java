@@ -225,4 +225,10 @@ public class JMPathPoint extends MathObject implements Updateable, Stateable {
     public void draw(Renderer r) {
         p.draw(r);
     }
+
+    public void copyFrom(JMPathPoint jmPoint) {
+        this.p.copyFrom(jmPoint.p);
+        this.cp1.copyFrom(jmPoint.cp1);
+        this.cp2.copyFrom(jmPoint.cp2);
+    }
 }
