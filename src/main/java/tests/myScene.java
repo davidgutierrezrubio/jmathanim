@@ -5,6 +5,8 @@
  */
 package tests;
 
+import com.jmathanim.Animations.Strategies.Transform.PointInterpolationCanonical;
+import com.jmathanim.Animations.Transform;
 import com.jmathanim.Animations.commands.Commands;
 import com.jmathanim.Utils.Anchor;
 import com.jmathanim.Utils.ConfigLoader;
@@ -35,29 +37,45 @@ public class myScene extends Scene2D {
 //        conf.setOutputDir("c:\\media");
 //        ConfigLoader.parseFile("production.xml");
         ConfigLoader.parseFile("preview.xml");
-        ConfigLoader.parseFile("light.xml");
+        ConfigLoader.parseFile("dark.xml");
 //        conf.setHighQuality();
 //        conf.setCreateMovie(true);
     }
 
     @Override
     public void runSketch() {
-        LaTeXMathObject lat = new LaTeXMathObject("$5$");
+        tran();
+    }
+
+    private void Big2() {
+        LaTeXMathObject lat = new LaTeXMathObject("$2$");
+        LaTeXMathObject lat2 = new LaTeXMathObject("$8$");
         lat.stackTo(Anchor.BY_CENTER);
         final JMPath pa = lat.get(0).getPath().rawCopy();
-//       add(lat);
-        Shape sh = new Shape();
-        sh.jmpath.jmPathPoints.add(pa.jmPathPoints.get(14));
-        sh.jmpath.jmPathPoints.add(pa.jmPathPoints.get(15));
-        sh.jmpath.jmPathPoints.add(pa.jmPathPoints.get(16));
-//        sh.scale(30);
-    camera.zoomToObjects(sh);
-        System.out.println("Sh "+sh.jmpath);
-        add(sh.thickness(1));
-//        camera.scale(.05);
-//        camera.adjustToAllObjects();
-    play.scale(10, sh.getCenter(), 10, sh);
-        waitSeconds(5);
+        add(lat);
+        camera.zoomToObjects(lat);
+        final Shape sh = lat.get(0);
+        JMPath jm=sh.getPath();
+//        Transform aa = new Transform(5, lat.get(0), lat2.get(0));
+//        playAnimation(aa);
+PointInterpolationCanonical can=new PointInterpolationCanonical(sh, lat2.get(0), this);
+can.prepareObjects();
+System.out.println("sizes before/after  "+pa.size()+"   "+jm.size());
+for (int n = 0; n < jm.size(); n++) {
+    System.out.println(n+ "before/after  : "+pa.getJMPoint(n)+"     "+jm.getJMPoint(n));
+}
+
+waitSeconds(5);
+    }
+    private void tran()
+    {
+         LaTeXMathObject lat = new LaTeXMathObject("$2$");
+        LaTeXMathObject lat2 = new LaTeXMathObject("$8$");
+        lat.stackTo(Anchor.BY_CENTER);
+         add(lat);
+        camera.zoomToObjects(lat);
+        play.transform(5, lat.get(0), lat2.get(0));
+        waitSeconds(3);
     }
 
     private void creationMultishape() {

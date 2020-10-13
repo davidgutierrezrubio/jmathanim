@@ -29,6 +29,7 @@ import java.awt.RenderingHints;
 import java.awt.Stroke;
 import java.awt.Toolkit;
 import java.awt.geom.AffineTransform;
+import java.awt.geom.GeneralPath;
 import java.awt.geom.Path2D;
 import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
@@ -426,6 +427,7 @@ public class Java2DRenderer extends Renderer {
 
         if (numPoints >= 2) {
             path = createPathFromJMPath(mobj, cam);
+            path.setWindingRule(GeneralPath.WIND_NON_ZERO);
 
             if (mobj.mp.isFilled()) {
                 //Filled paths are better drawn supposing all points are visible...
@@ -433,12 +435,8 @@ public class Java2DRenderer extends Renderer {
 //                Path2D.Double pathToFill = createPathFromJMPath(mobj, mobj.getPath().allVisible(), cam);
 //                g2draw.setColor(mobj.mp.fillColor.getColor());
 //                g2draw.fill(pathToFill);
-//                AffineTransform bTr = g2draw.getTransform();
-//                g2draw.setTransform(getCameratoG2DTransform(cam));
                 g2draw.setColor(mobj.mp.fillColor.getColor());
                 g2draw.fill(path);
-//                g2draw.setTransform(bTr);
-
             }
             //Border is always drawed
 //            AffineTransform bTr = g2draw.getTransform();
