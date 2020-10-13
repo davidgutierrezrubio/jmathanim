@@ -9,8 +9,13 @@
             <thickness>1</thickness>
         </style>  
         <style name="latexdefault">
-            <drawColor>#FFFFFFD0</drawColor>
+            <drawColor>#FFFFFF00</drawColor>
             <fillColor>#FFFFFFFF</fillColor>
+            <thickness>.04</thickness>
+        </style>
+        <style name="latextransparent">
+            <drawColor>#FFFFFFFF</drawColor>
+            <fillColor>#FFFFFF00</fillColor>
             <thickness>.04</thickness>
         </style>
         <style name="solidred">

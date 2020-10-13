@@ -370,7 +370,7 @@ public class JMPath implements Updateable, Stateable {
 
     /**
      * Cycle points in path.Point(0) becomes Point(step), Point(1) becomes
- Point(step+1)... Useful to align paths minimizing distances
+     * Point(step+1)... Useful to align paths minimizing distances
      *
      * @param step
      * @param direction
@@ -476,7 +476,6 @@ public class JMPath implements Updateable, Stateable {
 //
 //        }
 //    }
-
     void shift(Vec shiftVector) {
         for (JMPathPoint p : jmPathPoints) {
             p.shift(shiftVector);
@@ -713,6 +712,40 @@ public class JMPath implements Updateable, Stateable {
             JMPathPoint pNew = p.copy();
             pNew.isThisSegmentVisible = true;
             resul.addJMPoint(pNew);
+        }
+        return resul;
+    }
+
+    public JMPath distille() {
+        JMPath resul = rawCopy();
+        //Delete points that are separated
+        resul.removeConsecutiveHiddenVertices();
+        ArrayList<JMPathPoint> toDelete = new ArrayList<>();
+
+        double epsilon = .000001;
+        int n = 0;
+        while (n < resul.size()) {
+            JMPathPoint p1 = resul.getJMPoint(n);
+            JMPathPoint p2 = resul.getJMPoint(n + 1);
+            if (pointEqual(p1.p, p2.p, epsilon)) {
+                p1.cp2.copyFrom(p2.cp2);
+//                if (p2.isThisSegmentVisible) {
+                    p1.isThisSegmentVisible = true;
+//                }
+                resul.jmPathPoints.remove(p2);
+                n = 0;
+            } else {
+                n++;
+            }
+        }
+
+        return resul;
+    }
+
+    public boolean pointEqual(Point p1, Point p2, double epsilon) {
+        boolean resul = false;
+        if ((Math.abs(p1.v.x - p2.v.x) < epsilon) & (Math.abs(p1.v.y - p2.v.y) < epsilon)) {
+            resul = true;
         }
         return resul;
     }

@@ -426,8 +426,8 @@ public class Java2DRenderer extends Renderer {
         int numPoints = c.size();
 
         if (numPoints >= 2) {
-            path = createPathFromJMPath(mobj, cam);
-            path.setWindingRule(GeneralPath.WIND_NON_ZERO);
+            path = createPathFromJMPath(mobj, c,cam);
+//            path.setWindingRule(GeneralPath.WIND_NON_ZERO);
 
             if (mobj.mp.isFilled()) {
                 //Filled paths are better drawn supposing all points are visible...
@@ -481,10 +481,14 @@ public class Java2DRenderer extends Renderer {
         return createPathFromJMPath(mobj, mobj.getPath(), cam);
     }
 
-    public Path2D.Double createPathFromJMPath(Shape mobj, JMPath c, Camera2D cam) {
+    public Path2D.Double createPathFromJMPath(Shape mobj, JMPath cd, Camera2D cam) {
         Path2D.Double resul = new Path2D.Double();
+        JMPath c=cd.distille();
+//        System.out.println("Path   :"+cd);
+//        System.out.println("PathDes:"+c);
         Vec p = c.getJMPoint(0).p.v;
 
+        
         if (DEBUG_PATH_POINTS) {
             debugPathPoint(c.getJMPoint(0), c);
         }
@@ -524,6 +528,7 @@ public class Java2DRenderer extends Renderer {
                     resul.moveTo(xy[0], xy[1]);
                 }
             }
+            
         }
 //        if (c.getJMPoint(0).isThisSegmentVisible) {
 //            if (xy[0] != scr[0] | xy[1] != scr[1]) {
