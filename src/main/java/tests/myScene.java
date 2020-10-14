@@ -72,12 +72,11 @@ waitSeconds(5);
          LaTeXMathObject lat = new LaTeXMathObject("$2$");
         LaTeXMathObject lat2 = new LaTeXMathObject("$8$");
         lat.stackTo(Anchor.BY_CENTER);
-         add(lat);
+         add(lat2);
         camera.zoomToObjects(lat);
-        lat2.get(0).visible=false;
-        playAnimation(Commands.setStyle(.3, "latextransparent",lat.get(0), lat2.get(0)));
-        play.transform(1, lat.get(0), lat2.get(0));
-        playAnimation(Commands.setStyle(.3, "latexdefault",lat.get(0), lat2.get(0)));
+//        playAnimation(Commands.setStyle(.3, "latextransparent",lat.get(0), lat2.get(0)));
+        play.transform(5, lat2.get(0), lat.get(0));
+//        playAnimation(Commands.setStyle(.3, "latexdefault",lat.get(0), lat2.get(0)));
         waitSeconds(3);
     }
 

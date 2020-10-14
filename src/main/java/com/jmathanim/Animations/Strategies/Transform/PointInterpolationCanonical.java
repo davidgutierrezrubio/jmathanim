@@ -131,10 +131,17 @@ public class PointInterpolationCanonical extends TransformStrategy {
         }
     }
 
-    private void preparePaths(JMPath path1, JMPath path2) {
+    /**
+     * Creates connectedOrigin1 and connectedDst, two paths in their canonicalforms
+     * (and array of simple connected open paths)
+     * @param pathTransformed F
+     * @param pathDestiny 
+     */
+    
+    private void preparePaths(JMPath pathTransformed, JMPath pathDestiny) {
 
-        connectedOrigin = path1.canonicalForm();
-        connectedDst = path2.canonicalForm();
+        connectedOrigin = pathTransformed.canonicalForm();
+        connectedDst = pathDestiny.canonicalForm();
         alignNumberOfComponents(connectedOrigin, connectedDst);
         connectedOriginaRawCopy = new CanonicalJMPath();
         for (JMPath p : connectedOrigin.getPaths()) {
