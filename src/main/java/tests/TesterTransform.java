@@ -38,14 +38,14 @@ public class TesterTransform extends Scene2D {
 
     @Override
     public void runSketch() throws Exception {
-//        test1();//Circle and square, back and forth
-//        test2(); //Arcs, open curves vs closed
-//        test3(); //Circle to segment, back and forth
-//        test4(); //Circle to line, back and forth
-//        test5a();
-//        test5();
+        test1();//Circle and square, back and forth
+        test2(); //Arcs, open curves vs closed
+        test3(); //Circle to segment, back and forth
+        test4(); //Circle to line, back and forth
+        test5a();
+        test5();
         test6();
-//        test8();//Latex object
+        test8();//Latex object
 
     }
 
