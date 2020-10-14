@@ -35,8 +35,9 @@ public abstract class MathObject implements Drawable, Updateable, Stateable {
     public static final int SEGMENT = 9;
     public static final int LINE = 10;
     public static final int MULTISHAPE = 11;
-    public static final int LATEX = 11;
+    public static final int LATEX_MULTISHAPE = 11;
     public static final int SVG = 12;
+    public static final int LATEX_SHAPE=13;
 
     public MathObjectDrawingProperties mp;
     protected MathObjectDrawingProperties mpBackup;

@@ -385,14 +385,15 @@ public class Java2DRenderer extends Renderer {
     }
 
     public void setStroke(Graphics2D g2d, MathObject obj) {
-        double thickness = obj.mp.getThickness(this)*10;
-//        int strokeSize;
-//        if (!obj.mp.absoluteThickness) {
-//            strokeSize = camera.mathToScreen(.0025 * thickness); //TODO: Another way to compute this
-//        } else {
-//            strokeSize = (int) thickness;
-//        }
-        float strokeSize = (float) thickness;
+        double thickness = obj.mp.getThickness(this);
+//        double thickness = obj.mp.thickness*5;
+        int strokeSize;
+        if (!obj.mp.absoluteThickness) {
+            strokeSize = camera.mathToScreen(.0025 * thickness); //TODO: Another way to compute this
+        } else {
+            strokeSize = (int) thickness;
+        }
+//        float strokeSize = (float) thickness;
 
         switch (obj.mp.dashStyle) {
             case MathObjectDrawingProperties.SOLID:
@@ -481,9 +482,9 @@ public class Java2DRenderer extends Renderer {
         return createPathFromJMPath(mobj, mobj.getPath(), cam);
     }
 
-    public Path2D.Double createPathFromJMPath(Shape mobj, JMPath cd, Camera2D cam) {
+    public Path2D.Double createPathFromJMPath(Shape mobj, JMPath c, Camera2D cam) {
         Path2D.Double resul = new Path2D.Double();
-        JMPath c=cd.distille();
+//        JMPath c=cd.distille();
 //        System.out.println("Path   :"+cd);
 //        System.out.println("PathDes:"+c);
         Vec p = c.getJMPoint(0).p.v;
@@ -526,6 +527,7 @@ public class Java2DRenderer extends Renderer {
             } else {
                 if (n < numPoints) {//If it is the last point, don't move (it creates a strange point at the beginning)
                     resul.moveTo(xy[0], xy[1]);
+                    resul.closePath();
                 }
             }
             

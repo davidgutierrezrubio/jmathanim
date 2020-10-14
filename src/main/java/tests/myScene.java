@@ -48,8 +48,8 @@ public class myScene extends Scene2D {
     }
 
     private void Big2() {
-        LaTeXMathObject lat = new LaTeXMathObject("$2$");
-        LaTeXMathObject lat2 = new LaTeXMathObject("$$");
+        LaTeXMathObject lat2 = new LaTeXMathObject("$2$");
+        LaTeXMathObject lat = new LaTeXMathObject("$5$");
         lat.stackTo(Anchor.BY_CENTER);
         final JMPath pa = lat.get(0).getPath().rawCopy();
         add(lat);
@@ -69,9 +69,10 @@ waitSeconds(5);
     }
     private void tran()
     {
-         LaTeXMathObject lat = new LaTeXMathObject("$2$");
-        LaTeXMathObject lat2 = new LaTeXMathObject("$8$");
+         LaTeXMathObject lat = new LaTeXMathObject("$8$");
+        LaTeXMathObject lat2 = new LaTeXMathObject("$5$");
         lat.stackTo(Anchor.BY_CENTER);
+        lat2.stackTo(Anchor.BY_CENTER);
          add(lat2);
         camera.zoomToObjects(lat);
 //        playAnimation(Commands.setStyle(.3, "latextransparent",lat.get(0), lat2.get(0)));

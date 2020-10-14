@@ -20,16 +20,16 @@ import java.util.ArrayList;
  *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
-public class PointInterpolationCanonical extends TransformStrategy {
+public class PointInterpolationCanonicalProof extends TransformStrategy {
 
-   public CanonicalJMPath connectedOrigin, connectedDst, connectedOriginaRawCopy;
+    public CanonicalJMPath connectedOrigin, connectedDst, connectedOriginaRawCopy;
     private final ArrayList<Shape> addedAuxiliaryObjectsToScene;
     private Shape mobjTransformed;
     private Shape mobjDestiny;
     private Shape originalShapeBaseCopy;
     private static final boolean DEBUG_COLORS = false;
 
-    public PointInterpolationCanonical(Shape mobjTransformed, Shape mobjDestiny, JMathAnimScene scene) {
+    public PointInterpolationCanonicalProof(Shape mobjTransformed, Shape mobjDestiny, JMathAnimScene scene) {
         super(scene);
         this.mobjTransformed = mobjTransformed;
         this.mobjDestiny = mobjDestiny;
@@ -237,4 +237,5 @@ public class PointInterpolationCanonical extends TransformStrategy {
     @Override
     public void addObjectsToScene() {
     }
+
 }
