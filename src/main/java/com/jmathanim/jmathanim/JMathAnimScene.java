@@ -87,7 +87,7 @@ public abstract class JMathAnimScene {
      * Creates a new Scene with default settings.
      */
     public JMathAnimScene() {
-        objects = new ArrayList<>(); //TODO: Extends this to include layers
+        objects = new ArrayList<>();
         conf = JMathAnimConfig.getConfig();
         conf.setLowQuality();
         objectsToBeUpdated = new ArrayList<>();
@@ -108,7 +108,7 @@ public abstract class JMathAnimScene {
     /**
      * Execute the current scene
      */
-    public final void execute() {
+    public final int execute() {
 
         String nombre = this.getClass().getName();
         logger.info("Running sketch {} ", nombre);
@@ -137,7 +137,7 @@ public abstract class JMathAnimScene {
         if (exitCode != 0) {
             logger.error("An error ocurred. Check the logs.");
         }
-        System.exit(0);
+        return exitCode;
     }
 
     /**
@@ -221,7 +221,6 @@ public abstract class JMathAnimScene {
             objects.remove(obj);
             obj.removeScene(this);
             unregisterObjectToBeUpdated(obj);
-            obj.unregisterChildrenToBeUpdated(this);//TODO: Really unregister children??
         }
     }
 

@@ -297,11 +297,6 @@ public class AffineJTransform {
             p.v.x = pNew.getEntry(0, 1);
             p.v.y = pNew.getEntry(0, 2);
             p.v.z = pNew.getEntry(0, 3);
-            //If the object to be transformed is a point, it will have several JMPathPoints associated
-            for (JMPathPoint jmp : p.jmPoints) {
-                applyTransform(jmp.cp1);
-                applyTransform(jmp.cp2);
-            }
             applyTransformToAttributes(mObject);
             return;
         }

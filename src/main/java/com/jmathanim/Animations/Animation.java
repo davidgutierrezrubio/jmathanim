@@ -46,10 +46,8 @@ public abstract class Animation {
 
     public void setFps(double fps) {
         this.fps = fps;
-//        numFrames = (int) (runTime * fps) + 3;//TODO: Check this!
         dt = 1.d / (runTime * fps + 3);
         t = 0;
-//        frame = 0;
     }
 
     /**

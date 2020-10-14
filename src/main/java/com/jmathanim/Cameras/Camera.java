@@ -7,6 +7,7 @@ package com.jmathanim.Cameras;
 
 import com.jmathanim.Utils.JMathAnimConfig;
 import com.jmathanim.Utils.Rect;
+import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.MathObject;
 
@@ -222,4 +223,8 @@ public abstract class Camera {
     
     abstract public void restoreState();
     
+    public Vec getGaps()
+    {
+        return new Vec(hgap,vgap);
+    }
 }

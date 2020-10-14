@@ -22,15 +22,7 @@ import java.util.ArrayList;
 public class Shape extends MathObject {
 
     public final JMPath jmpath;
-    protected boolean needsRecalcControlPoints;
-    protected int numInterpolationPoints = 1;//TODO: Adaptative interpolation
     protected final ArrayList<JMPathPoint> vertices;
-
-    /**
-     * Type of path, JMPath.STRAIGHT or JMPath.CURVED
-     */
-    private ArrayList<Boolean> visibilityTemp;
-    private double fillAlphaTemp;
 
     public Shape() {
         this(new JMPath(), null);
@@ -44,14 +36,12 @@ public class Shape extends MathObject {
         super(mp);
         vertices = new ArrayList<>();
         this.jmpath = jmpath;
-        needsRecalcControlPoints = false;
     }
 
-    public Shape(MathObjectDrawingProperties mp) {//TODO: Fix this
+    public Shape(MathObjectDrawingProperties mp) {
         super(mp);
         vertices = new ArrayList<>();
         jmpath = new JMPath();
-        needsRecalcControlPoints = false;
     }
 
     public JMPathPoint getJMPoint(int n) {
@@ -77,7 +67,10 @@ public class Shape extends MathObject {
 
     @Override
     public Point getCenter() {
-//        return getBoundingBox().getCenter();
+        return getBoundingBox().getCenter();
+    }
+
+    public Point getCentroid() {
         Point resul = new Point(0, 0, 0);
         for (JMPathPoint p : jmpath.jmPathPoints) {
             resul.v.x += p.p.v.x;
@@ -225,7 +218,7 @@ public class Shape extends MathObject {
         Shape obj = new Shape();
         JMathAnimConfig.getConfig().getScene();
         JMPathPoint p1 = JMPathPoint.lineTo(A);
-        JMPathPoint p2 = JMPathPoint.lineTo(B.v.x, A.v.y);//TODO: Make it updateable
+        JMPathPoint p2 = JMPathPoint.lineTo(B.v.x, A.v.y);
         JMPathPoint p3 = JMPathPoint.lineTo(B);
         JMPathPoint p4 = JMPathPoint.lineTo(A.v.x, B.v.y);
         obj.jmpath.addJMPoint(p1, p2, p3, p4);

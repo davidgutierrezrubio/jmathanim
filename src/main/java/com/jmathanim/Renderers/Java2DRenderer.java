@@ -134,7 +134,6 @@ public class Java2DRenderer extends Renderer {
 
         if (cnf.showPreview) {
             JMathAnimScene.logger.debug("Creating preview window");
-            //TODO: Move this to its own class
             previewWindow = new PreviewWindow(this);
             previewWindow.buildGUI();
 

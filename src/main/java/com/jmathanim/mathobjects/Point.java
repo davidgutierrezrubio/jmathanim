@@ -24,7 +24,6 @@ public class Point extends MathObject {
     public Vec v;
     private Vec vBackup;
 
-    public final HashSet<JMPathPoint> jmPoints;
     private int dotStyle;
 
     public static final int DOT_STYLE_CIRCLE = 1;
@@ -87,7 +86,6 @@ public class Point extends MathObject {
         this.v = new Vec(x, y, z);
         this.mp.absoluteThickness = true;
         this.mp.thickness = 8d;//default value
-        jmPoints = new HashSet<>();
     }
 
     /**

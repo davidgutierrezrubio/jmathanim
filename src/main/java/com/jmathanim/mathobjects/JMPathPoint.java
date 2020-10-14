@@ -60,9 +60,6 @@ public class JMPathPoint extends MathObject implements Updateable, Stateable {
         isCurved = false;//By default, is not curved
         this.isThisSegmentVisible = isVisible;
         this.type = type;
-        if (!p.jmPoints.contains(this)) {//TODO: Implement delete method in MathObject
-            p.jmPoints.add(this);
-        }
     }
 
     @Override

@@ -60,7 +60,7 @@ public class PlayAnim {
     }
 
     public void fadeOutAll(double runtime) {
-        MathObject[] objects=scene.getObjects().toArray(new MathObject[scene.getObjects().size()]);
+        MathObject[] objects = scene.getObjects().toArray(new MathObject[scene.getObjects().size()]);
         scene.playAnimation(Commands.fadeOut(runtime, objects));
     }
 
@@ -99,9 +99,10 @@ public class PlayAnim {
     }
 
     public void adjustToObjects(double runTime, MathObject... objs) {
+        final Vec gaps = scene.getCamera().getGaps();
         Rect r = scene.getCamera().getMathView();
         for (MathObject obj : objs) {
-            r = r.union(obj.getBoundingBox().addGap(.1, .1));//TODO: personalize GAP
+            r = r.union(obj.getBoundingBox().addGap(gaps.x, gaps.y));
         }
         zoomToRect(runTime, r);
     }
@@ -261,10 +262,10 @@ public class PlayAnim {
     }
 
     /**
-     * Plays an animation drawing a {@link MathObject}.The object drawn is
- added to the current scene. Several strategies to create the object are
- automatically chosen: For a simple shape, draws the shape. For a
- {@link MultiShapeObject} performs a simple shape creation for each shape,
+     * Plays an animation drawing a {@link MathObject}.The object drawn is added
+     * to the current scene. Several strategies to create the object are
+     * automatically chosen: For a simple shape, draws the shape. For a
+     * {@link MultiShapeObject} performs a simple shape creation for each shape,
      * with a time gap between one and the next. For a {@link SVGMathObject}
      * (which includes {@link LaTeXMathObject}) a "first draw, then fill"
      * strategy is chosen.

@@ -60,8 +60,11 @@ public class Camera2D extends Camera {
         setCenter(xx, yy);
     }
 
+    /**
+     * Default values
+     */
     @Override
-    public final void reset() {// TODO: CHange this
+    public final void reset() {
         this.setMathXY(-2, 2, 0);
     }
 
@@ -122,18 +125,18 @@ public class Camera2D extends Camera {
 
     @Override
     public void saveState() {
-        xminB=xmin;
-        xmaxB=xmax;
-        yminB=ymin;
-        ymaxB=ymax;
+        xminB = xmin;
+        xmaxB = xmax;
+        yminB = ymin;
+        ymaxB = ymax;
     }
 
     @Override
     public void restoreState() {
-        xmin=xminB;
-        xmax=xmaxB;
-        ymin=yminB;
-        ymax=ymaxB;
+        xmin = xminB;
+        xmax = xmaxB;
+        ymin = yminB;
+        ymax = ymaxB;
     }
 
 }

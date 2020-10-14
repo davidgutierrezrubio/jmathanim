@@ -144,9 +144,9 @@ public class Arrow2D extends MathObject {
         double angle = v.getAngle();
         AffineJTransform tr = AffineJTransform.create2DRotationTransform(p2, -Math.PI / 2 + angle);
         tr.applyTransform(arrowHeadCopy);
-        //TODO: Needs to get the real height of arrow head to substract 
         double vecLength = p1.to(p2).norm();
-        double alpha = 1 - head.getBoundingBox().getHeight() / vecLength;
+        //TODO: Uses 50% of arrow head height. Can be improved?
+        double alpha = 1 - .5*head.getBoundingBox().getHeight() / vecLength;
         Shape bodyToDraw = body.copy().scale(body.getPoint(0), alpha, alpha);
         bodyToDraw.draw(r);
         arrowHeadCopy.draw(r);

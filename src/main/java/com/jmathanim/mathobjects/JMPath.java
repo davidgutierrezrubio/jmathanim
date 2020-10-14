@@ -126,24 +126,35 @@ public class JMPath implements Updateable, Stateable {
 
             double x1 = p1.p.v.x;
             double y1 = p1.p.v.y;
+            double z1 = p1.p.v.z;
             double x2 = p2.p.v.x;
             double y2 = p2.p.v.y;
+            double z2 = p2.p.v.z;
             double x3 = p3.p.v.x;
             double y3 = p3.p.v.y;
+            double z3 = p3.p.v.z;
             double x4 = p4.p.v.x;
             double y4 = p4.p.v.y;
+            double z4 = p4.p.v.z;
             if (p3.isCurved) {
-                double mod31 = Math.sqrt((x3 - x1) * (x3 - x1) + (y3 - y1) * (y3 - y1));
-                double mod42 = Math.sqrt((x4 - x2) * (x4 - x2) + (y4 - y2) * (y4 - y2));
-                double mod23 = Math.sqrt((x3 - x2) * (x3 - x2) + (y3 - y2) * (y3 - y2));
+//                double mod31 = Math.sqrt((x3 - x1) * (x3 - x1) + (y3 - y1) * (y3 - y1));//||p1-p3||
+//                double mod42 = Math.sqrt((x4 - x2) * (x4 - x2) + (y4 - y2) * (y4 - y2));//||p2-p4||
+//                double mod23 = Math.sqrt((x3 - x2) * (x3 - x2) + (y3 - y2) * (y3 - y2));//||p2-p3||
+                double mod31=p1.p.to(p3.p).norm();
+                double mod42=p4.p.to(p2.p).norm();
+                double mod23=p2.p.to(p3.p).norm();
                 double cx1 = x2 + mod23 / mod31 * tension * (x3 - x1);
                 double cy1 = y2 + mod23 / mod31 * tension * (y3 - y1);
+                double cz1 = z2 + mod23 / mod31 * tension * (z3 - z1);
                 double cx2 = x3 - mod23 / mod42 * tension * (x4 - x2);
                 double cy2 = y3 - mod23 / mod42 * tension * (y4 - y2);
-                p2.cp1.v.x = cx1;//TODO: Add z-coordinate too
+                double cz2 = z3 - mod23 / mod42 * tension * (z4 - z2);
+                p2.cp1.v.x = cx1;
                 p2.cp1.v.y = cy1;
+                p2.cp1.v.z = cz1;
                 p3.cp2.v.x = cx2;
                 p3.cp2.v.y = cy2;
+                p3.cp2.v.z = cz2;
             } else {
                 //If this path is straight, control points becomes vertices. Although this is not used
                 //when drawing straight paths, it becomes handy when doing transforms from STRAIGHT to CURVED paths
