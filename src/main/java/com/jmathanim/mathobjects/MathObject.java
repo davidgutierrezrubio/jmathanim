@@ -37,7 +37,7 @@ public abstract class MathObject implements Drawable, Updateable, Stateable {
     public static final int MULTISHAPE = 11;
     public static final int LATEX_MULTISHAPE = 11;
     public static final int SVG = 12;
-    public static final int LATEX_SHAPE=13;
+    public static final int LATEX_SHAPE = 13;
 
     public MathObjectDrawingProperties mp;
     protected MathObjectDrawingProperties mpBackup;
@@ -484,4 +484,16 @@ public abstract class MathObject implements Drawable, Updateable, Stateable {
         mp.loadFromStyle(name);
         return (T) this;
     }
+
+    /**
+     * Stablishes dot style. Only works when drawing dots
+     * @param <T> MathObject subclass
+     * @param dotStyle Style dot. DOT_STYLE_CIRCLE, DOT_STYLE_CROSS, DOT_STYLE_PLUS
+     * @return The object
+     */
+    public <T extends MathObject> T dotStyle(int dotStyle) {
+        this.mp.dotStyle = dotStyle;
+        return (T) this;
+    }
+
 }

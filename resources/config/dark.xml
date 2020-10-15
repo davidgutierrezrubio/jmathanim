@@ -1,5 +1,5 @@
 <JMathAnimConfig>
-     <background>
+    <background>
         <color>#192841</color>
     </background>
     <styles>
@@ -23,20 +23,38 @@
             <fillColor>RED</fillColor>
             <thickness>1.5</thickness>
         </style>
-         <style name="solidblue">
+        <style name="solidblue">
             <drawColor>WHITE</drawColor>
             <fillColor>BLUE</fillColor>
             <thickness>1.5</thickness>
         </style>
-         <style name="axisblue1">
+        <style name="axisblue1">
             <drawColor>#2565AE</drawColor>
             <fillColor>NONE</fillColor>
             <thickness>.5</thickness>
         </style>
-                 <style name="axisblue2">
+        <style name="axisblue2">
             <drawColor>#6ca2e0</drawColor>
             <fillColor>NONE</fillColor>
             <thickness>.5</thickness>
+        </style>
+        <style name="dotRedCircle">
+            <drawColor>RED</drawColor>
+            <fillColor>NONE</fillColor>
+            <thickness>1</thickness>
+            <dotStyle>DOT_STYLE_CIRCLE</dotStyle>
+        </style>
+        <style name="dotBlueCross">
+            <drawColor>#6ca2e0</drawColor>
+            <fillColor>NONE</fillColor>
+            <thickness>1</thickness>
+            <dotStyle>cross</dotStyle>
+        </style>
+         <style name="dotYellowPlus">
+            <drawColor>#FCE16D</drawColor>
+            <fillColor>NONE</fillColor>
+            <thickness>1</thickness>
+            <dotStyle>plus</dotStyle>
         </style>
     </styles>
 </JMathAnimConfig>

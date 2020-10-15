@@ -135,23 +135,23 @@ public class ShowCreation extends Animation {
         switch (this.strategyType) {
             case METHOD_LINE_CREATION:
                 strategy = new LineCreationStrategy((Line) mobj, this.scene);
-                JMathAnimScene.logger.info("ShowCreation method: LineCreationStrategy");
+                JMathAnimScene.logger.debug("ShowCreation method: LineCreationStrategy");
                 break;
             case METHOD_ARROW_CREATION:
                 strategy = new ArrowCreationStrategy((Arrow2D) mobj, this.runTime,this.scene);
-                JMathAnimScene.logger.info("ShowCreation method: ArrowCreationStrategy");
+                JMathAnimScene.logger.debug("ShowCreation method: ArrowCreationStrategy");
                 break;
             case METHOD_SIMPLE_SHAPE_CREATION:
                 strategy = new SimpleShapeCreationStrategy((Shape) mobj, this.scene);
-                JMathAnimScene.logger.info("ShowCreation method: SimpleShapeCreationStrategy");
+                JMathAnimScene.logger.debug("ShowCreation method: SimpleShapeCreationStrategy");
                 break;
             case METHOD_MULTISHAPE_CREATION:
                 strategy = new MultiShapeCreationStrategy((MultiShapeObject) mobj, .5, this.runTime, this.scene);
-                JMathAnimScene.logger.info("ShowCreation method: MultiShapeCreationStrategy");
+                JMathAnimScene.logger.debug("ShowCreation method: MultiShapeCreationStrategy");
                 break;
             case METHOD_FIRST_DRAW_AND_THEN_FILL:
                 strategy = new FirstDrawThenFillStrategy((MultiShapeObject) mobj, .5, this.runTime, this.scene);
-                JMathAnimScene.logger.info("ShowCreation method: FirstDrawThenFillStrategy");
+                JMathAnimScene.logger.debug("ShowCreation method: FirstDrawThenFillStrategy");
                 break;
             default:
                 break;

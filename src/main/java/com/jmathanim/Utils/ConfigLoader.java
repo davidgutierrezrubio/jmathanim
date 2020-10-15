@@ -162,6 +162,8 @@ public class ConfigLoader {
                 case "absoluteThickness":
                     mp.absoluteThickness = Boolean.parseBoolean(item.getTextContent());
                     break;
+                case "dotStyle":
+                    mp.dotStyle=MathObjectDrawingProperties.parseDotStyle(item.getTextContent());
             }
         }
         return mp;

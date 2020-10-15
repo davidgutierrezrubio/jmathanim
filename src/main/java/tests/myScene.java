@@ -48,33 +48,36 @@ public class myScene extends Scene2D {
     }
 
     private void Big2() {
-        LaTeXMathObject lat2 = new LaTeXMathObject("$2$");
-        LaTeXMathObject lat = new LaTeXMathObject("$5$");
+        LaTeXMathObject lat2 = new LaTeXMathObject("$2+x$");
+        LaTeXMathObject lat = new LaTeXMathObject("$5+x$");
         lat.stackTo(Anchor.BY_CENTER);
+        lat2.stackTo(Anchor.BY_CENTER);
         final JMPath pa = lat.get(0).getPath().rawCopy();
         add(lat);
         camera.zoomToObjects(lat);
         final Shape sh = lat.get(0);
-        JMPath jm=sh.getPath();
+        JMPath jm = sh.getPath();
 //        Transform aa = new Transform(5, lat.get(0), lat2.get(0));
 //        playAnimation(aa);
-PointInterpolationCanonical can=new PointInterpolationCanonical(sh, lat2.get(0), this);
-can.prepareObjects();
-System.out.println("sizes before/after  "+pa.size()+"   "+jm.size());
-for (int n = 0; n < jm.size(); n++) {
-    System.out.println(n+ "before/after  : "+pa.getJMPoint(n)+"     "+jm.getJMPoint(n));
-}
+        PointInterpolationCanonical can = new PointInterpolationCanonical(sh, lat2.get(0), this);
+        can.prepareObjects();
+        System.out.println("sizes before/after  " + pa.size() + "   " + jm.size());
+        for (int n = 0; n < jm.size(); n++) {
+            System.out.println(n + "before/after  : " + pa.getJMPoint(n) + "     " + jm.getJMPoint(n));
+        }
 
-waitSeconds(5);
+        waitSeconds(5);
     }
-    private void tran()
-    {
-         LaTeXMathObject lat = new LaTeXMathObject("$8$");
-        LaTeXMathObject lat2 = new LaTeXMathObject("$5$");
+
+    private void tran() {
+        LaTeXMathObject lat = new LaTeXMathObject("$8+y$");
+        LaTeXMathObject lat2 = new LaTeXMathObject("$x+y$");
         lat.stackTo(Anchor.BY_CENTER);
         lat2.stackTo(Anchor.BY_CENTER);
-         add(lat2);
+
+        add(lat2);
         camera.zoomToObjects(lat);
+        add(Shape.circle().scale(.1).stackTo(Anchor.RIGHT));
 //        playAnimation(Commands.setStyle(.3, "latextransparent",lat.get(0), lat2.get(0)));
         play.transform(5, lat2.get(0), lat.get(0));
 //        playAnimation(Commands.setStyle(.3, "latexdefault",lat.get(0), lat2.get(0)));

@@ -8,7 +8,6 @@ package tests;
 import com.jmathanim.Animations.AffineJTransform;
 import com.jmathanim.Animations.Animation;
 import com.jmathanim.Animations.Transform;
-import com.jmathanim.Animations.commands.Commands;
 import com.jmathanim.Utils.Anchor;
 import com.jmathanim.Utils.ConfigLoader;
 import com.jmathanim.Utils.JMColor;
@@ -17,11 +16,9 @@ import com.jmathanim.jmathanim.Scene2D;
 import com.jmathanim.mathobjects.LaTeXMathObject;
 import com.jmathanim.mathobjects.Line;
 import com.jmathanim.mathobjects.MOProperties.ArcAttributes;
-import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.Point;
 import com.jmathanim.mathobjects.Shape;
 import java.util.ArrayList;
-import javax.swing.TransferHandler;
 
 /**
  *

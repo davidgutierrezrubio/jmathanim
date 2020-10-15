@@ -384,7 +384,7 @@ public class Java2DRenderer extends Renderer {
     }
 
     public void setStroke(Graphics2D g2d, MathObject obj) {
-        double thickness = obj.mp.getThickness(this);
+        double thickness = obj.mp.computeScreenThickness(this);
 //        double thickness = obj.mp.thickness*5;
         int strokeSize;
         if (!obj.mp.absoluteThickness) {
