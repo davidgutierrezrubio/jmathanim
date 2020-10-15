@@ -379,11 +379,6 @@ public abstract class MathObject implements Drawable, Updateable, Stateable {
         return Anchor.getAnchorPoint(this, absoluteAnchorType);
     }
 
-    public void setAbsoluteAnchorType(int anchor) {
-        absoluteAnchorType = anchor;
-
-    }
-
     public Point getAbsoluteAnchorPoint() {
         return absoluteAnchorPoint;
     }

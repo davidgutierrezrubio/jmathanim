@@ -51,7 +51,13 @@ public class myScene extends Scene2D {
         Shape c = Shape.circle().drawColor(JMColor.RED);
 //        ar.thickness(3);
         add(ar, ar2,c);
-        play.scaleCamera(10, .2);
+        
+        LaTeXMathObject lat= LaTeXMathObject.make("Absolutely!").scale(2).stackTo(Anchor.BY_CENTER);
+        LaTeXMathObject lat2= LaTeXMathObject.make("Relatively!").scale(1).stackTo(Anchor.BY_CENTER);
+        add(lat,lat2);
+        lat.setAbsoluteSize(Anchor.BY_CENTER);
+        play.cameraScale(10, .2);
+        play.highlight(lat);
         waitSeconds(3);
     }
 
@@ -65,7 +71,7 @@ public class myScene extends Scene2D {
             play.fadeIn(.3, p);
         }
         waitSeconds(1);
-        play.scaleCamera(10, 5);
+        play.cameraScale(10, 5);
 
     }
 
@@ -203,7 +209,7 @@ public class myScene extends Scene2D {
         Point f = Point.at(1, 1);
         playAnimation(Commands.affineTransform(5, a, b, c, d, e, f, axes));
         play.rotate(5, PI / 3, axes);
-        play.scaleCamera(.5, 3);
+        play.cameraScale(.5, 3);
         playAnimation(Commands.reflectionByAxis(5, new Point(0, 0), new Point(0, 1), axes));
 // Lineas chungas
 

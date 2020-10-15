@@ -401,7 +401,10 @@ public class Commands {
         return cameraZoomToRect(runtime, camera, r);
 
     }
-
+    public static ApplyCommand cameraScale(double runtime,Camera cam,double scale){
+         return Commands.cameraZoomToRect(runtime, cam, cam.getMathView().scaled(scale, scale));
+    }
+    
     /**
      * Animation command that reduces the size and alpha of the
      * {@link MathObject}.After finishing the animation, object is removed from

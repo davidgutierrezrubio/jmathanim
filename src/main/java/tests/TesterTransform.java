@@ -167,7 +167,7 @@ public class TesterTransform extends Scene2D {
 //        play.showCreation(arc, seg);
         add(arc,seg);
         play.adjustToObjects(10,arc, seg);
-        play.scaleCamera(10, 2);
+        play.cameraScale(10, 2);
         waitSeconds(1);
 //        play.transform(6, arc, arc2);
 //TODO: Make an animation that rectifies an arc into a segment with equal length
