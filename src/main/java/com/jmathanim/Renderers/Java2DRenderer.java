@@ -3,7 +3,6 @@ package com.jmathanim.Renderers;
 import com.jmathanim.mathobjects.JMPath;
 import com.jmathanim.Cameras.Camera;
 import com.jmathanim.Cameras.Camera2D;
-import com.jmathanim.Renderers.MovieEncoders.HumbleVideoEncoder;
 import com.jmathanim.Renderers.MovieEncoders.VideoEncoder;
 import com.jmathanim.Renderers.MovieEncoders.XugglerVideoEncoder;
 import com.jmathanim.Utils.JMathAnimConfig;
@@ -29,9 +28,7 @@ import java.awt.RenderingHints;
 import java.awt.Stroke;
 import java.awt.Toolkit;
 import java.awt.geom.AffineTransform;
-import java.awt.geom.GeneralPath;
 import java.awt.geom.Path2D;
-import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
 import java.awt.image.ConvolveOp;
 import java.awt.image.Kernel;
@@ -54,7 +51,10 @@ public class Java2DRenderer extends Renderer {
     private static final boolean DEBUG_PATH_POINTS = false; //Draw control points and vertices
     private static final boolean PRINT_DEBUG = false; //Draw control points and vertices
     private static final boolean BOUNDING_BOX_DEBUG = false; //Draw bounding boxes
-
+    
+    private static final double XMIN_DEFAULT = -2;
+    private static final double XMAX_DEFAULT = 2;
+    
     private BufferedImage drawBufferImage;
     private BufferedImage finalImage;
     private BufferedImage debugImage;
@@ -81,12 +81,14 @@ public class Java2DRenderer extends Renderer {
 
     public Java2DRenderer(JMathAnimScene parentScene) {
         super(parentScene);
+        //Main Camera
         camera = new Camera2D(cnf.mediaW * scaleBufferedImage, cnf.mediaH * scaleBufferedImage);
-        //The Fixed camera doesn't change. It is used to display fixed-size objects
-        //like heads of arrows or text
+        //The Fixed camera it is not intended to change. It is used to display fixed-size objects
+        //like heads of arrows, dot symbols or text
         fixedCamera = new Camera2D(cnf.mediaW * scaleBufferedImage, cnf.mediaH * scaleBufferedImage);
 
-        fixedCamera.setMathXY(-5, 5, 0);//Fixed camera is 10 units by default
+        fixedCamera.setMathXY(XMIN_DEFAULT, XMAX_DEFAULT, 0);
+        camera.setMathXY(XMIN_DEFAULT, XMAX_DEFAULT, 0);
 
         drawBufferImage = new BufferedImage(cnf.mediaW * scaleBufferedImage, cnf.mediaH * scaleBufferedImage, BufferedImage.TYPE_INT_ARGB);
         finalImage = new BufferedImage(cnf.mediaW, cnf.mediaH, BufferedImage.TYPE_INT_RGB);
@@ -384,16 +386,18 @@ public class Java2DRenderer extends Renderer {
     }
 
     public void setStroke(Graphics2D g2d, MathObject obj) {
-        double thickness = obj.mp.computeScreenThickness(this);
-//        double thickness = obj.mp.thickness*5;
-        int strokeSize;
-        if (!obj.mp.absoluteThickness) {
-            strokeSize = camera.mathToScreen(.0025 * thickness); //TODO: Another way to compute this
-        } else {
-            strokeSize = (int) thickness;
-        }
-//        float strokeSize = (float) thickness;
 
+        double thickness = obj.mp.thickness;
+        //Thickness 1 means 1% of screen width
+        //Thickness 100 draws a line with whole screen width
+        if (!obj.mp.absoluteThickness) {
+            thickness *= cnf.mediaW * .005d;
+        } else {
+            thickness *= 4; //computed width for MediaW of 800
+        }
+        int strokeSize = (int) Math.round(thickness);
+
+//        float strokeSize = (float) thickness;
         switch (obj.mp.dashStyle) {
             case MathObjectDrawingProperties.SOLID:
                 BasicStroke basicStroke = new BasicStroke(strokeSize, CAP_ROUND, JOIN_ROUND);
@@ -413,8 +417,6 @@ public class Java2DRenderer extends Renderer {
 
     }
 
-    
-
     @Override
     public void drawPath(Shape mobj) {
         drawPath(mobj, camera);
@@ -426,7 +428,7 @@ public class Java2DRenderer extends Renderer {
         int numPoints = c.size();
 
         if (numPoints >= 2) {
-            path = createPathFromJMPath(mobj, c,cam);
+            path = createPathFromJMPath(mobj, c, cam);
 //            path.setWindingRule(GeneralPath.WIND_NON_ZERO);
 
             if (mobj.mp.isFilled()) {
@@ -488,11 +490,10 @@ public class Java2DRenderer extends Renderer {
 //        System.out.println("PathDes:"+c);
         Vec p = c.getJMPoint(0).p.v;
 
-        
         if (DEBUG_PATH_POINTS) {
             debugPathPoint(c.getJMPoint(0), c);
         }
-        int[] scr = camera.mathToScreen(p.x, p.y);
+        int[] scr = cam.mathToScreen(p.x, p.y);
         if (DEBUG_LABELS) {
             g2debug.setColor(Color.BLACK);
             g2debug.drawString(mobj.label, (float) scr[0], (float) scr[1]);
@@ -512,8 +513,8 @@ public class Java2DRenderer extends Renderer {
             Vec cpoint2 = c.getJMPoint(n).cp2.v;
             int[] xy = cam.mathToScreen(point);
 
-            int[] cxy1 = camera.mathToScreen(cpoint1);
-            int[] cxy2 = camera.mathToScreen(cpoint2);
+            int[] cxy1 = cam.mathToScreen(cpoint1);
+            int[] cxy2 = cam.mathToScreen(cpoint2);
             if (DEBUG_PATH_POINTS) {
                 debugPathPoint(c.getJMPoint(n), c);
             }
@@ -529,7 +530,7 @@ public class Java2DRenderer extends Renderer {
                     resul.closePath();
                 }
             }
-            
+
         }
 //        if (c.getJMPoint(0).isThisSegmentVisible) {
 //            if (xy[0] != scr[0] | xy[1] != scr[1]) {

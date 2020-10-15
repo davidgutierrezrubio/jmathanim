@@ -26,7 +26,6 @@ public class Camera2D extends Camera {
     public Camera2D(int screenWidth, int screenHeight) {
         this.screenWidth = screenWidth;
         this.screenHeight = screenHeight;
-        reset();
 
     }
 
@@ -58,14 +57,6 @@ public class Camera2D extends Camera {
         double xx = obj.getCenter().v.x;
         double yy = obj.getCenter().v.y;
         setCenter(xx, yy);
-    }
-
-    /**
-     * Default values
-     */
-    @Override
-    public final void reset() {
-        this.setMathXY(-2, 2, 0);
     }
 
     @Override

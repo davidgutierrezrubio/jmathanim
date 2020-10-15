@@ -375,13 +375,17 @@ public abstract class MathObject implements Drawable, Updateable, Stateable {
         return (T) this;
     }
 
-    public Point getAbsoluteAnchorPoint() {
+    public Point getAbsoluteAnchor() {
         return Anchor.getAnchorPoint(this, absoluteAnchorType);
     }
 
-    public void setAbsolutAnchorPoint(int anchor) {
+    public void setAbsoluteAnchorType(int anchor) {
         absoluteAnchorType = anchor;
 
+    }
+
+    public Point getAbsoluteAnchorPoint() {
+        return absoluteAnchorPoint;
     }
 
     public void setAbsoluteAnchorPoint(Point p) {
@@ -433,9 +437,7 @@ public abstract class MathObject implements Drawable, Updateable, Stateable {
     }
 
     public <T extends MathObject> T setAbsoluteSize() {
-        absoluteSize = true;
-        absoluteAnchorType = Anchor.BY_CENTER;//Default anchor
-        return (T) this;
+       return setAbsoluteSize(Anchor.BY_CENTER);
     }
 
     public <T extends MathObject> T setAbsoluteSize(int anchorType) {

@@ -110,15 +110,6 @@ public class MathObjectDrawingProperties {
         }
     }
 
-    public double computeScreenThickness(Renderer r) {
-        double resul;
-        if (absoluteThickness) {
-            resul = thickness;
-        } else {
-            resul = r.getCamera().relScalarToWidth(thickness);
-        }
-        return resul;
-    }
 
     /**
      * Returns a copy of this object. All objects are raw-copied.

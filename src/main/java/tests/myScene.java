@@ -44,24 +44,31 @@ public class myScene extends Scene2D {
 
     @Override
     public void runSketch() {
-        manyDots();
+//        manyDots();
+    Arrow2D ar=Arrow2D.makeSimpleArrow2D(Point.at(0,1), Point.at(0,0),Arrow2D.TYPE_3);
+    Arrow2D ar2=Arrow2D.makeSimpleArrow2D(Point.at(-1,-.61), Point.at(-.1,-.1),Arrow2D.TYPE_1);
+//        Shape s = Shape.segment(Point.at(0, 1), Point.at(0, 0));
+        Shape c = Shape.circle().drawColor(JMColor.RED);
+//        ar.thickness(3);
+        add(ar, ar2,c);
+        play.scaleCamera(10, .2);
+        waitSeconds(3);
     }
 
-    public void manyDots()
-    {
+    public void manyDots() {
         for (int n = 0; n < 15; n++) {
-            Point p=Point.random();
-            int st = (int) (Math.random()*2.9+1);
+            Point p = Point.random();
+            int st = (int) (Math.random() * 2.9 + 1);
             p.dotStyle(st);
-            p.thickness(1+Math.random()*1);
+            p.thickness(1 + Math.random() * 1);
             p.drawColor(JMColor.random());
             play.fadeIn(.3, p);
         }
         waitSeconds(1);
         play.scaleCamera(10, 5);
-        
+
     }
-    
+
     private void Big2() {
         LaTeXMathObject lat2 = new LaTeXMathObject("$2+x$");
         LaTeXMathObject lat = new LaTeXMathObject("$5+x$");

@@ -50,7 +50,6 @@ public abstract class Camera {
     public void setSize(int w, int h) {
         screenWidth = w;
         screenHeight = h;
-        reset();
         
     }
     
@@ -157,13 +156,6 @@ public abstract class Camera {
     public Rect getMathView() {
         return new Rect(xmin, ymin, xmax, ymax);
     }
-
-    /**
-     * Do the necessary recalculations (xmin, xmax, etc) when needed to. It
-     * depends on the type of camera, so this method is abstract to be
-     * implemented in the subclass
-     */
-    public abstract void reset();
 
     /**
      * Center camera in math-coordinates x,y

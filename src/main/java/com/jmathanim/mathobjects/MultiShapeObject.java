@@ -112,7 +112,7 @@ public class MultiShapeObject extends MathObject {
         for (Shape jmp : shapes) {
             if (jmp.visible) {
                 if (absoluteSize) {
-                    r.drawAbsoluteCopy(jmp, getAbsoluteAnchorPoint().v);//TODO: This doesnt work for overrided methods (e.g.: line)
+                    r.drawAbsoluteCopy(jmp, getAbsoluteAnchor().v);//TODO: This doesnt work for overrided methods (e.g.: line)
                 } else {
                     jmp.draw(r);
                 }

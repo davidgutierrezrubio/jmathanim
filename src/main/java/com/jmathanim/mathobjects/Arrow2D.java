@@ -7,6 +7,7 @@ package com.jmathanim.mathobjects;
 
 import com.jmathanim.Animations.AffineJTransform;
 import com.jmathanim.Renderers.Renderer;
+import com.jmathanim.Utils.Anchor;
 import com.jmathanim.Utils.JMColor;
 import com.jmathanim.Utils.JMathAnimConfig;
 import com.jmathanim.Utils.Rect;
@@ -34,7 +35,7 @@ public class Arrow2D extends MathObject {
     private final SVGMathObject head;
 //    private final File outputDir;
     private AbsoluteSizeUpdater absoluteSizeUpdater;
-    private static final double DEFAULT_ARROW_HEAD_SIZE = .005;
+    private static final double DEFAULT_ARROW_HEAD_SIZE = .015;
 
     public static Arrow2D makeSimpleArrow2D(Point p1, Point p2) {
         return makeSimpleArrow2D(p1, p2, TYPE_1);
@@ -145,10 +146,15 @@ public class Arrow2D extends MathObject {
         AffineJTransform tr = AffineJTransform.create2DRotationTransform(p2, -Math.PI / 2 + angle);
         tr.applyTransform(arrowHeadCopy);
         double vecLength = p1.to(p2).norm();
-        //TODO: Uses 50% of arrow head height. Can be improved?
-        double alpha = 1 - .5*head.getBoundingBox().getHeight() / vecLength;
+        //Draws arrow body only to (1-alpha)% of total length
+        double w1 = r.getCamera().getMathView().getWidth();
+        double w2 = r.getFixedCamera().getMathView().getWidth();
+        
+        double alpha = 1 - .5 * w1/w2*head.getBoundingBox().getHeight() / vecLength;
         Shape bodyToDraw = body.copy().scale(body.getPoint(0), alpha, alpha);
         bodyToDraw.draw(r);
+        arrowHeadCopy.setAbsoluteSize(Anchor.BY_POINT);
+        arrowHeadCopy.setAbsoluteAnchorPoint(p2);
         arrowHeadCopy.draw(r);
 
 //        head.draw(r);
@@ -243,7 +249,12 @@ public class Arrow2D extends MathObject {
         head.drawColor(dc);
         head.fillColor(dc);
         body.drawColor(dc);
+        return (T) this;
+    }
 
+    @Override
+    public <T extends MathObject> T thickness(double th) {
+        body.thickness(th);
         return (T) this;
     }
 

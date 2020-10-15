@@ -121,11 +121,12 @@ public class Shape extends MathObject {
 
     @Override
     public void draw(Renderer r) {
-
-        if (absoluteSize) {
-            r.drawAbsoluteCopy(this, getAbsoluteAnchorPoint().v);
-        } else {
-            r.drawPath(this);
+        if (visible) {
+            if (absoluteSize) {
+                r.drawAbsoluteCopy(this, getAbsoluteAnchor().v);
+            } else {
+                r.drawPath(this);
+            }
         }
     }
 

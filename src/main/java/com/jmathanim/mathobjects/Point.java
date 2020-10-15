@@ -6,6 +6,7 @@
 package com.jmathanim.mathobjects;
 
 import com.jmathanim.Renderers.Renderer;
+import com.jmathanim.Utils.Anchor;
 import com.jmathanim.Utils.JMathAnimConfig;
 import com.jmathanim.Utils.MathObjectDrawingProperties;
 import com.jmathanim.Utils.Rect;
@@ -115,28 +116,42 @@ public class Point extends MathObject {
 //        r.drawCircle(v.x, v.y, rad);
 //        
         double st;
+        Shape dotShape = generateDotShape();
+        dotShape.setAbsoluteSize();
+        dotShape.setAbsoluteAnchorPoint(this.copy());
+        dotShape.draw(r);
+
+    }
+
+    private Shape generateDotShape() {
+        double st;
+        Shape dotShape;
         switch (mp.dotStyle) {
-            case DOT_STYLE_CIRCLE://TODO: Draw this with fixed camera
-                st = mp.computeScreenThickness(r)/200;
-                Shape.circle().shift(v).scale(st).drawColor(mp.drawColor).fillColor(mp.drawColor).thickness(0).draw(r);
-                break;
             case DOT_STYLE_CROSS:
-                st = mp.computeScreenThickness(r)/20;
-                Shape cross = new Shape();
-                cross.getPath().addPoint(Point.at(-st / 2, st / 2), Point.at(st / 2, -st / 2), Point.at(st / 2, st / 2), Point.at(-st / 2, -st / 2));
-                cross.getJMPoint(0).isThisSegmentVisible = false;
-                cross.getJMPoint(2).isThisSegmentVisible = false;
-                cross.shift(v).scale(st).drawColor(mp.drawColor).thickness(mp.thickness).draw(r);
+//                st = mp.computeScreenThickness(r)/20;
+                st = mp.thickness / 10;
+                dotShape = new Shape();
+                dotShape.getPath().addPoint(Point.at(-1, 1), Point.at(1, -1), Point.at(1, 1), Point.at(-1, -1));
+                dotShape.getJMPoint(0).isThisSegmentVisible = false;
+                dotShape.getJMPoint(2).isThisSegmentVisible = false;
+                dotShape.shift(v).scale(st).drawColor(mp.drawColor).thickness(mp.thickness);
                 break;
             case DOT_STYLE_PLUS:
-                st = mp.computeScreenThickness(r)/20;
-                Shape plus = new Shape();
-                plus.getPath().addPoint(Point.at(0, st / 2), Point.at(0, -st / 2), Point.at(st / 2, 0), Point.at(-st / 2, 0));
-                plus.getJMPoint(0).isThisSegmentVisible = false;
-                plus.getJMPoint(2).isThisSegmentVisible = false;
-                plus.shift(v).scale(st).drawColor(mp.drawColor).thickness(mp.thickness).draw(r);
+//                st = mp.computeScreenThickness(r)/20;
+                st = mp.thickness / 10;
+                dotShape = new Shape();
+                dotShape.getPath().addPoint(Point.at(0, 1), Point.at(0, -1), Point.at(1, 0), Point.at(-1, 0));
+                dotShape.getJMPoint(0).isThisSegmentVisible = false;
+                dotShape.getJMPoint(2).isThisSegmentVisible = false;
+                dotShape.shift(v).scale(st).drawColor(mp.drawColor).thickness(mp.thickness);
+                break;
+            default://Default case, includes CIRCLE
+//                st = mp.computeScreenThickness(r)/200;
+                st = mp.thickness / 20;
+                dotShape = Shape.circle().shift(v).scale(st).drawColor(mp.drawColor).fillColor(mp.drawColor).thickness(0);
+                break;
         }
-
+        return dotShape;
     }
 
     @Override
@@ -148,8 +163,6 @@ public class Point extends MathObject {
     public int getDotStyle() {
         return mp.dotStyle;
     }
-
-    
 
 //    @Override
 //    public <T extends MathObject> T shift(Vec shiftVector) {
