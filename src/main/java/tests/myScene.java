@@ -44,9 +44,24 @@ public class myScene extends Scene2D {
 
     @Override
     public void runSketch() {
-        tran();
+        manyDots();
     }
 
+    public void manyDots()
+    {
+        for (int n = 0; n < 15; n++) {
+            Point p=Point.random();
+            int st = (int) (Math.random()*2.9+1);
+            p.dotStyle(st);
+            p.thickness(1+Math.random()*1);
+            p.drawColor(JMColor.random());
+            play.fadeIn(.3, p);
+        }
+        waitSeconds(1);
+        play.scaleCamera(10, 5);
+        
+    }
+    
     private void Big2() {
         LaTeXMathObject lat2 = new LaTeXMathObject("$2+x$");
         LaTeXMathObject lat = new LaTeXMathObject("$5+x$");
