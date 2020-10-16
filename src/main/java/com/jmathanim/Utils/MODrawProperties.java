@@ -31,7 +31,7 @@ import java.util.concurrent.ThreadLocalRandom;
  *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
-public class MathObjectDrawingProperties {
+public class MODrawProperties {
 
     public static final int SOLID = 1;
     public static final int DASHED = 2;
@@ -51,7 +51,7 @@ public class MathObjectDrawingProperties {
     //Point
     public Integer dotStyle = Point.DOT_STYLE_CIRCLE;
 
-    public MathObjectDrawingProperties() {
+    public MODrawProperties() {
         drawColor = new JMColor(1, 1, 1, 1);
         fillColor = new JMColor(0, 0, 0, 0);
     }
@@ -61,7 +61,7 @@ public class MathObjectDrawingProperties {
      *
      * @param prop
      */
-    public void digestFrom(MathObjectDrawingProperties prop) {
+    public void digestFrom(MODrawProperties prop) {
         if (prop == null) {//Nothing to do here!
             return;
         }
@@ -80,7 +80,7 @@ public class MathObjectDrawingProperties {
      * @param b
      * @param t Interpolation parameter
      */
-    public void interpolateFrom(MathObjectDrawingProperties a, MathObjectDrawingProperties b, double t) {
+    public void interpolateFrom(MODrawProperties a, MODrawProperties b, double t) {
         //Interpolate colors
         drawColor.set(a.drawColor.interpolate(b.drawColor, t));
         fillColor.set(a.fillColor.interpolate(b.fillColor, t));
@@ -128,18 +128,18 @@ public class MathObjectDrawingProperties {
      *
      * @return A raw copy of the object.
      */
-    public MathObjectDrawingProperties copy() {
-        MathObjectDrawingProperties resul = new MathObjectDrawingProperties();
+    public MODrawProperties copy() {
+        MODrawProperties resul = new MODrawProperties();
         resul.copyFrom(this);
         return resul;
     }
 
     /**
-     * Copy attributes from the given {@link MathObjectDrawingProperties} object
+     * Copy attributes from the given {@link MODrawProperties} object
      *
      * @param mp The object to copy attributes from.
      */
-    public void copyFrom(MathObjectDrawingProperties mp) {
+    public void copyFrom(MODrawProperties mp) {
         drawColor.set(mp.drawColor);
         fillColor.set(mp.fillColor);
         thickness = mp.thickness;
@@ -160,7 +160,7 @@ public class MathObjectDrawingProperties {
     static Integer parseDashStyle(String str) {
         int resul = SOLID; //default dash
         try {
-            Field field = MathObjectDrawingProperties.class.getField(str.toUpperCase());
+            Field field = MODrawProperties.class.getField(str.toUpperCase());
             resul = field.getInt(field);
         } catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException ex) {
             JMathAnimScene.logger.warn("Dash pattern {} not recognized ", str);
@@ -193,7 +193,7 @@ public class MathObjectDrawingProperties {
      * @param name The name of the style
      */
     public void loadFromStyle(String name) {
-        HashMap<String, MathObjectDrawingProperties> styles = JMathAnimConfig.getConfig().getStyles();
+        HashMap<String, MODrawProperties> styles = JMathAnimConfig.getConfig().getStyles();
         if (styles.containsKey(name)) {
             this.digestFrom(styles.get(name));
         } else {
@@ -202,16 +202,16 @@ public class MathObjectDrawingProperties {
     }
 
     /**
-     * Returns a new {@link MathObjectDrawingProperties} created from the
+     * Returns a new {@link MODrawProperties} created from the
      * current style. If no such style exists, a default
      * MathObjectDrawingProperties is created.
      *
      * @param name Style name
-     * @return A new {@link MathObjectDrawingProperties} object created from the
+     * @return A new {@link MODrawProperties} object created from the
      * current class.
      */
-    public static MathObjectDrawingProperties createFromStyle(String name) {
-        MathObjectDrawingProperties resul = new MathObjectDrawingProperties();
+    public static MODrawProperties createFromStyle(String name) {
+        MODrawProperties resul = new MODrawProperties();
         resul.loadFromStyle(name);
         return resul;
     }

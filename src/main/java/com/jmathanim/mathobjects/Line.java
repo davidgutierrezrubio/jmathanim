@@ -19,7 +19,7 @@
 package com.jmathanim.mathobjects;
 
 import com.jmathanim.Renderers.Renderer;
-import com.jmathanim.Utils.MathObjectDrawingProperties;
+import com.jmathanim.Utils.MODrawProperties;
 import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.Vec;
 
@@ -62,7 +62,7 @@ public class Line extends Shape {
      * @param p2 Second point
      * @param mp MathDrawingProperties
      */
-    public Line(Point p1, Point p2, MathObjectDrawingProperties mp) {
+    public Line(Point p1, Point p2, MODrawProperties mp) {
         super(mp);
         this.p1 = p1;
         this.p2 = p2;

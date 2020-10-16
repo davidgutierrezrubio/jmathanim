@@ -20,7 +20,7 @@ package com.jmathanim.mathobjects;
 
 import com.jmathanim.Renderers.Renderer;
 import com.jmathanim.Utils.JMColor;
-import com.jmathanim.Utils.MathObjectDrawingProperties;
+import com.jmathanim.Utils.MODrawProperties;
 import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
@@ -53,7 +53,7 @@ public class MultiShapeObject extends MathObject {
     public boolean addJMPathObject(JMPath p) {
         return shapes.add(new Shape(p, null));
     }
-  public boolean addJMPathObject(JMPath p,MathObjectDrawingProperties mp) {
+  public boolean addJMPathObject(JMPath p,MODrawProperties mp) {
         return shapes.add(new Shape(p, mp));
     }
     @Override

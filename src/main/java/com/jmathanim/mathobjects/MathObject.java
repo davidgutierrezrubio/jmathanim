@@ -15,14 +15,13 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-
 package com.jmathanim.mathobjects;
 
 import com.jmathanim.Animations.AffineJTransform;
 import com.jmathanim.Utils.Anchor;
 import com.jmathanim.Utils.JMColor;
 import com.jmathanim.Utils.JMathAnimConfig;
-import com.jmathanim.Utils.MathObjectDrawingProperties;
+import com.jmathanim.Utils.MODrawProperties;
 import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
@@ -52,8 +51,8 @@ public abstract class MathObject implements Drawable, Updateable, Stateable {
     public static final int SVG = 12;
     public static final int LATEX_SHAPE = 13;
 
-    public MathObjectDrawingProperties mp;
-    protected MathObjectDrawingProperties mpBackup;
+    public MODrawProperties mp;
+    protected MODrawProperties mpBackup;
     public String label = "";
 
     public MathObjectAttributes attrs;
@@ -82,7 +81,7 @@ public abstract class MathObject implements Drawable, Updateable, Stateable {
         this(null);
     }
 
-    public MathObject(MathObjectDrawingProperties prop) {
+    public MathObject(MODrawProperties prop) {
         mp = JMathAnimConfig.getConfig().getDefaultMP();//Default MP values
         mp.digestFrom(prop);//Copy all non-null values from prop
         scenes = new HashSet<>();
@@ -315,11 +314,11 @@ public abstract class MathObject implements Drawable, Updateable, Stateable {
         }
     }
 
-    public MathObjectDrawingProperties getMp() {
+    public MODrawProperties getMp() {
         return mp;
     }
 
-    public <T extends MathObject> T setMp(MathObjectDrawingProperties newMp) {
+    public <T extends MathObject> T setMp(MODrawProperties newMp) {
         this.mp.copyFrom(newMp);
         return (T) this;
     }
@@ -388,6 +387,11 @@ public abstract class MathObject implements Drawable, Updateable, Stateable {
         return (T) this;
     }
 
+    public <T extends MathObject> T dashStyle(int dst) {
+        mp.dashStyle = dst;
+        return (T) this;
+    }
+
     public Point getAbsoluteAnchor() {
         return Anchor.getAnchorPoint(this, absoluteAnchorType);
     }
@@ -445,7 +449,7 @@ public abstract class MathObject implements Drawable, Updateable, Stateable {
     }
 
     public <T extends MathObject> T setAbsoluteSize() {
-       return setAbsoluteSize(Anchor.BY_CENTER);
+        return setAbsoluteSize(Anchor.BY_CENTER);
     }
 
     public <T extends MathObject> T setAbsoluteSize(int anchorType) {
@@ -497,8 +501,10 @@ public abstract class MathObject implements Drawable, Updateable, Stateable {
 
     /**
      * Stablishes dot style. Only works when drawing dots
+     *
      * @param <T> MathObject subclass
-     * @param dotStyle Style dot. DOT_STYLE_CIRCLE, DOT_STYLE_CROSS, DOT_STYLE_PLUS
+     * @param dotStyle Style dot. DOT_STYLE_CIRCLE, DOT_STYLE_CROSS,
+     * DOT_STYLE_PLUS
      * @return The object
      */
     public <T extends MathObject> T dotStyle(int dotStyle) {

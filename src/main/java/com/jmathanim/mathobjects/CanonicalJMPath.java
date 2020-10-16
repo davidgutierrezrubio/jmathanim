@@ -18,7 +18,7 @@
 
 package com.jmathanim.mathobjects;
 
-import com.jmathanim.Utils.MathObjectDrawingProperties;
+import com.jmathanim.Utils.MODrawProperties;
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -35,7 +35,7 @@ public class CanonicalJMPath {
     }
 
     public MultiShapeObject createMultiShape(MathObject obj) {
-        MathObjectDrawingProperties mpCopy = obj.mp.copy();
+        MODrawProperties mpCopy = obj.mp.copy();
         MultiShapeObject msh = new MultiShapeObject();
         for (JMPath p : paths) {
             final Shape shape = new Shape(p.copy(), mpCopy);

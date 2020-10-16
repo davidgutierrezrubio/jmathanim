@@ -25,7 +25,7 @@ import com.jmathanim.Animations.ShowCreation;
 import com.jmathanim.Animations.Strategies.TransformStrategy;
 import com.jmathanim.Animations.WaitAnimation;
 import com.jmathanim.Animations.commands.Commands;
-import com.jmathanim.Utils.MathObjectDrawingProperties;
+import com.jmathanim.Utils.MODrawProperties;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.MultiShapeObject;
 import com.jmathanim.mathobjects.Shape;
@@ -69,7 +69,7 @@ public class FirstDrawThenFillStrategy extends TransformStrategy {
             dt += this.timegap;
             final ShowCreation cr = new ShowCreation(PERCENT_TO_DIVIDE_ANIMATION * realRuntime,s);
             anim.add(cr);
-            MathObjectDrawingProperties mpBase = s.mp.copy();
+            MODrawProperties mpBase = s.mp.copy();
             s.mp.fillColor.alpha = 0;
             final ApplyCommand st = Commands.setMP((1 - PERCENT_TO_DIVIDE_ANIMATION) * realRuntime, mpBase, s);
             anim.add(st);

@@ -90,6 +90,7 @@ public class JMColor {
                 bb = Integer.valueOf(hex.substring(2, 3) + hex.substring(2, 3), 16);
                 return JMColor.rgbInt(rr, gg, bb, 255);
             default:
+                JMathAnimScene.logger.warn("Color {} not recognized ", hex);
                 return null;
         }
     }

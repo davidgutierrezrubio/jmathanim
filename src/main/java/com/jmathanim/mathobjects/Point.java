@@ -20,7 +20,7 @@ package com.jmathanim.mathobjects;
 
 import com.jmathanim.Renderers.Renderer;
 import com.jmathanim.Utils.JMathAnimConfig;
-import com.jmathanim.Utils.MathObjectDrawingProperties;
+import com.jmathanim.Utils.MODrawProperties;
 import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
@@ -78,7 +78,7 @@ public class Point extends MathObject {
      * @param y
      * @param mp
      */
-    public Point(double x, double y, MathObjectDrawingProperties mp) {
+    public Point(double x, double y, MODrawProperties mp) {
         this(x, y, 0, mp);
 
     }
@@ -90,7 +90,7 @@ public class Point extends MathObject {
      * @param z
      * @param mp
      */
-    public Point(double x, double y, double z, MathObjectDrawingProperties mp) {
+    public Point(double x, double y, double z, MODrawProperties mp) {
         super(mp);
         this.v = new Vec(x, y, z);
         this.mp.absoluteThickness = false;
@@ -186,6 +186,7 @@ public class Point extends MathObject {
     public Point copy() {
         Point resul = new Point(v);
         resul.mp.copyFrom(mp);
+        resul.visible=this.visible;
         return resul;
     }
 

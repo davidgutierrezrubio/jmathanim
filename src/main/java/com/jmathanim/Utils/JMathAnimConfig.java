@@ -76,7 +76,7 @@ public class JMathAnimConfig {
     /**
      * A dictionary of the styles to be used in the objects
      */
-    private final HashMap<String, MathObjectDrawingProperties> styles;
+    private final HashMap<String, MODrawProperties> styles;
 
     /**
      * Returns the config, using the singleton pattern.
@@ -205,18 +205,18 @@ public class JMathAnimConfig {
      * Set default values, in case no xml config file is loaded
      */
     public final void setDefaultMP() {
-        MathObjectDrawingProperties defaultMP = new MathObjectDrawingProperties();
+        MODrawProperties defaultMP = new MODrawProperties();
         //Default, boring values
         defaultMP.drawColor.set(JMColor.WHITE);
         defaultMP.fillColor.set(JMColor.GRAY);
         defaultMP.setFillAlpha(0);//No filling by default
         defaultMP.thickness = 1d;
-        defaultMP.dashStyle = MathObjectDrawingProperties.SOLID;
+        defaultMP.dashStyle = MODrawProperties.SOLID;
         defaultMP.absoluteThickness = false;
         styles.put("default", defaultMP);
     }
 
-    public MathObjectDrawingProperties getDefaultMP() {
+    public MODrawProperties getDefaultMP() {
         return styles.get("default").copy();
     }
 
@@ -254,7 +254,7 @@ public class JMathAnimConfig {
         this.outputDir = outputDir;
     }
 
-    public HashMap<String, MathObjectDrawingProperties> getStyles() {
+    public HashMap<String, MODrawProperties> getStyles() {
         return styles;
     }
 

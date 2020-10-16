@@ -143,7 +143,7 @@ public class ConfigLoader {
             NodeList templChilds = elStyle.getElementsByTagName("style");
             for (int n = 0; n < templChilds.getLength(); n++) {
                 Node item = templChilds.item(n);
-                MathObjectDrawingProperties mp = parseMathObjectDrawingProperties(item);
+                MODrawProperties mp = parseMathObjectDrawingProperties(item);
                 if (item.getNodeType() == Node.ELEMENT_NODE) {
                     Element el = (Element) item;
                     config.getStyles().put(el.getAttribute("name"), mp);
@@ -153,8 +153,8 @@ public class ConfigLoader {
         }
     }
 
-    private static MathObjectDrawingProperties parseMathObjectDrawingProperties(Node template) {
-        MathObjectDrawingProperties mp = new MathObjectDrawingProperties();
+    private static MODrawProperties parseMathObjectDrawingProperties(Node template) {
+        MODrawProperties mp = new MODrawProperties();
         NodeList childs = template.getChildNodes();
         for (int n = 0; n < childs.getLength(); n++) {
             Node item = childs.item(n);
@@ -169,13 +169,13 @@ public class ConfigLoader {
                     mp.thickness = Double.parseDouble(item.getTextContent());
                     break;
                 case "dashStyle":
-                    mp.dashStyle = MathObjectDrawingProperties.parseDashStyle(item.getTextContent());
+                    mp.dashStyle = MODrawProperties.parseDashStyle(item.getTextContent());
                     break;
                 case "absoluteThickness":
                     mp.absoluteThickness = Boolean.parseBoolean(item.getTextContent());
                     break;
                 case "dotStyle":
-                    mp.dotStyle=MathObjectDrawingProperties.parseDotStyle(item.getTextContent());
+                    mp.dotStyle=MODrawProperties.parseDotStyle(item.getTextContent());
             }
         }
         return mp;

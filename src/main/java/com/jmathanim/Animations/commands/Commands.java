@@ -22,7 +22,7 @@ import com.jmathanim.Animations.AffineJTransform;
 import com.jmathanim.Animations.ApplyCommand;
 import com.jmathanim.Cameras.Camera;
 import com.jmathanim.Utils.JMathAnimConfig;
-import com.jmathanim.Utils.MathObjectDrawingProperties;
+import com.jmathanim.Utils.MODrawProperties;
 import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
@@ -312,16 +312,16 @@ public class Commands {
      * object, interpolating
      *
      * @param runtime Time duration in seconds
-     * @param mp Destination {@link MathObjectDrawingProperties}
+     * @param mp Destination {@link MODrawProperties}
      * @param objects Objects to animate (varargs)
      * @return Animation to run with
      * {@link JMathAnimScene#playAnimation(com.jmathanim.Animations.Animation...) playAnimation}
      * method
      */
-    public static ApplyCommand setMP(double runtime, MathObjectDrawingProperties mp, MathObject... objects) {
+    public static ApplyCommand setMP(double runtime, MODrawProperties mp, MathObject... objects) {
         return new ApplyCommand(new MathObjectsCommand(objects) {
-            MathObjectDrawingProperties mpDst = mp;
-            MathObjectDrawingProperties mpBase;
+            MODrawProperties mpDst = mp;
+            MODrawProperties mpBase;
 
             @Override
             public void initialize() {
@@ -356,7 +356,7 @@ public class Commands {
      * method
      */
     public static ApplyCommand setStyle(double runtime, String styleName, MathObject... objects) {
-        return setMP(runtime, MathObjectDrawingProperties.createFromStyle(styleName), objects);
+        return setMP(runtime, MODrawProperties.createFromStyle(styleName), objects);
     }
 
     /**

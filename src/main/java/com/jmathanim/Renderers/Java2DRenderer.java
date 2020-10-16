@@ -23,7 +23,7 @@ import com.jmathanim.Cameras.Camera2D;
 import com.jmathanim.Renderers.MovieEncoders.VideoEncoder;
 import com.jmathanim.Renderers.MovieEncoders.XugglerVideoEncoder;
 import com.jmathanim.Utils.JMathAnimConfig;
-import com.jmathanim.Utils.MathObjectDrawingProperties;
+import com.jmathanim.Utils.MODrawProperties;
 import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
@@ -417,16 +417,16 @@ public class Java2DRenderer extends Renderer {
 
 //        float strokeSize = (float) thickness;
         switch (obj.mp.dashStyle) {
-            case MathObjectDrawingProperties.SOLID:
+            case MODrawProperties.SOLID:
                 BasicStroke basicStroke = new BasicStroke(strokeSize, CAP_ROUND, JOIN_ROUND);
                 g2d.setStroke(basicStroke);
                 break;
-            case MathObjectDrawingProperties.DASHED:
+            case MODrawProperties.DASHED:
                 float[] dashedPattern = {5.0f * strokeSize, 2.0f * strokeSize};
                 Stroke dashedStroke = new BasicStroke(strokeSize, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND, 10.0f, dashedPattern, 1.0f);
                 g2d.setStroke(dashedStroke);
                 break;
-            case MathObjectDrawingProperties.DOTTED:
+            case MODrawProperties.DOTTED:
                 float[] dottedPattern = {1f, 2.0f * strokeSize};
                 Stroke dottedStroke = new BasicStroke(strokeSize, BasicStroke.CAP_SQUARE, BasicStroke.JOIN_ROUND, 10.0f, dottedPattern, 1.0f);
                 g2d.setStroke(dottedStroke);

@@ -21,7 +21,9 @@ import com.jmathanim.Animations.AffineJTransform;
 import com.jmathanim.Utils.Anchor;
 import com.jmathanim.Utils.ConfigLoader;
 import com.jmathanim.Utils.JMColor;
+import com.jmathanim.Utils.MODrawProperties;
 import com.jmathanim.jmathanim.Scene2D;
+import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.Point;
 import com.jmathanim.mathobjects.Shape;
 import com.jmathanim.mathobjects.updateableObjects.AnchoredMathObject;
@@ -43,18 +45,18 @@ public class TesterUpdaters extends Scene2D {
 
     @Override
     public void runSketch() throws Exception {
-        AnchoredToLower();
+        transformedPath2();
     }
 
     private void AnchoredToLower() {
-        Shape sq=Shape.regularPolygon(5).drawColor("#3ceaea3").thickness(2);
+        Shape sq=Shape.regularPolygon(5).drawColor("#3caea3").thickness(.7).dashStyle(MODrawProperties.DASHED);
         Shape c=Shape.circle().scale(.3).style("solidblue");
         AnchoredMathObject an=new AnchoredMathObject(c,Anchor.UPPER, sq,Anchor.LOWER);
         registerObjectToBeUpdated(an);
         add(c,sq);
-        waitSeconds(1);
-        play.shift(3,-1,0,sq);
+        play.rotate(5,120*DEGREES,sq);
         waitSeconds(3);
+        play.fadeOutAll();
     }
 
     private void AnchoredToPoint() {
@@ -66,9 +68,10 @@ public class TesterUpdaters extends Scene2D {
         waitSeconds(1);
         play.shift(3,-1,0,sq);
         waitSeconds(3);
+        play.fadeOutAll();
     }
 
-    private void transformedPath() {
+    private void transformedPath1() {
         Shape c=Shape.circle().scale(.5).style("solidblue");
         AffineJTransform tr=AffineJTransform.createAffineTransformation(Point.at(0,0), Point.at(1,0), Point.at(0,1), Point.at(-.5,.3), Point.at(1,0), Point.at(1,1), 1);
         TransformedJMPath tpa=new TransformedJMPath(c, tr);
@@ -77,8 +80,22 @@ public class TesterUpdaters extends Scene2D {
         waitSeconds(1);
         play.shift(3,-1,0,c);
         waitSeconds(3);
+        play.fadeOutAll();
     }
 
+    private void transformedPath2() {
+        Shape c=Shape.square().scale(.5,1.2).style("solidblue");
+        AffineJTransform tr=AffineJTransform.createAffineTransformation(Point.at(0,0), Point.at(1,0), Point.at(0,1), Point.at(-.5,.3), Point.at(1,0), Point.at(1,1), 1);
+        TransformedJMPath tpa=new TransformedJMPath(c, tr);
+        tpa.style("solidred").fillAlpha(.5);
+        add(c,tpa);
+        waitSeconds(1);
+        play.transform(5, c, Shape.square());
+        waitSeconds(3);
+        play.fadeOutAll();
+    }
+    
+    
     private void averagePoint() {
         Point p1=Point.random().drawColor(JMColor.random());
         Point p2=Point.random().drawColor(JMColor.random());
@@ -90,6 +107,7 @@ public class TesterUpdaters extends Scene2D {
         play.shift(3, -1,.3, p1);
         play.shift(3, .3,-.6, p2);
         waitSeconds(3);
+        play.fadeOutAll();
     }
 
 }

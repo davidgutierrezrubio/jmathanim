@@ -23,7 +23,7 @@ import com.jmathanim.Animations.Strategies.Transform.HomothecyStrategyTransform;
 import com.jmathanim.Animations.Strategies.Transform.PointInterpolationCanonical;
 import com.jmathanim.Animations.Strategies.Transform.RotateAndScaleXYStrategyTransform;
 import com.jmathanim.Animations.Strategies.TransformStrategy;
-import com.jmathanim.Utils.MathObjectDrawingProperties;
+import com.jmathanim.Utils.MODrawProperties;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.JMPath;
 import com.jmathanim.mathobjects.MathObject;
@@ -43,7 +43,7 @@ public class Transform extends Animation {
     private JMPath jmpathOrig, jmpathDstBackup;
     public final Shape mobjDestiny;
     public final Shape mobjTransformed;
-    private MathObjectDrawingProperties propBase;
+    private MODrawProperties propBase;
     private Integer method;
     public boolean shouldOptimizePathsFirst;
     public boolean forceChangeDirection;

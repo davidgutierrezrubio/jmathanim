@@ -20,7 +20,7 @@ package com.jmathanim.mathobjects;
 
 import com.jmathanim.Renderers.Renderer;
 import com.jmathanim.Utils.JMathAnimConfig;
-import com.jmathanim.Utils.MathObjectDrawingProperties;
+import com.jmathanim.Utils.MODrawProperties;
 import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
@@ -45,13 +45,13 @@ public class Shape extends MathObject {
         this(jmpath, null);
     }
 
-    public Shape(JMPath jmpath, MathObjectDrawingProperties mp) {
+    public Shape(JMPath jmpath, MODrawProperties mp) {
         super(mp);
         vertices = new ArrayList<>();
         this.jmpath = jmpath;
     }
 
-    public Shape(MathObjectDrawingProperties mp) {
+    public Shape(MODrawProperties mp) {
         super(mp);
         vertices = new ArrayList<>();
         jmpath = new JMPath();
@@ -112,7 +112,7 @@ public class Shape extends MathObject {
 
     @Override
     public Shape copy() {
-        final MathObjectDrawingProperties copy = mp.copy();
+        final MODrawProperties copy = mp.copy();
         Shape resul = new Shape(jmpath.rawCopy(), copy);
         if (this.attrs != null) {
             resul.attrs = this.attrs.copy();

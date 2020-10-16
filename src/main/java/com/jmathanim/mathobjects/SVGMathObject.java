@@ -20,7 +20,7 @@ package com.jmathanim.mathobjects;
 
 import com.jmathanim.Utils.Anchor;
 import com.jmathanim.Utils.JMColor;
-import com.jmathanim.Utils.MathObjectDrawingProperties;
+import com.jmathanim.Utils.MODrawProperties;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -102,7 +102,7 @@ public class SVGMathObject extends MultiShapeObject {
             if (node.getNodeType() == Node.ELEMENT_NODE) {
                 Element el = (Element) node;
                 Shape sh;
-                MathObjectDrawingProperties ShMp = this.mp.copy();
+                MODrawProperties ShMp = this.mp.copy();
 //                    ShMp.fillColor.set(JMColor.random());
 switch (el.getTagName()) {
     case "path":
