@@ -18,11 +18,14 @@
 package tests;
 
 import com.jmathanim.Animations.AffineJTransform;
+import com.jmathanim.Animations.Animation;
+import com.jmathanim.Animations.commands.Commands;
 import com.jmathanim.Utils.Anchor;
 import com.jmathanim.Utils.ConfigLoader;
 import com.jmathanim.Utils.JMColor;
 import com.jmathanim.Utils.MODrawProperties;
 import com.jmathanim.jmathanim.Scene2D;
+import com.jmathanim.mathobjects.LaTeXMathObject;
 import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.Point;
 import com.jmathanim.mathobjects.Shape;
@@ -45,67 +48,82 @@ public class TesterUpdaters extends Scene2D {
 
     @Override
     public void runSketch() throws Exception {
+//        averagePoint();
+//        AnchoredToLower();
+//        AnchoredToPoint();
+//        transformedPath1();
         transformedPath2();
     }
 
     private void AnchoredToLower() {
-        Shape sq=Shape.regularPolygon(5).drawColor("#3caea3").thickness(.7).dashStyle(MODrawProperties.DASHED);
-        Shape c=Shape.circle().scale(.3).style("solidblue");
-        AnchoredMathObject an=new AnchoredMathObject(c,Anchor.UPPER, sq,Anchor.LOWER);
+        Shape sq = Shape.regularPolygon(5).drawColor("#3caea3").thickness(.7).dashStyle(MODrawProperties.DASHED);
+        Shape c = Shape.circle().scale(.3).style("solidblue");
+        AnchoredMathObject an = new AnchoredMathObject(c, Anchor.UPPER, sq, Anchor.LOWER);
         registerObjectToBeUpdated(an);
-        add(c,sq);
-        play.rotate(5,120*DEGREES,sq);
+        add(c, sq);
+        play.rotate(5, 120 * DEGREES, sq);
         waitSeconds(3);
         play.fadeOutAll();
     }
 
     private void AnchoredToPoint() {
-        Shape sq=Shape.regularPolygon(5).drawColor("#3ceaea3").thickness(2);
-        Shape c=Shape.circle().scale(.3).style("solidblue");
-        AnchoredMathObject an=new AnchoredMathObject(c,Anchor.BY_CENTER, sq.getPoint(2));
+        Shape sq = Shape.regularPolygon(5).drawColor("#3ceaea3").thickness(2);
+        Shape c = Shape.circle().scale(.3).style("solidblue");
+        AnchoredMathObject an = new AnchoredMathObject(c, Anchor.BY_CENTER, sq.getPoint(2));
         registerObjectToBeUpdated(an);
-        add(c,sq);
+        add(c, sq);
         waitSeconds(1);
-        play.shift(3,-1,0,sq);
+        play.shift(3, -1, 0, sq);
         waitSeconds(3);
         play.fadeOutAll();
     }
 
     private void transformedPath1() {
-        Shape c=Shape.circle().scale(.5).style("solidblue");
-        AffineJTransform tr=AffineJTransform.createAffineTransformation(Point.at(0,0), Point.at(1,0), Point.at(0,1), Point.at(-.5,.3), Point.at(1,0), Point.at(1,1), 1);
-        TransformedJMPath tpa=new TransformedJMPath(c, tr);
+        Shape c = Shape.circle().scale(.5).style("solidblue");
+        AffineJTransform tr = AffineJTransform.createAffineTransformation(Point.at(0, 0), Point.at(1, 0), Point.at(0, 1), Point.at(-.5, .3), Point.at(1, 0), Point.at(1, 1), 1);
+        TransformedJMPath tpa = new TransformedJMPath(c, tr);
         tpa.style("solidred").fillAlpha(.5);
-        add(c,tpa);
+        add(c, tpa);
         waitSeconds(1);
-        play.shift(3,-1,0,c);
+        play.shift(3, -1, 0, c);
         waitSeconds(3);
         play.fadeOutAll();
     }
 
     private void transformedPath2() {
-        Shape c=Shape.square().scale(.5,1.2).style("solidblue");
-        AffineJTransform tr=AffineJTransform.createAffineTransformation(Point.at(0,0), Point.at(1,0), Point.at(0,1), Point.at(-.5,.3), Point.at(1,0), Point.at(1,1), 1);
-        TransformedJMPath tpa=new TransformedJMPath(c, tr);
+//        Shape c = Shape.square().scale(.5, 1.2).style("solidblue");
+        LaTeXMathObject lat=LaTeXMathObject.make("$8$").scale(7);
+        Shape c=lat.get(0);
+        
+        AffineJTransform tr = AffineJTransform.createAffineTransformation(Point.at(0, 0), Point.at(1, 0), Point.at(0, 1), Point.at(-.5, .3), Point.at(1, 0), Point.at(1, 1), 1);
+        TransformedJMPath tpa = new TransformedJMPath(c, tr);
         tpa.style("solidred").fillAlpha(.5);
-        add(c,tpa);
+        add(c, tpa);
         waitSeconds(1);
         play.transform(5, c, Shape.square());
         waitSeconds(3);
         play.fadeOutAll();
     }
-    
-    
+
     private void averagePoint() {
-        Point p1=Point.random().drawColor(JMColor.random());
-        Point p2=Point.random().drawColor(JMColor.random());
-        Point p3=Point.random().drawColor(JMColor.random());
-        AveragePoint avp = new AveragePoint(p1,p2,p3);
+        int numPoints = 30;
+        Point[] points = new Point[numPoints];
+        for (int n = 0; n < numPoints; n++) {
+            points[n] = Point.random().drawColor(JMColor.random());
+        }
+        add(points);
+        AveragePoint avp = new AveragePoint(points);
         avp.style("dotBlueCross");
-        add(p1,p2,p3,avp);
+        add(avp);
         waitSeconds(3);
-        play.shift(3, -1,.3, p1);
-        play.shift(3, .3,-.6, p2);
+        
+        //Create animations
+        Animation[] anims=new Animation[numPoints];
+        
+         for (int n = 0; n < numPoints; n++) {
+            anims[n]=Commands.shift(10,Math.random()*2-1,Math.random()*2-1,points[n]);
+        }
+         playAnimation(anims);
         waitSeconds(3);
         play.fadeOutAll();
     }
