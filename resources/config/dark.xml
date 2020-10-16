@@ -9,9 +9,9 @@
             <thickness>1</thickness>
         </style>  
         <style name="latexdefault">
-            <drawColor>#FFFFFF00</drawColor>
+            <drawColor>#FFFFFFFF</drawColor>
             <fillColor>#FFFFFFFF</fillColor>
-            <thickness>.04</thickness>
+            <thickness>.05</thickness>
         </style>
         <style name="latextransparent">
             <drawColor>#FFFFFFFF</drawColor>
@@ -41,19 +41,19 @@
         <style name="dotRedCircle">
             <drawColor>RED</drawColor>
             <fillColor>NONE</fillColor>
-            <thickness>1</thickness>
+            <thickness>.5</thickness>
             <dotStyle>DOT_STYLE_CIRCLE</dotStyle>
         </style>
         <style name="dotBlueCross">
             <drawColor>#6ca2e0</drawColor>
             <fillColor>NONE</fillColor>
-            <thickness>1</thickness>
+            <thickness>.5</thickness>
             <dotStyle>cross</dotStyle>
         </style>
          <style name="dotYellowPlus">
             <drawColor>#FCE16D</drawColor>
             <fillColor>NONE</fillColor>
-            <thickness>1</thickness>
+            <thickness>.5</thickness>
             <dotStyle>plus</dotStyle>
         </style>
     </styles>

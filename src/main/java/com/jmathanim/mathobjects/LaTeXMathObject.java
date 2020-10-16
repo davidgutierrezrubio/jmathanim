@@ -100,7 +100,7 @@ public class LaTeXMathObject extends SVGMathObject {
         Camera cam = JMathAnimConfig.getConfig().getFixedCamera();
 //        double hm = cam.getMathView().getHeight();
         double hm = cam.screenToMath(cam.screenHeight);
-        double sc = DEFAULT_SCALE_FACTOR * .4 * hm / 6.8;
+        double sc = DEFAULT_SCALE_FACTOR * .4 * hm / 6.8*2.5;
         this.scale(getBoundingBox().getUL(), sc, sc, 1);
 
     }

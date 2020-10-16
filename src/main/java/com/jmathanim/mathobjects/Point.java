@@ -140,7 +140,7 @@ public class Point extends MathObject {
         switch (mp.dotStyle) {
             case DOT_STYLE_CROSS:
 //                st = mp.computeScreenThickness(r)/20;
-                st = mp.thickness / 10;
+                st = mp.thickness /40;
                 dotShape = new Shape();
                 dotShape.getPath().addPoint(Point.at(-1, 1), Point.at(1, -1), Point.at(1, 1), Point.at(-1, -1));
                 dotShape.getJMPoint(0).isThisSegmentVisible = false;
@@ -149,7 +149,7 @@ public class Point extends MathObject {
                 break;
             case DOT_STYLE_PLUS:
 //                st = mp.computeScreenThickness(r)/20;
-                st = mp.thickness / 10;
+                st = mp.thickness / 70;
                 dotShape = new Shape();
                 dotShape.getPath().addPoint(Point.at(0, 1), Point.at(0, -1), Point.at(1, 0), Point.at(-1, 0));
                 dotShape.getJMPoint(0).isThisSegmentVisible = false;
@@ -158,7 +158,7 @@ public class Point extends MathObject {
                 break;
             default://Default case, includes CIRCLE
 //                st = mp.computeScreenThickness(r)/200;
-                st = mp.thickness / 20;
+                st = mp.thickness /40;
                 dotShape = Shape.circle().shift(v).scale(st).drawColor(mp.drawColor).fillColor(mp.drawColor).thickness(0);
                 break;
         }

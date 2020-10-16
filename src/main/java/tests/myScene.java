@@ -15,7 +15,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-
 package tests;
 
 import com.jmathanim.Animations.Strategies.Transform.PointInterpolationCanonical;
@@ -54,19 +53,25 @@ public class myScene extends Scene2D {
 
     @Override
     public void runSketch() {
-//        manyDots();
-    Arrow2D ar=Arrow2D.makeSimpleArrow2D(Point.at(0,1), Point.at(0,0),Arrow2D.TYPE_3);
-    Arrow2D ar2=Arrow2D.makeSimpleArrow2D(Point.at(-1,-.61), Point.at(-.1,-.1),Arrow2D.TYPE_1);
+        manyDots();
+    }
+
+    private void absoluteThings() {
+
+        Arrow2D ar = Arrow2D.makeSimpleArrow2D(Point.at(0, 1), Point.at(0, 0), Arrow2D.TYPE_3);
+        Arrow2D ar2 = Arrow2D.makeSimpleArrow2D(Point.at(-1, -.61), Point.at(-.1, -.1), Arrow2D.TYPE_1);
 //        Shape s = Shape.segment(Point.at(0, 1), Point.at(0, 0));
         Shape c = Shape.circle().drawColor(JMColor.RED);
 //        ar.thickness(3);
-        add(ar, ar2,c);
-        
-        LaTeXMathObject lat= LaTeXMathObject.make("Absolutely!").scale(2).stackTo(Anchor.BY_CENTER);
-        LaTeXMathObject lat2= LaTeXMathObject.make("Relatively!").scale(1).stackTo(Anchor.BY_CENTER);
-        add(lat,lat2);
+        add(ar, ar2, c);
+        System.out.println("1");
+        LaTeXMathObject lat = LaTeXMathObject.make("Absolutely!").scale(2).stackTo(Anchor.BY_CENTER);
+        LaTeXMathObject lat2 = LaTeXMathObject.make("Relatively!").scale(1).stackTo(Anchor.BY_CENTER);
+        System.out.println("2");
+        add(lat, lat2);
         lat.setAbsoluteSize(Anchor.BY_CENTER);
-        play.cameraScale(10, .2);
+        play.cameraScale(3, .2);
+        System.out.println("3");
         play.highlight(lat);
         waitSeconds(3);
     }
@@ -76,12 +81,15 @@ public class myScene extends Scene2D {
             Point p = Point.random();
             int st = (int) (Math.random() * 2.9 + 1);
             p.dotStyle(st);
-            p.thickness(1 + Math.random() * 1);
+            p.thickness(.5);
+            System.out.println("n "+n);
+//            p.thickness(1 + Math.random() * 1);
             p.drawColor(JMColor.random());
             play.fadeIn(.3, p);
         }
+        System.out.println("2");
         waitSeconds(1);
-        play.cameraScale(10, 5);
+        play.cameraScale(3, 5);
 
     }
 

@@ -15,7 +15,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-
 package com.jmathanim.Utils;
 
 import com.jmathanim.mathobjects.MathObject;
@@ -78,7 +77,7 @@ public class Anchor {
      *
      * @param obj Object to get anchor point
      * @param anchor Type of anchor point null null null null null null null
-     * null null null     {@link BY_POINT}, {@link BY_CENTER}, {@link RIGHT}, {@link UPPER},
+     * null null null null     {@link BY_POINT}, {@link BY_CENTER}, {@link RIGHT}, {@link UPPER},
      * {@link LEFT}, {@link LOWER}, {@link DR}, {@link UR},
      * {@link UL}, {@link DL}
      * @return The anchor point
@@ -95,7 +94,7 @@ public class Anchor {
      *
      * @param obj Object to get anchor point
      * @param anchor Type of anchor point null null null null null null null
-     * null null null null     {@link BY_POINT}, {@link BY_CENTER}, {@link RIGHT}, {@link UPPER},
+     * null null null null null     {@link BY_POINT}, {@link BY_CENTER}, {@link RIGHT}, {@link UPPER},
      * {@link LEFT}, {@link LOWER}, {@link DR}, {@link UR},
      * {@link UL}, {@link DL}
      * @param gap Gap to add to the anchor
@@ -113,7 +112,7 @@ public class Anchor {
      *
      * @param obj Object to get anchor point
      * @param anchor Type of anchor point null null null null null null null
-     * null null null     {@link BY_POINT}, {@link BY_CENTER}, {@link RIGHT}, {@link UPPER},
+     * null null null null     {@link BY_POINT}, {@link BY_CENTER}, {@link RIGHT}, {@link UPPER},
      * {@link LEFT}, {@link LOWER}, {@link DR}, {@link UR},
      * {@link UL}, {@link DL}
      * @param xgap Horizontal gap
@@ -124,7 +123,11 @@ public class Anchor {
         Point resul = new Point();
         switch (anchor) {
             case BY_POINT:
-                resul = obj.getAbsoluteAnchorPoint();
+                if (obj instanceof Point) {
+                    resul = obj.copy();
+                } else {
+                    resul = obj.getAbsoluteAnchorPoint();
+                }
                 break;
             case BY_CENTER:
                 resul = obj.getCenter();

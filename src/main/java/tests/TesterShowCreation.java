@@ -38,8 +38,8 @@ public class TesterShowCreation extends Scene2D {
 
     @Override
     public void setupSketch() {
-        ConfigLoader.parseFile("preview.xml");
-//        ConfigLoader.parseFile("production.xml");
+//        ConfigLoader.parseFile("preview.xml");
+        ConfigLoader.parseFile("production.xml");
         ConfigLoader.parseFile("dark.xml");
     }
 

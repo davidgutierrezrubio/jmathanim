@@ -22,10 +22,6 @@ import com.jmathanim.Utils.Vec;
 import com.jmathanim.mathobjects.JMPath;
 import com.jmathanim.mathobjects.JMPathPoint;
 import com.jmathanim.mathobjects.Point;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import jdk.nashorn.internal.runtime.arrays.ArrayLikeIterator;
 
 /**
  * This class represents middle point computed from 2 given ones. This class
@@ -34,31 +30,32 @@ import jdk.nashorn.internal.runtime.arrays.ArrayLikeIterator;
  *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
-public class AveragePoint extends Point implements Updateable {
+public class Centroid extends Point implements Updateable {
 
-    final List<Point> points;
-    public AveragePoint(Point...points) {
+    private final JMPath path;
+
+    public Centroid(JMPath path) {
         super();
-        this.points=Arrays.asList(points);
+        this.path = path;
     }
 
     @Override
     public void update() {
         Vec resul = new Vec(0, 0);
-        for (int n = 0; n < points.size(); n++) {
-            resul.addInSite(points.get(n).v);
+        for (int n = 0; n < path.size(); n++) {
+            resul.addInSite(path.getJMPoint(n).p.v);
         }
-        resul.multInSite(1.0d / points.size());
-        this.v.copyFrom(resul);
+        resul.multInSite(1.0d / path.size());
+        this.v = resul;
     }
 
     @Override
     public int getUpdateLevel() {
         int level = -1;
-        for (int n = 0; n < points.size(); n++) {
-            level = Math.max(level, points.get(n).getUpdateLevel());
+        for (JMPathPoint p : path.jmPathPoints) {
+            level = Math.max(level, p.getUpdateLevel());
         }
-        return level+1;
+        return level;
     }
 
 }
