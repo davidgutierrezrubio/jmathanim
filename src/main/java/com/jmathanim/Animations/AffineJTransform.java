@@ -287,17 +287,10 @@ public class AffineJTransform {
             Point cp1Dst = getTransformedObject(pSrc.cp1);
             Point cp2Dst = getTransformedObject(pSrc.cp2);
 
-            jmPDst.p.v.x = pDst.v.x;
-            jmPDst.p.v.y = pDst.v.y;
-            jmPDst.p.v.z = pDst.v.z;
+            jmPDst.p.v.copyFrom(pDst.v);
+            jmPDst.cp1.v.copyFrom(cp1Dst.v);
+            jmPDst.cp2.v.copyFrom(cp2Dst.v);
 
-            jmPDst.cp1.v.x = cp1Dst.v.x;
-            jmPDst.cp1.v.y = cp1Dst.v.y;
-            jmPDst.cp1.v.z = cp1Dst.v.z;
-
-            jmPDst.cp2.v.x = cp2Dst.v.x;
-            jmPDst.cp2.v.y = cp2Dst.v.y;
-            jmPDst.cp2.v.z = cp2Dst.v.z;
             applyTransformToAttributes(mObject);
             return;
         }

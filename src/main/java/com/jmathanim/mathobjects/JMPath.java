@@ -416,10 +416,11 @@ public class JMPath implements Updateable, Stateable {
 
                 double cpTempX = point.cp1.v.x;
                 double cpTempY = point.cp1.v.y;
-                point.cp1.v.x = point.cp2.v.x;
-                point.cp1.v.y = point.cp2.v.y;
+                double cpTempZ = point.cp1.v.z;
+                point.cp1.v.copyFrom(point.cp2.v);
                 point.cp2.v.x = cpTempX;
                 point.cp2.v.y = cpTempY;
+                point.cp2.v.z = cpTempZ;
             }
             jmPathPoints.add(point);
         }
@@ -510,30 +511,41 @@ public class JMPath implements Updateable, Stateable {
         //Initial values for min and max
         double xmin = jmPathPoints.get(0).p.v.x;
         double ymin = jmPathPoints.get(0).p.v.y;
+        double zmin = jmPathPoints.get(0).p.v.z;
         double xmax = jmPathPoints.get(0).p.v.x;
         double ymax = jmPathPoints.get(0).p.v.y;
+        double zmax = jmPathPoints.get(0).p.v.z;
         for (JMPathPoint p : jmPathPoints) {
             double x = p.p.v.x;
             double y = p.p.v.y;
+            double z = p.p.v.z;
             xmin = (x < xmin ? x : xmin);
             ymin = (y < ymin ? y : ymin);
+            zmin = (z < zmin ? z : zmin);
             xmax = (x > xmax ? x : xmax);
             ymax = (y > ymax ? y : ymax);
+            zmax = (z > zmax ? z : zmax);
             //Include also control points!
             double cx1 = p.cp1.v.x;
             double cy1 = p.cp1.v.y;
+            double cz1 = p.cp1.v.z;
             xmin = (cx1 < xmin ? cx1 : xmin);
             ymin = (cy1 < ymin ? cy1 : ymin);
+            zmin = (cz1 < zmin ? cz1 : zmin);
             xmax = (cx1 > xmax ? cx1 : xmax);
             ymax = (cy1 > ymax ? cy1 : ymax);
+            zmax = (cz1 > zmax ? cz1 : zmax);
             double cx2 = p.cp2.v.x;
             double cy2 = p.cp2.v.y;
+            double cz2 = p.cp2.v.z;
             xmin = (cx2 < xmin ? cx2 : xmin);
             ymin = (cy2 < ymin ? cy2 : ymin);
+            zmin = (cz2 < zmin ? cz2 : zmin);
             xmax = (cx2 > xmax ? cx2 : xmax);
             ymax = (cy2 > ymax ? cy2 : ymax);
+            zmax = (cz2 > zmax ? cz2 : zmax);
         }
-        return new Rect(xmin, ymin, xmax, ymax);
+        return new Rect(xmin, ymin, zmin,xmax, ymax,zmax);
     }
 
     void scale(Point point, double d, double e, double f) {

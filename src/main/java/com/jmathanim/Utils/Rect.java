@@ -15,7 +15,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-
 package com.jmathanim.Utils;
 
 import com.jmathanim.mathobjects.Point;
@@ -27,13 +26,19 @@ import com.jmathanim.mathobjects.Point;
  */
 public class Rect {//TODO: Adjust this to 3D coordinates
 
-    public double xmin, ymin, xmax, ymax;
+    public double xmin, ymin, xmax, ymax, zmin, zmax;
 
     public Rect(double xmin, double ymin, double xmax, double ymax) {
+        this(xmin,ymin,0,xmax,ymax,0);
+    }
+
+    public Rect(double xmin, double ymin, double zmin, double xmax, double ymax, double zmax) {
         this.xmin = xmin;
         this.ymin = ymin;
+        this.zmin = zmin;
         this.xmax = xmax;
         this.ymax = ymax;
+        this.zmax = zmax;
     }
 
     /**

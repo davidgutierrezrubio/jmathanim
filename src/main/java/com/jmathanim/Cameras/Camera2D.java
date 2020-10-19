@@ -69,7 +69,8 @@ public class Camera2D extends Camera {
     public void setCenter(MathObject obj) {
         double xx = obj.getCenter().v.x;
         double yy = obj.getCenter().v.y;
-        setCenter(xx, yy);
+        double zz = obj.getCenter().v.z;
+        setCenter(xx, yy,zz);
     }
 
     @Override
