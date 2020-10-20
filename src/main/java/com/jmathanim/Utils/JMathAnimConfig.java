@@ -180,10 +180,6 @@ public class JMathAnimConfig {
         return renderer.getCamera();
     }
 
-    public void setCamera(Camera camera) {
-        this.renderer.setCamera(camera);
-    }
-
     public JMColor getBackgroundColor() {
         return backgroundColor;
     }

@@ -5,10 +5,8 @@
         <outputDir>c:\media</outputDir>
         <showPreviewWindow>false</showPreviewWindow>
     </video>
-    <background>
          <background>
-        <shadows kernelSize="8" offsetX="5" offsetY="5" alpha=".7">false</shadows>
-        <!--<image>fondo.png</image>-->
-    </background>
+        <shadows kernelSize="8" offsetX="15" offsetY="15" alpha=".5">true</shadows>
+        <image>hoja1080.png</image>
     </background>
 </JMathAnimConfig>

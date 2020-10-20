@@ -138,15 +138,6 @@ public class Java2DAwtRenderer extends Renderer {
         }
     }
 
-    /**
-     *
-     * @param camera
-     */
-    @Override
-    public void setCamera(Camera camera) {
-        this.camera = (Camera2D) camera;
-        camera.setSize(cnf.mediaW, cnf.mediaH);
-    }
 
     public final void prepareEncoder() {
 

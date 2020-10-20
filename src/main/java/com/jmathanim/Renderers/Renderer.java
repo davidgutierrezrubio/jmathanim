@@ -41,8 +41,6 @@ public abstract class Renderer {
         this.cnf=JMathAnimConfig.getConfig();
     }
 
-    public abstract void setCamera(Camera c);
-
     abstract public <T extends Camera> T getCamera();
 
     public abstract Camera getFixedCamera();
@@ -57,7 +55,7 @@ public abstract class Renderer {
        return cnf.mediaH;
     }
 
-    abstract public void saveFrame(int frameCount) throws Exception;
+    abstract public void saveFrame(int frameCount);
 
     abstract public void finish(int frameCount);
 

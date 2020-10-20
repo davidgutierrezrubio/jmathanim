@@ -25,7 +25,6 @@ import com.jmathanim.Utils.JMColor;
 import com.jmathanim.Utils.JMathAnimConfig;
 import com.jmathanim.Utils.MODrawProperties;
 import com.jmathanim.jmathanim.Scene2D;
-import com.jmathanim.jmathanim.Scene2DAwt;
 import com.jmathanim.mathobjects.Arrow2D;
 import com.jmathanim.mathobjects.CanonicalJMPath;
 import com.jmathanim.mathobjects.JMPath;
@@ -46,16 +45,17 @@ public class myScene extends Scene2D {
     public void setupSketch() {
 //        conf.setResourcesDir(".");
 //        conf.setOutputDir("c:\\media");
-//        ConfigLoader.parseFile("production.xml");
-        ConfigLoader.parseFile("preview.xml");
+        ConfigLoader.parseFile("production.xml");
+//        ConfigLoader.parseFile("preview.xml");
         ConfigLoader.parseFile("dark.xml");
+
 //        conf.setHighQuality();
 //        conf.setCreateMovie(true);
     }
 
     @Override
     public void runSketch() {
-        manyDots();
+        drawCircleAndMarco();
     }
 
     private void drawCircleAndMarco() {
@@ -63,16 +63,18 @@ public class myScene extends Scene2D {
         c.style("solidblue");
         c.dashStyle(MODrawProperties.DASHED);
         add(c);
-        waitSeconds(3);
 //        Shape c = Shape.segment(Point.at(0,0),Point.at(1,1));
-Shape cr = Shape.rectangle(camera.getMathView());
-cr.dashStyle(MODrawProperties.DOTTED);
-cr.thickness(1);
-cr.drawColor(JMColor.RED);
+        Shape cr = Shape.rectangle(camera.getMathView());
+        cr.dashStyle(MODrawProperties.DOTTED);
+        cr.thickness(1);
+        cr.drawColor(JMColor.RED);
+        cr.mp.castShadows=false;
+        
 //        add(c,cr);
 //        play.transform(5, c, Shape.square());
-play.showCreation(c,cr);
-waitSeconds(3);
+        play.showCreation(c, cr);
+        play.cameraShift(3,1,0);
+        waitSeconds(3);
     }
 
     private void absoluteThings() {

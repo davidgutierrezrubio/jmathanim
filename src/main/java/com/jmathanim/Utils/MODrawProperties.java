@@ -46,6 +46,7 @@ public class MODrawProperties {
     public Boolean absoluteThickness = false;
     public Integer dashStyle = 1;
     private int layer = 0;
+    public boolean castShadows=true;//If shadows, this object should cast them
 
     //Styles used for specified objects
     //Point
@@ -71,6 +72,7 @@ public class MODrawProperties {
         dashStyle = (prop.dashStyle == null ? dashStyle : prop.dashStyle);
         absoluteThickness = (prop.absoluteThickness == null ? absoluteThickness : prop.absoluteThickness);
         dotStyle = (prop.dotStyle == null ? dotStyle : prop.dotStyle);
+        castShadows = prop.castShadows;
     }
 
     /**
@@ -148,6 +150,7 @@ public class MODrawProperties {
         dashStyle = mp.dashStyle;
         layer = mp.layer;
         dotStyle = mp.dotStyle;
+        castShadows=mp.castShadows;
     }
 
     /**

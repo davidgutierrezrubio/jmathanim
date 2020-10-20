@@ -26,7 +26,6 @@ import com.jmathanim.Utils.JMColor;
 import com.jmathanim.Utils.MODrawProperties;
 import com.jmathanim.jmathanim.Scene2DAwt;
 import com.jmathanim.mathobjects.LaTeXMathObject;
-import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.Point;
 import com.jmathanim.mathobjects.Shape;
 import com.jmathanim.mathobjects.updateableObjects.AnchoredMathObject;

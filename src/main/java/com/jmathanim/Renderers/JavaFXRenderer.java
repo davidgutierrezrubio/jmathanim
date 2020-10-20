@@ -44,7 +44,14 @@ import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.SnapshotParameters;
 import javafx.scene.effect.DropShadow;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.image.WritableImage;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundImage;
+import javafx.scene.layout.BackgroundPosition;
+import javafx.scene.layout.BackgroundRepeat;
+import javafx.scene.layout.BackgroundSize;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.CubicCurveTo;
 import javafx.scene.shape.LineTo;
@@ -66,6 +73,8 @@ public class JavaFXRenderer extends Renderer {
     public CameraFX2D fixedCamera;
     private Scene fxScene;
     private Group group;
+    DropShadow dropShadow;
+    
     private final ArrayList<Node> fxnodes;
 
     private VideoEncoder videoEncoder;
@@ -99,12 +108,14 @@ public class JavaFXRenderer extends Renderer {
             JMathAnimScene.logger.info("Creating movie encoder for {}", saveFilePath);
 //                muxer = Muxer.make(saveFilePath.getCanonicalPath(), null, "mp4");
             videoEncoder.createEncoder(saveFilePath, cnf);
-
-            if (cnf.drawShadow) {
-                //..................................
-            }
-
         }
+         if (cnf.drawShadow) {
+                dropShadow = new DropShadow();
+                dropShadow.setRadius(cnf.shadowKernelSize);
+                dropShadow.setOffsetX(cnf.shadowOffsetX);
+                dropShadow.setOffsetY(cnf.shadowOffsetY);
+                dropShadow.setColor(Color.color(0, 0, 0,cnf.shadowAlpha));
+            }
     }
 
     public final void initializeJavaFXWindow() throws Exception {
@@ -122,8 +133,8 @@ public class JavaFXRenderer extends Renderer {
                 if (cnf.showPreview) {
                     JMathAnimScene.logger.debug("Creating preview window");
                     //TODO: This gaps to add to the window are os-dependent
-                    StandaloneSnapshot.FXStarter.stage.setHeight(cnf.mediaH + 40);
-                    StandaloneSnapshot.FXStarter.stage.setWidth(cnf.mediaW + 18);
+                    StandaloneSnapshot.FXStarter.stage.setHeight(cnf.mediaH + 38);
+                    StandaloneSnapshot.FXStarter.stage.setWidth(cnf.mediaW + 16);
                     StandaloneSnapshot.FXStarter.stage.show();
                 }
                 return 1;
@@ -160,46 +171,56 @@ public class JavaFXRenderer extends Renderer {
 //        }
 //    }
     @Override
-    public void setCamera(Camera c) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
     public <T extends Camera> T getCamera() {
         return (T) camera;
     }
 
     @Override
     public Camera getFixedCamera() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return fixedCamera;
     }
 
-
     @Override
-    public void saveFrame(int frameCount) throws Exception {
+    public void saveFrame(int frameCount) {
         WritableImage img2;
         BufferedImage bi = new BufferedImage(cnf.mediaH, cnf.mediaW, BufferedImage.TYPE_INT_ARGB);
         FutureTask<WritableImage> task = new FutureTask<>(new Callable<WritableImage>() {
             @Override
             public WritableImage call() throws Exception {
-                WritableImage img;//=new WritableImage(cnf.mediaW, cnf.mediaH);
                 group.getChildren().clear();
+
+                //Create background
+                if ((!"".equals(cnf.backGroundImage)) && (cnf.backGroundImage != null)) {
+                    File file = new File(cnf.backGroundImage);
+                    ImageView background = new ImageView(new Image(file.toURI().toString()));
+                    Rectangle2D viewport = new Rectangle2D(0, 0, cnf.mediaW, cnf.mediaW);
+                    background.setViewport(viewport);
+                    group.getChildren().add(background);
+                }
+                //Add all elements
                 group.getChildren().addAll(fxnodes);
+                
+                //Snapshot parameters
                 final SnapshotParameters params = new SnapshotParameters();
                 params.setFill(JMathAnimConfig.getConfig().getBackgroundColor().getFXColor());
-                Rectangle2D r = new Rectangle2D(0, 0, cnf.mediaW, cnf.mediaH);
-                params.setViewport(r);
+                params.setViewport(new Rectangle2D(0, 0, cnf.mediaW, cnf.mediaH));
                 params.setCamera(fxScene.getCamera());
 
-                img = fxScene.getRoot().snapshot(params, null);
-                return img;
+                return fxScene.getRoot().snapshot(params, null);
             }
         });
 
         Platform.runLater(task);
-        img2 = task.get();
+        try {
+            img2 = task.get();
+            bi = SwingFXUtils.fromFXImage(img2, null);
+        } catch (InterruptedException ex) {
+            Logger.getLogger(JavaFXRenderer.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ExecutionException ex) {
+            Logger.getLogger(JavaFXRenderer.class.getName()).log(Level.SEVERE, null, ex);
+        }
 //        BufferedImage bi = SwingFXUtils.fromFXImage(img2, null);
-        bi = SwingFXUtils.fromFXImage(img2, null);
+
         if (cnf.createMovie) {
             videoEncoder.writeFrame(bi, frameCount);
 //            File file=new File("C:\\media\\frame"+frameCount+".png");
@@ -247,12 +268,7 @@ public class JavaFXRenderer extends Renderer {
 
             applyDrawingStyles(path, mobj);
 
-            if (cnf.drawShadow) {
-                DropShadow dropShadow = new DropShadow();
-                dropShadow.setRadius(5.0);
-                dropShadow.setOffsetX(6.0);
-                dropShadow.setOffsetY(6.0);
-                dropShadow.setColor(Color.color(0.4, 0.5, 0.5));//IMplement with JColor: Make JColor extends FX Color?
+            if (cnf.drawShadow & mobj.mp.castShadows) {
                 path.setEffect(dropShadow);
             }
             fxnodes.add(path);

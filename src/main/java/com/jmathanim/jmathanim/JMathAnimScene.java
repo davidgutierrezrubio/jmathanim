@@ -28,6 +28,7 @@ import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.updateableObjects.Updateable;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.logging.Level;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -263,7 +264,7 @@ public abstract class JMathAnimScene {
     /**
      * Advance one frame, making all necessary drawings and saving frame
      */
-    public final void advanceFrame() throws Exception {
+    public final void advanceFrame() {
         renderer.clear();
         doDraws();
         frameCount++;
@@ -277,9 +278,13 @@ public abstract class JMathAnimScene {
      * Save the current frame using the renderer. Renderer should save the frame
      * to video, or any other format.
      */
-    private void saveMPFrame() throws Exception {
+    private void saveMPFrame()  {
 
-        renderer.saveFrame(frameCount);
+        try {
+            renderer.saveFrame(frameCount);
+        } catch (Exception ex) {
+            java.util.logging.Logger.getLogger(JMathAnimScene.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     /**
@@ -288,7 +293,7 @@ public abstract class JMathAnimScene {
      *
      * @param anims Animations to play, with a variable number or arguments
      */
-    public void playAnimation(Animation... anims) throws Exception {
+    public void playAnimation(Animation... anims) {
         ArrayList<Animation> animArray = new ArrayList<>();
         animArray.addAll(Arrays.asList(anims));
         this.playAnimation(animArray);
@@ -300,7 +305,7 @@ public abstract class JMathAnimScene {
      *
      * @param anims An ArrayList with Animation objects.
      */
-    public void playAnimation(ArrayList<Animation> anims) throws Exception {
+    public void playAnimation(ArrayList<Animation> anims)  {
         for (Animation anim : anims) {
             if (anim != null) {
                 anim.initialize();//Perform needed steps immediately before playing
@@ -326,10 +331,14 @@ public abstract class JMathAnimScene {
      *
      * @param time Time in seconds.
      */
-    public void waitSeconds(double time) throws Exception {
+    public void waitSeconds(double time) {
         int numFrames = (int) (time * fps);
         for (int n = 0; n < numFrames; n++) {
-            advanceFrame();
+            try {
+                advanceFrame();
+            } catch (Exception ex) {
+                java.util.logging.Logger.getLogger(JMathAnimScene.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
 
     }
