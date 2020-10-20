@@ -263,7 +263,7 @@ public abstract class JMathAnimScene {
     /**
      * Advance one frame, making all necessary drawings and saving frame
      */
-    public final void advanceFrame() {
+    public final void advanceFrame() throws Exception {
         renderer.clear();
         doDraws();
         frameCount++;
@@ -277,7 +277,7 @@ public abstract class JMathAnimScene {
      * Save the current frame using the renderer. Renderer should save the frame
      * to video, or any other format.
      */
-    private void saveMPFrame() {
+    private void saveMPFrame() throws Exception {
 
         renderer.saveFrame(frameCount);
     }
@@ -288,7 +288,7 @@ public abstract class JMathAnimScene {
      *
      * @param anims Animations to play, with a variable number or arguments
      */
-    public void playAnimation(Animation... anims) {
+    public void playAnimation(Animation... anims) throws Exception {
         ArrayList<Animation> animArray = new ArrayList<>();
         animArray.addAll(Arrays.asList(anims));
         this.playAnimation(animArray);
@@ -300,7 +300,7 @@ public abstract class JMathAnimScene {
      *
      * @param anims An ArrayList with Animation objects.
      */
-    public void playAnimation(ArrayList<Animation> anims) {
+    public void playAnimation(ArrayList<Animation> anims) throws Exception {
         for (Animation anim : anims) {
             if (anim != null) {
                 anim.initialize();//Perform needed steps immediately before playing
@@ -326,7 +326,7 @@ public abstract class JMathAnimScene {
      *
      * @param time Time in seconds.
      */
-    public void waitSeconds(double time) {
+    public void waitSeconds(double time) throws Exception {
         int numFrames = (int) (time * fps);
         for (int n = 0; n < numFrames; n++) {
             advanceFrame();

@@ -23,6 +23,7 @@ import com.jmathanim.Utils.Anchor;
 import com.jmathanim.Utils.ConfigLoader;
 import com.jmathanim.Utils.JMColor;
 import com.jmathanim.Utils.JMathAnimConfig;
+import com.jmathanim.Utils.MODrawProperties;
 import com.jmathanim.jmathanim.Scene2D;
 import com.jmathanim.jmathanim.Scene2DAwt;
 import com.jmathanim.mathobjects.Arrow2D;
@@ -54,15 +55,24 @@ public class myScene extends Scene2D {
 
     @Override
     public void runSketch() {
+        manyDots();
+    }
+
+    private void drawCircleAndMarco() {
         final Shape c = Shape.circle();
+        c.style("solidblue");
+        c.dashStyle(MODrawProperties.DASHED);
         add(c);
         waitSeconds(3);
 //        Shape c = Shape.segment(Point.at(0,0),Point.at(1,1));
-//        Shape cr = Shape.rectangle(camera.getMathView().scaled(.7, .7));
+Shape cr = Shape.rectangle(camera.getMathView());
+cr.dashStyle(MODrawProperties.DOTTED);
+cr.thickness(1);
+cr.drawColor(JMColor.RED);
 //        add(c,cr);
 //        play.transform(5, c, Shape.square());
-        play.showCreation(c);
-        waitSeconds(3);
+play.showCreation(c,cr);
+waitSeconds(3);
     }
 
     private void absoluteThings() {

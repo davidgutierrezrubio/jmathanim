@@ -48,7 +48,6 @@ public abstract class Renderer {
     public abstract Camera getFixedCamera();
 
 
-    public abstract void setCameraSize(int w, int h);
 
     public int getWidth() {
         return cnf.mediaW;

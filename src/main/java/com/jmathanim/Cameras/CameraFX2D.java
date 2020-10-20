@@ -104,9 +104,9 @@ public class CameraFX2D extends Camera {
         return new double[]{x, y};
     }
 
-    public double[] screenToMath(int x, int y) {
-        double mx = (double) (x * (xmax - xmin) / screenWidth + xmin);
-        double my = -(double) (y * (ymax - ymin) / screenHeight - ymax);
+    public double[] screenToMath(double x, double y) {
+        double mx = (x * (xmax - xmin) / screenWidth + xmin);
+        double my = -(y * (ymax - ymin) / screenHeight - ymax);
         return new double[]{mx, my};
     }
 

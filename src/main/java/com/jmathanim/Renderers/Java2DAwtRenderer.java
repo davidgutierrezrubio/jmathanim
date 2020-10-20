@@ -303,7 +303,7 @@ public class Java2DAwtRenderer extends Renderer {
 
     @Override
     public void clear() {
-        g2dFinalImage.setColor(JMathAnimConfig.getConfig().getBackgroundColor().getColor());
+        g2dFinalImage.setColor(JMathAnimConfig.getConfig().getBackgroundColor().getAwtColor());
         g2dFinalImage.fillRect(0, 0, cnf.mediaW, cnf.mediaH);
 
         //Draw background image, if any
@@ -455,14 +455,14 @@ public class Java2DAwtRenderer extends Renderer {
 //                Path2D.Double pathToFill = createPathFromJMPath(mobj, mobj.getPath().allVisible(), cam);
 //                g2draw.setColor(mobj.mp.fillColor.getColor());
 //                g2draw.fill(pathToFill);
-                g2draw.setColor(mobj.mp.fillColor.getColor());
+                g2draw.setColor(mobj.mp.fillColor.getAwtColor());
                 g2draw.fill(path);
             }
             //Border is always drawed
 //            AffineTransform bTr = g2draw.getTransform();
 //            final AffineTransform cameratoG2DTransform = getCameratoG2DTransform(cam);
 
-            g2draw.setColor(mobj.mp.drawColor.getColor());
+            g2draw.setColor(mobj.mp.drawColor.getAwtColor());
             setStroke(g2draw, mobj);
 //            g2draw.setTransform(cameratoG2DTransform);
             g2draw.draw(path);
@@ -554,10 +554,6 @@ public class Java2DAwtRenderer extends Renderer {
         return resul;
     }
 
-    @Override
-    public void setCameraSize(int w, int h) {
-        camera.setSize(w, h);
-    }
 
     public void debugPathPoint(JMPathPoint p, JMPath path) {
         int[] x = camera.mathToScreen(p.p.v.x, p.p.v.y);

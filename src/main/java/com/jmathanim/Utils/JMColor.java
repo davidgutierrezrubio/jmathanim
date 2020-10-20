@@ -15,11 +15,9 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-
 package com.jmathanim.Utils;
 
 import com.jmathanim.jmathanim.JMathAnimScene;
-import java.awt.Color;
 import java.lang.reflect.Field;
 
 /**
@@ -96,12 +94,21 @@ public class JMColor {
     }
 
     /**
-     * Return a {@link Color} object representing the color.
+     * Return a {@link java.awt.Color} object representing the color.
      *
      * @return Color
      */
-    public Color getColor() {
-        return new Color((float) r, (float) g, (float) b, (float) alpha);
+    public java.awt.Color getAwtColor() {
+        return new java.awt.Color((float) r, (float) g, (float) b, (float) alpha);
+    }
+
+    /**
+     * Return a {@link java.awt.Color} object representing the color.
+     *
+     * @return Color
+     */
+    public javafx.scene.paint.Color getFXColor() {
+        return new javafx.scene.paint.Color((float) r, (float) g, (float) b, (float) alpha);
     }
 
     /**
@@ -172,19 +179,28 @@ public class JMColor {
      * @return A new JMColor with given parameters.
      */
     public static JMColor parseColorID(String str) {
+        javafx.scene.paint.Color col=javafx.scene.paint.Color.WHITE;//Default color
         str = str.toUpperCase();
-        JMColor resul = null;
         if (str.startsWith("#"))//Hex
         {
-            resul = JMColor.hex(str);
+            col = javafx.scene.paint.Color.valueOf(str);
         } else {
             try {
-                Field field = JMColor.class.getField(str.toUpperCase());
-                resul = (JMColor) field.get(JMColor.class);
+                Field field = javafx.scene.paint.Color.class.getField(str.toUpperCase());
+                col = (javafx.scene.paint.Color) field.get(JMColor.class);
             } catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException ex) {
                 JMathAnimScene.logger.warn("Color {} not recognized ", str);
             }
         }
+        return JMColor.fromFXColor(col);
+    }
+
+    public static JMColor fromFXColor(javafx.scene.paint.Color col) {
+        JMColor resul = new JMColor(1, 1, 1, 1);
+        resul.r = col.getRed();
+        resul.g = col.getGreen();
+        resul.b = col.getBlue();
+        resul.alpha = col.getOpacity();
         return resul;
     }
 

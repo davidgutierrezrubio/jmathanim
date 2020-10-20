@@ -21,6 +21,8 @@ import com.jmathanim.Cameras.Camera;
 import com.jmathanim.Cameras.CameraFX2D;
 import com.jmathanim.Renderers.MovieEncoders.VideoEncoder;
 import com.jmathanim.Renderers.MovieEncoders.XugglerVideoEncoder;
+import com.jmathanim.Utils.JMathAnimConfig;
+import com.jmathanim.Utils.MODrawProperties;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.JMPath;
@@ -48,6 +50,8 @@ import javafx.scene.shape.CubicCurveTo;
 import javafx.scene.shape.LineTo;
 import javafx.scene.shape.MoveTo;
 import javafx.scene.shape.Path;
+import javafx.scene.shape.StrokeLineCap;
+import javafx.scene.shape.StrokeType;
 
 /**
  *
@@ -59,6 +63,7 @@ public class JavaFXRenderer extends Renderer {
     private static final double XMAX_DEFAULT = 2;
 
     public CameraFX2D camera;
+    public CameraFX2D fixedCamera;
     private Scene fxScene;
     private Group group;
     private final ArrayList<Node> fxnodes;
@@ -70,6 +75,9 @@ public class JavaFXRenderer extends Renderer {
         super(parentScene);
         camera = new CameraFX2D(cnf.mediaW, cnf.mediaH);
         camera.setMathXY(XMIN_DEFAULT, XMAX_DEFAULT, 0);
+        fixedCamera = new CameraFX2D(cnf.mediaW, cnf.mediaH);
+        fixedCamera.setMathXY(XMIN_DEFAULT, XMAX_DEFAULT, 0);
+
         fxnodes = new ArrayList<>();
 
         prepareEncoder();
@@ -109,9 +117,13 @@ public class JavaFXRenderer extends Renderer {
             public Integer call() throws Exception {
                 group = new Group();
                 fxScene = new Scene(group, cnf.mediaW, cnf.mediaW);
+                fxScene.setFill(JMathAnimConfig.getConfig().getBackgroundColor().getFXColor());
                 StandaloneSnapshot.FXStarter.stage.setScene(fxScene);
                 if (cnf.showPreview) {
                     JMathAnimScene.logger.debug("Creating preview window");
+                    //TODO: This gaps to add to the window are os-dependent
+                    StandaloneSnapshot.FXStarter.stage.setHeight(cnf.mediaH + 40);
+                    StandaloneSnapshot.FXStarter.stage.setWidth(cnf.mediaW + 18);
                     StandaloneSnapshot.FXStarter.stage.show();
                 }
                 return 1;
@@ -162,10 +174,6 @@ public class JavaFXRenderer extends Renderer {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-    @Override
-    public void setCameraSize(int w, int h) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
 
     @Override
     public void saveFrame(int frameCount) throws Exception {
@@ -175,9 +183,10 @@ public class JavaFXRenderer extends Renderer {
             @Override
             public WritableImage call() throws Exception {
                 WritableImage img;//=new WritableImage(cnf.mediaW, cnf.mediaH);
+                group.getChildren().clear();
                 group.getChildren().addAll(fxnodes);
                 final SnapshotParameters params = new SnapshotParameters();
-                params.setFill(Color.ANTIQUEWHITE);
+                params.setFill(JMathAnimConfig.getConfig().getBackgroundColor().getFXColor());
                 Rectangle2D r = new Rectangle2D(0, 0, cnf.mediaW, cnf.mediaH);
                 params.setViewport(r);
                 params.setCamera(fxScene.getCamera());
@@ -214,31 +223,13 @@ public class JavaFXRenderer extends Renderer {
             JMathAnimScene.logger.info("Movie created at " + saveFilePath);
 
         }
-            endJavaFXEngine();
+        endJavaFXEngine();
 
     }
 
     @Override
     public void clear() {
         fxnodes.clear();
-        FutureTask<Integer> task = new FutureTask<>(new Callable<Integer>() {
-            @Override
-            public Integer call() throws Exception {
-                // Code to execute in FX Thread should go here
-                group.getChildren().clear();
-                return 1;
-            }
-        });
-
-        Platform.runLater(task);
-        try {
-            task.get();//This way I ensure task is executed before continuing this thread
-        } catch (InterruptedException ex) {
-            Logger.getLogger(JavaFXRenderer.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (ExecutionException ex) {
-            Logger.getLogger(JavaFXRenderer.class.getName()).log(Level.SEVERE, null, ex);
-        }
-
     }
 
     @Override
@@ -253,21 +244,69 @@ public class JavaFXRenderer extends Renderer {
 
         if (numPoints >= 2) {
             Path path = createPathFromJMPath(mobj, c, cam);
-//            path.setWindingRule(GeneralPath.WIND_NON_ZERO);
 
-            DropShadow dropShadow = new DropShadow();
-            dropShadow.setRadius(5.0);
-            dropShadow.setOffsetX(6.0);
-            dropShadow.setOffsetY(6.0);
-            dropShadow.setColor(Color.color(0.4, 0.5, 0.5));//IMplement with JColor: Make JColor extends FX Color?
-            path.setEffect(dropShadow);
+            applyDrawingStyles(path, mobj);
+
+            if (cnf.drawShadow) {
+                DropShadow dropShadow = new DropShadow();
+                dropShadow.setRadius(5.0);
+                dropShadow.setOffsetX(6.0);
+                dropShadow.setOffsetY(6.0);
+                dropShadow.setColor(Color.color(0.4, 0.5, 0.5));//IMplement with JColor: Make JColor extends FX Color?
+                path.setEffect(dropShadow);
+            }
             fxnodes.add(path);
         }
     }
 
+    private void applyDrawingStyles(Path path, Shape mobj) {
+
+        path.setStrokeLineCap(StrokeLineCap.ROUND);
+        path.setStrokeType(StrokeType.CENTERED);
+
+        //Stroke width and color
+        path.setStroke(mobj.mp.drawColor.getFXColor());
+        path.setStrokeWidth(mobj.mp.thickness * 4);
+
+        //Fill color
+        path.setFill(mobj.mp.fillColor.getFXColor());
+
+        //Dash pattern
+        switch (mobj.mp.dashStyle) {
+            case MODrawProperties.SOLID:
+                break;
+            case MODrawProperties.DASHED:
+                path.getStrokeDashArray().addAll(25d, 10d);
+                break;
+            case MODrawProperties.DOTTED:
+                path.getStrokeDashArray().addAll(2d, 6d);
+                break;
+        }
+
+    }
+
     @Override
     public void drawAbsoluteCopy(Shape sh, Vec anchor) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        Shape shape = sh.copy();
+        Vec vFixed = defaultToFixedCamera(anchor);
+        shape.shift(vFixed.minus(anchor));
+        drawPath(shape, fixedCamera);
+    }
+
+    /**
+     * Returns equivalent position from default camera to fixed camera.
+     *
+     * @param v
+     * @return
+     */
+    public Vec defaultToFixedCamera(Vec v) {
+        double width1 = camera.getMathView().getWidth();
+        double[] ms = camera.mathToScreenFX(v);
+        double[] coords = fixedCamera.screenToMath(ms[0], ms[1]);
+//        System.out.println(width1 + ",   " + v + "    MS(" + ms[0] + ", " + ms[1] + ")");
+
+        return new Vec(coords[0], coords[1]);
+
     }
 
     private Path createPathFromJMPath(Shape mobj, JMPath c, CameraFX2D cam) {
@@ -276,7 +315,7 @@ public class JavaFXRenderer extends Renderer {
         double[] scr = cam.mathToScreenFX(p.x, p.y);
         path.getElements().add(new MoveTo(scr[0], scr[1]));
 
-        for (int n = 1; n < c.size()+1; n++) {
+        for (int n = 1; n < c.size() + 1; n++) {
             Vec point = c.getJMPoint(n).p.v;
             Vec cpoint1 = c.getJMPoint(n - 1).cp1.v;
             Vec cpoint2 = c.getJMPoint(n).cp2.v;
@@ -291,7 +330,7 @@ public class JavaFXRenderer extends Renderer {
                     path.getElements().add(new LineTo(xy[0], xy[1]));
                 }
             } else {
-                if (n < c.size()+1) {//If it is the last point, don't move (it creates a strange point at the beginning)
+                if (n < c.size() + 1) {//If it is the last point, don't move (it creates a strange point at the beginning)
                     path.getElements().add(new MoveTo(xy[0], xy[1]));
                 }
             }
