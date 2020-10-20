@@ -21,7 +21,7 @@ package com.jmathanim.jmathanim;
 import com.jmathanim.Animations.Animation;
 import com.jmathanim.Animations.PlayAnim;
 import com.jmathanim.Cameras.Camera;
-import com.jmathanim.Renderers.Java2DRenderer;
+import com.jmathanim.Renderers.Java2DAwtRenderer;
 import com.jmathanim.Renderers.Renderer;
 import com.jmathanim.Utils.JMathAnimConfig;
 import com.jmathanim.mathobjects.MathObject;
@@ -136,8 +136,8 @@ public abstract class JMathAnimScene {
             exitCode = 1;
             logger.error(ex.toString());
             ex.printStackTrace();
-            if (renderer instanceof Java2DRenderer) {
-                Java2DRenderer ren = (Java2DRenderer) renderer;
+            if (renderer instanceof Java2DAwtRenderer) {
+                Java2DAwtRenderer ren = (Java2DAwtRenderer) renderer;
                 if (ren.getPreviewWindow() != null) {
                     ren.getPreviewWindow().setVisible(true);
                 }

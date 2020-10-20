@@ -25,7 +25,7 @@ import com.jmathanim.Utils.Anchor;
 import com.jmathanim.Utils.ConfigLoader;
 import com.jmathanim.Utils.JMColor;
 import com.jmathanim.Utils.Vec;
-import com.jmathanim.jmathanim.Scene2D;
+import com.jmathanim.jmathanim.Scene2DAwt;
 import com.jmathanim.mathobjects.LaTeXMathObject;
 import com.jmathanim.mathobjects.Line;
 import com.jmathanim.mathobjects.MOProperties.ArcAttributes;
@@ -37,7 +37,7 @@ import java.util.ArrayList;
  *
  * @author David Gutiérrez Rubio <davidgutierrezrubio@gmail.com>
  */
-public class TesterTransform extends Scene2D {
+public class TesterTransform extends Scene2DAwt {
 
     @Override
     public void setupSketch() {

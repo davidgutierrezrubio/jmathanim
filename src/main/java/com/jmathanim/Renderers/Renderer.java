@@ -58,7 +58,7 @@ public abstract class Renderer {
        return cnf.mediaH;
     }
 
-    abstract public void saveFrame(int frameCount);
+    abstract public void saveFrame(int frameCount) throws Exception;
 
     abstract public void finish(int frameCount);
 
@@ -84,13 +84,6 @@ public abstract class Renderer {
      * @param y y-coordinate (math scale)
      * @param radius radius (math scale)
      */
-    abstract public void drawCircle(double x, double y, double radius);
-
-    public void drawDot(MathObject dot) {
-        drawDot(dot.getCenter());
-    }
-
-    abstract public void drawDot(Point p);
 
     abstract public void drawAbsoluteCopy(Shape sh, Vec anchor);
 

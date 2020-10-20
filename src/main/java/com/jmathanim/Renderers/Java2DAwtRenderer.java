@@ -63,7 +63,7 @@ import javax.swing.SwingUtilities;
  *
  * @author David Gutierrez Rubio davidgutierrezrubio@gmail.com
  */
-public class Java2DRenderer extends Renderer {
+public class Java2DAwtRenderer extends Renderer {
 
     private static final boolean DEBUG_LABELS = false; //Draw label objects
     private static final boolean DEBUG_PATH_POINTS = false; //Draw control points and vertices
@@ -97,7 +97,7 @@ public class Java2DRenderer extends Renderer {
     private ConvolveOp ConvolveShadowOp;
     private int scaleBufferedImage = 1;
 
-    public Java2DRenderer(JMathAnimScene parentScene) {
+    public Java2DAwtRenderer(JMathAnimScene parentScene) {
         super(parentScene);
         //Main Camera
         camera = new Camera2D(cnf.mediaW * scaleBufferedImage, cnf.mediaH * scaleBufferedImage);
@@ -134,7 +134,7 @@ public class Java2DRenderer extends Renderer {
         try {
             tracker.waitForID(1);
         } catch (InterruptedException ex) {
-            Logger.getLogger(Java2DRenderer.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(Java2DAwtRenderer.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -165,7 +165,7 @@ public class Java2DRenderer extends Renderer {
                     }
                 });
             } catch (InterruptedException | InvocationTargetException ex) {
-                Logger.getLogger(Java2DRenderer.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(Java2DAwtRenderer.class.getName()).log(Level.SEVERE, null, ex);
             }
 
         }
@@ -182,7 +182,7 @@ public class Java2DRenderer extends Renderer {
 //                muxer = Muxer.make(saveFilePath.getCanonicalPath(), null, "mp4");
                 videoEncoder.createEncoder(saveFilePath, cnf);
             } catch (IOException ex) {
-                Logger.getLogger(Java2DRenderer.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(Java2DAwtRenderer.class.getName()).log(Level.SEVERE, null, ex);
             }
 
             if (cnf.drawShadow) {
@@ -256,7 +256,7 @@ public class Java2DRenderer extends Renderer {
                                     Thread.sleep(delay);
                                 }
                             } catch (InterruptedException ex) {
-                                Logger.getLogger(Java2DRenderer.class.getName()).log(Level.SEVERE, null, ex);
+                                Logger.getLogger(Java2DAwtRenderer.class.getName()).log(Level.SEVERE, null, ex);
                             }
                         }
 
@@ -268,7 +268,7 @@ public class Java2DRenderer extends Renderer {
                 try {
                     Thread.sleep(100);//TODO: Improve this
                 } catch (InterruptedException ex) {
-                    Logger.getLogger(Java2DRenderer.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(Java2DAwtRenderer.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
 
@@ -475,13 +475,7 @@ public class Java2DRenderer extends Renderer {
         }
     }
 
-    @Override
-    public void drawCircle(double x, double y, double radius) {
-    }
-
-    @Override
-    public void drawDot(Point p) {
-    }
+   
 
     public AffineTransform getCameratoG2DTransform(Camera cam) {
         Rect r = cam.getMathView();
