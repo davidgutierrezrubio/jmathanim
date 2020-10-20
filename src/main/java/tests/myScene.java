@@ -40,7 +40,7 @@ import java.util.ArrayList;
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
 public class myScene extends Scene2D {
-    
+
     @Override
     public void setupSketch() {
 //        conf.setResourcesDir(".");
@@ -49,20 +49,24 @@ public class myScene extends Scene2D {
         ConfigLoader.parseFile("preview.xml");
         ConfigLoader.parseFile("dark.xml");
 //        conf.setHighQuality();
-        conf.setCreateMovie(true);
+//        conf.setCreateMovie(true);
     }
-    
+
     @Override
     public void runSketch() {
-        Shape c = Shape.segment(Point.at(0,0),Point.at(1,1));
-        Shape cr = Shape.rectangle(camera.getMathView().scaled(.7, .7));
-        add(c,cr);
-        play.transform(5, c, Shape.square());
-//        waitSeconds(10);
+        final Shape c = Shape.circle();
+        add(c);
+        waitSeconds(3);
+//        Shape c = Shape.segment(Point.at(0,0),Point.at(1,1));
+//        Shape cr = Shape.rectangle(camera.getMathView().scaled(.7, .7));
+//        add(c,cr);
+//        play.transform(5, c, Shape.square());
+        play.showCreation(c);
+        waitSeconds(3);
     }
-    
+
     private void absoluteThings() {
-        
+
         Arrow2D ar = Arrow2D.makeSimpleArrow2D(Point.at(0, 1), Point.at(0, 0), Arrow2D.TYPE_3);
         Arrow2D ar2 = Arrow2D.makeSimpleArrow2D(Point.at(-1, -.61), Point.at(-.1, -.1), Arrow2D.TYPE_1);
 //        Shape s = Shape.segment(Point.at(0, 1), Point.at(0, 0));
@@ -80,7 +84,7 @@ public class myScene extends Scene2D {
         play.highlight(lat);
         waitSeconds(3);
     }
-    
+
     public void manyDots() {
         for (int n = 0; n < 15; n++) {
             Point p = Point.random();
@@ -95,9 +99,9 @@ public class myScene extends Scene2D {
         System.out.println("2");
         waitSeconds(1);
         play.cameraScale(3, 5);
-        
+
     }
-    
+
     private void Big2() {
         LaTeXMathObject lat2 = new LaTeXMathObject("$2+x$");
         LaTeXMathObject lat = new LaTeXMathObject("$5+x$");
@@ -116,16 +120,16 @@ public class myScene extends Scene2D {
         for (int n = 0; n < jm.size(); n++) {
             System.out.println(n + "before/after  : " + pa.getJMPoint(n) + "     " + jm.getJMPoint(n));
         }
-        
+
         waitSeconds(5);
     }
-    
+
     private void tran() {
         LaTeXMathObject lat = new LaTeXMathObject("$8+y$");
         LaTeXMathObject lat2 = new LaTeXMathObject("$x+y$");
         lat.stackTo(Anchor.BY_CENTER);
         lat2.stackTo(Anchor.BY_CENTER);
-        
+
         add(lat2);
         camera.zoomToObjects(lat);
         add(Shape.circle().scale(.1).stackTo(Anchor.RIGHT));
@@ -134,7 +138,7 @@ public class myScene extends Scene2D {
 //        playAnimation(Commands.setStyle(.3, "latexdefault",lat.get(0), lat2.get(0)));
         waitSeconds(3);
     }
-    
+
     private void creationMultishape() {
         Shape c = Shape.circle();
         Shape sq = Shape.square();
@@ -144,10 +148,10 @@ public class myScene extends Scene2D {
         m.addShape(sq);
         m.addShape(tr);
         play.showCreation(m);
-        
+
         waitSeconds(5);
     }
-    
+
     private void createLatex() {
         LaTeXMathObject t = new LaTeXMathObject("This is a test of how much a long paragraph should be drawn");
 //        LaTeXMathObject t = new LaTeXMathObject("$$\\int_0^\\infty x\\,dx\\geq\\pi$$");
@@ -156,7 +160,7 @@ public class myScene extends Scene2D {
         play.showCreation(10, t);
         waitSeconds(5);
     }
-    
+
     public void circuloCanonical() {
         Shape c = Shape.circle();//.rotate(180*DEGREES);
         CanonicalJMPath canonicalForm = c.getPath().canonicalForm();
@@ -173,17 +177,17 @@ public class myScene extends Scene2D {
         }
         waitSeconds(5);
     }
-    
+
     private void lineToSegment() {
         Line l = Line.XYBisector();
 //        add(l);
         Shape s = Shape.segment(new Point(1, -.6), new Point(1.3, 0));
         add(s.drawColor(JMColor.RED));
-        
+
         play.transform(5, Shape.segment(l), s);
         waitSeconds(3);
     }
-    
+
     public void theBigB() {
         LaTeXMathObject B = new LaTeXMathObject("B");
         CanonicalJMPath ms = B.shapes.get(0).getPath().canonicalForm();//.createMultiShape(B.mp.copy());
@@ -210,7 +214,7 @@ public class myScene extends Scene2D {
 //        }
         waitSeconds(5);
     }
-    
+
     private void transformAxes() {
         //Create axis
         MultiShapeObject axes = new MultiShapeObject();
@@ -238,5 +242,5 @@ public class myScene extends Scene2D {
 
         waitSeconds(3);
     }
-    
+
 }

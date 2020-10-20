@@ -35,7 +35,7 @@ import javax.imageio.ImageIO;
  * @author David Gutiérrez Rubio <davidgutierrezrubio@gmail.com>
  */
 public class StandaloneSnapshot {
-
+    public int w,h;
     public static void main(String[] args) throws Exception {
 
         // start FX toolkit in background thread:
@@ -52,28 +52,30 @@ public class StandaloneSnapshot {
 
     public static class FXStarter extends Application {
 
-        public static Scene scene;
-
+//        public static Scene scene;
+public static Stage stage;
         private static final CountDownLatch latch = new CountDownLatch(1);
 
         public static void awaitFXToolkit() throws InterruptedException {
             latch.await();
         }
+        
 
         @Override
         public void init() {
             
-            Group group=new Group();
-            scene = new Scene(group, 800, 600);
+//            Group group=new Group();
+//            scene = new Scene(group, 800, 600);
             
             latch.countDown();
         }
 
         @Override
         public void start(Stage primaryStage) {
-            primaryStage.setTitle("JMathAnim preview window");
-            primaryStage.setScene(scene);
-            primaryStage.show();
+            stage=primaryStage;
+            stage.setTitle("JMathAnim preview window");
+//            stage.setScene(scene);
+//            stage.show();
         }
     }
 

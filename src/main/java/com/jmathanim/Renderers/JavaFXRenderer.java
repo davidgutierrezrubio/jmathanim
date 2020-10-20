@@ -23,14 +23,10 @@ import com.jmathanim.Renderers.MovieEncoders.VideoEncoder;
 import com.jmathanim.Renderers.MovieEncoders.XugglerVideoEncoder;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
-import com.jmathanim.jmathanim.PreviewWindow;
 import com.jmathanim.mathobjects.JMPath;
 import com.jmathanim.mathobjects.Shape;
-import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
@@ -45,7 +41,6 @@ import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.SnapshotParameters;
-import javafx.scene.SnapshotResult;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.image.WritableImage;
 import javafx.scene.paint.Color;
@@ -53,8 +48,6 @@ import javafx.scene.shape.CubicCurveTo;
 import javafx.scene.shape.LineTo;
 import javafx.scene.shape.MoveTo;
 import javafx.scene.shape.Path;
-import javafx.scene.shape.Sphere;
-import javax.swing.SwingUtilities;
 
 /**
  *
@@ -86,10 +79,7 @@ public class JavaFXRenderer extends Renderer {
 
         JMathAnimScene.logger.info("Preparing encoder");
 
-        if (cnf.showPreview) {
-            JMathAnimScene.logger.debug("Creating preview window");
-            initializeJavaFXWindow();
-        }
+        initializeJavaFXWindow();
 
         if (cnf.createMovie) {
 //            videoEncoder=new JCodecVideoEncoder();
@@ -109,16 +99,33 @@ public class JavaFXRenderer extends Renderer {
         }
     }
 
-    public final void initializeJavaFXWindow() throws InterruptedException {
+    public final void initializeJavaFXWindow() throws Exception {
         new Thread(() -> Application.launch(StandaloneSnapshot.FXStarter.class)).start();
         // block until FX toolkit initialization is complete:
         StandaloneSnapshot.FXStarter.awaitFXToolkit();
-        fxScene = StandaloneSnapshot.FXStarter.scene;
-        group = (Group) fxScene.getRoot();
 
+        FutureTask<Integer> task = new FutureTask<>(new Callable<Integer>() {
+            @Override
+            public Integer call() throws Exception {
+                group = new Group();
+                fxScene = new Scene(group, cnf.mediaW, cnf.mediaW);
+                StandaloneSnapshot.FXStarter.stage.setScene(fxScene);
+                if (cnf.showPreview) {
+                    JMathAnimScene.logger.debug("Creating preview window");
+                    StandaloneSnapshot.FXStarter.stage.show();
+                }
+                return 1;
+            }
+        });
+
+        Platform.runLater(task);
+        task.get();
+
+//        Group group = new Group();
+//        scene = new Scene(group, 800, 600);
     }
 
-    public final void endJavaFXWindow() {
+    public final void endJavaFXEngine() {
         Platform.exit();
     }
 
@@ -169,12 +176,13 @@ public class JavaFXRenderer extends Renderer {
             public WritableImage call() throws Exception {
                 WritableImage img;//=new WritableImage(cnf.mediaW, cnf.mediaH);
                 group.getChildren().addAll(fxnodes);
-                final SnapshotParameters snapshotParameters = new SnapshotParameters();
-                snapshotParameters.setFill(Color.ANTIQUEWHITE);
+                final SnapshotParameters params = new SnapshotParameters();
+                params.setFill(Color.ANTIQUEWHITE);
                 Rectangle2D r = new Rectangle2D(0, 0, cnf.mediaW, cnf.mediaH);
-//                snapshotParameters.setViewport(r);
+                params.setViewport(r);
+                params.setCamera(fxScene.getCamera());
 
-                img = fxScene.getRoot().snapshot(snapshotParameters, null);
+                img = fxScene.getRoot().snapshot(params, null);
                 return img;
             }
         });
@@ -182,10 +190,11 @@ public class JavaFXRenderer extends Renderer {
         Platform.runLater(task);
         img2 = task.get();
 //        BufferedImage bi = SwingFXUtils.fromFXImage(img2, null);
-        SwingFXUtils.fromFXImage(img2, bi);
+        bi = SwingFXUtils.fromFXImage(img2, null);
         if (cnf.createMovie) {
-
             videoEncoder.writeFrame(bi, frameCount);
+//            File file=new File("C:\\media\\frame"+frameCount+".png");
+//             ImageIO.write(SwingFXUtils.fromFXImage(img2, null), "png", file);
 
         }
     }
@@ -205,9 +214,7 @@ public class JavaFXRenderer extends Renderer {
             JMathAnimScene.logger.info("Movie created at " + saveFilePath);
 
         }
-        if (cnf.showPreview) {
-            endJavaFXWindow();
-        }
+            endJavaFXEngine();
 
     }
 
@@ -269,7 +276,7 @@ public class JavaFXRenderer extends Renderer {
         double[] scr = cam.mathToScreenFX(p.x, p.y);
         path.getElements().add(new MoveTo(scr[0], scr[1]));
 
-        for (int n = 0; n < c.size() + 1; n++) {
+        for (int n = 1; n < c.size()+1; n++) {
             Vec point = c.getJMPoint(n).p.v;
             Vec cpoint1 = c.getJMPoint(n - 1).cp1.v;
             Vec cpoint2 = c.getJMPoint(n).cp2.v;
@@ -284,7 +291,7 @@ public class JavaFXRenderer extends Renderer {
                     path.getElements().add(new LineTo(xy[0], xy[1]));
                 }
             } else {
-                if (n < c.size()) {//If it is the last point, don't move (it creates a strange point at the beginning)
+                if (n < c.size()+1) {//If it is the last point, don't move (it creates a strange point at the beginning)
                     path.getElements().add(new MoveTo(xy[0], xy[1]));
                 }
             }

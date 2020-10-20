@@ -44,6 +44,8 @@ public abstract class Scene2D extends JMathAnimScene{
               renderer = new JavaFXRenderer(this);
           } catch (InterruptedException ex) {
               Logger.getLogger(Scene2D.class.getName()).log(Level.SEVERE, null, ex);
+          } catch (Exception ex) {
+              Logger.getLogger(Scene2D.class.getName()).log(Level.SEVERE, null, ex);
           }
         camera=renderer.getCamera();
         super.renderer=renderer;
