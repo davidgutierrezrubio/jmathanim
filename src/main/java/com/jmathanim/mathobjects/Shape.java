@@ -15,18 +15,19 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-
 package com.jmathanim.mathobjects;
 
 import com.jmathanim.Renderers.Renderer;
 import com.jmathanim.Utils.JMathAnimConfig;
 import com.jmathanim.Utils.MODrawProperties;
+import com.jmathanim.Utils.PathInterpolator;
 import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import static com.jmathanim.jmathanim.JMathAnimScene.PI;
 import com.jmathanim.mathobjects.MOProperties.ArcAttributes;
 import java.util.ArrayList;
+import java.util.function.DoubleUnaryOperator;
 
 /**
  *
@@ -342,4 +343,5 @@ public class Shape extends MathObject {
     public static Line line(Point a, Point b) {
         return new Line(a, b);
     }
+
 }

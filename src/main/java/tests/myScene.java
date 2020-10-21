@@ -27,6 +27,7 @@ import com.jmathanim.Utils.MODrawProperties;
 import com.jmathanim.jmathanim.Scene2D;
 import com.jmathanim.mathobjects.Arrow2D;
 import com.jmathanim.mathobjects.CanonicalJMPath;
+import com.jmathanim.mathobjects.FunctionGraph;
 import com.jmathanim.mathobjects.JMPath;
 import com.jmathanim.mathobjects.LaTeXMathObject;
 import com.jmathanim.mathobjects.Line;
@@ -47,7 +48,7 @@ public class myScene extends Scene2D {
 //        conf.setOutputDir("c:\\media");
 //        ConfigLoader.parseFile("production.xml");
         ConfigLoader.parseFile("preview.xml");
-        ConfigLoader.parseFile("dark.xml");
+        ConfigLoader.parseFile("light.xml");
 
 //        conf.setHighQuality();
 //        conf.setCreateMovie(true);
@@ -55,7 +56,14 @@ public class myScene extends Scene2D {
 
     @Override
     public void runSketch() {
-        drawCircleAndMarco();
+        FunctionGraph f1=new FunctionGraph((x)->Math.abs(x),-1.7 ,1.7, 50);
+        f1.setSingularPoints(0d);
+        FunctionGraph f2=new FunctionGraph((x)->Math.abs(x-1),-1.7 ,1.7, 50);
+        f2.setSingularPoints(1d);
+        play.showCreation(f1);
+        waitSeconds(3);
+        play.transform(5, f1, f2);
+        waitSeconds(3);
     }
 
     private void drawCircleAndMarco() {

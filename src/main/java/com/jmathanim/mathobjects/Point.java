@@ -275,7 +275,7 @@ public class Point extends MathObject {
         this.v.restoreState();
     }
 
-    void copyFrom(Point p) {
+    public void copyFrom(Point p) {
         this.v.copyFrom(p.v);
     }
 
