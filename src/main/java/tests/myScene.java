@@ -45,8 +45,8 @@ public class myScene extends Scene2D {
     public void setupSketch() {
 //        conf.setResourcesDir(".");
 //        conf.setOutputDir("c:\\media");
-        ConfigLoader.parseFile("production.xml");
-//        ConfigLoader.parseFile("preview.xml");
+//        ConfigLoader.parseFile("production.xml");
+        ConfigLoader.parseFile("preview.xml");
         ConfigLoader.parseFile("dark.xml");
 
 //        conf.setHighQuality();
@@ -74,7 +74,7 @@ public class myScene extends Scene2D {
 //        play.transform(5, c, Shape.square());
         play.showCreation(c, cr);
         play.cameraShift(3,1,0);
-        waitSeconds(3);
+        play.cameraScale(3, .2);
     }
 
     private void absoluteThings() {
