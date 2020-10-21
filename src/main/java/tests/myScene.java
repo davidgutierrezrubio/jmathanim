@@ -23,9 +23,11 @@ import com.jmathanim.Utils.Anchor;
 import com.jmathanim.Utils.ConfigLoader;
 import com.jmathanim.Utils.JMColor;
 import com.jmathanim.Utils.JMathAnimConfig;
+import com.jmathanim.Utils.MODrawProperties;
 import com.jmathanim.jmathanim.Scene2D;
 import com.jmathanim.mathobjects.Arrow2D;
 import com.jmathanim.mathobjects.CanonicalJMPath;
+import com.jmathanim.mathobjects.FunctionGraph;
 import com.jmathanim.mathobjects.JMPath;
 import com.jmathanim.mathobjects.LaTeXMathObject;
 import com.jmathanim.mathobjects.Line;
@@ -46,14 +48,41 @@ public class myScene extends Scene2D {
 //        conf.setOutputDir("c:\\media");
 //        ConfigLoader.parseFile("production.xml");
         ConfigLoader.parseFile("preview.xml");
-        ConfigLoader.parseFile("dark.xml");
+        ConfigLoader.parseFile("light.xml");
+
 //        conf.setHighQuality();
 //        conf.setCreateMovie(true);
     }
 
     @Override
     public void runSketch() {
-        manyDots();
+        FunctionGraph f1=new FunctionGraph((x)->Math.abs(x),-1.7 ,1.7, 50);
+        f1.setSingularPoints(0d);
+        FunctionGraph f2=new FunctionGraph((x)->Math.abs(x-1),-1.7 ,1.7, 50);
+        f2.setSingularPoints(1d);
+        play.showCreation(f1);
+        waitSeconds(3);
+        play.transform(5, f1, f2);
+        waitSeconds(3);
+    }
+
+    private void drawCircleAndMarco() {
+        final Shape c = Shape.circle();
+        c.style("solidblue");
+        c.dashStyle(MODrawProperties.DASHED);
+        add(c);
+//        Shape c = Shape.segment(Point.at(0,0),Point.at(1,1));
+        Shape cr = Shape.rectangle(camera.getMathView());
+        cr.dashStyle(MODrawProperties.DOTTED);
+        cr.thickness(1);
+        cr.drawColor(JMColor.RED);
+        cr.mp.castShadows=false;
+        
+//        add(c,cr);
+//        play.transform(5, c, Shape.square());
+        play.showCreation(c, cr);
+        play.cameraShift(3,1,0);
+        play.cameraScale(3, .2);
     }
 
     private void absoluteThings() {
@@ -82,7 +111,7 @@ public class myScene extends Scene2D {
             int st = (int) (Math.random() * 2.9 + 1);
             p.dotStyle(st);
             p.thickness(.5);
-            System.out.println("n "+n);
+            System.out.println("n " + n);
 //            p.thickness(1 + Math.random() * 1);
             p.drawColor(JMColor.random());
             play.fadeIn(.3, p);

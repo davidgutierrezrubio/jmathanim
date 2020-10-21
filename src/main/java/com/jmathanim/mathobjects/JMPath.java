@@ -41,7 +41,6 @@ public class JMPath implements Updateable, Stateable {
     public final CircularArrayList<Boolean> visiblePoints;//Whether this point is visible or not
     public int pathType; //Default value
 
-    double tension = .3d;
     private JMPath pathBackup;
 
     public JMPath() {
@@ -54,7 +53,6 @@ public class JMPath implements Updateable, Stateable {
 //        this.controlPoints1 = new CircularArrayList<>();
 //        this.controlPoints2 = new CircularArrayList<>();
         this.visiblePoints = new CircularArrayList<>();
-        tension = 0.3d; //Default tension
         pathType = JMPath.MATHOBJECT;//Default value
     }
 
@@ -85,13 +83,6 @@ public class JMPath implements Updateable, Stateable {
         return jmPathPoints.size();
     }
 
-    public double getTension() {
-        return tension;
-    }
-
-    public void setTension(double tension) {
-        this.tension = tension;
-    }
 
     public void addPoint(Point... points) {
         for (Point p : points) {
@@ -115,68 +106,7 @@ public class JMPath implements Updateable, Stateable {
         jmPathPoints.clear();
     }
 
-    /**
-     * Compute control points, using various methods This method should be
-     * called once all points have been added and only if there is generated
-     * shape (not to be used with SVG import, for example)
-     */
-    public void generateControlPoints() //For now, only one method
-    {
-        //If this is a SVG path, don't generate control points
-        if (this.pathType == JMPath.SVG_PATH) {
-            return;
-        }
-        int numPoints = jmPathPoints.size();
-
-        for (int n = 0; n < numPoints + 1; n++) {
-            int i = n - 1;
-            int k = n + 1;
-            int L = n + 2;
-            JMPathPoint p1 = jmPathPoints.get(i);
-            JMPathPoint p2 = jmPathPoints.get(n);//Compute cp1 for this
-            JMPathPoint p3 = jmPathPoints.get(k);//Compute cp2 for this
-            JMPathPoint p4 = jmPathPoints.get(L);
-
-            double x1 = p1.p.v.x;
-            double y1 = p1.p.v.y;
-            double z1 = p1.p.v.z;
-            double x2 = p2.p.v.x;
-            double y2 = p2.p.v.y;
-            double z2 = p2.p.v.z;
-            double x3 = p3.p.v.x;
-            double y3 = p3.p.v.y;
-            double z3 = p3.p.v.z;
-            double x4 = p4.p.v.x;
-            double y4 = p4.p.v.y;
-            double z4 = p4.p.v.z;
-            if (p3.isCurved) {
-//                double mod31 = Math.sqrt((x3 - x1) * (x3 - x1) + (y3 - y1) * (y3 - y1));//||p1-p3||
-//                double mod42 = Math.sqrt((x4 - x2) * (x4 - x2) + (y4 - y2) * (y4 - y2));//||p2-p4||
-//                double mod23 = Math.sqrt((x3 - x2) * (x3 - x2) + (y3 - y2) * (y3 - y2));//||p2-p3||
-                double mod31=p1.p.to(p3.p).norm();
-                double mod42=p4.p.to(p2.p).norm();
-                double mod23=p2.p.to(p3.p).norm();
-                double cx1 = x2 + mod23 / mod31 * tension * (x3 - x1);
-                double cy1 = y2 + mod23 / mod31 * tension * (y3 - y1);
-                double cz1 = z2 + mod23 / mod31 * tension * (z3 - z1);
-                double cx2 = x3 - mod23 / mod42 * tension * (x4 - x2);
-                double cy2 = y3 - mod23 / mod42 * tension * (y4 - y2);
-                double cz2 = z3 - mod23 / mod42 * tension * (z4 - z2);
-                p2.cp1.v.x = cx1;
-                p2.cp1.v.y = cy1;
-                p2.cp1.v.z = cz1;
-                p3.cp2.v.x = cx2;
-                p3.cp2.v.y = cy2;
-                p3.cp2.v.z = cz2;
-            } else {
-                //If this path is straight, control points becomes vertices. Although this is not used
-                //when drawing straight paths, it becomes handy when doing transforms from STRAIGHT to CURVED paths
-                p2.cp1.v.copyFrom(p2.p.v);
-                p3.cp2.v.copyFrom(p3.p.v);
-            }
-
-        }
-    }
+   
 
     /**
      * Remove interpolation points from path and mark it as no interpolated
@@ -370,7 +300,6 @@ public class JMPath implements Updateable, Stateable {
         for (int n = 0; n < jmPathPoints.size(); n++) {
             resul.addJMPoint(jmPathPoints.get(n).copy());
         }
-        resul.tension = tension;
         resul.pathType = pathType;
         return resul;
     }
@@ -386,7 +315,6 @@ public class JMPath implements Updateable, Stateable {
         resul.jmPathPoints.addAll(jmPathPoints);
 
         //Copy attributes
-        resul.tension = tension;
         resul.pathType = pathType;
         return resul;
 
@@ -455,52 +383,6 @@ public class JMPath implements Updateable, Stateable {
         return resul;
     }
 
-//    /**
-//     * Cycles the point of closed path (and inverts its orientation if
-//     * necessary) in order to minimize the sum of squared distances from the
-//     * points of two paths with the same number of nodes
-//     *
-//     * @param path2
-//     */
-//    public void minimizeSumDistance_old(JMPath path2) {
-//        ArrayList<Double> distances = new ArrayList<Double>();
-//        double minDistanceVarNoChangeDir = 999999999;
-//        int minStepNoChangeDir = 0;
-//
-//        //If the path is open, we can't cycle the path, so 
-//        //we set numberOfCycles to 1
-//        int numberOfCycles = this.size();// (this.isClosed ? this.size() : 1);
-//        //First, without changing direction
-//        for (int step = 0; step < numberOfCycles; step++) {
-//            JMPath tempPath = this.copy();
-//            tempPath.cyclePoints(step, 1);
-//            double distanceVar = tempPath.sumDistance(path2);
-//            distances.add(distanceVar);
-//            if (distanceVar < minDistanceVarNoChangeDir) {
-//                minDistanceVarNoChangeDir = distanceVar;
-//                minStepNoChangeDir = step;
-//            }
-//
-//        }
-//        double minDistanceVarChangeDir = 999999999;
-//        int minStepChangeDir = 0;
-//        for (int step = 0; step < numberOfCycles; step++) {
-//            JMPath tempPath = this.copy();
-//            tempPath.cyclePoints(step, -1);
-//            double distanceVar = tempPath.sumDistance(path2);
-//            distances.add(distanceVar);
-//            if (distanceVar < minDistanceVarChangeDir) {
-//                minDistanceVarChangeDir = distanceVar;
-//                minStepChangeDir = step;
-//            }
-//            if (minDistanceVarNoChangeDir < minDistanceVarChangeDir) {
-//                this.cyclePoints(minStepNoChangeDir, 1);
-//            } else {
-//                this.cyclePoints(minStepChangeDir, -1);
-//            }
-//
-//        }
-//    }
     void shift(Vec shiftVector) {
         for (JMPathPoint p : jmPathPoints) {
             p.shift(shiftVector);
@@ -607,7 +489,6 @@ public class JMPath implements Updateable, Stateable {
         this.clear();
         this.addPointsFrom(path.rawCopy());
         this.pathType = path.pathType;
-        this.tension = path.tension;
         this.visiblePoints.clear();
         this.visiblePoints.addAll(path.visiblePoints);
 
@@ -619,7 +500,6 @@ public class JMPath implements Updateable, Stateable {
             p.restoreState();
         }
         this.pathType = pathBackup.pathType;
-        this.tension = pathBackup.tension;
         this.visiblePoints.clear();
         this.visiblePoints.addAll(pathBackup.visiblePoints);
 
@@ -632,7 +512,6 @@ public class JMPath implements Updateable, Stateable {
             p.saveState();
         }
         pathBackup.pathType = this.pathType;
-        pathBackup.tension = this.tension;
         pathBackup.visiblePoints.clear();
         pathBackup.visiblePoints.addAll(pathBackup.visiblePoints);
     }

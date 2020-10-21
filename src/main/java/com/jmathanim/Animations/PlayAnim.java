@@ -160,7 +160,7 @@ public class PlayAnim {
      * @param v Shift vector
      * @param runTime Duration in seconds
      */
-    public void cameraShift(Vec v, double runTime) {
+    public void cameraShift(double runTime,Vec v) {
         scene.playAnimation(Commands.cameraShift(runTime, scene.getCamera(), v));
     }
 
@@ -172,7 +172,7 @@ public class PlayAnim {
      * @param y y coordinate of shift vector
      * @param runTime Duration in seconds
      */
-    public void cameraShift(double x, double y, double runTime) {
+    public void cameraShift(double runTime,double x, double y) {
         scene.playAnimation(Commands.cameraShift(runTime, scene.getCamera(), new Vec(x, y)));
     }
 

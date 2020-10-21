@@ -18,7 +18,7 @@
 
 package com.jmathanim.Renderers.MovieEncoders;
 
-import com.jmathanim.Renderers.Java2DRenderer;
+import com.jmathanim.Renderers.Java2DAwtRenderer;
 import com.jmathanim.Utils.JMathAnimConfig;
 import io.humble.video.Codec;
 import io.humble.video.Encoder;
@@ -82,7 +82,7 @@ public class HumbleVideoEncoder extends VideoEncoder {
              */
             muxer.open(null, null);
         } catch (InterruptedException | IOException ex) {
-            Logger.getLogger(Java2DRenderer.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(Java2DAwtRenderer.class.getName()).log(Level.SEVERE, null, ex);
         }
         packet = MediaPacket.make();
         picture = MediaPicture.make(

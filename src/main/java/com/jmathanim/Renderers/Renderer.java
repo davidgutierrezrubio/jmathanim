@@ -41,14 +41,11 @@ public abstract class Renderer {
         this.cnf=JMathAnimConfig.getConfig();
     }
 
-    public abstract void setCamera(Camera c);
-
     abstract public <T extends Camera> T getCamera();
 
     public abstract Camera getFixedCamera();
 
 
-    public abstract void setCameraSize(int w, int h);
 
     public int getWidth() {
         return cnf.mediaW;
@@ -84,13 +81,6 @@ public abstract class Renderer {
      * @param y y-coordinate (math scale)
      * @param radius radius (math scale)
      */
-    abstract public void drawCircle(double x, double y, double radius);
-
-    public void drawDot(MathObject dot) {
-        drawDot(dot.getCenter());
-    }
-
-    abstract public void drawDot(Point p);
 
     abstract public void drawAbsoluteCopy(Shape sh, Vec anchor);
 

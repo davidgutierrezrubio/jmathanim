@@ -15,20 +15,21 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-
 package com.jmathanim.jmathanim;
 
-import com.jmathanim.Cameras.Camera2D;
-import com.jmathanim.Renderers.Java2DRenderer;
+import com.jmathanim.Cameras.CameraFX2D;
+import com.jmathanim.Renderers.JavaFXRenderer;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
- * @author David Gutierrez Rubio davidgutierrezrubio@gmail.com
+ * @author David Gutiérrez Rubio <davidgutierrezrubio@gmail.com>
  */
-public abstract class Scene2D extends JMathAnimScene {
+public abstract class Scene2D extends JMathAnimScene{
 
-    protected Java2DRenderer renderer2d;
-    protected Camera2D camera;
+      protected JavaFXRenderer renderer;
+    protected CameraFX2D camera;
 
 
     public Scene2D() {
@@ -39,11 +40,16 @@ public abstract class Scene2D extends JMathAnimScene {
     public void createRenderer(){
         fps = conf.fps;
         dt=1./fps;
-        renderer2d = new Java2DRenderer(this);
-        camera=renderer2d.getCamera();
-        super.renderer=renderer2d;
+          try {
+              renderer = new JavaFXRenderer(this);
+          } catch (InterruptedException ex) {
+              Logger.getLogger(Scene2D.class.getName()).log(Level.SEVERE, null, ex);
+          } catch (Exception ex) {
+              Logger.getLogger(Scene2D.class.getName()).log(Level.SEVERE, null, ex);
+          }
+        camera=renderer.getCamera();
+        super.renderer=renderer;
     }
 
-   
     
 }

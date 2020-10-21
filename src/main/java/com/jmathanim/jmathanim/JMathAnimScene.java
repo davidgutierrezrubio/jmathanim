@@ -21,13 +21,14 @@ package com.jmathanim.jmathanim;
 import com.jmathanim.Animations.Animation;
 import com.jmathanim.Animations.PlayAnim;
 import com.jmathanim.Cameras.Camera;
-import com.jmathanim.Renderers.Java2DRenderer;
+import com.jmathanim.Renderers.Java2DAwtRenderer;
 import com.jmathanim.Renderers.Renderer;
 import com.jmathanim.Utils.JMathAnimConfig;
 import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.updateableObjects.Updateable;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.logging.Level;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -136,8 +137,8 @@ public abstract class JMathAnimScene {
             exitCode = 1;
             logger.error(ex.toString());
             ex.printStackTrace();
-            if (renderer instanceof Java2DRenderer) {
-                Java2DRenderer ren = (Java2DRenderer) renderer;
+            if (renderer instanceof Java2DAwtRenderer) {
+                Java2DAwtRenderer ren = (Java2DAwtRenderer) renderer;
                 if (ren.getPreviewWindow() != null) {
                     ren.getPreviewWindow().setVisible(true);
                 }
@@ -277,9 +278,13 @@ public abstract class JMathAnimScene {
      * Save the current frame using the renderer. Renderer should save the frame
      * to video, or any other format.
      */
-    private void saveMPFrame() {
+    private void saveMPFrame()  {
 
-        renderer.saveFrame(frameCount);
+        try {
+            renderer.saveFrame(frameCount);
+        } catch (Exception ex) {
+            java.util.logging.Logger.getLogger(JMathAnimScene.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     /**
@@ -300,7 +305,7 @@ public abstract class JMathAnimScene {
      *
      * @param anims An ArrayList with Animation objects.
      */
-    public void playAnimation(ArrayList<Animation> anims) {
+    public void playAnimation(ArrayList<Animation> anims)  {
         for (Animation anim : anims) {
             if (anim != null) {
                 anim.initialize();//Perform needed steps immediately before playing
@@ -329,7 +334,11 @@ public abstract class JMathAnimScene {
     public void waitSeconds(double time) {
         int numFrames = (int) (time * fps);
         for (int n = 0; n < numFrames; n++) {
-            advanceFrame();
+            try {
+                advanceFrame();
+            } catch (Exception ex) {
+                java.util.logging.Logger.getLogger(JMathAnimScene.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
 
     }

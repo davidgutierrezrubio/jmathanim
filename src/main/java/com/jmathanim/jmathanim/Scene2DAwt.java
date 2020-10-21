@@ -16,30 +16,34 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-package tests;
+package com.jmathanim.jmathanim;
 
-import com.jmathanim.jmathanim.JMathAnimScene;
+import com.jmathanim.Cameras.Camera2D;
+import com.jmathanim.Renderers.Java2DAwtRenderer;
 
 /**
  *
- * @author David
+ * @author David Gutierrez Rubio davidgutierrezrubio@gmail.com
  */
-public class JMathAnim {
+public abstract class Scene2DAwt extends JMathAnimScene {
 
-    
+    protected Java2DAwtRenderer renderer2d;
+    protected Camera2D camera;
 
-    /**
-     * A launcher for the scene
-     *
-     * @param args the command line arguments
-     */
-    public static void main(String[] args) {
-        JMathAnimScene demoScene = new myScene();
-        demoScene.execute();
-//        JMathAnimScene tsc = new TesterShowCreation();
-//        tsc.execute();
-//         JMathAnimScene tsf = new TesterTransform();
-//        tsf.execute();
+
+    public Scene2DAwt() {
+        super();
     }
 
+    @Override
+    public void createRenderer(){
+        fps = conf.fps;
+        dt=1./fps;
+        renderer2d = new Java2DAwtRenderer(this);
+        camera=renderer2d.getCamera();
+        super.renderer=renderer2d;
+    }
+
+   
+    
 }
