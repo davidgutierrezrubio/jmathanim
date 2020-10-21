@@ -27,7 +27,7 @@ public class myFirstScene extends Scene2D {
     public void runSketch() throws Exception {
         Shape s = Shape.square();
         play.showCreation(s);
-	play.rotate(s,30*DEGREES);
+	play.rotate(30*DEGREES,s);
         waitSeconds(5);
     }
 	
@@ -51,7 +51,7 @@ play.showCreation(s);
 This method plays an animation showing the square being created, with a default duration of 2 seconds. After the animation ends, the square is added to the scene.
 The following command works in a similar way, except in this case it animates a rotation of the square, rotating it 30 degrees clockwise.
 ```java
-play.rotate(s,30*DEGREES);
+play.rotate(30*DEGREES,s);
 ```
 The `waitSeconds` method simply waits for the specified amount of seconds, adding this frozen frames to the final output:
 ```java
@@ -62,7 +62,8 @@ waitSeconds(5);
 
 This library uses the following 3rd party libraries:
 
-* [Humble video encoder](https://github.com/artclarke/humble-video) For creating videos.
+* [JavaFX](https://openjfx.io/) For the graphics part.
+* [Xuggler](http://www.xuggle.com/xuggler/) For creating videos.
 * [Logback Project](http://logback.qos.ch/) For logging purposes.
 
 
