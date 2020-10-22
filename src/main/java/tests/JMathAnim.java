@@ -34,7 +34,7 @@ public class JMathAnim {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        JMathAnimScene demoScene = new myScene();
+        JMathAnimScene demoScene = new DemoScene();
         demoScene.execute();
 //        JMathAnimScene tsc = new TesterShowCreation();
 //        tsc.execute();

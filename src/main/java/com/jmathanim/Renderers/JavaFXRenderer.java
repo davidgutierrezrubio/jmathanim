@@ -41,6 +41,7 @@ import javafx.embed.swing.SwingFXUtils;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Group;
 import javafx.scene.Node;
+import javafx.scene.PerspectiveCamera;
 import javafx.scene.Scene;
 import javafx.scene.SnapshotParameters;
 import javafx.scene.effect.DropShadow;
@@ -59,6 +60,8 @@ import javafx.scene.shape.MoveTo;
 import javafx.scene.shape.Path;
 import javafx.scene.shape.StrokeLineCap;
 import javafx.scene.shape.StrokeType;
+import javafx.scene.transform.Rotate;
+import javafx.scene.transform.Translate;
 
 /**
  *
@@ -71,10 +74,16 @@ public class JavaFXRenderer extends Renderer {
 
     public CameraFX2D camera;
     public CameraFX2D fixedCamera;
+
+    private PerspectiveCamera fxCamera;
+    public double FxCamerarotateX=0;
+    public double FxCamerarotateY=0;
+    public double FxCamerarotateZ=0;
+    
     private Scene fxScene;
     private Group group;
     DropShadow dropShadow;
-    
+
     private final ArrayList<Node> fxnodes;
 
     private VideoEncoder videoEncoder;
@@ -109,13 +118,13 @@ public class JavaFXRenderer extends Renderer {
 //                muxer = Muxer.make(saveFilePath.getCanonicalPath(), null, "mp4");
             videoEncoder.createEncoder(saveFilePath, cnf);
         }
-         if (cnf.drawShadow) {
-                dropShadow = new DropShadow();
-                dropShadow.setRadius(cnf.shadowKernelSize);
-                dropShadow.setOffsetX(cnf.shadowOffsetX);
-                dropShadow.setOffsetY(cnf.shadowOffsetY);
-                dropShadow.setColor(Color.color(0, 0, 0,cnf.shadowAlpha));
-            }
+        if (cnf.drawShadow) {
+            dropShadow = new DropShadow();
+            dropShadow.setRadius(cnf.shadowKernelSize);
+            dropShadow.setOffsetX(cnf.shadowOffsetX);
+            dropShadow.setOffsetY(cnf.shadowOffsetY);
+            dropShadow.setColor(Color.color(0, 0, 0, cnf.shadowAlpha));
+        }
     }
 
     public final void initializeJavaFXWindow() throws Exception {
@@ -124,12 +133,23 @@ public class JavaFXRenderer extends Renderer {
         StandaloneSnapshot.FXStarter.awaitFXToolkit();
 
         FutureTask<Integer> task = new FutureTask<>(new Callable<Integer>() {
+
             @Override
             public Integer call() throws Exception {
                 group = new Group();
                 fxScene = new Scene(group, cnf.mediaW, cnf.mediaW);
                 fxScene.setFill(JMathAnimConfig.getConfig().getBackgroundColor().getFXColor());
                 StandaloneSnapshot.FXStarter.stage.setScene(fxScene);
+                //Proof with perspective camera
+                fxCamera = new PerspectiveCamera();
+//                camera.getTransforms().addAll(
+//                        new Translate(cnf.mediaW/2, cnf.mediaH/2, 0),
+//                        new Rotate(45, Rotate.X_AXIS),
+//                        new Rotate(45, Rotate.Z_AXIS),
+//                        new Rotate(45, Rotate.Y_AXIS),
+//                        new Translate(-cnf.mediaW/2, -cnf.mediaH/2, 0));
+                fxScene.setCamera(fxCamera);
+
                 if (cnf.showPreview) {
                     JMathAnimScene.logger.debug("Creating preview window");
                     //TODO: This gaps to add to the window are os-dependent
@@ -188,7 +208,16 @@ public class JavaFXRenderer extends Renderer {
             @Override
             public WritableImage call() throws Exception {
                 group.getChildren().clear();
-
+                fxCamera.getTransforms().clear();
+                 fxCamera.getTransforms().addAll(
+                        new Translate(cnf.mediaW/2, cnf.mediaH/2, 0),
+                        new Rotate(FxCamerarotateX, Rotate.X_AXIS),
+                        new Rotate(FxCamerarotateY, Rotate.Y_AXIS),
+                        new Rotate(FxCamerarotateZ, Rotate.Z_AXIS),
+                        new Translate(-cnf.mediaW/2, -cnf.mediaH/2, 0));
+                
+                
+                
                 //Create background
                 if ((!"".equals(cnf.backGroundImage)) && (cnf.backGroundImage != null)) {
                     File file = new File(cnf.backGroundImage);
@@ -199,7 +228,7 @@ public class JavaFXRenderer extends Renderer {
                 }
                 //Add all elements
                 group.getChildren().addAll(fxnodes);
-                
+
                 //Snapshot parameters
                 final SnapshotParameters params = new SnapshotParameters();
                 params.setFill(JMathAnimConfig.getConfig().getBackgroundColor().getFXColor());
@@ -327,6 +356,7 @@ public class JavaFXRenderer extends Renderer {
 
     private Path createPathFromJMPath(Shape mobj, JMPath c, CameraFX2D cam) {
         Path path = new Path();
+
         Vec p = c.getJMPoint(0).p.v;
         double[] scr = cam.mathToScreenFX(p.x, p.y);
         path.getElements().add(new MoveTo(scr[0], scr[1]));

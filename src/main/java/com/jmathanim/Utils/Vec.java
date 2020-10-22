@@ -15,7 +15,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-
 package com.jmathanim.Utils;
 
 import com.jmathanim.mathobjects.Stateable;
@@ -108,7 +107,7 @@ public class Vec implements Stateable {
      * @return The interpolated point
      */
     public Vec interpolate(Vec v2, double alpha) {
-        return new Vec((1-alpha)*x + alpha * v2.x, (1-alpha)*y + alpha * v2.y);
+        return new Vec((1 - alpha) * x + alpha * v2.x, (1 - alpha) * y + alpha * v2.y);
 
     }
 
@@ -183,4 +182,7 @@ public class Vec implements Stateable {
         return "Vec(" + x + ", " + y + ')';
     }
 
+    public static Vec to(double x, double y, double z) {
+        return new Vec(x, y, z);
+    }
 }
