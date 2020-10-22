@@ -5,7 +5,7 @@
         <showPreviewWindow>true</showPreviewWindow>
     </video>
       <background>
-        <shadows kernelSize="8" offsetX="15" offsetY="15" alpha=".5">true</shadows>
+        <shadows kernelSize="8" offsetX="15" offsetY="15" alpha=".5">false</shadows>
         <!--<image>hoja600.png</image>-->
     </background>
    </JMathAnimConfig>

@@ -1,4 +1,6 @@
 <JMathAnimConfig>
+        <include>axes_and_functions_dark.xml</include>
+        <include>dots.xml</include>
     <background>
         <color>#192841</color>
     </background>
@@ -27,44 +29,6 @@
             <drawColor>WHITE</drawColor>
             <fillColor>BLUE</fillColor>
             <thickness>1.5</thickness>
-        </style>
-        <style name="axisdefault">
-            <drawColor>#2565AE</drawColor>
-            <fillColor>TRANSPARENT</fillColor>
-            <thickness>.5</thickness>
-        </style>
-        <style name="axisblue2">
-            <drawColor>#6ca2e0</drawColor>
-            <fillColor>TRANSPARENT</fillColor>
-            <thickness>.5</thickness>
-        </style>
-         <style name="FunctionGraphDefault">
-            <drawColor>white</drawColor>
-            <fillColor>TRANSPARENT</fillColor>
-            <thickness>.5</thickness>
-        </style>
-        <style name="taylor">
-            <drawColor>#fa867e</drawColor>
-            <fillColor>TRANSPARENT</fillColor>
-            <thickness>.5</thickness>
-        </style>
-        <style name="dotRedCircle">
-            <drawColor>RED</drawColor>
-            <fillColor>TRANSPARENT</fillColor>
-            <thickness>.5</thickness>
-            <dotStyle>DOT_STYLE_CIRCLE</dotStyle>
-        </style>
-        <style name="dotBlueCross">
-            <drawColor>#6ca2e0</drawColor>
-            <fillColor>TRANSPARENT</fillColor>
-            <thickness>.5</thickness>
-            <dotStyle>cross</dotStyle>
-        </style>
-         <style name="dotYellowPlus">
-            <drawColor>#FCE16D</drawColor>
-            <fillColor>TRANSPARENT</fillColor>
-            <thickness>.5</thickness>
-            <dotStyle>plus</dotStyle>
         </style>
     </styles>
 </JMathAnimConfig>

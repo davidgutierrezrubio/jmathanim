@@ -15,7 +15,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-
 package com.jmathanim.mathobjects;
 
 import com.jmathanim.Renderers.Renderer;
@@ -53,9 +52,11 @@ public class MultiShapeObject extends MathObject {
     public boolean addJMPathObject(JMPath p) {
         return shapes.add(new Shape(p, null));
     }
-  public boolean addJMPathObject(JMPath p,MODrawProperties mp) {
+
+    public boolean addJMPathObject(JMPath p, MODrawProperties mp) {
         return shapes.add(new Shape(p, mp));
     }
+
     @Override
     public Point getCenter() {
         return getBoundingBox().getCenter();
@@ -92,7 +93,6 @@ public class MultiShapeObject extends MathObject {
 //        }
 //        return (T) this;
 //    }
-
     @Override
     public <T extends MathObject> T copy() {
         MultiShapeObject resul = new MultiShapeObject();
@@ -144,6 +144,14 @@ public class MultiShapeObject extends MathObject {
         } else {
             return null;
         }
+    }
+
+    @Override
+    public <T extends MathObject> T style(String name) {
+        for (Shape jmp : shapes) {
+            jmp.style(name);
+        }
+        return (T) this;
     }
 
     @Override

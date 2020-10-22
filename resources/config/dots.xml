@@ -1,0 +1,20 @@
+<JMathAnimConfig>  
+<style name="dotRedCircle">
+    <drawColor>RED</drawColor>
+    <fillColor>TRANSPARENT</fillColor>
+    <thickness>.5</thickness>
+    <dotStyle>DOT_STYLE_CIRCLE</dotStyle>
+</style>
+<style name="dotBlueCross">
+    <drawColor>#6ca2e0</drawColor>
+    <fillColor>TRANSPARENT</fillColor>
+    <thickness>.5</thickness>
+    <dotStyle>cross</dotStyle>
+</style>
+<style name="dotYellowPlus">
+    <drawColor>#FCE16D</drawColor>
+    <fillColor>TRANSPARENT</fillColor>
+    <thickness>.5</thickness>
+    <dotStyle>plus</dotStyle>
+</style>
+</JMathAnimConfig>

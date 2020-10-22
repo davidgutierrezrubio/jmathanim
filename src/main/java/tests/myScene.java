@@ -52,7 +52,8 @@ public class myScene extends Scene2D {
 //        conf.setOutputDir("c:\\media");
         ConfigLoader.parseFile("production.xml");
 //        ConfigLoader.parseFile("preview.xml");
-        ConfigLoader.parseFile("light.xml");
+        ConfigLoader.parseFile("dark.xml");
+//        ConfigLoader.parseFile("axes_and_functions_light.xml");
 
 //        conf.setHighQuality();
 //        conf.setCreateMovie(true);

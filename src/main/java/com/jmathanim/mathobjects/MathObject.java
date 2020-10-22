@@ -413,6 +413,12 @@ public abstract class MathObject implements Drawable, Updateable, Stateable {
         this.shift(A.to(B));
     }
 
+    public void stackTo(MathObject obj, int anchorType, double gap) {
+        Point B = Anchor.getAnchorPoint(obj, anchorType, gap);
+        Point A = Anchor.getAnchorPoint(this, Anchor.reverseAnchorPoint(anchorType));
+        this.shift(A.to(B));
+    }
+
     /**
      * Stack the object to the given anchor, relative to the current camera view
      *

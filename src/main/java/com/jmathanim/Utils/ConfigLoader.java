@@ -15,7 +15,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-
 package com.jmathanim.Utils;
 
 import com.jmathanim.jmathanim.JMathAnimScene;
@@ -61,6 +60,7 @@ public class ConfigLoader {
                 }
             }
 
+            parseLoadConfigOptions(config, root.getElementsByTagName("include"));
             parseVideoOptions(config, root.getElementsByTagName("video"));
             parseBackgroundOptions(config, root.getElementsByTagName("background"));
             parseStyles(config, root.getElementsByTagName("styles"));
@@ -175,10 +175,22 @@ public class ConfigLoader {
                     mp.absoluteThickness = Boolean.parseBoolean(item.getTextContent());
                     break;
                 case "dotStyle":
-                    mp.dotStyle=MODrawProperties.parseDotStyle(item.getTextContent());
+                    mp.dotStyle = MODrawProperties.parseDotStyle(item.getTextContent());
+                    break;
+                case "castShadows":
+                    mp.castShadows = Boolean.parseBoolean(item.getTextContent());
+                    break;
             }
         }
         return mp;
+    }
+
+    private static void parseLoadConfigOptions(JMathAnimConfig config, NodeList includeTags) {
+        for (int n = 0; n < includeTags.getLength(); n++) {
+            Node item = includeTags.item(n);
+             JMathAnimScene.logger.debug("Including file {}", item.getTextContent());
+                ConfigLoader.parseFile(item.getTextContent());
+        }
     }
 
 }
