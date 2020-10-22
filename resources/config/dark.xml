@@ -28,13 +28,23 @@
             <fillColor>BLUE</fillColor>
             <thickness>1.5</thickness>
         </style>
-        <style name="axisblue1">
+        <style name="axisdefault">
             <drawColor>#2565AE</drawColor>
             <fillColor>TRANSPARENT</fillColor>
             <thickness>.5</thickness>
         </style>
         <style name="axisblue2">
             <drawColor>#6ca2e0</drawColor>
+            <fillColor>TRANSPARENT</fillColor>
+            <thickness>.5</thickness>
+        </style>
+         <style name="defaultFunctionGraph">
+            <drawColor>white</drawColor>
+            <fillColor>TRANSPARENT</fillColor>
+            <thickness>.5</thickness>
+        </style>
+        <style name="taylor">
+            <drawColor>#fa867e</drawColor>
             <fillColor>TRANSPARENT</fillColor>
             <thickness>.5</thickness>
         </style>

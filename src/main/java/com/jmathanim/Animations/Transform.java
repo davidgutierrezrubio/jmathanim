@@ -15,16 +15,17 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-
 package com.jmathanim.Animations;
 
 import com.jmathanim.Animations.Strategies.Transform.AffineStrategyTransform;
+import com.jmathanim.Animations.Strategies.Transform.FunctionTransformStrategy;
 import com.jmathanim.Animations.Strategies.Transform.HomothecyStrategyTransform;
 import com.jmathanim.Animations.Strategies.Transform.PointInterpolationCanonical;
 import com.jmathanim.Animations.Strategies.Transform.RotateAndScaleXYStrategyTransform;
 import com.jmathanim.Animations.Strategies.TransformStrategy;
 import com.jmathanim.Utils.MODrawProperties;
 import com.jmathanim.jmathanim.JMathAnimScene;
+import com.jmathanim.mathobjects.FunctionGraph;
 import com.jmathanim.mathobjects.JMPath;
 import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.Shape;
@@ -40,6 +41,7 @@ public class Transform extends Animation {
     public static final int METHOD_HOMOTOPY_TRANSFORM = 2;
     public static final int METHOD_AFFINE_TRANSFORM = 3;
     public static final int METHOD_ROTATE_AND_SCALEXY_TRANSFORM = 4;
+    public static final int METHOD_FUNCTION_INTERPOLATION = 5;
     private JMPath jmpathOrig, jmpathDstBackup;
     public final Shape mobjDestiny;
     public final Shape mobjTransformed;
@@ -50,9 +52,8 @@ public class Transform extends Animation {
     private boolean isFinished;
     private JMathAnimScene scene;
     private TransformStrategy strategy;
-    
 
-    public Transform( double runTime,Shape ob1, Shape ob2) {
+    public Transform(double runTime, Shape ob1, Shape ob2) {
         super(runTime);
         mobjTransformed = ob1;
         mobjDestiny = ob2.copy();
@@ -121,6 +122,11 @@ public class Transform extends Animation {
 
         //Segment & Segment
         method = METHOD_INTERPOLATE_POINT_BY_POINT;//Default method if not specified
+        if ((mobjTransformed instanceof FunctionGraph) && (mobjDestiny instanceof FunctionGraph)) {
+            method = METHOD_FUNCTION_INTERPOLATION;
+            shouldOptimizePathsFirst = true;
+            methodTextOutput = "Transform method: Interpolation of functions";
+        }
         if ((mobjTransformed.getObjectType() == MathObject.SEGMENT) && (mobjDestiny.getObjectType() == MathObject.SEGMENT)) {
             method = METHOD_HOMOTOPY_TRANSFORM;
             shouldOptimizePathsFirst = true;
@@ -149,7 +155,7 @@ public class Transform extends Animation {
                 methodTextOutput = "Transform method: Rotate and Scale XY";
             } else { //Different number of vertices
                 method = METHOD_INTERPOLATE_POINT_BY_POINT;
-                 methodTextOutput = "Transform method: By point";
+                methodTextOutput = "Transform method: By point";
             }
 
         }
@@ -162,23 +168,26 @@ public class Transform extends Animation {
         //Now I choose strategy
         switch (method) {
             case METHOD_INTERPOLATE_POINT_BY_POINT:
-                strategy = new PointInterpolationCanonical(mobjTransformed, mobjDestiny,scene);
+                strategy = new PointInterpolationCanonical(mobjTransformed, mobjDestiny, scene);
                 break;
             case METHOD_HOMOTOPY_TRANSFORM:
-                strategy = new HomothecyStrategyTransform(mobjTransformed, mobjDestiny,scene);
+                strategy = new HomothecyStrategyTransform(mobjTransformed, mobjDestiny, scene);
                 break;
             case METHOD_AFFINE_TRANSFORM:
-                strategy = new AffineStrategyTransform(mobjTransformed, mobjDestiny,scene);
+                strategy = new AffineStrategyTransform(mobjTransformed, mobjDestiny, scene);
                 break;
             case METHOD_ROTATE_AND_SCALEXY_TRANSFORM:
-                strategy = new RotateAndScaleXYStrategyTransform(mobjTransformed, mobjDestiny,scene);
+                strategy = new RotateAndScaleXYStrategyTransform(mobjTransformed, mobjDestiny, scene);
+                break;
+            case METHOD_FUNCTION_INTERPOLATION:
+                strategy = new FunctionTransformStrategy((FunctionGraph) mobjTransformed, (FunctionGraph) mobjDestiny, scene);
                 break;
         }
     }
 
     @Override
-    public void doAnim(double t,double lt) {
-        strategy.applyTransform(t,lt);
+    public void doAnim(double t, double lt) {
+        strategy.applyTransform(t, lt);
 
     }
 
@@ -194,7 +203,6 @@ public class Transform extends Animation {
         mobjTransformed.setObjectType(mobjDestiny.getObjectType());
     }
 
-    
     public int getMethod() {
         return method;
     }

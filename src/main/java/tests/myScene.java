@@ -26,6 +26,7 @@ import com.jmathanim.Utils.JMathAnimConfig;
 import com.jmathanim.Utils.MODrawProperties;
 import com.jmathanim.jmathanim.Scene2D;
 import com.jmathanim.mathobjects.Arrow2D;
+import com.jmathanim.mathobjects.Axes;
 import com.jmathanim.mathobjects.CanonicalJMPath;
 import com.jmathanim.mathobjects.FunctionGraph;
 import com.jmathanim.mathobjects.JMPath;
@@ -49,26 +50,49 @@ public class myScene extends Scene2D {
 //        conf.setOutputDir("c:\\media");
 //        ConfigLoader.parseFile("production.xml");
         ConfigLoader.parseFile("preview.xml");
-        ConfigLoader.parseFile("light.xml");
+        ConfigLoader.parseFile("dark.xml");
 
 //        conf.setHighQuality();
 //        conf.setCreateMovie(true);
     }
 
+    public int factorial(int n) {
+        int resul = 1;
+        for (int i = 1; i <= n; i++) {
+            resul *= i;
+        }
+        return resul;
+    }
+
     @Override
     public void runSketch() {
-        FunctionGraph fg = new FunctionGraph((x) -> Math.abs(x-.32)-.74*Math.abs(x+.275), -1, 1);
-//        f1.setSingularPoints(0d);
-        FunctionGraph fg2=new FunctionGraph((x)->Math.sin(3*x),-1.7 ,1.7, 50);
-        fg.setSingularPoints(.32d,-.275d);
-        play.showCreation(fg);
-        PointOnFunctionGraph pg = new PointOnFunctionGraph(fg);
-        pg.shift(-.5, 0);
-        pg.v.x = 0;
-        add(Shape.segment(pg, pg.slopePointRight).drawColor(JMColor.BLUE).thickness(.5));
-        add(Shape.segment(pg, pg.slopePointLeft).drawColor(JMColor.RED).thickness(.5));
-        play.shift(5, 1, 1, pg);
-        play.transform(5, fg, fg2);
+        add(new Axes());
+        double xmin = -2 * PI;
+        double xmax = 2 * PI;
+        FunctionGraph sin = new FunctionGraph((x) -> Math.sin(x), xmin, xmax);
+        FunctionGraph sin1 = new FunctionGraph((x) -> x, xmin, xmax).style("taylor");
+        FunctionGraph sin2 = new FunctionGraph((x) -> x - Math.pow(x, 3) / factorial(3), xmin, xmax).style("taylor");
+        FunctionGraph sin3 = new FunctionGraph((x) -> x - Math.pow(x, 3) / factorial(3) + Math.pow(x, 5) / factorial(5), xmin, xmax).style("taylor");
+        FunctionGraph sin4 = new FunctionGraph((x) -> x - Math.pow(x, 3) / factorial(3) + Math.pow(x, 5) / factorial(5) - Math.pow(x, 7) / factorial(7), xmin, xmax).style("taylor");
+        FunctionGraph sin5 = new FunctionGraph((x) -> x - Math.pow(x, 3) / factorial(3) + Math.pow(x, 5) / factorial(5) - Math.pow(x, 7) / factorial(7)+Math.pow(x, 9) / factorial(9), xmin, xmax).style("taylor");
+
+        play.showCreation(sin);
+        play.showCreation(sin1);
+        play.adjustToObjects(sin);
+//        PointOnFunctionGraph pg = new PointOnFunctionGraph(fg);
+//        pg.shift(-.5, 0);
+//        pg.v.x = 0;
+//        add(Shape.segment(pg, pg.slopePointRight).drawColor(JMColor.BLUE).thickness(.5));
+//        add(Shape.segment(pg, pg.slopePointLeft).drawColor(JMColor.RED).thickness(.5));
+//        play.shift(5, 1, 1, pg);
+        waitSeconds(3);
+        play.transform(5, sin1, sin2);
+        waitSeconds(3);
+        play.transform(5, sin1, sin3);
+        waitSeconds(3);
+        play.transform(5, sin1, sin4);
+        waitSeconds(3);
+        play.transform(5, sin1, sin5);
         waitSeconds(3);
     }
 
