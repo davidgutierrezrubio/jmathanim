@@ -33,8 +33,8 @@ import java.text.DecimalFormat;
  */
 public class Point extends MathObject {
 
-    public Vec v;
-    private Vec vBackup;
+    public final Vec v;
+    private final Vec vBackup;
 
     public static final int DOT_STYLE_CIRCLE = 1;
     public static final int DOT_STYLE_CROSS = 2;
@@ -93,6 +93,7 @@ public class Point extends MathObject {
     public Point(double x, double y, double z, MODrawProperties mp) {
         super(mp);
         this.v = new Vec(x, y, z);
+        this.vBackup = new Vec(x, y, z);
         this.mp.absoluteThickness = false;
 //        this.mp.thickness = 8d;//default value
     }

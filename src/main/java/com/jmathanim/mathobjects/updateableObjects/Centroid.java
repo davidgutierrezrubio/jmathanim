@@ -15,7 +15,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-
 package com.jmathanim.mathobjects.updateableObjects;
 
 import com.jmathanim.Utils.Vec;
@@ -46,7 +45,7 @@ public class Centroid extends Point implements Updateable {
             resul.addInSite(path.getJMPoint(n).p.v);
         }
         resul.multInSite(1.0d / path.size());
-        this.v = resul;
+        this.v.copyFrom(resul);
     }
 
     @Override

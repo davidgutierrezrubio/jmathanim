@@ -15,7 +15,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-
 package com.jmathanim.mathobjects;
 
 import com.jmathanim.Renderers.Renderer;
@@ -68,7 +67,7 @@ public class JMPathPoint extends MathObject implements Updateable, Stateable {
     public JMPathPoint(Point p, boolean isVisible, int type) {
         super();
         this.p = p;
-        this.p.visible=false;
+        this.p.visible = false;
         cp1 = p.copy();
         cp2 = p.copy();
         isCurved = false;//By default, is not curved
@@ -80,8 +79,8 @@ public class JMPathPoint extends MathObject implements Updateable, Stateable {
     public JMPathPoint copy() {
         Point pCopy = p.copy();
         JMPathPoint resul = new JMPathPoint(pCopy, isThisSegmentVisible, type);
-        resul.cp1.v = cp1.v.copy();
-        resul.cp2.v = cp2.v.copy();
+        resul.cp1.v.copyFrom(cp1.v);
+        resul.cp2.v.copyFrom(cp2.v);
 
         try { //cp1vBackup and cp2vBackup may be null, so I enclose with a try-catch
             resul.cp1vBackup = cp1vBackup.copy();
@@ -142,8 +141,6 @@ public class JMPathPoint extends MathObject implements Updateable, Stateable {
 //        cp2.v.addInSite(shiftVector);
 //        return (T) this;
 //    }
-
-
     @Override
     public void update() {
 //        //Update descendents from Point and control points
@@ -217,12 +214,10 @@ public class JMPathPoint extends MathObject implements Updateable, Stateable {
     public void processAfterNonLinearAnimation() {
     }
 
-   
     @Override
     public Rect getBoundingBox() {
         return p.getBoundingBox();
     }
-
 
     @Override
     public void registerChildrenToBeUpdated(JMathAnimScene scene) {

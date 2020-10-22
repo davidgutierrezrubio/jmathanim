@@ -18,6 +18,7 @@
 package com.jmathanim.mathobjects;
 
 import com.jmathanim.Utils.PathInterpolator;
+import com.jmathanim.Utils.Vec;
 import java.util.ArrayList;
 import java.util.function.DoubleUnaryOperator;
 
@@ -27,11 +28,22 @@ import java.util.function.DoubleUnaryOperator;
  */
 public class FunctionGraph extends Shape {
 
+    public static final double DELTA_DERIVATIVE = .00001d;
+    public static final int DEFAULT_NUMBER_OF_POINTS = 49;
+    public static final int FUNC_TYPE_LAMBDA = 1;
+    public static final int FUNC_TYPE_ALGEBRA = 2;
+
     public DoubleUnaryOperator function;
     public final ArrayList<Double> xPoints;
+    public int functionType;
+
+    public FunctionGraph(DoubleUnaryOperator function, double xmin, double xmax) {
+        this(function, xmin, xmax, DEFAULT_NUMBER_OF_POINTS);
+    }
 
     public FunctionGraph(DoubleUnaryOperator function, double xmin, double xmax, int numPoints) {
         this.function = function;
+        this.functionType = FUNC_TYPE_LAMBDA;
         this.xPoints = new ArrayList<>();
         for (int n = 0; n < numPoints; n++) {
             double x = xmin + (xmax - xmin) * n / (numPoints - 1);
@@ -49,15 +61,45 @@ public class FunctionGraph extends Shape {
     private void generateFunctionPoints() {
         for (int n = 0; n < xPoints.size(); n++) {
             double x = xPoints.get(n);
-            double y = function.applyAsDouble(x);
+            double y = getFunctionValue(x);
             Point p = Point.at(x, y);
             final JMPathPoint jmp = JMPathPoint.curveTo(p);
             this.jmpath.addJMPoint(jmp);
             if (n == 0) {
                 jmp.isThisSegmentVisible = false;
             }
+            //Generate control points using slopes
+
         }
-        PathInterpolator.generateControlPointsBySimpleSlopes(this.jmpath);
+        generateControlPoints();
+//        PathInterpolator.generateControlPointsBySimpleSlopes(this.jmpath);
+    }
+
+    private void generateControlPoints() {
+        for (int n = 0; n < xPoints.size(); n++) {
+            JMPathPoint jmp = this.jmpath.getJMPoint(n);
+            double x = jmp.p.v.x;
+            if (n < xPoints.size() - 1) {
+                final double deltaX = .3 * (xPoints.get(n + 1) - x);
+                Vec v = new Vec(deltaX, getSlope(x, 1) * deltaX);
+                jmp.cp1.copyFrom(jmp.p.add(v));
+            }
+            if (n > 0) {
+                final double deltaX = .3 * (xPoints.get(n - 1) - x);
+                Vec v = new Vec(deltaX, getSlope(x, -1) * deltaX);
+                jmp.cp2.copyFrom(jmp.p.add(v));
+            }
+
+        }
+    }
+
+    public double getFunctionValue(double x) {
+        double y = 0;
+        if (this.functionType == FUNC_TYPE_LAMBDA) {
+            y = function.applyAsDouble(x);
+        }
+
+        return y;
     }
 
     public JMPathPoint addX(double x) {
@@ -71,7 +113,7 @@ public class FunctionGraph extends Shape {
         if (x0 == x) {
             return this.jmpath.getJMPoint(n);
         } else {
-            double y = function.applyAsDouble(x);
+            double y = getFunctionValue(x);
             Point p = Point.at(x, y);
             final JMPathPoint jmp = JMPathPoint.curveTo(p);
             this.jmpath.jmPathPoints.add(n, jmp);
@@ -80,17 +122,16 @@ public class FunctionGraph extends Shape {
     }
 
     public void setSingularPoints(Double... singularx) {
-        ArrayList<JMPathPoint> jmps = new ArrayList<>();
         for (double x : singularx) {
-            JMPathPoint jmp = addX(x);
-            jmp.isCurved = false;
-            jmps.add(jmp);
+            addX(x);
         }
-        PathInterpolator.generateControlPointsBySimpleSlopes(this.jmpath);
-        for (JMPathPoint jmp : jmps) {
-            jmp.cp1.copyFrom(jmp.p);
-            jmp.cp2.copyFrom(jmp.p);
-        }
+        generateControlPoints();
+    }
+
+    public double getSlope(double x, int direction) {
+        double delta = direction * DELTA_DERIVATIVE;
+        double slope = (getFunctionValue(x + delta) - getFunctionValue(x)) / delta;
+        return slope;
     }
 
 }

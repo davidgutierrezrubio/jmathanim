@@ -15,7 +15,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-
 package com.jmathanim.mathobjects.updateableObjects;
 
 import com.jmathanim.jmathanim.JMathAnimScene;
@@ -43,12 +42,12 @@ public class MiddlePoint extends Point {
 
     @Override
     public void update() {
-        this.v = p1.v.interpolate(p2.v, lambda);
+        this.v.copyFrom(p1.v.interpolate(p2.v, lambda));
     }
 
     @Override
     public int getUpdateLevel() {
-        return Math.max(p1.getUpdateLevel(),p2.getUpdateLevel())+1;
+        return Math.max(p1.getUpdateLevel(), p2.getUpdateLevel()) + 1;
     }
 
     @Override

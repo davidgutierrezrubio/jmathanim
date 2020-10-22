@@ -19,6 +19,7 @@ package com.jmathanim.Utils;
 
 import com.jmathanim.mathobjects.JMPath;
 import com.jmathanim.mathobjects.JMPathPoint;
+import com.jmathanim.mathobjects.Point;
 
 /**
  *
@@ -114,6 +115,28 @@ public class PathInterpolator {
                 jp0.cp2.copyFrom(jp0.p.add(v));
             }
         }
+    }
+
+    public JMPathPoint getInterpolatedPoint(JMPathPoint jmp1, JMPathPoint jmp2, double alpha) {
+        JMPathPoint interpolate;
+        if (jmp2.isCurved) {
+            //De Casteljau's Algorithm: https://en.wikipedia.org/wiki/De_Casteljau%27s_algorithm
+            Point E = jmp1.p.interpolate(jmp1.cp1, alpha); //New cp1 of v1
+            Point G = jmp2.cp2.interpolate(jmp2.p, alpha); //New cp2 of v2
+            Point F = jmp1.cp1.interpolate(jmp2.cp2, alpha);
+            Point H = E.interpolate(F, alpha);//cp2 of interpolation point
+            Point J = F.interpolate(G, alpha);//cp1 of interpolation point
+            Point K = H.interpolate(J, alpha); //Interpolation point
+            interpolate = new JMPathPoint(K, jmp2.isThisSegmentVisible, JMPathPoint.TYPE_INTERPOLATION_POINT);
+            interpolate.cp1.v.copyFrom(J.v);
+            interpolate.cp2.v.copyFrom(H.v);
+
+        } else {
+            Point K = jmp1.p.interpolate(jmp2.p, alpha);
+            interpolate = new JMPathPoint(K, jmp2.isThisSegmentVisible, JMPathPoint.TYPE_INTERPOLATION_POINT);
+        }
+        interpolate.isCurved = jmp2.isCurved;
+        return interpolate;
     }
 
 }

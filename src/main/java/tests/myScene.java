@@ -34,6 +34,7 @@ import com.jmathanim.mathobjects.Line;
 import com.jmathanim.mathobjects.MultiShapeObject;
 import com.jmathanim.mathobjects.Point;
 import com.jmathanim.mathobjects.Shape;
+import com.jmathanim.mathobjects.updateableObjects.PointOnFunctionGraph;
 import java.util.ArrayList;
 
 /**
@@ -56,13 +57,18 @@ public class myScene extends Scene2D {
 
     @Override
     public void runSketch() {
-        FunctionGraph f1=new FunctionGraph((x)->Math.abs(x),-1.7 ,1.7, 50);
-        f1.setSingularPoints(0d);
-        FunctionGraph f2=new FunctionGraph((x)->Math.abs(x-1),-1.7 ,1.7, 50);
-        f2.setSingularPoints(1d);
-        play.showCreation(f1);
-        waitSeconds(3);
-        play.transform(5, f1, f2);
+        FunctionGraph fg = new FunctionGraph((x) -> Math.abs(x-.32)-.74*Math.abs(x+.275), -1, 1);
+//        f1.setSingularPoints(0d);
+        FunctionGraph fg2=new FunctionGraph((x)->Math.sin(3*x),-1.7 ,1.7, 50);
+        fg.setSingularPoints(.32d,-.275d);
+        play.showCreation(fg);
+        PointOnFunctionGraph pg = new PointOnFunctionGraph(fg);
+        pg.shift(-.5, 0);
+        pg.v.x = 0;
+        add(Shape.segment(pg, pg.slopePointRight).drawColor(JMColor.BLUE).thickness(.5));
+        add(Shape.segment(pg, pg.slopePointLeft).drawColor(JMColor.RED).thickness(.5));
+        play.shift(5, 1, 1, pg);
+        play.transform(5, fg, fg2);
         waitSeconds(3);
     }
 
@@ -76,12 +82,12 @@ public class myScene extends Scene2D {
         cr.dashStyle(MODrawProperties.DOTTED);
         cr.thickness(1);
         cr.drawColor(JMColor.RED);
-        cr.mp.castShadows=false;
-        
+        cr.mp.castShadows = false;
+
 //        add(c,cr);
 //        play.transform(5, c, Shape.square());
         play.showCreation(c, cr);
-        play.cameraShift(3,1,0);
+        play.cameraShift(3, 1, 0);
         play.cameraScale(3, .2);
     }
 

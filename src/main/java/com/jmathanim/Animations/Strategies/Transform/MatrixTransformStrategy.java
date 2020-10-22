@@ -15,7 +15,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-
 package com.jmathanim.Animations.Strategies.Transform;
 
 import com.jmathanim.Animations.AffineJTransform;
@@ -59,15 +58,15 @@ public abstract class MatrixTransformStrategy extends TransformStrategy {
 
             //Interpolate point
             Point transformedPoint = tr.getTransformedObject(basePoint.p);
-            interPoint.p.v = transformedPoint.v;
+            interPoint.p.v.copyFrom(transformedPoint.v);
 
             //Interpolate control point 1
             transformedPoint = tr.getTransformedObject(basePoint.cp1);
-            interPoint.cp1.v = transformedPoint.v;
+            interPoint.cp1.v.copyFrom(transformedPoint.v);
 
             //Interpolate control point 2
             transformedPoint = tr.getTransformedObject(basePoint.cp2);
-            interPoint.cp2.v = transformedPoint.v;
+            interPoint.cp2.v.copyFrom(transformedPoint.v);
 
         }
         //Now interpolate properties from objects
