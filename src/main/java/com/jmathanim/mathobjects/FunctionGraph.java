@@ -111,7 +111,7 @@ public class FunctionGraph extends Shape {
         return y;
     }
 
-    public JMPathPoint addX(double x) {
+    private JMPathPoint addX(double x) {
 
         int n = 0;
         double x0 = xPoints.get(0);
@@ -131,9 +131,9 @@ public class FunctionGraph extends Shape {
         }
     }
 
-    public void setSingularPoints(Double... singularx) {
-        for (double x : singularx) {
-            addX(x);
+    public void addXPoint(Double... xPoints) {
+        for (double x : xPoints) {
+            addXPoint(x);
         }
         generateControlPoints();
     }
