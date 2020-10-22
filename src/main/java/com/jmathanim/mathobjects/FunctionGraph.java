@@ -43,6 +43,15 @@ public class FunctionGraph extends Shape {
         this(function, xmin, xmax, DEFAULT_NUMBER_OF_POINTS);
     }
 
+    /**
+     * Creates a function graph, which is a subclass of {@link Shape}
+     *
+     * @param function Function to draw, in lambda function, for example:
+     * (x)->Math.sin(x)
+     * @param xmin Minimum x of the interval to draw the function
+     * @param xmax Maximum x of the interval to draw the function
+     * @param numPoints Number of points to calculate
+     */
     public FunctionGraph(DoubleUnaryOperator function, double xmin, double xmax, int numPoints) {
         this.setObjectType(MathObject.FUNCTION_GRAPH);
         style("defaultFunctionGraph");//Default style, if any
@@ -77,6 +86,10 @@ public class FunctionGraph extends Shape {
         generateControlPoints();
     }
 
+    /**
+     * Generate the Bezier control points of the Shape representing the graph of
+     * the funcion Approximate derivatives are computed to compute these.
+     */
     private void generateControlPoints() {
         for (int n = 0; n < xPoints.size(); n++) {
             JMPathPoint jmp = this.jmpath.getJMPoint(n);
@@ -95,6 +108,11 @@ public class FunctionGraph extends Shape {
         }
     }
 
+    /**
+     * Update the value of the y-points of the graph. This method should be
+     * called when the function is changed. Control points are also
+     * recalculated.
+     */
     public void updatePoints() {
         for (JMPathPoint jmp : this.jmpath.jmPathPoints) {
             jmp.p.v.y = getFunctionValue(jmp.p.v.x);
@@ -131,6 +149,17 @@ public class FunctionGraph extends Shape {
         }
     }
 
+    /**
+     * Add the given x values of the abscises to the generation of the function
+     * curve. This is useful to explicity include singular points (for example,
+     * x=0 with (x)->Math.abs(x)) as graph may appear curved if this point is
+     * not explicitly include in the array of x-points. If the x coordinate is
+     * always included, this method has no effect, other than recalcuating
+     * control points.
+     *
+     * @param xPoints x coordinates of the abscise to include. Variable number
+     * of arguments.
+     */
     public void addXPoint(Double... xPoints) {
         for (double x : xPoints) {
             addXPoint(x);
