@@ -52,7 +52,7 @@ public class myScene extends Scene2D {
 //        conf.setOutputDir("c:\\media");
         ConfigLoader.parseFile("production.xml");
 //        ConfigLoader.parseFile("preview.xml");
-        ConfigLoader.parseFile("dark.xml");
+        ConfigLoader.parseFile("light.xml");
 
 //        conf.setHighQuality();
 //        conf.setCreateMovie(true);
@@ -87,7 +87,10 @@ public class myScene extends Scene2D {
     }
 
     public void TaylorSeriesSin() {
-        add(new Axes());
+        final Axes axes = new Axes();
+        axes.xAxis.mp.castShadows=false;
+        axes.yAxis.mp.castShadows=false;
+        add(axes);
         double xmin = -2 * PI;
         double xmax = 2 * PI;
         FunctionGraph sin = new FunctionGraph((x) -> Math.sin(x), xmin, xmax);

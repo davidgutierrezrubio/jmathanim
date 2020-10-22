@@ -38,7 +38,7 @@
             <fillColor>TRANSPARENT</fillColor>
             <thickness>.5</thickness>
         </style>
-         <style name="defaultFunctionGraph">
+         <style name="FunctionGraphDefault">
             <drawColor>white</drawColor>
             <fillColor>TRANSPARENT</fillColor>
             <thickness>.5</thickness>

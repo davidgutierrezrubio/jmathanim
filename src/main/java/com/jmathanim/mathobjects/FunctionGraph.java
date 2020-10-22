@@ -54,7 +54,7 @@ public class FunctionGraph extends Shape {
      */
     public FunctionGraph(DoubleUnaryOperator function, double xmin, double xmax, int numPoints) {
         this.setObjectType(MathObject.FUNCTION_GRAPH);
-        style("defaultFunctionGraph");//Default style, if any
+        style("FunctionGraphDefault");//Default style, if any
         this.function = function;
         this.functionBase = function;
         this.functionType = FUNC_TYPE_LAMBDA;

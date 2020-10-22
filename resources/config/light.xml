@@ -10,8 +10,18 @@
         </style>
         <style name="latexdefault">
             <drawColor>black</drawColor>
-            <fillColor>#00000000</fillColor>
+            <fillColor>black</fillColor>
             <thickness>.01</thickness>
+        </style>
+         <style name="FunctionGraphDefault">
+            <drawColor>black</drawColor>
+            <fillColor>TRANSPARENT</fillColor>
+            <thickness>.5</thickness>
+        </style>
+        <style name="taylor">
+            <drawColor>#fa867e</drawColor>
+            <fillColor>TRANSPARENT</fillColor>
+            <thickness>.5</thickness>
         </style>
         <style name="solidred">
             <drawColor>black</drawColor>
