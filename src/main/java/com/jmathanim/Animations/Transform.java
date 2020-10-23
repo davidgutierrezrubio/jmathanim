@@ -20,6 +20,7 @@ package com.jmathanim.Animations;
 import com.jmathanim.Animations.Strategies.Transform.AffineStrategyTransform;
 import com.jmathanim.Animations.Strategies.Transform.FunctionTransformStrategy;
 import com.jmathanim.Animations.Strategies.Transform.HomothecyStrategyTransform;
+import com.jmathanim.Animations.Strategies.Transform.Optimizers.NullOptimizationStrategy;
 import com.jmathanim.Animations.Strategies.Transform.Optimizers.OptimizePathsStrategy;
 import com.jmathanim.Animations.Strategies.Transform.PointInterpolationCanonical;
 import com.jmathanim.Animations.Strategies.Transform.PointInterpolationSimpleShape;
@@ -47,7 +48,8 @@ public class Transform extends Animation {
     public static final int METHOD_ROTATE_AND_SCALEXY_TRANSFORM = 5;
     public static final int METHOD_FUNCTION_INTERPOLATION = 6;
 
-    public static final int OPTIMIZE_SIMPLE_CONNECTED_PATHS = 1;
+    public static final int OPTIMIZE_NONE = 1;
+    public static final int OPTIMIZE_SIMPLE_CONNECTED_PATHS = 2;
 
     private JMPath jmpathOrig, jmpathDstBackup;
     public final Shape mobjDestiny;
@@ -242,7 +244,7 @@ public class Transform extends Animation {
     }
 
     private void determineOptimizationStrategy() {
-
+        optimizeMethod = OPTIMIZE_NONE;//default
         //Case 1: 2 simple closed curves (square to circle, for example)
         if ((mobjTransformed.jmpath.getNumberOfConnectedComponents() == 0) && (mobjDestiny.jmpath.getNumberOfConnectedComponents() == 0)) {
             optimizeMethod = OPTIMIZE_SIMPLE_CONNECTED_PATHS;
@@ -252,6 +254,10 @@ public class Transform extends Animation {
 
     private void createOptimizationStrategy() {
         switch (optimizeMethod) {
+            case OPTIMIZE_NONE:
+                optimizeStrategy = new NullOptimizationStrategy();
+                JMathAnimScene.logger.info("Optimization strategy chosen: None");
+                break;
             case OPTIMIZE_SIMPLE_CONNECTED_PATHS:
                 optimizeStrategy = new SimpleConnectedPathsOptimizationStrategy(mobjTransformed, mobjDestiny);
                 JMathAnimScene.logger.info("Optimization strategy chosen: Simple connected paths");
@@ -272,6 +278,5 @@ public class Transform extends Animation {
         this.transformMethod = transformMethod;
         return this;
     }
-    
 
 }

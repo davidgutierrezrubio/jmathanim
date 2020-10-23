@@ -41,8 +41,8 @@ public class TesterTransform extends Scene2DAwt {
 
     @Override
     public void setupSketch() {
-//        ConfigLoader.parseFile("preview.xml");
-        ConfigLoader.parseFile("production.xml");
+        ConfigLoader.parseFile("preview.xml");
+//        ConfigLoader.parseFile("production.xml");
         ConfigLoader.parseFile("dark.xml");
     }
 
