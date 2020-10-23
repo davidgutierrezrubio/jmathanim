@@ -73,20 +73,16 @@ public class myScene extends Scene2D {
     public void runSketch() {
         Shape reg1 = Shape.regularPolygon(6).scale(.7, -1).shift(-1, -1.1).rotate(6 * PI / 5);
         Shape reg2 = Shape.regularPolygon(5).scale(.4).shift(1, 0);
-        add(reg2,reg1);
-        Transform tr = new Transform(10, reg1, reg2);
-//        tr.shouldOptimizePathsFirst=false;
-//        playAnimation(tr);
-//        waitSeconds(2);
+        add(reg2, reg1);
+        playAnimation(Transform.make(10, reg1, reg2).optimizePaths(true));
+        waitSeconds(2);
         play.fadeOutAll();
 
         Shape c = Shape.circle();
         Shape sq = Shape.square().scale(-1, 1).rotate(60 * DEGREES).shift(1.5, -.2);
         add(c, sq);
-        Transform tr2 = new Transform(10, c, sq);
         waitSeconds(1);
-        tr.shouldOptimizePathsFirst=false;
-        playAnimation(tr2);
+        playAnimation(Transform.make(10, c, sq).optimizePaths(true));
         waitSeconds(2);
     }
 

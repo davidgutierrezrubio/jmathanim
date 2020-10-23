@@ -55,12 +55,16 @@ public class Transform extends Animation {
     private MODrawProperties propBase;
     private Integer transformMethod;
     private Integer optimizeMethod;
-    public boolean shouldOptimizePathsFirst;
+    private boolean shouldOptimizePathsFirst;
     public boolean forceChangeDirection;
     private boolean isFinished;
     private JMathAnimScene scene;
     private TransformStrategy transformStrategy;
     private OptimizePathsStrategy optimizeStrategy;
+
+    public static Transform make(double runTime, Shape ob1, Shape ob2) {
+        return new Transform(runTime, ob1, ob2);
+    }
 
     public Transform(double runTime, Shape ob1, Shape ob2) {
         super(runTime);
@@ -139,7 +143,7 @@ public class Transform extends Animation {
         String methodTextOutput = "Transform method: By point";
 
         transformMethod = METHOD_INTERPOLATE_POINT_BY_POINT;//Default method if not specified
-        
+
         if ((mobjTransformed instanceof FunctionGraph) && (mobjDestiny instanceof FunctionGraph)) {
             transformMethod = METHOD_FUNCTION_INTERPOLATION;
             methodTextOutput = "Transform method: Interpolation of functions";
@@ -172,14 +176,12 @@ public class Transform extends Animation {
                 methodTextOutput = "Transform method: By point";
             }
         }
-        
+
         //2 simple, closed curves
-        if ((mobjTransformed.getPath().getNumberOfConnectedComponents()==0)&&(mobjDestiny.getPath().getNumberOfConnectedComponents()==0)){
+        if ((mobjTransformed.getPath().getNumberOfConnectedComponents() == 0) && (mobjDestiny.getPath().getNumberOfConnectedComponents() == 0)) {
             transformMethod = METHOD_INTERPOLATE_SIMPLE_SHAPES_BY_POINT;
             methodTextOutput = "Transform method: Point interpolation between 2 simple closed curves";
         }
-        
-        
 
         JMathAnimScene.logger.info(methodTextOutput);
 
@@ -256,5 +258,20 @@ public class Transform extends Animation {
                 break;
         }
     }
+
+    public Transform optimizePaths(boolean shouldOptimizePathsFirst) {
+        this.shouldOptimizePathsFirst = shouldOptimizePathsFirst;
+        return this;
+    }
+
+    public Integer getTransformMethod() {
+        return transformMethod;
+    }
+
+    public Transform transformMethod(Integer transformMethod) {
+        this.transformMethod = transformMethod;
+        return this;
+    }
+    
 
 }
