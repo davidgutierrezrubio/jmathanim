@@ -157,10 +157,10 @@ public class JMPath implements Updateable, Stateable {
      * number of elements Invisible pieces of path are not interpolated. New
      * generated points are marked as INTERPOLATION_POINT
      *
-     * @param newNumPoints New number of points
+     * @param newNumPoints New number of points. Must be greater or equal than actual number of points in the path
      */
     public void alignPathsToGivenNumberOfElements(int newNumPoints) {
-        if (newNumPoints == this.size()) {
+        if (newNumPoints <= this.size()) {
             return; //Nothing to do here!
         }
         //First compute how many visible segments are
@@ -585,13 +585,14 @@ public class JMPath implements Updateable, Stateable {
      * @return The number of connected components.
      */
     public int getNumberOfConnectedComponents() {
-        int resul = 0;
-        for (JMPathPoint p : jmPathPoints) {
-            if (!p.isThisSegmentVisible) {
-                resul++;
-            }
-        }
-        return resul;
+//        int resul = 0;
+//        for (JMPathPoint p : jmPathPoints) {
+//            if (!p.isThisSegmentVisible) {
+//                resul++;
+//            }
+//        }
+//        return resul;
+        return (int) jmPathPoints.stream().filter((x)->!x.isThisSegmentVisible).count();
     }
 
     /**

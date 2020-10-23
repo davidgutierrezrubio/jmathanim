@@ -15,16 +15,20 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
+package com.jmathanim.Animations.Strategies.Transform.Optimizers;
 
-package com.jmathanim.Animations.Strategies.Transform;
-
+import com.jmathanim.mathobjects.JMPath;
 import com.jmathanim.mathobjects.Shape;
 
 /**
+ * Interface to any class that implements a optimization strategy of paths prior
+ * to transforming one into another. Strategies can be used to adapt paths so
+ * that the transformation is smoother.
  *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
 public interface OptimizePathsStrategy {
-    public void optimize(Shape sh1,Shape sh2);
-    
+
+    public void optimizePaths(Shape sh1,Shape sh2);
+
 }

@@ -20,8 +20,11 @@ package com.jmathanim.Animations;
 import com.jmathanim.Animations.Strategies.Transform.AffineStrategyTransform;
 import com.jmathanim.Animations.Strategies.Transform.FunctionTransformStrategy;
 import com.jmathanim.Animations.Strategies.Transform.HomothecyStrategyTransform;
+import com.jmathanim.Animations.Strategies.Transform.Optimizers.OptimizePathsStrategy;
 import com.jmathanim.Animations.Strategies.Transform.PointInterpolationCanonical;
+import com.jmathanim.Animations.Strategies.Transform.PointInterpolationSimpleShape;
 import com.jmathanim.Animations.Strategies.Transform.RotateAndScaleXYStrategyTransform;
+import com.jmathanim.Animations.Strategies.Transform.Optimizers.SimpleConnectedPathsOptimizationStrategy;
 import com.jmathanim.Animations.Strategies.TransformStrategy;
 import com.jmathanim.Utils.MODrawProperties;
 import com.jmathanim.jmathanim.JMathAnimScene;
@@ -37,30 +40,38 @@ import java.util.ArrayList;
  */
 public class Transform extends Animation {
 
-    public static final int METHOD_INTERPOLATE_POINT_BY_POINT = 1;
-    public static final int METHOD_HOMOTOPY_TRANSFORM = 2;
-    public static final int METHOD_AFFINE_TRANSFORM = 3;
-    public static final int METHOD_ROTATE_AND_SCALEXY_TRANSFORM = 4;
-    public static final int METHOD_FUNCTION_INTERPOLATION = 5;
+    public static final int METHOD_INTERPOLATE_SIMPLE_SHAPES_BY_POINT = 1;
+    public static final int METHOD_INTERPOLATE_POINT_BY_POINT = 2;
+    public static final int METHOD_HOMOTOPY_TRANSFORM = 3;
+    public static final int METHOD_AFFINE_TRANSFORM = 4;
+    public static final int METHOD_ROTATE_AND_SCALEXY_TRANSFORM = 5;
+    public static final int METHOD_FUNCTION_INTERPOLATION = 6;
+
+    public static final int OPTIMIZE_SIMPLE_CONNECTED_PATHS = 1;
+
     private JMPath jmpathOrig, jmpathDstBackup;
     public final Shape mobjDestiny;
     public final Shape mobjTransformed;
     private MODrawProperties propBase;
-    private Integer method;
+    private Integer transformMethod;
+    private Integer optimizeMethod;
     public boolean shouldOptimizePathsFirst;
     public boolean forceChangeDirection;
     private boolean isFinished;
     private JMathAnimScene scene;
-    private TransformStrategy strategy;
+    private TransformStrategy transformStrategy;
+    private OptimizePathsStrategy optimizeStrategy;
 
     public Transform(double runTime, Shape ob1, Shape ob2) {
         super(runTime);
         mobjTransformed = ob1;
         mobjDestiny = ob2.copy();
-        method = null;
+        transformMethod = null;
+        optimizeMethod = null;
         shouldOptimizePathsFirst = true;
         forceChangeDirection = false;
         isFinished = false;
+        optimizeStrategy = null;
     }
 
     @Override
@@ -72,14 +83,21 @@ public class Transform extends Animation {
         //2 segments/lines or segment/line
         //2 circles/ellipses
         //2 regular polygons with same number of sides
-        if (method == null) {
+        if (transformMethod == null) {
             determineTransformStrategy();
         }
-        createStrategy();
+        createTransformStrategy();
 
+        if (shouldOptimizePathsFirst) {
+            if (optimizeMethod == null) {
+                determineOptimizationStrategy();
+            }
+            createOptimizationStrategy();
+        }
+        transformStrategy.setOptimizationStrategy(optimizeStrategy);
         //Variable strategy should have proper strategy to transform
         //If method is null means that user didn't force one
-        strategy.prepareObjects();
+        transformStrategy.prepareObjects();
     }
 
     /**
@@ -120,74 +138,80 @@ public class Transform extends Animation {
     private void determineTransformStrategy() {
         String methodTextOutput = "Transform method: By point";
 
-        //Segment & Segment
-        method = METHOD_INTERPOLATE_POINT_BY_POINT;//Default method if not specified
+        transformMethod = METHOD_INTERPOLATE_POINT_BY_POINT;//Default method if not specified
+        
         if ((mobjTransformed instanceof FunctionGraph) && (mobjDestiny instanceof FunctionGraph)) {
-            method = METHOD_FUNCTION_INTERPOLATION;
-            shouldOptimizePathsFirst = true;
+            transformMethod = METHOD_FUNCTION_INTERPOLATION;
             methodTextOutput = "Transform method: Interpolation of functions";
         }
         if ((mobjTransformed.getObjectType() == MathObject.SEGMENT) && (mobjDestiny.getObjectType() == MathObject.SEGMENT)) {
-            method = METHOD_HOMOTOPY_TRANSFORM;
-            shouldOptimizePathsFirst = true;
+            transformMethod = METHOD_HOMOTOPY_TRANSFORM;
             methodTextOutput = "Transform method: Homotopy";
         }
 
         //Circle & Circle
         if ((mobjTransformed.getObjectType() == MathObject.CIRCLE) && (mobjDestiny.getObjectType() == MathObject.CIRCLE)) {
-            method = METHOD_HOMOTOPY_TRANSFORM;
+            transformMethod = METHOD_HOMOTOPY_TRANSFORM;
             shouldOptimizePathsFirst = true;
             methodTextOutput = "Transform method: Homotopy";
         }
 
         //Rectangle & Rectangle
         if ((mobjTransformed.getObjectType() == MathObject.RECTANGLE) && (mobjDestiny.getObjectType() == MathObject.RECTANGLE)) {
-            method = METHOD_ROTATE_AND_SCALEXY_TRANSFORM;
-            shouldOptimizePathsFirst = true;
+            transformMethod = METHOD_ROTATE_AND_SCALEXY_TRANSFORM;
             methodTextOutput = "Transform method: Rotate and Scale XY";
         }
 
         //Regular Polygons with the same number of vertices
         if ((mobjTransformed.getObjectType() == MathObject.REGULAR_POLYGON) && (mobjDestiny.getObjectType() == MathObject.REGULAR_POLYGON)) {
             if (mobjTransformed.jmpath.size() == mobjDestiny.jmpath.size()) {
-                method = METHOD_ROTATE_AND_SCALEXY_TRANSFORM;
-                shouldOptimizePathsFirst = true;
+                transformMethod = METHOD_ROTATE_AND_SCALEXY_TRANSFORM;
                 methodTextOutput = "Transform method: Rotate and Scale XY";
             } else { //Different number of vertices
-                method = METHOD_INTERPOLATE_POINT_BY_POINT;
+                transformMethod = METHOD_INTERPOLATE_POINT_BY_POINT;
                 methodTextOutput = "Transform method: By point";
             }
-
         }
+        
+        //2 simple, closed curves
+        if ((mobjTransformed.getPath().getNumberOfConnectedComponents()==0)&&(mobjDestiny.getPath().getNumberOfConnectedComponents()==0)){
+            transformMethod = METHOD_INTERPOLATE_SIMPLE_SHAPES_BY_POINT;
+            methodTextOutput = "Transform method: Point interpolation between 2 simple closed curves";
+        }
+        
+        
 
         JMathAnimScene.logger.info(methodTextOutput);
 
     }
 
-    private void createStrategy() {
+    private void createTransformStrategy() {
         //Now I choose strategy
-        switch (method) {
+        switch (transformMethod) {
+            case METHOD_INTERPOLATE_SIMPLE_SHAPES_BY_POINT:
+                transformStrategy = new PointInterpolationSimpleShape(mobjTransformed, mobjDestiny, scene);
+                break;
             case METHOD_INTERPOLATE_POINT_BY_POINT:
-                strategy = new PointInterpolationCanonical(mobjTransformed, mobjDestiny, scene);
+                transformStrategy = new PointInterpolationCanonical(mobjTransformed, mobjDestiny, scene);
                 break;
             case METHOD_HOMOTOPY_TRANSFORM:
-                strategy = new HomothecyStrategyTransform(mobjTransformed, mobjDestiny, scene);
+                transformStrategy = new HomothecyStrategyTransform(mobjTransformed, mobjDestiny, scene);
                 break;
             case METHOD_AFFINE_TRANSFORM:
-                strategy = new AffineStrategyTransform(mobjTransformed, mobjDestiny, scene);
+                transformStrategy = new AffineStrategyTransform(mobjTransformed, mobjDestiny, scene);
                 break;
             case METHOD_ROTATE_AND_SCALEXY_TRANSFORM:
-                strategy = new RotateAndScaleXYStrategyTransform(mobjTransformed, mobjDestiny, scene);
+                transformStrategy = new RotateAndScaleXYStrategyTransform(mobjTransformed, mobjDestiny, scene);
                 break;
             case METHOD_FUNCTION_INTERPOLATION:
-                strategy = new FunctionTransformStrategy((FunctionGraph) mobjTransformed, (FunctionGraph) mobjDestiny, scene);
+                transformStrategy = new FunctionTransformStrategy((FunctionGraph) mobjTransformed, (FunctionGraph) mobjDestiny, scene);
                 break;
         }
     }
 
     @Override
     public void doAnim(double t, double lt) {
-        strategy.applyTransform(t, lt);
+        transformStrategy.applyTransform(t, lt);
 
     }
 
@@ -198,21 +222,39 @@ public class Transform extends Animation {
         } else {
             isFinished = true;
         }
-        strategy.finish();
+        transformStrategy.finish();
         //Copy type of destiny object to transformed one
         mobjTransformed.setObjectType(mobjDestiny.getObjectType());
     }
 
     public int getMethod() {
-        return method;
+        return transformMethod;
     }
 
     public void setMethod(int method) {
-        this.method = method;
+        this.transformMethod = method;
     }
 
     @Override
     public void addObjectsToScene(JMathAnimScene scene) {
+    }
+
+    private void determineOptimizationStrategy() {
+
+        //Case 1: 2 simple closed curves (square to circle, for example)
+        if ((mobjTransformed.jmpath.getNumberOfConnectedComponents() == 0) && (mobjDestiny.jmpath.getNumberOfConnectedComponents() == 0)) {
+            optimizeMethod = OPTIMIZE_SIMPLE_CONNECTED_PATHS;
+            return;
+        }
+    }
+
+    private void createOptimizationStrategy() {
+        switch (optimizeMethod) {
+            case OPTIMIZE_SIMPLE_CONNECTED_PATHS:
+                optimizeStrategy = new SimpleConnectedPathsOptimizationStrategy(mobjTransformed, mobjDestiny);
+                JMathAnimScene.logger.info("Optimization strategy chosen: Simple connected paths");
+                break;
+        }
     }
 
 }

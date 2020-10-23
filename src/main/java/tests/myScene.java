@@ -18,6 +18,7 @@
 package tests;
 
 import com.jmathanim.Animations.Strategies.Transform.PointInterpolationCanonical;
+import com.jmathanim.Animations.Transform;
 import com.jmathanim.Animations.commands.Commands;
 import com.jmathanim.Renderers.JavaFXRenderer;
 import com.jmathanim.Utils.Anchor;
@@ -34,6 +35,7 @@ import com.jmathanim.mathobjects.FunctionGraph;
 import com.jmathanim.mathobjects.JMPath;
 import com.jmathanim.mathobjects.LaTeXMathObject;
 import com.jmathanim.mathobjects.Line;
+import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.MultiShapeObject;
 import com.jmathanim.mathobjects.Point;
 import com.jmathanim.mathobjects.Shape;
@@ -50,8 +52,8 @@ public class myScene extends Scene2D {
     public void setupSketch() {
 //        conf.setResourcesDir(".");
 //        conf.setOutputDir("c:\\media");
-        ConfigLoader.parseFile("production.xml");
-//        ConfigLoader.parseFile("preview.xml");
+//        ConfigLoader.parseFile("production.xml");
+        ConfigLoader.parseFile("preview.xml");
         ConfigLoader.parseFile("dark.xml");
 //        ConfigLoader.parseFile("axes_and_functions_light.xml");
 
@@ -69,19 +71,35 @@ public class myScene extends Scene2D {
 
     @Override
     public void runSketch() {
-        TaylorSeriesSin();
+        Shape reg1 = Shape.regularPolygon(6).scale(.7, -1).shift(-1, -1.1).rotate(6 * PI / 5);
+        Shape reg2 = Shape.regularPolygon(5).scale(.4).shift(1, 0);
+        add(reg2,reg1);
+        Transform tr = new Transform(10, reg1, reg2);
+//        tr.shouldOptimizePathsFirst=false;
+//        playAnimation(tr);
+//        waitSeconds(2);
+        play.fadeOutAll();
+
+        Shape c = Shape.circle();
+        Shape sq = Shape.square().scale(-1, 1).rotate(60 * DEGREES).shift(1.5, -.2);
+        add(c, sq);
+        Transform tr2 = new Transform(10, c, sq);
+        waitSeconds(1);
+        tr.shouldOptimizePathsFirst=false;
+        playAnimation(tr2);
+        waitSeconds(2);
     }
 
     public void manual3DRotateCamera() {
-        Shape c=Shape.circle().style("solidblue");
+        Shape c = Shape.circle().style("solidblue");
         add(c);
         waitSeconds(1);
-        int nfps=300;
-        
-        for (int n = 0; n <=nfps; n++) {
-            renderer.FxCamerarotateX=45d*n/nfps;
-            renderer.FxCamerarotateY=45d*n/nfps;
-            renderer.FxCamerarotateZ=45d*n/nfps;
+        int nfps = 300;
+
+        for (int n = 0; n <= nfps; n++) {
+            renderer.FxCamerarotateX = 45d * n / nfps;
+            renderer.FxCamerarotateY = 45d * n / nfps;
+            renderer.FxCamerarotateZ = 45d * n / nfps;
             advanceFrame();
         }
         waitSeconds(3);
@@ -89,8 +107,8 @@ public class myScene extends Scene2D {
 
     public void TaylorSeriesSin() {
         final Axes axes = new Axes();
-        axes.xAxis.mp.castShadows=false;
-        axes.yAxis.mp.castShadows=false;
+        axes.xAxis.mp.castShadows = false;
+        axes.yAxis.mp.castShadows = false;
         add(axes);
         double xmin = -2 * PI;
         double xmax = 2 * PI;
@@ -99,9 +117,9 @@ public class myScene extends Scene2D {
         FunctionGraph sin2 = new FunctionGraph((x) -> x - Math.pow(x, 3) / factorial(3), xmin, xmax).style("taylor");
         FunctionGraph sin3 = new FunctionGraph((x) -> x - Math.pow(x, 3) / factorial(3) + Math.pow(x, 5) / factorial(5), xmin, xmax).style("taylor");
         FunctionGraph sin4 = new FunctionGraph((x) -> x - Math.pow(x, 3) / factorial(3) + Math.pow(x, 5) / factorial(5) - Math.pow(x, 7) / factorial(7), xmin, xmax).style("taylor");
-        FunctionGraph sin5 = new FunctionGraph((x) -> x - Math.pow(x, 3) / factorial(3) + Math.pow(x, 5) / factorial(5) - Math.pow(x, 7) / factorial(7)+Math.pow(x, 9) / factorial(9), xmin, xmax).style("taylor");
-        FunctionGraph sin6 = new FunctionGraph((x) -> x - Math.pow(x, 3) / factorial(3) + Math.pow(x, 5) / factorial(5) - Math.pow(x, 7) / factorial(7)+Math.pow(x, 9) / factorial(9)-Math.pow(x, 11) / factorial(11), xmin, xmax).style("taylor");
-        FunctionGraph sin7 = new FunctionGraph((x) -> x - Math.pow(x, 3) / factorial(3) + Math.pow(x, 5) / factorial(5) - Math.pow(x, 7) / factorial(7)+Math.pow(x, 9) / factorial(9)-Math.pow(x, 11) / factorial(11)+Math.pow(x, 13) / factorial(13), xmin, xmax).style("taylor");
+        FunctionGraph sin5 = new FunctionGraph((x) -> x - Math.pow(x, 3) / factorial(3) + Math.pow(x, 5) / factorial(5) - Math.pow(x, 7) / factorial(7) + Math.pow(x, 9) / factorial(9), xmin, xmax).style("taylor");
+        FunctionGraph sin6 = new FunctionGraph((x) -> x - Math.pow(x, 3) / factorial(3) + Math.pow(x, 5) / factorial(5) - Math.pow(x, 7) / factorial(7) + Math.pow(x, 9) / factorial(9) - Math.pow(x, 11) / factorial(11), xmin, xmax).style("taylor");
+        FunctionGraph sin7 = new FunctionGraph((x) -> x - Math.pow(x, 3) / factorial(3) + Math.pow(x, 5) / factorial(5) - Math.pow(x, 7) / factorial(7) + Math.pow(x, 9) / factorial(9) - Math.pow(x, 11) / factorial(11) + Math.pow(x, 13) / factorial(13), xmin, xmax).style("taylor");
 
         play.showCreation(sin);
         play.showCreation(sin1);
@@ -112,19 +130,19 @@ public class myScene extends Scene2D {
 //        add(Shape.segment(pg, pg.slopePointRight).drawColor(JMColor.BLUE).thickness(.5));
 //        add(Shape.segment(pg, pg.slopePointLeft).drawColor(JMColor.RED).thickness(.5));
 //        play.shift(5, 1, 1, pg);
-waitSeconds(1);
-play.transform(1, sin1, sin2);
-waitSeconds(1);
-play.transform(1, sin1, sin3);
-waitSeconds(1);
-play.transform(1, sin1, sin4);
-waitSeconds(1);
-play.transform(1, sin1, sin5);
-waitSeconds(1);
-play.transform(1, sin1, sin6);
-waitSeconds(1);
-play.transform(1, sin1, sin7);
-waitSeconds(1);
+        waitSeconds(1);
+        play.transform(1, sin1, sin2);
+        waitSeconds(1);
+        play.transform(1, sin1, sin3);
+        waitSeconds(1);
+        play.transform(1, sin1, sin4);
+        waitSeconds(1);
+        play.transform(1, sin1, sin5);
+        waitSeconds(1);
+        play.transform(1, sin1, sin6);
+        waitSeconds(1);
+        play.transform(1, sin1, sin7);
+        waitSeconds(1);
     }
 
     private void drawCircleAndMarco() {

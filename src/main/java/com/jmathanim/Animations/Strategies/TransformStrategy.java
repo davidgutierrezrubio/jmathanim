@@ -15,9 +15,10 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-
 package com.jmathanim.Animations.Strategies;
 
+import com.jmathanim.Animations.Strategies.Transform.Optimizers.NullOptimizationStrategy;
+import com.jmathanim.Animations.Strategies.Transform.Optimizers.OptimizePathsStrategy;
 import com.jmathanim.jmathanim.JMathAnimScene;
 
 /**
@@ -27,9 +28,26 @@ import com.jmathanim.jmathanim.JMathAnimScene;
 public abstract class TransformStrategy {
 
     protected final JMathAnimScene scene;
+    protected OptimizePathsStrategy optimizeStrategy;
 
     public TransformStrategy(JMathAnimScene scene) {
         this.scene = scene;
+        optimizeStrategy = new NullOptimizationStrategy();
+    }
+
+    /**
+     * Sets the strategy to properly optimize paths in order to make transition
+     * smooth This strategy should be invoked in some moment at prepareObjects
+     * method.
+     *
+     * @param strategy Strategy to use
+     */
+    public void setOptimizationStrategy(OptimizePathsStrategy strategy) {
+        if (strategy != null) {
+            optimizeStrategy = strategy;
+        } else {
+            optimizeStrategy = new NullOptimizationStrategy();
+        }
     }
 
     /**
