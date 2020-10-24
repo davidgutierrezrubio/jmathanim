@@ -67,7 +67,7 @@ public class JMPathPoint extends MathObject implements Updateable, Stateable {
     public JMPathPoint(Point p, boolean isVisible, int type) {
         super();
         this.p = p;
-        this.p.visible = false;
+//        this.p.visible = false;
         cp1 = p.copy();
         cp2 = p.copy();
         isCurved = false;//By default, is not curved

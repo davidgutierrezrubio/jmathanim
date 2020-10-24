@@ -1,4 +1,5 @@
 <JMathAnimConfig>  
+    <styles>
 <style name="dotRedCircle">
     <drawColor>RED</drawColor>
     <fillColor>TRANSPARENT</fillColor>
@@ -17,4 +18,5 @@
     <thickness>.5</thickness>
     <dotStyle>plus</dotStyle>
 </style>
+    </styles>
 </JMathAnimConfig>

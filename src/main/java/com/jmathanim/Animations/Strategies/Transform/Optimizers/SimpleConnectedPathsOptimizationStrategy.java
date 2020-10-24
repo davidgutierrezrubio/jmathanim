@@ -44,9 +44,9 @@ public class SimpleConnectedPathsOptimizationStrategy implements OptimizePathsSt
         ArrayList<Double> dists = new ArrayList<>();
         for (int n = 1; n < pa1c.size(); n++) {
             pa1c.cyclePoints(1, direction);
-//            double d = SumDistancesBetweenPaths(pa1c, pa2);
+            double d = SumDistancesBetweenPaths(pa1c, pa2);
 //            double d = varAnglesBetweenPaths(pa1c, pa2);
-            double d = varAnglesBetweenPaths(pa1c, pa2)+varDistancesBetweenPaths(pa1c, pa2);
+//            double d = varAnglesBetweenPaths(pa1c, pa2)+varDistancesBetweenPaths(pa1c, pa2);
 //            double d = varDistancesBetweenPaths(pa1c, pa2);
             dists.add(d);
         }

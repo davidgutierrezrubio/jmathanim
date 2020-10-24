@@ -15,7 +15,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-
 package tests;
 
 import com.jmathanim.Animations.AffineJTransform;
@@ -49,24 +48,30 @@ public class TesterTransform extends Scene2DAwt {
     @Override
     public void runSketch() throws Exception {
         test1();//Circle and square, back and forth
-        test2(); //Arcs, open curves vs closed
-        test3(); //Circle to segment, back and forth
-        test4(); //Circle to line, back and forth
-        test5a();
-        test5();
-        test6();
-        test8();//Latex object
+//        test2(); //Arcs, open curves vs closed
+//        test3(); //Circle to segment, back and forth
+//        test4(); //Circle to line, back and forth
+//        test5a();
+//        test5();
+//        test6();
+//        test8();//Latex object
 
     }
 
     public void test1() {
-        Shape c = Shape.circle().drawColor("#de4463").thickness(2);
-        Shape sq = Shape.square().stackTo(Anchor.BY_CENTER).drawColor("#edc988").thickness(2);
+        Shape c = Shape.circle().drawColor("#de4463").thickness(.5).rotate(45*DEGREES);
+        Shape sq = Shape.square().stackTo(Anchor.BY_CENTER).scale(1.4142).drawColor("#edc988").thickness(.5);
         Shape c2 = c.copy();
+        add(Point.at(0,0).style("dotYellowPlus"));
         add(c, sq);
-        //The segment doesn't move on the second transform. Why?
-        //The second animation is not the reverse of the first one. Why?
-        add(Shape.segment(c.getPoint(0), sq.getPoint(0)).drawColor(JMColor.BLUE));
+         add(Shape.segment(c.getPoint(0), sq.getPoint(0)).drawColor(JMColor.BLUE));
+        for (int n = 0; n < c.jmpath.size(); n++) {
+            add(c.jmpath.getJMPoint(n).p.style("dotYellowPlus"));
+        }
+        for (int n = 0; n < sq.jmpath.size(); n++) {
+            add(sq.getPoint(n).copy().style("dotBlueCross"));
+        }
+       
         play.transform(5, c, sq);
         waitSeconds(1);
         play.transform(5, c, c2);
@@ -178,8 +183,8 @@ public class TesterTransform extends Scene2DAwt {
         Shape arc = Shape.arc(ang).rotate(Point.at(0, 0), -.5 * ang).thickness(3);
         Shape seg = Shape.segment(Point.at(1, -.5 * ang), Point.at(1, .5 * ang)).thickness(2);
 //        play.showCreation(arc, seg);
-        add(arc,seg);
-        play.adjustToObjects(10,arc, seg);
+        add(arc, seg);
+        play.adjustToObjects(10, arc, seg);
         play.cameraScale(10, 2);
         waitSeconds(1);
 //        play.transform(6, arc, arc2);
@@ -187,7 +192,6 @@ public class TesterTransform extends Scene2DAwt {
         play.transform(6, arc, seg);
         waitSeconds(3);
     }
-
 
     private void testArcContinous() {
         double ang = 360 * DEGREES;
