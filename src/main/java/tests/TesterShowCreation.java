@@ -38,20 +38,20 @@ public class TesterShowCreation extends Scene2D {
 
     @Override
     public void setupSketch() {
-//        ConfigLoader.parseFile("preview.xml");
-        ConfigLoader.parseFile("production.xml");
+        ConfigLoader.parseFile("preview.xml");
+//        ConfigLoader.parseFile("production.xml");
         ConfigLoader.parseFile("dark.xml");
     }
 
     @Override
     public void runSketch() throws Exception {
-//        test1();
-//        test2();
+        test1();
+        test2();
         test3();//Lines
-//        test4();//latex
-//        test5();//Polygons
-//        test6();//Arrows
-//        test7();//Circle
+        test4();//latex
+        test5();//Polygons
+        test6();//Arrows
+        test7();//Circle
 //Rect{xmin=-2.0, ymin=-1.125, xmax=2.0, ymax=1.125}
 //    Shape s=Shape.segment(Point.at(-1.87,1.125),Point.at(2,.83));
 //    play.showCreation(2,s);

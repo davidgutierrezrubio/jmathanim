@@ -25,11 +25,16 @@ import com.jmathanim.Utils.JMathAnimConfig;
 import com.jmathanim.Utils.MODrawProperties;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
+import com.jmathanim.mathobjects.JMImage;
 import com.jmathanim.mathobjects.JMPath;
+import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.Shape;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.FutureTask;
@@ -48,11 +53,6 @@ import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.image.WritableImage;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundImage;
-import javafx.scene.layout.BackgroundPosition;
-import javafx.scene.layout.BackgroundRepeat;
-import javafx.scene.layout.BackgroundSize;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.CubicCurveTo;
 import javafx.scene.shape.LineTo;
@@ -75,11 +75,13 @@ public class JavaFXRenderer extends Renderer {
     public CameraFX2D camera;
     public CameraFX2D fixedCamera;
 
+    final HashMap<String, Image> images;
+
     private PerspectiveCamera fxCamera;
-    public double FxCamerarotateX=0;
-    public double FxCamerarotateY=0;
-    public double FxCamerarotateZ=0;
-    
+    public double FxCamerarotateX = 0;
+    public double FxCamerarotateY = 0;
+    public double FxCamerarotateZ = 0;
+
     private Scene fxScene;
     private Group group;
     DropShadow dropShadow;
@@ -97,6 +99,7 @@ public class JavaFXRenderer extends Renderer {
         fixedCamera.setMathXY(XMIN_DEFAULT, XMAX_DEFAULT, 0);
 
         fxnodes = new ArrayList<>();
+        images = new HashMap<String, Image>();
 
         prepareEncoder();
     }
@@ -209,15 +212,13 @@ public class JavaFXRenderer extends Renderer {
             public WritableImage call() throws Exception {
                 group.getChildren().clear();
                 fxCamera.getTransforms().clear();
-                 fxCamera.getTransforms().addAll(
-                        new Translate(cnf.mediaW/2, cnf.mediaH/2, 0),
+                fxCamera.getTransforms().addAll(
+                        new Translate(cnf.mediaW / 2, cnf.mediaH / 2, 0),
                         new Rotate(FxCamerarotateX, Rotate.X_AXIS),
                         new Rotate(FxCamerarotateY, Rotate.Y_AXIS),
                         new Rotate(FxCamerarotateZ, Rotate.Z_AXIS),
-                        new Translate(-cnf.mediaW/2, -cnf.mediaH/2, 0));
-                
-                
-                
+                        new Translate(-cnf.mediaW / 2, -cnf.mediaH / 2, 0));
+
                 //Create background
                 if ((!"".equals(cnf.backGroundImage)) && (cnf.backGroundImage != null)) {
                     File file = new File(cnf.backGroundImage);
@@ -383,6 +384,26 @@ public class JavaFXRenderer extends Renderer {
         }
 
         return path;
+    }
+
+    @Override
+    public int createImage(String fileName) {
+        int imageId = -1;
+        try {
+            Image image = new Image(new FileInputStream(fileName));
+            images.put(fileName, image);
+            JMathAnimScene.logger.info("Loaded image " + fileName);
+        } catch (FileNotFoundException ex) {
+            JMathAnimScene.logger.warn("Could'nt load image " + fileName);
+
+        }
+        return imageId;
+    }
+    //Setting the image view     }
+
+    @Override
+    public void drawImage(JMImage obj) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
 }

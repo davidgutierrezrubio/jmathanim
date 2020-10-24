@@ -32,6 +32,7 @@ import com.jmathanim.mathobjects.Arrow2D;
 import com.jmathanim.mathobjects.Axes;
 import com.jmathanim.mathobjects.CanonicalJMPath;
 import com.jmathanim.mathobjects.FunctionGraph;
+import com.jmathanim.mathobjects.JMImage;
 import com.jmathanim.mathobjects.JMPath;
 import com.jmathanim.mathobjects.LaTeXMathObject;
 import com.jmathanim.mathobjects.Line;
@@ -71,6 +72,10 @@ public class myScene extends Scene2D {
 
     @Override
     public void runSketch() {
+        JMImage img=new JMImage("c:\\media\\math.png");
+    }
+
+    private void regularPolygons() {
         Shape reg1 = Shape.regularPolygon(6).scale(.7, -1).shift(-1, -1.1).rotate(6 * PI / 5);
         Shape reg2 = Shape.regularPolygon(5).scale(.4).shift(1, 0);
         add(reg2, reg1);

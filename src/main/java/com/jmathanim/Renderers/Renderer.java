@@ -22,6 +22,7 @@ import com.jmathanim.Cameras.Camera;
 import com.jmathanim.Utils.JMathAnimConfig;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
+import com.jmathanim.mathobjects.JMImage;
 import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.Point;
 import com.jmathanim.mathobjects.Shape;
@@ -84,5 +85,6 @@ public abstract class Renderer {
 
     abstract public void drawAbsoluteCopy(Shape sh, Vec anchor);
 
-
+ abstract public int createImage(String fileName);
+ abstract public void drawImage(JMImage obj);
 }
