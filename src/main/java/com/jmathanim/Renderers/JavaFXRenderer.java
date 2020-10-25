@@ -23,6 +23,7 @@ import com.jmathanim.Renderers.MovieEncoders.VideoEncoder;
 import com.jmathanim.Renderers.MovieEncoders.XugglerVideoEncoder;
 import com.jmathanim.Utils.JMathAnimConfig;
 import com.jmathanim.Utils.MODrawProperties;
+import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.JMImage;
@@ -387,23 +388,38 @@ public class JavaFXRenderer extends Renderer {
     }
 
     @Override
-    public int createImage(String fileName) {
-        int imageId = -1;
+    public Rect createImage(String fileName) {
+        Rect r = new Rect(0, 0, 0, 0);
         try {
             Image image = new Image(new FileInputStream(fileName));
             images.put(fileName, image);
             JMathAnimScene.logger.info("Loaded image " + fileName);
+            //UL corner of bounding box initially set to (0,0)
+            r.ymin = -camera.screenToMath(image.getHeight());
+            r.xmax = camera.screenToMath(image.getWidth());
         } catch (FileNotFoundException ex) {
             JMathAnimScene.logger.warn("Could'nt load image " + fileName);
 
         }
-        return imageId;
+        return r;
     }
     //Setting the image view     }
 
     @Override
     public void drawImage(JMImage obj) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        Image image = images.get(obj.filename);
+        ImageView imageView = new ImageView(image);
+        //setting the fit height and width of the image view
+        double[] xy = camera.mathToScreenFX(obj.bbox.getUL().v);
+
+        imageView.setX(xy[0]);
+        imageView.setY(xy[1]);
+        imageView.setFitHeight(camera.mathToScreenFX(obj.bbox.getHeight()));
+        imageView.setFitWidth(camera.mathToScreenFX(obj.bbox.getWidth()));
+        imageView.setPreserveRatio(true);
+        imageView.setSmooth(true);
+        imageView.setCache(true);
+        fxnodes.add(imageView);
     }
 
 }

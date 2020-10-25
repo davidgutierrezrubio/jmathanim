@@ -638,7 +638,7 @@ public class Java2DAwtRenderer extends Renderer {
     }
 
     @Override
-    public int createImage(String fileName) {
+    public Rect createImage(String fileName) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 

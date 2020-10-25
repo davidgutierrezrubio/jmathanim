@@ -73,6 +73,12 @@ public class myScene extends Scene2D {
     @Override
     public void runSketch() {
         JMImage img=new JMImage("c:\\media\\math.png");
+        add(Shape.segment(Point.at(0,0),Point.at(1,-1)).drawColor("GREEN"));
+        add(img,Point.at(1,-1));
+        
+        
+        img.bbox.xmax=1;
+        waitSeconds(3);
     }
 
     private void regularPolygons() {

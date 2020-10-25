@@ -29,10 +29,10 @@ import com.jmathanim.jmathanim.JMathAnimScene;
  */
 public class JMImage extends MathObject{
     public String filename;
-    public int imageId;
+    public Rect bbox;
     public JMImage(String filename) {
         this.filename=filename;
-        this.imageId=JMathAnimConfig.getConfig().getRenderer().createImage(filename);
+        this.bbox=JMathAnimConfig.getConfig().getRenderer().createImage(filename);
     }
 
     
@@ -68,22 +68,19 @@ public class JMImage extends MathObject{
 
     @Override
     public void registerChildrenToBeUpdated(JMathAnimScene scene) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
     public void unregisterChildrenToBeUpdated(JMathAnimScene scene) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
     public void draw(Renderer r) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        r.drawImage(this);
     }
 
     @Override
     public void update() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     
 }

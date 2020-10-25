@@ -95,6 +95,13 @@ public class CameraFX2D extends Camera {
         return (int) Math.round(mathScalar * screenWidth / (xmax - xmin));
     }
 
+    public double mathToScreenFX(double mathScalar) {
+        //xmin,ymin->(0,0)
+        //xmax, ymax->(screenWidth,screenHeight)
+//        resul = (int) ((mathScalar - xmin) + mathScalar * screenWidth / xmax);
+        return mathScalar * screenWidth / (xmax - xmin);
+    }
+
     public double[] mathToScreenFX(double mathX, double mathY) {
         //xmin,ymin->(0,0)
         //xmax, ymax->(screenWidth,screenHeight)
