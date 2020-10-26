@@ -53,8 +53,8 @@ public class myScene extends Scene2D {
     public void setupSketch() {
 //        conf.setResourcesDir(".");
 //        conf.setOutputDir("c:\\media");
-//        ConfigLoader.parseFile("production.xml");
-        ConfigLoader.parseFile("preview.xml");
+        ConfigLoader.parseFile("production.xml");
+//        ConfigLoader.parseFile("preview.xml");
         ConfigLoader.parseFile("dark.xml");
 //        ConfigLoader.parseFile("axes_and_functions_light.xml");
 
@@ -76,8 +76,9 @@ public class myScene extends Scene2D {
         Point p = Point.at(.3,.1);
         Shape c=Shape.arc(120*DEGREES).style("solidblue");
         play.fadeIn(img,c);
+        img.stackTo(c,Anchor.RIGHT);
         add(p.style("dotBlueCross"));
-        play.scale(5, p, .6, img);
+        play.scale(5, .3, img,c);
         img.rotate(15*DEGREES);
         waitSeconds(.5);
         img.rotate(30*DEGREES);

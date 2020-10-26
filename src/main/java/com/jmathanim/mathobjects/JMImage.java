@@ -109,10 +109,10 @@ public class JMImage extends MathObject {
 
     @Override
     public <T extends MathObject> T scale(Point scaleCenter, double sx, double sy, double sz) {
-        super.scale(scaleCenter, sx, sy, sz);
         bbox.copyFrom(Rect.make(bbox.getUL().scale(scaleCenter, sx, sy, sz), bbox.getDR().scale(scaleCenter, sx, sy, sz)));
         return (T) this;
     }
+
 
     @Override
     public <T extends MathObject> T rotate(Point center, double angle) {

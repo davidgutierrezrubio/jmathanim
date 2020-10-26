@@ -15,7 +15,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-
 package com.jmathanim.Animations;
 
 import com.jmathanim.Animations.commands.Commands;
@@ -89,6 +88,14 @@ public class PlayAnim {
         scale(runTime, center, sc, sc, sc, objs);
     }
 
+    public void scale(double runTime, double scale, MathObject... objs) {
+        Rect r=objs[0].getBoundingBox();
+        for (MathObject obj:objs){
+            r=r.union(obj.getBoundingBox());
+        }
+        scene.playAnimation(Commands.scale(runTime, r.getCenter(), scale, scale, scale, objs));
+    }
+
     public void scale(double runTime, Point center, double scx, double scy, double scz, MathObject... objs) {
         scene.playAnimation(Commands.scale(runTime, center, scx, scy, scz, objs));
     }
@@ -160,7 +167,7 @@ public class PlayAnim {
      * @param v Shift vector
      * @param runTime Duration in seconds
      */
-    public void cameraShift(double runTime,Vec v) {
+    public void cameraShift(double runTime, Vec v) {
         scene.playAnimation(Commands.cameraShift(runTime, scene.getCamera(), v));
     }
 
@@ -172,7 +179,7 @@ public class PlayAnim {
      * @param y y coordinate of shift vector
      * @param runTime Duration in seconds
      */
-    public void cameraShift(double runTime,double x, double y) {
+    public void cameraShift(double runTime, double x, double y) {
         scene.playAnimation(Commands.cameraShift(runTime, scene.getCamera(), new Vec(x, y)));
     }
 
