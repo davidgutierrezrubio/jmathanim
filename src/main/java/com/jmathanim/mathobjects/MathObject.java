@@ -53,7 +53,6 @@ public abstract class MathObject implements Drawable, Updateable, Stateable {
     public static final int FUNCTION_GRAPH = 14;
 
     public MODrawProperties mp;
-    protected MODrawProperties mpBackup;
     public String label = "";
 
     public MathObjectAttributes attrs;
@@ -301,7 +300,7 @@ public abstract class MathObject implements Drawable, Updateable, Stateable {
 
     @Override
     public void saveState() {
-        this.mpBackup = this.mp.copy();
+        mp.saveState();
         if (this.attrs != null) {
             this.attrs.saveState();
         }
@@ -309,7 +308,7 @@ public abstract class MathObject implements Drawable, Updateable, Stateable {
 
     @Override
     public void restoreState() {
-        mp.copyFrom(mpBackup);
+        mp.restoreState();
         if (this.attrs != null) {
             this.attrs.restoreState();
         }
@@ -335,17 +334,17 @@ public abstract class MathObject implements Drawable, Updateable, Stateable {
 
     //Convenience methods to set drawing parameters
     public <T extends MathObject> T drawColor(JMColor dc) {
-        mp.drawColor.set(dc);
+        mp.drawColor.copyFrom(dc);
         return (T) this;
     }
 
     public <T extends MathObject> T drawColor(String str) {
-        mp.drawColor.set(JMColor.parseColorID(str));
+        mp.drawColor.copyFrom(JMColor.parseColorID(str));
         return (T) this;
     }
 
     public <T extends MathObject> T fillColor(JMColor fc) {
-        mp.fillColor.set(fc);
+        mp.fillColor.copyFrom(fc);
         return (T) this;
     }
 

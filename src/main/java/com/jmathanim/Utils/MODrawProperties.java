@@ -20,6 +20,7 @@ package com.jmathanim.Utils;
 
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.Point;
+import com.jmathanim.mathobjects.Stateable;
 import java.awt.Color;
 import java.lang.reflect.Field;
 import java.util.HashMap;
@@ -31,7 +32,7 @@ import java.util.concurrent.ThreadLocalRandom;
  *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
-public class MODrawProperties {
+public class MODrawProperties implements Stateable{
 
     public static final int SOLID = 1;
     public static final int DASHED = 2;
@@ -43,7 +44,7 @@ public class MODrawProperties {
     public Double thickness = 1d;
     //If false, thickness is computed to be a percentage of the width
     //to ensure zoom or resolution doesn't affect the result
-    public Boolean absoluteThickness = false;
+    public Boolean absoluteThickness = true;
     public Integer dashStyle = 1;
     private int layer = 0;
     public boolean castShadows=true;//If shadows, this object should cast them
@@ -51,6 +52,7 @@ public class MODrawProperties {
     //Styles used for specified objects
     //Point
     public Integer dotStyle = Point.DOT_STYLE_CIRCLE;
+    private MODrawProperties mpBackup;
 
     public MODrawProperties() {
         drawColor = new JMColor(1, 1, 1, 1);
@@ -66,8 +68,8 @@ public class MODrawProperties {
         if (prop == null) {//Nothing to do here!
             return;
         }
-        drawColor.set(prop.drawColor);
-        fillColor.set(prop.fillColor);
+        drawColor.copyFrom(prop.drawColor);
+        fillColor.copyFrom(prop.fillColor);
         thickness = (prop.thickness == null ? thickness : prop.thickness);
         dashStyle = (prop.dashStyle == null ? dashStyle : prop.dashStyle);
         absoluteThickness = (prop.absoluteThickness == null ? absoluteThickness : prop.absoluteThickness);
@@ -84,8 +86,8 @@ public class MODrawProperties {
      */
     public void interpolateFrom(MODrawProperties a, MODrawProperties b, double t) {
         //Interpolate colors
-        drawColor.set(a.drawColor.interpolate(b.drawColor, t));
-        fillColor.set(a.fillColor.interpolate(b.fillColor, t));
+        drawColor.copyFrom(a.drawColor.interpolate(b.drawColor, t));
+        fillColor.copyFrom(a.fillColor.interpolate(b.fillColor, t));
 
 //        interpolateColor(a.fillColor, b.fillColor, t);
         this.thickness = (1 - t) * a.thickness + t * b.thickness;
@@ -93,7 +95,7 @@ public class MODrawProperties {
     }
 
     public void setRandomDrawColor() {
-        drawColor.set(JMColor.random());
+        drawColor.copyFrom(JMColor.random());
     }
 
     public static Color randomColor() {
@@ -142,8 +144,8 @@ public class MODrawProperties {
      * @param mp The object to copy attributes from.
      */
     public void copyFrom(MODrawProperties mp) {
-        drawColor.set(mp.drawColor);
-        fillColor.set(mp.fillColor);
+        drawColor.copyFrom(mp.drawColor);
+        fillColor.copyFrom(mp.fillColor);
         thickness = mp.thickness;
         dashStyle = mp.dashStyle;
         absoluteThickness = mp.absoluteThickness;
@@ -225,6 +227,16 @@ public class MODrawProperties {
 
     public void setLayer(int layer) {
         this.layer = layer;
+    }
+
+    @Override
+    public void saveState() {
+         this.mpBackup = this.copy();
+    }
+
+    @Override
+    public void restoreState() {
+        this.copyFrom(this.mpBackup);
     }
 
 }

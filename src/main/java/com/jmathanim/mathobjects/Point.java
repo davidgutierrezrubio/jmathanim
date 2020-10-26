@@ -94,7 +94,7 @@ public class Point extends MathObject {
         super(mp);
         this.v = new Vec(x, y, z);
         this.vBackup = new Vec(x, y, z);
-        this.mp.absoluteThickness = false;
+        this.mp.absoluteThickness = true;
 //        this.mp.thickness = 8d;//default value
     }
 

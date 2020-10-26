@@ -26,6 +26,7 @@ import com.jmathanim.Utils.ConfigLoader;
 import com.jmathanim.Utils.JMColor;
 import com.jmathanim.Utils.JMathAnimConfig;
 import com.jmathanim.Utils.MODrawProperties;
+import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.Scene2D;
 import com.jmathanim.mathobjects.Arrow2D;
@@ -39,6 +40,7 @@ import com.jmathanim.mathobjects.Line;
 import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.MultiShapeObject;
 import com.jmathanim.mathobjects.Point;
+import com.jmathanim.mathobjects.SVGMathObject;
 import com.jmathanim.mathobjects.Shape;
 import com.jmathanim.mathobjects.updateableObjects.PointOnFunctionGraph;
 import java.util.ArrayList;
@@ -53,8 +55,8 @@ public class myScene extends Scene2D {
     public void setupSketch() {
 //        conf.setResourcesDir(".");
 //        conf.setOutputDir("c:\\media");
-        ConfigLoader.parseFile("production.xml");
-//        ConfigLoader.parseFile("preview.xml");
+//        ConfigLoader.parseFile("production.xml");
+        ConfigLoader.parseFile("preview.xml");
         ConfigLoader.parseFile("dark.xml");
 //        ConfigLoader.parseFile("axes_and_functions_light.xml");
 
@@ -72,21 +74,59 @@ public class myScene extends Scene2D {
 
     @Override
     public void runSketch() {
-        JMImage img=new JMImage("c:\\media\\math.png");
-        Point p = Point.at(.3,.1);
-        Shape c=Shape.arc(120*DEGREES).style("solidblue");
-        play.fadeIn(img,c);
-        img.stackTo(c,Anchor.RIGHT);
-        add(p.style("dotBlueCross"));
-        play.scale(5, .3, img,c);
-        img.rotate(15*DEGREES);
-        waitSeconds(.5);
-        img.rotate(30*DEGREES);
-        waitSeconds(.5);
-        img.rotate(45*DEGREES);
-        waitSeconds(.5);
+        pruebaSVGImport();
+    }
+
+    public void pruebaAbsoluteThickness() {
+        Shape c = Shape.circle().style("solidblue").shift(-1, 0);
+        Shape c2 = Shape.circle().style("solidblue").shift(1, 0);
+        c2.mp.absoluteThickness = false;
+//        c2.scale(.5);
+        play.scale(5, .5, c, c2);
+//        System.out.println(c.mp.thickness + ",  " + c2.mp.thickness);
+        play.showCreation(c, c2);
+
+        waitSeconds(3);
+    }
+
+    public void pruebaSVGImport() {
+        camera.scale(2);
+        SVGMathObject finger = new SVGMathObject("C:\\media\\Balanza2.svg");
+         finger.scale(3d/finger.getBoundingBox().getHeight());
+        Shape balanza=finger.get(0);
+        balanza.drawColor(JMColor.WHITE);
+        balanza.fillColor(JMColor.WHITE);
+//        balanza.mp.absoluteThickness=true;
+        balanza.thickness(1);
+       
+        balanza.stackTo(Anchor.BY_CENTER);
+
+        SVGMathObject candy = new SVGMathObject("C:\\media\\candy.svg");
+        candy.scale(.01);
+        candy.stackTo(Anchor.RIGHT);
         
-        play.rotate(5, img.getCenter(),45*DEGREES, img,c);
+        play.showCreation(candy,finger);
+        play.scale(5, .5, candy,finger);
+        
+        waitSeconds(3);
+    }
+
+    public void JMImage() {
+        JMImage img = new JMImage("c:\\media\\math.png");
+        Point p = Point.at(.3, .1);
+        Shape c = Shape.arc(120 * DEGREES).style("solidblue");
+        play.fadeIn(img, c);
+        img.stackTo(c, Anchor.RIGHT);
+        add(p.style("dotBlueCross"));
+        play.scale(5, .3, img, c);
+        img.rotate(15 * DEGREES);
+        waitSeconds(.5);
+        img.rotate(30 * DEGREES);
+        waitSeconds(.5);
+        img.rotate(45 * DEGREES);
+        waitSeconds(.5);
+
+        play.rotate(5, img.getCenter(), 45 * DEGREES, img, c);
         play.fadeOutAll();
         waitSeconds(3);
     }
@@ -360,4 +400,3 @@ public class myScene extends Scene2D {
     }
 
 }
-

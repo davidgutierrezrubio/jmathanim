@@ -134,7 +134,7 @@ public class JMColor {
      *
      * @param jmcolor The JMColor to copy values from
      */
-    public final void set(JMColor jmcolor) {
+    public final void copyFrom(JMColor jmcolor) {
         if (jmcolor != null) {
             r = jmcolor.r;
             g = jmcolor.g;
@@ -179,8 +179,11 @@ public class JMColor {
      * @return A new JMColor with given parameters.
      */
     public static JMColor parseColorID(String str) {
-        javafx.scene.paint.Color col=javafx.scene.paint.Color.WHITE;//Default color
-        str = str.toUpperCase();
+        javafx.scene.paint.Color col = javafx.scene.paint.Color.WHITE;//Default color
+        str = str.toUpperCase().trim();
+        if ("NONE".equals(str)) {
+            return new JMColor(0, 0, 0, 0);
+        }
         if (str.startsWith("#"))//Hex
         {
             col = javafx.scene.paint.Color.valueOf(str);

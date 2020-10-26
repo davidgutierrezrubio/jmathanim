@@ -15,7 +15,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-
 package com.jmathanim.Animations;
 
 import com.jmathanim.Utils.Vec;
@@ -44,8 +43,8 @@ import org.apache.commons.math3.linear.RealMatrix;
  */
 public class AffineJTransform {
 
-    public boolean preserveDistances=true;
-    
+    public boolean preserveDistances = true;
+
     /**
      * Matrix that stores the transform, with the following form: {{1, x, y, z},
      * {0, vx, vy, vz},{0, wx, wy, wz},{0 tx ty tz}} Where x,y,z is the image of
@@ -262,6 +261,7 @@ public class AffineJTransform {
             applyTransform(mobj.getP1());
             applyTransform(mobj.getP2());
             applyTransformToAttributes(mObject);
+            applyTransformsToDrawingProperties(mObject);
             return;
         }
         if (mObject instanceof Shape) {
@@ -271,12 +271,14 @@ public class AffineJTransform {
                 applyTransform(mobj.getJMPoint(n));
             }
             applyTransformToAttributes(mObject);
+            applyTransformsToDrawingProperties(mObject);
             return;
         }
 
         if (mObject instanceof Arrow2D) {
             applyTransform(((Arrow2D) mObject).getBody());
             applyTransformToAttributes(mObject);
+            applyTransformsToDrawingProperties(mObject);
             return;
         }
 
@@ -292,6 +294,7 @@ public class AffineJTransform {
             jmPDst.cp2.v.copyFrom(cp2Dst.v);
 
             applyTransformToAttributes(mObject);
+            applyTransformsToDrawingProperties(mObject);
             return;
         }
 
@@ -304,18 +307,29 @@ public class AffineJTransform {
             p.v.y = pNew.getEntry(0, 2);
             p.v.z = pNew.getEntry(0, 3);
             applyTransformToAttributes(mObject);
+            applyTransformsToDrawingProperties(mObject);
             return;
         }
         JMathAnimScene.logger.warn("Don't know how to perform an Affine Transform on object " + mObject.getClass().getName());
     }
 
-    private void applyTransformToAttributes(MathObject mob){
-        MathObjectAttributes mo=mob.attrs;
-        if (mo!=null)
-        {
+    private void applyTransformToAttributes(MathObject mob) {
+        MathObjectAttributes mo = mob.attrs;
+        if (mo != null) {
             mo.applyTransform(this);
         }
     }
+
+    private void applyTransformsToDrawingProperties(MathObject mObject) {
+        //Determinant of the A_xy=2D-submatrix, to compute change in thickness
+        //As Area changes in det(A_xy), we change thickness in the root square of det(A_xy)
+        double det=matrix.getEntry(1, 1)*matrix.getEntry(2, 2)-matrix.getEntry(2, 1)*matrix.getEntry(1, 2);
+        if (!mObject.mp.absoluteThickness) {
+            mObject.mp.thickness *= Math.sqrt(det);
+        }
+
+    }
+
     /**
      * Returns a copy of the transformed object. Original object is not
      * modified.
@@ -593,4 +607,5 @@ public class AffineJTransform {
         return id.interpolate(tr, lambda);
 
     }
+
 }

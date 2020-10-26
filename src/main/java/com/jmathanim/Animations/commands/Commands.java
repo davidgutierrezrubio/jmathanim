@@ -87,6 +87,7 @@ public class Commands {
             public void execute(double t) {
                 for (MathObject obj : mathObjects) {
                     obj.restoreState();
+//                    double before=obj.mp.thickness;
                     double scax = 1 - t + scalex * t;
                     double scay = 1 - t + scaley * t;
                     double scaz = 1 - t + scalez * t;
@@ -95,6 +96,7 @@ public class Commands {
                     } else {
                         obj.scale(obj.getCenter(), scax, scay, scaz);
                     }
+//                    System.out.println(before+"-->"+obj.mp.thickness+"   scale: "+scax);
                 }
             }
 

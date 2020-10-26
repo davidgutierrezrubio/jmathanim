@@ -15,11 +15,12 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-
 package com.jmathanim.mathobjects;
 
+import com.jmathanim.Cameras.CameraFX2D;
 import com.jmathanim.Utils.Anchor;
 import com.jmathanim.Utils.JMColor;
+import com.jmathanim.Utils.JMathAnimConfig;
 import com.jmathanim.Utils.MODrawProperties;
 import java.io.File;
 import java.io.FileWriter;
@@ -30,6 +31,7 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.smartcardio.ATR;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import org.w3c.dom.Element;
@@ -56,6 +58,8 @@ public class SVGMathObject extends MultiShapeObject {
 
     JMPath importJMPathTemp;//Path to temporary import SVG Path commmands
     private JMColor currentFillColor;
+    private JMColor currentDrawColor;
+    private double currentStrokeSize = .5d;
 
     public SVGMathObject() {
     }
@@ -69,7 +73,8 @@ public class SVGMathObject extends MultiShapeObject {
         } catch (Exception ex) {
             Logger.getLogger(SVGMathObject.class.getName()).log(Level.SEVERE, null, ex);
         }
-
+        currentFillColor = mp.fillColor.copy();
+        currentDrawColor = mp.drawColor.copy();
     }
 
     protected final void importSVG(File file) throws Exception {
@@ -82,12 +87,8 @@ public class SVGMathObject extends MultiShapeObject {
         for (int n = 0; n < listGroups.getLength(); n++) {
 
             Element gNode = (Element) listGroups.item(n);
-            String fillColor = gNode.getAttribute("fill");
-            if (!"".equals(fillColor)) {
-                currentFillColor = JMColor.hex(fillColor);
-            } else {
-                currentFillColor = mp.fillColor.copy();
-            }
+            processAttributeCommands(gNode, mp);
+            mp.thickness = .1;
             //Look for svg elements inside this group
             processChildNodes(gNode);
         }
@@ -96,48 +97,52 @@ public class SVGMathObject extends MultiShapeObject {
 
     private void processChildNodes(Element gNode) throws NumberFormatException {
         NodeList nList = gNode.getChildNodes();
-        
+
         for (int nchild = 0; nchild < nList.getLength(); nchild++) {
             Node node = nList.item(nchild);
             if (node.getNodeType() == Node.ELEMENT_NODE) {
                 Element el = (Element) node;
-                Shape sh;
                 MODrawProperties ShMp = this.mp.copy();
+                ShMp.absoluteThickness = false;
 //                    ShMp.fillColor.set(JMColor.random());
-switch (el.getTagName()) {
-    case "path":
-        //Needs to parse style options too
-        JMPath path = processPathCommands(el.getAttribute("d"));
-        if (path.jmPathPoints.size() > 0) {
-            path.pathType = JMPath.SVG_PATH; //Mark this as a SVG path
-//                        ShMp.fillColor.set(currentFillColor);//This makes possible latex color fonts but not usual svg
-//                        ShMp.drawColor.set(currentFillColor);
-addJMPathObject(path, ShMp); //Add this path to the array of JMPathObjects
-//By default scale sizes so that SVG points matches Screen points
-        }
-        break;
-    case "rect":
-        double x = Double.parseDouble(el.getAttribute("x"));
-        double y = -Double.parseDouble(el.getAttribute("y"));
-        double w = Double.parseDouble(el.getAttribute("width"));
-        double h = -Double.parseDouble(el.getAttribute("height"));
-        shapes.add(Shape.rectangle(new Point(x, y), new Point(x + w, y + h)).setMp(ShMp));
-        break;
-    case "circle":
-        double cx = Double.parseDouble(el.getAttribute("cx"));
-        double cy = -Double.parseDouble(el.getAttribute("cy"));
-        double radius = Double.parseDouble(el.getAttribute("r"));
-        shapes.add(Shape.circle().scale(radius).shift(cx, cy).setMp(ShMp));
-        break;
-    case "ellipse":
-        double cxe = Double.parseDouble(el.getAttribute("cx"));
-        double cye = -Double.parseDouble(el.getAttribute("cy"));
-        double rxe = Double.parseDouble(el.getAttribute("rx"));
-        double rye = -Double.parseDouble(el.getAttribute("ry"));
-        shapes.add(Shape.circle().scale(rxe, rye).shift(cxe, cye).setMp(ShMp));
-        break;
-        
-}
+                switch (el.getTagName()) {
+                    case "path":
+                        //Needs to parse style options too
+                        
+                    try {
+                        JMPath path = processPathCommands(el.getAttribute("d"));
+                        processAttributeCommands(el, ShMp);
+                        if (path.jmPathPoints.size() > 0) {
+                            path.pathType = JMPath.SVG_PATH; //Mark this as a SVG path
+                            addJMPathObject(path, ShMp); //Add this path to the array of JMPathObjects
+                        }
+                    } catch (Exception ex) {
+                        Logger.getLogger(SVGMathObject.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                        
+                        break;
+                    case "rect":
+                        double x = Double.parseDouble(el.getAttribute("x"));
+                        double y = -Double.parseDouble(el.getAttribute("y"));
+                        double w = Double.parseDouble(el.getAttribute("width"));
+                        double h = -Double.parseDouble(el.getAttribute("height"));
+                        shapes.add(Shape.rectangle(new Point(x, y), new Point(x + w, y + h)).setMp(ShMp));
+                        break;
+                    case "circle":
+                        double cx = Double.parseDouble(el.getAttribute("cx"));
+                        double cy = -Double.parseDouble(el.getAttribute("cy"));
+                        double radius = Double.parseDouble(el.getAttribute("r"));
+                        shapes.add(Shape.circle().scale(radius).shift(cx, cy).setMp(ShMp));
+                        break;
+                    case "ellipse":
+                        double cxe = Double.parseDouble(el.getAttribute("cx"));
+                        double cye = -Double.parseDouble(el.getAttribute("cy"));
+                        double rxe = Double.parseDouble(el.getAttribute("rx"));
+                        double rye = -Double.parseDouble(el.getAttribute("ry"));
+                        shapes.add(Shape.circle().scale(rxe, rye).shift(cxe, cye).setMp(ShMp));
+                        break;
+
+                }
 
             }
         }
@@ -150,12 +155,13 @@ addJMPathObject(path, ShMp); //Add this path to the array of JMPathObjects
      * @param s The string of commands
      * @return The JMPathObject
      */
-    public JMPath processPathCommands(String s) {
+    public JMPath processPathCommands(String s) throws Exception {
         JMPath resul = new JMPath();
         JMPathPoint previousPoint = new JMPathPoint(new Point(0, 0), true, 0);
         String t = s.replace("M", " M ");
         t = t.replace("m", " m ");
         t = t.replace("-", " -");//Avoid errors with strings like "142.11998-.948884"
+        t = t.replace("e -", "e-");//Avoid errors with numbers in scientific format
         t = t.replace("H", " H ");//Adding "" to all commmands helps me to differentiate easily from coordinates
         t = t.replace("h", " h ");
         t = t.replace("V", " V ");
@@ -213,6 +219,10 @@ addJMPathObject(path, ShMp); //Add this path to the array of JMPathObjects
             switch (token) {
                 case "":
                     break;
+                case "A":
+                    throw new Exception("Arc command A still not implemented. Sorry.");
+                case "a":
+                    throw new Exception("Arc command a still not implemented. Sorry.");
                 case "M":
                     previousCommand = token;
                     getPoint(it.next(), it.next());
@@ -494,5 +504,39 @@ addJMPathObject(path, ShMp); //Add this path to the array of JMPathObjects
             Logger.getLogger(LaTeXMathObject.class
                     .getName()).log(Level.SEVERE, null, ex);
         }
+    }
+
+    private void processAttributeCommands(Element el, MODrawProperties ShMp) {
+        if (!"".equals(el.getAttribute("style"))) {
+            parseStyleAttribute(el.getAttribute("style"), ShMp);
+        }
+        if (!"".equals(el.getAttribute("stroke"))) {
+            ShMp.drawColor.copyFrom(JMColor.parseColorID(el.getAttribute("stroke")));
+        }
+
+        if (!"".equals(el.getAttribute("stroke-width"))) {
+            double th = Double.parseDouble(el.getAttribute("stroke-width"));
+            CameraFX2D cam = (CameraFX2D) JMathAnimConfig.getConfig().getCamera();
+//              ShMp.thickness=cam.mathToScreenFX(th)/cam.getMathView().getWidth();
+            ShMp.thickness = cam.mathToScreenFX(th) / 4;
+        }
+
+        if (!"".equals(el.getAttribute("fill"))) {
+            ShMp.fillColor.copyFrom(JMColor.parseColorID(el.getAttribute("fill")));
+        }
+
+    }
+
+    private void parseStyleAttribute(String str, MODrawProperties ShMp) {
+        String[] decls = str.split(";");
+        for (String pairs : decls) {
+            String[] decl = pairs.split(":");
+            switch (decl[0]) {
+                case "fill":
+                    ShMp.fillColor.copyFrom(JMColor.parseColorID(decl[1]));
+            }
+
+        }
+
     }
 }
