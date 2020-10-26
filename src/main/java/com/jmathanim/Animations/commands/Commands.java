@@ -115,7 +115,6 @@ public class Commands {
             double angle = ang;
             double tPrevious;
             Point rotationCenter = c;
-            AffineJTransform tr;
 
             @Override
             public void initialize() {
@@ -129,11 +128,10 @@ public class Commands {
                 for (MathObject obj : mathObjects) {
                     obj.restoreState();
                     if (rotationCenter == null) {
-                        tr = AffineJTransform.create2DRotationTransform(obj.getCenter(), angle * t);
+                        obj.rotate(obj.getCenter(), angle * t);
                     } else {
-                        tr = AffineJTransform.create2DRotationTransform(rotationCenter, angle * t);
+                        obj.rotate(rotationCenter, angle * t);
                     }
-                    tr.applyTransform(obj);
                 }
             }
 

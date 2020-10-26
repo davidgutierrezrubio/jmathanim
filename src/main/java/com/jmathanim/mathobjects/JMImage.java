@@ -27,18 +27,28 @@ import com.jmathanim.jmathanim.JMathAnimScene;
  *
  * @author David Gutiérrez Rubio <davidgutierrezrubio@gmail.com>
  */
-public class JMImage extends MathObject{
+public class JMImage extends MathObject {
+
     public String filename;
-    public Rect bbox;
+    public final Rect bbox;
+    public boolean preserveRatio = false;
+    public double rotateAngle = 0;
+    public double rotateAngleBackup = 0;
+
     public JMImage(String filename) {
-        this.filename=filename;
-        this.bbox=JMathAnimConfig.getConfig().getRenderer().createImage(filename);
+        this.filename = filename;
+        this.bbox = JMathAnimConfig.getConfig().getRenderer().createImage(filename);
     }
 
-    
     @Override
     public Point getCenter() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return bbox.getCenter();
+    }
+
+    @Override
+    public <T extends MathObject> T shift(Vec shiftVector) {
+        bbox.copyFrom(bbox.shifted(shiftVector));
+        return (T) this;
     }
 
     @Override
@@ -58,12 +68,11 @@ public class JMImage extends MathObject{
 
     @Override
     public void processAfterNonLinearAnimation() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
     public Rect getBoundingBox() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return bbox;
     }
 
     @Override
@@ -76,11 +85,40 @@ public class JMImage extends MathObject{
 
     @Override
     public void draw(Renderer r) {
+//        System.out.println(bbox);
         r.drawImage(this);
     }
 
     @Override
     public void update() {
     }
-    
+
+    @Override
+    public void restoreState() {
+        super.restoreState();
+        bbox.restoreState();
+        this.rotateAngle = this.rotateAngleBackup;
+    }
+
+    @Override
+    public void saveState() {
+        super.saveState();
+        bbox.saveState();
+        this.rotateAngleBackup = this.rotateAngle;
+    }
+
+    @Override
+    public <T extends MathObject> T scale(Point scaleCenter, double sx, double sy, double sz) {
+        super.scale(scaleCenter, sx, sy, sz);
+        bbox.copyFrom(Rect.make(bbox.getUL().scale(scaleCenter, sx, sy, sz), bbox.getDR().scale(scaleCenter, sx, sy, sz)));
+        return (T) this;
+    }
+
+    @Override
+    public <T extends MathObject> T rotate(Point center, double angle) {
+        //For now, ignore rotate center
+        rotateAngle+=angle;
+        return (T) this;
+    }
+
 }

@@ -26,6 +26,7 @@ import com.jmathanim.Utils.MODrawProperties;
 import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
+import static com.jmathanim.jmathanim.JMathAnimScene.DEGREES;
 import com.jmathanim.mathobjects.JMImage;
 import com.jmathanim.mathobjects.JMPath;
 import com.jmathanim.mathobjects.MathObject;
@@ -411,14 +412,18 @@ public class JavaFXRenderer extends Renderer {
         ImageView imageView = new ImageView(image);
         //setting the fit height and width of the image view
         double[] xy = camera.mathToScreenFX(obj.bbox.getUL().v);
-
+//        System.out.println(xy[0]+", "+xy[1]);
         imageView.setX(xy[0]);
         imageView.setY(xy[1]);
         imageView.setFitHeight(camera.mathToScreenFX(obj.bbox.getHeight()));
         imageView.setFitWidth(camera.mathToScreenFX(obj.bbox.getWidth()));
-        imageView.setPreserveRatio(true);
+        imageView.setPreserveRatio(obj.preserveRatio);
         imageView.setSmooth(true);
         imageView.setCache(true);
+        imageView.setOpacity(obj.mp.drawColor.alpha);
+        
+        imageView.setRotate(-obj.rotateAngle/DEGREES);
+//        imageView.setRotate(-45);
         fxnodes.add(imageView);
     }
 

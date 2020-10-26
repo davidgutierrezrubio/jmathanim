@@ -73,11 +73,20 @@ public class myScene extends Scene2D {
     @Override
     public void runSketch() {
         JMImage img=new JMImage("c:\\media\\math.png");
-        add(Shape.segment(Point.at(0,0),Point.at(1,-1)).drawColor("GREEN"));
-        add(img,Point.at(1,-1));
+        Point p = Point.at(.3,.1);
+        Shape c=Shape.arc(120*DEGREES).style("solidblue");
+        play.fadeIn(img,c);
+        add(p.style("dotBlueCross"));
+        play.scale(5, p, .6, img);
+        img.rotate(15*DEGREES);
+        waitSeconds(.5);
+        img.rotate(30*DEGREES);
+        waitSeconds(.5);
+        img.rotate(45*DEGREES);
+        waitSeconds(.5);
         
-        
-        img.bbox.xmax=1;
+        play.rotate(5, img.getCenter(),45*DEGREES, img,c);
+        play.fadeOutAll();
         waitSeconds(3);
     }
 
@@ -350,3 +359,4 @@ public class myScene extends Scene2D {
     }
 
 }
+
