@@ -234,6 +234,7 @@ public class JavaFXRenderer extends Renderer {
                     ImageView background = new ImageView(new Image(file.toURI().toString()));
                     Rectangle2D viewport = new Rectangle2D(0, 0, cnf.mediaW, cnf.mediaW);
                     background.setViewport(viewport);
+                    groupBackground.getChildren().clear();
                     groupBackground.getChildren().add(background);
                 }
                 //Add all elements
