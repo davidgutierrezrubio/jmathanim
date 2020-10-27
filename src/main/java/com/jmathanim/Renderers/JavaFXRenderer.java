@@ -86,6 +86,8 @@ public class JavaFXRenderer extends Renderer {
 
     private Scene fxScene;
     private Group group;
+    private Group groupRoot;
+    private Group groupBackground;
     DropShadow dropShadow;
 
     private final ArrayList<Node> fxnodes;
@@ -142,7 +144,11 @@ public class JavaFXRenderer extends Renderer {
             @Override
             public Integer call() throws Exception {
                 group = new Group();
-                fxScene = new Scene(group, cnf.mediaW, cnf.mediaW);
+                groupRoot = new Group();
+                groupBackground = new Group();
+                groupRoot.getChildren().add(groupBackground);
+                groupRoot.getChildren().add(group);
+                fxScene = new Scene(groupRoot, cnf.mediaW, cnf.mediaW);
                 fxScene.setFill(JMathAnimConfig.getConfig().getBackgroundColor().getFXColor());
                 StandaloneSnapshot.FXStarter.stage.setScene(fxScene);
                 //Proof with perspective camera
@@ -213,6 +219,7 @@ public class JavaFXRenderer extends Renderer {
             @Override
             public WritableImage call() throws Exception {
                 group.getChildren().clear();
+
                 fxCamera.getTransforms().clear();
                 fxCamera.getTransforms().addAll(
                         new Translate(cnf.mediaW / 2, cnf.mediaH / 2, 0),
@@ -227,11 +234,13 @@ public class JavaFXRenderer extends Renderer {
                     ImageView background = new ImageView(new Image(file.toURI().toString()));
                     Rectangle2D viewport = new Rectangle2D(0, 0, cnf.mediaW, cnf.mediaW);
                     background.setViewport(viewport);
-                    group.getChildren().add(background);
+                    groupBackground.getChildren().add(background);
                 }
                 //Add all elements
                 group.getChildren().addAll(fxnodes);
-
+                if (cnf.drawShadow) {
+                    group.setEffect(dropShadow);
+                }
                 //Snapshot parameters
                 final SnapshotParameters params = new SnapshotParameters();
                 params.setFill(JMathAnimConfig.getConfig().getBackgroundColor().getFXColor());
@@ -300,9 +309,9 @@ public class JavaFXRenderer extends Renderer {
 
             applyDrawingStyles(path, mobj);
 
-            if (cnf.drawShadow & mobj.mp.castShadows) {
-                path.setEffect(dropShadow);
-            }
+//            if (cnf.drawShadow & mobj.mp.castShadows) {
+//                path.setEffect(dropShadow);
+//            }
             fxnodes.add(path);
         }
     }
@@ -421,8 +430,8 @@ public class JavaFXRenderer extends Renderer {
         imageView.setSmooth(true);
         imageView.setCache(true);
         imageView.setOpacity(obj.mp.drawColor.alpha);
-        
-        imageView.setRotate(-obj.rotateAngle/DEGREES);
+
+        imageView.setRotate(-obj.rotateAngle / DEGREES);
 //        imageView.setRotate(-45);
         fxnodes.add(imageView);
     }

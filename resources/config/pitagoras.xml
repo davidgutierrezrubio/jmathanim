@@ -6,17 +6,17 @@
     </background>
     <styles>
         <style name="triangulo">
-            <drawColor>black</drawColor>
+            <drawColor>none</drawColor>
             <fillColor>#ebbe20</fillColor>
             <thickness>.5</thickness>
         </style>  
         <style name="cateto">
-            <drawColor>black</drawColor>
+            <drawColor>none</drawColor>
             <fillColor>#90b7b6</fillColor>
             <thickness>.5</thickness>
         </style>
         <style name="hipotenusa">
-            <drawColor>black</drawColor>
+            <drawColor>none</drawColor>
             <fillColor>#bfb0ae</fillColor>
             <thickness>.5</thickness>
         </style>

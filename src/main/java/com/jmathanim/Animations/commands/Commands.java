@@ -195,10 +195,10 @@ public class Commands {
     public static ApplyCommand homothecy(double runtime, Point a, Point b, Point c, Point d, MathObject... objects) {
         return new ApplyCommand(new MathObjectsCommand(objects) {
             double tPrevious;
-            Point A = a;
-            Point B = b;
-            Point C = c;
-            Point D = d;
+            Point A = a.copy();
+            Point B = b.copy();
+            Point C = c.copy();
+            Point D = d.copy();
             AffineJTransform tr;
 
             @Override
@@ -210,9 +210,9 @@ public class Commands {
 
             @Override
             public void execute(double t) {
+                tr = AffineJTransform.createDirect2DHomothecy(A, B, C, D, t);
                 for (MathObject obj : mathObjects) {
                     obj.restoreState();
-                    tr = AffineJTransform.createDirect2DHomothecy(A, B, C, D, t);
                     tr.applyTransform(obj);
                 }
             }

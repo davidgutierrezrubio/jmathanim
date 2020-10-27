@@ -481,8 +481,8 @@ public abstract class MathObject implements Drawable, Updateable, Stateable {
         return this.shift(A.to(B));
     }
 
-    public void putAt(Point p, int anchorType) {
-        putAt(p, anchorType, 0);
+    public <T extends MathObject> T putAt(Point p, int anchorType) {
+        return putAt(p, anchorType, 0);
     }
 
     public <T extends MathObject> T putAt(Point p, int anchorType, double gap) {

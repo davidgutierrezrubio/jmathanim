@@ -85,14 +85,20 @@ public class SVGMathObject extends MultiShapeObject {
 
     protected final void importSVG(File file) throws Exception {
         JMathAnimScene.logger.info("Importing SVG file {}",file.getCanonicalPath());
+        System.out.println("A1");
         DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+        System.out.println("A2");
         DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+        System.out.println("A3");
         org.w3c.dom.Document doc = dBuilder.parse(file);
+        System.out.println("A4");
+        
         //Look for svg elements in the root document
         processChildNodes((doc.getDocumentElement()));
+        System.out.println("A2");
         NodeList listGroups = doc.getElementsByTagName("g");
         for (int n = 0; n < listGroups.getLength(); n++) {
-
+            System.out.println("A"+(n+3));
             Element gNode = (Element) listGroups.item(n);
             processAttributeCommands(gNode, mp);
             mp.thickness = .1;
@@ -114,6 +120,7 @@ public class SVGMathObject extends MultiShapeObject {
 //                    ShMp.fillColor.set(JMColor.random());
                 switch (el.getTagName()) {
                     case "path":
+                        JMathAnimScene.logger.info("Parsing path");
                         //Needs to parse style options too
                         
                     try {
@@ -122,11 +129,12 @@ public class SVGMathObject extends MultiShapeObject {
                         if (path.jmPathPoints.size() > 0) {
                             path.pathType = JMPath.SVG_PATH; //Mark this as a SVG path
                             addJMPathObject(path, ShMp); //Add this path to the array of JMPathObjects
+                            JMathAnimScene.logger.info("Path parsed succesfully");
                         }
                     } catch (Exception ex) {
                         Logger.getLogger(SVGMathObject.class.getName()).log(Level.SEVERE, null, ex);
                     }
-
+                        
                     break;
                     case "rect":
                         double x = Double.parseDouble(el.getAttribute("x"));

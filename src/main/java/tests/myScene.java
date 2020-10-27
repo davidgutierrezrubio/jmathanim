@@ -57,8 +57,8 @@ public class myScene extends Scene2D {
     public void setupSketch() {
 //        conf.setResourcesDir(".");
 //        conf.setOutputDir("c:\\media");
-        ConfigLoader.parseFile("production.xml");
-//        ConfigLoader.parseFile("preview.xml");
+//        ConfigLoader.parseFile("production.xml");
+        ConfigLoader.parseFile("preview.xml");
         ConfigLoader.parseFile("dark.xml");
 //        ConfigLoader.parseFile("axes_and_functions_light.xml");
 
@@ -399,14 +399,13 @@ public class myScene extends Scene2D {
     }
 
     private void teoremaPitagoras() {
-        
-        
+
         ConfigLoader.parseFile("pitagoras.xml");
         //Triangle
         Shape triangle1 = Shape.polygon(Point.at(0, 0), Point.at(3, 0), Point.at(0, 4));
-        triangle1.style("triangulo").layer(2);
+        triangle1.style("triangulo").layer(3);
 
-        double animationTimes = 1;
+        double animationTimes = 2;
 //        CameraAlwaysAdjusting c = new CameraAlwaysAdjusting(camera,.1,.1);
 //        registerObjectToBeUpdated(c);
         camera.setCenter(5.3, 1.3);
@@ -415,17 +414,23 @@ public class myScene extends Scene2D {
         Shape sqC1 = Shape.square().style("cateto").layer(1);
         Shape sqC2 = Shape.square().style("cateto").layer(1);
         Shape sqHip = Shape.square().style("hipotenusa").layer(1);
+
+        LaTeXMathObject aSquared = LaTeXMathObject.make("$a^2$").setHeight(.5).putAt(sqC1.getCenter(), Anchor.BY_CENTER).layer(2).rotate(-90 * DEGREES);
+        LaTeXMathObject bSquared = LaTeXMathObject.make("$b^2$").setHeight(.5).putAt(sqC2.getCenter(), Anchor.BY_CENTER).layer(2).rotate(180 * DEGREES);
+        double angle = -triangle1.getPoint(2).to(triangle1.getPoint(1)).getAngle();
+        LaTeXMathObject cSquared = LaTeXMathObject.make("$c^2$").setHeight(.5).putAt(sqHip.getCenter(), Anchor.BY_CENTER).layer(2).rotate(angle);
+//        add(aSquared, bSquared, cSquared);
         play.showCreation(animationTimes, triangle1);
 
-        ApplyCommand com1 = Commands.homothecy(3, sqC1.getPoint(0), sqC1.getPoint(1), triangle1.getPoint(0), triangle1.getPoint(2), sqC1);
-        ApplyCommand com2 = Commands.homothecy(3, sqC2.getPoint(0), sqC2.getPoint(1), triangle1.getPoint(1), triangle1.getPoint(0), sqC2);
-        ApplyCommand com3 = Commands.homothecy(3, sqHip.getPoint(0), sqHip.getPoint(1), triangle1.getPoint(2), triangle1.getPoint(1), sqHip);
+        ApplyCommand com1 = Commands.homothecy(3, sqC1.getPoint(0), sqC1.getPoint(1), triangle1.getPoint(0), triangle1.getPoint(2), sqC1, aSquared);
+        ApplyCommand com2 = Commands.homothecy(3, sqC2.getPoint(0), sqC2.getPoint(1), triangle1.getPoint(1), triangle1.getPoint(0), sqC2, bSquared);
+        ApplyCommand com3 = Commands.homothecy(3, sqHip.getPoint(0), sqHip.getPoint(1), triangle1.getPoint(2), triangle1.getPoint(1), sqHip, cSquared);
 
         playAnimation(com1, com2, com3);
 
         waitSeconds(1);
 
-        play.shift(animationTimes, 10, sqC2.getBoundingBox().ymin - sqHip.getBoundingBox().ymin, sqHip);
+        play.shift(animationTimes, 10, sqC2.getBoundingBox().ymin - sqHip.getBoundingBox().ymin, sqHip, cSquared);
 
         Shape triangle2 = triangle1.copy();
 
@@ -433,8 +438,8 @@ public class myScene extends Scene2D {
 
         Shape triangle3 = triangle1.copy();
         Shape triangle4 = triangle2.copy();
-        
-        playAnimation(Commands.homothecy(animationTimes, triangle1.getPoint(0), triangle1.getPoint(2), sqC1.getPoint(3), sqC1.getPoint(0), triangle3,triangle4));
+
+        playAnimation(Commands.homothecy(animationTimes, triangle1.getPoint(0), triangle1.getPoint(2), sqC1.getPoint(3), sqC1.getPoint(0), triangle3, triangle4));
 
         //Triangles from hypothenuse squared
         Shape triangle5 = triangle2.copy();
@@ -451,7 +456,9 @@ public class myScene extends Scene2D {
 
         MultiShapeObject msh = new MultiShapeObject();
         for (MathObject obj : this.getObjects()) {
-            msh.addShape((Shape) obj);
+            if (obj instanceof Shape) {
+                msh.addShape((Shape) obj);
+            }
         }
         Point center = msh.getBoundingBox().getCenter();
 
@@ -463,17 +470,17 @@ public class myScene extends Scene2D {
         balance.fillColor(JMColor.parseColorID("#da6d42"));
         balance.setHeight(20).stackTo(center, Anchor.BY_CENTER);
         balance.shift(0, -.5).layer(0);
-        add(balance);
+        play.fadeIn(balance);
         //TODO: Layers need to be fixed in JavaFX
-        for (MathObject obj:getObjects()) {
-            System.out.println(obj.getClass().getCanonicalName()+"layer "+obj.getLayer());
+        for (MathObject obj : getObjects()) {
+            System.out.println(obj.getClass().getCanonicalName() + "layer " + obj.getLayer());
         }
-        
+
         play.adjustCameraToAllObjects();
-        play.fadeOut(animationTimes,triangle1,triangle8);
-        play.fadeOut(animationTimes,triangle2,triangle6);
-        play.fadeOut(animationTimes,triangle3,triangle5);
-        play.fadeOut(animationTimes,triangle4,triangle7);
+        play.fadeOut(animationTimes, triangle1, triangle8);
+        play.fadeOut(animationTimes, triangle2, triangle6);
+        play.fadeOut(animationTimes, triangle3, triangle5);
+        play.fadeOut(animationTimes, triangle4, triangle7);
         waitSeconds(7);
     }
 
