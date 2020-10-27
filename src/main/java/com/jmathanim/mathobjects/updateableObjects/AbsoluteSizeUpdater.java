@@ -20,6 +20,7 @@ package com.jmathanim.mathobjects.updateableObjects;
 
 import com.jmathanim.Cameras.Camera;
 import com.jmathanim.Utils.JMathAnimConfig;
+import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.MathObject;
 
 /**
@@ -42,8 +43,8 @@ public class AbsoluteSizeUpdater implements Updateable{
     }
 
     @Override
-    public void update() {
-        Camera camera = JMathAnimConfig.getConfig().getCamera();
+    public void update(JMathAnimScene scene) {
+        Camera camera = scene.getCamera();
         double screenMathWidth=camera.getMathView().getWidth();
         double objectWidth=obj.getBoundingBox().getWidth();
         

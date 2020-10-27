@@ -47,7 +47,7 @@ public class SimpleShapeCreationStrategy extends TransformStrategy {
         //Create multishape with all canonical components and a copy of drawing attributes
         //This will be drawed instead of mobj during the ShowCreation animation
         msh = canonPath.createMultiShape(this.mobj);
-        scene.remove(mobj);
+        mobj.visible(false);
         scene.add(msh);
         applyTransform(0, 0);
         numberOfSegments = canonPath.getTotalNumberOfSegments();
@@ -99,11 +99,12 @@ public class SimpleShapeCreationStrategy extends TransformStrategy {
     public void finish() {
         applyTransform(1, 1);
         this.scene.remove(msh);
-        scene.add(mobj);
+        mobj.visible(true);
     }
 
     @Override
     public void addObjectsToScene() {
+        scene.add(mobj);
     }
 
 }

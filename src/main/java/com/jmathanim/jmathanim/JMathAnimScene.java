@@ -249,7 +249,7 @@ public abstract class JMathAnimScene {
         //Objects with updatelevel n depend directly from those with level n-1
         objectsToBeUpdated.sort((Updateable o1, Updateable o2) -> o1.getUpdateLevel() - o2.getUpdateLevel());
         for (Updateable obj : objectsToBeUpdated) {
-            obj.update();
+            obj.update(this);
         }
         //Objects to be drawn on screen. Sort them by layer
         objects.sort((MathObject o1, MathObject o2) -> (o1.getLayer() - o2.getLayer()));

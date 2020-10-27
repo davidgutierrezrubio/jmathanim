@@ -43,7 +43,7 @@ public class Transform extends Animation {
 
     public static final int METHOD_INTERPOLATE_SIMPLE_SHAPES_BY_POINT = 1;
     public static final int METHOD_INTERPOLATE_POINT_BY_POINT = 2;
-    public static final int METHOD_HOMOTOPY_TRANSFORM = 3;
+    public static final int METHOD_HOMOTHECY_TRANSFORM = 3;
     public static final int METHOD_AFFINE_TRANSFORM = 4;
     public static final int METHOD_ROTATE_AND_SCALEXY_TRANSFORM = 5;
     public static final int METHOD_FUNCTION_INTERPOLATION = 6;
@@ -84,7 +84,7 @@ public class Transform extends Animation {
     public void initialize() {
         //Determine optimal transformation
 
-        //Should use an homotopy instead of point-to-point interpolation 
+        //Should use an homothecy instead of point-to-point interpolation 
         //in the following cases:
         //2 segments/lines or segment/line
         //2 circles/ellipses
@@ -151,15 +151,15 @@ public class Transform extends Animation {
             methodTextOutput = "Transform method: Interpolation of functions";
         }
         if ((mobjTransformed.getObjectType() == MathObject.SEGMENT) && (mobjDestiny.getObjectType() == MathObject.SEGMENT)) {
-            transformMethod = METHOD_HOMOTOPY_TRANSFORM;
-            methodTextOutput = "Transform method: Homotopy";
+            transformMethod = METHOD_HOMOTHECY_TRANSFORM;
+            methodTextOutput = "Transform method: Homothecy";
         }
 
         //Circle & Circle
         if ((mobjTransformed.getObjectType() == MathObject.CIRCLE) && (mobjDestiny.getObjectType() == MathObject.CIRCLE)) {
-            transformMethod = METHOD_HOMOTOPY_TRANSFORM;
+            transformMethod = METHOD_HOMOTHECY_TRANSFORM;
             shouldOptimizePathsFirst = true;
-            methodTextOutput = "Transform method: Homotopy";
+            methodTextOutput = "Transform method: Homothecy";
         }
 
         //Rectangle & Rectangle
@@ -198,7 +198,7 @@ public class Transform extends Animation {
             case METHOD_INTERPOLATE_POINT_BY_POINT:
                 transformStrategy = new PointInterpolationCanonical(mobjTransformed, mobjDestiny, scene);
                 break;
-            case METHOD_HOMOTOPY_TRANSFORM:
+            case METHOD_HOMOTHECY_TRANSFORM:
                 transformStrategy = new HomothecyStrategyTransform(mobjTransformed, mobjDestiny, scene);
                 break;
             case METHOD_AFFINE_TRANSFORM:

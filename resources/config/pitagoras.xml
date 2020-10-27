@@ -1,0 +1,24 @@
+<JMathAnimConfig>
+        <include>axes_and_functions_dark.xml</include>
+        <include>dots.xml</include>
+    <background>
+        <color>#192841</color>
+    </background>
+    <styles>
+        <style name="triangulo">
+            <drawColor>black</drawColor>
+            <fillColor>#ebbe20</fillColor>
+            <thickness>.5</thickness>
+        </style>  
+        <style name="cateto">
+            <drawColor>black</drawColor>
+            <fillColor>#90b7b6</fillColor>
+            <thickness>.5</thickness>
+        </style>
+        <style name="hipotenusa">
+            <drawColor>black</drawColor>
+            <fillColor>#bfb0ae</fillColor>
+            <thickness>.5</thickness>
+        </style>
+    </styles>
+</JMathAnimConfig>

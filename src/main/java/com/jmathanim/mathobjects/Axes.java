@@ -61,12 +61,12 @@ public class Axes extends MathObject {
             yticks.add(ytick);
 
             if (n != 0) {
-                final LaTeXMathObject xtickLegend = LaTeXMathObject.make("$" + n+"$").style("axislegenddefault").scale(TICKS_SCALE);
-                xtickLegend.stackTo(xtick, Anchor.LOWER,LEGEND_TICKS_GAP);
+                final LaTeXMathObject xtickLegend = LaTeXMathObject.make("$" + n + "$").style("axislegenddefault").scale(TICKS_SCALE);
+                xtickLegend.stackTo(xtick, Anchor.LOWER, LEGEND_TICKS_GAP);
                 xtickLegend.setAbsoluteSize(Anchor.UPPER);
                 xticksLegend.add(xtickLegend);
-                final LaTeXMathObject ytickLegend = LaTeXMathObject.make("$" + n+"$").style("axislegenddefault").scale(TICKS_SCALE);
-                ytickLegend.stackTo(ytick, Anchor.RIGHT,LEGEND_TICKS_GAP);
+                final LaTeXMathObject ytickLegend = LaTeXMathObject.make("$" + n + "$").style("axislegenddefault").scale(TICKS_SCALE);
+                ytickLegend.stackTo(ytick, Anchor.RIGHT, LEGEND_TICKS_GAP);
                 ytickLegend.setAbsoluteSize(Anchor.LEFT);
                 yticksLegend.add(ytickLegend);
             }
@@ -131,7 +131,8 @@ public class Axes extends MathObject {
     }
 
     @Override
-    public void update() {
+    public void update(JMathAnimScene scene) {
+        //TODO: Adding or removing ticks should be done here
     }
 
 }

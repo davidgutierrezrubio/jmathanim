@@ -180,7 +180,7 @@ public class Commands {
 
     /**
      * Animation command that transforms a MathObject through an
-     * Homotopy.Homotopy is specified by 2 pairs of points (origin-destiny)
+     * homothecy. Homothecy is specified by 2 pairs of points (origin-destiny)
      *
      * @param runtime Run time (in seconds)
      * @param a First origin point
@@ -192,7 +192,7 @@ public class Commands {
      * {@link JMathAnimScene#playAnimation(com.jmathanim.Animations.Animation...) playAnimation}
      * method
      */
-    public static ApplyCommand homotopy(double runtime, Point a, Point b, Point c, Point d, MathObject... objects) {
+    public static ApplyCommand homothecy(double runtime, Point a, Point b, Point c, Point d, MathObject... objects) {
         return new ApplyCommand(new MathObjectsCommand(objects) {
             double tPrevious;
             Point A = a;
@@ -222,7 +222,7 @@ public class Commands {
                 execute(1);
             }
         }, runtime);
-    }//End of homotopy command
+    }//End of homothecy command
 
     /**
      * Animation command that perfoms a reflection that maps A into B

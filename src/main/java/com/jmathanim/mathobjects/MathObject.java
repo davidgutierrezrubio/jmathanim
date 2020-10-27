@@ -208,6 +208,32 @@ public abstract class MathObject implements Drawable, Updateable, Stateable {
     }
 
     /**
+     * Scale object so that has a specified height. Scaled is done around its
+     * center.
+     *
+     * @param <T> Object type
+     * @param h Desired height
+     * @return The same object
+     */
+    public <T extends MathObject> T setHeight(double h) {
+        scale(h / this.getBoundingBox().getHeight());
+        return (T) this;
+    }
+
+    /**
+     * Scale object so that has a specified width. Scaled is done around its
+     * center.
+     *
+     * @param <T> Object type
+     * @param w Desired width
+     * @return The same object
+     */
+    public <T extends MathObject> T setWidth(double w) {
+        scale(w / this.getBoundingBox().getWidth());
+        return (T) this;
+    }
+
+    /**
      * Performs a 2D-Rotation of the MathObject around the given rotation center
      *
      * @param <T> MathObject subclass
@@ -339,12 +365,17 @@ public abstract class MathObject implements Drawable, Updateable, Stateable {
     }
 
     public <T extends MathObject> T drawColor(String str) {
-        mp.drawColor.copyFrom(JMColor.parseColorID(str));
+        drawColor(JMColor.parseColorID(str));
         return (T) this;
     }
 
     public <T extends MathObject> T fillColor(JMColor fc) {
         mp.fillColor.copyFrom(fc);
+        return (T) this;
+    }
+
+    public <T extends MathObject> T fillColor(String str) {
+        fillColor(JMColor.parseColorID(str));
         return (T) this;
     }
 
@@ -389,6 +420,11 @@ public abstract class MathObject implements Drawable, Updateable, Stateable {
 
     public <T extends MathObject> T dashStyle(int dst) {
         mp.dashStyle = dst;
+        return (T) this;
+    }
+    
+    public <T extends MathObject> T visible(boolean visible) {
+        this.visible = visible;
         return (T) this;
     }
 

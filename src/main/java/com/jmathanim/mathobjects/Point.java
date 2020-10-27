@@ -254,10 +254,6 @@ public class Point extends MathObject {
         //Nothing to do  here
     }
 
-    @Override
-    public void update() {
-        //Nothing to do  here
-    }
 
     @Override
     public void unregisterChildrenToBeUpdated(JMathAnimScene scene) {
@@ -278,6 +274,10 @@ public class Point extends MathObject {
 
     public void copyFrom(Point p) {
         this.v.copyFrom(p.v);
+    }
+
+    @Override
+    public void update(JMathAnimScene scene) {
     }
 
 }

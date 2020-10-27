@@ -46,7 +46,7 @@ public class TransformedJMPath extends Shape{
     }
 
     @Override
-    public void update() {
+    public void update(JMathAnimScene scene) {
           int size = srcOBj.jmpath.size();
           //TODO: This is already implemented
             for (int n = 0; n < size; n++) {

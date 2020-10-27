@@ -118,7 +118,7 @@ public class Shape extends MathObject {
         if (this.attrs != null) {
             resul.attrs = this.attrs.copy();
         }
-
+        
         resul.setObjectType(this.getObjectType());//Copy object type
         return resul;
     }
@@ -173,9 +173,9 @@ public class Shape extends MathObject {
     }
 
     @Override
-    public void update() {
+    public void update(JMathAnimScene scene) {
         for (JMPathPoint p : jmpath.jmPathPoints) {
-            p.update();
+            p.update(scene);
         }
     }
 
@@ -343,5 +343,7 @@ public class Shape extends MathObject {
     public static Line line(Point a, Point b) {
         return new Line(a, b);
     }
+
+   
 
 }

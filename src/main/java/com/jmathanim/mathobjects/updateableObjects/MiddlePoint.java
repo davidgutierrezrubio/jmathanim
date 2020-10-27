@@ -41,7 +41,7 @@ public class MiddlePoint extends Point {
     }
 
     @Override
-    public void update() {
+    public void update(JMathAnimScene scene) {
         this.v.copyFrom(p1.v.interpolate(p2.v, lambda));
     }
 

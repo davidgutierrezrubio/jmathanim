@@ -19,6 +19,7 @@
 package com.jmathanim.mathobjects.updateableObjects;
 
 import com.jmathanim.Utils.Vec;
+import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.JMPath;
 import com.jmathanim.mathobjects.JMPathPoint;
 import com.jmathanim.mathobjects.Point;
@@ -43,7 +44,7 @@ public class AveragePoint extends Point implements Updateable {
     }
 
     @Override
-    public void update() {
+    public void update(JMathAnimScene scene) {
         Vec resul = new Vec(0, 0);
         for (int n = 0; n < points.size(); n++) {
             resul.addInSite(points.get(n).v);

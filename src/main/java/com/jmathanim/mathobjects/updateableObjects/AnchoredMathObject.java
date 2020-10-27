@@ -20,6 +20,7 @@ package com.jmathanim.mathobjects.updateableObjects;
 
 import com.jmathanim.Utils.Anchor;
 import com.jmathanim.Utils.Vec;
+import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.Point;
 
@@ -68,7 +69,7 @@ public class AnchoredMathObject implements Updateable {
     }
 
     @Override
-    public void update() {
+    public void update(JMathAnimScene scene) {
 
         Point dst = Anchor.getAnchorPoint(dstObject, anchorMethodTo);
 

@@ -22,6 +22,7 @@ import com.jmathanim.Utils.Anchor;
 import com.jmathanim.Utils.JMColor;
 import com.jmathanim.Utils.JMathAnimConfig;
 import com.jmathanim.Utils.MODrawProperties;
+import com.jmathanim.jmathanim.JMathAnimScene;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -61,6 +62,11 @@ public class SVGMathObject extends MultiShapeObject {
     private JMColor currentDrawColor;
     private double currentStrokeSize = .5d;
 
+    public static SVGMathObject make(String fname) {
+        return new SVGMathObject(fname);
+    }
+
+    //This empty constructor is needed
     public SVGMathObject() {
     }
 
@@ -78,6 +84,7 @@ public class SVGMathObject extends MultiShapeObject {
     }
 
     protected final void importSVG(File file) throws Exception {
+        JMathAnimScene.logger.info("Importing SVG file {}",file.getCanonicalPath());
         DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
         DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
         org.w3c.dom.Document doc = dBuilder.parse(file);
@@ -119,8 +126,8 @@ public class SVGMathObject extends MultiShapeObject {
                     } catch (Exception ex) {
                         Logger.getLogger(SVGMathObject.class.getName()).log(Level.SEVERE, null, ex);
                     }
-                        
-                        break;
+
+                    break;
                     case "rect":
                         double x = Double.parseDouble(el.getAttribute("x"));
                         double y = -Double.parseDouble(el.getAttribute("y"));

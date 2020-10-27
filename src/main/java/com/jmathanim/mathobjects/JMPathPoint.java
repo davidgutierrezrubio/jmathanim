@@ -141,13 +141,10 @@ public class JMPathPoint extends MathObject implements Updateable, Stateable {
 //        cp2.v.addInSite(shiftVector);
 //        return (T) this;
 //    }
-    @Override
-    public void update() {
-//        //Update descendents from Point and control points
-//        p.updateDependents();
-//        cp1.updateDependents();
-//        cp2.updateDependents();
+  @Override
+    public void update(JMathAnimScene scene) {
     }
+
 
     @Override
     public int getUpdateLevel() {

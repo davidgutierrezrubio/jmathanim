@@ -53,7 +53,7 @@ public class RotateAndScaleXYStrategyTransform extends MatrixTransformStrategy{
         final double proportionalHeight = (F.to(E).norm() / D.to(E).norm()) / (B.to(C).norm() / B.to(A).norm());
         tr2.setV2Img(0, proportionalHeight * lt + (1 - lt) * 1); //Interpolated here
 
-        //Finally, and homotopy to carry A,B into D,E
+        //Finally, and homothecy to carry A,B into D,E
         AffineJTransform tr3 = AffineJTransform.createDirect2DHomothecy(A, B, D, E, lt);//Interpolated here
         AffineJTransform id = new AffineJTransform();
         //The final transformation

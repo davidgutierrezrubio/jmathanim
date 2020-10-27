@@ -90,7 +90,7 @@ public class JMImage extends MathObject {
     }
 
     @Override
-    public void update() {
+    public void update(JMathAnimScene scene) {
     }
 
     @Override

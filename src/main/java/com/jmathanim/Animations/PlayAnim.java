@@ -44,6 +44,7 @@ public class PlayAnim {
     public double defaultRunTimeGrowIn = 1;
     public double defaultRunTimeShrinkOut = 1;
     public double defaultRunTimeHighlight = 2;
+    public double defaultRunTimeCamera = 2;
 
     public PlayAnim(JMathAnimScene scene) {
         this.scene = scene;
@@ -111,9 +112,21 @@ public class PlayAnim {
     public void transform(double runTime, Shape obj1, Shape obj2) {
         scene.playAnimation(new Transform(runTime, obj1, obj2));
     }
-
+  public void adjustCameraToAllObjects() {
+      adjustCameraToAllObjects(defaultRunTimeCamera);
+      
+  }
+    public void adjustCameraToAllObjects(double runtime) {
+       final Vec gaps = scene.getCamera().getGaps();
+        Rect r = scene.getCamera().getMathView();
+        for (MathObject obj : scene.getObjects()) {
+            r = r.union(obj.getBoundingBox().addGap(gaps.x, gaps.y));
+        }
+        zoomToRect(runtime, r);
+    }
+    
     public void adjustToObjects(MathObject... objs) {
-        adjustToObjects(2, objs);
+        adjustToObjects(defaultRunTimeCamera, objs);
     }
 
     public void adjustToObjects(double runTime, MathObject... objs) {
@@ -308,4 +321,6 @@ public class PlayAnim {
     public void showCreation(MathObject... mobjs) {
         showCreation(defaultRunTimeshowCreation, mobjs);
     }
+
+    
 }

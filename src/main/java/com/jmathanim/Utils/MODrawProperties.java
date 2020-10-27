@@ -75,6 +75,7 @@ public class MODrawProperties implements Stateable{
         absoluteThickness = (prop.absoluteThickness == null ? absoluteThickness : prop.absoluteThickness);
         dotStyle = (prop.dotStyle == null ? dotStyle : prop.dotStyle);
         castShadows = prop.castShadows;
+        layer = prop.layer;
     }
 
     /**

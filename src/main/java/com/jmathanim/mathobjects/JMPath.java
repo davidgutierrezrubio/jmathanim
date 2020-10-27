@@ -20,6 +20,7 @@ package com.jmathanim.mathobjects;
 import com.jmathanim.Utils.CircularArrayList;
 import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.Vec;
+import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.updateableObjects.Updateable;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -477,7 +478,7 @@ public class JMPath implements Updateable, Stateable {
     }
 
     @Override
-    public void update() {
+     public void update(JMathAnimScene scene) {
         //This should do nothing, let their points to update by themselves
     }
 

@@ -153,4 +153,8 @@ public class CameraFX2D extends Camera {
         throw new UnsupportedOperationException("Not supported on FX."); //To change body of generated methods, choose Tools | Templates.
     }
 
+    public void setWidth(double d) {
+        scale(d/getMathView().getWidth());
+    }
+
 }

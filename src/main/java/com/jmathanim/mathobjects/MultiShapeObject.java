@@ -24,6 +24,9 @@ import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * This class stores multiple JMPathObjects, and properly apply transforms and
@@ -39,9 +42,14 @@ public class MultiShapeObject extends MathObject {
         this(new ArrayList<Shape>());
     }
 
-    public MultiShapeObject(ArrayList<Shape> jmps) {
+    public MultiShapeObject(Shape... shapes) {
+        this(Arrays.asList(shapes));
+    }
+
+    public MultiShapeObject(List<Shape> jmps) {
         super();
-        this.shapes = jmps;
+        this.shapes = new ArrayList<>();
+        this.shapes.addAll(jmps);
         this.setObjectType(MathObject.MULTISHAPE);
     }
 
@@ -198,8 +206,7 @@ public class MultiShapeObject extends MathObject {
     }
 
     @Override
-    public void update() {
-        //Nothing to do here
+    public void update(JMathAnimScene scene) {
     }
 
     @Override

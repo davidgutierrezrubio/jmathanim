@@ -17,37 +17,40 @@
  */
 package com.jmathanim.mathobjects.updateableObjects;
 
+import com.jmathanim.Cameras.Camera;
+import com.jmathanim.Utils.Rect;
 import com.jmathanim.jmathanim.JMathAnimScene;
-import com.jmathanim.mathobjects.FunctionGraph;
-import com.jmathanim.mathobjects.Point;
-import java.util.function.DoubleUnaryOperator;
+import com.jmathanim.mathobjects.MathObject;
 
 /**
  *
  * @author David Gutiérrez Rubio <davidgutierrezrubio@gmail.com>
  */
-public class PointOnFunctionGraph extends Point implements Updateable {
+public class CameraAlwaysAdjusting implements Updateable {
 
-    FunctionGraph fg;
-    public Point slopePointRight;
-    public Point slopePointLeft;
+    Camera camera;
+    double hgap,vgap;
 
-    public PointOnFunctionGraph(FunctionGraph fg) {
-        super();
-        this.fg = fg;
-        slopePointRight = Point.at(0, 0);
-        slopePointLeft = Point.at(0, 0);
+    public CameraAlwaysAdjusting(Camera cam,double hgap, double vgap) {
+        this.camera = cam;
+        this.hgap=hgap;
+        this.vgap=vgap;
+    }
+
+    @Override
+    public int getUpdateLevel() {
+        return Integer.MAX_VALUE;//This always should be updated last
     }
 
     @Override
     public void update(JMathAnimScene scene) {
-        super.update(scene);
-        this.v.y = this.fg.function.applyAsDouble(this.v.x);
-        slopePointRight.v.x = this.v.x + 1;
-        slopePointRight.v.y = this.v.y + this.fg.getSlope(this.v.x, -1);
-
-        slopePointLeft.v.x = this.v.x - 1;
-        slopePointLeft.v.y = this.v.y - this.fg.getSlope(this.v.x, -1);
+        if (!scene.getObjects().isEmpty()) {
+            Rect bbox = camera.getMathView().addGap(-hgap, -vgap);
+            for (MathObject obj : scene.getObjects()) {
+                bbox=bbox.union(obj.getBoundingBox());
+            }
+            camera.adjustToRect(bbox.addGap(hgap, vgap));
+        }
     }
 
 }

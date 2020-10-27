@@ -18,11 +18,13 @@
 
 package com.jmathanim.mathobjects.updateableObjects;
 
+import com.jmathanim.jmathanim.JMathAnimScene;
+
 /**
  *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
 public interface Updateable {
     public int getUpdateLevel();
-    public void update();
+    public void update(JMathAnimScene scene);
 }

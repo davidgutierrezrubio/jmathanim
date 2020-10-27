@@ -51,7 +51,7 @@ public class TransformedPoint extends Point{
     }
 
     @Override
-    public void update() {
+    public void update(JMathAnimScene scene) {
         Point tempPoint = transform.getTransformedObject(this.dstPoint);
         this.v.x=tempPoint.v.x;
         this.v.y=tempPoint.v.y;

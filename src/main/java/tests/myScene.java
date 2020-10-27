@@ -17,6 +17,7 @@
  */
 package tests;
 
+import com.jmathanim.Animations.ApplyCommand;
 import com.jmathanim.Animations.Strategies.Transform.PointInterpolationCanonical;
 import com.jmathanim.Animations.Transform;
 import com.jmathanim.Animations.commands.Commands;
@@ -42,6 +43,7 @@ import com.jmathanim.mathobjects.MultiShapeObject;
 import com.jmathanim.mathobjects.Point;
 import com.jmathanim.mathobjects.SVGMathObject;
 import com.jmathanim.mathobjects.Shape;
+import com.jmathanim.mathobjects.updateableObjects.CameraAlwaysAdjusting;
 import com.jmathanim.mathobjects.updateableObjects.PointOnFunctionGraph;
 import java.util.ArrayList;
 
@@ -55,8 +57,8 @@ public class myScene extends Scene2D {
     public void setupSketch() {
 //        conf.setResourcesDir(".");
 //        conf.setOutputDir("c:\\media");
-//        ConfigLoader.parseFile("production.xml");
-        ConfigLoader.parseFile("preview.xml");
+        ConfigLoader.parseFile("production.xml");
+//        ConfigLoader.parseFile("preview.xml");
         ConfigLoader.parseFile("dark.xml");
 //        ConfigLoader.parseFile("axes_and_functions_light.xml");
 
@@ -74,7 +76,7 @@ public class myScene extends Scene2D {
 
     @Override
     public void runSketch() {
-        pruebaSVGImport();
+        teoremaPitagoras();
     }
 
     public void pruebaAbsoluteThickness() {
@@ -91,23 +93,20 @@ public class myScene extends Scene2D {
 
     public void pruebaSVGImport() {
         camera.scale(2);
-        SVGMathObject finger = new SVGMathObject("C:\\media\\Balanza2.svg");
-         finger.scale(3d/finger.getBoundingBox().getHeight());
-        Shape balanza=finger.get(0);
-        balanza.drawColor(JMColor.WHITE);
-        balanza.fillColor(JMColor.WHITE);
-//        balanza.mp.absoluteThickness=true;
-        balanza.thickness(1);
-       
+        SVGMathObject balanza = new SVGMathObject("C:\\media\\Balanza3.svg");
+        balanza.setHeight(3);
+        balanza.drawColor(JMColor.RED);
+        balanza.fillColor(JMColor.RED);
+
         balanza.stackTo(Anchor.BY_CENTER);
 
         SVGMathObject candy = new SVGMathObject("C:\\media\\candy.svg");
         candy.scale(.01);
         candy.stackTo(Anchor.RIGHT);
-        
-        play.showCreation(candy,finger);
-        play.scale(5, .5, candy,finger);
-        
+
+        play.showCreation(candy, balanza);
+        play.scale(5, .5, candy, balanza);
+
         waitSeconds(3);
     }
 
@@ -397,6 +396,85 @@ public class myScene extends Scene2D {
 // Lineas chungas
 
         waitSeconds(3);
+    }
+
+    private void teoremaPitagoras() {
+        
+        
+        ConfigLoader.parseFile("pitagoras.xml");
+        //Triangle
+        Shape triangle1 = Shape.polygon(Point.at(0, 0), Point.at(3, 0), Point.at(0, 4));
+        triangle1.style("triangulo").layer(2);
+
+        double animationTimes = 1;
+//        CameraAlwaysAdjusting c = new CameraAlwaysAdjusting(camera,.1,.1);
+//        registerObjectToBeUpdated(c);
+        camera.setCenter(5.3, 1.3);
+        camera.setWidth(26.156);
+
+        Shape sqC1 = Shape.square().style("cateto").layer(1);
+        Shape sqC2 = Shape.square().style("cateto").layer(1);
+        Shape sqHip = Shape.square().style("hipotenusa").layer(1);
+        play.showCreation(animationTimes, triangle1);
+
+        ApplyCommand com1 = Commands.homothecy(3, sqC1.getPoint(0), sqC1.getPoint(1), triangle1.getPoint(0), triangle1.getPoint(2), sqC1);
+        ApplyCommand com2 = Commands.homothecy(3, sqC2.getPoint(0), sqC2.getPoint(1), triangle1.getPoint(1), triangle1.getPoint(0), sqC2);
+        ApplyCommand com3 = Commands.homothecy(3, sqHip.getPoint(0), sqHip.getPoint(1), triangle1.getPoint(2), triangle1.getPoint(1), sqHip);
+
+        playAnimation(com1, com2, com3);
+
+        waitSeconds(1);
+
+        play.shift(animationTimes, 10, sqC2.getBoundingBox().ymin - sqHip.getBoundingBox().ymin, sqHip);
+
+        Shape triangle2 = triangle1.copy();
+
+        playAnimation(Commands.homothecy(animationTimes, triangle2.getPoint(1), triangle2.getPoint(2), triangle1.getPoint(2), triangle1.getPoint(1), triangle2));
+
+        Shape triangle3 = triangle1.copy();
+        Shape triangle4 = triangle2.copy();
+        
+        playAnimation(Commands.homothecy(animationTimes, triangle1.getPoint(0), triangle1.getPoint(2), sqC1.getPoint(3), sqC1.getPoint(0), triangle3,triangle4));
+
+        //Triangles from hypothenuse squared
+        Shape triangle5 = triangle2.copy();
+        playAnimation(Commands.homothecy(animationTimes, triangle5.getPoint(1), triangle5.getPoint(2), sqHip.getPoint(0), sqHip.getPoint(3), triangle5));
+
+        Shape triangle6 = triangle5.copy();
+        playAnimation(Commands.homothecy(animationTimes, triangle6.getPoint(1), triangle6.getPoint(2), sqHip.getPoint(3), sqHip.getPoint(2), triangle6));
+
+        Shape triangle7 = triangle6.copy();
+        playAnimation(Commands.homothecy(animationTimes, triangle7.getPoint(1), triangle7.getPoint(2), sqHip.getPoint(2), sqHip.getPoint(1), triangle7));
+
+        Shape triangle8 = triangle7.copy();
+        playAnimation(Commands.homothecy(animationTimes, triangle8.getPoint(1), triangle8.getPoint(2), sqHip.getPoint(1), sqHip.getPoint(0), triangle8));
+
+        MultiShapeObject msh = new MultiShapeObject();
+        for (MathObject obj : this.getObjects()) {
+            msh.addShape((Shape) obj);
+        }
+        Point center = msh.getBoundingBox().getCenter();
+
+        System.out.println(camera.getMathView());
+        System.out.println(camera.getMathView().getCenter());
+        System.out.println(camera.getMathView().getWidth());
+        //Create balance
+        SVGMathObject balance = SVGMathObject.make("c:\\media\\balanza3.svg");
+        balance.fillColor(JMColor.parseColorID("#da6d42"));
+        balance.setHeight(20).stackTo(center, Anchor.BY_CENTER);
+        balance.shift(0, -.5).layer(0);
+        add(balance);
+        //TODO: Layers need to be fixed in JavaFX
+        for (MathObject obj:getObjects()) {
+            System.out.println(obj.getClass().getCanonicalName()+"layer "+obj.getLayer());
+        }
+        
+        play.adjustCameraToAllObjects();
+        play.fadeOut(animationTimes,triangle1,triangle8);
+        play.fadeOut(animationTimes,triangle2,triangle6);
+        play.fadeOut(animationTimes,triangle3,triangle5);
+        play.fadeOut(animationTimes,triangle4,triangle7);
+        waitSeconds(7);
     }
 
 }
