@@ -15,7 +15,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-
 package com.jmathanim.jmathanim;
 
 import com.jmathanim.Animations.Animation;
@@ -265,6 +264,7 @@ public abstract class JMathAnimScene {
      * Advance one frame, making all necessary drawings and saving frame
      */
     public final void advanceFrame() {
+      
         renderer.clear();
         doDraws();
         frameCount++;
@@ -278,7 +278,7 @@ public abstract class JMathAnimScene {
      * Save the current frame using the renderer. Renderer should save the frame
      * to video, or any other format.
      */
-    private void saveMPFrame()  {
+    private void saveMPFrame() {
 
         try {
             renderer.saveFrame(frameCount);
@@ -305,7 +305,7 @@ public abstract class JMathAnimScene {
      *
      * @param anims An ArrayList with Animation objects.
      */
-    public void playAnimation(ArrayList<Animation> anims)  {
+    public void playAnimation(ArrayList<Animation> anims) {
         for (Animation anim : anims) {
             if (anim != null) {
                 anim.initialize();//Perform needed steps immediately before playing

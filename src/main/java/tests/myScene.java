@@ -402,7 +402,7 @@ public class myScene extends Scene2D {
 
         ConfigLoader.parseFile("pitagoras.xml");
         //Triangle
-        Shape triangle1 = Shape.polygon(Point.at(0, 0), Point.at(3, 0), Point.at(0, 4));
+        Shape triangle1 = Shape.polygon(Point.at(0, 0), Point.at(3, 0), Point.at(1, 4));
         triangle1.style("triangulo").layer(3);
 
         double animationTimes = 2;

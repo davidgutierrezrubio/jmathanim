@@ -94,6 +94,7 @@ public class JavaFXRenderer extends Renderer {
 
     private VideoEncoder videoEncoder;
     private File saveFilePath;
+    private int newLineCounter=0;
 
     public JavaFXRenderer(JMathAnimScene parentScene) throws Exception {
         super(parentScene);
@@ -146,6 +147,15 @@ public class JavaFXRenderer extends Renderer {
                 group = new Group();
                 groupRoot = new Group();
                 groupBackground = new Group();
+                //Create background
+                if ((!"".equals(cnf.backGroundImage)) && (cnf.backGroundImage != null)) {
+                    File file = new File(cnf.backGroundImage);
+                    ImageView background = new ImageView(new Image(file.toURI().toString()));
+                    Rectangle2D viewport = new Rectangle2D(0, 0, cnf.mediaW, cnf.mediaW);
+                    background.setViewport(viewport);
+                    groupBackground.getChildren().clear();
+                    groupBackground.getChildren().add(background);
+                }
                 groupRoot.getChildren().add(groupBackground);
                 groupRoot.getChildren().add(group);
                 fxScene = new Scene(groupRoot, cnf.mediaW, cnf.mediaW);
@@ -227,16 +237,6 @@ public class JavaFXRenderer extends Renderer {
                         new Rotate(FxCamerarotateY, Rotate.Y_AXIS),
                         new Rotate(FxCamerarotateZ, Rotate.Z_AXIS),
                         new Translate(-cnf.mediaW / 2, -cnf.mediaH / 2, 0));
-
-                //Create background
-                if ((!"".equals(cnf.backGroundImage)) && (cnf.backGroundImage != null)) {
-                    File file = new File(cnf.backGroundImage);
-                    ImageView background = new ImageView(new Image(file.toURI().toString()));
-                    Rectangle2D viewport = new Rectangle2D(0, 0, cnf.mediaW, cnf.mediaW);
-                    background.setViewport(viewport);
-                    groupBackground.getChildren().clear();
-                    groupBackground.getChildren().add(background);
-                }
                 //Add all elements
                 group.getChildren().addAll(fxnodes);
                 if (cnf.drawShadow) {
@@ -264,6 +264,15 @@ public class JavaFXRenderer extends Renderer {
 //        BufferedImage bi = SwingFXUtils.fromFXImage(img2, null);
 
         if (cnf.createMovie) {
+            if ((frameCount % cnf.fps) == 0) {
+                newLineCounter++;
+                if (newLineCounter % 10 == 0) {
+                    newLineCounter=0;
+                    System.out.println("[" + 1d * frameCount / cnf.fps + "s]");
+                } else {
+                    System.out.print("[" + 1d * frameCount / cnf.fps + "]");
+                }
+            }
             videoEncoder.writeFrame(bi, frameCount);
 //            File file=new File("C:\\media\\frame"+frameCount+".png");
 //             ImageIO.write(SwingFXUtils.fromFXImage(img2, null), "png", file);
