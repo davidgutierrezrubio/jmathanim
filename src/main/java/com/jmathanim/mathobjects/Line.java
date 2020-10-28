@@ -22,6 +22,7 @@ import com.jmathanim.Renderers.Renderer;
 import com.jmathanim.Utils.MODrawProperties;
 import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.Vec;
+import com.jmathanim.mathobjects.JMPathPoint.JMPathPointType;
 
 /**
  * Represents an infinite line, given by 2 points.
@@ -32,7 +33,7 @@ public class Line extends Shape {
 
     final JMPathPoint bp1, bp2;
     private final Shape visiblePiece;
-    private Point p1, p2;
+    private Dot p1, p2;
 
     /**
      * Creates a line that passes through p with direction v
@@ -40,7 +41,7 @@ public class Line extends Shape {
      * @param p Point
      * @param v Direction vector
      */
-    public Line(Point p, Vec v) {
+    public Line(Dot p, Vec v) {
         this(p, p.add(v));
     }
 
@@ -50,7 +51,7 @@ public class Line extends Shape {
      * @param p1 First point
      * @param p2 Second point
      */
-    public Line(Point p1, Point p2) {
+    public Line(Dot p1, Dot p2) {
         this(p1, p2, null);
     }
 
@@ -62,13 +63,13 @@ public class Line extends Shape {
      * @param p2 Second point
      * @param mp MathDrawingProperties
      */
-    public Line(Point p1, Point p2, MODrawProperties mp) {
+    public Line(Dot p1, Dot p2, MODrawProperties mp) {
         super(mp);
         this.p1 = p1;
         this.p2 = p2;
         jmpath.clear(); //Super constructor adds p1, p2. Delete them
-        bp1 = new JMPathPoint(new Point(0, 0), true, JMPathPoint.TYPE_VERTEX);//trivial boundary points, just to initialize objects
-        bp2 = new JMPathPoint(new Point(0, 0), true, JMPathPoint.TYPE_VERTEX);//trivial boundary points, just to initialize objects
+        bp1 = new JMPathPoint(new Dot(0, 0), true, JMPathPointType.VERTEX);//trivial boundary points, just to initialize objects
+        bp2 = new JMPathPoint(new Dot(0, 0), true, JMPathPointType.VERTEX);//trivial boundary points, just to initialize objects
         visiblePiece = new Shape();
         visiblePiece.jmpath.addJMPoint(bp1, bp2);
         visiblePiece.mp = this.mp;
@@ -142,29 +143,29 @@ public class Line extends Shape {
 //        p1.restoreState();
 //        p2.restoreState();
 //    }
-    public Point getP1() {
+    public Dot getP1() {
         return p1;
     }
 
-    public Point getP2() {
+    public Dot getP2() {
         return p2;
     }
 
     @Override
-    public Point getCenter() {
+    public Dot getCenter() {
         //Center of an infinite line doesn't exists. Take first point instead.
         return p1;
     }
 
     public static Line XAxis() {
-        return new Line(new Point(0, 0), new Point(1, 0));
+        return new Line(new Dot(0, 0), new Dot(1, 0));
     }
 
     public static Line YAxis() {
-        return new Line(new Point(0, 0), new Point(1, 0));
+        return new Line(new Dot(0, 0), new Dot(1, 0));
     }
     public static Line XYBisector()
 {
-    return new Line(new Point(0,0),new Point(1,1));
+    return new Line(new Dot(0,0),new Dot(1,1));
 }
 }

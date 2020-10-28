@@ -22,7 +22,7 @@ import com.jmathanim.Animations.Strategies.TransformStrategy;
 import com.jmathanim.Utils.JMathAnimConfig;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.JMPathPoint;
-import com.jmathanim.mathobjects.Point;
+import com.jmathanim.mathobjects.Dot;
 import com.jmathanim.mathobjects.Shape;
 
 /**
@@ -57,7 +57,7 @@ public abstract class MatrixTransformStrategy extends TransformStrategy {
             dstPoint = mobjDestiny.getJMPoint(n);
 
             //Interpolate point
-            Point transformedPoint = tr.getTransformedObject(basePoint.p);
+            Dot transformedPoint = tr.getTransformedObject(basePoint.p);
             interPoint.p.v.copyFrom(transformedPoint.v);
 
             //Interpolate control point 1

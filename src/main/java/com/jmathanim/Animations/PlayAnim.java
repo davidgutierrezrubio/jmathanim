@@ -25,7 +25,7 @@ import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.LaTeXMathObject;
 import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.MultiShapeObject;
-import com.jmathanim.mathobjects.Point;
+import com.jmathanim.mathobjects.Dot;
 import com.jmathanim.mathobjects.SVGMathObject;
 import com.jmathanim.mathobjects.Shape;
 import java.util.ArrayList;
@@ -85,7 +85,7 @@ public class PlayAnim {
         scene.playAnimation(Commands.shift(runTime, v, objs));
     }
 
-    public void scale(double runTime, Point center, double sc, MathObject... objs) {
+    public void scale(double runTime, Dot center, double sc, MathObject... objs) {
         scale(runTime, center, sc, sc, sc, objs);
     }
 
@@ -97,7 +97,7 @@ public class PlayAnim {
         scene.playAnimation(Commands.scale(runTime, r.getCenter(), scale, scale, scale, objs));
     }
 
-    public void scale(double runTime, Point center, double scx, double scy, double scz, MathObject... objs) {
+    public void scale(double runTime, Dot center, double scx, double scy, double scz, MathObject... objs) {
         scene.playAnimation(Commands.scale(runTime, center, scx, scy, scz, objs));
     }
 
@@ -105,7 +105,7 @@ public class PlayAnim {
         scene.playAnimation(Commands.rotate(runTime, angle, objs));
     }
 
-    public void rotate(double runTime, Point center, double angle, MathObject... objs) {
+    public void rotate(double runTime, Dot center, double angle, MathObject... objs) {
         scene.playAnimation(Commands.rotate(runTime, center, angle, objs));
     }
 
@@ -198,7 +198,7 @@ public class PlayAnim {
 
     /**
      * Plays an animation highlighting an object. Scales and unscales this
-     * object for 1 second. Objects not scalable ({@link Point} for example) are
+     * object for 1 second. Objects not scalable ({@link Dot} for example) are
      * not affected.
      *
      * @param mobjs Objects to highlight (varargs)
@@ -209,7 +209,7 @@ public class PlayAnim {
 
     /**
      * Plays an animation highlighting an object.Scales and unscales this object
-     * for given time. Objects not scalable ({@link Point} for example) are not
+     * for given time. Objects not scalable ({@link Dot} for example) are not
      * affected.
      *
      * @param runTime Duration in seconds

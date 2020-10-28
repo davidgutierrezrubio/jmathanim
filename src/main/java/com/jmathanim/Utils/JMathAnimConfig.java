@@ -207,7 +207,7 @@ public class JMathAnimConfig {
         defaultMP.fillColor.copyFrom(JMColor.GRAY);
         defaultMP.setFillAlpha(0);//No filling by default
         defaultMP.thickness = 1d;
-        defaultMP.dashStyle = MODrawProperties.SOLID;
+        defaultMP.dashStyle = MODrawProperties.DashStyle.SOLID;
         defaultMP.absoluteThickness = false;
         styles.put("default", defaultMP);
     }

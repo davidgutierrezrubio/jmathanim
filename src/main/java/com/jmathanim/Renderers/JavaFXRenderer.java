@@ -95,7 +95,7 @@ public class JavaFXRenderer extends Renderer {
 
     private VideoEncoder videoEncoder;
     private File saveFilePath;
-    private int newLineCounter=0;
+    private int newLineCounter = 0;
 
     public JavaFXRenderer(JMathAnimScene parentScene) throws Exception {
         super(parentScene);
@@ -268,8 +268,8 @@ public class JavaFXRenderer extends Renderer {
             if ((frameCount % cnf.fps) == 0) {
                 newLineCounter++;
 //                if (newLineCounter % 10 == 0) {
-                    newLineCounter=0;
-                    System.out.println("[" + 1d * frameCount / cnf.fps + "s]");
+                newLineCounter = 0;
+                System.out.println("[" + 1d * frameCount / cnf.fps + "s]");
 //                } else {
 //                    System.out.print("[" + 1d * frameCount / cnf.fps + "s]");
 //                }
@@ -336,11 +336,10 @@ public class JavaFXRenderer extends Renderer {
 
         //Stroke width and color
         path.setStroke(mobj.mp.drawColor.getFXColor());
-        
+
         //Compute thickness depending on camera
         //A thickness of 1 means a javafx thickness 1 in a 800x600with mathview of width 4
         //In a 800x600, it should mean 1 pixel
-        
         path.setStrokeWidth(computeThickness(mobj));
 
         //Fill color
@@ -348,23 +347,25 @@ public class JavaFXRenderer extends Renderer {
 
         //Dash pattern
         switch (mobj.mp.dashStyle) {
-            case MODrawProperties.SOLID:
+            case SOLID:
                 break;
-            case MODrawProperties.DASHED:
+            case DASHED:
                 path.getStrokeDashArray().addAll(25d, 10d);
                 break;
-            case MODrawProperties.DOTTED:
+            case DOTTED:
                 path.getStrokeDashArray().addAll(2d, 6d);
                 break;
         }
     }
-    public double computeThickness(MathObject mobj){
-        Camera cam=(mobj.mp.absoluteThickness ? fixedCamera : camera) ;
-        return mobj.mp.thickness/cam.getMathView().getWidth()*2.5d;
+
+    public double computeThickness(MathObject mobj) {
+        Camera cam = (mobj.mp.absoluteThickness ? fixedCamera : camera);
+        return mobj.mp.thickness / cam.getMathView().getWidth() * 2.5d;
     }
-    public double getThicknessForMathWidth(double w){
+
+    public double getThicknessForMathWidth(double w) {
 //        return mathScalar * cnf.mediaW / (xmax - ymin);
-        return camera.mathToScreenFX(w)/1.25*camera.getMathView().getWidth()/2d;
+        return camera.mathToScreenFX(w) / 1.25 * camera.getMathView().getWidth() / 2d;
     }
 
     @Override

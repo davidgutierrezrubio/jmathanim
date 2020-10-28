@@ -20,7 +20,7 @@ package com.jmathanim.mathobjects.MOProperties;
 
 import com.jmathanim.Animations.AffineJTransform;
 import com.jmathanim.mathobjects.MathObject;
-import com.jmathanim.mathobjects.Point;
+import com.jmathanim.mathobjects.Dot;
 import com.jmathanim.mathobjects.Shape;
 
 /**
@@ -29,12 +29,12 @@ import com.jmathanim.mathobjects.Shape;
  */
 public class ArcAttributes extends MathObjectAttributes {
 
-    public Point center;
+    public Dot center;
     public double radius, angle;
     public Shape arc;
     private double radiusState, angleState;
 
-    public ArcAttributes(Point center, double radius, double angle, Shape arc) {
+    public ArcAttributes(Dot center, double radius, double angle, Shape arc) {
         super(arc);
         this.center = center;
         this.radius = radius;
@@ -46,7 +46,7 @@ public class ArcAttributes extends MathObjectAttributes {
     public void applyTransform(AffineJTransform tr) {
         tr.applyTransform(center);
         double sum = 0;
-        for (Point p : arc.getPath().getPoints()) {
+        for (Dot p : arc.getPath().getPoints()) {
             sum += center.to(p).norm();
         }
         radius = sum / arc.getPath().size();

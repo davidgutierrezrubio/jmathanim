@@ -15,7 +15,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-
 package com.jmathanim.mathobjects;
 
 import com.jmathanim.Renderers.Renderer;
@@ -31,24 +30,24 @@ import java.text.DecimalFormat;
  *
  * @author David Gutierrez Rubio davidgutierrezrubio@gmail.com
  */
-public class Point extends MathObject {
+public class Dot extends MathObject {
 
     public final Vec v;
     private final Vec vBackup;
 
-    public static final int DOT_STYLE_CIRCLE = 1;
-    public static final int DOT_STYLE_CROSS = 2;
-    public static final int DOT_STYLE_PLUS = 3;
+    public enum DotSyle {
+        DOT_STYLE_CIRCLE, DOT_STYLE_CROSS, DOT_STYLE_PLUS
+    }
 
-    public Point() {
+    public Dot() {
         this(0, 0, 0);
     }
 
-    public Point(Point p) {
+    public Dot(Dot p) {
         this(p.v);
     }
 
-    public Point(Vec v) {
+    public Dot(Vec v) {
         this(v.x, v.y, v.z);
     }
 
@@ -59,7 +58,7 @@ public class Point extends MathObject {
      * @param y y coordinate
      * @param z z coordinate
      */
-    public Point(double x, double y, double z) {
+    public Dot(double x, double y, double z) {
         this(x, y, z, null);
     }
 
@@ -68,7 +67,7 @@ public class Point extends MathObject {
      * @param x
      * @param y
      */
-    public Point(double x, double y) {
+    public Dot(double x, double y) {
         this(x, y, 0, null);
     }
 
@@ -78,7 +77,7 @@ public class Point extends MathObject {
      * @param y
      * @param mp
      */
-    public Point(double x, double y, MODrawProperties mp) {
+    public Dot(double x, double y, MODrawProperties mp) {
         this(x, y, 0, mp);
 
     }
@@ -90,7 +89,7 @@ public class Point extends MathObject {
      * @param z
      * @param mp
      */
-    public Point(double x, double y, double z, MODrawProperties mp) {
+    public Dot(double x, double y, double z, MODrawProperties mp) {
         super(mp);
         this.v = new Vec(x, y, z);
         this.vBackup = new Vec(x, y, z);
@@ -105,19 +104,19 @@ public class Point extends MathObject {
      * @param y y coordinate
      * @return
      */
-    public static Point at(double x, double y) {
-        return new Point(x, y);
+    public static Dot at(double x, double y) {
+        return new Dot(x, y);
     }
 
-    public static Point random() {
+    public static Dot random() {
         Rect r = JMathAnimConfig.getConfig().getCamera().getMathView();
         double x = r.xmin + (r.xmax - r.xmin) * Math.random();
         double y = r.ymin + (r.ymax - r.ymin) * Math.random();
-        return new Point(x, y);
+        return new Dot(x, y);
     }
 
     @Override
-    public Point getCenter() {
+    public Dot getCenter() {
         return this;
     }
 
@@ -141,9 +140,9 @@ public class Point extends MathObject {
         switch (mp.dotStyle) {
             case DOT_STYLE_CROSS:
 //                st = mp.computeScreenThickness(r)/20;
-                st = mp.thickness /40;
+                st = mp.thickness / 40;
                 dotShape = new Shape();
-                dotShape.getPath().addPoint(Point.at(-1, 1), Point.at(1, -1), Point.at(1, 1), Point.at(-1, -1));
+                dotShape.getPath().addPoint(Dot.at(-1, 1), Dot.at(1, -1), Dot.at(1, 1), Dot.at(-1, -1));
                 dotShape.getJMPoint(0).isThisSegmentVisible = false;
                 dotShape.getJMPoint(2).isThisSegmentVisible = false;
                 dotShape.shift(v).scale(st).drawColor(mp.drawColor).thickness(mp.thickness);
@@ -152,14 +151,14 @@ public class Point extends MathObject {
 //                st = mp.computeScreenThickness(r)/20;
                 st = mp.thickness / 70;
                 dotShape = new Shape();
-                dotShape.getPath().addPoint(Point.at(0, 1), Point.at(0, -1), Point.at(1, 0), Point.at(-1, 0));
+                dotShape.getPath().addPoint(Dot.at(0, 1), Dot.at(0, -1), Dot.at(1, 0), Dot.at(-1, 0));
                 dotShape.getJMPoint(0).isThisSegmentVisible = false;
                 dotShape.getJMPoint(2).isThisSegmentVisible = false;
                 dotShape.shift(v).scale(st).drawColor(mp.drawColor).thickness(mp.thickness);
                 break;
             default://Default case, includes CIRCLE
 //                st = mp.computeScreenThickness(r)/200;
-                st = mp.thickness /40;
+                st = mp.thickness / 40;
                 dotShape = Shape.circle().shift(v).scale(st).drawColor(mp.drawColor).fillColor(mp.drawColor).thickness(0);
                 break;
         }
@@ -172,7 +171,7 @@ public class Point extends MathObject {
 
     }
 
-    public int getDotStyle() {
+    public DotSyle getDotStyle() {
         return mp.dotStyle;
     }
 
@@ -184,10 +183,10 @@ public class Point extends MathObject {
 //        return (T) this;
 //    }
     @Override
-    public Point copy() {
-        Point resul = new Point(v);
+    public Dot copy() {
+        Dot resul = new Dot(v);
         resul.mp.copyFrom(mp);
-        resul.visible=this.visible;
+        resul.visible = this.visible;
         return resul;
     }
 
@@ -198,8 +197,8 @@ public class Point extends MathObject {
      * @param addVector Vector to add
      * @return Original point+addVector
      */
-    public Point add(Vec addVector) {
-        Point resul = (Point) this.copy();
+    public Dot add(Vec addVector) {
+        Dot resul = (Dot) this.copy();
         resul.v.addInSite(addVector);
         return resul;
     }
@@ -218,7 +217,7 @@ public class Point extends MathObject {
      * @param B The destination point
      * @return The vector from this point to B
      */
-    public Vec to(Point B) {
+    public Vec to(Dot B) {
         return new Vec(B.v.x - v.x, B.v.y - v.y, B.v.z - v.z);
     }
 
@@ -230,9 +229,9 @@ public class Point extends MathObject {
      * @param alpha
      * @return The new Point
      */
-    public Point interpolate(Point p2, double alpha) {
+    public Dot interpolate(Dot p2, double alpha) {
         Vec w = v.interpolate(p2.v, alpha);
-        return new Point(w);
+        return new Dot(w);
 
     }
 
@@ -254,7 +253,6 @@ public class Point extends MathObject {
         //Nothing to do  here
     }
 
-
     @Override
     public void unregisterChildrenToBeUpdated(JMathAnimScene scene) {
         //Nothing to do  here
@@ -272,7 +270,7 @@ public class Point extends MathObject {
         this.v.restoreState();
     }
 
-    public void copyFrom(Point p) {
+    public void copyFrom(Dot p) {
         this.v.copyFrom(p.v);
     }
 

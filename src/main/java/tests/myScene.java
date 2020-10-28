@@ -27,6 +27,7 @@ import com.jmathanim.Utils.ConfigLoader;
 import com.jmathanim.Utils.JMColor;
 import com.jmathanim.Utils.JMathAnimConfig;
 import com.jmathanim.Utils.MODrawProperties;
+import com.jmathanim.Utils.MODrawProperties.DashStyle;
 import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.Scene2D;
@@ -41,14 +42,13 @@ import com.jmathanim.mathobjects.LaTeXMathObject;
 import com.jmathanim.mathobjects.Line;
 import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.MultiShapeObject;
-import com.jmathanim.mathobjects.Point;
+import com.jmathanim.mathobjects.Dot;
 import com.jmathanim.mathobjects.SVGMathObject;
 import com.jmathanim.mathobjects.Shape;
 import com.jmathanim.mathobjects.updateableObjects.CameraAlwaysAdjusting;
 import com.jmathanim.mathobjects.updateableObjects.PointOnFunctionGraph;
 import java.util.ArrayList;
 import javafx.scene.shape.StrokeLineCap;
-import static tests.myScene.pepe.paco;
 
 /**
  *
@@ -67,11 +67,9 @@ public class myScene extends Scene2D {
 //        conf.setHighQuality();
 //        conf.setCreateMovie(true);
     }
-enum pepe {paco, juan}
     @Override
     public void runSketch() {
-        System.out.println("paco es "+paco);
-        pepe a=pepe.paco;
+       variosThickness();
         
     }
 
@@ -79,7 +77,7 @@ enum pepe {paco, juan}
         double th = 1;
         int nmax = 4;
         for (double n = 0; n < nmax; n++) {
-            Shape s = Shape.segment(Point.at(-1.5 + n * 2d / nmax, -1), Vec.to(0, 1)).thickness(th).shift(.3, 0);
+            Shape s = Shape.segment(Dot.at(-1.5 + n * 2d / nmax, -1), Vec.to(0, 1)).thickness(th).shift(.3, 0);
             s.mp.absoluteThickness = false;
             LaTeXMathObject t = LaTeXMathObject.make("$" + th + "$");
             t.stackTo(s, Anchor.LOWER);
@@ -124,7 +122,7 @@ enum pepe {paco, juan}
 
     public void JMImage() {
         JMImage img = new JMImage("c:\\media\\math.png");
-        Point p = Point.at(.3, .1);
+        Dot p = Dot.at(.3, .1);
         Shape c = Shape.arc(120 * DEGREES).style("solidblue");
         play.fadeIn(img, c);
         img.stackTo(c, Anchor.RIGHT);
@@ -216,11 +214,11 @@ enum pepe {paco, juan}
     private void drawCircleAndMarco() {
         final Shape c = Shape.circle();
         c.style("solidblue");
-        c.dashStyle(MODrawProperties.DASHED);
+        c.dashStyle(DashStyle.DASHED);
         add(c);
 //        Shape c = Shape.segment(Point.at(0,0),Point.at(1,1));
         Shape cr = Shape.rectangle(camera.getMathView());
-        cr.dashStyle(MODrawProperties.DOTTED);
+        cr.dashStyle(DashStyle.DOTTED);
         cr.thickness(1);
         cr.drawColor(JMColor.RED);
         cr.mp.castShadows = false;
@@ -234,8 +232,8 @@ enum pepe {paco, juan}
 
     private void absoluteThings() {
 
-        Arrow2D ar = Arrow2D.makeSimpleArrow2D(Point.at(0, 1), Point.at(0, 0), ArrowType.TYPE_3);
-        Arrow2D ar2 = Arrow2D.makeSimpleArrow2D(Point.at(-1, -.61), Point.at(-.1, -.1), ArrowType.TYPE_1);
+        Arrow2D ar = Arrow2D.makeSimpleArrow2D(Dot.at(0, 1), Dot.at(0, 0), ArrowType.TYPE_3);
+        Arrow2D ar2 = Arrow2D.makeSimpleArrow2D(Dot.at(-1, -.61), Dot.at(-.1, -.1), ArrowType.TYPE_1);
 //        Shape s = Shape.segment(Point.at(0, 1), Point.at(0, 0));
         Shape c = Shape.circle().drawColor(JMColor.RED);
 //        ar.thickness(3);
@@ -254,9 +252,8 @@ enum pepe {paco, juan}
 
     public void manyDots() {
         for (int n = 0; n < 15; n++) {
-            Point p = Point.random();
-            int st = (int) (Math.random() * 2.9 + 1);
-            p.dotStyle(st);
+            Dot p = Dot.random();
+            p.dotStyle(Dot.DotSyle.DOT_STYLE_CROSS);
             p.thickness(.5);
             System.out.println("n " + n);
 //            p.thickness(1 + Math.random() * 1);
@@ -337,8 +334,8 @@ enum pepe {paco, juan}
         s.rotate(90 * DEGREES);
 //        s.getPoint(4).shift(-.5,0);
 //        play.rotate(s, 2*PI, 20);
-        ArrayList<Point> points = s.getPath().getPoints();
-        for (Point p : points) {
+        ArrayList<Dot> points = s.getPath().getPoints();
+        for (Dot p : points) {
             add(Shape.circle().scale(.005).shift(p.v).fillColor(JMColor.RED).drawColor(JMColor.random()));
             System.out.println("" + p.v.x + ", " + p.v.y);
         }
@@ -348,7 +345,7 @@ enum pepe {paco, juan}
     private void lineToSegment() {
         Line l = Line.XYBisector();
 //        add(l);
-        Shape s = Shape.segment(new Point(1, -.6), new Point(1.3, 0));
+        Shape s = Shape.segment(new Dot(1, -.6), new Dot(1.3, 0));
         add(s.drawColor(JMColor.RED));
 
         play.transform(5, Shape.segment(l), s);
@@ -386,25 +383,25 @@ enum pepe {paco, juan}
         //Create axis
         MultiShapeObject axes = new MultiShapeObject();
         for (double xx = -10; xx < 10; xx += .3) {
-            final Shape lineaV = new Line(Point.at(xx, 0), Point.at(xx, 1)).style("axisblue1");
+            final Shape lineaV = new Line(Dot.at(xx, 0), Dot.at(xx, 1)).style("axisblue1");
             axes.addShape(lineaV);
-            final Shape lineaH = new Line(Point.at(0, xx), Point.at(1, xx)).style("axisblue2");
+            final Shape lineaH = new Line(Dot.at(0, xx), Dot.at(1, xx)).style("axisblue2");
             axes.addShape(lineaH);
         }
 //        add(axes);
 //        add(Shape.circle());
-        Shape lineaPrueba = new Line(Point.at(0, -1.5), Point.at(2, -1.5)).drawColor(JMColor.RED);
+        Shape lineaPrueba = new Line(Dot.at(0, -1.5), Dot.at(2, -1.5)).drawColor(JMColor.RED);
 //        waitSeconds(3);
-        Point a = Point.at(0, 0);
-        Point b = Point.at(1, 0);
-        Point c = Point.at(0, 1);
-        Point d = Point.at(0, 0);
-        Point e = Point.at(1, 0);
-        Point f = Point.at(1, 1);
+        Dot a = Dot.at(0, 0);
+        Dot b = Dot.at(1, 0);
+        Dot c = Dot.at(0, 1);
+        Dot d = Dot.at(0, 0);
+        Dot e = Dot.at(1, 0);
+        Dot f = Dot.at(1, 1);
         playAnimation(Commands.affineTransform(5, a, b, c, d, e, f, axes));
         play.rotate(5, PI / 3, axes);
         play.cameraScale(.5, 3);
-        playAnimation(Commands.reflectionByAxis(5, new Point(0, 0), new Point(0, 1), axes));
+        playAnimation(Commands.reflectionByAxis(5, new Dot(0, 0), new Dot(0, 1), axes));
 // Lineas chungas
 
         waitSeconds(3);
@@ -426,7 +423,7 @@ enum pepe {paco, juan}
 
     public void drawPitagorasProof(double xt,boolean correct,double animationTime) {
         //Triangle
-        Shape triangle1 = Shape.polygon(Point.at(0, 0), Point.at(3, 0), Point.at(xt, 4));
+        Shape triangle1 = Shape.polygon(Dot.at(0, 0), Dot.at(3, 0), Dot.at(xt, 4));
         triangle1.style("triangulo").layer(3);
         //        CameraAlwaysAdjusting c = new CameraAlwaysAdjusting(camera,.1,.1);
 //        registerObjectToBeUpdated(c);
@@ -467,7 +464,7 @@ enum pepe {paco, juan}
                 msh.addShape((Shape) obj);
             }
         }
-        Point center = msh.getBoundingBox().getCenter();
+        Dot center = msh.getBoundingBox().getCenter();
         System.out.println(camera.getMathView());
         System.out.println(camera.getMathView().getCenter());
         System.out.println(camera.getMathView().getWidth());
@@ -500,8 +497,8 @@ enum pepe {paco, juan}
 
     public void pruebaThickness() {
         camera.scale(5);
-        final Point B = Point.at(0, .5).drawColor(JMColor.BLACK);
-        final Point A = Point.at(0, -.5).drawColor(JMColor.BLACK);
+        final Dot B = Dot.at(0, .5).drawColor(JMColor.BLACK);
+        final Dot A = Dot.at(0, -.5).drawColor(JMColor.BLACK);
         camera.scale(.5);
         Shape s1 = Shape.segment(A, B).linecap(StrokeLineCap.BUTT);
         double longi = s1.getPoint(0).to(s1.getPoint(1)).norm();

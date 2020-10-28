@@ -32,7 +32,8 @@ import com.jmathanim.mathobjects.JMImage;
 import com.jmathanim.mathobjects.JMPath;
 import com.jmathanim.mathobjects.JMPathPoint;
 import com.jmathanim.mathobjects.MathObject;
-import com.jmathanim.mathobjects.Point;
+import com.jmathanim.mathobjects.Dot;
+import com.jmathanim.mathobjects.JMPathPoint.JMPathPointType;
 import com.jmathanim.mathobjects.Shape;
 import java.awt.BasicStroke;
 import static java.awt.BasicStroke.CAP_ROUND;
@@ -409,16 +410,16 @@ public class Java2DAwtRenderer extends Renderer {
 
 //        float strokeSize = (float) thickness;
         switch (obj.mp.dashStyle) {
-            case MODrawProperties.SOLID:
+            case SOLID:
                 BasicStroke basicStroke = new BasicStroke(strokeSize, CAP_ROUND, JOIN_ROUND);
                 g2d.setStroke(basicStroke);
                 break;
-            case MODrawProperties.DASHED:
+            case DASHED:
                 float[] dashedPattern = {5.0f * strokeSize, 2.0f * strokeSize};
                 Stroke dashedStroke = new BasicStroke(strokeSize, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND, 10.0f, dashedPattern, 1.0f);
                 g2d.setStroke(dashedStroke);
                 break;
-            case MODrawProperties.DOTTED:
+            case DOTTED:
                 float[] dottedPattern = {1f, 2.0f * strokeSize};
                 Stroke dottedStroke = new BasicStroke(strokeSize, BasicStroke.CAP_SQUARE, BasicStroke.JOIN_ROUND, 10.0f, dottedPattern, 1.0f);
                 g2d.setStroke(dottedStroke);
@@ -551,11 +552,11 @@ public class Java2DAwtRenderer extends Renderer {
         int[] x = camera.mathToScreen(p.p.v.x, p.p.v.y);
         debugCPoint(camera.mathToScreen(p.cp1.v.x, p.cp1.v.y));
         debugCPoint(camera.mathToScreen(p.cp2.v.x, p.cp2.v.y));
-        if (p.type == JMPathPoint.TYPE_VERTEX) {
+        if (p.type == JMPathPointType.VERTEX) {
             g2debug.setColor(Color.GREEN);
 
         }
-        if (p.type == JMPathPoint.TYPE_INTERPOLATION_POINT) {
+        if (p.type == JMPathPointType.INTERPOLATION_POINT) {
             g2debug.setColor(Color.GRAY);
 
         }

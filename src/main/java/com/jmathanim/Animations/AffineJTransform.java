@@ -25,7 +25,7 @@ import com.jmathanim.mathobjects.Line;
 import com.jmathanim.mathobjects.MOProperties.MathObjectAttributes;
 import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.MultiShapeObject;
-import com.jmathanim.mathobjects.Point;
+import com.jmathanim.mathobjects.Dot;
 import com.jmathanim.mathobjects.Shape;
 import org.apache.commons.math3.linear.Array2DRowRealMatrix;
 import org.apache.commons.math3.linear.LUDecomposition;
@@ -83,7 +83,7 @@ public class AffineJTransform {
      *
      * @param p Destiny point of origin (0,0,0)
      */
-    public void setOriginImg(Point p) {
+    public void setOriginImg(Dot p) {
         setOriginImg(p.v);
     }
 
@@ -123,7 +123,7 @@ public class AffineJTransform {
      *
      * @param p Destiny vector of (1,0,0) given by a vector
      */
-    public void setV1Img(Point p) {
+    public void setV1Img(Dot p) {
         setV1Img(p.v);
     }
 
@@ -163,7 +163,7 @@ public class AffineJTransform {
      *
      * @param p Destiny vector of (0,1,0) given by a point
      */
-    public void setV2Img(Point p) {
+    public void setV2Img(Dot p) {
         setV2Img(p.v);
     }
 
@@ -203,7 +203,7 @@ public class AffineJTransform {
      *
      * @param p Destiny vector of (0,0,1) given by a point
      */
-    public void setV3Img(Point p) {
+    public void setV3Img(Dot p) {
         setV3Img(p.v);
     }
 
@@ -285,9 +285,9 @@ public class AffineJTransform {
         if (mObject instanceof JMPathPoint) {
             JMPathPoint jmPDst = (JMPathPoint) mObject;
             JMPathPoint pSrc = jmPDst.copy();
-            Point pDst = getTransformedObject(pSrc.p);
-            Point cp1Dst = getTransformedObject(pSrc.cp1);
-            Point cp2Dst = getTransformedObject(pSrc.cp2);
+            Dot pDst = getTransformedObject(pSrc.p);
+            Dot cp1Dst = getTransformedObject(pSrc.cp1);
+            Dot cp2Dst = getTransformedObject(pSrc.cp2);
 
             jmPDst.p.v.copyFrom(pDst.v);
             jmPDst.cp1.v.copyFrom(cp1Dst.v);
@@ -298,8 +298,8 @@ public class AffineJTransform {
             return;
         }
 
-        if (mObject instanceof Point) {
-            Point p = (Point) mObject;
+        if (mObject instanceof Dot) {
+            Dot p = (Dot) mObject;
             RealMatrix pRow = new Array2DRowRealMatrix(new double[][]{{1d, p.v.x, p.v.y, p.v.z}});
             RealMatrix pNew = pRow.multiply(matrix);
 
@@ -374,7 +374,7 @@ public class AffineJTransform {
      * @param b Destiny
      * @return A newAffineTransform with traslation
      */
-    public static AffineJTransform createTranslationTransform(Point a, Point b) {
+    public static AffineJTransform createTranslationTransform(Dot a, Dot b) {
         return createTranslationTransform(new Vec(b.v.x - a.v.x, b.v.y - a.v.y, b.v.z - a.v.z));
     }
 
@@ -397,7 +397,7 @@ public class AffineJTransform {
      * @param angle Angle (in radians)
      * @return A new AffineTransform with the rotation
      */
-    public static AffineJTransform create2DRotationTransform(Point center, double angle) {
+    public static AffineJTransform create2DRotationTransform(Dot center, double angle) {
         AffineJTransform resul = new AffineJTransform();
         final double sin = Math.sin(angle);
         final double cos = Math.cos(angle);
@@ -418,7 +418,7 @@ public class AffineJTransform {
      * @param scale Factor of scale. A value of 1 means no change.
      * @return The transform
      */
-    public static AffineJTransform createScaleTransform(Point center, double scale) {
+    public static AffineJTransform createScaleTransform(Dot center, double scale) {
         return createScaleTransform(center, scale, scale, scale);
     }
 
@@ -431,7 +431,7 @@ public class AffineJTransform {
      * @param scaley y-scale factor
      * @return The transform
      */
-    public static AffineJTransform createScaleTransform(Point center, double scalex, double scaley) {
+    public static AffineJTransform createScaleTransform(Dot center, double scalex, double scaley) {
         return createScaleTransform(center, scalex, scaley, 1);
     }
 
@@ -445,7 +445,7 @@ public class AffineJTransform {
      * @param scalez z-scale factor
      * @return The transform
      */
-    public static AffineJTransform createScaleTransform(Point center, double scalex, double scaley, double scalez) {
+    public static AffineJTransform createScaleTransform(Dot center, double scalex, double scaley, double scalez) {
         AffineJTransform resul = new AffineJTransform();
         resul.setV1Img(scalex, 0, 0);
         resul.setV2Img(0, scaley, 0);
@@ -471,7 +471,7 @@ public class AffineJTransform {
      * 1 means the full transform done.
      * @return The transform
      */
-    public static AffineJTransform createDirect2DHomothecy(Point A, Point B, Point C, Point D, double alpha) {
+    public static AffineJTransform createDirect2DHomothecy(Dot A, Dot B, Dot C, Dot D, double alpha) {
         double angle;//Angle between AB and CD
         Vec v1 = A.to(B);//Vector AB
         Vec v2 = C.to(D);//Vector CD
@@ -503,9 +503,9 @@ public class AffineJTransform {
      * @param alpha Alpha parameter. 0 means unaltered, 1 fully reflection done
      * @return The reflection
      */
-    public static AffineJTransform createReflection(Point A, Point B, double alpha) {
-        Point E1 = new Point(1, 0);
-        Point E2 = new Point(-1, 0);
+    public static AffineJTransform createReflection(Dot A, Dot B, double alpha) {
+        Dot E1 = new Dot(1, 0);
+        Dot E2 = new Dot(-1, 0);
         AffineJTransform canonize = AffineJTransform.createDirect2DHomothecy(A, B, E1, E2, 1);
         AffineJTransform invCanonize = canonize.getInverse();
         //A reflection from (1,0) to (-1,0) has a very simple form
@@ -523,8 +523,8 @@ public class AffineJTransform {
      * @param alpha parameter. 0 means unaltered, 1 fully reflection done
      * @return The reflection
      */
-    public static AffineJTransform createReflectionByAxis(Point E1, Point E2, double alpha) {
-        AffineJTransform canonize = AffineJTransform.createDirect2DHomothecy(E1, E2, new Point(0, 0), new Point(0, E2.v.norm()), 1);
+    public static AffineJTransform createReflectionByAxis(Dot E1, Dot E2, double alpha) {
+        AffineJTransform canonize = AffineJTransform.createDirect2DHomothecy(E1, E2, new Dot(0, 0), new Dot(0, E2.v.norm()), 1);
         AffineJTransform invCanonize = canonize.getInverse();
         //A reflection from (1,0) to (-1,0) has a very simple form
         AffineJTransform canonizedReflection = new AffineJTransform();
@@ -587,7 +587,7 @@ public class AffineJTransform {
      * @param lambda Lambda parameter. 0 means unaltered, 1 fully transform done
      * @return The transform
      */
-    public static AffineJTransform createAffineTransformation(Point A, Point B, Point C, Point D, Point E, Point F, double lambda) {
+    public static AffineJTransform createAffineTransformation(Dot A, Dot B, Dot C, Dot D, Dot E, Dot F, double lambda) {
         //First I create a transformation that map O,e1,e2 into A,B,C
         AffineJTransform tr1 = new AffineJTransform();
         tr1.setOriginImg(A);

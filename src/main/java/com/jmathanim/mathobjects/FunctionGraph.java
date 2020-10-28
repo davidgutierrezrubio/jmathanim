@@ -76,7 +76,7 @@ public class FunctionGraph extends Shape {
         for (int n = 0; n < xPoints.size(); n++) {
             double x = xPoints.get(n);
             double y = getFunctionValue(x);
-            Point p = Point.at(x, y);
+            Dot p = Dot.at(x, y);
             final JMPathPoint jmp = JMPathPoint.curveTo(p);
             this.jmpath.addJMPoint(jmp);
             if (n == 0) {
@@ -142,7 +142,7 @@ public class FunctionGraph extends Shape {
         } else {
             xPoints.add(n, x);
             double y = getFunctionValue(x);
-            Point p = Point.at(x, y);
+            Dot p = Dot.at(x, y);
             final JMPathPoint jmp = JMPathPoint.curveTo(p);
             this.jmpath.jmPathPoints.add(n, jmp);
             return jmp;

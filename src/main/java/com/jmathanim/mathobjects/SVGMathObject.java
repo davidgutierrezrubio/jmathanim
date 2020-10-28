@@ -23,6 +23,7 @@ import com.jmathanim.Utils.JMColor;
 import com.jmathanim.Utils.JMathAnimConfig;
 import com.jmathanim.Utils.MODrawProperties;
 import com.jmathanim.jmathanim.JMathAnimScene;
+import com.jmathanim.mathobjects.JMPathPoint.JMPathPointType;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -99,7 +100,7 @@ public class SVGMathObject extends MultiShapeObject {
             //Look for svg elements inside this group
             processChildNodes(gNode);
         }
-        putAt(new Point(0, 0), Anchor.UL);
+        putAt(new Dot(0, 0), Anchor.UL);
     }
 
     private void processChildNodes(Element gNode) throws NumberFormatException {
@@ -135,7 +136,7 @@ public class SVGMathObject extends MultiShapeObject {
                         double y = -Double.parseDouble(el.getAttribute("y"));
                         double w = Double.parseDouble(el.getAttribute("width"));
                         double h = -Double.parseDouble(el.getAttribute("height"));
-                        shapes.add(Shape.rectangle(new Point(x, y), new Point(x + w, y + h)).setMp(ShMp));
+                        shapes.add(Shape.rectangle(new Dot(x, y), new Dot(x + w, y + h)).setMp(ShMp));
                         break;
                     case "circle":
                         double cx = Double.parseDouble(el.getAttribute("cx"));
@@ -166,7 +167,7 @@ public class SVGMathObject extends MultiShapeObject {
      */
     public JMPath processPathCommands(String s) throws Exception {
         JMPath resul = new JMPath();
-        JMPathPoint previousPoint = new JMPathPoint(new Point(0, 0), true, 0);
+        JMPathPoint previousPoint = new JMPathPoint(new Dot(0, 0), true, JMPathPointType.VERTEX);
         String t = s.replace("M", " M ");
         t = t.replace("m", " m ");
         t = t.replace("-", " -");//Avoid errors with strings like "142.11998-.948884"
@@ -477,7 +478,7 @@ public class SVGMathObject extends MultiShapeObject {
 //        return point;
 //    }
     private JMPathPoint pathCubicBezier(JMPath path, JMPathPoint previousPoint, double cx1, double cy1, double cx2, double cy2, double x, double y) {
-        JMPathPoint point = new JMPathPoint(new Point(currentX, currentY), true, JMPathPoint.TYPE_VERTEX);
+        JMPathPoint point = new JMPathPoint(new Dot(currentX, currentY), true, JMPathPointType.VERTEX);
         point.isCurved = true;
         previousPoint.cp1.v.x = cx1;
         previousPoint.cp1.v.y = cy1;
@@ -489,7 +490,7 @@ public class SVGMathObject extends MultiShapeObject {
 
     //Adds a simple point to the path, with control points equal to the point
     private JMPathPoint pathLineTo(JMPath path, double currentX, double currentY, boolean isVisible) {
-        JMPathPoint point = new JMPathPoint(new Point(currentX, currentY), isVisible, JMPathPoint.TYPE_VERTEX);
+        JMPathPoint point = new JMPathPoint(new Dot(currentX, currentY), isVisible, JMPathPointType.VERTEX);
         point.isCurved = false;
         point.cp1.v.x = currentX;
         point.cp1.v.y = currentY;

@@ -41,7 +41,7 @@ public class JMImage extends MathObject {
     }
 
     @Override
-    public Point getCenter() {
+    public Dot getCenter() {
         return bbox.getCenter();
     }
 
@@ -108,14 +108,14 @@ public class JMImage extends MathObject {
     }
 
     @Override
-    public <T extends MathObject> T scale(Point scaleCenter, double sx, double sy, double sz) {
+    public <T extends MathObject> T scale(Dot scaleCenter, double sx, double sy, double sz) {
         bbox.copyFrom(Rect.make(bbox.getUL().scale(scaleCenter, sx, sy, sz), bbox.getDR().scale(scaleCenter, sx, sy, sz)));
         return (T) this;
     }
 
 
     @Override
-    public <T extends MathObject> T rotate(Point center, double angle) {
+    public <T extends MathObject> T rotate(Dot center, double angle) {
         //For now, ignore rotate center
         rotateAngle+=angle;
         return (T) this;

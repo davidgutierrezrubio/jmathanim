@@ -18,7 +18,8 @@
 package com.jmathanim.Utils;
 
 import com.jmathanim.jmathanim.JMathAnimScene;
-import com.jmathanim.mathobjects.Point;
+import com.jmathanim.mathobjects.Dot;
+import com.jmathanim.mathobjects.Dot.DotSyle;
 import com.jmathanim.mathobjects.Stateable;
 import java.awt.Color;
 import java.lang.reflect.Field;
@@ -33,9 +34,7 @@ import javafx.scene.shape.StrokeLineCap;
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
 public class MODrawProperties implements Stateable {
-    public static final int SOLID = 1;
-    public static final int DASHED = 2;
-    public static final int DOTTED = 3;
+    public enum DashStyle {SOLID,DASHED,DOTTED}
 
     //When added a new property here, remember to include it in digestFrom and copyFrom
     public final JMColor drawColor;
@@ -44,13 +43,13 @@ public class MODrawProperties implements Stateable {
     //If false, thickness is computed to be a percentage of the width
     //to ensure zoom or resolution doesn't affect the result
     public Boolean absoluteThickness = true;
-    public Integer dashStyle = 1;
+    public DashStyle dashStyle = DashStyle.SOLID;
     private int layer = 0;
     public boolean castShadows = true;//If shadows, this object should cast them
 
     //Styles used for specified objects
     //Point
-    public Integer dotStyle = Point.DOT_STYLE_CIRCLE;
+    public DotSyle dotStyle = DotSyle.DOT_STYLE_CIRCLE;
     private MODrawProperties mpBackup;
     public StrokeLineCap linecap = StrokeLineCap.ROUND;
 
@@ -94,7 +93,7 @@ public class MODrawProperties implements Stateable {
         layer = mp.layer;
         dotStyle = mp.dotStyle;
         castShadows = mp.castShadows;
-        linecap=mp.linecap;
+        linecap = mp.linecap;
     }
 
     /**
@@ -164,31 +163,23 @@ public class MODrawProperties implements Stateable {
      * @param textContent Name of the dash patterns
      * @return The dash style
      */
-    static Integer parseDashStyle(String str) {
-        int resul = SOLID; //default dash
+    static DashStyle parseDashStyle(String str) {
+        DashStyle resul = DashStyle.SOLID; //default dash
         try {
-            Field field = MODrawProperties.class.getField(str.toUpperCase());
-            resul = field.getInt(field);
-        } catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException ex) {
-            JMathAnimScene.logger.warn("Dash pattern {} not recognized ", str);
+            resul = DashStyle.valueOf(str.toUpperCase());
+        } catch (IllegalArgumentException  e) {
+             JMathAnimScene.logger.warn("Dash pattern {} not recognized, using default {}", str,resul);
         }
+        
         return resul;
     }
 
-    static int parseDotStyle(String str) {
-        int resul = Point.DOT_STYLE_CIRCLE; //default dash
+    static DotSyle parseDotStyle(String str) {
+        DotSyle resul = DotSyle.DOT_STYLE_CIRCLE; //default dash
         try {
-            String styleName = str.toUpperCase();
-
-            //Adds the suffix, if it doesn't include it already
-            if (!styleName.contains("_")) {
-                styleName = "DOT_STYLE_" + styleName;
-            }
-
-            Field field = Point.class.getField(styleName);
-            resul = field.getInt(field);
-        } catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException ex) {
-            JMathAnimScene.logger.warn("Dash pattern {} not recognized ", str);
+            resul = DotSyle.valueOf(str.toUpperCase());
+        } catch (IllegalArgumentException  e) {
+             JMathAnimScene.logger.warn("Dot style {} not recognized, using default {}", str,resul);
         }
         return resul;
     }

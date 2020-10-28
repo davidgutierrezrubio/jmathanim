@@ -28,7 +28,7 @@ import com.jmathanim.jmathanim.Scene2DAwt;
 import com.jmathanim.mathobjects.LaTeXMathObject;
 import com.jmathanim.mathobjects.Line;
 import com.jmathanim.mathobjects.MOProperties.ArcAttributes;
-import com.jmathanim.mathobjects.Point;
+import com.jmathanim.mathobjects.Dot;
 import com.jmathanim.mathobjects.Shape;
 import java.util.ArrayList;
 
@@ -62,7 +62,7 @@ public class TesterTransform extends Scene2DAwt {
         Shape c = Shape.circle().drawColor("#de4463").thickness(.5).rotate(45*DEGREES);
         Shape sq = Shape.square().stackTo(Anchor.BY_CENTER).scale(1.4142).drawColor("#edc988").thickness(.5);
         Shape c2 = c.copy();
-        add(Point.at(0,0).style("dotYellowPlus"));
+        add(Dot.at(0,0).style("dotYellowPlus"));
         add(c, sq);
          add(Shape.segment(c.getPoint(0), sq.getPoint(0)).drawColor(JMColor.BLUE));
         for (int n = 0; n < c.jmpath.size(); n++) {
@@ -93,7 +93,7 @@ public class TesterTransform extends Scene2DAwt {
 
     private void test3() {
         Shape circ = Shape.circle().drawColor("#de4463").thickness(2);
-        Shape seg = Shape.segment(Point.at(0, 0), Point.at(1.6, -.3)).drawColor("#edc988").thickness(2);
+        Shape seg = Shape.segment(Dot.at(0, 0), Dot.at(1.6, -.3)).drawColor("#edc988").thickness(2);
         add(circ, seg);
         Shape circ2 = circ.copy();
         play.transform(5, circ, seg);
@@ -106,7 +106,7 @@ public class TesterTransform extends Scene2DAwt {
     private void test4() {
         //TODO: Treat special case to lines
         Shape circ = Shape.circle().drawColor("#de4463").thickness(2);
-        Line seg = Shape.line(Point.at(1, 0), Point.at(1, -1)).drawColor("#edc988").thickness(2);
+        Line seg = Shape.line(Dot.at(1, 0), Dot.at(1, -1)).drawColor("#edc988").thickness(2);
         add(circ, seg);
         Shape circ2 = circ.copy();
         play.transform(5, circ, Shape.segment(seg).scale(3));
@@ -118,7 +118,7 @@ public class TesterTransform extends Scene2DAwt {
 
     public void test5a() {
         Shape circ = Shape.circle().drawColor("#de4463").thickness(2).scale(.7);
-        Line l = Shape.line(Point.at(.3, 1), Point.at(1, -1)).shift(.6, .8).drawColor("#edc988").thickness(2);
+        Line l = Shape.line(Dot.at(.3, 1), Dot.at(1, -1)).shift(.6, .8).drawColor("#edc988").thickness(2);
         Shape seg = Shape.segment(l).scale(2);
         add(circ, seg);
         play.transform(5, circ, seg);
@@ -128,7 +128,7 @@ public class TesterTransform extends Scene2DAwt {
 
     public void test5() {
         Shape circ = Shape.circle().drawColor("#de4463").thickness(2).scale(.7);
-        Shape seg = Shape.line(Point.at(.3, 1), Point.at(1, -1)).shift(.6, .8).drawColor("#edc988").thickness(2);
+        Shape seg = Shape.line(Dot.at(.3, 1), Dot.at(1, -1)).shift(.6, .8).drawColor("#edc988").thickness(2);
         add(circ, seg);
         Shape circ2 = circ.copy();
 //        play.transform(5, circ, Shape.segment(seg).scale(3));
@@ -156,15 +156,15 @@ public class TesterTransform extends Scene2DAwt {
             tr.applyTransform(circ);
             tr.applyTransform(seg);
             //Rotate the circle so that point 0 lies in (r,0)
-            Point p0 = circ.getPoint(0);
+            Dot p0 = circ.getPoint(0);
             circ.rotate(-p0.v.getAngle());
             final double lambda = 1d / (1 - tt);
 
-            Point A = circ.getPoint(0).copy();
-            Point B = A.copy().scale(Point.at(0, 0), lambda, lambda);
+            Dot A = circ.getPoint(0).copy();
+            Dot B = A.copy().scale(Dot.at(0, 0), lambda, lambda);
             circ.scale(lambda);
             circ.shift(B.to(A));
-            Point pointOfRect = seg.getPoint(0).copy();
+            Dot pointOfRect = seg.getPoint(0).copy();
             pointOfRect.v.y = 0;
             circ.shift(A.to(pointOfRect).mult(tt));
 //            advanceFrame();
@@ -180,8 +180,8 @@ public class TesterTransform extends Scene2DAwt {
     private void test6() {
         double ang = 360 * DEGREES;
         double ang2 = 180 * DEGREES;
-        Shape arc = Shape.arc(ang).rotate(Point.at(0, 0), -.5 * ang).thickness(3);
-        Shape seg = Shape.segment(Point.at(1, -.5 * ang), Point.at(1, .5 * ang)).thickness(2);
+        Shape arc = Shape.arc(ang).rotate(Dot.at(0, 0), -.5 * ang).thickness(3);
+        Shape seg = Shape.segment(Dot.at(1, -.5 * ang), Dot.at(1, .5 * ang)).thickness(2);
 //        play.showCreation(arc, seg);
         add(arc, seg);
         play.adjustToObjects(10, arc, seg);
@@ -213,7 +213,7 @@ public class TesterTransform extends Scene2DAwt {
 
     private void doa(Shape arcbase, Shape arc, double t) {
         ArcAttributes attrs = (ArcAttributes) arcbase.attrs;
-        Point center = attrs.center;
+        Dot center = attrs.center;
         double angle = attrs.angle;
         double radius = attrs.radius;
         double angRot = center.to(arcbase.getPoint(0)).getAngle();

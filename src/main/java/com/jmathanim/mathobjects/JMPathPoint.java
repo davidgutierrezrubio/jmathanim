@@ -30,41 +30,39 @@ import java.text.DecimalFormat;
  */
 public class JMPathPoint extends MathObject implements Updateable, Stateable {
 
-    public static final int TYPE_NONE = 0;
-    public static final int TYPE_VERTEX = 1;
-    public static final int TYPE_INTERPOLATION_POINT = 2;
-    public static final int TYPE_CONTROL_POINT = 3;
-
-    public final Point p;
-    public final Point cp1, cp2; //Cómo debe entrar (cp2) y cómo debe salir (cp1)
+    public enum JMPathPointType {
+        NONE, VERTEX, INTERPOLATION_POINT, CONTROL_POINT
+    }
+    public final Dot p;
+    public final Dot cp1, cp2; //Cómo debe entrar (cp2) y cómo debe salir (cp1)
     public Vec cp1vBackup, cp2vBackup;//Backup values, to restore after removing interpolation points
     public boolean isThisSegmentVisible;
     public boolean isCurved;
-    public int type; //Vertex, interpolation point, etc.
+    public JMPathPointType type; //Vertex, interpolation point, etc.
 
     public int numDivisions = 0;//This number is used for convenience to store easily number of divisions when subdiving a path
     private JMPathPoint pState;
 
     //Builders
     public static JMPathPoint lineTo(double x, double y) {
-        return lineTo(new Point(x, y));
+        return lineTo(new Dot(x, y));
     }
 
-    public static JMPathPoint lineTo(Point p) {
+    public static JMPathPoint lineTo(Dot p) {
         //Default values: visible, type vertex, straight
-        JMPathPoint jmp = new JMPathPoint(p, true, TYPE_VERTEX);
+        JMPathPoint jmp = new JMPathPoint(p, true, JMPathPointType.VERTEX);
         jmp.isCurved = false;
         return jmp;
     }
 
-    public static JMPathPoint curveTo(Point p) {
+    public static JMPathPoint curveTo(Dot p) {
         //Default values: visible, type vertex, straight
-        JMPathPoint jmp = new JMPathPoint(p, true, TYPE_VERTEX);
+        JMPathPoint jmp = new JMPathPoint(p, true, JMPathPointType.VERTEX);
         jmp.isCurved = true;
         return jmp;
     }
 
-    public JMPathPoint(Point p, boolean isVisible, int type) {
+    public JMPathPoint(Dot p, boolean isVisible, JMPathPointType type) {
         super();
         this.p = p;
 //        this.p.visible = false;
@@ -77,7 +75,7 @@ public class JMPathPoint extends MathObject implements Updateable, Stateable {
 
     @Override
     public JMPathPoint copy() {
-        Point pCopy = p.copy();
+        Dot pCopy = p.copy();
         JMPathPoint resul = new JMPathPoint(pCopy, isThisSegmentVisible, type);
         resul.cp1.v.copyFrom(cp1.v);
         resul.cp2.v.copyFrom(cp2.v);
@@ -92,12 +90,12 @@ public class JMPathPoint extends MathObject implements Updateable, Stateable {
         return resul;
     }
 
-    void setControlPoint1(Point cp) {
+    void setControlPoint1(Dot cp) {
         cp1.v.x = cp.v.x;
         cp1.v.y = cp.v.y;
     }
 
-    void setControlPoint2(Point cp) {
+    void setControlPoint2(Dot cp) {
         cp2.v.x = cp.v.x;
         cp2.v.y = cp.v.y;
     }
@@ -113,10 +111,10 @@ public class JMPathPoint extends MathObject implements Updateable, Stateable {
             labelStr = label;
         }
         String resul = labelStr + "(" + decimalFormat.format(p.v.x) + ", " + decimalFormat.format(p.v.y) + ")";
-        if (type == TYPE_INTERPOLATION_POINT) {
+        if (type == JMPathPointType.INTERPOLATION_POINT) {
             resul = "I" + resul;
         }
-        if (type == TYPE_VERTEX) {
+        if (type == JMPathPointType.VERTEX) {
             resul = "V" + resul;
         }
         if (!isThisSegmentVisible) {
@@ -141,10 +139,9 @@ public class JMPathPoint extends MathObject implements Updateable, Stateable {
 //        cp2.v.addInSite(shiftVector);
 //        return (T) this;
 //    }
-  @Override
+    @Override
     public void update(JMathAnimScene scene) {
     }
-
 
     @Override
     public int getUpdateLevel() {
@@ -191,7 +188,7 @@ public class JMPathPoint extends MathObject implements Updateable, Stateable {
     }
 
     @Override
-    public Point getCenter() {
+    public Dot getCenter() {
         return p;
     }
 

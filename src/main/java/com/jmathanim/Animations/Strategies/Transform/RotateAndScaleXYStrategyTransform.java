@@ -20,7 +20,7 @@ package com.jmathanim.Animations.Strategies.Transform;
 
 import com.jmathanim.Animations.AffineJTransform;
 import com.jmathanim.jmathanim.JMathAnimScene;
-import com.jmathanim.mathobjects.Point;
+import com.jmathanim.mathobjects.Dot;
 import com.jmathanim.mathobjects.Shape;
 
 /**
@@ -37,15 +37,15 @@ public class RotateAndScaleXYStrategyTransform extends MatrixTransformStrategy{
 
     @Override
     public void applyTransform(double t,double lt) {
-        Point A = originalShapeBaseCopy.getJMPoint(0).p;
-        Point B = originalShapeBaseCopy.getJMPoint(1).p;
-        Point C = originalShapeBaseCopy.getJMPoint(2).p;
-        Point D = mobjDestiny.getJMPoint(0).p;
-        Point E = mobjDestiny.getJMPoint(1).p;
-        Point F = mobjDestiny.getJMPoint(2).p;
+        Dot A = originalShapeBaseCopy.getJMPoint(0).p;
+        Dot B = originalShapeBaseCopy.getJMPoint(1).p;
+        Dot C = originalShapeBaseCopy.getJMPoint(2).p;
+        Dot D = mobjDestiny.getJMPoint(0).p;
+        Dot E = mobjDestiny.getJMPoint(1).p;
+        Dot F = mobjDestiny.getJMPoint(2).p;
 
         //First map A,B into (0,0) and (1,0)
-        AffineJTransform tr1 = AffineJTransform.createDirect2DHomothecy(A, B, new Point(0, 0), new Point(1, 0), 1);
+        AffineJTransform tr1 = AffineJTransform.createDirect2DHomothecy(A, B, new Dot(0, 0), new Dot(1, 0), 1);
 
         //Now I create a transformation that adjust the y-scale, proportionally
         //This transform will be applied inversely too

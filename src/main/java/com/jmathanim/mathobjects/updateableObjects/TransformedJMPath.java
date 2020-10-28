@@ -21,7 +21,7 @@ package com.jmathanim.mathobjects.updateableObjects;
 import com.jmathanim.Animations.AffineJTransform;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.JMPathPoint;
-import com.jmathanim.mathobjects.Point;
+import com.jmathanim.mathobjects.Dot;
 import com.jmathanim.mathobjects.Shape;
 
 /**
@@ -52,9 +52,9 @@ public class TransformedJMPath extends Shape{
             for (int n = 0; n < size; n++) {
                 JMPathPoint jmPDst = getJMPoint(n);
                 JMPathPoint pSrc = srcOBj.getJMPoint(n);
-                Point pDst = transform.getTransformedObject(pSrc.p);
-                Point cp1Dst = transform.getTransformedObject(pSrc.cp1);
-                Point cp2Dst = transform.getTransformedObject(pSrc.cp2);
+                Dot pDst = transform.getTransformedObject(pSrc.p);
+                Dot cp1Dst = transform.getTransformedObject(pSrc.cp1);
+                Dot cp2Dst = transform.getTransformedObject(pSrc.cp2);
 
                 jmPDst.p.v.x = pDst.v.x;
                 jmPDst.p.v.y = pDst.v.y;

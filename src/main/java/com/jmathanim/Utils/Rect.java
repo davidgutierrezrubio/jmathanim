@@ -17,7 +17,7 @@
  */
 package com.jmathanim.Utils;
 
-import com.jmathanim.mathobjects.Point;
+import com.jmathanim.mathobjects.Dot;
 import com.jmathanim.mathobjects.Stateable;
 
 /**
@@ -31,7 +31,7 @@ public class Rect implements Stateable{//TODO: Adjust this to 3D coordinates
     private Rect rBackup;
 
     
-    public static Rect make(Point a,Point b){
+    public static Rect make(Dot a,Dot b){
         double xmin=Math.min(a.v.x,b.v.x);
         double xmax=Math.max(a.v.x,b.v.x);
         double ymin=Math.min(a.v.y,b.v.y);
@@ -244,10 +244,10 @@ public class Rect implements Stateable{//TODO: Adjust this to 3D coordinates
     /**
      * Returns the center of this Rect
      *
-     * @return A {@link Point} representing the rect center
+     * @return A {@link Dot} representing the rect center
      */
-    public Point getCenter() {
-        return new Point(.5 * (xmin + xmax), .5 * (ymin + ymax),.5 * (zmin + zmax));
+    public Dot getCenter() {
+        return new Dot(.5 * (xmin + xmax), .5 * (ymin + ymax),.5 * (zmin + zmax));
     }
 
     /**
@@ -285,36 +285,36 @@ public class Rect implements Stateable{//TODO: Adjust this to 3D coordinates
         return new Rect((1 - t) * xmin + t * rDst.xmin, (1 - t) * ymin + t * rDst.ymin, (1 - t) * xmax + t * rDst.xmax, (1 - t) * ymax + t * rDst.ymax);
     }
 
-    public Point getLeft() {
-        return new Point(xmin, .5 * (ymin + ymax));
+    public Dot getLeft() {
+        return new Dot(xmin, .5 * (ymin + ymax));
     }
 
-    public Point getRight() {
-        return new Point(xmax, .5 * (ymin + ymax));
+    public Dot getRight() {
+        return new Dot(xmax, .5 * (ymin + ymax));
     }
 
-    public Point getUpper() {
-        return new Point(.5 * (xmin + xmax), ymax);
+    public Dot getUpper() {
+        return new Dot(.5 * (xmin + xmax), ymax);
     }
 
-    public Point getLower() {
-        return new Point(.5 * (xmin + xmax), ymin);
+    public Dot getLower() {
+        return new Dot(.5 * (xmin + xmax), ymin);
     }
 
-    public Point getUL() {
-        return new Point(xmin, ymax);
+    public Dot getUL() {
+        return new Dot(xmin, ymax);
     }
 
-    public Point getUR() {
-        return new Point(xmax, ymax);
+    public Dot getUR() {
+        return new Dot(xmax, ymax);
     }
 
-    public Point getDL() {
-        return new Point(xmin, ymin);
+    public Dot getDL() {
+        return new Dot(xmin, ymin);
     }
 
-    public Point getDR() {
-        return new Point(xmax, ymin);
+    public Dot getDR() {
+        return new Dot(xmax, ymin);
     }
 
     /**
@@ -338,7 +338,7 @@ public class Rect implements Stateable{//TODO: Adjust this to 3D coordinates
      * @return The scaled rectangle.
      */
     public Rect scaled(double xs, double ys) {
-        Point p = getCenter();
+        Dot p = getCenter();
         double xminNew = p.v.x - .5 * getWidth() * xs;
         double xmaxNew = p.v.x + .5 * getWidth() * xs;
         double yminNew = p.v.y - .5 * getHeight() * ys;
@@ -377,7 +377,7 @@ public class Rect implements Stateable{//TODO: Adjust this to 3D coordinates
         this.copyFrom(this.rBackup);
     }
 
-    public void scale(Point scaleCenter, double sx, double sy, double sz) {
+    public void scale(Dot scaleCenter, double sx, double sy, double sz) {
         
         
     }
