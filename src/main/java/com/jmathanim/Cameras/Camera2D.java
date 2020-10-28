@@ -113,10 +113,7 @@ public class Camera2D extends Camera {
         return new double[]{mx, my};
     }
 
-    @Override
-    public double relScalarToWidth(double scalar) {
-        return screenToMath(scalar * screenWidth);
-    }
+   
 
     @Override
     public double screenToMath(double screenScalar) {

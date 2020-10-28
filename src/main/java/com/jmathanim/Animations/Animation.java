@@ -38,6 +38,7 @@ public abstract class Animation {
 //    private int numFrames; //Number of frames of animation
 //    private int frame;
     private boolean isInitialized = false;
+    private boolean isEnded = false;
     protected final JMathAnimScene scene;
 
     public Animation() {
@@ -71,6 +72,7 @@ public abstract class Animation {
      * @return True if animation has finished
      */
     public boolean processAnimation(double fps) {
+        if (isEnded) return true;
         if (!isInitialized) { //If not initalized, do it now
 //            initialize();
             isInitialized = true;
@@ -79,7 +81,7 @@ public abstract class Animation {
         boolean resul;
 //        if (frame < numFrames || t < 1 + dt) {
         double lt = lambda(t);
-        if (lt < 1 && lt >= 0) {
+        if (lt < 1 && lt >= 0 && t<1 && t>=0) {
             this.doAnim(t,lt);
 
 //            frame++;
@@ -91,6 +93,7 @@ public abstract class Animation {
         if (resul) {
             t = 1;
             this.finishAnimation();
+            isEnded=true;
         }
         return resul;
     }

@@ -222,7 +222,7 @@ public abstract class Camera {
      * @param scalar
      * @return The scalar in math coordinates
      */
-    abstract public double relScalarToWidth(double scalar);
+//    abstract public double relScalarToWidth(double scalar);
     
     abstract public void saveState();
     

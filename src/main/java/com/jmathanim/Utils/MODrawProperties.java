@@ -15,7 +15,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-
 package com.jmathanim.Utils;
 
 import com.jmathanim.jmathanim.JMathAnimScene;
@@ -25,6 +24,7 @@ import java.awt.Color;
 import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.concurrent.ThreadLocalRandom;
+import javafx.scene.shape.StrokeLineCap;
 
 /**
  * This class stores all drawing properties of a MathObject like color,
@@ -32,8 +32,7 @@ import java.util.concurrent.ThreadLocalRandom;
  *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
-public class MODrawProperties implements Stateable{
-
+public class MODrawProperties implements Stateable {
     public static final int SOLID = 1;
     public static final int DASHED = 2;
     public static final int DOTTED = 3;
@@ -47,12 +46,13 @@ public class MODrawProperties implements Stateable{
     public Boolean absoluteThickness = true;
     public Integer dashStyle = 1;
     private int layer = 0;
-    public boolean castShadows=true;//If shadows, this object should cast them
+    public boolean castShadows = true;//If shadows, this object should cast them
 
     //Styles used for specified objects
     //Point
     public Integer dotStyle = Point.DOT_STYLE_CIRCLE;
     private MODrawProperties mpBackup;
+    public StrokeLineCap linecap = StrokeLineCap.ROUND;
 
     public MODrawProperties() {
         drawColor = new JMColor(1, 1, 1, 1);
@@ -76,6 +76,25 @@ public class MODrawProperties implements Stateable{
         dotStyle = (prop.dotStyle == null ? dotStyle : prop.dotStyle);
         castShadows = prop.castShadows;
         layer = prop.layer;
+        linecap = prop.linecap;
+    }
+
+    /**
+     * Copy attributes from the given {@link MODrawProperties} object
+     *
+     * @param mp The object to copy attributes from.
+     */
+    public void copyFrom(MODrawProperties mp) {
+        drawColor.copyFrom(mp.drawColor);
+        fillColor.copyFrom(mp.fillColor);
+        thickness = mp.thickness;
+        dashStyle = mp.dashStyle;
+        absoluteThickness = mp.absoluteThickness;
+        dashStyle = mp.dashStyle;
+        layer = mp.layer;
+        dotStyle = mp.dotStyle;
+        castShadows = mp.castShadows;
+        linecap=mp.linecap;
     }
 
     /**
@@ -127,7 +146,6 @@ public class MODrawProperties implements Stateable{
         }
     }
 
-
     /**
      * Returns a copy of this object. All objects are raw-copied.
      *
@@ -137,23 +155,6 @@ public class MODrawProperties implements Stateable{
         MODrawProperties resul = new MODrawProperties();
         resul.copyFrom(this);
         return resul;
-    }
-
-    /**
-     * Copy attributes from the given {@link MODrawProperties} object
-     *
-     * @param mp The object to copy attributes from.
-     */
-    public void copyFrom(MODrawProperties mp) {
-        drawColor.copyFrom(mp.drawColor);
-        fillColor.copyFrom(mp.fillColor);
-        thickness = mp.thickness;
-        dashStyle = mp.dashStyle;
-        absoluteThickness = mp.absoluteThickness;
-        dashStyle = mp.dashStyle;
-        layer = mp.layer;
-        dotStyle = mp.dotStyle;
-        castShadows=mp.castShadows;
     }
 
     /**
@@ -208,13 +209,12 @@ public class MODrawProperties implements Stateable{
     }
 
     /**
-     * Returns a new {@link MODrawProperties} created from the
-     * current style. If no such style exists, a default
-     * MathObjectDrawingProperties is created.
+     * Returns a new {@link MODrawProperties} created from the current style. If
+     * no such style exists, a default MathObjectDrawingProperties is created.
      *
      * @param name Style name
-     * @return A new {@link MODrawProperties} object created from the
-     * current class.
+     * @return A new {@link MODrawProperties} object created from the current
+     * class.
      */
     public static MODrawProperties createFromStyle(String name) {
         MODrawProperties resul = new MODrawProperties();
@@ -232,7 +232,7 @@ public class MODrawProperties implements Stateable{
 
     @Override
     public void saveState() {
-         this.mpBackup = this.copy();
+        this.mpBackup = this.copy();
     }
 
     @Override

@@ -185,4 +185,7 @@ public class Vec implements Stateable {
     public static Vec to(double x, double y, double z) {
         return new Vec(x, y, z);
     }
+    public static Vec to(double x, double y) {
+        return new Vec(x, y);
+    }
 }

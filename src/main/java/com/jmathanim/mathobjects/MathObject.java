@@ -28,6 +28,7 @@ import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.MOProperties.MathObjectAttributes;
 import com.jmathanim.mathobjects.updateableObjects.Updateable;
 import java.util.HashSet;
+import javafx.scene.shape.StrokeLineCap;
 
 /**
  *
@@ -551,6 +552,11 @@ public abstract class MathObject implements Drawable, Updateable, Stateable {
      */
     public <T extends MathObject> T dotStyle(int dotStyle) {
         this.mp.dotStyle = dotStyle;
+        return (T) this;
+    }
+
+    public <T extends MathObject> T linecap(StrokeLineCap strokeLineCap) {
+        this.mp.linecap = strokeLineCap;
         return (T) this;
     }
 

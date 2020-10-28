@@ -31,6 +31,7 @@ import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.Scene2D;
 import com.jmathanim.mathobjects.Arrow2D;
+import com.jmathanim.mathobjects.Arrow2D.ArrowType;
 import com.jmathanim.mathobjects.Axes;
 import com.jmathanim.mathobjects.CanonicalJMPath;
 import com.jmathanim.mathobjects.FunctionGraph;
@@ -46,6 +47,8 @@ import com.jmathanim.mathobjects.Shape;
 import com.jmathanim.mathobjects.updateableObjects.CameraAlwaysAdjusting;
 import com.jmathanim.mathobjects.updateableObjects.PointOnFunctionGraph;
 import java.util.ArrayList;
+import javafx.scene.shape.StrokeLineCap;
+import static tests.myScene.pepe.paco;
 
 /**
  *
@@ -57,26 +60,35 @@ public class myScene extends Scene2D {
     public void setupSketch() {
 //        conf.setResourcesDir(".");
 //        conf.setOutputDir("c:\\media");
-        ConfigLoader.parseFile("production.xml");
-//        ConfigLoader.parseFile("preview.xml");
+//        ConfigLoader.parseFile("production.xml");
+        ConfigLoader.parseFile("preview.xml");
         ConfigLoader.parseFile("dark.xml");
 //        ConfigLoader.parseFile("axes_and_functions_light.xml");
-
 //        conf.setHighQuality();
 //        conf.setCreateMovie(true);
     }
-
-    public int factorial(int n) {
-        int resul = 1;
-        for (int i = 1; i <= n; i++) {
-            resul *= i;
-        }
-        return resul;
-    }
-
+enum pepe {paco, juan}
     @Override
     public void runSketch() {
-        teoremaPitagoras();
+        System.out.println("paco es "+paco);
+        pepe a=pepe.paco;
+        
+    }
+
+    public void variosThickness() {
+        double th = 1;
+        int nmax = 4;
+        for (double n = 0; n < nmax; n++) {
+            Shape s = Shape.segment(Point.at(-1.5 + n * 2d / nmax, -1), Vec.to(0, 1)).thickness(th).shift(.3, 0);
+            s.mp.absoluteThickness = false;
+            LaTeXMathObject t = LaTeXMathObject.make("$" + th + "$");
+            t.stackTo(s, Anchor.LOWER);
+            th += 1;
+            add(s, t);
+        }
+        waitSeconds(1);
+        play.cameraScale(5, .2);
+        waitSeconds(3);
     }
 
     public void pruebaAbsoluteThickness() {
@@ -222,8 +234,8 @@ public class myScene extends Scene2D {
 
     private void absoluteThings() {
 
-        Arrow2D ar = Arrow2D.makeSimpleArrow2D(Point.at(0, 1), Point.at(0, 0), Arrow2D.TYPE_3);
-        Arrow2D ar2 = Arrow2D.makeSimpleArrow2D(Point.at(-1, -.61), Point.at(-.1, -.1), Arrow2D.TYPE_1);
+        Arrow2D ar = Arrow2D.makeSimpleArrow2D(Point.at(0, 1), Point.at(0, 0), ArrowType.TYPE_3);
+        Arrow2D ar2 = Arrow2D.makeSimpleArrow2D(Point.at(-1, -.61), Point.at(-.1, -.1), ArrowType.TYPE_1);
 //        Shape s = Shape.segment(Point.at(0, 1), Point.at(0, 0));
         Shape c = Shape.circle().drawColor(JMColor.RED);
 //        ar.thickness(3);
@@ -399,61 +411,56 @@ public class myScene extends Scene2D {
     }
 
     private void teoremaPitagoras() {
-
         ConfigLoader.parseFile("pitagoras.xml");
-        //Triangle
-        Shape triangle1 = Shape.polygon(Point.at(0, 0), Point.at(3, 0), Point.at(1, 4));
-        triangle1.style("triangulo").layer(3);
+        drawPitagorasProof(0, true, 2);
+        waitSeconds(5);
+        play.fadeOutAll();
+        drawPitagorasProof(-.7, false, 2);
+        waitSeconds(5);
+        play.fadeOutAll();
+        drawPitagorasProof(1, false, 2);
+        waitSeconds(5);
+        play.fadeOutAll();
+        
+    }
 
-        double animationTimes = 2;
-//        CameraAlwaysAdjusting c = new CameraAlwaysAdjusting(camera,.1,.1);
+    public void drawPitagorasProof(double xt,boolean correct,double animationTime) {
+        //Triangle
+        Shape triangle1 = Shape.polygon(Point.at(0, 0), Point.at(3, 0), Point.at(xt, 4));
+        triangle1.style("triangulo").layer(3);
+        //        CameraAlwaysAdjusting c = new CameraAlwaysAdjusting(camera,.1,.1);
 //        registerObjectToBeUpdated(c);
         camera.setCenter(5.3, 1.3);
         camera.setWidth(26.156);
-
         Shape sqC1 = Shape.square().style("cateto").layer(1);
         Shape sqC2 = Shape.square().style("cateto").layer(1);
         Shape sqHip = Shape.square().style("hipotenusa").layer(1);
-
         LaTeXMathObject aSquared = LaTeXMathObject.make("$a^2$").setHeight(.5).putAt(sqC1.getCenter(), Anchor.BY_CENTER).layer(2).rotate(-90 * DEGREES);
         LaTeXMathObject bSquared = LaTeXMathObject.make("$b^2$").setHeight(.5).putAt(sqC2.getCenter(), Anchor.BY_CENTER).layer(2).rotate(180 * DEGREES);
         double angle = -triangle1.getPoint(2).to(triangle1.getPoint(1)).getAngle();
         LaTeXMathObject cSquared = LaTeXMathObject.make("$c^2$").setHeight(.5).putAt(sqHip.getCenter(), Anchor.BY_CENTER).layer(2).rotate(angle);
 //        add(aSquared, bSquared, cSquared);
-        play.showCreation(animationTimes, triangle1);
-
+        play.showCreation(animationTime, triangle1);
         ApplyCommand com1 = Commands.homothecy(3, sqC1.getPoint(0), sqC1.getPoint(1), triangle1.getPoint(0), triangle1.getPoint(2), sqC1, aSquared);
         ApplyCommand com2 = Commands.homothecy(3, sqC2.getPoint(0), sqC2.getPoint(1), triangle1.getPoint(1), triangle1.getPoint(0), sqC2, bSquared);
         ApplyCommand com3 = Commands.homothecy(3, sqHip.getPoint(0), sqHip.getPoint(1), triangle1.getPoint(2), triangle1.getPoint(1), sqHip, cSquared);
-
         playAnimation(com1, com2, com3);
-
         waitSeconds(1);
-
-        play.shift(animationTimes, 10, sqC2.getBoundingBox().ymin - sqHip.getBoundingBox().ymin, sqHip, cSquared);
-
+        play.shift(animationTime, 10, sqC2.getBoundingBox().ymin - sqHip.getBoundingBox().ymin, sqHip, cSquared);
         Shape triangle2 = triangle1.copy();
-
-        playAnimation(Commands.homothecy(animationTimes, triangle2.getPoint(1), triangle2.getPoint(2), triangle1.getPoint(2), triangle1.getPoint(1), triangle2));
-
+        playAnimation(Commands.homothecy(animationTime, triangle2.getPoint(1), triangle2.getPoint(2), triangle1.getPoint(2), triangle1.getPoint(1), triangle2));
         Shape triangle3 = triangle1.copy();
         Shape triangle4 = triangle2.copy();
-
-        playAnimation(Commands.homothecy(animationTimes, triangle1.getPoint(0), triangle1.getPoint(2), sqC1.getPoint(3), sqC1.getPoint(0), triangle3, triangle4));
-
-        //Triangles from hypothenuse squared
+        playAnimation(Commands.homothecy(animationTime, triangle1.getPoint(0), triangle1.getPoint(2), sqC1.getPoint(3), sqC1.getPoint(0), triangle3, triangle4));
+//Triangles from hypothenuse squared
         Shape triangle5 = triangle2.copy();
-        playAnimation(Commands.homothecy(animationTimes, triangle5.getPoint(1), triangle5.getPoint(2), sqHip.getPoint(0), sqHip.getPoint(3), triangle5));
-
+        playAnimation(Commands.homothecy(animationTime, triangle5.getPoint(1), triangle5.getPoint(2), sqHip.getPoint(0), sqHip.getPoint(3), triangle5));
         Shape triangle6 = triangle5.copy();
-        playAnimation(Commands.homothecy(animationTimes, triangle6.getPoint(1), triangle6.getPoint(2), sqHip.getPoint(3), sqHip.getPoint(2), triangle6));
-
+        playAnimation(Commands.homothecy(animationTime, triangle6.getPoint(1), triangle6.getPoint(2), sqHip.getPoint(3), sqHip.getPoint(2), triangle6));
         Shape triangle7 = triangle6.copy();
-        playAnimation(Commands.homothecy(animationTimes, triangle7.getPoint(1), triangle7.getPoint(2), sqHip.getPoint(2), sqHip.getPoint(1), triangle7));
-
+        playAnimation(Commands.homothecy(animationTime, triangle7.getPoint(1), triangle7.getPoint(2), sqHip.getPoint(2), sqHip.getPoint(1), triangle7));
         Shape triangle8 = triangle7.copy();
-        playAnimation(Commands.homothecy(animationTimes, triangle8.getPoint(1), triangle8.getPoint(2), sqHip.getPoint(1), sqHip.getPoint(0), triangle8));
-
+        playAnimation(Commands.homothecy(animationTime, triangle8.getPoint(1), triangle8.getPoint(2), sqHip.getPoint(1), sqHip.getPoint(0), triangle8));
         MultiShapeObject msh = new MultiShapeObject();
         for (MathObject obj : this.getObjects()) {
             if (obj instanceof Shape) {
@@ -461,27 +468,59 @@ public class myScene extends Scene2D {
             }
         }
         Point center = msh.getBoundingBox().getCenter();
-
         System.out.println(camera.getMathView());
         System.out.println(camera.getMathView().getCenter());
         System.out.println(camera.getMathView().getWidth());
-        //Create balance
+//Create balance
         SVGMathObject balance = SVGMathObject.make("c:\\media\\balanza3.svg");
         balance.fillColor(JMColor.parseColorID("#da6d42"));
         balance.setHeight(20).stackTo(center, Anchor.BY_CENTER);
         balance.shift(0, -.5).layer(0);
         play.fadeIn(balance);
-        //TODO: Layers need to be fixed in JavaFX
-        for (MathObject obj : getObjects()) {
-            System.out.println(obj.getClass().getCanonicalName() + "layer " + obj.getLayer());
-        }
+        
 
-        play.adjustCameraToAllObjects();
-        play.fadeOut(animationTimes, triangle1, triangle8);
-        play.fadeOut(animationTimes, triangle2, triangle6);
-        play.fadeOut(animationTimes, triangle3, triangle5);
-        play.fadeOut(animationTimes, triangle4, triangle7);
-        waitSeconds(7);
+        if (correct) {//Pitagoras correct
+            play.adjustCameraToAllObjects();
+            play.fadeOut(animationTime, triangle1, triangle8);
+            play.fadeOut(animationTime, triangle2, triangle6);
+            play.fadeOut(animationTime, triangle3, triangle5);
+            play.fadeOut(animationTime, triangle4, triangle7);
+        } else {
+            Rect bbox = balance.getBoundingBox();
+            Shape s1 = Shape.segment(bbox.getUL(), bbox.getDR()).scale(.5).linecap(StrokeLineCap.BUTT).drawColor(JMColor.RED).layer(Integer.MAX_VALUE);
+            Shape s2 = Shape.segment(bbox.getUR(), bbox.getDL()).scale(.5).linecap(StrokeLineCap.BUTT).drawColor(JMColor.RED).layer(Integer.MAX_VALUE);
+            double longi = .25 * s1.getPoint(0).to(s1.getPoint(1)).norm();
+            double width = renderer.getThicknessForMathWidth(longi);
+            s1.thickness(width).mp.absoluteThickness = false;
+            s2.thickness(width).mp.absoluteThickness = false;
+            play.showCreation(.25, s1);
+            play.showCreation(.25, s2);
+        }
     }
 
+    public void pruebaThickness() {
+        camera.scale(5);
+        final Point B = Point.at(0, .5).drawColor(JMColor.BLACK);
+        final Point A = Point.at(0, -.5).drawColor(JMColor.BLACK);
+        camera.scale(.5);
+        Shape s1 = Shape.segment(A, B).linecap(StrokeLineCap.BUTT);
+        double longi = s1.getPoint(0).to(s1.getPoint(1)).norm();
+        double width = renderer.getThicknessForMathWidth(longi);
+        s1.thickness(width);
+        s1.mp.absoluteThickness = false;
+        add(s1); //3.4???
+        add(A, B);
+        waitSeconds(3);
+        play.scale(4, .5, s1);
+        play.rotate(4, 90 * DEGREES, s1);
+        waitSeconds(3);
+    }
+
+    public int factorial(int n) {
+        int resul = 1;
+        for (int i = 1; i <= n; i++) {
+            resul *= i;
+        }
+        return resul;
+    }
 }

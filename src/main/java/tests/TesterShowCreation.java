@@ -23,6 +23,7 @@ import com.jmathanim.Utils.ConfigLoader;
 import com.jmathanim.Utils.JMColor;
 import com.jmathanim.jmathanim.Scene2D;
 import com.jmathanim.mathobjects.Arrow2D;
+import com.jmathanim.mathobjects.Arrow2D.ArrowType;
 import com.jmathanim.mathobjects.LaTeXMathObject;
 import com.jmathanim.mathobjects.Line;
 import com.jmathanim.mathobjects.MathObject;
@@ -66,7 +67,7 @@ public class TesterShowCreation extends Scene2D {
     }
 
     private void test6()   {
-        Arrow2D arrow = Arrow2D.makeSimpleArrow2D(Point.at(0, 0), Point.at(1, 1), Arrow2D.TYPE_1);
+        Arrow2D arrow = Arrow2D.makeSimpleArrow2D(Point.at(0, 0), Point.at(1, 1), ArrowType.TYPE_1);
         int numberOfLines = 15;
         MathObject[] objs = new MathObject[numberOfLines];
         for (int n = 0; n < numberOfLines; n++) {
@@ -74,7 +75,7 @@ public class TesterShowCreation extends Scene2D {
             double scale = Math.random();
             
             int randomType=(int) (1+Math.random()*2.9);
-            Arrow2D r = Arrow2D.makeSimpleArrow2D(Point.random(), Point.random(),randomType).drawColor(JMColor.random());
+            Arrow2D r = Arrow2D.makeSimpleArrow2D(Point.random(), Point.random(),ArrowType.TYPE_1).drawColor(JMColor.random());
             objs[n] = r;
         }
         play.showCreation(2, objs);

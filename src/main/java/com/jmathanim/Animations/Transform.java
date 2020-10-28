@@ -41,22 +41,26 @@ import java.util.ArrayList;
  */
 public class Transform extends Animation {
 
-    public static final int METHOD_INTERPOLATE_SIMPLE_SHAPES_BY_POINT = 1;
-    public static final int METHOD_INTERPOLATE_POINT_BY_POINT = 2;
-    public static final int METHOD_HOMOTHECY_TRANSFORM = 3;
-    public static final int METHOD_AFFINE_TRANSFORM = 4;
-    public static final int METHOD_ROTATE_AND_SCALEXY_TRANSFORM = 5;
-    public static final int METHOD_FUNCTION_INTERPOLATION = 6;
+    enum TransformMethod {
+        METHOD_INTERPOLATE_SIMPLE_SHAPES_BY_POINT,
+        METHOD_INTERPOLATE_POINT_BY_POINT,
+        METHOD_HOMOTHECY_TRANSFORM,
+        METHOD_AFFINE_TRANSFORM,
+        METHOD_ROTATE_AND_SCALEXY_TRANSFORM,
+        METHOD_FUNCTION_INTERPOLATION
+    }
 
-    public static final int OPTIMIZE_NONE = 1;
-    public static final int OPTIMIZE_SIMPLE_CONNECTED_PATHS = 2;
+    enum OptimizeMethod {
+        OPTIMIZE_NONE,
+        OPTIMIZE_SIMPLE_CONNECTED_PATHS
+    }
 
     private JMPath jmpathOrig, jmpathDstBackup;
     public final Shape mobjDestiny;
     public final Shape mobjTransformed;
     private MODrawProperties propBase;
-    private Integer transformMethod;
-    private Integer optimizeMethod;
+    private TransformMethod transformMethod;
+    private OptimizeMethod optimizeMethod;
     private boolean shouldOptimizePathsFirst;
     public boolean forceChangeDirection;
     private boolean isFinished;
@@ -144,44 +148,44 @@ public class Transform extends Animation {
     private void determineTransformStrategy() {
         String methodTextOutput = "Transform method: By point";
 
-        transformMethod = METHOD_INTERPOLATE_POINT_BY_POINT;//Default method if not specified
+        transformMethod = TransformMethod.METHOD_INTERPOLATE_POINT_BY_POINT;//Default method if not specified
 
         if ((mobjTransformed instanceof FunctionGraph) && (mobjDestiny instanceof FunctionGraph)) {
-            transformMethod = METHOD_FUNCTION_INTERPOLATION;
+            transformMethod = TransformMethod.METHOD_FUNCTION_INTERPOLATION;
             methodTextOutput = "Transform method: Interpolation of functions";
         }
         if ((mobjTransformed.getObjectType() == MathObject.SEGMENT) && (mobjDestiny.getObjectType() == MathObject.SEGMENT)) {
-            transformMethod = METHOD_HOMOTHECY_TRANSFORM;
+            transformMethod = TransformMethod.METHOD_HOMOTHECY_TRANSFORM;
             methodTextOutput = "Transform method: Homothecy";
         }
 
         //Circle & Circle
         if ((mobjTransformed.getObjectType() == MathObject.CIRCLE) && (mobjDestiny.getObjectType() == MathObject.CIRCLE)) {
-            transformMethod = METHOD_HOMOTHECY_TRANSFORM;
+            transformMethod = TransformMethod.METHOD_HOMOTHECY_TRANSFORM;
             shouldOptimizePathsFirst = true;
             methodTextOutput = "Transform method: Homothecy";
         }
 
         //Rectangle & Rectangle
         if ((mobjTransformed.getObjectType() == MathObject.RECTANGLE) && (mobjDestiny.getObjectType() == MathObject.RECTANGLE)) {
-            transformMethod = METHOD_ROTATE_AND_SCALEXY_TRANSFORM;
+            transformMethod = TransformMethod.METHOD_ROTATE_AND_SCALEXY_TRANSFORM;
             methodTextOutput = "Transform method: Rotate and Scale XY";
         }
 
         //Regular Polygons with the same number of vertices
         if ((mobjTransformed.getObjectType() == MathObject.REGULAR_POLYGON) && (mobjDestiny.getObjectType() == MathObject.REGULAR_POLYGON)) {
             if (mobjTransformed.jmpath.size() == mobjDestiny.jmpath.size()) {
-                transformMethod = METHOD_ROTATE_AND_SCALEXY_TRANSFORM;
+                transformMethod = TransformMethod.METHOD_ROTATE_AND_SCALEXY_TRANSFORM;
                 methodTextOutput = "Transform method: Rotate and Scale XY";
             } else { //Different number of vertices
-                transformMethod = METHOD_INTERPOLATE_POINT_BY_POINT;
+                transformMethod = TransformMethod.METHOD_INTERPOLATE_POINT_BY_POINT;
                 methodTextOutput = "Transform method: By point";
             }
         }
 
         //2 simple, closed curves
         if ((mobjTransformed.getPath().getNumberOfConnectedComponents() == 0) && (mobjDestiny.getPath().getNumberOfConnectedComponents() == 0)) {
-            transformMethod = METHOD_INTERPOLATE_SIMPLE_SHAPES_BY_POINT;
+            transformMethod = TransformMethod.METHOD_INTERPOLATE_SIMPLE_SHAPES_BY_POINT;
             methodTextOutput = "Transform method: Point interpolation between 2 simple closed curves";
         }
 
@@ -231,23 +235,15 @@ public class Transform extends Animation {
         mobjTransformed.setObjectType(mobjDestiny.getObjectType());
     }
 
-    public int getMethod() {
-        return transformMethod;
-    }
-
-    public void setMethod(int method) {
-        this.transformMethod = method;
-    }
-
     @Override
     public void addObjectsToScene(JMathAnimScene scene) {
     }
 
     private void determineOptimizationStrategy() {
-        optimizeMethod = OPTIMIZE_NONE;//default
+        optimizeMethod = OptimizeMethod.OPTIMIZE_NONE;//default
         //Case 1: 2 simple closed curves (square to circle, for example)
         if ((mobjTransformed.jmpath.getNumberOfConnectedComponents() == 0) && (mobjDestiny.jmpath.getNumberOfConnectedComponents() == 0)) {
-            optimizeMethod = OPTIMIZE_SIMPLE_CONNECTED_PATHS;
+            optimizeMethod = OptimizeMethod.OPTIMIZE_SIMPLE_CONNECTED_PATHS;
             return;
         }
     }
@@ -270,11 +266,11 @@ public class Transform extends Animation {
         return this;
     }
 
-    public Integer getTransformMethod() {
+    public TransformMethod getTransformMethod() {
         return transformMethod;
     }
 
-    public Transform transformMethod(Integer transformMethod) {
+    public Transform transformMethod(TransformMethod transformMethod) {
         this.transformMethod = transformMethod;
         return this;
     }

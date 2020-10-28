@@ -99,7 +99,7 @@ public class CameraFX2D extends Camera {
         //xmin,ymin->(0,0)
         //xmax, ymax->(screenWidth,screenHeight)
 //        resul = (int) ((mathScalar - xmin) + mathScalar * screenWidth / xmax);
-        return mathScalar * screenWidth / (xmax - xmin);
+        return mathScalar * screenHeight / (ymax - ymin);
     }
 
     public double[] mathToScreenFX(double mathX, double mathY) {
@@ -117,10 +117,6 @@ public class CameraFX2D extends Camera {
         return new double[]{mx, my};
     }
 
-    @Override
-    public double relScalarToWidth(double scalar) {
-        return screenToMath(scalar * screenWidth);
-    }
 
     @Override
     public double screenToMath(double screenScalar) {

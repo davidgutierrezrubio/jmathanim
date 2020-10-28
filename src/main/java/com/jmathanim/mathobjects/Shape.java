@@ -118,7 +118,7 @@ public class Shape extends MathObject {
         if (this.attrs != null) {
             resul.attrs = this.attrs.copy();
         }
-        
+
         resul.setObjectType(this.getObjectType());//Copy object type
         return resul;
     }
@@ -209,6 +209,10 @@ public class Shape extends MathObject {
 
     public static Shape rectangle(Rect r) {
         return Shape.rectangle(r.getDL(), r.getUR());
+    }
+
+    public static Shape segment(Point A, Vec v) {
+        return segment(A, A.add(v));
     }
 
     //Static methods to build most commons shapes
@@ -343,7 +347,5 @@ public class Shape extends MathObject {
     public static Line line(Point a, Point b) {
         return new Line(a, b);
     }
-
-   
 
 }

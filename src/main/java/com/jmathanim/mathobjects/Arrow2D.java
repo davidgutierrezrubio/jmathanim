@@ -15,7 +15,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-
 package com.jmathanim.mathobjects;
 
 import com.jmathanim.Animations.AffineJTransform;
@@ -38,23 +37,23 @@ import java.util.logging.Logger;
  */
 public class Arrow2D extends MathObject {
 
-    public static final int TYPE_1 = 1;
-    public static final int TYPE_2 = 2;
-    public static final int TYPE_3 = 3;
+    public enum ArrowType {
+        TYPE_1, TYPE_2, TYPE_3
+    }
 
     private Point p1, p2;
     private final Shape body;
-    public int arrowType = 0;
+    public ArrowType arrowType = ArrowType.TYPE_1;
     private final SVGMathObject head;
 //    private final File outputDir;
     private AbsoluteSizeUpdater absoluteSizeUpdater;
     private static final double DEFAULT_ARROW_HEAD_SIZE = .015;
 
     public static Arrow2D makeSimpleArrow2D(Point p1, Point p2) {
-        return makeSimpleArrow2D(p1, p2, TYPE_1);
+        return makeSimpleArrow2D(p1, p2, ArrowType.TYPE_1);
     }
 
-    public static Arrow2D makeSimpleArrow2D(Point p1, Point p2, int type) {
+    public static Arrow2D makeSimpleArrow2D(Point p1, Point p2, ArrowType type) {
         Arrow2D resul = null;
         SVGMathObject svg;
         File outputDir = JMathAnimConfig.getConfig().getResourcesDir();
@@ -162,8 +161,8 @@ public class Arrow2D extends MathObject {
         //Draws arrow body only to (1-alpha)% of total length
         double w1 = r.getCamera().getMathView().getWidth();
         double w2 = r.getFixedCamera().getMathView().getWidth();
-        
-        double alpha = 1 - .5 * w1/w2*head.getBoundingBox().getHeight() / vecLength;
+
+        double alpha = 1 - .5 * w1 / w2 * head.getBoundingBox().getHeight() / vecLength;
         Shape bodyToDraw = body.copy().scale(body.getPoint(0), alpha, alpha);
         bodyToDraw.draw(r);
         arrowHeadCopy.setAbsoluteSize(Anchor.BY_POINT);

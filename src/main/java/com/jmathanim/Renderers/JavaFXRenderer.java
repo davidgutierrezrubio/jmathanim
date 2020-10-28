@@ -61,6 +61,7 @@ import javafx.scene.shape.LineTo;
 import javafx.scene.shape.MoveTo;
 import javafx.scene.shape.Path;
 import javafx.scene.shape.StrokeLineCap;
+import javafx.scene.shape.StrokeLineJoin;
 import javafx.scene.shape.StrokeType;
 import javafx.scene.transform.Rotate;
 import javafx.scene.transform.Translate;
@@ -266,12 +267,12 @@ public class JavaFXRenderer extends Renderer {
         if (cnf.createMovie) {
             if ((frameCount % cnf.fps) == 0) {
                 newLineCounter++;
-                if (newLineCounter % 10 == 0) {
+//                if (newLineCounter % 10 == 0) {
                     newLineCounter=0;
                     System.out.println("[" + 1d * frameCount / cnf.fps + "s]");
-                } else {
-                    System.out.print("[" + 1d * frameCount / cnf.fps + "]");
-                }
+//                } else {
+//                    System.out.print("[" + 1d * frameCount / cnf.fps + "s]");
+//                }
             }
             videoEncoder.writeFrame(bi, frameCount);
 //            File file=new File("C:\\media\\frame"+frameCount+".png");
@@ -328,12 +329,19 @@ public class JavaFXRenderer extends Renderer {
 
     private void applyDrawingStyles(Path path, Shape mobj) {
 
-        path.setStrokeLineCap(StrokeLineCap.ROUND);
+        path.setStrokeLineCap(mobj.mp.linecap);
+        path.setStrokeLineJoin(StrokeLineJoin.ROUND);
         path.setStrokeType(StrokeType.CENTERED);
+//        path.setSmooth(false);
 
         //Stroke width and color
         path.setStroke(mobj.mp.drawColor.getFXColor());
-        path.setStrokeWidth(mobj.mp.thickness * 4);
+        
+        //Compute thickness depending on camera
+        //A thickness of 1 means a javafx thickness 1 in a 800x600with mathview of width 4
+        //In a 800x600, it should mean 1 pixel
+        
+        path.setStrokeWidth(computeThickness(mobj));
 
         //Fill color
         path.setFill(mobj.mp.fillColor.getFXColor());
@@ -349,7 +357,14 @@ public class JavaFXRenderer extends Renderer {
                 path.getStrokeDashArray().addAll(2d, 6d);
                 break;
         }
-
+    }
+    public double computeThickness(MathObject mobj){
+        Camera cam=(mobj.mp.absoluteThickness ? fixedCamera : camera) ;
+        return mobj.mp.thickness/cam.getMathView().getWidth()*2.5d;
+    }
+    public double getThicknessForMathWidth(double w){
+//        return mathScalar * cnf.mediaW / (xmax - ymin);
+        return camera.mathToScreenFX(w)/1.25*camera.getMathView().getWidth()/2d;
     }
 
     @Override
