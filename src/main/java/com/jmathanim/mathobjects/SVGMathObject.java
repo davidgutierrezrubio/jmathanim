@@ -72,7 +72,7 @@ public class SVGMathObject extends MultiShapeObject {
 
     public SVGMathObject(String fname) {
         filename = fname;
-        this.setObjectType(MathObject.SVG);
+        this.setObjectType(MathObjectType.SVG);
         if (!"".equals(filename))
         try {
             importSVG(new File(filename));

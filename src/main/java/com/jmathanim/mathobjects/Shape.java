@@ -223,7 +223,7 @@ public class Shape extends MathObject {
         p1.isThisSegmentVisible = false;
         JMPathPoint p2 = JMPathPoint.lineTo(B);
         obj.jmpath.addJMPoint(p1, p2);
-        obj.setObjectType(SEGMENT);
+        obj.setObjectType(MathObjectType.SEGMENT);
         return obj;
     }
 
@@ -241,7 +241,7 @@ public class Shape extends MathObject {
         JMPathPoint p3 = JMPathPoint.lineTo(B);
         JMPathPoint p4 = JMPathPoint.lineTo(A.v.x, B.v.y);
         obj.jmpath.addJMPoint(p1, p2, p3, p4);
-        obj.setObjectType(RECTANGLE);
+        obj.setObjectType(MathObjectType.RECTANGLE);
         return obj;
     }
 
@@ -268,7 +268,7 @@ public class Shape extends MathObject {
             JMPathPoint p = JMPathPoint.lineTo(newPoint);
             obj.getPath().addJMPoint(p);
         }
-        obj.setObjectType(REGULAR_POLYGON);
+        obj.setObjectType(MathObjectType.REGULAR_POLYGON);
         return obj;
     }
 
@@ -295,7 +295,7 @@ public class Shape extends MathObject {
             obj.jmpath.addJMPoint(jmp);
         }
 //        obj.getPath().generateControlPoints();
-        obj.setObjectType(ARC);
+        obj.setObjectType(MathObjectType.ARC);
 //        obj.getPath().jmPathPoints.remove(0);
 //        obj.getPath().jmPathPoints.remove(-1);
         obj.getPath().getJMPoint(0).isThisSegmentVisible = false;//Open path
@@ -327,7 +327,7 @@ public class Shape extends MathObject {
 //        obj.jmpath.generateControlPoints();
 //        obj.rotate(Math.PI/2);
 
-        obj.setObjectType(CIRCLE);
+        obj.setObjectType(MathObjectType.CIRCLE);
         return obj;
     }
 

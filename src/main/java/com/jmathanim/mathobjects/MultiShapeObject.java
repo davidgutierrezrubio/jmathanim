@@ -50,7 +50,7 @@ public class MultiShapeObject extends MathObject {
         super();
         this.shapes = new ArrayList<>();
         this.shapes.addAll(jmps);
-        this.setObjectType(MathObject.MULTISHAPE);
+        this.setObjectType(MathObjectType.MULTISHAPE);
     }
 
     public boolean addShape(Shape e) {

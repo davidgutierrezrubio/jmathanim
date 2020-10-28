@@ -36,22 +36,28 @@ import javafx.scene.shape.StrokeLineCap;
  */
 public abstract class MathObject implements Drawable, Updateable, Stateable {
 
-    //Implemented types
-    public static final int OTHER = 0;
-    public static final int POINT = 1;
-    public static final int RECTANGLE = 2; //Includes square
-    public static final int CIRCLE = 3;
-    public static final int ELLIPSE = 4;
-    public static final int ARC = 5;
-    public static final int REGULAR_POLYGON = 6;
-    public static final int GENERAL_POLYGON = 7;
-    public static final int SEGMENT = 9;
-    public static final int LINE = 10;
-    public static final int MULTISHAPE = 11;
-    public static final int LATEX_MULTISHAPE = 11;
-    public static final int SVG = 12;
-    public static final int LATEX_SHAPE = 13;
-    public static final int FUNCTION_GRAPH = 14;
+    public enum MathObjectType {
+        OTHER, POINT, RECTANGLE, CIRCLE, ELLIPSE,
+        ARC, REGULAR_POLYGON, GENERAL_POLYGON, SEGMENT,
+        LINE, MULTISHAPE, LATEX_MULTISHAPE, SVG,
+        LATEX_SHAPE, FUNCTION_GRAPH
+    }
+//    //Implemented types
+//    public static final int OTHER = 0;
+//    public static final int POINT = 1;
+//    public static final int RECTANGLE = 2; //Includes square
+//    public static final int CIRCLE = 3;
+//    public static final int ELLIPSE = 4;
+//    public static final int ARC = 5;
+//    public static final int REGULAR_POLYGON = 6;
+//    public static final int GENERAL_POLYGON = 7;
+//    public static final int SEGMENT = 9;
+//    public static final int LINE = 10;
+//    public static final int MULTISHAPE = 11;
+//    public static final int LATEX_MULTISHAPE = 11;
+//    public static final int SVG = 12;
+//    public static final int LATEX_SHAPE = 13;
+//    public static final int FUNCTION_GRAPH = 14;
 
     public MODrawProperties mp;
     public String label = "";
@@ -60,7 +66,7 @@ public abstract class MathObject implements Drawable, Updateable, Stateable {
 
     public boolean absoluteSize = false;
 
-    private int objectType;
+    private MathObjectType objectType;
     /**
      * Scenes where this object belongs.
      *
@@ -350,11 +356,11 @@ public abstract class MathObject implements Drawable, Updateable, Stateable {
         return (T) this;
     }
 
-    public int getObjectType() {
+    public MathObjectType getObjectType() {
         return objectType;
     }
 
-    public final <T extends MathObject> T setObjectType(int objectType) {
+    public final <T extends MathObject> T setObjectType(MathObjectType objectType) {
         this.objectType = objectType;
         return (T) this;
     }
@@ -423,7 +429,7 @@ public abstract class MathObject implements Drawable, Updateable, Stateable {
         mp.dashStyle = dst;
         return (T) this;
     }
-    
+
     public <T extends MathObject> T visible(boolean visible) {
         this.visible = visible;
         return (T) this;

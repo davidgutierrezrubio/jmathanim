@@ -32,6 +32,7 @@ import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.FunctionGraph;
 import com.jmathanim.mathobjects.JMPath;
 import com.jmathanim.mathobjects.MathObject;
+import com.jmathanim.mathobjects.MathObject.MathObjectType;
 import com.jmathanim.mathobjects.Shape;
 import java.util.ArrayList;
 
@@ -154,26 +155,26 @@ public class Transform extends Animation {
             transformMethod = TransformMethod.METHOD_FUNCTION_INTERPOLATION;
             methodTextOutput = "Transform method: Interpolation of functions";
         }
-        if ((mobjTransformed.getObjectType() == MathObject.SEGMENT) && (mobjDestiny.getObjectType() == MathObject.SEGMENT)) {
+        if ((mobjTransformed.getObjectType() == MathObjectType.SEGMENT) && (mobjDestiny.getObjectType() == MathObjectType.SEGMENT)) {
             transformMethod = TransformMethod.METHOD_HOMOTHECY_TRANSFORM;
             methodTextOutput = "Transform method: Homothecy";
         }
 
         //Circle & Circle
-        if ((mobjTransformed.getObjectType() == MathObject.CIRCLE) && (mobjDestiny.getObjectType() == MathObject.CIRCLE)) {
+        if ((mobjTransformed.getObjectType() == MathObjectType.CIRCLE) && (mobjDestiny.getObjectType() == MathObjectType.CIRCLE)) {
             transformMethod = TransformMethod.METHOD_HOMOTHECY_TRANSFORM;
             shouldOptimizePathsFirst = true;
             methodTextOutput = "Transform method: Homothecy";
         }
 
         //Rectangle & Rectangle
-        if ((mobjTransformed.getObjectType() == MathObject.RECTANGLE) && (mobjDestiny.getObjectType() == MathObject.RECTANGLE)) {
+        if ((mobjTransformed.getObjectType() == MathObjectType.RECTANGLE) && (mobjDestiny.getObjectType() == MathObjectType.RECTANGLE)) {
             transformMethod = TransformMethod.METHOD_ROTATE_AND_SCALEXY_TRANSFORM;
             methodTextOutput = "Transform method: Rotate and Scale XY";
         }
 
         //Regular Polygons with the same number of vertices
-        if ((mobjTransformed.getObjectType() == MathObject.REGULAR_POLYGON) && (mobjDestiny.getObjectType() == MathObject.REGULAR_POLYGON)) {
+        if ((mobjTransformed.getObjectType() == MathObjectType.REGULAR_POLYGON) && (mobjDestiny.getObjectType() == MathObjectType.REGULAR_POLYGON)) {
             if (mobjTransformed.jmpath.size() == mobjDestiny.jmpath.size()) {
                 transformMethod = TransformMethod.METHOD_ROTATE_AND_SCALEXY_TRANSFORM;
                 methodTextOutput = "Transform method: Rotate and Scale XY";
