@@ -33,8 +33,8 @@ public class JMPathPoint extends MathObject implements Updateable, Stateable {
     public enum JMPathPointType {
         NONE, VERTEX, INTERPOLATION_POINT, CONTROL_POINT
     }
-    public final Dot p;
-    public final Dot cp1, cp2; //Cómo debe entrar (cp2) y cómo debe salir (cp1)
+    public final Point p;
+    public final Point cp1, cp2; //Cómo debe entrar (cp2) y cómo debe salir (cp1)
     public Vec cp1vBackup, cp2vBackup;//Backup values, to restore after removing interpolation points
     public boolean isThisSegmentVisible;
     public boolean isCurved;
@@ -45,24 +45,24 @@ public class JMPathPoint extends MathObject implements Updateable, Stateable {
 
     //Builders
     public static JMPathPoint lineTo(double x, double y) {
-        return lineTo(new Dot(x, y));
+        return lineTo(new Point(x, y));
     }
 
-    public static JMPathPoint lineTo(Dot p) {
+    public static JMPathPoint lineTo(Point p) {
         //Default values: visible, type vertex, straight
         JMPathPoint jmp = new JMPathPoint(p, true, JMPathPointType.VERTEX);
         jmp.isCurved = false;
         return jmp;
     }
 
-    public static JMPathPoint curveTo(Dot p) {
+    public static JMPathPoint curveTo(Point p) {
         //Default values: visible, type vertex, straight
         JMPathPoint jmp = new JMPathPoint(p, true, JMPathPointType.VERTEX);
         jmp.isCurved = true;
         return jmp;
     }
 
-    public JMPathPoint(Dot p, boolean isVisible, JMPathPointType type) {
+    public JMPathPoint(Point p, boolean isVisible, JMPathPointType type) {
         super();
         this.p = p;
 //        this.p.visible = false;
@@ -75,7 +75,7 @@ public class JMPathPoint extends MathObject implements Updateable, Stateable {
 
     @Override
     public JMPathPoint copy() {
-        Dot pCopy = p.copy();
+        Point pCopy = p.copy();
         JMPathPoint resul = new JMPathPoint(pCopy, isThisSegmentVisible, type);
         resul.cp1.v.copyFrom(cp1.v);
         resul.cp2.v.copyFrom(cp2.v);
@@ -90,12 +90,12 @@ public class JMPathPoint extends MathObject implements Updateable, Stateable {
         return resul;
     }
 
-    void setControlPoint1(Dot cp) {
+    void setControlPoint1(Point cp) {
         cp1.v.x = cp.v.x;
         cp1.v.y = cp.v.y;
     }
 
-    void setControlPoint2(Dot cp) {
+    void setControlPoint2(Point cp) {
         cp2.v.x = cp.v.x;
         cp2.v.y = cp.v.y;
     }
@@ -188,7 +188,7 @@ public class JMPathPoint extends MathObject implements Updateable, Stateable {
     }
 
     @Override
-    public Dot getCenter() {
+    public Point getCenter() {
         return p;
     }
 

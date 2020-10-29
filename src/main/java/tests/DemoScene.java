@@ -26,7 +26,7 @@ import com.jmathanim.Utils.ConfigLoader;
 import com.jmathanim.Utils.JMColor;
 import com.jmathanim.jmathanim.Scene2D;
 import com.jmathanim.mathobjects.LaTeXMathObject;
-import com.jmathanim.mathobjects.Dot;
+import com.jmathanim.mathobjects.Point;
 import com.jmathanim.mathobjects.Shape;
 
 /**
@@ -122,7 +122,7 @@ public class DemoScene extends Scene2D {
         System.out.println("Slide 7");
 //        commandText = createCommandText("{\\tt dark.xml vs light.xml}");
         Shape r1 = Shape.regularPolygon(5).stackTo(Anchor.BY_CENTER).thickness(2).drawColor(JMColor.hex("#008891"));
-        final Dot centroid = r1.getCentroid().drawColor(JMColor.RED);
+        final Point centroid = r1.getCentroid().drawColor(JMColor.RED);
         centroid.style("dotRedCircle");
         centroid.thickness(1);
         

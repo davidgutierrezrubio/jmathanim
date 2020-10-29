@@ -20,7 +20,7 @@ package com.jmathanim.Animations.commands;
 
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.mathobjects.MathObject;
-import com.jmathanim.mathobjects.Dot;
+import com.jmathanim.mathobjects.Point;
 
 /**
  *
@@ -37,8 +37,8 @@ public class CommandArguments {
     public int int3;
     public MathObject mobj1;
     public MathObject mobj2;
-    public Dot point1;
-    public Dot point2;
+    public Point point1;
+    public Point point2;
     public Vec vec1;
     public Vec vec2;
 

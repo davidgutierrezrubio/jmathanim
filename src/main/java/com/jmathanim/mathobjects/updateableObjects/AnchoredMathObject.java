@@ -22,7 +22,7 @@ import com.jmathanim.Utils.Anchor;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.MathObject;
-import com.jmathanim.mathobjects.Dot;
+import com.jmathanim.mathobjects.Point;
 
 /**
  *
@@ -33,21 +33,21 @@ public class AnchoredMathObject implements Updateable {
    
 
     private MathObject mobj;
-    private Dot refPoint;
+    private Point refPoint;
     private MathObject dstObject;
     private int anchorMethodFrom;
     private int anchorMethodTo;
 
-    public AnchoredMathObject(MathObject mobj, Dot refPoint, MathObject dstObject) {
+    public AnchoredMathObject(MathObject mobj, Point refPoint, MathObject dstObject) {
         this(mobj, refPoint, dstObject, Anchor.BY_CENTER);
     }
 
-    public AnchoredMathObject(MathObject mobj, int method, Dot dstPoint) {
+    public AnchoredMathObject(MathObject mobj, int method, Point dstPoint) {
         this(mobj, method, dstPoint, Anchor.BY_POINT);
 
     }
 
-    public AnchoredMathObject(MathObject mobj, Dot refPoint, MathObject dstPoint, int methodTo) {
+    public AnchoredMathObject(MathObject mobj, Point refPoint, MathObject dstPoint, int methodTo) {
         this.mobj = mobj;
         this.refPoint = refPoint;
         this.dstObject = dstPoint;
@@ -58,7 +58,7 @@ public class AnchoredMathObject implements Updateable {
     public AnchoredMathObject(MathObject mobj, int methodFrom, MathObject dstPoint, int methodTo) {
         this.mobj = mobj;
         this.dstObject = dstPoint;
-        this.refPoint = new Dot();//This point is not used, just for computing update level easily
+        this.refPoint = new Point();//This point is not used, just for computing update level easily
         anchorMethodFrom = methodFrom;
         anchorMethodTo = methodTo;
     }
@@ -71,9 +71,9 @@ public class AnchoredMathObject implements Updateable {
     @Override
     public void update(JMathAnimScene scene) {
 
-        Dot dst = Anchor.getAnchorPoint(dstObject, anchorMethodTo);
+        Point dst = Anchor.getAnchorPoint(dstObject, anchorMethodTo);
 
-        Dot src = new Dot();
+        Point src = new Point();
         if (anchorMethodFrom == Anchor.BY_POINT) {
             src = refPoint;
         } else {

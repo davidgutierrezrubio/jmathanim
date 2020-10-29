@@ -30,7 +30,7 @@ import java.text.DecimalFormat;
  *
  * @author David Gutierrez Rubio davidgutierrezrubio@gmail.com
  */
-public class Dot extends MathObject {
+public class Point extends MathObject {
 
     public final Vec v;
     private final Vec vBackup;
@@ -38,16 +38,20 @@ public class Dot extends MathObject {
     public enum DotSyle {
         DOT_STYLE_CIRCLE, DOT_STYLE_CROSS, DOT_STYLE_PLUS
     }
+    public static final Point Origin = Point.at(0, 0);
+    public static final Point UnitX = Point.at(1, 0);
+    public static final Point UnitY = Point.at(0,1);
+    public static final Point UnitZ = new Point(0,0,1);
 
-    public Dot() {
+    public Point() {
         this(0, 0, 0);
     }
 
-    public Dot(Dot p) {
+    public Point(Point p) {
         this(p.v);
     }
 
-    public Dot(Vec v) {
+    public Point(Vec v) {
         this(v.x, v.y, v.z);
     }
 
@@ -58,7 +62,7 @@ public class Dot extends MathObject {
      * @param y y coordinate
      * @param z z coordinate
      */
-    public Dot(double x, double y, double z) {
+    public Point(double x, double y, double z) {
         this(x, y, z, null);
     }
 
@@ -67,7 +71,7 @@ public class Dot extends MathObject {
      * @param x
      * @param y
      */
-    public Dot(double x, double y) {
+    public Point(double x, double y) {
         this(x, y, 0, null);
     }
 
@@ -77,7 +81,7 @@ public class Dot extends MathObject {
      * @param y
      * @param mp
      */
-    public Dot(double x, double y, MODrawProperties mp) {
+    public Point(double x, double y, MODrawProperties mp) {
         this(x, y, 0, mp);
 
     }
@@ -89,7 +93,7 @@ public class Dot extends MathObject {
      * @param z
      * @param mp
      */
-    public Dot(double x, double y, double z, MODrawProperties mp) {
+    public Point(double x, double y, double z, MODrawProperties mp) {
         super(mp);
         this.v = new Vec(x, y, z);
         this.vBackup = new Vec(x, y, z);
@@ -104,19 +108,19 @@ public class Dot extends MathObject {
      * @param y y coordinate
      * @return
      */
-    public static Dot at(double x, double y) {
-        return new Dot(x, y);
+    public static Point at(double x, double y) {
+        return new Point(x, y);
     }
 
-    public static Dot random() {
+    public static Point random() {
         Rect r = JMathAnimConfig.getConfig().getCamera().getMathView();
         double x = r.xmin + (r.xmax - r.xmin) * Math.random();
         double y = r.ymin + (r.ymax - r.ymin) * Math.random();
-        return new Dot(x, y);
+        return new Point(x, y);
     }
 
     @Override
-    public Dot getCenter() {
+    public Point getCenter() {
         return this;
     }
 
@@ -142,7 +146,7 @@ public class Dot extends MathObject {
 //                st = mp.computeScreenThickness(r)/20;
                 st = mp.thickness / 40;
                 dotShape = new Shape();
-                dotShape.getPath().addPoint(Dot.at(-1, 1), Dot.at(1, -1), Dot.at(1, 1), Dot.at(-1, -1));
+                dotShape.getPath().addPoint(Point.at(-1, 1), Point.at(1, -1), Point.at(1, 1), Point.at(-1, -1));
                 dotShape.getJMPoint(0).isThisSegmentVisible = false;
                 dotShape.getJMPoint(2).isThisSegmentVisible = false;
                 dotShape.shift(v).scale(st).drawColor(mp.drawColor).thickness(mp.thickness);
@@ -151,7 +155,7 @@ public class Dot extends MathObject {
 //                st = mp.computeScreenThickness(r)/20;
                 st = mp.thickness / 70;
                 dotShape = new Shape();
-                dotShape.getPath().addPoint(Dot.at(0, 1), Dot.at(0, -1), Dot.at(1, 0), Dot.at(-1, 0));
+                dotShape.getPath().addPoint(Point.at(0, 1), Point.at(0, -1), Point.at(1, 0), Point.at(-1, 0));
                 dotShape.getJMPoint(0).isThisSegmentVisible = false;
                 dotShape.getJMPoint(2).isThisSegmentVisible = false;
                 dotShape.shift(v).scale(st).drawColor(mp.drawColor).thickness(mp.thickness);
@@ -183,8 +187,8 @@ public class Dot extends MathObject {
 //        return (T) this;
 //    }
     @Override
-    public Dot copy() {
-        Dot resul = new Dot(v);
+    public Point copy() {
+        Point resul = new Point(v);
         resul.mp.copyFrom(mp);
         resul.visible = this.visible;
         return resul;
@@ -197,8 +201,8 @@ public class Dot extends MathObject {
      * @param addVector Vector to add
      * @return Original point+addVector
      */
-    public Dot add(Vec addVector) {
-        Dot resul = (Dot) this.copy();
+    public Point add(Vec addVector) {
+        Point resul = (Point) this.copy();
         resul.v.addInSite(addVector);
         return resul;
     }
@@ -217,7 +221,7 @@ public class Dot extends MathObject {
      * @param B The destination point
      * @return The vector from this point to B
      */
-    public Vec to(Dot B) {
+    public Vec to(Point B) {
         return new Vec(B.v.x - v.x, B.v.y - v.y, B.v.z - v.z);
     }
 
@@ -229,9 +233,9 @@ public class Dot extends MathObject {
      * @param alpha
      * @return The new Point
      */
-    public Dot interpolate(Dot p2, double alpha) {
+    public Point interpolate(Point p2, double alpha) {
         Vec w = v.interpolate(p2.v, alpha);
-        return new Dot(w);
+        return new Point(w);
 
     }
 
@@ -270,7 +274,7 @@ public class Dot extends MathObject {
         this.v.restoreState();
     }
 
-    public void copyFrom(Dot p) {
+    public void copyFrom(Point p) {
         this.v.copyFrom(p.v);
     }
 

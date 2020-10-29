@@ -25,7 +25,7 @@ import com.jmathanim.Utils.MODrawProperties;
 import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
-import com.jmathanim.mathobjects.Dot.DotSyle;
+import com.jmathanim.mathobjects.Point.DotSyle;
 import com.jmathanim.mathobjects.MOProperties.MathObjectAttributes;
 import com.jmathanim.mathobjects.updateableObjects.Updateable;
 import java.util.HashSet;
@@ -82,7 +82,7 @@ public abstract class MathObject implements Drawable, Updateable, Stateable {
 
     public int updateLevel;
 //    private Point anchorPoint;
-    public Dot absoluteAnchorPoint;
+    public Point absoluteAnchorPoint;
     private int absoluteAnchorType = Anchor.BY_CENTER;
 
     public MathObject() {
@@ -101,7 +101,7 @@ public abstract class MathObject implements Drawable, Updateable, Stateable {
      *
      * @return Vec object with center
      */
-    public abstract Dot getCenter();
+    public abstract Point getCenter();
 
     /**
      * Move object so that center is the given coords
@@ -119,7 +119,7 @@ public abstract class MathObject implements Drawable, Updateable, Stateable {
      * @param p Point with coordinates of new center
      * @return The same object, after moving
      */
-    public <T extends MathObject> T moveTo(Dot p) {
+    public <T extends MathObject> T moveTo(Point p) {
         return moveTo(p.v);
     }
 
@@ -181,7 +181,7 @@ public abstract class MathObject implements Drawable, Updateable, Stateable {
      * @param sy y-scale factor
      * @return The same object, after scaling
      */
-    public <T extends MathObject> T scale(Dot p, double sx, double sy) {
+    public <T extends MathObject> T scale(Point p, double sx, double sy) {
         return scale(p, sx, sy, 1);
     }
 
@@ -209,7 +209,7 @@ public abstract class MathObject implements Drawable, Updateable, Stateable {
      * @param sz z-scale factor
      * @return The same object, after scaling
      */
-    public <T extends MathObject> T scale(Dot scaleCenter, double sx, double sy, double sz) {
+    public <T extends MathObject> T scale(Point scaleCenter, double sx, double sy, double sz) {
         AffineJTransform tr = AffineJTransform.createScaleTransform(scaleCenter, sx, sy, sz);
         tr.applyTransform(this);
         return (T) this;
@@ -249,7 +249,7 @@ public abstract class MathObject implements Drawable, Updateable, Stateable {
      * @param angle Angle, in radism
      * @return The same object, after rotating
      */
-    public <T extends MathObject> T rotate(Dot center, double angle) {
+    public <T extends MathObject> T rotate(Point center, double angle) {
         AffineJTransform tr = AffineJTransform.create2DRotationTransform(center, angle);
         tr.applyTransform(this);
         return (T) this;
@@ -436,29 +436,29 @@ public abstract class MathObject implements Drawable, Updateable, Stateable {
         return (T) this;
     }
 
-    public Dot getAbsoluteAnchor() {
+    public Point getAbsoluteAnchor() {
         return Anchor.getAnchorPoint(this, absoluteAnchorType);
     }
 
-    public Dot getAbsoluteAnchorPoint() {
+    public Point getAbsoluteAnchorPoint() {
         return absoluteAnchorPoint;
     }
 
-    public void setAbsoluteAnchorPoint(Dot p) {
+    public void setAbsoluteAnchorPoint(Point p) {
         this.absoluteAnchorPoint = p;
         absoluteAnchorType = Anchor.BY_POINT;
 
     }
 
     public void stackTo(MathObject obj, int anchorType) {
-        Dot B = Anchor.getAnchorPoint(obj, anchorType);
-        Dot A = Anchor.getAnchorPoint(this, Anchor.reverseAnchorPoint(anchorType));
+        Point B = Anchor.getAnchorPoint(obj, anchorType);
+        Point A = Anchor.getAnchorPoint(this, Anchor.reverseAnchorPoint(anchorType));
         this.shift(A.to(B));
     }
 
     public void stackTo(MathObject obj, int anchorType, double gap) {
-        Dot B = Anchor.getAnchorPoint(obj, anchorType, gap);
-        Dot A = Anchor.getAnchorPoint(this, Anchor.reverseAnchorPoint(anchorType));
+        Point B = Anchor.getAnchorPoint(obj, anchorType, gap);
+        Point A = Anchor.getAnchorPoint(this, Anchor.reverseAnchorPoint(anchorType));
         this.shift(A.to(B));
     }
 
@@ -484,17 +484,17 @@ public abstract class MathObject implements Drawable, Updateable, Stateable {
      * @return The current object
      */
     public <T extends MathObject> T stackTo(int anchorType, double xMargin, double yMargin) {
-        Dot B = Anchor.getScreenAnchorPoint(anchorType, xMargin, yMargin);
-        Dot A = Anchor.getAnchorPoint(this, anchorType);
+        Point B = Anchor.getScreenAnchorPoint(anchorType, xMargin, yMargin);
+        Point A = Anchor.getAnchorPoint(this, anchorType);
         return this.shift(A.to(B));
     }
 
-    public <T extends MathObject> T putAt(Dot p, int anchorType) {
+    public <T extends MathObject> T putAt(Point p, int anchorType) {
         return putAt(p, anchorType, 0);
     }
 
-    public <T extends MathObject> T putAt(Dot p, int anchorType, double gap) {
-        Dot anchorPoint = Anchor.getAnchorPoint(this, anchorType, gap);
+    public <T extends MathObject> T putAt(Point p, int anchorType, double gap) {
+        Point anchorPoint = Anchor.getAnchorPoint(this, anchorType, gap);
         return shift(anchorPoint.to(p));
     }
 

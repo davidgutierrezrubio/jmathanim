@@ -27,7 +27,7 @@ import com.jmathanim.mathobjects.Arrow2D.ArrowType;
 import com.jmathanim.mathobjects.LaTeXMathObject;
 import com.jmathanim.mathobjects.Line;
 import com.jmathanim.mathobjects.MathObject;
-import com.jmathanim.mathobjects.Dot;
+import com.jmathanim.mathobjects.Point;
 import com.jmathanim.mathobjects.Shape;
 
 /**
@@ -67,7 +67,7 @@ public class TesterShowCreation extends Scene2D {
     }
 
     private void test6()   {
-        Arrow2D arrow = Arrow2D.makeSimpleArrow2D(Dot.at(0, 0), Dot.at(1, 1), ArrowType.TYPE_1);
+        Arrow2D arrow = Arrow2D.makeSimpleArrow2D(Point.at(0, 0), Point.at(1, 1), ArrowType.TYPE_1);
         int numberOfLines = 15;
         MathObject[] objs = new MathObject[numberOfLines];
         for (int n = 0; n < numberOfLines; n++) {
@@ -75,7 +75,7 @@ public class TesterShowCreation extends Scene2D {
             double scale = Math.random();
             
             int randomType=(int) (1+Math.random()*2.9);
-            Arrow2D r = Arrow2D.makeSimpleArrow2D(Dot.random(), Dot.random(),ArrowType.TYPE_1).drawColor(JMColor.random());
+            Arrow2D r = Arrow2D.makeSimpleArrow2D(Point.random(), Point.random(),ArrowType.TYPE_1).drawColor(JMColor.random());
             objs[n] = r;
         }
         play.showCreation(2, objs);
@@ -90,7 +90,7 @@ public class TesterShowCreation extends Scene2D {
         for (int n = 0; n < numberOfLines; n++) {
             int numsides = (int) (3 + Math.random() * 7);
             double scale = Math.random();
-            Shape r = Shape.regularPolygon(numsides).scale(scale).shift(Dot.random().v).drawColor(JMColor.random());
+            Shape r = Shape.regularPolygon(numsides).scale(scale).shift(Point.random().v).drawColor(JMColor.random());
             objs[n] = r;
         }
         play.showCreation(objs);
@@ -111,7 +111,7 @@ public class TesterShowCreation extends Scene2D {
         int numberOfLines =5;
         MathObject[] objs = new MathObject[numberOfLines];
         for (int n = 0; n < numberOfLines; n++) {
-            Line r = Shape.line(Dot.random(), Dot.random()).drawColor(JMColor.random());
+            Line r = Shape.line(Point.random(), Point.random()).drawColor(JMColor.random());
             objs[n] = r;
         }
         play.showCreation(objs);

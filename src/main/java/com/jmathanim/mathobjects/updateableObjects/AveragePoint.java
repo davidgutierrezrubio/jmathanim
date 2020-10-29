@@ -22,7 +22,7 @@ import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.JMPath;
 import com.jmathanim.mathobjects.JMPathPoint;
-import com.jmathanim.mathobjects.Dot;
+import com.jmathanim.mathobjects.Point;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -35,10 +35,10 @@ import jdk.nashorn.internal.runtime.arrays.ArrayLikeIterator;
  *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
-public class AveragePoint extends Dot implements Updateable {
+public class AveragePoint extends Point implements Updateable {
 
-    final List<Dot> points;
-    public AveragePoint(Dot...points) {
+    final List<Point> points;
+    public AveragePoint(Point...points) {
         super();
         this.points=Arrays.asList(points);
     }

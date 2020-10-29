@@ -32,7 +32,7 @@ import com.jmathanim.mathobjects.JMImage;
 import com.jmathanim.mathobjects.JMPath;
 import com.jmathanim.mathobjects.JMPathPoint;
 import com.jmathanim.mathobjects.MathObject;
-import com.jmathanim.mathobjects.Dot;
+import com.jmathanim.mathobjects.Point;
 import com.jmathanim.mathobjects.JMPathPoint.JMPathPointType;
 import com.jmathanim.mathobjects.Shape;
 import java.awt.BasicStroke;

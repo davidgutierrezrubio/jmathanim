@@ -18,22 +18,22 @@
 package com.jmathanim.mathobjects.updateableObjects;
 
 import com.jmathanim.jmathanim.JMathAnimScene;
-import com.jmathanim.mathobjects.Dot;
+import com.jmathanim.mathobjects.Point;
 
 /**
  *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
-public class MiddlePoint extends Dot {
+public class MiddlePoint extends Point {
 
-    private Dot p1, p2;
+    private Point p1, p2;
     private double lambda;
 
-    public MiddlePoint(Dot p1, Dot p2) {
+    public MiddlePoint(Point p1, Point p2) {
         this(p1, p2, .5);
     }
 
-    public MiddlePoint(Dot p1, Dot p2, double lambda) {
+    public MiddlePoint(Point p1, Point p2, double lambda) {
         super();
         this.p1 = p1;
         this.p2 = p2;

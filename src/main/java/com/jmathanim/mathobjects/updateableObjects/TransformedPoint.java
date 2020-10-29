@@ -20,18 +20,18 @@ package com.jmathanim.mathobjects.updateableObjects;
 
 import com.jmathanim.Animations.AffineJTransform;
 import com.jmathanim.jmathanim.JMathAnimScene;
-import com.jmathanim.mathobjects.Dot;
+import com.jmathanim.mathobjects.Point;
 
 /**
  *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
-public class TransformedPoint extends Dot{
+public class TransformedPoint extends Point{
 
     private AffineJTransform transform;
-    private final Dot dstPoint;
+    private final Point dstPoint;
     
-    public TransformedPoint(Dot p,AffineJTransform tr) {
+    public TransformedPoint(Point p,AffineJTransform tr) {
         super();
         this.dstPoint=p;
         this.transform=tr;
@@ -52,7 +52,7 @@ public class TransformedPoint extends Dot{
 
     @Override
     public void update(JMathAnimScene scene) {
-        Dot tempPoint = transform.getTransformedObject(this.dstPoint);
+        Point tempPoint = transform.getTransformedObject(this.dstPoint);
         this.v.x=tempPoint.v.x;
         this.v.y=tempPoint.v.y;
         this.v.z=tempPoint.v.z;

@@ -18,8 +18,8 @@
 package com.jmathanim.Utils;
 
 import com.jmathanim.jmathanim.JMathAnimScene;
-import com.jmathanim.mathobjects.Dot;
-import com.jmathanim.mathobjects.Dot.DotSyle;
+import com.jmathanim.mathobjects.Point;
+import com.jmathanim.mathobjects.Point.DotSyle;
 import com.jmathanim.mathobjects.Stateable;
 import java.awt.Color;
 import java.lang.reflect.Field;

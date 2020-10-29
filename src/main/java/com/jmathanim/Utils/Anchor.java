@@ -18,7 +18,7 @@
 package com.jmathanim.Utils;
 
 import com.jmathanim.mathobjects.MathObject;
-import com.jmathanim.mathobjects.Dot;
+import com.jmathanim.mathobjects.Point;
 
 /**
  * A class that manages relevant points of a {@link MathObject}
@@ -71,7 +71,7 @@ public class Anchor {
     public static final int DL = 10;
 
     /**
-     * Return a {@link Dot} object that represents the given anchor. For
+     * Return a {@link Point} object that represents the given anchor. For
      * example getAnchorPoint(obj, Anchor.LEFT) returns the upper point of the
      * object (determined by its bounding box)
      *
@@ -82,12 +82,12 @@ public class Anchor {
      * {@link UL}, {@link DL}
      * @return The anchor point
      */
-    public static Dot getAnchorPoint(MathObject obj, int anchor) {
+    public static Point getAnchorPoint(MathObject obj, int anchor) {
         return getAnchorPoint(obj, anchor, 0, 0);
     }
 
     /**
-     * Return a {@link Dot} object that represents the given anchor.For
+     * Return a {@link Point} object that represents the given anchor.For
      * example getAnchorPoint(obj, Anchor.LEFT) returns the upper point of the
      * object (determined by its bounding box).A gap (in math coordinates) is
      * added, equal in x and y direction.
@@ -100,12 +100,12 @@ public class Anchor {
      * @param gap Gap to add to the anchor
      * @return The anchor point
      */
-    public static Dot getAnchorPoint(MathObject obj, int anchor, double gap) {
+    public static Point getAnchorPoint(MathObject obj, int anchor, double gap) {
         return getAnchorPoint(obj, anchor, gap, gap);
     }
 
     /**
-     * Return a {@link Dot} object that represents the given anchor.For
+     * Return a {@link Point} object that represents the given anchor.For
      * example getAnchorPoint(obj, Anchor.LEFT) returns the upper point of the
      * object (determined by its bounding box).A gap (in math coordinates) is
      * added, specified both by its x component and y component.
@@ -119,11 +119,11 @@ public class Anchor {
      * @param ygap Vertical gap
      * @return The anchor point
      */
-    public static Dot getAnchorPoint(MathObject obj, int anchor, double xgap, double ygap) {
-        Dot resul = new Dot();
+    public static Point getAnchorPoint(MathObject obj, int anchor, double xgap, double ygap) {
+        Point resul = new Point();
         switch (anchor) {
             case BY_POINT:
-                if (obj instanceof Dot) {
+                if (obj instanceof Point) {
                     resul = obj.copy();
                 } else {
                     resul = obj.getAbsoluteAnchorPoint();
@@ -215,10 +215,10 @@ public class Anchor {
      * @param anchor Anchor type
      * @param xMargin x margin to apply to the anchor
      * @param yMargin y margin to apply to the anchor
-     * @return A {@link Dot} located at the current anchor
+     * @return A {@link Point} located at the current anchor
      */
-    public static Dot getScreenAnchorPoint(int anchor, double xMargin, double yMargin) {
-        Dot resul = new Dot();
+    public static Point getScreenAnchorPoint(int anchor, double xMargin, double yMargin) {
+        Point resul = new Point();
         Rect mathViewWithGap = JMathAnimConfig.getConfig().getCamera().getMathView().addGap(-xMargin, -yMargin);
         switch (anchor) {
             case BY_CENTER:

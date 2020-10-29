@@ -45,10 +45,10 @@ public class JMPath implements Updateable, Stateable {
     private JMPath pathBackup;
 
     public JMPath() {
-        this(new ArrayList<Dot>());
+        this(new ArrayList<Point>());
     }
 
-    public JMPath(ArrayList<Dot> points) {
+    public JMPath(ArrayList<Point> points) {
         this.jmPathPoints = new CircularArrayList<>();
         this.setPoints(points);
 //        this.controlPoints1 = new CircularArrayList<>();
@@ -57,17 +57,17 @@ public class JMPath implements Updateable, Stateable {
         pathType = JMPath.MATHOBJECT;//Default value
     }
 
-    public ArrayList<Dot> getPoints() {
-        ArrayList<Dot> resul = new ArrayList<>();
+    public ArrayList<Point> getPoints() {
+        ArrayList<Point> resul = new ArrayList<>();
         for (JMPathPoint jmp : jmPathPoints) {
             resul.add(jmp.p);
         }
         return resul;
     }
 
-    public final void setPoints(ArrayList<Dot> points) {
+    public final void setPoints(ArrayList<Point> points) {
         this.jmPathPoints.clear();
-        for (Dot p : points) {
+        for (Point p : points) {
             this.jmPathPoints.add(new JMPathPoint(p, true, JMPathPointType.VERTEX));
         }
     }
@@ -76,7 +76,7 @@ public class JMPath implements Updateable, Stateable {
         return jmPathPoints.get(n);
     }
 
-    public Dot getControlPoint2(int n) {
+    public Point getControlPoint2(int n) {
         return jmPathPoints.get(n).cp2;
     }
 
@@ -84,8 +84,8 @@ public class JMPath implements Updateable, Stateable {
         return jmPathPoints.size();
     }
 
-    public void addPoint(Dot... points) {
-        for (Dot p : points) {
+    public void addPoint(Point... points) {
+        for (Point p : points) {
             jmPathPoints.add(new JMPathPoint(p, true, JMPathPointType.VERTEX));
         }
     }
@@ -94,11 +94,11 @@ public class JMPath implements Updateable, Stateable {
         jmPathPoints.addAll(Arrays.asList(points));
     }
 
-    public void addCPoint1(Dot e) {
+    public void addCPoint1(Point e) {
         jmPathPoints.get(jmPathPoints.size() - 1).cp1.v.copyFrom(e.v);
     }
 
-    public void addCPoint2(Dot e) {
+    public void addCPoint2(Point e) {
         jmPathPoints.get(jmPathPoints.size() - 1).cp2.v.copyFrom(e.v);
     }
 
@@ -225,12 +225,12 @@ public class JMPath implements Updateable, Stateable {
         JMPathPoint interpolate;
         if (jmp2.isCurved) {
             //De Casteljau's Algorithm: https://en.wikipedia.org/wiki/De_Casteljau%27s_algorithm
-            Dot E = jmp1.p.interpolate(jmp1.cp1, alpha); //New cp1 of v1
-            Dot G = jmp2.cp2.interpolate(jmp2.p, alpha); //New cp2 of v2
-            Dot F = jmp1.cp1.interpolate(jmp2.cp2, alpha);
-            Dot H = E.interpolate(F, alpha);//cp2 of interpolation point
-            Dot J = F.interpolate(G, alpha);//cp1 of interpolation point
-            Dot K = H.interpolate(J, alpha); //Interpolation point
+            Point E = jmp1.p.interpolate(jmp1.cp1, alpha); //New cp1 of v1
+            Point G = jmp2.cp2.interpolate(jmp2.p, alpha); //New cp2 of v2
+            Point F = jmp1.cp1.interpolate(jmp2.cp2, alpha);
+            Point H = E.interpolate(F, alpha);//cp2 of interpolation point
+            Point J = F.interpolate(G, alpha);//cp1 of interpolation point
+            Point K = H.interpolate(J, alpha); //Interpolation point
             interpolate = new JMPathPoint(K, jmp2.isThisSegmentVisible, JMPathPointType.INTERPOLATION_POINT);
             interpolate.cp1.v.copyFrom(J.v);
             interpolate.cp2.v.copyFrom(H.v);
@@ -248,7 +248,7 @@ public class JMPath implements Updateable, Stateable {
 
         } else {
             //Straight interpolation
-            Dot interP = new Dot(jmp1.p.v.interpolate(jmp2.p.v, alpha));
+            Point interP = new Point(jmp1.p.v.interpolate(jmp2.p.v, alpha));
             //Interpolation point is visible iff v2 is visible
             //Control points are by default the same as v1 and v2 (straight line)
             interpolate = new JMPathPoint(interP, jmp2.isThisSegmentVisible, JMPathPointType.INTERPOLATION_POINT);
@@ -266,23 +266,23 @@ public class JMPath implements Updateable, Stateable {
      * @return A (copy of) point that lies in the curve at relative position
      * alpha.
      */
-    public Dot getPointAt(double alpha) {
-        Dot resul;
+    public Point getPointAt(double alpha) {
+        Point resul;
         int k = (int) Math.floor(alpha * size());
         double t = alpha * size() - k;
         JMPathPoint v1 = getJMPoint(k);
         JMPathPoint v2 = getJMPoint(k + 1);
         if (v2.isCurved) {
             //De Casteljau's Algorithm: https://en.wikipedia.org/wiki/De_Casteljau%27s_algorithm
-            Dot E = v1.p.interpolate(v1.cp1, t); //New cp1 of v1
-            Dot G = v2.cp2.interpolate(v2.p, t); //New cp2 of v2
-            Dot F = v1.cp1.interpolate(v2.cp2, t);
-            Dot H = E.interpolate(F, t);//cp2 of interpolation point
-            Dot J = F.interpolate(G, t);//cp1 of interpolation point
+            Point E = v1.p.interpolate(v1.cp1, t); //New cp1 of v1
+            Point G = v2.cp2.interpolate(v2.p, t); //New cp2 of v2
+            Point F = v1.cp1.interpolate(v2.cp2, t);
+            Point H = E.interpolate(F, t);//cp2 of interpolation point
+            Point J = F.interpolate(G, t);//cp1 of interpolation point
             resul = H.interpolate(J, t); //Interpolation point
         } else {
             //Straight interpolation
-            resul = new Dot(v1.p.v.interpolate(v2.p.v, t));
+            resul = new Point(v1.p.v.interpolate(v2.p.v, t));
         }
         return resul;
     }
@@ -428,7 +428,7 @@ public class JMPath implements Updateable, Stateable {
         return new Rect(xmin, ymin, zmin, xmax, ymax, zmax);
     }
 
-    void scale(Dot point, double d, double e, double f) {
+    void scale(Point point, double d, double e, double f) {
         for (JMPathPoint p : jmPathPoints) {
             p.scale(point, d, e, f);
 
@@ -656,7 +656,7 @@ public class JMPath implements Updateable, Stateable {
         return resul;
     }
 
-    public boolean pointEqual(Dot p1, Dot p2, double epsilon) {
+    public boolean pointEqual(Point p1, Point p2, double epsilon) {
         boolean resul = false;
         if ((Math.abs(p1.v.x - p2.v.x) < epsilon) & (Math.abs(p1.v.y - p2.v.y) < epsilon)) {
             resul = true;

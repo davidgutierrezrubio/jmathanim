@@ -19,24 +19,24 @@ package com.jmathanim.mathobjects.updateableObjects;
 
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.FunctionGraph;
-import com.jmathanim.mathobjects.Dot;
+import com.jmathanim.mathobjects.Point;
 import java.util.function.DoubleUnaryOperator;
 
 /**
  *
  * @author David Gutiérrez Rubio <davidgutierrezrubio@gmail.com>
  */
-public class PointOnFunctionGraph extends Dot implements Updateable {
+public class PointOnFunctionGraph extends Point implements Updateable {
 
     FunctionGraph fg;
-    public Dot slopePointRight;
-    public Dot slopePointLeft;
+    public Point slopePointRight;
+    public Point slopePointLeft;
 
     public PointOnFunctionGraph(FunctionGraph fg) {
         super();
         this.fg = fg;
-        slopePointRight = Dot.at(0, 0);
-        slopePointLeft = Dot.at(0, 0);
+        slopePointRight = Point.at(0, 0);
+        slopePointLeft = Point.at(0, 0);
     }
 
     @Override

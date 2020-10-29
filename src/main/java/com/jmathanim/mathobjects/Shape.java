@@ -62,7 +62,7 @@ public class Shape extends MathObject {
         return jmpath.getJMPoint(n);
     }
 
-    public Dot getPoint(int n) {
+    public Point getPoint(int n) {
         return jmpath.getJMPoint(n).p;
     }
 
@@ -80,12 +80,12 @@ public class Shape extends MathObject {
     }
 
     @Override
-    public Dot getCenter() {
+    public Point getCenter() {
         return getBoundingBox().getCenter();
     }
 
-    public Dot getCentroid() {
-        Dot resul = new Dot(0, 0, 0);
+    public Point getCentroid() {
+        Point resul = new Point(0, 0, 0);
         for (JMPathPoint p : jmpath.jmPathPoints) {
             resul.v.x += p.p.v.x;
             resul.v.y += p.p.v.y;
@@ -199,10 +199,10 @@ public class Shape extends MathObject {
 
     //Static methods to build most used shapes
     public static Shape square() {
-        return Shape.square(new Dot(0, 0), 1);
+        return Shape.square(new Point(0, 0), 1);
     }
 
-    public static Shape square(Dot A, double side) {
+    public static Shape square(Point A, double side) {
 
         return Shape.rectangle(A, A.add(new Vec(side, side)));
     }
@@ -211,12 +211,12 @@ public class Shape extends MathObject {
         return Shape.rectangle(r.getDL(), r.getUR());
     }
 
-    public static Shape segment(Dot A, Vec v) {
+    public static Shape segment(Point A, Vec v) {
         return segment(A, A.add(v));
     }
 
     //Static methods to build most commons shapes
-    public static Shape segment(Dot A, Dot B) {
+    public static Shape segment(Point A, Point B) {
         Shape obj = new Shape();
         JMathAnimConfig.getConfig().getScene();
         JMPathPoint p1 = JMPathPoint.lineTo(A);
@@ -233,7 +233,7 @@ public class Shape extends MathObject {
         return segment(line.bp1.p.copy(), line.bp2.p.copy());
     }
 
-    public static Shape rectangle(Dot A, Dot B) {
+    public static Shape rectangle(Point A, Point B) {
         Shape obj = new Shape();
         JMathAnimConfig.getConfig().getScene();
         JMPathPoint p1 = JMPathPoint.lineTo(A);
@@ -245,9 +245,9 @@ public class Shape extends MathObject {
         return obj;
     }
 
-    public static Shape polygon(Dot... points) {
+    public static Shape polygon(Point... points) {
         Shape obj = new Shape();
-        for (Dot newPoint : points) {
+        for (Point newPoint : points) {
             JMPathPoint p = JMPathPoint.lineTo(newPoint);
             obj.getPath().addJMPoint(p);
         }
@@ -255,12 +255,12 @@ public class Shape extends MathObject {
     }
 
     public static Shape regularPolygon(int numsides) {
-        return regularPolygon(numsides, new Dot(0, 0), 1);
+        return regularPolygon(numsides, new Point(0, 0), 1);
     }
 
-    public static Shape regularPolygon(int numsides, Dot A, double side) {
+    public static Shape regularPolygon(int numsides, Point A, double side) {
         Shape obj = new Shape();
-        Dot newPoint = (Dot) A.copy();
+        Point newPoint = (Point) A.copy();
         for (int n = 0; n < numsides; n++) {
             double alpha = 2 * n * Math.PI / numsides;
             Vec moveVector = new Vec(side * Math.cos(alpha), side * Math.sin(alpha));
@@ -274,7 +274,7 @@ public class Shape extends MathObject {
 
     public static Shape arc(double angle) {
         Shape obj = new Shape();
-        obj.attrs = new ArcAttributes(Dot.at(0, 0), 1, angle, obj);
+        obj.attrs = new ArcAttributes(Point.at(0, 0), 1, angle, obj);
         double x1, y1;
         int nSegs = 4;
         int segsForFullCircle = (int) (2 * PI * nSegs / angle);
@@ -283,12 +283,12 @@ public class Shape extends MathObject {
             double alphaC = angle * n / nSegs;
             x1 = Math.cos(alphaC);
             y1 = Math.sin(alphaC);
-            Dot p = new Dot(x1, y1);
+            Point p = new Point(x1, y1);
             Vec v1 = new Vec(-y1, x1);
 
             v1.multInSite(cte);
-            Dot cp1 = p.add(v1);
-            Dot cp2 = p.add(v1.multInSite(-1));
+            Point cp1 = p.add(v1);
+            Point cp2 = p.add(v1.multInSite(-1));
             JMPathPoint jmp = JMPathPoint.curveTo(p);
             jmp.cp1.copyFrom(cp1);
             jmp.cp2.copyFrom(cp2);
@@ -313,12 +313,12 @@ public class Shape extends MathObject {
         for (double alphaC = 0; alphaC < 2 * Math.PI; alphaC += step) {
             x1 = Math.cos(alphaC);
             y1 = Math.sin(alphaC);
-            Dot p = new Dot(x1, y1);
+            Point p = new Point(x1, y1);
             Vec v1 = new Vec(-y1, x1);
 
             v1.multInSite(cte);
-            Dot cp1 = p.add(v1);
-            Dot cp2 = p.add(v1.multInSite(-1));
+            Point cp1 = p.add(v1);
+            Point cp2 = p.add(v1.multInSite(-1));
             JMPathPoint jmp = JMPathPoint.curveTo(p);
             jmp.cp1.copyFrom(cp1);
             jmp.cp2.copyFrom(cp2);
@@ -331,7 +331,7 @@ public class Shape extends MathObject {
         return obj;
     }
 
-    public static Shape circle(Dot center, double radius) {
+    public static Shape circle(Point center, double radius) {
         return circle().scale(radius).shift(center.v);
     }
 
@@ -344,7 +344,7 @@ public class Shape extends MathObject {
      * @param b Second point
      * @return The line object
      */
-    public static Line line(Dot a, Dot b) {
+    public static Line line(Point a, Point b) {
         return new Line(a, b);
     }
 

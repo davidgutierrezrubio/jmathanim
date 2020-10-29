@@ -84,7 +84,7 @@ public class LaTeXMathObject extends SVGMathObject {
 //            Rect r = getBoundingBox();
 //            this.shift(-r.xmin, -r.ymax);
 //            r = getBoundingBox();
-            putAt(new Dot(0, 0), Anchor.UL);
+            putAt(new Point(0, 0), Anchor.UL);
         }
         int n = 0;
         for (Shape sh : shapes) {//label them

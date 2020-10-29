@@ -41,7 +41,7 @@ public class Arrow2D extends MathObject {
         TYPE_1, TYPE_2, TYPE_3
     }
 
-    private Dot p1, p2;
+    private Point p1, p2;
     private final Shape body;
     public ArrowType arrowType = ArrowType.TYPE_1;
     private final SVGMathObject head;
@@ -49,11 +49,11 @@ public class Arrow2D extends MathObject {
     private AbsoluteSizeUpdater absoluteSizeUpdater;
     private static final double DEFAULT_ARROW_HEAD_SIZE = .015;
 
-    public static Arrow2D makeSimpleArrow2D(Dot p1, Dot p2) {
+    public static Arrow2D makeSimpleArrow2D(Point p1, Point p2) {
         return makeSimpleArrow2D(p1, p2, ArrowType.TYPE_1);
     }
 
-    public static Arrow2D makeSimpleArrow2D(Dot p1, Dot p2, ArrowType type) {
+    public static Arrow2D makeSimpleArrow2D(Point p1, Point p2, ArrowType type) {
         Arrow2D resul = null;
         SVGMathObject svg;
         File outputDir = JMathAnimConfig.getConfig().getResourcesDir();
@@ -71,7 +71,7 @@ public class Arrow2D extends MathObject {
         return resul;
     }
 
-    public Arrow2D(Dot p1, Dot p2, SVGMathObject svg) {
+    public Arrow2D(Point p1, Point p2, SVGMathObject svg) {
         this.p1 = p1;
         this.p2 = p2;
         this.body = Shape.segment(p1, p2);
@@ -113,7 +113,7 @@ public class Arrow2D extends MathObject {
      *
      * @return A reference to the starting Point
      */
-    public Dot getStart() {
+    public Point getStart() {
         return p1;
     }
 
@@ -122,7 +122,7 @@ public class Arrow2D extends MathObject {
      *
      * @return A reference to the ending Point
      */
-    public Dot getEnd() {
+    public Point getEnd() {
         return p2;
     }
 
@@ -148,7 +148,7 @@ public class Arrow2D extends MathObject {
     @Override
     public void draw(Renderer r) {
         //Move arrowhead to p2
-        Dot headPoint = this.head.getBoundingBox().getUpper();
+        Point headPoint = this.head.getBoundingBox().getUpper();
         this.head.shift(headPoint.to(p2));
 
         //Create a copy to rotate properly and draw, as original is not rotated
@@ -173,7 +173,7 @@ public class Arrow2D extends MathObject {
     }
 
     @Override
-    public <T extends MathObject> T scale(Dot scaleCenter, double sx, double sy, double sz) {
+    public <T extends MathObject> T scale(Point scaleCenter, double sx, double sy, double sz) {
         body.scale(scaleCenter, sx, sy, sz);
         return (T) this;
     }
@@ -185,7 +185,7 @@ public class Arrow2D extends MathObject {
     }
 
     @Override
-    public <T extends MathObject> T scale(Dot p, double sx, double sy) {
+    public <T extends MathObject> T scale(Point p, double sx, double sy) {
         body.scale(p, sx, sy);
         return (T) this;
     }
@@ -229,7 +229,7 @@ public class Arrow2D extends MathObject {
     }
 
     @Override
-    public Dot getCenter() {
+    public Point getCenter() {
         return body.getCenter();
     }
 

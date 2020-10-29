@@ -27,7 +27,7 @@ import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.MathObject;
-import com.jmathanim.mathobjects.Dot;
+import com.jmathanim.mathobjects.Point;
 
 /**
  *
@@ -65,16 +65,16 @@ public class Commands {
         }, runtime);
     }//End of shift command
 
-    public static ApplyCommand scale(double runtime, Dot c, double sc, MathObject... objects) {
+    public static ApplyCommand scale(double runtime, Point c, double sc, MathObject... objects) {
         return scale(runtime, c, sc, sc, sc, objects);
     }
 
-    public static ApplyCommand scale(double runtime, Dot c, double scx, double scy, double scz, MathObject... objects) {
+    public static ApplyCommand scale(double runtime, Point c, double scx, double scy, double scz, MathObject... objects) {
         return new ApplyCommand(new MathObjectsCommand(objects) {
             double scalex = scx;
             double scaley = scy;
             double scalez = scz;
-            Dot scaleCenter = c;
+            Point scaleCenter = c;
 
             @Override
             public void initialize() {
@@ -112,11 +112,10 @@ public class Commands {
 
     }
 
-    public static ApplyCommand rotate(double runtime, Dot c, double ang, MathObject... objects) {
+    public static ApplyCommand rotate(double runtime, Point c, double ang, MathObject... objects) {
         return new ApplyCommand(new MathObjectsCommand(objects) {
             double angle = ang;
-            double tPrevious;
-            Dot rotationCenter = c;
+            Point rotationCenter = c.copy();
 
             @Override
             public void initialize() {
@@ -144,15 +143,15 @@ public class Commands {
         }, runtime);
     }//End of rotate command
 
-    public static ApplyCommand affineTransform(double runtime, Dot a, Dot b, Dot c, Dot d, Dot e, Dot f, MathObject... objects) {
+    public static ApplyCommand affineTransform(double runtime, Point a, Point b, Point c, Point d, Point e, Point f, MathObject... objects) {
         return new ApplyCommand(new MathObjectsCommand(objects) {
             double tPrevious;
-            Dot orig1 = a;
-            Dot orig2 = b;
-            Dot orig3 = c;
-            Dot dst1 = d;
-            Dot dst2 = e;
-            Dot dst3 = f;
+            Point orig1 = a.copy();
+            Point orig2 = b.copy();
+            Point orig3 = c.copy();
+            Point dst1 = d.copy();
+            Point dst2 = e.copy();
+            Point dst3 = f.copy();
             AffineJTransform tr;
 
             @Override
@@ -192,13 +191,13 @@ public class Commands {
      * {@link JMathAnimScene#playAnimation(com.jmathanim.Animations.Animation...) playAnimation}
      * method
      */
-    public static ApplyCommand homothecy(double runtime, Dot a, Dot b, Dot c, Dot d, MathObject... objects) {
+    public static ApplyCommand homothecy(double runtime, Point a, Point b, Point c, Point d, MathObject... objects) {
         return new ApplyCommand(new MathObjectsCommand(objects) {
             double tPrevious;
-            Dot A = a.copy();
-            Dot B = b.copy();
-            Dot C = c.copy();
-            Dot D = d.copy();
+            Point A = a.copy();
+            Point B = b.copy();
+            Point C = c.copy();
+            Point D = d.copy();
             AffineJTransform tr;
 
             @Override
@@ -235,11 +234,11 @@ public class Commands {
      * {@link JMathAnimScene#playAnimation(com.jmathanim.Animations.Animation...) playAnimation}
      * method
      */
-    public static ApplyCommand reflection(double runtime, Dot A, Dot B, MathObject... objects) {
+    public static ApplyCommand reflection(double runtime, Point A, Point B, MathObject... objects) {
         return new ApplyCommand(new MathObjectsCommand(objects) {
             double tPrevious;
-            Dot axis1 = A;
-            Dot axis2 = B;
+            Point axis1 = A.copy();
+            Point axis2 = B.copy();
             AffineJTransform tr;
 
             @Override
@@ -277,11 +276,11 @@ public class Commands {
      * {@link JMathAnimScene#playAnimation(com.jmathanim.Animations.Animation...) playAnimation}
      * method
      */
-    public static ApplyCommand reflectionByAxis(double runtime, Dot a, Dot b, MathObject... objects) {
+    public static ApplyCommand reflectionByAxis(double runtime, Point a, Point b, MathObject... objects) {
         return new ApplyCommand(new MathObjectsCommand(objects) {
             double tPrevious;
-            Dot axis1 = a;
-            Dot axis2 = b;
+            Point axis1 = a.copy();
+            Point axis2 = b.copy();
             AffineJTransform tr;
 
             @Override

@@ -27,7 +27,7 @@ import com.jmathanim.Utils.MODrawProperties;
 import com.jmathanim.Utils.MODrawProperties.DashStyle;
 import com.jmathanim.jmathanim.Scene2DAwt;
 import com.jmathanim.mathobjects.LaTeXMathObject;
-import com.jmathanim.mathobjects.Dot;
+import com.jmathanim.mathobjects.Point;
 import com.jmathanim.mathobjects.Shape;
 import com.jmathanim.mathobjects.updateableObjects.AnchoredMathObject;
 import com.jmathanim.mathobjects.updateableObjects.AveragePoint;
@@ -80,7 +80,7 @@ public class TesterUpdaters extends Scene2DAwt {
 
     private void transformedPath1() {
         Shape c = Shape.circle().scale(.5).style("solidblue");
-        AffineJTransform tr = AffineJTransform.createAffineTransformation(Dot.at(0, 0), Dot.at(1, 0), Dot.at(0, 1), Dot.at(-.5, .3), Dot.at(1, 0), Dot.at(1, 1), 1);
+        AffineJTransform tr = AffineJTransform.createAffineTransformation(Point.at(0, 0), Point.at(1, 0), Point.at(0, 1), Point.at(-.5, .3), Point.at(1, 0), Point.at(1, 1), 1);
         TransformedJMPath tpa = new TransformedJMPath(c, tr);
         tpa.style("solidred").fillAlpha(.5);
         add(c, tpa);
@@ -95,7 +95,7 @@ public class TesterUpdaters extends Scene2DAwt {
         LaTeXMathObject lat=LaTeXMathObject.make("$8$").scale(7);
         Shape c=lat.get(0);
         
-        AffineJTransform tr = AffineJTransform.createAffineTransformation(Dot.at(0, 0), Dot.at(1, 0), Dot.at(0, 1), Dot.at(-.5, .3), Dot.at(1, 0), Dot.at(1, 1), 1);
+        AffineJTransform tr = AffineJTransform.createAffineTransformation(Point.at(0, 0), Point.at(1, 0), Point.at(0, 1), Point.at(-.5, .3), Point.at(1, 0), Point.at(1, 1), 1);
         TransformedJMPath tpa = new TransformedJMPath(c, tr);
         tpa.style("solidred").fillAlpha(.5);
         add(c, tpa);
@@ -107,9 +107,9 @@ public class TesterUpdaters extends Scene2DAwt {
 
     private void averagePoint() {
         int numPoints = 30;
-        Dot[] points = new Dot[numPoints];
+        Point[] points = new Point[numPoints];
         for (int n = 0; n < numPoints; n++) {
-            points[n] = Dot.random().drawColor(JMColor.random());
+            points[n] = Point.random().drawColor(JMColor.random());
         }
         add(points);
         AveragePoint avp = new AveragePoint(points);

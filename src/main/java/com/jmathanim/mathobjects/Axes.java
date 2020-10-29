@@ -45,18 +45,18 @@ public class Axes extends MathObject {
     }
 
     private void generateAxis() {
-        xAxis = Shape.line(Dot.at(0, 0), Dot.at(1, 0)).style("axisdefault");
-        yAxis = Shape.line(Dot.at(0, 0), Dot.at(0, 1)).style("axisdefault");
+        xAxis = Shape.line(Point.at(0, 0), Point.at(1, 0)).style("axisdefault");
+        yAxis = Shape.line(Point.at(0, 0), Point.at(0, 1)).style("axisdefault");
         xticks = new ArrayList<>();
         yticks = new ArrayList<>();
         xticksLegend = new ArrayList<>();
         yticksLegend = new ArrayList<>();
         for (int n = -5; n <= 5; n++) {
-            final Shape xtick = Shape.segment(Dot.at(n, -TICK_LENGTH), Dot.at(n, TICK_LENGTH)).style("axistickdefault");
+            final Shape xtick = Shape.segment(Point.at(n, -TICK_LENGTH), Point.at(n, TICK_LENGTH)).style("axistickdefault");
             xtick.setAbsoluteSize(Anchor.BY_CENTER);
             xticks.add(xtick);
 
-            final Shape ytick = Shape.segment(Dot.at(-TICK_LENGTH, n), Dot.at(TICK_LENGTH, n)).style("axistickdefault");;
+            final Shape ytick = Shape.segment(Point.at(-TICK_LENGTH, n), Point.at(TICK_LENGTH, n)).style("axistickdefault");;
             ytick.setAbsoluteSize(Anchor.BY_CENTER);
             yticks.add(ytick);
 
@@ -75,8 +75,8 @@ public class Axes extends MathObject {
     }
 
     @Override
-    public Dot getCenter() {
-        return Dot.at(0, 0);
+    public Point getCenter() {
+        return Point.at(0, 0);
     }
 
     @Override

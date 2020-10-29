@@ -66,7 +66,7 @@ public class MultiShapeObject extends MathObject {
     }
 
     @Override
-    public Dot getCenter() {
+    public Point getCenter() {
         return getBoundingBox().getCenter();
     }
 

@@ -20,7 +20,7 @@ package com.jmathanim.Animations.Strategies.Transform;
 
 import com.jmathanim.Animations.AffineJTransform;
 import com.jmathanim.jmathanim.JMathAnimScene;
-import com.jmathanim.mathobjects.Dot;
+import com.jmathanim.mathobjects.Point;
 import com.jmathanim.mathobjects.Shape;
 
 /**
@@ -36,10 +36,10 @@ public class HomothecyStrategyTransform extends MatrixTransformStrategy {
     @Override
     public void applyTransform(double t,double lt) {
 
-        Dot A = originalShapeBaseCopy.jmpath.getJMPoint(0).p;
-        Dot B = originalShapeBaseCopy.jmpath.getJMPoint(1).p;
-        Dot C = mobjDestiny.jmpath.getJMPoint(0).p;
-        Dot D = mobjDestiny.jmpath.getJMPoint(1).p;
+        Point A = originalShapeBaseCopy.jmpath.getJMPoint(0).p;
+        Point B = originalShapeBaseCopy.jmpath.getJMPoint(1).p;
+        Point C = mobjDestiny.jmpath.getJMPoint(0).p;
+        Point D = mobjDestiny.jmpath.getJMPoint(1).p;
 
         AffineJTransform tr = AffineJTransform.createDirect2DHomothecy(A, B, C, D, lt);
 
