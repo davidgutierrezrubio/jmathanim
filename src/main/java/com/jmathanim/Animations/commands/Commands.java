@@ -115,10 +115,13 @@ public class Commands {
     public static ApplyCommand rotate(double runtime, Point c, double ang, MathObject... objects) {
         return new ApplyCommand(new MathObjectsCommand(objects) {
             double angle = ang;
-            Point rotationCenter = c.copy();
+            Point rotationCenter=null;
 
             @Override
             public void initialize() {
+                if (c!=null){
+                    rotationCenter=c.copy();
+                }
                 for (MathObject obj : mathObjects) {
                     obj.saveState();//Easy way, but interferes with multiple animations (not easy to solve)
                 }

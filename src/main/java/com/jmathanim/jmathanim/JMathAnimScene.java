@@ -161,6 +161,14 @@ public abstract class JMathAnimScene {
         return objects;
     }
 
+    public MathObject[] everything() {
+        MathObject[] arr = new MathObject[objects.size()];
+        for (int n = 0; n < objects.size(); n++) {
+            arr[n]=objects.get(n);
+        }
+        return arr;
+    }
+
     /**
      * Returns the list of objects to be updated. Note that this doesn't
      * necessarily matchs with objects drawn
@@ -264,7 +272,7 @@ public abstract class JMathAnimScene {
      * Advance one frame, making all necessary drawings and saving frame
      */
     public final void advanceFrame() {
-      
+
         renderer.clear();
         doDraws();
         frameCount++;

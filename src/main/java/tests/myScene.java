@@ -74,8 +74,8 @@ public class myScene extends Scene2D {
        add(A,B);
         ApplyCommand rot1 = Commands.rotate(5, Point.Origin, 2*PI, A);
         ApplyCommand rot2 = Commands.rotate(5, A, 8*PI, B);
-        play.showCreation(new FunctionGraph((x) ->Math.sin(x*3),-2,2));
-        playAnimation(rot1,rot2);
+        play.showCreation(.5,new FunctionGraph((x) ->Math.sin(x*3),-2,2));
+        play.rotate(2,Point.Origin,PI, everything());
         waitSeconds(3);
        
         
