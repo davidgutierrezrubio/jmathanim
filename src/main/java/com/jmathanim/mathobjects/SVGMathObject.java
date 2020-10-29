@@ -85,11 +85,11 @@ public class SVGMathObject extends MultiShapeObject {
     }
 
     protected final void importSVG(File file) throws Exception {
-        JMathAnimScene.logger.info("Importing SVG file {}",file.getCanonicalPath());
+        JMathAnimScene.logger.info("Importing SVG file {}", file.getCanonicalPath());
         DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
         DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
         org.w3c.dom.Document doc = dBuilder.parse(file);
-        
+
         //Look for svg elements in the root document
         processChildNodes((doc.getDocumentElement()));
         NodeList listGroups = doc.getElementsByTagName("g");
@@ -117,20 +117,20 @@ public class SVGMathObject extends MultiShapeObject {
                     case "path":
                         JMathAnimScene.logger.info("Parsing path");
                         //Needs to parse style options too
-                        
-                    try {
-                        JMPath path = processPathCommands(el.getAttribute("d"));
-                        processAttributeCommands(el, ShMp);
-                        if (path.jmPathPoints.size() > 0) {
-                            path.pathType = JMPath.SVG_PATH; //Mark this as a SVG path
-                            addJMPathObject(path, ShMp); //Add this path to the array of JMPathObjects
-                            JMathAnimScene.logger.info("Path parsed succesfully");
+
+                        try {
+                            JMPath path = processPathCommands(el.getAttribute("d"));
+                            processAttributeCommands(el, ShMp);
+                            if (path.jmPathPoints.size() > 0) {
+                                path.pathType = JMPath.SVG_PATH; //Mark this as a SVG path
+                                addJMPathObject(path, ShMp); //Add this path to the array of JMPathObjects
+                                JMathAnimScene.logger.info("Path parsed succesfully");
+                            }
+                        } catch (Exception ex) {
+                            Logger.getLogger(SVGMathObject.class.getName()).log(Level.SEVERE, null, ex);
                         }
-                    } catch (Exception ex) {
-                        Logger.getLogger(SVGMathObject.class.getName()).log(Level.SEVERE, null, ex);
-                    }
-                        
-                    break;
+
+                        break;
                     case "rect":
                         double x = Double.parseDouble(el.getAttribute("x"));
                         double y = -Double.parseDouble(el.getAttribute("y"));
@@ -168,11 +168,12 @@ public class SVGMathObject extends MultiShapeObject {
     public JMPath processPathCommands(String s) throws Exception {
         JMPath resul = new JMPath();
         JMPathPoint previousPoint = new JMPathPoint(new Point(0, 0), true, JMPathPointType.VERTEX);
-        String t = s.replace("M", " M ");
-        t = t.replace("m", " m ");
-        t = t.replace("-", " -");//Avoid errors with strings like "142.11998-.948884"
+        String t = s.replace("-", " -");//Avoid errors with strings like "142.11998-.948884"
         t = t.replace("e -", "e-");//Avoid errors with numbers in scientific format
-        t = t.replace("H", " H ");//Adding "" to all commmands helps me to differentiate easily from coordinates
+        t = t.replace("E -", "E-");//Avoid errors with numbers in scientific format
+        t = t.replace("M", " M ");//Adding spaces before and after to all commmands helps me to differentiate easily from coordinates
+        t = t.replace("m", " m ");
+        t = t.replace("H", " H ");
         t = t.replace("h", " h ");
         t = t.replace("V", " V ");
         t = t.replace("v", " v ");
@@ -184,7 +185,7 @@ public class SVGMathObject extends MultiShapeObject {
         t = t.replace("l", " l ");
         t = t.replace("Z", " Z ");
         t = t.replace("z", " z ");
-        t = t.replaceAll(",", " ");//Delete all commas
+        t = t.replaceAll(",", " ");//Replace all commas with spaces
         t = t.replaceAll("^ +| +$|( )+", "$1");//Removes duplicate spaces
 
         //Look for second decimal points and add a space. Chains like this "-.5.4" should change to "-.5 .4"

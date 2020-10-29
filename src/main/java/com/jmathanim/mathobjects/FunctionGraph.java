@@ -17,6 +17,8 @@
  */
 package com.jmathanim.mathobjects;
 
+import com.jmathanim.Utils.JMathAnimConfig;
+import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.Vec;
 import java.util.ArrayList;
 import java.util.function.DoubleUnaryOperator;
@@ -31,13 +33,26 @@ public class FunctionGraph extends Shape {
 
     public static final double DELTA_DERIVATIVE = .00001d;
     public static final int DEFAULT_NUMBER_OF_POINTS = 49;
-    public static final int FUNC_TYPE_LAMBDA = 1;
-    public static final int FUNC_TYPE_ALGEBRA = 2;
+
+    /**
+     * Different ways to define a function. Right now only lambda is supported
+     */
+    public enum FunctionDefinitionType {
+        /**
+         * Function is defined by a lambda expresion, like (x)->Math.sin(x)
+         */
+        LAMBDA 
+    }
 
     public DoubleUnaryOperator function;
     public final ArrayList<Double> xPoints;
-    public int functionType;
+    public FunctionDefinitionType functionType;
     public DoubleUnaryOperator functionBase;
+
+    public static FunctionGraph make(DoubleUnaryOperator function) {
+        Rect r = JMathAnimConfig.getConfig().getCamera().getMathView();
+        return new FunctionGraph(function, r.xmin, r.xmax);
+    }
 
     public FunctionGraph(DoubleUnaryOperator function, double xmin, double xmax) {
         this(function, xmin, xmax, DEFAULT_NUMBER_OF_POINTS);
@@ -57,7 +72,7 @@ public class FunctionGraph extends Shape {
         style("FunctionGraphDefault");//Default style, if any
         this.function = function;
         this.functionBase = function;
-        this.functionType = FUNC_TYPE_LAMBDA;
+        this.functionType = FunctionDefinitionType.LAMBDA;
         this.xPoints = new ArrayList<>();
         for (int n = 0; n < numPoints; n++) {
             double x = xmin + (xmax - xmin) * n / (numPoints - 1);
@@ -122,7 +137,7 @@ public class FunctionGraph extends Shape {
 
     public double getFunctionValue(double x) {
         double y = 0;
-        if (this.functionType == FUNC_TYPE_LAMBDA) {
+        if (this.functionType == FunctionDefinitionType.LAMBDA) {
             y = function.applyAsDouble(x);
         }
 

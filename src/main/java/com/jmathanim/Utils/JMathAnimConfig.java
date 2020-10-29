@@ -115,8 +115,8 @@ public class JMathAnimConfig {
     /**
      * alpha shadow multiplier. A value of .5 lets alpha shadow in 50%
      */
-    public float shadowAlpha = 1f;//TODO: Doesn't work as expected
-    public String backGroundImage = null;//"c:\\media\\hoja.jpg"
+    public float shadowAlpha = .5f;
+    public String backGroundImage = null;
 
     private JMathAnimConfig() {//Private constructor
         styles = new HashMap<>();

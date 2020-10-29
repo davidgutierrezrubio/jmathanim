@@ -23,17 +23,17 @@
         <style name="solidred">
             <drawColor>WHITE</drawColor>
             <fillColor>#f55652</fillColor>
-            <thickness>.5</thickness>
+            <thickness>2</thickness>
         </style>
         <style name="solidblue">
             <drawColor>WHITE</drawColor>
             <fillColor>#7ca0c0</fillColor>
-            <thickness>.5</thickness>
+            <thickness>2</thickness>
         </style>
          <style name="solidgreen">
             <drawColor>WHITE</drawColor>
             <fillColor>#9bc693</fillColor>
-            <thickness>.5</thickness>
+            <thickness>2</thickness>
         </style>
     </styles>
 </JMathAnimConfig>

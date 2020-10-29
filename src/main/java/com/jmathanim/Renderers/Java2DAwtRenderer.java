@@ -151,11 +151,8 @@ public class Java2DAwtRenderer extends Renderer {
             previewWindow.buildGUI();
 
             try {
-                SwingUtilities.invokeAndWait(new Runnable() {
-                    @Override
-                    public void run() {
-                        previewWindow.setVisible(true);
-                    }
+                SwingUtilities.invokeAndWait(() -> {
+                    previewWindow.setVisible(true);
                 });
             } catch (InterruptedException | InvocationTargetException ex) {
                 Logger.getLogger(Java2DAwtRenderer.class.getName()).log(Level.SEVERE, null, ex);
@@ -222,37 +219,33 @@ public class Java2DAwtRenderer extends Renderer {
 
             //Draw into a window
             try {
-                SwingUtilities.invokeAndWait(new Runnable() {
-                    @Override
-                    public void run() {
-                        Graphics gr = previewWindow.drawPanel.getGraphics();
-                        gr.drawImage(finalImage, 0, 0, null);
-                        long timeElapsedInNanoSeconds = scene.nanoTime - scene.previousNanoTime;
-                        long fpsComputed;
-                        if (timeElapsedInNanoSeconds > 0) {
-                            fpsComputed = 1000000000 / (timeElapsedInNanoSeconds);
-                        } else {
-                            fpsComputed = 0;
-                        }
-
-                        String statusText = String.format("frame=%d   t=%.2fs    fps=%d", frameCount, (1f * frameCount) / cnf.fps, fpsComputed);
-                        previewWindow.statusLabel.setText(statusText);
-
-                        if (cnf.delay) {
-                            double tiempo = (1.d / cnf.fps) * 1000;
-                            try {
-                                long tiempoPasado = timeElapsedInNanoSeconds / 1000000;
+                SwingUtilities.invokeAndWait(() -> {
+                    Graphics gr = previewWindow.drawPanel.getGraphics();
+                    gr.drawImage(finalImage, 0, 0, null);
+                    long timeElapsedInNanoSeconds = scene.nanoTime - scene.previousNanoTime;
+                    long fpsComputed;
+                    if (timeElapsedInNanoSeconds > 0) {
+                        fpsComputed = 1000000000 / (timeElapsedInNanoSeconds);
+                    } else {
+                        fpsComputed = 0;
+                    }
+                    
+                    String statusText = String.format("frame=%d   t=%.2fs    fps=%d", frameCount, (1f * frameCount) / cnf.fps, fpsComputed);
+                    previewWindow.statusLabel.setText(statusText);
+                    
+                    if (cnf.delay) {
+                        double tiempo = (1.d / cnf.fps) * 1000;
+                        try {
+                            long tiempoPasado = timeElapsedInNanoSeconds / 1000000;
 //                System.out.println("Tiempo pasado en milisegundos: " + tiempoPasado);
-                                long delay = (long) (tiempo - tiempoPasado);
+long delay = (long) (tiempo - tiempoPasado);
 //                System.out.println("delay " + delay);
-                                if (delay > 0) {
-                                    Thread.sleep(delay);
-                                }
-                            } catch (InterruptedException ex) {
-                                Logger.getLogger(Java2DAwtRenderer.class.getName()).log(Level.SEVERE, null, ex);
-                            }
+if (delay > 0) {
+    Thread.sleep(delay);
+}
+                        } catch (InterruptedException ex) {
+                            Logger.getLogger(Java2DAwtRenderer.class.getName()).log(Level.SEVERE, null, ex);
                         }
-
                     }
                 });
             } catch (InterruptedException | InvocationTargetException ex) {
@@ -304,7 +297,6 @@ public class Java2DAwtRenderer extends Renderer {
 //            drawScaledImage(img, g2dFinalImage);
             g2dFinalImage.drawImage(img, 0, 0, null);
         }
-        //TODO: Find a more efficient way to erase a Alpha image
         drawBufferImage = new BufferedImage(cnf.mediaW * scaleBufferedImage, cnf.mediaH * scaleBufferedImage, BufferedImage.TYPE_INT_ARGB);
         debugImage = new BufferedImage(cnf.mediaW * scaleBufferedImage, cnf.mediaH * scaleBufferedImage, BufferedImage.TYPE_INT_ARGB);
         g2draw = drawBufferImage.createGraphics();

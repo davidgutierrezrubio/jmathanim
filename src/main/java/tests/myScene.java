@@ -72,10 +72,15 @@ public class myScene extends Scene2D {
        Point A=Point.at(1,0).dotStyle(Point.DotSyle.DOT_STYLE_PLUS);
        Point B=Point.at(1.3,0).dotStyle(Point.DotSyle.DOT_STYLE_CIRCLE).drawColor("yellow");
        add(A,B);
+       Shape s1=Shape.circle().scale(.3).style("solidblue");
+       Shape s2=Shape.circle().scale(.3).style("solidred");
+       add(s1,s2);
+       s1.putAt(A, Anchor.LOWER);
+       s2.putAt(A, Anchor.UPPER);
         ApplyCommand rot1 = Commands.rotate(5, Point.Origin, 2*PI, A);
         ApplyCommand rot2 = Commands.rotate(5, A, 8*PI, B);
         play.showCreation(.5,new FunctionGraph((x) ->Math.sin(x*3),-2,2));
-        play.rotate(2,Point.Origin,PI, everything());
+        play.rotate(2,A,PI, everything());
         waitSeconds(3);
        
         
