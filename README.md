@@ -58,6 +58,15 @@ The `waitSeconds` method simply waits for the specified amount of seconds, addin
 waitSeconds(5);
 ```
 
+If you are satisfied with the result and want to create a movie, you may add the following command in the `setupSketch`method:
+```java
+    @Override
+    public void setupSketch() {
+    	conf.setCreateMovie(true);
+    }
+```
+By default, it will create a movie into a subfolder of the project called `media`, with the name `<name_of_my_class>_widthInPX.mp4`.
+
 ## Dependencies
 
 This library uses the following 3rd party libraries:
