@@ -62,7 +62,7 @@ If you are satisfied with the result and want to create a movie, you may add the
 ```java
     @Override
     public void setupSketch() {
-    conf.setCreateMovie(true);
+    	conf.setCreateMovie(true);
     }
 ```
 By default, it will create a movie into a subfolder of the project called `media`, with the name `<name_of_my_class>_widthInPX.mp4`.
