@@ -426,17 +426,24 @@ public class JavaFXRenderer extends Renderer {
     @Override
     public Rect createImage(String fileName) {
         Rect r = new Rect(0, 0, 0, 0);
+
         try {
-            Image image = new Image(new FileInputStream(fileName));
-            images.put(fileName, image);
-            JMathAnimScene.logger.info("Loaded image " + fileName);
+            Image image;
+            if (!images.containsKey(fileName)) {//If the image is not already loaded...
+                image = new Image(new FileInputStream(fileName));
+                images.put(fileName, image);
+                JMathAnimScene.logger.info("Loaded image " + fileName);
+            } else {
+                image = images.get(fileName);
+            }
+
             //UL corner of bounding box initially set to (0,0)
             r.ymin = -camera.screenToMath(image.getHeight());
             r.xmax = camera.screenToMath(image.getWidth());
         } catch (FileNotFoundException ex) {
             JMathAnimScene.logger.warn("Could'nt load image " + fileName);
-
         }
+
         return r;
     }
     //Setting the image view     }

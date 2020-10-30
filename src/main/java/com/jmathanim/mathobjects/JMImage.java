@@ -38,6 +38,7 @@ public class JMImage extends MathObject {
     public static JMImage make(String filename) {
         return new JMImage(filename);
     }
+
     public JMImage(String filename) {
         this.filename = filename;
         this.bbox = JMathAnimConfig.getConfig().getRenderer().createImage(filename);
@@ -54,15 +55,19 @@ public class JMImage extends MathObject {
         return (T) this;
     }
 
-
     @Override
     public <T extends MathObject> T copy() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        JMImage resul = new JMImage(filename);
+        resul.bbox.copyFrom(this.bbox);
+        resul.mp.copyFrom(this.mp);
+        resul.preserveRatio = this.preserveRatio;
+        resul.rotateAngle = this.rotateAngle;
+        resul.rotateAngleBackup = this.rotateAngleBackup;
+        return (T) resul;
     }
 
     @Override
     public void prepareForNonLinearAnimation() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
@@ -84,7 +89,6 @@ public class JMImage extends MathObject {
 
     @Override
     public void draw(Renderer r) {
-//        System.out.println(bbox);
         r.drawImage(this);
     }
 
@@ -112,11 +116,10 @@ public class JMImage extends MathObject {
         return (T) this;
     }
 
-
     @Override
     public <T extends MathObject> T rotate(Point center, double angle) {
         //For now, ignore rotate center
-        rotateAngle+=angle;
+        rotateAngle += angle;
         return (T) this;
     }
 
