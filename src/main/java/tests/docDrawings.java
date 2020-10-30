@@ -17,10 +17,13 @@
  */
 package tests;
 
+import com.jmathanim.Utils.Anchor;
 import com.jmathanim.Utils.ConfigLoader;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.Scene2D;
+import com.jmathanim.mathobjects.JMImage;
 import com.jmathanim.mathobjects.LaTeXMathObject;
+import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.Point;
 import com.jmathanim.mathobjects.Point.DotSyle;
 import com.jmathanim.mathobjects.Shape;
@@ -30,26 +33,91 @@ import com.jmathanim.mathobjects.Shape;
  * @author David Gutiérrez Rubio <davidgutierrezrubio@gmail.com>
  */
 public class docDrawings extends Scene2D {
-
+    
     @Override
     public void setupSketch() {
-        conf.setCreateMovie(true);
-        conf.setLowQuality();
+        ConfigLoader.parseFile("preview.xml");
+        ConfigLoader.parseFile("light.xml");
     }
-
+    
     @Override
     public void runSketch() throws Exception {
-        Point p=Point.at(0,0);
-        play.shift(2,Vec.to(1,0),p);
-        waitSeconds(3);
+        Shape ellipse=Shape.circle().scale(.5,1);//Creates an ellipse
+        for (int n = 0; n < 180; n+=20) {
+            add(ellipse.copy().rotate(Point.at(.5,0),n*DEGREES));
+        }
+        waitSeconds(5);
     }
 
+    private void scaleExample1() {
+        add(Shape.circle().shift(-1, 0).scale(.5, 1));
+        add(Shape.circle().shift(0, 1).scale(Point.at(0, 0), 1.3, .2));
+        add(Shape.square().shift(1, 0).scale(.3));
+        waitSeconds(5);
+    }
+    
+    private void StackToScreenExample() {
+        Shape sq = Shape.square();
+        add(sq.stackToScreen(Anchor.LEFT));//Stack square to the left of the screen, with no gaps
+        add(sq.copy().stackToScreen(Anchor.RIGHT, .3, .1));//Stack a copy of square to the left of the screen,with gaps of .3 horizontal and .1 vertical
+        add(Shape.circle().stackToScreen(Anchor.UL));//Stack a unit circle to the upper left corner of the screen, with no gaps
+        waitSeconds(5);
+    }
+    
+    private void stackToExample2() {
+        Shape previousPol = Shape.regularPolygon(3);
+        add(previousPol);
+        for (int n = 4; n < 10; n++) {
+            Shape pol = Shape.regularPolygon(n).stackTo(previousPol, Anchor.RIGHT);
+            add(pol);
+            previousPol = pol;
+        }
+        camera.adjustToAllObjects();//Everyone should appear in the photo
+        waitSeconds(5);//Time for screenshot, but you already should know that
+    }
+    
+    private void stackToExample1() {
+        Shape c1 = Shape.circle();
+        Shape c2 = c1.copy();
+        Shape c3 = c1.copy();
+        Shape c4 = c1.copy();
+        Shape sq = Shape.square();
+        c1.stackTo(sq, Anchor.LEFT, .1);//Stacks circle to the left of the square, with a gap of .1 units
+        c2.stackTo(sq, Anchor.RIGHT, .1);//Stacks circle to the right of the square, with a gap of .1 units
+        c3.stackTo(sq, Anchor.UPPER);//Stacks circle to the upper side of the square, with no gap
+        c4.stackTo(sq, Anchor.BY_CENTER);//Stacks circle center-to-center with the square
+        add(c1, c2, c3, c4, sq);//Add everything to the scene
+        camera.adjustToAllObjects();//Everyone should appear in the photo
+        waitSeconds(5);//Time for screenshot, but you already should know that
+    }
+    
+    private void PutAtExample() {
+        Point A = Point.at(.5, .5);
+        Shape circ = Shape.circle().putAt(A, Anchor.UPPER);//Set upper point of circle to A
+        Shape arc = Shape.arc(120 * DEGREES).putAt(A, Anchor.UR);//Set up-right point of arc to A
+        Shape sq = Shape.square().putAt(A, Anchor.BY_CENTER);//Set center of square to A
+        add(A, circ, arc, sq);//Add everything to the scene
+        waitSeconds(5);//Give me time to make a screenshot!
+    }
+    
+    private void imageExample() {
+        JMImage img = JMImage.make("c:/media/Galois.jpg").center();
+        add(img);
+        waitSeconds(5);
+    }
+    
+    private void basicFlow() {
+        Point p = Point.at(0, 0);
+        play.shift(2, Vec.to(1, 0), p);
+        waitSeconds(3);
+    }
+    
     private void Latex_1() {
         LaTeXMathObject text = new LaTeXMathObject("$$\\int_0^\\infty e^x\\,dx=1$$");
         add(text);
         waitSeconds(5);
     }
-
+    
     private void BasicShapes() {
         Shape circ = Shape.circle();//Generates a circle with radius 1 and centered at (0,0)
         Shape sq = Shape.square();//Generates a unit-square, with lower left cornet at (0,0)
@@ -57,10 +125,10 @@ public class docDrawings extends Scene2D {
         Shape rect = Shape.rectangle(Point.at(1, 2), Point.at(3, 5));//A rectangle with their sides parallel to the axes, with lower left and upper right vertices at (1,2) and (3,5) respectively.
         Shape seg = Shape.segment(Point.at(-1, -1), Point.at(-.5, 1.5));//A segment specified by the given points
         Shape arc = Shape.arc(PI / 4);//An arc centered at (0,0) with radius 1, and arclength of PI/4 radians
-        add(circ,sq,reg,rect,seg,arc);
+        add(circ, sq, reg, rect, seg, arc);
         waitSeconds(5);
     }
-
+    
     private void ThreeDots() {
         Point A = Point.at(-.5, 0).dotStyle(DotSyle.CIRCLE);
         Point B = Point.at(0, 0).dotStyle(DotSyle.CROSS);
@@ -68,5 +136,5 @@ public class docDrawings extends Scene2D {
         add(A, B, C);
         waitSeconds(5);
     }
-
+    
 }

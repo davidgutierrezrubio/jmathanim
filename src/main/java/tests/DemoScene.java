@@ -110,7 +110,7 @@ public class DemoScene extends Scene2D {
         //Slide 6
         System.out.println("Slide 6");
         Shape c = Shape.circle();
-        Shape r = Shape.regularPolygon(5).stackTo(Anchor.BY_CENTER);
+        Shape r = Shape.regularPolygon(5).stackToScreen(Anchor.BY_CENTER);
         add(c);
         description = createDescription("Global styles can be loaded from config files");
         commandText = createCommandText("{\\tt dark.xml vs light.xml}");
@@ -121,7 +121,7 @@ public class DemoScene extends Scene2D {
         //Slide 7
         System.out.println("Slide 7");
 //        commandText = createCommandText("{\\tt dark.xml vs light.xml}");
-        Shape r1 = Shape.regularPolygon(5).stackTo(Anchor.BY_CENTER).thickness(2).drawColor(JMColor.hex("#008891"));
+        Shape r1 = Shape.regularPolygon(5).stackToScreen(Anchor.BY_CENTER).thickness(2).drawColor(JMColor.hex("#008891"));
         final Point centroid = r1.getCentroid().drawColor(JMColor.RED);
         centroid.style("dotRedCircle");
         centroid.thickness(1);
@@ -140,7 +140,7 @@ public class DemoScene extends Scene2D {
 
     private void makeTitle() {
         LaTeXMathObject title = new LaTeXMathObject("JMathAnim demo");
-        title.stackTo(Anchor.BY_CENTER);
+        title.stackToScreen(Anchor.BY_CENTER);
         play.growIn(2, PI / 10, title);
         waitSeconds(3);
         play.shrinkOut(2, -PI / 10, title);
@@ -149,13 +149,13 @@ public class DemoScene extends Scene2D {
 
     private LaTeXMathObject createDescription(String text) {
         LaTeXMathObject latex = new LaTeXMathObject(text);
-        play.showCreation(latex.scale(.7).stackTo(Anchor.UPPER, .1, .1));
+        play.showCreation(latex.scale(.7).stackToScreen(Anchor.UPPER, .1, .1));
         return latex;
     }
 
     private LaTeXMathObject createCommandText(String text) {
         LaTeXMathObject latex = new LaTeXMathObject(text);
-        play.fadeIn(latex.scale(.7).stackTo(Anchor.LOWER, .1, .1));
+        play.fadeIn(latex.scale(.7).stackToScreen(Anchor.LOWER, .1, .1));
         return latex;
     }
 }

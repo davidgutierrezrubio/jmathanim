@@ -71,14 +71,6 @@ public class MultiShapeObject extends MathObject {
     }
 
     @Override
-    public <T extends MathObject> T moveTo(Vec coords) {
-        for (Shape jmp : shapes) {
-            jmp.moveTo(coords);
-        }
-        return (T) this;
-    }
-
-    @Override
     public <T extends MathObject> T fillColor(JMColor fc) {
         for (Shape jmp : shapes) {
             jmp.fillColor(fc);

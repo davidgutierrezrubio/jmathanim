@@ -110,7 +110,9 @@ public abstract class MathObject implements Drawable, Updateable, Stateable {
      * @param coords Vec with coordinates of new center
      * @return The same object, after moving
      */
-    public abstract <T extends MathObject> T moveTo(Vec coords);
+    public final <T extends MathObject> T moveTo(Vec coords) {
+        return this.moveTo(Point.at(coords.x, coords.y));
+    }
 
     /**
      * Move object so that center is the given point
@@ -120,7 +122,8 @@ public abstract class MathObject implements Drawable, Updateable, Stateable {
      * @return The same object, after moving
      */
     public <T extends MathObject> T moveTo(Point p) {
-        return moveTo(p.v);
+        putAt(p, Anchor.BY_CENTER);
+        return (T) this;
     }
 
     /**
@@ -144,7 +147,7 @@ public abstract class MathObject implements Drawable, Updateable, Stateable {
      * @param y y-coordinate of shift vector
      * @return The same object, after shifting
      */
-    public <T extends MathObject> T shift(double x, double y) {
+    public final <T extends MathObject> T shift(double x, double y) {
         return shift(new Vec(x, y));
     }
 
@@ -156,7 +159,7 @@ public abstract class MathObject implements Drawable, Updateable, Stateable {
      * @param sy y-scale factor
      * @return The same object, after scaling
      */
-    public <T extends MathObject> T scale(double sx, double sy) {
+    public final <T extends MathObject> T scale(double sx, double sy) {
         scale(getCenter(), sx, sy);
         return (T) this;
     }
@@ -168,7 +171,7 @@ public abstract class MathObject implements Drawable, Updateable, Stateable {
      * @param s scale factor
      * @return The same object, after scaling
      */
-    public <T extends MathObject> T scale(double s) {
+    public final <T extends MathObject> T scale(double s) {
         return scale(getCenter(), s, s);
     }
 
@@ -181,7 +184,7 @@ public abstract class MathObject implements Drawable, Updateable, Stateable {
      * @param sy y-scale factor
      * @return The same object, after scaling
      */
-    public <T extends MathObject> T scale(Point p, double sx, double sy) {
+    public final <T extends MathObject> T scale(Point p, double sx, double sy) {
         return scale(p, sx, sy, 1);
     }
 
@@ -194,7 +197,7 @@ public abstract class MathObject implements Drawable, Updateable, Stateable {
      * @param sz z-scale factor
      * @return The same object, after scaling
      */
-    public <T extends MathObject> T scale(double sx, double sy, double sz) {
+    public final <T extends MathObject> T scale(double sx, double sy, double sz) {
         scale(getBoundingBox().getCenter(), sx, sy, sz);
         return (T) this;
     }
@@ -238,6 +241,11 @@ public abstract class MathObject implements Drawable, Updateable, Stateable {
      */
     public <T extends MathObject> T setWidth(double w) {
         scale(w / this.getBoundingBox().getWidth());
+        return (T) this;
+    }
+
+    public final <T extends MathObject> T center() {
+        this.stackToScreen(Anchor.BY_CENTER);
         return (T) this;
     }
 
@@ -450,16 +458,15 @@ public abstract class MathObject implements Drawable, Updateable, Stateable {
 
     }
 
-    public void stackTo(MathObject obj, int anchorType) {
-        Point B = Anchor.getAnchorPoint(obj, anchorType);
-        Point A = Anchor.getAnchorPoint(this, Anchor.reverseAnchorPoint(anchorType));
-        this.shift(A.to(B));
+    public final <T extends MathObject> T stackTo(MathObject obj, int anchorType) {
+       return stackTo(obj, anchorType,0);
     }
 
-    public void stackTo(MathObject obj, int anchorType, double gap) {
+    public <T extends MathObject> T stackTo(MathObject obj, int anchorType, double gap) {
         Point B = Anchor.getAnchorPoint(obj, anchorType, gap);
         Point A = Anchor.getAnchorPoint(this, Anchor.reverseAnchorPoint(anchorType));
         this.shift(A.to(B));
+        return (T) this;
     }
 
     /**
@@ -469,8 +476,8 @@ public abstract class MathObject implements Drawable, Updateable, Stateable {
      * @param anchorType {@link Anchor} type
      * @return The current object
      */
-    public <T extends MathObject> T stackTo(int anchorType) {
-        return stackTo(anchorType, 0, 0);
+    public final <T extends MathObject> T stackToScreen(int anchorType) {
+        return stackToScreen(anchorType, 0, 0);
     }
 
     /**
@@ -483,13 +490,13 @@ public abstract class MathObject implements Drawable, Updateable, Stateable {
      * @param yMargin y margin
      * @return The current object
      */
-    public <T extends MathObject> T stackTo(int anchorType, double xMargin, double yMargin) {
+    public <T extends MathObject> T stackToScreen(int anchorType, double xMargin, double yMargin) {
         Point B = Anchor.getScreenAnchorPoint(anchorType, xMargin, yMargin);
         Point A = Anchor.getAnchorPoint(this, anchorType);
         return this.shift(A.to(B));
     }
 
-    public <T extends MathObject> T putAt(Point p, int anchorType) {
+    public final <T extends MathObject> T putAt(Point p, int anchorType) {
         return putAt(p, anchorType, 0);
     }
 
@@ -548,8 +555,6 @@ public abstract class MathObject implements Drawable, Updateable, Stateable {
         mp.loadFromStyle(name);
         return (T) this;
     }
-
-   
 
     public <T extends MathObject> T linecap(StrokeLineCap strokeLineCap) {
         this.mp.linecap = strokeLineCap;

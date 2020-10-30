@@ -100,7 +100,7 @@ public class TesterShowCreation extends Scene2D {
 
     private void test4()   {
 
-        LaTeXMathObject lat = LaTeXMathObject.make("This is a test").stackTo(Anchor.BY_CENTER).layer(1);
+        LaTeXMathObject lat = LaTeXMathObject.make("This is a test").stackToScreen(Anchor.BY_CENTER).layer(1);
         Shape r = Shape.rectangle(lat.getBoundingBox().addGap(.2, .2)).layer(0).style("solidblue").fillAlpha(.6).drawColor(JMColor.RED);
         play.showCreation(lat, r);
         waitSeconds(1);
@@ -122,15 +122,15 @@ public class TesterShowCreation extends Scene2D {
     }
 
     private void test2() {
-        Shape s = Shape.square().stackTo(Anchor.BY_CENTER).style("solidred").layer(1);
-        Shape c = Shape.circle().stackTo(Anchor.BY_CENTER).style("solidblue").layer(0);
+        Shape s = Shape.square().stackToScreen(Anchor.BY_CENTER).style("solidred").layer(1);
+        Shape c = Shape.circle().stackToScreen(Anchor.BY_CENTER).style("solidblue").layer(0);
         play.showCreation(s, c);
         waitSeconds(1);
         play.fadeOutAll();
     }
 
     private void test1() {
-        Shape s = Shape.square().stackTo(Anchor.BY_CENTER).style("solidred").layer(1);
+        Shape s = Shape.square().stackToScreen(Anchor.BY_CENTER).style("solidred").layer(1);
         play.showCreation(s);
         waitSeconds(1);
         play.fadeOutAll();

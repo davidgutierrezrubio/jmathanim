@@ -35,6 +35,9 @@ public class JMImage extends MathObject {
     public double rotateAngle = 0;
     public double rotateAngleBackup = 0;
 
+    public static JMImage make(String filename) {
+        return new JMImage(filename);
+    }
     public JMImage(String filename) {
         this.filename = filename;
         this.bbox = JMathAnimConfig.getConfig().getRenderer().createImage(filename);
@@ -51,10 +54,6 @@ public class JMImage extends MathObject {
         return (T) this;
     }
 
-    @Override
-    public <T extends MathObject> T moveTo(Vec coords) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
 
     @Override
     public <T extends MathObject> T copy() {

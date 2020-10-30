@@ -60,7 +60,7 @@ public class TesterTransform extends Scene2DAwt {
 
     public void test1() {
         Shape c = Shape.circle().drawColor("#de4463").thickness(.5).rotate(45*DEGREES);
-        Shape sq = Shape.square().stackTo(Anchor.BY_CENTER).scale(1.4142).drawColor("#edc988").thickness(.5);
+        Shape sq = Shape.square().stackToScreen(Anchor.BY_CENTER).scale(1.4142).drawColor("#edc988").thickness(.5);
         Shape c2 = c.copy();
         add(Point.at(0,0).style("dotYellowPlus"));
         add(c, sq);
@@ -81,7 +81,7 @@ public class TesterTransform extends Scene2DAwt {
 
     private void test2() {
         Shape arc = Shape.arc(120 * DEGREES).drawColor("#de4463").thickness(2);
-        Shape sq = Shape.square().stackTo(Anchor.BY_CENTER).drawColor("#edc988").thickness(2);
+        Shape sq = Shape.square().stackToScreen(Anchor.BY_CENTER).drawColor("#edc988").thickness(2);
         add(arc, sq);
         Shape arc2 = arc.copy();
         play.transform(5, arc, sq);
@@ -239,9 +239,9 @@ public class TesterTransform extends Scene2DAwt {
         LaTeXMathObject lat = new LaTeXMathObject("$2+3=5$");
         LaTeXMathObject lat2 = new LaTeXMathObject("$2+6=8$");
         LaTeXMathObject lat3 = new LaTeXMathObject("$3+2=5$");
-        lat.stackTo(Anchor.BY_CENTER);
-        lat2.stackTo(Anchor.BY_CENTER);
-        lat3.stackTo(Anchor.BY_CENTER);
+        lat.stackToScreen(Anchor.BY_CENTER);
+        lat2.stackToScreen(Anchor.BY_CENTER);
+        lat3.stackToScreen(Anchor.BY_CENTER);
         add(lat);
         camera.adjustToAllObjects();
         waitSeconds(3);

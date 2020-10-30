@@ -183,8 +183,8 @@ public class Point extends MathObject {
     }
 
     @Override
-    public <T extends MathObject> T moveTo(Vec coords) {
-        return shift(coords.minus(v));
+    public <T extends MathObject> T moveTo(Point p) {
+        return shift(p.v.minus(v));
 
     }
 

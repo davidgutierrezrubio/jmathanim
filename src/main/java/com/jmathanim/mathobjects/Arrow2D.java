@@ -179,30 +179,6 @@ public class Arrow2D extends MathObject {
     }
 
     @Override
-    public <T extends MathObject> T scale(double sx, double sy, double sz) {
-        body.scale(sx, sy, sz);
-        return (T) this;
-    }
-
-    @Override
-    public <T extends MathObject> T scale(Point p, double sx, double sy) {
-        body.scale(p, sx, sy);
-        return (T) this;
-    }
-
-    @Override
-    public <T extends MathObject> T scale(double s) {
-        body.scale(s); //To change body of generated methods, choose Tools | Templates.
-        return (T) this;
-    }
-
-    @Override
-    public <T extends MathObject> T scale(double sx, double sy) {
-        body.scale(sx, sy); //To change body of generated methods, choose Tools | Templates.
-        return (T) this;
-    }
-
-    @Override
     public <T extends MathObject> T layer(int layer) {
         head.layer(layer);
         body.layer(layer);
@@ -223,21 +199,13 @@ public class Arrow2D extends MathObject {
         return (T) this;
     }
 
-    @Override
-    public <T extends MathObject> T shift(double x, double y) {
-        return super.shift(x, y); //To change body of generated methods, choose Tools | Templates.
-    }
+  
 
     @Override
     public Point getCenter() {
         return body.getCenter();
     }
 
-    @Override
-    public <T extends MathObject> T moveTo(Vec coords) {
-        body.moveTo(coords);
-        return (T) this;
-    }
 
     @Override
     public <T extends MathObject> T shift(Vec shiftVector) {

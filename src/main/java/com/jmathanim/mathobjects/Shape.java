@@ -97,11 +97,6 @@ public class Shape extends MathObject {
         return resul;
     }
 
-    @Override
-    public <T extends MathObject> T shift(double x, double y) {
-        return shift(new Vec(x, y));
-    }
-
 //    @Override
 //    public <T extends MathObject> T shift(Vec shiftVector) {
 //        jmpath.shift(shiftVector);
@@ -191,11 +186,6 @@ public class Shape extends MathObject {
         jmpath.saveState();
     }
 
-    @Override
-    public <T extends MathObject> T moveTo(Vec coords
-    ) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
 
     //Static methods to build most used shapes
     public static Shape square() {

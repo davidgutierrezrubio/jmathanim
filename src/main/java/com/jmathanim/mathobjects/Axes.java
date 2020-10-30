@@ -79,10 +79,6 @@ public class Axes extends MathObject {
         return Point.at(0, 0);
     }
 
-    @Override
-    public <T extends MathObject> T moveTo(Vec coords) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
 
     @Override
     public <T extends MathObject> T copy() {

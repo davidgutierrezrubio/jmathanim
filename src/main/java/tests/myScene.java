@@ -121,11 +121,11 @@ public class myScene extends Scene2D {
         balanza.drawColor(JMColor.RED);
         balanza.fillColor(JMColor.RED);
 
-        balanza.stackTo(Anchor.BY_CENTER);
+        balanza.stackToScreen(Anchor.BY_CENTER);
 
         SVGMathObject candy = new SVGMathObject("C:\\media\\candy.svg");
         candy.scale(.01);
-        candy.stackTo(Anchor.RIGHT);
+        candy.stackToScreen(Anchor.RIGHT);
 
         play.showCreation(candy, balanza);
         play.scale(5, .5, candy, balanza);
@@ -252,8 +252,8 @@ public class myScene extends Scene2D {
 //        ar.thickness(3);
         add(ar, ar2, c);
         System.out.println("1");
-        LaTeXMathObject lat = LaTeXMathObject.make("Absolutely!").scale(2).stackTo(Anchor.BY_CENTER);
-        LaTeXMathObject lat2 = LaTeXMathObject.make("Relatively!").scale(1).stackTo(Anchor.BY_CENTER);
+        LaTeXMathObject lat = LaTeXMathObject.make("Absolutely!").scale(2).stackToScreen(Anchor.BY_CENTER);
+        LaTeXMathObject lat2 = LaTeXMathObject.make("Relatively!").scale(1).stackToScreen(Anchor.BY_CENTER);
         System.out.println("2");
         add(lat, lat2);
         lat.setAbsoluteSize(Anchor.BY_CENTER);
@@ -282,8 +282,8 @@ public class myScene extends Scene2D {
     private void Big2() {
         LaTeXMathObject lat2 = new LaTeXMathObject("$2+x$");
         LaTeXMathObject lat = new LaTeXMathObject("$5+x$");
-        lat.stackTo(Anchor.BY_CENTER);
-        lat2.stackTo(Anchor.BY_CENTER);
+        lat.stackToScreen(Anchor.BY_CENTER);
+        lat2.stackToScreen(Anchor.BY_CENTER);
         final JMPath pa = lat.get(0).getPath().rawCopy();
         add(lat);
         camera.zoomToObjects(lat);
@@ -304,12 +304,12 @@ public class myScene extends Scene2D {
     private void tran() {
         LaTeXMathObject lat = new LaTeXMathObject("$8+y$");
         LaTeXMathObject lat2 = new LaTeXMathObject("$x+y$");
-        lat.stackTo(Anchor.BY_CENTER);
-        lat2.stackTo(Anchor.BY_CENTER);
+        lat.stackToScreen(Anchor.BY_CENTER);
+        lat2.stackToScreen(Anchor.BY_CENTER);
 
         add(lat2);
         camera.zoomToObjects(lat);
-        add(Shape.circle().scale(.1).stackTo(Anchor.RIGHT));
+        add(Shape.circle().scale(.1).stackToScreen(Anchor.RIGHT));
 //        playAnimation(Commands.setStyle(.3, "latextransparent",lat.get(0), lat2.get(0)));
         play.transform(5, lat2.get(0), lat.get(0));
 //        playAnimation(Commands.setStyle(.3, "latexdefault",lat.get(0), lat2.get(0)));
@@ -333,7 +333,7 @@ public class myScene extends Scene2D {
         LaTeXMathObject t = new LaTeXMathObject("This is a test of how much a long paragraph should be drawn");
 //        LaTeXMathObject t = new LaTeXMathObject("$$\\int_0^\\infty x\\,dx\\geq\\pi$$");
 //        LaTeXMathObject t=new LaTeXMathObject("$${\\color{red}x}+\\color{blue}1$$");
-        t.scale(1).stackTo(Anchor.LEFT, .2, .2);
+        t.scale(1).stackToScreen(Anchor.LEFT, .2, .2);
         play.showCreation(10, t);
         waitSeconds(5);
     }
