@@ -34,14 +34,15 @@ public class Point extends MathObject {
 
     public final Vec v;
     private final Vec vBackup;
+    private Shape dotShape;
 
     public enum DotSyle {
-        DOT_STYLE_CIRCLE, DOT_STYLE_CROSS, DOT_STYLE_PLUS
+        CIRCLE, CROSS, PLUS
     }
     public static final Point Origin = Point.at(0, 0);
     public static final Point UnitX = Point.at(1, 0);
-    public static final Point UnitY = Point.at(0,1);
-    public static final Point UnitZ = new Point(0,0,1);
+    public static final Point UnitY = Point.at(0, 1);
+    public static final Point UnitZ = new Point(0, 0, 1);
 
     public Point() {
         this(0, 0, 0);
@@ -131,27 +132,39 @@ public class Point extends MathObject {
 //        r.drawCircle(v.x, v.y, rad);
 //        
         double st;
-        Shape dotShape = generateDotShape();
+        dotShape = generateDotShape();
         dotShape.setAbsoluteSize();
         dotShape.setAbsoluteAnchorPoint(this.copy());
         dotShape.draw(r);
 
     }
 
+    /**
+     * Stablishes dot style.
+     *
+     * @param dotStyle Style dot. DOT_STYLE_CIRCLE, DOT_STYLE_CROSS,
+     * DOT_STYLE_PLUS
+     * @return The object
+     */
+    public Point dotStyle(DotSyle dotStyle) {
+        this.mp.dotStyle = dotStyle;
+        return this;
+    }
+
     private Shape generateDotShape() {
         double st;
         Shape dotShape;
         switch (mp.dotStyle) {
-            case DOT_STYLE_CROSS:
+            case CROSS:
 //                st = mp.computeScreenThickness(r)/20;
-                st = mp.thickness / 40;
+                st = mp.thickness / 70;
                 dotShape = new Shape();
                 dotShape.getPath().addPoint(Point.at(-1, 1), Point.at(1, -1), Point.at(1, 1), Point.at(-1, -1));
                 dotShape.getJMPoint(0).isThisSegmentVisible = false;
                 dotShape.getJMPoint(2).isThisSegmentVisible = false;
                 dotShape.shift(v).scale(st).drawColor(mp.drawColor).thickness(mp.thickness);
                 break;
-            case DOT_STYLE_PLUS:
+            case PLUS:
 //                st = mp.computeScreenThickness(r)/20;
                 st = mp.thickness / 70;
                 dotShape = new Shape();
@@ -162,7 +175,7 @@ public class Point extends MathObject {
                 break;
             default://Default case, includes CIRCLE
 //                st = mp.computeScreenThickness(r)/200;
-                st = mp.thickness / 40;
+                st = mp.thickness / 70;
                 dotShape = Shape.circle().shift(v).scale(st).drawColor(mp.drawColor).fillColor(mp.drawColor).thickness(0);
                 break;
         }

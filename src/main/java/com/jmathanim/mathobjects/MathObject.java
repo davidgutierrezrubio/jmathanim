@@ -549,18 +549,7 @@ public abstract class MathObject implements Drawable, Updateable, Stateable {
         return (T) this;
     }
 
-    /**
-     * Stablishes dot style. Only works when drawing dots
-     *
-     * @param <T> MathObject subclass
-     * @param dotStyle Style dot. DOT_STYLE_CIRCLE, DOT_STYLE_CROSS,
-     * DOT_STYLE_PLUS
-     * @return The object
-     */
-    public <T extends MathObject> T dotStyle(DotSyle dotStyle) {
-        this.mp.dotStyle = dotStyle;
-        return (T) this;
-    }
+   
 
     public <T extends MathObject> T linecap(StrokeLineCap strokeLineCap) {
         this.mp.linecap = strokeLineCap;

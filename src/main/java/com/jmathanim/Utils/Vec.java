@@ -93,10 +93,6 @@ public class Vec implements Stateable {
         return (double) sqrt(x * x + y * y + z * z);
     }
 
-    public double distanceTo(Vec point) {
-        Vec c = this.minus(point);
-        return c.norm();
-    }
 
     /**
      * Returns a new point between this and v2, given by the parameter

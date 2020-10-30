@@ -371,7 +371,7 @@ public class JMPath implements Updateable, Stateable {
         for (int n = 0; n < this.size(); n++) {
             Vec v1 = jmPathPoints.get(n).p.v;
             Vec v2 = path2.jmPathPoints.get(n).p.v;
-            double dist = v1.distanceTo(v2);
+            double dist = v1.minus(v2).norm();
             sumSq += dist;
             sum += dist;
         }

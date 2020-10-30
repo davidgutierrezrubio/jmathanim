@@ -49,7 +49,7 @@ public class MODrawProperties implements Stateable {
 
     //Styles used for specified objects
     //Point
-    public DotSyle dotStyle = DotSyle.DOT_STYLE_CIRCLE;
+    public DotSyle dotStyle = DotSyle.CIRCLE;
     private MODrawProperties mpBackup;
     public StrokeLineCap linecap = StrokeLineCap.ROUND;
 
@@ -175,7 +175,7 @@ public class MODrawProperties implements Stateable {
     }
 
     static DotSyle parseDotStyle(String str) {
-        DotSyle resul = DotSyle.DOT_STYLE_CIRCLE; //default dash
+        DotSyle resul = DotSyle.CIRCLE; //default dash
         try {
             resul = DotSyle.valueOf(str.toUpperCase());
         } catch (IllegalArgumentException  e) {

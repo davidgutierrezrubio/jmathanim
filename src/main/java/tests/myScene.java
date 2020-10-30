@@ -69,8 +69,8 @@ public class myScene extends Scene2D {
     }
     @Override
     public void runSketch() {
-       Point A=Point.at(1,0).dotStyle(Point.DotSyle.DOT_STYLE_PLUS);
-       Point B=Point.at(1.3,0).dotStyle(Point.DotSyle.DOT_STYLE_CIRCLE).drawColor("yellow");
+       Point A=Point.at(1,0).dotStyle(Point.DotSyle.PLUS);
+       Point B=Point.at(1.3,0).dotStyle(Point.DotSyle.CIRCLE).drawColor("yellow");
        add(A,B);
        Shape s1=Shape.circle().scale(.3).style("solidblue");
        Shape s2=Shape.circle().scale(.3).style("solidred");
@@ -266,7 +266,7 @@ public class myScene extends Scene2D {
     public void manyDots() {
         for (int n = 0; n < 15; n++) {
             Point p = Point.random();
-            p.dotStyle(Point.DotSyle.DOT_STYLE_CROSS);
+            p.dotStyle(Point.DotSyle.CROSS);
             p.thickness(.5);
             System.out.println("n " + n);
 //            p.thickness(1 + Math.random() * 1);
