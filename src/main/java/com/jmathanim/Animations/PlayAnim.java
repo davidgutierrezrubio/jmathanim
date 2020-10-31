@@ -96,7 +96,9 @@ public class PlayAnim {
         }
         scene.playAnimation(Commands.scale(runTime, r.getCenter(), scale, scale, scale, objs));
     }
-
+ public void scale(double runTime, Point center, double scx, double scy, MathObject... objs) {
+        scene.playAnimation(Commands.scale(runTime, center, scx, scy, 1, objs));
+    }
     public void scale(double runTime, Point center, double scx, double scy, double scz, MathObject... objs) {
         scene.playAnimation(Commands.scale(runTime, center, scx, scy, scz, objs));
     }

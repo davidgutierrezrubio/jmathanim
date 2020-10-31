@@ -17,6 +17,12 @@
  */
 package tests;
 
+import com.jmathanim.Animations.AffineJTransform;
+import com.jmathanim.Animations.Animation;
+import com.jmathanim.Animations.ApplyCommand;
+import com.jmathanim.Animations.ShowCreation;
+import com.jmathanim.Animations.ShowCreation.ShowCreationStrategy;
+import com.jmathanim.Animations.commands.Commands;
 import com.jmathanim.Utils.Anchor;
 import com.jmathanim.Utils.ConfigLoader;
 import com.jmathanim.Utils.Vec;
@@ -27,24 +33,96 @@ import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.Point;
 import com.jmathanim.mathobjects.Point.DotSyle;
 import com.jmathanim.mathobjects.Shape;
+import com.sun.webkit.ContextMenu;
 
 /**
  *
  * @author David Gutiérrez Rubio <davidgutierrezrubio@gmail.com>
  */
 public class docDrawings extends Scene2D {
-    
+
     @Override
     public void setupSketch() {
         ConfigLoader.parseFile("preview.xml");
-        ConfigLoader.parseFile("light.xml");
+        ConfigLoader.parseFile("dark.xml");
+//        conf.setCreateMovie(true);
     }
-    
+
     @Override
     public void runSketch() throws Exception {
-        Shape ellipse=Shape.circle().scale(.5,1);//Creates an ellipse
-        for (int n = 0; n < 180; n+=20) {
-            add(ellipse.copy().rotate(Point.at(.5,0),n*DEGREES));
+        LaTeXMathObject text=LaTeXMathObject.make("$a^2+b^2=c^2$").center().scale(3);
+        add(text);
+        play.showCreation(text);
+        waitSeconds(1);
+    }
+
+    private void fadeHighShrinkDemo() {
+        LaTeXMathObject text;
+        Shape sq = Shape.square().fillColor("#87556f").thickness(2).center();//
+        text = LaTeXMathObject.make("{\\tt play.fadeIn(sq)}").stackToScreen(Anchor.LOWER, .1, .1);
+        add(text);
+        play.fadeIn(sq);
+        waitSeconds(1);
+        remove(text);
+        text = LaTeXMathObject.make("{\\tt play.highlight(sq)}").stackToScreen(Anchor.LOWER, .1, .1);
+        add(text);
+        play.highlight(sq);
+        waitSeconds(1);
+        remove(text);
+        text = LaTeXMathObject.make("{\\tt play.shrinkOut(1,45*DEGREES, sq)}").stackToScreen(Anchor.LOWER, .1, .1);
+        add(text);
+        play.shrinkOut(1,45*DEGREES, sq);
+        waitSeconds(1);
+    }
+
+    private void AffineTransformExample1() {
+        Shape sq = Shape.square();
+        Shape circ = Shape.circle().scale(.5).shift(.5, .5);//A circle inscribed into the square
+        Point A = Point.at(0, 0); //A maps to D
+        Point B = Point.at(1, 0); //B maps to E
+        Point C = Point.at(0, 1); //C maps to F
+        Point D = Point.at(1.5, -.5).dotStyle(DotSyle.CROSS);
+        Point E = Point.at(2, 0).dotStyle(DotSyle.CROSS);
+        Point F = Point.at(1.75, .75).dotStyle(DotSyle.CROSS);
+        add(sq, circ, A, B, C, D, E, F);
+        AffineJTransform transform = AffineJTransform.createAffineTransformation(A, B, C, D, E, F, 1);
+        add(transform.getTransformedObject(sq));
+        add(transform.getTransformedObject(circ));
+        camera.adjustToAllObjects();
+        waitSeconds(5);
+    }
+
+    private void reflectionExample1() {
+        Shape sq = Shape.regularPolygon(5);
+        Point A = sq.getPoint(0);//First vertex of the pentagon(lower-left corner)
+        Point B = A.copy().shift(.5, -.2);
+        add(sq, A, B);
+        for (double alpha = 0; alpha <= 1; alpha += .2) {
+            AffineJTransform transform = AffineJTransform.createReflection(A, B, alpha);
+            add(transform.getTransformedObject(sq));
+        }
+        camera.adjustToAllObjects();
+        waitSeconds(5);
+    }
+
+    private void HomothecyExample1() {
+        Shape sq = Shape.square().shift(-1.5, -1);
+        Point A = sq.getPoint(0);//First vertex of the square (lower-left corner)
+        Point B = sq.getPoint(1);//First vertex of the square (lower-right corner)
+        Point C = Point.at(1.5, -1);//Destiny point of A
+        Point D = Point.at(1.7, .5);//Destiny point of B
+        add(A, B, C, D);
+        for (double alpha = 0; alpha <= 1; alpha += .2) {
+            AffineJTransform transform = AffineJTransform.createDirect2DHomothecy(A, B, C, D, alpha);
+            add(transform.getTransformedObject(sq));
+        }
+        waitSeconds(5);
+    }
+
+    private void rotateExample1() {
+        Shape ellipse = Shape.circle().scale(.5, 1);//Creates an ellipse
+        for (int n = 0; n < 180; n += 20) {
+            add(ellipse.copy().rotate(Point.at(.5, 0), n * DEGREES));
         }
         waitSeconds(5);
     }
@@ -55,7 +133,7 @@ public class docDrawings extends Scene2D {
         add(Shape.square().shift(1, 0).scale(.3));
         waitSeconds(5);
     }
-    
+
     private void StackToScreenExample() {
         Shape sq = Shape.square();
         add(sq.stackToScreen(Anchor.LEFT));//Stack square to the left of the screen, with no gaps
@@ -63,7 +141,7 @@ public class docDrawings extends Scene2D {
         add(Shape.circle().stackToScreen(Anchor.UL));//Stack a unit circle to the upper left corner of the screen, with no gaps
         waitSeconds(5);
     }
-    
+
     private void stackToExample2() {
         Shape previousPol = Shape.regularPolygon(3);
         add(previousPol);
@@ -75,7 +153,7 @@ public class docDrawings extends Scene2D {
         camera.adjustToAllObjects();//Everyone should appear in the photo
         waitSeconds(5);//Time for screenshot, but you already should know that
     }
-    
+
     private void stackToExample1() {
         Shape c1 = Shape.circle();
         Shape c2 = c1.copy();
@@ -90,7 +168,7 @@ public class docDrawings extends Scene2D {
         camera.adjustToAllObjects();//Everyone should appear in the photo
         waitSeconds(5);//Time for screenshot, but you already should know that
     }
-    
+
     private void PutAtExample() {
         Point A = Point.at(.5, .5);
         Shape circ = Shape.circle().putAt(A, Anchor.UPPER);//Set upper point of circle to A
@@ -99,25 +177,25 @@ public class docDrawings extends Scene2D {
         add(A, circ, arc, sq);//Add everything to the scene
         waitSeconds(5);//Give me time to make a screenshot!
     }
-    
+
     private void imageExample() {
         JMImage img = JMImage.make("c:/media/Galois.jpg").center();
         add(img);
         waitSeconds(5);
     }
-    
+
     private void basicFlow() {
         Point p = Point.at(0, 0);
         play.shift(2, Vec.to(1, 0), p);
         waitSeconds(3);
     }
-    
+
     private void Latex_1() {
         LaTeXMathObject text = new LaTeXMathObject("$$\\int_0^\\infty e^x\\,dx=1$$");
         add(text);
         waitSeconds(5);
     }
-    
+
     private void BasicShapes() {
         Shape circ = Shape.circle();//Generates a circle with radius 1 and centered at (0,0)
         Shape sq = Shape.square();//Generates a unit-square, with lower left cornet at (0,0)
@@ -128,7 +206,7 @@ public class docDrawings extends Scene2D {
         add(circ, sq, reg, rect, seg, arc);
         waitSeconds(5);
     }
-    
+
     private void ThreeDots() {
         Point A = Point.at(-.5, 0).dotStyle(DotSyle.CIRCLE);
         Point B = Point.at(0, 0).dotStyle(DotSyle.CROSS);
@@ -136,5 +214,5 @@ public class docDrawings extends Scene2D {
         add(A, B, C);
         waitSeconds(5);
     }
-    
+
 }

@@ -13,7 +13,7 @@
         <style name="latexdefault">
             <drawColor>black</drawColor>
             <fillColor>black</fillColor>
-            <thickness>.01</thickness>
+            <thickness>.5</thickness>
         </style>
          <style name="FunctionGraphDefault">
             <drawColor>black</drawColor>

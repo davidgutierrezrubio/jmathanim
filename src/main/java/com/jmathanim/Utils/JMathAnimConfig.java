@@ -68,11 +68,11 @@ public class JMathAnimConfig {
     /**
      * If true, the current renderer should render the result into a movie
      */
-    public boolean createMovie = false;
+    private boolean createMovie = false;
     /**
      * If true, the current renderer should show a preview of the result
      */
-    public boolean showPreview = true;
+    private boolean showPreview = true;
     /**
      * A dictionary of the styles to be used in the objects
      */
@@ -252,6 +252,14 @@ public class JMathAnimConfig {
 
     public HashMap<String, MODrawProperties> getStyles() {
         return styles;
+    }
+
+    public boolean isCreateMovie() {
+        return createMovie;
+    }
+
+    public boolean isShowPreview() {
+        return showPreview;
     }
 
 }

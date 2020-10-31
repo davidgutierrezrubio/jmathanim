@@ -116,7 +116,7 @@ public class JavaFXRenderer extends Renderer {
 
         initializeJavaFXWindow();
 
-        if (cnf.createMovie) {
+        if (cnf.isCreateMovie()) {
 //            videoEncoder=new JCodecVideoEncoder();
             videoEncoder = new XugglerVideoEncoder();
 //            videoEncoder=new HumbleVideoEncoder();
@@ -172,7 +172,7 @@ public class JavaFXRenderer extends Renderer {
 //                        new Translate(-cnf.mediaW/2, -cnf.mediaH/2, 0));
                 fxScene.setCamera(fxCamera);
 
-                if (cnf.showPreview) {
+                if (cnf.isShowPreview()) {
                     JMathAnimScene.logger.debug("Creating preview window");
                     //TODO: This gaps to add to the window are os-dependent
                     StandaloneSnapshot.FXStarter.stage.setHeight(cnf.mediaH + 38);
@@ -264,7 +264,7 @@ public class JavaFXRenderer extends Renderer {
         }
 //        BufferedImage bi = SwingFXUtils.fromFXImage(img2, null);
 
-        if (cnf.createMovie) {
+        if (cnf.isCreateMovie()) {
             if ((frameCount % cnf.fps) == 0) {
                 newLineCounter++;
 //                if (newLineCounter % 10 == 0) {
@@ -284,7 +284,7 @@ public class JavaFXRenderer extends Renderer {
     @Override
     public void finish(int frameCount) {
         JMathAnimScene.logger.info(String.format("%d frames created, %.2fs total time", frameCount, (1.f * frameCount) / cnf.fps));
-        if (cnf.createMovie) {
+        if (cnf.isCreateMovie()) {
             /**
              * Encoders, like decoders, sometimes cache pictures so it can do
              * the right key-frame optimizations. So, they need to be flushed as

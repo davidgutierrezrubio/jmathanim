@@ -145,7 +145,7 @@ public class Java2DAwtRenderer extends Renderer {
 
         JMathAnimScene.logger.info("Preparing encoder");
 
-        if (cnf.showPreview) {
+        if (cnf.isShowPreview()) {
             JMathAnimScene.logger.debug("Creating preview window");
             previewWindow = new PreviewWindow(this);
             previewWindow.buildGUI();
@@ -160,7 +160,7 @@ public class Java2DAwtRenderer extends Renderer {
 
         }
 
-        if (cnf.createMovie) {
+        if (cnf.isCreateMovie()) {
 //            videoEncoder=new JCodecVideoEncoder();
             videoEncoder = new XugglerVideoEncoder();
 //            videoEncoder=new HumbleVideoEncoder();
@@ -215,7 +215,7 @@ public class Java2DAwtRenderer extends Renderer {
             g2dFinalImage.drawImage(debugImage, 0, 0, null);
         }
 
-        if (cnf.showPreview) {
+        if (cnf.isShowPreview()) {
 
             //Draw into a window
             try {
@@ -259,7 +259,7 @@ if (delay > 0) {
             }
 
         }
-        if (cnf.createMovie) {
+        if (cnf.isCreateMovie()) {
             videoEncoder.writeFrame(finalImage, frameCount);
         }
     }
@@ -268,7 +268,7 @@ if (delay > 0) {
     public void finish(int frameCount
     ) {
         JMathAnimScene.logger.info(String.format("%d frames created, %.2fs total time", frameCount, (1.f * frameCount) / cnf.fps));
-        if (cnf.createMovie) {
+        if (cnf.isCreateMovie()) {
             /**
              * Encoders, like decoders, sometimes cache pictures so it can do
              * the right key-frame optimizations. So, they need to be flushed as
@@ -280,7 +280,7 @@ if (delay > 0) {
             JMathAnimScene.logger.info("Movie created at " + saveFilePath);
 
         }
-        if (cnf.showPreview) {
+        if (cnf.isShowPreview()) {
             previewWindow.setVisible(false);
             previewWindow.dispose();
         }

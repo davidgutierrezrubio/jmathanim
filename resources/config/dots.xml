@@ -4,7 +4,7 @@
     <drawColor>RED</drawColor>
     <fillColor>TRANSPARENT</fillColor>
     <thickness>.5</thickness>
-    <dotStyle>DOT_STYLE_CIRCLE</dotStyle>
+    <dotStyle>circle</dotStyle>
 </style>
 <style name="dotBlueCross">
     <drawColor>#6ca2e0</drawColor>
