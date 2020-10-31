@@ -57,8 +57,21 @@ public class Arrow2D extends MathObject {
         Arrow2D resul = null;
         SVGMathObject svg;
         File outputDir = JMathAnimConfig.getConfig().getResourcesDir();
-
-        String name = "arrow" + type + ".svg";
+        String name = "arrow";
+        switch (type) {//TODO: Improve this
+            case TYPE_1:
+                name += "1";
+                break;
+            case TYPE_2:
+                name+="2";
+                break;
+            case TYPE_3:
+                name+="3";
+                break;
+            default:
+                name+="1";
+        }
+        name += ".svg";
 
         String baseFileName;
         try {
@@ -199,13 +212,10 @@ public class Arrow2D extends MathObject {
         return (T) this;
     }
 
-  
-
     @Override
     public Point getCenter() {
         return body.getCenter();
     }
-
 
     @Override
     public <T extends MathObject> T shift(Vec shiftVector) {

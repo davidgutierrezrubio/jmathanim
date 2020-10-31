@@ -67,10 +67,11 @@ public class myScene extends Scene2D {
 //        conf.setHighQuality();
 //        conf.setCreateMovie(true);
     }
+
     @Override
     public void runSketch() {
-      pruebaSVGImport();
-        
+        pruebaSVGImport();
+
     }
 
     public void variosThickness() {
@@ -113,9 +114,13 @@ public class myScene extends Scene2D {
 //        SVGMathObject candy = new SVGMathObject("C:\\media\\candy.svg");
 //        candy.scale(.01);
 //        candy.stackToScreen(Anchor.RIGHT);
-
-        play.showCreation(balanza);
-        play.scale(5, .5,  balanza);
+        System.out.println("balanza es " + balanza);
+        for (Shape sh : balanza.shapes) {
+            sh.thickness(1);
+//            sh.fillColor("white");
+        }
+        play.showCreation(5,balanza);
+//        play.scale(5, .5,  balanza);
 
         waitSeconds(3);
     }
@@ -418,10 +423,10 @@ public class myScene extends Scene2D {
         drawPitagorasProof(1, false, 2);
         waitSeconds(5);
         play.fadeOutAll();
-        
+
     }
 
-    public void drawPitagorasProof(double xt,boolean correct,double animationTime) {
+    public void drawPitagorasProof(double xt, boolean correct, double animationTime) {
         //Triangle
         Shape triangle1 = Shape.polygon(Point.at(0, 0), Point.at(3, 0), Point.at(xt, 4));
         triangle1.style("triangulo").layer(3);
@@ -474,7 +479,6 @@ public class myScene extends Scene2D {
         balance.setHeight(20).stackTo(center, Anchor.BY_CENTER);
         balance.shift(0, -.5).layer(0);
         play.fadeIn(balance);
-        
 
         if (correct) {//Pitagoras correct
             play.adjustCameraToAllObjects();

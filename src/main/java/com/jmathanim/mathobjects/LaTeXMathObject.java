@@ -91,6 +91,8 @@ public class LaTeXMathObject extends SVGMathObject {
             sh.setObjectType(MathObjectType.LATEX_SHAPE);
             sh.label = String.valueOf(n);
             n++;
+            sh.mp.absoluteThickness=true;
+            sh.thickness(1);
         }
 
         //Scale

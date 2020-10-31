@@ -27,8 +27,10 @@ import com.jmathanim.Utils.Anchor;
 import com.jmathanim.Utils.ConfigLoader;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.Scene2D;
+import com.jmathanim.mathobjects.Arrow2D;
 import com.jmathanim.mathobjects.JMImage;
 import com.jmathanim.mathobjects.LaTeXMathObject;
+import com.jmathanim.mathobjects.Line;
 import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.Point;
 import com.jmathanim.mathobjects.Point.DotSyle;
@@ -44,15 +46,14 @@ public class docDrawings extends Scene2D {
     @Override
     public void setupSketch() {
         ConfigLoader.parseFile("preview.xml");
-        ConfigLoader.parseFile("dark.xml");
+        ConfigLoader.parseFile("light.xml");
 //        conf.setCreateMovie(true);
     }
 
     @Override
     public void runSketch() throws Exception {
-        LaTeXMathObject text=LaTeXMathObject.make("$a^2+b^2=c^2$").center().scale(3);
-        add(text);
-        play.showCreation(text);
+     Line l=Shape.line(Point.UnitY, Point.UnitX);
+        play.showCreation(l);
         waitSeconds(1);
     }
 

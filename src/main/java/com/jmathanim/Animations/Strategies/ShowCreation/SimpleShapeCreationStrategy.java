@@ -100,6 +100,7 @@ public class SimpleShapeCreationStrategy extends TransformStrategy {
         applyTransform(1, 1);
         this.scene.remove(msh);
         mobj.visible(true);
+        scene.add(mobj);
     }
 
     @Override
