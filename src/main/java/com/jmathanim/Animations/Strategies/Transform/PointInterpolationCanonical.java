@@ -75,6 +75,7 @@ public class PointInterpolationCanonical extends TransformStrategy {
         }
         mobjTransformed.getPath().clear();
         mobjTransformed.getPath().addPointsFrom(connectedOrigin.toJMPath());
+        scene.add(mobjTransformed);
         
     }
 

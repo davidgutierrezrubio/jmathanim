@@ -49,7 +49,7 @@ public class PointInterpolationSimpleShape extends TransformStrategy {
         for (JMPathPoint jmp : mobjTransformed.jmpath.jmPathPoints) {
             jmp.isCurved = true;
         }
-
+        scene.add(mobjTransformed);
     }
 
     @Override

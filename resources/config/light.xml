@@ -33,7 +33,7 @@
         <style name="solidblue">
             <drawColor>black</drawColor>
             <fillColor>blue</fillColor>
-            <thickness>2</thickness>
+            <thickness>3</thickness>
         </style>
     </styles>
 </JMathAnimConfig>
