@@ -54,12 +54,21 @@ public class docDrawings extends Scene2D {
     
     @Override
     public void runSketch() throws Exception {
+        Shape circle=Shape.circle().scale(-1,1).shift(-.5,0);
+        Shape square=Shape.square().shift(.5,0);
+        Transform tr=new Transform(3, circle, square);
+        playAnimation(tr);
+        tr.optimizePaths(false);
+        waitSeconds(3);
+
+    }
+
+    private void homothecyTransform() {
         Shape pentagon = Shape.regularPolygon(5).thickness(3).scale(.5).shift(-1,-1);
         Shape pentagonDst = Shape.regularPolygon(5).thickness(3).scale(.8).shift(.5,-.5).rotate(45*DEGREES);
         Transform tr = new Transform(3, pentagon, pentagonDst);
         playAnimation(tr);
         waitSeconds(1);
-
     }
 
     private void transform1() {
