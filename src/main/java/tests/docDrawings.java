@@ -44,28 +44,36 @@ import com.sun.webkit.ContextMenu;
  * @author David Gutiérrez Rubio <davidgutierrezrubio@gmail.com>
  */
 public class docDrawings extends Scene2D {
-    
+
     @Override
     public void setupSketch() {
         ConfigLoader.parseFile("preview.xml");
         ConfigLoader.parseFile("light.xml");
         conf.setCreateMovie(true);
     }
-    
+
     @Override
     public void runSketch() throws Exception {
-        Shape circle=Shape.circle().scale(-1,1).shift(-.5,0);
-        Shape square=Shape.square().shift(.5,0);
-        Transform tr=new Transform(3, circle, square);
+        Shape circle = Shape.circle().scale(-1, 1).scale(.6).shift(-.5, .3);
+        Shape circle2 = circle.copy();
+        Shape square = Shape.square().shift(.5, 0).scale(.6).rotate(45*DEGREES);
+        add(LaTeXMathObject.make("With optimization").stackToScreen(Anchor.LOWER, .1, .1));
+        Transform tr = new Transform(3, circle, square);
         playAnimation(tr);
-        tr.optimizePaths(false);
-        waitSeconds(3);
+        waitSeconds(1);
+        play.fadeOutAll();
+        add(LaTeXMathObject.make("Without optimization").stackToScreen(Anchor.LOWER, .1, .1));
+        Transform tr2 = new Transform(3, circle2, square);
+        tr2.optimizePaths(false);
+        playAnimation(tr2);
+        waitSeconds(1);
+        play.fadeOutAll();
 
     }
 
     private void homothecyTransform() {
-        Shape pentagon = Shape.regularPolygon(5).thickness(3).scale(.5).shift(-1,-1);
-        Shape pentagonDst = Shape.regularPolygon(5).thickness(3).scale(.8).shift(.5,-.5).rotate(45*DEGREES);
+        Shape pentagon = Shape.regularPolygon(5).thickness(3).scale(.5).shift(-1, -1);
+        Shape pentagonDst = Shape.regularPolygon(5).thickness(3).scale(.8).shift(.5, -.5).rotate(45 * DEGREES);
         Transform tr = new Transform(3, pentagon, pentagonDst);
         playAnimation(tr);
         waitSeconds(1);
@@ -77,7 +85,7 @@ public class docDrawings extends Scene2D {
         play.transform(3, circle, pentagon);
         waitSeconds(3);
     }
-    
+
     private void fadeHighShrinkDemo() {
         LaTeXMathObject text;
         Shape sq = Shape.square().fillColor("#87556f").thickness(2).center();//
@@ -96,7 +104,7 @@ public class docDrawings extends Scene2D {
         play.shrinkOut(1, 45 * DEGREES, sq);
         waitSeconds(1);
     }
-    
+
     private void AffineTransformExample1() {
         Shape sq = Shape.square();
         Shape circ = Shape.circle().scale(.5).shift(.5, .5);//A circle inscribed into the square
@@ -113,7 +121,7 @@ public class docDrawings extends Scene2D {
         camera.adjustToAllObjects();
         waitSeconds(5);
     }
-    
+
     private void reflectionExample1() {
         Shape sq = Shape.regularPolygon(5);
         Point A = sq.getPoint(0);//First vertex of the pentagon(lower-left corner)
@@ -126,7 +134,7 @@ public class docDrawings extends Scene2D {
         camera.adjustToAllObjects();
         waitSeconds(5);
     }
-    
+
     private void HomothecyExample1() {
         Shape sq = Shape.square().shift(-1.5, -1);
         Point A = sq.getPoint(0);//First vertex of the square (lower-left corner)
@@ -140,7 +148,7 @@ public class docDrawings extends Scene2D {
         }
         waitSeconds(5);
     }
-    
+
     private void rotateExample1() {
         Shape ellipse = Shape.circle().scale(.5, 1);//Creates an ellipse
         for (int n = 0; n < 180; n += 20) {
@@ -148,14 +156,14 @@ public class docDrawings extends Scene2D {
         }
         waitSeconds(5);
     }
-    
+
     private void scaleExample1() {
         add(Shape.circle().shift(-1, 0).scale(.5, 1));
         add(Shape.circle().shift(0, 1).scale(Point.at(0, 0), 1.3, .2));
         add(Shape.square().shift(1, 0).scale(.3));
         waitSeconds(5);
     }
-    
+
     private void StackToScreenExample() {
         Shape sq = Shape.square();
         add(sq.stackToScreen(Anchor.LEFT));//Stack square to the left of the screen, with no gaps
@@ -163,7 +171,7 @@ public class docDrawings extends Scene2D {
         add(Shape.circle().stackToScreen(Anchor.UL));//Stack a unit circle to the upper left corner of the screen, with no gaps
         waitSeconds(5);
     }
-    
+
     private void stackToExample2() {
         Shape previousPol = Shape.regularPolygon(3);
         add(previousPol);
@@ -175,7 +183,7 @@ public class docDrawings extends Scene2D {
         camera.adjustToAllObjects();//Everyone should appear in the photo
         waitSeconds(5);//Time for screenshot, but you already should know that
     }
-    
+
     private void stackToExample1() {
         Shape c1 = Shape.circle();
         Shape c2 = c1.copy();
@@ -190,7 +198,7 @@ public class docDrawings extends Scene2D {
         camera.adjustToAllObjects();//Everyone should appear in the photo
         waitSeconds(5);//Time for screenshot, but you already should know that
     }
-    
+
     private void PutAtExample() {
         Point A = Point.at(.5, .5);
         Shape circ = Shape.circle().putAt(A, Anchor.UPPER);//Set upper point of circle to A
@@ -199,25 +207,25 @@ public class docDrawings extends Scene2D {
         add(A, circ, arc, sq);//Add everything to the scene
         waitSeconds(5);//Give me time to make a screenshot!
     }
-    
+
     private void imageExample() {
         JMImage img = JMImage.make("c:/media/Galois.jpg").center();
         add(img);
         waitSeconds(5);
     }
-    
+
     private void basicFlow() {
         Point p = Point.at(0, 0);
         play.shift(2, Vec.to(1, 0), p);
         waitSeconds(3);
     }
-    
+
     private void Latex_1() {
         LaTeXMathObject text = new LaTeXMathObject("$$\\int_0^\\infty e^x\\,dx=1$$");
         add(text);
         waitSeconds(5);
     }
-    
+
     private void BasicShapes() {
         Shape circ = Shape.circle();//Generates a circle with radius 1 and centered at (0,0)
         Shape sq = Shape.square();//Generates a unit-square, with lower left cornet at (0,0)
@@ -228,7 +236,7 @@ public class docDrawings extends Scene2D {
         add(circ, sq, reg, rect, seg, arc);
         waitSeconds(5);
     }
-    
+
     private void ThreeDots() {
         Point A = Point.at(-.5, 0).dotStyle(DotSyle.CIRCLE);
         Point B = Point.at(0, 0).dotStyle(DotSyle.CROSS);
@@ -236,5 +244,5 @@ public class docDrawings extends Scene2D {
         add(A, B, C);
         waitSeconds(5);
     }
-    
+
 }
