@@ -125,6 +125,7 @@ public class LaTeXMathObject extends SVGMathObject {
         outputDir = new File("tex");
         baseFileName = outputDir.getCanonicalPath() + "\\" + hash;
         latexFile = new File(baseFileName + ".tex");
+        outputDir.mkdirs();
         FileWriter fw;
         PrintWriter pw;
         try {
