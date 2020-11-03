@@ -39,13 +39,15 @@ public class PointInterpolationCanonical extends TransformStrategy {
     private final ArrayList<Shape> addedAuxiliaryObjectsToScene;
     private Shape mobjTransformed;
     private Shape mobjDestiny;
+    private Shape mobjDestinyOrig;
     private Shape originalShapeBaseCopy;
     private static final boolean DEBUG_COLORS = false;
 
     public PointInterpolationCanonical(Shape mobjTransformed, Shape mobjDestiny, JMathAnimScene scene) {
         super(scene);
         this.mobjTransformed = mobjTransformed;
-        this.mobjDestiny = mobjDestiny;
+        this.mobjDestiny = mobjDestiny.copy();
+        this.mobjDestinyOrig = mobjDestiny;
         this.addedAuxiliaryObjectsToScene = new ArrayList<>();
     }
 
@@ -115,36 +117,38 @@ public class PointInterpolationCanonical extends TransformStrategy {
 
     @Override
     public void finish() {
-        for (int numConnected = 0; numConnected < this.connectedDst.getNumberOfPaths(); numConnected++) {
-//        for (int numConnected = 0; numConnected < 1; numConnected++) {
-            JMPath convertedPath = connectedOrigin.get(numConnected);
-            JMPath toPath = connectedDst.get(numConnected);
-
-            for (int n = 0; n < convertedPath.size(); n++) {
-                JMPathPoint p1 = convertedPath.getJMPoint(n);
-                JMPathPoint p2 = toPath.getJMPoint(n);
-                p1.type = p2.type;
-                p1.isCurved = p2.isCurved;
-                p1.isThisSegmentVisible = p2.isThisSegmentVisible;
-                p1.cp1vBackup = p2.cp1vBackup;
-                p1.cp2vBackup = p2.cp2vBackup;
-            }
-        }
-//        //Now I should remove all interpolation auxilary points
-//        mobjTransformed.removeInterpolationPoints();
-//        System.out.println(mobjTransformed);
-//        mobjDestiny.removeInterpolationPoints();
-
-        JMPath pa = connectedDst.toJMPath();
-        pa.removeInterpolationPoints();
+//        for (int numConnected = 0; numConnected < this.connectedDst.getNumberOfPaths(); numConnected++) {
+////        for (int numConnected = 0; numConnected < 1; numConnected++) {
+//            JMPath convertedPath = connectedOrigin.get(numConnected);
+//            JMPath toPath = connectedDst.get(numConnected);
+//
+//            for (int n = 0; n < convertedPath.size(); n++) {
+//                JMPathPoint p1 = convertedPath.getJMPoint(n);
+//                JMPathPoint p2 = toPath.getJMPoint(n);
+//                p1.type = p2.type;
+//                p1.isCurved = p2.isCurved;
+//                p1.isThisSegmentVisible = p2.isThisSegmentVisible;
+//                p1.cp1vBackup = p2.cp1vBackup;
+//                p1.cp2vBackup = p2.cp2vBackup;
+//            }
+//        }
+////        //Now I should remove all interpolation auxilary points
+////        mobjTransformed.removeInterpolationPoints();
+////        System.out.println(mobjTransformed);
+////        mobjDestiny.removeInterpolationPoints();
+//
+//        JMPath pa = connectedDst.toJMPath();
+//        pa.removeInterpolationPoints();
         mobjTransformed.jmpath.clear();
-        mobjTransformed.jmpath.addPointsFrom(pa);
-        mobjTransformed.mp.copyFrom(mobjDestiny.mp);
-        mobjTransformed.absoluteSize = mobjDestiny.absoluteSize;
+        mobjTransformed.jmpath.addPointsFrom(mobjDestinyOrig.getPath());
+        mobjTransformed.mp.copyFrom(mobjDestinyOrig.mp);
+        mobjTransformed.absoluteSize = mobjDestinyOrig.absoluteSize;
 //        scene.add(mobjTransformed);
         for (Shape shapesToRemove : addedAuxiliaryObjectsToScene) {
             scene.remove(shapesToRemove);
         }
+//        mobjTransformed.visible=false;
+//        scene.add(mobjDestinyOrig);
     }
 
     /**
