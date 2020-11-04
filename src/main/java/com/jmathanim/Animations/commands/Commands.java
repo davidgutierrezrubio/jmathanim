@@ -15,12 +15,13 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-
 package com.jmathanim.Animations.commands;
 
 import com.jmathanim.Animations.AffineJTransform;
+import com.jmathanim.Animations.AnimationGroup;
 import com.jmathanim.Animations.ApplyCommand;
 import com.jmathanim.Cameras.Camera;
+import com.jmathanim.Utils.JMColor;
 import com.jmathanim.Utils.JMathAnimConfig;
 import com.jmathanim.Utils.MODrawProperties;
 import com.jmathanim.Utils.Rect;
@@ -28,6 +29,9 @@ import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.Point;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  *
@@ -115,12 +119,12 @@ public class Commands {
     public static ApplyCommand rotate(double runtime, Point c, double ang, MathObject... objects) {
         return new ApplyCommand(new MathObjectsCommand(objects) {
             double angle = ang;
-            Point rotationCenter=null;
+            Point rotationCenter = null;
 
             @Override
             public void initialize() {
-                if (c!=null){
-                    rotationCenter=c.copy();
+                if (c != null) {
+                    rotationCenter = c.copy();
                 }
                 for (MathObject obj : mathObjects) {
                     obj.saveState();//Easy way, but interferes with multiple animations (not easy to solve)
@@ -181,8 +185,8 @@ public class Commands {
     }//End of affineTransform command
 
     /**
-     * Animation command that transforms a MathObject through an
-     * homothecy. Homothecy is specified by 2 pairs of points (origin-destiny)
+     * Animation command that transforms a MathObject through an homothecy.
+     * Homothecy is specified by 2 pairs of points (origin-destiny)
      *
      * @param runtime Run time (in seconds)
      * @param a First origin point
@@ -310,6 +314,33 @@ public class Commands {
     }//End of reflectionByAxis command
 
     /**
+     * Changes the draw color and fill color of the objects to the given one. If
+     * one of the colors is null, the colors are not changed Thus, if you want
+     * to change only drawColor, you should set fillColor to null.
+     *
+     * @param runtime Duration in seconds
+     * @param drawColor Color to be the drawColor
+     * @param fillColor Color to be the fillColor
+     * @param objects MathObjects to animate (varargs)
+     * @return The animation to be played with the playAnimation method
+     */
+    public static AnimationGroup setColor(double runtime, JMColor drawColor, JMColor fillColor, MathObject... objects) {
+        AnimationGroup ag = new AnimationGroup();
+        for (MathObject ob : objects) {
+            MODrawProperties mpDst = ob.mp.copy();
+            if (drawColor != null) {
+                mpDst.drawColor.copyFrom(drawColor);
+            }
+             if (fillColor != null) {
+                mpDst.fillColor.copyFrom(fillColor);
+            }
+            ApplyCommand cmd = setMP(runtime, mpDst, ob);
+            ag.add(cmd);
+        }
+        return ag;
+    }
+
+    /**
      * Animation command that changes the math drawing properties of given
      * object, interpolating
      *
@@ -323,19 +354,24 @@ public class Commands {
     public static ApplyCommand setMP(double runtime, MODrawProperties mp, MathObject... objects) {
         return new ApplyCommand(new MathObjectsCommand(objects) {
             MODrawProperties mpDst = mp;
-            MODrawProperties mpBase;
+            //Stores the MODrawProperties of each object to use as base for interpolation
+            MODrawProperties[] mpBase = new MODrawProperties[objects.length];
 
             @Override
             public void initialize() {
+                int n = 0;
                 for (MathObject obj : mathObjects) {
-                    mpBase = obj.mp.copy();
+                    mpBase[n] = obj.mp.copy();
+                    n++;
                 }
             }
 
             @Override
             public void execute(double t) {
+                int n = 0;
                 for (MathObject obj : mathObjects) {
-                    obj.mp.interpolateFrom(mpBase, mpDst, t);
+                    obj.mp.interpolateFrom(mpBase[n], mpDst, t);
+                    n++;
                 }
             }
 
@@ -416,10 +452,11 @@ public class Commands {
         return cameraZoomToRect(runtime, camera, r);
 
     }
-    public static ApplyCommand cameraScale(double runtime,Camera cam,double scale){
-         return Commands.cameraZoomToRect(runtime, cam, cam.getMathView().scaled(scale, scale));
+
+    public static ApplyCommand cameraScale(double runtime, Camera cam, double scale) {
+        return Commands.cameraZoomToRect(runtime, cam, cam.getMathView().scaled(scale, scale));
     }
-    
+
     /**
      * Animation command that reduces the size and alpha of the
      * {@link MathObject}.After finishing the animation, object is removed from

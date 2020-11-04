@@ -24,6 +24,7 @@ import com.jmathanim.mathobjects.JMPathPoint;
 import com.jmathanim.mathobjects.Line;
 import com.jmathanim.mathobjects.MOProperties.MathObjectAttributes;
 import com.jmathanim.mathobjects.MathObject;
+import com.jmathanim.mathobjects.MathObjectGroup;
 import com.jmathanim.mathobjects.MultiShapeObject;
 import com.jmathanim.mathobjects.Point;
 import com.jmathanim.mathobjects.Shape;
@@ -248,6 +249,15 @@ public class AffineJTransform {
      */
     public void applyTransform(MathObject mObject) {
 
+        if (mObject instanceof MathObjectGroup) {
+            MathObjectGroup mobj = (MathObjectGroup) mObject;
+            for (MathObject obj : mobj.getObjects()) {
+                applyTransform(obj);
+            }
+            applyTransformToAttributes(mObject);
+            return;
+        }
+
         if (mObject instanceof MultiShapeObject) {
             MultiShapeObject mobj = (MultiShapeObject) mObject;
             for (Shape obj : mobj.shapes) {
@@ -323,7 +333,7 @@ public class AffineJTransform {
     private void applyTransformsToDrawingProperties(MathObject mObject) {
         //Determinant of the A_xy=2D-submatrix, to compute change in thickness
         //As Area changes in det(A_xy), we change thickness in the root square of det(A_xy)
-        double det=matrix.getEntry(1, 1)*matrix.getEntry(2, 2)-matrix.getEntry(2, 1)*matrix.getEntry(1, 2);
+        double det = matrix.getEntry(1, 1) * matrix.getEntry(2, 2) - matrix.getEntry(2, 1) * matrix.getEntry(1, 2);
         if (!mObject.mp.absoluteThickness) {
             mObject.mp.thickness *= Math.sqrt(det);
         }

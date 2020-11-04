@@ -24,6 +24,7 @@ import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import java.util.ArrayList;
+import java.util.Collection;
 import javafx.scene.shape.StrokeLineCap;
 
 /**
@@ -31,9 +32,16 @@ import javafx.scene.shape.StrokeLineCap;
  * @author David Gutiérrez Rubio <davidgutierrezrubio@gmail.com>
  */
 public class MathObjectGroup extends MathObject {
-
+    public enum Layout {
+        RIGHT,
+        LEFT,
+        UP,
+        DOWN
+    }
     private final ArrayList<MathObject> objects;
-
+    public MathObjectGroup() {
+        this.objects = new ArrayList<>();
+    }
     public MathObjectGroup(ArrayList<MathObject> objects) {
         this.objects = objects;
     }
@@ -236,4 +244,55 @@ public class MathObjectGroup extends MathObject {
         }
     }
 
+    public void setLayout(int anchorType, double gap){
+        
+        for (int n = 1; n < objects.size(); n++) {
+            objects.get(n).stackTo(objects.get(n-1), anchorType,gap);
+        }
+        
+    }
+
+    public int size() {
+        return objects.size();
+    }
+
+    public int indexOf(Object o) {
+        return objects.indexOf(o);
+    }
+
+    public <T> T[] toArray(T[] a) {
+        return objects.toArray(a);
+    }
+
+    public MathObject get(int index) {
+        return objects.get(index);
+    }
+
+    public boolean add(MathObject e) {
+        return objects.add(e);
+    }
+
+    public void add(int index, MathObject element) {
+        objects.add(index, element);
+    }
+
+    public void clear() {
+        objects.clear();
+    }
+
+    public boolean addAll(Collection<? extends MathObject> c) {
+        return objects.addAll(c);
+    }
+
+    public boolean addAll(int index, Collection<? extends MathObject> c) {
+        return objects.addAll(index, c);
+    }
+
+    public ArrayList<MathObject> getObjects() {
+        return objects;
+    }
+    
+    
+    
+    
 }

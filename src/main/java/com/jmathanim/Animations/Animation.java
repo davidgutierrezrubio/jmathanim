@@ -41,6 +41,11 @@ public abstract class Animation {
     private boolean isEnded = false;
     protected final JMathAnimScene scene;
 
+    public boolean isEnded() {
+        return isEnded;
+    }
+
+    
     public Animation() {
         this(DEFAULT_TIME);
     }
@@ -71,12 +76,12 @@ public abstract class Animation {
      * @param fps
      * @return True if animation has finished
      */
-    public boolean processAnimation(double fps) {
+    public boolean processAnimation() {
         if (isEnded) return true;
         if (!isInitialized) { //If not initalized, do it now
 //            initialize();
             isInitialized = true;
-            setFps(fps);
+            setFps(JMathAnimConfig.getConfig().fps);
         }
         boolean resul;
 //        if (frame < numFrames || t < 1 + dt) {

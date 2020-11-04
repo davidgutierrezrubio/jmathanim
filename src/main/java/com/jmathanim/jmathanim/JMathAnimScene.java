@@ -326,7 +326,7 @@ public abstract class JMathAnimScene {
             finished = true;
             for (Animation anim : anims) {
                 if (anim != null) {
-                    finished = finished & anim.processAnimation(fps);
+                    finished = finished & anim.processAnimation();
                 }
             }
 
