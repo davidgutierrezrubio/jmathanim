@@ -8,12 +8,6 @@ JMathAnim is a library written in JAVA intended to simplify the process of doing
 ### Prerrequisites
 A machine with JDK installed
 
-### Install
-
-If you are using a JAVA IDE like NetBeans, Eclipse, or Intellij Idea, the easiest way to install is to add the following lines to your `pom.xml` file.
-```
-maven code goes here
-```
 ### Basic Example
 We will show a very basic example to illustrate the structure of an animation:
 ```java
@@ -66,6 +60,10 @@ If you are satisfied with the result and want to create a movie, you may add the
     }
 ```
 By default, it will create a movie into a subfolder of the project called `media`, with the name `<name_of_my_class>_widthInPX.mp4`.
+
+##Limitations
+
+Right now, the library is still in development, so there may be bugs and missing features.
 
 ## Dependencies
 
