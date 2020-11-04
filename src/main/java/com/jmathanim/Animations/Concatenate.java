@@ -69,6 +69,7 @@ public class Concatenate extends Animation {
 
     @Override
     public void doAnim(double t, double lt) {
+        //TODO: May be easier to override processAnimation instead
         double ct = this.cumulativeTimes.get(currentAnim);
         double l = anims.get(currentAnim).runTime;
         // (x-ct)/l where x=t*totalTime
