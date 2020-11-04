@@ -61,7 +61,7 @@ If you are satisfied with the result and want to create a movie, you may add the
 ```
 By default, it will create a movie into a subfolder of the project called `media`, with the name `<name_of_my_class>_widthInPX.mp4`.
 
-##Limitations
+## Limitations
 
 Right now, the library is still in development, so there may be bugs and missing features.
 
