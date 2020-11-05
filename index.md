@@ -8,7 +8,7 @@ For any other question, you can contact me at davidgutierrezrubio@gmail.com.
 A machine with JDK installed
 
 ### Install
-The easiest way to use it is creating a Maven project in your favorite IDE (Netbeans, Eclipse,...) and the following dependencie to your `pom.xml` file:
+The easiest way to use it is creating a Maven project in your favorite IDE (Netbeans, Eclipse,...) and adding the following dependency to your `pom.xml` file:
 ```XML
 <dependency>
   <groupId>com.github.davidgutierrezrubio</groupId>
