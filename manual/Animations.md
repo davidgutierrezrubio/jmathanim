@@ -257,7 +257,7 @@ waitSeconds(3);
 
 Will generate the following animation:
 
-![setColor](setColor.gif)
+
 
 The `setMP` animations works in a more general way, where you directly interpolate with the values of a specified `MODrawProperties`.
 Currently, only the draw and fill colors and thickness are interpolated. At the end of the animation, all the destiny attributes like layer, dash
@@ -272,24 +272,13 @@ play.setStyle(3,"solidBlue",circle);
 
 will progressively change the drawing parameters of the `circle` object to adjust to the style `solidBlue` defined previously.
 
-Camera animations
------------------
-
-The `play.cameraShift()`
-
-cameraShift cameraScale
-
-cameraZoomToRect
-
 AffineTransform related animations
 ----------------------------------
 
-affineTransform(double runtime, Point a, Point b, Point c, Point d,
-Point e, Point f, MathObject…​ objects) {
+`affineTransform(double runtime, Point a, Point b, Point c, Point d, Point e, Point f, MathObject…​ objects) `
 
-reflection(double runtime, Point A, Point B, MathObject…​ objects) {
+`reflection(double runtime, Point A, Point B, MathObject…​ objects) `
 
-reflectionByAxis(double runtime, Point a, Point b, MathObject…​ objects)
-{
+`reflectionByAxis(double runtime, Point a, Point b, MathObject…​ objects)`
 
-    homothecy(double runtime, Point a, Point b, Point c, Point d, MathObject... objects) {
+`homothecy(double runtime, Point a, Point b, Point c, Point d, MathObject... objects)`
