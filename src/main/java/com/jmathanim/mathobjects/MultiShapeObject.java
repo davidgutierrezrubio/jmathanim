@@ -223,4 +223,14 @@ public class MultiShapeObject extends MathObject {
             o.unregisterChildrenToBeUpdated(scene);
         }
     }
+
+    @Override
+    public void interpolateMPFrom(MathObject mobjBase, MODrawProperties mpDst, double alpha) {
+        MultiShapeObject shBase = (MultiShapeObject) mobjBase;
+        for (int n = 0; n < shapes.size(); n++) {
+            shapes.get(n).interpolateMPFrom(shBase.get(n), mpDst, alpha);
+        }
+
+    }
+
 }

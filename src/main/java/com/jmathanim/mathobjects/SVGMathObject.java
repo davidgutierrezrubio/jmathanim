@@ -548,6 +548,6 @@ public class SVGMathObject extends MultiShapeObject {
             }
 
         }
-
     }
+    
 }

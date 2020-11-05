@@ -22,6 +22,7 @@ import com.jmathanim.Renderers.Renderer;
 import com.jmathanim.Utils.Anchor;
 import com.jmathanim.Utils.JMColor;
 import com.jmathanim.Utils.JMathAnimConfig;
+import com.jmathanim.Utils.MODrawProperties;
 import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
@@ -271,6 +272,13 @@ public class Arrow2D extends MathObject {
 
     @Override
     public void update(JMathAnimScene scene) {
+    }
+
+    @Override
+    public void interpolateMPFrom(MathObject mobjBase, MODrawProperties mpDst, double alpha) {
+        Arrow2D arrBase=(Arrow2D) mobjBase;
+        body.interpolateMPFrom(arrBase.getBody(), mpDst, alpha); //To change body of generated methods, choose Tools | Templates.
+        head.interpolateMPFrom(arrBase.getArrowHead(), mpDst, alpha); //To change body of generated methods, choose Tools | Templates.
     }
 
 }

@@ -354,14 +354,14 @@ public class Commands {
     public static ApplyCommand setMP(double runtime, MODrawProperties mp, MathObject... objects) {
         return new ApplyCommand(new MathObjectsCommand(objects) {
             MODrawProperties mpDst = mp;
-            //Stores the MODrawProperties of each object to use as base for interpolation
-            MODrawProperties[] mpBase = new MODrawProperties[objects.length];
+            //Creates copies from all objects, so that objects with many MP's (arrows, multishapes) can be interpolated well
+            MathObject[] mobjBase = new MathObject[objects.length];
 
             @Override
             public void initialize() {
                 int n = 0;
                 for (MathObject obj : mathObjects) {
-                    mpBase[n] = obj.mp.copy();
+                    mobjBase[n] = obj.copy();
                     n++;
                 }
             }
@@ -370,7 +370,7 @@ public class Commands {
             public void execute(double t) {
                 int n = 0;
                 for (MathObject obj : mathObjects) {
-                    obj.mp.interpolateFrom(mpBase[n], mpDst, t);
+                    obj.interpolateMPFrom(mobjBase[n], mpDst, t);
                     n++;
                 }
             }

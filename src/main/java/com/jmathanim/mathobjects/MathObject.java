@@ -459,7 +459,7 @@ public abstract class MathObject implements Drawable, Updateable, Stateable {
     }
 
     public final <T extends MathObject> T stackTo(MathObject obj, int anchorType) {
-       return stackTo(obj, anchorType,0);
+        return stackTo(obj, anchorType, 0);
     }
 
     public <T extends MathObject> T stackTo(MathObject obj, int anchorType, double gap) {
@@ -561,4 +561,7 @@ public abstract class MathObject implements Drawable, Updateable, Stateable {
         return (T) this;
     }
 
+    public void interpolateMPFrom(MathObject mobjBase, MODrawProperties mpDst, double alpha) {
+        this.mp.interpolateFrom(mobjBase.mp, mpDst, alpha);
+    }
 }
