@@ -88,6 +88,7 @@ public class MODrawProperties implements Stateable {
         nullMP.castShadows = null;
         nullMP.dotStyle = null;
         nullMP.linecap = null;
+        nullMP.fillColorIsDrawColor = null;
         return nullMP;
     }
 
@@ -100,8 +101,12 @@ public class MODrawProperties implements Stateable {
         if (prop == null) {//Nothing to do here!
             return;
         }
-        drawColor.copyFrom(prop.drawColor);
-        fillColor.copyFrom(prop.fillColor);
+        if (prop.drawColor != null) {
+            drawColor = prop.drawColor.copy();
+        }
+        if (prop.fillColor != null) {
+            fillColor = prop.fillColor.copy();
+        }
         thickness = (prop.thickness == null ? thickness : prop.thickness);
         dashStyle = (prop.dashStyle == null ? dashStyle : prop.dashStyle);
         absoluteThickness = (prop.absoluteThickness == null ? absoluteThickness : prop.absoluteThickness);
@@ -255,7 +260,7 @@ public class MODrawProperties implements Stateable {
      * class.
      */
     public static MODrawProperties createFromStyle(String name) {
-        MODrawProperties resul = new MODrawProperties();
+        MODrawProperties resul = MODrawProperties.makeNullValues();
         resul.loadFromStyle(name);
         return resul;
     }

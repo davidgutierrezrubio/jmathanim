@@ -5,6 +5,14 @@
     <artifactId>JMathAnim</artifactId>
     <version>0.8.0</version>
     <packaging>jar</packaging>
+    <name>JMathAnim</name>
+    <description>A Java library to write mathematical animations</description>
+    <url>https://github.com/davidgutierrezrubio/jmathanim</url>
+    <scm>
+        <connection>scm:git:git://github.com/davidgutierrezrubio/jmathanim.git</connection>
+        <url>https://github.com/davidgutierrezrubio/jmathanim</url>
+    </scm>
+    
     <licenses>
         <license>
             <name>General Public License 3.0</name>
@@ -76,9 +84,6 @@
                 <groupId>org.openjfx</groupId>
                 <artifactId>javafx-maven-plugin</artifactId>
                 <version>0.0.5</version>
-                <configuration>
-                    <mainClass>HelloFX</mainClass>
-                </configuration>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

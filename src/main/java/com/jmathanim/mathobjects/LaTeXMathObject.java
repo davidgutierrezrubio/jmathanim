@@ -94,7 +94,7 @@ public class LaTeXMathObject extends SVGMathObject {
             sh.mp.absoluteThickness=true;
             sh.thickness(1);
         }
-
+        this.fillWithDrawColor(true);
         //Scale
         //An "X" character in LaTeX has 6.8 (svg units) pixels height.
         //This object should be scaled by default to extend over

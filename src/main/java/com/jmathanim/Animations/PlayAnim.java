@@ -19,6 +19,7 @@ package com.jmathanim.Animations;
 
 import com.jmathanim.Animations.commands.Commands;
 import com.jmathanim.Cameras.Camera;
+import com.jmathanim.Utils.JMColor;
 import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
@@ -90,15 +91,17 @@ public class PlayAnim {
     }
 
     public void scale(double runTime, double scale, MathObject... objs) {
-        Rect r=objs[0].getBoundingBox();
-        for (MathObject obj:objs){
-            r=r.union(obj.getBoundingBox());
+        Rect r = objs[0].getBoundingBox();
+        for (MathObject obj : objs) {
+            r = r.union(obj.getBoundingBox());
         }
         scene.playAnimation(Commands.scale(runTime, r.getCenter(), scale, scale, scale, objs));
     }
- public void scale(double runTime, Point center, double scx, double scy, MathObject... objs) {
+
+    public void scale(double runTime, Point center, double scx, double scy, MathObject... objs) {
         scene.playAnimation(Commands.scale(runTime, center, scx, scy, 1, objs));
     }
+
     public void scale(double runTime, Point center, double scx, double scy, double scz, MathObject... objs) {
         scene.playAnimation(Commands.scale(runTime, center, scx, scy, scz, objs));
     }
@@ -114,19 +117,21 @@ public class PlayAnim {
     public void transform(double runTime, Shape obj1, Shape obj2) {
         scene.playAnimation(new Transform(runTime, obj1, obj2));
     }
-  public void adjustCameraToAllObjects() {
-      adjustCameraToAllObjects(defaultRunTimeCamera);
-      
-  }
+
+    public void adjustCameraToAllObjects() {
+        adjustCameraToAllObjects(defaultRunTimeCamera);
+
+    }
+
     public void adjustCameraToAllObjects(double runtime) {
-       final Vec gaps = scene.getCamera().getGaps();
+        final Vec gaps = scene.getCamera().getGaps();
         Rect r = scene.getCamera().getMathView();
         for (MathObject obj : scene.getObjects()) {
             r = r.union(obj.getBoundingBox().addGap(gaps.x, gaps.y));
         }
         zoomToRect(runtime, r);
     }
-    
+
     public void adjustToObjects(MathObject... objs) {
         adjustToObjects(defaultRunTimeCamera, objs);
     }
@@ -256,10 +261,9 @@ public class PlayAnim {
     }
 
     /**
-     * Plays an animation that reduces the size and alpha of the
-     * MathObject.A rotation of a given angle is performed
-     * meanwhile.After finishing the animation, object is removed from the
-     * current scene.
+     * Plays an animation that reduces the size and alpha of the MathObject.A
+     * rotation of a given angle is performed meanwhile.After finishing the
+     * animation, object is removed from the current scene.
      *
      * @param runTime Duration in seconds
      * @param angle Angle in radians
@@ -272,8 +276,8 @@ public class PlayAnim {
 
     /**
      * Plays an animation that reduces the size and alpha of the
-     * MathObject.After finishing the animation, object is removed from
-     * the current scene.
+     * MathObject.After finishing the animation, object is removed from the
+     * current scene.
      *
      * @param runTime Duration in seconds
      * @param mobjs Objects to animate (varargs)
@@ -295,9 +299,9 @@ public class PlayAnim {
     }
 
     /**
-     * Plays an animation drawing a MathObject.The object drawn is added
-     * to the current scene. Several strategies to create the object are
-     * automatically chosen: For a simple shape, draws the shape. For a
+     * Plays an animation drawing a MathObject.The object drawn is added to the
+     * current scene. Several strategies to create the object are automatically
+     * chosen: For a simple shape, draws the shape. For a
      * {@link MultiShapeObject} performs a simple shape creation for each shape,
      * with a time gap between one and the next. For a {@link SVGMathObject}
      * (which includes {@link LaTeXMathObject}) a "first draw, then fill"
@@ -315,8 +319,8 @@ public class PlayAnim {
     }
 
     /**
-     * Convenience overloaded method. Plays an animation drawing a
-     * MathObject with runtime of 2 seconds.
+     * Convenience overloaded method. Plays an animation drawing a MathObject
+     * with runtime of 2 seconds.
      *
      * @param mobjs Objects to highlight (varargs)
      */
@@ -324,5 +328,30 @@ public class PlayAnim {
         showCreation(defaultRunTimeshowCreation, mobjs);
     }
 
-    
+    /**
+     * Changes the draw and fill color of the selected objects, animating the
+     * change for the specified time. If any of the colors is null, this color
+     * will not be animated. This way you can for example, change only the draw
+     * color of the selected objects if fill color is null
+     *
+     * @param runtime Time of animation (in seconds)
+     * @param drawColor Draw color to set (if null, no changes applied during animation)
+     * @param fillColor Fill color to set (if null, no changes applied during animation)
+     * @param mobjects Objects to apply animation (varargs)
+     */
+    public void setColor(double runtime, JMColor drawColor, JMColor fillColor, MathObject... mobjects) {
+        scene.playAnimation(Commands.setColor(runtime, drawColor, fillColor, mobjects));
+    }
+
+    /**
+     * Changes the draw parameters of the selected objects to match the given style, animating the
+     * change for the specified time. 
+     * @param runtime Time of animation (in seconds)
+     * @param styleName Style to apply
+     * @param mobjects bjects to apply animation (varargs)
+     */
+    public void setStyle(double runtime, String styleName, MathObject... mobjects) {
+        scene.playAnimation(Commands.setStyle(runtime, styleName, mobjects));
+    }
+
 }

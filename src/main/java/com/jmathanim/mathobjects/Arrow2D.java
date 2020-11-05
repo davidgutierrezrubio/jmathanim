@@ -262,7 +262,7 @@ public class Arrow2D extends MathObject {
 
     @Override
     public Rect getBoundingBox() {
-        return head.getBoundingBox().union(body.getBoundingBox());
+        return body.getBoundingBox();
     }
 
     @Override

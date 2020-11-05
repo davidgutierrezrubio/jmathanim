@@ -291,7 +291,12 @@ public class MathObjectGroup extends MathObject {
         return objects;
     }
     
-    
+       @Override
+    public void interpolateMPFrom(MODrawProperties mpDst, double alpha) {
+        for (int n = 0; n < objects.size(); n++) {
+            objects.get(n).interpolateMPFrom(mpDst, alpha);
+        }
+    }
     
     
 }
