@@ -521,7 +521,7 @@ public class SVGMathObject extends MultiShapeObject {
             parseStyleAttribute(el.getAttribute("style"), ShMp);
         }
         if (!"".equals(el.getAttribute("stroke"))) {
-            ShMp.getDrawColor().copyFrom(JMColor.parseColorID(el.getAttribute("stroke")));
+            ShMp.getDrawColor().copyFrom(JMColor.parse(el.getAttribute("stroke")));
         }
 
         if (!"".equals(el.getAttribute("stroke-width"))) {
@@ -532,7 +532,7 @@ public class SVGMathObject extends MultiShapeObject {
         }
 
         if (!"".equals(el.getAttribute("fill"))) {
-            ShMp.getFillColor().copyFrom(JMColor.parseColorID(el.getAttribute("fill")));
+            ShMp.getFillColor().copyFrom(JMColor.parse(el.getAttribute("fill")));
         }
 
     }
@@ -543,7 +543,7 @@ public class SVGMathObject extends MultiShapeObject {
             String[] decl = pairs.split(":");
             switch (decl[0]) {
                 case "fill":
-                    ShMp.getFillColor().copyFrom(JMColor.parseColorID(decl[1]));
+                    ShMp.getFillColor().copyFrom(JMColor.parse(decl[1]));
             }
 
         }

@@ -113,7 +113,7 @@ public class ConfigLoader {
             switch (item.getNodeName()) {
                 case "color":
                     String colorId = item.getTextContent();
-                    config.setBackgroundColor(JMColor.parseColorID(colorId));
+                    config.setBackgroundColor(JMColor.parse(colorId));
                     JMathAnimScene.logger.debug("Config read: Background color set to {}", colorId);
                     break;
                 case "shadows":
@@ -160,10 +160,10 @@ public class ConfigLoader {
             Node item = childs.item(n);
             switch (item.getNodeName()) {
                 case "drawColor":
-                    mp.getDrawColor().copyFrom(JMColor.parseColorID(item.getTextContent()));
+                    mp.getDrawColor().copyFrom(JMColor.parse(item.getTextContent()));
                     break;
                 case "fillColor":
-                    mp.getFillColor().copyFrom(JMColor.parseColorID(item.getTextContent()));
+                    mp.getFillColor().copyFrom(JMColor.parse(item.getTextContent()));
                     break;
                 case "thickness":
                     mp.thickness = Double.parseDouble(item.getTextContent());

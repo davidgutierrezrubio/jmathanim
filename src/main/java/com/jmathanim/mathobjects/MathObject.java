@@ -380,7 +380,7 @@ public abstract class MathObject implements Drawable, Updateable, Stateable {
     }
 
     public <T extends MathObject> T drawColor(String str) {
-        drawColor(JMColor.parseColorID(str));
+        drawColor(JMColor.parse(str));
         return (T) this;
     }
 
@@ -390,7 +390,7 @@ public abstract class MathObject implements Drawable, Updateable, Stateable {
     }
 
     public <T extends MathObject> T fillColor(String str) {
-        fillColor(JMColor.parseColorID(str));
+        fillColor(JMColor.parse(str));
         return (T) this;
     }
 

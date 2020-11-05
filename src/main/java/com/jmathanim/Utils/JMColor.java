@@ -67,7 +67,7 @@ public class JMColor {
     }
 
     //https://stackoverflow.com/questions/4129666/how-to-convert-hex-to-rgb-using-java
-    public static JMColor hex(String hex) {
+    private static JMColor hex(String hex) {
         int rr, gg, bb, aa;
         hex = hex.replace("#", "");
         switch (hex.length()) {
@@ -179,7 +179,7 @@ public class JMColor {
      * @param str The string with the hex digits or the color name
      * @return A new JMColor with given parameters.
      */
-    public static JMColor parseColorID(String str) {
+    public static JMColor parse(String str) {
         javafx.scene.paint.Color col = javafx.scene.paint.Color.WHITE;//Default color
         str = str.toUpperCase().trim();
         if ("NONE".equals(str)) {

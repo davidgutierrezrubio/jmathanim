@@ -21,6 +21,7 @@ package com.jmathanim.Utils;
 import com.jmathanim.Cameras.Camera;
 import com.jmathanim.Renderers.Renderer;
 import com.jmathanim.jmathanim.JMathAnimScene;
+import com.jmathanim.mathobjects.MathObject;
 import java.io.File;
 import java.util.HashMap;
 
@@ -265,5 +266,7 @@ public class JMathAnimConfig {
     public MODrawProperties createStyleFrom(MODrawProperties mp,String styleName) {
         return styles.put(styleName, mp);
     }
-
+ public MODrawProperties createStyleFrom(MathObject obj,String styleName) {
+        return styles.put(styleName, obj.mp);
+    }
 }
