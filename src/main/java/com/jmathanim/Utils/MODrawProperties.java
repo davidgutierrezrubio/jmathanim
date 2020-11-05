@@ -141,6 +141,12 @@ public class MODrawProperties implements Stateable {
      * @param alpha Interpolation parameter
      */
     public void interpolateFrom(MODrawProperties a, MODrawProperties b, double alpha) {
+        if (alpha == 1)//in this case, copy directly all non-null attributes, including non-interpolable
+        {
+            this.copyFrom(b);
+            return;
+        }
+        //If not, interpolate drawColor, fillColor and thickness (if they are not null)
         //Interpolate colors
         if (b.drawColor != null) {
             drawColor.copyFrom(a.drawColor.interpolate(b.drawColor, alpha));

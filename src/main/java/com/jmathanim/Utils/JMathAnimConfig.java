@@ -261,5 +261,9 @@ public class JMathAnimConfig {
     public boolean isShowPreview() {
         return showPreview;
     }
+    
+    public MODrawProperties createStyleFrom(MODrawProperties mp,String styleName) {
+        return styles.put(styleName, mp);
+    }
 
 }
