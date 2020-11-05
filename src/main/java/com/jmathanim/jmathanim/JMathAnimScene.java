@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020 David Gutiérrez Rubio <davidgutierrezrubio@gmail.com>
+ * Copyright (C) 2020 David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -76,7 +76,7 @@ public abstract class JMathAnimScene {
     /**
      * Configuration
      */
-    public JMathAnimConfig conf;
+    public JMathAnimConfig config;
     /**
      * This class is used to easily access to most common animations
      */
@@ -100,11 +100,11 @@ public abstract class JMathAnimScene {
      */
     public JMathAnimScene() {
         objects = new ArrayList<>();
-        conf = JMathAnimConfig.getConfig();
-        conf.setLowQuality();
+        config = JMathAnimConfig.getConfig();
+        config.setLowQuality();
         objectsToBeUpdated = new ArrayList<>();
         play = new PlayAnim(this);//Convenience class for fast access to common animations
-        conf.setOutputFileName(this.getClass().getSimpleName());
+        config.setOutputFileName(this.getClass().getSimpleName());
     }
 
     /**
@@ -129,7 +129,7 @@ public abstract class JMathAnimScene {
         JMathAnimConfig.getConfig().setRenderer(renderer);
         exitCode = 0;
         //In the global variable store Scene, Renderer and main Camera
-        conf.setScene(this);
+        config.setScene(this);
         try {
             runSketch();
         } catch (Exception ex) {
@@ -213,7 +213,7 @@ public abstract class JMathAnimScene {
     }
 
     /**
-     * Add the specified {@link Mathobject}s to the scene
+     * Add the specified MathObjects to the scene
      *
      * @param objs Mathobjects (varargs)
      */
@@ -232,7 +232,7 @@ public abstract class JMathAnimScene {
     }
 
     /**
-     * Remove the specified {@link Mathobject}s from the scene
+     * Remove the specified MathObjects from the scene
      *
      * @param objs Mathobjects (varargs)
      */

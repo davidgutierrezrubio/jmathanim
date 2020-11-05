@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020 David Gutiérrez Rubio <davidgutierrezrubio@gmail.com>
+ * Copyright (C) 2020 David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -257,7 +257,7 @@ public class PlayAnim {
 
     /**
      * Plays an animation that reduces the size and alpha of the
-     * {@link MathObject}.A rotation of a given angle is performed
+     * MathObject.A rotation of a given angle is performed
      * meanwhile.After finishing the animation, object is removed from the
      * current scene.
      *
@@ -272,7 +272,7 @@ public class PlayAnim {
 
     /**
      * Plays an animation that reduces the size and alpha of the
-     * {@link MathObject}.After finishing the animation, object is removed from
+     * MathObject.After finishing the animation, object is removed from
      * the current scene.
      *
      * @param runTime Duration in seconds
@@ -284,7 +284,7 @@ public class PlayAnim {
 
     /**
      * Convenience method. Plays an animation that reduces the size and alpha of
-     * the {@link MathObject}, with a duration of 1 second.After finishing the
+     * the MathObject, with a duration of 1 second.After finishing the
      * animation, object is removed from the current scene.
      *
      * @param mobj Object to animate
@@ -295,7 +295,7 @@ public class PlayAnim {
     }
 
     /**
-     * Plays an animation drawing a {@link MathObject}.The object drawn is added
+     * Plays an animation drawing a MathObject.The object drawn is added
      * to the current scene. Several strategies to create the object are
      * automatically chosen: For a simple shape, draws the shape. For a
      * {@link MultiShapeObject} performs a simple shape creation for each shape,
@@ -316,7 +316,7 @@ public class PlayAnim {
 
     /**
      * Convenience overloaded method. Plays an animation drawing a
-     * {@link MathObject} with runtime of 2 seconds.
+     * MathObject with runtime of 2 seconds.
      *
      * @param mobjs Objects to highlight (varargs)
      */

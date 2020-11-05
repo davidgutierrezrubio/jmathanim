@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020 David Gutiérrez Rubio <davidgutierrezrubio@gmail.com>
+ * Copyright (C) 2020 David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -324,8 +324,8 @@ public class Shape extends MathObject {
     }
 
     /**
-     * Creates a new {@link Line} object. Line is a {@link Shape} object with 2
-     * points, as a {@link Segment} but it overrides the draw method so that it
+     * Creates a new Lineobject. Line is a Shape object with 2
+     * points, as a Segment but it overrides the draw method so that it
      * extends itself to all the view, to look like an infinite line.
      *
      * @param a First point

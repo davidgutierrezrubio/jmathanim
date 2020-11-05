@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020 David Gutiérrez Rubio <davidgutierrezrubio@gmail.com>
+ * Copyright (C) 2020 David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -191,8 +191,7 @@ public class Commands {
      * @param c First destiny point
      * @param d Second destiny point
      * @param objects Objects to animate (varargs)
-     * @return Animation to run with
-     * {@link JMathAnimScene#playAnimation(com.jmathanim.Animations.Animation...) playAnimation}
+     * @return Animation to run playAnimation method
      * method
      */
     public static ApplyCommand homothecy(double runtime, Point a, Point b, Point c, Point d, MathObject... objects) {
@@ -454,7 +453,7 @@ public class Commands {
 
     /**
      * Animation command that reduces the size and alpha of the
-     * {@link MathObject}.After finishing the animation, object is removed from
+     * MathObject.After finishing the animation, object is removed from
      * the current scene.
      *
      * @param runtime Run time (in seconds)
@@ -469,7 +468,7 @@ public class Commands {
 
     /**
      * Animation command that reduces the size and alpha of the
-     * {@link MathObject}.A rotation of a given angle is performed
+     * MathObject.A rotation of a given angle is performed
      * meanwhile.After finishing the animation, object is removed from the
      * current scene.
      *

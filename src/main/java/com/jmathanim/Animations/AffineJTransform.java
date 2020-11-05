@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020 David Gutiérrez Rubio <davidgutierrezrubio@gmail.com>
+ * Copyright (C) 2020 David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -230,19 +230,19 @@ public class AffineJTransform {
     }
 
     /**
-     * Apply the current transform to the given {@link MathObject}. Strategy
-     * transformation depends on the type of {@link MathObject}. The object is
+     * Apply the current transform to the given MathObject. Strategy
+     * transformation depends on the type of MathObject. The object is
      * modified.
      *
-     * For {@link  MultiShapeObject} objects iterates the transformation over all
+     * For MultiShapeObject objects iterates the transformation over all
      * its shapes
      *
-     * For {@link Line} objects transform its defining points.
+     * For Lineobjects transform its defining points.
      *
-     * For {@link Shape} objects iterates the transformation over all the
-     * {@link JMPathPoint} objects.
+     * For Shape objects iterates the transformation over all the
+     * JMPathPoint objects.
      *
-     * For {@link JMPathPoint} objects, transform is applied to its point and
+     * For JMPathPoint objects, transform is applied to its point and
      * control points.
      *
      * @param mObject Object to apply transform

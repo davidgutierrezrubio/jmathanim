@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020 David Gutiérrez Rubio <davidgutierrezrubio@gmail.com>
+ * Copyright (C) 2020 David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -72,15 +72,6 @@ public abstract class Renderer {
      * @param mobj The JMPathObject
      */
     abstract public void drawPath(Shape mobj);
-
-    /**
-     * Draw a circle Most of the drawings will be paths, but this method will
-     * basically draw points
-     *
-     * @param x x-coordinate (math scale)
-     * @param y y-coordinate (math scale)
-     * @param radius radius (math scale)
-     */
 
     abstract public void drawAbsoluteCopy(Shape sh, Vec anchor);
 

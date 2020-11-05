@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020 David Gutiérrez Rubio <davidgutierrezrubio@gmail.com>
+ * Copyright (C) 2020 David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -55,7 +55,7 @@ public class ShowCreation extends Animation {
 
     /**
      * Creates an animation that shows the creation of the specified
-     * {@link MathObject}
+     * MathObject
      *
      * @param runtime Run time in seconds
      * @param mobj Mathobject to animate
@@ -102,7 +102,7 @@ public class ShowCreation extends Animation {
     /**
      * Determines the strategy to animate the creation of the object
      *
-     * @param mobj {@link MathObject} which will be animated. Its type
+     * @param mobj MathObject which will be animated. Its type
      * determines the type of animation to perform.
      */
     public void determineCreationStrategy(MathObject mobj) {
@@ -133,8 +133,7 @@ public class ShowCreation extends Animation {
     /**
      * Sets the animation strategy
      *
-     * @param strategyType Strategy, chosen from
-     * {@link METHOD_NONE},{@link METHOD_FIRST_DRAW_AND_THEN_FILL},{@link METHOD_SIMPLE_SHAPE_CREATION}, {@link METHOD_MULTISHAPE_CREATION}
+     * @param strategyType Strategy, chosen from enum ShowCreationStrategy
      */
     public void setStrategy(ShowCreationStrategy strategyType) {
         this.strategyType = strategyType;

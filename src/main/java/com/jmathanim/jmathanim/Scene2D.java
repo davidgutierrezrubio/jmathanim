@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020 David Gutiérrez Rubio <davidgutierrezrubio@gmail.com>
+ * Copyright (C) 2020 David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -24,7 +24,7 @@ import java.util.logging.Logger;
 
 /**
  *
- * @author David Gutiérrez Rubio <davidgutierrezrubio@gmail.com>
+ * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
 public abstract class Scene2D extends JMathAnimScene {
 
@@ -37,7 +37,7 @@ public abstract class Scene2D extends JMathAnimScene {
 
     @Override
     public void createRenderer() {
-        fps = conf.fps;
+        fps = config.fps;
         dt = 1. / fps;
         try {
             renderer = new JavaFXRenderer(this);

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020 David Gutiérrez Rubio <davidgutierrezrubio@gmail.com>
+ * Copyright (C) 2020 David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -25,9 +25,9 @@ import java.util.function.DoubleUnaryOperator;
 
 /**
  * Shape subclass that represents the graph of a single variable function
- * Functions are defined in its lambda function. For example (x)->Math.sin(x)
+ * Functions are defined in its lambda function. For example (x)-&gt;Math.sin(x)
  *
- * @author David Gutiérrez Rubio <davidgutierrezrubio@gmail.com>
+ * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
 public class FunctionGraph extends Shape {
 
@@ -39,7 +39,7 @@ public class FunctionGraph extends Shape {
      */
     public enum FunctionDefinitionType {
         /**
-         * Function is defined by a lambda expresion, like (x)->Math.sin(x)
+         * Function is defined by a lambda expresion, like (x)-&gt;Math.sin(x)
          */
         LAMBDA 
     }
@@ -59,10 +59,10 @@ public class FunctionGraph extends Shape {
     }
 
     /**
-     * Creates a function graph, which is a subclass of {@link Shape}
+     * Creates a function graph, which is a subclass of Shape
      *
      * @param function Function to draw, in lambda function, for example:
-     * (x)->Math.sin(x)
+     * (x)-&gt;Math.sin(x)
      * @param xmin Minimum x of the interval to draw the function
      * @param xmax Maximum x of the interval to draw the function
      * @param numPoints Number of points to calculate
@@ -167,7 +167,7 @@ public class FunctionGraph extends Shape {
     /**
      * Add the given x values of the abscises to the generation of the function
      * curve. This is useful to explicity include singular points (for example,
-     * x=0 with (x)->Math.abs(x)) as graph may appear curved if this point is
+     * x=0 with (x)-&gt;Math.abs(x)) as graph may appear curved if this point is
      * not explicitly include in the array of x-points. If the x coordinate is
      * always included, this method has no effect, other than recalcuating
      * control points.

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020 David Gutiérrez Rubio <davidgutierrezrubio@gmail.com>
+ * Copyright (C) 2020 David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -73,7 +73,6 @@ public abstract class Animation {
      * Process one frame of current animation If calling when finished, does
      * nothing
      *
-     * @param fps
      * @return True if animation has finished
      */
     public boolean processAnimation() {

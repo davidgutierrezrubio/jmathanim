@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020 David Gutiérrez Rubio <davidgutierrezrubio@gmail.com>
+ * Copyright (C) 2020 David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -59,8 +59,9 @@ public abstract class TransformStrategy {
     /**
      * Apply current transform
      *
-     * @param t Time of the animation 0<=t<=1 @ param lt lambda(t), where lambda
-     * is a "smooth" function. Actual animation is computed for this value.
+     * @param t Time of the animation 0&lt;=t&lt;=1
+     * @param lt lambda(t), where lambda is a "smooth" function. Actual
+     * animation is computed for this value.
      */
     abstract public void applyTransform(double t, double lt);
 

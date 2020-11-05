@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020 David Gutiérrez Rubio <davidgutierrezrubio@gmail.com>
+ * Copyright (C) 2020 David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -31,7 +31,7 @@ import java.util.Arrays;
  * It's independent of the renderer, which should translate it to proper drawing
  * commands
  *
- * @author David Gutiérrez <davidgutierrezrubio@gmail.com>
+ * @author David Gutiérrez davidgutierrezrubio@gmail.com
  */
 public class JMPath implements Updateable, Stateable {
 

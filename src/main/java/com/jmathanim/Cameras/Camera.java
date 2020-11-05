@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020 David Gutiérrez Rubio <davidgutierrezrubio@gmail.com>
+ * Copyright (C) 2020 David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -212,18 +212,6 @@ public abstract class Camera {
      */
     abstract public double screenToMath(double screenScalar);
 
-    /**
-     * Returns a relative scalar to screen width, given in math coordinates It
-     * is useful, for example, for determining the size of the circles that
-     * represent a point or determining the width of a line, according to the
-     * media. Thus relScalarToWidth(.01) gives in math coordinates a length
-     * equivalent to 1% of screen width.
-     *
-     * @param scalar
-     * @return The scalar in math coordinates
-     */
-//    abstract public double relScalarToWidth(double scalar);
-    
     abstract public void saveState();
     
     abstract public void restoreState();

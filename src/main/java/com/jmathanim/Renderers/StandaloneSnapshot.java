@@ -31,7 +31,7 @@ import javax.imageio.ImageIO;
 
 /**
  *
- * @author David Gutiérrez Rubio <davidgutierrezrubio@gmail.com>
+ * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
 public class StandaloneSnapshot {
     public int w,h;
