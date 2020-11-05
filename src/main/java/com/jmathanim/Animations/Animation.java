@@ -78,7 +78,6 @@ public abstract class Animation {
     public boolean processAnimation() {
         if (isEnded) return true;
         if (!isInitialized) { //If not initalized, do it now
-//            initialize();
             isInitialized = true;
             setFps(JMathAnimConfig.getConfig().fps);
         }

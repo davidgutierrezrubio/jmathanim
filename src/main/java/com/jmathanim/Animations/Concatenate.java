@@ -20,6 +20,8 @@ package com.jmathanim.Animations;
 
 import com.jmathanim.jmathanim.JMathAnimScene;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * Stores 2 or more animations and play them in sequential order
@@ -37,9 +39,14 @@ public class Concatenate extends Animation {
         this(new ArrayList<Animation>());
     }
 
-    public Concatenate(ArrayList<Animation> anims) {
+    public Concatenate(Animation...anims) {
+        this(Arrays.asList(anims));
+    }
+    
+    public Concatenate(List<Animation> anims) {
         super();
-        this.anims = anims;
+        this.anims =new ArrayList<Animation>();
+        this.anims.addAll(anims);
         this.cumulativeTimes = new ArrayList<>();
         this.relCumulativeTimes = new ArrayList<>();
         currentAnim = 0;

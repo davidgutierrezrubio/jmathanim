@@ -19,6 +19,7 @@ package com.jmathanim.Animations;
 
 import com.jmathanim.Animations.Strategies.ShowCreation.ArrowCreationStrategy;
 import com.jmathanim.Animations.Strategies.ShowCreation.FirstDrawThenFillStrategy;
+import com.jmathanim.Animations.Strategies.ShowCreation.GroupCreationStrategy;
 import com.jmathanim.Animations.Strategies.ShowCreation.LineCreationStrategy;
 import com.jmathanim.Animations.Strategies.ShowCreation.MultiShapeCreationStrategy;
 import com.jmathanim.Animations.Strategies.ShowCreation.SimpleShapeCreationStrategy;
@@ -28,6 +29,7 @@ import com.jmathanim.mathobjects.Arrow2D;
 import com.jmathanim.mathobjects.CanonicalJMPath;
 import com.jmathanim.mathobjects.Line;
 import com.jmathanim.mathobjects.MathObject;
+import com.jmathanim.mathobjects.MathObjectGroup;
 import com.jmathanim.mathobjects.MultiShapeObject;
 import com.jmathanim.mathobjects.SVGMathObject;
 import com.jmathanim.mathobjects.Shape;
@@ -44,7 +46,8 @@ public class ShowCreation extends Animation {
         SIMPLE_SHAPE_CREATION,
         MULTISHAPE_CREATION,
         LINE_CREATION,
-        ARROW_CREATION
+        ARROW_CREATION,
+        GROUP_CREATION
     }
 
     MathObject mobj;
@@ -54,8 +57,7 @@ public class ShowCreation extends Animation {
     private ShowCreationStrategy strategyType = ShowCreationStrategy.NONE;
 
     /**
-     * Creates an animation that shows the creation of the specified
-     * MathObject
+     * Creates an animation that shows the creation of the specified MathObject
      *
      * @param runtime Run time in seconds
      * @param mobj Mathobject to animate
@@ -102,11 +104,14 @@ public class ShowCreation extends Animation {
     /**
      * Determines the strategy to animate the creation of the object
      *
-     * @param mobj MathObject which will be animated. Its type
-     * determines the type of animation to perform.
+     * @param mobj MathObject which will be animated. Its type determines the
+     * type of animation to perform.
      */
     public void determineCreationStrategy(MathObject mobj) {
-
+        if (mobj instanceof MathObjectGroup) {
+            this.strategyType = ShowCreationStrategy.GROUP_CREATION;
+            return;
+        }
         if (mobj instanceof SVGMathObject) {
             this.strategyType = ShowCreationStrategy.FIRST_DRAW_AND_THEN_FILL;
             return;
@@ -147,6 +152,10 @@ public class ShowCreation extends Animation {
      */
     private void createStrategy() throws ClassCastException {
         switch (this.strategyType) {
+             case GROUP_CREATION:
+                strategy = new GroupCreationStrategy(this.runTime,(MathObjectGroup) mobj, this.scene);
+                JMathAnimScene.logger.debug("ShowCreation method: GroupCreationStrategy");
+                break;
             case LINE_CREATION:
                 strategy = new LineCreationStrategy((Line) mobj, this.scene);
                 JMathAnimScene.logger.debug("ShowCreation method: LineCreationStrategy");
