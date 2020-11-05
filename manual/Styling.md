@@ -10,6 +10,9 @@ Each object has 2 colors: the draw color (changed with `.setColor`), used drawin
 Shape r=Shape.regularPolygon(5).fillColor(JMColor.parse("CADETBLUE")).drawColor(JMColor.parse("#041137")).thickness(5);
 ```
 
+
+<img src="02_01_colors.png" alt="image-20201105234514407" style="zoom:50%;" />
+=======
 <img src="02_01_colors.png" alt="image-20201105234514407" style="zoom:50%;" />
 
 Here we can see the method `.parse` to define a color. All JavaFX color names are supported, as well as hexadecimal format `#RRGGBBAA` (8 hexadecimal digits), `#RRGGBB` (6 hexadecimal digits) and `#RGB` (4 hexadecimal digits) .
@@ -30,7 +33,5 @@ add(r1,r2,r3);
 camera.adjustToAllObjects();
 waitSeconds(5);
 ```
-
-
 
 <img src="dashStyles.png" alt="image-20201105235906935" style="zoom: 67%;" />
