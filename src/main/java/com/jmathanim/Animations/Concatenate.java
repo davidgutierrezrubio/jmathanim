@@ -15,7 +15,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-
 package com.jmathanim.Animations;
 
 import com.jmathanim.jmathanim.JMathAnimScene;
@@ -31,24 +30,20 @@ import java.util.List;
 public class Concatenate extends Animation {
 
     private final ArrayList<Animation> anims;
-    private final ArrayList<Double> cumulativeTimes;
-    private final ArrayList<Double> relCumulativeTimes;
     private int currentAnim;
 
     public Concatenate() {
         this(new ArrayList<Animation>());
     }
 
-    public Concatenate(Animation...anims) {
+    public Concatenate(Animation... anims) {
         this(Arrays.asList(anims));
     }
-    
+
     public Concatenate(List<Animation> anims) {
         super();
-        this.anims =new ArrayList<Animation>();
+        this.anims = new ArrayList<Animation>();
         this.anims.addAll(anims);
-        this.cumulativeTimes = new ArrayList<>();
-        this.relCumulativeTimes = new ArrayList<>();
         currentAnim = 0;
 
     }
@@ -59,45 +54,33 @@ public class Concatenate extends Animation {
 
     @Override
     public void initialize() {
-        //Total runtime
-        this.runTime = 0;
-        this.cumulativeTimes.add(0d);
-        for (Animation anim : anims) {
-            this.runTime += anim.runTime;
-            this.cumulativeTimes.add(this.runTime);
-        }
-//        for (int n=0;n<this.cumulativeTimes.size();n++)
-//        {
-//            this.relCumulativeTimes.add(this.cumulativeTimes.get(n)/this.runTime);
-//        }
-        //Initialize first animation
-        anims.get(currentAnim).initialize();
+        anims.get(0).initialize();
     }
 
     @Override
-    public void doAnim(double t, double lt) {
-        //TODO: May be easier to override processAnimation instead
-        double ct = this.cumulativeTimes.get(currentAnim);
-        double l = anims.get(currentAnim).runTime;
-        // (x-ct)/l where x=t*totalTime
-        double tForThisAnim = (t * this.runTime - ct) / l;
-        double ltForThisAnim = lambda(tForThisAnim);
-
-        anims.get(currentAnim).doAnim(tForThisAnim, ltForThisAnim);
-        if (tForThisAnim >= 1) {
+    public boolean processAnimation() {
+        boolean resul = anims.get(currentAnim).processAnimation();
+        if (resul) {
             anims.get(currentAnim).finishAnimation();
             currentAnim++;
-            anims.get(currentAnim).initialize();
+            if (currentAnim < this.anims.size()) {
+                anims.get(currentAnim).initialize();
+                resul=false;
+            }
         }
+        return resul;
     }
 
     @Override
     public void finishAnimation() {
-        anims.get(currentAnim).finishAnimation();
     }
 
     @Override
     public void addObjectsToScene(JMathAnimScene scene) {
+    }
+
+    @Override
+    public void doAnim(double t, double lt) {
     }
 
 }
