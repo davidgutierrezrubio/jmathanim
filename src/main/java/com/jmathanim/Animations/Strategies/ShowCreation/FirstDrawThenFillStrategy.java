@@ -70,7 +70,7 @@ public class FirstDrawThenFillStrategy extends TransformStrategy {
             final ShowCreation cr = new ShowCreation(PERCENT_TO_DIVIDE_ANIMATION * realRuntime,s);
             anim.add(cr);
             MODrawProperties mpBase = s.mp.copy();
-            s.mp.fillColor.alpha = 0;
+            s.mp.getFillColor().alpha = 0;
             final ApplyCommand st = Commands.setMP((1 - PERCENT_TO_DIVIDE_ANIMATION) * realRuntime, mpBase, s);
             anim.add(st);
             animations.add(anim);

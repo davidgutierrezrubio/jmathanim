@@ -162,7 +162,7 @@ public class Point extends MathObject {
                 dotShape.getPath().addPoint(Point.at(-1, 1), Point.at(1, -1), Point.at(1, 1), Point.at(-1, -1));
                 dotShape.getJMPoint(0).isThisSegmentVisible = false;
                 dotShape.getJMPoint(2).isThisSegmentVisible = false;
-                dotShape.shift(v).scale(st).drawColor(mp.drawColor).thickness(mp.thickness);
+                dotShape.shift(v).scale(st).drawColor(mp.getDrawColor()).thickness(mp.thickness);
                 break;
             case PLUS:
 //                st = mp.computeScreenThickness(r)/20;
@@ -171,12 +171,12 @@ public class Point extends MathObject {
                 dotShape.getPath().addPoint(Point.at(0, 1), Point.at(0, -1), Point.at(1, 0), Point.at(-1, 0));
                 dotShape.getJMPoint(0).isThisSegmentVisible = false;
                 dotShape.getJMPoint(2).isThisSegmentVisible = false;
-                dotShape.shift(v).scale(st).drawColor(mp.drawColor).thickness(mp.thickness);
+                dotShape.shift(v).scale(st).drawColor(mp.getDrawColor()).thickness(mp.thickness);
                 break;
             default://Default case, includes CIRCLE
 //                st = mp.computeScreenThickness(r)/200;
                 st = mp.thickness / 70;
-                dotShape = Shape.circle().shift(v).scale(st).drawColor(mp.drawColor).fillColor(mp.drawColor).thickness(0);
+                dotShape = Shape.circle().shift(v).scale(st).drawColor(mp.getDrawColor()).fillColor(mp.getDrawColor()).thickness(0);
                 break;
         }
         return dotShape;

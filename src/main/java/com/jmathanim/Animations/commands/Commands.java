@@ -29,9 +29,6 @@ import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.Point;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 /**
  *
@@ -327,18 +324,19 @@ public class Commands {
     public static AnimationGroup setColor(double runtime, JMColor drawColor, JMColor fillColor, MathObject... objects) {
         AnimationGroup ag = new AnimationGroup();
         for (MathObject ob : objects) {
-            MODrawProperties mpDst = ob.mp.copy();
+            MODrawProperties mpDst = MODrawProperties.makeNullValues();
             if (drawColor != null) {
-                mpDst.drawColor.copyFrom(drawColor);
+                mpDst.setDrawColor(drawColor);
             }
-             if (fillColor != null) {
-                mpDst.fillColor.copyFrom(fillColor);
+            if (fillColor != null) {
+                mpDst.setFillColor(fillColor);
             }
             ApplyCommand cmd = setMP(runtime, mpDst, ob);
             ag.add(cmd);
         }
         return ag;
     }
+
 
     /**
      * Animation command that changes the math drawing properties of given
@@ -354,15 +352,12 @@ public class Commands {
     public static ApplyCommand setMP(double runtime, MODrawProperties mp, MathObject... objects) {
         return new ApplyCommand(new MathObjectsCommand(objects) {
             MODrawProperties mpDst = mp;
-            //Creates copies from all objects, so that objects with many MP's (arrows, multishapes) can be interpolated well
-            MathObject[] mobjBase = new MathObject[objects.length];
 
             @Override
             public void initialize() {
                 int n = 0;
                 for (MathObject obj : mathObjects) {
-                    mobjBase[n] = obj.copy();
-                    n++;
+                    obj.saveState();
                 }
             }
 
@@ -370,8 +365,8 @@ public class Commands {
             public void execute(double t) {
                 int n = 0;
                 for (MathObject obj : mathObjects) {
-                    obj.interpolateMPFrom(mobjBase[n], mpDst, t);
-                    n++;
+                    obj.restoreState();
+                    obj.interpolateMPFrom(mpDst, t);
                 }
             }
 

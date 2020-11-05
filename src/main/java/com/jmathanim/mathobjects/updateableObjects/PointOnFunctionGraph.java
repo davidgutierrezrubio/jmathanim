@@ -20,7 +20,6 @@ package com.jmathanim.mathobjects.updateableObjects;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.FunctionGraph;
 import com.jmathanim.mathobjects.Point;
-import java.util.function.DoubleUnaryOperator;
 
 /**
  *

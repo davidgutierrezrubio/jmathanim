@@ -64,13 +64,13 @@ public class Arrow2D extends MathObject {
                 name += "1";
                 break;
             case TYPE_2:
-                name+="2";
+                name += "2";
                 break;
             case TYPE_3:
-                name+="3";
+                name += "3";
                 break;
             default:
-                name+="1";
+                name += "1";
         }
         name += ".svg";
 
@@ -82,6 +82,7 @@ public class Arrow2D extends MathObject {
         } catch (IOException ex) {
             Logger.getLogger(Arrow2D.class.getName()).log(Level.SEVERE, null, ex);
         }
+        resul.head.fillWithDrawColor(true);
         return resul;
     }
 
@@ -91,8 +92,8 @@ public class Arrow2D extends MathObject {
         this.body = Shape.segment(p1, p2);
         this.head = svg;
 
-        head.drawColor(this.body.mp.drawColor);
-        head.fillColor(this.body.mp.drawColor);
+        head.drawColor(this.body.mp.getDrawColor());
+        head.fillColor(this.body.mp.getDrawColor());
 
 //        shapes.get(0).mp = arrowHead.mp;
 //        absoluteSizeUpdater = new AbsoluteSizeUpdater(arrowHead, DEFAULT_ARROW_HEAD_SIZE);
@@ -226,8 +227,10 @@ public class Arrow2D extends MathObject {
 
     @Override
     public <T extends MathObject> T copy() {
-        return (T) Arrow2D.makeSimpleArrow2D(p1.copy(), p2.copy(), arrowType);
-
+        Arrow2D copy = Arrow2D.makeSimpleArrow2D(p1.copy(), p2.copy(), arrowType);
+        copy.head.mp.copyFrom(this.head.mp);
+        copy.body.mp.copyFrom(this.body.mp);
+        return (T) copy;
     }
 
     @Override
@@ -275,10 +278,9 @@ public class Arrow2D extends MathObject {
     }
 
     @Override
-    public void interpolateMPFrom(MathObject mobjBase, MODrawProperties mpDst, double alpha) {
-        Arrow2D arrBase=(Arrow2D) mobjBase;
-        body.interpolateMPFrom(arrBase.getBody(), mpDst, alpha); //To change body of generated methods, choose Tools | Templates.
-        head.interpolateMPFrom(arrBase.getArrowHead(), mpDst, alpha); //To change body of generated methods, choose Tools | Templates.
+    public void interpolateMPFrom(MODrawProperties mpDst, double alpha) {
+        body.interpolateMPFrom(mpDst, alpha); //To change body of generated methods, choose Tools | Templates.
+        head.interpolateMPFrom(mpDst, alpha); //To change body of generated methods, choose Tools | Templates.
     }
 
 }

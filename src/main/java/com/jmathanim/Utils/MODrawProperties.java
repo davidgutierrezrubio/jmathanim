@@ -18,11 +18,9 @@
 package com.jmathanim.Utils;
 
 import com.jmathanim.jmathanim.JMathAnimScene;
-import com.jmathanim.mathobjects.Point;
 import com.jmathanim.mathobjects.Point.DotSyle;
 import com.jmathanim.mathobjects.Stateable;
 import java.awt.Color;
-import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.concurrent.ThreadLocalRandom;
 import javafx.scene.shape.StrokeLineCap;
@@ -34,18 +32,30 @@ import javafx.scene.shape.StrokeLineCap;
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
 public class MODrawProperties implements Stateable {
-    public enum DashStyle {SOLID,DASHED,DOTTED}
 
-    //When added a new property here, remember to include it in digestFrom and copyFrom
-    public final JMColor drawColor;
-    public final JMColor fillColor;
+    public JMColor getDrawColor() {
+        return drawColor;
+    }
+
+    public JMColor getFillColor() {
+        return fillColor;
+    }
+
+    public enum DashStyle {
+        SOLID, DASHED, DOTTED
+    }
+
+    //When added a new property here, remember to include it in rawCopyFrom and copyFrom
+    private JMColor drawColor;
+    private JMColor fillColor;
     public Double thickness = 1d;
     //If false, thickness is computed to be a percentage of the width
     //to ensure zoom or resolution doesn't affect the result
     public Boolean absoluteThickness = true;
     public DashStyle dashStyle = DashStyle.SOLID;
-    private int layer = 0;
-    public boolean castShadows = true;//If shadows, this object should cast them
+    private Integer layer = 0;
+    public Boolean castShadows = true;//If shadows, this object should cast them
+    public Boolean fillColorIsDrawColor = false; //If true, fillColor is always overriden by drawColor
 
     //Styles used for specified objects
     //Point
@@ -59,11 +69,34 @@ public class MODrawProperties implements Stateable {
     }
 
     /**
+     * Generates a MODrawProperties instance with all its values null. It is
+     * useful if you want to interpolate only some values. By default, null
+     * values are not interpolated or copied.
+     *
+     * @return
+     */
+    public static MODrawProperties makeNullValues() {
+        MODrawProperties nullMP = new MODrawProperties();
+        nullMP.drawColor = null;
+        nullMP.fillColor = null;
+        nullMP.thickness = null;
+        nullMP.absoluteThickness = null;
+        nullMP.dashStyle = null;
+        nullMP.absoluteThickness = null;
+        nullMP.layer = null;
+        nullMP.absoluteThickness = null;
+        nullMP.castShadows = null;
+        nullMP.dotStyle = null;
+        nullMP.linecap = null;
+        return nullMP;
+    }
+
+    /**
      * Absorb all non-null properties of a given properties class
      *
      * @param prop
      */
-    public void digestFrom(MODrawProperties prop) {
+    public void copyFrom(MODrawProperties prop) {
         if (prop == null) {//Nothing to do here!
             return;
         }
@@ -73,17 +106,19 @@ public class MODrawProperties implements Stateable {
         dashStyle = (prop.dashStyle == null ? dashStyle : prop.dashStyle);
         absoluteThickness = (prop.absoluteThickness == null ? absoluteThickness : prop.absoluteThickness);
         dotStyle = (prop.dotStyle == null ? dotStyle : prop.dotStyle);
-        castShadows = prop.castShadows;
-        layer = prop.layer;
-        linecap = prop.linecap;
+        castShadows = (prop.dotStyle == null ? castShadows : prop.castShadows);
+        layer = (prop.layer == null ? layer : prop.layer);
+        linecap = (prop.linecap == null ? linecap : prop.linecap);
+        fillColorIsDrawColor = (prop.fillColorIsDrawColor == null ? fillColorIsDrawColor : prop.fillColorIsDrawColor);
     }
 
     /**
-     * Copy attributes from the given {@link MODrawProperties} object
+     * Copy attributes from the given {@link MODrawProperties} object Null
+     * values are copied also
      *
      * @param mp The object to copy attributes from.
      */
-    public void copyFrom(MODrawProperties mp) {
+    public void rawCopyFrom(MODrawProperties mp) {
         drawColor.copyFrom(mp.drawColor);
         fillColor.copyFrom(mp.fillColor);
         thickness = mp.thickness;
@@ -94,22 +129,28 @@ public class MODrawProperties implements Stateable {
         dotStyle = mp.dotStyle;
         castShadows = mp.castShadows;
         linecap = mp.linecap;
+        fillColorIsDrawColor = mp.fillColorIsDrawColor;
     }
 
     /**
-     * Interpolate values from another MathObjecDrawingProperties
+     * Interpolate values from another MathObjecDrawingProperties. Only
+     * drawColor, fillColor and thickness are actually interpolated
      *
-     * @param a
-     * @param b
-     * @param t Interpolation parameter
+     * @param a base drawing parameters
+     * @param b Destination drawing parameters
+     * @param alpha Interpolation parameter
      */
-    public void interpolateFrom(MODrawProperties a, MODrawProperties b, double t) {
+    public void interpolateFrom(MODrawProperties a, MODrawProperties b, double alpha) {
         //Interpolate colors
-        drawColor.copyFrom(a.drawColor.interpolate(b.drawColor, t));
-        fillColor.copyFrom(a.fillColor.interpolate(b.fillColor, t));
-
-//        interpolateColor(a.fillColor, b.fillColor, t);
-        this.thickness = (1 - t) * a.thickness + t * b.thickness;
+        if (b.drawColor != null) {
+            drawColor.copyFrom(a.drawColor.interpolate(b.drawColor, alpha));
+        }
+        if (b.fillColor != null) {
+            fillColor.copyFrom(a.fillColor.interpolate(b.fillColor, alpha));
+        }
+        if (b.thickness != null) {
+            this.thickness = (1 - alpha) * a.thickness + alpha * b.thickness;
+        }
 
     }
 
@@ -167,10 +208,10 @@ public class MODrawProperties implements Stateable {
         DashStyle resul = DashStyle.SOLID; //default dash
         try {
             resul = DashStyle.valueOf(str.toUpperCase());
-        } catch (IllegalArgumentException  e) {
-             JMathAnimScene.logger.warn("Dash pattern {} not recognized, using default {}", str,resul);
+        } catch (IllegalArgumentException e) {
+            JMathAnimScene.logger.warn("Dash pattern {} not recognized, using default {}", str, resul);
         }
-        
+
         return resul;
     }
 
@@ -178,8 +219,8 @@ public class MODrawProperties implements Stateable {
         DotSyle resul = DotSyle.CIRCLE; //default dash
         try {
             resul = DotSyle.valueOf(str.toUpperCase());
-        } catch (IllegalArgumentException  e) {
-             JMathAnimScene.logger.warn("Dot style {} not recognized, using default {}", str,resul);
+        } catch (IllegalArgumentException e) {
+            JMathAnimScene.logger.warn("Dot style {} not recognized, using default {}", str, resul);
         }
         return resul;
     }
@@ -193,7 +234,7 @@ public class MODrawProperties implements Stateable {
     public void loadFromStyle(String name) {
         HashMap<String, MODrawProperties> styles = JMathAnimConfig.getConfig().getStyles();
         if (styles.containsKey(name)) {
-            this.digestFrom(styles.get(name));
+            this.copyFrom(styles.get(name));
         } else {
             JMathAnimScene.logger.warn("No style with name {} found", name);
         }
@@ -229,6 +270,26 @@ public class MODrawProperties implements Stateable {
     @Override
     public void restoreState() {
         this.copyFrom(this.mpBackup);
+    }
+
+    public void setDrawColor(JMColor drawColor) {
+        if (drawColor != null) {
+            this.drawColor = drawColor.copy();
+        }
+    }
+
+    public void setFillColor(JMColor fillColor) {
+        if (fillColor != null) {
+            this.fillColor = fillColor.copy();
+        }
+    }
+
+    public void setFillColorIsDrawColor(Boolean fillColorIsDrawColor) {
+        this.fillColorIsDrawColor = fillColorIsDrawColor;
+    }
+
+    public Boolean isFillColorIsDrawColor() {
+        return fillColorIsDrawColor;
     }
 
 }

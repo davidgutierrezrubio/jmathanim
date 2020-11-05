@@ -20,13 +20,9 @@ package com.jmathanim.mathobjects.updateableObjects;
 
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
-import com.jmathanim.mathobjects.JMPath;
-import com.jmathanim.mathobjects.JMPathPoint;
 import com.jmathanim.mathobjects.Point;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import jdk.nashorn.internal.runtime.arrays.ArrayLikeIterator;
 
 /**
  * This class represents middle point computed from 2 given ones. This class

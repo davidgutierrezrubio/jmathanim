@@ -203,8 +203,8 @@ public class JMathAnimConfig {
     public final void setDefaultMP() {
         MODrawProperties defaultMP = new MODrawProperties();
         //Default, boring values
-        defaultMP.drawColor.copyFrom(JMColor.WHITE);
-        defaultMP.fillColor.copyFrom(JMColor.GRAY);
+        defaultMP.getDrawColor().copyFrom(JMColor.WHITE);
+        defaultMP.getFillColor().copyFrom(JMColor.GRAY);
         defaultMP.setFillAlpha(0);//No filling by default
         defaultMP.thickness = 1d;
         defaultMP.dashStyle = MODrawProperties.DashStyle.SOLID;

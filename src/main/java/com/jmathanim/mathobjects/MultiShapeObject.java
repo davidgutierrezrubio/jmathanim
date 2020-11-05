@@ -21,11 +21,9 @@ import com.jmathanim.Renderers.Renderer;
 import com.jmathanim.Utils.JMColor;
 import com.jmathanim.Utils.MODrawProperties;
 import com.jmathanim.Utils.Rect;
-import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -225,12 +223,18 @@ public class MultiShapeObject extends MathObject {
     }
 
     @Override
-    public void interpolateMPFrom(MathObject mobjBase, MODrawProperties mpDst, double alpha) {
-        MultiShapeObject shBase = (MultiShapeObject) mobjBase;
+    public void interpolateMPFrom(MODrawProperties mpDst, double alpha) {
         for (int n = 0; n < shapes.size(); n++) {
-            shapes.get(n).interpolateMPFrom(shBase.get(n), mpDst, alpha);
+            shapes.get(n).interpolateMPFrom(mpDst, alpha);
         }
+    }
 
+    @Override
+    public <T extends MathObject> T fillWithDrawColor(boolean fcd) {
+         for (int n = 0; n < shapes.size(); n++) {
+            shapes.get(n).fillWithDrawColor(fcd);
+        }
+         return (T) this;
     }
 
 }

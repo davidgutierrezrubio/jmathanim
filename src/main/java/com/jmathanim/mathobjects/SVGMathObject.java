@@ -33,7 +33,6 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.smartcardio.ATR;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import org.w3c.dom.Element;
@@ -80,8 +79,8 @@ public class SVGMathObject extends MultiShapeObject {
         } catch (Exception ex) {
             Logger.getLogger(SVGMathObject.class.getName()).log(Level.SEVERE, null, ex);
         }
-        currentFillColor = mp.fillColor.copy();
-        currentDrawColor = mp.drawColor.copy();
+        currentFillColor = mp.getFillColor().copy();
+        currentDrawColor = mp.getDrawColor().copy();
     }
 
     protected final void importSVG(File file) throws Exception {
@@ -522,7 +521,7 @@ public class SVGMathObject extends MultiShapeObject {
             parseStyleAttribute(el.getAttribute("style"), ShMp);
         }
         if (!"".equals(el.getAttribute("stroke"))) {
-            ShMp.drawColor.copyFrom(JMColor.parseColorID(el.getAttribute("stroke")));
+            ShMp.getDrawColor().copyFrom(JMColor.parseColorID(el.getAttribute("stroke")));
         }
 
         if (!"".equals(el.getAttribute("stroke-width"))) {
@@ -533,7 +532,7 @@ public class SVGMathObject extends MultiShapeObject {
         }
 
         if (!"".equals(el.getAttribute("fill"))) {
-            ShMp.fillColor.copyFrom(JMColor.parseColorID(el.getAttribute("fill")));
+            ShMp.getFillColor().copyFrom(JMColor.parseColorID(el.getAttribute("fill")));
         }
 
     }
@@ -544,7 +543,7 @@ public class SVGMathObject extends MultiShapeObject {
             String[] decl = pairs.split(":");
             switch (decl[0]) {
                 case "fill":
-                    ShMp.fillColor.copyFrom(JMColor.parseColorID(decl[1]));
+                    ShMp.getFillColor().copyFrom(JMColor.parseColorID(decl[1]));
             }
 
         }

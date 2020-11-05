@@ -65,7 +65,7 @@ public class PointInterpolationCanonical extends TransformStrategy {
         preparePaths(mobjTransformed.jmpath, mobjDestiny.jmpath);
         if (DEBUG_COLORS) {
             for (int n = 0; n < connectedOrigin.getNumberOfPaths(); n++) {
-                JMColor color = mobjTransformed.mp.drawColor.copy();
+                JMColor color = mobjTransformed.mp.getDrawColor().copy();
                 Shape sh = new Shape(connectedOrigin.get(n), null);
 //            Shape sh2 = new Shape(connectedDst.get(n), null);
 

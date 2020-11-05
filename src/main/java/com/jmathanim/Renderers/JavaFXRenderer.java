@@ -22,7 +22,6 @@ import com.jmathanim.Cameras.CameraFX2D;
 import com.jmathanim.Renderers.MovieEncoders.VideoEncoder;
 import com.jmathanim.Renderers.MovieEncoders.XugglerVideoEncoder;
 import com.jmathanim.Utils.JMathAnimConfig;
-import com.jmathanim.Utils.MODrawProperties;
 import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
@@ -60,7 +59,6 @@ import javafx.scene.shape.CubicCurveTo;
 import javafx.scene.shape.LineTo;
 import javafx.scene.shape.MoveTo;
 import javafx.scene.shape.Path;
-import javafx.scene.shape.StrokeLineCap;
 import javafx.scene.shape.StrokeLineJoin;
 import javafx.scene.shape.StrokeType;
 import javafx.scene.transform.Rotate;
@@ -335,7 +333,7 @@ public class JavaFXRenderer extends Renderer {
 //        path.setSmooth(false);
 
         //Stroke width and color
-        path.setStroke(mobj.mp.drawColor.getFXColor());
+        path.setStroke(mobj.mp.getDrawColor().getFXColor());
 
         //Compute thickness depending on camera
         //A thickness of 1 means a javafx thickness 1 in a 800x600with mathview of width 4
@@ -343,7 +341,11 @@ public class JavaFXRenderer extends Renderer {
         path.setStrokeWidth(computeThickness(mobj));
 
         //Fill color
-        path.setFill(mobj.mp.fillColor.getFXColor());
+        if (mobj.mp.isFillColorIsDrawColor()) {
+            path.setFill(mobj.mp.getDrawColor().getFXColor());
+        } else {
+            path.setFill(mobj.mp.getFillColor().getFXColor());
+        }
 
         //Dash pattern
         switch (mobj.mp.dashStyle) {
@@ -462,7 +464,7 @@ public class JavaFXRenderer extends Renderer {
         imageView.setPreserveRatio(obj.preserveRatio);
         imageView.setSmooth(true);
         imageView.setCache(true);
-        imageView.setOpacity(obj.mp.drawColor.alpha);
+        imageView.setOpacity(obj.mp.getDrawColor().alpha);
 
         imageView.setRotate(-obj.rotateAngle / DEGREES);
 //        imageView.setRotate(-45);

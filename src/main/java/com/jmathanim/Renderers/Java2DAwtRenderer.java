@@ -23,7 +23,6 @@ import com.jmathanim.Cameras.Camera2D;
 import com.jmathanim.Renderers.MovieEncoders.VideoEncoder;
 import com.jmathanim.Renderers.MovieEncoders.XugglerVideoEncoder;
 import com.jmathanim.Utils.JMathAnimConfig;
-import com.jmathanim.Utils.MODrawProperties;
 import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
@@ -31,9 +30,8 @@ import com.jmathanim.jmathanim.PreviewWindow;
 import com.jmathanim.mathobjects.JMImage;
 import com.jmathanim.mathobjects.JMPath;
 import com.jmathanim.mathobjects.JMPathPoint;
-import com.jmathanim.mathobjects.MathObject;
-import com.jmathanim.mathobjects.Point;
 import com.jmathanim.mathobjects.JMPathPoint.JMPathPointType;
+import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.Shape;
 import java.awt.BasicStroke;
 import static java.awt.BasicStroke.CAP_ROUND;
@@ -440,14 +438,14 @@ if (delay > 0) {
 //                Path2D.Double pathToFill = createPathFromJMPath(mobj, mobj.getPath().allVisible(), cam);
 //                g2draw.setColor(mobj.mp.fillColor.getColor());
 //                g2draw.fill(pathToFill);
-                g2draw.setColor(mobj.mp.fillColor.getAwtColor());
+                g2draw.setColor(mobj.mp.getFillColor().getAwtColor());
                 g2draw.fill(path);
             }
             //Border is always drawed
 //            AffineTransform bTr = g2draw.getTransform();
 //            final AffineTransform cameratoG2DTransform = getCameratoG2DTransform(cam);
 
-            g2draw.setColor(mobj.mp.drawColor.getAwtColor());
+            g2draw.setColor(mobj.mp.getDrawColor().getAwtColor());
             setStroke(g2draw, mobj);
 //            g2draw.setTransform(cameratoG2DTransform);
             g2draw.draw(path);

@@ -20,14 +20,12 @@ package com.jmathanim.mathobjects;
 import com.jmathanim.Renderers.Renderer;
 import com.jmathanim.Utils.JMathAnimConfig;
 import com.jmathanim.Utils.MODrawProperties;
-import com.jmathanim.Utils.PathInterpolator;
 import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import static com.jmathanim.jmathanim.JMathAnimScene.PI;
 import com.jmathanim.mathobjects.MOProperties.ArcAttributes;
 import java.util.ArrayList;
-import java.util.function.DoubleUnaryOperator;
 
 /**
  *

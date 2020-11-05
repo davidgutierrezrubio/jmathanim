@@ -19,7 +19,6 @@
 package com.jmathanim.mathobjects.updateableObjects;
 
 import com.jmathanim.Cameras.Camera;
-import com.jmathanim.Utils.JMathAnimConfig;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.MathObject;
 

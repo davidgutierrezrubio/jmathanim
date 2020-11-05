@@ -25,7 +25,6 @@ import com.jmathanim.Utils.MODrawProperties;
 import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
-import com.jmathanim.mathobjects.Point.DotSyle;
 import com.jmathanim.mathobjects.MOProperties.MathObjectAttributes;
 import com.jmathanim.mathobjects.updateableObjects.Updateable;
 import java.util.HashSet;
@@ -91,7 +90,7 @@ public abstract class MathObject implements Drawable, Updateable, Stateable {
 
     public MathObject(MODrawProperties prop) {
         mp = JMathAnimConfig.getConfig().getDefaultMP();//Default MP values
-        mp.digestFrom(prop);//Copy all non-null values from prop
+        mp.copyFrom(prop);//Copy all non-null values from prop
         scenes = new HashSet<>();
         updateLevel = 0;
     }
@@ -376,7 +375,7 @@ public abstract class MathObject implements Drawable, Updateable, Stateable {
 
     //Convenience methods to set drawing parameters
     public <T extends MathObject> T drawColor(JMColor dc) {
-        mp.drawColor.copyFrom(dc);
+        mp.getDrawColor().copyFrom(dc);
         return (T) this;
     }
 
@@ -386,7 +385,7 @@ public abstract class MathObject implements Drawable, Updateable, Stateable {
     }
 
     public <T extends MathObject> T fillColor(JMColor fc) {
-        mp.fillColor.copyFrom(fc);
+        mp.getFillColor().copyFrom(fc);
         return (T) this;
     }
 
@@ -396,12 +395,12 @@ public abstract class MathObject implements Drawable, Updateable, Stateable {
     }
 
     public <T extends MathObject> T drawAlpha(double alpha) {
-        mp.drawColor.alpha = alpha;
+        mp.getDrawColor().alpha = alpha;
         return (T) this;
     }
 
     public <T extends MathObject> T fillAlpha(double alpha) {
-        mp.fillColor.alpha = alpha;
+        mp.getFillColor().alpha = alpha;
         return (T) this;
     }
 
@@ -413,7 +412,7 @@ public abstract class MathObject implements Drawable, Updateable, Stateable {
      * @return This object
      */
     public <T extends MathObject> T multFillAlpha(double t) {
-        this.mp.fillColor.alpha *= t;
+        this.mp.getFillColor().alpha *= t;
         return (T) this;
     }
 
@@ -425,7 +424,7 @@ public abstract class MathObject implements Drawable, Updateable, Stateable {
      * @return This object
      */
     public <T extends MathObject> T multDrawAlpha(double t) {
-        this.mp.drawColor.alpha *= t;
+        this.mp.getDrawColor().alpha *= t;
         return (T) this;
     }
 
@@ -561,7 +560,11 @@ public abstract class MathObject implements Drawable, Updateable, Stateable {
         return (T) this;
     }
 
-    public void interpolateMPFrom(MathObject mobjBase, MODrawProperties mpDst, double alpha) {
-        this.mp.interpolateFrom(mobjBase.mp, mpDst, alpha);
+    public void interpolateMPFrom(MODrawProperties mpDst, double alpha) {
+        this.mp.interpolateFrom(this.mp, mpDst, alpha);
+    }
+      public <T extends MathObject> T fillWithDrawColor(boolean fcd) {
+        this.mp.setFillColorIsDrawColor(fcd);
+        return (T) this;
     }
 }

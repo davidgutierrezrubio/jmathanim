@@ -130,7 +130,8 @@ public class JMColor {
     }
 
     /**
-     * Set the RGBA values of those given by the parameter
+     * Set the RGBA values of those given by the parameter.
+     * If the given color is null, nothing is done
      *
      * @param jmcolor The JMColor to copy values from
      */
