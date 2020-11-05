@@ -3,6 +3,9 @@ JMathAnim is a library written in JAVA intended to simplify the process of doing
 ### Prerrequisites
 A machine with JDK installed
 
+### Manual
+A basic user's manual can be found [here](manual/index.html)
+
 ### Basic Example
 We will show a very basic example to illustrate the structure of an animation:
 ```java
