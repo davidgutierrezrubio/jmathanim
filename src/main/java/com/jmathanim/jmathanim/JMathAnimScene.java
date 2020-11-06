@@ -116,7 +116,7 @@ public abstract class JMathAnimScene {
     /**
      * This method handles the creation of the renderer(s)
      */
-    public abstract void createRenderer();
+    abstract void createRenderer();
 
     /**
      * Execute the current scene
