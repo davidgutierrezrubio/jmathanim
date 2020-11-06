@@ -28,6 +28,7 @@ import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.MathObject;
+import com.jmathanim.mathobjects.MathObjectGroup;
 import com.jmathanim.mathobjects.Point;
 
 /**
@@ -191,8 +192,7 @@ public class Commands {
      * @param c First destiny point
      * @param d Second destiny point
      * @param objects Objects to animate (varargs)
-     * @return Animation to run playAnimation method
-     * method
+     * @return Animation to run playAnimation method method
      */
     public static ApplyCommand homothecy(double runtime, Point a, Point b, Point c, Point d, MathObject... objects) {
         return new ApplyCommand(new MathObjectsCommand(objects) {
@@ -336,7 +336,6 @@ public class Commands {
         return ag;
     }
 
-
     /**
      * Animation command that changes the math drawing properties of given
      * object, interpolating
@@ -452,9 +451,8 @@ public class Commands {
     }
 
     /**
-     * Animation command that reduces the size and alpha of the
-     * MathObject.After finishing the animation, object is removed from
-     * the current scene.
+     * Animation command that reduces the size and alpha of the MathObject.After
+     * finishing the animation, object is removed from the current scene.
      *
      * @param runtime Run time (in seconds)
      * @param objects Objects to animate (varargs)
@@ -467,10 +465,9 @@ public class Commands {
     }
 
     /**
-     * Animation command that reduces the size and alpha of the
-     * MathObject.A rotation of a given angle is performed
-     * meanwhile.After finishing the animation, object is removed from the
-     * current scene.
+     * Animation command that reduces the size and alpha of the MathObject.A
+     * rotation of a given angle is performed meanwhile.After finishing the
+     * animation, object is removed from the current scene.
      *
      * @param angle Angle to rotate, in radians
      * @param runtime Duration time in seconds
@@ -635,4 +632,16 @@ public class Commands {
             }
         }, runtime);
     }//End of fadeOut command
+
+    public static AnimationGroup setLayout(double runtime, int anchor, double gap, MathObjectGroup group) {
+        AnimationGroup ag = new AnimationGroup();
+        MathObjectGroup grCopy = group.copy();
+        grCopy.setLayout(anchor, gap);
+        for (int n = 0; n < group.size(); n++) {
+            Vec v = group.get(n).getCenter().to(grCopy.get(n).getCenter());
+            ApplyCommand anim = Commands.shift(runtime, v, group.get(n));
+            ag.add(anim);
+        }
+        return ag;
+    }
 }

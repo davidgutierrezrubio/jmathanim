@@ -39,10 +39,21 @@ public class Point extends MathObject {
     public enum DotSyle {
         CIRCLE, CROSS, PLUS
     }
-    public static final Point Origin = Point.at(0, 0);
-    public static final Point UnitX = Point.at(1, 0);
-    public static final Point UnitY = Point.at(0, 1);
-    public static final Point UnitZ = new Point(0, 0, 1);
+
+    public static final Point origin() {
+        return Point.at(0, 0);
+    }
+
+    public static final Point unitX() {
+        return Point.at(1, 0);
+    }
+
+    public static final Point unitY() {
+        return Point.at(0, 1);
+    }
+     public static final Point unitZ() {
+        return new Point(0, 0,1);
+    }
 
     public Point() {
         this(0, 0, 0);
