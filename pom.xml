@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.github.davidgutierrezrubio</groupId>
     <artifactId>JMathAnim</artifactId>
-    <version>0.8.0</version>
+    <version>0.8.1-SNAPSHOT</version>
     <packaging>jar</packaging>
     <name>JMathAnim</name>
     <description>A Java library to write mathematical animations</description>
@@ -38,11 +38,6 @@
     </repositories>
     <dependencies>
         <dependency>
-            <groupId>io.humble</groupId>
-            <artifactId>humble-video-all</artifactId>
-            <version>0.3.0</version>
-        </dependency>
-        <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-math3</artifactId>
             <version>3.6.1</version>
@@ -51,16 +46,6 @@
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-classic</artifactId>
             <version>1.2.3</version>
-        </dependency>
-        <dependency>
-            <groupId>org.jcodec</groupId>
-            <artifactId>jcodec</artifactId>
-            <version>0.2.3</version>
-        </dependency>
-        <dependency>
-            <groupId>org.jcodec</groupId>
-            <artifactId>jcodec-javase</artifactId>
-            <version>0.2.3</version>
         </dependency>
         <dependency>
             <groupId>xuggle</groupId>
