@@ -37,10 +37,18 @@ public class AnimationGroup extends Animation {
         return animations;
     }
 
+    /**
+     * Creates a new, empty, AnimationGroup. This class stores a group of animations, to be
+     * played at the same time.
+     */
     public AnimationGroup() {
         this.animations = new ArrayList<>();
     }
 
+    /**
+     * Creates a new AnimationGroup with given animations. This class stores a group of
+     * animations, to be played at the same time.
+     */
     public AnimationGroup(Animation... anims) {
         this.animations = new ArrayList<>();
         this.animations.addAll(Arrays.asList(anims));

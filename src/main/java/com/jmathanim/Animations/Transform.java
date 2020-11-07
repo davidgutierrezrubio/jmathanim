@@ -41,6 +41,8 @@ import java.util.ArrayList;
  */
 public class Transform extends Animation {
 
+  
+
     public enum TransformMethod {
         INTERPOLATE_SIMPLE_SHAPES_BY_POINT,
         INTERPOLATE_POINT_BY_POINT,
@@ -65,7 +67,7 @@ public class Transform extends Animation {
     public boolean forceChangeDirection;
     private boolean isFinished;
 //    private JMathAnimScene scene;
-    private TransformStrategy transformStrategy;
+    private Animation transformStrategy;
     private OptimizePathsStrategy optimizeStrategy;
 
     public static Transform make(double runTime, Shape ob1, Shape ob2) {
@@ -107,7 +109,7 @@ public class Transform extends Animation {
         transformStrategy.setOptimizationStrategy(optimizeStrategy);
         //Variable strategy should have proper strategy to transform
         //If method is null means that user didn't force one
-        transformStrategy.prepareObjects();
+        transformStrategy.initialize();
     }
 
     /**
@@ -197,31 +199,20 @@ public class Transform extends Animation {
         //Now I choose strategy
         switch (transformMethod) {
             case INTERPOLATE_SIMPLE_SHAPES_BY_POINT:
-                transformStrategy = new PointInterpolationSimpleShape(mobjTransformed, mobjDestiny, scene);
                 break;
             case INTERPOLATE_POINT_BY_POINT:
-                transformStrategy = new PointInterpolationCanonical(mobjTransformed, mobjDestiny, scene);
                 break;
             case HOMOTHECY_TRANSFORM:
-                transformStrategy = new HomothecyStrategyTransform(mobjTransformed, mobjDestiny, scene);
                 break;
             case AFFINE_TRANSFORM:
-                transformStrategy = new AffineStrategyTransform(mobjTransformed, mobjDestiny, scene);
                 break;
             case ROTATE_AND_SCALEXY_TRANSFORM:
-                transformStrategy = new RotateAndScaleXYStrategyTransform(mobjTransformed, mobjDestiny, scene);
                 break;
             case FUNCTION_INTERPOLATION:
-                transformStrategy = new FunctionTransformStrategy((FunctionGraph) mobjTransformed, (FunctionGraph) mobjDestiny, scene);
                 break;
         }
     }
 
-    @Override
-    public void doAnim(double t, double lt) {
-        transformStrategy.applyTransform(t, lt);
-
-    }
 
     @Override
     public void finishAnimation() {
@@ -230,13 +221,12 @@ public class Transform extends Animation {
         } else {
             isFinished = true;
         }
-        transformStrategy.finish();
-        //Copy type of destiny object to transformed one
-        mobjTransformed.setObjectType(mobjDestiny.getObjectType());
+        transformStrategy.finishAnimation();
     }
 
     @Override
     public void addObjectsToScene(JMathAnimScene scene) {
+        transformStrategy.addObjectsToScene(scene);
     }
 
     private void determineOptimizationStrategy() {
@@ -274,5 +264,14 @@ public class Transform extends Animation {
         this.transformMethod = transformMethod;
         return this;
     }
+  @Override
+    public void doAnim(double t, double lt) {
+        //Nothing to do here, it delegates trough processAnimation()
+    }
 
+    @Override
+    public boolean processAnimation() {
+        return transformStrategy.processAnimation();
+    }
+    
 }

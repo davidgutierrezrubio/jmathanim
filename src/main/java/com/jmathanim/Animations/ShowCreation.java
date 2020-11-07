@@ -17,16 +17,12 @@
  */
 package com.jmathanim.Animations;
 
-import com.jmathanim.Animations.Strategies.ShowCreation.ArrowCreationStrategy;
-import com.jmathanim.Animations.Strategies.ShowCreation.FirstDrawThenFillStrategy;
-import com.jmathanim.Animations.Strategies.ShowCreation.GroupCreationStrategy;
-import com.jmathanim.Animations.Strategies.ShowCreation.LineCreationStrategy;
-import com.jmathanim.Animations.Strategies.ShowCreation.MultiShapeCreationStrategy;
-import com.jmathanim.Animations.Strategies.ShowCreation.SimpleShapeCreationStrategy;
-import com.jmathanim.Animations.Strategies.TransformStrategy;
+import com.jmathanim.Animations.Strategies.ShowCreation.FirstDrawThenFillAnimation;
+import com.jmathanim.Animations.Strategies.ShowCreation.SimpleShapeCreationAnimation;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.Arrow2D;
 import com.jmathanim.mathobjects.CanonicalJMPath;
+import com.jmathanim.mathobjects.LaTeXMathObject;
 import com.jmathanim.mathobjects.Line;
 import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.MathObjectGroup;
@@ -45,6 +41,7 @@ public class ShowCreation extends Animation {
         FIRST_DRAW_AND_THEN_FILL,
         SIMPLE_SHAPE_CREATION,
         MULTISHAPE_CREATION,
+        LATEX_CREATION,
         LINE_CREATION,
         ARROW_CREATION,
         GROUP_CREATION
@@ -53,7 +50,7 @@ public class ShowCreation extends Animation {
     MathObject mobj;
     CanonicalJMPath canonPath;
     private MultiShapeObject msh;
-    private TransformStrategy strategy;
+    private Animation creationStrategy;
     private ShowCreationStrategy strategyType = ShowCreationStrategy.NONE;
 
     /**
@@ -72,9 +69,9 @@ public class ShowCreation extends Animation {
         try {
             if (strategyType == ShowCreationStrategy.NONE) {
                 determineCreationStrategy(this.mobj);
-                createStrategy();
             }
-            strategy.prepareObjects();
+            createStrategy();
+            creationStrategy.initialize();
         } catch (NullPointerException | ClassCastException e) {
             JMathAnimScene.logger.error("Couldn't create ShowCreation strategy. Animation will not be done." + e.getLocalizedMessage());
         }
@@ -82,22 +79,29 @@ public class ShowCreation extends Animation {
 
     @Override
     public void doAnim(double t, double lt) {
-        if (strategy != null) {
-            strategy.applyTransform(t, lt);
+        //This should't be called, all process through processAnimation
+    }
+
+    @Override
+    public boolean processAnimation() {
+        if (creationStrategy != null) {
+            return creationStrategy.processAnimation();
+        } else {
+            return true;
         }
     }
 
     @Override
     public void finishAnimation() {
-        if (strategy != null) {
-            strategy.finish();
+        if (creationStrategy != null) {
+            creationStrategy.finishAnimation();
         }
     }
 
     @Override
     public void addObjectsToScene(JMathAnimScene scene) {
-        if (strategy != null) {
-            strategy.addObjectsToScene();
+        if (creationStrategy != null) {
+            creationStrategy.addObjectsToScene(scene);
         }
     }
 
@@ -110,6 +114,10 @@ public class ShowCreation extends Animation {
     public void determineCreationStrategy(MathObject mobj) {
         if (mobj instanceof MathObjectGroup) {
             this.strategyType = ShowCreationStrategy.GROUP_CREATION;
+            return;
+        }
+        if (mobj instanceof LaTeXMathObject) {
+            this.strategyType = ShowCreationStrategy.LATEX_CREATION;
             return;
         }
         if (mobj instanceof SVGMathObject) {
@@ -152,28 +160,32 @@ public class ShowCreation extends Animation {
      */
     private void createStrategy() throws ClassCastException {
         switch (this.strategyType) {
-             case GROUP_CREATION:
-                strategy = new GroupCreationStrategy(this.runTime,(MathObjectGroup) mobj, this.scene);
+            case GROUP_CREATION:
+//                creationStrategy = new GroupCreationStrategy(this.runTime,(MathObjectGroup) mobj, this.scene);
                 JMathAnimScene.logger.debug("ShowCreation method: GroupCreationStrategy");
                 break;
             case LINE_CREATION:
-                strategy = new LineCreationStrategy((Line) mobj, this.scene);
+//                creationStrategy = new LineCreationStrategy((Line) mobj, this.scene);
                 JMathAnimScene.logger.debug("ShowCreation method: LineCreationStrategy");
                 break;
             case ARROW_CREATION:
-                strategy = new ArrowCreationStrategy((Arrow2D) mobj, this.runTime, this.scene);
+//                creationStrategy = new ArrowCreationStrategy((Arrow2D) mobj, this.runTime, this.scene);
                 JMathAnimScene.logger.debug("ShowCreation method: ArrowCreationStrategy");
                 break;
             case SIMPLE_SHAPE_CREATION:
-                strategy = new SimpleShapeCreationStrategy((Shape) mobj, this.scene);
+                creationStrategy = new SimpleShapeCreationAnimation(runTime, (Shape) mobj);
                 JMathAnimScene.logger.debug("ShowCreation method: SimpleShapeCreationStrategy");
                 break;
             case MULTISHAPE_CREATION:
-                strategy = new MultiShapeCreationStrategy((MultiShapeObject) mobj, .5, this.runTime, this.scene);
+                creationStrategy = new FirstDrawThenFillAnimation(runTime, (MultiShapeObject) mobj);
                 JMathAnimScene.logger.debug("ShowCreation method: MultiShapeCreationStrategy");
                 break;
             case FIRST_DRAW_AND_THEN_FILL:
-                strategy = new FirstDrawThenFillStrategy((MultiShapeObject) mobj, .5, this.runTime, this.scene);
+                creationStrategy = new FirstDrawThenFillAnimation(runTime, (Shape) mobj);
+                JMathAnimScene.logger.debug("ShowCreation method: FirstDrawThenFillStrategy");
+                break;
+            case LATEX_CREATION:
+                creationStrategy = new FirstDrawThenFillAnimation(runTime, (MultiShapeObject) mobj);
                 JMathAnimScene.logger.debug("ShowCreation method: FirstDrawThenFillStrategy");
                 break;
             default:

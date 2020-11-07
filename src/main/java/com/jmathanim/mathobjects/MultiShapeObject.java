@@ -237,4 +237,9 @@ public class MultiShapeObject extends MathObject {
          return (T) this;
     }
 
+    public ArrayList<Shape> getShapes() {
+        return shapes;
+    }
+
+
 }

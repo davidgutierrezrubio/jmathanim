@@ -15,9 +15,10 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-
 package com.jmathanim.Animations;
 
+import com.jmathanim.Animations.Strategies.Transform.Optimizers.NullOptimizationStrategy;
+import com.jmathanim.Animations.Strategies.Transform.Optimizers.OptimizePathsStrategy;
 import com.jmathanim.Utils.JMathAnimConfig;
 import com.jmathanim.jmathanim.JMathAnimScene;
 
@@ -40,12 +41,12 @@ public abstract class Animation {
     private boolean isInitialized = false;
     private boolean isEnded = false;
     protected final JMathAnimScene scene;
+    private OptimizePathsStrategy optimizeStrategy = null;
 
     public boolean isEnded() {
         return isEnded;
     }
 
-    
     public Animation() {
         this(DEFAULT_TIME);
     }
@@ -76,7 +77,9 @@ public abstract class Animation {
      * @return True if animation has finished
      */
     public boolean processAnimation() {
-        if (isEnded) return true;
+        if (isEnded) {
+            return true;
+        }
         if (!isInitialized) { //If not initalized, do it now
             isInitialized = true;
             setFps(JMathAnimConfig.getConfig().fps);
@@ -84,8 +87,8 @@ public abstract class Animation {
         boolean resul;
 //        if (frame < numFrames || t < 1 + dt) {
         double lt = lambda(t);
-        if (lt < 1 && lt >= 0 && t<1 && t>=0) {
-            this.doAnim(t,lt);
+        if (lt < 1 && lt >= 0 && t < 1 && t >= 0) {
+            this.doAnim(t, lt);
 
 //            frame++;
             resul = false;
@@ -96,7 +99,7 @@ public abstract class Animation {
         if (resul) {
             t = 1;
             this.finishAnimation();
-            isEnded=true;
+            isEnded = true;
         }
         return resul;
     }
@@ -109,10 +112,12 @@ public abstract class Animation {
     /**
      * Executes one frame of the animation, given by the time t, from 0 to 1
      *
-     * @param t double between 0 and 1 0=start, 1=end. This value is passed as needed by some special animations
-     * @param lt lambda(t) where lambda is a "smooth" function. this value is used to compute the actual animation state.
+     * @param t double between 0 and 1 0=start, 1=end. This value is passed as
+     * needed by some special animations
+     * @param lt lambda(t) where lambda is a "smooth" function. this value is
+     * used to compute the actual animation state.
      */
-    abstract public void doAnim(double t,double lt);
+    abstract public void doAnim(double t, double lt);
 
     abstract public void finishAnimation();
 
@@ -136,4 +141,12 @@ public abstract class Animation {
     }
 
     abstract public void addObjectsToScene(JMathAnimScene scene);
+
+    public void setOptimizationStrategy(OptimizePathsStrategy strategy) {
+        if (strategy != null) {
+            optimizeStrategy = strategy;
+        } else {
+            optimizeStrategy = new NullOptimizationStrategy();
+        }
+    }
 }

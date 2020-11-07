@@ -26,10 +26,10 @@ import com.jmathanim.mathobjects.Shape;
  *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
-public class LineCreationStrategy extends SimpleShapeCreationStrategy {
+public class LineCreationStrategy extends SimpleShapeCreationAnimation {
 
-    public LineCreationStrategy(Line mobj, JMathAnimScene scene) {
-        super(Shape.segment(mobj).setMp(mobj.getMp()), scene);
+    public LineCreationStrategy(double runtime, Line mobj) {
+        super(runtime,Shape.segment(mobj).setMp(mobj.getMp()));
     }
 
 }

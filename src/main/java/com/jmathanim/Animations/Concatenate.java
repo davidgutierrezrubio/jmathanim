@@ -48,7 +48,7 @@ public class Concatenate extends Animation {
 
     }
 
-    public boolean add(Animation e) {
+    public final boolean add(Animation e) {
         return anims.add(e);
     }
 
@@ -59,13 +59,16 @@ public class Concatenate extends Animation {
 
     @Override
     public boolean processAnimation() {
+        if (currentAnim == this.anims.size()) {//If I already finished...
+            return true;
+        }
         boolean resul = anims.get(currentAnim).processAnimation();
         if (resul) {
             anims.get(currentAnim).finishAnimation();
             currentAnim++;
             if (currentAnim < this.anims.size()) {
                 anims.get(currentAnim).initialize();
-                resul=false;
+                resul = false;
             }
         }
         return resul;
