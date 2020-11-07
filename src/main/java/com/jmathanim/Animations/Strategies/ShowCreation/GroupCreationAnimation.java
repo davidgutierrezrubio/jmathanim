@@ -17,6 +17,7 @@
  */
 package com.jmathanim.Animations.Strategies.ShowCreation;
 
+import com.jmathanim.Animations.Animation;
 import com.jmathanim.Animations.AnimationGroup;
 import com.jmathanim.Animations.ShowCreation;
 import com.jmathanim.Animations.Strategies.TransformStrategy;
@@ -28,40 +29,44 @@ import com.jmathanim.mathobjects.MathObjectGroup;
  *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
-public class GroupCreationStrategy extends TransformStrategy {
+public class GroupCreationAnimation extends Animation {
 
     private final MathObjectGroup group;
     private AnimationGroup anim;
-    private final double runtime;
 
-    public GroupCreationStrategy(double runtime,MathObjectGroup group, JMathAnimScene scene) {
-        super(scene);
+    public GroupCreationAnimation(double runtime,MathObjectGroup group) {
+        super();
         this.group=group;
-        this.runtime=runtime;
+        this.runTime=runtime;
+        this.anim=new AnimationGroup();
+        for (MathObject obj:group.getObjects()) {
+            this.anim.add(new ShowCreation(runtime, obj));
+        }
     }
 
     @Override
-    public void prepareObjects() {
-        anim=new AnimationGroup();
-        for (MathObject obj:group.getObjects()){
-        anim.add(new ShowCreation(runtime, obj));
-    }
+    public void initialize() {
         anim.initialize();
         
     }
 
     @Override
-    public void applyTransform(double t, double lt) {
-        anim.doAnim(t, lt);
+    public boolean processAnimation() {
+        return anim.processAnimation();
     }
 
+
     @Override
-    public void finish() {
+    public void finishAnimation() {
         anim.finishAnimation();
     }
 
     @Override
-    public void addObjectsToScene() {
+    public void doAnim(double t, double lt) {
+    }
+
+    @Override
+    public void addObjectsToScene(JMathAnimScene scene) {
     }
 
 }

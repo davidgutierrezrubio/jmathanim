@@ -82,8 +82,6 @@ public class FirstDrawThenFillAnimation extends Animation {
         if (obj instanceof Shape) {
             Concatenate con = new Concatenate();
             MODrawProperties mpDst = obj.mp.copy();
-            obj.mp.getFillColor().alpha = 0; //Sets alpha to 0, to first draw objects without filling
-            //Sets alpha to 0, to first draw objects without filling
             con.add(new SimpleShapeCreationAnimation(runtime * PERCENT_DRAWING, (Shape) obj));
             con.add(Commands.setMP(runtime * (1 - PERCENT_DRAWING), mpDst, obj));
             return con;
@@ -109,8 +107,8 @@ public class FirstDrawThenFillAnimation extends Animation {
             }
             return ag;
         }
-        
-         if (obj instanceof MathObjectGroup) {
+
+        if (obj instanceof MathObjectGroup) {
             MathObjectGroup mog = (MathObjectGroup) obj;
             double delay_time = runtime * delayPercent / (mog.getObjects().size() - 1);
             double time = runtime * (1 - delayPercent);
@@ -131,13 +129,14 @@ public class FirstDrawThenFillAnimation extends Animation {
             }
             return ag;
         }
-        
+
         //Returns null if the object type is not supported
         return null;
     }
 
     @Override
     public void initialize() {
+        obj.mp.getFillColor().alpha = 0; //Sets alpha to 0, to first draw objects without filling
         anim.initialize();
     }
 
@@ -162,14 +161,18 @@ public class FirstDrawThenFillAnimation extends Animation {
         this.timegap = timegap;
         return this;
     }
-/**
- * Static constructor
- * @param runtime Run time in seconds of animation
- * @param obj Object to animate. Currently, a Shape, MultiShape or MathObjectGroup object
- * @return The animation to be played with the JMathimScene.playAnimation method
- */
-    public static FirstDrawThenFillAnimation make(double runtime,MathObject obj) {
+
+    /**
+     * Static constructor
+     *
+     * @param runtime Run time in seconds of animation
+     * @param obj Object to animate. Currently, a Shape, MultiShape or
+     * MathObjectGroup object
+     * @return The animation to be played with the JMathimScene.playAnimation
+     * method
+     */
+    public static FirstDrawThenFillAnimation make(double runtime, MathObject obj) {
         return new FirstDrawThenFillAnimation(runtime, obj);
     }
-    
+
 }

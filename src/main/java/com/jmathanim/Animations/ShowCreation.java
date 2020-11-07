@@ -17,7 +17,9 @@
  */
 package com.jmathanim.Animations;
 
+import com.jmathanim.Animations.Strategies.ShowCreation.ArrowCreationAnimation;
 import com.jmathanim.Animations.Strategies.ShowCreation.FirstDrawThenFillAnimation;
+import com.jmathanim.Animations.Strategies.ShowCreation.GroupCreationAnimation;
 import com.jmathanim.Animations.Strategies.ShowCreation.SimpleShapeCreationAnimation;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.Arrow2D;
@@ -73,7 +75,7 @@ public class ShowCreation extends Animation {
             createStrategy();
             creationStrategy.initialize();
         } catch (NullPointerException | ClassCastException e) {
-            JMathAnimScene.logger.error("Couldn't create ShowCreation strategy. Animation will not be done." + e.getLocalizedMessage());
+            JMathAnimScene.logger.error("Couldn't create ShowCreation strategy for "+this.mobj.getClass().getCanonicalName()+". Animation will not be done. ("+ e.toString()+")");
         }
     }
 
@@ -161,7 +163,7 @@ public class ShowCreation extends Animation {
     private void createStrategy() throws ClassCastException {
         switch (this.strategyType) {
             case GROUP_CREATION:
-//                creationStrategy = new GroupCreationStrategy(this.runTime,(MathObjectGroup) mobj, this.scene);
+                creationStrategy = new GroupCreationAnimation(this.runTime,(MathObjectGroup) mobj);
                 JMathAnimScene.logger.debug("ShowCreation method: GroupCreationStrategy");
                 break;
             case LINE_CREATION:
@@ -169,7 +171,7 @@ public class ShowCreation extends Animation {
                 JMathAnimScene.logger.debug("ShowCreation method: LineCreationStrategy");
                 break;
             case ARROW_CREATION:
-//                creationStrategy = new ArrowCreationStrategy((Arrow2D) mobj, this.runTime, this.scene);
+                creationStrategy = new ArrowCreationAnimation(this.runTime,(Arrow2D) mobj);
                 JMathAnimScene.logger.debug("ShowCreation method: ArrowCreationStrategy");
                 break;
             case SIMPLE_SHAPE_CREATION:
