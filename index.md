@@ -1,6 +1,6 @@
 JMathAnim is a library written in JAVA intended to simplify the process of doing mathematical animations. 
 
-Current version is 0.8.0. Although with limited features, it can be used to create many, non too complex animations. If you use it and find a bug/missing feature, feel free to fill an issue [here](https://github.com/davidgutierrezrubio/jmathanim/issues).
+Current version is 0.8.2. Although with limited features, it can be used to create many, non too complex animations. If you use it and find a bug/missing feature, feel free to fill an issue [here](https://github.com/davidgutierrezrubio/jmathanim/issues).
 
 For any other question, you can contact me at davidgutierrezrubio@gmail.com.
 
@@ -13,7 +13,7 @@ The easiest way to use it is creating a Maven project in your favorite IDE (Netb
 <dependency>
   <groupId>com.github.davidgutierrezrubio</groupId>
   <artifactId>JMathAnim</artifactId>
-  <version>0.8.0</version>
+  <version>0.8.2-SNAPSHOT</version>
 </dependency>
 ```
 
