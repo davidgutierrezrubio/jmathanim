@@ -27,20 +27,20 @@ import java.util.Collection;
 import javafx.scene.shape.StrokeLineCap;
 
 /**
+ * A class that manages sets of MathObjects. The objectes are not added to the
+ * scene when you add this object to the scene. It acts as a container to
+ * perform easily bulk-operations
  *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
 public class MathObjectGroup extends MathObject {
-    public enum Layout {
-        RIGHT,
-        LEFT,
-        UP,
-        DOWN
-    }
+
     private final ArrayList<MathObject> objects;
+
     public MathObjectGroup() {
         this.objects = new ArrayList<>();
     }
+
     public MathObjectGroup(ArrayList<MathObject> objects) {
         this.objects = objects;
     }
@@ -60,7 +60,11 @@ public class MathObjectGroup extends MathObject {
 
     @Override
     public <T extends MathObject> T copy() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        MathObjectGroup copy = new MathObjectGroup();
+        for (MathObject obj : this.getObjects()) {
+            copy.add(obj.copy());
+        }
+        return (T) copy;
     }
 
     @Override
@@ -102,16 +106,11 @@ public class MathObjectGroup extends MathObject {
 
     @Override
     public void draw(Renderer r) {
-        for (MathObject obj : objects) {
-            obj.draw(r);
-        }
+        //Does nothing. The objects have to add to the scene by themselves
     }
 
     @Override
     public void update(JMathAnimScene scene) {
-        for (MathObject obj : objects) {
-            obj.update(scene);
-        }
     }
 
     @Override
@@ -148,7 +147,10 @@ public class MathObjectGroup extends MathObject {
 
     @Override
     public <T extends MathObject> T setAbsoluteSize(int anchorType) {
-        return super.setAbsoluteSize(anchorType); //To change body of generated methods, choose Tools | Templates.
+        for (MathObject obj : objects) {
+            obj.setAbsoluteSize(anchorType);
+        }
+        return (T) this;
     }
 
     @Override
@@ -161,12 +163,10 @@ public class MathObjectGroup extends MathObject {
         return super.stackToScreen(anchorType, xMargin, yMargin); //To change body of generated methods, choose Tools | Templates.
     }
 
-
     @Override
     public <T extends MathObject> T stackTo(MathObject obj, int anchorType, double gap) {
         return super.stackTo(obj, anchorType, gap); //To change body of generated methods, choose Tools | Templates.
     }
-
 
     @Override
     public void setAbsoluteAnchorPoint(Point p) {
@@ -243,12 +243,12 @@ public class MathObjectGroup extends MathObject {
         }
     }
 
-    public void setLayout(int anchorType, double gap){
-        
+    public void setLayout(int anchorType, double gap) {
+
         for (int n = 1; n < objects.size(); n++) {
-            objects.get(n).stackTo(objects.get(n-1), anchorType,gap);
+            objects.get(n).stackTo(objects.get(n - 1), anchorType, gap);
         }
-        
+
     }
 
     public int size() {
@@ -290,13 +290,12 @@ public class MathObjectGroup extends MathObject {
     public ArrayList<MathObject> getObjects() {
         return objects;
     }
-    
-       @Override
+
+    @Override
     public void interpolateMPFrom(MODrawProperties mpDst, double alpha) {
         for (int n = 0; n < objects.size(); n++) {
             objects.get(n).interpolateMPFrom(mpDst, alpha);
         }
     }
-    
-    
+
 }

@@ -24,6 +24,7 @@ import com.jmathanim.Renderers.Java2DAwtRenderer;
 import com.jmathanim.Renderers.Renderer;
 import com.jmathanim.Utils.JMathAnimConfig;
 import com.jmathanim.mathobjects.MathObject;
+import com.jmathanim.mathobjects.MathObjectGroup;
 import com.jmathanim.mathobjects.updateableObjects.Updateable;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -115,7 +116,7 @@ public abstract class JMathAnimScene {
     /**
      * This method handles the creation of the renderer(s)
      */
-    public abstract void createRenderer();
+    abstract void createRenderer();
 
     /**
      * Execute the current scene
@@ -164,7 +165,7 @@ public abstract class JMathAnimScene {
     public MathObject[] everything() {
         MathObject[] arr = new MathObject[objects.size()];
         for (int n = 0; n < objects.size(); n++) {
-            arr[n]=objects.get(n);
+            arr[n] = objects.get(n);
         }
         return arr;
     }
@@ -220,7 +221,13 @@ public abstract class JMathAnimScene {
     public synchronized final void add(MathObject... objs) {
         for (MathObject obj : objs) {
             if (!objects.contains(obj)) {
-                objects.add(obj);
+                if (obj instanceof MathObjectGroup) {
+                    for (MathObject subobj:((MathObjectGroup)obj).getObjects()){
+                        add(subobj);
+                    }
+                } else {
+                    objects.add(obj);
+                }
                 obj.addScene(this);
                 //Check if this object is Updateable.
                 //This interface is present in every MathObject which needs to

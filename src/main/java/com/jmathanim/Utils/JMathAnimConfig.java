@@ -267,6 +267,7 @@ public class JMathAnimConfig {
         return styles.put(styleName, mp);
     }
  public MODrawProperties createStyleFrom(MathObject obj,String styleName) {
+     JMathAnimScene.logger.info("Creating style {}",styleName);
         return styles.put(styleName, obj.mp);
     }
 }

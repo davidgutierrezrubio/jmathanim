@@ -593,21 +593,21 @@ public class AffineJTransform {
      * @param C Third origin point
      * @param D Image of first origin point
      * @param E Image of second origin point
-     * @param F Image of hird origin point
+     * @param F Image of third origin point
      * @param lambda Lambda parameter. 0 means unaltered, 1 fully transform done
      * @return The transform
      */
     public static AffineJTransform createAffineTransformation(Point A, Point B, Point C, Point D, Point E, Point F, double lambda) {
         //First I create a transformation that map O,e1,e2 into A,B,C
         AffineJTransform tr1 = new AffineJTransform();
-        tr1.setOriginImg(A);
+        tr1.setOriginImg(A.copy());
         tr1.setV1Img(A.to(B));
         tr1.setV2Img(A.to(C));
         tr1 = tr1.getInverse();
 
         //Now I create a transformation that map O,e1,e2 into D,E,F
         AffineJTransform tr2 = new AffineJTransform();
-        tr2.setOriginImg(D);
+        tr2.setOriginImg(D.copy());
         tr2.setV1Img(D.to(E));
         tr2.setV2Img(D.to(F));
 
