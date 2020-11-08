@@ -24,6 +24,7 @@ import com.jmathanim.Utils.Rect;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Iterator;
 import javafx.scene.shape.StrokeLineCap;
 
 /**
@@ -33,7 +34,7 @@ import javafx.scene.shape.StrokeLineCap;
  *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
-public class MathObjectGroup extends MathObject {
+public class MathObjectGroup extends MathObject implements Iterable<MathObject> {
 
     private final ArrayList<MathObject> objects;
 
@@ -296,6 +297,11 @@ public class MathObjectGroup extends MathObject {
         for (int n = 0; n < objects.size(); n++) {
             objects.get(n).interpolateMPFrom(mpDst, alpha);
         }
+    }
+
+    @Override
+    public Iterator<MathObject> iterator() {
+        return objects.iterator();
     }
 
 }

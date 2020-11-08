@@ -15,7 +15,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-
 package com.jmathanim.Utils;
 
 import com.jmathanim.Cameras.Camera;
@@ -119,6 +118,24 @@ public class JMathAnimConfig {
     public float shadowAlpha = .5f;
     public String backGroundImage = null;
 
+    public void setDrawShadow(boolean drawShadow) {
+        this.drawShadow = drawShadow;
+    }
+
+    
+    public void setShadowParameters(int kernelSize, int offsetX, int offsetY, float alpha) {
+        this.shadowKernelSize = kernelSize;
+        this.shadowOffsetX = offsetX;
+        this.shadowOffsetY = offsetY;
+        this.shadowAlpha = alpha;
+    }
+
+    public void setBackGroundImage(String backGroundImage) {
+        this.backGroundImage = backGroundImage;
+    }
+
+    
+    
     private JMathAnimConfig() {//Private constructor
         styles = new HashMap<>();
         setDefaultMP();//Load "default" drawing style in dictionary
@@ -262,12 +279,26 @@ public class JMathAnimConfig {
     public boolean isShowPreview() {
         return showPreview;
     }
-    
-    public MODrawProperties createStyleFrom(MODrawProperties mp,String styleName) {
+
+    public MODrawProperties createStyleFrom(MODrawProperties mp, String styleName) {
         return styles.put(styleName, mp);
     }
- public MODrawProperties createStyleFrom(MathObject obj,String styleName) {
-     JMathAnimScene.logger.info("Creating style {}",styleName);
+
+    public MODrawProperties createStyleFrom(MathObject obj, String styleName) {
+        JMathAnimScene.logger.info("Creating style {}", styleName);
         return styles.put(styleName, obj.mp);
     }
+
+    public void setMediaW(int mediaW) {
+        this.mediaW = mediaW;
+    }
+
+    public void setMediaH(int mediaH) {
+        this.mediaH = mediaH;
+    }
+
+    public void setFPS(int fps) {
+        this.fps = fps;
+    }
+
 }

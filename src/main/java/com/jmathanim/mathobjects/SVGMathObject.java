@@ -25,9 +25,6 @@ import com.jmathanim.Utils.MODrawProperties;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.JMPathPoint.JMPathPointType;
 import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
@@ -210,7 +207,6 @@ public class SVGMathObject extends MultiShapeObject {
             tokens.addAll(Arrays.asList(tok2.split(" ")));
         }
 
-        debugSVG(tokens);
         Iterator<String> it = tokens.iterator();
         int n = 0;
         int nmax = tokens.size();
@@ -500,22 +496,6 @@ public class SVGMathObject extends MultiShapeObject {
         return point;
     }
 
-    public void debugSVG(ArrayList<String> tokens) {
-        FileWriter fw;
-        PrintWriter pw;
-        try {
-            fw = new FileWriter("c:\\media\\debugsvg.txt");
-            pw = new PrintWriter(fw);
-            for (String tok : tokens) {
-                pw.print(tok + "\n");
-            }
-            pw.close();
-        } catch (IOException ex) {
-            Logger.getLogger(LaTeXMathObject.class
-                    .getName()).log(Level.SEVERE, null, ex);
-        }
-    }
-
     private void processAttributeCommands(Element el, MODrawProperties ShMp) {
         if (!"".equals(el.getAttribute("style"))) {
             parseStyleAttribute(el.getAttribute("style"), ShMp);
@@ -544,9 +524,13 @@ public class SVGMathObject extends MultiShapeObject {
             switch (decl[0]) {
                 case "fill":
                     ShMp.getFillColor().copyFrom(JMColor.parse(decl[1]));
+                    break;
+                case "stroke":
+                    ShMp.getDrawColor().copyFrom(JMColor.parse(decl[1]));
+                    break;
             }
 
         }
     }
-    
+
 }
