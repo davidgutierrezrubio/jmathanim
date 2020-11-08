@@ -115,7 +115,6 @@ add(Shape.circle().stackToScreen(Anchor.UL));//Stack a unit circle to the upper 
 waitSeconds(5);
 ```
 
-<div class="tip">
 
 There is shortcut method if you want to simply put the object at the center screen. The method `.center()` is equivalent to `.stackToScreen(Anchor.BY_CENTER)`.
 
