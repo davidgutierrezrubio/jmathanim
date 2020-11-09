@@ -19,9 +19,7 @@ package com.jmathanim.Animations.Strategies.ShowCreation;
 
 import com.jmathanim.Animations.Animation;
 import com.jmathanim.Animations.AnimationGroup;
-import com.jmathanim.Animations.ApplyCommand;
 import com.jmathanim.Animations.Concatenate;
-import com.jmathanim.Animations.ShowCreation;
 import com.jmathanim.Animations.WaitAnimation;
 import com.jmathanim.Animations.commands.Commands;
 import com.jmathanim.Utils.MODrawProperties;

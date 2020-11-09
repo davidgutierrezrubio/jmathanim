@@ -20,7 +20,6 @@ package com.jmathanim.Animations;
 import com.jmathanim.Animations.Strategies.Transform.FunctionSimpleInterpolateTransform;
 import com.jmathanim.Animations.Strategies.Transform.HomothecyStrategyTransform;
 import com.jmathanim.Animations.Strategies.Transform.Optimizers.NullOptimizationStrategy;
-import com.jmathanim.Animations.Strategies.Transform.Optimizers.OptimizePathsStrategy;
 import com.jmathanim.Animations.Strategies.Transform.Optimizers.SimpleConnectedPathsOptimizationStrategy;
 import com.jmathanim.Animations.Strategies.Transform.PointInterpolationCanonical;
 import com.jmathanim.Animations.Strategies.Transform.PointInterpolationSimpleShapeTransform;
