@@ -53,7 +53,7 @@ public class myFirstScene extends Scene2D {
     public void runSketch() throws Exception {
         Shape s = Shape.square();
         play.showCreation(s);
-	play.rotate(30*DEGREES,s);
+	play.rotate(2,30*DEGREES,s);
         waitSeconds(5);
     }
 	
@@ -70,19 +70,21 @@ In this example, the `setupSketch` method is empty, so the default configuration
 Shape s = Shape.square();
 ```
 This command creates a `Shape` object which represents a 2D figure, closed or not. This class has several static, convenience methods to easily create most common shapes. With the method `square`, we create an unit square with lower left corner at (0,0). Note that defining this doesn't add the square to the scene, so for now it won't be drawed.
-The following method performs most of what is shown when running the program:
+
+The following methods performs most of what is shown when running the program:
 ```java
 play.showCreation(s);
 ```
-This method plays an animation showing the square being created, with a default duration of 2 seconds. After the animation ends, the square is added to the scene.
-The following command works in a similar way, except in this case it animates a rotation of the square, rotating it 30 degrees clockwise.
+The `showCreation` method performs an animation showing the creation of the object, drawing it from scratch. Different ways to animate the creation are available, depending of type of object to show.
 ```java
-play.rotate(30*DEGREES,s);
+play.rotate(2,30*DEGREES,s);
 ```
-The `waitSeconds` method simply waits for the specified amount of seconds, adding this frozen frames to the final output:
+The `rotate` method plays an animation showing the square being created, with a duration of 2 seconds. After the animation ends, the square is added to the scene.
+The following command works in a similar way, except in this case it animates a rotation of the square, rotating it 30 degrees clockwise.
 ```java
 waitSeconds(5);
 ```
+The `waitSeconds` method simply waits for the specified amount of seconds, adding this frozen frames to the final output:
 
 If you are satisfied with the result and want to create a movie, you may add the following command in the `setupSketch`method:
 ```java
