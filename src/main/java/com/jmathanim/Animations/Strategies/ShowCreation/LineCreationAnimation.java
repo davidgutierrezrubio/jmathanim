@@ -15,21 +15,59 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-
 package com.jmathanim.Animations.Strategies.ShowCreation;
 
+import com.jmathanim.Animations.Animation;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.Line;
 import com.jmathanim.mathobjects.Shape;
 
 /**
+ * Animation to create infinite lines. Temporarily replaces the line with a
+ * segment to create it.
  *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
-public class LineCreationStrategy extends SimpleShapeCreationAnimation {
+public class LineCreationAnimation extends Animation {
 
-    public LineCreationStrategy(double runtime, Line mobj) {
-        super(runtime,Shape.segment(mobj).setMp(mobj.getMp()));
+    Shape segment;
+    Line line;
+    SimpleShapeCreationAnimation anim;
+
+    public LineCreationAnimation(double runtime, Line line) {
+        super(runtime);
+        this.line = line;
+
+    }
+
+    @Override
+    public void initialize() {
+        segment = line.toSegment(scene.getCamera());
+        anim = new SimpleShapeCreationAnimation(this.runTime, segment);
+        anim.initialize();
+        scene.remove(line);
+    }
+
+    @Override
+    public boolean processAnimation() {
+        return anim.processAnimation();
+    }
+
+    @Override
+    public void doAnim(double t, double lt) {
+    }
+
+    @Override
+    public void finishAnimation() {
+        anim.finishAnimation();
+        scene.remove(segment);
+        scene.add(line);
+
+    }
+
+    @Override
+    public void addObjectsToScene(JMathAnimScene scene) {
+        scene.add(segment);
     }
 
 }

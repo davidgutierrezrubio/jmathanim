@@ -15,10 +15,11 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-
 package com.jmathanim.Animations.Strategies.Transform;
 
 import com.jmathanim.Animations.AffineJTransform;
+import com.jmathanim.Animations.Animation;
+import com.jmathanim.Utils.MODrawProperties;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.Point;
 import com.jmathanim.mathobjects.Shape;
@@ -27,22 +28,23 @@ import com.jmathanim.mathobjects.Shape;
  *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
-public class RotateAndScaleXYStrategyTransform extends MatrixTransformStrategy{
+public class RotateAndScaleXYStrategyTransform extends Animation {
 
-    public RotateAndScaleXYStrategyTransform(Shape mobjTransformed, Shape mobjDestiny,JMathAnimScene scene) {
-        super(mobjTransformed, mobjDestiny,scene);
+    private final Shape mobjDestiny;
+    private final Shape mobjTransformed;
+    private MODrawProperties mpBase;
+    Point A, B, C, D, E, F;
+
+    public RotateAndScaleXYStrategyTransform(double runtime, Shape mobjTransformed, Shape mobjDestiny) {
+        super(runtime);
+        this.mobjTransformed = mobjTransformed;
+        this.mobjDestiny = mobjDestiny;
+
     }
 
-  
-
     @Override
-    public void applyTransform(double t,double lt) {
-        Point A = originalShapeBaseCopy.getJMPoint(0).p;
-        Point B = originalShapeBaseCopy.getJMPoint(1).p;
-        Point C = originalShapeBaseCopy.getJMPoint(2).p;
-        Point D = mobjDestiny.getJMPoint(0).p;
-        Point E = mobjDestiny.getJMPoint(1).p;
-        Point F = mobjDestiny.getJMPoint(2).p;
+    public void doAnim(double t, double lt) {
+        mobjTransformed.restoreState();
 
         //First map A,B into (0,0) and (1,0)
         AffineJTransform tr1 = AffineJTransform.createDirect2DHomothecy(A, B, new Point(0, 0), new Point(1, 0), 1);
@@ -59,14 +61,34 @@ public class RotateAndScaleXYStrategyTransform extends MatrixTransformStrategy{
         //The final transformation
         AffineJTransform tr = tr1.compose(tr2).compose(tr1.getInverse()).compose(tr3);
 
-//        System.out.println("RotateXY Transform "+t);
-        applyMatrixTransform(tr, lt);
+        tr.applyTransform(mobjTransformed);
+        mobjTransformed.mp.interpolateFrom(mpBase, mobjDestiny.mp, lt);
     }
 
     @Override
-    public void addObjectsToScene() {
+    public void initialize() {
+        mpBase = mobjTransformed.mp.copy();
+        A = mobjTransformed.getPoint(0).copy();
+        B = mobjTransformed.getPoint(1).copy();
+        C = mobjTransformed.getPoint(2).copy();
+        D = mobjDestiny.getPoint(0).copy();
+        E = mobjDestiny.getPoint(1).copy();
+        F = mobjDestiny.getPoint(2).copy();
+        
+     
+        
+        mobjTransformed.saveState();
+        
     }
 
-    
+    @Override
+    public void finishAnimation() {
+        doAnim(1, 1);
+    }
+
+    @Override
+    public void addObjectsToScene(JMathAnimScene scene) {
+        scene.add(mobjTransformed);
+    }
 
 }

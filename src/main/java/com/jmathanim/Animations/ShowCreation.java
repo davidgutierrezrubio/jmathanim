@@ -20,6 +20,7 @@ package com.jmathanim.Animations;
 import com.jmathanim.Animations.Strategies.ShowCreation.ArrowCreationAnimation;
 import com.jmathanim.Animations.Strategies.ShowCreation.FirstDrawThenFillAnimation;
 import com.jmathanim.Animations.Strategies.ShowCreation.GroupCreationAnimation;
+import com.jmathanim.Animations.Strategies.ShowCreation.LineCreationAnimation;
 import com.jmathanim.Animations.Strategies.ShowCreation.SimpleShapeCreationAnimation;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.Arrow2D;
@@ -167,7 +168,7 @@ public class ShowCreation extends Animation {
                 JMathAnimScene.logger.debug("ShowCreation method: GroupCreationStrategy");
                 break;
             case LINE_CREATION:
-//                creationStrategy = new LineCreationStrategy((Line) mobj, this.scene);
+                creationStrategy = new LineCreationAnimation(this.runTime,(Line) mobj);
                 JMathAnimScene.logger.debug("ShowCreation method: LineCreationStrategy");
                 break;
             case ARROW_CREATION:

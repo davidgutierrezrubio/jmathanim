@@ -41,7 +41,7 @@ public abstract class Animation {
     private boolean isInitialized = false;
     private boolean isEnded = false;
     protected final JMathAnimScene scene;
-    private OptimizePathsStrategy optimizeStrategy = null;
+    protected OptimizePathsStrategy optimizeStrategy = null;
 
     public boolean isEnded() {
         return isEnded;

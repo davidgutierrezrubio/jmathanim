@@ -18,7 +18,7 @@
 
 package com.jmathanim.Animations.Strategies.Transform;
 
-import com.jmathanim.Animations.Strategies.TransformStrategy;
+import com.jmathanim.Animations.Animation;
 import com.jmathanim.Utils.JMColor;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.CanonicalJMPath;
@@ -33,7 +33,7 @@ import java.util.ArrayList;
  *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
-public class PointInterpolationCanonical extends TransformStrategy {
+public class PointInterpolationCanonical extends Animation {
 
    public CanonicalJMPath connectedOrigin, connectedDst, connectedOriginaRawCopy;
     private final ArrayList<Shape> addedAuxiliaryObjectsToScene;
@@ -43,8 +43,8 @@ public class PointInterpolationCanonical extends TransformStrategy {
     private Shape originalShapeBaseCopy;
     private static final boolean DEBUG_COLORS = false;
 
-    public PointInterpolationCanonical(Shape mobjTransformed, Shape mobjDestiny, JMathAnimScene scene) {
-        super(scene);
+    public PointInterpolationCanonical(double runtime,Shape mobjTransformed, Shape mobjDestiny) {
+        super(runtime);
         this.mobjTransformed = mobjTransformed;
         this.mobjDestiny = mobjDestiny.copy();
         this.mobjDestinyOrig = mobjDestiny;
@@ -52,7 +52,7 @@ public class PointInterpolationCanonical extends TransformStrategy {
     }
 
     @Override
-    public void prepareObjects() {
+    public void initialize() {
         //This is the initialization for the point-to-point interpolation
         //Prepare paths. Firs, I ensure they have the same number of points
         //and be in connected components form.
@@ -65,10 +65,7 @@ public class PointInterpolationCanonical extends TransformStrategy {
         preparePaths(mobjTransformed.jmpath, mobjDestiny.jmpath);
         if (DEBUG_COLORS) {
             for (int n = 0; n < connectedOrigin.getNumberOfPaths(); n++) {
-                JMColor color = mobjTransformed.mp.getDrawColor().copy();
                 Shape sh = new Shape(connectedOrigin.get(n), null);
-//            Shape sh2 = new Shape(connectedDst.get(n), null);
-
                 sh.drawColor(JMColor.random());
                 scene.add(sh);
                 addedAuxiliaryObjectsToScene.add(sh);
@@ -82,7 +79,7 @@ public class PointInterpolationCanonical extends TransformStrategy {
     }
 
     @Override
-    public void applyTransform(double t, double lt) {
+    public void doAnim(double t, double lt) {
         JMPathPoint interPoint, basePoint, dstPoint;
 
         for (int numConnected = 0; numConnected < this.connectedDst.getNumberOfPaths(); numConnected++) {
@@ -111,12 +108,12 @@ public class PointInterpolationCanonical extends TransformStrategy {
             }
 
         }
-        mobjTransformed.mp.interpolateFrom(originalShapeBaseCopy.mp, mobjDestiny.mp, t);
+        mobjTransformed.mp.interpolateFrom(originalShapeBaseCopy.mp, mobjDestiny.mp, lt);
 
     }
 
     @Override
-    public void finish() {
+    public void finishAnimation() {
 //        for (int numConnected = 0; numConnected < this.connectedDst.getNumberOfPaths(); numConnected++) {
 ////        for (int numConnected = 0; numConnected < 1; numConnected++) {
 //            JMPath convertedPath = connectedOrigin.get(numConnected);
@@ -254,6 +251,6 @@ public class PointInterpolationCanonical extends TransformStrategy {
     }
 
     @Override
-    public void addObjectsToScene() {
+    public void addObjectsToScene(JMathAnimScene scene) {
     }
 }

@@ -17,63 +17,47 @@
  */
 package com.jmathanim.Animations.Strategies.Transform;
 
-import com.jmathanim.Animations.AffineJTransform;
 import com.jmathanim.Animations.Animation;
-import com.jmathanim.Animations.ApplyCommand;
-import com.jmathanim.Animations.commands.Commands;
-import com.jmathanim.Utils.MODrawProperties;
+import com.jmathanim.Animations.Strategies.TransformStrategy;
 import com.jmathanim.jmathanim.JMathAnimScene;
-import com.jmathanim.mathobjects.Point;
-import com.jmathanim.mathobjects.Shape;
+import com.jmathanim.mathobjects.FunctionGraph;
 
 /**
+ * This function interpolates 2 graph functions.
  *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
-public class HomothecyStrategyTransform extends Animation {
-    
-    ApplyCommand anim;
-    private final Shape mobjTransformed;
-    private final Shape mobjDestiny;
-    private final MODrawProperties mpBase;
-    
-    public HomothecyStrategyTransform(double runtime, Shape mobjTransformed, Shape mobjDestiny) {
+public class FunctionSimpleInterpolateTransform extends Animation {
+
+    public final FunctionGraph gfObj, gfDst;
+
+    public FunctionSimpleInterpolateTransform(double runtime,FunctionGraph gfObj, FunctionGraph gfDst) {
         super(runtime);
-        this.mobjTransformed = mobjTransformed;
-        this.mobjDestiny = mobjDestiny;
-        mpBase = mobjTransformed.mp.copy();
-        
+        this.gfObj = gfObj;
+        this.gfDst = gfDst;
     }
-    
+
     @Override
     public void initialize() {
-        Point a = this.mobjTransformed.getPoint(0);
-        Point b = this.mobjTransformed.getPoint(1);
-        Point c = this.mobjDestiny.getPoint(0);
-        Point d = this.mobjDestiny.getPoint(1);
-        anim = Commands.homothecy(runTime, a, b, c, d, this.mobjTransformed);
-        anim.initialize();
-        
+//        this.gfObj.saveState();
     }
-    
-    @Override
-    public boolean processAnimation() {
-        return anim.processAnimation();
-    }
-    
+
     @Override
     public void doAnim(double t, double lt) {
-        anim.doAnim(t, lt);
-        mobjTransformed.mp.interpolateFrom(mpBase, mobjDestiny.mp, lt);
+        this.gfObj.function = (x) -> (1 - lt) * this.gfObj.functionBase.applyAsDouble(x) + lt * this.gfDst.function.applyAsDouble(x);
+        this.gfObj.updatePoints();
     }
-    
+
     @Override
     public void finishAnimation() {
-        anim.finishAnimation();
+        //Base function is now the new function 
+        this.gfObj.functionBase = this.gfDst.function;
     }
-    
+
     @Override
     public void addObjectsToScene(JMathAnimScene scene) {
+        scene.add(gfObj);
     }
-    
+
+
 }

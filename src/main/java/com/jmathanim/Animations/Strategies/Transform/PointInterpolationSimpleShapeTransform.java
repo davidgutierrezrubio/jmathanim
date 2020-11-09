@@ -17,6 +17,10 @@
  */
 package com.jmathanim.Animations.Strategies.Transform;
 
+import com.jmathanim.Animations.Animation;
+import com.jmathanim.Animations.Strategies.Transform.Optimizers.NullOptimizationStrategy;
+import com.jmathanim.Animations.Strategies.Transform.Optimizers.OptimizePathsStrategy;
+import com.jmathanim.Animations.Strategies.Transform.Optimizers.SimpleConnectedPathsOptimizationStrategy;
 import com.jmathanim.Animations.Strategies.TransformStrategy;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.JMPath;
@@ -28,20 +32,35 @@ import com.jmathanim.mathobjects.Shape;
  *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
-public class PointInterpolationSimpleShape extends TransformStrategy {
+public class PointInterpolationSimpleShapeTransform extends Animation {
 
     private final Shape mobjTransformed;
     private final Shape mobjDestiny;
     private Shape originalShapeBaseCopy;
+    private OptimizePathsStrategy optimizeStrategy = null;
 
-    public PointInterpolationSimpleShape(Shape mobjTransformed, Shape mobjDestiny, JMathAnimScene scene) {
-        super(scene);
+    public PointInterpolationSimpleShapeTransform(double runtime, Shape mobjTransformed, Shape mobjDestiny) {
+        super(runtime);
         this.mobjTransformed = mobjTransformed;
         this.mobjDestiny = mobjDestiny;
+
+    }
+
+    public void optimize(boolean optimize){
+        if (!optimize) {
+            optimizeStrategy=new NullOptimizationStrategy();
+        }
+    }
+    public void setOptimizeStrategy(OptimizePathsStrategy optimizeStrategy) {
+        this.optimizeStrategy = optimizeStrategy;
     }
 
     @Override
-    public void prepareObjects() {
+    public void initialize() {
+        if (optimizeStrategy == null) {
+            optimizeStrategy = new SimpleConnectedPathsOptimizationStrategy(mobjTransformed, mobjDestiny);
+        }
+
         alignNumberOfElements(mobjTransformed.jmpath, mobjDestiny.jmpath);
         optimizeStrategy.optimizePaths(mobjTransformed, mobjDestiny);
         originalShapeBaseCopy = mobjTransformed.copy();
@@ -53,7 +72,7 @@ public class PointInterpolationSimpleShape extends TransformStrategy {
     }
 
     @Override
-    public void applyTransform(double t, double lt) {
+    public void doAnim(double t, double lt) {
         JMPathPoint interPoint, basePoint, dstPoint;
         for (int n = 0; n < mobjTransformed.getPath().size(); n++) {
             interPoint = mobjTransformed.getPath().getJMPoint(n);
@@ -76,24 +95,23 @@ public class PointInterpolationSimpleShape extends TransformStrategy {
             interPoint.cp2.v.z = (1 - lt) * basePoint.cp2.v.z + lt * dstPoint.cp2.v.z;
         }
 
-        mobjTransformed.mp.interpolateFrom(originalShapeBaseCopy.mp, mobjDestiny.mp, t);
+        mobjTransformed.mp.interpolateFrom(originalShapeBaseCopy.mp, mobjDestiny.mp, lt);
 
     }
 
     @Override
-    public void finish() {
-        
+    public void finishAnimation() {
+
         for (int n = 0; n < mobjTransformed.getPath().size(); n++) {
-                JMPathPoint p1 = mobjTransformed.getPath().getJMPoint(n);
-                JMPathPoint p2 = mobjDestiny.getPath().getJMPoint(n);
-                p1.type = p2.type;
-                p1.isCurved = p2.isCurved;
-                p1.isThisSegmentVisible = p2.isThisSegmentVisible;
-                p1.cp1vBackup = p2.cp1vBackup;
-                p1.cp2vBackup = p2.cp2vBackup;
-            }
-        
-        
+            JMPathPoint p1 = mobjTransformed.getPath().getJMPoint(n);
+            JMPathPoint p2 = mobjDestiny.getPath().getJMPoint(n);
+            p1.type = p2.type;
+            p1.isCurved = p2.isCurved;
+            p1.isThisSegmentVisible = p2.isThisSegmentVisible;
+            p1.cp1vBackup = p2.cp1vBackup;
+            p1.cp2vBackup = p2.cp2vBackup;
+        }
+
         mobjTransformed.jmpath.removeInterpolationPoints();
         mobjTransformed.mp.copyFrom(mobjDestiny.mp);
         mobjTransformed.absoluteSize = mobjDestiny.absoluteSize;
@@ -112,6 +130,6 @@ public class PointInterpolationSimpleShape extends TransformStrategy {
     }
 
     @Override
-    public void addObjectsToScene() {
+    public void addObjectsToScene(JMathAnimScene scene) {
     }
 }
