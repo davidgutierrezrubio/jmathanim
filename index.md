@@ -30,10 +30,10 @@ If you want to use snapshots version, you need to add the following code instead
 and specify the repository for the snapshots version.
 ```XML
 <repository>
-	<id>snapshots-repo</id>
-         <url>https://oss.sonatype.org/content/repositories/snapshots</url>
-         <releases><enabled>false</enabled></releases>
-         <snapshots><enabled>true</enabled></snapshots>
+  id>snapshots-repo</id>
+  <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+  <releases><enabled>false</enabled></releases>
+  <snapshots><enabled>true</enabled></snapshots>
 </repository>
 ```
 
