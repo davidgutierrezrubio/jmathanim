@@ -24,6 +24,7 @@ import com.jmathanim.Utils.Rect;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -32,7 +33,7 @@ import java.util.List;
  *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
-public class MultiShapeObject extends MathObject {
+public class MultiShapeObject extends MathObject implements Iterable<Shape>{
 
     public final ArrayList<Shape> shapes;
 
@@ -236,5 +237,15 @@ public class MultiShapeObject extends MathObject {
         }
          return (T) this;
     }
+
+    public ArrayList<Shape> getShapes() {
+        return shapes;
+    }
+
+    @Override
+    public Iterator<Shape> iterator() {
+        return shapes.iterator();
+    }
+
 
 }

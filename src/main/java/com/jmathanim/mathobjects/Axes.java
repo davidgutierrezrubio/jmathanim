@@ -44,8 +44,8 @@ public class Axes extends MathObject {
     }
 
     private void generateAxis() {
-        xAxis = Shape.line(Point.at(0, 0), Point.at(1, 0)).style("axisdefault");
-        yAxis = Shape.line(Point.at(0, 0), Point.at(0, 1)).style("axisdefault");
+        xAxis = Line.make(Point.at(0, 0), Point.at(1, 0)).style("axisdefault");
+        yAxis = Line.make(Point.at(0, 0), Point.at(0, 1)).style("axisdefault");
         xticks = new ArrayList<>();
         yticks = new ArrayList<>();
         xticksLegend = new ArrayList<>();

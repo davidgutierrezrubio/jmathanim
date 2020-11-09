@@ -72,6 +72,8 @@ public class JavaFXRenderer extends Renderer {
 
     private static final double XMIN_DEFAULT = -2;
     private static final double XMAX_DEFAULT = 2;
+    
+    private static final double MIN_THICKNESS=.2d;
 
     public CameraFX2D camera;
     public CameraFX2D fixedCamera;
@@ -362,7 +364,7 @@ public class JavaFXRenderer extends Renderer {
 
     public double computeThickness(MathObject mobj) {
         Camera cam = (mobj.mp.absoluteThickness ? fixedCamera : camera);
-        return mobj.mp.thickness / cam.getMathView().getWidth() * 2.5d;
+        return Math.max(mobj.mp.thickness / cam.getMathView().getWidth() * 2.5d,MIN_THICKNESS);
     }
 
     public double getThicknessForMathWidth(double w) {

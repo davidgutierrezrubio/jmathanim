@@ -15,9 +15,9 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-
 package com.jmathanim.Animations.Strategies.ShowCreation;
 
+import com.jmathanim.Animations.Animation;
 import com.jmathanim.Animations.Strategies.TransformStrategy;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.CanonicalJMPath;
@@ -29,32 +29,33 @@ import com.jmathanim.mathobjects.Shape;
  *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
-public class SimpleShapeCreationStrategy extends TransformStrategy {
+public class SimpleShapeCreationAnimation extends Animation {
 
     private final Shape mobj;
     private MultiShapeObject msh;
     private CanonicalJMPath canonPath;
     private int numberOfSegments;
 
-    public SimpleShapeCreationStrategy(Shape mobj, JMathAnimScene scene) {
-        super(scene);
+    public SimpleShapeCreationAnimation(double runtime,Shape mobj) {
+        super();
+        this.runTime=runtime;
         this.mobj = mobj;
     }
 
     @Override
-    public void prepareObjects() {
+    public void initialize() {
         canonPath = mobj.jmpath.canonicalForm();
         //Create multishape with all canonical components and a copy of drawing attributes
         //This will be drawed instead of mobj during the ShowCreation animation
         msh = canonPath.createMultiShape(this.mobj);
         mobj.visible(false);
         scene.add(msh);
-        applyTransform(0, 0);
+        doAnim(0, 0);
         numberOfSegments = canonPath.getTotalNumberOfSegments();
     }
 
     @Override
-    public void applyTransform(double t, double lt) {
+    public void doAnim(double t, double lt) {
         if (lt == 1) {
             for (int n = 0; n < msh.shapes.size(); n++) {
                 //Restore all paths because in each loop there will be modified
@@ -96,15 +97,15 @@ public class SimpleShapeCreationStrategy extends TransformStrategy {
     }
 
     @Override
-    public void finish() {
-        applyTransform(1, 1);
+    public void finishAnimation() {
+        doAnim(1, 1);
         this.scene.remove(msh);
         mobj.visible(true);
         scene.add(mobj);
     }
 
     @Override
-    public void addObjectsToScene() {
+    public void addObjectsToScene(JMathAnimScene scene) {
         scene.add(mobj);
     }
 

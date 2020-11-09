@@ -215,12 +215,6 @@ public class Shape extends MathObject {
         return obj;
     }
 
-    public static Shape segment(Line line) {
-        //Compute bound points in case they still hasn't computed yet
-        line.computeBoundPoints(JMathAnimConfig.getConfig().getRenderer());
-        return segment(line.bp1.p.copy(), line.bp2.p.copy());
-    }
-
     public static Shape rectangle(Point A, Point B) {
         Shape obj = new Shape();
         JMathAnimConfig.getConfig().getScene();
@@ -323,17 +317,5 @@ public class Shape extends MathObject {
         return circle().scale(radius).shift(center.v);
     }
 
-    /**
-     * Creates a new Lineobject. Line is a Shape object with 2
-     * points, as a Segment but it overrides the draw method so that it
-     * extends itself to all the view, to look like an infinite line.
-     *
-     * @param a First point
-     * @param b Second point
-     * @return The line object
-     */
-    public static Line line(Point a, Point b) {
-        return new Line(a, b);
-    }
 
 }

@@ -18,6 +18,7 @@
 
 package com.jmathanim.mathobjects;
 
+import com.jmathanim.Cameras.Camera;
 import com.jmathanim.Renderers.Renderer;
 import com.jmathanim.Utils.MODrawProperties;
 import com.jmathanim.Utils.Rect;
@@ -91,7 +92,7 @@ public class Line extends Shape {
 
     @Override
     public void draw(Renderer r) {
-        computeBoundPoints(r);
+        computeBoundPoints(r.getCamera());
         visiblePiece.draw(r);
 
     }
@@ -103,8 +104,8 @@ public class Line extends Shape {
      *
      * @param r The renderer
      */
-    public final void computeBoundPoints(Renderer r) {
-        Rect rect = r.getCamera().getMathView();
+    public final void computeBoundPoints(Camera cam) {
+        Rect rect = cam.getMathView();
         double[] intersectLine = rect.intersectLine(p1.v.x, p1.v.y, p2.v.x, p2.v.y);
 
         if (intersectLine == null) {
@@ -168,4 +169,34 @@ public class Line extends Shape {
 {
     return new Line(new Point(0,0),new Point(1,1));
 }
+
+    /**
+     * Creates a new Line object. Line is a Shape object with 2
+     * points, as a Segment but it overrides the draw method so that it
+     * extends itself to all the view, to look like an infinite line.
+     *
+     * @param a First point
+     * @param b Second point
+     * @return The line object
+     */
+    public static Line make(Point a, Point b) {
+        return new Line(a, b);
+    }
+    
+    public static Line make(Point a, Vec b) {
+        return new Line(a, a.add(b));
+    }
+    
+    /**
+     * Creates a finite Segment, that runs over the screen plus a percent gap
+     * @return A segment with the visible part of the line
+     */
+    public Shape toSegment(Camera cam) {
+        computeBoundPoints(cam);
+        Point a=bp1.p;
+        Point b=bp2.p;
+        Shape segment = Shape.segment(bp1.p, bp2.p);
+        segment.mp.copyFrom(this.mp);
+        return segment;
+    }
 }
