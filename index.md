@@ -13,10 +13,29 @@ The easiest way to use it is creating a Maven project in your favorite IDE (Netb
 <dependency>
   <groupId>com.github.davidgutierrezrubio</groupId>
   <artifactId>JMathAnim</artifactId>
+  <version>0.8.0</version>
+</dependency>
+```
+
+If you want to use snapshots version, you need to add the following code instead:
+
+```XML
+<dependency>
+  <groupId>com.github.davidgutierrezrubio</groupId>
+  <artifactId>JMathAnim</artifactId>
   <version>0.8.2-SNAPSHOT</version>
 </dependency>
 ```
 
+and specify the repository for the snapshots version.
+```XML
+<repository>
+	<id>snapshots-repo</id>
+         <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+         <releases><enabled>false</enabled></releases>
+         <snapshots><enabled>true</enabled></snapshots>
+</repository>
+```
 
 ### Manual
 A basic user's manual can be found [here](manual/index.html)
