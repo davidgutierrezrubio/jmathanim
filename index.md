@@ -57,7 +57,7 @@ public class myFirstScene extends Scene2D {
         waitSeconds(5);
     }
 	
-	public static void main(String[] args) {
+    public static void main(String[] args) {
         JMathAnimScene scene = new myFirstScene();
         scene.execute();
     }
