@@ -67,14 +67,6 @@ public class JMImage extends MathObject {
     }
 
     @Override
-    public void prepareForNonLinearAnimation() {
-    }
-
-    @Override
-    public void processAfterNonLinearAnimation() {
-    }
-
-    @Override
     public Rect getBoundingBox() {
         return bbox;
     }

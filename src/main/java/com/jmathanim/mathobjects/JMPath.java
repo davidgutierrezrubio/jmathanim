@@ -210,6 +210,33 @@ public class JMPath implements Updateable, Stateable {
         dividePathSegment(k + 1, numDivForThisVertex - 1);//Keep subdividing until numDivForThisVertex=1
     }
 
+//    public Point getPointAt(double t){
+//        Point pointAt;
+//        //First, get the segment
+//         int numVisibleSegments=(int)(jmPathPoints.stream().filter((x)->x.isThisSegmentVisible).count()-1);
+//        double tTotal=numVisibleSegments*t;
+//        int n1=(int) Math.floor(tTotal);
+//        double alpha=tTotal-n1;
+//        JMPathPoint jmp1 = getJMPoint(n1);
+//        JMPathPoint jmp2 = getJMPoint(n1+1);
+//        if (jmp2.isCurved) {
+//            //De Casteljau's Algorithm: https://en.wikipedia.org/wiki/De_Casteljau%27s_algorithm
+//            Point E = jmp1.p.interpolate(jmp1.cp1, alpha); //New cp1 of v1
+//            Point G = jmp2.cp2.interpolate(jmp2.p, alpha); //New cp2 of v2
+//            Point F = jmp1.cp1.interpolate(jmp2.cp2, alpha);
+//            Point H = E.interpolate(F, alpha);//cp2 of interpolation point
+//            Point J = F.interpolate(G, alpha);//cp1 of interpolation point
+//            pointAt = H.interpolate(J, alpha); //Interpolation point
+//        } else {
+//            //Straight interpolation
+//            pointAt = new Point(jmp1.p.v.interpolate(jmp2.p.v, alpha));
+//        }
+//        
+//        return pointAt;
+//    }
+//    
+    
+    
     /**
      * Adds an interpolation point at alpha parameter between point(k-1) and
      * point(k) This method alters the control points of the points k-1 and k,

@@ -282,13 +282,6 @@ public abstract class MathObject implements Drawable, Updateable, Stateable {
      */
     abstract public <T extends MathObject> T copy();
 
-    /**
-     * Update all necessary componentes of this object to display properly This
-     * should be called when any of its subobjects (sides, vertices...) changes
-     */
-    abstract public void prepareForNonLinearAnimation();
-
-    abstract public void processAfterNonLinearAnimation();
 
     /**
      * Add the given scene to the collection of scenes which this object has

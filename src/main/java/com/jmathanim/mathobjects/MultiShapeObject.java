@@ -103,19 +103,6 @@ public class MultiShapeObject extends MathObject implements Iterable<Shape>{
         return (T) resul;
     }
 
-    @Override
-    public void prepareForNonLinearAnimation() {
-        for (Shape jmp : shapes) {
-            jmp.prepareForNonLinearAnimation();
-        }
-    }
-
-    @Override
-    public void processAfterNonLinearAnimation() {
-        for (Shape jmp : shapes) {
-            jmp.processAfterNonLinearAnimation();
-        }
-    }
 
     @Override
     public void draw(Renderer r) {

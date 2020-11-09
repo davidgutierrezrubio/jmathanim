@@ -185,13 +185,6 @@ public class JMPathPoint extends MathObject implements Updateable, Stateable {
         return (T) this;
     }
 
-    @Override
-    public void prepareForNonLinearAnimation() {
-    }
-
-    @Override
-    public void processAfterNonLinearAnimation() {
-    }
 
     @Override
     public Rect getBoundingBox() {

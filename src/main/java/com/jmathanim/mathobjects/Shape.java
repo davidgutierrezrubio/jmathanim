@@ -116,15 +116,6 @@ public class Shape extends MathObject {
         return resul;
     }
 
-    @Override
-    public void prepareForNonLinearAnimation() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public void processAfterNonLinearAnimation() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
 
     @Override
     public void draw(Renderer r) {

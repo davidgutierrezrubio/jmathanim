@@ -69,20 +69,6 @@ public class MathObjectGroup extends MathObject implements Iterable<MathObject> 
     }
 
     @Override
-    public void prepareForNonLinearAnimation() {
-        for (MathObject obj : objects) {
-            obj.prepareForNonLinearAnimation();
-        }
-    }
-
-    @Override
-    public void processAfterNonLinearAnimation() {
-        for (MathObject obj : objects) {
-            obj.processAfterNonLinearAnimation();
-        }
-    }
-
-    @Override
     public Rect getBoundingBox() {
         Rect bbox = objects.get(0).getBoundingBox();
         for (MathObject obj : objects) {

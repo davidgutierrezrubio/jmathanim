@@ -264,14 +264,6 @@ public class Point extends MathObject {
     }
 
     @Override
-    public void prepareForNonLinearAnimation() {
-    }
-
-    @Override
-    public void processAfterNonLinearAnimation() {
-    }
-
-    @Override
     public Rect getBoundingBox() {
         return new Rect(v.x, v.y, v.x, v.y);
     }

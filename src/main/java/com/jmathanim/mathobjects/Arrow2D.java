@@ -253,24 +253,20 @@ public class Arrow2D extends MathObject {
     }
 
     @Override
-    public void prepareForNonLinearAnimation() {
-    }
-
-    @Override
-    public void processAfterNonLinearAnimation() {
-    }
-
-    @Override
     public Rect getBoundingBox() {
         return body.getBoundingBox();
     }
 
     @Override
     public void registerChildrenToBeUpdated(JMathAnimScene scene) {
+        scene.registerObjectToBeUpdated(body);
+        scene.registerObjectToBeUpdated(head);
     }
 
     @Override
     public void unregisterChildrenToBeUpdated(JMathAnimScene scene) {
+        scene.unregisterObjectToBeUpdated(body);
+        scene.unregisterObjectToBeUpdated(head);
     }
 
     @Override

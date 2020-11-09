@@ -68,7 +68,7 @@ public class AffineJTransform {
      * v,w,z are the images of canonical vectors.
      */
     public AffineJTransform(RealMatrix rm) {
-        this.matrix = matrix;
+        this.matrix = rm;
     }
 
     /**
