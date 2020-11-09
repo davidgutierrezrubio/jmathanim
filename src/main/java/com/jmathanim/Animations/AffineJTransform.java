@@ -63,9 +63,11 @@ public class AffineJTransform {
     /**
      * Creates a new transform, with the specified matrix
      *
-     * @param matrix
+     * @param rm Matrix with the following form: {{1, x, y, z}, {0, vx, vy,
+     * vz},{0, wx, wy, wz},{0 tx ty tz}} Where x,y,z is the image of (0,0,0) and
+     * v,w,z are the images of canonical vectors.
      */
-    public AffineJTransform(RealMatrix matrix) {
+    public AffineJTransform(RealMatrix rm) {
         this.matrix = matrix;
     }
 
@@ -231,19 +233,18 @@ public class AffineJTransform {
 
     /**
      * Apply the current transform to the given MathObject. Strategy
-     * transformation depends on the type of MathObject. The object is
-     * modified.
+     * transformation depends on the type of MathObject. The object is modified.
      *
-     * For MultiShapeObject objects iterates the transformation over all
-     * its shapes
+     * For MultiShapeObject objects iterates the transformation over all its
+     * shapes
      *
      * For Lineobjects transform its defining points.
      *
-     * For Shape objects iterates the transformation over all the
-     * JMPathPoint objects.
+     * For Shape objects iterates the transformation over all the JMPathPoint
+     * objects.
      *
-     * For JMPathPoint objects, transform is applied to its point and
-     * control points.
+     * For JMPathPoint objects, transform is applied to its point and control
+     * points.
      *
      * @param mObject Object to apply transform
      */

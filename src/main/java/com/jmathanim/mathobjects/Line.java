@@ -15,7 +15,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-
 package com.jmathanim.mathobjects;
 
 import com.jmathanim.Cameras.Camera;
@@ -75,7 +74,7 @@ public class Line extends Shape {
         visiblePiece.jmpath.addJMPoint(bp1, bp2);
         visiblePiece.mp = this.mp;
         jmpath.addPoint(p1, p2);
-        jmpath.getJMPoint(0).isThisSegmentVisible=false;
+        jmpath.getJMPoint(0).isThisSegmentVisible = false;
     }
 
     @Override
@@ -98,11 +97,11 @@ public class Line extends Shape {
     }
 
     /**
-     * Compute border points in the view area of the given renderer. This is
-     * need in order to draw an "infinite" line which always extend to the whole
+     * Compute border points in the view area of the given renderer.This is need
+     * in order to draw an "infinite" line which always extend to the whole
      * visible area. The border points are stored in bp1 and bp2
      *
-     * @param r The renderer
+     * @param cam Camera with the view to compute bound points
      */
     public final void computeBoundPoints(Camera cam) {
         Rect rect = cam.getMathView();
@@ -165,15 +164,15 @@ public class Line extends Shape {
     public static Line YAxis() {
         return new Line(new Point(0, 0), new Point(1, 0));
     }
-    public static Line XYBisector()
-{
-    return new Line(new Point(0,0),new Point(1,1));
-}
+
+    public static Line XYBisector() {
+        return new Line(new Point(0, 0), new Point(1, 1));
+    }
 
     /**
-     * Creates a new Line object. Line is a Shape object with 2
-     * points, as a Segment but it overrides the draw method so that it
-     * extends itself to all the view, to look like an infinite line.
+     * Creates a new Line object. Line is a Shape object with 2 points, as a
+     * Segment but it overrides the draw method so that it extends itself to all
+     * the view, to look like an infinite line.
      *
      * @param a First point
      * @param b Second point
@@ -182,19 +181,20 @@ public class Line extends Shape {
     public static Line make(Point a, Point b) {
         return new Line(a, b);
     }
-    
+
     public static Line make(Point a, Vec b) {
         return new Line(a, a.add(b));
     }
-    
+
     /**
      * Creates a finite Segment, that runs over the screen plus a percent gap
+     *
      * @return A segment with the visible part of the line
      */
     public Shape toSegment(Camera cam) {
         computeBoundPoints(cam);
-        Point a=bp1.p;
-        Point b=bp2.p;
+        Point a = bp1.p;
+        Point b = bp2.p;
         Shape segment = Shape.segment(bp1.p, bp2.p);
         segment.mp.copyFrom(this.mp);
         return segment;

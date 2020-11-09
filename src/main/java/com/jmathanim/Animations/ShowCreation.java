@@ -34,6 +34,8 @@ import com.jmathanim.mathobjects.SVGMathObject;
 import com.jmathanim.mathobjects.Shape;
 
 /**
+ * Animation that shows the creation of a MathObject. The precise strategy for
+ * creating depends on the type of MathObject
  *
  * @author David Gutierrez Rubio davidgutierrezrubio@gmail.com
  */
@@ -76,7 +78,7 @@ public class ShowCreation extends Animation {
             createStrategy();
             creationStrategy.initialize();
         } catch (NullPointerException | ClassCastException e) {
-            JMathAnimScene.logger.error("Couldn't create ShowCreation strategy for "+this.mobj.getClass().getCanonicalName()+". Animation will not be done. ("+ e.toString()+")");
+            JMathAnimScene.logger.error("Couldn't create ShowCreation strategy for " + this.mobj.getClass().getCanonicalName() + ". Animation will not be done. (" + e.toString() + ")");
         }
     }
 
@@ -164,15 +166,15 @@ public class ShowCreation extends Animation {
     private void createStrategy() throws ClassCastException {
         switch (this.strategyType) {
             case GROUP_CREATION:
-                creationStrategy = new GroupCreationAnimation(this.runTime,(MathObjectGroup) mobj);
+                creationStrategy = new GroupCreationAnimation(this.runTime, (MathObjectGroup) mobj);
                 JMathAnimScene.logger.debug("ShowCreation method: GroupCreationStrategy");
                 break;
             case LINE_CREATION:
-                creationStrategy = new LineCreationAnimation(this.runTime,(Line) mobj);
+                creationStrategy = new LineCreationAnimation(this.runTime, (Line) mobj);
                 JMathAnimScene.logger.debug("ShowCreation method: LineCreationStrategy");
                 break;
             case ARROW_CREATION:
-                creationStrategy = new ArrowCreationAnimation(this.runTime,(Arrow2D) mobj);
+                creationStrategy = new ArrowCreationAnimation(this.runTime, (Arrow2D) mobj);
                 JMathAnimScene.logger.debug("ShowCreation method: ArrowCreationStrategy");
                 break;
             case SIMPLE_SHAPE_CREATION:

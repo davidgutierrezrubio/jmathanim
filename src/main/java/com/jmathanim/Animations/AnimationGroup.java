@@ -38,20 +38,22 @@ public class AnimationGroup extends Animation {
     }
 
     /**
-     * Creates a new, empty, AnimationGroup. This class stores a group of animations, to be
-     * played at the same time.
+     * Creates a new, empty, AnimationGroup. This class stores a group of
+     * animations, to be played at the same time.
      */
     public AnimationGroup() {
         this.animations = new ArrayList<>();
     }
 
     /**
-     * Creates a new AnimationGroup with given animations. This class stores a group of
-     * animations, to be played at the same time.
+     * Creates a new AnimationGroup with given animations.This class stores a
+     * group of animations, to be played at the same time.
+     *
+     * @param anmts Animations to add (varargs)
      */
-    public AnimationGroup(Animation... anims) {
+    public AnimationGroup(Animation... anmts) {
         this.animations = new ArrayList<>();
-        this.animations.addAll(Arrays.asList(anims));
+        this.animations.addAll(Arrays.asList(anmts));
 
     }
 
