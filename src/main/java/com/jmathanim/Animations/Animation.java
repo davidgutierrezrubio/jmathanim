@@ -21,6 +21,8 @@ import com.jmathanim.Animations.Strategies.Transform.Optimizers.NullOptimization
 import com.jmathanim.Animations.Strategies.Transform.Optimizers.OptimizePathsStrategy;
 import com.jmathanim.Utils.JMathAnimConfig;
 import com.jmathanim.jmathanim.JMathAnimScene;
+import com.sun.org.apache.xpath.internal.operations.UnaryOperation;
+import java.util.function.DoubleUnaryOperator;
 
 /**
  * This abstract class stores an Animation Animations are always played using a
@@ -42,6 +44,7 @@ public abstract class Animation {
     private boolean isEnded = false;
     protected final JMathAnimScene scene;
     protected OptimizePathsStrategy optimizeStrategy = null;
+    public DoubleUnaryOperator lambda;
 
     public boolean isEnded() {
         return isEnded;
@@ -58,6 +61,7 @@ public abstract class Animation {
     public Animation(double runTime) {
         this.runTime = runTime;
         scene = JMathAnimConfig.getConfig().getScene();
+        lambda = (x) -> lambdaDefault(x);
     }
 
     public double getFps() {
@@ -86,9 +90,9 @@ public abstract class Animation {
         }
         boolean resul;
 //        if (frame < numFrames || t < 1 + dt) {
-        double lt = lambda(t);
-        if (lt < 1 && lt >= 0 && t < 1 && t >= 0) {
-            this.doAnim(t, lt);
+        
+        if (t < 1 && t >= 0) {
+            this.doAnim(t);
 
 //            frame++;
             resul = false;
@@ -113,11 +117,10 @@ public abstract class Animation {
      * Executes one frame of the animation, given by the time t, from 0 to 1
      *
      * @param t double between 0 and 1 0=start, 1=end. This value is passed as
-     * needed by some special animations
-     * @param lt lambda(t) where lambda is a "smooth" function. this value is
-     * used to compute the actual animation state.
+     * needed by some special animations. The lambda function should be used to
+     * smooth animation.
      */
-    abstract public void doAnim(double t, double lt);
+    abstract public void doAnim(double t);
 
     abstract public void finishAnimation();
 
@@ -131,7 +134,7 @@ public abstract class Animation {
 
     //Smooth function from https://math.stackexchange.com/questions/328868/how-to-build-a-smooth-transition-function-explicitly
     //TODO: Adapt this to use Cubic Bezier splines
-    protected double lambda(double t) {
+    protected double lambdaDefault(double t) {
         double h = hh(t);
         double h2 = hh(1 - t);
         return h / (h + h2);
@@ -149,4 +152,13 @@ public abstract class Animation {
             optimizeStrategy = new NullOptimizationStrategy();
         }
     }
+
+    public DoubleUnaryOperator getLambda() {
+        return lambda;
+    }
+
+    public void setLambda(DoubleUnaryOperator lambda) {
+        this.lambda = lambda;
+    }
+    
 }

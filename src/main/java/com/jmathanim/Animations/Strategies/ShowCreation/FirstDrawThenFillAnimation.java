@@ -135,11 +135,12 @@ public class FirstDrawThenFillAnimation extends Animation {
     @Override
     public void initialize() {
         obj.mp.getFillColor().alpha = 0; //Sets alpha to 0, to first draw objects without filling
+        anim.setLambda(lambda);
         anim.initialize();
     }
 
     @Override
-    public void doAnim(double t, double lt) {
+    public void doAnim(double t) {
     }
 
     @Override

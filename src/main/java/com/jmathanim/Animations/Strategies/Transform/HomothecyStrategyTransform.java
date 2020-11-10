@@ -51,6 +51,7 @@ public class HomothecyStrategyTransform extends Animation {
         Point c = this.mobjDestiny.getPoint(0);
         Point d = this.mobjDestiny.getPoint(1);
         anim = Commands.homothecy(runTime, a, b, c, d, this.mobjTransformed);
+        anim.setLambda(lambda);
         anim.initialize();
         
     }
@@ -61,8 +62,9 @@ public class HomothecyStrategyTransform extends Animation {
     }
     
     @Override
-    public void doAnim(double t, double lt) {
-        anim.doAnim(t, lt);
+    public void doAnim(double t) {
+        double lt=anim.lambda.applyAsDouble(t);
+        anim.doAnim(t);
         mobjTransformed.mp.interpolateFrom(mpBase, mobjDestiny.mp, lt);
     }
     

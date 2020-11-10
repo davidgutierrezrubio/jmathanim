@@ -76,6 +76,7 @@ public class ShowCreation extends Animation {
                 determineCreationStrategy(this.mobj);
             }
             createStrategy();
+            creationStrategy.setLambda(lambda);
             creationStrategy.initialize();
         } catch (NullPointerException | ClassCastException e) {
             JMathAnimScene.logger.error("Couldn't create ShowCreation strategy for " + this.mobj.getClass().getCanonicalName() + ". Animation will not be done. (" + e.toString() + ")");
@@ -83,7 +84,7 @@ public class ShowCreation extends Animation {
     }
 
     @Override
-    public void doAnim(double t, double lt) {
+    public void doAnim(double t) {
         //This should't be called, all process through processAnimation
     }
 

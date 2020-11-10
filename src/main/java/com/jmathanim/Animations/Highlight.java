@@ -35,6 +35,7 @@ public class Highlight extends Animation {
     public Highlight(double runTime, MathObject... objs) {
         super(runTime);
         scale = Commands.scale(1, null, standOutFactor, objs);
+        scale.lambda=(x)->4*x*(1-x);
     }
 
     @Override
@@ -43,15 +44,17 @@ public class Highlight extends Animation {
     }
 
     @Override
-    public void doAnim(double t, double lt) {
-        double tt = 4 * t * (1 - t);
-        double ltt = 4 * lt * (1 - lt);
-        scale.doAnim(tt, ltt);
+    public boolean processAnimation() {
+        return scale.processAnimation(); //To change body of generated methods, choose Tools | Templates.
+    }
+    
+    @Override
+    public void doAnim(double t) {
     }
 
     @Override
     public void finishAnimation() {
-        scale.doAnim(0, 0);
+        scale.doAnim(0);
     }
 
     @Override

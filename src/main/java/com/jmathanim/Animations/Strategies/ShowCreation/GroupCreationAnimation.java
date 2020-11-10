@@ -45,6 +45,7 @@ public class GroupCreationAnimation extends Animation {
 
     @Override
     public void initialize() {
+        anim.setLambda(lambda);
         anim.initialize();
         
     }
@@ -61,7 +62,7 @@ public class GroupCreationAnimation extends Animation {
     }
 
     @Override
-    public void doAnim(double t, double lt) {
+    public void doAnim(double t) {
     }
 
     @Override

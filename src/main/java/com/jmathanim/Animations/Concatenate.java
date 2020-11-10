@@ -21,6 +21,7 @@ import com.jmathanim.jmathanim.JMathAnimScene;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.DoubleUnaryOperator;
 
 /**
  * Stores 2 or more animations and play them in sequential order
@@ -29,7 +30,7 @@ import java.util.List;
  */
 public class Concatenate extends Animation {
 
-    private final ArrayList<Animation> anims;
+    private final ArrayList<Animation> animations;
     private int currentAnim;
 
     public Concatenate() {
@@ -42,32 +43,32 @@ public class Concatenate extends Animation {
 
     public Concatenate(List<Animation> anims) {
         super();
-        this.anims = new ArrayList<Animation>();
-        this.anims.addAll(anims);
+        this.animations = new ArrayList<Animation>();
+        this.animations.addAll(anims);
         currentAnim = 0;
 
     }
 
     public final boolean add(Animation e) {
-        return anims.add(e);
+        return animations.add(e);
     }
 
     @Override
     public void initialize() {
-        anims.get(0).initialize();
+        animations.get(0).initialize();
     }
 
     @Override
     public boolean processAnimation() {
-        if (currentAnim == this.anims.size()) {//If I already finished...
+        if (currentAnim == this.animations.size()) {//If I already finished...
             return true;
         }
-        boolean resul = anims.get(currentAnim).processAnimation();
+        boolean resul = animations.get(currentAnim).processAnimation();
         if (resul) {
-            anims.get(currentAnim).finishAnimation();
+            animations.get(currentAnim).finishAnimation();
             currentAnim++;
-            if (currentAnim < this.anims.size()) {
-                anims.get(currentAnim).initialize();
+            if (currentAnim < this.animations.size()) {
+                animations.get(currentAnim).initialize();
                 resul = false;
             }
         }
@@ -83,7 +84,14 @@ public class Concatenate extends Animation {
     }
 
     @Override
-    public void doAnim(double t, double lt) {
+    public void doAnim(double t) {
     }
 
+    @Override
+    public void setLambda(DoubleUnaryOperator lambda) {
+        super.setLambda(lambda);
+        for (Animation anim : animations) {
+            anim.setLambda(lambda);
+        }
+    }
 }

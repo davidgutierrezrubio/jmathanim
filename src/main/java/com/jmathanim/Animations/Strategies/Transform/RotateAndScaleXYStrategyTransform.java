@@ -43,7 +43,8 @@ public class RotateAndScaleXYStrategyTransform extends Animation {
     }
 
     @Override
-    public void doAnim(double t, double lt) {
+    public void doAnim(double t) {
+        double lt=lambda.applyAsDouble(t);
         mobjTransformed.restoreState();
 
         //First map A,B into (0,0) and (1,0)
@@ -83,7 +84,7 @@ public class RotateAndScaleXYStrategyTransform extends Animation {
 
     @Override
     public void finishAnimation() {
-        doAnim(1, 1);
+        doAnim(1);
     }
 
     @Override

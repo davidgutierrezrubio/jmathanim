@@ -101,7 +101,9 @@ public class Transform extends Animation {
         transformStrategy.setOptimizationStrategy(optimizeStrategy);
         //Variable strategy should have proper strategy to transform
         //If method is null means that user didn't force one
+        transformStrategy.setLambda(lambda);
         transformStrategy.initialize();
+
     }
 
     /**
@@ -205,7 +207,7 @@ public class Transform extends Animation {
                 transformStrategy = new RotateAndScaleXYStrategyTransform(runTime, mobjTransformed, mobjDestiny);
                 break;
             case FUNCTION_INTERPOLATION:
-                transformStrategy=new FunctionSimpleInterpolateTransform(runTime, (FunctionGraph)mobjTransformed, (FunctionGraph)mobjDestiny);
+                transformStrategy = new FunctionSimpleInterpolateTransform(runTime, (FunctionGraph) mobjTransformed, (FunctionGraph) mobjDestiny);
                 break;
         }
     }
@@ -262,7 +264,7 @@ public class Transform extends Animation {
     }
 
     @Override
-    public void doAnim(double t, double lt) {
+    public void doAnim(double t) {
         //Nothing to do here, it delegates trough processAnimation()
     }
 

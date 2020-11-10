@@ -15,7 +15,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-
 package com.jmathanim.Animations;
 
 import com.jmathanim.Animations.commands.AbstractCommand;
@@ -25,38 +24,34 @@ import com.jmathanim.jmathanim.JMathAnimScene;
  *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
-public class ApplyCommand extends Animation{
-
+public class ApplyCommand extends Animation {
+    
     private final AbstractCommand command;
-
-
-    public ApplyCommand(AbstractCommand command,double runTime) {
+    
+    public ApplyCommand(AbstractCommand command, double runTime) {
         super(runTime);
-        this.command=command;
+        this.command = command;
     }
-
+    
     public ApplyCommand(AbstractCommand abstractCommand) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-
-
     
     @Override
     public void initialize() {
         command.initialize();
     }
-
-    @Override
-    public void doAnim(double t,double lt) {
-        command.execute(lt);
+    
+    public void doAnim(double t) {
+        command.execute(lambda.applyAsDouble(t));
     }
-
+    
     @Override
     public void finishAnimation() {
         command.finish();
     }
-
-     @Override
+    
+    @Override
     public void addObjectsToScene(JMathAnimScene scene) {
         command.addObjectsToScene(scene);
     }

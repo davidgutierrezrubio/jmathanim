@@ -49,12 +49,13 @@ public class SimpleShapeCreationAnimation extends Animation {
         msh = canonPath.createMultiShape(this.mobj);
         mobj.visible(false);
         scene.add(msh);
-        doAnim(0, 0);
+        doAnim(0);
         numberOfSegments = canonPath.getTotalNumberOfSegments();
     }
 
     @Override
-    public void doAnim(double t, double lt) {
+    public void doAnim(double t) {
+        double lt=lambda.applyAsDouble(t);
         if (lt == 1) {
             for (int n = 0; n < msh.shapes.size(); n++) {
                 //Restore all paths because in each loop there will be modified
@@ -97,7 +98,7 @@ public class SimpleShapeCreationAnimation extends Animation {
 
     @Override
     public void finishAnimation() {
-        doAnim(1, 1);
+        doAnim(1);
         this.scene.remove(msh);
         mobj.visible(true);
         scene.add(mobj);

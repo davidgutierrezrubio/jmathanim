@@ -79,7 +79,8 @@ public class PointInterpolationCanonical extends Animation {
     }
 
     @Override
-    public void doAnim(double t, double lt) {
+    public void doAnim(double t) {
+        double lt=lambda.applyAsDouble(t);
         JMPathPoint interPoint, basePoint, dstPoint;
 
         for (int numConnected = 0; numConnected < this.connectedDst.getNumberOfPaths(); numConnected++) {

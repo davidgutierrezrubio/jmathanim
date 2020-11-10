@@ -44,6 +44,7 @@ public class LineCreationAnimation extends Animation {
     public void initialize() {
         segment = line.toSegment(scene.getCamera());
         anim = new SimpleShapeCreationAnimation(this.runTime, segment);
+        anim.setLambda(lambda);
         anim.initialize();
         scene.remove(line);
     }
@@ -54,7 +55,7 @@ public class LineCreationAnimation extends Animation {
     }
 
     @Override
-    public void doAnim(double t, double lt) {
+    public void doAnim(double t) {
     }
 
     @Override

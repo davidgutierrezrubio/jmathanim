@@ -48,14 +48,15 @@ public class MoveAlongPath extends Animation {
     }
 
     @Override
-    public void doAnim(double t, double lt) {
+    public void doAnim(double t) {
+        double lt=lambda.applyAsDouble(t);
         mobjTransformed.restoreState();
         mobjTransformed.moveTo(path.getPointAt(lt).v);
     }
 
     @Override
     public void finishAnimation() {
-        doAnim(1, 1);
+        doAnim(1);
     }
 
     @Override

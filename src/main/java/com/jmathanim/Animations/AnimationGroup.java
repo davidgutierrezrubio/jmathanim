@@ -21,6 +21,7 @@ import com.jmathanim.jmathanim.JMathAnimScene;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.function.DoubleUnaryOperator;
 
 /**
  * Stores a group of animations, to be played at the same time. This class is
@@ -94,9 +95,9 @@ public class AnimationGroup extends Animation {
     }
 
     @Override
-    public void doAnim(double t, double lt) {
+    public void doAnim(double t) {
         for (Animation anim : animations) {
-            anim.doAnim(t, lt);
+            anim.doAnim(t);
         }
     }
 
@@ -111,6 +112,14 @@ public class AnimationGroup extends Animation {
 
     @Override
     public void addObjectsToScene(JMathAnimScene scene) {
+    }
+
+    @Override
+    public void setLambda(DoubleUnaryOperator lambda) {
+        super.setLambda(lambda); 
+        for (Animation anim:animations) {
+            anim.setLambda(lambda);
+        }
     }
 
 }
