@@ -23,7 +23,7 @@ If you want to use snapshots version, you need to add the following code instead
 <dependency>
   <groupId>com.github.davidgutierrezrubio</groupId>
   <artifactId>JMathAnim</artifactId>
-  <version>0.8.2-SNAPSHOT</version>
+  <version>0.8.3-SNAPSHOT</version>
 </dependency>
 ```
 
