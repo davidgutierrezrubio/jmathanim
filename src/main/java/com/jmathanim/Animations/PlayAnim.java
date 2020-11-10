@@ -32,89 +32,231 @@ import com.jmathanim.mathobjects.Shape;
 import java.util.ArrayList;
 
 /**
- * Several static methods to easily perform most common animations
+ * Several static methods to easily perform most common animations. This class
+ * is automatically instantiated by the JMathAnimScene class for using in the
+ * scene.
  *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
 public class PlayAnim {
 
-    JMathAnimScene scene;
+    private JMathAnimScene scene;
+    /**
+     * Default runtime for ShowCreation methods (in seconds)
+     */
     public double defaultRunTimeshowCreation = 2;
+    /**
+     * Default runtime for FadeIn methods (in seconds)
+     */
     public double defaultRunTimefadeIn = 1;
+    /**
+     * Default runtime for FadeOut methods (in seconds)
+     */
     public double defaultRunTimefadeOut = 1;
+    /**
+     * Default runtime for GrowIn methods (in seconds)
+     */
     public double defaultRunTimeGrowIn = 1;
+    /**
+     * Default runtime for Shrink Out methods (in seconds)
+     */
     public double defaultRunTimeShrinkOut = 1;
+    /**
+     * Default runtime for Highlight methods (in seconds)
+     */
     public double defaultRunTimeHighlight = 2;
+    /**
+     * Default runtime for camera methods (in seconds)
+     */
     public double defaultRunTimeCamera = 2;
 
     public PlayAnim(JMathAnimScene scene) {
         this.scene = scene;
     }
 
+    /**
+     * Animates the given objects, setting their alpha (draw and fill) from 0 to
+     * current, using default runtime. Then add the objects to the scene if they
+     * aren't.
+     *
+     * @param objs Mathobjects to animate (varargs)
+     */
     public void fadeIn(MathObject... objs) {
         fadeIn(defaultRunTimefadeIn, objs);
     }
 
+    /**
+     * Animates the given objects, setting their alpha (draw and fill) from 0 to
+     * current, using given runtime.Then add the objects to the scene if they
+     * aren't.
+     *
+     * @param runtime Duration in seconds
+     * @param objs Mathobjects to animate (varargs)
+     */
     public void fadeIn(double runtime, MathObject... objs) {
         scene.playAnimation(Commands.fadeIn(runtime, objs));
     }
 
+    /**
+     * Animates the given objects, setting their alpha (draw and fill) from
+     * current to 0, using default runtime. Then remove the objects to the
+     * scene.
+     *
+     * @param objs Mathobjects to animate (varargs)
+     */
     public void fadeOut(MathObject... objs) {
         fadeOut(defaultRunTimefadeOut, objs);
     }
 
+    /**
+     * Animates the given objects, setting their alpha (draw and fill) from
+     * current to 0, using given runtime.Then remove the objects to the scene.
+     *
+     * @param runtime Duration in seconds
+     * @param objs Mathobjects to animate (varargs)
+     */
     public void fadeOut(double runtime, MathObject... objs) {
         scene.playAnimation(Commands.fadeOut(runtime, objs));
     }
 
+    /**
+     * Animates all the objects in the scene, setting their alpha (draw and
+     * fill) from current to 0, using default runtime. Then remove the objects
+     * to the scene. This method is mostly used as a transition between parts of
+     * a scene, as it clears the scene completely.
+     *
+     */
     public void fadeOutAll() {
         fadeOutAll(defaultRunTimefadeOut);
     }
 
+    /**
+     * Animates all the objects in the scene, setting their alpha (draw and
+     * fill) from current to 0, using given runtime.Then remove the objects to
+     * the scene. This method is mostly used as a transition between parts of a
+     * scene, as it clears the scene completely.
+     *
+     * @param runtime Duration in seconds
+     */
     public void fadeOutAll(double runtime) {
         MathObject[] objects = scene.getObjects().toArray(new MathObject[scene.getObjects().size()]);
         scene.playAnimation(Commands.fadeOut(runtime, objects));
     }
 
-    //Convenience methods
-    //This methods allow easy and fast ways to shift, rotate, and scale objects
+    /**
+     * Overloaded method. Animation that moves specified objects with a vector
+     *
+     * @param runtime Duration in seconds
+     * @param dx x-coordinate of translation vector
+     * @param dy y-coordinate of translation vector
+     * @param objs Mathobjects to animate (varargs)
+     */
     public void shift(double runtime, double dx, double dy, MathObject... objs) {
         scene.playAnimation(Commands.shift(runtime, dx, dy, objs));
     }
 
-    public void shift(double runTime, Vec v, MathObject... objs) {
-        scene.playAnimation(Commands.shift(runTime, v, objs));
+    /**
+     * Animation that moves specified objects with a vector
+     *
+     * @param runtime Duration in seconds
+     * @param v Traslation vector
+     * @param objs Mathobjects to animate (varargs)
+     */
+    public void shift(double runtime, Vec v, MathObject... objs) {
+        scene.playAnimation(Commands.shift(runtime, v, objs));
     }
 
-    public void scale(double runTime, Point center, double sc, MathObject... objs) {
-        scale(runTime, center, sc, sc, sc, objs);
+    /**
+     * Animates a scaling of the given objects uniformly with a given scale,
+     * around a specified center
+     *
+     * @param runTime Duration in seconds
+     * @param center Scale center
+     * @param scaleFactor Scale factor
+     * @param objs Mathobjects to animate (varargs)
+     */
+    public void scale(double runTime, Point center, double scaleFactor, MathObject... objs) {
+        scale(runTime, center, scaleFactor, scaleFactor, scaleFactor, objs);
     }
 
-    public void scale(double runTime, double scale, MathObject... objs) {
+    /**
+     * Animates a scaling of the given objects uniformly with a given scale. The
+     * scale center is the center of the combined bounding box of all objects.
+     * If you want to scale each object around its own center, use one scale
+     * animation for each object.
+     *
+     * @param runTime Duration in seconds
+     * @param scaleFactor Scale factor
+     * @param objs Mathobjects to animate (varargs)
+     */
+    public void scale(double runTime, double scaleFactor, MathObject... objs) {
         Rect r = objs[0].getBoundingBox();
         for (MathObject obj : objs) {
             r = r.union(obj.getBoundingBox());
         }
-        scene.playAnimation(Commands.scale(runTime, r.getCenter(), scale, scale, scale, objs));
+        scene.playAnimation(Commands.scale(runTime, r.getCenter(), scaleFactor, scaleFactor, scaleFactor, objs));
     }
 
+    /**
+     * Animates a scaling of the given objects with given x and y scale, around
+     * a specified center
+     *
+     * @param runTime Duration in seconds
+     * @param center Scale center
+     * @param scx x-scale
+     * @param scy y-scale
+     * @param objs Mathobjects to animate (varargs)
+     */
     public void scale(double runTime, Point center, double scx, double scy, MathObject... objs) {
         scene.playAnimation(Commands.scale(runTime, center, scx, scy, 1, objs));
     }
 
+    /**
+     * Animates a scaling of the given objects with given x, y and z scale,
+     * around a specified center.This method is defined for convenience as the
+     * z-scale has no effect until 3D is developed.
+     *
+     * @param runTime Duration in seconds
+     * @param center Scale center
+     * @param scx x-scale
+     * @param scy y-scale
+     * @param scz z-scale
+     * @param objs Mathobjects to animate (varargs)
+     */
     public void scale(double runTime, Point center, double scx, double scy, double scz, MathObject... objs) {
         scene.playAnimation(Commands.scale(runTime, center, scx, scy, scz, objs));
     }
 
+    /**
+     * Animates a rotation of the given objects around the center of the
+     * combined bounding box of all objects. If you want to rotate each object
+     * around its own center, use one rotate animation for each object.
+     *
+     * @param runTime Duration in seconds
+     * @param angle Rotation angle, in radians
+     * @param objs Mathobjects to animate (varargs)
+     */
     public void rotate(double runTime, double angle, MathObject... objs) {
-        scene.playAnimation(Commands.rotate(runTime, angle, objs));
+        Rect r = objs[0].getBoundingBox();
+        for (MathObject obj : objs) {
+            r = r.union(obj.getBoundingBox());
+        }
+        scene.playAnimation(Commands.rotate(runTime, r.getCenter(), angle, objs));
     }
 
+    /**
+     * Animates a rotation of the given objects around a specified center.
+     *
+     * @param runTime Duration in seconds
+     * @param center Rotation center
+     * @param angle Rotation angle, in radians
+     * @param objs Mathobjects to animate (varargs)
+     */
     public void rotate(double runTime, Point center, double angle, MathObject... objs) {
         scene.playAnimation(Commands.rotate(runTime, center, angle, objs));
     }
 
-    public void transform(double runTime, Shape obj1, Shape obj2) {
+    public void transform(double runTime, MathObject obj1, MathObject obj2) {
         scene.playAnimation(new Transform(runTime, obj1, obj2));
     }
 
@@ -335,8 +477,10 @@ public class PlayAnim {
      * color of the selected objects if fill color is null
      *
      * @param runtime Time of animation (in seconds)
-     * @param drawColor Draw color to set (if null, no changes applied during animation)
-     * @param fillColor Fill color to set (if null, no changes applied during animation)
+     * @param drawColor Draw color to set (if null, no changes applied during
+     * animation)
+     * @param fillColor Fill color to set (if null, no changes applied during
+     * animation)
      * @param mobjects Objects to apply animation (varargs)
      */
     public void setColor(double runtime, JMColor drawColor, JMColor fillColor, MathObject... mobjects) {
@@ -344,8 +488,9 @@ public class PlayAnim {
     }
 
     /**
-     * Changes the draw parameters of the selected objects to match the given style, animating the
-     * change for the specified time. 
+     * Changes the draw parameters of the selected objects to match the given
+     * style, animating the change for the specified time.
+     *
      * @param runtime Time of animation (in seconds)
      * @param styleName Style to apply
      * @param mobjects bjects to apply animation (varargs)

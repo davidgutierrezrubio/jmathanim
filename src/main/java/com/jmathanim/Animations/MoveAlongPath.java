@@ -23,27 +23,44 @@ import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.Shape;
 
 /**
+ * This class animates an object moving it through a given path. An anchor
+ * determines what point of the object will locate at the moving point of the
+ * path
  *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
 public class MoveAlongPath extends Animation {
 
-    JMPath path;
-    MathObject mobjTransformed;
+    private JMPath path;
+    private MathObject mobjTransformed;
     private int anchorType;
 
-     public MoveAlongPath(double runtime,Shape sh, MathObject mobjTransformed,int anchorType) {
-         this(runtime,sh.getPath(),mobjTransformed,anchorType);
-     }
-    
-    public MoveAlongPath(double runtime,JMPath path, MathObject mobjTransformed,int anchorType) {
+    /**
+     * Creates a new instance of this animation
+     *
+     * @param runtime Duration in seconds
+     * @param sh Shape whose path will be the trajectory
+     * @param mobjTransformed Object to move
+     * @param anchorType Anchor that determines which point of the object will lie in the path
+     */
+    public MoveAlongPath(double runtime, Shape sh, MathObject mobjTransformed, int anchorType) {
+        this(runtime, sh.getPath(), mobjTransformed, anchorType);
+    }
+ /**
+     * Creates a new instance of this animation
+     *
+     * @param runtime Duration in seconds
+     * @param path Trajectory path
+     * @param mobjTransformed Object to move
+     * @param anchorType Anchor that determines which point of the object will lie in the path
+     */
+    public MoveAlongPath(double runtime, JMPath path, MathObject mobjTransformed, int anchorType) {
         super(runtime);
         this.path = path;
         this.mobjTransformed = mobjTransformed;
-        this.anchorType=anchorType;
+        this.anchorType = anchorType;
     }
 
-    
     @Override
     public void initialize() {
         mobjTransformed.saveState();
@@ -51,9 +68,9 @@ public class MoveAlongPath extends Animation {
 
     @Override
     public void doAnim(double t) {
-        double lt=lambda.applyAsDouble(t);
+        double lt = lambda.applyAsDouble(t);
         mobjTransformed.restoreState();
-        mobjTransformed.putAt(path.getPointAt(lt),this.anchorType);
+        mobjTransformed.putAt(path.getPointAt(lt), this.anchorType);
     }
 
     @Override

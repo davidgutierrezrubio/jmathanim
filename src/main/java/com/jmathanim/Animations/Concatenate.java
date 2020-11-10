@@ -24,7 +24,8 @@ import java.util.List;
 import java.util.function.DoubleUnaryOperator;
 
 /**
- * Stores 2 or more animations and play them in sequential order
+ * Stores 2 or more animations and play them in sequential order. The total
+ * runtime of this animation is the sum of runtimes of all animations played
  *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
@@ -33,14 +34,29 @@ public class Concatenate extends Animation {
     private final ArrayList<Animation> animations;
     private int currentAnim;
 
+    /**
+     * Creates a new instance, with no animations added
+     */
     public Concatenate() {
         this(new ArrayList<Animation>());
     }
 
+    /**
+     * Creates a new instance of this animation, with the specified list of
+     * animations
+     *
+     * @param anims Animations to add (varargs)
+     */
     public Concatenate(Animation... anims) {
         this(Arrays.asList(anims));
     }
 
+    /**
+     * Creates a new instance, with a the especified animations added to the
+     * list
+     *
+     * @param anims List object of animations to add
+     */
     public Concatenate(List<Animation> anims) {
         super();
         this.animations = new ArrayList<Animation>();
@@ -49,12 +65,19 @@ public class Concatenate extends Animation {
 
     }
 
+    /**
+     * Add the given animation to the list of animations to concatenate
+     *
+     * @param e Animation to add
+     * @return true if the collection changed as a result of this method
+     */
     public final boolean add(Animation e) {
         return animations.add(e);
     }
 
     @Override
     public void initialize() {
+        //Initialize the first...
         animations.get(0).initialize();
     }
 
@@ -77,6 +100,8 @@ public class Concatenate extends Animation {
 
     @Override
     public void finishAnimation() {
+        //...and finish the last one
+        animations.get(animations.size()-1).finishAnimation();
     }
 
     @Override
@@ -87,6 +112,12 @@ public class Concatenate extends Animation {
     public void doAnim(double t) {
     }
 
+    /**
+     * Sets the lambda function. Adjusting this will change the lambda for all
+     * animations stored in this class
+     *
+     * @param lambda
+     */
     @Override
     public void setLambda(DoubleUnaryOperator lambda) {
         super.setLambda(lambda);

@@ -125,7 +125,7 @@ public class Commands {
                 for (MathObject obj : mathObjects) {
                     obj.saveState();//Easy way, but interferes with multiple animations (not easy to solve)
                 }
-            }
+            }//TODO: Change this to rotate all objects from a common center
 
             @Override
             public void execute(double t) {

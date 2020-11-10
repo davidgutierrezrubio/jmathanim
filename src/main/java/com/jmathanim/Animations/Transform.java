@@ -27,6 +27,7 @@ import com.jmathanim.Utils.MODrawProperties;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.FunctionGraph;
 import com.jmathanim.mathobjects.JMPath;
+import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.MathObject.MathObjectType;
 import com.jmathanim.mathobjects.Shape;
 import java.util.ArrayList;
@@ -45,8 +46,8 @@ public class Transform extends Animation {
         FUNCTION_INTERPOLATION
     }
 
-    public final Shape mobjDestiny;
-    public final Shape mobjTransformed;
+    public final MathObject mobjDestiny;
+    public final MathObject mobjTransformed;
     private MODrawProperties propBase;
     private TransformMethod transformMethod;
     private boolean shouldOptimizePathsFirst;
@@ -55,11 +56,11 @@ public class Transform extends Animation {
 //    private JMathAnimScene scene;
     private Animation transformStrategy;
 
-    public static Transform make(double runTime, Shape ob1, Shape ob2) {
+    public static Transform make(double runTime, MathObject ob1, MathObject ob2) {
         return new Transform(runTime, ob1, ob2);
     }
 
-    public Transform(double runTime, Shape ob1, Shape ob2) {
+    public Transform(double runTime, MathObject ob1, MathObject ob2) {
         super(runTime);
         mobjTransformed = ob1;
         mobjDestiny = ob2.copy();
@@ -162,7 +163,8 @@ public class Transform extends Animation {
 
         //Regular Polygons with the same number of vertices
         if ((mobjTransformed.getObjectType() == MathObjectType.REGULAR_POLYGON) && (mobjDestiny.getObjectType() == MathObjectType.REGULAR_POLYGON)) {
-            if (mobjTransformed.jmpath.size() == mobjDestiny.jmpath.size()) {
+            Shape sh = (Shape) mobjTransformed;
+            if (sh.jmpath.size() == sh.jmpath.size()) {
                 transformMethod = TransformMethod.ROTATE_AND_SCALEXY_TRANSFORM;
                 JMathAnimScene.logger.info("Transform method: Rotate and Scale XY");
             } else { //Different number of vertices
@@ -171,12 +173,15 @@ public class Transform extends Animation {
                 return;
             }
         }
-
-        //2 simple, closed curves
-        if ((mobjTransformed.getPath().getNumberOfConnectedComponents() == 0) && (mobjDestiny.getPath().getNumberOfConnectedComponents() == 0)) {
-            transformMethod = TransformMethod.INTERPOLATE_SIMPLE_SHAPES_BY_POINT;
-            JMathAnimScene.logger.info("Transform method: Point interpolation between 2 simple closed curves");
-            return;
+        if ((mobjTransformed instanceof Shape) && (mobjDestiny instanceof Shape)) {
+            Shape shTr = (Shape) mobjTransformed;
+            Shape shDst = (Shape) mobjDestiny;
+            //2 simple, closed curves
+            if ((shTr.getPath().getNumberOfConnectedComponents() == 0) && (shDst.getPath().getNumberOfConnectedComponents() == 0)) {
+                transformMethod = TransformMethod.INTERPOLATE_SIMPLE_SHAPES_BY_POINT;
+                JMathAnimScene.logger.info("Transform method: Point interpolation between 2 simple closed curves");
+                return;
+            }
         }
 
     }
@@ -185,16 +190,16 @@ public class Transform extends Animation {
         //Now I choose strategy
         switch (transformMethod) {
             case INTERPOLATE_SIMPLE_SHAPES_BY_POINT:
-                transformStrategy = new PointInterpolationSimpleShapeTransform(runTime, mobjTransformed, mobjDestiny);
+                transformStrategy = new PointInterpolationSimpleShapeTransform(runTime, (Shape)mobjTransformed, (Shape)mobjDestiny);
                 break;
             case INTERPOLATE_POINT_BY_POINT:
-                transformStrategy = new PointInterpolationCanonical(runTime, mobjTransformed, mobjDestiny);
+                transformStrategy = new PointInterpolationCanonical(runTime, (Shape)mobjTransformed, (Shape)mobjDestiny);
                 break;
             case HOMOTHECY_TRANSFORM:
-                transformStrategy = new HomothecyStrategyTransform(runTime, mobjTransformed, mobjDestiny);
+                transformStrategy = new HomothecyStrategyTransform(runTime, (Shape)mobjTransformed, (Shape)mobjDestiny);
                 break;
             case ROTATE_AND_SCALEXY_TRANSFORM:
-                transformStrategy = new RotateAndScaleXYStrategyTransform(runTime, mobjTransformed, mobjDestiny);
+                transformStrategy = new RotateAndScaleXYStrategyTransform(runTime, (Shape)mobjTransformed, (Shape)mobjDestiny);
                 break;
             case FUNCTION_INTERPOLATION:
                 transformStrategy = new FunctionSimpleInterpolateTransform(runTime, (FunctionGraph) mobjTransformed, (FunctionGraph) mobjDestiny);
@@ -216,7 +221,6 @@ public class Transform extends Animation {
     public void addObjectsToScene(JMathAnimScene scene) {
         transformStrategy.addObjectsToScene(scene);
     }
-
 
 //    private void createOptimizationStrategy() {
 //        switch (optimizeMethod) {
