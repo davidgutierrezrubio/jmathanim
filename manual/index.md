@@ -1,6 +1,6 @@
 # User's Manual
 
- [Creating a project with JMathAnim](00_Installing/Installing.md)
+[Creating a project with JMathAnim](00_Installing/Installing.md)
 
 [Basic flow of a Scene](01_BasicFlow/BasicFlow.md)
 
