@@ -262,22 +262,14 @@ public class JavaFXRenderer extends Renderer {
         } catch (ExecutionException ex) {
             Logger.getLogger(JavaFXRenderer.class.getName()).log(Level.SEVERE, null, ex);
         }
-//        BufferedImage bi = SwingFXUtils.fromFXImage(img2, null);
 
         if (cnf.isCreateMovie()) {
             if ((frameCount % cnf.fps) == 0) {
                 newLineCounter++;
-//                if (newLineCounter % 10 == 0) {
                 newLineCounter = 0;
                 System.out.println("[" + 1d * frameCount / cnf.fps + "s]");
-//                } else {
-//                    System.out.print("[" + 1d * frameCount / cnf.fps + "s]");
-//                }
             }
             videoEncoder.writeFrame(bi, frameCount);
-//            File file=new File("C:\\media\\frame"+frameCount+".png");
-//             ImageIO.write(SwingFXUtils.fromFXImage(img2, null), "png", file);
-
         }
     }
 

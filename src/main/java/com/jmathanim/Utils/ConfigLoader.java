@@ -128,7 +128,7 @@ public class ConfigLoader {
                 case "image":
                     String backgroundFilename = item.getTextContent();
                     if (!"".equals(backgroundFilename)) {
-                        config.backGroundImage = config.getResourcesDir().getCanonicalPath() + "\\" + backgroundFilename;
+                        config.backGroundImage = config.getResourcesDir().getCanonicalPath() + File.pathSeparator + backgroundFilename;
                         JMathAnimScene.logger.debug("Config read: Background image set to {}", backgroundFilename);
                     }
                     break;

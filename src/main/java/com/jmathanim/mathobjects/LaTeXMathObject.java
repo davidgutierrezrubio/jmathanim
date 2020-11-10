@@ -15,7 +15,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-
 package com.jmathanim.mathobjects;
 
 import com.jmathanim.Cameras.Camera;
@@ -48,16 +47,16 @@ public class LaTeXMathObject extends SVGMathObject {
     //This factor represents % of height relative to the screen that a "X" character has
     public static final double DEFAULT_SCALE_FACTOR = .05;
 
-    
     /**
      * Static constructor
+     *
      * @param text LaTex text to compile
-     * @return  The LaTexMathObject
+     * @return The LaTexMathObject
      */
-    public static LaTeXMathObject make(String text)
-    {
+    public static LaTeXMathObject make(String text) {
         return new LaTeXMathObject(text);
     }
+
     /**
      * Creates a new LaTeX generated text
      *
@@ -91,7 +90,7 @@ public class LaTeXMathObject extends SVGMathObject {
             sh.setObjectType(MathObjectType.LATEX_SHAPE);
             sh.label = String.valueOf(n);
             n++;
-            sh.mp.absoluteThickness=true;
+            sh.mp.absoluteThickness = true;
             sh.thickness(1);
         }
 //        this.fillWithDrawColor(true);
@@ -102,7 +101,7 @@ public class LaTeXMathObject extends SVGMathObject {
         Camera cam = JMathAnimConfig.getConfig().getFixedCamera();
 //        double hm = cam.getMathView().getHeight();
         double hm = cam.screenToMath(cam.screenHeight);
-        double sc = DEFAULT_SCALE_FACTOR * .4 * hm / 6.8*2.5;
+        double sc = DEFAULT_SCALE_FACTOR * .4 * hm / 6.8 * 2.5;
         this.scale(getBoundingBox().getUL(), sc, sc, 1);
 
     }
@@ -123,7 +122,7 @@ public class LaTeXMathObject extends SVGMathObject {
         String hash = getMd5(fullDocument);
         hash = hash.substring(hash.length() - 8);
         outputDir = new File("tex");
-        baseFileName = outputDir.getCanonicalPath() + "\\" + hash;
+        baseFileName = outputDir.getCanonicalPath() + File.pathSeparator + hash;
         latexFile = new File(baseFileName + ".tex");
         outputDir.mkdirs();
         FileWriter fw;
@@ -180,19 +179,10 @@ public class LaTeXMathObject extends SVGMathObject {
             }
         }
         while ((line = bre.readLine()) != null) {
-             JMathAnimScene.logger.debug(line);
+            JMathAnimScene.logger.debug(line);
         }
         bre.close();
         p.waitFor();
 
     }
-
-//    private void setColor(JMColor color) {
-//        for (Shape p : shapes) {
-//            p.mp.thickness = .0001;
-//            p.drawColor(color);
-//            p.mp.setFillAlpha(1);
-//            p.fillColor(color); //LaTeX Objects should have by default same fill and draw color
-//        }
-//    }
 }
