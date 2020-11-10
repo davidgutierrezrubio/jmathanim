@@ -30,15 +30,17 @@ public class MoveAlongPath extends Animation {
 
     JMPath path;
     MathObject mobjTransformed;
+    private int anchorType;
 
-     public MoveAlongPath(double runtime,Shape sh, MathObject mobjTransformed) {
-         this(runtime,sh.getPath(),mobjTransformed);
+     public MoveAlongPath(double runtime,Shape sh, MathObject mobjTransformed,int anchorType) {
+         this(runtime,sh.getPath(),mobjTransformed,anchorType);
      }
     
-    public MoveAlongPath(double runtime,JMPath path, MathObject mobjTransformed) {
+    public MoveAlongPath(double runtime,JMPath path, MathObject mobjTransformed,int anchorType) {
         super(runtime);
         this.path = path;
         this.mobjTransformed = mobjTransformed;
+        this.anchorType=anchorType;
     }
 
     
@@ -51,7 +53,7 @@ public class MoveAlongPath extends Animation {
     public void doAnim(double t) {
         double lt=lambda.applyAsDouble(t);
         mobjTransformed.restoreState();
-        mobjTransformed.moveTo(path.getPointAt(lt).v);
+        mobjTransformed.putAt(path.getPointAt(lt),this.anchorType);
     }
 
     @Override
