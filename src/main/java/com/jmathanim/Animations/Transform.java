@@ -20,7 +20,6 @@ package com.jmathanim.Animations;
 import com.jmathanim.Animations.Strategies.Transform.FunctionSimpleInterpolateTransform;
 import com.jmathanim.Animations.Strategies.Transform.HomothecyStrategyTransform;
 import com.jmathanim.Animations.Strategies.Transform.Optimizers.NullOptimizationStrategy;
-import com.jmathanim.Animations.Strategies.Transform.Optimizers.SimpleConnectedPathsOptimizationStrategy;
 import com.jmathanim.Animations.Strategies.Transform.PointInterpolationCanonical;
 import com.jmathanim.Animations.Strategies.Transform.PointInterpolationSimpleShapeTransform;
 import com.jmathanim.Animations.Strategies.Transform.RotateAndScaleXYStrategyTransform;
@@ -46,16 +45,10 @@ public class Transform extends Animation {
         FUNCTION_INTERPOLATION
     }
 
-    enum OptimizeMethod {
-        NONE,
-        SIMPLE_CONNECTED_PATHS
-    }
-
     public final Shape mobjDestiny;
     public final Shape mobjTransformed;
     private MODrawProperties propBase;
     private TransformMethod transformMethod;
-    private OptimizeMethod optimizeMethod;
     private boolean shouldOptimizePathsFirst;
     public boolean forceChangeDirection;
     private boolean isFinished;
@@ -71,7 +64,6 @@ public class Transform extends Animation {
         mobjTransformed = ob1;
         mobjDestiny = ob2.copy();
         transformMethod = null;
-        optimizeMethod = null;
         shouldOptimizePathsFirst = true;
         forceChangeDirection = false;
         isFinished = false;
@@ -92,13 +84,11 @@ public class Transform extends Animation {
         }
         createTransformStrategy();
 
-        if (shouldOptimizePathsFirst) {
-            if (optimizeMethod == null) {
-                determineOptimizationStrategy();
-            }
-            createOptimizationStrategy();
+        if (!shouldOptimizePathsFirst) {
+            transformStrategy.setOptimizationStrategy(new NullOptimizationStrategy());
+        } else {
+            transformStrategy.setOptimizationStrategy(null);
         }
-        transformStrategy.setOptimizationStrategy(optimizeStrategy);
         //Variable strategy should have proper strategy to transform
         //If method is null means that user didn't force one
         transformStrategy.setLambda(lambda);
@@ -227,28 +217,19 @@ public class Transform extends Animation {
         transformStrategy.addObjectsToScene(scene);
     }
 
-    private void determineOptimizationStrategy() {
-        optimizeMethod = OptimizeMethod.NONE;//default
-        //Case 1: 2 simple closed curves (square to circle, for example)
-        if ((mobjTransformed.jmpath.getNumberOfConnectedComponents() == 0) && (mobjDestiny.jmpath.getNumberOfConnectedComponents() == 0)) {
-            optimizeMethod = OptimizeMethod.SIMPLE_CONNECTED_PATHS;
-            return;
-        }
-    }
 
-    private void createOptimizationStrategy() {
-        switch (optimizeMethod) {
-            case NONE:
-                optimizeStrategy = new NullOptimizationStrategy();
-                JMathAnimScene.logger.info("Optimization strategy chosen: None");
-                break;
-            case SIMPLE_CONNECTED_PATHS:
-                optimizeStrategy = new SimpleConnectedPathsOptimizationStrategy(mobjTransformed, mobjDestiny);
-                JMathAnimScene.logger.info("Optimization strategy chosen: Simple connected paths");
-                break;
-        }
-    }
-
+//    private void createOptimizationStrategy() {
+//        switch (optimizeMethod) {
+//            case NONE:
+//                optimizeStrategy = new NullOptimizationStrategy();
+//                JMathAnimScene.logger.info("Optimization strategy chosen: None");
+//                break;
+//            case SIMPLE_CONNECTED_PATHS:
+//                optimizeStrategy = new SimpleConnectedPathsOptimizationStrategy(mobjTransformed, mobjDestiny);
+//                JMathAnimScene.logger.info("Optimization strategy chosen: Simple connected paths");
+//                break;
+//        }
+//    }
     public Transform optimizePaths(boolean shouldOptimizePathsFirst) {
         this.shouldOptimizePathsFirst = shouldOptimizePathsFirst;
         return this;

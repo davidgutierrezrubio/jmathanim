@@ -146,11 +146,7 @@ public abstract class Animation {
     abstract public void addObjectsToScene(JMathAnimScene scene);
 
     public void setOptimizationStrategy(OptimizePathsStrategy strategy) {
-        if (strategy != null) {
             optimizeStrategy = strategy;
-        } else {
-            optimizeStrategy = new NullOptimizationStrategy();
-        }
     }
 
     public DoubleUnaryOperator getLambda() {
@@ -160,5 +156,7 @@ public abstract class Animation {
     public void setLambda(DoubleUnaryOperator lambda) {
         this.lambda = lambda;
     }
-    
+     public void setOptimizeStrategy(OptimizePathsStrategy optimizeStrategy) {
+        this.optimizeStrategy = optimizeStrategy;
+    }
 }

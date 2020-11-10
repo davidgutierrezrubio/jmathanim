@@ -18,8 +18,6 @@
 package com.jmathanim.Animations.Strategies.Transform;
 
 import com.jmathanim.Animations.Animation;
-import com.jmathanim.Animations.Strategies.Transform.Optimizers.NullOptimizationStrategy;
-import com.jmathanim.Animations.Strategies.Transform.Optimizers.OptimizePathsStrategy;
 import com.jmathanim.Animations.Strategies.Transform.Optimizers.SimpleConnectedPathsOptimizationStrategy;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.JMPath;
@@ -36,7 +34,6 @@ public class PointInterpolationSimpleShapeTransform extends Animation {
     private final Shape mobjTransformed;
     private final Shape mobjDestiny;
     private Shape originalShapeBaseCopy;
-    private OptimizePathsStrategy optimizeStrategy = null;
 
     public PointInterpolationSimpleShapeTransform(double runtime, Shape mobjTransformed, Shape mobjDestiny) {
         super(runtime);
@@ -45,14 +42,7 @@ public class PointInterpolationSimpleShapeTransform extends Animation {
 
     }
 
-    public void optimize(boolean optimize){
-        if (!optimize) {
-            optimizeStrategy=new NullOptimizationStrategy();
-        }
-    }
-    public void setOptimizeStrategy(OptimizePathsStrategy optimizeStrategy) {
-        this.optimizeStrategy = optimizeStrategy;
-    }
+   
 
     @Override
     public void initialize() {
