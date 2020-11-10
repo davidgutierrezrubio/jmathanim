@@ -10,22 +10,30 @@ the `advanceFrame()` method
 
 -   The `initialize()` method, which prepares the objects to be animated. It should be called immediately before the animation
     begins, that is, no modifications should be done to the objects between this method and the start of the animation.
-    
--   The `doAnim(double t, double lt)` method. This method actually 
-    performs the animation. It accepts 2 parameters: The parameter `t` ranges from 0 to 1 where 0 is the beginning and 1 is the end. This
-    is not actually the time, but the percentage of animation done. The second parameter is a "smoothed" version of the parameter `t`, where
+-   The `processAnimation`this method computes the time depending on the frame rate, and calls the next method. If the animation is finished, return `true`.
+-   The `doAnim(double t)` method. This method actually 
+    performs the animation. The parameter `t` ranges from 0 to 1 where 0 is the beginning and 1 is the end. This
+    is not actually the time, but the percentage of animation done. A second parameter computed is a "smoothed" version of the parameter `t`, where
     a smooth function is applied so that the animation starts and ends in a soft way, rather than with the lineal `t`. Currently, the smooth function used is
 
 ![lambda](lambda.png)
 
 ![smoothFunction](smoothFunction.png)
 
-this function is defined in the public method `lambda(double t)` in the `Animation` class.
+The smooth function is defined as a lambda java function, that you can get or set with `getLambda` and `setLambda` methods.
 
 -   The `finishAnimation()` method, that should do all the needed cleanup and finishing jobs.
 
-An `Animation` object can be played with the `playAnimation` method, but as we’ll see, there are other ways to easily access to most used
-animations.
+An `Animation` object can be played with the `playAnimation` method, but there is another way to play it in a more procedimental way. You can achieve the same effect with the following piece of code:
+
+````java
+Animation anim=<define here the animation>
+while (!anim.processAnimation()) {
+    advanceFrame();
+}
+````
+
+Also, there is a convenience object created, `play`, which performs easily most used animations.
 
 In general, parameters of all animations always follow the structure `(runTime, parameters, object_1,…​,object_n)`. The last part is a varargs `MathObject`, this way, you can apply the animation to an arbitrary number of objects.
 
@@ -63,10 +71,13 @@ You can replace the animation method with one of this list of basic transforms, 
 ``` java
 //Rotates the square arund its center, 45 degress, in 3s
 play.rotate(3,45*DEGRESS,sq);
+
 //Rotates the square around the origin 120
 play.rotate(5,Point.at(0,0),120*DEGREES,sq);degress, in 5s
+
 //Scales the square uniformly at 70%, around its center, in 3s
 play.scale(3,.7,sq);
+
 //Scales the square at 70% x, 150% y, around the origin, in 3s
 play.scale(3,Point.at(0,0),.7,1.5,sq);
 ```
@@ -76,12 +87,16 @@ The `play` object has also most animations related to the view camera:
 ``` java
 //Animates a camera pan for 4 seconds, with vector (1,-1)
 play.cameraShift(4,1,-1);
+
 //Zoom in the view 200%, in 3 seconds
 play.cameraScale(3,.5);
+
 //Zoom out the view 25%, in 3 seconds
 play.cameraScale(3,4);
+
 //Pan and zoom the camera so that the specified objects are visible, in 3 seconds
 play.adjustToObjects(3,sq,circ,A,B);
+
 //Pan and zoom the camera so that all objects in the scene are visible, in 3 seconds
 play.adjustCameraToAllObjects(3);
 ```
@@ -94,18 +109,25 @@ Some method to add or remove objects to the scene are also included:
 ``` java
 //Fade the object from 0 alpha to 1, and add the object to the scene, in 2 seconds
 play.fadeIn(2,sq);
+
 //Fade out the object to 1 alpha to 0, removing it from the scene, in 2 seconds
 play.fadeOut(2,sq);
+
 //Fade out all objects in the scene, in 2 seconds
 play.fadeOutAll(2);
+
 //Scales the object from 0 to 1, adding it to the scene
 play.growIn(2,sq);
+
 //The same, but it also applies a 30 degrees rotation
 play.growIn(2,30*DEGREES,sq);
+
 //The opposite, scales the object to 0 and removes it from the scene
 play.shrinkOut(2,sq);
+
 //The same but it also applies a 45 degrees rotation
 play.shrinkOut(2,45*DEGREES,sq);
+
 //Scales briefly the object, to highlight it, for 1 second
 play.highlight(1,sq);
 ```
@@ -134,6 +156,29 @@ waitSeconds(1);
 ```
 
 ![fadeHighLightShrinkDemo](fadeHighLightShrinkDemo.gif)
+
+
+
+The `MoveAlongPath` animations move an object along a specified path. You can provide a `Shape` object or a `JMPath`objec to determine the path. The moved object will be located with the specified `Anchor` point.
+
+In this example, we show 2 squares moving along  a circle:
+
+```java
+Shape c = Shape.circle();
+Shape a = Shape.square().scale(.3);
+Shape b = a.copy();
+add(c,a, b);
+Animation anim = new MoveAlongPath(5, c, a,Anchor.UL);
+Animation anim2 = new MoveAlongPath(5, c, b,Anchor.DR);
+playAnimation(anim, anim2);
+waitSeconds(3);
+```
+
+
+
+![moveAlongpath](moveAlongpath.gif)
+
+You can try modifying the lambda function of each animation with the `setLambda` method to see what happens. For example, `anim.setLambda(x->x)` or `anim.setLambda(x->4*x*(1-x))`. 
 
 The ShowCreation animation
 --------------------------
