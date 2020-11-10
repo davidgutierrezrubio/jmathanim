@@ -13,7 +13,7 @@ The easiest way to use it is creating a Maven project in your favorite IDE (Netb
 <dependency>
   <groupId>com.github.davidgutierrezrubio</groupId>
   <artifactId>JMathAnim</artifactId>
-  <version>0.8.0</version>
+  <version>0.8.2</version>
 </dependency>
 ```
 
