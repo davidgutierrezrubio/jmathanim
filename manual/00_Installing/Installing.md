@@ -6,7 +6,7 @@ JMathAnim is a Java library using Maven as deployment tool. As as result, you ca
 
 ![image-20201110145052433](01_Install.png)
 
-2) Set the name of the project, Artifact, group id, version and package are not really necessary if you don't intend to publish this a repository. Select "Finish" and the project will be created.
+2) Set the name of the project. The Artifact, group id, version and package are not really necessary if you don't intend to publish this a repository. Select "Finish" and the project will be created.
 
 ![image-20201110145157629](02_Install.png)
 
@@ -66,13 +66,13 @@ If you want to use the snapshot version, you need to add also the repository whe
 
 ![image-20201110150746477](07_install.png)
 
-7) Now we will make this class a subclass of `Scene2D`. If evertyhing goes well, the autocomplete should show the `Scene2D`class, and it will require you to implement the 2 abstract methods `setupSketch()` and `runSketch()`:
+7) Hit the "Clean and build" button. This will tell Maven to download all needed dependencies. Should download JavaFX and Xuggler, which, depending on you bandwidth, may take a few minutes. Then we will make this class a subclass of `Scene2D`. If everything goes well, the autocomplete should show the `Scene2D`class, and it will require you to implement the 2 abstract methods `setupSketch()` and `runSketch()`:
 
 ![image-20201110150929426](08_install.png)
 
-(Oops, I missed the convention that class names should start with a Uppercase letter, sorry!)
+(Oops, I missed the convention that class names should start with a uppercase letter, sorry!)
 
-8) Pressing alt+enter in netbeans allows you to automatically add required imports and implement abstract methods:
+8) Pressing alt+enter in Netbeans allows you to automatically add required imports and implement abstract methods:
 
 ![image-20201110151215103](09_install.png)
 
@@ -86,7 +86,7 @@ If you want to use the snapshot version, you need to add also the repository whe
 
 ![image-20201110151702319](11_install.png)
 
-And execute the code, pressing F6. You will be prompted for the `main` method the first time, just choose the class we created and hit "Select main class". If everything went as planned, yo should see a preview window with this beautiful animation:
+And execute the code, pressing F6. You will be prompted for the `main` method the first time, just choose the class we created and hit "Select main class". If everything went as planned, you should see a preview window with this beautiful animation:
 
 ![12_install](12_install.gif)
 

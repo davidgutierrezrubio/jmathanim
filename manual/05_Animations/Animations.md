@@ -28,6 +28,7 @@ An `Animation` object can be played with the `playAnimation` method, but there i
 
 ````java
 Animation anim=<define here the animation>
+anim.initialize();
 while (!anim.processAnimation()) {
     advanceFrame();
 }

@@ -2,43 +2,18 @@ JMathAnim is a library written in JAVA intended to simplify the process of doing
 
 Current version is 0.8.2. Although with limited features, it can be used to create many, non too complex animations. If you use it and find a bug/missing feature, feel free to fill an issue [here](https://github.com/davidgutierrezrubio/jmathanim/issues).
 
+Currently, the library is tested on
+
+* Windows 10 with Apache Netbeans 12.1 and Oracle JDK 1.8.0_261
+* LUbuntu 20.04, with Apache Netbeans 12.1 an openjdk 11.0.7
+
 For any other question, you can contact me at davidgutierrezrubio@gmail.com.
 
 ### Prerrequisites
-A machine with JDK installed
-
-### Install
-The easiest way to use it is creating a Maven project in your favorite IDE (Netbeans, Eclipse,...) and adding the following dependency to your `pom.xml` file:
-```XML
-<dependency>
-  <groupId>com.github.davidgutierrezrubio</groupId>
-  <artifactId>JMathAnim</artifactId>
-  <version>0.8.2</version>
-</dependency>
-```
-
-If you want to use snapshots version, you need to add the following code instead:
-
-```XML
-<dependency>
-  <groupId>com.github.davidgutierrezrubio</groupId>
-  <artifactId>JMathAnim</artifactId>
-  <version>0.8.3-SNAPSHOT</version>
-</dependency>
-```
-
-and specify the repository for the snapshots version.
-```XML
-<repository>
-  id>snapshots-repo</id>
-  <url>https://oss.sonatype.org/content/repositories/snapshots</url>
-  <releases><enabled>false</enabled></releases>
-  <snapshots><enabled>true</enabled></snapshots>
-</repository>
-```
+A machine with JDK 1.8 installed. A Java IDE editor like [Netbeans](https://netbeans.org/) or [Eclipse](https://www.eclipse.org/projects/) is recommended.
 
 ### Manual
-A basic user's manual can be found [here](manual/index.html)
+A basic user's manual can be found [here](manual/index.html).
 
 ### Basic Example
 We will show a very basic example to illustrate the structure of an animation:
