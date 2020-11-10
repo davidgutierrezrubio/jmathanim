@@ -62,7 +62,6 @@ public class Commands {
 
             @Override
             public void finish() {
-                execute(1);//Ensure that the object is well-located
             }
         }, runtime);
     }//End of shift command
@@ -104,7 +103,6 @@ public class Commands {
 
             @Override
             public void finish() {
-                execute(1);
             }
         }, runtime);
     }//End of scale command
@@ -143,7 +141,6 @@ public class Commands {
 
             @Override
             public void finish() {
-                execute(1);
             }
         }, runtime);
     }//End of rotate command
@@ -177,7 +174,6 @@ public class Commands {
 
             @Override
             public void finish() {
-                execute(1);
             }
         }, runtime);
     }//End of affineTransform command
@@ -221,7 +217,6 @@ public class Commands {
 
             @Override
             public void finish() {
-                execute(1);
             }
         }, runtime);
     }//End of homothecy command
@@ -262,7 +257,6 @@ public class Commands {
 
             @Override
             public void finish() {
-                execute(1);
             }
         }, runtime);
     }//End of reflectionByAxis command
@@ -304,7 +298,6 @@ public class Commands {
 
             @Override
             public void finish() {
-                execute(1);
             }
         }, runtime);
     }//End of reflectionByAxis command
@@ -370,7 +363,6 @@ public class Commands {
 
             @Override
             public void finish() {
-                execute(1);
             }
         }, runtime);
     }//End of setMP command
@@ -420,7 +412,6 @@ public class Commands {
 
             @Override
             public void finish() {
-                execute(1);
             }
 
             @Override
@@ -554,7 +545,6 @@ public class Commands {
 
             @Override
             public void finish() {
-                execute(1);
             }
         }, runtime);
     }//End of growIn command
@@ -590,7 +580,6 @@ public class Commands {
 
             @Override
             public void finish() {
-                execute(1);
             }
         }, runtime);
     }//End of fadeIn command

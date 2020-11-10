@@ -34,7 +34,8 @@ public class Highlight extends Animation {
 
     public Highlight(double runTime, MathObject... objs) {
         super(runTime);
-        scale = Commands.scale(1, null, standOutFactor, objs);
+        scale = Commands.scale(runTime, null, standOutFactor, objs);
+//        scale = Commands.shift(runTime, 0, standOutFactor, objs);
         scale.lambda=(x)->4*x*(1-x);
     }
 
@@ -54,7 +55,7 @@ public class Highlight extends Animation {
 
     @Override
     public void finishAnimation() {
-        scale.doAnim(0);
+        scale.doAnim(1);
     }
 
     @Override

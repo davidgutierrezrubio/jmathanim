@@ -48,6 +48,7 @@ public class ApplyCommand extends Animation {
     
     @Override
     public void finishAnimation() {
+        command.execute(lambda.applyAsDouble(1));
         command.finish();
     }
     

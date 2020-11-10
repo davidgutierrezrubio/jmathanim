@@ -61,7 +61,7 @@ public abstract class Animation {
     public Animation(double runTime) {
         this.runTime = runTime;
         scene = JMathAnimConfig.getConfig().getScene();
-        lambda = (x) -> lambdaDefault(x,1d);
+        lambda = (x) -> lambdaDefault(x,.9d);
     }
 
     public double getFps() {
