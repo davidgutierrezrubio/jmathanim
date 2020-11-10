@@ -61,7 +61,7 @@ public abstract class Animation {
     public Animation(double runTime) {
         this.runTime = runTime;
         scene = JMathAnimConfig.getConfig().getScene();
-        lambda = (x) -> lambdaDefault(x);
+        lambda = (x) -> lambdaDefault(x,1d);
     }
 
     public double getFps() {
@@ -134,10 +134,10 @@ public abstract class Animation {
 
     //Smooth function from https://math.stackexchange.com/questions/328868/how-to-build-a-smooth-transition-function-explicitly
     //TODO: Adapt this to use Cubic Bezier splines
-    protected double lambdaDefault(double t) {
+    protected double lambdaDefault(double t,double smoothness) {
         double h = hh(t);
         double h2 = hh(1 - t);
-        return h / (h + h2);
+        return (1-smoothness)*t+smoothness*h / (h + h2);
 
 //        return t * t * (3 - 2 * t);
 //        return t;
