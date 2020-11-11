@@ -256,15 +256,45 @@ public class PlayAnim {
         scene.playAnimation(Commands.rotate(runTime, center, angle, objs));
     }
 
-    public void transform(double runTime, MathObject obj1, MathObject obj2) {
-        scene.playAnimation(new Transform(runTime, obj1, obj2));
+    /**
+     * Animates a smooth transform from one MathObject to another. The specific
+     * type of transform is chosen depending on the given objects. Currently
+     * there are specific implementations FunctionSimpleInterpolateTransform,
+     * HomothecyStrategyTransform, PointInterpolationCanonical,
+     * PointInterpolationSimpleShapeTransform, and
+     * RotateAndScaleXYStrategyTransform. An optimization strategy is also
+     * chosen, if available. In general, the transformed object may be unusable
+     * after the transform, so it's recommended to remove the transformed object
+     * from the scene and using the destiny object instead.
+     *
+     * @param runTime Duration in seconds
+     * @param transformed Object that will be transformed
+     * @param destiny Object destiny
+     */
+    public void transform(double runTime, MathObject transformed, MathObject destiny) {
+        scene.playAnimation(new Transform(runTime, transformed, destiny));
     }
 
+    /**
+     * Performs a pan and zoom out animation of the current camera to ensure all
+     * objects in the scene fit in the math view, using the default run time for
+     * camera animations. You can set the gaps between objects and mathview
+     * borders, with the camera.setGaps method. This method doesn't zoom in the
+     * view.
+     */
     public void adjustCameraToAllObjects() {
         adjustCameraToAllObjects(defaultRunTimeCamera);
 
     }
 
+    /**
+     * Performs a pan and zoom out animation of the current camera to ensure all
+     * objects in the scene fit in the math view, using the specified run
+     * time.You can set the gaps between objects and mathview borders, with the
+     * camera.setGaps method. This method doesn't zoom in the view.
+     *
+     * @param runtime Duration in seconds
+     */
     public void adjustCameraToAllObjects(double runtime) {
         final Vec gaps = scene.getCamera().getGaps();
         Rect r = scene.getCamera().getMathView();
@@ -274,10 +304,27 @@ public class PlayAnim {
         zoomToRect(runtime, r);
     }
 
+    /**
+     * Performs a pan and zoom out animation of the current camera to ensure all
+     * given objects fit in the math view, using the default run time for camera
+     * animations.You can set the gaps between objects and mathview borders,
+     * with the camera.setGaps method. This method doesn't zoom in the view.
+     *
+     * @param objs Mathobjects to include in the view (varargs)
+     */
     public void adjustToObjects(MathObject... objs) {
         adjustToObjects(defaultRunTimeCamera, objs);
     }
 
+    /**
+     * Performs a pan and zoom out animation of the current camera to ensure all
+     * given objects fit in the math view, using the specified run time. You can
+     * set the gaps between objects and mathview borders, with the
+     * camera.setGaps method. This method doesn't zoom in the view.
+     *
+     * @param runTime Duration in seconds
+     * @param objs Mathobjects to include in the view (varargs)
+     */
     public void adjustToObjects(double runTime, MathObject... objs) {
         final Vec gaps = scene.getCamera().getGaps();
         Rect r = scene.getCamera().getMathView();
@@ -287,6 +334,13 @@ public class PlayAnim {
         zoomToRect(runTime, r);
     }
 
+    /**
+     * This method is similar to adjustToObjects, but it performs a zoom in to
+     * use all availabla math view to show the specified objects
+     *
+     * @param runTime Duration in seconds
+     * @param objs Mathobjects to include in the view (varargs)
+     */
     public void zoomToObjects(double runTime, MathObject... objs) {
         Rect r = objs[0].getBoundingBox();
         for (MathObject obj : objs) {
@@ -295,17 +349,25 @@ public class PlayAnim {
         zoomToRect(runTime, r);
     }
 
-    public void zoomToRect(double runTime, Camera cam, Rect r) {
+    private void zoomToRect(double runTime, Camera cam, Rect r) {
         scene.playAnimation(Commands.cameraZoomToRect(runTime, cam, r));
     }
 
-    public void zoomToRect(double runTime, Rect r) {
-        zoomToRect(runTime, scene.getCamera(), r);
+    /**
+     * Zooms the camera so that it contains the given rect. The resulting
+     * mathview is the smallest view containing the Rect specified.
+     *
+     * @param runTime Duration in seconds
+     * @param rect Rect to zoom to
+     */
+    public void zoomToRect(double runTime, Rect rect) {
+        zoomToRect(runTime, scene.getCamera(), rect);
     }
 
     /**
-     * Animate a zoom over the current area. Rect view is multiplied by scale
-     * factor
+     * Animate a zoom over the current math view. The rect that represents the
+     * math view is multiplied by scale factor, so factors greater than 1 means
+     * zoom out.
      *
      * @param scale Scale factor. A scale of value .5 means applying a x2 zoom
      * factor
@@ -315,34 +377,35 @@ public class PlayAnim {
         PlayAnim.this.cameraScale(runTime, scene.getCamera(), scale);
     }
 
-    public void cameraScale(double runTime, Camera cam, double scale) {
+    private void cameraScale(double runTime, Camera cam, double scale) {
         scene.playAnimation(Commands.cameraZoomToRect(runTime, cam, cam.getMathView().scaled(scale, scale)));
     }
 
-    public void cameraShift(Camera cam, Vec v, double runTime) {
+    private void cameraShift(double runTime, Vec v, Camera cam) {
         scene.playAnimation(Commands.cameraShift(runTime, cam, v));
     }
 
     /**
      * Animates a camera pan with the given shift vector
      *
-     * @param v Shift vector
      * @param runTime Duration in seconds
+     * @param v Shift vector
      */
     public void cameraShift(double runTime, Vec v) {
-        scene.playAnimation(Commands.cameraShift(runTime, scene.getCamera(), v));
+        cameraShift(runTime, v, scene.getCamera());
     }
 
     /**
-     * Convenience method. Animates a camera pan with the given shift vector,
+     * Overloaded method. Animates a camera pan with the given shift vector,
      * specified by x and y coordinates
      *
+     * @param runTime Duration in seconds
      * @param x x coordinate of shift vector
      * @param y y coordinate of shift vector
-     * @param runTime Duration in seconds
+     *
      */
     public void cameraShift(double runTime, double x, double y) {
-        scene.playAnimation(Commands.cameraShift(runTime, scene.getCamera(), new Vec(x, y)));
+        cameraShift(runTime, new Vec(x, y), scene.getCamera());
     }
 
     /**

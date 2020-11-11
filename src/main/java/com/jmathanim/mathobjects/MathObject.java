@@ -31,6 +31,8 @@ import java.util.HashSet;
 import javafx.scene.shape.StrokeLineCap;
 
 /**
+ * This class represents a mathematical object that can be drawed on screen,
+ * transformed or animated. All math objects subclass from here.
  *
  * @author David Gutierrez Rubio davidgutierrezrubio@gmail.com
  */
@@ -281,7 +283,6 @@ public abstract class MathObject implements Drawable, Updateable, Stateable {
      * performed.
      */
     abstract public <T extends MathObject> T copy();
-
 
     /**
      * Add the given scene to the collection of scenes which this object has
@@ -556,7 +557,8 @@ public abstract class MathObject implements Drawable, Updateable, Stateable {
     public void interpolateMPFrom(MODrawProperties mpDst, double alpha) {
         this.mp.interpolateFrom(this.mp, mpDst, alpha);
     }
-      public <T extends MathObject> T fillWithDrawColor(boolean fcd) {
+
+    public <T extends MathObject> T fillWithDrawColor(boolean fcd) {
         this.mp.setFillColorIsDrawColor(fcd);
         return (T) this;
     }

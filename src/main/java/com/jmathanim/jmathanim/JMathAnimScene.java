@@ -120,6 +120,8 @@ public abstract class JMathAnimScene {
 
     /**
      * Execute the current scene
+     *
+     * @return Exit code. 0 is no error, not 0 otherwise.
      */
     public final int execute() {
 
@@ -222,7 +224,7 @@ public abstract class JMathAnimScene {
         for (MathObject obj : objs) {
             if (!objects.contains(obj)) {
                 if (obj instanceof MathObjectGroup) {
-                    for (MathObject subobj:((MathObjectGroup)obj).getObjects()){
+                    for (MathObject subobj : ((MathObjectGroup) obj).getObjects()) {
                         add(subobj);
                     }
                 } else {

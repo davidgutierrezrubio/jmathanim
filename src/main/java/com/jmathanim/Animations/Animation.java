@@ -17,11 +17,9 @@
  */
 package com.jmathanim.Animations;
 
-import com.jmathanim.Animations.Strategies.Transform.Optimizers.NullOptimizationStrategy;
 import com.jmathanim.Animations.Strategies.Transform.Optimizers.OptimizePathsStrategy;
 import com.jmathanim.Utils.JMathAnimConfig;
 import com.jmathanim.jmathanim.JMathAnimScene;
-import com.sun.org.apache.xpath.internal.operations.UnaryOperation;
 import java.util.function.DoubleUnaryOperator;
 
 /**
@@ -33,42 +31,75 @@ import java.util.function.DoubleUnaryOperator;
  */
 public abstract class Animation {
 
-    private static final double DEFAULT_TIME = 1;
+    /**
+     * Default run time for animations, 1 second
+     */
+    public static final double DEFAULT_TIME = 1;
     private double t, dt;
 //    public final MathObject mobj;
+    /**
+     * Time span of the animation, in seconds
+     */
     protected double runTime;
+    /**
+     * Frames per second. This will be needed to compute time step for each
+     * frame.
+     */
     protected double fps;
 //    private int numFrames; //Number of frames of animation
 //    private int frame;
     private boolean isInitialized = false;
     private boolean isEnded = false;
+    /**
+     * Scene where this animation belongs
+     */
     protected final JMathAnimScene scene;
+    /**
+     * Optimization strategy to apply before performing the animation, if any
+     */
     protected OptimizePathsStrategy optimizeStrategy = null;
+    /**
+     * Lambda smooth function, ideally a growing function that maps 0 into 0 and
+     * 1 into 1
+     */
     public DoubleUnaryOperator lambda;
 
+    /**
+     * Returns true if the animation has ended
+     *
+     * @return True if ended, false otherwise
+     */
     public boolean isEnded() {
         return isEnded;
     }
 
+    /**
+     * Creates an empty animation, with the default run time. This constructor
+     * should be called only from implementing subclasses.
+     */
     public Animation() {
         this(DEFAULT_TIME);
     }
 
-    public Animation(int runTime) {
-        this((double) runTime);
-    }
-
+    /**
+     * Creates an empty animation, with specified run time.This constructor
+     * should be called only from implementing subclasses.
+     *
+     * @param runTime Duration of animation, in seconds
+     */
     public Animation(double runTime) {
         this.runTime = runTime;
         scene = JMathAnimConfig.getConfig().getScene();
-        lambda = (x) -> lambdaDefault(x,.9d);
+        lambda = (x) -> lambdaDefault(x, .9d);
     }
 
-    public double getFps() {
-        return fps;
-    }
-
-    public void setFps(double fps) {
+    /**
+     * Sets the frames per second. This value is automatically set by the
+     * initialize method
+     *
+     * @param fps Frames per second
+     */
+    protected void setFps(double fps) {
         this.fps = fps;
         dt = 1.d / (runTime * fps + 3);
         t = 0;
@@ -90,7 +121,7 @@ public abstract class Animation {
         }
         boolean resul;
 //        if (frame < numFrames || t < 1 + dt) {
-        
+
         if (t < 1 && t >= 0) {
             this.doAnim(t);
 
@@ -109,7 +140,8 @@ public abstract class Animation {
     }
 
     /**
-     * Initialize animation. This method is immediately called before playing
+     * Initialize animation. This method should be called immediately before
+     * playing
      */
     abstract public void initialize();
 
@@ -122,11 +154,10 @@ public abstract class Animation {
      */
     abstract public void doAnim(double t);
 
+    /**
+     * Finish animation, deleting auxiliary objects or anything necessary.
+     */
     abstract public void finishAnimation();
-
-    public double getT() {
-        return t;
-    }
 
     private double hh(double t) {
         return (t == 0 ? 0 : Math.exp(-1 / t));
@@ -134,10 +165,17 @@ public abstract class Animation {
 
     //Smooth function from https://math.stackexchange.com/questions/328868/how-to-build-a-smooth-transition-function-explicitly
     //TODO: Adapt this to use Cubic Bezier splines
-    protected double lambdaDefault(double t,double smoothness) {
+    /**
+     * Default lambda function
+     *
+     * @param t Parameter to compute value, from 0 to 1
+     * @param smoothness 1 full smoothnes, 0 makes the function identity
+     * @return
+     */
+    protected double lambdaDefault(double t, double smoothness) {
         double h = hh(t);
         double h2 = hh(1 - t);
-        return (1-smoothness)*t+smoothness*h / (h + h2);
+        return (1 - smoothness) * t + smoothness * h / (h + h2);
 
 //        return t * t * (3 - 2 * t);
 //        return t;
@@ -145,18 +183,31 @@ public abstract class Animation {
 
     abstract public void addObjectsToScene(JMathAnimScene scene);
 
+    /**
+     * Sets the optimization strategy. If null, the animation will try to find
+     * the most suitable optimization.
+     *
+     * @param strategy Optimization strategy
+     */
     public void setOptimizationStrategy(OptimizePathsStrategy strategy) {
-            optimizeStrategy = strategy;
+        optimizeStrategy = strategy;
     }
 
+    /**
+     * Returns the smooth function
+     *
+     * @return A lambda operator with the smooth function
+     */
     public DoubleUnaryOperator getLambda() {
         return lambda;
     }
 
+    /**
+     * Sets the smooth function
+     *
+     * @param lambda A lambda operator with the new smooth function
+     */
     public void setLambda(DoubleUnaryOperator lambda) {
         this.lambda = lambda;
-    }
-     public void setOptimizeStrategy(OptimizePathsStrategy optimizeStrategy) {
-        this.optimizeStrategy = optimizeStrategy;
     }
 }
