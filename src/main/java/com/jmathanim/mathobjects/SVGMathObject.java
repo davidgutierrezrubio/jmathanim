@@ -25,6 +25,7 @@ import com.jmathanim.Utils.MODrawProperties;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.JMPathPoint.JMPathPointType;
 import java.io.File;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -69,11 +70,23 @@ public class SVGMathObject extends MultiShapeObject {
     }
 
     public SVGMathObject(String fname) {
-        filename = fname;
+        File f = new File(fname);
         this.setObjectType(MathObjectType.SVG);
-        if (!"".equals(filename))
         try {
-            importSVG(new File(filename));
+            importSVG(f.toURI().toURL());
+        } catch (MalformedURLException ex) {
+            Logger.getLogger(SVGMathObject.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (Exception ex) {
+            Logger.getLogger(SVGMathObject.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        currentFillColor = mp.getFillColor().copy();
+        currentDrawColor = mp.getDrawColor().copy();
+    }
+
+    public SVGMathObject(URL url) {
+        this.setObjectType(MathObjectType.SVG);
+        try {
+            importSVG(url);
         } catch (Exception ex) {
             Logger.getLogger(SVGMathObject.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -83,9 +96,15 @@ public class SVGMathObject extends MultiShapeObject {
 
     protected final void importSVG(File file) throws Exception {
         JMathAnimScene.logger.info("Importing SVG file {}", file.getCanonicalPath());
+        importSVG(file.toURI().toURL());
+    }
+
+    protected final void importSVG(URL urlSvg) throws Exception {
+
         DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
         DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
-        org.w3c.dom.Document doc = dBuilder.parse(file);
+
+        org.w3c.dom.Document doc = dBuilder.parse(urlSvg.openStream());
 
         //Look for svg elements in the root document
         processChildNodes((doc.getDocumentElement()));

@@ -28,6 +28,7 @@ import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -77,11 +78,11 @@ public class Arrow2D extends MathObject {
         name += ".svg";
         String baseFileName;
         try {
-            baseFileName = outputDir.getCanonicalPath() + File.separator + "arrows" + File.separator + name;
-//            URL arrowUrl = this.getClass().getResource("arrows/"+name);
-            svg = new SVGMathObject(baseFileName);
+//            baseFileName = outputDir.getCanonicalPath() + File.separator + "arrows" + File.separator + name;
+            URL arrowUrl = this.getClass().getClassLoader().getResource("arrows/"+name);
+            svg = new SVGMathObject(arrowUrl);
 
-        } catch (NullPointerException | IOException ex) {
+        } catch (NullPointerException ex) {
             JMathAnimScene.logger.error("Arrow head " + name + " not found");
         }
         return svg;

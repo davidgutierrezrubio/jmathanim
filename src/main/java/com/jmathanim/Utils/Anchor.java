@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020 David Gutiérrez Rubio davidgutierrezrubio@gmail.com
+ * Copyright (C) 2020 David Gutiérrez Rubio davidgutierrezrubiogmail.com
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -76,10 +76,7 @@ public class Anchor {
      * object (determined by its bounding box)
      *
      * @param obj Object to get anchor point
-     * @param anchor Type of anchor point null null null null null null null
-     * null null null null null     {@link BY_POINT}, {@link BY_CENTER}, {@link RIGHT}, {@link UPPER},
-     * {@link LEFT}, {@link LOWER}, {@link DR}, {@link UR},
-     * {@link UL}, {@link DL}
+     * @param anchor Type of anchor defined in the enum Anchor.Type
      * @return The anchor point
      */
     public static Point getAnchorPoint(MathObject obj, Type anchor) {
@@ -93,10 +90,7 @@ public class Anchor {
      * added, equal in x and y direction.
      *
      * @param obj Object to get anchor point
-     * @param anchor Type of anchor point null null null null null null null
-     * null null null null null null     {@link BY_POINT}, {@link BY_CENTER}, {@link RIGHT}, {@link UPPER},
-     * {@link LEFT}, {@link LOWER}, {@link DR}, {@link UR},
-     * {@link UL}, {@link DL}
+     * @param anchor Type of anchor defined in the enum Anchor.Type
      * @param gap Gap to add to the anchor
      * @return The anchor point
      */
@@ -111,10 +105,7 @@ public class Anchor {
      * added, specified both by its x component and y component.
      *
      * @param obj Object to get anchor point
-     * @param anchor Type of anchor point null null null null null null null
-     * null null null null null     {@link BY_POINT}, {@link BY_CENTER}, {@link RIGHT}, {@link UPPER},
-     * {@link LEFT}, {@link LOWER}, {@link DR}, {@link UR},
-     * {@link UL}, {@link DL}
+     * @param anchor Type of anchor defined in the enum Anchor.Type
      * @param xgap Horizontal gap
      * @param ygap Vertical gap
      * @return The anchor point
