@@ -23,6 +23,7 @@ import com.jmathanim.mathobjects.JMPathPoint.JMPathPointType;
 import com.jmathanim.mathobjects.Point;
 
 /**
+ * Class with static methods to perform interpolations on path
  *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */

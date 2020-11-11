@@ -60,7 +60,7 @@ public class TransformedPoint extends Point{
 
     @Override
     public void registerChildrenToBeUpdated(JMathAnimScene scene) {
-        scene.registerObjectToBeUpdated(this.dstPoint);
+        scene.registerUpdateable(this.dstPoint);
     }
     
     

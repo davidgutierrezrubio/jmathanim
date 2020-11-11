@@ -22,25 +22,43 @@ import com.jmathanim.mathobjects.FunctionGraph;
 import com.jmathanim.mathobjects.Point;
 
 /**
+ * Updateable point which updates the y-coordinate to be f(x). Shifting this
+ * point horizontally moves the point along the funcion graph
  *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
-public class PointOnFunctionGraph extends Point implements Updateable {
+public class PointOnFunctionGraph extends Point {
 
     FunctionGraph fg;
     public Point slopePointRight;
     public Point slopePointLeft;
 
-    public PointOnFunctionGraph(FunctionGraph fg) {
+    /**
+     * Creates an updateable point which automatically updates the y-component to be so that lies in the function graph
+     * @param x The initial x component of the point
+     * @param fg Function graph
+     */
+    public PointOnFunctionGraph(double x, FunctionGraph fg) {
         super();
         this.fg = fg;
-        slopePointRight = Point.at(0, 0);
-        slopePointLeft = Point.at(0, 0);
+        slopePointRight = Point.at(x, 0);
+        slopePointLeft = Point.at(x, 0);
+        this.v.x = x;
+        computePoints();
+    }
+
+    @Override
+    public int getUpdateLevel() {
+        return fg.getUpdateLevel()+1;
     }
 
     @Override
     public void update(JMathAnimScene scene) {
         super.update(scene);
+        computePoints();
+    }
+
+    private void computePoints() {
         this.v.y = this.fg.function.applyAsDouble(this.v.x);
         slopePointRight.v.x = this.v.x + 1;
         slopePointRight.v.y = this.v.y + this.fg.getSlope(this.v.x, -1);

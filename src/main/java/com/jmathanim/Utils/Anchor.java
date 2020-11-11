@@ -27,48 +27,48 @@ import com.jmathanim.mathobjects.Point;
  */
 public class Anchor {
 
-    /**
-     * Anchor is specified by a given point
-     */
-    public static final int BY_POINT = 1;
-    /**
-     * Anchor determined by the center of the object
-     */
-    public static final int BY_CENTER = 2;
-
-    /**
-     * Right anchor point. Vertically centered.
-     */
-    public static final int RIGHT = 3;
-    /**
-     * Upper anchor point. Horizontally centered
-     */
-    public static final int UPPER = 4;
-    /**
-     * Left anchor point. Vertically centered.
-     */
-    public static final int LEFT = 5;
-    /**
-     * Lower anchor point. Horizontally centered
-     */
-    public static final int LOWER = 6;
-
-    /**
-     * Down-Right anchor point
-     */
-    public static final int DR = 7;
-    /**
-     * Up-Right anchor point
-     */
-    public static final int UR = 8;
-    /**
-     * Up-Left anchor point
-     */
-    public static final int UL = 9;
-    /**
-     * Down-Left anchor point
-     */
-    public static final int DL = 10;
+    public enum Type {
+        /**
+         * Anchor is specified by a given point
+         */
+        BY_POINT,
+        /**
+         * Anchor determined by the center of the object
+         */
+        BY_CENTER,
+        /**
+         * Right anchor point. Vertically centered.
+         */
+        RIGHT,
+        /**
+         * Upper anchor point. Horizontally centered
+         */
+        UPPER,
+        /**
+         * Left anchor point. Vertically centered.
+         */
+        LEFT,
+        /**
+         * Lower anchor point. Horizontally centered
+         */
+        LOWER,
+        /**
+         * Down-Right anchor point
+         */
+        DR,
+        /**
+         * Up-Right anchor point
+         */
+        UR,
+        /**
+         * Up-Left anchor point
+         */
+        UL,
+        /**
+         * Down-Left anchor point
+         */
+        DL
+    }
 
     /**
      * Return a {@link Point} object that represents the given anchor. For
@@ -77,12 +77,12 @@ public class Anchor {
      *
      * @param obj Object to get anchor point
      * @param anchor Type of anchor point null null null null null null null
-     * null null null null     {@link BY_POINT}, {@link BY_CENTER}, {@link RIGHT}, {@link UPPER},
+     * null null null null null     {@link BY_POINT}, {@link BY_CENTER}, {@link RIGHT}, {@link UPPER},
      * {@link LEFT}, {@link LOWER}, {@link DR}, {@link UR},
      * {@link UL}, {@link DL}
      * @return The anchor point
      */
-    public static Point getAnchorPoint(MathObject obj, int anchor) {
+    public static Point getAnchorPoint(MathObject obj, Type anchor) {
         return getAnchorPoint(obj, anchor, 0, 0);
     }
 
@@ -94,13 +94,13 @@ public class Anchor {
      *
      * @param obj Object to get anchor point
      * @param anchor Type of anchor point null null null null null null null
-     * null null null null null     {@link BY_POINT}, {@link BY_CENTER}, {@link RIGHT}, {@link UPPER},
+     * null null null null null null     {@link BY_POINT}, {@link BY_CENTER}, {@link RIGHT}, {@link UPPER},
      * {@link LEFT}, {@link LOWER}, {@link DR}, {@link UR},
      * {@link UL}, {@link DL}
      * @param gap Gap to add to the anchor
      * @return The anchor point
      */
-    public static Point getAnchorPoint(MathObject obj, int anchor, double gap) {
+    public static Point getAnchorPoint(MathObject obj, Type anchor, double gap) {
         return getAnchorPoint(obj, anchor, gap, gap);
     }
 
@@ -112,14 +112,14 @@ public class Anchor {
      *
      * @param obj Object to get anchor point
      * @param anchor Type of anchor point null null null null null null null
-     * null null null null     {@link BY_POINT}, {@link BY_CENTER}, {@link RIGHT}, {@link UPPER},
+     * null null null null null     {@link BY_POINT}, {@link BY_CENTER}, {@link RIGHT}, {@link UPPER},
      * {@link LEFT}, {@link LOWER}, {@link DR}, {@link UR},
      * {@link UL}, {@link DL}
      * @param xgap Horizontal gap
      * @param ygap Vertical gap
      * @return The anchor point
      */
-    public static Point getAnchorPoint(MathObject obj, int anchor, double xgap, double ygap) {
+    public static Point getAnchorPoint(MathObject obj, Type anchor, double xgap, double ygap) {
         Point resul = new Point();
         switch (anchor) {
             case BY_POINT:
@@ -169,40 +169,40 @@ public class Anchor {
      * @param anchorPoint Anchor to compute reverse
      * @return Reversed anchor
      */
-    public static int reverseAnchorPoint(int anchorPoint) {
-        int resul = BY_CENTER;//Default
+    public static Type reverseAnchorPoint(Type anchorPoint) {
+        Type resul = Type.BY_CENTER;//Default
         switch (anchorPoint) {
             case BY_POINT:
-                resul = BY_POINT;
+                resul = Type.BY_POINT;
                 break;
             case BY_CENTER:
-                resul = BY_CENTER;
+                resul = Type.BY_CENTER;
                 break;
 
             case LEFT:
-                resul = RIGHT;
+                resul = Type.RIGHT;
                 break;
             case RIGHT:
-                resul = LEFT;
+                resul = Type.LEFT;
                 break;
             case LOWER:
-                resul = UPPER;
+                resul = Type.UPPER;
                 break;
             case UPPER:
-                resul = LOWER;
+                resul = Type.LOWER;
                 break;
 
             case UL:
-                resul = DR;
+                resul = Type.DR;
                 break;
             case UR:
-                resul = DL;
+                resul = Type.DL;
                 break;
             case DL:
-                resul = UR;
+                resul = Type.UR;
                 break;
             case DR:
-                resul = UL;
+                resul = Type.UL;
                 break;
         }
         return resul;
@@ -217,7 +217,7 @@ public class Anchor {
      * @param yMargin y margin to apply to the anchor
      * @return A {@link Point} located at the current anchor
      */
-    public static Point getScreenAnchorPoint(int anchor, double xMargin, double yMargin) {
+    public static Point getScreenAnchorPoint(Type anchor, double xMargin, double yMargin) {
         Point resul = new Point();
         Rect mathViewWithGap = JMathAnimConfig.getConfig().getCamera().getMathView().addGap(-xMargin, -yMargin);
         switch (anchor) {

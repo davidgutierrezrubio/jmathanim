@@ -19,6 +19,7 @@ package com.jmathanim.mathobjects;
 
 import com.jmathanim.Animations.AffineJTransform;
 import com.jmathanim.Utils.Anchor;
+import com.jmathanim.Utils.Anchor.Type;
 import com.jmathanim.Utils.JMColor;
 import com.jmathanim.Utils.JMathAnimConfig;
 import com.jmathanim.Utils.MODrawProperties;
@@ -69,22 +70,10 @@ public abstract class MathObject implements Drawable, Updateable, Stateable {
     public boolean absoluteSize = false;
 
     private MathObjectType objectType;
-    /**
-     * Scenes where this object belongs.
-     *
-     */
-    private HashSet<JMathAnimScene> scenes;
     public boolean visible = true;
-    /**
-     * This parameter specifies the amount of object to be drawn 0=none,
-     * 1/2=draw half
-     */
-//    protected double drawParam;
-
-    public int updateLevel;
-//    private Point anchorPoint;
     public Point absoluteAnchorPoint;
-    private int absoluteAnchorType = Anchor.BY_CENTER;
+    private Type absoluteAnchorType = Type.BY_CENTER;
+    private JMathAnimScene scene;
 
     public MathObject() {
         this(null);
@@ -93,8 +82,25 @@ public abstract class MathObject implements Drawable, Updateable, Stateable {
     public MathObject(MODrawProperties prop) {
         mp = JMathAnimConfig.getConfig().getDefaultMP();//Default MP values
         mp.copyFrom(prop);//Copy all non-null values from prop
-        scenes = new HashSet<>();
-        updateLevel = 0;
+    }
+
+    /**
+     * Returns the scene where this object is added to
+     *
+     * @return The scene
+     */
+    public JMathAnimScene getScene() {
+        return scene;
+    }
+
+    /**
+     * Sets the scene where this object has been added. This method should be
+     * called from the JMathAnimScene.add method
+     *
+     * @param scene Scene where has been added
+     */
+    public void setScene(JMathAnimScene scene) {
+        this.scene = scene;
     }
 
     /**
@@ -123,7 +129,7 @@ public abstract class MathObject implements Drawable, Updateable, Stateable {
      * @return The same object, after moving
      */
     public <T extends MathObject> T moveTo(Point p) {
-        putAt(p, Anchor.BY_CENTER);
+        putAt(p, Type.BY_CENTER);
         return (T) this;
     }
 
@@ -246,7 +252,7 @@ public abstract class MathObject implements Drawable, Updateable, Stateable {
     }
 
     public final <T extends MathObject> T center() {
-        this.stackToScreen(Anchor.BY_CENTER);
+        this.stackToScreen(Type.BY_CENTER);
         return (T) this;
     }
 
@@ -285,34 +291,6 @@ public abstract class MathObject implements Drawable, Updateable, Stateable {
     abstract public <T extends MathObject> T copy();
 
     /**
-     * Add the given scene to the collection of scenes which this object has
-     * been added to.
-     *
-     * @param scene Scene
-     */
-    public void addScene(JMathAnimScene scene) {
-        scenes.add(scene);
-//        for (MathObject mob:cousins)
-//        {
-//            scen.add(mob);
-//        }
-    }
-
-    /**
-     * Remove the given scene from the collection of scenes which this object
-     * has been added to.
-     *
-     * @param scene Scene
-     */
-    public void removeScene(JMathAnimScene scene) {
-        scenes.remove(scene);
-//         for (MathObject mob:descendent)
-//        {
-//            mob.removeScene(scen);
-//        }
-    }
-
-    /**
      * Returns the Bounding box with limits of the MathObject
      *
      * @return A Rect with (xmin,ymin,xmax,ymax)
@@ -327,11 +305,6 @@ public abstract class MathObject implements Drawable, Updateable, Stateable {
     public abstract void registerChildrenToBeUpdated(JMathAnimScene scene);
 
     public abstract void unregisterChildrenToBeUpdated(JMathAnimScene scene);
-
-    @Override
-    public int getUpdateLevel() {
-        return updateLevel;
-    }
 
     @Override
     public void saveState() {
@@ -367,71 +340,143 @@ public abstract class MathObject implements Drawable, Updateable, Stateable {
         return (T) this;
     }
 
-    //Convenience methods to set drawing parameters
+    /**
+     * Sets the draw color of the object
+     *
+     * @param <T> Subclass of MathObject that calls the method
+     * @param dc A JMcolor object with the draw color
+     * @return The MathObject subclass
+     */
     public <T extends MathObject> T drawColor(JMColor dc) {
         mp.getDrawColor().copyFrom(dc);
         return (T) this;
     }
 
+    /**
+     * Sets the draw color of the object. Overloaded method.
+     *
+     * @param <T> Subclass of MathObject that calls the method
+     * @param str A string representing the draw color, as in the JMcolor.parse
+     * method
+     * @return The MathObject subclass
+     */
     public <T extends MathObject> T drawColor(String str) {
         drawColor(JMColor.parse(str));
         return (T) this;
     }
 
+    /**
+     * Sets the fill color of the object
+     *
+     * @param <T> Subclass of MathObject that calls the method
+     * @param fc A JMcolor object with the fill color
+     * @return The MathObject subclass
+     */
     public <T extends MathObject> T fillColor(JMColor fc) {
         mp.getFillColor().copyFrom(fc);
         return (T) this;
     }
 
+    /**
+     * Sets the fill color of the object. Overloaded method.
+     *
+     * @param <T> Subclass of MathObject that calls the method
+     * @param str A string representing the fill color, as in the JMcolor.parse
+     * method
+     * @return The MathObject subclass
+     */
     public <T extends MathObject> T fillColor(String str) {
         fillColor(JMColor.parse(str));
         return (T) this;
     }
 
+    /**
+     * Sets the alpha component of the draw color
+     *
+     * @param <T> Subclass of MathObject that calls the method
+     * @param alpha Alpha value, between 0 (transparent) and 1 (opaque)
+     * @return The MathObject subclass
+     */
     public <T extends MathObject> T drawAlpha(double alpha) {
         mp.getDrawColor().alpha = alpha;
         return (T) this;
     }
 
+    /**
+     * Sets the alpha component of the fill color
+     *
+     * @param <T> Subclass of MathObject that calls the method
+     * @param alpha Alpha value, between 0 (transparent) and 1 (opaque)
+     * @return This MathObject subclass
+     */
     public <T extends MathObject> T fillAlpha(double alpha) {
         mp.getFillColor().alpha = alpha;
         return (T) this;
     }
 
     /**
-     * Multiplies alpha Fill color by a scale
+     * Multiplies alpha fill color by a scale
      *
-     * @param <T> MathObject type
-     * @param t Scale to multiply alpha
-     * @return This object
+     * @param <T> Subclass of MathObject that calls the method
+     * @param alphaScale Scale to multiply alpha
+     * @return This MathObject subclass
      */
-    public <T extends MathObject> T multFillAlpha(double t) {
-        this.mp.getFillColor().alpha *= t;
+    public <T extends MathObject> T multFillAlpha(double alphaScale) {
+        double newAlpha = this.mp.getFillColor().alpha * alphaScale;
+        newAlpha = (newAlpha > 1 ? 1 : newAlpha);
+        newAlpha = (newAlpha < 0 ? 0 : newAlpha);
+        this.mp.getFillColor().alpha = newAlpha;
         return (T) this;
     }
 
     /**
-     * Multiplies alph Draw color by a scale
+     * Multiplies alpha draw color by a scale
      *
-     * @param <T> MathObject type
-     * @param t Scale to multiply alpha
-     * @return This object
+     * @param <T> Subclass of MathObject that calls the method
+     * @param alphaScale Scale to multiply alpha
+     * @return This MathObject subclass
      */
-    public <T extends MathObject> T multDrawAlpha(double t) {
-        this.mp.getDrawColor().alpha *= t;
+    public <T extends MathObject> T multDrawAlpha(double alphaScale) {
+        double newAlpha = this.mp.getDrawColor().alpha * alphaScale;
+        newAlpha = (newAlpha > 1 ? 1 : newAlpha);
+        newAlpha = (newAlpha < 0 ? 0 : newAlpha);
+        this.mp.getDrawColor().alpha = newAlpha;
         return (T) this;
     }
 
-    public <T extends MathObject> T thickness(double th) {
-        mp.thickness = th;
+    /**
+     * Sets the thickness to draw the contour of the object
+     *
+     * @param <T> Subclass of MathObject that calls the method
+     * @param newThickness Thickness
+     * @return This MathObject subclass
+     */
+    public <T extends MathObject> T thickness(double newThickness) {
+        mp.thickness = newThickness;
         return (T) this;
     }
 
-    public <T extends MathObject> T dashStyle(MODrawProperties.DashStyle dst) {
-        mp.dashStyle = dst;
+    /**
+     * Sets the dashStyle, from one of the types defined in the enum
+     * MODrawProperties.DashStyle
+     *
+     * @param <T> Subclass of MathObject that calls the method
+     * @param dashStyle A value from enum MODrawProperties.DashStyle
+     * @return This MathObject subclass
+     */
+    public <T extends MathObject> T dashStyle(MODrawProperties.DashStyle dashStyle) {
+        mp.dashStyle = dashStyle;
         return (T) this;
     }
 
+    /**
+     * Sets the flag visible. If false, the object won't be draw using the
+     * renderer, although it still will be in the scene.
+     *
+     * @param <T> Subclass of MathObject that calls the method
+     * @param visible
+     * @return This MathObject subclass
+     */
     public <T extends MathObject> T visible(boolean visible) {
         this.visible = visible;
         return (T) this;
@@ -447,15 +492,23 @@ public abstract class MathObject implements Drawable, Updateable, Stateable {
 
     public void setAbsoluteAnchorPoint(Point p) {
         this.absoluteAnchorPoint = p;
-        absoluteAnchorType = Anchor.BY_POINT;
+        absoluteAnchorType = Type.BY_POINT;
 
     }
 
-    public final <T extends MathObject> T stackTo(MathObject obj, int anchorType) {
+    /**
+     * Stack the object to another using a specified anchor.
+     *
+     * @param <T>
+     * @param obj
+     * @param anchorType
+     * @return
+     */
+    public final <T extends MathObject> T stackTo(MathObject obj, Type anchorType) {
         return stackTo(obj, anchorType, 0);
     }
 
-    public <T extends MathObject> T stackTo(MathObject obj, int anchorType, double gap) {
+    public <T extends MathObject> T stackTo(MathObject obj, Type anchorType, double gap) {
         Point B = Anchor.getAnchorPoint(obj, anchorType, gap);
         Point A = Anchor.getAnchorPoint(this, Anchor.reverseAnchorPoint(anchorType));
         this.shift(A.to(B));
@@ -469,7 +522,7 @@ public abstract class MathObject implements Drawable, Updateable, Stateable {
      * @param anchorType {@link Anchor} type
      * @return The current object
      */
-    public final <T extends MathObject> T stackToScreen(int anchorType) {
+    public final <T extends MathObject> T stackToScreen(Type anchorType) {
         return stackToScreen(anchorType, 0, 0);
     }
 
@@ -483,26 +536,26 @@ public abstract class MathObject implements Drawable, Updateable, Stateable {
      * @param yMargin y margin
      * @return The current object
      */
-    public <T extends MathObject> T stackToScreen(int anchorType, double xMargin, double yMargin) {
+    public <T extends MathObject> T stackToScreen(Type anchorType, double xMargin, double yMargin) {
         Point B = Anchor.getScreenAnchorPoint(anchorType, xMargin, yMargin);
         Point A = Anchor.getAnchorPoint(this, anchorType);
         return this.shift(A.to(B));
     }
 
-    public final <T extends MathObject> T putAt(Point p, int anchorType) {
+    public final <T extends MathObject> T putAt(Point p, Type anchorType) {
         return putAt(p, anchorType, 0);
     }
 
-    public <T extends MathObject> T putAt(Point p, int anchorType, double gap) {
+    public <T extends MathObject> T putAt(Point p, Type anchorType, double gap) {
         Point anchorPoint = Anchor.getAnchorPoint(this, anchorType, gap);
         return shift(anchorPoint.to(p));
     }
 
     public <T extends MathObject> T setAbsoluteSize() {
-        return setAbsoluteSize(Anchor.BY_CENTER);
+        return setAbsoluteSize(Type.BY_CENTER);
     }
 
-    public <T extends MathObject> T setAbsoluteSize(int anchorType) {
+    public <T extends MathObject> T setAbsoluteSize(Type anchorType) {
         absoluteSize = true;
         absoluteAnchorType = anchorType;
         return (T) this;
@@ -561,5 +614,15 @@ public abstract class MathObject implements Drawable, Updateable, Stateable {
     public <T extends MathObject> T fillWithDrawColor(boolean fcd) {
         this.mp.setFillColorIsDrawColor(fcd);
         return (T) this;
+    }
+
+    //Updateable methods
+    @Override
+    public void update(JMathAnimScene scene) {
+    }
+
+    @Override
+    public int getUpdateLevel() {
+        return 0;//Default value, objects that need to be updated should override this
     }
 }

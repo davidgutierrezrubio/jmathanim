@@ -18,6 +18,7 @@
 package com.jmathanim.mathobjects;
 
 import com.jmathanim.Renderers.Renderer;
+import com.jmathanim.Utils.Anchor;
 import com.jmathanim.Utils.JMColor;
 import com.jmathanim.Utils.MODrawProperties;
 import com.jmathanim.Utils.Rect;
@@ -133,7 +134,7 @@ public class MathObjectGroup extends MathObject implements Iterable<MathObject> 
     }
 
     @Override
-    public <T extends MathObject> T setAbsoluteSize(int anchorType) {
+    public <T extends MathObject> T setAbsoluteSize(Anchor.Type anchorType) {
         for (MathObject obj : objects) {
             obj.setAbsoluteSize(anchorType);
         }
@@ -146,12 +147,12 @@ public class MathObjectGroup extends MathObject implements Iterable<MathObject> 
     }
 
     @Override
-    public <T extends MathObject> T stackToScreen(int anchorType, double xMargin, double yMargin) {
+    public <T extends MathObject> T stackToScreen(Anchor.Type anchorType, double xMargin, double yMargin) {
         return super.stackToScreen(anchorType, xMargin, yMargin); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public <T extends MathObject> T stackTo(MathObject obj, int anchorType, double gap) {
+    public <T extends MathObject> T stackTo(MathObject obj, Anchor.Type anchorType, double gap) {
         return super.stackTo(obj, anchorType, gap); //To change body of generated methods, choose Tools | Templates.
     }
 
@@ -230,7 +231,7 @@ public class MathObjectGroup extends MathObject implements Iterable<MathObject> 
         }
     }
 
-    public void setLayout(int anchorType, double gap) {
+    public void setLayout(Anchor.Type anchorType, double gap) {
 
         for (int n = 1; n < objects.size(); n++) {
             objects.get(n).stackTo(objects.get(n - 1), anchorType, gap);

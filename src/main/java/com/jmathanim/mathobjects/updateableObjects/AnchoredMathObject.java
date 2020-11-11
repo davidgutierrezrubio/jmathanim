@@ -19,6 +19,7 @@
 package com.jmathanim.mathobjects.updateableObjects;
 
 import com.jmathanim.Utils.Anchor;
+import com.jmathanim.Utils.Anchor.Type;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.MathObject;
@@ -35,27 +36,27 @@ public class AnchoredMathObject implements Updateable {
     private MathObject mobj;
     private Point refPoint;
     private MathObject dstObject;
-    private int anchorMethodFrom;
-    private int anchorMethodTo;
+    private Type anchorMethodFrom;
+    private Type anchorMethodTo;
 
     public AnchoredMathObject(MathObject mobj, Point refPoint, MathObject dstObject) {
-        this(mobj, refPoint, dstObject, Anchor.BY_CENTER);
+        this(mobj, refPoint, dstObject, Type.BY_CENTER);
     }
 
-    public AnchoredMathObject(MathObject mobj, int method, Point dstPoint) {
-        this(mobj, method, dstPoint, Anchor.BY_POINT);
+    public AnchoredMathObject(MathObject mobj, Type method, Point dstPoint) {
+        this(mobj, method, dstPoint, Type.BY_POINT);
 
     }
 
-    public AnchoredMathObject(MathObject mobj, Point refPoint, MathObject dstPoint, int methodTo) {
+    public AnchoredMathObject(MathObject mobj, Point refPoint, MathObject dstPoint, Type methodTo) {
         this.mobj = mobj;
         this.refPoint = refPoint;
         this.dstObject = dstPoint;
-        anchorMethodFrom = Anchor.BY_POINT;
+        anchorMethodFrom = Type.BY_POINT;
         anchorMethodTo = methodTo;
     }
 
-    public AnchoredMathObject(MathObject mobj, int methodFrom, MathObject dstPoint, int methodTo) {
+    public AnchoredMathObject(MathObject mobj, Type methodFrom, MathObject dstPoint, Type methodTo) {
         this.mobj = mobj;
         this.dstObject = dstPoint;
         this.refPoint = new Point();//This point is not used, just for computing update level easily
@@ -74,7 +75,7 @@ public class AnchoredMathObject implements Updateable {
         Point dst = Anchor.getAnchorPoint(dstObject, anchorMethodTo);
 
         Point src = new Point();
-        if (anchorMethodFrom == Anchor.BY_POINT) {
+        if (anchorMethodFrom == Type.BY_POINT) {
             src = refPoint;
         } else {
             src = Anchor.getAnchorPoint(mobj, anchorMethodFrom);

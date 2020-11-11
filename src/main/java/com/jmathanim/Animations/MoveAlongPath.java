@@ -17,6 +17,8 @@
  */
 package com.jmathanim.Animations;
 
+import com.jmathanim.Utils.Anchor;
+import com.jmathanim.Utils.Anchor.Type;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.JMPath;
 import com.jmathanim.mathobjects.MathObject;
@@ -33,28 +35,34 @@ public class MoveAlongPath extends Animation {
 
     private JMPath path;
     private MathObject mobjTransformed;
-    private int anchorType;
+    private Type anchorType;
 
     /**
-     * Creates a new instance of this animation
+     * Animates an object moving it through a given path. An anchor determines
+     * what point of the object will locate at the moving point of the path
      *
      * @param runtime Duration in seconds
      * @param sh Shape whose path will be the trajectory
      * @param mobjTransformed Object to move
-     * @param anchorType Anchor that determines which point of the object will lie in the path
+     * @param anchorType Anchor that determines which point of the object will
+     * lie in the path
      */
-    public MoveAlongPath(double runtime, Shape sh, MathObject mobjTransformed, int anchorType) {
+    public MoveAlongPath(double runtime, Shape sh, MathObject mobjTransformed, Type anchorType) {
         this(runtime, sh.getPath(), mobjTransformed, anchorType);
     }
- /**
-     * Creates a new instance of this animation
+
+    /**
+     * Animates an object moving it through a given path. An anchor determines
+     * what point of the object will locate at the moving point of the path
+     *
      *
      * @param runtime Duration in seconds
      * @param path Trajectory path
      * @param mobjTransformed Object to move
-     * @param anchorType Anchor that determines which point of the object will lie in the path
+     * @param anchorType Anchor that determines which point of the object will
+     * lie in the path
      */
-    public MoveAlongPath(double runtime, JMPath path, MathObject mobjTransformed, int anchorType) {
+    public MoveAlongPath(double runtime, JMPath path, MathObject mobjTransformed, Type anchorType) {
         super(runtime);
         this.path = path;
         this.mobjTransformed = mobjTransformed;

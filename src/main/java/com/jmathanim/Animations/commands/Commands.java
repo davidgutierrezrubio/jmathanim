@@ -21,6 +21,7 @@ import com.jmathanim.Animations.AffineJTransform;
 import com.jmathanim.Animations.AnimationGroup;
 import com.jmathanim.Animations.ApplyCommand;
 import com.jmathanim.Cameras.Camera;
+import com.jmathanim.Utils.Anchor;
 import com.jmathanim.Utils.JMColor;
 import com.jmathanim.Utils.JMathAnimConfig;
 import com.jmathanim.Utils.MODrawProperties;
@@ -622,7 +623,7 @@ public class Commands {
         }, runtime);
     }//End of fadeOut command
 
-    public static AnimationGroup setLayout(double runtime, int anchor, double gap, MathObjectGroup group) {
+    public static AnimationGroup setLayout(double runtime, Anchor.Type anchor, double gap, MathObjectGroup group) {
         AnimationGroup ag = new AnimationGroup();
         MathObjectGroup grCopy = group.copy();
         grCopy.setLayout(anchor, gap);

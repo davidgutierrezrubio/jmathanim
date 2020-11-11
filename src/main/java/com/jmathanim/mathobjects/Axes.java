@@ -52,21 +52,21 @@ public class Axes extends MathObject {
         yticksLegend = new ArrayList<>();
         for (int n = -5; n <= 5; n++) {
             final Shape xtick = Shape.segment(Point.at(n, -TICK_LENGTH), Point.at(n, TICK_LENGTH)).style("axistickdefault");
-            xtick.setAbsoluteSize(Anchor.BY_CENTER);
+            xtick.setAbsoluteSize(Anchor.Type.BY_CENTER);
             xticks.add(xtick);
 
             final Shape ytick = Shape.segment(Point.at(-TICK_LENGTH, n), Point.at(TICK_LENGTH, n)).style("axistickdefault");;
-            ytick.setAbsoluteSize(Anchor.BY_CENTER);
+            ytick.setAbsoluteSize(Anchor.Type.BY_CENTER);
             yticks.add(ytick);
 
             if (n != 0) {
                 final LaTeXMathObject xtickLegend = LaTeXMathObject.make("$" + n + "$").style("axislegenddefault").scale(TICKS_SCALE);
-                xtickLegend.stackTo(xtick, Anchor.LOWER, LEGEND_TICKS_GAP);
-                xtickLegend.setAbsoluteSize(Anchor.UPPER);
+                xtickLegend.stackTo(xtick, Anchor.Type.LOWER, LEGEND_TICKS_GAP);
+                xtickLegend.setAbsoluteSize(Anchor.Type.UPPER);
                 xticksLegend.add(xtickLegend);
                 final LaTeXMathObject ytickLegend = LaTeXMathObject.make("$" + n + "$").style("axislegenddefault").scale(TICKS_SCALE);
-                ytickLegend.stackTo(ytick, Anchor.RIGHT, LEGEND_TICKS_GAP);
-                ytickLegend.setAbsoluteSize(Anchor.LEFT);
+                ytickLegend.stackTo(ytick, Anchor.Type.RIGHT, LEGEND_TICKS_GAP);
+                ytickLegend.setAbsoluteSize(Anchor.Type.LEFT);
                 yticksLegend.add(ytickLegend);
             }
 

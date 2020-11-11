@@ -141,18 +141,18 @@ public class Shape extends MathObject {
     @Override
     public void registerChildrenToBeUpdated(JMathAnimScene scene) {
         for (JMPathPoint p : jmpath.jmPathPoints) {
-            scene.registerObjectToBeUpdated(p.p);
-            scene.registerObjectToBeUpdated(p.cp1);
-            scene.registerObjectToBeUpdated(p.cp2);
+            scene.registerUpdateable(p.p);
+            scene.registerUpdateable(p.cp1);
+            scene.registerUpdateable(p.cp2);
         }
     }
 
     @Override
     public void unregisterChildrenToBeUpdated(JMathAnimScene scene) {
         for (JMPathPoint p : jmpath.jmPathPoints) {
-            scene.unregisterObjectToBeUpdated(p.p);
-            scene.unregisterObjectToBeUpdated(p.cp1);
-            scene.unregisterObjectToBeUpdated(p.cp2);
+            scene.unregisterUpdateable(p.p);
+            scene.unregisterUpdateable(p.cp1);
+            scene.unregisterUpdateable(p.cp2);
         }
     }
 

@@ -96,7 +96,7 @@ public class SVGMathObject extends MultiShapeObject {
             //Look for svg elements inside this group
             processChildNodes(gNode);
         }
-        putAt(new Point(0, 0), Anchor.UL);
+        putAt(new Point(0, 0), Anchor.Type.UL);
     }
 
     private void processChildNodes(Element gNode) throws NumberFormatException {

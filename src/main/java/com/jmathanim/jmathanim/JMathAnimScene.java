@@ -197,7 +197,7 @@ public abstract class JMathAnimScene {
      *
      * @param objs {@link Updateable} objects (varargs)
      */
-    public synchronized final void registerObjectToBeUpdated(Updateable... objs) {
+    public synchronized final void registerUpdateable(Updateable... objs) {
         for (Updateable obj : objs) {
             if (!objectsToBeUpdated.contains(obj)) {
                 objectsToBeUpdated.add(obj);
@@ -211,7 +211,7 @@ public abstract class JMathAnimScene {
      *
      * @param objs {@link Updateable} objects (varargs)
      */
-    public synchronized final void unregisterObjectToBeUpdated(Updateable... objs) {
+    public synchronized final void unregisterUpdateable(Updateable... objs) {
         objectsToBeUpdated.removeAll(Arrays.asList(objs));
     }
 
@@ -230,11 +230,11 @@ public abstract class JMathAnimScene {
                 } else {
                     objects.add(obj);
                 }
-                obj.addScene(this);
+                obj.setScene(this);
                 //Check if this object is Updateable.
                 //This interface is present in every MathObject which needs to
                 //be updated every frame
-                registerObjectToBeUpdated(obj);
+                registerUpdateable(obj);
                 obj.registerChildrenToBeUpdated(this);
             }
         }
@@ -248,8 +248,8 @@ public abstract class JMathAnimScene {
     public synchronized final void remove(MathObject... objs) {
         for (MathObject obj : objs) {
             objects.remove(obj);
-            obj.removeScene(this);
-            unregisterObjectToBeUpdated(obj);
+            obj.setScene(null);
+            unregisterUpdateable(obj);
         }
     }
 

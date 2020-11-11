@@ -73,7 +73,7 @@ public class TransformedJMPath extends Shape{
 
     @Override
     public void registerChildrenToBeUpdated(JMathAnimScene scene) {
-        scene.registerObjectToBeUpdated(srcOBj);
+        scene.registerUpdateable(srcOBj);
     }
     
     

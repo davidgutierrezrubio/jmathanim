@@ -26,7 +26,6 @@ import com.jmathanim.Utils.MODrawProperties;
 import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
-import com.jmathanim.mathobjects.updateableObjects.AbsoluteSizeUpdater;
 import java.io.File;
 import java.io.IOException;
 import java.util.logging.Level;
@@ -47,7 +46,6 @@ public class Arrow2D extends MathObject {
     public ArrowType arrowType = ArrowType.TYPE_1;
     private final SVGMathObject head;
 //    private final File outputDir;
-    private AbsoluteSizeUpdater absoluteSizeUpdater;
     private static final double DEFAULT_ARROW_HEAD_SIZE = .015;
 
     public static Arrow2D makeSimpleArrow2D(Point p1, Point p2) {
@@ -180,7 +178,7 @@ public class Arrow2D extends MathObject {
         double alpha = 1 - .5 * w1 / w2 * head.getBoundingBox().getHeight() / vecLength;
         Shape bodyToDraw = body.copy().scale(body.getPoint(0), alpha, alpha);
         bodyToDraw.draw(r);
-        arrowHeadCopy.setAbsoluteSize(Anchor.BY_POINT);
+        arrowHeadCopy.setAbsoluteSize(Anchor.Type.BY_POINT);
         arrowHeadCopy.setAbsoluteAnchorPoint(p2);
         arrowHeadCopy.draw(r);
 
@@ -259,14 +257,14 @@ public class Arrow2D extends MathObject {
 
     @Override
     public void registerChildrenToBeUpdated(JMathAnimScene scene) {
-        scene.registerObjectToBeUpdated(body);
-        scene.registerObjectToBeUpdated(head);
+        scene.registerUpdateable(body);
+        scene.registerUpdateable(head);
     }
 
     @Override
     public void unregisterChildrenToBeUpdated(JMathAnimScene scene) {
-        scene.unregisterObjectToBeUpdated(body);
-        scene.unregisterObjectToBeUpdated(head);
+        scene.unregisterUpdateable(body);
+        scene.unregisterUpdateable(head);
     }
 
     @Override
