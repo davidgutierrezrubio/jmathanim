@@ -28,6 +28,7 @@ import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -53,8 +54,11 @@ public class Arrow2D extends MathObject {
     }
 
     public static Arrow2D makeSimpleArrow2D(Point p1, Point p2, ArrowType type) {
-        Arrow2D resul = null;
-        SVGMathObject svg;
+        return new Arrow2D(p1, p2, type);
+    }
+
+    public final SVGMathObject buildArrowHead(ArrowType type) {
+        SVGMathObject svg = null;
         File outputDir = JMathAnimConfig.getConfig().getResourcesDir();
         String name = "arrow";
         switch (type) {//TODO: Improve this
@@ -71,17 +75,30 @@ public class Arrow2D extends MathObject {
                 name += "1";
         }
         name += ".svg";
-
         String baseFileName;
         try {
             baseFileName = outputDir.getCanonicalPath() + File.separator + "arrows" + File.separator + name;
+//            URL arrowUrl = this.getClass().getResource("arrows/"+name);
             svg = new SVGMathObject(baseFileName);
-            resul = new Arrow2D(p1, p2, svg);
-        } catch (IOException ex) {
-            Logger.getLogger(Arrow2D.class.getName()).log(Level.SEVERE, null, ex);
+
+        } catch (NullPointerException | IOException ex) {
+            JMathAnimScene.logger.error("Arrow head " + name + " not found");
         }
-        resul.head.fillWithDrawColor(true);
-        return resul;
+        return svg;
+    }
+
+    public Arrow2D(Point p1, Point p2, ArrowType type) {
+        this.p1 = p1;
+        this.p2 = p2;
+        this.body = Shape.segment(p1, p2);
+        this.head = buildArrowHead(type);
+
+        head.drawColor(this.body.mp.getDrawColor());
+        head.fillColor(this.body.mp.getDrawColor());
+        scaleArrowHead(1);
+        head.fillWithDrawColor(true);
+        head.setAbsoluteSize();
+        head.setAbsoluteAnchorPoint(p2);
     }
 
     public Arrow2D(Point p1, Point p2, SVGMathObject svg) {
@@ -89,18 +106,12 @@ public class Arrow2D extends MathObject {
         this.p2 = p2;
         this.body = Shape.segment(p1, p2);
         this.head = svg;
-
         head.drawColor(this.body.mp.getDrawColor());
         head.fillColor(this.body.mp.getDrawColor());
-
-//        shapes.get(0).mp = arrowHead.mp;
-//        absoluteSizeUpdater = new AbsoluteSizeUpdater(arrowHead, DEFAULT_ARROW_HEAD_SIZE);
-        //Default scale of arrowHead: width .5% of fixed camera width
         scaleArrowHead(1);
+        head.fillWithDrawColor(true);
         head.setAbsoluteSize();
         head.setAbsoluteAnchorPoint(p2);
-
-//        JMathAnimConfig.getConfig().getScene().registerObjectToBeUpdated(absoluteSizeUpdater);
     }
 
     /**

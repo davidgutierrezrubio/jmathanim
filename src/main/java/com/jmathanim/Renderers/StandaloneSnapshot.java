@@ -35,19 +35,6 @@ import javax.imageio.ImageIO;
  */
 public class StandaloneSnapshot {
     public int w,h;
-    public static void main(String[] args) throws Exception {
-
-        // start FX toolkit in background thread:
-        new Thread(() -> Application.launch(FXStarter.class)).start();
-
-        // block until FX toolkit initialization is complete:
-        FXStarter.awaitFXToolkit();
-
-        new StandaloneSnapshot().manipulatePdf();
-
-        // exit JavaFX toolkit:
-        Platform.exit();
-    }
 
     public static class FXStarter extends Application {
 
