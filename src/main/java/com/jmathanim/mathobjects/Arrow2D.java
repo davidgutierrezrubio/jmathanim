@@ -41,7 +41,7 @@ import java.util.logging.Logger;
 public class Arrow2D extends MathObject {
 
     public enum ArrowType {
-        TYPE_1, TYPE_2, TYPE_3
+        TYPE_1, TYPE_2
     }
 
     private Point p1, p2;
@@ -69,9 +69,6 @@ public class Arrow2D extends MathObject {
                 break;
             case TYPE_2:
                 name += "2";
-                break;
-            case TYPE_3:
-                name += "3";
                 break;
             default:
                 name += "1";
