@@ -31,7 +31,7 @@ Shape r=Shape.regularPolygon(5).moveTo(3,3);//A pentagon, with its bounding box 
 PutAt
 =====
 
-This command puts the objects so that its specified anchor point is located at a given coordinates. The anchor point of a object can be one of the defined in the `Anchor` enum, that is:
+This command puts the objects so that its specified anchor point is located at a given coordinates. The anchor point of a object can be one of the defined in the `Anchor.Type` enum, that is:
 
 -   `BY_CENTER` Center of the object.
 
@@ -43,9 +43,9 @@ Some examples illustrate better. If you execute this code in the `runSketch()` m
 
 ``` java
 Point A = Point.at(.5, .5);
-Shape circ = Shape.circle().putAt(A, Anchor.UPPER);//Set upper point of circle bouding box to A
-Shape arc = Shape.arc(120 * DEGREES).putAt(A, Anchor.UR);//Set up-right point of arc bounding box to A
-Shape sq = Shape.square().putAt(A, Anchor.BY_CENTER);//Set center of square to A
+Shape circ = Shape.circle().putAt(A, Anchor.Type.UPPER);//Set upper point of circle bouding box to A
+Shape arc = Shape.arc(120 * DEGREES).putAt(A, Anchor.Type.UR);//Set up-right point of arc bounding box to A
+Shape sq = Shape.square().putAt(A, Anchor.Type.BY_CENTER);//Set center of square to A
 add(A, circ, arc, sq);//Add everything to the scene
 waitSeconds(5);//Give me time to make a screenshot!
 ```
@@ -54,7 +54,7 @@ it gives this image:
 
 ![01 anchorExample](01_anchorExample.png)
 
-The command `putAt` accepts a third argument `gap` to leave a space between the point and the anchor. This gap doesn’t apply for `Anchor.BY_CENTER`.
+The command `putAt` accepts a third argument `gap` to leave a space between the point and the anchor. This gap doesn’t apply for `Anchor.Type.BY_CENTER`.
 
 StackTo
 =======
@@ -67,10 +67,10 @@ Shape c2=c1.copy();
 Shape c3=c1.copy();
 Shape c4=c1.copy();
 Shape sq=Shape.square();
-c1.stackTo(sq,Anchor.LEFT,.1);//Stacks circle to the left of the square, with a gap of .1 units
-c2.stackTo(sq,Anchor.RIGHT,.1);//Stacks circle to the right of the square, with a gap of .1 units
-c3.stackTo(sq,Anchor.UPPER);//Stacks circle to the upper side of the square, with no gap
-c4.stackTo(sq,Anchor.BY_CENTER);//Stacks circle center-to-center with the square
+c1.stackTo(sq,Anchor.Type.LEFT,.1);//Stacks circle to the left of the square, with a gap of .1 units
+c2.stackTo(sq,Anchor.Type.RIGHT,.1);//Stacks circle to the right of the square, with a gap of .1 units
+c3.stackTo(sq,Anchor.Type.UPPER);//Stacks circle to the upper side of the square, with no gap
+c4.stackTo(sq,Anchor.Type.BY_CENTER);//Stacks circle center-to-center with the square
 add(c1,c2,c3,c4,sq);//Add everything to the scene
 camera.adjustToAllObjects(); //Adjust camera, so that everyone gets into the photo
 waitSeconds(5);//That is, smile for the screenshot!
@@ -90,7 +90,7 @@ The `stackTo` command allows to easily generate aligned objects:
 Shape previousPol = Shape.regularPolygon(6);//First hexagon
 add(previousPol);
 for (int n = 0; n < 10; n++) {
-    Shape pol = Shape.regularPolygon(6).stackTo(previousPol, Anchor.RIGHT);
+    Shape pol = Shape.regularPolygon(6).stackTo(previousPol, Anchor.Type.RIGHT);
     add(pol);
     previousPol=pol;//New polygon becomes previous in the next iteration
 }
@@ -109,14 +109,14 @@ This methods is similar to `stackTo`, but it positions the object relative to th
 
 ``` java
 Shape sq=Shape.square();
-add(sq.stackToScreen(Anchor.LEFT));//Stack square to the left of the screen, with no gaps
-add(sq.copy().stackToScreen(Anchor.RIGHT,.3,.1));//Stack a copy of square to the left of the screen,with gaps of .3 horizontal and .1 vertical (here only horizontal one is used)
-add(Shape.circle().stackToScreen(Anchor.UL));//Stack a unit circle to the upper left corner of the screen, with no gaps
+add(sq.stackToScreen(Anchor.Type.LEFT));//Stack square to the left of the screen, with no gaps
+add(sq.copy().stackToScreen(Anchor.Type.RIGHT,.3,.1));//Stack a copy of square to the left of the screen,with gaps of .3 horizontal and .1 vertical (here only horizontal one is used)
+add(Shape.circle().stackToScreen(Anchor.Type.UL));//Stack a unit circle to the upper left corner of the screen, with no gaps
 waitSeconds(5);
 ```
 
 
-There is shortcut method if you want to simply put the object at the center screen. The method `.center()` is equivalent to `.stackToScreen(Anchor.BY_CENTER)`.
+There is shortcut method if you want to simply put the object at the center screen. The method `.center()` is equivalent to `.stackToScreen(Anchor.Type.BY_CENTER)`.
 
 Scaling objects
 ===============
