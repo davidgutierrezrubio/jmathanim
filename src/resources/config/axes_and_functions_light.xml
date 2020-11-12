@@ -1,0 +1,32 @@
+<JMathAnimConfig>
+    <styles>
+         <style name="FunctionGraphDefault">
+            <drawColor>black</drawColor>
+            <fillColor>TRANSPARENT</fillColor>
+            <thickness>.5</thickness>
+        </style>
+        <style name="taylor">
+            <drawColor>#fa867e</drawColor>
+            <fillColor>TRANSPARENT</fillColor>
+            <thickness>.5</thickness>
+        </style>
+        <style name="axisdefault">
+            <drawColor>gray</drawColor>
+            <fillColor>transparent</fillColor>
+            <thickness>1</thickness>
+            <castShadows>false</castShadows>
+        </style>
+        <style name="axistickdefault">
+            <drawColor>gray</drawColor>
+            <fillColor>transparent</fillColor>
+            <thickness>.2</thickness>
+            <castShadows>false</castShadows>
+        </style>
+         <style name="axislegenddefault">
+            <drawColor>gray</drawColor>
+            <fillColor>gray</fillColor>
+            <thickness>.02</thickness>
+            <castShadows>false</castShadows>
+        </style>
+    </styles>
+</JMathAnimConfig>

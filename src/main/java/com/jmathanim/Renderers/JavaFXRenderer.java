@@ -149,9 +149,10 @@ public class JavaFXRenderer extends Renderer {
                 groupRoot = new Group();
                 groupBackground = new Group();
                 //Create background
-                if ((!"".equals(cnf.backGroundImage)) && (cnf.backGroundImage != null)) {
-                    File file = new File(cnf.backGroundImage);
-                    ImageView background = new ImageView(new Image(file.toURI().toString()));
+                if (cnf.getBackGroundImage()!=null) {
+//                    File file = new File(cnf.backGroundImage);
+//                    ImageView background = new ImageView(new Image(file.toURI().toString()));
+                    ImageView background = new ImageView(new Image(cnf.getBackGroundImage().openStream()));
                     Rectangle2D viewport = new Rectangle2D(0, 0, cnf.mediaW, cnf.mediaW);
                     background.setViewport(viewport);
                     groupBackground.getChildren().clear();

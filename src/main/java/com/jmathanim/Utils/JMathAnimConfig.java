@@ -22,6 +22,7 @@ import com.jmathanim.Renderers.Renderer;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.MathObject;
 import java.io.File;
+import java.net.URL;
 import java.util.HashMap;
 
 /**
@@ -116,7 +117,7 @@ public class JMathAnimConfig {
      * alpha shadow multiplier. A value of .5 lets alpha shadow in 50%
      */
     public float shadowAlpha = .5f;
-    public String backGroundImage = null;
+    private URL backGroundImage = null;
 
     public void setDrawShadow(boolean drawShadow) {
         this.drawShadow = drawShadow;
@@ -130,8 +131,12 @@ public class JMathAnimConfig {
         this.shadowAlpha = alpha;
     }
 
-    public void setBackGroundImage(String backGroundImage) {
+    public void setBackGroundImage(URL backGroundImage) {
         this.backGroundImage = backGroundImage;
+    }
+
+    public URL getBackGroundImage() {
+        return backGroundImage;
     }
 
     

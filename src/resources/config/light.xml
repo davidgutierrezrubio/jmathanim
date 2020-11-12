@@ -1,0 +1,34 @@
+<JMathAnimConfig>
+    <include>#axes_and_functions_light.xml</include>
+    <include>#dots.xml</include>
+    <background>
+        <color>#FDFDFD</color>
+    </background>
+    <styles>
+        <style name="default">
+            <drawColor>black</drawColor>
+            <fillColor>#00000000</fillColor>
+            <thickness>1</thickness>
+        </style>
+        <style name="latexdefault">
+            <drawColor>black</drawColor>
+            <fillColor>black</fillColor>
+            <thickness>.5</thickness>
+        </style>
+        <style name="solidRed">
+            <drawColor>black</drawColor>
+            <fillColor>#f55652</fillColor>
+            <thickness>4</thickness>
+        </style>
+        <style name="solidBlue">
+            <drawColor>black</drawColor>
+            <fillColor>#7ca0c0</fillColor>
+            <thickness>4</thickness>
+        </style>
+         <style name="solidGreen">
+            <drawColor>black</drawColor>
+            <fillColor>#9bc693</fillColor>
+            <thickness>4</thickness>
+        </style>
+    </styles>
+</JMathAnimConfig>

@@ -20,6 +20,7 @@ package com.jmathanim.Utils;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.xml.parsers.DocumentBuilder;
@@ -37,16 +38,18 @@ import org.xml.sax.SAXException;
  */
 public class ConfigLoader {
 
+    private static ResourceLoader resourceLoader;
+
+
     public static void parseFile(String filename) {
+        resourceLoader = new ResourceLoader();
         try {
             JMathAnimConfig config = JMathAnimConfig.getConfig();
-            File resourcesDir = JMathAnimConfig.getConfig().getResourcesDir();
-            String baseFileName = resourcesDir.getCanonicalPath() + File.separator + "config" + File.separator + filename;
-            JMathAnimScene.logger.info("Loading config file {}", baseFileName);
-            File inputFile = new File(baseFileName);
+            URL configURL = resourceLoader.getResource(filename, "config");
+            JMathAnimScene.logger.info("Loading config file {}", filename);
             DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
             DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
-            Document doc = dBuilder.parse(inputFile);
+            Document doc = dBuilder.parse(configURL.openStream());
             doc.getDocumentElement().normalize();
 
             Element root = doc.getDocumentElement();
@@ -65,8 +68,8 @@ public class ConfigLoader {
             parseBackgroundOptions(config, root.getElementsByTagName("background"));
             parseStyles(config, root.getElementsByTagName("styles"));
 
-        } catch (IOException | SAXException | ParserConfigurationException ex) {
-            Logger.getLogger(ConfigLoader.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException | SAXException | ParserConfigurationException | NullPointerException ex) {
+            JMathAnimScene.logger.error("Error loading config file " + filename + ": " + ex.toString());
         }
     }
 
@@ -128,7 +131,8 @@ public class ConfigLoader {
                 case "image":
                     String backgroundFilename = item.getTextContent();
                     if (!"".equals(backgroundFilename)) {
-                        config.backGroundImage = config.getResourcesDir().getCanonicalPath() + File.pathSeparator + backgroundFilename;
+                        config.setBackGroundImage(resourceLoader.getResource(backgroundFilename, "images"));
+//                        config.backGroundImage = config.getResourcesDir().getCanonicalPath() + File.pathSeparator + backgroundFilename;
                         JMathAnimScene.logger.debug("Config read: Background image set to {}", backgroundFilename);
                     }
                     break;
@@ -188,8 +192,8 @@ public class ConfigLoader {
     private static void parseLoadConfigOptions(JMathAnimConfig config, NodeList includeTags) {
         for (int n = 0; n < includeTags.getLength(); n++) {
             Node item = includeTags.item(n);
-             JMathAnimScene.logger.debug("Including file {}", item.getTextContent());
-                ConfigLoader.parseFile(item.getTextContent());
+            JMathAnimScene.logger.debug("Including file {}", item.getTextContent());
+            ConfigLoader.parseFile(item.getTextContent());
         }
     }
 

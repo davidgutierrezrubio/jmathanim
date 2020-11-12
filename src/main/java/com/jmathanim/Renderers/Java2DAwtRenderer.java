@@ -125,8 +125,8 @@ public class Java2DAwtRenderer extends Renderer {
         prepareEncoder();
 
         //Proofs
-        if (cnf.backGroundImage != null) {
-            img = Toolkit.getDefaultToolkit().getImage(cnf.backGroundImage);
+        if (cnf.getBackGroundImage() != null) {
+            img = Toolkit.getDefaultToolkit().getImage(cnf.getBackGroundImage());
         }
 //        This tracker waits for image to be fully loaded
         MediaTracker tracker = new MediaTracker(new JLabel());

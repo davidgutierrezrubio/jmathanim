@@ -22,6 +22,7 @@ import com.jmathanim.Utils.Anchor;
 import com.jmathanim.Utils.JMColor;
 import com.jmathanim.Utils.JMathAnimConfig;
 import com.jmathanim.Utils.MODrawProperties;
+import com.jmathanim.Utils.ResourceLoader;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.JMPathPoint.JMPathPointType;
 import java.io.File;
@@ -70,12 +71,11 @@ public class SVGMathObject extends MultiShapeObject {
     }
 
     public SVGMathObject(String fname) {
-        File f = new File(fname);
+        ResourceLoader rl=new ResourceLoader();
+        URL urlImage=rl.getResource(fname, "images");
         this.setObjectType(MathObjectType.SVG);
         try {
-            importSVG(f.toURI().toURL());
-        } catch (MalformedURLException ex) {
-            Logger.getLogger(SVGMathObject.class.getName()).log(Level.SEVERE, null, ex);
+            importSVG(urlImage);
         } catch (Exception ex) {
             Logger.getLogger(SVGMathObject.class.getName()).log(Level.SEVERE, null, ex);
         }

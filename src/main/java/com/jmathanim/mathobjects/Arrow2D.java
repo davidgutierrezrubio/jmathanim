@@ -24,6 +24,7 @@ import com.jmathanim.Utils.JMColor;
 import com.jmathanim.Utils.JMathAnimConfig;
 import com.jmathanim.Utils.MODrawProperties;
 import com.jmathanim.Utils.Rect;
+import com.jmathanim.Utils.ResourceLoader;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import java.io.File;
@@ -61,7 +62,7 @@ public class Arrow2D extends MathObject {
     public final SVGMathObject buildArrowHead(ArrowType type) {
         SVGMathObject svg = null;
         File outputDir = JMathAnimConfig.getConfig().getResourcesDir();
-        String name = "arrow";
+        String name = "#arrow";
         switch (type) {//TODO: Improve this
             case TYPE_1:
                 name += "1";
@@ -79,7 +80,8 @@ public class Arrow2D extends MathObject {
         String baseFileName;
         try {
 //            baseFileName = outputDir.getCanonicalPath() + File.separator + "arrows" + File.separator + name;
-            URL arrowUrl = this.getClass().getClassLoader().getResource("arrows/"+name);
+            ResourceLoader rl=new ResourceLoader();
+            URL arrowUrl = rl.getResource(name,"arrows");
             svg = new SVGMathObject(arrowUrl);
 
         } catch (NullPointerException ex) {
