@@ -54,7 +54,6 @@ public class MODrawProperties implements Stateable {
     public Boolean absoluteThickness = true;
     public DashStyle dashStyle = DashStyle.SOLID;
     private Integer layer = 0;
-    public Boolean castShadows = true;//If shadows, this object should cast them
     public Boolean fillColorIsDrawColor = false; //If true, fillColor is always overriden by drawColor
 
     //Styles used for specified objects
@@ -85,7 +84,6 @@ public class MODrawProperties implements Stateable {
         nullMP.absoluteThickness = null;
         nullMP.layer = null;
         nullMP.absoluteThickness = null;
-        nullMP.castShadows = null;
         nullMP.dotStyle = null;
         nullMP.linecap = null;
         nullMP.fillColorIsDrawColor = null;
@@ -111,7 +109,6 @@ public class MODrawProperties implements Stateable {
         dashStyle = (prop.dashStyle == null ? dashStyle : prop.dashStyle);
         absoluteThickness = (prop.absoluteThickness == null ? absoluteThickness : prop.absoluteThickness);
         dotStyle = (prop.dotStyle == null ? dotStyle : prop.dotStyle);
-        castShadows = (prop.dotStyle == null ? castShadows : prop.castShadows);
         layer = (prop.layer == null ? layer : prop.layer);
         linecap = (prop.linecap == null ? linecap : prop.linecap);
         fillColorIsDrawColor = (prop.fillColorIsDrawColor == null ? fillColorIsDrawColor : prop.fillColorIsDrawColor);
@@ -132,7 +129,6 @@ public class MODrawProperties implements Stateable {
         dashStyle = mp.dashStyle;
         layer = mp.layer;
         dotStyle = mp.dotStyle;
-        castShadows = mp.castShadows;
         linecap = mp.linecap;
         fillColorIsDrawColor = mp.fillColorIsDrawColor;
     }

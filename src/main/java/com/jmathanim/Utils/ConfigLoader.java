@@ -40,7 +40,6 @@ public class ConfigLoader {
 
     private static ResourceLoader resourceLoader;
 
-
     public static void parseFile(String filename) {
         resourceLoader = new ResourceLoader();
         try {
@@ -99,6 +98,10 @@ public class ConfigLoader {
                     case "outputDir":
                         config.setOutputDir(item.getTextContent());
                         JMathAnimScene.logger.debug("Config read: Output dir set to {}", item.getTextContent());
+                        break;
+                    case "outputFileName":
+                        config.setOutputFileName(item.getTextContent());
+                        JMathAnimScene.logger.debug("Config read: Output filename set to {}", item.getTextContent());
                         break;
                 }
             }
@@ -180,9 +183,6 @@ public class ConfigLoader {
                     break;
                 case "dotStyle":
                     mp.dotStyle = MODrawProperties.parseDotStyle(item.getTextContent());
-                    break;
-                case "castShadows":
-                    mp.castShadows = Boolean.parseBoolean(item.getTextContent());
                     break;
             }
         }
