@@ -97,7 +97,46 @@ resources\
 
 ## Loading config files
 
-All the settings an definitions can be stored in `XML`files and loaded with the `ConfigLoader`class. This class holds the static method `ConfigLoader.parseFile("file.xml")` . These config files has to be located at the `RESOURCES_DIR\config`directory. Here is an example of a basic config file that I use for previewing, called `preview.xml`. The `<video>`tag controls aspects related to movie output:
+All the settings an definitions can be stored in `XML`files and loaded with the `ConfigLoader`class. This class holds the static method `ConfigLoader.parseFile("file.xml")` . 
+
+Where do JMathAnim look for the files? Well, there are 3 location types that you can specify:
+
+* If the file name starts with "#" it refers to an internal config file included in the library jar.
+* If the file name starts with "!" it refers to an absolute path.
+* Otherwise, it will look into the `<default resources path>/config/` folder.
+
+By default, the resources path is located at `<your current root project>/resources` folder. So if you want to add resources locally to your project you should create this folder. Of course, you can change the default `resources` folder with the method `config.setResourcesDir(newDir)`.
+
+A typical `resources`folder follows this structure:
+
+```
+resources/
+├── config/
+│   ├── configFile1.xml
+│   ├── configFile2.xml
+│   ├── ...
+└── images/
+    ├── image1.png
+    ├── image2.png
+    ├── image3.svg
+    └── ...
+```
+
+The `ConfigLoade.parseFile`will look into the `config` folder, and image-related objects like `SVGMathObject`or `JMImage`  will look into the `images` folder.
+
+A few examples:
+
+* the `ConfigLoader.parseFile("file.xml")` command will try to load `file.xml`located at `<your current root project>/resources/config` folder
+* the `ConfigLoader.parseFile("#file.xml") ` command will try to load `file.xml` internally stored at the jar library.
+* the `ConfigLoader.parseFile("!/home/user/myResources/file.xml") ` command will try to load `file.xml` from the location `/home/user/myResources/file.xml`.
+
+This way, if you want to store all your precious resources (config files, images, etc.) in a system-wide scope, you can store them in a folder (say ` /home/bob/myJMathAnimResources`) and make JMathAnim to look for resources there with the method `config.setResourcesDir("/home/bob/myJMathAnimResources")` at the beginning of the `setupSketch()` method.
+
+> Note: The "!" modifier also can be used when specifying a file path in the config files, like background images, for example.
+
+If the program cannot find the file, the logger will report an error but the execution won't be stopped.
+
+Here is an example of a basic config file that I use for previewing, called `preview.xml`. The `<video>`tag controls aspects related to movie output:
 
 ```XML
 <JMathAnimConfig>
@@ -109,7 +148,7 @@ All the settings an definitions can be stored in `XML`files and loaded with the 
 </JMathAnimConfig>
 ```
 
-And this for production, called `production.xml`. The `background` tag controls aspects like image or color background, or shadow effect.
+And this for production, called `productionWithShadow.xml`. The `background` tag controls aspects like image or color background, or shadow effect.
 
 ```XML
 <JMathAnimConfig>
@@ -119,7 +158,7 @@ And this for production, called `production.xml`. The `background` tag controls 
         <outputDir>c:\media</outputDir>
         <showPreviewWindow>false</showPreviewWindow>
     </video>
-         <background>
+    <background>
         <shadows kernelSize="8" offsetX="15" offsetY="15" alpha=".5">true</shadows>
         <image>background1080.png</image>
     </background>
@@ -147,26 +186,30 @@ You can have several config files with different, independent aspects. This is t
             <fillColor>black</fillColor>
             <thickness>.5</thickness>
         </style>
-         <style name="functionGraphDefault">
-            <drawColor>black</drawColor>
-            <fillColor>TRANSPARENT</fillColor>
-            <thickness>.5</thickness>
-        </style>
         <style name="solidred">
             <drawColor>black</drawColor>
             <fillColor>red</fillColor>
-            <thickness>2</thickness>
+            <thickness>4</thickness>
         </style>
         <style name="solidblue">
             <drawColor>black</drawColor>
             <fillColor>blue</fillColor>
-            <thickness>3</thickness>
+            <thickness>4</thickness>
         </style>
     </styles>
 </JMathAnimConfig>
 ```
 
-The `<styles>` tag allows defining styles to apply to your animation. There are 3 named styles that are important: `default`, `latexDefault`and `functionGraphDefault` (names are case-insensitive). The styles `latexdefault`and `functionGraphDefault` are applied by default to all `LaTexMathObject`and `FunctionGraph`objects. The style `default`is applied to the rest of MathObjects. If no style with that names are defined, a default style with black stroke and no fill will be applied.
+The JAR of the JMathAnim library has several predefined config files that you can load with "#" flag in the file name:
+
+* The `ConfigLoader.parseFile("#preview.xml")`  loads settings for previewing the animation, with low resolution of 1066x600 at 30pfs, show preview windows and not creating movie. Ideal for the creation process of the scene.
+* The `ConfigLoader.parseFile("#production.xml")`  loads settings for generating the final animation, with high resolution 1920x1080 at 60pfs, not showing preview windows and creating a movie. This config should be loaded when the designing process is done and to create the final animation.
+* The `ConfigLoader.parseFile("#light.xml")`  loads settings for black drawings over a white background. The default colors are black.
+* The `ConfigLoader.parseFile("#dark.xml")`  loads settings for white drawings over a black background (well, almost black). The default colors are white.
+
+You can check all the internal config files at the [github sources folder](https://github.com/davidgutierrezrubio/jmathanim/tree/master/src/resources/config).
+
+The `<styles>` tag allows defining styles to apply to your animation. There are 3 named styles that are important: `default`, `latexDefault`and `functionGraphDefault` (names are case-sensitive). The style `latexdefault` is applied by default to all `LaTexMathObject`. The style `default`is applied to the rest of MathObjects. If no style with these names are defined, a default style with white stroke and no fill will be applied.
 
 The `<include>` tag that appears at the beginning loads another config files.  In this case, a `dots.xml`file with styles to dots are defined:
 

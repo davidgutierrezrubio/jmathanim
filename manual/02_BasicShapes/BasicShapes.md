@@ -141,7 +141,7 @@ public void setupSketch() {
 
     @Override
 public void runSketch() throws Exception {
-	SVGMathObject svg=SVGMathObject.make("resources/donaldKnuth.svg");
+	SVGMathObject svg=SVGMathObject.make("donaldKnuth.svg");
     svg.setHeight(2).center();
     play.showCreation(svg);
     waitSeconds(3);
@@ -155,6 +155,8 @@ You'll obtain something like this:
 ![svgCreation](svgCreation.gif)
 
 
+
+For this to work, the `donaldKnut.svg` file must be located at `<your_project_root_dir>/resources/images/` folder. Later we will see the structure of the `resources` folder.
 
 Notice the command `config.setBackgroundColor(JMColor.WHITE)` we had to put in the `setupSketch` part. It's self-explicative. It simply sets the background color to white, so that we can see the svg we are importing.
 
