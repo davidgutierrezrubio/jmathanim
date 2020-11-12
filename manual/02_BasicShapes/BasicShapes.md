@@ -1,5 +1,4 @@
-Basic Objects
-=============
+# Basic Objects
 
 The Vec class
 -------------
@@ -94,8 +93,66 @@ Each `Shape` object has a `JMPath` object which stores and manages the path repr
 
 In the `Shape` objects, apart from `.getCenter()`method, which returns the center of its bounding box, there is also the `.getCentroid()`method which computes the centroid of the shape, defined by the mean point of all its vertices. This method effectively returns the center of a regular polygon for example, instead of the `.getCenter()`method.
 
-The `LaTeXMathObject` class
-===========================
+## The `Arrow2D`class
+
+The `Arrow2D` class defines a vector, which consists of a segment and an arrow head. 
+
+```java
+Arrow2D arrow1=new Arrow2D(Point.at(0,0), Point.at(1,1), Arrow2D.ArrowType.TYPE_1);
+Arrow2D arrow2=new Arrow2D(Point.at(0,0), Point.at(-1,1), Arrow2D.ArrowType.TYPE_2);
+add(arrow1,arrow2);
+waitSeconds(3);
+```
+
+
+
+<img src="arrow1.png" alt="image-20201112223825965" style="zoom:50%;" />
+
+As you can see, the constructor accepts 3 parameters: starting and ending point, and a enum value with the type of arrow head to draw. Currently, there are 2 arrow heads, showed in the example.
+
+You can, though, create your own personalized arrows supplying a `Shape` or `MultiShapeObject` object, with the arrow tip pointing up. For example, suppose we draw the following figure using a software like [Inkscape](https://inkscape.org/):
+
+![image-20201112225057266](inkscape.png)
+
+export the figure using the plain SVG format, and construct an `Arrow2D`object using the file we created. In the example, I saved the file in `C:\JMathAnim_resources\arrows\myArrrow.svg`:
+
+```java
+final SVGMathObject arrowHead = SVGMathObject.make("!C:\\JMathAnim_resources\\arrows\\myArrow.svg");
+Arrow2D arrow1=new Arrow2D(Point.at(0,0), Point.at(1,1), arrowHead);
+Arrow2D arrow2=new Arrow2D(Point.at(0,0), Point.at(-1,1), arrowHead.copy());
+arrow1.thickness(4);
+arrow2.thickness(4);
+arrow2.scaleArrowHead(3);
+add(arrow1,arrow2);
+waitSeconds(3);
+```
+
+(Note the "!" character in the file path, needed to set an absolute path, we will see this later). If we execute this code...Wingardium Leviosa!
+
+![image-20201112231912816](arrow2.png)
+
+Note also the `arrow2.scaleArrowHead(3)`command that scales the size of the head. In the definition of `arrow2` we use a copy of `arrowHead` so that the scaling doesn't affect to `arrow1`.
+
+The arrow head is by default set to absolute size. This means that scaling the camera won't affect the size perceived of the object. In this code we perform a zoom and see that the size of the arrow doesn't change:
+
+```java
+Shape square1 = Shape.square().center();
+Shape square2 = square1.copy().scale(.5);
+Shape square3 = square2.copy().scale(.5);
+Shape square4 = square3.copy().scale(.5);
+Arrow2D arrow = new Arrow2D(Point.at(1, 0), Point.at(0, 0), Arrow2D.ArrowType.TYPE_1);
+add(square1, square2, square3, square4, arrow);
+play.cameraScale(5, .1);
+waitSeconds(1);
+```
+
+![](arrowZoom.gif)
+
+
+
+
+
+## The `LaTeXMathObject` class
 
 If you want to include mathematical expressions in any work, of course, the best software to use is `LaTeX`. This class renders a mathematical expression written in LaTeX and imports it so you can draw it and animate it in several ways. To do this you’ll need a working LaTeX distribution installed on your system and accessible from your path. So, if you put the following the code in the `runSketch()` method:
 
