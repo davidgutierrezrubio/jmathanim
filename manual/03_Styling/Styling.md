@@ -93,9 +93,9 @@ resources\
 	   rest of files (images, another svg, etc.)
 ```
 
+## The configuration files
 
-
-## Loading config files
+### Loading config files
 
 All the settings an definitions can be stored in `XML`files and loaded with the `ConfigLoader`class. This class holds the static method `ConfigLoader.parseFile("file.xml")` . 
 
@@ -236,4 +236,47 @@ The `<include>` tag that appears at the beginning loads another config files.  I
     </styles>
 </JMathAnimConfig>
 ```
+
+### Configuration files syntax
+
+As we said, the config files that you can read are in XML format. All files must have a root tag called `<JMathAnimConfig>`. Everything out of this tag is ignored.
+
+Inside this tag, we may have
+
+* The `<include>` tag allows to load another XML config files. For example `<include>#axes_and_functions_dark.xml</include>` (an internal config file included in the jar library) or `<include>myColors.xml</include>` (a file include in the `resources/config` folder).
+
+* The `<video>` tag that controls the output format. Inside this we may  have:
+
+  * The `<size/>`tag  with attributes `width`, `height` and `fps`. For example `<size width="1066" height="600" fps="30"/>`.
+  * The `<createMovie>` tag with a boolean value, to determine if actually create a movie file or not. For example `<createMovie>false</createMovie>`.
+  * The `<showPreviewWindow>` to show or not the previsualization window. For example `<showPreviewWindow>true</showPreviewWindow>`.
+  * The `<outputDir>` tag, that specifies the folder where to save the movie, if created. If this tag is not found, by default the generated movie will save on `ROOT_PROJECT_DIR/media` folder. For example `<outputDir>c:/my_generated_movies</outputDir>`.
+  * The `<outputFileName>`tag sets part of the file name of the generated movie. A suffix with the media height is always added to the name. If this is tag is not found, by default the name will be the class name you are using as a subclass for `Scene2D`.
+
+* The `<background>` has tags related with the background and effects to apply:
+
+  * The `<color>`tag sets the background color. You can specify a color using a JavaFX color name case insensitive , like `<color>white</color>`or an hex format `<color>#F0A3C5</color>`. The hex format can be 8 bytes (RGBA), 6 bytes (RGB with alpha 1) or 3 bytes (RGB with alpha 1).
+  * The `<image>` tag allows to stablish a background image. You can use the "!" modifier to specify an absolute path. Otherwise, the program will look into `resources/images` folder. Note that no scaling or adjusting is made, so that the image should fit the dimensions of the `<size/>` tag.
+  * The `<shadow>` tag adds a shadow effect to every objects you draw in the screen, except for the background image. For example `<shadows kernelSize="8" offsetX="5" offsetY="5" alpha=".7">true</shadows>` sets a shadow with kernel size of 8 (the amount of shadow blurring), the offsets (15,15) of the shadow respect to their origin objects, and the alpha transparency of 70%.
+
+* The `<styles>` tag defines all the styles we may need, each one in the `<style>` subtag. For example:
+
+  ```xml
+         <style name="myStyle">
+             <drawColor>WHITE</drawColor>
+             <fillColor>#f55652</fillColor>
+             <thickness>4.5</thickness>
+             <dashStyle>SOLID</dashStyle>
+             <absoluteThickness>true</absoluteThickness>
+             <dotStyle></dotStyle>
+          </style>
+  ```
+
+  Is pretty self-explanatory. The attribute `name` defines the style name (case sensitive) and the `<drawColor>`, `<fillColor>`, `<thickness>` and `<dashStyle>` define their respective properties.  The `<dashStyle>` may take a value from the `enum DashStyle`, that is `SOLID`, `DASHED`,  or`DOTTED`.
+
+  The `<absoluteThickness>` thickness controls if the thickness of the object will be affected by scaling transformations. By default this is true, so that if you zoom in a circle, for example, its thickness will always be the same. For objects like SVG imports for example, the absolute thickness flag is set to false.
+
+  The `<dotStyle>` is one of the values of the `enum DotStyle` in the `Point` class and sets how a `Point`object with this style will be drawn. Currently, the possible values are `CIRCLE`, `CROSS` and `PLUS`.
+
+  
 
