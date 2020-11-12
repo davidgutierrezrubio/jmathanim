@@ -27,12 +27,7 @@ import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.ResourceLoader;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
 import java.net.URL;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
@@ -44,7 +39,7 @@ public class Arrow2D extends MathObject {
         TYPE_1, TYPE_2
     }
 
-    private Point p1, p2;
+    private final Point p1, p2;
     private final Shape body;
     public ArrowType arrowType = ArrowType.TYPE_1;
     private final SVGMathObject head;
@@ -61,7 +56,6 @@ public class Arrow2D extends MathObject {
 
     public final SVGMathObject buildArrowHead(ArrowType type) {
         SVGMathObject svg = null;
-        File outputDir = JMathAnimConfig.getConfig().getResourcesDir();
         String name = "#arrow";
         switch (type) {//TODO: Improve this
             case TYPE_1:
@@ -74,7 +68,6 @@ public class Arrow2D extends MathObject {
                 name += "1";
         }
         name += ".svg";
-        String baseFileName;
         try {
 //            baseFileName = outputDir.getCanonicalPath() + File.separator + "arrows" + File.separator + name;
             ResourceLoader rl=new ResourceLoader();

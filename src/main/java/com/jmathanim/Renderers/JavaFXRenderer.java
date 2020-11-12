@@ -23,6 +23,7 @@ import com.jmathanim.Renderers.MovieEncoders.VideoEncoder;
 import com.jmathanim.Renderers.MovieEncoders.XugglerVideoEncoder;
 import com.jmathanim.Utils.JMathAnimConfig;
 import com.jmathanim.Utils.Rect;
+import com.jmathanim.Utils.ResourceLoader;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import static com.jmathanim.jmathanim.JMathAnimScene.DEGREES;
@@ -34,6 +35,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.concurrent.Callable;
@@ -427,7 +429,8 @@ public class JavaFXRenderer extends Renderer {
         try {
             Image image;
             if (!images.containsKey(fileName)) {//If the image is not already loaded...
-                image = new Image(new FileInputStream(fileName));
+                ResourceLoader rl=new ResourceLoader();
+                image = new Image(rl.getResource(fileName, "images").openStream());
                 images.put(fileName, image);
                 JMathAnimScene.logger.info("Loaded image " + fileName);
             } else {
@@ -439,6 +442,8 @@ public class JavaFXRenderer extends Renderer {
             r.xmax = camera.screenToMath(image.getWidth());
         } catch (FileNotFoundException ex) {
             JMathAnimScene.logger.warn("Could'nt load image " + fileName);
+        } catch (IOException ex) {
+            Logger.getLogger(JavaFXRenderer.class.getName()).log(Level.SEVERE, null, ex);
         }
 
         return r;
