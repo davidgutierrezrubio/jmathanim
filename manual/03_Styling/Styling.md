@@ -108,7 +108,6 @@ Where do JMathAnim look for the files? Well, there are 3 location types that you
 By default, the resources path is located at `<your current root project>/resources` folder. So if you want to add resources locally to your project you should create this folder. Of course, you can change the default `resources` folder with the method `config.setResourcesDir(newDir)`.
 
 A typical `resources`folder follows this structure:
-
 ```
 resources/
 ├── config/
