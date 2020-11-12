@@ -33,8 +33,6 @@ import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.Shape;
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -74,13 +72,13 @@ public class JavaFXRenderer extends Renderer {
 
     private static final double XMIN_DEFAULT = -2;
     private static final double XMAX_DEFAULT = 2;
-    
-    private static final double MIN_THICKNESS=.2d;
+
+    private static final double MIN_THICKNESS = .2d;
 
     public CameraFX2D camera;
     public CameraFX2D fixedCamera;
 
-    final HashMap<String, Image> images;
+    private final HashMap<String, Image> images;
 
     private PerspectiveCamera fxCamera;
     public double FxCamerarotateX = 0;
@@ -107,7 +105,7 @@ public class JavaFXRenderer extends Renderer {
         fixedCamera.setMathXY(XMIN_DEFAULT, XMAX_DEFAULT, 0);
 
         fxnodes = new ArrayList<>();
-        images = new HashMap<String, Image>();
+        images = new HashMap<>();
 
         prepareEncoder();
     }
@@ -119,14 +117,11 @@ public class JavaFXRenderer extends Renderer {
         initializeJavaFXWindow();
 
         if (cnf.isCreateMovie()) {
-//            videoEncoder=new JCodecVideoEncoder();
             videoEncoder = new XugglerVideoEncoder();
-//            videoEncoder=new HumbleVideoEncoder();
             File tempPath = new File(cnf.getOutputDir().getCanonicalPath());
             tempPath.mkdirs();
             saveFilePath = new File(cnf.getOutputDir().getCanonicalPath() + File.separator + cnf.getOutputFileName() + "_" + cnf.mediaH + ".mp4");
             JMathAnimScene.logger.info("Creating movie encoder for {}", saveFilePath);
-//                muxer = Muxer.make(saveFilePath.getCanonicalPath(), null, "mp4");
             videoEncoder.createEncoder(saveFilePath, cnf);
         }
         if (cnf.drawShadow) {
@@ -151,9 +146,7 @@ public class JavaFXRenderer extends Renderer {
                 groupRoot = new Group();
                 groupBackground = new Group();
                 //Create background
-                if (cnf.getBackGroundImage()!=null) {
-//                    File file = new File(cnf.backGroundImage);
-//                    ImageView background = new ImageView(new Image(file.toURI().toString()));
+                if (cnf.getBackGroundImage() != null) {
                     ImageView background = new ImageView(new Image(cnf.getBackGroundImage().openStream()));
                     Rectangle2D viewport = new Rectangle2D(0, 0, cnf.mediaW, cnf.mediaW);
                     background.setViewport(viewport);
@@ -167,6 +160,7 @@ public class JavaFXRenderer extends Renderer {
                 StandaloneSnapshot.FXStarter.stage.setScene(fxScene);
                 //Proof with perspective camera
                 fxCamera = new PerspectiveCamera();
+                //These are 3d tests, maybe for the future...
 //                camera.getTransforms().addAll(
 //                        new Translate(cnf.mediaW/2, cnf.mediaH/2, 0),
 //                        new Rotate(45, Rotate.X_AXIS),
@@ -189,32 +183,12 @@ public class JavaFXRenderer extends Renderer {
         Platform.runLater(task);
         task.get();
 
-//        Group group = new Group();
-//        scene = new Scene(group, 800, 600);
     }
 
     public final void endJavaFXEngine() {
         Platform.exit();
     }
 
-//    public void addShadow(){
-//         FutureTask<WritableImage> task = new FutureTask<>(new Callable<WritableImage>() {
-//            @Override
-//            public WritableImage call() throws Exception {
-//                WritableImage img;
-//                group.getChildren().addAll(fxnodes);
-//                img = fxScene.getRoot().snapshot(null, null);
-//                return img;
-//            }
-//        });
-//
-//        Platform.runLater(task);
-//        try {
-//            WritableImage img2 = task.get();
-//        } catch (InterruptedException | ExecutionException ex) {
-//            Logger.getLogger(JavaFXRenderer.class.getName()).log(Level.SEVERE, null, ex);
-//        }
-//    }
     @Override
     public <T extends Camera> T getCamera() {
         return (T) camera;
@@ -305,19 +279,14 @@ public class JavaFXRenderer extends Renderer {
         drawPath(mobj, camera);
     }
 
-    public void drawPath(Shape mobj, CameraFX2D cam) {
+    private void drawPath(Shape mobj, CameraFX2D cam) {
 
         JMPath c = mobj.getPath();
         int numPoints = c.size();
 
         if (numPoints >= 2) {
             Path path = createPathFromJMPath(mobj, c, cam);
-
             applyDrawingStyles(path, mobj);
-
-//            if (cnf.drawShadow & mobj.mp.castShadows) {
-//                path.setEffect(dropShadow);
-//            }
             fxnodes.add(path);
         }
     }
@@ -359,7 +328,7 @@ public class JavaFXRenderer extends Renderer {
 
     public double computeThickness(MathObject mobj) {
         Camera cam = (mobj.mp.absoluteThickness ? fixedCamera : camera);
-        return Math.max(mobj.mp.thickness / cam.getMathView().getWidth() * 2.5d,MIN_THICKNESS);
+        return Math.max(mobj.mp.thickness / cam.getMathView().getWidth() * 2.5d, MIN_THICKNESS);
     }
 
     public double getThicknessForMathWidth(double w) {
@@ -376,17 +345,18 @@ public class JavaFXRenderer extends Renderer {
     }
 
     /**
-     * Returns equivalent position from default camera to fixed camera.
+     * Returns equivalent position from default camera to fixed camera. For
+     * example if you pass the Vec (1,1) to this method, it will return a new
+     * set of coordinates so that, when rendered with the fixed camera, appears
+     * in the same position as (1,1) with default camera.
      *
-     * @param v
-     * @return
+     * @param v Vector that marks the position
+     * @return The coordinates to be used with the fixed camera
      */
     public Vec defaultToFixedCamera(Vec v) {
         double width1 = camera.getMathView().getWidth();
         double[] ms = camera.mathToScreenFX(v);
         double[] coords = fixedCamera.screenToMath(ms[0], ms[1]);
-//        System.out.println(width1 + ",   " + v + "    MS(" + ms[0] + ", " + ms[1] + ")");
-
         return new Vec(coords[0], coords[1]);
 
     }
@@ -429,7 +399,7 @@ public class JavaFXRenderer extends Renderer {
         try {
             Image image;
             if (!images.containsKey(fileName)) {//If the image is not already loaded...
-                ResourceLoader rl=new ResourceLoader();
+                ResourceLoader rl = new ResourceLoader();
                 image = new Image(rl.getResource(fileName, "images").openStream());
                 images.put(fileName, image);
                 JMathAnimScene.logger.info("Loaded image " + fileName);
@@ -440,15 +410,12 @@ public class JavaFXRenderer extends Renderer {
             //UL corner of bounding box initially set to (0,0)
             r.ymin = -camera.screenToMath(image.getHeight());
             r.xmax = camera.screenToMath(image.getWidth());
-        } catch (FileNotFoundException ex) {
-            JMathAnimScene.logger.warn("Could'nt load image " + fileName);
         } catch (IOException ex) {
-            Logger.getLogger(JavaFXRenderer.class.getName()).log(Level.SEVERE, null, ex);
+            JMathAnimScene.logger.warn("Could'nt load image " + fileName);
         }
 
         return r;
     }
-    //Setting the image view     }
 
     @Override
     public void drawImage(JMImage obj) {
@@ -456,7 +423,6 @@ public class JavaFXRenderer extends Renderer {
         ImageView imageView = new ImageView(image);
         //setting the fit height and width of the image view
         double[] xy = camera.mathToScreenFX(obj.bbox.getUL().v);
-//        System.out.println(xy[0]+", "+xy[1]);
         imageView.setX(xy[0]);
         imageView.setY(xy[1]);
         imageView.setFitHeight(camera.mathToScreenFX(obj.bbox.getHeight()));
@@ -465,9 +431,7 @@ public class JavaFXRenderer extends Renderer {
         imageView.setSmooth(true);
         imageView.setCache(true);
         imageView.setOpacity(obj.mp.getDrawColor().alpha);
-
         imageView.setRotate(-obj.rotateAngle / DEGREES);
-//        imageView.setRotate(-45);
         fxnodes.add(imageView);
     }
 
