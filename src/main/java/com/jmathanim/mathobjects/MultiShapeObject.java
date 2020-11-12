@@ -93,14 +93,15 @@ public class MultiShapeObject extends MathObject implements Iterable<Shape>{
 //        return (T) this;
 //    }
     @Override
-    public <T extends MathObject> T copy() {
+    public MultiShapeObject copy() {
         MultiShapeObject resul = new MultiShapeObject();
         for (Shape sh : shapes) {
             final Shape copy = sh.copy();
             resul.addShape(copy);
         }
         resul.mp.copyFrom(mp);
-        return (T) resul;
+        resul.absoluteSize=this.absoluteSize;
+        return (MultiShapeObject) resul;
     }
 
 

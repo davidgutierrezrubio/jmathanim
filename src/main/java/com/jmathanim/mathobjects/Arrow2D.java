@@ -42,7 +42,7 @@ public class Arrow2D extends MathObject {
     private final Point p1, p2;
     private final Shape body;
     public ArrowType arrowType = ArrowType.TYPE_1;
-    private final SVGMathObject head;
+    private final MultiShapeObject head;
 //    private final File outputDir;
     private static final double DEFAULT_ARROW_HEAD_SIZE = .015;
 
@@ -54,8 +54,8 @@ public class Arrow2D extends MathObject {
         return new Arrow2D(p1, p2, type);
     }
 
-    public final SVGMathObject buildArrowHead(ArrowType type) {
-        SVGMathObject svg = null;
+    public final MultiShapeObject buildArrowHead(ArrowType type) {
+        SVGMathObject head = null;
         String name = "#arrow";
         switch (type) {//TODO: Improve this
             case TYPE_1:
@@ -72,12 +72,12 @@ public class Arrow2D extends MathObject {
 //            baseFileName = outputDir.getCanonicalPath() + File.separator + "arrows" + File.separator + name;
             ResourceLoader rl=new ResourceLoader();
             URL arrowUrl = rl.getResource(name,"arrows");
-            svg = new SVGMathObject(arrowUrl);
+            head = new SVGMathObject(arrowUrl);
 
         } catch (NullPointerException ex) {
             JMathAnimScene.logger.error("Arrow head " + name + " not found");
         }
-        return svg;
+        return head;
     }
 
     public Arrow2D(Point p1, Point p2, ArrowType type) {
@@ -94,11 +94,11 @@ public class Arrow2D extends MathObject {
         head.setAbsoluteAnchorPoint(p2);
     }
 
-    public Arrow2D(Point p1, Point p2, SVGMathObject svg) {
+    public Arrow2D(Point p1, Point p2, MultiShapeObject head) {
         this.p1 = p1;
         this.p2 = p2;
         this.body = Shape.segment(p1, p2);
-        this.head = svg;
+        this.head = head;
         head.drawColor(this.body.mp.getDrawColor());
         head.fillColor(this.body.mp.getDrawColor());
         scaleArrowHead(1);
@@ -107,6 +107,10 @@ public class Arrow2D extends MathObject {
         head.setAbsoluteAnchorPoint(p2);
     }
 
+    public Arrow2D(Point p1,Point p2,Shape head){
+        this(p1,p2,new MultiShapeObject(head));
+    }
+    
     /**
      * Returns the body of the Arrow
      *
@@ -121,7 +125,7 @@ public class Arrow2D extends MathObject {
      *
      * @return A SVGMathObject representing the arrow head
      */
-    public SVGMathObject getArrowHead() {
+    public MultiShapeObject getArrowHead() {
         return head;
     }
 
@@ -179,7 +183,7 @@ public class Arrow2D extends MathObject {
         double w1 = r.getCamera().getMathView().getWidth();
         double w2 = r.getFixedCamera().getMathView().getWidth();
 
-        double alpha = 1 - .5 * w1 / w2 * head.getBoundingBox().getHeight() / vecLength;
+        double alpha = 1 - .2 * w1 / w2 * head.getBoundingBox().getHeight() / vecLength;
         Shape bodyToDraw = body.copy().scale(body.getPoint(0), alpha, alpha);
         bodyToDraw.draw(r);
         arrowHeadCopy.setAbsoluteSize(Anchor.Type.BY_POINT);
