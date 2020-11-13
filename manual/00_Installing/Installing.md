@@ -20,7 +20,7 @@ JMathAnim is a Java library using Maven as deployment tool. As as result, you ca
 
 ![image-20201110145453859](04_Install.png)
 
-You need to add the dependencies to add JMathAnim library to your project. You can use the latest released version (right now v0.8.2) or a snapshot version. Currently I recommend using development snapshots because released versions <1.0.0 may still have bugs.
+You need to add the dependencies to add JMathAnim library to your project. You can use the latest released version (right now v0.8.3) or a snapshot version. Currently I recommend using development snapshots because released versions <1.0.0 may still have bugs.
 
 If you want the released version, add
 
