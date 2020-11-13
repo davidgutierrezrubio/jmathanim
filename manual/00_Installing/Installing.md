@@ -29,7 +29,7 @@ If you want the released version, add
     <dependency>
         <groupId>com.github.davidgutierrezrubio</groupId>
         <artifactId>JMathAnim</artifactId>
-        <version>0.8.2</version>
+        <version>0.8.3</version>
     </dependency>
 </dependencies>
 ```
@@ -49,12 +49,12 @@ If you want to use the snapshot version, you need to add also the repository whe
     <dependency>
         <groupId>com.github.davidgutierrezrubio</groupId>
         <artifactId>JMathAnim</artifactId>
-        <version>0.8.3-SNAPSHOT</version>
+        <version>0.8.4-SNAPSHOT</version>
     </dependency>
 </dependencies>
 ```
 
-4) In this example, I use the snapshot version:
+4) In this example, I use the 0.8.3-snapshot version:
 
 ![image-20201110150506506](05_Install.png)
 
