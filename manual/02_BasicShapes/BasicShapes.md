@@ -20,8 +20,8 @@ double angle=v.getAngle();//Returns the angle of v, from 0 to 2*PI
 The `Point` class
 -----------------
 
-Everything what you can draw in the screen is a subclass of the `MathObject` class (moreover, everything that implements the `Drawable`
-method). So, they share a few common methods, like `scale`, `rotate` or `shift`. We’ll see this methods later.
+Everything that you can draw in the screen is a subclass of the `MathObject` class (moreover, everything that implements the `Drawable`
+interface). So, they share a few common methods, like `scale`, `rotate` or `shift`. We’ll see this methods later.
 
 The `Point` class is the most basic `MathObject` and, yes, you’re right, it represents a single point.
 
@@ -47,9 +47,9 @@ The code used was
 ``` java
 @Override
 public void runSketch() throws Exception {
-        Point A = Point.at(-.5, 0).dotStyle(DotSyle.CIRCLE);
-        Point B = Point.at(0, 0).dotStyle(DotSyle.CROSS);
-        Point C = Point.at(.5, 0).dotStyle(DotSyle.PLUS);
+        Point A = Point.at(-.5, 0).dotStyle(Point.Syle.CIRCLE);
+        Point B = Point.at(0, 0).dotStyle(Point.Syle.CROSS);
+        Point C = Point.at(.5, 0).dotStyle(Point.Syle.PLUS);
         add(A, B, C); //Add the 3 points to the scene
         waitSeconds(5); //Give me time to do a screenshot!
     }
@@ -68,16 +68,22 @@ Several convenience static methods are defined to easily create most common shap
 ``` java
 //Generates a circle with radius 1 and centered at (0,0)
 Shape circ=Shape.circle();
+
 //Generates a unit-square, with lower left cornet at (0,0)
 Shape sq=Shape.square();
+
 //A regular pentagon, with 2 first vertices at (0,0) and (1,0)
 Shape reg=Shape.regularPolygon(5);
+
 //A closed polygon (in this case, a triangle)
 Shape poly=Shape.polygon(Point.at(0,0),Point.at(1,1),Point.at(0,1));
+
 //A rectangle with their sides parallel to the axes, with lower left and upper right vertices at (1,2) and (3,5) respectively.
 Shape rect=Shape.rectangle(Point.at(1,2),Point.at(3,5));
+
 //A segment specified by the given points
 Shape seg=Shape.segment(Point.at(-1,-1),Point.at(-.5,1.5));
+
 //An arc centered at (0,0) with radius 1, and arclength of PI/4 radians
 Shape arc=Shape.arc(PI/4);
 ```
@@ -91,7 +97,7 @@ The `Shape` class is one of the most important and the most likely to be animate
 Each `Shape` object has a `JMPath` object which stores and manages the path represented. Each point of the path can be accesed with the method
 `getPoint(n)`. This is a circular array and zero-based, that is, if you have the object `pentagon` which is a shape with 5 vertices, `pentagon.getPoint(0)` will give you the first point of the shape, `pentagon.getPoint(1)` the second one,…​and `pentagon.getPoint(5)` instead of giving you an error, will return again the first point of the path.
 
-In the `Shape` objects, apart from `.getCenter()`method, which returns the center of its bounding box, there is also the `.getCentroid()`method which computes the centroid of the shape, defined by the mean point of all its vertices. This method effectively returns the center of a regular polygon for example, instead of the `.getCenter()`method.
+In the `Shape` objects, apart from `.getCenter()`method, which returns the center of its bounding box, there is also the `.getCentroid()`method which computes the centroid of the shape, defined by the average point of all its vertices. This method effectively returns the center of a regular polygon for example, instead of the `.getCenter()`method.
 
 ## The `Arrow2D`class
 

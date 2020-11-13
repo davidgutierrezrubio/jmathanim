@@ -63,7 +63,6 @@ config.setMediumQuality();//Predefined adjusts: 854x480 video, at 30fps
 config.setHighQuality();//Predefined adjusts: 1920x1080 video, at 60fps
 
 config.setCreateMovie(true);//Generates a mp4 files with the animation
-config.setOutputDir("C:\\media");//Specifies output directory at c:\media
 config.setOutputDir("media");//Specifies output directory at <PROJECT_DIR>\media (this is the default value)
 config.setOutputFileName("animation");//Specifies video filename as animationWWW.mp4 where WWW is the width output (by default, the output file name is the name of the scene class)
 
@@ -76,21 +75,10 @@ config.setDrawShadow(true); //Apply shadow effect to the scene, using javafx sha
 config.setShadowParameters(10,15,15,.5f);//Sets shadow parameters (kernel 10, offsets 15 and 15, shadow alpha .5f)
 
 
-config.setResourcesDir("c:\\resources");Specifies resources directory at c:\resources
+config.setResourcesDir("c:\\resources");//Specifies resources directory at absolute path c:\resources
 
    
  
-```
-
-
-
-As well as configuring output, you can also configure where the resources are. Resources can be background images, predefined styles, svg objects like arrow heads, etc. By default, the resources directory is located at `<PROJECT_DIR>\resources`and has the following structure:
-
-```
-resources\
-	   +--  arrows\ svg heads of arrows
-	   +--  config\ xml config files go here
-	   rest of files (images, another svg, etc.)
 ```
 
 ## The configuration files
@@ -129,7 +117,7 @@ A few examples:
 * the `ConfigLoader.parseFile("#file.xml") ` command will try to load `file.xml` internally stored at the jar library.
 * the `ConfigLoader.parseFile("!/home/user/myResources/file.xml") ` command will try to load `file.xml` from the location `/home/user/myResources/file.xml`.
 
-This way, if you want to store all your precious resources (config files, images, etc.) in a system-wide scope, you can store them in a folder (say ` /home/bob/myJMathAnimResources`) and make JMathAnim to look for resources there with the method `config.setResourcesDir("/home/bob/myJMathAnimResources")` at the beginning of the `setupSketch()` method.
+This way, if you want to store all your precious resources in a system-wide scope, you can store them in a folder (say ` /home/bob/myJMathAnimResources`) and make JMathAnim to look for resources there with the method `config.setResourcesDir("/home/bob/myJMathAnimResources")` at the beginning of the `setupSketch()` method (Note that the "!" modifier is not needed here).
 
 > Note: The "!" modifier also can be used when specifying a file path in the config files, like background images, for example.
 
@@ -277,6 +265,4 @@ Inside this tag, we may have
   The `<absoluteThickness>` thickness controls if the thickness of the object will be affected by scaling transformations. By default this is true, so that if you zoom in a circle, for example, its thickness will always be the same. For objects like SVG imports for example, the absolute thickness flag is set to false.
 
   The `<dotStyle>` is one of the values of the `enum DotStyle` in the `Point` class and sets how a `Point`object with this style will be drawn. Currently, the possible values are `CIRCLE`, `CROSS` and `PLUS`.
-
-  
 

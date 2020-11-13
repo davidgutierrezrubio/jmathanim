@@ -90,4 +90,4 @@ And execute the code, pressing F6. You will be prompted for the `main` method th
 
 ![12_install](12_install.gif)
 
-And that's it! You have JMathAnim ready to create beautiful, teaching, mathematical animations. Enjoy!
+And that's it! You have JMathAnim ready to create beautiful, educational, mathematical animations. Enjoy!
