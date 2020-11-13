@@ -19,6 +19,7 @@ package com.jmathanim.Animations;
 
 import com.jmathanim.Animations.Strategies.Transform.FunctionSimpleInterpolateTransform;
 import com.jmathanim.Animations.Strategies.Transform.HomothecyStrategyTransform;
+import com.jmathanim.Animations.Strategies.Transform.MultiShapeTransform;
 import com.jmathanim.Animations.Strategies.Transform.Optimizers.NullOptimizationStrategy;
 import com.jmathanim.Animations.Strategies.Transform.PointInterpolationCanonical;
 import com.jmathanim.Animations.Strategies.Transform.PointInterpolationSimpleShapeTransform;
@@ -29,6 +30,7 @@ import com.jmathanim.mathobjects.FunctionGraph;
 import com.jmathanim.mathobjects.JMPath;
 import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.MathObject.MathObjectType;
+import com.jmathanim.mathobjects.MultiShapeObject;
 import com.jmathanim.mathobjects.Shape;
 import java.util.ArrayList;
 
@@ -43,7 +45,8 @@ public class Transform extends Animation {
         INTERPOLATE_POINT_BY_POINT,
         HOMOTHECY_TRANSFORM,
         ROTATE_AND_SCALEXY_TRANSFORM,
-        FUNCTION_INTERPOLATION
+        FUNCTION_INTERPOLATION,
+        MULTISHAPE_TRANSFORM
     }
 
     public final MathObject mobjDestiny;
@@ -134,7 +137,11 @@ public class Transform extends Animation {
 
     private void determineTransformStrategy() {
         transformMethod = TransformMethod.INTERPOLATE_POINT_BY_POINT;//Default method if not specified
-
+        if ((mobjTransformed instanceof MultiShapeObject) && (mobjDestiny instanceof MultiShapeObject)) {
+            transformMethod = TransformMethod.MULTISHAPE_TRANSFORM;
+            JMathAnimScene.logger.info("Transform method: Multishape");
+            return;
+        }
         if ((mobjTransformed instanceof FunctionGraph) && (mobjDestiny instanceof FunctionGraph)) {
             transformMethod = TransformMethod.FUNCTION_INTERPOLATION;
             JMathAnimScene.logger.info("Transform method: Interpolation of functions");
@@ -189,17 +196,20 @@ public class Transform extends Animation {
     private void createTransformStrategy() {
         //Now I choose strategy
         switch (transformMethod) {
+             case MULTISHAPE_TRANSFORM:
+                transformStrategy = new MultiShapeTransform(runTime, (MultiShapeObject) mobjTransformed, (MultiShapeObject) mobjDestiny);
+                break;
             case INTERPOLATE_SIMPLE_SHAPES_BY_POINT:
-                transformStrategy = new PointInterpolationSimpleShapeTransform(runTime, (Shape)mobjTransformed, (Shape)mobjDestiny);
+                transformStrategy = new PointInterpolationSimpleShapeTransform(runTime, (Shape) mobjTransformed, (Shape) mobjDestiny);
                 break;
             case INTERPOLATE_POINT_BY_POINT:
-                transformStrategy = new PointInterpolationCanonical(runTime, (Shape)mobjTransformed, (Shape)mobjDestiny);
+                transformStrategy = new PointInterpolationCanonical(runTime, (Shape) mobjTransformed, (Shape) mobjDestiny);
                 break;
             case HOMOTHECY_TRANSFORM:
-                transformStrategy = new HomothecyStrategyTransform(runTime, (Shape)mobjTransformed, (Shape)mobjDestiny);
+                transformStrategy = new HomothecyStrategyTransform(runTime, (Shape) mobjTransformed, (Shape) mobjDestiny);
                 break;
             case ROTATE_AND_SCALEXY_TRANSFORM:
-                transformStrategy = new RotateAndScaleXYStrategyTransform(runTime, (Shape)mobjTransformed, (Shape)mobjDestiny);
+                transformStrategy = new RotateAndScaleXYStrategyTransform(runTime, (Shape) mobjTransformed, (Shape) mobjDestiny);
                 break;
             case FUNCTION_INTERPOLATION:
                 transformStrategy = new FunctionSimpleInterpolateTransform(runTime, (FunctionGraph) mobjTransformed, (FunctionGraph) mobjDestiny);

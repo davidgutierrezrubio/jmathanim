@@ -122,7 +122,7 @@ public class LaTeXMathObject extends SVGMathObject {
         String hash = getMd5(fullDocument);
         hash = hash.substring(hash.length() - 8);
         outputDir = new File("tex");
-        baseFileName = outputDir.getCanonicalPath() + File.pathSeparator + hash;
+        baseFileName = outputDir.getCanonicalPath() + File.separator + hash;
         latexFile = new File(baseFileName + ".tex");
         outputDir.mkdirs();
         FileWriter fw;
