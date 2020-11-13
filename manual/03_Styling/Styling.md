@@ -125,7 +125,7 @@ If the program cannot find the file, the logger will report an error but the exe
 
 Here is an example of a basic config file that I use for previewing, called `preview.xml`. The `<video>`tag controls aspects related to movie output:
 
-```XML
+```xml
 <JMathAnimConfig>
     <video>
         <size width="1066" height="600" fps="30"/>
@@ -137,7 +137,7 @@ Here is an example of a basic config file that I use for previewing, called `pre
 
 And this for production, called `productionWithShadow.xml`. The `background` tag controls aspects like image or color background, or shadow effect.
 
-```XML
+```xml
 <JMathAnimConfig>
     <video>
         <size width="1920" height="1080" fps="60"/>
@@ -200,7 +200,7 @@ The `<styles>` tag allows defining styles to apply to your animation. There are 
 
 The `<include>` tag that appears at the beginning loads another config files.  In this case, a `dots.xml`file with styles to dots are defined:
 
-```XML
+```xml
 <JMathAnimConfig>  
     <styles>
         <style name="dotRedCircle">
