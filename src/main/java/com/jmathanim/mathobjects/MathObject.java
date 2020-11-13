@@ -28,7 +28,6 @@ import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.MOProperties.MathObjectAttributes;
 import com.jmathanim.mathobjects.updateableObjects.Updateable;
-import java.util.HashSet;
 import javafx.scene.shape.StrokeLineCap;
 
 /**
@@ -251,6 +250,13 @@ public abstract class MathObject implements Drawable, Updateable, Stateable {
         return (T) this;
     }
 
+    /**
+     * Center the object in the math view. This command is equivalent
+     * this.stackToScreen(Type.BY_CENTER);
+     *
+     * @param <T> Object type
+     * @return The same object
+     */
     public final <T extends MathObject> T center() {
         this.stackToScreen(Type.BY_CENTER);
         return (T) this;

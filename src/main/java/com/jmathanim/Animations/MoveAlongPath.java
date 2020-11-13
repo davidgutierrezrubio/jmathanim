@@ -17,7 +17,6 @@
  */
 package com.jmathanim.Animations;
 
-import com.jmathanim.Utils.Anchor;
 import com.jmathanim.Utils.Anchor.Type;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.JMPath;

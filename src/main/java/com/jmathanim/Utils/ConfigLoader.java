@@ -18,7 +18,6 @@
 package com.jmathanim.Utils;
 
 import com.jmathanim.jmathanim.JMathAnimScene;
-import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.logging.Level;

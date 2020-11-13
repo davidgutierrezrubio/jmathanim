@@ -56,27 +56,19 @@ public class JMImage extends MathObject {
     }
 
     @Override
-    public <T extends MathObject> T copy() {
+    public JMImage copy() {
         JMImage resul = new JMImage(filename);
         resul.bbox.copyFrom(this.bbox);
         resul.mp.copyFrom(this.mp);
         resul.preserveRatio = this.preserveRatio;
         resul.rotateAngle = this.rotateAngle;
         resul.rotateAngleBackup = this.rotateAngleBackup;
-        return (T) resul;
+        return resul;
     }
 
     @Override
     public Rect getBoundingBox() {
         return bbox;
-    }
-
-    @Override
-    public void registerChildrenToBeUpdated(JMathAnimScene scene) {
-    }
-
-    @Override
-    public void unregisterChildrenToBeUpdated(JMathAnimScene scene) {
     }
 
     @Override
@@ -113,6 +105,14 @@ public class JMImage extends MathObject {
         //For now, ignore rotate center
         rotateAngle += angle;
         return (T) this;
+    }
+
+    @Override
+    public void registerChildrenToBeUpdated(JMathAnimScene scene) {
+    }
+
+    @Override
+    public void unregisterChildrenToBeUpdated(JMathAnimScene scene) {
     }
 
 }

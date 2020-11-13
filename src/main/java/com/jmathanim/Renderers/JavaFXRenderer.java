@@ -34,6 +34,7 @@ import com.jmathanim.mathobjects.Shape;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.concurrent.Callable;
@@ -400,7 +401,8 @@ public class JavaFXRenderer extends Renderer {
             Image image;
             if (!images.containsKey(fileName)) {//If the image is not already loaded...
                 ResourceLoader rl = new ResourceLoader();
-                image = new Image(rl.getResource(fileName, "images").openStream());
+                final URL imageResource = rl.getResource(fileName, "images");
+                image = new Image(imageResource.openStream());
                 images.put(fileName, image);
                 JMathAnimScene.logger.info("Loaded image " + fileName);
             } else {
