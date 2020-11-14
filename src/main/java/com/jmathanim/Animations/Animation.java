@@ -133,7 +133,7 @@ public abstract class Animation {
         t += dt;
         if (resul) {
             t = 1;
-            this.finishAnimation();
+//            this.finishAnimation();
             isEnded = true;
         }
         return resul;

@@ -15,7 +15,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-
 package com.jmathanim.Renderers;
 
 import com.jmathanim.Cameras.Camera;
@@ -59,7 +58,8 @@ import javax.swing.JLabel;
 import javax.swing.SwingUtilities;
 
 /**
- * This class uses Java2D to render the image.
+ * This class uses Java2D to render the image. This class is deprecated. Use
+ * JavaFXRenderer instead.
  *
  * @author David Gutierrez Rubio davidgutierrezrubio@gmail.com
  */
@@ -69,10 +69,10 @@ public class Java2DAwtRenderer extends Renderer {
     private static final boolean DEBUG_PATH_POINTS = false; //Draw control points and vertices
     private static final boolean PRINT_DEBUG = false; //Draw control points and vertices
     private static final boolean BOUNDING_BOX_DEBUG = false; //Draw bounding boxes
-    
+
     private static final double XMIN_DEFAULT = -2;
     private static final double XMAX_DEFAULT = 2;
-    
+
     private BufferedImage drawBufferImage;
     private BufferedImage finalImage;
     private BufferedImage debugImage;
@@ -137,7 +137,6 @@ public class Java2DAwtRenderer extends Renderer {
             Logger.getLogger(Java2DAwtRenderer.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-
 
     public final void prepareEncoder() {
 
@@ -227,20 +226,20 @@ public class Java2DAwtRenderer extends Renderer {
                     } else {
                         fpsComputed = 0;
                     }
-                    
+
                     String statusText = String.format("frame=%d   t=%.2fs    fps=%d", frameCount, (1f * frameCount) / cnf.fps, fpsComputed);
                     previewWindow.statusLabel.setText(statusText);
-                    
+
                     if (cnf.delay) {
                         double tiempo = (1.d / cnf.fps) * 1000;
                         try {
                             long tiempoPasado = timeElapsedInNanoSeconds / 1000000;
 //                System.out.println("Tiempo pasado en milisegundos: " + tiempoPasado);
-long delay = (long) (tiempo - tiempoPasado);
+                            long delay = (long) (tiempo - tiempoPasado);
 //                System.out.println("delay " + delay);
-if (delay > 0) {
-    Thread.sleep(delay);
-}
+                            if (delay > 0) {
+                                Thread.sleep(delay);
+                            }
                         } catch (InterruptedException ex) {
                             Logger.getLogger(Java2DAwtRenderer.class.getName()).log(Level.SEVERE, null, ex);
                         }
@@ -451,14 +450,11 @@ if (delay > 0) {
             g2draw.draw(path);
 //            g2draw.setTransform(bTr);
 
-         
             if (BOUNDING_BOX_DEBUG) {
                 debugBoundingBox(c.getBoundingBox());
             }
         }
     }
-
-   
 
     public AffineTransform getCameratoG2DTransform(Camera cam) {
         Rect r = cam.getMathView();
@@ -537,7 +533,6 @@ if (delay > 0) {
         return resul;
     }
 
-
     public void debugPathPoint(JMPathPoint p, JMPath path) {
         int[] x = camera.mathToScreen(p.p.v.x, p.p.v.y);
         debugCPoint(camera.mathToScreen(p.cp1.v.x, p.cp1.v.y));
@@ -571,23 +566,6 @@ if (delay > 0) {
     public void debugCPoint(int[] xy) {
         g2draw.setColor(Color.PINK);
         g2draw.drawRect(xy[0] - 4, xy[1] - 4, 8, 8);
-    }
-
-    public void debugText(String texto, int x, int y) {
-        Font font = new Font("Serif", Font.PLAIN, 12);
-        g2draw.setFont(font);
-        g2draw.setColor(Color.WHITE);
-        g2draw.drawString(texto, x, y);
-    }
-
-    public void debugBoundingBox(Rect r) {
-        double[] ULCorner = {r.xmin, r.ymax};
-        double[] DRCorner = {r.xmax, r.ymin};
-        int[] scUL = camera.mathToScreen(ULCorner[0], ULCorner[1]);
-        int[] scDR = camera.mathToScreen(DRCorner[0], DRCorner[1]);
-        g2draw.setColor(Color.LIGHT_GRAY);
-        g2draw.setStroke(new BasicStroke(1, CAP_ROUND, JOIN_ROUND));
-        g2draw.drawRect(scUL[0], scUL[1], scDR[0] - scUL[0], scDR[1] - scUL[1]);
     }
 
     /**
@@ -638,4 +616,26 @@ if (delay > 0) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
+    @Override
+    public void debugText(String text, Vec loc) {
+        int[] xy = camera.mathToScreen(loc);
+        debugText(text, xy[0], xy[1]);
+    }
+
+    public void debugText(String texto, int x, int y) {
+        Font font = new Font("Serif", Font.PLAIN, 12);
+        g2draw.setFont(font);
+        g2draw.setColor(Color.WHITE);
+        g2draw.drawString(texto, x, y);
+    }
+
+    public void debugBoundingBox(Rect r) {
+        double[] ULCorner = {r.xmin, r.ymax};
+        double[] DRCorner = {r.xmax, r.ymin};
+        int[] scUL = camera.mathToScreen(ULCorner[0], ULCorner[1]);
+        int[] scDR = camera.mathToScreen(DRCorner[0], DRCorner[1]);
+        g2draw.setColor(Color.LIGHT_GRAY);
+        g2draw.setStroke(new BasicStroke(1, CAP_ROUND, JOIN_ROUND));
+        g2draw.drawRect(scUL[0], scUL[1], scDR[0] - scUL[0], scDR[1] - scUL[1]);
+    }
 }

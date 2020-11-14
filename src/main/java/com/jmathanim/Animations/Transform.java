@@ -66,7 +66,7 @@ public class Transform extends Animation {
     public Transform(double runTime, MathObject ob1, MathObject ob2) {
         super(runTime);
         mobjTransformed = ob1;
-        mobjDestiny = ob2.copy();
+        mobjDestiny = ob2;
         transformMethod = null;
         shouldOptimizePathsFirst = true;
         forceChangeDirection = false;
@@ -170,8 +170,9 @@ public class Transform extends Animation {
 
         //Regular Polygons with the same number of vertices
         if ((mobjTransformed.getObjectType() == MathObjectType.REGULAR_POLYGON) && (mobjDestiny.getObjectType() == MathObjectType.REGULAR_POLYGON)) {
-            Shape sh = (Shape) mobjTransformed;
-            if (sh.jmpath.size() == sh.jmpath.size()) {
+            Shape shTransformed = (Shape) mobjTransformed;
+            Shape shDst = (Shape) mobjDestiny;
+            if (shTransformed.jmpath.size() == shDst.jmpath.size()) {
                 transformMethod = TransformMethod.ROTATE_AND_SCALEXY_TRANSFORM;
                 JMathAnimScene.logger.info("Transform method: Rotate and Scale XY");
             } else { //Different number of vertices
@@ -225,6 +226,9 @@ public class Transform extends Animation {
             isFinished = true;
         }
         transformStrategy.finishAnimation();
+        //Remove fist object and add the second to the scene
+        scene.add(mobjDestiny);
+        scene.remove(mobjTransformed);
     }
 
     @Override

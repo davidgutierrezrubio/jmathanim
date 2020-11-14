@@ -24,6 +24,7 @@ import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.CanonicalJMPath;
 import com.jmathanim.mathobjects.JMPath;
 import com.jmathanim.mathobjects.JMPathPoint;
+import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.Point;
 import com.jmathanim.mathobjects.Shape;
 import java.util.ArrayList;
@@ -53,9 +54,10 @@ public class PointInterpolationCanonical extends Animation {
 
     @Override
     public void initialize() {
-        //This is the initialization for the point-to-point interpolation
-        //Prepare paths. Firs, I ensure they have the same number of points
-        //and be in connected components form.
+       ArrayList<MathObject> ob = scene.getObjects();
+       //This is the initialization for the point-to-point interpolation
+       //Prepare paths. Firs, I ensure they have the same number of points
+       //and be in connected components form.
 
         //Remove consecutive hidden vertices, in case.
         this.mobjTransformed.getPath().removeConsecutiveHiddenVertices();

@@ -25,6 +25,8 @@ import com.jmathanim.Renderers.Renderer;
 import com.jmathanim.Utils.JMathAnimConfig;
 import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.MathObjectGroup;
+import com.jmathanim.mathobjects.MultiShapeObject;
+import com.jmathanim.mathobjects.Shape;
 import com.jmathanim.mathobjects.updateableObjects.Updateable;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -247,6 +249,21 @@ public abstract class JMathAnimScene {
      */
     public synchronized final void remove(MathObject... objs) {
         for (MathObject obj : objs) {
+
+            if (obj instanceof MultiShapeObject) {
+                MultiShapeObject msh = (MultiShapeObject) obj;
+                for (Shape o : msh) {
+                    this.remove(o);
+                }
+            }
+
+            if (obj instanceof MathObjectGroup) {
+                MathObjectGroup msh = (MathObjectGroup) obj;
+                for (MathObject o : msh) {
+                    this.remove(o);
+                }
+            }
+
             objects.remove(obj);
             obj.setScene(null);
             unregisterUpdateable(obj);
@@ -335,7 +352,11 @@ public abstract class JMathAnimScene {
             finished = true;
             for (Animation anim : anims) {
                 if (anim != null) {
-                    finished = finished & anim.processAnimation();
+                    final boolean resultAnimation = anim.processAnimation();
+                    finished = finished & resultAnimation;
+                    if (resultAnimation) {
+                        anim.finishAnimation();
+                    }
                 }
             }
 

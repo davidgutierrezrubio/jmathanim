@@ -33,9 +33,10 @@ import java.util.List;
  *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
-public class MultiShapeObject extends MathObject implements Iterable<Shape>{
+public class MultiShapeObject extends MathObject implements Iterable<Shape> {
 
     public final ArrayList<Shape> shapes;
+    private boolean debugText = false;
 
     public MultiShapeObject() {
         this(new ArrayList<Shape>());
@@ -100,10 +101,9 @@ public class MultiShapeObject extends MathObject implements Iterable<Shape>{
             resul.addShape(copy);
         }
         resul.mp.copyFrom(mp);
-        resul.absoluteSize=this.absoluteSize;
+        resul.absoluteSize = this.absoluteSize;
         return (MultiShapeObject) resul;
     }
-
 
     @Override
     public void draw(Renderer r) {
@@ -115,8 +115,12 @@ public class MultiShapeObject extends MathObject implements Iterable<Shape>{
                     r.drawAbsoluteCopy(jmp, getAbsoluteAnchor().v);//TODO: This doesnt work for overrided methods (e.g.: line)
                 } else {
                     jmp.draw(r);
+                    if (debugText) {
+                        r.debugText("" + n, jmp.getCenter().v);
+                    }
                 }
             }
+            n++;
         }
     }
 
@@ -220,10 +224,10 @@ public class MultiShapeObject extends MathObject implements Iterable<Shape>{
 
     @Override
     public <T extends MathObject> T fillWithDrawColor(boolean fcd) {
-         for (int n = 0; n < shapes.size(); n++) {
+        for (int n = 0; n < shapes.size(); n++) {
             shapes.get(n).fillWithDrawColor(fcd);
         }
-         return (T) this;
+        return (T) this;
     }
 
     public ArrayList<Shape> getShapes() {
@@ -235,5 +239,13 @@ public class MultiShapeObject extends MathObject implements Iterable<Shape>{
         return shapes.iterator();
     }
 
+    public boolean isDebugText() {
+        return debugText;
+    }
+
+    public <T extends MultiShapeObject> T showDebugText(boolean debugText) {
+        this.debugText = debugText;
+        return (T) this;
+    }
 
 }

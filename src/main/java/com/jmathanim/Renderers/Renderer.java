@@ -15,7 +15,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-
 package com.jmathanim.Renderers;
 
 import com.jmathanim.Cameras.Camera;
@@ -36,23 +35,22 @@ public abstract class Renderer {
 
     protected final JMathAnimConfig cnf;
     protected final JMathAnimScene scene;
+
     public Renderer(JMathAnimScene parentScene) {
-        this.scene=parentScene;
-        this.cnf=JMathAnimConfig.getConfig();
+        this.scene = parentScene;
+        this.cnf = JMathAnimConfig.getConfig();
     }
 
     abstract public <T extends Camera> T getCamera();
 
     public abstract Camera getFixedCamera();
 
-
-
     public int getWidth() {
         return cnf.mediaW;
     }
 
     public int getHeight() {
-       return cnf.mediaH;
+        return cnf.mediaH;
     }
 
     abstract public void saveFrame(int frameCount);
@@ -64,7 +62,6 @@ public abstract class Renderer {
      */
     abstract public void clear();
 
-
     /**
      * Draws the path of a JMPathObject This method will draw most of the
      * objects in the screen
@@ -75,6 +72,9 @@ public abstract class Renderer {
 
     abstract public void drawAbsoluteCopy(Shape sh, Vec anchor);
 
- abstract public Rect createImage(String fileName);
- abstract public void drawImage(JMImage obj);
+    abstract public Rect createImage(String fileName);
+
+    abstract public void drawImage(JMImage obj);
+
+    abstract public void debugText(String text, Vec loc);
 }

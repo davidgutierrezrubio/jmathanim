@@ -135,7 +135,7 @@ public class Shape extends MathObject {
 
     @Override
     public String toString() {
-        return jmpath.toString();
+        return label+":"+jmpath.toString();
     }
 
     @Override

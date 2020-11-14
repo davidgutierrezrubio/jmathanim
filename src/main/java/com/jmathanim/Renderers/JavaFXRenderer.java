@@ -45,6 +45,7 @@ import java.util.logging.Logger;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.embed.swing.SwingFXUtils;
+import javafx.geometry.Bounds;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Group;
 import javafx.scene.Node;
@@ -60,8 +61,11 @@ import javafx.scene.shape.CubicCurveTo;
 import javafx.scene.shape.LineTo;
 import javafx.scene.shape.MoveTo;
 import javafx.scene.shape.Path;
+import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.StrokeLineJoin;
 import javafx.scene.shape.StrokeType;
+import javafx.scene.text.Font;
+import javafx.scene.text.Text;
 import javafx.scene.transform.Rotate;
 import javafx.scene.transform.Translate;
 
@@ -90,9 +94,11 @@ public class JavaFXRenderer extends Renderer {
     private Group group;
     private Group groupRoot;
     private Group groupBackground;
+    private Group groupDebug;
     DropShadow dropShadow;
 
     private final ArrayList<Node> fxnodes;
+    private final ArrayList<Node> debugFXnodes;
 
     private VideoEncoder videoEncoder;
     private File saveFilePath;
@@ -106,6 +112,7 @@ public class JavaFXRenderer extends Renderer {
         fixedCamera.setMathXY(XMIN_DEFAULT, XMAX_DEFAULT, 0);
 
         fxnodes = new ArrayList<>();
+        debugFXnodes = new ArrayList<>();
         images = new HashMap<>();
 
         prepareEncoder();
@@ -146,6 +153,7 @@ public class JavaFXRenderer extends Renderer {
                 group = new Group();
                 groupRoot = new Group();
                 groupBackground = new Group();
+                groupDebug = new Group();
                 //Create background
                 if (cnf.getBackGroundImage() != null) {
                     ImageView background = new ImageView(new Image(cnf.getBackGroundImage().openStream()));
@@ -156,6 +164,7 @@ public class JavaFXRenderer extends Renderer {
                 }
                 groupRoot.getChildren().add(groupBackground);
                 groupRoot.getChildren().add(group);
+                groupRoot.getChildren().add(groupDebug);
                 fxScene = new Scene(groupRoot, cnf.mediaW, cnf.mediaW);
                 fxScene.setFill(JMathAnimConfig.getConfig().getBackgroundColor().getFXColor());
                 StandaloneSnapshot.FXStarter.stage.setScene(fxScene);
@@ -208,6 +217,7 @@ public class JavaFXRenderer extends Renderer {
             @Override
             public WritableImage call() throws Exception {
                 group.getChildren().clear();
+                groupDebug.getChildren().clear();
 
                 fxCamera.getTransforms().clear();
                 fxCamera.getTransforms().addAll(
@@ -218,6 +228,7 @@ public class JavaFXRenderer extends Renderer {
                         new Translate(-cnf.mediaW / 2, -cnf.mediaH / 2, 0));
                 //Add all elements
                 group.getChildren().addAll(fxnodes);
+                groupDebug.getChildren().addAll(debugFXnodes);
                 if (cnf.drawShadow) {
                     group.setEffect(dropShadow);
                 }
@@ -273,6 +284,7 @@ public class JavaFXRenderer extends Renderer {
     @Override
     public void clear() {
         fxnodes.clear();
+        debugFXnodes.clear();
     }
 
     @Override
@@ -435,6 +447,26 @@ public class JavaFXRenderer extends Renderer {
         imageView.setOpacity(obj.mp.getDrawColor().alpha);
         imageView.setRotate(-obj.rotateAngle / DEGREES);
         fxnodes.add(imageView);
+    }
+
+    @Override
+    public void debugText(String text, Vec loc) {
+        double[] xy = camera.mathToScreenFX(loc);
+        Text t = new Text(text);
+        t.setFont(new Font(32));
+        Bounds b1 = t.getLayoutBounds();
+        t.setX(xy[0]-.5*b1.getWidth());
+        t.setY(xy[1]+.5*b1.getHeight());
+        
+        
+        Bounds b = t.getLayoutBounds();
+        double gap=2;
+        Rectangle rectangle = new Rectangle(b.getMinX()-gap, b.getMinY()-gap, b.getWidth()+gap, b.getHeight()+gap);
+        rectangle.setFill(Color.LIGHTBLUE);
+        rectangle.setStroke(Color.DARKBLUE);
+        
+        debugFXnodes.add(rectangle);
+        debugFXnodes.add(t);
     }
 
 }
