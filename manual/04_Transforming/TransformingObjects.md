@@ -89,8 +89,8 @@ The `stackTo` command allows to easily generate aligned objects:
 ``` java
 Shape previousPol = Shape.regularPolygon(6);//First hexagon
 add(previousPol);
-for (int n = 0; n < 10; n++) {
-    Shape pol = Shape.regularPolygon(6).stackTo(previousPol, Anchor.Type.RIGHT);
+for (int n = 4; n < 10; n++) {
+    Shape pol = Shape.regularPolygon(n).stackTo(previousPol, Anchor.Type.RIGHT);
     add(pol);
     previousPol=pol;//New polygon becomes previous in the next iteration
 }
