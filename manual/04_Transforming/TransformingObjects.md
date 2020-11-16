@@ -132,7 +132,7 @@ waitSeconds(5);
 
 produces the result:
 
-![04 scaleExample1](04_scaleExample1.png)
+![04 scaleExample1](04_ScaleExample1.png)
 
 Rotating objects
 ================
