@@ -34,7 +34,7 @@ public class ApplyCommand extends Animation {
     }
     
     public ApplyCommand(AbstractCommand abstractCommand) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        this.command=abstractCommand;
     }
     
     @Override

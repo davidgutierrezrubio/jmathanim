@@ -18,6 +18,8 @@
 package com.jmathanim.Animations;
 
 import com.jmathanim.Animations.Strategies.Transform.MultiShapeTransform;
+import com.jmathanim.Animations.commands.Commands;
+import com.jmathanim.Utils.MODrawProperties;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.LaTeXMathObject;
 import com.jmathanim.mathobjects.MultiShapeObject;
@@ -37,7 +39,7 @@ public class TransformMathExpression extends Animation {
     private final LaTeXMathObject latexTransformed;
     private final MultiShapeObject mshDst;
     private final MultiShapeObject mshOrig;
-    private Animation anim;
+    private AnimationGroup anim;
 
     public TransformMathExpression(double runTime, LaTeXMathObject latexTransformed, LaTeXMathObject latexDestiny) {
         super(runTime);
@@ -125,9 +127,24 @@ public class TransformMathExpression extends Animation {
             System.out.println("Merging Destiny " + (shNumber + n) + " into " + shNumber);
         }
         mshDst.addShape(sh);
-        anim=new Transform(runTime,mshOrig,mshDst);
+
+        anim = new AnimationGroup();
+
+        final Transform anim2 = new Transform(runTime * .8, mshOrig, mshDst);
+        anim2.setLambda(x -> x);
+        anim.add(anim2);
+
+//        MODrawProperties mpOrig = latexTransformed.getMp().copy();
+//        MODrawProperties mpDst = latexDestiny.getMp().copy();
+//        mpOrig.setFillAlpha(0);
+//        mpOrig.thickness = 8d;
+//        for (Shape shape : mshDst.getShapes()) {
+//            shape.getMp().copyFrom(latexDestiny.getMp());
+//            anim.add(Commands.changeFillAlpha(runTime * .2, shape));
+//        }
+
         anim.initialize();
-//        scene.add(mshOrig);
+        scene.add(mshOrig);
     }
 
     @Override

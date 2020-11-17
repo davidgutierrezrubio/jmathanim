@@ -27,12 +27,10 @@ import com.jmathanim.Animations.Strategies.Transform.RotateAndScaleXYStrategyTra
 import com.jmathanim.Utils.MODrawProperties;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.FunctionGraph;
-import com.jmathanim.mathobjects.JMPath;
 import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.MathObject.MathObjectType;
 import com.jmathanim.mathobjects.MultiShapeObject;
 import com.jmathanim.mathobjects.Shape;
-import java.util.ArrayList;
 
 /**
  *
@@ -156,13 +154,13 @@ public class Transform extends Animation {
                 return;
             }
         }
-JMathAnimScene.logger.info("Transform method: Point interpolation between 2 curves");
+        JMathAnimScene.logger.info("Transform method: Point interpolation between 2 curves");
     }
 
     private void createTransformStrategy() {
         //Now I choose strategy
         switch (transformMethod) {
-             case MULTISHAPE_TRANSFORM:
+            case MULTISHAPE_TRANSFORM:
                 transformStrategy = new MultiShapeTransform(runTime, (MultiShapeObject) mobjTransformed, (MultiShapeObject) mobjDestiny);
                 break;
             case INTERPOLATE_SIMPLE_SHAPES_BY_POINT:

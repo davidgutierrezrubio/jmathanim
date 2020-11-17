@@ -66,6 +66,7 @@ public class PointInterpolationCanonical extends Animation {
             optimizeStrategy = new DivideEquallyStrategy();
         }
         optimizeStrategy.optimizePaths(mobjTransformed, mobjDestiny);
+        optimizeStrategy.optimizePaths(mobjDestiny, mobjTransformed);
         originalShapeBaseCopy = mobjTransformed.copy();
         preparePaths(mobjTransformed.jmpath, mobjDestiny.jmpath);
         if (DEBUG_COLORS) {

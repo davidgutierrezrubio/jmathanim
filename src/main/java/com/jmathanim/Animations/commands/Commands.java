@@ -31,6 +31,9 @@ import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.MathObjectGroup;
 import com.jmathanim.mathobjects.Point;
+import com.jmathanim.mathobjects.Shape;
+import java.util.ArrayList;
+import java.util.function.DoubleUnaryOperator;
 
 /**
  *
@@ -633,5 +636,33 @@ public class Commands {
             ag.add(anim);
         }
         return ag;
+    }
+
+    public static ApplyCommand changeFillAlpha(double runTime, MathObject... objects) {
+        return new ApplyCommand(new MathObjectsCommand(objects) {
+            ArrayList<Double> alphaOrig = new ArrayList<>();
+            DoubleUnaryOperator lambda = (x) -> 2 * (x - .5) * (x - .5);
+
+            @Override
+            public void initialize() {
+                for (MathObject obj : objects) {
+                    alphaOrig.add(obj.getMp().getFillColor().alpha);
+                }
+            }
+
+            @Override
+            public void execute(double t) {
+                int n = 0;
+                for (MathObject obj : objects) {
+                    double a = alphaOrig.get(n) * lambda.applyAsDouble(t);
+                    obj.getMp().setFillAlpha((float) a);
+                }
+            }
+
+            @Override
+            public void finish() {
+                execute(1);
+            }
+        });
     }
 }
