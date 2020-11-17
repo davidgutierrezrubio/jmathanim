@@ -36,7 +36,6 @@ import java.util.List;
 public class MultiShapeObject extends MathObject implements Iterable<Shape> {
 
     public final ArrayList<Shape> shapes;
-    private boolean debugText = false;
 
     public MultiShapeObject() {
         this(new ArrayList<Shape>());
@@ -94,7 +93,7 @@ public class MultiShapeObject extends MathObject implements Iterable<Shape> {
 //        return (T) this;
 //    }
     @Override
-    public MultiShapeObject copy() {
+    public  MultiShapeObject copy() {
         MultiShapeObject resul = new MultiShapeObject();
         for (Shape sh : shapes) {
             final Shape copy = sh.copy();
@@ -102,7 +101,7 @@ public class MultiShapeObject extends MathObject implements Iterable<Shape> {
         }
         resul.mp.copyFrom(mp);
         resul.absoluteSize = this.absoluteSize;
-        return (MultiShapeObject) resul;
+        return  resul;
     }
 
     @Override
@@ -115,7 +114,7 @@ public class MultiShapeObject extends MathObject implements Iterable<Shape> {
                     r.drawAbsoluteCopy(jmp, getAbsoluteAnchor().v);//TODO: This doesnt work for overrided methods (e.g.: line)
                 } else {
                     jmp.draw(r);
-                    if (debugText) {
+                    if (isShowDebugText()) {
                         r.debugText("" + n, jmp.getCenter().v);
                     }
                 }
@@ -239,13 +238,6 @@ public class MultiShapeObject extends MathObject implements Iterable<Shape> {
         return shapes.iterator();
     }
 
-    public boolean isDebugText() {
-        return debugText;
-    }
-
-    public <T extends MultiShapeObject> T showDebugText(boolean debugText) {
-        this.debugText = debugText;
-        return (T) this;
-    }
+  
 
 }

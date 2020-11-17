@@ -111,11 +111,10 @@ public class Shape extends MathObject {
         if (this.attrs != null) {
             resul.attrs = this.attrs.copy();
         }
-        resul.absoluteSize=this.absoluteSize;
+        resul.absoluteSize = this.absoluteSize;
         resul.setObjectType(this.getObjectType());//Copy object type
         return resul;
     }
-
 
     @Override
     public void draw(Renderer r) {
@@ -135,7 +134,7 @@ public class Shape extends MathObject {
 
     @Override
     public String toString() {
-        return label+":"+jmpath.toString();
+        return label + ":" + jmpath.toString();
     }
 
     @Override
@@ -175,6 +174,22 @@ public class Shape extends MathObject {
         jmpath.saveState();
     }
 
+    public void merge(Shape sh) {
+        JMPath pa = sh.getPath();
+
+        final JMPathPoint jmPoint = jmpath.getJMPoint(0);
+        if (jmPoint.isThisSegmentVisible) {
+            jmpath.jmPathPoints.add(jmPoint.copy());
+            jmPoint.isThisSegmentVisible=false;
+        }
+        
+        final JMPathPoint jmPoint2 = pa.getJMPoint(0);
+        if (jmPoint2.isThisSegmentVisible) {
+            pa.jmPathPoints.add(jmPoint2.copy());
+            jmPoint2.isThisSegmentVisible=false;
+        }
+        jmpath.jmPathPoints.addAll(pa.jmPathPoints);
+    }
 
     //Static methods to build most used shapes
     public static Shape square() {
@@ -307,6 +322,5 @@ public class Shape extends MathObject {
     public static Shape circle(Point center, double radius) {
         return circle().scale(radius).shift(center.v);
     }
-
 
 }

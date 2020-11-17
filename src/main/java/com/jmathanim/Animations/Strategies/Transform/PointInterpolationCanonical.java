@@ -15,10 +15,10 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-
 package com.jmathanim.Animations.Strategies.Transform;
 
 import com.jmathanim.Animations.Animation;
+import com.jmathanim.Animations.Strategies.Transform.Optimizers.DivideEquallyStrategy;
 import com.jmathanim.Utils.JMColor;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.CanonicalJMPath;
@@ -36,15 +36,15 @@ import java.util.ArrayList;
  */
 public class PointInterpolationCanonical extends Animation {
 
-   public CanonicalJMPath connectedOrigin, connectedDst, connectedOriginaRawCopy;
+    public CanonicalJMPath connectedOrigin, connectedDst, connectedOriginaRawCopy;
     private final ArrayList<Shape> addedAuxiliaryObjectsToScene;
-    private Shape mobjTransformed;
-    private Shape mobjDestiny;
-    private Shape mobjDestinyOrig;
+    private final Shape mobjTransformed;
+    private final Shape mobjDestiny;
+    private final Shape mobjDestinyOrig;
     private Shape originalShapeBaseCopy;
     private static final boolean DEBUG_COLORS = false;
 
-    public PointInterpolationCanonical(double runtime,Shape mobjTransformed, Shape mobjDestiny) {
+    public PointInterpolationCanonical(double runtime, Shape mobjTransformed, Shape mobjDestiny) {
         super(runtime);
         this.mobjTransformed = mobjTransformed;
         this.mobjDestiny = mobjDestiny.copy();
@@ -54,15 +54,18 @@ public class PointInterpolationCanonical extends Animation {
 
     @Override
     public void initialize() {
-       ArrayList<MathObject> ob = scene.getObjects();
-       //This is the initialization for the point-to-point interpolation
-       //Prepare paths. Firs, I ensure they have the same number of points
-       //and be in connected components form.
+        ArrayList<MathObject> ob = scene.getObjects();
+        //This is the initialization for the point-to-point interpolation
+        //Prepare paths. Firs, I ensure they have the same number of points
+        //and be in connected components form.
 
         //Remove consecutive hidden vertices, in case.
         this.mobjTransformed.getPath().removeConsecutiveHiddenVertices();
         this.mobjDestiny.getPath().removeConsecutiveHiddenVertices();
-
+        if (optimizeStrategy == null) {
+            optimizeStrategy = new DivideEquallyStrategy();
+        }
+        optimizeStrategy.optimizePaths(mobjTransformed, mobjDestiny);
         originalShapeBaseCopy = mobjTransformed.copy();
         preparePaths(mobjTransformed.jmpath, mobjDestiny.jmpath);
         if (DEBUG_COLORS) {
@@ -77,12 +80,12 @@ public class PointInterpolationCanonical extends Animation {
         mobjTransformed.getPath().clear();
         mobjTransformed.getPath().addPointsFrom(connectedOrigin.toJMPath());
         scene.add(mobjTransformed);
-        
+
     }
 
     @Override
     public void doAnim(double t) {
-        double lt=lambda.applyAsDouble(t);
+        double lt = lambda.applyAsDouble(t);
         JMPathPoint interPoint, basePoint, dstPoint;
 
         for (int numConnected = 0; numConnected < this.connectedDst.getNumberOfPaths(); numConnected++) {
@@ -208,7 +211,7 @@ public class PointInterpolationCanonical extends Animation {
 //            }
             //Last point of conSmall
             Point p = conSmall.get(n - 1).getPointAt(-1);
-            
+
             //Create a dummy path with sizePathToAdd points, all equal
             JMPath pa = new JMPath();
             for (int k = 0; k < sizePathToAdd; k++) {

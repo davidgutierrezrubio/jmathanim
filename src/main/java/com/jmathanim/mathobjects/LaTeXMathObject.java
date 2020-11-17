@@ -39,13 +39,14 @@ import java.util.logging.Logger;
  */
 public class LaTeXMathObject extends SVGMathObject {
 
-    private final String text;
+    private String text;
     private File latexFile;
     private String baseFileName;
     private File outputDir;
     //Default scale for latex objects (relative to screen height)
     //This factor represents % of height relative to the screen that a "X" character has
     public static final double DEFAULT_SCALE_FACTOR = .05;
+    private Integer[] transformIndices = {};
 
     /**
      * Static constructor
@@ -55,6 +56,10 @@ public class LaTeXMathObject extends SVGMathObject {
      */
     public static LaTeXMathObject make(String text) {
         return new LaTeXMathObject(text);
+    }
+
+    public LaTeXMathObject() {
+        super();
     }
 
     /**
@@ -183,6 +188,26 @@ public class LaTeXMathObject extends SVGMathObject {
         }
         bre.close();
         p.waitFor();
-
     }
+
+    @Override
+    public LaTeXMathObject copy() {
+        LaTeXMathObject resul = new LaTeXMathObject();
+        for (Shape sh : shapes) {
+            final Shape copy = sh.copy();
+            resul.addShape(copy);
+        }
+        resul.mp.copyFrom(mp);
+        resul.absoluteSize = this.absoluteSize;
+        return resul;
+    }
+
+    public void setTransformIndices(Integer... transformIndices) {
+        this.transformIndices = transformIndices;
+    }
+
+    public Integer[] getTransformIndices() {
+        return transformIndices;
+    }
+
 }

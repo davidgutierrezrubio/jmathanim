@@ -100,41 +100,6 @@ public class Transform extends Animation {
 
     }
 
-    /**
-     * Cycles the point of closed path (and inverts its orientation if
-     * necessary) in order to minimize the sum of squared distances from the
-     * points of two paths with the same number of nodes
-     *
-     * @param path1
-     * @param path2
-     * @param forceChangeDirection
-     */
-    public void minimizeSumDistance(JMPath path1, JMPath path2, boolean forceChangeDirection) {
-        ArrayList<Double> distances = new ArrayList<Double>();
-        double minSumDistances = 999999999;
-        int optimalStep = 0;
-        //this variable is negative if both paths have different orientation
-        //so the transformed path reverses itself to better adjust
-        int changeDirection = path1.getOrientation() * path2.getOrientation();
-        changeDirection = (forceChangeDirection ? -changeDirection : changeDirection);
-        //If the path is open, we can't cycle the path, so 
-        //we set numberOfCycles to 1
-        int numberOfCycles = path1.size();//(path1.isClosed ? path1.size() : 1);
-        //First, without changing direction
-        for (int step = 0; step < numberOfCycles; step++) {
-            JMPath tempPath = path1.copy();
-            tempPath.cyclePoints(step, changeDirection);
-            double sumDistances = tempPath.sumDistance(path2);
-            distances.add(sumDistances);
-            if (sumDistances < minSumDistances) {
-                minSumDistances = sumDistances;
-                optimalStep = step;
-            }
-
-        }
-        path1.cyclePoints(optimalStep, changeDirection);
-    }
-
     private void determineTransformStrategy() {
         transformMethod = TransformMethod.INTERPOLATE_POINT_BY_POINT;//Default method if not specified
         if ((mobjTransformed instanceof MultiShapeObject) && (mobjDestiny instanceof MultiShapeObject)) {
@@ -191,7 +156,7 @@ public class Transform extends Animation {
                 return;
             }
         }
-
+JMathAnimScene.logger.info("Transform method: Point interpolation between 2 curves");
     }
 
     private void createTransformStrategy() {

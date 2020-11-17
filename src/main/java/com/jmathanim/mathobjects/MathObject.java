@@ -38,6 +38,8 @@ import javafx.scene.shape.StrokeLineCap;
  */
 public abstract class MathObject implements Drawable, Updateable, Stateable {
 
+    private boolean debugText;
+
     public enum MathObjectType {
         OTHER, POINT, RECTANGLE, CIRCLE, ELLIPSE,
         ARC, REGULAR_POLYGON, GENERAL_POLYGON, SEGMENT,
@@ -631,4 +633,14 @@ public abstract class MathObject implements Drawable, Updateable, Stateable {
     public int getUpdateLevel() {
         return 0;//Default value, objects that need to be updated should override this
     }
+      public boolean isShowDebugText() {
+        return debugText;
+    }
+
+    public <T extends MathObject> T showDebugText(boolean debugText) {
+        this.debugText = debugText;
+        return (T) this;
+    }
+    
+    
 }

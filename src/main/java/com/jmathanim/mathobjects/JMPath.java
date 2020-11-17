@@ -603,7 +603,6 @@ public class JMPath implements Updateable, Stateable {
 //        pnew.cp1.v.copyFrom(p.cp1.v);
 
         jmPathPoints.add(k + 1, pnew);
-
     }
 
     /**

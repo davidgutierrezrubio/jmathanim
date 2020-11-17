@@ -49,7 +49,7 @@ public abstract class Animation {
 //    private int numFrames; //Number of frames of animation
 //    private int frame;
     private boolean isInitialized = false;
-    private boolean isEnded = false;
+    protected boolean isEnded = false;
     /**
      * Scene where this animation belongs
      */
