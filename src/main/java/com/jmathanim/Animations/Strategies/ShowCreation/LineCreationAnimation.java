@@ -47,6 +47,8 @@ public class LineCreationAnimation extends Animation {
         anim.setLambda(lambda);
         anim.initialize();
         scene.remove(line);
+        scene.add(segment);
+
     }
 
     @Override
@@ -64,11 +66,6 @@ public class LineCreationAnimation extends Animation {
         scene.remove(segment);
         scene.add(line);
 
-    }
-
-    @Override
-    public void addObjectsToScene(JMathAnimScene scene) {
-        scene.add(segment);
     }
 
 }

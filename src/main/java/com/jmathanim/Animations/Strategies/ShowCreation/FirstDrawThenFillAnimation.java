@@ -148,9 +148,6 @@ public class FirstDrawThenFillAnimation extends Animation {
         anim.finishAnimation();
     }
 
-    @Override
-    public void addObjectsToScene(JMathAnimScene scene) {
-    }
 
     public double getTimegap() {
         return timegap;

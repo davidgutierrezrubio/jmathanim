@@ -104,12 +104,6 @@ public class ShowCreation extends Animation {
         }
     }
 
-    @Override
-    public void addObjectsToScene(JMathAnimScene scene) {
-        if (creationStrategy != null) {
-            creationStrategy.addObjectsToScene(scene);
-        }
-    }
 
     /**
      * Determines the strategy to animate the creation of the object

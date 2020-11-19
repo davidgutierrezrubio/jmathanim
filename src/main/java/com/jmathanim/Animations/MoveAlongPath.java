@@ -71,6 +71,7 @@ public class MoveAlongPath extends Animation {
     @Override
     public void initialize() {
         mobjTransformed.saveState();
+        scene.add(mobjTransformed);
     }
 
     @Override
@@ -85,9 +86,5 @@ public class MoveAlongPath extends Animation {
         doAnim(1);
     }
 
-    @Override
-    public void addObjectsToScene(JMathAnimScene scene) {
-        scene.add(mobjTransformed);
-    }
 
 }

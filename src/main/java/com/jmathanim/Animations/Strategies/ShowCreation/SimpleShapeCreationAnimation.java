@@ -35,9 +35,9 @@ public class SimpleShapeCreationAnimation extends Animation {
     private CanonicalJMPath canonPath;
     private int numberOfSegments;
 
-    public SimpleShapeCreationAnimation(double runtime,Shape mobj) {
+    public SimpleShapeCreationAnimation(double runtime, Shape mobj) {
         super();
-        this.runTime=runtime;
+        this.runTime = runtime;
         this.mobj = mobj;
     }
 
@@ -49,13 +49,15 @@ public class SimpleShapeCreationAnimation extends Animation {
         msh = canonPath.createMultiShape(this.mobj);
         mobj.visible(false);
         scene.add(msh);
+//        scene.add(mobj);
+
         doAnim(0);
         numberOfSegments = canonPath.getTotalNumberOfSegments();
     }
 
     @Override
     public void doAnim(double t) {
-        double lt=lambda.applyAsDouble(t);
+        double lt = lambda.applyAsDouble(t);
         if (lt == 1) {
             for (int n = 0; n < msh.shapes.size(); n++) {
                 //Restore all paths because in each loop there will be modified
@@ -101,11 +103,6 @@ public class SimpleShapeCreationAnimation extends Animation {
         doAnim(1);
         this.scene.remove(msh);
         mobj.visible(true);
-        scene.add(mobj);
-    }
-
-    @Override
-    public void addObjectsToScene(JMathAnimScene scene) {
         scene.add(mobj);
     }
 

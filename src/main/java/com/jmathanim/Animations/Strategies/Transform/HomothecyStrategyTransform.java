@@ -53,6 +53,7 @@ public class HomothecyStrategyTransform extends Animation {
         anim = Commands.homothecy(runTime, a, b, c, d, this.mobjTransformed);
         anim.setLambda(lambda);
         anim.initialize();
+        scene.add(this.mobjTransformed);
         
     }
     
@@ -73,8 +74,5 @@ public class HomothecyStrategyTransform extends Animation {
         anim.finishAnimation();
     }
     
-    @Override
-    public void addObjectsToScene(JMathAnimScene scene) {
-    }
     
 }

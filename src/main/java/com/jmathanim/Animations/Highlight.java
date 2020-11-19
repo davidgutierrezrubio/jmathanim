@@ -69,8 +69,5 @@ public class Highlight extends Animation {
         scale.doAnim(1);
     }
 
-    @Override
-    public void addObjectsToScene(JMathAnimScene scene) {
-    }
 
 }

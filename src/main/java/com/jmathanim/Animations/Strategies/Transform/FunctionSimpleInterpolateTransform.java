@@ -30,7 +30,7 @@ public class FunctionSimpleInterpolateTransform extends Animation {
 
     public final FunctionGraph gfObj, gfDst;
 
-    public FunctionSimpleInterpolateTransform(double runtime,FunctionGraph gfObj, FunctionGraph gfDst) {
+    public FunctionSimpleInterpolateTransform(double runtime, FunctionGraph gfObj, FunctionGraph gfDst) {
         super(runtime);
         this.gfObj = gfObj;
         this.gfDst = gfDst;
@@ -38,12 +38,12 @@ public class FunctionSimpleInterpolateTransform extends Animation {
 
     @Override
     public void initialize() {
-//        this.gfObj.saveState();
+        scene.add(gfObj);
     }
 
     @Override
     public void doAnim(double t) {
-        double lt=lambda.applyAsDouble(t);
+        double lt = lambda.applyAsDouble(t);
         this.gfObj.function = (x) -> (1 - lt) * this.gfObj.functionBase.applyAsDouble(x) + lt * this.gfDst.function.applyAsDouble(x);
         this.gfObj.updatePoints();
     }
@@ -52,11 +52,6 @@ public class FunctionSimpleInterpolateTransform extends Animation {
     public void finishAnimation() {
         //Base function is now the new function 
         this.gfObj.functionBase = this.gfDst.function;
-    }
-
-    @Override
-    public void addObjectsToScene(JMathAnimScene scene) {
-        scene.add(gfObj);
     }
 
 

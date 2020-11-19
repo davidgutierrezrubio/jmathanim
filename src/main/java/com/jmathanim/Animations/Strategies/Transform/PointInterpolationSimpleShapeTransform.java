@@ -119,7 +119,4 @@ public class PointInterpolationSimpleShapeTransform extends Animation {
         pathSmall.alignPathsToGivenNumberOfElements(pathBig.size());
     }
 
-    @Override
-    public void addObjectsToScene(JMathAnimScene scene) {
-    }
 }

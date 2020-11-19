@@ -43,8 +43,5 @@ public class WaitAnimation extends Animation{
     public void finishAnimation() {
     }
 
-    @Override
-    public void addObjectsToScene(JMathAnimScene scene) {
-    }
     
 }

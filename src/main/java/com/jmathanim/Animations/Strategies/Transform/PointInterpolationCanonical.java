@@ -257,7 +257,4 @@ public class PointInterpolationCanonical extends Animation {
         return pathToDivide.canonicalForm();
     }
 
-    @Override
-    public void addObjectsToScene(JMathAnimScene scene) {
-    }
 }

@@ -70,8 +70,8 @@ public class SVGMathObject extends MultiShapeObject {
     }
 
     public SVGMathObject(String fname) {
-        ResourceLoader rl=new ResourceLoader();
-        URL urlImage=rl.getResource(fname, "images");
+        ResourceLoader rl = new ResourceLoader();
+        URL urlImage = rl.getResource(fname, "images");
         this.setObjectType(MathObjectType.SVG);
         try {
             importSVG(urlImage);
@@ -107,14 +107,14 @@ public class SVGMathObject extends MultiShapeObject {
 
         //Look for svg elements in the root document
         processChildNodes((doc.getDocumentElement()));
-        NodeList listGroups = doc.getElementsByTagName("g");
-        for (int n = 0; n < listGroups.getLength(); n++) {
-            Element gNode = (Element) listGroups.item(n);
-            processAttributeCommands(gNode, mp);
-            mp.thickness = .1;
-            //Look for svg elements inside this group
-            processChildNodes(gNode);
-        }
+//        NodeList listGroups = doc.getElementsByTagName("g");
+//        for (int n = 0; n < listGroups.getLength(); n++) {
+//            Element gNode = (Element) listGroups.item(n);
+//            processAttributeCommands(gNode, mp);
+//            mp.thickness = .1;
+//            //Look for svg elements inside this group
+//            processChildNodes(gNode);
+//        }
         putAt(new Point(0, 0), Anchor.Type.UL);
     }
 
@@ -129,6 +129,13 @@ public class SVGMathObject extends MultiShapeObject {
                 ShMp.absoluteThickness = false;
 //                    ShMp.fillColor.set(JMColor.random());
                 switch (el.getTagName()) {
+                    case "g":
+                        MODrawProperties mpCopy=mp.copy();
+                        processAttributeCommands(el, mp);
+                        mp.thickness = .1;
+                        processChildNodes(el);
+                        mp.copyFrom(mpCopy);
+                        break;
                     case "path":
                         JMathAnimScene.logger.info("Parsing path");
                         //Needs to parse style options too

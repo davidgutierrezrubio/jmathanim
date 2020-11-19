@@ -110,9 +110,6 @@ public class AnimationGroup extends Animation {
         }
     }
 
-    @Override
-    public void addObjectsToScene(JMathAnimScene scene) {
-    }
 
     @Override
     public void setLambda(DoubleUnaryOperator lambda) {

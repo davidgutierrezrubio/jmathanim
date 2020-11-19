@@ -65,8 +65,5 @@ public class GroupCreationAnimation extends Animation {
     public void doAnim(double t) {
     }
 
-    @Override
-    public void addObjectsToScene(JMathAnimScene scene) {
-    }
 
 }

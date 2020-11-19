@@ -104,9 +104,6 @@ public class Concatenate extends Animation {
         animations.get(animations.size()-1).finishAnimation();
     }
 
-    @Override
-    public void addObjectsToScene(JMathAnimScene scene) {
-    }
 
     @Override
     public void doAnim(double t) {

@@ -194,11 +194,6 @@ public class Transform extends Animation {
         scene.remove(mobjTransformed);
     }
 
-    @Override
-    public void addObjectsToScene(JMathAnimScene scene) {
-        transformStrategy.addObjectsToScene(scene);
-    }
-
 //    private void createOptimizationStrategy() {
 //        switch (optimizeMethod) {
 //            case NONE:

@@ -51,10 +51,4 @@ public class ApplyCommand extends Animation {
         command.execute(lambda.applyAsDouble(1));
         command.finish();
     }
-    
-    @Override
-    public void addObjectsToScene(JMathAnimScene scene) {
-        command.addObjectsToScene(scene);
-    }
-    
 }

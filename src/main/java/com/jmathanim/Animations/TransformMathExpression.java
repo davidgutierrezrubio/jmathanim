@@ -164,8 +164,5 @@ public class TransformMathExpression extends Animation {
         scene.add(latexDestiny);
     }
 
-    @Override
-    public void addObjectsToScene(JMathAnimScene scene) {
-    }
 
 }

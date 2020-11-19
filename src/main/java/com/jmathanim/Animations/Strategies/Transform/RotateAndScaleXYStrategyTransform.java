@@ -75,21 +75,14 @@ public class RotateAndScaleXYStrategyTransform extends Animation {
         D = mobjDestiny.getPoint(0).copy();
         E = mobjDestiny.getPoint(1).copy();
         F = mobjDestiny.getPoint(2).copy();
-        
-     
-        
         mobjTransformed.saveState();
+        scene.add(mobjTransformed);
         
     }
 
     @Override
     public void finishAnimation() {
         doAnim(1);
-    }
-
-    @Override
-    public void addObjectsToScene(JMathAnimScene scene) {
-        scene.add(mobjTransformed);
     }
 
 }

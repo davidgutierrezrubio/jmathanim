@@ -181,7 +181,6 @@ public abstract class Animation {
 //        return t;
     }
 
-    abstract public void addObjectsToScene(JMathAnimScene scene);
 
     /**
      * Sets the optimization strategy. If null, the animation will try to find
@@ -210,4 +209,5 @@ public abstract class Animation {
     public void setLambda(DoubleUnaryOperator lambda) {
         this.lambda = lambda;
     }
+
 }
