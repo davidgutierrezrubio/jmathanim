@@ -46,7 +46,6 @@ public class LaTeXMathObject extends SVGMathObject {
     //Default scale for latex objects (relative to screen height)
     //This factor represents % of height relative to the screen that a "X" character has
     public static final double DEFAULT_SCALE_FACTOR = .05;
-    private Integer[] transformIndices = {};
 
     /**
      * Static constructor
@@ -202,12 +201,9 @@ public class LaTeXMathObject extends SVGMathObject {
         return resul;
     }
 
-    public void setTransformIndices(Integer... transformIndices) {
-        this.transformIndices = transformIndices;
-    }
 
-    public Integer[] getTransformIndices() {
-        return transformIndices;
+    public int size() {
+        return shapes.size();
     }
 
 }

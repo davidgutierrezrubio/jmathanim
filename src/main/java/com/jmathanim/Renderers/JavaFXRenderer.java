@@ -453,7 +453,7 @@ public class JavaFXRenderer extends Renderer {
     public void debugText(String text, Vec loc) {
         double[] xy = camera.mathToScreenFX(loc);
         Text t = new Text(text);
-        t.setFont(new Font(32));
+        t.setFont(new Font(16));
         Bounds b1 = t.getLayoutBounds();
         t.setX(xy[0]-.5*b1.getWidth());
         t.setY(xy[1]+.5*b1.getHeight());

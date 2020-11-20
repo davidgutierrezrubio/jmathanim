@@ -27,6 +27,7 @@ import com.jmathanim.mathobjects.Shape;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import sun.security.util.ArrayUtil;
 
 /**
@@ -40,6 +41,7 @@ public class TransformMathExpression extends Animation {
     private final MultiShapeObject mshDst;
     private final MultiShapeObject mshOrig;
     private AnimationGroup anim;
+    private TransformFormulaParameters tr;
 
     public TransformMathExpression(double runTime, LaTeXMathObject latexTransformed, LaTeXMathObject latexDestiny) {
         super(runTime);
@@ -49,102 +51,39 @@ public class TransformMathExpression extends Animation {
         this.mshDst = new MultiShapeObject();
     }
 
+    public TransformFormulaParameters getTransformParameters() {
+        return tr;
+    }
+
+    public void setTransformParameters(TransformFormulaParameters tr) {
+        this.tr = tr;
+    }
+
     @Override
     public void initialize() {
-        //0,0,1,2,3 ------> 1) Trans: merge 0-1, Dst: 4-...
-        //maps 0 onto 0 and 1
-        //maps 1 onto 2
-        //maps 2 onto 3
-        //maps 3 onto 4 to end
-        Integer[] ind = latexTransformed.getTransformIndices();
-        //First, do some checks
-        Integer max = Collections.max(Arrays.asList(ind));
-        if (max > latexDestiny.shapes.size()) {
-            JMathAnimScene.logger.error("Destiny formula has less elements than the transform indices. Animation will not be done.");
-            isEnded = true;
-            return;
+        HashMap<String, int[]> or = tr.getOrigGroups();
+        HashMap<String, int[]> dst = tr.getDstGroups();
+        HashMap<String, String> maps = tr.getMaps();
+        for (String name1:maps.keySet())
+        {
+            String name2 = maps.get(name1);
+            Shape sh1=getShapeForGroup(or, name1, latexTransformed);
+            Shape sh2=getShapeForGroup(dst, name2, latexDestiny);
+            scene.add(sh1);//needs to be removed too
+            
         }
-        if (ind.length != latexTransformed.shapes.size()) {
-            JMathAnimScene.logger.error("Transform indices don't match transformed formula. Animation will not be done.");
-            isEnded = true;
-            return;
-        }
-
-        //Compute mshTransformed
-        int previousShape = ind[0];
-        Shape sh = latexTransformed.get(0);
-        for (int n = 1; n < latexTransformed.shapes.size(); n++) {
-            int currentIndex = ind[n];
-            if (currentIndex == previousShape) {
-                sh.merge(latexTransformed.get(n));
-                System.out.println("Merging " + n + " into " + currentIndex);
-            } else {
-                mshOrig.addShape(sh);
-                sh = latexTransformed.get(n);
-                previousShape = currentIndex;
-            }
-        }
-        mshOrig.addShape(sh);
-
-        //Now, compute mshDestiny
-        //Creates an arraylist removing duplicates
-        int index = 0;
-        int shNumber = 0;
-        int val = 0;
-        int valPrevious = 0;
-        sh = latexDestiny.get(shNumber);
-        while (index < ind.length) {
-            //First, advance until finding a different number
-
-            valPrevious = ind[index];
-            val = ind[index];
-            while (val == valPrevious) {
-                index++;
-                if (index < ind.length) {
-                    val = ind[index];
-                } else {
-                    break;
-                }
-            }
-
-            int dif = val - valPrevious;
-
-            //if difference is 2 or more, merge
-            for (int n = 1; n < dif; n++) {
-                sh.merge(latexDestiny.get(shNumber + n));
-                System.out.println("Merging Destiny " + (shNumber + n) + " into " + shNumber);
-            }
-            mshDst.addShape(sh);
-
-            shNumber = val;
-            sh = latexDestiny.get(shNumber);
-        }
-
-        //Finally, add the rest of the shapes
-        int dif = latexDestiny.shapes.size() - val;
-        for (int n = 1; n < dif; n++) {
-            sh.merge(latexDestiny.get(shNumber + n));
-            System.out.println("Merging Destiny " + (shNumber + n) + " into " + shNumber);
-        }
-        mshDst.addShape(sh);
-
-        anim = new AnimationGroup();
-
-        final Transform anim2 = new Transform(runTime * .8, mshOrig, mshDst);
-        anim2.setLambda(x -> x);
-        anim.add(anim2);
-
-//        MODrawProperties mpOrig = latexTransformed.getMp().copy();
-//        MODrawProperties mpDst = latexDestiny.getMp().copy();
-//        mpOrig.setFillAlpha(0);
-//        mpOrig.thickness = 8d;
-//        for (Shape shape : mshDst.getShapes()) {
-//            shape.getMp().copyFrom(latexDestiny.getMp());
-//            anim.add(Commands.changeFillAlpha(runTime * .2, shape));
-//        }
 
         anim.initialize();
         scene.add(mshOrig);
+    }
+
+    public Shape getShapeForGroup(HashMap<String, int[]> or, String names,LaTeXMathObject lat) {
+        int[] gr = or.get(names);
+        Shape sh = lat.get(gr[0]).copy();
+        for (int n = 1; n < gr.length; n++) {
+            sh.merge(lat.get(gr[n]).copy());
+        }
+        return sh;
     }
 
     @Override
@@ -163,6 +102,5 @@ public class TransformMathExpression extends Animation {
         scene.remove(mshDst);
         scene.add(latexDestiny);
     }
-
 
 }
