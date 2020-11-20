@@ -58,6 +58,13 @@ public class TransformFormulaParameters {
         map(name, defineDstGroup("_" + j, j));
     }
 
+    public void mapRange(int i1, int i2,int j) {
+        for (int n = 0; n <=i2-i1; n++) {
+            map(i1+n,j+n);
+            
+        }
+    }
+    
     public void map(int i, String name) {
         map(defineOrigGroup("_" + i, i), name);
     }

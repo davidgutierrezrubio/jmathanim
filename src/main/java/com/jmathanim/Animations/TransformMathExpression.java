@@ -17,18 +17,13 @@
  */
 package com.jmathanim.Animations;
 
-import com.jmathanim.Animations.Strategies.Transform.MultiShapeTransform;
 import com.jmathanim.Animations.commands.Commands;
-import com.jmathanim.Utils.MODrawProperties;
-import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.LaTeXMathObject;
 import com.jmathanim.mathobjects.MultiShapeObject;
 import com.jmathanim.mathobjects.Shape;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
-import sun.security.util.ArrayUtil;
 
 /**
  *
@@ -41,7 +36,10 @@ public class TransformMathExpression extends Animation {
     private final MultiShapeObject mshDst;
     private final MultiShapeObject mshOrig;
     private AnimationGroup anim;
-    private TransformFormulaParameters tr;
+    private TransformFormulaParameters transformParameters;
+    private final ArrayList<Integer> shrinkOutOrig;
+    private final ArrayList<Integer> growInDst;
+    private final ArrayList<Shape> toDelete;
 
     public TransformMathExpression(double runTime, LaTeXMathObject latexTransformed, LaTeXMathObject latexDestiny) {
         super(runTime);
@@ -49,39 +47,77 @@ public class TransformMathExpression extends Animation {
         this.latexDestiny = latexDestiny;
         this.mshOrig = new MultiShapeObject();
         this.mshDst = new MultiShapeObject();
+        anim = new AnimationGroup();
+        transformParameters = new TransformFormulaParameters(this.latexTransformed.size(), this.latexDestiny.size());
+        shrinkOutOrig = new ArrayList<>();
+        growInDst = new ArrayList<>();
+        toDelete = new ArrayList<>();
+
+        for (int n = 0; n < this.latexTransformed.size(); n++) {
+            shrinkOutOrig.add(n);
+        }
+        for (int n = 0; n < this.latexDestiny.size(); n++) {
+            growInDst.add(n);
+        }
     }
 
     public TransformFormulaParameters getTransformParameters() {
-        return tr;
+        return transformParameters;
     }
 
     public void setTransformParameters(TransformFormulaParameters tr) {
-        this.tr = tr;
+        this.transformParameters = tr;
     }
 
     @Override
     public void initialize() {
-        HashMap<String, int[]> or = tr.getOrigGroups();
-        HashMap<String, int[]> dst = tr.getDstGroups();
-        HashMap<String, String> maps = tr.getMaps();
-        for (String name1:maps.keySet())
-        {
+        scene.remove(latexTransformed);
+        HashMap<String, int[]> or = transformParameters.getOrigGroups();
+        HashMap<String, int[]> dst = transformParameters.getDstGroups();
+        HashMap<String, String> maps = transformParameters.getMaps();
+        for (String name1 : maps.keySet()) {
             String name2 = maps.get(name1);
-            Shape sh1=getShapeForGroup(or, name1, latexTransformed);
-            Shape sh2=getShapeForGroup(dst, name2, latexDestiny);
-            scene.add(sh1);//needs to be removed too
-            
+//            Shape sh1 = getShapeForGroup(or, name1, latexTransformed, shrinkOutOrig);
+            for (Shape sh : getShapeListForGroup(or, name1, latexTransformed, shrinkOutOrig)) {
+                Shape sh2 = getShapeForGroup(dst, name2, latexDestiny, growInDst);
+                anim.add(new Transform(runTime, sh, sh2));
+                toDelete.add(sh);
+                toDelete.add(sh2);
+            }
+
+        }
+        for (int n : shrinkOutOrig) {
+            Shape sh = latexTransformed.get(n);
+            scene.add(sh);
+            anim.add(Commands.shrinkOut(runTime, sh));
+        }
+        for (int n : growInDst) {
+            Shape sh = latexDestiny.get(n);
+            anim.add(Commands.growIn(runTime, sh));
+            toDelete.add(sh);
         }
 
         anim.initialize();
-        scene.add(mshOrig);
+//        scene.add(mshOrig);
     }
 
-    public Shape getShapeForGroup(HashMap<String, int[]> or, String names,LaTeXMathObject lat) {
+    public ArrayList<Shape> getShapeListForGroup(HashMap<String, int[]> or, String names, LaTeXMathObject lat, ArrayList<Integer> listRemainders) {
+        ArrayList<Shape> resul = new ArrayList<>();
+        int[] gr = or.get(names);
+        for (int n = 0; n < gr.length; n++) {
+            resul.add(lat.get(gr[n]).copy());
+            listRemainders.removeAll(Arrays.asList(gr[n]));
+        }
+        return resul;
+    }
+
+    public Shape getShapeForGroup(HashMap<String, int[]> or, String names, LaTeXMathObject lat, ArrayList<Integer> listRemainders) {
         int[] gr = or.get(names);
         Shape sh = lat.get(gr[0]).copy();
+        listRemainders.removeAll(Arrays.asList(gr[0]));
         for (int n = 1; n < gr.length; n++) {
             sh.merge(lat.get(gr[n]).copy());
+            listRemainders.removeAll(Arrays.asList(gr[n]));
         }
         return sh;
     }
@@ -93,14 +129,44 @@ public class TransformMathExpression extends Animation {
 
     @Override
     public void doAnim(double t) {
-
     }
 
     @Override
     public void finishAnimation() {
         anim.finishAnimation();
-        scene.remove(mshDst);
+//        scene.remove(mshDst);
         scene.add(latexDestiny);
+        for (Shape sh : toDelete) {
+            scene.remove(sh);
+        }
     }
 
+    public void map(int i, int j) {
+        transformParameters.map(i, j);
+    }
+
+    public void map(String name, int j) {
+        transformParameters.map(name, j);
+    }
+
+    public void map(int i, String name) {
+        transformParameters.map(i, name);
+    }
+
+    public String defineOrigGroup(String name, int... indices) {
+        return transformParameters.defineOrigGroup(name, indices);
+    }
+
+    public String defineDstGroup(String name, int... indices) {
+        return transformParameters.defineDstGroup(name, indices);
+    }
+
+    public void map(String gr1, String gr2) {
+        transformParameters.map(gr1, gr2);
+    }
+
+    public void mapRange(int i1, int i2, int j) {
+        transformParameters.mapRange(i1, i2, j);
+    }
+    
 }

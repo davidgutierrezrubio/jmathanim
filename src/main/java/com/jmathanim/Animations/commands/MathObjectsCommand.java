@@ -18,6 +18,7 @@
 
 package com.jmathanim.Animations.commands;
 
+import com.jmathanim.Utils.JMathAnimConfig;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.MathObject;
 
@@ -29,9 +30,11 @@ import com.jmathanim.mathobjects.MathObject;
 public abstract class MathObjectsCommand extends AbstractCommand {
 
     protected MathObject[] mathObjects;
+    protected final JMathAnimScene scene;
 
     public MathObjectsCommand(MathObject...mathObjects) {
         this.mathObjects = mathObjects;
+        scene=JMathAnimConfig.getConfig().getScene();
     }
 
     @Override

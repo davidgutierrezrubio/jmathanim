@@ -201,9 +201,11 @@ public class LaTeXMathObject extends SVGMathObject {
         return resul;
     }
 
-
     public int size() {
         return shapes.size();
     }
 
+    public void alignCenter(int n, LaTeXMathObject lat, int m) {
+        shift(this.get(n).getCenter().to(lat.get(m).getCenter()));
+    }
 }

@@ -24,9 +24,11 @@ import com.jmathanim.Utils.MODrawProperties;
 import com.jmathanim.Utils.Rect;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
 import javafx.scene.shape.StrokeLineCap;
+import sun.security.util.ArrayUtil;
 
 /**
  * A class that manages sets of MathObjects. The objectes are not added to the
@@ -41,6 +43,10 @@ public class MathObjectGroup extends MathObject implements Iterable<MathObject> 
 
     public MathObjectGroup() {
         this.objects = new ArrayList<>();
+    }
+
+    public MathObjectGroup(MathObject... objects) {
+        this.objects = new ArrayList<>(Arrays.asList(objects));
     }
 
     public MathObjectGroup(ArrayList<MathObject> objects) {
@@ -231,11 +237,12 @@ public class MathObjectGroup extends MathObject implements Iterable<MathObject> 
         }
     }
 
-    public void setLayout(Anchor.Type anchorType, double gap) {
+    public MathObjectGroup setLayout(Anchor.Type anchorType, double gap) {
 
         for (int n = 1; n < objects.size(); n++) {
             objects.get(n).stackTo(objects.get(n - 1), anchorType, gap);
         }
+        return this;
 
     }
 
@@ -291,4 +298,7 @@ public class MathObjectGroup extends MathObject implements Iterable<MathObject> 
         return objects.iterator();
     }
 
+    public static MathObjectGroup make(MathObject... objects) {
+        return new MathObjectGroup(objects);
+    }
 }
