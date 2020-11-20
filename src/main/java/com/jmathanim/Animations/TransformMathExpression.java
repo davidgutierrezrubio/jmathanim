@@ -19,7 +19,6 @@ package com.jmathanim.Animations;
 
 import com.jmathanim.Animations.commands.Commands;
 import com.jmathanim.mathobjects.LaTeXMathObject;
-import com.jmathanim.mathobjects.MultiShapeObject;
 import com.jmathanim.mathobjects.Shape;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -31,33 +30,39 @@ import java.util.HashMap;
  */
 public class TransformMathExpression extends Animation {
 
+    public enum AddType {
+        FADEIN, GROWIN
+    }
+
+    public enum RemoveType {
+        FADEOUT, SHRINKOUT
+    }
+
     private final LaTeXMathObject latexDestiny;
     private final LaTeXMathObject latexTransformed;
-    private final MultiShapeObject mshDst;
-    private final MultiShapeObject mshOrig;
-    private AnimationGroup anim;
+    private final AnimationGroup anim;
     private TransformFormulaParameters transformParameters;
-    private final ArrayList<Integer> shrinkOutOrig;
-    private final ArrayList<Integer> growInDst;
+    private final ArrayList<Integer> removeInOrig;
+    private final ArrayList<Integer> addInDst;
     private final ArrayList<Shape> toDelete;
+    private AddType addType = AddType.FADEIN;
+    private RemoveType removeType = RemoveType.FADEOUT;
 
     public TransformMathExpression(double runTime, LaTeXMathObject latexTransformed, LaTeXMathObject latexDestiny) {
         super(runTime);
         this.latexTransformed = latexTransformed;
         this.latexDestiny = latexDestiny;
-        this.mshOrig = new MultiShapeObject();
-        this.mshDst = new MultiShapeObject();
         anim = new AnimationGroup();
         transformParameters = new TransformFormulaParameters(this.latexTransformed.size(), this.latexDestiny.size());
-        shrinkOutOrig = new ArrayList<>();
-        growInDst = new ArrayList<>();
+        removeInOrig = new ArrayList<>();
+        addInDst = new ArrayList<>();
         toDelete = new ArrayList<>();
 
         for (int n = 0; n < this.latexTransformed.size(); n++) {
-            shrinkOutOrig.add(n);
+            removeInOrig.add(n);
         }
         for (int n = 0; n < this.latexDestiny.size(); n++) {
-            growInDst.add(n);
+            addInDst.add(n);
         }
     }
 
@@ -77,23 +82,46 @@ public class TransformMathExpression extends Animation {
         HashMap<String, String> maps = transformParameters.getMaps();
         for (String name1 : maps.keySet()) {
             String name2 = maps.get(name1);
-//            Shape sh1 = getShapeForGroup(or, name1, latexTransformed, shrinkOutOrig);
-            for (Shape sh : getShapeListForGroup(or, name1, latexTransformed, shrinkOutOrig)) {
-                Shape sh2 = getShapeForGroup(dst, name2, latexDestiny, growInDst);
-                anim.add(new Transform(runTime, sh, sh2));
-                toDelete.add(sh);
-                toDelete.add(sh2);
-            }
 
+            if (true) {
+                Shape sh1 = getShapeForGroup(or, name1, latexTransformed, removeInOrig);
+                Shape sh2 = getShapeForGroup(dst, name2, latexDestiny, addInDst);
+                anim.add(new Transform(runTime, sh1, sh2));
+                toDelete.add(sh1);
+                toDelete.add(sh2);
+            } else {
+                //For each of the shapes of a origin group, makes a transform animation 
+                //The destiny will be one merged shape of all shapes of destiny group
+                for (Shape sh : getShapeListForGroup(or, name1, latexTransformed, removeInOrig)) {
+                    Shape sh2 = getShapeForGroup(dst, name2, latexDestiny, addInDst);
+                    anim.add(new Transform(runTime, sh, sh2));
+                    toDelete.add(sh);
+                    toDelete.add(sh2);
+                }
+            }
         }
-        for (int n : shrinkOutOrig) {
+        for (int n : removeInOrig) {
             Shape sh = latexTransformed.get(n);
             scene.add(sh);
-            anim.add(Commands.shrinkOut(runTime, sh));
+            switch (removeType) {
+                case FADEOUT:
+                    anim.add(Commands.fadeOut(runTime, sh));
+                    break;
+                case SHRINKOUT:
+                    anim.add(Commands.shrinkOut(runTime, sh));
+                    break;
+            }
         }
-        for (int n : growInDst) {
+        for (int n : addInDst) {
             Shape sh = latexDestiny.get(n);
-            anim.add(Commands.growIn(runTime, sh));
+            switch (addType) {
+                case FADEIN:
+                    anim.add(Commands.fadeIn(runTime, sh));
+                    break;
+                case GROWIN:
+                    anim.add(Commands.growIn(runTime, sh));
+                    break;
+            }
             toDelete.add(sh);
         }
 
@@ -141,6 +169,22 @@ public class TransformMathExpression extends Animation {
         }
     }
 
+    public AddType getAddType() {
+        return addType;
+    }
+
+    public void setAddType(AddType addType) {
+        this.addType = addType;
+    }
+
+    public RemoveType getRemoveType() {
+        return removeType;
+    }
+
+    public void setRemoveType(RemoveType removeType) {
+        this.removeType = removeType;
+    }
+
     public void map(int i, int j) {
         transformParameters.map(i, j);
     }
@@ -168,5 +212,5 @@ public class TransformMathExpression extends Animation {
     public void mapRange(int i1, int i2, int j) {
         transformParameters.mapRange(i1, i2, j);
     }
-    
+
 }

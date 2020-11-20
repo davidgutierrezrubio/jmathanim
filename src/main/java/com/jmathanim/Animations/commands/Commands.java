@@ -572,6 +572,7 @@ public class Commands {
             public void initialize() {
                 for (MathObject obj : mathObjects) {
                     obj.saveState();
+                    scene.add(obj);
                 }
             }
 
