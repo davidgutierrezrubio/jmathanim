@@ -22,7 +22,7 @@ Shape sq=Shape.square().shift(-3,0);//An unit square, lower left vertex at (-3,0
 
 ### MoveTo
 
-The `MoveTo` command shifts the object so that its center is positioned at the given coordinates. Note that the center is the center of the bounding box of the object, not the geometrical center. For regular polygons, for example, they don’t necessarily match.
+The `moveTo` command shifts the object so that its center is positioned at the given coordinates. Note that the center is the center of the bounding box of the object, not the geometrical center. For regular polygons, for example, they don’t necessarily match.
 
 ``` java
 Shape r=Shape.regularPolygon(5).moveTo(3,3);//A pentagon, with its bounding box centered at (3,3)
@@ -52,7 +52,7 @@ waitSeconds(5);//Give me time to make a screenshot!
 
 it gives this image:
 
-![01 anchorExample](01_anchorExample.png)
+<img src="01_anchorExample.png" alt="01 anchorExample" style="zoom:50%;" />
 
 The command `putAt` accepts a third argument `gap` to leave a space between the point and the anchor. This gap doesn’t apply for `Anchor.Type.BY_CENTER`.
 
@@ -78,7 +78,7 @@ waitSeconds(5);//That is, smile for the screenshot!
 
 which produces the following image:
 
-![02 stackToExample](02_stackToExample.png)
+<img src="02_stackToExample.png" alt="02 stackToExample" style="zoom:50%;" />
 
 You’ll notice two new methods here: The `copy()` method returns a copy of the object, and the `camera.adjustToAllObjects()` does as it says, rescales the camera so that everything fits into view.
 
@@ -102,7 +102,7 @@ Which produces this regular polygons pattern. Note that all polygons are vertica
 
 ![02b stackToExample2](02b_stackToExample2.png)
 
-stackToScreen
+StackToScreen
 =============
 
 This methods is similar to `stackTo`, but it positions the object relative to the current view.
@@ -132,7 +132,7 @@ waitSeconds(5);
 
 produces the result:
 
-![04 scaleExample1](04_ScaleExample1.png)
+<img src="04_ScaleExample1.png" alt="04 scaleExample1" style="zoom:50%;" />
 
 Rotating objects
 ================
@@ -151,7 +151,7 @@ waitSeconds(5);
 
 Gives this spirograh-like picture:
 
-![05 rotateExample1](05_rotateExample1.png)
+<img src="05_rotateExample1.png" alt="05 rotateExample1" style="zoom:50%;" />
 
 Affine Transforms
 =================
@@ -191,7 +191,7 @@ waitSeconds(5);
 
 Produces the following sequence of interpolated transforms from one square to another. Note that an homothecy may change scale of objects, but proportions are unaltered:
 
-![06 homothecy1](06_homothecy1.png)
+<img src="06_homothecy1.png" alt="06 homothecy1" style="zoom:50%;" />
 
 Notice also another new method here, the `getPoint(n)` method in a `Shape`, will return the n-th point at the shape.
 
@@ -220,7 +220,7 @@ camera.adjustToAllObjects();
 waitSeconds(5);
 ```
 
-![07 reflectionExample1](07_reflectionExample1.png)
+<img src="07_reflectionExample1.png" alt="07 reflectionExample1" style="zoom:50%;" />
 
 There is also a more general way to define an affine transform using `createAffineTransformation(Point A, Point B, Point C, Point D, Point E, Point F, double lambda)`. It returns the (only) affine transform that maps the points (A,B,C) into (D,E,F), with the `lambda` interpolation parameter as in the previous methods. Here’s an example:
 
@@ -243,4 +243,4 @@ waitSeconds(5);
 
 That produces the following image:
 
-![08 GeneralAffineExample1](08_GeneralAffineExample1.png)
+<img src="08_GeneralAffineExample1.png" alt="08 GeneralAffineExample1" style="zoom:50%;" />

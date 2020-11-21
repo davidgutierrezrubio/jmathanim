@@ -4,7 +4,7 @@ Each `MathObject` has one `MODrawingProperties` object that stores drawing param
 
 ## Basic styles
 
-Each object has 2 colors: the draw color (changed with `.setColor`), used drawing the contour  y the fill color (changed with `.fillColor`), used to fill the object. Each color is stores in a `JMColor`object, with the components red, green, blue and alpha. The `.thickness`method sets the thickness of the stroke used to draw the object.
+Each object has 2 colors: the draw color (changed with `.drawColor`), used drawing the contour  y the fill color (changed with `.fillColor`), used to fill the object. Each color is stores in a `JMColor`object, with the components red, green, blue and alpha. The `.thickness`method sets the thickness of the stroke used to draw the object.
 
 ``` java
 Shape r=Shape.regularPolygon(5).fillColor(JMColor.parse("CADETBLUE")).drawColor(JMColor.parse("#041137")).thickness(5);
@@ -76,9 +76,6 @@ config.setShadowParameters(10,15,15,.5f);//Sets shadow parameters (kernel 10, of
 
 
 config.setResourcesDir("c:\\resources");//Specifies resources directory at absolute path c:\resources
-
-   
- 
 ```
 
 ## The configuration files

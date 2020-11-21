@@ -452,3 +452,88 @@ t2.alignCenter(1, t1, 3);
 we make that the center of glyph 1 of `t2` (its "=" sign) match the center of the glyph 3 of `t1` (its "=" sign). If we execute this method prior to the animation now we have:
 
 ![equation04](equation04.gif)
+
+The method `mapRange` allows to map many consecutive shapes:
+
+The command
+
+```java
+tr.mapRange(3,7,13);
+```
+
+is equivalent to
+
+```java
+tr.map(3,13);
+tr.map(4,14);
+tr.map(5,15);
+tr.map(6,16);
+tr.map(7,17);
+```
+
+### Grouping 
+
+Suppose we have the following complex number expressions.  The second one is the first simplified. We want to animate a descriptive transition from `t1` to `t2`.
+
+```java
+LaTeXMathObject t1 = LaTeXMathObject.make("$2+3{\\color{blue}i}+5-{\\color{blue}i}$");
+LaTeXMathObject t2 = LaTeXMathObject.make("$7+2{\\color{blue}i}$");
+```
+
+It is desirably that the "2" and "+5" shapes morph into single shape "7". For the complex part, the coefficients "+3" and "-" should morph into "+2", and the two "i" symbols from the origin should morph into the single "i" in the destination. This can be achieved defining groups, with the methods ` defineOrigGroup(name, i1,i2,...)` and `defineDstGroup(name, i1,i2,...)`. First of all, let's see a clear view of the indices, with the `formulaHelper` method, as seen before:
+
+![image-20201121172930831](equation05.png)
+
+We need to map orig-shapes 0, 4 and 5 into detiny-shape 7. We define a group in the origin with these indices:
+
+```java
+tr.defineOrigGroup("realPart", 0,4,5);
+```
+
+We can use any string to name that group, with the only restriction that can't begin with an underscore "_".
+
+Now we can map this group into the "7" shape of the destiny, which has index 0:
+
+```java
+tr.map("realPart",0);
+```
+
+Now we have to map "+3" and "-" of the imaginary part into "+2" of the destiny expression. We define one group in the origin, as we have done before:
+
+```java
+tr.defineOrigGroup("imagCoef", 1,2,6);//Shapes 1,2 and 6 in the original formula
+tr.defineDstGroup("imagCoefDst", 1,2);//Shapes 1 and 2 in the destiny formula
+tr.map("imagCoef","imagCoefDst");
+```
+
+As you can see, the `map` method admits any pair of group names or indices.
+
+Finally, create a group with the "i" symbols in the origin (shapes 3 and 7) and map it into the "i" of the destiny (shape 3):
+
+```java
+tr.defineOrigGroup("i", 3,7);
+tr.map("i",3);
+```
+
+Here is the complete source code, with a `stackTo`command to position the second formula under the first one:
+
+```java
+LaTeXMathObject t1 = LaTeXMathObject.make("$2+3{\\color{blue}i}+5-{\\color{blue}i}$");
+LaTeXMathObject t2 = LaTeXMathObject.make("$7+2{\\color{blue}i}$");
+t2.stackTo(t1, Anchor.Type.LOWER,.5);
+camera.zoomToObjects(t1,t2);
+TransformMathExpression tr = new TransformMathExpression(5, t1, t2);
+tr.defineOrigGroup("realPart", 0,4,5);
+tr.map("realPart",0);
+tr.defineOrigGroup("imagCoef", 1,2,6);
+tr.defineDstGroup("imagCoefDst", 1,2);
+tr.map("imagCoef","imagCoefDst");
+tr.defineOrigGroup("i", 3,7);
+tr.map("i",3);
+playAnimation(tr);
+waitSeconds(5);
+```
+
+
+
+![equation05](equation05.gif)
