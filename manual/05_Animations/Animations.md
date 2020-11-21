@@ -83,6 +83,8 @@ play.scale(3,.7,sq);
 play.scale(3,Point.at(0,0),.7,1.5,sq);
 ```
 
+## Camera animations
+
 The `play` object has also most animations related to the view camera:
 
 ``` java
@@ -104,6 +106,8 @@ play.adjustCameraToAllObjects(3);
 
 Before adjusting the camera to objects, you can define the gaps used to leave space between the objects and the border of the screen, with the
 `camera.setGaps(hGap,vGap)` method.
+
+## Enter and exit animations
 
 Some method to add or remove objects to the scene are also included:
 
@@ -158,7 +162,7 @@ waitSeconds(1);
 
 ![fadeHighLightShrinkDemo](fadeHighLightShrinkDemo.gif)
 
-
+## Moving along a path
 
 The `MoveAlongPath` animations move an object along a specified path. You can provide a `Shape` object or a `JMPath`objec to determine the path. The moved object will be located with the specified `Anchor` point.
 
