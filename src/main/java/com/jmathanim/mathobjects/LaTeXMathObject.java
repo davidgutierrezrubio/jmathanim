@@ -19,6 +19,7 @@ package com.jmathanim.mathobjects;
 
 import com.jmathanim.Cameras.Camera;
 import com.jmathanim.Utils.Anchor;
+import com.jmathanim.Utils.JMColor;
 import com.jmathanim.Utils.JMathAnimConfig;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import java.io.BufferedReader;
@@ -211,6 +212,14 @@ public class LaTeXMathObject extends SVGMathObject {
 
     public String getText() {
         return text;
+    }
+    
+    public LaTeXMathObject setColor(JMColor col, int...indices){
+        for (int i:indices){
+            this.get(i).drawColor(col);
+            this.get(i).fillColor(col);
+        }
+        return this;
     }
     
 }
