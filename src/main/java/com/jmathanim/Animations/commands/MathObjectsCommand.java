@@ -15,7 +15,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-
 package com.jmathanim.Animations.commands;
 
 import com.jmathanim.Utils.JMathAnimConfig;
@@ -32,9 +31,17 @@ public abstract class MathObjectsCommand extends AbstractCommand {
     protected MathObject[] mathObjects;
     protected final JMathAnimScene scene;
 
-    public MathObjectsCommand(MathObject...mathObjects) {
+    public MathObjectsCommand(MathObject... mathObjects) {
         this.mathObjects = mathObjects;
-        scene=JMathAnimConfig.getConfig().getScene();
+        scene = JMathAnimConfig.getConfig().getScene();
+    }
+
+    @Override
+    public void initialize() {
+        for (MathObject obj : mathObjects) {
+            obj.saveState();
+            scene.add(obj);
+        }
     }
 
     @Override

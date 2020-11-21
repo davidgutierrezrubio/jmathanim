@@ -49,12 +49,6 @@ public class Commands {
         return new ApplyCommand(new MathObjectsCommand(objects) {
             Vec shiftVector = sv;
 
-            @Override
-            public void initialize() {
-                for (MathObject obj : mathObjects) {
-                    obj.saveState();
-                }
-            }
 
             @Override
             public void execute(double t) {
@@ -80,13 +74,6 @@ public class Commands {
             double scaley = scy;
             double scalez = scz;
             Point scaleCenter = c;
-
-            @Override
-            public void initialize() {
-                for (MathObject obj : mathObjects) {
-                    obj.saveState();
-                }
-            }
 
             @Override
             public void execute(double t) {
@@ -123,13 +110,11 @@ public class Commands {
 
             @Override
             public void initialize() {
+                super.initialize();
                 if (c != null) {
                     rotationCenter = c.copy();
                 }
-                for (MathObject obj : mathObjects) {
-                    obj.saveState();//Easy way, but interferes with multiple animations (not easy to solve)
-                }
-            }//TODO: Change this to rotate all objects from a common center
+            }
 
             @Override
             public void execute(double t) {
@@ -160,12 +145,6 @@ public class Commands {
             Point dst3 = f.copy();
             AffineJTransform tr;
 
-            @Override
-            public void initialize() {
-                for (MathObject obj : mathObjects) {
-                    obj.saveState();//Easy way, but interferes with multiple animations (not easy to solve)
-                }
-            }
 
             @Override
             public void execute(double t) {
@@ -204,13 +183,6 @@ public class Commands {
             AffineJTransform tr;
 
             @Override
-            public void initialize() {
-                for (MathObject obj : mathObjects) {
-                    obj.saveState();//Easy way, but interferes with multiple animations (not easy to solve)
-                }
-            }
-
-            @Override
             public void execute(double t) {
                 tr = AffineJTransform.createDirect2DHomothecy(A, B, C, D, t);
                 for (MathObject obj : mathObjects) {
@@ -242,13 +214,6 @@ public class Commands {
             Point axis1 = A.copy();
             Point axis2 = B.copy();
             AffineJTransform tr;
-
-            @Override
-            public void initialize() {
-                for (MathObject obj : mathObjects) {
-                    obj.saveState();//Easy way, but interferes with multiple animations (not easy to solve)
-                }
-            }
 
             @Override
             public void execute(double t) {
@@ -283,13 +248,6 @@ public class Commands {
             Point axis1 = a.copy();
             Point axis2 = b.copy();
             AffineJTransform tr;
-
-            @Override
-            public void initialize() {
-                for (MathObject obj : mathObjects) {
-                    obj.saveState();//Easy way, but interferes with multiple animations (not easy to solve)
-                }
-            }
 
             @Override
             public void execute(double t) {
@@ -347,14 +305,6 @@ public class Commands {
     public static ApplyCommand setMP(double runtime, MODrawProperties mp, MathObject... objects) {
         return new ApplyCommand(new MathObjectsCommand(objects) {
             MODrawProperties mpDst = mp;
-
-            @Override
-            public void initialize() {
-                int n = 0;
-                for (MathObject obj : mathObjects) {
-                    obj.saveState();
-                }
-            }
 
             @Override
             public void execute(double t) {
@@ -475,13 +425,6 @@ public class Commands {
         return new ApplyCommand(new MathObjectsCommand(objects) {
 
             @Override
-            public void initialize() {
-                for (MathObject obj : mathObjects) {
-                    obj.saveState();
-                }
-            }
-
-            @Override
             public void execute(double t) {
                 for (MathObject obj : mathObjects) {
                     obj.restoreState();
@@ -530,15 +473,6 @@ public class Commands {
         return new ApplyCommand(new MathObjectsCommand(objects) {
 
             @Override
-            public void initialize() {
-                for (MathObject obj : mathObjects) {
-                    obj.saveState();
-                    scene.add(obj);
-                    
-                }
-            }
-
-            @Override
             public void execute(double t) {
                 for (MathObject obj : mathObjects) {
                     obj.restoreState();
@@ -569,14 +503,6 @@ public class Commands {
         return new ApplyCommand(new MathObjectsCommand(objects) {
 
             @Override
-            public void initialize() {
-                for (MathObject obj : mathObjects) {
-                    obj.saveState();
-                    scene.add(obj);
-                }
-            }
-
-            @Override
             public void execute(double t) {
                 for (MathObject obj : mathObjects) {
                     obj.restoreState();
@@ -605,12 +531,6 @@ public class Commands {
     public static ApplyCommand fadeOut(double runtime, MathObject... objects) {
         return new ApplyCommand(new MathObjectsCommand(objects) {
 
-            @Override
-            public void initialize() {
-                for (MathObject obj : mathObjects) {
-                    obj.saveState();
-                }
-            }
 
             @Override
             public void execute(double t) {
@@ -650,6 +570,7 @@ public class Commands {
             public void initialize() {
                 for (MathObject obj : objects) {
                     alphaOrig.add(obj.getMp().getFillColor().alpha);
+                    scene.add(obj);
                 }
             }
 

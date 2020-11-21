@@ -22,7 +22,9 @@ import com.jmathanim.Animations.PlayAnim;
 import com.jmathanim.Cameras.Camera;
 import com.jmathanim.Renderers.Java2DAwtRenderer;
 import com.jmathanim.Renderers.Renderer;
+import com.jmathanim.Utils.Anchor;
 import com.jmathanim.Utils.JMathAnimConfig;
+import com.jmathanim.mathobjects.LaTeXMathObject;
 import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.MathObjectGroup;
 import com.jmathanim.mathobjects.MultiShapeObject;
@@ -390,4 +392,26 @@ public abstract class JMathAnimScene {
         return renderer.getCamera();
     }
 
+    public void formulaHelper(String...formulas) {
+        LaTeXMathObject[] texes=new LaTeXMathObject[formulas.length];
+        int n=0;
+        for (String t: formulas) {
+            LaTeXMathObject lat=LaTeXMathObject.make(t);
+            texes[n]=lat;
+            n++;
+        }
+        formulaHelper(texes);
+    }
+       public void formulaHelper(LaTeXMathObject...texes) {
+        MathObjectGroup group=new MathObjectGroup();
+        for (LaTeXMathObject lat: texes) {
+            lat.showDebugText(true);
+            group.add(lat);
+        }
+        group.setLayout(Anchor.Type.LOWER, .2);
+        renderer.getCamera().zoomToObjects(group);
+        add(group);
+    }
+    
+    
 }

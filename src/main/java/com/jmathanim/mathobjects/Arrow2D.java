@@ -183,7 +183,7 @@ public class Arrow2D extends MathObject {
         double w1 = r.getCamera().getMathView().getWidth();
         double w2 = r.getFixedCamera().getMathView().getWidth();
 
-        double alpha = 1 - .2 * w1 / w2 * head.getBoundingBox().getHeight() / vecLength;
+        double alpha = 1 - .8 * w1 / w2 * head.getBoundingBox().getHeight() / vecLength;
         Shape bodyToDraw = body.copy().scale(body.getPoint(0), alpha, alpha);
         bodyToDraw.draw(r);
         arrowHeadCopy.setAbsoluteSize(Anchor.Type.BY_POINT);

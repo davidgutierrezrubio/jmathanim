@@ -20,6 +20,7 @@ package com.jmathanim.Animations.Strategies.Transform;
 import com.jmathanim.Animations.AnimationGroup;
 import com.jmathanim.Animations.Transform;
 import com.jmathanim.mathobjects.MultiShapeObject;
+import com.jmathanim.mathobjects.Shape;
 
 /**
  *
@@ -27,12 +28,19 @@ import com.jmathanim.mathobjects.MultiShapeObject;
  */
 public class MultiShapeTransform extends AnimationGroup {
 
-    public MultiShapeTransform(double runtime,MultiShapeObject mobjTransformed,MultiShapeObject mobjDestiny) {
+    public MultiShapeTransform(double runtime, MultiShapeObject mobjTransformed, MultiShapeObject mobjDestiny) {
         super();
-        int numAnims=Math.min(mobjTransformed.shapes.size(), mobjDestiny.shapes.size());
-        for (int n = 0; n < numAnims; n++) {
+        int numAnims = Math.min(mobjTransformed.shapes.size(), mobjDestiny.shapes.size());
+        for (int n = 0; n < numAnims - 1; n++) {
             add(new Transform(runtime, mobjTransformed.get(n), mobjDestiny.get(n)));
         }
+        //Now, merge the remaining with the last
+        for (int n = numAnims-1; n < mobjTransformed.shapes.size(); n++) {
+            for (int m = numAnims-1; m < mobjDestiny.shapes.size(); m++) {
+                add(new Transform(runtime, mobjTransformed.get(n), mobjDestiny.get(m)));
+            }
+        }
+
     }
-    
+
 }

@@ -208,4 +208,9 @@ public class LaTeXMathObject extends SVGMathObject {
     public void alignCenter(int n, LaTeXMathObject lat, int m) {
         shift(this.get(n).getCenter().to(lat.get(m).getCenter()));
     }
+
+    public String getText() {
+        return text;
+    }
+    
 }
