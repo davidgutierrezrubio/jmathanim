@@ -368,3 +368,87 @@ waitSeconds(3);
 ```
 
 ![homothecyAnim](homothecyAnim.gif)
+
+## Transforming math expressions
+
+As we saw, the `LatexMathObject`allows to import mathematical expressions via LaTeX. JMathAnim implements a specific animation to transform an expression into another. First, we must analyze the internal structure of a `LatexMathObject`. This class inherites from the `MultiShape` class which manages an array of `Shape` objects. So, for example if we generate a math expression with the command
+
+```java
+LaTeXMathObject t1=LaTeXMathObject.make("$2+2=4$");
+```
+
+It will generate 4 shapes, that we can access via `get` method. Thus, the command `t1.get(0)` will return the first shape ( the "2" glyph), `t1.get(1)` will return the "+" glyph, etc. This indices will be important to specify exactly how we want the animation from one expression to another to be done.
+
+For complicated expressions, it may be difficult to get the exact number that corresponds to any glyph. For that reason, there is a method called `formulaHelper` that helps to visualize it better. Suppose we are planning to perform an animation that solves a simple equation x+2=0. We define the two math expressions:
+
+```java
+LaTeXMathObject t1=LaTeXMathObject.make("$x+2=0$");
+LaTeXMathObject t2=LaTeXMathObject.make("$x=-2$");
+```
+
+and we want to define a precise, self-explaining animation. 
+
+If we simply try with the command
+
+```java
+play.transform(4, t1, t2);
+```
+
+we obtain the following:
+
+
+
+![equation01](equation01.gif)
+
+It's nice, but not illustrative. It would be better to force the "+2" to convert into "-2", and the original "=" sign to their destination "=" sign. For this we have the `TransformMathExpression` animation class. But first, we must be clear about the indices of the different shapes that compose the latex objects. For that, we have the method `formulaHelper` that takes a varargs of `LatexMathObject` objects, or `String` with the LaTeX code, overlays the shape number for each one, stacks the formulas vertically, zooms and adds them to the scene. If we execute, with the previous objects `t1` and `t2 `
+
+```java
+formulaHelper(t1,t2);
+waitSeconds(5);
+```
+
+We'll obtain the following image for 5 seconds. You can make an screenshot to examine it more deeply:
+
+![image-20201121131228596](equation02.png)
+
+So, we need an animation that maps shape 0 onto shape 0, shape 3 onto shape 1, etc.
+
+We create a new `TransformMathExpression` animation object, with the expected parameters:
+
+```java
+TransformMathExpression tr=new TransformMathExpression(5, t1, t2);
+```
+
+The `TransformMathExpression`  objects admits several commands to define the precise transform we want to do. In this case, we want to transform the original shape 0 (x) to destiny shape 0 (x). This is stated with the command`map`
+
+```java
+tr.map(0,0);//Transforms orig-shape 0 to dst-shape 0
+```
+
+We also want to map the "+" sign (shape 1) into the "-" sign (shape 2), with the command
+
+```java
+tr.map(1,2);//Transforms orig-shape 1 to dst-shape 2
+```
+
+And finally, the "=" sign (shape 3) into the another "=" sign (shape 1):
+
+```java
+tr.map(3,1);//Transforms orig-shape 3 to dst-shape 1
+```
+
+What about shape 4 (the "0" sign)? If we don't specify a destination, this shape is marked for removal, with a `fadeOut` animation by default. If we play this animation with the `playAnimation` method we have:
+
+
+
+![equation03](equation03.gif)
+
+Oh, this is better, but there is still something that looks odd.  When manipulating equations, it's always desirable to mark the "=" sign a as pivotal point. We can achieve this forcing that the origin and destiny formulas are aligned by the "=" sign. This sign is at position 3 in origin formula and in position 1 in destiny. With the command
+
+```
+t2.alignCenter(1, t1, 3);
+```
+
+we make that the center of glyph 1 of `t2` (its "=" sign) match the center of the glyph 3 of `t1` (its "=" sign). If we execute this method prior to the animation now we have:
+
+![equation04](equation04.gif)
