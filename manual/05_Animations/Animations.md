@@ -1,20 +1,13 @@
 Animations
 ==========
 
-So far, we’ve learned to draw basic objects, and put them in the position we desire. What about animations? Well, that is what this
-library is meant for. We have the `Animation` class that will store any kind of animation you can do to an object. Not only `MathObject`
-instances can be animated, but also the `Camera` object. 
+So far, we’ve learned to draw basic objects, and put them in the position we desire. What about animations? Well, that is what this library is meant for. We have the `Animation` class that will store any kind of animation you can do to an object. Not only `MathObject` instances can be animated, but also the `Camera` object. 
 
-An `Animation` object has 3 important methods that should be understood if you want to implement your own animations or playing it manually with
-the `advanceFrame()` method 
+An `Animation` object has 3 important methods that should be understood if you want to implement your own animations or playing it manually with the `advanceFrame()` method 
 
--   The `initialize()` method, which prepares the objects to be animated. It should be called immediately before the animation
-    begins, that is, no modifications should be done to the objects between this method and the start of the animation.
+-   The `initialize()` method, which prepares the objects to be animated. It should be called immediately before the animation begins, that is, no modifications should be done to the objects between this method and the start of the animation.
 -   The `processAnimation`this method computes the time depending on the frame rate, and calls the next method. If the animation is finished, return `true`.
--   The `doAnim(double t)` method. This method actually 
-    performs the animation. The parameter `t` ranges from 0 to 1 where 0 is the beginning and 1 is the end. This
-    is not actually the time, but the percentage of animation done. A second parameter computed is a "smoothed" version of the parameter `t`, where
-    a smooth function is applied so that the animation starts and ends in a soft way, rather than with the lineal `t`. Currently, the smooth function used is
+-   The `doAnim(double t)` method. This method actually performs the animation. The parameter `t` ranges from 0 to 1 where 0 is the beginning and 1 is the end. This is not actually the time, but the percentage of animation done. A second parameter computed is a "smoothed" version of the parameter `t`, where a smooth function is applied so that the animation starts and ends in a soft way, rather than with the lineal `t`. Currently, the smooth function used is
 
 ![lambda](lambda.png)
 
@@ -188,9 +181,7 @@ You can try modifying the lambda function of each animation with the `setLambda`
 The ShowCreation animation
 --------------------------
 
-This animation draws the specified object and add it to the scene. Depending on the object, several strategies (that is several ways to
-actually create the object) are used, specified in the enum `ShowCreationStrategy`. Strategy is automatically chosen, but it can be
-overriden with the method `setStrategy`. 
+This animation draws the specified object and add it to the scene. Depending on the object, several strategies (that is several ways to actually create the object) are used, specified in the enum `ShowCreationStrategy`. Strategy is automatically chosen, but it can be overriden with the method `setStrategy`. 
 
 Forcing a specified strategy may lead to errors in some cases, as some methods are designed for specific subclasses, like `Line` or `Arrow2D`.
 
@@ -236,13 +227,9 @@ waitSeconds(3);
 Note that the `transform` animation also interpolates drawing parameters
 as thickness and color.
 
-> **WARNING**: After transforming object `A` into `B`, in some cases the transformed object becomes unusable. You should using `B` after that in a general
-> case. That is no the case when the objects transformed are both `Shape` for example.
+> **WARNING**: After transforming object `A` into `B`, in some cases the transformed object becomes unusable. You should using `B` after that in a general case. 
 
-The precise method of transform depends on the type of source and destination objects. While both have to be `Shape` instances, the
-specified type of the object, given by the `getObjectType()` determines the most appropiate type of transformation. For example, in the previous
-case, a point-by-point interpolation was chosen. However, if both shapes are regular polygons with the same number of sides, a homothecy is
-chosen to transform. We will show another example, not using the "long" form given by the \` play\` object:
+The precise method of transform depends on the type of source and destination objects.  For example, in the previous case, a point-by-point interpolation was chosen. However, if both shapes are regular polygons with the same number of sides, an homothecy is chosen to transform. We will show another example, not using the "long" form given by the `play` object:
 
 ``` java
 Shape pentagon = Shape.regularPolygon(5).thickness(3).scale(.5).shift(-1,-1);
@@ -254,17 +241,13 @@ waitSeconds(1);
 
 ![transform2](transform2.gif)
 
-While both methods may seem equal, the homothecy method ensures the object doesn’t get distorted in the way. If you want to force a concrete
-transform strategy, you can do it with the method `.transformMethod(method)` where method is a value of the enum `TransformMethod`.
+While both methods may seem equal, the homothecy method ensures the object doesn’t get distorted in the way. If you want to force a concrete transform strategy, you can do it with the method `.transformMethod(method)` where method is a value of the enum `TransformMethod`.
 
 > **WARNING**: Forcing a concrete transform strategy may leads to errors in some cases. In most cases, no animation will be done and a message will be added to the logs.
 
-Apart from different transform strategies, this class also allows different previous-to-transform optimization strategies (well, right now
-it only has one), listed in the enum `OptimizeMethod`.
+Apart from different transform strategies, this class also allows different previous-to-transform optimization strategies (well, right now it only has one), listed in the enum `OptimizeMethod`.
 
-By default, a transform animations convertes the n-th point of Shape A into the n-th point of Shape B. The `SIMPLE_CONNECTED_PATHS`
-optimization aligns the paths cycling the transformed object, so that the sum of the distances between points of A from the points of B is
-minimum, ensuring a cleaner point-to-point transform from A to B. The following code compares the same transformation with and without
+By default, a transform animations convertes the n-th point of Shape A into the n-th point of Shape B. The `SIMPLE_CONNECTED_PATHS` optimization aligns the paths cycling the transformed object, so that the sum of the distances between points of A from the points of B is minimal, ensuring a cleaner point-to-point transform from A to B. The following code compares the same transformation with and without
 optimization:
 
 ``` java
@@ -289,32 +272,28 @@ play.fadeOutAll();
 Changing styles
 ---------------
 
-So far, we have seen how to animate the position or shape of an object. In the `Transform` animation, style of the transformed object changes
-smoothly to match the style of destiny too. There are a few animations related to the style of an object:
+So far, we have seen how to animate the position or shape of an object. In the `Transform` animation, style of the transformed object changes smoothly to match the style of destiny too. There are a few animations related to the style of an object:
 
-The `setColor` animation animates the colors of the objects to the specified. Draw color and fill color may be specified. If you do not
-wish to change one of them, you just set it to null. For example:
+The `setColor` animation animates the colors of the objects to the specified. Draw color and fill color may be specified. If you do not wish to change one of them, you just set it to null. For example:
 
 ``` java
 Shape sq=Shape.square().center().thickness(10);
-Arrow2D arrow=Arrow2D.makeSimpleArrow2D(Point.UnitX, Point.UnitY).thickness(10);
+Arrow2D arrow=Arrow2D.makeSimpleArrow2D(Point.unitX(), Point.unitY()).thickness(10);
 add(sq,arrow);
 waitSeconds(3);
-AnimationGroup cmd = Commands.setColor(3, JMColor.RED, null, sq,arrow);
+Animation cmd = Commands.setColor(3, JMColor.RED, null, sq,arrow);
 playAnimation(cmd);
 waitSeconds(3);
 ```
 
 Will generate the following animation:
 
-
+![setColorAnimation](setColorAnimation.gif)
 
 The `setMP` animations works in a more general way, where you directly interpolate with the values of a specified `MODrawProperties`.
-Currently, only the draw and fill colors and thickness are interpolated. At the end of the animation, all the destiny attributes like layer, dash
-style, etc are copied.
+Currently, only the draw and fill colors and thickness are interpolated. At the end of the animation, all the destiny attributes like layer, dash style, etc are copied.
 
-If you have styles defined via config files or with the command `createStyleFrom(obj)` , the ` setStyle` animation changes the drawing
-parameters of an object to that style. This command has a shortcut in the `play` object. So, for example, the following code:
+If you have styles defined via config files or with the command `createStyleFrom(obj)` , the ` setStyle` animation changes the drawing parameters of an object to that style. This command has a shortcut in the `play` object. So, for example, the following code:
 
 ``` java
 play.setStyle(3,"solidBlue",circle);
@@ -325,10 +304,67 @@ will progressively change the drawing parameters of the `circle` object to adjus
 AffineTransform related animations
 ----------------------------------
 
-`affineTransform(double runtime, Point a, Point b, Point c, Point d, Point e, Point f, MathObject…​ objects) `
+These animations are better explained with illustrative examples:
 
-`reflection(double runtime, Point A, Point B, MathObject…​ objects) `
+The method `Commands.affineTransform(double runtime, Point a, Point b, Point c, Point d, Point e, Point f, MathObject… objects) ` is the animated version of the `createAffineTransformation`we saw in the chapter dedicated to transforming objects:
 
-`reflectionByAxis(double runtime, Point a, Point b, MathObject…​ objects)`
+```java
+Shape sq=Shape.square().center().scale(2);
+Shape circ=Shape.circle();
+Point A=Point.at(-1,-1).drawColor(JMColor.BLUE);
+Point B=Point.at(1,-1).drawColor(JMColor.BLUE);
+Point C=Point.at(-1,1).drawColor(JMColor.BLUE);
+Point D=Point.at(1,1).drawColor(JMColor.RED);
+Point E=Point.at(0,0).drawColor(JMColor.RED);
+Point F=Point.at(1.7,.2).drawColor(JMColor.RED);
+add(A,B,C,D,E,F);
+Animation anim = Commands.affineTransform(3, A, B, C, D, E, F, sq,circ);
+playAnimation(anim);
+waitSeconds(3);
+```
 
-`homothecy(double runtime, Point a, Point b, Point c, Point d, MathObject... objects)`
+![affineAnimation](affineAnimation.gif)
+
+The method  `Commands.reflection(double runtime, Point A, Point B, MathObject… objects) `animates the reflection that maps point A into B.
+
+```java
+Shape reg=Shape.regularPolygon(5).center();
+Point A=reg.getPoint(0).drawColor(JMColor.BLUE);
+Point B=Point.at(1,.5).drawColor(JMColor.RED);
+add(A,B);
+Animation anim=Commands.reflection(3, A, B, reg);
+playAnimation(anim);
+waitSeconds(3);
+```
+
+![reflection1Anim](reflection1Anim.gif)
+
+The method  `Commands.reflectionByAxis(double runtime, Point a, Point b, MathObject… objects)` animates the reflection given by the axis AB.
+
+```java
+Shape reg=Shape.regularPolygon(5).center();
+Point A=reg.getPoint(0).drawColor(JMColor.BLUE);
+Point B=Point.at(1,.5).drawColor(JMColor.RED);
+add(A,B);
+Animation anim=Commands.reflectionByAxis(3, A, B, reg);
+playAnimation(anim);
+waitSeconds(3);
+```
+
+![reflection2Anim](reflection2Anim.gif)
+
+The method  `Commands.homothecy(double runtime, Point a, Point b, Point c, Point d, MathObject... objects)` animates the only direct homothecy that maps A into C and B into D:
+
+```java
+Point A = Point.origin().drawColor(JMColor.BLUE);
+Point B = Point.at(1, 0).drawColor(JMColor.BLUE);
+Point C = Point.at(1, .2).drawColor(JMColor.RED);
+Point D = Point.at(1.8, .6).drawColor(JMColor.RED);
+add(A,B,C,D);
+Shape triangle = Shape.polygon(A, B, Point.at(0, .5));
+Animation anim=Commands.homothecy(3, A, B, C, D, triangle);
+playAnimation(anim);
+waitSeconds(3);
+```
+
+![homothecyAnim](homothecyAnim.gif)
