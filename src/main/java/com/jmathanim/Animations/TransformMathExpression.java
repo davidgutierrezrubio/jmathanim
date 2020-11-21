@@ -83,7 +83,7 @@ public class TransformMathExpression extends Animation {
         for (String name1 : maps.keySet()) {
             String name2 = maps.get(name1);
 
-            if (true) {
+            if (false) {
                 Shape sh1 = getShapeForGroup(or, name1, latexTransformed, removeInOrig);
                 Shape sh2 = getShapeForGroup(dst, name2, latexDestiny, addInDst);
                 anim.add(new Transform(runTime, sh1, sh2));
