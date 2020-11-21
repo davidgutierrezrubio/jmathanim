@@ -306,7 +306,7 @@ AffineTransform related animations
 
 These animations are better explained with illustrative examples:
 
-The method `Commands.affineTransform(double runtime, Point a, Point b, Point c, Point d, Point e, Point f, MathObject… objects) ` is the animated version of the `createAffineTransformation`we saw in the chapter dedicated to transforming objects:
+The animation `Commands.affineTransform(double runtime, Point a, Point b, Point c, Point d, Point e, Point f, MathObject… objects) ` is the animated version of the `createAffineTransformation`we saw in the chapter dedicated to transforming objects:
 
 ```java
 Shape sq=Shape.square().center().scale(2);
@@ -325,7 +325,7 @@ waitSeconds(3);
 
 ![affineAnimation](affineAnimation.gif)
 
-The method  `Commands.reflection(double runtime, Point A, Point B, MathObject… objects) `animates the reflection that maps point A into B.
+The animation   `Commands.reflection(double runtime, Point A, Point B, MathObject… objects) `animates the reflection that maps point A into B.
 
 ```java
 Shape reg=Shape.regularPolygon(5).center();
@@ -339,7 +339,7 @@ waitSeconds(3);
 
 ![reflection1Anim](reflection1Anim.gif)
 
-The method  `Commands.reflectionByAxis(double runtime, Point a, Point b, MathObject… objects)` animates the reflection given by the axis AB.
+The animation `Commands.reflectionByAxis(double runtime, Point a, Point b, MathObject… objects)` animates the reflection given by the axis AB.
 
 ```java
 Shape reg=Shape.regularPolygon(5).center();
@@ -353,7 +353,7 @@ waitSeconds(3);
 
 ![reflection2Anim](reflection2Anim.gif)
 
-The method  `Commands.homothecy(double runtime, Point a, Point b, Point c, Point d, MathObject... objects)` animates the only direct homothecy that maps A into C and B into D:
+The animation `Commands.homothecy(double runtime, Point a, Point b, Point c, Point d, MathObject... objects)` animates the only direct homothecy that maps A into C and B into D:
 
 ```java
 Point A = Point.origin().drawColor(JMColor.BLUE);
