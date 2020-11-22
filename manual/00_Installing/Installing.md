@@ -86,7 +86,7 @@ If you want to use the snapshot version, you need to add also the repository whe
 
 ![image-20201110151702319](11_install.png)
 
-And execute the code, pressing F6. You will be prompted for the `main` method the first time, just choose the class we created and hit "Select main class". If everything went as planned, you should see a preview window with this beautiful animation:
+And execute the code, pressing F6. You will be prompted for the `main` method the first time, just choose the class we created and hit "Select main class". If everything went as planned, you should see a preview window with this animation:
 
 ![12_install](12_install.gif)
 
