@@ -639,7 +639,7 @@ public class Commands {
 
             @Override
             public void finishAnimation() {
-                  scene.remove(mathObjects);
+                scene.remove(mathObjects);
             }
         };
         anim.setLambda(t -> t);//Default value
@@ -669,7 +669,6 @@ public class Commands {
                     alphaOrig.add(obj.getMp().getFillColor().alpha);
                 }
                 scene.add(mathObjects);
-
             }
 
             @Override
@@ -688,6 +687,7 @@ public class Commands {
         };
     }
 
+    
     public static Animation moveOut(double runtime, Anchor.Type exitAnchor, MathObject... mathObjects) {
         AnimationGroup resul = new AnimationGroup();
         //Compute appropiate shift vectors
@@ -707,11 +707,12 @@ public class Commands {
                     q.v.x = p.v.x;
                     break;
             }
-            resul.add(new Concatenate(Commands.shift(runtime, p.to(q), obj).setLambda(t->t), Commands.fadeOut(0, obj)));
+            resul.add(new Concatenate(Commands.shift(runtime, p.to(q), obj).setLambda(t -> t), Commands.fadeOut(0, obj)));
         }
         return resul;
     }
-      public static Animation moveIn(double runtime, Anchor.Type exitAnchor, MathObject... mathObjects) {
+
+    public static Animation moveIn(double runtime, Anchor.Type exitAnchor, MathObject... mathObjects) {
         AnimationGroup resul = new AnimationGroup();
         //Compute appropiate shift vectors
         Rect r = JMathAnimConfig.getConfig().getCamera().getMathView();
@@ -732,7 +733,7 @@ public class Commands {
                     break;
             }
             obj.shift(p.to(q));
-            resul.add(Commands.shift(runtime, q.to(p), obj).setLambda(t->t));
+            resul.add(Commands.shift(runtime, q.to(p), obj).setLambda(t -> t));
         }
         return resul;
     }

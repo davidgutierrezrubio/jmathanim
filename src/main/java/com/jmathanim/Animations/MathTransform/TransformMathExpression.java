@@ -40,7 +40,7 @@ public class TransformMathExpression extends Animation {
 
     public enum AddType {
         FADE_IN, GROW_IN,
-         MOVE_IN_UP, MOVE_IN_LEFT,
+        MOVE_IN_UP, MOVE_IN_LEFT,
         MOVE_IN_RIGHT, MOVE_IN_DOWN
     }
 
@@ -178,9 +178,9 @@ public class TransformMathExpression extends Animation {
 
         AnimationGroup group = new AnimationGroup(transform);
 
-        if (par.getRadius() != 0) {
+        if (par.getJumpHeight() != 0) {
             Vec v = sh.getCenter().to(sh2.getCenter());
-            Vec shiftVector = Vec.to(-v.y, v.x).normalize().mult(par.getRadius());
+            Vec shiftVector = Vec.to(-v.y, v.x).normalize().mult(par.getJumpHeight());
 
             final Animation radiusShift = Commands.shift(runTime, shiftVector, sh);
             radiusShift.setLambda(t -> Math.sin(PI * t));
@@ -188,9 +188,51 @@ public class TransformMathExpression extends Animation {
             group.add(radiusShift);
         }
         if (par.getNumTurns() != 0) {
-            final Animation rotation = Commands.rotate(runTime, 2 * PI * par.getNumTurns(), sh);
+            Animation rotation = Commands.rotate(runTime, 2 * PI * par.getNumTurns(), sh);
             rotation.setUseObjectState(false);
             group.add(rotation);
+        }
+        if (par.getAlphaMult() != 1) {
+            double L = 4 * (1 - par.getAlphaMult());
+            Animation changeAlpha = new Animation(runTime) {
+                @Override
+                public void initialize() {
+                }
+
+                @Override
+                public void doAnim(double t) {
+                    double lt = 1 - t * (1 - t) * L;
+                    sh.fillAlpha(lt * sh.mp.getFillColor().alpha);
+                    sh.drawAlpha(lt * sh.mp.getDrawColor().alpha);
+                }
+
+                @Override
+                public void finishAnimation() {
+                    doAnim(1);
+                }
+            };
+            group.add(changeAlpha);
+        }
+        if (par.getScale() != 1) {
+            double L = 4 * (1 - par.getScale());
+            Animation changeScale = new Animation(runTime) {
+                @Override
+                public void initialize() {
+                }
+
+                @Override
+                public void doAnim(double t) {
+                    double lt = 1 - t * (1 - t) * L;
+                    sh.scale(lt);
+                    System.out.println(lt);
+                }
+
+                @Override
+                public void finishAnimation() {
+                    doAnim(1);
+                }
+            };
+            group.add(changeScale);
         }
 
         anim.add(group);//, radius, rota));
@@ -265,7 +307,6 @@ public class TransformMathExpression extends Animation {
 //    public TransformMathExpressionParameters getDstTransformParameters(int n) {
 //        return addInDst.get(n);
 //    }
-
     public TransformMathExpressionParameters map(int i, String name) {
         return map(defineOrigGroup("_" + i, i), name);
     }

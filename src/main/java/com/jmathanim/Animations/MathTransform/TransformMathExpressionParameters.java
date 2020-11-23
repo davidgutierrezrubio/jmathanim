@@ -23,13 +23,17 @@ package com.jmathanim.Animations.MathTransform;
  */
 public class TransformMathExpressionParameters {
 
-    private double radius;
+    private double jumpHeight;
+    private double alphaMult;
+    private double scale;
     private int numTurns;
     private TransformMathExpression.RemoveType removingStyle;
     private TransformMathExpression.AddType addingStyle;
 
     public TransformMathExpressionParameters() {
-        radius = 0d;
+        jumpHeight = 0d;
+        alphaMult=1d;
+        scale=1d;
         numTurns = 0;
         removingStyle=TransformMathExpression.RemoveType.FADE_OUT;
         addingStyle=TransformMathExpression.AddType.FADE_IN;
@@ -44,12 +48,12 @@ public class TransformMathExpressionParameters {
         return this;
     }
 
-    public double getRadius() {
-        return radius;
+    public double getJumpHeight() {
+        return jumpHeight;
     }
 
-    public TransformMathExpressionParameters setRadius(double radius) {
-        this.radius = radius;
+    public TransformMathExpressionParameters setJumpHeight(double radius) {
+        this.jumpHeight = radius;
         return this;
     }
 
@@ -67,6 +71,24 @@ public class TransformMathExpressionParameters {
 
     public void setAddingStyle(TransformMathExpression.AddType addingStyle) {
         this.addingStyle = addingStyle;
+    }
+
+    public double getAlphaMult() {
+        return alphaMult;
+    }
+
+    public TransformMathExpressionParameters setAlphaMult(double alphaMult) {
+        this.alphaMult = alphaMult;
+         return this;
+    }
+
+    public double getScale() {
+        return scale;
+    }
+
+    public TransformMathExpressionParameters setScale(double scale) {
+        this.scale = scale;
+         return this;
     }
 
 }

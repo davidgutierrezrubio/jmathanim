@@ -44,7 +44,7 @@ public class TransformMathExpressionParametersArray {
 
     public TransformMathExpressionParametersArray setRadius(double radius) {
         for (TransformMathExpressionParameters par : pars) {
-            par.setRadius(radius);
+            par.setJumpHeight(radius);
         }
         return this;
     }
