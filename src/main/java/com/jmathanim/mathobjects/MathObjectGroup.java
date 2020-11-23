@@ -28,7 +28,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
 import javafx.scene.shape.StrokeLineCap;
-import sun.security.util.ArrayUtil;
 
 /**
  * A class that manages sets of MathObjects. The objectes are not added to the

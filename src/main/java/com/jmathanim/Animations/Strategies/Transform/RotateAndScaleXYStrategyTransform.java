@@ -20,7 +20,6 @@ package com.jmathanim.Animations.Strategies.Transform;
 import com.jmathanim.Animations.AffineJTransform;
 import com.jmathanim.Animations.Animation;
 import com.jmathanim.Utils.MODrawProperties;
-import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.Point;
 import com.jmathanim.mathobjects.Shape;
 

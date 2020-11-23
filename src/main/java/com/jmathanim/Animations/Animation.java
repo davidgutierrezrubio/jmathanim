@@ -20,6 +20,7 @@ package com.jmathanim.Animations;
 import com.jmathanim.Animations.Strategies.Transform.Optimizers.OptimizePathsStrategy;
 import com.jmathanim.Utils.JMathAnimConfig;
 import com.jmathanim.jmathanim.JMathAnimScene;
+import com.jmathanim.mathobjects.MathObject;
 import java.util.function.DoubleUnaryOperator;
 
 /**
@@ -64,6 +65,8 @@ public abstract class Animation {
      */
     public DoubleUnaryOperator lambda;
 
+    private boolean useObjectState;
+
     /**
      * Returns true if the animation has ended
      *
@@ -74,11 +77,36 @@ public abstract class Animation {
     }
 
     /**
+     * Return the use object state flag. This flag controls whether the
+     * animation should restore the initial state of the object prior to do each
+     * frame of the animation.
+     *
+     * @return True if restore state, false otherwise
+     */
+    public boolean isUseObjectState() {
+        return useObjectState;
+    }
+
+    /**
+     * Sets the use object state flag. This flag controls whether the animation
+     * should restore the initial state of the object prior to do each frame of
+     * the animation. By default is true,but it may be necessary to set to false
+     * when combining 2 animations. For example a shift and a rotation, should
+     * deactivate the flag in the second.
+     *
+     * @param shouldSaveState True if restore state, false otherwise
+     */
+    public void setUseObjectState(boolean shouldSaveState) {
+        this.useObjectState = shouldSaveState;
+    }
+
+    /**
      * Creates an empty animation, with the default run time. This constructor
      * should be called only from implementing subclasses.
      */
     public Animation() {
         this(DEFAULT_TIME);
+
     }
 
     /**
@@ -89,6 +117,7 @@ public abstract class Animation {
      */
     public Animation(double runTime) {
         this.runTime = runTime;
+        this.useObjectState = true;
         scene = JMathAnimConfig.getConfig().getScene();
         lambda = (x) -> lambdaDefault(x, .9d);
     }
@@ -181,7 +210,6 @@ public abstract class Animation {
 //        return t;
     }
 
-
     /**
      * Sets the optimization strategy. If null, the animation will try to find
      * the most suitable optimization.
@@ -210,4 +238,18 @@ public abstract class Animation {
         this.lambda = lambda;
     }
 
+    public void saveStates(MathObject[] mathObjects) {
+        if (this.isUseObjectState()) {
+            for (MathObject obj : mathObjects) {
+                obj.saveState();
+            }
+        }
+    }
+    public void restoreStates(MathObject[] mathObjects) {
+        if (this.isUseObjectState()) {
+            for (MathObject obj : mathObjects) {
+                obj.restoreState();
+            }
+        }
+    }
 }

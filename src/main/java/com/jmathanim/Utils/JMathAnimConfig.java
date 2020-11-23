@@ -123,7 +123,6 @@ public class JMathAnimConfig {
         this.drawShadow = drawShadow;
     }
 
-    
     public void setShadowParameters(int kernelSize, int offsetX, int offsetY, float alpha) {
         this.shadowKernelSize = kernelSize;
         this.shadowOffsetX = offsetX;
@@ -139,8 +138,6 @@ public class JMathAnimConfig {
         return backGroundImage;
     }
 
-    
-    
     private JMathAnimConfig() {//Private constructor
         styles = new HashMap<>();
         setDefaultMP();//Load "default" drawing style in dictionary
@@ -226,13 +223,18 @@ public class JMathAnimConfig {
     public final void setDefaultMP() {
         MODrawProperties defaultMP = new MODrawProperties();
         //Default, boring values
-        defaultMP.getDrawColor().copyFrom(JMColor.WHITE);
-        defaultMP.getFillColor().copyFrom(JMColor.GRAY);
+        defaultMP.setDrawColor(JMColor.WHITE);
+        defaultMP.setFillColor(JMColor.GRAY);
         defaultMP.setFillAlpha(0);//No filling by default
         defaultMP.thickness = 1d;
         defaultMP.dashStyle = MODrawProperties.DashStyle.SOLID;
         defaultMP.absoluteThickness = false;
         styles.put("default", defaultMP);
+
+        MODrawProperties latexDefaultMP = defaultMP.copy();
+        latexDefaultMP.setFillColor(JMColor.WHITE);
+        defaultMP.setFillAlpha(1);//Latex formulas are filled by default
+        styles.put("latexdefault", latexDefaultMP);
     }
 
     public MODrawProperties getDefaultMP() {

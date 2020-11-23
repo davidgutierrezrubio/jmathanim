@@ -17,7 +17,6 @@
  */
 package com.jmathanim.Animations;
 
-import com.jmathanim.Animations.commands.Commands;
 import com.jmathanim.Cameras.Camera;
 import com.jmathanim.Utils.JMColor;
 import com.jmathanim.Utils.Rect;

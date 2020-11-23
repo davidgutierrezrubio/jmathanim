@@ -17,8 +17,6 @@
  */
 package com.jmathanim.Animations;
 
-import com.jmathanim.Animations.commands.Commands;
-import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.MathObject;
 
 /**
@@ -29,7 +27,7 @@ import com.jmathanim.mathobjects.MathObject;
  */
 public class Highlight extends Animation {
 
-    ApplyCommand scale;
+    Animation scale;
     /**
      * Factor to scale, default, increase the size 10%
      */

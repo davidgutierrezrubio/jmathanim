@@ -15,15 +15,14 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-package com.jmathanim.Animations.commands;
+package com.jmathanim.Animations;
 
 import com.jmathanim.Animations.AffineJTransform;
+import com.jmathanim.Animations.Animation;
 import com.jmathanim.Animations.AnimationGroup;
-import com.jmathanim.Animations.ApplyCommand;
 import com.jmathanim.Cameras.Camera;
 import com.jmathanim.Utils.Anchor;
 import com.jmathanim.Utils.JMColor;
-import com.jmathanim.Utils.JMathAnimConfig;
 import com.jmathanim.Utils.MODrawProperties;
 import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.Vec;
@@ -31,9 +30,7 @@ import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.MathObjectGroup;
 import com.jmathanim.mathobjects.Point;
-import com.jmathanim.mathobjects.Shape;
 import java.util.ArrayList;
-import java.util.function.DoubleUnaryOperator;
 
 /**
  *
@@ -41,48 +38,65 @@ import java.util.function.DoubleUnaryOperator;
  */
 public class Commands {
 
-    public static ApplyCommand shift(double runtime, double dx, double dy, MathObject... objects) {
+    public static Animation shift(double runtime, double dx, double dy, MathObject... objects) {
         return shift(runtime, new Vec(dx, dy), objects);
     }
 
-    public static ApplyCommand shift(double runtime, Vec sv, MathObject... objects) {
-        return new ApplyCommand(new MathObjectsCommand(objects) {
+    public static Animation shift(double runtime, Vec sv, MathObject... objects) {
+
+        return new Animation(runtime) {
+            MathObject[] mathObjects = objects;
             Vec shiftVector = sv;
 
+            @Override
+            public void initialize() {
+                saveStates(mathObjects);
+                scene.add(mathObjects);
+            }
 
             @Override
-            public void execute(double t) {
+            public void doAnim(double t) {
+                double lt = getLambda().applyAsDouble(t);
+                restoreStates(mathObjects);
                 for (MathObject obj : mathObjects) {
-                    obj.restoreState();
-                    obj.shift(shiftVector.mult(t));
+                    obj.shift(shiftVector.mult(lt));
                 }
             }
 
             @Override
-            public void finish() {
+            public void finishAnimation() {
+                doAnim(1);
             }
-        }, runtime);
-    }//End of shift command
+        };
+    }
 
-    public static ApplyCommand scale(double runtime, Point c, double sc, MathObject... objects) {
+    public static Animation scale(double runtime, Point c, double sc, MathObject... objects) {
         return scale(runtime, c, sc, sc, sc, objects);
     }
 
-    public static ApplyCommand scale(double runtime, Point c, double scx, double scy, double scz, MathObject... objects) {
-        return new ApplyCommand(new MathObjectsCommand(objects) {
+    public static Animation scale(double runtime, Point c, double scx, double scy, double scz, MathObject... objects) {
+        return new Animation(runtime) {
             double scalex = scx;
             double scaley = scy;
             double scalez = scz;
             Point scaleCenter = c;
+            MathObject[] mathObjects = objects;
 
             @Override
-            public void execute(double t) {
+            public void initialize() {
+                saveStates(mathObjects);
+                scene.add(mathObjects);
+            }
+
+            @Override
+            public void doAnim(double t) {
+                double lt = lambda.applyAsDouble(t);
+                restoreStates(mathObjects);
                 for (MathObject obj : mathObjects) {
-                    obj.restoreState();
 //                    double before=obj.mp.thickness;
-                    double scax = 1 - t + scalex * t;
-                    double scay = 1 - t + scaley * t;
-                    double scaz = 1 - t + scalez * t;
+                    double scax = 1 - lt + scalex * lt;
+                    double scay = 1 - lt + scaley * lt;
+                    double scaz = 1 - lt + scalez * lt;
                     if (scaleCenter != null) {
                         obj.scale(scaleCenter, scax, scay, scaz);
                     } else {
@@ -93,72 +107,83 @@ public class Commands {
             }
 
             @Override
-            public void finish() {
+            public void finishAnimation() {
+                doAnim(1);
             }
-        }, runtime);
-    }//End of scale command
+        };
+    }
 
-    public static ApplyCommand rotate(double runtime, double ang, MathObject... objects) {
+    public static Animation rotate(double runtime, double ang, MathObject... objects) {
         return rotate(runtime, null, ang, objects);
 
     }
 
-    public static ApplyCommand rotate(double runtime, Point c, double ang, MathObject... objects) {
-        return new ApplyCommand(new MathObjectsCommand(objects) {
+    public static Animation rotate(double runtime, Point c, double ang, MathObject... objects) {
+        return new Animation(runtime) {
             double angle = ang;
             Point rotationCenter = null;
+            MathObject[] mathObjects = objects;
 
             @Override
             public void initialize() {
-                super.initialize();
+                saveStates(mathObjects);
                 if (c != null) {
                     rotationCenter = c.copy();
                 }
+                scene.add(mathObjects);
             }
 
             @Override
-            public void execute(double t) {
+            public void doAnim(double t) {
+                double lt = lambda.applyAsDouble(t);
+                restoreStates(mathObjects);
                 for (MathObject obj : mathObjects) {
-                    obj.restoreState();
                     if (rotationCenter == null) {
-                        obj.rotate(obj.getCenter(), angle * t);
+                        obj.rotate(obj.getCenter(), angle * lt);
                     } else {
-                        obj.rotate(rotationCenter, angle * t);
+                        obj.rotate(rotationCenter, angle * lt);
                     }
                 }
             }
 
             @Override
-            public void finish() {
+            public void finishAnimation() {
+                doAnim(1);
             }
-        }, runtime);
+        };
     }//End of rotate command
 
-    public static ApplyCommand affineTransform(double runtime, Point a, Point b, Point c, Point d, Point e, Point f, MathObject... objects) {
-        return new ApplyCommand(new MathObjectsCommand(objects) {
-            double tPrevious;
+    public static Animation affineTransform(double runtime, Point a, Point b, Point c, Point d, Point e, Point f, MathObject... objects) {
+        return new Animation(runtime) {
             Point orig1 = a.copy();
             Point orig2 = b.copy();
             Point orig3 = c.copy();
             Point dst1 = d.copy();
             Point dst2 = e.copy();
             Point dst3 = f.copy();
+            MathObject[] mathObjects = objects;
             AffineJTransform tr;
 
+            @Override
+            public void initialize() {
+                saveStates(mathObjects);
+            }
 
             @Override
-            public void execute(double t) {
+            public void doAnim(double t) {
+                restoreStates(mathObjects);
+                double lt = lambda.applyAsDouble(t);
                 for (MathObject obj : mathObjects) {
-                    obj.restoreState();
-                    tr = AffineJTransform.createAffineTransformation(orig1, orig2, orig3, dst1, dst2, dst3, t);
+                    tr = AffineJTransform.createAffineTransformation(orig1, orig2, orig3, dst1, dst2, dst3, lt);
                     tr.applyTransform(obj);
                 }
             }
 
             @Override
-            public void finish() {
+            public void finishAnimation() {
+                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
             }
-        }, runtime);
+        };
     }//End of affineTransform command
 
     /**
@@ -173,28 +198,36 @@ public class Commands {
      * @param objects Objects to animate (varargs)
      * @return Animation to run playAnimation method method
      */
-    public static ApplyCommand homothecy(double runtime, Point a, Point b, Point c, Point d, MathObject... objects) {
-        return new ApplyCommand(new MathObjectsCommand(objects) {
-            double tPrevious;
+    public static Animation homothecy(double runtime, Point a, Point b, Point c, Point d, MathObject... objects) {
+        return new Animation(runtime) {
             Point A = a.copy();
             Point B = b.copy();
             Point C = c.copy();
             Point D = d.copy();
             AffineJTransform tr;
+            MathObject[] mathObjects = objects;
 
             @Override
-            public void execute(double t) {
-                tr = AffineJTransform.createDirect2DHomothecy(A, B, C, D, t);
+            public void initialize() {
+                saveStates(mathObjects);
+                scene.add(mathObjects);
+            }
+
+            @Override
+            public void doAnim(double t) {
+                double lt = getLambda().applyAsDouble(t);
+                restoreStates(mathObjects);
+                tr = AffineJTransform.createDirect2DHomothecy(A, B, C, D, lt);
                 for (MathObject obj : mathObjects) {
-                    obj.restoreState();
                     tr.applyTransform(obj);
                 }
             }
 
             @Override
-            public void finish() {
+            public void finishAnimation() {
+                doAnim(1);
             }
-        }, runtime);
+        };
     }//End of homothecy command
 
     /**
@@ -208,26 +241,34 @@ public class Commands {
      * {@link JMathAnimScene#playAnimation(com.jmathanim.Animations.Animation...) playAnimation}
      * method
      */
-    public static ApplyCommand reflection(double runtime, Point A, Point B, MathObject... objects) {
-        return new ApplyCommand(new MathObjectsCommand(objects) {
-            double tPrevious;
+    public static Animation reflection(double runtime, Point A, Point B, MathObject... objects) {
+        return new Animation(runtime) {
+            MathObject[] mathObjects = objects;
             Point axis1 = A.copy();
             Point axis2 = B.copy();
             AffineJTransform tr;
 
             @Override
-            public void execute(double t) {
+            public void initialize() {
+                saveStates(mathObjects);
+                scene.add(mathObjects);
+            }
+
+            @Override
+            public void doAnim(double t) {
+                double lt = getLambda().applyAsDouble(t);
+                restoreStates(mathObjects);
                 for (MathObject obj : mathObjects) {
-                    obj.restoreState();
-                    tr = AffineJTransform.createReflection(axis1, axis2, t);
+                    tr = AffineJTransform.createReflection(axis1, axis2, lt);
                     tr.applyTransform(obj);
                 }
             }
 
             @Override
-            public void finish() {
+            public void finishAnimation() {
+                doAnim(1);
             }
-        }, runtime);
+        };
     }//End of reflectionByAxis command
 
     /**
@@ -242,26 +283,34 @@ public class Commands {
      * {@link JMathAnimScene#playAnimation(com.jmathanim.Animations.Animation...) playAnimation}
      * method
      */
-    public static ApplyCommand reflectionByAxis(double runtime, Point a, Point b, MathObject... objects) {
-        return new ApplyCommand(new MathObjectsCommand(objects) {
-            double tPrevious;
+    public static Animation reflectionByAxis(double runtime, Point a, Point b, MathObject... objects) {
+        return new Animation(runtime) {
+            MathObject[] mathObjects = objects;
             Point axis1 = a.copy();
             Point axis2 = b.copy();
             AffineJTransform tr;
 
             @Override
-            public void execute(double t) {
+            public void initialize() {
+                saveStates(mathObjects);
+                scene.add(mathObjects);
+            }
+
+            @Override
+            public void doAnim(double t) {
+                double lt = getLambda().applyAsDouble(t);
+                restoreStates(mathObjects);
                 for (MathObject obj : mathObjects) {
-                    obj.restoreState();
-                    tr = AffineJTransform.createReflectionByAxis(axis1, axis2, t);
+                    tr = AffineJTransform.createReflectionByAxis(axis1, axis2, lt);
                     tr.applyTransform(obj);
                 }
             }
 
             @Override
-            public void finish() {
+            public void finishAnimation() {
+                doAnim(1);
             }
-        }, runtime);
+        };
     }//End of reflectionByAxis command
 
     /**
@@ -285,7 +334,7 @@ public class Commands {
             if (fillColor != null) {
                 mpDst.setFillColor(fillColor);
             }
-            ApplyCommand cmd = setMP(runtime, mpDst, ob);
+            Animation cmd = setMP(runtime, mpDst, ob);
             ag.add(cmd);
         }
         return ag;
@@ -302,23 +351,32 @@ public class Commands {
      * {@link JMathAnimScene#playAnimation(com.jmathanim.Animations.Animation...) playAnimation}
      * method
      */
-    public static ApplyCommand setMP(double runtime, MODrawProperties mp, MathObject... objects) {
-        return new ApplyCommand(new MathObjectsCommand(objects) {
+    public static Animation setMP(double runtime, MODrawProperties mp, MathObject... objects) {
+        return new Animation(runtime) {
+            MathObject[] mathObjects = objects;
             MODrawProperties mpDst = mp;
 
             @Override
-            public void execute(double t) {
+            public void initialize() {
+                saveStates(mathObjects);
+                scene.add(mathObjects);
+            }
+
+            @Override
+            public void doAnim(double t) {
+                double lt = getLambda().applyAsDouble(t);
+                restoreStates(mathObjects);
                 int n = 0;
                 for (MathObject obj : mathObjects) {
-                    obj.restoreState();
-                    obj.interpolateMPFrom(mpDst, t);
+                    obj.interpolateMPFrom(mpDst, lt);
                 }
             }
 
             @Override
-            public void finish() {
+            public void finishAnimation() {
+                doAnim(1);
             }
-        }, runtime);
+        };
     }//End of setMP command
 
     /**
@@ -332,7 +390,7 @@ public class Commands {
      * {@link JMathAnimScene#playAnimation(com.jmathanim.Animations.Animation...) playAnimation}
      * method
      */
-    public static ApplyCommand setStyle(double runtime, String styleName, MathObject... objects) {
+    public static Animation setStyle(double runtime, String styleName, MathObject... objects) {
         return setMP(runtime, MODrawProperties.createFromStyle(styleName), objects);
     }
 
@@ -347,8 +405,8 @@ public class Commands {
      * {@link JMathAnimScene#playAnimation(com.jmathanim.Animations.Animation...) playAnimation}
      * method
      */
-    public static ApplyCommand cameraZoomToRect(double runtime, Camera camera, Rect rectToZoom) {
-        return new ApplyCommand(new AbstractCommand() {
+    public static Animation cameraZoomToRect(double runtime, Camera camera, Rect rectToZoom) {
+        return new Animation(runtime) {
             Camera cam = camera;
             Rect rDst = cam.getRectThatContains(rectToZoom);
             Rect rSource;
@@ -359,19 +417,17 @@ public class Commands {
             }
 
             @Override
-            public void execute(double t) {
-                Rect r = rSource.interpolate(rDst, t);
+            public void doAnim(double t) {
+                double lt = getLambda().applyAsDouble(t);
+                Rect r = rSource.interpolate(rDst, lt);
                 cam.setMathView(r);
             }
 
             @Override
-            public void finish() {
+            public void finishAnimation() {
+                doAnim(1);
             }
-
-            @Override
-            public void addObjectsToScene(JMathAnimScene scene) {
-            }
-        }, runtime);
+        };
     }
 
     /**
@@ -385,13 +441,13 @@ public class Commands {
      * {@link JMathAnimScene#playAnimation(com.jmathanim.Animations.Animation...) playAnimation}
      * method
      */
-    public static ApplyCommand cameraShift(double runtime, Camera camera, Vec shiftVector) {
+    public static Animation cameraShift(double runtime, Camera camera, Vec shiftVector) {
         Rect r = camera.getMathView().shifted(shiftVector);
         return cameraZoomToRect(runtime, camera, r);
 
     }
 
-    public static ApplyCommand cameraScale(double runtime, Camera cam, double scale) {
+    public static Animation cameraScale(double runtime, Camera cam, double scale) {
         return Commands.cameraZoomToRect(runtime, cam, cam.getMathView().scaled(scale, scale));
     }
 
@@ -405,7 +461,7 @@ public class Commands {
      * {@link JMathAnimScene#playAnimation(com.jmathanim.Animations.Animation...) playAnimation}
      * method
      */
-    public static ApplyCommand shrinkOut(double runtime, MathObject... objects) {
+    public static Animation shrinkOut(double runtime, MathObject... objects) {
         return shrinkOut(runtime, 0, objects);
     }
 
@@ -421,25 +477,35 @@ public class Commands {
      * {@link JMathAnimScene#playAnimation(com.jmathanim.Animations.Animation...) playAnimation}
      * method
      */
-    public static ApplyCommand shrinkOut(double runtime, double angle, MathObject... objects) {
-        return new ApplyCommand(new MathObjectsCommand(objects) {
+    public static Animation shrinkOut(double runtime, double angle, MathObject... objects) {
+        Animation anim = new Animation(runtime) {
+            MathObject[] mathObjects;
 
             @Override
-            public void execute(double t) {
+            public void initialize() {
+                saveStates(mathObjects);
+                scene.add(mathObjects);
+            }
+
+            @Override
+            public void doAnim(double t) {
+                double lt = getLambda().applyAsDouble(t);
+                restoreStates(mathObjects);
                 for (MathObject obj : mathObjects) {
-                    obj.restoreState();
-                    obj.scale(1 - t);
-                    obj.multDrawAlpha(1 - t);
-                    obj.multFillAlpha(1 - t);
-                    obj.rotate(t * angle);
+                    obj.scale(1 - lt);
+                    obj.multDrawAlpha(1 - lt);
+                    obj.multFillAlpha(1 - lt);
+                    obj.rotate(lt * angle);
                 }
             }
 
             @Override
-            public void finish() {
-                JMathAnimConfig.getConfig().getScene().remove(mathObjects);
+            public void finishAnimation() {
+                doAnim(1);
             }
-        }, runtime);
+        };
+        anim.setLambda(t -> t);//Default
+        return anim;
     }//End of shrinkOut command
 
     /**
@@ -453,7 +519,7 @@ public class Commands {
      * {@link JMathAnimScene#playAnimation(com.jmathanim.Animations.Animation...) playAnimation}
      * method
      */
-    public static ApplyCommand growIn(double runtime, MathObject... objects) {
+    public static Animation growIn(double runtime, MathObject... objects) {
         return growIn(runtime, 0, objects);
     }
 
@@ -469,13 +535,20 @@ public class Commands {
      * {@link JMathAnimScene#playAnimation(com.jmathanim.Animations.Animation...) playAnimation}
      * method
      */
-    public static ApplyCommand growIn(double runtime, double angle, MathObject... objects) {
-        return new ApplyCommand(new MathObjectsCommand(objects) {
+    public static Animation growIn(double runtime, double angle, MathObject... objects) {
+        Animation anim = new Animation(runtime) {
+            MathObject[] mathObjects;
 
             @Override
-            public void execute(double t) {
+            public void initialize() {
+                saveStates(mathObjects);
+                scene.add(mathObjects);
+            }
+
+            @Override
+            public void doAnim(double t) {
+                restoreStates(mathObjects);
                 for (MathObject obj : mathObjects) {
-                    obj.restoreState();
                     obj.scale(t);
                     obj.multDrawAlpha(t);
                     obj.multFillAlpha(t);
@@ -484,9 +557,12 @@ public class Commands {
             }
 
             @Override
-            public void finish() {
+            public void finishAnimation() {
+                doAnim(1);
             }
-        }, runtime);
+        };
+        anim.setLambda(t -> t);//Default value
+        return anim;
     }//End of growIn command
 
     /**
@@ -499,22 +575,32 @@ public class Commands {
      * {@link JMathAnimScene#playAnimation(com.jmathanim.Animations.Animation...) playAnimation}
      * method
      */
-    public static ApplyCommand fadeIn(double runtime, MathObject... objects) {
-        return new ApplyCommand(new MathObjectsCommand(objects) {
+    public static Animation fadeIn(double runtime, MathObject... objects) {
+        Animation anim = new Animation(runtime) {
+            MathObject[] mathObjects;
 
             @Override
-            public void execute(double t) {
+            public void initialize() {
+                saveStates(mathObjects);
+                scene.add(mathObjects);
+            }
+
+            @Override
+            public void doAnim(double t) {
+                restoreStates(mathObjects);
                 for (MathObject obj : mathObjects) {
-                    obj.restoreState();
                     obj.multDrawAlpha(t);
                     obj.multFillAlpha(t);
                 }
             }
 
             @Override
-            public void finish() {
+            public void finishAnimation() {
+                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
             }
-        }, runtime);
+        };
+        anim.setLambda(t -> t);//Default value
+        return anim;
     }//End of fadeIn command
 
     /**
@@ -528,25 +614,32 @@ public class Commands {
      * {@link JMathAnimScene#playAnimation(com.jmathanim.Animations.Animation...) playAnimation}
      * method
      */
-    public static ApplyCommand fadeOut(double runtime, MathObject... objects) {
-        return new ApplyCommand(new MathObjectsCommand(objects) {
-
+    public static Animation fadeOut(double runtime, MathObject... objects) {
+        Animation anim = new Animation(runtime) {
+            MathObject[] mathObjects;
 
             @Override
-            public void execute(double t) {
+            public void initialize() {
+                saveStates(mathObjects);
+                scene.add(mathObjects);
+            }
+
+            @Override
+            public void doAnim(double t) {
+                restoreStates(mathObjects);
                 for (MathObject obj : mathObjects) {
-                    obj.restoreState();
                     obj.multDrawAlpha(1 - t);
                     obj.multFillAlpha(1 - t);
                 }
             }
 
             @Override
-            public void finish() {
-                execute(0);
-                JMathAnimConfig.getConfig().getScene().remove(mathObjects);
+            public void finishAnimation() {
+                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
             }
-        }, runtime);
+        };
+        anim.setLambda(t -> t);//Default value
+        return anim;
     }//End of fadeOut command
 
     public static AnimationGroup setLayout(double runtime, Anchor.Type anchor, double gap, MathObjectGroup group) {
@@ -555,27 +648,28 @@ public class Commands {
         grCopy.setLayout(anchor, gap);
         for (int n = 0; n < group.size(); n++) {
             Vec v = group.get(n).getCenter().to(grCopy.get(n).getCenter());
-            ApplyCommand anim = Commands.shift(runtime, v, group.get(n));
+            Animation anim = Commands.shift(runtime, v, group.get(n));
             ag.add(anim);
         }
         return ag;
     }
 
-    public static ApplyCommand changeFillAlpha(double runTime, MathObject... objects) {
-        return new ApplyCommand(new MathObjectsCommand(objects) {
+    public static Animation changeFillAlpha(double runTime, MathObject... objects) {
+        return new Animation(runTime) {
+            MathObject[] mathObjects = objects;
             ArrayList<Double> alphaOrig = new ArrayList<>();
-            DoubleUnaryOperator lambda = (x) -> 2 * (x - .5) * (x - .5);
 
             @Override
             public void initialize() {
                 for (MathObject obj : objects) {
                     alphaOrig.add(obj.getMp().getFillColor().alpha);
-                    scene.add(obj);
                 }
+                scene.add(mathObjects);
+
             }
 
             @Override
-            public void execute(double t) {
+            public void doAnim(double t) {
                 int n = 0;
                 for (MathObject obj : objects) {
                     double a = alphaOrig.get(n) * lambda.applyAsDouble(t);
@@ -584,9 +678,10 @@ public class Commands {
             }
 
             @Override
-            public void finish() {
-                execute(1);
+            public void finishAnimation() {
+                doAnim(1);
             }
-        });
+        };
     }
+
 }

@@ -20,7 +20,6 @@ package com.jmathanim.Animations.Strategies.Transform;
 import com.jmathanim.Animations.Animation;
 import com.jmathanim.Animations.Strategies.Transform.Optimizers.DivideEquallyStrategy;
 import com.jmathanim.Utils.JMColor;
-import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.CanonicalJMPath;
 import com.jmathanim.mathobjects.JMPath;
 import com.jmathanim.mathobjects.JMPathPoint;

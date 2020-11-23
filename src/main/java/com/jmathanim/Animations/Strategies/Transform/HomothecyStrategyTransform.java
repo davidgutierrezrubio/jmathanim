@@ -18,10 +18,8 @@
 package com.jmathanim.Animations.Strategies.Transform;
 
 import com.jmathanim.Animations.Animation;
-import com.jmathanim.Animations.ApplyCommand;
-import com.jmathanim.Animations.commands.Commands;
+import com.jmathanim.Animations.Commands;
 import com.jmathanim.Utils.MODrawProperties;
-import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.Point;
 import com.jmathanim.mathobjects.Shape;
 
@@ -31,7 +29,7 @@ import com.jmathanim.mathobjects.Shape;
  */
 public class HomothecyStrategyTransform extends Animation {
     
-    ApplyCommand anim;
+    Animation anim;
     private final Shape mobjTransformed;
     private final Shape mobjDestiny;
     private final MODrawProperties mpBase;

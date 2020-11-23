@@ -20,7 +20,6 @@ package com.jmathanim.Animations.Strategies.Transform;
 import com.jmathanim.Animations.AnimationGroup;
 import com.jmathanim.Animations.Transform;
 import com.jmathanim.mathobjects.MultiShapeObject;
-import com.jmathanim.mathobjects.Shape;
 
 /**
  *

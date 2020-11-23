@@ -18,7 +18,6 @@
 package com.jmathanim.Animations.Strategies.Transform;
 
 import com.jmathanim.Animations.Animation;
-import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.FunctionGraph;
 
 /**
