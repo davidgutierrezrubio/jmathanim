@@ -1,5 +1,4 @@
 Animations
-==========
 
 So far, we’ve learned to draw basic objects, and put them in the position we desire. What about animations? Well, that is what this library is meant for. We have the `Animation` class that will store any kind of animation you can do to an object. Not only `MathObject` instances can be animated, but also the `Camera` object. 
 
@@ -459,7 +458,7 @@ we make that the center of glyph 1 of `t2` (its "=" sign) match the center of th
 
 ![equation04](equation04.gif)
 
-## Range mapping
+### Range mapping
 
 If we need to map a bunch of consecutive origin indices into another bunch of consecutive destiny indices, the method `mapRange(OrigA,OrigB,dst)` do exactly this. The command
 
@@ -543,3 +542,69 @@ waitSeconds(5);
 
 
 ![equation05](equation05.gif)
+
+### Effects
+
+Each mapping from one shape (or group) to another can be decorated with some effects. These can be added right after the `map` command, with the following methods. Let's show them with an example. Suppose we want to animate the commutative property of the sum. Define the 2 `LaTexMathObject` objects and make an animation:
+
+```java
+LaTeXMathObject t1=LaTeXMathObject.make("$a+b$");
+LaTeXMathObject t2=LaTeXMathObject.make("$b+a$");
+t2.alignCenter(1, t1, 1);//Align both expressions in the "=" sign
+camera.zoomToObjects(t1,t2);
+TransformMathExpression tr=new TransformMathExpression(5, t1, t2);
+tr.map(1,1);//= into =
+tr.map(0,2);//a into b
+tr.map(2,0);//b into a
+playAnimation(tr);
+waitSeconds(3);
+```
+
+We have the following animation:
+
+![equation06](equation06.gif)
+
+We will apply effects adding them to the `tr.map(0,2)` and `tr.map(2,0)` commands. First, the `.setScale(t)` applies a scaling factor back and forth.
+
+```java
+tr.map(0,2).setScale(.7);
+tr.map(2,0).setScale(1d/.7);
+```
+
+![equation07](equation07.gif)
+
+The `.setAlphaMult(t)`  changes the alpha (draw and fill) back and forth:
+
+```java
+tr.map(0,2).setAlphaMult(.7);
+tr.map(2,0).setAlphaMult(.1);
+```
+
+![equation08](equation08.gif)
+
+The `.setNumTurns(n)`  rotates n times the shape.
+
+```java
+tr.map(0,2).setNumTurns(1);
+tr.map(2,0).setNumTurns(-1);
+```
+
+![equation09](equation09.gif)
+
+The `.setJumpHeight(t)`  applies a (sinusoidal) jump with a vector of 90º clockwise.
+
+```java
+tr.map(0,2).setJumpHeight(.1);
+tr.map(2,0).setJumpHeight(.1);
+```
+
+![equation10](equation10.gif)
+
+You can nest any of these effects:
+
+```java
+tr.map(0,2).setJumpHeight(.1).setNumTurns(-1).setScale(.5);
+tr.map(2,0).setJumpHeight(.1).setNumTurns(1).setScale(.5);
+```
+
+![equation11](equation11.gif)
