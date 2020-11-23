@@ -479,7 +479,7 @@ public class Commands {
      */
     public static Animation shrinkOut(double runtime, double angle, MathObject... objects) {
         Animation anim = new Animation(runtime) {
-            MathObject[] mathObjects;
+            MathObject[] mathObjects = objects;
 
             @Override
             public void initialize() {
@@ -537,7 +537,7 @@ public class Commands {
      */
     public static Animation growIn(double runtime, double angle, MathObject... objects) {
         Animation anim = new Animation(runtime) {
-            MathObject[] mathObjects;
+            MathObject[] mathObjects = objects;
 
             @Override
             public void initialize() {
@@ -577,10 +577,11 @@ public class Commands {
      */
     public static Animation fadeIn(double runtime, MathObject... objects) {
         Animation anim = new Animation(runtime) {
-            MathObject[] mathObjects;
+            MathObject[] mathObjects = objects;
 
             @Override
             public void initialize() {
+                this.mathObjects = objects;
                 saveStates(mathObjects);
                 scene.add(mathObjects);
             }
@@ -616,10 +617,11 @@ public class Commands {
      */
     public static Animation fadeOut(double runtime, MathObject... objects) {
         Animation anim = new Animation(runtime) {
-            MathObject[] mathObjects;
+            MathObject[] mathObjects = objects;
 
             @Override
             public void initialize() {
+
                 saveStates(mathObjects);
                 scene.add(mathObjects);
             }

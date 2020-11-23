@@ -111,11 +111,12 @@ public class AnimationGroup extends Animation {
 
 
     @Override
-    public void setLambda(DoubleUnaryOperator lambda) {
+    public <T extends Animation> T setLambda(DoubleUnaryOperator lambda) {
         super.setLambda(lambda); 
         for (Animation anim:animations) {
             anim.setLambda(lambda);
         }
+        return (T) this;
     }
 
 }

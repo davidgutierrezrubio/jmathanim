@@ -100,9 +100,8 @@ public class Concatenate extends Animation {
     @Override
     public void finishAnimation() {
         //...and finish the last one
-        animations.get(animations.size()-1).finishAnimation();
+        animations.get(animations.size() - 1).finishAnimation();
     }
-
 
     @Override
     public void doAnim(double t) {
@@ -115,10 +114,11 @@ public class Concatenate extends Animation {
      * @param lambda
      */
     @Override
-    public void setLambda(DoubleUnaryOperator lambda) {
+    public <T extends Animation> T setLambda(DoubleUnaryOperator lambda) {
         super.setLambda(lambda);
         for (Animation anim : animations) {
             anim.setLambda(lambda);
         }
+        return (T) this;
     }
 }

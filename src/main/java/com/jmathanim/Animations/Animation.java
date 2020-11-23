@@ -232,10 +232,13 @@ public abstract class Animation {
     /**
      * Sets the smooth function
      *
+     * @param <T> Animation subclass
      * @param lambda A lambda operator with the new smooth function
+     * @return The animation
      */
-    public void setLambda(DoubleUnaryOperator lambda) {
+    public <T extends Animation> T setLambda(DoubleUnaryOperator lambda) {
         this.lambda = lambda;
+        return (T) this;
     }
 
     public void saveStates(MathObject[] mathObjects) {

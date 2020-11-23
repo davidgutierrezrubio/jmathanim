@@ -184,4 +184,9 @@ public class Vec implements Stateable {
     public static Vec to(double x, double y) {
         return new Vec(x, y);
     }
+
+    public Vec normalize() {
+        double norm=this.norm();
+        return this.mult(1d/norm);
+    }
 }
