@@ -23,6 +23,7 @@ import com.jmathanim.Animations.AnimationGroup;
 import com.jmathanim.Cameras.Camera;
 import com.jmathanim.Utils.Anchor;
 import com.jmathanim.Utils.JMColor;
+import com.jmathanim.Utils.JMathAnimConfig;
 import com.jmathanim.Utils.MODrawProperties;
 import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.Vec;
@@ -30,6 +31,7 @@ import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.MathObjectGroup;
 import com.jmathanim.mathobjects.Point;
+import com.jmathanim.mathobjects.Shape;
 import java.util.ArrayList;
 
 /**
@@ -597,7 +599,7 @@ public class Commands {
 
             @Override
             public void finishAnimation() {
-                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+                doAnim(1);
             }
         };
         anim.setLambda(t -> t);//Default value
@@ -637,7 +639,7 @@ public class Commands {
 
             @Override
             public void finishAnimation() {
-                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+                  scene.remove(mathObjects);
             }
         };
         anim.setLambda(t -> t);//Default value
@@ -686,4 +688,52 @@ public class Commands {
         };
     }
 
+    public static Animation moveOut(double runtime, Anchor.Type exitAnchor, MathObject... mathObjects) {
+        AnimationGroup resul = new AnimationGroup();
+        //Compute appropiate shift vectors
+        Rect r = JMathAnimConfig.getConfig().getCamera().getMathView();
+        for (int n = 0; n < mathObjects.length; n++) {
+            MathObject obj = mathObjects[n];
+            Point p = Anchor.getAnchorPoint(obj, Anchor.reverseAnchorPoint(exitAnchor));
+            Point q = Anchor.getAnchorPoint(Shape.rectangle(r), exitAnchor);
+            switch (exitAnchor) {
+                case LEFT:
+                    q.v.y = p.v.y;
+                case RIGHT:
+                    q.v.y = p.v.y;
+                    break;
+                case UPPER:
+                case LOWER:
+                    q.v.x = p.v.x;
+                    break;
+            }
+            resul.add(new Concatenate(Commands.shift(runtime, p.to(q), obj).setLambda(t->t), Commands.fadeOut(0, obj)));
+        }
+        return resul;
+    }
+      public static Animation moveIn(double runtime, Anchor.Type exitAnchor, MathObject... mathObjects) {
+        AnimationGroup resul = new AnimationGroup();
+        //Compute appropiate shift vectors
+        Rect r = JMathAnimConfig.getConfig().getCamera().getMathView();
+        for (int n = 0; n < mathObjects.length; n++) {
+            MathObject obj = mathObjects[n];
+            final Anchor.Type reverseAnchor = Anchor.reverseAnchorPoint(exitAnchor);
+            Point p = Anchor.getAnchorPoint(obj, reverseAnchor);
+            Point q = Anchor.getAnchorPoint(Shape.rectangle(r), exitAnchor);
+            switch (exitAnchor) {
+                case LEFT:
+                    q.v.y = p.v.y;
+                case RIGHT:
+                    q.v.y = p.v.y;
+                    break;
+                case UPPER:
+                case LOWER:
+                    q.v.x = p.v.x;
+                    break;
+            }
+            obj.shift(p.to(q));
+            resul.add(Commands.shift(runtime, q.to(p), obj).setLambda(t->t));
+        }
+        return resul;
+    }
 }
