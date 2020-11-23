@@ -377,16 +377,16 @@ As we saw, the `LatexMathObject`allows to import mathematical expressions via La
 LaTeXMathObject t1=LaTeXMathObject.make("$2+2=4$");
 ```
 
-It will generate 4 shapes, that we can access via `get` method. Thus, the command `t1.get(0)` will return the first shape ( the "2" glyph), `t1.get(1)` will return the "+" glyph, etc. This indices will be important to specify exactly how we want the animation from one expression to another to be done.
+It will generate 5 shapes, that we can access via `get` method. Thus, the command `t1.get(0)` will return the first shape ( the "2" glyph), `t1.get(1)` will return the "+" glyph, etc. This indices will be important to specify exactly how we want the animation from one expression to another to be done.
 
-For complicated expressions, it may be difficult to get the exact number that corresponds to any glyph. For that reason, there is a method called `formulaHelper` that helps to visualize it better. Suppose we are planning to perform an animation that solves a simple equation x+2=0. We define the two math expressions:
+Suppose we are planning to perform an animation that solves a simple equation x+2=0. We define the two math expressions:
 
 ```java
 LaTeXMathObject t1=LaTeXMathObject.make("$x+2=0$");
 LaTeXMathObject t2=LaTeXMathObject.make("$x=-2$");
 ```
 
-and we want to define a precise, self-explaining animation. 
+and we want to define a precise, self-explaining animation, that transforms the first into to second.
 
 If we simply try with the command
 
@@ -431,6 +431,12 @@ We also want to map the "+" sign (shape 1) into the "-" sign (shape 2), with the
 tr.map(1,2);//Transforms orig-shape 1 to dst-shape 2
 ```
 
+and the original "2" (shape 2) into the destiny "2" (shape 3):
+
+```java
+tr.map(2,3);
+```
+
 And finally, the "=" sign (shape 3) into the another "=" sign (shape 1):
 
 ```java
@@ -453,9 +459,9 @@ we make that the center of glyph 1 of `t2` (its "=" sign) match the center of th
 
 ![equation04](equation04.gif)
 
-The method `mapRange` allows to map many consecutive shapes:
+## Range mapping
 
-The command
+If we need to map a bunch of consecutive origin indices into another bunch of consecutive destiny indices, the method `mapRange(OrigA,OrigB,dst)` do exactly this. The command
 
 ```java
 tr.mapRange(3,7,13);
