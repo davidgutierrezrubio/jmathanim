@@ -608,3 +608,45 @@ tr.map(2,0).setJumpHeight(.1).setNumTurns(1).setScale(.5);
 ```
 
 ![equation11](equation11.gif)
+
+### Shapes marked for removal or adding
+
+Any shape whose index is not mapped to a destiny index or group is marked for removal. Currently, there are 6  types, defined in the enum `TransformMathExpression.RemoveType`: `FADE_OUT, SHRINK_OUT, MOVE_OUT_UP, MOVE_OUT_LEFT, MOVE_OUT_RIGHT, MOVE_OUT_DOWN`.
+
+In a similar way, any destiny shape not mapped by a origin index or group is marked for adding, with one of the following ways, defined in the enum `TransformMathExpression.AddType`: `FADE_IN, GROW_IN, MOVE_IN_UP, MOVE_IN_LEFT, MOVE_IN_RIGHT, MOVE_IN_DOWN`.
+
+By default, `FADE_OUT` and `FADE_IN` are chosen for removing and adding. With the `setRemovingStyle`and `setAddingStyle` we can define individually the style for each shape.
+
+We'll show all of this in one single, beautiful, self-explicative, dizzying animation:
+
+```java
+LaTeXMathObject t1 = LaTeXMathObject.make("ABCDEF").center();
+LaTeXMathObject t2 = LaTeXMathObject.make("123456").center();
+camera.zoomToObjects(t1, t2);
+camera.scale(2);
+TransformMathExpression tr = new TransformMathExpression(10, t1, t2);
+//If we don't map anything, all origin shapes are marked for removal and 
+//all destiny shapes are marked for adding.
+
+tr.setRemovingStyle(TransformMathExpression.RemoveType.FADE_OUT, 0);
+tr.setRemovingStyle(TransformMathExpression.RemoveType.SHRINK_OUT, 1);
+tr.setRemovingStyle(TransformMathExpression.RemoveType.MOVE_OUT_DOWN, 2);
+tr.setRemovingStyle(TransformMathExpression.RemoveType.MOVE_OUT_LEFT, 3);
+tr.setRemovingStyle(TransformMathExpression.RemoveType.MOVE_OUT_RIGHT, 4);
+tr.setRemovingStyle(TransformMathExpression.RemoveType.MOVE_OUT_UP, 5);
+        
+tr.setAddingStyle(TransformMathExpression.AddType.FADE_IN, 0);
+tr.setAddingStyle(TransformMathExpression.AddType.GROW_IN, 1);
+tr.setAddingStyle(TransformMathExpression.AddType.MOVE_IN_DOWN, 2);
+tr.setAddingStyle(TransformMathExpression.AddType.MOVE_IN_LEFT, 3);
+tr.setAddingStyle(TransformMathExpression.AddType.MOVE_IN_RIGHT, 4);
+tr.setAddingStyle(TransformMathExpression.AddType.MOVE_IN_UP, 5);
+        
+playAnimation(tr);
+waitSeconds(3);
+```
+
+
+
+![equation12](equation12.gif)
+
