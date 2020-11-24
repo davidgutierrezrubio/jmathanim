@@ -23,6 +23,7 @@ import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.updateableObjects.Updateable;
 import java.text.DecimalFormat;
+import java.util.Objects;
 
 /**
  *
@@ -123,7 +124,6 @@ public class JMPathPoint extends MathObject implements Updateable, Stateable {
         return resul;
     }
 
-
     @Override
     public void update(JMathAnimScene scene) {
     }
@@ -185,7 +185,6 @@ public class JMPathPoint extends MathObject implements Updateable, Stateable {
         return (T) this;
     }
 
-
     @Override
     public Rect getBoundingBox() {
         return p.getBoundingBox();
@@ -209,4 +208,24 @@ public class JMPathPoint extends MathObject implements Updateable, Stateable {
         this.cp1.copyFrom(jmPoint.cp1);
         this.cp2.copyFrom(jmPoint.cp2);
     }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        return hash;
+    }
+
+    public boolean equals(JMPathPoint p2, double epsilon) {
+        if (!p.equals(p2.p, epsilon)) {
+            return false;
+        }
+        if (!cp1.equals(p2.cp1, epsilon)) {
+            return false;
+        }
+        if (!cp2.equals(p2.cp2, epsilon)) {
+            return false;
+        }
+        return true;
+    }
+
 }

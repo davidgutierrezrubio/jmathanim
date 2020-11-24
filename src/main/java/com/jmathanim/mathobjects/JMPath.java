@@ -25,6 +25,7 @@ import com.jmathanim.mathobjects.JMPathPoint.JMPathPointType;
 import com.jmathanim.mathobjects.updateableObjects.Updateable;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Objects;
 
 /**
  * This class stores info for drawing a curve with control points, tension...
@@ -159,7 +160,8 @@ public class JMPath implements Updateable, Stateable {
      * number of elements Invisible pieces of path are not interpolated. New
      * generated points are marked as INTERPOLATION_POINT
      *
-     * @param newNumPoints New number of points. Must be greater or equal than actual number of points in the path
+     * @param newNumPoints New number of points. Must be greater or equal than
+     * actual number of points in the path
      */
     public void alignPathsToGivenNumberOfElements(int newNumPoints) {
         if (newNumPoints <= this.size()) {
@@ -235,8 +237,6 @@ public class JMPath implements Updateable, Stateable {
 //        return pointAt;
 //    }
 //    
-    
-    
     /**
      * Adds an interpolation point at alpha parameter between point(k-1) and
      * point(k) This method alters the control points of the points k-1 and k,
@@ -506,7 +506,7 @@ public class JMPath implements Updateable, Stateable {
     }
 
     @Override
-     public void update(JMathAnimScene scene) {
+    public void update(JMathAnimScene scene) {
         //This should do nothing, let their points to update by themselves
     }
 
@@ -620,7 +620,7 @@ public class JMPath implements Updateable, Stateable {
 //            }
 //        }
 //        return resul;
-        return (int) jmPathPoints.stream().filter((x)->!x.isThisSegmentVisible).count();
+        return (int) jmPathPoints.stream().filter((x) -> !x.isThisSegmentVisible).count();
     }
 
     /**
@@ -667,7 +667,7 @@ public class JMPath implements Updateable, Stateable {
         while (n < resul.size()) {
             JMPathPoint p1 = resul.getJMPoint(n);
             JMPathPoint p2 = resul.getJMPoint(n + 1);
-            if (pointEqual(p1.p, p2.p, epsilon)) {
+            if (p1.p.equals(p2.p, epsilon)) {
                 p1.cp2.copyFrom(p2.cp2);
 //                if (p2.isThisSegmentVisible) {
                 p1.isThisSegmentVisible = true;
@@ -682,12 +682,19 @@ public class JMPath implements Updateable, Stateable {
         return resul;
     }
 
-    public boolean pointEqual(Point p1, Point p2, double epsilon) {
-        boolean resul = false;
-        if ((Math.abs(p1.v.x - p2.v.x) < epsilon) & (Math.abs(p1.v.y - p2.v.y) < epsilon)) {
-            resul = true;
+
+    public boolean equals(JMPath obj,double epsilon) {
+        if (size() != obj.size()) {
+            return false;
         }
-        return resul;
+        for (int n = 0; n < size(); n++) {
+            JMPathPoint pa1 = getJMPoint(n);
+            JMPathPoint pa2 = obj.getJMPoint(n);
+            if (!pa1.equals(pa2,epsilon)) {
+                return false;
+            }
+        }
+        return true;
     }
 
 }

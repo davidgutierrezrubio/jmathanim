@@ -189,4 +189,5 @@ public class Vec implements Stateable {
         double norm=this.norm();
         return this.mult(1d/norm);
     }
+    
 }

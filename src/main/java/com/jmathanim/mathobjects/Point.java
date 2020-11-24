@@ -24,6 +24,7 @@ import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import java.text.DecimalFormat;
+import java.util.Objects;
 
 /**
  * This class represents a point in 2D or 3D space
@@ -314,6 +315,20 @@ public class Point extends MathObject {
 
     @Override
     public void update(JMathAnimScene scene) {
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        return hash;
+    }
+
+    public boolean equals(Point p2, double epsilon) {
+        boolean resul = false;
+        if ((Math.abs(v.x - p2.v.x) < epsilon) & (Math.abs(v.y - p2.v.y) < epsilon)) {
+            resul = true;
+        }
+        return resul;
     }
 
 }
