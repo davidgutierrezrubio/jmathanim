@@ -57,8 +57,6 @@ public class TransformMathExpression extends Animation {
     private final ArrayList<Shape> toDelete;
 
     //Transformation parameters
-    private final int trParSizeOrig;
-    private final int trParSizeDst;
     private final HashMap<String, int[]> trParOrigGroups;
     private final HashMap<String, int[]> trParDstGroups;
     private final HashMap<String, String> trParMaps;
@@ -80,11 +78,8 @@ public class TransformMathExpression extends Animation {
         this.latexTransformed = latexTransformed;
         this.latexDestiny = latexDestiny;
         anim = new AnimationGroup();
-//        transformParameters = new TransformFormulaParameters(this.latexTransformed.size(), this.latexDestiny.size());
         toDelete = new ArrayList<>();
 
-        this.trParSizeOrig = this.latexTransformed.size();
-        this.trParSizeDst = this.latexDestiny.size();
         trParOrigGroups = new HashMap<>();
         trParDstGroups = new HashMap<>();
         trParMaps = new HashMap<>();
@@ -137,26 +132,32 @@ public class TransformMathExpression extends Animation {
     private void createRemovingSubAnimation(int n, TransformMathExpressionParameters par) {
         Shape sh = latexTransformed.get(n);
         scene.add(sh);
+        AnimationGroup group = new AnimationGroup();
         switch (par.getRemovingStyle()) {
             case FADE_OUT:
-                anim.add(Commands.fadeOut(runTime, sh).setLambda(t -> Math.sqrt(t)));
+                group.add(Commands.fadeOut(runTime, sh).setLambda(t -> Math.sqrt(t)));
                 break;
             case SHRINK_OUT:
-                anim.add(Commands.shrinkOut(runTime, sh));
+                group.add(Commands.shrinkOut(runTime, sh));
                 break;
             case MOVE_OUT_UP:
-                anim.add(Commands.moveOut(runTime, Anchor.Type.UPPER, sh));
+                group.add(Commands.moveOut(runTime, Anchor.Type.UPPER, sh));
                 break;
             case MOVE_OUT_LEFT:
-                anim.add(Commands.moveOut(runTime, Anchor.Type.LEFT, sh));
+                group.add(Commands.moveOut(runTime, Anchor.Type.LEFT, sh));
                 break;
             case MOVE_OUT_RIGHT:
-                anim.add(Commands.moveOut(runTime, Anchor.Type.RIGHT, sh));
+                group.add(Commands.moveOut(runTime, Anchor.Type.RIGHT, sh));
                 break;
             case MOVE_OUT_DOWN:
-                anim.add(Commands.moveOut(runTime, Anchor.Type.LOWER, sh));
+                group.add(Commands.moveOut(runTime, Anchor.Type.LOWER, sh));
                 break;
         }
+        
+        Animation rotation = Commands.rotate(runTime, 2 * PI * par.getNumTurns(), sh);
+        rotation.setUseObjectState(false);
+        group.add(rotation);
+        anim.add(group);
     }
 
     private void createAddingSubAnimation(Shape sh, TransformMathExpressionParameters par) {
@@ -203,21 +204,7 @@ public class TransformMathExpression extends Animation {
             group.add(rotation);
         }
         if (par.getAlphaMult() != 1) {
-            //Parabola parameter so that mininum reaches at (.5,par.getAlphaMult())
-            double L = 4 * (1 - par.getAlphaMult());
-            Animation changeAlpha = new Animation(runTime) {
-                @Override
-                public void doAnim(double t) {
-                    double lt = 1 - t * (1 - t) * L;
-                    sh.fillAlpha(lt * sh.mp.getFillColor().alpha);
-                    sh.drawAlpha(lt * sh.mp.getDrawColor().alpha);
-                }
-
-                @Override
-                public void finishAnimation() {
-                    doAnim(1);
-                }
-            };
+            Animation changeAlpha = getAlphaMultAnimation(par, sh);
             group.add(changeAlpha);
         }
         if (par.getScale() != 1) {
@@ -242,6 +229,25 @@ public class TransformMathExpression extends Animation {
         anim.add(group);//, radius, rota));
         toDelete.add(sh);
         toDelete.add(sh2);
+    }
+
+    public Animation getAlphaMultAnimation(TransformMathExpressionParameters par, Shape sh) {
+        //Parabola parameter so that mininum reaches at (.5,par.getAlphaMult())
+        double L = 4 * (1 - par.getAlphaMult());
+        Animation changeAlpha = new Animation(runTime) {
+            @Override
+            public void doAnim(double t) {
+                double lt = 1 - t * (1 - t) * L;
+                sh.fillAlpha(lt * sh.mp.getFillColor().alpha);
+                sh.drawAlpha(lt * sh.mp.getDrawColor().alpha);
+            }
+
+            @Override
+            public void finishAnimation() {
+                doAnim(1);
+            }
+        };
+        return changeAlpha;
     }
 
     private ArrayList<Shape> getShapeListForGroup(HashMap<String, int[]> or, String names, LaTeXMathObject lat, HashMap<Integer, TransformMathExpressionParameters> listRemainders) {
@@ -328,7 +334,6 @@ public class TransformMathExpression extends Animation {
             final int ind = i1 + n;
             map(ind, j + n);
             ar.add(trParTransformParameters.get("_" + ind));
-
         }
         return ar;
     }
@@ -358,7 +363,6 @@ public class TransformMathExpression extends Animation {
         TransformMathExpressionParameters par = new TransformMathExpressionParameters();
         trParTransformParameters.put(origName, par);
         return par;
-
     }
 
     /**
@@ -368,13 +372,17 @@ public class TransformMathExpression extends Animation {
      * @param type One of the enum RemoveType: FADE_OUT, SHRINK_OUT,
      * MOVE_OUT_UP, MOVE_OUT_LEFT, MOVE_OUT_RIGHT, MOVE_OUT_DOWN
      * @param indices varargs origin indices
+     * @return Array of transform parameters
      */
-    public void setRemovingStyle(RemoveType type, int... indices) {
+    public TransformMathExpressionParametersArray setRemovingStyle(RemoveType type, int... indices) {
+         TransformMathExpressionParametersArray ar = new TransformMathExpressionParametersArray();
         for (int i : indices) {
             if (removeInOrigParameters.containsKey(i)) {
                 removeInOrigParameters.get(i).setRemovingStyle(type);
+                ar.add(removeInOrigParameters.get(i));
             }
         }
+         return ar;
     }
 
     /**
