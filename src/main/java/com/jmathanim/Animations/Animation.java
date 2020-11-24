@@ -50,7 +50,7 @@ public abstract class Animation {
 //    private int numFrames; //Number of frames of animation
 //    private int frame;
     private boolean isInitialized = false;
-    protected boolean isEnded = false;
+    private boolean isEnded = false;
     /**
      * Scene where this animation belongs
      */
@@ -241,14 +241,26 @@ public abstract class Animation {
         return (T) this;
     }
 
-    public void saveStates(MathObject[] mathObjects) {
+    /**
+     * Save state of all given mathobjects. If the useObjectState flag is set to
+     * false, this method does nothing
+     *
+     * @param mathObjects MathObjects to save state (varargs)
+     */
+    protected void saveStates(MathObject[] mathObjects) {
         if (this.isUseObjectState()) {
             for (MathObject obj : mathObjects) {
                 obj.saveState();
             }
         }
     }
-    public void restoreStates(MathObject[] mathObjects) {
+  /**
+     * Restore state of all given mathobjects. If the useObjectState flag is set to
+     * false, this method does nothing
+     *
+     * @param mathObjects MathObjects to restore state (varargs)
+     */
+    protected void restoreStates(MathObject[] mathObjects) {
         if (this.isUseObjectState()) {
             for (MathObject obj : mathObjects) {
                 obj.restoreState();

@@ -40,35 +40,56 @@ public class Point extends MathObject {
         CIRCLE, CROSS, PLUS
     }
 
+    /**
+     * Static method. Returns a new point at (0,0), with default style
+     *
+     * @return The created Point
+     */
     public static final Point origin() {
         return Point.at(0, 0);
     }
 
+    /**
+     * Static method. Returns a new point at (1,0), with default style
+     *
+     * @return The created Point
+     */
     public static final Point unitX() {
         return Point.at(1, 0);
     }
 
+    /**
+     * Static method. Returns a new point at (0,1), with default style
+     *
+     * @return The created Point
+     */
     public static final Point unitY() {
         return Point.at(0, 1);
     }
-     public static final Point unitZ() {
-        return new Point(0, 0,1);
+
+    public static final Point unitZ() {
+        return new Point(0, 0, 1);
     }
 
+    /**
+     * Creates a new Point with coordinates (0,0,0), with default style.
+     */
     public Point() {
         this(0, 0, 0);
     }
 
-    public Point(Point p) {
-        this(p.v);
-    }
-
+    /**
+     * Creates a new point copying coordinates from given vector, with default
+     * style.
+     *
+     * @param v Vector with coordinates
+     */
     public Point(Vec v) {
         this(v.x, v.y, v.z);
     }
 
     /**
-     * Creates a new Point with coordinates x,y,z
+     * Creates a new Point with coordinates x,y,z, with default style.
      *
      * @param x x coordinate
      * @param y y coordinate
@@ -79,26 +100,19 @@ public class Point extends MathObject {
     }
 
     /**
+     * Overloaded method. Creates a new Point with coordinates x,y, with default
+     * style. The z coordinates is set to 0.
      *
-     * @param x
-     * @param y
+     * @param x x coordinate
+     * @param y y coordinate
      */
     public Point(double x, double y) {
         this(x, y, 0, null);
     }
 
     /**
-     *
-     * @param x
-     * @param y
-     * @param mp
-     */
-    public Point(double x, double y, MODrawProperties mp) {
-        this(x, y, 0, mp);
-
-    }
-
-    /**
+     * Full constructor. Creates a new point with given coordinates and
+     * specified draw properties.
      *
      * @param x
      * @param y
@@ -114,18 +128,25 @@ public class Point extends MathObject {
     }
 
     /**
-     * Static builder
+     * Static builder. Creates and returns a new point at given coordinates.
      *
      * @param x x coordinate
      * @param y y coordinate
-     * @return
+     * @return The created point
      */
     public static Point at(double x, double y) {
         return new Point(x, y);
     }
 
-    public static Point random() {
-        Rect r = JMathAnimConfig.getConfig().getCamera().getMathView();
+    /**
+     * Static builder.Creates and returns a new point at random coordinates,
+     * inside the math view.
+     *
+     * @param scene The scene where to create the Point
+     * @return The created point
+     */
+    public static Point random(JMathAnimScene scene) {
+        Rect r = scene.getCamera().getMathView();
         double x = r.xmin + (r.xmax - r.xmin) * Math.random();
         double y = r.ymin + (r.ymax - r.ymin) * Math.random();
         return new Point(x, y);
@@ -199,17 +220,15 @@ public class Point extends MathObject {
 
     }
 
+    /**
+     * Returns the current dot style
+     *
+     * @return A value of enum DotStyle: CIRCLE, CROSS, PLUS
+     */
     public DotSyle getDotStyle() {
         return mp.dotStyle;
     }
 
-//    @Override
-//    public <T extends MathObject> T shift(Vec shiftVector) {
-//        v.x += shiftVector.x;
-//        v.y += shiftVector.y;
-//        v.z += shiftVector.z;
-//        return (T) this;
-//    }
     @Override
     public Point copy() {
         Point resul = new Point(v);

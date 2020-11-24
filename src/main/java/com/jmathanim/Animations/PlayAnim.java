@@ -18,6 +18,7 @@
 package com.jmathanim.Animations;
 
 import com.jmathanim.Cameras.Camera;
+import com.jmathanim.Utils.Anchor;
 import com.jmathanim.Utils.JMColor;
 import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.Vec;
@@ -141,6 +142,13 @@ public class PlayAnim {
         scene.playAnimation(Commands.fadeOut(runtime, objects));
     }
 
+    public void moveOut(double runtime, Anchor.Type exitAnchor, MathObject... mathObjects) {
+        scene.playAnimation(Commands.moveOut(runtime, scene, exitAnchor, mathObjects));
+    }
+     public void moveIn(double runtime, Anchor.Type exitAnchor, MathObject... mathObjects) {
+        scene.playAnimation(Commands.moveIn(runtime, scene, exitAnchor, mathObjects));
+    }
+    
     /**
      * Overloaded method. Animation that moves specified objects with a vector
      *

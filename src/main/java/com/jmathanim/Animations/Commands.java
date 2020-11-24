@@ -685,11 +685,10 @@ public class Commands {
         };
     }
 
-    
-    public static Animation moveOut(double runtime, Anchor.Type exitAnchor, MathObject... mathObjects) {
+    public static Animation moveOut(double runtime, JMathAnimScene scene, Anchor.Type exitAnchor, MathObject... mathObjects) {
         AnimationGroup resul = new AnimationGroup();
         //Compute appropiate shift vectors
-        Rect r = JMathAnimConfig.getConfig().getCamera().getMathView();
+        Rect r = scene.getCamera().getMathView();
         for (int n = 0; n < mathObjects.length; n++) {
             MathObject obj = mathObjects[n];
             Point p = Anchor.getAnchorPoint(obj, Anchor.reverseAnchorPoint(exitAnchor));
@@ -710,10 +709,10 @@ public class Commands {
         return resul;
     }
 
-    public static Animation moveIn(double runtime, Anchor.Type exitAnchor, MathObject... mathObjects) {
+    public static Animation moveIn(double runtime, JMathAnimScene scene, Anchor.Type exitAnchor, MathObject... mathObjects) {
         AnimationGroup resul = new AnimationGroup();
         //Compute appropiate shift vectors
-        Rect r = JMathAnimConfig.getConfig().getCamera().getMathView();
+        Rect r = scene.getCamera().getMathView();
         for (int n = 0; n < mathObjects.length; n++) {
             MathObject obj = mathObjects[n];
             final Anchor.Type reverseAnchor = Anchor.reverseAnchorPoint(exitAnchor);
