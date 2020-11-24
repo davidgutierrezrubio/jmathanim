@@ -142,12 +142,30 @@ public class PlayAnim {
         scene.playAnimation(Commands.fadeOut(runtime, objects));
     }
 
+    /**
+     * Shift the specified objects out of the math view and removes them from
+     * the scene.
+     *
+     * @param runtime Duration in seconds
+     * @param exitAnchor Exit, given by a Anchor constant. For example
+     * Anchor.UPPER will move the objects to the upper side of the math view.
+     * @param mathObjects Mathobjects to animate (varargs)
+     */
     public void moveOut(double runtime, Anchor.Type exitAnchor, MathObject... mathObjects) {
         scene.playAnimation(Commands.moveOut(runtime, exitAnchor, mathObjects));
     }
 
-    public void moveIn(double runtime, Anchor.Type exitAnchor, MathObject... mathObjects) {
-        scene.playAnimation(Commands.moveIn(runtime, exitAnchor, mathObjects));
+    /**
+     * Shift the specified objects from an outer point of the math view to their
+     * original position, adding them to the scene.
+     *
+     * @param runtime Duration in seconds
+     * @param enterAnchor Enter point, given by a Anchor constant. For example
+     * Anchor.UPPER will move the objects from the upper side of the math view.
+     * @param mathObjects Mathobjects to animate (varargs)
+     */
+    public void moveIn(double runtime, Anchor.Type enterAnchor, MathObject... mathObjects) {
+        scene.playAnimation(Commands.moveIn(runtime, enterAnchor, mathObjects));
     }
 
     /**
