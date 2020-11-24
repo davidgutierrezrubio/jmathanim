@@ -630,11 +630,10 @@ public class Commands {
     public static Animation fadeOut(double runtime, MathObject... objects) {
         Animation anim = new Animation(runtime) {
             MathObject[] mathObjects = objects;
-            JMathAnimScene scene;
 
             @Override
             public void initialize(JMathAnimScene sc) {
-                this.scene = sc;
+                super.initialize(sc);
                 saveStates(mathObjects);
                 sc.add(mathObjects);
             }
