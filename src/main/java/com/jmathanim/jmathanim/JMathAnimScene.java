@@ -86,6 +86,7 @@ public abstract class JMathAnimScene {
      * This class is used to easily access to most common animations
      */
     protected final PlayAnim play;
+
     /**
      * Nanotime, used to control frame rate in preview window
      */
@@ -226,9 +227,6 @@ public abstract class JMathAnimScene {
      */
     public synchronized final void add(MathObject... objs) {
         for (MathObject obj : objs) {
-            if (obj.mp.getLayer()==0)
-            {
-            }
             if (!objects.contains(obj)) {
                 if (obj instanceof MathObjectGroup) {
                     for (MathObject subobj : ((MathObjectGroup) obj).getObjects()) {
@@ -237,7 +235,6 @@ public abstract class JMathAnimScene {
                 } else {
                     objects.add(obj);
                 }
-                obj.setScene(this);
                 //Check if this object is Updateable.
                 //This interface is present in every MathObject which needs to
                 //be updated every frame
@@ -270,7 +267,6 @@ public abstract class JMathAnimScene {
             }
 
             objects.remove(obj);
-            obj.setScene(null);
             unregisterUpdateable(obj);
         }
     }
@@ -346,8 +342,8 @@ public abstract class JMathAnimScene {
     public void playAnimation(ArrayList<Animation> anims) {
         for (Animation anim : anims) {
             if (anim != null) {
-                
-                anim.initialize();//Perform needed steps immediately before playing
+
+                anim.initialize(this);//Perform needed steps immediately before playing
             }
         }
 
@@ -394,19 +390,20 @@ public abstract class JMathAnimScene {
         return renderer.getCamera();
     }
 
-    public void formulaHelper(String...formulas) {
-        LaTeXMathObject[] texes=new LaTeXMathObject[formulas.length];
-        int n=0;
-        for (String t: formulas) {
-            LaTeXMathObject lat=LaTeXMathObject.make(t);
-            texes[n]=lat;
+    public void formulaHelper(String... formulas) {
+        LaTeXMathObject[] texes = new LaTeXMathObject[formulas.length];
+        int n = 0;
+        for (String t : formulas) {
+            LaTeXMathObject lat = LaTeXMathObject.make(t);
+            texes[n] = lat;
             n++;
         }
         formulaHelper(texes);
     }
-       public void formulaHelper(LaTeXMathObject...texes) {
-        MathObjectGroup group=new MathObjectGroup();
-        for (LaTeXMathObject lat: texes) {
+
+    public void formulaHelper(LaTeXMathObject... texes) {
+        MathObjectGroup group = new MathObjectGroup();
+        for (LaTeXMathObject lat : texes) {
             lat.showDebugText(true);
             group.add(lat);
         }
@@ -414,6 +411,9 @@ public abstract class JMathAnimScene {
         renderer.getCamera().zoomToObjects(group);
         add(group);
     }
-    
-    
+
+    public JMathAnimConfig getConfig() {
+        return config;
+    }
+
 }

@@ -20,6 +20,7 @@ package com.jmathanim.Animations.Strategies.Transform;
 import com.jmathanim.Animations.AffineJTransform;
 import com.jmathanim.Animations.Animation;
 import com.jmathanim.Utils.MODrawProperties;
+import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.Point;
 import com.jmathanim.mathobjects.Shape;
 
@@ -66,7 +67,8 @@ public class RotateAndScaleXYStrategyTransform extends Animation {
     }
 
     @Override
-    public void initialize() {
+    public void initialize(JMathAnimScene scene) {
+        super.initialize(scene);
         mpBase = mobjTransformed.mp.copy();
         A = mobjTransformed.getPoint(0).copy();
         B = mobjTransformed.getPoint(1).copy();

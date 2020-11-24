@@ -18,6 +18,7 @@
 package com.jmathanim.Cameras;
 
 import com.jmathanim.Utils.Vec;
+import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.MathObject;
 
 /**
@@ -31,13 +32,8 @@ public class CameraFX2D extends Camera {
 
     private double xminB, xmaxB, yminB, ymaxB;//Backup values for saveState()
 
-    public CameraFX2D() {
-        this(0, 0);//To initialize after
-    }
-
-    public CameraFX2D(int screenWidth, int screenHeight) {
-        this.screenWidth = screenWidth;
-        this.screenHeight = screenHeight;
+    public CameraFX2D(JMathAnimScene scene, int screenWidth, int screenHeight) {
+        super(scene,screenWidth,screenHeight);
 
     }
 
@@ -117,7 +113,6 @@ public class CameraFX2D extends Camera {
         return new double[]{mx, my};
     }
 
-
     @Override
     public double screenToMath(double screenScalar) {
         //resul = (int) ((mathScalar - xmin) + mathScalar * screenWidth / xmax);
@@ -150,7 +145,7 @@ public class CameraFX2D extends Camera {
     }
 
     public void setWidth(double d) {
-        scale(d/getMathView().getWidth());
+        scale(d / getMathView().getWidth());
     }
 
 }

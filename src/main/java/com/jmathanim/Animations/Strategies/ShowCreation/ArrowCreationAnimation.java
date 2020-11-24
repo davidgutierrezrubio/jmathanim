@@ -19,6 +19,7 @@
 package com.jmathanim.Animations.Strategies.ShowCreation;
 
 import com.jmathanim.Animations.Animation;
+import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.Arrow2D;
 
 /**
@@ -37,7 +38,8 @@ public class ArrowCreationAnimation extends Animation {
     }
 
     @Override
-    public void initialize() {
+    public void initialize(JMathAnimScene scene) {
+        super.initialize(scene);
         obj.saveState();
         scene.add(obj);
     }

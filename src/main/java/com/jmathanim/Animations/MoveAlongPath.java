@@ -18,6 +18,7 @@
 package com.jmathanim.Animations;
 
 import com.jmathanim.Utils.Anchor.Type;
+import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.JMPath;
 import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.Shape;
@@ -68,7 +69,8 @@ public class MoveAlongPath extends Animation {
     }
 
     @Override
-    public void initialize() {
+    public void initialize(JMathAnimScene scene) {
+        super.initialize(scene);
         mobjTransformed.saveState();
         scene.add(mobjTransformed);
     }

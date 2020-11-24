@@ -20,6 +20,7 @@ package com.jmathanim.Animations.Strategies.Transform;
 import com.jmathanim.Animations.Animation;
 import com.jmathanim.Animations.Commands;
 import com.jmathanim.Utils.MODrawProperties;
+import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.Point;
 import com.jmathanim.mathobjects.Shape;
 
@@ -43,14 +44,15 @@ public class HomothecyStrategyTransform extends Animation {
     }
     
     @Override
-    public void initialize() {
+    public void initialize(JMathAnimScene scene) {
+        super.initialize(scene);
         Point a = this.mobjTransformed.getPoint(0);
         Point b = this.mobjTransformed.getPoint(1);
         Point c = this.mobjDestiny.getPoint(0);
         Point d = this.mobjDestiny.getPoint(1);
         anim = Commands.homothecy(runTime, a, b, c, d, this.mobjTransformed);
         anim.setLambda(lambda);
-        anim.initialize();
+        anim.initialize(scene);
         scene.add(this.mobjTransformed);
         
     }

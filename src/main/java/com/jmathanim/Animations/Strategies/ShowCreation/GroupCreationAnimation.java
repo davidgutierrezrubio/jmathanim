@@ -20,6 +20,7 @@ package com.jmathanim.Animations.Strategies.ShowCreation;
 import com.jmathanim.Animations.Animation;
 import com.jmathanim.Animations.AnimationGroup;
 import com.jmathanim.Animations.ShowCreation;
+import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.MathObjectGroup;
 
@@ -43,9 +44,10 @@ public class GroupCreationAnimation extends Animation {
     }
 
     @Override
-    public void initialize() {
+    public void initialize(JMathAnimScene scene) {
+        super.initialize(scene);
         anim.setLambda(lambda);
-        anim.initialize();
+        anim.initialize(scene);
         
     }
 

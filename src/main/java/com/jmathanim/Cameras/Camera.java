@@ -51,7 +51,19 @@ public abstract class Camera {
      * Gaps to add when adjusting view to an object or Rect
      */
     protected double hgap = .1, vgap = .1;
+    
+    private final JMathAnimScene scene;
 
+    public Camera(JMathAnimScene scene,int screenWidth, int screenHeight) {
+        this.screenWidth = screenWidth;
+        this.screenHeight = screenHeight;
+        this.scene=scene;
+    }
+
+    
+    
+    
+    
     /**
      * Set size of the screen to which the camera will compute coordinates
      * Screen size usually is 800x600, 1920x1080, etc.
@@ -98,7 +110,6 @@ public abstract class Camera {
     }
 
     public void adjustToAllObjects() {
-        JMathAnimScene scene = JMathAnimConfig.getConfig().getScene();
         if (!scene.getObjects().isEmpty()) {
             MathObject[] objs = scene.getObjects().toArray(new MathObject[scene.getObjects().size()]);
             adjustToObjects(objs);

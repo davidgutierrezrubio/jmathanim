@@ -51,7 +51,8 @@ public class Commands {
             Vec shiftVector = sv;
 
             @Override
-            public void initialize() {
+            public void initialize(JMathAnimScene scene) {
+                super.initialize(scene);
                 saveStates(mathObjects);
                 scene.add(mathObjects);
             }
@@ -85,7 +86,8 @@ public class Commands {
             MathObject[] mathObjects = objects;
 
             @Override
-            public void initialize() {
+            public void initialize(JMathAnimScene scene) {
+                super.initialize(scene);
                 saveStates(mathObjects);
                 scene.add(mathObjects);
             }
@@ -125,7 +127,8 @@ public class Commands {
             MathObject[] mathObjects = objects;
 
             @Override
-            public void initialize() {
+            public void initialize(JMathAnimScene scene) {
+                super.initialize(scene);
                 saveStates(mathObjects);
                 if (c != null) {
                     rotationCenter = c.copy();
@@ -165,7 +168,8 @@ public class Commands {
             AffineJTransform tr;
 
             @Override
-            public void initialize() {
+            public void initialize(JMathAnimScene scene) {
+                super.initialize(scene);
                 saveStates(mathObjects);
             }
 
@@ -208,7 +212,8 @@ public class Commands {
             MathObject[] mathObjects = objects;
 
             @Override
-            public void initialize() {
+            public void initialize(JMathAnimScene scene) {
+                super.initialize(scene);
                 saveStates(mathObjects);
                 scene.add(mathObjects);
             }
@@ -249,7 +254,8 @@ public class Commands {
             AffineJTransform tr;
 
             @Override
-            public void initialize() {
+            public void initialize(JMathAnimScene scene) {
+                super.initialize(scene);
                 saveStates(mathObjects);
                 scene.add(mathObjects);
             }
@@ -291,7 +297,8 @@ public class Commands {
             AffineJTransform tr;
 
             @Override
-            public void initialize() {
+            public void initialize(JMathAnimScene scene) {
+                super.initialize(scene);
                 saveStates(mathObjects);
                 scene.add(mathObjects);
             }
@@ -357,7 +364,8 @@ public class Commands {
             MODrawProperties mpDst = mp;
 
             @Override
-            public void initialize() {
+            public void initialize(JMathAnimScene scene) {
+                super.initialize(scene);
                 saveStates(mathObjects);
                 scene.add(mathObjects);
             }
@@ -412,7 +420,8 @@ public class Commands {
             Rect rSource;
 
             @Override
-            public void initialize() {
+            public void initialize(JMathAnimScene scene) {
+                super.initialize(scene);
                 rSource = cam.getMathView();
             }
 
@@ -482,7 +491,8 @@ public class Commands {
             MathObject[] mathObjects = objects;
 
             @Override
-            public void initialize() {
+            public void initialize(JMathAnimScene scene) {
+                super.initialize(scene);
                 saveStates(mathObjects);
                 scene.add(mathObjects);
             }
@@ -540,7 +550,8 @@ public class Commands {
             MathObject[] mathObjects = objects;
 
             @Override
-            public void initialize() {
+            public void initialize(JMathAnimScene scene) {
+                super.initialize(scene);
                 saveStates(mathObjects);
                 scene.add(mathObjects);
             }
@@ -580,7 +591,8 @@ public class Commands {
             MathObject[] mathObjects = objects;
 
             @Override
-            public void initialize() {
+            public void initialize(JMathAnimScene scene) {
+                super.initialize(scene);
                 this.mathObjects = objects;
                 saveStates(mathObjects);
                 scene.add(mathObjects);
@@ -618,12 +630,13 @@ public class Commands {
     public static Animation fadeOut(double runtime, MathObject... objects) {
         Animation anim = new Animation(runtime) {
             MathObject[] mathObjects = objects;
+            JMathAnimScene scene;
 
             @Override
-            public void initialize() {
-
+            public void initialize(JMathAnimScene sc) {
+                this.scene = sc;
                 saveStates(mathObjects);
-                scene.add(mathObjects);
+                sc.add(mathObjects);
             }
 
             @Override
@@ -662,7 +675,8 @@ public class Commands {
             ArrayList<Double> alphaOrig = new ArrayList<>();
 
             @Override
-            public void initialize() {
+            public void initialize(JMathAnimScene scene) {
+                super.initialize(scene);
                 for (MathObject obj : objects) {
                     alphaOrig.add(obj.getMp().getFillColor().alpha);
                 }
@@ -685,10 +699,10 @@ public class Commands {
         };
     }
 
-    public static Animation moveOut(double runtime, JMathAnimScene scene, Anchor.Type exitAnchor, MathObject... mathObjects) {
+    public static Animation moveOut(double runtime, Anchor.Type exitAnchor, MathObject... mathObjects) {
         AnimationGroup resul = new AnimationGroup();
         //Compute appropiate shift vectors
-        Rect r = scene.getCamera().getMathView();
+        Rect r = JMathAnimConfig.getConfig().getCamera().getMathView();
         for (int n = 0; n < mathObjects.length; n++) {
             MathObject obj = mathObjects[n];
             Point p = Anchor.getAnchorPoint(obj, Anchor.reverseAnchorPoint(exitAnchor));
@@ -709,10 +723,10 @@ public class Commands {
         return resul;
     }
 
-    public static Animation moveIn(double runtime, JMathAnimScene scene, Anchor.Type exitAnchor, MathObject... mathObjects) {
+    public static Animation moveIn(double runtime, Anchor.Type exitAnchor, MathObject... mathObjects) {
         AnimationGroup resul = new AnimationGroup();
         //Compute appropiate shift vectors
-        Rect r = scene.getCamera().getMathView();
+        Rect r = JMathAnimConfig.getConfig().getCamera().getMathView();
         for (int n = 0; n < mathObjects.length; n++) {
             MathObject obj = mathObjects[n];
             final Anchor.Type reverseAnchor = Anchor.reverseAnchorPoint(exitAnchor);

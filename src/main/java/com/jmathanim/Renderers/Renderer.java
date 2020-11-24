@@ -38,7 +38,7 @@ public abstract class Renderer {
 
     public Renderer(JMathAnimScene parentScene) {
         this.scene = parentScene;
-        this.cnf = JMathAnimConfig.getConfig();
+        this.cnf = parentScene.getConfig();
     }
 
     abstract public <T extends Camera> T getCamera();

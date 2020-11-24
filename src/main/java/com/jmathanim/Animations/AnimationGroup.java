@@ -17,6 +17,7 @@
  */
 package com.jmathanim.Animations;
 
+import com.jmathanim.jmathanim.JMathAnimScene;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -87,9 +88,10 @@ public class AnimationGroup extends Animation {
     }
 
     @Override
-    public void initialize() {
+    public void initialize(JMathAnimScene scene) {
+        super.initialize(scene);
         for (Animation anim : animations) {
-            anim.initialize();
+            anim.initialize(scene);
         }
     }
 

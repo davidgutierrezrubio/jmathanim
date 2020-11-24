@@ -17,6 +17,7 @@
  */
 package com.jmathanim.Animations;
 
+import com.jmathanim.jmathanim.JMathAnimScene;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -75,9 +76,10 @@ public class Concatenate extends Animation {
     }
 
     @Override
-    public void initialize() {
+    public void initialize(JMathAnimScene scene) {
+        super.initialize(scene);
         //Initialize the first...
-        animations.get(0).initialize();
+        animations.get(0).initialize(scene);
     }
 
     @Override
@@ -90,7 +92,7 @@ public class Concatenate extends Animation {
             animations.get(currentAnim).finishAnimation();
             currentAnim++;
             if (currentAnim < this.animations.size()) {
-                animations.get(currentAnim).initialize();
+                animations.get(currentAnim).initialize(scene);
                 resul = false;
             }
         }

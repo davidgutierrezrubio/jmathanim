@@ -100,7 +100,8 @@ public class TransformMathExpression extends Animation {
     }
 
     @Override
-    public void initialize() {
+    public void initialize(JMathAnimScene scene) {
+        super.initialize(scene);
         scene.remove(latexTransformed);
         HashMap<String, int[]> or = trParOrigGroups;
         HashMap<String, int[]> dst = trParDstGroups;
@@ -129,7 +130,7 @@ public class TransformMathExpression extends Animation {
             createAddingSubAnimation(sh, addInDstParameters.get(n));
         }
 
-        anim.initialize();
+        anim.initialize(scene);
 //        scene.add(mshOrig);
     }
 
@@ -144,16 +145,16 @@ public class TransformMathExpression extends Animation {
                 anim.add(Commands.shrinkOut(runTime, sh));
                 break;
             case MOVE_OUT_UP:
-                anim.add(Commands.moveOut(runTime, scene, Anchor.Type.UPPER, sh));
+                anim.add(Commands.moveOut(runTime, Anchor.Type.UPPER, sh));
                 break;
             case MOVE_OUT_LEFT:
-                anim.add(Commands.moveOut(runTime, scene, Anchor.Type.LEFT, sh));
+                anim.add(Commands.moveOut(runTime, Anchor.Type.LEFT, sh));
                 break;
             case MOVE_OUT_RIGHT:
-                anim.add(Commands.moveOut(runTime, scene, Anchor.Type.RIGHT, sh));
+                anim.add(Commands.moveOut(runTime, Anchor.Type.RIGHT, sh));
                 break;
             case MOVE_OUT_DOWN:
-                anim.add(Commands.moveOut(runTime, scene, Anchor.Type.LOWER, sh));
+                anim.add(Commands.moveOut(runTime, Anchor.Type.LOWER, sh));
                 break;
         }
     }
@@ -167,16 +168,16 @@ public class TransformMathExpression extends Animation {
                 anim.add(Commands.growIn(runTime, sh));
                 break;
             case MOVE_IN_UP:
-                anim.add(Commands.moveIn(runTime, scene, Anchor.Type.UPPER, sh));
+                anim.add(Commands.moveIn(runTime, Anchor.Type.UPPER, sh));
                 break;
             case MOVE_IN_LEFT:
-                anim.add(Commands.moveIn(runTime, scene, Anchor.Type.LEFT, sh));
+                anim.add(Commands.moveIn(runTime, Anchor.Type.LEFT, sh));
                 break;
             case MOVE_IN_RIGHT:
-                anim.add(Commands.moveIn(runTime, scene, Anchor.Type.RIGHT, sh));
+                anim.add(Commands.moveIn(runTime, Anchor.Type.RIGHT, sh));
                 break;
             case MOVE_IN_DOWN:
-                anim.add(Commands.moveIn(runTime, scene, Anchor.Type.LOWER, sh));
+                anim.add(Commands.moveIn(runTime, Anchor.Type.LOWER, sh));
                 break;
         }
         toDelete.add(sh);
@@ -206,10 +207,6 @@ public class TransformMathExpression extends Animation {
             double L = 4 * (1 - par.getAlphaMult());
             Animation changeAlpha = new Animation(runTime) {
                 @Override
-                public void initialize() {
-                }
-
-                @Override
                 public void doAnim(double t) {
                     double lt = 1 - t * (1 - t) * L;
                     sh.fillAlpha(lt * sh.mp.getFillColor().alpha);
@@ -227,9 +224,6 @@ public class TransformMathExpression extends Animation {
             //Parabola parameter so that mininum reaches at (.5,par.getAlphaMult())
             double L = 4 * (1 - par.getScale());
             Animation changeScale = new Animation(runTime) {
-                @Override
-                public void initialize() {
-                }
 
                 @Override
                 public void doAnim(double t) {

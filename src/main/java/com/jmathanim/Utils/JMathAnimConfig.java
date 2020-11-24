@@ -233,7 +233,7 @@ public class JMathAnimConfig {
 
         MODrawProperties latexDefaultMP = defaultMP.copy();
         latexDefaultMP.setFillColor(JMColor.WHITE);
-        defaultMP.setFillAlpha(1);//Latex formulas are filled by default
+        latexDefaultMP.setFillAlpha(1);//Latex formulas are filled by default
         styles.put("latexdefault", latexDefaultMP);
     }
 

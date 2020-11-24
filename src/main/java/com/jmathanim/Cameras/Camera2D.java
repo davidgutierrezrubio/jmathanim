@@ -19,6 +19,7 @@
 package com.jmathanim.Cameras;
 
 import com.jmathanim.Utils.Vec;
+import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.MathObject;
 
 /**
@@ -32,13 +33,9 @@ public class Camera2D extends Camera {
 
     private double xminB, xmaxB, yminB, ymaxB;//Backup values for saveState()
 
-    public Camera2D() {
-        this(0, 0);//To initialize after
-    }
 
-    public Camera2D(int screenWidth, int screenHeight) {
-        this.screenWidth = screenWidth;
-        this.screenHeight = screenHeight;
+    public Camera2D(JMathAnimScene scene,int screenWidth, int screenHeight) {
+      super(scene,screenWidth,screenHeight);
 
     }
 

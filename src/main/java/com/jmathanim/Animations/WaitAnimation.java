@@ -19,6 +19,8 @@
 
 package com.jmathanim.Animations;
 
+import com.jmathanim.jmathanim.JMathAnimScene;
+
 /**
  * Simple animation which does nothing
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
@@ -27,10 +29,6 @@ public class WaitAnimation extends Animation{
 
     public WaitAnimation(double runTime) {
         super(runTime);
-    }
-
-    @Override
-    public void initialize() {
     }
 
     @Override

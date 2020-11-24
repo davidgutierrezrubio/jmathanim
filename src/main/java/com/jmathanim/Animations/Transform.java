@@ -38,6 +38,7 @@ import com.jmathanim.mathobjects.Shape;
  */
 public class Transform extends Animation {
 
+
     public enum TransformMethod {
         INTERPOLATE_SIMPLE_SHAPES_BY_POINT,
         INTERPOLATE_POINT_BY_POINT,
@@ -54,7 +55,6 @@ public class Transform extends Animation {
     private boolean shouldOptimizePathsFirst;
     public boolean forceChangeDirection;
     private boolean isFinished;
-//    private JMathAnimScene scene;
     private Animation transformStrategy;
 
     public static Transform make(double runTime, MathObject ob1, MathObject ob2) {
@@ -73,7 +73,8 @@ public class Transform extends Animation {
     }
 
     @Override
-    public void initialize() {
+    public void initialize(JMathAnimScene scene) {
+        super.initialize(scene);
         //Determine optimal transformation
 
         //Should use an homothecy instead of point-to-point interpolation 
@@ -94,7 +95,7 @@ public class Transform extends Animation {
         //Variable strategy should have proper strategy to transform
         //If method is null means that user didn't force one
         transformStrategy.setLambda(lambda);
-        transformStrategy.initialize();
+        transformStrategy.initialize(scene);
 
     }
 

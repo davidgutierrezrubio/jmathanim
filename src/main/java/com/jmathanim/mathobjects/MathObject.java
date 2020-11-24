@@ -74,7 +74,6 @@ public abstract class MathObject implements Drawable, Updateable, Stateable {
     public boolean visible = true;
     public Point absoluteAnchorPoint;
     private Type absoluteAnchorType = Type.BY_CENTER;
-    private JMathAnimScene scene;
 
     public MathObject() {
         this(null);
@@ -83,25 +82,6 @@ public abstract class MathObject implements Drawable, Updateable, Stateable {
     public MathObject(MODrawProperties prop) {
         mp = JMathAnimConfig.getConfig().getDefaultMP();//Default MP values
         mp.copyFrom(prop);//Copy all non-null values from prop
-    }
-
-    /**
-     * Returns the scene where this object is added to
-     *
-     * @return The scene
-     */
-    public JMathAnimScene getScene() {
-        return scene;
-    }
-
-    /**
-     * Sets the scene where this object has been added. This method should be
-     * called from the JMathAnimScene.add method
-     *
-     * @param scene Scene where has been added
-     */
-    public void setScene(JMathAnimScene scene) {
-        this.scene = scene;
     }
 
     /**
@@ -531,7 +511,7 @@ public abstract class MathObject implements Drawable, Updateable, Stateable {
      * @return The current object
      */
     public final <T extends MathObject> T stackToScreen(Type anchorType) {
-        return stackToScreen(anchorType, 0, 0);
+        return stackToScreen(anchorType,  0, 0);
     }
 
     /**
@@ -540,11 +520,12 @@ public abstract class MathObject implements Drawable, Updateable, Stateable {
      *
      * @param <T> Mathobject subclass
      * @param anchorType {@link Anchor} type
+     * @param scene Scene where the main view is
      * @param xMargin x margin
      * @param yMargin y margin
      * @return The current object
      */
-    public <T extends MathObject> T stackToScreen(Type anchorType, double xMargin, double yMargin) {
+    public <T extends MathObject> T stackToScreen(Type anchorType,  double xMargin, double yMargin) {
         Point B = Anchor.getScreenAnchorPoint(anchorType, xMargin, yMargin);
         Point A = Anchor.getAnchorPoint(this, anchorType);
         return this.shift(A.to(B));
@@ -651,6 +632,7 @@ public abstract class MathObject implements Drawable, Updateable, Stateable {
 
     /**
      * Sets the linecap style, using one of the styles of StrokeLineCap
+     *
      * @param <T> MathObject subclass
      * @param strokeLineCap Style of linecap
      * @return The object
@@ -690,8 +672,7 @@ public abstract class MathObject implements Drawable, Updateable, Stateable {
 
     @Override
     public String toString() {
-        return "mobj" + label+" "+mp.getLayer();
+        return "mobj" + label + " " + mp.getLayer();
     }
-    
 
 }

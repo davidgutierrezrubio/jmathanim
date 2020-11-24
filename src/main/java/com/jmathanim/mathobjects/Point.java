@@ -145,8 +145,8 @@ public class Point extends MathObject {
      * @param scene The scene where to create the Point
      * @return The created point
      */
-    public static Point random(JMathAnimScene scene) {
-        Rect r = scene.getCamera().getMathView();
+    public static Point random() {
+        Rect r = JMathAnimConfig.getConfig().getCamera().getMathView();
         double x = r.xmin + (r.xmax - r.xmin) * Math.random();
         double y = r.ymin + (r.ymax - r.ymin) * Math.random();
         return new Point(x, y);

@@ -20,6 +20,7 @@ package com.jmathanim.Animations.Strategies.Transform;
 import com.jmathanim.Animations.Animation;
 import com.jmathanim.Animations.Strategies.Transform.Optimizers.DivideEquallyStrategy;
 import com.jmathanim.Utils.JMColor;
+import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.CanonicalJMPath;
 import com.jmathanim.mathobjects.JMPath;
 import com.jmathanim.mathobjects.JMPathPoint;
@@ -52,7 +53,8 @@ public class PointInterpolationCanonical extends Animation {
     }
 
     @Override
-    public void initialize() {
+    public void initialize(JMathAnimScene scene) {
+        super.initialize(scene);
         ArrayList<MathObject> ob = scene.getObjects();
         //This is the initialization for the point-to-point interpolation
         //Prepare paths. Firs, I ensure they have the same number of points

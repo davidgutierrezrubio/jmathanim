@@ -100,10 +100,10 @@ public class Java2DAwtRenderer extends Renderer {
     public Java2DAwtRenderer(JMathAnimScene parentScene) {
         super(parentScene);
         //Main Camera
-        camera = new Camera2D(cnf.mediaW * scaleBufferedImage, cnf.mediaH * scaleBufferedImage);
+        camera = new Camera2D(parentScene,cnf.mediaW * scaleBufferedImage, cnf.mediaH * scaleBufferedImage);
         //The Fixed camera it is not intended to change. It is used to display fixed-size objects
         //like heads of arrows, dot symbols or text
-        fixedCamera = new Camera2D(cnf.mediaW * scaleBufferedImage, cnf.mediaH * scaleBufferedImage);
+        fixedCamera = new Camera2D(parentScene,cnf.mediaW * scaleBufferedImage, cnf.mediaH * scaleBufferedImage);
 
         fixedCamera.setMathXY(XMIN_DEFAULT, XMAX_DEFAULT, 0);
         camera.setMathXY(XMIN_DEFAULT, XMAX_DEFAULT, 0);
@@ -284,7 +284,7 @@ public class Java2DAwtRenderer extends Renderer {
 
     @Override
     public void clear() {
-        g2dFinalImage.setColor(JMathAnimConfig.getConfig().getBackgroundColor().getAwtColor());
+        g2dFinalImage.setColor(scene.getConfig().getBackgroundColor().getAwtColor());
         g2dFinalImage.fillRect(0, 0, cnf.mediaW, cnf.mediaH);
 
         //Draw background image, if any

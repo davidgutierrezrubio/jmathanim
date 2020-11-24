@@ -18,6 +18,7 @@
 package com.jmathanim.Animations.Strategies.Transform;
 
 import com.jmathanim.Animations.Animation;
+import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.FunctionGraph;
 
 /**
@@ -36,7 +37,8 @@ public class FunctionSimpleInterpolateTransform extends Animation {
     }
 
     @Override
-    public void initialize() {
+    public void initialize(JMathAnimScene scene) {
+        super.initialize(scene);
         scene.add(gfObj);
     }
 

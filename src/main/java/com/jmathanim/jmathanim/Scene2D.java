@@ -37,7 +37,7 @@ public abstract class Scene2D extends JMathAnimScene {
 
     @Override
     void createRenderer() {
-        fps = config.fps;
+        fps = getConfig().fps;
         dt = 1. / fps;
         try {
             renderer = new JavaFXRenderer(this);

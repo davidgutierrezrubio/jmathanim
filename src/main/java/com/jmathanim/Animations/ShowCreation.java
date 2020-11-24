@@ -70,14 +70,15 @@ public class ShowCreation extends Animation {
     }
 
     @Override
-    public void initialize() {
+    public void initialize(JMathAnimScene scene) {
+        super.initialize(scene);
         try {
             if (strategyType == ShowCreationStrategy.NONE) {
                 determineCreationStrategy(this.mobj);
             }
             createStrategy();
             creationStrategy.setLambda(lambda);
-            creationStrategy.initialize();
+            creationStrategy.initialize(scene);
         } catch (NullPointerException | ClassCastException e) {
             JMathAnimScene.logger.error("Couldn't create ShowCreation strategy for " + this.mobj.getClass().getCanonicalName() + ". Animation will not be done. (" + e.toString() + ")");
         }

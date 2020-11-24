@@ -39,7 +39,6 @@ import java.util.ArrayList;
  */
 public class PlayAnim {
 
-    private JMathAnimScene scene;
     /**
      * Default runtime for ShowCreation methods (in seconds)
      */
@@ -68,6 +67,7 @@ public class PlayAnim {
      * Default runtime for camera methods (in seconds)
      */
     public double defaultRunTimeCamera = 2;
+    private final JMathAnimScene scene;
 
     public PlayAnim(JMathAnimScene scene) {
         this.scene = scene;
@@ -143,12 +143,13 @@ public class PlayAnim {
     }
 
     public void moveOut(double runtime, Anchor.Type exitAnchor, MathObject... mathObjects) {
-        scene.playAnimation(Commands.moveOut(runtime, scene, exitAnchor, mathObjects));
+        scene.playAnimation(Commands.moveOut(runtime, exitAnchor, mathObjects));
     }
-     public void moveIn(double runtime, Anchor.Type exitAnchor, MathObject... mathObjects) {
-        scene.playAnimation(Commands.moveIn(runtime, scene, exitAnchor, mathObjects));
+
+    public void moveIn(double runtime, Anchor.Type exitAnchor, MathObject... mathObjects) {
+        scene.playAnimation(Commands.moveIn(runtime, exitAnchor, mathObjects));
     }
-    
+
     /**
      * Overloaded method. Animation that moves specified objects with a vector
      *

@@ -17,6 +17,7 @@
  */
 package com.jmathanim.Animations;
 
+import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.MathObject;
 
 /**
@@ -49,8 +50,9 @@ public class Highlight extends Animation {
     }
 
     @Override
-    public void initialize() {
-        scale.initialize();
+    public void initialize(JMathAnimScene scene) {
+        super.initialize(scene);
+        scale.initialize(scene);
     }
 
     @Override

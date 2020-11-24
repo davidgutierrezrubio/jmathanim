@@ -18,7 +18,6 @@
 package com.jmathanim.Animations;
 
 import com.jmathanim.Animations.Strategies.Transform.Optimizers.OptimizePathsStrategy;
-import com.jmathanim.Utils.JMathAnimConfig;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.MathObject;
 import java.util.function.DoubleUnaryOperator;
@@ -54,7 +53,7 @@ public abstract class Animation {
     /**
      * Scene where this animation belongs
      */
-    protected final JMathAnimScene scene;
+    protected JMathAnimScene scene;
     /**
      * Optimization strategy to apply before performing the animation, if any
      */
@@ -118,7 +117,7 @@ public abstract class Animation {
     public Animation(double runTime) {
         this.runTime = runTime;
         this.useObjectState = true;
-        scene = JMathAnimConfig.getConfig().getScene();
+//        scene = JMathAnimConfig.getConfig().getScene();
         lambda = (x) -> lambdaDefault(x, .9d);
     }
 
@@ -145,8 +144,8 @@ public abstract class Animation {
             return true;
         }
         if (!isInitialized) { //If not initalized, do it now
-            isInitialized = true;
-            setFps(JMathAnimConfig.getConfig().fps);
+            JMathAnimScene.logger.error("Animation " + this.getClass().getCanonicalName() + " not initialized. Animation will not be done");
+            return true;
         }
         boolean resul;
 //        if (frame < numFrames || t < 1 + dt) {
@@ -169,10 +168,16 @@ public abstract class Animation {
     }
 
     /**
-     * Initialize animation. This method should be called immediately before
+     * Initialize animation.This method should be called immediately before
      * playing
+     *
+     * @param scene Scene where the animation is invoked from.
      */
-    abstract public void initialize();
+    public void initialize(JMathAnimScene scene) {
+        this.scene = scene;
+        setFps(scene.getConfig().fps);
+        this.isInitialized = true;
+    }
 
     /**
      * Executes one frame of the animation, given by the time t, from 0 to 1
@@ -254,9 +259,10 @@ public abstract class Animation {
             }
         }
     }
-  /**
-     * Restore state of all given mathobjects. If the useObjectState flag is set to
-     * false, this method does nothing
+
+    /**
+     * Restore state of all given mathobjects. If the useObjectState flag is set
+     * to false, this method does nothing
      *
      * @param mathObjects MathObjects to restore state (varargs)
      */

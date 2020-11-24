@@ -18,6 +18,7 @@
 package com.jmathanim.Animations.Strategies.ShowCreation;
 
 import com.jmathanim.Animations.Animation;
+import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.Line;
 import com.jmathanim.mathobjects.Shape;
 
@@ -40,11 +41,12 @@ public class LineCreationAnimation extends Animation {
     }
 
     @Override
-    public void initialize() {
+    public void initialize(JMathAnimScene scene) {
+        super.initialize(scene);
         segment = line.toSegment(scene.getCamera());
         anim = new SimpleShapeCreationAnimation(this.runTime, segment);
         anim.setLambda(lambda);
-        anim.initialize();
+        anim.initialize(scene);
         scene.remove(line);
         scene.add(segment);
 

@@ -106,9 +106,9 @@ public class JavaFXRenderer extends Renderer {
 
     public JavaFXRenderer(JMathAnimScene parentScene) throws Exception {
         super(parentScene);
-        camera = new CameraFX2D(cnf.mediaW, cnf.mediaH);
+        camera = new CameraFX2D(parentScene, cnf.mediaW, cnf.mediaH);
         camera.setMathXY(XMIN_DEFAULT, XMAX_DEFAULT, 0);
-        fixedCamera = new CameraFX2D(cnf.mediaW, cnf.mediaH);
+        fixedCamera = new CameraFX2D(parentScene, cnf.mediaW, cnf.mediaH);
         fixedCamera.setMathXY(XMIN_DEFAULT, XMAX_DEFAULT, 0);
 
         fxnodes = new ArrayList<>();
@@ -166,7 +166,7 @@ public class JavaFXRenderer extends Renderer {
                 groupRoot.getChildren().add(group);
                 groupRoot.getChildren().add(groupDebug);
                 fxScene = new Scene(groupRoot, cnf.mediaW, cnf.mediaW);
-                fxScene.setFill(JMathAnimConfig.getConfig().getBackgroundColor().getFXColor());
+                fxScene.setFill(cnf.getBackgroundColor().getFXColor());
                 StandaloneSnapshot.FXStarter.stage.setScene(fxScene);
                 //Proof with perspective camera
                 fxCamera = new PerspectiveCamera();
@@ -234,7 +234,7 @@ public class JavaFXRenderer extends Renderer {
                 }
                 //Snapshot parameters
                 final SnapshotParameters params = new SnapshotParameters();
-                params.setFill(JMathAnimConfig.getConfig().getBackgroundColor().getFXColor());
+                params.setFill(cnf.getBackgroundColor().getFXColor());
                 params.setViewport(new Rectangle2D(0, 0, cnf.mediaW, cnf.mediaH));
                 params.setCamera(fxScene.getCamera());
 
@@ -454,16 +454,15 @@ public class JavaFXRenderer extends Renderer {
         Text t = new Text(text);
         t.setFont(new Font(16));
         Bounds b1 = t.getLayoutBounds();
-        t.setX(xy[0]-.5*b1.getWidth());
-        t.setY(xy[1]+.5*b1.getHeight());
-        
-        
+        t.setX(xy[0] - .5 * b1.getWidth());
+        t.setY(xy[1] + .5 * b1.getHeight());
+
         Bounds b = t.getLayoutBounds();
-        double gap=2;
-        Rectangle rectangle = new Rectangle(b.getMinX()-gap, b.getMinY()-gap, b.getWidth()+gap, b.getHeight()+gap);
+        double gap = 2;
+        Rectangle rectangle = new Rectangle(b.getMinX() - gap, b.getMinY() - gap, b.getWidth() + gap, b.getHeight() + gap);
         rectangle.setFill(Color.LIGHTBLUE);
         rectangle.setStroke(Color.DARKBLUE);
-        
+
         debugFXnodes.add(rectangle);
         debugFXnodes.add(t);
     }

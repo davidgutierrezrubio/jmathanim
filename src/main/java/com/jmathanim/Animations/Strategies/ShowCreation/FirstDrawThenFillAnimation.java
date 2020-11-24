@@ -130,14 +130,15 @@ public class FirstDrawThenFillAnimation extends Animation {
     }
 
     @Override
-    public void initialize() {
+    public void initialize(JMathAnimScene scene) {
+        super.initialize(scene);
         anim = createAnimation(obj, runtime);
         if (anim == null) {
             JMathAnimScene.logger.error("Could'n crate FirstDrawThenFillAnimation for object type " + obj.getClass().getCanonicalName() + ". Animation will not be performed");
         }
         obj.mp.getFillColor().alpha = 0; //Sets alpha to 0, to first draw objects without filling
         anim.setLambda(lambda);
-        anim.initialize();
+        anim.initialize(scene);
     }
 
     @Override

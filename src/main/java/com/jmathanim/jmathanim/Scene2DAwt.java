@@ -37,7 +37,7 @@ public abstract class Scene2DAwt extends JMathAnimScene {
 
     @Override
     public void createRenderer(){
-        fps = config.fps;
+        fps = getConfig().fps;
         dt=1./fps;
         renderer2d = new Java2DAwtRenderer(this);
         camera=renderer2d.getCamera();

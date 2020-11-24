@@ -18,6 +18,7 @@
 package com.jmathanim.Animations.Strategies.ShowCreation;
 
 import com.jmathanim.Animations.Animation;
+import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.CanonicalJMPath;
 import com.jmathanim.mathobjects.JMPath;
 import com.jmathanim.mathobjects.MultiShapeObject;
@@ -41,14 +42,15 @@ public class SimpleShapeCreationAnimation extends Animation {
     }
 
     @Override
-    public void initialize() {
+    public void initialize(JMathAnimScene scene) {
+        super.initialize(scene);
         canonPath = mobj.jmpath.canonicalForm();
-        
+
         //Create multishape with all canonical components and a copy of drawing attributes
         //This will be drawed instead of mobj during the ShowCreation animation
         msh = canonPath.createMultiShape(this.mobj);
-         for (int n = 0; n < msh.shapes.size(); n++) {
-             msh.get(n).label="msh"+n;
+        for (int n = 0; n < msh.shapes.size(); n++) {
+            msh.get(n).label = "msh" + n;
         }
         mobj.visible(false);
         scene.add(msh);
