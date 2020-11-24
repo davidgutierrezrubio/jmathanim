@@ -649,6 +649,7 @@ public class Commands {
 
             @Override
             public void finishAnimation() {
+                restoreStates(mathObjects);//Restore original alphas in case of reutilization
                 scene.remove(mathObjects);
             }
         };
