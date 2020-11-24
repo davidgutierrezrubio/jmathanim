@@ -28,14 +28,14 @@ import com.jmathanim.mathobjects.Shape;
  *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
-public class RotateAndScaleXYStrategyTransform extends Animation {
+public class RotateAndScaleXYTransform extends Animation {
 
     private final Shape mobjDestiny;
     private final Shape mobjTransformed;
     private MODrawProperties mpBase;
     Point A, B, C, D, E, F;
 
-    public RotateAndScaleXYStrategyTransform(double runtime, Shape mobjTransformed, Shape mobjDestiny) {
+    public RotateAndScaleXYTransform(double runtime, Shape mobjTransformed, Shape mobjDestiny) {
         super(runtime);
         this.mobjTransformed = mobjTransformed;
         this.mobjDestiny = mobjDestiny;

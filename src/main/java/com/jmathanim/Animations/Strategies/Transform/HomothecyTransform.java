@@ -28,14 +28,14 @@ import com.jmathanim.mathobjects.Shape;
  *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
-public class HomothecyStrategyTransform extends Animation {
+public class HomothecyTransform extends Animation {
     
     Animation anim;
     private final Shape mobjTransformed;
     private final Shape mobjDestiny;
     private final MODrawProperties mpBase;
     
-    public HomothecyStrategyTransform(double runtime, Shape mobjTransformed, Shape mobjDestiny) {
+    public HomothecyTransform(double runtime, Shape mobjTransformed, Shape mobjDestiny) {
         super(runtime);
         this.mobjTransformed = mobjTransformed;
         this.mobjDestiny = mobjDestiny;

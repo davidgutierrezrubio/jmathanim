@@ -18,12 +18,12 @@
 package com.jmathanim.Animations;
 
 import com.jmathanim.Animations.Strategies.Transform.FunctionSimpleInterpolateTransform;
-import com.jmathanim.Animations.Strategies.Transform.HomothecyStrategyTransform;
+import com.jmathanim.Animations.Strategies.Transform.HomothecyTransform;
 import com.jmathanim.Animations.Strategies.Transform.MultiShapeTransform;
 import com.jmathanim.Animations.Strategies.Transform.Optimizers.NullOptimizationStrategy;
 import com.jmathanim.Animations.Strategies.Transform.PointInterpolationCanonical;
 import com.jmathanim.Animations.Strategies.Transform.PointInterpolationSimpleShapeTransform;
-import com.jmathanim.Animations.Strategies.Transform.RotateAndScaleXYStrategyTransform;
+import com.jmathanim.Animations.Strategies.Transform.RotateAndScaleXYTransform;
 import com.jmathanim.Utils.MODrawProperties;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.FunctionGraph;
@@ -171,10 +171,10 @@ public class Transform extends Animation {
                 transformStrategy = new PointInterpolationCanonical(runTime, (Shape) mobjTransformed, (Shape) mobjDestiny);
                 break;
             case HOMOTHECY_TRANSFORM:
-                transformStrategy = new HomothecyStrategyTransform(runTime, (Shape) mobjTransformed, (Shape) mobjDestiny);
+                transformStrategy = new HomothecyTransform(runTime, (Shape) mobjTransformed, (Shape) mobjDestiny);
                 break;
             case ROTATE_AND_SCALEXY_TRANSFORM:
-                transformStrategy = new RotateAndScaleXYStrategyTransform(runTime, (Shape) mobjTransformed, (Shape) mobjDestiny);
+                transformStrategy = new RotateAndScaleXYTransform(runTime, (Shape) mobjTransformed, (Shape) mobjDestiny);
                 break;
             case FUNCTION_INTERPOLATION:
                 transformStrategy = new FunctionSimpleInterpolateTransform(runTime, (FunctionGraph) mobjTransformed, (FunctionGraph) mobjDestiny);
