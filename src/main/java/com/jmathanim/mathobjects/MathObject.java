@@ -507,10 +507,10 @@ public abstract class MathObject implements Drawable, Updateable, Stateable {
     /**
      * Stack the object to another using a specified anchor.
      *
-     * @param <T>
+     * @param <T> Mathobject subclass
      * @param obj
-     * @param anchorType
-     * @return
+     * @param anchorType {@link Anchor} type
+     * @return The current object
      */
     public final <T extends MathObject> T stackTo(MathObject obj, Type anchorType) {
         return stackTo(obj, anchorType, 0);
@@ -526,7 +526,7 @@ public abstract class MathObject implements Drawable, Updateable, Stateable {
     /**
      * Stack the object to the given anchor, relative to the current camera view
      *
-     * @param <T> Mathobject to stack
+     * @param <T> Mathobject subclass
      * @param anchorType {@link Anchor} type
      * @return The current object
      */
@@ -538,7 +538,7 @@ public abstract class MathObject implements Drawable, Updateable, Stateable {
      * Stack the object to the given anchor, relative to the current camera
      * view, applying the specified margins.
      *
-     * @param <T> Mathobject to stack
+     * @param <T> Mathobject subclass
      * @param anchorType {@link Anchor} type
      * @param xMargin x margin
      * @param yMargin y margin
@@ -550,19 +550,58 @@ public abstract class MathObject implements Drawable, Updateable, Stateable {
         return this.shift(A.to(B));
     }
 
+    /**
+     * Shifts the object so that its anchor point locates at the specified
+     * location
+     *
+     * @param <T> Mathobject subclass
+     * @param p Destination point
+     * @param anchorType {@link Anchor} type
+     * @return The current object
+     */
     public final <T extends MathObject> T putAt(Point p, Type anchorType) {
         return putAt(p, anchorType, 0);
     }
 
+    /**
+     * Shifts the object so that its anchor point locates at the specified
+     * location, leaving a gap between the destination point and the anchor
+     * point.
+     *
+     * @param <T> Mathobject subclass
+     * @param p Destination point
+     * @param anchorType {@link Anchor} type
+     * @param gap gap between anchor and destination point
+     * @return The current object
+     */
     public <T extends MathObject> T putAt(Point p, Type anchorType, double gap) {
         Point anchorPoint = Anchor.getAnchorPoint(this, anchorType, gap);
         return shift(anchorPoint.to(p));
     }
 
+    /**
+     * Marks this object with the absolute size flag. In this case, it will be
+     * drawn using a fixed camera, so that it will appear with the same size
+     * regardless of the zoom applied to the camera. The center of the object
+     * will be used as reference point to position the object.
+     *
+     * @param <T> Mathobject subclass
+     * @return The current object
+     */
     public <T extends MathObject> T setAbsoluteSize() {
         return setAbsoluteSize(Type.BY_CENTER);
     }
 
+    /**
+     * Marks this object with the absolute size flag.In this case, it will be
+     * drawn using a fixed camera, so that it will appear with the same size
+     * regardless of the zoom applied to the camera. The specified anchor will
+     * be used as reference point to position the object.
+     *
+     * @param <T> Mathobject subclass
+     * @param anchorType {@link Anchor} type
+     * @return The current object
+     */
     public <T extends MathObject> T setAbsoluteSize(Type anchorType) {
         absoluteSize = true;
         absoluteAnchorType = anchorType;
@@ -610,6 +649,12 @@ public abstract class MathObject implements Drawable, Updateable, Stateable {
         return (T) this;
     }
 
+    /**
+     * Sets the linecap style, using one of the styles of StrokeLineCap
+     * @param <T> MathObject subclass
+     * @param strokeLineCap Style of linecap
+     * @return The object
+     */
     public <T extends MathObject> T linecap(StrokeLineCap strokeLineCap) {
         this.mp.linecap = strokeLineCap;
         return (T) this;
@@ -633,7 +678,8 @@ public abstract class MathObject implements Drawable, Updateable, Stateable {
     public int getUpdateLevel() {
         return 0;//Default value, objects that need to be updated should override this
     }
-      public boolean isShowDebugText() {
+
+    public boolean isShowDebugText() {
         return debugText;
     }
 
@@ -641,6 +687,5 @@ public abstract class MathObject implements Drawable, Updateable, Stateable {
         this.debugText = debugText;
         return (T) this;
     }
-    
-    
+
 }

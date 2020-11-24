@@ -63,9 +63,18 @@ public class TransformMathExpression extends Animation {
     private final HashMap<String, int[]> trParDstGroups;
     private final HashMap<String, String> trParMaps;
     private final HashMap<String, TransformMathExpressionParameters> trParTransformParameters;
-    private final HashMap<Integer, TransformMathExpressionParameters> removeInOrig;
-    private final HashMap<Integer, TransformMathExpressionParameters> addInDst;
+    private final HashMap<Integer, TransformMathExpressionParameters> removeInOrigParameters;
+    private final HashMap<Integer, TransformMathExpressionParameters> addInDstParameters;
 
+    /**
+     * Creates a new animation that transforms a math expression into another.
+     * Fine-tuning of the animation can be donde with the map, mapRange,
+     * defineDstGroup and defineOrigGroup commands.
+     *
+     * @param runTime Time in seconds
+     * @param latexTransformed Original math expression
+     * @param latexDestiny Destiny math expression
+     */
     public TransformMathExpression(double runTime, LaTeXMathObject latexTransformed, LaTeXMathObject latexDestiny) {
         super(runTime);
         this.latexTransformed = latexTransformed;
@@ -80,13 +89,13 @@ public class TransformMathExpression extends Animation {
         trParDstGroups = new HashMap<>();
         trParMaps = new HashMap<>();
         trParTransformParameters = new HashMap<>();
-        removeInOrig = new HashMap<>();
-        addInDst = new HashMap<>();
+        removeInOrigParameters = new HashMap<>();
+        addInDstParameters = new HashMap<>();
         for (int n = 0; n < this.latexTransformed.size(); n++) {
-            removeInOrig.put(n, new TransformMathExpressionParameters());
+            removeInOrigParameters.put(n, new TransformMathExpressionParameters());
         }
         for (int n = 0; n < this.latexDestiny.size(); n++) {
-            addInDst.put(n, new TransformMathExpressionParameters());
+            addInDstParameters.put(n, new TransformMathExpressionParameters());
         }
     }
 
@@ -100,24 +109,24 @@ public class TransformMathExpression extends Animation {
             String name2 = maps.get(name1);
 
             if (true) {
-                Shape sh1 = getShapeForGroup(or, name1, latexTransformed, removeInOrig);
-                Shape sh2 = getShapeForGroup(dst, name2, latexDestiny, addInDst);
+                Shape sh1 = getShapeForGroup(or, name1, latexTransformed, removeInOrigParameters);
+                Shape sh2 = getShapeForGroup(dst, name2, latexDestiny, addInDstParameters);
                 createTransformSubAnimation(sh1, sh2, trParTransformParameters.get(name1));
             } else {
                 //For each of the shapes of a origin group, makes a transform animation 
                 //The destiny will be one merged shape of all shapes of destiny group
-                for (Shape sh : getShapeListForGroup(or, name1, latexTransformed, removeInOrig)) {
-                    Shape sh2 = getShapeForGroup(dst, name2, latexDestiny, addInDst);
+                for (Shape sh : getShapeListForGroup(or, name1, latexTransformed, removeInOrigParameters)) {
+                    Shape sh2 = getShapeForGroup(dst, name2, latexDestiny, addInDstParameters);
                     createTransformSubAnimation(sh, sh2, trParTransformParameters.get(name1));
                 }
             }
         }
-        for (int n : removeInOrig.keySet()) {
-            createRemovingSubAnimation(n, removeInOrig.get(n));
+        for (int n : removeInOrigParameters.keySet()) {
+            createRemovingSubAnimation(n, removeInOrigParameters.get(n));
         }
-        for (int n : addInDst.keySet()) {
+        for (int n : addInDstParameters.keySet()) {
             Shape sh = latexDestiny.get(n);
-            createAddingSubAnimation(sh, addInDst.get(n));
+            createAddingSubAnimation(sh, addInDstParameters.get(n));
         }
 
         anim.initialize();
@@ -193,6 +202,7 @@ public class TransformMathExpression extends Animation {
             group.add(rotation);
         }
         if (par.getAlphaMult() != 1) {
+            //Parabola parameter so that mininum reaches at (.5,par.getAlphaMult())
             double L = 4 * (1 - par.getAlphaMult());
             Animation changeAlpha = new Animation(runTime) {
                 @Override
@@ -214,6 +224,7 @@ public class TransformMathExpression extends Animation {
             group.add(changeAlpha);
         }
         if (par.getScale() != 1) {
+            //Parabola parameter so that mininum reaches at (.5,par.getAlphaMult())
             double L = 4 * (1 - par.getScale());
             Animation changeScale = new Animation(runTime) {
                 @Override
@@ -280,15 +291,44 @@ public class TransformMathExpression extends Animation {
         }
     }
 
+    /**
+     * Maps ith-element of original formula to the jth-element destiny formula.
+     * Current transform will be done via the Transform method, interpolating
+     * point by point. It will return an associated
+     * TransformMathExpressionParameters instance so that effects can be added
+     * to the transform.
+     *
+     * @param i ith-element of original formula
+     * @param j jth-element of the destiny formula.
+     * @return Associated transform parameter, to add effects.
+     */
     public TransformMathExpressionParameters map(int i, int j) {
         return map(defineOrigGroup("_" + i, i), defineDstGroup("_" + j, j));
 
     }
 
+    /**
+     * Overloaded method. Maps the origin group defined with the given name to
+     * the jth-element of destiny formula.
+     *
+     * @param name Name of the origin group previously defined
+     * @param j jth-element of the destiny formula.
+     * @return Associated transform parameter, to add effects.
+     */
     public TransformMathExpressionParameters map(String name, int j) {
         return map(name, defineDstGroup("_" + j, j));
     }
 
+    /**
+     * Maps i1,i1+1,i1+2,...,i2 to j,j+1,j+2,...j+(i2-i1). Returns a
+     * TransformMathExpressionParametersArray to add uniformly the same effects
+     * to all maps created
+     *
+     * @param i1 First origin index to map (included)
+     * @param i2 Last origin index to map (included)
+     * @param j First destiny index to map
+     * @return Associated array transform parameter, to add effects.
+     */
     public TransformMathExpressionParametersArray mapRange(int i1, int i2, int j) {
         TransformMathExpressionParametersArray ar = new TransformMathExpressionParametersArray();
         for (int n = 0; n <= i2 - i1; n++) {
@@ -300,41 +340,72 @@ public class TransformMathExpression extends Animation {
         return ar;
     }
 
-//    public TransformMathExpressionParameters getOrigTransformParameters(int n) {
-//        return removeInOrig.get(n);
-//    }
-//
-//    public TransformMathExpressionParameters getDstTransformParameters(int n) {
-//        return addInDst.get(n);
-//    }
+    /**
+     * Overloaded method. Maps the origin group defined with the given name to
+     * the jth-element of destiny formula.
+     *
+     * @param i ith-element of original formula
+     * @param name Name of the destiny group previously defined
+     * @return Associated transform parameter, to add effects.
+     */
     public TransformMathExpressionParameters map(int i, String name) {
         return map(defineOrigGroup("_" + i, i), name);
     }
 
-    public TransformMathExpressionParameters map(String gr1, String gr2) {
-        trParMaps.put(gr1, gr2);
+    /**
+     * Overloaded method.Maps the origin group defined with the given name to
+     * the specified destiny group.
+     *
+     * @param origName Name of the origin group previously defined
+     * @param dstName Name of the destiny group previously defined
+     * @return Associated transform parameter, to add effects.
+     */
+    public TransformMathExpressionParameters map(String origName, String dstName) {
+        trParMaps.put(origName, dstName);
         TransformMathExpressionParameters par = new TransformMathExpressionParameters();
-        trParTransformParameters.put(gr1, par);
+        trParTransformParameters.put(origName, par);
         return par;
 
     }
 
+    /**
+     * Sets the removing style for the specified origin indices marked for
+     * removal
+     *
+     * @param type One of the enum RemoveType: FADE_OUT, SHRINK_OUT,
+     * MOVE_OUT_UP, MOVE_OUT_LEFT, MOVE_OUT_RIGHT, MOVE_OUT_DOWN
+     * @param indices varargs origin indices
+     */
     public void setRemovingStyle(RemoveType type, int... indices) {
         for (int i : indices) {
-            if (removeInOrig.containsKey(i)) {
-                removeInOrig.get(i).setRemovingStyle(type);
+            if (removeInOrigParameters.containsKey(i)) {
+                removeInOrigParameters.get(i).setRemovingStyle(type);
             }
         }
     }
 
+    /**
+     * Sets the adding style for the specified destiny indices marked for adding
+     *
+     * @param type One of the enum AddTyp: FADE_IN, GROW_IN, MOVE_IN_UP,
+     * MOVE_IN_LEFT, MOVE_IN_RIGHT, MOVE_IN_DOWN
+     * @param indices varargs origin indices
+     */
     public void setAddingStyle(AddType type, int... indices) {
         for (int i : indices) {
-            if (addInDst.containsKey(i)) {
-                addInDst.get(i).setAddingStyle(type);
+            if (addInDstParameters.containsKey(i)) {
+                addInDstParameters.get(i).setAddingStyle(type);
             }
         }
     }
 
+    /**
+     * Define a group of origin indices
+     *
+     * @param name Name of the group
+     * @param indices varargs of origin indices
+     * @return The name of the group created
+     */
     public String defineOrigGroup(String name, int... indices) {
 
         for (int i : indices) {
@@ -347,6 +418,13 @@ public class TransformMathExpression extends Animation {
         return name;
     }
 
+    /**
+     * Define a group of destiny indices
+     *
+     * @param name Name of the group
+     * @param indices varargs of destiny indices
+     * @return The name of the group created
+     */
     public String defineDstGroup(String name, int... indices) {
 
         for (int i : indices) {
@@ -359,7 +437,7 @@ public class TransformMathExpression extends Animation {
         return name;
     }
 
-    public String belongsToAnOrigGroup(int index) {
+    private String belongsToAnOrigGroup(int index) {
         for (String p : trParOrigGroups.keySet()) {
             int[] li = trParOrigGroups.get(p);
             for (int n = 0; n < li.length; n++) {
@@ -371,7 +449,7 @@ public class TransformMathExpression extends Animation {
         return "";
     }
 
-    public String belongsToADstGroup(int index) {
+    private String belongsToADstGroup(int index) {
         for (String p : trParDstGroups.keySet()) {
             List<int[]> ar = Arrays.asList(trParDstGroups.get(p));
             if (ar.contains(index)) {
@@ -379,24 +457,5 @@ public class TransformMathExpression extends Animation {
             }
         }
         return "";
-    }
-
-    public int[][] createMatrix() {
-        int[][] resul = new int[trParSizeDst][trParSizeOrig];
-
-        for (String name1 : trParMaps.keySet()) {
-            String name2 = trParMaps.get(name1);
-            int[] gr1 = trParOrigGroups.get(name1);
-            int[] gr2 = trParDstGroups.get(name2);
-
-            for (int i : gr1) {
-                for (int j : gr2) {
-                    resul[j][i] = 1;
-                }
-            }
-
-        }
-
-        return resul;
     }
 }

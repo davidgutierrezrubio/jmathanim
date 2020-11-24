@@ -288,7 +288,8 @@ public class MathObjectGroup extends MathObject implements Iterable<MathObject> 
     @Override
     public void interpolateMPFrom(MODrawProperties mpDst, double alpha) {
         for (int n = 0; n < objects.size(); n++) {
-            objects.get(n).interpolateMPFrom(mpDst, alpha);
+            MathObject obj = objects.get(n);
+            obj.mp.interpolateFrom(obj.mp, mpDst, alpha);
         }
     }
 
