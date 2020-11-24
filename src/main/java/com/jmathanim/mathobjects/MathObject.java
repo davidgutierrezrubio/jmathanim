@@ -520,7 +520,6 @@ public abstract class MathObject implements Drawable, Updateable, Stateable {
      *
      * @param <T> Mathobject subclass
      * @param anchorType {@link Anchor} type
-     * @param scene Scene where the main view is
      * @param xMargin x margin
      * @param yMargin y margin
      * @return The current object

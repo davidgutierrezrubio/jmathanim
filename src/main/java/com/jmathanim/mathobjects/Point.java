@@ -142,7 +142,6 @@ public class Point extends MathObject {
      * Static builder.Creates and returns a new point at random coordinates,
      * inside the math view.
      *
-     * @param scene The scene where to create the Point
      * @return The created point
      */
     public static Point random() {
