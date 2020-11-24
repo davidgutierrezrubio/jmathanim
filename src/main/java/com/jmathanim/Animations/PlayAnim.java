@@ -67,6 +67,14 @@ public class PlayAnim {
      * Default runtime for camera methods (in seconds)
      */
     public double defaultRunTimeCamera = 2;
+    /**
+     * Default runtime for move out methods (in seconds)
+     */
+    public double defaultRunTimeMoveOut = 1;
+    /**
+     * Default runtime for move in methods (in seconds)
+     */
+    public double defaultRunTimeMoveIn = 1;
     private final JMathAnimScene scene;
 
     public PlayAnim(JMathAnimScene scene) {
@@ -120,9 +128,10 @@ public class PlayAnim {
 
     /**
      * Animates all the objects in the scene, setting their alpha (draw and
-     * fill) from current to 0, using default runtime. Then remove the objects
-     * to the scene. This method is mostly used as a transition between parts of
-     * a scene, as it clears the scene completely.
+     * fill) from current to 0, using default runtime
+     * {@link defaultRunTimefadeOut}. Then remove the objects to the scene. This
+     * method is mostly used as a transition between parts of a scene, as it
+     * clears the scene completely.
      *
      */
     public void fadeOutAll() {
@@ -131,9 +140,9 @@ public class PlayAnim {
 
     /**
      * Animates all the objects in the scene, setting their alpha (draw and
-     * fill) from current to 0, using given runtime.Then remove the objects to
-     * the scene. This method is mostly used as a transition between parts of a
-     * scene, as it clears the scene completely.
+     * fill) from current to 0, using specified runtime.Then remove the objects
+     * to the scene. This method is mostly used as a transition between parts of
+     * a scene, as it clears the scene completely.
      *
      * @param runtime Duration in seconds
      */
@@ -156,6 +165,19 @@ public class PlayAnim {
     }
 
     /**
+     * Shift the specified objects out of the math view and removes them from
+     * the scene.The duration of the animation is the value stored in
+     * {@link defaultRunTimeMoveOut}.
+     *
+     * @param exitAnchor Exit, given by a Anchor constant. For example
+     * Anchor.UPPER will move the objects to the upper side of the math view.
+     * @param mathObjects Mathobjects to animate (varargs)
+     */
+    public void moveOut(Anchor.Type exitAnchor, MathObject... mathObjects) {
+        scene.playAnimation(Commands.moveOut(defaultRunTimeMoveOut, exitAnchor, mathObjects));
+    }
+
+    /**
      * Shift the specified objects from an outer point of the math view to their
      * original position, adding them to the scene.
      *
@@ -166,6 +188,19 @@ public class PlayAnim {
      */
     public void moveIn(double runtime, Anchor.Type enterAnchor, MathObject... mathObjects) {
         scene.playAnimation(Commands.moveIn(runtime, enterAnchor, mathObjects));
+    }
+
+    /**
+     * Shift the specified objects from an outer point of the math view to their
+     * original position, adding them to the scene. The duration of the
+     * animation is the value stored in {@link defaultRunTimeMoveIn}.
+     *
+     * @param enterAnchor Enter point, given by a Anchor constant. For example
+     * Anchor.UPPER will move the objects from the upper side of the math view.
+     * @param mathObjects Mathobjects to animate (varargs)
+     */
+    public void moveIn(Anchor.Type enterAnchor, MathObject... mathObjects) {
+        scene.playAnimation(Commands.moveIn(defaultRunTimeMoveIn, enterAnchor, mathObjects));
     }
 
     /**
