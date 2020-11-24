@@ -95,7 +95,6 @@ public class Commands {
                 double lt = lambda.applyAsDouble(t);
                 restoreStates(mathObjects);
                 for (MathObject obj : mathObjects) {
-//                    double before=obj.mp.thickness;
                     double scax = 1 - lt + scalex * lt;
                     double scay = 1 - lt + scaley * lt;
                     double scaz = 1 - lt + scalez * lt;
@@ -104,7 +103,6 @@ public class Commands {
                     } else {
                         obj.scale(obj.getCenter(), scax, scay, scaz);
                     }
-//                    System.out.println(before+"-->"+obj.mp.thickness+"   scale: "+scax);
                 }
             }
 

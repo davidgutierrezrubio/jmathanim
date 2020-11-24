@@ -59,10 +59,7 @@ public class FirstDrawThenFillAnimation extends Animation {
         super();
         this.obj = obj;
         this.runtime = runtime;
-        anim = createAnimation(obj, runtime);
-        if (anim == null) {
-            JMathAnimScene.logger.error("Could'n crate FirstDrawThenFillAnimation for object type " + obj.getClass().getCanonicalName() + ". Animation will not be performed");
-        }
+
     }
 
     @Override
@@ -134,6 +131,10 @@ public class FirstDrawThenFillAnimation extends Animation {
 
     @Override
     public void initialize() {
+        anim = createAnimation(obj, runtime);
+        if (anim == null) {
+            JMathAnimScene.logger.error("Could'n crate FirstDrawThenFillAnimation for object type " + obj.getClass().getCanonicalName() + ". Animation will not be performed");
+        }
         obj.mp.getFillColor().alpha = 0; //Sets alpha to 0, to first draw objects without filling
         anim.setLambda(lambda);
         anim.initialize();
@@ -147,7 +148,6 @@ public class FirstDrawThenFillAnimation extends Animation {
     public void finishAnimation() {
         anim.finishAnimation();
     }
-
 
     public double getTimegap() {
         return timegap;

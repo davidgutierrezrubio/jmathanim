@@ -113,6 +113,7 @@ public class Shape extends MathObject {
         }
         resul.absoluteSize = this.absoluteSize;
         resul.setObjectType(this.getObjectType());//Copy object type
+        resul.label=this.label+"_copy";
         return resul;
     }
 

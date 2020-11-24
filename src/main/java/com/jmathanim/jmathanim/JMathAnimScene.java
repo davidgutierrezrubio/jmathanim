@@ -226,6 +226,9 @@ public abstract class JMathAnimScene {
      */
     public synchronized final void add(MathObject... objs) {
         for (MathObject obj : objs) {
+            if (obj.mp.getLayer()==0)
+            {
+            }
             if (!objects.contains(obj)) {
                 if (obj instanceof MathObjectGroup) {
                     for (MathObject subobj : ((MathObjectGroup) obj).getObjects()) {
@@ -293,7 +296,6 @@ public abstract class JMathAnimScene {
                 obj.draw(renderer);
             }
         }
-
     }
 
     /**

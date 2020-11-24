@@ -120,38 +120,13 @@ public class PointInterpolationCanonical extends Animation {
 
     @Override
     public void finishAnimation() {
-//        for (int numConnected = 0; numConnected < this.connectedDst.getNumberOfPaths(); numConnected++) {
-////        for (int numConnected = 0; numConnected < 1; numConnected++) {
-//            JMPath convertedPath = connectedOrigin.get(numConnected);
-//            JMPath toPath = connectedDst.get(numConnected);
-//
-//            for (int n = 0; n < convertedPath.size(); n++) {
-//                JMPathPoint p1 = convertedPath.getJMPoint(n);
-//                JMPathPoint p2 = toPath.getJMPoint(n);
-//                p1.type = p2.type;
-//                p1.isCurved = p2.isCurved;
-//                p1.isThisSegmentVisible = p2.isThisSegmentVisible;
-//                p1.cp1vBackup = p2.cp1vBackup;
-//                p1.cp2vBackup = p2.cp2vBackup;
-//            }
-//        }
-////        //Now I should remove all interpolation auxilary points
-////        mobjTransformed.removeInterpolationPoints();
-////        System.out.println(mobjTransformed);
-////        mobjDestiny.removeInterpolationPoints();
-//
-//        JMPath pa = connectedDst.toJMPath();
-//        pa.removeInterpolationPoints();
         mobjTransformed.jmpath.clear();
         mobjTransformed.jmpath.addPointsFrom(mobjDestinyOrig.getPath());
         mobjTransformed.mp.copyFrom(mobjDestinyOrig.mp);
         mobjTransformed.absoluteSize = mobjDestinyOrig.absoluteSize;
-//        scene.add(mobjTransformed);
         for (Shape shapesToRemove : addedAuxiliaryObjectsToScene) {
             scene.remove(shapesToRemove);
         }
-//        mobjTransformed.visible=false;
-//        scene.add(mobjDestinyOrig);
     }
 
     /**
@@ -172,7 +147,6 @@ public class PointInterpolationCanonical extends Animation {
         }
         //Mark all points as curved during the transform
         for (int numConnected = 0; numConnected < this.connectedDst.getNumberOfPaths(); numConnected++) {
-//        for (int numConnected = 0; numConnected < 1; numConnected++) {
             JMPath convertedPath = connectedOrigin.get(numConnected);
             for (JMPathPoint p : convertedPath.jmPathPoints) {
                 p.isCurved = true;

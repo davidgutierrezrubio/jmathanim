@@ -462,7 +462,7 @@ public class SVGMathObject extends MultiShapeObject {
                                 previousPoint = pathCubicBezier(resul, previousPoint, cx1, cy1, cx2, cy2, currentX, currentY);
                                 break;
                             default:
-                                System.out.println("Unknow repeated command: <" + token + ">");
+                                JMathAnimScene.logger.warn("Unknow repeated command: <" + token + ">");
 
                         }
 

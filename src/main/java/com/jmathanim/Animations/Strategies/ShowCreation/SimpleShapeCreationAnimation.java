@@ -43,9 +43,13 @@ public class SimpleShapeCreationAnimation extends Animation {
     @Override
     public void initialize() {
         canonPath = mobj.jmpath.canonicalForm();
+        
         //Create multishape with all canonical components and a copy of drawing attributes
         //This will be drawed instead of mobj during the ShowCreation animation
         msh = canonPath.createMultiShape(this.mobj);
+         for (int n = 0; n < msh.shapes.size(); n++) {
+             msh.get(n).label="msh"+n;
+        }
         mobj.visible(false);
         scene.add(msh);
 //        scene.add(mobj);

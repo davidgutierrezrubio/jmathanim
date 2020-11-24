@@ -37,6 +37,7 @@ public class CanonicalJMPath {
     public MultiShapeObject createMultiShape(MathObject obj) {
         MODrawProperties mpCopy = obj.mp.copy();
         MultiShapeObject msh = new MultiShapeObject();
+        msh.mp.copyFrom(mpCopy);
         for (JMPath p : paths) {
             final Shape shape = new Shape(p.copy(), mpCopy);
             msh.addShape(shape);
@@ -155,4 +156,9 @@ public class CanonicalJMPath {
         }
         return resul;
  }
+
+    public int size() {
+        return paths.size();
+    }
+ 
 }

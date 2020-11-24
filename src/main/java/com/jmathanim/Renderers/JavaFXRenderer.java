@@ -256,7 +256,6 @@ public class JavaFXRenderer extends Renderer {
             if ((frameCount % cnf.fps) == 0) {
                 newLineCounter++;
                 newLineCounter = 0;
-                System.out.println("[" + 1d * frameCount / cnf.fps + "s]");
             }
             videoEncoder.writeFrame(bi, frameCount);
         }

@@ -235,7 +235,6 @@ public class TransformMathExpression extends Animation {
                 public void doAnim(double t) {
                     double lt = 1 - t * (1 - t) * L;
                     sh.scale(lt);
-                    System.out.println(lt);
                 }
 
                 @Override

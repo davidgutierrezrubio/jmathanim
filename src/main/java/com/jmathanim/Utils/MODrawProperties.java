@@ -53,7 +53,7 @@ public class MODrawProperties implements Stateable {
     //to ensure zoom or resolution doesn't affect the result
     public Boolean absoluteThickness = true;
     public DashStyle dashStyle = DashStyle.SOLID;
-    private Integer layer = 0;
+    private Integer layer = null;
     public Boolean fillColorIsDrawColor = false; //If true, fillColor is always overriden by drawColor
 
     //Styles used for specified objects
@@ -261,7 +261,10 @@ public class MODrawProperties implements Stateable {
         return resul;
     }
 
-    public int getLayer() {
+    public Integer getLayer() {
+        if (layer == null) {//If null, sets default value 0
+            layer = 0;
+        }
         return layer;
     }
 

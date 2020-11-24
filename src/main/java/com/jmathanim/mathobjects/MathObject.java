@@ -632,7 +632,7 @@ public abstract class MathObject implements Drawable, Updateable, Stateable {
      *
      * @return The layer number
      */
-    public int getLayer() {
+    public Integer getLayer() {
         return mp.getLayer();
     }
 
@@ -687,5 +687,11 @@ public abstract class MathObject implements Drawable, Updateable, Stateable {
         this.debugText = debugText;
         return (T) this;
     }
+
+    @Override
+    public String toString() {
+        return "mobj" + label+" "+mp.getLayer();
+    }
+    
 
 }

@@ -234,9 +234,7 @@ public class Java2DAwtRenderer extends Renderer {
                         double tiempo = (1.d / cnf.fps) * 1000;
                         try {
                             long tiempoPasado = timeElapsedInNanoSeconds / 1000000;
-//                System.out.println("Tiempo pasado en milisegundos: " + tiempoPasado);
                             long delay = (long) (tiempo - tiempoPasado);
-//                System.out.println("delay " + delay);
                             if (delay > 0) {
                                 Thread.sleep(delay);
                             }
@@ -474,9 +472,6 @@ public class Java2DAwtRenderer extends Renderer {
 
     public Path2D.Double createPathFromJMPath(Shape mobj, JMPath c, Camera2D cam) {
         Path2D.Double resul = new Path2D.Double();
-//        JMPath c=cd.distille();
-//        System.out.println("Path   :"+cd);
-//        System.out.println("PathDes:"+c);
         Vec p = c.getJMPoint(0).p.v;
 
         if (DEBUG_PATH_POINTS) {
@@ -578,8 +573,6 @@ public class Java2DAwtRenderer extends Renderer {
         double width1 = camera.getMathView().getWidth();
         int[] ms = camera.mathToScreen(v);
         double[] coords = fixedCamera.screenToMath(ms[0], ms[1]);
-//        System.out.println(width1 + ",   " + v + "    MS(" + ms[0] + ", " + ms[1] + ")");
-
         return new Vec(coords[0], coords[1]);
 
     }
