@@ -6,7 +6,7 @@ JMathAnim is a Java library using Maven as deployment tool. As as result, you ca
 
 ![image-20201110145052433](01_Install.png)
 
-2) Set the name of the project. The Artifact, group id, version and package are not really necessary if you don't intend to publish this a repository. Select "Finish" and the project will be created.
+2) Set the name of the project. The Artifact, group id, version and package are not really necessary if you don't intend to publish this to a repository. Select "Finish" and the project will be created.
 
 ![image-20201110145157629](02_Install.png)
 
@@ -29,7 +29,7 @@ If you want the released version, add
     <dependency>
         <groupId>com.github.davidgutierrezrubio</groupId>
         <artifactId>JMathAnim</artifactId>
-        <version>0.8.5</version>
+        <version>0.8.4</version>
     </dependency>
 </dependencies>
 ```
