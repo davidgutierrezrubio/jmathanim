@@ -38,6 +38,7 @@ public class AnchoredMathObject implements Updateable {
     private MathObject dstObject;
     private Type anchorMethodFrom;
     private Type anchorMethodTo;
+    private double gap;
 
     public AnchoredMathObject(MathObject mobj, Point refPoint, MathObject dstObject) {
         this(mobj, refPoint, dstObject, Type.BY_CENTER);
@@ -64,6 +65,14 @@ public class AnchoredMathObject implements Updateable {
         anchorMethodTo = methodTo;
     }
 
+    public double getGap() {
+        return gap;
+    }
+
+    public void setGap(double gap) {
+        this.gap = gap;
+    }
+
     @Override
     public int getUpdateLevel() {
         return Math.max(Math.max(this.mobj.getUpdateLevel(), refPoint.getUpdateLevel()), dstObject.getUpdateLevel())+1;
@@ -78,7 +87,7 @@ public class AnchoredMathObject implements Updateable {
         if (anchorMethodFrom == Type.BY_POINT) {
             src = refPoint;
         } else {
-            src = Anchor.getAnchorPoint(mobj, anchorMethodFrom);
+            src = Anchor.getAnchorPoint(mobj, anchorMethodFrom,gap);
         }
         Vec v = src.to(dst);
 

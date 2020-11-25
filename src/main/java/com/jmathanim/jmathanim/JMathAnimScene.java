@@ -32,6 +32,7 @@ import com.jmathanim.mathobjects.Shape;
 import com.jmathanim.mathobjects.updateableObjects.Updateable;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.logging.Level;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -62,6 +63,12 @@ public abstract class JMathAnimScene {
      * List of objects which needs to be updated (not necessarily drawn)
      */
     final ArrayList<Updateable> objectsToBeUpdated;
+
+    /**
+     * List of objects which needs to be removed immediately after rendering
+     */
+    final ArrayList<Updateable> objectsToBeRemoved;
+
     /**
      * Renderer to perform drawings
      */
@@ -109,6 +116,7 @@ public abstract class JMathAnimScene {
         config = JMathAnimConfig.getConfig();
         config.setLowQuality();
         objectsToBeUpdated = new ArrayList<>();
+        objectsToBeRemoved = new ArrayList<>();
         play = new PlayAnim(this);//Convenience class for fast access to common animations
         config.setOutputFileName(this.getClass().getSimpleName());
     }
@@ -221,6 +229,17 @@ public abstract class JMathAnimScene {
     }
 
     /**
+     * Adds the objects to scene but mark them for removal immediately after the
+     * frame is drawn. This method is used mostly for frame-by-frame animations
+     *
+     * @param objs Objects to be drawn
+     */
+    public void drawOnce(MathObject... objs) {
+        add(objs);
+        objectsToBeRemoved.addAll(Arrays.asList(objs));
+    }
+
+    /**
      * Add the specified MathObjects to the scene
      *
      * @param objs Mathobjects (varargs)
@@ -292,6 +311,10 @@ public abstract class JMathAnimScene {
                 obj.draw(renderer);
             }
         }
+        
+        //Now remove all marked objects from the scene
+        remove((MathObject[]) objectsToBeRemoved.toArray(new MathObject[objectsToBeRemoved.size()]));
+        objectsToBeRemoved.clear();
     }
 
     /**

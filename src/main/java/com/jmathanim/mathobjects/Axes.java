@@ -31,46 +31,61 @@ import java.util.ArrayList;
 public class Axes extends MathObject {
 
     public Line xAxis, yAxis;
-    ArrayList<Shape> xticks;
-    ArrayList<Shape> yticks;
-    ArrayList<MultiShapeObject> xticksLegend;
-    ArrayList<MultiShapeObject> yticksLegend;
+    private final ArrayList<Shape> xticks;
+    private final ArrayList<Shape> yticks;
+    private final ArrayList<MultiShapeObject> xticksLegend;
+    private final ArrayList<MultiShapeObject> yticksLegend;
     public static final double TICK_LENGTH = .02;
-    public static final double TICKS_SCALE = .3;
+    public double ticksScale = .3;
     public static final double LEGEND_TICKS_GAP = .05;
 
     public Axes() {
-        generateAxis();
-    }
-
-    private void generateAxis() {
-        xAxis = Line.make(Point.at(0, 0), Point.at(1, 0)).style("axisdefault");
-        yAxis = Line.make(Point.at(0, 0), Point.at(0, 1)).style("axisdefault");
         xticks = new ArrayList<>();
         yticks = new ArrayList<>();
         xticksLegend = new ArrayList<>();
         yticksLegend = new ArrayList<>();
-        for (int n = -5; n <= 5; n++) {
-            final Shape xtick = Shape.segment(Point.at(n, -TICK_LENGTH), Point.at(n, TICK_LENGTH)).style("axistickdefault");
-            xtick.setAbsoluteSize(Anchor.Type.BY_CENTER);
-            xticks.add(xtick);
+        xAxis = Line.make(Point.at(0, 0), Point.at(1, 0)).style("axisdefault");
+        yAxis = Line.make(Point.at(0, 0), Point.at(0, 1)).style("axisdefault");
+    }
 
-            final Shape ytick = Shape.segment(Point.at(-TICK_LENGTH, n), Point.at(TICK_LENGTH, n)).style("axistickdefault");;
-            ytick.setAbsoluteSize(Anchor.Type.BY_CENTER);
-            yticks.add(ytick);
-
-            if (n != 0) {
-                final LaTeXMathObject xtickLegend = LaTeXMathObject.make("$" + n + "$").style("axislegenddefault").scale(TICKS_SCALE);
-                xtickLegend.stackTo(xtick, Anchor.Type.LOWER, LEGEND_TICKS_GAP);
-                xtickLegend.setAbsoluteSize(Anchor.Type.UPPER);
-                xticksLegend.add(xtickLegend);
-                final LaTeXMathObject ytickLegend = LaTeXMathObject.make("$" + n + "$").style("axislegenddefault").scale(TICKS_SCALE);
-                ytickLegend.stackTo(ytick, Anchor.Type.RIGHT, LEGEND_TICKS_GAP);
-                ytickLegend.setAbsoluteSize(Anchor.Type.LEFT);
-                yticksLegend.add(ytickLegend);
-            }
-
+    public void generateXTicks(double start, double finish, double step) {
+        for (double x = start; x < finish; x += step) {
+            addXTicksLegend(x);
         }
+    }
+     public void generateYTicks(double start, double finish, double step) {
+        for (double y = start; y < finish; y += step) {
+            addYTicksLegend(y);
+        }
+    }
+
+    public void addYTicksLegend(double y) {
+        addYTicksLegend("$" + y + "$", y);
+    }
+
+    public void addYTicksLegend(String latex, double y) {
+        final Shape ytick = Shape.segment(Point.at(-TICK_LENGTH, y), Point.at(TICK_LENGTH, y)).style("axistickdefault");;
+        ytick.setAbsoluteSize(Anchor.Type.BY_CENTER);
+        yticks.add(ytick);
+
+        final LaTeXMathObject ytickLegend = LaTeXMathObject.make(latex).style("axislegenddefault").scale(ticksScale);
+        ytickLegend.stackTo(ytick, Anchor.Type.RIGHT, LEGEND_TICKS_GAP);
+        ytickLegend.setAbsoluteSize(Anchor.Type.LEFT);
+        yticksLegend.add(ytickLegend);
+    }
+
+    public void addXTicksLegend(double x) {
+        addXTicksLegend("$" + x + "$", x);
+    }
+
+    public void addXTicksLegend(String latex, double x) {
+        final Shape xtick = Shape.segment(Point.at(x, -TICK_LENGTH), Point.at(x, TICK_LENGTH)).style("axistickdefault");
+        xtick.setAbsoluteSize(Anchor.Type.BY_CENTER);
+        xticks.add(xtick);
+        final LaTeXMathObject xtickLegend = LaTeXMathObject.make(latex).style("axislegenddefault").scale(ticksScale);
+        xtickLegend.stackTo(xtick, Anchor.Type.LOWER, LEGEND_TICKS_GAP);
+        xtickLegend.setAbsoluteSize(Anchor.Type.UPPER);
+        xticksLegend.add(xtickLegend);
     }
 
     @Override
@@ -78,12 +93,10 @@ public class Axes extends MathObject {
         return Point.at(0, 0);
     }
 
-
     @Override
     public <T extends MathObject> T copy() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-
 
     @Override
     public Rect getBoundingBox() {
@@ -121,6 +134,22 @@ public class Axes extends MathObject {
     @Override
     public void update(JMathAnimScene scene) {
         //TODO: Adding or removing ticks should be done here
+    }
+
+    public Line getxAxis() {
+        return xAxis;
+    }
+
+    public Line getyAxis() {
+        return yAxis;
+    }
+
+    public double getTicksScale() {
+        return ticksScale;
+    }
+
+    public void setTicksScale(double ticksScale) {
+        this.ticksScale = ticksScale;
     }
 
 }

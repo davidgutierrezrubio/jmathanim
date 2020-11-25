@@ -41,7 +41,7 @@ public class FunctionGraph extends Shape {
         /**
          * Function is defined by a lambda expresion, like (x)-&gt;Math.sin(x)
          */
-        LAMBDA 
+        LAMBDA
     }
 
     public DoubleUnaryOperator function;
@@ -52,6 +52,10 @@ public class FunctionGraph extends Shape {
     public static FunctionGraph make(DoubleUnaryOperator function) {
         Rect r = JMathAnimConfig.getConfig().getCamera().getMathView();
         return new FunctionGraph(function, r.xmin, r.xmax);
+    }
+
+    public static FunctionGraph make(DoubleUnaryOperator function, double xmin, double xmax) {
+        return new FunctionGraph(function, xmin,xmax);
     }
 
     public FunctionGraph(DoubleUnaryOperator function, double xmin, double xmax) {
