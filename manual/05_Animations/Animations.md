@@ -4,7 +4,7 @@ So far, we’ve learned to draw basic objects, and put them in the position we d
 
 An `Animation` object has 3 important methods that should be understood if you want to implement your own animations or playing it manually with the `advanceFrame()` method 
 
--   The `initialize()` method, which prepares the objects to be animated. It should be called immediately before the animation begins, that is, no modifications should be done to the objects between this method and the start of the animation.
+-   The `initialize(this)` method, which prepares the objects to be animated. It should be called immediately before the animation begins, that is, no modifications should be done to the objects between this method and the start of the animation. The only parameter it needs is the scene from where it is invoked, usually the own class, `this`.
 -   The `processAnimation`this method computes the time depending on the frame rate, and calls the next method. If the animation is finished, return `true`.
 -   The `doAnim(double t)` method. This method actually performs the animation. The parameter `t` ranges from 0 to 1 where 0 is the beginning and 1 is the end. This is not actually the time, but the percentage of animation done. A second parameter computed is a "smoothed" version of the parameter `t`, where a smooth function is applied so that the animation starts and ends in a soft way, rather than with the lineal `t`. Currently, the smooth function used is
 
@@ -20,7 +20,7 @@ An `Animation` object can be played with the `playAnimation` method, but there i
 
 ````java
 Animation anim=<define here the animation>
-anim.initialize();
+anim.initialize(this);
 while (!anim.processAnimation()) {
     advanceFrame();
 }
@@ -199,7 +199,7 @@ waitSeconds(1);
 
 In the case of a simple shape like this, the `SIMPLE_SHAPE_CREATION` strategy is used.
 
-In case of `MultiShape` objects, which include `LaTeXMathObject` and `SVGObject`, the strategy `FIRST_DRAW_AND_THEN_FILL`, where, as its name
+In case of `MultiShape` objects, which include `LaTeXMathObject` and `SVGObject`, the strategy `FIRST_DRAW_AND_THEN_FILL` is chosen, where, as its name
 suggest, first draw the outline and then fill the shape.
 
 ``` java
