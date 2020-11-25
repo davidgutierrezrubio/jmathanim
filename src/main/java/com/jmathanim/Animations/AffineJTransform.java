@@ -22,7 +22,6 @@ import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.Arrow2D;
 import com.jmathanim.mathobjects.JMPathPoint;
 import com.jmathanim.mathobjects.Line;
-import com.jmathanim.mathobjects.MOProperties.MathObjectAttributes;
 import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.MathObjectGroup;
 import com.jmathanim.mathobjects.MultiShapeObject;
@@ -253,7 +252,6 @@ public class AffineJTransform {
             for (MathObject obj : mobj.getObjects()) {
                 applyTransform(obj);
             }
-            applyTransformToAttributes(mObject);
             return;
         }
 
@@ -262,14 +260,12 @@ public class AffineJTransform {
             for (Shape obj : mobj.shapes) {
                 applyTransform(obj);
             }
-            applyTransformToAttributes(mObject);
             return;
         }
         if (mObject instanceof Line) {
             Line mobj = (Line) mObject;
             applyTransform(mobj.getP1());
             applyTransform(mobj.getP2());
-            applyTransformToAttributes(mObject);
             applyTransformsToDrawingProperties(mObject);
             return;
         }
@@ -279,14 +275,12 @@ public class AffineJTransform {
             for (int n = 0; n < size; n++) {
                 applyTransform(mobj.getJMPoint(n));
             }
-            applyTransformToAttributes(mObject);
             applyTransformsToDrawingProperties(mObject);
             return;
         }
 
         if (mObject instanceof Arrow2D) {
             applyTransform(((Arrow2D) mObject).getBody());
-            applyTransformToAttributes(mObject);
             applyTransformsToDrawingProperties(mObject);
             return;
         }
@@ -302,7 +296,6 @@ public class AffineJTransform {
             jmPDst.cp1.v.copyFrom(cp1Dst.v);
             jmPDst.cp2.v.copyFrom(cp2Dst.v);
 
-            applyTransformToAttributes(mObject);
             applyTransformsToDrawingProperties(mObject);
             return;
         }
@@ -315,18 +308,10 @@ public class AffineJTransform {
             p.v.x = pNew.getEntry(0, 1);
             p.v.y = pNew.getEntry(0, 2);
             p.v.z = pNew.getEntry(0, 3);
-            applyTransformToAttributes(mObject);
             applyTransformsToDrawingProperties(mObject);
             return;
         }
         JMathAnimScene.logger.warn("Don't know how to perform an Affine Transform on object " + mObject.getClass().getName());
-    }
-
-    private void applyTransformToAttributes(MathObject mob) {
-        MathObjectAttributes mo = mob.attrs;
-        if (mo != null) {
-            mo.applyTransform(this);
-        }
     }
 
     private void applyTransformsToDrawingProperties(MathObject mObject) {

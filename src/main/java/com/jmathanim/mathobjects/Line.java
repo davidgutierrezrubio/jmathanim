@@ -191,7 +191,7 @@ public class Line extends Shape {
         computeBoundPoints(cam);
         Point a = bp1.p;
         Point b = bp2.p;
-        Shape segment = Shape.segment(bp1.p, bp2.p);
+        Shape segment = Shape.segment(bp1.p.copy(), bp2.p.copy());
         segment.mp.copyFrom(this.mp);
         return segment;
     }

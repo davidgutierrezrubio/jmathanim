@@ -24,7 +24,6 @@ import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import static com.jmathanim.jmathanim.JMathAnimScene.PI;
-import com.jmathanim.mathobjects.MOProperties.ArcAttributes;
 import java.util.ArrayList;
 
 /**
@@ -108,11 +107,7 @@ public class Shape extends MathObject {
     public Shape copy() {
         final MODrawProperties copy = mp.copy();
         Shape resul = new Shape(jmpath.rawCopy(), copy);
-        if (this.attrs != null) {
-            resul.attrs = this.attrs.copy();
-        }
         resul.absoluteSize = this.absoluteSize;
-        resul.setObjectType(this.getObjectType());//Copy object type
         resul.label=this.label+"_copy";
         return resul;
     }
@@ -218,7 +213,6 @@ public class Shape extends MathObject {
         p1.isThisSegmentVisible = false;
         JMPathPoint p2 = JMPathPoint.lineTo(B);
         obj.jmpath.addJMPoint(p1, p2);
-        obj.setObjectType(MathObjectType.SEGMENT);
         return obj;
     }
 
@@ -230,7 +224,6 @@ public class Shape extends MathObject {
         JMPathPoint p3 = JMPathPoint.lineTo(B);
         JMPathPoint p4 = JMPathPoint.lineTo(A.v.x, B.v.y);
         obj.jmpath.addJMPoint(p1, p2, p3, p4);
-        obj.setObjectType(MathObjectType.RECTANGLE);
         return obj;
     }
 
@@ -257,13 +250,11 @@ public class Shape extends MathObject {
             JMPathPoint p = JMPathPoint.lineTo(newPoint);
             obj.getPath().addJMPoint(p);
         }
-        obj.setObjectType(MathObjectType.REGULAR_POLYGON);
         return obj;
     }
 
     public static Shape arc(double angle) {
         Shape obj = new Shape();
-        obj.attrs = new ArcAttributes(Point.at(0, 0), 1, angle, obj);
         double x1, y1;
         int nSegs = 4;
         int segsForFullCircle = (int) (2 * PI * nSegs / angle);
@@ -284,7 +275,6 @@ public class Shape extends MathObject {
             obj.jmpath.addJMPoint(jmp);
         }
 //        obj.getPath().generateControlPoints();
-        obj.setObjectType(MathObjectType.ARC);
 //        obj.getPath().jmPathPoints.remove(0);
 //        obj.getPath().jmPathPoints.remove(-1);
         obj.getPath().getJMPoint(0).isThisSegmentVisible = false;//Open path
@@ -313,10 +303,6 @@ public class Shape extends MathObject {
             jmp.cp2.copyFrom(cp2);
             obj.jmpath.addJMPoint(jmp);
         }
-//        obj.jmpath.generateControlPoints();
-//        obj.rotate(Math.PI/2);
-
-        obj.setObjectType(MathObjectType.CIRCLE);
         return obj;
     }
 

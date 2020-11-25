@@ -49,7 +49,6 @@ public class MultiShapeObject extends MathObject implements Iterable<Shape> {
         super();
         this.shapes = new ArrayList<>();
         this.shapes.addAll(jmps);
-        this.setObjectType(MathObjectType.MULTISHAPE);
     }
 
     public boolean addShape(Shape e) {

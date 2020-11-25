@@ -70,7 +70,6 @@ public class LaTeXMathObject extends SVGMathObject {
      */
     public LaTeXMathObject(String text) {
         super();
-        this.setObjectType(MathObjectType.LATEX_MULTISHAPE);
         mp.loadFromStyle("latexdefault");
         this.text = text;
 
@@ -92,7 +91,6 @@ public class LaTeXMathObject extends SVGMathObject {
         }
         int n = 0;
         for (Shape sh : shapes) {//label them
-            sh.setObjectType(MathObjectType.LATEX_SHAPE);
             sh.label = String.valueOf(n);
             n++;
             sh.mp.absoluteThickness = true;

@@ -68,7 +68,6 @@ public class FunctionGraph extends Shape {
      * @param numPoints Number of points to calculate
      */
     public FunctionGraph(DoubleUnaryOperator function, double xmin, double xmax, int numPoints) {
-        this.setObjectType(MathObjectType.FUNCTION_GRAPH);
         style("FunctionGraphDefault");//Default style, if any
         this.function = function;
         this.functionBase = function;

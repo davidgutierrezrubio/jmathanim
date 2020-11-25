@@ -26,7 +26,6 @@ import com.jmathanim.Utils.MODrawProperties;
 import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
-import com.jmathanim.mathobjects.MOProperties.MathObjectAttributes;
 import com.jmathanim.mathobjects.updateableObjects.Updateable;
 import javafx.scene.shape.StrokeLineCap;
 
@@ -40,12 +39,6 @@ public abstract class MathObject implements Drawable, Updateable, Stateable {
 
     private boolean debugText;
 
-    public enum MathObjectType {
-        OTHER, POINT, RECTANGLE, CIRCLE, ELLIPSE,
-        ARC, REGULAR_POLYGON, GENERAL_POLYGON, SEGMENT,
-        LINE, MULTISHAPE, LATEX_MULTISHAPE, SVG,
-        LATEX_SHAPE, FUNCTION_GRAPH
-    }
 //    //Implemented types
 //    public static final int OTHER = 0;
 //    public static final int POINT = 1;
@@ -62,15 +55,11 @@ public abstract class MathObject implements Drawable, Updateable, Stateable {
 //    public static final int SVG = 12;
 //    public static final int LATEX_SHAPE = 13;
 //    public static final int FUNCTION_GRAPH = 14;
-
     public MODrawProperties mp;
     public String label = "";
 
-    public MathObjectAttributes attrs;
-
     public boolean absoluteSize = false;
 
-    private MathObjectType objectType;
     public boolean visible = true;
     public Point absoluteAnchorPoint;
     private Type absoluteAnchorType = Type.BY_CENTER;
@@ -297,34 +286,31 @@ public abstract class MathObject implements Drawable, Updateable, Stateable {
     @Override
     public void saveState() {
         mp.saveState();
-        if (this.attrs != null) {
-            this.attrs.saveState();
-        }
     }
 
     @Override
     public void restoreState() {
         mp.restoreState();
-        if (this.attrs != null) {
-            this.attrs.restoreState();
-        }
     }
 
+    /**
+     * Return the current drawing attributes object
+     *
+     * @return The drawing attributes object
+     */
     public MODrawProperties getMp() {
         return mp;
     }
 
+    /**
+     * Copy draw attributes from another one.
+     *
+     * @param <T> Subclass of MathObject that calls the method
+     * @param newMp Drawing properties to be copied
+     * @return This object
+     */
     public <T extends MathObject> T setMp(MODrawProperties newMp) {
         this.mp.copyFrom(newMp);
-        return (T) this;
-    }
-
-    public MathObjectType getObjectType() {
-        return objectType;
-    }
-
-    public final <T extends MathObject> T setObjectType(MathObjectType objectType) {
-        this.objectType = objectType;
         return (T) this;
     }
 
@@ -511,7 +497,7 @@ public abstract class MathObject implements Drawable, Updateable, Stateable {
      * @return The current object
      */
     public final <T extends MathObject> T stackToScreen(Type anchorType) {
-        return stackToScreen(anchorType,  0, 0);
+        return stackToScreen(anchorType, 0, 0);
     }
 
     /**
@@ -524,7 +510,7 @@ public abstract class MathObject implements Drawable, Updateable, Stateable {
      * @param yMargin y margin
      * @return The current object
      */
-    public <T extends MathObject> T stackToScreen(Type anchorType,  double xMargin, double yMargin) {
+    public <T extends MathObject> T stackToScreen(Type anchorType, double xMargin, double yMargin) {
         Point B = Anchor.getScreenAnchorPoint(anchorType, xMargin, yMargin);
         Point A = Anchor.getAnchorPoint(this, anchorType);
         return this.shift(A.to(B));

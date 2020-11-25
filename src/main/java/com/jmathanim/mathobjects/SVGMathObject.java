@@ -72,7 +72,6 @@ public class SVGMathObject extends MultiShapeObject {
     public SVGMathObject(String fname) {
         ResourceLoader rl = new ResourceLoader();
         URL urlImage = rl.getResource(fname, "images");
-        this.setObjectType(MathObjectType.SVG);
         try {
             importSVG(urlImage);
         } catch (Exception ex) {
@@ -83,7 +82,6 @@ public class SVGMathObject extends MultiShapeObject {
     }
 
     public SVGMathObject(URL url) {
-        this.setObjectType(MathObjectType.SVG);
         try {
             importSVG(url);
         } catch (Exception ex) {
