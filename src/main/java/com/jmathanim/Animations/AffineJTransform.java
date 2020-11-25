@@ -617,4 +617,20 @@ public class AffineJTransform {
 
     }
 
+    public static AffineJTransform createRotateScaleXYTransformation(Point A, Point B, Point C, Point D, Point E, Point F, double lambda) {
+        //First map A,B into (0,0) and (1,0)
+        AffineJTransform tr1 = AffineJTransform.createDirect2DHomothecy(A, B, new Point(0, 0), new Point(1, 0), 1);
+
+        //Now I create a transformation that adjust the y-scale, proportionally
+        //This transform will be applied inversely too
+        AffineJTransform tr2 = new AffineJTransform();
+        final double proportionalHeight = (F.to(E).norm() / D.to(E).norm()) / (B.to(C).norm() / B.to(A).norm());
+        tr2.setV2Img(0, proportionalHeight * lambda + (1 - lambda) * 1); //Interpolated here
+
+        //Finally, and homothecy to carry A,B into D,E
+        AffineJTransform tr3 = AffineJTransform.createDirect2DHomothecy(A, B, D, E, lambda);//Interpolated here
+        //The final transformation
+        return tr1.compose(tr2).compose(tr1.getInverse()).compose(tr3);
+    }
+
 }

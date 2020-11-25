@@ -30,6 +30,7 @@ import com.jmathanim.mathobjects.FunctionGraph;
 import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.MathObject.MathObjectType;
 import com.jmathanim.mathobjects.MultiShapeObject;
+import com.jmathanim.mathobjects.Point;
 import com.jmathanim.mathobjects.Shape;
 
 /**
@@ -38,14 +39,13 @@ import com.jmathanim.mathobjects.Shape;
  */
 public class Transform extends Animation {
 
-
     public enum TransformMethod {
         INTERPOLATE_SIMPLE_SHAPES_BY_POINT,
         INTERPOLATE_POINT_BY_POINT,
         HOMOTHECY_TRANSFORM,
         ROTATE_AND_SCALEXY_TRANSFORM,
         FUNCTION_INTERPOLATION,
-        MULTISHAPE_TRANSFORM
+        MULTISHAPE_TRANSFORM, GENERAL_AFFINE_TRANSFORM
     }
 
     public final MathObject mobjDestiny;
@@ -100,62 +100,40 @@ public class Transform extends Animation {
     }
 
     private void determineTransformStrategy() {
-        transformMethod = TransformMethod.INTERPOLATE_POINT_BY_POINT;//Default method if not specified
         if ((mobjTransformed instanceof MultiShapeObject) && (mobjDestiny instanceof MultiShapeObject)) {
             transformMethod = TransformMethod.MULTISHAPE_TRANSFORM;
-            JMathAnimScene.logger.info("Transform method: Multishape");
             return;
         }
         if ((mobjTransformed instanceof FunctionGraph) && (mobjDestiny instanceof FunctionGraph)) {
             transformMethod = TransformMethod.FUNCTION_INTERPOLATION;
-            JMathAnimScene.logger.info("Transform method: Interpolation of functions");
             return;
-        }
-        if ((mobjTransformed.getObjectType() == MathObjectType.SEGMENT) && (mobjDestiny.getObjectType() == MathObjectType.SEGMENT)) {
-            transformMethod = TransformMethod.HOMOTHECY_TRANSFORM;
-            JMathAnimScene.logger.info("Transform method: Homothecy");
-            return;
-        }
-
-        //Circle & Circle
-        if ((mobjTransformed.getObjectType() == MathObjectType.CIRCLE) && (mobjDestiny.getObjectType() == MathObjectType.CIRCLE)) {
-            transformMethod = TransformMethod.HOMOTHECY_TRANSFORM;
-            shouldOptimizePathsFirst = true;
-            JMathAnimScene.logger.info("Transform method: Homothecy");
-            return;
-        }
-
-        //Rectangle & Rectangle
-        if ((mobjTransformed.getObjectType() == MathObjectType.RECTANGLE) && (mobjDestiny.getObjectType() == MathObjectType.RECTANGLE)) {
-            transformMethod = TransformMethod.ROTATE_AND_SCALEXY_TRANSFORM;
-            JMathAnimScene.logger.info("Transform method: Rotate and Scale XY");
-            return;
-        }
-
-        //Regular Polygons with the same number of vertices
-        if ((mobjTransformed.getObjectType() == MathObjectType.REGULAR_POLYGON) && (mobjDestiny.getObjectType() == MathObjectType.REGULAR_POLYGON)) {
-            Shape shTransformed = (Shape) mobjTransformed;
-            Shape shDst = (Shape) mobjDestiny;
-            if (shTransformed.jmpath.size() == shDst.jmpath.size()) {
-                transformMethod = TransformMethod.ROTATE_AND_SCALEXY_TRANSFORM;
-                JMathAnimScene.logger.info("Transform method: Rotate and Scale XY");
-            } else { //Different number of vertices
-                transformMethod = TransformMethod.INTERPOLATE_POINT_BY_POINT;
-                JMathAnimScene.logger.info("Transform method: By point");
-                return;
-            }
         }
         if ((mobjTransformed instanceof Shape) && (mobjDestiny instanceof Shape)) {
             Shape shTr = (Shape) mobjTransformed;
             Shape shDst = (Shape) mobjDestiny;
-            //2 simple, closed curves
+            double epsilon = 0.00000001;
+
+            if (TransformStrategyChecker.testDirectHomothecyTransform(shTr, shDst, epsilon)) {//            setTransformMethod = TransformMethod.HOMOTHECY_TRANSFORM;
+                shouldOptimizePathsFirst = true;
+                return;
+            }
+            if (TransformStrategyChecker.testRotateScaleXYTransform(shTr, shDst, epsilon)) {//            setTransformMethod = TransformMethod.HOMOTHECY_TRANSFORM;
+                transformMethod = TransformMethod.ROTATE_AND_SCALEXY_TRANSFORM;
+                return;
+            }
+            if (TransformStrategyChecker.testGeneralAffineTransform(shTr, shDst, epsilon)) {//            setTransformMethod = TransformMethod.HOMOTHECY_TRANSFORM;
+                transformMethod = TransformMethod.GENERAL_AFFINE_TRANSFORM;
+                return;
+            }
+            //If 2 simple, closed curves, I have something simpler in mind...
             if ((shTr.getPath().getNumberOfConnectedComponents() == 0) && (shDst.getPath().getNumberOfConnectedComponents() == 0)) {
                 transformMethod = TransformMethod.INTERPOLATE_SIMPLE_SHAPES_BY_POINT;
-                JMathAnimScene.logger.info("Transform method: Point interpolation between 2 simple closed curves");
                 return;
             }
         }
-        JMathAnimScene.logger.info("Transform method: Point interpolation between 2 curves");
+        //Nothing previous worked...try with the most general method
+        transformMethod = TransformMethod.INTERPOLATE_POINT_BY_POINT;
+
     }
 
     private void createTransformStrategy() {
@@ -163,21 +141,43 @@ public class Transform extends Animation {
         switch (transformMethod) {
             case MULTISHAPE_TRANSFORM:
                 transformStrategy = new MultiShapeTransform(runTime, (MultiShapeObject) mobjTransformed, (MultiShapeObject) mobjDestiny);
+                JMathAnimScene.logger.info("Transform method: Multishape");
                 break;
             case INTERPOLATE_SIMPLE_SHAPES_BY_POINT:
                 transformStrategy = new PointInterpolationSimpleShapeTransform(runTime, (Shape) mobjTransformed, (Shape) mobjDestiny);
+                JMathAnimScene.logger.info("Transform method: Point interpolation between 2 simple closed curves");
                 break;
             case INTERPOLATE_POINT_BY_POINT:
                 transformStrategy = new PointInterpolationCanonical(runTime, (Shape) mobjTransformed, (Shape) mobjDestiny);
+                JMathAnimScene.logger.info("Transform method: Point interpolation between 2 curves");
                 break;
             case HOMOTHECY_TRANSFORM:
                 transformStrategy = new HomothecyTransform(runTime, (Shape) mobjTransformed, (Shape) mobjDestiny);
+                JMathAnimScene.logger.info("Transform method: Homothecy");
+
                 break;
             case ROTATE_AND_SCALEXY_TRANSFORM:
                 transformStrategy = new RotateAndScaleXYTransform(runTime, (Shape) mobjTransformed, (Shape) mobjDestiny);
+                JMathAnimScene.logger.info("Transform method: Rotate and Scale XY");
+                break;
+            case GENERAL_AFFINE_TRANSFORM:
+                Shape shORig = (Shape) mobjTransformed;
+                Shape shDest = (Shape) mobjDestiny;
+                AnimationGroup ag = new AnimationGroup();
+                Point A = shORig.getPoint(0);//TODO: Take better points (as far as possible)
+                Point B = shORig.getPoint(1);
+                Point C = shORig.getPoint(2);
+                Point D = shDest.getPoint(0);
+                Point E = shDest.getPoint(1);
+                Point F = shDest.getPoint(2);
+                ag.add(Commands.affineTransform(runTime, A, B, C, D, E, F, shORig));
+                ag.add(Commands.setMP(runTime, shDest.getMp(), shORig).setUseObjectState(false));
+                transformStrategy = ag;
+                JMathAnimScene.logger.info("Transform method: General affine transform");
                 break;
             case FUNCTION_INTERPOLATION:
                 transformStrategy = new FunctionSimpleInterpolateTransform(runTime, (FunctionGraph) mobjTransformed, (FunctionGraph) mobjDestiny);
+                JMathAnimScene.logger.info("Transform method: Interpolation of functions");
                 break;
         }
     }
@@ -195,28 +195,36 @@ public class Transform extends Animation {
         scene.remove(mobjTransformed);
     }
 
-//    private void createOptimizationStrategy() {
-//        switch (optimizeMethod) {
-//            case NONE:
-//                optimizeStrategy = new NullOptimizationStrategy();
-//                JMathAnimScene.logger.info("Optimization strategy chosen: None");
-//                break;
-//            case SIMPLE_CONNECTED_PATHS:
-//                optimizeStrategy = new SimpleConnectedPathsOptimizationStrategy(mobjTransformed, mobjDestiny);
-//                JMathAnimScene.logger.info("Optimization strategy chosen: Simple connected paths");
-//                break;
-//        }
-//    }
-    public Transform optimizePaths(boolean shouldOptimizePathsFirst) {
+    /**
+     * Sets if paths should be optimized in any available way, before doing the
+     * animation
+     *
+     * @param shouldOptimizePathsFirst True if should optimize.
+     * @return This object
+     */
+    public Transform setOptimizePaths(boolean shouldOptimizePathsFirst) {
         this.shouldOptimizePathsFirst = shouldOptimizePathsFirst;
         return this;
     }
 
+    /**
+     * Return the current transform method determined
+     *
+     * @return A value of the enum {@link TransformMethod}
+     */
     public TransformMethod getTransformMethod() {
         return transformMethod;
     }
 
-    public Transform transformMethod(TransformMethod transformMethod) {
+    /**
+     * Forces to use a specified transform method. Forcing a transform method
+     * may give unpredictable results.
+     *
+     * @param transformMethod The transform method,defined in enum
+     * {@link TransformMethod}
+     * @return This object
+     */
+    public Transform setTransformMethod(TransformMethod transformMethod) {
         this.transformMethod = transformMethod;
         return this;
     }

@@ -87,16 +87,19 @@ public abstract class Animation {
     }
 
     /**
-     * Sets the use object state flag. This flag controls whether the animation
+     * Sets the use object state flag.This flag controls whether the animation
      * should restore the initial state of the object prior to do each frame of
-     * the animation. By default is true,but it may be necessary to set to false
-     * when combining 2 animations. For example a shift and a rotation, should
-     * deactivate the flag in the second.
+     * the animation.By default is true,but it may be necessary to set to false
+ when combining 2 animations. For example a shift and a rotation, should
+ deactivate the flag in the second.
      *
+     * @param <T> Animation subclass that calls this method
      * @param shouldSaveState True if restore state, false otherwise
+     * @return This object
      */
-    public void setUseObjectState(boolean shouldSaveState) {
+    public <T extends Animation> T setUseObjectState(boolean shouldSaveState) {
         this.useObjectState = shouldSaveState;
+        return (T) this;
     }
 
     /**

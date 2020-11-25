@@ -171,6 +171,7 @@ public class Commands {
             public void initialize(JMathAnimScene scene) {
                 super.initialize(scene);
                 saveStates(mathObjects);
+                scene.add(mathObjects);
             }
 
             @Override
@@ -185,7 +186,7 @@ public class Commands {
 
             @Override
             public void finishAnimation() {
-                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+                doAnim(1);
             }
         };
     }//End of affineTransform command

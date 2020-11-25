@@ -667,7 +667,7 @@ public class JMPath implements Updateable, Stateable {
         while (n < resul.size()) {
             JMPathPoint p1 = resul.getJMPoint(n);
             JMPathPoint p2 = resul.getJMPoint(n + 1);
-            if (p1.p.equals(p2.p, epsilon)) {
+            if (p1.p.isEquivalenTo(p2.p, epsilon)) {
                 p1.cp2.copyFrom(p2.cp2);
 //                if (p2.isThisSegmentVisible) {
                 p1.isThisSegmentVisible = true;
@@ -683,14 +683,14 @@ public class JMPath implements Updateable, Stateable {
     }
 
 
-    public boolean equals(JMPath obj,double epsilon) {
+    public boolean isEquivalentTo(JMPath obj,double epsilon) {
         if (size() != obj.size()) {
             return false;
         }
         for (int n = 0; n < size(); n++) {
             JMPathPoint pa1 = getJMPoint(n);
             JMPathPoint pa2 = obj.getJMPoint(n);
-            if (!pa1.equals(pa2,epsilon)) {
+            if (!pa1.isEquivalentTo(pa2,epsilon)) {
                 return false;
             }
         }

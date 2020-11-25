@@ -215,17 +215,17 @@ public class JMPathPoint extends MathObject implements Updateable, Stateable {
         return hash;
     }
 
-    public boolean equals(JMPathPoint p2, double epsilon) {
-        if (!p.equals(p2.p, epsilon)) {
+    public boolean isEquivalentTo(JMPathPoint p2, double epsilon) {
+        if (p2.isThisSegmentVisible != isThisSegmentVisible) {
             return false;
         }
-        if (!cp1.equals(p2.cp1, epsilon)) {
+        if (!p.isEquivalenTo(p2.p, epsilon)) {
             return false;
         }
-        if (!cp2.equals(p2.cp2, epsilon)) {
+        if (!cp1.isEquivalenTo(p2.cp1, epsilon)) {
             return false;
         }
-        return true;
+        return cp2.isEquivalenTo(p2.cp2, epsilon);
     }
 
 }
