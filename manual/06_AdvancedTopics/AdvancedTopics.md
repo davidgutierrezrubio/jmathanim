@@ -123,3 +123,88 @@ waitSeconds(5);
 
 ![Updater03](Updater03.gif)
 
+### Trail
+
+A trail is a `Shape` subclass that updates every frame adding the position of a marker point.  Let's draw a cycloid, using a combined `shift` and `rotate` animation as we have seen before:
+
+```java
+camera.scale(4);
+Shape sq = Shape.circle().fillColor("royalblue").thickness(3).stackToScreen(Anchor.Type.LEFT).rotate(-90*DEGREES);
+Line floor=Line.XAxis().stackTo(sq, Anchor.Type.LOWER);
+add(floor);
+Trail trail=new Trail(sq.getPoint(0));
+add(trail.layer(1).thickness(6).drawColor(JMColor.parse("tomato")));
+Animation shift = Commands.shift(10, 4*PI, 0, sq);
+Animation rotate = Commands.rotate(10, -4*PI, sq).setUseObjectState(false);
+playAnimation(shift,rotate);
+waitSeconds(3);
+```
+
+
+
+![trail01](trail01.gif)
+
+## Combining animations
+
+Suppose you want a square to perform a shift and rotation at the same time. The first approach may be to play at the same this animations. However if you try with a code like this:
+
+```java
+Shape sq = Shape.square().fillColor("seagreen").thickness(3).center();
+Animation shift = Commands.shift(5, 1, 0, sq);
+Animation rotate = Commands.rotate(5, PI/2, sq);
+playAnimation(shift, rotate);
+waitSeconds(3);
+```
+
+You'll obtain a square rotating, but not shifting at all. The reason is that each animation saves the state of the object in the `initialize` method and restore it at each call of `doAnim` where the changes are done. So, the restore state call of the `rotate` animation erases the changes made by the `shift` animation. The solution is quite simple, as every animation has the method `.setUseObjectState(false)` that activates or deactivates the saving and restoring of states. In this case, as the `rotate` animation is executed each frame after the `shift`, we let this to manage states, and deactivates for the `rotate` animation.
+
+```java
+Shape sq = Shape.square().fillColor("seagreen").thickness(3).center();
+Animation shift = Commands.shift(5, 1, 0, sq);
+Animation rotate = Commands.rotate(5, -PI/2, sq).setUseObjectState(false);
+playAnimation(shift, rotate);
+waitSeconds(3);
+```
+
+Now the square properly shifts and rotates:
+
+![StateFlagAnimation01](StateFlagAnimation01.gif)
+
+## Creating complex animations
+
+There are special subclasses of `Animation`that allows to build more complex animations using previously defined ones.
+
+### The wait animation
+
+This animation does what it says. It simply waits for specified amount of time. Sounds exciting right?
+
+### The concatenate animation
+
+The `Concatenate`class allows to play animations in sequence
+
+```java
+Shape sq = Shape.square().fillColor("seagreen").thickness(3).center();
+Animation shift = Commands.shift(2, 1, 0, sq);
+Animation rotate = Commands.rotate(2, -PI/2, sq);
+Concatenate c=new Concatenate(shift,rotate);
+playAnimation(c);
+waitSeconds(1);
+```
+
+
+
+![concatenate01](concatenate01.gif)
+
+### The AnimationGroup animation
+
+The `AnimationGroup` plays all the animations at the same. It finishes when the last one has ended. The example of the combined shift and rotate can be written as
+
+```java
+Shape sq = Shape.square().fillColor("seagreen").thickness(3).center();
+Animation shift = Commands.shift(5, 1, 0, sq);
+Animation rotate = Commands.rotate(5, -PI/2, sq).setUseObjectState(false);
+AnimationGroup ag=new AnimationGroup(shift,rotate);
+playAnimation(ag);
+waitSeconds(3);
+```
+
