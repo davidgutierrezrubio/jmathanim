@@ -23,6 +23,7 @@ import com.jmathanim.mathobjects.Point;
 import com.jmathanim.mathobjects.Shape;
 
 /**
+ * Shape representing the trail drawed by a moving a point
  *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
@@ -32,6 +33,12 @@ public class Trail extends Shape {
     private boolean cutNext = true;
     private boolean draw = true;
 
+    /**
+     * Returns a new Trail object. A trail is a updateable Shape that adds a
+     * copy of a marker point every frame.
+     *
+     * @param marker
+     */
     public Trail(Point marker) {
         this.marker = marker;
         getPath().addPoint(marker.copy());
@@ -53,10 +60,17 @@ public class Trail extends Shape {
         return Math.max(super.getUpdateLevel(), marker.getUpdateLevel()) + 1;
     }
 
+    /**
+     * Disables adding new elements to the trail, until a call to
+     * {@link lowerPen} is made.
+     */
     public void raisePen() {
         draw = false;
     }
 
+    /**
+     * Enables adding new elements to the trail. By default this is set.
+     */
     public void lowerPen() {
         draw = true;
         cutNext = true;
