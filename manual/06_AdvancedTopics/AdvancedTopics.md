@@ -125,7 +125,7 @@ waitSeconds(5);
 
 ### Trail
 
-A trail is a `Shape` subclass that updates every frame adding the position of a marker point.  Let's draw a cycloid, using a combined `shift` and `rotate` animation as we have seen before:
+A trail is a `Shape` subclass that updates every frame adding the position of a marker point.  Let's draw a cycloid, using a combined `shift` and `rotate` animation (we will see the purpose of the method `setUseObjectState` in the next section):
 
 ```java
 camera.scale(4);
@@ -139,13 +139,8 @@ Animation rotate = Commands.rotate(10, -4*PI, sq).setUseObjectState(false);
 playAnimation(shift,rotate);
 waitSeconds(3);
 ```
-
-
-
 ![trail01](trail01.gif)
-
 ## Combining animations
-
 Suppose you want a square to perform a shift and rotation at the same time. The first approach may be to play at the same this animations. However if you try with a code like this:
 
 ```java
@@ -171,7 +166,6 @@ Now the square properly shifts and rotates:
 ![StateFlagAnimation01](StateFlagAnimation01.gif)
 
 ## Creating complex animations
-
 There are special subclasses of `Animation`that allows to build more complex animations using previously defined ones.
 
 ### The wait animation
