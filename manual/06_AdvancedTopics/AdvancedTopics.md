@@ -19,7 +19,7 @@ For example, let's suppose we have the following simple animation, where a `Poin
 
 ```java
 add(new Axes());
-Point A=Point.at(0,0);
+Point A = Point.at(1, 1);
 play.shift(3,-2,0,A);
 waitSeconds(3);
 ```
@@ -59,7 +59,7 @@ Point A = Point.at(1, 1);
 UnitPoint B = new UnitPoint(A);
 B.drawColor(JMColor.RED);
 add(B);
-play.shift(3, -2,0, A);
+play.shift(3, -2, 0, A);
 waitSeconds(3);
 ```
 
