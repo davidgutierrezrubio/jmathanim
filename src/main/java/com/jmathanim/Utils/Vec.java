@@ -93,7 +93,6 @@ public class Vec implements Stateable {
         return (double) sqrt(x * x + y * y + z * z);
     }
 
-
     /**
      * Returns a new point between this and v2, given by the parameter
      *
@@ -135,11 +134,26 @@ public class Vec implements Stateable {
 
     }
 
+    /**
+     * Return the angle of the vector, between 0 and 2*PI
+     *
+     * @return The angle
+     */
     public double getAngle() {
         double angle = Math.atan2(this.y, this.x);
         return angle;
     }
-
+    /**
+     * Return the angle of the vector, between -PI and PI
+     *
+     * @return The angle
+     */
+    public double getAngleFC() {
+        double angle = Math.atan(this.y/this.x);
+        return angle;
+    }
+    
+    
     @Override
     public int hashCode() {
         int hash = 7;
@@ -181,13 +195,14 @@ public class Vec implements Stateable {
     public static Vec to(double x, double y, double z) {
         return new Vec(x, y, z);
     }
+
     public static Vec to(double x, double y) {
         return new Vec(x, y);
     }
 
     public Vec normalize() {
-        double norm=this.norm();
-        return this.mult(1d/norm);
+        double norm = this.norm();
+        return this.mult(1d / norm);
     }
-    
+
 }

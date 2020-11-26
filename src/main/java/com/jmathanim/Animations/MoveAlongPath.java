@@ -71,14 +71,14 @@ public class MoveAlongPath extends Animation {
     @Override
     public void initialize(JMathAnimScene scene) {
         super.initialize(scene);
-        mobjTransformed.saveState();
+        saveStates(mobjTransformed);
         scene.add(mobjTransformed);
     }
 
     @Override
     public void doAnim(double t) {
         double lt = lambda.applyAsDouble(t);
-        mobjTransformed.restoreState();
+        restoreStates(mobjTransformed);
         mobjTransformed.putAt(path.getPointAt(lt), this.anchorType);
     }
 

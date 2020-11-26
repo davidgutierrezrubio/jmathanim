@@ -5,28 +5,20 @@
             <fillColor>TRANSPARENT</fillColor>
             <thickness>.5</thickness>
         </style>
-        <style name="taylor">
-            <drawColor>#fa867e</drawColor>
-            <fillColor>TRANSPARENT</fillColor>
-            <thickness>.5</thickness>
-        </style>
         <style name="axisdefault">
-            <drawColor>gray</drawColor>
+            <drawColor>#4F4F4F</drawColor>
             <fillColor>transparent</fillColor>
             <thickness>1</thickness>
-            <castShadows>false</castShadows>
         </style>
         <style name="axistickdefault">
-            <drawColor>gray</drawColor>
+            <drawColor>#4F4F4F</drawColor>
             <fillColor>transparent</fillColor>
             <thickness>.2</thickness>
-            <castShadows>false</castShadows>
         </style>
          <style name="axislegenddefault">
-            <drawColor>gray</drawColor>
-            <fillColor>gray</fillColor>
+            <drawColor>#4F4F4F</drawColor>
+            <fillColor>#0F0F0F</fillColor>
             <thickness>.02</thickness>
-            <castShadows>false</castShadows>
         </style>
     </styles>
 </JMathAnimConfig>

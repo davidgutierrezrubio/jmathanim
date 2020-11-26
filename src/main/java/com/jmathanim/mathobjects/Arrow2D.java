@@ -42,7 +42,7 @@ public class Arrow2D extends MathObject {
     private final Point p1, p2;
     private final Shape body;
     public ArrowType arrowType = ArrowType.TYPE_1;
-    private final MultiShapeObject head;
+    private MultiShapeObject head;
 //    private final File outputDir;
     private static final double DEFAULT_ARROW_HEAD_SIZE = .015;
 
@@ -146,12 +146,18 @@ public class Arrow2D extends MathObject {
     public Point getEnd() {
         return p2;
     }
-
-    public final void scaleArrowHead(double sc) {
+/**
+ * Sets the scale of the arrow head
+ * @param <T> Implementation of Arrow2D
+ * @param sc Scale value. By default is 1.
+ * @return This object
+ */
+    public final <T extends Arrow2D> T scaleArrowHead(double sc) {
         double mw = JMathAnimConfig.getConfig().getFixedCamera().getMathView().getWidth();
         double scaleFactor = sc * DEFAULT_ARROW_HEAD_SIZE * mw / head.getBoundingBox().getWidth();
 
         head.scale(scaleFactor);
+        return (T) this;
     }
 
     @Override
@@ -234,7 +240,8 @@ public class Arrow2D extends MathObject {
     @Override
     public <T extends MathObject> T copy() {
         Arrow2D copy = Arrow2D.makeSimpleArrow2D(p1.copy(), p2.copy(), arrowType);
-        copy.head.mp.copyFrom(this.head.mp);
+        copy.head=head.copy();
+//        copy.head.mp.copyFrom(this.head.mp);
         copy.body.mp.copyFrom(this.body.mp);
         return (T) copy;
     }

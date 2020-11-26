@@ -255,7 +255,7 @@ public abstract class Animation {
      *
      * @param mathObjects MathObjects to save state (varargs)
      */
-    protected void saveStates(MathObject[] mathObjects) {
+    protected void saveStates(MathObject...mathObjects) {
         if (this.isUseObjectState()) {
             for (MathObject obj : mathObjects) {
                 obj.saveState();
@@ -269,7 +269,7 @@ public abstract class Animation {
      *
      * @param mathObjects MathObjects to restore state (varargs)
      */
-    protected void restoreStates(MathObject[] mathObjects) {
+    protected void restoreStates(MathObject...mathObjects) {
         if (this.isUseObjectState()) {
             for (MathObject obj : mathObjects) {
                 obj.restoreState();
