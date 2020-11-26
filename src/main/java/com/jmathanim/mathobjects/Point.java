@@ -314,10 +314,6 @@ public class Point extends MathObject {
     }
 
     @Override
-    public void update(JMathAnimScene scene) {
-    }
-
-    @Override
     public int hashCode() {
         int hash = 7;
         return hash;

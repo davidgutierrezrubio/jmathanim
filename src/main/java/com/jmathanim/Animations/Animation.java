@@ -75,6 +75,10 @@ public abstract class Animation {
         return isEnded;
     }
 
+    public void setEnded(boolean value) {
+        isEnded = value;
+    }
+
     /**
      * Return the use object state flag. This flag controls whether the
      * animation should restore the initial state of the object prior to do each
@@ -90,8 +94,8 @@ public abstract class Animation {
      * Sets the use object state flag.This flag controls whether the animation
      * should restore the initial state of the object prior to do each frame of
      * the animation.By default is true,but it may be necessary to set to false
- when combining 2 animations. For example a shift and a rotation, should
- deactivate the flag in the second.
+     * when combining 2 animations. For example a shift and a rotation, should
+     * deactivate the flag in the second.
      *
      * @param <T> Animation subclass that calls this method
      * @param shouldSaveState True if restore state, false otherwise
@@ -255,7 +259,7 @@ public abstract class Animation {
      *
      * @param mathObjects MathObjects to save state (varargs)
      */
-    protected void saveStates(MathObject...mathObjects) {
+    protected void saveStates(MathObject... mathObjects) {
         if (this.isUseObjectState()) {
             for (MathObject obj : mathObjects) {
                 obj.saveState();
@@ -269,7 +273,7 @@ public abstract class Animation {
      *
      * @param mathObjects MathObjects to restore state (varargs)
      */
-    protected void restoreStates(MathObject...mathObjects) {
+    protected void restoreStates(MathObject... mathObjects) {
         if (this.isUseObjectState()) {
             for (MathObject obj : mathObjects) {
                 obj.restoreState();

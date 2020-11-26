@@ -311,7 +311,7 @@ public abstract class JMathAnimScene {
                 obj.draw(renderer);
             }
         }
-        
+
         //Now remove all marked objects from the scene
         remove((MathObject[]) objectsToBeRemoved.toArray(new MathObject[objectsToBeRemoved.size()]));
         objectsToBeRemoved.clear();
@@ -365,7 +365,9 @@ public abstract class JMathAnimScene {
     public void playAnimation(ArrayList<Animation> anims) {
         for (Animation anim : anims) {
             if (anim != null) {
-
+                if (anim.isEnded()) {//This allow to reuse ended animations
+                    anim.setEnded(false);
+                }
                 anim.initialize(this);//Perform needed steps immediately before playing
             }
         }
