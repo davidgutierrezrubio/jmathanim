@@ -12,3 +12,5 @@
 
 [Animating objects](05_Animations/Animations.md)
 
+[Advance topics](06_AdvancedTopics/AdvancedTopics.html)
+
