@@ -15,7 +15,7 @@ Any update must be registered on the scene to be used, with the `registerUpdatea
 
 Every MathObjects implements the interface `Updateable` , and is registered when added to the scene.	
 
-For example, lets suppose we want the following simple animation, where a `Point` object named `A` moves from the point (1,1) to (-1,1):
+For example, let's suppose we have the following simple animation, where a `Point` object named `A` moves from the point (1,1) to (-1,1):
 
 ```java
 add(new Axes());
