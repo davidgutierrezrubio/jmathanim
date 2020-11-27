@@ -25,12 +25,13 @@ import com.jmathanim.Utils.Anchor;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import static com.jmathanim.jmathanim.JMathAnimScene.PI;
-import com.jmathanim.mathobjects.LaTeXMathObject;
+import com.jmathanim.mathobjects.MultiShapeObject;
 import com.jmathanim.mathobjects.Shape;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.function.UnaryOperator;
 
 /**
  *
@@ -50,8 +51,8 @@ public class TransformMathExpression extends Animation {
         MOVE_OUT_RIGHT, MOVE_OUT_DOWN
     }
 
-    private final LaTeXMathObject latexDestiny;
-    private final LaTeXMathObject latexTransformed;
+    private final MultiShapeObject latexDestiny;
+    private final MultiShapeObject latexTransformed;
     private final AnimationGroup anim;
 
     private final ArrayList<Shape> toDelete;
@@ -73,7 +74,7 @@ public class TransformMathExpression extends Animation {
      * @param latexTransformed Original math expression
      * @param latexDestiny Destiny math expression
      */
-    public TransformMathExpression(double runTime, LaTeXMathObject latexTransformed, LaTeXMathObject latexDestiny) {
+    public TransformMathExpression(double runTime, MultiShapeObject latexTransformed, MultiShapeObject latexDestiny) {
         super(runTime);
         this.latexTransformed = latexTransformed;
         this.latexDestiny = latexDestiny;
@@ -141,52 +142,61 @@ public class TransformMathExpression extends Animation {
                 group.add(Commands.shrinkOut(runTime, sh));
                 break;
             case MOVE_OUT_UP:
-                group.add(Commands.moveOut(runTime, Anchor.Type.UPPER, sh));
+                group.add(Commands.moveOut(runTime, Anchor.Type.UPPER, sh).setLambda(lambda));
                 break;
             case MOVE_OUT_LEFT:
-                group.add(Commands.moveOut(runTime, Anchor.Type.LEFT, sh));
+                group.add(Commands.moveOut(runTime, Anchor.Type.LEFT, sh).setLambda(lambda));
                 break;
             case MOVE_OUT_RIGHT:
-                group.add(Commands.moveOut(runTime, Anchor.Type.RIGHT, sh));
+                group.add(Commands.moveOut(runTime, Anchor.Type.RIGHT, sh).setLambda(lambda));
                 break;
             case MOVE_OUT_DOWN:
-                group.add(Commands.moveOut(runTime, Anchor.Type.LOWER, sh));
+                group.add(Commands.moveOut(runTime, Anchor.Type.LOWER, sh).setLambda(lambda));
                 break;
         }
-        
-        Animation rotation = Commands.rotate(runTime, 2 * PI * par.getNumTurns(), sh);
-        rotation.setUseObjectState(false);
-        group.add(rotation);
+        if (par.getNumTurns() != 0) {
+            Animation rotation = Commands.rotate(runTime, 2 * PI * par.getNumTurns(), sh);
+            rotation.setUseObjectState(false);
+            group.add(rotation);
+        }
+
         anim.add(group);
     }
 
     private void createAddingSubAnimation(Shape sh, TransformMathExpressionParameters par) {
+        AnimationGroup group = new AnimationGroup();
         switch (par.getAddingStyle()) {
             case FADE_IN:
-                anim.add(Commands.fadeIn(runTime, sh));
+                anim.add(Commands.fadeIn(runTime, sh).setLambda(lambda));
                 break;
             case GROW_IN:
-                anim.add(Commands.growIn(runTime, sh));
+                anim.add(Commands.growIn(runTime, sh).setLambda(lambda));
                 break;
             case MOVE_IN_UP:
-                anim.add(Commands.moveIn(runTime, Anchor.Type.UPPER, sh));
+                anim.add(Commands.moveIn(runTime, Anchor.Type.UPPER, sh).setLambda(lambda));
                 break;
             case MOVE_IN_LEFT:
-                anim.add(Commands.moveIn(runTime, Anchor.Type.LEFT, sh));
+                anim.add(Commands.moveIn(runTime, Anchor.Type.LEFT, sh).setLambda(lambda));
                 break;
             case MOVE_IN_RIGHT:
-                anim.add(Commands.moveIn(runTime, Anchor.Type.RIGHT, sh));
+                anim.add(Commands.moveIn(runTime, Anchor.Type.RIGHT, sh).setLambda(lambda));
                 break;
             case MOVE_IN_DOWN:
-                anim.add(Commands.moveIn(runTime, Anchor.Type.LOWER, sh));
+                anim.add(Commands.moveIn(runTime, Anchor.Type.LOWER, sh).setLambda(lambda));
                 break;
         }
+        if (par.getNumTurns() != 0) {
+            Animation rotation = Commands.rotate(runTime, 2 * PI * par.getNumTurns(), sh);
+            rotation.setUseObjectState(false);
+            group.add(rotation);
+        }
+        anim.add(group);
         toDelete.add(sh);
     }
 
     private void createTransformSubAnimation(Shape sh, Shape sh2, TransformMathExpressionParameters par) {
         final Transform transform = new Transform(runTime, sh, sh2);
-
+        transform.setLambda(lambda);
         AnimationGroup group = new AnimationGroup(transform);
 
         if (par.getJumpHeight() != 0) {
@@ -201,10 +211,12 @@ public class TransformMathExpression extends Animation {
         if (par.getNumTurns() != 0) {
             Animation rotation = Commands.rotate(runTime, 2 * PI * par.getNumTurns(), sh);
             rotation.setUseObjectState(false);
+            rotation.setLambda(lambda);
             group.add(rotation);
         }
         if (par.getAlphaMult() != 1) {
             Animation changeAlpha = getAlphaMultAnimation(par, sh);
+            changeAlpha.setLambda(lambda);
             group.add(changeAlpha);
         }
         if (par.getScale() != 1) {
@@ -223,6 +235,7 @@ public class TransformMathExpression extends Animation {
                     doAnim(1);
                 }
             };
+            changeScale.setLambda(lambda);
             group.add(changeScale);
         }
 
@@ -250,7 +263,7 @@ public class TransformMathExpression extends Animation {
         return changeAlpha;
     }
 
-    private ArrayList<Shape> getShapeListForGroup(HashMap<String, int[]> or, String names, LaTeXMathObject lat, HashMap<Integer, TransformMathExpressionParameters> listRemainders) {
+    private ArrayList<Shape> getShapeListForGroup(HashMap<String, int[]> or, String names, MultiShapeObject lat, HashMap<Integer, TransformMathExpressionParameters> listRemainders) {
         ArrayList<Shape> resul = new ArrayList<>();
         int[] gr = or.get(names);
         for (int n = 0; n < gr.length; n++) {
@@ -260,7 +273,7 @@ public class TransformMathExpression extends Animation {
         return resul;
     }
 
-    private Shape getShapeForGroup(HashMap<String, int[]> or, String names, LaTeXMathObject lat, HashMap<Integer, TransformMathExpressionParameters> listRemainders) {
+    private Shape getShapeForGroup(HashMap<String, int[]> or, String names, MultiShapeObject lat, HashMap<Integer, TransformMathExpressionParameters> listRemainders) {
         int[] gr = or.get(names);
         Shape sh = lat.get(gr[0]).copy();
         listRemainders.remove(gr[0]);
@@ -375,14 +388,14 @@ public class TransformMathExpression extends Animation {
      * @return Array of transform parameters
      */
     public TransformMathExpressionParametersArray setRemovingStyle(RemoveType type, int... indices) {
-         TransformMathExpressionParametersArray ar = new TransformMathExpressionParametersArray();
+        TransformMathExpressionParametersArray ar = new TransformMathExpressionParametersArray();
         for (int i : indices) {
             if (removeInOrigParameters.containsKey(i)) {
                 removeInOrigParameters.get(i).setRemovingStyle(type);
                 ar.add(removeInOrigParameters.get(i));
             }
         }
-         return ar;
+        return ar;
     }
 
     /**
@@ -391,13 +404,17 @@ public class TransformMathExpression extends Animation {
      * @param type One of the enum AddTyp: FADE_IN, GROW_IN, MOVE_IN_UP,
      * MOVE_IN_LEFT, MOVE_IN_RIGHT, MOVE_IN_DOWN
      * @param indices varargs origin indices
+     * @return Array of transform parameters
      */
-    public void setAddingStyle(AddType type, int... indices) {
+    public TransformMathExpressionParametersArray setAddingStyle(AddType type, int... indices) {
+        TransformMathExpressionParametersArray ar = new TransformMathExpressionParametersArray();
         for (int i : indices) {
             if (addInDstParameters.containsKey(i)) {
                 addInDstParameters.get(i).setAddingStyle(type);
+                ar.add(addInDstParameters.get(i));
             }
         }
+        return ar;
     }
 
     /**
@@ -459,4 +476,7 @@ public class TransformMathExpression extends Animation {
         }
         return "";
     }
+
+    
+    
 }

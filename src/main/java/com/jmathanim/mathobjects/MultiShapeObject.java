@@ -92,7 +92,7 @@ public class MultiShapeObject extends MathObject implements Iterable<Shape> {
 //        return (T) this;
 //    }
     @Override
-    public  MultiShapeObject copy() {
+    public MultiShapeObject copy() {
         MultiShapeObject resul = new MultiShapeObject();
         for (Shape sh : shapes) {
             final Shape copy = sh.copy();
@@ -100,7 +100,7 @@ public class MultiShapeObject extends MathObject implements Iterable<Shape> {
         }
         resul.mp.copyFrom(mp);
         resul.absoluteSize = this.absoluteSize;
-        return  resul;
+        return resul;
     }
 
     @Override
@@ -181,7 +181,7 @@ public class MultiShapeObject extends MathObject implements Iterable<Shape> {
 
     @Override
     public <T extends MathObject> T layer(int layer) {
-         for (Shape jmp : shapes) {
+        for (Shape jmp : shapes) {
             jmp.layer(layer);
         }
         return (T) this;
@@ -245,6 +245,12 @@ public class MultiShapeObject extends MathObject implements Iterable<Shape> {
         return shapes.iterator();
     }
 
-  
+    public int size() {
+        return shapes.size();
+    }
+
+    public void alignCenter(int n, MultiShapeObject lat, int m) {
+        shift(this.get(n).getCenter().to(lat.get(m).getCenter()));
+    }
 
 }
