@@ -17,9 +17,6 @@
  */
 package com.jmathanim.Animations;
 
-import com.jmathanim.Animations.AffineJTransform;
-import com.jmathanim.Animations.Animation;
-import com.jmathanim.Animations.AnimationGroup;
 import com.jmathanim.Cameras.Camera;
 import com.jmathanim.Utils.Anchor;
 import com.jmathanim.Utils.JMColor;

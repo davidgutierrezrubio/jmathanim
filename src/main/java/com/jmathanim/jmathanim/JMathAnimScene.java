@@ -56,16 +56,16 @@ public abstract class JMathAnimScene {
      */
     public static final double DEGREES = PI / 180;
     /**
-     * List of objects which needs to be drawn on the screen
+     * List of sceneObjects which needs to be drawn on the screen
      */
-    final ArrayList<MathObject> objects;
+    private final ArrayList<MathObject> sceneObjects;
     /**
-     * List of objects which needs to be updated (not necessarily drawn)
+     * List of sceneObjects which needs to be updated (not necessarily drawn)
      */
     final ArrayList<Updateable> objectsToBeUpdated;
 
     /**
-     * List of objects which needs to be removed immediately after rendering
+     * List of sceneObjects which needs to be removed immediately after rendering
      */
     final ArrayList<Updateable> objectsToBeRemoved;
 
@@ -112,7 +112,7 @@ public abstract class JMathAnimScene {
      * Creates a new Scene with default settings.
      */
     public JMathAnimScene() {
-        objects = new ArrayList<>();
+        sceneObjects = new ArrayList<>();
         config = JMathAnimConfig.getConfig();
         config.setLowQuality();
         objectsToBeUpdated = new ArrayList<>();
@@ -169,18 +169,18 @@ public abstract class JMathAnimScene {
     }
 
     /**
-     * Returns the list of objects to be drawn
+     * Returns the list of sceneObjects to be drawn
      *
      * @return An ArrayList of MathObject
      */
     public ArrayList<MathObject> getObjects() {
-        return objects;
+        return sceneObjects;
     }
 
     public MathObject[] everything() {
-        MathObject[] arr = new MathObject[objects.size()];
-        for (int n = 0; n < objects.size(); n++) {
-            arr[n] = objects.get(n);
+        MathObject[] arr = new MathObject[sceneObjects.size()];
+        for (int n = 0; n < sceneObjects.size(); n++) {
+            arr[n] = sceneObjects.get(n);
         }
         return arr;
     }
@@ -208,7 +208,7 @@ public abstract class JMathAnimScene {
      * Register the given objects to be updated. Any class that implements the
      * interface {@link Updateable} may be added here.
      *
-     * @param objs {@link Updateable} objects (varargs)
+     * @param objs {@link Updateable} sceneObjects (varargs)
      */
     public synchronized final void registerUpdateable(Updateable... objs) {
         for (Updateable obj : objs) {
@@ -222,7 +222,7 @@ public abstract class JMathAnimScene {
      * Unregister the given objects to be updated. Any class that implements the
      * interface {@link Updateable} may be added here.
      *
-     * @param objs {@link Updateable} objects (varargs)
+     * @param objs {@link Updateable} sceneObjects (varargs)
      */
     public synchronized final void unregisterUpdateable(Updateable... objs) {
         objectsToBeUpdated.removeAll(Arrays.asList(objs));
@@ -246,13 +246,13 @@ public abstract class JMathAnimScene {
      */
     public synchronized final void add(MathObject... objs) {
         for (MathObject obj : objs) {
-            if (!objects.contains(obj)) {
+            if (!sceneObjects.contains(obj)) {
                 if (obj instanceof MathObjectGroup) {
                     for (MathObject subobj : ((MathObjectGroup) obj).getObjects()) {
                         add(subobj);
                     }
                 } else {
-                    objects.add(obj);
+                    sceneObjects.add(obj);
                 }
                 //Check if this object is Updateable.
                 //This interface is present in every MathObject which needs to
@@ -285,7 +285,7 @@ public abstract class JMathAnimScene {
                 }
             }
 
-            objects.remove(obj);
+            sceneObjects.remove(obj);
             unregisterUpdateable(obj);
         }
     }
@@ -297,7 +297,7 @@ public abstract class JMathAnimScene {
      */
     protected final void doDraws() {
 
-        //For the array of objects to be updated (not necessarily drawn), I sort them by the updatelevel variable
+        //For the array of sceneObjects to be updated (not necessarily drawn), I sort them by the updatelevel variable
         //updatelevel 0 gets updated first.
         //Objects with updatelevel n depend directly from those with level n-1
         objectsToBeUpdated.sort((Updateable o1, Updateable o2) -> o1.getUpdateLevel() - o2.getUpdateLevel());
@@ -305,14 +305,14 @@ public abstract class JMathAnimScene {
             obj.update(this);
         }
         //Objects to be drawn on screen. Sort them by layer
-        objects.sort((MathObject o1, MathObject o2) -> (o1.getLayer() - o2.getLayer()));
-        for (MathObject obj : objects) {
+        sceneObjects.sort((MathObject o1, MathObject o2) -> (o1.getLayer() - o2.getLayer()));
+        for (MathObject obj : sceneObjects) {
             if (obj.visible) {
                 obj.draw(renderer);
             }
         }
 
-        //Now remove all marked objects from the scene
+        //Now remove all marked sceneObjects from the scene
         remove((MathObject[]) objectsToBeRemoved.toArray(new MathObject[objectsToBeRemoved.size()]));
         objectsToBeRemoved.clear();
     }
@@ -360,7 +360,7 @@ public abstract class JMathAnimScene {
      * Play the given animations, generating new frames automatically until all
      * animations have finished.
      *
-     * @param anims An ArrayList with Animation objects.
+     * @param anims An ArrayList with Animation sceneObjects.
      */
     public void playAnimation(ArrayList<Animation> anims) {
         for (Animation anim : anims) {

@@ -207,6 +207,22 @@ public class MathObjectGroup extends MathObject implements Iterable<MathObject> 
     }
 
     @Override
+    public <T extends MathObject> T multDrawAlpha(double alphaScale) {
+        for (MathObject obj : objects) {
+            obj.multDrawAlpha(alphaScale);
+        }
+        return (T) this;
+    }
+
+    @Override
+    public <T extends MathObject> T multFillAlpha(double alphaScale) {
+        for (MathObject obj : objects) {
+            obj.multFillAlpha(alphaScale);
+        }
+        return (T) this;
+    }
+
+    @Override
     public <T extends MathObject> T fillColor(JMColor fc) {
         for (MathObject obj : objects) {
             obj.fillColor(fc);
