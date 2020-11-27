@@ -11,7 +11,7 @@ public void update(JMathAnimScene scene);
 
 The `getUpdateLevel` method returns the order of updating this object. Objects with level 0 update first, then all with level 1, etc. Thus, if you have an updater  A that depends on another updater B to be previously updated before, you should set the update level of A greater than of B. All necessary updating commands should be set in the `update` method.
 
-Any update must be registered on the scene to be used, with the `registerUpdateable`method.
+Any update must be registered on the scene to be used, with the `registerUpdateable`method. Similarly, there is `unregisterUpdateable` method that does the opposite.
 
 Every MathObjects implements the interface `Updateable` , and is registered when added to the scene.	
 
@@ -69,11 +69,11 @@ Generates the following animation:
 
 ## Predefinied updaters
 
-JMathAnim has some useful updaters defined
+JMathAnim has some useful updaters defined that maybe useful:
 
 ### Camera always ajusted to objects
 
-With the `CameraAlwaysAdjusting`  updater, you can force the camera to show all objects in the scene. The camera will zoom out when needed, but not zoom in.
+With the `CameraAlwaysAdjusting`  updater, you can force the camera to show all objects in the scene. The camera will zoom out when needed, but not zoom in. Admits 3 parameters: the camera (currently there is only one), and the horizontal and vertical gaps. For example:
 
 ```java
 registerUpdateable(new CameraAlwaysAdjusting(camera, .1, .1));
@@ -102,8 +102,10 @@ waitSeconds(3);
 
 ### Transformed path 
 
+A path that is always the image of another path, using an affine transformation.
+
 ```java
-Shape sq = Shape.square().fillColor("seagreen").thickness(3);
+Shape sq = Shape.square().fillColor("seagreen").thickness(3);//The original path
 Point A = Point.at(0, 0); //A maps to D
 Point B = Point.at(1, 0); //B maps to E
 Point C = Point.at(0, 1); //C maps to F
@@ -112,7 +114,7 @@ Point E = Point.at(2, 0).dotStyle(DotSyle.CROSS);
 Point F = Point.at(1.75, .75).dotStyle(DotSyle.CROSS);
 
 AffineJTransform transform = AffineJTransform.createAffineTransformation(A, B, C, D, E, F, 1);
-Shape sqTransformed = new TransformedJMPath(sq, transform);
+Shape sqTransformed = new TransformedJMPath(sq, transform);//The transformed path
 sqTransformed.fillColor("steelblue").thickness(3);
 add(sqTransformed, sq, A, B, C, D, E, F);
 
@@ -202,3 +204,42 @@ playAnimation(ag);
 waitSeconds(3);
 ```
 
+## Making procedural animations
+
+For procedural animations we means animations made "manually" performing the modifications to the objects and advancing a frame, most like a stop motion artist would do. This method is needed for complex movements that cannot be done with the predefined animations. For this, the `JMathAnimScene`class has a protected variable, named `dt`, that holds the time step for each frame. The `advanceFrame()`method manually do all necessary procedures to create the frame and save it. For example, let's make a program that moves a point with uniformly random steps:
+
+```java
+=Point.origin();
+add(A);
+double numberOfSeconds=10;
+for (double t = 0;  t< numberOfSeconds; t+=dt) {
+	A.shift((1-2*Math.random())*dt,(1-2*Math.random())  *dt);
+	advanceFrame();
+}
+```
+
+If you execute it, you'll obtain a rather nervous point:
+
+![procedural01](procedural01.gif)
+
+### Combining predefined procedural and animations
+
+Suppose you want to show the nervous point, but at the same time you want to execute a rotation on a square for example. Of course you could do this in a purely procedural way, but you can use also the `rotate` animation. After defining it, you must initialize it and, prior to each call of the `advanceFrame`, invoke the `processAnimation`method of the animation. 
+
+```java
+Point A=Point.origin();
+Shape square=Shape.square().center();
+add(A,square);
+Animation rotation=Commands.rotate(5,90*DEGREES,square);//Define the animation
+rotation.initialize(this);//Initialize the animation
+double numberOfSeconds=10;
+for (double t = 0;  t< numberOfSeconds; t+=dt) {
+	A.shift((1-2*Math.random())*dt,(1-2*Math.random())  *dt);
+	rotation.processAnimation();//Do whatever the animation needs for every frame here
+	advanceFrame();
+}
+```
+
+Note that when the rotation is finished subsequent calls to `processAnimation` have no effect:
+
+![procedural02](procedural02.gif)
