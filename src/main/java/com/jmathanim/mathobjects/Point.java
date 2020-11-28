@@ -24,7 +24,6 @@ import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import java.text.DecimalFormat;
-import java.util.Objects;
 
 /**
  * This class represents a point in 2D or 3D space

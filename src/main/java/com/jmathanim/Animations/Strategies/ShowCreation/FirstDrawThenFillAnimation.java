@@ -19,9 +19,9 @@ package com.jmathanim.Animations.Strategies.ShowCreation;
 
 import com.jmathanim.Animations.Animation;
 import com.jmathanim.Animations.AnimationGroup;
+import com.jmathanim.Animations.Commands;
 import com.jmathanim.Animations.Concatenate;
 import com.jmathanim.Animations.WaitAnimation;
-import com.jmathanim.Animations.Commands;
 import com.jmathanim.Utils.MODrawProperties;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.MathObject;

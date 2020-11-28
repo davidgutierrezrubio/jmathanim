@@ -51,7 +51,7 @@ public class Commands {
             public void initialize(JMathAnimScene scene) {
                 super.initialize(scene);
                 saveStates(mathObjects);
-                scene.add(mathObjects);
+                addObjectsToscene(mathObjects);
             }
 
             @Override
@@ -86,7 +86,7 @@ public class Commands {
             public void initialize(JMathAnimScene scene) {
                 super.initialize(scene);
                 saveStates(mathObjects);
-                scene.add(mathObjects);
+               addObjectsToscene(mathObjects);
             }
 
             @Override
@@ -130,7 +130,7 @@ public class Commands {
                 if (c != null) {
                     rotationCenter = c.copy();
                 }
-                scene.add(mathObjects);
+               addObjectsToscene(mathObjects);
             }
 
             @Override
@@ -168,7 +168,7 @@ public class Commands {
             public void initialize(JMathAnimScene scene) {
                 super.initialize(scene);
                 saveStates(mathObjects);
-                scene.add(mathObjects);
+                addObjectsToscene(mathObjects);
             }
 
             @Override
@@ -213,7 +213,7 @@ public class Commands {
             public void initialize(JMathAnimScene scene) {
                 super.initialize(scene);
                 saveStates(mathObjects);
-                scene.add(mathObjects);
+                addObjectsToscene(mathObjects);
             }
 
             @Override
@@ -255,7 +255,7 @@ public class Commands {
             public void initialize(JMathAnimScene scene) {
                 super.initialize(scene);
                 saveStates(mathObjects);
-                scene.add(mathObjects);
+                addObjectsToscene(mathObjects);
             }
 
             @Override
@@ -298,7 +298,7 @@ public class Commands {
             public void initialize(JMathAnimScene scene) {
                 super.initialize(scene);
                 saveStates(mathObjects);
-                scene.add(mathObjects);
+                addObjectsToscene(mathObjects);
             }
 
             @Override
@@ -365,7 +365,7 @@ public class Commands {
             public void initialize(JMathAnimScene scene) {
                 super.initialize(scene);
                 saveStates(mathObjects);
-                scene.add(mathObjects);
+                addObjectsToscene(mathObjects);
             }
 
             @Override
@@ -492,7 +492,7 @@ public class Commands {
             public void initialize(JMathAnimScene scene) {
                 super.initialize(scene);
                 saveStates(mathObjects);
-                scene.add(mathObjects);
+                addObjectsToscene(mathObjects);
             }
 
             @Override
@@ -551,7 +551,7 @@ public class Commands {
             public void initialize(JMathAnimScene scene) {
                 super.initialize(scene);
                 saveStates(mathObjects);
-                scene.add(mathObjects);
+                addObjectsToscene(mathObjects);
             }
 
             @Override
@@ -593,7 +593,7 @@ public class Commands {
                 super.initialize(scene);
                 this.mathObjects = objects;
                 saveStates(mathObjects);
-                scene.add(mathObjects);
+                addObjectsToscene(mathObjects);
             }
 
             @Override
@@ -678,7 +678,7 @@ public class Commands {
                 for (MathObject obj : objects) {
                     alphaOrig.add(obj.getMp().getFillColor().alpha);
                 }
-                scene.add(mathObjects);
+                addObjectsToscene(mathObjects);
             }
 
             @Override

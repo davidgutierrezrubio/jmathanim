@@ -65,6 +65,8 @@ public abstract class Animation {
     public DoubleUnaryOperator lambda;
 
     private boolean useObjectState;
+    
+    private boolean shouldAddObjectsToScene;
 
     /**
      * Returns true if the animation has ended
@@ -106,6 +108,12 @@ public abstract class Animation {
         return (T) this;
     }
 
+       public <T extends Animation> T setAddObjectsToScene(boolean addToScene) {
+        this.shouldAddObjectsToScene = addToScene;
+        return (T) this;
+    }
+    
+    
     /**
      * Creates an empty animation, with the default run time. This constructor
      * should be called only from implementing subclasses.
@@ -124,6 +132,7 @@ public abstract class Animation {
     public Animation(double runTime) {
         this.runTime = runTime;
         this.useObjectState = true;
+        this.shouldAddObjectsToScene = true;
 //        scene = JMathAnimConfig.getConfig().getScene();
         lambda = (x) -> lambdaDefault(x, .9d);
     }
@@ -280,4 +289,10 @@ public abstract class Animation {
             }
         }
     }
+    protected void addObjectsToscene(MathObject... mathObjects){
+       if (this.shouldAddObjectsToScene) {
+            scene.add(mathObjects);
+        }  
+    }
+    
 }

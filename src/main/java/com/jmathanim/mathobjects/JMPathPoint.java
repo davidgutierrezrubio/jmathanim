@@ -23,7 +23,6 @@ import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.updateableObjects.Updateable;
 import java.text.DecimalFormat;
-import java.util.Objects;
 
 /**
  *
