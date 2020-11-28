@@ -114,7 +114,7 @@ public class Shape extends MathObject {
 
     @Override
     public void draw(Renderer r) {
-        if (visible) {
+        if (isVisible()) {
             if (absoluteSize) {
                 r.drawAbsoluteCopy(this, getAbsoluteAnchor().v);
             } else {

@@ -306,7 +306,7 @@ public abstract class JMathAnimScene {
         //Objects to be drawn on screen. Sort them by layer
         sceneObjects.sort((MathObject o1, MathObject o2) -> (o1.getLayer() - o2.getLayer()));
         for (MathObject obj : sceneObjects) {
-            if (obj.visible) {
+            if (obj.isVisible()) {
                 obj.draw(renderer);
             }
         }

@@ -232,7 +232,7 @@ public class Point extends MathObject {
     public Point copy() {
         Point resul = new Point(v);
         resul.mp.copyFrom(mp);
-        resul.visible = this.visible;
+        resul.visible(this.isVisible());
         return resul;
     }
 

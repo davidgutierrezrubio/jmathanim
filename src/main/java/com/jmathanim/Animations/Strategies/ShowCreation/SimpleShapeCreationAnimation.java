@@ -87,13 +87,13 @@ public class SimpleShapeCreationAnimation extends Animation {
             msh.shapes.get(n).jmpath.addPointsFrom(path);
 
             if (n < pathNumber) {
-                msh.shapes.get(n).visible = true;//Draw whole path
+                msh.shapes.get(n).visible(true);//Draw whole path
             }
             if (n > pathNumber) {
-                msh.shapes.get(n).visible = false;//Still don't draw
+                msh.shapes.get(n).visible(true);//Still don't draw
             }
             if (n == pathNumber) {//This path should be drawn partly
-                msh.shapes.get(n).visible = true;
+                msh.shapes.get(n).visible(true);
                 //k=point in this path, and alpha 0-1 relative position between k-1 and k
                 final double alphaInThisPath = (k + alpha) / (msh.shapes.get(n).jmpath.size() - 1);
                 JMPath subpath = canonPath.subpath(n, alphaInThisPath);

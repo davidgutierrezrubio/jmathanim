@@ -49,7 +49,7 @@ public class Delimiter extends Shape {
                 name = "#braces.svg";
                 break;
             case PARENTHESIS:
-                name = "#braces.svg";
+                name = "#parenthesis.svg";
                 break;
             case BRACKET:
                 name = "#braces.svg";
@@ -80,6 +80,21 @@ public class Delimiter extends Shape {
             resul.get(0).shift(-.5 * hasToGrow, 0);
             resul.get(5).shift(.5 * hasToGrow, 0);
         }
+
+        if (type == Type.PARENTHESIS) {
+            double a = 1.3;
+            double wr = (dist < a ? 1 - (dist - a) * (dist - a) / a / a : 1);
+            resul.setWidth(wr);
+            double hasToGrow = dist - resul.getBoundingBox().getWidth();
+            //6 shapes ^-()-^ Shapes 1 and 4 are extensible
+            double w = resul.get(1).getBoundingBox().getWidth();
+            double scale = 1 + .5 * hasToGrow / w;
+            resul.get(1).scale(resul.get(1).getBoundingBox().getLeft(), scale, 1);
+            resul.get(2).scale(resul.get(2).getBoundingBox().getRight(), scale, 1);
+            resul.get(0).shift(.5 * hasToGrow, 0);
+            resul.get(3).shift(-.5 * hasToGrow, 0);
+        }
+
         Rect bb = resul.getBoundingBox();
         AffineJTransform tr = AffineJTransform.createDirect2DHomothecy(bb.getDL(), bb.getDR(), A, B, 1);
         tr.applyTransform(resul);

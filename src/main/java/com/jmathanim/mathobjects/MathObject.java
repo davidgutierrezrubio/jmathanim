@@ -60,15 +60,17 @@ public abstract class MathObject implements Drawable, Updateable, Stateable {
 
     public boolean absoluteSize = false;
 
-    public boolean visible = true;
+    public boolean visible;
     public Point absoluteAnchorPoint;
     private Type absoluteAnchorType = Type.BY_CENTER;
 
     public MathObject() {
         this(null);
+        this.visible = true;
     }
 
     public MathObject(MODrawProperties prop) {
+        this.visible = true;
         mp = JMathAnimConfig.getConfig().getDefaultMP();//Default MP values
         mp.copyFrom(prop);//Copy all non-null values from prop
     }
@@ -658,6 +660,10 @@ public abstract class MathObject implements Drawable, Updateable, Stateable {
     @Override
     public String toString() {
         return "mobj" + label + " " + mp.getLayer();
+    }
+
+    public boolean isVisible() {
+        return visible;
     }
 
 }
