@@ -17,7 +17,7 @@
  */
 package com.jmathanim.mathobjects;
 
-import com.jmathanim.Animations.AffineJTransform;
+import com.jmathanim.Utils.AffineJTransform;
 import com.jmathanim.Utils.Anchor;
 import com.jmathanim.Utils.Anchor.Type;
 import com.jmathanim.Utils.JMColor;

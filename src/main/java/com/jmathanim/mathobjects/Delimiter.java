@@ -17,9 +17,8 @@
  */
 package com.jmathanim.mathobjects;
 
-import com.jmathanim.Animations.AffineJTransform;
+import com.jmathanim.Utils.AffineJTransform;
 import com.jmathanim.Renderers.Renderer;
-import com.jmathanim.Utils.JMColor;
 import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.ResourceLoader;
 
@@ -57,19 +56,22 @@ public class Delimiter extends Shape {
                 break;
         }
         body = new SVGMathObject(rl.getResource(name, "delimiters"));
-        body.style("latexdefault");
+        this.style("latexdefault");
+        this.drawAlpha(0);//This is necessary so that "stitches" are not seen when fadeIn or fadeOut
     }
 
     private MultiShapeObject generateDelimiter() {
         double dist = A.to(B).norm();
 
         MultiShapeObject resul = body.copy();
+        for (Shape sh : resul) {
+            sh.mp.copyFrom(this.mp);
+        }
 
-       
         if (type == Type.BRACE) {
-            double wr = (dist < .5 ? 1-4*(dist-.5)*(dist-.5) : 1);
+            double wr = (dist < .5 ? 1 - 4 * (dist - .5) * (dist - .5) : 1);
             resul.setWidth(wr);
-             double hasToGrow = dist - resul.getBoundingBox().getWidth();
+            double hasToGrow = dist - resul.getBoundingBox().getWidth();
             //6 shapes ^-()-^ Shapes 1 and 4 are extensible
             double w = resul.get(1).getBoundingBox().getWidth();
             double scale = 1 + .5 * hasToGrow / w;
@@ -78,17 +80,21 @@ public class Delimiter extends Shape {
             resul.get(0).shift(-.5 * hasToGrow, 0);
             resul.get(5).shift(.5 * hasToGrow, 0);
         }
-
+        Rect bb = resul.getBoundingBox();
+        AffineJTransform tr = AffineJTransform.createDirect2DHomothecy(bb.getDL(), bb.getDR(), A, B, 1);
+        tr.applyTransform(resul);
         return resul;
     }
 
     @Override
     public void draw(Renderer r) {
         MultiShapeObject del = generateDelimiter();
-        Rect bb = del.getBoundingBox();
-        AffineJTransform tr = AffineJTransform.createDirect2DHomothecy(bb.getDL(), bb.getDR(), A, B, 1);
-        tr.applyTransform(del);
         del.draw(r);
+    }
+
+    @Override
+    public Rect getBoundingBox() {
+        return generateDelimiter().getBoundingBox();
     }
 
 }

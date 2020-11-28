@@ -41,7 +41,7 @@ public class ArrowCreationAnimation extends Animation {
     public void initialize(JMathAnimScene scene) {
         super.initialize(scene);
         obj.saveState();
-        scene.add(obj);
+        addObjectsToscene(obj);
     }
 
     @Override

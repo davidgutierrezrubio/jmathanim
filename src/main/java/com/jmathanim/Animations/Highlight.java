@@ -47,6 +47,7 @@ public class Highlight extends Animation {
         scale = Commands.scale(runTime, null, standOutFactor, objs);
 //        scale = Commands.shift(runTime, 0, standOutFactor, objs);
         scale.lambda = (x) -> 4 * x * (1 - x);
+        addObjectsToscene(objs);
     }
 
     @Override

@@ -25,6 +25,7 @@ import com.jmathanim.Animations.Strategies.ShowCreation.SimpleShapeCreationAnima
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.Arrow2D;
 import com.jmathanim.mathobjects.CanonicalJMPath;
+import com.jmathanim.mathobjects.Delimiter;
 import com.jmathanim.mathobjects.LaTeXMathObject;
 import com.jmathanim.mathobjects.Line;
 import com.jmathanim.mathobjects.MathObject;
@@ -49,6 +50,7 @@ public class ShowCreation extends Animation {
         LATEX_CREATION,
         LINE_CREATION,
         ARROW_CREATION,
+        DELIMITER_CREATION,
         GROUP_CREATION
     }
 
@@ -105,7 +107,6 @@ public class ShowCreation extends Animation {
         }
     }
 
-
     /**
      * Determines the strategy to animate the creation of the object
      *
@@ -127,6 +128,10 @@ public class ShowCreation extends Animation {
         }
         if (mobj instanceof Arrow2D) {
             this.strategyType = ShowCreationStrategy.ARROW_CREATION;
+            return;
+        }
+        if (mobj instanceof Delimiter) {
+            this.strategyType = ShowCreationStrategy.DELIMITER_CREATION;
             return;
         }
         if (mobj instanceof MultiShapeObject) {
@@ -172,6 +177,10 @@ public class ShowCreation extends Animation {
             case ARROW_CREATION:
                 creationStrategy = new ArrowCreationAnimation(this.runTime, (Arrow2D) mobj);
                 JMathAnimScene.logger.debug("ShowCreation method: ArrowCreationStrategy");
+                break;
+            case DELIMITER_CREATION:
+                creationStrategy = Commands.growIn(this.runTime, (Delimiter) mobj);
+                JMathAnimScene.logger.debug("ShowCreation method: Delimiter (growIn)");
                 break;
             case SIMPLE_SHAPE_CREATION:
                 creationStrategy = new SimpleShapeCreationAnimation(runTime, (Shape) mobj);

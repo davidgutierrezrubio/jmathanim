@@ -18,7 +18,7 @@
 
 package com.jmathanim.mathobjects.updateableObjects;
 
-import com.jmathanim.Animations.AffineJTransform;
+import com.jmathanim.Utils.AffineJTransform;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.Point;
 
