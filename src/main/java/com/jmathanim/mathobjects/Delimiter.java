@@ -23,6 +23,7 @@ import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.ResourceLoader;
 
 /**
+ * A extensible delimiter like braces or parenthesis
  *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
@@ -31,11 +32,29 @@ public class Delimiter extends Shape {
     private final Point A, B;
     private final SVGMathObject body;
 
+    /**
+     * Type of delimiter
+     */
     public enum Type {
-        BRACE, PARENTHESIS, BRACKET
+        /**
+         * Brace {
+         */
+        BRACE,
+        /**
+         * Parenthesis (
+         */
+        PARENTHESIS
     }
     private Type type;
 
+    /**
+     * Constructs a new delimiter. The points mark the beginning and end of the
+     * delimiter. The delimiter lies at the "left" of vector AB.
+     *
+     * @param A Beginning point
+     * @param B Ending point
+     * @param type Type of delimiter, one enum {@link Type}
+     */
     public Delimiter(Point A, Point B, Type type) {
         this.A = A;
         this.B = B;
@@ -51,9 +70,6 @@ public class Delimiter extends Shape {
             case PARENTHESIS:
                 name = "#parenthesis.svg";
                 break;
-            case BRACKET:
-                name = "#braces.svg";
-                break;
         }
         body = new SVGMathObject(rl.getResource(name, "delimiters"));
         this.style("latexdefault");
@@ -61,7 +77,7 @@ public class Delimiter extends Shape {
     }
 
     private MultiShapeObject generateDelimiter() {
-        double dist = A.to(B).norm();
+        double width = A.to(B).norm();
 
         MultiShapeObject resul = body.copy();
         for (Shape sh : resul) {
@@ -69,10 +85,11 @@ public class Delimiter extends Shape {
         }
 
         if (type == Type.BRACE) {
-            double wr = (dist < .5 ? 1 - 4 * (dist - .5) * (dist - .5) : 1);
+            double minimumWidthToShrink = .5;
+            double wr = (width < minimumWidthToShrink ? 1 - (width - minimumWidthToShrink) * (width - minimumWidthToShrink) / minimumWidthToShrink / minimumWidthToShrink : 1);
             resul.setWidth(wr);
-            double hasToGrow = dist - resul.getBoundingBox().getWidth();
-            //6 shapes ^-()-^ Shapes 1 and 4 are extensible
+            double hasToGrow = width - resul.getBoundingBox().getWidth();
+            //0,1,2,3,4,5 shapes  Shapes 1 and 4 are extensible
             double w = resul.get(1).getBoundingBox().getWidth();
             double scale = 1 + .5 * hasToGrow / w;
             resul.get(1).scale(resul.get(1).getBoundingBox().getRight(), scale, 1);
@@ -82,11 +99,11 @@ public class Delimiter extends Shape {
         }
 
         if (type == Type.PARENTHESIS) {
-            double a = 1.3;
-            double wr = (dist < a ? 1 - (dist - a) * (dist - a) / a / a : 1);
+            double minimumWidthToShrink = 1.3;
+            double wr = (width < minimumWidthToShrink ? 1 - (width - minimumWidthToShrink) * (width - minimumWidthToShrink) / minimumWidthToShrink / minimumWidthToShrink : 1);
             resul.setWidth(wr);
-            double hasToGrow = dist - resul.getBoundingBox().getWidth();
-            //6 shapes ^-()-^ Shapes 1 and 4 are extensible
+            double hasToGrow = width - resul.getBoundingBox().getWidth();
+            //0,1,2,3 shapes where shapes 1 and 2 are extensible
             double w = resul.get(1).getBoundingBox().getWidth();
             double scale = 1 + .5 * hasToGrow / w;
             resul.get(1).scale(resul.get(1).getBoundingBox().getLeft(), scale, 1);
