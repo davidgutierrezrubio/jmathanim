@@ -172,7 +172,7 @@ There are special subclasses of `Animation`that allows to build more complex ani
 
 ### The wait animation
 
-This animation does what it says. It simply waits for specified amount of time. Sounds exciting right?
+This `waitAnimation` does what it says. It simply waits for specified amount of time. Sounds exciting right? This is used for example in the `ShowCreation` animation when applied to a `LaTexMathObject`, where each shape must wait a certain time, to make the left-to-right appear illusion.
 
 ### The concatenate animation
 
@@ -234,7 +234,7 @@ Animation rotation=Commands.rotate(5,90*DEGREES,square);//Define the animation
 rotation.initialize(this);//Initialize the animation
 double numberOfSeconds=10;
 for (double t = 0;  t< numberOfSeconds; t+=dt) {
-	A.shift((1-2*Math.random())*dt,(1-2*Math.random())  *dt);
+	A.shift((1-2*Math.random())*dt,(1-2*Math.random())*dt);
 	rotation.processAnimation();//Do whatever the animation needs for every frame here
 	advanceFrame();
 }

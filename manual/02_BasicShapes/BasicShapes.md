@@ -101,11 +101,11 @@ In the `Shape` objects, apart from `.getCenter()`method, which returns the cente
 
 ## The `Arrow2D`class
 
-The `Arrow2D` class defines a vector, which consists of a segment and an arrow head. 
+The `Arrow2D` class defines a vector, which consists of a segment and an arrow head.  It is made with a static builder:
 
 ```java
-Arrow2D arrow1=new Arrow2D(Point.at(0,0), Point.at(1,1), Arrow2D.ArrowType.TYPE_1);
-Arrow2D arrow2=new Arrow2D(Point.at(0,0), Point.at(-1,1), Arrow2D.ArrowType.TYPE_2);
+Arrow2D arrow1=Arrow2D.makeSimpleArrow2D(Point.at(0,0), Point.at(1,1), Arrow2D.ArrowType.TYPE_1);
+Arrow2D arrow2=Arrow2D.makeSimpleArrow2D(Point.at(0,0), Point.at(-1,1), Arrow2D.ArrowType.TYPE_2);
 add(arrow1,arrow2);
 waitSeconds(3);
 ```
@@ -124,8 +124,8 @@ export the figure using the plain SVG format, and construct an `Arrow2D`object u
 
 ```java
 final SVGMathObject arrowHead = SVGMathObject.make("!C:\\JMathAnim_resources\\arrows\\myArrow.svg");
-Arrow2D arrow1=new Arrow2D(Point.at(0,0), Point.at(1,1), arrowHead);
-Arrow2D arrow2=new Arrow2D(Point.at(0,0), Point.at(-1,1), arrowHead.copy());
+Arrow2D arrow1=Arrow2D.makeSimpleArrow2D(Point.at(0,0), Point.at(1,1), arrowHead);
+Arrow2D arrow2=Arrow2D.makeSimpleArrow2D(Point.at(0,0), Point.at(-1,1), arrowHead.copy());
 arrow1.thickness(4);
 arrow2.thickness(4);
 arrow2.scaleArrowHead(3);
@@ -146,7 +146,7 @@ Shape square1 = Shape.square().center();
 Shape square2 = square1.copy().scale(.5);
 Shape square3 = square2.copy().scale(.5);
 Shape square4 = square3.copy().scale(.5);
-Arrow2D arrow = new Arrow2D(Point.at(1, 0), Point.at(0, 0), Arrow2D.ArrowType.TYPE_1);
+Arrow2D arrow = Arrow2D.makeSimpleArrow2D(Point.at(1, 0), Point.at(0, 0), Arrow2D.ArrowType.TYPE_1);
 add(square1, square2, square3, square4, arrow);
 play.cameraScale(5, .1);
 waitSeconds(1);
@@ -156,7 +156,27 @@ waitSeconds(1);
 
 
 
+## The `Delimiter` class
 
+The `Delimiter` is a extensible sign that adjust to 2 given control points A,B. May be brackets, braces, or parenthesis.  The precise form of the delimiter is recalculated every frame so if you animate the control points the delimiter will automatically adjust to them. Note that the delimiter always draws to the "left" of segment AB, if you are looking from A to B. The last parameter of the builder is the gap you want to apply between the control point and the delimiter.
+
+```java
+Shape sq=Shape.square().center().style("solidBlue");
+//Brace
+Delimiter delim1 = Delimiter.make(sq.getPoint(2), sq.getPoint(1), Delimiter.Type.BRACE, .05).fillColor("#d35d6e");
+Delimiter delim2 = Delimiter.make(sq.getPoint(1), sq.getPoint(0), Delimiter.Type.BRACKET, .05).fillColor("#5aa469");
+Delimiter delim3 = Delimiter.make(sq.getPoint(0), sq.getPoint(3), Delimiter.Type.PARENTHESIS, .05).fillColor("#efb08c");
+add(delim1,delim2,delim3,sq);
+play.scale(3,.75,1.8,sq);
+play.scale(3,2,.25,sq);
+play.rotate(3,60*DEGREES,sq);
+play.shrinkOut(sq);
+waitSeconds(1);
+```
+
+For this object the `drawAlpha` should be set to 0, that is, it should a purely fill object, otherwise, the "stitches" could be seen when fade in or fade out.
+
+![delimiter01](delimiter01.gif)
 
 ## The `LaTeXMathObject` class
 
