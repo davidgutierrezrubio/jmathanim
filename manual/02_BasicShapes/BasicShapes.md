@@ -116,29 +116,6 @@ waitSeconds(3);
 
 As you can see, the constructor accepts 3 parameters: starting and ending point, and a enum value with the type of arrow head to draw. Currently, there are 2 arrow heads, showed in the example.
 
-You can, though, create your own personalized arrows supplying a `Shape` or `MultiShapeObject` object, with the arrow tip pointing up. For example, suppose we draw the following figure using a software like [Inkscape](https://inkscape.org/):
-
-![image-20201112225057266](inkscape.png)
-
-export the figure using the plain SVG format, and construct an `Arrow2D`object using the file we created. In the example, I saved the file in `C:\JMathAnim_resources\arrows\myArrrow.svg`:
-
-```java
-final SVGMathObject arrowHead = SVGMathObject.make("!C:\\JMathAnim_resources\\arrows\\myArrow.svg");
-Arrow2D arrow1=Arrow2D.makeSimpleArrow2D(Point.at(0,0), Point.at(1,1), arrowHead);
-Arrow2D arrow2=Arrow2D.makeSimpleArrow2D(Point.at(0,0), Point.at(-1,1), arrowHead.copy());
-arrow1.thickness(4);
-arrow2.thickness(4);
-arrow2.scaleArrowHead(3);
-add(arrow1,arrow2);
-waitSeconds(3);
-```
-
-(Note the "!" character in the file path, needed to set an absolute path, we will see this later). If we execute this code...Wingardium Leviosa!
-
-![image-20201112231912816](arrow2.png)
-
-Note also the `arrow2.scaleArrowHead(3)`command that scales the size of the head. In the definition of `arrow2` we use a copy of `arrowHead` so that the scaling doesn't affect to `arrow1`.
-
 The arrow head is by default set to absolute size. This means that scaling the camera won't affect the size perceived of the object. In this code we perform a zoom and see that the size of the arrow doesn't change:
 
 ```java
