@@ -8,6 +8,8 @@ This show an scene with a background image and the shadow effect
 
 ## The Tusi couple
 
+This example shows the use of anonymous updaters to perform commands in the update cycle of the animation.
+
 ```java
   Shape circleBig = Shape.circle().rotate(90 * DEGREES);
 		//Circle that moves
@@ -50,8 +52,8 @@ This show an scene with a background image and the shadow effect
         add(circleBig, circleSmall);
         MoveAlongPath mov = new MoveAlongPath(10, path, circleSmall, Anchor.Type.BY_CENTER);
         Animation rot = Commands.rotate(10, -2 * PI, circleSmall).setUseObjectState(false);
-        mov.setLambda(t -> t);
-        rot.setLambda(t -> t);
+        mov.setLambda(t -> t);//Uniform movement
+        rot.setLambda(t -> t);//Uniform rotation
         playAnimation(mov, rot);
 ```
 
