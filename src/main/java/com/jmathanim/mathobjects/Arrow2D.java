@@ -35,8 +35,8 @@ import java.net.URL;
  */
 public class Arrow2D extends MathObject {
 
-    private MultiShapeObject arrrowHeadToDraw1;
-    private MultiShapeObject arrrowHeadToDraw2;
+    private MultiShapeObject arrowHeadToDraw1;
+    private MultiShapeObject arrowHeadToDraw2;
     private Shape bodyToDraw;
     private double scaleFactorHead1;
     private double scaleFactorHead2;
@@ -47,7 +47,7 @@ public class Arrow2D extends MathObject {
     private int anchorPoint2;
 
     public enum ArrowType {
-        NONE, TYPE_1, TYPE_2
+        NONE, TYPE_1, TYPE_2, TYPE_3
     }
 
     private final Point p1, p2;
@@ -55,7 +55,8 @@ public class Arrow2D extends MathObject {
     public ArrowType arrowType = ArrowType.TYPE_1;
     private MultiShapeObject head1, head2;
 //    private final File outputDir;
-    private static final double DEFAULT_ARROW_HEAD_SIZE = .015;
+    private double defaultArrowHead1Size1 = .015;
+    private double defaultArrowHead1Size2 = .015;
 
     public static Arrow2D makeSimpleArrow2D(Point p1, Point p2) {
         return makeSimpleArrow2D(p1, p2, ArrowType.TYPE_1);
@@ -73,22 +74,15 @@ public class Arrow2D extends MathObject {
         this.p1 = p1;
         this.p2 = p2;
         this.body = Shape.segment(p1, p2);
-        this.head1 = buildArrowHead(type1);
-        this.head2 = buildArrowHead(type2);
+        this.head1 = buildArrowHead(type1, 1);
+        this.head2 = buildArrowHead(type2, 2);
 
         head1.drawColor(this.body.mp.getDrawColor());
         head1.fillColor(this.body.mp.getDrawColor());
         scaleArrowHead1(1);
-        head1.fillWithDrawColor(true);
-        head1.setAbsoluteSize();
-        head1.setAbsoluteAnchorPoint(p2);
-
         head2.drawColor(this.body.mp.getDrawColor());
         head2.fillColor(this.body.mp.getDrawColor());
         scaleArrowHead2(1);
-        head2.fillWithDrawColor(true);
-        head2.setAbsoluteSize();
-        head2.setAbsoluteAnchorPoint(p1);
     }
 
     public Arrow2D(Point p1, Point p2, MultiShapeObject head1) {
@@ -106,15 +100,10 @@ public class Arrow2D extends MathObject {
         head1.fillColor(this.body.mp.getDrawColor());
         scaleArrowHead1(1);
         head1.fillWithDrawColor(true);
-        head1.setAbsoluteSize();
-        head1.setAbsoluteAnchorPoint(p2);
-
         head2.drawColor(this.body.mp.getDrawColor());
         head2.fillColor(this.body.mp.getDrawColor());
         scaleArrowHead2(1);
         head2.fillWithDrawColor(true);
-        head2.setAbsoluteSize();
-        head2.setAbsoluteAnchorPoint(p1);
     }
 
     public Arrow2D(Point p1, Point p2, Shape head) {
@@ -125,22 +114,41 @@ public class Arrow2D extends MathObject {
         this(p1, p2, new MultiShapeObject(head1), new MultiShapeObject(head2));
     }
 
-    public final MultiShapeObject buildArrowHead(ArrowType type) {
+    public final MultiShapeObject buildArrowHead(ArrowType type, int side) {
         SVGMathObject head = null;
         String name = "#arrow";
+        int anchorValue;
+        double scaleDefaultValue;
         if (type != ArrowType.NONE) {//If type=NONE, head=null
             switch (type) {//TODO: Improve this
                 case TYPE_1:
                     name += "1";
-                    anchorPoint1 = 2;
+                    anchorValue = 2;
+                    scaleDefaultValue = 1.5;
                     break;
                 case TYPE_2:
                     name += "2";
-                    anchorPoint1 = 7;
+                    anchorValue = 7;
+                    scaleDefaultValue = 1.5;
+                    break;
+                case TYPE_3:
+                    name += "3";
+                    anchorValue = 7;
+                    scaleDefaultValue = 1;
                     break;
                 default:
                     name += "1";
+                    anchorValue = 2;
+                    scaleDefaultValue = 1.5;
             }
+            if (side == 1) {
+                anchorPoint1 = anchorValue;
+                defaultArrowHead1Size1 *= scaleDefaultValue;
+            } else {
+                anchorPoint2 = anchorValue;
+                defaultArrowHead1Size2 *= scaleDefaultValue;
+            }
+
             name += ".svg";
             try {
 //            baseFileName = outputDir.getCanonicalPath() + File.separator + "arrows" + File.separator + name;
@@ -221,6 +229,7 @@ public class Arrow2D extends MathObject {
     public void restoreState() {
         body.restoreState();
         head1.restoreState();
+        head2.restoreState();
         scaleFactorHead1 = scaleFactorHead1Backup;
         scaleFactorHead2 = scaleFactorHead2Backup;
     }
@@ -229,6 +238,7 @@ public class Arrow2D extends MathObject {
     public void saveState() {
         body.saveState();
         head1.saveState();
+        head2.saveState();
         scaleFactorHead1Backup = scaleFactorHead1;
         scaleFactorHead2Backup = scaleFactorHead2;
     }
@@ -238,61 +248,57 @@ public class Arrow2D extends MathObject {
         //Move arrowhead to p2
 
         bodyToDraw.draw(r);
-        arrrowHeadToDraw1.draw(r);
-        arrrowHeadToDraw2.draw(r);
+        arrowHeadToDraw1.draw(r);
+        arrowHeadToDraw2.draw(r);
 
     }
 
     @Override
     public void update(JMathAnimScene scene) {
         bodyToDraw = body.copy();
-        arrrowHeadToDraw1 = this.head1.copy();
-        arrrowHeadToDraw2 = this.head2.copy();
+        arrowHeadToDraw1 = this.head1.copy();
+        arrowHeadToDraw2 = this.head2.copy();
         if (this.head1.size() > 0) {
             //Scaling
-            double mw = JMathAnimConfig.getConfig().getFixedCamera().getMathView().getHeight();
-            double sc1 = this.scaleFactorHead1 * DEFAULT_ARROW_HEAD_SIZE * mw / head1.getBoundingBox().getHeight();
-            arrrowHeadToDraw1.scale(sc1);
+            double mw = scene.getCamera().getMathView().getHeight();
+            double sc1 = this.scaleFactorHead1 * defaultArrowHead1Size1 * mw / head1.getBoundingBox().getHeight();
+            arrowHeadToDraw1.scale(sc1);
 
             //Shifting
-            Point headPoint = this.arrrowHeadToDraw1.getBoundingBox().getUpper();
-            this.arrrowHeadToDraw1.shift(headPoint.to(p2));
+            Point headPoint = this.arrowHeadToDraw1.getBoundingBox().getUpper();
+            this.arrowHeadToDraw1.shift(headPoint.to(p2));
 
             //Rotating
             Vec v = p1.to(p2);
             double angle = v.getAngle();
             AffineJTransform tr = AffineJTransform.create2DRotationTransform(p2, -Math.PI / 2 + angle);
-            tr.applyTransform(arrrowHeadToDraw1);
-            double vecLength = p1.to(p2).norm();
-            arrrowHeadToDraw1.setAbsoluteSize(Anchor.Type.BY_POINT);
-            arrrowHeadToDraw1.setAbsoluteAnchorPoint(p2);
-            arrrowHeadToDraw1.draw(scene.getConfig().getRenderer());
+            tr.applyTransform(arrowHeadToDraw1);
+
+            arrowHeadToDraw1.draw(scene.getConfig().getRenderer());
 
             JMPathPoint pa = bodyToDraw.getPath().getJMPoint(1);
-            pa.p.v.copyFrom(arrrowHeadToDraw1.get(0).getPoint(anchorPoint1).v);
+            pa.p.v.copyFrom(arrowHeadToDraw1.get(0).getPoint(anchorPoint1).v);
         }
 
         if (this.head2.size() > 0) {
 
             //Scaling
-            double mw = JMathAnimConfig.getConfig().getFixedCamera().getMathView().getHeight();
-            double sc2 = this.scaleFactorHead2 * DEFAULT_ARROW_HEAD_SIZE * mw / head2.getBoundingBox().getHeight();
-            arrrowHeadToDraw2.scale(sc2);
+            double mw = JMathAnimConfig.getConfig().getCamera().getMathView().getHeight();
+            double sc2 = this.scaleFactorHead2 * defaultArrowHead1Size2 * mw / head2.getBoundingBox().getHeight();
+            arrowHeadToDraw2.scale(sc2);
 
             //Shifting
-            Point headPoint = this.arrrowHeadToDraw2.getBoundingBox().getUpper();
-            this.arrrowHeadToDraw2.shift(headPoint.to(p1));
+            Point headPoint = this.arrowHeadToDraw2.getBoundingBox().getUpper();
+            this.arrowHeadToDraw2.shift(headPoint.to(p1));
 
             //Rotating
             Vec v = p2.to(p1);
             double angle = v.getAngle();
             AffineJTransform tr = AffineJTransform.create2DRotationTransform(p1, -Math.PI / 2 + angle);
-            tr.applyTransform(arrrowHeadToDraw2);
-            arrrowHeadToDraw2.setAbsoluteSize(Anchor.Type.BY_POINT);
-            arrrowHeadToDraw2.setAbsoluteAnchorPoint(p2);
+            tr.applyTransform(arrowHeadToDraw2);
 
             JMPathPoint pa = bodyToDraw.getPath().getJMPoint(0);
-            pa.p.v.copyFrom(arrrowHeadToDraw2.get(0).getPoint(anchorPoint2).v);
+            pa.p.v.copyFrom(arrowHeadToDraw2.get(0).getPoint(anchorPoint2).v);
         }
 
     }
@@ -365,7 +371,15 @@ public class Arrow2D extends MathObject {
 
     @Override
     public Rect getBoundingBox() {
-        return body.getBoundingBox();
+        Rect r = body.getBoundingBox();
+        update(JMathAnimConfig.getConfig().getScene());
+        if (arrowHeadToDraw1.size() > 0) {
+            r = r.union(arrowHeadToDraw1.getBoundingBox());
+        }
+        if (arrowHeadToDraw2.size() > 0) {
+            r = r.union(arrowHeadToDraw2.getBoundingBox());
+        }
+        return r;
     }
 
     @Override
@@ -393,4 +407,13 @@ public class Arrow2D extends MathObject {
     public double getScaleArrowHead2() {
         return scaleFactorHead2;
     }
+
+    public MultiShapeObject getHead1() {
+        return head1;
+    }
+
+    public MultiShapeObject getHead2() {
+        return head2;
+    }
+
 }

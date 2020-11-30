@@ -71,10 +71,10 @@ public class Camera2D extends Camera {
     }
 
     @Override
-    public void setMathXY(double xmin, double xmax, double ycenter) {
+    public <T extends Camera> T  setMathXY(double xmin, double xmax, double ycenter) {
 
         if (xmax <= xmin) {
-            return;
+            return (T) this;
         }
         this.xmin = xmin;
         this.xmax = xmax;
@@ -83,6 +83,7 @@ public class Camera2D extends Camera {
         //(xmax-xmin)/(ymax-ymin)=ratioScreen, so...
         this.ymax = ycenter + .5 * (xmax - xmin) / ratioScreen;
         this.ymin = ycenter - .5 * (xmax - xmin) / ratioScreen;
+        return (T) this;
     }
 
     @Override

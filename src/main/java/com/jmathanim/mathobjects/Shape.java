@@ -34,6 +34,7 @@ public class Shape extends MathObject {
 
     public final JMPath jmpath;
     protected final ArrayList<JMPathPoint> vertices;
+    private boolean showDebugPoints = false;
 
     public Shape() {
         this(new JMPath(), null);
@@ -108,7 +109,7 @@ public class Shape extends MathObject {
         final MODrawProperties copy = mp.copy();
         Shape resul = new Shape(jmpath.rawCopy(), copy);
         resul.absoluteSize = this.absoluteSize;
-        resul.label=this.label+"_copy";
+        resul.label = this.label + "_copy";
         return resul;
     }
 
@@ -119,6 +120,12 @@ public class Shape extends MathObject {
                 r.drawAbsoluteCopy(this, getAbsoluteAnchor().v);
             } else {
                 r.drawPath(this);
+                if (isShowDebugPoints()) {
+                    for (int n = 0; n < size(); n++) {
+                        r.debugText("" + n, getPoint(n).v);
+                    }
+
+                }
             }
         }
     }
@@ -176,13 +183,13 @@ public class Shape extends MathObject {
         final JMPathPoint jmPoint = jmpath.getJMPoint(0);
         if (jmPoint.isThisSegmentVisible) {
             jmpath.jmPathPoints.add(jmPoint.copy());
-            jmPoint.isThisSegmentVisible=false;
+            jmPoint.isThisSegmentVisible = false;
         }
-        
+
         final JMPathPoint jmPoint2 = pa.getJMPoint(0);
         if (jmPoint2.isThisSegmentVisible) {
             pa.jmPathPoints.add(jmPoint2.copy());
-            jmPoint2.isThisSegmentVisible=false;
+            jmPoint2.isThisSegmentVisible = false;
         }
         jmpath.jmPathPoints.addAll(pa.jmPathPoints);
     }
@@ -312,6 +319,14 @@ public class Shape extends MathObject {
 
     public static Shape circle(Point center, double radius) {
         return circle().scale(radius).shift(center.v);
+    }
+
+    public boolean isShowDebugPoints() {
+        return showDebugPoints;
+    }
+
+    public void setShowDebugPoints(boolean showDebugPoints) {
+        this.showDebugPoints = showDebugPoints;
     }
 
 }

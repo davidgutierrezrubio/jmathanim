@@ -50,19 +50,15 @@ public abstract class Camera {
      * Gaps to add when adjusting view to an object or Rect
      */
     protected double hgap = .1, vgap = .1;
-    
+
     private final JMathAnimScene scene;
 
-    public Camera(JMathAnimScene scene,int screenWidth, int screenHeight) {
+    public Camera(JMathAnimScene scene, int screenWidth, int screenHeight) {
         this.screenWidth = screenWidth;
         this.screenHeight = screenHeight;
-        this.scene=scene;
+        this.scene = scene;
     }
 
-    
-    
-    
-    
     /**
      * Set size of the screen to which the camera will compute coordinates
      * Screen size usually is 800x600, 1920x1080, etc.
@@ -90,10 +86,11 @@ public abstract class Camera {
      * @param xmax Right x-coordinate
      * @param ycenter y-center coordinate
      */
-    abstract public void setMathXY(double xmin, double xmax, double ycenter);
+    abstract <T extends Camera> T  setMathXY(double xmin, double xmax, double ycenter);
 
-    public void setMathView(Rect r) {
+    public <T extends Camera> T setMathView(Rect r) {
         setMathXY(r.xmin, r.xmax, .5 * (r.ymin + r.ymax));
+        return (T) this;
     }
 
     /**
@@ -103,36 +100,41 @@ public abstract class Camera {
      *
      * @param rAdjust Rectangle to adjust
      */
-    public void adjustToRect(Rect rAdjust) {
+    public <T extends Camera> T adjustToRect(Rect rAdjust) {
         Rect r = getRectThatContains(rAdjust);
         setMathXY(r.xmin, r.xmax, .5 * (r.ymax + r.ymin));
+        return (T) this;
     }
 
-    public void adjustToAllObjects() {
+    public <T extends Camera> T adjustToAllObjects() {
         if (!scene.getObjects().isEmpty()) {
             MathObject[] objs = scene.getObjects().toArray(new MathObject[scene.getObjects().size()]);
             adjustToObjects(objs);
         }
+        return (T) this;
     }
 
-    public void adjustToObjects(MathObject... objs) {
+    public <T extends Camera> T adjustToObjects(MathObject... objs) {
         Rect r = objs[0].getBoundingBox();
         for (MathObject obj : objs) {
             r = r.union(obj.getBoundingBox());
         }
         adjustToRect(r.addGap(hgap, hgap));
+        return (T) this;
     }
 
-    public void zoomToObjects(MathObject... objs) {
+    public <T extends Camera> T zoomToObjects(MathObject... objs) {
         Rect r = objs[0].getBoundingBox();
         for (MathObject obj : objs) {
             r = r.union(obj.getBoundingBox());
         }
         adjustToRect(r.addGap(hgap, hgap));
+        return (T) this;
     }
 
-    public void scale(double scale) {
+    public <T extends Camera> T scale(double scale) {
         setMathView(getMathView().scaled(scale, scale));
+        return (T) this;
     }
 
     /**
