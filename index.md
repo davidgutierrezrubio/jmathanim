@@ -14,7 +14,9 @@ Version 0.8.5:
 Version 0.8.6-SNAPSHOT:
 
 - Fixed a bug when animation the creation of a `Arrow2D` object.
+- Fixed bug when zooming arrows.
 - Added double arrows with the `makeDoubleArrow2D` static method.
+- Added type 3 of arrow.
 
 
 ### Prerrequisites

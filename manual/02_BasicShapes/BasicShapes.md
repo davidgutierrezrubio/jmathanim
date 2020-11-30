@@ -104,17 +104,27 @@ In the `Shape` objects, apart from `.getCenter()`method, which returns the cente
 The `Arrow2D` class defines a vector, which consists of a segment and an arrow head.  It is made with a static builder:
 
 ```java
-Arrow2D arrow1=Arrow2D.makeSimpleArrow2D(Point.at(0,0), Point.at(1,1), Arrow2D.ArrowType.TYPE_1);
-Arrow2D arrow2=Arrow2D.makeSimpleArrow2D(Point.at(0,0), Point.at(-1,1), Arrow2D.ArrowType.TYPE_2);
-add(arrow1,arrow2);
-waitSeconds(3);
+Point A = Point.at(0, 0);
+Point B = Point.at(1, 0);
+        
+Arrow2D ar = Arrow2D.makeSimpleArrow2D(A, B, ArrowType.TYPE_1);
+Arrow2D ar2 = Arrow2D.makeSimpleArrow2D(A.copy(), B.copy(), ArrowType.TYPE_2).stackTo(ar, Anchor.Type.LOWER);
+Arrow2D ar3 = Arrow2D.makeSimpleArrow2D(A.copy(), B.copy(), ArrowType.TYPE_3).stackTo(ar2, Anchor.Type.LOWER);
+Arrow2D ar4 = Arrow2D.makeDoubleArrow2D(A.copy(), B.copy(), ArrowType.TYPE_1,ArrowType.TYPE_1).stackTo(ar3, Anchor.Type.LOWER);
+Arrow2D ar5 = Arrow2D.makeDoubleArrow2D(A.copy(), B.copy(), ArrowType.TYPE_1,ArrowType.TYPE_2).stackTo(ar3, Anchor.Type.LOWER);
+ar5.scaleArrowHead1(2);
+ar5.scaleArrowHead2(2);
+
+add(ar,ar2,ar3,ar4,ar5);
+camera.adjustToAllObjects();
+waitSeconds(4);
 ```
 
 
 
-<img src="arrow1.png" alt="image-20201112223825965" style="zoom:50%;" />
+<img src="arrow1.png" alt="image-20201112223825965"  />
 
-As you can see, the constructor accepts 3 parameters: starting and ending point, and a enum value with the type of arrow head to draw. Currently, there are 2 arrow heads, showed in the example.
+As you can see, there are 2 static builders, `makeSimpleArrow2D` and `makeDoubleArrow2D`, with parameters starting and ending points and type(s) of arrow(s). Currently there are 3 types of arrows, showed in the previous example. 
 
 The arrow head is by default set to absolute size. This means that scaling the camera won't affect the size perceived of the object. In this code we perform a zoom and see that the size of the arrow doesn't change:
 
