@@ -30,7 +30,7 @@ import com.jmathanim.Utils.ResourceLoader;
 public class Delimiter extends Shape {
 
     private final Point A, B;
-    private final SVGMathObject body;
+    private SVGMathObject body;
 
     /**
      * Type of delimiter
@@ -43,24 +43,30 @@ public class Delimiter extends Shape {
         /**
          * Parenthesis (
          */
-        PARENTHESIS
+        PARENTHESIS,
+        /**
+         * Brackets
+         */
+        BRACKET
     }
     private Type type;
+    /**
+     * Gap to apply between control points and delimiter
+     */
+    private double gap;
 
     /**
-     * Constructs a new delimiter. The points mark the beginning and end of the
-     * delimiter. The delimiter lies at the "left" of vector AB.
+     * Constructs a new delimiter.The points mark the beginning and end of the
+     * delimiter.The delimiter lies at the "left" of vector AB.
      *
      * @param A Beginning point
      * @param B Ending point
      * @param type Type of delimiter, one enum {@link Type}
+     * @param gap Gap between control points and delimiter
+     * @return The delimiter
      */
-    public Delimiter(Point A, Point B, Type type) {
-        this.A = A;
-        this.B = B;
-        this.type = type;
-        this.getPath().addPoint(A);
-        this.getPath().addPoint(B);
+    public static Delimiter make(Point A, Point B, Type type, double gap) {
+        Delimiter resul = new Delimiter(Shape.segment(A, B), type, gap);
         ResourceLoader rl = new ResourceLoader();
         String name = "";
         switch (type) {
@@ -70,10 +76,29 @@ public class Delimiter extends Shape {
             case PARENTHESIS:
                 name = "#parenthesis.svg";
                 break;
+            case BRACKET:
+                name = "#bracket.svg";
+                break;
         }
-        body = new SVGMathObject(rl.getResource(name, "delimiters"));
-        this.style("latexdefault");
-        this.drawAlpha(0);//This is necessary so that "stitches" are not seen when fadeIn or fadeOut
+        resul.setBody(new SVGMathObject(rl.getResource(name, "delimiters")));
+        resul.style("latexdefault");
+        resul.drawAlpha(0);//This is necessary so that "stitches" are not seen when fadeIn or fadeOut
+        return resul;
+    }
+
+    private Delimiter(Shape sh, Type type, double gap) {
+        this.A = sh.getPoint(0);
+        this.B = sh.getPoint(1);
+        this.type = type;
+        this.gap = gap;
+    }
+
+    public void setBody(SVGMathObject body) {
+        this.body = body;
+    }
+
+    public void setGap(double gap) {
+        this.gap = gap;
     }
 
     private MultiShapeObject generateDelimiter() {
@@ -98,8 +123,8 @@ public class Delimiter extends Shape {
             resul.get(5).shift(.5 * hasToGrow, 0);
         }
 
-        if (type == Type.PARENTHESIS) {
-            double minimumWidthToShrink = 1.3;
+        if ((type == Type.PARENTHESIS) || (type == Type.BRACKET)) {
+            double minimumWidthToShrink = 1.5;
             double wr = (width < minimumWidthToShrink ? 1 - (width - minimumWidthToShrink) * (width - minimumWidthToShrink) / minimumWidthToShrink / minimumWidthToShrink : 1);
             resul.setWidth(wr);
             double hasToGrow = width - resul.getBoundingBox().getWidth();
@@ -113,6 +138,7 @@ public class Delimiter extends Shape {
         }
 
         Rect bb = resul.getBoundingBox();
+        resul.shift(0, gap);
         AffineJTransform tr = AffineJTransform.createDirect2DHomothecy(bb.getDL(), bb.getDR(), A, B, 1);
         tr.applyTransform(resul);
         return resul;
@@ -120,6 +146,9 @@ public class Delimiter extends Shape {
 
     @Override
     public void draw(Renderer r) {
+        if (A.isEquivalenTo(B, 0)) {
+            return;//Do nothing
+        }
         MultiShapeObject del = generateDelimiter();
         del.draw(r);
     }
