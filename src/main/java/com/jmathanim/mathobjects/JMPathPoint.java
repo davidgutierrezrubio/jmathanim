@@ -49,14 +49,14 @@ public class JMPathPoint extends MathObject implements Updateable, Stateable {
     }
 
     public static JMPathPoint lineTo(Point p) {
-        //Default values: visible, type vertex, straight
+        //Default values: visibleFlag, type vertex, straight
         JMPathPoint jmp = new JMPathPoint(p, true, JMPathPointType.VERTEX);
         jmp.isCurved = false;
         return jmp;
     }
 
     public static JMPathPoint curveTo(Point p) {
-        //Default values: visible, type vertex, straight
+        //Default values: visibleFlag, type vertex, straight
         JMPathPoint jmp = new JMPathPoint(p, true, JMPathPointType.VERTEX);
         jmp.isCurved = true;
         return jmp;
@@ -65,7 +65,7 @@ public class JMPathPoint extends MathObject implements Updateable, Stateable {
     public JMPathPoint(Point p, boolean isVisible, JMPathPointType type) {
         super();
         this.p = p;
-//        this.p.visible = false;
+//        this.p.visibleFlag = false;
         cp1 = p.copy();
         cp2 = p.copy();
         isCurved = false;//By default, is not curved

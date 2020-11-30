@@ -187,6 +187,10 @@ public class Shape extends MathObject {
         jmpath.jmPathPoints.addAll(pa.jmPathPoints);
     }
 
+    public int size() {
+        return jmpath.size();
+    }
+
     //Static methods to build most used shapes
     public static Shape square() {
         return Shape.square(new Point(0, 0), 1);

@@ -203,4 +203,9 @@ public class ShowCreation extends Animation {
         }
     }
 
+    public <T extends ShowCreation> T setStrategyType(ShowCreationStrategy strategyType) {
+        this.strategyType = strategyType;
+        return (T) this;
+    }
+
 }

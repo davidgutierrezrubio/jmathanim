@@ -429,7 +429,7 @@ public class Java2DAwtRenderer extends Renderer {
 //            path.setWindingRule(GeneralPath.WIND_NON_ZERO);
 
             if (mobj.mp.isFilled()) {
-                //Filled paths are better drawn supposing all points are visible...
+                //Filled paths are better drawn supposing all points are visibleFlag...
                 //This works well on simply paths, but not path with multiple holes (like letter "B")
 //                Path2D.Double pathToFill = createPathFromJMPath(mobj, mobj.getPath().allVisible(), cam);
 //                g2draw.setColor(mobj.mp.fillColor.getColor());

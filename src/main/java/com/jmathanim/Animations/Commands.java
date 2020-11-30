@@ -553,8 +553,8 @@ public class Commands {
                 super.initialize(scene);
                 saveStates(mathObjects);
                 addObjectsToscene(mathObjects);
-                for (MathObject obj : mathObjects) {
-                    obj.visible = false;
+                  for (MathObject obj : mathObjects) {
+                    obj.visible(false);
                 }
             }
 
@@ -598,6 +598,9 @@ public class Commands {
                 this.mathObjects = objects;
                 saveStates(mathObjects);
                 addObjectsToscene(mathObjects);
+                 for (MathObject obj : mathObjects) {
+                    obj.visible(false);
+                }
             }
 
             @Override

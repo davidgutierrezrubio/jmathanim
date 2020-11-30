@@ -185,7 +185,7 @@ public class Line extends Shape {
     /**
      * Creates a finite Segment, that runs over the screen plus a percent gap
      *
-     * @return A segment with the visible part of the line
+     * @return A segment with the visibleFlag part of the line
      */
     public Shape toSegment(Camera cam) {
         computeBoundPoints(cam);

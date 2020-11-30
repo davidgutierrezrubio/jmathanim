@@ -181,12 +181,22 @@ public class MultiShapeObject extends MathObject implements Iterable<Shape> {
 
     @Override
     public <T extends MathObject> T layer(int layer) {
-        for (Shape jmp : shapes) {
-            jmp.layer(layer);
+        for (Shape sh : shapes) {
+            sh.layer(layer);
         }
         return (T) this;
     }
 
+    @Override
+    public <T extends MathObject> T visible(boolean visible) {
+         for (Shape sh : shapes) {
+            sh.visible(visible);
+        }
+        return (T) this;
+    }
+
+    
+    
     @Override
     public void registerChildrenToBeUpdated(JMathAnimScene scene) {
         for (Shape o : shapes) {

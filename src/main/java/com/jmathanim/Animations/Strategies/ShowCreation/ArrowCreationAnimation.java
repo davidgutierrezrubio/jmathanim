@@ -49,7 +49,8 @@ public class ArrowCreationAnimation extends Animation {
         double lt=lambda.applyAsDouble(t);
         obj.restoreState();
         obj.scale(obj.getBody().getPoint(0), lt, lt);
-        obj.scaleArrowHead(lt);
+        obj.scaleArrowHead1(lt*obj.getScaleArrowHead1());
+        obj.scaleArrowHead2(lt*obj.getScaleArrowHead2());
     }
 
     @Override

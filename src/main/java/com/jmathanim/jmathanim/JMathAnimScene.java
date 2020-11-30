@@ -64,7 +64,8 @@ public abstract class JMathAnimScene {
     final ArrayList<Updateable> objectsToBeUpdated;
 
     /**
-     * List of sceneObjects which needs to be removed immediately after rendering
+     * List of sceneObjects which needs to be removed immediately after
+     * rendering
      */
     final ArrayList<Updateable> objectsToBeRemoved;
 
@@ -250,14 +251,15 @@ public abstract class JMathAnimScene {
                     for (MathObject subobj : ((MathObjectGroup) obj).getObjects()) {
                         add(subobj);
                     }
+                } else if (obj instanceof MultiShapeObject) {
+                    for (Shape sh : (MultiShapeObject) obj) {
+                        add(sh);
+                    }
                 } else {
                     sceneObjects.add(obj);
+                    registerUpdateable(obj);
+                    obj.registerChildrenToBeUpdated(this);
                 }
-                //Check if this object is Updateable.
-                //This interface is present in every MathObject which needs to
-                //be updated every frame
-                registerUpdateable(obj);
-                obj.registerChildrenToBeUpdated(this);
             }
         }
     }
@@ -412,6 +414,15 @@ public abstract class JMathAnimScene {
      */
     public Camera getCamera() {
         return renderer.getCamera();
+    }
+
+    /**
+     * Returns the fixed camera, used in vectors and other fixed-size elements
+     *
+     * @return The fixed camera
+     */
+    public Camera getFixedCamera() {
+        return renderer.getFixedCamera();
     }
 
     public void formulaHelper(String... formulas) {

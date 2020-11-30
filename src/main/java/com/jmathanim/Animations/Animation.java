@@ -237,8 +237,9 @@ public abstract class Animation {
      *
      * @param strategy Optimization strategy
      */
-    public void setOptimizationStrategy(OptimizePathsStrategy strategy) {
+    public <T extends Animation> T setOptimizationStrategy(OptimizePathsStrategy strategy) {
         optimizeStrategy = strategy;
+        return (T) this;
     }
 
     /**
