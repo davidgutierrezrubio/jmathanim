@@ -87,7 +87,7 @@ public class Commands {
             public void initialize(JMathAnimScene scene) {
                 super.initialize(scene);
                 saveStates(mathObjects);
-               addObjectsToscene(mathObjects);
+                addObjectsToscene(mathObjects);
             }
 
             @Override
@@ -131,7 +131,7 @@ public class Commands {
                 if (c != null) {
                     rotationCenter = c.copy();
                 }
-               addObjectsToscene(mathObjects);
+                addObjectsToscene(mathObjects);
             }
 
             @Override
@@ -553,6 +553,9 @@ public class Commands {
                 super.initialize(scene);
                 saveStates(mathObjects);
                 addObjectsToscene(mathObjects);
+                for (MathObject obj : mathObjects) {
+                    obj.visible = false;
+                }
             }
 
             @Override

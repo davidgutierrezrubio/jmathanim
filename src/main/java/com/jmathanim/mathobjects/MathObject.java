@@ -63,6 +63,7 @@ public abstract class MathObject implements Drawable, Updateable, Stateable {
     public boolean visible;
     public Point absoluteAnchorPoint;
     private Type absoluteAnchorType = Type.BY_CENTER;
+    private boolean visibleBackup;
 
     public MathObject() {
         this(null);
@@ -288,11 +289,13 @@ public abstract class MathObject implements Drawable, Updateable, Stateable {
     @Override
     public void saveState() {
         mp.saveState();
+        visibleBackup = visible;
     }
 
     @Override
     public void restoreState() {
         mp.restoreState();
+        visible = visibleBackup;
     }
 
     /**
