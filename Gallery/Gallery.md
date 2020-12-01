@@ -6,6 +6,13 @@ This show an scene with a background image and the shadow effect
 
 [Link to Youtube](https://www.youtube.com/watch?v=wogadxvkZi0)
 
+## Sum of the first odd numbers
+Visual proof of the sum of the 9 first odd numbers
+[Link to Youtube](https://www.youtube.com/watch?v=uFhtdXuPPLM)
+
+And here with the 40 first odd numbers...
+[Link to Youtube](https://www.youtube.com/watch?v=emEJ-EooNBc)
+
 ## The Tusi couple
 
 This example shows the use of anonymous updaters to perform commands in the update cycle of the animation.
