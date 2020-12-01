@@ -15,10 +15,10 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-
 package com.jmathanim.Renderers.MovieEncoders;
 
 import com.jmathanim.Utils.JMathAnimConfig;
+import com.jmathanim.jmathanim.JMathAnimScene;
 import com.xuggle.mediatool.IMediaWriter;
 import com.xuggle.mediatool.ToolFactory;
 import com.xuggle.xuggler.ICodec;
@@ -36,26 +36,32 @@ public class XugglerVideoEncoder extends VideoEncoder {
     IMediaWriter writer;
     private long startTime;
     private double fps;
+    private boolean framesGenerated;
 
     @Override
     public void createEncoder(File output, JMathAnimConfig config) throws IOException {
         writer = ToolFactory.makeWriter(output.getCanonicalPath());
         writer.addVideoStream(0, 0, ICodec.ID.CODEC_ID_H264, config.mediaW, config.mediaH);
-        fps=config.fps;
+        fps = config.fps;
+        framesGenerated = false;
     }
 
     @Override
     public void writeFrame(BufferedImage image, int frameCount) {
 
         BufferedImage bgrScreen = convertToType(image, BufferedImage.TYPE_3BYTE_BGR);
-        long nanosecondsElapsed=(long) (1000000000d*frameCount/fps);
+        long nanosecondsElapsed = (long) (1000000000d * frameCount / fps);
         writer.encodeVideo(0, bgrScreen, nanosecondsElapsed, TimeUnit.NANOSECONDS);
-        
+        framesGenerated = true;
     }
 
     @Override
     public void finish() {
-        writer.close();
+        if (framesGenerated) {
+            writer.close();
+        }
+        else
+            JMathAnimScene.logger.info("No frames generated. Empty movie created.");
     }
 
     public static BufferedImage convertToType(BufferedImage sourceImage, int targetType) {
@@ -79,6 +85,11 @@ public class XugglerVideoEncoder extends VideoEncoder {
 
         return image;
 
+    }
+
+    @Override
+    public boolean isFramesGenerated() {
+        return framesGenerated;
     }
 
 }

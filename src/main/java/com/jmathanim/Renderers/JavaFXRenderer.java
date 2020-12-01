@@ -272,7 +272,9 @@ public class JavaFXRenderer extends Renderer {
              */
             JMathAnimScene.logger.info("Finishing movie...");
             videoEncoder.finish();
-            JMathAnimScene.logger.info("Movie created at " + saveFilePath);
+            if (videoEncoder.isFramesGenerated()) {
+                JMathAnimScene.logger.info("Movie created at " + saveFilePath);
+            }
 
         }
         endJavaFXEngine();

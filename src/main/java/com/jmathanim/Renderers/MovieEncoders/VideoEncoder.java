@@ -31,4 +31,5 @@ public abstract class VideoEncoder {
     public abstract void createEncoder(File output,JMathAnimConfig config) throws IOException;
     public abstract void writeFrame(BufferedImage image,int frameCount);
     public abstract void finish();
+    public abstract boolean isFramesGenerated();
 }
