@@ -70,8 +70,14 @@ public class Commands {
             }
         };
     }
-
-    public static Animation scale(double runtime, Point c, double sc, MathObject... objects) {
+public static Animation highlight(double runtime, MathObject...objects){
+    AnimationGroup ag=new AnimationGroup();
+    for (MathObject obj:objects){
+        ag.add(Commands.scale(runtime, obj.getCenter(), 1.5, obj).setLambda((x) -> 4 * x * (1 - x)));
+    }
+    return ag;
+}
+    public static Animation scale(double runtime, Point c, double sc,  MathObject... objects) {
         return scale(runtime, c, sc, sc, sc, objects);
     }
 
@@ -375,7 +381,7 @@ public class Commands {
                 restoreStates(mathObjects);
                 int n = 0;
                 for (MathObject obj : mathObjects) {
-                    obj.mp.interpolateFrom(obj.mp, mpDst, lt);
+                    obj.interpolateMPFrom(mpDst, lt);
                 }
             }
 

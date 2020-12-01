@@ -296,10 +296,11 @@ public class TransformMathExpression extends Animation {
     public void finishAnimation() {
         anim.finishAnimation();
 //        scene.remove(mshDst);
-        scene.add(latexDestiny);
+      
         for (Shape sh : toDelete) {
             scene.remove(sh);
         }
+          scene.add(latexDestiny);
     }
 
     /**

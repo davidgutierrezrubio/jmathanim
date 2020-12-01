@@ -491,7 +491,7 @@ public class PlayAnim {
      * @param mobjs Objects to highlight (varargs)
      */
     public void highlight(MathObject... mobjs) {
-        scene.playAnimation(new Highlight(defaultRunTimeHighlight, mobjs));
+        scene.playAnimation(Commands.highlight(defaultRunTimeHighlight, mobjs));
     }
 
     /**
@@ -503,7 +503,7 @@ public class PlayAnim {
      * @param mobjs Objects to highlight (varargs)
      */
     public void highlight(double runTime, MathObject... mobjs) {
-        scene.playAnimation(new Highlight(runTime, mobjs));
+        scene.playAnimation(Commands.highlight(runTime, mobjs));
     }
 
     /**

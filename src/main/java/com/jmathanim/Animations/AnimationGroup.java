@@ -111,12 +111,27 @@ public class AnimationGroup extends Animation {
         }
     }
 
-
     @Override
     public <T extends Animation> T setLambda(DoubleUnaryOperator lambda) {
-        super.setLambda(lambda); 
-        for (Animation anim:animations) {
+        super.setLambda(lambda);
+        for (Animation anim : animations) {
             anim.setLambda(lambda);
+        }
+        return (T) this;
+    }
+
+    @Override
+    public <T extends Animation> T setUseObjectState(boolean shouldSaveState) {
+        for (Animation anim : animations) {
+            anim.setUseObjectState(shouldSaveState);
+        }
+        return (T) this;
+    }
+
+    @Override
+    public <T extends Animation> T setAddObjectsToScene(boolean addToScene) {
+        for (Animation anim : animations) {
+            anim.setAddObjectsToScene(addToScene);
         }
         return (T) this;
     }

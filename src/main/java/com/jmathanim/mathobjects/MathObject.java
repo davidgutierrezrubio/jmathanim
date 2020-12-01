@@ -669,4 +669,21 @@ public abstract class MathObject implements Drawable, Updateable, Stateable {
         return visibleFlag;
     }
 
+    /**
+     * Returns the current width of the object, in math coordinates
+     *
+     * @return The width
+     */
+    public double getWidth() {
+        return getBoundingBox().getWidth();
+    }
+
+    /**
+     * Returns the current height of the object, in math coordinates
+     *
+     * @return The height
+     */
+    public double getHeight() {
+        return getBoundingBox().getHeight();
+    }
 }
