@@ -7,8 +7,8 @@ We will illustrate this with a simple example: Create a java class named  `movin
 public class movingDot extends Scene2D {
     @Override
     public void setupSketch() {
-        conf.setCreateMovie(true);
-        conf.setLowQuality();
+        config.setCreateMovie(true);
+        config.setLowQuality();
     }
 
     @Override
@@ -45,16 +45,16 @@ All animations are defined in a class that extends the basic class `JMathAnimSce
 ``` java
  @Override
     public void setupSketch() {
-        conf.setCreateMovie(true);
-        conf.setLowQuality();
+        config.setCreateMovie(true);
+        config.setLowQuality();
     }
 ```
 
-The `conf` object stores global configuration and has several methods to fine tuning your scene. The `conf.setCreateMovie(true)` tells that it
+The `config` object stores global configuration and has several methods to fine tuning your scene. The `config.setCreateMovie(true)` tells that it
 should generate a movie. In practice, you should generate a movie in the last stages of your design, so by default this flag is set to `false`.
 
-The `conf.setLowQuality()` command stablishes dimensions of 854x480 and 30 frames per second. Aditionally there is `conf.setMediumQuality()`
-with 1280x1024 at 30fps and `conf.setHighQuality()` with 1920x1080 at 60fps. All these settings are 16:9.
+The `config.setLowQuality()` command stablishes dimensions of 854x480 and 30 frames per second. Aditionally there is `config.setMediumQuality()`
+with 1280x1024 at 30fps and `config.setHighQuality()` with 1920x1080 at 60fps. All these settings are 16:9.
 
 The second method is where you should perform all the animations and drawings.
 

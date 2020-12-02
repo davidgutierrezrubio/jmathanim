@@ -50,7 +50,7 @@ waitSeconds(5);
 
 ## Configuring the scene
 
-The `Scene`class has an instance of `JMathAnimConfig` class, named `config`, that allows to personalize global aspects of the animation. Most of these methods should be called only on the `setupSketch()`part of the animation. Invoking `config`methods in the `runSketch()`could lead to unpredictable behaviour.
+The `Scene` class has an instance of `JMathAnimConfig` class, named `config`, that allows to personalize global aspects of the animation. Most of these methods should be called only on the `setupSketch()`part of the animation. Invoking `config`methods in the `runSketch()`could lead to unpredictable behaviour.
 
 ```java
 //Methods to adjust output
@@ -82,7 +82,7 @@ config.setResourcesDir("c:\\resources");//Specifies resources directory at absol
 
 ### Loading config files
 
-All the settings an definitions can be stored in `XML`files and loaded with the `ConfigLoader`class. This class holds the static method `ConfigLoader.parseFile("file.xml")` . 
+All the settings an definitions can be stored in `XML` files and loaded with the `ConfigLoader`class. This class holds the static method `ConfigLoader.parseFile("file.xml")` . 
 
 Where do JMathAnim look for the files? Well, there are 3 location types that you can specify:
 
@@ -92,7 +92,7 @@ Where do JMathAnim look for the files? Well, there are 3 location types that you
 
 By default, the resources path is located at `<your current root project>/resources` folder. So if you want to add resources locally to your project you should create this folder. Of course, you can change the default `resources` folder with the method `config.setResourcesDir(newDir)`.
 
-A typical `resources`folder follows this structure:
+A typical `resources` folder follows this structure:
 ```
 resources/
 ├── config/
@@ -106,7 +106,7 @@ resources/
     └── ...
 ```
 
-The `ConfigLoade.parseFile`will look into the `config` folder, and image-related objects like `SVGMathObject`or `JMImage`  will look into the `images` folder.
+The `ConfigLoade.parseFile` will look into the `config` folder, and image-related objects like `SVGMathObject`or `JMImage`  will look into the `images` folder.
 
 A few examples:
 
@@ -114,13 +114,13 @@ A few examples:
 * the `ConfigLoader.parseFile("#file.xml") ` command will try to load `file.xml` internally stored at the jar library.
 * the `ConfigLoader.parseFile("!/home/user/myResources/file.xml") ` command will try to load `file.xml` from the location `/home/user/myResources/file.xml`.
 
-This way, if you want to store all your precious resources in a system-wide scope, you can store them in a folder (say ` /home/bob/myJMathAnimResources`) and make JMathAnim to look for resources there with the method `config.setResourcesDir("/home/bob/myJMathAnimResources")` at the beginning of the `setupSketch()` method (Note that the "!" modifier is not needed here).
+This way, if you want to store all your precious resources in a system-wide scope, you can store them in a folder (say `/home/bob/myJMathAnimResources`) and make JMathAnim to look for resources there with the method `config.setResourcesDir("/home/bob/myJMathAnimResources")` at the beginning of the `setupSketch()` method (Note that the "!" modifier is not needed here).
 
 > Note: The "!" modifier also can be used when specifying a file path in the config files, like background images, for example.
 
 If the program cannot find the file, the logger will report an error but the execution won't be stopped.
 
-Here is an example of a basic config file that I use for previewing, called `preview.xml`. The `<video>`tag controls aspects related to movie output:
+Here is an example of a basic config file that I use for previewing, called `preview.xml`. The `<video>` tag controls aspects related to movie output:
 
 ```xml
 <JMathAnimConfig>
@@ -149,9 +149,9 @@ And this for production, called `productionWithShadow.xml`. The `background` tag
 </JMathAnimConfig>
 ```
 
-This way, in the `setupSketch()`method, you can change program behavior just changing the config file loaded.
+This way, in the `setupSketch()` method, you can change program behavior just changing the config file loaded.
 
-You can have several config files with different, independent aspects. This is the `light.xml`config I used in examples shown:
+You can have several config files with different, independent aspects. This is the `light.xml` config I used in examples shown:
 
 ```xml
 <JMathAnimConfig>
@@ -187,15 +187,15 @@ You can have several config files with different, independent aspects. This is t
 The JAR of the JMathAnim library has several predefined config files that you can load with "#" flag in the file name:
 
 * The `ConfigLoader.parseFile("#preview.xml")`  loads settings for previewing the animation, with low resolution of 1066x600 at 30pfs, show preview windows and not creating movie. Ideal for the creation process of the scene.
-* The `ConfigLoader.parseFile("#production.xml")`  loads settings for generating the final animation, with high resolution 1920x1080 at 60pfs, not showing preview windows and creating a movie. This config should be loaded when the designing process is done and to create the final animation.
-* The `ConfigLoader.parseFile("#light.xml")`  loads settings for black drawings over a white background. The default colors are black.
-* The `ConfigLoader.parseFile("#dark.xml")`  loads settings for white drawings over a black background (well, almost black). The default colors are white.
+* The `ConfigLoader.parseFile("#production.xml")` loads settings for generating the final animation, with high resolution 1920x1080 at 60pfs, not showing preview windows and creating a movie. This config should be loaded when the designing process is done and to create the final animation.
+* The `ConfigLoader.parseFile("#light.xml")` loads settings for black drawings over a white background. The default colors are black.
+* The `ConfigLoader.parseFile("#dark.xml")` loads settings for white drawings over a black background (well, almost black). The default colors are white.
 
 You can check all the internal config files at the [github sources folder](https://github.com/davidgutierrezrubio/jmathanim/tree/master/src/resources/config).
 
-The `<styles>` tag allows defining styles to apply to your animation. There are 3 named styles that are important: `default`, `latexDefault`and `functionGraphDefault` (names are case-sensitive). The style `latexdefault` is applied by default to all `LaTexMathObject`. The style `default`is applied to the rest of MathObjects. If no style with these names are defined, a default style with white stroke and no fill will be applied.
+The `<styles>` tag allows defining styles to apply to your animation. There are 3 named styles that are important: `default`, `latexDefault` and `functionGraphDefault` (names are case-sensitive). The style `latexdefault` is applied by default to all `LaTexMathObject`. The style `default` is applied to the rest of MathObjects. If no style with these names are defined, a default style with white stroke and no fill will be applied.
 
-The `<include>` tag that appears at the beginning loads another config files.  In this case, a `dots.xml`file with styles to dots are defined:
+The `<include>` tag that appears at the beginning loads another config files.  In this case, a `dots.xml` file with styles to dots are defined:
 
 ```xml
 <JMathAnimConfig>  
@@ -240,7 +240,7 @@ Inside this tag, we may have
 
 * The `<background>` has tags related with the background and effects to apply:
 
-  * The `<color>`tag sets the background color. You can specify a color using a JavaFX color name case insensitive , like `<color>white</color>`or an hex format `<color>#F0A3C5</color>`. The hex format can be 8 bytes (RGBA), 6 bytes (RGB with alpha 1) or 3 bytes (RGB with alpha 1).
+  * The `<color>` tag sets the background color. You can specify a color using a JavaFX color name case insensitive , like `<color>white</color>` or an hex format `<color>#F0A3C5</color>`. The hex format can be 8 bytes (RGBA), 6 bytes (RGB with alpha 1) or 3 bytes (RGB with alpha 1).
   * The `<image>` tag allows to stablish a background image. You can use the "!" modifier to specify an absolute path. Otherwise, the program will look into `resources/images` folder. Note that no scaling or adjusting is made, so that the image should fit the dimensions of the `<size/>` tag.
   * The `<shadow>` tag adds a shadow effect to every objects you draw in the screen, except for the background image. For example `<shadows kernelSize="8" offsetX="5" offsetY="5" alpha=".7">true</shadows>` sets a shadow with kernel size of 8 (the amount of shadow blurring), the offsets (15,15) of the shadow respect to their origin objects, and the alpha transparency of 70%.
 
