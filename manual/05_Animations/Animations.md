@@ -58,6 +58,7 @@ play.shift(3, Vec.to(.75,-.5), sq);
 waitSeconds(1);
 ```
 
+## Moving, rotating, scaling
 The `play` object is an instance of the `PlayAnim` class that holds several fast-access to most common animations.
 
 You can replace the animation method with one of this list of basic transforms, in its easy-access version, to see how it works:
@@ -76,7 +77,7 @@ play.scale(3,.7,sq);
 play.scale(3,Point.at(0,0),.7,1.5,sq);
 ```
 
-# Camera animations
+## Animating the camera
 
 The `play` object has also most animations related to the view camera:
 
@@ -100,7 +101,7 @@ play.adjustCameraToAllObjects(3);
 Before adjusting the camera to objects, you can define the gaps used to leave space between the objects and the border of the screen, with the
 `camera.setGaps(hGap,vGap)` method.
 
-# Enter and exit animations
+## Entering and exiting
 
 Some method to add or remove objects to the scene are also included:
 
@@ -155,7 +156,7 @@ waitSeconds(1);
 
 ![fadeHighLightShrinkDemo](fadeHighLightShrinkDemo.gif)
 
-# Moving along a path
+## Moving along a path
 
 The `MoveAlongPath` animations move an object along a specified path. You can provide a `Shape` object or a `JMPath`objec to determine the path. The moved object will be located with the specified `Anchor` point.
 
@@ -265,9 +266,7 @@ play.fadeOutAll();
 
 ![transform3](transform3.gif)
 
-# Changing styles
-
-
+# Animating style changes
 So far, we have seen how to animate the position or shape of an object. In the `Transform` animation, style of the transformed object changes smoothly to match the style of destiny too. There are a few animations related to the style of an object:
 
 The `setColor` animation animates the colors of the objects to the specified. Draw color and fill color may be specified. If you do not wish to change one of them, you just set it to null. For example:

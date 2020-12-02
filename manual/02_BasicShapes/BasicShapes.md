@@ -1,7 +1,9 @@
+[back](../index.html)
+
 # Basic Objects
 
-The Vec class
--------------
+## The Vec class
+
 
 The `Vec` class represents a 2D vector (although it includes the z-coordinate too). All coordinates in the math view are represented by this class. Several methods are implemented for this class. For example, methods `add` and `mult` adds 2 vectors or multiply by a scalar,returning a new vector object with the result. These methods have their versions `addInSite` and `multInSite` which returns `void` and change the original vector.
 
@@ -17,8 +19,8 @@ double dot=w.dot(v);//Computes the dot product of v and w
 double angle=v.getAngle();//Returns the angle of v, from 0 to 2*PI
 ```
 
-The `Point` class
------------------
+## The `Point` class
+
 
 Everything that you can draw in the screen is a subclass of the `MathObject` class (moreover, everything that implements the `Drawable`
 interface). So, they share a few common methods, like `scale`, `rotate` or `shift`. We’ll see this methods later.
@@ -57,8 +59,8 @@ public void runSketch() throws Exception {
 
 If you try to execute this code you’ll probably see the dots are white over black background. These are the default color values. I used another colors for this document. Don’t worry, we’ll see later how to change this. You’ll see that you can easily apply styles to your animations.
 
-The `Shape` class
------------------
+## The `Shape` class
+
 
 This class represents a shape defined by a curve. The truth is, it represents more than that, as it can represents a closed or open curve,
 or even a curve defined by many disconnected pieces.
@@ -99,7 +101,7 @@ Each `Shape` object has a `JMPath` object which stores and manages the path repr
 
 In the `Shape` objects, apart from `.getCenter()`method, which returns the center of its bounding box, there is also the `.getCentroid()`method which computes the centroid of the shape, defined by the average point of all its vertices. This method effectively returns the center of a regular polygon for example, instead of the `.getCenter()`method.
 
-## The `Arrow2D`class
+## The `Arrow2D` class
 
 The `Arrow2D` class defines a vector, which consists of a segment and an arrow head.  It is made with a static builder:
 
@@ -141,7 +143,7 @@ waitSeconds(1);
 
 ![](arrowZoom.gif)
 
-
+# Not so basic objects
 
 ## The `Delimiter` class
 
@@ -195,10 +197,12 @@ Otherwise you will get an error. Fortunately, most commons java IDE, like Netbea
 
 By default, LaTeX formulas are placed so that their left side is centered at (0,0).
 
-Importing images
-================
+# Importing images
+
 
 JMathAnim allows both bitmap and vectorial images. All bitmap formats supported by JavaFX can be added into the scene with `JMImage` class and SVG format is (partially) supported using the `SVGMathObject` class.
+
+## Importing bitmap images
 
 ## Importing SVG Objects
 
@@ -233,3 +237,5 @@ Notice the command `config.setBackgroundColor(JMColor.WHITE)` we had to put in t
 > **WARNING**: The SVG import capabilities are limited, not all SVG commands are implemented, like gradient or the ARC command. So, not all SVG files can be imported succesfully.
 
 Importing a SVG creates a `MultiShape`object, that holds many `Shape`objects. Each object of the SVG file is converted to a `JMPath` and stored in a `Shape`object. So, you can perform transformations and animations like any other `Shape` object.
+
+[back](../index.html)

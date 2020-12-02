@@ -1,12 +1,11 @@
-Transforming Objects
-====================
+[back](../index.html)
 
+# Transforming Objects
 All classes that inherit from `MathObject` can be transformed. Several methods for shifting, rotating, scaling or aligning are defined, and most of them have their animated version. Note that also most of these methods return the object self, so that they can be applied consecutively like this  `object.method1().method2()…​`.
 
-Positioning objects
--------------------
+# Positioning objects
 
-### Shift
+## Shift
 
 The `shift` command shifts the object by the specified vector
 
@@ -20,17 +19,14 @@ A simpler 2D-version is also provided:
 Shape sq=Shape.square().shift(-3,0);//An unit square, lower left vertex at (-3,0)
 ```
 
-### MoveTo
-
+## MoveTo
 The `moveTo` command shifts the object so that its center is positioned at the given coordinates. Note that the center is the center of the bounding box of the object, not the geometrical center. For regular polygons, for example, they don’t necessarily match.
 
 ``` java
 Shape r=Shape.regularPolygon(5).moveTo(3,3);//A pentagon, with its bounding box centered at (3,3)
 ```
 
-PutAt
-=====
-
+## PutAt
 This command puts the objects so that its specified anchor point is located at a given coordinates. The anchor point of a object can be one of the defined in the `Anchor.Type` enum, that is:
 
 -   `BY_CENTER` Center of the object.
@@ -56,9 +52,7 @@ it gives this image:
 
 The command `putAt` accepts a third argument `gap` to leave a space between the point and the anchor. This gap doesn’t apply for `Anchor.Type.BY_CENTER`.
 
-StackTo
-=======
-
+## StackTo
 The `StackTo` command works in a similar way that `putAt`, but allows to position an object relative to another one. For example, the following code creates 4 circles, and stacks them into a square in different ways:
 
 ``` java
@@ -102,9 +96,7 @@ Which produces this regular polygons pattern. Note that all polygons are vertica
 
 ![02b stackToExample2](02b_stackToExample2.png)
 
-StackToScreen
-=============
-
+## StackToScreen
 This methods is similar to `stackTo`, but it positions the object relative to the current view.
 
 ``` java
@@ -118,9 +110,7 @@ waitSeconds(5);
 
 There is shortcut method if you want to simply put the object at the center screen. The method `.center()` is equivalent to `.stackToScreen(Anchor.Type.BY_CENTER)`.
 
-Scaling objects
-===============
-
+# Scaling objects
 All `MathObject` instances can be scaled with the `scale` command. Scaling can be done from a given scale center or by default, the center of the object.
 
 ``` java
@@ -134,9 +124,7 @@ produces the result:
 
 <img src="04_ScaleExample1.png" alt="04 scaleExample1" style="zoom:50%;" />
 
-Rotating objects
-================
-
+# Rotating objects
 The `rotate` command rotates the object around a given center (or the center of the object if none given). The angle is specified in radians, but can also be given in degrees using the `DEGREES` constant. The format is `object.rotate(center_of_rotation,angle)` or `object.rotate(angle)`.
 
 For example:
@@ -153,9 +141,7 @@ Gives this spirograh-like picture:
 
 <img src="05_rotateExample1.png" alt="05 rotateExample1" style="zoom:50%;" />
 
-Affine Transforms
-=================
-
+# Affine Transforms
 `shift`, `rotate` and `scale` are particular cases of a more general affine transform implemented by the `AffineJTransform` class. This class defines general affine transforms in the 2D plane, and has several static convenience methods for some of the most common transforms:
 
 The `createTranslationTransform(Vec v)` or `createTranslationTransform(Point A, Point B)` creates a traslation transform. The `shift` command is just a shortcut for this transform. 
@@ -171,6 +157,7 @@ Given any `MathObject` instance, there are 2 main methods to use an `AffineJTran
     
 -   The `transform.getTransformed(object)` returns a copy of the object transformed. The original object is unaltered.
 
+## Homothecies
 The `createDirect2DHomothecy(Point A, Point B, Point C, Point D, double alpha)` is a combination of shifting, rotating and uniform scaling. This method generates the (only) direct homothecy that maps the points (A,B) into points (C,D). The `alpha` parameter is used for animations, as a value of `alpha=0` returns the identity transform and `alpha=1` returns the full transform. Intermediate values return intermediate transforms, interpolating the shifting, rotating, and scaling parameters adequately.
 
 Look at the following example:
@@ -197,6 +184,7 @@ Notice also another new method here, the `getPoint(n)` method in a `Shape`, will
 
 > **WARNING**: You should be careful, when defining the parameters of a transformation like `createDirect2DHomothecy(A, B, C, D, alpha)` if the points `A, B, C, D` are going to be actually modified by the transformation itself (for example, A is an instance of a point of the shape you are transforming). The safe approach in this case should be using copies of the points as parameters, with the `.copy()` method.
 
+## Reflections
 If we want to make a reflection of an object, we can use the static methods `createReflection` and `createReflectionByAxis`. They differ in the way the transformation is specified:
 
 -   `createReflection(Point A, Point B, double alpha)` creates the (only) reflection that maps the point `A` into point `B`. The reflection axis is the perpendicular bisector of the segment joining the two points.
@@ -221,7 +209,7 @@ waitSeconds(5);
 ```
 
 <img src="07_reflectionExample1.png" alt="07 reflectionExample1" style="zoom:50%;" />
-
+## General affine transforms
 There is also a more general way to define an affine transform using `createAffineTransformation(Point A, Point B, Point C, Point D, Point E, Point F, double lambda)`. It returns the (only) affine transform that maps the points (A,B,C) into (D,E,F), with the `lambda` interpolation parameter as in the previous methods. Here’s an example:
 
 ``` java
@@ -244,3 +232,5 @@ waitSeconds(5);
 That produces the following image:
 
 <img src="08_GeneralAffineExample1.png" alt="08 GeneralAffineExample1" style="zoom:50%;" />
+
+[back](../index.html)

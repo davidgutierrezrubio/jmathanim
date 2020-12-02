@@ -1,8 +1,9 @@
-## Applying styles
+[back](../index.html)
+# Applying styles
 
 Each `MathObject` has one `MODrawingProperties` object that stores drawing parameters.
 
-## Basic styles
+# Basic styles
 
 Each object has 2 colors: the draw color (changed with `.drawColor`), used drawing the contour  y the fill color (changed with `.fillColor`), used to fill the object. Each color is stores in a `JMColor`object, with the components red, green, blue and alpha. The `.thickness`method sets the thickness of the stroke used to draw the object.
 
@@ -33,7 +34,7 @@ waitSeconds(5);
 
 <img src="dashStyles.png" alt="image-20201105235906935" style="zoom: 67%;" />
 
-## Saving styles 
+# Saving styles 
 
 A concrete combination of drawing parameters can be saved in styles. The `config`objects stores the saved styles and has methods to manage them. To apply a style to an object, use the method `.style(styleName)`.
 
@@ -48,7 +49,7 @@ add(triangle,circle);
 waitSeconds(5);
 ```
 
-## Configuring the scene
+# Configuring the scene
 
 The `Scene` class has an instance of `JMathAnimConfig` class, named `config`, that allows to personalize global aspects of the animation. Most of these methods should be called only on the `setupSketch()`part of the animation. Invoking `config`methods in the `runSketch()`could lead to unpredictable behaviour.
 
@@ -78,9 +79,9 @@ config.setShadowParameters(10,15,15,.5f);//Sets shadow parameters (kernel 10, of
 config.setResourcesDir("c:\\resources");//Specifies resources directory at absolute path c:\resources
 ```
 
-## The configuration files
+# The configuration files
 
-### Loading config files
+## Loading config files
 
 All the settings an definitions can be stored in `XML` files and loaded with the `ConfigLoader`class. This class holds the static method `ConfigLoader.parseFile("file.xml")` . 
 
@@ -222,7 +223,7 @@ The `<include>` tag that appears at the beginning loads another config files.  I
 </JMathAnimConfig>
 ```
 
-### Configuration files syntax
+## Configuration files syntax
 
 As we said, the config files that you can read are in XML format. All files must have a root tag called `<JMathAnimConfig>`. Everything out of this tag is ignored.
 
@@ -263,3 +264,4 @@ Inside this tag, we may have
 
   The `<dotStyle>` is one of the values of the `enum DotStyle` in the `Point` class and sets how a `Point`object with this style will be drawn. Currently, the possible values are `CIRCLE`, `CROSS` and `PLUS`.
 
+[back](../index.html)

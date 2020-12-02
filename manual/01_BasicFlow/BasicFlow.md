@@ -1,5 +1,6 @@
-Basic flow of an animation
-==========================
+[back](../index.html)
+# Basic flow of an animation
+
 
 We will illustrate this with a simple example: Create a java class named  `movingDot.java` in your IDE with this code:
 
@@ -112,3 +113,5 @@ Actually, there is another, more procedural form, to do animations, with the `ad
 your objects like size or position and calling `advanceFrame()` each
 time. This way can be useful when you want to do complex movements like
 solving ODE or similar.
+
+[back](../index.html)

@@ -1,3 +1,4 @@
+[back](../index.html)
 # Creating a JMathAnim Project
 
 JMathAnim is a Java library using Maven as deployment tool. As as result, you can easily include it in any project using a modern IDE. For example, let's see how to create a JMathAnim project in Netbeans:
@@ -11,7 +12,7 @@ JMathAnim is a Java library using Maven as deployment tool. As as result, you ca
 ![image-20201110145157629](02_Install.png)
 
 
-
+# Adding Maven dependencies
 3) In the "Project files" section, we find the `pom.xml`file. This file is very important for a Maven based project. Among many things, it allows us to specify external dependencies. Double click to edit:
 
 ![image-20201110145320736](03_Install.png)
@@ -66,6 +67,7 @@ If you want to use the snapshot version, you need to add also the repository whe
 
 ![image-20201110150746477](07_install.png)
 
+# Writing the basic code
 7) Hit the "Clean and build" button. This will tell Maven to download all needed dependencies. Should download JavaFX and Xuggler, which, depending on you bandwidth, may take a few minutes. Then we will make this class a subclass of `Scene2D`. If everything goes well, the autocomplete should show the `Scene2D`class, and it will require you to implement the 2 abstract methods `setupSketch()` and `runSketch()`:
 
 ![image-20201110150929426](08_install.png)
@@ -91,3 +93,5 @@ And execute the code, pressing F6. You will be prompted for the `main` method th
 ![12_install](12_install.gif)
 
 And that's it! You have JMathAnim ready to create beautiful, educational, mathematical animations. Enjoy!
+
+[back](../index.html)
