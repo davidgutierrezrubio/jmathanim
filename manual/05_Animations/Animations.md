@@ -6,7 +6,7 @@ An `Animation` object has 3 important methods that should be understood if you w
 
 -   The `initialize(this)` method, which prepares the objects to be animated. It should be called immediately before the animation begins, that is, no modifications should be done to the objects between this method and the start of the animation. The only parameter it needs is the scene from where it is invoked, usually the own class, `this`.
 -   The `processAnimation`this method computes the time depending on the frame rate, and calls the next method. If the animation is finished, return `true`.
--   The `doAnim(double t)` method. This method actually performs the animation. The parameter `t` ranges from 0 to 1 where 0 is the beginning and 1 is the end. This is not actually the time, but the percentage of animation done. A second parameter computed is a "smoothed" version of the parameter `t`, where a smooth function is applied so that the animation starts and ends in a soft way, rather than with the lineal `t`. Currently, the smooth function used is
+-   The `doAnim(double t)` method. This method actually performs the animation. The parameter `t` ranges from 0 to 1 where 0 is the beginning and 1 is the end. This is not actually the time, but the percentage of animation done. Internally a second parameter computed is a "smoothed" version of the parameter `t`, where a smooth function is applied so that the animation starts and ends in a soft way, rather than with the lineal `t`. Currently, the smooth function used is
 
 ![lambda](lambda.png)
 
@@ -171,8 +171,6 @@ playAnimation(anim, anim2);
 waitSeconds(3);
 ```
 
-
-
 ![moveAlongpath](moveAlongpath.gif)
 
 You can try modifying the lambda function of each animation with the `setLambda` method to see what happens. For example, `anim.setLambda(x->x)` or `anim.setLambda(x->4*x*(1-x))`. 
@@ -180,11 +178,11 @@ You can try modifying the lambda function of each animation with the `setLambda`
 The ShowCreation animation
 --------------------------
 
-This animation draws the specified object and add it to the scene. Depending on the object, several strategies (that is several ways to actually create the object) are used, specified in the enum `ShowCreationStrategy`. Strategy is automatically chosen, but it can be overriden with the method `setStrategy`. 
+This animation draws the specified object and adds it to the scene. Depending on the object, several strategies (that is, several ways to actually create the object) are used, specified in the enum `ShowCreationStrategy`. Strategy is automatically chosen, but it can be overriden with the method `setStrategy`. 
 
 Forcing a specified strategy may lead to errors in some cases, as some methods are designed for specific subclasses, like `Line` or `Arrow2D`.
 
-Let’s show with an example. Using the short version with the `play` object:
+Let’s show it with an example. We use the short version with the `play` object:
 
 ``` java
 Shape sq=Shape.square().fillColor("#87556f").thickness(2).center();
@@ -226,7 +224,7 @@ waitSeconds(3);
 Note that the `transform` animation also interpolates drawing parameters
 as thickness and color.
 
-> **WARNING**: After transforming object `A` into `B`, in some cases the transformed object becomes unusable. You should using `B` after that in a general case. 
+> **WARNING**: After transforming object `A` into `B`, in some cases the transformed object becomes unusable. You should using `B` after that in a general case. In any case, `A` object is removed automatically from the scene.
 
 The precise method of transform depends on the type of source and destination objects.  For example, in the previous case, a point-by-point interpolation was chosen. However, if both shapes are regular polygons with the same number of sides, an homothecy is chosen to transform. We will show another example, not using the "long" form given by the `play` object:
 
@@ -305,7 +303,7 @@ AffineTransform related animations
 
 These animations are better explained with illustrative examples:
 
-The animation `Commands.affineTransform(double runtime, Point a, Point b, Point c, Point d, Point e, Point f, MathObject… objects) ` is the animated version of the `createAffineTransformation`we saw in the chapter dedicated to transforming objects:
+The animation `Commands.affineTransform(double runtime, Point a, Point b, Point c, Point d, Point e, Point f, MathObject… objects)` is the animated version of the `createAffineTransformation` we saw in the chapter dedicated to transforming objects:
 
 ```java
 Shape sq=Shape.square().center().scale(2);
@@ -324,7 +322,7 @@ waitSeconds(3);
 
 ![affineAnimation](affineAnimation.gif)
 
-The animation   `Commands.reflection(double runtime, Point A, Point B, MathObject… objects) `animates the reflection that maps point A into B.
+The animation `Commands.reflection(double runtime, Point A, Point B, MathObject… objects)` animates the reflection that maps point A into B.
 
 ```java
 Shape reg=Shape.regularPolygon(5).center();
@@ -370,7 +368,7 @@ waitSeconds(3);
 
 ## Transforming math expressions
 
-As we saw, the `LatexMathObject`allows to import mathematical expressions via LaTeX. JMathAnim implements a specific animation to transform an expression into another. First, we must analyze the internal structure of a `LatexMathObject`. This class inherites from the `MultiShape` class which manages an array of `Shape` objects. So, for example if we generate a math expression with the command
+As we saw, the `LatexMathObject` allows to import mathematical expressions via LaTeX. JMathAnim implements a specific animation to transform an expression into another. First, we must analyze the internal structure of a `LatexMathObject`. This class inherites from the `MultiShape` class which manages an array of `Shape` objects. So, for example if we generate a math expression with the command
 
 ```java
 LaTeXMathObject t1=LaTeXMathObject.make("$2+2=4$");
@@ -395,11 +393,9 @@ play.transform(4, t1, t2);
 
 we obtain the following:
 
-
-
 ![equation01](equation01.gif)
 
-It's nice, but not illustrative. It would be better to force the "+2" to convert into "-2", and the original "=" sign to their destination "=" sign. For this we have the `TransformMathExpression` animation class. But first, we must be clear about the indices of the different shapes that compose the latex objects. For that, we have the method `formulaHelper` that takes a varargs of `LatexMathObject` objects, or `String` with the LaTeX code, overlays the shape number for each one, stacks the formulas vertically, zooms and adds them to the scene. If we execute, with the previous objects `t1` and `t2 `
+It's nice, but not illustrative. It would be better to force the "+2" to convert into "-2", and the original "=" sign to their destination "=" sign. For this we have the `TransformMathExpression` animation class. But first, we must be clear about the indices of the different shapes that compose the latex objects. For that, we have the method `formulaHelper` that takes a varargs of `LatexMathObject` objects, or `String` with the LaTeX code, overlays the shape number for each one, stacks the formulas vertically, zooms and adds them to the scene. If we execute, with the previous objects `t1` and `t2`.
 
 ```java
 formulaHelper(t1,t2);
@@ -418,7 +414,7 @@ We create a new `TransformMathExpression` animation object, with the expected pa
 TransformMathExpression tr=new TransformMathExpression(5, t1, t2);
 ```
 
-The `TransformMathExpression`  objects admits several commands to define the precise transform we want to do. In this case, we want to transform the original shape 0 (x) to destiny shape 0 (x). This is stated with the command`map`
+The `TransformMathExpression` objects admits several commands to define the precise transform we want to do. In this case, we want to transform the original shape 0 (x) to destiny shape 0 (x). This is stated with the command`map`
 
 ```java
 tr.map(0,0);//Transforms orig-shape 0 to dst-shape 0
@@ -443,8 +439,6 @@ tr.map(3,1);//Transforms orig-shape 3 to dst-shape 1
 ```
 
 What about shape 4 (the "0" sign)? If we don't specify a destination, this shape is marked for removal, with a `fadeOut` animation by default. If we play this animation with the `playAnimation` method we have:
-
-
 
 ![equation03](equation03.gif)
 
@@ -615,7 +609,7 @@ Any shape whose index is not mapped to a destiny index or group is marked for re
 
 In a similar way, any destiny shape not mapped by a origin index or group is marked for adding, with one of the following ways, defined in the enum `TransformMathExpression.AddType`: `FADE_IN, GROW_IN, MOVE_IN_UP, MOVE_IN_LEFT, MOVE_IN_RIGHT, MOVE_IN_DOWN`.
 
-By default, `FADE_OUT` and `FADE_IN` are chosen for removing and adding. With the `setRemovingStyle`and `setAddingStyle` we can define individually the style for each shape.
+By default, `FADE_OUT` and `FADE_IN` are chosen for removing and adding. With the `setRemovingStyle` and `setAddingStyle` we can define individually the style for each shape.
 
 We'll show all of this in one single, beautiful, self-explicative, dizzying animation:
 
