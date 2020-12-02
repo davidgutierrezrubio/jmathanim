@@ -1,4 +1,4 @@
-Animations
+# Animations
 
 So far, we’ve learned to draw basic objects, and put them in the position we desire. What about animations? Well, that is what this library is meant for. We have the `Animation` class that will store any kind of animation you can do to an object. Not only `MathObject` instances can be animated, but also the `Camera` object. 
 
@@ -30,8 +30,8 @@ Also, there is a convenience object created, `play`, which performs easily most 
 
 In general, parameters of all animations always follow the structure `(runTime, parameters, object_1,…​,object_n)`. The last part is a varargs `MathObject`, this way, you can apply the animation to an arbitrary number of objects.
 
-Basic Animations
-----------------
+## Basic Animations
+
 
 The basic transformations also have their animated versions. They are defined as static methods in the `Commands` class.
 
@@ -175,8 +175,7 @@ waitSeconds(3);
 
 You can try modifying the lambda function of each animation with the `setLambda` method to see what happens. For example, `anim.setLambda(x->x)` or `anim.setLambda(x->4*x*(1-x))`. 
 
-The ShowCreation animation
---------------------------
+# The ShowCreation animation
 
 This animation draws the specified object and adds it to the scene. Depending on the object, several strategies (that is, several ways to actually create the object) are used, specified in the enum `ShowCreationStrategy`. Strategy is automatically chosen, but it can be overriden with the method `setStrategy`. 
 
@@ -207,8 +206,7 @@ play.showCreation(text);
 
 ![showCreation2](showCreation2.gif)
 
-The Transform animation
------------------------
+# The Transform animation
 
 The `Transform` class animates a smooth transform from one `Shape` object to another.
 
@@ -266,8 +264,8 @@ play.fadeOutAll();
 
 ![transform3](transform3.gif)
 
-Changing styles
----------------
+# Changing styles
+
 
 So far, we have seen how to animate the position or shape of an object. In the `Transform` animation, style of the transformed object changes smoothly to match the style of destiny too. There are a few animations related to the style of an object:
 
@@ -298,8 +296,7 @@ play.setStyle(3,"solidBlue",circle);
 
 will progressively change the drawing parameters of the `circle` object to adjust to the style `solidBlue` defined previously.
 
-AffineTransform related animations
-----------------------------------
+# AffineTransform related animations
 
 These animations are better explained with illustrative examples:
 
@@ -533,8 +530,6 @@ playAnimation(tr);
 waitSeconds(5);
 ```
 
-
-
 ![equation05](equation05.gif)
 
 ### Effects
@@ -639,8 +634,6 @@ tr.setAddingStyle(TransformMathExpression.AddType.MOVE_IN_UP, 5);
 playAnimation(tr);
 waitSeconds(3);
 ```
-
-
 
 ![equation12](equation12.gif)
 
