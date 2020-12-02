@@ -202,7 +202,7 @@ Here you have a GIF from the movie generated:
 
 ## A Pythagoras Theorem proof
 
-This show an scene with a background image and the shadow effect
+An animation with a background image and the shadow effect
 
 [Link to Youtube](https://www.youtube.com/watch?v=wogadxvkZi0)
 
