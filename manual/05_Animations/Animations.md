@@ -1,3 +1,4 @@
+[back](../index.html)
 # Animations
 
 So far, we’ve learned to draw basic objects, and put them in the position we desire. What about animations? Well, that is what this library is meant for. We have the `Animation` class that will store any kind of animation you can do to an object. Not only `MathObject` instances can be animated, but also the `Camera` object. 
@@ -637,3 +638,4 @@ waitSeconds(3);
 
 ![equation12](equation12.gif)
 
+[back](../index.html)
