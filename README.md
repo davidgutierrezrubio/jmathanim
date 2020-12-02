@@ -1,9 +1,9 @@
 # JMathAnim
-A (mostly) port of manim to java
+A Java library to make mathematical animations ([homepage](https://davidgutierrezrubio.github.io/jmathanim/))
 
 ## Introduction
 
-JMathAnim is a library written in JAVA intended to simplify the process of doing mathematical animations.
+JMathAnim is a library written in JAVA intended to simplify the process of doing mathematical animations. Initially inspired by the python manim library from 3Blue1Brown.
 
 ### Prerrequisites
 A machine with JDK installed
