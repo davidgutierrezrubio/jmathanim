@@ -1,3 +1,5 @@
+[home](https://davidgutierrezrubio.github.io/jmathanim/) [back](../index.html)
+
 # Examples gallery
 
 ## Taylor expansion of sin(x)
@@ -212,3 +214,6 @@ Visual proof of the sum of the 9 first odd numbers
 And here with the 40 first odd numbers...
 [Link to Youtube](https://www.youtube.com/watch?v=emEJ-EooNBc)
 
+
+
+[home](https://davidgutierrezrubio.github.io/jmathanim/) [back](../index.html)
