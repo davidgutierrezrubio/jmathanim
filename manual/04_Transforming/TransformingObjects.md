@@ -1,4 +1,4 @@
-[back](../index.html)
+[home](https://davidgutierrezrubio.github.io/jmathanim/) [back](../index.html)
 
 # Transforming Objects
 All classes that inherit from `MathObject` can be transformed. Several methods for shifting, rotating, scaling or aligning are defined, and most of them have their animated version. Note that also most of these methods return the object self, so that they can be applied consecutively like this  `object.method1().method2()…​`.
@@ -233,4 +233,4 @@ That produces the following image:
 
 <img src="08_GeneralAffineExample1.png" alt="08 GeneralAffineExample1" style="zoom:50%;" />
 
-[back](../index.html)
+[home](https://davidgutierrezrubio.github.io/jmathanim/) [back](../index.html)

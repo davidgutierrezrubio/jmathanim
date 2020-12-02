@@ -1,4 +1,5 @@
-[back](../index.html)
+[home](https://davidgutierrezrubio.github.io/jmathanim/) [back](../index.html)
+
 # Applying styles
 
 Each `MathObject` has one `MODrawingProperties` object that stores drawing parameters.
@@ -264,4 +265,4 @@ Inside this tag, we may have
 
   The `<dotStyle>` is one of the values of the `enum DotStyle` in the `Point` class and sets how a `Point`object with this style will be drawn. Currently, the possible values are `CIRCLE`, `CROSS` and `PLUS`.
 
-[back](../index.html)
+[home](https://davidgutierrezrubio.github.io/jmathanim/) [back](../index.html)

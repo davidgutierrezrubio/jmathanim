@@ -1,3 +1,5 @@
+[home](https://davidgutierrezrubio.github.io/jmathanim/) [back](../index.html)
+
 # User's Manual
 
 ## [Creating a project with JMathAnim](00_Installing/Installing.md)
@@ -14,3 +16,5 @@
 
 ## [Advanced topics](06_AdvancedTopics/AdvancedTopics.html)
 
+
+[home](https://davidgutierrezrubio.github.io/jmathanim/) [back](../index.html)

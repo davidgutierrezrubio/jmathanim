@@ -1,4 +1,5 @@
-[back](../index.html)
+[home](https://davidgutierrezrubio.github.io/jmathanim/) [back](../index.html)
+
 # Basic flow of an animation
 
 
@@ -114,4 +115,4 @@ your objects like size or position and calling `advanceFrame()` each
 time. This way can be useful when you want to do complex movements like
 solving ODE or similar.
 
-[back](../index.html)
+[home](https://davidgutierrezrubio.github.io/jmathanim/) [back](../index.html)

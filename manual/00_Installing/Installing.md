@@ -1,4 +1,5 @@
-[back](../index.html)
+[home](https://davidgutierrezrubio.github.io/jmathanim/) [back](../index.html)
+
 # Creating a JMathAnim Project
 
 JMathAnim is a Java library using Maven as deployment tool. As as result, you can easily include it in any project using a modern IDE. For example, let's see how to create a JMathAnim project in Netbeans:
@@ -94,4 +95,4 @@ And execute the code, pressing F6. You will be prompted for the `main` method th
 
 And that's it! You have JMathAnim ready to create beautiful, educational, mathematical animations. Enjoy!
 
-[back](../index.html)
+[home](https://davidgutierrezrubio.github.io/jmathanim/) [back](../index.html)

@@ -1,4 +1,4 @@
-[back](../index.html)
+[home](https://davidgutierrezrubio.github.io/jmathanim/) [back](../index.html)
 
 # Basic Objects
 
@@ -238,4 +238,4 @@ Notice the command `config.setBackgroundColor(JMColor.WHITE)` we had to put in t
 
 Importing a SVG creates a `MultiShape`object, that holds many `Shape`objects. Each object of the SVG file is converted to a `JMPath` and stored in a `Shape`object. So, you can perform transformations and animations like any other `Shape` object.
 
-[back](../index.html)
+[home](https://davidgutierrezrubio.github.io/jmathanim/) [back](../index.html)
