@@ -106,7 +106,49 @@ public Shape getNextKochIteration(Shape previousShape) {
 
 You can [see the video here](https://imgur.com/gallery/8jCXGWf).
 
+## The Hilbert curve
 
+```java
+@Override
+public void runSketch() throws Exception {
+    int numIters = 7;
+    Shape unitSquare = Shape.square().center().scale(-1, 1);
+    Shape hilbert = unitSquare.copy().scale(.5).rotate(-90 * DEGREES);
+    unitSquare.thickness(2).drawColor("#153e90").fillColor("#FDFDFD");
+    camera.setGaps(.1, .1);
+    camera.zoomToObjects(unitSquare);
+    hilbert.getJMPoint(0).isThisSegmentVisible = false;
+    Shape previous = hilbert;
+    add(unitSquare);
+    for (int n = 0; n < numIters; n++) {
+        hilbert = getNextHilbert(unitSquare, hilbert);
+        play.transform(2, previous, hilbert);
+        previous = hilbert;
+    }
+    waitSeconds(3);
+}
+
+public Shape getNextHilbert(Shape box, Shape previous) {
+    Shape s1 = previous.copy().scale(box.getPoint(1), .5, .5);
+    AffineJTransform.createReflectionByAxis(s1.getBoundingBox().getUR(), s1.getBoundingBox().getDL(), 1).applyTransform(s1);
+
+    Shape s2 = previous.copy().scale(box.getPoint(2), .5, .5);
+    s2.getJMPoint(0).isThisSegmentVisible = true;
+    Shape s3 = previous.copy().scale(box.getPoint(3), .5, .5);
+    s3.getJMPoint(0).isThisSegmentVisible = true;
+    Shape s4 = previous.copy().scale(box.getPoint(0), .5, .5);
+    s4.getJMPoint(0).isThisSegmentVisible = true;
+    AffineJTransform.createReflectionByAxis(s4.getBoundingBox().getDR(), s4.getBoundingBox().getUL(), 1).applyTransform(s4);
+
+    s1.getPath().addJMPointsFrom(s2.getPath());//Add all points of s2
+    s1.getPath().addJMPointsFrom(s3.getPath());//Add all points of s3
+    s1.getPath().addJMPointsFrom(s4.getPath());//Add all points of s4
+
+    return s1;
+}
+```
+
+You can [see the video here](https://imgur.com/gallery/7ZRnq0I).
 
 ## The Tusi couple
 
