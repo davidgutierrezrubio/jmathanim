@@ -1,5 +1,5 @@
 # JMathAnim
-A Java library to make mathematical animations
+A Java library to make mathematical animations ([homepage](https://davidgutierrezrubio.github.io/jmathanim/))
 
 ## Introduction
 
