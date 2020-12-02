@@ -31,7 +31,7 @@ Also, there is a convenience object created, `play`, which performs easily most 
 
 In general, parameters of all animations always follow the structure `(runTime, parameters, object_1,…​,object_n)`. The last part is a varargs `MathObject`, this way, you can apply the animation to an arbitrary number of objects.
 
-## Basic Animations
+# Basic Animations
 
 
 The basic transformations also have their animated versions. They are defined as static methods in the `Commands` class.
@@ -76,7 +76,7 @@ play.scale(3,.7,sq);
 play.scale(3,Point.at(0,0),.7,1.5,sq);
 ```
 
-## Camera animations
+# Camera animations
 
 The `play` object has also most animations related to the view camera:
 
@@ -100,7 +100,7 @@ play.adjustCameraToAllObjects(3);
 Before adjusting the camera to objects, you can define the gaps used to leave space between the objects and the border of the screen, with the
 `camera.setGaps(hGap,vGap)` method.
 
-## Enter and exit animations
+# Enter and exit animations
 
 Some method to add or remove objects to the scene are also included:
 
@@ -155,7 +155,7 @@ waitSeconds(1);
 
 ![fadeHighLightShrinkDemo](fadeHighLightShrinkDemo.gif)
 
-## Moving along a path
+# Moving along a path
 
 The `MoveAlongPath` animations move an object along a specified path. You can provide a `Shape` object or a `JMPath`objec to determine the path. The moved object will be located with the specified `Anchor` point.
 
@@ -300,7 +300,7 @@ will progressively change the drawing parameters of the `circle` object to adjus
 # AffineTransform related animations
 
 These animations are better explained with illustrative examples:
-
+## Affine transform
 The animation `Commands.affineTransform(double runtime, Point a, Point b, Point c, Point d, Point e, Point f, MathObject… objects)` is the animated version of the `createAffineTransformation` we saw in the chapter dedicated to transforming objects:
 
 ```java
@@ -320,6 +320,7 @@ waitSeconds(3);
 
 ![affineAnimation](affineAnimation.gif)
 
+## Reflection
 The animation `Commands.reflection(double runtime, Point A, Point B, MathObject… objects)` animates the reflection that maps point A into B.
 
 ```java
@@ -348,6 +349,7 @@ waitSeconds(3);
 
 ![reflection2Anim](reflection2Anim.gif)
 
+## Homothecy
 The animation `Commands.homothecy(double runtime, Point a, Point b, Point c, Point d, MathObject... objects)` animates the only direct homothecy that maps A into C and B into D:
 
 ```java
@@ -364,7 +366,7 @@ waitSeconds(3);
 
 ![homothecyAnim](homothecyAnim.gif)
 
-## Transforming math expressions
+# Transforming math expressions
 
 As we saw, the `LatexMathObject` allows to import mathematical expressions via LaTeX. JMathAnim implements a specific animation to transform an expression into another. First, we must analyze the internal structure of a `LatexMathObject`. This class inherites from the `MultiShape` class which manages an array of `Shape` objects. So, for example if we generate a math expression with the command
 
@@ -450,7 +452,7 @@ we make that the center of glyph 1 of `t2` (its "=" sign) match the center of th
 
 ![equation04](equation04.gif)
 
-### Range mapping
+## Range mapping
 
 If we need to map a bunch of consecutive origin indices into another bunch of consecutive destiny indices, the method `mapRange(OrigA,OrigB,dst)` do exactly this. The command
 
@@ -468,7 +470,7 @@ tr.map(6,16);
 tr.map(7,17);
 ```
 
-### Grouping 
+## Grouping 
 
 Suppose we have the following complex number expressions.  The second one is the first simplified. We want to animate a descriptive transition from `t1` to `t2`.
 
@@ -533,7 +535,7 @@ waitSeconds(5);
 
 ![equation05](equation05.gif)
 
-### Effects
+## Effects
 
 Each mapping from one shape (or group) to another can be decorated with some effects. These can be added right after the `map` command, with the following methods. Let's show them with an example. Suppose we want to animate the commutative property of the sum. Define the 2 `LaTexMathObject` objects and make an animation:
 
@@ -599,7 +601,7 @@ tr.map(2,0).setJumpHeight(.1).setNumTurns(1).setScale(.5);
 
 ![equation11](equation11.gif)
 
-### Shapes marked for removal or adding
+## Shapes marked for removal or adding
 
 Any shape whose index is not mapped to a destiny index or group is marked for removal. Currently, there are 6  types, defined in the enum `TransformMathExpression.RemoveType`: `FADE_OUT, SHRINK_OUT, MOVE_OUT_UP, MOVE_OUT_LEFT, MOVE_OUT_RIGHT, MOVE_OUT_DOWN`.
 
