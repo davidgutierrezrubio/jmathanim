@@ -152,7 +152,7 @@ public class CanonicalJMPath {
  {
         JMPath resul = new JMPath();
         for (JMPath p : paths) {
-            resul.addPointsFrom(p);
+            resul.addJMPointsFrom(p);
         }
         return resul;
  }

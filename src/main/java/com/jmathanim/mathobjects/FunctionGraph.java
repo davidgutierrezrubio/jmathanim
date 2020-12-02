@@ -55,7 +55,7 @@ public class FunctionGraph extends Shape {
     }
 
     public static FunctionGraph make(DoubleUnaryOperator function, double xmin, double xmax) {
-        return new FunctionGraph(function, xmin,xmax);
+        return new FunctionGraph(function, xmin, xmax);
     }
 
     public FunctionGraph(DoubleUnaryOperator function, double xmin, double xmax) {
@@ -87,6 +87,8 @@ public class FunctionGraph extends Shape {
     public FunctionGraph(DoubleUnaryOperator function, ArrayList<Double> xPoints) {
         this.function = function;
         this.xPoints = xPoints;
+        this.functionBase = function;
+        this.functionType = FunctionDefinitionType.LAMBDA;
         generateFunctionPoints();
     }
 
@@ -193,7 +195,9 @@ public class FunctionGraph extends Shape {
 
     @Override
     public FunctionGraph copy() {
-        FunctionGraph resul = new FunctionGraph(function, xPoints);
+        ArrayList<Double> xPointsCopy = new ArrayList<>(xPoints);
+        FunctionGraph resul = new FunctionGraph(function, xPointsCopy);
+        resul.mp.copyFrom(mp);
         return resul;
     }
 

@@ -41,7 +41,7 @@ import com.jmathanim.mathobjects.Shape;
  * @author David Gutierrez Rubio davidgutierrezrubio@gmail.com
  */
 public class ShowCreation extends Animation {
-
+    
     public enum ShowCreationStrategy {
         NONE,
         FIRST_DRAW_AND_THEN_FILL,
@@ -53,7 +53,7 @@ public class ShowCreation extends Animation {
         DELIMITER_CREATION,
         GROUP_CREATION
     }
-
+    
     MathObject mobj;
     CanonicalJMPath canonPath;
     private MultiShapeObject msh;
@@ -70,7 +70,7 @@ public class ShowCreation extends Animation {
         super(runtime);
         this.mobj = mobj;
     }
-
+    
     @Override
     public void initialize(JMathAnimScene scene) {
         super.initialize(scene);
@@ -85,12 +85,12 @@ public class ShowCreation extends Animation {
             JMathAnimScene.logger.error("Couldn't create ShowCreation strategy for " + this.mobj.getClass().getCanonicalName() + ". Animation will not be done. (" + e.toString() + ")");
         }
     }
-
+    
     @Override
     public void doAnim(double t) {
         //This should't be called, all process through processAnimation
     }
-
+    
     @Override
     public boolean processAnimation() {
         if (creationStrategy != null) {
@@ -99,7 +99,7 @@ public class ShowCreation extends Animation {
             return true;
         }
     }
-
+    
     @Override
     public void finishAnimation() {
         if (creationStrategy != null) {
@@ -146,7 +146,7 @@ public class ShowCreation extends Animation {
             this.strategyType = ShowCreationStrategy.SIMPLE_SHAPE_CREATION;
             return;
         }
-
+        
     }
 
     /**
@@ -179,9 +179,26 @@ public class ShowCreation extends Animation {
                 JMathAnimScene.logger.debug("ShowCreation method: ArrowCreationStrategy");
                 break;
             case DELIMITER_CREATION:
-                creationStrategy = Commands.growIn(this.runTime, (Delimiter) mobj);
+                Delimiter del = (Delimiter) mobj;
+                creationStrategy = new Animation(runTime) {
+                    @Override
+                    public void initialize(JMathAnimScene scene) {
+                        super.initialize(scene);                        
+                        addObjectsToscene(del);
+                    }
+                    
+                    @Override
+                    public void doAnim(double t) {
+                        del.setDelimiterScale(lambda.applyAsDouble(t));
+                    }
+                    
+                    @Override
+                    public void finishAnimation() {
+                    }
+                };
                 JMathAnimScene.logger.debug("ShowCreation method: Delimiter (growIn)");
                 break;
+            
             case SIMPLE_SHAPE_CREATION:
                 creationStrategy = new SimpleShapeCreationAnimation(runTime, (Shape) mobj);
                 JMathAnimScene.logger.debug("ShowCreation method: SimpleShapeCreationStrategy");
@@ -202,10 +219,10 @@ public class ShowCreation extends Animation {
                 break;
         }
     }
-
+    
     public <T extends ShowCreation> T setStrategyType(ShowCreationStrategy strategyType) {
         this.strategyType = strategyType;
         return (T) this;
     }
-
+    
 }

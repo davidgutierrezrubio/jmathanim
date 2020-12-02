@@ -150,7 +150,7 @@ public class JMPath implements Updateable, Stateable {
      *
      * @param jmpathTemp
      */
-    public void addPointsFrom(JMPath jmpathTemp) {
+    public void addJMPointsFrom(JMPath jmpathTemp) {
         jmPathPoints.addAll(jmpathTemp.jmPathPoints);
     }
 
@@ -509,9 +509,9 @@ public class JMPath implements Updateable, Stateable {
         //This should do nothing, let their points to update by themselves
     }
 
-    public void addJMPoints(JMPath path) {
+    public void setJMPoints(JMPath path) {
         this.clear();
-        this.addPointsFrom(path.rawCopy());
+        this.addJMPointsFrom(path.rawCopy());
         this.pathType = path.pathType;
         this.visiblePoints.clear();
         this.visiblePoints.addAll(path.visiblePoints);
@@ -655,30 +655,27 @@ public class JMPath implements Updateable, Stateable {
         return resul;
     }
 
-    public JMPath distille() {
-        JMPath resul = rawCopy();
+    public void distille() {
         //Delete points that are separated
-        resul.removeConsecutiveHiddenVertices();
+        this.removeConsecutiveHiddenVertices();
         ArrayList<JMPathPoint> toDelete = new ArrayList<>();
 
         double epsilon = .000001;
         int n = 0;
-        while (n < resul.size()) {
-            JMPathPoint p1 = resul.getJMPoint(n);
-            JMPathPoint p2 = resul.getJMPoint(n + 1);
+        while (n < this.size()) {
+            JMPathPoint p1 = this.getJMPoint(n);
+            JMPathPoint p2 = this.getJMPoint(n + 1);
             if (p1.p.isEquivalenTo(p2.p, epsilon)) {
                 p1.cp2.copyFrom(p2.cp2);
 //                if (p2.isThisSegmentVisible) {
                 p1.isThisSegmentVisible = true;
 //                }
-                resul.jmPathPoints.remove(p2);
+                this.jmPathPoints.remove(p2);
                 n = 0;
             } else {
                 n++;
             }
         }
-
-        return resul;
     }
 
 

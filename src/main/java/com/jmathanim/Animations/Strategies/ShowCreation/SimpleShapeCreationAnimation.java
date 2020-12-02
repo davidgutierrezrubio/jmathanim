@@ -68,7 +68,7 @@ public class SimpleShapeCreationAnimation extends Animation {
                 //Restore all paths because in each loop there will be modified
                 msh.shapes.get(n).jmpath.clear();
                 final JMPath path = canonPath.get(n);
-                msh.shapes.get(n).jmpath.addPointsFrom(path);
+                msh.shapes.get(n).jmpath.addJMPointsFrom(path);
             }
             return;
         }
@@ -84,7 +84,7 @@ public class SimpleShapeCreationAnimation extends Animation {
             //Restore all paths because in each loop there will be modified
             msh.shapes.get(n).jmpath.clear();
             final JMPath path = canonPath.get(n);
-            msh.shapes.get(n).jmpath.addPointsFrom(path);
+            msh.shapes.get(n).jmpath.addJMPointsFrom(path);
 
             if (n < pathNumber) {
                 msh.shapes.get(n).visible(true);//Draw whole path
@@ -98,7 +98,7 @@ public class SimpleShapeCreationAnimation extends Animation {
                 final double alphaInThisPath = (k + alpha) / (msh.shapes.get(n).jmpath.size() - 1);
                 JMPath subpath = canonPath.subpath(n, alphaInThisPath);
                 msh.shapes.get(n).jmpath.clear();
-                msh.shapes.get(n).jmpath.addPointsFrom(subpath);
+                msh.shapes.get(n).jmpath.addJMPointsFrom(subpath);
             }
         }
     }

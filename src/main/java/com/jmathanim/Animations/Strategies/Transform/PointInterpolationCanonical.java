@@ -80,7 +80,7 @@ public class PointInterpolationCanonical extends Animation {
 
         }
         mobjTransformed.getPath().clear();
-        mobjTransformed.getPath().addPointsFrom(connectedOrigin.toJMPath());
+        mobjTransformed.getPath().addJMPointsFrom(connectedOrigin.toJMPath());
         scene.add(mobjTransformed);
 
     }
@@ -123,7 +123,7 @@ public class PointInterpolationCanonical extends Animation {
     @Override
     public void finishAnimation() {
         mobjTransformed.jmpath.clear();
-        mobjTransformed.jmpath.addPointsFrom(mobjDestinyOrig.getPath());
+        mobjTransformed.jmpath.addJMPointsFrom(mobjDestinyOrig.getPath());
         mobjTransformed.mp.copyFrom(mobjDestinyOrig.mp);
         mobjTransformed.absoluteSize = mobjDestinyOrig.absoluteSize;
         for (Shape shapesToRemove : addedAuxiliaryObjectsToScene) {

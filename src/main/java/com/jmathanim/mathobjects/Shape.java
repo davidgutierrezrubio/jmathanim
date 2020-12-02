@@ -177,7 +177,7 @@ public class Shape extends MathObject {
         jmpath.saveState();
     }
 
-    public void merge(Shape sh) {
+    public <T extends Shape> T merge(Shape sh) {
         JMPath pa = sh.getPath();
 
         final JMPathPoint jmPoint = jmpath.getJMPoint(0);
@@ -192,6 +192,7 @@ public class Shape extends MathObject {
             jmPoint2.isThisSegmentVisible = false;
         }
         jmpath.jmPathPoints.addAll(pa.jmPathPoints);
+        return (T) this;
     }
 
     public int size() {

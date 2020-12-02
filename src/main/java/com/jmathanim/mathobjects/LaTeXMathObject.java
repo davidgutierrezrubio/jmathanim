@@ -204,14 +204,28 @@ public class LaTeXMathObject extends SVGMathObject {
         return shapes.size();
     }
 
-
-
     public String getText() {
         return text;
     }
-    
-    public LaTeXMathObject setColor(JMColor col, int...indices){
-        for (int i:indices){
+
+    public LaTeXMathObject setColor(String str) {
+        return setColor(JMColor.parse(str));
+    }
+
+    public LaTeXMathObject setColor(JMColor col) {
+        for (Shape sh : shapes) {
+            sh.drawColor(col);
+            sh.fillColor(col);
+        }
+        return this;
+    }
+
+    public LaTeXMathObject setColor(String str, int... indices) {
+        return setColor(JMColor.parse(str), indices);
+    }
+
+    public LaTeXMathObject setColor(JMColor col, int... indices) {
+        for (int i : indices) {
             this.get(i).drawColor(col);
             this.get(i).fillColor(col);
         }

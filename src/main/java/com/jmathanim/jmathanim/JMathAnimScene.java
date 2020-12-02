@@ -396,6 +396,7 @@ public abstract class JMathAnimScene {
      * @param time Time in seconds.
      */
     public void waitSeconds(double time) {
+        JMathAnimScene.logger.info("Waiting "+time+" seconds");
         int numFrames = (int) (time * fps);
         for (int n = 0; n < numFrames; n++) {
             try {

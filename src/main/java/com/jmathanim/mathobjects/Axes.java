@@ -50,12 +50,17 @@ public class Axes extends MathObject {
 
     public void generateXTicks(double start, double finish, double step) {
         for (double x = start; x < finish; x += step) {
-            addXTicksLegend(x);
+            if (x != 0) {
+                addXTicksLegend(x);
+            }
         }
     }
-     public void generateYTicks(double start, double finish, double step) {
+
+    public void generateYTicks(double start, double finish, double step) {
         for (double y = start; y < finish; y += step) {
-            addYTicksLegend(y);
+            if (y != 0) {
+                addYTicksLegend(y);
+            }
         }
     }
 

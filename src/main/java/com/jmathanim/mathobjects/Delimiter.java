@@ -31,6 +31,7 @@ public class Delimiter extends Shape {
 
     private final Point A, B;
     private SVGMathObject body;
+    private double delimiterScale;
 
     /**
      * Type of delimiter
@@ -83,6 +84,7 @@ public class Delimiter extends Shape {
         resul.setBody(new SVGMathObject(rl.getResource(name, "delimiters")));
         resul.style("latexdefault");
         resul.drawAlpha(0);//This is necessary so that "stitches" are not seen when fadeIn or fadeOut
+        resul.delimiterScale = 1;
         return resul;
     }
 
@@ -102,7 +104,9 @@ public class Delimiter extends Shape {
     }
 
     private MultiShapeObject generateDelimiter() {
-        double width = A.to(B).norm();
+        Point AA = A.interpolate(B, .5 * (1 - delimiterScale));
+        Point BB = B.interpolate(A, .5 * (1 - delimiterScale));
+        double width = AA.to(BB).norm();
 
         MultiShapeObject resul = body.copy();
         for (Shape sh : resul) {
@@ -139,7 +143,7 @@ public class Delimiter extends Shape {
 
         Rect bb = resul.getBoundingBox();
         resul.shift(0, gap);
-        AffineJTransform tr = AffineJTransform.createDirect2DHomothecy(bb.getDL(), bb.getDR(), A, B, 1);
+        AffineJTransform tr = AffineJTransform.createDirect2DHomothecy(bb.getDL(), bb.getDR(), AA, BB, 1);
         tr.applyTransform(resul);
         return resul;
     }
@@ -156,6 +160,18 @@ public class Delimiter extends Shape {
     @Override
     public Rect getBoundingBox() {
         return generateDelimiter().getBoundingBox();
+    }
+
+    /**
+     * Returns the scale of the delimiter. A value of 1 draws the delimiter from
+     * one anchor point to another. Smaller values scales the delimiter in the
+     * same proportion. This value is used mainly for showCreation
+     * animations-like.
+     *
+     * @param delimiterScale The delimiter scale, from 0 to 1
+     */
+    public void setDelimiterScale(double delimiterScale) {
+        this.delimiterScale = delimiterScale;
     }
 
 }
