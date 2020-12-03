@@ -152,7 +152,7 @@ public class ConfigLoader {
                 MODrawProperties mp = parseMathObjectDrawingProperties(item);
                 if (item.getNodeType() == Node.ELEMENT_NODE) {
                     Element el = (Element) item;
-                    config.getStyles().put(el.getAttribute("name"), mp);
+                    config.getStyles().put(el.getAttribute("name").toUpperCase(), mp);
                 }
 
             }

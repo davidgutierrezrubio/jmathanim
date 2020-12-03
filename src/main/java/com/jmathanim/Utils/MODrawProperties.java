@@ -239,6 +239,7 @@ public class MODrawProperties implements Stateable {
      * @param name The name of the style
      */
     public void loadFromStyle(String name) {
+        name=name.toUpperCase();
         HashMap<String, MODrawProperties> styles = JMathAnimConfig.getConfig().getStyles();
         if (styles.containsKey(name)) {
             this.copyFrom(styles.get(name));

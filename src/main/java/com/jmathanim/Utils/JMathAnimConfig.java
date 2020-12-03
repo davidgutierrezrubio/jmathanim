@@ -229,16 +229,16 @@ public class JMathAnimConfig {
         defaultMP.thickness = 1d;
         defaultMP.dashStyle = MODrawProperties.DashStyle.SOLID;
         defaultMP.absoluteThickness = false;
-        styles.put("default", defaultMP);
+        styles.put("DEFAULT", defaultMP);
 
         MODrawProperties latexDefaultMP = defaultMP.copy();
         latexDefaultMP.setFillColor(JMColor.WHITE);
         latexDefaultMP.setFillAlpha(1);//Latex formulas are filled by default
-        styles.put("latexdefault", latexDefaultMP);
+        styles.put("LATEXDEFAULT", latexDefaultMP);
     }
 
     public MODrawProperties getDefaultMP() {
-        return styles.get("default").copy();
+        return styles.get("DEFAULT").copy();
     }
 
     public File getResourcesDir() {
@@ -288,12 +288,12 @@ public class JMathAnimConfig {
     }
 
     public MODrawProperties createStyleFrom(MODrawProperties mp, String styleName) {
-        return styles.put(styleName, mp);
+        JMathAnimScene.logger.info("Creating style {}", styleName.toUpperCase());
+        return styles.put(styleName.toUpperCase(), mp);
     }
 
     public MODrawProperties createStyleFrom(MathObject obj, String styleName) {
-        JMathAnimScene.logger.info("Creating style {}", styleName);
-        return styles.put(styleName, obj.mp);
+        return createStyleFrom(obj.getMp(), styleName);
     }
 
     public void setMediaW(int mediaW) {
