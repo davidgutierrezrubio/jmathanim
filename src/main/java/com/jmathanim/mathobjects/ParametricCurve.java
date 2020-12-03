@@ -29,7 +29,7 @@ import java.util.function.DoubleUnaryOperator;
  */
 public class ParametricCurve extends Shape {
 
-    public static final double DELTA_DERIVATIVE = .00001d;
+    public static final double DELTA_DERIVATIVE = .000000001d;
     public static final int DEFAULT_NUMBER_OF_POINTS = 50;
     private DoubleUnaryOperator functionXBackup;
     private DoubleUnaryOperator functionYBackup;

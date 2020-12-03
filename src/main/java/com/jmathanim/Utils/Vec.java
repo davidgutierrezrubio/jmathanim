@@ -30,6 +30,10 @@ public class Vec implements Stateable {
     public double x, y, z;
     public double xState, yState, zState;
 
+    public Vec(double[] xy) {
+        this(xy[0], xy[1]);
+    }
+
     public Vec(double x, double y) {
         this(x, y, 0);
     }
@@ -143,17 +147,17 @@ public class Vec implements Stateable {
         double angle = Math.atan2(this.y, this.x);
         return angle;
     }
+
     /**
      * Return the angle of the vector, between -PI and PI
      *
      * @return The angle
      */
     public double getAngleFC() {
-        double angle = Math.atan(this.y/this.x);
+        double angle = Math.atan(this.y / this.x);
         return angle;
     }
-    
-    
+
     @Override
     public int hashCode() {
         int hash = 7;
