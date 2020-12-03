@@ -60,7 +60,27 @@ public final DoubleUnaryOperator TaylorExpansionSin(int order) {
 
 You can [see the video here](https://imgur.com/gallery/PjlVtXw).
 
+## Trifolium into Freeth's Nephroid (and back)
 
+Two parametric curves expressed in polar coordinates. Note that we made a copy of the first one as it becomes altered after the first `transform`.
+
+```java
+add(new Axes());
+ParametricCurve trifollium = ParametricCurve.makePolar(t -> 2*Math.cos(t)*(4*Math.sin(t)*Math.sin(t)-1), t -> t, 0, PI);
+ParametricCurve nephroid = ParametricCurve.makePolar(t -> 1 + 2 * Math.sin(t / 2), t -> t, 0, 4 * PI);
+
+trifollium.drawColor("#153e90").thickness(3);
+nephroid.drawColor("#a05344").thickness(3);
+ParametricCurve trifolliumCopy = trifollium.copy();
+
+camera.adjustToObjects(trifollium, nephroid);
+play.transform(5, trifollium, nephroid);
+play.transform(5, nephroid, trifolliumCopy);
+```
+
+Here you have a GIF from the movie generated:
+
+![Trifollium](Trifollium.gif)
 
 ## The Koch curve
 

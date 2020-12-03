@@ -19,6 +19,7 @@ Version 0.8.6-SNAPSHOT:
 - Fixed bug when zooming arrows.
 - Added double arrows with the `makeDoubleArrow2D` static method.
 - Added type 3 of arrow.
+- Added `ParametricCurve.make` and `ParametricCurve.makePolar` static methods.
 # Prerrequisites
 A machine with JDK 1.8 installed. A Java IDE editor like [Netbeans](https://netbeans.org/) or [Eclipse](https://www.eclipse.org/projects/) is recommended.
 
