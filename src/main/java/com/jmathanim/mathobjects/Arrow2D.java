@@ -175,12 +175,23 @@ public class Arrow2D extends MathObject {
     }
 
     /**
-     * Returns the arrow head
+     * Returns the arrow head 1, located at the end of the segment
      *
      * @return A SVGMathObject representing the arrow head
      */
-    public MultiShapeObject getArrowHead() {
-        return head1;
+    public MultiShapeObject getArrowHead1() {
+        update(JMathAnimConfig.getConfig().getScene());//TODO: Remove this coupling
+        return arrowHeadToDraw1;
+    }
+
+    /**
+     * Returns the arrow head 2, located at the beginning of the segment
+     *
+     * @return A SVGMathObject representing the arrow head
+     */
+    public MultiShapeObject getArrowHead2() {
+        update(JMathAnimConfig.getConfig().getScene());//TODO: Remove this coupling
+        return arrowHeadToDraw2;
     }
 
     /**

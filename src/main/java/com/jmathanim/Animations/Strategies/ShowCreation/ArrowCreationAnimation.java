@@ -21,6 +21,7 @@ package com.jmathanim.Animations.Strategies.ShowCreation;
 import com.jmathanim.Animations.Animation;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.Arrow2D;
+import com.jmathanim.mathobjects.Point;
 
 /**
  *
@@ -48,7 +49,11 @@ public class ArrowCreationAnimation extends Animation {
     public void doAnim(double t) {
         double lt=lambda.applyAsDouble(t);
         obj.restoreState();
-        obj.scale(obj.getBody().getPoint(0), lt, lt);
+        //If there is only head 1 (the ending point), scale from the beginning
+        //if there are 2 heads (ending and beginning point), better scale from the center
+        Point scaleCenter=(obj.getArrowHead2().size()>0 ? obj.getCenter() : obj.getBody().getPoint(0));
+        
+        obj.scale(scaleCenter, lt, lt);
         obj.scaleArrowHead1(lt*obj.getScaleArrowHead1());
         obj.scaleArrowHead2(lt*obj.getScaleArrowHead2());
     }
