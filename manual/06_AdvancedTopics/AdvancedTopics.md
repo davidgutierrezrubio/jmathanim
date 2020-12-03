@@ -24,7 +24,7 @@ play.shift(3,-2,0,A);
 waitSeconds(3);
 ```
 
-We want to create a `Point`subclass that automatically locates at the inverse coordinates of point `A`. As the `Point` class implements the `updateable` interface, the easiest way is to subclass the `Point` and override the `getUpdateLevel` and `update` methods.
+We want to create a `Point`subclass that automatically locates at the normalized coordinates of point `A`, that is, the projection of `A` into the unit circle. As the `Point` class implements the `updateable` interface, the easiest way is to subclass the `Point` and override the `getUpdateLevel` and `update` methods.
 
 ```java
 class UnitPoint extends Point {
@@ -155,7 +155,7 @@ playAnimation(shift, rotate);
 waitSeconds(3);
 ```
 
-You'll obtain a square rotating, but not shifting at all. The reason is that each animation saves the state of the object in the `initialize` method and restore it at each call of `doAnim` where the changes are done. So, the restore state call of the `rotate` animation erases the changes made by the `shift` animation. The solution is quite simple, as every animation has the method `.setUseObjectState(false)` that activates or deactivates the saving and restoring of states. In this case, as the `rotate` animation is executed each frame after the `shift`, we let this to manage states, and deactivates for the `rotate` animation.
+You'll obtain a square rotating, but not shifting at all. The reason is that each animation saves the state of the object in the `initialize` method and restore it at each call of `doAnim` where the changes are done. So, the restore state call of the `rotate` animation erases the changes made by the `shift` animation. The solution is quite simple, as every animation has the method `.setUseObjectState` that activates or deactivates the saving and restoring of states. In this case, as the `rotate` animation is executed each frame after the `shift`, we let this one to manage states, and deactivates it for the `rotate` animation.
 
 ```java
 Shape sq = Shape.square().fillColor("seagreen").thickness(3).center();
@@ -174,7 +174,7 @@ There are special subclasses of `Animation`that allows to build more complex ani
 
 ## The wait animation
 
-This `waitAnimation` does what it says. It simply waits for specified amount of time. Sounds exciting right? This is used for example in the `ShowCreation` animation when applied to a `LaTexMathObject`, where each shape must wait a certain time, to make the left-to-right appear illusion.
+This `WaitAnimation` does what it says. It simply waits for specified amount of time. Sounds exciting right? This is used for example in the `ShowCreation` animation when applied to a `LaTexMathObject`, where each shape must wait a certain time, to make the left-to-right appear illusion.
 
 ## The concatenate animation
 
@@ -247,3 +247,17 @@ Note that when the rotation is finished subsequent calls to `processAnimation` h
 ![procedural02](procedural02.gif)
 
 [home](https://davidgutierrezrubio.github.io/jmathanim/) [back](../index.html)
+
+# Current status of methods implemented to MathObjects
+
+Not all `MathObject` and `Animation` combinations are compatible. Below is a table that shows, at the current version of the library, what you can and cannot do:
+
+| MathObject      | Affine transforms related: Shift, scale, rotate , grow in, shrink out, highlight | ShowCreation animation | Transform animation                           |
+| --------------- | ------------------------------------------------------------ | ---------------------- | --------------------------------------------- |
+| Point           | Yes                                                          | No (use fade in)       | No                                            |
+| Shape           | Yes                                                          | Yes                    | Yes                                           |
+| Line            | Yes                                                          | Yes                    | Yes                                           |
+| LaTeXMathObject | Yes                                                          | Yes                    | Yes                                           |
+| Arrow2D         | Yes                                                          | Yes                    | No (use homothecy transform)                  |
+| Delimiter       | No (you have the transform the anchor points instead)        | Yes                    | No (use homothecy transform in anchor points) |
+
