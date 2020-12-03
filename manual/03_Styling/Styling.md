@@ -6,22 +6,39 @@ Each `MathObject` has one `MODrawingProperties` object that stores drawing param
 
 # Basic styles
 
+## Colors
+
 Each object has 2 colors: the draw color (changed with `.drawColor`), used drawing the contour  y the fill color (changed with `.fillColor`), used to fill the object. Each color is stores in a `JMColor`object, with the components red, green, blue and alpha. The `.thickness`method sets the thickness of the stroke used to draw the object.
 
 ``` java
-Shape r=Shape.regularPolygon(5).fillColor(JMColor.parse("CADETBLUE")).drawColor(JMColor.parse("#041137")).thickness(5);
+Shape r = Shape.regularPolygon(5).fillColor(JMColor.parse("CADETBLUE")).drawColor(JMColor.parse("#041137")).thickness(5);
 ```
 
 <img src="02_01_colors.png" alt="image-20201105234514407" style="zoom:25%;" />
 
 Here we can see the method `.parse` to define a color. All JavaFX color names are supported, as well as hexadecimal format `#RRGGBBAA` (8 hexadecimal digits), `#RRGGBB` (6 hexadecimal digits) and `#RGB` (4 hexadecimal digits) . Also, both methods to change colors are overloaded so that `drawColor(string)`is equivalent to `drawColor(JMColor.parse(string))`, and the same with `fillColor`.
 
+```java
+JMColor col1 = new JMColor.parse(1,1,1,.5);//White color with 50% opacity
+JMColor col2 = JMColor.parse("#CDFA14");//Red: CD , Green: FA,    Blue: 14   (hexadecimal), opacity 100% 
+JMColor col3 = JMColor.parse("#CDFA14A6");//Red: CD , Green: FA,    Blue: 14   (hexadecimal), opacity A6
+JMColor col4 = JMColor.parse("SNOW");//Color SNOW from the JavaFX palette
+```
+
+The methods `.fillAlpha(double f)` and `.drawAlpha(double d)` sets directly the opacity of fill and draw colors. These methods, like most, can be nested:
+
+```
+Shape sq=Shape.square().fillColor("CADETBLUE").fillAlpha(.5);
+```
+
+## DashStyle
+
 The `dashStyle`method sets the dash used to draw the outline, chosen from the enum `DashStyle`. Currently, there are 3 different styles, `SOLID`, `DASHED`and `DOTTED`. The following code creates 3 pentagons with these dash styles.
 
 ```java
 Shape r1 = Shape.regularPolygon(5).thickness(5);
-Shape r2=r1.copy().stackTo(r1, Anchor.RIGHT,.1);
-Shape r3=r1.copy().stackTo(r2, Anchor.RIGHT,.1);
+Shape r2 = r1.copy().stackTo(r1, Anchor.RIGHT,.1);
+Shape r3 = r1.copy().stackTo(r2, Anchor.RIGHT,.1);
 r1.dashStyle(DashStyle.SOLID);
 r2.dashStyle(DashStyle.DASHED);
 r3.dashStyle(DashStyle.DOTTED);
@@ -195,7 +212,7 @@ The JAR of the JMathAnim library has several predefined config files that you ca
 
 You can check all the internal config files at the [github sources folder](https://github.com/davidgutierrezrubio/jmathanim/tree/master/src/resources/config).
 
-The `<styles>` tag allows defining styles to apply to your animation. There are 3 named styles that are important: `default`, `latexDefault` and `functionGraphDefault` (names are case-sensitive). The style `latexdefault` is applied by default to all `LaTexMathObject`. The style `default` is applied to the rest of MathObjects. If no style with these names are defined, a default style with white stroke and no fill will be applied.
+The `<styles>` tag allows defining styles to apply to your animation. There are 3 named styles that are important: `default`, `latexDefault` and `functionGraphDefault` (names are case-insensitive). The style `latexdefault` is applied by default to all `LaTexMathObject`. The style `default` is applied to the rest of MathObjects. If no style with these names are defined, a default style with white stroke and no fill will be applied.
 
 The `<include>` tag that appears at the beginning loads another config files.  In this case, a `dots.xml` file with styles to dots are defined:
 
@@ -228,7 +245,7 @@ The `<include>` tag that appears at the beginning loads another config files.  I
 
 As we said, the config files that you can read are in XML format. All files must have a root tag called `<JMathAnimConfig>`. Everything out of this tag is ignored.
 
-Inside this tag, we may have
+Inside this tag, we may have:
 
 * The `<include>` tag allows to load another XML config files. For example `<include>#axes_and_functions_dark.xml</include>` (an internal config file included in the jar library) or `<include>myColors.xml</include>` (a file include in the `resources/config` folder).
 
@@ -249,14 +266,14 @@ Inside this tag, we may have
 * The `<styles>` tag defines all the styles we may need, each one in the `<style>` subtag. For example:
 
   ```xml
-         <style name="myStyle">
-             <drawColor>WHITE</drawColor>
-             <fillColor>#f55652</fillColor>
-             <thickness>4.5</thickness>
-             <dashStyle>SOLID</dashStyle>
-             <absoluteThickness>true</absoluteThickness>
-             <dotStyle></dotStyle>
-          </style>
+  <style name="myStyle">
+      <drawColor>WHITE</drawColor>
+      <fillColor>#f55652</fillColor>
+      <thickness>4.5</thickness>
+      <dashStyle>SOLID</dashStyle>
+      <absoluteThickness>true</absoluteThickness>
+      <dotStyle></dotStyle>
+  </style>
   ```
 
   Is pretty self-explanatory. The attribute `name` defines the style name (case sensitive) and the `<drawColor>`, `<fillColor>`, `<thickness>` and `<dashStyle>` define their respective properties.  The `<dashStyle>` may take a value from the `enum DashStyle`, that is `SOLID`, `DASHED`,  or`DOTTED`.
