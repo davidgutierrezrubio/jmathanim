@@ -99,7 +99,7 @@ add(Trail.make(pointToTrail).drawColor("darkred").dashStyle(DashStyle.DASHED));
 registerUpdateable(new CameraAlwaysAdjusting(camera, .1, .1));
 double time = 10;
 for (double t = 0; t < time; t += dt) {
-    final double t0 = t / PI;
+    final double t0 = PI *t/time;
     pointOnCurve.moveTo(new Vec(trifolium.getFunctionValue(t0)));
     Vec deriv = trifolium.getTangentVector(t0);
     Vec normal=deriv.copy().rotate(-90 * DEGREES);
