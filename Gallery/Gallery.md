@@ -66,21 +66,54 @@ Two parametric curves expressed in polar coordinates. Note that we made a copy o
 
 ```java
 add(new Axes());
-ParametricCurve trifollium = ParametricCurve.makePolar(t -> 2*Math.cos(t)*(4*Math.sin(t)*Math.sin(t)-1), t -> t, 0, PI);
+ParametricCurve trifolium = ParametricCurve.makePolar(t -> 2*Math.cos(t)*(4*Math.sin(t)*Math.sin(t)-1), t -> t, 0, PI);
 ParametricCurve nephroid = ParametricCurve.makePolar(t -> 1 + 2 * Math.sin(t / 2), t -> t, 0, 4 * PI);
 
-trifollium.drawColor("#153e90").thickness(3);
+trifolium.drawColor("#153e90").thickness(3);
 nephroid.drawColor("#a05344").thickness(3);
-ParametricCurve trifolliumCopy = trifollium.copy();
+ParametricCurve trifoliumCopy = trifolium.copy();
 
-camera.adjustToObjects(trifollium, nephroid);
-play.transform(5, trifollium, nephroid);
-play.transform(5, nephroid, trifolliumCopy);
+camera.adjustToObjects(trifolium, nephroid);
+play.transform(5, trifolium, nephroid);
+play.transform(5, nephroid, trifoliumCopy);
 ```
 
 Here you have a GIF from the movie generated:
 
-![Trifollium](Trifollium.gif)
+![Trifollium](Trifolium.gif)
+
+### Trail curve derived from Trifolium
+
+For each point of the Trifolium, add their derivative vector rotated 90 degrees clockwise, and draws the trail. The animation is done with the `advanceFrame()` method, and we register a instance of `CameraAlwaysAdjusting` class to adjust the camera to all objects in the scene.
+
+```java
+ParametricCurve trifolium = ParametricCurve.makePolar(t -> 2 * Math.cos(t) * (4 * Math.sin(t) * Math.sin(t) - 1), t -> t, 0, PI);
+
+//The original coordinates of the points are irrelevant as they will be updated
+//prior to drawing the first frame.
+Point pointOnCurve = Point.at(0, 0).drawColor("darkblue");
+Point pointToTrail = Point.at(0, 0);
+Arrow2D arrow = Arrow2D.makeSimpleArrow2D(pointOnCurve, pointToTrail).drawColor("darkblue").layer(1);
+add(trifolium.thickness(3), pointOnCurve, arrow);
+add(Trail.make(pointToTrail).drawColor("darkred").dashStyle(DashStyle.DASHED));
+registerUpdateable(new CameraAlwaysAdjusting(camera, .1, .1));
+double time = 10;
+for (double t = 0; t < time; t += dt) {
+    final double t0 = t / PI;
+    pointOnCurve.moveTo(new Vec(trifolium.getFunctionValue(t0)));
+    Vec deriv = trifolium.getTangentVector(t0);
+    Vec normal=deriv.copy().rotate(-90 * DEGREES);
+    pointToTrail.copyFrom(pointOnCurve.add(normal));
+    advanceFrame();
+}
+waitSeconds(3);
+```
+
+Here you have a GIF from the movie generated:
+
+![Trifollium](TrifoliumNormalTrail.gif)
+
+
 
 ## The Koch curve
 
