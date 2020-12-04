@@ -34,10 +34,22 @@ public class Trail extends Shape {
     private boolean draw = true;
 
     /**
+     * Builds new Trail object. A trail is a updateable Shape that adds a copy
+     * of a marker point every frame.
+     *
+     * @param marker Point to be followed
+     * @return The new Trail object
+     */
+    public static Trail make(Point marker) {
+        return new Trail(marker);
+    }
+
+    /**
      * Returns a new Trail object. A trail is a updateable Shape that adds a
      * copy of a marker point every frame.
      *
-     * @param marker
+     * @param marker Point to be followed
+     * @return The new Trail object
      */
     public Trail(Point marker) {
         this.marker = marker;

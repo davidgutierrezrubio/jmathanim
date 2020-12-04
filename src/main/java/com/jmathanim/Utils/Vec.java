@@ -45,14 +45,33 @@ public class Vec implements Stateable {
 
     }
 
-    public double dot(Vec a) {
-        return x * a.x + y * a.y + z * a.z;
+    /**
+     * Computes the dot product of this vector and a given one
+     *
+     * @param b The other vector to compute the dot product
+     * @return The result
+     */
+    public double dot(Vec b) {
+        return x * b.x + y * b.y + z * b.z;
     }
 
-    public Vec cross(Vec a) {
-        return new Vec(this.y * a.z - this.z * a.y, this.z * a.x - this.x * a.z, this.x * a.y - this.y * a.x);
+    /**
+     * Computes the cross product of this vector and a given one
+     *
+     * @param b The other vector to compute the cross product
+     * @return A new vector with the result.
+     */
+    public Vec cross(Vec b) {
+        return new Vec(this.y * b.z - this.z * b.y, this.z * b.x - this.x * b.z, this.x * b.y - this.y * b.x);
     }
 
+    /**
+     * Multiplies the vector by a scalar and stores the resul. The original
+     * vector is altered and the method returns this object.
+     *
+     * @param lambda The scalar to multiply
+     * @return This vector
+     */
     public Vec multInSite(double lambda) {
         x *= lambda;
         y *= lambda;
@@ -68,9 +87,16 @@ public class Vec implements Stateable {
      * @return The new vector
      */
     public Vec mult(double lambda) {
-        return new Vec(x * lambda, y * lambda, z * lambda);
+        return this.copy().multInSite(lambda);
     }
 
+    /**
+     * Adds the given vector to this and stores the resul. The original vector
+     * is altered and the method returns this object.
+     *
+     * @param b The vector to add
+     * @return This vector
+     */
     public Vec addInSite(Vec b) {
         x += b.x;
         y += b.y;
@@ -78,6 +104,13 @@ public class Vec implements Stateable {
         return this;
     }
 
+    /**
+     * Substracts the given vector to this and stores the resul. The original
+     * vector is altered and the method returns this object.
+     *
+     * @param b The vector to substract
+     * @return This vector
+     */
     public Vec minusInSite(Vec b) {
         x -= b.x;
         y -= b.y;
@@ -85,12 +118,26 @@ public class Vec implements Stateable {
         return this;
     }
 
+    /**
+     * Substracts the given vector to this and return the result. The original
+     * vector is unaltered.
+     *
+     * @param b The vector to substract
+     * @return The substraction result
+     */
     public Vec minus(Vec b) {
-        return new Vec(x - b.x, y - b.y, z - b.z);
+        return this.copy().minusInSite(b);
     }
 
+    /**
+     * Add the given vector to this and return the result. The original vector
+     * is unaltered.
+     *
+     * @param b The vector to add
+     * @return The sum result
+     */
     public Vec add(Vec b) {
-        return new Vec(x + b.x, y + b.y, z + b.z);
+        return this.copy().addInSite(b);
     }
 
     public double norm() {
@@ -149,11 +196,40 @@ public class Vec implements Stateable {
     }
 
     /**
+     * Rotates the vector the specified angle, storing the result in the
+     * original vector.
+     *
+     * @param angle Rotation angle
+     * @return This vector
+     */
+    public Vec rotateInSite(double angle) {
+        double c = Math.cos(angle);
+        double s = Math.sin(angle);
+        double a=this.x;
+        double b=this.y;
+        this.x = c * a - s * b;
+        this.y = s * a + c * b;
+        return this;
+    }
+
+    /**
+     * Rotates the vector the specified angle, and returns the result.The
+     * original vector is unaltered
+     *
+     * @param angle
+     * @return A new vector with the resul
+     */
+    public Vec rotate(double angle) {
+        return this.copy().rotateInSite(angle);
+        
+    }
+
+    /**
      * Return the angle of the vector, between -PI and PI
      *
      * @return The angle
      */
-    public double getAngleFC() {
+    public double getAngleFirstQuad() {
         double angle = Math.atan(this.y / this.x);
         return angle;
     }

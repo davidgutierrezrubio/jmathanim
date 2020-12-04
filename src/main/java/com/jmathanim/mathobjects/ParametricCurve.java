@@ -29,7 +29,7 @@ import java.util.function.DoubleUnaryOperator;
  */
 public class ParametricCurve extends Shape {
 
-    public static final double DELTA_DERIVATIVE = .000000001d;
+    public static final double DELTA_DERIVATIVE = .000001d;
     public static final int DEFAULT_NUMBER_OF_POINTS = 50;
     private DoubleUnaryOperator functionXBackup;
     private DoubleUnaryOperator functionYBackup;
@@ -303,6 +303,16 @@ public class ParametricCurve extends Shape {
         super.restoreState();
         this.functionX = this.functionXBackup;
         this.functionY = this.functionYBackup;
+    }
+
+    /**
+     * Returns the tangent vector at a value of the independent variable. The componentes are the derivatives
+     *
+     * @param t0 Value to get the tangent vector
+     * @return The tangent vector (x'(t),y'(t))
+     */
+    public Vec getTangentVector(double t0) {
+        return new Vec(getDerivX(t0, 1), getDerivY(t0, 1));
     }
 
 }
