@@ -49,7 +49,6 @@ public class Trail extends Shape {
      * copy of a marker point every frame.
      *
      * @param marker Point to be followed
-     * @return The new Trail object
      */
     public Trail(Point marker) {
         this.marker = marker;

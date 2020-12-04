@@ -49,7 +49,7 @@ public class ResourceLoader {
      * begins with &quot;#&quot; it denotes a internal file located at resources
      * directory
      * @param folder Folder where to look at (config, arrows,...)
-     * @return
+     * @return URL with the resource location
      */
     public URL getResource(String resource, String folder) {
         if (resource.startsWith("!")) {
