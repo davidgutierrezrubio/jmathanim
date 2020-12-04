@@ -216,7 +216,7 @@ public class Vec implements Stateable {
      * Rotates the vector the specified angle, and returns the result.The
      * original vector is unaltered
      *
-     * @param angle
+     * @param angle Rotation angle
      * @return A new vector with the resul
      */
     public Vec rotate(double angle) {
