@@ -84,7 +84,7 @@ Here you have a GIF from the movie generated:
 
 ### Trail curve derived from Trifolium
 
-For each point of the Trifolium, we add the derivative vector rotated 90 degrees clockwise, and draws the trail. The animation is done with the `advanceFrame()` method, and we register a instance of `CameraAlwaysAdjusting` class to adjust the camera to all objects in the scene.
+For each point of the Trifolium, we add the derivative vector rotated 90 degrees clockwise, and draw the trail. The animation is done with the `advanceFrame()` method, and we register an instance of `CameraAlwaysAdjusting` class to adjust the camera to all objects in the scene.
 
 ```java
 ParametricCurve trifolium = ParametricCurve.makePolar(t -> 2 * Math.cos(t) * (4 * Math.sin(t) * Math.sin(t) - 1), t -> t, 0, PI);
