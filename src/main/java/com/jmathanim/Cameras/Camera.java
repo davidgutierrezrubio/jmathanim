@@ -86,11 +86,19 @@ public abstract class Camera {
      * @param xmax Right x-coordinate
      * @param ycenter y-center coordinate
      */
-    abstract <T extends Camera> T  setMathXY(double xmin, double xmax, double ycenter);
+    abstract <T extends Camera> T setMathXY(double xmin, double xmax, double ycenter);
 
     public <T extends Camera> T setMathView(Rect r) {
         setMathXY(r.xmin, r.xmax, .5 * (r.ymin + r.ymax));
         return (T) this;
+    }
+
+    public void shift(Vec v) {
+        shift(v.x, v.y);
+    }
+
+    public void shift(double x, double y) {
+        setMathXY(xmin + x, xmax + x, .5*(ymin+ymax) + y);
     }
 
     /**
@@ -232,4 +240,5 @@ public abstract class Camera {
     public Vec getGaps() {
         return new Vec(hgap, vgap);
     }
+
 }
