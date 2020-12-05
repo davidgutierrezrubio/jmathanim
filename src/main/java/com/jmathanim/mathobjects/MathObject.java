@@ -675,7 +675,11 @@ public abstract class MathObject implements Drawable, Updateable, Stateable {
      * @return The width
      */
     public double getWidth() {
-        return getBoundingBox().getWidth();
+        if (isEmpty()) {
+            return 0;
+        } else {
+            return getBoundingBox().getWidth();
+        }
     }
 
     /**
@@ -684,6 +688,20 @@ public abstract class MathObject implements Drawable, Updateable, Stateable {
      * @return The height
      */
     public double getHeight() {
-        return getBoundingBox().getHeight();
+        if (isEmpty()) {
+            return 0;
+        } else {
+            return getBoundingBox().getHeight();
+        }
+    }
+
+    /**
+     * Check if the current object is empty (for example: a MultiShape with no
+     * objects)
+     *
+     * @return True if object is empty, false otherwise
+     */
+    public boolean isEmpty() {
+        return false;
     }
 }

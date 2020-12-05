@@ -414,6 +414,9 @@ public class JMPath implements Updateable, Stateable {
     }
 
     public Rect getBoundingBox() {
+        if (jmPathPoints.isEmpty()) {
+            return null;
+        }
         //Initial values for min and max
         double xmin = jmPathPoints.get(0).p.v.x;
         double ymin = jmPathPoints.get(0).p.v.y;

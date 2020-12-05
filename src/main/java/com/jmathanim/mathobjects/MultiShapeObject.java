@@ -276,4 +276,14 @@ public class MultiShapeObject extends MathObject implements Iterable<Shape> {
         }
         return resul;
     }
+
+    @Override
+    public boolean isEmpty() {
+        boolean resul=false;
+        for (Shape sh: shapes) {
+            resul=resul | sh.isEmpty();
+        }
+        return resul;
+    }
+
 }

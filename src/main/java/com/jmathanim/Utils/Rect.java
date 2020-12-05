@@ -25,22 +25,21 @@ import com.jmathanim.mathobjects.Stateable;
  *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
-public class Rect implements Stateable{//TODO: Adjust this to 3D coordinates
+public class Rect implements Stateable {//TODO: Adjust this to 3D coordinates
 
     public double xmin, ymin, xmax, ymax, zmin, zmax;
     private Rect rBackup;
 
-    
-    public static Rect make(Point a,Point b){
-        double xmin=Math.min(a.v.x,b.v.x);
-        double xmax=Math.max(a.v.x,b.v.x);
-        double ymin=Math.min(a.v.y,b.v.y);
-        double ymax=Math.max(a.v.y,b.v.y);
-        double zmin=Math.min(a.v.z,b.v.z);
-        double zmax=Math.max(a.v.z,b.v.z);
-        return new Rect(xmin,ymin,zmin,xmax,ymax,zmax);
+    public static Rect make(Point a, Point b) {
+        double xmin = Math.min(a.v.x, b.v.x);
+        double xmax = Math.max(a.v.x, b.v.x);
+        double ymin = Math.min(a.v.y, b.v.y);
+        double ymax = Math.max(a.v.y, b.v.y);
+        double zmin = Math.min(a.v.z, b.v.z);
+        double zmax = Math.max(a.v.z, b.v.z);
+        return new Rect(xmin, ymin, zmin, xmax, ymax, zmax);
     }
-    
+
     public Rect(double xmin, double ymin, double xmax, double ymax) {
         this(xmin, ymin, 0, xmax, ymax, 0);
     }
@@ -52,7 +51,7 @@ public class Rect implements Stateable{//TODO: Adjust this to 3D coordinates
         this.xmax = xmax;
         this.ymax = ymax;
         this.zmax = zmax;
-        
+
     }
 
     /**
@@ -238,7 +237,11 @@ public class Rect implements Stateable{//TODO: Adjust this to 3D coordinates
      * @return A new {@link Rect} with the union of both rects
      */
     public Rect union(Rect b) {
-        return new Rect(Math.min(xmin, b.xmin), Math.min(ymin, b.ymin), Math.max(xmax, b.xmax), Math.max(ymax, b.ymax));
+        if (b != null) {
+            return new Rect(Math.min(xmin, b.xmin), Math.min(ymin, b.ymin), Math.max(xmax, b.xmax), Math.max(ymax, b.ymax));
+        } else {
+            return this;
+        }
     }
 
     /**
@@ -247,7 +250,7 @@ public class Rect implements Stateable{//TODO: Adjust this to 3D coordinates
      * @return A {@link Point} representing the rect center
      */
     public Point getCenter() {
-        return new Point(.5 * (xmin + xmax), .5 * (ymin + ymax),.5 * (zmin + zmax));
+        return new Point(.5 * (xmin + xmax), .5 * (ymin + ymax), .5 * (zmin + zmax));
     }
 
     /**
@@ -368,7 +371,7 @@ public class Rect implements Stateable{//TODO: Adjust this to 3D coordinates
 
     @Override
     public void saveState() {
-        rBackup=new Rect(0,0,0,0);
+        rBackup = new Rect(0, 0, 0, 0);
         this.rBackup.copyFrom(this);
     }
 
@@ -378,7 +381,6 @@ public class Rect implements Stateable{//TODO: Adjust this to 3D coordinates
     }
 
     public void scale(Point scaleCenter, double sx, double sy, double sz) {
-        
-        
+
     }
 }
