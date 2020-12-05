@@ -101,6 +101,12 @@ Each `Shape` object has a `JMPath` object which stores and manages the path repr
 
 In the `Shape` objects, apart from `.getCenter()`method, which returns the center of its bounding box, there is also the `.getCentroid()`method which computes the centroid of the shape, defined by the average point of all its vertices. This method effectively returns the center of a regular polygon for example, instead of the `.getCenter()`method.
 
+# Not so basic objects
+
+## The `Line` class
+
+## The `Axes` class
+
 ## The `Arrow2D` class
 
 The `Arrow2D` class defines a vector, which consists of a segment and an arrow head.  It is made with a static builder:
@@ -142,8 +148,6 @@ waitSeconds(1);
 ```
 
 ![](arrowZoom.gif)
-
-# Not so basic objects
 
 ## The `Delimiter` class
 
