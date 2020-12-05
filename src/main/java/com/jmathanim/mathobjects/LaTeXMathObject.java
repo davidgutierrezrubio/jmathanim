@@ -231,5 +231,6 @@ public class LaTeXMathObject extends SVGMathObject {
         }
         return this;
     }
-
+   
+    
 }

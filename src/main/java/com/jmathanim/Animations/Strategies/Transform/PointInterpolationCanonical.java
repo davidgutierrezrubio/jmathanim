@@ -55,11 +55,19 @@ public class PointInterpolationCanonical extends Animation {
     @Override
     public void initialize(JMathAnimScene scene) {
         super.initialize(scene);
-        ArrayList<MathObject> ob = scene.getObjects();
         //This is the initialization for the point-to-point interpolation
-        //Prepare paths. Firs, I ensure they have the same number of points
+        //Prepare paths. 
+        //First, if any of the shapes is empty, don't do nothing
+        
+        if ((mobjTransformed.size()==0)||(mobjDestiny.size()==0)){
+//            return;
+        }
+        
+        //I ensure they have the same number of points
         //and be in connected components form.
 
+        
+        
         //Remove consecutive hidden vertices, in case.
         this.mobjTransformed.getPath().removeConsecutiveHiddenVertices();
         this.mobjDestiny.getPath().removeConsecutiveHiddenVertices();
@@ -90,6 +98,10 @@ public class PointInterpolationCanonical extends Animation {
         double lt = lambda.applyAsDouble(t);
         JMPathPoint interPoint, basePoint, dstPoint;
 
+          if ((connectedOrigin.getNumberOfPaths()==0)||(connectedDst.getNumberOfPaths()==0)) {
+            return;
+        }
+        
         for (int numConnected = 0; numConnected < this.connectedDst.getNumberOfPaths(); numConnected++) {
             JMPath convertedPath = connectedOrigin.get(numConnected);
             JMPath fromPath = connectedOriginaRawCopy.get(numConnected);
@@ -142,6 +154,11 @@ public class PointInterpolationCanonical extends Animation {
 
         connectedOrigin = pathTransformed.canonicalForm();
         connectedDst = pathDestiny.canonicalForm();
+        
+         if ((connectedOrigin.getNumberOfPaths()==0)||(connectedDst.getNumberOfPaths()==0)) {
+            return;
+        }
+        
         alignNumberOfComponents(connectedOrigin, connectedDst);
         connectedOriginaRawCopy = new CanonicalJMPath();
         for (JMPath p : connectedOrigin.getPaths()) {
@@ -171,6 +188,9 @@ public class PointInterpolationCanonical extends Animation {
     }
 
     private void alignNumberOfComponents(CanonicalJMPath con1, CanonicalJMPath con2) {
+        if ((con1.getNumberOfPaths()==0)||(con2.getNumberOfPaths()==0)) {
+            return;
+        }
         CanonicalJMPath conBig, conSmall;
         if (con1.getNumberOfPaths() < con2.getNumberOfPaths()) {
             conSmall = con1;

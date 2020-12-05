@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
+import java.util.stream.IntStream;
 
 /**
  * This class stores multiple JMPathObjects, and properly apply transforms and
@@ -189,14 +190,12 @@ public class MultiShapeObject extends MathObject implements Iterable<Shape> {
 
     @Override
     public <T extends MathObject> T visible(boolean visible) {
-         for (Shape sh : shapes) {
+        for (Shape sh : shapes) {
             sh.visible(visible);
         }
         return (T) this;
     }
 
-    
-    
     @Override
     public void registerChildrenToBeUpdated(JMathAnimScene scene) {
         for (Shape o : shapes) {
@@ -259,8 +258,22 @@ public class MultiShapeObject extends MathObject implements Iterable<Shape> {
         return shapes.size();
     }
 
-    public void alignCenter(int n, MultiShapeObject lat, int m) {
+    public <T extends MultiShapeObject> T alignCenter(int n, MultiShapeObject lat, int m) {
         shift(this.get(n).getCenter().to(lat.get(m).getCenter()));
+        return (T) this;
     }
 
+    public <T extends MultiShapeObject> T slice(int... indices) {
+        T resul = (T) this.copy();
+        List<int[]> indAr = Arrays.asList(indices);
+        for (int n = 0; n < this.size(); n++) {
+            int k = n;
+            if (IntStream.of(indices).anyMatch(x -> x == k)) {//Index to slice
+                this.get(n).getPath().clear();
+            } else {//Index to remain in the original multishape
+                resul.get(n).getPath().clear();
+            }
+        }
+        return resul;
+    }
 }

@@ -550,6 +550,9 @@ public class JMPath implements Updateable, Stateable {
      * @return The array of paths
      */
     public CanonicalJMPath canonicalForm() {
+        if (this.size()==0) {
+            return new CanonicalJMPath();
+        }
         ArrayList<JMPath> resul = new ArrayList<>();
         JMPath workPath = this.copy();
         Integer offset = null;
