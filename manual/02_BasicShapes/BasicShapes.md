@@ -113,7 +113,7 @@ Arrow2D ar = Arrow2D.makeSimpleArrow2D(A, B, ArrowType.TYPE_1);
 Arrow2D ar2 = Arrow2D.makeSimpleArrow2D(A.copy(), B.copy(), ArrowType.TYPE_2).stackTo(ar, Anchor.Type.LOWER);
 Arrow2D ar3 = Arrow2D.makeSimpleArrow2D(A.copy(), B.copy(), ArrowType.TYPE_3).stackTo(ar2, Anchor.Type.LOWER);
 Arrow2D ar4 = Arrow2D.makeDoubleArrow2D(A.copy(), B.copy(), ArrowType.TYPE_1,ArrowType.TYPE_1).stackTo(ar3, Anchor.Type.LOWER);
-Arrow2D ar5 = Arrow2D.makeDoubleArrow2D(A.copy(), B.copy(), ArrowType.TYPE_1,ArrowType.TYPE_2).stackTo(ar3, Anchor.Type.LOWER);
+Arrow2D ar5 = Arrow2D.makeDoubleArrow2D(A.copy(), B.copy(), ArrowType.TYPE_1,ArrowType.TYPE_2).stackTo(ar4, Anchor.Type.LOWER);
 ar5.scaleArrowHead1(2);
 ar5.scaleArrowHead2(2);
 
