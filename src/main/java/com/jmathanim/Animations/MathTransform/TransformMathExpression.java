@@ -50,6 +50,10 @@ public class TransformMathExpression extends Animation {
         MOVE_OUT_RIGHT, MOVE_OUT_DOWN
     }
 
+    public enum TransformType {
+        INTERPOLATION, FLIP_HORIZONTALLY, FLIP_VERTICALLY
+    }
+
     private final MultiShapeObject latexDestiny;
     private final MultiShapeObject latexTransformed;
     private final AnimationGroup anim;
@@ -194,8 +198,20 @@ public class TransformMathExpression extends Animation {
     }
 
     private void createTransformSubAnimation(Shape sh, Shape sh2, TransformMathExpressionParameters par) {
-        final Transform transform = new Transform(runTime, sh, sh2);
-        transform.setLambda(lambda);
+        Animation transform=null;
+        switch (par.getTransformStyle()) {
+            case INTERPOLATION:
+                transform = new Transform(runTime, sh, sh2);
+                transform.setLambda(lambda);
+                break;
+            case FLIP_HORIZONTALLY:
+                transform=Commands.flipTransform(runTime, sh, sh2, 0);
+                break;
+                case FLIP_VERTICALLY:
+                transform=Commands.flipTransform(runTime, sh, sh2, 1);
+                break;
+        }
+        
         AnimationGroup group = new AnimationGroup(transform);
 
         if (par.getJumpHeight() != 0) {
@@ -296,11 +312,11 @@ public class TransformMathExpression extends Animation {
     public void finishAnimation() {
         anim.finishAnimation();
 //        scene.remove(mshDst);
-      
+
         for (Shape sh : toDelete) {
             scene.remove(sh);
         }
-          scene.add(latexDestiny);
+        scene.add(latexDestiny);
     }
 
     /**
@@ -477,6 +493,4 @@ public class TransformMathExpression extends Animation {
         return "";
     }
 
-    
-    
 }

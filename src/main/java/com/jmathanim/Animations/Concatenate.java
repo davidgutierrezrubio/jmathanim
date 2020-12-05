@@ -94,7 +94,7 @@ public class Concatenate extends Animation {
             //It is important to call the initialize of the next animation immediately, before any draws are done to the screen
             if (currentAnim < this.animations.size()) {
                 animations.get(currentAnim).initialize(scene);
-                resul = false;
+                resul = animations.get(currentAnim).processAnimation();
             }
         }
         return resul;

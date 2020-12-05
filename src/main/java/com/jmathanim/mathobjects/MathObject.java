@@ -488,9 +488,11 @@ public abstract class MathObject implements Drawable, Updateable, Stateable {
     }
 
     public <T extends MathObject> T stackTo(MathObject obj, Type anchorType, double gap) {
-        Point B = Anchor.getAnchorPoint(obj, anchorType, gap);
-        Point A = Anchor.getAnchorPoint(this, Anchor.reverseAnchorPoint(anchorType));
-        this.shift(A.to(B));
+        if (!obj.isEmpty()) {
+            Point B = Anchor.getAnchorPoint(obj, anchorType, gap);
+            Point A = Anchor.getAnchorPoint(this, Anchor.reverseAnchorPoint(anchorType));
+            this.shift(A.to(B));
+        }
         return (T) this;
     }
 

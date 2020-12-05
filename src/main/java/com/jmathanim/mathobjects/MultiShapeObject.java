@@ -263,16 +263,12 @@ public class MultiShapeObject extends MathObject implements Iterable<Shape> {
         return (T) this;
     }
 
-    public <T extends MultiShapeObject> T slice(int... indices) {
+    public <T extends MultiShapeObject> T getSlice(int... indices) {
         T resul = (T) this.copy();
-        List<int[]> indAr = Arrays.asList(indices);
-        for (int n = 0; n < this.size(); n++) {
-            int k = n;
-            if (IntStream.of(indices).anyMatch(x -> x == k)) {//Index to slice
-                this.get(n).getPath().clear();
-            } else {//Index to remain in the original multishape
-                resul.get(n).getPath().clear();
-            }
+        resul.shapes.clear();
+        for (int i:indices)
+        {
+            resul.addShape(this.get(i).copy());
         }
         return resul;
     }

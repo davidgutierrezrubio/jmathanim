@@ -29,6 +29,7 @@ public class TransformMathExpressionParameters {
     private int numTurns;
     private TransformMathExpression.RemoveType removingStyle;
     private TransformMathExpression.AddType addingStyle;
+    private TransformMathExpression.TransformType transformStyle;
 
     public TransformMathExpressionParameters() {
         jumpHeight = 0d;
@@ -37,6 +38,7 @@ public class TransformMathExpressionParameters {
         numTurns = 0;
         removingStyle=TransformMathExpression.RemoveType.FADE_OUT;
         addingStyle=TransformMathExpression.AddType.FADE_IN;
+        transformStyle=TransformMathExpression.TransformType.INTERPOLATION;
     }
 
     public int getNumTurns() {
@@ -89,6 +91,14 @@ public class TransformMathExpressionParameters {
     public TransformMathExpressionParameters setScale(double scale) {
         this.scale = scale;
          return this;
+    }
+
+    public TransformMathExpression.TransformType getTransformStyle() {
+        return transformStyle;
+    }
+
+    public void setTransformStyle(TransformMathExpression.TransformType transformStyle) {
+        this.transformStyle = transformStyle;
     }
 
 }

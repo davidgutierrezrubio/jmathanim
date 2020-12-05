@@ -26,6 +26,7 @@ import com.jmathanim.Utils.MODrawProperties;
 import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
+import static com.jmathanim.jmathanim.JMathAnimScene.PI;
 import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.MathObjectGroup;
 import com.jmathanim.mathobjects.Point;
@@ -70,14 +71,16 @@ public class Commands {
             }
         };
     }
-public static Animation highlight(double runtime, MathObject...objects){
-    AnimationGroup ag=new AnimationGroup();
-    for (MathObject obj:objects){
-        ag.add(Commands.scale(runtime, obj.getCenter(), 1.5, obj).setLambda((x) -> 4 * x * (1 - x)));
+
+    public static Animation highlight(double runtime, MathObject... objects) {
+        AnimationGroup ag = new AnimationGroup();
+        for (MathObject obj : objects) {
+            ag.add(Commands.scale(runtime, obj.getCenter(), 1.5, obj).setLambda((x) -> 4 * x * (1 - x)));
+        }
+        return ag;
     }
-    return ag;
-}
-    public static Animation scale(double runtime, Point c, double sc,  MathObject... objects) {
+
+    public static Animation scale(double runtime, Point c, double sc, MathObject... objects) {
         return scale(runtime, c, sc, sc, sc, objects);
     }
 
@@ -559,7 +562,7 @@ public static Animation highlight(double runtime, MathObject...objects){
                 super.initialize(scene);
                 saveStates(mathObjects);
                 addObjectsToscene(mathObjects);
-                  for (MathObject obj : mathObjects) {
+                for (MathObject obj : mathObjects) {
                     obj.visible(false);
                 }
             }
@@ -604,7 +607,7 @@ public static Animation highlight(double runtime, MathObject...objects){
                 this.mathObjects = objects;
                 saveStates(mathObjects);
                 addObjectsToscene(mathObjects);
-                 for (MathObject obj : mathObjects) {
+                for (MathObject obj : mathObjects) {
                     obj.visible(false);
                 }
             }
@@ -757,6 +760,29 @@ public static Animation highlight(double runtime, MathObject...objects){
             obj.shift(p.to(q));
             resul.add(Commands.shift(runtime, q.to(p), obj).setLambda(t -> t));
         }
+        return resul;
+    }
+
+    public static Animation flipTransform(double runtime, MathObject ob1, MathObject ob2, int dir) {
+        Concatenate resul = new Concatenate();
+        Vec v = ob1.getCenter().to(ob2.getCenter()).mult(.5);
+        Animation sc = Commands.scale(.5 * runtime, ob1.getCenter(), dir, 1 - dir, 1, ob1);
+//        sc.setLambda(t->1-Math.cos(.5*PI*t));
+        sc.setLambda(t -> t);
+        Animation tr = Commands.shift(.5 * runtime, v, ob1).setUseObjectState(false);
+        Animation fd = Commands.fadeOut(.5 * runtime, ob1).setUseObjectState(false);
+        fd.setLambda(t -> Math.sqrt(1-t));
+        resul.add(new AnimationGroup(sc, tr, fd));
+
+        sc = Commands.scale(.5 * runtime, ob1.getCenter(), dir, 1 - dir, 1, ob2);
+//        sc.setLambda(t->Math.cos(.5*PI*t));
+        sc.setLambda(t -> 1 - t);
+        tr = Commands.shift(.5 * runtime, v.mult(-1), ob2).setUseObjectState(false);
+        fd = Commands.fadeIn(.5 * runtime, ob2).setUseObjectState(false);
+        fd.setLambda(t -> t);
+        tr.setLambda(t -> Math.sqrt(t));
+        resul.add(new AnimationGroup(sc, tr,fd));
+
         return resul;
     }
 }
