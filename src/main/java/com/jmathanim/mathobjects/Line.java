@@ -19,6 +19,7 @@ package com.jmathanim.mathobjects;
 
 import com.jmathanim.Cameras.Camera;
 import com.jmathanim.Renderers.Renderer;
+import com.jmathanim.Utils.JMathAnimConfig;
 import com.jmathanim.Utils.MODrawProperties;
 import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.Vec;
@@ -110,6 +111,7 @@ public class Line extends Shape {
 
     @Override
     public void draw(Renderer r) {
+        update(JMathAnimConfig.getConfig().getScene());//TODO: remove coupling
         visiblePiece.draw(r);
     }
 
