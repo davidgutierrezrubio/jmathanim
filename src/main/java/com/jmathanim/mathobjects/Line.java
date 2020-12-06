@@ -22,6 +22,7 @@ import com.jmathanim.Renderers.Renderer;
 import com.jmathanim.Utils.MODrawProperties;
 import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.Vec;
+import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.JMPathPoint.JMPathPointType;
 
 /**
@@ -31,7 +32,7 @@ import com.jmathanim.mathobjects.JMPathPoint.JMPathPointType;
  */
 public class Line extends Shape {
 
-    final JMPathPoint bp1, bp2;
+    private final JMPathPoint bp1, bp2;
     private final Shape visiblePiece;
     private Point p1, p2;
 
@@ -84,12 +85,43 @@ public class Line extends Shape {
         return resul;
     }
 
+    /**
+     * Returns the point of the line lying in the boundaries of the math view.
+     * From the 2 points of the boundary, this is next to p1.
+     *
+     * @param scene The scene, needed to obtain the math view
+     * @return A copy of the boundary point
+     */
+    public Point getBorderPoint1(JMathAnimScene scene) {
+        update(scene);
+        return bp1.p.copy();
+    }
+/**
+     * Returns the point of the line lying in the boundaries of the math view.
+     * From the 2 points of the boundary, this is next to p2.
+     *
+     * @param scene The scene, needed to obtain the math view
+     * @return A copy of the boundary point
+     */
+    public Point getBorderPoint2(JMathAnimScene scene) {
+        update(scene);
+        return bp2.p.copy();
+    }
 
     @Override
     public void draw(Renderer r) {
-        computeBoundPoints(r.getCamera());
         visiblePiece.draw(r);
+    }
 
+    @Override
+    public void update(JMathAnimScene scene) {
+        super.update(scene);
+        computeBoundPoints(scene.getCamera());
+    }
+
+    @Override
+    public int getUpdateLevel() {
+        return Math.max(p1.getUpdateLevel(), p2.getUpdateLevel()) + 1;
     }
 
     /**
@@ -126,19 +158,19 @@ public class Line extends Shape {
 
     }
 
-//    @Override
-//    public void saveState() {
-//        super.saveState(); 
-//        p1.saveState(); 
-//        p2.saveState(); 
-//    }
-//
-//    @Override
-//    public void restoreState() {
-//        super.restoreState();
-//        p1.restoreState();
-//        p2.restoreState();
-//    }
+    @Override
+    public void saveState() {
+        super.saveState(); 
+        p1.saveState(); 
+        p2.saveState(); 
+    }
+
+    @Override
+    public void restoreState() {
+        super.restoreState();
+        p1.restoreState();
+        p2.restoreState();
+    }
     public Point getP1() {
         return p1;
     }
@@ -149,8 +181,8 @@ public class Line extends Shape {
 
     @Override
     public Point getCenter() {
-        //Center of an infinite line doesn't exists. Take first point instead.
-        return p1;
+        //Center of an infinite line doesn't exists. Take middle point of p1 and p2 instead.
+        return p1.interpolate(p2, .5);
     }
 
     public static Line XAxis() {
@@ -158,7 +190,7 @@ public class Line extends Shape {
     }
 
     public static Line YAxis() {
-        return new Line(new Point(0, 0), new Point(1, 0));
+        return new Line(new Point(0, 0), new Point(0, 1));
     }
 
     public static Line XYBisector() {
