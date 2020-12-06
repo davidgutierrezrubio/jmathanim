@@ -19,6 +19,7 @@ package com.jmathanim.mathobjects;
 
 import com.jmathanim.Renderers.Renderer;
 import com.jmathanim.Utils.Anchor;
+import com.jmathanim.Utils.JMColor;
 import com.jmathanim.Utils.JMathAnimConfig;
 import com.jmathanim.Utils.Rect;
 import com.jmathanim.jmathanim.JMathAnimScene;
@@ -40,6 +41,7 @@ public class Axes extends MathObject {
     public static final double LEGEND_TICKS_GAP = .05;
 
     public Axes() {
+        mp.loadFromStyle("axisdefault");
         xticks = new ArrayList<>();
         yticks = new ArrayList<>();
         xticksLegend = new ArrayList<>();
@@ -155,6 +157,71 @@ public class Axes extends MathObject {
 
     public void setTicksScale(double ticksScale) {
         this.ticksScale = ticksScale;
+    }
+
+    @Override
+    public <T extends MathObject> T style(String name) {
+        super.style(name);
+        applyMPToSubobjects();
+        return (T) this;
+    }
+
+    @Override
+    public <T extends MathObject> T layer(int layer) {
+        super.layer(layer);
+        applyMPToSubobjects();
+        return (T) this;
+    }
+
+    @Override
+    public <T extends MathObject> T drawAlpha(double alpha) {
+        super.drawAlpha(alpha);
+        applyMPToSubobjects();
+        return (T) this;
+    }
+
+    @Override
+    public <T extends MathObject> T fillColor(JMColor fc) {
+        super.fillColor(fc);
+        applyMPToSubobjects();
+        return (T) this;
+    }
+
+    @Override
+    public <T extends MathObject> T drawColor(JMColor dc) {
+        super.drawColor(dc);
+        applyMPToSubobjects();
+        return (T) this;
+    }
+
+    private void applyMPToSubobjects() {
+        xAxis.mp.copyFrom(mp);
+        yAxis.mp.copyFrom(mp);
+        for (Shape s : xticks) {
+            s.mp.copyFrom(mp);
+        }
+        for (Shape s : yticks) {
+            s.mp.copyFrom(mp);
+        }
+        for (MultiShapeObject s : xticksLegend) {
+            s.mp.copyFrom(mp);
+        }
+        for (MultiShapeObject s : yticksLegend) {
+            s.mp.copyFrom(mp);
+        }
+    }
+
+    @Override
+    public <T extends MathObject> T thickness(double newThickness) {
+        xAxis.thickness(newThickness);
+        yAxis.thickness(newThickness);
+        for (Shape s : xticks) {
+            s.thickness(newThickness);
+        }
+        for (Shape s : yticks) {
+            s.thickness(newThickness);
+        }
+        return (T) this;
     }
 
 }
