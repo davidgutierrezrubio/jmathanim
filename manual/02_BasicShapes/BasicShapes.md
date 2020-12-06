@@ -103,7 +103,29 @@ In the `Shape` objects, apart from `.getCenter()`method, which returns the cente
 
 # Not so basic objects
 
+There are some subclasses of `Shape` that implements specific methods for drawing or transforming them.
+
 ## The `Line` class
+
+This class represents an infinite line. Of course, the "trick" is that in every frame it draws the visible part. Several static builder are implemented:
+
+```java
+Point A=Point.at(1, 1);
+Point B=Point.at(0,1);
+Vec v=Vec.to(1,.2);
+Line line1=Line.make(A, B).drawColor(JMColor.RED).thickness(3);//Line that pass through A and B, color red
+Line line2=Line.make(A, v).drawColor(JMColor.BLUE).thickness(2);//Line that pass through A and A+v, color blue
+Line line3=Line.XAxis().drawColor("darkorange");//Line y=0, color dark orange
+Line line4=Line.YAxis().drawColor("darkmagenta");//Line x=0, color dark magenta
+Line line5=Line.XYBisector().drawColor("darkgreen");//Line y=x, color dark green
+add(line1,line2,line3,line4,line5);//Add everything to the scene
+play.shift(5, -1,-1.5, A);//Animates the point A moving (-1,-1.5) for 5 seconds
+waitSeconds(3);
+```
+
+![Line01](Line01.gif)
+
+Note that the construction of `line2` only considers the direction vector at the build time. When moving the `A` point the direction changes. 
 
 ## The `Axes` class
 
