@@ -36,9 +36,12 @@ public class Axes extends MathObject {
     private final ArrayList<Shape> yticks;
     private final ArrayList<MultiShapeObject> xticksLegend;
     private final ArrayList<MultiShapeObject> yticksLegend;
-    public static final double TICK_LENGTH = .02;
-    public double ticksScale = .3;
-    public static final double LEGEND_TICKS_GAP = .05;
+    public static final double INITIAL_TICK_LENGTH = .04;
+    private double tickScale = 1;
+
+    private static final double INITIAL_LEGEND_TICK_SCALE = .3;
+    public double legendScale = 1;
+    public static final double LEGEND_TICKS_GAP = .01;
 
     public Axes() {
         mp.loadFromStyle("axisdefault");
@@ -49,7 +52,14 @@ public class Axes extends MathObject {
         xAxis = Line.make(Point.at(0, 0), Point.at(1, 0)).style("axisdefault");
         yAxis = Line.make(Point.at(0, 0), Point.at(0, 1)).style("axisdefault");
     }
-
+   /**
+     * Generates a set of pairs (ticks-legends) from start to finish (including)
+     * with given step, in the x-axis
+     *
+     * @param start Starting number
+     * @param finish Ending number
+     * @param step Step
+     */
     public void generateXTicks(double start, double finish, double step) {
         for (double x = start; x < finish; x += step) {
             if (x != 0) {
@@ -58,6 +68,14 @@ public class Axes extends MathObject {
         }
     }
 
+    /**
+     * Generates a set of pairs (ticks-legends) from start to finish (including)
+     * with given step, in the y-axis
+     *
+     * @param start Starting number
+     * @param finish Ending number
+     * @param step Step
+     */
     public void generateYTicks(double start, double finish, double step) {
         for (double y = start; y < finish; y += step) {
             if (y != 0) {
@@ -66,30 +84,56 @@ public class Axes extends MathObject {
         }
     }
 
+    /**
+     * Adds a pair (tick, legend text) at the given value in the y-axis. The
+     * text is automatically generated from the value of y.
+     *
+     * @param y The y coordinate where to put the tick
+     */
     public void addYTicksLegend(double y) {
         addYTicksLegend("$" + y + "$", y);
     }
 
+    /**
+     * Adds a pair (tick, legend text) at the given value in the y-axis, with
+     * the specified latex string.
+     *
+     * @param latex The text with the legend
+     * @param y The y coordinate where to put the tick
+     */
     public void addYTicksLegend(String latex, double y) {
-        final Shape ytick = Shape.segment(Point.at(-TICK_LENGTH, y), Point.at(TICK_LENGTH, y)).style("axistickdefault");;
+        final Shape ytick = Shape.segment(Point.at(-.5, y), Point.at(.5, y)).style("axistickdefault");;
         ytick.setAbsoluteSize(Anchor.Type.BY_CENTER);
         yticks.add(ytick);
 
-        final LaTeXMathObject ytickLegend = LaTeXMathObject.make(latex).style("axislegenddefault").scale(ticksScale);
+        final LaTeXMathObject ytickLegend = LaTeXMathObject.make(latex).style("axislegenddefault");
         ytickLegend.stackTo(ytick, Anchor.Type.RIGHT, LEGEND_TICKS_GAP);
         ytickLegend.setAbsoluteSize(Anchor.Type.LEFT);
         yticksLegend.add(ytickLegend);
     }
 
+    /**
+     * Adds a pair (tick, legend text) at the given value in the x-axis. The
+     * text is automatically generated from the value of x.
+     *
+     * @param x The x coordinate where to put the tick
+     */
     public void addXTicksLegend(double x) {
         addXTicksLegend("$" + x + "$", x);
     }
 
+    /**
+     * Adds a pair (tick, legend text) at the given value in the y-axis, with
+     * the specified latex string.
+     *
+     * @param latex The text with the legend
+     * @param x The x coordinate where to put the tick
+     */
     public void addXTicksLegend(String latex, double x) {
-        final Shape xtick = Shape.segment(Point.at(x, -TICK_LENGTH), Point.at(x, TICK_LENGTH)).style("axistickdefault");
+        final Shape xtick = Shape.segment(Point.at(x, -.5), Point.at(x, .5)).style("axistickdefault");
         xtick.setAbsoluteSize(Anchor.Type.BY_CENTER);
         xticks.add(xtick);
-        final LaTeXMathObject xtickLegend = LaTeXMathObject.make(latex).style("axislegenddefault").scale(ticksScale);
+        final LaTeXMathObject xtickLegend = LaTeXMathObject.make(latex).style("axislegenddefault");
         xtickLegend.stackTo(xtick, Anchor.Type.LOWER, LEGEND_TICKS_GAP);
         xtickLegend.setAbsoluteSize(Anchor.Type.UPPER);
         xticksLegend.add(xtickLegend);
@@ -123,17 +167,19 @@ public class Axes extends MathObject {
         xAxis.draw(r);
         yAxis.draw(r);
 
-        for (Shape s : xticks) {
-            s.draw(r);
+        for (int n = 0; n < xticks.size(); n++) {
+            Shape xt = xticks.get(n).copy().scale(INITIAL_TICK_LENGTH * tickScale);
+            MultiShapeObject leg = xticksLegend.get(n).copy().scale(legendScale * INITIAL_LEGEND_TICK_SCALE);
+            leg.stackTo(xt, Anchor.Type.LOWER, LEGEND_TICKS_GAP);
+            xt.draw(r);
+            leg.draw(r);
         }
-        for (Shape s : yticks) {
-            s.draw(r);
-        }
-        for (MultiShapeObject s : xticksLegend) {
-            s.draw(r);
-        }
-        for (MultiShapeObject s : yticksLegend) {
-            s.draw(r);
+        for (int n = 0; n < yticks.size(); n++) {
+            Shape yt = yticks.get(n).copy().scale(INITIAL_TICK_LENGTH * tickScale);
+            MultiShapeObject leg = yticksLegend.get(n).copy().scale(legendScale * INITIAL_LEGEND_TICK_SCALE);
+            leg.stackTo(yt, Anchor.Type.LEFT, LEGEND_TICKS_GAP);
+            yt.draw(r);
+            leg.draw(r);
         }
 
     }
@@ -143,20 +189,40 @@ public class Axes extends MathObject {
         //TODO: Adding or removing ticks should be done here
     }
 
+    /**
+     * Returns a Line object representing the x-axis
+     *
+     * @return The x-axis
+     */
     public Line getxAxis() {
         return xAxis;
     }
 
+    /**
+     * Returns a Line object representing the y-axis
+     *
+     * @return The y-axis
+     */
     public Line getyAxis() {
         return yAxis;
     }
 
-    public double getTicksScale() {
-        return ticksScale;
+    /**
+     * Returns the current legend scale
+     *
+     * @return The legend scale
+     */
+    public double getLegendScale() {
+        return legendScale;
     }
 
-    public void setTicksScale(double ticksScale) {
-        this.ticksScale = ticksScale;
+    /**
+     * Sets the scale of the text legends. Default value is 1.
+     *
+     * @param legendScale The legend scale
+     */
+    public void setLegendScale(double legendScale) {
+        this.legendScale = legendScale;
     }
 
     @Override
@@ -204,15 +270,21 @@ public class Axes extends MathObject {
             s.mp.copyFrom(mp);
         }
         for (MultiShapeObject s : xticksLegend) {
-            s.mp.copyFrom(mp);
+            for (Shape sh : s) {
+                sh.mp.copyFrom(mp);
+            }
+
         }
         for (MultiShapeObject s : yticksLegend) {
-            s.mp.copyFrom(mp);
+            for (Shape sh : s) {
+                sh.mp.copyFrom(mp);
+            }
         }
     }
 
     @Override
-    public <T extends MathObject> T thickness(double newThickness) {
+    public <T extends MathObject> T thickness(double newThickness
+    ) {
         xAxis.thickness(newThickness);
         yAxis.thickness(newThickness);
         for (Shape s : xticks) {
@@ -224,4 +296,22 @@ public class Axes extends MathObject {
         return (T) this;
     }
 
+    /**
+     * Returns the current tick scale
+     *
+     * @return The tick scale
+     */
+    public double getTickScale() {
+        return tickScale;
+    }
+
+    /**
+     * Sets the scaling of the ticks, both vertical and horizontal.Default value
+     * is 1.
+     *
+     * @param tickScale Scale to apply to ticks
+     */
+    public void setTickScale(double tickScale) {
+        this.tickScale = tickScale;
+    }
 }
