@@ -129,6 +129,22 @@ Note that the construction of `line2` only considers the direction vector at the
 
 ## The `Axes` class
 
+The `Axes` class represents a cartesian axis. Well, actually is just a container for a couple of `Line`objects (the x-axis and y-axis), `Shape` objects (the ticks) and `LaTeXMathObject`(the legends of the ticks).
+
+By default, axes without ticks are created. You can add them with the methods `generateXTicks` and `generateYTicks`. If you want to fine-tune the ticks, you can add individual ticks with latex expressions:
+
+```java
+Axes axes = new Axes();
+axes.generateXTicks(-2, 2, .5);//Generate x ticks -2, -1.5, -1, ..., 1.5, 2
+axes.generateYTicks(-2, 2, .5);//Generate y ticks -2, -1.5, -1, ..., 1.5, 2
+axes.addXTicksLegend(0.75);//Adds a tick at x=0.75
+axes.addYTicksLegend("$\\pi/4$", PI / 4);//Adds a tick at y=PI/4 with legend $\\pi/4$
+add(axes, Shape.circle().scale(.5).drawColor("darkblue"));//Add axes and a blue circle
+waitSeconds(5);//Time for a screenshot!
+```
+
+![image-20201207211508323](axes01.png)
+
 ## The `Arrow2D` class
 
 The `Arrow2D` class defines a vector, which consists of a segment and an arrow head.  It is made with a static builder:
