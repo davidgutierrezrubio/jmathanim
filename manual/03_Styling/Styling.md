@@ -174,7 +174,8 @@ You can have several config files with different, independent aspects. This is t
 
 ```xml
 <JMathAnimConfig>
-    <include>dots.xml</include>
+    <include>#axes_and_functions_light.xml</include>
+    <include>#dots.xml</include>
     <background>
         <color>#FDFDFD</color>
     </background>
@@ -189,14 +190,19 @@ You can have several config files with different, independent aspects. This is t
             <fillColor>black</fillColor>
             <thickness>.5</thickness>
         </style>
-        <style name="solidred">
+        <style name="solidRed">
             <drawColor>black</drawColor>
-            <fillColor>red</fillColor>
+            <fillColor>#f55652</fillColor>
             <thickness>4</thickness>
         </style>
-        <style name="solidblue">
+        <style name="solidBlue">
             <drawColor>black</drawColor>
-            <fillColor>blue</fillColor>
+            <fillColor>#7ca0c0</fillColor>
+            <thickness>4</thickness>
+        </style>
+         <style name="solidGreen">
+            <drawColor>black</drawColor>
+            <fillColor>#9bc693</fillColor>
             <thickness>4</thickness>
         </style>
     </styles>
@@ -212,7 +218,23 @@ The JAR of the JMathAnim library has several predefined config files that you ca
 
 You can check all the internal config files at the [github sources folder](https://github.com/davidgutierrezrubio/jmathanim/tree/master/src/resources/config).
 
-The `<styles>` tag allows defining styles to apply to your animation. There are 3 named styles that are important: `default`, `latexDefault` and `functionGraphDefault` (names are case-insensitive). The style `latexdefault` is applied by default to all `LaTexMathObject`. The style `default` is applied to the rest of MathObjects. If no style with these names are defined, a default style with white stroke and no fill will be applied.
+The `<styles>` tag allows defining styles to apply to your animation. There are some convention-named styles that are important (names are case-insensitive):
+
+*  Style `default`: All MathObjects (except the next ones mentioned) load this style when created.
+
+* Style `latexDefault`: Applied by default to all `LaTexMathObject` instances.
+
+* Style`functionGraphDefault`: For function graphs.
+
+* Style `axisdefault`: For x-axis and y-axis.
+
+* Style `axistickdefault`: For x-ticks and y-ticks in the axes.
+
+* Style `axislegenddefault`: For legends in ticks of axes.
+
+* If no style with these names is defined, a default style with white stroke and no fill will be applied.
+
+Below there is an example image, with the same scene, loading `dark.xml` and `light.xml` config files.  ![image-20201208101038042](darkVsLight.png)
 
 The `<include>` tag that appears at the beginning loads another config files.  In this case, a `dots.xml` file with styles to dots are defined:
 
