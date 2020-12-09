@@ -83,7 +83,7 @@ public class FirstDrawThenFillAnimation extends Animation {
         }
         if (obj instanceof MultiShapeObject) {
             MultiShapeObject msh = (MultiShapeObject) obj;
-            double delay_time = runtime * delayPercent / (msh.getShapes().size() - 1);
+            double delay_time = (msh.getShapes().size() > 1 ? runtime * delayPercent / (msh.getShapes().size() - 1) : 0);
             double time = runtime * (1 - delayPercent);
             if (time <= 0) {
                 JMathAnimScene.logger.error("Time too short for draw-and-fill multishape, please take a higher runtime");
@@ -98,7 +98,7 @@ public class FirstDrawThenFillAnimation extends Animation {
                 con.add(new WaitAnimation(delay));
                 con.add(new FirstDrawThenFillAnimation(time, sh));
                 ag.add(con);
-                delay += delayPercent;
+                delay += delay_time;
             }
             return ag;
         }

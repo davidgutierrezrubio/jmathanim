@@ -380,7 +380,19 @@ public class Rect implements Stateable {//TODO: Adjust this to 3D coordinates
         this.copyFrom(this.rBackup);
     }
 
-    public void scale(Point scaleCenter, double sx, double sy, double sz) {
-
+/**
+ * Return the smallest rect that containts this rect rotated the given angle
+ * @param rotateAngle Rotation angle, in radians
+ * @return A new Rect, the smallest containing the rotated rect.
+ */
+    public Rect getRotatedRect(double rotateAngle) {
+        Point center=this.getCenter();
+        Point A=this.getUL().rotate(center, rotateAngle);
+        Point B=this.getUR().rotate(center, rotateAngle);
+        Point C=this.getDR().rotate(center, rotateAngle);
+        Point D=this.getDL().rotate(center, rotateAngle);
+        Rect r1=Rect.make(A, C);
+        Rect r2=Rect.make(B, D);
+        return r1.union(r2);
     }
 }

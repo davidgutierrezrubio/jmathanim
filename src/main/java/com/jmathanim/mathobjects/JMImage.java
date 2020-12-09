@@ -41,7 +41,10 @@ public class JMImage extends MathObject {
 
     public JMImage(String filename) {
         this.filename = filename;
-        this.bbox = JMathAnimConfig.getConfig().getRenderer().createImage(filename);
+        Renderer r = JMathAnimConfig.getConfig().getRenderer();
+        this.bbox = r.createImage(filename);
+        double sc=r.getMediaHeight()*1d/1080d;//Scales it taking as reference 1920x1080 production output
+        this.scale(sc);
     }
 
     @Override
@@ -68,7 +71,7 @@ public class JMImage extends MathObject {
 
     @Override
     public Rect getBoundingBox() {
-        return bbox;
+        return bbox.getRotatedRect(this.rotateAngle);
     }
 
     @Override

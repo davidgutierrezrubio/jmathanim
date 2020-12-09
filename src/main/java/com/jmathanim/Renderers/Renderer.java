@@ -45,11 +45,21 @@ public abstract class Renderer {
 
     public abstract Camera getFixedCamera();
 
-    public int getWidth() {
+    /**
+     * Returns the width of the media output, in pixels
+     *
+     * @return the width of media
+     */
+    public int getMediaWidth() {
         return cnf.mediaW;
     }
 
-    public int getHeight() {
+    /**
+     * Returns the height of the media output, in pixels
+     *
+     * @return the height of media
+     */
+    public int getMediaHeight() {
         return cnf.mediaH;
     }
 

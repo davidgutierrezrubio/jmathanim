@@ -45,12 +45,12 @@ public class PreviewWindow extends Frame {
     }
 
     public void buildGUI() {
-        this.setSize(renderer.getWidth() + 20, renderer.getHeight() + 60);//TODO: Scale window to fixed size
+        this.setSize(renderer.getMediaWidth() + 20, renderer.getMediaHeight() + 60);//TODO: Scale window to fixed size
 //            frame.setLayout(new BasicSplitPaneUI.BasicVerticalLayoutManager());
         this.setLayout(new BorderLayout(0, 10));
         drawPanel = new JPanel();
         buttonsPanel = new JPanel();
-        drawPanel.setBounds(0, 0, renderer.getWidth(), renderer.getHeight());//x axis, y axis, width, height  
+        drawPanel.setBounds(0, 0, renderer.getMediaWidth(), renderer.getMediaHeight());//x axis, y axis, width, height  
         this.add(drawPanel, BorderLayout.CENTER);
         statusLabel = new JLabel("");
 

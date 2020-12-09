@@ -213,7 +213,7 @@ public class ShowCreation extends Animation {
                 break;
             case LATEX_CREATION:
                 creationStrategy = new FirstDrawThenFillAnimation(runTime, (MultiShapeObject) mobj);
-                JMathAnimScene.logger.debug("ShowCreation method: FirstDrawThenFillStrategy");
+                JMathAnimScene.logger.debug("ShowCreation method: FirstDrawThenFillStrategy (LaTeXMathObject)");
                 break;
             default:
                 break;
