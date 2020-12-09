@@ -131,17 +131,11 @@ play.shrinkOut(2,45*DEGREES,sq);
 //Scales briefly the object, to highlight it, for 1 second
 play.highlight(1,sq);
 
-//Moves the object from outside
+//Moves the object from outside (direction is specified in the enum Anchor.Type {LEFT, RIGHT, LOWER, UPPER})
 play.moveIn(1,Anchor.Type.LEFT,sq);//Entering from the left
-play.moveIn(1,Anchor.Type.RIGHT,sq);//Entering from the right
-play.moveIn(1,Anchor.Type.LOWER,sq);//Entering from the bottom
-play.moveIn(1,Anchor.Type.UPPER,sq);//Entering from the top
 
 //Moves the object out of the scene
 play.moveOut(1,Anchor.Type.LEFT,sq);//Exiting through the left
-play.moveOut(1,Anchor.Type.RIGHT,sq);//Exiting through the right
-play.moveOut(1,Anchor.Type.LOWER,sq);//Exiting through the bottom
-play.moveOut(1,Anchor.Type.UPPER,sq);//Exiting through the top
 ```
 
 Most of this commands can be called omitting the runtime parameter, using the default time for each one. For example, calling

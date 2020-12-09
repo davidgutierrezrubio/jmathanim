@@ -12,16 +12,14 @@ Version 0.8.6:
 
 * Fixed time duration of ShowCreation for MultiShapeObjects
 * Fixed bounding box for JMImage objects
-
-- Included the Delimiter objects, extensible delimiters like parenthesis, braces or brackets.
-
-- Fixed bug in copy() method of FunctionGraph
-- Added showCreation strategy for delimiters
-- Fixed a bug when animation the creation of a `Arrow2D` object.
-- Fixed bug when zooming arrows.
-- Added double arrows with the `makeDoubleArrow2D` static method.
-- Added type 3 of arrow.
-- Added `ParametricCurve.make` and `ParametricCurve.makePolar` static methods.
+* Included the Delimiter objects, extensible delimiters like parenthesis, braces or brackets.
+* Fixed bug in copy() method of FunctionGraph
+* Added showCreation strategy for delimiters
+* Fixed a bug when animation the creation of a `Arrow2D` object.
+* Fixed bug when zooming arrows.
+* Added double arrows with the `makeDoubleArrow2D` static method.
+* Added type 3 of arrow.
+* Added `ParametricCurve.make` and `ParametricCurve.makePolar` static methods.
 
 # Prerrequisites
 A machine with JDK 1.8 installed. A Java IDE editor like [Netbeans](https://netbeans.org/) or [Eclipse](https://www.eclipse.org/projects/) is recommended.
