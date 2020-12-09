@@ -246,6 +246,18 @@ JMathAnim allows both bitmap and vectorial images. All bitmap formats supported 
 
 ## Importing bitmap images
 
+JMathAnim can import and transform all bitmap images supported by JavaFX, like png, or jpg. Only basic transformations like shift, rotate and scale are supported, and its basic related animations. By default, the images are loaded in the `resources/images/` folder in your project (see the styling chapter about specifying another search paths).
+
+````java
+JMImage img=JMImage.make("euler.jpg").center().rotate(-5*DEGREES);
+LaTeXMathObject text=LaTeXMathObject.make("All hail the great Euler!").stackTo(img, Anchor.Type.LOWER);
+Animation anim = Commands.moveIn(2, Anchor.Type.LEFT, img);
+playAnimation(anim,new ShowCreation(2 ,text));
+waitSeconds(3);
+````
+
+![image01](image01.gif)
+
 ## Importing SVG Objects
 
 Let's see with an example: I used a free SVG file example from https://freesvg.org/donald-knuth.
