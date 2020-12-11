@@ -161,9 +161,9 @@ public class JavaFXRenderer extends Renderer {
                     groupBackground.getChildren().clear();
                     groupBackground.getChildren().add(background);
                 }
-                groupRoot.getChildren().add(groupBackground);
-                groupRoot.getChildren().add(group);
-                groupRoot.getChildren().add(groupDebug);
+                groupRoot.getChildren().add(groupBackground);//Background image
+                groupRoot.getChildren().add(group);//Mathobjects
+                groupRoot.getChildren().add(groupDebug);//Debug things
                 fxScene = new Scene(groupRoot, cnf.mediaW, cnf.mediaW);
                 fxScene.setFill(cnf.getBackgroundColor().getFXColor());
                 StandaloneSnapshot.FXStarter.stage.setScene(fxScene);

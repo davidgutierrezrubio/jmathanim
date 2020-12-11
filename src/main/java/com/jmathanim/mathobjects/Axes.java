@@ -31,10 +31,14 @@ import java.util.ArrayList;
  */
 public class Axes extends MathObject {
 
-    public Line xAxis, yAxis;
+    private Line xAxis, yAxis;
+    private final ArrayList<Shape> xticksOrig;
     private final ArrayList<Shape> xticks;
+    private final ArrayList<Shape> yticksOrig;
     private final ArrayList<Shape> yticks;
+    private final ArrayList<MultiShapeObject> xticksLegendOrig;
     private final ArrayList<MultiShapeObject> xticksLegend;
+    private final ArrayList<MultiShapeObject> yticksLegendOrig;
     private final ArrayList<MultiShapeObject> yticksLegend;
     public static final double INITIAL_TICK_LENGTH = .04;
     private double tickScale = 1;
@@ -45,14 +49,19 @@ public class Axes extends MathObject {
 
     public Axes() {
         mp.loadFromStyle("axisdefault");
+        xticksOrig = new ArrayList<>();
         xticks = new ArrayList<>();
         yticks = new ArrayList<>();
+        yticksOrig = new ArrayList<>();
+        xticksLegendOrig = new ArrayList<>();
         xticksLegend = new ArrayList<>();
+        yticksLegendOrig = new ArrayList<>();
         yticksLegend = new ArrayList<>();
         xAxis = Line.make(Point.at(0, 0), Point.at(1, 0)).style("axisdefault");
         yAxis = Line.make(Point.at(0, 0), Point.at(0, 1)).style("axisdefault");
     }
-   /**
+
+    /**
      * Generates a set of pairs (ticks-legends) from start to finish (including)
      * with given step, in the x-axis
      *
@@ -104,12 +113,12 @@ public class Axes extends MathObject {
     public void addYTicksLegend(String latex, double y) {
         final Shape ytick = Shape.segment(Point.at(-.5, y), Point.at(.5, y)).style("axistickdefault");;
         ytick.setAbsoluteSize(Anchor.Type.BY_CENTER);
-        yticks.add(ytick);
+        yticksOrig.add(ytick);
 
         final LaTeXMathObject ytickLegend = LaTeXMathObject.make(latex).style("axislegenddefault");
         ytickLegend.stackTo(ytick, Anchor.Type.RIGHT, LEGEND_TICKS_GAP);
         ytickLegend.setAbsoluteSize(Anchor.Type.LEFT);
-        yticksLegend.add(ytickLegend);
+        yticksLegendOrig.add(ytickLegend);
     }
 
     /**
@@ -132,11 +141,11 @@ public class Axes extends MathObject {
     public void addXTicksLegend(String latex, double x) {
         final Shape xtick = Shape.segment(Point.at(x, -.5), Point.at(x, .5)).style("axistickdefault");
         xtick.setAbsoluteSize(Anchor.Type.BY_CENTER);
-        xticks.add(xtick);
+        xticksOrig.add(xtick);
         final LaTeXMathObject xtickLegend = LaTeXMathObject.make(latex).style("axislegenddefault");
         xtickLegend.stackTo(xtick, Anchor.Type.LOWER, LEGEND_TICKS_GAP);
         xtickLegend.setAbsoluteSize(Anchor.Type.UPPER);
-        xticksLegend.add(xtickLegend);
+        xticksLegendOrig.add(xtickLegend);
     }
 
     @Override
@@ -167,16 +176,16 @@ public class Axes extends MathObject {
         xAxis.draw(r);
         yAxis.draw(r);
 
-        for (int n = 0; n < xticks.size(); n++) {
-            Shape xt = xticks.get(n).copy().scale(INITIAL_TICK_LENGTH * tickScale);
-            MultiShapeObject leg = xticksLegend.get(n).copy().scale(legendScale * INITIAL_LEGEND_TICK_SCALE);
+        for (int n = 0; n < xticksOrig.size(); n++) {
+            Shape xt = xticksOrig.get(n).copy().scale(INITIAL_TICK_LENGTH * tickScale);
+            MultiShapeObject leg = xticksLegendOrig.get(n).copy().scale(legendScale * INITIAL_LEGEND_TICK_SCALE);
             leg.stackTo(xt, Anchor.Type.LOWER, LEGEND_TICKS_GAP);
             xt.draw(r);
             leg.draw(r);
         }
-        for (int n = 0; n < yticks.size(); n++) {
-            Shape yt = yticks.get(n).copy().scale(INITIAL_TICK_LENGTH * tickScale);
-            MultiShapeObject leg = yticksLegend.get(n).copy().scale(legendScale * INITIAL_LEGEND_TICK_SCALE);
+        for (int n = 0; n < yticksOrig.size(); n++) {
+            Shape yt = yticksOrig.get(n).copy().scale(INITIAL_TICK_LENGTH * tickScale);
+            MultiShapeObject leg = yticksLegendOrig.get(n).copy().scale(legendScale * INITIAL_LEGEND_TICK_SCALE);
             leg.stackTo(yt, Anchor.Type.LEFT, LEGEND_TICKS_GAP);
             yt.draw(r);
             leg.draw(r);
@@ -314,4 +323,21 @@ public class Axes extends MathObject {
     public void setTickScale(double tickScale) {
         this.tickScale = tickScale;
     }
+
+    public ArrayList<Shape> getXticks() {
+        return xticks;
+    }
+
+    public ArrayList<Shape> getYticks() {
+        return yticks;
+    }
+
+    public ArrayList<MultiShapeObject> getXticksLegend() {
+        return xticksLegend;
+    }
+
+    public ArrayList<MultiShapeObject> getYticksLegend() {
+        return yticksLegend;
+    }
+
 }

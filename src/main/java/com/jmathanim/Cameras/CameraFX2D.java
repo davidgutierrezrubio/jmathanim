@@ -22,7 +22,7 @@ import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.MathObject;
 
 /**
- * A Camera subclass designed to work with the Java2D library This class
+ * A Camera subclass designed to work with the JavaFX library. This class
  * converts math coordinates to screen cordinates. Screen coordinates are always
  * (0,0)-(w,h) where (0,0) is upper left corner
  *

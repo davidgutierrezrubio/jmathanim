@@ -97,7 +97,8 @@ public class Line extends Shape {
         update(scene);
         return bp1.p.copy();
     }
-/**
+
+    /**
      * Returns the point of the line lying in the boundaries of the math view.
      * From the 2 points of the boundary, this is next to p2.
      *
@@ -162,9 +163,9 @@ public class Line extends Shape {
 
     @Override
     public void saveState() {
-        super.saveState(); 
-        p1.saveState(); 
-        p2.saveState(); 
+        super.saveState();
+        p1.saveState();
+        p2.saveState();
     }
 
     @Override
@@ -173,6 +174,7 @@ public class Line extends Shape {
         p1.restoreState();
         p2.restoreState();
     }
+
     public Point getP1() {
         return p1;
     }
@@ -219,14 +221,20 @@ public class Line extends Shape {
     /**
      * Creates a finite Segment, that runs over the screen plus a percent gap
      *
+     * @param cam Camera with math view
+     * @param scale Scale to apply. 1 returns the visible part of the line.
      * @return A segment with the visibleFlag part of the line
      */
-    public Shape toSegment(Camera cam) {
+    public Shape toSegment(Camera cam, double scale) {
         computeBoundPoints(cam);
-        Point a = bp1.p;
-        Point b = bp2.p;
-        Shape segment = Shape.segment(bp1.p.copy(), bp2.p.copy());
+        Point a = bp1.p.copy().scale(getCenter(), scale, scale);
+        Point b = bp2.p.copy().scale(getCenter(), scale, scale);
+        Shape segment = Shape.segment(a, b);
         segment.mp.copyFrom(this.mp);
         return segment;
+    }
+
+    public Shape toSegment(Camera cam) {
+        return toSegment(cam, 1);
     }
 }

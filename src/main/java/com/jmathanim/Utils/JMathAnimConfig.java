@@ -129,7 +129,10 @@ public class JMathAnimConfig {
         this.shadowOffsetY = offsetY;
         this.shadowAlpha = alpha;
     }
-
+public void setBackGroundImage(String name) {
+    ResourceLoader rl=new ResourceLoader();
+    setBackGroundImage(rl.getResource(name, "images"));
+}
     public void setBackGroundImage(URL backGroundImage) {
         this.backGroundImage = backGroundImage;
     }

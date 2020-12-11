@@ -24,9 +24,11 @@ import com.jmathanim.Animations.Strategies.Transform.Optimizers.NullOptimization
 import com.jmathanim.Animations.Strategies.Transform.PointInterpolationCanonical;
 import com.jmathanim.Animations.Strategies.Transform.PointInterpolationSimpleShapeTransform;
 import com.jmathanim.Animations.Strategies.Transform.RotateAndScaleXYTransform;
+import com.jmathanim.Utils.JMathAnimConfig;
 import com.jmathanim.Utils.MODrawProperties;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.FunctionGraph;
+import com.jmathanim.mathobjects.Line;
 import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.MultiShapeObject;
 import com.jmathanim.mathobjects.Point;
@@ -48,7 +50,7 @@ public class Transform extends Animation {
     }
 
     public final MathObject mobjDestiny;
-    public final MathObject mobjTransformed;
+    public MathObject mobjTransformed;
     private MODrawProperties propBase;
     private TransformMethod transformMethod;
     private boolean shouldOptimizePathsFirst;
@@ -99,6 +101,9 @@ public class Transform extends Animation {
     }
 
     private void determineTransformStrategy() {
+        if (mobjTransformed instanceof Line) {
+            mobjTransformed = ((Line) mobjTransformed).toSegment(JMathAnimConfig.getConfig().getCamera(), 2);
+        }
         if ((mobjTransformed instanceof MultiShapeObject) && (mobjDestiny instanceof MultiShapeObject)) {
             transformMethod = TransformMethod.MULTISHAPE_TRANSFORM;
             return;
