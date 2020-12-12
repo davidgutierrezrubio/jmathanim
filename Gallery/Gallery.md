@@ -86,7 +86,7 @@ public void runSketch() throws Exception {
         add(taylor[n-1].copy().thickness(1).drawColor(JMColor.GRAY));
         Transform transformFunction = new Transform(2, taylor[n-1], taylor[n]);
         Transform transformText=new Transform(2, texts[n-1], texts[n]);
-        playAnimation(transformFunction,transformText);
+        playAnim(transformFunction,transformText);
     }
     waitSeconds(5);
 }
@@ -300,7 +300,7 @@ This example shows the use of anonymous updaters to perform commands in the upda
         Animation rot = Commands.rotate(10, -2 * PI, circleSmall).setUseObjectState(false);
         mov.setLambda(t -> t);//Uniform movement
         rot.setLambda(t -> t);//Uniform rotation
-        playAnimation(mov, rot);
+        playAnim(mov, rot);
 ```
 
 Here you have a GIF from the movie generated:
@@ -336,7 +336,7 @@ This example shows how combining simple animations we can have complex ones. The
             Concatenate con = new Concatenate(new WaitAnimation(waitTime), ag);
             gr.add(con);
         }
-        playAnimation(gr);
+        playAnim(gr);
         waitSeconds(3);
 ```
 
