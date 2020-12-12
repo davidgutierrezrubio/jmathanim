@@ -246,19 +246,21 @@ public abstract class JMathAnimScene {
      */
     public synchronized final void add(MathObject... objs) {
         for (MathObject obj : objs) {
-            if (!sceneObjects.contains(obj)) {
-                if (obj instanceof MathObjectGroup) {
-                    for (MathObject subobj : ((MathObjectGroup) obj).getObjects()) {
-                        add(subobj);
+            if (obj != null) {
+                if (!sceneObjects.contains(obj)) {
+                    if (obj instanceof MathObjectGroup) {
+                        for (MathObject subobj : ((MathObjectGroup) obj).getObjects()) {
+                            add(subobj);
+                        }
+                    } else if (obj instanceof MultiShapeObject) {
+                        for (Shape sh : (MultiShapeObject) obj) {
+                            add(sh);
+                        }
+                    } else {
+                        sceneObjects.add(obj);
+                        registerUpdateable(obj);
+                        obj.registerChildrenToBeUpdated(this);
                     }
-                } else if (obj instanceof MultiShapeObject) {
-                    for (Shape sh : (MultiShapeObject) obj) {
-                        add(sh);
-                    }
-                } else {
-                    sceneObjects.add(obj);
-                    registerUpdateable(obj);
-                    obj.registerChildrenToBeUpdated(this);
                 }
             }
         }
@@ -396,7 +398,7 @@ public abstract class JMathAnimScene {
      * @param time Time in seconds.
      */
     public void waitSeconds(double time) {
-        JMathAnimScene.logger.info("Waiting "+time+" seconds");
+        JMathAnimScene.logger.info("Waiting " + time + " seconds");
         int numFrames = (int) (time * fps);
         for (int n = 0; n < numFrames; n++) {
             try {
