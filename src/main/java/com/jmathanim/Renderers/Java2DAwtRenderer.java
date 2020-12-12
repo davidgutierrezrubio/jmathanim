@@ -99,17 +99,17 @@ public class Java2DAwtRenderer extends Renderer {
     public Java2DAwtRenderer(JMathAnimScene parentScene) {
         super(parentScene);
         //Main Camera
-        camera = new Camera2D(parentScene,cnf.mediaW * scaleBufferedImage, cnf.mediaH * scaleBufferedImage);
+        camera = new Camera2D(parentScene,config.mediaW * scaleBufferedImage, config.mediaH * scaleBufferedImage);
         //The Fixed camera it is not intended to change. It is used to display fixed-size objects
         //like heads of arrows, dot symbols or text
-        fixedCamera = new Camera2D(parentScene,cnf.mediaW * scaleBufferedImage, cnf.mediaH * scaleBufferedImage);
+        fixedCamera = new Camera2D(parentScene,config.mediaW * scaleBufferedImage, config.mediaH * scaleBufferedImage);
 
         fixedCamera.setMathXY(XMIN_DEFAULT, XMAX_DEFAULT, 0);
         camera.setMathXY(XMIN_DEFAULT, XMAX_DEFAULT, 0);
 
-        drawBufferImage = new BufferedImage(cnf.mediaW * scaleBufferedImage, cnf.mediaH * scaleBufferedImage, BufferedImage.TYPE_INT_ARGB);
-        finalImage = new BufferedImage(cnf.mediaW, cnf.mediaH, BufferedImage.TYPE_INT_RGB);
-        debugImage = new BufferedImage(cnf.mediaW * scaleBufferedImage, cnf.mediaH * scaleBufferedImage, BufferedImage.TYPE_INT_ARGB);
+        drawBufferImage = new BufferedImage(config.mediaW * scaleBufferedImage, config.mediaH * scaleBufferedImage, BufferedImage.TYPE_INT_ARGB);
+        finalImage = new BufferedImage(config.mediaW, config.mediaH, BufferedImage.TYPE_INT_RGB);
+        debugImage = new BufferedImage(config.mediaW * scaleBufferedImage, config.mediaH * scaleBufferedImage, BufferedImage.TYPE_INT_ARGB);
         g2draw = drawBufferImage.createGraphics();
         g2debug = debugImage.createGraphics();
         g2dFinalImage = finalImage.createGraphics();
@@ -124,8 +124,8 @@ public class Java2DAwtRenderer extends Renderer {
         prepareEncoder();
 
         //Proofs
-        if (cnf.getBackGroundImage() != null) {
-            img = Toolkit.getDefaultToolkit().getImage(cnf.getBackGroundImage());
+        if (config.getBackGroundImage() != null) {
+            img = Toolkit.getDefaultToolkit().getImage(config.getBackGroundImage());
         }
 //        This tracker waits for image to be fully loaded
         MediaTracker tracker = new MediaTracker(new JLabel());
@@ -141,7 +141,7 @@ public class Java2DAwtRenderer extends Renderer {
 
         JMathAnimScene.logger.info("Preparing encoder");
 
-        if (cnf.isShowPreview()) {
+        if (config.isShowPreview()) {
             JMathAnimScene.logger.debug("Creating preview window");
             previewWindow = new PreviewWindow(this);
             previewWindow.buildGUI();
@@ -156,22 +156,22 @@ public class Java2DAwtRenderer extends Renderer {
 
         }
 
-        if (cnf.isCreateMovie()) {
+        if (config.isCreateMovie()) {
 //            videoEncoder=new JCodecVideoEncoder();
             videoEncoder = new XugglerVideoEncoder();
 //            videoEncoder=new HumbleVideoEncoder();
             try {
-                File tempPath = new File(cnf.getOutputDir().getCanonicalPath());
+                File tempPath = new File(config.getOutputDir().getCanonicalPath());
                 tempPath.mkdirs();
-                saveFilePath = new File(cnf.getOutputDir().getCanonicalPath() + File.separator + cnf.getOutputFileName() + "_" + cnf.mediaH + ".mp4");
+                saveFilePath = new File(config.getOutputDir().getCanonicalPath() + File.separator + config.getOutputFileName() + "_" + config.mediaH + ".mp4");
                 JMathAnimScene.logger.info("Creating movie encoder for {}", saveFilePath);
 //                muxer = Muxer.make(saveFilePath.getCanonicalPath(), null, "mp4");
-                videoEncoder.createEncoder(saveFilePath, cnf);
+                videoEncoder.createEncoder(saveFilePath, config);
             } catch (IOException ex) {
                 Logger.getLogger(Java2DAwtRenderer.class.getName()).log(Level.SEVERE, null, ex);
             }
 
-            if (cnf.drawShadow) {
+            if (config.drawShadow) {
                 computeShadowKernel();
             }
 
@@ -181,9 +181,9 @@ public class Java2DAwtRenderer extends Renderer {
     @Override
     public void saveFrame(int frameCount) {
         //Draw all layers into finalimage
-        if (cnf.drawShadow) {
+        if (config.drawShadow) {
             BufferedImage shadowImage = computeShadow(drawBufferImage);
-            g2dFinalImage.drawImage(shadowImage, cnf.shadowOffsetX, cnf.shadowOffsetY, null);
+            g2dFinalImage.drawImage(shadowImage, config.shadowOffsetX, config.shadowOffsetY, null);
 
         }
 
@@ -195,7 +195,7 @@ public class Java2DAwtRenderer extends Renderer {
             AffineTransform scaleTransformToFinal = AffineTransform.getScaleInstance(1d / scaleBufferedImage, 1d / scaleBufferedImage);
 //            AffineTransformOp afop = new AffineTransformOp(tr, AffineTransformOp.TYPE_BILINEAR);
             g2dFinalImage.setTransform(scaleTransformToFinal);
-//            BufferedImage draw=new BufferedImage(cnf.mediaW , cnf.mediaH, BufferedImage.TYPE_INT_ARGB);
+//            BufferedImage draw=new BufferedImage(config.mediaW , config.mediaH, BufferedImage.TYPE_INT_ARGB);
 //            draw=afop.filter(drawBufferImage, draw);
 //            g2dFinalImage.drawImage(draw, 0, 0, null);
             g2dFinalImage.drawImage(drawBufferImage, 0, 0, null);
@@ -211,7 +211,7 @@ public class Java2DAwtRenderer extends Renderer {
             g2dFinalImage.drawImage(debugImage, 0, 0, null);
         }
 
-        if (cnf.isShowPreview()) {
+        if (config.isShowPreview()) {
 
             //Draw into a window
             try {
@@ -226,11 +226,11 @@ public class Java2DAwtRenderer extends Renderer {
                         fpsComputed = 0;
                     }
 
-                    String statusText = String.format("frame=%d   t=%.2fs    fps=%d", frameCount, (1f * frameCount) / cnf.fps, fpsComputed);
+                    String statusText = String.format("frame=%d   t=%.2fs    fps=%d", frameCount, (1f * frameCount) / config.fps, fpsComputed);
                     previewWindow.statusLabel.setText(statusText);
 
-                    if (cnf.delay) {
-                        double tiempo = (1.d / cnf.fps) * 1000;
+                    if (config.delay) {
+                        double tiempo = (1.d / config.fps) * 1000;
                         try {
                             long tiempoPasado = timeElapsedInNanoSeconds / 1000000;
                             long delay = (long) (tiempo - tiempoPasado);
@@ -253,7 +253,7 @@ public class Java2DAwtRenderer extends Renderer {
             }
 
         }
-        if (cnf.isCreateMovie()) {
+        if (config.isCreateMovie()) {
             videoEncoder.writeFrame(finalImage, frameCount);
         }
     }
@@ -261,8 +261,8 @@ public class Java2DAwtRenderer extends Renderer {
     @Override
     public void finish(int frameCount
     ) {
-        JMathAnimScene.logger.info(String.format("%d frames created, %.2fs total time", frameCount, (1.f * frameCount) / cnf.fps));
-        if (cnf.isCreateMovie()) {
+        JMathAnimScene.logger.info(String.format("%d frames created, %.2fs total time", frameCount, (1.f * frameCount) / config.fps));
+        if (config.isCreateMovie()) {
             /**
              * Encoders, like decoders, sometimes cache pictures so it can do
              * the right key-frame optimizations. So, they need to be flushed as
@@ -274,7 +274,7 @@ public class Java2DAwtRenderer extends Renderer {
             JMathAnimScene.logger.info("Movie created at " + saveFilePath);
 
         }
-        if (cnf.isShowPreview()) {
+        if (config.isShowPreview()) {
             previewWindow.setVisible(false);
             previewWindow.dispose();
         }
@@ -284,15 +284,15 @@ public class Java2DAwtRenderer extends Renderer {
     @Override
     public void clear() {
         g2dFinalImage.setColor(scene.getConfig().getBackgroundColor().getAwtColor());
-        g2dFinalImage.fillRect(0, 0, cnf.mediaW, cnf.mediaH);
+        g2dFinalImage.fillRect(0, 0, config.mediaW, config.mediaH);
 
         //Draw background image, if any
         if (img != null) {
 //            drawScaledImage(img, g2dFinalImage);
             g2dFinalImage.drawImage(img, 0, 0, null);
         }
-        drawBufferImage = new BufferedImage(cnf.mediaW * scaleBufferedImage, cnf.mediaH * scaleBufferedImage, BufferedImage.TYPE_INT_ARGB);
-        debugImage = new BufferedImage(cnf.mediaW * scaleBufferedImage, cnf.mediaH * scaleBufferedImage, BufferedImage.TYPE_INT_ARGB);
+        drawBufferImage = new BufferedImage(config.mediaW * scaleBufferedImage, config.mediaH * scaleBufferedImage, BufferedImage.TYPE_INT_ARGB);
+        debugImage = new BufferedImage(config.mediaW * scaleBufferedImage, config.mediaH * scaleBufferedImage, BufferedImage.TYPE_INT_ARGB);
         g2draw = drawBufferImage.createGraphics();
         g2debug = debugImage.createGraphics();
         g2draw.setRenderingHints(rh);
@@ -300,7 +300,7 @@ public class Java2DAwtRenderer extends Renderer {
     }
 
     public void computeShadowKernel() {
-        int dimension = cnf.shadowKernelSize;
+        int dimension = config.shadowKernelSize;
         if (dimension > 0) {
             float valor = 1f / (dimension * dimension);
             float[] k = new float[dimension * dimension];
@@ -314,7 +314,7 @@ public class Java2DAwtRenderer extends Renderer {
     }
 
     public BufferedImage computeShadow(BufferedImage img) {
-        BufferedImage resul = new BufferedImage(cnf.mediaW * scaleBufferedImage, cnf.mediaH * scaleBufferedImage, BufferedImage.TRANSLUCENT);
+        BufferedImage resul = new BufferedImage(config.mediaW * scaleBufferedImage, config.mediaH * scaleBufferedImage, BufferedImage.TRANSLUCENT);
 ////        ColorModel cm = img.getColorModel();
 ////        boolean isAlphaPremultiplied = cm.isAlphaPremultiplied();
 ////        WritableRaster raster = img.copyData(null);
@@ -323,7 +323,7 @@ public class Java2DAwtRenderer extends Renderer {
 //        int[] imagePixels = img.getRGB(0, 0, width, height, null, 0, width);
 //        for (int i = 0; i < imagePixels.length; i++) {
 //            int color = imagePixels[i];// & 0xff000000;
-//            color = (int) ((color >> 56) * cnf.shadowAlpha) << 56;//TODO: Check this
+//            color = (int) ((color >> 56) * config.shadowAlpha) << 56;//TODO: Check this
 //
 //            imagePixels[i] = color;
 //        }
@@ -332,9 +332,9 @@ public class Java2DAwtRenderer extends Renderer {
 ////        if (ConvolveShadowOp != null) {
 ////            resul = ConvolveShadowOp.filter(resul, null);
 ////        }
-//        ShadowFilter fil = new ShadowFilter(cnf.shadowKernelSize, cnf.shadowOffsetX, cnf.shadowOffsetY, cnf.shadowAlpha);
+//        ShadowFilter fil = new ShadowFilter(config.shadowKernelSize, config.shadowOffsetX, config.shadowOffsetY, config.shadowAlpha);
 //        fil.setShadowOnly(true);
-////        GaussianFilter fil = new GaussianFilter(cnf.shadowKernelSize);
+////        GaussianFilter fil = new GaussianFilter(config.shadowKernelSize);
 //        resul = fil.filter(img, null);
         return resul;
     }
@@ -345,8 +345,8 @@ public class Java2DAwtRenderer extends Renderer {
 
         double imgAspect = (double) imgHeight / imgWidth;
 
-        int canvasWidth = cnf.mediaW * scaleBufferedImage;
-        int canvasHeight = cnf.mediaH * scaleBufferedImage;
+        int canvasWidth = config.mediaW * scaleBufferedImage;
+        int canvasHeight = config.mediaH * scaleBufferedImage;
 
         double canvasAspect = (double) canvasHeight / canvasWidth;
 
@@ -388,7 +388,7 @@ public class Java2DAwtRenderer extends Renderer {
         //Thickness 1 means 1% of screen width
         //Thickness 100 draws a line with whole screen width
         if (!obj.mp.absoluteThickness) {
-            thickness *= cnf.mediaW * .005d;
+            thickness *= config.mediaW * .005d;
         } else {
             thickness *= 4; //computed width for MediaW of 800
         }
@@ -458,8 +458,8 @@ public class Java2DAwtRenderer extends Renderer {
         //First, move UL math corner to screen (0,0)
         AffineTransform tr = AffineTransform.getTranslateInstance(-r.xmin, -r.ymax);
         //Now, scale it so that (xmax-xmin, ymax-ymin) goes to (W,H)
-        double w = cnf.mediaW * scaleBufferedImage / (r.xmax - r.xmin);
-        double h = -cnf.mediaH * scaleBufferedImage / (r.ymax - r.ymin);
+        double w = config.mediaW * scaleBufferedImage / (r.xmax - r.xmin);
+        double h = -config.mediaH * scaleBufferedImage / (r.ymax - r.ymin);
         AffineTransform sc = AffineTransform.getScaleInstance(w, h);
         sc.concatenate(tr);
         return sc;

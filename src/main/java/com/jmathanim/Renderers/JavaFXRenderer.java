@@ -105,9 +105,9 @@ public class JavaFXRenderer extends Renderer {
 
     public JavaFXRenderer(JMathAnimScene parentScene) throws Exception {
         super(parentScene);
-        camera = new CameraFX2D(parentScene, cnf.mediaW, cnf.mediaH);
+        camera = new CameraFX2D(parentScene,config.mediaW, config.mediaH);
         camera.setMathXY(XMIN_DEFAULT, XMAX_DEFAULT, 0);
-        fixedCamera = new CameraFX2D(parentScene, cnf.mediaW, cnf.mediaH);
+        fixedCamera = new CameraFX2D(parentScene, config.mediaW, config.mediaH);
         fixedCamera.setMathXY(XMIN_DEFAULT, XMAX_DEFAULT, 0);
 
         fxnodes = new ArrayList<>();
@@ -115,6 +115,7 @@ public class JavaFXRenderer extends Renderer {
         images = new HashMap<>();
 
         prepareEncoder();
+        playA
     }
 
     public final void prepareEncoder() throws Exception {
@@ -123,20 +124,20 @@ public class JavaFXRenderer extends Renderer {
 
         initializeJavaFXWindow();
 
-        if (cnf.isCreateMovie()) {
+        if (config.isCreateMovie()) {
             videoEncoder = new XugglerVideoEncoder();
-            File tempPath = new File(cnf.getOutputDir().getCanonicalPath());
+            File tempPath = new File(config.getOutputDir().getCanonicalPath());
             tempPath.mkdirs();
-            saveFilePath = new File(cnf.getOutputDir().getCanonicalPath() + File.separator + cnf.getOutputFileName() + "_" + cnf.mediaH + ".mp4");
+            saveFilePath = new File(config.getOutputDir().getCanonicalPath() + File.separator + config.getOutputFileName() + "_" + config.mediaH + ".mp4");
             JMathAnimScene.logger.info("Creating movie encoder for {}", saveFilePath);
-            videoEncoder.createEncoder(saveFilePath, cnf);
+            videoEncoder.createEncoder(saveFilePath, config);
         }
-        if (cnf.drawShadow) {
+        if (config.drawShadow) {
             dropShadow = new DropShadow();
-            dropShadow.setRadius(cnf.shadowKernelSize);
-            dropShadow.setOffsetX(cnf.shadowOffsetX);
-            dropShadow.setOffsetY(cnf.shadowOffsetY);
-            dropShadow.setColor(Color.color(0, 0, 0, cnf.shadowAlpha));
+            dropShadow.setRadius(config.shadowKernelSize);
+            dropShadow.setOffsetX(config.shadowOffsetX);
+            dropShadow.setOffsetY(config.shadowOffsetY);
+            dropShadow.setColor(Color.color(0, 0, 0, config.shadowAlpha));
         }
     }
 
@@ -154,9 +155,9 @@ public class JavaFXRenderer extends Renderer {
                 groupBackground = new Group();
                 groupDebug = new Group();
                 //Create background
-                if (cnf.getBackGroundImage() != null) {
-                    ImageView background = new ImageView(new Image(cnf.getBackGroundImage().openStream()));
-                    Rectangle2D viewport = new Rectangle2D(0, 0, cnf.mediaW, cnf.mediaW);
+                if (config.getBackGroundImage() != null) {
+                    ImageView background = new ImageView(new Image(config.getBackGroundImage().openStream()));
+                    Rectangle2D viewport = new Rectangle2D(0, 0, config.mediaW, config.mediaH);
                     background.setViewport(viewport);
                     groupBackground.getChildren().clear();
                     groupBackground.getChildren().add(background);
@@ -164,25 +165,26 @@ public class JavaFXRenderer extends Renderer {
                 groupRoot.getChildren().add(groupBackground);//Background image
                 groupRoot.getChildren().add(group);//Mathobjects
                 groupRoot.getChildren().add(groupDebug);//Debug things
-                fxScene = new Scene(groupRoot, cnf.mediaW, cnf.mediaW);
-                fxScene.setFill(cnf.getBackgroundColor().getFXColor());
+                fxScene = new Scene(groupRoot, config.mediaW, config.mediaH);
+                fxScene.setFill(config.getBackgroundColor().getFXColor());
                 StandaloneSnapshot.FXStarter.stage.setScene(fxScene);
                 //Proof with perspective camera
                 fxCamera = new PerspectiveCamera();
+//                fxCamera.setFieldOfView(.1);
                 //These are 3d tests, maybe for the future...
 //                camera.getTransforms().addAll(
-//                        new Translate(cnf.mediaW/2, cnf.mediaH/2, 0),
+//                        new Translate(config.mediaW/2, config.mediaH/2, 0),
 //                        new Rotate(45, Rotate.X_AXIS),
 //                        new Rotate(45, Rotate.Z_AXIS),
 //                        new Rotate(45, Rotate.Y_AXIS),
-//                        new Translate(-cnf.mediaW/2, -cnf.mediaH/2, 0));
+//                        new Translate(-config.mediaW/2, -config.mediaH/2, 0));
                 fxScene.setCamera(fxCamera);
 
-                if (cnf.isShowPreview()) {
+                if (config.isShowPreview()) {
                     JMathAnimScene.logger.debug("Creating preview window");
                     //TODO: This gaps to add to the window are os-dependent
-                    StandaloneSnapshot.FXStarter.stage.setHeight(cnf.mediaH + 38);
-                    StandaloneSnapshot.FXStarter.stage.setWidth(cnf.mediaW + 16);
+                    StandaloneSnapshot.FXStarter.stage.setHeight(config.mediaH + 38);
+                    StandaloneSnapshot.FXStarter.stage.setWidth(config.mediaW + 16);
                     StandaloneSnapshot.FXStarter.stage.show();
                 }
                 return 1;
@@ -211,7 +213,7 @@ public class JavaFXRenderer extends Renderer {
     @Override
     public void saveFrame(int frameCount) {
         WritableImage img2;
-        BufferedImage bi = new BufferedImage(cnf.mediaH, cnf.mediaW, BufferedImage.TYPE_INT_ARGB);
+        BufferedImage bi = new BufferedImage(config.mediaW, config.mediaH, BufferedImage.TYPE_INT_ARGB);
         FutureTask<WritableImage> task = new FutureTask<>(new Callable<WritableImage>() {
             @Override
             public WritableImage call() throws Exception {
@@ -220,21 +222,21 @@ public class JavaFXRenderer extends Renderer {
 
                 fxCamera.getTransforms().clear();
                 fxCamera.getTransforms().addAll(
-                        new Translate(cnf.mediaW / 2, cnf.mediaH / 2, 0),
+                        new Translate(config.mediaW / 2, config.mediaH / 2, 0),
                         new Rotate(FxCamerarotateX, Rotate.X_AXIS),
                         new Rotate(FxCamerarotateY, Rotate.Y_AXIS),
                         new Rotate(FxCamerarotateZ, Rotate.Z_AXIS),
-                        new Translate(-cnf.mediaW / 2, -cnf.mediaH / 2, 0));
+                        new Translate(-config.mediaW / 2, -config.mediaH / 2, 0));
                 //Add all elements
                 group.getChildren().addAll(fxnodes);
                 groupDebug.getChildren().addAll(debugFXnodes);
-                if (cnf.drawShadow) {
+                if (config.drawShadow) {
                     group.setEffect(dropShadow);
                 }
                 //Snapshot parameters
                 final SnapshotParameters params = new SnapshotParameters();
-                params.setFill(cnf.getBackgroundColor().getFXColor());
-                params.setViewport(new Rectangle2D(0, 0, cnf.mediaW, cnf.mediaH));
+                params.setFill(config.getBackgroundColor().getFXColor());
+                params.setViewport(new Rectangle2D(0, 0, config.mediaW, config.mediaH));
                 params.setCamera(fxScene.getCamera());
 
                 return fxScene.getRoot().snapshot(params, null);
@@ -251,8 +253,8 @@ public class JavaFXRenderer extends Renderer {
             Logger.getLogger(JavaFXRenderer.class.getName()).log(Level.SEVERE, null, ex);
         }
 
-        if (cnf.isCreateMovie()) {
-            if ((frameCount % cnf.fps) == 0) {
+        if (config.isCreateMovie()) {
+            if ((frameCount % config.fps) == 0) {
                 newLineCounter++;
                 newLineCounter = 0;
             }
@@ -262,8 +264,8 @@ public class JavaFXRenderer extends Renderer {
 
     @Override
     public void finish(int frameCount) {
-        JMathAnimScene.logger.info(String.format("%d frames created, %.2fs total time", frameCount, (1.f * frameCount) / cnf.fps));
-        if (cnf.isCreateMovie()) {
+        JMathAnimScene.logger.info(String.format("%d frames created, %.2fs total time", frameCount, (1.f * frameCount) / config.fps));
+        if (config.isCreateMovie()) {
             /**
              * Encoders, like decoders, sometimes cache pictures so it can do
              * the right key-frame optimizations. So, they need to be flushed as
@@ -345,7 +347,7 @@ public class JavaFXRenderer extends Renderer {
     }
 
     public double getThicknessForMathWidth(double w) {
-//        return mathScalar * cnf.mediaW / (xmax - ymin);
+//        return mathScalar * config.mediaW / (xmax - ymin);
         return camera.mathToScreenFX(w) / 1.25 * camera.getMathView().getWidth() / 2d;
     }
 

@@ -33,12 +33,12 @@ import com.jmathanim.mathobjects.Shape;
  */
 public abstract class Renderer {
 
-    protected final JMathAnimConfig cnf;
+    protected final JMathAnimConfig config;
     protected final JMathAnimScene scene;
 
     public Renderer(JMathAnimScene parentScene) {
         this.scene = parentScene;
-        this.cnf = parentScene.getConfig();
+        this.config = parentScene.getConfig();
     }
 
     abstract public <T extends Camera> T getCamera();
@@ -51,7 +51,7 @@ public abstract class Renderer {
      * @return the width of media
      */
     public int getMediaWidth() {
-        return cnf.mediaW;
+        return config.mediaW;
     }
 
     /**
@@ -60,7 +60,7 @@ public abstract class Renderer {
      * @return the height of media
      */
     public int getMediaHeight() {
-        return cnf.mediaH;
+        return config.mediaH;
     }
 
     abstract public void saveFrame(int frameCount);
