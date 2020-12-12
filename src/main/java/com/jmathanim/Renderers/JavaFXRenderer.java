@@ -115,7 +115,6 @@ public class JavaFXRenderer extends Renderer {
         images = new HashMap<>();
 
         prepareEncoder();
-        playA
     }
 
     public final void prepareEncoder() throws Exception {
