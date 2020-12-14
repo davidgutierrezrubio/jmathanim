@@ -170,12 +170,12 @@ The `MoveAlongPath` animations move an object along a specified path. You can pr
 In this example, we show 2 squares moving along  a circle:
 
 ```java
-Shape c = Shape.circle();
-Shape a = Shape.square().scale(.3);
+Shape c = Shape.circle().fillColor("orange").thickness(3);
+Shape a = Shape.square().scale(.3).fillColor("darkblue").fillAlpha(.7);
 Shape b = a.copy();
-add(c,a, b);
-Animation anim = new MoveAlongPath(5, c, a,Anchor.UL);
-Animation anim2 = new MoveAlongPath(5, c, b,Anchor.DR);
+add(c, a, b);
+Animation anim = new MoveAlongPath(5, c, a, Anchor.Type.UL);
+Animation anim2 = new MoveAlongPath(5, c, b, Anchor.Type.DR);
 playAnimation(anim, anim2);
 waitSeconds(3);
 ```
@@ -327,14 +327,14 @@ waitSeconds(3);
 ![affineAnimation](affineAnimation.gif)
 
 ## Reflection
-The animation `Commands.reflection(double runtime, Point A, Point B, MathObject… objects)` animates the reflection that maps point A into B.
+The animation `Commands.reflection(double runtime, Point A, Point B, MathObject… objects)` animates the reflection that maps point A into B. Note that the point A is also transformed, as it is an instance of a point of the shape.
 
 ```java
-Shape reg=Shape.regularPolygon(5).center();
-Point A=reg.getPoint(0).drawColor(JMColor.BLUE);
-Point B=Point.at(1,.5).drawColor(JMColor.RED);
-add(A,B);
-Animation anim=Commands.reflection(3, A, B, reg);
+Shape reg = Shape.regularPolygon(5).center();
+Point A = reg.getPoint(0).drawColor(JMColor.BLUE);
+Point B = Point.at(1, .5).drawColor(JMColor.RED);
+add(A, B);
+Animation anim = Commands.reflection(3, A, B, reg);
 playAnimation(anim);
 waitSeconds(3);
 ```

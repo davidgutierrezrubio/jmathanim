@@ -26,32 +26,6 @@ The `moveTo` command shifts the object so that its center is positioned at the g
 Shape r=Shape.regularPolygon(5).moveTo(3,3);//A pentagon, with its bounding box centered at (3,3)
 ```
 
-## PutAt
-This command puts the objects so that its specified anchor point is located at a given coordinates. The anchor point of a object can be one of the defined in the `Anchor.Type` enum, that is:
-
--   `BY_CENTER` Center of the object.
-
--   `LEFT, RIGHT, UPPER, LOWER` middle point of the left/right/upper/lower side of the bounding box of the object.
-    
--   `UL, UR, DL, DR` Up-left, up-right, down-left and down-right corners of the bounding box.
-
-Some examples illustrate better. If you execute this code in the `runSketch()` method:
-
-``` java
-Point A = Point.at(.5, .5);
-Shape circ = Shape.circle().putAt(A, Anchor.Type.UPPER);//Set upper point of circle bouding box to A
-Shape arc = Shape.arc(120 * DEGREES).putAt(A, Anchor.Type.UR);//Set up-right point of arc bounding box to A
-Shape sq = Shape.square().putAt(A, Anchor.Type.BY_CENTER);//Set center of square to A
-add(A, circ, arc, sq);//Add everything to the scene
-waitSeconds(5);//Give me time to make a screenshot!
-```
-
-it gives this image:
-
-<img src="01_anchorExample.png" alt="01 anchorExample" style="zoom:50%;" />
-
-The command `putAt` accepts a third argument `gap` to leave a space between the point and the anchor. This gap doesn’t apply for `Anchor.Type.BY_CENTER`.
-
 ## StackTo
 The `StackTo` command works in a similar way that `putAt`, but allows to position an object relative to another one. For example, the following code creates 4 circles, and stacks them into a square in different ways:
 
@@ -81,12 +55,12 @@ As in the `putAt` method, a third parameter `gap` is allowed to add a given gap 
 The `stackTo` command allows to easily generate aligned objects:
 
 ``` java
-Shape previousPol = Shape.regularPolygon(6);//First hexagon
+Shape previousPol = Shape.regularPolygon(3).fillColor(JMColor.random()).thickness(3);//First polygon, with random fill color
 add(previousPol);
 for (int n = 4; n < 10; n++) {
-    Shape pol = Shape.regularPolygon(n).stackTo(previousPol, Anchor.Type.RIGHT);
+    Shape pol = Shape.regularPolygon(n).fillColor(JMColor.random()).thickness(3).stackTo(previousPol, Anchor.Type.RIGHT);
     add(pol);
-    previousPol=pol;//New polygon becomes previous in the next iteration
+    previousPol = pol;//New polygon becomes previous in the next iteration
 }
 camera.adjustToAllObjects();//Everyone should appear in the photo
 waitSeconds(5);//Time for screenshot, but you already should know that
@@ -111,7 +85,7 @@ waitSeconds(5);
 There is shortcut method if you want to simply put the object at the center screen. The method `.center()` is equivalent to `.stackToScreen(Anchor.Type.BY_CENTER)`.
 
 # Scaling objects
-All `MathObject` instances can be scaled with the `scale` command. Scaling can be done from a given scale center or by default, the center of the object.
+All `MathObject` instances can be scaled with the `scale` command. Scaling can be done from a given scale center or by default, the center of the object  bounding box.
 
 ``` java
 add(Shape.circle().shift(-1, 0).scale(.5, 1));//x-scale and y-scale around center
@@ -125,14 +99,15 @@ produces the result:
 <img src="04_ScaleExample1.png" alt="04 scaleExample1" style="zoom:50%;" />
 
 # Rotating objects
-The `rotate` command rotates the object around a given center (or the center of the object if none given). The angle is specified in radians, but can also be given in degrees using the `DEGREES` constant. The format is `object.rotate(center_of_rotation,angle)` or `object.rotate(angle)`.
+The `rotate` command rotates the object around a given center (or the center of the object if none given). The angle is specified in radians, but can also be given in degrees using the `DEGREES` constant. The format is `object.rotate(center_of_rotation,angle)` or `object.rotate(angle)`. As in the `scale` method, if no center is specified, the center of the bounding box is chosen as rotation center.
 
 For example:
 
 ``` java
 Shape ellipse=Shape.circle().scale(.5,1);//Creates an ellipse
+Point rotationCenter=Point.at(.5,0);
 for (int n = 0; n < 180; n+=20) {
-    add(ellipse.copy().rotate(Point.at(.5,0),n*DEGREES));
+    add(ellipse.copy().rotate(rotationCenter,n*DEGREES));
 }
 waitSeconds(5);
 ```
@@ -163,20 +138,22 @@ The `createDirect2DHomothecy(Point A, Point B, Point C, Point D, double alpha)` 
 Look at the following example:
 
 ``` java
-Shape sq = Shape.square().shift(-1.5,-1);
-Point A = sq.getPoint(0);//First vertex of the square (lower-left corner)
-Point B = sq.getPoint(1);//First vertex of the square (lower-right corner)
-Point C = Point.at(1.5, -1);//Destiny point of A
-Point D = Point.at(1.7, .5);//Destiny point of B
+Shape sq = Shape.square().shift(-1.5, -1).fillColor("darkgreen").fillAlpha(.3);//Square, fill color dark green, and opacity 30%
+Point A = sq.getPoint(0).drawColor("darkblue");//First vertex of the square (lower-left corner), dark blue color
+Point B = sq.getPoint(1).drawColor("darkblue");//First vertex of the square (lower-right corner), dark blue color
+Point C = Point.at(1.5, -1).drawColor("darkred");//Destiny point of A, dark red color
+Point D = Point.at(1.7, .5).drawColor("darkred");//Destiny point of B, dark red color
 add(A, B, C, D);
 for (double alpha = 0; alpha <= 1; alpha += .2) {
     AffineJTransform transform = AffineJTransform.createDirect2DHomothecy(A, B, C, D, alpha);
-    add(transform.getTransformedObject(sq));
+    add(transform.getTransformedObject(sq));//Adds a copy of the square, transformed
 }
 waitSeconds(5);
 ```
 
 Produces the following sequence of interpolated transforms from one square to another. Note that an homothecy may change scale of objects, but proportions are unaltered:
+
+
 
 <img src="06_homothecy1.png" alt="06 homothecy1" style="zoom:50%;" />
 
@@ -196,13 +173,13 @@ In both cases, the `alpha` parameter works in a similar way than the homothecy t
 An example of `createReflection` is showed in the following source code:
 
 ``` java
-Shape sq = Shape.regularPolygon(5);
-Point A = sq.getPoint(0);//First vertex of the pentagon(lower-left corner)
-Point B = A.copy().shift(.5,-.2);
+Shape sq = Shape.regularPolygon(5).fillColor("violet").fillAlpha(.3);//Regular pentagon, fill violet, opacity 30%
+Point A = sq.getPoint(0).copy().drawColor("darkblue");//Copy of the first vertex of the pentagon(lower-right corner), color dark blue
+Point B = A.copy().shift(.5, -.2).drawColor("darkred");//Copy of A, shifted (.5,-2), color dark red
 add(A, B);
 for (double alpha = 0; alpha <= 1; alpha += .2) {
     AffineJTransform transform = AffineJTransform.createReflection(A, B, alpha);//Reflection that maps A into B
-    add(transform.getTransformedObject(sq));
+    add(transform.getTransformedObject(sq));//Adds a copy of the pentagon, transformed
 }
 camera.adjustToAllObjects();
 waitSeconds(5);
@@ -213,18 +190,23 @@ waitSeconds(5);
 There is also a more general way to define an affine transform using `createAffineTransformation(Point A, Point B, Point C, Point D, Point E, Point F, double lambda)`. It returns the (only) affine transform that maps the points (A,B,C) into (D,E,F), with the `lambda` interpolation parameter as in the previous methods. Here’s an example:
 
 ``` java
-Shape sq = Shape.square();
-Shape circ = Shape.circle().scale(.5).shift(.5, .5);//A circle inscribed into the square
-Point A = Point.at(0, 0); //A maps to D
-Point B = Point.at(1, 0); //B maps to E
-Point C = Point.at(0, 1); //C maps to F
-Point D = Point.at(1.5, -.5).dotStyle(DotSyle.CROSS);
-Point E = Point.at(2, 0).dotStyle(DotSyle.CROSS);
-Point F = Point.at(1.75, .75).dotStyle(DotSyle.CROSS);
+Shape sq = Shape.square().drawColor("brown").thickness(3);
+Shape circ = Shape.circle().scale(.5).shift(.5, .5).fillColor("orange").fillAlpha(.1);//A circle inscribed into the square
+//We create the points with layer(1) so that the draw over the square and circles (by default in layer 0)
+Point A = Point.at(0, 0).drawColor("darkblue").layer(1); 
+Point B = Point.at(1, 0).drawColor("darkblue").layer(1); 
+Point C = Point.at(0, 1).drawColor("darkblue").layer(1); 
+Point D = Point.at(1.5, -.5).dotStyle(DotSyle.PLUS).thickness(1).drawColor("darkgreen");
+Point E = Point.at(2, 0).dotStyle(DotSyle.PLUS).thickness(1).drawColor("darkgreen");
+Point F = Point.at(1.75, .75).dotStyle(DotSyle.PLUS).thickness(2).drawColor("darkgreen");
 add(sq, circ, A, B, C, D, E, F);
-AffineJTransform transform = AffineJTransform.createAffineTransformation(A, B, C, D, E, F, 1);
-add(transform.getTransformedObject(sq));
-add(transform.getTransformedObject(circ));
+
+for (double alpha = 0; alpha <= 1; alpha += .2) {
+    //A maps to D,B maps to E, C maps to F
+    AffineJTransform transform = AffineJTransform.createAffineTransformation(A, B, C, D, E, F, alpha);
+    add(transform.getTransformedObject(sq));//Adds a copy of the square, transformed
+    add(transform.getTransformedObject(circ));//Adds a copy of the circle, transformed
+}
 camera.adjustToAllObjects();
 waitSeconds(5);
 ```
