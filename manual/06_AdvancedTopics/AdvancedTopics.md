@@ -252,12 +252,15 @@ Note that when the rotation is finished subsequent calls to `processAnimation` h
 
 Not all `MathObject` and `Animation` combinations are compatible. Below is a table that shows, at the current version of the library, what you can and cannot do:
 
-| MathObject      | Affine transforms related: Shift, scale, rotate , grow in, shrink out, highlight | ShowCreation animation | Transform animation                           |
-| --------------- | ------------------------------------------------------------ | ---------------------- | --------------------------------------------- |
-| Point           | Yes                                                          | No (use fade in)       | No                                            |
-| Shape           | Yes                                                          | Yes                    | Yes                                           |
-| Line            | Yes                                                          | Yes                    | Yes                                           |
-| LaTeXMathObject | Yes                                                          | Yes                    | Yes                                           |
-| Arrow2D         | Yes                                                          | Yes                    | No (use homothecy transform)                  |
-| Delimiter       | No (you have the transform the anchor points instead)        | Yes                    | No (use homothecy transform in anchor points) |
+| MathObject      | Affine transforms related: Shift, scale, rotate , grow in, shrink out, highlight | ShowCreation animation | Transform animation                                          |
+| --------------- | ------------------------------------------------------------ | ---------------------- | ------------------------------------------------------------ |
+| Point           | Yes                                                          | No (use fade in)       | No                                                           |
+| Shape           | Yes                                                          | Yes                    | Yes                                                          |
+| Line            | Yes                                                          | Yes                    | Yes                                                          |
+| Axes            | No                                                           | No (work in progress)  | No                                                           |
+| LaTeXMathObject | Yes                                                          | Yes                    | Yes (also you can use the specialized `TransformMathExpression` method) |
+| Arrow2D         | Yes                                                          | Yes                    | No (use homothecy transform)                                 |
+| Delimiter       | No (you have the transform the anchor points instead)        | Yes                    | No (use homothecy transform in anchor points)                |
+
+
 

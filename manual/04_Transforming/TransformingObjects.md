@@ -30,16 +30,16 @@ Shape r=Shape.regularPolygon(5).moveTo(3,3);//A pentagon, with its bounding box 
 The `StackTo` command works in a similar way that `putAt`, but allows to position an object relative to another one. For example, the following code creates 4 circles, and stacks them into a square in different ways:
 
 ``` java
-Shape c1=Shape.circle();
-Shape c2=c1.copy();
-Shape c3=c1.copy();
-Shape c4=c1.copy();
-Shape sq=Shape.square();
-c1.stackTo(sq,Anchor.Type.LEFT,.1);//Stacks circle to the left of the square, with a gap of .1 units
-c2.stackTo(sq,Anchor.Type.RIGHT,.1);//Stacks circle to the right of the square, with a gap of .1 units
-c3.stackTo(sq,Anchor.Type.UPPER);//Stacks circle to the upper side of the square, with no gap
-c4.stackTo(sq,Anchor.Type.BY_CENTER);//Stacks circle center-to-center with the square
-add(c1,c2,c3,c4,sq);//Add everything to the scene
+Shape c1 = Shape.circle().fillColor("orange").fillAlpha(.3);
+Shape c2 = c1.copy().fillColor("violet").fillAlpha(.6);
+Shape c3 = c1.copy().fillColor("darkgreen").fillAlpha(.5);
+Shape c4 = c1.copy().fillColor("darkblue").fillAlpha(.5);
+Shape sq = Shape.square().fillColor("darkred").fillAlpha(.3);
+c1.stackTo(sq, Anchor.Type.LEFT, .1);//Stacks circle to the left of the square, with a gap of .1 units
+c2.stackTo(sq, Anchor.Type.RIGHT, .1);//Stacks circle to the right of the square, with a gap of .1 units
+c3.stackTo(sq, Anchor.Type.UPPER);//Stacks circle to the upper side of the square, with no gap
+c4.stackTo(sq, Anchor.Type.BY_CENTER);//Stacks circle center-to-center with the square
+add(c1, c2, c3, c4, sq);//Add everything to the scene
 camera.adjustToAllObjects(); //Adjust camera, so that everyone gets into the photo
 waitSeconds(5);//That is, smile for the screenshot!
 ```
@@ -48,7 +48,7 @@ which produces the following image:
 
 <img src="02_stackToExample.png" alt="02 stackToExample" style="zoom:50%;" />
 
-You’ll notice two new methods here: The `copy()` method returns a copy of the object, and the `camera.adjustToAllObjects()` does as it says, rescales the camera so that everything fits into view.
+You’ll notice two new methods here: The `copy()` method returns a copy of the object, and the `camera.adjustToAllObjects()` does as it says, rescales the camera so that everything fits into view.  The `fillColor` and `fillAlpha` sets the filling of the object. 
 
 As in the `putAt` method, a third parameter `gap` is allowed to add a given gap between the objects.
 
@@ -196,8 +196,8 @@ Shape circ = Shape.circle().scale(.5).shift(.5, .5).fillColor("orange").fillAlph
 Point A = Point.at(0, 0).drawColor("darkblue").layer(1); 
 Point B = Point.at(1, 0).drawColor("darkblue").layer(1); 
 Point C = Point.at(0, 1).drawColor("darkblue").layer(1); 
-Point D = Point.at(1.5, -.5).dotStyle(DotSyle.PLUS).thickness(1).drawColor("darkgreen");
-Point E = Point.at(2, 0).dotStyle(DotSyle.PLUS).thickness(1).drawColor("darkgreen");
+Point D = Point.at(1.5, -.5).dotStyle(DotSyle.PLUS).thickness(2).drawColor("darkgreen");
+Point E = Point.at(2, 0).dotStyle(DotSyle.PLUS).thickness(2).drawColor("darkgreen");
 Point F = Point.at(1.75, .75).dotStyle(DotSyle.PLUS).thickness(2).drawColor("darkgreen");
 add(sq, circ, A, B, C, D, E, F);
 
