@@ -105,6 +105,13 @@ public final DoubleUnaryOperator TaylorExpansionSin(int order) {
         return resul;
     };
 }
+public int factorial(int n) {
+    int resul = 1;
+    for (int i = 1; i <= n; i++) {
+        resul *= i;
+    }
+    return resul;
+}
 ```
 
 You can [see the video here](https://imgur.com/gallery/PjlVtXw).
