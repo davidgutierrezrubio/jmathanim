@@ -228,6 +228,8 @@ public class ShowCreation extends Animation {
                         new ShowCreation(.5 * runTime, axes.getxAxis()),
                         new ShowCreation(.5 * runTime, axes.getyAxis())
                 ));
+            MathObject[] toArray = (MathObject[]) axes.getXticks().toArray(new MathObject[axes.getXticks().size()]);
+                con.add(Commands.fadeIn(.5*runTime, toArray));
 //                for (int n = 0; n < axes.getXticks().size(); n++) {
 //                    con.add(new AnimationGroup(
 //                            Commands.fadeIn(.5 * runTime, axes.getXticks().get(n)),
