@@ -21,13 +21,14 @@ import com.jmathanim.Utils.AffineJTransform;
 import com.jmathanim.Renderers.Renderer;
 import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.ResourceLoader;
+import com.jmathanim.jmathanim.JMathAnimScene;
 
 /**
  * A extensible delimiter like braces or parenthesis
  *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
-public class Delimiter extends Shape {
+public class Delimiter extends MathObject {
 
     private final Point A, B;
     private SVGMathObject body;
@@ -173,5 +174,23 @@ public class Delimiter extends Shape {
     public void setDelimiterScale(double delimiterScale) {
         this.delimiterScale = delimiterScale;
     }
+ @Override
+    public Point getCenter() {
+        return getBoundingBox().getCenter();
+    }
 
+    @Override
+    public <T extends MathObject> T copy() {
+        return (T) make(A.copy(),B.copy(),type,gap);
+    }
+
+    @Override
+    public void registerChildrenToBeUpdated(JMathAnimScene scene) {
+        scene.registerUpdateable(A,B);
+    }
+
+    @Override
+    public void unregisterChildrenToBeUpdated(JMathAnimScene scene) {
+        scene.unregisterUpdateable(A,B);
+    }
 }

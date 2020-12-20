@@ -282,9 +282,15 @@ public abstract class MathObject implements Drawable, Updateable, Stateable {
         fillAlpha(t);
     }
 
-    public abstract void registerChildrenToBeUpdated(JMathAnimScene scene);
+    public void registerChildrenToBeUpdated(JMathAnimScene scene) {
+    }
 
-    public abstract void unregisterChildrenToBeUpdated(JMathAnimScene scene);
+    ;
+
+    public void unregisterChildrenToBeUpdated(JMathAnimScene scene) {
+    }
+
+    ;
 
     @Override
     public void saveState() {
