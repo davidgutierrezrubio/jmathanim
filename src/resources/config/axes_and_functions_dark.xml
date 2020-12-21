@@ -6,18 +6,24 @@
             <thickness>.5</thickness>
         </style>
        <style name="axisdefault">
-            <drawColor>#bedcfa</drawColor>
+            <drawColor>#eff8ff</drawColor>
             <fillColor>TRANSPARENT</fillColor>
             <thickness>1</thickness>
         </style>
-        <style name="axistickdefault">
-            <drawColor>#bedcfa</drawColor>
+        <style name="axisPrimaryTickDefault">
+            <drawColor>#eff8ff</drawColor>
             <fillColor>transparent</fillColor>
-            <thickness>1</thickness>
+            <thickness>1.5</thickness>
         </style>
-         <style name="axislegenddefault">
-            <drawColor>transparent</drawColor>
-            <fillColor>#bedcfa</fillColor>
+         <style name="axisSecondaryTickDefault">
+            <drawColor>#eff8ff</drawColor>
+            <fillColor>transparent</fillColor>
+            <thickness>.75</thickness>
+        </style>
+         <style name="axisLegendDefault">
+            <drawColor>#eff8ff</drawColor>
+            <fillColor>#eff8ff</fillColor>
+            <thickness>.02</thickness>
         </style>
     </styles>
 </JMathAnimConfig>

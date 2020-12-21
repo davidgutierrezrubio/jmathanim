@@ -8,16 +8,21 @@
         <style name="axisdefault">
             <drawColor>#4F4F4F</drawColor>
             <fillColor>transparent</fillColor>
-            <thickness>1</thickness>
+            <thickness>1.5</thickness>
         </style>
-        <style name="axistickdefault">
+        <style name="axisPrimaryTickDefault">
             <drawColor>#4F4F4F</drawColor>
             <fillColor>transparent</fillColor>
-            <thickness>.2</thickness>
+            <thickness>1.5</thickness>
         </style>
-         <style name="axislegenddefault">
+         <style name="axisSecondaryTickDefault">
             <drawColor>#4F4F4F</drawColor>
-            <fillColor>#0F0F0F</fillColor>
+            <fillColor>transparent</fillColor>
+            <thickness>.75</thickness>
+        </style>
+         <style name="axisLegendDefault">
+            <drawColor>#4F4F4F</drawColor>
+            <fillColor>#4F4F4F</fillColor>
             <thickness>.02</thickness>
         </style>
     </styles>

@@ -18,6 +18,7 @@
 package com.jmathanim.Animations;
 
 import com.jmathanim.Animations.Strategies.ShowCreation.ArrowCreationAnimation;
+import com.jmathanim.Animations.Strategies.ShowCreation.AxesCreationAnimation;
 import com.jmathanim.Animations.Strategies.ShowCreation.FirstDrawThenFillAnimation;
 import com.jmathanim.Animations.Strategies.ShowCreation.GroupCreationAnimation;
 import com.jmathanim.Animations.Strategies.ShowCreation.LineCreationAnimation;
@@ -34,6 +35,7 @@ import com.jmathanim.mathobjects.MathObjectGroup;
 import com.jmathanim.mathobjects.MultiShapeObject;
 import com.jmathanim.mathobjects.SVGMathObject;
 import com.jmathanim.mathobjects.Shape;
+import com.jmathanim.mathobjects.TickAxes;
 
 /**
  * Animation that shows the creation of a MathObject. The precise strategy for
@@ -222,23 +224,8 @@ public class ShowCreation extends Animation {
                 JMathAnimScene.logger.debug("ShowCreation method: FirstDrawThenFillStrategy (LaTeXMathObject)");
                 break;
             case AXES_CREATION:
-                Concatenate con = new Concatenate();
-                Axes axes = (Axes) mobj;
-                con.add(new AnimationGroup(
-                        new ShowCreation(.5 * runTime, axes.getxAxis()),
-                        new ShowCreation(.5 * runTime, axes.getyAxis())
-                ));
-            MathObject[] toArray = (MathObject[]) axes.getXticks().toArray(new MathObject[axes.getXticks().size()]);
-                con.add(Commands.fadeIn(.5*runTime, toArray));
-//                for (int n = 0; n < axes.getXticks().size(); n++) {
-//                    con.add(new AnimationGroup(
-//                            Commands.fadeIn(.5 * runTime, axes.getXticks().get(n)),
-//                            Commands.fadeIn(.5 * runTime, axes.getXticksLegend().get(n))
-//                    ));
+                creationStrategy = new AxesCreationAnimation(runTime, (Axes) mobj);
 
-//                }
-
-                creationStrategy = con;
             default:
                 break;
         }

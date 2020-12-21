@@ -23,7 +23,11 @@ import com.jmathanim.Utils.JMColor;
 import com.jmathanim.Utils.JMathAnimConfig;
 import com.jmathanim.Utils.Rect;
 import com.jmathanim.jmathanim.JMathAnimScene;
+import static com.jmathanim.mathobjects.Axes.LEGEND_TICKS_GAP;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
+import java.util.Locale;
 
 /**
  *
@@ -31,121 +35,200 @@ import java.util.ArrayList;
  */
 public class Axes extends MathObject {
 
-    private Line xAxis, yAxis;
-    private final ArrayList<Shape> xticksOrig;
-    private final ArrayList<Shape> xticks;
-    private final ArrayList<Shape> yticksOrig;
-    private final ArrayList<Shape> yticks;
-    private final ArrayList<MultiShapeObject> xticksLegendOrig;
-    private final ArrayList<MultiShapeObject> xticksLegend;
-    private final ArrayList<MultiShapeObject> yticksLegendOrig;
-    private final ArrayList<MultiShapeObject> yticksLegend;
-    public static final double INITIAL_TICK_LENGTH = .04;
-    private double tickScale = 1;
+    private final Line xAxis;
+    private final Line yAxis;
+    private final ArrayList<TickAxes> xticksBase, xticks;
+    private final ArrayList<TickAxes> yticksBase, yticks;
 
-    private static final double INITIAL_LEGEND_TICK_SCALE = .3;
-    public double legendScale = 1;
-    public static final double LEGEND_TICKS_GAP = .01;
+    public static final double LEGEND_TICKS_GAP = .5;
+    DecimalFormat format;
+
+    public enum TickScale {
+        PRIMARY, SECONDARY
+    }
 
     public Axes() {
         mp.loadFromStyle("axisdefault");
-        xticksOrig = new ArrayList<>();
+        xticksBase = new ArrayList<>();
         xticks = new ArrayList<>();
+        yticksBase = new ArrayList<>();
         yticks = new ArrayList<>();
-        yticksOrig = new ArrayList<>();
-        xticksLegendOrig = new ArrayList<>();
-        xticksLegend = new ArrayList<>();
-        yticksLegendOrig = new ArrayList<>();
-        yticksLegend = new ArrayList<>();
         xAxis = Line.make(Point.at(0, 0), Point.at(1, 0)).style("axisdefault");
         yAxis = Line.make(Point.at(0, 0), Point.at(0, 1)).style("axisdefault");
+        Locale locale = new Locale("en", "UK");
+        DecimalFormatSymbols symbols = new DecimalFormatSymbols(locale);
+        String pattern = "#.####";
+        format = new DecimalFormat(pattern, symbols);
+    }
+
+    public DecimalFormat getFormat() {
+        return format;
+    }
+
+    public void setFormat(DecimalFormat format) {
+        this.format = format;
     }
 
     /**
      * Generates a set of pairs (ticks-legends) from start to finish (including)
-     * with given step, in the x-axis
+     * with given step, in the x-axis. The primary ticks are slightly bigger
+     * than the secondary, and they are always shown on the screen
      *
      * @param start Starting number
      * @param finish Ending number
      * @param step Step
      */
-    public void generateXTicks(double start, double finish, double step) {
+    public void generatePrimaryXTicks(double start, double finish, double step) {
         for (double x = start; x < finish; x += step) {
             if (x != 0) {
-                addXTicksLegend(x);
+                addXTicksLegend(x, TickAxes.TickType.PRIMARY, 0);
             }
         }
     }
 
     /**
      * Generates a set of pairs (ticks-legends) from start to finish (including)
-     * with given step, in the y-axis
+     * with given step, in the y-axis. The primary ticks are slightly bigger
+     * than the secondary, and they are always shown on the screen
      *
      * @param start Starting number
      * @param finish Ending number
      * @param step Step
      */
-    public void generateYTicks(double start, double finish, double step) {
+    public void generatePrimaryYTicks(double start, double finish, double step) {
         for (double y = start; y < finish; y += step) {
             if (y != 0) {
-                addYTicksLegend(y);
+                addYTicksLegend(y, TickAxes.TickType.PRIMARY, 0);
             }
         }
     }
 
     /**
-     * Adds a pair (tick, legend text) at the given value in the y-axis. The
-     * text is automatically generated from the value of y.
+     * Generates a set of pairs (ticks-legends) from start to finish (including)
+     * with given step, in the x-axis.The maxScale parameter is the maximum
+     * width of the math view to show this tick.A value of 0 means always show
+     * this tick.
+     *
+     * @param start Starting number
+     * @param finish Ending number
+     * @param step Step
+     * @param maxScale max scale to show these ticks
+     */
+    public void generateSecondaryXTicks(double start, double finish, double step, double maxScale) {
+        for (double x = start; x < finish; x += step) {
+            if (x != 0) {
+                addXTicksLegend(x, TickAxes.TickType.SECONDARY, maxScale);
+            }
+        }
+    }
+
+    /**
+     * Generates a set of pairs (ticks-legends) from start to finish (including)
+     * with given step, in the y-axis.The maxScale parameter is the maximum
+     * width of the math view to show this tick.A value of 0 means always show
+     * this tick.
+     *
+     * @param start Starting number
+     * @param finish Ending number
+     * @param step Step
+     * @param maxScale max scale to show these ticks
+     */
+    public void generateSecondaryYTicks(double start, double finish, double step, double maxScale) {
+        for (double y = start; y < finish; y += step) {
+            if (y != 0) {
+                addYTicksLegend(y, TickAxes.TickType.SECONDARY, maxScale);
+            }
+        }
+    }
+
+//    /**
+//     * Generates a set of pairs (ticks-legends) from start to finish (including)
+//     * with given step, in the x-axis.The maxScale parameter is the maximum
+//     * width of the math view to show this tick. A value of 0 means always show
+//     * this tick
+//     *
+//     * @param start Starting number
+//     * @param finish Ending number
+//     * @param step Step
+//     * @param tickType TickScale (primary or secondary, sets the size of the
+//     * markers)
+//     * @param maxScale max scale to show these ticks
+//     */
+//    public void generateXTicks(double start, double finish, double step, TickScale tickType, double maxScale) {
+//        for (double x = start; x < finish; x += step) {
+//            if (x != 0) {
+//                addXTicksLegend(x, tickType, maxScale);
+//            }
+//        }
+//    }
+    /**
+     * Adds a pair (tick, legend text) at the given value in the y-axis.The text
+     * is automatically generated from the value of y. The maxScale parameter is
+     * the maximum width of the math view to show this tick. A value of 0 means
+     * always show this tick
      *
      * @param y The y coordinate where to put the tick
+     * @param maxScale max scale to show the tick
      */
-    public void addYTicksLegend(double y) {
-        addYTicksLegend("$" + y + "$", y);
+    public void addYTicksLegend(double y, TickAxes.TickType tickType, double maxScale) {
+        addYTicksLegend("$" + format.format(y) + "$", y, tickType, maxScale);
     }
 
     /**
      * Adds a pair (tick, legend text) at the given value in the y-axis, with
-     * the specified latex string.
+     * the specified latex string.The maxScale parameter is the maximum width of
+     * the math view to show this tick. A value of 0 means always show this tick
      *
      * @param latex The text with the legend
      * @param y The y coordinate where to put the tick
+     * @param tickType Tick orientation (primary or secondary)
+     * @param maxScale max scale to show the tick
      */
-    public void addYTicksLegend(String latex, double y) {
-        final Shape ytick = Shape.segment(Point.at(-.5, y), Point.at(.5, y)).style("axistickdefault");;
-        ytick.setAbsoluteSize(Anchor.Type.BY_CENTER);
-        yticksOrig.add(ytick);
-
-        final LaTeXMathObject ytickLegend = LaTeXMathObject.make(latex).style("axislegenddefault");
-        ytickLegend.stackTo(ytick, Anchor.Type.RIGHT, LEGEND_TICKS_GAP);
-        ytickLegend.setAbsoluteSize(Anchor.Type.LEFT);
-        yticksLegendOrig.add(ytickLegend);
+    public void addYTicksLegend(String latex, double y, TickAxes.TickType tickType, double maxScale) {
+        if (!yticksBase.stream().anyMatch(t -> (t.location == y))) {
+            yticksBase.add(TickAxes.makeYTick(y, latex, tickType, maxScale));
+        }
     }
 
     /**
-     * Adds a pair (tick, legend text) at the given value in the x-axis. The
-     * text is automatically generated from the value of x.
+     * Adds a pair (tick, legend text) at the given value in the x-axis.The text
+     * is automatically generated from the value of x.The maxScale parameter is
+     * the maximum width of the math view to show this tick. A value of 0 means
+     * always show this tick
      *
      * @param x The x coordinate where to put the tick
+     * @param tickType Tick orientation (primary or secondary)
+     * @param maxScale max scale to show the tick
      */
-    public void addXTicksLegend(double x) {
-        addXTicksLegend("$" + x + "$", x);
+    public void addXTicksLegend(double x, TickAxes.TickType tickType, double maxScale) {
+        addXTicksLegend("$" + format.format(x) + "$", x, tickType, maxScale);
     }
 
     /**
      * Adds a pair (tick, legend text) at the given value in the y-axis, with
-     * the specified latex string.
+     * the specified latex string.The maxScale parameter is the maximum width of
+     * the math view to show this tick. A value of 0 means always show this tick
      *
      * @param latex The text with the legend
      * @param x The x coordinate where to put the tick
+     * @param tickType Tick orientation (primary or secondary)
+     * @param maxScale max scale to show the tick
      */
-    public void addXTicksLegend(String latex, double x) {
-        final Shape xtick = Shape.segment(Point.at(x, -.5), Point.at(x, .5)).style("axistickdefault");
-        xtick.setAbsoluteSize(Anchor.Type.BY_CENTER);
-        xticksOrig.add(xtick);
-        final LaTeXMathObject xtickLegend = LaTeXMathObject.make(latex).style("axislegenddefault");
-        xtickLegend.stackTo(xtick, Anchor.Type.LOWER, LEGEND_TICKS_GAP);
-        xtickLegend.setAbsoluteSize(Anchor.Type.UPPER);
-        xticksLegendOrig.add(xtickLegend);
+    public void addXTicksLegend(String latex, double x, TickAxes.TickType tickType, double maxScale) {
+        if (!xticksBase.stream().anyMatch(t -> (t.location == x))) {
+            xticksBase.add(TickAxes.makeXTick(x, latex, tickType, maxScale));
+        }
+    }
+
+    private double tickScaleToDouble(TickScale tickScale) {
+        switch (tickScale) {
+            case PRIMARY:
+                return 1;
+            case SECONDARY:
+                return .5;
+            default:
+                return 1;
+        }
     }
 
     @Override
@@ -155,7 +238,7 @@ public class Axes extends MathObject {
 
     @Override
     public <T extends MathObject> T copy() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return null;//For now, it doesn't make senses to make a copy of the axes
     }
 
     @Override
@@ -176,26 +259,50 @@ public class Axes extends MathObject {
         xAxis.draw(r);
         yAxis.draw(r);
 
-        for (int n = 0; n < xticksOrig.size(); n++) {
-            Shape xt = xticksOrig.get(n).copy().scale(INITIAL_TICK_LENGTH * tickScale);
-            MultiShapeObject leg = xticksLegendOrig.get(n).copy().scale(legendScale * INITIAL_LEGEND_TICK_SCALE);
-            leg.stackTo(xt, Anchor.Type.LOWER, LEGEND_TICKS_GAP);
-            xt.draw(r);
-            leg.draw(r);
-        }
-        for (int n = 0; n < yticksOrig.size(); n++) {
-            Shape yt = yticksOrig.get(n).copy().scale(INITIAL_TICK_LENGTH * tickScale);
-            MultiShapeObject leg = yticksLegendOrig.get(n).copy().scale(legendScale * INITIAL_LEGEND_TICK_SCALE);
-            leg.stackTo(yt, Anchor.Type.LEFT, LEGEND_TICKS_GAP);
-            yt.draw(r);
-            leg.draw(r);
-        }
+        double xmax = r.getCamera().getMathView().xmax;
+        double xmin = r.getCamera().getMathView().xmin;
+        double ymax = r.getCamera().getMathView().ymax;
+        double ymin = r.getCamera().getMathView().ymin;
 
+        for (TickAxes xtick : xticks) {
+            if ((xtick.location >= xmin) && (xtick.location <= xmax)) {
+                xtick.draw(r);
+            }
+        }
+        for (TickAxes ytick : yticks) {
+            if ((ytick.location >= ymin) && (ytick.location <= ymax)) {
+                ytick.draw(r);
+            }
+        }
     }
 
     @Override
     public void update(JMathAnimScene scene) {
-        //TODO: Adding or removing ticks should be done here
+        double xmax = scene.getCamera().getMathView().xmax;
+        double xmin = scene.getCamera().getMathView().xmin;
+        double scale = (xmax - xmin) / 4;
+        xticks.clear();
+        for (int n = 0; n < xticksBase.size(); n++) {
+            if (xticksBase.get(n).shouldDraw(scene.getCamera())) {
+                TickAxes copy = xticksBase.get(n).copy();
+                copy.tick.scale(scale);
+                copy.legend.scale(scale);
+                copy.legend.stackTo(copy.tick, Anchor.Type.LOWER, LEGEND_TICKS_GAP * copy.legend.getHeight());
+                xticks.add(copy);
+            }
+        }
+
+        yticks.clear();
+        for (int n = 0; n < yticksBase.size(); n++) {
+            double l = yticksBase.get(n).location;
+            if ((yticksBase.get(n).shouldDraw(scene.getCamera()))) {
+                TickAxes copy = yticksBase.get(n).copy();
+                copy.tick.scale(scale);
+                copy.legend.scale(scale);
+                copy.legend.stackTo(copy.tick, Anchor.Type.RIGHT, LEGEND_TICKS_GAP * copy.legend.getHeight());
+                yticks.add(copy);
+            }
+        }
     }
 
     /**
@@ -214,24 +321,6 @@ public class Axes extends MathObject {
      */
     public Line getyAxis() {
         return yAxis;
-    }
-
-    /**
-     * Returns the current legend scale
-     *
-     * @return The legend scale
-     */
-    public double getLegendScale() {
-        return legendScale;
-    }
-
-    /**
-     * Sets the scale of the text legends. Default value is 1.
-     *
-     * @param legendScale The legend scale
-     */
-    public void setLegendScale(double legendScale) {
-        this.legendScale = legendScale;
     }
 
     @Override
@@ -272,23 +361,15 @@ public class Axes extends MathObject {
     private void applyMPToSubobjects() {
         xAxis.mp.copyFrom(mp);
         yAxis.mp.copyFrom(mp);
-        for (Shape s : xticks) {
-            s.mp.copyFrom(mp);
+        for (TickAxes s : xticksBase) {
+            s.legend.mp.copyFrom(mp);
+            s.tick.mp.copyFrom(mp);
         }
-        for (Shape s : yticks) {
-            s.mp.copyFrom(mp);
+        for (TickAxes s : yticksBase) {
+            s.legend.mp.copyFrom(mp);
+            s.tick.mp.copyFrom(mp);
         }
-        for (MultiShapeObject s : xticksLegend) {
-            for (Shape sh : s) {
-                sh.mp.copyFrom(mp);
-            }
 
-        }
-        for (MultiShapeObject s : yticksLegend) {
-            for (Shape sh : s) {
-                sh.mp.copyFrom(mp);
-            }
-        }
     }
 
     @Override
@@ -296,48 +377,21 @@ public class Axes extends MathObject {
     ) {
         xAxis.thickness(newThickness);
         yAxis.thickness(newThickness);
-        for (Shape s : xticks) {
-            s.thickness(newThickness);
+        for (TickAxes s : xticksBase) {
+            s.tick.thickness(newThickness);
         }
-        for (Shape s : yticks) {
-            s.thickness(newThickness);
+        for (TickAxes s : yticksBase) {
+            s.tick.thickness(newThickness);
         }
         return (T) this;
     }
 
-    /**
-     * Returns the current tick scale
-     *
-     * @return The tick scale
-     */
-    public double getTickScale() {
-        return tickScale;
-    }
-
-    /**
-     * Sets the scaling of the ticks, both vertical and horizontal.Default value
-     * is 1.
-     *
-     * @param tickScale Scale to apply to ticks
-     */
-    public void setTickScale(double tickScale) {
-        this.tickScale = tickScale;
-    }
-
-    public ArrayList<Shape> getXticks() {
+    public ArrayList<TickAxes> getXticks() {
         return xticks;
     }
 
-    public ArrayList<Shape> getYticks() {
+    public ArrayList<TickAxes> getYticks() {
         return yticks;
-    }
-
-    public ArrayList<MultiShapeObject> getXticksLegend() {
-        return xticksLegend;
-    }
-
-    public ArrayList<MultiShapeObject> getYticksLegend() {
-        return yticksLegend;
     }
 
 }
