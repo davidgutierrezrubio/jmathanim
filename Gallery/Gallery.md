@@ -314,6 +314,98 @@ Here you have a GIF from the movie generated:
 
 ![Tusi](Tusi.gif)
 
+## The distributive property
+
+```java
+//Two rectangles
+Shape sq1 = Shape.square().scale(2.5, 1).style("solidblue");
+Shape sq2 = Shape.square().scale(1.75, 1).style("solidred");
+sq2.stackTo(sq1, Anchor.Type.RIGHT, .5);
+add(sq1, sq2);
+
+//Brace delimiters...
+Delimiter del1X = Delimiter.make(sq1.getPoint(1), sq1.getPoint(0), Delimiter.Type.BRACE, .1);
+Delimiter del1Y = Delimiter.make(sq1.getPoint(0), sq1.getPoint(3), Delimiter.Type.BRACE, .1);
+Delimiter del2X = Delimiter.make(sq2.getPoint(1), sq2.getPoint(0), Delimiter.Type.BRACE, .1);
+Delimiter del2Y = Delimiter.make(sq2.getPoint(2), sq2.getPoint(1), Delimiter.Type.BRACE, .1);
+//And their legends
+LaTeXMathObject textA1 = LaTeXMathObject.make("$a$").stackTo(del1Y, Anchor.Type.LEFT, .05);
+LaTeXMathObject textA2 = LaTeXMathObject.make("$a$").stackTo(del2Y, Anchor.Type.RIGHT, .05);
+LaTeXMathObject textB = LaTeXMathObject.make("$b$").stackTo(del1X, Anchor.Type.LOWER, .05);
+LaTeXMathObject textC = LaTeXMathObject.make("$c$").stackTo(del2X, Anchor.Type.LOWER, .05);
+
+//The colors chosen to the symbols a, b and c
+JMColor colA = JMColor.parse("#34403C");
+JMColor colB = JMColor.parse("#961A4C");
+JMColor colC = JMColor.parse("#6A2A5C");
+JMColor colArea = JMColor.parse("#B73A1C");
+textA1.setColor(colA, 0);
+textA2.setColor(colA, 0);
+textB.setColor(colB, 0);
+textC.setColor(colC, 0);
+
+Delimiter del12X = Delimiter.make(sq1.getPoint(3), sq2.getPoint(2), Delimiter.Type.BRACE, .1);
+LaTeXMathObject textBC = LaTeXMathObject.make("$b+c$");
+textBC.setColor(colB, 0);
+textBC.setColor(colC, 2);
+
+//This ensures that the text "b+c" is always centered under the brace
+registerUpdateable(new AnchoredMathObject(textBC, del12X, Anchor.Type.UPPER, .05));
+
+LaTeXMathObject formula1 = LaTeXMathObject.make("\\'{A}rea=$a\\cdot b+a\\cdot c$").scale(3);
+formula1.stackTo(sq2.getPoint(3), Anchor.Type.UPPER, .5);
+formula1.setColor(colArea, 0, 1, 2, 3, 4);
+formula1.setColor(colA, 6, 10);
+formula1.setColor(colB, 8);
+formula1.setColor(colC, 12);
+
+
+LaTeXMathObject formula2 = LaTeXMathObject.make("\\'{A}rea=$a\\cdot(b+c)$").scale(3);
+
+formula2.setColor(colArea, 0, 1, 2, 3, 4);
+formula2.setColor(colA, 6);
+formula2.setColor(colB, 9);
+formula2.setColor(colC, 11);
+
+add(del1X, del2X, del1Y, del2Y, textA1, textA2, textB, textC, formula1);
+camera.adjustToAllObjects();
+
+//Align horizontally formula1 and formula2 with it. Note that we have to do this after adjusting the camera
+formula1.hCenter();
+formula2.alignCenter(5, formula1, 5);
+LaTeXMathObject formula3 = formula1.copy();
+
+waitSeconds(2);
+
+Animation an1 = Commands.shift(3, .5, 0, sq1, textA1, textB);
+Animation an2 = Commands.fadeIn(3, del12X, textBC);
+
+TransformMathExpression an3 = new TransformMathExpression(3, formula1, formula2);
+an3.mapRange(0, 7, 0);//"Área=a\cdot"
+an3.map(8, 9);//b -> b
+an3.map(9, 10);//+ -> +
+an3.map(10, 6).setJumpHeight(.5);//Second a -> a
+an3.map(12, 11);//c -> c
+
+playAnimation(an1, an2, an3);
+waitSeconds(3);
+
+//Inverse
+an1 = Commands.shift(3, -.5, 0, sq1, textA1, textB);
+an2 = Commands.fadeOut(3, del12X, textBC);
+
+an3 = new TransformMathExpression(3, formula2, formula3);
+an3.mapRange(0, 7, 0);
+an3.map(9, 8);
+an3.map(10, 9);
+an3.map(6, 10).setJumpHeight(-.5);
+an3.map(11, 12);
+playAnimation(an1, an2, an3);
+waitSeconds(3);
+```
+
+![distributive](distributive.gif)
+
 
 
 ## The Clock
