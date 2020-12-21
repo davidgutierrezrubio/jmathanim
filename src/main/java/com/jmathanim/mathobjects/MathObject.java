@@ -237,6 +237,32 @@ public abstract class MathObject implements Drawable, Updateable, Stateable {
     }
 
     /**
+     * Center the object vertically in the math view.
+     *
+     * @param <T> Object type
+     * @return The same object
+     */
+    public final <T extends MathObject> T vCenter() {
+        Vec v = getCenter().v;
+        center();
+        shift(v.x - getCenter().v.x, 0);
+        return (T) this;
+    }
+ /**
+     * Center the object horizontally in the math view.
+     *
+     * @param <T> Object type
+     * @return The same object
+     */
+
+    public final <T extends MathObject> T hCenter() {
+        Vec v = getCenter().v;
+        center();
+        shift(0, v.y - getCenter().v.y);
+        return (T) this;
+    }
+
+    /**
      * Performs a 2D-Rotation of the MathObject around the given rotation center
      *
      * @param <T> MathObject subclass
