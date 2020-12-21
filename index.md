@@ -8,6 +8,14 @@ Although with limited features, it can be used to create many, non too complex a
 [Here you can find some examples made with this library ](Gallery/Gallery.html)
 
 # What's new?
+Version 0.8.7-SNAPSHOT:
+
+* Added `ShowCreation` method for `Axes` objects.
+* Improved axes ticks: 
+  * now there are primary and secondary ticks.
+  * Secondary ticks can be showed only when reaching certain level of zoom.
+  * `axes.setFormat`  allows to specify the precise format the numbers in ticks.
+
 Version 0.8.6:
 
 * Fixed time duration of ShowCreation for MultiShapeObjects

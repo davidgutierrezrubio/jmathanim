@@ -8,8 +8,8 @@ A simple animation illustrating the updateable object `PointOnFunctionGraph` :
 
 ```java
 final Axes axes = new Axes();
-axes.generateXTicks(-2, 2, 1);
-axes.generateYTicks(-2, 2, 1);
+axes.generatePrimaryXTicks(-2, 2, 1);
+axes.generatePrimaryYTicks(-2, 2, 1);
 add(axes);
 
 //The function
@@ -57,11 +57,11 @@ waitSeconds(5);
 public void runSketch() throws Exception {
     int orderTaylor = 8;
     Axes axes = new Axes();
-    axes.addXTicksLegend("$\\pi$", PI);
-    axes.addXTicksLegend("$-\\pi$", -PI);
-    axes.addXTicksLegend("$2\\pi$", 2 * PI);
-    axes.addXTicksLegend("$-2\\pi$", -2 * PI);
-    axes.generateYTicks(-4, 4, 1);
+    axes.addXTicksLegend("$\\pi$", PI, Axes.TickScale.PRIMARY, 0);
+    axes.addXTicksLegend("$-\\pi$", -PI, Axes.TickScale.PRIMARY, 0);
+    axes.addXTicksLegend("$2\\pi$", 2 * PI, Axes.TickScale.PRIMARY, 0);
+    axes.addXTicksLegend("$-2\\pi$", -2 * PI, Axes.TickScale.PRIMARY, 0);
+    axes.generatePrimaryYTicks(-4, 4, 1);
     add(axes);
     final double xmin = -2 * PI - .2;
     final double xmax = 2 * PI + .2;
