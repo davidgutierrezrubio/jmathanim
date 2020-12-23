@@ -115,13 +115,28 @@ public class MultiShapeObject extends MathObject implements Iterable<Shape> {
                     r.drawAbsoluteCopy(jmp, getAbsoluteAnchor().v);//TODO: This doesnt work for overrided methods (e.g.: line)
                 } else {
                     jmp.draw(r);
-                    if (isShowDebugText()) {
-                        r.debugText("" + n, jmp.getCenter().v);
-                    }
+//                    if (isShowDebugText()) {
+//                        r.debugText("" + n, jmp.getCenter().v);
+//                    }
                 }
             }
             n++;
         }
+    }
+
+    public <T extends MultiShapeObject> T showDebugIndices(boolean value) {
+        if (value) {
+            int k = 0;
+            for (Shape sh : shapes) {
+                sh.debugText("" + k);
+                k++;
+            }
+        } else {
+            for (Shape sh : shapes) {
+                sh.debugText("");
+            }
+        }
+        return (T) this;
     }
 
     @Override
@@ -129,7 +144,7 @@ public class MultiShapeObject extends MathObject implements Iterable<Shape> {
         if (shapes.size() > 0) {
             Rect resul = null;
             for (Shape jmp : shapes) {
-                resul = Rect.union(resul,jmp.getBoundingBox());
+                resul = Rect.union(resul, jmp.getBoundingBox());
             }
             return resul;
         } else {

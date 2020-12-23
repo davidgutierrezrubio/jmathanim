@@ -442,7 +442,11 @@ public abstract class JMathAnimScene {
     public void formulaHelper(LaTeXMathObject... texes) {
         MathObjectGroup group = new MathObjectGroup();
         for (LaTeXMathObject lat : texes) {
-            lat.showDebugText(true);
+            int k=0;
+            for (Shape sh:lat) {
+                sh.debugText(""+k);
+                k++;
+            }
             group.add(lat);
         }
         group.setLayout(Anchor.Type.LOWER, .2);

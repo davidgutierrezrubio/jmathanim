@@ -155,7 +155,9 @@ public class Anchor {
     }
 
     /**
-     * Returns the reverse anchor (LEFT-RIGHT, UP-DOWN, etc.)
+     * Returns the reverse anchor (LEFT-RIGHT, UP-DOWN, etc.) The reverse of UR
+     * is UL (not DL) so that we can anchor an object right to another and
+     * vertically upper aligned
      *
      * @param anchorPoint Anchor to compute reverse
      * @return Reversed anchor
@@ -184,16 +186,16 @@ public class Anchor {
                 break;
 
             case UL:
-                resul = Type.DR;
-                break;
-            case UR:
-                resul = Type.DL;
-                break;
-            case DL:
                 resul = Type.UR;
                 break;
-            case DR:
+            case UR:
                 resul = Type.UL;
+                break;
+            case DL:
+                resul = Type.DR;
+                break;
+            case DR:
+                resul = Type.DL;
                 break;
         }
         return resul;

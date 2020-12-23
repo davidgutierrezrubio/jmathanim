@@ -832,4 +832,22 @@ public class Commands {
 
         return resul;
     }
+/**
+ * Animated version of the align method
+ * @param runtime time in seconds
+ * @param dst Destiny object to align with
+ * @param type Type of align, a value of MathObject.Align enum
+ * @param mathobjects Mathobjects to animate
+ * @return The created animation
+ */
+    public static Animation align(double runtime, MathObject dst, MathObject.Align type, MathObject[] mathobjects) {
+        AnimationGroup ag = new AnimationGroup();
+        for (MathObject obj : mathobjects) {
+            Point dstCenter = obj.copy()
+                    .align(dst, type).getCenter();
+            ag.add(Commands.shift(runtime, obj.getCenter().to(dstCenter), obj));
+        }
+        return ag;
+    }
+
 }

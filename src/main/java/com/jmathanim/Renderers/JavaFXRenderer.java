@@ -303,6 +303,9 @@ public class JavaFXRenderer extends Renderer {
             applyDrawingStyles(path, mobj);
             fxnodes.add(path);
         }
+        if (!"".equals(mobj.getDebugText())) {
+            debugText(mobj.getDebugText(), mobj.getCenter().v);
+        }
     }
 
     private void applyDrawingStyles(Path path, Shape mobj) {

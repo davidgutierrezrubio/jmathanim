@@ -37,24 +37,12 @@ import javafx.scene.shape.StrokeLineCap;
  */
 public abstract class MathObject implements Drawable, Updateable, Stateable {
 
-    private boolean debugText;
+    public enum Align {
+        LEFT, RIGHT, UPPER, LOWER, HCENTER, VCENTER
+    }
 
-//    //Implemented types
-//    public static final int OTHER = 0;
-//    public static final int POINT = 1;
-//    public static final int RECTANGLE = 2; //Includes square
-//    public static final int CIRCLE = 3;
-//    public static final int ELLIPSE = 4;
-//    public static final int ARC = 5;
-//    public static final int REGULAR_POLYGON = 6;
-//    public static final int GENERAL_POLYGON = 7;
-//    public static final int SEGMENT = 9;
-//    public static final int LINE = 10;
-//    public static final int MULTISHAPE = 11;
-//    public static final int LATEX_MULTISHAPE = 11;
-//    public static final int SVG = 12;
-//    public static final int LATEX_SHAPE = 13;
-//    public static final int FUNCTION_GRAPH = 14;
+    private String debugText = "";
+
     public MODrawProperties mp;
     public String label = "";
 
@@ -248,13 +236,13 @@ public abstract class MathObject implements Drawable, Updateable, Stateable {
         shift(v.x - getCenter().v.x, 0);
         return (T) this;
     }
- /**
+
+    /**
      * Center the object horizontally in the math view.
      *
      * @param <T> Object type
      * @return The same object
      */
-
     public final <T extends MathObject> T hCenter() {
         Vec v = getCenter().v;
         center();
@@ -685,11 +673,11 @@ public abstract class MathObject implements Drawable, Updateable, Stateable {
         return 0;//Default value, objects that need to be updated should override this
     }
 
-    public boolean isShowDebugText() {
+    public String getDebugText() {
         return debugText;
     }
 
-    public <T extends MathObject> T showDebugText(boolean debugText) {
+    public <T extends MathObject> T debugText(String debugText) {
         this.debugText = debugText;
         return (T) this;
     }
@@ -737,5 +725,41 @@ public abstract class MathObject implements Drawable, Updateable, Stateable {
      */
     public boolean isEmpty() {
         return false;
+    }
+
+    /**
+     * Align this object with another one
+     *
+     * @param <T> MathObject subclass
+     * @param obj Object to align with. This object remains unaltered.
+     * @param type Align type, a value from the enum Align
+     * @return This object
+     */
+    public <T extends MathObject> T align(MathObject obj, Align type) {
+        Vec shiftVector = Vec.to(0, 0);
+        Rect thisBoundingBox = this.getBoundingBox();
+        Rect objectBoundingBox = obj.getBoundingBox();
+        switch (type) {
+            case UPPER:
+                shiftVector.y = objectBoundingBox.ymin - thisBoundingBox.ymin;
+                break;
+            case LOWER:
+                shiftVector.y = objectBoundingBox.ymax - thisBoundingBox.ymax;
+                break;
+            case LEFT:
+                shiftVector.x = objectBoundingBox.xmin - thisBoundingBox.xmin;
+                break;
+            case RIGHT:
+                shiftVector.x = objectBoundingBox.xmax - thisBoundingBox.xmax;
+                break;
+            case VCENTER:
+                shiftVector.y = .5d * ((objectBoundingBox.ymin + objectBoundingBox.ymax) - (thisBoundingBox.ymin + thisBoundingBox.ymax));
+                break;
+            case HCENTER:
+                shiftVector.x = .5d * ((objectBoundingBox.xmin + objectBoundingBox.xmax) - (thisBoundingBox.xmin + thisBoundingBox.xmax));
+                break;
+        }
+        shift(shiftVector);
+        return (T) this;
     }
 }
