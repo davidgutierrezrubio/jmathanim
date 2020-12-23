@@ -267,7 +267,7 @@ public class PlayAnim {
     public void scale(double runTime, double scx, double scy, MathObject... objs) {
         Rect r = objs[0].getBoundingBox();
         for (MathObject obj : objs) {
-            r = r.union(obj.getBoundingBox());
+            r = Rect.union(r,obj.getBoundingBox());
         }
         scene.playAnimation(Commands.scale(runTime, r.getCenter(), scx, scy, 1, objs));
     }
@@ -314,7 +314,7 @@ public class PlayAnim {
     public void rotate(double runTime, double angle, MathObject... objs) {
         Rect r = objs[0].getBoundingBox();
         for (MathObject obj : objs) {
-            r = r.union(obj.getBoundingBox());
+            r = Rect.union(r,obj.getBoundingBox());
         }
         scene.playAnimation(Commands.rotate(runTime, r.getCenter(), angle, objs));
     }
@@ -374,7 +374,7 @@ public class PlayAnim {
         final Vec gaps = scene.getCamera().getGaps();
         Rect r = scene.getCamera().getMathView();
         for (MathObject obj : scene.getObjects()) {
-            r = r.union(obj.getBoundingBox().addGap(gaps.x, gaps.y));
+            r = Rect.union(r,obj.getBoundingBox().addGap(gaps.x, gaps.y));
         }
         zoomToRect(runtime, r);
     }
@@ -404,7 +404,7 @@ public class PlayAnim {
         final Vec gaps = scene.getCamera().getGaps();
         Rect r = scene.getCamera().getMathView();
         for (MathObject obj : objs) {
-            r = r.union(obj.getBoundingBox().addGap(gaps.x, gaps.y));
+            r = Rect.union(r,obj.getBoundingBox().addGap(gaps.x, gaps.y));
         }
         zoomToRect(runTime, r);
     }
@@ -419,7 +419,7 @@ public class PlayAnim {
     public void zoomToObjects(double runTime, MathObject... objs) {
         Rect r = objs[0].getBoundingBox();
         for (MathObject obj : objs) {
-            r = r.union(obj.getBoundingBox());
+            r = Rect.union(r,obj.getBoundingBox());
         }
         zoomToRect(runTime, r);
     }

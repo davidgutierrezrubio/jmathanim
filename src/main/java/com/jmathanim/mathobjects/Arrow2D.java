@@ -385,10 +385,10 @@ public class Arrow2D extends MathObject {
         Rect r = body.getBoundingBox();
         update(JMathAnimConfig.getConfig().getScene());
         if (arrowHeadToDraw1.size() > 0) {
-            r = r.union(arrowHeadToDraw1.getBoundingBox());
+            r = Rect.union(r,arrowHeadToDraw1.getBoundingBox());
         }
         if (arrowHeadToDraw2.size() > 0) {
-            r = r.union(arrowHeadToDraw2.getBoundingBox());
+            r = Rect.union(r,arrowHeadToDraw2.getBoundingBox());
         }
         return r;
     }

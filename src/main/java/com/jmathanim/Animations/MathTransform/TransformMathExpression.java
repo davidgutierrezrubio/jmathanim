@@ -111,7 +111,9 @@ public class TransformMathExpression extends Animation {
             if (true) {
                 Shape sh1 = getShapeForGroup(or, name1, latexTransformed, removeInOrigParameters);
                 Shape sh2 = getShapeForGroup(dst, name2, latexDestiny, addInDstParameters);
-                createTransformSubAnimation(sh1, sh2, trParTransformParameters.get(name1));
+                if ((sh1.size() > 0) && (sh2.size() > 0)) {//If any of the shapes is empty...abort!
+                    createTransformSubAnimation(sh1, sh2, trParTransformParameters.get(name1));
+                }
             } else {
                 //For each of the shapes of a origin group, makes a transform animation 
                 //The destiny will be one merged shape of all shapes of destiny group
@@ -157,8 +159,8 @@ public class TransformMathExpression extends Animation {
                 group.add(Commands.moveOut(runTime, Anchor.Type.LOWER, sh).setLambda(lambda));
                 break;
         }
-        if (par.getNumTurns() != 0) {
-            Animation rotation = Commands.rotate(runTime, 2 * PI * par.getNumTurns(), sh);
+        if (par.getNumTurnsFromRotateEffect() != 0) {
+            Animation rotation = Commands.rotate(runTime, 2 * PI * par.getNumTurnsFromRotateEffect(), sh);
             rotation.setUseObjectState(false);
             group.add(rotation);
         }
@@ -188,8 +190,8 @@ public class TransformMathExpression extends Animation {
                 anim.add(Commands.moveIn(runTime, Anchor.Type.LOWER, sh).setLambda(lambda));
                 break;
         }
-        if (par.getNumTurns() != 0) {
-            Animation rotation = Commands.rotate(runTime, 2 * PI * par.getNumTurns(), sh);
+        if (par.getNumTurnsFromRotateEffect() != 0) {
+            Animation rotation = Commands.rotate(runTime, 2 * PI * par.getNumTurnsFromRotateEffect(), sh);
             rotation.setUseObjectState(false);
             group.add(rotation);
         }
@@ -198,60 +200,37 @@ public class TransformMathExpression extends Animation {
     }
 
     private void createTransformSubAnimation(Shape sh, Shape sh2, TransformMathExpressionParameters par) {
-        Animation transform=null;
+        Animation transform = null;
         switch (par.getTransformStyle()) {
             case INTERPOLATION:
                 transform = new Transform(runTime, sh, sh2);
                 transform.setLambda(lambda);
                 break;
             case FLIP_HORIZONTALLY:
-                transform=Commands.flipTransform(runTime, sh, sh2, 0);
+                transform = Commands.flipTransform(runTime, sh, sh2, 0);
                 break;
-                case FLIP_VERTICALLY:
-                transform=Commands.flipTransform(runTime, sh, sh2, 1);
+            case FLIP_VERTICALLY:
+                transform = Commands.flipTransform(runTime, sh, sh2, 1);
                 break;
         }
-        
+
         AnimationGroup group = new AnimationGroup(transform);
 
-        if (par.getJumpHeight() != 0) {
+        if (par.getJumpHeightFromJumpEffect() != 0) {
             Vec v = sh.getCenter().to(sh2.getCenter());
-            Vec shiftVector = Vec.to(-v.y, v.x).normalize().mult(par.getJumpHeight());
-
-            final Animation radiusShift = Commands.shift(runTime, shiftVector, sh);
-            radiusShift.setLambda(t -> Math.sin(PI * t));
-            radiusShift.setUseObjectState(false);
-            group.add(radiusShift);
+            group.add(par.createJumpAnimation(runTime,v,sh));
         }
-        if (par.getNumTurns() != 0) {
-            Animation rotation = Commands.rotate(runTime, 2 * PI * par.getNumTurns(), sh);
-            rotation.setUseObjectState(false);
-            rotation.setLambda(lambda);
-            group.add(rotation);
+        if (par.getNumTurnsFromRotateEffect() != 0) {
+          
+            group.add(par.createRotateAnimation(runTime,sh));
         }
-        if (par.getAlphaMult() != 1) {
-            Animation changeAlpha = getAlphaMultAnimation(par, sh);
-            changeAlpha.setLambda(lambda);
+        if (par.getAlphaMultFromAlphaEffect() != 1) {
+            Animation changeAlpha = par.createAlphaMultAnimation(runTime, sh);
             group.add(changeAlpha);
         }
-        if (par.getScale() != 1) {
-            //Parabola parameter so that mininum reaches at (.5,par.getAlphaMult())
-            double L = 4 * (1 - par.getScale());
-            Animation changeScale = new Animation(runTime) {
-
-                @Override
-                public void doAnim(double t) {
-                    double lt = 1 - t * (1 - t) * L;
-                    sh.scale(lt);
-                }
-
-                @Override
-                public void finishAnimation() {
-                    doAnim(1);
-                }
-            };
-            changeScale.setLambda(lambda);
-            group.add(changeScale);
+        if (par.getScaleFromScaleEffect() != 1) {
+           
+            group.add(par.createScaleAnimation(runTime, sh));
         }
 
         anim.add(group);//, radius, rota));
@@ -259,24 +238,7 @@ public class TransformMathExpression extends Animation {
         toDelete.add(sh2);
     }
 
-    public Animation getAlphaMultAnimation(TransformMathExpressionParameters par, Shape sh) {
-        //Parabola parameter so that mininum reaches at (.5,par.getAlphaMult())
-        double L = 4 * (1 - par.getAlphaMult());
-        Animation changeAlpha = new Animation(runTime) {
-            @Override
-            public void doAnim(double t) {
-                double lt = 1 - t * (1 - t) * L;
-                sh.fillAlpha(lt * sh.mp.getFillColor().alpha);
-                sh.drawAlpha(lt * sh.mp.getDrawColor().alpha);
-            }
-
-            @Override
-            public void finishAnimation() {
-                doAnim(1);
-            }
-        };
-        return changeAlpha;
-    }
+   
 
     private ArrayList<Shape> getShapeListForGroup(HashMap<String, int[]> or, String names, MultiShapeObject lat, HashMap<Integer, TransformMathExpressionParameters> listRemainders) {
         ArrayList<Shape> resul = new ArrayList<>();
@@ -365,6 +327,10 @@ public class TransformMathExpression extends Animation {
             ar.add(trParTransformParameters.get("_" + ind));
         }
         return ar;
+    }
+    public TransformMathExpressionParametersArray mapAll() {
+        int n=Math.min(latexDestiny.size()-1,latexTransformed.size()-1);
+        return mapRange(0,n,0);
     }
 
     /**

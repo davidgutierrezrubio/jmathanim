@@ -17,6 +17,12 @@
  */
 package com.jmathanim.Animations.MathTransform;
 
+import com.jmathanim.Animations.Animation;
+import com.jmathanim.Animations.Commands;
+import com.jmathanim.Utils.Vec;
+import static com.jmathanim.jmathanim.JMathAnimScene.PI;
+import com.jmathanim.mathobjects.Shape;
+
 /**
  *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
@@ -33,33 +39,50 @@ public class TransformMathExpressionParameters {
 
     public TransformMathExpressionParameters() {
         jumpHeight = 0d;
-        alphaMult=1d;
-        scale=1d;
+        alphaMult = 1d;
+        scale = 1d;
         numTurns = 0;
-        removingStyle=TransformMathExpression.RemoveType.FADE_OUT;
-        addingStyle=TransformMathExpression.AddType.FADE_IN;
-        transformStyle=TransformMathExpression.TransformType.INTERPOLATION;
+        removingStyle = TransformMathExpression.RemoveType.FADE_OUT;
+        addingStyle = TransformMathExpression.AddType.FADE_IN;
+        transformStyle = TransformMathExpression.TransformType.INTERPOLATION;
     }
 
-    public int getNumTurns() {
+    protected int getNumTurnsFromRotateEffect() {
         return numTurns;
     }
 
-    public TransformMathExpressionParameters setNumTurns(int numTurns) {
+    /**
+     * Adds a rotation effect, rotating the transformed shape the specified
+     * number of turns.
+     *
+     * @param numTurns Number of turns. Positive is counterclockwise, negative
+     * clockwise.
+     * @return This object
+     */
+    public TransformMathExpressionParameters addRotateEffect(int numTurns) {
         this.numTurns = numTurns;
         return this;
     }
 
-    public double getJumpHeight() {
+    protected double getJumpHeightFromJumpEffect() {
         return jumpHeight;
     }
 
-    public TransformMathExpressionParameters setJumpHeight(double radius) {
-        this.jumpHeight = radius;
+    /**
+     * Adds a jump effect to the transformed shape. The trajectory is
+     * sinusoidal, with a total height of the given parameter. The jump vector
+     * is the rotated vector 90 degrees clockwise from the vector from the
+     * original and destiny shape.
+     *
+     * @param heightJump Height jump
+     * @return This object
+     */
+    public TransformMathExpressionParameters addJumpEffect(double heightJump) {
+        this.jumpHeight = heightJump;
         return this;
     }
 
-    public TransformMathExpression.RemoveType getRemovingStyle() {
+    protected TransformMathExpression.RemoveType getRemovingStyle() {
         return removingStyle;
     }
 
@@ -67,7 +90,7 @@ public class TransformMathExpressionParameters {
         this.removingStyle = removingStyle;
     }
 
-    public TransformMathExpression.AddType getAddingStyle() {
+    protected TransformMathExpression.AddType getAddingStyle() {
         return addingStyle;
     }
 
@@ -75,30 +98,96 @@ public class TransformMathExpressionParameters {
         this.addingStyle = addingStyle;
     }
 
-    public double getAlphaMult() {
+    protected double getAlphaMultFromAlphaEffect() {
         return alphaMult;
     }
 
-    public TransformMathExpressionParameters setAlphaMult(double alphaMult) {
+    /**
+     * Adds an alpha effect when transforming, multiplying the transformed shape
+     * alpha up to a given value, back and forth.
+     *
+     * @param alphaMult Alpha value to multiply.
+     * @return This object
+     */
+    public TransformMathExpressionParameters addAlphaEffect(double alphaMult) {
         this.alphaMult = alphaMult;
-         return this;
+        return this;
     }
 
-    public double getScale() {
+    protected double getScaleFromScaleEffect() {
         return scale;
     }
 
-    public TransformMathExpressionParameters setScale(double scale) {
+    /**
+     * Sets a scale effect when transforming, scaling the transformed shape by a
+     * given factor, back and forth.
+     *
+     * @param scale Scale to reach.
+     * @return This object
+     */
+    public TransformMathExpressionParameters addScaleEffect(double scale) {
         this.scale = scale;
-         return this;
+        return this;
     }
 
-    public TransformMathExpression.TransformType getTransformStyle() {
+    protected TransformMathExpression.TransformType getTransformStyle() {
         return transformStyle;
     }
 
     public void setTransformStyle(TransformMathExpression.TransformType transformStyle) {
         this.transformStyle = transformStyle;
+    }
+
+    public Animation createJumpAnimation(double runTime, Vec v, Shape sh) {
+        Vec shiftVector = Vec.to(-v.y, v.x).normalize().mult(getJumpHeightFromJumpEffect());
+
+        final Animation jumpShift = Commands.shift(runTime, shiftVector, sh);
+        jumpShift.setLambda(t -> Math.sin(PI * t));
+        jumpShift.setUseObjectState(false);
+        return jumpShift;
+    }
+
+    public Animation createRotateAnimation(double runTime, Shape sh) {
+        Animation rotation = Commands.rotate(runTime, 2 * PI * getNumTurnsFromRotateEffect(), sh);
+        rotation.setUseObjectState(false);
+        return rotation;
+    }
+
+    public Animation createAlphaMultAnimation(double runTime, Shape sh) {
+        //Parabola parameter so that mininum reaches at (.5,par.getAlphaMultFromAlphaEffect())
+        double L = 4 * (1 - getAlphaMultFromAlphaEffect());
+        Animation changeAlpha = new Animation(runTime) {
+            @Override
+            public void doAnim(double t) {
+                double lt = 1 - t * (1 - t) * L;
+                sh.fillAlpha(lt * sh.mp.getFillColor().alpha);
+                sh.drawAlpha(lt * sh.mp.getDrawColor().alpha);
+            }
+
+            @Override
+            public void finishAnimation() {
+                doAnim(1);
+            }
+        };
+        return changeAlpha;
+    }
+
+    public Animation createScaleAnimation(double runTime, Shape sh) {
+        //Parabola parameter so that mininum reaches at (.5,par.getAlphaMultFromAlphaEffect())
+        double L = 4 * (1 - getScaleFromScaleEffect());
+       return  new Animation(runTime) {
+
+            @Override
+            public void doAnim(double t) {
+                double lt = 1 - t * (1 - t) * L;
+                sh.scale(lt);
+            }
+
+            @Override
+            public void finishAnimation() {
+                doAnim(1);
+            }
+        };
     }
 
 }

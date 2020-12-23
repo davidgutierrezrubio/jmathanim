@@ -27,6 +27,7 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.stream.IntStream;
+import sun.security.util.ArrayUtil;
 
 /**
  * This class stores multiple JMPathObjects, and properly apply transforms and
@@ -126,9 +127,9 @@ public class MultiShapeObject extends MathObject implements Iterable<Shape> {
     @Override
     public Rect getBoundingBox() {
         if (shapes.size() > 0) {
-            Rect resul = shapes.get(0).getBoundingBox();
+            Rect resul = null;
             for (Shape jmp : shapes) {
-                resul = resul.union(jmp.getBoundingBox());
+                resul = Rect.union(resul,jmp.getBoundingBox());
             }
             return resul;
         } else {
@@ -266,8 +267,7 @@ public class MultiShapeObject extends MathObject implements Iterable<Shape> {
     public <T extends MultiShapeObject> T getSlice(int... indices) {
         T resul = (T) this.copy();
         resul.shapes.clear();
-        for (int i:indices)
-        {
+        for (int i : indices) {
             resul.addShape(this.get(i).copy());
         }
         return resul;
@@ -275,10 +275,35 @@ public class MultiShapeObject extends MathObject implements Iterable<Shape> {
 
     @Override
     public boolean isEmpty() {
-        boolean resul=false;
-        for (Shape sh: shapes) {
-            resul=resul | sh.isEmpty();
+        boolean resul = false;
+        for (Shape sh : shapes) {
+            resul = resul | sh.isEmpty();
         }
+        return resul;
+    }
+
+    /**
+     * Extracts a part of a MultiShape, given by a set of indices. Indices are
+     * unaltered, so shape 5 after slicing is still shape 5.
+     *
+     * @param <T> Multishape subclass
+     * @param indices indices to slice (varargs)
+     * @return A new multishape instance with the extracted shapes. The original
+     * multishape object is altered as the extracted shapes becomes invisible
+     */
+    public <T extends MultiShapeObject> T slice(Integer... indices) {
+        List<Integer> list = Arrays.asList(indices);
+        T resul = (T) this.copy();
+        for (int n = 0; n < resul.shapes.size(); n++) {
+            resul.shapes.set(n, new Shape());
+        }
+        for (int n = 0; n < this.shapes.size(); n++) {
+            if (list.contains(n)) {//if this index is marked for extraction...
+                resul.shapes.set(n, this.get(n));
+                this.shapes.set(n, new Shape());
+            }
+        }
+
         return resul;
     }
 

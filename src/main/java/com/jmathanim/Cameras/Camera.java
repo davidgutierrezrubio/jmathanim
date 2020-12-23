@@ -123,9 +123,9 @@ public abstract class Camera {
     }
 
     public <T extends Camera> T adjustToObjects(MathObject... objs) {
-        Rect r = objs[0].getBoundingBox();
+        Rect r = getMathView();
         for (MathObject obj : objs) {
-            r = r.union(obj.getBoundingBox());
+            r = Rect.union(r,obj.getBoundingBox());
         }
         adjustToRect(r.addGap(hgap, hgap));
         return (T) this;
@@ -134,7 +134,7 @@ public abstract class Camera {
     public <T extends Camera> T zoomToObjects(MathObject... objs) {
         Rect r = objs[0].getBoundingBox();
         for (MathObject obj : objs) {
-            r = r.union(obj.getBoundingBox());
+            r = Rect.union(r,obj.getBoundingBox());
         }
         adjustToRect(r.addGap(hgap, hgap));
         return (T) this;

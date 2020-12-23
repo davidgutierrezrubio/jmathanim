@@ -78,7 +78,7 @@ public class MathObjectGroup extends MathObject implements Iterable<MathObject> 
     public Rect getBoundingBox() {
         Rect bbox = objects.get(0).getBoundingBox();
         for (MathObject obj : objects) {
-            bbox = bbox.union(obj.getBoundingBox());
+            bbox = Rect.union(bbox,obj.getBoundingBox());
         }
         return bbox;
     }

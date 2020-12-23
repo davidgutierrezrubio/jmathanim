@@ -230,18 +230,27 @@ public class Rect implements Stateable {//TODO: Adjust this to 3D coordinates
         return resul;
     }
 
+//    public Rect union(Rect b) {
+//       return Rect.union(this, b);
+//    }
     /**
-     * Returns the smallest {@link Rect} which contains this and the given one
+     * Returns the smallest {@link Rect} which contains 2 given rects. The
+     * method is made static so that it can deal with the case any of them is
+     * null
      *
+     * @param a The another {@link Rect}
      * @param b The another {@link Rect}
      * @return A new {@link Rect} with the union of both rects
      */
-    public Rect union(Rect b) {
-        if (b != null) {
-            return new Rect(Math.min(xmin, b.xmin), Math.min(ymin, b.ymin), Math.max(xmax, b.xmax), Math.max(ymax, b.ymax));
-        } else {
-            return this;
+    public static Rect union(Rect a, Rect b) {
+        if (a == null) {
+            return b;
         }
+        if (b == null) {
+            return a;
+        }
+        return new Rect(Math.min(a.xmin, b.xmin), Math.min(a.ymin, b.ymin), Math.max(a.xmax, b.xmax), Math.max(a.ymax, b.ymax));
+
     }
 
     /**
@@ -380,19 +389,20 @@ public class Rect implements Stateable {//TODO: Adjust this to 3D coordinates
         this.copyFrom(this.rBackup);
     }
 
-/**
- * Return the smallest rect that containts this rect rotated the given angle
- * @param rotateAngle Rotation angle, in radians
- * @return A new Rect, the smallest containing the rotated rect.
- */
+    /**
+     * Return the smallest rect that contains this rect rotated the given angle
+     *
+     * @param rotateAngle Rotation angle, in radians
+     * @return A new Rect, the smallest containing the rotated rect.
+     */
     public Rect getRotatedRect(double rotateAngle) {
-        Point center=this.getCenter();
-        Point A=this.getUL().rotate(center, rotateAngle);
-        Point B=this.getUR().rotate(center, rotateAngle);
-        Point C=this.getDR().rotate(center, rotateAngle);
-        Point D=this.getDL().rotate(center, rotateAngle);
-        Rect r1=Rect.make(A, C);
-        Rect r2=Rect.make(B, D);
-        return r1.union(r2);
+        Point center = this.getCenter();
+        Point A = this.getUL().rotate(center, rotateAngle);
+        Point B = this.getUR().rotate(center, rotateAngle);
+        Point C = this.getDR().rotate(center, rotateAngle);
+        Point D = this.getDL().rotate(center, rotateAngle);
+        Rect r1 = Rect.make(A, C);
+        Rect r2 = Rect.make(B, D);
+        return Rect.union(r1, r2);
     }
 }
