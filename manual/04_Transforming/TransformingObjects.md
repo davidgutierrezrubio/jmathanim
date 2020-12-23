@@ -50,8 +50,6 @@ which produces the following image:
 
 You’ll notice two new methods here: The `copy()` method returns a copy of the object, and the `camera.adjustToAllObjects()` does as it says, rescales the camera so that everything fits into view.  The `fillColor` and `fillAlpha` sets the filling of the object. 
 
-As in the `putAt` method, a third parameter `gap` is allowed to add a given gap between the objects.
-
 The `stackTo` command allows to easily generate aligned objects:
 
 ``` java
@@ -70,7 +68,10 @@ Which produces this regular polygons pattern. Note that all polygons are vertica
 
 ![02b stackToExample2](02b_stackToExample2.png)
 
+You can change the `Anchor` to other values to see how these anchors work. Apart from `UPPER`, `LOWER`, `LEFT`, `RIGHT` and`BY_CENTER` there are also `UR` (up-right), `UL` (up-left), `DR` (down-right) and `DL` (down-left).
+
 ## StackToScreen
+
 This methods is similar to `stackTo`, but it positions the object relative to the current view.
 
 ``` java
