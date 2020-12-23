@@ -76,7 +76,7 @@ public class Commands {
      * Performs an animation shifting the objects with a jump. The jump is a
      * parabolic up-and-down animation, perpendicular 90 degrees rotated
      * clockwise with respect to the shift vector. The lambda function used by
-     * default is t->t
+     * default is linear
      *
      * @param runtime Duration in seconds
      * @param v Shift vector
@@ -105,7 +105,7 @@ public class Commands {
      * Overloaded method. Performs an animation shifting the objects with a
      * jump. The jump is a parabolic up-and-down animation, perpendicular 90
      * degrees rotated clockwise with respect to the shift vector. The lambda
-     * function used by default is t->t
+     * function used by default is linear
      *
      * @param runtime Duration in seconds
      * @param x x coordinate of the shift vector

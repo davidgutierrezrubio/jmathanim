@@ -69,7 +69,7 @@ public class TransformMathExpressionParametersArray {
      * Adds an alpha effect when transforming, multiplying the transformed shape
      * alpha up to a given value, back and forth.
      *
-     * @param alphaMult Alpha value to multiply.
+     * @param alpha Alpha value to multiply.
      * @return This object
      */
     public TransformMathExpressionParametersArray addAlphaEffect(double alpha) {

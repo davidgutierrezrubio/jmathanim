@@ -102,11 +102,13 @@ public abstract class Camera {
     }
 
     /**
-     * Adjust the view so that if contains the area given by a Rect object. The
-     * view is the minimal bounding box that contains r, with the proportions of
-     * the screen.
+     * Adjust the view so that if contains the area given by a Rect object.The
+ view is the minimal bounding box that contains r, with the proportions of
+ the screen.
      *
+     * @param <T> Camera subclass
      * @param rAdjust Rectangle to adjust
+     * @return This camera
      */
     public <T extends Camera> T adjustToRect(Rect rAdjust) {
         Rect r = getRectThatContains(rAdjust);
