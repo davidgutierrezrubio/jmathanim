@@ -72,6 +72,53 @@ public class Commands {
         };
     }
 
+    /**
+     * Performs an animation shifting the objects with a jump. The jump is a
+     * parabolic up-and-down animation, perpendicular 90 degrees rotated
+     * clockwise with respect to the shift vector. The lambda function used by
+     * default is t->t
+     *
+     * @param runtime Duration in seconds
+     * @param v Shift vector
+     * @param jumpHeight Height of the "jump"
+     * @param objects Objects to be shifted
+     * @return The animation created, ready to play with the playAnimation
+     * method
+     */
+    public static AnimationGroup shiftWithJump(double runtime, Vec v, double jumpHeight, MathObject... objects) {
+        AnimationGroup resul = new AnimationGroup();
+        Animation shiftAnim = Commands.shift(runtime, v, objects).setLambda(t -> t);
+        resul.add(shiftAnim);
+
+        Vec shiftVector = Vec.to(-v.y, v.x).normalize().mult(jumpHeight);
+
+        final Animation jumpShift = Commands.shift(runtime, shiftVector, objects);
+//        jumpShift.setLambda(t -> Math.sin(PI * t));
+        jumpShift.setLambda(t -> 4 * shiftAnim.getLambda().applyAsDouble(t) * (1 - shiftAnim.getLambda().applyAsDouble(t)));
+        jumpShift.setUseObjectState(false);
+        resul.add(jumpShift);
+        return resul;
+
+    }
+
+    /**
+     * Overloaded method. Performs an animation shifting the objects with a
+     * jump. The jump is a parabolic up-and-down animation, perpendicular 90
+     * degrees rotated clockwise with respect to the shift vector. The lambda
+     * function used by default is t->t
+     *
+     * @param runtime Duration in seconds
+     * @param x x coordinate of the shift vector
+     * @param y y coordinate of the shift vector
+     * @param jumpHeight Height of the "jump"
+     * @param objects Objects to be shifted
+     * @return The animation created, ready to play with the playAnimation
+     * method
+     */
+    public static AnimationGroup shiftWithJump(double runtime, double x, double y, double jumpHeight, MathObject... objects) {
+        return shiftWithJump(runtime, Vec.to(x, y), jumpHeight, objects);
+    }
+
     public static Animation highlight(double runtime, MathObject... objects) {
         AnimationGroup ag = new AnimationGroup();
         for (MathObject obj : objects) {
@@ -771,7 +818,7 @@ public class Commands {
         sc.setLambda(t -> t);
         Animation tr = Commands.shift(.5 * runtime, v, ob1).setUseObjectState(false);
         Animation fd = Commands.fadeOut(.5 * runtime, ob1).setUseObjectState(false);
-        fd.setLambda(t -> Math.sqrt(1-t));
+        fd.setLambda(t -> Math.sqrt(1 - t));
         resul.add(new AnimationGroup(sc, tr, fd));
 
         sc = Commands.scale(.5 * runtime, ob1.getCenter(), dir, 1 - dir, 1, ob2);
@@ -781,7 +828,7 @@ public class Commands {
         fd = Commands.fadeIn(.5 * runtime, ob2).setUseObjectState(false);
         fd.setLambda(t -> t);
         tr.setLambda(t -> Math.sqrt(t));
-        resul.add(new AnimationGroup(sc, tr,fd));
+        resul.add(new AnimationGroup(sc, tr, fd));
 
         return resul;
     }
