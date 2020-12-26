@@ -66,19 +66,19 @@ public class MathObjectGroup extends MathObject implements Iterable<MathObject> 
     }
 
     @Override
-    public <T extends MathObject> T copy() {
+    public MathObjectGroup copy() {
         MathObjectGroup copy = new MathObjectGroup();
         for (MathObject obj : this.getObjects()) {
             copy.add(obj.copy());
         }
-        return (T) copy;
+        return copy;
     }
 
     @Override
     public Rect getBoundingBox() {
         Rect bbox = objects.get(0).getBoundingBox();
         for (MathObject obj : objects) {
-            bbox = Rect.union(bbox,obj.getBoundingBox());
+            bbox = Rect.union(bbox, obj.getBoundingBox());
         }
         return bbox;
     }
@@ -277,8 +277,16 @@ public class MathObjectGroup extends MathObject implements Iterable<MathObject> 
         return objects.get(index);
     }
 
-    public boolean add(MathObject e) {
-        return objects.add(e);
+    public MathObjectGroup add(MathObject... objs) {
+        for (MathObject obj : objs) {
+            objects.add(obj);
+        }
+        return this;
+    }
+
+    public MathObjectGroup add(MathObject e) {
+        objects.add(e);
+        return this;
     }
 
     public void add(int index, MathObject element) {

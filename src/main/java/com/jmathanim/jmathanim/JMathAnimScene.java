@@ -51,6 +51,10 @@ public abstract class JMathAnimScene {
      */
     public static final double PI = 3.14159265358979323846;
     /**
+     * The golden ratio
+     */
+    public static final double GOLDEN_RATIO = 1.6180339887498948482045868;
+    /**
      * Constant to specify easily angles by degrees, like 45*DEGREES
      */
     public static final double DEGREES = PI / 180;
@@ -309,14 +313,14 @@ public abstract class JMathAnimScene {
         for (Updateable obj : objectsToBeUpdated) {
             obj.update(this);
         }
-        if (!animationIsDisabled){
-        //Objects to be drawn on screen. Sort them by layer
-        sceneObjects.sort((MathObject o1, MathObject o2) -> (o1.getLayer() - o2.getLayer()));
-        for (MathObject obj : sceneObjects) {
-            if (obj.isVisible()) {
-                obj.draw(renderer);
+        if (!animationIsDisabled) {
+            //Objects to be drawn on screen. Sort them by layer
+            sceneObjects.sort((MathObject o1, MathObject o2) -> (o1.getLayer() - o2.getLayer()));
+            for (MathObject obj : sceneObjects) {
+                if (obj.isVisible()) {
+                    obj.draw(renderer);
+                }
             }
-        }
         }
 
         //Now remove all marked sceneObjects from the scene
@@ -333,10 +337,10 @@ public abstract class JMathAnimScene {
         }
         doDraws();
         if (!animationIsDisabled) {
-        frameCount++;
-        saveMPFrame();
-        previousNanoTime = nanoTime;
-        nanoTime = System.nanoTime();
+            frameCount++;
+            saveMPFrame();
+            previousNanoTime = nanoTime;
+            nanoTime = System.nanoTime();
         }
 
     }
@@ -375,7 +379,7 @@ public abstract class JMathAnimScene {
     public void playAnimation(ArrayList<Animation> anims) {
         for (Animation anim : anims) {
             if (anim != null) {
-                if (anim.getStatus()==Animation.Status.FINISHED) {//This allow to reuse ended animations
+                if (anim.getStatus() == Animation.Status.FINISHED) {//This allow to reuse ended animations
                     anim.setStatus(Animation.Status.NOT_INITIALIZED);
                 }
                 anim.initialize(this);//Perform needed steps immediately before playing

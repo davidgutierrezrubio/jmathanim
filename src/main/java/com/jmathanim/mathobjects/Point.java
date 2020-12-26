@@ -153,7 +153,7 @@ public class Point extends MathObject {
 
     @Override
     public Point getCenter() {
-        return this;
+        return this.copy();
     }
 
     @Override

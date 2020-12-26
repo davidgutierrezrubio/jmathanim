@@ -405,4 +405,17 @@ public class Rect implements Stateable {//TODO: Adjust this to 3D coordinates
         Rect r2 = Rect.make(B, D);
         return Rect.union(r1, r2);
     }
+
+    /**
+     * Gets the point inside the rect with the relative coordinates from 0 to 1.
+     * The point (0,0) refers to the DL corner, the (1,1) the UR corner, and
+     * (.5,.5) the center of the rect
+     *
+     * @param relX x relative coordinate, from 0 to 1
+     * @param relY y relative coordinate, from 0 to 1
+     * @return
+     */
+    public Point getRelPoint(double relX, double relY) {
+        return Point.at(xmin + relX * (xmax - xmin), ymin + relY * (ymax - ymin));
+    }
 }
