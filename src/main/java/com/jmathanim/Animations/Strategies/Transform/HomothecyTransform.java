@@ -71,6 +71,7 @@ public class HomothecyTransform extends Animation {
     
     @Override
     public void finishAnimation() {
+         super.finishAnimation();
         anim.finishAnimation();
     }
     

@@ -57,6 +57,7 @@ public abstract class AffineTransformAnimation extends Animation {
 
     @Override
     public void finishAnimation() {
+        super.finishAnimation();
         doAnim(1);//Ensure that the transformed object gets fully transformed
     }
 

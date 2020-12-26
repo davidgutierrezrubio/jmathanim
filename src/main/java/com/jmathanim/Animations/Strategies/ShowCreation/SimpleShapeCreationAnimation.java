@@ -105,6 +105,7 @@ public class SimpleShapeCreationAnimation extends Animation {
 
     @Override
     public void finishAnimation() {
+         super.finishAnimation();
         doAnim(1);
         this.scene.remove(msh);
         mobj.visible(true);

@@ -51,6 +51,7 @@ public class FunctionSimpleInterpolateTransform extends Animation {
 
     @Override
     public void finishAnimation() {
+         super.finishAnimation();
         //Base function is now the new function 
         this.gfObj.functionBase = this.gfDst.function;
     }

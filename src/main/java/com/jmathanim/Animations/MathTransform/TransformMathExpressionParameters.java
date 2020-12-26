@@ -166,6 +166,7 @@ public class TransformMathExpressionParameters {
 
             @Override
             public void finishAnimation() {
+                 super.finishAnimation();
                 doAnim(1);
             }
         };
@@ -185,6 +186,7 @@ public class TransformMathExpressionParameters {
 
             @Override
             public void finishAnimation() {
+                 super.finishAnimation();
                 doAnim(1);
             }
         };

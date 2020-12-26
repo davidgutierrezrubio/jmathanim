@@ -106,6 +106,7 @@ public class ShowCreation extends Animation {
 
     @Override
     public void finishAnimation() {
+         super.finishAnimation();
         if (creationStrategy != null) {
             creationStrategy.finishAnimation();
         }
@@ -200,9 +201,6 @@ public class ShowCreation extends Animation {
                         del.setDelimiterScale(lambda.applyAsDouble(t));
                     }
 
-                    @Override
-                    public void finishAnimation() {
-                    }
                 };
                 JMathAnimScene.logger.debug("ShowCreation method: Delimiter (growIn)");
                 break;

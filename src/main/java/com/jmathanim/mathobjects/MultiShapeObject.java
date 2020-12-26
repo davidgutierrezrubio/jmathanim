@@ -321,5 +321,16 @@ public class MultiShapeObject extends MathObject implements Iterable<Shape> {
 
         return resul;
     }
+    
+    public Shape[] getSubArray(int...indices){
+        Shape[] resul=new Shape[indices.length];
+        int k=0;
+        for (int n:indices){
+            resul[k]=shapes.get(n);
+            k++;
+        }
+        
+        return resul;
+    }
 
 }

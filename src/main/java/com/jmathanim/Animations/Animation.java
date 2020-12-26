@@ -31,6 +31,8 @@ import java.util.function.DoubleUnaryOperator;
  */
 public abstract class Animation {
 
+    public enum Status {NOT_INITIALIZED, INITIALIZED, RUNNING, FINISHED}
+    private Status status=Status.NOT_INITIALIZED;
     /**
      * Default run time for animations, 1 second
      */
@@ -48,8 +50,8 @@ public abstract class Animation {
     protected double fps;
 //    private int numFrames; //Number of frames of animation
 //    private int frame;
-    private boolean isInitialized = false;
-    private boolean isEnded = false;
+//    private boolean isInitialized = false;
+//    private boolean isEnded = false;
     /**
      * Scene where this animation belongs
      */
@@ -65,7 +67,7 @@ public abstract class Animation {
     public DoubleUnaryOperator lambda;
 
     private boolean useObjectState;
-    
+
     private boolean shouldAddObjectsToScene;
 
     /**
@@ -73,13 +75,13 @@ public abstract class Animation {
      *
      * @return True if ended, false otherwise
      */
-    public boolean isEnded() {
-        return isEnded;
-    }
+//    public boolean isEnded() {
+//        return isEnded;
+//    }
 
-    public void setEnded(boolean value) {
-        isEnded = value;
-    }
+//    public void setEnded(boolean value) {
+//        isEnded = value;
+//    }
 
     /**
      * Return the use object state flag. This flag controls whether the
@@ -108,12 +110,11 @@ public abstract class Animation {
         return (T) this;
     }
 
-       public <T extends Animation> T setAddObjectsToScene(boolean addToScene) {
+    public <T extends Animation> T setAddObjectsToScene(boolean addToScene) {
         this.shouldAddObjectsToScene = addToScene;
         return (T) this;
     }
-    
-    
+
     /**
      * Creates an empty animation, with the default run time. This constructor
      * should be called only from implementing subclasses.
@@ -156,10 +157,10 @@ public abstract class Animation {
      * @return True if animation has finished
      */
     public boolean processAnimation() {
-        if (isEnded) {
+        if (status==Status.FINISHED) {
             return true;
         }
-        if (!isInitialized) { //If not initalized, do it now
+        if (status==Status.NOT_INITIALIZED) {
             JMathAnimScene.logger.error("Animation " + this.getClass().getCanonicalName() + " not initialized. Animation will not be done");
             return true;
         }
@@ -175,11 +176,11 @@ public abstract class Animation {
             resul = true;
         }
         t += dt;
-        if (resul) {
-            t = 1;
-//            this.finishAnimation();
-            isEnded = true;
-        }
+//        if (resul) {
+//            t = 1;
+////            this.finishAnimation();
+//            
+//        }
         return resul;
     }
 
@@ -192,7 +193,7 @@ public abstract class Animation {
     public void initialize(JMathAnimScene scene) {
         this.scene = scene;
         setFps(scene.getConfig().fps);
-        this.isInitialized = true;
+        status=Status.INITIALIZED;
     }
 
     /**
@@ -207,7 +208,11 @@ public abstract class Animation {
     /**
      * Finish animation, deleting auxiliary objects or anything necessary.
      */
-    abstract public void finishAnimation();
+    public void finishAnimation() {
+        status=Status.FINISHED;
+    }
+
+    ;
 
     private double hh(double t) {
         return (t == 0 ? 0 : Math.exp(-1 / t));
@@ -290,10 +295,22 @@ public abstract class Animation {
             }
         }
     }
-    protected void addObjectsToscene(MathObject... mathObjects){
-       if (this.shouldAddObjectsToScene) {
+
+    protected void addObjectsToscene(MathObject... mathObjects) {
+        if (this.shouldAddObjectsToScene) {
             scene.add(mathObjects);
-        }  
+        }
     }
-    
+
+    public Status getStatus() {
+        return status;
+    }
+
+    public void setStatus(Status status) {
+        this.status = status;
+    }
+    public void setT(double tt) {
+        this.t=tt;
+    }
+
 }

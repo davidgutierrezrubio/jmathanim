@@ -107,6 +107,7 @@ public abstract class JMathAnimScene {
      * Exit code of program
      */
     private int exitCode;
+    private boolean animationIsDisabled;
 
     /**
      * Creates a new Scene with default settings.
@@ -119,6 +120,7 @@ public abstract class JMathAnimScene {
         objectsToBeRemoved = new ArrayList<>();
         play = new PlayAnim(this);//Convenience class for fast access to common animations
         config.setOutputFileName(this.getClass().getSimpleName());
+        animationIsDisabled = false;
     }
 
     /**
@@ -307,12 +309,14 @@ public abstract class JMathAnimScene {
         for (Updateable obj : objectsToBeUpdated) {
             obj.update(this);
         }
+        if (!animationIsDisabled){
         //Objects to be drawn on screen. Sort them by layer
         sceneObjects.sort((MathObject o1, MathObject o2) -> (o1.getLayer() - o2.getLayer()));
         for (MathObject obj : sceneObjects) {
             if (obj.isVisible()) {
                 obj.draw(renderer);
             }
+        }
         }
 
         //Now remove all marked sceneObjects from the scene
@@ -324,13 +328,16 @@ public abstract class JMathAnimScene {
      * Advance one frame, making all necessary drawings and saving frame
      */
     public final void advanceFrame() {
-
-        renderer.clear();
+        if (!animationIsDisabled) {
+            renderer.clear();
+        }
         doDraws();
+        if (!animationIsDisabled) {
         frameCount++;
         saveMPFrame();
         previousNanoTime = nanoTime;
         nanoTime = System.nanoTime();
+        }
 
     }
 
@@ -368,10 +375,14 @@ public abstract class JMathAnimScene {
     public void playAnimation(ArrayList<Animation> anims) {
         for (Animation anim : anims) {
             if (anim != null) {
-                if (anim.isEnded()) {//This allow to reuse ended animations
-                    anim.setEnded(false);
+                if (anim.getStatus()==Animation.Status.FINISHED) {//This allow to reuse ended animations
+                    anim.setStatus(Animation.Status.NOT_INITIALIZED);
                 }
                 anim.initialize(this);//Perform needed steps immediately before playing
+                if (animationIsDisabled) {
+                    anim.setT(1);
+//                    anim.finishAnimation();
+                }
             }
         }
 
@@ -387,7 +398,6 @@ public abstract class JMathAnimScene {
                     }
                 }
             }
-
             advanceFrame();
         }
     }
@@ -398,6 +408,9 @@ public abstract class JMathAnimScene {
      * @param time Time in seconds.
      */
     public void waitSeconds(double time) {
+        if (animationIsDisabled) {
+            return;
+        }
         JMathAnimScene.logger.info("Waiting " + time + " seconds");
         int numFrames = (int) (time * fps);
         for (int n = 0; n < numFrames; n++) {
@@ -442,9 +455,9 @@ public abstract class JMathAnimScene {
     public void formulaHelper(LaTeXMathObject... texes) {
         MathObjectGroup group = new MathObjectGroup();
         for (LaTeXMathObject lat : texes) {
-            int k=0;
-            for (Shape sh:lat) {
-                sh.debugText(""+k);
+            int k = 0;
+            for (Shape sh : lat) {
+                sh.debugText("" + k);
                 k++;
             }
             group.add(lat);
@@ -456,6 +469,14 @@ public abstract class JMathAnimScene {
 
     public JMathAnimConfig getConfig() {
         return config;
+    }
+
+    public void disableAnimations() {
+        this.animationIsDisabled = true;
+    }
+
+    public void enableAnimations() {
+        this.animationIsDisabled = false;
     }
 
 }

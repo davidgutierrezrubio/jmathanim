@@ -134,6 +134,7 @@ public class PointInterpolationCanonical extends Animation {
 
     @Override
     public void finishAnimation() {
+         super.finishAnimation();
         mobjTransformed.jmpath.clear();
         mobjTransformed.jmpath.addJMPointsFrom(mobjDestinyOrig.getPath());
         mobjTransformed.mp.copyFrom(mobjDestinyOrig.mp);

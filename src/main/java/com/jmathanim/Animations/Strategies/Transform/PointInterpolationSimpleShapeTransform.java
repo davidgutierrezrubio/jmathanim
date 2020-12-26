@@ -92,6 +92,7 @@ public class PointInterpolationSimpleShapeTransform extends Animation {
 
     @Override
     public void finishAnimation() {
+         super.finishAnimation();
 
         for (int n = 0; n < mobjTransformed.getPath().size(); n++) {
             JMPathPoint p1 = mobjTransformed.getPath().getJMPoint(n);

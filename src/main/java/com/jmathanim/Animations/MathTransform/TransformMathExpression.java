@@ -272,6 +272,7 @@ public class TransformMathExpression extends Animation {
 
     @Override
     public void finishAnimation() {
+         super.finishAnimation();
         anim.finishAnimation();
 //        scene.remove(mshDst);
 

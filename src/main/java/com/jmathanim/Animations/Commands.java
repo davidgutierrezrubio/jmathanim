@@ -67,6 +67,7 @@ public class Commands {
 
             @Override
             public void finishAnimation() {
+                 super.finishAnimation();
                 doAnim(1);
             }
         };
@@ -121,8 +122,9 @@ public class Commands {
 
     public static Animation highlight(double runtime, MathObject... objects) {
         AnimationGroup ag = new AnimationGroup();
+        Point center=MathObjectGroup.make(objects).getCenter();
         for (MathObject obj : objects) {
-            ag.add(Commands.scale(runtime, obj.getCenter(), 1.5, obj).setLambda((x) -> 4 * x * (1 - x)));
+            ag.add(Commands.scale(runtime, center, 1.5, obj).setLambda((x) -> 4 * x * (1 - x)));
         }
         return ag;
     }
@@ -164,6 +166,7 @@ public class Commands {
 
             @Override
             public void finishAnimation() {
+                 super.finishAnimation();
                 doAnim(1);
             }
         };
@@ -205,6 +208,7 @@ public class Commands {
 
             @Override
             public void finishAnimation() {
+                 super.finishAnimation();
                 doAnim(1);
             }
         };
@@ -240,6 +244,7 @@ public class Commands {
 
             @Override
             public void finishAnimation() {
+                 super.finishAnimation();
                 doAnim(1);
             }
         };
@@ -285,6 +290,7 @@ public class Commands {
 
             @Override
             public void finishAnimation() {
+                 super.finishAnimation();
                 doAnim(1);
             }
         };
@@ -327,6 +333,7 @@ public class Commands {
 
             @Override
             public void finishAnimation() {
+                 super.finishAnimation();
                 doAnim(1);
             }
         };
@@ -370,6 +377,7 @@ public class Commands {
 
             @Override
             public void finishAnimation() {
+                 super.finishAnimation();
                 doAnim(1);
             }
         };
@@ -437,6 +445,7 @@ public class Commands {
 
             @Override
             public void finishAnimation() {
+                 super.finishAnimation();
                 doAnim(1);
             }
         };
@@ -489,6 +498,7 @@ public class Commands {
 
             @Override
             public void finishAnimation() {
+                 super.finishAnimation();
                 doAnim(1);
             }
         };
@@ -566,6 +576,7 @@ public class Commands {
 
             @Override
             public void finishAnimation() {
+                 super.finishAnimation();
                 doAnim(1);
             }
         };
@@ -627,6 +638,7 @@ public class Commands {
 
             @Override
             public void finishAnimation() {
+                 super.finishAnimation();
                 doAnim(1);
             }
         };
@@ -670,6 +682,7 @@ public class Commands {
 
             @Override
             public void finishAnimation() {
+                 super.finishAnimation();
                 doAnim(1);
             }
         };
@@ -710,6 +723,7 @@ public class Commands {
 
             @Override
             public void finishAnimation() {
+                 super.finishAnimation();
                 restoreStates(mathObjects);//Restore original alphas in case of reutilization
                 scene.remove(mathObjects);
             }
@@ -755,6 +769,7 @@ public class Commands {
 
             @Override
             public void finishAnimation() {
+                 super.finishAnimation();
                 doAnim(1);
             }
         };

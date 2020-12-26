@@ -63,6 +63,7 @@ public class LineCreationAnimation extends Animation {
 
     @Override
     public void finishAnimation() {
+         super.finishAnimation();
         anim.finishAnimation();
         scene.remove(segment);
         scene.add(line);

@@ -60,6 +60,7 @@ public class ArrowCreationAnimation extends Animation {
 
     @Override
     public void finishAnimation() {
+         super.finishAnimation();
         doAnim(1);
     }
 

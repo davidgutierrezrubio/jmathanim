@@ -192,11 +192,7 @@ public class Transform extends Animation {
 
     @Override
     public void finishAnimation() {
-        if (isFinished) {
-            return;
-        } else {
-            isFinished = true;
-        }
+        super.finishAnimation();
         transformStrategy.finishAnimation();
         //Remove fist object and add the second to the scene
         scene.add(mobjDestiny);

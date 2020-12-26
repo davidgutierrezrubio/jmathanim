@@ -33,9 +33,5 @@ public class WaitAnimation extends Animation{
     public void doAnim(double t) {
     }
 
-    @Override
-    public void finishAnimation() {
-    }
-
     
 }

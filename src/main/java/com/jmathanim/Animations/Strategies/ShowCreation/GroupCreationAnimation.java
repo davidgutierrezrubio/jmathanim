@@ -59,6 +59,7 @@ public class GroupCreationAnimation extends Animation {
 
     @Override
     public void finishAnimation() {
+         super.finishAnimation();
         anim.finishAnimation();
     }
 

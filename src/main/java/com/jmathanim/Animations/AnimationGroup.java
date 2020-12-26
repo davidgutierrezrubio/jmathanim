@@ -104,8 +104,9 @@ public class AnimationGroup extends Animation {
 
     @Override
     public void finishAnimation() {
+        super.finishAnimation();
         for (Animation anim : animations) {
-            if (!anim.isEnded()) {
+            if (anim.getStatus()!=Status.FINISHED) {
                 anim.finishAnimation();
             }
         }

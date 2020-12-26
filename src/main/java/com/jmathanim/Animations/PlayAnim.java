@@ -25,9 +25,11 @@ import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.LaTeXMathObject;
 import com.jmathanim.mathobjects.MathObject;
+import com.jmathanim.mathobjects.MathObjectGroup;
 import com.jmathanim.mathobjects.MultiShapeObject;
 import com.jmathanim.mathobjects.Point;
 import com.jmathanim.mathobjects.SVGMathObject;
+import com.jmathanim.mathobjects.Shape;
 import java.util.ArrayList;
 
 /**
@@ -150,7 +152,28 @@ public class PlayAnim {
         MathObject[] objects = scene.getObjects().toArray(new MathObject[scene.getObjects().size()]);
         scene.playAnimation(Commands.fadeOut(runtime, objects));
     }
-
+    
+  public void fadeOutAllBut(double runtime,MathObject...objs) {
+      ArrayList<MathObject> toRemove=new ArrayList<>();
+      toRemove.addAll(scene.getObjects());
+      for (MathObject obj:objs) {
+          if (obj instanceof MultiShapeObject) {
+              for (Shape sh:(MultiShapeObject)obj){
+                  toRemove.remove(sh);
+              }
+          }
+           if (obj instanceof MathObjectGroup) {
+              for (MathObject o:(MathObjectGroup)obj){
+                  toRemove.remove(o);
+              }
+          }
+          
+          
+          toRemove.remove(obj);
+      }
+        MathObject[] objects = toRemove.toArray(new MathObject[toRemove.size()]);
+        scene.playAnimation(Commands.fadeOut(runtime, objects));
+    }
     /**
      * Shift the specified objects out of the math view and removes them from
      * the scene.

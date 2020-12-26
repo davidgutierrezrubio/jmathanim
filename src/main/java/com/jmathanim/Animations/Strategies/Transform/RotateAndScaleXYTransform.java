@@ -83,6 +83,7 @@ public class RotateAndScaleXYTransform extends Animation {
 
     @Override
     public void finishAnimation() {
+         super.finishAnimation();
         doAnim(1);
     }
 
