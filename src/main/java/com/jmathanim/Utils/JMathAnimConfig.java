@@ -310,5 +310,7 @@ public void setBackGroundImage(String name) {
     public void setFPS(int fps) {
         this.fps = fps;
     }
-
+ public void parseFile(String url) {
+        ConfigLoader.parseFile(url);
+    }
 }

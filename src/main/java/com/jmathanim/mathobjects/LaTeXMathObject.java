@@ -117,6 +117,7 @@ public class LaTeXMathObject extends SVGMathObject {
         //How to avoid having to write 2 backslashs??
         String beginDocument = "\\documentclass[preview]{standalone}\n"
                 + "\\usepackage{xcolor}\n"
+                +"\\usepackage{amssymb}"
                 + "\\begin{document}\n";
 
         String endDocument = "\\end{document}";

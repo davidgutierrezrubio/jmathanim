@@ -418,4 +418,8 @@ public class Rect implements Stateable {//TODO: Adjust this to 3D coordinates
     public Point getRelPoint(double relX, double relY) {
         return Point.at(xmin + relX * (xmax - xmin), ymin + relY * (ymax - ymin));
     }
+
+    public Rect copy() {
+        return new Rect(xmin,ymin,xmax,ymax);
+    }
 }
