@@ -90,10 +90,10 @@ public class LaTeXMathObject extends SVGMathObject {
             center = this.getCenter();
         }
         this.text = text;
-        for (Shape sh:shapes) {
+        for (Shape sh : shapes) {
             scene.remove(sh);
         }
-        
+
         shapes.clear();
         try {
             generateLaTeXDocument();
@@ -108,12 +108,14 @@ public class LaTeXMathObject extends SVGMathObject {
         int n = 0;
 
         for (Shape sh : shapes) {//label them
-            sh.mp.fillColorIsDrawColor=true;
+            sh.mp.fillColorIsDrawColor = true;
             sh.label = String.valueOf(n);
             n++;
             sh.mp.absoluteThickness = true;
             sh.thickness(1);
-            scene.add(sh);
+            if (isAddedToScene) {
+                scene.add(sh);
+            }
         }
 //Scale
 //An "X" character in LaTeX has 6.8 (svg units) pixels height.

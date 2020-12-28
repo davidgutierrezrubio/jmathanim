@@ -37,6 +37,7 @@ import sun.security.util.ArrayUtil;
  */
 public class MultiShapeObject extends MathObject implements Iterable<Shape> {
 
+    public boolean isAddedToScene;
     public final ArrayList<Shape> shapes;
 
     public MultiShapeObject() {
@@ -49,6 +50,7 @@ public class MultiShapeObject extends MathObject implements Iterable<Shape> {
 
     public MultiShapeObject(List<Shape> jmps) {
         super();
+        isAddedToScene=false;
         this.shapes = new ArrayList<>();
         this.shapes.addAll(jmps);
     }
