@@ -72,6 +72,12 @@ public class SimpleShapeCreationAnimation extends Animation {
             }
             return;
         }
+          if (lt == 0) {
+            for (int n = 0; n < msh.shapes.size(); n++) {
+                msh.shapes.get(n).visible(false);
+            }
+            return;
+        }
 
         double po = lt * numberOfSegments;
         int k = (int) Math.floor(po); //Number of segment
@@ -90,7 +96,7 @@ public class SimpleShapeCreationAnimation extends Animation {
                 msh.shapes.get(n).visible(true);//Draw whole path
             }
             if (n > pathNumber) {
-                msh.shapes.get(n).visible(true);//Still don't draw
+                msh.shapes.get(n).visible(false);//Still don't draw
             }
             if (n == pathNumber) {//This path should be drawn partly
                 msh.shapes.get(n).visible(true);
@@ -105,7 +111,7 @@ public class SimpleShapeCreationAnimation extends Animation {
 
     @Override
     public void finishAnimation() {
-         super.finishAnimation();
+        super.finishAnimation();
         doAnim(1);
         this.scene.remove(msh);
         mobj.visible(true);

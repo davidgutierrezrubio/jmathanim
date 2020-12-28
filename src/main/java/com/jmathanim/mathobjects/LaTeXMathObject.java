@@ -108,10 +108,11 @@ public class LaTeXMathObject extends SVGMathObject {
         int n = 0;
 
         for (Shape sh : shapes) {//label them
-            sh.mp.fillColorIsDrawColor = true;
+//            sh.mp.fillColorIsDrawColor = true;
             sh.label = String.valueOf(n);
             n++;
             sh.mp.absoluteThickness = true;
+            sh.mp.setFillColor(sh.mp.getDrawColor());
             sh.thickness(1);
             if (isAddedToScene) {
                 scene.add(sh);
