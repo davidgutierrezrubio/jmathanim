@@ -30,9 +30,13 @@ import java.util.function.DoubleUnaryOperator;
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
 public class Concatenate extends Animation {
-    
+
     private final ArrayList<Animation> animations;
     private int currentAnim;
+
+    public static Concatenate make(Animation... anims) {
+        return new Concatenate(anims);
+    }
 
     /**
      * Creates a new instance, with no animations added
@@ -62,7 +66,7 @@ public class Concatenate extends Animation {
         this.animations = new ArrayList<Animation>();
         this.animations.addAll(anims);
         currentAnim = 0;
-        
+
     }
 
     /**
@@ -74,14 +78,14 @@ public class Concatenate extends Animation {
     public final boolean add(Animation e) {
         return animations.add(e);
     }
-    
+
     @Override
     public void initialize(JMathAnimScene scene) {
         super.initialize(scene);
         //Initialize the first...
         animations.get(0).initialize(scene);
     }
-    
+
     @Override
     public boolean processAnimation() {
         if (currentAnim == this.animations.size()) {//If I already finished...
@@ -97,9 +101,13 @@ public class Concatenate extends Animation {
                 resul = animations.get(currentAnim).processAnimation();
             }
         }
-        return resul;
+        if (currentAnim == this.animations.size()-1) {//If I am processing the last animation...
+            return resul;
+        } else {
+            return false;
+        }
     }
-    
+
     @Override
     public void finishAnimation() {
         super.finishAnimation();
@@ -109,12 +117,12 @@ public class Concatenate extends Animation {
             if (an.getStatus() == Status.NOT_INITIALIZED) {
                 an.initialize(scene);
             }
-            if (an.getStatus()!=Status.FINISHED) {
+            if (an.getStatus() != Status.FINISHED) {
                 an.finishAnimation();
             }
         }
     }
-    
+
     @Override
     public void doAnim(double t) {
     }

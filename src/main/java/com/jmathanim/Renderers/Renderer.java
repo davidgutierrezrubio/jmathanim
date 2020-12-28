@@ -87,4 +87,6 @@ public abstract class Renderer {
     abstract public void drawImage(JMImage obj);
 
     abstract public void debugText(String text, Vec loc);
+
+    abstract public double getThicknessForMathWidth(double w);
 }

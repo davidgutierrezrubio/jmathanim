@@ -15,35 +15,25 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-
-package com.jmathanim.jmathanim;
-
-import com.jmathanim.Cameras.Camera2D;
-import com.jmathanim.Renderers.Java2DAwtRenderer;
+package com.jmathanim.Animations;
 
 /**
  *
- * @author David Gutierrez Rubio davidgutierrezrubio@gmail.com
+ * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
-public abstract class Scene2DAwt extends JMathAnimScene {
-
-    protected Java2DAwtRenderer renderer2d;
-    protected Camera2D camera;
-
-
-    public Scene2DAwt() {
-        super();
-    }
+public abstract class SingleCommandAnimation extends Animation{
 
     @Override
-    public void createRenderer(){
-        fps = getConfig().fps;
-        dt=1./fps;
-        renderer2d = new Java2DAwtRenderer(this);
-        camera=renderer2d.getCamera();
-        super.renderer=renderer2d;
+    public boolean processAnimation() {
+        super.processAnimation();
+        command();
+        return true;//Finish the animation inmediately
     }
 
-   
+    
+    @Override
+    public void doAnim(double t) {
+    }
+    public abstract void command();
     
 }

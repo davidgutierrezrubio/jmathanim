@@ -40,7 +40,7 @@ public abstract class MathObject implements Drawable, Updateable, Stateable {
     public enum Align {
         LEFT, RIGHT, UPPER, LOWER, HCENTER, VCENTER
     }
-
+    protected JMathAnimScene scene;
     private String debugText = "";
 
     public MODrawProperties mp;
@@ -55,11 +55,12 @@ public abstract class MathObject implements Drawable, Updateable, Stateable {
 
     public MathObject() {
         this(null);
-        this.visibleFlag = true;
     }
 
     public MathObject(MODrawProperties prop) {
+
         this.visibleFlag = true;
+        scene = JMathAnimConfig.getConfig().getScene();
         mp = JMathAnimConfig.getConfig().getDefaultMP();//Default MP values
         mp.copyFrom(prop);//Copy all non-null values from prop
     }

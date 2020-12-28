@@ -32,6 +32,7 @@ import com.jmathanim.mathobjects.MathObjectGroup;
 import com.jmathanim.mathobjects.Point;
 import com.jmathanim.mathobjects.Shape;
 import java.util.ArrayList;
+import javafx.scene.shape.StrokeLineCap;
 
 /**
  *
@@ -67,7 +68,7 @@ public class Commands {
 
             @Override
             public void finishAnimation() {
-                 super.finishAnimation();
+                super.finishAnimation();
                 doAnim(1);
             }
         };
@@ -122,7 +123,7 @@ public class Commands {
 
     public static Animation highlight(double runtime, MathObject... objects) {
         AnimationGroup ag = new AnimationGroup();
-        Point center=MathObjectGroup.make(objects).getCenter();
+        Point center = MathObjectGroup.make(objects).getCenter();
         for (MathObject obj : objects) {
             ag.add(Commands.scale(runtime, center, 1.5, obj).setLambda((x) -> 4 * x * (1 - x)));
         }
@@ -166,7 +167,7 @@ public class Commands {
 
             @Override
             public void finishAnimation() {
-                 super.finishAnimation();
+                super.finishAnimation();
                 doAnim(1);
             }
         };
@@ -208,7 +209,7 @@ public class Commands {
 
             @Override
             public void finishAnimation() {
-                 super.finishAnimation();
+                super.finishAnimation();
                 doAnim(1);
             }
         };
@@ -244,7 +245,7 @@ public class Commands {
 
             @Override
             public void finishAnimation() {
-                 super.finishAnimation();
+                super.finishAnimation();
                 doAnim(1);
             }
         };
@@ -290,7 +291,7 @@ public class Commands {
 
             @Override
             public void finishAnimation() {
-                 super.finishAnimation();
+                super.finishAnimation();
                 doAnim(1);
             }
         };
@@ -333,7 +334,7 @@ public class Commands {
 
             @Override
             public void finishAnimation() {
-                 super.finishAnimation();
+                super.finishAnimation();
                 doAnim(1);
             }
         };
@@ -377,7 +378,7 @@ public class Commands {
 
             @Override
             public void finishAnimation() {
-                 super.finishAnimation();
+                super.finishAnimation();
                 doAnim(1);
             }
         };
@@ -445,7 +446,7 @@ public class Commands {
 
             @Override
             public void finishAnimation() {
-                 super.finishAnimation();
+                super.finishAnimation();
                 doAnim(1);
             }
         };
@@ -498,7 +499,7 @@ public class Commands {
 
             @Override
             public void finishAnimation() {
-                 super.finishAnimation();
+                super.finishAnimation();
                 doAnim(1);
             }
         };
@@ -576,7 +577,7 @@ public class Commands {
 
             @Override
             public void finishAnimation() {
-                 super.finishAnimation();
+                super.finishAnimation();
                 doAnim(1);
             }
         };
@@ -638,7 +639,7 @@ public class Commands {
 
             @Override
             public void finishAnimation() {
-                 super.finishAnimation();
+                super.finishAnimation();
                 doAnim(1);
             }
         };
@@ -682,7 +683,7 @@ public class Commands {
 
             @Override
             public void finishAnimation() {
-                 super.finishAnimation();
+                super.finishAnimation();
                 doAnim(1);
             }
         };
@@ -723,7 +724,7 @@ public class Commands {
 
             @Override
             public void finishAnimation() {
-                 super.finishAnimation();
+                super.finishAnimation();
                 restoreStates(mathObjects);//Restore original alphas in case of reutilization
                 scene.remove(mathObjects);
             }
@@ -769,7 +770,7 @@ public class Commands {
 
             @Override
             public void finishAnimation() {
-                 super.finishAnimation();
+                super.finishAnimation();
                 doAnim(1);
             }
         };
@@ -847,15 +848,17 @@ public class Commands {
 
         return resul;
     }
-/**
- * Animated version of the align method
- * @param runtime time in seconds
- * @param dst Destiny object to align with
- * @param type Type of align, a value of MathObject.Align enum
- * @param mathobjects Mathobjects to animate
- * @return The created animation
- */
-    public static Animation align(double runtime, MathObject dst, MathObject.Align type, MathObject[] mathobjects) {
+
+    /**
+     * Animated version of the align method
+     *
+     * @param runtime time in seconds
+     * @param dst Destiny object to align with
+     * @param type Type of align, a value of MathObject.Align enum
+     * @param mathobjects Mathobjects to animate
+     * @return The created animation
+     */
+    public static Animation align(double runtime, MathObject dst, MathObject.Align type, MathObject... mathobjects) {
         AnimationGroup ag = new AnimationGroup();
         for (MathObject obj : mathobjects) {
             Point dstCenter = obj.copy()
@@ -865,4 +868,34 @@ public class Commands {
         return ag;
     }
 
+    /**
+     * Animated version of the stackTo method
+     *
+     * @param runtime time in seconds
+     * @param dst Destiny object to align with
+     * @param type Type of stack, a value of Anchor.Type enum
+     * @param mathobjects Mathobjects to animate
+     * @return The created animation
+     */
+    public static Animation stackTo(double runtime, MathObject dst, Anchor.Type type, double gap, MathObject... mathobjects) {
+        AnimationGroup ag = new AnimationGroup();
+        for (MathObject obj : mathobjects) {
+            Point dstCenter = obj.copy()
+                    .stackTo(dst, type, gap).getCenter();
+            ag.add(Commands.shift(runtime, obj.getCenter().to(dstCenter), obj));
+        }
+        return ag;
+    }
+
+    public static Animation crossOut(double runtime, MathObject obj) {
+        Rect bbox = obj.getBoundingBox();
+        Shape s1 = Shape.segment(bbox.getUL(), bbox.getDR()).scale(.75).linecap(StrokeLineCap.BUTT).drawColor(JMColor.RED).layer(Integer.MAX_VALUE);
+        Shape s2 = Shape.segment(bbox.getUR(), bbox.getDL()).scale(.75).linecap(StrokeLineCap.BUTT).drawColor(JMColor.RED).layer(Integer.MAX_VALUE);
+        double longi = .25 * s1.getPoint(0).to(s1.getPoint(1)).norm();
+        double width = JMathAnimConfig.getConfig().getRenderer().getThicknessForMathWidth(longi);
+        s1.thickness(width).mp.absoluteThickness = false;
+        s2.thickness(width).mp.absoluteThickness = false;
+        return new Concatenate(new ShowCreation(.5*runtime, s1),
+                new ShowCreation(.5*runtime, s2));
+    }
 }

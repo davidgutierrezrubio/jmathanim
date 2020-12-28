@@ -29,7 +29,7 @@ import com.jmathanim.jmathanim.JMathAnimScene;
  */
 public class JMImage extends MathObject {
 
-    public String filename;
+    private String filename;
     public final Rect bbox;
     public boolean preserveRatio = false;
     public double rotateAngle = 0;
@@ -38,13 +38,19 @@ public class JMImage extends MathObject {
     public static JMImage make(String filename) {
         return new JMImage(filename);
     }
+    private final Renderer renderer;
 
     public JMImage(String filename) {
         this.filename = filename;
-        Renderer r = JMathAnimConfig.getConfig().getRenderer();
-        this.bbox = r.createImage(filename);
-        double sc=r.getMediaHeight()*1d/1080d;//Scales it taking as reference 1920x1080 production output
+         renderer = JMathAnimConfig.getConfig().getRenderer();
+        this.bbox = renderer.createImage(filename);
+        double sc=renderer.getMediaHeight()*1d/1080d;//Scales it taking as reference 1920x1080 production output
         this.scale(sc);
+    }
+    public void setImage(String fn) {
+        Rect bb=renderer.createImage(fn);
+        bb.centerAt(this.bbox.getCenter());
+        this.filename=fn;
     }
 
     @Override
@@ -116,6 +122,10 @@ public class JMImage extends MathObject {
 
     @Override
     public void unregisterChildrenToBeUpdated(JMathAnimScene scene) {
+    }
+
+    public String getFilename() {
+        return filename;
     }
 
 }

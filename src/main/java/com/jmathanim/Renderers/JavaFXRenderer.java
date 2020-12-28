@@ -347,7 +347,7 @@ public class JavaFXRenderer extends Renderer {
         Camera cam = (mobj.mp.absoluteThickness ? fixedCamera : camera);
         return Math.max(mobj.mp.thickness / cam.getMathView().getWidth() * 2.5d, MIN_THICKNESS);
     }
-
+@Override
     public double getThicknessForMathWidth(double w) {
 //        return mathScalar * config.mediaW / (xmax - ymin);
         return camera.mathToScreenFX(w) / 1.25 * camera.getMathView().getWidth() / 2d;
@@ -437,7 +437,7 @@ public class JavaFXRenderer extends Renderer {
 
     @Override
     public void drawImage(JMImage obj) {
-        Image image = images.get(obj.filename);
+        Image image = images.get(obj.getFilename());
         ImageView imageView = new ImageView(image);
         //setting the fit height and width of the image view
         double[] xy = camera.mathToScreenFX(obj.bbox.getUL().v);

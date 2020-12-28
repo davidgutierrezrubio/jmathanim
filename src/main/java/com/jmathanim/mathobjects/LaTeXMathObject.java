@@ -55,7 +55,12 @@ public class LaTeXMathObject extends SVGMathObject {
      * @return The LaTexMathObject
      */
     public static LaTeXMathObject make(String text) {
-        return new LaTeXMathObject(text);
+        LaTeXMathObject t = new LaTeXMathObject(text);
+        if (t.shapes.size() > 0)//Move UL to (0,0) by default
+        {
+            t.stackTo(new Point(0, 0), Anchor.Type.UL);
+        }
+        return t;
     }
 
     public LaTeXMathObject() {
@@ -66,13 +71,30 @@ public class LaTeXMathObject extends SVGMathObject {
      * Creates a new LaTeX generated text
      *
      * @param text The text to be compiled. Backslashes in Java strings should
-     * be writen with "\\"
+     * be written with "\\"
      */
-    public LaTeXMathObject(String text) {
+    private LaTeXMathObject(String text) {
         super();
         mp.loadFromStyle("latexdefault");
-        this.text = text;
 
+        setLaTeX(text);
+
+    }
+
+    public final void setLaTeX(String text) {
+        Point center;
+
+        if (shapes.isEmpty()) {
+            center = JMathAnimConfig.getConfig().getCamera().getMathView().getCenter();
+        } else {
+            center = this.getCenter();
+        }
+        this.text = text;
+        for (Shape sh:shapes) {
+            scene.remove(sh);
+        }
+        
+        shapes.clear();
         try {
             generateLaTeXDocument();
             File f = new File(compileLaTeXFile());
@@ -82,31 +104,27 @@ public class LaTeXMathObject extends SVGMathObject {
         } catch (Exception ex) {
             Logger.getLogger(LaTeXMathObject.class.getName()).log(Level.SEVERE, null, ex);
         }
-        if (shapes.size() > 0)//Move UL to (0,0) by default
-        {
-//            Rect r = getBoundingBox();
-//            this.shift(-r.xmin, -r.ymax);
-//            r = getBoundingBox();
-            putAt(new Point(0, 0), Anchor.Type.UL);
-        }
+
         int n = 0;
+
         for (Shape sh : shapes) {//label them
+            sh.mp.fillColorIsDrawColor=true;
             sh.label = String.valueOf(n);
             n++;
             sh.mp.absoluteThickness = true;
             sh.thickness(1);
+            scene.add(sh);
         }
-//        this.fillWithDrawColor(true);
-        //Scale
-        //An "X" character in LaTeX has 6.8 (svg units) pixels height.
-        //This object should be scaled by default to extend over
-        //DEFAULT_SCALE_FACTOR% of the screen
+//Scale
+//An "X" character in LaTeX has 6.8 (svg units) pixels height.
+//This object should be scaled by default to extend over
+//DEFAULT_SCALE_FACTOR% of the screen
         Camera cam = JMathAnimConfig.getConfig().getFixedCamera();
 //        double hm = cam.getMathView().getHeight();
         double hm = cam.screenToMath(cam.screenHeight);
         double sc = DEFAULT_SCALE_FACTOR * .4 * hm / 6.8 * 2.5;
         this.scale(getBoundingBox().getUL(), sc, sc, 1);
-
+        this.stackTo(center, Anchor.Type.BY_CENTER);
     }
 
     /**
@@ -117,7 +135,7 @@ public class LaTeXMathObject extends SVGMathObject {
         //How to avoid having to write 2 backslashs??
         String beginDocument = "\\documentclass[preview]{standalone}\n"
                 + "\\usepackage{xcolor}\n"
-                +"\\usepackage{amssymb}"
+                + "\\usepackage{amssymb}"
                 + "\\begin{document}\n";
 
         String endDocument = "\\end{document}";
@@ -232,6 +250,5 @@ public class LaTeXMathObject extends SVGMathObject {
         }
         return this;
     }
-   
-    
+
 }

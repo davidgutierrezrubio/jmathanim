@@ -422,4 +422,12 @@ public class Rect implements Stateable {//TODO: Adjust this to 3D coordinates
     public Rect copy() {
         return new Rect(xmin,ymin,xmax,ymax);
     }
+
+    public void centerAt(Point dstCenter) {
+        Vec v=getCenter().to(dstCenter);
+        xmin+=v.x;
+        xmax+=v.x;
+        ymin+=v.y;
+        ymax+=v.y;
+    }
 }

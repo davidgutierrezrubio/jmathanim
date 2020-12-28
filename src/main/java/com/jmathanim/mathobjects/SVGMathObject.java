@@ -67,9 +67,11 @@ public class SVGMathObject extends MultiShapeObject {
 
     //This empty constructor is needed
     public SVGMathObject() {
+        super();
     }
 
     public SVGMathObject(String fname) {
+        super();
         ResourceLoader rl = new ResourceLoader();
         URL urlImage = rl.getResource(fname, "images");
         try {
