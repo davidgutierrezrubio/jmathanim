@@ -40,85 +40,48 @@ import javafx.scene.shape.StrokeLineCap;
  */
 public class Commands {
 
-    public static Animation shift(double runtime, double dx, double dy, MathObject... objects) {
+    public static AbstractShiftAnimation shift(double runtime, double dx, double dy, MathObject... objects) {
         return shift(runtime, new Vec(dx, dy), objects);
     }
 
-    public static Animation shift(double runtime, Vec sv, MathObject... objects) {
-
-        return new Animation(runtime) {
-            MathObject[] mathObjects = objects;
-            Vec shiftVector = sv;
-
+    public static AbstractShiftAnimation shift(double runtime, Vec sv, MathObject... objects) {
+        return new AbstractShiftAnimation(runtime, objects) {
             @Override
             public void initialize(JMathAnimScene scene) {
                 super.initialize(scene);
-                saveStates(mathObjects);
-                addObjectsToscene(mathObjects);
-            }
-
-            @Override
-            public void doAnim(double t) {
-                double lt = getLambda().applyAsDouble(t);
-                restoreStates(mathObjects);
-                for (MathObject obj : mathObjects) {
-                    obj.shift(shiftVector.mult(lt));
+                for (MathObject obj : objects) {
+                    setShiftVector(obj, sv);
                 }
             }
 
-            @Override
-            public void finishAnimation() {
-                super.finishAnimation();
-                doAnim(1);
-            }
         };
-    }
-
-    /**
-     * Performs an animation shifting the objects with a jump. The jump is a
-     * parabolic up-and-down animation, perpendicular 90 degrees rotated
-     * clockwise with respect to the shift vector. The lambda function used by
-     * default is linear
-     *
-     * @param runtime Duration in seconds
-     * @param v Shift vector
-     * @param jumpHeight Height of the "jump"
-     * @param objects Objects to be shifted
-     * @return The animation created, ready to play with the playAnimation
-     * method
-     */
-    public static AnimationGroup shiftWithJump(double runtime, Vec v, double jumpHeight, MathObject... objects) {
-        AnimationGroup resul = new AnimationGroup();
-        Animation shiftAnim = Commands.shift(runtime, v, objects).setLambda(t -> t);
-        resul.add(shiftAnim);
-
-        Vec shiftVector = Vec.to(-v.y, v.x).normalize().mult(jumpHeight);
-
-        final Animation jumpShift = Commands.shift(runtime, shiftVector, objects);
-//        jumpShift.setLambda(t -> Math.sin(PI * t));
-        jumpShift.setLambda(t -> 4 * shiftAnim.getLambda().applyAsDouble(t) * (1 - shiftAnim.getLambda().applyAsDouble(t)));
-        jumpShift.setUseObjectState(false);
-        resul.add(jumpShift);
-        return resul;
-
-    }
-
-    /**
-     * Overloaded method. Performs an animation shifting the objects with a
-     * jump. The jump is a parabolic up-and-down animation, perpendicular 90
-     * degrees rotated clockwise with respect to the shift vector. The lambda
-     * function used by default is linear
-     *
-     * @param runtime Duration in seconds
-     * @param x x coordinate of the shift vector
-     * @param y y coordinate of the shift vector
-     * @param jumpHeight Height of the "jump"
-     * @param objects Objects to be shifted
-     * @return The animation created, ready to play with the playAnimation
-     * method
-     */
-    public static AnimationGroup shiftWithJump(double runtime, double x, double y, double jumpHeight, MathObject... objects) {
-        return shiftWithJump(runtime, Vec.to(x, y), jumpHeight, objects);
+//
+//        return new Animation(runtime) {
+//            MathObject[] mathObjects = objects;
+//            Vec shiftVector = sv;
+//
+//            @Override
+//            public void initialize(JMathAnimScene scene) {
+//                super.initialize(scene);
+//                saveStates(mathObjects);
+//                addObjectsToscene(mathObjects);
+//            }
+//
+//            @Override
+//            public void doAnim(double t) {
+//                double lt = getLambda().applyAsDouble(t);
+//                restoreStates(mathObjects);
+//                for (MathObject obj : mathObjects) {
+//                    obj.shift(shiftVector.mult(lt));
+//                }
+//            }
+//
+//            @Override
+//            public void finishAnimation() {
+//                super.finishAnimation();
+//                doAnim(1);
+//            }
+//        };
     }
 
     public static Animation highlight(double runtime, MathObject... objects) {
@@ -800,29 +763,40 @@ public class Commands {
         return resul;
     }
 
-    public static Animation moveIn(double runtime, Anchor.Type exitAnchor, MathObject... mathObjects) {
-        AnimationGroup resul = new AnimationGroup();
+    public static AbstractShiftAnimation moveIn(double runtime, Anchor.Type exitAnchor, MathObject... mathObjects) {
+
         //Compute appropiate shift vectors
         Rect r = JMathAnimConfig.getConfig().getCamera().getMathView();
-        for (int n = 0; n < mathObjects.length; n++) {
-            MathObject obj = mathObjects[n];
-            final Anchor.Type reverseAnchor = Anchor.reverseAnchorPoint(exitAnchor);
-            Point p = Anchor.getAnchorPoint(obj, reverseAnchor);
-            Point q = Anchor.getAnchorPoint(Shape.rectangle(r), exitAnchor);
-            switch (exitAnchor) {
-                case LEFT:
-                    q.v.y = p.v.y;
-                case RIGHT:
-                    q.v.y = p.v.y;
-                    break;
-                case UPPER:
-                case LOWER:
-                    q.v.x = p.v.x;
-                    break;
+
+        AbstractShiftAnimation resul = new AbstractShiftAnimation(runtime, mathObjects) {
+            @Override
+            public void initialize(JMathAnimScene scene) {
+                super.initialize(scene);
+                for (int n = 0; n < mathObjects.length; n++) {
+                    MathObject obj = mathObjects[n];
+                    final Anchor.Type reverseAnchor = Anchor.reverseAnchorPoint(exitAnchor);
+                    Point p = Anchor.getAnchorPoint(obj, reverseAnchor);
+                    Point q = Anchor.getAnchorPoint(Shape.rectangle(r), exitAnchor);
+                    switch (exitAnchor) {
+                        case LEFT:
+                            q.v.y = p.v.y;
+                        case RIGHT:
+                            q.v.y = p.v.y;
+                            break;
+                        case UPPER:
+                        case LOWER:
+                            q.v.x = p.v.x;
+                            break;
+                    }
+                    obj.shift(p.to(q));
+                   this.setShiftVector(obj, q.to(p));
+                }
+                saveStates(mathObjects);
+
             }
-            obj.shift(p.to(q));
-            resul.add(Commands.shift(runtime, q.to(p), obj).setLambda(t -> t));
-        }
+
+        };
+        resul.setLambda(t->t);
         return resul;
     }
 
@@ -869,22 +843,32 @@ public class Commands {
     }
 
     /**
-     * Animated version of the stackTo method
+     * Animated version of the stackTo method.The destination point is computed
+     * at the initialize() method so it cab ne safely concatenated. If several
+     * objects are animated, the second will be stacked to the first, and so on
      *
      * @param runtime time in seconds
      * @param dst Destiny object to align with
      * @param type Type of stack, a value of Anchor.Type enum
+     * @param gap Gap between the stacked objects
      * @param mathobjects Mathobjects to animate
      * @return The created animation
      */
-    public static Animation stackTo(double runtime, MathObject dst, Anchor.Type type, double gap, MathObject... mathobjects) {
-        AnimationGroup ag = new AnimationGroup();
-        for (MathObject obj : mathobjects) {
-            Point dstCenter = obj.copy()
-                    .stackTo(dst, type, gap).getCenter();
-            ag.add(Commands.shift(runtime, obj.getCenter().to(dstCenter), obj));
-        }
-        return ag;
+    public static AbstractShiftAnimation stackTo(double runtime, MathObject dst, Anchor.Type type, double gap, MathObject... mathobjects) {
+        return new AbstractShiftAnimation(runtime, mathobjects) {
+            @Override
+            public void initialize(JMathAnimScene scene) {
+                MathObject previous = dst;
+
+                super.initialize(scene);
+                for (MathObject obj : mathobjects) {
+                    MathObject objc = obj.copy().stackTo(previous, type, gap);
+                    setShiftVector(obj, obj.getCenter().to(objc.getCenter()));
+                    previous = objc;
+                }
+            }
+        };
+
     }
 
     public static Animation crossOut(double runtime, MathObject obj) {
@@ -895,7 +879,7 @@ public class Commands {
         double width = JMathAnimConfig.getConfig().getRenderer().getThicknessForMathWidth(longi);
         s1.thickness(width).mp.absoluteThickness = false;
         s2.thickness(width).mp.absoluteThickness = false;
-        return new Concatenate(new ShowCreation(.5*runtime, s1),
-                new ShowCreation(.5*runtime, s2));
+        return new Concatenate(new ShowCreation(.5 * runtime, s1),
+                new ShowCreation(.5 * runtime, s2));
     }
 }
