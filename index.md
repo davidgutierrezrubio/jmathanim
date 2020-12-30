@@ -10,6 +10,8 @@ Although with limited features, it can be used to create many, non too complex a
 # What's new?
 Version 0.8.7-SNAPSHOT:
 
+* Added `stackTo` animation.
+
 * Added `ShowCreation` method for `Axes` objects.
 * Improved axes ticks: 
   * now there are primary and secondary ticks.
