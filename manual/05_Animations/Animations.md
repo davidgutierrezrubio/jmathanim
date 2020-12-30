@@ -2,9 +2,9 @@
 
 # Animations
 
-So far, we’ve learned to draw basic objects, and put them in the position we desire. What about animations? Well, that is what this library is meant for. We have the `Animation` class that will store any kind of animation you can do to an object. Not only `MathObject` instances can be animated, but also the `Camera` object. 
+So far, we’ve learned to draw basic objects, and put them in the position we desire. What about animations? Well, that is what this library is meant for. We have the `Animation` class that will store any kind of animation you can do to an object. Not only `MathObject` instances can be animated, but also the `Camera` object can be animated too.
 
-An `Animation` object has 3 important methods that should be understood if you want to implement your own animations or playing it manually with the `advanceFrame()` method 
+An `Animation` object has 4 important methods that should be understood if you want to implement your own animations or playing it manually with the `advanceFrame()` method 
 
 -   The `initialize(this)` method, which prepares the objects to be animated. It should be called immediately before the animation begins, that is, no modifications should be done to the objects between this method and the start of the animation. The only parameter it needs is the scene from where it is invoked, usually the own class, `this`.
 -   The `processAnimation`this method computes the time depending on the frame rate, and calls the next method. If the animation is finished, return `true`.
@@ -214,6 +214,8 @@ play.showCreation(text);
 ```
 
 ![showCreation2](showCreation2.gif)
+
+There are specific creation strategies for objects like axes, arrows or delimiters.
 
 # The Transform animation
 

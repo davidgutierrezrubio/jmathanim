@@ -208,7 +208,7 @@ waitSeconds(3);
 
 # Making procedural animations
 
-For procedural animations we means animations made "manually" performing the modifications to the objects and advancing a frame, most like a stop motion artist would do. This method is needed for complex movements that cannot be done with the predefined animations. For this, the `JMathAnimScene`class has a protected variable, named `dt`, that holds the time step for each frame. The `advanceFrame()`method manually do all necessary procedures to create the frame and save it. For example, let's make a program that moves a point with uniformly random steps:
+For procedural animations we mean animations made "manually" performing the modifications to the objects and advancing a frame, most like a stop motion artist would do. This method is needed for complex movements that cannot be done with the predefined animations. For this, the `JMathAnimScene`class has a protected variable, named `dt`, that holds the time step for each frame. The `advanceFrame()`method  does all necessary procedures to create the frame and save it. For example, let's make a program that moves a point with uniformly random steps:
 
 ```java
 A=Point.origin();
@@ -257,10 +257,10 @@ Not all `MathObject` and `Animation` combinations are compatible. Below is a tab
 | Point           | Yes                                                          | No (use fade in)       | No                                                           |
 | Shape           | Yes                                                          | Yes                    | Yes                                                          |
 | Line            | Yes                                                          | Yes                    | Yes                                                          |
-| Axes            | No                                                           | No (work in progress)  | No                                                           |
+| Axes            | No                                                           | Yes                    | No                                                           |
 | LaTeXMathObject | Yes                                                          | Yes                    | Yes (also you can use the specialized `TransformMathExpression` method) |
 | Arrow2D         | Yes                                                          | Yes                    | No (use homothecy transform)                                 |
-| Delimiter       | No (you have the transform the anchor points instead)        | Yes                    | No (use homothecy transform in anchor points)                |
+| Delimiter       | No (you have the transform the anchor points instead)        | Yes                    | No (transform anchor points instead)                         |
 
 
 
