@@ -741,10 +741,10 @@ public abstract class MathObject implements Drawable, Updateable, Stateable {
         Rect thisBoundingBox = this.getBoundingBox();
         Rect objectBoundingBox = obj.getBoundingBox();
         switch (type) {
-            case UPPER:
+            case LOWER:
                 shiftVector.y = objectBoundingBox.ymin - thisBoundingBox.ymin;
                 break;
-            case LOWER:
+            case UPPER:
                 shiftVector.y = objectBoundingBox.ymax - thisBoundingBox.ymax;
                 break;
             case LEFT:

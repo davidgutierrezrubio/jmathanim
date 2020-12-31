@@ -40,12 +40,12 @@ import javafx.scene.shape.StrokeLineCap;
  */
 public class Commands {
 
-    public static AbstractShiftAnimation shift(double runtime, double dx, double dy, MathObject... objects) {
+    public static ShiftAnimation shift(double runtime, double dx, double dy, MathObject... objects) {
         return shift(runtime, new Vec(dx, dy), objects);
     }
 
-    public static AbstractShiftAnimation shift(double runtime, Vec sv, MathObject... objects) {
-        return new AbstractShiftAnimation(runtime, objects) {
+    public static ShiftAnimation shift(double runtime, Vec sv, MathObject... objects) {
+        return new ShiftAnimation(runtime, objects) {
             @Override
             public void initialize(JMathAnimScene scene) {
                 super.initialize(scene);
@@ -739,36 +739,52 @@ public class Commands {
         };
     }
 
-    public static Animation moveOut(double runtime, Anchor.Type exitAnchor, MathObject... mathObjects) {
-        AnimationGroup resul = new AnimationGroup();
-        //Compute appropiate shift vectors
-        Rect r = JMathAnimConfig.getConfig().getCamera().getMathView();
-        for (int n = 0; n < mathObjects.length; n++) {
-            MathObject obj = mathObjects[n];
-            Point p = Anchor.getAnchorPoint(obj, Anchor.reverseAnchorPoint(exitAnchor));
-            Point q = Anchor.getAnchorPoint(Shape.rectangle(r), exitAnchor);
-            switch (exitAnchor) {
-                case LEFT:
-                    q.v.y = p.v.y;
-                case RIGHT:
-                    q.v.y = p.v.y;
-                    break;
-                case UPPER:
-                case LOWER:
-                    q.v.x = p.v.x;
-                    break;
+    public static ShiftAnimation moveOut(double runtime, Anchor.Type exitAnchor, MathObject... mathObjects) {
+        ShiftAnimation resul = new ShiftAnimation(runtime, mathObjects) {
+            @Override
+            public void initialize(JMathAnimScene scene) {
+                super.initialize(scene);
+                //Compute appropiate shift vectors
+                Rect r = JMathAnimConfig.getConfig().getCamera().getMathView();
+                for (int n = 0; n < mathObjects.length; n++) {
+                    MathObject obj = mathObjects[n];
+                    Point p = Anchor.getAnchorPoint(obj, Anchor.reverseAnchorPoint(exitAnchor));
+                    Point q = Anchor.getAnchorPoint(Shape.rectangle(r), exitAnchor,1);
+                    switch (exitAnchor) {
+                        case LEFT:
+                            q.v.y = p.v.y;
+                        case RIGHT:
+                            q.v.y = p.v.y;
+                            break;
+                        case UPPER:
+                        case LOWER:
+                            q.v.x = p.v.x;
+                            break;
+                    }
+                    this.setShiftVector(obj, p.to(q));
+                }
             }
-            resul.add(new Concatenate(Commands.shift(runtime, p.to(q), obj).setLambda(t -> t), Commands.fadeOut(0, obj)));
-        }
+
+            @Override
+            public void finishAnimation() {
+                super.finishAnimation();
+                for (MathObject obj:mathObjects) {
+                    scene.remove(obj);
+                }
+            }
+            
+
+        };
+
         return resul;
     }
 
-    public static AbstractShiftAnimation moveIn(double runtime, Anchor.Type exitAnchor, MathObject... mathObjects) {
+    public static ShiftAnimation moveIn(double runtime, Anchor.Type exitAnchor, MathObject... mathObjects) {
 
         //Compute appropiate shift vectors
         Rect r = JMathAnimConfig.getConfig().getCamera().getMathView();
 
-        AbstractShiftAnimation resul = new AbstractShiftAnimation(runtime, mathObjects) {
+        ShiftAnimation resul = new ShiftAnimation(runtime, mathObjects) {
             @Override
             public void initialize(JMathAnimScene scene) {
                 super.initialize(scene);
@@ -789,14 +805,14 @@ public class Commands {
                             break;
                     }
                     obj.shift(p.to(q));
-                   this.setShiftVector(obj, q.to(p));
+                    this.setShiftVector(obj, q.to(p));
                 }
                 saveStates(mathObjects);
 
             }
 
         };
-        resul.setLambda(t->t);
+        resul.setLambda(t -> t);
         return resul;
     }
 
@@ -832,14 +848,20 @@ public class Commands {
      * @param mathobjects Mathobjects to animate
      * @return The created animation
      */
-    public static Animation align(double runtime, MathObject dst, MathObject.Align type, MathObject... mathobjects) {
-        AnimationGroup ag = new AnimationGroup();
-        for (MathObject obj : mathobjects) {
+    public static ShiftAnimation align(double runtime, MathObject dst, MathObject.Align type, MathObject... mathobjects) {
+      ShiftAnimation resul=new ShiftAnimation(runtime, mathobjects) {
+          @Override
+          public void initialize(JMathAnimScene scene) {
+              super.initialize(scene);
+              for (MathObject obj:mathobjects){
             Point dstCenter = obj.copy()
                     .align(dst, type).getCenter();
-            ag.add(Commands.shift(runtime, obj.getCenter().to(dstCenter), obj));
-        }
-        return ag;
+                  setShiftVector(obj,obj.getCenter().to(dstCenter));
+              }
+          }
+          
+      };
+      return resul;
     }
 
     /**
@@ -854,8 +876,8 @@ public class Commands {
      * @param mathobjects Mathobjects to animate
      * @return The created animation
      */
-    public static AbstractShiftAnimation stackTo(double runtime, MathObject dst, Anchor.Type type, double gap, MathObject... mathobjects) {
-        return new AbstractShiftAnimation(runtime, mathobjects) {
+    public static ShiftAnimation stackTo(double runtime, MathObject dst, Anchor.Type type, double gap, MathObject... mathobjects) {
+        return new ShiftAnimation(runtime, mathobjects) {
             @Override
             public void initialize(JMathAnimScene scene) {
                 MathObject previous = dst;

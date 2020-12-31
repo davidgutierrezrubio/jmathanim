@@ -26,19 +26,21 @@ import java.util.HashMap;
  *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
-public abstract class AbstractShiftAnimation extends Animation {
+public abstract class ShiftAnimation extends Animation {
 
     protected MathObject[] mathObjects;
     HashMap<MathObject, Vec> shiftVectors;
     private HashMap<MathObject, Double> jumpHeights;
-    private Vec jumpVector;
-    private double rotateAngle;
+    private HashMap<MathObject, Double> rotateAngles;
+    private HashMap<MathObject, Double> scaleEffects;
 
-    public AbstractShiftAnimation(double runTime, MathObject[] mathObjects) {
+    public ShiftAnimation(double runTime, MathObject[] mathObjects) {
         super(runTime);
         this.mathObjects = mathObjects;
-        jumpHeights = new HashMap<>();
         shiftVectors = new HashMap<>();
+        rotateAngles = new HashMap<>();
+        jumpHeights = new HashMap<>();
+        scaleEffects = new HashMap<>();
 
     }
 
@@ -56,16 +58,33 @@ public abstract class AbstractShiftAnimation extends Animation {
         restoreStates(mathObjects);
         for (MathObject obj : mathObjects) {
             Vec v = shiftVectors.get(obj);//Gets the shift vector for this object
-            Double jumpHeight = jumpHeights.get(obj);
-
             obj.shift(v.mult(lt));
+            //Jump
+            Double jumpHeight = jumpHeights.get(obj);
             if (jumpHeight != null) {
                 if (jumpHeight != 0) {
-                    jumpVector = Vec.to(-v.y, v.x).normalize().mult(jumpHeight);
+                    Vec jumpVector = Vec.to(-v.y, v.x).normalize().mult(jumpHeight);
                     double jlt = 4 * lt * (1 - lt);
                     obj.shift(jumpVector.mult(jlt));
                 }
             }
+             //Rotate
+            Double rotateAngle = rotateAngles.get(obj);
+            if (rotateAngle != null) {
+                if (rotateAngle != 0) {
+                    obj.rotate(rotateAngle*lt);
+                }
+            }
+              //Scale effect
+            Double scaleEffect = scaleEffects.get(obj);
+            if (scaleEffect != null) {
+                if (scaleEffect != 0) {
+                     double L = 4 * (1 - scaleEffect);
+                    double scalelt =  1 - lt * (1 - lt) * L;
+                    obj.scale(scalelt);
+                }
+            }
+            
         }
     }
 
@@ -79,24 +98,49 @@ public abstract class AbstractShiftAnimation extends Animation {
         return this.shiftVectors.get(obj);
     }
 
-    public <T extends AbstractShiftAnimation> T setShiftVector(MathObject obj, Vec shiftVector) {
+    public <T extends ShiftAnimation> T setShiftVector(MathObject obj, Vec shiftVector) {
         this.shiftVectors.put(obj, shiftVector);
         return (T) this;
     }
 
     public double getJumpHeight(MathObject obj) {
-        return jumpHeights.get(obj);
+        return rotateAngles.get(obj);
     }
 
-    public <T extends AbstractShiftAnimation> T setJumpHeight(MathObject obj, double jumpHeight) {
+    public <T extends ShiftAnimation> T setJumpHeight(MathObject obj, double jumpHeight) {
         this.jumpHeights.put(obj, jumpHeight);
         return (T) this;
     }
 
-    public <T extends AbstractShiftAnimation> T setJumpHeight(double jumpHeight) {
+    public <T extends ShiftAnimation> T setJumpHeight(double jumpHeight) {
         for (MathObject obj : mathObjects) {
             setJumpHeight(obj, jumpHeight);
         }
         return (T) this;
     }
+    
+     public <T extends ShiftAnimation> T setScaleEffect(MathObject obj, double jumpHeight) {
+        this.scaleEffects.put(obj, jumpHeight);
+        return (T) this;
+    }
+
+    public <T extends ShiftAnimation> T setScaleEffect(double jumpHeight) {
+        for (MathObject obj : mathObjects) {
+            setScaleEffect(obj, jumpHeight);
+        }
+        return (T) this;
+    }
+    
+      public <T extends ShiftAnimation> T setRotateEffect(MathObject obj, double angle) {
+        this.rotateAngles.put(obj, angle);
+        return (T) this;
+    }
+
+    public <T extends ShiftAnimation> T setRotateEffect(double angle) {
+        for (MathObject obj : mathObjects) {
+            setRotateEffect(obj, angle);
+        }
+        return (T) this;
+    }
+    
 }
