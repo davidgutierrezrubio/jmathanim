@@ -169,7 +169,62 @@ Now the square properly shifts and rotates:
 
 ![StateFlagAnimation01](StateFlagAnimation01.gif)
 
+# Adding effects to shifting animations
+
+The previous animation can be done in another way. The animations `shift`,  `stackTo`, `align`, `moveIn` and `moveOut` all have in common that they implement a shifting of the object(s), each one differing in the form the shift vector is computed. All these animations inherit from the abstract class `ShiftAnimation` which implements 3 effects you can add to these animations:
+
+The `.setJumpHeight(double height)` adds a jump effect to the object(s) being shifted. The direction of the jump is the shift vector rotated 90 degrees counterclockwise. A negative height can be specified.
+
+```java
+Shape pol = Shape.regularPolygon(6).scale(.25).center().fillColor("steelblue").thickness(3);
+ShiftAnimation anim = Commands.shift(3, 1,0, pol);//shifts pol with vector (1,0)
+anim.setJumpHeight(.5); //adds a jump effect
+playAnimation(anim);
+```
+
+
+
+
+
+![jumpEffect](jumpEffect.gif)
+
+The `.setScaleEffect(double scale)` adds a back and forth scale effect:
+
+```java
+Shape pol = Shape.regularPolygon(6).scale(.25).center().fillColor("steelblue").thickness(3);
+ShiftAnimation anim = Commands.shift(3, 1,0, pol);//shifts pol with vector (1,0)
+anim.setScaleEffect(2); //adds a scale effect
+playAnimation(anim);
+```
+
+
+
+![scaleEffect](scaleEffect.gif)
+
+The `.setRotateEffect(double angle)` adds a rotation:
+
+```java
+Shape pol = Shape.regularPolygon(6).scale(.25).center().fillColor("steelblue").thickness(3);
+ShiftAnimation anim = Commands.shift(3, 1,0, pol);//shifts pol with vector (1,0)
+anim.setRotateEffect(90*DEGREES); //adds a rotation effect
+playAnimation(anim);
+```
+
+![rotateEffect](rotateEffect.gif)
+
+And, in case you are wondering, yes, these effects can be nested:
+
+```java
+Shape pol = Shape.regularPolygon(6).scale(.25).center().fillColor("steelblue").thickness(3);
+ShiftAnimation anim = Commands.shift(3, 1,0, pol);//shifts pol with vector (1,0)
+anim.setRotateEffect(90*DEGREES).setScaleEffect(2).setJumpHeight(.5);
+playAnimation(anim);
+```
+
+![nestedShiftEffects](nestedShiftEffects.gif)
+
 # Creating complex animations
+
 There are special subclasses of `Animation`that allows to build more complex animations using previously defined ones.
 
 ## The wait animation

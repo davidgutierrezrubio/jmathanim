@@ -82,8 +82,30 @@ add(Shape.circle().stackToScreen(Anchor.Type.UL));//Stack a unit circle to the u
 waitSeconds(5);
 ```
 
-
 There is shortcut method if you want to simply put the object at the center screen. The method `.center()` is equivalent to `.stackToScreen(Anchor.Type.BY_CENTER)`.
+
+## Aligning objects
+
+The `MathObject`class has the method `align` which aligns the object with another one, using one of the aligns in the enum `Align: LEFT, RIGHT, UPPER, LOWER, HCENTER, VCENTER`.
+
+```java
+Line floor=Line.XAxis();
+add(floor);
+for (int n = 4; n < 10; n++) {
+    Shape pol = Shape.regularPolygon(n).center().shift(Point.random().v).scale(Math.random()*.5);
+    Shape pol2=pol.copy()
+        .fillColor(JMColor.random())
+        .thickness(3)
+        .align(floor, MathObject.Align.LOWER);//Align bottom of the object with floor
+    add(pol,pol2);
+}
+camera.adjustToAllObjects();//Everyone should appear in the photo
+waitSeconds(5);//Smile!
+```
+
+
+
+<img src="03b_alignExample.png" alt="image-20201231181216715" style="zoom: 67%;" />
 
 # Scaling objects
 All `MathObject` instances can be scaled with the `scale` command. Scaling can be done from a given scale center or by default, the center of the object  bounding box.
