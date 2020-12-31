@@ -23,6 +23,8 @@ import com.jmathanim.mathobjects.MathObject;
 import java.util.HashMap;
 
 /**
+ * A generic shift animation. This subclass is instatiated from every
+ * implementation of a shift, like align, stackto or moveIn, moveOut animations
  *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
@@ -68,23 +70,23 @@ public abstract class ShiftAnimation extends Animation {
                     obj.shift(jumpVector.mult(jlt));
                 }
             }
-             //Rotate
+            //Rotate
             Double rotateAngle = rotateAngles.get(obj);
             if (rotateAngle != null) {
                 if (rotateAngle != 0) {
-                    obj.rotate(rotateAngle*lt);
+                    obj.rotate(rotateAngle * lt);
                 }
             }
-              //Scale effect
+            //Scale effect
             Double scaleEffect = scaleEffects.get(obj);
             if (scaleEffect != null) {
-                if (scaleEffect != 0) {
-                     double L = 4 * (1 - scaleEffect);
-                    double scalelt =  1 - lt * (1 - lt) * L;
+                if (scaleEffect != 1) {
+                    double L = 4 * (1 - scaleEffect);
+                    double scalelt = 1 - lt * (1 - lt) * L;
                     obj.scale(scalelt);
                 }
             }
-            
+
         }
     }
 
@@ -103,44 +105,120 @@ public abstract class ShiftAnimation extends Animation {
         return (T) this;
     }
 
+    /**
+     * Returns the specific jump height for the given object
+     *
+     * @param obj Mathobject to get the jump height from
+     * @return the jump height of the given object. A value or null or zero
+     * means no jump at all.
+     */
     public double getJumpHeight(MathObject obj) {
+        return jumpHeights.get(obj);
+    }
+
+    /**
+     * Returns the rotation angle assigned to the given object
+     *
+     * @param obj Mathobject to get the rotation angle from
+     * @return Angle to rotate the object. A value of null or 0 means no effect
+     */
+    public double getRotationAngle(MathObject obj) {
         return rotateAngles.get(obj);
     }
 
+    /**
+     * Returns the amount of scale effect assigned to the given object
+     *
+     * @param obj Mathobject to get the scale from
+     * @return Amount of scale to apply to the object. A value of null or 1 means no effect
+     */
+    public double getScaleEffect(MathObject obj) {
+        return scaleEffects.get(obj);
+    }
+
+    /**
+     * Adds a jump effect to the shift animation. The direction of the jump is
+     * the shift vector rotated 90 degrees counterclockwise.
+     *
+     * @param <T> The calling subccass
+     * @param obj The mathobject to apply the jump
+     * @param jumpHeight Height of the jump. Negative heights can be passed.
+     * @return This object
+     */
     public <T extends ShiftAnimation> T setJumpHeight(MathObject obj, double jumpHeight) {
         this.jumpHeights.put(obj, jumpHeight);
         return (T) this;
     }
 
+    /**
+     * Sets the jump height for all the objects added to the animation
+     *
+     * @param <T> The calling subclass
+     * @param jumpHeight Height of the jump. Negative heights can be passed.
+     * @return This object
+     */
     public <T extends ShiftAnimation> T setJumpHeight(double jumpHeight) {
         for (MathObject obj : mathObjects) {
             setJumpHeight(obj, jumpHeight);
         }
         return (T) this;
     }
-    
-     public <T extends ShiftAnimation> T setScaleEffect(MathObject obj, double jumpHeight) {
-        this.scaleEffects.put(obj, jumpHeight);
+
+    /**
+     * Adds a scaling back and forth effect to the shift animation
+     *
+     * @param <T> The calling subclass
+     * @param obj The matobject to apply the effect
+     * @param scaleEffect The amount to scale. A value of null or 1 means no
+     * effect.
+     * @return This object
+     */
+    public <T extends ShiftAnimation> T setScaleEffect(MathObject obj, double scaleEffect) {
+        this.scaleEffects.put(obj, scaleEffect);
         return (T) this;
     }
 
-    public <T extends ShiftAnimation> T setScaleEffect(double jumpHeight) {
+    /**
+     * Adds a scaling back and forth effect to all the objects added to the
+     * animation
+     *
+     * @param <T> The calling subclass
+     * @param scaleEffect The amount to scale. A value of null or 1 means no
+     * effect.
+     * @return This object
+     */
+    public <T extends ShiftAnimation> T setScaleEffect(double scaleEffect) {
         for (MathObject obj : mathObjects) {
-            setScaleEffect(obj, jumpHeight);
+            setScaleEffect(obj, scaleEffect);
         }
         return (T) this;
     }
-    
-      public <T extends ShiftAnimation> T setRotateEffect(MathObject obj, double angle) {
+
+    /**
+     * Adds a rotation effect to the shift animation
+     *
+     * @param <T> The calling subclass
+     * @param obj The mathobject to apply the rotation
+     * @param angle Angle ro rotate. A value of null or 0 means no effect
+     * @return This object
+     */
+    public <T extends ShiftAnimation> T setRotateEffect(MathObject obj, double angle) {
         this.rotateAngles.put(obj, angle);
         return (T) this;
     }
 
+    /**
+     * Adds a rotation effect to every mathobject added to the animation
+     *
+     * @param <T> The calling subclass
+     * @param angle Angle ro rotate. A value of null or 0 means no effect
+     * @return This object
+     */
     public <T extends ShiftAnimation> T setRotateEffect(double angle) {
         for (MathObject obj : mathObjects) {
             setRotateEffect(obj, angle);
         }
         return (T) this;
     }
-    
+
 }

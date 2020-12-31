@@ -854,7 +854,7 @@ public class Commands {
           public void initialize(JMathAnimScene scene) {
               super.initialize(scene);
               for (MathObject obj:mathobjects){
-            Point dstCenter = obj.copy()
+            Point dstCenter = Shape.rectangle(obj.getBoundingBox())
                     .align(dst, type).getCenter();
                   setShiftVector(obj,obj.getCenter().to(dstCenter));
               }
@@ -884,7 +884,7 @@ public class Commands {
 
                 super.initialize(scene);
                 for (MathObject obj : mathobjects) {
-                    MathObject objc = obj.copy().stackTo(previous, type, gap);
+                    MathObject objc = Shape.rectangle(obj.getBoundingBox()).stackTo(previous, type, gap);
                     setShiftVector(obj, obj.getCenter().to(objc.getCenter()));
                     previous = objc;
                 }
