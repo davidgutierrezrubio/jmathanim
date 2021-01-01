@@ -1,22 +1,23 @@
 ![logo](logo.gif)
 
 JMathAnim is a library written in JAVA intended to simplify the process of doing mathematical animations. 
-Current version is 0.8.6. 
+Current version is 0.8.7. 
 
 Although with limited features, it can be used to create many, non too complex animations. If you use it and find a bug/missing feature, feel free to fill an issue [here](https://github.com/davidgutierrezrubio/jmathanim/issues). For any other question, you can contact me at davidgutierrezrubio@gmail.com.
 # Gallery
 [Here you can find some examples made with this library ](Gallery/Gallery.html)
 
 # What's new?
-Version 0.8.7-SNAPSHOT:
+Version 0.8.7:
 
-* Added `stackTo` animation.
-
+* Added `stackTo` and `align`animations.
+* Animations `shift, moveIn, moveOut, stackTo, align` now inherit from a common abstract class that allows adding jump, scaling and rotating effects to these animations.
 * Added `ShowCreation` method for `Axes` objects.
 * Improved axes ticks: 
   * now there are primary and secondary ticks.
   * Secondary ticks can be showed only when reaching certain level of zoom.
   * `axes.setFormat`  allows to specify the precise format the numbers in ticks.
+* Bug fixes
 
 Version 0.8.6:
 
