@@ -308,10 +308,12 @@ public class MultiShapeObject extends MathObject implements Iterable<Shape> {
         }
         for (int n = 0; n < this.shapes.size(); n++) {
             if (list.contains(n)) {//if this index is marked for extraction...
-                resul.shapes.set(n, this.get(n));
+                
                 if (delete) {
+                    resul.shapes.set(n, this.get(n));
                     this.shapes.set(n, new Shape());
-                }
+                }else
+                    resul.shapes.set(n, this.get(n).copy());
             }
         }
 
