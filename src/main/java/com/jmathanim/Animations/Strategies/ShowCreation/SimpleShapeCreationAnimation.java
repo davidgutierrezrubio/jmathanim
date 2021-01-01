@@ -44,6 +44,9 @@ public class SimpleShapeCreationAnimation extends Animation {
     @Override
     public void initialize(JMathAnimScene scene) {
         super.initialize(scene);
+        if (mobj.jmpath.size() == 0) {//If it is a empty shape, do nothing
+            finishAnimation();
+        }
         canonPath = mobj.jmpath.canonicalForm();
 
         //Create multishape with all canonical components and a copy of drawing attributes
@@ -72,7 +75,7 @@ public class SimpleShapeCreationAnimation extends Animation {
             }
             return;
         }
-          if (lt == 0) {
+        if (lt == 0) {
             for (int n = 0; n < msh.shapes.size(); n++) {
                 msh.shapes.get(n).visible(false);
             }
@@ -112,7 +115,9 @@ public class SimpleShapeCreationAnimation extends Animation {
     @Override
     public void finishAnimation() {
         super.finishAnimation();
-        doAnim(1);
+        if (mobj.jmpath.size() > 0) {
+            doAnim(1);
+        }
         this.scene.remove(msh);
         mobj.visible(true);
         scene.add(mobj);
