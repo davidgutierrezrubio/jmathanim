@@ -32,8 +32,13 @@ import java.util.function.DoubleUnaryOperator;
  */
 public class AnimationGroup extends Animation {
 
-    public final ArrayList<Animation> animations;
+    private final ArrayList<Animation> animations;
 
+    /**
+     * Returns the list of the animations to play
+     *
+     * @return An ArrayList with the animations
+     */
     public ArrayList<Animation> getAnimations() {
         return animations;
     }
@@ -50,11 +55,11 @@ public class AnimationGroup extends Animation {
      * Creates a new AnimationGroup with given animations.This class stores a
      * group of animations, to be played at the same time.
      *
-     * @param anmts Animations to add (varargs)
+     * @param animations Animations to add (varargs)
      */
-    public AnimationGroup(Animation... anmts) {
+    public AnimationGroup(Animation... animations) {
         this.animations = new ArrayList<>();
-        this.animations.addAll(Arrays.asList(anmts));
+        this.animations.addAll(Arrays.asList(animations));
 
     }
 
@@ -67,24 +72,29 @@ public class AnimationGroup extends Animation {
         return finishedAll;
     }
 
+    /**
+     * Overloaded method. Creates a new AnimationGroup with given animations
+     * using an ArrayList.This class stores a group of animations, to be played
+     * at the same time.
+     *
+     * @param animations Animations to add (varargs)
+     */
     public AnimationGroup(ArrayList<Animation> animations) {
         this.animations = animations;
     }
 
-    public int size() {
-        return animations.size();
-    }
-
-    public boolean add(Animation e) {
-        return animations.add(e);
-    }
-
-    public void clear() {
-        animations.clear();
-    }
-
-    public boolean addAll(Collection<? extends Animation> c) {
-        return animations.addAll(c);
+    /**
+     * Add the given animations to the list
+     *
+     * @param <T> Calling subclass
+     * @param anims Animations to add (varargs)
+     * @return This object
+     */
+    public <T extends AnimationGroup> T add(Animation... anims) {
+        for (Animation anim : anims) {
+            animations.add(anim);
+        }
+        return (T) this;
     }
 
     @Override
@@ -106,7 +116,7 @@ public class AnimationGroup extends Animation {
     public void finishAnimation() {
         super.finishAnimation();
         for (Animation anim : animations) {
-            if (anim.getStatus()!=Status.FINISHED) {
+            if (anim.getStatus() != Status.FINISHED) {
                 anim.finishAnimation();
             }
         }

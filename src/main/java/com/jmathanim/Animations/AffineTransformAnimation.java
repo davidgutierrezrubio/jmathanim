@@ -22,6 +22,7 @@ import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.MathObject;
 
 /**
+ * Represents a generic affine transformation
  *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
@@ -62,7 +63,8 @@ public abstract class AffineTransformAnimation extends Animation {
     }
 
     /**
-     * Implement this to specify the concrete affine transform
+     * A subclass that implement this class should specify the concrete affine
+     * transform in this method
      *
      * @param t interpolation parameter, 0 means the identity, 1 means the full
      * transform done

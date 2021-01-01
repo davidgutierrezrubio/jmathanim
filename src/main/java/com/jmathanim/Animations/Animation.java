@@ -31,8 +31,13 @@ import java.util.function.DoubleUnaryOperator;
  */
 public abstract class Animation {
 
-    public enum Status {NOT_INITIALIZED, INITIALIZED, RUNNING, FINISHED}
-    private Status status=Status.NOT_INITIALIZED;
+    /**
+     * Animation status
+     */
+    public enum Status {
+        NOT_INITIALIZED, INITIALIZED, RUNNING, FINISHED
+    }
+    private Status status;
     /**
      * Default run time for animations, 1 second
      */
@@ -78,11 +83,9 @@ public abstract class Animation {
 //    public boolean isEnded() {
 //        return isEnded;
 //    }
-
 //    public void setEnded(boolean value) {
 //        isEnded = value;
 //    }
-
     /**
      * Return the use object state flag. This flag controls whether the
      * animation should restore the initial state of the object prior to do each
@@ -95,7 +98,7 @@ public abstract class Animation {
     }
 
     /**
-     * Sets the use object state flag.This flag controls whether the animation
+     * Sets the use object state flag. This flag controls whether the animation
      * should restore the initial state of the object prior to do each frame of
      * the animation.By default is true,but it may be necessary to set to false
      * when combining 2 animations. For example a shift and a rotation, should
@@ -110,6 +113,15 @@ public abstract class Animation {
         return (T) this;
     }
 
+    /**
+     * Activates or deactivates whether this animation should automatically add
+     * needed objects to the scene
+     *
+     * @param <T> Animation subclass that calls this method
+     * @param addToScene If true, objects will be added (to or removed from) the
+     * scene as needed.
+     * @return This object
+     */
     public <T extends Animation> T setAddObjectsToScene(boolean addToScene) {
         this.shouldAddObjectsToScene = addToScene;
         return (T) this;
@@ -121,7 +133,6 @@ public abstract class Animation {
      */
     public Animation() {
         this(DEFAULT_TIME);
-
     }
 
     /**
@@ -131,6 +142,7 @@ public abstract class Animation {
      * @param runTime Duration of animation, in seconds
      */
     public Animation(double runTime) {
+        this.status = Status.NOT_INITIALIZED;
         this.runTime = runTime;
         this.useObjectState = true;
         this.shouldAddObjectsToScene = true;
@@ -146,7 +158,8 @@ public abstract class Animation {
      */
     protected void setFps(double fps) {
         this.fps = fps;
-        dt = 1.d / (runTime * fps + 3);
+//        dt = 1.d / (runTime * fps + 3);
+        dt = 1. / (runTime * fps);
         t = 0;
     }
 
@@ -157,30 +170,22 @@ public abstract class Animation {
      * @return True if animation has finished
      */
     public boolean processAnimation() {
-        if (status==Status.FINISHED) {
+        if (status == Status.FINISHED) {
             return true;
         }
-        if (status==Status.NOT_INITIALIZED) {
+        if (status == Status.NOT_INITIALIZED) {
             JMathAnimScene.logger.error("Animation " + this.getClass().getCanonicalName() + " not initialized. Animation will not be done");
             return true;
         }
         boolean resul;
-//        if (frame < numFrames || t < 1 + dt) {
-
         if (t < 1 && t >= 0) {
             this.doAnim(t);
 
-//            frame++;
             resul = false;
         } else {
             resul = true;
         }
         t += dt;
-//        if (resul) {
-//            t = 1;
-////            this.finishAnimation();
-//            
-//        }
         return resul;
     }
 
@@ -193,7 +198,7 @@ public abstract class Animation {
     public void initialize(JMathAnimScene scene) {
         this.scene = scene;
         setFps(scene.getConfig().fps);
-        status=Status.INITIALIZED;
+        status = Status.INITIALIZED;
     }
 
     /**
@@ -209,12 +214,10 @@ public abstract class Animation {
      * Finish animation, deleting auxiliary objects or anything necessary.
      */
     public void finishAnimation() {
-        status=Status.FINISHED;
+        status = Status.FINISHED;
     }
 
-    ;
-
-    private double hh(double t) {
+    private double smoothFunctionAux(double t) {
         return (t == 0 ? 0 : Math.exp(-1 / t));
     }
 
@@ -228,8 +231,8 @@ public abstract class Animation {
      * @return
      */
     protected double lambdaDefault(double t, double smoothness) {
-        double h = hh(t);
-        double h2 = hh(1 - t);
+        double h = smoothFunctionAux(t);
+        double h2 = smoothFunctionAux(1 - t);
         return (1 - smoothness) * t + smoothness * h / (h + h2);
 
 //        return t * t * (3 - 2 * t);
@@ -237,10 +240,12 @@ public abstract class Animation {
     }
 
     /**
-     * Sets the optimization strategy. If null, the animation will try to find
+     * Sets the optimization strategy.If null, the animation will try to find
      * the most suitable optimization.
      *
+     * @param <T> The calling subclass
      * @param strategy Optimization strategy
+     * @return This object
      */
     public <T extends Animation> T setOptimizationStrategy(OptimizePathsStrategy strategy) {
         optimizeStrategy = strategy;
@@ -296,21 +301,46 @@ public abstract class Animation {
         }
     }
 
+    /**
+     * Add the specified objects to the scene. Adding objects to the scene
+     * should be done through this method.
+     *
+     * @param mathObjects Objects to add (varargs)
+     */
     protected void addObjectsToscene(MathObject... mathObjects) {
         if (this.shouldAddObjectsToScene) {
             scene.add(mathObjects);
         }
     }
 
+    /**
+     * Returns the current status of the animation
+     *
+     * @return A value of the enum Status, NOT_INITIALIZED, INITIALIZED,
+     * RUNNING, FINISHED
+     */
     public Status getStatus() {
         return status;
     }
 
+    /**
+     * Sets the current status of the animation
+     *
+     * @param status A value of the enum Status: NOT_INITIALIZED, INITIALIZED,
+     * RUNNING, FINISHED
+     */
     public void setStatus(Status status) {
         this.status = status;
     }
-    public void setT(double tt) {
-        this.t=tt;
+
+    /**
+     * Sets the time parameter. A value or 0 means beginning of the animation
+     * and 1 the ending.
+     *
+     * @param time A value from 0 to 1
+     */
+    public void setT(double time) {
+        this.t = time;
     }
 
 }

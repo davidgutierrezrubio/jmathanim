@@ -281,14 +281,6 @@ public class MultiShapeObject extends MathObject implements Iterable<Shape> {
         return (T) this;
     }
 
-    public <T extends MultiShapeObject> T getSlice(int... indices) {
-        T resul = (T) this.copy();
-        resul.shapes.clear();
-        for (int i : indices) {
-            resul.addShape(this.get(i).copy());
-        }
-        return resul;
-    }
 
     @Override
     public boolean isEmpty() {
@@ -323,7 +315,11 @@ public class MultiShapeObject extends MathObject implements Iterable<Shape> {
 
         return resul;
     }
-    
+    /**
+     * Gets an array of Shapes with the given indices. This method is used mostly to combine with animations that accepts a varargs of MathObject
+     * @param indices
+     * @return 
+     */
     public Shape[] getSubArray(int...indices){
         Shape[] resul=new Shape[indices.length];
         int k=0;

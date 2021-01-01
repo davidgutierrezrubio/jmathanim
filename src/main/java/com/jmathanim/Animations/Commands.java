@@ -40,6 +40,14 @@ import javafx.scene.shape.StrokeLineCap;
  */
 public class Commands {
 
+    /**
+     * A shift animation. Animates the objects moving them with the given vector.
+     * @param runtime
+     * @param dx
+     * @param dy
+     * @param objects
+     * @return 
+     */
     public static ShiftAnimation shift(double runtime, double dx, double dy, MathObject... objects) {
         return shift(runtime, new Vec(dx, dy), objects);
     }

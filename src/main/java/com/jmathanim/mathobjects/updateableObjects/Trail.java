@@ -59,7 +59,7 @@ public class Trail extends Shape {
     @Override
     public void update(JMathAnimScene scene) {
         if (draw) {
-            JMPathPoint pa = JMPathPoint.lineTo(marker.copy());;
+            JMPathPoint pa = JMPathPoint.lineTo(marker.copy());
             pa.isThisSegmentVisible = !cutNext;
             cutNext = false;
             getPath().addJMPoint(pa);
