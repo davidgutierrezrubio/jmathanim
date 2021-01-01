@@ -459,4 +459,81 @@ And here with the 40 first odd numbers...
 
 
 
+## A property of powers
+
+The `map` parameters may seem confusing, but the creation was pretty straightforward, using the `formulaHelper` method before to show the indices.
+
+```java
+LaTeXMathObject t1 = LaTeXMathObject.make("$4^{2+3}=4^2\\cdot 4^3$");
+LaTeXMathObject t2 = LaTeXMathObject.make("$4^{7+3}=4^7\\cdot 4^3$").alignCenter(4, t1, 4);
+LaTeXMathObject t3 = LaTeXMathObject.make("$4^{7+1}=4^7\\cdot 4^1$").alignCenter(4, t1, 4);
+LaTeXMathObject t4 = LaTeXMathObject.make("$4^{7-2}=4^7\\cdot 4^{-2}$").alignCenter(4, t1, 4);
+LaTeXMathObject t5 = LaTeXMathObject.make("$4^{{1\\over2}-2}=4^{1\\over2}\\cdot 4^{-2}$").alignCenter(6, t1, 4);
+LaTeXMathObject t6 = LaTeXMathObject.make("$a^{b+c}=a^{b}\\cdot a^{c}$").alignCenter(4, t1, 4);
+
+//Colors
+JMColor colA = JMColor.parse("darkgreen");
+JMColor colB = JMColor.parse("#84142d");
+JMColor colC = JMColor.parse("#1f4068");
+t1.setColor(colA, 0, 5, 8).setColor(colB, 1, 6).setColor(colC, 3, 9);
+t2.setColor(colA, 0, 5, 8).setColor(colB, 1, 6).setColor(colC, 3, 9);
+t3.setColor(colA, 0, 5, 8).setColor(colB, 1, 6).setColor(colC, 3, 9);
+t4.setColor(colA, 0, 5, 8).setColor(colB, 1, 6).setColor(colC, 2, 3, 9, 10);
+t5.setColor(colA, 0, 7, 12).setColor(colB, 1, 2, 3, 8, 9, 10).setColor(colC, 4, 5, 13, 14);
+t6.setColor(colA, 0, 5, 8).setColor(colB, 1, 6).setColor(colC, 3, 9);
+
+double runtime = 2;
+camera.setGaps(.1, .1);
+camera.zoomToObjects(t1, t2, t3, t4, t5, t6);
+TransformMathExpression tr = new TransformMathExpression(runtime, t1, t2);
+tr.mapRange(0, 9, 0);
+playAnimation(tr);
+waitSeconds(1);
+
+tr = new TransformMathExpression(runtime, t2, t3);
+tr.mapRange(0, 9, 0);
+playAnimation(tr);
+waitSeconds(1);
+
+tr = new TransformMathExpression(runtime, t3, t4);
+tr.mapRange(0, 8, 0);
+tr.defineDstGroup("minus8", 9, 10);
+tr.map(9, "minus8");
+playAnimation(tr);
+waitSeconds(1);
+
+tr = new TransformMathExpression(runtime, t4, t5);
+tr.map(0, 0);
+tr.defineDstGroup("frac1", 1, 2, 3);
+tr.map(1, "frac1").setTransformStyle(TransformMathExpression.TransformType.FLIP_VERTICALLY);
+tr.mapRange(2, 5, 4);
+tr.defineDstGroup("frac2", 8, 9, 10);
+tr.map(6, "frac2").setTransformStyle(TransformMathExpression.TransformType.FLIP_VERTICALLY);
+tr.mapRange(7, 10, 11);
+playAnimation(tr);
+waitSeconds(1);
+
+tr = new TransformMathExpression(runtime, t5, t6);
+tr.map(0, 0);
+tr.defineOrigGroup("frac1", 1, 2, 3);
+tr.map("frac1", 1);
+tr.mapRange(4, 7, 2);
+tr.defineOrigGroup("frac2", 8, 9, 10);
+tr.map("frac2", 6);
+tr.mapRange(11, 12, 7);
+tr.defineOrigGroup("minus8", 13, 14);
+tr.map("minus8", 9);
+playAnimation(tr);
+waitSeconds(1);
+enableAnimations();
+playAnimation(Commands.highlight(1, t6.get(1)),
+              Commands.highlight(1, t6.get(6)));
+
+playAnimation(Commands.highlight(1, t6.get(3)),
+              Commands.highlight(1, t6.get(9)));
+waitSeconds(3);
+```
+
+![powerProperty1](powerProperty1.gif)
+
 [home](https://davidgutierrezrubio.github.io/jmathanim/) [back](../index.html)
