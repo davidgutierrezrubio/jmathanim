@@ -163,6 +163,67 @@ waitSeconds(1);
 
 ![fadeHighLightShrinkDemo](fadeHighLightShrinkDemo.gif)
 
+## Stacking and aligning
+
+The `stackTo` method also has an animated version. A variable number of objects can be animated at the same animation. In this case, the second object will be stacked to the first, and so on. To illustrate this, we create 4 arrays of circles with random colors and stack them to a central square:
+
+```java
+Shape[] circles1 = new Shape[5];
+Shape[] circles2 = new Shape[5];
+Shape[] circles3 = new Shape[5];
+Shape[] circles4 = new Shape[5];
+for (int n = 0; n < 5; n++) {
+    Shape s = Shape.circle().scale(.25).fillColor(JMColor.random());
+    circles1[n] = s.copy().shift(Point.random().v);
+    circles2[n] = s.copy().shift(Point.random().v);
+    circles3[n] = s.copy().shift(Point.random().v);
+    circles4[n] = s.copy().shift(Point.random().v);
+    add(circles1[n],
+        circles2[n],
+        circles3[n],
+        circles4[n]);
+}
+Shape center = Shape.square().center().scale(.5).fillColor(JMColor.random());
+add(center);
+camera.adjustToAllObjects();
+ShiftAnimation anim1 = Commands.stackTo(3, center, Anchor.Type.UPPER, 0, circles1);
+ShiftAnimation anim2 = Commands.stackTo(3, center, Anchor.Type.LEFT, 0, circles2);
+ShiftAnimation anim3 = Commands.stackTo(3, center, Anchor.Type.LOWER, 0, circles3);
+ShiftAnimation anim4 = Commands.stackTo(3, center, Anchor.Type.RIGHT, 0, circles4);
+playAnimation(anim1,anim2,anim3,anim4);
+waitSeconds(5);
+```
+
+
+
+![stackToAnimation](stackToAnimation.gif)
+
+
+
+The `Commands.align` animation works in a similar way than the method `Mathobject.align`
+
+```java
+LaTeXMathObject upper=LaTeXMathObject.make("upper");
+LaTeXMathObject lower=LaTeXMathObject.make("lower");
+LaTeXMathObject left=LaTeXMathObject.make("left");
+LaTeXMathObject right=LaTeXMathObject.make("right");
+LaTeXMathObject hcenter=LaTeXMathObject.make("hcenter");
+LaTeXMathObject vcenter=LaTeXMathObject.make("vcenter");
+Shape center = Shape.square().scale(3).fillColor("lightblue");
+add(center);
+camera.adjustToAllObjects();
+ShiftAnimation anim1 = Commands.align(3, center, MathObject.Align.LEFT, left);
+ShiftAnimation anim2 = Commands.align(3, center,  MathObject.Align.RIGHT, right);
+ShiftAnimation anim3 = Commands.align(3, center,  MathObject.Align.UPPER, upper);
+ShiftAnimation anim4 = Commands.align(3, center,  MathObject.Align.LOWER, lower);
+ShiftAnimation anim5 = Commands.align(3, center, MathObject.Align.HCENTER, hcenter);
+ShiftAnimation anim6 = Commands.align(3, center, MathObject.Align.VCENTER, vcenter);
+playAnimation(anim1,anim2,anim3,anim4,anim5,anim6);
+waitSeconds(5);
+```
+
+![alignAnimation](alignAnimation.gif)
+
 ## Moving along a path
 
 The `MoveAlongPath` animations move an object along a specified path. You can provide a `Shape` object or a `JMPath`objec to determine the path. The moved object will be located with the specified `Anchor` point.
@@ -647,5 +708,9 @@ waitSeconds(3);
 ```
 
 ![equation12](equation12.gif)
+
+## Slicing equations
+
+
 
 [home](https://davidgutierrezrubio.github.io/jmathanim/) [back](../index.html)
