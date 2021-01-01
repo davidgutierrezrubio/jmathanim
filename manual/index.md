@@ -14,7 +14,9 @@
 
 ## [Animating objects](05_Animations/Animations.md)
 
-## [Advanced topics](06_AdvancedTopics/AdvancedTopics.html)
+## [Mathematical formulas](06_MathFormulas/MathFormulas.md)
+
+## [Advanced topics](07_AdvancedTopics/AdvancedTopics.html)
 
 
 [home](https://davidgutierrezrubio.github.io/jmathanim/) [back](../index.html)
