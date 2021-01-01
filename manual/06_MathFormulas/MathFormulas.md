@@ -83,6 +83,8 @@ waitSeconds(2);
 
 Note that the although the sliced formula has only one element, the indices remain the same. So, if the "b" were in position 2 in the original formula, it is still in position 2 in the sliced formula, so that `sliceBase.get(2)` returns the "b" shape. The other indices stores empty shapes.
 
+There is another version of the method, with a boolean flag that lets control if the sliced shapes are removed from the original math expression or not. For example, in the previous example `LaTeXMathObject sliceBase=formula.slice(false,2)` will create a slice of the "b" glyph without altering the original formula.
+
 The `slice`method can be a powerful tool if you want to operate on part of complex math expressions.
 
 ## Animating transforms between equations
