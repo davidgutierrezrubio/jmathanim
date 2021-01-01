@@ -50,7 +50,7 @@ public class MultiShapeObject extends MathObject implements Iterable<Shape> {
 
     public MultiShapeObject(List<Shape> jmps) {
         super();
-        isAddedToScene=false;
+        isAddedToScene = false;
         this.shapes = new ArrayList<>();
         this.shapes.addAll(jmps);
     }
@@ -281,7 +281,6 @@ public class MultiShapeObject extends MathObject implements Iterable<Shape> {
         return (T) this;
     }
 
-
     @Override
     public boolean isEmpty() {
         boolean resul = false;
@@ -292,15 +291,16 @@ public class MultiShapeObject extends MathObject implements Iterable<Shape> {
     }
 
     /**
-     * Extracts a part of a MultiShape, given by a set of indices. Indices are
+     * Extracts a part of a MultiShape, given by a set of indices.Indices are
      * unaltered, so shape 5 after slicing is still shape 5.
      *
      * @param <T> Multishape subclass
+     * @param delete If true, sliced shapes will be removed from the original
+     * and replaced with empty shapes.
      * @param indices indices to slice (varargs)
-     * @return A new multishape instance with the extracted shapes. The original
-     * multishape object is altered as the extracted shapes becomes invisible
+     * @return A new multishape instance with the extracted shapes.
      */
-    public <T extends MultiShapeObject> T slice(Integer... indices) {
+    public <T extends MultiShapeObject> T slice(boolean delete, Integer... indices) {
         List<Integer> list = Arrays.asList(indices);
         T resul = (T) this.copy();
         for (int n = 0; n < resul.shapes.size(); n++) {
@@ -309,25 +309,42 @@ public class MultiShapeObject extends MathObject implements Iterable<Shape> {
         for (int n = 0; n < this.shapes.size(); n++) {
             if (list.contains(n)) {//if this index is marked for extraction...
                 resul.shapes.set(n, this.get(n));
-                this.shapes.set(n, new Shape());
+                if (delete) {
+                    this.shapes.set(n, new Shape());
+                }
             }
         }
 
         return resul;
     }
+
     /**
-     * Gets an array of Shapes with the given indices. This method is used mostly to combine with animations that accepts a varargs of MathObject
-     * @param indices
-     * @return 
+     * Overloaded method, equivalent to slice(true,indices)
+     *
+     * @param <T> Multishape subclass object
+     * @param indices indices to slice (varargs)
+     * @return A new multishape instance with the extracted shapes. The original
+     * multishape object is altered as the extracted shapes becomes null shapes
      */
-    public Shape[] getSubArray(int...indices){
-        Shape[] resul=new Shape[indices.length];
-        int k=0;
-        for (int n:indices){
-            resul[k]=shapes.get(n);
+    public <T extends MultiShapeObject> T slice(Integer... indices) {
+        return slice(true, indices);
+    }
+
+    /**
+     * Gets an array of Shapes with the given indices. This method is used
+     * mostly to combine with animations that accepts a varargs of MathObject
+     *
+     * @param indices
+     * @return
+     */
+    public Shape[] getSubArray(int... indices) {
+        Shape[] resul = new Shape[indices.length];
+        int k = 0;
+        for (int n : indices) {
+            resul[k] = shapes.get(n);
             k++;
         }
-        
+
         return resul;
     }
 
