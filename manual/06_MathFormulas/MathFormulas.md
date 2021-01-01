@@ -26,7 +26,7 @@ waitSeconds(5);
 
 We'll obtain the following image for 5 seconds. You can make an screenshot to examine it more deeply:
 
-![image-20210101131234148](../../../../../../AppData/Roaming/Typora/typora-user-images/image-20210101131234148.png)
+![image-20210101131234148](equationFormHelper.png)
 
 It is recommended, before doing any animation that involves math formulas, to run this method to get useful references when defining animations.
 
