@@ -461,7 +461,7 @@ And here with the 40 first odd numbers...
 
 ## A property of powers
 
-The `map` parameters may seem confusing, but the creation was pretty straightforward, using the `formulaHelper` method before to show the indices of each LaTeXMathObject instance:
+The `map` parameters may seem confusing to read, but the creation was pretty straightforward, using the `formulaHelper` method before to show the indices of each LaTeXMathObject instance:
 
 ```java
 LaTeXMathObject t1 = LaTeXMathObject.make("$4^{2+3}=4^2\\cdot 4^3$");
