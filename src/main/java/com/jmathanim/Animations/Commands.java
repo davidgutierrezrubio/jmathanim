@@ -820,7 +820,6 @@ public class Commands {
             }
 
         };
-        resul.setLambda(t -> t);
         return resul;
     }
 
