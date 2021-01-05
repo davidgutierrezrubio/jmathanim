@@ -534,6 +534,51 @@ playAnimation(Commands.highlight(1, t6.get(3)),
 waitSeconds(3);
 ```
 
+Here is a gif from the movie generated:
+
 ![powerProperty1](powerProperty1.gif)
+
+## Moving 3 coins
+
+```java
+Shape coinBase = Shape.circle().fillColor("gold").thickness(2);
+Shape[] coin = new Shape[10];
+for (int n = 0; n < 10; n++) {
+    coin[n] = coinBase.copy();
+}
+double vertGap = Math.sqrt(3) - 2;//This negative gap is computed so that circles are tangent
+MathObjectGroup row1 = MathObjectGroup.make(coin[0], coin[1], coin[2],coin[3])
+    .setLayout(Anchor.Type.RIGHT, 0);
+MathObjectGroup row2 = MathObjectGroup.make(coin[4], coin[5],coin[6])
+    .setLayout(Anchor.Type.RIGHT, 0);
+MathObjectGroup row3 = MathObjectGroup.make(coin[7],coin[8])
+    .setLayout(Anchor.Type.RIGHT, 0);
+MathObjectGroup row4 = MathObjectGroup.make(coin[9])
+    .setLayout(Anchor.Type.RIGHT, 0);
+MathObjectGroup pyramid = MathObjectGroup.make(row1, row2, row3, row4)
+    .setLayout(Anchor.Type.UPPER, vertGap);
+
+add(pyramid);
+camera.adjustToAllObjects();
+camera.scale(2);
+Animation anim1 = Commands.rotate(2, coin[8].getCenter(), -120 * DEGREES, coin[9]);
+Animation anim2 = Commands.rotate(2, coin[4].getCenter(), -120 * DEGREES, coin[0]);
+Animation anim3 = Commands.rotate(2, coin[2].getCenter(), -120 * DEGREES, coin[3]);
+
+playAnimation(anim1, anim2, anim3);
+waitSeconds(3);
+
+anim1 = Commands.rotate(2, coin[6].getCenter(), -120 * DEGREES, coin[9]);
+anim2 = Commands.rotate(2, coin[7].getCenter(), -120 * DEGREES, coin[0]);
+anim3 = Commands.rotate(2, coin[1].getCenter(), -120 * DEGREES, coin[3]);
+
+playAnimation(anim1, anim2, anim3);
+
+waitSeconds(3);
+```
+
+Here is a gif from the movie generated:
+
+![coins](coins.gif)
 
 [home](https://davidgutierrezrubio.github.io/jmathanim/) [back](../index.html)
