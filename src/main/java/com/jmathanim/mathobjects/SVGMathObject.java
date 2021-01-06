@@ -154,6 +154,7 @@ public class SVGMathObject extends MultiShapeObject {
 
                         break;
                     case "rect":
+                        processAttributeCommands(el, ShMp);
                         double x = Double.parseDouble(el.getAttribute("x"));
                         double y = -Double.parseDouble(el.getAttribute("y"));
                         double w = Double.parseDouble(el.getAttribute("width"));
@@ -161,12 +162,14 @@ public class SVGMathObject extends MultiShapeObject {
                         shapes.add(Shape.rectangle(new Point(x, y), new Point(x + w, y + h)).setMp(ShMp));
                         break;
                     case "circle":
+                        processAttributeCommands(el, ShMp);
                         double cx = Double.parseDouble(el.getAttribute("cx"));
                         double cy = -Double.parseDouble(el.getAttribute("cy"));
                         double radius = Double.parseDouble(el.getAttribute("r"));
                         shapes.add(Shape.circle().scale(radius).shift(cx, cy).setMp(ShMp));
                         break;
                     case "ellipse":
+                        processAttributeCommands(el, ShMp);
                         double cxe = Double.parseDouble(el.getAttribute("cx"));
                         double cye = -Double.parseDouble(el.getAttribute("cy"));
                         double rxe = Double.parseDouble(el.getAttribute("rx"));
