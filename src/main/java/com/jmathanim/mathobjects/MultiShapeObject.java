@@ -40,6 +40,10 @@ public class MultiShapeObject extends MathObject implements Iterable<Shape> {
     public boolean isAddedToScene;
     public final ArrayList<Shape> shapes;
 
+    public static MultiShapeObject make(Shape...shapes) {
+        return new MultiShapeObject(shapes);
+    }
+    
     public MultiShapeObject() {
         this(new ArrayList<Shape>());
     }
