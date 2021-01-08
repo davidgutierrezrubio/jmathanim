@@ -271,7 +271,7 @@ We will apply effects adding them to the `tr.map(0,2)` and `tr.map(2,0)` command
 
 ```java
 tr.map(0,2).setScale(.7);
-tr.map(2,0).setScale(1d/.7);
+tr.map(2,0).setScale(1./.7);
 ```
 
 ![equation07](equation07.gif)
@@ -350,3 +350,28 @@ waitSeconds(3);
 ```
 
 ![equation12](equation12.gif)
+
+And finally, we show how the initial animation will look applying colors, mapping, and effects:
+
+````java
+LaTeXMathObject t1 = LaTeXMathObject.make("$x+2=0$");
+LaTeXMathObject t2 = LaTeXMathObject.make("$x=-2$");
+t1.setColor(JMColor.parse("MEDIUMORCHID"),0);
+t2.setColor(JMColor.parse("MEDIUMORCHID"),0);
+
+t1.setColor(JMColor.parse("MEDIUMVIOLETRED"),2);
+t2.setColor(JMColor.parse("MEDIUMVIOLETRED"),2,3);
+
+t2.alignCenter(1, t1, 3);
+camera.zoomToObjects(t1,t2);
+TransformMathExpression tr = new TransformMathExpression(5, t1, t2);
+tr.map(0, 0);//Transforms orig-shape 0 to dst-shape 0
+tr.map(1, 2).addJumpEffect(t1.getHeight());//Transforms orig-shape 1 to dst-shape 2 and adds a jump effect with the height of t1
+tr.map(2, 3).addJumpEffect(t1.getHeight());//Transforms orig-shape 2 to dst-shape 3 and adds a jump effect with the height of t1
+tr.map(3, 1);//Transforms orig-shape 3 to dst-shape 1
+tr.setRemovingStyle(TransformMathExpression.RemoveType.SHRINK_OUT, 4);
+playAnimation(tr);
+waitSeconds(3);
+````
+
+![equation13](equation13.gif)
