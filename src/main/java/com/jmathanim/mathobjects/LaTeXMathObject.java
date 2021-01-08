@@ -81,7 +81,20 @@ public class LaTeXMathObject extends SVGMathObject {
 
     }
 
+    /**
+     * Changes the current LaTeX expression, updating the whole object as
+     * needed. The JMNumber for example, uses this. The new formula generated
+     * will be center-aligned with the replaced one. In case the old formula was
+     * empty (no shapes) it will be centered on the screen.
+     *
+     * @param text The new LaTeX string
+     */
     public final void setLaTeX(String text) {
+        if (text.equals(this.text)) {
+            return;
+        } else {
+            this.text = text;
+        }
         Point center;
 
         if (shapes.isEmpty()) {
@@ -163,7 +176,7 @@ public class LaTeXMathObject extends SVGMathObject {
 
     }
 
-    public String getMd5(String input) {
+    private String getMd5(String input) {
         try {
             MessageDigest md = MessageDigest.getInstance("MD5");
             byte[] messageDigest = md.digest(input.getBytes());
@@ -194,7 +207,6 @@ public class LaTeXMathObject extends SVGMathObject {
 
     public void runExternalCommand(String command) throws IOException, InterruptedException {
         String line;
-        String[] ar = {};
         Process p = Runtime.getRuntime().exec(command, null, outputDir);
         BufferedReader bre;
         try (BufferedReader bri = new BufferedReader(new InputStreamReader(p.getInputStream()))) {
@@ -222,6 +234,7 @@ public class LaTeXMathObject extends SVGMathObject {
         return resul;
     }
 
+    @Override
     public int size() {
         return shapes.size();
     }

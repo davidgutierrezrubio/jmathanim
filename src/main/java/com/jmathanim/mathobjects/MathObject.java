@@ -698,10 +698,11 @@ public abstract class MathObject implements Drawable, Updateable, Stateable {
      * @return The width
      */
     public double getWidth() {
-        if (isEmpty()) {
+          Rect b = getBoundingBox();
+        if (b==null) {
             return 0;
         } else {
-            return getBoundingBox().getWidth();
+            return b.getWidth();
         }
     }
 
@@ -711,10 +712,11 @@ public abstract class MathObject implements Drawable, Updateable, Stateable {
      * @return The height
      */
     public double getHeight() {
-        if (isEmpty()) {
+        Rect b = getBoundingBox();
+        if (b==null) {
             return 0;
         } else {
-            return getBoundingBox().getHeight();
+            return b.getHeight();
         }
     }
 
