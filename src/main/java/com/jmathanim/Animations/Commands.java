@@ -41,12 +41,14 @@ import javafx.scene.shape.StrokeLineCap;
 public class Commands {
 
     /**
-     * A shift animation. Animates the objects moving them with the given vector.
+     * A shift animation. Animates the objects moving them with the given
+     * vector.
+     *
      * @param runtime
      * @param dx
      * @param dy
      * @param objects
-     * @return 
+     * @return
      */
     public static ShiftAnimation shift(double runtime, double dx, double dy, MathObject... objects) {
         return shift(runtime, new Vec(dx, dy), objects);
@@ -704,6 +706,18 @@ public class Commands {
         return anim;
     }//End of fadeOut command
 
+    /**
+     * Animated version of method setLayout for MathObjectGroup instances
+     *
+     * @param runtime Duration in seconds
+     * @param anchor Type of anchor to apply layout as defined in the enum
+     * Anchor.Type
+     * @param gap Gap to apply between elements, in math units
+     * @param group MathObjectGroup instance to apply the layout
+     * @return Animation to run with
+     * {@link JMathAnimScene#playAnimation(com.jmathanim.Animations.Animation...) playAnimation}
+     * method
+     */
     public static AnimationGroup setLayout(double runtime, Anchor.Type anchor, double gap, MathObjectGroup group) {
         AnimationGroup ag = new AnimationGroup();
         MathObjectGroup grCopy = group.copy();
@@ -716,6 +730,16 @@ public class Commands {
         return ag;
     }
 
+    /**
+     * Animates a change in the alpha fill of the objects. The precise change is
+     * given by the lambda function used in the animation
+     *
+     * @param runTime Duration in seconds
+     * @param objects MathObjects to apply the animation (varargs)
+     * @return Animation to run with
+     * {@link JMathAnimScene#playAnimation(com.jmathanim.Animations.Animation...) playAnimation}
+     * method
+     */
     public static Animation changeFillAlpha(double runTime, MathObject... objects) {
         return new Animation(runTime) {
             MathObject[] mathObjects = objects;
@@ -757,7 +781,7 @@ public class Commands {
                 for (int n = 0; n < mathObjects.length; n++) {
                     MathObject obj = mathObjects[n];
                     Point p = Anchor.getAnchorPoint(obj, Anchor.reverseAnchorPoint(exitAnchor));
-                    Point q = Anchor.getAnchorPoint(Shape.rectangle(r), exitAnchor,1);
+                    Point q = Anchor.getAnchorPoint(Shape.rectangle(r), exitAnchor, 1);
                     switch (exitAnchor) {
                         case LEFT:
                             q.v.y = p.v.y;
@@ -776,11 +800,10 @@ public class Commands {
             @Override
             public void finishAnimation() {
                 super.finishAnimation();
-                for (MathObject obj:mathObjects) {
+                for (MathObject obj : mathObjects) {
                     scene.remove(obj);
                 }
             }
-            
 
         };
 
@@ -856,19 +879,19 @@ public class Commands {
      * @return The created animation
      */
     public static ShiftAnimation align(double runtime, MathObject dst, MathObject.Align type, MathObject... mathobjects) {
-      ShiftAnimation resul=new ShiftAnimation(runtime, mathobjects) {
-          @Override
-          public void initialize(JMathAnimScene scene) {
-              super.initialize(scene);
-              for (MathObject obj:mathobjects){
-            Point dstCenter = Shape.rectangle(obj.getBoundingBox())
-                    .align(dst, type).getCenter();
-                  setShiftVector(obj,obj.getCenter().to(dstCenter));
-              }
-          }
-          
-      };
-      return resul;
+        ShiftAnimation resul = new ShiftAnimation(runtime, mathobjects) {
+            @Override
+            public void initialize(JMathAnimScene scene) {
+                super.initialize(scene);
+                for (MathObject obj : mathobjects) {
+                    Point dstCenter = Shape.rectangle(obj.getBoundingBox())
+                            .align(dst, type).getCenter();
+                    setShiftVector(obj, obj.getCenter().to(dstCenter));
+                }
+            }
+
+        };
+        return resul;
     }
 
     /**

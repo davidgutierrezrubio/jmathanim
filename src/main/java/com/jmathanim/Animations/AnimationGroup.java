@@ -50,6 +50,7 @@ public class AnimationGroup extends Animation {
      * animations, to be played at the same time.
      */
     public AnimationGroup() {
+        super(0);
         this.animations = new ArrayList<>();
     }
 
@@ -60,6 +61,7 @@ public class AnimationGroup extends Animation {
      * @param animations Animations to add (varargs)
      */
     public AnimationGroup(Animation... animations) {
+        super(0);
         this.animations = new ArrayList<>();
         this.animations.addAll(Arrays.asList(animations));
 
@@ -82,6 +84,7 @@ public class AnimationGroup extends Animation {
      * @param animations Animations to add (varargs)
      */
     public AnimationGroup(ArrayList<Animation> animations) {
+        super(0);
         this.animations = animations;
     }
 

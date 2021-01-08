@@ -131,9 +131,9 @@ public abstract class Animation {
      * Creates an empty animation, with the default run time. This constructor
      * should be called only from implementing subclasses.
      */
-    public Animation() {
-        this(DEFAULT_TIME);
-    }
+//    public Animation() {
+//        this(DEFAULT_TIME);
+//    }
 
     /**
      * Creates an empty animation, with specified run time.This constructor

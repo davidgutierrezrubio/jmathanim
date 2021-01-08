@@ -36,8 +36,7 @@ public class SimpleShapeCreationAnimation extends Animation {
     private int numberOfSegments;
 
     public SimpleShapeCreationAnimation(double runtime, Shape mobj) {
-        super();
-        this.runTime = runtime;
+        super(runtime);
         this.mobj = mobj;
     }
 

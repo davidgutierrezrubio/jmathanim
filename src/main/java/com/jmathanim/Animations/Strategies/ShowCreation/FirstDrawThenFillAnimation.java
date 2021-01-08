@@ -51,14 +51,12 @@ public class FirstDrawThenFillAnimation extends Animation {
      */
     public final double delayPercent = 0.1d;
     private final MathObject obj;
-    private final double runtime;
     private double timegap;
     private Animation anim;
 
     public FirstDrawThenFillAnimation(double runtime, MathObject obj) {
-        super();
+        super(runtime);
         this.obj = obj;
-        this.runtime = runtime;
 
     }
 
@@ -132,7 +130,7 @@ public class FirstDrawThenFillAnimation extends Animation {
     @Override
     public void initialize(JMathAnimScene scene) {
         super.initialize(scene);
-        anim = createAnimation(obj, runtime);
+        anim = createAnimation(obj, this.runTime);
         if (anim == null) {
             JMathAnimScene.logger.error("Could'n crate FirstDrawThenFillAnimation for object type " + obj.getClass().getCanonicalName() + ". Animation will not be performed");
         }

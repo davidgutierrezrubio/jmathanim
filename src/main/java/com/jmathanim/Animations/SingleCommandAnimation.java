@@ -23,6 +23,10 @@ package com.jmathanim.Animations;
  */
 public abstract class SingleCommandAnimation extends Animation{
 
+    public SingleCommandAnimation() {
+        super(0);
+    }
+
     @Override
     public boolean processAnimation() {
         super.processAnimation();

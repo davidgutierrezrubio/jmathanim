@@ -30,6 +30,8 @@ import com.jmathanim.mathobjects.TickAxes;
 import java.util.ArrayList;
 
 /**
+ * Animation to crate axes. This strategy is automatically chosen by the
+ * ShowCreation class when passed an Axes object.
  *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
@@ -97,7 +99,7 @@ public class AxesCreationAnimation extends Animation {
 
     @Override
     public void finishAnimation() {
-         super.finishAnimation();
+        super.finishAnimation();
         anim.finishAnimation();
         scene.add(axes);
         for (MathObject ob : objectsToRemoveWhenFinished) {

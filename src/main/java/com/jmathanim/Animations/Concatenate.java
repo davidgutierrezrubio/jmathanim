@@ -62,7 +62,7 @@ public class Concatenate extends Animation {
      * @param anims List object of animations to add
      */
     public Concatenate(List<Animation> anims) {
-        super();
+        super(0);
         this.animations = new ArrayList<Animation>();
         this.animations.addAll(anims);
         currentAnim = 0;

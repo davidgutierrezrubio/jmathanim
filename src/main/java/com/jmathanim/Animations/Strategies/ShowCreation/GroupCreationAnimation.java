@@ -34,9 +34,8 @@ public class GroupCreationAnimation extends Animation {
     private AnimationGroup anim;
 
     public GroupCreationAnimation(double runtime,MathObjectGroup group) {
-        super();
+        super(runtime);
         this.group=group;
-        this.runTime=runtime;
         this.anim=new AnimationGroup();
         for (MathObject obj:group.getObjects()) {
             this.anim.add(new ShowCreation(runtime, obj));

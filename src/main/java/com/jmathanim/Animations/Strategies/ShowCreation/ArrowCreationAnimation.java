@@ -33,9 +33,8 @@ public class ArrowCreationAnimation extends Animation {
 
 
     public ArrowCreationAnimation( double runTime,Arrow2D obj) {
-        super();
+        super(runTime);
         this.obj=obj;
-        this.runTime=runTime;
     }
 
     @Override

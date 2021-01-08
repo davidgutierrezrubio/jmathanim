@@ -105,38 +105,38 @@ public class Axes extends MathObject {
 
     /**
      * Generates a set of pairs (ticks-legends) from start to finish (including)
-     * with given step, in the x-axis.The maxScale parameter is the maximum
+     * with given step, in the x-axis.The maxWidthToShow parameter is the maximum
      * width of the math view to show this tick.A value of 0 means always show
      * this tick.
      *
      * @param start Starting number
      * @param finish Ending number
      * @param step Step
-     * @param maxScale max scale to show these ticks
+     * @param maxWidthToShow max width of the current camera to show these ticks
      */
-    public void generateSecondaryXTicks(double start, double finish, double step, double maxScale) {
+    public void generateSecondaryXTicks(double start, double finish, double step, double maxWidthToShow) {
         for (double x = start; x < finish; x += step) {
             if (x != 0) {
-                addXTicksLegend(x, TickAxes.TickType.SECONDARY, maxScale);
+                addXTicksLegend(x, TickAxes.TickType.SECONDARY, maxWidthToShow);
             }
         }
     }
 
     /**
      * Generates a set of pairs (ticks-legends) from start to finish (including)
-     * with given step, in the y-axis.The maxScale parameter is the maximum
+     * with given step, in the y-axis.The maxWidthToShow parameter is the maximum
      * width of the math view to show this tick.A value of 0 means always show
      * this tick.
      *
      * @param start Starting number
      * @param finish Ending number
      * @param step Step
-     * @param maxScale max scale to show these ticks
+     * @param maxWidthToShow max scale to show these ticks
      */
-    public void generateSecondaryYTicks(double start, double finish, double step, double maxScale) {
+    public void generateSecondaryYTicks(double start, double finish, double step, double maxWidthToShow) {
         for (double y = start; y < finish; y += step) {
             if (y != 0) {
-                addYTicksLegend(y, TickAxes.TickType.SECONDARY, maxScale);
+                addYTicksLegend(y, TickAxes.TickType.SECONDARY, maxWidthToShow);
             }
         }
     }
@@ -163,60 +163,60 @@ public class Axes extends MathObject {
 //    }
     /**
      * Adds a pair (tick, legend text) at the given value in the y-axis.The text
-     * is automatically generated from the value of y. The maxScale parameter is
+     * is automatically generated from the value of y. The maxWidthToShow parameter is
      * the maximum width of the math view to show this tick. A value of 0 means
      * always show this tick
      *
      * @param y The y coordinate where to put the tick
-     * @param maxScale max scale to show the tick
+     * @param maxWidthToShow max scale to show the tick
      */
-    public void addYTicksLegend(double y, TickAxes.TickType tickType, double maxScale) {
-        addYTicksLegend("$" + format.format(y) + "$", y, tickType, maxScale);
+    public void addYTicksLegend(double y, TickAxes.TickType tickType, double maxWidthToShow) {
+        addYTicksLegend("$" + format.format(y) + "$", y, tickType, maxWidthToShow);
     }
 
     /**
      * Adds a pair (tick, legend text) at the given value in the y-axis, with
-     * the specified latex string.The maxScale parameter is the maximum width of
+     * the specified latex string.The maxWidthToShow parameter is the maximum width of
      * the math view to show this tick. A value of 0 means always show this tick
      *
      * @param latex The text with the legend
      * @param y The y coordinate where to put the tick
      * @param tickType Tick orientation (primary or secondary)
-     * @param maxScale max scale to show the tick
+     * @param maxWidthToShow max scale to show the tick
      */
-    public void addYTicksLegend(String latex, double y, TickAxes.TickType tickType, double maxScale) {
+    public void addYTicksLegend(String latex, double y, TickAxes.TickType tickType, double maxWidthToShow) {
         if (!yticksBase.stream().anyMatch(t -> (t.location == y))) {
-            yticksBase.add(TickAxes.makeYTick(y, latex, tickType, maxScale));
+            yticksBase.add(TickAxes.makeYTick(y, latex, tickType, maxWidthToShow));
         }
     }
 
     /**
      * Adds a pair (tick, legend text) at the given value in the x-axis.The text
-     * is automatically generated from the value of x.The maxScale parameter is
+     * is automatically generated from the value of x.The maxWidthToShow parameter is
      * the maximum width of the math view to show this tick. A value of 0 means
      * always show this tick
      *
      * @param x The x coordinate where to put the tick
      * @param tickType Tick orientation (primary or secondary)
-     * @param maxScale max scale to show the tick
+     * @param maxWidthToShow max scale to show the tick
      */
-    public void addXTicksLegend(double x, TickAxes.TickType tickType, double maxScale) {
-        addXTicksLegend("$" + format.format(x) + "$", x, tickType, maxScale);
+    public void addXTicksLegend(double x, TickAxes.TickType tickType, double maxWidthToShow) {
+        addXTicksLegend("$" + format.format(x) + "$", x, tickType, maxWidthToShow);
     }
 
     /**
      * Adds a pair (tick, legend text) at the given value in the y-axis, with
-     * the specified latex string.The maxScale parameter is the maximum width of
+     * the specified latex string.The maxWidthToShow parameter is the maximum width of
      * the math view to show this tick. A value of 0 means always show this tick
      *
      * @param latex The text with the legend
      * @param x The x coordinate where to put the tick
      * @param tickType Tick orientation (primary or secondary)
-     * @param maxScale max scale to show the tick
+     * @param maxWidthToShow max scale to show the tick
      */
-    public void addXTicksLegend(String latex, double x, TickAxes.TickType tickType, double maxScale) {
+    public void addXTicksLegend(String latex, double x, TickAxes.TickType tickType, double maxWidthToShow) {
         if (!xticksBase.stream().anyMatch(t -> (t.location == x))) {
-            xticksBase.add(TickAxes.makeXTick(x, latex, tickType, maxScale));
+            xticksBase.add(TickAxes.makeXTick(x, latex, tickType, maxWidthToShow));
         }
     }
 
@@ -259,20 +259,12 @@ public class Axes extends MathObject {
         xAxis.draw(r);
         yAxis.draw(r);
 
-        double xmax = r.getCamera().getMathView().xmax;
-        double xmin = r.getCamera().getMathView().xmin;
-        double ymax = r.getCamera().getMathView().ymax;
-        double ymin = r.getCamera().getMathView().ymin;
 
         for (TickAxes xtick : xticks) {
-            if ((xtick.location >= xmin) && (xtick.location <= xmax)) {
                 xtick.draw(r);
-            }
         }
         for (TickAxes ytick : yticks) {
-            if ((ytick.location >= ymin) && (ytick.location <= ymax)) {
                 ytick.draw(r);
-            }
         }
     }
 

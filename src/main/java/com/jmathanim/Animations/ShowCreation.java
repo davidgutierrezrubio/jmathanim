@@ -60,7 +60,6 @@ public class ShowCreation extends Animation {
 
     MathObject mobj;
     CanonicalJMPath canonPath;
-    private MultiShapeObject msh;
     private Animation creationStrategy;
     private ShowCreationStrategy strategyType = ShowCreationStrategy.NONE;
 
