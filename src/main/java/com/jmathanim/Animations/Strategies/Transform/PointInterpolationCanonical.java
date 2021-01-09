@@ -24,7 +24,6 @@ import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.CanonicalJMPath;
 import com.jmathanim.mathobjects.JMPath;
 import com.jmathanim.mathobjects.JMPathPoint;
-import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.Point;
 import com.jmathanim.mathobjects.Shape;
 import java.util.ArrayList;
@@ -81,7 +80,7 @@ public class PointInterpolationCanonical extends Animation {
         if (DEBUG_COLORS) {
             for (int n = 0; n < connectedOrigin.getNumberOfPaths(); n++) {
                 Shape sh = new Shape(connectedOrigin.get(n), null);
-                sh.drawColor(JMColor.random());
+                sh.drawColor(JMColor.random()).thickness(10);
                 scene.add(sh);
                 addedAuxiliaryObjectsToScene.add(sh);
             }
@@ -145,7 +144,7 @@ public class PointInterpolationCanonical extends Animation {
     }
 
     /**
-     * Creates connectedOrigin1 and connectedDst, two paths in their
+     * Creates connectedOrigin and connectedDst, two paths in their
      * canonicalforms (and array of simple connected open paths)
      *
      * @param pathTransformed F
