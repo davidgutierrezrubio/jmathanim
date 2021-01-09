@@ -152,28 +152,28 @@ public class PlayAnim {
         MathObject[] objects = scene.getObjects().toArray(new MathObject[scene.getObjects().size()]);
         scene.playAnimation(Commands.fadeOut(runtime, objects));
     }
-
-    public void fadeOutAllBut(double runtime, MathObject... objs) {
-        ArrayList<MathObject> toRemove = new ArrayList<>();
-        toRemove.addAll(scene.getObjects());
-        for (MathObject obj : objs) {
-            if (obj instanceof MultiShapeObject) {
-                for (Shape sh : (MultiShapeObject) obj) {
-                    toRemove.remove(sh);
-                }
-            }
-            if (obj instanceof MathObjectGroup) {
-                for (MathObject o : (MathObjectGroup) obj) {
-                    toRemove.remove(o);
-                }
-            }
-
-            toRemove.remove(obj);
-        }
+    
+  public void fadeOutAllBut(double runtime,MathObject...objs) {
+      ArrayList<MathObject> toRemove=new ArrayList<>();
+      toRemove.addAll(scene.getObjects());
+      for (MathObject obj:objs) {
+          if (obj instanceof MultiShapeObject) {
+              for (Shape sh:(MultiShapeObject)obj){
+                  toRemove.remove(sh);
+              }
+          }
+           if (obj instanceof MathObjectGroup) {
+              for (MathObject o:(MathObjectGroup)obj){
+                  toRemove.remove(o);
+              }
+          }
+          
+          
+          toRemove.remove(obj);
+      }
         MathObject[] objects = toRemove.toArray(new MathObject[toRemove.size()]);
         scene.playAnimation(Commands.fadeOut(runtime, objects));
     }
-
     /**
      * Shift the specified objects out of the math view and removes them from
      * the scene.
@@ -290,7 +290,7 @@ public class PlayAnim {
     public void scale(double runTime, double scx, double scy, MathObject... objs) {
         Rect r = objs[0].getBoundingBox();
         for (MathObject obj : objs) {
-            r = Rect.union(r, obj.getBoundingBox());
+            r = Rect.union(r,obj.getBoundingBox());
         }
         scene.playAnimation(Commands.scale(runTime, r.getCenter(), scx, scy, 1, objs));
     }
@@ -337,7 +337,7 @@ public class PlayAnim {
     public void rotate(double runTime, double angle, MathObject... objs) {
         Rect r = objs[0].getBoundingBox();
         for (MathObject obj : objs) {
-            r = Rect.union(r, obj.getBoundingBox());
+            r = Rect.union(r,obj.getBoundingBox());
         }
         scene.playAnimation(Commands.rotate(runTime, r.getCenter(), angle, objs));
     }
@@ -374,21 +374,6 @@ public class PlayAnim {
     }
 
     /**
-     * Performs an animated change from origin object to destiny, simulating a
-     * flipping effect. When finished, the original object is removed from the
-     * scene and added the destiny one.
-     *
-     * @param runTime Duration in seconds
-     * @param horizontalFlip If true, performs an horizontal flip, vertically
-     * otherwise
-     * @param transformed Object to be transformed
-     * @param destiny Destiny object
-     */
-    public void flipTransform(double runTime, boolean horizontalFlip, MathObject transformed, MathObject destiny) {
-        scene.playAnimation(Commands.flipTransform(runTime, horizontalFlip, transformed, destiny));
-    }
-
-    /**
      * Performs a pan and zoom out animation of the current camera to ensure all
      * objects in the scene fit in the math view, using the default run time for
      * camera animations. You can set the gaps between objects and mathview
@@ -412,7 +397,7 @@ public class PlayAnim {
         final Vec gaps = scene.getCamera().getGaps();
         Rect r = scene.getCamera().getMathView();
         for (MathObject obj : scene.getObjects()) {
-            r = Rect.union(r, obj.getBoundingBox().addGap(gaps.x, gaps.y));
+            r = Rect.union(r,obj.getBoundingBox().addGap(gaps.x, gaps.y));
         }
         zoomToRect(runtime, r);
     }
@@ -442,7 +427,7 @@ public class PlayAnim {
         final Vec gaps = scene.getCamera().getGaps();
         Rect r = scene.getCamera().getMathView();
         for (MathObject obj : objs) {
-            r = Rect.union(r, obj.getBoundingBox().addGap(gaps.x, gaps.y));
+            r = Rect.union(r,obj.getBoundingBox().addGap(gaps.x, gaps.y));
         }
         zoomToRect(runTime, r);
     }
@@ -457,7 +442,7 @@ public class PlayAnim {
     public void zoomToObjects(double runTime, MathObject... objs) {
         Rect r = objs[0].getBoundingBox();
         for (MathObject obj : objs) {
-            r = Rect.union(r, obj.getBoundingBox());
+            r = Rect.union(r,obj.getBoundingBox());
         }
         zoomToRect(runTime, r);
     }
