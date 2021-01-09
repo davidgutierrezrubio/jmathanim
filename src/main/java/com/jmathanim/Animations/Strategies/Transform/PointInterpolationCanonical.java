@@ -60,7 +60,7 @@ public class PointInterpolationCanonical extends Animation {
         //First, if any of the shapes is empty, don't do nothing
         
         if ((mobjTransformed.size()==0)||(mobjDestiny.size()==0)){
-//            return;
+            return;
         }
         
         //I ensure they have the same number of points

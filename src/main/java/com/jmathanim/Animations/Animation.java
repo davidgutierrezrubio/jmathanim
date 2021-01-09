@@ -230,7 +230,7 @@ public abstract class Animation {
      * @param smoothness 1 full smoothnes, 0 makes the function identity
      * @return
      */
-    protected double lambdaDefault(double t, double smoothness) {
+    public double lambdaDefault(double t, double smoothness) {
         double h = smoothFunctionAux(t);
         double h2 = smoothFunctionAux(1 - t);
         return (1 - smoothness) * t + smoothness * h / (h + h2);

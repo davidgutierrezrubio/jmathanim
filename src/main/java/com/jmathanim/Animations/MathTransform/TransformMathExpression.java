@@ -207,10 +207,13 @@ public class TransformMathExpression extends Animation {
                 transform.setLambda(lambda);
                 break;
             case FLIP_HORIZONTALLY:
-                transform = Commands.flipTransform(runTime, sh, sh2, 0);
+                AnimationGroup ag=new AnimationGroup();
+//                ag.add(Commands.shift(runTime, sh.getCenter().to(sh2.getCenter()), sh).setLambda(t->t));
+                ag.add(Commands.flipTransform(runTime, true,sh, sh2).setUseObjectState(false));
+                transform=ag;
                 break;
             case FLIP_VERTICALLY:
-                transform = Commands.flipTransform(runTime, sh, sh2, 1);
+                transform = Commands.flipTransform(runTime, false,sh, sh2);
                 break;
         }
 
