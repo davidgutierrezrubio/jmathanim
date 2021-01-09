@@ -336,7 +336,34 @@ play.fadeOutAll();
 
 ![transform3](transform3.gif)
 
+## Flip transforms
+
+A simpler transform animation, which works on any `MathObject` instance is `flipTransform`. This animations scales the first object to 0 horizontally or vertically and then scales the second object from 0 to 1, giving the effect of flipping.
+
+```java
+LaTeXMathObject text = LaTeXMathObject.make("JMathAnim");
+
+//The MultiShapeObject and all its subclasses implement the iterable interface,
+//which allows to easily iterate over all the shapes this way:
+for (Shape s : text)
+{
+    s.center();//Center all the shape glyphs on the screen
+}
+camera.zoomToObjects(text);
+Shape previous = null;
+boolean horizontal = true; //Starts with an horizontal flipping
+for (Shape s : text) {
+    if (previous != null) {
+        playAnimation(Commands.flipTransform(.5, horizontal, previous, s));
+        horizontal = !horizontal;//And 
+    }
+    previous = s;
+}
+```
+![flipAnimation](flipAnimation.gif)
+
 # Animating style changes
+
 So far, we have seen how to animate the position or shape of an object. In the `Transform` animation, style of the transformed object changes smoothly to match the style of destiny too. There are a few animations related to the style of an object:
 
 The `setColor` animation animates the colors of the objects to the specified. Draw color and fill color may be specified. If you do not wish to change one of them, you just set it to null. For example:

@@ -288,7 +288,7 @@ For this to work, the `donaldKnuth.svg` file must be located at `<your_project_r
 
 Notice the command `config.setBackgroundColor(JMColor.WHITE)` we had to put in the `setupSketch` part. It's self-explicative. It simply sets the background color to white, so that we can see the svg we are importing.
 
-> **WARNING**: The SVG import capabilities are limited, not all SVG commands are implemented, like gradient or the ARC command. So, not all SVG files can be imported succesfully.
+> **WARNING**: The SVG import capabilities are limited, not all SVG commands are implemented, like gradients or the ARC command. So, not all SVG files can be imported succesfully.
 
 Importing a SVG creates a `MultiShape`object, that holds many `Shape`objects. Each object of the SVG file is converted to a `JMPath` and stored in a `Shape`object. So, you can perform transformations and animations like any other `Shape` object.
 

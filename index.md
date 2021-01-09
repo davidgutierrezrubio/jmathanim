@@ -8,6 +8,11 @@ Although with limited features, it can be used to create many, non too complex a
 [Here you can find some examples made with this library ](Gallery/Gallery.html)
 
 # What's new?
+Version 0.8.8-SNAPSHOT:
+
+* Fixed bug transforming shapes with the flip animation when their centers were not aligned
+* Fixed bug parsing styles to SVG objects different from path (rect, circle...)
+
 Version 0.8.7:
 
 * Added `stackTo` and `align`animations.

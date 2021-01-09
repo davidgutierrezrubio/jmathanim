@@ -539,8 +539,8 @@ Here is a gif from the movie generated:
 
 ![powerProperty1](powerProperty1.gif)
 
-<<<<<<< HEAD
 ## Moving 3 coins
+A solution for a simple puzzle. Can you invert the triangle only moving 3 coins?
 
 ```java
 Shape coinBase = Shape.circle().fillColor("gold").thickness(2);
@@ -584,6 +584,3 @@ Here is a gif from the movie generated:
 ![coins](coins.gif)
 
 [home](https://davidgutierrezrubio.github.io/jmathanim/) [back](../index.html)
-=======
-[home](https://davidgutierrezrubio.github.io/jmathanim/) [back](../index.html)
->>>>>>> b0860f39f975470a0cd9ad8ba50d95653a89ecd6
