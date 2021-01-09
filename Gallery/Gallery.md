@@ -461,14 +461,14 @@ And here with the 40 first odd numbers...
 
 ## A property of powers
 
-The `map` parameters may seem confusing, but the creation was pretty straightforward, using the `formulaHelper` method before to show the indices.
+The `map` parameters may seem confusing to read, but the creation was pretty straightforward, using the `formulaHelper` method before to show the indices of each LaTeXMathObject instance:
 
 ```java
 LaTeXMathObject t1 = LaTeXMathObject.make("$4^{2+3}=4^2\\cdot 4^3$");
 LaTeXMathObject t2 = LaTeXMathObject.make("$4^{7+3}=4^7\\cdot 4^3$").alignCenter(4, t1, 4);
 LaTeXMathObject t3 = LaTeXMathObject.make("$4^{7+1}=4^7\\cdot 4^1$").alignCenter(4, t1, 4);
 LaTeXMathObject t4 = LaTeXMathObject.make("$4^{7-2}=4^7\\cdot 4^{-2}$").alignCenter(4, t1, 4);
-LaTeXMathObject t5 = LaTeXMathObject.make("$4^{{1\\over2}-2}=4^{1\\over2}\\cdot 4^{-2}$").alignCenter(6, t1, 4);
+LaTeXMathObject t5 = LaTeXMathObject.make("$4^{ {1\\over2}-2}=4^{1\\over2}\\cdot 4^{-2}$").alignCenter(6, t1, 4);
 LaTeXMathObject t6 = LaTeXMathObject.make("$a^{b+c}=a^{b}\\cdot a^{c}$").alignCenter(4, t1, 4);
 
 //Colors
@@ -491,14 +491,14 @@ playAnimation(tr);
 waitSeconds(1);
 
 tr = new TransformMathExpression(runtime, t2, t3);
-tr.mapRange(0, 9, 0);
+tr.mapRange(0, 9, 0);//t2 and t3 have the same number of shapes, one-to-one correspondence
 playAnimation(tr);
 waitSeconds(1);
 
 tr = new TransformMathExpression(runtime, t3, t4);
 tr.mapRange(0, 8, 0);
 tr.defineDstGroup("minus8", 9, 10);
-tr.map(9, "minus8");
+tr.map(9, "minus8");//The "3" maps into the 2 shapes "-8"
 playAnimation(tr);
 waitSeconds(1);
 
@@ -516,7 +516,7 @@ waitSeconds(1);
 tr = new TransformMathExpression(runtime, t5, t6);
 tr.map(0, 0);
 tr.defineOrigGroup("frac1", 1, 2, 3);
-tr.map("frac1", 1);
+tr.map("frac1", 1);//The 3 shapes "1 / 2" maps into the shape "b"
 tr.mapRange(4, 7, 2);
 tr.defineOrigGroup("frac2", 8, 9, 10);
 tr.map("frac2", 6);
@@ -525,10 +525,11 @@ tr.defineOrigGroup("minus2", 13, 14);
 tr.map("minus2", 9);
 playAnimation(tr);
 waitSeconds(1);
-enableAnimations();
+
+//Highlight the "b"
 playAnimation(Commands.highlight(1, t6.get(1)),
               Commands.highlight(1, t6.get(6)));
-
+//Highlight the "c"
 playAnimation(Commands.highlight(1, t6.get(3)),
               Commands.highlight(1, t6.get(9)));
 waitSeconds(3);
@@ -538,6 +539,7 @@ Here is a gif from the movie generated:
 
 ![powerProperty1](powerProperty1.gif)
 
+<<<<<<< HEAD
 ## Moving 3 coins
 
 ```java
@@ -582,3 +584,6 @@ Here is a gif from the movie generated:
 ![coins](coins.gif)
 
 [home](https://davidgutierrezrubio.github.io/jmathanim/) [back](../index.html)
+=======
+[home](https://davidgutierrezrubio.github.io/jmathanim/) [back](../index.html)
+>>>>>>> b0860f39f975470a0cd9ad8ba50d95653a89ecd6

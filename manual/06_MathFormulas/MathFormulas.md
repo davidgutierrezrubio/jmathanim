@@ -13,7 +13,7 @@ For example if we generate a math expression with the command
 LaTeXMathObject sum=LaTeXMathObject.make("$2+2=4$");
 ```
 
-It will generate 5 shapes, that we can access via `get` method. Thus, the command `sum.get(0)` will return the first shape ( the "2" glyph), `sum.get(1)` will return the "+" glyph, etc. This indices will be important to specify exactly how we want the animation from one expression to another to be done.
+It will generate 5 shapes, that we can access via `get` method. Thus, the command `sum.get(0)` will return the first shape ( the "2" glyph), `sum.get(1)` will return the "+" glyph, etc. This indexeses will be important to specify exactly how we want the animation from one expression to another to be done.
 
 The major drawback of this approach is that is not always clear which glyph of the formula corresponds to a given index.  For that, we have the method `formulaHelper` that takes a varargs of `LatexMathObject` objects, or `String` with the LaTeX code, overlays the shape number for each one, stacks the formulas vertically, zooms and adds them to the scene. For example:
 
@@ -32,13 +32,13 @@ It is recommended, before doing any animation that involves math formulas, to ru
 
 ## Setting color to specific parts of a math expression
 
-If you want to apply colors to some parts of a math expression, you can use the `\color` commands of LaTeX or you can use the `setColor`method and specify the indices to apply the color. For example:
+If you want to apply colors to some parts of a math expression, you can use the `\color` commands of LaTeX or you can use the `setColor`method and specify the indexes to apply the color. For example:
 
 ```java
 LaTeXMathObject formula=LaTeXMathObject.make("$(a+b)^2=a^2+b^2+2ab$").center();
 camera.adjustToAllObjects();
-formula.setColor(JMColor.parse("darkred"),1,7,14);//Color dark red to indices 1, 7 and 14
-formula.setColor(JMColor.parse("darkgreen"),3,10,15);//Color dark green to indices 3,10 and 15
+formula.setColor(JMColor.parse("darkred"),1,7,14);//Color dark red to indexes 1, 7 and 14
+formula.setColor(JMColor.parse("darkgreen"),3,10,15);//Color dark green to indexes 3,10 and 15
 add(formula);
 waitSeconds(5);
 ```
@@ -51,7 +51,7 @@ Note that the method changes both draw and fill colors.
 
 ## The slice method
 
-Sometimes you may need to separate a formula in parts so you can animate them separately. The `slice`method extracts a subformula with the given indices and removes the extracted shapes from the original formula. For example
+Sometimes you may need to separate a formula in parts so you can animate them separately. The `slice`method extracts a subformula with the given indexes and removes the extracted shapes from the original formula. For example
 
 ```java
 Shape rectangle = Shape.square().scale(2,1).center().fillColor("chocolate");
@@ -81,7 +81,7 @@ waitSeconds(2);
 
 ![equationSlice](equationSlice.gif)
 
-Note that the although the sliced formula has only one element, the indices remain the same. So, if the "b" were in position 2 in the original formula, it is still in position 2 in the sliced formula, so that `sliceBase.get(2)` returns the "b" shape. The other indices stores empty shapes.
+Note that the although the sliced formula has only one element, the indexes remain the same. So, if the "b" were in position 2 in the original formula, it is still in position 2 in the sliced formula, so that `sliceBase.get(2)` returns the "b" shape. The other indexes stores empty shapes.
 
 There is another version of the method, with a boolean flag that lets control if the sliced shapes are removed from the original math expression or not. For example, in the previous example `LaTeXMathObject sliceBase=formula.slice(false,2)` will create a slice of the "b" glyph without altering the original formula.
 
@@ -108,7 +108,7 @@ we obtain the following:
 
 ![equation01](equation01.gif)
 
-It's nice, but not illustrative. It would be better to force the "+2" to convert into "-2", and the original "=" sign to their destination "=" sign. For this we have the `TransformMathExpression` animation class. But first, we must be clear about the indices of the different shapes that compose the latex objects. For that, we use the method `formulaHelper`:
+It's nice, but not illustrative. It would be better to force the "+2" to convert into "-2", and the original "=" sign to their destination "=" sign. For this we have the `TransformMathExpression` animation class. But first, we must be clear about the indexes of the different shapes that compose the latex objects. For that, we use the method `formulaHelper`:
 
 ```java
 formulaHelper(t1,t2);
@@ -159,13 +159,13 @@ Oh, this is better, but there is still something that looks odd.  When manipulat
 t2.alignCenter(1, t1, 3);
 ```
 
-we make that the center of glyph 1 of `t2` (its "=" sign) match the center of the glyph 3 of `t1` (its "=" sign). If we execute this method prior to the animation now we have:
+we make that the center of glyph number 1 of `t2` (its "=" sign) matches the center of the glyph number 3 of `t1` (its "=" sign). If we execute this method prior to the animation now we have:
 
 ![equation04](equation04.gif)
 
 ## Range mapping
 
-If we need to map a bunch of consecutive origin indices into another bunch of consecutive destiny indices, the method `mapRange(OrigA,OrigB,dst)` do exactly this. The command
+If we need to map a bunch of consecutive origin indexes into another bunch of consecutive destiny indexes , the method `mapRange(OrigA,OrigB,dst)` do exactly this. The command
 
 ```java
 tr.mapRange(3,7,13);
@@ -190,11 +190,11 @@ LaTeXMathObject t1 = LaTeXMathObject.make("$2+3{\\color{blue}i}+5-{\\color{blue}
 LaTeXMathObject t2 = LaTeXMathObject.make("$7+2{\\color{blue}i}$");
 ```
 
-It is desirably that the "2" and "+5" shapes morph into single shape "7". For the complex part, the coefficients "+3" and "-" should morph into "+2", and the two "i" symbols from the origin should morph into the single "i" in the destination. This can be achieved defining groups, with the methods ` defineOrigGroup(name, i1,i2,...)` and `defineDstGroup(name, i1,i2,...)`. First of all, let's see a clear view of the indices, with the `formulaHelper` method, as seen before:
+It is desirably that the "2" and "+5" shapes morph into single shape "7". For the complex part, the coefficients "+3" and "-" should morph into "+2", and the two "i" symbols from the origin should morph into the single "i" in the destination. This can be achieved defining groups, with the methods ` defineOrigGroup(name, i1,i2,...)` and `defineDstGroup(name, i1,i2,...)`. First of all, let's see a clear view of the indexes, with the `formulaHelper` method, as seen before:
 
 ![image-20201121172930831](equation05.png)
 
-We need to map orig-shapes 0, 4 and 5 into detiny-shape 7. We define a group in the origin with these indices:
+We need to map orig-shapes 0, 4 and 5 into destiny-shape 7. We define a group in the origin with these indexes:
 
 ```java
 tr.defineOrigGroup("realPart", 0,4,5);
@@ -216,7 +216,7 @@ tr.defineDstGroup("imagCoefDst", 1,2);//Shapes 1 and 2 in the destiny formula
 tr.map("imagCoef","imagCoefDst");
 ```
 
-As you can see, the `map` method admits any pair of group names or indices.
+As you can see, the `map` method admits any pair of group names or indexes.
 
 Finally, create a group with the "i" symbols in the origin (shapes 3 and 7) and map it into the "i" of the destiny (shape 3):
 
@@ -271,7 +271,7 @@ We will apply effects adding them to the `tr.map(0,2)` and `tr.map(2,0)` command
 
 ```java
 tr.map(0,2).setScale(.7);
-tr.map(2,0).setScale(1d/.7);
+tr.map(2,0).setScale(1./.7);
 ```
 
 ![equation07](equation07.gif)
@@ -350,3 +350,28 @@ waitSeconds(3);
 ```
 
 ![equation12](equation12.gif)
+
+And finally, we show how the initial animation will look applying colors, mapping, and effects:
+
+````java
+LaTeXMathObject t1 = LaTeXMathObject.make("$x+2=0$");
+LaTeXMathObject t2 = LaTeXMathObject.make("$x=-2$");
+t1.setColor(JMColor.parse("MEDIUMORCHID"),0);
+t2.setColor(JMColor.parse("MEDIUMORCHID"),0);
+
+t1.setColor(JMColor.parse("MEDIUMVIOLETRED"),2);
+t2.setColor(JMColor.parse("MEDIUMVIOLETRED"),2,3);
+
+t2.alignCenter(1, t1, 3);
+camera.zoomToObjects(t1,t2);
+TransformMathExpression tr = new TransformMathExpression(5, t1, t2);
+tr.map(0, 0);//Transforms orig-shape 0 to dst-shape 0
+tr.map(1, 2).addJumpEffect(t1.getHeight());//Transforms orig-shape 1 to dst-shape 2 and adds a jump effect with the height of t1
+tr.map(2, 3).addJumpEffect(t1.getHeight());//Transforms orig-shape 2 to dst-shape 3 and adds a jump effect with the height of t1
+tr.map(3, 1);//Transforms orig-shape 3 to dst-shape 1
+tr.setRemovingStyle(TransformMathExpression.RemoveType.SHRINK_OUT, 4);
+playAnimation(tr);
+waitSeconds(3);
+````
+
+![equation13](equation13.gif)
