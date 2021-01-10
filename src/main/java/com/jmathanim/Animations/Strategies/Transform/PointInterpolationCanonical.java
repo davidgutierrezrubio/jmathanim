@@ -19,6 +19,7 @@ package com.jmathanim.Animations.Strategies.Transform;
 
 import com.jmathanim.Animations.Animation;
 import com.jmathanim.Animations.Strategies.Transform.Optimizers.DivideEquallyStrategy;
+import com.jmathanim.Animations.Strategies.Transform.Optimizers.DivideOnSensiblePointsStrategy;
 import com.jmathanim.Utils.JMColor;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.CanonicalJMPath;
@@ -71,6 +72,7 @@ public class PointInterpolationCanonical extends Animation {
         this.mobjTransformed.getPath().removeConsecutiveHiddenVertices();
         this.mobjDestiny.getPath().removeConsecutiveHiddenVertices();
         if (optimizeStrategy == null) {
+//            optimizeStrategy = new DivideOnSensiblePointsStrategy();
             optimizeStrategy = new DivideEquallyStrategy();
         }
         optimizeStrategy.optimizePaths(mobjTransformed, mobjDestiny);
