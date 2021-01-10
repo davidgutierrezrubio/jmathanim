@@ -46,7 +46,7 @@ public class PointInterpolationCanonical extends Animation {
 
     public PointInterpolationCanonical(double runtime, Shape mobjTransformed, Shape mobjDestiny) {
         super(runtime);
-        this.mobjTransformed = mobjTransformed;
+        this.mobjTransformed = mobjTransformed.copy();
         this.mobjDestiny = mobjDestiny.copy();
         this.mobjDestinyOrig = mobjDestiny;
         this.addedAuxiliaryObjectsToScene = new ArrayList<>();
@@ -77,6 +77,8 @@ public class PointInterpolationCanonical extends Animation {
         }
         optimizeStrategy.optimizePaths(mobjTransformed, mobjDestiny);
         optimizeStrategy.optimizePaths(mobjDestiny, mobjTransformed);
+        
+        
         originalShapeBaseCopy = mobjTransformed.copy();
         preparePaths(mobjTransformed.jmpath, mobjDestiny.jmpath);
         if (DEBUG_COLORS) {
