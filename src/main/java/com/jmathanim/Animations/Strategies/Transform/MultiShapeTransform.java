@@ -23,6 +23,12 @@ import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.MultiShapeObject;
 
 /**
+ * Animation strategy between 2 multishapes A and B. If size(A) equals size(B)
+ * and one-to-one correspondence transform is done. If size(A)<size(B), copies
+ * of shapes of A are added to A to ensure A and B have the same size. The
+ * copies are distributed uniformly in the shapes of A. For example if A has 4
+ * shapes (0,1,2,3) and B has 11 (0,1,...10) the augmented A will have the
+ * shapes 0,0,0,1,1,1,2,2,2,3,3. A similar case happens if size(B)<size(A).
  *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
@@ -30,13 +36,13 @@ public class MultiShapeTransform extends AnimationGroup {
 
     private MultiShapeObject dst;
     private MultiShapeObject tr;
-    private MultiShapeObject mobjTransformed;
-    private MultiShapeObject mobjDestiny;
+    private final MultiShapeObject mobjTransformed;
+    private final MultiShapeObject mobjDestiny;
 
     public MultiShapeTransform(double runtime, MultiShapeObject mobjTransformed, MultiShapeObject mobjDestiny) {
         super();
-        this.mobjDestiny=mobjDestiny;
-        this.mobjTransformed=mobjTransformed;
+        this.mobjDestiny = mobjDestiny;
+        this.mobjTransformed = mobjTransformed;
         tr = new MultiShapeObject();
         dst = new MultiShapeObject();
         int sizeTr = mobjTransformed.shapes.size();
@@ -70,7 +76,6 @@ public class MultiShapeTransform extends AnimationGroup {
         super.initialize(scene);
         scene.remove(mobjTransformed);
     }
-    
 
     @Override
     public void finishAnimation() {
