@@ -72,8 +72,8 @@ public class PointInterpolationCanonical extends Animation {
         this.mobjTransformed.getPath().removeConsecutiveHiddenVertices();
         this.mobjDestiny.getPath().removeConsecutiveHiddenVertices();
         if (optimizeStrategy == null) {
-//            optimizeStrategy = new DivideOnSensiblePointsStrategy();
-            optimizeStrategy = new DivideEquallyStrategy();
+            optimizeStrategy = new DivideOnSensiblePointsStrategy();
+//            optimizeStrategy = new DivideEquallyStrategy();
         }
         optimizeStrategy.optimizePaths(mobjTransformed, mobjDestiny);
         optimizeStrategy.optimizePaths(mobjDestiny, mobjTransformed);

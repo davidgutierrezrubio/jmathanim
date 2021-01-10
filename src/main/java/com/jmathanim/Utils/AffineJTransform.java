@@ -602,6 +602,25 @@ public class AffineJTransform {
 
     }
 
+    /**
+     * Overloaded method. Returns the affine transform that maps the rectangle
+     * r1 onto r2
+     *
+     * @param r1 Origin rectangle
+     * @param r2 Destiny rectangle
+     * @param lambda Lambda parameter. 0 means unaltered, 1 fully transform done
+     * @return The transform
+     */
+    public static AffineJTransform createAffineTransformation(Rect r1, Rect r2, double lambda) {
+        Point A1 = r1.getDL();
+        Point A2 = r2.getDL();
+        Point B1 = r1.getDR();
+        Point B2 = r2.getDR();
+        Point C1 = r1.getUL();
+        Point C2 = r2.getUL();
+        return createAffineTransformation(A1, B1, C1, A2, B2, C2, lambda);
+    }
+
     public static AffineJTransform createRotateScaleXYTransformation(Point A, Point B, Point C, Point D, Point E, Point F, double lambda) {
         //First map A,B into (0,0) and (1,0)
         AffineJTransform tr1 = AffineJTransform.createDirect2DHomothecy(A, B, new Point(0, 0), new Point(1, 0), 1);

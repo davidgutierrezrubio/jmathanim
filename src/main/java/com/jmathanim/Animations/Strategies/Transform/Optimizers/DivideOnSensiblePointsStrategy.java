@@ -48,7 +48,7 @@ public class DivideOnSensiblePointsStrategy implements OptimizePathsStrategy {
             return;
         }
 
-        for (int n = n2; n < n1-1; n++) {
+        for (int n = n2; n < Math.min(n2+2, n1); n++) {
             for (int k = 0; k < pa2.size(); k++) {
                 JMPathPoint jmp = pa2.jmPathPoints.get(k);
                 if (jmp.type != JMPathPoint.JMPathPointType.INTERPOLATION_POINT) {
