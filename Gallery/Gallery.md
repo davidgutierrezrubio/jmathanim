@@ -583,4 +583,35 @@ Here is a gif from the movie generated:
 
 ![coins](coins.gif)
 
+## A declaration of love
+
+This example illustrates the transform animation between two multishape objects.
+
+```java
+LaTeXMathObject text = LaTeXMathObject.make("I$\\heartsuit$pentagons").center();
+text.setColor(JMColor.parse("darkred"), 1);//Heart must be dark red
+
+MultiShapeObject pentagons = new MultiShapeObject();
+for (Shape sh : text) {//Iterates over the shapes
+    //Creates a pentagon rotated a random angle
+    Shape pentagon = Shape.regularPolygon(5);
+    pentagon.rotate(Math.random() * 2 * PI);
+    AffineJTransform tr = AffineJTransform.createAffineTransformation(pentagon.getBoundingBox(), sh.getBoundingBox(), 1);
+    //Transforms the pentagon so that fits in the bounding box of the current letter
+    tr.applyTransform(pentagon);
+    //Pentagon will be drawed and filled with a random color
+    JMColor col = JMColor.random();
+    pentagon.fillColor(col)
+        .fillAlpha(.5)
+        .drawColor(col);
+    pentagons.add(pentagon);
+}
+
+camera.zoomToObjects(text);
+play.transform(3, pentagons, text);
+play.transform(3, text, pentagons);
+```
+
+![pentagons](pentagons.gif)
+
 [home](https://davidgutierrezrubio.github.io/jmathanim/) [back](../index.html)
