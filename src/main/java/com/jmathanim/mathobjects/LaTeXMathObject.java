@@ -227,7 +227,7 @@ public class LaTeXMathObject extends SVGMathObject {
         LaTeXMathObject resul = new LaTeXMathObject();
         for (Shape sh : shapes) {
             final Shape copy = sh.copy();
-            resul.addShape(copy);
+            resul.add(copy);
         }
         resul.mp.copyFrom(mp);
         resul.absoluteSize = this.absoluteSize;

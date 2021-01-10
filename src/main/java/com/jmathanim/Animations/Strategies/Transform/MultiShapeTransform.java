@@ -19,6 +19,7 @@ package com.jmathanim.Animations.Strategies.Transform;
 
 import com.jmathanim.Animations.AnimationGroup;
 import com.jmathanim.Animations.Transform;
+import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.MultiShapeObject;
 
 /**
@@ -27,19 +28,56 @@ import com.jmathanim.mathobjects.MultiShapeObject;
  */
 public class MultiShapeTransform extends AnimationGroup {
 
+    private MultiShapeObject dst;
+    private MultiShapeObject tr;
+    private MultiShapeObject mobjTransformed;
+    private MultiShapeObject mobjDestiny;
+
     public MultiShapeTransform(double runtime, MultiShapeObject mobjTransformed, MultiShapeObject mobjDestiny) {
         super();
-        int numAnims = Math.min(mobjTransformed.shapes.size(), mobjDestiny.shapes.size());
-        for (int n = 0; n < numAnims - 1; n++) {
-            add(new Transform(runtime, mobjTransformed.get(n), mobjDestiny.get(n)));
-        }
-        //Now, merge the remaining with the last
-        for (int n = numAnims-1; n < mobjTransformed.shapes.size(); n++) {
-            for (int m = numAnims-1; m < mobjDestiny.shapes.size(); m++) {
-                add(new Transform(runtime, mobjTransformed.get(n), mobjDestiny.get(m)));
+        this.mobjDestiny=mobjDestiny;
+        this.mobjTransformed=mobjTransformed;
+        tr = new MultiShapeObject();
+        dst = new MultiShapeObject();
+        int sizeTr = mobjTransformed.shapes.size();
+        int sizeDst = mobjDestiny.shapes.size();
+        int numAnims = Math.max(sizeTr, sizeDst);
+
+        if (sizeDst < sizeTr) {
+            for (int i = 0; i < sizeTr; i++) {
+                dst.add(mobjDestiny.get(i * sizeDst / sizeTr).copy());
             }
+            tr = mobjTransformed.copy();
+        }
+        if (sizeTr < sizeDst) {
+            for (int i = 0; i < sizeDst; i++) {
+                tr.add(mobjTransformed.get(i * sizeTr / sizeDst).copy());
+            }
+            dst = mobjDestiny.copy();
+        }
+        if (sizeDst == sizeTr) {
+            dst = mobjDestiny.copy();
+            tr = mobjTransformed.copy();
         }
 
+        for (int n = 0; n < numAnims; n++) {
+            add(new Transform(runtime, tr.get(n), dst.get(n)));
+        }
+    }
+
+    @Override
+    public void initialize(JMathAnimScene scene) {
+        super.initialize(scene);
+        scene.remove(mobjTransformed);
+    }
+    
+
+    @Override
+    public void finishAnimation() {
+        super.finishAnimation();
+        scene.remove(tr);
+        scene.remove(dst);
+        scene.add(mobjDestiny);
     }
 
 }

@@ -26,8 +26,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
-import java.util.stream.IntStream;
-import sun.security.util.ArrayUtil;
 
 /**
  * This class stores multiple JMPathObjects, and properly apply transforms and
@@ -59,7 +57,7 @@ public class MultiShapeObject extends MathObject implements Iterable<Shape> {
         this.shapes.addAll(jmps);
     }
 
-    public boolean addShape(Shape e) {
+    public boolean add(Shape e) {
         return shapes.add(e);
     }
 
@@ -104,7 +102,7 @@ public class MultiShapeObject extends MathObject implements Iterable<Shape> {
         MultiShapeObject resul = new MultiShapeObject();
         for (Shape sh : shapes) {
             final Shape copy = sh.copy();
-            resul.addShape(copy);
+            resul.add(copy);
         }
         resul.mp.copyFrom(mp);
         resul.absoluteSize = this.absoluteSize;

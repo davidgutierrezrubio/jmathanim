@@ -27,6 +27,7 @@ import com.jmathanim.Animations.Strategies.Transform.RotateAndScaleXYTransform;
 import com.jmathanim.Utils.JMathAnimConfig;
 import com.jmathanim.Utils.MODrawProperties;
 import com.jmathanim.jmathanim.JMathAnimScene;
+import com.jmathanim.mathobjects.CanonicalJMPath;
 import com.jmathanim.mathobjects.FunctionGraph;
 import com.jmathanim.mathobjects.Line;
 import com.jmathanim.mathobjects.MathObject;
@@ -151,6 +152,7 @@ public class Transform extends Animation {
                 transformStrategy = new MultiShapeTransform(runTime, (MultiShapeObject) mobjTransformed, (MultiShapeObject) mobjDestiny);
                 JMathAnimScene.logger.info("Transform method: Multishape");
                 break;
+
             case INTERPOLATE_SIMPLE_SHAPES_BY_POINT:
                 transformStrategy = new PointInterpolationSimpleShapeTransform(runTime, (Shape) mobjTransformed, (Shape) mobjDestiny);
                 JMathAnimScene.logger.info("Transform method: Point interpolation between 2 simple closed curves");

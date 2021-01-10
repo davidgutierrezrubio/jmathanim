@@ -30,6 +30,15 @@ public class CanonicalJMPath {
 
     public final ArrayList<JMPath> paths;
 
+    public static CanonicalJMPath make(MultiShapeObject msho) {
+        CanonicalJMPath resul=new CanonicalJMPath();
+        for (Shape sh:msho) {
+            CanonicalJMPath aa = sh.getPath().canonicalForm();
+            resul.paths.addAll(aa.paths);
+        }
+        return resul;
+    }
+    
     public CanonicalJMPath(ArrayList<JMPath> paths) {
         this.paths = paths;
     }
@@ -40,7 +49,7 @@ public class CanonicalJMPath {
         msh.mp.copyFrom(mpCopy);
         for (JMPath p : paths) {
             final Shape shape = new Shape(p.copy(), mpCopy);
-            msh.addShape(shape);
+            msh.add(shape);
         }
         msh.layer(obj.getLayer());
         return msh;
