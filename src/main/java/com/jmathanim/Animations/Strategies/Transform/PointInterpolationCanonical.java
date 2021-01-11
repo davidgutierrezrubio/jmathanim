@@ -28,6 +28,7 @@ import com.jmathanim.mathobjects.JMPathPoint;
 import com.jmathanim.mathobjects.Point;
 import com.jmathanim.mathobjects.Shape;
 import java.util.ArrayList;
+import java.util.Comparator;
 
 /**
  * Separates paths into canonical forms to interpolate point by point
@@ -58,16 +59,13 @@ public class PointInterpolationCanonical extends Animation {
         //This is the initialization for the point-to-point interpolation
         //Prepare paths. 
         //First, if any of the shapes is empty, don't do nothing
-        
-        if ((mobjTransformed.size()==0)||(mobjDestiny.size()==0)){
+
+        if ((mobjTransformed.size() == 0) || (mobjDestiny.size() == 0)) {
             return;
         }
-        
+
         //I ensure they have the same number of points
         //and be in connected components form.
-
-        
-        
         //Remove consecutive hidden vertices, in case.
         this.mobjTransformed.getPath().removeConsecutiveHiddenVertices();
         this.mobjDestiny.getPath().removeConsecutiveHiddenVertices();
@@ -77,8 +75,7 @@ public class PointInterpolationCanonical extends Animation {
         }
         optimizeStrategy.optimizePaths(mobjTransformed, mobjDestiny);
         optimizeStrategy.optimizePaths(mobjDestiny, mobjTransformed);
-        
-        
+
         originalShapeBaseCopy = mobjTransformed.copy();
         preparePaths(mobjTransformed.jmpath, mobjDestiny.jmpath);
         if (DEBUG_COLORS) {
@@ -101,10 +98,10 @@ public class PointInterpolationCanonical extends Animation {
         double lt = lambda.applyAsDouble(t);
         JMPathPoint interPoint, basePoint, dstPoint;
 
-          if ((connectedOrigin.getNumberOfPaths()==0)||(connectedDst.getNumberOfPaths()==0)) {
+        if ((connectedOrigin.getNumberOfPaths() == 0) || (connectedDst.getNumberOfPaths() == 0)) {
             return;
         }
-        
+
         for (int numConnected = 0; numConnected < this.connectedDst.getNumberOfPaths(); numConnected++) {
             JMPath convertedPath = connectedOrigin.get(numConnected);
             JMPath fromPath = connectedOriginaRawCopy.get(numConnected);
@@ -137,14 +134,12 @@ public class PointInterpolationCanonical extends Animation {
 
     @Override
     public void finishAnimation() {
-         super.finishAnimation();
-        mobjTransformed.jmpath.clear();
-        mobjTransformed.jmpath.addJMPointsFrom(mobjDestinyOrig.getPath());
-        mobjTransformed.mp.copyFrom(mobjDestinyOrig.mp);
-        mobjTransformed.absoluteSize = mobjDestinyOrig.absoluteSize;
+        super.finishAnimation();
+        scene.remove(mobjTransformed);
         for (Shape shapesToRemove : addedAuxiliaryObjectsToScene) {
             scene.remove(shapesToRemove);
         }
+        scene.add(mobjDestinyOrig);
     }
 
     /**
@@ -158,11 +153,23 @@ public class PointInterpolationCanonical extends Animation {
 
         connectedOrigin = pathTransformed.canonicalForm();
         connectedDst = pathDestiny.canonicalForm();
-        
-         if ((connectedOrigin.getNumberOfPaths()==0)||(connectedDst.getNumberOfPaths()==0)) {
+
+        //Sort canonical forms from biggest chunk to smallest.
+        //The size is computed using the semiperimeter of the bounding box
+        Comparator<JMPath> comparator = (JMPath o1, JMPath o2) -> {
+            if ((o1.getWidth() + o1.getHeight()) < (o2.getWidth() + o2.getHeight())) {
+                return 1;
+            } else {
+                return -1;
+            }
+       };
+        connectedOrigin.paths.sort(comparator);
+        connectedDst.paths.sort(comparator);
+
+        if ((connectedOrigin.getNumberOfPaths() == 0) || (connectedDst.getNumberOfPaths() == 0)) {
             return;
         }
-        
+
         alignNumberOfComponents(connectedOrigin, connectedDst);
         connectedOriginaRawCopy = new CanonicalJMPath();
         for (JMPath p : connectedOrigin.getPaths()) {
@@ -192,7 +199,7 @@ public class PointInterpolationCanonical extends Animation {
     }
 
     private void alignNumberOfComponents(CanonicalJMPath con1, CanonicalJMPath con2) {
-        if ((con1.getNumberOfPaths()==0)||(con2.getNumberOfPaths()==0)) {
+        if ((con1.getNumberOfPaths() == 0) || (con2.getNumberOfPaths() == 0)) {
             return;
         }
         CanonicalJMPath conBig, conSmall;

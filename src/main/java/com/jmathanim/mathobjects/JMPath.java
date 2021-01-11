@@ -413,6 +413,24 @@ public class JMPath implements Updateable, Stateable {
         }
     }
 
+    public double getWidth() {
+        Rect r = getBoundingBox();
+        if (r == null) {
+            return 0;
+        } else {
+            return r.getWidth();
+        }
+    }
+
+    public double getHeight() {
+        Rect r = getBoundingBox();
+        if (r == null) {
+            return 0;
+        } else {
+            return r.getHeight();
+        }
+    }
+
     public Rect getBoundingBox() {
         if (jmPathPoints.isEmpty()) {
             return null;
@@ -553,7 +571,7 @@ public class JMPath implements Updateable, Stateable {
      * @return The array of paths
      */
     public CanonicalJMPath canonicalForm() {
-        if (this.size()==0) {
+        if (this.size() == 0) {
             return new CanonicalJMPath();
         }
         ArrayList<JMPath> resul = new ArrayList<>();
@@ -684,15 +702,14 @@ public class JMPath implements Updateable, Stateable {
         }
     }
 
-
-    public boolean isEquivalentTo(JMPath obj,double epsilon) {
+    public boolean isEquivalentTo(JMPath obj, double epsilon) {
         if (size() != obj.size()) {
             return false;
         }
         for (int n = 0; n < size(); n++) {
             JMPathPoint pa1 = getJMPoint(n);
             JMPathPoint pa2 = obj.getJMPoint(n);
-            if (!pa1.isEquivalentTo(pa2,epsilon)) {
+            if (!pa1.isEquivalentTo(pa2, epsilon)) {
                 return false;
             }
         }

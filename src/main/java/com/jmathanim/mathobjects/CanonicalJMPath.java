@@ -15,7 +15,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-
 package com.jmathanim.mathobjects;
 
 import com.jmathanim.Utils.MODrawProperties;
@@ -31,14 +30,14 @@ public class CanonicalJMPath {
     public final ArrayList<JMPath> paths;
 
     public static CanonicalJMPath make(MultiShapeObject msho) {
-        CanonicalJMPath resul=new CanonicalJMPath();
-        for (Shape sh:msho) {
+        CanonicalJMPath resul = new CanonicalJMPath();
+        for (Shape sh : msho) {
             CanonicalJMPath aa = sh.getPath().canonicalForm();
             resul.paths.addAll(aa.paths);
         }
         return resul;
     }
-    
+
     public CanonicalJMPath(ArrayList<JMPath> paths) {
         this.paths = paths;
     }
@@ -66,6 +65,7 @@ public class CanonicalJMPath {
     public boolean addAll(Collection<? extends JMPath> c) {
         return paths.addAll(c);
     }
+
     public boolean addAll(CanonicalJMPath c) {
         return paths.addAll(c.getPaths());
     }
@@ -107,14 +107,14 @@ public class CanonicalJMPath {
      * Return path number where segment lies
      *
      * @param k Index of the JMPathPoint
-     * @return An int[] array containing the path number and the segment number in that path
-     * All zero-based.
+     * @return An int[] array containing the path number and the segment number
+     * in that path All zero-based.
      */
     public int[] getSegmentLocation(int k) {
         k = k % getTotalNumberOfSegments(); //If k is too big...
         int n = 0;
-        while (paths.get(n).size()-1 <= k) {
-            k -= paths.get(n).size()-1;
+        while (paths.get(n).size() - 1 <= k) {
+            k -= paths.get(n).size() - 1;
             n++;
         }
         return new int[]{n, k};
@@ -157,17 +157,17 @@ public class CanonicalJMPath {
         return resul;
 
     }
- public JMPath toJMPath()
- {
+
+    public JMPath toJMPath() {
         JMPath resul = new JMPath();
         for (JMPath p : paths) {
             resul.addJMPointsFrom(p);
         }
         return resul;
- }
+    }
 
     public int size() {
         return paths.size();
     }
- 
+
 }
