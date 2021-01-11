@@ -413,6 +413,11 @@ public class JMPath implements Updateable, Stateable {
         }
     }
 
+    /**
+     * Returns the width of the path
+     *
+     * @return The width. If the path is empty, returns 0.
+     */
     public double getWidth() {
         Rect r = getBoundingBox();
         if (r == null) {
@@ -422,6 +427,11 @@ public class JMPath implements Updateable, Stateable {
         }
     }
 
+    /**
+     * Returns the height of the path
+     *
+     * @return The height. If the path is empty, returns 0.
+     */
     public double getHeight() {
         Rect r = getBoundingBox();
         if (r == null) {
@@ -431,6 +441,12 @@ public class JMPath implements Updateable, Stateable {
         }
     }
 
+    /**
+     * Returns the bounding box of the path.
+     *
+     * @return The bounding box, as a Rect instance. If the path is empty,
+     * returns null;
+     */
     public Rect getBoundingBox() {
         if (jmPathPoints.isEmpty()) {
             return null;
@@ -473,13 +489,6 @@ public class JMPath implements Updateable, Stateable {
             zmax = (cz2 > zmax ? cz2 : zmax);
         }
         return new Rect(xmin, ymin, zmin, xmax, ymax, zmax);
-    }
-
-    void scale(Point point, double d, double e, double f) {
-        for (JMPathPoint p : jmPathPoints) {
-            p.scale(point, d, e, f);
-
-        }
     }
 
     /**
@@ -530,6 +539,12 @@ public class JMPath implements Updateable, Stateable {
         //This should do nothing, let their points to update by themselves
     }
 
+    /**
+     * Replaces the JMPathPoints of the path with copies of points from another
+     * path. path.
+     *
+     * @param path The path with the JMPathPoints to add.
+     */
     public void setJMPoints(JMPath path) {
         this.clear();
         this.addJMPointsFrom(path.rawCopy());
@@ -679,6 +694,10 @@ public class JMPath implements Updateable, Stateable {
         return resul;
     }
 
+    /**
+     * Removes unnecessary points from the path. Duplicated points or
+     * consecutive hidden ones.
+     */
     public void distille() {
         //Delete points that are separated
         this.removeConsecutiveHiddenVertices();
@@ -702,6 +721,16 @@ public class JMPath implements Updateable, Stateable {
         }
     }
 
+    /**
+     * Performs a comparison point-to-point with another path. This method is
+     * used to determine if another path is the affine transformation of
+     * another, for example.
+     *
+     * @param obj The other path to compare.
+     * @param epsilon A threshold value to compare.
+     * @return True if all distances are smaller than the threshold value. False
+     * otherwise
+     */
     public boolean isEquivalentTo(JMPath obj, double epsilon) {
         if (size() != obj.size()) {
             return false;
