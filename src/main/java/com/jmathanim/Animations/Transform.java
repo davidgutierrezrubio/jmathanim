@@ -120,23 +120,19 @@ public class Transform extends Animation {
 
             if (TransformStrategyChecker.testDirectHomothecyTransform(shTr, shDst, epsilon)) {
                 transformMethod = TransformMethod.HOMOTHECY_TRANSFORM;
-                shouldOptimizePathsFirst = true;
                 return;
             }
             if (TransformStrategyChecker.testRotateScaleXYTransform(shTr, shDst, epsilon)) {
                 transformMethod = TransformMethod.ROTATE_AND_SCALEXY_TRANSFORM;
-                shouldOptimizePathsFirst = true;
                 return;
             }
             if (TransformStrategyChecker.testGeneralAffineTransform(shTr, shDst, epsilon)) {
                 transformMethod = TransformMethod.GENERAL_AFFINE_TRANSFORM;
-                shouldOptimizePathsFirst = true;
                 return;
             }
             //If 2 simple, closed curves, I have something simpler in mind...
             if ((shTr.getPath().getNumberOfConnectedComponents() == 0) && (shDst.getPath().getNumberOfConnectedComponents() == 0)) {
                 transformMethod = TransformMethod.INTERPOLATE_SIMPLE_SHAPES_BY_POINT;
-                shouldOptimizePathsFirst = true;
                 return;
             }
         }

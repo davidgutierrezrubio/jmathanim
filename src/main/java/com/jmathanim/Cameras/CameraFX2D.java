@@ -37,16 +37,6 @@ public class CameraFX2D extends Camera {
 
     }
 
-    /**
-     * Center camera in math-coordinates x,y, ignores z
-     *
-     * @param x
-     * @param y
-     */
-    @Override
-    public final void setCenter(double x, double y, double z) {
-        setCenter(x, y);//Ignore the z, we are in 2D!
-    }
 
     /**
      * Center camera in math-coordinates x,y
@@ -65,7 +55,7 @@ public class CameraFX2D extends Camera {
         double xx = obj.getCenter().v.x;
         double yy = obj.getCenter().v.y;
         double zz = obj.getCenter().v.z;
-        setCenter(xx, yy, zz);
+        setCenter(xx, yy);
     }
 
     @Override

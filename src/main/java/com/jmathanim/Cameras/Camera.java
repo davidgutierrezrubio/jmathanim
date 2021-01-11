@@ -98,13 +98,13 @@ public abstract class Camera {
     }
 
     public void shift(double x, double y) {
-        setMathXY(xmin + x, xmax + x, .5*(ymin+ymax) + y);
+        setMathXY(xmin + x, xmax + x, .5 * (ymin + ymax) + y);
     }
 
     /**
      * Adjust the view so that if contains the area given by a Rect object.The
- view is the minimal bounding box that contains r, with the proportions of
- the screen.
+     * view is the minimal bounding box that contains r, with the proportions of
+     * the screen.
      *
      * @param <T> Camera subclass
      * @param rAdjust Rectangle to adjust
@@ -116,6 +116,15 @@ public abstract class Camera {
         return (T) this;
     }
 
+    /**
+     * Adjust the camera view so that all objects in the scene are visible,
+     * zooming out as necessary. The difference with the zoom methods is that a
+     * zoom in is not applied in this case. The setGaps method can be called
+     * before to set the gaps between the view and the objects.
+     *
+     * @param <T> Camera subclass
+     * @return This object
+     */
     public <T extends Camera> T adjustToAllObjects() {
         if (!scene.getObjects().isEmpty()) {
             MathObject[] objs = scene.getObjects().toArray(new MathObject[scene.getObjects().size()]);
@@ -124,24 +133,67 @@ public abstract class Camera {
         return (T) this;
     }
 
+    /**
+     * Adjust the camera view so that the specified objects are visible (objects
+     * don't need to be added to the scene), zooming out as necessary. The
+     * difference with the zoom methods is that a zoom in is not applied in this
+     * case. The setGaps method can be called before to set the gaps between the
+     * view and the objects.
+     *
+     * @param <T> Camera subclass
+     * @param objs Objects to zoom in
+     * @return This object
+     */
     public <T extends Camera> T adjustToObjects(MathObject... objs) {
         Rect r = getMathView();
         for (MathObject obj : objs) {
-            r = Rect.union(r,obj.getBoundingBox());
+            r = Rect.union(r, obj.getBoundingBox());
         }
         adjustToRect(r.addGap(hgap, hgap));
         return (T) this;
     }
 
+    /**
+     * Zoom the camera so that the specified objects are visible (objects don't
+     * need to be added to the scene). The setGaps method can be called before
+     * to set the gaps between the view and the objects.
+     *
+     * @param <T> Camera subclass
+     * @return This object
+     */
     public <T extends Camera> T zoomToObjects(MathObject... objs) {
         Rect r = objs[0].getBoundingBox();
         for (MathObject obj : objs) {
-            r = Rect.union(r,obj.getBoundingBox());
+            r = Rect.union(r, obj.getBoundingBox());
         }
         adjustToRect(r.addGap(hgap, hgap));
         return (T) this;
     }
 
+    /**
+     * Zoom the camera so that all objects in the scene are visible. The setGaps
+     * method can be called before to set the gaps between the view and the
+     * objects.
+     *
+     * @param <T> Camera subclass
+     * @return This object
+     */
+    public <T extends Camera> T zoomToAllObjects() {
+        if (!scene.getObjects().isEmpty()) {
+            MathObject[] objs = scene.getObjects().toArray(new MathObject[scene.getObjects().size()]);
+            zoomToObjects(objs);
+        }
+        return (T) this;
+    }
+
+    /**
+     * Scales the visible area with the given factor.
+     *
+     * @param <T> Camera subclass
+     * @param scale Scale factor. A value of 1 does nothing. A value of 0.5
+     * applies a 2x zoom.
+     * @return This object
+     */
     public <T extends Camera> T scale(double scale) {
         setMathView(getMathView().scaled(scale, scale));
         return (T) this;
@@ -185,9 +237,9 @@ public abstract class Camera {
     }
 
     /**
-     * Return an array with the corners of the math world to display
+     * Return the visible math space portion.
      *
-     * @return An array with the values {xmin,ymin,xmax,ymax}
+     * @return a Rect object that represents the visible math space portion.
      */
     public Rect getMathView() {
         return new Rect(xmin, ymin, xmax, ymax);
@@ -200,15 +252,6 @@ public abstract class Camera {
      * @param y
      */
     public abstract void setCenter(double x, double y);
-
-    /**
-     * Center camera in math-coordinates x,y,Z
-     *
-     * @param x
-     * @param y
-     * @param z
-     */
-    public abstract void setCenter(double x, double y, double z);
 
     /**
      * Convert a scalar given in math coordinates to screen coordinates
@@ -239,6 +282,11 @@ public abstract class Camera {
 
     abstract public void restoreState();
 
+    /**
+     * Return the current gaps of the camera
+     * @return a Vec with the gap components
+     */
+    
     public Vec getGaps() {
         return new Vec(hgap, vgap);
     }
