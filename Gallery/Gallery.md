@@ -593,7 +593,7 @@ text.setColor(JMColor.parse("darkred"), 1);//Heart must be dark red
 
 MultiShapeObject pentagons = new MultiShapeObject();
 for (Shape sh : text) {//Iterates over the shapes
-    //Creates a pentagon rotated a random angle
+    //Creates a pentagon rotated with a random angle
     Shape pentagon = Shape.regularPolygon(5);
     pentagon.rotate(Math.random() * 2 * PI);
     AffineJTransform tr = AffineJTransform.createAffineTransformation(pentagon.getBoundingBox(), sh.getBoundingBox(), 1);
