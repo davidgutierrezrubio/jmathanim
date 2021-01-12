@@ -18,6 +18,7 @@
 package com.jmathanim.mathobjects;
 
 import com.jmathanim.Renderers.Renderer;
+import com.jmathanim.Utils.AffineJTransform;
 import com.jmathanim.Utils.JMathAnimConfig;
 import com.jmathanim.Utils.MODrawProperties;
 import com.jmathanim.Utils.Rect;
@@ -71,6 +72,20 @@ public class Point extends MathObject {
         return new Point(0, 0, 1);
     }
 
+     public static final Point segmentIntersection(Point A, Point B, Point C, Point D) {
+        AffineJTransform tr = AffineJTransform.createAffineTransformation(A, B, C, Point.unitX(), Point.unitY(), Point.origin(), 1);
+        Point P = tr.getTransformedObject(D);
+        double r = P.v.x + P.v.y;
+        if ((r >= 1) & (P.v.x >= 0) & (P.v.y >= 0)) {
+            P.v.x /= r;
+            P.v.y /= r;
+            return tr.getInverse().getTransformedObject(P);
+        } else {
+            return null;
+        }
+    }
+    
+    
     /**
      * Creates a new Point with coordinates (0,0,0), with default style.
      */

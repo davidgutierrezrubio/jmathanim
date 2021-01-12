@@ -688,6 +688,12 @@ public abstract class MathObject implements Drawable, Updateable, Stateable {
         return "mobj" + label + " " + mp.getLayer();
     }
 
+    /**
+     * Returns the visibility status of the object. If false, object will not be
+     * drawed, even if it is added to the scene. It will be updated, though.
+     *
+     * @return True if visible, false otherwise
+     */
     public boolean isVisible() {
         return visibleFlag;
     }
@@ -698,8 +704,8 @@ public abstract class MathObject implements Drawable, Updateable, Stateable {
      * @return The width
      */
     public double getWidth() {
-          Rect b = getBoundingBox();
-        if (b==null) {
+        Rect b = getBoundingBox();
+        if (b == null) {
             return 0;
         } else {
             return b.getWidth();
@@ -713,7 +719,7 @@ public abstract class MathObject implements Drawable, Updateable, Stateable {
      */
     public double getHeight() {
         Rect b = getBoundingBox();
-        if (b==null) {
+        if (b == null) {
             return 0;
         } else {
             return b.getHeight();

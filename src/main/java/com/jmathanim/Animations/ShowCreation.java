@@ -117,7 +117,7 @@ public class ShowCreation extends Animation {
      * @param mobj MathObject which will be animated. Its type determines the
      * type of animation to perform.
      */
-    public void determineCreationStrategy(MathObject mobj) {
+    private void determineCreationStrategy(MathObject mobj) {
         if (mobj instanceof Axes) {
             this.strategyType = ShowCreationStrategy.AXES_CREATION;
             return;
@@ -160,10 +160,13 @@ public class ShowCreation extends Animation {
     /**
      * Sets the animation strategy
      *
+     * @param <T> This class
      * @param strategyType Strategy, chosen from enum ShowCreationStrategy
+     * @return This object
      */
-    public void setStrategy(ShowCreationStrategy strategyType) {
+    public <T extends ShowCreation> T setStrategy(ShowCreationStrategy strategyType) {
         this.strategyType = strategyType;
+        return (T) this;
     }
 
     /**

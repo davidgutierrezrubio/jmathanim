@@ -95,10 +95,14 @@ public class Commands {
     }
 
     public static Animation highlight(double runtime, MathObject... objects) {
+        return highlight(runtime, 1.5, objects);
+    }
+
+    public static Animation highlight(double runtime, double scale, MathObject... objects) {
         AnimationGroup ag = new AnimationGroup();
         Point center = MathObjectGroup.make(objects).getCenter();
         for (MathObject obj : objects) {
-            ag.add(Commands.scale(runtime, center, 1.5, obj).setLambda((x) -> 4 * x * (1 - x)));
+            ag.add(Commands.scale(runtime, center, scale, obj).setLambda((x) -> 4 * x * (1 - x)));
         }
         return ag;
     }

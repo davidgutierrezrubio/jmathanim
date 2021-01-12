@@ -228,13 +228,39 @@ public class Shape extends MathObject {
         return obj;
     }
 
+    /**
+     * Creates a rectangle from 2 opposite points
+     *
+     * @param A First point
+     * @param B Second point
+     * @return The rectangle
+     */
     public static Shape rectangle(Point A, Point B) {
         Shape obj = new Shape();
-        JMathAnimConfig.getConfig().getScene();
         JMPathPoint p1 = JMPathPoint.lineTo(A);
         JMPathPoint p2 = JMPathPoint.lineTo(B.v.x, A.v.y);
         JMPathPoint p3 = JMPathPoint.lineTo(B);
         JMPathPoint p4 = JMPathPoint.lineTo(A.v.x, B.v.y);
+        obj.jmpath.addJMPoint(p1, p2, p3, p4);
+        return obj;
+    }
+
+    /**
+     * Creates a rectangle from 3 consecutive points.
+     *
+     * @param A First point
+     * @param B Second point. The fourth point will be the opposite of this
+     * point. This will be the point with index 0 in the path.
+     * @param C Third point
+     * @return The rectangle
+     */
+    public static Shape rectangle(Point A, Point B, Point C) {
+        Shape obj = new Shape();
+
+        JMPathPoint p1 = JMPathPoint.lineTo(B);
+        JMPathPoint p2 = JMPathPoint.lineTo(C);
+        JMPathPoint p3 = JMPathPoint.lineTo(C.add(B.to(A)));
+        JMPathPoint p4 = JMPathPoint.lineTo(A);
         obj.jmpath.addJMPoint(p1, p2, p3, p4);
         return obj;
     }
