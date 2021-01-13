@@ -1,5 +1,18 @@
 [home](https://davidgutierrezrubio.github.io/jmathanim/) [back](../index.html)
 
+# Disabling and enabling animations
+
+Suppose you are writing a rather long animation.  Usually this process involves several test runs to check if every goes as planned. If you are fine tuning the last part of the animation, you don't need to run all the animation from the beginning to do this. Instead, you can add these methods to your code:
+
+```java
+disableAnimations();
+//...animation code that is already tested and don't need to see it again before generating the final movie
+enableAnimations();
+//...animation code that I want to preview
+```
+
+ The `disableAnimations()` and `enableAnimations()` methods allows to temporarily disable animations and frame generations. Updating and object creations are done, but the non essential parts, like drawing, writing to movie, or performing the animations is omitted, dramatically increasing speed. You can also use this to generate a movie with only specific parts of the sketch.
+
 # Updaters
 
 An updater is an object whose state is automatically updated right before doing the draws on the screen. Any class that implements the `Updateable` interface can be registered as an updater. This interface implements the two following methods:
