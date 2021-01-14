@@ -104,4 +104,14 @@ public class DensityPlot extends AbstractJMImage {
         return raster;
     }
 
+    public BiFunction<Double, Double, Double> getDensityMap() {
+        return densityMap;
+    }
+
+    public void setDensityMap(BiFunction<Double, Double, Double> densityMap) {
+        this.densityMap = densityMap;
+        updatePixels();
+    }
+    
+
 }
