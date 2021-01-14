@@ -1,8 +1,7 @@
 [home](https://davidgutierrezrubio.github.io/jmathanim/) [back](../index.html)
 
 # Disabling and enabling animations
-
-Suppose you are writing a rather long animation.  Usually this process involves several test runs to check if every goes as planned. If you are fine tuning the last part of the animation, you don't need to run all the animation from the beginning to do this. Instead, you can add these methods to your code:
+Suppose you are writing a rather long animation.  Usually this process involves several test runs to check if everything goes as planned. If you are fine tuning the last part of the animation, you don't need to run all from the beginning to do this. Instead, you can add these methods to your code:
 
 ```java
 disableAnimations();
@@ -11,7 +10,7 @@ enableAnimations();
 //...animation code that I want to preview
 ```
 
- The `disableAnimations()` and `enableAnimations()` methods allows to temporarily disable animations and frame generations. Updating and object creations are done, but the non essential parts, like drawing, writing to movie, or performing the animations is omitted, dramatically increasing speed. You can also use this to generate a movie with only specific parts of the sketch.
+The `disableAnimations()` and `enableAnimations()` methods allows to temporarily disable animations and frame generations. Updating and object creations are done, but the non-essential parts, like drawing, writing to movie, or performing the animations is omitted, dramatically increasing speed. You can also use this to generate a movie with only specific parts of the sketch.
 
 # Updaters
 
@@ -22,7 +21,7 @@ public int getUpdateLevel();
 public void update(JMathAnimScene scene);
 ```
 
-The `getUpdateLevel` method returns the order of updating this object. Objects with level 0 update first, then all with level 1, etc. Thus, if you have an updater  A that depends on another updater B to be previously updated before, you should set the update level of A greater than of B. All necessary updating commands should be set in the `update` method.
+The `getUpdateLevel` method returns the order of updating this object. Objects with level 0 update first, then all with level 1, etc. Thus, if you have an updater  A that depends on that another updater B to be previously updated before, you should set the update level of A greater than of B. All necessary updating commands should be set in the `update` method.
 
 Any update must be registered on the scene to be used, with the `registerUpdateable`method. Similarly, there is `unregisterUpdateable` method that does the opposite.
 
