@@ -17,7 +17,7 @@
  */
 package com.jmathanim.jmathanim;
 
-import com.jmathanim.Cameras.CameraFX2D;
+import com.jmathanim.Cameras.Camera;
 import com.jmathanim.Renderers.JavaFXRenderer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -29,7 +29,7 @@ import java.util.logging.Logger;
 public abstract class Scene2D extends JMathAnimScene {
 
     protected JavaFXRenderer renderer;
-    protected CameraFX2D camera;
+    protected Camera camera;
 
     public Scene2D() {
         super();
