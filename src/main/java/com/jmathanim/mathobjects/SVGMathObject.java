@@ -17,7 +17,7 @@
  */
 package com.jmathanim.mathobjects;
 
-import com.jmathanim.Cameras.Camera;
+import com.jmathanim.Cameras.CameraFX2D;
 import com.jmathanim.Utils.Anchor;
 import com.jmathanim.Utils.JMColor;
 import com.jmathanim.Utils.JMathAnimConfig;
@@ -535,9 +535,9 @@ public class SVGMathObject extends MultiShapeObject {
 
         if (!"".equals(el.getAttribute("stroke-width"))) {
             double th = Double.parseDouble(el.getAttribute("stroke-width"));
-            Camera cam = (Camera) JMathAnimConfig.getConfig().getCamera();
+            CameraFX2D cam = (CameraFX2D) JMathAnimConfig.getConfig().getCamera();
 //              ShMp.thickness=cam.mathToScreenFX(th)/cam.getMathView().getWidth();
-            ShMp.thickness = cam.mathToScreen(th) / 4;
+            ShMp.thickness = cam.mathToScreenFX(th) / 4;
         }
 
         if (!"".equals(el.getAttribute("fill"))) {

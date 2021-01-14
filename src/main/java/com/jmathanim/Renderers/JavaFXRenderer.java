@@ -18,7 +18,7 @@
 package com.jmathanim.Renderers;
 
 import com.jmathanim.Cameras.Camera;
-import com.jmathanim.Cameras.Camera;
+import com.jmathanim.Cameras.CameraFX2D;
 import com.jmathanim.Renderers.MovieEncoders.VideoEncoder;
 import com.jmathanim.Renderers.MovieEncoders.XugglerVideoEncoder;
 import com.jmathanim.Utils.Rect;
@@ -79,8 +79,8 @@ public class JavaFXRenderer extends Renderer {
 
     private static final double MIN_THICKNESS = .2d;
 
-    public Camera camera;
-    public Camera fixedCamera;
+    public CameraFX2D camera;
+    public CameraFX2D fixedCamera;
 
     private final HashMap<String, Image> images;
 
@@ -105,9 +105,9 @@ public class JavaFXRenderer extends Renderer {
 
     public JavaFXRenderer(JMathAnimScene parentScene) throws Exception {
         super(parentScene);
-        camera = new Camera(parentScene,config.mediaW, config.mediaH);
+        camera = new CameraFX2D(parentScene,config.mediaW, config.mediaH);
         camera.setMathXY(XMIN_DEFAULT, XMAX_DEFAULT, 0);
-        fixedCamera = new Camera(parentScene, config.mediaW, config.mediaH);
+        fixedCamera = new CameraFX2D(parentScene, config.mediaW, config.mediaH);
         fixedCamera.setMathXY(XMIN_DEFAULT, XMAX_DEFAULT, 0);
 
         fxnodes = new ArrayList<>();
@@ -293,7 +293,7 @@ public class JavaFXRenderer extends Renderer {
         drawPath(mobj, camera);
     }
 
-    private void drawPath(Shape mobj, Camera cam) {
+    private void drawPath(Shape mobj, CameraFX2D cam) {
 
         JMPath c = mobj.getPath();
         int numPoints = c.size();
@@ -350,7 +350,7 @@ public class JavaFXRenderer extends Renderer {
 @Override
     public double getThicknessForMathWidth(double w) {
 //        return mathScalar * config.mediaW / (xmax - ymin);
-        return camera.mathToScreen(w) / 1.25 * camera.getMathView().getWidth() / 2d;
+        return camera.mathToScreenFX(w) / 1.25 * camera.getMathView().getWidth() / 2d;
     }
 
     @Override
@@ -378,11 +378,11 @@ public class JavaFXRenderer extends Renderer {
 
     }
 
-    private Path createPathFromJMPath(Shape mobj, JMPath c, Camera cam) {
+    private Path createPathFromJMPath(Shape mobj, JMPath c, CameraFX2D cam) {
         Path path = new Path();
 
         Vec p = c.getJMPoint(0).p.v;
-        double[] scr = cam.mathToScreen(p.x, p.y);
+        double[] scr = cam.mathToScreenFX(p.x, p.y);
         path.getElements().add(new MoveTo(scr[0], scr[1]));
 
         for (int n = 1; n < c.size() + 1; n++) {
@@ -443,8 +443,8 @@ public class JavaFXRenderer extends Renderer {
         double[] xy = camera.mathToScreenFX(obj.bbox.getUL().v);
         imageView.setX(xy[0]);
         imageView.setY(xy[1]);
-        imageView.setFitHeight(camera.mathToScreen(obj.bbox.getHeight()));
-        imageView.setFitWidth(camera.mathToScreen(obj.bbox.getWidth()));
+        imageView.setFitHeight(camera.mathToScreenFX(obj.bbox.getHeight()));
+        imageView.setFitWidth(camera.mathToScreenFX(obj.bbox.getWidth()));
         imageView.setPreserveRatio(obj.preserveRatio);
         imageView.setSmooth(true);
         imageView.setCache(true);

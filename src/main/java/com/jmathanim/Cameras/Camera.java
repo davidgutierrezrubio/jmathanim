@@ -23,13 +23,13 @@ import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.MathObject;
 
 /**
- * A Camera subclass designed to work with the JavaFX library. This class
- * converts math coordinates to screen cordinates. Screen coordinates are always
- * (0,0)-(w,h) where (0,0) is upper left corner
+ * This class manages conversion between math coordinates (usually
+ * (-2,-2)..(2,2) to screen coordinates (depending on renderer, usually (0,0) to
+ * (1920,1080).
  *
  * @author David Gutierrez Rubio davidgutierrezrubio@gmail.com
  */
-public class Camera {
+public abstract class Camera {
 
     /**
      * Screen width size to be displayed 800x600, 1920x1280, etc.
@@ -52,96 +52,11 @@ public class Camera {
     protected double hgap = .1, vgap = .1;
 
     private final JMathAnimScene scene;
-    private double xminB, xmaxB, yminB, ymaxB;//Backup values for saveState()
 
     public Camera(JMathAnimScene scene, int screenWidth, int screenHeight) {
         this.screenWidth = screenWidth;
         this.screenHeight = screenHeight;
         this.scene = scene;
-
-    }
-
-    /**
-     * Center camera in math-coordinates x,y
-     *
-     * @param x
-     * @param y
-     */
-    public final void setCenter(double x, double y) {
-        double mWidth = xmax - xmin;
-        setMathXY(x - .5 * mWidth, x + .5 * mWidth, y);
-
-    }
-
-    public void setCenter(MathObject obj) {
-        double xx = obj.getCenter().v.x;
-        double yy = obj.getCenter().v.y;
-        double zz = obj.getCenter().v.z;
-        setCenter(xx, yy);
-    }
-
-    public Camera setMathXY(double xmin, double xmax, double ycenter) {
-
-        if (xmax <= xmin) {
-            return this;
-        }
-        this.xmin = xmin;
-        this.xmax = xmax;
-        //Compute y so that proportion is the same as the screen
-        double ratioScreen = ((double) screenWidth) / ((double) screenHeight);
-        //(xmax-xmin)/(ymax-ymin)=ratioScreen, so...
-        this.ymax = ycenter + .5 * (xmax - xmin) / ratioScreen;
-        this.ymin = ycenter - .5 * (xmax - xmin) / ratioScreen;
-        return this;
-    }
-
-    public double mathToScreen(double mathScalar) {
-        //xmin,ymin->(0,0)
-        //xmax, ymax->(screenWidth,screenHeight)
-//        resul = (int) ((mathScalar - xmin) + mathScalar * screenWidth / xmax);
-        return mathScalar * screenHeight / (ymax - ymin);
-    }
-
-    public double[] mathToScreen(double mathX, double mathY) {
-        //xmin,ymin->(0,0)
-        //xmax, ymax->(screenWidth,screenHeight)
-        double x, y;
-        x = (mathX - xmin) * screenWidth / (xmax - xmin);
-        y = (ymax - mathY) * screenHeight / (ymax - ymin);
-        return new double[]{x, y};
-    }
-
-    public double[] screenToMath(double x, double y) {
-        double mx = (x * (xmax - xmin) / screenWidth + xmin);
-        double my = -(y * (ymax - ymin) / screenHeight - ymax);
-        return new double[]{mx, my};
-    }
-
-    public double screenToMath(double screenScalar) {
-        //resul = (int) ((mathScalar - xmin) + mathScalar * screenWidth / xmax);
-        return screenScalar * (xmax - xmin) / screenWidth;
-    }
-
-    public double[] mathToScreenFX(Vec p) {
-        return mathToScreen(p.x, p.y);
-    }
-
-    public void saveState() {
-        xminB = xmin;
-        xmaxB = xmax;
-        yminB = ymin;
-        ymaxB = ymax;
-    }
-
-    public void restoreState() {
-        xmin = xminB;
-        xmax = xmaxB;
-        ymin = yminB;
-        ymax = ymaxB;
-    }
-
-    public void setWidth(double d) {
-        scale(d / getMathView().getWidth());
     }
 
     /**
@@ -171,9 +86,11 @@ public class Camera {
      * @param xmax Right x-coordinate
      * @param ycenter y-center coordinate
      */
-    public Camera setMathView(Rect r) {
+    abstract <T extends Camera> T setMathXY(double xmin, double xmax, double ycenter);
+
+    public <T extends Camera> T setMathView(Rect r) {
         setMathXY(r.xmin, r.xmax, .5 * (r.ymin + r.ymax));
-        return this;
+        return (T) this;
     }
 
     public void shift(Vec v) {
@@ -189,13 +106,14 @@ public class Camera {
      * view is the minimal bounding box that contains r, with the proportions of
      * the screen.
      *
+     * @param <T> Camera subclass
      * @param rAdjust Rectangle to adjust
      * @return This camera
      */
-    public Camera adjustToRect(Rect rAdjust) {
+    public <T extends Camera> T adjustToRect(Rect rAdjust) {
         Rect r = getRectThatContains(rAdjust);
         setMathXY(r.xmin, r.xmax, .5 * (r.ymax + r.ymin));
-        return this;
+        return (T) this;
     }
 
     /**
@@ -204,14 +122,15 @@ public class Camera {
      * zoom in is not applied in this case. The setGaps method can be called
      * before to set the gaps between the view and the objects.
      *
+     * @param <T> Camera subclass
      * @return This object
      */
-    public Camera adjustToAllObjects() {
+    public <T extends Camera> T adjustToAllObjects() {
         if (!scene.getObjects().isEmpty()) {
             MathObject[] objs = scene.getObjects().toArray(new MathObject[scene.getObjects().size()]);
             adjustToObjects(objs);
         }
-        return this;
+        return (T) this;
     }
 
     /**
@@ -221,16 +140,17 @@ public class Camera {
      * case. The setGaps method can be called before to set the gaps between the
      * view and the objects.
      *
+     * @param <T> Camera subclass
      * @param objs Objects to zoom in
      * @return This object
      */
-    public Camera adjustToObjects(MathObject... objs) {
+    public <T extends Camera> T adjustToObjects(MathObject... objs) {
         Rect r = getMathView();
         for (MathObject obj : objs) {
             r = Rect.union(r, obj.getBoundingBox());
         }
         adjustToRect(r.addGap(hgap, hgap));
-        return this;
+        return (T) this;
     }
 
     /**
@@ -238,15 +158,16 @@ public class Camera {
      * need to be added to the scene). The setGaps method can be called before
      * to set the gaps between the view and the objects.
      *
+     * @param <T> Camera subclass
      * @return This object
      */
-    public Camera zoomToObjects(MathObject... objs) {
+    public <T extends Camera> T zoomToObjects(MathObject... objs) {
         Rect r = objs[0].getBoundingBox();
         for (MathObject obj : objs) {
             r = Rect.union(r, obj.getBoundingBox());
         }
         adjustToRect(r.addGap(hgap, hgap));
-        return this;
+        return (T) this;
     }
 
     /**
@@ -254,14 +175,15 @@ public class Camera {
      * method can be called before to set the gaps between the view and the
      * objects.
      *
+     * @param <T> Camera subclass
      * @return This object
      */
-    public Camera zoomToAllObjects() {
+    public <T extends Camera> T zoomToAllObjects() {
         if (!scene.getObjects().isEmpty()) {
             MathObject[] objs = scene.getObjects().toArray(new MathObject[scene.getObjects().size()]);
             zoomToObjects(objs);
         }
-        return this;
+        return (T) this;
     }
 
     /**
@@ -272,9 +194,9 @@ public class Camera {
      * applies a 2x zoom.
      * @return This object
      */
-    public Camera scale(double scale) {
+    public <T extends Camera> T scale(double scale) {
         setMathView(getMathView().scaled(scale, scale));
-        return this;
+        return (T) this;
     }
 
     /**
@@ -323,6 +245,48 @@ public class Camera {
         return new Rect(xmin, ymin, xmax, ymax);
     }
 
+    /**
+     * Center camera in math-coordinates x,y
+     *
+     * @param x
+     * @param y
+     */
+    public abstract void setCenter(double x, double y);
+
+    /**
+     * Convert a scalar given in math coordinates to screen coordinates
+     *
+     * @param mathScalar
+     * @return An integer with the scalar
+     */
+    abstract public int mathToScreen(double mathScalar);
+
+    /**
+     * Convert a 2d-coordinates given in math coordinates to screen coordinates
+     *
+     * @param mathX
+     * @param mathY
+     * @return and array int[] with the coordinates
+     */
+    abstract public int[] mathToScreen(double mathX, double mathY);
+
+    /**
+     * Converts a scalar in screen coordinates to math coordinates.
+     *
+     * @param screenScalar
+     * @return scalar in math coordinates
+     */
+    abstract public double screenToMath(double screenScalar);
+
+    abstract public void saveState();
+
+    abstract public void restoreState();
+
+    /**
+     * Return the current gaps of the camera
+     * @return a Vec with the gap components
+     */
+    
     public Vec getGaps() {
         return new Vec(hgap, vgap);
     }
