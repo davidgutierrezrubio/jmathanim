@@ -110,9 +110,13 @@ public class JMImage extends AbstractJMImage {
     public void unregisterChildrenToBeUpdated(JMathAnimScene scene) {
     }
 
+    public String getFilename() {
+     return filename;
+    }
+    
     @Override
     public String getId() {
-     return filename;
+     return getFilename();
     }
 
     @Override
