@@ -22,6 +22,7 @@ import com.jmathanim.Utils.JMathAnimConfig;
 import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
+import com.jmathanim.mathobjects.AbstractJMImage;
 import com.jmathanim.mathobjects.JMImage;
 import com.jmathanim.mathobjects.Shape;
 
@@ -84,7 +85,7 @@ public abstract class Renderer {
 
     abstract public Rect createImage(String fileName);
 
-    abstract public void drawImage(JMImage obj);
+    abstract public void drawImage(AbstractJMImage obj);
 
     abstract public void debugText(String text, Vec loc);
 

@@ -26,6 +26,7 @@ import com.jmathanim.Utils.ResourceLoader;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import static com.jmathanim.jmathanim.JMathAnimScene.DEGREES;
+import com.jmathanim.mathobjects.AbstractJMImage;
 import com.jmathanim.mathobjects.JMImage;
 import com.jmathanim.mathobjects.JMPath;
 import com.jmathanim.mathobjects.MathObject;
@@ -105,7 +106,7 @@ public class JavaFXRenderer extends Renderer {
 
     public JavaFXRenderer(JMathAnimScene parentScene) throws Exception {
         super(parentScene);
-        camera = new Camera(parentScene,config.mediaW, config.mediaH);
+        camera = new Camera(parentScene, config.mediaW, config.mediaH);
         camera.setMathXY(XMIN_DEFAULT, XMAX_DEFAULT, 0);
         fixedCamera = new Camera(parentScene, config.mediaW, config.mediaH);
         fixedCamera.setMathXY(XMIN_DEFAULT, XMAX_DEFAULT, 0);
@@ -200,8 +201,8 @@ public class JavaFXRenderer extends Renderer {
     }
 
     @Override
-    public <T extends Camera> T getCamera() {
-        return (T) camera;
+    public Camera getCamera() {
+        return camera;
     }
 
     @Override
@@ -347,7 +348,8 @@ public class JavaFXRenderer extends Renderer {
         Camera cam = (mobj.mp.absoluteThickness ? fixedCamera : camera);
         return Math.max(mobj.mp.thickness / cam.getMathView().getWidth() * 2.5d, MIN_THICKNESS);
     }
-@Override
+
+    @Override
     public double getThicknessForMathWidth(double w) {
 //        return mathScalar * config.mediaW / (xmax - ymin);
         return camera.mathToScreen(w) / 1.25 * camera.getMathView().getWidth() / 2d;
@@ -436,9 +438,14 @@ public class JavaFXRenderer extends Renderer {
     }
 
     @Override
-    public void drawImage(JMImage obj) {
-        Image image = images.get(obj.getFilename());
-        ImageView imageView = new ImageView(image);
+    public void drawImage(AbstractJMImage obj) {
+        ImageView imageView;
+        if (obj.isCached()) {
+            Image image = images.get(obj.getId());
+            imageView = new ImageView(image);
+        } else {
+            imageView = new ImageView(obj.getImage());
+        }
         //setting the fit height and width of the image view
         double[] xy = camera.mathToScreenFX(obj.bbox.getUL().v);
         imageView.setX(xy[0]);

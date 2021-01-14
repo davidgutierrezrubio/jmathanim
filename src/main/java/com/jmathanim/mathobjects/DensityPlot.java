@@ -20,22 +20,27 @@ package com.jmathanim.mathobjects;
 import com.jmathanim.Renderers.Renderer;
 import com.jmathanim.Utils.JMathAnimConfig;
 import com.jmathanim.Utils.Rect;
+import com.jmathanim.jmathanim.JMathAnimScene;
 import java.util.function.BiFunction;
+import javafx.scene.image.Image;
+import javafx.scene.image.PixelWriter;
 import javafx.scene.image.WritableImage;
+import javafx.scene.paint.Color;
 
 /**
  *
  * @author David
  */
-public class DensityPlot extends MathObject {
+public class DensityPlot extends AbstractJMImage {
 
-    Rect area;
     BiFunction<Double, Double, Double> densityMap;
     WritableImage raster;
     double widthView,heightView;
+    private int wRaster;
+    private int hRaster;
 
     public DensityPlot(Rect area, BiFunction<Double, Double, Double> densityMap) {
-        this.area = area;
+        this.bbox=area.copy();
         this.densityMap = densityMap;
         widthView=-1;
         heightView=-1;
@@ -43,39 +48,60 @@ public class DensityPlot extends MathObject {
     }
 
     @Override
-    public Point getCenter() {
-        return area.getCenter();
-
-    }
-
-    @Override
     public <T extends MathObject> T copy() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
+
+
     @Override
-    public Rect getBoundingBox() {
-        return area.copy();
+    public int getUpdateLevel() {
+        return 0;
     }
 
     @Override
-    public void draw(Renderer r) {
+    public void update(JMathAnimScene scene) {
+        super.update(scene);
         createRasterImage();
     }
 
+    
     private void createRasterImage() {
         double w=scene.getCamera().getMathView().getWidth();
         double h=scene.getCamera().getMathView().getHeight();
         if ((w!=widthView)||(h!=heightView)) {
             widthView=w;
             heightView=h;
-            double[] xy1=scene.getCamera().mathToScreen(area.xmin, area.ymax);
-            double[] xy2=scene.getCamera().mathToScreen(area.xmax, area.ymin);
-            final int wRaster = (int)(xy2[0]-xy1[0]);
-            final int hRaster = (int)(xy2[1]-xy1[1]);
+            double[] xy1=scene.getCamera().mathToScreen(bbox.xmin, bbox.ymax);
+            double[] xy2=scene.getCamera().mathToScreen(bbox.xmax, bbox.ymin);
+            wRaster = (int)(xy2[0]-xy1[0]);
+            hRaster = (int)(xy2[1]-xy1[1]);
             System.out.println("Creating new density raster "+wRaster+" "+hRaster);
             raster=new WritableImage(wRaster, hRaster);
+            updatePixels();
         }
+    }
+    private void updatePixels() {
+        PixelWriter pixelWriter = raster.getPixelWriter();
+        for (int i = 0; i < wRaster; i++) {
+            for (int j = 0; j < hRaster; j++) {
+                Point p=bbox.getRelPoint(i*1d/wRaster, j*1d/hRaster);
+                double z=densityMap.apply(p.v.x, p.v.y);
+                int zt=(int)(z*100);
+                pixelWriter.setColor(i, j, Color.rgb(zt, zt, zt));
+            }
+            
+        }
+    }
+
+    @Override
+    public String getId() {
+        return "";
+    }
+
+    @Override
+    public Image getImage() {
+        return raster;
     }
 
 }

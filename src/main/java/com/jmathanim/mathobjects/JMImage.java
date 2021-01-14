@@ -20,20 +20,17 @@ package com.jmathanim.mathobjects;
 import com.jmathanim.Renderers.Renderer;
 import com.jmathanim.Utils.JMathAnimConfig;
 import com.jmathanim.Utils.Rect;
-import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
+import javafx.scene.image.Image;
 
 /**
  *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
-public class JMImage extends MathObject {
+public class JMImage extends AbstractJMImage {
 
     private String filename;
-    public final Rect bbox;
-    public boolean preserveRatio = false;
-    public double rotateAngle = 0;
-    public double rotateAngleBackup = 0;
+   
 
     public static JMImage make(String filename) {
         return new JMImage(filename);
@@ -41,6 +38,7 @@ public class JMImage extends MathObject {
     private final Renderer renderer;
 
     public JMImage(String filename) {
+        setCached(true);
         this.filename = filename;
          renderer = JMathAnimConfig.getConfig().getRenderer();
         this.bbox = renderer.createImage(filename);
@@ -53,16 +51,7 @@ public class JMImage extends MathObject {
         this.filename=fn;
     }
 
-    @Override
-    public Point getCenter() {
-        return bbox.getCenter();
-    }
-
-    @Override
-    public <T extends MathObject> T shift(Vec shiftVector) {
-        bbox.copyFrom(bbox.shifted(shiftVector));
-        return (T) this;
-    }
+   
 
     @Override
     public JMImage copy() {
@@ -75,10 +64,7 @@ public class JMImage extends MathObject {
         return resul;
     }
 
-    @Override
-    public Rect getBoundingBox() {
-        return bbox.getRotatedRect(this.rotateAngle);
-    }
+   
 
     @Override
     public void draw(Renderer r) {
@@ -124,8 +110,14 @@ public class JMImage extends MathObject {
     public void unregisterChildrenToBeUpdated(JMathAnimScene scene) {
     }
 
-    public String getFilename() {
-        return filename;
+    @Override
+    public String getId() {
+     return filename;
+    }
+
+    @Override
+    public Image getImage() {
+        return null;
     }
 
 }
