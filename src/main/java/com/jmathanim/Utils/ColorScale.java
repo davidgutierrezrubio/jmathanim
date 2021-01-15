@@ -28,13 +28,20 @@ import java.util.HashMap;
  */
 public class ColorScale {
 
+    public static ColorScale createDefault(double minValue, double maxValue) {
+        ColorScale cs = new ColorScale();
+        cs.addMarker(minValue, JMColor.BLUE);
+        cs.addMarker(maxValue, JMColor.RED);
+        return cs;
+    }
+
     private ArrayList<Double> markers;
     private HashMap<Double, JMColor> colors;
 
     public ColorScale() {
-        markers=new ArrayList<>();
-        colors=new HashMap<>();
-        
+        markers = new ArrayList<>();
+        colors = new HashMap<>();
+
     }
 
     public void addMarker(double marker, JMColor color) {
@@ -61,6 +68,10 @@ public class ColorScale {
         double alpha = (x - a) / (b - a);
         JMColor colB = colors.get(b);
         return colA.getInterpolatedColor(colB, alpha);
+    }
+
+    public ArrayList<Double> getMarkers() {
+        return markers;
     }
 
 }

@@ -47,12 +47,14 @@ public class DensityPlot extends AbstractJMImage {
     private int wRaster;
     private int hRaster;
     private ColorScale colorScale;
-/**
- * Creates a new Densityplot with the given domain
- * @param area The domain to represent, in a Rect object
- * @param densityMap A lambda function, for example (x,y)-&gt;x*y
- * @return  The density plot created
- */
+
+    /**
+     * Creates a new Densityplot with the given domain
+     *
+     * @param area The domain to represent, in a Rect object
+     * @param densityMap A lambda function, for example (x,y)-&gt;x*y
+     * @return The density plot created
+     */
     public static DensityPlot make(Rect area, BiFunction<Double, Double, Double> densityMap) {
         return new DensityPlot(area, densityMap);
     }
@@ -62,7 +64,7 @@ public class DensityPlot extends AbstractJMImage {
         this.densityLambdaFunction = densityMap;
         widthView = -1;//Ensures that will create the raster image in the first update of the object
         heightView = -1;
-        colorScale=new ColorScale();
+        colorScale = new ColorScale();
         scene = JMathAnimConfig.getConfig().getScene();
     }
 
@@ -97,14 +99,15 @@ public class DensityPlot extends AbstractJMImage {
     }
 
     private void updatePixels() {
+
         FutureTask<Integer> task = new FutureTask<>(new Callable<Integer>() {
             @Override
             public Integer call() throws Exception {
-
+                createColorScale();
                 PixelWriter pixelWriter = raster.getPixelWriter();
                 for (int i = 0; i < wRaster; i++) {
                     for (int j = 0; j < hRaster; j++) {
-                        Point p = bbox.getRelPoint(i * 1d / wRaster, 1-j * 1d / hRaster);
+                        Point p = bbox.getRelPoint(i * 1d / wRaster, 1 - j * 1d / hRaster);
                         double z = densityLambdaFunction.apply(p.v.x, p.v.y);
                         pixelWriter.setColor(i, j, colorScale.getColorValue(z).getFXColor());
                     }
@@ -122,6 +125,26 @@ public class DensityPlot extends AbstractJMImage {
 
     }
 
+    private void createColorScale() {
+        if (colorScale.getMarkers().isEmpty()) {
+            double a = Double.MAX_VALUE;
+            double b = Double.MIN_VALUE;
+            for (int i = 0; i < wRaster; i++) {
+                for (int j = 0; j < hRaster; j++) {
+                    Point p = bbox.getRelPoint(i * 1d / wRaster, 1 - j * 1d / hRaster);
+                    double z = densityLambdaFunction.apply(p.v.x, p.v.y);
+                    if (z < a) {
+                        a = z;
+                    }
+                    if (z > b) {
+                        b = z;
+                    }
+                }
+            }
+            colorScale = ColorScale.createDefault(-1, 1);
+        }
+    }
+
     @Override
     public String getId() {
         return "";
@@ -131,10 +154,12 @@ public class DensityPlot extends AbstractJMImage {
     public Image getImage() {
         return raster;
     }
-/**
- * Gets the current function represented in the density
- * @return 
- */
+
+    /**
+     * Gets the current function represented in the density
+     *
+     * @return
+     */
     public BiFunction<Double, Double, Double> getFunction() {
         return densityLambdaFunction;
     }
