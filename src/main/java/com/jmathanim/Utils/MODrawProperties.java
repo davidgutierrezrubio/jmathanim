@@ -147,13 +147,13 @@ public class MODrawProperties implements Stateable {
             this.copyFrom(b);
             return;
         }
-        //If not, interpolate drawColor, fillColor and thickness (if they are not null)
+        //If not, getInterpolatedColor drawColor, fillColor and thickness (if they are not null)
         //Interpolate colors
         if (b.drawColor != null) {
-            drawColor.copyFrom(a.drawColor.interpolate(b.drawColor, alpha));
+            drawColor.copyFrom(a.drawColor.getInterpolatedColor(b.drawColor, alpha));
         }
         if (b.fillColor != null) {
-            fillColor.copyFrom(a.fillColor.interpolate(b.fillColor, alpha));
+            fillColor.copyFrom(a.fillColor.getInterpolatedColor(b.fillColor, alpha));
         }
         if (b.thickness != null) {
             this.thickness = (1 - alpha) * a.thickness + alpha * b.thickness;

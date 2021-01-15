@@ -76,10 +76,17 @@ public class Camera {
     public void setCenter(MathObject obj) {
         double xx = obj.getCenter().v.x;
         double yy = obj.getCenter().v.y;
-        double zz = obj.getCenter().v.z;
         setCenter(xx, yy);
     }
-
+    /**
+     * Set the boundaries of the math region displayed in the screen given by
+     * xmin and xmax. ymin and ymax are automatically computed Rectangle
+     * (xmin,ymin) to (xmax, ymax) vertically centered at ycenter
+     *
+     * @param xmin Left x-coordinate
+     * @param xmax Right x-coordinate
+     * @param ycenter y-center coordinate
+     */
     public Camera setMathXY(double xmin, double xmax, double ycenter) {
 
         if (xmax <= xmin) {
@@ -162,15 +169,7 @@ public class Camera {
         vgap = v;
     }
 
-    /**
-     * Set the boundaries of the math region displayed in the screen given by
-     * xmin and xmax. ymin and ymax are automatically computed Rectangle
-     * (xmin,ymin) to (xmax, ymax) vertically centered at ycenter
-     *
-     * @param xmin Left x-coordinate
-     * @param xmax Right x-coordinate
-     * @param ycenter y-center coordinate
-     */
+
     public Camera setMathView(Rect r) {
         setMathXY(r.xmin, r.xmax, .5 * (r.ymin + r.ymax));
         return this;
@@ -267,7 +266,6 @@ public class Camera {
     /**
      * Scales the visible area with the given factor.
      *
-     * @param <T> Camera subclass
      * @param scale Scale factor. A value of 1 does nothing. A value of 0.5
      * applies a 2x zoom.
      * @return This object

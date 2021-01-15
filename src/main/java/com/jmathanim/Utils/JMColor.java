@@ -145,14 +145,14 @@ public class JMColor {
     }
 
     /**
-     * Interpolates this JMColor with another given
+     * Interpolates this JMColor with another given. The original color is unaltered
      *
-     * @param B JMColor to interpolate
+     * @param B JMColor to getInterpolatedColor
      * @param t Interpolation parameter. 0 means this object, 1 means the given
      * color
      * @return A JMcolor with components interpolated
      */
-    public JMColor interpolate(JMColor B, double t) {
+    public JMColor getInterpolatedColor(JMColor B, double t) {
         double rr = (1 - t) * r + t * B.r;
         double gg = (1 - t) * g + t * B.g;
         double bb = (1 - t) * b + t * B.b;

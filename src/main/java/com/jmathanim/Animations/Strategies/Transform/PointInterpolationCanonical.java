@@ -31,7 +31,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 
 /**
- * Separates paths into canonical forms to interpolate point by point
+ * Separates paths into canonical forms to getInterpolatedColor point by point
  *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */

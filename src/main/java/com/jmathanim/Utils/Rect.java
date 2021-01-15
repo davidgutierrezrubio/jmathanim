@@ -413,21 +413,31 @@ public class Rect implements Stateable {//TODO: Adjust this to 3D coordinates
      *
      * @param relX x relative coordinate, from 0 to 1
      * @param relY y relative coordinate, from 0 to 1
-     * @return
+     * @return A Point with the relative coordinates
      */
     public Point getRelPoint(double relX, double relY) {
         return Point.at(xmin + relX * (xmax - xmin), ymin + relY * (ymax - ymin));
     }
 
+    /**
+     * Creates a copy of this Rect
+     *
+     * @return The new Rect
+     */
     public Rect copy() {
-        return new Rect(xmin,ymin,xmax,ymax);
+        return new Rect(xmin, ymin, xmax, ymax);
     }
 
+    /**
+     * Shifts the current rect so that its center is located at the given one
+     *
+     * @param dstCenter A point with the new center
+     */
     public void centerAt(Point dstCenter) {
-        Vec v=getCenter().to(dstCenter);
-        xmin+=v.x;
-        xmax+=v.x;
-        ymin+=v.y;
-        ymax+=v.y;
+        Vec v = getCenter().to(dstCenter);
+        xmin += v.x;
+        xmax += v.x;
+        ymin += v.y;
+        ymax += v.y;
     }
 }

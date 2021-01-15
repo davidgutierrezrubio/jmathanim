@@ -17,42 +17,58 @@
  */
 package com.jmathanim.mathobjects;
 
-import com.jmathanim.Renderers.Renderer;
+import com.jmathanim.Utils.ColorScale;
 import com.jmathanim.Utils.JMathAnimConfig;
 import com.jmathanim.Utils.Rect;
 import com.jmathanim.jmathanim.JMathAnimScene;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.FutureTask;
 import java.util.function.BiFunction;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javafx.application.Platform;
 import javafx.scene.image.Image;
 import javafx.scene.image.PixelWriter;
 import javafx.scene.image.WritableImage;
 import javafx.scene.paint.Color;
 
 /**
+ * This class represents a density plot in a specified area given by a Rect
+ * object and a Bifunction object
  *
- * @author David
+ * @author David Gutiérrez davidgutierrezrubio@gmail.com
  */
 public class DensityPlot extends AbstractJMImage {
 
-    BiFunction<Double, Double, Double> densityMap;
+    BiFunction<Double, Double, Double> densityLambdaFunction;
     WritableImage raster;
-    double widthView,heightView;
+    double widthView, heightView;
     private int wRaster;
     private int hRaster;
+    private ColorScale colorScale;
+/**
+ * Creates a new Densityplot with the given domain
+ * @param area The domain to represent, in a Rect object
+ * @param densityMap A lambda function, for example (x,y)-&gt;x*y
+ * @return  The density plot created
+ */
+    public static DensityPlot make(Rect area, BiFunction<Double, Double, Double> densityMap) {
+        return new DensityPlot(area, densityMap);
+    }
 
     public DensityPlot(Rect area, BiFunction<Double, Double, Double> densityMap) {
-        this.bbox=area.copy();
-        this.densityMap = densityMap;
-        widthView=-1;
-        heightView=-1;
-        scene=JMathAnimConfig.getConfig().getScene();
+        this.bbox = area.copy();
+        this.densityLambdaFunction = densityMap;
+        widthView = -1;//Ensures that will create the raster image in the first update of the object
+        heightView = -1;
+        colorScale=new ColorScale();
+        scene = JMathAnimConfig.getConfig().getScene();
     }
 
-    @Override
     public <T extends MathObject> T copy() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return (T) new DensityPlot(bbox, densityLambdaFunction);
     }
-
-
 
     @Override
     public int getUpdateLevel() {
@@ -65,33 +81,45 @@ public class DensityPlot extends AbstractJMImage {
         createRasterImage();
     }
 
-    
     private void createRasterImage() {
-        double w=scene.getCamera().getMathView().getWidth();
-        double h=scene.getCamera().getMathView().getHeight();
-        if ((w!=widthView)||(h!=heightView)) {
-            widthView=w;
-            heightView=h;
-            double[] xy1=scene.getCamera().mathToScreen(bbox.xmin, bbox.ymax);
-            double[] xy2=scene.getCamera().mathToScreen(bbox.xmax, bbox.ymin);
-            wRaster = (int)(xy2[0]-xy1[0]);
-            hRaster = (int)(xy2[1]-xy1[1]);
-            System.out.println("Creating new density raster "+wRaster+" "+hRaster);
-            raster=new WritableImage(wRaster, hRaster);
+        double w = scene.getCamera().getMathView().getWidth();
+        double h = scene.getCamera().getMathView().getHeight();
+        if ((w != widthView) || (h != heightView)) {//Only recreate it if necessary
+            widthView = w;
+            heightView = h;
+            double[] xy1 = scene.getCamera().mathToScreen(bbox.xmin, bbox.ymax);
+            double[] xy2 = scene.getCamera().mathToScreen(bbox.xmax, bbox.ymin);
+            wRaster = (int) (xy2[0] - xy1[0]);
+            hRaster = (int) (xy2[1] - xy1[1]);
+            raster = new WritableImage(wRaster, hRaster);
             updatePixels();
         }
     }
+
     private void updatePixels() {
-        PixelWriter pixelWriter = raster.getPixelWriter();
-        for (int i = 0; i < wRaster; i++) {
-            for (int j = 0; j < hRaster; j++) {
-                Point p=bbox.getRelPoint(i*1d/wRaster, j*1d/hRaster);
-                double z=densityMap.apply(p.v.x, p.v.y);
-                int zt=(int)(z*100);
-                pixelWriter.setColor(i, j, Color.rgb(zt, zt, zt));
+        FutureTask<Integer> task = new FutureTask<>(new Callable<Integer>() {
+            @Override
+            public Integer call() throws Exception {
+
+                PixelWriter pixelWriter = raster.getPixelWriter();
+                for (int i = 0; i < wRaster; i++) {
+                    for (int j = 0; j < hRaster; j++) {
+                        Point p = bbox.getRelPoint(i * 1d / wRaster, 1-j * 1d / hRaster);
+                        double z = densityLambdaFunction.apply(p.v.x, p.v.y);
+                        pixelWriter.setColor(i, j, colorScale.getColorValue(z).getFXColor());
+                    }
+                }
+
+                return 0;
             }
-            
+        });
+        Platform.runLater(task);
+        try {
+            int resul = task.get();
+        } catch (InterruptedException | ExecutionException ex) {
+            Logger.getLogger(DensityPlot.class.getName()).log(Level.SEVERE, null, ex);
         }
+
     }
 
     @Override
@@ -103,15 +131,25 @@ public class DensityPlot extends AbstractJMImage {
     public Image getImage() {
         return raster;
     }
-
-    public BiFunction<Double, Double, Double> getDensityMap() {
-        return densityMap;
+/**
+ * Gets the current function represented in the density
+ * @return 
+ */
+    public BiFunction<Double, Double, Double> getFunction() {
+        return densityLambdaFunction;
     }
 
-    public void setDensityMap(BiFunction<Double, Double, Double> densityMap) {
-        this.densityMap = densityMap;
+    public void setFunction(BiFunction<Double, Double, Double> densityMap) {
+        this.densityLambdaFunction = densityMap;
         updatePixels();
     }
-    
+
+    public ColorScale getColorScale() {
+        return colorScale;
+    }
+
+    public void setColorScale(ColorScale colorScale) {
+        this.colorScale = colorScale;
+    }
 
 }
