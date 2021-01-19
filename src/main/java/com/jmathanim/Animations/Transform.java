@@ -34,6 +34,7 @@ import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.MultiShapeObject;
 import com.jmathanim.mathobjects.Point;
 import com.jmathanim.mathobjects.Shape;
+import java.util.List;
 
 /**
  *
@@ -105,6 +106,15 @@ public class Transform extends Animation {
         if (mobjTransformed instanceof Line) {
             mobjTransformed = ((Line) mobjTransformed).toSegment(JMathAnimConfig.getConfig().getCamera(), 2);
         }
+        if ((mobjTransformed instanceof Shape) && (mobjDestiny instanceof MultiShapeObject)) {
+            transformMethod = TransformMethod.MULTISHAPE_TRANSFORM;
+            return;
+        }
+        if ((mobjTransformed instanceof MultiShapeObject) && (mobjDestiny instanceof Shape)) {
+            transformMethod = TransformMethod.MULTISHAPE_TRANSFORM;
+            return;
+        }
+
         if ((mobjTransformed instanceof MultiShapeObject) && (mobjDestiny instanceof MultiShapeObject)) {
             transformMethod = TransformMethod.MULTISHAPE_TRANSFORM;
             return;
@@ -141,11 +151,21 @@ public class Transform extends Animation {
 
     }
 
+    private MultiShapeObject convertToMultiShapeObject(MathObject obj) {
+        if (obj instanceof MultiShapeObject) {
+            return (MultiShapeObject) obj;
+        }
+        if (obj instanceof Shape) {
+            return new MultiShapeObject((Shape) obj);
+        }
+        return null;//Don't know how to convert it to multishape, return null
+    }
+
     private void createTransformStrategy() {
         //Now I choose strategy
         switch (transformMethod) {
             case MULTISHAPE_TRANSFORM:
-                transformStrategy = new MultiShapeTransform(runTime, (MultiShapeObject) mobjTransformed, (MultiShapeObject) mobjDestiny);
+                transformStrategy = new MultiShapeTransform(runTime, convertToMultiShapeObject(mobjTransformed), convertToMultiShapeObject(mobjDestiny));
                 JMathAnimScene.logger.info("Transform method: Multishape");
                 break;
 
