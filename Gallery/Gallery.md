@@ -169,6 +169,28 @@ Here you have a GIF from the movie generated:
 
 ![Trifollium](TrifoliumNormalTrail.gif)
 
+## The trail of the vertices of a square rotating over a line
+
+```java
+Shape sq=Shape.square().scale(.2).stackToScreen(Anchor.Type.LEFT).shift(0,.1);
+add(Line.XAxis(),sq);
+int n=1;
+add(Trail.make(sq.getPoint(0)).drawColor(JMColor.RED).thickness(3)
+    ,Trail.make(sq.getPoint(1)).drawColor(JMColor.BLUE).thickness(3)
+    ,Trail.make(sq.getPoint(2)).drawColor(JMColor.GREEN).thickness(3)
+    ,Trail.make(sq.getPoint(3)).drawColor(JMColor.GRAY).thickness(3)
+   );
+for (int k = 0; k < 30; k++) {
+    play.rotate(.5, sq.getPoint(n),-90*DEGREES, sq);
+    n++;
+}
+waitSeconds(3);
+```
+
+Here is a GIF from the movie generated:
+
+![rotatinSquare](rotatinSquare.gif)
+
 
 
 ## The Koch curve
