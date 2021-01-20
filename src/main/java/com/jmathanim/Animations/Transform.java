@@ -17,6 +17,7 @@
  */
 package com.jmathanim.Animations;
 
+import com.jmathanim.Animations.Strategies.Transform.ArrowTransform;
 import com.jmathanim.Animations.Strategies.Transform.FunctionSimpleInterpolateTransform;
 import com.jmathanim.Animations.Strategies.Transform.HomothecyTransform;
 import com.jmathanim.Animations.Strategies.Transform.MultiShapeTransform;
@@ -27,6 +28,7 @@ import com.jmathanim.Animations.Strategies.Transform.RotateAndScaleXYTransform;
 import com.jmathanim.Utils.JMathAnimConfig;
 import com.jmathanim.Utils.MODrawProperties;
 import com.jmathanim.jmathanim.JMathAnimScene;
+import com.jmathanim.mathobjects.Arrow2D;
 import com.jmathanim.mathobjects.CanonicalJMPath;
 import com.jmathanim.mathobjects.FunctionGraph;
 import com.jmathanim.mathobjects.Line;
@@ -48,7 +50,8 @@ public class Transform extends Animation {
         HOMOTHECY_TRANSFORM,
         ROTATE_AND_SCALEXY_TRANSFORM,
         FUNCTION_INTERPOLATION,
-        MULTISHAPE_TRANSFORM, GENERAL_AFFINE_TRANSFORM
+        MULTISHAPE_TRANSFORM, GENERAL_AFFINE_TRANSFORM,
+        ARROW_TRANSFORM
     }
 
     public final MathObject mobjDestiny;
@@ -103,6 +106,10 @@ public class Transform extends Animation {
     }
 
     private void determineTransformStrategy() {
+        if ((mobjTransformed instanceof Arrow2D) && (mobjDestiny instanceof Arrow2D)) {
+            transformMethod = TransformMethod.ARROW_TRANSFORM;
+            return;
+        }
         if (mobjTransformed instanceof Line) {
             mobjTransformed = ((Line) mobjTransformed).toSegment(JMathAnimConfig.getConfig().getCamera(), 2);
         }
@@ -164,6 +171,10 @@ public class Transform extends Animation {
     private void createTransformStrategy() {
         //Now I choose strategy
         switch (transformMethod) {
+            case ARROW_TRANSFORM:
+                transformStrategy = new ArrowTransform(runTime, (Arrow2D) mobjTransformed, (Arrow2D) mobjDestiny);
+                JMathAnimScene.logger.info("Transform method: Arrow2D");
+                break;
             case MULTISHAPE_TRANSFORM:
                 transformStrategy = new MultiShapeTransform(runTime, convertToMultiShapeObject(mobjTransformed), convertToMultiShapeObject(mobjDestiny));
                 JMathAnimScene.logger.info("Transform method: Multishape");

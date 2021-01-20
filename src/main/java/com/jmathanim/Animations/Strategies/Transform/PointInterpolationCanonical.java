@@ -44,10 +44,12 @@ public class PointInterpolationCanonical extends Animation {
     private final Shape mobjDestinyOrig;
     private Shape originalShapeBaseCopy;
     private static final boolean DEBUG_COLORS = false;
+    private final Shape mobjTransformedOrig;
 
     public PointInterpolationCanonical(double runtime, Shape mobjTransformed, Shape mobjDestiny) {
         super(runtime);
         this.mobjTransformed = mobjTransformed.copy();
+        this.mobjTransformedOrig = mobjTransformed;
         this.mobjDestiny = mobjDestiny.copy();
         this.mobjDestinyOrig = mobjDestiny;
         this.addedAuxiliaryObjectsToScene = new ArrayList<>();
@@ -90,6 +92,7 @@ public class PointInterpolationCanonical extends Animation {
         mobjTransformed.getPath().clear();
         mobjTransformed.getPath().addJMPointsFrom(connectedOrigin.toJMPath());
         scene.add(mobjTransformed);
+        scene.remove(mobjTransformedOrig);
 
     }
 
