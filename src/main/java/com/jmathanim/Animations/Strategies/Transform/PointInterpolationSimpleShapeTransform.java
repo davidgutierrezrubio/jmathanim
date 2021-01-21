@@ -51,11 +51,11 @@ public class PointInterpolationSimpleShapeTransform extends Animation {
             optimizeStrategy = new SimpleConnectedPathsOptimizationStrategy(mobjTransformed, mobjDestiny);
         }
 
-        alignNumberOfElements(mobjTransformed.jmpath, mobjDestiny.jmpath);
+        alignNumberOfElements(mobjTransformed.getPath(), mobjDestiny.getPath());
         optimizeStrategy.optimizePaths(mobjTransformed, mobjDestiny);
         originalShapeBaseCopy = mobjTransformed.copy();
         //Mark all points as curved during transformation
-        for (JMPathPoint jmp : mobjTransformed.jmpath.jmPathPoints) {
+        for (JMPathPoint jmp : mobjTransformed.getPath().jmPathPoints) {
             jmp.isCurved = true;
         }
         scene.add(mobjTransformed);
@@ -104,7 +104,7 @@ public class PointInterpolationSimpleShapeTransform extends Animation {
             p1.cp2vBackup = p2.cp2vBackup;
         }
 
-        mobjTransformed.jmpath.removeInterpolationPoints();
+        mobjTransformed.getPath().removeInterpolationPoints();
         mobjTransformed.mp.copyFrom(mobjDestiny.mp);
         mobjTransformed.absoluteSize = mobjDestiny.absoluteSize;
     }

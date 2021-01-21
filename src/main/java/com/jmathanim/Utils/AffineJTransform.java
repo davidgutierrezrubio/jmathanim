@@ -271,7 +271,7 @@ public class AffineJTransform {
         }
         if (mObject instanceof Shape) {
             Shape mobj = (Shape) mObject;
-            int size = mobj.jmpath.size();
+            int size = mobj.getPath().size();
             for (int n = 0; n < size; n++) {
                 applyTransform(mobj.getJMPoint(n));
             }

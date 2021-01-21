@@ -258,7 +258,7 @@ public class TransformMathExpression extends Animation {
         Shape sh = lat.get(gr[0]).copy();
         listRemainders.remove(gr[0]);
         for (int n = 1; n < gr.length; n++) {
-            sh.merge(lat.get(gr[n]).copy());
+            sh.merge(lat.get(gr[n]).copy(),false,false);
             listRemainders.remove(gr[n]);
         }
         return sh;

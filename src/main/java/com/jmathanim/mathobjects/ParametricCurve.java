@@ -141,7 +141,7 @@ public class ParametricCurve extends Shape {
             double xy[] = getFunctionValue(t);
             Point p = Point.at(xy[0], xy[1]);
             final JMPathPoint jmp = JMPathPoint.curveTo(p);
-            this.jmpath.addJMPoint(jmp);
+            this.getPath().addJMPoint(jmp);
 
         }
         this.getJMPoint(0).isThisSegmentVisible = this.getPoint(0).isEquivalenTo(this.getPoint(-1), 0.0000001);
@@ -155,7 +155,7 @@ public class ParametricCurve extends Shape {
      */
     private void generateControlPoints() {
         for (int n = 0; n < tPoints.size(); n++) {
-            JMPathPoint jmp = this.jmpath.getJMPoint(n);
+            JMPathPoint jmp = this.getPath().getJMPoint(n);
             double t = tPoints.get(n);
             if (n < tPoints.size() - 1) {
                 final double delta = .3 * (tPoints.get(n + 1) - t);
@@ -224,14 +224,14 @@ public class ParametricCurve extends Shape {
             x0 = tPoints.get(n);
         }
         if (x0 == t) {
-            return this.jmpath.getJMPoint(n);
+            return this.getPath().getJMPoint(n);
         } else {
             tPoints.add(n, t);
             double x = getFunctionValueX(t);
             double y = getFunctionValueY(t);
             Point p = Point.at(x, y);
             final JMPathPoint jmp = JMPathPoint.curveTo(p);
-            this.jmpath.jmPathPoints.add(n, jmp);
+            this.getPath().jmPathPoints.add(n, jmp);
             return jmp;
         }
     }

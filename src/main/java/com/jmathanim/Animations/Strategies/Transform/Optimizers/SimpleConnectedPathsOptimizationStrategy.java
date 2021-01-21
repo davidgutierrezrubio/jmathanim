@@ -37,8 +37,8 @@ public class SimpleConnectedPathsOptimizationStrategy implements OptimizePathsSt
 
     @Override
     public void optimizePaths(Shape shape1, Shape shape2) {
-        JMPath pa1c = shape1.jmpath.rawCopy();
-        JMPath pa2 = shape2.jmpath;
+        JMPath pa1c = shape1.getPath().rawCopy();
+        JMPath pa2 = shape2.getPath();
         int direction = pa1c.getOrientation() * pa2.getOrientation();
 
         ArrayList<Double> dists = new ArrayList<>();
@@ -52,7 +52,7 @@ public class SimpleConnectedPathsOptimizationStrategy implements OptimizePathsSt
         }
         int cycleMin = dists.indexOf(Collections.min(dists)) + 1;
 
-        shape1.jmpath.cyclePoints(cycleMin, direction);
+        shape1.getPath().cyclePoints(cycleMin, direction);
     }
 
     private double SumDistancesBetweenPaths(JMPath pa1, JMPath pa2) {

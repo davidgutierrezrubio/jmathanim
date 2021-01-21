@@ -37,7 +37,7 @@ public class TransformedJMPath extends Shape{
         super();
         this.transform=tr;
         this.srcOBj=jmpobj;
-        this.jmpath.setJMPoints(jmpobj.jmpath);
+        this.getPath().setJMPoints(jmpobj.getPath());
     }
 
     @Override
@@ -47,7 +47,7 @@ public class TransformedJMPath extends Shape{
 
     @Override
     public void update(JMathAnimScene scene) {
-          int size = srcOBj.jmpath.size();
+          int size = srcOBj.getPath().size();
           //TODO: This is already implemented
             for (int n = 0; n < size; n++) {
                 JMPathPoint jmPDst = getJMPoint(n);

@@ -98,7 +98,7 @@ public class FunctionGraph extends Shape {
             double y = getFunctionValue(x);
             Point p = Point.at(x, y);
             final JMPathPoint jmp = JMPathPoint.curveTo(p);
-            this.jmpath.addJMPoint(jmp);
+            this.getPath().addJMPoint(jmp);
             if (n == 0) {
                 jmp.isThisSegmentVisible = false;
             }
@@ -112,7 +112,7 @@ public class FunctionGraph extends Shape {
      */
     private void generateControlPoints() {
         for (int n = 0; n < xPoints.size(); n++) {
-            JMPathPoint jmp = this.jmpath.getJMPoint(n);
+            JMPathPoint jmp = this.getPath().getJMPoint(n);
             double x = jmp.p.v.x;
             if (n < xPoints.size() - 1) {
                 final double deltaX = .3 * (xPoints.get(n + 1) - x);
@@ -134,7 +134,7 @@ public class FunctionGraph extends Shape {
      * recalculated.
      */
     public void updatePoints() {
-        for (JMPathPoint jmp : this.jmpath.jmPathPoints) {
+        for (JMPathPoint jmp : this.getPath().jmPathPoints) {
             jmp.p.v.y = getFunctionValue(jmp.p.v.x);
         }
         generateControlPoints();
@@ -158,13 +158,13 @@ public class FunctionGraph extends Shape {
             x0 = xPoints.get(n);
         }
         if (x0 == x) {
-            return this.jmpath.getJMPoint(n);
+            return this.getPath().getJMPoint(n);
         } else {
             xPoints.add(n, x);
             double y = getFunctionValue(x);
             Point p = Point.at(x, y);
             final JMPathPoint jmp = JMPathPoint.curveTo(p);
-            this.jmpath.jmPathPoints.add(n, jmp);
+            this.getPath().jmPathPoints.add(n, jmp);
             return jmp;
         }
     }

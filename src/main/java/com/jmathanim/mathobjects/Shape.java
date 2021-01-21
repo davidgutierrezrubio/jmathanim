@@ -32,7 +32,7 @@ import java.util.ArrayList;
  */
 public class Shape extends MathObject {
 
-    public final JMPath jmpath;
+    private final JMPath jmpath;
     protected final ArrayList<JMPathPoint> vertices;
     private boolean showDebugPoints = false;
 
@@ -177,20 +177,40 @@ public class Shape extends MathObject {
         jmpath.saveState();
     }
 
-    public <T extends Shape> T merge(Shape sh) {
-        JMPath pa = sh.getPath();
-
+    /**
+     * Merges with the given Shape, adding all their jmpathpoints.If the shapes
+     * were disconnected they will remain so unless the connect parameter is set
+     * to true. In such case, the shapes will be connected by a straight line
+     * from the last point of the calling object to the first point of the given
+     * one.
+     *
+     * @param <T> Calling Shape subclass
+     * @param sh Shape to merge
+     * @param connect If true, the 2 paths will be connected by a straight line
+     * @param reverse If true, reverse the points of the second shape. This is
+     * useful for filling purposes if you are trying to add a "hole" to a shape
+     * @return This object
+     */
+    public <T extends Shape> T merge(Shape sh, boolean connect, boolean reverse) {
+        JMPath pa = sh.getPath().copy();
+        if (reverse) {
+            pa.reverse();
+        }
+        //If the first path is already a closed one, open it
+        //with 2 identical points (old-fashioned style of closing shapes)
         final JMPathPoint jmPoint = jmpath.getJMPoint(0);
         if (jmPoint.isThisSegmentVisible) {
             jmpath.jmPathPoints.add(jmPoint.copy());
             jmPoint.isThisSegmentVisible = false;
         }
 
+        //Do the same with the second path
         final JMPathPoint jmPoint2 = pa.getJMPoint(0);
         if (jmPoint2.isThisSegmentVisible) {
             pa.jmPathPoints.add(jmPoint2.copy());
-            jmPoint2.isThisSegmentVisible = false;
         }
+        jmPoint2.isThisSegmentVisible = connect;
+        //Now you can add the points
         jmpath.jmPathPoints.addAll(pa.jmPathPoints);
         return (T) this;
     }
@@ -265,6 +285,12 @@ public class Shape extends MathObject {
         return obj;
     }
 
+    /**
+     * Creates a polygon with the given points
+     *
+     * @param points Points of the polygon, varargs or array Point[]
+     * @return The polygon
+     */
     public static Shape polygon(Point... points) {
         Shape obj = new Shape();
         for (Point newPoint : points) {
@@ -272,6 +298,18 @@ public class Shape extends MathObject {
             obj.getPath().addJMPoint(p);
         }
         return obj;
+    }
+
+    /**
+     * Creates a shape composed of multiple connected segments
+     *
+     * @param points Points to connect. Varargs or array Point[]
+     * @return The polyline
+     */
+    public static Shape polyLine(Point... points) {
+        Shape resul = polygon(points);
+        resul.getJMPoint(0).isThisSegmentVisible = false;
+        return resul;
     }
 
     public static Shape regularPolygon(int numsides) {
@@ -344,8 +382,17 @@ public class Shape extends MathObject {
         return obj;
     }
 
-    public static Shape circle(Point center, double radius) {
-        return circle().scale(radius).shift(center.v);
+    /**
+     * Creates an annulus with the given min and max radius
+     *
+     * @param minRadius Inner radius of the annulus
+     * @param maxRadius Outer radius of the annulus
+     * @return The annulus created
+     */
+    public static Shape annulus(double minRadius, double maxRadius) {
+        Shape extCircle = Shape.circle().scale(maxRadius);
+        Shape intCircle = Shape.circle().scale(.75);
+        return extCircle.merge(intCircle, false, true);
     }
 
     public boolean isShowDebugPoints() {

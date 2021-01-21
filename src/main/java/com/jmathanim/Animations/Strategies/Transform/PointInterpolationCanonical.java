@@ -79,7 +79,7 @@ public class PointInterpolationCanonical extends Animation {
         optimizeStrategy.optimizePaths(mobjDestiny, mobjTransformed);
 
         originalShapeBaseCopy = mobjTransformed.copy();
-        preparePaths(mobjTransformed.jmpath, mobjDestiny.jmpath);
+        preparePaths(mobjTransformed.getPath(), mobjDestiny.getPath());
         if (DEBUG_COLORS) {
             for (int n = 0; n < connectedOrigin.getNumberOfPaths(); n++) {
                 Shape sh = new Shape(connectedOrigin.get(n), null);

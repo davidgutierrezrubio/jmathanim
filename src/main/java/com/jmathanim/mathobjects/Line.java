@@ -69,14 +69,14 @@ public class Line extends Shape {
         super(mp);
         this.p1 = p1;
         this.p2 = p2;
-        jmpath.clear(); //Super constructor adds p1, p2. Delete them
+        getPath().clear(); //Super constructor adds p1, p2. Delete them
         bp1 = new JMPathPoint(new Point(0, 0), true, JMPathPointType.VERTEX);//trivial boundary points, just to initialize objects
         bp2 = new JMPathPoint(new Point(0, 0), true, JMPathPointType.VERTEX);//trivial boundary points, just to initialize objects
         visiblePiece = new Shape();
-        visiblePiece.jmpath.addJMPoint(bp1, bp2);
+        visiblePiece.getPath().addJMPoint(bp1, bp2);
         visiblePiece.mp = this.mp;
-        jmpath.addPoint(p1, p2);
-        jmpath.getJMPoint(0).isThisSegmentVisible = false;
+        getPath().addPoint(p1, p2);
+        getPath().getJMPoint(0).isThisSegmentVisible = false;
     }
 
     @Override

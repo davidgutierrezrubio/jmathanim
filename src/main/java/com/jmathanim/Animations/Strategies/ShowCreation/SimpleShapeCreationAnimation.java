@@ -43,10 +43,10 @@ public class SimpleShapeCreationAnimation extends Animation {
     @Override
     public void initialize(JMathAnimScene scene) {
         super.initialize(scene);
-        if (mobj.jmpath.size() == 0) {//If it is a empty shape, do nothing
+        if (mobj.getPath().size() == 0) {//If it is a empty shape, do nothing
             finishAnimation();
         }
-        canonPath = mobj.jmpath.canonicalForm();
+        canonPath = mobj.getPath().canonicalForm();
 
         //Create multishape with all canonical components and a copy of drawing attributes
         //This will be drawed instead of mobj during the ShowCreation animation
@@ -68,9 +68,9 @@ public class SimpleShapeCreationAnimation extends Animation {
         if (lt == 1) {
             for (int n = 0; n < msh.shapes.size(); n++) {
                 //Restore all paths because in each loop there will be modified
-                msh.shapes.get(n).jmpath.clear();
+                msh.shapes.get(n).getPath().clear();
                 final JMPath path = canonPath.get(n);
-                msh.shapes.get(n).jmpath.addJMPointsFrom(path);
+                msh.shapes.get(n).getPath().addJMPointsFrom(path);
             }
             return;
         }
@@ -90,9 +90,9 @@ public class SimpleShapeCreationAnimation extends Animation {
         k = pl[1];
         for (int n = 0; n < msh.shapes.size(); n++) {
             //Restore all paths because in each loop there will be modified
-            msh.shapes.get(n).jmpath.clear();
+            msh.shapes.get(n).getPath().clear();
             final JMPath path = canonPath.get(n);
-            msh.shapes.get(n).jmpath.addJMPointsFrom(path);
+            msh.shapes.get(n).getPath().addJMPointsFrom(path);
 
             if (n < pathNumber) {
                 msh.shapes.get(n).visible(true);//Draw whole path
@@ -103,10 +103,10 @@ public class SimpleShapeCreationAnimation extends Animation {
             if (n == pathNumber) {//This path should be drawn partly
                 msh.shapes.get(n).visible(true);
                 //k=point in this path, and alpha 0-1 relative position between k-1 and k
-                final double alphaInThisPath = (k + alpha) / (msh.shapes.get(n).jmpath.size() - 1);
+                final double alphaInThisPath = (k + alpha) / (msh.shapes.get(n).getPath().size() - 1);
                 JMPath subpath = canonPath.subpath(n, alphaInThisPath);
-                msh.shapes.get(n).jmpath.clear();
-                msh.shapes.get(n).jmpath.addJMPointsFrom(subpath);
+                msh.shapes.get(n).getPath().clear();
+                msh.shapes.get(n).getPath().addJMPointsFrom(subpath);
             }
         }
     }
@@ -114,7 +114,7 @@ public class SimpleShapeCreationAnimation extends Animation {
     @Override
     public void finishAnimation() {
         super.finishAnimation();
-        if (mobj.jmpath.size() > 0) {
+        if (mobj.getPath().size() > 0) {
             doAnim(1);
         }
         this.scene.remove(msh);

@@ -380,6 +380,21 @@ public class JMPath implements Updateable, Stateable {
     }
 
     /**
+     * Reverse the points of the path
+     */
+    public void reverse() {
+        //TODO: implement this for more general path, using canonical form
+        if (getNumberOfConnectedComponents() == 0) {
+            this.cyclePoints(0, -1);
+        }
+        if (getNumberOfConnectedComponents() == 1) {
+            this.jmPathPoints.get(0).isThisSegmentVisible = true;
+            this.jmPathPoints.get(-1).isThisSegmentVisible = false;
+            this.cyclePoints(-1, -1);
+        }
+    }
+
+    /**
      * Compute the sum of distance of points from aligned paths This distance
      * should be minimized in order to Transform more smoothly. The paths should
      * have the same number of points.
