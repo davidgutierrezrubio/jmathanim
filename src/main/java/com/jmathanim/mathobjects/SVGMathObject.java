@@ -75,6 +75,7 @@ public class SVGMathObject extends MultiShapeObject {
         ResourceLoader rl = new ResourceLoader();
         URL urlImage = rl.getResource(fname, "images");
         try {
+            JMathAnimScene.logger.info("loading svg 1");
             importSVG(urlImage);
         } catch (Exception ex) {
             Logger.getLogger(SVGMathObject.class.getName()).log(Level.SEVERE, null, ex);
@@ -101,12 +102,18 @@ public class SVGMathObject extends MultiShapeObject {
     protected final void importSVG(URL urlSvg) throws Exception {
 
         DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+        dbFactory.setFeature("http://xml.org/sax/features/namespaces", false);
+        dbFactory.setFeature("http://xml.org/sax/features/validation", false);
+        dbFactory.setFeature("http://apache.org/xml/features/nonvalidating/load-dtd-grammar", false);
+        dbFactory.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
+
         DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
-
+        JMathAnimScene.logger.info("parse stream 107");
         org.w3c.dom.Document doc = dBuilder.parse(urlSvg.openStream());
-
+        JMathAnimScene.logger.info("process child nodes 108");
         //Look for svg elements in the root document
         processChildNodes((doc.getDocumentElement()));
+        JMathAnimScene.logger.info("process child nodes done 108");
 //        NodeList listGroups = doc.getElementsByTagName("g");
 //        for (int n = 0; n < listGroups.getLength(); n++) {
 //            Element gNode = (Element) listGroups.item(n);
@@ -130,7 +137,7 @@ public class SVGMathObject extends MultiShapeObject {
 //                    ShMp.fillColor.set(JMColor.random());
                 switch (el.getTagName()) {
                     case "g":
-                        MODrawProperties mpCopy=mp.copy();
+                        MODrawProperties mpCopy = mp.copy();
                         processAttributeCommands(el, mp);
                         mp.thickness = .1;
                         processChildNodes(el);
@@ -561,5 +568,15 @@ public class SVGMathObject extends MultiShapeObject {
 
         }
     }
-
+  @Override
+    public SVGMathObject copy() {
+        SVGMathObject resul = new SVGMathObject();
+        for (Shape sh : shapes) {
+            final Shape copy = sh.copy();
+            resul.add(copy);
+        }
+        resul.mp.copyFrom(mp);
+        resul.absoluteSize = this.absoluteSize;
+        return resul;
+    }
 }

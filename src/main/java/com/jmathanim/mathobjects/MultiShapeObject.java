@@ -195,7 +195,13 @@ public class MultiShapeObject extends MathObject implements Iterable<Shape> {
         }
         return (T) this;
     }
-
+ @Override
+    public <T extends MathObject> T thickness(double t) {
+        for (Shape jmp : shapes) {
+            jmp.thickness(t);
+        }
+        return (T) this;
+    }
     public Shape get(int n) {
         return shapes.get(n);
     }

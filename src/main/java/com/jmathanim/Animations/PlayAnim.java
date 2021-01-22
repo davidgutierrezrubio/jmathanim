@@ -152,28 +152,28 @@ public class PlayAnim {
         MathObject[] objects = scene.getObjects().toArray(new MathObject[scene.getObjects().size()]);
         scene.playAnimation(Commands.fadeOut(runtime, objects));
     }
-    
-  public void fadeOutAllBut(double runtime,MathObject...objs) {
-      ArrayList<MathObject> toRemove=new ArrayList<>();
-      toRemove.addAll(scene.getObjects());
-      for (MathObject obj:objs) {
-          if (obj instanceof MultiShapeObject) {
-              for (Shape sh:(MultiShapeObject)obj){
-                  toRemove.remove(sh);
-              }
-          }
-           if (obj instanceof MathObjectGroup) {
-              for (MathObject o:(MathObjectGroup)obj){
-                  toRemove.remove(o);
-              }
-          }
-          
-          
-          toRemove.remove(obj);
-      }
+
+    public void fadeOutAllBut(double runtime, MathObject... objs) {
+        ArrayList<MathObject> toRemove = new ArrayList<>();
+        toRemove.addAll(scene.getObjects());
+        for (MathObject obj : objs) {
+            if (obj instanceof MultiShapeObject) {
+                for (Shape sh : (MultiShapeObject) obj) {
+                    toRemove.remove(sh);
+                }
+            }
+            if (obj instanceof MathObjectGroup) {
+                for (MathObject o : (MathObjectGroup) obj) {
+                    toRemove.remove(o);
+                }
+            }
+
+            toRemove.remove(obj);
+        }
         MathObject[] objects = toRemove.toArray(new MathObject[toRemove.size()]);
         scene.playAnimation(Commands.fadeOut(runtime, objects));
     }
+
     /**
      * Shift the specified objects out of the math view and removes them from
      * the scene.
@@ -290,7 +290,7 @@ public class PlayAnim {
     public void scale(double runTime, double scx, double scy, MathObject... objs) {
         Rect r = objs[0].getBoundingBox();
         for (MathObject obj : objs) {
-            r = Rect.union(r,obj.getBoundingBox());
+            r = Rect.union(r, obj.getBoundingBox());
         }
         scene.playAnimation(Commands.scale(runTime, r.getCenter(), scx, scy, 1, objs));
     }
@@ -337,7 +337,7 @@ public class PlayAnim {
     public void rotate(double runTime, double angle, MathObject... objs) {
         Rect r = objs[0].getBoundingBox();
         for (MathObject obj : objs) {
-            r = Rect.union(r,obj.getBoundingBox());
+            r = Rect.union(r, obj.getBoundingBox());
         }
         scene.playAnimation(Commands.rotate(runTime, r.getCenter(), angle, objs));
     }
@@ -397,7 +397,7 @@ public class PlayAnim {
         final Vec gaps = scene.getCamera().getGaps();
         Rect r = scene.getCamera().getMathView();
         for (MathObject obj : scene.getObjects()) {
-            r = Rect.union(r,obj.getBoundingBox().addGap(gaps.x, gaps.y));
+            r = Rect.union(r, obj.getBoundingBox().addGap(gaps.x, gaps.y));
         }
         zoomToRect(runtime, r);
     }
@@ -427,7 +427,7 @@ public class PlayAnim {
         final Vec gaps = scene.getCamera().getGaps();
         Rect r = scene.getCamera().getMathView();
         for (MathObject obj : objs) {
-            r = Rect.union(r,obj.getBoundingBox().addGap(gaps.x, gaps.y));
+            r = Rect.union(r, obj.getBoundingBox().addGap(gaps.x, gaps.y));
         }
         zoomToRect(runTime, r);
     }
@@ -442,7 +442,7 @@ public class PlayAnim {
     public void zoomToObjects(double runTime, MathObject... objs) {
         Rect r = objs[0].getBoundingBox();
         for (MathObject obj : objs) {
-            r = Rect.union(r,obj.getBoundingBox());
+            r = Rect.union(r, obj.getBoundingBox());
         }
         zoomToRect(runTime, r);
     }
@@ -660,4 +660,18 @@ public class PlayAnim {
         scene.playAnimation(Commands.setStyle(runtime, styleName, mobjects));
     }
 
+    /**
+     * Plays an animated version of the stackTo method.The destination point is computed
+     * at the initialize() method so it cab ne safely concatenated. If several
+     * objects are animated, the second will be stacked to the first, and so on
+     *
+     * @param runtime time in seconds
+     * @param dst Destiny object to align with
+     * @param type Type of stack, a value of Anchor.Type enum
+     * @param gap Gap between the stacked objects
+     * @param mobjects Mathobjects to animate
+     */
+    public void stackTo(double runtime, MathObject dst, Anchor.Type type, double gap, MathObject... mobjects) {
+        scene.playAnimation(Commands.stackTo(runtime, dst, type, gap, mobjects));
+    }
 }
