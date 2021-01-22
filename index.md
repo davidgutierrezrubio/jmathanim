@@ -10,6 +10,11 @@ Although with limited features, it can be used to create many, non too complex a
 # What's new?
 Version 0.8.8-SNAPSHOT:
 
+* Disabled XML validation so that SVG files load faster
+* Added stackTo animation to fast access method play.stackTo
+* Added merge command to Shape objects
+* Added annulus and polyLine creation to Shape
+
 * Fixed bug transforming shapes with the flip animation when their centers were not aligned
 * Fixed bug parsing styles to SVG objects different from path (rect, circle...)
 
