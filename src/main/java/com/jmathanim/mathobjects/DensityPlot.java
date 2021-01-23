@@ -17,6 +17,7 @@
  */
 package com.jmathanim.mathobjects;
 
+import com.jmathanim.Utils.AffineJTransform;
 import com.jmathanim.Utils.ColorScale;
 import com.jmathanim.Utils.JMathAnimConfig;
 import com.jmathanim.Utils.Rect;
@@ -175,6 +176,12 @@ public class DensityPlot extends AbstractJMImage {
 
     public void setColorScale(ColorScale colorScale) {
         this.colorScale = colorScale;
+    }
+
+    @Override
+    public <T extends MathObject> T applyLinearTransform(AffineJTransform tr) {
+        //Nothing to do (for now...)
+        return (T) this;
     }
 
 }

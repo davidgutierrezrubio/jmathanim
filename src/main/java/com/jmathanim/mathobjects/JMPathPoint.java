@@ -18,6 +18,7 @@
 package com.jmathanim.mathobjects;
 
 import com.jmathanim.Renderers.Renderer;
+import com.jmathanim.Utils.AffineJTransform;
 import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
@@ -230,4 +231,18 @@ public class JMPathPoint extends MathObject implements Updateable, Stateable {
         return cpEnter.isEquivalenTo(p2.cpEnter, epsilon);
     }
 
+    @Override
+    public <T extends MathObject> T applyLinearTransform(AffineJTransform tr) {
+        JMPathPoint pSrc = this.copy();
+        Point pDst = tr.getTransformedObject(pSrc.p);
+        Point cp1Dst = tr.getTransformedObject(pSrc.cpExit);
+        Point cp2Dst = tr.getTransformedObject(pSrc.cpEnter);
+
+        this.p.v.copyFrom(pDst.v);
+        this.cpExit.v.copyFrom(cp1Dst.v);
+        this.cpEnter.v.copyFrom(cp2Dst.v);
+
+        tr.applyTransformsToDrawingProperties(this);
+        return (T) this;
+    }
 }

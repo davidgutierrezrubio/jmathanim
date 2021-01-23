@@ -774,4 +774,6 @@ public abstract class MathObject implements Drawable, Updateable, Stateable {
         shift(shiftVector);
         return (T) this;
     }
+    
+    abstract public <T extends MathObject> T applyLinearTransform(AffineJTransform tr);
 }

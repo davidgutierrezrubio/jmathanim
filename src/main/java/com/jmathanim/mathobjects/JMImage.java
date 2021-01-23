@@ -18,6 +18,7 @@
 package com.jmathanim.mathobjects;
 
 import com.jmathanim.Renderers.Renderer;
+import com.jmathanim.Utils.AffineJTransform;
 import com.jmathanim.Utils.JMathAnimConfig;
 import com.jmathanim.Utils.Rect;
 import com.jmathanim.jmathanim.JMathAnimScene;
@@ -30,7 +31,6 @@ import javafx.scene.image.Image;
 public class JMImage extends AbstractJMImage {
 
     private String filename;
-   
 
     public static JMImage make(String filename) {
         return new JMImage(filename);
@@ -40,18 +40,17 @@ public class JMImage extends AbstractJMImage {
     public JMImage(String filename) {
         setCached(true);
         this.filename = filename;
-         renderer = JMathAnimConfig.getConfig().getRenderer();
+        renderer = JMathAnimConfig.getConfig().getRenderer();
         this.bbox = renderer.createImage(filename);
-        double sc=renderer.getMediaHeight()*1d/1080d;//Scales it taking as reference 1920x1080 production output
+        double sc = renderer.getMediaHeight() * 1d / 1080d;//Scales it taking as reference 1920x1080 production output
         this.scale(sc);
     }
-    public void setImage(String fn) {
-        Rect bb=renderer.createImage(fn);
-        bb.centerAt(this.bbox.getCenter());
-        this.filename=fn;
-    }
 
-   
+    public void setImage(String fn) {
+        Rect bb = renderer.createImage(fn);
+        bb.centerAt(this.bbox.getCenter());
+        this.filename = fn;
+    }
 
     @Override
     public JMImage copy() {
@@ -63,8 +62,6 @@ public class JMImage extends AbstractJMImage {
         resul.rotateAngleBackup = this.rotateAngleBackup;
         return resul;
     }
-
-   
 
     @Override
     public void draw(Renderer r) {
@@ -111,12 +108,12 @@ public class JMImage extends AbstractJMImage {
     }
 
     public String getFilename() {
-     return filename;
+        return filename;
     }
-    
+
     @Override
     public String getId() {
-     return getFilename();
+        return getFilename();
     }
 
     @Override
@@ -124,4 +121,9 @@ public class JMImage extends AbstractJMImage {
         return null;
     }
 
+    @Override
+    public <T extends MathObject> T applyLinearTransform(AffineJTransform tr) {
+        //Nothing to do (for now...)
+        return (T) this;
+    }
 }

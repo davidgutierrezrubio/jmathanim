@@ -18,6 +18,7 @@
 package com.jmathanim.mathobjects;
 
 import com.jmathanim.Renderers.Renderer;
+import com.jmathanim.Utils.AffineJTransform;
 import com.jmathanim.Utils.Anchor;
 import com.jmathanim.Utils.JMColor;
 import com.jmathanim.Utils.MODrawProperties;
@@ -51,7 +52,6 @@ public class MathObjectGroup extends MathObject implements Iterable<MathObject> 
     public MathObjectGroup(ArrayList<MathObject> objects) {
         this.objects = objects;
     }
-
 
     @Override
     public <T extends MathObject> T moveTo(Point p) {
@@ -320,5 +320,14 @@ public class MathObjectGroup extends MathObject implements Iterable<MathObject> 
 
     public static MathObjectGroup make(MathObject... objects) {
         return new MathObjectGroup(objects);
+    }
+
+    @Override
+    public <T extends MathObject> T applyLinearTransform(AffineJTransform tr) {
+        for (MathObject obj : objects) {
+            obj.applyLinearTransform(tr);
+        }
+        tr.applyTransformsToDrawingProperties(this);
+        return (T) this;
     }
 }

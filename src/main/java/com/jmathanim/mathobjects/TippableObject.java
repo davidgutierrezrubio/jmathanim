@@ -27,5 +27,5 @@ import com.jmathanim.Utils.Vec;
  */
 public abstract class TippableObject implements Drawable{
 
-    abstract public void updateLocations(Point location, Vec pointTo);
+    abstract public void updateLocations(JMPathPoint location);
 }

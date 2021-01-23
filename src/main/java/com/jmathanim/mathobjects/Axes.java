@@ -18,6 +18,7 @@
 package com.jmathanim.mathobjects;
 
 import com.jmathanim.Renderers.Renderer;
+import com.jmathanim.Utils.AffineJTransform;
 import com.jmathanim.Utils.Anchor;
 import com.jmathanim.Utils.JMColor;
 import com.jmathanim.Utils.JMathAnimConfig;
@@ -105,9 +106,9 @@ public class Axes extends MathObject {
 
     /**
      * Generates a set of pairs (ticks-legends) from start to finish (including)
-     * with given step, in the x-axis.The maxWidthToShow parameter is the maximum
-     * width of the math view to show this tick.A value of 0 means always show
-     * this tick.
+     * with given step, in the x-axis.The maxWidthToShow parameter is the
+     * maximum width of the math view to show this tick.A value of 0 means
+     * always show this tick.
      *
      * @param start Starting number
      * @param finish Ending number
@@ -124,9 +125,9 @@ public class Axes extends MathObject {
 
     /**
      * Generates a set of pairs (ticks-legends) from start to finish (including)
-     * with given step, in the y-axis.The maxWidthToShow parameter is the maximum
-     * width of the math view to show this tick.A value of 0 means always show
-     * this tick.
+     * with given step, in the y-axis.The maxWidthToShow parameter is the
+     * maximum width of the math view to show this tick.A value of 0 means
+     * always show this tick.
      *
      * @param start Starting number
      * @param finish Ending number
@@ -163,9 +164,9 @@ public class Axes extends MathObject {
 //    }
     /**
      * Adds a pair (tick, legend text) at the given value in the y-axis.The text
-     * is automatically generated from the value of y. The maxWidthToShow parameter is
-     * the maximum width of the math view to show this tick. A value of 0 means
-     * always show this tick
+     * is automatically generated from the value of y. The maxWidthToShow
+     * parameter is the maximum width of the math view to show this tick. A
+     * value of 0 means always show this tick
      *
      * @param y The y coordinate where to put the tick
      * @param maxWidthToShow max scale to show the tick
@@ -176,8 +177,9 @@ public class Axes extends MathObject {
 
     /**
      * Adds a pair (tick, legend text) at the given value in the y-axis, with
-     * the specified latex string.The maxWidthToShow parameter is the maximum width of
-     * the math view to show this tick. A value of 0 means always show this tick
+     * the specified latex string.The maxWidthToShow parameter is the maximum
+     * width of the math view to show this tick. A value of 0 means always show
+     * this tick
      *
      * @param latex The text with the legend
      * @param y The y coordinate where to put the tick
@@ -192,9 +194,9 @@ public class Axes extends MathObject {
 
     /**
      * Adds a pair (tick, legend text) at the given value in the x-axis.The text
-     * is automatically generated from the value of x.The maxWidthToShow parameter is
-     * the maximum width of the math view to show this tick. A value of 0 means
-     * always show this tick
+     * is automatically generated from the value of x.The maxWidthToShow
+     * parameter is the maximum width of the math view to show this tick. A
+     * value of 0 means always show this tick
      *
      * @param x The x coordinate where to put the tick
      * @param tickType Tick orientation (primary or secondary)
@@ -206,8 +208,9 @@ public class Axes extends MathObject {
 
     /**
      * Adds a pair (tick, legend text) at the given value in the y-axis, with
-     * the specified latex string.The maxWidthToShow parameter is the maximum width of
-     * the math view to show this tick. A value of 0 means always show this tick
+     * the specified latex string.The maxWidthToShow parameter is the maximum
+     * width of the math view to show this tick. A value of 0 means always show
+     * this tick
      *
      * @param latex The text with the legend
      * @param x The x coordinate where to put the tick
@@ -259,12 +262,11 @@ public class Axes extends MathObject {
         xAxis.draw(r);
         yAxis.draw(r);
 
-
         for (TickAxes xtick : xticks) {
-                xtick.draw(r);
+            xtick.draw(r);
         }
         for (TickAxes ytick : yticks) {
-                ytick.draw(r);
+            ytick.draw(r);
         }
     }
 
@@ -386,4 +388,9 @@ public class Axes extends MathObject {
         return yticks;
     }
 
+    @Override
+    public <T extends MathObject> T applyLinearTransform(AffineJTransform tr) {
+        //Do nothing
+        return (T) this;
+    }
 }

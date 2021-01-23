@@ -18,6 +18,7 @@
 package com.jmathanim.mathobjects;
 
 import com.jmathanim.Renderers.Renderer;
+import com.jmathanim.Utils.AffineJTransform;
 import com.jmathanim.Utils.JMColor;
 import com.jmathanim.Utils.MODrawProperties;
 import com.jmathanim.Utils.Rect;
@@ -38,10 +39,10 @@ public class MultiShapeObject extends MathObject implements Iterable<Shape> {
     public boolean isAddedToScene;
     public final ArrayList<Shape> shapes;
 
-    public static MultiShapeObject make(Shape...shapes) {
+    public static MultiShapeObject make(Shape... shapes) {
         return new MultiShapeObject(shapes);
     }
-    
+
     public MultiShapeObject() {
         this(new ArrayList<Shape>());
     }
@@ -68,7 +69,6 @@ public class MultiShapeObject extends MathObject implements Iterable<Shape> {
     public boolean addJMPathObject(JMPath p, MODrawProperties mp) {
         return shapes.add(new Shape(p, mp));
     }
-
 
     @Override
     public <T extends MathObject> T fillColor(JMColor fc) {
@@ -191,13 +191,15 @@ public class MultiShapeObject extends MathObject implements Iterable<Shape> {
         }
         return (T) this;
     }
- @Override
+
+    @Override
     public <T extends MathObject> T thickness(double t) {
         for (Shape jmp : shapes) {
             jmp.thickness(t);
         }
         return (T) this;
     }
+
     public Shape get(int n) {
         return shapes.get(n);
     }
@@ -312,12 +314,13 @@ public class MultiShapeObject extends MathObject implements Iterable<Shape> {
         }
         for (int n = 0; n < this.shapes.size(); n++) {
             if (list.contains(n)) {//if this index is marked for extraction...
-                
+
                 if (delete) {
                     resul.shapes.set(n, this.get(n));
                     this.shapes.set(n, new Shape());
-                }else
+                } else {
                     resul.shapes.set(n, this.get(n).copy());
+                }
             }
         }
 
@@ -352,6 +355,15 @@ public class MultiShapeObject extends MathObject implements Iterable<Shape> {
         }
 
         return resul;
+    }
+
+    @Override
+    public <T extends MathObject> T applyLinearTransform(AffineJTransform tr) {
+        for (Shape sh : shapes) {
+            sh.applyLinearTransform(tr);
+        }
+        tr.applyTransformsToDrawingProperties(this);
+        return (T) this;
     }
 
 }

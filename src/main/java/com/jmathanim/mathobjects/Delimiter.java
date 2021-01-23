@@ -34,6 +34,14 @@ public class Delimiter extends MathObject {
     private SVGMathObject body;
     private double delimiterScale;
 
+    @Override
+    public <T extends MathObject> T applyLinearTransform(AffineJTransform tr) {
+        A.applyLinearTransform(tr);
+        B.applyLinearTransform(tr);
+        tr.applyTransformsToDrawingProperties(this);
+        return (T) this;
+    }
+
     /**
      * Type of delimiter
      */
@@ -177,16 +185,16 @@ public class Delimiter extends MathObject {
 
     @Override
     public <T extends MathObject> T copy() {
-        return (T) make(A.copy(),B.copy(),type,gap);
+        return (T) make(A.copy(), B.copy(), type, gap);
     }
 
     @Override
     public void registerChildrenToBeUpdated(JMathAnimScene scene) {
-        scene.registerUpdateable(A,B);
+        scene.registerUpdateable(A, B);
     }
 
     @Override
     public void unregisterChildrenToBeUpdated(JMathAnimScene scene) {
-        scene.unregisterUpdateable(A,B);
+        scene.unregisterUpdateable(A, B);
     }
 }

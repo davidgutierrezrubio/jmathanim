@@ -109,9 +109,9 @@ public class ArrowTip extends TippableObject {
     }
 
     @Override
-    public void updateLocations(Point location, Vec pointTo) {
-        this.location = location;
-        this.pointTo = pointTo;
+    public void updateLocations(JMPathPoint jmp) {
+        this.location = jmp.p;
+        this.pointTo = jmp.p.to(jmp.cpExit);
         arrowtipDrawableCopy = arrowtip.copy();
         arrowtipDrawableCopy.setHeight(.1);
         //Shifting

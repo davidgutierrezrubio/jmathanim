@@ -18,6 +18,7 @@
 package com.jmathanim.mathobjects;
 
 import com.jmathanim.Renderers.Renderer;
+import com.jmathanim.Utils.AffineJTransform;
 import com.jmathanim.Utils.JMathAnimConfig;
 import com.jmathanim.Utils.MODrawProperties;
 import com.jmathanim.Utils.Rect;
@@ -353,9 +354,11 @@ public class Shape extends MathObject {
 //        obj.getJMPoint(-1).cp2.v.copyFrom(obj.getJMPoint(-1).p.v);
         return obj;
     }
- public static Shape circle() {
-     return circle(4);
- }
+
+    public static Shape circle() {
+        return circle(4);
+    }
+
     public static Shape circle(int numSegments) {
         Shape obj = new Shape();
         double x1, y1;
@@ -397,6 +400,16 @@ public class Shape extends MathObject {
 
     public void setShowDebugPoints(boolean showDebugPoints) {
         this.showDebugPoints = showDebugPoints;
+    }
+
+    @Override
+    public <T extends MathObject> T applyLinearTransform(AffineJTransform tr) {
+        int size = getPath().size();
+        for (int n = 0; n < size; n++) {
+            getJMPoint(n).applyLinearTransform(tr);
+        }
+        tr.applyTransformsToDrawingProperties(this);
+        return (T) this;
     }
 
 }

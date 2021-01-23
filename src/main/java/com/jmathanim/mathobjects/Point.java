@@ -25,6 +25,8 @@ import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import java.text.DecimalFormat;
+import org.apache.commons.math3.linear.Array2DRowRealMatrix;
+import org.apache.commons.math3.linear.RealMatrix;
 
 /**
  * This class represents a point in 2D or 3D space
@@ -36,6 +38,18 @@ public class Point extends MathObject {
     public final Vec v;
     private final Vec vBackup;
     private Shape dotShape;
+
+    @Override
+    public <T extends MathObject> T applyLinearTransform(AffineJTransform tr) {
+        RealMatrix pRow = new Array2DRowRealMatrix(new double[][]{{1d, v.x, v.y, v.z}});
+        RealMatrix pNew = pRow.multiply(tr.getMatrix());
+
+        v.x = pNew.getEntry(0, 1);
+        v.y = pNew.getEntry(0, 2);
+        v.z = pNew.getEntry(0, 3);
+        tr.applyTransformsToDrawingProperties(this);
+        return (T) this;
+    }
 
     public enum DotSyle {
         CIRCLE, CROSS, PLUS
@@ -72,7 +86,7 @@ public class Point extends MathObject {
         return new Point(0, 0, 1);
     }
 
-     public static final Point segmentIntersection(Point A, Point B, Point C, Point D) {
+    public static final Point segmentIntersection(Point A, Point B, Point C, Point D) {
         AffineJTransform tr = AffineJTransform.createAffineTransformation(A, B, C, Point.unitX(), Point.unitY(), Point.origin(), 1);
         Point P = tr.getTransformedObject(D);
         double r = P.v.x + P.v.y;
@@ -84,8 +98,7 @@ public class Point extends MathObject {
             return null;
         }
     }
-    
-    
+
     /**
      * Creates a new Point with coordinates (0,0,0), with default style.
      */

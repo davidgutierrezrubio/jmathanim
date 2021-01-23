@@ -19,6 +19,7 @@ package com.jmathanim.mathobjects;
 
 import com.jmathanim.Cameras.Camera;
 import com.jmathanim.Renderers.Renderer;
+import com.jmathanim.Utils.AffineJTransform;
 import com.jmathanim.Utils.JMathAnimConfig;
 import com.jmathanim.Utils.MODrawProperties;
 import com.jmathanim.Utils.Rect;
@@ -243,4 +244,13 @@ public class Line extends Shape {
     public Shape toSegment(Camera cam) {
         return toSegment(cam, 1);
     }
+
+    @Override
+    public <T extends MathObject> T applyLinearTransform(AffineJTransform tr) {
+            getP1().applyLinearTransform(tr);
+            getP2().applyLinearTransform(tr);
+            tr.applyTransformsToDrawingProperties(this);
+            return (T) this;
+    }
+    
 }

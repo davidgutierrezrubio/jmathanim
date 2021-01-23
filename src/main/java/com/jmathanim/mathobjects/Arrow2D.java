@@ -341,7 +341,6 @@ public class Arrow2D extends MathObject {
         return (T) this;
     }
 
-
     @Override
     public <T extends MathObject> T shift(Vec shiftVector) {
         body.shift(shiftVector);
@@ -381,10 +380,10 @@ public class Arrow2D extends MathObject {
         Rect r = body.getBoundingBox();
         update(JMathAnimConfig.getConfig().getScene());
         if (arrowHeadToDraw1.size() > 0) {
-            r = Rect.union(r,arrowHeadToDraw1.getBoundingBox());
+            r = Rect.union(r, arrowHeadToDraw1.getBoundingBox());
         }
         if (arrowHeadToDraw2.size() > 0) {
-            r = Rect.union(r,arrowHeadToDraw2.getBoundingBox());
+            r = Rect.union(r, arrowHeadToDraw2.getBoundingBox());
         }
         return r;
     }
@@ -423,4 +422,10 @@ public class Arrow2D extends MathObject {
         return head2;
     }
 
+    @Override
+    public <T extends MathObject> T applyLinearTransform(AffineJTransform tr) {
+        getBody().applyLinearTransform(tr);
+        tr.applyTransformsToDrawingProperties(this);
+        return (T) this;
+    }
 }

@@ -18,7 +18,9 @@
 package com.jmathanim.mathobjects;
 
 import com.jmathanim.Renderers.Renderer;
+import com.jmathanim.Utils.AffineJTransform;
 import com.jmathanim.Utils.JMColor;
+import com.jmathanim.Utils.MODrawProperties;
 import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
@@ -57,6 +59,9 @@ public class ArrowDecorator extends MathObject {
 
     @Override
     public void draw(Renderer r) {
+        if (!scene.getObjects().contains(shape)) {
+            return;
+        }
         shape.draw(r);
         for (double t : arrows.keySet()) {
             arrows.get(t).draw(r);
@@ -65,9 +70,12 @@ public class ArrowDecorator extends MathObject {
 
     @Override
     public void update(JMathAnimScene scene) {
+        if (!scene.getObjects().contains(shape)) {
+            return;
+        }
         for (double t : arrows.keySet()) {
             JMPathPoint loc = shape.getPath().getPointAt(t);
-            arrows.get(t).updateLocations(loc.p, loc.p.to(loc.cpExit));
+            arrows.get(t).updateLocations(loc);
         }
     }
 
@@ -111,12 +119,34 @@ public class ArrowDecorator extends MathObject {
 
     @Override
     public <T extends MathObject> T drawColor(JMColor dc) {
-        return super.drawColor(dc); //To change body of generated methods, choose Tools | Templates.
+        super.drawColor(dc);
+        for (double t : arrows.keySet()) {
+            arrows.get(t).getArrowtip().drawColor(dc);
+        }
+        return (T) this;
     }
 
     @Override
     public <T extends MathObject> T drawAlpha(double alpha) {
-        return super.drawAlpha(alpha); //To change body of generated methods, choose Tools | Templates.
+        super.drawAlpha(alpha);
+        for (double t : arrows.keySet()) {
+            arrows.get(t).getArrowtip().drawAlpha(alpha);
+        }
+        return (T) this;
+    }
+
+    @Override
+    public void interpolateMPFrom(MODrawProperties mpDst, double alpha) {
+        super.interpolateMPFrom(mpDst, alpha);
+        for (double t : arrows.keySet()) {
+            arrows.get(t).getArrowtip().interpolateMPFrom(mpDst, alpha);
+        }
+    }
+
+    @Override
+    public <T extends MathObject> T applyLinearTransform(AffineJTransform tr) {
+        //Nothing to do
+        return (T) this;
     }
 
 }
