@@ -47,7 +47,11 @@ public class ArrowDecorator extends MathObject {
     }
 
     public void addArrow(Arrow2D.ArrowType type, double location) {
-        final ArrowTip arrowTip = new ArrowTip(type);
+        addArrow(type, location, ArrowTip.slopeDirection.POSITIVE);
+    }
+
+    public void addArrow(Arrow2D.ArrowType type, double location, ArrowTip.slopeDirection dir) {
+        final ArrowTip arrowTip = new ArrowTip(type, dir);
         arrowTip.getArrowtip().fillColor(shape.mp.getDrawColor());
         arrowTip.getArrowtip().drawColor(shape.mp.getDrawColor());
         arrows.put(location, arrowTip);

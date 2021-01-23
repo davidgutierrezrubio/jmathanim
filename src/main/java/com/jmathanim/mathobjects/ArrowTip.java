@@ -36,13 +36,20 @@ public class ArrowTip extends TippableObject {
     private Vec pointTo;
     private MultiShapeObject arrowtipDrawableCopy;
     int anchorValue;
+    private slopeDirection direction;
 
-    public ArrowTip(MultiShapeObject arrowtip) {
+    public enum slopeDirection {
+        NEGATIVE, POSITIVE
+    };
+
+    public ArrowTip(MultiShapeObject arrowtip, slopeDirection dir) {
         this.arrowtip = arrowtip;
+        this.direction = dir;
     }
 
-    public ArrowTip(Arrow2D.ArrowType type) {
+    public ArrowTip(Arrow2D.ArrowType type, slopeDirection dir) {
         this.arrowtip = buildArrowHead(type);
+        this.direction = dir;
     }
 
     public MultiShapeObject getArrowtip() {
@@ -111,7 +118,7 @@ public class ArrowTip extends TippableObject {
     @Override
     public void updateLocations(JMPathPoint jmp) {
         this.location = jmp.p;
-        this.pointTo = jmp.p.to(jmp.cpExit);
+
         arrowtipDrawableCopy = arrowtip.copy();
         arrowtipDrawableCopy.setHeight(.1);
         //Shifting
@@ -119,6 +126,11 @@ public class ArrowTip extends TippableObject {
         this.arrowtipDrawableCopy.shift(headPoint.to(location));
 
         //Rotating
+        if (direction == slopeDirection.POSITIVE) {
+            this.pointTo = jmp.p.to(jmp.cpExit);
+        } else {
+            this.pointTo = jmp.cpEnter.to(jmp.p);
+        }
         Vec v = pointTo;
         double angle = v.getAngle();
         AffineJTransform tr = AffineJTransform.create2DRotationTransform(location, -Math.PI / 2 + angle);
