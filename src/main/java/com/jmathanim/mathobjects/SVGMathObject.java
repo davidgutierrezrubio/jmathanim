@@ -75,7 +75,6 @@ public class SVGMathObject extends MultiShapeObject {
         ResourceLoader rl = new ResourceLoader();
         URL urlImage = rl.getResource(fname, "images");
         try {
-            JMathAnimScene.logger.info("loading svg 1");
             importSVG(urlImage);
         } catch (Exception ex) {
             Logger.getLogger(SVGMathObject.class.getName()).log(Level.SEVERE, null, ex);
@@ -108,12 +107,9 @@ public class SVGMathObject extends MultiShapeObject {
         dbFactory.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
 
         DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
-        JMathAnimScene.logger.info("parse stream 107");
         org.w3c.dom.Document doc = dBuilder.parse(urlSvg.openStream());
-        JMathAnimScene.logger.info("process child nodes 108");
         //Look for svg elements in the root document
         processChildNodes((doc.getDocumentElement()));
-        JMathAnimScene.logger.info("process child nodes done 108");
 //        NodeList listGroups = doc.getElementsByTagName("g");
 //        for (int n = 0; n < listGroups.getLength(); n++) {
 //            Element gNode = (Element) listGroups.item(n);
@@ -144,7 +140,7 @@ public class SVGMathObject extends MultiShapeObject {
                         mp.copyFrom(mpCopy);
                         break;
                     case "path":
-                        JMathAnimScene.logger.info("Parsing path");
+//                        JMathAnimScene.logger.info("Parsing path");
                         //Needs to parse style options too
 
                         try {
@@ -153,7 +149,7 @@ public class SVGMathObject extends MultiShapeObject {
                             if (path.jmPathPoints.size() > 0) {
                                 path.pathType = JMPath.SVG_PATH; //Mark this as a SVG path
                                 addJMPathObject(path, ShMp); //Add this path to the array of JMPathObjects
-                                JMathAnimScene.logger.info("Path parsed succesfully");
+//                                JMathAnimScene.logger.info("Path parsed succesfully");
                             }
                         } catch (Exception ex) {
                             Logger.getLogger(SVGMathObject.class.getName()).log(Level.SEVERE, null, ex);
