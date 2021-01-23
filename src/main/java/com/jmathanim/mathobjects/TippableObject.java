@@ -18,14 +18,22 @@
 package com.jmathanim.mathobjects;
 
 import com.jmathanim.Renderers.Renderer;
+import com.jmathanim.Utils.AffineJTransform;
 import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.Vec;
+import com.jmathanim.jmathanim.JMathAnimScene;
+import com.jmathanim.mathobjects.updateableObjects.Updateable;
 
 /**
  *
  * @author David Gutierrez Rubio davidgutierrezrubio@gmail.com
  */
-public abstract class TippableObject implements Drawable{
+public abstract class TippableObject extends MathObject {
 
     abstract public void updateLocations(JMPathPoint location);
+
+    @Override
+    public <T extends MathObject> T applyLinearTransform(AffineJTransform tr) {
+        return (T) this;
+    }
 }
