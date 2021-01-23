@@ -77,11 +77,6 @@ public class Shape extends MathObject {
         }
     }
 
-    @Override
-    public Point getCenter() {
-        return getBoundingBox().getCenter();
-    }
-
     public Point getCentroid() {
         Point resul = new Point(0, 0, 0);
         for (JMPathPoint p : jmpath.jmPathPoints) {
@@ -144,8 +139,8 @@ public class Shape extends MathObject {
     public void registerChildrenToBeUpdated(JMathAnimScene scene) {
         for (JMPathPoint p : jmpath.jmPathPoints) {
             scene.registerUpdateable(p.p);
-            scene.registerUpdateable(p.cp1);
-            scene.registerUpdateable(p.cp2);
+            scene.registerUpdateable(p.cpExit);
+            scene.registerUpdateable(p.cpEnter);
         }
     }
 
@@ -153,8 +148,8 @@ public class Shape extends MathObject {
     public void unregisterChildrenToBeUpdated(JMathAnimScene scene) {
         for (JMPathPoint p : jmpath.jmPathPoints) {
             scene.unregisterUpdateable(p.p);
-            scene.unregisterUpdateable(p.cp1);
-            scene.unregisterUpdateable(p.cp2);
+            scene.unregisterUpdateable(p.cpExit);
+            scene.unregisterUpdateable(p.cpEnter);
         }
     }
 
@@ -346,8 +341,8 @@ public class Shape extends MathObject {
             Point cp1 = p.add(v1);
             Point cp2 = p.add(v1.multInSite(-1));
             JMPathPoint jmp = JMPathPoint.curveTo(p);
-            jmp.cp1.copyFrom(cp1);
-            jmp.cp2.copyFrom(cp2);
+            jmp.cpExit.copyFrom(cp1);
+            jmp.cpEnter.copyFrom(cp2);
             obj.jmpath.addJMPoint(jmp);
         }
 //        obj.getPath().generateControlPoints();
@@ -358,11 +353,12 @@ public class Shape extends MathObject {
 //        obj.getJMPoint(-1).cp2.v.copyFrom(obj.getJMPoint(-1).p.v);
         return obj;
     }
-
-    public static Shape circle() {
+ public static Shape circle() {
+     return circle(4);
+ }
+    public static Shape circle(int numSegments) {
         Shape obj = new Shape();
         double x1, y1;
-        int numSegments = 4;
         double step = Math.PI * 2 / numSegments;
         double cte = 4d / 3 * Math.tan(.5 * Math.PI / numSegments);
         for (double alphaC = 0; alphaC < 2 * Math.PI; alphaC += step) {
@@ -375,8 +371,8 @@ public class Shape extends MathObject {
             Point cp1 = p.add(v1);
             Point cp2 = p.add(v1.multInSite(-1));
             JMPathPoint jmp = JMPathPoint.curveTo(p);
-            jmp.cp1.copyFrom(cp1);
-            jmp.cp2.copyFrom(cp2);
+            jmp.cpExit.copyFrom(cp1);
+            jmp.cpEnter.copyFrom(cp2);
             obj.jmpath.addJMPoint(jmp);
         }
         return obj;

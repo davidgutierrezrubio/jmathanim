@@ -69,10 +69,6 @@ public class MultiShapeObject extends MathObject implements Iterable<Shape> {
         return shapes.add(new Shape(p, mp));
     }
 
-    @Override
-    public Point getCenter() {
-        return getBoundingBox().getCenter();
-    }
 
     @Override
     public <T extends MathObject> T fillColor(JMColor fc) {

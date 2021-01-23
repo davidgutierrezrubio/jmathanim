@@ -289,12 +289,12 @@ public class AffineJTransform {
             JMPathPoint jmPDst = (JMPathPoint) mObject;
             JMPathPoint pSrc = jmPDst.copy();
             Point pDst = getTransformedObject(pSrc.p);
-            Point cp1Dst = getTransformedObject(pSrc.cp1);
-            Point cp2Dst = getTransformedObject(pSrc.cp2);
+            Point cp1Dst = getTransformedObject(pSrc.cpExit);
+            Point cp2Dst = getTransformedObject(pSrc.cpEnter);
 
             jmPDst.p.v.copyFrom(pDst.v);
-            jmPDst.cp1.v.copyFrom(cp1Dst.v);
-            jmPDst.cp2.v.copyFrom(cp2Dst.v);
+            jmPDst.cpExit.v.copyFrom(cp1Dst.v);
+            jmPDst.cpEnter.v.copyFrom(cp2Dst.v);
 
             applyTransformsToDrawingProperties(mObject);
             return;

@@ -76,14 +76,14 @@ public class PointInterpolationSimpleShapeTransform extends Animation {
             interPoint.p.v.z = (1 - lt) * basePoint.p.v.z + lt * dstPoint.p.v.z;
 
             //Interpolate control point 1
-            interPoint.cp1.v.x = (1 - lt) * basePoint.cp1.v.x + lt * dstPoint.cp1.v.x;
-            interPoint.cp1.v.y = (1 - lt) * basePoint.cp1.v.y + lt * dstPoint.cp1.v.y;
-            interPoint.cp1.v.z = (1 - lt) * basePoint.cp1.v.z + lt * dstPoint.cp1.v.z;
+            interPoint.cpExit.v.x = (1 - lt) * basePoint.cpExit.v.x + lt * dstPoint.cpExit.v.x;
+            interPoint.cpExit.v.y = (1 - lt) * basePoint.cpExit.v.y + lt * dstPoint.cpExit.v.y;
+            interPoint.cpExit.v.z = (1 - lt) * basePoint.cpExit.v.z + lt * dstPoint.cpExit.v.z;
 
             //Interpolate control point 2
-            interPoint.cp2.v.x = (1 - lt) * basePoint.cp2.v.x + lt * dstPoint.cp2.v.x;
-            interPoint.cp2.v.y = (1 - lt) * basePoint.cp2.v.y + lt * dstPoint.cp2.v.y;
-            interPoint.cp2.v.z = (1 - lt) * basePoint.cp2.v.z + lt * dstPoint.cp2.v.z;
+            interPoint.cpEnter.v.x = (1 - lt) * basePoint.cpEnter.v.x + lt * dstPoint.cpEnter.v.x;
+            interPoint.cpEnter.v.y = (1 - lt) * basePoint.cpEnter.v.y + lt * dstPoint.cpEnter.v.y;
+            interPoint.cpEnter.v.z = (1 - lt) * basePoint.cpEnter.v.z + lt * dstPoint.cpEnter.v.z;
         }
 
         mobjTransformed.mp.interpolateFrom(originalShapeBaseCopy.mp, mobjDestiny.mp, lt);
@@ -100,8 +100,8 @@ public class PointInterpolationSimpleShapeTransform extends Animation {
             p1.type = p2.type;
             p1.isCurved = p2.isCurved;
             p1.isThisSegmentVisible = p2.isThisSegmentVisible;
-            p1.cp1vBackup = p2.cp1vBackup;
-            p1.cp2vBackup = p2.cp2vBackup;
+            p1.cpExitvBackup = p2.cpExitvBackup;
+            p1.cpEntervBackup = p2.cpEntervBackup;
         }
 
         mobjTransformed.getPath().removeInterpolationPoints();

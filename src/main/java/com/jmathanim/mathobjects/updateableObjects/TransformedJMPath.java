@@ -53,20 +53,20 @@ public class TransformedJMPath extends Shape{
                 JMPathPoint jmPDst = getJMPoint(n);
                 JMPathPoint pSrc = srcOBj.getJMPoint(n);
                 Point pDst = transform.getTransformedObject(pSrc.p);
-                Point cp1Dst = transform.getTransformedObject(pSrc.cp1);
-                Point cp2Dst = transform.getTransformedObject(pSrc.cp2);
+                Point cp1Dst = transform.getTransformedObject(pSrc.cpExit);
+                Point cp2Dst = transform.getTransformedObject(pSrc.cpEnter);
 
                 jmPDst.p.v.x = pDst.v.x;
                 jmPDst.p.v.y = pDst.v.y;
                 jmPDst.p.v.z = pDst.v.z;
 
-                jmPDst.cp1.v.x = cp1Dst.v.x;
-                jmPDst.cp1.v.y = cp1Dst.v.y;
-                jmPDst.cp1.v.z = cp1Dst.v.z;
+                jmPDst.cpExit.v.x = cp1Dst.v.x;
+                jmPDst.cpExit.v.y = cp1Dst.v.y;
+                jmPDst.cpExit.v.z = cp1Dst.v.z;
 
-                jmPDst.cp2.v.x = cp2Dst.v.x;
-                jmPDst.cp2.v.y = cp2Dst.v.y;
-                jmPDst.cp2.v.z = cp2Dst.v.z;
+                jmPDst.cpEnter.v.x = cp2Dst.v.x;
+                jmPDst.cpEnter.v.y = cp2Dst.v.y;
+                jmPDst.cpEnter.v.z = cp2Dst.v.z;
             }
         }
         

@@ -174,10 +174,6 @@ public class Delimiter extends MathObject {
     public void setDelimiterScale(double delimiterScale) {
         this.delimiterScale = delimiterScale;
     }
- @Override
-    public Point getCenter() {
-        return getBoundingBox().getCenter();
-    }
 
     @Override
     public <T extends MathObject> T copy() {

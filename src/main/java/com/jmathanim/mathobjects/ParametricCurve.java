@@ -160,12 +160,12 @@ public class ParametricCurve extends Shape {
             if (n < tPoints.size() - 1) {
                 final double delta = .3 * (tPoints.get(n + 1) - t);
                 Vec v = new Vec(getDerivX(t, 1) * delta, getDerivY(t, 1) * delta);
-                jmp.cp1.copyFrom(jmp.p.add(v));
+                jmp.cpExit.copyFrom(jmp.p.add(v));
             }
             if (n > 0) {
                 final double delta = .3 * (tPoints.get(n - 1) - t);
                 Vec v = new Vec(getDerivX(t, -1) * delta, getDerivY(t, -1) * delta);
-                jmp.cp2.copyFrom(jmp.p.add(v));
+                jmp.cpEnter.copyFrom(jmp.p.add(v));
             }
 
         }

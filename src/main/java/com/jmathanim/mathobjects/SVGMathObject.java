@@ -361,8 +361,8 @@ public class SVGMathObject extends MultiShapeObject {
                 case "S": //Simplified Cubic Bezier. Take first control point as a reflection of previous one
                     previousCommand = token;
 
-                    cx1 = previousPoint.p.v.x - (previousPoint.cp2.v.x - previousPoint.p.v.x);
-                    cy1 = previousPoint.p.v.y - (previousPoint.cp2.v.y - previousPoint.p.v.y);
+                    cx1 = previousPoint.p.v.x - (previousPoint.cpEnter.v.x - previousPoint.p.v.x);
+                    cy1 = previousPoint.p.v.y - (previousPoint.cpEnter.v.y - previousPoint.p.v.y);
                     cx2 = Double.parseDouble(it.next());
                     cy2 = -Double.parseDouble(it.next());
                     getPoint(it.next(), it.next());
@@ -372,8 +372,8 @@ public class SVGMathObject extends MultiShapeObject {
                 case "s": //Simplified relative Cubic Bezier. Take first control point as a reflection of previous one
                     previousCommand = token;
 
-                    cx1 = previousPoint.p.v.x - (previousPoint.cp2.v.x - previousPoint.p.v.x);
-                    cy1 = previousPoint.p.v.y - (previousPoint.cp2.v.y - previousPoint.p.v.y);
+                    cx1 = previousPoint.p.v.x - (previousPoint.cpEnter.v.x - previousPoint.p.v.x);
+                    cy1 = previousPoint.p.v.y - (previousPoint.cpEnter.v.y - previousPoint.p.v.y);
                     xx = previousPoint.p.v.x;
                     yy = previousPoint.p.v.y;
                     cx2 = xx + Double.parseDouble(it.next());
@@ -448,16 +448,16 @@ public class SVGMathObject extends MultiShapeObject {
                                 previousPoint = pathCubicBezier(resul, previousPoint, cx1, cy1, cx2, cy2, currentX, currentY);
                                 break;
                             case "S": //Simplified Cubic Bezier. Take first control point as a reflection of previous one
-                                cx1 = previousPoint.p.v.x - (previousPoint.cp2.v.x - previousPoint.p.v.x);
-                                cy1 = previousPoint.p.v.y - (previousPoint.cp2.v.y - previousPoint.p.v.y);
+                                cx1 = previousPoint.p.v.x - (previousPoint.cpEnter.v.x - previousPoint.p.v.x);
+                                cy1 = previousPoint.p.v.y - (previousPoint.cpEnter.v.y - previousPoint.p.v.y);
                                 cx2 = Double.parseDouble(token);
                                 cy2 = -Double.parseDouble(it.next());
                                 getPoint(it.next(), it.next());
                                 previousPoint = pathCubicBezier(resul, previousPoint, cx1, cy1, cx2, cy2, currentX, currentY);
                                 break;
                             case "s": //Simplified relative Cubic Bezier. Take first control point as a reflection of previous one
-                                cx1 = previousPoint.p.v.x - (previousPoint.cp2.v.x - previousPoint.p.v.x);
-                                cy1 = previousPoint.p.v.y - (previousPoint.cp2.v.y - previousPoint.p.v.y);
+                                cx1 = previousPoint.p.v.x - (previousPoint.cpEnter.v.x - previousPoint.p.v.x);
+                                cy1 = previousPoint.p.v.y - (previousPoint.cpEnter.v.y - previousPoint.p.v.y);
                                 xx = previousPoint.p.v.x;
                                 yy = previousPoint.p.v.y;
                                 cx2 = xx + Double.parseDouble(token);
@@ -508,10 +508,10 @@ public class SVGMathObject extends MultiShapeObject {
     private JMPathPoint pathCubicBezier(JMPath path, JMPathPoint previousPoint, double cx1, double cy1, double cx2, double cy2, double x, double y) {
         JMPathPoint point = new JMPathPoint(new Point(currentX, currentY), true, JMPathPointType.VERTEX);
         point.isCurved = true;
-        previousPoint.cp1.v.x = cx1;
-        previousPoint.cp1.v.y = cy1;
-        point.cp2.v.x = cx2;
-        point.cp2.v.y = cy2;
+        previousPoint.cpExit.v.x = cx1;
+        previousPoint.cpExit.v.y = cy1;
+        point.cpEnter.v.x = cx2;
+        point.cpEnter.v.y = cy2;
         path.addJMPoint(point);
         return point;
     }
@@ -520,10 +520,10 @@ public class SVGMathObject extends MultiShapeObject {
     private JMPathPoint pathLineTo(JMPath path, double currentX, double currentY, boolean isVisible) {
         JMPathPoint point = new JMPathPoint(new Point(currentX, currentY), isVisible, JMPathPointType.VERTEX);
         point.isCurved = false;
-        point.cp1.v.x = currentX;
-        point.cp1.v.y = currentY;
-        point.cp2.v.x = currentX;
-        point.cp2.v.y = currentY;
+        point.cpExit.v.x = currentX;
+        point.cpExit.v.y = currentY;
+        point.cpEnter.v.x = currentX;
+        point.cpEnter.v.y = currentY;
         path.addJMPoint(point);
         return point;
     }

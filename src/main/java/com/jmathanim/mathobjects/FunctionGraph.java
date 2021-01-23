@@ -117,12 +117,12 @@ public class FunctionGraph extends Shape {
             if (n < xPoints.size() - 1) {
                 final double deltaX = .3 * (xPoints.get(n + 1) - x);
                 Vec v = new Vec(deltaX, getSlope(x, 1) * deltaX);
-                jmp.cp1.copyFrom(jmp.p.add(v));
+                jmp.cpExit.copyFrom(jmp.p.add(v));
             }
             if (n > 0) {
                 final double deltaX = .3 * (xPoints.get(n - 1) - x);
                 Vec v = new Vec(deltaX, getSlope(x, -1) * deltaX);
-                jmp.cp2.copyFrom(jmp.p.add(v));
+                jmp.cpEnter.copyFrom(jmp.p.add(v));
             }
 
         }

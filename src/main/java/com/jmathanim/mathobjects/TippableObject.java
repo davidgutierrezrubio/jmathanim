@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2021 David
+ * Copyright (C) 2021 David Gutierrez Rubio davidgutierrezrubio@gmail.com
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -20,45 +20,12 @@ package com.jmathanim.mathobjects;
 import com.jmathanim.Renderers.Renderer;
 import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.Vec;
-import javafx.scene.image.Image;
 
 /**
  *
- * @author David
+ * @author David Gutierrez Rubio davidgutierrezrubio@gmail.com
  */
-public abstract class AbstractJMImage extends MathObject {
+public abstract class TippableObject implements Drawable{
 
-    public Rect bbox;
-    public boolean preserveRatio = false;
-    public double rotateAngle = 0;
-    public double rotateAngleBackup = 0;
-    private boolean cached=false;
-
-    @Override
-    public Rect getBoundingBox() {
-        return bbox.getRotatedRect(this.rotateAngle);
-    }
-
-
-    @Override
-    public <T extends MathObject> T shift(Vec shiftVector) {
-        bbox.copyFrom(bbox.shifted(shiftVector));
-        return (T) this;
-    }
-
-    @Override
-    public void draw(Renderer r) {
-        r.drawImage(this);
-    }
-
-    public boolean isCached() {
-        return cached;
-    }
-
-    public void setCached(boolean cached) {
-        this.cached = cached;
-    }
-   abstract public String getId();
-   abstract public Image getImage();
-    
+    abstract public void updateLocations(Point location, Vec pointTo);
 }

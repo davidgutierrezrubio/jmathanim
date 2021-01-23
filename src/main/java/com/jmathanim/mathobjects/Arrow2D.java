@@ -341,10 +341,6 @@ public class Arrow2D extends MathObject {
         return (T) this;
     }
 
-    @Override
-    public Point getCenter() {
-        return body.getCenter();
-    }
 
     @Override
     public <T extends MathObject> T shift(Vec shiftVector) {

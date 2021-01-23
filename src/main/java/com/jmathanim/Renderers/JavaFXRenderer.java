@@ -389,8 +389,8 @@ public class JavaFXRenderer extends Renderer {
 
         for (int n = 1; n < c.size() + 1; n++) {
             Vec point = c.getJMPoint(n).p.v;
-            Vec cpoint1 = c.getJMPoint(n - 1).cp1.v;
-            Vec cpoint2 = c.getJMPoint(n).cp2.v;
+            Vec cpoint1 = c.getJMPoint(n - 1).cpExit.v;
+            Vec cpoint2 = c.getJMPoint(n).cpEnter.v;
             double[] xy = cam.mathToScreenFX(point);
 
             double[] cxy1 = cam.mathToScreenFX(cpoint1);

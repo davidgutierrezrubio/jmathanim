@@ -34,8 +34,8 @@ public class JMPathPoint extends MathObject implements Updateable, Stateable {
         NONE, VERTEX, INTERPOLATION_POINT, CONTROL_POINT
     }
     public final Point p;
-    public final Point cp1, cp2; //Entering control point (cp2) and exit control point (cp1)
-    public Vec cp1vBackup, cp2vBackup;//Backup values, to restore after removing interpolation points
+    public final Point cpExit, cpEnter; //Entering control point (cpFrom) and exit control point (cpTo)
+    public Vec cpExitvBackup, cpEntervBackup;//Backup values, to restore after removing interpolation points
     public boolean isThisSegmentVisible;
     public boolean isCurved;
     public JMPathPointType type; //Vertex, interpolation point, etc.
@@ -66,8 +66,8 @@ public class JMPathPoint extends MathObject implements Updateable, Stateable {
         super();
         this.p = p;
 //        this.p.visibleFlag = false;
-        cp1 = p.copy();
-        cp2 = p.copy();
+        cpExit = p.copy();
+        cpEnter = p.copy();
         isCurved = false;//By default, is not curved
         this.isThisSegmentVisible = isVisible;
         this.type = type;
@@ -77,12 +77,12 @@ public class JMPathPoint extends MathObject implements Updateable, Stateable {
     public JMPathPoint copy() {
         Point pCopy = p.copy();
         JMPathPoint resul = new JMPathPoint(pCopy, isThisSegmentVisible, type);
-        resul.cp1.v.copyFrom(cp1.v);
-        resul.cp2.v.copyFrom(cp2.v);
+        resul.cpExit.v.copyFrom(cpExit.v);
+        resul.cpEnter.v.copyFrom(cpEnter.v);
 
         try { //cp1vBackup and cp2vBackup may be null, so I enclose with a try-catch
-            resul.cp1vBackup = cp1vBackup.copy();
-            resul.cp2vBackup = cp2vBackup.copy();
+            resul.cpExitvBackup = cpExitvBackup.copy();
+            resul.cpEntervBackup = cpEntervBackup.copy();
         } catch (NullPointerException e) {
         }
         resul.isCurved = this.isCurved;
@@ -91,13 +91,13 @@ public class JMPathPoint extends MathObject implements Updateable, Stateable {
     }
 
     void setControlPoint1(Point cp) {
-        cp1.v.x = cp.v.x;
-        cp1.v.y = cp.v.y;
+        cpExit.v.x = cp.v.x;
+        cpExit.v.y = cp.v.y;
     }
 
     void setControlPoint2(Point cp) {
-        cp2.v.x = cp.v.x;
-        cp2.v.y = cp.v.y;
+        cpEnter.v.x = cp.v.x;
+        cpEnter.v.y = cp.v.y;
     }
 
     @Override
@@ -132,22 +132,22 @@ public class JMPathPoint extends MathObject implements Updateable, Stateable {
 
     @Override
     public int getUpdateLevel() {
-        return Math.max(Math.max(p.getUpdateLevel(), cp1.getUpdateLevel()), cp2.getUpdateLevel());
+        return Math.max(Math.max(p.getUpdateLevel(), cpExit.getUpdateLevel()), cpEnter.getUpdateLevel());
     }
 
     @Override
     public void saveState() {
         pState = new JMPathPoint(p, isThisSegmentVisible, type);
         p.saveState();
-        cp1.saveState();
-        cp2.saveState();
+        cpExit.saveState();
+        cpEnter.saveState();
 
         try {
-            pState.cp1vBackup.saveState();
+            pState.cpExitvBackup.saveState();
         } catch (NullPointerException e) {
         }
         try {
-            pState.cp2vBackup.saveState();
+            pState.cpEntervBackup.saveState();
         } catch (NullPointerException e) {
         }
         pState.isThisSegmentVisible = this.isThisSegmentVisible;
@@ -158,15 +158,15 @@ public class JMPathPoint extends MathObject implements Updateable, Stateable {
     @Override
     public void restoreState() {
         p.restoreState();
-        cp1.restoreState();
-        cp2.restoreState();
+        cpExit.restoreState();
+        cpEnter.restoreState();
 
         try {
-            pState.cp1vBackup.restoreState();
+            pState.cpExitvBackup.restoreState();
         } catch (NullPointerException e) {
         }
         try {
-            pState.cp2vBackup.restoreState();
+            pState.cpEntervBackup.restoreState();
         } catch (NullPointerException e) {
         }
         pState.isThisSegmentVisible = this.isThisSegmentVisible;
@@ -182,8 +182,8 @@ public class JMPathPoint extends MathObject implements Updateable, Stateable {
     @Override
     public <T extends MathObject> T moveTo(Point p) {
         p.moveTo(p);
-        cp1.moveTo(p);
-        cp2.moveTo(p);
+        cpExit.moveTo(p);
+        cpEnter.moveTo(p);
         return (T) this;
     }
 
@@ -207,8 +207,8 @@ public class JMPathPoint extends MathObject implements Updateable, Stateable {
 
     public void copyFrom(JMPathPoint jmPoint) {
         this.p.copyFrom(jmPoint.p);
-        this.cp1.copyFrom(jmPoint.cp1);
-        this.cp2.copyFrom(jmPoint.cp2);
+        this.cpExit.copyFrom(jmPoint.cpExit);
+        this.cpEnter.copyFrom(jmPoint.cpEnter);
     }
 
     @Override
@@ -224,10 +224,10 @@ public class JMPathPoint extends MathObject implements Updateable, Stateable {
         if (!p.isEquivalenTo(p2.p, epsilon)) {
             return false;
         }
-        if (!cp1.isEquivalenTo(p2.cp1, epsilon)) {
+        if (!cpExit.isEquivalenTo(p2.cpExit, epsilon)) {
             return false;
         }
-        return cp2.isEquivalenTo(p2.cp2, epsilon);
+        return cpEnter.isEquivalenTo(p2.cpEnter, epsilon);
     }
 
 }

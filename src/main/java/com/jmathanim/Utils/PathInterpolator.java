@@ -87,17 +87,17 @@ public class PathInterpolator {
                 double cx2 = x3 - mod23 / mod42 * (1 - tension) * (x4 - x2);
                 double cy2 = y3 - mod23 / mod42 * (1 - tension) * (y4 - y2);
                 double cz2 = z3 - mod23 / mod42 * (1 - tension) * (z4 - z2);
-                p2.cp1.v.x = cx1;
-                p2.cp1.v.y = cy1;
-                p2.cp1.v.z = cz1;
-                p3.cp2.v.x = cx2;
-                p3.cp2.v.y = cy2;
-                p3.cp2.v.z = cz2;
+                p2.cpExit.v.x = cx1;
+                p2.cpExit.v.y = cy1;
+                p2.cpExit.v.z = cz1;
+                p3.cpEnter.v.x = cx2;
+                p3.cpEnter.v.y = cy2;
+                p3.cpEnter.v.z = cz2;
             } else {
                 //If this path is straight, control points becomes vertices. Although this is not used
                 //when drawing straight paths, it becomes handy when doing transforms from STRAIGHT to CURVED paths
-                p2.cp1.v.copyFrom(p2.p.v);
-                p3.cp2.v.copyFrom(p3.p.v);
+                p2.cpExit.v.copyFrom(p2.p.v);
+                p3.cpEnter.v.copyFrom(p3.p.v);
             }
 
         }
@@ -107,14 +107,14 @@ public class PathInterpolator {
         jp0 = path.getJMPoint(0);
         if (!jp0.isThisSegmentVisible) {
             jp1 = path.getJMPoint(1);
-            v = jp0.p.to(jp1.cp2).multInSite(PathInterpolator.DEFAULT_TENSION);
-            jp0.cp1.copyFrom(jp0.p.add(v));
+            v = jp0.p.to(jp1.cpEnter).multInSite(PathInterpolator.DEFAULT_TENSION);
+            jp0.cpExit.copyFrom(jp0.p.add(v));
 
             jp1 = path.getJMPoint(numPoints - 2);
             jp0 = path.getJMPoint(numPoints - 1);
             if (jp0.isCurved) {
-                v = jp0.p.to(jp1.cp1).multInSite(PathInterpolator.DEFAULT_TENSION);
-                jp0.cp2.copyFrom(jp0.p.add(v));
+                v = jp0.p.to(jp1.cpExit).multInSite(PathInterpolator.DEFAULT_TENSION);
+                jp0.cpEnter.copyFrom(jp0.p.add(v));
             }
         }
     }
@@ -123,15 +123,15 @@ public class PathInterpolator {
         JMPathPoint interpolate;
         if (jmp2.isCurved) {
             //De Casteljau's Algorithm: https://en.wikipedia.org/wiki/De_Casteljau%27s_algorithm
-            Point E = jmp1.p.interpolate(jmp1.cp1, alpha); //New cp1 of v1
-            Point G = jmp2.cp2.interpolate(jmp2.p, alpha); //New cp2 of v2
-            Point F = jmp1.cp1.interpolate(jmp2.cp2, alpha);
+            Point E = jmp1.p.interpolate(jmp1.cpExit, alpha); //New cp1 of v1
+            Point G = jmp2.cpEnter.interpolate(jmp2.p, alpha); //New cp2 of v2
+            Point F = jmp1.cpExit.interpolate(jmp2.cpEnter, alpha);
             Point H = E.interpolate(F, alpha);//cp2 of interpolation point
             Point J = F.interpolate(G, alpha);//cp1 of interpolation point
             Point K = H.interpolate(J, alpha); //Interpolation point
             interpolate = new JMPathPoint(K, jmp2.isThisSegmentVisible, JMPathPointType.INTERPOLATION_POINT);
-            interpolate.cp1.v.copyFrom(J.v);
-            interpolate.cp2.v.copyFrom(H.v);
+            interpolate.cpExit.v.copyFrom(J.v);
+            interpolate.cpEnter.v.copyFrom(H.v);
 
         } else {
             Point K = jmp1.p.interpolate(jmp2.p, alpha);

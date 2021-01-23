@@ -77,7 +77,7 @@ public class JMPath implements Updateable, Stateable {
     }
 
     public Point getControlPoint2(int n) {
-        return jmPathPoints.get(n).cp2;
+        return jmPathPoints.get(n).cpEnter;
     }
 
     public int size() {
@@ -95,11 +95,11 @@ public class JMPath implements Updateable, Stateable {
     }
 
     public void addCPoint1(Point e) {
-        jmPathPoints.get(jmPathPoints.size() - 1).cp1.v.copyFrom(e.v);
+        jmPathPoints.get(jmPathPoints.size() - 1).cpExit.v.copyFrom(e.v);
     }
 
     public void addCPoint2(Point e) {
-        jmPathPoints.get(jmPathPoints.size() - 1).cp2.v.copyFrom(e.v);
+        jmPathPoints.get(jmPathPoints.size() - 1).cpEnter.v.copyFrom(e.v);
     }
 
     public void clear() {
@@ -120,13 +120,13 @@ public class JMPath implements Updateable, Stateable {
         //Now, restore old control points
         //for curved paths control points are modified so that a backup is necessary
         for (JMPathPoint p : jmPathPoints) {
-            if (p.cp1vBackup != null) {
-                p.cp1.v.copyFrom(p.cp1vBackup);
-                p.cp1vBackup = null;
+            if (p.cpExitvBackup != null) {
+                p.cpExit.v.copyFrom(p.cpExitvBackup);
+                p.cpExitvBackup = null;
             }
-            if (p.cp2vBackup != null) {
-                p.cp2.v.copyFrom(p.cp2vBackup);
-                p.cp2vBackup = null;
+            if (p.cpEntervBackup != null) {
+                p.cpEnter.v.copyFrom(p.cpEntervBackup);
+                p.cpEntervBackup = null;
             }
         }
 
@@ -251,26 +251,26 @@ public class JMPath implements Updateable, Stateable {
         JMPathPoint interpolate;
         if (jmp2.isCurved) {
             //De Casteljau's Algorithm: https://en.wikipedia.org/wiki/De_Casteljau%27s_algorithm
-            Point E = jmp1.p.interpolate(jmp1.cp1, alpha); //New cp1 of v1
-            Point G = jmp2.cp2.interpolate(jmp2.p, alpha); //New cp2 of v2
-            Point F = jmp1.cp1.interpolate(jmp2.cp2, alpha);
+            Point E = jmp1.p.interpolate(jmp1.cpExit, alpha); //New cp1 of v1
+            Point G = jmp2.cpEnter.interpolate(jmp2.p, alpha); //New cp2 of v2
+            Point F = jmp1.cpExit.interpolate(jmp2.cpEnter, alpha);
             Point H = E.interpolate(F, alpha);//cp2 of interpolation point
             Point J = F.interpolate(G, alpha);//cp1 of interpolation point
             Point K = H.interpolate(J, alpha); //Interpolation point
             interpolate = new JMPathPoint(K, jmp2.isThisSegmentVisible, JMPathPointType.INTERPOLATION_POINT);
-            interpolate.cp1.v.copyFrom(J.v);
-            interpolate.cp2.v.copyFrom(H.v);
+            interpolate.cpExit.v.copyFrom(J.v);
+            interpolate.cpEnter.v.copyFrom(H.v);
             //Change control points from v1 and v2,save
             //backup values to restore after removing interpolation points
-            if (jmp1.cp1vBackup == null) {
-                jmp1.cp1vBackup = jmp1.cp1.v;
+            if (jmp1.cpExitvBackup == null) {
+                jmp1.cpExitvBackup = jmp1.cpExit.v;
             }
-            if (jmp2.cp2vBackup == null) {
-                jmp2.cp2vBackup = jmp2.cp2.v;
+            if (jmp2.cpEntervBackup == null) {
+                jmp2.cpEntervBackup = jmp2.cpEnter.v;
             }
 
-            jmp1.cp1.v.copyFrom(E.v);
-            jmp2.cp2.v.copyFrom(G.v);
+            jmp1.cpExit.v.copyFrom(E.v);
+            jmp2.cpEnter.v.copyFrom(G.v);
 
         } else {
             //Straight interpolation
@@ -292,24 +292,22 @@ public class JMPath implements Updateable, Stateable {
      * @return A (copy of) point that lies in the curve at relative position
      * alpha.
      */
-    public Point getPointAt(double alpha) {
-        Point resul;
+    public JMPathPoint getPointAt(double alpha) {
+        JMPathPoint resul;
         int k = (int) Math.floor(alpha * size());
         double t = alpha * size() - k;
         JMPathPoint v1 = getJMPoint(k);
         JMPathPoint v2 = getJMPoint(k + 1);
-        if (v2.isCurved) {
-            //De Casteljau's Algorithm: https://en.wikipedia.org/wiki/De_Casteljau%27s_algorithm
-            Point E = v1.p.interpolate(v1.cp1, t); //New cp1 of v1
-            Point G = v2.cp2.interpolate(v2.p, t); //New cp2 of v2
-            Point F = v1.cp1.interpolate(v2.cp2, t);
-            Point H = E.interpolate(F, t);//cp2 of interpolation point
-            Point J = F.interpolate(G, t);//cp1 of interpolation point
-            resul = H.interpolate(J, t); //Interpolation point
-        } else {
-            //Straight interpolation
-            resul = new Point(v1.p.v.interpolate(v2.p.v, t));
-        }
+        //De Casteljau's Algorithm: https://en.wikipedia.org/wiki/De_Casteljau%27s_algorithm
+        Point E = v1.p.interpolate(v1.cpExit, t); //New cp1 of v1
+        Point G = v2.cpEnter.interpolate(v2.p, t); //New cp2 of v2
+        Point F = v1.cpExit.interpolate(v2.cpEnter, t);
+        Point H = E.interpolate(F, t);//cp2 of interpolation point
+        Point J = F.interpolate(G, t);//cp1 of interpolation point
+//            resul = H.interpolate(J, t); //Interpolation point
+        resul = JMPathPoint.curveTo(H.interpolate(J, t));
+        resul.cpExit.copyFrom(J);
+        resul.cpEnter.copyFrom(H);
         return resul;
     }
 
@@ -366,13 +364,13 @@ public class JMPath implements Updateable, Stateable {
             if (direction < 0) //If reverse the path, we must swap control points
             {
 
-                double cpTempX = point.cp1.v.x;
-                double cpTempY = point.cp1.v.y;
-                double cpTempZ = point.cp1.v.z;
-                point.cp1.v.copyFrom(point.cp2.v);
-                point.cp2.v.x = cpTempX;
-                point.cp2.v.y = cpTempY;
-                point.cp2.v.z = cpTempZ;
+                double cpTempX = point.cpExit.v.x;
+                double cpTempY = point.cpExit.v.y;
+                double cpTempZ = point.cpExit.v.z;
+                point.cpExit.v.copyFrom(point.cpEnter.v);
+                point.cpEnter.v.x = cpTempX;
+                point.cpEnter.v.y = cpTempY;
+                point.cpEnter.v.z = cpTempZ;
             }
             jmPathPoints.add(point);
         }
@@ -484,18 +482,18 @@ public class JMPath implements Updateable, Stateable {
             ymax = (y > ymax ? y : ymax);
             zmax = (z > zmax ? z : zmax);
             //Include also control points!
-            double cx1 = p.cp1.v.x;
-            double cy1 = p.cp1.v.y;
-            double cz1 = p.cp1.v.z;
+            double cx1 = p.cpExit.v.x;
+            double cy1 = p.cpExit.v.y;
+            double cz1 = p.cpExit.v.z;
             xmin = (cx1 < xmin ? cx1 : xmin);
             ymin = (cy1 < ymin ? cy1 : ymin);
             zmin = (cz1 < zmin ? cz1 : zmin);
             xmax = (cx1 > xmax ? cx1 : xmax);
             ymax = (cy1 > ymax ? cy1 : ymax);
             zmax = (cz1 > zmax ? cz1 : zmax);
-            double cx2 = p.cp2.v.x;
-            double cy2 = p.cp2.v.y;
-            double cz2 = p.cp2.v.z;
+            double cx2 = p.cpEnter.v.x;
+            double cy2 = p.cpEnter.v.y;
+            double cz2 = p.cpEnter.v.z;
             xmin = (cx2 < xmin ? cx2 : xmin);
             ymin = (cy2 < ymin ? cy2 : ymin);
             zmin = (cz2 < zmin ? cz2 : zmin);
@@ -724,7 +722,7 @@ public class JMPath implements Updateable, Stateable {
             JMPathPoint p1 = this.getJMPoint(n);
             JMPathPoint p2 = this.getJMPoint(n + 1);
             if (p1.p.isEquivalenTo(p2.p, epsilon)) {
-                p1.cp2.copyFrom(p2.cp2);
+                p1.cpEnter.copyFrom(p2.cpEnter);
 //                if (p2.isThisSegmentVisible) {
                 p1.isThisSegmentVisible = true;
 //                }

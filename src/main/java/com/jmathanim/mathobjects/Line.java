@@ -150,14 +150,14 @@ public class Line extends Shape {
             bp2.p.v.x = intersectLine[2];
             bp2.p.v.y = intersectLine[3];
         }
-        bp1.cp1.v.x = bp1.p.v.x;
-        bp1.cp1.v.y = bp1.p.v.y;
-        bp1.cp2.v.x = bp1.p.v.x;
-        bp1.cp2.v.y = bp1.p.v.y;
-        bp2.cp1.v.x = bp2.p.v.x;
-        bp2.cp1.v.y = bp2.p.v.y;
-        bp2.cp2.v.x = bp2.p.v.x;
-        bp2.cp2.v.y = bp2.p.v.y;
+        bp1.cpExit.v.x = bp1.p.v.x;
+        bp1.cpExit.v.y = bp1.p.v.y;
+        bp1.cpEnter.v.x = bp1.p.v.x;
+        bp1.cpEnter.v.y = bp1.p.v.y;
+        bp2.cpExit.v.x = bp2.p.v.x;
+        bp2.cpExit.v.y = bp2.p.v.y;
+        bp2.cpEnter.v.x = bp2.p.v.x;
+        bp2.cpEnter.v.y = bp2.p.v.y;
 
     }
 
@@ -183,9 +183,15 @@ public class Line extends Shape {
         return p2;
     }
 
+    /**
+     * Returns the center of the object. As the center of an infinite line
+     * doesn't exists. Take middle point of p1 and p2 instead.
+     *
+     * @return The middle point of the generator points p1 and p2
+     */
     @Override
     public Point getCenter() {
-        //Center of an infinite line doesn't exists. Take middle point of p1 and p2 instead.
+
         return p1.interpolate(p2, .5);
     }
 

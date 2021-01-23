@@ -52,10 +52,6 @@ public class MathObjectGroup extends MathObject implements Iterable<MathObject> 
         this.objects = objects;
     }
 
-    @Override
-    public Point getCenter() {
-        return getBoundingBox().getCenter();
-    }
 
     @Override
     public <T extends MathObject> T moveTo(Point p) {

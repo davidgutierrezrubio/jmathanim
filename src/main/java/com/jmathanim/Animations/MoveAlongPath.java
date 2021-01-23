@@ -79,7 +79,7 @@ public class MoveAlongPath extends Animation {
     public void doAnim(double t) {
         double lt = lambda.applyAsDouble(t);
         restoreStates(mobjTransformed);
-        mobjTransformed.putAt(path.getPointAt(lt), this.anchorType);
+        mobjTransformed.putAt(path.getPointAt(lt).p, this.anchorType);
     }
 
     @Override

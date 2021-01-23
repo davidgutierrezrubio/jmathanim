@@ -66,11 +66,14 @@ public abstract class MathObject implements Drawable, Updateable, Stateable {
     }
 
     /**
-     * Return center of object. Implementation depends on type of MathObject
+     * Return center of object, intented by default as the center of bounding
+     * box.
      *
      * @return Vec object with center
      */
-    public abstract Point getCenter();
+    public Point getCenter() {
+        return this.getBoundingBox().getCenter();
+    }
 
     /**
      * Move object so that center is the given coords
@@ -360,7 +363,7 @@ public abstract class MathObject implements Drawable, Updateable, Stateable {
      * method
      * @return The MathObject subclass
      */
-    public <T extends MathObject> T drawColor(String str) {
+    public final <T extends MathObject> T drawColor(String str) {
         drawColor(JMColor.parse(str));
         return (T) this;
     }
@@ -385,7 +388,7 @@ public abstract class MathObject implements Drawable, Updateable, Stateable {
      * method
      * @return The MathObject subclass
      */
-    public <T extends MathObject> T fillColor(String str) {
+    public final <T extends MathObject> T fillColor(String str) {
         fillColor(JMColor.parse(str));
         return (T) this;
     }
