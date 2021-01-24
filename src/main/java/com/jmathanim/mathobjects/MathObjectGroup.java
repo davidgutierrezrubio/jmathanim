@@ -147,20 +147,20 @@ public class MathObjectGroup extends MathObject implements Iterable<MathObject> 
         return super.setAbsoluteSize(); //To change body of generated methods, choose Tools | Templates.
     }
 
-    @Override
-    public <T extends MathObject> T stackToScreen(Anchor.Type anchorType, double xMargin, double yMargin) {
-        return super.stackToScreen(anchorType, xMargin, yMargin); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public <T extends MathObject> T stackTo(MathObject obj, Anchor.Type anchorType, double gap) {
-        return super.stackTo(obj, anchorType, gap); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public void setAbsoluteAnchorPoint(Point p) {
-        super.setAbsoluteAnchorPoint(p); //To change body of generated methods, choose Tools | Templates.
-    }
+//    @Override
+//    public <T extends MathObject> T stackToScreen(Anchor.Type anchorType, double xMargin, double yMargin) {
+//        return super.stackToScreen(anchorType, xMargin, yMargin); //To change body of generated methods, choose Tools | Templates.
+//    }
+//
+//    @Override
+//    public <T extends MathObject> T stackTo(MathObject obj, Anchor.Type anchorType, double gap) {
+//        return super.stackTo(obj, anchorType, gap); //To change body of generated methods, choose Tools | Templates.
+//    }
+//
+//    @Override
+//    public void setAbsoluteAnchorPoint(Point p) {
+//        super.setAbsoluteAnchorPoint(p); //To change body of generated methods, choose Tools | Templates.
+//    }
 
     @Override
     public <T extends MathObject> T visible(boolean visible) {
