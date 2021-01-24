@@ -137,7 +137,7 @@ public class TransformMathExpression extends Animation {
 
     private void createRemovingSubAnimation(int n, TransformMathExpressionParameters par) {
         Shape sh = latexTransformed.get(n);
-        scene.add(sh);
+        addObjectsToscene(sh);
         AnimationGroup group = new AnimationGroup();
         switch (par.getRemovingStyle()) {
             case FADE_OUT:
@@ -282,7 +282,7 @@ public class TransformMathExpression extends Animation {
         for (Shape sh : toDelete) {
             scene.remove(sh);
         }
-        scene.add(latexDestiny);
+        addObjectsToscene(latexDestiny);
     }
 
     /**

@@ -101,7 +101,7 @@ public class AxesCreationAnimation extends Animation {
     public void finishAnimation() {
         super.finishAnimation();
         anim.finishAnimation();
-        scene.add(axes);
+        addObjectsToscene(axes);
         for (MathObject ob : objectsToRemoveWhenFinished) {
             scene.remove(ob);
         }

@@ -58,7 +58,7 @@ public class PointInterpolationSimpleShapeTransform extends Animation {
         for (JMPathPoint jmp : mobjTransformed.getPath().jmPathPoints) {
             jmp.isCurved = true;
         }
-        scene.add(mobjTransformed);
+        addObjectsToscene(mobjTransformed);
     }
 
     @Override

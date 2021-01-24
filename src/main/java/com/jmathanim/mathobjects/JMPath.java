@@ -293,6 +293,12 @@ public class JMPath implements Updateable, Stateable {
      * alpha.
      */
     public JMPathPoint getPointAt(double alpha) {
+        while (alpha > 1) {
+            alpha -= 1;
+        }
+        while (alpha < 0) {
+            alpha += 1;
+        }
         JMPathPoint resul;
         final double size = (jmPathPoints.get(0).isThisSegmentVisible ? alpha * size() : alpha * (size() - 1));
         int k = (int) Math.floor(size);

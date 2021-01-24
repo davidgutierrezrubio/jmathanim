@@ -21,7 +21,8 @@ import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.Point;
 
 /**
- * A class that manages relevant points of a MathObject
+ * A class that manages relevant points of a MathObject, or any class that
+ * implements the Boxable interface.
  *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
@@ -79,7 +80,7 @@ public class Anchor {
      * @param anchor Type of anchor defined in the enum Anchor.Type
      * @return The anchor point
      */
-    public static Point getAnchorPoint(MathObject obj, Type anchor) {
+    public static Point getAnchorPoint(Boxable obj, Type anchor) {
         return getAnchorPoint(obj, anchor, 0, 0);
     }
 
@@ -94,7 +95,7 @@ public class Anchor {
      * @param gap Gap to add to the anchor
      * @return The anchor point
      */
-    public static Point getAnchorPoint(MathObject obj, Type anchor, double gap) {
+    public static Point getAnchorPoint(Boxable obj, Type anchor, double gap) {
         return getAnchorPoint(obj, anchor, gap, gap);
     }
 
@@ -110,44 +111,49 @@ public class Anchor {
      * @param ygap Vertical gap
      * @return The anchor point
      */
-    public static Point getAnchorPoint(MathObject obj, Type anchor, double xgap, double ygap) {
+    public static Point getAnchorPoint(Boxable obj, Type anchor, double xgap, double ygap) {
         Point resul = new Point();
+        final Rect bb = obj.getBoundingBox();
         switch (anchor) {
             case BY_POINT:
                 if (obj instanceof Point) {
-                    resul = obj.copy();
+                    Point p = (Point) obj;
+                    resul = p.copy();
                 } else {
-                    resul = obj.getAbsoluteAnchorPoint();
+                    if (obj instanceof MathObject) {
+                        MathObject o = (MathObject) obj;
+                        resul = o.getAbsoluteAnchorPoint();
+                    }
                 }
                 break;
             case BY_CENTER:
-                resul = obj.getCenter();
+                resul = bb.getCenter();
                 break;
 
             case LEFT:
-                resul = obj.getBoundingBox().addGap(xgap, ygap).getLeft();
+                resul = bb.addGap(xgap, ygap).getLeft();
                 break;
             case RIGHT:
-                resul = obj.getBoundingBox().addGap(xgap, ygap).getRight();
+                resul = bb.addGap(xgap, ygap).getRight();
                 break;
             case LOWER:
-                resul = obj.getBoundingBox().addGap(xgap, ygap).getLower();
+                resul = bb.addGap(xgap, ygap).getLower();
                 break;
             case UPPER:
-                resul = obj.getBoundingBox().addGap(xgap, ygap).getUpper();
+                resul = bb.addGap(xgap, ygap).getUpper();
                 break;
 
             case UL:
-                resul = obj.getBoundingBox().addGap(xgap, ygap).getUL();
+                resul = bb.addGap(xgap, ygap).getUL();
                 break;
             case UR:
-                resul = obj.getBoundingBox().addGap(xgap, ygap).getUR();
+                resul = bb.addGap(xgap, ygap).getUR();
                 break;
             case DL:
-                resul = obj.getBoundingBox().addGap(xgap, ygap).getDL();
+                resul = bb.addGap(xgap, ygap).getDL();
                 break;
             case DR:
-                resul = obj.getBoundingBox().addGap(xgap, ygap).getDR();
+                resul = bb.addGap(xgap, ygap).getDR();
                 break;
 
         }

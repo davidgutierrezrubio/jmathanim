@@ -313,6 +313,11 @@ public abstract class Animation {
         }
     }
 
+    public boolean isShouldAddObjectsToScene() {
+        return shouldAddObjectsToScene;
+    }
+    
+    
     /**
      * Returns the current status of the animation
      *

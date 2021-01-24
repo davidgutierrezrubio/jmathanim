@@ -65,7 +65,7 @@ public class ArrowTransform extends Animation {
     public void finishAnimation() {
         super.finishAnimation();
         scene.remove(arOrig);
-        scene.add(arDst);
+        addObjectsToscene(arDst);
     }
     
 

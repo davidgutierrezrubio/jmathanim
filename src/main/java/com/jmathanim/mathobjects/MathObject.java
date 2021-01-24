@@ -20,6 +20,7 @@ package com.jmathanim.mathobjects;
 import com.jmathanim.Utils.AffineJTransform;
 import com.jmathanim.Utils.Anchor;
 import com.jmathanim.Utils.Anchor.Type;
+import com.jmathanim.Utils.Boxable;
 import com.jmathanim.Utils.JMColor;
 import com.jmathanim.Utils.JMathAnimConfig;
 import com.jmathanim.Utils.MODrawProperties;
@@ -35,7 +36,7 @@ import javafx.scene.shape.StrokeLineCap;
  *
  * @author David Gutierrez Rubio davidgutierrezrubio@gmail.com
  */
-public abstract class MathObject implements Drawable, Updateable, Stateable {
+public abstract class MathObject implements Drawable, Updateable, Stateable, Boxable {
 
     public enum Align {
         LEFT, RIGHT, UPPER, LOWER, HCENTER, VCENTER
@@ -131,7 +132,7 @@ public abstract class MathObject implements Drawable, Updateable, Stateable {
      * @param sy y-scale factor
      * @return The same object, after scaling
      */
-    public final <T extends MathObject> T scale(double sx, double sy) {
+    public <T extends MathObject> T scale(double sx, double sy) {
         scale(getCenter(), sx, sy);
         return (T) this;
     }
@@ -143,7 +144,7 @@ public abstract class MathObject implements Drawable, Updateable, Stateable {
      * @param s scale factor
      * @return The same object, after scaling
      */
-    public final <T extends MathObject> T scale(double s) {
+    public  <T extends MathObject> T scale(double s) {
         return scale(getCenter(), s, s);
     }
 
@@ -507,11 +508,11 @@ public abstract class MathObject implements Drawable, Updateable, Stateable {
      * @param anchorType {@link Anchor} type
      * @return The current object
      */
-    public final <T extends MathObject> T stackTo(MathObject obj, Type anchorType) {
+    public final <T extends MathObject> T stackTo(Boxable obj, Type anchorType) {
         return stackTo(obj, anchorType, 0);
     }
 
-    public <T extends MathObject> T stackTo(MathObject obj, Type anchorType, double gap) {
+    public <T extends MathObject> T stackTo(Boxable obj, Type anchorType, double gap) {
         if (!obj.isEmpty()) {
             Point B = Anchor.getAnchorPoint(obj, anchorType, gap);
             Point A = Anchor.getAnchorPoint(this, Anchor.reverseAnchorPoint(anchorType));
@@ -747,7 +748,7 @@ public abstract class MathObject implements Drawable, Updateable, Stateable {
      * @param type Align type, a value from the enum Align
      * @return This object
      */
-    public <T extends MathObject> T align(MathObject obj, Align type) {
+    public <T extends MathObject> T align(Boxable obj, Align type) {
         Vec shiftVector = Vec.to(0, 0);
         Rect thisBoundingBox = this.getBoundingBox();
         Rect objectBoundingBox = obj.getBoundingBox();
@@ -774,6 +775,8 @@ public abstract class MathObject implements Drawable, Updateable, Stateable {
         shift(shiftVector);
         return (T) this;
     }
-    
-    abstract public <T extends MathObject> T applyLinearTransform(AffineJTransform tr);
+
+    public <T extends MathObject> T applyLinearTransform(AffineJTransform tr) {
+        return (T) this;
+    }
 }

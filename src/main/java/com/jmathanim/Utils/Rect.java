@@ -25,7 +25,7 @@ import com.jmathanim.mathobjects.Stateable;
  *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
-public class Rect implements Stateable {//TODO: Adjust this to 3D coordinates
+public class Rect implements Stateable, Boxable {//TODO: Adjust this to 3D coordinates
 
     public double xmin, ymin, xmax, ymax, zmin, zmax;
     private Rect rBackup;
@@ -439,5 +439,15 @@ public class Rect implements Stateable {//TODO: Adjust this to 3D coordinates
         xmax += v.x;
         ymin += v.y;
         ymax += v.y;
+    }
+
+    @Override
+    public Rect getBoundingBox() {
+        return this.copy();
+    }
+
+    @Override
+    public boolean isEmpty() {
+        return false;
     }
 }

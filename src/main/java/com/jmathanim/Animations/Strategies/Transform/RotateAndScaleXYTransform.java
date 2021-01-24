@@ -77,7 +77,7 @@ public class RotateAndScaleXYTransform extends Animation {
         E = mobjDestiny.getPoint(1).copy();
         F = mobjDestiny.getPoint(2).copy();
         mobjTransformed.saveState();
-        scene.add(mobjTransformed);
+        addObjectsToscene(mobjTransformed);
         
     }
 

@@ -55,8 +55,7 @@ public class SimpleShapeCreationAnimation extends Animation {
             msh.get(n).label = "msh" + n;
         }
         mobj.visible(false);
-        scene.add(msh);
-//        scene.add(mobj);
+        addObjectsToscene(msh);
 
         doAnim(0);
         numberOfSegments = canonPath.getTotalNumberOfSegments();
@@ -119,7 +118,7 @@ public class SimpleShapeCreationAnimation extends Animation {
         }
         this.scene.remove(msh);
         mobj.visible(true);
-        scene.add(mobj);
+        addObjectsToscene(mobj);
     }
 
 }

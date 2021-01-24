@@ -55,7 +55,7 @@ public class HomothecyTransform extends Animation {
         anim = Commands.homothecy(runTime, a, b, c, d, this.mobjTransformed);
         anim.setLambda(lambda);
         anim.initialize(scene);
-        scene.add(this.mobjTransformed);
+        addObjectsToscene(this.mobjTransformed);
         scene.remove(mobjTransformedOrig);
         
     }
@@ -77,7 +77,7 @@ public class HomothecyTransform extends Animation {
          super.finishAnimation();
         anim.finishAnimation();
         scene.remove(mobjTransformed);
-        scene.add(mobjDestiny);
+        addObjectsToscene(mobjDestiny);
     }
     
     

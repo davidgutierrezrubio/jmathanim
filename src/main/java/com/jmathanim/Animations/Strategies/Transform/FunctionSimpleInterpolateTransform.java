@@ -39,7 +39,7 @@ public class FunctionSimpleInterpolateTransform extends Animation {
     @Override
     public void initialize(JMathAnimScene scene) {
         super.initialize(scene);
-        scene.add(gfObj);
+        addObjectsToscene(gfObj);
     }
 
     @Override

@@ -101,6 +101,8 @@ public class Transform extends Animation {
         //Variable strategy should have proper strategy to transform
         //If method is null means that user didn't force one
         transformStrategy.setLambda(lambda);
+        transformStrategy.setAddObjectsToScene(this.isShouldAddObjectsToScene());
+        transformStrategy.setUseObjectState(this.isUseObjectState());
         transformStrategy.initialize(scene);
 
     }
@@ -224,7 +226,7 @@ public class Transform extends Animation {
         super.finishAnimation();
         transformStrategy.finishAnimation();
         //Remove fist object and add the second to the scene
-        scene.add(mobjDestiny);
+        addObjectsToscene(mobjDestiny);
         scene.remove(mobjTransformed);
     }
 

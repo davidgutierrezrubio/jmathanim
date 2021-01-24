@@ -48,7 +48,7 @@ public class LineCreationAnimation extends Animation {
         anim.setLambda(lambda);
         anim.initialize(scene);
         scene.remove(line);
-        scene.add(segment);
+        addObjectsToscene(segment);
 
     }
 
@@ -66,7 +66,7 @@ public class LineCreationAnimation extends Animation {
          super.finishAnimation();
         anim.finishAnimation();
         scene.remove(segment);
-        scene.add(line);
+        addObjectsToscene(line);
 
     }
 

@@ -23,6 +23,7 @@ import com.jmathanim.Cameras.Camera;
 import com.jmathanim.Renderers.Renderer;
 import com.jmathanim.Utils.Anchor;
 import com.jmathanim.Utils.JMathAnimConfig;
+import com.jmathanim.Utils.Rect;
 import com.jmathanim.mathobjects.LaTeXMathObject;
 import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.MathObjectGroup;
@@ -306,10 +307,10 @@ public abstract class JMathAnimScene {
         //updatelevel 0 gets updated first.
         //Objects with updatelevel n depend directly from those with level n-1
         objectsToBeUpdated.sort((Updateable o1, Updateable o2) -> o1.getUpdateLevel() - o2.getUpdateLevel());
-        
+
         ArrayList<Updateable> updatesCopy = new ArrayList<Updateable>();
         updatesCopy.addAll(objectsToBeUpdated);
-        
+
         for (Updateable obj : updatesCopy) {
             obj.update(this);
         }
@@ -483,4 +484,15 @@ public abstract class JMathAnimScene {
         this.animationIsDisabled = false;
     }
 
+    public Rect getMathView() {
+        return renderer.getCamera().getMathView();
+    }
+
+    public double getViewWidth() {
+        return getMathView().getWidth();
+    }
+
+    public double getViewHeight() {
+        return getMathView().getHeight();
+    }
 }

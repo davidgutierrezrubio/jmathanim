@@ -82,7 +82,7 @@ public class MultiShapeTransform extends AnimationGroup {
         super.finishAnimation();
         scene.remove(tr);
         scene.remove(dst);
-        scene.add(mobjDestiny);
+        addObjectsToscene(mobjDestiny);
     }
 
 }

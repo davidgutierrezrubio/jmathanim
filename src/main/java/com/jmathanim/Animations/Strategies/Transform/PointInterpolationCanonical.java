@@ -84,14 +84,14 @@ public class PointInterpolationCanonical extends Animation {
             for (int n = 0; n < connectedOrigin.getNumberOfPaths(); n++) {
                 Shape sh = new Shape(connectedOrigin.get(n), null);
                 sh.drawColor(JMColor.random()).thickness(10);
-                scene.add(sh);
+                addObjectsToscene(sh);
                 addedAuxiliaryObjectsToScene.add(sh);
             }
 
         }
         mobjTransformed.getPath().clear();
         mobjTransformed.getPath().addJMPointsFrom(connectedOrigin.toJMPath());
-        scene.add(mobjTransformed);
+        addObjectsToscene(mobjTransformed);
         scene.remove(mobjTransformedOrig);
 
     }
@@ -142,7 +142,7 @@ public class PointInterpolationCanonical extends Animation {
         for (Shape shapesToRemove : addedAuxiliaryObjectsToScene) {
             scene.remove(shapesToRemove);
         }
-        scene.add(mobjDestinyOrig);
+        addObjectsToscene(mobjDestinyOrig);
     }
 
     /**

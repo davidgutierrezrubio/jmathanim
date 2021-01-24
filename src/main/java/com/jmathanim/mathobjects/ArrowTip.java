@@ -31,25 +31,10 @@ import java.net.URL;
  */
 public class ArrowTip extends TippableObject {
 
-    private Point pointLoc;
-    private Vec pointTo;
-    private MathObject arrowtip, arrowtipDrawableCopy;
-    int anchorValue;
-    private slopeDirection direction;
-    private Shape shape;
-    private double location;
-
-    public enum slopeDirection {
-        NEGATIVE, POSITIVE
-    };
-
-//    public static ArrowTip make(Shape shape, double location, slopeDirection dir, MathObject arrowTip) {
-//        return make(shape, location, dir, MultiShapeObject.make(arrowTip));
-//    }
-
+   
     public static ArrowTip make(Shape shape, double location, slopeDirection dir, MathObject arrowtip) {
         ArrowTip resul = new ArrowTip(shape, location, dir);
-        resul.setTipShape(arrowtip);
+        resul.setTip(arrowtip);
         return resul;
     }
 
@@ -58,30 +43,18 @@ public class ArrowTip extends TippableObject {
         MultiShapeObject at = buildArrowHead(type);
         at.fillColor(shape.mp.getDrawColor());
         at.drawColor(shape.mp.getDrawColor());
-        resul.setTipShape(at);
+        resul.setTip(at);
         return resul;
     }
 
     private ArrowTip(Shape shape, double location, slopeDirection dir) {
-        this.direction = dir;
-        this.location = location;
+        setDirection(dir);
+        setLocation(location);
         this.shape = shape;
     }
 
     public Shape getShape() {
         return shape;
-    }
-
-    public void setTipShape(MathObject tipShape) {
-        arrowtip = tipShape;
-    }
-
-    public MathObject getTipShape() {
-        return arrowtip;
-    }
-
-    public MathObject getTipShapeToDraw() {
-        return arrowtipDrawableCopy;
     }
 
     private static MultiShapeObject buildArrowHead(Arrow2D.ArrowType type) {
@@ -123,54 +96,5 @@ public class ArrowTip extends TippableObject {
         return head;
     }
 
-    @Override
-    public void updateLocations(JMPathPoint jmp) {
-        this.pointLoc = jmp.p;
-
-        arrowtipDrawableCopy = arrowtip.copy();
-        arrowtipDrawableCopy.setHeight(.1);
-        //Shifting
-        Point headPoint = this.arrowtipDrawableCopy.getBoundingBox().getUpper();
-        this.arrowtipDrawableCopy.shift(headPoint.to(pointLoc));
-
-        //Rotating
-        if (direction == slopeDirection.POSITIVE) {
-            this.pointTo = jmp.p.to(jmp.cpExit);
-        } else {
-            this.pointTo = jmp.cpEnter.to(jmp.p);
-        }
-        Vec v = pointTo;
-        double angle = v.getAngle();
-        AffineJTransform tr = AffineJTransform.create2DRotationTransform(pointLoc, -Math.PI / 2 + angle);
-        tr.applyTransform(arrowtipDrawableCopy);
-    }
-
-    @Override
-    public void draw(Renderer r) {
-        arrowtipDrawableCopy.draw(r);
-    }
-
-    @Override
-    public int getUpdateLevel() {
-        return shape.getUpdateLevel() + 1;
-    }
-
-    @Override
-    public void update(JMathAnimScene scene) {
-        if (!scene.getObjects().contains(shape)) {
-            return;
-        }
-        updateLocations(shape.getPath().getPointAt(location));
-    }
-
-    @Override
-    public Rect getBoundingBox() {
-        updateLocations(shape.getPath().getPointAt(location));
-        return arrowtipDrawableCopy.getBoundingBox();
-    }
-
-    @Override
-    public <T extends MathObject> T copy() {
-        return (T) make(shape, location, direction, arrowtip.copy());
-    }
+   
 }
