@@ -62,8 +62,9 @@ public class SimpleConnectedPathsOptimizationStrategy implements OptimizePathsSt
         }
         return dist;
     }
-        private double varDistancesBetweenPaths(JMPath pa1, JMPath pa2) {
-         ArrayList<Double> distances = new ArrayList<>();
+
+    private double varDistancesBetweenPaths(JMPath pa1, JMPath pa2) {
+        ArrayList<Double> distances = new ArrayList<>();
         for (int n = 0; n < pa1.size(); n++) {
             double dist = pa1.getJMPoint(n).p.to(pa2.getJMPoint(n).p).norm();
             distances.add(dist);

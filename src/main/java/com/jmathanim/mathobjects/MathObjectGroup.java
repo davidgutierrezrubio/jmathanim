@@ -238,6 +238,5 @@ public class MathObjectGroup extends MathObject implements Iterable<MathObject> 
     public Stylable getMp() {
         return mpArray;
     }
-    
 
 }

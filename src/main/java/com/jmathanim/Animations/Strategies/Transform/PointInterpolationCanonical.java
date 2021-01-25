@@ -164,7 +164,7 @@ public class PointInterpolationCanonical extends Animation {
             } else {
                 return -1;
             }
-       };
+        };
         connectedOrigin.paths.sort(comparator);
         connectedDst.paths.sort(comparator);
 

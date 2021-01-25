@@ -134,7 +134,6 @@ public abstract class Animation {
 //    public Animation() {
 //        this(DEFAULT_TIME);
 //    }
-
     /**
      * Creates an empty animation, with specified run time.This constructor
      * should be called only from implementing subclasses.
@@ -316,8 +315,7 @@ public abstract class Animation {
     public boolean isShouldAddObjectsToScene() {
         return shouldAddObjectsToScene;
     }
-    
-    
+
     /**
      * Returns the current status of the animation
      *

@@ -104,7 +104,7 @@ public class ShowCreation extends Animation {
 
     @Override
     public void finishAnimation() {
-         super.finishAnimation();
+        super.finishAnimation();
         if (creationStrategy != null) {
             creationStrategy.finishAnimation();
         }

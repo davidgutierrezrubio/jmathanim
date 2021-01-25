@@ -59,9 +59,9 @@ public class XugglerVideoEncoder extends VideoEncoder {
     public void finish() {
         if (framesGenerated) {
             writer.close();
-        }
-        else
+        } else {
             JMathAnimScene.logger.info("No frames generated. Empty movie created.");
+        }
     }
 
     public static BufferedImage convertToType(BufferedImage sourceImage, int targetType) {

@@ -39,7 +39,8 @@ public class TransformMathExpressionParametersArray {
      * Adds a rotation effect, rotating the transformed shape the specified
      * number of turns.
      *
-     * @param numTurns Number of turns. Positive is counterclockwise, negative clockwise.
+     * @param numTurns Number of turns. Positive is counterclockwise, negative
+     * clockwise.
      * @return This object
      */
     public TransformMathExpressionParametersArray addRotateEffect(int numTurns) {

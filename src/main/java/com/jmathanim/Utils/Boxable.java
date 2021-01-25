@@ -24,6 +24,7 @@ package com.jmathanim.Utils;
 public interface Boxable {
 
     public Rect getBoundingBox();
+
     public boolean isEmpty();
 
 }

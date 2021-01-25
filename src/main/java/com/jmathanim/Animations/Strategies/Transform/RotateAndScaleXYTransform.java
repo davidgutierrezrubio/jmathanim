@@ -44,7 +44,7 @@ public class RotateAndScaleXYTransform extends Animation {
 
     @Override
     public void doAnim(double t) {
-        double lt=lambda.applyAsDouble(t);
+        double lt = lambda.applyAsDouble(t);
         mobjTransformed.restoreState();
 
         //First map A,B into (0,0) and (1,0)
@@ -78,12 +78,12 @@ public class RotateAndScaleXYTransform extends Animation {
         F = mobjDestiny.getPoint(2).copy();
         mobjTransformed.saveState();
         addObjectsToscene(mobjTransformed);
-        
+
     }
 
     @Override
     public void finishAnimation() {
-         super.finishAnimation();
+        super.finishAnimation();
         doAnim(1);
     }
 

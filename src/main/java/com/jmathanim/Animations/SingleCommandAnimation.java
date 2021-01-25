@@ -21,7 +21,7 @@ package com.jmathanim.Animations;
  *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
-public abstract class SingleCommandAnimation extends Animation{
+public abstract class SingleCommandAnimation extends Animation {
 
     public SingleCommandAnimation() {
         super(0);
@@ -34,10 +34,10 @@ public abstract class SingleCommandAnimation extends Animation{
         return true;//Finish the animation inmediately
     }
 
-    
     @Override
     public void doAnim(double t) {
     }
+
     public abstract void command();
-    
+
 }

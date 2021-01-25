@@ -34,31 +34,30 @@ import javax.imageio.ImageIO;
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
 public class StandaloneSnapshot {
-    public int w,h;
+
+    public int w, h;
 
     public static class FXStarter extends Application {
 
 //        public static Scene scene;
-public static Stage stage;
+        public static Stage stage;
         private static final CountDownLatch latch = new CountDownLatch(1);
 
         public static void awaitFXToolkit() throws InterruptedException {
             latch.await();
         }
-        
 
         @Override
         public void init() {
-            
+
 //            Group group=new Group();
 //            scene = new Scene(group, 800, 600);
-            
             latch.countDown();
         }
 
         @Override
         public void start(Stage primaryStage) {
-            stage=primaryStage;
+            stage = primaryStage;
             stage.setTitle("JMathAnim preview window");
 //            stage.setScene(scene);
 //            stage.show();

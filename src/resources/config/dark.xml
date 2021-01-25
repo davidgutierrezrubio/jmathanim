@@ -1,6 +1,6 @@
 <JMathAnimConfig>
-        <include>#axes_and_functions_dark.xml</include>
-        <include>#dots.xml</include>
+    <include>#axes_and_functions_dark.xml</include>
+    <include>#dots.xml</include>
     <background>
         <color>#192841</color>
     </background>
@@ -25,7 +25,7 @@
             <fillColor>#7ca0c0</fillColor>
             <thickness>4</thickness>
         </style>
-         <style name="solidGreen">
+        <style name="solidGreen">
             <drawColor>WHITE</drawColor>
             <fillColor>#9bc693</fillColor>
             <thickness>4</thickness>

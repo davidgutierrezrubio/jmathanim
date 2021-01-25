@@ -33,17 +33,17 @@ import javafx.scene.shape.StrokeLineCap;
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
 public class MODrawProperties implements Stylable, Stateable {
-    
+
     @Override
     public JMColor getDrawColor() {
         return drawColor;
     }
-    
+
     @Override
     public JMColor getFillColor() {
         return fillColor;
     }
-    
+
     @Override
     public void setMultFillAlpha(double alphaScale) {
         double newAlpha = getFillColor().alpha * alphaScale;
@@ -51,7 +51,7 @@ public class MODrawProperties implements Stylable, Stateable {
         newAlpha = (newAlpha < 0 ? 0 : newAlpha);
         this.setFillAlpha(newAlpha);
     }
-    
+
     @Override
     public void setMultDrawAlpha(double alphaScale) {
         double newAlpha = getDrawColor().alpha * alphaScale;
@@ -59,57 +59,57 @@ public class MODrawProperties implements Stylable, Stateable {
         newAlpha = (newAlpha < 0 ? 0 : newAlpha);
         this.setDrawAlpha(newAlpha);
     }
-    
+
     @Override
     public StrokeLineCap getLinecap() {
         return this.linecap;
     }
-    
+
     @Override
     public void setLinecap(StrokeLineCap linecap) {
         this.linecap = linecap;
     }
-    
+
     @Override
     public Double getThickness() {
         return thickness;
     }
-    
+
     @Override
     public void setThickness(Double thickness) {
         this.thickness = thickness;
     }
-    
+
     @Override
     public void setDotStyle(DotSyle dotStyle) {
         this.dotStyle = dotStyle;
     }
-    
+
     @Override
     public DotSyle getDotStyle() {
         return dotStyle;
     }
-    
+
     @Override
     public void setDashStyle(DashStyle dashStyle) {
         this.dashStyle = dashStyle;
     }
-    
+
     @Override
     public DashStyle getDashStyle() {
         return dashStyle;
     }
-    
+
     @Override
     public Boolean isAbsoluteThickness() {
         return absoluteThickness;
     }
-    
+
     @Override
     public void setAbsoluteThickness(Boolean absThickness) {
         this.absoluteThickness = absThickness;
     }
-    
+
     public enum DashStyle {
         SOLID, DASHED, DOTTED
     }
@@ -130,7 +130,7 @@ public class MODrawProperties implements Stylable, Stateable {
     public DotSyle dotStyle = DotSyle.CIRCLE;
     private MODrawProperties mpBackup;
     public StrokeLineCap linecap = StrokeLineCap.ROUND;
-    
+
     public MODrawProperties() {
         drawColor = new JMColor(1, 1, 1, 1);
         fillColor = new JMColor(0, 0, 0, 0);
@@ -204,7 +204,6 @@ public class MODrawProperties implements Stylable, Stateable {
         fillColorIsDrawColor = mp.fillColorIsDrawColor;
     }
 
-   
     @Override
     public void interpolateFrom(Stylable a, Stylable b, double alpha) {
         if (alpha == 1)//in this case, copy directly all non-null attributes, including non-interpolable
@@ -224,33 +223,33 @@ public class MODrawProperties implements Stylable, Stateable {
             this.thickness = (1 - alpha) * a.getThickness() + alpha * b.getThickness();
         }
     }
-    
+
     @Override
     public void interpolateFrom(Stylable dst, double alpha) {
         interpolateFrom(this, dst, alpha);
     }
-    
+
     public static Color randomColor() {
         int r = ThreadLocalRandom.current().nextInt(0, 255 + 1);
         int g = ThreadLocalRandom.current().nextInt(0, 255 + 1);
         int b = ThreadLocalRandom.current().nextInt(0, 255 + 1);
         return new Color(r, g, b);
     }
-    
+
     @Override
     public void setFillAlpha(double alpha) {
         this.fillColor.alpha = alpha;
     }
-    
+
     @Override
     public void setDrawAlpha(double alpha) {
         this.drawColor.alpha = alpha;
     }
-    
+
     public boolean isFilled() {
         return (this.fillColor.alpha > 0);
     }
-    
+
     @Override
     public void setFilled(boolean fill) {
         if (fill && fillColor.alpha == 0) {
@@ -287,10 +286,10 @@ public class MODrawProperties implements Stylable, Stateable {
         } catch (IllegalArgumentException e) {
             JMathAnimScene.logger.warn("Dash pattern {} not recognized, using default {}", str, resul);
         }
-        
+
         return resul;
     }
-    
+
     static DotSyle parseDotStyle(String str) {
         DotSyle resul = DotSyle.CIRCLE; //default dash
         try {
@@ -331,7 +330,7 @@ public class MODrawProperties implements Stylable, Stateable {
         resul.loadFromStyle(name);
         return resul;
     }
-    
+
     @Override
     public Integer getLayer() {
         if (layer == null) {//If null, sets default value 0
@@ -339,22 +338,22 @@ public class MODrawProperties implements Stylable, Stateable {
         }
         return layer;
     }
-    
+
     @Override
     public void setLayer(int layer) {
         this.layer = layer;
     }
-    
+
     @Override
     public void saveState() {
         this.mpBackup = this.copy();
     }
-    
+
     @Override
     public void restoreState() {
         this.copyFrom(this.mpBackup);
     }
-    
+
     @Override
     public void setDrawColor(JMColor drawColor) {
         if (drawColor != null) {
@@ -367,32 +366,32 @@ public class MODrawProperties implements Stylable, Stateable {
             }
         }
     }
-    
+
     @Override
     public void setFillColor(JMColor fillColor) {
         if (fillColor != null) {
             this.fillColor = fillColor.copy();
         }
     }
-    
+
     @Override
     public void setFillColorIsDrawColor(Boolean fillColorIsDrawColor) {
         this.fillColorIsDrawColor = fillColorIsDrawColor;
     }
-    
+
     public Boolean isFillColorIsDrawColor() {
         return fillColorIsDrawColor;
     }
-    
+
     public Stylable getSubMP(int n) {
         return this;//Nothing sub here...
     }
-    
+
     @Override
     public void multThickness(double multT) {
         setThickness(getThickness() * multT);
     }
-    
+
     public MODrawProperties getFirstMP() {
         return this;
     }

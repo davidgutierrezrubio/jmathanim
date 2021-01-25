@@ -207,13 +207,13 @@ public class TransformMathExpression extends Animation {
                 transform.setLambda(lambda);
                 break;
             case FLIP_HORIZONTALLY:
-                AnimationGroup ag=new AnimationGroup();
+                AnimationGroup ag = new AnimationGroup();
 //                ag.add(Commands.shift(runTime, sh.getCenter().to(sh2.getCenter()), sh).setLambda(t->t));
-                ag.add(Commands.flipTransform(runTime, true,sh, sh2).setUseObjectState(false));
-                transform=ag;
+                ag.add(Commands.flipTransform(runTime, true, sh, sh2).setUseObjectState(false));
+                transform = ag;
                 break;
             case FLIP_VERTICALLY:
-                transform = Commands.flipTransform(runTime, false,sh, sh2);
+                transform = Commands.flipTransform(runTime, false, sh, sh2);
                 break;
         }
 
@@ -221,18 +221,18 @@ public class TransformMathExpression extends Animation {
 
         if (par.getJumpHeightFromJumpEffect() != 0) {
             Vec v = sh.getCenter().to(sh2.getCenter());
-            group.add(par.createJumpAnimation(runTime,v,sh));
+            group.add(par.createJumpAnimation(runTime, v, sh));
         }
         if (par.getNumTurnsFromRotateEffect() != 0) {
-          
-            group.add(par.createRotateAnimation(runTime,sh));
+
+            group.add(par.createRotateAnimation(runTime, sh));
         }
         if (par.getAlphaMultFromAlphaEffect() != 1) {
             Animation changeAlpha = par.createAlphaMultAnimation(runTime, sh);
             group.add(changeAlpha);
         }
         if (par.getScaleFromScaleEffect() != 1) {
-           
+
             group.add(par.createScaleAnimation(runTime, sh));
         }
 
@@ -240,8 +240,6 @@ public class TransformMathExpression extends Animation {
         toDelete.add(sh);
         toDelete.add(sh2);
     }
-
-   
 
     private ArrayList<Shape> getShapeListForGroup(HashMap<String, int[]> or, String names, MultiShapeObject lat, HashMap<Integer, TransformMathExpressionParameters> listRemainders) {
         ArrayList<Shape> resul = new ArrayList<>();
@@ -258,7 +256,7 @@ public class TransformMathExpression extends Animation {
         Shape sh = lat.get(gr[0]).copy();
         listRemainders.remove(gr[0]);
         for (int n = 1; n < gr.length; n++) {
-            sh.merge(lat.get(gr[n]).copy(),false,false);
+            sh.merge(lat.get(gr[n]).copy(), false, false);
             listRemainders.remove(gr[n]);
         }
         return sh;
@@ -275,7 +273,7 @@ public class TransformMathExpression extends Animation {
 
     @Override
     public void finishAnimation() {
-         super.finishAnimation();
+        super.finishAnimation();
         anim.finishAnimation();
 //        scene.remove(mshDst);
 
@@ -332,9 +330,10 @@ public class TransformMathExpression extends Animation {
         }
         return ar;
     }
+
     public TransformMathExpressionParametersArray mapAll() {
-        int n=Math.min(latexDestiny.size()-1,latexTransformed.size()-1);
-        return mapRange(0,n,0);
+        int n = Math.min(latexDestiny.size() - 1, latexTransformed.size() - 1);
+        return mapRange(0, n, 0);
     }
 
     /**

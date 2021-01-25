@@ -130,7 +130,8 @@ public abstract class ShiftAnimation extends Animation {
      * Returns the amount of scale effect assigned to the given object
      *
      * @param obj Mathobject to get the scale from
-     * @return Amount of scale to apply to the object. A value of null or 1 means no effect
+     * @return Amount of scale to apply to the object. A value of null or 1
+     * means no effect
      */
     public double getScaleEffect(MathObject obj) {
         return scaleEffects.get(obj);

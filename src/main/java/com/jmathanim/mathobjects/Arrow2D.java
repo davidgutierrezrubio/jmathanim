@@ -76,9 +76,9 @@ public class Arrow2D extends MathObject {
         this.body = Shape.segment(p1, p2);
         this.head1 = buildArrowHead(type1, 1);
         this.head2 = buildArrowHead(type2, 2);
-        this.body.label="body";
-        this.head1.label="head1";
-        this.head2.label="head2";
+        this.body.label = "body";
+        this.head1.label = "head1";
+        this.head2.label = "head2";
 
         head1.drawColor(this.body.getMp().getDrawColor());
         head1.fillColor(this.body.getMp().getDrawColor());
@@ -124,7 +124,6 @@ public class Arrow2D extends MathObject {
 //    private Arrow2D(Point p1, Point p2, Shape head1, Shape head2) {
 //        this(p1, p2, new MultiShapeObject(head1), new MultiShapeObject(head2));
 //    }
-
     public final MultiShapeObject buildArrowHead(ArrowType type, int side) {
         SVGMathObject head = null;
         String name = "#arrow";
@@ -347,7 +346,6 @@ public class Arrow2D extends MathObject {
         return (T) copy;
     }
 
-
     @Override
     public <T extends MathObject> T thickness(double th) {
         body.thickness(th);
@@ -406,5 +404,5 @@ public class Arrow2D extends MathObject {
     public Stylable getMp() {
         return mpArray;
     }
-    
+
 }

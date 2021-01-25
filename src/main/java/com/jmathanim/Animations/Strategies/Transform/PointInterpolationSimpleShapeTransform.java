@@ -42,8 +42,6 @@ public class PointInterpolationSimpleShapeTransform extends Animation {
 
     }
 
-   
-
     @Override
     public void initialize(JMathAnimScene scene) {
         super.initialize(scene);
@@ -63,7 +61,7 @@ public class PointInterpolationSimpleShapeTransform extends Animation {
 
     @Override
     public void doAnim(double t) {
-        double lt=lambda.applyAsDouble(t);
+        double lt = lambda.applyAsDouble(t);
         JMPathPoint interPoint, basePoint, dstPoint;
         for (int n = 0; n < mobjTransformed.getPath().size(); n++) {
             interPoint = mobjTransformed.getPath().getJMPoint(n);
@@ -92,7 +90,7 @@ public class PointInterpolationSimpleShapeTransform extends Animation {
 
     @Override
     public void finishAnimation() {
-         super.finishAnimation();
+        super.finishAnimation();
 
         for (int n = 0; n < mobjTransformed.getPath().size(); n++) {
             JMPathPoint p1 = mobjTransformed.getPath().getJMPoint(n);

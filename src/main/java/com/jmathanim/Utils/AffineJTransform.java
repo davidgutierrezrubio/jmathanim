@@ -278,13 +278,11 @@ public class AffineJTransform {
 //            applyTransformsToDrawingProperties(mObject);
 //            return;
 //        }
-
 //        if (mObject instanceof Arrow2D) {
 //            applyTransform(((Arrow2D) mObject).getBody());
 //            applyTransformsToDrawingProperties(mObject);
 //            return;
 //        }
-
 //        if (mObject instanceof JMPathPoint) {
 //            JMPathPoint jmPDst = (JMPathPoint) mObject;
 //            JMPathPoint pSrc = jmPDst.copy();
@@ -299,7 +297,6 @@ public class AffineJTransform {
 //            applyTransformsToDrawingProperties(mObject);
 //            return;
 //        }
-
 //        if (mObject instanceof Point) {
 //            Point p = (Point) mObject;
 //            RealMatrix pRow = new Array2DRowRealMatrix(new double[][]{{1d, p.v.x, p.v.y, p.v.z}});

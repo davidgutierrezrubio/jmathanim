@@ -27,7 +27,6 @@ import java.net.URL;
  */
 public class ArrowTip extends TippableObject {
 
-   
     public static ArrowTip make(Shape shape, double location, slopeDirection dir, MathObject arrowtip) {
         ArrowTip resul = new ArrowTip(shape, location, dir);
         resul.setTip(arrowtip);
@@ -92,5 +91,4 @@ public class ArrowTip extends TippableObject {
         return head;
     }
 
-   
 }

@@ -205,8 +205,8 @@ public class Vec implements Stateable {
     public Vec rotateInSite(double angle) {
         double c = Math.cos(angle);
         double s = Math.sin(angle);
-        double a=this.x;
-        double b=this.y;
+        double a = this.x;
+        double b = this.y;
         this.x = c * a - s * b;
         this.y = s * a + c * b;
         return this;
@@ -221,7 +221,7 @@ public class Vec implements Stateable {
      */
     public Vec rotate(double angle) {
         return this.copy().rotateInSite(angle);
-        
+
     }
 
     /**

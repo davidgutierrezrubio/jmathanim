@@ -661,9 +661,10 @@ public class PlayAnim {
     }
 
     /**
-     * Plays an animated version of the stackTo method.The destination point is computed
-     * at the initialize() method so it cab ne safely concatenated. If several
-     * objects are animated, the second will be stacked to the first, and so on
+     * Plays an animated version of the stackTo method.The destination point is
+     * computed at the initialize() method so it cab ne safely concatenated. If
+     * several objects are animated, the second will be stacked to the first,
+     * and so on
      *
      * @param runtime time in seconds
      * @param dst Destiny object to align with

@@ -133,10 +133,12 @@ public class JMathAnimConfig {
         this.shadowOffsetY = offsetY;
         this.shadowAlpha = alpha;
     }
-public void setBackGroundImage(String name) {
-    ResourceLoader rl=new ResourceLoader();
-    setBackGroundImage(rl.getResource(name, "images"));
-}
+
+    public void setBackGroundImage(String name) {
+        ResourceLoader rl = new ResourceLoader();
+        setBackGroundImage(rl.getResource(name, "images"));
+    }
+
     public void setBackGroundImage(URL backGroundImage) {
         this.backGroundImage = backGroundImage;
     }
@@ -296,7 +298,7 @@ public void setBackGroundImage(String name) {
 
     public MODrawProperties createStyleFrom(Stylable mp, String styleName) {
         JMathAnimScene.logger.info("Creating style {}", styleName.toUpperCase());
-        MODrawProperties mpO=mp.getFirstMP();
+        MODrawProperties mpO = mp.getFirstMP();
         return styles.put(styleName.toUpperCase(), mpO);
     }
 
@@ -315,7 +317,8 @@ public void setBackGroundImage(String name) {
     public void setFPS(int fps) {
         this.fps = fps;
     }
- public void parseFile(String url) {
+
+    public void parseFile(String url) {
         ConfigLoader.parseFile(url);
     }
 }

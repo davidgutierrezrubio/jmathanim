@@ -306,7 +306,8 @@ public class ParametricCurve extends Shape {
     }
 
     /**
-     * Returns the tangent vector at a value of the independent variable. The componentes are the derivatives
+     * Returns the tangent vector at a value of the independent variable. The
+     * componentes are the derivatives
      *
      * @param t0 Value to get the tangent vector
      * @return The tangent vector (x'(t),y'(t))

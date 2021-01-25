@@ -41,9 +41,11 @@ public class AnimationGroup extends Animation {
     public ArrayList<Animation> getAnimations() {
         return animations;
     }
-    public static AnimationGroup make(Animation...anims) {
+
+    public static AnimationGroup make(Animation... anims) {
         return new AnimationGroup(anims);
     }
+
     /**
      * Creates a new, empty, AnimationGroup. This class stores a group of
      * animations, to be played at the same time.

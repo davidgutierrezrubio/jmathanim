@@ -25,7 +25,7 @@
             <fillColor>#7ca0c0</fillColor>
             <thickness>4</thickness>
         </style>
-         <style name="solidGreen">
+        <style name="solidGreen">
             <drawColor>black</drawColor>
             <fillColor>#9bc693</fillColor>
             <thickness>4</thickness>

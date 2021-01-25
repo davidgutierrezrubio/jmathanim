@@ -33,11 +33,11 @@ public class GroupCreationAnimation extends Animation {
     private final MathObjectGroup group;
     private AnimationGroup anim;
 
-    public GroupCreationAnimation(double runtime,MathObjectGroup group) {
+    public GroupCreationAnimation(double runtime, MathObjectGroup group) {
         super(runtime);
-        this.group=group;
-        this.anim=new AnimationGroup();
-        for (MathObject obj:group.getObjects()) {
+        this.group = group;
+        this.anim = new AnimationGroup();
+        for (MathObject obj : group.getObjects()) {
             this.anim.add(new ShowCreation(runtime, obj));
         }
     }
@@ -47,7 +47,7 @@ public class GroupCreationAnimation extends Animation {
         super.initialize(scene);
         anim.setLambda(lambda);
         anim.initialize(scene);
-        
+
     }
 
     @Override
@@ -55,16 +55,14 @@ public class GroupCreationAnimation extends Animation {
         return anim.processAnimation();
     }
 
-
     @Override
     public void finishAnimation() {
-         super.finishAnimation();
+        super.finishAnimation();
         anim.finishAnimation();
     }
 
     @Override
     public void doAnim(double t) {
     }
-
 
 }

@@ -49,7 +49,7 @@ public abstract class TippableObject extends MathObject {
 
     public TippableObject() {
         super();
-        mpArray=new MODrawPropertiesArray();
+        mpArray = new MODrawPropertiesArray();
         scaleFactorX = 1;
         scaleFactorY = 1;
     }

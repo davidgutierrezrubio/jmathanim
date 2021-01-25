@@ -166,7 +166,7 @@ public class TransformMathExpressionParameters {
 
             @Override
             public void finishAnimation() {
-                 super.finishAnimation();
+                super.finishAnimation();
                 doAnim(1);
             }
         };
@@ -176,7 +176,7 @@ public class TransformMathExpressionParameters {
     public Animation createScaleAnimation(double runTime, Shape sh) {
         //Parabola parameter so that mininum reaches at (.5,par.getAlphaMultFromAlphaEffect())
         double L = 4 * (1 - getScaleFromScaleEffect());
-       return  new Animation(runTime) {
+        return new Animation(runTime) {
 
             @Override
             public void doAnim(double t) {
@@ -186,7 +186,7 @@ public class TransformMathExpressionParameters {
 
             @Override
             public void finishAnimation() {
-                 super.finishAnimation();
+                super.finishAnimation();
                 doAnim(1);
             }
         };

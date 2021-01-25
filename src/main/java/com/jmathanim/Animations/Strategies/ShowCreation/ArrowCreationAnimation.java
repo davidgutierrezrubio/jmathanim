@@ -15,7 +15,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-
 package com.jmathanim.Animations.Strategies.ShowCreation;
 
 import com.jmathanim.Animations.Animation;
@@ -31,10 +30,9 @@ public class ArrowCreationAnimation extends Animation {
 
     private final Arrow2D obj;
 
-
-    public ArrowCreationAnimation( double runTime,Arrow2D obj) {
+    public ArrowCreationAnimation(double runTime, Arrow2D obj) {
         super(runTime);
-        this.obj=obj;
+        this.obj = obj;
     }
 
     @Override
@@ -46,22 +44,21 @@ public class ArrowCreationAnimation extends Animation {
 
     @Override
     public void doAnim(double t) {
-        double lt=lambda.applyAsDouble(t);
+        double lt = lambda.applyAsDouble(t);
         obj.restoreState();
         //If there is only head 1 (the ending point), scale from the beginning
         //if there are 2 heads (ending and beginning point), better scale from the center
-        Point scaleCenter=(obj.getArrowHead2().size()>0 ? obj.getCenter() : obj.getBody().getPoint(0));
-        
+        Point scaleCenter = (obj.getArrowHead2().size() > 0 ? obj.getCenter() : obj.getBody().getPoint(0));
+
         obj.scale(scaleCenter, lt, lt);
-        obj.scaleArrowHead1(lt*obj.getScaleArrowHead1());
-        obj.scaleArrowHead2(lt*obj.getScaleArrowHead2());
+        obj.scaleArrowHead1(lt * obj.getScaleArrowHead1());
+        obj.scaleArrowHead2(lt * obj.getScaleArrowHead2());
     }
 
     @Override
     public void finishAnimation() {
-         super.finishAnimation();
+        super.finishAnimation();
         doAnim(1);
     }
-
 
 }

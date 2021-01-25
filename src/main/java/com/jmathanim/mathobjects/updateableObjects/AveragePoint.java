@@ -15,7 +15,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-
 package com.jmathanim.mathobjects.updateableObjects;
 
 import com.jmathanim.Utils.Vec;
@@ -34,9 +33,10 @@ import java.util.List;
 public class AveragePoint extends Point implements Updateable {
 
     final List<Point> points;
-    public AveragePoint(Point...points) {
+
+    public AveragePoint(Point... points) {
         super();
-        this.points=Arrays.asList(points);
+        this.points = Arrays.asList(points);
     }
 
     @Override
@@ -55,7 +55,7 @@ public class AveragePoint extends Point implements Updateable {
         for (int n = 0; n < points.size(); n++) {
             level = Math.max(level, points.get(n).getUpdateLevel());
         }
-        return level+1;
+        return level + 1;
     }
 
 }

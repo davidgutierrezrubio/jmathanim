@@ -34,7 +34,9 @@ public class PointOnFunctionGraph extends Point {
     private Point slopePointLeft;
 
     /**
-     * Creates an updateable point which automatically updates the y-component to be so that lies in the function graph
+     * Creates an updateable point which automatically updates the y-component
+     * to be so that lies in the function graph
+     *
      * @param x The initial x component of the point
      * @param fg Function graph
      */
@@ -49,7 +51,7 @@ public class PointOnFunctionGraph extends Point {
 
     @Override
     public int getUpdateLevel() {
-        return fg.getUpdateLevel()+1;
+        return fg.getUpdateLevel() + 1;
     }
 
     @Override

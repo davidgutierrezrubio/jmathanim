@@ -60,7 +60,6 @@ public class Shape extends MathObject {
     public JMPathPoint get(int n) {
         return jmpath.getJMPoint(n);
     }
-    
 
     public Point getPoint(int n) {
         return get(n).p;

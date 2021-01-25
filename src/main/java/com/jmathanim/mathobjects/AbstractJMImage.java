@@ -32,13 +32,12 @@ public abstract class AbstractJMImage extends MathObject {
     public boolean preserveRatio = false;
     public double rotateAngle = 0;
     public double rotateAngleBackup = 0;
-    private boolean cached=false;
+    private boolean cached = false;
 
     @Override
     public Rect getBoundingBox() {
         return bbox.getRotatedRect(this.rotateAngle);
     }
-
 
     @Override
     public <T extends MathObject> T shift(Vec shiftVector) {
@@ -58,7 +57,9 @@ public abstract class AbstractJMImage extends MathObject {
     public void setCached(boolean cached) {
         this.cached = cached;
     }
-   abstract public String getId();
-   abstract public Image getImage();
-    
+
+    abstract public String getId();
+
+    abstract public Image getImage();
+
 }

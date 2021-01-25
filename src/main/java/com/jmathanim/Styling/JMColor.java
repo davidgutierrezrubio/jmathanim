@@ -130,8 +130,8 @@ public class JMColor {
     }
 
     /**
-     * Set the RGBA values of those given by the parameter.
-     * If the given color is null, nothing is done
+     * Set the RGBA values of those given by the parameter. If the given color
+     * is null, nothing is done
      *
      * @param jmcolor The JMColor to copy values from
      */
@@ -145,7 +145,8 @@ public class JMColor {
     }
 
     /**
-     * Interpolates this JMColor with another given. The original color is unaltered
+     * Interpolates this JMColor with another given. The original color is
+     * unaltered
      *
      * @param B JMColor to getInterpolatedColor
      * @param t Interpolation parameter. 0 means this object, 1 means the given

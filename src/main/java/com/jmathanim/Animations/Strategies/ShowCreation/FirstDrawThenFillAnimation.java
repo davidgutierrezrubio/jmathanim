@@ -145,7 +145,7 @@ public class FirstDrawThenFillAnimation extends Animation {
 
     @Override
     public void finishAnimation() {
-         super.finishAnimation();
+        super.finishAnimation();
         anim.finishAnimation();
     }
 

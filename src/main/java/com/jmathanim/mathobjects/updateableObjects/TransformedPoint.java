@@ -15,7 +15,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-
 package com.jmathanim.mathobjects.updateableObjects;
 
 import com.jmathanim.Utils.AffineJTransform;
@@ -26,15 +25,15 @@ import com.jmathanim.mathobjects.Point;
  *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
-public class TransformedPoint extends Point{
+public class TransformedPoint extends Point {
 
     private AffineJTransform transform;
     private final Point dstPoint;
-    
-    public TransformedPoint(Point p,AffineJTransform tr) {
+
+    public TransformedPoint(Point p, AffineJTransform tr) {
         super();
-        this.dstPoint=p;
-        this.transform=tr;
+        this.dstPoint = p;
+        this.transform = tr;
     }
 
     public AffineJTransform getTransform() {
@@ -47,21 +46,20 @@ public class TransformedPoint extends Point{
 
     @Override
     public int getUpdateLevel() {
-        return dstPoint.getUpdateLevel()+1;
+        return dstPoint.getUpdateLevel() + 1;
     }
 
     @Override
     public void update(JMathAnimScene scene) {
         Point tempPoint = transform.getTransformedObject(this.dstPoint);
-        this.v.x=tempPoint.v.x;
-        this.v.y=tempPoint.v.y;
-        this.v.z=tempPoint.v.z;
+        this.v.x = tempPoint.v.x;
+        this.v.y = tempPoint.v.y;
+        this.v.z = tempPoint.v.z;
     }
 
     @Override
     public void registerChildrenToBeUpdated(JMathAnimScene scene) {
         scene.registerUpdateable(this.dstPoint);
     }
-    
-    
+
 }
