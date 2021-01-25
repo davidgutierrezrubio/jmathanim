@@ -160,7 +160,7 @@ public class MODrawProperties implements Stylable, Stateable {
     }
 
     /**
-     * Absorb all non-null properties of a given properties class
+     * Absorbs all non-null properties of a given properties class
      *
      * @param prop
      */

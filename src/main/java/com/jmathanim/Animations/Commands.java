@@ -416,7 +416,7 @@ public class Commands {
                 restoreStates(mathObjects);
                 int n = 0;
                 for (MathObject obj : mathObjects) {
-                    obj.interpolateMPFrom(mpDst, lt);
+                    obj.getMp().interpolateFrom(mpDst, lt);
                 }
             }
 

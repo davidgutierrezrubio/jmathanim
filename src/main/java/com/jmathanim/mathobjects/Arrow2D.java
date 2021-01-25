@@ -34,7 +34,7 @@ import java.net.URL;
  */
 public class Arrow2D extends MathObject {
 
-    private MODrawPropertiesArray mp;
+    private MODrawPropertiesArray mpArray;
     private MultiShapeObject arrowHeadToDraw1;
     private MultiShapeObject arrowHeadToDraw2;
     private Shape bodyToDraw;
@@ -83,10 +83,10 @@ public class Arrow2D extends MathObject {
         head2.drawColor(this.body.getMp().getDrawColor());
         head2.fillColor(this.body.getMp().getDrawColor());
         scaleArrowHead2(1);
-        mp = new MODrawPropertiesArray();
-        mp.add(head1);
-        mp.add(head2);
-        mp.add(body);
+        mpArray = new MODrawPropertiesArray();
+        mpArray.add(head1);
+        mpArray.add(head2);
+        mpArray.add(body);
     }
 
     public Arrow2D(Point p1, Point p2, MultiShapeObject head1) {
@@ -108,10 +108,10 @@ public class Arrow2D extends MathObject {
         head2.fillColor(this.body.getMp().getDrawColor());
         scaleArrowHead2(1);
         head2.fillWithDrawColor(true);
-        mp = new MODrawPropertiesArray();
-        mp.add(head1);
-        mp.add(head2);
-        mp.add(body);
+        mpArray = new MODrawPropertiesArray();
+        mpArray.add(head1);
+        mpArray.add(head2);
+        mpArray.add(body);
     }
 
     public Arrow2D(Point p1, Point p2, Shape head) {
@@ -246,7 +246,8 @@ public class Arrow2D extends MathObject {
 
     @Override
     public void restoreState() {
-        mp.restoreState();
+        super.restoreState();
+        getMp().restoreState();
         body.restoreState();
         head1.restoreState();
         head2.restoreState();
@@ -256,7 +257,8 @@ public class Arrow2D extends MathObject {
 
     @Override
     public void saveState() {
-        mp.saveState();
+        super.saveState();
+        getMp().saveState();
         body.saveState();
         head1.saveState();
         head2.saveState();
@@ -266,12 +268,9 @@ public class Arrow2D extends MathObject {
 
     @Override
     public void draw(Renderer r) {
-        //Move arrowhead to p2
-
         bodyToDraw.draw(r);
         arrowHeadToDraw1.draw(r);
         arrowHeadToDraw2.draw(r);
-
     }
 
     @Override
@@ -402,7 +401,7 @@ public class Arrow2D extends MathObject {
 
     @Override
     public Stylable getMp() {
-        return mp;
+        return mpArray;
     }
     
 }

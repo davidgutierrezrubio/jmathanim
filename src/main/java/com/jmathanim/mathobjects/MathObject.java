@@ -650,10 +650,6 @@ public abstract class MathObject implements Drawable, Updateable, Stateable, Box
         return (T) this;
     }
 
-    public void interpolateMPFrom(Stylable mpDst, double alpha) {
-        this.getMp().interpolateFrom(mpDst, alpha);
-    }
-
     public <T extends MathObject> T fillWithDrawColor(boolean fcd) {
         this.getMp().setFillColorIsDrawColor(fcd);
         return (T) this;
@@ -676,11 +672,6 @@ public abstract class MathObject implements Drawable, Updateable, Stateable, Box
     public <T extends MathObject> T debugText(String debugText) {
         this.debugText = debugText;
         return (T) this;
-    }
-
-    @Override
-    public String toString() {
-        return "mobj" + label + " " + getMp().getLayer();
     }
 
     /**
