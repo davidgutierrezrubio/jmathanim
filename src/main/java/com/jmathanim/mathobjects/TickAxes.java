@@ -19,46 +19,18 @@ package com.jmathanim.mathobjects;
 
 import com.jmathanim.Cameras.Camera;
 import com.jmathanim.Renderers.Renderer;
+import com.jmathanim.Styling.MODrawPropertiesArray;
+import com.jmathanim.Styling.Stylable;
+import com.jmathanim.Utils.Rect;
 
 /**
  *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
-public class TickAxes implements Drawable {
+public class TickAxes extends MathObject {
 
-    LaTeXMathObject legend;
-    Shape tick;
-    double maximumScaleToShow;
-    double location;
-    private static final double INITIAL_MARK_SCALE = .025;
     private static final double INITIAL_LEGEND_SCALE = .3;
-
-    enum TickOrientation {
-        XAXIS, YAXIS
-    }
-    TickOrientation orientation;
-
-    public enum TickType {
-        PRIMARY, SECONDARY
-    }
-    TickType tickType;
-
-    public static TickAxes makeXTick(double x, String latex, TickType tt, double maxShowScale) {
-        double markScale = getMarkScaleFortype(tt);
-        final Shape xtick = Shape.segment(Point.at(x, -INITIAL_MARK_SCALE * markScale), Point.at(x, INITIAL_MARK_SCALE * markScale)).style(getStyleNameFortype(tt));
-        final LaTeXMathObject xtickLegend = LaTeXMathObject.make(latex).style("axislegenddefault");
-        xtickLegend.scale(INITIAL_LEGEND_SCALE);
-        return new TickAxes(x, xtickLegend, xtick, TickOrientation.XAXIS, maxShowScale);
-    }
-
-    public static TickAxes makeYTick(double y, String latex, TickType tt, double maxShowScale) {
-        double markScale = getMarkScaleFortype(tt);
-        final Shape ytick = Shape.segment(Point.at(-INITIAL_MARK_SCALE * markScale, y), Point.at(INITIAL_MARK_SCALE * markScale, y)).style(getStyleNameFortype(tt));
-
-        final LaTeXMathObject ytickLegend = LaTeXMathObject.make(latex).style("axislegenddefault");
-        ytickLegend.scale(INITIAL_LEGEND_SCALE);
-        return new TickAxes(y, ytickLegend, ytick, TickOrientation.YAXIS, maxShowScale);
-    }
+    private static final double INITIAL_MARK_SCALE = .025;
 
     public static double getMarkScaleFortype(TickType type) {
         switch (type) {
@@ -82,12 +54,44 @@ public class TickAxes implements Drawable {
         }
     }
 
+    public static TickAxes makeXTick(double x, String latex, TickType tt, double maxShowScale) {
+        double markScale = getMarkScaleFortype(tt);
+        final Shape xtick = Shape.segment(Point.at(x, -INITIAL_MARK_SCALE * markScale), Point.at(x, INITIAL_MARK_SCALE * markScale)).style(getStyleNameFortype(tt));
+        final LaTeXMathObject xtickLegend = LaTeXMathObject.make(latex).style("axislegenddefault");
+        xtickLegend.scale(INITIAL_LEGEND_SCALE);
+        return new TickAxes(x, xtickLegend, xtick, TickOrientation.XAXIS, maxShowScale);
+    }
+
+    public static TickAxes makeYTick(double y, String latex, TickType tt, double maxShowScale) {
+        double markScale = getMarkScaleFortype(tt);
+        final Shape ytick = Shape.segment(Point.at(-INITIAL_MARK_SCALE * markScale, y), Point.at(INITIAL_MARK_SCALE * markScale, y)).style(getStyleNameFortype(tt));
+
+        final LaTeXMathObject ytickLegend = LaTeXMathObject.make(latex).style("axislegenddefault");
+        ytickLegend.scale(INITIAL_LEGEND_SCALE);
+        return new TickAxes(y, ytickLegend, ytick, TickOrientation.YAXIS, maxShowScale);
+    }
+    LaTeXMathObject legend;
+    double location;
+    double maximumScaleToShow;
+    MODrawPropertiesArray mpArray;
+    TickOrientation orientation;
+
+    Shape tick;
+    TickType tickType;
+
     public TickAxes(double location, LaTeXMathObject legend, Shape mark, TickOrientation type, double maximumScaleToShow) {
+        super();
+        mpArray = new MODrawPropertiesArray();
         this.location = location;
         this.legend = legend;
         this.tick = mark;
+        mpArray.add(legend, tick);
         this.maximumScaleToShow = maximumScaleToShow;
         this.orientation = type;
+    }
+
+    public TickAxes copy() {
+        return new TickAxes(location, legend.copy(), tick.copy(), orientation, maximumScaleToShow);
     }
 
     public void draw(Renderer r) {
@@ -95,6 +99,40 @@ public class TickAxes implements Drawable {
             legend.draw(r);
             tick.draw(r);
         }
+    }
+
+    @Override
+    public Rect getBoundingBox() {
+        return Rect.union(tick.getBoundingBox(), legend.getBoundingBox());
+    }
+
+    public LaTeXMathObject getLegend() {
+        return legend;
+    }
+
+    public double getLocation() {
+        return location;
+    }
+
+    public double getMaximumScaleToShow() {
+        return maximumScaleToShow;
+    }
+
+    @Override
+    public Stylable getMp() {
+        return mpArray;
+    }
+
+    public TickOrientation getOrientation() {
+        return orientation;
+    }
+
+    public Shape getTick() {
+        return tick;
+    }
+
+    public TickType getTickType() {
+        return tickType;
     }
 
     public boolean shouldDraw(Camera cam) {
@@ -113,32 +151,12 @@ public class TickAxes implements Drawable {
         return (scaleCondition && locationCondition);
     }
 
-    public TickAxes copy() {
-        return new TickAxes(location, legend.copy(), tick.copy(), orientation, maximumScaleToShow);
+    enum TickOrientation {
+        XAXIS, YAXIS
     }
 
-    public LaTeXMathObject getLegend() {
-        return legend;
-    }
-
-    public Shape getTick() {
-        return tick;
-    }
-
-    public double getMaximumScaleToShow() {
-        return maximumScaleToShow;
-    }
-
-    public double getLocation() {
-        return location;
-    }
-
-    public TickOrientation getOrientation() {
-        return orientation;
-    }
-
-    public TickType getTickType() {
-        return tickType;
+    public enum TickType {
+        PRIMARY, SECONDARY
     }
 
 }

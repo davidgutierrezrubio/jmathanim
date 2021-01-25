@@ -20,7 +20,6 @@ package com.jmathanim.mathobjects;
 import com.jmathanim.Renderers.Renderer;
 import com.jmathanim.Utils.AffineJTransform;
 import com.jmathanim.Styling.JMColor;
-import com.jmathanim.Styling.MODrawProperties;
 import com.jmathanim.Styling.MODrawPropertiesArray;
 import com.jmathanim.Styling.Stylable;
 import com.jmathanim.Utils.Rect;
@@ -156,54 +155,6 @@ public class MultiShapeObject extends MathObject implements Iterable<Shape> {
         }
     }
 
-    @Override
-    public <T extends MathObject> T style(String name) {
-        for (Shape jmp : shapes) {
-            jmp.style(name);
-        }
-        return (T) this;
-    }
-
-    @Override
-    public <T extends MathObject> T drawAlpha(double t) {
-        for (Shape jmp : shapes) {
-            jmp.drawAlpha(t);
-        }
-        return (T) this;
-    }
-
-    @Override
-    public <T extends MathObject> T fillAlpha(double t) {
-        for (Shape jmp : shapes) {
-            jmp.fillAlpha(t);
-        }
-        return (T) this;
-    }
-
-    @Override
-    public <T extends MathObject> T multDrawAlpha(double t) {
-        for (Shape jmp : shapes) {
-            jmp.multDrawAlpha(t);
-        }
-        return (T) this;
-    }
-
-    @Override
-    public <T extends MathObject> T multFillAlpha(double t) {
-        for (Shape jmp : shapes) {
-            jmp.multFillAlpha(t);
-        }
-        return (T) this;
-    }
-
-    @Override
-    public <T extends MathObject> T thickness(double t) {
-        for (Shape jmp : shapes) {
-            jmp.thickness(t);
-        }
-        return (T) this;
-    }
-
     public Shape get(int n) {
         return shapes.get(n);
     }
@@ -217,11 +168,13 @@ public class MultiShapeObject extends MathObject implements Iterable<Shape> {
 
     @Override
     public void update(JMathAnimScene scene) {
+        //No need to update as the shapes are already added to the scene
     }
 
     @Override
     public void restoreState() {
         super.restoreState();
+        getMp().restoreState();
         for (Shape o : shapes) {
             o.restoreState();
         }
@@ -230,6 +183,7 @@ public class MultiShapeObject extends MathObject implements Iterable<Shape> {
     @Override
     public void saveState() {
         super.saveState();
+        getMp().saveState();
         for (Shape o : shapes) {
             o.saveState();
         }
@@ -255,6 +209,18 @@ public class MultiShapeObject extends MathObject implements Iterable<Shape> {
         return shapes.size();
     }
 
+    /**
+     * Align with another MultiShape so that the center of one of its shapes is
+     * aligned with the center of the shape of the other Multishape. This is
+     * generally used for LaTeXMathObjects to align two equation by their equal
+     * sign
+     *
+     * @param <T> Calling subclass
+     * @param n Shape index of the shape to align
+     * @param lat The other multishape object
+     * @param m Index of the shape of the other multishape to align with
+     * @return This object
+     */
     public <T extends MultiShapeObject> T alignCenter(int n, MultiShapeObject lat, int m) {
         shift(this.get(n).getCenter().to(lat.get(m).getCenter()));
         return (T) this;
@@ -331,9 +297,9 @@ public class MultiShapeObject extends MathObject implements Iterable<Shape> {
     }
 
     @Override
-    public <T extends MathObject> T applyLinearTransform(AffineJTransform tr) {
+    public <T extends MathObject> T applyAffineTransform(AffineJTransform tr) {
         for (Shape sh : shapes) {
-            sh.applyLinearTransform(tr);
+            sh.applyAffineTransform(tr);
         }
         tr.applyTransformsToDrawingProperties(this);
         return (T) this;

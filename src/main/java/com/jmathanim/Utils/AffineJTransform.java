@@ -18,16 +18,8 @@
 package com.jmathanim.Utils;
 
 import com.jmathanim.Utils.Vec;
-import com.jmathanim.jmathanim.JMathAnimScene;
-import com.jmathanim.mathobjects.Arrow2D;
-import com.jmathanim.mathobjects.JMPathPoint;
-import com.jmathanim.mathobjects.Line;
 import com.jmathanim.mathobjects.MathObject;
-import com.jmathanim.mathobjects.MathObjectGroup;
-import com.jmathanim.mathobjects.MultiShapeObject;
 import com.jmathanim.mathobjects.Point;
-import com.jmathanim.mathobjects.Shape;
-import org.apache.commons.math3.linear.Array2DRowRealMatrix;
 import org.apache.commons.math3.linear.LUDecomposition;
 import org.apache.commons.math3.linear.MatrixUtils;
 import org.apache.commons.math3.linear.RealMatrix;
@@ -254,7 +246,7 @@ public class AffineJTransform {
      * @param mObject Object to apply transform
      */
     public void applyTransform(MathObject mObject) {
-        mObject.applyLinearTransform(this);
+        mObject.applyAffineTransform(this);
 //        if (mObject instanceof MathObjectGroup) {
 //            MathObjectGroup mobj = (MathObjectGroup) mObject;
 //            for (MathObject obj : mobj.getObjects()) {

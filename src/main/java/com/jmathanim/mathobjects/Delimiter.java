@@ -29,15 +29,15 @@ import com.jmathanim.jmathanim.JMathAnimScene;
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
 public class Delimiter extends MathObject {
-
+    
     private final Point A, B;
     private SVGMathObject body;
     private double delimiterScale;
-
+    
     @Override
-    public <T extends MathObject> T applyLinearTransform(AffineJTransform tr) {
-        A.applyLinearTransform(tr);
-        B.applyLinearTransform(tr);
+    public <T extends MathObject> T applyAffineTransform(AffineJTransform tr) {
+        A.applyAffineTransform(tr);
+        B.applyAffineTransform(tr);
         tr.applyTransformsToDrawingProperties(this);
         return (T) this;
     }
@@ -96,32 +96,33 @@ public class Delimiter extends MathObject {
         resul.delimiterScale = 1;
         return resul;
     }
-
+    
     private Delimiter(Shape sh, Type type, double gap) {
         this.A = sh.getPoint(0);
         this.B = sh.getPoint(1);
         this.type = type;
         this.gap = gap;
     }
-
+    
     public void setBody(SVGMathObject body) {
         this.body = body;
     }
-
+    
     public void setGap(double gap) {
         this.gap = gap;
     }
-
+    
     private MultiShapeObject generateDelimiter() {
         Point AA = A.interpolate(B, .5 * (1 - delimiterScale));
         Point BB = B.interpolate(A, .5 * (1 - delimiterScale));
         double width = AA.to(BB).norm();
-
+        
         MultiShapeObject resul = body.copy();
+        drawAlpha(0);//This is to ensure that the "stitches" are not seen
         for (Shape sh : resul) {
             sh.getMp().copyFrom(this.getMp());
         }
-
+        
         if (type == Type.BRACE) {
             double minimumWidthToShrink = .5;
             double wr = (width < minimumWidthToShrink ? 1 - (width - minimumWidthToShrink) * (width - minimumWidthToShrink) / minimumWidthToShrink / minimumWidthToShrink : 1);
@@ -135,7 +136,7 @@ public class Delimiter extends MathObject {
             resul.get(0).shift(-.5 * hasToGrow, 0);
             resul.get(5).shift(.5 * hasToGrow, 0);
         }
-
+        
         if ((type == Type.PARENTHESIS) || (type == Type.BRACKET)) {
             double minimumWidthToShrink = 1.5;
             double wr = (width < minimumWidthToShrink ? 1 - (width - minimumWidthToShrink) * (width - minimumWidthToShrink) / minimumWidthToShrink / minimumWidthToShrink : 1);
@@ -149,14 +150,14 @@ public class Delimiter extends MathObject {
             resul.get(0).shift(.5 * hasToGrow, 0);
             resul.get(3).shift(-.5 * hasToGrow, 0);
         }
-
+        
         Rect bb = resul.getBoundingBox();
         resul.shift(0, gap);
         AffineJTransform tr = AffineJTransform.createDirect2DHomothecy(bb.getDL(), bb.getDR(), AA, BB, 1);
         tr.applyTransform(resul);
         return resul;
     }
-
+    
     @Override
     public void draw(Renderer r) {
         if (A.isEquivalenTo(B, 0)) {
@@ -165,7 +166,7 @@ public class Delimiter extends MathObject {
         MultiShapeObject del = generateDelimiter();
         del.draw(r);
     }
-
+    
     @Override
     public Rect getBoundingBox() {
         return generateDelimiter().getBoundingBox();
@@ -182,17 +183,17 @@ public class Delimiter extends MathObject {
     public void setDelimiterScale(double delimiterScale) {
         this.delimiterScale = delimiterScale;
     }
-
+    
     @Override
     public <T extends MathObject> T copy() {
         return (T) make(A.copy(), B.copy(), type, gap);
     }
-
+    
     @Override
     public void registerChildrenToBeUpdated(JMathAnimScene scene) {
         scene.registerUpdateable(A, B);
     }
-
+    
     @Override
     public void unregisterChildrenToBeUpdated(JMathAnimScene scene) {
         scene.unregisterUpdateable(A, B);

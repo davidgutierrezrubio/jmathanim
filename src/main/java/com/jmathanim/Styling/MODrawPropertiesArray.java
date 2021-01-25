@@ -19,10 +19,8 @@ package com.jmathanim.Styling;
 
 import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.Point;
-import com.jmathanim.mathobjects.Shape;
 import com.jmathanim.mathobjects.Stateable;
 import java.util.ArrayList;
-import java.util.Collection;
 import javafx.scene.shape.StrokeLineCap;
 
 /**
@@ -37,7 +35,7 @@ public class MODrawPropertiesArray implements Stylable, Stateable {
 
     public MODrawPropertiesArray() {
         mpRef = new MODrawProperties();
-        objects=new ArrayList<>();
+        objects = new ArrayList<>();
     }
 
     public MODrawPropertiesArray(ArrayList<MathObject> objects) {
@@ -49,8 +47,10 @@ public class MODrawPropertiesArray implements Stylable, Stateable {
         return objects;
     }
 
-    public boolean add(MathObject e) {
-        return objects.add(e);
+    public void add(MathObject... objs) {
+        for (MathObject obj : objs) {
+            objects.add(obj);
+        }
     }
 
     public void setObjects(ArrayList<MathObject> objects) {
@@ -72,6 +72,14 @@ public class MODrawPropertiesArray implements Stylable, Stateable {
             obj.getMp().copyFrom(prop);
         }
         mpRef.copyFrom(prop);
+    }
+
+    @Override
+    public void interpolateFrom(Stylable dst, double alpha) {
+        for (MathObject obj : objects) {
+            obj.getMp().interpolateFrom(dst, alpha);
+        }
+        mpRef.interpolateFrom(dst, alpha);
     }
 
     @Override

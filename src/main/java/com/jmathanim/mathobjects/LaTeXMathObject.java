@@ -64,7 +64,7 @@ public class LaTeXMathObject extends SVGMathObject {
     }
 
     public LaTeXMathObject() {
-        super();
+        this("");
     }
 
     /**
@@ -76,8 +76,13 @@ public class LaTeXMathObject extends SVGMathObject {
     private LaTeXMathObject(String text) {
         super();
         getMp().loadFromStyle("latexdefault");
-
-        setLaTeX(text);
+        getMp().setAbsoluteThickness(true);
+        getMp().setFillColor(getMp().getDrawColor());
+        getMp().setFillColorIsDrawColor(true);
+        getMp().setThickness(1d);
+        if (!"".equals(text)) {
+            setLaTeX(text);
+        }
 
     }
 
@@ -124,13 +129,13 @@ public class LaTeXMathObject extends SVGMathObject {
 //            sh.getMp().fillColorIsDrawColor = true;
             sh.label = String.valueOf(n);
             n++;
-            sh.getMp().setAbsoluteThickness(true);
-            sh.getMp().setFillColor(sh.getMp().getDrawColor());
-            sh.thickness(1);
+
             if (isAddedToScene) {
                 scene.add(sh);
+                sh.getMp().copyFrom(getMp());
             }
         }
+
 //Scale
 //An "X" character in LaTeX has 6.8 (svg units) pixels height.
 //This object should be scaled by default to extend over

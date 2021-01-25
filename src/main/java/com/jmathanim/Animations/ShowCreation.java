@@ -35,7 +35,6 @@ import com.jmathanim.mathobjects.MathObjectGroup;
 import com.jmathanim.mathobjects.MultiShapeObject;
 import com.jmathanim.mathobjects.SVGMathObject;
 import com.jmathanim.mathobjects.Shape;
-import com.jmathanim.mathobjects.TickAxes;
 
 /**
  * Animation that shows the creation of a MathObject. The precise strategy for

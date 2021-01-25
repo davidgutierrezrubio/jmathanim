@@ -29,14 +29,12 @@ import com.jmathanim.Utils.JMathAnimConfig;
 import com.jmathanim.Styling.MODrawProperties;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.Arrow2D;
-import com.jmathanim.mathobjects.CanonicalJMPath;
 import com.jmathanim.mathobjects.FunctionGraph;
 import com.jmathanim.mathobjects.Line;
 import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.MultiShapeObject;
 import com.jmathanim.mathobjects.Point;
 import com.jmathanim.mathobjects.Shape;
-import java.util.List;
 
 /**
  *

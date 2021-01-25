@@ -32,7 +32,6 @@ import javafx.application.Platform;
 import javafx.scene.image.Image;
 import javafx.scene.image.PixelWriter;
 import javafx.scene.image.WritableImage;
-import javafx.scene.paint.Color;
 
 /**
  * This class represents a density plot in a specified area given by a Rect
@@ -179,7 +178,7 @@ public class DensityPlot extends AbstractJMImage {
     }
 
     @Override
-    public <T extends MathObject> T applyLinearTransform(AffineJTransform tr) {
+    public <T extends MathObject> T applyAffineTransform(AffineJTransform tr) {
         //Nothing to do (for now...)
         return (T) this;
     }

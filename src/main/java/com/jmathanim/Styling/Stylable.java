@@ -18,7 +18,6 @@
 package com.jmathanim.Styling;
 
 import com.jmathanim.mathobjects.Point;
-import com.jmathanim.mathobjects.Stateable;
 import javafx.scene.shape.StrokeLineCap;
 
 /**
@@ -44,7 +43,7 @@ public interface Stylable {
     void copyFrom(Stylable prop);
 
     /**
-     * Interpolate values from another MathObjecDrawingProperties. Only
+     * Copy the interpolated values from two MathObjecDrawingProperties. Only
      * drawColor, fillColor and thickness are actually interpolated
      *
      * @param a base drawing parameters
@@ -52,6 +51,15 @@ public interface Stylable {
      * @param alpha Interpolation parameter
      */
     void interpolateFrom(Stylable a, Stylable b, double alpha);
+
+    /**
+     * Interpolate values with another MathObjecDrawingProperties. Only
+     * drawColor, fillColor and thickness are actually interpolated
+     *
+     * @param dst Destination drawing parameters
+     * @param alpha Interpolation parameter
+     */
+    void interpolateFrom(Stylable dst, double alpha);
 
     /**
      * Load attributes from given style. If such style doesn't exist, no changes

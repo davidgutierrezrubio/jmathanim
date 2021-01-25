@@ -145,7 +145,7 @@ public abstract class MathObject implements Drawable, Updateable, Stateable, Box
      * @param s scale factor
      * @return The same object, after scaling
      */
-    public  <T extends MathObject> T scale(double s) {
+    public <T extends MathObject> T scale(double s) {
         return scale(getCenter(), s, s);
     }
 
@@ -305,12 +305,8 @@ public abstract class MathObject implements Drawable, Updateable, Stateable, Box
     public void registerChildrenToBeUpdated(JMathAnimScene scene) {
     }
 
-    ;
-
     public void unregisterChildrenToBeUpdated(JMathAnimScene scene) {
     }
-
-    ;
 
     @Override
     public void saveState() {
@@ -403,7 +399,7 @@ public abstract class MathObject implements Drawable, Updateable, Stateable, Box
      * @return The MathObject subclass
      */
     public <T extends MathObject> T drawAlpha(double alpha) {
-        mp.getDrawColor().alpha = alpha;
+        getMp().setDrawAlpha(alpha);
         return (T) this;
     }
 
@@ -415,7 +411,7 @@ public abstract class MathObject implements Drawable, Updateable, Stateable, Box
      * @return This MathObject subclass
      */
     public <T extends MathObject> T fillAlpha(double alpha) {
-        mp.getFillColor().alpha = alpha;
+        getMp().setFillAlpha(alpha);
         return (T) this;
     }
 
@@ -451,7 +447,7 @@ public abstract class MathObject implements Drawable, Updateable, Stateable, Box
      * @return This MathObject subclass
      */
     public <T extends MathObject> T thickness(double newThickness) {
-        mp.thickness = newThickness;
+        getMp().setThickness(newThickness);
         return (T) this;
     }
 
@@ -655,7 +651,7 @@ public abstract class MathObject implements Drawable, Updateable, Stateable, Box
     }
 
     public void interpolateMPFrom(Stylable mpDst, double alpha) {
-        this.getMp().interpolateFrom(this.getMp(), mpDst, alpha);
+        this.getMp().interpolateFrom(mpDst, alpha);
     }
 
     public <T extends MathObject> T fillWithDrawColor(boolean fcd) {
@@ -727,7 +723,8 @@ public abstract class MathObject implements Drawable, Updateable, Stateable, Box
 
     /**
      * Check if the current object is empty (for example: a MultiShape with no
-     * objects)
+     * objects). A empty object case should be considered as they return null
+     * bounding boxes.
      *
      * @return True if object is empty, false otherwise
      */
@@ -771,7 +768,14 @@ public abstract class MathObject implements Drawable, Updateable, Stateable, Box
         return (T) this;
     }
 
-    public <T extends MathObject> T applyLinearTransform(AffineJTransform tr) {
-        return (T) this;
+    /**
+     * Apply an affine transform to the object.
+     *
+     * @param <T> Calling subclass
+     * @param transform Affine transform to apply
+     * @return This object
+     */
+    public <T extends MathObject> T applyAffineTransform(AffineJTransform transform) {
+        return (T) this;//By default does nothing
     }
 }

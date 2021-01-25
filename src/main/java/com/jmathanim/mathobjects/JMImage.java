@@ -122,7 +122,7 @@ public class JMImage extends AbstractJMImage {
     }
 
     @Override
-    public <T extends MathObject> T applyLinearTransform(AffineJTransform tr) {
+    public <T extends MathObject> T applyAffineTransform(AffineJTransform tr) {
         //Nothing to do (for now...)
         return (T) this;
     }

@@ -404,10 +404,10 @@ public class Shape extends MathObject {
     }
 
     @Override
-    public <T extends MathObject> T applyLinearTransform(AffineJTransform tr) {
+    public <T extends MathObject> T applyAffineTransform(AffineJTransform tr) {
         int size = getPath().size();
         for (int n = 0; n < size; n++) {
-            get(n).applyLinearTransform(tr);
+            get(n).applyAffineTransform(tr);
         }
         tr.applyTransformsToDrawingProperties(this);
         return (T) this;

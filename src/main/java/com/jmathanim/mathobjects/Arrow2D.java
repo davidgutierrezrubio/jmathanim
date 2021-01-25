@@ -19,10 +19,7 @@ package com.jmathanim.mathobjects;
 
 import com.jmathanim.Utils.AffineJTransform;
 import com.jmathanim.Renderers.Renderer;
-import com.jmathanim.Utils.Anchor;
-import com.jmathanim.Styling.JMColor;
 import com.jmathanim.Utils.JMathAnimConfig;
-import com.jmathanim.Styling.MODrawProperties;
 import com.jmathanim.Styling.MODrawPropertiesArray;
 import com.jmathanim.Styling.Stylable;
 import com.jmathanim.Utils.Rect;
@@ -397,8 +394,8 @@ public class Arrow2D extends MathObject {
     }
 
     @Override
-    public <T extends MathObject> T applyLinearTransform(AffineJTransform tr) {
-        getBody().applyLinearTransform(tr);
+    public <T extends MathObject> T applyAffineTransform(AffineJTransform tr) {
+        getBody().applyAffineTransform(tr);
         tr.applyTransformsToDrawingProperties(this);
         return (T) this;
     }

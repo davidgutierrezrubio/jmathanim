@@ -232,7 +232,7 @@ public class JMPathPoint extends MathObject implements Updateable, Stateable {
     }
 
     @Override
-    public <T extends MathObject> T applyLinearTransform(AffineJTransform tr) {
+    public <T extends MathObject> T applyAffineTransform(AffineJTransform tr) {
         JMPathPoint pSrc = this.copy();
         Point pDst = tr.getTransformedObject(pSrc.p);
         Point cp1Dst = tr.getTransformedObject(pSrc.cpExit);

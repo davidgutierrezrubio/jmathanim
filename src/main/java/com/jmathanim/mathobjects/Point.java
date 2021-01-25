@@ -40,7 +40,7 @@ public class Point extends MathObject {
     private Shape dotShape;
 
     @Override
-    public <T extends MathObject> T applyLinearTransform(AffineJTransform tr) {
+    public <T extends MathObject> T applyAffineTransform(AffineJTransform tr) {
         RealMatrix pRow = new Array2DRowRealMatrix(new double[][]{{1d, v.x, v.y, v.z}});
         RealMatrix pNew = pRow.multiply(tr.getMatrix());
 
