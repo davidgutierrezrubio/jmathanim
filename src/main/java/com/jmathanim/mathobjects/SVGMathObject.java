@@ -84,6 +84,7 @@ public class SVGMathObject extends MultiShapeObject {
     }
 
     public SVGMathObject(URL url) {
+        super();
         try {
             importSVG(url);
         } catch (Exception ex) {

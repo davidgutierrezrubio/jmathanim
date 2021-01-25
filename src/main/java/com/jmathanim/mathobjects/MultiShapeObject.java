@@ -37,6 +37,7 @@ import java.util.List;
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
 public class MultiShapeObject extends MathObject implements Iterable<Shape> {
+
     private MODrawPropertiesArray mpMultiShape;
     public boolean isAddedToScene;
     public final ArrayList<Shape> shapes;
@@ -58,11 +59,14 @@ public class MultiShapeObject extends MathObject implements Iterable<Shape> {
         isAddedToScene = false;
         this.shapes = new ArrayList<>();
         this.shapes.addAll(jmps);
-        mpMultiShape=new MODrawPropertiesArray();
-        mpMultiShape.addAll(shapes);
+        mpMultiShape = new MODrawPropertiesArray();
+        for (MathObject sh : shapes) {
+            mpMultiShape.add(sh);
+        }
     }
 
     public boolean add(Shape e) {
+        mpMultiShape.add(e);
         return shapes.add(e);
     }
 
@@ -205,22 +209,6 @@ public class MultiShapeObject extends MathObject implements Iterable<Shape> {
     }
 
     @Override
-    public <T extends MathObject> T layer(int layer) {
-        for (Shape sh : shapes) {
-            sh.layer(layer);
-        }
-        return (T) this;
-    }
-
-    @Override
-    public <T extends MathObject> T visible(boolean visible) {
-        for (Shape sh : shapes) {
-            sh.visible(visible);
-        }
-        return (T) this;
-    }
-
-    @Override
     public void registerChildrenToBeUpdated(JMathAnimScene scene) {
         for (Shape o : shapes) {
             o.registerChildrenToBeUpdated(scene);
@@ -253,8 +241,6 @@ public class MultiShapeObject extends MathObject implements Iterable<Shape> {
             o.unregisterChildrenToBeUpdated(scene);
         }
     }
-
-
 
     public ArrayList<Shape> getShapes() {
         return shapes;
@@ -357,6 +343,5 @@ public class MultiShapeObject extends MathObject implements Iterable<Shape> {
     public Stylable getMp() {
         return mpMultiShape;
     }
-    
 
 }

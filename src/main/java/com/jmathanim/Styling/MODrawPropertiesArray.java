@@ -32,13 +32,17 @@ import javafx.scene.shape.StrokeLineCap;
 public class MODrawPropertiesArray implements Stylable, Stateable {
 
     private ArrayList<MathObject> objects;
+    private MODrawProperties mpRef;
     private int layer = 0;
 
     public MODrawPropertiesArray() {
+        mpRef = new MODrawProperties();
+        objects=new ArrayList<>();
     }
 
     public MODrawPropertiesArray(ArrayList<MathObject> objects) {
         this.objects = objects;
+        mpRef = new MODrawProperties();
     }
 
     public ArrayList<MathObject> getObjects() {
@@ -47,10 +51,6 @@ public class MODrawPropertiesArray implements Stylable, Stateable {
 
     public boolean add(MathObject e) {
         return objects.add(e);
-    }
-
-    public boolean addAll(Collection<? extends MathObject> c) {
-        return objects.addAll(c);
     }
 
     public void setObjects(ArrayList<MathObject> objects) {
@@ -63,7 +63,7 @@ public class MODrawPropertiesArray implements Stylable, Stateable {
 
     @Override
     public MODrawProperties copy() {
-        return this.getFirstMP().copy();
+        return this.mpRef.copy();
     }
 
     @Override
@@ -71,6 +71,7 @@ public class MODrawPropertiesArray implements Stylable, Stateable {
         for (MathObject obj : objects) {
             obj.getMp().copyFrom(prop);
         }
+        mpRef.copyFrom(prop);
     }
 
     @Override
@@ -78,13 +79,16 @@ public class MODrawPropertiesArray implements Stylable, Stateable {
         for (MathObject obj : objects) {
             obj.getMp().interpolateFrom(a, b, alpha);
         }
+        mpRef.interpolateFrom(a, b, alpha);
     }
 
     @Override
     public void loadFromStyle(String name) {
         for (MathObject obj : objects) {
             obj.getMp().loadFromStyle(name);
+
         }
+        mpRef.loadFromStyle(name);
     }
 
     @Override
@@ -92,6 +96,7 @@ public class MODrawPropertiesArray implements Stylable, Stateable {
         for (MathObject obj : objects) {
             obj.getMp().rawCopyFrom(mp);
         }
+        mpRef.rawCopyFrom(mp);
     }
 
     @Override
@@ -99,6 +104,8 @@ public class MODrawPropertiesArray implements Stylable, Stateable {
         for (MathObject obj : objects) {
             obj.getMp().restoreState();
         }
+        mpRef.restoreState();
+
     }
 
     @Override
@@ -113,6 +120,8 @@ public class MODrawPropertiesArray implements Stylable, Stateable {
         for (MathObject obj : objects) {
             obj.getMp().setDrawAlpha(alpha);
         }
+        mpRef.setDrawAlpha(alpha);
+
     }
 
     @Override
@@ -120,6 +129,7 @@ public class MODrawPropertiesArray implements Stylable, Stateable {
         for (MathObject obj : objects) {
             obj.getMp().setDrawColor(drawColor);
         }
+        mpRef.setDrawColor(drawColor);
     }
 
     @Override
@@ -127,6 +137,7 @@ public class MODrawPropertiesArray implements Stylable, Stateable {
         for (MathObject obj : objects) {
             obj.getMp().setFillAlpha(alpha);
         }
+        mpRef.setFillAlpha(alpha);
     }
 
     @Override
@@ -134,6 +145,7 @@ public class MODrawPropertiesArray implements Stylable, Stateable {
         for (MathObject obj : objects) {
             obj.getMp().setFillColor(fillColor);
         }
+        mpRef.setFillColor(fillColor);
     }
 
     @Override
@@ -141,6 +153,7 @@ public class MODrawPropertiesArray implements Stylable, Stateable {
         for (MathObject obj : objects) {
             obj.getMp().setFillColorIsDrawColor(fillColorIsDrawColor);
         }
+        mpRef.setFillColorIsDrawColor(fillColorIsDrawColor);
     }
 
     @Override
@@ -148,6 +161,7 @@ public class MODrawPropertiesArray implements Stylable, Stateable {
         for (MathObject obj : objects) {
             obj.getMp().setFilled(fill);
         }
+        mpRef.setFilled(fill);
     }
 
     @Override
@@ -155,11 +169,12 @@ public class MODrawPropertiesArray implements Stylable, Stateable {
         for (MathObject obj : objects) {
             obj.getMp().setLayer(layer);
         }
+        mpRef.setLayer(layer);
     }
 
     @Override
     public Integer getLayer() {
-        return objects.get(0).getMp().getLayer();
+        return mpRef.getLayer();
     }
 
     @Override
@@ -167,6 +182,7 @@ public class MODrawPropertiesArray implements Stylable, Stateable {
         for (MathObject obj : objects) {
             obj.getMp().setMultFillAlpha(alpha);
         }
+        mpRef.setMultFillAlpha(alpha);
     }
 
     @Override
@@ -174,16 +190,17 @@ public class MODrawPropertiesArray implements Stylable, Stateable {
         for (MathObject obj : objects) {
             obj.getMp().setMultDrawAlpha(alpha);
         }
+        mpRef.setMultDrawAlpha(alpha);
     }
 
     @Override
     public JMColor getDrawColor() {
-        return objects.get(0).getMp().getDrawColor();
+        return mpRef.getDrawColor();
     }
 
     @Override
     public JMColor getFillColor() {
-        return objects.get(0).getMp().getFillColor();
+        return mpRef.getFillColor();
     }
 
     public Stylable getSubMP(int n) {
@@ -192,17 +209,12 @@ public class MODrawPropertiesArray implements Stylable, Stateable {
 
     @Override
     public MODrawProperties getFirstMP() {
-        Stylable mpRec = this;
-        while (!(mpRec instanceof MODrawProperties)) {
-            mpRec = mpRec.getSubMP(0);
-        }
-        MODrawProperties mpO = (MODrawProperties) mpRec;
-        return mpO;
+        return mpRef;
     }
 
     @Override
     public StrokeLineCap getLinecap() {
-        return objects.get(0).getMp().getLinecap();
+        return mpRef.getLinecap();
     }
 
     @Override
@@ -210,11 +222,12 @@ public class MODrawPropertiesArray implements Stylable, Stateable {
         for (MathObject obj : objects) {
             obj.getMp().setLinecap(linecap);
         }
+        mpRef.setLinecap(linecap);
     }
 
     @Override
     public Double getThickness() {
-        return objects.get(0).getMp().getThickness();
+        return mpRef.getThickness();
     }
 
     @Override
@@ -222,6 +235,7 @@ public class MODrawPropertiesArray implements Stylable, Stateable {
         for (MathObject obj : objects) {
             obj.getMp().setThickness(thickness);
         }
+        mpRef.setThickness(thickness);
     }
 
     @Override
@@ -229,11 +243,12 @@ public class MODrawPropertiesArray implements Stylable, Stateable {
         for (MathObject obj : objects) {
             obj.getMp().setDotStyle(dotStyle);
         }
+        mpRef.setDotStyle(dotStyle);
     }
 
     @Override
     public Point.DotSyle getDotStyle() {
-        return objects.get(0).getMp().getDotStyle();
+        return mpRef.getDotStyle();
     }
 
     @Override
@@ -241,16 +256,17 @@ public class MODrawPropertiesArray implements Stylable, Stateable {
         for (MathObject obj : objects) {
             obj.getMp().setDashStyle(dashStyle);
         }
+        mpRef.setDashStyle(dashStyle);
     }
 
     @Override
     public MODrawProperties.DashStyle getDashStyle() {
-        return objects.get(0).getMp().getDashStyle();
+        return mpRef.getDashStyle();
     }
 
     @Override
     public Boolean isAbsoluteThickness() {
-        return objects.get(0).getMp().isAbsoluteThickness();
+        return mpRef.isAbsoluteThickness();
     }
 
     @Override
@@ -258,11 +274,12 @@ public class MODrawPropertiesArray implements Stylable, Stateable {
         for (MathObject obj : objects) {
             obj.getMp().setAbsoluteThickness(absThickness);
         }
+        mpRef.setAbsoluteThickness(absThickness);
     }
 
     @Override
     public Boolean isFillColorIsDrawColor() {
-        return objects.get(0).getMp().isFillColorIsDrawColor();
+        return mpRef.isFillColorIsDrawColor();
     }
 
     @Override
@@ -270,5 +287,6 @@ public class MODrawPropertiesArray implements Stylable, Stateable {
         for (MathObject obj : objects) {
             obj.getMp().multThickness(multT);
         }
+        mpRef.multThickness(multT);
     }
 }
