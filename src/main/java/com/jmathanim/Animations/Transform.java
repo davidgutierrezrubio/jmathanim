@@ -203,12 +203,12 @@ public class Transform extends Animation {
                 Shape shORig = (Shape) mobjTransformed;
                 Shape shDest = (Shape) mobjDestiny;
                 AnimationGroup ag = new AnimationGroup();
-                Point A = shORig.getPoint(0);//TODO: Take better points (as far as possible)
-                Point B = shORig.getPoint(1);
-                Point C = shORig.getPoint(2);
-                Point D = shDest.getPoint(0);
-                Point E = shDest.getPoint(1);
-                Point F = shDest.getPoint(2);
+                Point A = shORig.get(0).p;//TODO: Take better points (as far as possible)
+                Point B = shORig.get(1).p;
+                Point C = shORig.get(2).p;
+                Point D = shDest.get(0).p;
+                Point E = shDest.get(1).p;
+                Point F = shDest.get(2).p;
                 ag.add(Commands.affineTransform(runTime, A, B, C, D, E, F, shORig));
                 ag.add(Commands.setMP(runTime, shDest.getMp(), shORig).setUseObjectState(false));
                 transformStrategy = ag;

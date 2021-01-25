@@ -50,8 +50,8 @@ public class TransformedJMPath extends Shape{
           int size = srcOBj.getPath().size();
           //TODO: This is already implemented
             for (int n = 0; n < size; n++) {
-                JMPathPoint jmPDst = getJMPoint(n);
-                JMPathPoint pSrc = srcOBj.getJMPoint(n);
+                JMPathPoint jmPDst = get(n);
+                JMPathPoint pSrc = srcOBj.get(n);
                 Point pDst = transform.getTransformedObject(pSrc.p);
                 Point cp1Dst = transform.getTransformedObject(pSrc.cpExit);
                 Point cp2Dst = transform.getTransformedObject(pSrc.cpEnter);

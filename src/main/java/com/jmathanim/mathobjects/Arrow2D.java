@@ -288,7 +288,7 @@ public class Arrow2D extends MathObject {
             arrowHeadToDraw1.draw(scene.getConfig().getRenderer());
 
             JMPathPoint pa = bodyToDraw.getPath().getJMPoint(1);
-            pa.p.v.copyFrom(arrowHeadToDraw1.get(0).getPoint(anchorPoint1).v);
+            pa.p.v.copyFrom(arrowHeadToDraw1.get(0).get(anchorPoint1).p.v);
         }
 
         if (this.head2.size() > 0) {
@@ -309,7 +309,7 @@ public class Arrow2D extends MathObject {
             tr.applyTransform(arrowHeadToDraw2);
 
             JMPathPoint pa = bodyToDraw.getPath().getJMPoint(0);
-            pa.p.v.copyFrom(arrowHeadToDraw2.get(0).getPoint(anchorPoint2).v);
+            pa.p.v.copyFrom(arrowHeadToDraw2.get(0).get(anchorPoint2).p.v);
         }
 
     }

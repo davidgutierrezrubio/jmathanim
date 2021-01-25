@@ -219,8 +219,8 @@ public class Point extends MathObject {
                 st = mp.thickness / 70;
                 dotShape = new Shape();
                 dotShape.getPath().addPoint(Point.at(-1, 1), Point.at(1, -1), Point.at(1, 1), Point.at(-1, -1));
-                dotShape.getJMPoint(0).isThisSegmentVisible = false;
-                dotShape.getJMPoint(2).isThisSegmentVisible = false;
+                dotShape.get(0).isThisSegmentVisible = false;
+                dotShape.get(2).isThisSegmentVisible = false;
                 dotShape.shift(v).scale(st).drawColor(mp.getDrawColor()).thickness(mp.thickness);
                 break;
             case PLUS:
@@ -228,8 +228,8 @@ public class Point extends MathObject {
                 st = mp.thickness / 70;
                 dotShape = new Shape();
                 dotShape.getPath().addPoint(Point.at(0, 1), Point.at(0, -1), Point.at(1, 0), Point.at(-1, 0));
-                dotShape.getJMPoint(0).isThisSegmentVisible = false;
-                dotShape.getJMPoint(2).isThisSegmentVisible = false;
+                dotShape.get(0).isThisSegmentVisible = false;
+                dotShape.get(2).isThisSegmentVisible = false;
                 dotShape.shift(v).scale(st).drawColor(mp.getDrawColor()).thickness(mp.thickness);
                 break;
             default://Default case, includes CIRCLE
