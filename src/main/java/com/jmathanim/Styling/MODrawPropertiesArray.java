@@ -30,8 +30,7 @@ import javafx.scene.shape.StrokeLineCap;
 public class MODrawPropertiesArray implements Stylable, Stateable {
 
     private ArrayList<MathObject> objects;
-    private MODrawProperties mpRef;
-    private int layer = 0;
+    private final MODrawProperties mpRef;
 
     public MODrawPropertiesArray() {
         mpRef = new MODrawProperties();
@@ -57,7 +56,7 @@ public class MODrawPropertiesArray implements Stylable, Stateable {
         this.objects = objects;
     }
 
-    public boolean remove(Object o) {
+    public boolean remove(MathObject o) {
         return objects.remove(o);
     }
 
@@ -121,6 +120,7 @@ public class MODrawPropertiesArray implements Stylable, Stateable {
         for (MathObject obj : objects) {
             obj.getMp().saveState();
         }
+        mpRef.saveState();
     }
 
     @Override
@@ -196,7 +196,9 @@ public class MODrawPropertiesArray implements Stylable, Stateable {
     @Override
     public void setMultDrawAlpha(double alpha) {
         for (MathObject obj : objects) {
+            System.out.println(alpha + "  before multalpha " + obj.label + "  " + obj.getMp().getDrawColor().alpha);
             obj.getMp().setMultDrawAlpha(alpha);
+            System.out.println(alpha + "  multalpha " + obj.label + "  " + obj.getMp().getDrawColor().alpha);
         }
         mpRef.setMultDrawAlpha(alpha);
     }

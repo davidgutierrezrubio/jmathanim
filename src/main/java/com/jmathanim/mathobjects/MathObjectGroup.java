@@ -21,6 +21,7 @@ import com.jmathanim.Renderers.Renderer;
 import com.jmathanim.Utils.AffineJTransform;
 import com.jmathanim.Utils.Anchor;
 import com.jmathanim.Styling.MODrawPropertiesArray;
+import com.jmathanim.Styling.Stylable;
 import com.jmathanim.Utils.Rect;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import java.util.ArrayList;
@@ -232,5 +233,11 @@ public class MathObjectGroup extends MathObject implements Iterable<MathObject> 
         }
         return (T) this;
     }
+
+    @Override
+    public Stylable getMp() {
+        return mpArray;
+    }
+    
 
 }
