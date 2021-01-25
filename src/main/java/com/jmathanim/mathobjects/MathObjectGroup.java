@@ -20,8 +20,8 @@ package com.jmathanim.mathobjects;
 import com.jmathanim.Renderers.Renderer;
 import com.jmathanim.Utils.AffineJTransform;
 import com.jmathanim.Utils.Anchor;
-import com.jmathanim.Utils.JMColor;
-import com.jmathanim.Utils.MODrawProperties;
+import com.jmathanim.Styling.JMColor;
+import com.jmathanim.Styling.MODrawProperties;
 import com.jmathanim.Utils.Rect;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import java.util.ArrayList;
@@ -303,14 +303,6 @@ public class MathObjectGroup extends MathObject implements Iterable<MathObject> 
 
     public ArrayList<MathObject> getObjects() {
         return objects;
-    }
-
-    @Override
-    public void interpolateMPFrom(MODrawProperties mpDst, double alpha) {
-        for (int n = 0; n < objects.size(); n++) {
-            MathObject obj = objects.get(n);
-            obj.mp.interpolateFrom(obj.mp, mpDst, alpha);
-        }
     }
 
     @Override

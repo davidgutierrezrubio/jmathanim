@@ -41,8 +41,8 @@ public class ArrowTip extends TippableObject {
     public static ArrowTip make(Shape shape, double location, slopeDirection dir, Arrow2D.ArrowType type) {
         ArrowTip resul = new ArrowTip(shape, location, dir);
         MultiShapeObject at = buildArrowHead(type);
-        at.fillColor(shape.mp.getDrawColor());
-        at.drawColor(shape.mp.getDrawColor());
+        at.fillColor(shape.getMp().getDrawColor());
+        at.drawColor(shape.getMp().getDrawColor());
         resul.setTip(at);
         return resul;
     }

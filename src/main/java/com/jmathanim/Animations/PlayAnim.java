@@ -19,7 +19,7 @@ package com.jmathanim.Animations;
 
 import com.jmathanim.Cameras.Camera;
 import com.jmathanim.Utils.Anchor;
-import com.jmathanim.Utils.JMColor;
+import com.jmathanim.Styling.JMColor;
 import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;

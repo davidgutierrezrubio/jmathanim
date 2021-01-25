@@ -17,6 +17,7 @@
  */
 package com.jmathanim.Utils;
 
+import com.jmathanim.Styling.JMColor;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;

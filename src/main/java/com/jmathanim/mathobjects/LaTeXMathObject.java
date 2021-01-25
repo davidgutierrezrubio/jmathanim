@@ -19,7 +19,7 @@ package com.jmathanim.mathobjects;
 
 import com.jmathanim.Cameras.Camera;
 import com.jmathanim.Utils.Anchor;
-import com.jmathanim.Utils.JMColor;
+import com.jmathanim.Styling.JMColor;
 import com.jmathanim.Utils.JMathAnimConfig;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import java.io.BufferedReader;
@@ -75,7 +75,7 @@ public class LaTeXMathObject extends SVGMathObject {
      */
     private LaTeXMathObject(String text) {
         super();
-        mp.loadFromStyle("latexdefault");
+        getMp().loadFromStyle("latexdefault");
 
         setLaTeX(text);
 
@@ -121,11 +121,11 @@ public class LaTeXMathObject extends SVGMathObject {
         int n = 0;
 
         for (Shape sh : shapes) {//label them
-//            sh.mp.fillColorIsDrawColor = true;
+//            sh.getMp().fillColorIsDrawColor = true;
             sh.label = String.valueOf(n);
             n++;
-            sh.mp.absoluteThickness = true;
-            sh.mp.setFillColor(sh.mp.getDrawColor());
+            sh.getMp().setAbsoluteThickness(true);
+            sh.getMp().setFillColor(sh.getMp().getDrawColor());
             sh.thickness(1);
             if (isAddedToScene) {
                 scene.add(sh);
@@ -229,7 +229,7 @@ public class LaTeXMathObject extends SVGMathObject {
             final Shape copy = sh.copy();
             resul.add(copy);
         }
-        resul.mp.copyFrom(mp);
+        resul.getMp().copyFrom(getMp());
         resul.absoluteSize = this.absoluteSize;
         return resul;
     }

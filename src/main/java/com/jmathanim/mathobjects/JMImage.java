@@ -56,7 +56,7 @@ public class JMImage extends AbstractJMImage {
     public JMImage copy() {
         JMImage resul = new JMImage(filename);
         resul.bbox.copyFrom(this.bbox);
-        resul.mp.copyFrom(this.mp);
+        resul.getMp().copyFrom(this.getMp());
         resul.preserveRatio = this.preserveRatio;
         resul.rotateAngle = this.rotateAngle;
         resul.rotateAngleBackup = this.rotateAngleBackup;

@@ -20,7 +20,7 @@ package com.jmathanim.mathobjects;
 import com.jmathanim.Renderers.Renderer;
 import com.jmathanim.Utils.AffineJTransform;
 import com.jmathanim.Utils.Anchor;
-import com.jmathanim.Utils.JMColor;
+import com.jmathanim.Styling.JMColor;
 import com.jmathanim.Utils.JMathAnimConfig;
 import com.jmathanim.Utils.Rect;
 import com.jmathanim.jmathanim.JMathAnimScene;
@@ -49,7 +49,7 @@ public class Axes extends MathObject {
     }
 
     public Axes() {
-        mp.loadFromStyle("axisdefault");
+        getMp().loadFromStyle("axisdefault");
         xticksBase = new ArrayList<>();
         xticks = new ArrayList<>();
         yticksBase = new ArrayList<>();
@@ -353,15 +353,15 @@ public class Axes extends MathObject {
     }
 
     private void applyMPToSubobjects() {
-        xAxis.mp.copyFrom(mp);
-        yAxis.mp.copyFrom(mp);
+        xAxis.getMp().copyFrom(getMp());
+        yAxis.getMp().copyFrom(getMp());
         for (TickAxes s : xticksBase) {
-            s.legend.mp.copyFrom(mp);
-            s.tick.mp.copyFrom(mp);
+            s.legend.getMp().copyFrom(getMp());
+            s.tick.getMp().copyFrom(getMp());
         }
         for (TickAxes s : yticksBase) {
-            s.legend.mp.copyFrom(mp);
-            s.tick.mp.copyFrom(mp);
+            s.legend.getMp().copyFrom(getMp());
+            s.tick.getMp().copyFrom(getMp());
         }
 
     }

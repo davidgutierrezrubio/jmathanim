@@ -19,7 +19,7 @@ package com.jmathanim.Animations.Strategies.Transform;
 
 import com.jmathanim.Animations.Animation;
 import com.jmathanim.Animations.Commands;
-import com.jmathanim.Utils.MODrawProperties;
+import com.jmathanim.Styling.MODrawProperties;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.Point;
 import com.jmathanim.mathobjects.Shape;
@@ -41,7 +41,7 @@ public class HomothecyTransform extends Animation {
         this.mobjTransformed = mobjTransformed.copy();
         this.mobjTransformedOrig = mobjTransformed;
         this.mobjDestiny = mobjDestiny;
-        mpBase = mobjTransformed.mp.copy();
+        mpBase = mobjTransformed.getMp().copy();
         
     }
     
@@ -69,7 +69,7 @@ public class HomothecyTransform extends Animation {
     public void doAnim(double t) {
         double lt=anim.lambda.applyAsDouble(t);
         anim.doAnim(t);
-        mobjTransformed.mp.interpolateFrom(mpBase, mobjDestiny.mp, lt);
+        mobjTransformed.getMp().interpolateFrom(mpBase, mobjDestiny.getMp(), lt);
     }
     
     @Override

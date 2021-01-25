@@ -119,7 +119,7 @@ public class Delimiter extends MathObject {
 
         MultiShapeObject resul = body.copy();
         for (Shape sh : resul) {
-            sh.mp.copyFrom(this.mp);
+            sh.getMp().copyFrom(this.getMp());
         }
 
         if (type == Type.BRACE) {

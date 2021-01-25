@@ -15,11 +15,17 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-package com.jmathanim.Utils;
+package com.jmathanim.Styling;
 
+import com.jmathanim.Styling.MODrawProperties;
+import com.jmathanim.Utils.JMathAnimConfig;
+import com.jmathanim.Utils.ResourceLoader;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLConnection;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.xml.parsers.DocumentBuilder;
@@ -47,7 +53,8 @@ public class ConfigLoader {
             JMathAnimScene.logger.info("Loading config file {}", filename);
             DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
             DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
-            Document doc = dBuilder.parse(configURL.openStream());
+            InputStream stream = configURL.openStream();
+            Document doc = dBuilder.parse(stream);
             doc.getDocumentElement().normalize();
 
             Element root = doc.getDocumentElement();

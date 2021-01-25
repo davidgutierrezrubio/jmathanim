@@ -86,7 +86,7 @@ public class PointInterpolationSimpleShapeTransform extends Animation {
             interPoint.cpEnter.v.z = (1 - lt) * basePoint.cpEnter.v.z + lt * dstPoint.cpEnter.v.z;
         }
 
-        mobjTransformed.mp.interpolateFrom(originalShapeBaseCopy.mp, mobjDestiny.mp, lt);
+        mobjTransformed.getMp().interpolateFrom(originalShapeBaseCopy.getMp(), mobjDestiny.getMp(), lt);
 
     }
 
@@ -105,7 +105,7 @@ public class PointInterpolationSimpleShapeTransform extends Animation {
         }
 
         mobjTransformed.getPath().removeInterpolationPoints();
-        mobjTransformed.mp.copyFrom(mobjDestiny.mp);
+        mobjTransformed.getMp().copyFrom(mobjDestiny.getMp());
         mobjTransformed.absoluteSize = mobjDestiny.absoluteSize;
     }
 

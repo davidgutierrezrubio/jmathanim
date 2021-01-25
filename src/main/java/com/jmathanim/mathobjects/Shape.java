@@ -20,7 +20,7 @@ package com.jmathanim.mathobjects;
 import com.jmathanim.Renderers.Renderer;
 import com.jmathanim.Utils.AffineJTransform;
 import com.jmathanim.Utils.JMathAnimConfig;
-import com.jmathanim.Utils.MODrawProperties;
+import com.jmathanim.Styling.MODrawProperties;
 import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
@@ -103,7 +103,7 @@ public class Shape extends MathObject {
 
     @Override
     public Shape copy() {
-        final MODrawProperties copy = mp.copy();
+        final MODrawProperties copy = getMp().copy();
         Shape resul = new Shape(jmpath.rawCopy(), copy);
         resul.absoluteSize = this.absoluteSize;
         resul.label = this.label + "_copy";

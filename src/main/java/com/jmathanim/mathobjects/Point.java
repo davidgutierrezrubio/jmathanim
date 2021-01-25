@@ -20,7 +20,7 @@ package com.jmathanim.mathobjects;
 import com.jmathanim.Renderers.Renderer;
 import com.jmathanim.Utils.AffineJTransform;
 import com.jmathanim.Utils.JMathAnimConfig;
-import com.jmathanim.Utils.MODrawProperties;
+import com.jmathanim.Styling.MODrawProperties;
 import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
@@ -151,8 +151,8 @@ public class Point extends MathObject {
         super(mp);
         this.v = new Vec(x, y, z);
         this.vBackup = new Vec(x, y, z);
-        this.mp.absoluteThickness = true;
-//        this.mp.thickness = 8d;//default value
+        this.getMp().setAbsoluteThickness(true);
+//        this.getMp().thickness = 8d;//default value
     }
 
     /**
@@ -206,36 +206,36 @@ public class Point extends MathObject {
      * @return The object
      */
     public Point dotStyle(DotSyle dotStyle) {
-        this.mp.dotStyle = dotStyle;
+        this.getMp().setDotStyle(dotStyle);
         return this;
     }
 
     private Shape generateDotShape() {
         double st;
         Shape dotShape;
-        switch (mp.dotStyle) {
+        switch (getMp().getDotStyle()) {
             case CROSS:
 //                st = mp.computeScreenThickness(r)/20;
-                st = mp.thickness / 70;
+                st = getMp().getThickness() / 70;
                 dotShape = new Shape();
                 dotShape.getPath().addPoint(Point.at(-1, 1), Point.at(1, -1), Point.at(1, 1), Point.at(-1, -1));
                 dotShape.get(0).isThisSegmentVisible = false;
                 dotShape.get(2).isThisSegmentVisible = false;
-                dotShape.shift(v).scale(st).drawColor(mp.getDrawColor()).thickness(mp.thickness);
+                dotShape.shift(v).scale(st).drawColor(getMp().getDrawColor()).thickness(getMp().getThickness());
                 break;
             case PLUS:
 //                st = mp.computeScreenThickness(r)/20;
-                st = mp.thickness / 70;
+                st = getMp().getThickness() / 70;
                 dotShape = new Shape();
                 dotShape.getPath().addPoint(Point.at(0, 1), Point.at(0, -1), Point.at(1, 0), Point.at(-1, 0));
                 dotShape.get(0).isThisSegmentVisible = false;
                 dotShape.get(2).isThisSegmentVisible = false;
-                dotShape.shift(v).scale(st).drawColor(mp.getDrawColor()).thickness(mp.thickness);
+                dotShape.shift(v).scale(st).drawColor(getMp().getDrawColor()).thickness(getMp().getThickness());
                 break;
             default://Default case, includes CIRCLE
 //                st = mp.computeScreenThickness(r)/200;
-                st = mp.thickness / 70;
-                dotShape = Shape.circle().shift(v).scale(st).drawColor(mp.getDrawColor()).fillColor(mp.getDrawColor()).thickness(0);
+                st = getMp().getThickness() / 70;
+                dotShape = Shape.circle().shift(v).scale(st).drawColor(getMp().getDrawColor()).fillColor(getMp().getDrawColor()).thickness(0);
                 break;
         }
         return dotShape;
@@ -253,13 +253,13 @@ public class Point extends MathObject {
      * @return A value of enum DotStyle: CIRCLE, CROSS, PLUS
      */
     public DotSyle getDotStyle() {
-        return mp.dotStyle;
+        return getMp().getDotStyle();
     }
 
     @Override
     public Point copy() {
         Point resul = new Point(v);
-        resul.mp.copyFrom(mp);
+        resul.getMp().copyFrom(getMp());
         resul.visible(this.isVisible());
         return resul;
     }

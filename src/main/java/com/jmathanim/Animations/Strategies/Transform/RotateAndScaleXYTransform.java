@@ -19,7 +19,7 @@ package com.jmathanim.Animations.Strategies.Transform;
 
 import com.jmathanim.Utils.AffineJTransform;
 import com.jmathanim.Animations.Animation;
-import com.jmathanim.Utils.MODrawProperties;
+import com.jmathanim.Styling.MODrawProperties;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.Point;
 import com.jmathanim.mathobjects.Shape;
@@ -63,13 +63,13 @@ public class RotateAndScaleXYTransform extends Animation {
         AffineJTransform tr = tr1.compose(tr2).compose(tr1.getInverse()).compose(tr3);
 
         tr.applyTransform(mobjTransformed);
-        mobjTransformed.mp.interpolateFrom(mpBase, mobjDestiny.mp, lt);
+        mobjTransformed.getMp().interpolateFrom(mpBase, mobjDestiny.getMp(), lt);
     }
 
     @Override
     public void initialize(JMathAnimScene scene) {
         super.initialize(scene);
-        mpBase = mobjTransformed.mp.copy();
+        mpBase = mobjTransformed.getMp().copy();
         A = mobjTransformed.getPoint(0).copy();
         B = mobjTransformed.getPoint(1).copy();
         C = mobjTransformed.getPoint(2).copy();

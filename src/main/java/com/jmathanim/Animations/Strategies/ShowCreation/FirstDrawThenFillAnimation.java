@@ -22,7 +22,7 @@ import com.jmathanim.Animations.AnimationGroup;
 import com.jmathanim.Animations.Commands;
 import com.jmathanim.Animations.Concatenate;
 import com.jmathanim.Animations.WaitAnimation;
-import com.jmathanim.Utils.MODrawProperties;
+import com.jmathanim.Styling.MODrawProperties;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.MathObjectGroup;
@@ -74,7 +74,7 @@ public class FirstDrawThenFillAnimation extends Animation {
     private final Animation createAnimation(MathObject obj, double runtime) {
         if (obj instanceof Shape) {
             Concatenate con = new Concatenate();
-            MODrawProperties mpDst = obj.mp.copy();
+            MODrawProperties mpDst = obj.getMp().copy();
             con.add(new SimpleShapeCreationAnimation(runtime * PERCENT_DRAWING, (Shape) obj));
             con.add(Commands.setMP(runtime * (1 - PERCENT_DRAWING), mpDst, obj));
             return con;
@@ -134,7 +134,7 @@ public class FirstDrawThenFillAnimation extends Animation {
         if (anim == null) {
             JMathAnimScene.logger.error("Could'n crate FirstDrawThenFillAnimation for object type " + obj.getClass().getCanonicalName() + ". Animation will not be performed");
         }
-        obj.mp.getFillColor().alpha = 0; //Sets alpha to 0, to first draw objects without filling
+        obj.getMp().getFillColor().alpha = 0; //Sets alpha to 0, to first draw objects without filling
         anim.setLambda(lambda);
         anim.initialize(scene);
     }

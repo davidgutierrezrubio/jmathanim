@@ -20,9 +20,11 @@ package com.jmathanim.mathobjects;
 import com.jmathanim.Utils.AffineJTransform;
 import com.jmathanim.Renderers.Renderer;
 import com.jmathanim.Utils.Anchor;
-import com.jmathanim.Utils.JMColor;
+import com.jmathanim.Styling.JMColor;
 import com.jmathanim.Utils.JMathAnimConfig;
-import com.jmathanim.Utils.MODrawProperties;
+import com.jmathanim.Styling.MODrawProperties;
+import com.jmathanim.Styling.MODrawPropertiesArray;
+import com.jmathanim.Styling.Stylable;
 import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.ResourceLoader;
 import com.jmathanim.Utils.Vec;
@@ -35,6 +37,7 @@ import java.net.URL;
  */
 public class Arrow2D extends MathObject {
 
+    private MODrawPropertiesArray mp;
     private MultiShapeObject arrowHeadToDraw1;
     private MultiShapeObject arrowHeadToDraw2;
     private Shape bodyToDraw;
@@ -77,12 +80,16 @@ public class Arrow2D extends MathObject {
         this.head1 = buildArrowHead(type1, 1);
         this.head2 = buildArrowHead(type2, 2);
 
-        head1.drawColor(this.body.mp.getDrawColor());
-        head1.fillColor(this.body.mp.getDrawColor());
+        head1.drawColor(this.body.getMp().getDrawColor());
+        head1.fillColor(this.body.getMp().getDrawColor());
         scaleArrowHead1(1);
-        head2.drawColor(this.body.mp.getDrawColor());
-        head2.fillColor(this.body.mp.getDrawColor());
+        head2.drawColor(this.body.getMp().getDrawColor());
+        head2.fillColor(this.body.getMp().getDrawColor());
         scaleArrowHead2(1);
+        mp = new MODrawPropertiesArray();
+        mp.add(head1);
+        mp.add(head2);
+        mp.add(body);
     }
 
     public Arrow2D(Point p1, Point p2, MultiShapeObject head1) {
@@ -96,14 +103,18 @@ public class Arrow2D extends MathObject {
         this.head1 = msh1;
         this.head2 = msh2;
 
-        head1.drawColor(this.body.mp.getDrawColor());
-        head1.fillColor(this.body.mp.getDrawColor());
+        head1.drawColor(this.body.getMp().getDrawColor());
+        head1.fillColor(this.body.getMp().getDrawColor());
         scaleArrowHead1(1);
         head1.fillWithDrawColor(true);
-        head2.drawColor(this.body.mp.getDrawColor());
-        head2.fillColor(this.body.mp.getDrawColor());
+        head2.drawColor(this.body.getMp().getDrawColor());
+        head2.fillColor(this.body.getMp().getDrawColor());
         scaleArrowHead2(1);
         head2.fillWithDrawColor(true);
+        mp = new MODrawPropertiesArray();
+        mp.add(head1);
+        mp.add(head2);
+        mp.add(body);
     }
 
     public Arrow2D(Point p1, Point p2, Shape head) {
@@ -238,6 +249,7 @@ public class Arrow2D extends MathObject {
 
     @Override
     public void restoreState() {
+        mp.restoreState();
         body.restoreState();
         head1.restoreState();
         head2.restoreState();
@@ -247,6 +259,7 @@ public class Arrow2D extends MathObject {
 
     @Override
     public void saveState() {
+        mp.saveState();
         body.saveState();
         head1.saveState();
         head2.saveState();
@@ -321,27 +334,6 @@ public class Arrow2D extends MathObject {
     }
 
     @Override
-    public <T extends MathObject> T layer(int layer) {
-        head1.layer(layer);
-        body.layer(layer);
-        return (T) this;
-    }
-
-    @Override
-    public <T extends MathObject> T multDrawAlpha(double t) {
-        head1.multDrawAlpha(t);
-        body.multDrawAlpha(t);
-        return (T) this;
-    }
-
-    @Override
-    public <T extends MathObject> T multFillAlpha(double t) {
-        head1.multFillAlpha(t);
-        body.multFillAlpha(t);
-        return (T) this;
-    }
-
-    @Override
     public <T extends MathObject> T shift(Vec shiftVector) {
         body.shift(shiftVector);
         return (T) this;
@@ -351,23 +343,11 @@ public class Arrow2D extends MathObject {
     public <T extends MathObject> T copy() {
         Arrow2D copy = Arrow2D.makeSimpleArrow2D(p1.copy(), p2.copy(), arrowType);
         copy.head1 = head1.copy();
-//        copy.head.mp.copyFrom(this.head.mp);
-        copy.body.mp.copyFrom(this.body.mp);
+//        copy.head.getMp().copyFrom(this.head.mp);
+        copy.body.getMp().copyFrom(this.body.getMp());
         return (T) copy;
     }
 
-    @Override
-    public <T extends MathObject> T fillColor(JMColor fc) {
-        return drawColor(fc); //Fill and draw color should be the same
-    }
-
-    @Override
-    public <T extends MathObject> T drawColor(JMColor dc) {
-        head1.drawColor(dc);
-        head1.fillColor(dc);
-        body.drawColor(dc);
-        return (T) this;
-    }
 
     @Override
     public <T extends MathObject> T thickness(double th) {
@@ -400,12 +380,6 @@ public class Arrow2D extends MathObject {
         scene.unregisterUpdateable(head1);
     }
 
-    @Override
-    public void interpolateMPFrom(MODrawProperties mpDst, double alpha) {
-        body.interpolateMPFrom(mpDst, alpha); //To change body of generated methods, choose Tools | Templates.
-        head1.interpolateMPFrom(mpDst, alpha); //To change body of generated methods, choose Tools | Templates.
-    }
-
     public double getScaleArrowHead1() {
         return scaleFactorHead1;
     }
@@ -428,4 +402,10 @@ public class Arrow2D extends MathObject {
         tr.applyTransformsToDrawingProperties(this);
         return (T) this;
     }
+
+    @Override
+    public Stylable getMp() {
+        return mp;
+    }
+    
 }

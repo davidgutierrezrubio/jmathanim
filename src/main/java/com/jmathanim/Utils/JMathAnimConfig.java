@@ -17,8 +17,12 @@
  */
 package com.jmathanim.Utils;
 
+import com.jmathanim.Styling.JMColor;
+import com.jmathanim.Styling.ConfigLoader;
+import com.jmathanim.Styling.MODrawProperties;
 import com.jmathanim.Cameras.Camera;
 import com.jmathanim.Renderers.Renderer;
+import com.jmathanim.Styling.Stylable;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.MathObject;
 import java.io.File;
@@ -290,9 +294,10 @@ public void setBackGroundImage(String name) {
         return showPreview;
     }
 
-    public MODrawProperties createStyleFrom(MODrawProperties mp, String styleName) {
+    public MODrawProperties createStyleFrom(Stylable mp, String styleName) {
         JMathAnimScene.logger.info("Creating style {}", styleName.toUpperCase());
-        return styles.put(styleName.toUpperCase(), mp);
+        MODrawProperties mpO=mp.getFirstMP();
+        return styles.put(styleName.toUpperCase(), mpO);
     }
 
     public MODrawProperties createStyleFrom(MathObject obj, String styleName) {

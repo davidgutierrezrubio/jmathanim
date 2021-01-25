@@ -287,7 +287,7 @@ public class ParametricCurve extends Shape {
         ParametricCurve resul = new ParametricCurve(functionX, functionY, xPointsCopy);
         resul.functionType = this.functionType;
         resul.generateFunctionPoints();
-        resul.mp.copyFrom(mp);
+        resul.getMp().copyFrom(getMp());
         return resul;
     }
 

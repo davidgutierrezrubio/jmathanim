@@ -160,8 +160,8 @@ public class TransformMathExpressionParameters {
             @Override
             public void doAnim(double t) {
                 double lt = 1 - t * (1 - t) * L;
-                sh.fillAlpha(lt * sh.mp.getFillColor().alpha);
-                sh.drawAlpha(lt * sh.mp.getDrawColor().alpha);
+                sh.fillAlpha(lt * sh.getMp().getFillColor().alpha);
+                sh.drawAlpha(lt * sh.getMp().getDrawColor().alpha);
             }
 
             @Override

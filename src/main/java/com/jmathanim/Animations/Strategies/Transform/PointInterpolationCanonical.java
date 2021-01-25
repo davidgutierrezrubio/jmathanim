@@ -20,7 +20,7 @@ package com.jmathanim.Animations.Strategies.Transform;
 import com.jmathanim.Animations.Animation;
 import com.jmathanim.Animations.Strategies.Transform.Optimizers.DivideEquallyStrategy;
 import com.jmathanim.Animations.Strategies.Transform.Optimizers.DivideOnSensiblePointsStrategy;
-import com.jmathanim.Utils.JMColor;
+import com.jmathanim.Styling.JMColor;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.CanonicalJMPath;
 import com.jmathanim.mathobjects.JMPath;
@@ -131,7 +131,7 @@ public class PointInterpolationCanonical extends Animation {
             }
 
         }
-        mobjTransformed.mp.interpolateFrom(originalShapeBaseCopy.mp, mobjDestiny.mp, lt);
+        mobjTransformed.getMp().interpolateFrom(originalShapeBaseCopy.getMp(), mobjDestiny.getMp(), lt);
 
     }
 

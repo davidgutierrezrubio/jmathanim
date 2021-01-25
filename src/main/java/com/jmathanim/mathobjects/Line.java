@@ -21,7 +21,7 @@ import com.jmathanim.Cameras.Camera;
 import com.jmathanim.Renderers.Renderer;
 import com.jmathanim.Utils.AffineJTransform;
 import com.jmathanim.Utils.JMathAnimConfig;
-import com.jmathanim.Utils.MODrawProperties;
+import com.jmathanim.Styling.MODrawProperties;
 import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
@@ -75,7 +75,7 @@ public class Line extends Shape {
         bp2 = new JMPathPoint(new Point(0, 0), true, JMPathPointType.VERTEX);//trivial boundary points, just to initialize objects
         visiblePiece = new Shape();
         visiblePiece.getPath().addJMPoint(bp1, bp2);
-        visiblePiece.mp = this.mp;
+        visiblePiece.getMp().copyFrom(this.getMp());
         getPath().addPoint(p1, p2);
         getPath().getJMPoint(0).isThisSegmentVisible = false;
     }
@@ -83,7 +83,7 @@ public class Line extends Shape {
     @Override
     public Line copy() {
         Line resul = new Line(p1.copy(), p2.copy());
-        resul.mp.copyFrom(mp);
+        resul.getMp().copyFrom(getMp());
         return resul;
     }
 
@@ -237,7 +237,7 @@ public class Line extends Shape {
         Point a = bp1.p.copy().scale(getCenter(), scale, scale);
         Point b = bp2.p.copy().scale(getCenter(), scale, scale);
         Shape segment = Shape.segment(a, b);
-        segment.mp.copyFrom(this.mp);
+        segment.getMp().copyFrom(this.getMp());
         return segment;
     }
 

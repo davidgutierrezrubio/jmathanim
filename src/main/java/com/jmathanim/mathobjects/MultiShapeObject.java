@@ -19,8 +19,10 @@ package com.jmathanim.mathobjects;
 
 import com.jmathanim.Renderers.Renderer;
 import com.jmathanim.Utils.AffineJTransform;
-import com.jmathanim.Utils.JMColor;
-import com.jmathanim.Utils.MODrawProperties;
+import com.jmathanim.Styling.JMColor;
+import com.jmathanim.Styling.MODrawProperties;
+import com.jmathanim.Styling.MODrawPropertiesArray;
+import com.jmathanim.Styling.Stylable;
 import com.jmathanim.Utils.Rect;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import java.util.ArrayList;
@@ -35,7 +37,7 @@ import java.util.List;
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
 public class MultiShapeObject extends MathObject implements Iterable<Shape> {
-
+    private MODrawPropertiesArray mpMultiShape;
     public boolean isAddedToScene;
     public final ArrayList<Shape> shapes;
 
@@ -56,6 +58,8 @@ public class MultiShapeObject extends MathObject implements Iterable<Shape> {
         isAddedToScene = false;
         this.shapes = new ArrayList<>();
         this.shapes.addAll(jmps);
+        mpMultiShape=new MODrawPropertiesArray();
+        mpMultiShape.addAll(shapes);
     }
 
     public boolean add(Shape e) {
@@ -64,10 +68,6 @@ public class MultiShapeObject extends MathObject implements Iterable<Shape> {
 
     public boolean addJMPathObject(JMPath p) {
         return shapes.add(new Shape(p, null));
-    }
-
-    public boolean addJMPathObject(JMPath p, MODrawProperties mp) {
-        return shapes.add(new Shape(p, mp));
     }
 
     @Override
@@ -100,7 +100,7 @@ public class MultiShapeObject extends MathObject implements Iterable<Shape> {
             final Shape copy = sh.copy();
             resul.add(copy);
         }
-        resul.mp.copyFrom(mp);
+        resul.getMp().copyFrom(getMp());
         resul.absoluteSize = this.absoluteSize;
         return resul;
     }
@@ -254,20 +254,7 @@ public class MultiShapeObject extends MathObject implements Iterable<Shape> {
         }
     }
 
-    @Override
-    public void interpolateMPFrom(MODrawProperties mpDst, double alpha) {
-        for (int n = 0; n < shapes.size(); n++) {
-            shapes.get(n).interpolateMPFrom(mpDst, alpha);
-        }
-    }
 
-    @Override
-    public <T extends MathObject> T fillWithDrawColor(boolean fcd) {
-        for (int n = 0; n < shapes.size(); n++) {
-            shapes.get(n).fillWithDrawColor(fcd);
-        }
-        return (T) this;
-    }
 
     public ArrayList<Shape> getShapes() {
         return shapes;
@@ -365,5 +352,11 @@ public class MultiShapeObject extends MathObject implements Iterable<Shape> {
         tr.applyTransformsToDrawingProperties(this);
         return (T) this;
     }
+
+    @Override
+    public Stylable getMp() {
+        return mpMultiShape;
+    }
+    
 
 }
