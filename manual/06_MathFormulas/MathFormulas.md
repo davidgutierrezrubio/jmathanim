@@ -51,7 +51,7 @@ Note that the method changes both draw and fill colors.
 
 ## The slice method
 
-Sometimes you may need to separate a formula in parts so you can animate them separately. The `slice`method extracts a subformula with the given indexes and removes the extracted shapes from the original formula. For example
+Sometimes you may need to separate a formula in parts so you can animate them separately. The `slice`method extracts a subformula with the given indexes and removes the extracted shapes from the original formula. For example, suppose we have the formula `$A=b\cdot h$` and want to initially show the "b" and "h" glyphs in a rectangle, prior to put them in their original place:
 
 ```java
 Shape rectangle = Shape.square().scale(2,1).center().fillColor("chocolate");
@@ -81,11 +81,11 @@ waitSeconds(2);
 
 ![equationSlice](equationSlice.gif)
 
-Note that the although the sliced formula has only one element, the indexes remain the same. So, if the "b" were in position 2 in the original formula, it is still in position 2 in the sliced formula, so that `sliceBase.get(2)` returns the "b" shape. The other indexes stores empty shapes.
+Note that, although the sliced formula has only one element, the indexes remain the same. So, if the "b" glyph was in position 2 in the original formula, it is still in position 2 in the sliced formula, so that `sliceBase.get(2)` returns the "b" shape. The other indexes stores empty shapes.
 
 There is another version of the method, with a boolean flag that lets control if the sliced shapes are removed from the original math expression or not. For example, in the previous example `LaTeXMathObject sliceBase=formula.slice(false,2)` will create a slice of the "b" glyph without altering the original formula.
 
-The `slice`method can be a powerful tool if you want to operate on part of complex math expressions.
+The `slice`method can be a powerful tool if you want to operate on part of complex math expressions. If you want to progressively show a complex formula, the easiest option is to slice it in the different parts you will be showing at  a concrete point of the animation.
 
 ## Animating transforms between equations
 
@@ -96,7 +96,7 @@ LaTeXMathObject t1=LaTeXMathObject.make("$x+2=0$");
 LaTeXMathObject t2=LaTeXMathObject.make("$x=-2$");
 ```
 
-and we want to define a precise, self-explaining animation, that transforms the first into to second.
+and we want to define a precise, self-explaining animation, that transforms the first equation into the second.
 
 If we simply try with the command
 
@@ -108,7 +108,7 @@ we obtain the following:
 
 ![equation01](equation01.gif)
 
-It's nice, but not illustrative. It would be better to force the "+2" to convert into "-2", and the original "=" sign to their destination "=" sign. For this we have the `TransformMathExpression` animation class. But first, we must be clear about the indexes of the different shapes that compose the latex objects. For that, we use the method `formulaHelper`:
+It's nice, but not illustrative. It would be better to force the "+2" to convert into "-2", and the originals "x" and "=" glyphs to their counterparts "x" and "=" glyphs. For this we have the `TransformMathExpression` animation class. But first, we must be clear about the indexes of the different shapes that compose the latex objects. For that, we use the method `formulaHelper`:
 
 ```java
 formulaHelper(t1,t2);
@@ -153,7 +153,7 @@ What about shape 4 (the "0" sign)? If we don't specify a destination, this shape
 
 ![equation03](equation03.gif)
 
-Oh, this is better, but there is still something that looks odd.  When manipulating equations, it's always desirable to mark the "=" sign a as pivotal point. We can achieve this forcing that the origin and destiny formulas are aligned by the "=" sign. This sign is at position 3 in origin formula and in position 1 in destiny. With the command
+Ok, this is better, but there is still something that looks odd.  When manipulating equations, it's always desirable to mark the "=" sign a as pivotal point. We can achieve this by forcing that the origin and destiny formulas are aligned by the "=" sign. This sign is at position 3 in origin formula and in position 1 in destiny. With the command
 
 ```
 t2.alignCenter(1, t1, 3);
@@ -280,7 +280,7 @@ The `.setAlphaMult(t)`  changes the alpha (draw and fill) back and forth:
 
 ```java
 tr.map(0,2).setAlphaMult(.7);
-tr.map(2,0).setAlphaMult(.1);
+tr.map(2,0).setAlphaMult(.7);
 ```
 
 ![equation08](equation08.gif)
@@ -298,12 +298,20 @@ The `.setJumpHeight(t)`  applies a (sinusoidal) jump with a vector of 90º clock
 
 ```java
 tr.map(0,2).setJumpHeight(.1);
-tr.map(2,0).setJumpHeight(.1);
+tr.map(2,0).setJumpHeight(.1);//Note that this "jump" is downward
 ```
 
 ![equation10](equation10.gif)
 
-You can nest any of these effects:
+The height of the jump is given in math coordinates. You can use the getHeight() method to specify a relative jump. For example, if you want the shape to make a jump 1.5 times the height of the formula, you can use this code:
+
+```java
+tr.map(0,2).setJumpHeight(1.5*t1.getHeight());//1.5 times the height of LaTexMathObject t1
+```
+
+
+
+And, finally, you can nest any of these effects:
 
 ```java
 tr.map(0,2).setJumpHeight(.1).setNumTurns(-1).setScale(.5);
