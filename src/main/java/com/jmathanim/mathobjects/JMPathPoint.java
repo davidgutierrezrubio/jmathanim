@@ -203,7 +203,7 @@ public class JMPathPoint extends MathObject implements Updateable, Stateable {
 
     @Override
     public void draw(Renderer r) {
-        p.draw(r);
+        //Nothing to draw
     }
 
     public void copyFrom(JMPathPoint jmPoint) {
@@ -232,7 +232,7 @@ public class JMPathPoint extends MathObject implements Updateable, Stateable {
     }
 
     @Override
-    public <T extends MathObject> T applyLinearTransform(AffineJTransform tr) {
+    public <T extends MathObject> T applyAffineTransform(AffineJTransform tr) {
         JMPathPoint pSrc = this.copy();
         Point pDst = tr.getTransformedObject(pSrc.p);
         Point cp1Dst = tr.getTransformedObject(pSrc.cpExit);
@@ -243,6 +243,22 @@ public class JMPathPoint extends MathObject implements Updateable, Stateable {
         this.cpEnter.v.copyFrom(cp2Dst.v);
 
         tr.applyTransformsToDrawingProperties(this);
+        return (T) this;
+    }
+
+    @Override
+    public <T extends MathObject> T rotate(Point center, double angle) {
+        p.rotate(center, angle);
+        cpEnter.rotate(center, angle);
+        cpExit.rotate(center, angle);
+        return (T) this;
+    }
+
+    @Override
+    public <T extends MathObject> T shift(Vec shiftVector) {
+        p.shift(shiftVector);
+        cpEnter.shift(shiftVector);
+        cpExit.shift(shiftVector);
         return (T) this;
     }
 }

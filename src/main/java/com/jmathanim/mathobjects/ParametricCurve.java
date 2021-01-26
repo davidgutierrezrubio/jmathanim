@@ -144,7 +144,7 @@ public class ParametricCurve extends Shape {
             this.getPath().addJMPoint(jmp);
 
         }
-        this.getJMPoint(0).isThisSegmentVisible = this.getPoint(0).isEquivalenTo(this.getPoint(-1), 0.0000001);
+        this.get(0).isThisSegmentVisible = this.getPoint(0).isEquivalenTo(this.getPoint(-1), 0.0000001);
 
         generateControlPoints();
     }
@@ -287,7 +287,7 @@ public class ParametricCurve extends Shape {
         ParametricCurve resul = new ParametricCurve(functionX, functionY, xPointsCopy);
         resul.functionType = this.functionType;
         resul.generateFunctionPoints();
-        resul.mp.copyFrom(mp);
+        resul.getMp().copyFrom(getMp());
         return resul;
     }
 
@@ -306,7 +306,8 @@ public class ParametricCurve extends Shape {
     }
 
     /**
-     * Returns the tangent vector at a value of the independent variable. The componentes are the derivatives
+     * Returns the tangent vector at a value of the independent variable. The
+     * componentes are the derivatives
      *
      * @param t0 Value to get the tangent vector
      * @return The tangent vector (x'(t),y'(t))

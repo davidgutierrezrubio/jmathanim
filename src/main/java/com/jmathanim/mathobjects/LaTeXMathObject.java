@@ -19,7 +19,7 @@ package com.jmathanim.mathobjects;
 
 import com.jmathanim.Cameras.Camera;
 import com.jmathanim.Utils.Anchor;
-import com.jmathanim.Utils.JMColor;
+import com.jmathanim.Styling.JMColor;
 import com.jmathanim.Utils.JMathAnimConfig;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import java.io.BufferedReader;
@@ -64,7 +64,7 @@ public class LaTeXMathObject extends SVGMathObject {
     }
 
     public LaTeXMathObject() {
-        super();
+        this("");
     }
 
     /**
@@ -75,9 +75,14 @@ public class LaTeXMathObject extends SVGMathObject {
      */
     private LaTeXMathObject(String text) {
         super();
-        mp.loadFromStyle("latexdefault");
-
-        setLaTeX(text);
+        getMp().loadFromStyle("latexdefault");
+        getMp().setAbsoluteThickness(true);
+        getMp().setFillColor(getMp().getDrawColor());
+        getMp().setFillColorIsDrawColor(true);
+        getMp().setThickness(1d);
+        if (!"".equals(text)) {
+            setLaTeX(text);
+        }
 
     }
 
@@ -121,16 +126,16 @@ public class LaTeXMathObject extends SVGMathObject {
         int n = 0;
 
         for (Shape sh : shapes) {//label them
-//            sh.mp.fillColorIsDrawColor = true;
+//            sh.getMp().fillColorIsDrawColor = true;
             sh.label = String.valueOf(n);
             n++;
-            sh.mp.absoluteThickness = true;
-            sh.mp.setFillColor(sh.mp.getDrawColor());
-            sh.thickness(1);
+
             if (isAddedToScene) {
                 scene.add(sh);
+                sh.getMp().copyFrom(getMp());
             }
         }
+
 //Scale
 //An "X" character in LaTeX has 6.8 (svg units) pixels height.
 //This object should be scaled by default to extend over
@@ -229,7 +234,7 @@ public class LaTeXMathObject extends SVGMathObject {
             final Shape copy = sh.copy();
             resul.add(copy);
         }
-        resul.mp.copyFrom(mp);
+        resul.getMp().copyFrom(getMp());
         resul.absoluteSize = this.absoluteSize;
         return resul;
     }

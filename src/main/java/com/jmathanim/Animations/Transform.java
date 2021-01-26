@@ -26,17 +26,15 @@ import com.jmathanim.Animations.Strategies.Transform.PointInterpolationCanonical
 import com.jmathanim.Animations.Strategies.Transform.PointInterpolationSimpleShapeTransform;
 import com.jmathanim.Animations.Strategies.Transform.RotateAndScaleXYTransform;
 import com.jmathanim.Utils.JMathAnimConfig;
-import com.jmathanim.Utils.MODrawProperties;
+import com.jmathanim.Styling.MODrawProperties;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.Arrow2D;
-import com.jmathanim.mathobjects.CanonicalJMPath;
 import com.jmathanim.mathobjects.FunctionGraph;
 import com.jmathanim.mathobjects.Line;
 import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.MultiShapeObject;
 import com.jmathanim.mathobjects.Point;
 import com.jmathanim.mathobjects.Shape;
-import java.util.List;
 
 /**
  *
@@ -203,14 +201,14 @@ public class Transform extends Animation {
                 Shape shORig = (Shape) mobjTransformed;
                 Shape shDest = (Shape) mobjDestiny;
                 AnimationGroup ag = new AnimationGroup();
-                Point A = shORig.getPoint(0);//TODO: Take better points (as far as possible)
-                Point B = shORig.getPoint(1);
-                Point C = shORig.getPoint(2);
-                Point D = shDest.getPoint(0);
-                Point E = shDest.getPoint(1);
-                Point F = shDest.getPoint(2);
+                Point A = shORig.get(0).p;//TODO: Take better points (as far as possible)
+                Point B = shORig.get(1).p;
+                Point C = shORig.get(2).p;
+                Point D = shDest.get(0).p;
+                Point E = shDest.get(1).p;
+                Point F = shDest.get(2).p;
                 ag.add(Commands.affineTransform(runTime, A, B, C, D, E, F, shORig));
-                ag.add(Commands.setMP(runTime, shDest.getMp(), shORig).setUseObjectState(false));
+                ag.add(Commands.setMP(runTime, shDest.getMp().getFirstMP(), shORig).setUseObjectState(false));
                 transformStrategy = ag;
                 JMathAnimScene.logger.info("Transform method: General affine transform");
                 break;

@@ -15,7 +15,7 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-package com.jmathanim.Utils;
+package com.jmathanim.Styling;
 
 import com.jmathanim.jmathanim.JMathAnimScene;
 import java.lang.reflect.Field;
@@ -130,8 +130,8 @@ public class JMColor {
     }
 
     /**
-     * Set the RGBA values of those given by the parameter.
-     * If the given color is null, nothing is done
+     * Set the RGBA values of those given by the parameter. If the given color
+     * is null, nothing is done
      *
      * @param jmcolor The JMColor to copy values from
      */
@@ -145,7 +145,8 @@ public class JMColor {
     }
 
     /**
-     * Interpolates this JMColor with another given. The original color is unaltered
+     * Interpolates this JMColor with another given. The original color is
+     * unaltered
      *
      * @param B JMColor to getInterpolatedColor
      * @param t Interpolation parameter. 0 means this object, 1 means the given

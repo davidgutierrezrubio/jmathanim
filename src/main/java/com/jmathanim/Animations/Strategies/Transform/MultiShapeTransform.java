@@ -24,10 +24,10 @@ import com.jmathanim.mathobjects.MultiShapeObject;
 
 /**
  * Animation strategy between 2 multishapes A and B. If size(A) equals size(B)
- * and one-to-one correspondence transform is done. If size(A)&lt;size(B), copies
- * of shapes of A are added to A to ensure A and B have the same size. The
- * copies are distributed uniformly in the shapes of A. For example if A has 4
- * shapes (0,1,2,3) and B has 11 (0,1,...10) the augmented A will have the
+ * and one-to-one correspondence transform is done. If size(A)&lt;size(B),
+ * copies of shapes of A are added to A to ensure A and B have the same size.
+ * The copies are distributed uniformly in the shapes of A. For example if A has
+ * 4 shapes (0,1,2,3) and B has 11 (0,1,...10) the augmented A will have the
  * shapes 0,0,0,1,1,1,2,2,2,3,3. A similar case happens if size(B)&lt;size(A).
  *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com

@@ -78,6 +78,7 @@ public class Camera {
         double yy = obj.getCenter().v.y;
         setCenter(xx, yy);
     }
+
     /**
      * Set the boundaries of the math region displayed in the screen given by
      * xmin and xmax. ymin and ymax are automatically computed Rectangle
@@ -168,7 +169,6 @@ public class Camera {
         hgap = h;
         vgap = v;
     }
-
 
     public Camera setMathView(Rect r) {
         setMathXY(r.xmin, r.xmax, .5 * (r.ymin + r.ymax));

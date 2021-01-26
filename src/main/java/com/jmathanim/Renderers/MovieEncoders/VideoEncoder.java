@@ -15,7 +15,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-
 package com.jmathanim.Renderers.MovieEncoders;
 
 import com.jmathanim.Utils.JMathAnimConfig;
@@ -28,8 +27,12 @@ import java.io.IOException;
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
 public abstract class VideoEncoder {
-    public abstract void createEncoder(File output,JMathAnimConfig config) throws IOException;
-    public abstract void writeFrame(BufferedImage image,int frameCount);
+
+    public abstract void createEncoder(File output, JMathAnimConfig config) throws IOException;
+
+    public abstract void writeFrame(BufferedImage image, int frameCount);
+
     public abstract void finish();
+
     public abstract boolean isFramesGenerated();
 }

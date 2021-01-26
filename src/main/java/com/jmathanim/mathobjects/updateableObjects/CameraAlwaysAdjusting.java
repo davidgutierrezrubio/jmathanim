@@ -29,12 +29,12 @@ import com.jmathanim.mathobjects.MathObject;
 public class CameraAlwaysAdjusting implements Updateable {
 
     Camera camera;
-    double hgap,vgap;
+    double hgap, vgap;
 
-    public CameraAlwaysAdjusting(Camera cam,double hgap, double vgap) {
+    public CameraAlwaysAdjusting(Camera cam, double hgap, double vgap) {
         this.camera = cam;
-        this.hgap=hgap;
-        this.vgap=vgap;
+        this.hgap = hgap;
+        this.vgap = vgap;
     }
 
     @Override
@@ -47,7 +47,7 @@ public class CameraAlwaysAdjusting implements Updateable {
         if (!scene.getObjects().isEmpty()) {
             Rect bbox = camera.getMathView().addGap(-hgap, -vgap);
             for (MathObject obj : scene.getObjects()) {
-                bbox=Rect.union(bbox,obj.getBoundingBox());
+                bbox = Rect.union(bbox, obj.getBoundingBox());
             }
             camera.adjustToRect(bbox.addGap(hgap, vgap));
         }

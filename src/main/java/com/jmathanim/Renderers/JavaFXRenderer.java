@@ -18,7 +18,6 @@
 package com.jmathanim.Renderers;
 
 import com.jmathanim.Cameras.Camera;
-import com.jmathanim.Cameras.Camera;
 import com.jmathanim.Renderers.MovieEncoders.VideoEncoder;
 import com.jmathanim.Renderers.MovieEncoders.XugglerVideoEncoder;
 import com.jmathanim.Utils.Rect;
@@ -27,7 +26,6 @@ import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import static com.jmathanim.jmathanim.JMathAnimScene.DEGREES;
 import com.jmathanim.mathobjects.AbstractJMImage;
-import com.jmathanim.mathobjects.JMImage;
 import com.jmathanim.mathobjects.JMPath;
 import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.Shape;
@@ -311,13 +309,13 @@ public class JavaFXRenderer extends Renderer {
 
     private void applyDrawingStyles(Path path, Shape mobj) {
 
-        path.setStrokeLineCap(mobj.mp.linecap);
+        path.setStrokeLineCap(mobj.getMp().getLinecap());
         path.setStrokeLineJoin(StrokeLineJoin.ROUND);
         path.setStrokeType(StrokeType.CENTERED);
 //        path.setSmooth(false);
 
         //Stroke width and color
-        path.setStroke(mobj.mp.getDrawColor().getFXColor());
+        path.setStroke(mobj.getMp().getDrawColor().getFXColor());
 
         //Compute thickness depending on camera
         //A thickness of 1 means a javafx thickness 1 in a 800x600with mathview of width 4
@@ -325,14 +323,14 @@ public class JavaFXRenderer extends Renderer {
         path.setStrokeWidth(computeThickness(mobj));
 
         //Fill color
-        if (mobj.mp.isFillColorIsDrawColor()) {
-            path.setFill(mobj.mp.getDrawColor().getFXColor());
+        if (mobj.getMp().isFillColorIsDrawColor()) {
+            path.setFill(mobj.getMp().getDrawColor().getFXColor());
         } else {
-            path.setFill(mobj.mp.getFillColor().getFXColor());
+            path.setFill(mobj.getMp().getFillColor().getFXColor());
         }
 
         //Dash pattern
-        switch (mobj.mp.dashStyle) {
+        switch (mobj.getMp().getDashStyle()) {
             case SOLID:
                 break;
             case DASHED:
@@ -345,8 +343,8 @@ public class JavaFXRenderer extends Renderer {
     }
 
     public double computeThickness(MathObject mobj) {
-        Camera cam = (mobj.mp.absoluteThickness ? fixedCamera : camera);
-        return Math.max(mobj.mp.thickness / cam.getMathView().getWidth() * 2.5d, MIN_THICKNESS);
+        Camera cam = (mobj.getMp().isAbsoluteThickness() ? fixedCamera : camera);
+        return Math.max(mobj.getMp().getThickness() / cam.getMathView().getWidth() * 2.5d, MIN_THICKNESS);
     }
 
     @Override
@@ -455,7 +453,7 @@ public class JavaFXRenderer extends Renderer {
         imageView.setPreserveRatio(obj.preserveRatio);
         imageView.setSmooth(true);
         imageView.setCache(true);
-        imageView.setOpacity(obj.mp.getDrawColor().alpha);
+        imageView.setOpacity(obj.getMp().getDrawColor().alpha);
         imageView.setRotate(-obj.rotateAngle / DEGREES);
         fxnodes.add(imageView);
     }

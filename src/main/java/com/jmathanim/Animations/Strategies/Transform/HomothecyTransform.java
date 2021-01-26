@@ -19,7 +19,7 @@ package com.jmathanim.Animations.Strategies.Transform;
 
 import com.jmathanim.Animations.Animation;
 import com.jmathanim.Animations.Commands;
-import com.jmathanim.Utils.MODrawProperties;
+import com.jmathanim.Styling.MODrawProperties;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.Point;
 import com.jmathanim.mathobjects.Shape;
@@ -29,22 +29,22 @@ import com.jmathanim.mathobjects.Shape;
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
 public class HomothecyTransform extends Animation {
-    
+
     Animation anim;
     private final Shape mobjTransformed;
     private final Shape mobjDestiny;
     private final MODrawProperties mpBase;
     private final Shape mobjTransformedOrig;
-    
+
     public HomothecyTransform(double runtime, Shape mobjTransformed, Shape mobjDestiny) {
         super(runtime);
         this.mobjTransformed = mobjTransformed.copy();
         this.mobjTransformedOrig = mobjTransformed;
         this.mobjDestiny = mobjDestiny;
-        mpBase = mobjTransformed.mp.copy();
-        
+        mpBase = mobjTransformed.getMp().copy();
+
     }
-    
+
     @Override
     public void initialize(JMathAnimScene scene) {
         super.initialize(scene);
@@ -57,28 +57,27 @@ public class HomothecyTransform extends Animation {
         anim.initialize(scene);
         addObjectsToscene(this.mobjTransformed);
         scene.remove(mobjTransformedOrig);
-        
+
     }
-    
+
     @Override
     public boolean processAnimation() {
         return anim.processAnimation();
     }
-    
+
     @Override
     public void doAnim(double t) {
-        double lt=anim.lambda.applyAsDouble(t);
+        double lt = anim.lambda.applyAsDouble(t);
         anim.doAnim(t);
-        mobjTransformed.mp.interpolateFrom(mpBase, mobjDestiny.mp, lt);
+        mobjTransformed.getMp().interpolateFrom(mpBase, mobjDestiny.getMp(), lt);
     }
-    
+
     @Override
     public void finishAnimation() {
-         super.finishAnimation();
+        super.finishAnimation();
         anim.finishAnimation();
         scene.remove(mobjTransformed);
         addObjectsToscene(mobjDestiny);
     }
-    
-    
+
 }

@@ -19,7 +19,7 @@ package com.jmathanim.mathobjects;
 
 import com.jmathanim.Renderers.Renderer;
 import com.jmathanim.Utils.AffineJTransform;
-import com.jmathanim.Utils.JMColor;
+import com.jmathanim.Styling.MODrawPropertiesArray;
 import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
@@ -32,25 +32,46 @@ import static com.jmathanim.mathobjects.ArrowTip.make;
 public abstract class TippableObject extends MathObject {
 
     public static final double DELTA_DERIVATIVE = .0001;
-
-    private double scaleFactorX,scaleFactorY;
-    protected Shape shape;
-    private MathObject tip, tipCopy;
-    private double tLocation;
-    private double offsetAngle = 0;
-    private Point pointLoc;
     int anchorValue;
     private slopeDirection direction;
+    MODrawPropertiesArray mpArray;
+
+    private double offsetAngle = 0;
+    private Point pointLoc;
     private Vec pointTo;
 //    abstract public void updateLocations(JMPathPoint location);
+    private double scaleFactorX;
+    private double scaleFactorY;
+    protected Shape shape;
+    private double tLocation;
+    private MathObject tip;
+    private MathObject tipCopy;
 
-    public double getOffsetAngle() {
-        return offsetAngle;
+    public TippableObject() {
+        super();
+        mpArray = new MODrawPropertiesArray();
+        scaleFactorX = 1;
+        scaleFactorY = 1;
     }
 
-    public <T extends TippableObject> T setOffsetAngle(double angle) {
-        this.offsetAngle = angle;
-        return (T) this;
+    @Override
+    public <T extends MathObject> T copy() {
+        return (T) make(shape, getLocation(), direction, getTip().copy());
+    }
+
+    @Override
+    public void draw(Renderer r) {
+        getTipCopy().draw(r);
+    }
+
+    @Override
+    public Rect getBoundingBox() {
+        updateLocations();
+        return getTipCopy().getBoundingBox();
+    }
+
+    public slopeDirection getDirection() {
+        return direction;
     }
 
     public double getLocation() {
@@ -61,16 +82,26 @@ public abstract class TippableObject extends MathObject {
         this.tLocation = location;
     }
 
+    public double getOffsetAngle() {
+        return offsetAngle;
+    }
+
     public MathObject getTip() {
         return tip;
     }
 
     public void setTip(MathObject tip) {
+        mpArray.remove(this.tip);
         this.tip = tip;
+        mpArray.add(tip);
     }
 
     protected MathObject getTipCopy() {
         return tipCopy;
+    }
+
+    protected void setTipCopy(MathObject tipCopy) {
+        this.tipCopy = tipCopy;
     }
 
     public MathObject getTippedObject() {
@@ -78,60 +109,20 @@ public abstract class TippableObject extends MathObject {
         return getTipCopy();
     }
 
-    protected void setTipCopy(MathObject tipCopy) {
-        this.tipCopy = tipCopy;
+    @Override
+    public int getUpdateLevel() {
+        return shape.getUpdateLevel() + 1;
     }
 
     @Override
-    public <T extends MathObject> T drawColor(JMColor dc) {
-        tip.drawColor(dc);
-        return (T) this;
+    public void restoreState() {
+        super.restoreState();
+        tip.restoreState();
     }
 
     @Override
-    public <T extends MathObject> T fillColor(JMColor fc) {
-        tip.fillColor(fc);
-        return (T) this;
-    }
-
-    @Override
-    public <T extends MathObject> T drawAlpha(double alpha) {
-        return tip.drawAlpha(alpha);
-    }
-
-    @Override
-    public <T extends MathObject> T fillAlpha(double alpha) {
-        tip.fillAlpha(alpha);
-        return (T) this;
-    }
-
-    @Override
-    public <T extends MathObject> T multFillAlpha(double alphaScale) {
-        tip.multFillAlpha(alphaScale);
-        return (T) this;
-    }
-
-    @Override
-    public <T extends MathObject> T multDrawAlpha(double alphaScale) {
-        tip.multDrawAlpha(alphaScale);
-        return (T) this;
-    }
-
-    @Override
-    public <T extends MathObject> T thickness(double newThickness) {
-        tip.thickness(newThickness);
-        return (T) this;
-    }
-
-    @Override
-    public <T extends MathObject> T style(String name) {
-        tip.style(name);
-        return (T) this;
-    }
-
-    @Override
-    public <T extends MathObject> T fillWithDrawColor(boolean fcd) {
-        tip.fillWithDrawColor(fcd);
+    public <T extends MathObject> T rotate(double angle) {
+        tip.rotate(angle);
         return (T) this;
     }
 
@@ -142,14 +133,42 @@ public abstract class TippableObject extends MathObject {
     }
 
     @Override
-    public void restoreState() {
-        super.restoreState();
-        tip.restoreState();
+    public <T extends MathObject> T scale(double sx, double sy) {
+        scaleFactorX *= sx;
+        scaleFactorY *= sy;
+        return (T) this;
     }
 
     @Override
-    public void draw(Renderer r) {
-        getTipCopy().draw(r);
+    public <T extends MathObject> T scale(double s) {
+        return this.scale(s, s);
+    }
+
+    public <T extends MathObject> T setDirection(slopeDirection direction) {
+        this.direction = direction;
+        return (T) this;
+    }
+
+    @Override
+    public <T extends MathObject> T setHeight(double h) {
+        tip.setHeight(h);
+        return (T) this;
+    }
+
+    public <T extends TippableObject> T setOffsetAngle(double angle) {
+        this.offsetAngle = angle;
+        return (T) this;
+    }
+
+    @Override
+    public <T extends MathObject> T setWidth(double w) {
+        tip.setWidth(w);
+        return (T) this;
+    }
+
+    @Override
+    public void update(JMathAnimScene scene) {
+        updateLocations();
     }
 
     public void updateLocations() {
@@ -179,70 +198,6 @@ public abstract class TippableObject extends MathObject {
         getTipCopy().rotate(getOffsetAngle());
     }
 
-    @Override
-    public int getUpdateLevel() {
-        return shape.getUpdateLevel() + 1;
-    }
-
-    @Override
-    public void update(JMathAnimScene scene) {
-        updateLocations();
-    }
-
-    @Override
-    public Rect getBoundingBox() {
-        updateLocations();
-        return getTipCopy().getBoundingBox();
-    }
-
-    @Override
-    public <T extends MathObject> T copy() {
-        return (T) make(shape, getLocation(), direction, getTip().copy());
-    }
-
-    public slopeDirection getDirection() {
-        return direction;
-    }
-
-    public <T extends MathObject> T setDirection(slopeDirection direction) {
-        this.direction = direction;
-        return (T) this;
-    }
-
-    @Override
-    public <T extends MathObject> T scale(double sx, double sy) {
-       scaleFactorX*=sx;
-       scaleFactorY*=sy;
-        return (T) this;
-    }
-
-    public TippableObject() {
-        scaleFactorX=1;
-        scaleFactorY=1;
-    }
-
-    @Override
-    public <T extends MathObject> T scale(double s) {
-       return this.scale(s,s);
-    }
-
-    @Override
-    public <T extends MathObject> T setHeight(double h) {
-        tip.setHeight(h);
-        return (T) this;
-    }
-
-    @Override
-    public <T extends MathObject> T setWidth(double w) {
-        tip.setWidth(w);
-        return (T) this;
-    }
-
-    @Override
-    public <T extends MathObject> T rotate(double angle) {
-        tip.rotate(angle);
-        return (T) this;
-    }
     public enum slopeDirection {
         NEGATIVE, POSITIVE
     }

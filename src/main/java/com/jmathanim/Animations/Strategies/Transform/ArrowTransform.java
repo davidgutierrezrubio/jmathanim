@@ -67,6 +67,5 @@ public class ArrowTransform extends Animation {
         scene.remove(arOrig);
         addObjectsToscene(arDst);
     }
-    
 
 }

@@ -17,8 +17,12 @@
  */
 package com.jmathanim.Utils;
 
+import com.jmathanim.Styling.JMColor;
+import com.jmathanim.Styling.ConfigLoader;
+import com.jmathanim.Styling.MODrawProperties;
 import com.jmathanim.Cameras.Camera;
 import com.jmathanim.Renderers.Renderer;
+import com.jmathanim.Styling.Stylable;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.MathObject;
 import java.io.File;
@@ -129,10 +133,12 @@ public class JMathAnimConfig {
         this.shadowOffsetY = offsetY;
         this.shadowAlpha = alpha;
     }
-public void setBackGroundImage(String name) {
-    ResourceLoader rl=new ResourceLoader();
-    setBackGroundImage(rl.getResource(name, "images"));
-}
+
+    public void setBackGroundImage(String name) {
+        ResourceLoader rl = new ResourceLoader();
+        setBackGroundImage(rl.getResource(name, "images"));
+    }
+
     public void setBackGroundImage(URL backGroundImage) {
         this.backGroundImage = backGroundImage;
     }
@@ -290,9 +296,10 @@ public void setBackGroundImage(String name) {
         return showPreview;
     }
 
-    public MODrawProperties createStyleFrom(MODrawProperties mp, String styleName) {
+    public MODrawProperties createStyleFrom(Stylable mp, String styleName) {
         JMathAnimScene.logger.info("Creating style {}", styleName.toUpperCase());
-        return styles.put(styleName.toUpperCase(), mp);
+        MODrawProperties mpO = mp.getFirstMP();
+        return styles.put(styleName.toUpperCase(), mpO);
     }
 
     public MODrawProperties createStyleFrom(MathObject obj, String styleName) {
@@ -310,7 +317,8 @@ public void setBackGroundImage(String name) {
     public void setFPS(int fps) {
         this.fps = fps;
     }
- public void parseFile(String url) {
+
+    public void parseFile(String url) {
         ConfigLoader.parseFile(url);
     }
 }

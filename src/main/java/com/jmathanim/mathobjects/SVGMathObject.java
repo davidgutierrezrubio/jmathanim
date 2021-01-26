@@ -19,9 +19,9 @@ package com.jmathanim.mathobjects;
 
 import com.jmathanim.Cameras.Camera;
 import com.jmathanim.Utils.Anchor;
-import com.jmathanim.Utils.JMColor;
+import com.jmathanim.Styling.JMColor;
 import com.jmathanim.Utils.JMathAnimConfig;
-import com.jmathanim.Utils.MODrawProperties;
+import com.jmathanim.Styling.MODrawProperties;
 import com.jmathanim.Utils.ResourceLoader;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.JMPathPoint.JMPathPointType;
@@ -79,18 +79,19 @@ public class SVGMathObject extends MultiShapeObject {
         } catch (Exception ex) {
             Logger.getLogger(SVGMathObject.class.getName()).log(Level.SEVERE, null, ex);
         }
-        currentFillColor = mp.getFillColor().copy();
-        currentDrawColor = mp.getDrawColor().copy();
+        currentFillColor = getMp().getFillColor().copy();
+        currentDrawColor = getMp().getDrawColor().copy();
     }
 
     public SVGMathObject(URL url) {
+        super();
         try {
             importSVG(url);
         } catch (Exception ex) {
             Logger.getLogger(SVGMathObject.class.getName()).log(Level.SEVERE, null, ex);
         }
-        currentFillColor = mp.getFillColor().copy();
-        currentDrawColor = mp.getDrawColor().copy();
+        currentFillColor = getMp().getFillColor().copy();
+        currentDrawColor = getMp().getDrawColor().copy();
     }
 
     protected final void importSVG(File file) throws Exception {
@@ -128,34 +129,30 @@ public class SVGMathObject extends MultiShapeObject {
             Node node = nList.item(nchild);
             if (node.getNodeType() == Node.ELEMENT_NODE) {
                 Element el = (Element) node;
-                MODrawProperties ShMp = this.mp.copy();
+                MODrawProperties ShMp = this.getMp().getFirstMP().copy();
                 ShMp.absoluteThickness = false;
 //                    ShMp.fillColor.set(JMColor.random());
                 switch (el.getTagName()) {
                     case "g":
-                        MODrawProperties mpCopy = mp.copy();
-                        processAttributeCommands(el, mp);
-                        mp.thickness = .1;
+                        MODrawProperties mpCopy = getMp().getFirstMP().copy();
+                        processAttributeCommands(el, mpCopy);
+                        mpCopy.setThickness(.1);//TODO: Should delete this?
                         processChildNodes(el);
-                        mp.copyFrom(mpCopy);
+                        getMp().copyFrom(mpCopy);
                         break;
                     case "path":
-//                        JMathAnimScene.logger.info("Parsing path");
-                        //Needs to parse style options too
-
                         try {
-                            JMPath path = processPathCommands(el.getAttribute("d"));
-                            processAttributeCommands(el, ShMp);
-                            if (path.jmPathPoints.size() > 0) {
-                                path.pathType = JMPath.SVG_PATH; //Mark this as a SVG path
-                                addJMPathObject(path, ShMp); //Add this path to the array of JMPathObjects
-//                                JMathAnimScene.logger.info("Path parsed succesfully");
-                            }
-                        } catch (Exception ex) {
-                            Logger.getLogger(SVGMathObject.class.getName()).log(Level.SEVERE, null, ex);
+                        JMPath path = processPathCommands(el.getAttribute("d"));
+                        processAttributeCommands(el, ShMp);
+                        if (path.jmPathPoints.size() > 0) {
+                            path.pathType = JMPath.SVG_PATH; //Mark this as a SVG path
+                            add(new Shape(path, ShMp));
                         }
+                    } catch (Exception ex) {
+                        Logger.getLogger(SVGMathObject.class.getName()).log(Level.SEVERE, null, ex);
+                    }
 
-                        break;
+                    break;
                     case "rect":
                         processAttributeCommands(el, ShMp);
                         double x = Double.parseDouble(el.getAttribute("x"));
@@ -564,14 +561,15 @@ public class SVGMathObject extends MultiShapeObject {
 
         }
     }
-  @Override
+
+    @Override
     public SVGMathObject copy() {
         SVGMathObject resul = new SVGMathObject();
         for (Shape sh : shapes) {
             final Shape copy = sh.copy();
             resul.add(copy);
         }
-        resul.mp.copyFrom(mp);
+        resul.getMp().copyFrom(getMp());
         resul.absoluteSize = this.absoluteSize;
         return resul;
     }

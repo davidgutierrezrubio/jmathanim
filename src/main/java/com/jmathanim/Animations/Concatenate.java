@@ -101,7 +101,7 @@ public class Concatenate extends Animation {
                 resul = animations.get(currentAnim).processAnimation();
             }
         }
-        if (currentAnim == this.animations.size()-1) {//If I am processing the last animation...
+        if (currentAnim == this.animations.size() - 1) {//If I am processing the last animation...
             return resul;
         } else {
             return false;

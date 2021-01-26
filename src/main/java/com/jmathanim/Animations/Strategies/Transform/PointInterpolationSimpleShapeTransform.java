@@ -42,8 +42,6 @@ public class PointInterpolationSimpleShapeTransform extends Animation {
 
     }
 
-   
-
     @Override
     public void initialize(JMathAnimScene scene) {
         super.initialize(scene);
@@ -63,7 +61,7 @@ public class PointInterpolationSimpleShapeTransform extends Animation {
 
     @Override
     public void doAnim(double t) {
-        double lt=lambda.applyAsDouble(t);
+        double lt = lambda.applyAsDouble(t);
         JMPathPoint interPoint, basePoint, dstPoint;
         for (int n = 0; n < mobjTransformed.getPath().size(); n++) {
             interPoint = mobjTransformed.getPath().getJMPoint(n);
@@ -86,13 +84,13 @@ public class PointInterpolationSimpleShapeTransform extends Animation {
             interPoint.cpEnter.v.z = (1 - lt) * basePoint.cpEnter.v.z + lt * dstPoint.cpEnter.v.z;
         }
 
-        mobjTransformed.mp.interpolateFrom(originalShapeBaseCopy.mp, mobjDestiny.mp, lt);
+        mobjTransformed.getMp().interpolateFrom(originalShapeBaseCopy.getMp(), mobjDestiny.getMp(), lt);
 
     }
 
     @Override
     public void finishAnimation() {
-         super.finishAnimation();
+        super.finishAnimation();
 
         for (int n = 0; n < mobjTransformed.getPath().size(); n++) {
             JMPathPoint p1 = mobjTransformed.getPath().getJMPoint(n);
@@ -105,7 +103,7 @@ public class PointInterpolationSimpleShapeTransform extends Animation {
         }
 
         mobjTransformed.getPath().removeInterpolationPoints();
-        mobjTransformed.mp.copyFrom(mobjDestiny.mp);
+        mobjTransformed.getMp().copyFrom(mobjDestiny.getMp());
         mobjTransformed.absoluteSize = mobjDestiny.absoluteSize;
     }
 

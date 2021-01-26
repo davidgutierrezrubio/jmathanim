@@ -30,7 +30,6 @@ public abstract class AffineTransformAnimation extends Animation {
 
     MathObject[] mathObjects;
 
-
     public AffineTransformAnimation(double runTime, MathObject[] mathObjects) {
         super(runTime);
         this.mathObjects = mathObjects;

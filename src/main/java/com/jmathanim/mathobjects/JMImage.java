@@ -56,7 +56,7 @@ public class JMImage extends AbstractJMImage {
     public JMImage copy() {
         JMImage resul = new JMImage(filename);
         resul.bbox.copyFrom(this.bbox);
-        resul.mp.copyFrom(this.mp);
+        resul.getMp().copyFrom(this.getMp());
         resul.preserveRatio = this.preserveRatio;
         resul.rotateAngle = this.rotateAngle;
         resul.rotateAngleBackup = this.rotateAngleBackup;
@@ -122,7 +122,7 @@ public class JMImage extends AbstractJMImage {
     }
 
     @Override
-    public <T extends MathObject> T applyLinearTransform(AffineJTransform tr) {
+    public <T extends MathObject> T applyAffineTransform(AffineJTransform tr) {
         //Nothing to do (for now...)
         return (T) this;
     }

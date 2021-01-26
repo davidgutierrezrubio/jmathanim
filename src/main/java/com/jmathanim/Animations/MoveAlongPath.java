@@ -84,9 +84,8 @@ public class MoveAlongPath extends Animation {
 
     @Override
     public void finishAnimation() {
-         super.finishAnimation();
+        super.finishAnimation();
         doAnim(1);
     }
-
 
 }

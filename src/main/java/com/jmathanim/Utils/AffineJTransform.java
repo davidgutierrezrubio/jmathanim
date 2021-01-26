@@ -18,16 +18,8 @@
 package com.jmathanim.Utils;
 
 import com.jmathanim.Utils.Vec;
-import com.jmathanim.jmathanim.JMathAnimScene;
-import com.jmathanim.mathobjects.Arrow2D;
-import com.jmathanim.mathobjects.JMPathPoint;
-import com.jmathanim.mathobjects.Line;
 import com.jmathanim.mathobjects.MathObject;
-import com.jmathanim.mathobjects.MathObjectGroup;
-import com.jmathanim.mathobjects.MultiShapeObject;
 import com.jmathanim.mathobjects.Point;
-import com.jmathanim.mathobjects.Shape;
-import org.apache.commons.math3.linear.Array2DRowRealMatrix;
 import org.apache.commons.math3.linear.LUDecomposition;
 import org.apache.commons.math3.linear.MatrixUtils;
 import org.apache.commons.math3.linear.RealMatrix;
@@ -254,7 +246,7 @@ public class AffineJTransform {
      * @param mObject Object to apply transform
      */
     public void applyTransform(MathObject mObject) {
-        mObject.applyLinearTransform(this);
+        mObject.applyAffineTransform(this);
 //        if (mObject instanceof MathObjectGroup) {
 //            MathObjectGroup mobj = (MathObjectGroup) mObject;
 //            for (MathObject obj : mobj.getObjects()) {
@@ -286,13 +278,11 @@ public class AffineJTransform {
 //            applyTransformsToDrawingProperties(mObject);
 //            return;
 //        }
-
 //        if (mObject instanceof Arrow2D) {
 //            applyTransform(((Arrow2D) mObject).getBody());
 //            applyTransformsToDrawingProperties(mObject);
 //            return;
 //        }
-
 //        if (mObject instanceof JMPathPoint) {
 //            JMPathPoint jmPDst = (JMPathPoint) mObject;
 //            JMPathPoint pSrc = jmPDst.copy();
@@ -307,7 +297,6 @@ public class AffineJTransform {
 //            applyTransformsToDrawingProperties(mObject);
 //            return;
 //        }
-
 //        if (mObject instanceof Point) {
 //            Point p = (Point) mObject;
 //            RealMatrix pRow = new Array2DRowRealMatrix(new double[][]{{1d, p.v.x, p.v.y, p.v.z}});
@@ -326,8 +315,8 @@ public class AffineJTransform {
         //Determinant of the A_xy=2D-submatrix, to compute change in thickness
         //As Area changes in det(A_xy), we change thickness in the root square of det(A_xy)
         double det = matrix.getEntry(1, 1) * matrix.getEntry(2, 2) - matrix.getEntry(2, 1) * matrix.getEntry(1, 2);
-        if (!mObject.mp.absoluteThickness) {
-            mObject.mp.thickness *= Math.sqrt(det);
+        if (!mObject.getMp().isAbsoluteThickness()) {
+            mObject.getMp().multThickness(Math.sqrt(det));
         }
 
     }

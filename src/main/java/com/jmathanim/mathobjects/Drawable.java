@@ -15,16 +15,16 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-
 package com.jmathanim.mathobjects;
 
 import com.jmathanim.Renderers.Renderer;
 
-
 /**
  * Anything that can be drawed in the canvas
+ *
  * @author David Gutierrez Rubio davidgutierrezrubio@gmail.com
  */
 public interface Drawable {
+
     public void draw(Renderer r);
 }

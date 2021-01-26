@@ -35,9 +35,9 @@ public class Delimiter extends MathObject {
     private double delimiterScale;
 
     @Override
-    public <T extends MathObject> T applyLinearTransform(AffineJTransform tr) {
-        A.applyLinearTransform(tr);
-        B.applyLinearTransform(tr);
+    public <T extends MathObject> T applyAffineTransform(AffineJTransform tr) {
+        A.applyAffineTransform(tr);
+        B.applyAffineTransform(tr);
         tr.applyTransformsToDrawingProperties(this);
         return (T) this;
     }
@@ -118,8 +118,9 @@ public class Delimiter extends MathObject {
         double width = AA.to(BB).norm();
 
         MultiShapeObject resul = body.copy();
+        drawAlpha(0);//This is to ensure that the "stitches" are not seen
         for (Shape sh : resul) {
-            sh.mp.copyFrom(this.mp);
+            sh.getMp().copyFrom(this.getMp());
         }
 
         if (type == Type.BRACE) {

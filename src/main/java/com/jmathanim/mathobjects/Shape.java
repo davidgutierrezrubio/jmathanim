@@ -20,7 +20,7 @@ package com.jmathanim.mathobjects;
 import com.jmathanim.Renderers.Renderer;
 import com.jmathanim.Utils.AffineJTransform;
 import com.jmathanim.Utils.JMathAnimConfig;
-import com.jmathanim.Utils.MODrawProperties;
+import com.jmathanim.Styling.MODrawProperties;
 import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
@@ -57,12 +57,12 @@ public class Shape extends MathObject {
         jmpath = new JMPath();
     }
 
-    public JMPathPoint getJMPoint(int n) {
+    public JMPathPoint get(int n) {
         return jmpath.getJMPoint(n);
     }
 
     public Point getPoint(int n) {
-        return jmpath.getJMPoint(n).p;
+        return get(n).p;
     }
 
     public JMPath getPath() {
@@ -102,7 +102,7 @@ public class Shape extends MathObject {
 
     @Override
     public Shape copy() {
-        final MODrawProperties copy = mp.copy();
+        final MODrawProperties copy = getMp().copy();
         Shape resul = new Shape(jmpath.rawCopy(), copy);
         resul.absoluteSize = this.absoluteSize;
         resul.label = this.label + "_copy";
@@ -304,7 +304,7 @@ public class Shape extends MathObject {
      */
     public static Shape polyLine(Point... points) {
         Shape resul = polygon(points);
-        resul.getJMPoint(0).isThisSegmentVisible = false;
+        resul.get(0).isThisSegmentVisible = false;
         return resul;
     }
 
@@ -350,8 +350,8 @@ public class Shape extends MathObject {
 //        obj.getPath().jmPathPoints.remove(0);
 //        obj.getPath().jmPathPoints.remove(-1);
         obj.getPath().getJMPoint(0).isThisSegmentVisible = false;//Open path
-//        obj.getJMPoint(0).cp1.v.copyFrom(obj.getJMPoint(0).p.v);
-//        obj.getJMPoint(-1).cp2.v.copyFrom(obj.getJMPoint(-1).p.v);
+//        obj.get(0).cp1.v.copyFrom(obj.get(0).p.v);
+//        obj.get(-1).cp2.v.copyFrom(obj.get(-1).p.v);
         return obj;
     }
 
@@ -403,10 +403,10 @@ public class Shape extends MathObject {
     }
 
     @Override
-    public <T extends MathObject> T applyLinearTransform(AffineJTransform tr) {
+    public <T extends MathObject> T applyAffineTransform(AffineJTransform tr) {
         int size = getPath().size();
         for (int n = 0; n < size; n++) {
-            getJMPoint(n).applyLinearTransform(tr);
+            get(n).applyAffineTransform(tr);
         }
         tr.applyTransformsToDrawingProperties(this);
         return (T) this;

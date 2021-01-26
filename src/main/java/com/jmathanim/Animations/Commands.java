@@ -20,13 +20,12 @@ package com.jmathanim.Animations;
 import com.jmathanim.Utils.AffineJTransform;
 import com.jmathanim.Cameras.Camera;
 import com.jmathanim.Utils.Anchor;
-import com.jmathanim.Utils.JMColor;
+import com.jmathanim.Styling.JMColor;
 import com.jmathanim.Utils.JMathAnimConfig;
-import com.jmathanim.Utils.MODrawProperties;
+import com.jmathanim.Styling.MODrawProperties;
 import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
-import static com.jmathanim.jmathanim.JMathAnimScene.PI;
 import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.MathObjectGroup;
 import com.jmathanim.mathobjects.Point;
@@ -417,7 +416,7 @@ public class Commands {
                 restoreStates(mathObjects);
                 int n = 0;
                 for (MathObject obj : mathObjects) {
-                    obj.interpolateMPFrom(mpDst, lt);
+                    obj.getMp().interpolateFrom(mpDst, lt);
                 }
             }
 
@@ -945,8 +944,8 @@ public class Commands {
         Shape s2 = Shape.segment(bbox.getUR(), bbox.getDL()).scale(.75).linecap(StrokeLineCap.BUTT).drawColor(JMColor.RED).layer(Integer.MAX_VALUE);
         double longi = .25 * s1.getPoint(0).to(s1.getPoint(1)).norm();
         double width = JMathAnimConfig.getConfig().getRenderer().getThicknessForMathWidth(longi);
-        s1.thickness(width).mp.absoluteThickness = false;
-        s2.thickness(width).mp.absoluteThickness = false;
+        s1.thickness(width).getMp().setAbsoluteThickness(false);
+        s2.thickness(width).getMp().setAbsoluteThickness(false);
         return new Concatenate(new ShowCreation(.5 * runtime, s1),
                 new ShowCreation(.5 * runtime, s2));
     }

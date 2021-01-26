@@ -17,11 +17,7 @@
  */
 package com.jmathanim.mathobjects;
 
-import com.jmathanim.Renderers.Renderer;
-import com.jmathanim.Utils.AffineJTransform;
-import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.ResourceLoader;
-import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import java.net.URL;
 
@@ -31,7 +27,6 @@ import java.net.URL;
  */
 public class ArrowTip extends TippableObject {
 
-   
     public static ArrowTip make(Shape shape, double location, slopeDirection dir, MathObject arrowtip) {
         ArrowTip resul = new ArrowTip(shape, location, dir);
         resul.setTip(arrowtip);
@@ -41,8 +36,8 @@ public class ArrowTip extends TippableObject {
     public static ArrowTip make(Shape shape, double location, slopeDirection dir, Arrow2D.ArrowType type) {
         ArrowTip resul = new ArrowTip(shape, location, dir);
         MultiShapeObject at = buildArrowHead(type);
-        at.fillColor(shape.mp.getDrawColor());
-        at.drawColor(shape.mp.getDrawColor());
+        at.fillColor(shape.getMp().getDrawColor());
+        at.drawColor(shape.getMp().getDrawColor());
         resul.setTip(at);
         return resul;
     }
@@ -96,5 +91,4 @@ public class ArrowTip extends TippableObject {
         return head;
     }
 
-   
 }

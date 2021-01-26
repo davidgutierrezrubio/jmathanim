@@ -1,6 +1,6 @@
 <JMathAnimConfig>
     <styles>
-         <style name="FunctionGraphDefault">
+        <style name="FunctionGraphDefault">
             <drawColor>black</drawColor>
             <fillColor>TRANSPARENT</fillColor>
             <thickness>.5</thickness>
@@ -15,12 +15,12 @@
             <fillColor>transparent</fillColor>
             <thickness>1.5</thickness>
         </style>
-         <style name="axisSecondaryTickDefault">
+        <style name="axisSecondaryTickDefault">
             <drawColor>#4F4F4F</drawColor>
             <fillColor>transparent</fillColor>
             <thickness>.75</thickness>
         </style>
-         <style name="axisLegendDefault">
+        <style name="axisLegendDefault">
             <drawColor>#4F4F4F</drawColor>
             <fillColor>#4F4F4F</fillColor>
             <thickness>.02</thickness>

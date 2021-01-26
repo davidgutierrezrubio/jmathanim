@@ -197,7 +197,7 @@ public class FunctionGraph extends Shape {
     public FunctionGraph copy() {
         ArrayList<Double> xPointsCopy = new ArrayList<>(xPoints);
         FunctionGraph resul = new FunctionGraph(function, xPointsCopy);
-        resul.mp.copyFrom(mp);
+        resul.getMp().copyFrom(getMp());
         return resul;
     }
 

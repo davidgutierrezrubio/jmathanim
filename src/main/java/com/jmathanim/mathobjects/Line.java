@@ -21,7 +21,9 @@ import com.jmathanim.Cameras.Camera;
 import com.jmathanim.Renderers.Renderer;
 import com.jmathanim.Utils.AffineJTransform;
 import com.jmathanim.Utils.JMathAnimConfig;
-import com.jmathanim.Utils.MODrawProperties;
+import com.jmathanim.Styling.MODrawProperties;
+import com.jmathanim.Styling.MODrawPropertiesArray;
+import com.jmathanim.Styling.Stylable;
 import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
@@ -34,9 +36,38 @@ import com.jmathanim.mathobjects.JMPathPoint.JMPathPointType;
  */
 public class Line extends Shape {
 
+    public static Line XAxis() {
+        return new Line(new Point(0, 0), new Point(1, 0));
+    }
+
+    public static Line XYBisector() {
+        return new Line(new Point(0, 0), new Point(1, 1));
+    }
+
+    public static Line YAxis() {
+        return new Line(new Point(0, 0), new Point(0, 1));
+    }
+
+    /**
+     * Creates a new Line object. Line is a Shape object with 2 points, as a
+     * Segment but it overrides the draw method so that it extends itself to all
+     * the view, to look like an infinite line.
+     *
+     * @param a First point
+     * @param b Second point
+     * @return The line object
+     */
+    public static Line make(Point a, Point b) {
+        return new Line(a, b);
+    }
+
+    public static Line make(Point a, Vec b) {
+        return new Line(a, a.add(b));
+    }
     private final JMPathPoint bp1, bp2;
-    private final Shape visiblePiece;
+    MODrawPropertiesArray mpArray;
     private Point p1, p2;
+    private final Shape visiblePiece;
 
     /**
      * Creates a line that passes through p with direction v
@@ -68,6 +99,7 @@ public class Line extends Shape {
      */
     public Line(Point p1, Point p2, MODrawProperties mp) {
         super(mp);
+        mpArray = new MODrawPropertiesArray();
         this.p1 = p1;
         this.p2 = p2;
         getPath().clear(); //Super constructor adds p1, p2. Delete them
@@ -75,57 +107,18 @@ public class Line extends Shape {
         bp2 = new JMPathPoint(new Point(0, 0), true, JMPathPointType.VERTEX);//trivial boundary points, just to initialize objects
         visiblePiece = new Shape();
         visiblePiece.getPath().addJMPoint(bp1, bp2);
-        visiblePiece.mp = this.mp;
+        visiblePiece.getMp().copyFrom(this.getMp());
         getPath().addPoint(p1, p2);
         getPath().getJMPoint(0).isThisSegmentVisible = false;
+        mpArray.add(visiblePiece);
     }
 
     @Override
-    public Line copy() {
-        Line resul = new Line(p1.copy(), p2.copy());
-        resul.mp.copyFrom(mp);
-        return resul;
-    }
-
-    /**
-     * Returns the point of the line lying in the boundaries of the math view.
-     * From the 2 points of the boundary, this is next to p1.
-     *
-     * @param scene The scene, needed to obtain the math view
-     * @return A copy of the boundary point
-     */
-    public Point getBorderPoint1(JMathAnimScene scene) {
-        update(scene);
-        return bp1.p.copy();
-    }
-
-    /**
-     * Returns the point of the line lying in the boundaries of the math view.
-     * From the 2 points of the boundary, this is next to p2.
-     *
-     * @param scene The scene, needed to obtain the math view
-     * @return A copy of the boundary point
-     */
-    public Point getBorderPoint2(JMathAnimScene scene) {
-        update(scene);
-        return bp2.p.copy();
-    }
-
-    @Override
-    public void draw(Renderer r) {
-        update(JMathAnimConfig.getConfig().getScene());//TODO: remove coupling
-        visiblePiece.draw(r);
-    }
-
-    @Override
-    public void update(JMathAnimScene scene) {
-        super.update(scene);
-        computeBoundPoints(scene.getCamera());
-    }
-
-    @Override
-    public int getUpdateLevel() {
-        return Math.max(p1.getUpdateLevel(), p2.getUpdateLevel()) + 1;
+    public <T extends MathObject> T applyAffineTransform(AffineJTransform tr) {
+        getP1().applyAffineTransform(tr);
+        getP2().applyAffineTransform(tr);
+        tr.applyTransformsToDrawingProperties(this);
+        return (T) this;
     }
 
     /**
@@ -163,25 +156,40 @@ public class Line extends Shape {
     }
 
     @Override
-    public void saveState() {
-        super.saveState();
-        p1.saveState();
-        p2.saveState();
+    public Line copy() {
+        Line resul = new Line(p1.copy(), p2.copy());
+        resul.getMp().copyFrom(getMp());
+        return resul;
     }
 
     @Override
-    public void restoreState() {
-        super.restoreState();
-        p1.restoreState();
-        p2.restoreState();
+    public void draw(Renderer r) {
+        update(JMathAnimConfig.getConfig().getScene());//TODO: remove coupling
+        visiblePiece.draw(r);
     }
 
-    public Point getP1() {
-        return p1;
+    /**
+     * Returns the point of the line lying in the boundaries of the math view.
+     * From the 2 points of the boundary, this is next to p1.
+     *
+     * @param scene The scene, needed to obtain the math view
+     * @return A copy of the boundary point
+     */
+    public Point getBorderPoint1(JMathAnimScene scene) {
+        update(scene);
+        return bp1.p.copy();
     }
 
-    public Point getP2() {
-        return p2;
+    /**
+     * Returns the point of the line lying in the boundaries of the math view.
+     * From the 2 points of the boundary, this is next to p2.
+     *
+     * @param scene The scene, needed to obtain the math view
+     * @return A copy of the boundary point
+     */
+    public Point getBorderPoint2(JMathAnimScene scene) {
+        update(scene);
+        return bp2.p.copy();
     }
 
     /**
@@ -196,33 +204,36 @@ public class Line extends Shape {
         return p1.interpolate(p2, .5);
     }
 
-    public static Line XAxis() {
-        return new Line(new Point(0, 0), new Point(1, 0));
+    @Override
+    public Stylable getMp() {
+        return mpArray;
     }
 
-    public static Line YAxis() {
-        return new Line(new Point(0, 0), new Point(0, 1));
+    public Point getP1() {
+        return p1;
     }
 
-    public static Line XYBisector() {
-        return new Line(new Point(0, 0), new Point(1, 1));
+    public Point getP2() {
+        return p2;
     }
 
-    /**
-     * Creates a new Line object. Line is a Shape object with 2 points, as a
-     * Segment but it overrides the draw method so that it extends itself to all
-     * the view, to look like an infinite line.
-     *
-     * @param a First point
-     * @param b Second point
-     * @return The line object
-     */
-    public static Line make(Point a, Point b) {
-        return new Line(a, b);
+    @Override
+    public int getUpdateLevel() {
+        return Math.max(p1.getUpdateLevel(), p2.getUpdateLevel()) + 1;
     }
 
-    public static Line make(Point a, Vec b) {
-        return new Line(a, a.add(b));
+    @Override
+    public void restoreState() {
+        super.restoreState();
+        p1.restoreState();
+        p2.restoreState();
+    }
+
+    @Override
+    public void saveState() {
+        super.saveState();
+        p1.saveState();
+        p2.saveState();
     }
 
     /**
@@ -237,7 +248,7 @@ public class Line extends Shape {
         Point a = bp1.p.copy().scale(getCenter(), scale, scale);
         Point b = bp2.p.copy().scale(getCenter(), scale, scale);
         Shape segment = Shape.segment(a, b);
-        segment.mp.copyFrom(this.mp);
+        segment.getMp().copyFrom(this.getMp());
         return segment;
     }
 
@@ -246,11 +257,9 @@ public class Line extends Shape {
     }
 
     @Override
-    public <T extends MathObject> T applyLinearTransform(AffineJTransform tr) {
-            getP1().applyLinearTransform(tr);
-            getP2().applyLinearTransform(tr);
-            tr.applyTransformsToDrawingProperties(this);
-            return (T) this;
+    public void update(JMathAnimScene scene) {
+        super.update(scene);
+        computeBoundPoints(scene.getCamera());
     }
-    
+
 }

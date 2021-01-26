@@ -50,8 +50,8 @@ public class TransformStrategyChecker {
     }
 
     private static boolean checkMinimalPathRequirements(Shape shORig, int n1, Shape shDest, int n2) {
-        boolean mininumPoints=((shORig.getPath().size() >= n1) && (shDest.getPath().size() >= n2));
-        boolean sameSize=(shORig.getPath().size()==shDest.getPath().size());
+        boolean mininumPoints = ((shORig.getPath().size() >= n1) && (shDest.getPath().size() >= n2));
+        boolean sameSize = (shORig.getPath().size() == shDest.getPath().size());
         return mininumPoints & sameSize;
     }
 
