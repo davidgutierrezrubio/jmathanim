@@ -64,7 +64,6 @@ public class DivideOnSensiblePointsStrategy implements OptimizePathsStrategy {
                 }
             }
 
-            System.out.println("Done" + pa1.getNumberOfConnectedComponents() + "   " + pa2.getNumberOfConnectedComponents());
 
         }
     }

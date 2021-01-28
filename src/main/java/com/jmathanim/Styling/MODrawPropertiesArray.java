@@ -32,6 +32,12 @@ public class MODrawPropertiesArray implements Stylable, Stateable {
     private ArrayList<MathObject> objects;
     private final MODrawProperties mpRef;
 
+     public MODrawPropertiesArray(MODrawProperties mp) {
+        mpRef = new MODrawProperties();
+        mpRef.copyFrom(mp);
+        objects = new ArrayList<>();
+    }
+    
     public MODrawPropertiesArray() {
         mpRef = new MODrawProperties();
         objects = new ArrayList<>();
@@ -196,9 +202,7 @@ public class MODrawPropertiesArray implements Stylable, Stateable {
     @Override
     public void setMultDrawAlpha(double alpha) {
         for (MathObject obj : objects) {
-            System.out.println(alpha + "  before multalpha " + obj.label + "  " + obj.getMp().getDrawColor().alpha);
             obj.getMp().setMultDrawAlpha(alpha);
-            System.out.println(alpha + "  multalpha " + obj.label + "  " + obj.getMp().getDrawColor().alpha);
         }
         mpRef.setMultDrawAlpha(alpha);
     }

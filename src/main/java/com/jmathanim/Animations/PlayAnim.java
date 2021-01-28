@@ -44,7 +44,7 @@ public class PlayAnim {
     /**
      * Default runtime for ShowCreation methods (in seconds)
      */
-    public double defaultRunTimeshowCreation = 2;
+    public double defaultRunTimeshowCreation = 1;
     /**
      * Default runtime for FadeIn methods (in seconds)
      */
@@ -64,11 +64,11 @@ public class PlayAnim {
     /**
      * Default runtime for Highlight methods (in seconds)
      */
-    public double defaultRunTimeHighlight = 2;
+    public double defaultRunTimeHighlight = 1;
     /**
      * Default runtime for camera methods (in seconds)
      */
-    public double defaultRunTimeCamera = 2;
+    public double defaultRunTimeCamera = 1;
     /**
      * Default runtime for move out methods (in seconds)
      */

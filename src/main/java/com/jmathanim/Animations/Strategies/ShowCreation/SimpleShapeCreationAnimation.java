@@ -74,6 +74,7 @@ public class SimpleShapeCreationAnimation extends CreationStrategy {
                 msh.shapes.get(n).getPath().clear();
                 final JMPath path = canonPath.get(n);
                 msh.shapes.get(n).getPath().addJMPointsFrom(path);
+                 setPencilPosition(msh.shapes.get(n).get(-1));
             }
             return;
         }
@@ -81,6 +82,7 @@ public class SimpleShapeCreationAnimation extends CreationStrategy {
             for (int n = 0; n < msh.shapes.size(); n++) {
                 msh.shapes.get(n).visible(false);
             }
+             setPencilPosition(msh.shapes.get(0).get(0));//Put the pencil at the beginning
             return;
         }
 

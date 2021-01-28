@@ -86,7 +86,7 @@ public class Line extends Shape {
      * @param p2 Second point
      */
     public Line(Point p1, Point p2) {
-        this(p1, p2, null);
+        this(p1, p2,null);
     }
 
     /**
@@ -100,6 +100,8 @@ public class Line extends Shape {
     public Line(Point p1, Point p2, MODrawProperties mp) {
         super(mp);
         mpArray = new MODrawPropertiesArray();
+        mpArray.copyFrom(JMathAnimConfig.getConfig().getDefaultMP());//Default MP values);
+        mpArray.copyFrom(mp);
         this.p1 = p1;
         this.p2 = p2;
         getPath().clear(); //Super constructor adds p1, p2. Delete them
