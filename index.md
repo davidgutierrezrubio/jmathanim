@@ -29,6 +29,9 @@ If you are used to another OO languages, like Python, it is relatively easy to s
 # What's new?
 Version 0.8.8-SNAPSHOT:
 
+* Changed `BY_CENTER` anchor point name to more concise `CENTER`
+* Fixed bug for line objects that did not load the default style
+
 * Disabled XML validation so that SVG files load faster
 * Added stackTo animation to fast access method play.stackTo
 * Added merge command to Shape objects
