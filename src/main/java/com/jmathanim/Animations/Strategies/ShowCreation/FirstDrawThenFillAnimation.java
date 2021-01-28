@@ -36,7 +36,7 @@ import com.jmathanim.mathobjects.Shape;
  *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
-public class FirstDrawThenFillAnimation extends Animation {
+public class FirstDrawThenFillAnimation extends CreationStrategy {
 
     /**
      * Percentage (0 to 1) of time dedicated to drawing the path. The rest of

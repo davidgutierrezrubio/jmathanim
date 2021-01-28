@@ -19,6 +19,7 @@ package com.jmathanim.Animations;
 
 import com.jmathanim.Animations.Strategies.ShowCreation.ArrowCreationAnimation;
 import com.jmathanim.Animations.Strategies.ShowCreation.AxesCreationAnimation;
+import com.jmathanim.Animations.Strategies.ShowCreation.CreationStrategy;
 import com.jmathanim.Animations.Strategies.ShowCreation.FirstDrawThenFillAnimation;
 import com.jmathanim.Animations.Strategies.ShowCreation.GroupCreationAnimation;
 import com.jmathanim.Animations.Strategies.ShowCreation.LineCreationAnimation;
@@ -28,11 +29,13 @@ import com.jmathanim.mathobjects.Arrow2D;
 import com.jmathanim.mathobjects.Axes;
 import com.jmathanim.mathobjects.CanonicalJMPath;
 import com.jmathanim.mathobjects.Delimiter;
+import com.jmathanim.mathobjects.JMPathPoint;
 import com.jmathanim.mathobjects.LaTeXMathObject;
 import com.jmathanim.mathobjects.Line;
 import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.MathObjectGroup;
 import com.jmathanim.mathobjects.MultiShapeObject;
+import com.jmathanim.mathobjects.Point;
 import com.jmathanim.mathobjects.SVGMathObject;
 import com.jmathanim.mathobjects.Shape;
 
@@ -56,10 +59,10 @@ public class ShowCreation extends Animation {
         GROUP_CREATION,
         AXES_CREATION
     }
-
+    public final JMPathPoint pencilPosition;
     MathObject mobj;
     CanonicalJMPath canonPath;
-    private Animation creationStrategy;
+    private CreationStrategy creationStrategy;
     private ShowCreationStrategy strategyType = ShowCreationStrategy.NONE;
 
     /**
@@ -71,6 +74,7 @@ public class ShowCreation extends Animation {
     public ShowCreation(double runtime, MathObject mobj) {
         super(runtime);
         this.mobj = mobj;
+        pencilPosition = new JMPathPoint(mobj.getCenter(), false, JMPathPoint.JMPathPointType.NONE);
     }
 
     @Override
@@ -96,7 +100,9 @@ public class ShowCreation extends Animation {
     @Override
     public boolean processAnimation() {
         if (creationStrategy != null) {
-            return creationStrategy.processAnimation();
+            boolean ret = creationStrategy.processAnimation();
+            pencilPosition.copyFrom(creationStrategy.getPencilPosition());
+            return ret;
         } else {
             return true;
         }
@@ -190,7 +196,7 @@ public class ShowCreation extends Animation {
                 break;
             case DELIMITER_CREATION:
                 Delimiter del = (Delimiter) mobj;
-                creationStrategy = new Animation(runTime) {
+                creationStrategy = new CreationStrategy(runTime) {
                     @Override
                     public void initialize(JMathAnimScene scene) {
                         super.initialize(scene);
@@ -233,6 +239,11 @@ public class ShowCreation extends Animation {
     public <T extends ShowCreation> T setStrategyType(ShowCreationStrategy strategyType) {
         this.strategyType = strategyType;
         return (T) this;
+    }
+
+    public JMPathPoint getPencilPosition() {
+        return pencilPosition;
+
     }
 
 }

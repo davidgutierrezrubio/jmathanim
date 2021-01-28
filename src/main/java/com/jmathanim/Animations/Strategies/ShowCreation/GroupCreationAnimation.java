@@ -28,7 +28,7 @@ import com.jmathanim.mathobjects.MathObjectGroup;
  *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
-public class GroupCreationAnimation extends Animation {
+public class GroupCreationAnimation extends CreationStrategy {
 
     private final MathObjectGroup group;
     private AnimationGroup anim;

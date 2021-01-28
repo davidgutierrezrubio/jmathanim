@@ -28,7 +28,7 @@ import com.jmathanim.mathobjects.Shape;
  *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
-public class LineCreationAnimation extends Animation {
+public class LineCreationAnimation extends CreationStrategy {
 
     Shape segment;
     Line line;

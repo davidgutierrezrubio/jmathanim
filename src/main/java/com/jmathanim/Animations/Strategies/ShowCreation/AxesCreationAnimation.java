@@ -35,7 +35,7 @@ import java.util.ArrayList;
  *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
-public class AxesCreationAnimation extends Animation {
+public class AxesCreationAnimation extends CreationStrategy {
 
     private Axes axes;
     ArrayList<MathObject> objectsToRemoveWhenFinished;

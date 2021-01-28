@@ -26,7 +26,7 @@ import com.jmathanim.mathobjects.Point;
  *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
-public class ArrowCreationAnimation extends Animation {
+public class ArrowCreationAnimation extends CreationStrategy {
 
     private final Arrow2D obj;
 

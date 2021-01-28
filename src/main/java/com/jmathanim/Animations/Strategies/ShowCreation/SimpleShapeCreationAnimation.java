@@ -21,14 +21,16 @@ import com.jmathanim.Animations.Animation;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.CanonicalJMPath;
 import com.jmathanim.mathobjects.JMPath;
+import com.jmathanim.mathobjects.JMPathPoint;
 import com.jmathanim.mathobjects.MultiShapeObject;
+import com.jmathanim.mathobjects.Point;
 import com.jmathanim.mathobjects.Shape;
 
 /**
  *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
-public class SimpleShapeCreationAnimation extends Animation {
+public class SimpleShapeCreationAnimation extends CreationStrategy {
 
     private final Shape mobj;
     private MultiShapeObject msh;
@@ -38,7 +40,9 @@ public class SimpleShapeCreationAnimation extends Animation {
     public SimpleShapeCreationAnimation(double runtime, Shape mobj) {
         super(runtime);
         this.mobj = mobj;
+      
     }
+
 
     @Override
     public void initialize(JMathAnimScene scene) {
@@ -106,6 +110,7 @@ public class SimpleShapeCreationAnimation extends Animation {
                 JMPath subpath = canonPath.subpath(n, alphaInThisPath);
                 msh.shapes.get(n).getPath().clear();
                 msh.shapes.get(n).getPath().addJMPointsFrom(subpath);
+                setPencilPosition(msh.shapes.get(n).get(-1));
             }
         }
     }
