@@ -266,7 +266,7 @@ public class Point extends MathObject {
 
     /**
      * Return a new Point object which represents the original point plus a
-     * given vector
+     * given vector. The original point is unaltered.
      *
      * @param addVector Vector to add
      * @return Original point+addVector

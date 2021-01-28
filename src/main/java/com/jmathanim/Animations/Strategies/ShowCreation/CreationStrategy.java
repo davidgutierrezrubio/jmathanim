@@ -27,25 +27,26 @@ import com.jmathanim.mathobjects.Point;
  */
 public abstract class CreationStrategy extends Animation {
 
-    private final JMPathPoint pencil;
+    private final Point[] pencil;
 
     public CreationStrategy(double runtime) {
         super(runtime);
-        this.pencil = new JMPathPoint(Point.at(0, 0), false, JMPathPoint.JMPathPointType.NONE);
+        this.pencil = new Point[2];
     }
 
     /**
-     * Returns the "pencil" position, the current JMPathPoint that is drawing in
-     * this moment
+     * Returns the "pencil" position.
      *
-     * @return A JMathPoint that marks the current drawing
+     * @return An array with 2 point objects. The 0 index stores the previous
+     * position of the pencil and 1 stores the current
      */
-    public JMPathPoint getPencilPosition() {
+    public Point[] getPencilPosition() {
         return pencil;
     }
 
-    protected void setPencilPosition(JMPathPoint p) {
-        pencil.copyFrom(p);
+    protected void setPencilPosition(Point previous, Point current) {
+        pencil[0] = previous;
+        pencil[1] = current;
     }
 
 }

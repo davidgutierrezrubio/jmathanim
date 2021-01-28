@@ -18,6 +18,7 @@
 package com.jmathanim.Animations.Strategies.ShowCreation;
 
 import com.jmathanim.Animations.Animation;
+import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.CanonicalJMPath;
 import com.jmathanim.mathobjects.JMPath;
@@ -36,13 +37,13 @@ public class SimpleShapeCreationAnimation extends CreationStrategy {
     private MultiShapeObject msh;
     private CanonicalJMPath canonPath;
     private int numberOfSegments;
+    private final Point previous;
 
     public SimpleShapeCreationAnimation(double runtime, Shape mobj) {
         super(runtime);
         this.mobj = mobj;
-      
+        previous=Point.at(0,0);
     }
-
 
     @Override
     public void initialize(JMathAnimScene scene) {
@@ -74,7 +75,9 @@ public class SimpleShapeCreationAnimation extends CreationStrategy {
                 msh.shapes.get(n).getPath().clear();
                 final JMPath path = canonPath.get(n);
                 msh.shapes.get(n).getPath().addJMPointsFrom(path);
-                 setPencilPosition(msh.shapes.get(n).get(-1));
+                Point current = msh.shapes.get(n).get(-1).p.copy();
+                setPencilPosition(previous.copy(), current);
+                previous.copyFrom(current);
             }
             return;
         }
@@ -82,7 +85,11 @@ public class SimpleShapeCreationAnimation extends CreationStrategy {
             for (int n = 0; n < msh.shapes.size(); n++) {
                 msh.shapes.get(n).visible(false);
             }
-             setPencilPosition(msh.shapes.get(0).get(0));//Put the pencil at the beginning
+            Point current = msh.shapes.get(0).get(0).p.copy();
+            Vec v=current.to(msh.shapes.get(0).getPath().getPointAt(.01).p).mult(-1);
+            previous.copyFrom(current.add(v));
+            setPencilPosition(previous.copy(),current);//Put the pencil at the beginning
+             
             return;
         }
 
@@ -112,7 +119,9 @@ public class SimpleShapeCreationAnimation extends CreationStrategy {
                 JMPath subpath = canonPath.subpath(n, alphaInThisPath);
                 msh.shapes.get(n).getPath().clear();
                 msh.shapes.get(n).getPath().addJMPointsFrom(subpath);
-                setPencilPosition(msh.shapes.get(n).get(-1));
+                Point current = msh.shapes.get(n).get(-1).p.copy();
+                setPencilPosition(previous.copy(),current);
+                previous.copyFrom(current);
             }
         }
     }

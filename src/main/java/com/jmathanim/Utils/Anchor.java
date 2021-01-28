@@ -36,7 +36,7 @@ public class Anchor {
         /**
          * Anchor determined by the center of the object
          */
-        BY_CENTER,
+        CENTER,
         /**
          * Right anchor point. Vertically centered.
          */
@@ -126,7 +126,7 @@ public class Anchor {
                     }
                 }
                 break;
-            case BY_CENTER:
+            case CENTER:
                 resul = bb.getCenter();
                 break;
 
@@ -169,14 +169,15 @@ public class Anchor {
      * @return Reversed anchor
      */
     public static Type reverseAnchorPoint(Type anchorPoint) {
-        Type resul = Type.BY_CENTER;//Default
+        Type resul = Type.CENTER;//Default
         switch (anchorPoint) {
             case BY_POINT:
                 resul = Type.BY_POINT;
                 break;
-            case BY_CENTER:
-                resul = Type.BY_CENTER;
+            case CENTER:
+                resul = Type.CENTER;
                 break;
+
 
             case LEFT:
                 resul = Type.RIGHT;
@@ -220,7 +221,7 @@ public class Anchor {
         Point resul = new Point();
         Rect mathViewWithGap = JMathAnimConfig.getConfig().getCamera().getMathView().addGap(-xMargin, -yMargin);
         switch (anchor) {
-            case BY_CENTER:
+            case CENTER:
                 resul = mathViewWithGap.getCenter();
                 break;
             case LEFT:

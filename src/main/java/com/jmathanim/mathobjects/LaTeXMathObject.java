@@ -145,7 +145,7 @@ public class LaTeXMathObject extends SVGMathObject {
         double hm = cam.screenToMath(cam.screenHeight);
         double sc = DEFAULT_SCALE_FACTOR * .4 * hm / 6.8 * 2.5;
         this.scale(getBoundingBox().getUL(), sc, sc, 1);
-        this.stackTo(center, Anchor.Type.BY_CENTER);
+        this.stackTo(center, Anchor.Type.CENTER);
     }
 
     /**

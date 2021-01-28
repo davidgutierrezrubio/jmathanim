@@ -52,7 +52,7 @@ public abstract class MathObject implements Drawable, Updateable, Stateable, Box
 
     public boolean visibleFlag;
     public Point absoluteAnchorPoint;
-    private Type absoluteAnchorType = Type.BY_CENTER;
+    private Type absoluteAnchorType = Type.CENTER;
     private boolean visibleBackup;
 
     public MathObject() {
@@ -96,7 +96,7 @@ public abstract class MathObject implements Drawable, Updateable, Stateable, Box
      * @return The same object, after moving
      */
     public <T extends MathObject> T moveTo(Point p) {
-        putAt(p, Type.BY_CENTER);
+        putAt(p, Type.CENTER);
         return (T) this;
     }
 
@@ -226,7 +226,7 @@ public abstract class MathObject implements Drawable, Updateable, Stateable, Box
      * @return The same object
      */
     public final <T extends MathObject> T center() {
-        this.stackToScreen(Type.BY_CENTER);
+        this.stackToScreen(Type.CENTER);
         return (T) this;
     }
 
@@ -492,10 +492,15 @@ public abstract class MathObject implements Drawable, Updateable, Stateable, Box
     }
 
     /**
-     * Stack the object to another using a specified anchor.
+     * Stack the object to another using a specified anchor. The anchor for the
+     * stacked object is automatically selected as the reverse of the destiny
+     * anchor. For example stackTo(obj, RIGHT) will move this object so that its
+     * LEFT anchor matchs the RIGHT anchor of the destiny. This method is
+     * equivalent to stackTo(obj,type,0)
      *
      * @param <T> Mathobject subclass
-     * @param obj
+     * @param obj The destiny object. Anyting that implements the Boxable
+     * interface, like MathObject or Rect
      * @param anchorType {@link Anchor} type
      * @return The current object
      */
@@ -503,13 +508,42 @@ public abstract class MathObject implements Drawable, Updateable, Stateable, Box
         return stackTo(obj, anchorType, 0);
     }
 
-    public <T extends MathObject> T stackTo(Boxable obj, Type anchorType, double gap) {
-        if (!obj.isEmpty()) {
-            Point B = Anchor.getAnchorPoint(obj, anchorType, gap);
-            Point A = Anchor.getAnchorPoint(this, Anchor.reverseAnchorPoint(anchorType));
+    /**
+     * Stack the object to another using a specified anchor. For example
+     * stackTo(UPPER, obj, RIGHT) will move this object so that its UPPER anchor
+     * matchs the RIGHT anchor of the destiny.
+     *
+     * @param <T> Mathobject subclass
+     * @param anchorObj Anchor of this object to use
+     * @param dstObj Destiny object to stack with
+     * @param anchorType Anchor of destiny object to use
+     * @param gap Amount of gap to leave between the anchors, in math units
+     * @return This object
+     */
+    public <T extends MathObject> T stackTo(Type anchorObj, Boxable dstObj, Type anchorType, double gap) {
+        if (!dstObj.isEmpty()) {
+            Point B = Anchor.getAnchorPoint(dstObj, anchorType, gap);
+            Point A = Anchor.getAnchorPoint(this, anchorObj);
             this.shift(A.to(B));
         }
         return (T) this;
+    }
+
+    /**
+     * Stack the object to another using a specified anchor.The anchor for the
+     * stacked object is automatically selected as the reverse of the destiny
+     * anchor. For example stackTo(obj, RIGHT) will move this object so that its
+     * LEFT anchor matchs the RIGHT anchor of the destiny.
+     *
+     * @param <T> Mathobject subclass
+     * @param obj The destiny object. Anyting that implements the Boxable
+     * interface, like MathObject or Rect
+     * @param anchorType {@link Anchor} type
+     * @param gap Amount of gap to leave between the anchors, in math units
+     * @return The current object
+     */
+    public <T extends MathObject> T stackTo(Boxable obj, Type anchorType, double gap) {
+        return stackTo(Anchor.reverseAnchorPoint(anchorType), obj, anchorType, gap);
     }
 
     /**
@@ -578,7 +612,7 @@ public abstract class MathObject implements Drawable, Updateable, Stateable, Box
      * @return The current object
      */
     public <T extends MathObject> T setAbsoluteSize() {
-        return setAbsoluteSize(Type.BY_CENTER);
+        return setAbsoluteSize(Type.CENTER);
     }
 
     /**

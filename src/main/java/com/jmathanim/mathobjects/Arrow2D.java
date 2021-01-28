@@ -19,6 +19,7 @@ package com.jmathanim.mathobjects;
 
 import com.jmathanim.Utils.AffineJTransform;
 import com.jmathanim.Renderers.Renderer;
+import com.jmathanim.Styling.JMColor;
 import com.jmathanim.Utils.JMathAnimConfig;
 import com.jmathanim.Styling.MODrawPropertiesArray;
 import com.jmathanim.Styling.Stylable;
@@ -308,7 +309,6 @@ public class Arrow2D extends MathObject {
             double mw = JMathAnimConfig.getConfig().getCamera().getMathView().getHeight();
             double sc2 = this.scaleFactorHead2 * defaultArrowHead1Size2 * mw / head2.getBoundingBox().getHeight();
             arrowHeadToDraw2.scale(sc2);
-
             //Shifting
             Point headPoint = this.arrowHeadToDraw2.getBoundingBox().getUpper();
             this.arrowHeadToDraw2.shift(headPoint.to(p1));

@@ -59,7 +59,7 @@ public class ShowCreation extends Animation {
         GROUP_CREATION,
         AXES_CREATION
     }
-    public final JMPathPoint pencilPosition;
+    public final Point[] pencilPosition;
     MathObject mobj;
     CanonicalJMPath canonPath;
     private CreationStrategy creationStrategy;
@@ -74,7 +74,7 @@ public class ShowCreation extends Animation {
     public ShowCreation(double runtime, MathObject mobj) {
         super(runtime);
         this.mobj = mobj;
-        pencilPosition = new JMPathPoint(mobj.getCenter(), false, JMPathPoint.JMPathPointType.NONE);
+        pencilPosition = new Point[2];
     }
 
     @Override
@@ -101,7 +101,8 @@ public class ShowCreation extends Animation {
     public boolean processAnimation() {
         if (creationStrategy != null) {
             boolean ret = creationStrategy.processAnimation();
-            pencilPosition.copyFrom(creationStrategy.getPencilPosition());
+            pencilPosition[0]=creationStrategy.getPencilPosition()[0];
+            pencilPosition[1]=creationStrategy.getPencilPosition()[1];
             return ret;
         } else {
             return true;
@@ -241,7 +242,7 @@ public class ShowCreation extends Animation {
         return (T) this;
     }
 
-    public JMPathPoint getPencilPosition() {
+    public Point[] getPencilPosition() {
         return pencilPosition;
 
     }
