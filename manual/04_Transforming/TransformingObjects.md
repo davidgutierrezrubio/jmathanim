@@ -38,7 +38,7 @@ Shape sq = Shape.square().fillColor("darkred").fillAlpha(.3);
 c1.stackTo(sq, Anchor.Type.LEFT, .1);//Stacks circle to the left of the square, with a gap of .1 units
 c2.stackTo(sq, Anchor.Type.RIGHT, .1);//Stacks circle to the right of the square, with a gap of .1 units
 c3.stackTo(sq, Anchor.Type.UPPER);//Stacks circle to the upper side of the square, with no gap
-c4.stackTo(sq, Anchor.Type.BY_CENTER);//Stacks circle center-to-center with the square
+c4.stackTo(sq, Anchor.Type.CENTER);//Stacks circle center-to-center with the square
 add(c1, c2, c3, c4, sq);//Add everything to the scene
 camera.adjustToAllObjects(); //Adjust camera, so that everyone gets into the photo
 waitSeconds(5);//That is, smile for the screenshot!
@@ -68,7 +68,19 @@ Which produces this regular polygons pattern. Note that all polygons are vertica
 
 ![02b stackToExample2](02b_stackToExample2.png)
 
-You can change the `Anchor` to other values to see how these anchors work. Apart from `UPPER`, `LOWER`, `LEFT`, `RIGHT` and`BY_CENTER` there are also `UR` (up-right), `UL` (up-left), `DR` (down-right) and `DL` (down-left).
+You can change the `Anchor` to other values to see how these anchors work. Apart from `UPPER`, `LOWER`, `LEFT`, `RIGHT` and`CENTER` there are also `UR` (up-right), `UL` (up-left), `DR` (down-right) and `DL` (down-left).
+
+By default, the `stackTo` method takes appropiate origin anchor point to align with the destination anchor point. For example `stackTo(obj,Anchor.Type.RIGHT)` will move the object so that its `LEFT` anchor (the reverse of `RIGHT`) matches the `RIGHT` anchor of the destination object. You can specify the origin and destiny anchors too. For example, this code will put a square so that its center matches the right side of a circle:
+
+```java
+Shape sq = Shape.square().scale(.5, .5).fillColor("orange").fillAlpha(.5).thickness(3);
+Shape c = Shape.circle().scale(.5).fillColor("yellow").fillAlpha(.5).thickness(3);
+add(c, sq);
+sq.stackTo(Anchor.Type.CENTER, c, Anchor.Type.RIGHT, 0);
+waitSeconds(3);
+```
+
+![image-20210128172514664](04_StackToScreenExample3.png)
 
 ## StackToScreen
 
@@ -82,7 +94,7 @@ add(Shape.circle().stackToScreen(Anchor.Type.UL));//Stack a unit circle to the u
 waitSeconds(5);
 ```
 
-There is shortcut method if you want to simply put the object at the center screen. The method `.center()` is equivalent to `.stackToScreen(Anchor.Type.BY_CENTER)`.
+There is shortcut method if you want to simply put the object at the center screen. The method `.center()` is equivalent to `.stackToScreen(Anchor.Type.CENTER)`.
 
 ## Aligning objects
 
