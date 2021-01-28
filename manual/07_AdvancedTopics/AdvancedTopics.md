@@ -185,7 +185,7 @@ Now the square properly shifts and rotates:
 
 The previous animation can be done in another way. The animations `shift`,  `stackTo`, `align`, `moveIn` and `moveOut` all have in common that they implement a shifting of the object(s), each one differing in the form the shift vector is computed. All these animations inherit from the abstract class `ShiftAnimation` which implements 3 effects you can add to these animations:
 
-The `.setJumpHeight(double height)` adds a jump effect to the object(s) being shifted. The direction of the jump is the shift vector rotated 90 degrees counterclockwise. A negative height can be specified.
+The `.setJumpHeight(double height)` adds a (parabolical) jump effect to the object(s) being shifted. The direction of the jump is the shift vector rotated 90 degrees clockwise. A negative height can be specified.
 
 ```java
 Shape pol = Shape.regularPolygon(6).scale(.25).center().fillColor("steelblue").thickness(3);
@@ -275,7 +275,7 @@ waitSeconds(3);
 
 # Making procedural animations
 
-For procedural animations we mean animations made "manually" performing the modifications to the objects and advancing a frame, most like a stop motion artist would do. This method is needed for complex movements that cannot be done with the predefined animations. For this, the `JMathAnimScene`class has a protected variable, named `dt`, that holds the time step for each frame. The `advanceFrame()`method  does all necessary procedures to create the frame and save it. For example, let's make a program that moves a point with uniformly random steps:
+For procedural animations we mean animations made "manually" performing the modifications to the objects and advancing a frame, most like a stop motion artist would do. This method is needed for complex movements that cannot be done with the predefined animations. For this, the `JMathAnimScene`class has a protected variable, `dt`, that holds the time step for each frame. The `advanceFrame()`method  does all necessary procedures to create the frame and save it. For example, let's make a program that moves a point with uniformly random steps:
 
 ```java
 A=Point.origin();

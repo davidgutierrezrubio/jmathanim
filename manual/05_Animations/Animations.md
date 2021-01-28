@@ -355,7 +355,7 @@ boolean horizontal = true; //Starts with an horizontal flipping
 for (Shape s : text) {
     if (previous != null) {
         playAnimation(Commands.flipTransform(.5, horizontal, previous, s));
-        horizontal = !horizontal;//And 
+        horizontal = !horizontal;
     }
     previous = s;
 }
