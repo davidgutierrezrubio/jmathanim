@@ -217,7 +217,9 @@ public class Shape extends MathObject {
 
     //Static methods to build most used shapes
     public static Shape square() {
-        return Shape.square(new Point(0, 0), 1);
+        Shape obj = Shape.square(new Point(0, 0), 1);
+        obj.label = "square";
+        return obj;
     }
 
     public static Shape square(Point A, double side) {
@@ -303,9 +305,10 @@ public class Shape extends MathObject {
      * @return The polyline
      */
     public static Shape polyLine(Point... points) {
-        Shape resul = polygon(points);
-        resul.get(0).isThisSegmentVisible = false;
-        return resul;
+        Shape obj = polygon(points);
+        obj.label = "polyLine";
+        obj.get(0).isThisSegmentVisible = false;
+        return obj;
     }
 
     public static Shape regularPolygon(int numsides) {
@@ -314,6 +317,7 @@ public class Shape extends MathObject {
 
     public static Shape regularPolygon(int numsides, Point A, double side) {
         Shape obj = new Shape();
+        obj.label = "regPol";
         Point newPoint = (Point) A.copy();
         for (int n = 0; n < numsides; n++) {
             double alpha = 2 * n * Math.PI / numsides;
@@ -327,6 +331,7 @@ public class Shape extends MathObject {
 
     public static Shape arc(double angle) {
         Shape obj = new Shape();
+        obj.label = "arc";
         double x1, y1;
         int nSegs = 4;
         int segsForFullCircle = (int) (2 * PI * nSegs / angle);
@@ -361,6 +366,7 @@ public class Shape extends MathObject {
 
     public static Shape circle(int numSegments) {
         Shape obj = new Shape();
+        obj.label = "circle";
         double x1, y1;
         double step = Math.PI * 2 / numSegments;
         double cte = 4d / 3 * Math.tan(.5 * Math.PI / numSegments);
@@ -391,7 +397,9 @@ public class Shape extends MathObject {
     public static Shape annulus(double minRadius, double maxRadius) {
         Shape extCircle = Shape.circle().scale(maxRadius);
         Shape intCircle = Shape.circle().scale(.75);
-        return extCircle.merge(intCircle, false, true);
+        Shape obj = extCircle.merge(intCircle, false, true);
+        obj.label = "annulus";
+        return obj;
     }
 
     public boolean isShowDebugPoints() {

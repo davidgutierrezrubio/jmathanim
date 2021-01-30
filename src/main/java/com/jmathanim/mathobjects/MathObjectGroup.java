@@ -147,14 +147,6 @@ public class MathObjectGroup extends MathObject implements Iterable<MathObject> 
     }
 
     @Override
-    public <T extends MathObject> T moveTo(Point p) {
-        for (MathObject obj : objects) {
-            obj.moveTo(p);
-        }
-        return (T) this;
-    }
-
-    @Override
     public void registerChildrenToBeUpdated(JMathAnimScene scene) {
         for (MathObject obj : objects) {
             obj.registerChildrenToBeUpdated(scene);

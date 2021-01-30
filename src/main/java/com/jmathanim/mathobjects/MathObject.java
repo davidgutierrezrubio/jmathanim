@@ -78,29 +78,6 @@ public abstract class MathObject implements Drawable, Updateable, Stateable, Box
     }
 
     /**
-     * Move object so that center is the given coords
-     *
-     * @param <T> MathObject subclass
-     * @param coords Vec with coordinates of new center
-     * @return The same object, after moving
-     */
-    public final <T extends MathObject> T moveTo(Vec coords) {
-        return this.moveTo(Point.at(coords.x, coords.y));
-    }
-
-    /**
-     * Move object so that center is the given point
-     *
-     * @param <T> MathObject subclass
-     * @param p Point with coordinates of new center
-     * @return The same object, after moving
-     */
-    public <T extends MathObject> T moveTo(Point p) {
-        putAt(p, Type.CENTER);
-        return (T) this;
-    }
-
-    /**
      * Shift object with the given vector
      *
      * @param <T> MathObject subclass
@@ -574,32 +551,27 @@ public abstract class MathObject implements Drawable, Updateable, Stateable, Box
     }
 
     /**
-     * Shifts the object so that its anchor point locates at the specified
-     * location
+     * Shifts the object so that its center lies at the specified location
      *
      * @param <T> Mathobject subclass
      * @param p Destination point
-     * @param anchorType {@link Anchor} type
      * @return The current object
      */
-    public final <T extends MathObject> T putAt(Point p, Type anchorType) {
-        return putAt(p, anchorType, 0);
+    public final <T extends MathObject> T moveTo(Point p) {
+        return stackTo(p, Anchor.Type.CENTER);
     }
 
     /**
-     * Shifts the object so that its anchor point locates at the specified
-     * location, leaving a gap between the destination point and the anchor
-     * point.
+     * Overloaded method. Shifts the object so that its center lies at the
+     * specified location
      *
      * @param <T> Mathobject subclass
-     * @param p Destination point
-     * @param anchorType {@link Anchor} type
-     * @param gap gap between anchor and destination point
+     * @param x x destiny coordinate
+     * @param y y destiny coordinate
      * @return The current object
      */
-    public <T extends MathObject> T putAt(Point p, Type anchorType, double gap) {
-        Point anchorPoint = Anchor.getAnchorPoint(this, anchorType, gap);
-        return shift(anchorPoint.to(p));
+    public <T extends MathObject> T moveTo(double x, double y) {
+        return moveTo(Point.at(x, y));
     }
 
     /**

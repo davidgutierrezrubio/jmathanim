@@ -181,14 +181,6 @@ public class JMPathPoint extends MathObject implements Updateable, Stateable {
     }
 
     @Override
-    public <T extends MathObject> T moveTo(Point p) {
-        p.moveTo(p);
-        cpExit.moveTo(p);
-        cpEnter.moveTo(p);
-        return (T) this;
-    }
-
-    @Override
     public Rect getBoundingBox() {
         return p.getBoundingBox();
     }

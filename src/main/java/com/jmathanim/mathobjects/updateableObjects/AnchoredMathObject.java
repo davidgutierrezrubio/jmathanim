@@ -29,17 +29,19 @@ public class AnchoredMathObject implements Updateable {
 
     private final MathObject mobj;
     private final MathObject dstObject;
-    private Type anchorType;
+    private Type dstType;
+    private Type origType;
     private double gap;
 
-    public AnchoredMathObject(MathObject mobj, MathObject dstObject, Type anchorType) {
-        this(mobj, dstObject, anchorType, 0);
+    public AnchoredMathObject(MathObject mobj, Type origType,MathObject dstObject, Type dstType) {
+        this(mobj, origType,dstObject, dstType, 0);
     }
 
-    public AnchoredMathObject(MathObject mobj, MathObject dstObject, Type anchorType, double gap) {
+    public AnchoredMathObject(MathObject mobj, Type origType,MathObject dstObject, Type dstType, double gap) {
         this.mobj = mobj;
         this.dstObject = dstObject;
-        this.anchorType = anchorType;
+        this.origType = origType;
+        this.dstType = dstType;
         this.gap = gap;
     }
 
@@ -58,15 +60,15 @@ public class AnchoredMathObject implements Updateable {
 
     @Override
     public void update(JMathAnimScene scene) {
-        mobj.stackTo(dstObject, anchorType, gap);
+        mobj.stackTo(origType,dstObject, dstType, gap);
     }
 
     public Type getAnchorType() {
-        return anchorType;
+        return dstType;
     }
 
     public void setAnchorType(Type anchorType) {
-        this.anchorType = anchorType;
+        this.dstType = anchorType;
     }
 
 }

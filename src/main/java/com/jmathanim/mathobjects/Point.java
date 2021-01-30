@@ -241,12 +241,6 @@ public class Point extends MathObject {
         return dotShape;
     }
 
-    @Override
-    public <T extends MathObject> T moveTo(Point p) {
-        return shift(p.v.minus(v));
-
-    }
-
     /**
      * Returns the current dot style
      *

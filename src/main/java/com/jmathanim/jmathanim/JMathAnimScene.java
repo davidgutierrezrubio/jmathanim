@@ -30,9 +30,13 @@ import com.jmathanim.mathobjects.MathObjectGroup;
 import com.jmathanim.mathobjects.MultiShapeObject;
 import com.jmathanim.mathobjects.Shape;
 import com.jmathanim.mathobjects.updateableObjects.Updateable;
+import com.sun.org.apache.bcel.internal.generic.AALOAD;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.logging.Level;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -476,6 +480,10 @@ public abstract class JMathAnimScene {
         return config;
     }
 
+    /**
+     * Disable animations. If you invoke this method, subsequent drawings,
+     * animations and movie generating will be disabled
+     */
     public void disableAnimations() {
         this.animationIsDisabled = true;
     }
@@ -484,15 +492,50 @@ public abstract class JMathAnimScene {
         this.animationIsDisabled = false;
     }
 
+    /**
+     * Gets the current visible area, in math coordinates
+     *
+     * @return A Rect object with the visible area
+     */
     public Rect getMathView() {
         return renderer.getCamera().getMathView();
     }
 
+    /**
+     * Gets the current view width, in math coordinates
+     *
+     * @return The view width
+     */
     public double getViewWidth() {
         return getMathView().getWidth();
     }
 
+    /**
+     * Gets the current view height, in math coordinates
+     *
+     * @return The view height
+     */
     public double getViewHeight() {
         return getMathView().getHeight();
     }
+
+    /**
+     * Returns an Array with all objects added to the scene that are in the
+     * specified layers
+     *
+     * @param layers Layers to retrieve objects from (varargs)
+     * @return A MathObject[] array containing the objects
+     */
+    public MathObject[] getObjectsFromLayers(int... layers) {
+        ArrayList<Integer> arLayers = new ArrayList<>();
+        for (int k : layers) {
+            arLayers.add(k);
+        }
+        MathObject[] resul = getObjects()
+                .stream()
+                .filter(obj -> arLayers.contains(obj.getLayer()))
+                .toArray(MathObject[]::new);
+        return resul;
+    }
+
 }
