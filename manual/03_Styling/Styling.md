@@ -2,7 +2,7 @@
 
 # Applying styles
 
-Each `MathObject` has one `MODrawingProperties` object that stores drawing parameters.
+Each `MathObject` has an object implementing the  `Stylable` interface that stores drawing parameters.
 
 # Basic styles
 

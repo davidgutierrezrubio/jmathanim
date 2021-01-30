@@ -81,7 +81,7 @@ Generates the following animation:
 
 # Predefinied updaters
 
-JMathAnim has some useful updaters defined that maybe useful:
+JMathAnim has some built-in updaters that maybe useful:
 
 ## Camera always ajusted to objects
 
@@ -101,10 +101,17 @@ Shape circ4=circ1.copy();
 Shape sq=Shape.square().center().thickness(4);
 add(circ1,circ2,circ3,circ4);
         
-registerUpdateable(new AnchoredMathObject(circ1, sq, Anchor.Type.RIGHT));
-registerUpdateable(new AnchoredMathObject(circ2, sq, Anchor.Type.LEFT));
-registerUpdateable(new AnchoredMathObject(circ3, sq, Anchor.Type.UPPER));
-registerUpdateable(new AnchoredMathObject(circ4, sq, Anchor.Type.LOWER));
+//Stacks permantently the LEFT of circ1 with the RIGHT of sq
+registerUpdateable(new AnchoredMathObject(circ1, Anchor.Type.LEFT,sq, Anchor.Type.RIGHT));
+
+//Stacks permantently the RIGHT of circ1 with the LEFT of sq
+registerUpdateable(new AnchoredMathObject(circ2, Anchor.Type.RIGHT,sq, Anchor.Type.LEFT));
+
+//Stacks permantently the LOWER of circ1 with the UPPER of sq
+registerUpdateable(new AnchoredMathObject(circ3, Anchor.Type.LOWER,sq, Anchor.Type.UPPER));
+
+//Stacks permantently the UPPER of circ1 with the LOWER of sq
+registerUpdateable(new AnchoredMathObject(circ4, Anchor.Type.UPPER,sq, Anchor.Type.LOWER));
         
 play.rotate(3, 90*DEGREES, sq);
 waitSeconds(3);

@@ -50,6 +50,8 @@ which produces the following image:
 
 You’ll notice two new methods here: The `copy()` method returns a copy of the object, and the `camera.adjustToAllObjects()` does as it says, rescales the camera so that everything fits into view.  The `fillColor` and `fillAlpha` sets the filling of the object. 
 
+Note that the `.moveTo(p)`method is equivalent to `.stackTo(p, Anchor.Type.CENTER)`.
+
 The `stackTo` command allows to easily generate aligned objects:
 
 ``` java
@@ -81,6 +83,8 @@ waitSeconds(3);
 ```
 
 ![image-20210128172514664](04_StackToScreenExample3.png)
+
+
 
 ## StackToScreen
 

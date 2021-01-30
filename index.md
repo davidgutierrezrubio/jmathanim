@@ -5,6 +5,8 @@ Current version is 0.8.7.
 
 Although with limited features, it can be used to create many, non too complex animations. If you use it and find a bug/missing feature, feel free to fill an issue [here](https://github.com/davidgutierrezrubio/jmathanim/issues). For any other question, you can contact me at davidgutierrezrubio@gmail.com.
 
+You can also follow my [Youtube](https://www.youtube.com/channel/UCeczwEqSrAwZbPdHADN8rfQ) channel where I ocasionally upload math videos and my [Twitter](https://twitter.com/DavidCalculin) account (both mostly in Spanish).
+
 ## Why Java?
 
 The short answer is: why not?
@@ -28,6 +30,9 @@ If you are used to another OO languages, like Python, it is relatively easy to s
 
 # What's new?
 Version 0.8.8-SNAPSHOT:
+
+* Added `getObjectsFromLayers`method that returns a `MathObject[]` array with all objects from the scene in the specified layers.
+* Removed method `putAt` . Use `moveTo` instead.
 
 * Changed `BY_CENTER` anchor point name to more concise `CENTER`
 * Fixed bug for line objects that did not load the default style

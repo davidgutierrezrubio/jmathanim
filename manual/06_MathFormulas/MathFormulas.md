@@ -13,7 +13,7 @@ For example if we generate a math expression with the command
 LaTeXMathObject sum=LaTeXMathObject.make("$2+2=4$");
 ```
 
-It will generate 5 shapes, that we can access via `get` method. Thus, the command `sum.get(0)` will return the first shape ( the "2" glyph), `sum.get(1)` will return the "+" glyph, etc. This indexeses will be important to specify exactly how we want the animation from one expression to another to be done.
+It will generate 5 shapes, that we can access via `get` method. Thus, the command `sum.get(0)` will return the first shape ( the "2" glyph), `sum.get(1)` will return the "+" glyph, etc. These indices will be important to specify exactly how we want the animation from one expression to another to be done.
 
 The major drawback of this approach is that is not always clear which glyph of the formula corresponds to a given index.  For that, we have the method `formulaHelper` that takes a varargs of `LatexMathObject` objects, or `String` with the LaTeX code, overlays the shape number for each one, stacks the formulas vertically, zooms and adds them to the scene. For example:
 
@@ -83,7 +83,7 @@ waitSeconds(2);
 
 Note that, although the sliced formula has only one element, the indexes remain the same. So, if the "b" glyph was in position 2 in the original formula, it is still in position 2 in the sliced formula, so that `sliceBase.get(2)` returns the "b" shape. The other indexes stores empty shapes.
 
-There is another version of the method, with a boolean flag that lets control if the sliced shapes are removed from the original math expression or not. For example, in the previous example `LaTeXMathObject sliceBase=formula.slice(false,2)` will create a slice of the "b" glyph without altering the original formula.
+There is another version of the method, with a boolean flag that controls if the sliced shapes are removed from the original math expression or not. For example, in the previous example `LaTeXMathObject sliceBase=formula.slice(false,2)` will create a slice of the "b" glyph without altering the original formula.
 
 The `slice`method can be a powerful tool if you want to operate on part of complex math expressions. If you want to progressively show a complex formula, the easiest option is to slice it in the different parts you will be showing at  a concrete point of the animation.
 
