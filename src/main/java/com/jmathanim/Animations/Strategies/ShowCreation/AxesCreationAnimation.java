@@ -24,9 +24,9 @@ import com.jmathanim.Animations.Concatenate;
 import com.jmathanim.Animations.ShowCreation;
 import com.jmathanim.Animations.WaitAnimation;
 import com.jmathanim.jmathanim.JMathAnimScene;
-import com.jmathanim.mathobjects.Axes;
+import com.jmathanim.mathobjects.Axes.Axes;
 import com.jmathanim.mathobjects.MathObject;
-import com.jmathanim.mathobjects.TickAxes;
+import com.jmathanim.mathobjects.Axes.TickAxes;
 import java.util.ArrayList;
 
 /**

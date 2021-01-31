@@ -15,7 +15,7 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-package com.jmathanim.mathobjects;
+package com.jmathanim.mathobjects.Tippable;
 
 import com.jmathanim.Renderers.Renderer;
 import com.jmathanim.Utils.AffineJTransform;
@@ -23,13 +23,20 @@ import com.jmathanim.Styling.MODrawPropertiesArray;
 import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
-import static com.jmathanim.mathobjects.ArrowTip.make;
+import com.jmathanim.mathobjects.MathObject;
+import com.jmathanim.mathobjects.MultiShapeObject;
+import com.jmathanim.mathobjects.Point;
+import com.jmathanim.mathobjects.Shape;
+import static com.jmathanim.mathobjects.Tippable.ArrowTip.make;
 
 /**
+ * A MathObject that is permanently anchored to a specified point of a Shape.
+ * For example: marks in segments do denote equal lengths, arrows to denote
+ * directions, etc.
  *
  * @author David Gutierrez Rubio davidgutierrezrubio@gmail.com
  */
-public abstract class TippableObject extends MathObject {
+public class TippableObject extends MathObject {
 
     public static final double DELTA_DERIVATIVE = .0001;
     int anchorValue;
@@ -90,7 +97,7 @@ public abstract class TippableObject extends MathObject {
         return tip;
     }
 
-    public void setTip(MathObject tip) {
+    public final void setTip(MathObject tip) {
         mpArray.remove(this.tip);
         this.tip = tip;
         mpArray.add(tip);
@@ -144,7 +151,7 @@ public abstract class TippableObject extends MathObject {
         return this.scale(s, s);
     }
 
-    public <T extends MathObject> T setDirection(slopeDirection direction) {
+    public final <T extends MathObject> T setDirection(slopeDirection direction) {
         this.direction = direction;
         return (T) this;
     }
@@ -200,6 +207,14 @@ public abstract class TippableObject extends MathObject {
 
     public enum slopeDirection {
         NEGATIVE, POSITIVE
+    }
+    
+    public static TippableObject parallelSign(Shape shape, double location, int numberOfMarks) {
+         MultiShapeObject parallelSign = new MultiShapeObject();
+        for (int i = 0; i < numberOfMarks; i++) {
+            parallelSign.add(Shape.segment(Point.at(0,.25*i), Point.at(1,.25*i)));
+        }
+        return make(shape,location,slopeDirection.POSITIVE,parallelSign);
     }
 
 }

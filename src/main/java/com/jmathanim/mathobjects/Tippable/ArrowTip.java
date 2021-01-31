@@ -15,10 +15,15 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-package com.jmathanim.mathobjects;
+package com.jmathanim.mathobjects.Tippable;
 
 import com.jmathanim.Utils.ResourceLoader;
 import com.jmathanim.jmathanim.JMathAnimScene;
+import com.jmathanim.mathobjects.Arrow2D;
+import com.jmathanim.mathobjects.MathObject;
+import com.jmathanim.mathobjects.MultiShapeObject;
+import com.jmathanim.mathobjects.SVGMathObject;
+import com.jmathanim.mathobjects.Shape;
 import java.net.URL;
 
 /**

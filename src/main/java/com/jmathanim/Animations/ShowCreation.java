@@ -26,7 +26,7 @@ import com.jmathanim.Animations.Strategies.ShowCreation.LineCreationAnimation;
 import com.jmathanim.Animations.Strategies.ShowCreation.SimpleShapeCreationAnimation;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.Arrow2D;
-import com.jmathanim.mathobjects.Axes;
+import com.jmathanim.mathobjects.Axes.Axes;
 import com.jmathanim.mathobjects.CanonicalJMPath;
 import com.jmathanim.mathobjects.Delimiter;
 import com.jmathanim.mathobjects.JMPathPoint;

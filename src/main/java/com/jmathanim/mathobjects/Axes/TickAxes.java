@@ -15,13 +15,17 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-package com.jmathanim.mathobjects;
+package com.jmathanim.mathobjects.Axes;
 
 import com.jmathanim.Cameras.Camera;
 import com.jmathanim.Renderers.Renderer;
 import com.jmathanim.Styling.MODrawPropertiesArray;
 import com.jmathanim.Styling.Stylable;
 import com.jmathanim.Utils.Rect;
+import com.jmathanim.mathobjects.LaTeXMathObject;
+import com.jmathanim.mathobjects.MathObject;
+import com.jmathanim.mathobjects.Point;
+import com.jmathanim.mathobjects.Shape;
 
 /**
  *

@@ -15,7 +15,7 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-package com.jmathanim.mathobjects;
+package com.jmathanim.mathobjects.Axes;
 
 import com.jmathanim.Renderers.Renderer;
 import com.jmathanim.Utils.AffineJTransform;
@@ -25,7 +25,10 @@ import com.jmathanim.Styling.Stylable;
 import com.jmathanim.Utils.JMathAnimConfig;
 import com.jmathanim.Utils.Rect;
 import com.jmathanim.jmathanim.JMathAnimScene;
-import static com.jmathanim.mathobjects.Axes.LEGEND_TICKS_GAP;
+import com.jmathanim.mathobjects.Line;
+import com.jmathanim.mathobjects.MathObject;
+import com.jmathanim.mathobjects.Point;
+import static com.jmathanim.mathobjects.Axes.Axes.LEGEND_TICKS_GAP;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
