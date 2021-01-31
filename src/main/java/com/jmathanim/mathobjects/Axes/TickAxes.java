@@ -99,12 +99,15 @@ public class TickAxes extends MathObject {
         return new TickAxes(location, legend.copy(), tick.copy(), orientation, maximumScaleToShow);
     }
 
-    public void draw(JMathAnimScene scene, Renderer r){
-        if (shouldDraw(r.getCamera())) {
-            legend.draw(scene, r);
-            tick.draw(scene, r);
+    public void draw(JMathAnimScene scene, Renderer r) {
+        if (isVisible()) {
+            if (shouldDraw(r.getCamera())) {
+                legend.draw(scene, r);
+                tick.draw(scene, r);
+            }
         }
-          scene.markAsAlreadyDrawed(this);
+        scene.markAsAlreadyDrawed(this);
+
     }
 
     @Override

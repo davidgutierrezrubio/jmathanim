@@ -48,8 +48,10 @@ public abstract class AbstractJMImage extends MathObject {
     }
 
     @Override
-    public void draw(JMathAnimScene scene, Renderer r){
-        r.drawImage(this);
+    public void draw(JMathAnimScene scene, Renderer r) {
+        if (isVisible()) {
+            r.drawImage(this);
+        }
         scene.markAsAlreadyDrawed(this);
     }
 

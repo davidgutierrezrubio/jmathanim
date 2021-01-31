@@ -190,11 +190,13 @@ public class Point extends MathObject {
 //        double rad = mp.getThickness(r);
 //        r.drawCircle(v.x, v.y, rad);
 //        
-        double st;
+
         dotShape = generateDotShape();
         dotShape.setAbsoluteSize();
         dotShape.setAbsoluteAnchorPoint(this.copy());
-        dotShape.draw(scene, r);
+        if (isVisible()) {
+            dotShape.draw(scene, r);
+        }
         scene.markAsAlreadyDrawed(this);
 
     }

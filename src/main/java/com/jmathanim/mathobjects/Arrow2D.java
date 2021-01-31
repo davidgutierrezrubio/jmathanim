@@ -271,9 +271,11 @@ public class Arrow2D extends MathObject {
 
     @Override
     public void draw(JMathAnimScene scene, Renderer r) {
-        bodyToDraw.draw(scene, r);
-        arrowHeadToDraw1.draw(scene, r);
-        arrowHeadToDraw2.draw(scene, r);
+        if (isVisible()) {
+            bodyToDraw.draw(scene, r);
+            arrowHeadToDraw1.draw(scene, r);
+            arrowHeadToDraw2.draw(scene, r);
+        }
         scene.markAsAlreadyDrawed(this);
     }
 

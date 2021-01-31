@@ -117,9 +117,11 @@ public class MathObjectGroup extends MathObject implements Iterable<MathObject> 
 
     @Override
     public void draw(JMathAnimScene scene, Renderer r) {
-        for (MathObject obj : this.getObjects()) {
-            if (!scene.isAlreadyDrawed(obj)) {
-                obj.draw(scene, r);
+        if (isVisible()) {
+            for (MathObject obj : this.getObjects()) {
+                if (!scene.isAlreadyDrawed(obj)) {
+                    obj.draw(scene, r);
+                }
             }
         }
         scene.markAsAlreadyDrawed(this);

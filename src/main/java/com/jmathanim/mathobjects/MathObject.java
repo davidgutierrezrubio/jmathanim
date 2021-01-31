@@ -51,10 +51,8 @@ public abstract class MathObject implements Drawable, Updateable, Stateable, Box
 
     public boolean absoluteSize = false;
 
-    private boolean visibleFlag;
     public Point absoluteAnchorPoint;
     private Type absoluteAnchorType = Type.CENTER;
-    private boolean visibleBackup;
 
     public MathObject() {
         this(null);
@@ -62,7 +60,6 @@ public abstract class MathObject implements Drawable, Updateable, Stateable, Box
 
     public MathObject(MODrawProperties prop) {
 
-        this.visibleFlag = true;
         scene = JMathAnimConfig.getConfig().getScene();
         mp = JMathAnimConfig.getConfig().getDefaultMP();//Default MP values
         mp.copyFrom(prop);//Copy all non-null values from prop
@@ -289,13 +286,11 @@ public abstract class MathObject implements Drawable, Updateable, Stateable, Box
     @Override
     public void saveState() {
         getMp().saveState();
-        visibleBackup = visibleFlag;
     }
 
     @Override
     public void restoreState() {
         getMp().restoreState();
-        visibleFlag = visibleBackup;
     }
 
     /**
@@ -451,7 +446,7 @@ public abstract class MathObject implements Drawable, Updateable, Stateable, Box
      * @return This MathObject subclass
      */
     public <T extends MathObject> T visible(boolean visible) {
-        this.visibleFlag = visible;
+      getMp().setVisible(visible);
         return (T) this;
     }
 
@@ -688,7 +683,7 @@ public abstract class MathObject implements Drawable, Updateable, Stateable, Box
      * @return True if visible, false otherwise
      */
     public boolean isVisible() {
-        return visibleFlag;
+        return getMp().isVisible();
     }
 
     /**

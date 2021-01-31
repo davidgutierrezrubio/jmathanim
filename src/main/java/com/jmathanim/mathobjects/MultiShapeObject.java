@@ -109,23 +109,24 @@ public class MultiShapeObject extends MathObject implements Iterable<Shape> {
     }
 
     @Override
-    public void draw(JMathAnimScene scene,Renderer r) {
-
-        int n = 0;
-        for (Shape jmp : shapes) {
-            if (jmp.isVisible()) {
-                if (absoluteSize) {
-                    r.drawAbsoluteCopy(jmp, getAbsoluteAnchor().v);//TODO: This doesnt work for overrided methods (e.g.: line)
-                } else {
-                    jmp.draw(scene,r);
+    public void draw(JMathAnimScene scene, Renderer r) {
+        if (isVisible()) {
+            int n = 0;
+            for (Shape jmp : shapes) {
+                if (jmp.isVisible()) {
+                    if (absoluteSize) {
+                        r.drawAbsoluteCopy(jmp, getAbsoluteAnchor().v);//TODO: This doesnt work for overrided methods (e.g.: line)
+                    } else {
+                        jmp.draw(scene, r);
 //                    if (isShowDebugText()) {
 //                        r.debugText("" + n, jmp.getCenter().v);
 //                    }
+                    }
                 }
+                n++;
             }
-            n++;
         }
-          scene.markAsAlreadyDrawed(this);
+        scene.markAsAlreadyDrawed(this);
     }
 
     public <T extends MultiShapeObject> T showDebugIndices(boolean value) {

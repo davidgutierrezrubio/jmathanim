@@ -164,16 +164,18 @@ public class Axes extends MathObject {
 
     @Override
     public void draw(JMathAnimScene scene, Renderer r) {
-        xAxis.draw(scene, r);
-        yAxis.draw(scene, r);
+        if (isVisible()) {
+            xAxis.draw(scene, r);
+            yAxis.draw(scene, r);
 
-        for (TickAxes xtick : xticks) {
-            xtick.draw(scene, r);
+            for (TickAxes xtick : xticks) {
+                xtick.draw(scene, r);
+            }
+            for (TickAxes ytick : yticks) {
+                ytick.draw(scene, r);
+            }
         }
-        for (TickAxes ytick : yticks) {
-            ytick.draw(scene, r);
-        }
-          scene.markAsAlreadyDrawed(this);
+        scene.markAsAlreadyDrawed(this);
     }
 
     /**

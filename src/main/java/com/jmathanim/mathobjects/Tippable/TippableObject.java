@@ -80,8 +80,10 @@ public class TippableObject extends MathObject {
 
     @Override
     public void draw(JMathAnimScene scene, Renderer r) {
-        getTipCopy().draw(scene, r);
-        scene.markAsAlreadyDrawed(this);
+        if (isVisible()) {
+            getTipCopy().draw(scene, r);
+            scene.markAsAlreadyDrawed(this);
+        }
     }
 
     @Override

@@ -86,7 +86,7 @@ public class Line extends Shape {
      * @param p2 Second point
      */
     public Line(Point p1, Point p2) {
-        this(p1, p2,null);
+        this(p1, p2, null);
     }
 
     /**
@@ -165,10 +165,12 @@ public class Line extends Shape {
     }
 
     @Override
-    public void draw(JMathAnimScene scene, Renderer r){
+    public void draw(JMathAnimScene scene, Renderer r) {
         update(JMathAnimConfig.getConfig().getScene());//TODO: remove coupling
-        visiblePiece.draw(scene,r);
-          scene.markAsAlreadyDrawed(this);
+        if (isVisible()) {
+            visiblePiece.draw(scene, r);
+        }
+        scene.markAsAlreadyDrawed(this);
     }
 
     /**
