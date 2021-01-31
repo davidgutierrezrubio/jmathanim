@@ -32,12 +32,12 @@ public class MODrawPropertiesArray implements Stylable, Stateable {
     private ArrayList<MathObject> objects;
     private final MODrawProperties mpRef;
 
-     public MODrawPropertiesArray(MODrawProperties mp) {
+    public MODrawPropertiesArray(MODrawProperties mp) {
         mpRef = new MODrawProperties();
         mpRef.copyFrom(mp);
         objects = new ArrayList<>();
     }
-    
+
     public MODrawPropertiesArray() {
         mpRef = new MODrawProperties();
         objects = new ArrayList<>();
@@ -60,6 +60,19 @@ public class MODrawPropertiesArray implements Stylable, Stateable {
 
     public void setObjects(ArrayList<MathObject> objects) {
         this.objects = objects;
+    }
+
+    @Override
+    public void setVisible(Boolean visible) {
+        for (MathObject obj : objects) {
+            obj.getMp().setVisible(visible);
+        }
+        mpRef.setVisible(visible);
+    }
+
+    @Override
+    public Boolean isVisible() {
+        return mpRef.isVisible();
     }
 
     public boolean remove(MathObject o) {

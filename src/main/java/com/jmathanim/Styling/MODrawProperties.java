@@ -34,106 +34,18 @@ import javafx.scene.shape.StrokeLineCap;
  */
 public class MODrawProperties implements Stylable, Stateable {
 
-    @Override
-    public JMColor getDrawColor() {
-        return drawColor;
-    }
-
-    @Override
-    public JMColor getFillColor() {
-        return fillColor;
-    }
-
-    @Override
-    public void setMultFillAlpha(double alphaScale) {
-        double newAlpha = getFillColor().alpha * alphaScale;
-        newAlpha = (newAlpha > 1 ? 1 : newAlpha);
-        newAlpha = (newAlpha < 0 ? 0 : newAlpha);
-        this.setFillAlpha(newAlpha);
-    }
-
-    @Override
-    public void setMultDrawAlpha(double alphaScale) {
-        double newAlpha = getDrawColor().alpha * alphaScale;
-        newAlpha = (newAlpha > 1 ? 1 : newAlpha);
-        newAlpha = (newAlpha < 0 ? 0 : newAlpha);
-        this.setDrawAlpha(newAlpha);
-    }
-
-    @Override
-    public StrokeLineCap getLinecap() {
-        return this.linecap;
-    }
-
-    @Override
-    public void setLinecap(StrokeLineCap linecap) {
-        this.linecap = linecap;
-    }
-
-    @Override
-    public Double getThickness() {
-        return thickness;
-    }
-
-    @Override
-    public void setThickness(Double thickness) {
-        this.thickness = thickness;
-    }
-
-    @Override
-    public void setDotStyle(DotSyle dotStyle) {
-        this.dotStyle = dotStyle;
-    }
-
-    @Override
-    public DotSyle getDotStyle() {
-        return dotStyle;
-    }
-
-    @Override
-    public void setDashStyle(DashStyle dashStyle) {
-        this.dashStyle = dashStyle;
-    }
-
-    @Override
-    public DashStyle getDashStyle() {
-        return dashStyle;
-    }
-
-    @Override
-    public Boolean isAbsoluteThickness() {
-        return absoluteThickness;
-    }
-
-    @Override
-    public void setAbsoluteThickness(Boolean absThickness) {
-        this.absoluteThickness = absThickness;
-    }
-
-    public enum DashStyle {
-        SOLID, DASHED, DOTTED
-    }
-
-    //When added a new property here, remember to include it in rawCopyFrom and copyFrom
-    private JMColor drawColor;
-    private JMColor fillColor;
-    public Double thickness = 1d;
-    //If false, thickness is computed to be a percentage of the width
-    //to ensure zoom or resolution doesn't affect the result
-    public Boolean absoluteThickness = true;
-    public DashStyle dashStyle = DashStyle.SOLID;
-    private Integer layer = null;
-    public Boolean fillColorIsDrawColor = false; //If true, fillColor is always overriden by drawColor
-
-    //Styles used for specified objects
-    //Point
-    public DotSyle dotStyle = DotSyle.CIRCLE;
-    private MODrawProperties mpBackup;
-    public StrokeLineCap linecap = StrokeLineCap.ROUND;
-
-    public MODrawProperties() {
-        drawColor = new JMColor(1, 1, 1, 1);
-        fillColor = new JMColor(0, 0, 0, 0);
+    /**
+     * Returns a new {@link MODrawProperties} created from the current style. If
+     * no such style exists, a default MathObjectDrawingProperties is created.
+     *
+     * @param name Style name
+     * @return A new {@link MODrawProperties} object created from the current
+     * class.
+     */
+    public static MODrawProperties createFromStyle(String name) {
+        MODrawProperties resul = MODrawProperties.makeNullValues();
+        resul.loadFromStyle(name);
+        return resul;
     }
 
     /**
@@ -157,119 +69,6 @@ public class MODrawProperties implements Stylable, Stateable {
         nullMP.linecap = null;
         nullMP.fillColorIsDrawColor = null;
         return nullMP;
-    }
-
-    /**
-     * Absorbs all non-null properties of a given properties class
-     *
-     * @param prop
-     */
-    @Override
-    public void copyFrom(Stylable prop) {
-        if (prop == null) {//Nothing to do here!
-            return;
-        }
-        if (prop.getDrawColor() != null) {
-            drawColor = prop.getDrawColor().copy();
-        }
-        if (prop.getFillColor() != null) {
-            fillColor = prop.getFillColor().copy();
-        }
-        thickness = (prop.getThickness() == null ? thickness : prop.getThickness());
-        dashStyle = (prop.getDashStyle() == null ? dashStyle : prop.getDashStyle());
-        absoluteThickness = (prop.isAbsoluteThickness() == null ? absoluteThickness : prop.isAbsoluteThickness());
-        dotStyle = (prop.getDotStyle() == null ? dotStyle : prop.getDotStyle());
-        layer = (prop.getLayer() == null ? layer : prop.getLayer());
-        linecap = (prop.getLinecap() == null ? linecap : prop.getLinecap());
-        fillColorIsDrawColor = (prop.isFillColorIsDrawColor() == null ? fillColorIsDrawColor : prop.isFillColorIsDrawColor());
-    }
-
-    /**
-     * Copy attributes from the given {@link MODrawProperties} object Null
-     * values are copied also
-     *
-     * @param mp The object to copy attributes from.
-     */
-    @Override
-    public void rawCopyFrom(MODrawProperties mp) {
-        drawColor.copyFrom(mp.drawColor);
-        fillColor.copyFrom(mp.fillColor);
-        thickness = mp.thickness;
-        dashStyle = mp.dashStyle;
-        absoluteThickness = mp.absoluteThickness;
-        dashStyle = mp.dashStyle;
-        layer = mp.layer;
-        dotStyle = mp.dotStyle;
-        linecap = mp.linecap;
-        fillColorIsDrawColor = mp.fillColorIsDrawColor;
-    }
-
-    @Override
-    public void interpolateFrom(Stylable a, Stylable b, double alpha) {
-        if (alpha == 1)//in this case, copy directly all non-null attributes, including non-interpolable
-        {
-            this.copyFrom(b);
-            return;
-        }
-        //If not, getInterpolatedColor drawColor, fillColor and thickness (if they are not null)
-        //Interpolate colors
-        if (b.getDrawColor() != null) {
-            drawColor.copyFrom(a.getDrawColor().getInterpolatedColor(b.getDrawColor(), alpha));
-        }
-        if (b.getFillColor() != null) {
-            fillColor.copyFrom(a.getFillColor().getInterpolatedColor(b.getFillColor(), alpha));
-        }
-        if (b.getThickness() != null) {
-            this.thickness = (1 - alpha) * a.getThickness() + alpha * b.getThickness();
-        }
-    }
-
-    @Override
-    public void interpolateFrom(Stylable dst, double alpha) {
-        interpolateFrom(this, dst, alpha);
-    }
-
-    public static Color randomColor() {
-        int r = ThreadLocalRandom.current().nextInt(0, 255 + 1);
-        int g = ThreadLocalRandom.current().nextInt(0, 255 + 1);
-        int b = ThreadLocalRandom.current().nextInt(0, 255 + 1);
-        return new Color(r, g, b);
-    }
-
-    @Override
-    public void setFillAlpha(double alpha) {
-        this.fillColor.alpha = alpha;
-    }
-
-    @Override
-    public void setDrawAlpha(double alpha) {
-        this.drawColor.alpha = alpha;
-    }
-
-    public boolean isFilled() {
-        return (this.fillColor.alpha > 0);
-    }
-
-    @Override
-    public void setFilled(boolean fill) {
-        if (fill && fillColor.alpha == 0) {
-            setFillAlpha(1);
-        }
-        if (!fill) {
-            setFillAlpha(0);
-        }
-    }
-
-    /**
-     * Returns a copy of this object. All objects are raw-copied.
-     *
-     * @return A raw copy of the object.
-     */
-    @Override
-    public MODrawProperties copy() {
-        MODrawProperties resul = new MODrawProperties();
-        resul.copyFrom(this);
-        return resul;
     }
 
     /**
@@ -300,6 +99,260 @@ public class MODrawProperties implements Stylable, Stateable {
         return resul;
     }
 
+    public static Color randomColor() {
+        int r = ThreadLocalRandom.current().nextInt(0, 255 + 1);
+        int g = ThreadLocalRandom.current().nextInt(0, 255 + 1);
+        int b = ThreadLocalRandom.current().nextInt(0, 255 + 1);
+        return new Color(r, g, b);
+    }
+
+    //When added a new property here, remember to include it in rawCopyFrom and copyFrom
+    //If false, thickness is computed to be a percentage of the width
+    //to ensure zoom or resolution doesn't affect the result
+    public Boolean absoluteThickness = true;
+
+    public Boolean visible = true;
+    public DashStyle dashStyle = DashStyle.SOLID;
+    //Styles used for specified objects
+    //Point
+    public DotSyle dotStyle = DotSyle.CIRCLE;
+
+    private JMColor drawColor;
+    private JMColor fillColor;
+    public Boolean fillColorIsDrawColor = false; //If true, fillColor is always overriden by drawColor
+    private Integer layer = null;
+    public StrokeLineCap linecap = StrokeLineCap.ROUND;
+    private MODrawProperties mpBackup;
+    public Double thickness = 1d;
+
+    public MODrawProperties() {
+        drawColor = new JMColor(1, 1, 1, 1);
+        fillColor = new JMColor(0, 0, 0, 0);
+    }
+
+    /**
+     * Returns a copy of this object. All objects are raw-copied.
+     *
+     * @return A raw copy of the object.
+     */
+    @Override
+    public MODrawProperties copy() {
+        MODrawProperties resul = new MODrawProperties();
+        resul.copyFrom(this);
+        return resul;
+    }
+
+    /**
+     * Absorbs all non-null properties of a given properties class
+     *
+     * @param prop
+     */
+    @Override
+    public void copyFrom(Stylable prop) {
+        if (prop == null) {//Nothing to do here!
+            return;
+        }
+        if (prop.getDrawColor() != null) {
+            drawColor = prop.getDrawColor().copy();
+        }
+        if (prop.getFillColor() != null) {
+            fillColor = prop.getFillColor().copy();
+        }
+        thickness = (prop.getThickness() == null ? thickness : prop.getThickness());
+        dashStyle = (prop.getDashStyle() == null ? dashStyle : prop.getDashStyle());
+        absoluteThickness = (prop.isAbsoluteThickness() == null ? absoluteThickness : prop.isAbsoluteThickness());
+        dotStyle = (prop.getDotStyle() == null ? dotStyle : prop.getDotStyle());
+        layer = (prop.getLayer() == null ? layer : prop.getLayer());
+        linecap = (prop.getLinecap() == null ? linecap : prop.getLinecap());
+        fillColorIsDrawColor = (prop.isFillColorIsDrawColor() == null ? fillColorIsDrawColor : prop.isFillColorIsDrawColor());
+        visible = (prop.isVisible()== null ? visible : prop.isVisible());
+    }
+
+    @Override
+    public void setAbsoluteThickness(Boolean absThickness) {
+        this.absoluteThickness = absThickness;
+    }
+
+    @Override
+    public DashStyle getDashStyle() {
+        return dashStyle;
+    }
+
+    @Override
+    public void setDashStyle(DashStyle dashStyle) {
+        this.dashStyle = dashStyle;
+    }
+
+    @Override
+    public DotSyle getDotStyle() {
+        return dotStyle;
+    }
+
+    @Override
+    public void setDotStyle(DotSyle dotStyle) {
+        this.dotStyle = dotStyle;
+    }
+
+    @Override
+    public void setDrawAlpha(double alpha) {
+        this.drawColor.alpha = alpha;
+    }
+
+    @Override
+    public JMColor getDrawColor() {
+        return drawColor;
+    }
+
+    @Override
+    public void setDrawColor(JMColor drawColor) {
+        if (drawColor != null) {
+            this.drawColor = drawColor.copy();
+            Boolean a = isFillColorIsDrawColor();
+            if (a != null) {
+                if (a == true) {
+                    this.fillColor = drawColor.copy();
+                }
+            }
+        }
+    }
+
+    @Override
+    public void setFillAlpha(double alpha) {
+        this.fillColor.alpha = alpha;
+    }
+
+    @Override
+    public JMColor getFillColor() {
+        return fillColor;
+    }
+
+    @Override
+    public void setFillColor(JMColor fillColor) {
+        if (fillColor != null) {
+            this.fillColor = fillColor.copy();
+        }
+    }
+
+    @Override
+    public void setFillColorIsDrawColor(Boolean fillColorIsDrawColor) {
+        this.fillColorIsDrawColor = fillColorIsDrawColor;
+    }
+
+    public MODrawProperties getFirstMP() {
+        return this;
+    }
+
+    @Override
+    public Integer getLayer() {
+        if (layer == null) {//If null, sets default value 0
+            layer = 0;
+        }
+        return layer;
+    }
+
+    @Override
+    public void setLayer(int layer) {
+        this.layer = layer;
+    }
+
+    @Override
+    public StrokeLineCap getLinecap() {
+        return this.linecap;
+    }
+
+    @Override
+    public void setLinecap(StrokeLineCap linecap) {
+        this.linecap = linecap;
+    }
+
+    @Override
+    public void setMultDrawAlpha(double alphaScale) {
+        double newAlpha = getDrawColor().alpha * alphaScale;
+        newAlpha = (newAlpha > 1 ? 1 : newAlpha);
+        newAlpha = (newAlpha < 0 ? 0 : newAlpha);
+        this.setDrawAlpha(newAlpha);
+    }
+
+    @Override
+    public void setMultFillAlpha(double alphaScale) {
+        double newAlpha = getFillColor().alpha * alphaScale;
+        newAlpha = (newAlpha > 1 ? 1 : newAlpha);
+        newAlpha = (newAlpha < 0 ? 0 : newAlpha);
+        this.setFillAlpha(newAlpha);
+    }
+
+    public Stylable getSubMP(int n) {
+        return this;//Nothing sub here...
+    }
+
+    @Override
+    public Double getThickness() {
+        return thickness;
+    }
+
+    @Override
+    public void setThickness(Double thickness) {
+        this.thickness = thickness;
+    }
+
+    @Override
+    public void setVisible(Boolean visible) {
+        this.visible = visible;
+    }
+
+    @Override
+    public void interpolateFrom(Stylable a, Stylable b, double alpha) {
+        if (alpha == 1)//in this case, copy directly all non-null attributes, including non-interpolable
+        {
+            this.copyFrom(b);
+            return;
+        }
+        //If not, getInterpolatedColor drawColor, fillColor and thickness (if they are not null)
+        //Interpolate colors
+        if (b.getDrawColor() != null) {
+            drawColor.copyFrom(a.getDrawColor().getInterpolatedColor(b.getDrawColor(), alpha));
+        }
+        if (b.getFillColor() != null) {
+            fillColor.copyFrom(a.getFillColor().getInterpolatedColor(b.getFillColor(), alpha));
+        }
+        if (b.getThickness() != null) {
+            this.thickness = (1 - alpha) * a.getThickness() + alpha * b.getThickness();
+        }
+    }
+
+    @Override
+    public void interpolateFrom(Stylable dst, double alpha) {
+        interpolateFrom(this, dst, alpha);
+    }
+
+    @Override
+    public Boolean isAbsoluteThickness() {
+        return absoluteThickness;
+    }
+
+    public Boolean isFillColorIsDrawColor() {
+        return fillColorIsDrawColor;
+    }
+
+    public boolean isFilled() {
+        return (this.fillColor.alpha > 0);
+    }
+
+    @Override
+    public void setFilled(boolean fill) {
+        if (fill && fillColor.alpha == 0) {
+            setFillAlpha(1);
+        }
+        if (!fill) {
+            setFillAlpha(0);
+        }
+    }
+
+    @Override
+    public Boolean isVisible() {
+        return visible;
+    }
+
     /**
      * Load attributes from given style. If such style doesn't exist, no changes
      * are done, and a warning log is showed.
@@ -317,36 +370,30 @@ public class MODrawProperties implements Stylable, Stateable {
         }
     }
 
+    @Override
+    public void multThickness(double multT) {
+        setThickness(getThickness() * multT);
+    }
+
     /**
-     * Returns a new {@link MODrawProperties} created from the current style. If
-     * no such style exists, a default MathObjectDrawingProperties is created.
+     * Copy attributes from the given {@link MODrawProperties} object Null
+     * values are copied also
      *
-     * @param name Style name
-     * @return A new {@link MODrawProperties} object created from the current
-     * class.
+     * @param mp The object to copy attributes from.
      */
-    public static MODrawProperties createFromStyle(String name) {
-        MODrawProperties resul = MODrawProperties.makeNullValues();
-        resul.loadFromStyle(name);
-        return resul;
-    }
-
     @Override
-    public Integer getLayer() {
-        if (layer == null) {//If null, sets default value 0
-            layer = 0;
-        }
-        return layer;
-    }
-
-    @Override
-    public void setLayer(int layer) {
-        this.layer = layer;
-    }
-
-    @Override
-    public void saveState() {
-        this.mpBackup = this.copy();
+    public void rawCopyFrom(MODrawProperties mp) {
+        drawColor.copyFrom(mp.drawColor);
+        fillColor.copyFrom(mp.fillColor);
+        thickness = mp.thickness;
+        dashStyle = mp.dashStyle;
+        absoluteThickness = mp.absoluteThickness;
+        dashStyle = mp.dashStyle;
+        layer = mp.layer;
+        dotStyle = mp.dotStyle;
+        linecap = mp.linecap;
+        fillColorIsDrawColor = mp.fillColorIsDrawColor;
+        visible=mp.visible;
     }
 
     @Override
@@ -355,44 +402,11 @@ public class MODrawProperties implements Stylable, Stateable {
     }
 
     @Override
-    public void setDrawColor(JMColor drawColor) {
-        if (drawColor != null) {
-            this.drawColor = drawColor.copy();
-            Boolean a = isFillColorIsDrawColor();
-            if (a != null) {
-                if (a == true) {
-                    this.fillColor = drawColor.copy();
-                }
-            }
-        }
+    public void saveState() {
+        this.mpBackup = this.copy();
     }
 
-    @Override
-    public void setFillColor(JMColor fillColor) {
-        if (fillColor != null) {
-            this.fillColor = fillColor.copy();
-        }
-    }
-
-    @Override
-    public void setFillColorIsDrawColor(Boolean fillColorIsDrawColor) {
-        this.fillColorIsDrawColor = fillColorIsDrawColor;
-    }
-
-    public Boolean isFillColorIsDrawColor() {
-        return fillColorIsDrawColor;
-    }
-
-    public Stylable getSubMP(int n) {
-        return this;//Nothing sub here...
-    }
-
-    @Override
-    public void multThickness(double multT) {
-        setThickness(getThickness() * multT);
-    }
-
-    public MODrawProperties getFirstMP() {
-        return this;
+    public enum DashStyle {
+        SOLID, DASHED, DOTTED
     }
 }

@@ -125,6 +125,10 @@ public interface Stylable {
 
     public void setAbsoluteThickness(Boolean absThickness);
 
+    public void setVisible(Boolean absThickness);
+
+    public Boolean isVisible();
+
     public Boolean isFillColorIsDrawColor();
 
     public Stylable getSubMP(int n);
