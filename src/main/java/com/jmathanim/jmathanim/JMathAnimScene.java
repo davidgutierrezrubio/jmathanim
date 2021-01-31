@@ -33,6 +33,7 @@ import com.jmathanim.mathobjects.updateableObjects.Updateable;
 import com.sun.org.apache.bcel.internal.generic.AALOAD;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.stream.IntStream;
@@ -66,6 +67,7 @@ public abstract class JMathAnimScene {
      * List of sceneObjects which needs to be drawn on the screen
      */
     private final ArrayList<MathObject> sceneObjects;
+    private final HashSet<MathObject> objectsAlreadyDrawed;
     /**
      * List of sceneObjects which needs to be updated (not necessarily drawn)
      */
@@ -122,6 +124,7 @@ public abstract class JMathAnimScene {
      */
     public JMathAnimScene() {
         sceneObjects = new ArrayList<>();
+        objectsAlreadyDrawed = new HashSet<>();
         config = JMathAnimConfig.getConfig();
         config.setLowQuality();
         objectsToBeUpdated = new ArrayList<>();
@@ -306,7 +309,7 @@ public abstract class JMathAnimScene {
      * are sorted by layer, so that lower layers means drawing under.
      */
     protected final void doDraws() {
-
+        objectsAlreadyDrawed.clear();
         //For the array of sceneObjects to be updated (not necessarily drawn), I sort them by the updatelevel variable
         //updatelevel 0 gets updated first.
         //Objects with updatelevel n depend directly from those with level n-1
@@ -323,7 +326,10 @@ public abstract class JMathAnimScene {
             sceneObjects.sort((MathObject o1, MathObject o2) -> (o1.getLayer() - o2.getLayer()));
             for (MathObject obj : sceneObjects) {
                 if (obj.isVisible()) {
-                    obj.draw(renderer);
+                    if (!isAlreadyDrawed(obj)) {
+                        obj.draw(this, renderer);
+                        markAsAlreadyDrawed(obj);
+                    }
                 }
             }
         }
@@ -538,4 +544,11 @@ public abstract class JMathAnimScene {
         return resul;
     }
 
+    public boolean isAlreadyDrawed(MathObject obj) {
+        return objectsAlreadyDrawed.contains(obj);
+    }
+
+    public void markAsAlreadyDrawed(MathObject obj) {
+        objectsAlreadyDrawed.add(obj);
+    }
 }

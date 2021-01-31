@@ -165,9 +165,10 @@ public class Line extends Shape {
     }
 
     @Override
-    public void draw(Renderer r) {
+    public void draw(JMathAnimScene scene, Renderer r){
         update(JMathAnimConfig.getConfig().getScene());//TODO: remove coupling
-        visiblePiece.draw(r);
+        visiblePiece.draw(scene,r);
+          scene.markAsAlreadyDrawed(this);
     }
 
     /**

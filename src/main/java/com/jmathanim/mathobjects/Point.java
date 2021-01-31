@@ -185,7 +185,7 @@ public class Point extends MathObject {
     }
 
     @Override
-    public void draw(Renderer r) {
+    public void draw(JMathAnimScene scene, Renderer r) {
 //        r.setBorderColor(mp.drawColor);
 //        double rad = mp.getThickness(r);
 //        r.drawCircle(v.x, v.y, rad);
@@ -194,7 +194,8 @@ public class Point extends MathObject {
         dotShape = generateDotShape();
         dotShape.setAbsoluteSize();
         dotShape.setAbsoluteAnchorPoint(this.copy());
-        dotShape.draw(r);
+        dotShape.draw(scene, r);
+        scene.markAsAlreadyDrawed(this);
 
     }
 

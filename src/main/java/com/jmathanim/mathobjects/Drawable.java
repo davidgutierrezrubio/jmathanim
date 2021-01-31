@@ -18,6 +18,7 @@
 package com.jmathanim.mathobjects;
 
 import com.jmathanim.Renderers.Renderer;
+import com.jmathanim.jmathanim.JMathAnimScene;
 
 /**
  * Anything that can be drawed in the canvas
@@ -26,5 +27,5 @@ import com.jmathanim.Renderers.Renderer;
  */
 public interface Drawable {
 
-    public void draw(Renderer r);
+    public void draw(JMathAnimScene scene,Renderer r);
 }

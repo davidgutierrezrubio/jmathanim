@@ -116,8 +116,13 @@ public class MathObjectGroup extends MathObject implements Iterable<MathObject> 
     }
 
     @Override
-    public void draw(Renderer r) {
-        //Does nothing. The objects have to add to the scene by themselves
+    public void draw(JMathAnimScene scene, Renderer r) {
+        for (MathObject obj : this.getObjects()) {
+            if (!scene.isAlreadyDrawed(obj)) {
+                obj.draw(scene, r);
+            }
+        }
+        scene.markAsAlreadyDrawed(this);
     }
 
     public MathObject get(int index) {

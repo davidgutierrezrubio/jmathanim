@@ -194,7 +194,7 @@ public class JMPathPoint extends MathObject implements Updateable, Stateable {
     }
 
     @Override
-    public void draw(Renderer r) {
+    public void draw(JMathAnimScene scene, Renderer r) {
         //Nothing to draw
     }
 

@@ -17,6 +17,7 @@
  */
 package com.jmathanim.mathobjects;
 
+import com.jmathanim.Renderers.Renderer;
 import com.jmathanim.Utils.AffineJTransform;
 import com.jmathanim.Utils.Anchor;
 import com.jmathanim.Utils.Anchor.Type;
@@ -50,7 +51,7 @@ public abstract class MathObject implements Drawable, Updateable, Stateable, Box
 
     public boolean absoluteSize = false;
 
-    public boolean visibleFlag;
+    private boolean visibleFlag;
     public Point absoluteAnchorPoint;
     private Type absoluteAnchorType = Type.CENTER;
     private boolean visibleBackup;
@@ -775,4 +776,5 @@ public abstract class MathObject implements Drawable, Updateable, Stateable, Box
     public <T extends MathObject> T applyAffineTransform(AffineJTransform transform) {
         return (T) this;//By default does nothing
     }
+
 }
