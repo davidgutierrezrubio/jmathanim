@@ -20,6 +20,8 @@ package com.jmathanim.mathobjects;
 import com.jmathanim.Renderers.Renderer;
 import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.Vec;
+import com.jmathanim.jmathanim.JMathAnimScene;
+import java.security.CryptoPrimitive;
 import javafx.scene.image.Image;
 
 /**
@@ -46,8 +48,9 @@ public abstract class AbstractJMImage extends MathObject {
     }
 
     @Override
-    public void draw(Renderer r) {
+    public void draw(JMathAnimScene scene, Renderer r){
         r.drawImage(this);
+        scene.markAsAlreadyDrawed(this);
     }
 
     public boolean isCached() {

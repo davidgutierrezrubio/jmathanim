@@ -270,10 +270,11 @@ public class Arrow2D extends MathObject {
     }
 
     @Override
-    public void draw(Renderer r) {
-        bodyToDraw.draw(r);
-        arrowHeadToDraw1.draw(r);
-        arrowHeadToDraw2.draw(r);
+    public void draw(JMathAnimScene scene, Renderer r) {
+        bodyToDraw.draw(scene, r);
+        arrowHeadToDraw1.draw(scene, r);
+        arrowHeadToDraw2.draw(scene, r);
+        scene.markAsAlreadyDrawed(this);
     }
 
     @Override
@@ -297,8 +298,7 @@ public class Arrow2D extends MathObject {
             AffineJTransform tr = AffineJTransform.create2DRotationTransform(p2, -Math.PI / 2 + angle);
             tr.applyTransform(arrowHeadToDraw1);
 
-            arrowHeadToDraw1.draw(scene.getConfig().getRenderer());
-
+//            arrowHeadToDraw1.draw(scene.getConfig().getRenderer());
             JMPathPoint pa = bodyToDraw.getPath().getJMPoint(1);
             pa.p.v.copyFrom(arrowHeadToDraw1.get(0).get(anchorPoint1).p.v);
         }

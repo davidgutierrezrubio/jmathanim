@@ -17,6 +17,7 @@
  */
 package com.jmathanim.Styling;
 
+import com.jmathanim.Utils.JMathAnimConfig;
 import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.Point;
 import com.jmathanim.mathobjects.Stateable;
@@ -40,6 +41,7 @@ public class MODrawPropertiesArray implements Stylable, Stateable {
 
     public MODrawPropertiesArray() {
         mpRef = new MODrawProperties();
+        mpRef.copyFrom(JMathAnimConfig.getConfig().getDefaultMP());
         objects = new ArrayList<>();
     }
 

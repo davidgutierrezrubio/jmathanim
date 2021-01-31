@@ -63,10 +63,6 @@ public class JMImage extends AbstractJMImage {
         return resul;
     }
 
-    @Override
-    public void draw(Renderer r) {
-        r.drawImage(this);
-    }
 
     @Override
     public void update(JMathAnimScene scene) {

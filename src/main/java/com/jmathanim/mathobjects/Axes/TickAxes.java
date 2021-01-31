@@ -22,6 +22,7 @@ import com.jmathanim.Renderers.Renderer;
 import com.jmathanim.Styling.MODrawPropertiesArray;
 import com.jmathanim.Styling.Stylable;
 import com.jmathanim.Utils.Rect;
+import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.LaTeXMathObject;
 import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.Point;
@@ -98,11 +99,12 @@ public class TickAxes extends MathObject {
         return new TickAxes(location, legend.copy(), tick.copy(), orientation, maximumScaleToShow);
     }
 
-    public void draw(Renderer r) {
+    public void draw(JMathAnimScene scene, Renderer r){
         if (shouldDraw(r.getCamera())) {
-            legend.draw(r);
-            tick.draw(r);
+            legend.draw(scene, r);
+            tick.draw(scene, r);
         }
+          scene.markAsAlreadyDrawed(this);
     }
 
     @Override

@@ -20,10 +20,15 @@ package com.jmathanim.mathobjects.Tippable;
 import com.jmathanim.Renderers.Renderer;
 import com.jmathanim.Utils.AffineJTransform;
 import com.jmathanim.Styling.MODrawPropertiesArray;
+import com.jmathanim.Styling.Stylable;
+import com.jmathanim.Utils.Anchor;
 import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
+import static com.jmathanim.jmathanim.JMathAnimScene.PI;
+import com.jmathanim.mathobjects.LaTeXMathObject;
 import com.jmathanim.mathobjects.MathObject;
+import com.jmathanim.mathobjects.MathObjectGroup;
 import com.jmathanim.mathobjects.MultiShapeObject;
 import com.jmathanim.mathobjects.Point;
 import com.jmathanim.mathobjects.Shape;
@@ -39,8 +44,8 @@ import static com.jmathanim.mathobjects.Tippable.ArrowTip.make;
 public class TippableObject extends MathObject {
 
     public static final double DELTA_DERIVATIVE = .0001;
-    int anchorValue;
     private slopeDirection direction;
+    private Anchor.Type anchor;
     MODrawPropertiesArray mpArray;
 
     private double offsetAngle = 0;
@@ -53,12 +58,19 @@ public class TippableObject extends MathObject {
     private double tLocation;
     private MathObject tip;
     private MathObject tipCopy;
+    protected double totalRotationAngle;
 
     public TippableObject() {
         super();
         mpArray = new MODrawPropertiesArray();
         scaleFactorX = 1;
         scaleFactorY = 1;
+        anchor = Anchor.Type.UPPER;//Default anchor value
+    }
+
+    @Override
+    public Stylable getMp() {
+        return mpArray;
     }
 
     @Override
@@ -67,8 +79,9 @@ public class TippableObject extends MathObject {
     }
 
     @Override
-    public void draw(Renderer r) {
-        getTipCopy().draw(r);
+    public void draw(JMathAnimScene scene, Renderer r) {
+        getTipCopy().draw(scene, r);
+        scene.markAsAlreadyDrawed(this);
     }
 
     @Override
@@ -173,6 +186,14 @@ public class TippableObject extends MathObject {
         return (T) this;
     }
 
+    public Anchor.Type getAnchor() {
+        return anchor;
+    }
+
+    public void setAnchor(Anchor.Type anchor) {
+        this.anchor = anchor;
+    }
+
     @Override
     public void update(JMathAnimScene scene) {
         updateLocations();
@@ -184,10 +205,11 @@ public class TippableObject extends MathObject {
         Point slopeTo;
 
         setTipCopy(getTip().copy());
-        getTipCopy().setHeight(.1);
+//        getTipCopy().setHeight(.1);
         getTipCopy().scale(scaleFactorX, scaleFactorY);
         //Shifting
-        Point headPoint = this.getTipCopy().getBoundingBox().getUpper();
+        Point headPoint = Anchor.getAnchorPoint(getTipCopy(), anchor);
+//        Point headPoint = this.getTipCopy().getBoundingBox().getUpper();
         this.getTipCopy().shift(headPoint.to(pointLoc));
 
         //Rotating
@@ -200,21 +222,48 @@ public class TippableObject extends MathObject {
         }
         pointTo = pointLoc.to(slopeTo);
         double rotAngle = pointTo.getAngle();
-        AffineJTransform tr = AffineJTransform.create2DRotationTransform(pointLoc, -Math.PI / 2 + rotAngle);
-        tr.applyTransform(getTipCopy());
-        getTipCopy().rotate(getOffsetAngle());
+        totalRotationAngle = -Math.PI / 2 + rotAngle + getOffsetAngle();
+//        AffineJTransform tr = AffineJTransform.create2DRotationTransform(pointLoc, -Math.PI / 2 + rotAngle);
+//        tr.applyTransform(getTipCopy());
+        getTipCopy().rotate(pointLoc, totalRotationAngle);
     }
 
     public enum slopeDirection {
         NEGATIVE, POSITIVE
     }
-    
+
     public static TippableObject parallelSign(Shape shape, double location, int numberOfMarks) {
-         MultiShapeObject parallelSign = new MultiShapeObject();
+        MultiShapeObject parallelSign = new MultiShapeObject();
         for (int i = 0; i < numberOfMarks; i++) {
-            parallelSign.add(Shape.segment(Point.at(0,.25*i), Point.at(1,.25*i)));
+            parallelSign.add(Shape.segment(Point.at(0, i), Point.at(2, i)));
         }
-        return make(shape,location,slopeDirection.POSITIVE,parallelSign);
+        TippableObject resul = new TippableObject(); //shape,location,slopeDirection.POSITIVE,parallelSign);
+        resul.shape = shape;
+        resul.setLocation(location);
+        resul.setTip(parallelSign);
+//        parallelSign.drawColor("black");
+        resul.setWidth(.05);
+        resul.setAnchor(Anchor.Type.CENTER);
+        resul.getTip().setAbsoluteSize();
+        return resul;
     }
 
+//    public static TippableObject labelText(Shape shape, double location, String text) {
+//        MathObjectGroup tip = MathObjectGroup.make();
+//        tip.add(LaTeXMathObject.make(text));
+//        tip.add(Point.at(0, 0));
+//        tip.add(Point.at(0, 0));
+//        tip.add(Point.at(0, 0));
+//        tip.add(Point.at(0, 0));
+//        tip.add(Point.at(0, 0));
+//        tip.add(Point.at(0, 0));
+//        tip.setLayout(Anchor.Type.LOWER, .05);
+//        TippableObject resul = new TippableObject();
+//        resul.shape = shape;
+//        resul.setLocation(location);
+//        resul.setTip(tip);
+//        resul.setAnchor(Anchor.Type.LOWER);
+//        resul.setOffsetAngle(-PI / 2);
+//        return resul;
+//    }
 }

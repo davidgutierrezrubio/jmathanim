@@ -110,7 +110,7 @@ public class Shape extends MathObject {
     }
 
     @Override
-    public void draw(Renderer r) {
+    public void draw(JMathAnimScene scene, Renderer r){
         if (isVisible()) {
             if (absoluteSize) {
                 r.drawAbsoluteCopy(this, getAbsoluteAnchor().v);
