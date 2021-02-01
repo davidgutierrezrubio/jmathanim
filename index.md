@@ -31,6 +31,9 @@ If you are used to another OO languages, like Python, it is relatively easy to s
 # What's new?
 Version 0.8.8-SNAPSHOT:
 
+* Added `TippableObject`, to put labels, or any marks in points of a Shape.
+* Improved cascade behaviour of styling methods for `MathObjectGroup` or `MultiShape` objects.
+
 * Added `getObjectsFromLayers`method that returns a `MathObject[]` array with all objects from the scene in the specified layers.
 * Removed method `putAt` . Use `moveTo` instead.
 
