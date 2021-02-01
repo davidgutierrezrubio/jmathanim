@@ -35,16 +35,16 @@ public class LabelTip extends TippableObject {
     private LaTeXMathObject latexLabel;
     private Point markPoint;
 
-    public static LabelTip make(Shape shape, double location, String text) {
+    public static LabelTip makeLabelTip(Shape shape, double location, String text) {
         LabelTip resul = new LabelTip();
         resul.shape = shape;
         resul.setLocation(location);
         MathObjectGroup tip = MathObjectGroup.make();
         resul.latexLabel = LaTeXMathObject.make(text);
         tip.add(resul.latexLabel);
-        resul.markPoint=Point.at(0,0);
+        resul.markPoint = Point.at(0, 0).visible(false);
         tip.add(resul.markPoint);
-        tip.setLayout(Anchor.Type.LOWER, .5*resul.latexLabel.getHeight());
+        tip.setLayout(Anchor.Type.LOWER, .5 * resul.latexLabel.getHeight());
         resul.setTip(tip);
         resul.setAnchor(Anchor.Type.LOWER);
         resul.setOffsetAngle(-PI / 2);
@@ -70,17 +70,32 @@ public class LabelTip extends TippableObject {
         this.fixedAngle = fixedAngle;
         return (T) this;
     }
-    
-   public <T extends LabelTip> T markPointVisible(boolean visible) {
+
+    public <T extends LabelTip> T markPointVisible(boolean visible) {
         this.markPoint.visible(visible);
         return (T) this;
     }
-   /**
-    * Mark point where the label locates
-    * @return A Point object 
-    */
+
+    /**
+     * Mark point where the label locates
+     *
+     * @return A Point object
+     */
     public Point getMarkPoint() {
         return markPoint;
     }
-    
+
+    /**
+     * Sets the visibility of the mark point. This method is equivalent to
+     * getMarkPoint().visible(flag)
+     *
+     * @param <T> Calling subclass
+     * @param visible Visible flag
+     * @return This object
+     */
+    public <T extends LabelTip> T visibleMarkPoint(boolean visible) {
+        markPoint.visible(visible);
+        return (T) this;
+    }
+
 }
