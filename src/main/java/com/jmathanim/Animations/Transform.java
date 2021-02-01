@@ -19,7 +19,8 @@ package com.jmathanim.Animations;
 
 import com.jmathanim.Animations.Strategies.Transform.ArrowTransform;
 import com.jmathanim.Animations.Strategies.Transform.FunctionSimpleInterpolateTransform;
-import com.jmathanim.Animations.Strategies.Transform.HomothecyTransform;
+import com.jmathanim.Animations.Strategies.Transform.GeneralAffineTransformAnimation;
+import com.jmathanim.Animations.Strategies.Transform.HomothecyTransformAnimation;
 import com.jmathanim.Animations.Strategies.Transform.MultiShapeTransform;
 import com.jmathanim.Animations.Strategies.Transform.Optimizers.NullOptimizationStrategy;
 import com.jmathanim.Animations.Strategies.Transform.PointInterpolationCanonical;
@@ -79,14 +80,9 @@ public class Transform extends Animation {
     @Override
     public void initialize(JMathAnimScene scene) {
         super.initialize(scene);
-        //Determine optimal transformation
+        //Determine optimal transformation, if nothing has been chosen prior to init
 
-        //Should use an homothecy instead of point-to-point interpolation 
-        //in the following cases:
-        //2 segments/lines or segment/line
-        //2 circles/ellipses
-        //2 regular polygons with same number of sides
-        if (transformMethod == null) {
+       if (transformMethod == null) {
             determineTransformStrategy();
         }
         createTransformStrategy();
@@ -96,8 +92,7 @@ public class Transform extends Animation {
         } else {
             transformStrategy.setOptimizationStrategy(null);
         }
-        //Variable strategy should have proper strategy to transform
-        //If method is null means that user didn't force one
+        //Copy preferences to this strategy
         transformStrategy.setLambda(lambda);
         transformStrategy.setAddObjectsToScene(this.isShouldAddObjectsToScene());
         transformStrategy.setUseObjectState(this.isUseObjectState());
@@ -133,7 +128,7 @@ public class Transform extends Animation {
         if ((mobjTransformed instanceof Shape) && (mobjDestiny instanceof Shape)) {
             Shape shTr = (Shape) mobjTransformed;
             Shape shDst = (Shape) mobjDestiny;
-            double epsilon = 0.00000001;
+            double epsilon = 0.000001;
 
             if (TransformStrategyChecker.testDirectHomothecyTransform(shTr, shDst, epsilon)) {
                 transformMethod = TransformMethod.HOMOTHECY_TRANSFORM;
@@ -189,7 +184,7 @@ public class Transform extends Animation {
                 JMathAnimScene.logger.info("Transform method: Point interpolation between 2 curves");
                 break;
             case HOMOTHECY_TRANSFORM:
-                transformStrategy = new HomothecyTransform(runTime, (Shape) mobjTransformed, (Shape) mobjDestiny);
+                transformStrategy = new HomothecyTransformAnimation(runTime, (Shape) mobjTransformed, (Shape) mobjDestiny);
                 JMathAnimScene.logger.info("Transform method: Homothecy");
 
                 break;
@@ -198,18 +193,19 @@ public class Transform extends Animation {
                 JMathAnimScene.logger.info("Transform method: Rotate and Scale XY");
                 break;
             case GENERAL_AFFINE_TRANSFORM:
-                Shape shORig = (Shape) mobjTransformed;
-                Shape shDest = (Shape) mobjDestiny;
-                AnimationGroup ag = new AnimationGroup();
-                Point A = shORig.get(0).p;//TODO: Take better points (as far as possible)
-                Point B = shORig.get(1).p;
-                Point C = shORig.get(2).p;
-                Point D = shDest.get(0).p;
-                Point E = shDest.get(1).p;
-                Point F = shDest.get(2).p;
-                ag.add(Commands.affineTransform(runTime, A, B, C, D, E, F, shORig));
-                ag.add(Commands.setMP(runTime, shDest.getMp().getFirstMP(), shORig).setUseObjectState(false));
-                transformStrategy = ag;
+//                Shape shORig = (Shape) mobjTransformed;
+//                Shape shDest = (Shape) mobjDestiny;
+//                AnimationGroup ag = new AnimationGroup();
+//                Point A = shORig.get(0).p;//TODO: Take better points (as far as possible)
+//                Point B = shORig.get(1).p;
+//                Point C = shORig.get(2).p;
+//                Point D = shDest.get(0).p;
+//                Point E = shDest.get(1).p;
+//                Point F = shDest.get(2).p;
+//                ag.add(Commands.affineTransform(runTime, A, B, C, D, E, F, shORig));
+//                ag.add(Commands.setMP(runTime, shDest.getMp().getFirstMP(), shORig).setUseObjectState(false));
+//                transformStrategy = ag;
+                transformStrategy=new GeneralAffineTransformAnimation(runTime, (Shape) mobjTransformed, (Shape) mobjDestiny);
                 JMathAnimScene.logger.info("Transform method: General affine transform");
                 break;
             case FUNCTION_INTERPOLATION:
@@ -225,7 +221,7 @@ public class Transform extends Animation {
         transformStrategy.finishAnimation();
         //Remove fist object and add the second to the scene
         addObjectsToscene(mobjDestiny);
-        scene.remove(mobjTransformed);
+        removeObjectsToscene(mobjTransformed);
     }
 
     /**

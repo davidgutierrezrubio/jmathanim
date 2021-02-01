@@ -702,7 +702,7 @@ public class Commands {
             public void finishAnimation() {
                 super.finishAnimation();
                 restoreStates(mathObjects);//Restore original alphas in case of reutilization
-                scene.remove(mathObjects);
+                removeObjectsToscene(mathObjects);
             }
         };
         anim.setLambda(t -> t);//Default value
@@ -804,7 +804,7 @@ public class Commands {
             public void finishAnimation() {
                 super.finishAnimation();
                 for (MathObject obj : mathObjects) {
-                    scene.remove(obj);
+                    removeObjectsToscene(obj);
                 }
             }
 

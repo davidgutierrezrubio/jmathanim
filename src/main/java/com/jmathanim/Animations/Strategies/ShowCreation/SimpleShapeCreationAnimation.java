@@ -132,7 +132,7 @@ public class SimpleShapeCreationAnimation extends CreationStrategy {
         if (mobj.getPath().size() > 0) {
             doAnim(1);
         }
-        this.scene.remove(msh);
+        removeObjectsToscene(msh);
         mobj.visible(true);
         addObjectsToscene(mobj);
     }

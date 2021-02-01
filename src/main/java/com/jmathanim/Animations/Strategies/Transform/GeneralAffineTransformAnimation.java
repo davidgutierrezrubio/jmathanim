@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020 David Gutiérrez Rubio davidgutierrezrubio@gmail.com
+ * Copyright (C) 2021 David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -18,6 +18,7 @@
 package com.jmathanim.Animations.Strategies.Transform;
 
 import com.jmathanim.Animations.Animation;
+import com.jmathanim.Animations.AnimationGroup;
 import com.jmathanim.Animations.Commands;
 import com.jmathanim.Styling.MODrawProperties;
 import com.jmathanim.jmathanim.JMathAnimScene;
@@ -28,21 +29,25 @@ import com.jmathanim.mathobjects.Shape;
  *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
-public class HomothecyTransform extends Animation {
+public class GeneralAffineTransformAnimation extends Animation {
 
-    Animation anim;
-    private final Shape mobjTransformed;
+    private Animation affine;
+
+    private AnimationGroup anim;
+
     private final Shape mobjDestiny;
-    private final MODrawProperties mpBase;
+
+    private final Shape mobjTransformed;
+
     private final Shape mobjTransformedOrig;
+    private final MODrawProperties mpBase;
 
-    public HomothecyTransform(double runtime, Shape mobjTransformed, Shape mobjDestiny) {
-        super(runtime);
-        this.mobjTransformed = mobjTransformed.copy();
-        this.mobjTransformedOrig = mobjTransformed;
-        this.mobjDestiny = mobjDestiny;
-        mpBase = mobjTransformed.getMp().copy();
-
+    public GeneralAffineTransformAnimation(double runTime, Shape objTr, Shape objDst) {
+        super(runTime);
+        this.mobjTransformed = objTr;
+        this.mobjTransformedOrig = objTr.copy();
+        this.mobjDestiny = objDst;
+        mpBase = objTr.getMp().copy();
     }
 
     @Override
@@ -50,34 +55,36 @@ public class HomothecyTransform extends Animation {
         super.initialize(scene);
         Point a = this.mobjTransformed.getPoint(0);
         Point b = this.mobjTransformed.getPoint(1);
-        Point c = this.mobjDestiny.getPoint(0);
-        Point d = this.mobjDestiny.getPoint(1);
-        anim = Commands.homothecy(runTime, a, b, c, d, this.mobjTransformed);
+        Point c = this.mobjTransformed.getPoint(2);
+        Point d = this.mobjDestiny.getPoint(0);
+        Point e = this.mobjDestiny.getPoint(1);
+        Point f = this.mobjDestiny.getPoint(2);
+
+        anim = new AnimationGroup();
+        affine = Commands.affineTransform(runTime, a, b, c, d, e, f, this.mobjTransformed);
+        affine.setUseObjectState(this.isUseObjectState());
+        anim.add(affine);
+        anim.add(Commands.setMP(runTime, mobjDestiny.getMp().copy(), this.mobjTransformed).setUseObjectState(false));
         anim.setLambda(lambda);
         anim.initialize(scene);
-        addObjectsToscene(this.mobjTransformed);
-        scene.remove(mobjTransformedOrig);
 
     }
 
+
     @Override
     public boolean processAnimation() {
+        super.processAnimation();
         return anim.processAnimation();
     }
 
     @Override
     public void doAnim(double t) {
-        double lt = anim.lambda.applyAsDouble(t);
-        anim.doAnim(t);
-        mobjTransformed.getMp().interpolateFrom(mpBase, mobjDestiny.getMp(), lt);
     }
 
     @Override
     public void finishAnimation() {
         super.finishAnimation();
         anim.finishAnimation();
-        scene.remove(mobjTransformed);
-        addObjectsToscene(mobjDestiny);
     }
 
 }

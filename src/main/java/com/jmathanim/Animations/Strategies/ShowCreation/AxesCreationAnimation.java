@@ -103,7 +103,7 @@ public class AxesCreationAnimation extends CreationStrategy {
         anim.finishAnimation();
         addObjectsToscene(axes);
         for (MathObject ob : objectsToRemoveWhenFinished) {
-            scene.remove(ob);
+            removeObjectsToscene(ob);
         }
     }
 

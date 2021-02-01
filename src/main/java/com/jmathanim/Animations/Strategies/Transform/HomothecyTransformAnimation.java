@@ -15,45 +15,58 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-package com.jmathanim.Animations.Strategies.ShowCreation;
+package com.jmathanim.Animations.Strategies.Transform;
 
 import com.jmathanim.Animations.Animation;
+import com.jmathanim.Animations.AnimationGroup;
+import com.jmathanim.Animations.Commands;
+import com.jmathanim.Styling.MODrawProperties;
 import com.jmathanim.jmathanim.JMathAnimScene;
-import com.jmathanim.mathobjects.Line;
+import com.jmathanim.mathobjects.Point;
 import com.jmathanim.mathobjects.Shape;
 
 /**
- * Animation to create infinite lines. Temporarily replaces the line with a
- * segment to create it.
  *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
-public class LineCreationAnimation extends CreationStrategy {
+public class HomothecyTransformAnimation extends Animation {
 
-    Shape segment;
-    Line line;
-    SimpleShapeCreationAnimation anim;
+    AnimationGroup anim;
+    private Animation homothecy;
+    private final Shape mobjTransformed;
+    private final Shape mobjDestiny;
+    private final MODrawProperties mpBase;
+    private final Shape mobjTransformedOrig;
 
-    public LineCreationAnimation(double runtime, Line line) {
+    public HomothecyTransformAnimation(double runtime, Shape mobjTransformed, Shape mobjDestiny) {
         super(runtime);
-        this.line = line;
+        this.mobjTransformed = mobjTransformed.copy();
+        this.mobjTransformedOrig = mobjTransformed;
+        this.mobjDestiny = mobjDestiny;
+        mpBase = mobjTransformed.getMp().copy();
 
     }
 
     @Override
     public void initialize(JMathAnimScene scene) {
         super.initialize(scene);
-        segment = line.toSegment(scene.getCamera());
-        anim = new SimpleShapeCreationAnimation(this.runTime, segment);
+        Point a = this.mobjTransformed.getPoint(0);
+        Point b = this.mobjTransformed.getPoint(1);
+        Point c = this.mobjDestiny.getPoint(0);
+        Point d = this.mobjDestiny.getPoint(1);
+        anim = new AnimationGroup();
+        homothecy = Commands.homothecy(runTime, a, b, c, d, this.mobjTransformed);
+        homothecy.setUseObjectState(isUseObjectState());
+        anim.add(homothecy);
+        anim.add(Commands.setMP(runTime, mobjDestiny.getMp().copy(), this.mobjTransformed).setUseObjectState(false));
         anim.setLambda(lambda);
         anim.initialize(scene);
-        removeObjectsToscene(line);
-        addObjectsToscene(segment);
 
     }
 
     @Override
     public boolean processAnimation() {
+        super.processAnimation();
         return anim.processAnimation();
     }
 
@@ -65,9 +78,6 @@ public class LineCreationAnimation extends CreationStrategy {
     public void finishAnimation() {
         super.finishAnimation();
         anim.finishAnimation();
-        removeObjectsToscene(segment);
-        addObjectsToscene(line);
-
     }
 
 }

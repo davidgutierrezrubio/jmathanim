@@ -74,14 +74,13 @@ public class MultiShapeTransform extends AnimationGroup {
     @Override
     public void initialize(JMathAnimScene scene) {
         super.initialize(scene);
-        scene.remove(mobjTransformed);
+        removeObjectsToscene(mobjTransformed);
     }
 
     @Override
     public void finishAnimation() {
         super.finishAnimation();
-        scene.remove(tr);
-        scene.remove(dst);
+        removeObjectsToscene(tr,dst);
         addObjectsToscene(mobjDestiny);
     }
 

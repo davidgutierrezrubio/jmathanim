@@ -312,6 +312,18 @@ public abstract class Animation {
         }
     }
 
+     /**
+     * remove the specified objects from the scene. Removing objects from the scene
+     * should be done through this method.
+     *
+     * @param mathObjects Objects to add (varargs)
+     */
+    protected void removeObjectsToscene(MathObject... mathObjects) {
+        if (this.shouldAddObjectsToScene) {
+            scene.remove(mathObjects);
+        }
+    }
+    
     public boolean isShouldAddObjectsToScene() {
         return shouldAddObjectsToScene;
     }

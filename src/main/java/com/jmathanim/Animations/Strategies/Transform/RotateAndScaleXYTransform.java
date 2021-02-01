@@ -45,7 +45,7 @@ public class RotateAndScaleXYTransform extends Animation {
     @Override
     public void doAnim(double t) {
         double lt = lambda.applyAsDouble(t);
-        mobjTransformed.restoreState();
+        restoreStates(mobjTransformed);
 
         //First map A,B into (0,0) and (1,0)
         AffineJTransform tr1 = AffineJTransform.createDirect2DHomothecy(A, B, new Point(0, 0), new Point(1, 0), 1);
@@ -76,7 +76,7 @@ public class RotateAndScaleXYTransform extends Animation {
         D = mobjDestiny.getPoint(0).copy();
         E = mobjDestiny.getPoint(1).copy();
         F = mobjDestiny.getPoint(2).copy();
-        mobjTransformed.saveState();
+        saveStates(mobjTransformed);
         addObjectsToscene(mobjTransformed);
 
     }

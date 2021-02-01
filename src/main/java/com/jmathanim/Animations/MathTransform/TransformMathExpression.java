@@ -101,7 +101,7 @@ public class TransformMathExpression extends Animation {
     @Override
     public void initialize(JMathAnimScene scene) {
         super.initialize(scene);
-        scene.remove(latexTransformed);
+        removeObjectsToscene(latexTransformed);
         HashMap<String, int[]> or = trParOrigGroups;
         HashMap<String, int[]> dst = trParDstGroups;
         HashMap<String, String> maps = trParMaps;
@@ -278,7 +278,7 @@ public class TransformMathExpression extends Animation {
 //        scene.remove(mshDst);
 
         for (Shape sh : toDelete) {
-            scene.remove(sh);
+            removeObjectsToscene(sh);
         }
         addObjectsToscene(latexDestiny);
     }
