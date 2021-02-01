@@ -46,6 +46,8 @@ public class Arrow2D extends MathObject {
 
     private int anchorPoint1;
     private int anchorPoint2;
+    private final ArrowType type1;
+    private final ArrowType type2;
 
     public enum ArrowType {
         NONE, TYPE_1, TYPE_2, TYPE_3
@@ -72,6 +74,8 @@ public class Arrow2D extends MathObject {
     }
 
     private Arrow2D(Point p1, Point p2, ArrowType type1, ArrowType type2) {
+        this.type1 = type1;
+        this.type2 = type2;
         this.p1 = p1;
         this.p2 = p2;
         this.body = Shape.segment(p1, p2);
@@ -127,39 +131,55 @@ public class Arrow2D extends MathObject {
 //    }
     public final MultiShapeObject buildArrowHead(ArrowType type, int side) {
         SVGMathObject head = null;
-        String name = "#arrow";
+
         int anchorValue;
         double scaleDefaultValue;
+        switch (type) {//TODO: Improve this
+            case TYPE_1:
+                anchorValue = 2;
+                scaleDefaultValue = 1.5;
+                break;
+            case TYPE_2:
+                anchorValue = 7;
+                scaleDefaultValue = 1.5;
+                break;
+            case TYPE_3:
+                anchorValue = 7;
+                scaleDefaultValue = 1;
+                break;
+            default:
+                anchorValue = 2;
+                scaleDefaultValue = 1.5;
+        }
+        if (side == 1) {
+            anchorPoint1 = anchorValue;
+            defaultArrowHead1Size1 *= scaleDefaultValue;
+        } else {
+            anchorPoint2 = anchorValue;
+            defaultArrowHead1Size2 *= scaleDefaultValue;
+        }
+
+        return Arrow2D.buildArrowHead(type);
+    }
+
+    public static MultiShapeObject buildArrowHead(ArrowType type) {
+        MultiShapeObject head;
+        String name = "#arrow";
         if (type != ArrowType.NONE) {//If type=NONE, head=null
             switch (type) {//TODO: Improve this
                 case TYPE_1:
                     name += "1";
-                    anchorValue = 2;
-                    scaleDefaultValue = 1.5;
                     break;
                 case TYPE_2:
                     name += "2";
-                    anchorValue = 7;
-                    scaleDefaultValue = 1.5;
                     break;
                 case TYPE_3:
                     name += "3";
-                    anchorValue = 7;
-                    scaleDefaultValue = 1;
                     break;
                 default:
                     name += "1";
-                    anchorValue = 2;
-                    scaleDefaultValue = 1.5;
+                    break;
             }
-            if (side == 1) {
-                anchorPoint1 = anchorValue;
-                defaultArrowHead1Size1 *= scaleDefaultValue;
-            } else {
-                anchorPoint2 = anchorValue;
-                defaultArrowHead1Size2 *= scaleDefaultValue;
-            }
-
             name += ".svg";
             try {
 //            baseFileName = outputDir.getCanonicalPath() + File.separator + "arrows" + File.separator + name;
@@ -169,9 +189,11 @@ public class Arrow2D extends MathObject {
 
             } catch (NullPointerException ex) {
                 JMathAnimScene.logger.error("Arrow head " + name + " not found");
+                head = new MultiShapeObject();
             }
+
         } else {
-            head = new SVGMathObject();
+            head = new MultiShapeObject();
         }
         return head;
     }
@@ -271,6 +293,7 @@ public class Arrow2D extends MathObject {
 
     @Override
     public void draw(JMathAnimScene scene, Renderer r) {
+        updateDrawableParts();
         if (isVisible()) {
             bodyToDraw.draw(scene, r);
             arrowHeadToDraw1.draw(scene, r);
@@ -281,6 +304,11 @@ public class Arrow2D extends MathObject {
 
     @Override
     public void update(JMathAnimScene scene) {
+        this.scene = scene;
+
+    }
+
+    protected void updateDrawableParts() {
         bodyToDraw = body.copy();
         arrowHeadToDraw1 = this.head1.copy();
         arrowHeadToDraw2 = this.head2.copy();
@@ -324,7 +352,6 @@ public class Arrow2D extends MathObject {
             JMPathPoint pa = bodyToDraw.getPath().getJMPoint(0);
             pa.p.v.copyFrom(arrowHeadToDraw2.get(0).get(anchorPoint2).p.v);
         }
-
     }
 
     @Override
@@ -341,7 +368,7 @@ public class Arrow2D extends MathObject {
 
     @Override
     public <T extends MathObject> T copy() {
-        Arrow2D copy = Arrow2D.makeSimpleArrow2D(p1.copy(), p2.copy(), arrowType);
+        Arrow2D copy = new Arrow2D(p1.copy(), p2.copy(), this.type1, this.type2);
         copy.head1.getMp().copyFrom(this.head1.getMp());
         copy.head2.getMp().copyFrom(this.head2.getMp());
         copy.body.getMp().copyFrom(this.body.getMp());
@@ -356,6 +383,7 @@ public class Arrow2D extends MathObject {
 
     @Override
     public Rect getBoundingBox() {
+        updateDrawableParts();
         Rect r = body.getBoundingBox();
         update(JMathAnimConfig.getConfig().getScene());
         if (arrowHeadToDraw1.size() > 0) {

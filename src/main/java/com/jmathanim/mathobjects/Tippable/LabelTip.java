@@ -42,7 +42,7 @@ public class LabelTip extends TippableObject {
         MathObjectGroup tip = MathObjectGroup.make();
         resul.latexLabel = LaTeXMathObject.make(text);
         tip.add(resul.latexLabel);
-        resul.markPoint=Point.at(0,0).drawColor(JMColor.BLUE);
+        resul.markPoint=Point.at(0,0);
         tip.add(resul.markPoint);
         tip.setLayout(Anchor.Type.LOWER, .5*resul.latexLabel.getHeight());
         resul.setTip(tip);
@@ -75,7 +75,10 @@ public class LabelTip extends TippableObject {
         this.markPoint.visible(visible);
         return (T) this;
     }
-
+   /**
+    * Mark point where the label locates
+    * @return A Point object 
+    */
     public Point getMarkPoint() {
         return markPoint;
     }

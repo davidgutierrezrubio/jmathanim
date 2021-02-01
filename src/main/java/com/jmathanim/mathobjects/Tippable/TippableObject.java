@@ -18,21 +18,17 @@
 package com.jmathanim.mathobjects.Tippable;
 
 import com.jmathanim.Renderers.Renderer;
-import com.jmathanim.Utils.AffineJTransform;
 import com.jmathanim.Styling.MODrawPropertiesArray;
 import com.jmathanim.Styling.Stylable;
 import com.jmathanim.Utils.Anchor;
 import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
-import static com.jmathanim.jmathanim.JMathAnimScene.PI;
-import com.jmathanim.mathobjects.LaTeXMathObject;
+import com.jmathanim.mathobjects.Arrow2D;
 import com.jmathanim.mathobjects.MathObject;
-import com.jmathanim.mathobjects.MathObjectGroup;
 import com.jmathanim.mathobjects.MultiShapeObject;
 import com.jmathanim.mathobjects.Point;
 import com.jmathanim.mathobjects.Shape;
-import static com.jmathanim.mathobjects.Tippable.ArrowTip.make;
 
 /**
  * A MathObject that is permanently anchored to a specified point of a Shape.
@@ -43,15 +39,75 @@ import static com.jmathanim.mathobjects.Tippable.ArrowTip.make;
  */
 public class TippableObject extends MathObject {
 
+    public enum slopeDirection {
+        NEGATIVE, POSITIVE
+    }
     public static final double DELTA_DERIVATIVE = .0001;
-    private slopeDirection direction;
+
+    /**
+     * Creates a new Tippable object
+     *
+     * @param shape Shape to anchor to
+     * @param location Location of the shape. A number between 0 and 1.
+     * @param direction Direction (POSITIVE or NEGATIVE) to compute the slope. A
+     * value of the enum TippableObject.slopeDirection
+     * @param tip MathObject to tip. This object is not drawed, but a copy of it
+     * properly scaled and rotated.
+     * @return The tippable object.
+     */
+    public static TippableObject make(Shape shape, double location, TippableObject.slopeDirection direction, MathObject tip) {
+        TippableObject resul = new TippableObject();
+        resul.shape = shape;
+        resul.setLocation(location);
+        resul.setDirection(direction);
+        resul.setTip(tip);
+        return resul;
+    }
+
+    /**
+     * Creates a parallel sign
+     *
+     * @param shape Shape to anchor to
+     * @param location Location of the shape. A number between 0 and 1.
+     * @param numberOfMarks Number of marks to draw
+     * @return The tippable object
+     */
+    public static TippableObject equalLengthTip(Shape shape, double location, int numberOfMarks) {
+        MultiShapeObject parallelSign = new MultiShapeObject();
+        for (int i = 0; i < numberOfMarks; i++) {
+            parallelSign.add(Shape.segment(Point.at(0, i), Point.at(2, i)));
+        }
+        TippableObject resul = new TippableObject(); //shape,location,slopeDirection.POSITIVE,equalLengthTip);
+        resul.shape = shape;
+        resul.setLocation(location);
+        resul.setTip(parallelSign);
+        resul.setWidth(.05);
+        resul.setAnchor(Anchor.Type.CENTER);
+        resul.getTip().setAbsoluteSize();
+        return resul;
+    }
+
+    public static TippableObject arrowHead(Shape shape, double location, slopeDirection direction, Arrow2D.ArrowType type) {
+        MultiShapeObject arrowHead = Arrow2D.buildArrowHead(type);
+        arrowHead.fillColor(shape.getMp().getDrawColor());
+        arrowHead.drawColor(shape.getMp().getDrawColor());
+        TippableObject resul = new TippableObject(); //shape,location,slopeDirection.POSITIVE,equalLengthTip);
+        resul.shape = shape;
+        resul.setLocation(location);
+        resul.setTip(arrowHead);
+        resul.setWidth(.05);
+        resul.setAnchor(Anchor.Type.UPPER);
+        resul.getTip().setAbsoluteSize();
+        return resul;
+    }
+
     private Anchor.Type anchor;
+    private slopeDirection direction;
     MODrawPropertiesArray mpArray;
 
     private double offsetAngle = 0;
     private Point pointLoc;
     private Vec pointTo;
-//    abstract public void updateLocations(JMPathPoint location);
     private double scaleFactorX;
     private double scaleFactorY;
     protected Shape shape;
@@ -69,11 +125,6 @@ public class TippableObject extends MathObject {
     }
 
     @Override
-    public Stylable getMp() {
-        return mpArray;
-    }
-
-    @Override
     public <T extends MathObject> T copy() {
         return (T) make(shape, getLocation(), direction, getTip().copy());
     }
@@ -86,6 +137,23 @@ public class TippableObject extends MathObject {
         }
     }
 
+    public Anchor.Type getAnchor() {
+        return anchor;
+    }
+
+    /**
+     * Sets the type of the anchor used to position the tip with respect to the
+     * point of the shape
+     *
+     * @param <T> Calling class
+     * @param anchor Anchor
+     * @return This object
+     */
+    public <T extends TippableObject> T setAnchor(Anchor.Type anchor) {
+        this.anchor = anchor;
+        return (T) this;
+    }
+
     @Override
     public Rect getBoundingBox() {
         updateLocations();
@@ -96,26 +164,67 @@ public class TippableObject extends MathObject {
         return direction;
     }
 
+    /**
+     * Returns the parameter of the tip location in the shape
+     *
+     * @return The location parameter, a number between 0 and 1
+     */
     public double getLocation() {
         return tLocation;
     }
 
+    /**
+     * Sets the current location of the tip
+     *
+     * @param location A number between 0 and 1. If the number lies outside of
+     * this range, it is normalized.
+     */
     public final void setLocation(double location) {
+        while (location > 1) {
+            location -= 1;
+        }
+        while (location < 0) {
+            location += 1;
+        }
         this.tLocation = location;
     }
 
+    @Override
+    public Stylable getMp() {
+        return mpArray;
+    }
+
+    /**
+     * Returns the extra rotation angle to apply to the tip
+     *
+     * @return The offset angle
+     */
     public double getOffsetAngle() {
         return offsetAngle;
     }
 
+    /**
+     * Returns the current object used to build the tip
+     *
+     * @return The tip
+     */
     public MathObject getTip() {
         return tip;
     }
 
-    public final void setTip(MathObject tip) {
+    /**
+     * Sets the object to use to build the tip.Note that this object is not
+     * drawed, but a copy properyl rotated and scaled.
+     *
+     * @param <T> Calling subclass
+     * @param tip The tip
+     * @return This object
+     */
+    public final <T extends TippableObject> T setTip(MathObject tip) {
         mpArray.remove(this.tip);
         this.tip = tip;
         mpArray.add(tip);
+        return (T) this;
     }
 
     protected MathObject getTipCopy() {
@@ -126,6 +235,12 @@ public class TippableObject extends MathObject {
         this.tipCopy = tipCopy;
     }
 
+    /**
+     * Returns the tipped object, properly scaled and rotated. This is the
+     * object that will be drawed in the next draw routine.
+     *
+     * @return The tipped object
+     */
     public MathObject getTippedObject() {
         update(scene);
         return getTipCopy();
@@ -177,6 +292,14 @@ public class TippableObject extends MathObject {
         return (T) this;
     }
 
+    /**
+     * Sets the extra rotation angle to apply to the tip
+     *
+     * @param <T>
+     * @param angle Offset angle. A value of 0 means that the tip is rotated
+     * along the direction of the shape in the location point.
+     * @return This object
+     */
     public <T extends TippableObject> T setOffsetAngle(double angle) {
         this.offsetAngle = angle;
         return (T) this;
@@ -186,14 +309,6 @@ public class TippableObject extends MathObject {
     public <T extends MathObject> T setWidth(double w) {
         tip.setWidth(w);
         return (T) this;
-    }
-
-    public Anchor.Type getAnchor() {
-        return anchor;
-    }
-
-    public void setAnchor(Anchor.Type anchor) {
-        this.anchor = anchor;
     }
 
     @Override
@@ -215,7 +330,7 @@ public class TippableObject extends MathObject {
         this.getTipCopy().shift(headPoint.to(pointLoc));
 
         //Rotating
-        if (direction == ArrowTip.slopeDirection.NEGATIVE) {
+        if (direction == TippableObject.slopeDirection.NEGATIVE) {
 //            this.pointTo = jmp.p.to(jmp.cpEnter);
             slopeTo = shape.getPath().getPointAt(getLocation() - DELTA_DERIVATIVE).p;
 
@@ -230,42 +345,4 @@ public class TippableObject extends MathObject {
         getTipCopy().rotate(pointLoc, totalRotationAngle);
     }
 
-    public enum slopeDirection {
-        NEGATIVE, POSITIVE
-    }
-
-    public static TippableObject parallelSign(Shape shape, double location, int numberOfMarks) {
-        MultiShapeObject parallelSign = new MultiShapeObject();
-        for (int i = 0; i < numberOfMarks; i++) {
-            parallelSign.add(Shape.segment(Point.at(0, i), Point.at(2, i)));
-        }
-        TippableObject resul = new TippableObject(); //shape,location,slopeDirection.POSITIVE,parallelSign);
-        resul.shape = shape;
-        resul.setLocation(location);
-        resul.setTip(parallelSign);
-//        parallelSign.drawColor("black");
-        resul.setWidth(.05);
-        resul.setAnchor(Anchor.Type.CENTER);
-        resul.getTip().setAbsoluteSize();
-        return resul;
-    }
-
-//    public static TippableObject labelText(Shape shape, double location, String text) {
-//        MathObjectGroup tip = MathObjectGroup.make();
-//        tip.add(LaTeXMathObject.make(text));
-//        tip.add(Point.at(0, 0));
-//        tip.add(Point.at(0, 0));
-//        tip.add(Point.at(0, 0));
-//        tip.add(Point.at(0, 0));
-//        tip.add(Point.at(0, 0));
-//        tip.add(Point.at(0, 0));
-//        tip.setLayout(Anchor.Type.LOWER, .05);
-//        TippableObject resul = new TippableObject();
-//        resul.shape = shape;
-//        resul.setLocation(location);
-//        resul.setTip(tip);
-//        resul.setAnchor(Anchor.Type.LOWER);
-//        resul.setOffsetAngle(-PI / 2);
-//        return resul;
-//    }
 }
