@@ -248,7 +248,8 @@ public class TippableObject extends MathObject {
 
     @Override
     public int getUpdateLevel() {
-        return shape.getUpdateLevel() + 1;
+//        return shape.getUpdateLevel() + 1;
+        return Integer.MAX_VALUE;
     }
 
     @Override

@@ -305,6 +305,7 @@ public class JMPath implements Updateable, Stateable {
         double t = size - k;
         JMPathPoint v1 = getJMPoint(k);
         JMPathPoint v2 = getJMPoint(k + 1);
+         if (v1.isCurved) {
         //De Casteljau's Algorithm: https://en.wikipedia.org/wiki/De_Casteljau%27s_algorithm
         Point E = v1.p.interpolate(v1.cpExit, t); //New cp1 of v1
         Point G = v2.cpEnter.interpolate(v2.p, t); //New cp2 of v2
@@ -313,10 +314,11 @@ public class JMPath implements Updateable, Stateable {
         Point J = F.interpolate(G, t);//cp1 of interpolation point
 //            resul = H.interpolate(J, t); //Interpolation point
         resul = JMPathPoint.curveTo(H.interpolate(J, t));
-        if (v1.isCurved) {
+       
             resul.cpExit.copyFrom(J);
             resul.cpEnter.copyFrom(H);
         } else {
+             resul=JMPathPoint.lineTo(v1.p.interpolate(v2.p, alpha));
             resul.cpExit.copyFrom(v1.p);
             resul.cpEnter.copyFrom(v2.p);
         }
