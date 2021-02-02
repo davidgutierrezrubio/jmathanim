@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.github.davidgutierrezrubio</groupId>
     <artifactId>JMathAnim</artifactId>
-    <version>0.8.8</version>
+    <version>0.8.9-SNAPSHOT</version>
     <packaging>jar</packaging>
     <name>JMathAnim</name>
     <description>A Java library to write mathematical animations</description>
@@ -129,7 +129,7 @@
                     </execution>
                 </executions>
             </plugin>
-                        <plugin>
+<!--                        <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-gpg-plugin</artifactId>
                 <version>1.5</version>
@@ -142,7 +142,7 @@
                         </goals>
                     </execution>
                 </executions>
-            </plugin>
+            </plugin>-->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-release-plugin</artifactId>
