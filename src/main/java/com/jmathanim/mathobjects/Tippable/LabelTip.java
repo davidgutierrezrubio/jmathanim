@@ -35,6 +35,10 @@ public class LabelTip extends TippableObject {
     private LaTeXMathObject latexLabel;
     private Point markPoint;
 
+    public static LabelTip makeLabelTip(Shape shape, double location, String text) {
+        return makeLabelTip(shape, location, LaTeXMathObject.make(text));
+    }
+
     /**
      * Attach a LaTeX expression to a specific point of a Shape. The LaTeX is
      * attached outside the point
@@ -42,15 +46,15 @@ public class LabelTip extends TippableObject {
      * @param shape Shape to attach the tip
      * @param location Point of the shape to locate the tip. A parameter between
      * 0 and 1. Values outside this range are normalized.
-     * @param text LaTeX string
+     * @param text LaTeX object
      * @return The tippable object
      */
-    public static LabelTip makeLabelTip(Shape shape, double location, String text) {
+    public static LabelTip makeLabelTip(Shape shape, double location, LaTeXMathObject text) {
         LabelTip resul = new LabelTip();
         resul.shape = shape;
         resul.setLocation(location);
         resul.group = MathObjectGroup.make();
-        resul.latexLabel = LaTeXMathObject.make(text);
+        resul.latexLabel = text;
         resul.group.add(resul.latexLabel);
         resul.markPoint = Point.at(0, 0).visible(false);
         resul.group.add(resul.markPoint);
