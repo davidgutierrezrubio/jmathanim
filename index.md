@@ -1,7 +1,6 @@
 ![logo](logo.gif)
 
-JMathAnim is a library written in JAVA intended to simplify the process of doing mathematical animations. 
-Current version is 0.8.7. 
+JMathAnim is a library written in JAVA intended to simplify the process of doing mathematical animations. Current version is 0.8.8. 
 
 Although with limited features, it can be used to create many, non too complex animations. If you use it and find a bug/missing feature, feel free to fill an issue [here](https://github.com/davidgutierrezrubio/jmathanim/issues). For any other question, you can contact me at davidgutierrezrubio@gmail.com.
 
@@ -29,7 +28,7 @@ If you are used to another OO languages, like Python, it is relatively easy to s
 [Here you can find some examples made with this library ](Gallery/Gallery.html)
 
 # What's new?
-Version 0.8.8-SNAPSHOT:
+Version 0.8.8:
 
 * Added `TippableObject`, to put labels, or any marks in points of a Shape.
 * Improved cascade behaviour of styling methods for `MathObjectGroup` or `MultiShape` objects.
