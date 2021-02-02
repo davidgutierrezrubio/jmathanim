@@ -193,7 +193,7 @@ public class Point extends MathObject {
 
         dotShape = generateDotShape();
         dotShape.setAbsoluteSize();
-        dotShape.setAbsoluteAnchorPoint(this.copy());
+        dotShape.setAbsoluteSize(this.copy());
         if (isVisible()) {
             dotShape.draw(scene, r);
         }

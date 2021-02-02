@@ -316,7 +316,7 @@ public class TippableObject extends MathObject {
         updateLocations();
     }
 
-    public void updateLocations() {
+    protected void updateLocations() {
 
         this.pointLoc = shape.getPath().getPointAt(getLocation()).p;
         Point slopeTo;

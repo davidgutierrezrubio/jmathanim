@@ -446,7 +446,7 @@ public abstract class MathObject implements Drawable, Updateable, Stateable, Box
      * @return This MathObject subclass
      */
     public <T extends MathObject> T visible(boolean visible) {
-      getMp().setVisible(visible);
+        getMp().setVisible(visible);
         return (T) this;
     }
 
@@ -458,9 +458,20 @@ public abstract class MathObject implements Drawable, Updateable, Stateable, Box
         return absoluteAnchorPoint;
     }
 
-    public void setAbsoluteAnchorPoint(Point p) {
+    /**
+     * Marks this object with the absolute size flag.In this case, it will be
+     * drawn using a fixed camera, so that it will appear with the same size
+     * regardless of the zoom applied to the camera. The given point will be
+     * used as reference point to position the object.
+     *
+     * @param <T> Mathobject subclass
+     * @param p Reference point to position the object.
+     * @return The current object
+     */
+    public <T extends MathObject> T setAbsoluteSize(Point p) {
         this.absoluteAnchorPoint = p;
         absoluteAnchorType = Type.BY_POINT;
+        return (T) this;
 
     }
 
@@ -500,6 +511,42 @@ public abstract class MathObject implements Drawable, Updateable, Stateable, Box
             this.shift(A.to(B));
         }
         return (T) this;
+    }
+
+    /**
+     * Stack the object to another using a specified anchor. For example
+     * stackTo(UPPER, obj, RIGHT) will move this object so that its UPPER anchor
+     * matchs the RIGHT anchor of the destiny. The difference with similar
+     * methods is that the gap is given relative to this object width.
+     *
+     * @param <T> Mathobject subclass
+     * @param anchorObj Anchor of this object to use
+     * @param dstObj Destiny object to stack with
+     * @param anchorType Anchor of destiny object to use
+     * @param gap Amount of gap, relative to this object width, to leave between
+     * the anchors, in math units.
+     * @return This object
+     */
+    public <T extends MathObject> T stackToRW(Type anchorObj, Boxable dstObj, Type anchorType, double gap) {
+        return stackTo(anchorObj, dstObj, anchorType, gap * this.getWidth());
+    }
+
+    /**
+     * Stack the object to another using a specified anchor. For example
+     * stackTo(UPPER, obj, RIGHT) will move this object so that its UPPER anchor
+     * matchs the RIGHT anchor of the destiny. The difference with similar
+     * methods is that the gap is given relative to this object height.
+     *
+     * @param <T> Mathobject subclass
+     * @param anchorObj Anchor of this object to use
+     * @param dstObj Destiny object to stack with
+     * @param anchorType Anchor of destiny object to use
+     * @param gap Amount of gap, relative to this object height, to leave
+     * between the anchors, in math units.
+     * @return This object
+     */
+    public <T extends MathObject> T stackToRH(Type anchorObj, Boxable dstObj, Type anchorType, double gap) {
+        return stackTo(anchorObj, dstObj, anchorType, gap * this.getHeight());
     }
 
     /**

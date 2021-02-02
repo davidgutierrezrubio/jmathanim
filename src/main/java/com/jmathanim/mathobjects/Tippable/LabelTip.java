@@ -35,22 +35,88 @@ public class LabelTip extends TippableObject {
     private LaTeXMathObject latexLabel;
     private Point markPoint;
 
+    /**
+     * Attach a LaTeX expression to a specific point of a Shape. The LaTeX is
+     * attached outside the point
+     *
+     * @param shape Shape to attach the tip
+     * @param location Point of the shape to locate the tip. A parameter between
+     * 0 and 1. Values outside this range are normalized.
+     * @param text LaTeX string
+     * @return The tippable object
+     */
     public static LabelTip makeLabelTip(Shape shape, double location, String text) {
         LabelTip resul = new LabelTip();
         resul.shape = shape;
         resul.setLocation(location);
-        MathObjectGroup tip = MathObjectGroup.make();
+        resul.group = MathObjectGroup.make();
         resul.latexLabel = LaTeXMathObject.make(text);
-        tip.add(resul.latexLabel);
+        resul.group.add(resul.latexLabel);
         resul.markPoint = Point.at(0, 0).visible(false);
-        tip.add(resul.markPoint);
-        tip.setLayout(Anchor.Type.LOWER, .5 * resul.latexLabel.getHeight());
-        resul.setTip(tip);
+        resul.group.add(resul.markPoint);
+        resul.setTextOffset(.5 * resul.latexLabel.getHeight());
+        resul.setTip(resul.group);
         resul.setAnchor(Anchor.Type.LOWER);
         resul.setOffsetAngle(-PI / 2);
         return resul;
     }
     private boolean fixedAngle;
+    private double textOffset;
+    protected MathObjectGroup group;
+
+    public double getTextOffset() {
+        return textOffset;
+    }
+
+    /**
+     * Sets the distance between the marker point and the bottom line of the
+     * LaTeX expression.By default this value is half height of the LaTeX
+     * expression.
+     *
+     * @param <T> Calling subclass
+     * @param textOffset A positive value. Negative values are normalized.
+     * @return This object
+     */
+    public <T extends LabelTip> T setTextOffset(double textOffset) {
+        if (textOffset < 0) {
+            textOffset = -textOffset;
+        }
+        this.textOffset = textOffset;
+        group.setLayout(Anchor.Type.LOWER, getTextOffset());
+        return (T) this;
+    }
+
+    /**
+     * Sets the distance between the marker point and the bottom line of the
+     * LaTeX expression. The difference with other similar methods is that in
+     * this case the distance is given relative to the current width of the
+     * LaTeX equation. By default this value is half height of the LaTeX
+     * expression.
+     *
+     * @param <T> Calling subclass
+     * @param textOffset A positive value, relative to the current width of the
+     * LaTeX expression.
+     * @return This object
+     */
+    public <T extends LabelTip> T setTextOffsetRW(double textOffset) {
+        return setTextOffset(textOffset * latexLabel.getWidth());
+    }
+
+    /**
+     * Sets the distance between the marker point and the bottom line of the
+     * LaTeX expression. The difference with other similar methods is that in
+     * this case the distance is given relative to the current height of the
+     * LaTeX equation. By default this value is half height of the LaTeX
+     * expression.
+     *
+     * @param <T> Calling subclass
+     * @param textOffset A positive value, relative to the current width of the
+     * LaTeX expression.
+     * @return This object
+     */
+    public <T extends LabelTip> T setTextOffsetRH(double textOffset) {
+        return setTextOffset(textOffset * latexLabel.getHeight());
+    }
 
     private LabelTip() {
         super();
@@ -58,7 +124,7 @@ public class LabelTip extends TippableObject {
     }
 
     @Override
-    public void updateLocations() {
+    protected void updateLocations() {
         super.updateLocations(); //To change body of generated methods, choose Tools | Templates.
         MathObjectGroup msh = (MathObjectGroup) getTipCopy();
         if (fixedAngle) {
@@ -66,13 +132,17 @@ public class LabelTip extends TippableObject {
         }
     }
 
+    /**
+     * A flag whether the LaTeX expression should rotate according to the slope
+     * of the shape or not.
+     *
+     * @param <T> Calling subclass
+     * @param fixedAngle True if LaTeX expression should rotate, false
+     * otherwise.
+     * @return This object
+     */
     public <T extends LabelTip> T fixedAngle(boolean fixedAngle) {
         this.fixedAngle = fixedAngle;
-        return (T) this;
-    }
-
-    public <T extends LabelTip> T markPointVisible(boolean visible) {
-        this.markPoint.visible(visible);
         return (T) this;
     }
 
@@ -87,7 +157,7 @@ public class LabelTip extends TippableObject {
 
     /**
      * Sets the visibility of the mark point. This method is equivalent to
-     * getMarkPoint().visible(flag)
+     * this.getMarkPoint().visible(flag)
      *
      * @param <T> Calling subclass
      * @param visible Visible flag

@@ -22,6 +22,7 @@ import com.jmathanim.Utils.AffineJTransform;
 import com.jmathanim.Styling.JMColor;
 import com.jmathanim.Styling.MODrawPropertiesArray;
 import com.jmathanim.Styling.Stylable;
+import com.jmathanim.Utils.Anchor;
 import com.jmathanim.Utils.Rect;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import java.util.ArrayList;
@@ -109,24 +110,35 @@ public class MultiShapeObject extends MathObject implements Iterable<Shape> {
     }
 
     @Override
-    public void draw(JMathAnimScene scene, Renderer r) {
-        if (isVisible()) {
-            int n = 0;
-            for (Shape jmp : shapes) {
-                if (jmp.isVisible()) {
-                    if (absoluteSize) {
-                        r.drawAbsoluteCopy(jmp, getAbsoluteAnchor().v);//TODO: This doesnt work for overrided methods (e.g.: line)
-                    } else {
-                        jmp.draw(scene, r);
-//                    if (isShowDebugText()) {
-//                        r.debugText("" + n, jmp.getCenter().v);
-//                    }
-                    }
-                }
-                n++;
-            }
+    public <T extends MathObject> T setAbsoluteSize(Anchor.Type anchorType) {
+        super.setAbsoluteSize(anchorType);
+        Point p=Anchor.getAnchorPoint(this, anchorType);
+        for (Shape sh: shapes) {
+            sh.setAbsoluteSize(p);
         }
-        scene.markAsAlreadyDrawed(this);
+        
+        return (T) this;
+    }
+
+    @Override
+    public void draw(JMathAnimScene scene, Renderer r) {
+//        if (isVisible()) {
+//            int n = 0;
+//            for (Shape jmp : shapes) {
+//                if (jmp.isVisible()) {
+//                    if (absoluteSize) {
+//                        r.drawAbsoluteCopy(jmp, getAbsoluteAnchor().v);//TODO: This doesnt work for overrided methods (e.g.: line)
+//                    } else {
+//                        jmp.draw(scene, r);
+////                    if (isShowDebugText()) {
+////                        r.debugText("" + n, jmp.getCenter().v);
+////                    }
+//                    }
+//                }
+//                n++;
+//            }
+//        }
+//        scene.markAsAlreadyDrawed(this);
     }
 
     public <T extends MultiShapeObject> T showDebugIndices(boolean value) {
