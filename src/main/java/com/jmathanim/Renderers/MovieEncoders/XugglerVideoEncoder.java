@@ -26,7 +26,6 @@ import com.xuggle.xuggler.IAudioSamples;
 import com.xuggle.xuggler.ICodec;
 import com.xuggle.xuggler.IContainer;
 import com.xuggle.xuggler.IPacket;
-import com.xuggle.xuggler.IRational;
 import com.xuggle.xuggler.IStream;
 import com.xuggle.xuggler.IStreamCoder;
 import java.awt.image.BufferedImage;
@@ -40,12 +39,12 @@ import java.util.concurrent.TimeUnit;
  */
 public class XugglerVideoEncoder extends VideoEncoder {
 
-    private IContainer containerAudio;
-    IStreamCoder audioCoder;
     IMediaWriter writer;
     private double fps;
     private boolean framesGenerated;
     private boolean playSound;
+    public static int BITRATE=48000;
+    public static int NUM_CHANNELS=2;
 
     @Override
     public void createEncoder(File output, JMathAnimConfig config) throws IOException {
@@ -53,21 +52,17 @@ public class XugglerVideoEncoder extends VideoEncoder {
         writer = ToolFactory.makeWriter(output.getCanonicalPath());
         writer.addVideoStream(0, 0, ICodec.ID.CODEC_ID_H264, config.mediaW, config.mediaH);
 
-        writer.addAudioStream(1, 1, 2, 48000);
-//        writer.addAudioStream(1, 1, audioCoder.getChannels(), audioCoder.getSampleRate());
+        writer.addAudioStream(1, 1, NUM_CHANNELS, BITRATE);
 
         fps = config.fps;
 
     }
 
     @Override
-    public void addSound(File soundFile) throws IOException {
-        if (playSound) {
-            return;//Don't add a sound while another one is playing
-        }
-        playSound = true;
-        int offset = 0;
-        containerAudio = IContainer.make();
+    public void addSound(File soundFile, int frameCount) throws IOException {
+        long microsecondsElapsed = (long) (1000000d * frameCount / fps);
+        
+        IContainer containerAudio = IContainer.make();
         containerAudio.open(soundFile.getCanonicalPath(), IContainer.Type.READ, null);
 
         int audiostreamt = -1;
@@ -83,62 +78,50 @@ public class XugglerVideoEncoder extends VideoEncoder {
             }
         }
 
-        audioCoder = containerAudio.getStream(audiostreamt).getStreamCoder();
+        IStreamCoder audioCoder = containerAudio.getStream(audiostreamt).getStreamCoder();
         System.out.println("Channels: " + audioCoder.getChannels());
         System.out.println("Sample rate: " + audioCoder.getSampleRate());
         if (audioCoder.open() < 0) {
             throw new RuntimeException("Cant open audio coder");
         }
+
+        IPacket packetaudio = IPacket.make();
+        while (containerAudio.readNextPacket(packetaudio) >= 0) {
+            IAudioSamples samples = IAudioSamples.make(512,
+                    audioCoder.getChannels(),
+                    IAudioSamples.Format.FMT_S32);
+            int offset = 0;
+            while (offset < packetaudio.getSize()) {
+                int bytesDecodedaudio = audioCoder.decodeAudio(samples,
+                        packetaudio,
+                        offset);
+                if (bytesDecodedaudio < 0) {
+                    throw new RuntimeException("could not detect audio");
+                }
+                offset += bytesDecodedaudio;
+
+                if (samples.isComplete()) {
+                    IAudioResampler resampler = IAudioResampler.make(2, audioCoder.getChannels(), 48000, audioCoder.getSampleRate());
+                    long sampleCount = samples.getNumSamples();
+                    IAudioSamples out = IAudioSamples.make(sampleCount, 2);
+                    resampler.resample(out, samples, sampleCount);
+
+                    out.setTimeStamp(microsecondsElapsed);
+                    writer.encodeAudio(1, out);
+
+                }
+            }
+        }
+
     }
 
     @Override
     public void writeFrame(BufferedImage image, int frameCount) {
-
+        framesGenerated=true;
         BufferedImage bgrScreen = convertToType(image, BufferedImage.TYPE_3BYTE_BGR);
         long nanosecondsElapsed = (long) (1000000000d * frameCount / fps);
         writer.encodeVideo(0, bgrScreen, nanosecondsElapsed, TimeUnit.NANOSECONDS);
 
-        if (playSound) {
-            IPacket packetaudio = IPacket.make();
-            if (containerAudio.readNextPacket(packetaudio) >= 0) {
-                IAudioSamples samples = IAudioSamples.make(512,
-                        audioCoder.getChannels(),
-                        IAudioSamples.Format.FMT_S32);
-                int offset = 0;
-                while (offset < packetaudio.getSize()) {
-                    int bytesDecodedaudio = audioCoder.decodeAudio(samples,
-                            packetaudio,
-                            offset);
-                    if (bytesDecodedaudio < 0) {
-                        throw new RuntimeException("could not detect audio");
-                    }
-                    offset += bytesDecodedaudio;
-
-                    if (samples.isComplete()) {
-                        IAudioResampler resampler = IAudioResampler.make(2, audioCoder.getChannels(), 48000, audioCoder.getSampleRate());
-                        long sampleCount = samples.getNumSamples();
-                        IAudioSamples out = IAudioSamples.make(sampleCount, 2);
-                        resampler.resample(out, samples, sampleCount);
-//                        long ts = (nanosecondsElapsed - 2100000000l) * (512000l - 21333l) / (2866666666l - 2100000000l) + 21333l;
-                    IRational fr = IRational.make((int) fps, 1);
-                            out.setTimeBase(IRational.make(fr.getDenominator(), fr.getNumerator()));
-                            out.setTimeStamp(sampleCount);
-//                        out.setTimeStamp((long) (21333*frameCount*30/fps));
-
-//                        out.setTimeBase(IRational.make((int) fps,1));
-                        System.out.println("Timestamp\t" + out.getTimeStamp() + "\t" + frameCount+"\t"+fps);
-//                        out.setTimeStamp(nanosecondsElapsed);
-//                        out.setTimeBase(TimeUnit.NANOSECONDS);
-                        writer.encodeAudio(1, out);
-//                        writer.encodeAudio(1, out,nanosecondsElapsed, TimeUnit.NANOSECONDS);
-
-                    }
-                }
-            } else {
-                playSound = false;
-            }
-        } else System.out.println("Timestamp only video\t" +  + nanosecondsElapsed);
-        framesGenerated = true;
     }
 
     @Override
