@@ -26,6 +26,7 @@ import com.xuggle.xuggler.IAudioSamples;
 import com.xuggle.xuggler.ICodec;
 import com.xuggle.xuggler.IContainer;
 import com.xuggle.xuggler.IPacket;
+import com.xuggle.xuggler.IRational;
 import com.xuggle.xuggler.IStream;
 import com.xuggle.xuggler.IStreamCoder;
 import java.awt.image.BufferedImage;
@@ -98,15 +99,15 @@ public class XugglerVideoEncoder extends VideoEncoder {
         BufferedImage bgrScreen = convertToType(image, BufferedImage.TYPE_3BYTE_BGR);
         long nanosecondsElapsed = (long) (1000000000d * frameCount / fps);
         writer.encodeVideo(0, bgrScreen, nanosecondsElapsed, TimeUnit.NANOSECONDS);
+
         if (playSound) {
             IPacket packetaudio = IPacket.make();
             if (containerAudio.readNextPacket(packetaudio) >= 0) {
                 IAudioSamples samples = IAudioSamples.make(512,
                         audioCoder.getChannels(),
                         IAudioSamples.Format.FMT_S32);
-                 
-                offset=0;
-                if (offset < packetaudio.getSize()) {
+                int offset = 0;
+                while (offset < packetaudio.getSize()) {
                     int bytesDecodedaudio = audioCoder.decodeAudio(samples,
                             packetaudio,
                             offset);
@@ -120,14 +121,21 @@ public class XugglerVideoEncoder extends VideoEncoder {
                         long sampleCount = samples.getNumSamples();
                         IAudioSamples out = IAudioSamples.make(sampleCount, 2);
                         resampler.resample(out, samples, sampleCount);
+//                        long ts = (nanosecondsElapsed - 2100000000l) * (512000l - 21333l) / (2866666666l - 2100000000l) + 21333l;
+                        out.setTimeStamp((long) (21333*frameCount*30/fps));
+//                        out.setTimeBase(IRational.make((int) fps,1));
+                        System.out.println("Timestamp\t" + out.getTimeStamp() + "\t" + frameCount+"\t"+fps);
+//                        out.setTimeStamp(nanosecondsElapsed);
+//                        out.setTimeBase(TimeUnit.NANOSECONDS);
                         writer.encodeAudio(1, out);
+//                        writer.encodeAudio(1, out,nanosecondsElapsed, TimeUnit.NANOSECONDS);
 
                     }
                 }
             } else {
                 playSound = false;
             }
-        }
+        } else System.out.println("Timestamp only video\t" +  + nanosecondsElapsed);
         framesGenerated = true;
     }
 
