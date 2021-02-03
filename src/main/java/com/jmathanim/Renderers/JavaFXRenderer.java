@@ -476,5 +476,12 @@ public class JavaFXRenderer extends Renderer {
         debugFXnodes.add(rectangle);
         debugFXnodes.add(t);
     }
+    public void addSound(File soundFile) {
+        try {
+            videoEncoder.addSound(soundFile);
+        } catch (IOException ex) {
+            Logger.getLogger(JavaFXRenderer.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
 
 }

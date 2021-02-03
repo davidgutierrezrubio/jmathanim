@@ -19,9 +19,15 @@ package com.jmathanim.Renderers.MovieEncoders;
 
 import com.jmathanim.Utils.JMathAnimConfig;
 import com.jmathanim.jmathanim.JMathAnimScene;
+import com.xuggle.xuggler.IAudioResampler;
 import com.xuggle.mediatool.IMediaWriter;
 import com.xuggle.mediatool.ToolFactory;
+import com.xuggle.xuggler.IAudioSamples;
 import com.xuggle.xuggler.ICodec;
+import com.xuggle.xuggler.IContainer;
+import com.xuggle.xuggler.IPacket;
+import com.xuggle.xuggler.IStream;
+import com.xuggle.xuggler.IStreamCoder;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -33,17 +39,57 @@ import java.util.concurrent.TimeUnit;
  */
 public class XugglerVideoEncoder extends VideoEncoder {
 
+    private IContainer containerAudio;
+    IStreamCoder audioCoder;
+    private int offset;
     IMediaWriter writer;
     private long startTime;
     private double fps;
     private boolean framesGenerated;
+    private boolean playSound;
 
     @Override
     public void createEncoder(File output, JMathAnimConfig config) throws IOException {
+        framesGenerated = false;
         writer = ToolFactory.makeWriter(output.getCanonicalPath());
         writer.addVideoStream(0, 0, ICodec.ID.CODEC_ID_H264, config.mediaW, config.mediaH);
+
+        writer.addAudioStream(1, 1, 2, 48000);
+//        writer.addAudioStream(1, 1, audioCoder.getChannels(), audioCoder.getSampleRate());
+
         fps = config.fps;
-        framesGenerated = false;
+
+    }
+
+    @Override
+    public void addSound(File soundFile) throws IOException {
+        if (playSound) {
+            return;//Don't add a sound while another one is playing
+        }
+        playSound = true;
+        offset = 0;
+        containerAudio = IContainer.make();
+        containerAudio.open(soundFile.getCanonicalPath(), IContainer.Type.READ, null);
+
+        int audiostreamt = -1;
+        int numStreamAudio = containerAudio.getNumStreams();
+        for (int i = 0; i < numStreamAudio; i++) {
+            IStream stream = containerAudio.getStream(i);
+            IStreamCoder code = stream.getStreamCoder();
+
+            if (code.getCodecType() == ICodec.Type.CODEC_TYPE_AUDIO) {
+
+                audiostreamt = i;
+                break;
+            }
+        }
+
+        audioCoder = containerAudio.getStream(audiostreamt).getStreamCoder();
+        System.out.println("Channels: " + audioCoder.getChannels());
+        System.out.println("Sample rate: " + audioCoder.getSampleRate());
+        if (audioCoder.open() < 0) {
+            throw new RuntimeException("Cant open audio coder");
+        }
     }
 
     @Override
@@ -52,6 +98,36 @@ public class XugglerVideoEncoder extends VideoEncoder {
         BufferedImage bgrScreen = convertToType(image, BufferedImage.TYPE_3BYTE_BGR);
         long nanosecondsElapsed = (long) (1000000000d * frameCount / fps);
         writer.encodeVideo(0, bgrScreen, nanosecondsElapsed, TimeUnit.NANOSECONDS);
+        if (playSound) {
+            IPacket packetaudio = IPacket.make();
+            if (containerAudio.readNextPacket(packetaudio) >= 0) {
+                IAudioSamples samples = IAudioSamples.make(512,
+                        audioCoder.getChannels(),
+                        IAudioSamples.Format.FMT_S32);
+                 
+                offset=0;
+                if (offset < packetaudio.getSize()) {
+                    int bytesDecodedaudio = audioCoder.decodeAudio(samples,
+                            packetaudio,
+                            offset);
+                    if (bytesDecodedaudio < 0) {
+                        throw new RuntimeException("could not detect audio");
+                    }
+                    offset += bytesDecodedaudio;
+
+                    if (samples.isComplete()) {
+                        IAudioResampler resampler = IAudioResampler.make(2, audioCoder.getChannels(), 48000, audioCoder.getSampleRate());
+                        long sampleCount = samples.getNumSamples();
+                        IAudioSamples out = IAudioSamples.make(sampleCount, 2);
+                        resampler.resample(out, samples, sampleCount);
+                        writer.encodeAudio(1, out);
+
+                    }
+                }
+            } else {
+                playSound = false;
+            }
+        }
         framesGenerated = true;
     }
 
