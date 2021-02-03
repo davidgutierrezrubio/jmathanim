@@ -42,9 +42,7 @@ public class XugglerVideoEncoder extends VideoEncoder {
 
     private IContainer containerAudio;
     IStreamCoder audioCoder;
-    private int offset;
     IMediaWriter writer;
-    private long startTime;
     private double fps;
     private boolean framesGenerated;
     private boolean playSound;
@@ -68,7 +66,7 @@ public class XugglerVideoEncoder extends VideoEncoder {
             return;//Don't add a sound while another one is playing
         }
         playSound = true;
-        offset = 0;
+        int offset = 0;
         containerAudio = IContainer.make();
         containerAudio.open(soundFile.getCanonicalPath(), IContainer.Type.READ, null);
 
@@ -122,7 +120,11 @@ public class XugglerVideoEncoder extends VideoEncoder {
                         IAudioSamples out = IAudioSamples.make(sampleCount, 2);
                         resampler.resample(out, samples, sampleCount);
 //                        long ts = (nanosecondsElapsed - 2100000000l) * (512000l - 21333l) / (2866666666l - 2100000000l) + 21333l;
-                        out.setTimeStamp((long) (21333*frameCount*30/fps));
+                    IRational fr = IRational.make((int) fps, 1);
+                            out.setTimeBase(IRational.make(fr.getDenominator(), fr.getNumerator()));
+                            out.setTimeStamp(sampleCount);
+//                        out.setTimeStamp((long) (21333*frameCount*30/fps));
+
 //                        out.setTimeBase(IRational.make((int) fps,1));
                         System.out.println("Timestamp\t" + out.getTimeStamp() + "\t" + frameCount+"\t"+fps);
 //                        out.setTimeStamp(nanosecondsElapsed);
