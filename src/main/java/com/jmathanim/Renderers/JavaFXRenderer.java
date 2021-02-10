@@ -66,6 +66,7 @@ import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.scene.transform.Rotate;
 import javafx.scene.transform.Translate;
+import javax.imageio.ImageIO;
 
 /**
  *
@@ -258,6 +259,12 @@ public class JavaFXRenderer extends Renderer {
             }
             videoEncoder.writeFrame(bi, frameCount);
         }
+//        File fpng=new File(config.getOutputFileName()+String.format("%03d", frameCount)+".png");
+//        try {
+//            ImageIO.write(bi, "png", fpng);
+//        } catch (IOException ex) {
+//            Logger.getLogger(JavaFXRenderer.class.getName()).log(Level.SEVERE, null, ex);
+//        }
     }
 
     @Override

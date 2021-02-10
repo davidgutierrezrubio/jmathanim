@@ -31,7 +31,12 @@ import com.xuggle.xuggler.IStreamCoder;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.nio.ByteBuffer;
 import java.util.concurrent.TimeUnit;
+import javax.sound.sampled.AudioFormat;
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.DataLine;
 
 /**
  *
@@ -43,25 +48,25 @@ public class XugglerVideoEncoder extends VideoEncoder {
     private double fps;
     private boolean framesGenerated;
     private boolean playSound;
-    public static int BITRATE=48000;
-    public static int NUM_CHANNELS=2;
+    public static int BITRATE = 48000;
+    public static int NUM_CHANNELS = 2;
+    private long soundFrame;
 
     @Override
     public void createEncoder(File output, JMathAnimConfig config) throws IOException {
         framesGenerated = false;
         writer = ToolFactory.makeWriter(output.getCanonicalPath());
         writer.addVideoStream(0, 0, ICodec.ID.CODEC_ID_H264, config.mediaW, config.mediaH);
-
-        writer.addAudioStream(1, 1, NUM_CHANNELS, BITRATE);
-
+        writer.addAudioStream(1, 0, NUM_CHANNELS, BITRATE);
+        soundFrame = 0;
         fps = config.fps;
 
     }
 
     @Override
     public void addSound(File soundFile, int frameCount) throws IOException {
-        long microsecondsElapsed = (long) (1000000d * frameCount / fps);
-        
+//        long microsecondsElapsed = (long) (1000000d * frameCount / fps);
+
         IContainer containerAudio = IContainer.make();
         containerAudio.open(soundFile.getCanonicalPath(), IContainer.Type.READ, null);
 
@@ -85,41 +90,74 @@ public class XugglerVideoEncoder extends VideoEncoder {
             throw new RuntimeException("Cant open audio coder");
         }
 
+        addSilence(frameCount - soundFrame);
+
         IPacket packetaudio = IPacket.make();
         while (containerAudio.readNextPacket(packetaudio) >= 0) {
             IAudioSamples samples = IAudioSamples.make(512,
                     audioCoder.getChannels(),
                     IAudioSamples.Format.FMT_S32);
-            int offset = 0;
-            while (offset < packetaudio.getSize()) {
-                int bytesDecodedaudio = audioCoder.decodeAudio(samples,
-                        packetaudio,
-                        offset);
-                if (bytesDecodedaudio < 0) {
-                    throw new RuntimeException("could not detect audio");
-                }
-                offset += bytesDecodedaudio;
+            ByteBuffer aa = packetaudio.getData().getByteBuffer(0, packetaudio.getSize());
 
-                if (samples.isComplete()) {
-                    IAudioResampler resampler = IAudioResampler.make(2, audioCoder.getChannels(), 48000, audioCoder.getSampleRate());
-                    long sampleCount = samples.getNumSamples();
-                    IAudioSamples out = IAudioSamples.make(sampleCount, 2);
-                    resampler.resample(out, samples, sampleCount);
-
-                    out.setTimeStamp(microsecondsElapsed);
-                    writer.encodeAudio(1, out);
-
-                }
+            byte[] myBytes = new byte[aa.remaining()];
+            aa.get(myBytes);
+            short[] mySamples = new short[myBytes.length / 2];
+            for (int i = 0; i < mySamples.length; i++) {
+                mySamples[i] = (short) ((myBytes[2 * i] << 8) | myBytes[2 * i + 1]);
             }
+
+            writer.encodeAudio(1, mySamples);
+            soundFrame += mySamples.length * fps / NUM_CHANNELS / BITRATE;
+
+//            int offset = 0;
+//            while (offset < packetaudio.getSize()) {
+//                int bytesDecodedaudio = audioCoder.decodeAudio(samples,
+//                        packetaudio,
+//                        offset);
+//                if (bytesDecodedaudio < 0) {
+//                    throw new RuntimeException("could not detect audio");
+//                }
+//                offset += bytesDecodedaudio;
+//
+//                if (samples.isComplete()) {
+//                    IAudioResampler resampler = IAudioResampler.make(2, audioCoder.getChannels(), 48000, audioCoder.getSampleRate());
+//                    long sampleCount = samples.getNumSamples();
+//                    IAudioSamples out = IAudioSamples.make(sampleCount, 2);
+//                    resampler.resample(out, samples, sampleCount);
+//
+////                    out.setTimeStamp(microsecondsElapsed);
+//                    writer.encodeAudio(1, out);
+//
+//                }
+//            }
         }
+        containerAudio.close();
+        audioCoder.close();
+
+    }
+
+    private void addSilence(long numFrame) {
+        //Generate silence for the given number of frames
+        int size = (int) (numFrame / fps * NUM_CHANNELS * BITRATE);
+        short[] silence = new short[size];
+        for (int i = 0; i < silence.length; i++) {
+//            silence[i] = (short) (32767 * Math.sin(5000 * Math.PI * i / silence.length));
+            silence[i] = 0;
+        }
+        writer.encodeAudio(1, silence);
+        soundFrame += numFrame;
 
     }
 
     @Override
     public void writeFrame(BufferedImage image, int frameCount) {
-        framesGenerated=true;
+        framesGenerated = true;
         BufferedImage bgrScreen = convertToType(image, BufferedImage.TYPE_3BYTE_BGR);
         long nanosecondsElapsed = (long) (1000000000d * frameCount / fps);
+        if (frameCount == 60) {
+            long nanosecondsElapsed2 = (long) (1000000000d * frameCount / fps);
+        }
+        
         writer.encodeVideo(0, bgrScreen, nanosecondsElapsed, TimeUnit.NANOSECONDS);
 
     }
@@ -159,6 +197,41 @@ public class XugglerVideoEncoder extends VideoEncoder {
     @Override
     public boolean isFramesGenerated() {
         return framesGenerated;
+    }
+
+    public void getSampleFromAudioFile(File fileIn) {
+        int totalFramesRead = 0;
+        try {
+            AudioInputStream audioInputStream
+                    = AudioSystem.getAudioInputStream(fileIn);
+            int bytesPerFrame
+                    = audioInputStream.getFormat().getFrameSize();
+            if (bytesPerFrame == AudioSystem.NOT_SPECIFIED) {
+                // some audio formats may have unspecified frame size
+                // in that case we may read any amount of bytes
+                bytesPerFrame = 1;
+            }
+            // Set an arbitrary buffer size of 1024 frames.
+            int numBytes = 1024 * bytesPerFrame;
+            byte[] audioBytes = new byte[numBytes];
+            try {
+                int numBytesRead = 0;
+                int numFramesRead = 0;
+                // Try to read numBytes bytes from the file.
+                while ((numBytesRead
+                        = audioInputStream.read(audioBytes)) != -1) {
+                    // Calculate the number of frames actually read.
+                    numFramesRead = numBytesRead / bytesPerFrame;
+                    totalFramesRead += numFramesRead;
+                    // Here, do something useful with the audio data that's 
+                    // now in the audioBytes array...
+                }
+            } catch (Exception ex) {
+                // Handle the error...
+            }
+        } catch (Exception e) {
+            // Handle the error...
+        }
     }
 
 }
