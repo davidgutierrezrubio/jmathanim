@@ -137,6 +137,7 @@ public class JMathAnimConfig {
     public void setBackGroundImage(String name) {
         ResourceLoader rl = new ResourceLoader();
         setBackGroundImage(rl.getResource(name, "images"));
+        JMathAnimScene.logger.info("Background image set to "+rl.getResource(name, "images"));
     }
 
     public void setBackGroundImage(URL backGroundImage) {
