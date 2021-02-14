@@ -34,10 +34,11 @@ public abstract class SingleCommandAnimation extends Animation {
         return true;//Finish the animation inmediately
     }
 
+    public abstract void command();
+
     @Override
     public void doAnim(double t) {
     }
-
-    public abstract void command();
+;
 
 }
