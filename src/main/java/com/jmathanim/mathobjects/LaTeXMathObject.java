@@ -55,7 +55,12 @@ public class LaTeXMathObject extends SVGMathObject {
      * @return The LaTexMathObject
      */
     public static LaTeXMathObject make(String text) {
-        LaTeXMathObject t = new LaTeXMathObject(text);
+        LaTeXMathObject t = new LaTeXMathObject();
+
+        if (!"".equals(text)) {
+            t.setLaTeX(text);
+        }
+
         if (t.shapes.size() > 0)//Move UL to (0,0) by default
         {
             t.stackTo(new Point(0, 0), Anchor.Type.UL);
@@ -63,40 +68,31 @@ public class LaTeXMathObject extends SVGMathObject {
         return t;
     }
 
-    public LaTeXMathObject() {
-        this("");
-    }
-
     /**
      * Creates a new LaTeX generated text
-     *
-     * @param text The text to be compiled. Backslashes in Java strings should
-     * be written with "\\"
      */
-    private LaTeXMathObject(String text) {
+    protected LaTeXMathObject() {
         super();
         getMp().loadFromStyle("latexdefault");
         getMp().setAbsoluteThickness(true);
         getMp().setFillColor(getMp().getDrawColor());
         getMp().setFillColorIsDrawColor(true);
         getMp().setThickness(1d);
-        if (!"".equals(text)) {
-            setLaTeX(text);
-        }
-
     }
 
     /**
      * Changes the current LaTeX expression, updating the whole object as
-     * needed. The JMNumber for example, uses this. The new formula generated
-     * will be center-aligned with the replaced one. In case the old formula was
+     * needed.The JMNumber for example, uses this.The new formula generated will
+     * be center-aligned with the replaced one. In case the old formula was
      * empty (no shapes) it will be centered on the screen.
      *
+     * @param <T> Calling subclass
      * @param text The new LaTeX string
+     * @return This object
      */
-    public final void setLaTeX(String text) {
+    public <T extends LaTeXMathObject> T setLaTeX(String text) {
         if (text.equals(this.text)) {
-            return;
+            return (T) this;
         } else {
             this.text = text;
         }
@@ -132,20 +128,26 @@ public class LaTeXMathObject extends SVGMathObject {
 
             if (isAddedToScene) {
                 scene.add(sh);
-                sh.getMp().copyFrom(getMp());
             }
+        }
+
+        //Apply style to all subshapes
+        for (Shape sh : shapes) {
+            sh.getMp().copyFrom(getMp());
         }
 
 //Scale
 //An "X" character in LaTeX has 6.8 (svg units) pixels height.
 //This object should be scaled by default to extend over
 //DEFAULT_SCALE_FACTOR% of the screen
-        Camera cam = JMathAnimConfig.getConfig().getFixedCamera();
+//        Camera cam = JMathAnimConfig.getConfig().getFixedCamera();
 //        double hm = cam.getMathView().getHeight();
-        double hm = cam.screenToMath(cam.screenHeight);
+//        double hm = cam.screenToMath(cam.screenHeight);
+        double hm = 2.5;
         double sc = DEFAULT_SCALE_FACTOR * .4 * hm / 6.8 * 2.5;
         this.scale(getBoundingBox().getUL(), sc, sc, 1);
         this.stackTo(center, Anchor.Type.CENTER);
+        return (T) this;
     }
 
     /**

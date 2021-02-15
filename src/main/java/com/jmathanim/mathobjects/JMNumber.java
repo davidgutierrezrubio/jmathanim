@@ -44,19 +44,26 @@ public class JMNumber extends LaTeXMathObject {
 
         return resul;
     }
+    private double refHeight;
     private String unitString;
 
-    private JMNumber(double number) {
+    protected JMNumber(double number) {
         super();
         this.number = number;
         this.unitString = "";
+        this.refHeight = 0;
     }
 
     private void updateContents() {
-        double h=this.getHeight();
+        double h = this.getHeight();
         setLaTeX(lambdaText.apply(this.number) + unitString);
+        this.refHeight = this.getHeight();
+       
         
-        if (h>0) setHeight(h);//TODO: Improve this
+
+        if (h > 0) {
+            scale(h / this.refHeight);
+        }
     }
 
     /**

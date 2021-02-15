@@ -320,7 +320,7 @@ public class MultiShapeObject extends MathObject implements Iterable<Shape> {
     }
 
     @Override
-    public Stylable getMp() {
+    public final Stylable getMp() {
         return mpMultiShape;
     }
 
