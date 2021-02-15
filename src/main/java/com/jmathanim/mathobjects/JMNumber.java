@@ -39,7 +39,8 @@ public class JMNumber extends LaTeXMathObject {
      * @return The new JMNumber object
      */
     public static JMNumber make(double number) {
-        JMNumber resul = new JMNumber(number);
+        JMNumber resul = new JMNumber(0);
+        resul.setNumber(number);
 
         return resul;
     }
@@ -52,7 +53,10 @@ public class JMNumber extends LaTeXMathObject {
     }
 
     private void updateContents() {
+        double h=this.getHeight();
         setLaTeX(lambdaText.apply(this.number) + unitString);
+        
+        if (h>0) setHeight(h);//TODO: Improve this
     }
 
     /**
@@ -104,6 +108,7 @@ public class JMNumber extends LaTeXMathObject {
         this.lambdaText = t -> {
             return String.format("$%32.0f$", t);
         };
+        updateContents();
         return (T) this;
     }
 
@@ -119,6 +124,7 @@ public class JMNumber extends LaTeXMathObject {
         this.lambdaText = t -> {
             return String.format("$%32." + numDecimals + "f$", t);
         };
+        updateContents();
         return (T) this;
     }
 
@@ -132,6 +138,7 @@ public class JMNumber extends LaTeXMathObject {
      */
     public <T extends JMNumber> T setUnit(String unitString) {
         this.unitString = unitString;
+        updateContents();
         return (T) this;
     }
 
