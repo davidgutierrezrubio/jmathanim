@@ -2,7 +2,7 @@
 
 # Animations
 
-So far, we’ve learned to draw basic objects, and put them in the position we desire. What about animations? Well, that is what this library is meant for. We have the `Animation` class that will store any kind of animation you can do to an object. Not only `MathObject` instances can be animated, but also the `Camera` object can be animated too.
+So far, we’ve learned to draw basic objects, and put them in the position we desire. What about animations? Well, this is what this library is meant for. We have the `Animation` class that will store any kind of animation you can do to an object. Not only `MathObject` instances can be animated, but also the `Camera` object can be animated too.
 
 An `Animation` object has 4 important methods that should be understood if you want to implement your own animations or playing it manually with the `advanceFrame()` method 
 
@@ -18,7 +18,7 @@ The smooth function is defined as a lambda java function, that you can get or se
 
 -   The `finishAnimation()` method, that should do all the needed cleanup and finishing jobs.
 
-An `Animation` object can be played with the `playAnimation` method, but there is another way to play it in a more procedimental way. You can achieve the same effect with the following piece of code:
+An `Animation` object can be played with the `playAnimation` method, which will handle all the necessary steps for you, but there is another way to play it in a more procedimental way. You can achieve the same effect with the following piece of code:
 
 ````java
 Animation anim=<define here the animation>
@@ -28,9 +28,9 @@ while (!anim.processAnimation()) {
 }
 ````
 
-Also, there is a convenience object created, `play`, which performs easily most used animations.
+Also, there is a convenience object created, `play`, which stores shortcuts for most used animations.
 
-In general, parameters of all animations always follow the structure `(runTime, parameters, object_1,…​,object_n)`. The last part is a varargs `MathObject`, this way, you can apply the animation to an arbitrary number of objects.
+In general, parameters of all animations always follow the structure `(runTime, parameters, object_1,…​,object_n)`. The last part is a varargs `MathObject`, so that you can apply the animation to an arbitrary number of objects.
 
 # Basic Animations
 

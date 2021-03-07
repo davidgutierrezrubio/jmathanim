@@ -27,7 +27,7 @@ Shape r=Shape.regularPolygon(5).moveTo(3,3);//A pentagon, with its bounding box 
 ```
 
 ## StackTo
-The `StackTo` command works in a similar way that `putAt`, but allows to position an object relative to another one. For example, the following code creates 4 circles, and stacks them into a square in different ways:
+The `StackTo` command allows to position an object relative to another one. For example, the following code creates 4 circles, and stacks them into a square in different ways:
 
 ``` java
 Shape c1 = Shape.circle().fillColor("orange").fillAlpha(.3);
