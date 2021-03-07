@@ -209,6 +209,55 @@ For this object the `drawAlpha` should be set to 0, that is, it should a purely 
 
 ![delimiter01](delimiter01.gif)
 
+## The `TippableObject` class
+
+A tippable object is a MathObject that marks a specified point of a `Shape`. Any mathobject can be used as a tip. Two static methods implements specific tips: the equal length symbols and arrow head symbols. A specialized subclass `LabelTip` attaches a LaTeX formula to a point of the shape. We'll use an hexagon to show you 6 examples in one:
+
+```java
+Shape reg = Shape.regularPolygon(6).center().style("solidblue");
+
+//A black type 1 arrow head at the middle of one side
+TippableObject tip1 = TippableObject.arrowHead(reg, .5 / 6,
+	TippableObject.slopeDirection.POSITIVE,
+    Arrow2D.ArrowType.TYPE_1
+    ).layer(1);
+
+//A LaTeX expression, color darkslateblue, at the middle of one side
+//this expression rotates with the side, and the mark point is visible
+LabelTip tip2 = LabelTip.makeLabelTip(reg, 1.5 / 6, "$a+b$");
+tip2.visibleMarkPoint(true).layer(1); //Mark point is visible.
+tip2.drawColor("darkslateblue");
+
+//A LaTeX expression, color firebrick, attached to a side, that does not rotate with the shape
+LabelTip tip3 = LabelTip.makeLabelTip(reg, 2.5 / 6, "$x$").visibleMarkPoint(false);
+tip3.fixedAngle(true).layer(1); //The text shows with a fixed angle
+tip3.drawColor("firebrick");
+
+//An "equal length" sign, with 2 marks
+TippableObject tip4 = TippableObject.equalLengthTip(reg, 3.5 / 6, 2).layer(1);
+
+//A solid orange circle
+TippableObject tip5 = TippableObject.make(reg, 4.5 / 6,
+	TippableObject.slopeDirection.POSITIVE,
+    Shape.circle().scale(.05).style("solidOrange")
+    ).layer(1);
+
+//A solid red square, aligned to the left of the shape point
+TippableObject tip6 = TippableObject.make(reg, 5.5 / 6,
+	TippableObject.slopeDirection.POSITIVE,
+    Shape.square().scale(.1).style("solidRed")
+                                         );
+tip6.setAnchor(Anchor.Type.LEFT).layer(1);
+
+add(reg, tip1, tip2, tip3, tip4, tip5, tip6);
+
+//Rotate the hexagon and we'll see what happens to the tips
+play.rotate(5, PI, reg);
+waitSeconds(3);
+```
+
+![tippable01](tippable01.gif)
+
 ## The `LaTeXMathObject` class
 
 If you want to include mathematical expressions in any work, of course, the best software to use is `LaTeX`. This class renders a mathematical expression written in LaTeX and imports it so you can draw it and animate it in several ways. To do this you’ll need a working LaTeX distribution installed on your system and accessible from your path. So, if you put the following the code in the `runSketch()` method:
