@@ -2,27 +2,9 @@
 
 JMathAnim is a library written in JAVA intended to simplify the process of doing mathematical animations. Current version is 0.8.8. 
 
-Although with limited features, it can be used to create many, non too complex animations. If you use it and find a bug/missing feature, feel free to fill an issue [here](https://github.com/davidgutierrezrubio/jmathanim/issues). For any other question, you can contact me at davidgutierrezrubio@gmail.com.
+If you use it and find a bug/missing feature, feel free to fill an issue [here](https://github.com/davidgutierrezrubio/jmathanim/issues). For any other question, you can contact me at davidgutierrezrubio@gmail.com.
 
-You can also follow my [Youtube](https://www.youtube.com/channel/UCeczwEqSrAwZbPdHADN8rfQ) channel where I ocasionally upload math videos and my [Twitter](https://twitter.com/DavidCalculin) account (both mostly in Spanish).
-
-## Why Java?
-
-The short answer is: why not?
-
-The long answer is: See the next point.
-
-## But...why not Python?
-
-Yes, Python has become the de facto language for mathematicians and other related areas, mostly for the excellent numpy library. If you want to make math animations with Python, you can try the manim library from [3Blue1Brown](https://www.youtube.com/channel/UCYO_jab_esuFRV4b17AJtAw) (or much better, the [manimce](https://pypi.org/project/manimce/) community version). In fact, this project was based initially on the manim library.
-
-Personally, after years of experience with both languages, I prefer Java over Python for some reasons:
-
-* Static typing vs dynamic typing. With Java and a good IDE like NetBeans or Eclipse, static typing ensures clever suggestions about the available methods for any variable you declare. If you're lazy (like me) you can do 80% of the writing just autocompleting. Although Python introduced the [possibility](https://www.python.org/dev/peps/pep-0484/) of static typing, I still prefer the Java way.
-* Easier installation. JMathAnim is a maven based, so all the required libraries are automatically downloaded prior to the first run. You just create a maven project and a few lines to the `pom.xml` to have a functional implementation of the library.
-* The JavaFX library is a well designed, mature library to create graphics seamlessly integrating 2D and 3D objects. Currently JMathAnim doesn't use the 3D capabilities of this library, but is expected to do so in a future.
-
-If you are used to another OO languages, like Python, it is relatively easy to switch to Java, at least the basic level to use this library.
+You can also follow my [Youtube](https://www.youtube.com/channel/UCeczwEqSrAwZbPdHADN8rfQ) channel where I occasionally upload math videos and my [Twitter](https://twitter.com/DavidCalculin) account (both mostly in Spanish).
 
 # Gallery
 [Here you can find some examples made with this library ](Gallery/Gallery.html)

@@ -190,9 +190,9 @@ Now the square properly shifts and rotates:
 
 # Adding effects to shifting animations
 
-The previous animation can be done in another way. The animations `shift`,  `stackTo`, `align`, `moveIn` and `moveOut` all have in common that they implement a shifting of the object(s), each one differing in the form the shift vector is computed. All these animations inherit from the abstract class `ShiftAnimation` which implements 3 effects you can add to these animations:
+The previous animation can be done in another way. The animations `shift`,  `stackTo`, `align`, `moveIn`, `moveOut` and `setLayout`all have in common that they implement a shifting of the object(s), each one differing in the form the shift vector is computed. All these animations inherit from the abstract class `ShiftAnimation` which implements 3 effects you can add to these animations:
 
-The `.setJumpHeight(double height)` adds a (parabolical) jump effect to the object(s) being shifted. The direction of the jump is the shift vector rotated 90 degrees clockwise. A negative height can be specified.
+The `.setJumpHeight(double height)` adds a (parabolical) jump effect to the object(s) being shifted. The direction of the jump is the shift vector rotated 90 degrees clockwise. A negative height can be specified. (Note: this effect doesn't work on `setLayout` in version 0.8.8)
 
 ```java
 Shape pol = Shape.regularPolygon(6).scale(.25).center().fillColor("steelblue").thickness(3);

@@ -78,7 +78,7 @@ By default, the `stackTo` method takes appropiate origin anchor point to align w
 Shape sq = Shape.square().scale(.5, .5).fillColor("orange").fillAlpha(.5).thickness(3);
 Shape c = Shape.circle().scale(.5).fillColor("yellow").fillAlpha(.5).thickness(3);
 add(c, sq);
-sq.stackTo(Anchor.Type.CENTER, c, Anchor.Type.RIGHT, 0);
+sq.stackTo(Anchor.Type.CENTER, c, Anchor.Type.RIGHT, 0);//Center of sq goes to RIGHT of c
 waitSeconds(3);
 ```
 
@@ -109,10 +109,10 @@ Line floor=Line.XAxis();
 add(floor);
 for (int n = 4; n < 10; n++) {
     Shape pol = Shape.regularPolygon(n).center().shift(Point.random().v).scale(Math.random()*.5);
-    Shape pol2=pol.copy()
-        .fillColor(JMColor.random())
-        .thickness(3)
-        .align(floor, MathObject.Align.LOWER);//Align bottom of the object with floor
+    Shape pol2=pol.copy() //Creates a copy of the polygon...
+        .fillColor(JMColor.random()) //fill it with a random color...
+        .thickness(3) //With this thicknes...
+        .align(floor, MathObject.Align.LOWER);//And align bottom of the object with floor
     add(pol,pol2);
 }
 camera.adjustToAllObjects();//Everyone should appear in the photo

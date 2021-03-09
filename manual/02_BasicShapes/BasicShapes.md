@@ -341,4 +341,56 @@ Notice the command `config.setBackgroundColor(JMColor.WHITE)` we had to put in t
 
 Importing a SVG creates a `MultiShape`object, that holds many `Shape`objects. Each object of the SVG file is converted to a `JMPath` and stored in a `Shape`object. So, you can perform transformations and animations like any other `Shape` object.
 
+# The MathObjectGroup class
+
+The `MathObjectGroup` class allows managing of large sets of `MathObject`instances as one single entity. For example, the following code creates a group with 3 shapes:
+
+```java
+Shape square=Shape.square();
+Shape triangle=Shape.regularPolygon(3);
+Shape circle=Shape.circle();
+MathObjectGroup group=MathObjectGroup.make(square,triangle,circle);
+```
+
+A `MathObjectGroup` inherits from the `MathObject`class, so that you can perform methods like shift, rotate, scale, etc.
+
+Any style change will be applied to all elements in the group.
+
+```
+group.setFillColor("cadetblue"); //Apply this fillcolor to square, triangle and circle
+```
+
+Note that you don't need to add the `MathObjectGroup` to the scene in order to show its members. You can add individually the objects you want to the scene. Adding a `MathObjectGroup` to the scene does not add the object itself, but is equivalent to add all its members to the scene.
+
+```java
+add(group);//Equivalent to add(square, triangle, circle)
+```
+
+This class implements the `setLayout(layout,gap)` method which positions all object with the given layout and specified gap. The layouts are defined in the enum `MathObjectGroup.Layout` and currently are `CENTER`, `LEFT, RIGHT, UPPER` and `LOWER`, which aligns the objects centered in these directions. There also the versions `URIGHT, DRIGHT, ULEFT, DLEFT` which work in a similar way but aligning at top (U) o bottom (D), and `LUPPER, RUPPER, LLOWER, RLOWER` that align to the left (L) or right (R). There are also the `DIAG1, DIAG2, DIAG3, DIAG4` layouts that align in the main diagonals of the 4 sectors (45, 135, 225 and 315 degrees).
+
+The following code shows all current layouts, with a set of 10 increasing squares:
+
+```java
+MathObjectGroup group = MathObjectGroup.make();
+double h = 0;//This will hold the total height of the squares, to properly zoom out the camera later
+for (int n = 0; n < 10; n++) {
+    Shape square = Shape.square().scale(.2 + .1 * n).fillColor(JMColor.random()).fillAlpha(.5).thickness(3);
+    h += square.getHeight();
+    group.add(square);
+}
+camera.scale(2 * h / camera.getMathView().getHeight());//Zooms out so that the height of view is 2xTotal height
+add(group);//Add all squares to the scene (not the group object)
+LaTeXMathObject layoutName=LaTeXMathObject.make("");
+add(layoutName);
+for (MathObjectGroup.Layout layout : MathObjectGroup.Layout.values()) {//Iterate over all the layout values
+    group.setLayout(layout, .1); //Set this layout
+    layoutName.setLaTeX(layout.name()).scale(7).stackToScreen(Anchor.Type.LOWER,.2,.2); //Change value of the label
+    waitSeconds(2);
+}
+```
+
+
+
+![layouts](layouts.gif)
+
 [home](https://davidgutierrezrubio.github.io/jmathanim/) [back](../index.html)

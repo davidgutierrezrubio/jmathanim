@@ -572,15 +572,15 @@ for (int n = 0; n < 10; n++) {
 }
 double vertGap = Math.sqrt(3) - 2;//This negative gap is computed so that circles are tangent
 MathObjectGroup row1 = MathObjectGroup.make(coin[0], coin[1], coin[2],coin[3])
-    .setLayout(Anchor.Type.RIGHT, 0);
+    .setLayout(MathObjectGroup.Layout.RIGHT, 0);
 MathObjectGroup row2 = MathObjectGroup.make(coin[4], coin[5],coin[6])
-    .setLayout(Anchor.Type.RIGHT, 0);
+    .setLayout(MathObjectGroup.Layout.RIGHT, 0);
 MathObjectGroup row3 = MathObjectGroup.make(coin[7],coin[8])
-    .setLayout(Anchor.Type.RIGHT, 0);
+    .setLayout(MathObjectGroup.Layout.RIGHT, 0);
 MathObjectGroup row4 = MathObjectGroup.make(coin[9])
-    .setLayout(Anchor.Type.RIGHT, 0);
+    .setLayout(MathObjectGroup.Layout.RIGHT, 0);
 MathObjectGroup pyramid = MathObjectGroup.make(row1, row2, row3, row4)
-    .setLayout(Anchor.Type.UPPER, vertGap);
+    .setLayout(MathObjectGroup.Layout.UPPER, vertGap);
 
 add(pyramid);
 camera.adjustToAllObjects();
