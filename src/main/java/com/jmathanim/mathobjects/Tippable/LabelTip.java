@@ -86,7 +86,7 @@ public class LabelTip extends TippableObject {
             textOffset = -textOffset;
         }
         this.textOffset = textOffset;
-        group.setLayout(Anchor.Type.LOWER, getTextOffset());
+        group.setLayout(MathObjectGroup.Layout.LOWER, getTextOffset());
         return (T) this;
     }
 

@@ -513,6 +513,15 @@ public abstract class MathObject implements Drawable, Updateable, Stateable, Box
         return (T) this;
     }
 
+    public <T extends MathObject> T stackTo(Type anchorObj, Boxable dstObj, Type anchorType, double hgap,double vgap) {
+        if (!dstObj.isEmpty()) {
+            Point B = Anchor.getAnchorPoint(dstObj, anchorType, hgap,vgap);
+            Point A = Anchor.getAnchorPoint(this, anchorObj);
+            this.shift(A.to(B));
+        }
+        return (T) this;
+    }
+
     /**
      * Stack the object to another using a specified anchor. For example
      * stackTo(UPPER, obj, RIGHT) will move this object so that its UPPER anchor
@@ -549,11 +558,11 @@ public abstract class MathObject implements Drawable, Updateable, Stateable, Box
         return stackTo(anchorObj, dstObj, anchorType, gap * this.getHeight());
     }
 
-     /**
+    /**
      * Stack the object to another using a specified anchor. For example
-     * stackTo(obj, RIGHT) will move this object so that its LEFT anchor
-     * matchs the RIGHT anchor of the destiny. The difference with similar
-     * methods is that the gap is given relative to this object height.
+     * stackTo(obj, RIGHT) will move this object so that its LEFT anchor matchs
+     * the RIGHT anchor of the destiny. The difference with similar methods is
+     * that the gap is given relative to this object height.
      *
      * @param <T> Mathobject subclass
      * @param dstObj Destiny object to stack with
@@ -562,17 +571,15 @@ public abstract class MathObject implements Drawable, Updateable, Stateable, Box
      * between the anchors, in math units.
      * @return This object
      */
-    public <T extends MathObject> T stackToRH( Boxable dstObj, Type anchorType, double gap) {
+    public <T extends MathObject> T stackToRH(Boxable dstObj, Type anchorType, double gap) {
         return stackToRH(Anchor.reverseAnchorPoint(anchorType), dstObj, anchorType, gap);
     }
 
-    
-    
-     /**
+    /**
      * Stack the object to another using a specified anchor. For example
-     * stackTo(obj, RIGHT) will move this object so that its LEFT anchor
-     * matchs the RIGHT anchor of the destiny. The difference with similar
-     * methods is that the gap is given relative to this object width.
+     * stackTo(obj, RIGHT) will move this object so that its LEFT anchor matchs
+     * the RIGHT anchor of the destiny. The difference with similar methods is
+     * that the gap is given relative to this object width.
      *
      * @param <T> Mathobject subclass
      * @param dstObj Destiny object to stack with
@@ -581,11 +588,10 @@ public abstract class MathObject implements Drawable, Updateable, Stateable, Box
      * the anchors, in math units.
      * @return This object
      */
-     public <T extends MathObject> T stackToRW( Boxable dstObj, Type anchorType, double gap) {
+    public <T extends MathObject> T stackToRW(Boxable dstObj, Type anchorType, double gap) {
         return stackToRW(Anchor.reverseAnchorPoint(anchorType), dstObj, anchorType, gap);
     }
-    
-    
+
     /**
      * Stack the object to another using a specified anchor.The anchor for the
      * stacked object is automatically selected as the reverse of the destiny

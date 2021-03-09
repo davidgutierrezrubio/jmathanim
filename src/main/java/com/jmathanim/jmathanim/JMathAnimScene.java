@@ -477,7 +477,7 @@ public abstract class JMathAnimScene {
             }
             group.add(lat);
         }
-        group.setLayout(Anchor.Type.LOWER, .2);
+        group.setLayout(MathObjectGroup.Layout.LOWER, .2);
         renderer.getCamera().zoomToObjects(group);
         add(group);
     }

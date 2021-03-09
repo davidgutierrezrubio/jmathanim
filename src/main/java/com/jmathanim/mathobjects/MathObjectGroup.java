@@ -189,10 +189,128 @@ public class MathObjectGroup extends MathObject implements Iterable<MathObject> 
         return super.setAbsoluteSize(); //To change body of generated methods, choose Tools | Templates.
     }
 
-    public MathObjectGroup setLayout(Anchor.Type anchorType, double gap) {
+    public enum Layout {
+        CENTER,
+        RIGHT,
+        LEFT,
+        UPPER,
+        LOWER,
+        URIGHT,
+        ULEFT,
+        DRIGHT,
+        DLEFT,
+        RUPPER,
+        LUPPER,
+        RLOWER,
+        LLOWER,
+        DIAG1,
+        DIAG2,
+        DIAG3,
+        DIAG4
+    }
+
+    public MathObjectGroup setLayout(Layout layout, double gap) {
+        Anchor.Type anchor1 = Anchor.Type.CENTER;
+        Anchor.Type anchor2 = Anchor.Type.CENTER;
+        
+        double hgap=0;
+        double vgap=0;
+        switch (layout) {
+            case CENTER:
+                anchor1 = Anchor.Type.CENTER;
+                anchor2 = Anchor.Type.CENTER;
+                break;
+            case RIGHT:
+                anchor1 = Anchor.Type.LEFT;
+                anchor2 = Anchor.Type.RIGHT;
+                hgap=gap;
+                break;
+            case LEFT:
+                anchor1 = Anchor.Type.RIGHT;
+                anchor2 = Anchor.Type.LEFT;
+                hgap=gap;
+                break;
+            case UPPER:
+                anchor1 = Anchor.Type.LOWER;
+                anchor2 = Anchor.Type.UPPER;
+                vgap=gap;
+                break;
+            case LOWER:
+                anchor1 = Anchor.Type.UPPER;
+                anchor2 = Anchor.Type.LOWER;
+                vgap=gap;
+                break;
+            case URIGHT:
+                anchor1 = Anchor.Type.UL;
+                anchor2 = Anchor.Type.UR;
+                hgap=gap;
+                break;
+            case ULEFT:
+                anchor1 = Anchor.Type.UR;
+                anchor2 = Anchor.Type.UL;
+                hgap=gap;
+                break;
+            case DRIGHT:
+                anchor1 = Anchor.Type.DL;
+                anchor2 = Anchor.Type.DR;
+                hgap=gap;
+                break;
+            case DLEFT:
+                anchor1 = Anchor.Type.DR;
+                anchor2 = Anchor.Type.DL;
+                hgap=gap;
+                break;
+            case RUPPER:
+                anchor1 = Anchor.Type.DR;
+                anchor2 = Anchor.Type.UR;
+                vgap=gap;
+                break;
+            case LUPPER:
+                anchor1 = Anchor.Type.DL;
+                anchor2 = Anchor.Type.UL;
+                vgap=gap;
+                break;
+            case RLOWER:
+                anchor1 = Anchor.Type.UR;
+                anchor2 = Anchor.Type.DR;
+                vgap=gap;
+                break;
+            case LLOWER:
+                anchor1 = Anchor.Type.UL;
+                anchor2 = Anchor.Type.DL;
+                vgap=gap;
+                break;
+            case DIAG1:
+                anchor1 = Anchor.Type.DL;
+                anchor2 = Anchor.Type.UR;
+                vgap=gap;
+                hgap=gap;
+                break;
+            case DIAG2:
+                anchor1 = Anchor.Type.DR;
+                anchor2 = Anchor.Type.UL;
+                vgap=gap;
+                hgap=gap;
+                break;
+            case DIAG3:
+                anchor1 = Anchor.Type.UR;
+                anchor2 = Anchor.Type.DL;
+                vgap=gap;
+                hgap=gap;
+                break;
+            case DIAG4:
+                anchor1 = Anchor.Type.UL;
+                anchor2 = Anchor.Type.DR;
+                vgap=gap;
+                hgap=gap;
+                break;
+            default:
+                JMathAnimScene.logger.error("Layout not recognized, reverting to CENTER");
+                break;
+        }
 
         for (int n = 1; n < objects.size(); n++) {
-            objects.get(n).stackTo(objects.get(n - 1), anchorType, gap);
+            objects.get(n).stackTo(anchor1, objects.get(n - 1), anchor2, hgap,vgap);
         }
         return this;
 
