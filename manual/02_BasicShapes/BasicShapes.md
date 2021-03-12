@@ -309,7 +309,7 @@ waitSeconds(3);
 
 ## Importing SVG Objects
 
-Let's see with an example: I used a free SVG file example from https://freesvg.org/donald-knuth.
+Let's see with an example: I used a free SVG file example from https://freesvg.org/donald-knuth. As with the bitmap images, the SVG files are loaded by default from the `resources/images` folder.
 
 ```java
 public void setupSketch() {
@@ -383,7 +383,7 @@ add(group);//Add all squares to the scene (not the group object)
 LaTeXMathObject layoutName=LaTeXMathObject.make("");
 add(layoutName);
 for (MathObjectGroup.Layout layout : MathObjectGroup.Layout.values()) {//Iterate over all the layout values
-    group.setLayout(layout, .1); //Set this layout
+    group.setLayout(layout, .1); //Set this layout, with .1 gap between objects
     layoutName.setLaTeX(layout.name()).scale(7).stackToScreen(Anchor.Type.LOWER,.2,.2); //Change value of the label
     waitSeconds(2);
 }
