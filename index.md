@@ -10,6 +10,11 @@ You can also follow my [Youtube](https://www.youtube.com/channel/UCeczwEqSrAwZbP
 [Here you can find some examples made with this library ](Gallery/Gallery.html)
 
 # What's new?
+Version 0.8.9-SNAPSHOT:
+
+* Improved `setLayout`method and animation for `MathObjectGroup` objects (see manual)
+* Fixed a bug that prevented the `showCreation` for `Arrow2D` objects
+
 Version 0.8.8:
 
 * Added `TippableObject`, to put labels, or any marks in points of a Shape.
