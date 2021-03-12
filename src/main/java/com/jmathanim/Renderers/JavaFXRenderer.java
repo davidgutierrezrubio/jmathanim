@@ -171,7 +171,7 @@ public class JavaFXRenderer extends Renderer {
                 fxCamera = new PerspectiveCamera();
 //                fxCamera.setFieldOfView(.1);
                 //These are 3d tests, maybe for the future...
-//                camera.getTransforms().addAll(
+//                fxCamera.getTransforms().addAll(
 //                        new Translate(config.mediaW/2, config.mediaH/2, 0),
 //                        new Rotate(45, Rotate.X_AXIS),
 //                        new Rotate(45, Rotate.Z_AXIS),
@@ -211,6 +211,9 @@ public class JavaFXRenderer extends Renderer {
 
     @Override
     public void saveFrame(int frameCount) {
+        Rectangle clip = new Rectangle(8000, 6000);
+        clip.setLayoutX(25);
+        clip.setLayoutY(25);
         WritableImage img2;
         BufferedImage bi = new BufferedImage(config.mediaW, config.mediaH, BufferedImage.TYPE_INT_ARGB);
         FutureTask<WritableImage> task = new FutureTask<>(new Callable<WritableImage>() {
@@ -226,6 +229,7 @@ public class JavaFXRenderer extends Renderer {
                         new Rotate(FxCamerarotateY, Rotate.Y_AXIS),
                         new Rotate(FxCamerarotateZ, Rotate.Z_AXIS),
                         new Translate(-config.mediaW / 2, -config.mediaH / 2, 0));
+                
                 //Add all elements
                 group.getChildren().addAll(fxnodes);
                 groupDebug.getChildren().addAll(debugFXnodes);
@@ -237,7 +241,7 @@ public class JavaFXRenderer extends Renderer {
                 params.setFill(config.getBackgroundColor().getFXColor());
                 params.setViewport(new Rectangle2D(0, 0, config.mediaW, config.mediaH));
                 params.setCamera(fxScene.getCamera());
-
+                
                 return fxScene.getRoot().snapshot(params, null);
             }
         });

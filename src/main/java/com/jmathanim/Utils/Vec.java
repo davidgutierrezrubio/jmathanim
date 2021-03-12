@@ -280,9 +280,20 @@ public class Vec implements Stateable {
         return new Vec(x, y);
     }
 
+    /**
+     * Return the normalized vector, with modulus 1. If the vector is the null
+     * vector, does nothing.
+     *
+     * @return The normalized vector if the modulus is positive. The original
+     * otherwise.
+     */
     public Vec normalize() {
         double norm = this.norm();
-        return this.mult(1d / norm);
+        if (norm > 0) {
+            return this.mult(1d / norm);
+        } else {
+            return this;
+        }
     }
 
 }
