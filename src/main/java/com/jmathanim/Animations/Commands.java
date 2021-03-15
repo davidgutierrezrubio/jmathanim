@@ -23,6 +23,7 @@ import com.jmathanim.Utils.Anchor;
 import com.jmathanim.Styling.JMColor;
 import com.jmathanim.Utils.JMathAnimConfig;
 import com.jmathanim.Styling.MODrawProperties;
+import com.jmathanim.Utils.Layouts.GroupLayout;
 import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
@@ -769,6 +770,45 @@ public class Commands {
         };
     }
 
+      /**
+     * Animated version of method setLayout for MathObjectGroup instances
+     *
+     * @param runtime Duration in seconds
+     * @param layout A GroupLayout subclass
+     * @param group MathObjectGroup instance to apply the layout
+     * @return Animation to run with
+     * {@link JMathAnimScene#playAnimation(com.jmathanim.Animations.Animation...) playAnimation}
+     * method
+     */
+    public static ShiftAnimation setLayout(double runtime, GroupLayout layout, MathObjectGroup group) {
+        group.saveState();//TODO: Jump effect doesn't work yet
+        group.setLayout(layout);
+        HashMap<MathObject,Point> centers = new HashMap<>();
+        int n = 0;
+        for (MathObject ob : group) {
+            centers.put(ob, ob.getCenter());//The destination centers of the objects of the group
+            n++;
+        }
+        group.restoreState();
+        MathObject[] mathobjects = group.getObjects().toArray(new MathObject[group.size()]);
+        
+        return new ShiftAnimation(runtime, mathobjects) {
+            @Override
+            public void initialize(JMathAnimScene scene) {
+                super.initialize(scene);
+                for (MathObject obj : mathobjects) {
+                    Point dst = centers.get(obj);
+                    setShiftVector(obj, obj.getCenter().to(dst));
+                }
+            }
+        };
+    }
+    
+    
+    
+    
+    
+    
     /**
      * Animates a change in the alpha fill of the objects. The precise change is
      * given by the lambda function used in the animation

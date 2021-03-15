@@ -18,6 +18,7 @@
 package com.jmathanim.Utils;
 
 /**
+ * Any object that has a bounding box
  *
  * @author David Gutierrez Rubio davidgutierrezrubio@gmail.com
  */

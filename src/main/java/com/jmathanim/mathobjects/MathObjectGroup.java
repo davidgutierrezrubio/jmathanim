@@ -22,6 +22,7 @@ import com.jmathanim.Utils.AffineJTransform;
 import com.jmathanim.Utils.Anchor;
 import com.jmathanim.Styling.MODrawPropertiesArray;
 import com.jmathanim.Styling.Stylable;
+import com.jmathanim.Utils.Layouts.GroupLayout;
 import com.jmathanim.Utils.Rect;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import java.util.ArrayList;
@@ -209,12 +210,18 @@ public class MathObjectGroup extends MathObject implements Iterable<MathObject> 
         DIAG4
     }
 
-    public MathObjectGroup setLayout(Layout layout, double gap) {
+    public <T extends MathObjectGroup> T setLayout(GroupLayout layout) {
+        layout.setGroup(this);
+        layout.applyLayout();
+        return (T) this;
+    }
+
+    public <T extends MathObjectGroup> T setLayout(Layout layout, double gap) {
         Anchor.Type anchor1 = Anchor.Type.CENTER;
         Anchor.Type anchor2 = Anchor.Type.CENTER;
-        
-        double hgap=0;
-        double vgap=0;
+
+        double hgap = 0;
+        double vgap = 0;
         switch (layout) {
             case CENTER:
                 anchor1 = Anchor.Type.CENTER;
@@ -223,86 +230,86 @@ public class MathObjectGroup extends MathObject implements Iterable<MathObject> 
             case RIGHT:
                 anchor1 = Anchor.Type.LEFT;
                 anchor2 = Anchor.Type.RIGHT;
-                hgap=gap;
+                hgap = gap;
                 break;
             case LEFT:
                 anchor1 = Anchor.Type.RIGHT;
                 anchor2 = Anchor.Type.LEFT;
-                hgap=gap;
+                hgap = gap;
                 break;
             case UPPER:
                 anchor1 = Anchor.Type.LOWER;
                 anchor2 = Anchor.Type.UPPER;
-                vgap=gap;
+                vgap = gap;
                 break;
             case LOWER:
                 anchor1 = Anchor.Type.UPPER;
                 anchor2 = Anchor.Type.LOWER;
-                vgap=gap;
+                vgap = gap;
                 break;
             case URIGHT:
                 anchor1 = Anchor.Type.UL;
                 anchor2 = Anchor.Type.UR;
-                hgap=gap;
+                hgap = gap;
                 break;
             case ULEFT:
                 anchor1 = Anchor.Type.UR;
                 anchor2 = Anchor.Type.UL;
-                hgap=gap;
+                hgap = gap;
                 break;
             case DRIGHT:
                 anchor1 = Anchor.Type.DL;
                 anchor2 = Anchor.Type.DR;
-                hgap=gap;
+                hgap = gap;
                 break;
             case DLEFT:
                 anchor1 = Anchor.Type.DR;
                 anchor2 = Anchor.Type.DL;
-                hgap=gap;
+                hgap = gap;
                 break;
             case RUPPER:
                 anchor1 = Anchor.Type.DR;
                 anchor2 = Anchor.Type.UR;
-                vgap=gap;
+                vgap = gap;
                 break;
             case LUPPER:
                 anchor1 = Anchor.Type.DL;
                 anchor2 = Anchor.Type.UL;
-                vgap=gap;
+                vgap = gap;
                 break;
             case RLOWER:
                 anchor1 = Anchor.Type.UR;
                 anchor2 = Anchor.Type.DR;
-                vgap=gap;
+                vgap = gap;
                 break;
             case LLOWER:
                 anchor1 = Anchor.Type.UL;
                 anchor2 = Anchor.Type.DL;
-                vgap=gap;
+                vgap = gap;
                 break;
             case DIAG1:
                 anchor1 = Anchor.Type.DL;
                 anchor2 = Anchor.Type.UR;
-                vgap=gap;
-                hgap=gap;
+                vgap = gap;
+                hgap = gap;
                 break;
             case DIAG2:
                 anchor1 = Anchor.Type.DR;
                 anchor2 = Anchor.Type.UL;
-                vgap=gap;
-                hgap=gap;
+                vgap = gap;
+                hgap = gap;
                 break;
             case DIAG3:
                 anchor1 = Anchor.Type.UR;
                 anchor2 = Anchor.Type.DL;
-                vgap=gap;
-                hgap=gap;
+                vgap = gap;
+                hgap = gap;
                 break;
             case DIAG4:
                 anchor1 = Anchor.Type.UL;
                 anchor2 = Anchor.Type.DR;
-                vgap=gap;
-                hgap=gap;
+                vgap = gap;
+                hgap = gap;
                 break;
             default:
                 JMathAnimScene.logger.error("Layout not recognized, reverting to CENTER");
@@ -310,9 +317,9 @@ public class MathObjectGroup extends MathObject implements Iterable<MathObject> 
         }
 
         for (int n = 1; n < objects.size(); n++) {
-            objects.get(n).stackTo(anchor1, objects.get(n - 1), anchor2, hgap,vgap);
+            objects.get(n).stackTo(anchor1, objects.get(n - 1), anchor2, hgap, vgap);
         }
-        return this;
+        return (T) this;
 
     }
 
@@ -328,8 +335,13 @@ public class MathObjectGroup extends MathObject implements Iterable<MathObject> 
         return objects.size();
     }
 
-    public <T> T[] toArray(T[] a) {
-        return objects.toArray(a);
+    /**
+     * Returns an array of MathObject with the contents of the group.
+     *
+     * @return The array
+     */
+    public MathObject[] toArray() {
+        return objects.toArray(new MathObject[objects.size()]);
     }
 
     @Override
