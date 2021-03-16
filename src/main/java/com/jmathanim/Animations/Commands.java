@@ -54,7 +54,7 @@ public class Commands {
     public static ShiftAnimation shift(double runtime, double dx, double dy, MathObject... objects) {
         return shift(runtime, new Vec(dx, dy), objects);
     }
-    
+
     public static ShiftAnimation shift(double runtime, Vec sv, MathObject... objects) {
         return new ShiftAnimation(runtime, objects) {
             @Override
@@ -64,7 +64,7 @@ public class Commands {
                     setShiftVector(obj, sv);
                 }
             }
-            
+
         };
 //
 //        return new Animation(runtime) {
@@ -94,11 +94,11 @@ public class Commands {
 //            }
 //        };
     }
-    
+
     public static Animation highlight(double runtime, MathObject... objects) {
         return highlight(runtime, 1.5, objects);
     }
-    
+
     public static Animation highlight(double runtime, double scale, MathObject... objects) {
         AnimationGroup ag = new AnimationGroup();
         Point center = MathObjectGroup.make(objects).getCenter();
@@ -107,11 +107,11 @@ public class Commands {
         }
         return ag;
     }
-    
+
     public static Animation scale(double runtime, Point c, double sc, MathObject... objects) {
         return scale(runtime, c, sc, sc, sc, objects);
     }
-    
+
     public static Animation scale(double runtime, Point c, double scx, double scy, double scz, MathObject... objects) {
         return new Animation(runtime) {
             double scalex = scx;
@@ -119,14 +119,14 @@ public class Commands {
             double scalez = scz;
             Point scaleCenter = c;
             MathObject[] mathObjects = objects;
-            
+
             @Override
             public void initialize(JMathAnimScene scene) {
                 super.initialize(scene);
                 saveStates(mathObjects);
                 addObjectsToscene(mathObjects);
             }
-            
+
             @Override
             public void doAnim(double t) {
                 double lt = lambda.applyAsDouble(t);
@@ -142,7 +142,7 @@ public class Commands {
                     }
                 }
             }
-            
+
             @Override
             public void finishAnimation() {
                 super.finishAnimation();
@@ -150,18 +150,18 @@ public class Commands {
             }
         };
     }
-    
+
     public static Animation rotate(double runtime, double ang, MathObject... objects) {
         return rotate(runtime, null, ang, objects);
-        
+
     }
-    
+
     public static Animation rotate(double runtime, Point c, double ang, MathObject... objects) {
         return new Animation(runtime) {
             double angle = ang;
             Point rotationCenter = null;
             MathObject[] mathObjects = objects;
-            
+
             @Override
             public void initialize(JMathAnimScene scene) {
                 super.initialize(scene);
@@ -171,7 +171,7 @@ public class Commands {
                 }
                 addObjectsToscene(mathObjects);
             }
-            
+
             @Override
             public void doAnim(double t) {
                 double lt = lambda.applyAsDouble(t);
@@ -184,7 +184,7 @@ public class Commands {
                     }
                 }
             }
-            
+
             @Override
             public void finishAnimation() {
                 super.finishAnimation();
@@ -203,14 +203,14 @@ public class Commands {
             Point dst3 = f.copy();
             MathObject[] mathObjects = objects;
             AffineJTransform tr;
-            
+
             @Override
             public void initialize(JMathAnimScene scene) {
                 super.initialize(scene);
                 saveStates(mathObjects);
                 addObjectsToscene(mathObjects);
             }
-            
+
             @Override
             public void doAnim(double t) {
                 restoreStates(mathObjects);
@@ -220,7 +220,7 @@ public class Commands {
                     tr.applyTransform(obj);
                 }
             }
-            
+
             @Override
             public void finishAnimation() {
                 super.finishAnimation();
@@ -249,14 +249,14 @@ public class Commands {
             Point D = d.copy();
             AffineJTransform tr;
             MathObject[] mathObjects = objects;
-            
+
             @Override
             public void initialize(JMathAnimScene scene) {
                 super.initialize(scene);
                 saveStates(mathObjects);
                 addObjectsToscene(mathObjects);
             }
-            
+
             @Override
             public void doAnim(double t) {
                 double lt = getLambda().applyAsDouble(t);
@@ -266,7 +266,7 @@ public class Commands {
                     tr.applyTransform(obj);
                 }
             }
-            
+
             @Override
             public void finishAnimation() {
                 super.finishAnimation();
@@ -292,14 +292,14 @@ public class Commands {
             Point axis1 = A.copy();
             Point axis2 = B.copy();
             AffineJTransform tr;
-            
+
             @Override
             public void initialize(JMathAnimScene scene) {
                 super.initialize(scene);
                 saveStates(mathObjects);
                 addObjectsToscene(mathObjects);
             }
-            
+
             @Override
             public void doAnim(double t) {
                 double lt = getLambda().applyAsDouble(t);
@@ -309,7 +309,7 @@ public class Commands {
                     tr.applyTransform(obj);
                 }
             }
-            
+
             @Override
             public void finishAnimation() {
                 super.finishAnimation();
@@ -336,14 +336,14 @@ public class Commands {
             Point axis1 = a.copy();
             Point axis2 = b.copy();
             AffineJTransform tr;
-            
+
             @Override
             public void initialize(JMathAnimScene scene) {
                 super.initialize(scene);
                 saveStates(mathObjects);
                 addObjectsToscene(mathObjects);
             }
-            
+
             @Override
             public void doAnim(double t) {
                 double lt = getLambda().applyAsDouble(t);
@@ -353,7 +353,7 @@ public class Commands {
                     tr.applyTransform(obj);
                 }
             }
-            
+
             @Override
             public void finishAnimation() {
                 super.finishAnimation();
@@ -404,14 +404,14 @@ public class Commands {
         return new Animation(runtime) {
             MathObject[] mathObjects = objects;
             MODrawProperties mpDst = mp;
-            
+
             @Override
             public void initialize(JMathAnimScene scene) {
                 super.initialize(scene);
                 saveStates(mathObjects);
                 addObjectsToscene(mathObjects);
             }
-            
+
             @Override
             public void doAnim(double t) {
                 double lt = getLambda().applyAsDouble(t);
@@ -421,7 +421,7 @@ public class Commands {
                     obj.getMp().interpolateFrom(mpDst, lt);
                 }
             }
-            
+
             @Override
             public void finishAnimation() {
                 super.finishAnimation();
@@ -461,20 +461,20 @@ public class Commands {
             Camera cam = camera;
             Rect rDst = cam.getRectThatContains(rectToZoom);
             Rect rSource;
-            
+
             @Override
             public void initialize(JMathAnimScene scene) {
                 super.initialize(scene);
                 rSource = cam.getMathView();
             }
-            
+
             @Override
             public void doAnim(double t) {
                 double lt = getLambda().applyAsDouble(t);
                 Rect r = rSource.interpolate(rDst, lt);
                 cam.setMathView(r);
             }
-            
+
             @Override
             public void finishAnimation() {
                 super.finishAnimation();
@@ -497,9 +497,9 @@ public class Commands {
     public static Animation cameraShift(double runtime, Camera camera, Vec shiftVector) {
         Rect r = camera.getMathView().shifted(shiftVector);
         return cameraZoomToRect(runtime, camera, r);
-        
+
     }
-    
+
     public static Animation cameraScale(double runtime, Camera cam, double scale) {
         return Commands.cameraZoomToRect(runtime, cam, cam.getMathView().scaled(scale, scale));
     }
@@ -533,14 +533,14 @@ public class Commands {
     public static Animation shrinkOut(double runtime, double angle, MathObject... objects) {
         Animation anim = new Animation(runtime) {
             MathObject[] mathObjects = objects;
-            
+
             @Override
             public void initialize(JMathAnimScene scene) {
                 super.initialize(scene);
                 saveStates(mathObjects);
                 addObjectsToscene(mathObjects);
             }
-            
+
             @Override
             public void doAnim(double t) {
                 double lt = getLambda().applyAsDouble(t);
@@ -552,7 +552,7 @@ public class Commands {
                     obj.rotate(lt * angle);
                 }
             }
-            
+
             @Override
             public void finishAnimation() {
                 super.finishAnimation();
@@ -593,7 +593,7 @@ public class Commands {
     public static Animation growIn(double runtime, double angle, MathObject... objects) {
         Animation anim = new Animation(runtime) {
             MathObject[] mathObjects = objects;
-            
+
             @Override
             public void initialize(JMathAnimScene scene) {
                 super.initialize(scene);
@@ -603,7 +603,7 @@ public class Commands {
                     obj.visible(false);
                 }
             }
-            
+
             @Override
             public void doAnim(double t) {
                 restoreStates(mathObjects);
@@ -614,7 +614,7 @@ public class Commands {
                     obj.rotate((1 - t) * angle);
                 }
             }
-            
+
             @Override
             public void finishAnimation() {
                 super.finishAnimation();
@@ -638,7 +638,7 @@ public class Commands {
     public static Animation fadeIn(double runtime, MathObject... objects) {
         Animation anim = new Animation(runtime) {
             MathObject[] mathObjects = objects;
-            
+
             @Override
             public void initialize(JMathAnimScene scene) {
                 super.initialize(scene);
@@ -649,7 +649,7 @@ public class Commands {
                     obj.visible(false);
                 }
             }
-            
+
             @Override
             public void doAnim(double t) {
                 restoreStates(mathObjects);
@@ -658,7 +658,7 @@ public class Commands {
                     obj.multFillAlpha(t);
                 }
             }
-            
+
             @Override
             public void finishAnimation() {
                 super.finishAnimation();
@@ -683,14 +683,14 @@ public class Commands {
     public static Animation fadeOut(double runtime, MathObject... objects) {
         Animation anim = new Animation(runtime) {
             MathObject[] mathObjects = objects;
-            
+
             @Override
             public void initialize(JMathAnimScene sc) {
                 super.initialize(sc);
                 saveStates(mathObjects);
                 sc.add(mathObjects);
             }
-            
+
             @Override
             public void doAnim(double t) {
                 restoreStates(mathObjects);
@@ -699,7 +699,7 @@ public class Commands {
                     obj.multFillAlpha(1 - t);
                 }
             }
-            
+
             @Override
             public void finishAnimation() {
                 super.finishAnimation();
@@ -711,29 +711,6 @@ public class Commands {
         return anim;
     }//End of fadeOut command
 
-//    /**
-//     * Animated version of method setLayout for MathObjectGroup instances
-//     *
-//     * @param runtime Duration in seconds
-//     * @param layout Type of anchor to apply layout as defined in the enum
-//     * Anchor.Type
-//     * @param gap Gap to apply between elements, in math units
-//     * @param group MathObjectGroup instance to apply the layout
-//     * @return Animation to run with
-//     * {@link JMathAnimScene#playAnimation(com.jmathanim.Animations.Animation...) playAnimation}
-//     * method
-//     */
-//    public static AnimationGroup setLayout(double runtime, MathObjectGroup.Layout layout, double gap, MathObjectGroup group) {
-//        AnimationGroup ag = new AnimationGroup();
-//        MathObjectGroup grCopy = group.copy();
-//        grCopy.setLayout(layout, gap);
-//        for (int n = 0; n < group.size(); n++) {
-//            Vec v = group.get(n).getCenter().to(grCopy.get(n).getCenter());
-//            Animation anim = Commands.shift(runtime, v, group.get(n));
-//            ag.add(anim);
-//        }
-//        return ag;
-//    }
     /**
      * Animated version of method setLayout for MathObjectGroup instances
      *
@@ -749,7 +726,7 @@ public class Commands {
     public static ShiftAnimation setLayout(double runtime, MathObjectGroup.Layout layout, double gap, MathObjectGroup group) {
         group.saveState();//TODO: Jump effect doesn't work yet
         group.setLayout(layout, gap);
-        HashMap<MathObject,Point> centers = new HashMap<>();
+        HashMap<MathObject, Point> centers = new HashMap<>();
         int n = 0;
         for (MathObject ob : group) {
             centers.put(ob, ob.getCenter());//The destination centers of the objects of the group
@@ -757,7 +734,7 @@ public class Commands {
         }
         group.restoreState();
         MathObject[] mathobjects = group.getObjects().toArray(new MathObject[group.size()]);
-        
+
         return new ShiftAnimation(runtime, mathobjects) {
             @Override
             public void initialize(JMathAnimScene scene) {
@@ -770,7 +747,7 @@ public class Commands {
         };
     }
 
-      /**
+    /**
      * Animated version of method setLayout for MathObjectGroup instances
      *
      * @param runtime Duration in seconds
@@ -783,7 +760,7 @@ public class Commands {
     public static ShiftAnimation setLayout(double runtime, GroupLayout layout, MathObjectGroup group) {
         group.saveState();//TODO: Jump effect doesn't work yet
         group.setLayout(layout);
-        HashMap<MathObject,Point> centers = new HashMap<>();
+        HashMap<MathObject, Point> centers = new HashMap<>();
         int n = 0;
         for (MathObject ob : group) {
             centers.put(ob, ob.getCenter());//The destination centers of the objects of the group
@@ -791,7 +768,7 @@ public class Commands {
         }
         group.restoreState();
         MathObject[] mathobjects = group.getObjects().toArray(new MathObject[group.size()]);
-        
+
         return new ShiftAnimation(runtime, mathobjects) {
             @Override
             public void initialize(JMathAnimScene scene) {
@@ -803,12 +780,7 @@ public class Commands {
             }
         };
     }
-    
-    
-    
-    
-    
-    
+
     /**
      * Animates a change in the alpha fill of the objects. The precise change is
      * given by the lambda function used in the animation
@@ -823,7 +795,7 @@ public class Commands {
         return new Animation(runTime) {
             MathObject[] mathObjects = objects;
             ArrayList<Double> alphaOrig = new ArrayList<>();
-            
+
             @Override
             public void initialize(JMathAnimScene scene) {
                 super.initialize(scene);
@@ -832,7 +804,7 @@ public class Commands {
                 }
                 addObjectsToscene(mathObjects);
             }
-            
+
             @Override
             public void doAnim(double t) {
                 int n = 0;
@@ -841,7 +813,7 @@ public class Commands {
                     obj.getMp().setFillAlpha((float) a);
                 }
             }
-            
+
             @Override
             public void finishAnimation() {
                 super.finishAnimation();
@@ -849,7 +821,16 @@ public class Commands {
             }
         };
     }
-    
+
+    /**
+     * Performs an exit animation of an object(s). When finished, removes the
+     * objects from the scene.
+     *
+     * @param runtime Duration in seconds
+     * @param exitAnchor Exit direction. A vaue of Anchor.Type
+     * @param mathObjects Objects to exit (varargs)
+     * @return this animation, ready to play with the playAnimation method
+     */
     public static ShiftAnimation moveOut(double runtime, Anchor.Type exitAnchor, MathObject... mathObjects) {
         ShiftAnimation resul = new ShiftAnimation(runtime, mathObjects) {
             @Override
@@ -875,7 +856,7 @@ public class Commands {
                     this.setShiftVector(obj, p.to(q));
                 }
             }
-            
+
             @Override
             public void finishAnimation() {
                 super.finishAnimation();
@@ -883,27 +864,36 @@ public class Commands {
                     removeObjectsToscene(obj);
                 }
             }
-            
+
         };
-        
+
         return resul;
     }
-    
-    public static ShiftAnimation moveIn(double runtime, Anchor.Type exitAnchor, MathObject... mathObjects) {
+
+    /**
+     * Performs an enter animation of an object(s).The object(s) are added
+     * automatically to the scene.
+     *
+     * @param runtime Duration in seconds
+     * @param enterAnchor Enter direction. A vaue of Anchor.Type
+     * @param mathObjects Objects to enter (varargs)
+     * @return this animation, ready to play with the playAnimation method
+     */
+    public static ShiftAnimation moveIn(double runtime, Anchor.Type enterAnchor, MathObject... mathObjects) {
 
         //Compute appropiate shift vectors
         Rect r = JMathAnimConfig.getConfig().getCamera().getMathView();
-        
+
         ShiftAnimation resul = new ShiftAnimation(runtime, mathObjects) {
             @Override
             public void initialize(JMathAnimScene scene) {
                 super.initialize(scene);
                 for (int n = 0; n < mathObjects.length; n++) {
                     MathObject obj = mathObjects[n];
-                    final Anchor.Type reverseAnchor = Anchor.reverseAnchorPoint(exitAnchor);
+                    final Anchor.Type reverseAnchor = Anchor.reverseAnchorPoint(enterAnchor);
                     Point p = Anchor.getAnchorPoint(obj, reverseAnchor);
-                    Point q = Anchor.getAnchorPoint(Shape.rectangle(r), exitAnchor);
-                    switch (exitAnchor) {
+                    Point q = Anchor.getAnchorPoint(Shape.rectangle(r), enterAnchor);
+                    switch (enterAnchor) {
                         case LEFT:
                             q.v.y = p.v.y;
                         case RIGHT:
@@ -918,9 +908,9 @@ public class Commands {
                     this.setShiftVector(obj, q.to(p));
                 }
                 saveStates(mathObjects);
-                
+
             }
-            
+
         };
         return resul;
     }
@@ -947,7 +937,7 @@ public class Commands {
         Animation fd = Commands.fadeOut(.5 * runtime, ob1).setUseObjectState(false);
         fd.setLambda(t -> Math.sqrt(1 - t));
         resul.add(new AnimationGroup(sc, tr, fd));
-        
+
         sc = Commands.scale(.5 * runtime, ob2.getCenter(), dir, 1 - dir, 1, ob2);
 //        sc.setLambda(t->Math.cos(.5*PI*t));
         sc.setLambda(t -> 1 - t);
@@ -956,7 +946,7 @@ public class Commands {
         fd.setLambda(t -> t);
         tr.setLambda(t -> 1 - t);
         resul.add(new AnimationGroup(sc, tr, fd));
-        
+
         return resul;
     }
 
@@ -980,7 +970,7 @@ public class Commands {
                     setShiftVector(obj, obj.getCenter().to(dstCenter));
                 }
             }
-            
+
         };
         return resul;
     }
@@ -1002,7 +992,7 @@ public class Commands {
             @Override
             public void initialize(JMathAnimScene scene) {
                 MathObject previous = dst;
-                
+
                 super.initialize(scene);
                 for (MathObject obj : mathobjects) {
                     MathObject objc = Shape.rectangle(obj.getBoundingBox()).stackTo(previous, type, gap);
@@ -1012,7 +1002,15 @@ public class Commands {
             }
         };
     }
-    
+
+    /**
+     * Animates a crossout. The size of the crossout is computed from the
+     * bounding box of the crossed object
+     *
+     * @param runtime Duration in seconds
+     * @param obj Object to cross out
+     * @return The created animation
+     */
     public static Animation crossOut(double runtime, MathObject obj) {
         Rect bbox = obj.getBoundingBox();
         Shape s1 = Shape.segment(bbox.getUL(), bbox.getDR()).scale(.75).linecap(StrokeLineCap.BUTT).drawColor(JMColor.RED).layer(Integer.MAX_VALUE);
