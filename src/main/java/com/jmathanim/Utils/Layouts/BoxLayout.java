@@ -103,24 +103,24 @@ public class BoxLayout extends GroupLayout {
     }
 
     @Override
-    public void applyLayout() {
+    public void applyLayout(MathObjectGroup group) {
         int rowCounter = 0; //This counter checks if another row is necessary
-        MathObject firstOfTheRow = getGroup().get(0);
+        MathObject firstOfTheRow = group.get(0);
         //Stacks the first object to the corner point, if it exists
         if (this.corner != null) {
-            getGroup().get(0).stackTo(firstElementStack, this.corner, Anchor.Type.CENTER, 0);
+            group.get(0).stackTo(firstElementStack, this.corner, Anchor.Type.CENTER, 0);
         }
 
-        for (int n = 1; n < getGroup().size(); n++) {//n=0 gets unaltered
+        for (int n = 1; n < group.size(); n++) {//n=0 gets unaltered
             rowCounter++;
             if (rowCounter < this.rowSize) {
-                getGroup().get(n).stackTo(getGroup().get(n - 1), inRowStack, this.horizontalGap);
+                group.get(n).stackTo(group.get(n - 1), inRowStack, this.horizontalGap);
             }
 
             if (rowCounter == this.rowSize) {
                 rowCounter = 0;
-                getGroup().get(n).stackTo(firstOfTheRow, inColStack, this.verticalGap);
-                firstOfTheRow = getGroup().get(n);
+                group.get(n).stackTo(firstOfTheRow, inColStack, this.verticalGap);
+                firstOfTheRow = group.get(n);
             }
 
         }

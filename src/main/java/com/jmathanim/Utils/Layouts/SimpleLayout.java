@@ -45,7 +45,7 @@ public class SimpleLayout extends GroupLayout {
     }
 
     @Override
-    public void applyLayout() {
+    public void applyLayout(MathObjectGroup group) {
         Anchor.Type anchor1 = Anchor.Type.CENTER;
         Anchor.Type anchor2 = Anchor.Type.CENTER;
 
@@ -145,10 +145,10 @@ public class SimpleLayout extends GroupLayout {
                 break;
         }
         if (this.refPoint!=null) {
-            getGroup().get(0).stackTo(anchor1, this.refPoint, Anchor.Type.CENTER, hgap, vgap);
+           group.get(0).stackTo(anchor1, this.refPoint, Anchor.Type.CENTER, hgap, vgap);
         }
-        for (int n = 1; n < getGroup().size(); n++) {
-            getGroup().get(n).stackTo(anchor1, getGroup().get(n - 1), anchor2, hgap, vgap);
+        for (int n = 1; n < group.size(); n++) {
+            group.get(n).stackTo(anchor1, group.get(n - 1), anchor2, hgap, vgap);
         }
     }
 

@@ -44,14 +44,16 @@ public class HeapLayout extends GroupLayout {
     }
 
     @Override
-    public void applyLayout() {
-        MathObjectGroup g = getGroup();
-        int n = g.size();
+    public void applyLayout(MathObjectGroup group) {
+        center.clear();
+        rightSide.clear();
+        leftSide.clear();
+        int n = group.size();
         //Center column
         int k = 0;
         int step = 2;
         while (k < n) {
-            center.add(g.get(k));
+            center.add(group.get(k));
             k += step;
             step += 2;
         }
@@ -62,7 +64,7 @@ public class HeapLayout extends GroupLayout {
             MathObjectGroup col = new MathObjectGroup();
             step = (colIndex + 1) * 2;
             while (k < n) {
-                col.add(g.get(k));
+                col.add(group.get(k));
                 k += step;
                 step += 2;
             }
@@ -76,7 +78,7 @@ public class HeapLayout extends GroupLayout {
             MathObjectGroup col = new MathObjectGroup();
             step = (colIndex) * 2;
             while (k < n) {
-                col.add(g.get(k));
+                col.add(group.get(k));
                 k += step;
                 step += 2;
             }

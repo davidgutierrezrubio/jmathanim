@@ -211,8 +211,7 @@ public class MathObjectGroup extends MathObject implements Iterable<MathObject> 
     }
 
     public <T extends MathObjectGroup> T setLayout(GroupLayout layout) {
-        layout.setGroup(this);
-        layout.applyLayout();
+        layout.applyLayout(this);
         return (T) this;
     }
 

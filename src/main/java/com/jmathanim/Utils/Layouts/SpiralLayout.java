@@ -18,6 +18,8 @@
 package com.jmathanim.Utils.Layouts;
 
 import com.jmathanim.Utils.Anchor;
+import com.jmathanim.mathobjects.MathObject;
+import com.jmathanim.mathobjects.MathObjectGroup;
 import com.jmathanim.mathobjects.Point;
 
 /**
@@ -75,16 +77,16 @@ public class SpiralLayout extends GroupLayout {
     }
 
     @Override
-    public void applyLayout() {
+    public void applyLayout(MathObjectGroup group) {
         if (this.center != null) {//Stack first element to the center
-            getGroup().get(0).stackTo(this.center, Anchor.Type.CENTER);
+           group.get(0).stackTo(this.center, Anchor.Type.CENTER);
         }
         int stackType = 0;//Index to the array of used stacks
         int numberOfStacks = 1;//This variable holds how many objects should I stack before doing a "turn"
         int turnNumber=1;
-        for (int n = 1; n < getGroup().size(); n++) {
+        for (int n = 1; n < group.size(); n++) {
             Anchor.Type stack = stacks[stackType];
-            getGroup().get(n).stackTo(Anchor.reverseAnchorPoint(stack),getGroup().get(n - 1), stack,this.horizontalGap,this.verticalGap);
+            group.get(n).stackTo(Anchor.reverseAnchorPoint(stack),group.get(n - 1), stack,this.horizontalGap,this.verticalGap);
             numberOfStacks--;
             if (numberOfStacks==0) {//Ok, time to turn...
                 turnNumber++;

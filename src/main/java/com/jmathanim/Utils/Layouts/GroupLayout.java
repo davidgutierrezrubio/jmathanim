@@ -27,35 +27,19 @@ import com.jmathanim.mathobjects.MathObjectGroup;
  *
  * @author David Gutiérrez Rubio
  */
-public abstract class GroupLayout implements Boxable {
+public abstract class GroupLayout {
 
-    private MathObjectGroup group;
+    public abstract void applyLayout(MathObjectGroup group);
 
-    public MathObjectGroup getGroup() {
-        return group;
-    }
-
-    public void setGroup(MathObjectGroup group) {
-        this.group = group;
-    }
-
-    public abstract void applyLayout();
-
-    @Override
-    public Rect getBoundingBox() {
-        if (isEmpty()) {//Nothing to show
+    public Rect getBoundingBox(MathObjectGroup group) {
+        if (group.isEmpty()) {//Nothing to show
             return null;
         }
         group.saveState();
-        applyLayout();
+        applyLayout(group);
         Rect bbox = group.getBoundingBox();
         group.restoreState();
         return bbox;
-    }
-
-    @Override
-    public boolean isEmpty() {
-        return (group == null) || (group.size() == 0);
     }
 
 }
