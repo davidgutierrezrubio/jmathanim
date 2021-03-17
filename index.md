@@ -13,6 +13,7 @@ You can also follow my [Youtube](https://www.youtube.com/channel/UCeczwEqSrAwZbP
 Version 0.8.9-SNAPSHOT:
 
 * Improved `setLayout`method and animation for `MathObjectGroup` objects (see manual)
+* Added `BoxLayout`, `SpiralLayout` and `HeapLayout` to the `MathObjectGroup` class.
 * Fixed a bug that prevented the `showCreation` for `Arrow2D` objects
 
 Version 0.8.8:
