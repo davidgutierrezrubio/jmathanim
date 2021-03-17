@@ -152,7 +152,7 @@ for (MathObjectGroup.Layout layout : MathObjectGroup.Layout.values()) {//Iterate
 
 ![layouts](../02_BasicShapes/layouts.gif)
 
-There is a more advanced overloaded form of this method, where the layout is given as a subclass of the `GroupLayout` class. In the current version (v0.8.9-SNAPSHOT), the `BoxLayout`, `SpiralLayout` and `HeapLayout` are implemented. These methods works well when all elements of the group have the same dimensions.
+There is a more advanced overloaded form of this method, where the layout is given as a subclass of the `GroupLayout` class. In the current version (v0.8.9-SNAPSHOT), the `BoxLayout`, `SpiralLayout`, `HeapLayout` and `PascalLayout` are implemented. These methods works well when all elements of the group have the same dimensions.
 
 The `BoxLayout` allocates the objects in a matrix form:
 
@@ -198,12 +198,22 @@ You will get the objects in a spiral form:
 If you use the `HeapLayout`:
 
 ```java
-GroupLayout layout = new HeapLayout(refPoint, .1, .1);//More magic!
+GroupLayout layout = new HeapLayout(refPoint, .1, .1);
 ```
 
 You will get a triangular pile of numbered squares:
 
 <img src="heaplayout01.png" alt="image-20210317091208946" style="zoom:50%;" />
+
+And finally, the `PascalLayout`. If you use instead the code:
+
+```java
+GroupLayout layout = new PascalLayout(refPoint,0,0);
+```
+
+You will obtain a layout resembling the Pascal triangle:
+
+![pascalLayout01](pascalLayout01.png)
 
 You can define your own layouts subclassing the `GroupLayout` abstract class.
 
