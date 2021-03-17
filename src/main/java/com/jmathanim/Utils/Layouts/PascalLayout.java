@@ -23,8 +23,6 @@ import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.MathObjectGroup;
 import com.jmathanim.mathobjects.Point;
 import com.jmathanim.mathobjects.Shape;
-import java.util.ArrayList;
-import jdk.nashorn.internal.runtime.arrays.ArrayLikeIterator;
 
 /**
  *
@@ -32,8 +30,9 @@ import jdk.nashorn.internal.runtime.arrays.ArrayLikeIterator;
  */
 public class PascalLayout extends GroupLayout {
 
-    private Point top;//Upper point of the triangle
-    private double horizontalGap, verticalGap;
+    private final Point top;//Upper point of the triangle
+    private final double horizontalGap;
+    private final double verticalGap;
 
     public PascalLayout(Point top, double horizontalGap, double verticalGap) {
         this.top = top;
@@ -53,7 +52,6 @@ public class PascalLayout extends GroupLayout {
             h = Math.max(h, g.getHeight());
         }
         Rect r = new Rect(0, 0, w, h);
-        System.out.println("r=" + r);
         r = r.addGap(.5*this.horizontalGap, .5*this.verticalGap);
         MathObjectGroup workGroup = MathObjectGroup.make();
 
@@ -83,7 +81,6 @@ public class PascalLayout extends GroupLayout {
                 }
                 counter++;
                 rowCounter++;
-                System.out.println("row " + rowSize + " counter " + counter);
             }
             grRow.setLayout(MathObjectGroup.Layout.RIGHT, 0);
             rows.add(grRow);
@@ -92,15 +89,15 @@ public class PascalLayout extends GroupLayout {
         }
         rows.setLayout(MathObjectGroup.Layout.LOWER, 0);
 
-        //Move now so that the top center point of first element match the Point top.
-        Point A = Anchor.getAnchorPoint(workGroup.get(0), Anchor.Type.UPPER);
-        rows.shift(A.to(top));
+      
 
         //Now that the rectangles are properly located, move the original objects so that their centers match those of the workgroup
         for (int n = 0; n < group.size(); n++) {
             group.get(n).stackTo(workGroup.get(n), Anchor.Type.CENTER);
         }
-
+  //Move now so that the top center point of first element match the Point top.
+        Point A = Anchor.getAnchorPoint(group.get(0), Anchor.Type.UPPER);
+        group.shift(A.to(top));
     }
 
 }
