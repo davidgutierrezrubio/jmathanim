@@ -175,7 +175,7 @@ waitSeconds(3);//Smile, you're in a screenshot!
 
 Gives a static image like this. The red dot is the reference point
 
-<img src="../../../../../../AppData/Roaming/Typora/typora-user-images/image-20210317090826194.png" alt="image-20210317090826194" style="zoom:50%;" />
+<img src="boxlayout01.png" alt="image-20210317090826194" style="zoom:50%;" />
 
 The `BoxLayout.Direction.RIGHT_UP` tells the layout to fill first the row in the `RIGHT` direction, and go `UP` to move to the next one.
 
@@ -193,7 +193,7 @@ GroupLayout layout = new SpiralLayout(refPoint, SpiralLayout.Orientation.RIGHT_C
 
 You will get the objects in a spiral form:
 
-<img src="../../../../../../AppData/Roaming/Typora/typora-user-images/image-20210317091043689.png" alt="image-20210317091043689" style="zoom:50%;" />
+<img src="spirallayout01.png" alt="image-20210317091043689" style="zoom:50%;" />
 
 If you use the `HeapLayout`:
 
@@ -203,7 +203,7 @@ GroupLayout layout = new HeapLayout(refPoint, .1, .1);//More magic!
 
 You will get a triangular pile of numbered squares:
 
-<img src="../../../../../../AppData/Roaming/Typora/typora-user-images/image-20210317091208946.png" alt="image-20210317091208946" style="zoom:50%;" />
+<img src="heaplayout01.png" alt="image-20210317091208946" style="zoom:50%;" />
 
 You can define your own layouts subclassing the `GroupLayout` abstract class.
 
