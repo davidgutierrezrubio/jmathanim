@@ -331,7 +331,7 @@ public class Rect implements Stateable, Boxable {//TODO: Adjust this to 3D coord
 
     /**
      * Computes a new Rect which is the original grown by a horizontal and
-     * vertical gap
+     * vertical gap. The original Rect is unaffected.
      *
      * @param xgap Horizontal gap
      * @param ygap Vertical gap

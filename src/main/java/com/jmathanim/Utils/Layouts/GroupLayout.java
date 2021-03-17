@@ -44,7 +44,7 @@ public abstract class GroupLayout {
         if (group.isEmpty()) {//Nothing to show
             return null;
         }
-        MathObjectGroup boxedGroup = createBoxedGroup(group);
+        MathObjectGroup boxedGroup = createBoxedGroup(group,0,0);
         applyLayout(boxedGroup);
         Rect bbox = boxedGroup.getBoundingBox();
         return bbox;
@@ -57,10 +57,10 @@ public abstract class GroupLayout {
      * @return A new MathObjectGroup, with rectangles representing the bounding
      * boxes
      */
-    protected MathObjectGroup createBoxedGroup(MathObjectGroup group) {
+    protected MathObjectGroup createBoxedGroup(MathObjectGroup group,double hgap,double vgap) {
         MathObjectGroup resul = MathObjectGroup.make();
         for (MathObject ob : group) {
-            resul.add(Shape.rectangle(ob.getBoundingBox()));
+            resul.add(Shape.rectangle(ob.getBoundingBox().addGap(hgap, vgap)));
         }
         return resul;
     }
