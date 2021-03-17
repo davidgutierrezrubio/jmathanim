@@ -19,7 +19,9 @@ package com.jmathanim.Utils.Layouts;
 
 import com.jmathanim.Utils.Boxable;
 import com.jmathanim.Utils.Rect;
+import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.MathObjectGroup;
+import com.jmathanim.mathobjects.Shape;
 
 /**
  * A basic abstract class to implement any layout can be applied to a
@@ -31,15 +33,36 @@ public abstract class GroupLayout {
 
     public abstract void applyLayout(MathObjectGroup group);
 
+    /**
+     * Returns the bounding box that will have the specified group if layout is
+     * applied. The group is unaltered
+     *
+     * @param group MathObjectGroup to apply layout
+     * @return The bounding box
+     */
     public Rect getBoundingBox(MathObjectGroup group) {
         if (group.isEmpty()) {//Nothing to show
             return null;
         }
-        group.saveState();
-        applyLayout(group);
-        Rect bbox = group.getBoundingBox();
-        group.restoreState();
+        MathObjectGroup boxedGroup = createBoxedGroup(group);
+        applyLayout(boxedGroup);
+        Rect bbox = boxedGroup.getBoundingBox();
         return bbox;
+    }
+
+    /**
+     * Creates a simpler group with rectangles representing the bounding boxes
+     *
+     * @param group The MathObjectGroup to compute bounding boxes
+     * @return A new MathObjectGroup, with rectangles representing the bounding
+     * boxes
+     */
+    protected MathObjectGroup createBoxedGroup(MathObjectGroup group) {
+        MathObjectGroup resul = MathObjectGroup.make();
+        for (MathObject ob : group) {
+            resul.add(Shape.rectangle(ob.getBoundingBox()));
+        }
+        return resul;
     }
 
 }

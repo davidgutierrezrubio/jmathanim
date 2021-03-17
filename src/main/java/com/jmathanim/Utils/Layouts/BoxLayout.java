@@ -43,14 +43,36 @@ public class BoxLayout extends GroupLayout {
         this(null, rowSize, Direction.RIGHT_UP, 0, 0);
     }
 
+    /**
+     * Creates a box layout with specified corner point, no gaps, and RIGHT_UP
+     * direction
+     *
+     * @param corner A Point object, the lower left corner of the box
+     * @param rowSize Numbers of elements in a row
+     */
     public BoxLayout(Point corner, int rowSize) {
         this(corner, rowSize, Direction.RIGHT_UP, 0, 0);
     }
 
-    public BoxLayout(Point corner, int rows, Direction direction, double hgap, double vgap) {
+    /**
+     * Creates a box layout
+     *
+     * @param corner A point object, the corner of the box. The precise corner
+     * depends on the direction chosen. For example if direction is RIGHT_UP,
+     * the corner will be the lower left one. If direction is DOWN_LEFT, the
+     * corner will be the upper right one.
+     * @param rows Numbers of element in each row. Note that "row" becomes
+     * "columns" if direction is UP_LEFT, UP_RIGHT, DOWN_LEFT or DOWN_RIGHT
+     * @param direction Direction of the box. Specifies the direction to stack
+     * the elements. A direction of RIGHT_UP will stack the row in the RIGHT
+     * direction and then UP to allocate the next row
+     * @param inRowGap Gap between 2 consecutive elements in the same row
+     * @param inColGap Gap between 2 consecutive elements in the same column
+     */
+    public BoxLayout(Point corner, int rows, Direction direction, double inRowGap, double inColGap) {
         this.rowSize = rows;
-        this.horizontalGap = hgap;
-        this.verticalGap = vgap;
+        this.horizontalGap = inRowGap;
+        this.verticalGap = inColGap;
         this.corner = corner;
 
         switch (direction) {
