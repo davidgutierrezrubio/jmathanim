@@ -208,7 +208,7 @@ You will get a triangular pile of numbered squares:
 And finally, the `PascalLayout`. If you use instead the code:
 
 ```java
-GroupLayout layout = new PascalLayout(refPoint,0,0);
+GroupLayout layout = new PascalLayout(refPoint,.1,.1);
 ```
 
 You will obtain a layout resembling the Pascal triangle:
