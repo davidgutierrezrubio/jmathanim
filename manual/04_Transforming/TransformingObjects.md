@@ -123,6 +123,90 @@ waitSeconds(5);//Smile!
 
 <img src="03b_alignExample.png" alt="image-20201231181216715" style="zoom: 67%;" />
 
+# Layouts
+
+The `MathObjectGroup`class allows applying layouts to its members through the `setLayout(layout,gap)` method which positions all object with the given layout and specified gap. The layouts are defined in the enum `MathObjectGroup.Layout` and currently are `CENTER`, `LEFT, RIGHT, UPPER` and `LOWER`, which aligns the objects centered in these directions. There also the versions `URIGHT, DRIGHT, ULEFT, DLEFT` which work in a similar way but aligning at top (U) o bottom (D), and `LUPPER, RUPPER, LLOWER, RLOWER` that align to the left (L) or right (R). There are also the `DIAG1, DIAG2, DIAG3, DIAG4` layouts that align in the main diagonals of the 4 sectors (45, 135, 225 and 315 degrees).
+
+The following code shows all current layouts, with a set of 10 increasing squares:
+
+```java
+MathObjectGroup group = MathObjectGroup.make();
+double h = 0;//This will hold the total height of the squares, to properly zoom out the camera later
+for (int n = 0; n < 10; n++) {
+    Shape square = Shape.square().scale(.2 + .1 * n).fillColor(JMColor.random()).fillAlpha(.5).thickness(3);
+    h += square.getHeight();
+    group.add(square);
+}
+camera.scale(2 * h / camera.getMathView().getHeight());//Zooms out so that the height of view is 2xTotal height
+add(group);//Add all squares to the scene (not the group object)
+LaTeXMathObject layoutName=LaTeXMathObject.make("");
+add(layoutName);
+for (MathObjectGroup.Layout layout : MathObjectGroup.Layout.values()) {//Iterate over all the layout values
+    group.setLayout(layout, .1); //Set this layout, with .1 gap between objects
+    layoutName.setLaTeX(layout.name()).scale(7).stackToScreen(Anchor.Type.LOWER,.2,.2); //Change value of the label
+    waitSeconds(2);
+}
+```
+
+
+
+![layouts](../02_BasicShapes/layouts.gif)
+
+There is a more advanced overloaded form of this method, where the layout is given as a subclass of the `GroupLayout` class. In the current version (v0.8.9-SNAPSHOT), the `BoxLayout`, `SpiralLayout` and `HeapLayout` are implemented. These methods works well when all elements of the group have the same dimensions.
+
+The `BoxLayout` allocates the objects in a matrix form:
+
+```java
+MathObjectGroup gr = MathObjectGroup.make();
+int num = 16;
+for (int n = 0; n < num; n++) {
+    MathObject sq = Shape.square().scale(.25).fillColor("violet").fillAlpha(1 - 1. * (n+1) / num).thickness(3);
+    LaTeXMathObject t = LaTeXMathObject.make("" + n);
+    t.stackTo(sq, Anchor.Type.CENTER).layer(1);
+    gr.add(MathObjectGroup.make(sq, t));//Each object of the group is itself a group with 2 elements
+}
+Point refPoint = Point.origin(); //The reference point to locate the box
+add(refPoint.thickness(2).drawColor(JMColor.RED).layer(1));
+GroupLayout layout = new BoxLayout(refPoint, 4, BoxLayout.Direction.RIGHT_UP, .1, .1);//This is where the magic happens
+add(gr.setLayout(layout));
+camera.zoomToAllObjects();
+waitSeconds(3);//Smile, you're in a screenshot!
+```
+
+Gives a static image like this. The red dot is the reference point
+
+<img src="../../../../../../AppData/Roaming/Typora/typora-user-images/image-20210317090826194.png" alt="image-20210317090826194" style="zoom:50%;" />
+
+The `BoxLayout.Direction.RIGHT_UP` tells the layout to fill first the row in the `RIGHT` direction, and go `UP` to move to the next one.
+
+If in the previous code you change the 
+
+```java
+GroupLayout layout = new BoxLayout(refPoint, 4, BoxLayout.Direction.RIGHT_UP, .1, .1);//This is where the magic happens
+```
+
+into
+
+```java
+GroupLayout layout = new SpiralLayout(refPoint, SpiralLayout.Orientation.RIGHT_CLOCKWISE, .1, .1);//Another kind of magic!
+```
+
+You will get the objects in a spiral form:
+
+<img src="../../../../../../AppData/Roaming/Typora/typora-user-images/image-20210317091043689.png" alt="image-20210317091043689" style="zoom:50%;" />
+
+If you use the `HeapLayout`:
+
+```java
+GroupLayout layout = new HeapLayout(refPoint, .1, .1);//More magic!
+```
+
+You will get a triangular pile of numbered squares:
+
+<img src="../../../../../../AppData/Roaming/Typora/typora-user-images/image-20210317091208946.png" alt="image-20210317091208946" style="zoom:50%;" />
+
+You can define your own layouts subclassing the `GroupLayout` abstract class.
+
 # Scaling objects
 All `MathObject` instances can be scaled with the `scale` command. Scaling can be done from a given scale center or by default, the center of the object  bounding box.
 

@@ -366,31 +366,6 @@ Note that you don't need to add the `MathObjectGroup` to the scene in order to s
 add(group);//Equivalent to add(square, triangle, circle)
 ```
 
-This class implements the `setLayout(layout,gap)` method which positions all object with the given layout and specified gap. The layouts are defined in the enum `MathObjectGroup.Layout` and currently are `CENTER`, `LEFT, RIGHT, UPPER` and `LOWER`, which aligns the objects centered in these directions. There also the versions `URIGHT, DRIGHT, ULEFT, DLEFT` which work in a similar way but aligning at top (U) o bottom (D), and `LUPPER, RUPPER, LLOWER, RLOWER` that align to the left (L) or right (R). There are also the `DIAG1, DIAG2, DIAG3, DIAG4` layouts that align in the main diagonals of the 4 sectors (45, 135, 225 and 315 degrees).
-
-The following code shows all current layouts, with a set of 10 increasing squares:
-
-```java
-MathObjectGroup group = MathObjectGroup.make();
-double h = 0;//This will hold the total height of the squares, to properly zoom out the camera later
-for (int n = 0; n < 10; n++) {
-    Shape square = Shape.square().scale(.2 + .1 * n).fillColor(JMColor.random()).fillAlpha(.5).thickness(3);
-    h += square.getHeight();
-    group.add(square);
-}
-camera.scale(2 * h / camera.getMathView().getHeight());//Zooms out so that the height of view is 2xTotal height
-add(group);//Add all squares to the scene (not the group object)
-LaTeXMathObject layoutName=LaTeXMathObject.make("");
-add(layoutName);
-for (MathObjectGroup.Layout layout : MathObjectGroup.Layout.values()) {//Iterate over all the layout values
-    group.setLayout(layout, .1); //Set this layout, with .1 gap between objects
-    layoutName.setLaTeX(layout.name()).scale(7).stackToScreen(Anchor.Type.LOWER,.2,.2); //Change value of the label
-    waitSeconds(2);
-}
-```
-
-
-
-![layouts](layouts.gif)
+This class becomes handy when you want to animate or position a large amount of objects, as we will see in next chapters.
 
 [home](https://davidgutierrezrubio.github.io/jmathanim/) [back](../index.html)
