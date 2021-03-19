@@ -169,7 +169,7 @@ public class JMathAnimConfig {
      */
     public void setMediumQuality() {
         mediaW = 1280;
-        mediaH = 1024;
+        mediaH = 720;
         fps = 30;
     }
 

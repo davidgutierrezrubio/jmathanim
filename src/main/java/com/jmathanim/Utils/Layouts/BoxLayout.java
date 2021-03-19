@@ -23,6 +23,8 @@ import com.jmathanim.mathobjects.MathObjectGroup;
 import com.jmathanim.mathobjects.Point;
 
 /**
+ * A box layout. This layout allocates the objects following a row-column
+ * strategy.
  *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
@@ -147,6 +149,57 @@ public class BoxLayout extends GroupLayout {
 
         }
 
+    }
+
+    /**
+     * Returns a MathObjectGroup containing other MathObjectGroup objects, one
+     * for each row. So for example, getRowGroups(group).get(0) will return a
+     * MathObjectGroup with all objects from the first row.
+     *
+     * @param group The group to get the rows from
+     * @return A MathObjectGroup with all rows
+     */
+    public MathObjectGroup getRowGroups(MathObjectGroup group) {
+        MathObjectGroup rowGroups = MathObjectGroup.make();
+        int rowCounter = 0;
+        MathObjectGroup currentRow = MathObjectGroup.make();
+        for (int n = 0; n < group.size(); n++) {
+            if (rowCounter < this.rowSize) {
+                rowCounter++;
+            } else {
+                rowCounter = 1;
+                rowGroups.add(currentRow);
+                currentRow = MathObjectGroup.make();
+            }
+            currentRow.add(group.get(n));
+        }
+        //Check if last row is added (this is neeeded if last row is incomplete)
+        if (!rowGroups.getObjects().contains(currentRow)) {
+            rowGroups.add(currentRow);
+        }
+        return rowGroups;
+    }
+    /**
+     * Returns a MathObjectGroup containing other MathObjectGroup objects, one
+     * for each column. So for example, getColGroups(group).get(0) will return a
+     * MathObjectGroup with all objects from the first column.
+     *
+     * @param group The group to get the columns from
+     * @return A MathObjectGroup with all columns
+     */
+    public MathObjectGroup getColumnGroups(MathObjectGroup group) {
+        MathObjectGroup colGroup = MathObjectGroup.make();
+        MathObjectGroup currentCol = MathObjectGroup.make();
+        for (int n = 0; n < this.rowSize; n++) {//There will be exactly this columns
+            int index = n;//First index to look for columns
+            while (index < group.size()) {
+                currentCol.add(group.get(index));
+                index += this.rowSize;
+            }
+            colGroup.add(currentCol);
+            currentCol = MathObjectGroup.make();
+        }
+        return colGroup;
     }
 
 }

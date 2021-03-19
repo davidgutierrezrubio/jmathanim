@@ -52,7 +52,7 @@ public class PascalLayout extends GroupLayout {
             h = Math.max(h, g.getHeight());
         }
         Rect r = new Rect(0, 0, w, h);
-        r = r.addGap(.5*this.horizontalGap, .5*this.verticalGap);
+        r = r.addGap(.5 * this.horizontalGap, .5 * this.verticalGap);
         MathObjectGroup workGroup = MathObjectGroup.make();
 
         //Complete the last row in case it is not complete
@@ -89,15 +89,41 @@ public class PascalLayout extends GroupLayout {
         }
         rows.setLayout(MathObjectGroup.Layout.LOWER, 0);
 
-      
-
         //Now that the rectangles are properly located, move the original objects so that their centers match those of the workgroup
         for (int n = 0; n < group.size(); n++) {
             group.get(n).stackTo(workGroup.get(n), Anchor.Type.CENTER);
         }
-  //Move now so that the top center point of first element match the Point top.
+        //Move now so that the top center point of first element match the Point top.
         Point A = Anchor.getAnchorPoint(group.get(0), Anchor.Type.UPPER);
         group.shift(A.to(top));
+    }
+  /**
+     * Returns a MathObjectGroup containing other MathObjectGroup objects, one
+     * for each row. So for example, getRowGroups(group).get(3) will return a
+     * MathObjectGroup with all objects from the fourth row (that will hold 4 objects)
+     *
+     * @param group The group to get the rows from
+     * @return A MathObjectGroup with all rows
+     */
+    public MathObjectGroup getRowGroups(MathObjectGroup group) {
+        int rowSize = 1;
+        int counter = 0;
+        int rowCounter = 0;
+        MathObjectGroup rows = MathObjectGroup.make();
+        while (counter < group.size()) {//Main loop
+            MathObjectGroup grRow = MathObjectGroup.make();
+            while (rowCounter < rowSize) {
+                if (counter < group.size()) {
+                    grRow.add(group.get(counter));
+                }
+                counter++;
+                rowCounter++;
+            }
+            rows.add(grRow);
+            rowSize++;
+            rowCounter = 0;
+        }
+        return rows;
     }
 
 }

@@ -17,14 +17,13 @@
  */
 package com.jmathanim.Utils.Layouts;
 
-import com.jmathanim.Utils.Boxable;
 import com.jmathanim.Utils.Rect;
 import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.MathObjectGroup;
 import com.jmathanim.mathobjects.Shape;
 
 /**
- * A basic abstract class to implement any layout can be applied to a
+ * A basic abstract class to implement any layout that can be applied to a
  * MathObjectGroup
  *
  * @author David Gutiérrez Rubio
@@ -35,7 +34,7 @@ public abstract class GroupLayout {
 
     /**
      * Returns the bounding box that will have the specified group if layout is
-     * applied. The group is unaltered
+     * applied. The group is unaltered.
      *
      * @param group MathObjectGroup to apply layout
      * @return The bounding box
@@ -44,7 +43,7 @@ public abstract class GroupLayout {
         if (group.isEmpty()) {//Nothing to show
             return null;
         }
-        MathObjectGroup boxedGroup = createBoxedGroup(group,0,0);
+        MathObjectGroup boxedGroup = createBoxedGroup(group, 0, 0);
         applyLayout(boxedGroup);
         Rect bbox = boxedGroup.getBoundingBox();
         return bbox;
@@ -54,10 +53,14 @@ public abstract class GroupLayout {
      * Creates a simpler group with rectangles representing the bounding boxes
      *
      * @param group The MathObjectGroup to compute bounding boxes
+     * @param hgap Horizontal gap. The height of the rectangles will be
+     * increased by this gap.
+     * @param vgap Vertical gap. The width of the rectangles will be increased
+     * by this gap.
      * @return A new MathObjectGroup, with rectangles representing the bounding
      * boxes
      */
-    protected MathObjectGroup createBoxedGroup(MathObjectGroup group,double hgap,double vgap) {
+    protected MathObjectGroup createBoxedGroup(MathObjectGroup group, double hgap, double vgap) {
         MathObjectGroup resul = MathObjectGroup.make();
         for (MathObject ob : group) {
             resul.add(Shape.rectangle(ob.getBoundingBox().addGap(hgap, vgap)));
