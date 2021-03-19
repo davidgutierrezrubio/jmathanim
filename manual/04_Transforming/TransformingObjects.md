@@ -203,8 +203,7 @@ GroupLayout layout = new HeapLayout(refPoint, .1, .1);
 
 You will get a triangular pile of numbered squares:
 
-<img src="heaplayout01.png" alt="image-20210317091208946" style="zoom:50%;" />
-
+![heaplayout01](heaplayout01.png)
 And finally, the `PascalLayout`. If you use instead the code:
 
 ```java
