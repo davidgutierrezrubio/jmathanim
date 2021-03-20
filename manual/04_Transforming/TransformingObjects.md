@@ -189,7 +189,7 @@ The `BoxLayout` has the methods `getRowGroups` and `getColumnGroups` which retur
 
 For example, if you add the following lines right before the `waitSeconds`command in the previous code, you can assign random fill colors to each row:
 
-```javafor(MathObject rows:layout.getRowGroups(gr)) {
+```java
 for(MathObject rows:layout.getRowGroups(gr)) {//Iterate over the rows
 	rows.fillColor(JMColor.random());
 }
