@@ -33,7 +33,7 @@ public class BoxLayout extends GroupLayout {
     private final Point corner;
 
     int rowSize;
-    private double horizontalGap, verticalGap;
+    private double inRowGap, inColGap;
 
     public enum Direction {
         RIGHT_UP, RIGHT_DOWN, LEFT_UP, LEFT_DOWN, UP_RIGHT, UP_LEFT, DOWN_RIGHT, DOWN_LEFT
@@ -73,8 +73,8 @@ public class BoxLayout extends GroupLayout {
      */
     public BoxLayout(Point corner, int rows, Direction direction, double inRowGap, double inColGap) {
         this.rowSize = rows;
-        this.horizontalGap = inRowGap;
-        this.verticalGap = inColGap;
+        this.inRowGap = inRowGap;
+        this.inColGap = inColGap;
         this.corner = corner;
 
         switch (direction) {
@@ -138,12 +138,12 @@ public class BoxLayout extends GroupLayout {
         for (int n = 1; n < group.size(); n++) {//n=0 gets unaltered
             rowCounter++;
             if (rowCounter < this.rowSize) {
-                group.get(n).stackTo(group.get(n - 1), inRowStack, this.horizontalGap);
+                group.get(n).stackTo(group.get(n - 1), inRowStack, this.inRowGap);
             }
 
             if (rowCounter == this.rowSize) {
                 rowCounter = 0;
-                group.get(n).stackTo(firstOfTheRow, inColStack, this.verticalGap);
+                group.get(n).stackTo(firstOfTheRow, inColStack, this.inColGap);
                 firstOfTheRow = group.get(n);
             }
 
