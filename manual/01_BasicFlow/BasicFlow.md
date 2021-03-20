@@ -3,10 +3,10 @@
 # Basic flow of an animation
 
 
-We will illustrate this with a simple example: Create a java class named  `movingDot.java` in your IDE with this code:
+We will illustrate this with a simple example: Create a java class named  `MovingDot.java` in your IDE with this code:
 
 ``` java
-public class movingDot extends Scene2D {
+public class MovingDot extends Scene2D {
     @Override
     public void setupSketch() {
         config.setCreateMovie(true);
@@ -31,7 +31,7 @@ and, for simplicity, another one with the `main` method:
 }
 ```
 
-If you execute the program, and if it everything goes well, you should see a white point moving to the right in a window, which closes after a few seconds. Something like this:
+If you execute the program, and if everything goes well, you should see a white point moving to the right in a window, which closes after a few seconds. Something like this:
 
 ![movingDot](movingDot.gif)
 
@@ -51,11 +51,11 @@ All animations are defined in a class that extends the basic class `JMathAnimSce
     }
 ```
 
-The `config` object stores global configuration and has several methods to fine tuning your scene. The `config.setCreateMovie(true)` tells that it should generate a movie. In practice, you should generate a movie in the last stages of your design, so by default this flag is set to `false`.
+The `config` object stores global configuration and has several methods to fine tune your scene. The `config.setCreateMovie(true)` tells the library that it should generate a movie. In practice, you should generate a movie in the last stages of your design, so by default this flag is set to `false`.
 
-The `config.setLowQuality()` command stablishes dimensions of 854x480 and 30 frames per second. Aditionally there is `config.setMediumQuality()` with 1280x1024 at 30fps and `config.setHighQuality()` with 1920x1080 at 60fps. All these settings are 16:9.
+The `config.setLowQuality()` command establishes dimensions of 854x480 and 30 frames per second. Aditionally there is `config.setMediumQuality()` with 1280x720 at 30fps and `config.setHighQuality()` with 1920x1080 at 60fps. All these settings are 16:9.
 
-The second method is where you should perform all the animations and drawings.
+The second method is where you should perform all the animations and drawings:
 
 ``` java
   @Override

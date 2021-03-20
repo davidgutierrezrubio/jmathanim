@@ -11,7 +11,10 @@ Each `MathObject` has an object implementing the  `Stylable` interface that stor
 Each object has 2 colors: the draw color (changed with `.drawColor`), used drawing the contour  y the fill color (changed with `.fillColor`), used to fill the object. Each color is stores in a `JMColor`object, with the components red, green, blue and alpha. The `.thickness`method sets the thickness of the stroke used to draw the object.
 
 ``` java
-Shape r = Shape.regularPolygon(5).fillColor(JMColor.parse("CADETBLUE")).drawColor(JMColor.parse("#041137")).thickness(5);
+Shape r = Shape.regularPolygon(5)
+	.fillColor(JMColor.parse("CADETBLUE"))
+    .drawColor(JMColor.parse("#041137"))
+    .thickness(5);
 ```
 
 <img src="02_01_colors.png" alt="image-20201105234514407" style="zoom:25%;" />
@@ -20,8 +23,8 @@ Here we can see the method `.parse` to define a color. All JavaFX color names ar
 
 ```java
 JMColor col1 = new JMColor.parse(1,1,1,.5);//White color with 50% opacity
-JMColor col2 = JMColor.parse("#CDFA14");//Red: CD , Green: FA,    Blue: 14   (hexadecimal), opacity 100% 
-JMColor col3 = JMColor.parse("#CDFA14A6");//Red: CD , Green: FA,    Blue: 14   (hexadecimal), opacity A6
+JMColor col2 = JMColor.parse("#CDFA14");//Red: CD, Green: FA, Blue: 14 (hexadecimal), opacity 100% 
+JMColor col3 = JMColor.parse("#CDFA14A6");//Red: CD, Green: FA, Blue: 14 (hexadecimal), opacity A6
 JMColor col4 = JMColor.parse("SNOW");//Color SNOW from the JavaFX palette
 ```
 
@@ -67,9 +70,15 @@ add(triangle,circle);
 waitSeconds(5);
 ```
 
+Nevertheless, you don't need to create styles to copy the drawing attributes from an object to another. With the `.getMP()`method you can access directly to the `Stylable`object that stores the drawing parameters. If you want to copy the style from object A to B you can invoke the `.copyFrom` method like this:
+
+```java
+B.getMP().copyFrom(A.getMP());
+```
+
 # Configuring the scene
 
-The `Scene` class has an instance of `JMathAnimConfig` class, named `config`, that allows to personalize global aspects of the animation. Most of these methods should be called only on the `setupSketch()`part of the animation. Invoking `config`methods in the `runSketch()`could lead to unpredictable behaviour.
+The `Scene` class has an instance of `JMathAnimConfig` class, named `config`, that allows to personalize global aspects of the animation. Most of these methods should be called only on the `setupSketch()`part of the animation. Invoking `config`methods in the `runSketch()`could lead to unpredictable behavior.
 
 ```java
 //Methods to adjust output
@@ -78,21 +87,19 @@ config.setMediaH(600);//Adjusts height output to 600px
 config.setFPS(25);//Adjusts frames per second of video output to 25 fps
 
 config.setLowQuality();//Predefined adjusts: 854x480 video, at 30fps
-config.setMediumQuality();//Predefined adjusts: 854x480 video, at 30fps
+config.setMediumQuality();//Predefined adjusts: 1024x720 video, at 30fps
 config.setHighQuality();//Predefined adjusts: 1920x1080 video, at 60fps
 
 config.setCreateMovie(true);//Generates a mp4 files with the animation
 config.setOutputDir("media");//Specifies output directory at <PROJECT_DIR>\media (this is the default value)
-config.setOutputFileName("animation");//Specifies video filename as animationWWW.mp4 where WWW is the width output (by default, the output file name is the name of the scene class)
+config.setOutputFileName("animation");//Specifies video filename as animation_WWW.mp4 where WWW is the width output (by default, the output file name is the name of the scene class)
 
 config.setShowPreviewWindow(true); //Show the preview window (by default: true)
-
 
 config.setBackgroundColor(JMColor.parse("WHITE)"));//Sets background color to white
 config.setBackGroundImage("background.png");//Sets the background image, located at RESOURCES_DIR. If null, no image background is applied
 config.setDrawShadow(true); //Apply shadow effect to the scene, using javafx shadow effect
 config.setShadowParameters(10,15,15,.5f);//Sets shadow parameters (kernel 10, offsets 15 and 15, shadow alpha .5f)
-
 
 config.setResourcesDir("c:\\resources");//Specifies resources directory at absolute path c:\resources
 ```
