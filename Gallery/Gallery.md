@@ -676,8 +676,7 @@ double vgap = radius * (Math.sqrt(3) - 2);//negative gap so that the circles wil
 PascalLayout layout = new PascalLayout(Point.origin(), 0, vgap);//The reference point here is meaningless, we will align the group later
 auxCandyHeap.setLayout(layout);
 auxCandyHeap.stackTo(refPoint, Anchor.Type.UPPER);
-//        add(candyHeap);
-//        waitSeconds(3);
+
 //Note that we used auxCandyHeap only the set the layout of all alements of group candyHeap
 //Now perform animations. We will shuffle all elements in each row
 AnimationGroup anim = AnimationGroup.make();
