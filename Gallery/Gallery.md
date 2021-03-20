@@ -650,7 +650,7 @@ refPoint.stackToScreen(Anchor.Type.LOWER, candy.getWidth(), candy.getHeight());
 //Creates the group of candies
 MathObjectGroup candyHeap = MathObjectGroup.make();
 for (int n = 0; n < numCandies; n++) {
-    candyHeap.add(candy.copy().fillColor(JMColor.random()).fillAlpha(1));
+    candyHeap.add(candy.copy().fillColor(JMColor.random()));
 }
 //Now we will layout this using a PascalLayout. We need a triangular number
 //of candies to get a perfect triangular heap, so we will use an auxiliar group
