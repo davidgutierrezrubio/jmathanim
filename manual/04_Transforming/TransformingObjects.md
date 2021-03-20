@@ -152,7 +152,9 @@ for (MathObjectGroup.Layout layout : MathObjectGroup.Layout.values()) {//Iterate
 
 ![layouts](../02_BasicShapes/layouts.gif)
 
-There is a more advanced overloaded form of this method, where the layout is given as a subclass of the `GroupLayout` class. In the current version (v0.8.9-SNAPSHOT), the `BoxLayout`, `SpiralLayout`, `HeapLayout` and `PascalLayout` are implemented. These methods works well when all elements of the group have the same dimensions.
+There is a more advanced overloaded form of this method, where the layout is given as a subclass of the `GroupLayout` class. Since version 0.8.9, the `BoxLayout`, `SpiralLayout`, `HeapLayout` and `PascalLayout` are implemented. These methods works well when all elements of the group have the same dimensions.
+
+## The BoxLayout
 
 The `BoxLayout` allocates the objects in a matrix form:
 
@@ -177,7 +179,25 @@ Gives a static image like this. The red dot is the reference point
 
 <img src="boxlayout01.png" alt="image-20210317090826194" style="zoom:50%;" />
 
-The `BoxLayout.Direction.RIGHT_UP` tells the layout to fill first the row in the `RIGHT` direction, and go `UP` to move to the next one.
+The `BoxLayout.Direction.RIGHT_UP` tells the layout to fill first the row in the `RIGHT` direction, and go `UP` to move to the next one. You can try other values like `LEFT_DOWN`.
+
+The gaps are not the usual horizontal and vertical gaps, but the in-row-gap, and between-row gaps.  The "row" term in this case is not the usual horizontal row, but the low level groups of objects. For example, if direction is `RIGHT_DOWN`,`RIGHT_UP`, `LEFT_DOWN` or `LEFT_UP` the "rows" will be horizontal and the in-row-gap will act like an horizontal gap (and the between-rows-gap like a vertical gap), but if direction is `UP_RIGHT, UP_LEFT, DOWN_RIGHT`, or `DOWN_LEFT`, the "rows" will be vertical and the in-row-gap will act like a vertical gap.  An image is worth thousand words:
+
+![image-20210320114251701](boxlayout02.png)
+
+The `BoxLayout` has the methods `getRowGroups` and `getColumnGroups` which returns a `MathObjectGroup` with its elements others `MathObjectGroup` objects, each one with the elements of a row (or column).
+
+For example, if you add the following lines right before the `waitSeconds`command in the previous code, you can assign random fill colors to each row:
+
+```javafor(MathObject rows:layout.getRowGroups(gr)) {
+for(MathObject rows:layout.getRowGroups(gr)) {//Iterate over the rows
+	rows.fillColor(JMColor.random());
+}
+```
+
+![image-20210320112113747](BoxLayoutRowGroup01.png)
+
+## The SpiralLayout
 
 If in the previous code you change the 
 
@@ -195,6 +215,10 @@ You will get the objects in a spiral form:
 
 <img src="spirallayout01.png" alt="image-20210317091043689" style="zoom:50%;" />
 
+The orientation parameters specifies if spiral is clockwise or counterclockwise and the position of the second object relative to the first one (which is centered at the reference point). The gaps are the usual horizontal and vertical gaps.
+
+## The HeapLayout
+
 If you use the `HeapLayout`:
 
 ```java
@@ -204,13 +228,16 @@ GroupLayout layout = new HeapLayout(refPoint, .1, .1);
 You will get a triangular pile of numbered squares:
 
 ![heaplayout01](heaplayout01.png)
-And finally, the `PascalLayout`. If you use instead the code:
+
+## The PascalLayout
+
+The `PascalLayout` resembles the positions of numbers in the Pascal triangle. If you use instead the code:
 
 ```java
 GroupLayout layout = new PascalLayout(refPoint,.1,.1);
 ```
 
-You will obtain a layout resembling the Pascal triangle:
+You will obtain a layout like this:
 
 ![pascalLayout01](pascalLayout01.png)
 
