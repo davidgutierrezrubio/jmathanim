@@ -562,7 +562,7 @@ Here is a gif from the movie generated:
 ![powerProperty1](powerProperty1.gif)
 
 ## Moving 3 coins
-A solution for a simple puzzle. Can you invert the triangle only moving 3 coins?
+A solution for a simple puzzle. Can you invert the triangle moving only 3 coins?
 
 ```java
 Shape coinBase = Shape.circle().fillColor("gold").thickness(2);
@@ -635,5 +635,80 @@ play.transform(3, text, pentagons);
 ```
 
 ![pentagons](pentagons.gif)
+
+## One thousand candies falling
+
+This example explores the use of `MathObjectGroup`class to handle large sets of objects
+
+```java
+Shape candy = Shape.circle().scale(.03).thickness(2);//base shape for candy
+int numCandies = 1000;//Number of candies to fall
+Point refPoint = Point.origin();
+//Locates the refPoint at the bottom of the screen, leaving a margin the size of a candy
+refPoint.stackToScreen(Anchor.Type.LOWER, candy.getWidth(), candy.getHeight());
+
+//Creates the group of candies
+MathObjectGroup candyHeap = MathObjectGroup.make();
+for (int n = 0; n < numCandies; n++) {
+    candyHeap.add(candy.copy().fillColor(JMColor.random()).fillAlpha(1));
+}
+//Now we will layout this using a PascalLayout. We need a triangular number
+//of candies to get a perfect triangular heap, so we will use an auxiliar group
+//with the candies and fill it to get a triangular number
+int triangularNumber = 0;
+int k = 0;
+while (triangularNumber < numCandies) {
+    triangularNumber = k * (k + 1) / 2;
+    k++;
+}
+MathObjectGroup auxCandyHeap = MathObjectGroup.make();
+//add the candies
+auxCandyHeap.getObjects().addAll(candyHeap.getObjects());
+//Now add the "virtual candies"
+for (int n = 0; n < triangularNumber - numCandies; n++) {
+    auxCandyHeap.add(candy.copy());//Virtual candies, these will be discarded later
+}
+//Reverse the order, so that the virtual candies will be on top of the Pascal Layout
+Collections.reverse(auxCandyHeap.getObjects());
+
+double radius = .5 * candy.getHeight();//radius of a candy
+double vgap = radius * (Math.sqrt(3) - 2);//negative gap so that the circles will stick together
+PascalLayout layout = new PascalLayout(Point.origin(), 0, vgap);//The reference point here is meaningless, we will align the group later
+auxCandyHeap.setLayout(layout);
+auxCandyHeap.stackTo(refPoint, Anchor.Type.UPPER);
+//        add(candyHeap);
+//        waitSeconds(3);
+//Note that we used auxCandyHeap only the set the layout of all alements of group candyHeap
+//Now perform animations. We will shuffle all elements in each row
+AnimationGroup anim = AnimationGroup.make();
+MathObjectGroup rows = layout.getRowGroups(auxCandyHeap);
+Collections.reverse(rows.getObjects()); //Reverse the order of rows
+int counter = 0;
+int rowCounter=0;
+for (MathObject r : rows) {
+    MathObjectGroup row = (MathObjectGroup) r;
+    Collections.shuffle(row.getObjects());
+    //Now for each candy of the shuffled row, add a fall animation
+    //Each candy waits an increasing time and makes a moveIn animation from UPPER
+    //The time duration of the fall animation decreases with the row number,
+    //as upper rows takes less time to fall that lower ones
+    //It is not phsyically accurate, but hey, it works...
+    for (MathObject candyToFall : row) {
+        if (candyHeap.getObjects().contains(candyToFall)) {//if not an auxiliar candy...
+            Concatenate conc = Concatenate.make();
+            final double wt = 2d * counter / candyHeap.size();
+            conc.add(new WaitAnimation(wt));
+            conc.add(Commands.moveIn(1-.9*rowCounter/rows.size(), Anchor.Type.UPPER, 						candyToFall).setLambda(t -> t * t));
+            anim.add(conc);
+            counter++;
+        }
+    }
+    rowCounter++;
+}
+playAnimation(anim);
+waitSeconds(3);
+```
+ You can see a video of the animation [here](https://imgur.com/a/Yd6dfnk)
+
 
 [home](https://davidgutierrezrubio.github.io/jmathanim/) [back](../index.html)
