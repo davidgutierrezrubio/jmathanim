@@ -24,6 +24,7 @@ import com.jmathanim.Styling.MODrawPropertiesArray;
 import com.jmathanim.Styling.Stylable;
 import com.jmathanim.Utils.Anchor;
 import com.jmathanim.Utils.Rect;
+import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -112,11 +113,11 @@ public class MultiShapeObject extends MathObject implements Iterable<Shape> {
     @Override
     public <T extends MathObject> T setAbsoluteSize(Anchor.Type anchorType) {
         super.setAbsoluteSize(anchorType);
-        Point p=Anchor.getAnchorPoint(this, anchorType);
-        for (Shape sh: shapes) {
+        Point p = Anchor.getAnchorPoint(this, anchorType);
+        for (Shape sh : shapes) {
             sh.setAbsoluteSize(p);
         }
-        
+
         return (T) this;
     }
 
@@ -322,6 +323,19 @@ public class MultiShapeObject extends MathObject implements Iterable<Shape> {
     @Override
     public final Stylable getMp() {
         return mpMultiShape;
+    }
+
+    public boolean containsPoint(Point p) {
+        return containsPoint(p.v);
+    }
+    
+    public boolean containsPoint(Vec v) {
+        for (Shape sh : shapes) {
+            if (sh.containsPoint(v)) {
+                return true;
+            }
+        }
+        return false;
     }
 
 }

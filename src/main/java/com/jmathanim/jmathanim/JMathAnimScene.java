@@ -83,6 +83,10 @@ public abstract class JMathAnimScene {
      * Renderer to perform drawings
      */
     protected Renderer renderer;
+
+    public Renderer getRenderer() {
+        return renderer;
+    }
     /**
      * Number of frames
      */

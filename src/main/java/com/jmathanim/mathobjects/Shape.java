@@ -17,7 +17,9 @@
  */
 package com.jmathanim.mathobjects;
 
+import com.jmathanim.Renderers.JavaFXRenderer;
 import com.jmathanim.Renderers.Renderer;
+import com.jmathanim.Styling.JMColor;
 import com.jmathanim.Utils.AffineJTransform;
 import com.jmathanim.Utils.JMathAnimConfig;
 import com.jmathanim.Styling.MODrawProperties;
@@ -26,6 +28,7 @@ import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import static com.jmathanim.jmathanim.JMathAnimScene.PI;
 import java.util.ArrayList;
+import javafx.scene.shape.Path;
 
 /**
  *
@@ -110,7 +113,7 @@ public class Shape extends MathObject {
     }
 
     @Override
-    public void draw(JMathAnimScene scene, Renderer r){
+    public void draw(JMathAnimScene scene, Renderer r) {
         if (isVisible()) {
             if (absoluteSize) {
                 r.drawAbsoluteCopy(this, getAbsoluteAnchor().v);
@@ -418,6 +421,18 @@ public class Shape extends MathObject {
         }
         tr.applyTransformsToDrawingProperties(this);
         return (T) this;
+    }
+
+    public boolean containsPoint(Point p) {
+        return containsPoint(p.v);
+    }
+
+    public boolean containsPoint(Vec v) {
+        JavaFXRenderer fxr = (JavaFXRenderer) scene.getRenderer();
+        Path path = fxr.createPathFromJMPath(this, jmpath, scene.getCamera());
+        path.setFill(JMColor.parse("black").getFXColor());//It's necessary that the javafx path is filled to work
+        double xy[] = scene.getCamera().mathToScreenFX(v);
+        return path.contains(xy[0], xy[1]);
     }
 
 }

@@ -389,7 +389,7 @@ public class JavaFXRenderer extends Renderer {
 
     }
 
-    private Path createPathFromJMPath(Shape mobj, JMPath c, Camera cam) {
+    public Path createPathFromJMPath(Shape mobj, JMPath c, Camera cam) {
         Path path = new Path();
 
         Vec p = c.getJMPoint(0).p.v;
