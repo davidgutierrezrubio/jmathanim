@@ -10,9 +10,15 @@ You can also follow my [Youtube](https://www.youtube.com/channel/UCeczwEqSrAwZbP
 [Here you can find some examples made with this library ](Gallery/Gallery.html)
 
 # What's new?
+Version 0.9.0-SNAPSHOT:
+
+* Added `contains` method to `Shape` objects to check if a point lies inside the `Shape`.
+* Added  boolean operations `union`, `intersect` and  `substract` to `Shape` objects.
+* Added updateable `BooleanShape`.
+
 Version 0.8.9:
 
-* This version introduces use of advanced layouts for MathObjectGroups, allowing to work easily with large sets of MathObjects
+* This version introduces use of advanced layouts for `MathObjectGroup` objects, allowing to work easily with large sets of MathObjects
 
 * Fixed some bugs and added some javadocs.
 
