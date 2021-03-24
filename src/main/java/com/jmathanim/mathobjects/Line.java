@@ -135,7 +135,7 @@ public class Line extends Shape {
         double[] intersectLine = rect.intersectLine(p1.v.x, p1.v.y, p2.v.x, p2.v.y);
 
         if (intersectLine == null) {
-            //If there are no intersect points, take p1 and p2 (workaround)
+            //If there are no getIntersectionPath points, take p1 and p2 (workaround)
             bp1.p.v.x = p1.v.x;
             bp1.p.v.y = p1.v.y;
             bp2.p.v.x = p2.v.x;

@@ -435,4 +435,69 @@ public class Shape extends MathObject {
         return path.contains(xy[0], xy[1]);
     }
 
+    public JMPath getIntersectionPath(Shape s2) {
+        JavaFXRenderer fxr = (JavaFXRenderer) scene.getRenderer();
+        Path path = fxr.createPathFromJMPath(this, jmpath, scene.getCamera());
+        Path path2 = fxr.createPathFromJMPath(s2, s2.getPath(), scene.getCamera());
+        path.setFill(JMColor.parse("black").getFXColor());//It's necessary that the javafx path is filled to work
+        path2.setFill(JMColor.parse("black").getFXColor());//It's necessary that the javafx path is filled to work
+        javafx.scene.shape.Shape newpa = Path.intersect(path, path2);
+        return fxr.createJMPathFromPath(Shape.shapeToPath(newpa), scene.getCamera());
+    }
+
+    public Shape intersect(Shape s2) {
+        return new Shape(getIntersectionPath(s2));
+    }
+    
+    
+     public JMPath getUnionPath(Shape s2) {
+        JavaFXRenderer fxr = (JavaFXRenderer) scene.getRenderer();
+        Path path = fxr.createPathFromJMPath(this, jmpath, scene.getCamera());
+        Path path2 = fxr.createPathFromJMPath(s2, s2.getPath(), scene.getCamera());
+        path.setFill(JMColor.parse("black").getFXColor());//It's necessary that the javafx path is filled to work
+        path2.setFill(JMColor.parse("black").getFXColor());//It's necessary that the javafx path is filled to work
+        javafx.scene.shape.Shape newpa = Path.union(path, path2);
+        return fxr.createJMPathFromPath(Shape.shapeToPath(newpa), scene.getCamera());
+    }
+
+    public Shape union(Shape s2) {
+        return new Shape(getIntersectionPath(s2));
+    }
+    
+     public JMPath getSubstractPath(Shape s2) {
+        JavaFXRenderer fxr = (JavaFXRenderer) scene.getRenderer();
+        Path path = fxr.createPathFromJMPath(this, jmpath, scene.getCamera());
+        Path path2 = fxr.createPathFromJMPath(s2, s2.getPath(), scene.getCamera());
+        path.setFill(JMColor.parse("black").getFXColor());//It's necessary that the javafx path is filled to work
+        path2.setFill(JMColor.parse("black").getFXColor());//It's necessary that the javafx path is filled to work
+        javafx.scene.shape.Shape newpa = Path.subtract(path, path2);
+        return fxr.createJMPathFromPath(Shape.shapeToPath(newpa), scene.getCamera());
+    }
+
+    public Shape substract(Shape s2) {
+        return new Shape(getIntersectionPath(s2));
+    }
+    
+    
+    
+    
+
+    public static Path shapeToPath(javafx.scene.shape.Shape shape) {
+        if (shape == null) {
+            return null;
+        }
+        if (shape instanceof Path) {
+            return (Path) shape;
+        }
+        return (Path) javafx.scene.shape.Shape.union(createEmptyShape(), shape);
+    }
+
+    /**
+     * Create an empty Shape.
+     *
+     * @return
+     */
+    public static Path createEmptyShape() {
+        return new Path(); // The better, we can do !!!
+    }
 }

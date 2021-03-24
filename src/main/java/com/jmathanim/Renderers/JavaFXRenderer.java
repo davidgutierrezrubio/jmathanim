@@ -27,7 +27,9 @@ import com.jmathanim.jmathanim.JMathAnimScene;
 import static com.jmathanim.jmathanim.JMathAnimScene.DEGREES;
 import com.jmathanim.mathobjects.AbstractJMImage;
 import com.jmathanim.mathobjects.JMPath;
+import com.jmathanim.mathobjects.JMPathPoint;
 import com.jmathanim.mathobjects.MathObject;
+import com.jmathanim.mathobjects.Point;
 import com.jmathanim.mathobjects.Shape;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -42,6 +44,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Application;
 import javafx.application.Platform;
+import javafx.collections.ObservableList;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.geometry.Bounds;
 import javafx.geometry.Rectangle2D;
@@ -59,6 +62,7 @@ import javafx.scene.shape.CubicCurveTo;
 import javafx.scene.shape.LineTo;
 import javafx.scene.shape.MoveTo;
 import javafx.scene.shape.Path;
+import javafx.scene.shape.PathElement;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.StrokeLineJoin;
 import javafx.scene.shape.StrokeType;
@@ -229,7 +233,7 @@ public class JavaFXRenderer extends Renderer {
                         new Rotate(FxCamerarotateY, Rotate.Y_AXIS),
                         new Rotate(FxCamerarotateZ, Rotate.Z_AXIS),
                         new Translate(-config.mediaW / 2, -config.mediaH / 2, 0));
-                
+
                 //Add all elements
                 group.getChildren().addAll(fxnodes);
                 groupDebug.getChildren().addAll(debugFXnodes);
@@ -241,7 +245,7 @@ public class JavaFXRenderer extends Renderer {
                 params.setFill(config.getBackgroundColor().getFXColor());
                 params.setViewport(new Rectangle2D(0, 0, config.mediaW, config.mediaH));
                 params.setCamera(fxScene.getCamera());
-                
+
                 return fxScene.getRoot().snapshot(params, null);
             }
         });
@@ -420,6 +424,53 @@ public class JavaFXRenderer extends Renderer {
         return path;
     }
 
+    public JMPath createJMPathFromPath(Path pa, Camera cam) {
+        JMPath resul = new JMPath();
+        JMPathPoint previousPP = JMPathPoint.curveTo(Point.origin());
+        for (PathElement el : pa.getElements()) {
+            if (el instanceof MoveTo) {
+                MoveTo c = (MoveTo) el;
+                double xy[] = camera.screenToMath(c.getX(), c.getY());
+                JMPathPoint pp = JMPathPoint.lineTo(Point.at(xy[0], xy[1]));
+                pp.isThisSegmentVisible=false;
+                resul.addJMPoint(pp);
+                previousPP = pp;
+                
+            }
+            if (el instanceof CubicCurveTo) {
+                CubicCurveTo c = (CubicCurveTo) el;
+
+                double xy[] = camera.screenToMath(c.getX(), c.getY());
+                JMPathPoint pp = JMPathPoint.curveTo(Point.at(xy[0], xy[1]));
+
+                xy = camera.screenToMath(c.getControlX2(), c.getControlY2());
+
+                pp.cpEnter.v.x = xy[0];
+                pp.cpEnter.v.y = xy[1];
+
+                xy = camera.screenToMath(c.getControlX1(), c.getControlY1());
+                previousPP.cpExit.v.x = xy[0];
+                previousPP.cpExit.v.y = xy[1];
+
+                resul.addJMPoint(pp);
+                previousPP = pp;
+            }
+            if (el instanceof LineTo) {
+                LineTo c = (LineTo) el;
+                double xy[] = camera.screenToMath(c.getX(), c.getY());
+                JMPathPoint pp = JMPathPoint.lineTo(Point.at(xy[0], xy[1]));
+                resul.addJMPoint(pp);
+                previousPP = pp;
+            }
+        }
+//        //Be sure the last point is connected with the first (if closed)
+//        if (resul.getJMPoint(0).isEquivalentTo(resul.getJMPoint(-1), .000001)) {
+//            
+//        }
+
+        return resul;
+    }
+
     @Override
     public Rect createImage(String fileName) {
         Rect r = new Rect(0, 0, 0, 0);
@@ -487,7 +538,8 @@ public class JavaFXRenderer extends Renderer {
         debugFXnodes.add(rectangle);
         debugFXnodes.add(t);
     }
-    public void addSound(File soundFile,int frameCount) {
+
+    public void addSound(File soundFile, int frameCount) {
         try {
             videoEncoder.addSound(soundFile, frameCount);
         } catch (IOException ex) {
