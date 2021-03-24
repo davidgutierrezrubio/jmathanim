@@ -158,13 +158,6 @@ public class Shape extends MathObject {
     }
 
     @Override
-    public void update(JMathAnimScene scene) {
-        for (JMPathPoint p : jmpath.jmPathPoints) {
-            p.update(scene);
-        }
-    }
-
-    @Override
     public void restoreState() {
         super.restoreState();
         jmpath.restoreState();
@@ -423,10 +416,24 @@ public class Shape extends MathObject {
         return (T) this;
     }
 
+    /**
+     * Check if a given point is inside the shape
+     *
+     * @param p Point to check
+     * @return True if p lies inside of the shape (regardless of being filled or
+     * not). False otherwise.
+     */
     public boolean containsPoint(Point p) {
         return containsPoint(p.v);
     }
 
+    /**
+     * Overloaded method. Check if a given vector is inside the shape
+     *
+     * @param v Vector to check
+     * @return True if v lies inside of the shape (regardless of being filled or
+     * not). False otherwise.
+     */
     public boolean containsPoint(Vec v) {
         JavaFXRenderer fxr = (JavaFXRenderer) scene.getRenderer();
         Path path = fxr.createPathFromJMPath(this, jmpath, scene.getCamera());
@@ -435,6 +442,12 @@ public class Shape extends MathObject {
         return path.contains(xy[0], xy[1]);
     }
 
+    /**
+     * Computes the JMPath of the intersection of this Shape with another one
+     *
+     * @param s2 Shape to intersect with
+     * @return A JMpath object of the intersection
+     */
     public JMPath getIntersectionPath(Shape s2) {
         JavaFXRenderer fxr = (JavaFXRenderer) scene.getRenderer();
         Path path = fxr.createPathFromJMPath(this, jmpath, scene.getCamera());
@@ -442,62 +455,81 @@ public class Shape extends MathObject {
         path.setFill(JMColor.parse("black").getFXColor());//It's necessary that the javafx path is filled to work
         path2.setFill(JMColor.parse("black").getFXColor());//It's necessary that the javafx path is filled to work
         javafx.scene.shape.Shape newpa = Path.intersect(path, path2);
-        return fxr.createJMPathFromPath(Shape.shapeToPath(newpa), scene.getCamera());
+        return fxr.createJMPathFromPath(convertToPath(newpa), scene.getCamera());
     }
 
+    /**
+     * Creates a new Shape object with the intersection of this Shape and
+     * another one
+     *
+     * @param s2 Shape to intersect with
+     * @return A Shape with the intersecion
+     */
     public Shape intersect(Shape s2) {
         return new Shape(getIntersectionPath(s2));
     }
-    
-    
-     public JMPath getUnionPath(Shape s2) {
+
+    /**
+     * Computes the JMPath of the union of this Shape with another one
+     *
+     * @param s2 Shape to compute the union
+     * @return A JMpath object of the union
+     */
+    public JMPath getUnionPath(Shape s2) {
         JavaFXRenderer fxr = (JavaFXRenderer) scene.getRenderer();
         Path path = fxr.createPathFromJMPath(this, jmpath, scene.getCamera());
         Path path2 = fxr.createPathFromJMPath(s2, s2.getPath(), scene.getCamera());
         path.setFill(JMColor.parse("black").getFXColor());//It's necessary that the javafx path is filled to work
         path2.setFill(JMColor.parse("black").getFXColor());//It's necessary that the javafx path is filled to work
         javafx.scene.shape.Shape newpa = Path.union(path, path2);
-        return fxr.createJMPathFromPath(Shape.shapeToPath(newpa), scene.getCamera());
+        return fxr.createJMPathFromPath(convertToPath(newpa), scene.getCamera());
     }
 
+    /**
+     * Creates a new Shape object with the union of this Shape and another one
+     *
+     * @param s2 Shape to compute the union
+     * @return A Shape with the union
+     */
     public Shape union(Shape s2) {
         return new Shape(getIntersectionPath(s2));
     }
-    
-     public JMPath getSubstractPath(Shape s2) {
+
+    /**
+     * Computes the JMPath of the substraction of this Shape with another one
+     *
+     * @param s2 Shape to substract
+     * @return A JMpath object of the substraction
+     */
+    public JMPath getSubstractPath(Shape s2) {
         JavaFXRenderer fxr = (JavaFXRenderer) scene.getRenderer();
         Path path = fxr.createPathFromJMPath(this, jmpath, scene.getCamera());
         Path path2 = fxr.createPathFromJMPath(s2, s2.getPath(), scene.getCamera());
         path.setFill(JMColor.parse("black").getFXColor());//It's necessary that the javafx path is filled to work
         path2.setFill(JMColor.parse("black").getFXColor());//It's necessary that the javafx path is filled to work
         javafx.scene.shape.Shape newpa = Path.subtract(path, path2);
-        return fxr.createJMPathFromPath(Shape.shapeToPath(newpa), scene.getCamera());
+        return fxr.createJMPathFromPath(convertToPath(newpa), scene.getCamera());
     }
 
+    /**
+     * Creates a new Shape object with the substraction of this Shape with
+     * another one
+     *
+     * @param s2 Shape to substract
+     * @return A Shape with the substraction
+     */
     public Shape substract(Shape s2) {
         return new Shape(getIntersectionPath(s2));
     }
-    
-    
-    
-    
 
-    public static Path shapeToPath(javafx.scene.shape.Shape shape) {
+    private Path convertToPath(javafx.scene.shape.Shape shape) {
         if (shape == null) {
             return null;
         }
         if (shape instanceof Path) {
             return (Path) shape;
         }
-        return (Path) javafx.scene.shape.Shape.union(createEmptyShape(), shape);
+        return (Path) javafx.scene.shape.Shape.union(new Path(), shape);
     }
 
-    /**
-     * Create an empty Shape.
-     *
-     * @return
-     */
-    public static Path createEmptyShape() {
-        return new Path(); // The better, we can do !!!
-    }
 }
