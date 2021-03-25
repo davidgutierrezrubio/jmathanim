@@ -492,7 +492,7 @@ public class Shape extends MathObject {
      * @return A Shape with the union
      */
     public Shape union(Shape s2) {
-        return new Shape(getIntersectionPath(s2));
+        return new Shape(getUnionPath(s2));
     }
 
     /**
@@ -519,7 +519,7 @@ public class Shape extends MathObject {
      * @return A Shape with the substraction
      */
     public Shape substract(Shape s2) {
-        return new Shape(getIntersectionPath(s2));
+        return new Shape(getSubstractPath(s2));
     }
 
     private Path convertToPath(javafx.scene.shape.Shape shape) {
