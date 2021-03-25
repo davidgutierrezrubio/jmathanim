@@ -460,13 +460,16 @@ public class Shape extends MathObject {
 
     /**
      * Creates a new Shape object with the intersection of this Shape and
-     * another one
+     * another one. Styling properties of the new Shape are copied from calling
+     * object.
      *
      * @param s2 Shape to intersect with
      * @return A Shape with the intersecion
      */
     public Shape intersect(Shape s2) {
-        return new Shape(getIntersectionPath(s2));
+        Shape resul = new Shape(getIntersectionPath(s2));
+        resul.getMp().copyFrom(this.getMp());
+        return resul;
     }
 
     /**
@@ -486,13 +489,16 @@ public class Shape extends MathObject {
     }
 
     /**
-     * Creates a new Shape object with the union of this Shape and another one
+     * Creates a new Shape object with the union of this Shape and another one.
+     * Styling properties of the new Shape are copied from calling object.
      *
      * @param s2 Shape to compute the union
      * @return A Shape with the union
      */
     public Shape union(Shape s2) {
-        return new Shape(getUnionPath(s2));
+        Shape resul = new Shape(getUnionPath(s2));
+        resul.getMp().copyFrom(this.getMp());
+        return resul;
     }
 
     /**
@@ -513,13 +519,16 @@ public class Shape extends MathObject {
 
     /**
      * Creates a new Shape object with the substraction of this Shape with
-     * another one
+     * another one. Styling properties of the new Shape are copied from calling
+     * object.
      *
      * @param s2 Shape to substract
      * @return A Shape with the substraction
      */
     public Shape substract(Shape s2) {
-        return new Shape(getSubstractPath(s2));
+        Shape resul = new Shape(getSubstractPath(s2));
+        resul.getMp().copyFrom(this.getMp());
+        return resul;
     }
 
     private Path convertToPath(javafx.scene.shape.Shape shape) {
