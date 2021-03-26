@@ -144,7 +144,7 @@ public class ParametricCurve extends Shape {
             this.getPath().addJMPoint(jmp);
 
         }
-        this.get(0).isThisSegmentVisible = this.getPoint(0).isEquivalenTo(this.getPoint(-1), 0.0000001);
+        this.get(0).isThisSegmentVisible = this.getPoint(0).isEquivalentTo(this.getPoint(-1), 0.0000001);
 
         generateControlPoints();
     }

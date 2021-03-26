@@ -161,7 +161,7 @@ public class Delimiter extends MathObject {
     @Override
     public void draw(JMathAnimScene scene, Renderer r) {
         if (isVisible()) {
-            if (A.isEquivalenTo(B, 0)) {
+            if (A.isEquivalentTo(B, 0)) {
                 return;//Do nothing
             }
             MultiShapeObject delimiterToDraw = generateDelimiter();//TODO: do this in the update method

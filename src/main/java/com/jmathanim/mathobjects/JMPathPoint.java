@@ -214,13 +214,13 @@ public class JMPathPoint extends MathObject implements Updateable, Stateable {
         if (p2.isThisSegmentVisible != isThisSegmentVisible) {
             return false;
         }
-        if (!p.isEquivalenTo(p2.p, epsilon)) {
+        if (!p.isEquivalentTo(p2.p, epsilon)) {
             return false;
         }
-        if (!cpExit.isEquivalenTo(p2.cpExit, epsilon)) {
+        if (!cpExit.isEquivalentTo(p2.cpExit, epsilon)) {
             return false;
         }
-        return cpEnter.isEquivalenTo(p2.cpEnter, epsilon);
+        return cpEnter.isEquivalentTo(p2.cpEnter, epsilon);
     }
 
     @Override

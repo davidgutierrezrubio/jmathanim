@@ -58,6 +58,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.image.WritableImage;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.ClosePath;
 import javafx.scene.shape.CubicCurveTo;
 import javafx.scene.shape.LineTo;
 import javafx.scene.shape.MoveTo;
@@ -427,15 +428,17 @@ public class JavaFXRenderer extends Renderer {
     public JMPath createJMPathFromPath(Path pa, Camera cam) {
         JMPath resul = new JMPath();
         JMPathPoint previousPP = JMPathPoint.curveTo(Point.origin());
+        JMPathPoint currentMoveToPoint = null;
         for (PathElement el : pa.getElements()) {
             if (el instanceof MoveTo) {
                 MoveTo c = (MoveTo) el;
                 double xy[] = camera.screenToMath(c.getX(), c.getY());
                 JMPathPoint pp = JMPathPoint.lineTo(Point.at(xy[0], xy[1]));
-                pp.isThisSegmentVisible=false;
+                pp.isThisSegmentVisible = false;
                 resul.addJMPoint(pp);
                 previousPP = pp;
-                
+                currentMoveToPoint = pp;
+
             }
             if (el instanceof CubicCurveTo) {
                 CubicCurveTo c = (CubicCurveTo) el;
@@ -462,82 +465,119 @@ public class JavaFXRenderer extends Renderer {
                 resul.addJMPoint(pp);
                 previousPP = pp;
             }
-        }
+            if (el instanceof ClosePath) {
+                if (currentMoveToPoint != null) {
+
+//                    if (currentMoveToPoint == resul.getJMPoint(0)) {
+//                        resul.getJMPoint(0).isThisSegmentVisible=true;
+//                    }
+//                        else
+//                        {                    
+                    JMPathPoint cc = currentMoveToPoint.copy();
+                    cc.isThisSegmentVisible = true;
+                    resul.addJMPoint(cc);
+//                                }
+                    }
+                }
+
+            }
 //        //Be sure the last point is connected with the first (if closed)
-//        if (resul.getJMPoint(0).isEquivalentTo(resul.getJMPoint(-1), .000001)) {
-//            
-//        }
-
-        return resul;
-    }
-
-    @Override
-    public Rect createImage(String fileName) {
-        Rect r = new Rect(0, 0, 0, 0);
-
-        try {
-            Image image;
-            if (!images.containsKey(fileName)) {//If the image is not already loaded...
-                ResourceLoader rl = new ResourceLoader();
-                final URL imageResource = rl.getResource(fileName, "images");
-                image = new Image(imageResource.openStream());
-                images.put(fileName, image);
-                JMathAnimScene.logger.info("Loaded image " + fileName);
-            } else {
-                image = images.get(fileName);
+            if (resul.getJMPoint(0).p.isEquivalentTo(resul.getJMPoint(-1).p, .000001)) {
+                JMPathPoint fp = resul.getJMPoint(0);
+                JMPathPoint lp = resul.getJMPoint(-1);
+                fp.cpEnter.v.x = lp.cpEnter.v.x;
+                fp.cpEnter.v.y = lp.cpEnter.v.y;
+                fp.isThisSegmentVisible = true;
+                //Delete last point
+                resul.jmPathPoints.remove(lp);
             }
 
-            //UL corner of bounding box initially set to (0,0)
-            r.ymin = -camera.screenToMath(image.getHeight());
-            r.xmax = camera.screenToMath(image.getWidth());
-        } catch (IOException ex) {
-            JMathAnimScene.logger.warn("Could'nt load image " + fileName);
+            return resul;
         }
 
-        return r;
-    }
+        @Override
+        public Rect createImage
+        (String fileName
+        
+        
+            ) {
+        Rect r = new Rect(0, 0, 0, 0);
 
-    @Override
-    public void drawImage(AbstractJMImage obj) {
+            try {
+                Image image;
+                if (!images.containsKey(fileName)) {//If the image is not already loaded...
+                    ResourceLoader rl = new ResourceLoader();
+                    final URL imageResource = rl.getResource(fileName, "images");
+                    image = new Image(imageResource.openStream());
+                    images.put(fileName, image);
+                    JMathAnimScene.logger.info("Loaded image " + fileName);
+                } else {
+                    image = images.get(fileName);
+                }
+
+                //UL corner of bounding box initially set to (0,0)
+                r.ymin = -camera.screenToMath(image.getHeight());
+                r.xmax = camera.screenToMath(image.getWidth());
+            } catch (IOException ex) {
+                JMathAnimScene.logger.warn("Could'nt load image " + fileName);
+            }
+
+            return r;
+        }
+
+        @Override
+        public void drawImage
+        (AbstractJMImage obj
+        
+        
+            ) {
         ImageView imageView;
-        if (obj.isCached()) {
-            Image image = images.get(obj.getId());
-            imageView = new ImageView(image);
-        } else {
-            imageView = new ImageView(obj.getImage());
+            if (obj.isCached()) {
+                Image image = images.get(obj.getId());
+                imageView = new ImageView(image);
+            } else {
+                imageView = new ImageView(obj.getImage());
+            }
+            //setting the fit height and width of the image view
+            double[] xy = camera.mathToScreenFX(obj.bbox.getUL().v);
+            imageView.setX(xy[0]);
+            imageView.setY(xy[1]);
+            imageView.setFitHeight(camera.mathToScreen(obj.bbox.getHeight()));
+            imageView.setFitWidth(camera.mathToScreen(obj.bbox.getWidth()));
+            imageView.setPreserveRatio(obj.preserveRatio);
+            imageView.setSmooth(true);
+            imageView.setCache(true);
+            imageView.setOpacity(obj.getMp().getDrawColor().alpha);
+            imageView.setRotate(-obj.rotateAngle / DEGREES);
+            fxnodes.add(imageView);
         }
-        //setting the fit height and width of the image view
-        double[] xy = camera.mathToScreenFX(obj.bbox.getUL().v);
-        imageView.setX(xy[0]);
-        imageView.setY(xy[1]);
-        imageView.setFitHeight(camera.mathToScreen(obj.bbox.getHeight()));
-        imageView.setFitWidth(camera.mathToScreen(obj.bbox.getWidth()));
-        imageView.setPreserveRatio(obj.preserveRatio);
-        imageView.setSmooth(true);
-        imageView.setCache(true);
-        imageView.setOpacity(obj.getMp().getDrawColor().alpha);
-        imageView.setRotate(-obj.rotateAngle / DEGREES);
-        fxnodes.add(imageView);
-    }
 
-    @Override
-    public void debugText(String text, Vec loc) {
+        @Override
+        public void debugText
+        (String text, Vec loc
+        
+        
+            ) {
         double[] xy = camera.mathToScreenFX(loc);
-        Text t = new Text(text);
-        t.setFont(new Font(16));
-        Bounds b1 = t.getLayoutBounds();
-        t.setX(xy[0] - .5 * b1.getWidth());
-        t.setY(xy[1] + .5 * b1.getHeight());
+            Text t = new Text(text);
+            t.setFont(new Font(16));
+            Bounds b1 = t.getLayoutBounds();
+            t.setX(xy[0] - .5 * b1.getWidth());
+            t.setY(xy[1] + .5 * b1.getHeight());
 
-        Bounds b = t.getLayoutBounds();
-        double gap = 2;
-        Rectangle rectangle = new Rectangle(b.getMinX() - gap, b.getMinY() - gap, b.getWidth() + gap, b.getHeight() + gap);
-        rectangle.setFill(Color.LIGHTBLUE);
-        rectangle.setStroke(Color.DARKBLUE);
+            Bounds b = t.getLayoutBounds();
+            double gap = 2;
+            Rectangle rectangle = new Rectangle(b.getMinX() - gap, b.getMinY() - gap, b.getWidth() + gap, b.getHeight() + gap);
+            rectangle.setFill(Color.LIGHTBLUE);
+            rectangle.setStroke(Color.DARKBLUE);
 
-        debugFXnodes.add(rectangle);
-        debugFXnodes.add(t);
-    }
+            debugFXnodes.add(rectangle);
+            debugFXnodes.add(t);
+        }
+
+    
+
+    
 
     public void addSound(File soundFile, int frameCount) {
         try {

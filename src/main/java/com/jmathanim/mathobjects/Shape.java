@@ -17,6 +17,7 @@
  */
 package com.jmathanim.mathobjects;
 
+import com.jmathanim.Renderers.FXPathUtils;
 import com.jmathanim.Renderers.JavaFXRenderer;
 import com.jmathanim.Renderers.Renderer;
 import com.jmathanim.Styling.JMColor;
@@ -29,6 +30,7 @@ import com.jmathanim.jmathanim.JMathAnimScene;
 import static com.jmathanim.jmathanim.JMathAnimScene.PI;
 import java.util.ArrayList;
 import javafx.scene.shape.Path;
+import javafx.scene.shape.PathElement;
 
 /**
  *
@@ -455,7 +457,14 @@ public class Shape extends MathObject {
         path.setFill(JMColor.parse("black").getFXColor());//It's necessary that the javafx path is filled to work
         path2.setFill(JMColor.parse("black").getFXColor());//It's necessary that the javafx path is filled to work
         javafx.scene.shape.Shape newpa = Path.intersect(path, path2);
-        return fxr.createJMPathFromPath(convertToPath(newpa), scene.getCamera());
+         Path convertToPath = convertToPath(newpa);
+//        writeFXPathPoints(convertToPath);
+        //Distille!
+        FXPathUtils ut=new FXPathUtils();
+        ut.distille(convertToPath);
+//        writeFXPathPoints(convertToPath);
+        
+        return fxr.createJMPathFromPath(convertToPath, scene.getCamera());
     }
 
     /**
@@ -485,7 +494,14 @@ public class Shape extends MathObject {
         path.setFill(JMColor.parse("black").getFXColor());//It's necessary that the javafx path is filled to work
         path2.setFill(JMColor.parse("black").getFXColor());//It's necessary that the javafx path is filled to work
         javafx.scene.shape.Shape newpa = Path.union(path, path2);
-        return fxr.createJMPathFromPath(convertToPath(newpa), scene.getCamera());
+       Path convertToPath = convertToPath(newpa);
+        writeFXPathPoints(convertToPath);
+        //Distille!
+        FXPathUtils ut=new FXPathUtils();
+        ut.distille(convertToPath);
+        writeFXPathPoints(convertToPath);
+        
+        return fxr.createJMPathFromPath(convertToPath, scene.getCamera());   
     }
 
     /**
@@ -514,7 +530,14 @@ public class Shape extends MathObject {
         path.setFill(JMColor.parse("black").getFXColor());//It's necessary that the javafx path is filled to work
         path2.setFill(JMColor.parse("black").getFXColor());//It's necessary that the javafx path is filled to work
         javafx.scene.shape.Shape newpa = Path.subtract(path, path2);
-        return fxr.createJMPathFromPath(convertToPath(newpa), scene.getCamera());
+        Path convertToPath = convertToPath(newpa);
+//        writeFXPathPoints(convertToPath);
+        //Distille!
+        FXPathUtils ut=new FXPathUtils();
+        ut.distille(convertToPath);
+//        writeFXPathPoints(convertToPath);
+        
+        return fxr.createJMPathFromPath(convertToPath, scene.getCamera());
     }
 
     /**
@@ -541,4 +564,16 @@ public class Shape extends MathObject {
         return (Path) javafx.scene.shape.Shape.union(new Path(), shape);
     }
 
+     private void writeFXPathPoints(Path pa) {
+        System.out.println("FXPATH");
+        System.out.println("-----------------------");
+        int counter = 0;
+        for (PathElement el : pa.getElements()) {
+            System.out.println(counter + ":  " + el);
+            counter++;
+        }
+        System.out.println("-----------------------");
+    }
+    
+    
 }

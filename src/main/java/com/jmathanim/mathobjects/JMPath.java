@@ -735,7 +735,7 @@ public class JMPath implements Updateable, Stateable {
         while (n < this.size()) {
             JMPathPoint p1 = this.getJMPoint(n);
             JMPathPoint p2 = this.getJMPoint(n + 1);
-            if (p1.p.isEquivalenTo(p2.p, epsilon)) {
+            if (p1.p.isEquivalentTo(p2.p, epsilon)) {
                 p1.cpEnter.copyFrom(p2.cpEnter);
 //                if (p2.isThisSegmentVisible) {
                 p1.isThisSegmentVisible = true;

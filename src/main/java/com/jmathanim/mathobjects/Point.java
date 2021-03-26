@@ -276,9 +276,9 @@ public class Point extends MathObject {
 
     @Override
     public String toString() {
-        String pattern = "##0.##";
+        String pattern = "##0.###########";
         DecimalFormat decimalFormat = new DecimalFormat(pattern);
-        return label + "|Point(" + decimalFormat.format(v.x) + "," + decimalFormat.format(v.y) + ")";
+        return label + "|Point(" + decimalFormat.format(v.x) + ",  " + decimalFormat.format(v.y) + ")";
 
     }
 
@@ -343,7 +343,7 @@ public class Point extends MathObject {
         return hash;
     }
 
-    public boolean isEquivalenTo(Point p2, double epsilon) {
+    public boolean isEquivalentTo(Point p2, double epsilon) {
         boolean resul = false;
         if ((Math.abs(v.x - p2.v.x) < epsilon) & (Math.abs(v.y - p2.v.y) < epsilon)) {
             resul = true;
