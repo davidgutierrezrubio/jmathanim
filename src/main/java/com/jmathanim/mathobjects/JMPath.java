@@ -736,11 +736,12 @@ public class JMPath implements Updateable, Stateable {
             JMPathPoint p1 = this.getJMPoint(n);
             JMPathPoint p2 = this.getJMPoint(n + 1);
             if (p1.p.isEquivalentTo(p2.p, epsilon)) {
-                p1.cpEnter.copyFrom(p2.cpEnter);
+                p2.cpEnter.copyFrom(p1.cpEnter);
 //                if (p2.isThisSegmentVisible) {
                 p1.isThisSegmentVisible = true;
+                p2.isCurved=p1.isCurved;
 //                }
-                this.jmPathPoints.remove(p2);
+                this.jmPathPoints.remove(p1);
                 n = 0;
             } else {
                 n++;

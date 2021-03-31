@@ -491,7 +491,8 @@ public class JavaFXRenderer extends Renderer {
                 //Delete last point
                 resul.jmPathPoints.remove(lp);
             }
-
+            //Finally, distille the path, removing unnecessary points
+            resul.distille();
             return resul;
         }
 
