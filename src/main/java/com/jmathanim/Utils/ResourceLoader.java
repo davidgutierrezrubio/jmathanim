@@ -42,7 +42,7 @@ public class ResourceLoader {
      * resource.loadResource(&quot;c:/config/config.xml&quot;) will return an
      * URL pointing to external file
      * loadResource(&quot;#config/config.xml&quot;) will return an URL pointing
-     * to interal file located at src/resources/config/config.xml
+     * to internal file located at src/resources/config/config.xml
      *
      *
      * @param resource String with the path of the resource. If this string
