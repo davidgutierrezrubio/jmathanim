@@ -40,7 +40,7 @@ public class FXPathUtils {
 
     public static double EPSILON = 0.0001;
 
-    public JMPath createJMPathFromFXPath(Path pa, Camera cam) {
+    public static JMPath createJMPathFromFXPath(Path pa, Camera cam) {
         JMPath resul = new JMPath();
         JMPathPoint previousPP = JMPathPoint.curveTo(Point.origin());
         JMPathPoint currentMoveToPoint = null;
@@ -104,30 +104,35 @@ public class FXPathUtils {
         }
         return resul;
     }
-
-    public Path createFXPathFromJMPath(Shape mobj, JMPath c, Camera cam) {
+/**
+ * Convert a JMPath into a JavaFX path
+ * @param jmpath JMPath to convert
+ * @param camera Camera to convert from math coordinates to screen coordinates
+ * @return 
+ */
+    public static Path createFXPathFromJMPath(JMPath jmpath, Camera camera) {
         Path path = new Path();
-        Vec p = c.getJMPoint(0).p.v;
-        double[] scr = cam.mathToScreen(p.x, p.y);
+        Vec p = jmpath.getJMPoint(0).p.v;
+        double[] scr = camera.mathToScreen(p.x, p.y);
         path.getElements().add(new MoveTo(scr[0], scr[1]));
-        for (int n = 1; n < c.size() + 1; n++) {
-            Vec point = c.getJMPoint(n).p.v;
-            Vec cpoint1 = c.getJMPoint(n - 1).cpExit.v;
-            Vec cpoint2 = c.getJMPoint(n).cpEnter.v;
+        for (int n = 1; n < jmpath.size() + 1; n++) {
+            Vec point = jmpath.getJMPoint(n).p.v;
+            Vec cpoint1 = jmpath.getJMPoint(n - 1).cpExit.v;
+            Vec cpoint2 = jmpath.getJMPoint(n).cpEnter.v;
 
             double[] xy, cxy1, cxy2;
 
-            xy = cam.mathToScreenFX(point);
-            cxy1 = cam.mathToScreenFX(cpoint1);
-            cxy2 = cam.mathToScreenFX(cpoint2);
-            if (c.getJMPoint(n).isThisSegmentVisible) {
-                if (c.getJMPoint(n).isCurved) {
+            xy = camera.mathToScreenFX(point);
+            cxy1 = camera.mathToScreenFX(cpoint1);
+            cxy2 = camera.mathToScreenFX(cpoint2);
+            if (jmpath.getJMPoint(n).isThisSegmentVisible) {
+                if (jmpath.getJMPoint(n).isCurved) {
                     path.getElements().add(new CubicCurveTo(cxy1[0], cxy1[1], cxy2[0], cxy2[1], xy[0], xy[1]));
                 } else {
                     path.getElements().add(new LineTo(xy[0], xy[1]));
                 }
             } else {
-                if (n < c.size() + 1) {
+                if (n < jmpath.size() + 1) {
                     //If it is the last point, don't move (it creates a strange point at the beginning)
                     path.getElements().add(new MoveTo(xy[0], xy[1]));
                 }
@@ -141,7 +146,7 @@ public class FXPathUtils {
      *
      * @param path Path to distille
      */
-    public void distille(Path path) {
+    public static void distille(Path path) {
         int n = 0;
         Double xyPrevious[] = new Double[]{null, null};
         while (n < path.getElements().size() - 1) {
@@ -162,15 +167,7 @@ public class FXPathUtils {
         }
     }
 
-    /**
-     * If true, second element can ba safely removed from the elements of the
-     * path
-     *
-     * @param el1
-     * @param el2
-     * @return
-     */
-    public boolean isSecondElementRedundant(Double xyPrevious[], PathElement el1, PathElement el2) {
+    private static boolean isSecondElementRedundant(Double xyPrevious[], PathElement el1, PathElement el2) {
 
         //If the second element doesn't move from the first, is redundant
         if (sameXY(el1, el2)) {
@@ -193,7 +190,7 @@ public class FXPathUtils {
         return false;
     }
 
-    public boolean isFirstElementRedundant(Double xyPrevious[], PathElement el1, PathElement el2) {
+    private static boolean isFirstElementRedundant(Double xyPrevious[], PathElement el1, PathElement el2) {
         //2 consecutive MoveTo
         if ((el1 instanceof MoveTo) && (el2 instanceof MoveTo)) {
             return true;
@@ -221,7 +218,7 @@ public class FXPathUtils {
         return false;
     }
 
-    public boolean sameXY(PathElement el1, PathElement el2) {
+    private static boolean sameXY(PathElement el1, PathElement el2) {
         Double xy1[] = getXYFromPathElement(el1);
         Double xy2[] = getXYFromPathElement(el2);
 
@@ -229,7 +226,7 @@ public class FXPathUtils {
 
     }
 
-    public Double[] getXYFromPathElement(PathElement el) {
+    private static Double[] getXYFromPathElement(PathElement el) {
         Double[] resul = new Double[2];
         if (el instanceof MoveTo) {
             MoveTo elTyped = (MoveTo) el;
