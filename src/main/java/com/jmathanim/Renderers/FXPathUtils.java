@@ -17,7 +17,12 @@
  */
 package com.jmathanim.Renderers;
 
+import com.jmathanim.Cameras.Camera;
 import com.jmathanim.Utils.Vec;
+import com.jmathanim.mathobjects.JMPath;
+import com.jmathanim.mathobjects.JMPathPoint;
+import com.jmathanim.mathobjects.Point;
+import com.jmathanim.mathobjects.Shape;
 import javafx.scene.shape.ClosePath;
 import javafx.scene.shape.CubicCurveTo;
 import javafx.scene.shape.LineTo;
@@ -34,6 +39,102 @@ import javafx.scene.shape.PathElement;
 public class FXPathUtils {
 
     public static double EPSILON = 0.0001;
+
+    public JMPath createJMPathFromFXPath(Path pa, Camera cam) {
+        JMPath resul = new JMPath();
+        JMPathPoint previousPP = JMPathPoint.curveTo(Point.origin());
+        JMPathPoint currentMoveToPoint = null;
+        for (PathElement el : pa.getElements()) {
+            if (el instanceof MoveTo) {
+                MoveTo c = (MoveTo) el;
+                double[] xy = cam.screenToMath(c.getX(), c.getY());
+                JMPathPoint pp = JMPathPoint.lineTo(Point.at(xy[0], xy[1]));
+                pp.isThisSegmentVisible = false;
+                resul.addJMPoint(pp);
+                previousPP = pp;
+                currentMoveToPoint = pp;
+            }
+            if (el instanceof CubicCurveTo) {
+                CubicCurveTo c = (CubicCurveTo) el;
+                double[] xy = cam.screenToMath(c.getX(), c.getY());
+                JMPathPoint pp = JMPathPoint.curveTo(Point.at(xy[0], xy[1]));
+                xy = cam.screenToMath(c.getControlX2(), c.getControlY2());
+                pp.cpEnter.v.x = xy[0];
+                pp.cpEnter.v.y = xy[1];
+                xy = cam.screenToMath(c.getControlX1(), c.getControlY1());
+                previousPP.cpExit.v.x = xy[0];
+                previousPP.cpExit.v.y = xy[1];
+                resul.addJMPoint(pp);
+                previousPP = pp;
+            }
+            if (el instanceof LineTo) {
+                LineTo c = (LineTo) el;
+                double[] xy = cam.screenToMath(c.getX(), c.getY());
+                JMPathPoint pp = JMPathPoint.lineTo(Point.at(xy[0], xy[1]));
+                resul.addJMPoint(pp);
+                previousPP = pp;
+            }
+            if (el instanceof ClosePath) {
+                if (currentMoveToPoint != null) {
+                    //                    if (currentMoveToPoint == resul.getJMPoint(0)) {
+                    //                        resul.getJMPoint(0).isThisSegmentVisible=true;
+                    //                    }
+                    //                        else
+                    //                        {
+                    JMPathPoint cc = currentMoveToPoint.copy();
+                    cc.isThisSegmentVisible = true;
+                    resul.addJMPoint(cc);
+                    //                                }
+                }
+            }
+        }
+        //        //Be sure the last point is connected with the first (if closed)
+        if (resul.jmPathPoints.size() > 0) {
+            if (resul.getJMPoint(0).p.isEquivalentTo(resul.getJMPoint(-1).p, 1.0E-6)) {
+                JMPathPoint fp = resul.getJMPoint(0);
+                JMPathPoint lp = resul.getJMPoint(-1);
+                fp.cpEnter.v.x = lp.cpEnter.v.x;
+                fp.cpEnter.v.y = lp.cpEnter.v.y;
+                fp.isThisSegmentVisible = true;
+                //Delete last point
+                resul.jmPathPoints.remove(lp);
+            }
+            //Finally, distille the path, removing unnecessary points
+            resul.distille();
+        }
+        return resul;
+    }
+
+    public Path createFXPathFromJMPath(Shape mobj, JMPath c, Camera cam) {
+        Path path = new Path();
+        Vec p = c.getJMPoint(0).p.v;
+        double[] scr = cam.mathToScreen(p.x, p.y);
+        path.getElements().add(new MoveTo(scr[0], scr[1]));
+        for (int n = 1; n < c.size() + 1; n++) {
+            Vec point = c.getJMPoint(n).p.v;
+            Vec cpoint1 = c.getJMPoint(n - 1).cpExit.v;
+            Vec cpoint2 = c.getJMPoint(n).cpEnter.v;
+
+            double[] xy, cxy1, cxy2;
+
+            xy = cam.mathToScreenFX(point);
+            cxy1 = cam.mathToScreenFX(cpoint1);
+            cxy2 = cam.mathToScreenFX(cpoint2);
+            if (c.getJMPoint(n).isThisSegmentVisible) {
+                if (c.getJMPoint(n).isCurved) {
+                    path.getElements().add(new CubicCurveTo(cxy1[0], cxy1[1], cxy2[0], cxy2[1], xy[0], xy[1]));
+                } else {
+                    path.getElements().add(new LineTo(xy[0], xy[1]));
+                }
+            } else {
+                if (n < c.size() + 1) {
+                    //If it is the last point, don't move (it creates a strange point at the beginning)
+                    path.getElements().add(new MoveTo(xy[0], xy[1]));
+                }
+            }
+        }
+        return path;
+    }
 
     /**
      * Remove redundant elements from a JavaFX Path
