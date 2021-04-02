@@ -58,8 +58,6 @@ public class JMNumber extends LaTeXMathObject {
         double h = this.getHeight();
         setLaTeX(lambdaText.apply(this.number) + unitString);
         this.refHeight = this.getHeight();
-       
-        
 
         if (h > 0) {
             scale(h / this.refHeight);

@@ -82,7 +82,7 @@ public class Transform extends Animation {
         super.initialize(scene);
         //Determine optimal transformation, if nothing has been chosen prior to init
 
-       if (transformMethod == null) {
+        if (transformMethod == null) {
             determineTransformStrategy();
         }
         createTransformStrategy();
@@ -205,7 +205,7 @@ public class Transform extends Animation {
 //                ag.add(Commands.affineTransform(runTime, A, B, C, D, E, F, shORig));
 //                ag.add(Commands.setMP(runTime, shDest.getMp().getFirstMP(), shORig).setUseObjectState(false));
 //                transformStrategy = ag;
-                transformStrategy=new GeneralAffineTransformAnimation(runTime, (Shape) mobjTransformed, (Shape) mobjDestiny);
+                transformStrategy = new GeneralAffineTransformAnimation(runTime, (Shape) mobjTransformed, (Shape) mobjDestiny);
                 JMathAnimScene.logger.info("Transform method: General affine transform");
                 break;
             case FUNCTION_INTERPOLATION:

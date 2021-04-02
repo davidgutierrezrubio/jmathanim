@@ -165,7 +165,7 @@ public class MODrawProperties implements Stylable, Stateable {
         layer = (prop.getLayer() == null ? layer : prop.getLayer());
         linecap = (prop.getLinecap() == null ? linecap : prop.getLinecap());
         fillColorIsDrawColor = (prop.isFillColorIsDrawColor() == null ? fillColorIsDrawColor : prop.isFillColorIsDrawColor());
-        visible = (prop.isVisible()== null ? visible : prop.isVisible());
+        visible = (prop.isVisible() == null ? visible : prop.isVisible());
     }
 
     @Override
@@ -393,7 +393,7 @@ public class MODrawProperties implements Stylable, Stateable {
         dotStyle = mp.dotStyle;
         linecap = mp.linecap;
         fillColorIsDrawColor = mp.fillColorIsDrawColor;
-        visible=mp.visible;
+        visible = mp.visible;
     }
 
     @Override

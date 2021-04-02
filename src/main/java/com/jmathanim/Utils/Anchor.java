@@ -178,7 +178,6 @@ public class Anchor {
                 resul = Type.CENTER;
                 break;
 
-
             case LEFT:
                 resul = Type.RIGHT;
                 break;

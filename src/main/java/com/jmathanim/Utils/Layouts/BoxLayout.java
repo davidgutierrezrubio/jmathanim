@@ -179,6 +179,7 @@ public class BoxLayout extends GroupLayout {
         }
         return rowGroups;
     }
+
     /**
      * Returns a MathObjectGroup containing other MathObjectGroup objects, one
      * for each column. So for example, getColGroups(group).get(0) will return a

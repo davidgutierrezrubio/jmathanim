@@ -161,18 +161,18 @@ public class JMPathPoint extends MathObject implements Updateable, Stateable {
         p.restoreState();
         cpExit.restoreState();
         cpEnter.restoreState();
-        if (pState!=null) {
-        try {
-            pState.cpExitvBackup.restoreState();
-        } catch (NullPointerException e) {
-        }
-        try {
-            pState.cpEntervBackup.restoreState();
-        } catch (NullPointerException e) {
-        }
-        this.isThisSegmentVisible = pState.isThisSegmentVisible;
-        this.isCurved = pState.isCurved;
-        this.type = pState.type;
+        if (pState != null) {
+            try {
+                pState.cpExitvBackup.restoreState();
+            } catch (NullPointerException e) {
+            }
+            try {
+                pState.cpEntervBackup.restoreState();
+            } catch (NullPointerException e) {
+            }
+            this.isThisSegmentVisible = pState.isThisSegmentVisible;
+            this.isCurved = pState.isCurved;
+            this.type = pState.type;
         }
     }
 

@@ -312,9 +312,9 @@ public abstract class Animation {
         }
     }
 
-     /**
-     * remove the specified objects from the scene. Removing objects from the scene
-     * should be done through this method.
+    /**
+     * remove the specified objects from the scene. Removing objects from the
+     * scene should be done through this method.
      *
      * @param mathObjects Objects to add (varargs)
      */
@@ -323,7 +323,7 @@ public abstract class Animation {
             scene.remove(mathObjects);
         }
     }
-    
+
     public boolean isShouldAddObjectsToScene() {
         return shouldAddObjectsToScene;
     }

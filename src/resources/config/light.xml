@@ -30,7 +30,7 @@
             <fillColor>#9bc693</fillColor>
             <thickness>4</thickness>
         </style>
-         <style name="solidOrange">
+        <style name="solidOrange">
             <drawColor>black</drawColor>
             <fillColor>orange</fillColor>
             <thickness>4</thickness>

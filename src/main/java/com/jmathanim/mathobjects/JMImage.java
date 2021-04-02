@@ -63,7 +63,6 @@ public class JMImage extends AbstractJMImage {
         return resul;
     }
 
-
     @Override
     public void update(JMathAnimScene scene) {
     }
@@ -90,7 +89,7 @@ public class JMImage extends AbstractJMImage {
 
     @Override
     public <T extends MathObject> T rotate(Point center, double angle) {
-        Point centerBbox=bbox.getCenter();
+        Point centerBbox = bbox.getCenter();
         centerBbox.rotate(center, angle);
         bbox.copyFrom(bbox.shifted(bbox.getCenter().to(centerBbox)));
         //For now, ignore rotate center

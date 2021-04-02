@@ -97,10 +97,12 @@ public class PascalLayout extends GroupLayout {
         Point A = Anchor.getAnchorPoint(group.get(0), Anchor.Type.UPPER);
         group.shift(A.to(top));
     }
-  /**
+
+    /**
      * Returns a MathObjectGroup containing other MathObjectGroup objects, one
      * for each row. So for example, getRowGroups(group).get(3) will return a
-     * MathObjectGroup with all objects from the fourth row (that will hold 4 objects)
+     * MathObjectGroup with all objects from the fourth row (that will hold 4
+     * objects)
      *
      * @param group The group to get the rows from
      * @return A MathObjectGroup with all rows

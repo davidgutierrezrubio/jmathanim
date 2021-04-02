@@ -80,7 +80,7 @@ public class MultiShapeTransform extends AnimationGroup {
     @Override
     public void finishAnimation() {
         super.finishAnimation();
-        removeObjectsToscene(tr,dst);
+        removeObjectsToscene(tr, dst);
         addObjectsToscene(mobjDestiny);
     }
 

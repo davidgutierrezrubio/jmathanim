@@ -101,8 +101,8 @@ public class ShowCreation extends Animation {
     public boolean processAnimation() {
         if (creationStrategy != null) {
             boolean ret = creationStrategy.processAnimation();
-            pencilPosition[0]=creationStrategy.getPencilPosition()[0];
-            pencilPosition[1]=creationStrategy.getPencilPosition()[1];
+            pencilPosition[0] = creationStrategy.getPencilPosition()[0];
+            pencilPosition[1] = creationStrategy.getPencilPosition()[1];
             return ret;
         } else {
             return true;

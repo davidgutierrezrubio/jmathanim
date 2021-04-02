@@ -328,7 +328,7 @@ public class MultiShapeObject extends MathObject implements Iterable<Shape> {
     public boolean containsPoint(Point p) {
         return containsPoint(p.v);
     }
-    
+
     public boolean containsPoint(Vec v) {
         for (Shape sh : shapes) {
             if (sh.containsPoint(v)) {

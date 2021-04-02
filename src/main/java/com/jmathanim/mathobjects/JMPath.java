@@ -305,20 +305,20 @@ public class JMPath implements Updateable, Stateable {
         double t = size - k;
         JMPathPoint v1 = getJMPoint(k);
         JMPathPoint v2 = getJMPoint(k + 1);
-         if (v1.isCurved) {
-        //De Casteljau's Algorithm: https://en.wikipedia.org/wiki/De_Casteljau%27s_algorithm
-        Point E = v1.p.interpolate(v1.cpExit, t); //New cp1 of v1
-        Point G = v2.cpEnter.interpolate(v2.p, t); //New cp2 of v2
-        Point F = v1.cpExit.interpolate(v2.cpEnter, t);
-        Point H = E.interpolate(F, t);//cp2 of interpolation point
-        Point J = F.interpolate(G, t);//cp1 of interpolation point
+        if (v1.isCurved) {
+            //De Casteljau's Algorithm: https://en.wikipedia.org/wiki/De_Casteljau%27s_algorithm
+            Point E = v1.p.interpolate(v1.cpExit, t); //New cp1 of v1
+            Point G = v2.cpEnter.interpolate(v2.p, t); //New cp2 of v2
+            Point F = v1.cpExit.interpolate(v2.cpEnter, t);
+            Point H = E.interpolate(F, t);//cp2 of interpolation point
+            Point J = F.interpolate(G, t);//cp1 of interpolation point
 //            resul = H.interpolate(J, t); //Interpolation point
-        resul = JMPathPoint.curveTo(H.interpolate(J, t));
-       
+            resul = JMPathPoint.curveTo(H.interpolate(J, t));
+
             resul.cpExit.copyFrom(J);
             resul.cpEnter.copyFrom(H);
         } else {
-             resul=JMPathPoint.lineTo(v1.p.interpolate(v2.p, alpha));
+            resul = JMPathPoint.lineTo(v1.p.interpolate(v2.p, alpha));
             resul.cpExit.copyFrom(v1.p);
             resul.cpEnter.copyFrom(v2.p);
         }
@@ -739,7 +739,7 @@ public class JMPath implements Updateable, Stateable {
                 p2.cpEnter.copyFrom(p1.cpEnter);
 //                if (p2.isThisSegmentVisible) {
                 p1.isThisSegmentVisible = true;
-                p2.isCurved=p1.isCurved;
+                p2.isCurved = p1.isCurved;
 //                }
                 this.jmPathPoints.remove(p1);
                 n = 0;

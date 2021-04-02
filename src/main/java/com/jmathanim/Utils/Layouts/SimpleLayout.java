@@ -144,8 +144,8 @@ public class SimpleLayout extends GroupLayout {
                 JMathAnimScene.logger.error("Layout not recognized, reverting to CENTER");
                 break;
         }
-        if (this.refPoint!=null) {
-           group.get(0).stackTo(anchor1, this.refPoint, Anchor.Type.CENTER, hgap, vgap);
+        if (this.refPoint != null) {
+            group.get(0).stackTo(anchor1, this.refPoint, Anchor.Type.CENTER, hgap, vgap);
         }
         for (int n = 1; n < group.size(); n++) {
             group.get(n).stackTo(anchor1, group.get(n - 1), anchor2, hgap, vgap);

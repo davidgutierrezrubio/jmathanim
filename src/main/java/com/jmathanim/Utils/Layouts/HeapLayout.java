@@ -83,7 +83,7 @@ public class HeapLayout extends GroupLayout {
                 step += 2;
             }
             rightSide.add(col);
-             colIndex++;
+            colIndex++;
         }
         //Now that I have created the appropiate groups, stack them
         center.setLayout(MathObjectGroup.Layout.UPPER, this.verticalGap);
@@ -93,16 +93,14 @@ public class HeapLayout extends GroupLayout {
         for (MathObjectGroup cols : rightSide) {
             cols.setLayout(MathObjectGroup.Layout.UPPER, this.verticalGap);
         }
-        
-        
-        
+
         //This group holds all objects, grouped by columns
         MathObjectGroup whole = MathObjectGroup.make();
         for (int col = 0; col < leftSide.size(); col++) {
             MathObjectGroup get = leftSide.get(leftSide.size() - 1 - col);
             whole.add(get);
         }
-        
+
         whole.add(center);
         for (int col = 0; col < rightSide.size(); col++) {
             MathObjectGroup get = rightSide.get(col);
@@ -113,8 +111,6 @@ public class HeapLayout extends GroupLayout {
         //Allocates them properly
         Point a = center.get(0).getBoundingBox().getLower();//The center
         whole.shift(a.to(this.base));
-
-        
 
     }
 

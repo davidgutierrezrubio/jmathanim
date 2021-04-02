@@ -36,5 +36,5 @@ public abstract class VideoEncoder {
 
     public abstract boolean isFramesGenerated();
 
-    public abstract void addSound(File soundFile,int frameCount) throws IOException;
+    public abstract void addSound(File soundFile, int frameCount) throws IOException;
 }

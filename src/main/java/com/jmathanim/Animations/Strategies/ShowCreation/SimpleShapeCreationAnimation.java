@@ -42,7 +42,7 @@ public class SimpleShapeCreationAnimation extends CreationStrategy {
     public SimpleShapeCreationAnimation(double runtime, Shape mobj) {
         super(runtime);
         this.mobj = mobj;
-        previous=Point.at(0,0);
+        previous = Point.at(0, 0);
     }
 
     @Override
@@ -86,10 +86,10 @@ public class SimpleShapeCreationAnimation extends CreationStrategy {
                 msh.shapes.get(n).visible(false);
             }
             Point current = msh.shapes.get(0).get(0).p.copy();
-            Vec v=current.to(msh.shapes.get(0).getPath().getPointAt(.01).p).mult(-1);
+            Vec v = current.to(msh.shapes.get(0).getPath().getPointAt(.01).p).mult(-1);
             previous.copyFrom(current.add(v));
-            setPencilPosition(previous.copy(),current);//Put the pencil at the beginning
-             
+            setPencilPosition(previous.copy(), current);//Put the pencil at the beginning
+
             return;
         }
 
@@ -120,7 +120,7 @@ public class SimpleShapeCreationAnimation extends CreationStrategy {
                 msh.shapes.get(n).getPath().clear();
                 msh.shapes.get(n).getPath().addJMPointsFrom(subpath);
                 Point current = msh.shapes.get(n).get(-1).p.copy();
-                setPencilPosition(previous.copy(),current);
+                setPencilPosition(previous.copy(), current);
                 previous.copyFrom(current);
             }
         }

@@ -64,7 +64,6 @@ public class DivideOnSensiblePointsStrategy implements OptimizePathsStrategy {
                 }
             }
 
-
         }
     }
 

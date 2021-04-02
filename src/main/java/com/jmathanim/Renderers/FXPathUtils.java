@@ -104,12 +104,15 @@ public class FXPathUtils {
         }
         return resul;
     }
-/**
- * Convert a JMPath into a JavaFX path
- * @param jmpath JMPath to convert
- * @param camera Camera to convert from math coordinates to screen coordinates
- * @return 
- */
+
+    /**
+     * Convert a JMPath into a JavaFX path
+     *
+     * @param jmpath JMPath to convert
+     * @param camera Camera to convert from math coordinates to screen
+     * coordinates
+     * @return
+     */
     public static Path createFXPathFromJMPath(JMPath jmpath, Camera camera) {
         Path path = new Path();
         Vec p = jmpath.getJMPoint(0).p.v;

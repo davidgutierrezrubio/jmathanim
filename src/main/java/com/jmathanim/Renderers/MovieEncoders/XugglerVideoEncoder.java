@@ -157,7 +157,7 @@ public class XugglerVideoEncoder extends VideoEncoder {
         if (frameCount == 60) {
             long nanosecondsElapsed2 = (long) (1000000000d * frameCount / fps);
         }
-        
+
         writer.encodeVideo(0, bgrScreen, nanosecondsElapsed, TimeUnit.NANOSECONDS);
 
     }

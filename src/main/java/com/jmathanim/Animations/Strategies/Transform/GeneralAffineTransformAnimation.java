@@ -70,7 +70,6 @@ public class GeneralAffineTransformAnimation extends Animation {
 
     }
 
-
     @Override
     public boolean processAnimation() {
         super.processAnimation();

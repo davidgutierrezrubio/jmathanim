@@ -513,9 +513,9 @@ public abstract class MathObject implements Drawable, Updateable, Stateable, Box
         return (T) this;
     }
 
-    public <T extends MathObject> T stackTo(Type anchorObj, Boxable dstObj, Type anchorType, double hgap,double vgap) {
+    public <T extends MathObject> T stackTo(Type anchorObj, Boxable dstObj, Type anchorType, double hgap, double vgap) {
         if (!dstObj.isEmpty()) {
-            Point B = Anchor.getAnchorPoint(dstObj, anchorType, hgap,vgap);
+            Point B = Anchor.getAnchorPoint(dstObj, anchorType, hgap, vgap);
             Point A = Anchor.getAnchorPoint(this, anchorObj);
             this.shift(A.to(B));
         }
