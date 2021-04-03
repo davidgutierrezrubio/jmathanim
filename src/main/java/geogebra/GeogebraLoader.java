@@ -179,6 +179,10 @@ public class GeogebraLoader implements Iterable<MathObject> {
             case "Segment":
                 processSegmentCommand(el);
                 break;
+            case "Polygon":
+                processPolygonCommand(el);
+
+                break;
         }
     }
 
@@ -194,7 +198,19 @@ public class GeogebraLoader implements Iterable<MathObject> {
         resul.label = label;
         geogebraElements.put(label, resul);
         JMathAnimScene.logger.info("Generated segment {}", label);
+    }
 
+    private void processPolygonCommand(Element el) {
+        Element elInput = firstElementWithTag(el, "input");
+        String label = firstElementWithTag(el, "output").getAttribute("a0");
+
+        Point[] points = new Point[elInput.getAttributes().getLength()];
+        for (int i = 0; i < elInput.getAttributes().getLength(); i++) {
+            String labelPoint = elInput.getAttribute("a" + i);
+            points[i] = (Point) geogebraElements.get(labelPoint);
+        }
+        Shape resul = Shape.polygon(points);
+        geogebraElements.put(label, resul);
     }
 
     private Element firstElementWithTag(Element el, String name) {
@@ -209,15 +225,26 @@ public class GeogebraLoader implements Iterable<MathObject> {
     private MODrawProperties parseStylingOptions(Element el) {
         MODrawProperties resul = MODrawProperties.makeNullValues();
 
+        //Visibility
+        Element show = firstElementWithTag(el, "show");
+        resul.visible=("true".equals(show.getAttribute("object")));
+        
+        //Layer
+        Element layer = firstElementWithTag(el, "layer");
+        resul.setLayer(Integer.valueOf(layer.getAttribute("val")));
+        
         //Color
         Element objColor = firstElementWithTag(el, "objColor");
         int r = Integer.valueOf(objColor.getAttribute("r"));
         int g = Integer.valueOf(objColor.getAttribute("g"));
         int b = Integer.valueOf(objColor.getAttribute("b"));
-        double alpha = 1 - Double.valueOf(objColor.getAttribute("alpha"));//Geogebra manages the alpha value from 0 (total opaque) to 1 (invisible)
+        double alpha = Double.valueOf(objColor.getAttribute("alpha"));
         JMColor col = JMColor.rgbInt(r, g, b, 255);
-        col.alpha = alpha;
+        JMColor colFill = JMColor.rgbInt(r, g, b,255);
+        colFill.alpha=alpha;
+        
         resul.setDrawColor(col);
+        resul.setFillColor(colFill);
 
         //Line style
         Element lineStyle = firstElementWithTag(el, "lineStyle");
@@ -234,4 +261,9 @@ public class GeogebraLoader implements Iterable<MathObject> {
 
         return resul;
     }
+
+    public MathObject get(Object key) {
+        return geogebraElements.get(key);
+    }
+    
 }
