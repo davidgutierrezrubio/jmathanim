@@ -15,7 +15,7 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-package geogebra;
+package com.jmathanim.geogebra;
 
 import com.jmathanim.Styling.JMColor;
 import com.jmathanim.Styling.MODrawProperties;
@@ -23,12 +23,17 @@ import com.jmathanim.Utils.ResourceLoader;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.Point;
+import com.jmathanim.mathobjects.Scalar;
 import com.jmathanim.mathobjects.Shape;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import javax.xml.parsers.DocumentBuilder;
@@ -159,6 +164,95 @@ public class GeogebraLoader implements Iterable<MathObject> {
 
     }
 
+    /**
+     * Process a geogebra argument. May be a name of an existing object, a point
+     * or a scalar
+     *
+     * @param argument String with the argument
+     * @return The MathObject generated
+     */
+    private MathObject parseArgument(String argument) {
+        if (geogebraElements.containsKey(argument)) {
+            return geogebraElements.get(argument);
+        }
+        try {//try if it is a number...
+            double value = Double.valueOf(argument);
+            return new Scalar(value);
+        } catch (NumberFormatException ex) {
+            //Nothing to do here, pass to the next guess
+        }
+
+        //Try if it is a point expressed in (a,b) form (an anoynimous point)
+        Pattern pattern = Pattern.compile("\\((.*),(.*)\\)");
+        Matcher matcher = pattern.matcher(argument);
+        if (matcher.find()) {
+            System.out.println(matcher.group(1));
+            System.out.println(matcher.group(2));
+            return Point.at(Double.valueOf(matcher.group(1)), Double.valueOf(matcher.group(2)));
+        }
+
+        //Nothing recognized so far, throw an exception
+        try {
+            throw new Exception("Don't know how to parse this argument " + argument);
+        } catch (Exception ex) {
+            Logger.getLogger(GeogebraLoader.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
+    }
+
+    private void processCircleCommand(Element el) {
+        String label = getOutputArgument(el, 0);
+        Element elInput = firstElementWithTag(el, "input");
+        int numberOfArguments = elInput.getAttributes().getLength();//Number of arguments
+        if (numberOfArguments == 3) {//A circle defined by 3 points
+            String str0 = elInput.getAttribute("a0");
+            String str1 = elInput.getAttribute("a1");
+            String str2 = elInput.getAttribute("a2");
+
+            Point arg0 = (Point) parseArgument(str0);
+            Point arg1 = (Point) parseArgument(str1);
+            Point arg2 = (Point) parseArgument(str2);
+            Shape resul = GeogebraCircleThreePoints.make(arg0, arg1, arg2);
+            registerGeogebraElement(label, resul);
+            JMathAnimScene.logger.debug("Imported Geogebra Circle " + label + " by 3 points: " + arg0 + ", " + arg1+",  "+arg2);
+            return;
+
+        }
+
+        if (numberOfArguments == 2) {
+            String str0 = elInput.getAttribute("a0");
+            String str1 = elInput.getAttribute("a1");
+
+            MathObject arg0 = parseArgument(str0);
+            MathObject arg1 = parseArgument(str1);
+
+            //A circle with center a point and another one in the perimeter
+            if ((arg0 instanceof Point) && (arg1 instanceof Point)) {
+                Point p0 = (Point) arg0;
+                Point p1 = (Point) arg1;
+                Shape resul = new GeogebraCirclePointPoint(p0, p1);
+                registerGeogebraElement(label, resul);
+                JMathAnimScene.logger.debug("Imported Geogebra Circle " + label + ", center " + p0 + ", point " + p1);
+                return;
+            }
+            if ((arg0 instanceof Point) && (arg1 instanceof Scalar)) {
+                Point p0 = (Point) arg0;
+                Scalar sc0 = (Scalar) arg1;
+                Shape resul = GeogebraCircleCenterRadius.make(p0, sc0);
+                registerGeogebraElement(label, resul);
+                JMathAnimScene.logger.debug("Imported Geogebra Circle " + label + ", center " + p0 + ", radius " + sc0);
+                return;
+
+            }
+
+        }
+    }
+
+    public void registerGeogebraElement(String label, MathObject resul) {
+        resul.label = label;
+        geogebraElements.put(label, resul);
+    }
+
     private void processPoint(Element el) {
         String label = el.getAttribute("label");
         //Get the coordinates
@@ -170,7 +264,7 @@ public class GeogebraLoader implements Iterable<MathObject> {
         resul.label = label;
         geogebraElements.put(label, resul);
 //        resul.getMp().copyFrom(parseStylingOptions(el));
-        JMathAnimScene.logger.info("Generated point {}", label);
+        JMathAnimScene.logger.info("Imported point {}", label);
     }
 
     private void parseGeogebraCommand(Element el) {
@@ -181,6 +275,9 @@ public class GeogebraLoader implements Iterable<MathObject> {
                 break;
             case "Polygon":
                 processPolygonCommand(el);
+                break;
+            case "Circle":
+                processCircleCommand(el);
 
                 break;
         }
@@ -204,13 +301,17 @@ public class GeogebraLoader implements Iterable<MathObject> {
         Element elInput = firstElementWithTag(el, "input");
         String label = firstElementWithTag(el, "output").getAttribute("a0");
 
-        Point[] points = new Point[elInput.getAttributes().getLength()];
+        Shape resul = Shape.polygon((Point[]) getArrayOfParameters(elInput));
+        geogebraElements.put(label, resul);
+    }
+
+    private MathObject[] getArrayOfParameters(Element elInput) {
+        MathObject[] points = new Point[elInput.getAttributes().getLength()];
         for (int i = 0; i < elInput.getAttributes().getLength(); i++) {
             String labelPoint = elInput.getAttribute("a" + i);
             points[i] = (Point) geogebraElements.get(labelPoint);
         }
-        Shape resul = Shape.polygon(points);
-        geogebraElements.put(label, resul);
+        return points;
     }
 
     private Element firstElementWithTag(Element el, String name) {
@@ -222,17 +323,27 @@ public class GeogebraLoader implements Iterable<MathObject> {
         }
     }
 
+    private String getInputArgument(Element el, int num) {
+        Element elInput = firstElementWithTag(el, "input");
+        return elInput.getAttribute("a" + num);
+    }
+
+    private String getOutputArgument(Element el, int num) {
+        Element elOutput = firstElementWithTag(el, "output");
+        return elOutput.getAttribute("a" + num);
+    }
+
     private MODrawProperties parseStylingOptions(Element el) {
         MODrawProperties resul = MODrawProperties.makeNullValues();
 
         //Visibility
         Element show = firstElementWithTag(el, "show");
-        resul.visible=("true".equals(show.getAttribute("object")));
-        
+        resul.visible = ("true".equals(show.getAttribute("object")));
+
         //Layer
         Element layer = firstElementWithTag(el, "layer");
         resul.setLayer(Integer.valueOf(layer.getAttribute("val")));
-        
+
         //Color
         Element objColor = firstElementWithTag(el, "objColor");
         int r = Integer.valueOf(objColor.getAttribute("r"));
@@ -240,9 +351,9 @@ public class GeogebraLoader implements Iterable<MathObject> {
         int b = Integer.valueOf(objColor.getAttribute("b"));
         double alpha = Double.valueOf(objColor.getAttribute("alpha"));
         JMColor col = JMColor.rgbInt(r, g, b, 255);
-        JMColor colFill = JMColor.rgbInt(r, g, b,255);
-        colFill.alpha=alpha;
-        
+        JMColor colFill = JMColor.rgbInt(r, g, b, 255);
+        colFill.alpha = alpha;
+
         resul.setDrawColor(col);
         resul.setFillColor(colFill);
 
@@ -265,5 +376,5 @@ public class GeogebraLoader implements Iterable<MathObject> {
     public MathObject get(Object key) {
         return geogebraElements.get(key);
     }
-    
+
 }
