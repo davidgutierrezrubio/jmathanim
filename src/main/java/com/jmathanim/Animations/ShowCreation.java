@@ -24,6 +24,7 @@ import com.jmathanim.Animations.Strategies.ShowCreation.FirstDrawThenFillAnimati
 import com.jmathanim.Animations.Strategies.ShowCreation.GroupCreationAnimation;
 import com.jmathanim.Animations.Strategies.ShowCreation.LineCreationAnimation;
 import com.jmathanim.Animations.Strategies.ShowCreation.SimpleShapeCreationAnimation;
+import com.jmathanim.Constructible.Constructible;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.Arrow2D;
 import com.jmathanim.mathobjects.Axes.Axes;
@@ -64,6 +65,8 @@ public class ShowCreation extends Animation {
     CanonicalJMPath canonPath;
     private CreationStrategy creationStrategy;
     private ShowCreationStrategy strategyType = ShowCreationStrategy.NONE;
+    private MathObject removeThisAtTheEnd=null;
+    private MathObject addThisAtTheEnd=null;
 
     /**
      * Creates an animation that shows the creation of the specified MathObject
@@ -74,6 +77,13 @@ public class ShowCreation extends Animation {
     public ShowCreation(double runtime, MathObject mobj) {
         super(runtime);
         this.mobj = mobj;
+        
+        //If the object is a constructible one, get its visible object to animate
+         if (mobj instanceof Constructible) {
+            this.mobj=((Constructible) mobj).getMathObject();
+            removeThisAtTheEnd=this.mobj;
+            addThisAtTheEnd=mobj;
+        }
         pencilPosition = new Point[2];
     }
 
@@ -115,6 +125,8 @@ public class ShowCreation extends Animation {
         if (creationStrategy != null) {
             creationStrategy.finishAnimation();
         }
+        scene.remove(removeThisAtTheEnd);
+        scene.add(addThisAtTheEnd);
     }
 
     /**
@@ -124,6 +136,8 @@ public class ShowCreation extends Animation {
      * type of animation to perform.
      */
     private void determineCreationStrategy(MathObject mobj) {
+        
+        
         if (mobj instanceof Axes) {
             this.strategyType = ShowCreationStrategy.AXES_CREATION;
             return;

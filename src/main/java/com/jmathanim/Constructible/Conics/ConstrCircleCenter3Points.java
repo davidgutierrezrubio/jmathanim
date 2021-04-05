@@ -15,7 +15,7 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-package com.jmathanim.geogebra;
+package com.jmathanim.Constructible.Conics;
 
 import com.jmathanim.mathobjects.Point;
 
@@ -23,17 +23,17 @@ import com.jmathanim.mathobjects.Point;
  *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
-public class GeogebraCircleThreePoints extends GeogebraCirclePointPoint {
+public class ConstrCircleCenter3Points extends ConstrCircleCenterPoint {
 
     public final Point P0, P1, P2;
 
-    public static GeogebraCircleThreePoints make(Point P0, Point P1, Point P2) {
-        GeogebraCircleThreePoints resul = new GeogebraCircleThreePoints(P0, P1, P2);
+    public static ConstrCircleCenter3Points make(Point P0, Point P1, Point P2) {
+        ConstrCircleCenter3Points resul = new ConstrCircleCenter3Points(P0, P1, P2);
         resul.rebuildShape();
         return resul;
     }
 
-    private GeogebraCircleThreePoints(Point P0, Point P1, Point P2) {
+    private ConstrCircleCenter3Points(Point P0, Point P1, Point P2) {
         super(Point.origin(), Point.origin());
         this.P0 = P0;
         this.P1 = P1;
@@ -44,6 +44,11 @@ public class GeogebraCircleThreePoints extends GeogebraCirclePointPoint {
     public void computeCircleCenterRadius() {
         findCircle(P0.v.x, P0.v.y, P1.v.x, P1.v.y, P2.v.x, P2.v.y);
     }
+     @Override
+    public int getUpdateLevel() {
+        return Math.max(Math.max(P0.getUpdateLevel(), P1.getUpdateLevel()),P2.getUpdateLevel()) + 1;
+    }
+    
     
 
 // Function to find the circle on
@@ -103,6 +108,5 @@ public class GeogebraCircleThreePoints extends GeogebraCirclePointPoint {
         this.radius=this.circleCenter.to(P0).norm();
         //Center (h,k)
     }
-
 // This code is contributed by chandan_jnu
 }

@@ -15,7 +15,7 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-package com.jmathanim.geogebra;
+package com.jmathanim.Constructible.Conics;
 
 import com.jmathanim.mathobjects.Point;
 import com.jmathanim.mathobjects.Scalar;
@@ -24,18 +24,18 @@ import com.jmathanim.mathobjects.Scalar;
  *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
-public class GeogebraCircleCenterRadius extends GeogebraCirclePointPoint{
+public class ConstrCircleCenterRadius extends ConstrCircleCenterPoint{
     Scalar scalarRadius;
     private Point A;
 
-    public static GeogebraCircleCenterRadius make(Point A, Scalar radius) {
-        GeogebraCircleCenterRadius resul=new GeogebraCircleCenterRadius(A,radius);
+    public static ConstrCircleCenterRadius make(Point A, Scalar radius) {
+        ConstrCircleCenterRadius resul=new ConstrCircleCenterRadius(A,radius);
         
         resul.rebuildShape();
         return resul;
     }
     
-    private GeogebraCircleCenterRadius(Point A, Scalar radius) {
+    private ConstrCircleCenterRadius(Point A, Scalar radius) {
         super(A, Point.origin());
         this.A=A;
         this.scalarRadius=radius;
@@ -47,6 +47,11 @@ public class GeogebraCircleCenterRadius extends GeogebraCirclePointPoint{
         this.radius=scalarRadius.value;
         this.circleCenter.v.x=A.v.x;
         this.circleCenter.v.y=A.v.y;
+    }
+
+    @Override
+    public int getUpdateLevel() {
+        return Math.max(scalarRadius.getUpdateLevel(),this.A.getUpdateLevel())+1;
     }
 
     
