@@ -20,9 +20,15 @@ package com.jmathanim.Constructible;
 import com.jmathanim.Constructible.Conics.ConstrCircleCenter3Points;
 import com.jmathanim.Constructible.Conics.ConstrCircleCenterPoint;
 import com.jmathanim.Constructible.Conics.ConstrCircleCenterRadius;
+import com.jmathanim.Constructible.Lines.ConstrLineOrthogonal;
+import com.jmathanim.Constructible.Lines.ConstrLineParallel;
+import com.jmathanim.Constructible.Lines.ConstrLinePointPoint;
+import com.jmathanim.Constructible.Lines.ConstrSegmentPointPoint;
+import com.jmathanim.Constructible.Lines.HasDirection;
 import com.jmathanim.Styling.JMColor;
 import com.jmathanim.Styling.MODrawProperties;
 import com.jmathanim.jmathanim.JMathAnimScene;
+import com.jmathanim.mathobjects.Line;
 import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.Point;
 import com.jmathanim.mathobjects.Scalar;
@@ -154,13 +160,14 @@ public class GeogebraCommandParser {
         }
     }
 
-    private MathObject[] getArrayOfParameters(Element elInput) {
-        MathObject[] points = new Point[elInput.getAttributes().getLength()];
+    private MathObject[] getArrayOfParameters(Element el) {
+        Element elInput = firstElementWithTag(el, "input");
+        MathObject[] objs = new MathObject[elInput.getAttributes().getLength()];
         for (int i = 0; i < elInput.getAttributes().getLength(); i++) {
-            String labelPoint = elInput.getAttribute("a" + i);
-            points[i] = (Point) geogebraElements.get(labelPoint);
+            String label = elInput.getAttribute("a" + i);
+            objs[i] = geogebraElements.get(label);
         }
-        return points;
+        return objs;
     }
 
     //COMMANDS
@@ -185,18 +192,40 @@ public class GeogebraCommandParser {
         String labelPoint2 = elInput.getAttribute("a1");
         Point p1 = (Point) geogebraElements.get(labelPoint1);
         Point p2 = (Point) geogebraElements.get(labelPoint2);
-        Shape resul = Shape.segment(p1, p2);
+        MathObject resul = ConstrSegmentPointPoint.make(p1, p2);
         String label = firstElementWithTag(el, "output").getAttribute("a0");
         resul.label = label;
         geogebraElements.put(label, resul);
         JMathAnimScene.logger.info("Generated segment {}", label);
     }
 
-    protected void processPolygonCommand(Element el) {
-        Element elInput = firstElementWithTag(el, "input");
-        String label = firstElementWithTag(el, "output").getAttribute("a0");
+    protected void processLineCommand(Element el) {
+        String label = getOutputArgument(el, 0);
+        MathObject[] params = getArrayOfParameters(el);
+        Point A = (Point) params[0]; //First argument is always a point
+        MathObject B = params[1];
+        if (B instanceof Point) {//A line given by 2 points
+            registerGeogebraElement(label, ConstrLinePointPoint.make(A, (Point) B));
+            return;
+        }
+        if (B instanceof HasDirection) {//Line parallel
+            registerGeogebraElement(label, ConstrLineParallel.make(A, (HasDirection) B));
+        }
+    }
 
-        Shape resul = Shape.polygon((Point[]) getArrayOfParameters(elInput));
+    protected void processOrthogonalLine(Element el) {
+      String label = getOutputArgument(el, 0);
+        MathObject[] params = getArrayOfParameters(el);
+        Point A = (Point) params[0]; //First argument is always a point
+        MathObject B = params[1];
+         if (B instanceof HasDirection) {
+            registerGeogebraElement(label, ConstrLineOrthogonal.make(A, (HasDirection) B));
+        }
+    }
+
+    protected void processPolygonCommand(Element el) {
+        String label = getOutputArgument(el, 0);
+        Shape resul = Shape.polygon((Point[]) getArrayOfParameters(el));
         geogebraElements.put(label, resul);
     }
 

@@ -19,7 +19,6 @@ package com.jmathanim.Constructible.Lines;
 
 import com.jmathanim.Constructible.Constructible;
 import com.jmathanim.Renderers.Renderer;
-import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.Line;
@@ -30,32 +29,37 @@ import com.jmathanim.mathobjects.Point;
  *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
-public class ConstrLinePointPoint extends Constructible implements HasDirection {
+public class ConstrLineParallel extends Constructible implements HasDirection {
 
+    Point A;
+    HasDirection dir;
     private final Line lineToDraw;
-    Point A, B;
 
-    public static ConstrLinePointPoint make(Point A, Point B) {
-        ConstrLinePointPoint resul = new ConstrLinePointPoint(A, B);
+    public static ConstrLineParallel make(Point A, HasDirection dir) {
+        ConstrLineParallel resul = new ConstrLineParallel(A, dir);
         resul.rebuildShape();
         return resul;
     }
 
-    private ConstrLinePointPoint(Point A, Point B) {
+    private ConstrLineParallel(Point A, HasDirection dir) {
         this.A = A;
-        this.B = B;
-        lineToDraw = Line.make(A, B);
+        this.dir = dir;
+        lineToDraw = new Line(A, this.dir.getDirection());
     }
 
     @Override
     public <T extends MathObject> T copy() {
-        return (T) ConstrLinePointPoint.make(A.copy(), B.copy());
+        return (T) make(A.copy(), dir);
     }
 
     @Override
     public void draw(JMathAnimScene scene, Renderer r) {
         lineToDraw.draw(scene, r);
+    }
 
+    @Override
+    public Vec getDirection() {
+        return dir.getDirection();
     }
 
     @Override
@@ -65,11 +69,18 @@ public class ConstrLinePointPoint extends Constructible implements HasDirection 
 
     @Override
     public void rebuildShape() {
-        //Nothing is needed, the line is updated by itself
-    }
+        lineToDraw.getP1().v.x = A.v.x;
+        lineToDraw.getP1().v.y = A.v.y;
 
-    @Override
-    public Vec getDirection() {
-        return A.to(B);
+        lineToDraw.getP2().v.x = A.v.x + dir.getDirection().x;
+        lineToDraw.getP2().v.y = A.v.y + dir.getDirection().y;
     }
+       @Override
+    public int getUpdateLevel() {
+        return Math.max(A.getUpdateLevel(), ((MathObject)dir).getUpdateLevel()) + 1;
+    }
+    
+    
+    
+    
 }

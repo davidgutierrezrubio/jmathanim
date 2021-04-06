@@ -17,13 +17,13 @@
  */
 package com.jmathanim.Constructible;
 
-import com.jmathanim.Styling.MODrawProperties;
 import com.jmathanim.Styling.Stylable;
 import com.jmathanim.Utils.AffineJTransform;
 import com.jmathanim.Utils.Anchor;
 import com.jmathanim.Utils.Boxable;
 import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.Vec;
+import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.Point;
 
@@ -134,8 +134,13 @@ public abstract class Constructible extends MathObject {
         return getMathObject().getMp();
     }
 
+    @Override
+    public void update(JMathAnimScene scene) {
+        rebuildShape();
+    }
+
     abstract public void rebuildShape();
-    
+
     @Override
     public Rect getBoundingBox() {
         rebuildShape();

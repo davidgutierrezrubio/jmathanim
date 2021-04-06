@@ -18,6 +18,7 @@
 package com.jmathanim.mathobjects;
 
 import com.jmathanim.Cameras.Camera;
+import com.jmathanim.Constructible.Lines.HasDirection;
 import com.jmathanim.Renderers.Renderer;
 import com.jmathanim.Utils.AffineJTransform;
 import com.jmathanim.Utils.JMathAnimConfig;
@@ -34,7 +35,7 @@ import com.jmathanim.mathobjects.JMPathPoint.JMPathPointType;
  *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
-public class Line extends Shape {
+public class Line extends Shape implements HasDirection{
 
     public static Line XAxis() {
         return new Line(new Point(0, 0), new Point(1, 0));
@@ -207,6 +208,11 @@ public class Line extends Shape {
     public Point getCenter() {
 
         return p1.interpolate(p2, .5);
+    }
+
+    @Override
+    public Vec getDirection() {
+     return p1.to(p2);
     }
 
     @Override

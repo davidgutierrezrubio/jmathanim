@@ -100,21 +100,5 @@ public class ConstrCircleCenterPoint extends Constructible {
         return Math.max(A.getUpdateLevel(), B.getUpdateLevel()) + 1;
     }
 
-    @Override
-    public void update(JMathAnimScene scene) {
-        rebuildShape();
-    }
-
-    @Override
-    public void saveState() {
-        A.saveState();
-        B.saveState();
-    }
-
-    @Override
-    public void restoreState() {
-        A.restoreState();
-        B.restoreState();
-    }
 
 }

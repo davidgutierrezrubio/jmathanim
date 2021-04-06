@@ -51,12 +51,11 @@ public class GeogebraLoader {
     private ZipEntry zipEntry;
     private InputStream inputStream;
     private final GeogebraCommandParser cp;
-    
 
     private GeogebraLoader(String fileName) {
         rl = new ResourceLoader();
         url = rl.getResource(fileName, "geogebra");
-        this.cp=new GeogebraCommandParser();
+        this.cp = new GeogebraCommandParser();
     }
 
     public static GeogebraLoader make(String fileName) {
@@ -75,9 +74,8 @@ public class GeogebraLoader {
         } catch (IOException ex) {
             Logger.getLogger(GeogebraLoader.class.getName()).log(Level.SEVERE, null, ex);
         }
-         
-    }
 
+    }
 
     private void parseGeogebraContents(InputStream inputStream) {
         DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
@@ -163,13 +161,6 @@ public class GeogebraLoader {
 
     }
 
-
-   
-
-  
-
-  
-
     private void parseGeogebraCommand(Element el) {
         String name = el.getAttribute("name");
         switch (name) {
@@ -182,6 +173,13 @@ public class GeogebraLoader {
             case "Circle":
                 cp.processCircleCommand(el);
                 break;
+            case "Line":
+                cp.processLineCommand(el);
+                break;
+                case "OrthogonalLine":
+                    cp.processOrthogonalLine(el);
+                
+                break;
         }
     }
 
@@ -190,8 +188,9 @@ public class GeogebraLoader {
     }
 
     public Collection<MathObject> getObjects() {
-       return cp.geogebraElements.values();
+        return cp.geogebraElements.values();
     }
+
     public HashMap<String, MathObject> getDict() {
         return cp.geogebraElements;
     }

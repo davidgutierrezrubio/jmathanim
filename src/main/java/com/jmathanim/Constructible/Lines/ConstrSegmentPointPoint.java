@@ -19,57 +19,57 @@ package com.jmathanim.Constructible.Lines;
 
 import com.jmathanim.Constructible.Constructible;
 import com.jmathanim.Renderers.Renderer;
-import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
-import com.jmathanim.mathobjects.Line;
 import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.Point;
+import com.jmathanim.mathobjects.Shape;
 
 /**
  *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
-public class ConstrLinePointPoint extends Constructible implements HasDirection {
+public class ConstrSegmentPointPoint extends Constructible implements HasDirection
+{
+    public final Point A,B;
+    private final Shape segmentToDraw;
 
-    private final Line lineToDraw;
-    Point A, B;
-
-    public static ConstrLinePointPoint make(Point A, Point B) {
-        ConstrLinePointPoint resul = new ConstrLinePointPoint(A, B);
+    public static ConstrSegmentPointPoint make(Point A,Point B) {
+        ConstrSegmentPointPoint resul=new ConstrSegmentPointPoint(A, B);
         resul.rebuildShape();
         return resul;
     }
-
-    private ConstrLinePointPoint(Point A, Point B) {
+    
+    private ConstrSegmentPointPoint(Point A, Point B) {
         this.A = A;
         this.B = B;
-        lineToDraw = Line.make(A, B);
+        segmentToDraw=Shape.segment(A, B);
     }
-
+    
+    
     @Override
     public <T extends MathObject> T copy() {
-        return (T) ConstrLinePointPoint.make(A.copy(), B.copy());
+        return (T) ConstrSegmentPointPoint.make(this.A.copy(),this.B.copy());
     }
 
     @Override
     public void draw(JMathAnimScene scene, Renderer r) {
-        lineToDraw.draw(scene, r);
-
-    }
-
-    @Override
-    public MathObject getMathObject() {
-        return lineToDraw;
-    }
-
-    @Override
-    public void rebuildShape() {
-        //Nothing is needed, the line is updated by itself
+        segmentToDraw.draw(scene, r);
     }
 
     @Override
     public Vec getDirection() {
         return A.to(B);
     }
+
+    @Override
+    public MathObject getMathObject() {
+        return segmentToDraw;
+    }
+
+    @Override
+    public void rebuildShape() {
+        //Nothing to do here...
+    }
+    
 }
