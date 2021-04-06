@@ -21,66 +21,61 @@ import com.jmathanim.Constructible.Constructible;
 import com.jmathanim.Renderers.Renderer;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
+import com.jmathanim.mathobjects.Line;
 import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.Point;
-import com.jmathanim.mathobjects.Shape;
 
 /**
  *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
-public class ConstrSegmentPointPoint extends Constructible implements HasDirection
-{
-    public final Point A,B;
-    private final Shape segmentToDraw;
+public class ConstrPerpBisectorPointPoint extends Constructible implements HasDirection {
 
-    public static ConstrSegmentPointPoint make(Point A,Point B) {
-        ConstrSegmentPointPoint resul=new ConstrSegmentPointPoint(A, B);
+    Point A, B;
+    private final Line lineToDraw;
+
+    public static ConstrPerpBisectorPointPoint make(Point A, Point B) {
+        ConstrPerpBisectorPointPoint resul = new ConstrPerpBisectorPointPoint(A, B);
         resul.rebuildShape();
         return resul;
     }
-    
-    private ConstrSegmentPointPoint(Point A, Point B) {
+
+    private ConstrPerpBisectorPointPoint(Point A, Point B) {
         this.A = A;
         this.B = B;
-        segmentToDraw=Shape.segment(A, B);
+        lineToDraw=new Line(Point.origin(),Point.origin());//Irrelevant
     }
-    
-    
+
     @Override
     public <T extends MathObject> T copy() {
-        return (T) ConstrSegmentPointPoint.make(this.A.copy(),this.B.copy());
+        return (T) new ConstrPerpBisectorPointPoint(A.copy(),B.copy());
     }
 
     @Override
     public void draw(JMathAnimScene scene, Renderer r) {
-        segmentToDraw.draw(scene, r);
+        lineToDraw.draw(scene, r);
     }
 
     @Override
     public Vec getDirection() {
-        return A.to(B);
+        return lineToDraw.getDirection();
     }
 
     @Override
     public MathObject getMathObject() {
-        return segmentToDraw;
+        return lineToDraw;
     }
 
-    public Point getA() {
-        return A;
-    }
-
-    public Point getB() {
-        return B;
-    }
-
-    
-    
-    
     @Override
     public void rebuildShape() {
-        //Nothing to do here...
+        Point C=A.interpolate(B, .5);
+        Vec v=A.to(B);
+        
+         lineToDraw.getP1().v.x = C.v.x;
+        lineToDraw.getP1().v.y = C.v.y;
+
+        lineToDraw.getP2().v.x = C.v.x - v.y;
+        lineToDraw.getP2().v.y = C.v.y + v.x;
     }
-    
+
 }

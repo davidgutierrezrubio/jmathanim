@@ -44,26 +44,26 @@ import org.xml.sax.SAXException;
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
 public class GeogebraLoader {
-
+    
     private ResourceLoader rl;
     private final URL url;
     private ZipFile zipFile;
     private ZipEntry zipEntry;
     private InputStream inputStream;
     private final GeogebraCommandParser cp;
-
+    
     private GeogebraLoader(String fileName) {
         rl = new ResourceLoader();
         url = rl.getResource(fileName, "geogebra");
         this.cp = new GeogebraCommandParser();
     }
-
+    
     public static GeogebraLoader make(String fileName) {
         GeogebraLoader resul = new GeogebraLoader(fileName);
         resul.parseFile(fileName);
         return resul;
     }
-
+    
     private void parseFile(String fileName) {
         try {
             JMathAnimScene.logger.info("Loading Geogebra file {}", fileName);
@@ -74,9 +74,9 @@ public class GeogebraLoader {
         } catch (IOException ex) {
             Logger.getLogger(GeogebraLoader.class.getName()).log(Level.SEVERE, null, ex);
         }
-
+        
     }
-
+    
     private void parseGeogebraContents(InputStream inputStream) {
         DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
         DocumentBuilder dBuilder;
@@ -92,7 +92,7 @@ public class GeogebraLoader {
         } catch (IOException ex) {
             Logger.getLogger(GeogebraLoader.class.getName()).log(Level.SEVERE, null, ex);
         }
-
+        
         Element root = doc.getDocumentElement();
         String n = root.getNodeName();
         if (!"geogebra".equals(root.getNodeName())) {
@@ -105,27 +105,27 @@ public class GeogebraLoader {
 
         //Iterate over all tags. Element and Command tags are the interesting ones
         NodeList nodes = root.getChildNodes();
-
+        
         for (int i = 0; i < nodes.getLength(); i++) {
             Node node = nodes.item(i);
-
+            
             if (node instanceof Element) {
                 Element el = (Element) node;
                 if (el.getNodeName() == "construction") {
                     parseConstructionChildren(el);
                 }
-
+                
             }
         }
-
+        
     }
-
+    
     private void parseConstructionChildren(Element constructionNode) {
         NodeList nodes = constructionNode.getChildNodes();
-
+        
         for (int i = 0; i < nodes.getLength(); i++) {
             Node node = nodes.item(i);
-
+            
             if (node instanceof Element) {
                 Element el = (Element) node;
                 if (el.getNodeName() == "element") {
@@ -134,10 +134,10 @@ public class GeogebraLoader {
                 if (el.getNodeName() == "command") {
                     parseGeogebraCommand(el);
                 }
-
+                
             }
         }
-
+        
     }
 
     /**
@@ -158,9 +158,9 @@ public class GeogebraLoader {
         if (cp.containsKey(label)) {
             cp.get(label).getMp().copyFrom(cp.parseStylingOptions(el));
         }
-
+        
     }
-
+    
     private void parseGeogebraCommand(Element el) {
         String name = el.getAttribute("name");
         switch (name) {
@@ -176,23 +176,25 @@ public class GeogebraLoader {
             case "Line":
                 cp.processLineCommand(el);
                 break;
-                case "OrthogonalLine":
-                    cp.processOrthogonalLine(el);
-                
+            case "OrthogonalLine":
+                cp.processOrthogonalLine(el);
+                break;
+            case "LineBisector":
+                cp.processPerpBisector(el);
                 break;
         }
     }
-
+    
     public MathObject get(Object key) {
         return cp.get(key);
     }
-
+    
     public Collection<MathObject> getObjects() {
         return cp.geogebraElements.values();
     }
-
+    
     public HashMap<String, MathObject> getDict() {
         return cp.geogebraElements;
     }
-
+    
 }
