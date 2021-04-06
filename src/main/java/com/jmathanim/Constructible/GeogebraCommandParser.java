@@ -23,6 +23,8 @@ import com.jmathanim.Constructible.Conics.ConstrCircleCenterRadius;
 import com.jmathanim.Constructible.Lines.ConstrLineOrthogonal;
 import com.jmathanim.Constructible.Lines.ConstrLineParallel;
 import com.jmathanim.Constructible.Lines.ConstrLinePointPoint;
+import com.jmathanim.Constructible.Lines.ConstrPerpBisectorPointPoint;
+import com.jmathanim.Constructible.Lines.ConstrPerpBisectorSegment;
 import com.jmathanim.Constructible.Lines.ConstrSegmentPointPoint;
 import com.jmathanim.Constructible.Lines.HasDirection;
 import com.jmathanim.Styling.JMColor;
@@ -170,6 +172,16 @@ public class GeogebraCommandParser {
         return objs;
     }
 
+    private String[] getArrayOfOutputs(Element el) {
+        Element elInput = firstElementWithTag(el, "output");
+        String[] outputs = new String[elInput.getAttributes().getLength()];
+        for (int i = 0; i < elInput.getAttributes().getLength(); i++) {
+            String output = elInput.getAttribute("a" + i);
+            outputs[i] = output;
+        }
+        return outputs;
+    }
+
     //COMMANDS
     protected void processPoint(Element el) {
         String label = el.getAttribute("label");
@@ -186,7 +198,6 @@ public class GeogebraCommandParser {
     }
 
     protected void processSegmentCommand(Element el) {
-
         Element elInput = firstElementWithTag(el, "input");
         String labelPoint1 = elInput.getAttribute("a0");
         String labelPoint2 = elInput.getAttribute("a1");
@@ -214,19 +225,46 @@ public class GeogebraCommandParser {
     }
 
     protected void processOrthogonalLine(Element el) {
-      String label = getOutputArgument(el, 0);
+        String label = getOutputArgument(el, 0);
         MathObject[] params = getArrayOfParameters(el);
         Point A = (Point) params[0]; //First argument is always a point
         MathObject B = params[1];
-         if (B instanceof HasDirection) {
+        if (B instanceof HasDirection) {
             registerGeogebraElement(label, ConstrLineOrthogonal.make(A, (HasDirection) B));
         }
     }
 
-    protected void processPolygonCommand(Element el) {
+    void processPerpBisector(Element el) {
         String label = getOutputArgument(el, 0);
-        Shape resul = Shape.polygon((Point[]) getArrayOfParameters(el));
+        MathObject[] params = getArrayOfParameters(el);
+        if (params.length == 2) {//2 points
+            Point A = (Point) params[0];
+            Point B = (Point) params[1];
+            registerGeogebraElement(label, ConstrPerpBisectorPointPoint.make(A, B));
+        }
+        if (params.length == 1) {//1 segment
+            ConstrSegmentPointPoint seg = (ConstrSegmentPointPoint) params[0];
+            registerGeogebraElement(label, ConstrPerpBisectorSegment.make(seg));
+        }
+
+    }
+
+    protected void processPolygonCommand(Element el) {
+        String[] outputs = getArrayOfOutputs(el);
+        String label = outputs[0];
+        MathObject[] objs = getArrayOfParameters(el);
+        Point[] points = new Point[objs.length];
+        for (int i = 0; i < objs.length; i++) {
+            points[i] = (Point) objs[i];
+        }
+        Shape resul = Shape.polygon(points);
         geogebraElements.put(label, resul);
+        
+        for (int i = 1; i < outputs.length-1; i++) {
+            int i2=(i<outputs.length ? i : 1);
+            registerGeogebraElement(outputs[i], ConstrSegmentPointPoint.make(points[i], points[i2]));
+        }
+
     }
 
     protected void processCircleCommand(Element el) {
