@@ -253,6 +253,7 @@ public class GeogebraCommandParser {
         String[] outputs = getArrayOfOutputs(el);
         String label = outputs[0];
         MathObject[] objs = getArrayOfParameters(el);
+        //Array of points of the polygon
         Point[] points = new Point[objs.length];
         for (int i = 0; i < objs.length; i++) {
             points[i] = (Point) objs[i];
@@ -260,9 +261,12 @@ public class GeogebraCommandParser {
         Shape resul = Shape.polygon(points);
         geogebraElements.put(label, resul);
         
-        for (int i = 1; i < outputs.length-1; i++) {
-            int i2=(i<outputs.length ? i : 1);
-            registerGeogebraElement(outputs[i], ConstrSegmentPointPoint.make(points[i], points[i2]));
+        
+        //Now, build all segments
+        for (int i = 0; i < points.length; i++) {
+            int i2=(i<outputs.length-2 ? i+1 : 0);
+            System.out.println(outputs[i+1]+"-->"+i+",  "+i2);
+            registerGeogebraElement(outputs[i+1], ConstrSegmentPointPoint.make(points[i], points[i2]));
         }
 
     }
