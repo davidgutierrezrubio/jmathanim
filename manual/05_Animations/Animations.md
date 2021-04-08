@@ -400,21 +400,39 @@ These animations are better explained with illustrative examples:
 The animation `Commands.affineTransform(double runtime, Point a, Point b, Point c, Point d, Point e, Point f, MathObject… objects)` is the animated version of the `createAffineTransformation` we saw in the chapter dedicated to transforming objects:
 
 ```java
-Shape sq=Shape.square().center().scale(2);
-Shape circ=Shape.circle();
-Point A=Point.at(-1,-1).drawColor(JMColor.BLUE);
-Point B=Point.at(1,-1).drawColor(JMColor.BLUE);
-Point C=Point.at(-1,1).drawColor(JMColor.BLUE);
-Point D=Point.at(1,1).drawColor(JMColor.RED);
-Point E=Point.at(0,0).drawColor(JMColor.RED);
-Point F=Point.at(1.7,.2).drawColor(JMColor.RED);
-add(A,B,C,D,E,F);
-Animation anim = Commands.affineTransform(3, A, B, C, D, E, F, sq,circ);
+//Create axes, color dark blue, in layer 1 so that they draw over the rest of the objects
+Axes axes = new Axes();
+axes.generatePrimaryXTicks(-2, 2, 1);
+axes.generatePrimaryYTicks(-2, 2, 1);
+add(axes);
+axes.thickness(3).drawColor("darkblue").layer(1);
+
+//Create a cartesian grid, a group of horizontal and vertical lines.
+MathObjectGroup grid = new MathObjectGroup();
+for (int i = -5; i < 5; i++) {
+    grid.add(Line.XAxis().shift(0, .5 * i).thickness(i % 2 == 0 ? 3 : 1));
+    grid.add(Line.YAxis().shift(.5 * i, 0).thickness(i % 2 == 0 ? 3 : 1));
+}
+//Creates a B glyph, center it, make it height 1
+Shape c = LaTeXMathObject.make("B").get(0).center().setHeight(1).style("solidorange").fillAlpha(.5);
+//Animate the creation of the grid and the B shape
+play.showCreation(grid, c);
+waitSeconds(1);
+Point A = Point.at(0, 0).drawColor(JMColor.BLUE);
+Point B = Point.at(1, 0).drawColor(JMColor.BLUE);
+Point C = Point.at(0, 1).drawColor(JMColor.BLUE);
+Point D = Point.at(0, .5).drawColor(JMColor.RED);
+Point E = Point.at(1, 0).drawColor(JMColor.RED);
+Point F = Point.at(1, 1).drawColor(JMColor.RED);
+add(A, B, C, D, E, F);
+Animation anim = Commands.affineTransform(3, A, B, C, D, E, F, grid, c);
 playAnimation(anim);
-waitSeconds(3);
+waitSeconds(1);
 ```
 
-![affineAnimation](affineAnimation.gif)
+Here you can see a GIF from the movie generated:
+
+![affineAnimation2](affineAnimation2.gif)
 
 ## Reflection
 The animation `Commands.reflection(double runtime, Point A, Point B, MathObject… objects)` animates the reflection that maps point A into B. Note that the point A is also transformed, as it is an instance of a point of the shape.
