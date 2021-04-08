@@ -414,7 +414,7 @@ for (int i = -5; i < 5; i++) {
     grid.add(Line.YAxis().shift(.5 * i, 0).thickness(i % 2 == 0 ? 3 : 1));
 }
 //Creates a B glyph, center it, make it height 1
-Shape c = LaTeXMathObject.make("B").get(0).center().setHeight(1).style("solidorange").fillAlpha(.5);
+LaTeXMathObject c = LaTeXMathObject.make("B").center().setHeight(1).style("solidorange").fillAlpha(.5);
 //Animate the creation of the grid and the B shape
 play.showCreation(grid, c);
 waitSeconds(1);
