@@ -438,13 +438,34 @@ Here you can see a GIF from the movie generated:
 The animation `Commands.reflection(double runtime, Point A, Point B, MathObject… objects)` animates the reflection that maps point A into B. Note that the point A is also transformed, as it is an instance of a point of the shape.
 
 ```java
-Shape reg = Shape.regularPolygon(5).center();
-Point A = reg.getPoint(0).drawColor(JMColor.BLUE);
+MathObjectGroup grid = new MathObjectGroup();
+//Create a grid
+for (int i = -15; i < 15; i++) {
+    grid.add(Line.XAxis().shift(0, .5 * i).thickness(i % 2 == 0 ? 3 : 1));
+    grid.add(Line.YAxis().shift(.5 * i, 0).thickness(i % 2 == 0 ? 3 : 1));
+}
+
+//A pentagon
+Shape reg = Shape.regularPolygon(5)
+    .center().thickness(5)
+    .fillColor("steelblue");
+//A text
+MathObject text = LaTeXMathObject.make("Pentagon")
+    .center().setHeight(.5)
+    .style("solidorange").fillAlpha(.5)
+    .layer(1);
+
+//Origin and destination points to define the reflection
+//Point A is (a copy of) the first point of the pentagon
+Point A = reg.getPoint(0).drawColor(JMColor.BLUE).copy();
 Point B = Point.at(1, .5).drawColor(JMColor.RED);
-add(A, B);
-Animation anim = Commands.reflection(3, A, B, reg);
+
+//Add everything to the scene
+add(A, B, grid, text);
+//Define the animation and play it!
+Animation anim = Commands.reflection(3, A, B, reg, text,grid);
 playAnimation(anim);
-waitSeconds(3);
+waitSeconds(2);
 ```
 
 ![reflection1Anim](reflection1Anim.gif)
@@ -452,13 +473,16 @@ waitSeconds(3);
 The animation `Commands.reflectionByAxis(double runtime, Point a, Point b, MathObject… objects)` animates the reflection given by the axis AB.
 
 ```java
-Shape reg=Shape.regularPolygon(5).center();
-Point A=reg.getPoint(0).drawColor(JMColor.BLUE);
-Point B=Point.at(1,.5).drawColor(JMColor.RED);
-add(A,B);
-Animation anim=Commands.reflectionByAxis(3, A, B, reg);
+Shape sq = Shape.regularPolygon(6).style("solidred").center();
+Shape sq2 = sq.copy().style("solidorange");
+add(sq, sq2);
+camera.scale(2);
+Point A=sq.getPoint(1);
+Point B=sq.getPoint(2);
+add(Line.make(A,B).dashStyle(MODrawProperties.DashStyle.DOTTED));
+Animation anim = Commands.reflectionByAxis(3, A, B, sq2);
 playAnimation(anim);
-waitSeconds(3);
+waitSeconds(2);
 ```
 
 ![reflection2Anim](reflection2Anim.gif)
