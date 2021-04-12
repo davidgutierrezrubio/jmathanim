@@ -18,6 +18,7 @@
 package com.jmathanim.Animations.Strategies.Transform;
 
 import com.jmathanim.Animations.Animation;
+import com.jmathanim.Animations.AnimationWithEffects;
 import com.jmathanim.Animations.Commands;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.Arrow2D;
@@ -28,10 +29,10 @@ import com.jmathanim.mathobjects.Point;
  *
  * @author David Gutierrez Rubio davidgutierrezrubio@gmail.com
  */
-public class ArrowTransform extends Animation {
+public class ArrowTransform extends AnimationWithEffects {
 
     Arrow2D arOrig, arDst;
-    Animation anim;
+    AnimationWithEffects anim;
 
     public ArrowTransform(double runTime, Arrow2D arOrig, Arrow2D arDst) {
         super(runTime);
@@ -48,6 +49,10 @@ public class ArrowTransform extends Animation {
         Point d = arDst.getEnd().copy();
         anim = Commands.homothecy(runTime, a, b, c, d, arOrig);
         anim.initialize(scene);
+        anim.addJumpEffect(jumpHeight);
+        anim.addAlphaEffect(alphaScaleEffect);
+        anim.addRotationEffect(numTurns);
+        anim.addScaleEffect(scaleEffect);
     }
 
     @Override

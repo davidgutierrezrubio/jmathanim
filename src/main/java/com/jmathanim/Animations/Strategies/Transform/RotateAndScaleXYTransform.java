@@ -19,8 +19,11 @@ package com.jmathanim.Animations.Strategies.Transform;
 
 import com.jmathanim.Utils.AffineJTransform;
 import com.jmathanim.Animations.Animation;
+import com.jmathanim.Animations.AnimationWithEffects;
 import com.jmathanim.Styling.MODrawProperties;
+import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
+import static com.jmathanim.jmathanim.JMathAnimScene.PI;
 import com.jmathanim.mathobjects.Point;
 import com.jmathanim.mathobjects.Shape;
 
@@ -28,20 +31,21 @@ import com.jmathanim.mathobjects.Shape;
  *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
-public class RotateAndScaleXYTransform extends Animation {
+public class RotateAndScaleXYTransform extends AnimationWithEffects {
 
     private final Shape mobjDestiny;
     private final Shape mobjTransformed;
     private MODrawProperties mpBase;
     Point A, B, C, D, E, F;
+    private Vec jumpVector;
 
     public RotateAndScaleXYTransform(double runtime, Shape mobjTransformed, Shape mobjDestiny) {
         super(runtime);
         this.mobjTransformed = mobjTransformed;
         this.mobjDestiny = mobjDestiny;
-
     }
 
+    
     @Override
     public void doAnim(double t) {
         double lt = lambda.applyAsDouble(t);
@@ -64,6 +68,13 @@ public class RotateAndScaleXYTransform extends Animation {
 
         tr.applyTransform(mobjTransformed);
         mobjTransformed.getMp().interpolateFrom(mpBase, mobjDestiny.getMp(), lt);
+
+        //Transform effects
+        applyJumpEffect(lt, jumpVector, mobjTransformed);
+        applyScaleEffect(lt, mobjTransformed);
+        applyRotationEffect(lt, mobjTransformed);
+        applyAlphaScaleEffect(lt, mobjTransformed);
+
     }
 
     @Override
@@ -78,6 +89,7 @@ public class RotateAndScaleXYTransform extends Animation {
         F = mobjDestiny.getPoint(2).copy();
         saveStates(mobjTransformed);
         addObjectsToscene(mobjTransformed);
+        jumpVector=mobjTransformed.getCenter().to(mobjDestiny.getCenter()).rotate(.5*PI);
 
     }
 

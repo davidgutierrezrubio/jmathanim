@@ -19,6 +19,7 @@ package com.jmathanim.Animations.Strategies.Transform;
 
 import com.jmathanim.Animations.Animation;
 import com.jmathanim.Animations.AnimationGroup;
+import com.jmathanim.Animations.AnimationWithEffects;
 import com.jmathanim.Animations.Commands;
 import com.jmathanim.Styling.MODrawProperties;
 import com.jmathanim.jmathanim.JMathAnimScene;
@@ -29,10 +30,10 @@ import com.jmathanim.mathobjects.Shape;
  *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
-public class HomothecyTransformAnimation extends Animation {
+public class HomothecyTransformAnimation extends AnimationWithEffects {
 
     AnimationGroup anim;
-    private Animation homothecy;
+    private AnimationWithEffects homothecy;
     private final Shape mobjTransformed;
     private final Shape mobjDestiny;
     private final MODrawProperties mpBase;
@@ -61,13 +62,18 @@ public class HomothecyTransformAnimation extends Animation {
         anim.add(Commands.setMP(runTime, mobjDestiny.getMp().copy(), this.mobjTransformed).setUseObjectState(false));
         anim.setLambda(lambda);
         anim.initialize(scene);
+        homothecy.addJumpEffect(jumpHeight);
+        homothecy.addAlphaEffect(alphaScaleEffect);
+        homothecy.addRotationEffect(numTurns);
+        homothecy.addScaleEffect(scaleEffect);
 
     }
 
     @Override
     public boolean processAnimation() {
         super.processAnimation();
-        return anim.processAnimation();
+        boolean value = anim.processAnimation();
+        return value;
     }
 
     @Override

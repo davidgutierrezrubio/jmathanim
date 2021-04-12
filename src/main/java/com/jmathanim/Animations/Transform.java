@@ -41,8 +41,10 @@ import com.jmathanim.mathobjects.Shape;
  *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
-public class Transform extends Animation {
-
+public class Transform extends AnimationWithEffects {
+    
+   
+    
     public enum TransformMethod {
         INTERPOLATE_SIMPLE_SHAPES_BY_POINT,
         INTERPOLATE_POINT_BY_POINT,
@@ -52,7 +54,7 @@ public class Transform extends Animation {
         MULTISHAPE_TRANSFORM, GENERAL_AFFINE_TRANSFORM,
         ARROW_TRANSFORM
     }
-
+    
     public final MathObject mobjDestiny;
     public MathObject mobjTransformed;
     private MODrawProperties propBase;
@@ -61,11 +63,11 @@ public class Transform extends Animation {
     public boolean forceChangeDirection;
     private boolean isFinished;
     private Animation transformStrategy;
-
+    
     public static Transform make(double runTime, MathObject ob1, MathObject ob2) {
         return new Transform(runTime, ob1, ob2);
     }
-
+    
     public Transform(double runTime, MathObject ob1, MathObject ob2) {
         super(runTime);
         mobjTransformed = ob1;
@@ -76,7 +78,7 @@ public class Transform extends Animation {
         isFinished = false;
         optimizeStrategy = null;
     }
-
+    
     @Override
     public void initialize(JMathAnimScene scene) {
         super.initialize(scene);
@@ -86,7 +88,7 @@ public class Transform extends Animation {
             determineTransformStrategy();
         }
         createTransformStrategy();
-
+        
         if (!shouldOptimizePathsFirst) {
             transformStrategy.setOptimizationStrategy(new NullOptimizationStrategy());
         } else {
@@ -97,9 +99,9 @@ public class Transform extends Animation {
         transformStrategy.setAddObjectsToScene(this.isShouldAddObjectsToScene());
         transformStrategy.setUseObjectState(this.isUseObjectState());
         transformStrategy.initialize(scene);
-
+        
     }
-
+    
     private void determineTransformStrategy() {
         if ((mobjTransformed instanceof Arrow2D) && (mobjDestiny instanceof Arrow2D)) {
             transformMethod = TransformMethod.ARROW_TRANSFORM;
@@ -116,7 +118,7 @@ public class Transform extends Animation {
             transformMethod = TransformMethod.MULTISHAPE_TRANSFORM;
             return;
         }
-
+        
         if ((mobjTransformed instanceof MultiShapeObject) && (mobjDestiny instanceof MultiShapeObject)) {
             transformMethod = TransformMethod.MULTISHAPE_TRANSFORM;
             return;
@@ -129,7 +131,7 @@ public class Transform extends Animation {
             Shape shTr = (Shape) mobjTransformed;
             Shape shDst = (Shape) mobjDestiny;
             double epsilon = 0.000001;
-
+            
             if (TransformStrategyChecker.testDirectHomothecyTransform(shTr, shDst, epsilon)) {
                 transformMethod = TransformMethod.HOMOTHECY_TRANSFORM;
                 return;
@@ -150,9 +152,9 @@ public class Transform extends Animation {
         }
         //Nothing previous worked...try with the most general method
         transformMethod = TransformMethod.INTERPOLATE_POINT_BY_POINT;
-
+        
     }
-
+    
     private MultiShapeObject convertToMultiShapeObject(MathObject obj) {
         if (obj instanceof MultiShapeObject) {
             return (MultiShapeObject) obj;
@@ -162,7 +164,7 @@ public class Transform extends Animation {
         }
         return null;//Don't know how to convert it to multishape, return null
     }
-
+    
     private void createTransformStrategy() {
         //Now I choose strategy
         switch (transformMethod) {
@@ -174,7 +176,7 @@ public class Transform extends Animation {
                 transformStrategy = new MultiShapeTransform(runTime, convertToMultiShapeObject(mobjTransformed), convertToMultiShapeObject(mobjDestiny));
                 JMathAnimScene.logger.info("Transform method: Multishape");
                 break;
-
+            
             case INTERPOLATE_SIMPLE_SHAPES_BY_POINT:
                 transformStrategy = new PointInterpolationSimpleShapeTransform(runTime, (Shape) mobjTransformed, (Shape) mobjDestiny);
                 JMathAnimScene.logger.info("Transform method: Point interpolation between 2 simple closed curves");
@@ -186,25 +188,13 @@ public class Transform extends Animation {
             case HOMOTHECY_TRANSFORM:
                 transformStrategy = new HomothecyTransformAnimation(runTime, (Shape) mobjTransformed, (Shape) mobjDestiny);
                 JMathAnimScene.logger.info("Transform method: Homothecy");
-
+                
                 break;
             case ROTATE_AND_SCALEXY_TRANSFORM:
                 transformStrategy = new RotateAndScaleXYTransform(runTime, (Shape) mobjTransformed, (Shape) mobjDestiny);
                 JMathAnimScene.logger.info("Transform method: Rotate and Scale XY");
                 break;
             case GENERAL_AFFINE_TRANSFORM:
-//                Shape shORig = (Shape) mobjTransformed;
-//                Shape shDest = (Shape) mobjDestiny;
-//                AnimationGroup ag = new AnimationGroup();
-//                Point A = shORig.get(0).p;//TODO: Take better points (as far as possible)
-//                Point B = shORig.get(1).p;
-//                Point C = shORig.get(2).p;
-//                Point D = shDest.get(0).p;
-//                Point E = shDest.get(1).p;
-//                Point F = shDest.get(2).p;
-//                ag.add(Commands.affineTransform(runTime, A, B, C, D, E, F, shORig));
-//                ag.add(Commands.setMP(runTime, shDest.getMp().getFirstMP(), shORig).setUseObjectState(false));
-//                transformStrategy = ag;
                 transformStrategy = new GeneralAffineTransformAnimation(runTime, (Shape) mobjTransformed, (Shape) mobjDestiny);
                 JMathAnimScene.logger.info("Transform method: General affine transform");
                 break;
@@ -213,8 +203,17 @@ public class Transform extends Animation {
                 JMathAnimScene.logger.info("Transform method: Interpolation of functions");
                 break;
         }
+        if (transformStrategy instanceof AnimationWithEffects) {
+            AnimationWithEffects tr = (AnimationWithEffects) transformStrategy;
+            tr.addJumpEffect(jumpHeight);
+            tr.addAlphaEffect(alphaScaleEffect);
+            tr.addRotationEffect(numTurns);
+            tr.addScaleEffect(scaleEffect);
+        } else {
+            JMathAnimScene.logger.warn("Cannot apply effects to current transform");
+        }
     }
-
+    
     @Override
     public void finishAnimation() {
         super.finishAnimation();
@@ -257,15 +256,16 @@ public class Transform extends Animation {
         this.transformMethod = transformMethod;
         return this;
     }
-
+    
     @Override
     public void doAnim(double t) {
         //Nothing to do here, it delegates trough processAnimation()
     }
-
+    
     @Override
     public boolean processAnimation() {
         return transformStrategy.processAnimation();
     }
-
+   
+    
 }

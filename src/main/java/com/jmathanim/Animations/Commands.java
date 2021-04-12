@@ -27,6 +27,7 @@ import com.jmathanim.Utils.Layouts.GroupLayout;
 import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
+import static com.jmathanim.jmathanim.JMathAnimScene.PI;
 import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.MathObjectGroup;
 import com.jmathanim.mathobjects.Point;
@@ -193,8 +194,8 @@ public class Commands {
         };
     }//End of rotate command
 
-    public static Animation affineTransform(double runtime, Point a, Point b, Point c, Point d, Point e, Point f, MathObject... objects) {
-        return new Animation(runtime) {
+    public static AnimationWithEffects affineTransform(double runtime, Point a, Point b, Point c, Point d, Point e, Point f, MathObject... objects) {
+        return new AnimationWithEffects(runtime) {
             Point orig1 = a.copy();
             Point orig2 = b.copy();
             Point orig3 = c.copy();
@@ -203,6 +204,7 @@ public class Commands {
             Point dst3 = f.copy();
             MathObject[] mathObjects = objects;
             AffineJTransform tr;
+            Vec jumpVector=a.to(d).rotate(.5*PI);
 
             @Override
             public void initialize(JMathAnimScene scene) {
@@ -218,6 +220,11 @@ public class Commands {
                 for (MathObject obj : mathObjects) {
                     tr = AffineJTransform.createAffineTransformation(orig1, orig2, orig3, dst1, dst2, dst3, lt);
                     tr.applyTransform(obj);
+                    //Effects
+                    applyJumpEffect(lt, jumpVector, obj);
+                    applyScaleEffect(lt, obj);
+                    applyRotationEffect(lt, obj);
+                    applyAlphaScaleEffect(lt, obj);
                 }
             }
 
@@ -241,14 +248,15 @@ public class Commands {
      * @param objects Objects to animate (varargs)
      * @return Animation to run playAnimation method method
      */
-    public static Animation homothecy(double runtime, Point a, Point b, Point c, Point d, MathObject... objects) {
-        return new Animation(runtime) {
+    public static AnimationWithEffects homothecy(double runtime, Point a, Point b, Point c, Point d, MathObject... objects) {
+        return new AnimationWithEffects(runtime) {
             Point A = a.copy();
             Point B = b.copy();
             Point C = c.copy();
             Point D = d.copy();
             AffineJTransform tr;
             MathObject[] mathObjects = objects;
+            Vec jumpVector = A.to(C).rotate(.5 * PI);
 
             @Override
             public void initialize(JMathAnimScene scene) {
@@ -264,6 +272,11 @@ public class Commands {
                 tr = AffineJTransform.createDirect2DHomothecy(A, B, C, D, lt);
                 for (MathObject obj : mathObjects) {
                     tr.applyTransform(obj);
+                    //Transform effects
+                    applyJumpEffect(lt, jumpVector, obj);
+                    applyScaleEffect(lt, obj);
+                    applyRotationEffect(lt, obj);
+                    applyAlphaScaleEffect(lt, obj);
                 }
             }
 

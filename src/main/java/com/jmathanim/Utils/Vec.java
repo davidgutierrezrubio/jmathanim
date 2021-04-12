@@ -282,7 +282,7 @@ public class Vec implements Stateable {
 
     /**
      * Return the normalized vector, with modulus 1. If the vector is the null
-     * vector, does nothing.
+     * vector, does nothing. The original vector is unaltered.
      *
      * @return The normalized vector if the modulus is positive. The original
      * otherwise.

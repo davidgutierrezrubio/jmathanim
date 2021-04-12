@@ -134,8 +134,9 @@ public class TransformMathExpressionParameters {
         return transformStyle;
     }
 
-    public void setTransformStyle(TransformMathExpression.TransformType transformStyle) {
+    public TransformMathExpressionParameters setTransformStyle(TransformMathExpression.TransformType transformStyle) {
         this.transformStyle = transformStyle;
+        return this;
     }
 
     public Animation createJumpAnimation(double runTime, Vec v, Shape sh) {

@@ -19,9 +19,12 @@ package com.jmathanim.Animations.Strategies.Transform;
 
 import com.jmathanim.Animations.Animation;
 import com.jmathanim.Animations.AnimationGroup;
+import com.jmathanim.Animations.AnimationWithEffects;
 import com.jmathanim.Animations.Commands;
 import com.jmathanim.Styling.MODrawProperties;
+import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
+import static com.jmathanim.jmathanim.JMathAnimScene.PI;
 import com.jmathanim.mathobjects.Point;
 import com.jmathanim.mathobjects.Shape;
 
@@ -29,9 +32,9 @@ import com.jmathanim.mathobjects.Shape;
  *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
-public class GeneralAffineTransformAnimation extends Animation {
+public class GeneralAffineTransformAnimation extends AnimationWithEffects {
 
-    private Animation affine;
+    private AnimationWithEffects affine;
 
     private AnimationGroup anim;
 
@@ -42,12 +45,15 @@ public class GeneralAffineTransformAnimation extends Animation {
     private final Shape mobjTransformedOrig;
     private final MODrawProperties mpBase;
 
+    private Vec jumpVector;
+
     public GeneralAffineTransformAnimation(double runTime, Shape objTr, Shape objDst) {
         super(runTime);
         this.mobjTransformed = objTr;
         this.mobjTransformedOrig = objTr.copy();
         this.mobjDestiny = objDst;
         mpBase = objTr.getMp().copy();
+
     }
 
     @Override
@@ -67,6 +73,13 @@ public class GeneralAffineTransformAnimation extends Animation {
         anim.add(Commands.setMP(runTime, mobjDestiny.getMp().copy(), this.mobjTransformed).setUseObjectState(false));
         anim.setLambda(lambda);
         anim.initialize(scene);
+
+        affine.addJumpEffect(jumpHeight);
+        affine.addAlphaEffect(alphaScaleEffect);
+        affine.addRotationEffect(numTurns);
+        affine.addScaleEffect(scaleEffect);
+
+        jumpVector = mobjTransformed.getCenter().to(mobjDestiny.getCenter()).rotate(.5 * PI);
 
     }
 

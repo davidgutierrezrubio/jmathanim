@@ -17,9 +17,11 @@
  */
 package com.jmathanim.Animations.Strategies.Transform;
 
-import com.jmathanim.Animations.Animation;
+import com.jmathanim.Animations.AnimationWithEffects;
 import com.jmathanim.Animations.Strategies.Transform.Optimizers.SimpleConnectedPathsOptimizationStrategy;
+import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
+import static com.jmathanim.jmathanim.JMathAnimScene.PI;
 import com.jmathanim.mathobjects.JMPath;
 import com.jmathanim.mathobjects.JMPathPoint;
 import com.jmathanim.mathobjects.Shape;
@@ -29,14 +31,16 @@ import com.jmathanim.mathobjects.Shape;
  *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
-public class PointInterpolationSimpleShapeTransform extends Animation {
+public class PointInterpolationSimpleShapeTransform extends AnimationWithEffects {
 
     private final Shape mobjTransformed;
     private final Shape mobjDestiny;
     private Shape originalShapeBaseCopy;
+    private Vec jumpVector;
 
     public PointInterpolationSimpleShapeTransform(double runtime, Shape mobjTransformed, Shape mobjDestiny) {
         super(runtime);
+
         this.mobjTransformed = mobjTransformed;
         this.mobjDestiny = mobjDestiny;
 
@@ -57,6 +61,9 @@ public class PointInterpolationSimpleShapeTransform extends Animation {
             jmp.isCurved = true;
         }
         addObjectsToscene(mobjTransformed);
+        
+        //Jump vector
+        jumpVector=mobjTransformed.getCenter().to(mobjDestiny.getCenter()).rotate(.5*PI);
     }
 
     @Override
@@ -83,8 +90,14 @@ public class PointInterpolationSimpleShapeTransform extends Animation {
             interPoint.cpEnter.v.y = (1 - lt) * basePoint.cpEnter.v.y + lt * dstPoint.cpEnter.v.y;
             interPoint.cpEnter.v.z = (1 - lt) * basePoint.cpEnter.v.z + lt * dstPoint.cpEnter.v.z;
         }
-
+        //Style interpolation
         mobjTransformed.getMp().interpolateFrom(originalShapeBaseCopy.getMp(), mobjDestiny.getMp(), lt);
+
+        //Transform effects
+        applyJumpEffect(lt, jumpVector,mobjTransformed);
+        applyScaleEffect(lt, mobjTransformed);
+        applyRotationEffect(lt, mobjTransformed);
+        applyAlphaScaleEffect(lt, mobjTransformed);
 
     }
 
