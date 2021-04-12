@@ -29,7 +29,7 @@ import java.util.function.DoubleUnaryOperator;
  *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
-public class AnimationGroup extends Animation {
+public class AnimationGroup extends AnimationWithEffects {
 
     private final ArrayList<Animation> animations;
 
@@ -107,6 +107,10 @@ public class AnimationGroup extends Animation {
     public void initialize(JMathAnimScene scene) {
         super.initialize(scene);
         for (Animation anim : animations) {
+            if (anim instanceof AnimationWithEffects) {
+                AnimationWithEffects animEf = (AnimationWithEffects) anim;
+                    animEf.copyEffectParametersFrom(this);
+            }
             anim.initialize(scene);
         }
     }

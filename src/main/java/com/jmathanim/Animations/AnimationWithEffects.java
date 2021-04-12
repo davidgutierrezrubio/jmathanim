@@ -27,17 +27,23 @@ import com.jmathanim.mathobjects.MathObject;
  */
 public class AnimationWithEffects extends Animation {
 
-    protected double jumpHeight;
-    protected int numTurns;
-    protected double alphaScaleEffect;
-    protected double scaleEffect;
+    protected Double jumpHeight;
+    protected Integer numTurns;
+    protected Double alphaScaleEffect;
+    protected Double scaleEffect;
+
+    public enum JumpType {
+        PARABOLICAL, ELLIPTICAL, TRIANGULAR, SINUSOIDAL2, SINUSOIDAL, PARABOLLICALRECT
+    }
+    JumpType jumpType;
 
     public AnimationWithEffects(double runTime) {
         super(runTime);
-        this.jumpHeight = 0;
-        this.numTurns = 0;
-        this.scaleEffect = 1;
-        this.alphaScaleEffect = 1;
+        this.jumpHeight = null;
+        this.numTurns = null;
+        this.scaleEffect = null;
+        this.alphaScaleEffect = null;
+        jumpType = null;
     }
 
     @Override
@@ -46,6 +52,13 @@ public class AnimationWithEffects extends Animation {
 
     public <T extends AnimationWithEffects> T addJumpEffect(double height) {
         this.jumpHeight = height;
+        jumpType = JumpType.PARABOLICAL;
+        return (T) this;
+    }
+
+    public <T extends AnimationWithEffects> T addJumpEffect(double height, JumpType type) {
+        this.jumpHeight = height;
+        jumpType = type;
         return (T) this;
     }
 
@@ -65,7 +78,7 @@ public class AnimationWithEffects extends Animation {
     }
 
     protected void applyScaleEffect(double t, MathObject obj) {
-        if (scaleEffect != 1) {
+        if ((scaleEffect != null) && (scaleEffect != 1)) {
             double L = 4 * (1 - scaleEffect);
             double scalelt = 1 - t * (1 - t) * L;
             obj.scale(scalelt);
@@ -73,14 +86,14 @@ public class AnimationWithEffects extends Animation {
     }
 
     protected void applyRotationEffect(double t, MathObject obj) {
-        if (numTurns != 0) {
+        if ((numTurns != null) && (numTurns != 0)) {
             double rotateAngle = 2 * PI * numTurns;
             obj.rotate(rotateAngle * t);
         }
     }
 
     protected void applyAlphaScaleEffect(double t, MathObject obj) {
-        if (alphaScaleEffect != 1) {
+        if ((alphaScaleEffect != null) && (alphaScaleEffect != 1)) {
             double L = 4 * (1 - alphaScaleEffect);
             double alphaScalelt = 1 - t * (1 - t) * L;
             obj.drawAlpha(alphaScalelt);
@@ -89,9 +102,64 @@ public class AnimationWithEffects extends Animation {
     }
 
     protected void applyJumpEffect(double t, Vec jumpVector, MathObject obj) {
-        if (jumpHeight != 0) {
-            double jlt = 4 * t * (1 - t);
-            obj.shift(jumpVector.mult(jumpHeight*jlt));
+        try {
+            if (jumpHeight == 0) {
+                return;
+            }
+
+            double jlt = 0;
+            switch (jumpType) {
+                case PARABOLICAL:
+                    jlt = 4 * t * (1 - t) * jumpHeight;
+                    break;
+                case ELLIPTICAL:
+                    jlt = 2 * Math.sqrt(t * (1 - t)) * jumpHeight;
+                    break;
+                case TRIANGULAR:
+                    jlt = (t < .5 ? t : 1 - t) * jumpHeight;
+                    break;
+                case SINUSOIDAL2:
+                    jlt = Math.sin(2 * t * PI) * jumpHeight;
+                    break;
+                case SINUSOIDAL:
+                    jlt = Math.sin(t * PI) * jumpHeight;
+                    break;
+                case PARABOLLICALRECT:
+                    double a = .2;
+                    if (t < a) {
+                        jlt = 2 * t / a * (1 - 0.5 * t / a);
+                    } else if (t > 1 - a) {
+                        jlt = 2 * (1 - t) / a * (1 - 0.5 * (1 - t) / a);
+                    }
+                    if ((t >= a) && (t <= 1 - a)) {
+                        jlt = 1;
+                    }
+                    jlt*=jumpHeight;
+                    break;
+
+            }
+
+            obj.shift(jumpVector.mult(jlt));
+        } catch (NullPointerException e) {
+        }
+    }
+
+    public boolean shouldApplyEffects() {
+        return ((0 != jumpHeight) || (1 != alphaScaleEffect) || (1 != scaleEffect) || (0 != numTurns));
+    }
+
+    public void copyEffectParametersFrom(AnimationWithEffects obj) {
+        if (obj.jumpHeight != null) {
+            this.addJumpEffect(obj.jumpHeight, obj.jumpType);
+        }
+        if (obj.alphaScaleEffect != null) {
+            this.addAlphaEffect(obj.alphaScaleEffect);
+        }
+        if (obj.numTurns != null) {
+            this.addRotationEffect(obj.numTurns);
+        }
+        if (obj.scaleEffect != null) {
+            this.addScaleEffect(obj.scaleEffect);
         }
     }
 

@@ -49,10 +49,7 @@ public class ArrowTransform extends AnimationWithEffects {
         Point d = arDst.getEnd().copy();
         anim = Commands.homothecy(runTime, a, b, c, d, arOrig);
         anim.initialize(scene);
-        anim.addJumpEffect(jumpHeight);
-        anim.addAlphaEffect(alphaScaleEffect);
-        anim.addRotationEffect(numTurns);
-        anim.addScaleEffect(scaleEffect);
+        anim.copyEffectParametersFrom(this);
     }
 
     @Override

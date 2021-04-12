@@ -19,6 +19,7 @@ package com.jmathanim.Animations.MathTransform;
 
 import com.jmathanim.Animations.Animation;
 import com.jmathanim.Animations.AnimationGroup;
+import com.jmathanim.Animations.AnimationWithEffects;
 import com.jmathanim.Animations.Commands;
 import com.jmathanim.Animations.Transform;
 import com.jmathanim.Utils.Anchor;
@@ -200,43 +201,50 @@ public class TransformMathExpression extends Animation {
     }
 
     private void createTransformSubAnimation(Shape sh, Shape sh2, TransformMathExpressionParameters par) {
-        Animation transform = null;
+        AnimationWithEffects transform = null;
+        AnimationGroup ag;
         switch (par.getTransformStyle()) {
             case INTERPOLATION:
                 transform = new Transform(runTime, sh, sh2);
                 transform.setLambda(lambda);
                 break;
             case FLIP_HORIZONTALLY:
-                AnimationGroup ag = new AnimationGroup();
+                ag = new AnimationGroup();
 //                ag.add(Commands.shift(runTime, sh.getCenter().to(sh2.getCenter()), sh).setLambda(t->t));
                 ag.add(Commands.flipTransform(runTime, true, sh, sh2).setUseObjectState(false));
                 transform = ag;
                 break;
             case FLIP_VERTICALLY:
-                transform = Commands.flipTransform(runTime, false, sh, sh2);
+                ag = new AnimationGroup();
+                ag.add(Commands.flipTransform(runTime, false, sh, sh2));
+                transform = ag;
                 break;
         }
 
-        AnimationGroup group = new AnimationGroup(transform);
+//        AnimationGroup group = new AnimationGroup(transform);
 
         if (par.getJumpHeightFromJumpEffect() != 0) {
-            Vec v = sh.getCenter().to(sh2.getCenter());
-            group.add(par.createJumpAnimation(runTime, v, sh));
+//            Vec v = sh.getCenter().to(sh2.getCenter());
+//            group.add(par.createJumpAnimation(runTime, v, sh));
+            transform.addJumpEffect(par.getJumpHeightFromJumpEffect(), AnimationWithEffects.JumpType.PARABOLICAL);
         }
         if (par.getNumTurnsFromRotateEffect() != 0) {
-
-            group.add(par.createRotateAnimation(runTime, sh));
+//            group.add(par.createRotateAnimation(runTime, sh));
+            transform.addRotationEffect(par.getNumTurnsFromRotateEffect());
+            transform.setLambda(t->t);
         }
         if (par.getAlphaMultFromAlphaEffect() != 1) {
-            Animation changeAlpha = par.createAlphaMultAnimation(runTime, sh);
-            group.add(changeAlpha);
+//            Animation changeAlpha = par.createAlphaMultAnimation(runTime, sh);
+//            group.add(changeAlpha);
+            transform.addAlphaEffect(par.getAlphaMultFromAlphaEffect());
         }
         if (par.getScaleFromScaleEffect() != 1) {
-
-            group.add(par.createScaleAnimation(runTime, sh));
+//            group.add(par.createScaleAnimation(runTime, sh));
+            transform.addScaleEffect(par.getScaleFromScaleEffect());
         }
 
-        anim.add(group);//, radius, rota));
+//        anim.add(group);//, radius, rota));
+        anim.add(transform);
         toDelete.add(sh);
         toDelete.add(sh2);
     }

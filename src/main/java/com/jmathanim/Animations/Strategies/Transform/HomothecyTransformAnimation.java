@@ -62,10 +62,7 @@ public class HomothecyTransformAnimation extends AnimationWithEffects {
         anim.add(Commands.setMP(runTime, mobjDestiny.getMp().copy(), this.mobjTransformed).setUseObjectState(false));
         anim.setLambda(lambda);
         anim.initialize(scene);
-        homothecy.addJumpEffect(jumpHeight);
-        homothecy.addAlphaEffect(alphaScaleEffect);
-        homothecy.addRotationEffect(numTurns);
-        homothecy.addScaleEffect(scaleEffect);
+        homothecy.copyEffectParametersFrom(this);
 
     }
 

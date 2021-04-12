@@ -256,7 +256,7 @@ public class Commands {
             Point D = d.copy();
             AffineJTransform tr;
             MathObject[] mathObjects = objects;
-            Vec jumpVector = A.to(C).rotate(.5 * PI);
+            Vec jumpVector = A.to(C).normalize().rotate(.5 * PI);
 
             @Override
             public void initialize(JMathAnimScene scene) {

@@ -43,8 +43,6 @@ import com.jmathanim.mathobjects.Shape;
  */
 public class Transform extends AnimationWithEffects {
     
-   
-    
     public enum TransformMethod {
         INTERPOLATE_SIMPLE_SHAPES_BY_POINT,
         INTERPOLATE_POINT_BY_POINT,
@@ -203,15 +201,14 @@ public class Transform extends AnimationWithEffects {
                 JMathAnimScene.logger.info("Transform method: Interpolation of functions");
                 break;
         }
-        if (transformStrategy instanceof AnimationWithEffects) {
-            AnimationWithEffects tr = (AnimationWithEffects) transformStrategy;
-            tr.addJumpEffect(jumpHeight);
-            tr.addAlphaEffect(alphaScaleEffect);
-            tr.addRotationEffect(numTurns);
-            tr.addScaleEffect(scaleEffect);
-        } else {
-            JMathAnimScene.logger.warn("Cannot apply effects to current transform");
-        }
+//        if (shouldApplyEffects()) {
+            if (transformStrategy instanceof AnimationWithEffects) {
+                AnimationWithEffects tr = (AnimationWithEffects) transformStrategy;
+                tr.copyEffectParametersFrom(this);
+            } else {
+                JMathAnimScene.logger.warn("Cannot apply effects to current transform");
+            }
+//        }
     }
     
     @Override
@@ -266,6 +263,5 @@ public class Transform extends AnimationWithEffects {
     public boolean processAnimation() {
         return transformStrategy.processAnimation();
     }
-   
     
 }

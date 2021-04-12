@@ -18,6 +18,7 @@
 package com.jmathanim.Animations.Strategies.Transform;
 
 import com.jmathanim.Animations.AnimationGroup;
+import com.jmathanim.Animations.AnimationWithEffects;
 import com.jmathanim.Animations.Transform;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.MultiShapeObject;
@@ -32,22 +33,35 @@ import com.jmathanim.mathobjects.MultiShapeObject;
  *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
-public class MultiShapeTransform extends AnimationGroup {
+public class MultiShapeTransform extends AnimationWithEffects {
 
     private MultiShapeObject dst;
     private MultiShapeObject tr;
     private final MultiShapeObject mobjTransformed;
     private final MultiShapeObject mobjDestiny;
+    private final AnimationGroup anim;
 
     public MultiShapeTransform(double runtime, MultiShapeObject mobjTransformed, MultiShapeObject mobjDestiny) {
-        super();
+        super(runtime);
         this.mobjDestiny = mobjDestiny;
         this.mobjTransformed = mobjTransformed;
-        tr = new MultiShapeObject();
+       anim = new AnimationGroup();
+    }
+
+    @Override
+    public boolean processAnimation() {
+        return anim.processAnimation();
+    }
+
+    @Override
+    public void initialize(JMathAnimScene scene) {
+        super.initialize(scene);
+         tr = new MultiShapeObject();
         dst = new MultiShapeObject();
         int sizeTr = mobjTransformed.shapes.size();
         int sizeDst = mobjDestiny.shapes.size();
         int numAnims = Math.max(sizeTr, sizeDst);
+        
 
         if (sizeDst < sizeTr) {
             for (int i = 0; i < sizeTr; i++) {
@@ -67,19 +81,18 @@ public class MultiShapeTransform extends AnimationGroup {
         }
 
         for (int n = 0; n < numAnims; n++) {
-            add(new Transform(runtime, tr.get(n), dst.get(n)));
+            Transform transformAnim = new Transform(this.runTime, tr.get(n), dst.get(n));
+            transformAnim.copyEffectParametersFrom(this);
+            anim.add(transformAnim);
         }
-    }
-
-    @Override
-    public void initialize(JMathAnimScene scene) {
-        super.initialize(scene);
+        anim.initialize(scene);
         removeObjectsToscene(mobjTransformed);
     }
 
     @Override
     public void finishAnimation() {
         super.finishAnimation();
+        anim.finishAnimation();
         removeObjectsToscene(tr, dst);
         addObjectsToscene(mobjDestiny);
     }

@@ -18,9 +18,12 @@
 package com.jmathanim.Animations.Strategies.Transform;
 
 import com.jmathanim.Animations.Animation;
+import com.jmathanim.Animations.AnimationWithEffects;
 import com.jmathanim.Animations.Strategies.Transform.Optimizers.DivideOnSensiblePointsStrategy;
 import com.jmathanim.Styling.JMColor;
+import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
+import static com.jmathanim.jmathanim.JMathAnimScene.PI;
 import com.jmathanim.mathobjects.CanonicalJMPath;
 import com.jmathanim.mathobjects.JMPath;
 import com.jmathanim.mathobjects.JMPathPoint;
@@ -34,10 +37,11 @@ import java.util.Comparator;
  *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
-public class PointInterpolationCanonical extends Animation {
+public class PointInterpolationCanonical extends AnimationWithEffects {
 
     public CanonicalJMPath connectedOrigin, connectedDst, connectedOriginaRawCopy;
     private final ArrayList<Shape> addedAuxiliaryObjectsToScene;
+    private Vec jumpVector;
     private final Shape mobjTransformed;
     private final Shape mobjDestiny;
     private final Shape mobjDestinyOrig;
@@ -93,6 +97,9 @@ public class PointInterpolationCanonical extends Animation {
         addObjectsToscene(mobjTransformed);
         removeObjectsToscene(mobjTransformedOrig);
 
+        //Jump vector
+        jumpVector = mobjTransformed.getCenter().to(mobjDestiny.getCenter()).rotate(.5 * PI);
+
     }
 
     @Override
@@ -131,6 +138,12 @@ public class PointInterpolationCanonical extends Animation {
 
         }
         mobjTransformed.getMp().interpolateFrom(originalShapeBaseCopy.getMp(), mobjDestiny.getMp(), lt);
+
+        //Transform effects
+        applyJumpEffect(lt, jumpVector, mobjTransformed);
+        applyScaleEffect(lt, mobjTransformed);
+        applyRotationEffect(lt, mobjTransformed);
+        applyAlphaScaleEffect(lt, mobjTransformed);
 
     }
 
