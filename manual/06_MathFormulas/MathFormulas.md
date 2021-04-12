@@ -260,45 +260,45 @@ tr.map(1,1);//= into =
 tr.map(0,2);//a into b
 tr.map(2,0);//b into a
 playAnimation(tr);
-waitSeconds(3);
+waitSeconds(1);
 ```
 
 We have the following animation:
 
 ![equation06](equation06.gif)
 
-We will apply effects adding them to the `tr.map(0,2)` and `tr.map(2,0)` commands. First, the `.setScale(t)` applies a scaling factor back and forth.
+We will apply effects adding them to the `tr.map(0,2)` and `tr.map(2,0)` commands. First, the `.addScaleEffect(t)` applies a scaling factor back and forth.
 
 ```java
-tr.map(0,2).setScale(.7);
-tr.map(2,0).setScale(1./.7);
+tr.map(0,2).addScaleEffect(.7);
+tr.map(2,0).addScaleEffect(1./.7);
 ```
 
 ![equation07](equation07.gif)
 
-The `.setAlphaMult(t)`  changes the alpha (draw and fill) back and forth:
+The `.addAlphaEffect(t)`  changes the alpha (draw and fill) back and forth:
 
 ```java
-tr.map(0,2).setAlphaMult(.7);
-tr.map(2,0).setAlphaMult(.7);
+tr.map(0,2).addAlphaEffect(.7);
+tr.map(2,0).addAlphaEffect(.7);
 ```
 
 ![equation08](equation08.gif)
 
-The `.setNumTurns(n)`  rotates n times the shape.
+The `.addRotateEffect(n)`  rotates n times the shape.
 
 ```java
-tr.map(0,2).setNumTurns(1);
-tr.map(2,0).setNumTurns(-1);
+tr.map(0,2).addRotateEffect(1);
+tr.map(2,0).addRotateEffect(-1);
 ```
 
 ![equation09](equation09.gif)
 
-The `.setJumpHeight(t)`  applies a (sinusoidal) jump with a vector of 90º clockwise.
+The `.addJumpEffect(t)`  applies a (parabollical) jump with a vector of 90º clockwise.
 
 ```java
-tr.map(0,2).setJumpHeight(.1);
-tr.map(2,0).setJumpHeight(.1);//Note that this "jump" is downward
+tr.map(0,2).addJumpEffect(.1);
+tr.map(2,0).addJumpEffect(.1);//Note that this "jump" is downward
 ```
 
 ![equation10](equation10.gif)
@@ -306,7 +306,7 @@ tr.map(2,0).setJumpHeight(.1);//Note that this "jump" is downward
 The height of the jump is given in math coordinates. You can use the getHeight() method to specify a relative jump. For example, if you want the shape to make a jump 1.5 times the height of the formula, you can use this code:
 
 ```java
-tr.map(0,2).setJumpHeight(1.5*t1.getHeight());//1.5 times the height of LaTexMathObject t1
+tr.map(0,2).addJumpEffect(1.5*t1.getHeight());//1.5 times the height of LaTexMathObject t1
 ```
 
 
@@ -314,8 +314,8 @@ tr.map(0,2).setJumpHeight(1.5*t1.getHeight());//1.5 times the height of LaTexMat
 And, finally, you can nest any of these effects:
 
 ```java
-tr.map(0,2).setJumpHeight(.1).setNumTurns(-1).setScale(.5);
-tr.map(2,0).setJumpHeight(.1).setNumTurns(1).setScale(.5);
+tr.map(0,2).addJumpEffect(.1).addRotateEffect(-1).addScaleEffect(.5);
+tr.map(2,0).addJumpEffect(.1).addRotateEffect(1).addScaleEffect(.5);
 ```
 
 ![equation11](equation11.gif)
@@ -364,13 +364,13 @@ And finally, we show how the initial animation will look applying colors, mappin
 ````java
 LaTeXMathObject t1 = LaTeXMathObject.make("$x+2=0$");
 LaTeXMathObject t2 = LaTeXMathObject.make("$x=-2$");
-t1.setColor(JMColor.parse("MEDIUMORCHID"),0);
-t2.setColor(JMColor.parse("MEDIUMORCHID"),0);
+//Add some colors
+t1.setColor(JMColor.parse("darkolivegreen"), 0);
+t2.setColor(JMColor.parse("darkolivegreen"), 0);
+t1.setColor(JMColor.parse("maroon"), 2);
+t2.setColor(JMColor.parse("maroon"), 2, 3);
 
-t1.setColor(JMColor.parse("MEDIUMVIOLETRED"),2);
-t2.setColor(JMColor.parse("MEDIUMVIOLETRED"),2,3);
-
-t2.alignCenter(1, t1, 3);
+t2.alignCenter(1, t1, 3);//Align centers
 camera.zoomToObjects(t1,t2);
 TransformMathExpression tr = new TransformMathExpression(5, t1, t2);
 tr.map(0, 0);//Transforms orig-shape 0 to dst-shape 0
