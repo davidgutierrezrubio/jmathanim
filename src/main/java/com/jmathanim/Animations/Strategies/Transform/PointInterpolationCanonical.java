@@ -97,8 +97,10 @@ public class PointInterpolationCanonical extends AnimationWithEffects {
         addObjectsToscene(mobjTransformed);
         removeObjectsToscene(mobjTransformedOrig);
 
-        //Jump vector
-        jumpVector = mobjTransformed.getCenter().to(mobjDestiny.getCenter()).rotate(.5 * PI);
+        //Jump paths
+        Point origCenter = this.mobjTransformedOrig.getCenter();
+        Point dstCenter = this.mobjDestinyOrig.getCenter();
+        prepareJumpPath(origCenter, dstCenter, mobjTransformed);
 
     }
 
@@ -140,10 +142,7 @@ public class PointInterpolationCanonical extends AnimationWithEffects {
         mobjTransformed.getMp().interpolateFrom(originalShapeBaseCopy.getMp(), mobjDestiny.getMp(), lt);
 
         //Transform effects
-        applyJumpEffect(lt, jumpVector, mobjTransformed);
-        applyScaleEffect(lt, mobjTransformed);
-        applyRotationEffect(lt, mobjTransformed);
-        applyAlphaScaleEffect(lt, mobjTransformed);
+        applyAnimationEffects(lt, mobjTransformed);
 
     }
 

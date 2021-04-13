@@ -146,7 +146,7 @@ public abstract class ShiftAnimation extends Animation {
      * @param jumpHeight Height of the jump. Negative heights can be passed.
      * @return This object
      */
-    public <T extends ShiftAnimation> T setJumpHeight(MathObject obj, double jumpHeight) {
+    public <T extends ShiftAnimation> T addJumpEffect(MathObject obj, double jumpHeight) {
         this.jumpHeights.put(obj, jumpHeight);
         return (T) this;
     }
@@ -158,9 +158,9 @@ public abstract class ShiftAnimation extends Animation {
      * @param jumpHeight Height of the jump. Negative heights can be passed.
      * @return This object
      */
-    public <T extends ShiftAnimation> T setJumpHeight(double jumpHeight) {
+    public <T extends ShiftAnimation> T addJumpEffect(double jumpHeight) {
         for (MathObject obj : mathObjects) {
-            setJumpHeight(obj, jumpHeight);
+            ShiftAnimation.this.addJumpEffect(obj, jumpHeight);
         }
         return (T) this;
     }
@@ -174,7 +174,7 @@ public abstract class ShiftAnimation extends Animation {
      * effect.
      * @return This object
      */
-    public <T extends ShiftAnimation> T setScaleEffect(MathObject obj, double scaleEffect) {
+    public <T extends ShiftAnimation> T addScaleEffect(MathObject obj, double scaleEffect) {
         this.scaleEffects.put(obj, scaleEffect);
         return (T) this;
     }
@@ -188,9 +188,9 @@ public abstract class ShiftAnimation extends Animation {
      * effect.
      * @return This object
      */
-    public <T extends ShiftAnimation> T setScaleEffect(double scaleEffect) {
+    public <T extends ShiftAnimation> T addScaleEffect(double scaleEffect) {
         for (MathObject obj : mathObjects) {
-            setScaleEffect(obj, scaleEffect);
+            addScaleEffect(obj, scaleEffect);
         }
         return (T) this;
     }
@@ -203,7 +203,7 @@ public abstract class ShiftAnimation extends Animation {
      * @param angle Angle ro rotate. A value of null or 0 means no effect
      * @return This object
      */
-    public <T extends ShiftAnimation> T setRotateEffect(MathObject obj, double angle) {
+    public <T extends ShiftAnimation> T addRotationEffect(MathObject obj, double angle) {
         this.rotateAngles.put(obj, angle);
         return (T) this;
     }
@@ -215,9 +215,9 @@ public abstract class ShiftAnimation extends Animation {
      * @param angle Angle ro rotate. A value of null or 0 means no effect
      * @return This object
      */
-    public <T extends ShiftAnimation> T setRotateEffect(double angle) {
+    public <T extends ShiftAnimation> T addRotationEffect(double angle) {
         for (MathObject obj : mathObjects) {
-            setRotateEffect(obj, angle);
+            ShiftAnimation.this.addRotationEffect(obj, angle);
         }
         return (T) this;
     }

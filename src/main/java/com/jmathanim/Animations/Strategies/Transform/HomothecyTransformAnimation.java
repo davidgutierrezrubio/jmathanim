@@ -37,12 +37,12 @@ public class HomothecyTransformAnimation extends AnimationWithEffects {
     private final Shape mobjTransformed;
     private final Shape mobjDestiny;
     private final MODrawProperties mpBase;
-    private final Shape mobjTransformedOrig;
+//    private final Shape mobjTransformedOrig;
 
     public HomothecyTransformAnimation(double runtime, Shape mobjTransformed, Shape mobjDestiny) {
         super(runtime);
-        this.mobjTransformed = mobjTransformed.copy();
-        this.mobjTransformedOrig = mobjTransformed;
+        this.mobjTransformed = mobjTransformed;//.copy();
+//        this.mobjTransformedOrig = mobjTransformed;
         this.mobjDestiny = mobjDestiny;
         mpBase = mobjTransformed.getMp().copy();
 
@@ -61,8 +61,10 @@ public class HomothecyTransformAnimation extends AnimationWithEffects {
         anim.add(homothecy);
         anim.add(Commands.setMP(runTime, mobjDestiny.getMp().copy(), this.mobjTransformed).setUseObjectState(false));
         anim.setLambda(lambda);
-        anim.initialize(scene);
         homothecy.copyEffectParametersFrom(this);
+//        homothecy.prepareJumpPath(this.mobjTransformed.getCenter(), this.mobjDestiny.getCenter(), this.mobjTransformed);
+        anim.initialize(scene);
+        
 
     }
 
@@ -80,6 +82,7 @@ public class HomothecyTransformAnimation extends AnimationWithEffects {
     @Override
     public void finishAnimation() {
         super.finishAnimation();
+        removeObjectsToscene(this.mobjTransformed);
         anim.finishAnimation();
     }
 

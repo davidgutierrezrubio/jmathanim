@@ -18,6 +18,7 @@
 package com.jmathanim.Animations.MathTransform;
 
 import com.jmathanim.Animations.Animation;
+import com.jmathanim.Animations.AnimationEffect;
 import com.jmathanim.Animations.AnimationGroup;
 import com.jmathanim.Animations.AnimationWithEffects;
 import com.jmathanim.Animations.Commands;
@@ -226,7 +227,7 @@ public class TransformMathExpression extends Animation {
         if (par.getJumpHeightFromJumpEffect() != 0) {
 //            Vec v = sh.getCenter().to(sh2.getCenter());
 //            group.add(par.createJumpAnimation(runTime, v, sh));
-            transform.addJumpEffect(par.getJumpHeightFromJumpEffect(), AnimationWithEffects.JumpType.PARABOLICAL);
+            transform.addJumpEffect(par.getJumpHeightFromJumpEffect(), par.getJumptype());
         }
         if (par.getNumTurnsFromRotateEffect() != 0) {
 //            group.add(par.createRotateAnimation(runTime, sh));

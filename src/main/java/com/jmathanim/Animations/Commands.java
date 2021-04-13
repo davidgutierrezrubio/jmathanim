@@ -204,13 +204,17 @@ public class Commands {
             Point dst3 = f.copy();
             MathObject[] mathObjects = objects;
             AffineJTransform tr;
-            Vec jumpVector=a.to(d).rotate(.5*PI);
 
             @Override
             public void initialize(JMathAnimScene scene) {
                 super.initialize(scene);
                 saveStates(mathObjects);
                 addObjectsToscene(mathObjects);
+                for (MathObject obj : mathObjects) {
+                    tr = AffineJTransform.createAffineTransformation(orig1, orig2, orig3, dst1, dst2, dst3, 1);
+                    Point center = obj.getCenter();
+                    prepareJumpPath(center, tr.getTransformedObject(center), obj);
+                }
             }
 
             @Override
@@ -220,11 +224,7 @@ public class Commands {
                 for (MathObject obj : mathObjects) {
                     tr = AffineJTransform.createAffineTransformation(orig1, orig2, orig3, dst1, dst2, dst3, lt);
                     tr.applyTransform(obj);
-                    //Effects
-                    applyJumpEffect(lt, jumpVector, obj);
-                    applyScaleEffect(lt, obj);
-                    applyRotationEffect(lt, obj);
-                    applyAlphaScaleEffect(lt, obj);
+                    applyAnimationEffects(lt, obj);
                 }
             }
 
@@ -256,13 +256,17 @@ public class Commands {
             Point D = d.copy();
             AffineJTransform tr;
             MathObject[] mathObjects = objects;
-            Vec jumpVector = A.to(C).normalize().rotate(.5 * PI);
 
             @Override
             public void initialize(JMathAnimScene scene) {
                 super.initialize(scene);
                 saveStates(mathObjects);
                 addObjectsToscene(mathObjects);
+                tr = AffineJTransform.createDirect2DHomothecy(A, B, C, D, 1);
+                for (MathObject obj : mathObjects) {
+                    Point center = obj.getCenter();
+                    prepareJumpPath(center, tr.getTransformedObject(center), obj);
+                }
             }
 
             @Override
@@ -272,11 +276,7 @@ public class Commands {
                 tr = AffineJTransform.createDirect2DHomothecy(A, B, C, D, lt);
                 for (MathObject obj : mathObjects) {
                     tr.applyTransform(obj);
-                    //Transform effects
-                    applyJumpEffect(lt, jumpVector, obj);
-                    applyScaleEffect(lt, obj);
-                    applyRotationEffect(lt, obj);
-                    applyAlphaScaleEffect(lt, obj);
+                    applyAnimationEffects(lt, obj);
                 }
             }
 
@@ -299,8 +299,8 @@ public class Commands {
      * {@link JMathAnimScene#playAnimation(com.jmathanim.Animations.Animation...) playAnimation}
      * method
      */
-    public static Animation reflection(double runtime, Point A, Point B, MathObject... objects) {
-        return new Animation(runtime) {
+    public static AnimationWithEffects reflection(double runtime, Point A, Point B, MathObject... objects) {
+        return new AnimationWithEffects(runtime) {
             MathObject[] mathObjects = objects;
             Point axis1 = A.copy();
             Point axis2 = B.copy();
@@ -311,6 +311,11 @@ public class Commands {
                 super.initialize(scene);
                 saveStates(mathObjects);
                 addObjectsToscene(mathObjects);
+                for (MathObject obj : mathObjects) {
+                    tr = AffineJTransform.createReflection(axis1, axis2, 1);
+                    Point center = obj.getCenter();
+                    prepareJumpPath(center, tr.getTransformedObject(center), obj);
+                }
             }
 
             @Override
@@ -320,6 +325,7 @@ public class Commands {
                 for (MathObject obj : mathObjects) {
                     tr = AffineJTransform.createReflection(axis1, axis2, lt);
                     tr.applyTransform(obj);
+                    applyAnimationEffects(lt, obj);
                 }
             }
 
@@ -343,11 +349,11 @@ public class Commands {
      * {@link JMathAnimScene#playAnimation(com.jmathanim.Animations.Animation...) playAnimation}
      * method
      */
-    public static Animation reflectionByAxis(double runtime, Point a, Point b, MathObject... objects) {
-        return new Animation(runtime) {
+    public static AnimationWithEffects reflectionByAxis(double runtime, Point a, Point b, MathObject... objects) {
+        return new AnimationWithEffects(runtime) {
             MathObject[] mathObjects = objects;
-            Point axis1 = a.copy();
-            Point axis2 = b.copy();
+            Point axisPoint1 = a.copy();
+            Point axisPoint2 = b.copy();
             AffineJTransform tr;
 
             @Override
@@ -355,6 +361,11 @@ public class Commands {
                 super.initialize(scene);
                 saveStates(mathObjects);
                 addObjectsToscene(mathObjects);
+                for (MathObject obj : mathObjects) {
+                    tr = AffineJTransform.createReflectionByAxis(axisPoint1, axisPoint2, 1);
+                    Point center = obj.getCenter();
+                    prepareJumpPath(center, tr.getTransformedObject(center), obj);
+                }
             }
 
             @Override
@@ -362,8 +373,9 @@ public class Commands {
                 double lt = getLambda().applyAsDouble(t);
                 restoreStates(mathObjects);
                 for (MathObject obj : mathObjects) {
-                    tr = AffineJTransform.createReflectionByAxis(axis1, axis2, lt);
+                    tr = AffineJTransform.createReflectionByAxis(axisPoint1, axisPoint2, lt);
                     tr.applyTransform(obj);
+                    applyAnimationEffects(lt, obj);
                 }
             }
 

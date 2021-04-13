@@ -318,7 +318,7 @@ public class JMPath implements Updateable, Stateable {
             resul.cpExit.copyFrom(J);
             resul.cpEnter.copyFrom(H);
         } else {
-            resul = JMPathPoint.lineTo(v1.p.interpolate(v2.p, alpha));
+            resul = JMPathPoint.lineTo(v1.p.interpolate(v2.p, t));
             resul.cpExit.copyFrom(v1.p);
             resul.cpEnter.copyFrom(v2.p);
         }

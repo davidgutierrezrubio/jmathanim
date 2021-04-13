@@ -17,6 +17,7 @@
  */
 package com.jmathanim.Animations.MathTransform;
 
+import com.jmathanim.Animations.AnimationEffect;
 import java.util.ArrayList;
 
 /**
@@ -66,6 +67,15 @@ public class TransformMathExpressionParametersArray {
         return this;
     }
 
+     public TransformMathExpressionParametersArray addJumpEffect(double heightJump, AnimationEffect.JumpType jumpType) {
+       for (TransformMathExpressionParameters par : pars) {
+            par.addJumpEffect(heightJump,jumpType);
+        }
+        return this;
+    }
+    
+    
+    
     /**
      * Adds an alpha effect when transforming, multiplying the transformed shape
      * alpha up to a given value, back and forth.

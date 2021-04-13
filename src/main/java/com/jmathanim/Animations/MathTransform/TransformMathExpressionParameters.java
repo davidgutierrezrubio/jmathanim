@@ -18,6 +18,7 @@
 package com.jmathanim.Animations.MathTransform;
 
 import com.jmathanim.Animations.Animation;
+import com.jmathanim.Animations.AnimationEffect;
 import com.jmathanim.Animations.Commands;
 import com.jmathanim.Utils.Vec;
 import static com.jmathanim.jmathanim.JMathAnimScene.PI;
@@ -31,6 +32,7 @@ public class TransformMathExpressionParameters {
 
     private double jumpHeight;
     private double alphaMult;
+    private AnimationEffect.JumpType jumptype;
     private double scale;
     private int numTurns;
     private TransformMathExpression.RemoveType removingStyle;
@@ -69,16 +71,32 @@ public class TransformMathExpressionParameters {
     }
 
     /**
-     * Adds a jump effect to the transformed shape. The trajectory is
-     * sinusoidal, with a total height of the given parameter. The jump vector
-     * is the rotated vector 90 degrees clockwise from the vector from the
-     * original and destiny shape.
+     * Adds a jump effect to the transformed shape. The trajectory is a
+     * semicirlce. The jump vector is the rotated vector 90 degrees clockwise
+     * from the vector from the original and destiny shape.
      *
      * @param heightJump Height jump
      * @return This object
      */
     public TransformMathExpressionParameters addJumpEffect(double heightJump) {
         this.jumpHeight = heightJump;
+        this.jumptype = AnimationEffect.JumpType.SEMICIRCLE;
+        return this;
+    }
+
+    /**
+     * Adds a jump effect to the transformed shape, with the trajectory
+     * specified and with a total height of the given parameter.The jump vector
+     * is the rotated vector 90 degrees clockwise from the vector from the
+     * original and destiny shape.
+     *
+     * @param heightJump Height jump
+     * @param jumpType Jump type, a value of the enum AnimationEffect.JumpType
+     * @return This object
+     */
+    public TransformMathExpressionParameters addJumpEffect(double heightJump, AnimationEffect.JumpType jumpType) {
+        this.jumpHeight = heightJump;
+        this.jumptype = jumpType;
         return this;
     }
 
@@ -191,6 +209,10 @@ public class TransformMathExpressionParameters {
                 doAnim(1);
             }
         };
+    }
+
+    public AnimationEffect.JumpType getJumptype() {
+        return jumptype;
     }
 
 }

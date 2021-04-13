@@ -24,6 +24,7 @@ import com.jmathanim.jmathanim.JMathAnimScene;
 import static com.jmathanim.jmathanim.JMathAnimScene.PI;
 import com.jmathanim.mathobjects.JMPath;
 import com.jmathanim.mathobjects.JMPathPoint;
+import com.jmathanim.mathobjects.Point;
 import com.jmathanim.mathobjects.Shape;
 
 /**
@@ -37,12 +38,15 @@ public class PointInterpolationSimpleShapeTransform extends AnimationWithEffects
     private final Shape mobjDestiny;
     private Shape originalShapeBaseCopy;
     private Vec jumpVector;
+    Point origCenter,dstCenter;
 
     public PointInterpolationSimpleShapeTransform(double runtime, Shape mobjTransformed, Shape mobjDestiny) {
         super(runtime);
 
         this.mobjTransformed = mobjTransformed;
         this.mobjDestiny = mobjDestiny;
+        origCenter=this.mobjTransformed.getCenter();
+        dstCenter=this.mobjDestiny.getCenter();
 
     }
 
@@ -62,8 +66,7 @@ public class PointInterpolationSimpleShapeTransform extends AnimationWithEffects
         }
         addObjectsToscene(mobjTransformed);
         
-        //Jump vector
-        jumpVector=mobjTransformed.getCenter().to(mobjDestiny.getCenter()).rotate(.5*PI);
+        prepareJumpPath(origCenter, dstCenter, mobjTransformed);
     }
 
     @Override
@@ -94,10 +97,7 @@ public class PointInterpolationSimpleShapeTransform extends AnimationWithEffects
         mobjTransformed.getMp().interpolateFrom(originalShapeBaseCopy.getMp(), mobjDestiny.getMp(), lt);
 
         //Transform effects
-        applyJumpEffect(lt, jumpVector,mobjTransformed);
-        applyScaleEffect(lt, mobjTransformed);
-        applyRotationEffect(lt, mobjTransformed);
-        applyAlphaScaleEffect(lt, mobjTransformed);
+        applyAnimationEffects(lt, mobjTransformed);
 
     }
 
