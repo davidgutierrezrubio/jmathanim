@@ -55,9 +55,7 @@ public abstract class ShiftAnimation extends Animation {
         int size = mathObjects.length-1;
         int k = 0;
         for (MathObject obj : mathObjects) {
-            double name = k *(delayPercentage)/size;
-            beginningTimes.put(obj, name);
-            System.out.println("k="+k+",  "+name);
+            beginningTimes.put(obj, k *(delayPercentage)/size);
             k++;
         }
 
