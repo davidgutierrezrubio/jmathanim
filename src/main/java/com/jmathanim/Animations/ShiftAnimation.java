@@ -52,34 +52,39 @@ public abstract class ShiftAnimation extends Animation {
         super.initialize(scene);
         saveStates(mathObjects);
         addObjectsToscene(mathObjects);
-        int size = mathObjects.length-1;
+        int size = mathObjects.length;
         int k = 0;
-        for (MathObject obj : mathObjects) {
-            beginningTimes.put(obj, k *(delayPercentage)/size);
-            k++;
+        if (size > 1) {//Only works when group has at least 2 members...
+            for (MathObject obj : mathObjects) {
+                beginningTimes.put(obj, k * (delayPercentage) / (size - 1));
+                k++;
+            }
         }
 
     }
 
     public double allocateToNewTime(double a, double b, double t) {
-        if (t<a) return 0;
-        if (t>b) return 1;
-        return (t-a)/(b-a);
+        if (t < a) {
+            return 0;
+        }
+        if (t > b) {
+            return 1;
+        }
+        return (t - a) / (b - a);
     }
-    
-    
+
     @Override
     public void doAnim(double t) {
-
+        int size = mathObjects.length;
         double lt = getLambda().applyAsDouble(t);
         restoreStates(mathObjects);
-        double b=(1-delayPercentage);
+        double b = (1 - delayPercentage);
         for (MathObject obj : mathObjects) {
             Vec v = shiftVectors.get(obj);//Gets the shift vector for this object
-            if (delayPercentage>0) {
-                double a=beginningTimes.get(obj);
-            double newT = allocateToNewTime(a, a+b, t);
-                lt=getLambda().applyAsDouble(newT);
+            if ((size>1)&&(delayPercentage > 0)) {
+                double a = beginningTimes.get(obj);
+                double newT = allocateToNewTime(a, a + b, t);
+                lt = getLambda().applyAsDouble(newT);
             }
             obj.shift(v.mult(lt));
             if (effects.containsKey(obj)) {

@@ -19,6 +19,7 @@ package com.jmathanim.mathobjects.updateableObjects;
 
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.JMPathPoint;
+import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.Point;
 import com.jmathanim.mathobjects.Shape;
 
@@ -29,7 +30,7 @@ import com.jmathanim.mathobjects.Shape;
  */
 public class Trail extends Shape {
 
-    Point marker;
+    MathObject marker;
     private boolean cutNext = true;
     private boolean draw = true;
 
@@ -40,7 +41,7 @@ public class Trail extends Shape {
      * @param marker Point to be followed
      * @return The new Trail object
      */
-    public static Trail make(Point marker) {
+    public static Trail make(MathObject marker) {
         return new Trail(marker);
     }
 
@@ -50,16 +51,16 @@ public class Trail extends Shape {
      *
      * @param marker Point to be followed
      */
-    public Trail(Point marker) {
+    public Trail(MathObject marker) {
         this.marker = marker;
-        getPath().addPoint(marker.copy());
+        getPath().addPoint(marker.getCenter());
         getPath().getJMPoint(0).isThisSegmentVisible = false;
     }
 
     @Override
     public void update(JMathAnimScene scene) {
         if (draw) {
-            JMPathPoint pa = JMPathPoint.lineTo(marker.copy());
+            JMPathPoint pa = JMPathPoint.lineTo(marker.getCenter());
             pa.isThisSegmentVisible = !cutNext;
             cutNext = false;
             getPath().addJMPoint(pa);

@@ -214,8 +214,10 @@ public class MathObjectGroup extends MathObject implements Iterable<MathObject> 
         layout.applyLayout(this);
         return (T) this;
     }
-
     public <T extends MathObjectGroup> T setLayout(Layout layout, double gap) {
+        return (T) setLayout(null,layout,gap);
+    }
+    public <T extends MathObjectGroup> T setLayout(MathObject corner,Layout layout, double gap) {
         Anchor.Type anchor1 = Anchor.Type.CENTER;
         Anchor.Type anchor2 = Anchor.Type.CENTER;
 
@@ -314,7 +316,9 @@ public class MathObjectGroup extends MathObject implements Iterable<MathObject> 
                 JMathAnimScene.logger.error("Layout not recognized, reverting to CENTER");
                 break;
         }
-
+        if (corner!=null) {
+             objects.get(0).stackTo(anchor1, corner, anchor2, hgap, vgap);
+        }
         for (int n = 1; n < objects.size(); n++) {
             objects.get(n).stackTo(anchor1, objects.get(n - 1), anchor2, hgap, vgap);
         }

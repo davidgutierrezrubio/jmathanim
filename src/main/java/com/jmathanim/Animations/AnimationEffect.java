@@ -85,7 +85,7 @@ public class AnimationEffect {
 
     protected void applyRotationEffect(double t, MathObject obj) {
         if ((numTurns != null) && (numTurns != 0)) {
-            double rotateAngle = 2*PI*numTurns;
+            double rotateAngle = 2 * PI * numTurns;
             obj.rotate(rotateAngle * t);
         }
     }
@@ -100,7 +100,7 @@ public class AnimationEffect {
     }
 
     protected void prepareJumpPath(Point A, Point B, MathObject obj) {
-        if ((jumpHeight == null) || (jumpHeight == 0)||A.to(B).norm()==0) {
+        if ((jumpHeight == null) || (jumpHeight == 0) || A.to(B).norm() == 0) {
             return;
         }
         double dist = A.to(B).norm();
@@ -111,7 +111,7 @@ public class AnimationEffect {
                 jumpPath.getPath().reverse();
                 break;
             case ELLIPTICAL:
-                jumpPath = Shape.arc(PI).scale(1, 2*jumpHeight / dist);
+                jumpPath = Shape.arc(PI).scale(1, 2 * jumpHeight / dist);
                 jumpPath.getPath().reverse();
                 break;
             case TRIANGULAR:
@@ -119,19 +119,20 @@ public class AnimationEffect {
                 break;
             case PARABOLICAL:
                 jumpPath = new Shape(FunctionGraph.make(t -> 4 * t * (1 - t), 0, 1).getPath());
-                jumpPath.scale(1, jumpPath.getWidth()*jumpHeight / dist);
+                jumpPath.scale(1, jumpPath.getWidth() * jumpHeight / dist);
                 break;
             case SINUSOIDAL:
-                jumpPath = new Shape(FunctionGraph.make(t -> Math.sin(t), 0, PI).getPath());
-                jumpPath.scale(1, jumpPath.getWidth()*jumpHeight / dist);
+                jumpPath = new Shape(FunctionGraph.make(t -> Math.sin(PI*t), 0, 1).getPath());
+                jumpPath.scale(1, jumpPath.getWidth() * jumpHeight / dist);
                 break;
             case SINUSOIDAL2:
-                jumpPath = new Shape(FunctionGraph.make(t -> Math.sin(t), 0, 2 * PI).getPath());
-               
+//                jumpPath = new Shape(FunctionGraph.make(t -> 10.39230484541326*t*(1-t)*(1-2*t), 0, 1).getPath());
+                jumpPath = new Shape(FunctionGraph.make(t -> Math.sin(2*PI * t), 0, 1).getPath());
+                jumpPath.scale(1, jumpPath.getWidth() * jumpHeight / dist);
                 break;
             case CRANE:
                 jumpPath = Shape.polyLine(Point.origin(), Point.at(0, 1), Point.at(1, 1), Point.at(1, 0));
-               jumpPath.scale(1, jumpPath.getWidth()*jumpHeight / dist);
+                jumpPath.scale(1, jumpPath.getWidth() * jumpHeight / dist);
                 break;
         }
         if (jumpPath != null) {

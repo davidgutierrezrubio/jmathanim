@@ -740,6 +740,8 @@ public class Commands {
      * Animated version of method setLayout for MathObjectGroup instances
      *
      * @param runtime Duration in seconds
+     * @param corner Corner to layout from. If null, first object of the group
+     * will be used
      * @param layout Type of anchor to apply layout as defined in the enum
      * Anchor.Type
      * @param gap Gap to apply between elements, in math units
@@ -748,9 +750,9 @@ public class Commands {
      * {@link JMathAnimScene#playAnimation(com.jmathanim.Animations.Animation...) playAnimation}
      * method
      */
-    public static ShiftAnimation setLayout(double runtime, MathObjectGroup.Layout layout, double gap, MathObjectGroup group) {
-        group.saveState();//TODO: Jump effect doesn't work yet
-        group.setLayout(layout, gap);
+    public static ShiftAnimation setLayout(double runtime, MathObject corner, MathObjectGroup.Layout layout, double gap, MathObjectGroup group) {
+        group.saveState();
+        group.setLayout(corner, layout, gap);
         HashMap<MathObject, Point> centers = new HashMap<>();
         int n = 0;
         for (MathObject ob : group) {
@@ -769,6 +771,7 @@ public class Commands {
                     setShiftVector(obj, obj.getCenter().to(dst));
                 }
             }
+
         };
     }
 
