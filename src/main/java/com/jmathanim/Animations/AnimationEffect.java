@@ -63,8 +63,8 @@ public class AnimationEffect {
         jumpType = type;
     }
 
-    public void addRotationEffect(int numturns) {
-        this.numTurns = numturns;
+    public void addRotationEffect(int numTurns) {
+        this.numTurns = numTurns;
     }
 
     public void addAlphaEffect(double alphaScale) {
@@ -85,7 +85,7 @@ public class AnimationEffect {
 
     protected void applyRotationEffect(double t, MathObject obj) {
         if ((numTurns != null) && (numTurns != 0)) {
-            double rotateAngle = 2 * PI * numTurns;
+            double rotateAngle = 2*PI*numTurns;
             obj.rotate(rotateAngle * t);
         }
     }
@@ -100,7 +100,7 @@ public class AnimationEffect {
     }
 
     protected void prepareJumpPath(Point A, Point B, MathObject obj) {
-        if ((jumpHeight == null) || (jumpHeight == 0)) {
+        if ((jumpHeight == null) || (jumpHeight == 0)||A.to(B).norm()==0) {
             return;
         }
         double dist = A.to(B).norm();

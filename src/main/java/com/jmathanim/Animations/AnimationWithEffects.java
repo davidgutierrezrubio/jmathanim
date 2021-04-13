@@ -59,8 +59,8 @@ public class AnimationWithEffects extends Animation {
         return (T) this;
     }
 
-    public <T extends AnimationWithEffects> T  addRotationEffect(int numturns) {
-        effect.addRotationEffect(numturns);
+    public <T extends AnimationWithEffects> T  addRotationEffect(int numTurns) {
+        effect.addRotationEffect(numTurns);
         return (T) this;
     }
 

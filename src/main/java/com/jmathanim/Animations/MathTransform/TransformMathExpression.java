@@ -161,8 +161,8 @@ public class TransformMathExpression extends Animation {
                 group.add(Commands.moveOut(runTime, Anchor.Type.LOWER, sh).setLambda(lambda));
                 break;
         }
-        if (par.getNumTurnsFromRotateEffect() != 0) {
-            Animation rotation = Commands.rotate(runTime, 2 * PI * par.getNumTurnsFromRotateEffect(), sh);
+        if (par.getNumTurns() != 0) {
+            Animation rotation = Commands.rotate(runTime, 2 * PI * par.getNumTurns(), sh);
             rotation.setUseObjectState(false);
             group.add(rotation);
         }
@@ -192,8 +192,8 @@ public class TransformMathExpression extends Animation {
                 anim.add(Commands.moveIn(runTime, Anchor.Type.LOWER, sh).setLambda(lambda));
                 break;
         }
-        if (par.getNumTurnsFromRotateEffect() != 0) {
-            Animation rotation = Commands.rotate(runTime, 2 * PI * par.getNumTurnsFromRotateEffect(), sh);
+        if (par.getNumTurns() != 0) {
+            Animation rotation = Commands.rotate(runTime, 2 * PI * par.getNumTurns(), sh);
             rotation.setUseObjectState(false);
             group.add(rotation);
         }
@@ -229,9 +229,9 @@ public class TransformMathExpression extends Animation {
 //            group.add(par.createJumpAnimation(runTime, v, sh));
             transform.addJumpEffect(par.getJumpHeightFromJumpEffect(), par.getJumptype());
         }
-        if (par.getNumTurnsFromRotateEffect() != 0) {
+        if (par.getNumTurns() != 0) {
 //            group.add(par.createRotateAnimation(runTime, sh));
-            transform.addRotationEffect(par.getNumTurnsFromRotateEffect());
+            transform.addRotationEffect(par.getNumTurns());
             transform.setLambda(t->t);
         }
         if (par.getAlphaMultFromAlphaEffect() != 1) {

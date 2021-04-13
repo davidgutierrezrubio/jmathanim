@@ -49,7 +49,7 @@ public class TransformMathExpressionParameters {
         transformStyle = TransformMathExpression.TransformType.INTERPOLATION;
     }
 
-    protected int getNumTurnsFromRotateEffect() {
+    protected int getNumTurns() {
         return numTurns;
     }
 
@@ -167,7 +167,7 @@ public class TransformMathExpressionParameters {
     }
 
     public Animation createRotateAnimation(double runTime, Shape sh) {
-        Animation rotation = Commands.rotate(runTime, 2 * PI * getNumTurnsFromRotateEffect(), sh);
+        Animation rotation = Commands.rotate(runTime, 2 * PI * getNumTurns(), sh);
         rotation.setUseObjectState(false);
         return rotation;
     }
