@@ -197,7 +197,7 @@ The `.setJumpHeight(double height)` adds a (parabolical) jump effect to the obje
 ```java
 Shape pol = Shape.regularPolygon(6).scale(.25).center().fillColor("steelblue").thickness(3);
 ShiftAnimation anim = Commands.shift(3, 1,0, pol);//shifts pol with vector (1,0)
-anim.setJumpHeight(.5); //adds a jump effect
+anim.addJumpEffect(.5); //adds a jump effect
 playAnimation(anim);
 ```
 
@@ -212,7 +212,7 @@ The `.setScaleEffect(double scale)` adds a back and forth scale effect:
 ```java
 Shape pol = Shape.regularPolygon(6).scale(.25).center().fillColor("steelblue").thickness(3);
 ShiftAnimation anim = Commands.shift(3, 1,0, pol);//shifts pol with vector (1,0)
-anim.setScaleEffect(2); //adds a scale effect
+anim.addScaleEffect(2); //adds a scale effect
 playAnimation(anim);
 ```
 
@@ -225,7 +225,7 @@ The `.setRotateEffect(double angle)` adds a rotation:
 ```java
 Shape pol = Shape.regularPolygon(6).scale(.25).center().fillColor("steelblue").thickness(3);
 ShiftAnimation anim = Commands.shift(3, 1,0, pol);//shifts pol with vector (1,0)
-anim.setRotateEffect(90*DEGREES); //adds a rotation effect
+anim.addRotationEffect(90*DEGREES); //adds a rotation effect
 playAnimation(anim);
 ```
 
@@ -236,7 +236,7 @@ And, in case you are wondering, yes, these effects can be nested:
 ```java
 Shape pol = Shape.regularPolygon(6).scale(.25).center().fillColor("steelblue").thickness(3);
 ShiftAnimation anim = Commands.shift(3, 1,0, pol);//shifts pol with vector (1,0)
-anim.setRotateEffect(90*DEGREES).setScaleEffect(2).setJumpHeight(.5);
+anim.addRotationEffect(90*DEGREES).addScaleEffect(2).addJumpEffect(.5);
 playAnimation(anim);
 ```
 
