@@ -12,6 +12,8 @@ You can also follow my [Youtube](https://www.youtube.com/channel/UCeczwEqSrAwZbP
 # What's new?
 Version 0.9.0-SNAPSHOT:
 
+* Added effects to transform animations
+
 * Added `contains` method to `Shape` objects to check if a point lies inside the `Shape`.
 * Added  boolean operations `union`, `intersect` and  `substract` to `Shape` objects.
 * Added updateable `BooleanShape`.
