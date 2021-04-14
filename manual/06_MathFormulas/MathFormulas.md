@@ -294,22 +294,27 @@ tr.map(2,0).addRotateEffect(-1);
 
 ![equation09](equation09.gif)
 
-The `.addJumpEffect(t)`  applies a (parabollical) jump with a vector of 90º clockwise.
+The `.addJumpEffect(t)`  applies a jump with a vector of 90º clockwise.
 
 ```java
-tr.map(0,2).addJumpEffect(.1);
-tr.map(2,0).addJumpEffect(.1);//Note that this "jump" is downward
+tr.map(0,2).addJumpEffect(1);
+tr.map(2,0).addJumpEffect(1);//Note that this "jump" is downward
 ```
 
 ![equation10](equation10.gif)
 
-The height of the jump is given in math coordinates. You can use the getHeight() method to specify a relative jump. For example, if you want the shape to make a jump 1.5 times the height of the formula, you can use this code:
+By default, the shape of the jump is a semicircle, so that only the sign of the parameter is relevant. Other jump types can be specified since version 0.9.0, defined in the enum `AnimationEffect.JumpType`: `SEMICIRCLE, PARABOLICAL, ELLIPTICAL, TRIANGULAR, SINUSOIDAL, SINUSOIDAL2, CRANE`. These are explained with detail in the animation effects chapter. For example, you can set that the "a" glyph moves like grabbed by a crane, and that the "b" glyph follows a path resembling a triangular roof. We use the 
 
 ```java
-tr.map(0,2).addJumpEffect(1.5*t1.getHeight());//1.5 times the height of LaTexMathObject t1
+tr.map(0, 2).addJumpEffect(t1.getHeight(), AnimationEffect.JumpType.CRANE);
+tr.map(2, 0).addJumpEffect(t1.getHeight(), AnimationEffect.JumpType.TRIANGULAR);//Note that this "jump" is downward
 ```
 
+![equation11a](equation11a.gif)
 
+
+
+We use the method `getHeight()` to get the actual height of the formula, which will be the height of the jumps.
 
 And, finally, you can nest any of these effects:
 
