@@ -22,6 +22,7 @@ import com.jmathanim.Animations.AnimationEffect;
 import com.jmathanim.Animations.AnimationGroup;
 import com.jmathanim.Animations.AnimationWithEffects;
 import com.jmathanim.Animations.Commands;
+import com.jmathanim.Animations.FlipTransform;
 import com.jmathanim.Animations.Transform;
 import com.jmathanim.Utils.Anchor;
 import com.jmathanim.Utils.Vec;
@@ -207,21 +208,23 @@ public class TransformMathExpression extends Animation {
         switch (par.getTransformStyle()) {
             case INTERPOLATION:
                 transform = new Transform(runTime, sh, sh2);
-                transform.setLambda(lambda);
+
                 break;
             case FLIP_HORIZONTALLY:
-                ag = new AnimationGroup();
+//                ag = new AnimationGroup();
 //                ag.add(Commands.shift(runTime, sh.getCenter().to(sh2.getCenter()), sh).setLambda(t->t));
-                ag.add(Commands.flipTransform(runTime, true, sh, sh2).setUseObjectState(false));
-                transform = ag;
+//                ag.add(Commands.flipTransform(runTime, true, sh, sh2).setUseObjectState(false));
+//                transform = ag;
+                transform = new FlipTransform(runTime, FlipTransform.FlipType.HORIZONTAL, sh, sh2);
                 break;
             case FLIP_VERTICALLY:
-                ag = new AnimationGroup();
-                ag.add(Commands.flipTransform(runTime, false, sh, sh2));
-                transform = ag;
+//                ag = new AnimationGroup();
+//                ag.add(Commands.flipTransform(runTime, false, sh, sh2));
+//                transform = ag;
+                transform = new FlipTransform(runTime, FlipTransform.FlipType.VERTICAL, sh, sh2);
                 break;
         }
-
+        transform.setLambda(lambda);
 //        AnimationGroup group = new AnimationGroup(transform);
 
         if (par.getJumpHeightFromJumpEffect() != 0) {
@@ -232,7 +235,7 @@ public class TransformMathExpression extends Animation {
         if (par.getNumTurns() != 0) {
 //            group.add(par.createRotateAnimation(runTime, sh));
             transform.addRotationEffect(par.getNumTurns());
-            transform.setLambda(t->t);
+            transform.setLambda(t -> t);
         }
         if (par.getAlphaMultFromAlphaEffect() != 1) {
 //            Animation changeAlpha = par.createAlphaMultAnimation(runTime, sh);

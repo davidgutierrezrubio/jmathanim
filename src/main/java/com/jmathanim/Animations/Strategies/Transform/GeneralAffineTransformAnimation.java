@@ -33,29 +33,29 @@ import com.jmathanim.mathobjects.Shape;
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
 public class GeneralAffineTransformAnimation extends AnimationWithEffects {
-    
+
     private AnimationWithEffects affine;
-    
+
     private AnimationGroup anim;
-    
+
     private final Shape mobjDestiny;
-    
+
     private final Shape mobjTransformed;
-    
+
     private final Shape mobjTransformedOrig;
     private final MODrawProperties mpBase;
-    
+
     private Vec jumpVector;
-    
+
     public GeneralAffineTransformAnimation(double runTime, Shape objTr, Shape objDst) {
         super(runTime);
         this.mobjTransformed = objTr;
         this.mobjTransformedOrig = objTr.copy();
         this.mobjDestiny = objDst;
         mpBase = objTr.getMp().copy();
-        
+
     }
-    
+
     @Override
     public void initialize(JMathAnimScene scene) {
         super.initialize(scene);
@@ -65,7 +65,7 @@ public class GeneralAffineTransformAnimation extends AnimationWithEffects {
         Point d = this.mobjDestiny.getPoint(0);
         Point e = this.mobjDestiny.getPoint(1);
         Point f = this.mobjDestiny.getPoint(2);
-        
+
         anim = new AnimationGroup();
         affine = Commands.affineTransform(runTime, a, b, c, d, e, f, this.mobjTransformed);
         affine.setUseObjectState(this.isUseObjectState());
@@ -73,26 +73,26 @@ public class GeneralAffineTransformAnimation extends AnimationWithEffects {
         anim.add(Commands.setMP(runTime, mobjDestiny.getMp().copy(), this.mobjTransformed).setUseObjectState(false));
         anim.setLambda(lambda);
         anim.initialize(scene);
-        
+
         affine.copyEffectParametersFrom(this);
-        jumpVector = mobjTransformed.getCenter().to(mobjDestiny.getCenter()).rotate(.5 * PI);
-        
+        affine.prepareJumpPath(this.mobjTransformed.getCenter(), this.mobjDestiny.getCenter(), this.mobjTransformed);
+
     }
-    
+
     @Override
     public boolean processAnimation() {
         super.processAnimation();
         return anim.processAnimation();
     }
-    
+
     @Override
     public void doAnim(double t) {
     }
-    
+
     @Override
     public void finishAnimation() {
         super.finishAnimation();
         anim.finishAnimation();
     }
-    
+
 }

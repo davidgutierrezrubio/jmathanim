@@ -953,29 +953,8 @@ public class Commands {
      * otherwise
      * @return The animation
      */
-    public static Animation flipTransform(double runtime, boolean horizontal, MathObject ob1, MathObject ob2) {
-        int dir = (horizontal ? 0 : 1);
-        Concatenate resul = new Concatenate();
-        Vec v = ob1.getCenter().to(ob2.getCenter()).mult(.5);
-        Animation sc = Commands.scale(.5 * runtime, ob1.getCenter(), dir, 1 - dir, 1, ob1);
-//        sc.setLambda(t->1-Math.cos(.5*PI*t));
-        sc.setLambda(t -> t);
-        Animation tr = Commands.shift(.5 * runtime, v, ob1).setUseObjectState(false);
-        tr.setLambda(t -> t);
-        Animation fd = Commands.fadeOut(.5 * runtime, ob1).setUseObjectState(false);
-        fd.setLambda(t -> Math.sqrt(1 - t));
-        resul.add(new AnimationGroup(sc, tr, fd));
-
-        sc = Commands.scale(.5 * runtime, ob2.getCenter(), dir, 1 - dir, 1, ob2);
-//        sc.setLambda(t->Math.cos(.5*PI*t));
-        sc.setLambda(t -> 1 - t);
-        tr = Commands.shift(.5 * runtime, v.mult(-1), ob2).setUseObjectState(false);
-        fd = Commands.fadeIn(.5 * runtime, ob2).setUseObjectState(false);
-        fd.setLambda(t -> t);
-        tr.setLambda(t -> 1 - t);
-        resul.add(new AnimationGroup(sc, tr, fd));
-
-        return resul;
+    public static FlipTransform flipTransform(double runtime, boolean horizontal, MathObject ob1, MathObject ob2) {
+        return new FlipTransform(runtime, (horizontal ? FlipTransform.FlipType.HORIZONTAL : FlipTransform.FlipType.VERTICAL), ob1, ob2);
     }
 
     /**

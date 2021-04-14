@@ -74,7 +74,7 @@ public class AnimationWithEffects extends Animation {
         return (T) this;
     }
 
-    protected void prepareJumpPath(Point A, Point B, MathObject obj) {
+    public void prepareJumpPath(Point A, Point B, MathObject obj) {
         effect.prepareJumpPath(A, B, obj);
     }
 
