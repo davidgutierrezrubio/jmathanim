@@ -115,7 +115,8 @@ public class AnimationEffect {
                 jumpPath.getPath().reverse();
                 break;
             case TRIANGULAR:
-                jumpPath = Shape.polyLine(Point.origin(), Point.at(1, 1), Point.at(2, 0)).scale(1, jumpHeight / dist);
+                jumpPath = Shape.polyLine(Point.origin(), Point.at(1, 1), Point.at(2, 0));
+                jumpPath.scale(1, jumpPath.getWidth() * jumpHeight / dist);
                 break;
             case PARABOLICAL:
                 jumpPath = new Shape(FunctionGraph.make(t -> 4 * t * (1 - t), 0, 1).getPath());

@@ -17,15 +17,8 @@
  */
 package com.jmathanim.Animations;
 
-import com.jmathanim.Utils.AffineJTransform;
-import com.jmathanim.Utils.Vec;
-import static com.jmathanim.jmathanim.JMathAnimScene.PI;
-import com.jmathanim.mathobjects.FunctionGraph;
-import com.jmathanim.mathobjects.JMPath;
 import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.Point;
-import com.jmathanim.mathobjects.Shape;
-import java.util.HashMap;
 
 /**
  *
