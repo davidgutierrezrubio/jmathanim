@@ -345,8 +345,7 @@ LaTeXMathObject text = LaTeXMathObject.make("JMathAnim");
 
 //The MultiShapeObject and all its subclasses implement the iterable interface,
 //which allows to easily iterate over all the shapes this way:
-for (Shape s : text)
-{
+for (Shape s : text) {
     s.center();//Center all the shape glyphs on the screen
 }
 camera.zoomToObjects(text);
@@ -354,7 +353,8 @@ Shape previous = null;
 boolean horizontal = true; //Starts with an horizontal flipping
 for (Shape s : text) {
     if (previous != null) {
-        playAnimation(Commands.flipTransform(.5, horizontal, previous, s));
+        FlipTransform.FlipType flipType = horizontal ? FlipTransform.FlipType.HORIZONTAL : FlipTransform.FlipType.VERTICAL;
+        playAnimation(new FlipTransform(.5, flipType, previous, s));
         horizontal = !horizontal;
     }
     previous = s;

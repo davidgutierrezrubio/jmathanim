@@ -371,11 +371,14 @@ t1.setColor(JMColor.parse("maroon"), 2);
 t2.setColor(JMColor.parse("maroon"), 2, 3);
 
 t2.alignCenter(1, t1, 3);//Align centers
-camera.zoomToObjects(t1,t2);
+camera.zoomToObjects(t1, t2);
 TransformMathExpression tr = new TransformMathExpression(5, t1, t2);
 tr.map(0, 0);//Transforms orig-shape 0 to dst-shape 0
-tr.map(1, 2).addJumpEffect(t1.getHeight());//Transforms orig-shape 1 to dst-shape 2 and adds a jump effect with the height of t1
-tr.map(2, 3).addJumpEffect(t1.getHeight());//Transforms orig-shape 2 to dst-shape 3 and adds a jump effect with the height of t1
+tr.map(1, 2)
+    .addJumpEffect(t1.getHeight())
+    .setTransformStyle(TransformMathExpression.TransformType.FLIP_VERTICALLY);//Transforms using a vertical flip orig-shape 1 to dst-shape 2 and adds a jump effect with the height of t1
+tr.map(2, 3)
+    .addJumpEffect(t1.getHeight());//Transforms orig-shape 2 to dst-shape 3 and adds a jump effect with the height of t1
 tr.map(3, 1);//Transforms orig-shape 3 to dst-shape 1
 tr.setRemovingStyle(TransformMathExpression.RemoveType.SHRINK_OUT, 4);
 playAnimation(tr);
