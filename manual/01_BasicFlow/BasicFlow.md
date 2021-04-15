@@ -35,10 +35,10 @@ If you execute the program, and if everything goes well, you should see a white 
 
 ![movingDot](movingDot.gif)
 
-Besides, a file named `movingDots_480p.mp4` should be generated at the `media` folder in your project directory, with the generated animation. We will examine what happened here:
+Besides, a file named MovingDot_480p.mp4` should be generated at the `media` folder in your project directory, with the generated animation. We will examine what happened here:
 
 ``` java
-public class movingDot extends Scene2D {...
+public class MovingDot extends Scene2D {...
 ```
 
 All animations are defined in a class that extends the basic class `JMathAnimScene`. In this case, `Scene2D` is a subclass of `JMathAnimScene` which uses JavaFX to perform drawings. When you extend this class, you’ll need to implement the two abstract methods `setupSketch` and `runSketch`. The first does all necessary configuration before doing actual animations, like width, height, fps, whether should create a movie or not, should show preview window, etc.
@@ -74,7 +74,7 @@ The command
 Point p=Point.at(0,0);
 ```
 
-Creates a `Point`object, which represents a point at (0,0). These object is not automatically added to the scene. You should include it with the `add(p)`command or animating it in some way. Note that, up to this point, no frames were generated. The following command begins to do the magic:
+Creates a `Point`object, which represents a point at (0,0).  This object is not automatically added to the scene, so you should include it with the `add(p)`command or animating it in some way. Note that, up to this point, no frames were generated. The following command begins to do the magic:
 
 ``` java
 play.shift(2,Vec.to(1,0),p);

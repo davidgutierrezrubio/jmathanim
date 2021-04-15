@@ -101,9 +101,35 @@ Each `Shape` object has a `JMPath` object which stores and manages the path repr
 
 In the `Shape` objects, apart from `.getCenter()`method, which returns the center of its bounding box, there is also the `.getCentroid()`method which computes the centroid of the shape, defined by the average point of all its vertices. This method effectively returns the center of a regular polygon for example, instead of the `.getCenter()`method.
 
-# Not so basic objects
+## The `LaTeXMathObject` class
 
-There are some subclasses of `Shape` that implements specific methods for drawing or transforming them.
+If you want to include mathematical expressions in any work, of course, the best software to use is `LaTeX`. This class renders a mathematical expression written in LaTeX and imports it so you can draw it and animate it in several ways. To do this you’ll need a working LaTeX distribution installed on your system and accessible from your path. So, if you put the following the code in the `runSketch()` method:
+
+``` java
+LaTeXMathObject text = new LaTeXMathObject("Look mom, I'm \\LaTeX!");
+add(text);
+waitSeconds(5);
+```
+
+![LaTeX 1](LaTeX_1.png)
+
+A minor drawback when combining LaTeX and Java, is that one of the most used symbols in LaTeX is the backslash "\\", and Java doesn’t accept single backslashes in their strings, so, if you want to compile a LaTeX formula like this
+
+``` latex
+$$\int_0^\infty e^{-x}\,dx=1$$
+```
+
+You’ll have to replace every single backslash "\\" with a double one "\\\\"
+
+``` java
+LaTeXMathObject formula = new LaTeXMathObject("$$\\int_0^\\infty e^{-x}\\,dx=1$$");
+add(formula);
+waitSeconds(5);
+```
+
+Otherwise you will get an error. Fortunately, most commons java IDE, like Netbeans, automatically perform this change when copy-pasting an already written formula into the code editor. 
+
+By default, LaTeX formulas are placed so that their left side is centered at (0,0).
 
 ## The `Line` class
 
@@ -257,36 +283,6 @@ waitSeconds(3);
 ```
 
 ![tippable01](tippable01.gif)
-
-## The `LaTeXMathObject` class
-
-If you want to include mathematical expressions in any work, of course, the best software to use is `LaTeX`. This class renders a mathematical expression written in LaTeX and imports it so you can draw it and animate it in several ways. To do this you’ll need a working LaTeX distribution installed on your system and accessible from your path. So, if you put the following the code in the `runSketch()` method:
-
-``` java
-LaTeXMathObject text = new LaTeXMathObject("Look mom, I'm \\LaTeX!");
-add(text);
-waitSeconds(5);
-```
-
-![LaTeX 1](LaTeX_1.png)
-
-A minor drawback when combining LaTeX and Java, is that one of the most used symbols in LaTeX is the backslash "\\", and Java doesn’t accept single backslashes in their strings, so, if you want to compile a LaTeX formula like this
-
-``` latex
-$$\int_0^\infty e^{-x}\,dx=1$$
-```
-
-You’ll have to replace every single backslash "\\" with a double one "\\\\"
-
-``` java
-LaTeXMathObject formula = new LaTeXMathObject("$$\\int_0^\\infty e^{-x}\\,dx=1$$");
-add(formula);
-waitSeconds(5);
-```
-
-Otherwise you will get an error. Fortunately, most commons java IDE, like Netbeans, automatically perform this change when copy-pasting an already written formula into the code editor. 
-
-By default, LaTeX formulas are placed so that their left side is centered at (0,0).
 
 # Importing images
 
