@@ -338,10 +338,11 @@ play.fadeOutAll();
 
 ## Flip transforms
 
-A simpler transform animation, which works on any `MathObject` instance is `flipTransform`. This animations scales the first object to 0 horizontally or vertically and then scales the second object from 0 to 1, giving the effect of flipping.
+A simpler transform animation, which works on any `MathObject` instance is `FlipTransform`. This animation scales the first object to 0 horizontally or vertically (or both) and then scales the second object from 0 to 1, giving the effect of flipping. The flip can be `HORIZONTAL`, `VERTICAL` or `BOTH`.
 
 ```java
 LaTeXMathObject text = LaTeXMathObject.make("JMathAnim");
+FlipTransform.FlipType[] flips = new FlipTransform.FlipType[]{FlipTransform.FlipType.HORIZONTAL, FlipTransform.FlipType.VERTICAL, FlipTransform.FlipType.BOTH};
 
 //The MultiShapeObject and all its subclasses implement the iterable interface,
 //which allows to easily iterate over all the shapes this way:
@@ -350,12 +351,11 @@ for (Shape s : text) {
 }
 camera.zoomToObjects(text);
 Shape previous = null;
-boolean horizontal = true; //Starts with an horizontal flipping
+int index = 0;
 for (Shape s : text) {
     if (previous != null) {
-        FlipTransform.FlipType flipType = horizontal ? FlipTransform.FlipType.HORIZONTAL : FlipTransform.FlipType.VERTICAL;
-        playAnimation(new FlipTransform(.5, flipType, previous, s));
-        horizontal = !horizontal;
+        playAnimation(new FlipTransform(2, flips[index], previous, s));
+        index = (index + 1) % 3;
     }
     previous = s;
 }

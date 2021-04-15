@@ -163,6 +163,30 @@ we make that the center of glyph number 1 of `t2` (its "=" sign) matches the cen
 
 ![equation04](equation04.gif)
 
+## Type of transformations
+
+The method `.map` returns a `TransformMathExpressionParameters` object, which allows to control how the transformation is done,  with the method `setTransformStyle`. Transformation types are defined in the enum `TransformMathExpression.TransformType`, currently `INTERPOLATION`, `FLIP_HORIZONTALLY`, `FLIP_VERTICALLY` and `FLIP_BOTH`. By default, the `INTERPOLATION` method is used.
+
+Note: The `INTERPOLATION` method uses the `Transform` class to do the work, so, depending on the origin and destiny shapes, it may actually perform a point-to-point interpolation, or, if applicable, a homothecy or a more general affine transform. If you apply a `INTERPOLATION` type transform to, say, map a "2" sign into another "2" sign, it will use a homothecy as these 2 figures are equal except scale.
+
+```java
+LaTeXMathObject t1 = LaTeXMathObject.make("$a^2=a\\cdot a$");
+LaTeXMathObject t2 = LaTeXMathObject.make("$3^2=3\\cdot 3$");
+t1.alignCenter(2, t2, 2);
+camera.zoomToObjects(t1, t2);
+TransformMathExpression tr = new TransformMathExpression(5, t1, t2);
+tr.map(0, 0).setTransformStyle(TransformMathExpression.TransformType.FLIP_HORIZONTALLY);//The first "a"
+tr.map(1, 1);
+tr.map(2, 2);
+tr.map(3, 3).setTransformStyle(TransformMathExpression.TransformType.FLIP_VERTICALLY);//The second "a"
+tr.map(4, 4);
+tr.map(5, 5).setTransformStyle(TransformMathExpression.TransformType.FLIP_BOTH);//The third "a"
+playAnimation(tr);
+waitSeconds(3);
+```
+
+![equation04a](equation04a.gif)
+
 ## Range mapping
 
 If we need to map a bunch of consecutive origin indexes into another bunch of consecutive destiny indexes , the method `mapRange(OrigA,OrigB,dst)` do exactly this. The command
@@ -180,6 +204,8 @@ tr.map(5,15);
 tr.map(6,16);
 tr.map(7,17);
 ```
+
+Or, if you have two formulas which the same number of glyphs and one-to-one correspondence, the `mapAll()` method does all the work for you.
 
 ## Grouping 
 
