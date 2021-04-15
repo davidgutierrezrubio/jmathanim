@@ -280,20 +280,20 @@ waitSeconds(3);
 
 ## The delay effect
 
-This effect can be applied to shifting-type animations (`shift`,  `stackTo`, `align`, `moveIn`, `moveOut` and `setLayout`) when several objects are animated. Instead of moving all object at the same time, a delay can be applied creating the effect of a queue of moving objects. For example, let's create a simple animation that changes the layout of a group of squares, leaving commented the line that adds the delay effect:
+This effect can be applied to shifting-type animations (`shift`,  `stackTo`, `align`, `moveIn`, `moveOut` and `setLayout`) when several objects are animated. Instead of moving all object at the same time, a delay is applied creating the effect of a queue of moving objects. For example, let's create a simple animation that changes the layout of a group of squares, leaving commented the line that adds the delay effect:
 
 ```java
- MathObjectGroup smallSquaresGroup = MathObjectGroup.make();
-        for (int n = 0; n < 10; n++) {
-            smallSquaresGroup.add(Shape.square().scale(.1).thickness(3).fillColor(JMColor.random()));
-        }
-        Shape centralSquare = Shape.square().scale(.25).stackToScreen(Anchor.Type.LOWER, .1, .1);
-        smallSquaresGroup.setLayout(centralSquare, MathObjectGroup.Layout.LEFT, 0);
-        add(smallSquaresGroup,centralSquare);
-        waitSeconds(1);
-        ShiftAnimation anim = Commands.setLayout(5, centralSquare, MathObjectGroup.Layout.UPPER, 0, smallSquaresGroup);
-//        anim.addDelayEffect(.5);
-        playAnimation(anim);
+MathObjectGroup smallSquaresGroup = MathObjectGroup.make();
+for (int n = 0; n < 10; n++) {
+    smallSquaresGroup.add(Shape.square().scale(.1).thickness(3).fillColor(JMColor.random()));
+}
+Shape centralSquare = Shape.square().scale(.25).stackToScreen(Anchor.Type.LOWER, .1, .1);
+smallSquaresGroup.setLayout(centralSquare, MathObjectGroup.Layout.LEFT, 0);
+add(smallSquaresGroup,centralSquare);
+waitSeconds(1);
+ShiftAnimation anim = Commands.setLayout(5, centralSquare, MathObjectGroup.Layout.UPPER, 0, smallSquaresGroup);
+//anim.addDelayEffect(.5);
+playAnimation(anim);
 ```
 
 Generates the following animation:
