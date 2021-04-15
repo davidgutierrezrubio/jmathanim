@@ -188,11 +188,13 @@ Now the square properly shifts and rotates:
 
 ![StateFlagAnimation01](StateFlagAnimation01.gif)
 
-# Adding effects to shifting animations
+# Adding effects to animations
 
-The previous animation can be done in another way. The animations `shift`,  `stackTo`, `align`, `moveIn`, `moveOut` and `setLayout`all have in common that they implement a shifting of the object(s), each one differing in the form the shift vector is computed. All these animations inherit from the abstract class `ShiftAnimation` which implements 3 effects you can add to these animations:
+Several animations inherit from a subclass called `AnimationWithEffects`that allows to apply certain effects. Currently, those animations are `Transform`, `FlipTransform`, `TransformMathExpression`, `shift`,  `stackTo`, `align`, `moveIn`, `moveOut` and `setLayout`.  We saw how to apply these effects in the `TransformMathExpression` animations in the math formulas chapter.
 
-The `.setJumpHeight(double height)` adds a (parabolical) jump effect to the object(s) being shifted. The direction of the jump is the shift vector rotated 90 degrees clockwise. A negative height can be specified. (Note: this effect doesn't work on `setLayout` in version 0.8.8)
+## The jump effect
+
+The `.setJumpHeight(double height)` adds a jump effect to the object(s) being shifted. The direction of the jump is the shift vector rotated 90 degrees clockwise. A negative height can be specified.
 
 ```java
 Shape pol = Shape.regularPolygon(6).scale(.25).center().fillColor("steelblue").thickness(3);
@@ -207,6 +209,24 @@ playAnimation(anim);
 
 ![jumpEffect](jumpEffect.gif)
 
+By default, the trajectory is a parabola (except in the `TransformMathExpression` which is semicircular). You can specify other jump types adding a second parameter to the `addJumpEffect` method, defined in the `AnimationEffect.JumpType` enum.
+
+```java
+anim.addJumpEffect(.5,AnimationEffect.JumpType.CRANE);//A crane effect, with height .5
+anim.addJumpEffect(.5,AnimationEffect.JumpType.ELLIPTICAL); //Elliptical path, with height .5
+anim.addJumpEffect(.5,AnimationEffect.JumpType.PARABOLICAL); //Parabolical path, with height .5
+anim.addJumpEffect(.5,AnimationEffect.JumpType.SEMICIRCLE); //A semicircular path (the height is ignored, except for the sign)
+anim.addJumpEffect(.5,AnimationEffect.JumpType.SINUSOIDAL); //A path with a sinusoidal shape, from 0 to PI, and height .5
+anim.addJumpEffect(.5,AnimationEffect.JumpType.SINUSOIDAL2); //A path with a sinusoidal shape, from 0 to 2*PI, and height .5
+anim.addJumpEffect(.5,AnimationEffect.JumpType.TRIANGULAR); //A path resembling a triangular roof, with height .5
+```
+
+Here you can see the different paths:
+
+![jumpPaths](jumpPaths.gif)
+
+## The scale effect
+
 The `.setScaleEffect(double scale)` adds a back and forth scale effect:
 
 ```java
@@ -220,12 +240,27 @@ playAnimation(anim);
 
 ![scaleEffect](scaleEffect.gif)
 
-The `.setRotateEffect(double angle)` adds a rotation:
+## The alpha scale effect
+
+The `.setAlphaScaleEffect(double alphaScale)` adds a back and forth alpha effect:
+
+```java
+Shape pol = Shape.regularPolygon(6).scale(.25).center().fillColor("steelblue").thickness(3);
+ShiftAnimation anim = Commands.shift(5, 1, 0, pol);//shifts pol with vector (1,0)
+anim.addAlphaScaleEffect(.2);
+playAnimation(anim);
+```
+
+![alphaEffect](alphaEffect.gif)
+
+## The rotation effect
+
+The `.setRotateEffect(int numTurns)` adds a rotation, making the specified number of turns.
 
 ```java
 Shape pol = Shape.regularPolygon(6).scale(.25).center().fillColor("steelblue").thickness(3);
 ShiftAnimation anim = Commands.shift(3, 1,0, pol);//shifts pol with vector (1,0)
-anim.addRotationEffect(90*DEGREES); //adds a rotation effect
+anim.addRotationEffect(-1); //Make a complete turn clockwise
 playAnimation(anim);
 ```
 
@@ -235,12 +270,49 @@ And, in case you are wondering, yes, these effects can be nested:
 
 ```java
 Shape pol = Shape.regularPolygon(6).scale(.25).center().fillColor("steelblue").thickness(3);
-ShiftAnimation anim = Commands.shift(3, 1,0, pol);//shifts pol with vector (1,0)
-anim.addRotationEffect(90*DEGREES).addScaleEffect(2).addJumpEffect(.5);
+ShiftAnimation anim = Commands.shift(5, 1, 0, pol);//shifts pol with vector (1,0)
+anim.addRotationEffect(1).addScaleEffect(.5).addJumpEffect(.5,AnimationEffect.JumpType.FOLIUM);
 playAnimation(anim);
+waitSeconds(3);
 ```
 
 ![nestedShiftEffects](nestedShiftEffects.gif)
+
+## The delay effect
+
+This effect can be applied to shifting-type animations (`shift`,  `stackTo`, `align`, `moveIn`, `moveOut` and `setLayout`) when several objects are animated. Instead of moving all object at the same time, a delay can be applied creating the effect of a queue of moving objects. For example, lets create a simple animation that changes the layout of a group of squares, leaving commented the line that adds the delay effect:
+
+```java
+ MathObjectGroup smallSquaresGroup = MathObjectGroup.make();
+        for (int n = 0; n < 10; n++) {
+            smallSquaresGroup.add(Shape.square().scale(.1).thickness(3).fillColor(JMColor.random()));
+        }
+        Shape centralSquare = Shape.square().scale(.25).stackToScreen(Anchor.Type.LOWER, .1, .1);
+        smallSquaresGroup.setLayout(centralSquare, MathObjectGroup.Layout.LEFT, 0);
+        add(smallSquaresGroup,centralSquare);
+        waitSeconds(1);
+        ShiftAnimation anim = Commands.setLayout(5, centralSquare, MathObjectGroup.Layout.UPPER, 0, smallSquaresGroup);
+//        anim.addDelayEffect(.5);
+        playAnimation(anim);
+```
+
+Generates the following animation:
+
+![delayEffect1](delayEffect1.gif)
+
+Note that all squares begin and end their paths at the same time.
+
+Now if we uncomment the method `anim.addDelayEffect(.5)` we have this:
+
+![delayEffect2](delayEffect2.gif)
+
+When applying a delay effect with a parameter 0<t<1, each individual animation runtime is reduced by the factor 1-t and distributed evenly over the total runtime of the animation. Thus, for example an `addDelayEffect(.75)` will reduce all single animations to the 25% of the total runtime.
+
+If you change the parameter .5 to .9, with `anim.addDelayEffect(.9)`  the animation produced looks like that:
+
+![delayEffect3](delayEffect3.gif)
+
+
 
 # Creating complex animations
 
