@@ -280,7 +280,7 @@ waitSeconds(3);
 
 ## The delay effect
 
-This effect can be applied to shifting-type animations (`shift`,  `stackTo`, `align`, `moveIn`, `moveOut` and `setLayout`) when several objects are animated. Instead of moving all object at the same time, a delay can be applied creating the effect of a queue of moving objects. For example, lets create a simple animation that changes the layout of a group of squares, leaving commented the line that adds the delay effect:
+This effect can be applied to shifting-type animations (`shift`,  `stackTo`, `align`, `moveIn`, `moveOut` and `setLayout`) when several objects are animated. Instead of moving all object at the same time, a delay can be applied creating the effect of a queue of moving objects. For example, let's create a simple animation that changes the layout of a group of squares, leaving commented the line that adds the delay effect:
 
 ```java
  MathObjectGroup smallSquaresGroup = MathObjectGroup.make();
@@ -306,9 +306,9 @@ Now if we uncomment the method `anim.addDelayEffect(.5)` we have this:
 
 ![delayEffect2](delayEffect2.gif)
 
-When applying a delay effect with a parameter 0<t<1, each individual animation runtime is reduced by the factor 1-t and distributed evenly over the total runtime of the animation. Thus, for example an `addDelayEffect(.75)` will reduce all single animations to the 25% of the total runtime.
+When applying a delay effect with a parameter 0<t<1, each individual animation runtime is reduced by the factor 1-t and distributed evenly over the total runtime of the animation. Thus, for example an `addDelayEffect(.3)` will reduce all single animations to the 70% of the total runtime.
 
-If you change the parameter .5 to .9, with `anim.addDelayEffect(.9)`  the animation produced looks like that:
+If you change the parameter .5 to .75, with `anim.addDelayEffect(.75)`  the animation produced looks like that:
 
 ![delayEffect3](delayEffect3.gif)
 
