@@ -17,11 +17,11 @@
  */
 package com.jmathanim.Utils;
 
-import com.jmathanim.Styling.JMColor;
-import com.jmathanim.Styling.ConfigLoader;
-import com.jmathanim.Styling.MODrawProperties;
 import com.jmathanim.Cameras.Camera;
 import com.jmathanim.Renderers.Renderer;
+import com.jmathanim.Styling.ConfigLoader;
+import com.jmathanim.Styling.JMColor;
+import com.jmathanim.Styling.MODrawProperties;
 import com.jmathanim.Styling.Stylable;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.MathObject;

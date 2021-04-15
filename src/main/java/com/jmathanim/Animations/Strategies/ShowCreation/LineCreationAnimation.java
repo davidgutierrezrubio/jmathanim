@@ -17,7 +17,6 @@
  */
 package com.jmathanim.Animations.Strategies.ShowCreation;
 
-import com.jmathanim.Animations.Animation;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.Line;
 import com.jmathanim.mathobjects.Shape;

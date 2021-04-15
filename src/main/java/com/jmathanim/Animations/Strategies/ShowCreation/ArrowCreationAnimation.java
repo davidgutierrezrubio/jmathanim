@@ -17,7 +17,6 @@
  */
 package com.jmathanim.Animations.Strategies.ShowCreation;
 
-import com.jmathanim.Animations.Animation;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.Arrow2D;
 import com.jmathanim.mathobjects.Point;

@@ -18,7 +18,6 @@
 package com.jmathanim.Animations.Strategies.ShowCreation;
 
 import com.jmathanim.Animations.Animation;
-import com.jmathanim.mathobjects.JMPathPoint;
 import com.jmathanim.mathobjects.Point;
 
 /**

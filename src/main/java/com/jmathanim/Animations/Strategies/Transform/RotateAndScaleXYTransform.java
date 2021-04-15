@@ -17,12 +17,11 @@
  */
 package com.jmathanim.Animations.Strategies.Transform;
 
-import com.jmathanim.Utils.AffineJTransform;
 import com.jmathanim.Animations.AnimationWithEffects;
 import com.jmathanim.Styling.MODrawProperties;
+import com.jmathanim.Utils.AffineJTransform;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
-import static com.jmathanim.jmathanim.JMathAnimScene.PI;
 import com.jmathanim.mathobjects.Point;
 import com.jmathanim.mathobjects.Shape;
 

@@ -45,6 +45,9 @@ public abstract class ShiftAnimation extends Animation {
         effects = new HashMap<>();
         beginningTimes = new HashMap<>();
         delayPercentage = 0;
+        for (MathObject obj : mathObjects) {
+            effects.put(obj, new AnimationEffect());
+        }
     }
 
     @Override
@@ -81,7 +84,7 @@ public abstract class ShiftAnimation extends Animation {
         double b = (1 - delayPercentage);
         for (MathObject obj : mathObjects) {
             Vec v = shiftVectors.get(obj);//Gets the shift vector for this object
-            if ((size>1)&&(delayPercentage > 0)) {
+            if ((size > 1) && (delayPercentage > 0)) {
                 double a = beginningTimes.get(obj);
                 double newT = allocateToNewTime(a, a + b, t);
                 lt = getLambda().applyAsDouble(newT);
@@ -131,7 +134,7 @@ public abstract class ShiftAnimation extends Animation {
      * @param obj Mathobject to get the rotation numTurns from
      * @return Angle to rotate the object. A value of null or 0 means no effect
      */
-    public double getRotationAngle(MathObject obj) {
+    public double getNumTurns(MathObject obj) {
         return effects.get(obj).numTurns;
     }
 
@@ -244,6 +247,37 @@ public abstract class ShiftAnimation extends Animation {
         for (MathObject obj : mathObjects) {
             addRotationEffect(obj, numTurns);
         }
+        return (T) this;
+    }
+
+    /**
+     * Adds a alpha scale effect to all objects involved in the animation. A back and forth alpha
+     * effect
+     *
+     * @param <T> The calling subclass
+     * @param alphaScale The amount to scale. A value of .5 will reduce the
+     * alpha to 50% at the middle of the animation.
+     * @return This object
+     */
+    public <T extends ShiftAnimation> T addAlphaScaleEffect(double alphaScale) {
+        for (MathObject obj : mathObjects) {
+            addAlphaScaleEffect(obj, alphaScale);
+        }
+        return (T) this;
+    }
+
+    /**
+     * Adds a alpha scale effect to the specified object. A back and forth alpha
+     * effect
+     *
+     * @param <T> The calling subclass
+     * @param obj The MathObject to apply the scale
+     * @param alphaScale The amount to scale. A value of .5 will reduce the
+     * alpha to 50% at the middle of the animation.
+     * @return This object
+     */
+    public <T extends ShiftAnimation> T addAlphaScaleEffect(MathObject obj, double alphaScale) {
+        effects.get(obj).addAlphaEffect(alphaScale);
         return (T) this;
     }
 

@@ -25,7 +25,6 @@ import java.io.InputStream;
 import java.net.URL;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.zip.ZipEntry;
@@ -45,7 +44,7 @@ import org.xml.sax.SAXException;
  */
 public class GeogebraLoader {
     
-    private ResourceLoader rl;
+    private final ResourceLoader rl;
     private final URL url;
     private ZipFile zipFile;
     private ZipEntry zipEntry;

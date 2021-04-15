@@ -21,7 +21,6 @@ import com.jmathanim.Renderers.Renderer;
 import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
-import java.security.CryptoPrimitive;
 import javafx.scene.image.Image;
 
 /**

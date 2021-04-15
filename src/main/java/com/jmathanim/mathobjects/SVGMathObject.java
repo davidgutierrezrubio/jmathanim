@@ -18,10 +18,10 @@
 package com.jmathanim.mathobjects;
 
 import com.jmathanim.Cameras.Camera;
-import com.jmathanim.Utils.Anchor;
 import com.jmathanim.Styling.JMColor;
-import com.jmathanim.Utils.JMathAnimConfig;
 import com.jmathanim.Styling.MODrawProperties;
+import com.jmathanim.Utils.Anchor;
+import com.jmathanim.Utils.JMathAnimConfig;
 import com.jmathanim.Utils.ResourceLoader;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.JMPathPoint.JMPathPointType;

@@ -20,7 +20,6 @@ package com.jmathanim.mathobjects.updateableObjects;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.JMPathPoint;
 import com.jmathanim.mathobjects.MathObject;
-import com.jmathanim.mathobjects.Point;
 import com.jmathanim.mathobjects.Shape;
 
 /**

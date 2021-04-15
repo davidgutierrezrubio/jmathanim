@@ -17,15 +17,14 @@
  */
 package com.jmathanim.mathobjects;
 
-import com.jmathanim.Renderers.Renderer;
+import com.jmathanim.Styling.JMColor;
+import com.jmathanim.Styling.MODrawProperties;
+import com.jmathanim.Styling.Stylable;
 import com.jmathanim.Utils.AffineJTransform;
 import com.jmathanim.Utils.Anchor;
 import com.jmathanim.Utils.Anchor.Type;
 import com.jmathanim.Utils.Boxable;
-import com.jmathanim.Styling.JMColor;
 import com.jmathanim.Utils.JMathAnimConfig;
-import com.jmathanim.Styling.MODrawProperties;
-import com.jmathanim.Styling.Stylable;
 import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;

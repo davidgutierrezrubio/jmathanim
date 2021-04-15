@@ -17,17 +17,16 @@
  */
 package com.jmathanim.Animations;
 
-import com.jmathanim.Utils.AffineJTransform;
 import com.jmathanim.Cameras.Camera;
-import com.jmathanim.Utils.Anchor;
 import com.jmathanim.Styling.JMColor;
-import com.jmathanim.Utils.JMathAnimConfig;
 import com.jmathanim.Styling.MODrawProperties;
+import com.jmathanim.Utils.AffineJTransform;
+import com.jmathanim.Utils.Anchor;
+import com.jmathanim.Utils.JMathAnimConfig;
 import com.jmathanim.Utils.Layouts.GroupLayout;
 import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
-import static com.jmathanim.jmathanim.JMathAnimScene.PI;
 import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.MathObjectGroup;
 import com.jmathanim.mathobjects.Point;

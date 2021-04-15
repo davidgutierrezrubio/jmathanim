@@ -18,7 +18,6 @@
 package com.jmathanim.Utils.Layouts;
 
 import com.jmathanim.Utils.Anchor;
-import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.MathObjectGroup;
 import com.jmathanim.mathobjects.Point;
 

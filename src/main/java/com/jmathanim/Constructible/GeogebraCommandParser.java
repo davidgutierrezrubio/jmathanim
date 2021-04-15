@@ -30,7 +30,6 @@ import com.jmathanim.Constructible.Lines.HasDirection;
 import com.jmathanim.Styling.JMColor;
 import com.jmathanim.Styling.MODrawProperties;
 import com.jmathanim.jmathanim.JMathAnimScene;
-import com.jmathanim.mathobjects.Line;
 import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.Point;
 import com.jmathanim.mathobjects.Scalar;

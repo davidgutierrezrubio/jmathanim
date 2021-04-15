@@ -30,7 +30,6 @@ import com.jmathanim.mathobjects.Arrow2D;
 import com.jmathanim.mathobjects.Axes.Axes;
 import com.jmathanim.mathobjects.CanonicalJMPath;
 import com.jmathanim.mathobjects.Delimiter;
-import com.jmathanim.mathobjects.JMPathPoint;
 import com.jmathanim.mathobjects.LaTeXMathObject;
 import com.jmathanim.mathobjects.Line;
 import com.jmathanim.mathobjects.MathObject;

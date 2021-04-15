@@ -17,8 +17,8 @@
  */
 package com.jmathanim.mathobjects;
 
-import com.jmathanim.Utils.AffineJTransform;
 import com.jmathanim.Renderers.Renderer;
+import com.jmathanim.Utils.AffineJTransform;
 import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.ResourceLoader;
 import com.jmathanim.jmathanim.JMathAnimScene;
@@ -59,7 +59,7 @@ public class Delimiter extends MathObject {
          */
         BRACKET
     }
-    private Type type;
+    private final Type type;
     /**
      * Gap to apply between control points and delimiter
      */

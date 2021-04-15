@@ -22,7 +22,6 @@ import com.jmathanim.Utils.Vec;
 import com.jmathanim.mathobjects.JMPath;
 import com.jmathanim.mathobjects.JMPathPoint;
 import com.jmathanim.mathobjects.Point;
-import com.jmathanim.mathobjects.Shape;
 import javafx.scene.shape.ClosePath;
 import javafx.scene.shape.CubicCurveTo;
 import javafx.scene.shape.LineTo;

@@ -17,12 +17,10 @@
  */
 package com.jmathanim.Animations.Strategies.ShowCreation;
 
-import com.jmathanim.Animations.Animation;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.CanonicalJMPath;
 import com.jmathanim.mathobjects.JMPath;
-import com.jmathanim.mathobjects.JMPathPoint;
 import com.jmathanim.mathobjects.MultiShapeObject;
 import com.jmathanim.mathobjects.Point;
 import com.jmathanim.mathobjects.Shape;

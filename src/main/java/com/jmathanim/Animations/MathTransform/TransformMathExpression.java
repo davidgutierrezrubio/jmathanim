@@ -18,14 +18,12 @@
 package com.jmathanim.Animations.MathTransform;
 
 import com.jmathanim.Animations.Animation;
-import com.jmathanim.Animations.AnimationEffect;
 import com.jmathanim.Animations.AnimationGroup;
 import com.jmathanim.Animations.AnimationWithEffects;
 import com.jmathanim.Animations.Commands;
 import com.jmathanim.Animations.FlipTransform;
 import com.jmathanim.Animations.Transform;
 import com.jmathanim.Utils.Anchor;
-import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import static com.jmathanim.jmathanim.JMathAnimScene.PI;
 import com.jmathanim.mathobjects.MultiShapeObject;

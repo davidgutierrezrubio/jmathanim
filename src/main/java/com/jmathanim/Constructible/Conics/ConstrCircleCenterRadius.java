@@ -26,7 +26,7 @@ import com.jmathanim.mathobjects.Scalar;
  */
 public class ConstrCircleCenterRadius extends ConstrCircleCenterPoint{
     Scalar scalarRadius;
-    private Point A;
+    private final Point A;
 
     public static ConstrCircleCenterRadius make(Point A, Scalar radius) {
         ConstrCircleCenterRadius resul=new ConstrCircleCenterRadius(A,radius);

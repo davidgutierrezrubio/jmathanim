@@ -17,8 +17,6 @@
  */
 package com.jmathanim.Utils.Layouts;
 
-import com.jmathanim.Styling.JMColor;
-import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.MathObjectGroup;
 import com.jmathanim.mathobjects.Point;
 import java.util.ArrayList;
@@ -31,7 +29,7 @@ public class HeapLayout extends GroupLayout {
 
     private final ArrayList<MathObjectGroup> rightSide, leftSide;
     MathObjectGroup center;
-    private Point base;
+    private final Point base;
     private final double horizontalGap, verticalGap;
 
     public HeapLayout(Point base, double hgap, double vgap) {

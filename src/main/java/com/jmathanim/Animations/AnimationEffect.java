@@ -23,6 +23,7 @@ import com.jmathanim.mathobjects.FunctionGraph;
 import com.jmathanim.mathobjects.JMPath;
 import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.Point;
+import com.jmathanim.mathobjects.SVGMathObject;
 import com.jmathanim.mathobjects.Shape;
 import java.util.HashMap;
 
@@ -49,7 +50,7 @@ public class AnimationEffect {
     }
 
     public enum JumpType {
-        SEMICIRCLE, PARABOLICAL, ELLIPTICAL, TRIANGULAR, SINUSOIDAL2, SINUSOIDAL, CRANE
+        SEMICIRCLE, PARABOLICAL, ELLIPTICAL, TRIANGULAR, FOLIUM, SINUSOIDAL2, SINUSOIDAL, CRANE
     }
     JumpType jumpType;
 
@@ -111,38 +112,57 @@ public class AnimationEffect {
                 jumpPath.getPath().reverse();
                 break;
             case ELLIPTICAL:
-                jumpPath = Shape.arc(PI).scale(1, 2 * jumpHeight / dist);
+                jumpPath = Shape.arc(PI).scale(.5);//.scale(1, 2 * jumpHeight / dist);
                 jumpPath.getPath().reverse();
                 break;
             case TRIANGULAR:
-                jumpPath = Shape.polyLine(Point.origin(), Point.at(1, 1), Point.at(2, 0));
-                jumpPath.scale(1, jumpPath.getWidth() * jumpHeight / dist);
+                jumpPath = Shape.polyLine(
+                        Point.origin(),
+                        Point.at(.7, .7),
+                        Point.at(1, 1),
+                        Point.at(1.3, .7),
+                        Point.at(2, 0));
+                break;
+            case FOLIUM:
+                jumpPath = SVGMathObject.make("#foliumJumpPath.svg").get(0).scale(1, -1);
                 break;
             case PARABOLICAL:
                 jumpPath = new Shape(FunctionGraph.make(t -> 4 * t * (1 - t), 0, 1).getPath());
                 jumpPath.scale(1, jumpPath.getWidth() * jumpHeight / dist);
                 break;
             case SINUSOIDAL:
-                jumpPath = new Shape(FunctionGraph.make(t -> Math.sin(PI*t), 0, 1).getPath());
-                jumpPath.scale(1, jumpPath.getWidth() * jumpHeight / dist);
+                jumpPath = new Shape(FunctionGraph.make(t -> Math.sin(PI * t), 0, 1).getPath());
                 break;
             case SINUSOIDAL2:
 //                jumpPath = new Shape(FunctionGraph.make(t -> 10.39230484541326*t*(1-t)*(1-2*t), 0, 1).getPath());
-                jumpPath = new Shape(FunctionGraph.make(t -> Math.sin(2*PI * t), 0, 1).getPath());
-                jumpPath.scale(1, jumpPath.getWidth() * jumpHeight / dist);
+                jumpPath = new Shape(FunctionGraph.make(t -> Math.sin(2 * PI * t), 0, 1).getPath());
                 break;
             case CRANE:
-                jumpPath = Shape.polyLine(Point.origin(), Point.at(0, 1), Point.at(1, 1), Point.at(1, 0));
-                jumpPath.scale(1, jumpPath.getWidth() * jumpHeight / dist);
+                jumpPath = Shape.polyLine(
+                        Point.origin(),
+                        Point.at(0, .7),
+                        Point.at(0, 1),
+                        Point.at(.3, 1),
+                        Point.at(.7, 1),
+                        Point.at(1, 1),
+                        Point.at(1, .7),
+                        Point.at(1, 0));
                 break;
         }
+
         if (jumpPath != null) {
+            if (jumpType != JumpType.SEMICIRCLE) {
+                jumpPath.scale(1, jumpPath.getWidth() * jumpHeight / (jumpPath.getHeight() * dist));
+            }
+            if (jumpType==JumpType.ELLIPTICAL) {
+                jumpPath.scale(1,1.25);
+            }
             AffineJTransform.createDirect2DHomothecy(jumpPath.getPoint(0), jumpPath.getPoint(-1), A, B, 1).applyTransform(jumpPath);
             jumpPaths.put(obj, jumpPath.getPath());
         }
     }
 
-    protected void applyJumpEffectExperimental(double t, MathObject obj) {
+    protected void applyJumpEffect(double t, MathObject obj) {
         if (jumpPaths.containsKey(obj)) {
             obj.moveTo(jumpPaths.get(obj).getPointAt(t).p);
         }
@@ -150,56 +170,10 @@ public class AnimationEffect {
     }
 
     protected void applyAnimationEffects(double lt, MathObject obj) {
-        applyJumpEffectExperimental(lt, obj);
+        applyJumpEffect(lt, obj);
         applyScaleEffect(lt, obj);
         applyRotationEffect(lt, obj);
         applyAlphaScaleEffect(lt, obj);
-    }
-
-//    protected void applyJumpEffect(double t, Vec jumpVector, MathObject obj) {
-//        try {
-//            if (jumpHeight == 0) {
-//                return;
-//            }
-//
-//            double jlt = 0;
-//            switch (jumpType) {
-//                case PARABOLICAL:
-//                    jlt = 4 * t * (1 - t) * jumpHeight;
-//                    break;
-//                case ELLIPTICAL:
-//                    jlt = 2 * Math.sqrt(t * (1 - t)) * jumpHeight;
-//                    break;
-//                case TRIANGULAR:
-//                    jlt = (t < .5 ? t : 1 - t) * jumpHeight;
-//                    break;
-//                case SINUSOIDAL2:
-//                    jlt = Math.sin(2 * t * PI) * jumpHeight;
-//                    break;
-//                case SINUSOIDAL:
-//                    jlt = Math.sin(t * PI) * jumpHeight;
-//                    break;
-//                case PARABOLLICALRECT:
-//                    double a = .2;
-//                    if (t < a) {
-//                        jlt = 2 * t / a * (1 - 0.5 * t / a);
-//                    } else if (t > 1 - a) {
-//                        jlt = 2 * (1 - t) / a * (1 - 0.5 * (1 - t) / a);
-//                    }
-//                    if ((t >= a) && (t <= 1 - a)) {
-//                        jlt = 1;
-//                    }
-//                    jlt *= jumpHeight;
-//                    break;
-//
-//            }
-//
-//            obj.shift(jumpVector.mult(jlt));
-//        } catch (NullPointerException e) {
-//        }
-//    }
-    public boolean shouldApplyEffects() {
-        return ((0 != jumpHeight) || (1 != alphaScaleEffect) || (1 != scaleEffect) || (0 != numTurns));
     }
 
     public void copyEffectParametersFrom(AnimationEffect obj) {

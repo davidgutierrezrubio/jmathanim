@@ -18,7 +18,6 @@
 package com.jmathanim.Cameras;
 
 import com.jmathanim.Utils.Vec;
-import com.jmathanim.jmathanim.JMathAnimScene;
 
 /**
  * A dummy camera that does not perform scale changes. Used primarily for fast

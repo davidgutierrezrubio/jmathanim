@@ -17,7 +17,6 @@
  */
 package com.jmathanim.Styling;
 
-import com.jmathanim.Styling.MODrawProperties;
 import com.jmathanim.Utils.JMathAnimConfig;
 import com.jmathanim.Utils.ResourceLoader;
 import com.jmathanim.jmathanim.JMathAnimScene;

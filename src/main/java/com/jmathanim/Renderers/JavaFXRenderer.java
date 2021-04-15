@@ -27,9 +27,7 @@ import com.jmathanim.jmathanim.JMathAnimScene;
 import static com.jmathanim.jmathanim.JMathAnimScene.DEGREES;
 import com.jmathanim.mathobjects.AbstractJMImage;
 import com.jmathanim.mathobjects.JMPath;
-import com.jmathanim.mathobjects.JMPathPoint;
 import com.jmathanim.mathobjects.MathObject;
-import com.jmathanim.mathobjects.Point;
 import com.jmathanim.mathobjects.Shape;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -44,7 +42,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Application;
 import javafx.application.Platform;
-import javafx.collections.ObservableList;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.geometry.Bounds;
 import javafx.geometry.Rectangle2D;
@@ -58,12 +55,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.image.WritableImage;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.ClosePath;
-import javafx.scene.shape.CubicCurveTo;
-import javafx.scene.shape.LineTo;
-import javafx.scene.shape.MoveTo;
 import javafx.scene.shape.Path;
-import javafx.scene.shape.PathElement;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.StrokeLineJoin;
 import javafx.scene.shape.StrokeType;
@@ -71,7 +63,6 @@ import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.scene.transform.Rotate;
 import javafx.scene.transform.Translate;
-import javax.imageio.ImageIO;
 
 /**
  *

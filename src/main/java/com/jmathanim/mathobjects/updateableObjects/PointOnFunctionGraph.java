@@ -30,8 +30,8 @@ import com.jmathanim.mathobjects.Point;
 public class PointOnFunctionGraph extends Point {
 
     FunctionGraph fg;
-    private Point slopePointRight;
-    private Point slopePointLeft;
+    private final Point slopePointRight;
+    private final Point slopePointLeft;
 
     /**
      * Creates an updateable point which automatically updates the y-component

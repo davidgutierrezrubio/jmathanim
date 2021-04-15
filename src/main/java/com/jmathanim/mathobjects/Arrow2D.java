@@ -17,12 +17,11 @@
  */
 package com.jmathanim.mathobjects;
 
-import com.jmathanim.Utils.AffineJTransform;
 import com.jmathanim.Renderers.Renderer;
-import com.jmathanim.Styling.JMColor;
-import com.jmathanim.Utils.JMathAnimConfig;
 import com.jmathanim.Styling.MODrawPropertiesArray;
 import com.jmathanim.Styling.Stylable;
+import com.jmathanim.Utils.AffineJTransform;
+import com.jmathanim.Utils.JMathAnimConfig;
 import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.ResourceLoader;
 import com.jmathanim.Utils.Vec;
@@ -35,7 +34,7 @@ import java.net.URL;
  */
 public class Arrow2D extends MathObject {
 
-    private MODrawPropertiesArray mpArray;
+    private final MODrawPropertiesArray mpArray;
     private MultiShapeObject arrowHeadToDraw1;
     private MultiShapeObject arrowHeadToDraw2;
     private Shape bodyToDraw;

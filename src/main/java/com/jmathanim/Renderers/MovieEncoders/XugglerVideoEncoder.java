@@ -19,7 +19,6 @@ package com.jmathanim.Renderers.MovieEncoders;
 
 import com.jmathanim.Utils.JMathAnimConfig;
 import com.jmathanim.jmathanim.JMathAnimScene;
-import com.xuggle.xuggler.IAudioResampler;
 import com.xuggle.mediatool.IMediaWriter;
 import com.xuggle.mediatool.ToolFactory;
 import com.xuggle.xuggler.IAudioSamples;
@@ -33,10 +32,8 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.concurrent.TimeUnit;
-import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
-import javax.sound.sampled.DataLine;
 
 /**
  *

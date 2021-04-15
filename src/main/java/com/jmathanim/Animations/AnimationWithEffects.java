@@ -37,7 +37,6 @@ public class AnimationWithEffects extends Animation {
     public AnimationEffect getEffect() {
         return effect;
     }
-    
 
     @Override
     public void doAnim(double t) {//Nothing to do  here, it will be overriden

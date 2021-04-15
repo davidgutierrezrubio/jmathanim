@@ -17,7 +17,6 @@
  */
 package com.jmathanim.Animations.Strategies.ShowCreation;
 
-import com.jmathanim.Animations.Animation;
 import com.jmathanim.Animations.AnimationGroup;
 import com.jmathanim.Animations.ShowCreation;
 import com.jmathanim.jmathanim.JMathAnimScene;
@@ -31,7 +30,7 @@ import com.jmathanim.mathobjects.MathObjectGroup;
 public class GroupCreationAnimation extends CreationStrategy {
 
     private final MathObjectGroup group;
-    private AnimationGroup anim;
+    private final AnimationGroup anim;
 
     public GroupCreationAnimation(double runtime, MathObjectGroup group) {
         super(runtime);

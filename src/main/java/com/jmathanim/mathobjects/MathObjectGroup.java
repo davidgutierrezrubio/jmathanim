@@ -18,10 +18,10 @@
 package com.jmathanim.mathobjects;
 
 import com.jmathanim.Renderers.Renderer;
-import com.jmathanim.Utils.AffineJTransform;
-import com.jmathanim.Utils.Anchor;
 import com.jmathanim.Styling.MODrawPropertiesArray;
 import com.jmathanim.Styling.Stylable;
+import com.jmathanim.Utils.AffineJTransform;
+import com.jmathanim.Utils.Anchor;
 import com.jmathanim.Utils.Layouts.GroupLayout;
 import com.jmathanim.Utils.Rect;
 import com.jmathanim.jmathanim.JMathAnimScene;

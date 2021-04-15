@@ -17,7 +17,6 @@
  */
 package com.jmathanim.Utils;
 
-import com.jmathanim.Utils.Vec;
 import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.Point;
 import org.apache.commons.math3.linear.LUDecomposition;

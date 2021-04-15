@@ -26,15 +26,14 @@ import com.jmathanim.Animations.Strategies.Transform.Optimizers.NullOptimization
 import com.jmathanim.Animations.Strategies.Transform.PointInterpolationCanonical;
 import com.jmathanim.Animations.Strategies.Transform.PointInterpolationSimpleShapeTransform;
 import com.jmathanim.Animations.Strategies.Transform.RotateAndScaleXYTransform;
-import com.jmathanim.Utils.JMathAnimConfig;
 import com.jmathanim.Styling.MODrawProperties;
+import com.jmathanim.Utils.JMathAnimConfig;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.Arrow2D;
 import com.jmathanim.mathobjects.FunctionGraph;
 import com.jmathanim.mathobjects.Line;
 import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.MultiShapeObject;
-import com.jmathanim.mathobjects.Point;
 import com.jmathanim.mathobjects.Shape;
 
 /**
@@ -59,7 +58,7 @@ public class Transform extends AnimationWithEffects {
     private TransformMethod transformMethod;
     private boolean shouldOptimizePathsFirst;
     public boolean forceChangeDirection;
-    private boolean isFinished;
+    private final boolean isFinished;
     private Animation transformStrategy;
     
     public static Transform make(double runTime, MathObject ob1, MathObject ob2) {

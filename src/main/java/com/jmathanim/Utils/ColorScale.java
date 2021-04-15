@@ -36,8 +36,8 @@ public class ColorScale {
         return cs;
     }
 
-    private ArrayList<Double> markers;
-    private HashMap<Double, JMColor> colors;
+    private final ArrayList<Double> markers;
+    private final HashMap<Double, JMColor> colors;
 
     public ColorScale() {
         markers = new ArrayList<>();
