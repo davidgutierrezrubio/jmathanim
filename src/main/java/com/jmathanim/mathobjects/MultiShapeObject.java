@@ -231,13 +231,13 @@ public class MultiShapeObject extends MathObject implements Iterable<Shape> {
      * sign
      *
      * @param <T> Calling subclass
-     * @param n Shape index of the shape to align
-     * @param lat The other multishape object
-     * @param m Index of the shape of the other multishape to align with
+     * @param index Shape index of the shape to align
+     * @param otherObject The other multishape object
+     * @param indexOtherObject Index of the shape of the other multishape to align with
      * @return This object
      */
-    public <T extends MultiShapeObject> T alignCenter(int n, MultiShapeObject lat, int m) {
-        shift(this.get(n).getCenter().to(lat.get(m).getCenter()));
+    public <T extends MultiShapeObject> T alignCenter(int index, MultiShapeObject otherObject, int indexOtherObject) {
+        shift(this.get(index).getCenter().to(otherObject.get(indexOtherObject).getCenter()));
         return (T) this;
     }
 

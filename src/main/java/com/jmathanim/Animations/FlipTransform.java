@@ -29,7 +29,7 @@ import com.jmathanim.mathobjects.Point;
 public class FlipTransform extends AnimationWithEffects {
 
     public enum FlipType {
-        HORIZONTAL, VERTICAL,GUAY
+        HORIZONTAL, VERTICAL,BOTH
     }
     FlipType flipType;
     MathObject objOrig, objDst;
@@ -77,6 +77,18 @@ public class FlipTransform extends AnimationWithEffects {
     public static FlipTransform VFlip(double runTime, MathObject objOrig, MathObject objDst) {
         return new FlipTransform(runTime, FlipType.VERTICAL, objOrig, objDst);
     }
+    
+     /**
+     * Static method to build a flip animation both vertically and horizontally
+     *
+     * @param runTime Duration in seconds
+     * @param objOrig Original object
+     * @param objDst Destiny object
+     * @return The animation to play with the playAnim method
+     */
+    public static FlipTransform Flip(double runTime, MathObject objOrig, MathObject objDst) {
+        return new FlipTransform(runTime, FlipType.BOTH, objOrig, objDst);
+    }
 
     @Override
     public void initialize(JMathAnimScene scene) {
@@ -123,7 +135,7 @@ public class FlipTransform extends AnimationWithEffects {
                 scales[0] = 1;
                 scales[1] = (lt < .5 ? 1 - 2 * lt : 2 * lt - 1);
                 break;
-                case GUAY:
+                case BOTH:
                      scales[0] = (lt < .5 ? 1 - 2 * lt : 2 * lt - 1);
                       scales[1] = (lt < .5 ? 1 - 2 * lt : 2 * lt - 1);
                 

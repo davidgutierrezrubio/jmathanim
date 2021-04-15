@@ -152,66 +152,19 @@ public class TransformMathExpressionParameters {
         return transformStyle;
     }
 
+    /**
+     * Sets the type of transformation to apply to a part of a math expression.
+     *
+     * @param transformStyle A value of TransformMathExpression.TransformType
+     * enum
+     * @return This object
+     */
     public TransformMathExpressionParameters setTransformStyle(TransformMathExpression.TransformType transformStyle) {
         this.transformStyle = transformStyle;
         return this;
     }
 
-    public Animation createJumpAnimation(double runTime, Vec v, Shape sh) {
-        Vec shiftVector = Vec.to(-v.y, v.x).normalize().mult(getJumpHeightFromJumpEffect());
-
-        final Animation jumpShift = Commands.shift(runTime, shiftVector, sh);
-        jumpShift.setLambda(t -> Math.sin(PI * t));
-        jumpShift.setUseObjectState(false);
-        return jumpShift;
-    }
-
-    public Animation createRotateAnimation(double runTime, Shape sh) {
-        Animation rotation = Commands.rotate(runTime, 2 * PI * getNumTurns(), sh);
-        rotation.setUseObjectState(false);
-        return rotation;
-    }
-
-    public Animation createAlphaMultAnimation(double runTime, Shape sh) {
-        //Parabola parameter so that mininum reaches at (.5,par.getAlphaMultFromAlphaEffect())
-        double L = 4 * (1 - getAlphaMultFromAlphaEffect());
-        Animation changeAlpha = new Animation(runTime) {
-            @Override
-            public void doAnim(double t) {
-                double lt = 1 - t * (1 - t) * L;
-                sh.fillAlpha(lt * sh.getMp().getFillColor().alpha);
-                sh.drawAlpha(lt * sh.getMp().getDrawColor().alpha);
-            }
-
-            @Override
-            public void finishAnimation() {
-                super.finishAnimation();
-                doAnim(1);
-            }
-        };
-        return changeAlpha;
-    }
-
-    public Animation createScaleAnimation(double runTime, Shape sh) {
-        //Parabola parameter so that mininum reaches at (.5,par.getAlphaMultFromAlphaEffect())
-        double L = 4 * (1 - getScaleFromScaleEffect());
-        return new Animation(runTime) {
-
-            @Override
-            public void doAnim(double t) {
-                double lt = 1 - t * (1 - t) * L;
-                sh.scale(lt);
-            }
-
-            @Override
-            public void finishAnimation() {
-                super.finishAnimation();
-                doAnim(1);
-            }
-        };
-    }
-
-    public AnimationEffect.JumpType getJumptype() {
+    protected AnimationEffect.JumpType getJumptype() {
         return jumptype;
     }
 

@@ -52,7 +52,7 @@ public class TransformMathExpression extends Animation {
     }
 
     public enum TransformType {
-        INTERPOLATION, FLIP_HORIZONTALLY, FLIP_VERTICALLY
+        INTERPOLATION, FLIP_HORIZONTALLY, FLIP_VERTICALLY, FLIP_BOTH
     }
 
     private final MultiShapeObject latexDestiny;
@@ -202,24 +202,18 @@ public class TransformMathExpression extends Animation {
 
     private void createTransformSubAnimation(Shape sh, Shape sh2, TransformMathExpressionParameters par) {
         AnimationWithEffects transform = null;
-        AnimationGroup ag;
         switch (par.getTransformStyle()) {
             case INTERPOLATION:
                 transform = new Transform(runTime, sh, sh2);
-
                 break;
             case FLIP_HORIZONTALLY:
-//                ag = new AnimationGroup();
-//                ag.add(Commands.shift(runTime, sh.getCenter().to(sh2.getCenter()), sh).setLambda(t->t));
-//                ag.add(Commands.flipTransform(runTime, true, sh, sh2).setUseObjectState(false));
-//                transform = ag;
                 transform = new FlipTransform(runTime, FlipTransform.FlipType.HORIZONTAL, sh, sh2);
                 break;
             case FLIP_VERTICALLY:
-//                ag = new AnimationGroup();
-//                ag.add(Commands.flipTransform(runTime, false, sh, sh2));
-//                transform = ag;
                 transform = new FlipTransform(runTime, FlipTransform.FlipType.VERTICAL, sh, sh2);
+                break;
+            case FLIP_BOTH:
+                transform = new FlipTransform(runTime, FlipTransform.FlipType.BOTH, sh, sh2);
                 break;
         }
         transform.setLambda(lambda);
