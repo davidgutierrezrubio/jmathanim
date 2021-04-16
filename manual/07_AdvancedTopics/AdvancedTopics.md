@@ -278,9 +278,42 @@ waitSeconds(3);
 
 ![nestedShiftEffects](nestedShiftEffects.gif)
 
+# Effects in shift animations
+
+The shifting-type animations (`shift`,  `stackTo`, `align`, `moveIn`, `moveOut` and `setLayout`)  all inherit from the `ShiftAnimation`class. These methods allows additional effects:
+
+## Rotation by any angle
+
+Apart from the `.addRotationEffect` you can also use the method `.addRotationEffectByAngle` to specify an arbitrary rotation angle. However, keep in mind that animations like `setLayout` or `stackTo` compute the shifting vectors without taking into account this.
+
+## Setting animations for individual objects
+
+All methods to add effects have overloaded methods when you can set an effect for a particular object added to the animation. For example, let's suppose we have a MathObjectGroup with 10 squares and want to shift them, each one with a different rotation angle. We can accomplish this by creating 10 individual shift animations and setting the rotation angle effect for each one, but we can achieve the same effect with a single animation:
+
+```java
+MathObjectGroup squares = MathObjectGroup.make();
+for (int n = 0; n < 10; n++) {
+    squares.add(Shape.square().scale(.1).thickness(3).fillColor(JMColor.random()));
+}
+squares.setLayout(MathObjectGroup.Layout.RIGHT,.1).center();
+
+//Note that in the animation we pass squares.toArray() instead of squares. This way we are passing the
+//10 squares instead of a single object
+ShiftAnimation anim=Commands.shift(5, 0,-1, squares.toArray());
+for (int n = 0; n < 10; n++) {
+    anim.addRotationEffectByAngle(squares.get(n),PI*n/9);//Sets different rotation angles for each object
+}
+playAnimation(anim);
+waitSeconds(2);
+```
+
+![shiftAnimEffect1](shiftAnimEffect1.gif)
+
+
+
 ## The delay effect
 
-This effect can be applied to shifting-type animations (`shift`,  `stackTo`, `align`, `moveIn`, `moveOut` and `setLayout`) when several objects are animated. Instead of moving all object at the same time, a delay is applied creating the effect of a queue of moving objects. For example, let's create a simple animation that changes the layout of a group of squares, leaving commented the line that adds the delay effect:
+This effect can be applied to shifting-type animations when several objects are animated. Instead of moving all object at the same time, a delay is applied creating the effect of a queue of moving objects. For example, let's create a simple animation that changes the layout of a group of squares, leaving commented the line that adds the delay effect:
 
 ```java
 MathObjectGroup smallSquaresGroup = MathObjectGroup.make();

@@ -189,7 +189,7 @@ waitSeconds(3);
 
 ## Range mapping
 
-If we need to map a bunch of consecutive origin indexes into another bunch of consecutive destiny indexes , the method `mapRange(OrigA,OrigB,dst)` do exactly this. The command
+If we need to map a bunch of consecutive origin indexes into another bunch of consecutive destiny indexes , the method `mapRange(OrigA,OrigB,dst)` does exactly this. The command
 
 ```java
 tr.mapRange(3,7,13);
