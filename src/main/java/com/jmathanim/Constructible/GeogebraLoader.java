@@ -93,7 +93,6 @@ public class GeogebraLoader {
         }
         
         Element root = doc.getDocumentElement();
-        String n = root.getNodeName();
         if (!"geogebra".equals(root.getNodeName())) {
             try {
                 throw new Exception("XML File doesn't contain a valid Geogebra file");

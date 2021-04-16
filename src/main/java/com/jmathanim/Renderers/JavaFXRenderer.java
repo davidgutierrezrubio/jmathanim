@@ -103,9 +103,9 @@ public class JavaFXRenderer extends Renderer {
     public JavaFXRenderer(JMathAnimScene parentScene) throws Exception {
         super(parentScene);
         camera = new Camera(parentScene, config.mediaW, config.mediaH);
-        camera.setMathXY(XMIN_DEFAULT, XMAX_DEFAULT, 0);
+        camera.initialize(XMIN_DEFAULT, XMAX_DEFAULT, 0);
         fixedCamera = new Camera(parentScene, config.mediaW, config.mediaH);
-        fixedCamera.setMathXY(XMIN_DEFAULT, XMAX_DEFAULT, 0);
+        fixedCamera.initialize(XMIN_DEFAULT, XMAX_DEFAULT, 0);
 
         fxnodes = new ArrayList<>();
         debugFXnodes = new ArrayList<>();
@@ -379,7 +379,6 @@ public class JavaFXRenderer extends Renderer {
      * @return The coordinates to be used with the fixed camera
      */
     public Vec defaultToFixedCamera(Vec v) {
-        double width1 = camera.getMathView().getWidth();
         double[] ms = camera.mathToScreenFX(v);
         double[] coords = fixedCamera.screenToMath(ms[0], ms[1]);
         return new Vec(coords[0], coords[1]);

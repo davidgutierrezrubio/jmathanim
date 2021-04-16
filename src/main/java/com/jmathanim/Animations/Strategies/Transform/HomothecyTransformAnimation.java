@@ -35,7 +35,6 @@ public class HomothecyTransformAnimation extends AnimationWithEffects {
     private AnimationWithEffects homothecy;
     private final Shape mobjTransformed;
     private final Shape mobjDestiny;
-    private final MODrawProperties mpBase;
 //    private final Shape mobjTransformedOrig;
 
     public HomothecyTransformAnimation(double runtime, Shape mobjTransformed, Shape mobjDestiny) {
@@ -43,7 +42,6 @@ public class HomothecyTransformAnimation extends AnimationWithEffects {
         this.mobjTransformed = mobjTransformed;//.copy();
 //        this.mobjTransformedOrig = mobjTransformed;
         this.mobjDestiny = mobjDestiny;
-        mpBase = mobjTransformed.getMp().copy();
 
     }
 

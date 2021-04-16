@@ -47,6 +47,11 @@ public class Camera {
     protected double xmin, xmax, ymin, ymax;
 
     /**
+     * Values to reset the camera
+     */
+    protected double[] resetValues;
+
+    /**
      * Gaps to add when adjusting view to an object or Rect
      */
     protected double hgap = .1, vgap = .1;
@@ -59,6 +64,13 @@ public class Camera {
         this.screenHeight = screenHeight;
         this.scene = scene;
 
+    }
+
+    /**
+     * Sets the camera to its default values
+     */
+    public void reset() {
+        setMathXY(resetValues[0], resetValues[1], resetValues[2]);
     }
 
     /**
@@ -323,6 +335,11 @@ public class Camera {
 
     public Vec getGaps() {
         return new Vec(hgap, vgap);
+    }
+
+    public void initialize(double xmin, double xmax, double ycenter) {
+        setMathXY(xmin, xmax, ycenter);
+        resetValues=new double[]{xmin,xmax,ycenter};
     }
 
 }

@@ -118,7 +118,7 @@ public class DensityPlot extends AbstractJMImage {
         });
         Platform.runLater(task);
         try {
-            int resul = task.get();
+            task.get();
         } catch (InterruptedException | ExecutionException ex) {
             Logger.getLogger(DensityPlot.class.getName()).log(Level.SEVERE, null, ex);
         }

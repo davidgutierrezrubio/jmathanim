@@ -128,9 +128,7 @@ public class Arrow2D extends MathObject {
 //    private Arrow2D(Point p1, Point p2, Shape head1, Shape head2) {
 //        this(p1, p2, new MultiShapeObject(head1), new MultiShapeObject(head2));
 //    }
-    public final MultiShapeObject buildArrowHead(ArrowType type, int side) {
-        SVGMathObject head = null;
-
+    private final MultiShapeObject buildArrowHead(ArrowType type, int side) {
         int anchorValue;
         double scaleDefaultValue;
         switch (type) {//TODO: Improve this
@@ -158,7 +156,9 @@ public class Arrow2D extends MathObject {
             defaultArrowHead1Size2 *= scaleDefaultValue;
         }
 
-        return Arrow2D.buildArrowHead(type);
+        MultiShapeObject resul = Arrow2D.buildArrowHead(type);
+        resul.getMp().copyFrom(getMp());
+        return resul;
     }
 
     public static MultiShapeObject buildArrowHead(ArrowType type) {
@@ -331,6 +331,8 @@ public class Arrow2D extends MathObject {
 //            arrowHeadToDraw1.draw(scene.getConfig().getRenderer());
             JMPathPoint pa = bodyToDraw.getPath().getJMPoint(1);
             pa.p.v.copyFrom(arrowHeadToDraw1.get(0).get(anchorPoint1).p.v);
+            arrowHeadToDraw1.drawColor(getMp().getDrawColor());
+            arrowHeadToDraw1.fillColor(getMp().getDrawColor());
         }
 
         if (this.head2.size() > 0) {
@@ -351,6 +353,8 @@ public class Arrow2D extends MathObject {
 
             JMPathPoint pa = bodyToDraw.getPath().getJMPoint(0);
             pa.p.v.copyFrom(arrowHeadToDraw2.get(0).get(anchorPoint2).p.v);
+            arrowHeadToDraw2.drawColor(getMp().getDrawColor());
+            arrowHeadToDraw2.fillColor(getMp().getDrawColor());
         }
     }
 

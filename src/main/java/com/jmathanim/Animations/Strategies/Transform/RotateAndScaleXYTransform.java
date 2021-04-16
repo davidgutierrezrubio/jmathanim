@@ -35,7 +35,6 @@ public class RotateAndScaleXYTransform extends AnimationWithEffects {
     private final Shape mobjTransformed;
     private MODrawProperties mpBase;
     Point A, B, C, D, E, F;
-    private Vec jumpVector;
 
     public RotateAndScaleXYTransform(double runtime, Shape mobjTransformed, Shape mobjDestiny) {
         super(runtime);
@@ -84,7 +83,6 @@ public class RotateAndScaleXYTransform extends AnimationWithEffects {
         tr2.setV2Img(0, proportionalHeight * lt + (1 - lt) * 1); //Interpolated here
         //Finally, and homothecy to carry A,B into D,E
         AffineJTransform tr3 = AffineJTransform.createDirect2DHomothecy(A, B, D, E, lt);//Interpolated here
-        AffineJTransform id = new AffineJTransform();
         //The final transformation
         AffineJTransform tr = tr1.compose(tr2).compose(tr1.getInverse()).compose(tr3);
         return tr;

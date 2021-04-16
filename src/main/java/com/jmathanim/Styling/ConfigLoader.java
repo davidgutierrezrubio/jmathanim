@@ -55,7 +55,6 @@ public class ConfigLoader {
             doc.getDocumentElement().normalize();
 
             Element root = doc.getDocumentElement();
-            String n = root.getNodeName();
             if (!"JMathAnimConfig".equals(root.getNodeName())) {
                 try {
                     throw new Exception("XML File doesn't contain a valid config file");
@@ -65,7 +64,7 @@ public class ConfigLoader {
                 }
             }
 
-            parseLoadConfigOptions(config, root.getElementsByTagName("include"));
+            parseLoadConfigOptions(root.getElementsByTagName("include"));
             parseVideoOptions(config, root.getElementsByTagName("video"));
             parseBackgroundOptions(config, root.getElementsByTagName("background"));
             parseStyles(config, root.getElementsByTagName("styles"));
@@ -192,7 +191,7 @@ public class ConfigLoader {
         return mp;
     }
 
-    private static void parseLoadConfigOptions(JMathAnimConfig config, NodeList includeTags) {
+    private static void parseLoadConfigOptions(NodeList includeTags) {
         for (int n = 0; n < includeTags.getLength(); n++) {
             Node item = includeTags.item(n);
             JMathAnimScene.logger.debug("Including file {}", item.getTextContent());

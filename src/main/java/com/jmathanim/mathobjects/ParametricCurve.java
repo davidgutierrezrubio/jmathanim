@@ -216,7 +216,7 @@ public class ParametricCurve extends Shape {
         return value;
     }
 
-    private JMPathPoint addT(double t) {
+    public JMPathPoint addT(double t) {
         int n = 0;
         double x0 = tPoints.get(0);
         while (x0 < t) {

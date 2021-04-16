@@ -102,10 +102,10 @@ public class GeogebraCommandParser {
         geogebraElements.put(label, resul);
     }
 
-    private String getInputArgument(Element el, int num) {
-        Element elInput = firstElementWithTag(el, "input");
-        return elInput.getAttribute("a" + num);
-    }
+//    private String getInputArgument(Element el, int num) {
+//        Element elInput = firstElementWithTag(el, "input");
+//        return elInput.getAttribute("a" + num);
+//    }
 
     private String getOutputArgument(Element el, int num) {
         Element elOutput = firstElementWithTag(el, "output");

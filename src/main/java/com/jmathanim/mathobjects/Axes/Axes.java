@@ -385,7 +385,6 @@ public class Axes extends MathObject {
 
         yticks.clear();
         for (int n = 0; n < yticksBase.size(); n++) {
-            double l = yticksBase.get(n).location;
             if ((yticksBase.get(n).shouldDraw(scene.getCamera()))) {
                 TickAxes copy = yticksBase.get(n).copy();
                 copy.tick.scale(scale);

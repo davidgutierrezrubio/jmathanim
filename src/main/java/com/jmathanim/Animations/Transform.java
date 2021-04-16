@@ -54,11 +54,9 @@ public class Transform extends AnimationWithEffects {
     
     public final MathObject mobjDestiny;
     public MathObject mobjTransformed;
-    private MODrawProperties propBase;
     private TransformMethod transformMethod;
     private boolean shouldOptimizePathsFirst;
     public boolean forceChangeDirection;
-    private final boolean isFinished;
     private Animation transformStrategy;
     
     public static Transform make(double runTime, MathObject ob1, MathObject ob2) {
@@ -72,7 +70,6 @@ public class Transform extends AnimationWithEffects {
         transformMethod = null;
         shouldOptimizePathsFirst = true;
         forceChangeDirection = false;
-        isFinished = false;
         optimizeStrategy = null;
     }
     

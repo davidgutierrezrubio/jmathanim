@@ -36,7 +36,6 @@ public class PointInterpolationSimpleShapeTransform extends AnimationWithEffects
     private final Shape mobjTransformed;
     private final Shape mobjDestiny;
     private Shape originalShapeBaseCopy;
-    private Vec jumpVector;
     Point origCenter,dstCenter;
 
     public PointInterpolationSimpleShapeTransform(double runtime, Shape mobjTransformed, Shape mobjDestiny) {

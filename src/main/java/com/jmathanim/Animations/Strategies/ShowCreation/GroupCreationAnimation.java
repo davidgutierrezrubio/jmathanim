@@ -29,12 +29,10 @@ import com.jmathanim.mathobjects.MathObjectGroup;
  */
 public class GroupCreationAnimation extends CreationStrategy {
 
-    private final MathObjectGroup group;
     private final AnimationGroup anim;
 
     public GroupCreationAnimation(double runtime, MathObjectGroup group) {
         super(runtime);
-        this.group = group;
         this.anim = new AnimationGroup();
         for (MathObject obj : group.getObjects()) {
             this.anim.add(new ShowCreation(runtime, obj));

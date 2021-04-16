@@ -419,13 +419,13 @@ public class JMPath implements Updateable, Stateable {
             return null;
         }
         double resul = 0;
-        double sumSq = 0;
+//        double sumSq = 0;
         double sum = 0;
         for (int n = 0; n < this.size(); n++) {
             Vec v1 = jmPathPoints.get(n).p.v;
             Vec v2 = path2.jmPathPoints.get(n).p.v;
             double dist = v1.minus(v2).norm();
-            sumSq += dist;
+//            sumSq += dist;
             sum += dist;
         }
         sum /= this.size();
@@ -728,8 +728,6 @@ public class JMPath implements Updateable, Stateable {
     public void distille() {
         //Delete points that are separated
         this.removeConsecutiveHiddenVertices();
-        ArrayList<JMPathPoint> toDelete = new ArrayList<>();
-
         double epsilon = .000001;
         int n = 0;
         while (n < this.size()) {
@@ -737,10 +735,8 @@ public class JMPath implements Updateable, Stateable {
             JMPathPoint p2 = this.getJMPoint(n + 1);
             if (p1.p.isEquivalentTo(p2.p, epsilon)) {
                 p2.cpEnter.copyFrom(p1.cpEnter);
-//                if (p2.isThisSegmentVisible) {
                 p1.isThisSegmentVisible = true;
                 p2.isCurved = p1.isCurved;
-//                }
                 this.jmPathPoints.remove(p1);
                 n = 0;
             } else {

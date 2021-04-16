@@ -39,7 +39,6 @@ public class PointInterpolationCanonical extends AnimationWithEffects {
 
     public CanonicalJMPath connectedOrigin, connectedDst, connectedOriginaRawCopy;
     private final ArrayList<Shape> addedAuxiliaryObjectsToScene;
-    private Vec jumpVector;
     private final Shape mobjTransformed;
     private final Shape mobjDestiny;
     private final Shape mobjDestinyOrig;
@@ -249,30 +248,30 @@ public class PointInterpolationCanonical extends AnimationWithEffects {
 
     }
 
-    private CanonicalJMPath divideConnectedComponent(JMPath pathToDivide, int numberOfDivisions) {
-        if (pathToDivide.size() < numberOfDivisions + 1) {
-            //I must ensure they have at least numDivs+1 points! (+1 if n<rest)
-            pathToDivide.alignPathsToGivenNumberOfElements(numberOfDivisions + 1);
-        }
-        //Length of each SEGMENT
-        int stepDiv = ((pathToDivide.size() - 1) / (numberOfDivisions)); //Euclidean quotient
-        int rest = ((pathToDivide.size() - 1) % (numberOfDivisions));//Euclidean rest
-
-        //Now separate appropiate vertices
-        int step = stepDiv;
-        ArrayList<JMPathPoint> pointsToSeparate = new ArrayList<>();
-        for (int k = 1; k < numberOfDivisions; k++) {
-            pointsToSeparate.add(pathToDivide.getJMPoint(step));
-            step += stepDiv;
-            step += (k < rest ? 1 : 0);
-        }
-        //Now that I marked correspondent points to separate, do the separation
-        for (JMPathPoint p : pointsToSeparate) {
-            int k = pathToDivide.jmPathPoints.indexOf(p);
-            pathToDivide.separate(k);
-        }
-
-        return pathToDivide.canonicalForm();
-    }
+//    private CanonicalJMPath divideConnectedComponent(JMPath pathToDivide, int numberOfDivisions) {
+//        if (pathToDivide.size() < numberOfDivisions + 1) {
+//            //I must ensure they have at least numDivs+1 points! (+1 if n<rest)
+//            pathToDivide.alignPathsToGivenNumberOfElements(numberOfDivisions + 1);
+//        }
+//        //Length of each SEGMENT
+//        int stepDiv = ((pathToDivide.size() - 1) / (numberOfDivisions)); //Euclidean quotient
+//        int rest = ((pathToDivide.size() - 1) % (numberOfDivisions));//Euclidean rest
+//
+//        //Now separate appropiate vertices
+//        int step = stepDiv;
+//        ArrayList<JMPathPoint> pointsToSeparate = new ArrayList<>();
+//        for (int k = 1; k < numberOfDivisions; k++) {
+//            pointsToSeparate.add(pathToDivide.getJMPoint(step));
+//            step += stepDiv;
+//            step += (k < rest ? 1 : 0);
+//        }
+//        //Now that I marked correspondent points to separate, do the separation
+//        for (JMPathPoint p : pointsToSeparate) {
+//            int k = pathToDivide.jmPathPoints.indexOf(p);
+//            pathToDivide.separate(k);
+//        }
+//
+//        return pathToDivide.canonicalForm();
+//    }
 
 }

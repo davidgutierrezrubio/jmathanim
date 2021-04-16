@@ -67,10 +67,6 @@ public class JMathAnimConfig {
      */
     private Renderer renderer;
     /**
-     * The camera used in the scene
-     */
-    private Camera camera;
-    /**
      * If true, the current renderer should render the result into a movie
      */
     private boolean createMovie = false;

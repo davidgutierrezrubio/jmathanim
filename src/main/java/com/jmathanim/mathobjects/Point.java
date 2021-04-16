@@ -36,7 +36,6 @@ import org.apache.commons.math3.linear.RealMatrix;
 public class Point extends MathObject {
 
     public final Vec v;
-    private final Vec vBackup;
     private Shape dotShape;
 
     @Override
@@ -150,7 +149,6 @@ public class Point extends MathObject {
     public Point(double x, double y, double z, MODrawProperties mp) {
         super(mp);
         this.v = new Vec(x, y, z);
-        this.vBackup = new Vec(x, y, z);
         this.getMp().setAbsoluteThickness(true);
 //        this.getMp().thickness = 8d;//default value
     }

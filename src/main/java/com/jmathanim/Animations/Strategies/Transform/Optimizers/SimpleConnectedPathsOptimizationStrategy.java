@@ -63,34 +63,34 @@ public class SimpleConnectedPathsOptimizationStrategy implements OptimizePathsSt
         return dist;
     }
 
-    private double varDistancesBetweenPaths(JMPath pa1, JMPath pa2) {
-        ArrayList<Double> distances = new ArrayList<>();
-        for (int n = 0; n < pa1.size(); n++) {
-            double dist = pa1.getJMPoint(n).p.to(pa2.getJMPoint(n).p).norm();
-            distances.add(dist);
-        }
-        return stdDev(distances);
-    }
+//    private double varDistancesBetweenPaths(JMPath pa1, JMPath pa2) {
+//        ArrayList<Double> distances = new ArrayList<>();
+//        for (int n = 0; n < pa1.size(); n++) {
+//            double dist = pa1.getJMPoint(n).p.to(pa2.getJMPoint(n).p).norm();
+//            distances.add(dist);
+//        }
+//        return stdDev(distances);
+//    }
+//
+//    private double varAnglesBetweenPaths(JMPath pa1, JMPath pa2) {
+//        ArrayList<Double> angles = new ArrayList<>();
+//        for (int n = 0; n < pa1.size(); n++) {
+//            double angle = pa1.getJMPoint(n).p.to(pa2.getJMPoint(n).p).getAngle();
+//            angles.add(angle);
+//        }
+//        return stdDev(angles);
+//    }
 
-    private double varAnglesBetweenPaths(JMPath pa1, JMPath pa2) {
-        ArrayList<Double> angles = new ArrayList<>();
-        for (int n = 0; n < pa1.size(); n++) {
-            double angle = pa1.getJMPoint(n).p.to(pa2.getJMPoint(n).p).getAngle();
-            angles.add(angle);
-        }
-        return stdDev(angles);
-    }
-
-    private double stdDev(ArrayList<Double> values) {
-        double var = 0;
-        double sum = 0;
-        double sumSq = 0;
-        for (Double x : values) {
-            sum += x;
-            sumSq += x * x;
-        }
-        var = sumSq / values.size() - sum * sum / values.size() / values.size();
-        return Math.sqrt(var);
-    }
+//    private double stdDev(ArrayList<Double> values) {
+//        double var = 0;
+//        double sum = 0;
+//        double sumSq = 0;
+//        for (Double x : values) {
+//            sum += x;
+//            sumSq += x * x;
+//        }
+//        var = sumSq / values.size() - sum * sum / values.size() / values.size();
+//        return Math.sqrt(var);
+//    }
 
 }

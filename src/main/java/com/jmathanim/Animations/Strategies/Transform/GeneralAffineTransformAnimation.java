@@ -40,18 +40,12 @@ public class GeneralAffineTransformAnimation extends AnimationWithEffects {
 
     private final Shape mobjTransformed;
 
-    private final Shape mobjTransformedOrig;
-    private final MODrawProperties mpBase;
 
-    private Vec jumpVector;
 
     public GeneralAffineTransformAnimation(double runTime, Shape objTr, Shape objDst) {
         super(runTime);
         this.mobjTransformed = objTr;
-        this.mobjTransformedOrig = objTr.copy();
         this.mobjDestiny = objDst;
-        mpBase = objTr.getMp().copy();
-
     }
 
     @Override

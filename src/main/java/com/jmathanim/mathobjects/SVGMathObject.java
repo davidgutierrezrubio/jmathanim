@@ -57,9 +57,9 @@ public class SVGMathObject extends MultiShapeObject {
     Double anchorY = null;
 
     JMPath importJMPathTemp;//Path to temporary import SVG Path commmands
-    private JMColor currentFillColor;
-    private JMColor currentDrawColor;
-    private double currentStrokeSize = .5d;
+//    private JMColor currentFillColor;
+//    private JMColor currentDrawColor;
+//    private double currentStrokeSize = .5d;
 
     public static SVGMathObject make(String fname) {
         return new SVGMathObject(fname);
@@ -79,8 +79,8 @@ public class SVGMathObject extends MultiShapeObject {
         } catch (Exception ex) {
             Logger.getLogger(SVGMathObject.class.getName()).log(Level.SEVERE, null, ex);
         }
-        currentFillColor = getMp().getFillColor().copy();
-        currentDrawColor = getMp().getDrawColor().copy();
+//        currentFillColor = getMp().getFillColor().copy();
+//        currentDrawColor = getMp().getDrawColor().copy();
     }
 
     public SVGMathObject(URL url) {
@@ -90,8 +90,8 @@ public class SVGMathObject extends MultiShapeObject {
         } catch (Exception ex) {
             Logger.getLogger(SVGMathObject.class.getName()).log(Level.SEVERE, null, ex);
         }
-        currentFillColor = getMp().getFillColor().copy();
-        currentDrawColor = getMp().getDrawColor().copy();
+//        currentFillColor = getMp().getFillColor().copy();
+//        currentDrawColor = getMp().getDrawColor().copy();
     }
 
     protected final void importSVG(File file) throws Exception {
@@ -216,7 +216,6 @@ public class SVGMathObject extends MultiShapeObject {
         //TODO: Do it in a more efficient way, maybe with regex patterns
         String[] tokens_1 = t.split(" ");
         ArrayList<String> tokens = new ArrayList<>();
-        boolean closeAtTheEnd = false;
         for (String tok : tokens_1) {
             StringBuilder st = new StringBuilder(tok);
             String tok2 = tok;
@@ -236,13 +235,9 @@ public class SVGMathObject extends MultiShapeObject {
         }
 
         Iterator<String> it = tokens.iterator();
-        int n = 0;
-        int nmax = tokens.size();
         double cx1, cx2, cy1, cy2;
         double xx, yy;
         String previousCommand = "";
-        Double initialX = null;
-        Double initialY = null;
         currentX = 0;
         currentY = 0;
         previousPoint.p.v.x = 0;
@@ -260,8 +255,6 @@ public class SVGMathObject extends MultiShapeObject {
                 case "M":
                     previousCommand = token;
                     getPoint(it.next(), it.next());
-                    initialX = currentX;
-                    initialY = currentY;
                     //First point. Creatline do the same as a the first point
                     previousPoint = pathLineTo(resul, currentX, currentY, false);
                     closeX = currentX;

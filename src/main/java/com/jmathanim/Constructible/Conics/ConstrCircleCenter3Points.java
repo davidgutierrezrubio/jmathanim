@@ -98,7 +98,6 @@ public class ConstrCircleCenter3Points extends ConstrCircleCenterPoint {
         // as r^2 = h^2 + k^2 - c
         double h = -g;
         double k = -f;
-        double sqr_of_r = h * h + k * k - c;
 
         // r is the radius
         

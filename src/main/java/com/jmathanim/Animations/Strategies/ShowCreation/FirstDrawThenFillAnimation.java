@@ -103,7 +103,6 @@ public class FirstDrawThenFillAnimation extends CreationStrategy {
 
         if (obj instanceof MathObjectGroup) {
             MathObjectGroup mog = (MathObjectGroup) obj;
-            double delay_time = runtime * delayPercent / (mog.getObjects().size() - 1);
             double time = runtime * (1 - delayPercent);
             if (time <= 0) {
                 JMathAnimScene.logger.error("Time too short for draw-and-fill multishape, please take a higher runtime");

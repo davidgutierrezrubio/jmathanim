@@ -149,7 +149,7 @@ public class FunctionGraph extends Shape {
         return y;
     }
 
-    private JMPathPoint addX(double x) {
+    public JMPathPoint addX(double x) {
 
         int n = 0;
         double x0 = xPoints.get(0);

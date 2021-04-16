@@ -543,11 +543,36 @@ public abstract class JMathAnimScene {
         return resul;
     }
 
+    /**
+     * Check if a MathObject is already drawed in the current frame
+     *
+     * @param obj MathObject to check
+     * @return True if is already drawed, false otherwise
+     */
     public boolean isAlreadyDrawed(MathObject obj) {
         return objectsAlreadyDrawed.contains(obj);
     }
 
+    /**
+     * Mark a MathObject as drawed in the current frame
+     *
+     * @param obj MathObject to mark
+     */
     public void markAsAlreadyDrawed(MathObject obj) {
         objectsAlreadyDrawed.add(obj);
+    }
+
+    /**
+     * Reset the scene, deleting all objects, unregistering updaters, and
+     * setting the camera to its default values
+     */
+    public void reset() {
+        for (MathObject obj: getObjects().toArray(new MathObject[getObjects().size()])) {
+            remove(obj);
+        }
+        for (Updateable upd: getObjectsToBeUpdated().toArray(new Updateable[getObjectsToBeUpdated().size()])) {
+            unregisterUpdateable(upd);
+        }
+        renderer.getCamera().reset();
     }
 }

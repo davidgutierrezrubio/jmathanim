@@ -440,7 +440,6 @@ public class Commands {
             public void doAnim(double t) {
                 double lt = getLambda().applyAsDouble(t);
                 restoreStates(mathObjects);
-                int n = 0;
                 for (MathObject obj : mathObjects) {
                     obj.getMp().interpolateFrom(mpDst, lt);
                 }

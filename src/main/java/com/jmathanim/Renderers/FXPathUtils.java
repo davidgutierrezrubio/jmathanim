@@ -204,17 +204,11 @@ public class FXPathUtils {
 
             Vec v1 = Vec.to(xy1[0] - xyPrevious[0], xy1[1] - xyPrevious[1]);
             Vec v2 = Vec.to(xy2[0] - xyPrevious[0], xy2[1] - xyPrevious[1]);
-            double c1 = v1.x / v2.x;
-            double c2 = v1.y / v2.y;
             double n1 = v1.norm();
             double n2 = v2.norm();
             if (v1.dot(v2) / (n1 * n2) == 1) {
                 return true;
             }
-
-//            if ((v1.x / v2.x == v1.y / v2.y) && (v1.x / v2.x > 0)) {
-//                return true;
-//            }
         }
 
         return false;
