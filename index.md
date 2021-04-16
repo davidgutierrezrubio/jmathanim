@@ -12,6 +12,9 @@ You can also follow my [Youtube](https://www.youtube.com/channel/UCeczwEqSrAwZbP
 # What's new?
 Version 0.9.0-SNAPSHOT:
 
+* Fixed bug loading styles from SVG objects, including LaTeXMathObject
+* Added reset() method to the JMathAnimScene class
+
 * Added effects to transform animations
 
 * Added `contains` method to `Shape` objects to check if a point lies inside the `Shape`.
