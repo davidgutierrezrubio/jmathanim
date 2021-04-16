@@ -23,7 +23,7 @@ public void update(JMathAnimScene scene);
 
 The `getUpdateLevel` method returns the order of updating this object. Objects with level 0 update first, then all with level 1, etc. Thus, if you have an updater  A that depends on that another updater B to be previously updated before, you should set the update level of A greater than of B. All necessary updating commands should be set in the `update` method.
 
-Any update must be registered on the scene to be used, with the `registerUpdateable`method. Similarly, there is `unregisterUpdateable` method that does the opposite.
+Any updater must be registered on the scene to be used, with the `registerUpdateable`method. Similarly, there is the `unregisterUpdateable` method that does the opposite.
 
 Every MathObjects implements the interface `Updateable` , and is registered when added to the scene.	
 
@@ -288,7 +288,7 @@ Apart from the `.addRotationEffect` you can also use the method `.addRotationEff
 
 ## Setting animations for individual objects
 
-All methods to add effects have overloaded methods when you can set an effect for a particular object added to the animation. For example, let's suppose we have a MathObjectGroup with 10 squares and want to shift them, each one with a different rotation angle. We can accomplish this by creating 10 individual shift animations and setting the rotation angle effect for each one, but we can achieve the same effect with a single animation:
+All methods to add effects have overloaded methods in the  `ShiftAnimation` class where you can set an effect for a particular object added to the animation. For example, let's suppose we have a MathObjectGroup with 10 squares and want to shift them, each one with a different rotation angle. We can accomplish this by creating 10 individual shift animations and setting the rotation angle effect for each one, but we can achieve the same effect with a single animation:
 
 ```java
 MathObjectGroup squares = MathObjectGroup.make();
@@ -425,8 +425,6 @@ Note that when the rotation is finished subsequent calls to `processAnimation` h
 
 ![procedural02](procedural02.gif)
 
-[home](https://davidgutierrezrubio.github.io/jmathanim/) [back](../index.html)
-
 # Current status of methods implemented to MathObjects
 
 Not all `MathObject` and `Animation` combinations are compatible. Below is a table that shows, at the current version of the library, what you can and cannot do:
@@ -438,8 +436,8 @@ Not all `MathObject` and `Animation` combinations are compatible. Below is a tab
 | Line            | Yes                                                          | Yes                    | Yes                                                          |
 | Axes            | No                                                           | Yes                    | No                                                           |
 | LaTeXMathObject | Yes                                                          | Yes                    | Yes (also you can use the specialized `TransformMathExpression` method) |
-| Arrow2D         | Yes                                                          | Yes                    | No (use homothecy transform)                                 |
+| Arrow2D         | Yes                                                          | Yes                    | Yes (delegates in the homothecy transform)                   |
 | Delimiter       | No (you have the transform the anchor points instead)        | Yes                    | No (transform anchor points instead)                         |
 
-
+[home](https://davidgutierrezrubio.github.io/jmathanim/) [back](../index.html)
 
