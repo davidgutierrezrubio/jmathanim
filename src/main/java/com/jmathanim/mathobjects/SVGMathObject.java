@@ -102,6 +102,7 @@ public class SVGMathObject extends MultiShapeObject {
     protected final void importSVG(URL urlSvg) throws Exception {
 
         DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+        //Disabling these features will speed up the load of the svg
         dbFactory.setFeature("http://xml.org/sax/features/namespaces", false);
         dbFactory.setFeature("http://xml.org/sax/features/validation", false);
         dbFactory.setFeature("http://apache.org/xml/features/nonvalidating/load-dtd-grammar", false);
@@ -109,44 +110,39 @@ public class SVGMathObject extends MultiShapeObject {
 
         DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
         org.w3c.dom.Document doc = dBuilder.parse(urlSvg.openStream());
+
         //Look for svg elements in the root document
-        processChildNodes((doc.getDocumentElement()));
-//        NodeList listGroups = doc.getElementsByTagName("g");
-//        for (int n = 0; n < listGroups.getLength(); n++) {
-//            Element gNode = (Element) listGroups.item(n);
-//            processAttributeCommands(gNode, mp);
-//            mp.thickness = .1;
-//            //Look for svg elements inside this group
-//            processChildNodes(gNode);
-//        }
+        getMp().setAbsoluteThickness(false);//Default behaviour
+        processChildNodes((doc.getDocumentElement()), getMp().getFirstMP());
         stackTo(new Point(0, 0), Anchor.Type.UL);
     }
 
-    private void processChildNodes(Element gNode) throws NumberFormatException {
+    private void processChildNodes(Element gNode, MODrawProperties localMP) throws NumberFormatException {
         NodeList nList = gNode.getChildNodes();
-
+        //localMP holds the base MODrawProperties to apply to all childs
+        MODrawProperties mpCopy;
         for (int nchild = 0; nchild < nList.getLength(); nchild++) {
             Node node = nList.item(nchild);
             if (node.getNodeType() == Node.ELEMENT_NODE) {
                 Element el = (Element) node;
-                MODrawProperties ShMp = this.getMp().getFirstMP().copy();
-                ShMp.absoluteThickness = false;
+//                MODrawProperties ShMp = this.getMp().getFirstMP().copy();
+//                ShMp.absoluteThickness = false;
 //                    ShMp.fillColor.set(JMColor.random());
                 switch (el.getTagName()) {
                     case "g":
-                        MODrawProperties mpCopy = getMp().getFirstMP().copy();
+                        mpCopy = localMP.copy();
                         processAttributeCommands(el, mpCopy);
                         mpCopy.setThickness(.1);//TODO: Should delete this?
-                        processChildNodes(el);
-                        getMp().copyFrom(mpCopy);
+                        processChildNodes(el, mpCopy);
                         break;
                     case "path":
                         try {
                         JMPath path = processPathCommands(el.getAttribute("d"));
-                        processAttributeCommands(el, ShMp);
+                        mpCopy = localMP.copy();
+                        processAttributeCommands(el, mpCopy);
                         if (path.jmPathPoints.size() > 0) {
                             path.pathType = JMPath.SVG_PATH; //Mark this as a SVG path
-                            add(new Shape(path, ShMp));
+                            add(new Shape(path, mpCopy));
                         }
                     } catch (Exception ex) {
                         Logger.getLogger(SVGMathObject.class.getName()).log(Level.SEVERE, null, ex);
@@ -154,27 +150,30 @@ public class SVGMathObject extends MultiShapeObject {
 
                     break;
                     case "rect":
-                        processAttributeCommands(el, ShMp);
+                        mpCopy = localMP.copy();
+                        processAttributeCommands(el, mpCopy);
                         double x = Double.parseDouble(el.getAttribute("x"));
                         double y = -Double.parseDouble(el.getAttribute("y"));
                         double w = Double.parseDouble(el.getAttribute("width"));
                         double h = -Double.parseDouble(el.getAttribute("height"));
-                        shapes.add(Shape.rectangle(new Point(x, y), new Point(x + w, y + h)).setMp(ShMp));
+                        shapes.add(Shape.rectangle(new Point(x, y), new Point(x + w, y + h)).setMp(mpCopy));
                         break;
                     case "circle":
-                        processAttributeCommands(el, ShMp);
+                        mpCopy = localMP.copy();
+                        processAttributeCommands(el, mpCopy);
                         double cx = Double.parseDouble(el.getAttribute("cx"));
                         double cy = -Double.parseDouble(el.getAttribute("cy"));
                         double radius = Double.parseDouble(el.getAttribute("r"));
-                        shapes.add(Shape.circle().scale(radius).shift(cx, cy).setMp(ShMp));
+                        shapes.add(Shape.circle().scale(radius).shift(cx, cy).setMp(mpCopy));
                         break;
                     case "ellipse":
-                        processAttributeCommands(el, ShMp);
+                        mpCopy = localMP.copy();
+                        processAttributeCommands(el, mpCopy);
                         double cxe = Double.parseDouble(el.getAttribute("cx"));
                         double cye = -Double.parseDouble(el.getAttribute("cy"));
                         double rxe = Double.parseDouble(el.getAttribute("rx"));
                         double rye = -Double.parseDouble(el.getAttribute("ry"));
-                        shapes.add(Shape.circle().scale(rxe, rye).shift(cxe, cye).setMp(ShMp));
+                        shapes.add(Shape.circle().scale(rxe, rye).shift(cxe, cye).setMp(mpCopy));
                         break;
 
                 }
@@ -530,7 +529,11 @@ public class SVGMathObject extends MultiShapeObject {
             parseStyleAttribute(el.getAttribute("style"), ShMp);
         }
         if (!"".equals(el.getAttribute("stroke"))) {
-            ShMp.getDrawColor().copyFrom(JMColor.parse(el.getAttribute("stroke")));
+            JMColor strokeColor = JMColor.parse(el.getAttribute("stroke"));
+            ShMp.getDrawColor().copyFrom(strokeColor);
+            if (getMp().isFillColorIsDrawColor()) {//For LaTeX documents, this applies
+                ShMp.getFillColor().copyFrom(strokeColor);
+            }
         }
 
         if (!"".equals(el.getAttribute("stroke-width"))) {
@@ -541,7 +544,11 @@ public class SVGMathObject extends MultiShapeObject {
         }
 
         if (!"".equals(el.getAttribute("fill"))) {
-            ShMp.getFillColor().copyFrom(JMColor.parse(el.getAttribute("fill")));
+            JMColor fillColor = JMColor.parse(el.getAttribute("fill"));
+            ShMp.getFillColor().copyFrom(fillColor);
+            if (getMp().isFillColorIsDrawColor()) {//For LaTeX documents, this applies
+                ShMp.getDrawColor().copyFrom(fillColor);
+            }
         }
 
     }
@@ -552,10 +559,18 @@ public class SVGMathObject extends MultiShapeObject {
             String[] decl = pairs.split(":");
             switch (decl[0]) {
                 case "fill":
-                    ShMp.getFillColor().copyFrom(JMColor.parse(decl[1]));
+                    JMColor fillColor = JMColor.parse(decl[1]);
+                    ShMp.getFillColor().copyFrom(fillColor);
+                    if (getMp().isFillColorIsDrawColor()) {//For LaTeX documents, this applies
+                        ShMp.getDrawColor().copyFrom(fillColor);
+                    }
                     break;
                 case "stroke":
-                    ShMp.getDrawColor().copyFrom(JMColor.parse(decl[1]));
+                    JMColor strokeColor = JMColor.parse(decl[1]);
+                    ShMp.getDrawColor().copyFrom(strokeColor);
+                    if (getMp().isFillColorIsDrawColor()) {//For LaTeX documents, this applies
+                        ShMp.getFillColor().copyFrom(strokeColor);
+                    }
                     break;
             }
 

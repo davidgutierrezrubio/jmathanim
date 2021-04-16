@@ -130,10 +130,10 @@ public class LaTeXMathObject extends SVGMathObject {
             }
         }
 
-        //Apply style to all subshapes
-        for (Shape sh : shapes) {
-            sh.getMp().copyFrom(getMp());
-        }
+//        //Apply style to all subshapes
+//        for (Shape sh : shapes) {
+//            sh.getMp().copyFrom(getMp());
+//        }
 
 //Scale
 //An "X" character in LaTeX has 6.8 (svg units) pixels height.
