@@ -37,6 +37,7 @@ public abstract class ShiftAnimation extends Animation {
     HashMap<MathObject, Vec> shiftVectors;
     private final HashMap<MathObject, AnimationEffect> effects;
     private final HashMap<MathObject, Double> beginningTimes;
+    private final HashMap<MathObject, Double> rotationAngles;
 
     public ShiftAnimation(double runTime, MathObject[] mathObjects) {
         super(runTime);
@@ -44,9 +45,11 @@ public abstract class ShiftAnimation extends Animation {
         shiftVectors = new HashMap<>();
         effects = new HashMap<>();
         beginningTimes = new HashMap<>();
+        rotationAngles = new HashMap<>();
         delayPercentage = 0;
         for (MathObject obj : mathObjects) {
             effects.put(obj, new AnimationEffect());
+            rotationAngles.put(obj, 0d);
         }
     }
 
@@ -90,8 +93,9 @@ public abstract class ShiftAnimation extends Animation {
                 lt = getLambda().applyAsDouble(newT);
             }
             obj.shift(v.mult(lt));
-            if (effects.containsKey(obj)) {
-                effects.get(obj).applyAnimationEffects(lt, obj);
+            effects.get(obj).applyAnimationEffects(lt, obj);
+            if (rotationAngles.get(obj) != 0) {
+                obj.rotate(rotationAngles.get(obj) * lt);
             }
         }
     }
@@ -251,18 +255,29 @@ public abstract class ShiftAnimation extends Animation {
     }
 
     /**
-     * Adds a alpha scale effect to all objects involved in the animation. A back and forth alpha
-     * effect
+     * Adds a rotation effect with a specified angle to every mathobject added to the animation
      *
      * @param <T> The calling subclass
-     * @param alphaScale The amount to scale. A value of .5 will reduce the
-     * alpha to 50% at the middle of the animation.
+     * @param rotationAngle Rotation angle
      * @return This object
      */
-    public <T extends ShiftAnimation> T addAlphaScaleEffect(double alphaScale) {
+    public <T extends ShiftAnimation> T addRotationEffectByAngle(double rotationAngle) {
         for (MathObject obj : mathObjects) {
-            addAlphaScaleEffect(obj, alphaScale);
+            addRotationEffectByAngle(obj, rotationAngle);
         }
+        return (T) this;
+    }
+
+    /**
+     * Adds a rotation effect with a specified angle to a given mathobject added to the animation
+     *
+     * @param <T> The calling subclass
+     * @param obj MathObject to rotate
+     * @param rotationAngle Rotation angle
+     * @return This object
+     */
+    public <T extends ShiftAnimation> T addRotationEffectByAngle(MathObject obj, double rotationAngle) {
+        rotationAngles.put(obj, rotationAngle);
         return (T) this;
     }
 
