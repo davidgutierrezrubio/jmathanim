@@ -18,7 +18,6 @@
 package com.jmathanim.Utils.Layouts;
 
 import com.jmathanim.Utils.Anchor;
-import com.jmathanim.Utils.Layouts.BoxLayout.Direction;
 import com.jmathanim.mathobjects.Point;
 
 /**
@@ -26,20 +25,27 @@ import com.jmathanim.mathobjects.Point;
  * @author David Gutierrez Rubio davidgutierrezrubio@gmail.com
  */
 public abstract class AbstractBoxLayout extends GroupLayout {
-    
-    protected  Point corner;
+
+    public enum Direction {
+        RIGHT_UP, RIGHT_DOWN, LEFT_UP, LEFT_DOWN, UP_RIGHT, UP_LEFT, DOWN_RIGHT, DOWN_LEFT
+    }
+
+    public enum RowAlignType {
+        UPPER, LOWER, MIDDLE
+    }
+    protected Point corner;
     protected double inRowGap;
     protected double inColGap;
     Anchor.Type inRowStack;
     Anchor.Type inColStack;
     Anchor.Type firstElementStack;
+    RowAlignType rowAlignType;
 
     public AbstractBoxLayout(Point corner, double inRowGap, double inColGap) {
         this.inRowGap = inRowGap;
         this.inColGap = inColGap;
         this.corner = corner;
     }
-
 
     protected final void computeDirections(Direction direction) {
         switch (direction) {
@@ -91,5 +97,40 @@ public abstract class AbstractBoxLayout extends GroupLayout {
                 break;
         }
     }
-    
+
+    public void setRowAlign(RowAlignType type) {
+        switch (type) {
+            case UPPER:
+                if (inRowStack == Anchor.Type.LEFT) {
+                    inRowStack = Anchor.Type.UL;
+                }
+                if (inRowStack == Anchor.Type.RIGHT) {
+                    inRowStack = Anchor.Type.UR;
+                }
+                if (inRowStack == Anchor.Type.UPPER) {
+                    inRowStack = Anchor.Type.UL;
+                }
+                if (inRowStack == Anchor.Type.LOWER) {
+                    inRowStack = Anchor.Type.DL;
+                }
+
+                break;
+            case MIDDLE:
+                break;
+            case LOWER:
+                if (inRowStack == Anchor.Type.LEFT) {
+                    inRowStack = Anchor.Type.DL;
+                }
+                if (inRowStack == Anchor.Type.RIGHT) {
+                    inRowStack = Anchor.Type.DR;
+                }
+                if (inRowStack == Anchor.Type.UPPER) {
+                    inRowStack = Anchor.Type.UR;
+                }
+                if (inRowStack == Anchor.Type.LOWER) {
+                    inRowStack = Anchor.Type.DR;
+                }
+                break;
+        }
+    }
 }

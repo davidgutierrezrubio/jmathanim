@@ -32,9 +32,7 @@ public class BoxLayout extends AbstractBoxLayout {
 
     int rowSize;
 
-    public enum Direction {
-        RIGHT_UP, RIGHT_DOWN, LEFT_UP, LEFT_DOWN, UP_RIGHT, UP_LEFT, DOWN_RIGHT, DOWN_LEFT
-    }
+   
 
     public BoxLayout(int rowSize) {
         this(null, rowSize, Direction.RIGHT_UP, 0, 0);

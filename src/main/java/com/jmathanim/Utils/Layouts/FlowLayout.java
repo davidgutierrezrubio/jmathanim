@@ -17,6 +17,7 @@
  */
 package com.jmathanim.Utils.Layouts;
 
+import com.jmathanim.Utils.Anchor;
 import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.MathObjectGroup;
 import com.jmathanim.mathobjects.Point;
@@ -61,10 +62,37 @@ public class FlowLayout extends AbstractBoxLayout {
     @Override
     public void applyLayout(MathObjectGroup group) {
         ArrayList<MathObjectGroup> rowGroups = getRowGroups(group);
-        
-        rowGroups.get(0).get(0).stackTo(corner, firstElementStack);
+
+        rowGroups.get(0).get(0).stackTo(firstElementStack, this.corner, Anchor.Type.CENTER, 0);
         for (int n = 1; n < rowGroups.get(0).size(); n++) {
-            rowGroups.get(0).get(n).stackTo(rowGroups.get(0).get(n-1), firstElementStack,inRowGap);
+            rowGroups.get(0).get(n).stackTo(rowGroups.get(0).get(n - 1), inRowStack, inRowGap);
+        }
+
+        for (int k = 1; k < rowGroups.size(); k++) {
+            rowGroups.get(k).get(0).stackTo(rowGroups.get(k - 1).get(0), inColStack, inColGap);
+            for (int n = 1; n < rowGroups.get(k).size(); n++) {
+                rowGroups.get(k).get(n).stackTo(rowGroups.get(k).get(n - 1), inRowStack, inRowGap);
+            }
+            MathObject.Align align = null;
+            switch (direction) {
+                case RIGHT_UP:
+                case RIGHT_DOWN:
+                    align = MathObject.Align.LEFT;
+                    break;
+                case LEFT_UP:
+                case LEFT_DOWN:
+                    align = MathObject.Align.RIGHT;
+                    break;
+                case UP_RIGHT:
+                case UP_LEFT:
+                    align = MathObject.Align.LOWER;
+                    break;
+                case DOWN_RIGHT:
+                case DOWN_LEFT:
+                    align = MathObject.Align.UPPER;
+                    break;
+            }
+            rowGroups.get(k).align(rowGroups.get(0), align);
         }
     }
 
@@ -99,13 +127,11 @@ public class FlowLayout extends AbstractBoxLayout {
     }
 
     private MathObjectGroup.Layout getInRowLayout() {
-        MathObjectGroup.Layout resul=null;
-        switch(direction) {
-            
+        MathObjectGroup.Layout resul = null;
+        switch (direction) {
+
         }
         return resul;
     }
-    
-    
-    
+
 }
