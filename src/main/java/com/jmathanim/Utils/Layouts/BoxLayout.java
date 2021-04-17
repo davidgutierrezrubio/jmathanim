@@ -28,18 +28,13 @@ import com.jmathanim.mathobjects.Point;
  *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
-public class BoxLayout extends GroupLayout {
-
-    private final Point corner;
+public class BoxLayout extends AbstractBoxLayout {
 
     int rowSize;
-    private double inRowGap, inColGap;
 
     public enum Direction {
         RIGHT_UP, RIGHT_DOWN, LEFT_UP, LEFT_DOWN, UP_RIGHT, UP_LEFT, DOWN_RIGHT, DOWN_LEFT
     }
-
-    Anchor.Type inRowStack, inColStack, firstElementStack;
 
     public BoxLayout(int rowSize) {
         this(null, rowSize, Direction.RIGHT_UP, 0, 0);
@@ -63,7 +58,7 @@ public class BoxLayout extends GroupLayout {
      * depends on the direction chosen. For example if direction is RIGHT_UP,
      * the corner will be the lower left one. If direction is DOWN_LEFT, the
      * corner will be the upper right one.
-     * @param rows Numbers of element in each row. Note that "row" becomes
+     * @param rowSize Numbers of element in each row. Note that "row" becomes
      * "columns" if direction is UP_LEFT, UP_RIGHT, DOWN_LEFT or DOWN_RIGHT
      * @param direction Direction of the box. Specifies the direction to stack
      * the elements. A direction of RIGHT_UP will stack the row in the RIGHT
@@ -71,59 +66,10 @@ public class BoxLayout extends GroupLayout {
      * @param inRowGap Gap between 2 consecutive elements in the same row
      * @param inColGap Gap between 2 consecutive elements in the same column
      */
-    public BoxLayout(Point corner, int rows, Direction direction, double inRowGap, double inColGap) {
-        this.rowSize = rows;
-        this.inRowGap = inRowGap;
-        this.inColGap = inColGap;
-        this.corner = corner;
-
-        switch (direction) {
-            case RIGHT_UP:
-                inRowStack = Anchor.Type.RIGHT;
-                inColStack = Anchor.Type.UPPER;
-                firstElementStack = Anchor.Type.DL;
-                break;
-            case RIGHT_DOWN:
-                inRowStack = Anchor.Type.RIGHT;
-                inColStack = Anchor.Type.LOWER;
-                firstElementStack = Anchor.Type.UL;
-                break;
-            case LEFT_UP:
-                inRowStack = Anchor.Type.LEFT;
-                inColStack = Anchor.Type.UPPER;
-                firstElementStack = Anchor.Type.DR;
-                break;
-            case LEFT_DOWN:
-                inRowStack = Anchor.Type.LEFT;
-                inColStack = Anchor.Type.LOWER;
-                firstElementStack = Anchor.Type.UR;
-                break;
-            case UP_RIGHT:
-                inRowStack = Anchor.Type.UPPER;
-                inColStack = Anchor.Type.RIGHT;
-                firstElementStack = Anchor.Type.DL;
-                break;
-            case UP_LEFT:
-                inRowStack = Anchor.Type.UPPER;
-                inColStack = Anchor.Type.LEFT;
-                firstElementStack = Anchor.Type.DR;
-                break;
-            case DOWN_RIGHT:
-                inRowStack = Anchor.Type.LOWER;
-                inColStack = Anchor.Type.RIGHT;
-                firstElementStack = Anchor.Type.UL;
-                break;
-            case DOWN_LEFT:
-                inRowStack = Anchor.Type.LOWER;
-                inColStack = Anchor.Type.LEFT;
-                firstElementStack = Anchor.Type.UR;
-                break;
-            default://Default case, rowSize goes to right, columns to the heaven
-                inRowStack = Anchor.Type.RIGHT;
-                inColStack = Anchor.Type.UPPER;
-                firstElementStack = Anchor.Type.DL;
-                break;
-        }
+    public BoxLayout(Point corner, int rowSize, Direction direction, double inRowGap, double inColGap) {
+        super(corner, inRowGap, inColGap);
+        this.rowSize = rowSize;
+        computeDirections(direction);
     }
 
     @Override
@@ -146,7 +92,6 @@ public class BoxLayout extends GroupLayout {
                 group.get(n).stackTo(firstOfTheRow, inColStack, this.inColGap);
                 firstOfTheRow = group.get(n);
             }
-
         }
 
     }

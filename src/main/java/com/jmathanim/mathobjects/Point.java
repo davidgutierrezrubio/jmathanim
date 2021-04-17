@@ -27,6 +27,7 @@ import com.jmathanim.jmathanim.JMathAnimScene;
 import java.text.DecimalFormat;
 import org.apache.commons.math3.linear.Array2DRowRealMatrix;
 import org.apache.commons.math3.linear.RealMatrix;
+import sun.security.krb5.Config;
 
 /**
  * This class represents a point in 2D or 3D space
@@ -63,6 +64,9 @@ public class Point extends MathObject {
         return Point.at(0, 0);
     }
 
+    public static final Point relAt(double x,double y) {
+        return JMathAnimConfig.getConfig().getCamera().getMathView().getRelPoint(x, y);
+    }
     /**
      * Static method. Returns a new point at (1,0), with default style
      *
