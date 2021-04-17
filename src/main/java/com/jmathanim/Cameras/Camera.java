@@ -17,6 +17,7 @@
  */
 package com.jmathanim.Cameras;
 
+import com.jmathanim.Utils.Boxable;
 import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
@@ -235,9 +236,9 @@ public class Camera {
      * @param objs Objects to zoom in
      * @return This object
      */
-    public Camera adjustToObjects(MathObject... objs) {
+    public Camera adjustToObjects(Boxable... objs) {
         Rect r = getMathView();
-        for (MathObject obj : objs) {
+        for (Boxable obj : objs) {
             r = Rect.union(r, obj.getBoundingBox());
         }
         adjustToRect(r.addGap(hgap, hgap));
