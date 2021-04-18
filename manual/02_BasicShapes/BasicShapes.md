@@ -364,4 +364,55 @@ add(group);//Equivalent to add(square, triangle, circle)
 
 This class becomes handy when you want to animate or position a large amount of objects, as we will see in next chapters.
 
+# The `Rect` class
+
+The `Rect`class represents a bounding box. If you are familiar with game programming or similar, you will know this concept. The bounding box of an object is the smallest rectangle which contains that object and which is used as fast reference for collision detection. The bounding box itself is not drawable, but you can easily create a rectangle with its dimensions with the static method `Shape.rectangle(Rect bbox)`. 
+
+Every `MathObject` (moreover, any class that implements the `Boxable` interface) has the method `.getBoundingBox()` to get precisely that.
+
+For example, the following code draws a ellipse rotated 45º counter-clockwise and its bounding box:
+
+```java
+Shape s = Shape.circle().scale(1, .5).rotate(45*DEGREES).style("solidorange");
+Rect r=s.getBoundingBox();//the bounding box of the ellipse
+Shape bbox=Shape.rectangle(r).drawColor("blue");//Creates a blue rectangle with the dimensions of r
+add(s,bbox);
+waitSeconds(3);//Smile for the screenshot!
+```
+
+<img src="boundingbox1.png" alt="image-20210418201105276" style="zoom:50%;" />
+
+Here are some useful methods that the `Rect`class implements (you can see more detailed information in the Javadocs). In the previous example, where `r` was a `Rect` representing the bounding box of the ellipse:
+
+```java
+r.xmin;//The most left x-coordinate of the Rect
+r.xmax;//The most right x-coordinate of the Rect
+r.ymin;//The lowest y-coordinate of the Rect
+r.ymax;//The most upper y-coordinate of the Rect
+r.getWidth();//Returns the width of the Rect
+r.getHeight();//Returns the height of the Rect
+r.addGap(.1, .2);//Creates a new Rect increased by .1 in x and .2 in y
+r.getCenter();//Gets a Point lying in the center of the Rect
+r.getUL();//Gets a Point lying the Upper-Left corner
+r.getUR();//Gets a Point lying the Upper-Right corner
+r.getDL();//Gets a Point lying the Lower-Left corner
+r.getDL();//Gets a Point lying the Lower-Right corner
+r.centerAt(dst);//Moves the Rect so that its center lies in dst
+r.getRotatedRect(45*DEGREES);//Returns the smallest Rect that containts the original roated 45 degrees
+r.getRelPoint(.25, .25);//Returns a Point located at the relative coordinates (.25,.25) of the Rect
+```
+
+Apart from bounding boxes, the `Rect` class is used to represent the mathview. The method `getMathView()` returns a `Rect` will represents all visible area that is currently being drawed.
+
+Thus, for example,  
+
+```java
+Point P0=getMathView().getCenter();//Creates a Point at the center of the screen
+Point Q=
+```
+
+
+
+
+
 [home](https://davidgutierrezrubio.github.io/jmathanim/) [back](../index.html)
