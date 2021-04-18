@@ -25,6 +25,9 @@ import com.jmathanim.mathobjects.JMPathPoint.JMPathPointType;
 import com.jmathanim.mathobjects.updateableObjects.Updateable;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * This class stores info for drawing a curve with control points, tension...
@@ -305,6 +308,12 @@ public class JMPath implements Updateable, Stateable {
         double t = size - k;
         JMPathPoint v1 = getJMPoint(k);
         JMPathPoint v2 = getJMPoint(k + 1);
+        resul = getJMPointBetween(v1, v2, t);
+        return resul;
+    }
+
+    private JMPathPoint getJMPointBetween(JMPathPoint v1, JMPathPoint v2, double t) {
+        JMPathPoint resul;
         if (v1.isCurved) {
             //De Casteljau's Algorithm: https://en.wikipedia.org/wiki/De_Casteljau%27s_algorithm
             Point E = v1.p.interpolate(v1.cpExit, t); //New cp1 of v1
@@ -468,13 +477,38 @@ public class JMPath implements Updateable, Stateable {
         }
     }
 
+    public Rect getBoundingBox() {
+        if (jmPathPoints.isEmpty()) {
+            return null;
+        }
+        List<Point> points = jmPathPoints.stream().map(p -> p.p).collect(Collectors.toList());
+        points.addAll(getCriticalPoints());
+
+        return Rect.make(points);
+    }
+
+    public ArrayList<Point> getCriticalPoints() {
+        ArrayList<Point> criticalPoints = new ArrayList<>();
+        for (int n = 0; n < jmPathPoints.size(); n++) {
+            JMPathPoint jmp = jmPathPoints.get(n);
+            if (jmp.isThisSegmentVisible) {
+                if (jmp.isCurved) {
+                    criticalPoints.addAll(getCriticalPoints(jmPathPoints.get(n - 1), jmp));
+                }
+                criticalPoints.add(jmp.p);
+
+            }
+        }
+        return criticalPoints;
+    }
+
     /**
      * Returns the bounding box of the path.
      *
      * @return The bounding box, as a Rect instance. If the path is empty,
      * returns null;
      */
-    public Rect getBoundingBox() {
+    public Rect getBoundingBoxOld() {
         if (jmPathPoints.isEmpty()) {
             return null;
         }
@@ -767,6 +801,77 @@ public class JMPath implements Updateable, Stateable {
             }
         }
         return true;
+    }
+
+    private Vec evaluateBezier(Vec P0, Vec P1, Vec P2, Vec P3, double t) {
+        Vec a = P3.add(P2.mult(-3)).add(P1.mult(3)).add(P0.mult(-1));
+        Vec b = P2.mult(3).add(P1.mult(-6)).add(P0.mult(3));
+        Vec c = P1.mult(3).add(P0.mult(-3));
+        Vec d = P0.copy();
+        return d.add(c.mult(t)).add(b.mult(t * t)).add(a.mult(t * t * t));
+    }
+
+    private ArrayList<Point> getCriticalPoints(JMPathPoint pOrig, JMPathPoint pDst) {
+        //https://floris.briolas.nl/floris/2009/10/bounding-box-of-cubic-bezier/
+        ArrayList<Point> resul = new ArrayList<>();
+        Vec P0 = pOrig.p.v;
+        Vec P1 = pOrig.cpExit.v;
+        Vec P2 = pDst.cpEnter.v;
+        Vec P3 = pDst.p.v;
+        Vec a = P3.add(P2.mult(-3)).add(P1.mult(3)).add(P0.mult(-1)).mult(3);
+        Vec b = P2.mult(3).add(P1.mult(-6)).add(P0.mult(3)).mult(2);
+        Vec c = P1.mult(3).add(P0.mult(-3));
+        //a,b,c are the coefficients of the derivate f'(t)=at^2+bt+c
+
+        //First, for x
+        double discriminant = b.x * b.x - 4 * a.x * c.x;
+
+        if (discriminant == 0) {//Only one solution
+            double tCrit = -b.x / (2 * a.x);
+            if ((tCrit > 0) && (tCrit < 1)) { //it's a valid point
+//                Vec v = evaluateBezier(P0, P1, P2, P3, tCrit);
+                Vec v=getJMPointBetween(pOrig,pDst,tCrit).p.v;
+                resul.add(Point.at(v.x, v.y));
+            }
+        }
+
+        if (discriminant > 0) {//Only one solution
+            double tCrit1 = (-b.x + Math.sqrt(discriminant)) / (2 * a.x);
+            if ((tCrit1 > 0) && (tCrit1 < 1)) { //it's a valid point
+                Vec v=getJMPointBetween(pOrig,pDst,tCrit1).p.v;
+                resul.add(Point.at(v.x, v.y));
+            }
+            double tCrit2 = (-b.x - Math.sqrt(discriminant)) / (2 * a.x);
+            if ((tCrit2 > 0) && (tCrit2 < 1)) { //it's a valid point
+                Vec v=getJMPointBetween(pOrig,pDst,tCrit2).p.v;
+                resul.add(Point.at(v.x, v.y));
+            }
+        }
+
+        //Now for y
+        discriminant = b.y * b.y - 4 * a.y * c.y;
+
+        if (discriminant == 0) {//Only one solution
+            double tCrit = -b.y / (2 * a.y);
+            if ((tCrit > 0) && (tCrit < 1)) { //it's a valid point
+                Vec v = evaluateBezier(P0, P1, P2, P3, tCrit);
+                resul.add(Point.at(v.y, v.y));
+            }
+        }
+
+        if (discriminant > 0) {//Only one solution
+            double tCrit1 = (-b.y + Math.sqrt(discriminant)) / (2 * a.y);
+            if ((tCrit1 > 0) && (tCrit1 < 1)) { //it's a valid point
+                Vec v = evaluateBezier(P0, P1, P2, P3, tCrit1);
+                resul.add(Point.at(v.y, v.y));
+            }
+            double tCrit2 = (-b.y - Math.sqrt(discriminant)) / (2 * a.y);
+            if ((tCrit2 > 0) && (tCrit2 < 1)) { //it's a valid point
+                Vec v = evaluateBezier(P0, P1, P2, P3, tCrit2);
+                resul.add(Point.at(v.y, v.y));
+            }
+        }
+        return resul;
     }
 
 }
