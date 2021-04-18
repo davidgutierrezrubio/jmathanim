@@ -17,6 +17,7 @@
  */
 package com.jmathanim.mathobjects;
 
+import com.jmathanim.Styling.JMColor;
 import com.jmathanim.Utils.CircularArrayList;
 import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.Vec;
@@ -477,11 +478,15 @@ public class JMPath implements Updateable, Stateable {
         }
     }
 
-    public Rect getBoundingBox() {
+    public Rect getBoundingBoxNew() {
         if (jmPathPoints.isEmpty()) {
             return null;
         }
-        List<Point> points = jmPathPoints.stream().map(p -> p.p).collect(Collectors.toList());
+        ArrayList<Point> points=new ArrayList<>();
+        for (JMPathPoint jmp:jmPathPoints) {
+            points.add(jmp.p.copy().thickness(2));
+        }
+//        List<Point> points = jmPathPoints.stream().map(p -> p.p).collect(Collectors.toList());
         points.addAll(getCriticalPoints());
 
         return Rect.make(points);
@@ -495,7 +500,7 @@ public class JMPath implements Updateable, Stateable {
                 if (jmp.isCurved) {
                     criticalPoints.addAll(getCriticalPoints(jmPathPoints.get(n - 1), jmp));
                 }
-                criticalPoints.add(jmp.p);
+//                criticalPoints.add(jmp.p);
 
             }
         }
@@ -508,7 +513,7 @@ public class JMPath implements Updateable, Stateable {
      * @return The bounding box, as a Rect instance. If the path is empty,
      * returns null;
      */
-    public Rect getBoundingBoxOld() {
+    public Rect getBoundingBox() {
         if (jmPathPoints.isEmpty()) {
             return null;
         }
@@ -829,22 +834,28 @@ public class JMPath implements Updateable, Stateable {
         if (discriminant == 0) {//Only one solution
             double tCrit = -b.x / (2 * a.x);
             if ((tCrit > 0) && (tCrit < 1)) { //it's a valid point
+                System.out.println("Crit X:"+tCrit);
 //                Vec v = evaluateBezier(P0, P1, P2, P3, tCrit);
-                Vec v=getJMPointBetween(pOrig,pDst,tCrit).p.v;
-                resul.add(Point.at(v.x, v.y));
+                Vec v = getJMPointBetween(pOrig, pDst, tCrit).p.v;
+//                Vec v=evaluateBezier(P0, P1, P2, P3, tCrit);
+                resul.add(Point.at(v.x, v.y).drawColor(JMColor.BLUE));
             }
         }
 
         if (discriminant > 0) {//Only one solution
             double tCrit1 = (-b.x + Math.sqrt(discriminant)) / (2 * a.x);
             if ((tCrit1 > 0) && (tCrit1 < 1)) { //it's a valid point
-                Vec v=getJMPointBetween(pOrig,pDst,tCrit1).p.v;
-                resul.add(Point.at(v.x, v.y));
+                System.out.println("Crit X:"+tCrit1);
+                Vec v = getJMPointBetween(pOrig, pDst, tCrit1).p.v;
+//                Vec v=evaluateBezier(P0, P1, P2, P3, tCrit1);
+                resul.add(Point.at(v.x, v.y).drawColor(JMColor.BLUE));
             }
             double tCrit2 = (-b.x - Math.sqrt(discriminant)) / (2 * a.x);
             if ((tCrit2 > 0) && (tCrit2 < 1)) { //it's a valid point
-                Vec v=getJMPointBetween(pOrig,pDst,tCrit2).p.v;
-                resul.add(Point.at(v.x, v.y));
+                System.out.println("Crit X:"+tCrit2);
+                Vec v = getJMPointBetween(pOrig, pDst, tCrit2).p.v;
+//                Vec v=evaluateBezier(P0, P1, P2, P3, tCrit2);
+                resul.add(Point.at(v.x, v.y).drawColor(JMColor.BLUE));
             }
         }
 
@@ -854,21 +865,27 @@ public class JMPath implements Updateable, Stateable {
         if (discriminant == 0) {//Only one solution
             double tCrit = -b.y / (2 * a.y);
             if ((tCrit > 0) && (tCrit < 1)) { //it's a valid point
-                Vec v = evaluateBezier(P0, P1, P2, P3, tCrit);
-                resul.add(Point.at(v.y, v.y));
+                System.out.println("Crit Y:"+tCrit);
+//                Vec v = evaluateBezier(P0, P1, P2, P3, tCrit);
+                Vec v = getJMPointBetween(pOrig, pDst, tCrit).p.v;
+                resul.add(Point.at(v.y, v.y).drawColor(JMColor.RED));
             }
         }
 
-        if (discriminant > 0) {//Only one solution
+        if (discriminant > 0) {//Double solution
             double tCrit1 = (-b.y + Math.sqrt(discriminant)) / (2 * a.y);
             if ((tCrit1 > 0) && (tCrit1 < 1)) { //it's a valid point
-                Vec v = evaluateBezier(P0, P1, P2, P3, tCrit1);
-                resul.add(Point.at(v.y, v.y));
+                  System.out.println("Crit Y:"+tCrit1);
+//                Vec v = evaluateBezier(P0, P1, P2, P3, tCrit1);
+                Vec v = getJMPointBetween(pOrig, pDst, tCrit1).p.v;
+                resul.add(Point.at(v.x, v.y).drawColor(JMColor.GREEN));
             }
             double tCrit2 = (-b.y - Math.sqrt(discriminant)) / (2 * a.y);
             if ((tCrit2 > 0) && (tCrit2 < 1)) { //it's a valid point
-                Vec v = evaluateBezier(P0, P1, P2, P3, tCrit2);
-                resul.add(Point.at(v.y, v.y));
+                  System.out.println("Crit Y:"+tCrit2);
+//                Vec v = evaluateBezier(P0, P1, P2, P3, tCrit2);
+                Vec v = getJMPointBetween(pOrig, pDst, tCrit2).p.v;
+                resul.add(Point.at(v.x, v.y).drawColor(JMColor.RED));
             }
         }
         return resul;
