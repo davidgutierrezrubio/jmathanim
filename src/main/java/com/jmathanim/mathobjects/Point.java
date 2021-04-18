@@ -215,9 +215,8 @@ public class Point extends MathObject {
         return this;
     }
 
-    private Shape generateDotShape() {
+    public Shape generateDotShape() {
         double st;
-        Shape dotShape;
         switch (getMp().getDotStyle()) {
             case CROSS:
 //                st = mp.computeScreenThickness(r)/20;

@@ -19,6 +19,8 @@ package com.jmathanim.Utils;
 
 import com.jmathanim.mathobjects.Point;
 import com.jmathanim.mathobjects.Stateable;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Encapsulates data about a rectangle
@@ -29,6 +31,22 @@ public class Rect implements Stateable, Boxable {//TODO: Adjust this to 3D coord
 
     public double xmin, ymin, xmax, ymax, zmin, zmax;
     private Rect rBackup;
+
+    public static Rect make(List<Point> points) {
+        double xmin = Double.MAX_VALUE;
+        double xmax = Double.MIN_VALUE;
+        double ymin = Double.MAX_VALUE;
+        double ymax = Double.MIN_VALUE;
+
+        for (Point p : points) {
+            xmin = (xmin < p.v.x ? xmin : p.v.x);
+            xmax = (xmax > p.v.x ? xmax : p.v.x);
+            ymin = (ymin < p.v.y ? ymin : p.v.y);
+            ymax = (ymax > p.v.y ? ymax : p.v.y);
+        }
+        return new Rect(xmin, ymin, xmax, ymax);
+
+    }
 
     public static Rect make(Point a, Point b) {
         double xmin = Math.min(a.v.x, b.v.x);

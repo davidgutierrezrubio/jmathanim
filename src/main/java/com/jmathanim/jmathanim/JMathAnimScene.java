@@ -575,4 +575,5 @@ public abstract class JMathAnimScene {
         }
         renderer.getCamera().reset();
     }
+    
 }
