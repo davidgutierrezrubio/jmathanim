@@ -764,6 +764,7 @@ public class Commands {
             @Override
             public void initialize(JMathAnimScene scene) {
                 super.initialize(scene);
+                JMathAnimScene.logger.info("Initialized setLayout animation");
                 for (MathObject obj : mathobjects) {
                     Point dst = centers.get(obj);
                     setShiftVector(obj, obj.getCenter().to(dst));
@@ -799,6 +800,7 @@ public class Commands {
             @Override
             public void initialize(JMathAnimScene scene) {
                 super.initialize(scene);
+                 JMathAnimScene.logger.info("Initialized setLayout animation");
                 for (MathObject obj : mathobjects) {
                     Point dst = centers.get(obj);
                     setShiftVector(obj, obj.getCenter().to(dst));
@@ -825,6 +827,7 @@ public class Commands {
             @Override
             public void initialize(JMathAnimScene scene) {
                 super.initialize(scene);
+                 JMathAnimScene.logger.info("Initialized changeFillAlpha animation");
                 for (MathObject obj : objects) {
                     alphaOrig.add(obj.getMp().getFillColor().alpha);
                 }
@@ -862,6 +865,7 @@ public class Commands {
             @Override
             public void initialize(JMathAnimScene scene) {
                 super.initialize(scene);
+                JMathAnimScene.logger.info("Initialized moveOut animation");
                 //Compute appropiate shift vectors
                 Rect r = JMathAnimConfig.getConfig().getCamera().getMathView();
                 for (int n = 0; n < mathObjects.length; n++) {
@@ -883,7 +887,6 @@ public class Commands {
                 }
             }
 
-            @Override
             public void finishAnimation() {
                 super.finishAnimation();
                 for (MathObject obj : mathObjects) {
@@ -914,6 +917,7 @@ public class Commands {
             @Override
             public void initialize(JMathAnimScene scene) {
                 super.initialize(scene);
+                JMathAnimScene.logger.info("Initialized moveIn animation");
                 for (int n = 0; n < mathObjects.length; n++) {
                     MathObject obj = mathObjects[n];
                     final Anchor.Type reverseAnchor = Anchor.reverseAnchorPoint(enterAnchor);
@@ -969,6 +973,7 @@ public class Commands {
             @Override
             public void initialize(JMathAnimScene scene) {
                 super.initialize(scene);
+                    JMathAnimScene.logger.info("Initialized align animation");
                 for (MathObject obj : mathobjects) {
                     Point dstCenter = Shape.rectangle(obj.getBoundingBox())
                             .align(dst, type).getCenter();
