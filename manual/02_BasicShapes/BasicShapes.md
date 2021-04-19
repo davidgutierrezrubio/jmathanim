@@ -400,18 +400,32 @@ r.getDL();//Gets a Point lying the Lower-Right corner
 r.centerAt(dst);//Moves the Rect so that its center lies in dst
 r.getRotatedRect(45*DEGREES);//Returns the smallest Rect that containts the original roated 45 degrees
 r.getRelPoint(.25, .25);//Returns a Point located at the relative coordinates (.25,.25) of the Rect
+r.getRelPoint(.5,.5);//This is the same as r.getCenter()
 ```
 
 Apart from bounding boxes, the `Rect` class is used to represent the mathview. The method `getMathView()` returns a `Rect` will represents all visible area that is currently being drawed.
 
-Thus, for example,  
+Thus, for example,  the following code will draw some dots at key points of the screen (the methods `thickness`, `drawColow` and `dotStyle` control the appearance of the points and will be seen in the Styling chapter):
 
 ```java
-Point P0=getMathView().getCenter();//Creates a Point at the center of the screen
-Point Q=
+Rect mathView = getMathView();
+Point center = mathView.getCenter().dotStyle(Point.DotSyle.PLUS).thickness(2);//A black point with a plus sign at the center
+Point UL = mathView.getUL().thickness(2);//Black point at upper-left corner of the screen
+Point UR = mathView.getUR().thickness(2);//Black point at upper-right corner of the screen
+Point DL = mathView.getDL().thickness(2);//Black point at lower-left corner of the screen
+Point DR = mathView.getDR().thickness(2);//Black point at lower-right corner of the screen
+Point Q1 = mathView.getRelPoint(.25, .25).thickness(2).drawColor("red");//Red point at (25%,25%) of the screen
+Point Q2 = mathView.getRelPoint(.75, .25).thickness(2).drawColor("green");//Green point at (75%,25%) of the screen
+Point Q3 = mathView.getRelPoint(.75, .75).thickness(2).drawColor("yellow");//Yellow point at (75%,75%) of the screen
+Point Q4 = mathView.getRelPoint(.25, .75).thickness(2).drawColor("blue");//Blue point at (25%,75%) of the screen
+add(center, UL, UR, DL, DR, Q1, Q2, Q3, Q4);
+add(Shape.rectangle(getMathView()).scale(.9));//add a rectangle with size 90% of the screen
+waitSeconds(5);
 ```
 
+If you execute this code you will obtain an image like this:
 
+<img src="mathview.png" alt="image-20210419170908465" style="zoom:75%;" />
 
 
 
