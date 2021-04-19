@@ -128,7 +128,7 @@ public class DensityPlot extends AbstractJMImage {
     private void createColorScale() {
         if (colorScale.getMarkers().isEmpty()) {
             double a = Double.MAX_VALUE;
-            double b = Double.MIN_VALUE;
+            double b = -Double.MAX_VALUE;
             for (int i = 0; i < wRaster; i++) {
                 for (int j = 0; j < hRaster; j++) {
                     Point p = bbox.getRelPoint(i * 1d / wRaster, 1 - j * 1d / hRaster);

@@ -34,9 +34,9 @@ public class Rect implements Stateable, Boxable {//TODO: Adjust this to 3D coord
 
     public static Rect make(List<Point> points) {
         double xmin = Double.MAX_VALUE;
-        double xmax = Double.MIN_VALUE;
+        double xmax = -Double.MAX_VALUE;
         double ymin = Double.MAX_VALUE;
-        double ymax = Double.MIN_VALUE;
+        double ymax = -Double.MAX_VALUE;
 
         for (Point p : points) {
             xmin = (xmin < p.v.x ? xmin : p.v.x);
