@@ -240,7 +240,7 @@ public abstract class JMathAnimScene {
      *
      * @param objs Objects to be drawn
      */
-    public void drawOnce(MathObject... objs) {
+    public void addOnce(MathObject... objs) {
         add(objs);
         objectsToBeRemoved.addAll(Arrays.asList(objs));
     }

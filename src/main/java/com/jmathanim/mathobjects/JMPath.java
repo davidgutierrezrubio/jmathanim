@@ -18,6 +18,7 @@
 package com.jmathanim.mathobjects;
 
 import com.jmathanim.Styling.JMColor;
+import com.jmathanim.Utils.Anchor;
 import com.jmathanim.Utils.Boxable;
 import com.jmathanim.Utils.CircularArrayList;
 import com.jmathanim.Utils.Rect;
@@ -31,6 +32,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Stack;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * This class stores info for drawing a curve with control points, tension...
@@ -480,7 +482,7 @@ public class JMPath implements Updateable, Stateable, Boxable {
         }
     }
 
-    private ArrayList<Point> getCriticalPoints() {
+    public ArrayList<Point> getCriticalPoints() {
         ArrayList<Point> criticalPoints = new ArrayList<>();
         for (int n = 0; n < jmPathPoints.size(); n++) {
             JMPathPoint jmp = jmPathPoints.get(n);
@@ -785,6 +787,7 @@ public class JMPath implements Updateable, Stateable, Boxable {
         Vec P1 = pOrig.cpExit.v;
         Vec P2 = pDst.cpEnter.v;
         Vec P3 = pDst.p.v;
+        Vec v;
         //a,b,c are the coefficients of the derivative of the Bezier function f'(t)=at^2+bt+c
         Vec a = P3.add(P2.mult(-3)).add(P1.mult(3)).add(P0.mult(-1)).mult(3);
         Vec b = P2.mult(3).add(P1.mult(-6)).add(P0.mult(3)).mult(2);
@@ -794,7 +797,13 @@ public class JMPath implements Updateable, Stateable, Boxable {
         double[] solsX = quadraticSolutions(a.x, b.x, c.x);
         for (double tCrit : solsX) {
             if ((tCrit > 0) && (tCrit < 1)) {
-                Vec v = getJMPointBetween(pOrig, pDst, tCrit).p.v;
+//                v = getJMPointBetween(pOrig, pDst, tCrit).p.v;
+                if (pDst.isCurved) {
+                    v = evaluateBezier(P0, P1, P2, P3, tCrit);
+                } else {
+                    v = pOrig.p.interpolate(pDst.p, tCrit).v;
+                }
+
                 resul.add(Point.at(v.x, v.y).drawColor(JMColor.BLUE));
             }
         }
@@ -802,7 +811,12 @@ public class JMPath implements Updateable, Stateable, Boxable {
         double[] solsY = quadraticSolutions(a.y, b.y, c.y);
         for (double tCrit : solsY) {
             if ((tCrit > 0) && (tCrit < 1)) {
-                Vec v = getJMPointBetween(pOrig, pDst, tCrit).p.v;
+//                Vec v = getJMPointBetween(pOrig, pDst, tCrit).p.v;
+                if (pDst.isCurved) {
+                    v = evaluateBezier(P0, P1, P2, P3, tCrit);
+                } else {
+                    v = pOrig.p.interpolate(pDst.p, tCrit).v;
+                }
                 resul.add(Point.at(v.x, v.y).drawColor(JMColor.RED));
             }
         }
@@ -842,7 +856,36 @@ public class JMPath implements Updateable, Stateable, Boxable {
 
         return new double[]{};
     }
-    
-//    public ArrayList<Point> getBorderPoins(Anch)
-    
+
+    /**
+     * Gets the points of the shape that lies in the boundary of the bounding
+     * box
+     *
+     * @param type What side of the bounding box: UPPER, LOWER, RIGHT or LEFT.
+     * The other types return null.
+     * @return A List with all the points that lies in the specified side of the
+     * boundary box
+     */
+    public List<Point> getBorderPoints(Anchor.Type type) {
+        Stream<Point> stream = getCriticalPoints().stream();
+        Rect bb = getBoundingBox();
+        List<Point> li = null;
+        switch (type) {
+            case UPPER:
+                li = stream.filter(p -> p.v.y == bb.ymax).collect(Collectors.toList());
+                break;
+            case LOWER:
+                li = stream.filter(p -> p.v.y == bb.ymin).collect(Collectors.toList());
+                break;
+            case RIGHT:
+                li = stream.filter(p -> p.v.x == bb.xmax).collect(Collectors.toList());
+                break;
+            case LEFT:
+                li = stream.filter(p -> p.v.x == bb.xmin).collect(Collectors.toList());
+                break;
+        }
+
+        return li;
+    }
+
 }

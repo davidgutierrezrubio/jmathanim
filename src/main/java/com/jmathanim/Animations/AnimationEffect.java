@@ -128,7 +128,6 @@ public class AnimationEffect {
                 break;
             case PARABOLICAL:
                 jumpPath = new Shape(FunctionGraph.make(t -> 4 * t * (1 - t), 0, 1).getPath());
-                jumpPath.scale(1, jumpPath.getWidth() * jumpHeight / dist);
                 break;
             case SINUSOIDAL:
                 jumpPath = new Shape(FunctionGraph.make(t -> Math.sin(PI * t), 0, 1).getPath());
