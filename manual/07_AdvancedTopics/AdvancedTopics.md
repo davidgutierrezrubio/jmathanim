@@ -425,6 +425,10 @@ Note that when the rotation is finished subsequent calls to `processAnimation` h
 
 ![procedural02](procedural02.gif)
 
+# The addOnce method
+
+A useful method when creating procedural animations is the `addOnce(obj)` method. This method will add the specified object(s) to the scene but remove them after they are being drawed, so they "live" only for a frame. This method may be useful when you need to create an object for every frame, draw, and remove it because you will use another object in the next frame. 
+
 # Current status of methods implemented to MathObjects
 
 Not all `MathObject` and `Animation` combinations are compatible. Below is a table that shows, at the current version of the library, what you can and cannot do:
