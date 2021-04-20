@@ -35,7 +35,22 @@ public abstract class Animation {
      * Animation status
      */
     public enum Status {
-        NOT_INITIALIZED, INITIALIZED, RUNNING, FINISHED
+        /**
+         * Animation is not initialized yet
+         */
+        NOT_INITIALIZED, 
+        /**
+         * Animation initialized, ready to be played
+         */
+        INITIALIZED,
+        /**
+         * Animation is currently being played
+         */
+        RUNNING,
+        /**
+         * Animation is finished. Subsequent calls to processAnimation() makes no effect
+         */
+        FINISHED
     }
     private Status status;
     /**
@@ -323,7 +338,10 @@ public abstract class Animation {
             scene.remove(mathObjects);
         }
     }
-
+/**
+ * Whether the objects should be added to the scene or not using this animation
+ * @return True if objects are automatically added to the scene when initialized, false otherwise
+ */
     public boolean isShouldAddObjectsToScene() {
         return shouldAddObjectsToScene;
     }

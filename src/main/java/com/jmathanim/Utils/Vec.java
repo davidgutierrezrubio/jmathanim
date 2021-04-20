@@ -30,14 +30,31 @@ public class Vec implements Stateable {
     public double x, y, z;
     public double xState, yState, zState;
 
+    /**
+     * Overloaded constructor
+     *
+     * @param xy A size-2 array with the coordinates
+     */
     public Vec(double[] xy) {
         this(xy[0], xy[1]);
     }
 
+    /**
+     * Returns a new Vec with the given coordinates
+     *
+     * @param x x coordinate
+     * @param y y coordinate
+     */
     public Vec(double x, double y) {
         this(x, y, 0);
     }
-
+/**
+     * Returns a new Vec with the given coordinates, 3D version
+     *
+     * @param x x coordinate
+     * @param y y coordinate
+     * @param z z coordinate
+     */
     public Vec(double x, double y, double z) {
         this.x = x;
         this.y = y;

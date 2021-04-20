@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020 David Gutiérrez Rubio davidgutierrezrubio@gmail.com
+ * Copyright (C) 2021 David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -15,24 +15,26 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-package com.jmathanim.Animations;
+package com.jmathanim.Utils.Layouts;
+
+import com.jmathanim.mathobjects.MathObjectGroup;
 
 /**
- * Simple animation which does nothing
  *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
-public class WaitAnimation extends Animation {
-    /**
-     * Creates a new WaitAnimation, that waits for the specified amount of time
-     * @param runTime Duration in seconds
-     */
-    public WaitAnimation(double runTime) {
-        super(runTime);
+public class DestinyGroupLayout extends GroupLayout{
+private MathObjectGroup destinyGroup;
+
+    public DestinyGroupLayout(MathObjectGroup destinyGroup) {
+        this.destinyGroup = destinyGroup;
     }
 
     @Override
-    public void doAnim(double t) {
+    public void applyLayout(MathObjectGroup group) {
+        for (int n = 0; n < group.size(); n++) {
+            group.get(n).moveTo(destinyGroup.get(n).getCenter());
+        }
     }
-
+    
 }

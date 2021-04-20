@@ -34,12 +34,28 @@ import java.util.HashMap;
  */
 public class AnimationEffect {
 
+    /**
+     * Height of the jump, a negative one can be specified
+     */
     protected Double jumpHeight;
+    /**
+     * Number of turns of the rotation effect. A negative number means clockwise
+     */
     protected Integer numTurns;
+    /**
+     * Alpha scale effect parameter. 1 means no effect.
+     */
     protected Double alphaScaleEffect;
+    /**
+     * Scale parameter. 1 means no effect
+     */
     protected Double scaleEffect;
     private final HashMap<MathObject, JMPath> jumpPaths;
 
+    /**
+     * Creates a new AnimationEffect. This object stores effect parameters for
+     * those animation who support effects.
+     */
     public AnimationEffect() {
         this.jumpHeight = null;
         this.numTurns = null;
@@ -49,8 +65,44 @@ public class AnimationEffect {
         this.jumpPaths = new HashMap<>();
     }
 
+    /**
+     * Type of jump
+     */
     public enum JumpType {
-        SEMICIRCLE, PARABOLICAL, ELLIPTICAL, TRIANGULAR, FOLIUM, SINUSOIDAL2, SINUSOIDAL, CRANE
+        /**
+         * A semicircular jump. This jump has a fixed height depending on the
+         * diameter of the semicircle. The jumpheight parameter only determines
+         * the direction by its sign
+         */
+        SEMICIRCLE,
+        /**
+         * A parabolical jump path
+         */
+        PARABOLICAL,
+        /**
+         * A elliptical jump path, with the jumpHeight given
+         */
+        ELLIPTICAL,
+        /**
+         * A path resembling a triangular roof
+         */
+        TRIANGULAR,
+        /**
+         * A path with the shape of Descartes Folium
+         */
+        FOLIUM,
+        /**
+         * A path with a sin(t) form from 0 to PI
+         */
+        SINUSOIDAL,
+        /**
+         * A path with a sin(t) form from 0 to 2PI
+         */
+        SINUSOIDAL2,
+        /**
+         * A path resembling a crane taking an object, following a rectangular path
+         */
+        CRANE
     }
     JumpType jumpType;
 
@@ -153,8 +205,8 @@ public class AnimationEffect {
             if (jumpType != JumpType.SEMICIRCLE) {
                 jumpPath.scale(1, jumpPath.getWidth() * jumpHeight / (jumpPath.getHeight() * dist));
             }
-            if (jumpType==JumpType.ELLIPTICAL) {
-                jumpPath.scale(1,1.25);
+            if (jumpType == JumpType.ELLIPTICAL) {
+                jumpPath.scale(1, 1.25);
             }
             AffineJTransform.createDirect2DHomothecy(jumpPath.getPoint(0), jumpPath.getPoint(-1), A, B, 1).applyTransform(jumpPath);
             jumpPaths.put(obj, jumpPath.getPath());

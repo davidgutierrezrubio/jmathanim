@@ -133,4 +133,13 @@ public abstract class AbstractBoxLayout extends GroupLayout {
                 break;
         }
     }
+
+    public Point getCorner() {
+        return corner;
+    }
+
+    public void setCorner(Point corner) {
+        this.corner = corner;
+    }
+    
 }

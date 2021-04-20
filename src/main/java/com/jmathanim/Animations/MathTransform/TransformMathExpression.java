@@ -335,6 +335,12 @@ public class TransformMathExpression extends Animation {
         return ar;
     }
 
+    /**
+     * Map all index from origin to destiny. For this to work, destiny size has
+     * to be greater or equal than origin size.
+     *
+     * @return Associated array transform parameter, to add effects.
+     */
     public TransformMathExpressionParametersArray mapAll() {
         int n = Math.min(latexDestiny.size() - 1, latexTransformed.size() - 1);
         return mapRange(0, n, 0);

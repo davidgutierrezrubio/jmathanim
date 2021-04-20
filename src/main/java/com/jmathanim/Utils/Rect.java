@@ -20,6 +20,7 @@ package com.jmathanim.Utils;
 import com.jmathanim.mathobjects.Point;
 import com.jmathanim.mathobjects.Stateable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -31,6 +32,10 @@ public class Rect implements Stateable, Boxable {//TODO: Adjust this to 3D coord
 
     public double xmin, ymin, xmax, ymax, zmin, zmax;
     private Rect rBackup;
+
+    public static Rect make(Point... points) {
+        return make(Arrays.asList(points));
+    }
 
     public static Rect make(List<Point> points) {
         double xmin = Double.MAX_VALUE;
@@ -48,15 +53,15 @@ public class Rect implements Stateable, Boxable {//TODO: Adjust this to 3D coord
 
     }
 
-    public static Rect make(Point a, Point b) {
-        double xmin = Math.min(a.v.x, b.v.x);
-        double xmax = Math.max(a.v.x, b.v.x);
-        double ymin = Math.min(a.v.y, b.v.y);
-        double ymax = Math.max(a.v.y, b.v.y);
-        double zmin = Math.min(a.v.z, b.v.z);
-        double zmax = Math.max(a.v.z, b.v.z);
-        return new Rect(xmin, ymin, zmin, xmax, ymax, zmax);
-    }
+//    public static Rect make(Point a, Point b) {
+//        double xmin = Math.min(a.v.x, b.v.x);
+//        double xmax = Math.max(a.v.x, b.v.x);
+//        double ymin = Math.min(a.v.y, b.v.y);
+//        double ymax = Math.max(a.v.y, b.v.y);
+//        double zmin = Math.min(a.v.z, b.v.z);
+//        double zmax = Math.max(a.v.z, b.v.z);
+//        return new Rect(xmin, ymin, zmin, xmax, ymax, zmax);
+//    }
 
     public Rect(double xmin, double ymin, double xmax, double ymax) {
         this(xmin, ymin, 0, xmax, ymax, 0);

@@ -48,7 +48,10 @@ public class TransformMathExpressionParameters {
         addingStyle = TransformMathExpression.AddType.FADE_IN;
         transformStyle = TransformMathExpression.TransformType.INTERPOLATION;
     }
-
+    /**
+     * Return the number of turns associated to the rotation effect
+     * @return The number of turns
+     */
     protected int getNumTurns() {
         return numTurns;
     }

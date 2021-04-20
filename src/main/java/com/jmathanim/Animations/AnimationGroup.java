@@ -42,6 +42,12 @@ public class AnimationGroup extends AnimationWithEffects {
         return animations;
     }
 
+    /**
+     * Creates a new AnimationGroup with the given animations
+     *
+     * @param anims Animations to add (varargs)
+     * @return The new AnimationGroup created
+     */
     public static AnimationGroup make(Animation... anims) {
         return new AnimationGroup(anims);
     }
@@ -109,7 +115,7 @@ public class AnimationGroup extends AnimationWithEffects {
         for (Animation anim : animations) {
             if (anim instanceof AnimationWithEffects) {
                 AnimationWithEffects animEf = (AnimationWithEffects) anim;
-                    animEf.copyEffectParametersFrom(this);
+                animEf.copyEffectParametersFrom(this);
             }
             anim.initialize(scene);
         }
