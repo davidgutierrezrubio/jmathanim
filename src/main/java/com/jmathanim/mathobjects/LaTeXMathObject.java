@@ -137,7 +137,7 @@ public class LaTeXMathObject extends SVGMathObject {
 
 //Scale
 //An "X" character in LaTeX has 6.8 (svg units) pixels height.
-//This object should be scaled by default to extend over
+//This object should be scale by default to extend over
 //DEFAULT_SCALE_FACTOR% of the screen
 //        Camera cam = JMathAnimConfig.getConfig().getFixedCamera();
 //        double hm = cam.getMathView().getHeight();

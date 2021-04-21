@@ -62,7 +62,6 @@ public class Rect implements Stateable, Boxable {//TODO: Adjust this to 3D coord
 //        double zmax = Math.max(a.v.z, b.v.z);
 //        return new Rect(xmin, ymin, zmin, xmax, ymax, zmax);
 //    }
-
     public Rect(double xmin, double ymin, double xmax, double ymax) {
         this(xmin, ymin, 0, xmax, ymax, 0);
     }
@@ -365,6 +364,18 @@ public class Rect implements Stateable, Boxable {//TODO: Adjust this to 3D coord
     }
 
     /**
+     * For compatilibiy purposes from previous versions. It has identical
+     * effects than scale method
+     *
+     * @param xs x scale
+     * @param ys y scale
+     * @return The scaled rectangle.
+     */
+    public Rect scaled(double xs, double ys) {
+        return scale(xs, ys);
+    }
+
+    /**
      * Scale the rectangle around center, and return a new one with the result.
      * Does not affect the current rect.
      *
@@ -372,7 +383,7 @@ public class Rect implements Stateable, Boxable {//TODO: Adjust this to 3D coord
      * @param ys y scale
      * @return The scaled rectangle.
      */
-    public Rect scaled(double xs, double ys) {
+    public Rect scale(double xs, double ys) {
         Point p = getCenter();
         double xminNew = p.v.x - .5 * getWidth() * xs;
         double xmaxNew = p.v.x + .5 * getWidth() * xs;

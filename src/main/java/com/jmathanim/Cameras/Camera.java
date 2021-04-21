@@ -284,7 +284,7 @@ public class Camera {
      * @return This object
      */
     public Camera scale(double scale) {
-        setMathView(getMathView().scaled(scale, scale));
+        setMathView(getMathView().scale(scale, scale));
         return this;
     }
 

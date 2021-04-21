@@ -524,7 +524,7 @@ public class Commands {
     }
 
     public static Animation cameraScale(double runtime, Camera cam, double scale) {
-        return Commands.cameraZoomToRect(runtime, cam, cam.getMathView().scaled(scale, scale));
+        return Commands.cameraZoomToRect(runtime, cam, cam.getMathView().scale(scale, scale));
     }
 
     /**
