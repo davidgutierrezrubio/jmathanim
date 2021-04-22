@@ -60,17 +60,21 @@ waitSeconds(5);
 A concrete combination of drawing parameters can be saved in styles. The `config`objects stores the saved styles and has methods to manage them. To apply a style to an object, use the method `.style(styleName)`.
 
 ```java
-Shape triangle=Shape.regularPolygon(3).thickness(5).fillColor("RED");
+Shape triangle = Shape.regularPolygon(3).thickness(5).dashStyle(MODrawProperties.DashStyle.DASHED).fillColor("steelblue");
 //Creates style named solidRed
-config.createStyleFrom(triangle, "solidRed");
-Shape circle=Shape.circle().stackTo(triangle,Anchor.LEFT);
+config.createStyleFrom(triangle, "myStyle");
+Shape circle = Shape.circle().scale(.5).stackTo(triangle, Anchor.Type.LEFT);
 //Apply style to circle
-circle.style("solidRed");
-add(triangle,circle);
+circle.style("myStyle");
+add(triangle, circle);
 waitSeconds(5);
 ```
 
-Nevertheless, you don't need to create styles to copy the drawing attributes from an object to another. With the `.getMP()`method you can access directly to the `Stylable`object that stores the drawing parameters. If you want to copy the style from object A to B you can invoke the `.copyFrom` method like this:
+<img src="createStyles.png" alt="image-20210422095807875" style="zoom:50%;" />
+
+
+
+Nevertheless, although using styles is an efficient way to organize the appearance of an animation, you don't need to create them to copy the drawing attributes from an object to another. With the `.getMP()`method you can access directly to the `Stylable`object that stores the drawing parameters. If you want to copy the style from object A to B you can invoke the `.copyFrom` method like this:
 
 ```java
 B.getMP().copyFrom(A.getMP());
@@ -90,11 +94,11 @@ config.setLowQuality();//Predefined adjusts: 854x480 video, at 30fps
 config.setMediumQuality();//Predefined adjusts: 1024x720 video, at 30fps
 config.setHighQuality();//Predefined adjusts: 1920x1080 video, at 60fps
 
-config.setCreateMovie(true);//Generates a mp4 files with the animation
+config.setCreateMovie(true);//Generates a mp4 file with the animation
 config.setOutputDir("media");//Specifies output directory at <PROJECT_DIR>\media (this is the default value)
-config.setOutputFileName("animation");//Specifies video filename as animation_WWW.mp4 where WWW is the width output (by default, the output file name is the name of the scene class)
+config.setOutputFileName("animation");//Sets video filename as animation_WWW.mp4 where WWW is the width output (by default, the output file name is the name of the scene class)
 
-config.setShowPreviewWindow(true); //Show the preview window (by default: true)
+config.setShowPreviewWindow(true);//Show the preview window (by default: true)
 
 config.setBackgroundColor(JMColor.parse("WHITE)"));//Sets background color to white
 config.setBackGroundImage("background.png");//Sets the background image, located at RESOURCES_DIR. If null, no image background is applied
