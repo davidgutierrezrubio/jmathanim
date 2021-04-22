@@ -439,7 +439,8 @@ public class Shape extends MathObject {
      */
     public boolean containsPoint(Vec v) {
         FXPathUtils fXPathUtils = new FXPathUtils();
-        DummyCamera dummyCamera = new DummyCamera();
+//        DummyCamera dummyCamera = new DummyCamera();
+Camera dummyCamera=JMathAnimConfig.getConfig().getCamera();
         Path path = fXPathUtils.createFXPathFromJMPath(jmpath, dummyCamera);
         path.setFill(JMColor.parse("black").getFXColor());//It's necessary that the javafx path is filled to work
         double xy[] = dummyCamera.mathToScreenFX(v);
@@ -493,14 +494,15 @@ public class Shape extends MathObject {
      */
     public JMPath getUnionPath(Shape s2) {
         FXPathUtils fXPathUtils = new FXPathUtils();
-        DummyCamera dummyCamera = new DummyCamera();
+//        DummyCamera dummyCamera = new DummyCamera();
+        Camera dummyCamera = scene.getCamera();
         Path path = fXPathUtils.createFXPathFromJMPath(jmpath, dummyCamera);
         Path path2 = fXPathUtils.createFXPathFromJMPath(s2.getPath(), dummyCamera);
         path.setFill(JMColor.parse("black").getFXColor());//It's necessary that the javafx path is filled to work
         path2.setFill(JMColor.parse("black").getFXColor());//It's necessary that the javafx path is filled to work
         javafx.scene.shape.Shape newpa = Path.union(path, path2);
         Path convertToPath = convertToPath(newpa);
-        writeFXPathPoints(convertToPath);
+//        writeFXPathPoints(convertToPath);
         //Distille!
         fXPathUtils.distille(convertToPath);
 

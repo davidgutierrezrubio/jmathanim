@@ -39,7 +39,7 @@ public class FXPathUtils {
 
     public static double EPSILON = 0.0001;
 
-    public static JMPath createJMPathFromFXPath(Path pa, Camera cam) {
+    public JMPath createJMPathFromFXPath(Path pa, Camera cam) {
         JMPath resul = new JMPath();
         JMPathPoint previousPP = JMPathPoint.curveTo(Point.origin());
         JMPathPoint currentMoveToPoint = null;
@@ -148,7 +148,7 @@ public class FXPathUtils {
      *
      * @param path Path to distille
      */
-    public static void distille(Path path) {
+    public void distille(Path path) {
         int n = 0;
         Double xyPrevious[] = new Double[]{null, null};
         while (n < path.getElements().size() - 1) {
