@@ -194,11 +194,18 @@ Several animations inherit from a subclass called `AnimationWithEffects`that all
 
 ## The jump effect
 
-The `.setJumpHeight(double height)` adds a jump effect to the object(s) being shifted. The direction of the jump is the shift vector rotated 90 degrees clockwise. A negative height can be specified.
+The `.setJumpHeight(double height)` adds a jump effect to the object(s) being shifted. The direction of the jump is the shift vector rotated 90 degrees clockwise. A negative height can be specified. We show an example adding a jump effect to a FlipTransform animation:
 
 ```java
-Shape pol = Shape.regularPolygon(6).scale(.25).center().fillColor("steelblue").thickness(3);
-ShiftAnimation anim = Commands.shift(3, 1,0, pol);//shifts pol with vector (1,0)
+Shape hexagon = Shape.regularPolygon(6)
+    .scale(.25)
+    .moveTo(Point.relAt(.25, .5))
+    .fillColor("steelblue").thickness(3);
+Shape triangle = Shape.regularPolygon(3)
+    .scale(.5)
+    .moveTo(Point.relAt(.75, .5))
+    .fillColor("orange").thickness(3);
+FlipTransform anim = new FlipTransform(5, FlipTransform.FlipType.HORIZONTAL, hexagon, triangle);
 anim.addJumpEffect(.5); //adds a jump effect
 playAnimation(anim);
 ```
@@ -269,9 +276,18 @@ playAnimation(anim);
 And, in case you are wondering, yes, these effects can be nested:
 
 ```java
-Shape pol = Shape.regularPolygon(6).scale(.25).center().fillColor("steelblue").thickness(3);
-ShiftAnimation anim = Commands.shift(5, 1, 0, pol);//shifts pol with vector (1,0)
-anim.addRotationEffect(1).addScaleEffect(.5).addJumpEffect(.5,AnimationEffect.JumpType.FOLIUM);
+Shape square = Shape.square()
+    .scale(.25)
+    .moveTo(Point.relAt(.25, .5))
+    .fillColor("steelblue").thickness(3);
+Shape circle = Shape.circle()
+    .scale(.25)
+    .moveTo(Point.relAt(.75, .5))
+    .fillColor("firebrick").thickness(3);
+Transform anim = new Transform(5, square, circle);
+anim.addRotationEffect(1)
+    .addScaleEffect(.5)
+    .addJumpEffect(.5, AnimationEffect.JumpType.FOLIUM);
 playAnimation(anim);
 waitSeconds(3);
 ```
