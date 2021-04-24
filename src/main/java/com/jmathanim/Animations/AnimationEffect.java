@@ -18,6 +18,7 @@
 package com.jmathanim.Animations;
 
 import com.jmathanim.Utils.AffineJTransform;
+import com.jmathanim.Utils.UsefulLambdas;
 import static com.jmathanim.jmathanim.JMathAnimScene.PI;
 import com.jmathanim.mathobjects.FunctionGraph;
 import com.jmathanim.mathobjects.JMPath;
@@ -100,9 +101,12 @@ public class AnimationEffect {
          */
         SINUSOIDAL2,
         /**
-         * A path resembling a crane taking an object, following a rectangular path
+         * A path resembling a crane taking an object, following a rectangular
+         * path
          */
-        CRANE
+        CRANE,
+        BOUNCE1,
+        BOUNCE2
     }
     JumpType jumpType;
 
@@ -198,6 +202,12 @@ public class AnimationEffect {
                         Point.at(1, 1),
                         Point.at(1, .7),
                         Point.at(1, 0));
+                break;
+            case BOUNCE1:
+                jumpPath = new Shape(FunctionGraph.make(UsefulLambdas.backAndForthBounce1(), 0, 1).getPath());
+                break;
+                case BOUNCE2:
+                jumpPath = new Shape(FunctionGraph.make(UsefulLambdas.backAndForthBounce2(), 0, 1).getPath());
                 break;
         }
 

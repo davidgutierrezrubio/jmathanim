@@ -17,6 +17,7 @@
  */
 package com.jmathanim.Utils;
 
+import com.jmathanim.Animations.Animation;
 import java.util.function.DoubleUnaryOperator;
 
 /**
@@ -80,4 +81,53 @@ public class UsefulLambdas {
         };
     }
 
+    public static DoubleUnaryOperator backAndForthBounce1() {
+        return backAndForthBounce1(.7, 1d);
+    }
+
+    private static DoubleUnaryOperator backAndForthBounce1(double a, double b) {
+        final double aa = a;
+        final double bb = b * 4 / (a * a);
+        return new DoubleUnaryOperator() {
+            @Override
+            public double applyAsDouble(double t) {
+                if (t < a) {
+                    return bb * t * (a - t);
+                } else {
+                    return (a - t) * (t - 1) * bb;
+                }
+            }
+        };
+    }
+
+    public static DoubleUnaryOperator backAndForthBounce2() {
+        return backAndForthBounce2(.7, 1d);
+    }
+
+    private static DoubleUnaryOperator backAndForthBounce2(double a, double b) {
+        final double norm = b * 4 / (a * a);
+        double c = a + a * (1 - a);
+        return new DoubleUnaryOperator() {
+            @Override
+            public double applyAsDouble(double t) {
+                if (t < a) {
+                    return norm * t * (a - t);
+                }
+                if (t < c) {
+                    return (a - t) * (t - c) * norm;
+                } else {
+                    return (c - t) * (t -1) * norm;
+                }
+            }
+        };
+    }
+// public static DoubleUnaryOperator endingSmooth() {
+//     double smooth=.75;
+//        return new DoubleUnaryOperator() {
+//            @Override
+//            public double applyAsDouble(double t) {
+//                return (1-smooth)*t+smooth*(1+(t-1)*(1-t));
+//            }
+//        };
+//    }
 }
