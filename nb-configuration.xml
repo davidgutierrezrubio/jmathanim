@@ -14,5 +14,6 @@
         Any value defined here will override the pom.xml file value but is only applicable to the current project.
         -->
         <netbeans.hint.license>gpl20</netbeans.hint.license>
+        <netbeans.compile.on.save>none</netbeans.compile.on.save>
     </properties>
 </project-shared-configuration>

@@ -79,7 +79,7 @@ public class ResourceLoader {
     }
 
     private URL parseInternalResource(String resource, String folder) {
-        String urlStr = folder + File.separator + resource;
+        String urlStr = folder + "/" + resource;
 
         return this.getClass().getClassLoader().getResource(urlStr);
     }
