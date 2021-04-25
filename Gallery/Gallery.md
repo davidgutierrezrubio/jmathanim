@@ -709,5 +709,10 @@ waitSeconds(3);
 ```
  You can see a video of the animation [here](https://imgur.com/a/Yd6dfnk)
 
+## Showing the divisibility of a number with candies
+
+The animation of the candies allocating in the band is done with a single `setLayout` animation, with a jump effect with semicircular path and a delay effect of 0.5
+
+You can see a video of the animation [here](https://imgur.com/a/aVj0oXL)
 
 [home](https://davidgutierrezrubio.github.io/jmathanim/) [back](../index.html)
