@@ -68,4 +68,5 @@ public abstract class GroupLayout {
         return resul;
     }
 
+    public abstract <T extends GroupLayout> T copy();
 }

@@ -117,4 +117,12 @@ public class SpiralLayout extends GroupLayout {
 
     }
 
+    @Override
+    public SpiralLayout copy() {
+        if (this.center != null) {
+            return new SpiralLayout(center.copy(), orientation, verticalGap, verticalGap);
+        } else {
+            return new SpiralLayout(null, orientation, verticalGap, verticalGap);
+        }
+    }
 }

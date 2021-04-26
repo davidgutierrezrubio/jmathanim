@@ -32,8 +32,6 @@ public class BoxLayout extends AbstractBoxLayout {
 
     int rowSize;
 
-   
-
     public BoxLayout(int rowSize) {
         this(null, rowSize, Direction.RIGHT_UP, 0, 0);
     }
@@ -68,6 +66,10 @@ public class BoxLayout extends AbstractBoxLayout {
         super(corner, inRowGap, inColGap);
         this.rowSize = rowSize;
         computeDirections(direction);
+    }
+
+    private BoxLayout(int rowSize, Direction direction, double inRowGap, double inColGap) {
+        this(null, rowSize, direction, inRowGap, inColGap);
     }
 
     @Override
@@ -144,6 +146,15 @@ public class BoxLayout extends AbstractBoxLayout {
             currentCol = MathObjectGroup.make();
         }
         return colGroup;
+    }
+
+    @Override
+    public BoxLayout copy() {
+        if (this.corner != null) {
+            return new BoxLayout(corner.copy(), rowSize, Direction.RIGHT_UP, inRowGap, inColGap);
+        } else {
+            return new BoxLayout(rowSize, Direction.RIGHT_UP, inRowGap, inColGap);
+        }
     }
 
 }

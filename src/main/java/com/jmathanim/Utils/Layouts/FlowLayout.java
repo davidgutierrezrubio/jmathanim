@@ -39,6 +39,13 @@ public class FlowLayout extends AbstractBoxLayout {
         this.direction = direction;
         computeDirections(direction);
     }
+    
+     public FlowLayout(Point corner, IntToDoubleFunction widthFunction, BoxLayout.Direction direction, double inRowGap, double inColGap) {
+        super(corner, inRowGap, inColGap);
+        rowLength = widthFunction;
+        this.direction = direction;
+        computeDirections(direction);
+    }
 
     private double getAppropiateSize(MathObject obj) {
         double resul = 0;
@@ -134,4 +141,12 @@ public class FlowLayout extends AbstractBoxLayout {
         return resul;
     }
 
+    @Override
+    public FlowLayout copy() {
+        if (this.corner != null) {
+            return new FlowLayout(corner.copy(), this.rowLength, direction, inRowGap, inColGap);
+        } else {
+            return new FlowLayout(null, this.rowLength, direction, inRowGap, inColGap);
+        }
+    }
 }

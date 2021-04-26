@@ -152,4 +152,13 @@ public class SimpleLayout extends GroupLayout {
         }
     }
 
+    @Override
+    public SimpleLayout copy() {
+        if (refPoint != null) {
+            return new SimpleLayout(refPoint.copy(), layout, verticalGap, verticalGap);
+        } else {
+            return new SimpleLayout(layout, verticalGap, verticalGap);
+        }
+    }
+
 }

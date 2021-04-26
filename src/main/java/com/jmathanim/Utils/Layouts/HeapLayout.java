@@ -112,4 +112,9 @@ public class HeapLayout extends GroupLayout {
 
     }
 
+    @Override
+    public HeapLayout copy() {
+        return new HeapLayout(base.copy(), verticalGap, verticalGap);
+    }
+
 }

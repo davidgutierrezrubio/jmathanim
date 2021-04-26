@@ -36,5 +36,8 @@ private MathObjectGroup destinyGroup;
             group.get(n).moveTo(destinyGroup.get(n).getCenter());
         }
     }
-    
+@Override
+    public DestinyGroupLayout copy() {
+        return new DestinyGroupLayout(destinyGroup);
+    }
 }

@@ -128,4 +128,12 @@ public class PascalLayout extends GroupLayout {
         return rows;
     }
 
+    @Override
+    public PascalLayout copy() {
+        if (top != null) {
+            return new PascalLayout(top.copy(), horizontalGap, verticalGap);
+        } else {
+            return new PascalLayout(null, horizontalGap, verticalGap);
+        }
+    }
 }
