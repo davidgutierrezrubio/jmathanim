@@ -43,6 +43,19 @@ public class MathObjectGroup extends MathObject implements Iterable<MathObject> 
         return new MathObjectGroup(objects);
     }
 
+    public static MathObjectGroup divide(MathObjectGroup group,int size){
+        MathObjectGroup dividedGroup=MathObjectGroup.make();
+        MathObjectGroup auxGroup=null;
+        for (int n = 0; n < group.size(); n++) {
+            if (n % size==0) {
+                auxGroup=MathObjectGroup.make();
+                dividedGroup.add(auxGroup);
+            }
+            auxGroup.add(group.get(n));
+        }
+        return dividedGroup;
+    }
+    
     MODrawPropertiesArray mpArray;
     private final ArrayList<MathObject> objects;
 
