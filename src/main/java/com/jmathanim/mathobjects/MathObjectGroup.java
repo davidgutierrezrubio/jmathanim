@@ -43,19 +43,54 @@ public class MathObjectGroup extends MathObject implements Iterable<MathObject> 
         return new MathObjectGroup(objects);
     }
 
-    public static MathObjectGroup divide(MathObjectGroup group,int size){
-        MathObjectGroup dividedGroup=MathObjectGroup.make();
-        MathObjectGroup auxGroup=null;
-        for (int n = 0; n < group.size(); n++) {
-            if (n % size==0) {
-                auxGroup=MathObjectGroup.make();
+    /**
+     * Computes a MathObjectgroup with the same elements, divided en equally
+     * sized subgroups. The current group is unaltered.
+     *
+     * @param size Size of subgroups. Last subgroup created may have less than
+     * this number. For example a group with 17 elements with the division
+     * parameter 5 will return 3 subgroups of 5 elements and 1 subgroup of 2
+     * elements.
+     * @return A new MathObjectGroup contanining other MathObjectGroup instance
+     * with the divided objects.
+     */
+    public MathObjectGroup divide(int size) {
+        MathObjectGroup dividedGroup = MathObjectGroup.make();
+        MathObjectGroup auxGroup = null;
+        for (int n = 0; n < this.size(); n++) {
+            if (n % size == 0) {
+                auxGroup = MathObjectGroup.make();
                 dividedGroup.add(auxGroup);
             }
-            auxGroup.add(group.get(n));
+            auxGroup.add(this.get(n));
         }
         return dividedGroup;
     }
-    
+
+    /**
+     * Returns the MathObjectGroup flattened. If the group contains other group
+     * in nested levels, it flattens all elements in one single group. The
+     * current group is unaltered.
+     *
+     * @return A new group with the elements flattened
+     */
+    public MathObjectGroup flatten() {
+        return flatten(this);
+    }
+
+    private MathObjectGroup flatten(MathObjectGroup group) {
+        MathObjectGroup resul = MathObjectGroup.make();
+        for (MathObject obj : group) {
+            if (obj instanceof MathObjectGroup) {
+                MathObjectGroup cc = flatten(((MathObjectGroup) obj));
+                resul.addAll(cc.getObjects());
+            } else {
+                resul.add(obj);
+            }
+        }
+        return resul;
+    }
+
     MODrawPropertiesArray mpArray;
     private final ArrayList<MathObject> objects;
 
@@ -228,10 +263,12 @@ public class MathObjectGroup extends MathObject implements Iterable<MathObject> 
         layout.applyLayout(this);
         return (T) this;
     }
+
     public <T extends MathObjectGroup> T setLayout(Layout layout, double gap) {
-        return (T) setLayout(null,layout,gap);
+        return (T) setLayout(null, layout, gap);
     }
-    public <T extends MathObjectGroup> T setLayout(MathObject corner,Layout layout, double gap) {
+
+    public <T extends MathObjectGroup> T setLayout(MathObject corner, Layout layout, double gap) {
         Anchor.Type anchor1 = Anchor.Type.CENTER;
         Anchor.Type anchor2 = Anchor.Type.CENTER;
 
@@ -330,8 +367,8 @@ public class MathObjectGroup extends MathObject implements Iterable<MathObject> 
                 JMathAnimScene.logger.error("Layout not recognized, reverting to CENTER");
                 break;
         }
-        if (corner!=null) {
-             objects.get(0).stackTo(anchor1, corner, anchor2, hgap, vgap);
+        if (corner != null) {
+            objects.get(0).stackTo(anchor1, corner, anchor2, hgap, vgap);
         }
         for (int n = 1; n < objects.size(); n++) {
             objects.get(n).stackTo(anchor1, objects.get(n - 1), anchor2, hgap, vgap);
