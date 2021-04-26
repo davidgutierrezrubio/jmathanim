@@ -20,12 +20,22 @@ package com.jmathanim.Utils.Layouts;
 import com.jmathanim.mathobjects.MathObjectGroup;
 
 /**
+ * A layout setting individual destiny locations for each object of the group
  *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
-public class DestinyGroupLayout extends GroupLayout{
-private MathObjectGroup destinyGroup;
+public class DestinyGroupLayout extends GroupLayout {
 
+    private MathObjectGroup destinyGroup;
+
+    /**
+     * Creates a new DestinyGroupLayout. The destinty of n-th object of the
+     * MathObjectGroup to apply the layout is given by the n-th object of the
+     * destiny group
+     *
+     * @param destinyGroup Destiny group. The center of each object will be the
+     * center of group to apply the layout
+     */
     public DestinyGroupLayout(MathObjectGroup destinyGroup) {
         this.destinyGroup = destinyGroup;
     }
@@ -36,7 +46,8 @@ private MathObjectGroup destinyGroup;
             group.get(n).moveTo(destinyGroup.get(n).getCenter());
         }
     }
-@Override
+
+    @Override
     public DestinyGroupLayout copy() {
         return new DestinyGroupLayout(destinyGroup);
     }
