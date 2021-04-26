@@ -10,6 +10,10 @@ You can also follow my [Youtube](https://www.youtube.com/channel/UCeczwEqSrAwZbP
 [Here you can find some examples made with this library ](Gallery/Gallery.html)
 
 # What's new?
+Version 0.9.2-SNAPSHOT:
+
+* Added ComposeLayout for MathObjectGroup objects
+
 Version 0.9.1:
 
 * Fixed bug in boolean operation union 
