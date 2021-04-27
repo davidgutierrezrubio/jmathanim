@@ -123,6 +123,138 @@ waitSeconds(5);//Smile!
 
 <img src="03b_alignExample.png" alt="image-20201231181216715" style="zoom: 67%;" />
 
+
+# Scaling objects
+All `MathObject` instances can be scaled with the `scale` command. Scaling can be done from a given scale center or by default, the center of the object  bounding box.
+
+``` java
+add(Shape.circle().shift(-1, 0).scale(.5, 1));//x-scale and y-scale around center
+add(Shape.circle().shift(0, 1).scale(Point.at(0, 0), 1.3, .2));//x-scale and y-scale around (0,0)
+add(Shape.square().shift(1, 0).scale(.3)); //Uniform scale around center
+waitSeconds(5);
+```
+
+produces the result:
+
+<img src="04_ScaleExample1.png" alt="04 scaleExample1" style="zoom:50%;" />
+
+# Rotating objects
+The `rotate` command rotates the object around a given center (or the center of the object if none given). The angle is specified in radians, but can also be given in degrees using the `DEGREES` constant. The format is `object.rotate(center_of_rotation,angle)` or `object.rotate(angle)`. As in the `scale` method, if no center is specified, the center of the bounding box is chosen as rotation center.
+
+For example:
+
+``` java
+Shape ellipse=Shape.circle().scale(.5,1);//Creates an ellipse
+Point rotationCenter=Point.at(.5,0);
+for (int n = 0; n < 180; n+=20) {
+    add(ellipse.copy().rotate(rotationCenter,n*DEGREES));
+}
+waitSeconds(5);
+```
+
+Gives this spirograh-like picture:
+
+<img src="05_rotateExample1.png" alt="05 rotateExample1" style="zoom:50%;" />
+
+# Affine Transforms
+`shift`, `rotate` and `scale` are particular cases of a more general affine transform implemented by the `AffineJTransform` class. This class defines general affine transforms in the 2D plane, and has several static convenience methods for some of the most common transforms:
+
+The `createTranslationTransform(Vec v)` or `createTranslationTransform(Point A, Point B)` creates a traslation transform. The `shift` command is just a shortcut for this transform. 
+
+The `create2DRotationTransform(Point center, double angle)` creates a rotation transform, used in the `rotate` command.
+
+The `createScaleTransform(Point center, double sx, double sy, double sz)` creates a scaling transform. The z-scale factor is here for
+compatibility to extend to the 3D case, but is currently not used. Used in the `scale` command.
+
+Given any `MathObject` instance, there are 2 main methods to use an `AffineJTransform` object on it:
+
+-   The `transform.applyTransform(object)` method transforms and modifies the current object, returning `void`.
+    
+-   The `transform.getTransformed(object)` returns a copy of the object transformed. The original object is unaltered.
+
+## Homothecies
+The `createDirect2DHomothecy(Point A, Point B, Point C, Point D, double alpha)` is a combination of shifting, rotating and uniform scaling. This method generates the (only) direct homothecy that maps the points (A,B) into points (C,D). The `alpha` parameter is used for animations, as a value of `alpha=0` returns the identity transform and `alpha=1` returns the full transform. Intermediate values return intermediate transforms, interpolating the shifting, rotating, and scaling parameters adequately.
+
+Look at the following example:
+
+``` java
+Shape sq = Shape.square().shift(-1.5, -1).fillColor("darkgreen").fillAlpha(.3);//Square, fill color dark green, and opacity 30%
+Point A = sq.getPoint(0).drawColor("darkblue");//First vertex of the square (lower-left corner), dark blue color
+Point B = sq.getPoint(1).drawColor("darkblue");//First vertex of the square (lower-right corner), dark blue color
+Point C = Point.at(1.5, -1).drawColor("darkred");//Destiny point of A, dark red color
+Point D = Point.at(1.7, .5).drawColor("darkred");//Destiny point of B, dark red color
+add(A, B, C, D);
+for (double alpha = 0; alpha <= 1; alpha += .2) {
+    AffineJTransform transform = AffineJTransform.createDirect2DHomothecy(A, B, C, D, alpha);
+    add(transform.getTransformedObject(sq));//Adds a copy of the square, transformed
+}
+waitSeconds(5);
+```
+
+Produces the following sequence of interpolated transforms from one square to another. Note that an homothecy may change scale of objects, but proportions are unaltered:
+
+
+
+<img src="06_homothecy1.png" alt="06 homothecy1" style="zoom:50%;" />
+
+Notice also another new method here, the `getPoint(n)` method in a `Shape`, will return the n-th point at the shape.
+
+> **WARNING**: You should be careful, when defining the parameters of a transformation like `createDirect2DHomothecy(A, B, C, D, alpha)` if the points `A, B, C, D` are going to be actually modified by the transformation itself (for example, A is an instance of a point of the shape you are transforming). The safe approach in this case should be using copies of the points as parameters, with the `.copy()` method.
+
+## Reflections
+If we want to make a reflection of an object, we can use the static methods `createReflection` and `createReflectionByAxis`. They differ in the way the transformation is specified:
+
+-   `createReflection(Point A, Point B, double alpha)` creates the (only) reflection that maps the point `A` into point `B`. The reflection axis is the perpendicular bisector of the segment joining the two points.
+    
+-   `createReflectionByAxis(Point E1, Point E2, double alpha)` creates the (only) reflection with axis the line specified by the points `E1` and `E2`.
+
+In both cases, the `alpha` parameter works in a similar way than the homothecy transform.
+
+An example of `createReflection` is showed in the following source code:
+
+``` java
+Shape sq = Shape.regularPolygon(5).fillColor("violet").fillAlpha(.3);//Regular pentagon, fill violet, opacity 30%
+Point A = sq.getPoint(0).copy().drawColor("darkblue");//Copy of the first vertex of the pentagon(lower-right corner), color dark blue
+Point B = A.copy().shift(.5, -.2).drawColor("darkred");//Copy of A, shifted (.5,-2), color dark red
+add(A, B);
+for (double alpha = 0; alpha <= 1; alpha += .2) {
+    AffineJTransform transform = AffineJTransform.createReflection(A, B, alpha);//Reflection that maps A into B
+    add(transform.getTransformedObject(sq));//Adds a copy of the pentagon, transformed
+}
+camera.adjustToAllObjects();
+waitSeconds(5);
+```
+
+<img src="07_reflectionExample1.png" alt="07 reflectionExample1" style="zoom:50%;" />
+## General affine transforms
+There is also a more general way to define an affine transform using `createAffineTransformation(Point A, Point B, Point C, Point D, Point E, Point F, double lambda)`. It returns the (only) affine transform that maps the points (A,B,C) into (D,E,F), with the `lambda` interpolation parameter as in the previous methods. Here’s an example:
+
+``` java
+Shape sq = Shape.square().drawColor("brown").thickness(3);
+Shape circ = Shape.circle().scale(.5).shift(.5, .5).fillColor("orange").fillAlpha(.1);//A circle inscribed into the square
+//We create the points with layer(1) so that the draw over the square and circles (by default in layer 0)
+Point A = Point.at(0, 0).drawColor("darkblue").layer(1); 
+Point B = Point.at(1, 0).drawColor("darkblue").layer(1); 
+Point C = Point.at(0, 1).drawColor("darkblue").layer(1); 
+Point D = Point.at(1.5, -.5).dotStyle(DotSyle.PLUS).thickness(2).drawColor("darkgreen");
+Point E = Point.at(2, 0).dotStyle(DotSyle.PLUS).thickness(2).drawColor("darkgreen");
+Point F = Point.at(1.75, .75).dotStyle(DotSyle.PLUS).thickness(2).drawColor("darkgreen");
+add(sq, circ, A, B, C, D, E, F);
+
+for (double alpha = 0; alpha <= 1; alpha += .2) {
+    //A maps to D,B maps to E, C maps to F
+    AffineJTransform transform = AffineJTransform.createAffineTransformation(A, B, C, D, E, F, alpha);
+    add(transform.getTransformedObject(sq));//Adds a copy of the square, transformed
+    add(transform.getTransformedObject(circ));//Adds a copy of the circle, transformed
+}
+camera.adjustToAllObjects();
+waitSeconds(5);
+```
+
+That produces the following image:
+
+<img src="08_GeneralAffineExample1.png" alt="08 GeneralAffineExample1" style="zoom:50%;" />
+
 # Layouts
 
 The `MathObjectGroup`class allows applying layouts to its members through the `setLayout(layout,gap)` method which positions all object with the given layout and specified gap. The layouts are defined in the enum `MathObjectGroup.Layout` and currently are `CENTER`, `LEFT, RIGHT, UPPER` and `LOWER`, which aligns the objects centered in these directions. There also the versions `URIGHT, DRIGHT, ULEFT, DLEFT` which work in a similar way but aligning at top (U) o bottom (D), and `LUPPER, RUPPER, LLOWER, RLOWER` that align to the left (L) or right (R). There are also the `DIAG1, DIAG2, DIAG3, DIAG4` layouts that align in the main diagonals of the 4 sectors (45, 135, 225 and 315 degrees).
@@ -349,135 +481,5 @@ We obtain the following image (note that there are 729 triangles in there):
 
 
 
-# Scaling objects
-All `MathObject` instances can be scaled with the `scale` command. Scaling can be done from a given scale center or by default, the center of the object  bounding box.
-
-``` java
-add(Shape.circle().shift(-1, 0).scale(.5, 1));//x-scale and y-scale around center
-add(Shape.circle().shift(0, 1).scale(Point.at(0, 0), 1.3, .2));//x-scale and y-scale around (0,0)
-add(Shape.square().shift(1, 0).scale(.3)); //Uniform scale around center
-waitSeconds(5);
-```
-
-produces the result:
-
-<img src="04_ScaleExample1.png" alt="04 scaleExample1" style="zoom:50%;" />
-
-# Rotating objects
-The `rotate` command rotates the object around a given center (or the center of the object if none given). The angle is specified in radians, but can also be given in degrees using the `DEGREES` constant. The format is `object.rotate(center_of_rotation,angle)` or `object.rotate(angle)`. As in the `scale` method, if no center is specified, the center of the bounding box is chosen as rotation center.
-
-For example:
-
-``` java
-Shape ellipse=Shape.circle().scale(.5,1);//Creates an ellipse
-Point rotationCenter=Point.at(.5,0);
-for (int n = 0; n < 180; n+=20) {
-    add(ellipse.copy().rotate(rotationCenter,n*DEGREES));
-}
-waitSeconds(5);
-```
-
-Gives this spirograh-like picture:
-
-<img src="05_rotateExample1.png" alt="05 rotateExample1" style="zoom:50%;" />
-
-# Affine Transforms
-`shift`, `rotate` and `scale` are particular cases of a more general affine transform implemented by the `AffineJTransform` class. This class defines general affine transforms in the 2D plane, and has several static convenience methods for some of the most common transforms:
-
-The `createTranslationTransform(Vec v)` or `createTranslationTransform(Point A, Point B)` creates a traslation transform. The `shift` command is just a shortcut for this transform. 
-
-The `create2DRotationTransform(Point center, double angle)` creates a rotation transform, used in the `rotate` command.
-
-The `createScaleTransform(Point center, double sx, double sy, double sz)` creates a scaling transform. The z-scale factor is here for
-compatibility to extend to the 3D case, but is currently not used. Used in the `scale` command.
-
-Given any `MathObject` instance, there are 2 main methods to use an `AffineJTransform` object on it:
-
--   The `transform.applyTransform(object)` method transforms and modifies the current object, returning `void`.
-    
--   The `transform.getTransformed(object)` returns a copy of the object transformed. The original object is unaltered.
-
-## Homothecies
-The `createDirect2DHomothecy(Point A, Point B, Point C, Point D, double alpha)` is a combination of shifting, rotating and uniform scaling. This method generates the (only) direct homothecy that maps the points (A,B) into points (C,D). The `alpha` parameter is used for animations, as a value of `alpha=0` returns the identity transform and `alpha=1` returns the full transform. Intermediate values return intermediate transforms, interpolating the shifting, rotating, and scaling parameters adequately.
-
-Look at the following example:
-
-``` java
-Shape sq = Shape.square().shift(-1.5, -1).fillColor("darkgreen").fillAlpha(.3);//Square, fill color dark green, and opacity 30%
-Point A = sq.getPoint(0).drawColor("darkblue");//First vertex of the square (lower-left corner), dark blue color
-Point B = sq.getPoint(1).drawColor("darkblue");//First vertex of the square (lower-right corner), dark blue color
-Point C = Point.at(1.5, -1).drawColor("darkred");//Destiny point of A, dark red color
-Point D = Point.at(1.7, .5).drawColor("darkred");//Destiny point of B, dark red color
-add(A, B, C, D);
-for (double alpha = 0; alpha <= 1; alpha += .2) {
-    AffineJTransform transform = AffineJTransform.createDirect2DHomothecy(A, B, C, D, alpha);
-    add(transform.getTransformedObject(sq));//Adds a copy of the square, transformed
-}
-waitSeconds(5);
-```
-
-Produces the following sequence of interpolated transforms from one square to another. Note that an homothecy may change scale of objects, but proportions are unaltered:
-
-
-
-<img src="06_homothecy1.png" alt="06 homothecy1" style="zoom:50%;" />
-
-Notice also another new method here, the `getPoint(n)` method in a `Shape`, will return the n-th point at the shape.
-
-> **WARNING**: You should be careful, when defining the parameters of a transformation like `createDirect2DHomothecy(A, B, C, D, alpha)` if the points `A, B, C, D` are going to be actually modified by the transformation itself (for example, A is an instance of a point of the shape you are transforming). The safe approach in this case should be using copies of the points as parameters, with the `.copy()` method.
-
-## Reflections
-If we want to make a reflection of an object, we can use the static methods `createReflection` and `createReflectionByAxis`. They differ in the way the transformation is specified:
-
--   `createReflection(Point A, Point B, double alpha)` creates the (only) reflection that maps the point `A` into point `B`. The reflection axis is the perpendicular bisector of the segment joining the two points.
-    
--   `createReflectionByAxis(Point E1, Point E2, double alpha)` creates the (only) reflection with axis the line specified by the points `E1` and `E2`.
-
-In both cases, the `alpha` parameter works in a similar way than the homothecy transform.
-
-An example of `createReflection` is showed in the following source code:
-
-``` java
-Shape sq = Shape.regularPolygon(5).fillColor("violet").fillAlpha(.3);//Regular pentagon, fill violet, opacity 30%
-Point A = sq.getPoint(0).copy().drawColor("darkblue");//Copy of the first vertex of the pentagon(lower-right corner), color dark blue
-Point B = A.copy().shift(.5, -.2).drawColor("darkred");//Copy of A, shifted (.5,-2), color dark red
-add(A, B);
-for (double alpha = 0; alpha <= 1; alpha += .2) {
-    AffineJTransform transform = AffineJTransform.createReflection(A, B, alpha);//Reflection that maps A into B
-    add(transform.getTransformedObject(sq));//Adds a copy of the pentagon, transformed
-}
-camera.adjustToAllObjects();
-waitSeconds(5);
-```
-
-<img src="07_reflectionExample1.png" alt="07 reflectionExample1" style="zoom:50%;" />
-## General affine transforms
-There is also a more general way to define an affine transform using `createAffineTransformation(Point A, Point B, Point C, Point D, Point E, Point F, double lambda)`. It returns the (only) affine transform that maps the points (A,B,C) into (D,E,F), with the `lambda` interpolation parameter as in the previous methods. Here’s an example:
-
-``` java
-Shape sq = Shape.square().drawColor("brown").thickness(3);
-Shape circ = Shape.circle().scale(.5).shift(.5, .5).fillColor("orange").fillAlpha(.1);//A circle inscribed into the square
-//We create the points with layer(1) so that the draw over the square and circles (by default in layer 0)
-Point A = Point.at(0, 0).drawColor("darkblue").layer(1); 
-Point B = Point.at(1, 0).drawColor("darkblue").layer(1); 
-Point C = Point.at(0, 1).drawColor("darkblue").layer(1); 
-Point D = Point.at(1.5, -.5).dotStyle(DotSyle.PLUS).thickness(2).drawColor("darkgreen");
-Point E = Point.at(2, 0).dotStyle(DotSyle.PLUS).thickness(2).drawColor("darkgreen");
-Point F = Point.at(1.75, .75).dotStyle(DotSyle.PLUS).thickness(2).drawColor("darkgreen");
-add(sq, circ, A, B, C, D, E, F);
-
-for (double alpha = 0; alpha <= 1; alpha += .2) {
-    //A maps to D,B maps to E, C maps to F
-    AffineJTransform transform = AffineJTransform.createAffineTransformation(A, B, C, D, E, F, alpha);
-    add(transform.getTransformedObject(sq));//Adds a copy of the square, transformed
-    add(transform.getTransformedObject(circ));//Adds a copy of the circle, transformed
-}
-camera.adjustToAllObjects();
-waitSeconds(5);
-```
-
-That produces the following image:
-
-<img src="08_GeneralAffineExample1.png" alt="08 GeneralAffineExample1" style="zoom:50%;" />
 
 [home](https://davidgutierrezrubio.github.io/jmathanim/) [back](../index.html)
