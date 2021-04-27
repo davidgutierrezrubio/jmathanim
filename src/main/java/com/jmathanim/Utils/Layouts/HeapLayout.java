@@ -22,6 +22,7 @@ import com.jmathanim.mathobjects.Point;
 import java.util.ArrayList;
 
 /**
+ * A layout resembling a triangular heap of objects
  *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
@@ -32,6 +33,12 @@ public class HeapLayout extends GroupLayout {
     private final Point base;
     private final double horizontalGap, verticalGap;
 
+    /**
+     * Creates a new heap layout
+     * @param base Reference point. This will be the lower centered point of the heap
+     * @param hgap Horizontal gap
+     * @param vgap Vertical gap
+     */
     public HeapLayout(Point base, double hgap, double vgap) {
         center = new MathObjectGroup();
         rightSide = new ArrayList<>();

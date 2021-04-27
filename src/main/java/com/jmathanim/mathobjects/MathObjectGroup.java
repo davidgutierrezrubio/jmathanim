@@ -239,6 +239,9 @@ public class MathObjectGroup extends MathObject implements Iterable<MathObject> 
         return super.setAbsoluteSize(); //To change body of generated methods, choose Tools | Templates.
     }
 
+    /**
+     * Simpe layouts to apply to the group
+     */
     public enum Layout {
         CENTER,
         RIGHT,

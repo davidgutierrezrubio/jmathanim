@@ -21,6 +21,8 @@ import com.jmathanim.Utils.Anchor;
 import com.jmathanim.mathobjects.Point;
 
 /**
+ * An abstract class to implement boxed-like layouts, like BoxLayout and
+ * FlowLayout
  *
  * @author David Gutierrez Rubio davidgutierrezrubio@gmail.com
  */
@@ -141,5 +143,5 @@ public abstract class AbstractBoxLayout extends GroupLayout {
     public void setCorner(Point corner) {
         this.corner = corner;
     }
-    
+
 }

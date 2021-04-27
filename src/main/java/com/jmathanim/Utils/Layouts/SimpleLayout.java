@@ -23,6 +23,7 @@ import com.jmathanim.mathobjects.MathObjectGroup;
 import com.jmathanim.mathobjects.Point;
 
 /**
+ * A simple layout which allocates the objects using fixed styles
  *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
@@ -33,10 +34,29 @@ public class SimpleLayout extends GroupLayout {
     private final double verticalGap;
     private Point refPoint;
 
+    /**
+     * Creates a simple layout
+     *
+     * @param layout Layout to apply. A value from the enum
+     * MathObjectGroup.Layout: CENTER, RIGHT, LEFT, UPPER, LOWER, URIGHT, ULEFT,
+     * DRIGHT, DLEFT, RUPPER, LUPPER, RLOWER, LLOWER, DIAG1, DIAG2, DIAG3, DIAG4
+     * @param hgap Horizontal gap between elements
+     * @param vgap Vertical gap between elements
+     */
     public SimpleLayout(MathObjectGroup.Layout layout, double hgap, double vgap) {
         this(null, layout, hgap, vgap);
     }
 
+    /**
+     * Creates a simple layout, starting from a reference point
+     *
+     * @param refPoint Reference point
+     * @param layout Layout to apply. A value from the enum
+     * MathObjectGroup.Layout: CENTER, RIGHT, LEFT, UPPER, LOWER, URIGHT, ULEFT,
+     * DRIGHT, DLEFT, RUPPER, LUPPER, RLOWER, LLOWER, DIAG1, DIAG2, DIAG3, DIAG4
+     * @param hgap Horizontal gap between elements
+     * @param vgap Vertical gap between elements
+     */
     public SimpleLayout(Point refPoint, MathObjectGroup.Layout layout, double hgap, double vgap) {
         this.layout = layout;
         this.horizontalGap = hgap;
