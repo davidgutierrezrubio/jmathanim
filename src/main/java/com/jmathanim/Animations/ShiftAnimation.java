@@ -69,6 +69,15 @@ public abstract class ShiftAnimation extends Animation {
 
     }
 
+    /**
+     * This function rescales the time parameter so that (0,1) becomes the (a,b)
+     * interval
+     *
+     * @param a left side of new interval
+     * @param b right side of new interval
+     * @param t parameter to evaluate
+     * @return The new parameter rescaled
+     */
     public double allocateToNewTime(double a, double b, double t) {
         if (t < a) {
             return 0;
@@ -106,6 +115,12 @@ public abstract class ShiftAnimation extends Animation {
         doAnim(1);
     }
 
+    /**
+     * Returns the current shift vector for the given object
+     *
+     * @param obj MathObject to get it shift vector
+     * @return The shift vector
+     */
     public Vec getShiftVector(MathObject obj) {
         return this.shiftVectors.get(obj);
     }
@@ -190,6 +205,13 @@ public abstract class ShiftAnimation extends Animation {
         return (T) this;
     }
 
+    /**
+     * Sets the jump height for all the objects added to the animation
+     *
+     * @param <T> The calling subclass
+     * @param jumpHeight Height of the jump. Negative heights can be passed.
+     * @return This object
+     */
     public <T extends ShiftAnimation> T addJumpEffect(double jumpHeight, AnimationEffect.JumpType jumpType) {
         for (MathObject obj : mathObjects) {
             addJumpEffect(obj, jumpHeight, jumpType);
@@ -255,7 +277,8 @@ public abstract class ShiftAnimation extends Animation {
     }
 
     /**
-     * Adds a rotation effect with a specified angle to every mathobject added to the animation
+     * Adds a rotation effect with a specified angle to every mathobject added
+     * to the animation
      *
      * @param <T> The calling subclass
      * @param rotationAngle Rotation angle
@@ -269,7 +292,8 @@ public abstract class ShiftAnimation extends Animation {
     }
 
     /**
-     * Adds a rotation effect with a specified angle to a given mathobject added to the animation
+     * Adds a rotation effect with a specified angle to a given mathobject added
+     * to the animation
      *
      * @param <T> The calling subclass
      * @param obj MathObject to rotate

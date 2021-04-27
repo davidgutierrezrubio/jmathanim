@@ -82,7 +82,6 @@ public class XugglerVideoEncoder extends VideoEncoder {
 
         IStreamCoder audioCoder = containerAudio.getStream(audiostreamt).getStreamCoder();
         System.out.println("Channels: " + audioCoder.getChannels());
-        System.out.println("Sample rate: " + audioCoder.getSampleRate());
         if (audioCoder.open() < 0) {
             throw new RuntimeException("Cant open audio coder");
         }

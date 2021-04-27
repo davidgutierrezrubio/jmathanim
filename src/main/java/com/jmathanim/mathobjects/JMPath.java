@@ -28,9 +28,7 @@ import com.jmathanim.mathobjects.JMPathPoint.JMPathPointType;
 import com.jmathanim.mathobjects.updateableObjects.Updateable;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
-import java.util.Stack;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 

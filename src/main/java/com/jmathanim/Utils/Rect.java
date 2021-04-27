@@ -19,7 +19,6 @@ package com.jmathanim.Utils;
 
 import com.jmathanim.mathobjects.Point;
 import com.jmathanim.mathobjects.Stateable;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 

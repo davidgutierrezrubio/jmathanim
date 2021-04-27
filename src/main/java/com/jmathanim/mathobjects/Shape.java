@@ -18,7 +18,6 @@
 package com.jmathanim.mathobjects;
 
 import com.jmathanim.Cameras.Camera;
-import com.jmathanim.Cameras.DummyCamera;
 import com.jmathanim.Renderers.FXPathUtils;
 import com.jmathanim.Renderers.Renderer;
 import com.jmathanim.Styling.JMColor;

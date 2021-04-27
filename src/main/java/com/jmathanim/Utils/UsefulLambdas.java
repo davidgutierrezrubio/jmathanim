@@ -17,7 +17,6 @@
  */
 package com.jmathanim.Utils;
 
-import com.jmathanim.Animations.Animation;
 import java.util.function.DoubleUnaryOperator;
 
 /**

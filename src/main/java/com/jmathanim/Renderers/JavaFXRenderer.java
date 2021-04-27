@@ -177,7 +177,7 @@ public class JavaFXRenderer extends Renderer {
                 fxScene.setCamera(fxCamera);
 
                 if (config.isShowPreview()) {
-                    JMathAnimScene.logger.debug("Creating preview window");
+                    JMathAnimScene.logger.info("Creating preview window");
                     //TODO: This gaps to add to the window are os-dependent
                     StandaloneSnapshot.FXStarter.stage.setHeight(config.mediaH + 38);
                     StandaloneSnapshot.FXStarter.stage.setWidth(config.mediaW + 16);

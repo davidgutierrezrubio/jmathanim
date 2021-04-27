@@ -34,6 +34,16 @@ public class PascalLayout extends GroupLayout {
     private final double horizontalGap;
     private final double verticalGap;
 
+    public PascalLayout() {
+        this(0, 0);
+    }
+
+    public PascalLayout(double horizontalGap, double verticalGap) {
+        this.top = null;
+        this.horizontalGap = horizontalGap;
+        this.verticalGap = verticalGap;
+    }
+
     public PascalLayout(Point top, double horizontalGap, double verticalGap) {
         this.top = top;
         this.horizontalGap = horizontalGap;
@@ -95,7 +105,9 @@ public class PascalLayout extends GroupLayout {
         }
         //Move now so that the top center point of first element match the Point top.
         Point A = Anchor.getAnchorPoint(group.get(0), Anchor.Type.UPPER);
-        group.shift(A.to(top));
+        if (top != null) {
+            group.shift(A.to(top));
+        }
     }
 
     /**

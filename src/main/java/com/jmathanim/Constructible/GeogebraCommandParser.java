@@ -76,7 +76,6 @@ public class GeogebraCommandParser {
         Matcher matcher = pattern.matcher(argument);
         if (matcher.find()) {
             System.out.println(matcher.group(1));
-            System.out.println(matcher.group(2));
             return Point.at(Double.valueOf(matcher.group(1)), Double.valueOf(matcher.group(2)));
         }
 
@@ -193,7 +192,7 @@ public class GeogebraCommandParser {
         resul.label = label;
         geogebraElements.put(label, resul);
 //        resul.getMp().copyFrom(parseStylingOptions(el));
-        JMathAnimScene.logger.info("Imported point {}", label);
+        JMathAnimScene.logger.debug("Imported point {}", label);
     }
 
     protected void processSegmentCommand(Element el) {
@@ -206,7 +205,7 @@ public class GeogebraCommandParser {
         String label = firstElementWithTag(el, "output").getAttribute("a0");
         resul.label = label;
         geogebraElements.put(label, resul);
-        JMathAnimScene.logger.info("Generated segment {}", label);
+        JMathAnimScene.logger.debug("Generated segment {}", label);
     }
 
     protected void processLineCommand(Element el) {
@@ -264,7 +263,6 @@ public class GeogebraCommandParser {
         //Now, build all segments
         for (int i = 0; i < points.length; i++) {
             int i2=(i<outputs.length-2 ? i+1 : 0);
-            System.out.println(outputs[i+1]+"-->"+i+",  "+i2);
             registerGeogebraElement(outputs[i+1], ConstrSegmentPointPoint.make(points[i], points[i2]));
         }
 

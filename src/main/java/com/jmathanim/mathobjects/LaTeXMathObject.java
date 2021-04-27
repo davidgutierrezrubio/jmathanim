@@ -201,12 +201,13 @@ public class LaTeXMathObject extends SVGMathObject {
         String svgFilename = baseFileName + ".svg";
         File svgFile = new File(svgFilename);
         if (!svgFile.exists()) {//If file is already created, don't do it again
+            JMathAnimScene.logger.info("Compiling LaTeX string "+this.text);
             File dviFile = new File(baseFileName + ".dvi");
             String od = outputDir.getCanonicalPath();
             runExternalCommand("latex -output-directory=" + od + " " + this.latexFile.getCanonicalPath());
-            JMathAnimScene.logger.info("Done compiling {}", latexFile.getCanonicalPath());
+            JMathAnimScene.logger.debug("Done compiling {}", latexFile.getCanonicalPath());
             runExternalCommand("dvisvgm -n1 " + dviFile.getCanonicalPath());
-            JMathAnimScene.logger.info("Done converting {}", dviFile.getCanonicalPath());
+            JMathAnimScene.logger.debug("Done converting {}", dviFile.getCanonicalPath());
         }
         return svgFilename;
     }

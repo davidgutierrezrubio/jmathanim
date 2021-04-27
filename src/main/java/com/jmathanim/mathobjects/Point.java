@@ -27,7 +27,6 @@ import com.jmathanim.jmathanim.JMathAnimScene;
 import java.text.DecimalFormat;
 import org.apache.commons.math3.linear.Array2DRowRealMatrix;
 import org.apache.commons.math3.linear.RealMatrix;
-import sun.security.krb5.Config;
 
 /**
  * This class represents a point in 2D or 3D space

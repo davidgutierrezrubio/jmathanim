@@ -32,6 +32,7 @@ public class SpiralLayout extends GroupLayout {
 
     private final Point center;
     private double horizontalGap, verticalGap;
+    private int spiralGap;
 
     public enum Orientation {
         UPPER_CLOCKWISE, UPPER_COUNTERCLOCKWISE, RIGHT_CLOCKWISE, RIGHT_COUNTERCLOCKWISE,
@@ -67,6 +68,7 @@ public class SpiralLayout extends GroupLayout {
         this.orientation = orientation;
         this.horizontalGap = hgap;
         this.verticalGap = vgap;
+        this.spiralGap = 0;
         switch (orientation) {
             case LEFT_CLOCKWISE:
                 stacks = new Anchor.Type[]{Anchor.Type.LEFT, Anchor.Type.UPPER, Anchor.Type.RIGHT, Anchor.Type.LOWER};
@@ -102,7 +104,7 @@ public class SpiralLayout extends GroupLayout {
             group.get(0).stackTo(this.center, Anchor.Type.CENTER);
         }
         int stackType = 0;//Index to the array of used stacks
-        int numberOfStacks = 1;//This variable holds how many objects should I stack before doing a "turn"
+        int numberOfStacks = Math.max(1,spiralGap);//This variable holds how many objects should I stack before doing a "turn"
         int turnNumber = 1;
         for (int n = 1; n < group.size(); n++) {
             Anchor.Type stack = stacks[stackType];
@@ -110,7 +112,7 @@ public class SpiralLayout extends GroupLayout {
             numberOfStacks--;
             if (numberOfStacks == 0) {//Ok, time to turn...
                 turnNumber++;
-                numberOfStacks = (turnNumber + 1) / 2;//integer division: 1,1,2,2,3,3,4,4,....
+                numberOfStacks = ((spiralGap+1) * turnNumber + 1) / 2;//integer division: 1,1,2,2,3,3,4,4,....
                 stackType = (stackType + 1) % 4;
             }
         }
@@ -125,4 +127,20 @@ public class SpiralLayout extends GroupLayout {
             return new SpiralLayout(null, orientation, verticalGap, verticalGap);
         }
     }
+
+    /**
+     * Sets the spiral gap
+     *
+     * @param <T> Calling class
+     * @param spiralGap The spiral gap. A value of 0 means all revolutions of
+     * the spiral are glued together. A value of 1 or greater leaves a
+     * proportional space between revolutions depending on the sizes of the
+     * objects.
+     * @return This object
+     */
+    public <T extends SpiralLayout> T setSpiralGap(int spiralGap) {
+        this.spiralGap = spiralGap;
+        return (T) this;
+    }
+
 }

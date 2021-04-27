@@ -17,12 +17,7 @@
  */
 package com.jmathanim.Animations.MathTransform;
 
-import com.jmathanim.Animations.Animation;
 import com.jmathanim.Animations.AnimationEffect;
-import com.jmathanim.Animations.Commands;
-import com.jmathanim.Utils.Vec;
-import static com.jmathanim.jmathanim.JMathAnimScene.PI;
-import com.jmathanim.mathobjects.Shape;
 
 /**
  *

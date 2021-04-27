@@ -83,7 +83,7 @@ public class MODrawProperties implements Stylable, Stateable {
         try {
             resul = DashStyle.valueOf(str.toUpperCase());
         } catch (IllegalArgumentException e) {
-            JMathAnimScene.logger.warn("Dash pattern {} not recognized, using default {}", str, resul);
+            JMathAnimScene.logger.error("Dash pattern {} not recognized, using default {}", str, resul);
         }
 
         return resul;
@@ -94,7 +94,7 @@ public class MODrawProperties implements Stylable, Stateable {
         try {
             resul = DotSyle.valueOf(str.toUpperCase());
         } catch (IllegalArgumentException e) {
-            JMathAnimScene.logger.warn("Dot style {} not recognized, using default {}", str, resul);
+            JMathAnimScene.logger.error("Dot style {} not recognized, using default {}", str, resul);
         }
         return resul;
     }

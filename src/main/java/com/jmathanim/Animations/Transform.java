@@ -26,7 +26,6 @@ import com.jmathanim.Animations.Strategies.Transform.Optimizers.NullOptimization
 import com.jmathanim.Animations.Strategies.Transform.PointInterpolationCanonical;
 import com.jmathanim.Animations.Strategies.Transform.PointInterpolationSimpleShapeTransform;
 import com.jmathanim.Animations.Strategies.Transform.RotateAndScaleXYTransform;
-import com.jmathanim.Styling.MODrawProperties;
 import com.jmathanim.Utils.JMathAnimConfig;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.Arrow2D;
@@ -164,37 +163,37 @@ public class Transform extends AnimationWithEffects {
         switch (transformMethod) {
             case ARROW_TRANSFORM:
                 transformStrategy = new ArrowTransform(runTime, (Arrow2D) mobjTransformed, (Arrow2D) mobjDestiny);
-                JMathAnimScene.logger.info("Transform method: Arrow2D");
+                JMathAnimScene.logger.debug("Transform method: Arrow2D");
                 break;
             case MULTISHAPE_TRANSFORM:
                 transformStrategy = new MultiShapeTransform(runTime, convertToMultiShapeObject(mobjTransformed), convertToMultiShapeObject(mobjDestiny));
-                JMathAnimScene.logger.info("Transform method: Multishape");
+                JMathAnimScene.logger.debug("Transform method: Multishape");
                 break;
             
             case INTERPOLATE_SIMPLE_SHAPES_BY_POINT:
                 transformStrategy = new PointInterpolationSimpleShapeTransform(runTime, (Shape) mobjTransformed, (Shape) mobjDestiny);
-                JMathAnimScene.logger.info("Transform method: Point interpolation between 2 simple closed curves");
+                JMathAnimScene.logger.debug("Transform method: Point interpolation between 2 simple closed curves");
                 break;
             case INTERPOLATE_POINT_BY_POINT:
                 transformStrategy = new PointInterpolationCanonical(runTime, (Shape) mobjTransformed, (Shape) mobjDestiny);
-                JMathAnimScene.logger.info("Transform method: Point interpolation between 2 curves");
+                JMathAnimScene.logger.debug("Transform method: Point interpolation between 2 curves");
                 break;
             case HOMOTHECY_TRANSFORM:
                 transformStrategy = new HomothecyTransformAnimation(runTime, (Shape) mobjTransformed, (Shape) mobjDestiny);
-                JMathAnimScene.logger.info("Transform method: Homothecy");
+                JMathAnimScene.logger.debug("Transform method: Homothecy");
                 
                 break;
             case ROTATE_AND_SCALEXY_TRANSFORM:
                 transformStrategy = new RotateAndScaleXYTransform(runTime, (Shape) mobjTransformed, (Shape) mobjDestiny);
-                JMathAnimScene.logger.info("Transform method: Rotate and Scale XY");
+                JMathAnimScene.logger.debug("Transform method: Rotate and Scale XY");
                 break;
             case GENERAL_AFFINE_TRANSFORM:
                 transformStrategy = new GeneralAffineTransformAnimation(runTime, (Shape) mobjTransformed, (Shape) mobjDestiny);
-                JMathAnimScene.logger.info("Transform method: General affine transform");
+                JMathAnimScene.logger.debug("Transform method: General affine transform");
                 break;
             case FUNCTION_INTERPOLATION:
                 transformStrategy = new FunctionSimpleInterpolateTransform(runTime, (FunctionGraph) mobjTransformed, (FunctionGraph) mobjDestiny);
-                JMathAnimScene.logger.info("Transform method: Interpolation of functions");
+                JMathAnimScene.logger.debug("Transform method: Interpolation of functions");
                 break;
         }
 //        if (shouldApplyEffects()) {
@@ -202,7 +201,7 @@ public class Transform extends AnimationWithEffects {
                 AnimationWithEffects tr = (AnimationWithEffects) transformStrategy;
                 tr.copyEffectParametersFrom(this);
             } else {
-                JMathAnimScene.logger.warn("Cannot apply effects to current transform");
+                JMathAnimScene.logger.error("Cannot apply effects to current transform");
             }
 //        }
     }

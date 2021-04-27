@@ -17,6 +17,9 @@
  */
 package com.jmathanim.jmathanim;
 
+import ch.qos.logback.classic.LoggerContext;
+import ch.qos.logback.classic.joran.JoranConfigurator;
+import ch.qos.logback.core.joran.spi.JoranException;
 import com.jmathanim.Animations.Animation;
 import com.jmathanim.Animations.PlayAnim;
 import com.jmathanim.Cameras.Camera;
@@ -29,6 +32,7 @@ import com.jmathanim.mathobjects.MathObjectGroup;
 import com.jmathanim.mathobjects.MultiShapeObject;
 import com.jmathanim.mathobjects.Shape;
 import com.jmathanim.mathobjects.updateableObjects.Updateable;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -150,8 +154,19 @@ public abstract class JMathAnimScene {
      */
     public final int execute() {
 
-        String nombre = this.getClass().getName();
-        logger.info("Running sketch {} ", nombre);
+        String sketchName = this.getClass().getName();
+        LoggerContext loggerContext = (LoggerContext) LoggerFactory.getILoggerFactory();
+        loggerContext.reset();
+        JoranConfigurator configurator = new JoranConfigurator();
+        configurator.setContext(loggerContext);
+        try {
+            URL url = this.getClass().getClassLoader().getResource("logback.xml");//Loads default config for logger
+            configurator.doConfigure(url);
+        } catch (JoranException ex) {
+            java.util.logging.Logger.getLogger(JMathAnimScene.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        logger.info("Running sketch {} ", sketchName);
+
         setupSketch();
         createRenderer();
         JMathAnimConfig.getConfig().setRenderer(renderer);
@@ -567,13 +582,13 @@ public abstract class JMathAnimScene {
      * setting the camera to its default values
      */
     public void reset() {
-        for (MathObject obj: getObjects().toArray(new MathObject[getObjects().size()])) {
+        for (MathObject obj : getObjects().toArray(new MathObject[getObjects().size()])) {
             remove(obj);
         }
-        for (Updateable upd: getObjectsToBeUpdated().toArray(new Updateable[getObjectsToBeUpdated().size()])) {
+        for (Updateable upd : getObjectsToBeUpdated().toArray(new Updateable[getObjectsToBeUpdated().size()])) {
             unregisterUpdateable(upd);
         }
         renderer.getCamera().reset();
     }
-    
+
 }

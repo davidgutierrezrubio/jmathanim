@@ -33,9 +33,19 @@ public class HeapLayout extends GroupLayout {
     private final Point base;
     private final double horizontalGap, verticalGap;
 
+    public HeapLayout() {
+        this(0, 0);
+    }
+
+    public HeapLayout(double hgap, double vgap) {
+        this(null, hgap, vgap);
+    }
+
     /**
      * Creates a new heap layout
-     * @param base Reference point. This will be the lower centered point of the heap
+     *
+     * @param base Reference point. This will be the lower centered point of the
+     * heap
      * @param hgap Horizontal gap
      * @param vgap Vertical gap
      */
@@ -115,7 +125,9 @@ public class HeapLayout extends GroupLayout {
         whole.setLayout(MathObjectGroup.Layout.DRIGHT, this.horizontalGap);
         //Allocates them properly
         Point a = center.get(0).getBoundingBox().getLower();//The center
-        whole.shift(a.to(this.base));
+        if (this.base != null) {
+            whole.shift(a.to(this.base));
+        }
 
     }
 

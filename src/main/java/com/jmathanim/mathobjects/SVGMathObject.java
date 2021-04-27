@@ -95,7 +95,7 @@ public class SVGMathObject extends MultiShapeObject {
     }
 
     protected final void importSVG(File file) throws Exception {
-        JMathAnimScene.logger.info("Importing SVG file {}", file.getCanonicalPath());
+        JMathAnimScene.logger.debug("Importing SVG file {}", file.getCanonicalPath());
         importSVG(file.toURI().toURL());
     }
 
@@ -457,7 +457,7 @@ public class SVGMathObject extends MultiShapeObject {
                                 previousPoint = pathCubicBezier(resul, previousPoint, cx1, cy1, cx2, cy2, currentX, currentY);
                                 break;
                             default:
-                                JMathAnimScene.logger.warn("Unknow repeated command: <" + token + ">");
+                                JMathAnimScene.logger.error("Unknow repeated command: <" + token + ">");
 
                         }
 
@@ -468,32 +468,21 @@ public class SVGMathObject extends MultiShapeObject {
         return resul;
     }
 
-    public void getPoint(String x, String y) throws NumberFormatException {
+    private void getPoint(String x, String y) throws NumberFormatException {
         getPointX(x);
         getPointY(y);
     }
 
-    public void getPointX(String x) throws NumberFormatException {
+    private void getPointX(String x) throws NumberFormatException {
         previousX = currentX;
         currentX = Double.parseDouble(x);
     }
 
-    public void getPointY(String y) throws NumberFormatException {
+    private void getPointY(String y) throws NumberFormatException {
         previousY = currentY;
         currentY = -Double.parseDouble(y);
     }
 
-//    private JMPathPoint pathM(JMPath path, double x, double y) {
-//        JMPathPoint point = new JMPathPoint(new Point(currentX, currentY), true, JMPathPoint.TYPE_VERTEX);
-//        point.isCurved = false;
-//        point.isVisible = false;
-//        point.cp1.v.x = currentX;
-//        point.cp1.v.y = currentY;
-//        point.cp2.v.x = currentX;
-//        point.cp2.v.y = currentY;
-//        path.addPoint(point);
-//        return point;
-//    }
     private JMPathPoint pathCubicBezier(JMPath path, JMPathPoint previousPoint, double cx1, double cy1, double cx2, double cy2, double x, double y) {
         JMPathPoint point = new JMPathPoint(new Point(currentX, currentY), true, JMPathPointType.VERTEX);
         point.isCurved = true;
