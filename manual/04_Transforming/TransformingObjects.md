@@ -177,13 +177,13 @@ waitSeconds(3);//Smile, you're in a screenshot!
 
 Gives a static image like this. The red dot is the reference point
 
-<img src="boxlayout01.png" alt="image-20210317090826194" style="zoom:50%;" />
+<img src="boxlayout01.png" alt="image-20210317090826194" style="zoom: 50%;" />
 
 The `BoxLayout.Direction.RIGHT_UP` tells the layout to fill first the row in the `RIGHT` direction, and go `UP` to move to the next one. You can try other values like `LEFT_DOWN`.
 
 The gaps are not the usual horizontal and vertical gaps, but the in-row-gap, and between-row gaps.  The "row" term in this case is not the usual horizontal row, but the low level groups of objects. For example, if direction is `RIGHT_DOWN`,`RIGHT_UP`, `LEFT_DOWN` or `LEFT_UP` the "rows" will be horizontal and the in-row-gap will act like an horizontal gap (and the between-rows-gap like a vertical gap), but if direction is `UP_RIGHT, UP_LEFT, DOWN_RIGHT`, or `DOWN_LEFT`, the "rows" will be vertical and the in-row-gap will act like a vertical gap.  An image is worth thousand words:
 
-![image-20210320114251701](boxlayout02.png)
+<img src="boxlayout02.png" alt="image-20210320114251701" style="zoom:67%;" />
 
 The `BoxLayout` has the methods `getRowGroups` and `getColumnGroups` which returns a `MathObjectGroup` with its elements others `MathObjectGroup` objects, each one with the elements of a row (or column).
 
@@ -195,7 +195,7 @@ for(MathObject rows:layout.getRowGroups(gr)) {//Iterate over the rows
 }
 ```
 
-![image-20210320112113747](BoxLayoutRowGroup01.png)
+<img src="BoxLayoutRowGroup01.png" alt="image-20210320112113747" style="zoom:67%;" />
 
 ## The SpiralLayout
 
@@ -213,7 +213,7 @@ GroupLayout layout = new SpiralLayout(refPoint, SpiralLayout.Orientation.RIGHT_C
 
 You will get the objects in a spiral form:
 
-<img src="spirallayout01.png" alt="image-20210317091043689" style="zoom:50%;" />
+<img src="spirallayout01.png" alt="image-20210317091043689" style="zoom: 50%;" />
 
 The orientation parameters specifies if spiral is clockwise or counterclockwise and the position of the second object relative to the first one (which is centered at the reference point). The gaps are the usual horizontal and vertical gaps.
 
@@ -227,7 +227,7 @@ GroupLayout layout = new HeapLayout(refPoint, .1, .1);
 
 You will get a triangular pile of numbered squares:
 
-![heaplayout01](heaplayout01.png)
+<img src="heaplayout01.png" alt="heaplayout01" style="zoom:67%;" />
 
 ## The PascalLayout
 
@@ -239,9 +239,101 @@ GroupLayout layout = new PascalLayout(refPoint,.1,.1);
 
 You will obtain a layout like this:
 
-![pascalLayout01](pascalLayout01.png)
+<img src="pascalLayout01.png" alt="pascalLayout01" style="zoom:67%;" />
 
 You can define your own layouts subclassing the `GroupLayout` abstract class.
+
+## The FlowLayout
+
+The `FlowLayout` is similar to the `BoxLayout` except the new row is created when exceeds certain width, most like a text editor will do.
+
+```java
+int num = 70;
+MathObjectGroup sqs = MathObjectGroup.make();
+for (int n = 0; n < num; n++) {//Create random bars
+     sqs.add(Shape.square().scale(Math.random(), .1).style("solidorange"));
+}
+double width = 2;
+final Point corner = Point.relAt(.1, .9);
+add(corner.thickness(2).drawColor("red").layer(1));
+add(Line.YAxis().shift(corner.v.add(Vec.to(width, 0))));//Draw vertical lines to mark the margins
+add(Line.YAxis().shift(corner.v.add(Vec.to(0, 0))));
+FlowLayout flayout = new FlowLayout(corner, width, AbstractBoxLayout.Direction.RIGHT_DOWN, 0,0);
+sqs.setLayout(flayout);
+add(sqs);
+camera.adjustToAllObjects();
+waitSeconds(2);
+```
+
+<img src="flowLayout.png" alt="image-20210427132218631" style="zoom:67%;" />
+
+## Composing layouts
+
+From version 0.9.2-SNAPSHOT the `ComposeLayout` allows to create more complex layouts by composition.  The syntax to create a composite layout is
+
+```java
+ComposeLayout composedLayout=new ComposeLayout(outerLayout, innerLayout, size);
+```
+
+When applied to a group, this layout will first divide the group into subgroups of `size` elements, then will layout each one with the inner layout, and finally it will layout each subgroup, as an individual object, with the outer layout.
+
+We illustrate this with an example. Here we use as inner layout a `BoxLayout` and as outer layout a `PascalLayout`.
+
+```java
+MathObjectGroup gr = MathObjectGroup.make();
+int num = 54;
+for (int n = 0; n < num; n++) {//Creates a group with 54 numbered squares
+    MathObject sq = Shape.square().scale(.25).fillColor("violet").fillAlpha(1 - 1. * (n + 1) / num).thickness(3);
+    LaTeXMathObject t = LaTeXMathObject.make("" + n);
+    t.stackTo(sq, Anchor.Type.CENTER).layer(1);
+    gr.add(MathObjectGroup.make(sq, t));//Each object of the group is itself a group with 2 elements
+}
+
+Point refPoint = Point.origin(); //The reference point to locate the outer layout
+add(refPoint.thickness(2).drawColor(JMColor.RED).layer(1));//add this point so we can see it clearly
+
+GroupLayout innerLayout = new BoxLayout(refPoint, 3, BoxLayout.Direction.RIGHT_UP, 0, 0);
+GroupLayout outerLayout = new PascalLayout(refPoint, .1, .1);
+ComposeLayout composedLayout=new ComposeLayout(outerLayout, innerLayout, 9);//The composed layout
+
+add(gr.setLayout(composedLayout));
+camera.adjustToAllObjects();
+waitSeconds(3);//Smile, you're in a screenshot!
+```
+
+<img src="composeLayout.png" alt="image-20210427133017072" style="zoom: 67%;" />
+
+Another example: we use composite layouts to draw a Sierpinski triangle using a group of equilateral triangles and iterating compositions:
+
+```java
+MathObjectGroup triangles = MathObjectGroup.make();
+int degree = 6;//Degree of the Sierpisnki triangle
+int num = (int) Math.pow(3, degree);//We need 3^degree triangles!
+for (int n = 0; n < num; n++) {
+    MathObject sq = Shape.regularPolygon(3).scale(.25);
+    triangles.add(sq);
+}
+Point corner = Point.relAt(.5, .9);//Top corner of the Sierpinski triangle
+PascalLayout innerLayout = new PascalLayout(corner, 0, 0);
+GroupLayout previousLayout = innerLayout;
+GroupLayout sierpinskiLayout = innerLayout;
+for (int n = 1; n < degree; n++) {//Iterates composing the innerLayout with itself 6 times
+    sierpinskiLayout = new ComposeLayout(previousLayout, innerLayout, 3);
+    previousLayout = sierpinskiLayout;
+}
+sierpinskiLayout.applyLayout(triangles);
+add(triangles);
+camera.adjustToAllObjects();
+waitSeconds(5);
+```
+
+We obtain the following image (note that there are 729 triangles in there):
+
+
+
+<img src="Sierpinski.png" alt="image-20210427133822331" style="zoom:50%;" />
+
+
 
 # Scaling objects
 All `MathObject` instances can be scaled with the `scale` command. Scaling can be done from a given scale center or by default, the center of the object  bounding box.
