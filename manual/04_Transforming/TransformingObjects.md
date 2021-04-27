@@ -169,7 +169,7 @@ for (int n = 0; n < num; n++) {
 }
 Point refPoint = Point.origin(); //The reference point to locate the box
 add(refPoint.thickness(2).drawColor(JMColor.RED).layer(1));
-GroupLayout layout = new BoxLayout(refPoint, 4, BoxLayout.Direction.RIGHT_UP, .1, .1);//This is where the magic happens
+BoxLayout layout = new BoxLayout(refPoint, 4, BoxLayout.Direction.RIGHT_UP, .1, .1);//This is where the magic happens
 add(gr.setLayout(layout));
 camera.zoomToAllObjects();
 waitSeconds(3);//Smile, you're in a screenshot!
@@ -202,13 +202,13 @@ for(MathObject rows:layout.getRowGroups(gr)) {//Iterate over the rows
 If in the previous code you change the 
 
 ```java
-GroupLayout layout = new BoxLayout(refPoint, 4, BoxLayout.Direction.RIGHT_UP, .1, .1);//This is where the magic happens
+BoxLayout layout = new BoxLayout(refPoint, 4, BoxLayout.Direction.RIGHT_UP, .1, .1);//This is where the magic happens
 ```
 
 into
 
 ```java
-GroupLayout layout = new SpiralLayout(refPoint, SpiralLayout.Orientation.RIGHT_CLOCKWISE, .1, .1);//Another kind of magic!
+SpiralLayout layout = new SpiralLayout(refPoint, SpiralLayout.Orientation.RIGHT_CLOCKWISE, .1, .1);//Another kind of magic!
 ```
 
 You will get the objects in a spiral form:
@@ -217,12 +217,26 @@ You will get the objects in a spiral form:
 
 The orientation parameters specifies if spiral is clockwise or counterclockwise and the position of the second object relative to the first one (which is centered at the reference point). The gaps are the usual horizontal and vertical gaps.
 
+This class has the attribute `spiralGap` that admits an integer parameter that controls the aperture of the spiral. The default value is 0. A value of 1 will leave a single space between consecutive turns of the spiral. A value of 2 will leave 2 spaces, etc. If in the previous example we make the following change in the number of squares and the creation of the layout:
+
+```java
+int num=50;//Now we are creating more squares!
+........
+SpiralLayout layout = new SpiralLayout(refPoint, SpiralLayout.Orientation.RIGHT_CLOCKWISE, .1, .1).setSpiralGap(1);
+```
+
+You will obtain the following image:
+
+<img src="spirallayout02.png" alt="image-20210427163826985" style="zoom:50%;" />
+
+
+
 ## The HeapLayout
 
 If you use the `HeapLayout`:
 
 ```java
-GroupLayout layout = new HeapLayout(refPoint, .1, .1);
+HeapLayout layout = new HeapLayout(refPoint, .1, .1);
 ```
 
 You will get a triangular pile of numbered squares:
@@ -234,7 +248,7 @@ You will get a triangular pile of numbered squares:
 The `PascalLayout` resembles the positions of numbers in the Pascal triangle. If you use instead the code:
 
 ```java
-GroupLayout layout = new PascalLayout(refPoint,.1,.1);
+PascalLayout layout = new PascalLayout(refPoint,.1,.1);
 ```
 
 You will obtain a layout like this:
