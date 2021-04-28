@@ -438,7 +438,7 @@ for (int n = 0; n < num; n++) {//Creates a group with 54 numbered squares
 Point refPoint = Point.origin(); //The reference point to locate the outer layout
 add(refPoint.thickness(2).drawColor(JMColor.RED).layer(1));//add this point so we can see it clearly
 
-GroupLayout innerLayout = new BoxLayout(refPoint, 3, BoxLayout.Direction.RIGHT_UP, 0, 0);
+GroupLayout innerLayout = new BoxLayout(refPoint, 3, BoxLayout.Direction.RIGHT_DOWN, 0, 0);
 GroupLayout outerLayout = new PascalLayout(refPoint, .1, .1);
 ComposeLayout composedLayout=new ComposeLayout(outerLayout, innerLayout, 9);//The composed layout
 
