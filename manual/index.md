@@ -13,6 +13,7 @@
 ## [Transforming objects](04_Transforming/TransformingObjects.md)
 
 ## [Animating objects](05_Animations/Animations.md)
+## [Adding effects to animations](05a_Animations2/Animations2.md)
 
 ## [Mathematical formulas](06_MathFormulas/MathFormulas.md)
 
