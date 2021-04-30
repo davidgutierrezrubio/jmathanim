@@ -26,61 +26,60 @@ import com.jmathanim.mathobjects.Point;
  */
 public class AnimationWithEffects extends Animation {
 
-   AnimationEffect effect;
+	AnimationEffect effect;
 
-    public AnimationWithEffects(double runTime) {
-        super(runTime);
-        effect=new AnimationEffect();
-       
-    }
+	public AnimationWithEffects(double runTime) {
+		super(runTime);
+		effect = new AnimationEffect();
 
-    public AnimationEffect getEffect() {
-        return effect;
-    }
+	}
 
-    @Override
-    public void doAnim(double t) {//Nothing to do  here, it will be overriden
-    }
+	public AnimationEffect getEffect() {
+		return effect;
+	}
 
-    public void addJumpEffect(double height) {
-        effect.addJumpEffect(height);
-    }
+	@Override
+	public void doAnim(double t) {// Nothing to do here, it will be overriden
+	}
 
-    public <T extends AnimationWithEffects> T addJumpEffect(double height, AnimationEffect.JumpType type) {
-        effect.addJumpEffect(height, type);
-        return (T) this;
-    }
+	public void addJumpEffect(double height) {
+		effect.addJumpEffect(height);
+	}
 
-    public <T extends AnimationWithEffects> T  addRotationEffect(int numTurns) {
-        effect.addRotationEffect(numTurns);
-        return (T) this;
-    }
+	public <T extends AnimationWithEffects> T addJumpEffect(double height, AnimationEffect.JumpType type) {
+		effect.addJumpEffect(height, type);
+		return (T) this;
+	}
 
-    public <T extends AnimationWithEffects> T  addAlphaEffect(double alphaScale) {
-        effect.addAlphaEffect(alphaScale);
-        return (T) this;
-    }
+	public <T extends AnimationWithEffects> T addRotationEffect(int numTurns) {
+		effect.addRotationEffect(numTurns);
+		return (T) this;
+	}
 
-    public <T extends AnimationWithEffects> T  addScaleEffect(double scale) {
-        effect.addScaleEffect(scale);
-        return (T) this;
-    }
+	public <T extends AnimationWithEffects> T addAlphaEffect(double alphaScale) {
+		effect.addAlphaEffect(alphaScale);
+		return (T) this;
+	}
 
-    public void prepareJumpPath(Point A, Point B, MathObject obj) {
-        effect.prepareJumpPath(A, B, obj);
-    }
+	public <T extends AnimationWithEffects> T addScaleEffect(double scale) {
+		effect.addScaleEffect(scale);
+		return (T) this;
+	}
 
-    protected void applyAnimationEffects(double lt, MathObject obj) {
-        effect.applyAnimationEffects(lt, obj);
-    }
+	public void prepareJumpPath(Point A, Point B, MathObject obj) {
+		effect.prepareJumpPath(A, B, obj);
+	}
 
-    public void copyEffectParametersFrom(AnimationEffect obj) {
-        effect.copyEffectParametersFrom(obj);
-    }
-    public void copyEffectParametersFrom(AnimationWithEffects anim) {
-        effect.copyEffectParametersFrom(anim.getEffect());
-    }
+	protected void applyAnimationEffects(double lt, MathObject obj) {
+		effect.applyAnimationEffects(lt, obj);
+	}
 
-  
+	public void copyEffectParametersFrom(AnimationEffect obj) {
+		effect.copyEffectParametersFrom(obj);
+	}
+
+	public void copyEffectParametersFrom(AnimationWithEffects anim) {
+		effect.copyEffectParametersFrom(anim.getEffect());
+	}
 
 }

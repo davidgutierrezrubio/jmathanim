@@ -27,53 +27,53 @@ import com.jmathanim.jmathanim.JMathAnimScene;
  */
 public abstract class TransformStrategy {
 
-    protected final JMathAnimScene scene;
-    protected OptimizePathsStrategy optimizeStrategy;
+	protected final JMathAnimScene scene;
+	protected OptimizePathsStrategy optimizeStrategy;
 
-    public TransformStrategy(JMathAnimScene scene) {
-        this.scene = scene;
-        optimizeStrategy = new NullOptimizationStrategy();
-    }
+	public TransformStrategy(JMathAnimScene scene) {
+		this.scene = scene;
+		optimizeStrategy = new NullOptimizationStrategy();
+	}
 
-    /**
-     * Sets the strategy to properly optimize paths in order to make transition
-     * smooth This strategy should be invoked in some moment at prepareObjects
-     * method.
-     *
-     * @param strategy Strategy to use
-     */
-    public void setOptimizationStrategy(OptimizePathsStrategy strategy) {
-        if (strategy != null) {
-            optimizeStrategy = strategy;
-        } else {
-            optimizeStrategy = new NullOptimizationStrategy();
-        }
-    }
+	/**
+	 * Sets the strategy to properly optimize paths in order to make transition
+	 * smooth This strategy should be invoked in some moment at prepareObjects
+	 * method.
+	 *
+	 * @param strategy Strategy to use
+	 */
+	public void setOptimizationStrategy(OptimizePathsStrategy strategy) {
+		if (strategy != null) {
+			optimizeStrategy = strategy;
+		} else {
+			optimizeStrategy = new NullOptimizationStrategy();
+		}
+	}
 
-    /**
-     * Prepare necessary objects to perform transformation. This method is
-     * called immediately before playing the first frame.
-     */
-    abstract public void prepareObjects();
+	/**
+	 * Prepare necessary objects to perform transformation. This method is called
+	 * immediately before playing the first frame.
+	 */
+	abstract public void prepareObjects();
 
-    /**
-     * Apply current transform
-     *
-     * @param t Time of the animation 0&lt;=t&lt;=1
-     * @param lt lambda(t), where lambda is a "smooth" function. Actual
-     * animation is computed for this value.
-     */
-    abstract public void applyTransform(double t, double lt);
+	/**
+	 * Apply current transform
+	 *
+	 * @param t  Time of the animation 0&lt;=t&lt;=1
+	 * @param lt lambda(t), where lambda is a "smooth" function. Actual animation is
+	 *           computed for this value.
+	 */
+	abstract public void applyTransform(double t, double lt);
 
-    /**
-     * Performs clean up and finishing methods. This method is called right
-     * after the animation ends.
-     */
-    abstract public void finish();
+	/**
+	 * Performs clean up and finishing methods. This method is called right after
+	 * the animation ends.
+	 */
+	abstract public void finish();
 
-    /**
-     * Add necessary objects to scene
-     */
-    abstract public void addObjectsToScene();
+	/**
+	 * Add necessary objects to scene
+	 */
+	abstract public void addObjectsToScene();
 
 }

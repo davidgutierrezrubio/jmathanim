@@ -31,50 +31,50 @@ import com.jmathanim.mathobjects.Point;
  */
 public class ConstrPerpBisectorSegment extends Constructible implements HasDirection {
 
-    ConstrSegmentPointPoint segment;
-    private final Line lineToDraw;
+	ConstrSegmentPointPoint segment;
+	private final Line lineToDraw;
 
-    public static ConstrPerpBisectorSegment make(ConstrSegmentPointPoint segment) {
-        ConstrPerpBisectorSegment resul = new ConstrPerpBisectorSegment(segment);
-        resul.rebuildShape();
-        return resul;
-    }
+	public static ConstrPerpBisectorSegment make(ConstrSegmentPointPoint segment) {
+		ConstrPerpBisectorSegment resul = new ConstrPerpBisectorSegment(segment);
+		resul.rebuildShape();
+		return resul;
+	}
 
-    private ConstrPerpBisectorSegment(ConstrSegmentPointPoint segment) {
-        this.segment = segment;
-        lineToDraw = new Line(Point.origin(), Point.origin());//Irrelevant
-    }
+	private ConstrPerpBisectorSegment(ConstrSegmentPointPoint segment) {
+		this.segment = segment;
+		lineToDraw = new Line(Point.origin(), Point.origin());// Irrelevant
+	}
 
-    @Override
-    public <T extends MathObject> T copy() {
-        return (T) new ConstrPerpBisectorSegment(segment.copy());
-    }
+	@Override
+	public <T extends MathObject> T copy() {
+		return (T) new ConstrPerpBisectorSegment(segment.copy());
+	}
 
-    @Override
-    public void draw(JMathAnimScene scene, Renderer r) {
-        lineToDraw.draw(scene, r);
-    }
+	@Override
+	public void draw(JMathAnimScene scene, Renderer r) {
+		lineToDraw.draw(scene, r);
+	}
 
-    @Override
-    public Vec getDirection() {
-        return lineToDraw.getDirection();
-    }
+	@Override
+	public Vec getDirection() {
+		return lineToDraw.getDirection();
+	}
 
-    @Override
-    public MathObject getMathObject() {
-        return lineToDraw;
-    }
+	@Override
+	public MathObject getMathObject() {
+		return lineToDraw;
+	}
 
-    @Override
-    public void rebuildShape() {
-        Point C = segment.getA().interpolate(segment.getB(), .5);
-        Vec v = segment.getDirection();
+	@Override
+	public void rebuildShape() {
+		Point C = segment.getA().interpolate(segment.getB(), .5);
+		Vec v = segment.getDirection();
 
-        lineToDraw.getP1().v.x = C.v.x;
-        lineToDraw.getP1().v.y = C.v.y;
+		lineToDraw.getP1().v.x = C.v.x;
+		lineToDraw.getP1().v.y = C.v.y;
 
-        lineToDraw.getP2().v.x = C.v.x - v.y;
-        lineToDraw.getP2().v.y = C.v.y + v.x;
-    }
+		lineToDraw.getP2().v.x = C.v.x - v.y;
+		lineToDraw.getP2().v.y = C.v.y + v.x;
+	}
 
 }

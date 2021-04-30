@@ -28,26 +28,26 @@ import java.util.logging.Logger;
  */
 public abstract class Scene2D extends JMathAnimScene {
 
-    protected JavaFXRenderer renderer;
-    protected Camera camera;
+	protected JavaFXRenderer renderer;
+	protected Camera camera;
 
-    public Scene2D() {
-        super();
-    }
+	public Scene2D() {
+		super();
+	}
 
-    @Override
-    void createRenderer() {
-        fps = getConfig().fps;
-        dt = 1. / fps;
-        try {
-            renderer = new JavaFXRenderer(this);
-        } catch (InterruptedException ex) {
-            Logger.getLogger(Scene2D.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (Exception ex) {
-            Logger.getLogger(Scene2D.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        camera = renderer.getCamera();
-        super.renderer = renderer;
-    }
+	@Override
+	void createRenderer() {
+		fps = getConfig().fps;
+		dt = 1. / fps;
+		try {
+			renderer = new JavaFXRenderer(this);
+		} catch (InterruptedException ex) {
+			Logger.getLogger(Scene2D.class.getName()).log(Level.SEVERE, null, ex);
+		} catch (Exception ex) {
+			Logger.getLogger(Scene2D.class.getName()).log(Level.SEVERE, null, ex);
+		}
+		camera = renderer.getCamera();
+		super.renderer = renderer;
+	}
 
 }

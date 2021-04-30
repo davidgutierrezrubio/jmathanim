@@ -37,285 +37,286 @@ import java.util.HashMap;
  */
 public class JMathAnimConfig {
 
-    private String outputFileName;
-    private File resourcesDir;
-    private File outputDir;
-    /**
-     * Width of media screen. Typically 800 or 1920.
-     */
-    public int mediaW = 800;
-    /**
-     * Height of media screen. Typically 600 or 1080.
-     */
-    public int mediaH = 600;
+	private String outputFileName;
+	private File resourcesDir;
+	private File outputDir;
+	/**
+	 * Width of media screen. Typically 800 or 1920.
+	 */
+	public int mediaW = 800;
+	/**
+	 * Height of media screen. Typically 600 or 1080.
+	 */
+	public int mediaH = 600;
 
-    /**
-     * Frames per second to use in the video. Typically 30 or 60.
-     */
-    public int fps = 30;
-    /**
-     * Singleton pattern to ensure there is a common config class for whole
-     * execution
-     */
-    private static JMathAnimConfig singletonConfig;
-    /**
-     * The scene used
-     */
-    private JMathAnimScene scene;
-    /**
-     * The renderer used
-     */
-    private Renderer renderer;
-    /**
-     * If true, the current renderer should render the result into a movie
-     */
-    private boolean createMovie = false;
-    /**
-     * If true, the current renderer should show a preview of the result
-     */
-    private boolean showPreview = true;
-    /**
-     * A dictionary of the styles to be used in the objects
-     */
-    private final HashMap<String, MODrawProperties> styles;
+	/**
+	 * Frames per second to use in the video. Typically 30 or 60.
+	 */
+	public int fps = 30;
+	/**
+	 * Singleton pattern to ensure there is a common config class for whole
+	 * execution
+	 */
+	private static JMathAnimConfig singletonConfig;
+	/**
+	 * The scene used
+	 */
+	private JMathAnimScene scene;
+	/**
+	 * The renderer used
+	 */
+	private Renderer renderer;
+	/**
+	 * If true, the current renderer should render the result into a movie
+	 */
+	private boolean createMovie = false;
+	/**
+	 * If true, the current renderer should show a preview of the result
+	 */
+	private boolean showPreview = true;
+	/**
+	 * A dictionary of the styles to be used in the objects
+	 */
+	private final HashMap<String, MODrawProperties> styles;
 
-    /**
-     * Returns the config, using the singleton pattern.
-     *
-     * @return The config object, global scope.
-     */
-    public static JMathAnimConfig getConfig() {
-        if (singletonConfig == null) {
+	/**
+	 * Returns the config, using the singleton pattern.
+	 *
+	 * @return The config object, global scope.
+	 */
+	public static JMathAnimConfig getConfig() {
+		if (singletonConfig == null) {
 
-            singletonConfig = new JMathAnimConfig();
-        }
-        return singletonConfig;
-    }
-    //Background color, default black
-    private JMColor backgroundColor = JMColor.BLACK;
-    public boolean delay = true;
+			singletonConfig = new JMathAnimConfig();
+		}
+		return singletonConfig;
+	}
 
-    //Shadow parameters
-    /**
-     * If true, draw a shadow of objects over the background image
-     */
-    public boolean drawShadow = false;
-    /**
-     * Amount of blurring. Bigger es more blurred (and more cpu expensive) a
-     * value of 0 means no blurring
-     */
-    public int shadowKernelSize = 10;
-    /**
-     * XOffset for shadow
-     */
-    public int shadowOffsetX = 5;
-    /**
-     * YOffset for shadow
-     */
-    public int shadowOffsetY = 5;
-    /**
-     * alpha shadow multiplier. A value of .5 lets alpha shadow in 50%
-     */
-    public float shadowAlpha = .5f;
-    private URL backGroundImage = null;
+	// Background color, default black
+	private JMColor backgroundColor = JMColor.BLACK;
+	public boolean delay = true;
 
-    public void setDrawShadow(boolean drawShadow) {
-        this.drawShadow = drawShadow;
-    }
+	// Shadow parameters
+	/**
+	 * If true, draw a shadow of objects over the background image
+	 */
+	public boolean drawShadow = false;
+	/**
+	 * Amount of blurring. Bigger es more blurred (and more cpu expensive) a value
+	 * of 0 means no blurring
+	 */
+	public int shadowKernelSize = 10;
+	/**
+	 * XOffset for shadow
+	 */
+	public int shadowOffsetX = 5;
+	/**
+	 * YOffset for shadow
+	 */
+	public int shadowOffsetY = 5;
+	/**
+	 * alpha shadow multiplier. A value of .5 lets alpha shadow in 50%
+	 */
+	public float shadowAlpha = .5f;
+	private URL backGroundImage = null;
 
-    public void setShadowParameters(int kernelSize, int offsetX, int offsetY, float alpha) {
-        this.shadowKernelSize = kernelSize;
-        this.shadowOffsetX = offsetX;
-        this.shadowOffsetY = offsetY;
-        this.shadowAlpha = alpha;
-    }
+	public void setDrawShadow(boolean drawShadow) {
+		this.drawShadow = drawShadow;
+	}
 
-    public void setBackGroundImage(String name) {
-        ResourceLoader rl = new ResourceLoader();
-        setBackGroundImage(rl.getResource(name, "images"));
-        JMathAnimScene.logger.info("Background image set to " + rl.getResource(name, "images"));
-    }
+	public void setShadowParameters(int kernelSize, int offsetX, int offsetY, float alpha) {
+		this.shadowKernelSize = kernelSize;
+		this.shadowOffsetX = offsetX;
+		this.shadowOffsetY = offsetY;
+		this.shadowAlpha = alpha;
+	}
 
-    public void setBackGroundImage(URL backGroundImage) {
-        this.backGroundImage = backGroundImage;
-    }
+	public void setBackGroundImage(String name) {
+		ResourceLoader rl = new ResourceLoader();
+		setBackGroundImage(rl.getResource(name, "images"));
+		JMathAnimScene.logger.info("Background image set to " + rl.getResource(name, "images"));
+	}
 
-    public URL getBackGroundImage() {
-        return backGroundImage;
-    }
+	public void setBackGroundImage(URL backGroundImage) {
+		this.backGroundImage = backGroundImage;
+	}
 
-    private JMathAnimConfig() {//Private constructor
-        styles = new HashMap<>();
-        setDefaultMP();//Load "default" drawing style in dictionary
-        resourcesDir = new File("." + File.separator + "resources");
-        outputDir = new File("." + File.separator + "media");
-    }
+	public URL getBackGroundImage() {
+		return backGroundImage;
+	}
 
-    /**
-     * Set low quality settings (854,480, 30fps). These are the default settings
-     */
-    public void setLowQuality() {
-        mediaW = 854;
-        mediaH = 480;
-        fps = 30;
-    }
+	private JMathAnimConfig() {// Private constructor
+		styles = new HashMap<>();
+		setDefaultMP();// Load "default" drawing style in dictionary
+		resourcesDir = new File("." + File.separator + "resources");
+		outputDir = new File("." + File.separator + "media");
+	}
 
-    /**
-     * Set high quality settings (1920,1080, 60fps)
-     */
-    public void setMediumQuality() {
-        mediaW = 1280;
-        mediaH = 720;
-        fps = 30;
-    }
+	/**
+	 * Set low quality settings (854,480, 30fps). These are the default settings
+	 */
+	public void setLowQuality() {
+		mediaW = 854;
+		mediaH = 480;
+		fps = 30;
+	}
 
-    public void setAdjustPreviewToFPS(boolean delay) {
-        this.delay = delay;
-    }
+	/**
+	 * Set high quality settings (1920,1080, 60fps)
+	 */
+	public void setMediumQuality() {
+		mediaW = 1280;
+		mediaH = 720;
+		fps = 30;
+	}
 
-    /**
-     * Set high quality settings (1920,1080, 60fps)
-     */
-    public void setHighQuality() {
-        mediaW = 1920;
-        mediaH = 1080;
-        fps = 60;
-    }
+	public void setAdjustPreviewToFPS(boolean delay) {
+		this.delay = delay;
+	}
 
-    public JMathAnimScene getScene() {
-        return scene;
-    }
+	/**
+	 * Set high quality settings (1920,1080, 60fps)
+	 */
+	public void setHighQuality() {
+		mediaW = 1920;
+		mediaH = 1080;
+		fps = 60;
+	}
 
-    public void setScene(JMathAnimScene scene) {
-        this.scene = scene;
-    }
+	public JMathAnimScene getScene() {
+		return scene;
+	}
 
-    public Renderer getRenderer() {
-        return renderer;
-    }
+	public void setScene(JMathAnimScene scene) {
+		this.scene = scene;
+	}
 
-    public void setRenderer(Renderer renderer) {
-        this.renderer = renderer;
-    }
+	public Renderer getRenderer() {
+		return renderer;
+	}
 
-    public Camera getFixedCamera() {
-        return renderer.getFixedCamera();
-    }
+	public void setRenderer(Renderer renderer) {
+		this.renderer = renderer;
+	}
 
-    public Camera getCamera() {
-        return renderer.getCamera();
-    }
+	public Camera getFixedCamera() {
+		return renderer.getFixedCamera();
+	}
 
-    public JMColor getBackgroundColor() {
-        return backgroundColor;
-    }
+	public Camera getCamera() {
+		return renderer.getCamera();
+	}
 
-    public void setBackgroundColor(JMColor bakcgroundColor) {
-        this.backgroundColor = bakcgroundColor;
-    }
+	public JMColor getBackgroundColor() {
+		return backgroundColor;
+	}
 
-    public void setCreateMovie(boolean createMovie) {
-        this.createMovie = createMovie;
-    }
+	public void setBackgroundColor(JMColor bakcgroundColor) {
+		this.backgroundColor = bakcgroundColor;
+	}
 
-    public void setShowPreviewWindow(boolean showPreviewWindow) {
-        this.showPreview = showPreviewWindow;
-    }
+	public void setCreateMovie(boolean createMovie) {
+		this.createMovie = createMovie;
+	}
 
-    //MathObjectDrawingProperties
-    /**
-     * Set default values, in case no xml config file is loaded
-     */
-    public final void setDefaultMP() {
-        MODrawProperties defaultMP = new MODrawProperties();
-        //Default, boring values
-        defaultMP.setDrawColor(JMColor.WHITE);
-        defaultMP.setFillColor(JMColor.GRAY);
-        defaultMP.setFillAlpha(0);//No filling by default
-        defaultMP.thickness = 1d;
-        defaultMP.dashStyle = MODrawProperties.DashStyle.SOLID;
-        defaultMP.absoluteThickness = false;
-        styles.put("DEFAULT", defaultMP);
+	public void setShowPreviewWindow(boolean showPreviewWindow) {
+		this.showPreview = showPreviewWindow;
+	}
 
-        MODrawProperties latexDefaultMP = defaultMP.copy();
-        latexDefaultMP.setFillColor(JMColor.WHITE);
-        latexDefaultMP.setFillAlpha(1);//Latex formulas are filled by default
-        styles.put("LATEXDEFAULT", latexDefaultMP);
-    }
+	// MathObjectDrawingProperties
+	/**
+	 * Set default values, in case no xml config file is loaded
+	 */
+	public final void setDefaultMP() {
+		MODrawProperties defaultMP = new MODrawProperties();
+		// Default, boring values
+		defaultMP.setDrawColor(JMColor.WHITE);
+		defaultMP.setFillColor(JMColor.GRAY);
+		defaultMP.setFillAlpha(0);// No filling by default
+		defaultMP.thickness = 1d;
+		defaultMP.dashStyle = MODrawProperties.DashStyle.SOLID;
+		defaultMP.absoluteThickness = false;
+		styles.put("DEFAULT", defaultMP);
 
-    public MODrawProperties getDefaultMP() {
-        return styles.get("DEFAULT").copy();
-    }
+		MODrawProperties latexDefaultMP = defaultMP.copy();
+		latexDefaultMP.setFillColor(JMColor.WHITE);
+		latexDefaultMP.setFillAlpha(1);// Latex formulas are filled by default
+		styles.put("LATEXDEFAULT", latexDefaultMP);
+	}
 
-    public File getResourcesDir() {
-        return resourcesDir;
-    }
+	public MODrawProperties getDefaultMP() {
+		return styles.get("DEFAULT").copy();
+	}
 
-    /**
-     * Sets the resources path. When a relative path, it refers to the current
-     * execution directory.
-     *
-     * @param path A string with the resources path
-     */
-    public void setResourcesDir(String path) {
-        this.resourcesDir = new File(path);
-    }
+	public File getResourcesDir() {
+		return resourcesDir;
+	}
 
-    public String getOutputFileName() {
-        return outputFileName;
-    }
+	/**
+	 * Sets the resources path. When a relative path, it refers to the current
+	 * execution directory.
+	 *
+	 * @param path A string with the resources path
+	 */
+	public void setResourcesDir(String path) {
+		this.resourcesDir = new File(path);
+	}
 
-    public void setOutputFileName(String outputFileName) {
-        this.outputFileName = outputFileName;
-    }
+	public String getOutputFileName() {
+		return outputFileName;
+	}
 
-    public File getOutputDir() {
-        return outputDir;
-    }
+	public void setOutputFileName(String outputFileName) {
+		this.outputFileName = outputFileName;
+	}
 
-    public void setOutputDir(String str) {
-        this.outputDir = new File(str);
-    }
+	public File getOutputDir() {
+		return outputDir;
+	}
 
-    public void setOutputDir(File outputDir) {
-        this.outputDir = outputDir;
-    }
+	public void setOutputDir(String str) {
+		this.outputDir = new File(str);
+	}
 
-    public HashMap<String, MODrawProperties> getStyles() {
-        return styles;
-    }
+	public void setOutputDir(File outputDir) {
+		this.outputDir = outputDir;
+	}
 
-    public boolean isCreateMovie() {
-        return createMovie;
-    }
+	public HashMap<String, MODrawProperties> getStyles() {
+		return styles;
+	}
 
-    public boolean isShowPreview() {
-        return showPreview;
-    }
+	public boolean isCreateMovie() {
+		return createMovie;
+	}
 
-    public MODrawProperties createStyleFrom(Stylable mp, String styleName) {
-        JMathAnimScene.logger.info("Creating style {}", styleName.toUpperCase());
-        MODrawProperties mpO = mp.getFirstMP();
-        return styles.put(styleName.toUpperCase(), mpO);
-    }
+	public boolean isShowPreview() {
+		return showPreview;
+	}
 
-    public MODrawProperties createStyleFrom(MathObject obj, String styleName) {
-        return createStyleFrom(obj.getMp(), styleName);
-    }
+	public MODrawProperties createStyleFrom(Stylable mp, String styleName) {
+		JMathAnimScene.logger.info("Creating style {}", styleName.toUpperCase());
+		MODrawProperties mpO = mp.getFirstMP();
+		return styles.put(styleName.toUpperCase(), mpO);
+	}
 
-    public void setMediaW(int mediaW) {
-        this.mediaW = mediaW;
-    }
+	public MODrawProperties createStyleFrom(MathObject obj, String styleName) {
+		return createStyleFrom(obj.getMp(), styleName);
+	}
 
-    public void setMediaH(int mediaH) {
-        this.mediaH = mediaH;
-    }
+	public void setMediaW(int mediaW) {
+		this.mediaW = mediaW;
+	}
 
-    public void setFPS(int fps) {
-        this.fps = fps;
-    }
+	public void setMediaH(int mediaH) {
+		this.mediaH = mediaH;
+	}
 
-    public void parseFile(String url) {
-        ConfigLoader.parseFile(url);
-    }
+	public void setFPS(int fps) {
+		this.fps = fps;
+	}
+
+	public void parseFile(String url) {
+		ConfigLoader.parseFile(url);
+	}
 }

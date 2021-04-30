@@ -28,32 +28,33 @@ import com.jmathanim.mathobjects.FunctionGraph;
  */
 public class FunctionSimpleInterpolateTransform extends Animation {
 
-    public final FunctionGraph gfObj, gfDst;
+	public final FunctionGraph gfObj, gfDst;
 
-    public FunctionSimpleInterpolateTransform(double runtime, FunctionGraph gfObj, FunctionGraph gfDst) {
-        super(runtime);
-        this.gfObj = gfObj;
-        this.gfDst = gfDst;
-    }
+	public FunctionSimpleInterpolateTransform(double runtime, FunctionGraph gfObj, FunctionGraph gfDst) {
+		super(runtime);
+		this.gfObj = gfObj;
+		this.gfDst = gfDst;
+	}
 
-    @Override
-    public void initialize(JMathAnimScene scene) {
-        super.initialize(scene);
-        addObjectsToscene(gfObj);
-    }
+	@Override
+	public void initialize(JMathAnimScene scene) {
+		super.initialize(scene);
+		addObjectsToscene(gfObj);
+	}
 
-    @Override
-    public void doAnim(double t) {
-        double lt = lambda.applyAsDouble(t);
-        this.gfObj.function = (x) -> (1 - lt) * this.gfObj.functionBase.applyAsDouble(x) + lt * this.gfDst.function.applyAsDouble(x);
-        this.gfObj.updatePoints();
-    }
+	@Override
+	public void doAnim(double t) {
+		double lt = lambda.applyAsDouble(t);
+		this.gfObj.function = (x) -> (1 - lt) * this.gfObj.functionBase.applyAsDouble(x)
+				+ lt * this.gfDst.function.applyAsDouble(x);
+		this.gfObj.updatePoints();
+	}
 
-    @Override
-    public void finishAnimation() {
-        super.finishAnimation();
-        //Base function is now the new function 
-        this.gfObj.functionBase = this.gfDst.function;
-    }
+	@Override
+	public void finishAnimation() {
+		super.finishAnimation();
+		// Base function is now the new function
+		this.gfObj.functionBase = this.gfDst.function;
+	}
 
 }

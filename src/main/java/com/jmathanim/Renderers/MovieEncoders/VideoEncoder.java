@@ -28,13 +28,13 @@ import java.io.IOException;
  */
 public abstract class VideoEncoder {
 
-    public abstract void createEncoder(File output, JMathAnimConfig config) throws IOException;
+	public abstract void createEncoder(File output, JMathAnimConfig config) throws IOException;
 
-    public abstract void writeFrame(BufferedImage image, int frameCount);
+	public abstract void writeFrame(BufferedImage image, int frameCount);
 
-    public abstract void finish();
+	public abstract void finish();
 
-    public abstract boolean isFramesGenerated();
+	public abstract boolean isFramesGenerated();
 
-    public abstract void addSound(File soundFile, int frameCount) throws IOException;
+	public abstract void addSound(File soundFile, int frameCount) throws IOException;
 }

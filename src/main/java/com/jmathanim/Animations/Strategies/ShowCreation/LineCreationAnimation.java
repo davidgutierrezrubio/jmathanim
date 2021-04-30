@@ -29,44 +29,44 @@ import com.jmathanim.mathobjects.Shape;
  */
 public class LineCreationAnimation extends CreationStrategy {
 
-    Shape segment;
-    Line line;
-    SimpleShapeCreationAnimation anim;
+	Shape segment;
+	Line line;
+	SimpleShapeCreationAnimation anim;
 
-    public LineCreationAnimation(double runtime, Line line) {
-        super(runtime);
-        this.line = line;
+	public LineCreationAnimation(double runtime, Line line) {
+		super(runtime);
+		this.line = line;
 
-    }
+	}
 
-    @Override
-    public void initialize(JMathAnimScene scene) {
-        super.initialize(scene);
-        segment = line.toSegment(scene.getCamera());
-        anim = new SimpleShapeCreationAnimation(this.runTime, segment);
-        anim.setLambda(lambda);
-        anim.initialize(scene);
-        removeObjectsToscene(line);
-        addObjectsToscene(segment);
+	@Override
+	public void initialize(JMathAnimScene scene) {
+		super.initialize(scene);
+		segment = line.toSegment(scene.getCamera());
+		anim = new SimpleShapeCreationAnimation(this.runTime, segment);
+		anim.setLambda(lambda);
+		anim.initialize(scene);
+		removeObjectsToscene(line);
+		addObjectsToscene(segment);
 
-    }
+	}
 
-    @Override
-    public boolean processAnimation() {
-        return anim.processAnimation();
-    }
+	@Override
+	public boolean processAnimation() {
+		return anim.processAnimation();
+	}
 
-    @Override
-    public void doAnim(double t) {
-    }
+	@Override
+	public void doAnim(double t) {
+	}
 
-    @Override
-    public void finishAnimation() {
-        super.finishAnimation();
-        anim.finishAnimation();
-        removeObjectsToscene(segment);
-        addObjectsToscene(line);
+	@Override
+	public void finishAnimation() {
+		super.finishAnimation();
+		anim.finishAnimation();
+		removeObjectsToscene(segment);
+		addObjectsToscene(line);
 
-    }
+	}
 
 }

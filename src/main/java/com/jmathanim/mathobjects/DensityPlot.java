@@ -41,146 +41,146 @@ import javafx.scene.image.WritableImage;
  */
 public class DensityPlot extends AbstractJMImage {
 
-    BiFunction<Double, Double, Double> densityLambdaFunction;
-    WritableImage raster;
-    double widthView, heightView;
-    private int wRaster;
-    private int hRaster;
-    private ColorScale colorScale;
+	BiFunction<Double, Double, Double> densityLambdaFunction;
+	WritableImage raster;
+	double widthView, heightView;
+	private int wRaster;
+	private int hRaster;
+	private ColorScale colorScale;
 
-    /**
-     * Creates a new Densityplot with the given domain
-     *
-     * @param area The domain to represent, in a Rect object
-     * @param densityMap A lambda function, for example (x,y)-&gt;x*y
-     * @return The density plot created
-     */
-    public static DensityPlot make(Rect area, BiFunction<Double, Double, Double> densityMap) {
-        return new DensityPlot(area, densityMap);
-    }
+	/**
+	 * Creates a new Densityplot with the given domain
+	 *
+	 * @param area       The domain to represent, in a Rect object
+	 * @param densityMap A lambda function, for example (x,y)-&gt;x*y
+	 * @return The density plot created
+	 */
+	public static DensityPlot make(Rect area, BiFunction<Double, Double, Double> densityMap) {
+		return new DensityPlot(area, densityMap);
+	}
 
-    public DensityPlot(Rect area, BiFunction<Double, Double, Double> densityMap) {
-        this.bbox = area.copy();
-        this.densityLambdaFunction = densityMap;
-        widthView = -1;//Ensures that will create the raster image in the first update of the object
-        heightView = -1;
-        colorScale = new ColorScale();
-        scene = JMathAnimConfig.getConfig().getScene();
-    }
+	public DensityPlot(Rect area, BiFunction<Double, Double, Double> densityMap) {
+		this.bbox = area.copy();
+		this.densityLambdaFunction = densityMap;
+		widthView = -1;// Ensures that will create the raster image in the first update of the object
+		heightView = -1;
+		colorScale = new ColorScale();
+		scene = JMathAnimConfig.getConfig().getScene();
+	}
 
-    public <T extends MathObject> T copy() {
-        return (T) new DensityPlot(bbox, densityLambdaFunction);
-    }
+	public <T extends MathObject> T copy() {
+		return (T) new DensityPlot(bbox, densityLambdaFunction);
+	}
 
-    @Override
-    public int getUpdateLevel() {
-        return 0;
-    }
+	@Override
+	public int getUpdateLevel() {
+		return 0;
+	}
 
-    @Override
-    public void update(JMathAnimScene scene) {
-        super.update(scene);
-        createRasterImage();
-    }
+	@Override
+	public void update(JMathAnimScene scene) {
+		super.update(scene);
+		createRasterImage();
+	}
 
-    private void createRasterImage() {
-        double w = scene.getCamera().getMathView().getWidth();
-        double h = scene.getCamera().getMathView().getHeight();
-        if ((w != widthView) || (h != heightView)) {//Only recreate it if necessary
-            widthView = w;
-            heightView = h;
-            double[] xy1 = scene.getCamera().mathToScreen(bbox.xmin, bbox.ymax);
-            double[] xy2 = scene.getCamera().mathToScreen(bbox.xmax, bbox.ymin);
-            wRaster = (int) (xy2[0] - xy1[0]);
-            hRaster = (int) (xy2[1] - xy1[1]);
-            raster = new WritableImage(wRaster, hRaster);
-            updatePixels();
-        }
-    }
+	private void createRasterImage() {
+		double w = scene.getCamera().getMathView().getWidth();
+		double h = scene.getCamera().getMathView().getHeight();
+		if ((w != widthView) || (h != heightView)) {// Only recreate it if necessary
+			widthView = w;
+			heightView = h;
+			double[] xy1 = scene.getCamera().mathToScreen(bbox.xmin, bbox.ymax);
+			double[] xy2 = scene.getCamera().mathToScreen(bbox.xmax, bbox.ymin);
+			wRaster = (int) (xy2[0] - xy1[0]);
+			hRaster = (int) (xy2[1] - xy1[1]);
+			raster = new WritableImage(wRaster, hRaster);
+			updatePixels();
+		}
+	}
 
-    private void updatePixels() {
+	private void updatePixels() {
 
-        FutureTask<Integer> task = new FutureTask<>(new Callable<Integer>() {
-            @Override
-            public Integer call() throws Exception {
-                createColorScale();
-                PixelWriter pixelWriter = raster.getPixelWriter();
-                for (int i = 0; i < wRaster; i++) {
-                    for (int j = 0; j < hRaster; j++) {
-                        Point p = bbox.getRelPoint(i * 1d / wRaster, 1 - j * 1d / hRaster);
-                        double z = densityLambdaFunction.apply(p.v.x, p.v.y);
-                        pixelWriter.setColor(i, j, colorScale.getColorValue(z).getFXColor());
-                    }
-                }
+		FutureTask<Integer> task = new FutureTask<>(new Callable<Integer>() {
+			@Override
+			public Integer call() throws Exception {
+				createColorScale();
+				PixelWriter pixelWriter = raster.getPixelWriter();
+				for (int i = 0; i < wRaster; i++) {
+					for (int j = 0; j < hRaster; j++) {
+						Point p = bbox.getRelPoint(i * 1d / wRaster, 1 - j * 1d / hRaster);
+						double z = densityLambdaFunction.apply(p.v.x, p.v.y);
+						pixelWriter.setColor(i, j, colorScale.getColorValue(z).getFXColor());
+					}
+				}
 
-                return 0;
-            }
-        });
-        Platform.runLater(task);
-        try {
-            task.get();
-        } catch (InterruptedException | ExecutionException ex) {
-            Logger.getLogger(DensityPlot.class.getName()).log(Level.SEVERE, null, ex);
-        }
+				return 0;
+			}
+		});
+		Platform.runLater(task);
+		try {
+			task.get();
+		} catch (InterruptedException | ExecutionException ex) {
+			Logger.getLogger(DensityPlot.class.getName()).log(Level.SEVERE, null, ex);
+		}
 
-    }
+	}
 
-    private void createColorScale() {
-        if (colorScale.getMarkers().isEmpty()) {
-            double a = Double.MAX_VALUE;
-            double b = -Double.MAX_VALUE;
-            for (int i = 0; i < wRaster; i++) {
-                for (int j = 0; j < hRaster; j++) {
-                    Point p = bbox.getRelPoint(i * 1d / wRaster, 1 - j * 1d / hRaster);
-                    double z = densityLambdaFunction.apply(p.v.x, p.v.y);
-                    if (z < a) {
-                        a = z;
-                    }
-                    if (z > b) {
-                        b = z;
-                    }
-                }
-            }
-            colorScale = ColorScale.createDefault(-1, 1);
-        }
-    }
+	private void createColorScale() {
+		if (colorScale.getMarkers().isEmpty()) {
+			double a = Double.MAX_VALUE;
+			double b = -Double.MAX_VALUE;
+			for (int i = 0; i < wRaster; i++) {
+				for (int j = 0; j < hRaster; j++) {
+					Point p = bbox.getRelPoint(i * 1d / wRaster, 1 - j * 1d / hRaster);
+					double z = densityLambdaFunction.apply(p.v.x, p.v.y);
+					if (z < a) {
+						a = z;
+					}
+					if (z > b) {
+						b = z;
+					}
+				}
+			}
+			colorScale = ColorScale.createDefault(-1, 1);
+		}
+	}
 
-    @Override
-    public String getId() {
-        return "";
-    }
+	@Override
+	public String getId() {
+		return "";
+	}
 
-    @Override
-    public Image getImage() {
-        return raster;
-    }
+	@Override
+	public Image getImage() {
+		return raster;
+	}
 
-    /**
-     * Gets the current function represented in the density
-     *
-     * @return
-     */
-    public BiFunction<Double, Double, Double> getFunction() {
-        return densityLambdaFunction;
-    }
+	/**
+	 * Gets the current function represented in the density
+	 *
+	 * @return
+	 */
+	public BiFunction<Double, Double, Double> getFunction() {
+		return densityLambdaFunction;
+	}
 
-    public void setFunction(BiFunction<Double, Double, Double> densityMap) {
-        this.densityLambdaFunction = densityMap;
-        updatePixels();
-    }
+	public void setFunction(BiFunction<Double, Double, Double> densityMap) {
+		this.densityLambdaFunction = densityMap;
+		updatePixels();
+	}
 
-    public ColorScale getColorScale() {
-        return colorScale;
-    }
+	public ColorScale getColorScale() {
+		return colorScale;
+	}
 
-    public void setColorScale(ColorScale colorScale) {
-        this.colorScale = colorScale;
-    }
+	public void setColorScale(ColorScale colorScale) {
+		this.colorScale = colorScale;
+	}
 
-    @Override
-    public <T extends MathObject> T applyAffineTransform(AffineJTransform tr) {
-        //Nothing to do (for now...)
-        return (T) this;
-    }
+	@Override
+	public <T extends MathObject> T applyAffineTransform(AffineJTransform tr) {
+		// Nothing to do (for now...)
+		return (T) this;
+	}
 
 }

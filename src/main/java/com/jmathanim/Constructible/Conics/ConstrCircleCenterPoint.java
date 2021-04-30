@@ -33,71 +33,70 @@ import com.jmathanim.mathobjects.Shape;
  */
 public class ConstrCircleCenterPoint extends Constructible {
 
-    //Circle(point,point)
-    //Circle(point,number)
-    //Circle(point,Segment)
-    //Circle(point,point,point)
-    Point A, B;
-    protected double radius;
-    public final Point circleCenter;
-    private final Shape originalCircle;
-    private final Shape circleToDraw;
+	// Circle(point,point)
+	// Circle(point,number)
+	// Circle(point,Segment)
+	// Circle(point,point,point)
+	Point A, B;
+	protected double radius;
+	public final Point circleCenter;
+	private final Shape originalCircle;
+	private final Shape circleToDraw;
 
-    public static ConstrCircleCenterPoint make(Point A, Point B) {
-        ConstrCircleCenterPoint resul = new ConstrCircleCenterPoint(A, B);
-        resul.rebuildShape();
-        return resul;
-    }
+	public static ConstrCircleCenterPoint make(Point A, Point B) {
+		ConstrCircleCenterPoint resul = new ConstrCircleCenterPoint(A, B);
+		resul.rebuildShape();
+		return resul;
+	}
 
-    protected ConstrCircleCenterPoint(Point A, Point B) {
-        super();
-        this.A = A;
-        this.B = B;
-        originalCircle = Shape.circle();
-        circleToDraw=new Shape();
-        circleCenter = Point.at(0, 0);
-    }
+	protected ConstrCircleCenterPoint(Point A, Point B) {
+		super();
+		this.A = A;
+		this.B = B;
+		originalCircle = Shape.circle();
+		circleToDraw = new Shape();
+		circleCenter = Point.at(0, 0);
+	}
 
-    @Override
-    public <T extends MathObject> T copy() {
-        return (T) ConstrCircleCenterPoint.make(A.copy(), B.copy());
-    }
+	@Override
+	public <T extends MathObject> T copy() {
+		return (T) ConstrCircleCenterPoint.make(A.copy(), B.copy());
+	}
 
-    @Override
-    public void draw(JMathAnimScene scene, Renderer r) {
-        circleToDraw.draw(scene, r);
-    }
+	@Override
+	public void draw(JMathAnimScene scene, Renderer r) {
+		circleToDraw.draw(scene, r);
+	}
 
-    @Override
-    public Rect getBoundingBox() {
-       rebuildShape();
-       return circleToDraw.getBoundingBox();
-    }
+	@Override
+	public Rect getBoundingBox() {
+		rebuildShape();
+		return circleToDraw.getBoundingBox();
+	}
 
-    @Override
-    public MathObject getMathObject() {
-        return circleToDraw;
-    }
+	@Override
+	public MathObject getMathObject() {
+		return circleToDraw;
+	}
 
-    @Override
-    public final void rebuildShape() {
-        computeCircleCenterRadius();
-        circleToDraw.getPath().jmPathPoints.clear();
-        circleToDraw.getPath().addJMPointsFrom(originalCircle.copy().getPath());
-        circleToDraw.scale(this.radius);
-        circleToDraw.shift(this.circleCenter.v);
-    }
+	@Override
+	public final void rebuildShape() {
+		computeCircleCenterRadius();
+		circleToDraw.getPath().jmPathPoints.clear();
+		circleToDraw.getPath().addJMPointsFrom(originalCircle.copy().getPath());
+		circleToDraw.scale(this.radius);
+		circleToDraw.shift(this.circleCenter.v);
+	}
 
-    public void computeCircleCenterRadius() {
-        this.radius = A.to(B).norm();
-        this.circleCenter.v.x=A.v.x;
-        this.circleCenter.v.y=A.v.y;
-    }
+	public void computeCircleCenterRadius() {
+		this.radius = A.to(B).norm();
+		this.circleCenter.v.x = A.v.x;
+		this.circleCenter.v.y = A.v.y;
+	}
 
-    @Override
-    public int getUpdateLevel() {
-        return Math.max(A.getUpdateLevel(), B.getUpdateLevel()) + 1;
-    }
-
+	@Override
+	public int getUpdateLevel() {
+		return Math.max(A.getUpdateLevel(), B.getUpdateLevel()) + 1;
+	}
 
 }

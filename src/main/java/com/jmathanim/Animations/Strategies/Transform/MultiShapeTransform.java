@@ -35,66 +35,65 @@ import com.jmathanim.mathobjects.MultiShapeObject;
  */
 public class MultiShapeTransform extends AnimationWithEffects {
 
-    private MultiShapeObject dst;
-    private MultiShapeObject tr;
-    private final MultiShapeObject mobjTransformed;
-    private final MultiShapeObject mobjDestiny;
-    private final AnimationGroup anim;
+	private MultiShapeObject dst;
+	private MultiShapeObject tr;
+	private final MultiShapeObject mobjTransformed;
+	private final MultiShapeObject mobjDestiny;
+	private final AnimationGroup anim;
 
-    public MultiShapeTransform(double runtime, MultiShapeObject mobjTransformed, MultiShapeObject mobjDestiny) {
-        super(runtime);
-        this.mobjDestiny = mobjDestiny;
-        this.mobjTransformed = mobjTransformed;
-       anim = new AnimationGroup();
-    }
+	public MultiShapeTransform(double runtime, MultiShapeObject mobjTransformed, MultiShapeObject mobjDestiny) {
+		super(runtime);
+		this.mobjDestiny = mobjDestiny;
+		this.mobjTransformed = mobjTransformed;
+		anim = new AnimationGroup();
+	}
 
-    @Override
-    public boolean processAnimation() {
-        return anim.processAnimation();
-    }
+	@Override
+	public boolean processAnimation() {
+		return anim.processAnimation();
+	}
 
-    @Override
-    public void initialize(JMathAnimScene scene) {
-        super.initialize(scene);
-         tr = new MultiShapeObject();
-        dst = new MultiShapeObject();
-        int sizeTr = mobjTransformed.shapes.size();
-        int sizeDst = mobjDestiny.shapes.size();
-        int numAnims = Math.max(sizeTr, sizeDst);
-        
+	@Override
+	public void initialize(JMathAnimScene scene) {
+		super.initialize(scene);
+		tr = new MultiShapeObject();
+		dst = new MultiShapeObject();
+		int sizeTr = mobjTransformed.shapes.size();
+		int sizeDst = mobjDestiny.shapes.size();
+		int numAnims = Math.max(sizeTr, sizeDst);
 
-        if (sizeDst < sizeTr) {
-            for (int i = 0; i < sizeTr; i++) {
-                dst.add(mobjDestiny.get(i * sizeDst / sizeTr).copy());
-            }
-            tr = mobjTransformed.copy();
-        }
-        if (sizeTr < sizeDst) {
-            for (int i = 0; i < sizeDst; i++) {
-                tr.add(mobjTransformed.get(i * sizeTr / sizeDst).copy());
-            }
-            dst = mobjDestiny.copy();
-        }
-        if (sizeDst == sizeTr) {
-            dst = mobjDestiny.copy();
-            tr = mobjTransformed.copy();
-        }
+		if (sizeDst < sizeTr) {
+			for (int i = 0; i < sizeTr; i++) {
+				dst.add(mobjDestiny.get(i * sizeDst / sizeTr).copy());
+			}
+			tr = mobjTransformed.copy();
+		}
+		if (sizeTr < sizeDst) {
+			for (int i = 0; i < sizeDst; i++) {
+				tr.add(mobjTransformed.get(i * sizeTr / sizeDst).copy());
+			}
+			dst = mobjDestiny.copy();
+		}
+		if (sizeDst == sizeTr) {
+			dst = mobjDestiny.copy();
+			tr = mobjTransformed.copy();
+		}
 
-        for (int n = 0; n < numAnims; n++) {
-            Transform transformAnim = new Transform(this.runTime, tr.get(n), dst.get(n));
-            transformAnim.copyEffectParametersFrom(this);
-            anim.add(transformAnim);
-        }
-        anim.initialize(scene);
-        removeObjectsToscene(mobjTransformed);
-    }
+		for (int n = 0; n < numAnims; n++) {
+			Transform transformAnim = new Transform(this.runTime, tr.get(n), dst.get(n));
+			transformAnim.copyEffectParametersFrom(this);
+			anim.add(transformAnim);
+		}
+		anim.initialize(scene);
+		removeObjectsToscene(mobjTransformed);
+	}
 
-    @Override
-    public void finishAnimation() {
-        super.finishAnimation();
-        anim.finishAnimation();
-        removeObjectsToscene(tr, dst);
-        addObjectsToscene(mobjDestiny);
-    }
+	@Override
+	public void finishAnimation() {
+		super.finishAnimation();
+		anim.finishAnimation();
+		removeObjectsToscene(tr, dst);
+		addObjectsToscene(mobjDestiny);
+	}
 
 }

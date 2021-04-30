@@ -36,74 +36,79 @@ import java.util.ArrayList;
  */
 public class AxesCreationAnimation extends CreationStrategy {
 
-    private final Axes axes;
-    ArrayList<MathObject> objectsToRemoveWhenFinished;
-    Concatenate anim;
+	private final Axes axes;
+	ArrayList<MathObject> objectsToRemoveWhenFinished;
+	Concatenate anim;
 
-    public AxesCreationAnimation(double runTime, Axes axes) {
-        super(runTime);
-        this.axes = axes;
-        objectsToRemoveWhenFinished = new ArrayList<>();
-    }
+	public AxesCreationAnimation(double runTime, Axes axes) {
+		super(runTime);
+		this.axes = axes;
+		objectsToRemoveWhenFinished = new ArrayList<>();
+	}
 
-    @Override
-    public void initialize(JMathAnimScene scene) {
-        super.initialize(scene);
-        anim = new Concatenate();
-        axes.update(scene);
+	@Override
+	public void initialize(JMathAnimScene scene) {
+		super.initialize(scene);
+		anim = new Concatenate();
+		axes.update(scene);
 
-        //Axes
-        AnimationGroup ag = new AnimationGroup(new ShowCreation(.5 * runTime, axes.getxAxis()), new ShowCreation(runTime, axes.getyAxis()));
-        anim.add(ag);
-        objectsToRemoveWhenFinished.add(axes.getxAxis());
-        objectsToRemoveWhenFinished.add(axes.getyAxis());
+		// Axes
+		AnimationGroup ag = new AnimationGroup(new ShowCreation(.5 * runTime, axes.getxAxis()),
+				new ShowCreation(runTime, axes.getyAxis()));
+		anim.add(ag);
+		objectsToRemoveWhenFinished.add(axes.getxAxis());
+		objectsToRemoveWhenFinished.add(axes.getyAxis());
 
-        ag = new AnimationGroup();
-        //X Ticks
-        int n = 0;
-        for (TickAxes t : axes.getXticks()) {
-            if (t.shouldDraw(scene.getCamera())) {
-                ag.add(new Concatenate(new WaitAnimation(.15 * .5 * runTime * n / axes.getXticks().size()), Commands.fadeIn(.85 * .5 * runTime, t.getLegend())));
-                ag.add(new Concatenate(new WaitAnimation(.15 * .5 * runTime * n / axes.getXticks().size()), Commands.fadeIn(.85 * .5 * runTime, t.getTick())));
-                objectsToRemoveWhenFinished.add(t.getLegend());
-                objectsToRemoveWhenFinished.add(t.getTick());
-            }
-            n++;
-        }
+		ag = new AnimationGroup();
+		// X Ticks
+		int n = 0;
+		for (TickAxes t : axes.getXticks()) {
+			if (t.shouldDraw(scene.getCamera())) {
+				ag.add(new Concatenate(new WaitAnimation(.15 * .5 * runTime * n / axes.getXticks().size()),
+						Commands.fadeIn(.85 * .5 * runTime, t.getLegend())));
+				ag.add(new Concatenate(new WaitAnimation(.15 * .5 * runTime * n / axes.getXticks().size()),
+						Commands.fadeIn(.85 * .5 * runTime, t.getTick())));
+				objectsToRemoveWhenFinished.add(t.getLegend());
+				objectsToRemoveWhenFinished.add(t.getTick());
+			}
+			n++;
+		}
 
-        //Y Ticks
-        n = 0;
-        for (TickAxes t : axes.getYticks()) {
-            if (t.shouldDraw(scene.getCamera())) {
-                ag.add(new Concatenate(new WaitAnimation(.15 * .5 * runTime * n / axes.getXticks().size()), Commands.fadeIn(.85 * .5 * runTime, t.getLegend())));
-                ag.add(new Concatenate(new WaitAnimation(.15 * .5 * runTime * n / axes.getXticks().size()), Commands.fadeIn(.85 * .5 * runTime, t.getTick())));
-                objectsToRemoveWhenFinished.add(t.getLegend());
-                objectsToRemoveWhenFinished.add(t.getTick());
-            }
-            n++;
-        }
-        anim.add(ag);
+		// Y Ticks
+		n = 0;
+		for (TickAxes t : axes.getYticks()) {
+			if (t.shouldDraw(scene.getCamera())) {
+				ag.add(new Concatenate(new WaitAnimation(.15 * .5 * runTime * n / axes.getXticks().size()),
+						Commands.fadeIn(.85 * .5 * runTime, t.getLegend())));
+				ag.add(new Concatenate(new WaitAnimation(.15 * .5 * runTime * n / axes.getXticks().size()),
+						Commands.fadeIn(.85 * .5 * runTime, t.getTick())));
+				objectsToRemoveWhenFinished.add(t.getLegend());
+				objectsToRemoveWhenFinished.add(t.getTick());
+			}
+			n++;
+		}
+		anim.add(ag);
 
-        anim.initialize(scene);
-    }
+		anim.initialize(scene);
+	}
 
-    @Override
-    public boolean processAnimation() {
-        return anim.processAnimation(); //To change body of generated methods, choose Tools | Templates.
-    }
+	@Override
+	public boolean processAnimation() {
+		return anim.processAnimation(); // To change body of generated methods, choose Tools | Templates.
+	}
 
-    @Override
-    public void doAnim(double t) {
-    }
+	@Override
+	public void doAnim(double t) {
+	}
 
-    @Override
-    public void finishAnimation() {
-        super.finishAnimation();
-        anim.finishAnimation();
-        addObjectsToscene(axes);
-        for (MathObject ob : objectsToRemoveWhenFinished) {
-            removeObjectsToscene(ob);
-        }
-    }
+	@Override
+	public void finishAnimation() {
+		super.finishAnimation();
+		anim.finishAnimation();
+		addObjectsToscene(axes);
+		for (MathObject ob : objectsToRemoveWhenFinished) {
+			removeObjectsToscene(ob);
+		}
+	}
 
 }

@@ -30,39 +30,40 @@ import com.jmathanim.mathobjects.Shape;
  */
 public class DivideOnSensiblePointsStrategy implements OptimizePathsStrategy {
 
-    @Override
-    public void optimizePaths(Shape sh1, Shape sh2) {
-        JMPath pa1 = sh1.getPath();
-        JMPath pa2 = sh2.getPath();
-        int n1 = pa1.getNumberOfConnectedComponents();
-        int n2 = pa2.getNumberOfConnectedComponents();
-        if ((n1 < 2) | (n2 > 1)) {
-            return; //Do nothing
-        }
+	@Override
+	public void optimizePaths(Shape sh1, Shape sh2) {
+		JMPath pa1 = sh1.getPath();
+		JMPath pa2 = sh2.getPath();
+		int n1 = pa1.getNumberOfConnectedComponents();
+		int n2 = pa2.getNumberOfConnectedComponents();
+		if ((n1 < 2) | (n2 > 1)) {
+			return; // Do nothing
+		}
 
-        int numSegments = pa2.size();
+		int numSegments = pa2.size();
 
-        int step = numSegments / n1;
-        //If there are more connected componentes than segments in destiny shape, do nothing
-        if (step == 0) {
-            return;
-        }
+		int step = numSegments / n1;
+		// If there are more connected componentes than segments in destiny shape, do
+		// nothing
+		if (step == 0) {
+			return;
+		}
 
-        for (int n = n2; n < Math.min(n2, n1); n++) {
-            for (int k = 0; k < pa2.size(); k++) {
-                JMPathPoint jmp = pa2.jmPathPoints.get(k);
-                if (jmp.type != JMPathPoint.JMPathPointType.INTERPOLATION_POINT) {
-                    JMPathPoint jmpNext = pa2.jmPathPoints.get(k + 1);
-                    if ((jmp.isThisSegmentVisible) && (!jmp.isCurved)) {
-                        if ((jmpNext.isThisSegmentVisible)) {
-                            pa2.separate(k);
-                            break;
-                        }
-                    }
-                }
-            }
+		for (int n = n2; n < Math.min(n2, n1); n++) {
+			for (int k = 0; k < pa2.size(); k++) {
+				JMPathPoint jmp = pa2.jmPathPoints.get(k);
+				if (jmp.type != JMPathPoint.JMPathPointType.INTERPOLATION_POINT) {
+					JMPathPoint jmpNext = pa2.jmPathPoints.get(k + 1);
+					if ((jmp.isThisSegmentVisible) && (!jmp.isCurved)) {
+						if ((jmpNext.isThisSegmentVisible)) {
+							pa2.separate(k);
+							break;
+						}
+					}
+				}
+			}
 
-        }
-    }
+		}
+	}
 
 }

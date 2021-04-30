@@ -23,16 +23,17 @@ package com.jmathanim.Animations;
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
 public class WaitAnimation extends Animation {
-    /**
-     * Creates a new WaitAnimation, that waits for the specified amount of time
-     * @param runTime Duration in seconds
-     */
-    public WaitAnimation(double runTime) {
-        super(runTime);
-    }
+	/**
+	 * Creates a new WaitAnimation, that waits for the specified amount of time
+	 * 
+	 * @param runTime Duration in seconds
+	 */
+	public WaitAnimation(double runTime) {
+		super(runTime);
+	}
 
-    @Override
-    public void doAnim(double t) {
-    }
+	@Override
+	public void doAnim(double t) {
+	}
 
 }

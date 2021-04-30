@@ -32,30 +32,30 @@ import java.util.List;
  */
 public class AveragePoint extends Point implements Updateable {
 
-    final List<Point> points;
+	final List<Point> points;
 
-    public AveragePoint(Point... points) {
-        super();
-        this.points = Arrays.asList(points);
-    }
+	public AveragePoint(Point... points) {
+		super();
+		this.points = Arrays.asList(points);
+	}
 
-    @Override
-    public void update(JMathAnimScene scene) {
-        Vec resul = new Vec(0, 0);
-        for (int n = 0; n < points.size(); n++) {
-            resul.addInSite(points.get(n).v);
-        }
-        resul.multInSite(1.0d / points.size());
-        this.v.copyFrom(resul);
-    }
+	@Override
+	public void update(JMathAnimScene scene) {
+		Vec resul = new Vec(0, 0);
+		for (int n = 0; n < points.size(); n++) {
+			resul.addInSite(points.get(n).v);
+		}
+		resul.multInSite(1.0d / points.size());
+		this.v.copyFrom(resul);
+	}
 
-    @Override
-    public int getUpdateLevel() {
-        int level = -1;
-        for (int n = 0; n < points.size(); n++) {
-            level = Math.max(level, points.get(n).getUpdateLevel());
-        }
-        return level + 1;
-    }
+	@Override
+	public int getUpdateLevel() {
+		int level = -1;
+		for (int n = 0; n < points.size(); n++) {
+			level = Math.max(level, points.get(n).getUpdateLevel());
+		}
+		return level + 1;
+	}
 
 }

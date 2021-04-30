@@ -30,59 +30,57 @@ import com.jmathanim.mathobjects.Shape;
  */
 public class GeneralAffineTransformAnimation extends AnimationWithEffects {
 
-    private AnimationWithEffects affine;
+	private AnimationWithEffects affine;
 
-    private AnimationGroup anim;
+	private AnimationGroup anim;
 
-    private final Shape mobjDestiny;
+	private final Shape mobjDestiny;
 
-    private final Shape mobjTransformed;
+	private final Shape mobjTransformed;
 
+	public GeneralAffineTransformAnimation(double runTime, Shape objTr, Shape objDst) {
+		super(runTime);
+		this.mobjTransformed = objTr;
+		this.mobjDestiny = objDst;
+	}
 
+	@Override
+	public void initialize(JMathAnimScene scene) {
+		super.initialize(scene);
+		Point a = this.mobjTransformed.getPoint(0);
+		Point b = this.mobjTransformed.getPoint(1);
+		Point c = this.mobjTransformed.getPoint(2);
+		Point d = this.mobjDestiny.getPoint(0);
+		Point e = this.mobjDestiny.getPoint(1);
+		Point f = this.mobjDestiny.getPoint(2);
 
-    public GeneralAffineTransformAnimation(double runTime, Shape objTr, Shape objDst) {
-        super(runTime);
-        this.mobjTransformed = objTr;
-        this.mobjDestiny = objDst;
-    }
+		anim = new AnimationGroup();
+		affine = Commands.affineTransform(runTime, a, b, c, d, e, f, this.mobjTransformed);
+		affine.setUseObjectState(this.isUseObjectState());
+		anim.add(affine);
+		anim.add(Commands.setMP(runTime, mobjDestiny.getMp().copy(), this.mobjTransformed).setUseObjectState(false));
+		anim.setLambda(lambda);
+		anim.initialize(scene);
 
-    @Override
-    public void initialize(JMathAnimScene scene) {
-        super.initialize(scene);
-        Point a = this.mobjTransformed.getPoint(0);
-        Point b = this.mobjTransformed.getPoint(1);
-        Point c = this.mobjTransformed.getPoint(2);
-        Point d = this.mobjDestiny.getPoint(0);
-        Point e = this.mobjDestiny.getPoint(1);
-        Point f = this.mobjDestiny.getPoint(2);
+		affine.copyEffectParametersFrom(this);
+		affine.prepareJumpPath(this.mobjTransformed.getCenter(), this.mobjDestiny.getCenter(), this.mobjTransformed);
 
-        anim = new AnimationGroup();
-        affine = Commands.affineTransform(runTime, a, b, c, d, e, f, this.mobjTransformed);
-        affine.setUseObjectState(this.isUseObjectState());
-        anim.add(affine);
-        anim.add(Commands.setMP(runTime, mobjDestiny.getMp().copy(), this.mobjTransformed).setUseObjectState(false));
-        anim.setLambda(lambda);
-        anim.initialize(scene);
+	}
 
-        affine.copyEffectParametersFrom(this);
-        affine.prepareJumpPath(this.mobjTransformed.getCenter(), this.mobjDestiny.getCenter(), this.mobjTransformed);
+	@Override
+	public boolean processAnimation() {
+		super.processAnimation();
+		return anim.processAnimation();
+	}
 
-    }
+	@Override
+	public void doAnim(double t) {
+	}
 
-    @Override
-    public boolean processAnimation() {
-        super.processAnimation();
-        return anim.processAnimation();
-    }
-
-    @Override
-    public void doAnim(double t) {
-    }
-
-    @Override
-    public void finishAnimation() {
-        super.finishAnimation();
-        anim.finishAnimation();
-    }
+	@Override
+	public void finishAnimation() {
+		super.finishAnimation();
+		anim.finishAnimation();
+	}
 
 }

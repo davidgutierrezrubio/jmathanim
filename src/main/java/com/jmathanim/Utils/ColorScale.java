@@ -29,50 +29,50 @@ import java.util.HashMap;
  */
 public class ColorScale {
 
-    public static ColorScale createDefault(double minValue, double maxValue) {
-        ColorScale cs = new ColorScale();
-        cs.addMarker(minValue, JMColor.BLUE);
-        cs.addMarker(maxValue, JMColor.RED);
-        return cs;
-    }
+	public static ColorScale createDefault(double minValue, double maxValue) {
+		ColorScale cs = new ColorScale();
+		cs.addMarker(minValue, JMColor.BLUE);
+		cs.addMarker(maxValue, JMColor.RED);
+		return cs;
+	}
 
-    private final ArrayList<Double> markers;
-    private final HashMap<Double, JMColor> colors;
+	private final ArrayList<Double> markers;
+	private final HashMap<Double, JMColor> colors;
 
-    public ColorScale() {
-        markers = new ArrayList<>();
-        colors = new HashMap<>();
+	public ColorScale() {
+		markers = new ArrayList<>();
+		colors = new HashMap<>();
 
-    }
+	}
 
-    public void addMarker(double marker, JMColor color) {
-        markers.add(marker);
-        colors.put(marker, color);
-        Collections.sort(markers);
-    }
+	public void addMarker(double marker, JMColor color) {
+		markers.add(marker);
+		colors.put(marker, color);
+		Collections.sort(markers);
+	}
 
-    public JMColor getColorValue(double x) {
-        int n = 0;
-        while (markers.get(n) <= x) {
-            n++;
-            if (n == markers.size()) {
-                return colors.get(markers.get(markers.size() - 1));
-            }
-        }
-        if (n == 0) {
-            return colors.get(markers.get(0));
-        }
-        double a = markers.get(n - 1);
-        double b = markers.get(n);
-        JMColor colA = colors.get(a).copy();
+	public JMColor getColorValue(double x) {
+		int n = 0;
+		while (markers.get(n) <= x) {
+			n++;
+			if (n == markers.size()) {
+				return colors.get(markers.get(markers.size() - 1));
+			}
+		}
+		if (n == 0) {
+			return colors.get(markers.get(0));
+		}
+		double a = markers.get(n - 1);
+		double b = markers.get(n);
+		JMColor colA = colors.get(a).copy();
 
-        double alpha = (x - a) / (b - a);
-        JMColor colB = colors.get(b);
-        return colA.getInterpolatedColor(colB, alpha);
-    }
+		double alpha = (x - a) / (b - a);
+		JMColor colB = colors.get(b);
+		return colA.getInterpolatedColor(colB, alpha);
+	}
 
-    public ArrayList<Double> getMarkers() {
-        return markers;
-    }
+	public ArrayList<Double> getMarkers() {
+		return markers;
+	}
 
 }

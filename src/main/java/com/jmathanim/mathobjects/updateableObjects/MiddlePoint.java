@@ -27,50 +27,50 @@ import com.jmathanim.mathobjects.Point;
  */
 public class MiddlePoint extends Point {
 
-    private Point p1, p2;
-    private double lambda;
+	private Point p1, p2;
+	private double lambda;
 
-    /**
-     * Returns an updateable point that adjust every frame to be the middle
-     * point of 2 given ones.
-     *
-     * @param p1 First point
-     * @param p2 Second point
-     */
-    public MiddlePoint(Point p1, Point p2) {
-        this(p1, p2, .5);
-    }
+	/**
+	 * Returns an updateable point that adjust every frame to be the middle point of
+	 * 2 given ones.
+	 *
+	 * @param p1 First point
+	 * @param p2 Second point
+	 */
+	public MiddlePoint(Point p1, Point p2) {
+		this(p1, p2, .5);
+	}
 
-    /**
-     * Returns an updateable point that adjust every frame to a point lying
-     * between 2 given ones, with a lambda parameter. Lambda 0 means first
-     * point, 1 second point. Lambda .5d means middle point.
-     *
-     * @param p1 First point
-     * @param p2 Second point
-     * @param lambda
-     */
-    public MiddlePoint(Point p1, Point p2, double lambda) {
-        super();
-        this.p1 = p1;
-        this.p2 = p2;
-        this.lambda = lambda;
-    }
+	/**
+	 * Returns an updateable point that adjust every frame to a point lying between
+	 * 2 given ones, with a lambda parameter. Lambda 0 means first point, 1 second
+	 * point. Lambda .5d means middle point.
+	 *
+	 * @param p1     First point
+	 * @param p2     Second point
+	 * @param lambda
+	 */
+	public MiddlePoint(Point p1, Point p2, double lambda) {
+		super();
+		this.p1 = p1;
+		this.p2 = p2;
+		this.lambda = lambda;
+	}
 
-    @Override
-    public void update(JMathAnimScene scene) {
-        this.v.copyFrom(p1.v.interpolate(p2.v, lambda));
-    }
+	@Override
+	public void update(JMathAnimScene scene) {
+		this.v.copyFrom(p1.v.interpolate(p2.v, lambda));
+	}
 
-    @Override
-    public int getUpdateLevel() {
-        return Math.max(p1.getUpdateLevel(), p2.getUpdateLevel()) + 1;
-    }
+	@Override
+	public int getUpdateLevel() {
+		return Math.max(p1.getUpdateLevel(), p2.getUpdateLevel()) + 1;
+	}
 
-    @Override
-    public void registerChildrenToBeUpdated(JMathAnimScene scene) {
-        scene.registerUpdateable(p1);
-        scene.registerUpdateable(p2);
-    }
+	@Override
+	public void registerChildrenToBeUpdated(JMathAnimScene scene) {
+		scene.registerUpdateable(p1);
+		scene.registerUpdateable(p2);
+	}
 
 }

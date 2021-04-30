@@ -27,147 +27,147 @@ import java.util.Collection;
  */
 public class CanonicalJMPath {
 
-    public final ArrayList<JMPath> paths;
+	public final ArrayList<JMPath> paths;
 
-    public static CanonicalJMPath make(MultiShapeObject msho) {
-        CanonicalJMPath resul = new CanonicalJMPath();
-        for (Shape sh : msho) {
-            CanonicalJMPath aa = sh.getPath().canonicalForm();
-            resul.paths.addAll(aa.paths);
-        }
-        return resul;
-    }
+	public static CanonicalJMPath make(MultiShapeObject msho) {
+		CanonicalJMPath resul = new CanonicalJMPath();
+		for (Shape sh : msho) {
+			CanonicalJMPath aa = sh.getPath().canonicalForm();
+			resul.paths.addAll(aa.paths);
+		}
+		return resul;
+	}
 
-    public CanonicalJMPath(ArrayList<JMPath> paths) {
-        this.paths = paths;
-    }
+	public CanonicalJMPath(ArrayList<JMPath> paths) {
+		this.paths = paths;
+	}
 
-    public MultiShapeObject createMultiShape(MathObject obj) {
-        MODrawProperties mpCopy = obj.getMp().copy();
-        MultiShapeObject msh = new MultiShapeObject();
-        msh.getMp().copyFrom(mpCopy);
-        for (JMPath p : paths) {
-            final Shape shape = new Shape(p.copy(), mpCopy);
-            msh.add(shape);
-        }
-        msh.layer(obj.getLayer());
-        return msh;
-    }
+	public MultiShapeObject createMultiShape(MathObject obj) {
+		MODrawProperties mpCopy = obj.getMp().copy();
+		MultiShapeObject msh = new MultiShapeObject();
+		msh.getMp().copyFrom(mpCopy);
+		for (JMPath p : paths) {
+			final Shape shape = new Shape(p.copy(), mpCopy);
+			msh.add(shape);
+		}
+		msh.layer(obj.getLayer());
+		return msh;
+	}
 
-    public void clear() {
-        paths.clear();
-    }
+	public void clear() {
+		paths.clear();
+	}
 
-    public boolean add(JMPath e) {
-        return paths.add(e);
-    }
+	public boolean add(JMPath e) {
+		return paths.add(e);
+	}
 
-    public boolean addAll(Collection<? extends JMPath> c) {
-        return paths.addAll(c);
-    }
+	public boolean addAll(Collection<? extends JMPath> c) {
+		return paths.addAll(c);
+	}
 
-    public boolean addAll(CanonicalJMPath c) {
-        return paths.addAll(c.getPaths());
-    }
+	public boolean addAll(CanonicalJMPath c) {
+		return paths.addAll(c.getPaths());
+	}
 
-    public CanonicalJMPath() {
-        this(new ArrayList<JMPath>());
-    }
+	public CanonicalJMPath() {
+		this(new ArrayList<JMPath>());
+	}
 
-    public ArrayList<JMPath> getPaths() {
-        return paths;
-    }
+	public ArrayList<JMPath> getPaths() {
+		return paths;
+	}
 
-    public int getNumberOfPaths() {
-        return paths.size();
-    }
+	public int getNumberOfPaths() {
+		return paths.size();
+	}
 
-    public JMPath get(int index) {
-        return paths.get(index);
-    }
+	public JMPath get(int index) {
+		return paths.get(index);
+	}
 
-    public int getTotalNumberOfPoints() {
-        int getTotalNumberOfPoints = 0;
-        for (JMPath p : paths) {
-            getTotalNumberOfPoints += p.size();
-        }
-        return getTotalNumberOfPoints;
-    }
+	public int getTotalNumberOfPoints() {
+		int getTotalNumberOfPoints = 0;
+		for (JMPath p : paths) {
+			getTotalNumberOfPoints += p.size();
+		}
+		return getTotalNumberOfPoints;
+	}
 
-    public int getTotalNumberOfSegments() {
-        int getTotalNumberOfSegments = 0;
-        for (JMPath p : paths) {
-            //In an open path, n points define n-1 segments
-            getTotalNumberOfSegments += p.size() - 1;
-        }
-        return getTotalNumberOfSegments;
-    }
+	public int getTotalNumberOfSegments() {
+		int getTotalNumberOfSegments = 0;
+		for (JMPath p : paths) {
+			// In an open path, n points define n-1 segments
+			getTotalNumberOfSegments += p.size() - 1;
+		}
+		return getTotalNumberOfSegments;
+	}
 
-    /**
-     * Return path number where segment lies
-     *
-     * @param k Index of the JMPathPoint
-     * @return An int[] array containing the path number and the segment number
-     * in that path All zero-based.
-     */
-    public int[] getSegmentLocation(int k) {
-        k = k % getTotalNumberOfSegments(); //If k is too big...
-        int n = 0;
-        while (paths.get(n).size() - 1 <= k) {
-            k -= paths.get(n).size() - 1;
-            n++;
-        }
-        return new int[]{n, k};
-    }
+	/**
+	 * Return path number where segment lies
+	 *
+	 * @param k Index of the JMPathPoint
+	 * @return An int[] array containing the path number and the segment number in
+	 *         that path All zero-based.
+	 */
+	public int[] getSegmentLocation(int k) {
+		k = k % getTotalNumberOfSegments(); // If k is too big...
+		int n = 0;
+		while (paths.get(n).size() - 1 <= k) {
+			k -= paths.get(n).size() - 1;
+			n++;
+		}
+		return new int[] { n, k };
+	}
 
-    /**
-     * Generates a subpath from 0 to t, where t=1 returns the whole path Path
-     * should be open and connected (canonical form)
-     *
-     * @param pathNumber Number of the path to compute the subpath
-     * @param t
-     * @return A copy of the path (deep copy, points are not referenced)
-     */
-    public JMPath subpath(int pathNumber, double t) {
-        JMPath resul = paths.get(pathNumber).rawCopy();
-        if (t < 1) {
+	/**
+	 * Generates a subpath from 0 to t, where t=1 returns the whole path Path should
+	 * be open and connected (canonical form)
+	 *
+	 * @param pathNumber Number of the path to compute the subpath
+	 * @param t
+	 * @return A copy of the path (deep copy, points are not referenced)
+	 */
+	public JMPath subpath(int pathNumber, double t) {
+		JMPath resul = paths.get(pathNumber).rawCopy();
+		if (t < 1) {
 
-            double a = t * (resul.size() - 1);
+			double a = t * (resul.size() - 1);
 
-            int k = (int) Math.floor(a);
-            double alpha = a - k;
-            k++;
+			int k = (int) Math.floor(a);
+			double alpha = a - k;
+			k++;
 
-            if (alpha > 0 && alpha < 1) {
-                //Interpolate
-                JMPathPoint interp = resul.interpolateBetweenTwoPoints(k, alpha);
-                interp.isThisSegmentVisible = true;
-            }
+			if (alpha > 0 && alpha < 1) {
+				// Interpolate
+				JMPathPoint interp = resul.interpolateBetweenTwoPoints(k, alpha);
+				interp.isThisSegmentVisible = true;
+			}
 
-            ArrayList<JMPathPoint> subList = new ArrayList<>();
-            if (alpha == 0) {
-                k--;
-            }
-            for (int n = 0; n < k + 1; n++) {
-                subList.add(resul.jmPathPoints.get(n));
-            }
-            resul.jmPathPoints.clear();
-            resul.jmPathPoints.addAll(subList);
-        }
-        return resul;
+			ArrayList<JMPathPoint> subList = new ArrayList<>();
+			if (alpha == 0) {
+				k--;
+			}
+			for (int n = 0; n < k + 1; n++) {
+				subList.add(resul.jmPathPoints.get(n));
+			}
+			resul.jmPathPoints.clear();
+			resul.jmPathPoints.addAll(subList);
+		}
+		return resul;
 
-    }
+	}
 
-    public JMPath toJMPath() {
-        JMPath resul = new JMPath();
-        for (JMPath p : paths) {
-            resul.addJMPointsFrom(p);
-        }
-        return resul;
-    }
+	public JMPath toJMPath() {
+		JMPath resul = new JMPath();
+		for (JMPath p : paths) {
+			resul.addJMPointsFrom(p);
+		}
+		return resul;
+	}
 
-    public int size() {
-        return paths.size();
-    }
+	public int size() {
+		return paths.size();
+	}
 
 }

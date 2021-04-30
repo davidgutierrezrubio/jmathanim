@@ -27,290 +27,291 @@ import static java.lang.Math.sqrt;
  */
 public class Vec implements Stateable {
 
-    public double x, y, z;
-    public double xState, yState, zState;
+	public double x, y, z;
+	public double xState, yState, zState;
 
-    /**
-     * Overloaded constructor
-     *
-     * @param xy A size-2 array with the coordinates
-     */
-    public Vec(double[] xy) {
-        this(xy[0], xy[1]);
-    }
+	/**
+	 * Overloaded constructor
+	 *
+	 * @param xy A size-2 array with the coordinates
+	 */
+	public Vec(double[] xy) {
+		this(xy[0], xy[1]);
+	}
 
-    /**
-     * Returns a new Vec with the given coordinates
-     *
-     * @param x x coordinate
-     * @param y y coordinate
-     */
-    public Vec(double x, double y) {
-        this(x, y, 0);
-    }
-/**
-     * Returns a new Vec with the given coordinates, 3D version
-     *
-     * @param x x coordinate
-     * @param y y coordinate
-     * @param z z coordinate
-     */
-    public Vec(double x, double y, double z) {
-        this.x = x;
-        this.y = y;
-        this.z = z;
+	/**
+	 * Returns a new Vec with the given coordinates
+	 *
+	 * @param x x coordinate
+	 * @param y y coordinate
+	 */
+	public Vec(double x, double y) {
+		this(x, y, 0);
+	}
 
-    }
+	/**
+	 * Returns a new Vec with the given coordinates, 3D version
+	 *
+	 * @param x x coordinate
+	 * @param y y coordinate
+	 * @param z z coordinate
+	 */
+	public Vec(double x, double y, double z) {
+		this.x = x;
+		this.y = y;
+		this.z = z;
 
-    /**
-     * Computes the dot product of this vector and a given one
-     *
-     * @param b The other vector to compute the dot product
-     * @return The result
-     */
-    public double dot(Vec b) {
-        return x * b.x + y * b.y + z * b.z;
-    }
+	}
 
-    /**
-     * Computes the cross product of this vector and a given one
-     *
-     * @param b The other vector to compute the cross product
-     * @return A new vector with the result.
-     */
-    public Vec cross(Vec b) {
-        return new Vec(this.y * b.z - this.z * b.y, this.z * b.x - this.x * b.z, this.x * b.y - this.y * b.x);
-    }
+	/**
+	 * Computes the dot product of this vector and a given one
+	 *
+	 * @param b The other vector to compute the dot product
+	 * @return The result
+	 */
+	public double dot(Vec b) {
+		return x * b.x + y * b.y + z * b.z;
+	}
 
-    /**
-     * Multiplies the vector by a scalar and stores the resul. The original
-     * vector is altered and the method returns this object.
-     *
-     * @param lambda The scalar to multiply
-     * @return This vector
-     */
-    public Vec multInSite(double lambda) {
-        x *= lambda;
-        y *= lambda;
-        z *= lambda;
-        return this;
-    }
+	/**
+	 * Computes the cross product of this vector and a given one
+	 *
+	 * @param b The other vector to compute the cross product
+	 * @return A new vector with the result.
+	 */
+	public Vec cross(Vec b) {
+		return new Vec(this.y * b.z - this.z * b.y, this.z * b.x - this.x * b.z, this.x * b.y - this.y * b.x);
+	}
 
-    /**
-     * Returns a new vector representing this vector scaled by a factor. The
-     * current vector is unaltered.
-     *
-     * @param lambda The factor
-     * @return The new vector
-     */
-    public Vec mult(double lambda) {
-        return this.copy().multInSite(lambda);
-    }
+	/**
+	 * Multiplies the vector by a scalar and stores the resul. The original vector
+	 * is altered and the method returns this object.
+	 *
+	 * @param lambda The scalar to multiply
+	 * @return This vector
+	 */
+	public Vec multInSite(double lambda) {
+		x *= lambda;
+		y *= lambda;
+		z *= lambda;
+		return this;
+	}
 
-    /**
-     * Adds the given vector to this and stores the resul. The original vector
-     * is altered and the method returns this object.
-     *
-     * @param b The vector to add
-     * @return This vector
-     */
-    public Vec addInSite(Vec b) {
-        x += b.x;
-        y += b.y;
-        z += b.z;
-        return this;
-    }
+	/**
+	 * Returns a new vector representing this vector scaled by a factor. The current
+	 * vector is unaltered.
+	 *
+	 * @param lambda The factor
+	 * @return The new vector
+	 */
+	public Vec mult(double lambda) {
+		return this.copy().multInSite(lambda);
+	}
 
-    /**
-     * Substracts the given vector to this and stores the resul. The original
-     * vector is altered and the method returns this object.
-     *
-     * @param b The vector to substract
-     * @return This vector
-     */
-    public Vec minusInSite(Vec b) {
-        x -= b.x;
-        y -= b.y;
-        z -= b.z;
-        return this;
-    }
+	/**
+	 * Adds the given vector to this and stores the resul. The original vector is
+	 * altered and the method returns this object.
+	 *
+	 * @param b The vector to add
+	 * @return This vector
+	 */
+	public Vec addInSite(Vec b) {
+		x += b.x;
+		y += b.y;
+		z += b.z;
+		return this;
+	}
 
-    /**
-     * Substracts the given vector to this and return the result. The original
-     * vector is unaltered.
-     *
-     * @param b The vector to substract
-     * @return The substraction result
-     */
-    public Vec minus(Vec b) {
-        return this.copy().minusInSite(b);
-    }
+	/**
+	 * Substracts the given vector to this and stores the resul. The original vector
+	 * is altered and the method returns this object.
+	 *
+	 * @param b The vector to substract
+	 * @return This vector
+	 */
+	public Vec minusInSite(Vec b) {
+		x -= b.x;
+		y -= b.y;
+		z -= b.z;
+		return this;
+	}
 
-    /**
-     * Add the given vector to this and return the result. The original vector
-     * is unaltered.
-     *
-     * @param b The vector to add
-     * @return The sum result
-     */
-    public Vec add(Vec b) {
-        return this.copy().addInSite(b);
-    }
+	/**
+	 * Substracts the given vector to this and return the result. The original
+	 * vector is unaltered.
+	 *
+	 * @param b The vector to substract
+	 * @return The substraction result
+	 */
+	public Vec minus(Vec b) {
+		return this.copy().minusInSite(b);
+	}
 
-    public double norm() {
-        return (double) sqrt(x * x + y * y + z * z);
-    }
+	/**
+	 * Add the given vector to this and return the result. The original vector is
+	 * unaltered.
+	 *
+	 * @param b The vector to add
+	 * @return The sum result
+	 */
+	public Vec add(Vec b) {
+		return this.copy().addInSite(b);
+	}
 
-    /**
-     * Returns a new point between this and v2, given by the parameter
-     *
-     * @param v2 The other point to interpolate
-     * @param alpha Parameter of interpolation. 0 gives this point. 1 gives v2.
-     * 0.5 returns the middle point
-     * @return The interpolated point
-     */
-    public Vec interpolate(Vec v2, double alpha) {
-        return new Vec((1 - alpha) * x + alpha * v2.x, (1 - alpha) * y + alpha * v2.y);
+	public double norm() {
+		return (double) sqrt(x * x + y * y + z * z);
+	}
 
-    }
+	/**
+	 * Returns a new point between this and v2, given by the parameter
+	 *
+	 * @param v2    The other point to interpolate
+	 * @param alpha Parameter of interpolation. 0 gives this point. 1 gives v2. 0.5
+	 *              returns the middle point
+	 * @return The interpolated point
+	 */
+	public Vec interpolate(Vec v2, double alpha) {
+		return new Vec((1 - alpha) * x + alpha * v2.x, (1 - alpha) * y + alpha * v2.y);
 
-    public Vec copy() {
-        Vec resul = new Vec(x, y);
-        return resul;
-    }
+	}
 
-    public void copyFrom(Vec v) {
-        if (v != null) {
-            this.x = v.x;
-            this.y = v.y;
-            this.z = v.z;
-        }
-    }
+	public Vec copy() {
+		Vec resul = new Vec(x, y);
+		return resul;
+	}
 
-    @Override
-    public void saveState() {
-        xState = x;
-        yState = y;
-        zState = z;
-    }
+	public void copyFrom(Vec v) {
+		if (v != null) {
+			this.x = v.x;
+			this.y = v.y;
+			this.z = v.z;
+		}
+	}
 
-    @Override
-    public void restoreState() {
-        x = xState;
-        y = yState;
-        z = zState;
+	@Override
+	public void saveState() {
+		xState = x;
+		yState = y;
+		zState = z;
+	}
 
-    }
+	@Override
+	public void restoreState() {
+		x = xState;
+		y = yState;
+		z = zState;
 
-    /**
-     * Return the angle of the vector, between 0 and 2*PI
-     *
-     * @return The angle
-     */
-    public double getAngle() {
-        double angle = Math.atan2(this.y, this.x);
-        return angle;
-    }
+	}
 
-    /**
-     * Rotates the vector the specified angle, storing the result in the
-     * original vector.
-     *
-     * @param angle Rotation angle
-     * @return This vector
-     */
-    public Vec rotateInSite(double angle) {
-        double c = Math.cos(angle);
-        double s = Math.sin(angle);
-        double a = this.x;
-        double b = this.y;
-        this.x = c * a - s * b;
-        this.y = s * a + c * b;
-        return this;
-    }
+	/**
+	 * Return the angle of the vector, between 0 and 2*PI
+	 *
+	 * @return The angle
+	 */
+	public double getAngle() {
+		double angle = Math.atan2(this.y, this.x);
+		return angle;
+	}
 
-    /**
-     * Rotates the vector the specified angle, and returns the result.The
-     * original vector is unaltered
-     *
-     * @param angle Rotation angle
-     * @return A new vector with the resul
-     */
-    public Vec rotate(double angle) {
-        return this.copy().rotateInSite(angle);
+	/**
+	 * Rotates the vector the specified angle, storing the result in the original
+	 * vector.
+	 *
+	 * @param angle Rotation angle
+	 * @return This vector
+	 */
+	public Vec rotateInSite(double angle) {
+		double c = Math.cos(angle);
+		double s = Math.sin(angle);
+		double a = this.x;
+		double b = this.y;
+		this.x = c * a - s * b;
+		this.y = s * a + c * b;
+		return this;
+	}
 
-    }
+	/**
+	 * Rotates the vector the specified angle, and returns the result.The original
+	 * vector is unaltered
+	 *
+	 * @param angle Rotation angle
+	 * @return A new vector with the resul
+	 */
+	public Vec rotate(double angle) {
+		return this.copy().rotateInSite(angle);
 
-    /**
-     * Return the angle of the vector, between -PI and PI
-     *
-     * @return The angle
-     */
-    public double getAngleFirstQuad() {
-        double angle = Math.atan(this.y / this.x);
-        return angle;
-    }
+	}
 
-    @Override
-    public int hashCode() {
-        int hash = 7;
-        hash = 29 * hash + (int) (Double.doubleToLongBits(this.x) ^ (Double.doubleToLongBits(this.x) >>> 32));
-        hash = 29 * hash + (int) (Double.doubleToLongBits(this.y) ^ (Double.doubleToLongBits(this.y) >>> 32));
-        hash = 29 * hash + (int) (Double.doubleToLongBits(this.z) ^ (Double.doubleToLongBits(this.z) >>> 32));
-        return hash;
-    }
+	/**
+	 * Return the angle of the vector, between -PI and PI
+	 *
+	 * @return The angle
+	 */
+	public double getAngleFirstQuad() {
+		double angle = Math.atan(this.y / this.x);
+		return angle;
+	}
 
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final Vec other = (Vec) obj;
-        if (Double.doubleToLongBits(this.x) != Double.doubleToLongBits(other.x)) {
-            return false;
-        }
-        if (Double.doubleToLongBits(this.y) != Double.doubleToLongBits(other.y)) {
-            return false;
-        }
-        if (Double.doubleToLongBits(this.z) != Double.doubleToLongBits(other.z)) {
-            return false;
-        }
-        return true;
-    }
+	@Override
+	public int hashCode() {
+		int hash = 7;
+		hash = 29 * hash + (int) (Double.doubleToLongBits(this.x) ^ (Double.doubleToLongBits(this.x) >>> 32));
+		hash = 29 * hash + (int) (Double.doubleToLongBits(this.y) ^ (Double.doubleToLongBits(this.y) >>> 32));
+		hash = 29 * hash + (int) (Double.doubleToLongBits(this.z) ^ (Double.doubleToLongBits(this.z) >>> 32));
+		return hash;
+	}
 
-    @Override
-    public String toString() {
-        return "Vec(" + x + ", " + y + ')';
-    }
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (obj == null) {
+			return false;
+		}
+		if (getClass() != obj.getClass()) {
+			return false;
+		}
+		final Vec other = (Vec) obj;
+		if (Double.doubleToLongBits(this.x) != Double.doubleToLongBits(other.x)) {
+			return false;
+		}
+		if (Double.doubleToLongBits(this.y) != Double.doubleToLongBits(other.y)) {
+			return false;
+		}
+		if (Double.doubleToLongBits(this.z) != Double.doubleToLongBits(other.z)) {
+			return false;
+		}
+		return true;
+	}
 
-    public static Vec to(double x, double y, double z) {
-        return new Vec(x, y, z);
-    }
+	@Override
+	public String toString() {
+		return "Vec(" + x + ", " + y + ')';
+	}
 
-    public static Vec to(double x, double y) {
-        return new Vec(x, y);
-    }
+	public static Vec to(double x, double y, double z) {
+		return new Vec(x, y, z);
+	}
 
-    /**
-     * Return the normalized vector, with modulus 1. If the vector is the null
-     * vector, does nothing. The original vector is unaltered.
-     *
-     * @return The normalized vector if the modulus is positive. The original
-     * otherwise.
-     */
-    public Vec normalize() {
-        double norm = this.norm();
-        if (norm > 0) {
-            return this.mult(1d / norm);
-        } else {
-            return this;
-        }
-    }
+	public static Vec to(double x, double y) {
+		return new Vec(x, y);
+	}
+
+	/**
+	 * Return the normalized vector, with modulus 1. If the vector is the null
+	 * vector, does nothing. The original vector is unaltered.
+	 *
+	 * @return The normalized vector if the modulus is positive. The original
+	 *         otherwise.
+	 */
+	public Vec normalize() {
+		double norm = this.norm();
+		if (norm > 0) {
+			return this.mult(1d / norm);
+		} else {
+			return this;
+		}
+	}
 
 }

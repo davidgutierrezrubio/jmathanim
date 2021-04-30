@@ -24,5 +24,5 @@ import com.jmathanim.Utils.Vec;
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
 public interface HasDirection {
-    public Vec getDirection();
+	public Vec getDirection();
 }

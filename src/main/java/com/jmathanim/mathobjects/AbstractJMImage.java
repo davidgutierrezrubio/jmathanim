@@ -29,41 +29,41 @@ import javafx.scene.image.Image;
  */
 public abstract class AbstractJMImage extends MathObject {
 
-    public Rect bbox;
-    public boolean preserveRatio = false;
-    public double rotateAngle = 0;
-    public double rotateAngleBackup = 0;
-    private boolean cached = false;
+	public Rect bbox;
+	public boolean preserveRatio = false;
+	public double rotateAngle = 0;
+	public double rotateAngleBackup = 0;
+	private boolean cached = false;
 
-    @Override
-    public Rect getBoundingBox() {
-        return bbox.getRotatedRect(this.rotateAngle);
-    }
+	@Override
+	public Rect getBoundingBox() {
+		return bbox.getRotatedRect(this.rotateAngle);
+	}
 
-    @Override
-    public <T extends MathObject> T shift(Vec shiftVector) {
-        bbox.copyFrom(bbox.shifted(shiftVector));
-        return (T) this;
-    }
+	@Override
+	public <T extends MathObject> T shift(Vec shiftVector) {
+		bbox.copyFrom(bbox.shifted(shiftVector));
+		return (T) this;
+	}
 
-    @Override
-    public void draw(JMathAnimScene scene, Renderer r) {
-        if (isVisible()) {
-            r.drawImage(this);
-        }
-        scene.markAsAlreadyDrawed(this);
-    }
+	@Override
+	public void draw(JMathAnimScene scene, Renderer r) {
+		if (isVisible()) {
+			r.drawImage(this);
+		}
+		scene.markAsAlreadyDrawed(this);
+	}
 
-    public boolean isCached() {
-        return cached;
-    }
+	public boolean isCached() {
+		return cached;
+	}
 
-    public void setCached(boolean cached) {
-        this.cached = cached;
-    }
+	public void setCached(boolean cached) {
+		this.cached = cached;
+	}
 
-    abstract public String getId();
+	abstract public String getId();
 
-    abstract public Image getImage();
+	abstract public Image getImage();
 
 }

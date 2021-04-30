@@ -30,123 +30,125 @@ import java.util.function.IntToDoubleFunction;
  */
 public class FlowLayout extends AbstractBoxLayout {
 
-    public IntToDoubleFunction rowLength;
-    BoxLayout.Direction direction;
+	public IntToDoubleFunction rowLength;
+	BoxLayout.Direction direction;
 
-    public FlowLayout(Point corner, double width, BoxLayout.Direction direction, double inRowGap, double inColGap) {
-        super(corner, inRowGap, inColGap);
-        rowLength = (int row) -> width;
-        this.direction = direction;
-        computeDirections(direction);
-    }
-    
-     public FlowLayout(Point corner, IntToDoubleFunction widthFunction, BoxLayout.Direction direction, double inRowGap, double inColGap) {
-        super(corner, inRowGap, inColGap);
-        rowLength = widthFunction;
-        this.direction = direction;
-        computeDirections(direction);
-    }
+	public FlowLayout(Point corner, double width, BoxLayout.Direction direction, double inRowGap, double inColGap) {
+		super(corner, inRowGap, inColGap);
+		rowLength = (int row) -> width;
+		this.direction = direction;
+		computeDirections(direction);
+	}
 
-    private double getAppropiateSize(MathObject obj) {
-        double resul = 0;
-        switch (direction) {
-            case DOWN_LEFT:
-            case DOWN_RIGHT:
-            case UP_LEFT:
-            case UP_RIGHT:
-                resul = obj.getHeight();
-                break;
-            case LEFT_DOWN:
-            case LEFT_UP:
-            case RIGHT_DOWN:
-            case RIGHT_UP:
-                resul = obj.getWidth();
-                break;
-        }
-        return resul;
-    }
+	public FlowLayout(Point corner, IntToDoubleFunction widthFunction, BoxLayout.Direction direction, double inRowGap,
+			double inColGap) {
+		super(corner, inRowGap, inColGap);
+		rowLength = widthFunction;
+		this.direction = direction;
+		computeDirections(direction);
+	}
 
-    @Override
-    public void applyLayout(MathObjectGroup group) {
-        ArrayList<MathObjectGroup> rowGroups = getRowGroups(group);
+	private double getAppropiateSize(MathObject obj) {
+		double resul = 0;
+		switch (direction) {
+		case DOWN_LEFT:
+		case DOWN_RIGHT:
+		case UP_LEFT:
+		case UP_RIGHT:
+			resul = obj.getHeight();
+			break;
+		case LEFT_DOWN:
+		case LEFT_UP:
+		case RIGHT_DOWN:
+		case RIGHT_UP:
+			resul = obj.getWidth();
+			break;
+		}
+		return resul;
+	}
 
-        rowGroups.get(0).get(0).stackTo(firstElementStack, this.corner, Anchor.Type.CENTER, 0);
-        for (int n = 1; n < rowGroups.get(0).size(); n++) {
-            rowGroups.get(0).get(n).stackTo(rowGroups.get(0).get(n - 1), inRowStack, inRowGap);
-        }
+	@Override
+	public void applyLayout(MathObjectGroup group) {
+		ArrayList<MathObjectGroup> rowGroups = getRowGroups(group);
 
-        for (int k = 1; k < rowGroups.size(); k++) {
-            rowGroups.get(k).get(0).stackTo(rowGroups.get(k - 1).get(0), inColStack, inColGap);
-            for (int n = 1; n < rowGroups.get(k).size(); n++) {
-                rowGroups.get(k).get(n).stackTo(rowGroups.get(k).get(n - 1), inRowStack, inRowGap);
-            }
-            MathObject.Align align = null;
-            switch (direction) {
-                case RIGHT_UP:
-                case RIGHT_DOWN:
-                    align = MathObject.Align.LEFT;
-                    break;
-                case LEFT_UP:
-                case LEFT_DOWN:
-                    align = MathObject.Align.RIGHT;
-                    break;
-                case UP_RIGHT:
-                case UP_LEFT:
-                    align = MathObject.Align.LOWER;
-                    break;
-                case DOWN_RIGHT:
-                case DOWN_LEFT:
-                    align = MathObject.Align.UPPER;
-                    break;
-            }
-            rowGroups.get(k).align(rowGroups.get(0), align);
-        }
-    }
+		rowGroups.get(0).get(0).stackTo(firstElementStack, this.corner, Anchor.Type.CENTER, 0);
+		for (int n = 1; n < rowGroups.get(0).size(); n++) {
+			rowGroups.get(0).get(n).stackTo(rowGroups.get(0).get(n - 1), inRowStack, inRowGap);
+		}
 
-    public ArrayList<MathObjectGroup> getRowGroups(MathObjectGroup group) {
-        ArrayList<MathObjectGroup> resul = new ArrayList<>();
-        MathObject firstOfTheRow = group.get(0);
-        MathObjectGroup currentRow = MathObjectGroup.make(firstOfTheRow);
-        resul.add(currentRow);
-        int rowNumber = 0;
-        double totalWidth = getAppropiateSize(firstOfTheRow);//when this variable is greater than size, go to a new line
-        //Puts the first element in the corner point
-        firstOfTheRow.stackTo(corner, firstElementStack);
-        //Now the rest
-        for (int n = 1; n < group.size(); n++) {
-            totalWidth += getAppropiateSize(group.get(n)) + inRowGap;
-            if (totalWidth <= rowLength.applyAsDouble(rowNumber)) {
+		for (int k = 1; k < rowGroups.size(); k++) {
+			rowGroups.get(k).get(0).stackTo(rowGroups.get(k - 1).get(0), inColStack, inColGap);
+			for (int n = 1; n < rowGroups.get(k).size(); n++) {
+				rowGroups.get(k).get(n).stackTo(rowGroups.get(k).get(n - 1), inRowStack, inRowGap);
+			}
+			MathObject.Align align = null;
+			switch (direction) {
+			case RIGHT_UP:
+			case RIGHT_DOWN:
+				align = MathObject.Align.LEFT;
+				break;
+			case LEFT_UP:
+			case LEFT_DOWN:
+				align = MathObject.Align.RIGHT;
+				break;
+			case UP_RIGHT:
+			case UP_LEFT:
+				align = MathObject.Align.LOWER;
+				break;
+			case DOWN_RIGHT:
+			case DOWN_LEFT:
+				align = MathObject.Align.UPPER;
+				break;
+			}
+			rowGroups.get(k).align(rowGroups.get(0), align);
+		}
+	}
+
+	public ArrayList<MathObjectGroup> getRowGroups(MathObjectGroup group) {
+		ArrayList<MathObjectGroup> resul = new ArrayList<>();
+		MathObject firstOfTheRow = group.get(0);
+		MathObjectGroup currentRow = MathObjectGroup.make(firstOfTheRow);
+		resul.add(currentRow);
+		int rowNumber = 0;
+		double totalWidth = getAppropiateSize(firstOfTheRow);// when this variable is greater than size, go to a new
+																// line
+		// Puts the first element in the corner point
+		firstOfTheRow.stackTo(corner, firstElementStack);
+		// Now the rest
+		for (int n = 1; n < group.size(); n++) {
+			totalWidth += getAppropiateSize(group.get(n)) + inRowGap;
+			if (totalWidth <= rowLength.applyAsDouble(rowNumber)) {
 //                group.get(n).stackTo(group.get(n - 1), inRowStack, inRowGap);
-                currentRow.add(group.get(n));
+				currentRow.add(group.get(n));
 //                System.out.println("row " + rowNumber + ", size=" + totalWidth);
-            } else {
+			} else {
 //                System.out.println("Salto porque " + totalWidth);
-                rowNumber++;
+				rowNumber++;
 //                group.get(n).stackTo(firstOfTheRow, inColStack, inColGap);
-                firstOfTheRow = group.get(n);
-                totalWidth = getAppropiateSize(firstOfTheRow);
-                currentRow = MathObjectGroup.make(firstOfTheRow);
-                resul.add(currentRow);
-            }
+				firstOfTheRow = group.get(n);
+				totalWidth = getAppropiateSize(firstOfTheRow);
+				currentRow = MathObjectGroup.make(firstOfTheRow);
+				resul.add(currentRow);
+			}
 
-        }
-        return resul;
-    }
+		}
+		return resul;
+	}
 
-    private MathObjectGroup.Layout getInRowLayout() {
-        MathObjectGroup.Layout resul = null;
-        switch (direction) {
+	private MathObjectGroup.Layout getInRowLayout() {
+		MathObjectGroup.Layout resul = null;
+		switch (direction) {
 
-        }
-        return resul;
-    }
+		}
+		return resul;
+	}
 
-    @Override
-    public FlowLayout copy() {
-        if (this.corner != null) {
-            return new FlowLayout(corner.copy(), this.rowLength, direction, inRowGap, inColGap);
-        } else {
-            return new FlowLayout(null, this.rowLength, direction, inRowGap, inColGap);
-        }
-    }
+	@Override
+	public FlowLayout copy() {
+		if (this.corner != null) {
+			return new FlowLayout(corner.copy(), this.rowLength, direction, inRowGap, inColGap);
+		} else {
+			return new FlowLayout(null, this.rowLength, direction, inRowGap, inColGap);
+		}
+	}
 }

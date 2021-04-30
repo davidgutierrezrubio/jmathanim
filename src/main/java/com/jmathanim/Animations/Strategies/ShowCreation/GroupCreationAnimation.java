@@ -29,37 +29,37 @@ import com.jmathanim.mathobjects.MathObjectGroup;
  */
 public class GroupCreationAnimation extends CreationStrategy {
 
-    private final AnimationGroup anim;
+	private final AnimationGroup anim;
 
-    public GroupCreationAnimation(double runtime, MathObjectGroup group) {
-        super(runtime);
-        this.anim = new AnimationGroup();
-        for (MathObject obj : group.getObjects()) {
-            this.anim.add(new ShowCreation(runtime, obj));
-        }
-    }
+	public GroupCreationAnimation(double runtime, MathObjectGroup group) {
+		super(runtime);
+		this.anim = new AnimationGroup();
+		for (MathObject obj : group.getObjects()) {
+			this.anim.add(new ShowCreation(runtime, obj));
+		}
+	}
 
-    @Override
-    public void initialize(JMathAnimScene scene) {
-        super.initialize(scene);
-        anim.setLambda(lambda);
-        anim.initialize(scene);
+	@Override
+	public void initialize(JMathAnimScene scene) {
+		super.initialize(scene);
+		anim.setLambda(lambda);
+		anim.initialize(scene);
 
-    }
+	}
 
-    @Override
-    public boolean processAnimation() {
-        return anim.processAnimation();
-    }
+	@Override
+	public boolean processAnimation() {
+		return anim.processAnimation();
+	}
 
-    @Override
-    public void finishAnimation() {
-        super.finishAnimation();
-        anim.finishAnimation();
-    }
+	@Override
+	public void finishAnimation() {
+		super.finishAnimation();
+		anim.finishAnimation();
+	}
 
-    @Override
-    public void doAnim(double t) {
-    }
+	@Override
+	public void doAnim(double t) {
+	}
 
 }

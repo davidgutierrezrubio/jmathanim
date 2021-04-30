@@ -30,98 +30,100 @@ import javafx.scene.image.Image;
  */
 public class JMImage extends AbstractJMImage {
 
-    private String filename;
+	private String filename;
 
-    public static JMImage make(String filename) {
-        return new JMImage(filename);
-    }
-    private final Renderer renderer;
+	public static JMImage make(String filename) {
+		return new JMImage(filename);
+	}
 
-    public JMImage(String filename) {
-        setCached(true);
-        this.filename = filename;
-        renderer = JMathAnimConfig.getConfig().getRenderer();
-        this.bbox = renderer.createImage(filename);
-        double sc = renderer.getMediaHeight() * 1d / 1080d;//Scales it taking as reference 1920x1080 production output
-        this.scale(sc);
-    }
+	private final Renderer renderer;
 
-    public void setImage(String fn) {
-        Rect bb = renderer.createImage(fn);
-        bb.centerAt(this.bbox.getCenter());
-        this.filename = fn;
-    }
+	public JMImage(String filename) {
+		setCached(true);
+		this.filename = filename;
+		renderer = JMathAnimConfig.getConfig().getRenderer();
+		this.bbox = renderer.createImage(filename);
+		double sc = renderer.getMediaHeight() * 1d / 1080d;// Scales it taking as reference 1920x1080 production output
+		this.scale(sc);
+	}
 
-    @Override
-    public JMImage copy() {
-        JMImage resul = new JMImage(filename);
-        resul.bbox.copyFrom(this.bbox);
-        resul.getMp().copyFrom(this.getMp());
-        resul.preserveRatio = this.preserveRatio;
-        resul.rotateAngle = this.rotateAngle;
-        resul.rotateAngleBackup = this.rotateAngleBackup;
-        return resul;
-    }
+	public void setImage(String fn) {
+		Rect bb = renderer.createImage(fn);
+		bb.centerAt(this.bbox.getCenter());
+		this.filename = fn;
+	}
 
-    @Override
-    public void update(JMathAnimScene scene) {
-    }
+	@Override
+	public JMImage copy() {
+		JMImage resul = new JMImage(filename);
+		resul.bbox.copyFrom(this.bbox);
+		resul.getMp().copyFrom(this.getMp());
+		resul.preserveRatio = this.preserveRatio;
+		resul.rotateAngle = this.rotateAngle;
+		resul.rotateAngleBackup = this.rotateAngleBackup;
+		return resul;
+	}
 
-    @Override
-    public void restoreState() {
-        super.restoreState();
-        bbox.restoreState();
-        this.rotateAngle = this.rotateAngleBackup;
-    }
+	@Override
+	public void update(JMathAnimScene scene) {
+	}
 
-    @Override
-    public void saveState() {
-        super.saveState();
-        bbox.saveState();
-        this.rotateAngleBackup = this.rotateAngle;
-    }
+	@Override
+	public void restoreState() {
+		super.restoreState();
+		bbox.restoreState();
+		this.rotateAngle = this.rotateAngleBackup;
+	}
 
-    @Override
-    public <T extends MathObject> T scale(Point scaleCenter, double sx, double sy, double sz) {
-        bbox.copyFrom(Rect.make(bbox.getUL().scale(scaleCenter, sx, sy, sz), bbox.getDR().scale(scaleCenter, sx, sy, sz)));
-        return (T) this;
-    }
+	@Override
+	public void saveState() {
+		super.saveState();
+		bbox.saveState();
+		this.rotateAngleBackup = this.rotateAngle;
+	}
 
-    @Override
-    public <T extends MathObject> T rotate(Point center, double angle) {
-        Point centerBbox = bbox.getCenter();
-        centerBbox.rotate(center, angle);
-        bbox.copyFrom(bbox.shifted(bbox.getCenter().to(centerBbox)));
-        //For now, ignore rotate center
-        rotateAngle += angle;
-        return (T) this;
-    }
+	@Override
+	public <T extends MathObject> T scale(Point scaleCenter, double sx, double sy, double sz) {
+		bbox.copyFrom(
+				Rect.make(bbox.getUL().scale(scaleCenter, sx, sy, sz), bbox.getDR().scale(scaleCenter, sx, sy, sz)));
+		return (T) this;
+	}
 
-    @Override
-    public void registerChildrenToBeUpdated(JMathAnimScene scene) {
-    }
+	@Override
+	public <T extends MathObject> T rotate(Point center, double angle) {
+		Point centerBbox = bbox.getCenter();
+		centerBbox.rotate(center, angle);
+		bbox.copyFrom(bbox.shifted(bbox.getCenter().to(centerBbox)));
+		// For now, ignore rotate center
+		rotateAngle += angle;
+		return (T) this;
+	}
 
-    @Override
-    public void unregisterChildrenToBeUpdated(JMathAnimScene scene) {
-    }
+	@Override
+	public void registerChildrenToBeUpdated(JMathAnimScene scene) {
+	}
 
-    public String getFilename() {
-        return filename;
-    }
+	@Override
+	public void unregisterChildrenToBeUpdated(JMathAnimScene scene) {
+	}
 
-    @Override
-    public String getId() {
-        return getFilename();
-    }
+	public String getFilename() {
+		return filename;
+	}
 
-    @Override
-    public Image getImage() {
-        return null;
-    }
+	@Override
+	public String getId() {
+		return getFilename();
+	}
 
-    @Override
-    public <T extends MathObject> T applyAffineTransform(AffineJTransform tr) {
-        //Nothing to do (for now...)
-        return (T) this;
-    }
+	@Override
+	public Image getImage() {
+		return null;
+	}
+
+	@Override
+	public <T extends MathObject> T applyAffineTransform(AffineJTransform tr) {
+		// Nothing to do (for now...)
+		return (T) this;
+	}
 }

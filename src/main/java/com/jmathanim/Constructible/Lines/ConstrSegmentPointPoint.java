@@ -29,58 +29,53 @@ import com.jmathanim.mathobjects.Shape;
  *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
-public class ConstrSegmentPointPoint extends Constructible implements HasDirection
-{
-    public final Point A,B;
-    private final Shape segmentToDraw;
+public class ConstrSegmentPointPoint extends Constructible implements HasDirection {
+	public final Point A, B;
+	private final Shape segmentToDraw;
 
-    public static ConstrSegmentPointPoint make(Point A,Point B) {
-        ConstrSegmentPointPoint resul=new ConstrSegmentPointPoint(A, B);
-        resul.rebuildShape();
-        return resul;
-    }
-    
-    private ConstrSegmentPointPoint(Point A, Point B) {
-        this.A = A;
-        this.B = B;
-        segmentToDraw=Shape.segment(A, B);
-    }
-    
-    
-    @Override
-    public <T extends MathObject> T copy() {
-        return (T) ConstrSegmentPointPoint.make(this.A.copy(),this.B.copy());
-    }
+	public static ConstrSegmentPointPoint make(Point A, Point B) {
+		ConstrSegmentPointPoint resul = new ConstrSegmentPointPoint(A, B);
+		resul.rebuildShape();
+		return resul;
+	}
 
-    @Override
-    public void draw(JMathAnimScene scene, Renderer r) {
-        segmentToDraw.draw(scene, r);
-    }
+	private ConstrSegmentPointPoint(Point A, Point B) {
+		this.A = A;
+		this.B = B;
+		segmentToDraw = Shape.segment(A, B);
+	}
 
-    @Override
-    public Vec getDirection() {
-        return A.to(B);
-    }
+	@Override
+	public <T extends MathObject> T copy() {
+		return (T) ConstrSegmentPointPoint.make(this.A.copy(), this.B.copy());
+	}
 
-    @Override
-    public MathObject getMathObject() {
-        return segmentToDraw;
-    }
+	@Override
+	public void draw(JMathAnimScene scene, Renderer r) {
+		segmentToDraw.draw(scene, r);
+	}
 
-    public Point getA() {
-        return A;
-    }
+	@Override
+	public Vec getDirection() {
+		return A.to(B);
+	}
 
-    public Point getB() {
-        return B;
-    }
+	@Override
+	public MathObject getMathObject() {
+		return segmentToDraw;
+	}
 
-    
-    
-    
-    @Override
-    public void rebuildShape() {
-        //Nothing to do here...
-    }
-    
+	public Point getA() {
+		return A;
+	}
+
+	public Point getB() {
+		return B;
+	}
+
+	@Override
+	public void rebuildShape() {
+		// Nothing to do here...
+	}
+
 }

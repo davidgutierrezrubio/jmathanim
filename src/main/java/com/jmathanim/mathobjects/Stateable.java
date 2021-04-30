@@ -24,13 +24,13 @@ package com.jmathanim.mathobjects;
  */
 public interface Stateable {
 
-    /**
-     * Save the state of the current object
-     */
-    public void saveState();
+	/**
+	 * Save the state of the current object
+	 */
+	public void saveState();
 
-    /**
-     * Restore the previously saved state
-     */
-    public void restoreState();
+	/**
+	 * Restore the previously saved state
+	 */
+	public void restoreState();
 }

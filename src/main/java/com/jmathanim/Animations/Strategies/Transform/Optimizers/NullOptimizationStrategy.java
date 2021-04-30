@@ -27,8 +27,8 @@ import com.jmathanim.mathobjects.Shape;
  */
 public class NullOptimizationStrategy implements OptimizePathsStrategy {
 
-    @Override
-    public void optimizePaths(Shape sh1, Shape sh2) {
-    }
+	@Override
+	public void optimizePaths(Shape sh1, Shape sh2) {
+	}
 
 }

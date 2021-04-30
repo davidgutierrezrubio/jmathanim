@@ -27,39 +27,39 @@ import com.jmathanim.mathobjects.Point;
  */
 public class TransformedPoint extends Point {
 
-    private AffineJTransform transform;
-    private final Point dstPoint;
+	private AffineJTransform transform;
+	private final Point dstPoint;
 
-    public TransformedPoint(Point p, AffineJTransform tr) {
-        super();
-        this.dstPoint = p;
-        this.transform = tr;
-    }
+	public TransformedPoint(Point p, AffineJTransform tr) {
+		super();
+		this.dstPoint = p;
+		this.transform = tr;
+	}
 
-    public AffineJTransform getTransform() {
-        return transform;
-    }
+	public AffineJTransform getTransform() {
+		return transform;
+	}
 
-    public void setTransform(AffineJTransform transform) {
-        this.transform = transform;
-    }
+	public void setTransform(AffineJTransform transform) {
+		this.transform = transform;
+	}
 
-    @Override
-    public int getUpdateLevel() {
-        return dstPoint.getUpdateLevel() + 1;
-    }
+	@Override
+	public int getUpdateLevel() {
+		return dstPoint.getUpdateLevel() + 1;
+	}
 
-    @Override
-    public void update(JMathAnimScene scene) {
-        Point tempPoint = transform.getTransformedObject(this.dstPoint);
-        this.v.x = tempPoint.v.x;
-        this.v.y = tempPoint.v.y;
-        this.v.z = tempPoint.v.z;
-    }
+	@Override
+	public void update(JMathAnimScene scene) {
+		Point tempPoint = transform.getTransformedObject(this.dstPoint);
+		this.v.x = tempPoint.v.x;
+		this.v.y = tempPoint.v.y;
+		this.v.z = tempPoint.v.z;
+	}
 
-    @Override
-    public void registerChildrenToBeUpdated(JMathAnimScene scene) {
-        scene.registerUpdateable(this.dstPoint);
-    }
+	@Override
+	public void registerChildrenToBeUpdated(JMathAnimScene scene) {
+		scene.registerUpdateable(this.dstPoint);
+	}
 
 }

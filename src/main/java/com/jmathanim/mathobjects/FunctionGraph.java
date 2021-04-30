@@ -31,186 +31,184 @@ import java.util.function.DoubleUnaryOperator;
  */
 public class FunctionGraph extends Shape {
 
-    public static final double DELTA_DERIVATIVE = .00001d;
-    public static final int DEFAULT_NUMBER_OF_POINTS = 49;
+	public static final double DELTA_DERIVATIVE = .00001d;
+	public static final int DEFAULT_NUMBER_OF_POINTS = 49;
 
-    /**
-     * Different ways to define a function. Right now only lambda is supported
-     */
-    public enum FunctionDefinitionType {
-        /**
-         * Function is defined by a lambda expresion, like (x)-&gt;Math.sin(x)
-         */
-        LAMBDA
-    }
+	/**
+	 * Different ways to define a function. Right now only lambda is supported
+	 */
+	public enum FunctionDefinitionType {
+		/**
+		 * Function is defined by a lambda expresion, like (x)-&gt;Math.sin(x)
+		 */
+		LAMBDA
+	}
 
-    public DoubleUnaryOperator function;
-    public final ArrayList<Double> xPoints;
-    public FunctionDefinitionType functionType;
-    public DoubleUnaryOperator functionBase;
+	public DoubleUnaryOperator function;
+	public final ArrayList<Double> xPoints;
+	public FunctionDefinitionType functionType;
+	public DoubleUnaryOperator functionBase;
 
-    public static FunctionGraph make(DoubleUnaryOperator function) {
-        Rect r = JMathAnimConfig.getConfig().getCamera().getMathView();
-        return new FunctionGraph(function, r.xmin, r.xmax);
-    }
+	public static FunctionGraph make(DoubleUnaryOperator function) {
+		Rect r = JMathAnimConfig.getConfig().getCamera().getMathView();
+		return new FunctionGraph(function, r.xmin, r.xmax);
+	}
 
-    public static FunctionGraph make(DoubleUnaryOperator function, double xmin, double xmax) {
-        return new FunctionGraph(function, xmin, xmax);
-    }
+	public static FunctionGraph make(DoubleUnaryOperator function, double xmin, double xmax) {
+		return new FunctionGraph(function, xmin, xmax);
+	}
 
-    public FunctionGraph(DoubleUnaryOperator function, double xmin, double xmax) {
-        this(function, xmin, xmax, DEFAULT_NUMBER_OF_POINTS);
-    }
+	public FunctionGraph(DoubleUnaryOperator function, double xmin, double xmax) {
+		this(function, xmin, xmax, DEFAULT_NUMBER_OF_POINTS);
+	}
 
-    /**
-     * Creates a function graph, which is a subclass of Shape
-     *
-     * @param function Function to draw, in lambda function, for example:
-     * (x)-&gt;Math.sin(x)
-     * @param xmin Minimum x of the interval to draw the function
-     * @param xmax Maximum x of the interval to draw the function
-     * @param numPoints Number of points to calculate
-     */
-    public FunctionGraph(DoubleUnaryOperator function, double xmin, double xmax, int numPoints) {
-        style("FunctionGraphDefault");//Default style, if any
-        this.function = function;
-        this.functionBase = function;
-        this.functionType = FunctionDefinitionType.LAMBDA;
-        this.xPoints = new ArrayList<>();
-        for (int n = 0; n < numPoints; n++) {
-            double x = xmin + (xmax - xmin) * n / (numPoints - 1);
-            xPoints.add(x);
-        }
-        generateFunctionPoints();
-    }
+	/**
+	 * Creates a function graph, which is a subclass of Shape
+	 *
+	 * @param function  Function to draw, in lambda function, for example:
+	 *                  (x)-&gt;Math.sin(x)
+	 * @param xmin      Minimum x of the interval to draw the function
+	 * @param xmax      Maximum x of the interval to draw the function
+	 * @param numPoints Number of points to calculate
+	 */
+	public FunctionGraph(DoubleUnaryOperator function, double xmin, double xmax, int numPoints) {
+		style("FunctionGraphDefault");// Default style, if any
+		this.function = function;
+		this.functionBase = function;
+		this.functionType = FunctionDefinitionType.LAMBDA;
+		this.xPoints = new ArrayList<>();
+		for (int n = 0; n < numPoints; n++) {
+			double x = xmin + (xmax - xmin) * n / (numPoints - 1);
+			xPoints.add(x);
+		}
+		generateFunctionPoints();
+	}
 
-    public FunctionGraph(DoubleUnaryOperator function, ArrayList<Double> xPoints) {
-        this.function = function;
-        this.xPoints = xPoints;
-        this.functionBase = function;
-        this.functionType = FunctionDefinitionType.LAMBDA;
-        generateFunctionPoints();
-    }
+	public FunctionGraph(DoubleUnaryOperator function, ArrayList<Double> xPoints) {
+		this.function = function;
+		this.xPoints = xPoints;
+		this.functionBase = function;
+		this.functionType = FunctionDefinitionType.LAMBDA;
+		generateFunctionPoints();
+	}
 
-    private void generateFunctionPoints() {
-        for (int n = 0; n < xPoints.size(); n++) {
-            double x = xPoints.get(n);
-            double y = getFunctionValue(x);
-            Point p = Point.at(x, y);
-            final JMPathPoint jmp = JMPathPoint.curveTo(p);
-            this.getPath().addJMPoint(jmp);
-            if (n == 0) {
-                jmp.isThisSegmentVisible = false;
-            }
-        }
-        generateControlPoints();
-    }
+	private void generateFunctionPoints() {
+		for (int n = 0; n < xPoints.size(); n++) {
+			double x = xPoints.get(n);
+			double y = getFunctionValue(x);
+			Point p = Point.at(x, y);
+			final JMPathPoint jmp = JMPathPoint.curveTo(p);
+			this.getPath().addJMPoint(jmp);
+			if (n == 0) {
+				jmp.isThisSegmentVisible = false;
+			}
+		}
+		generateControlPoints();
+	}
 
-    /**
-     * Generate the Bezier control points of the Shape representing the graph of
-     * the funcion Approximate derivatives are computed to compute these.
-     */
-    private void generateControlPoints() {
-        for (int n = 0; n < xPoints.size(); n++) {
-            JMPathPoint jmp = this.getPath().getJMPoint(n);
-            double x = jmp.p.v.x;
-            if (n < xPoints.size() - 1) {
-                final double deltaX = .3 * (xPoints.get(n + 1) - x);
-                Vec v = new Vec(deltaX, getSlope(x, 1) * deltaX);
-                jmp.cpExit.copyFrom(jmp.p.add(v));
-            }
-            if (n > 0) {
-                final double deltaX = .3 * (xPoints.get(n - 1) - x);
-                Vec v = new Vec(deltaX, getSlope(x, -1) * deltaX);
-                jmp.cpEnter.copyFrom(jmp.p.add(v));
-            }
+	/**
+	 * Generate the Bezier control points of the Shape representing the graph of the
+	 * funcion Approximate derivatives are computed to compute these.
+	 */
+	private void generateControlPoints() {
+		for (int n = 0; n < xPoints.size(); n++) {
+			JMPathPoint jmp = this.getPath().getJMPoint(n);
+			double x = jmp.p.v.x;
+			if (n < xPoints.size() - 1) {
+				final double deltaX = .3 * (xPoints.get(n + 1) - x);
+				Vec v = new Vec(deltaX, getSlope(x, 1) * deltaX);
+				jmp.cpExit.copyFrom(jmp.p.add(v));
+			}
+			if (n > 0) {
+				final double deltaX = .3 * (xPoints.get(n - 1) - x);
+				Vec v = new Vec(deltaX, getSlope(x, -1) * deltaX);
+				jmp.cpEnter.copyFrom(jmp.p.add(v));
+			}
 
-        }
-    }
+		}
+	}
 
-    /**
-     * Update the value of the y-points of the graph. This method should be
-     * called when the function is changed. Control points are also
-     * recalculated.
-     */
-    public void updatePoints() {
-        for (JMPathPoint jmp : this.getPath().jmPathPoints) {
-            jmp.p.v.y = getFunctionValue(jmp.p.v.x);
-        }
-        generateControlPoints();
-    }
+	/**
+	 * Update the value of the y-points of the graph. This method should be called
+	 * when the function is changed. Control points are also recalculated.
+	 */
+	public void updatePoints() {
+		for (JMPathPoint jmp : this.getPath().jmPathPoints) {
+			jmp.p.v.y = getFunctionValue(jmp.p.v.x);
+		}
+		generateControlPoints();
+	}
 
-    public double getFunctionValue(double x) {
-        double y = 0;
-        if (this.functionType == FunctionDefinitionType.LAMBDA) {
-            y = function.applyAsDouble(x);
-        }
+	public double getFunctionValue(double x) {
+		double y = 0;
+		if (this.functionType == FunctionDefinitionType.LAMBDA) {
+			y = function.applyAsDouble(x);
+		}
 
-        return y;
-    }
+		return y;
+	}
 
-    public JMPathPoint addX(double x) {
+	public JMPathPoint addX(double x) {
 
-        int n = 0;
-        double x0 = xPoints.get(0);
-        while (x0 < x) {
-            n++;
-            x0 = xPoints.get(n);
-        }
-        if (x0 == x) {
-            return this.getPath().getJMPoint(n);
-        } else {
-            xPoints.add(n, x);
-            double y = getFunctionValue(x);
-            Point p = Point.at(x, y);
-            final JMPathPoint jmp = JMPathPoint.curveTo(p);
-            this.getPath().jmPathPoints.add(n, jmp);
-            return jmp;
-        }
-    }
+		int n = 0;
+		double x0 = xPoints.get(0);
+		while (x0 < x) {
+			n++;
+			x0 = xPoints.get(n);
+		}
+		if (x0 == x) {
+			return this.getPath().getJMPoint(n);
+		} else {
+			xPoints.add(n, x);
+			double y = getFunctionValue(x);
+			Point p = Point.at(x, y);
+			final JMPathPoint jmp = JMPathPoint.curveTo(p);
+			this.getPath().jmPathPoints.add(n, jmp);
+			return jmp;
+		}
+	}
 
-    /**
-     * Add the given x values of the abscises to the generation of the function
-     * curve. This is useful to explicity include singular points (for example,
-     * x=0 with (x)-&gt;Math.abs(x)) as graph may appear curved if this point is
-     * not explicitly include in the array of x-points. If the x coordinate is
-     * always included, this method has no effect, other than recalcuating
-     * control points.
-     *
-     * @param xPoints x coordinates of the abscise to include. Variable number
-     * of arguments.
-     */
-    public void addXPoint(Double... xPoints) {
-        for (double x : xPoints) {
-            addXPoint(x);
-        }
-        generateControlPoints();
-    }
+	/**
+	 * Add the given x values of the abscises to the generation of the function
+	 * curve. This is useful to explicity include singular points (for example, x=0
+	 * with (x)-&gt;Math.abs(x)) as graph may appear curved if this point is not
+	 * explicitly include in the array of x-points. If the x coordinate is always
+	 * included, this method has no effect, other than recalcuating control points.
+	 *
+	 * @param xPoints x coordinates of the abscise to include. Variable number of
+	 *                arguments.
+	 */
+	public void addXPoint(Double... xPoints) {
+		for (double x : xPoints) {
+			addXPoint(x);
+		}
+		generateControlPoints();
+	}
 
-    public double getSlope(double x, int direction) {
-        double delta = direction * DELTA_DERIVATIVE;
-        double slope = (getFunctionValue(x + delta) - getFunctionValue(x)) / delta;
-        return slope;
-    }
+	public double getSlope(double x, int direction) {
+		double delta = direction * DELTA_DERIVATIVE;
+		double slope = (getFunctionValue(x + delta) - getFunctionValue(x)) / delta;
+		return slope;
+	}
 
-    @Override
-    public FunctionGraph copy() {
-        ArrayList<Double> xPointsCopy = new ArrayList<>(xPoints);
-        FunctionGraph resul = new FunctionGraph(function, xPointsCopy);
-        resul.getMp().copyFrom(getMp());
-        return resul;
-    }
+	@Override
+	public FunctionGraph copy() {
+		ArrayList<Double> xPointsCopy = new ArrayList<>(xPoints);
+		FunctionGraph resul = new FunctionGraph(function, xPointsCopy);
+		resul.getMp().copyFrom(getMp());
+		return resul;
+	}
 
-    @Override
-    public void saveState() {
-        super.saveState();
-        this.functionBase = this.function;
-    }
+	@Override
+	public void saveState() {
+		super.saveState();
+		this.functionBase = this.function;
+	}
 
-    @Override
-    public void restoreState() {
-        super.restoreState();
-        this.functionBase = this.function;
-    }
+	@Override
+	public void restoreState() {
+		super.restoreState();
+		this.functionBase = this.function;
+	}
 
 }

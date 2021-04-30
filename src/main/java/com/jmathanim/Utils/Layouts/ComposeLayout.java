@@ -28,39 +28,39 @@ import com.jmathanim.mathobjects.MathObjectGroup;
  */
 public class ComposeLayout extends GroupLayout {
 
-    GroupLayout externalLayout;
-    GroupLayout internalLayout;
-    int sizeInternalGroups;
+	GroupLayout externalLayout;
+	GroupLayout internalLayout;
+	int sizeInternalGroups;
 
-    /**
-     * Creates a new ComposeLayout. The original MathObjectGroup is split into
-     * internal subgroups of the given size, and each one is applied the
-     * internal layout. Now considering each internal subgroup as a individual
-     * object, apply the external layout to them.
-     *
-     * @param externalLayout Layout to apply in the outer level
-     * @param internalLayout Layout to apply in the inner level
-     * @param sizeInternalGroups Size of the inner subgroups
-     */
-    public ComposeLayout(GroupLayout externalLayout, GroupLayout internalLayout, int sizeInternalGroups) {
-        this.externalLayout = externalLayout;
-        this.internalLayout = internalLayout;
-        this.sizeInternalGroups = sizeInternalGroups;
-    }
+	/**
+	 * Creates a new ComposeLayout. The original MathObjectGroup is split into
+	 * internal subgroups of the given size, and each one is applied the internal
+	 * layout. Now considering each internal subgroup as a individual object, apply
+	 * the external layout to them.
+	 *
+	 * @param externalLayout     Layout to apply in the outer level
+	 * @param internalLayout     Layout to apply in the inner level
+	 * @param sizeInternalGroups Size of the inner subgroups
+	 */
+	public ComposeLayout(GroupLayout externalLayout, GroupLayout internalLayout, int sizeInternalGroups) {
+		this.externalLayout = externalLayout;
+		this.internalLayout = internalLayout;
+		this.sizeInternalGroups = sizeInternalGroups;
+	}
 
-    @Override
-    public void applyLayout(MathObjectGroup group) {
-        MathObjectGroup externalGroup = group.divide(sizeInternalGroups);
-        for (MathObject ig : externalGroup) {
-            MathObjectGroup internalGroup = (MathObjectGroup) ig;
-            internalLayout.applyLayout(internalGroup);
-        }
-        externalLayout.applyLayout(externalGroup);
+	@Override
+	public void applyLayout(MathObjectGroup group) {
+		MathObjectGroup externalGroup = group.divide(sizeInternalGroups);
+		for (MathObject ig : externalGroup) {
+			MathObjectGroup internalGroup = (MathObjectGroup) ig;
+			internalLayout.applyLayout(internalGroup);
+		}
+		externalLayout.applyLayout(externalGroup);
 
-    }
+	}
 
-    @Override
-    public ComposeLayout copy() {
-        return new ComposeLayout(externalLayout.copy(), internalLayout.copy(), sizeInternalGroups);
-    }
+	@Override
+	public ComposeLayout copy() {
+		return new ComposeLayout(externalLayout.copy(), internalLayout.copy(), sizeInternalGroups);
+	}
 }

@@ -27,28 +27,28 @@ import com.jmathanim.Utils.Vec;
  */
 public class DummyCamera extends Camera {
 
-    public DummyCamera() {
-        super(null, 0, 0);
-    }
+	public DummyCamera() {
+		super(null, 0, 0);
+	}
 
-    @Override
-    public double[] mathToScreenFX(Vec p) {
-        return new double[]{p.x, p.y};
-    }
+	@Override
+	public double[] mathToScreenFX(Vec p) {
+		return new double[] { p.x, p.y };
+	}
 
-    @Override
-    public double[] mathToScreen(double mathX, double mathY) {
-        return new double[]{mathX, mathY};
-    }
+	@Override
+	public double[] mathToScreen(double mathX, double mathY) {
+		return new double[] { mathX, mathY };
+	}
 
-    @Override
-    public double mathToScreen(double mathScalar) {
-        return mathScalar;
-    }
+	@Override
+	public double mathToScreen(double mathScalar) {
+		return mathScalar;
+	}
 
-    @Override
-    public double[] screenToMath(double x, double y) {
-        return new double[]{x, y};
-    }
+	@Override
+	public double[] screenToMath(double x, double y) {
+		return new double[] { x, y };
+	}
 
 }

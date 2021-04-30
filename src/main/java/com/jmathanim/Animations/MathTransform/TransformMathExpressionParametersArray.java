@@ -26,82 +26,80 @@ import java.util.ArrayList;
  */
 public class TransformMathExpressionParametersArray {
 
-    private final ArrayList<TransformMathExpressionParameters> pars;
+	private final ArrayList<TransformMathExpressionParameters> pars;
 
-    public TransformMathExpressionParametersArray() {
-        this.pars = new ArrayList<>();
-    }
+	public TransformMathExpressionParametersArray() {
+		this.pars = new ArrayList<>();
+	}
 
-    public boolean add(TransformMathExpressionParameters e) {
-        return pars.add(e);
-    }
+	public boolean add(TransformMathExpressionParameters e) {
+		return pars.add(e);
+	}
 
-    /**
-     * Adds a rotation effect, rotating the transformed shape the specified
-     * number of turns.
-     *
-     * @param numTurns Number of turns. Positive is counterclockwise, negative
-     * clockwise.
-     * @return This object
-     */
-    public TransformMathExpressionParametersArray addRotateEffect(int numTurns) {
-        for (TransformMathExpressionParameters par : pars) {
-            par.addRotateEffect(numTurns);
-        }
-        return this;
-    }
+	/**
+	 * Adds a rotation effect, rotating the transformed shape the specified number
+	 * of turns.
+	 *
+	 * @param numTurns Number of turns. Positive is counterclockwise, negative
+	 *                 clockwise.
+	 * @return This object
+	 */
+	public TransformMathExpressionParametersArray addRotateEffect(int numTurns) {
+		for (TransformMathExpressionParameters par : pars) {
+			par.addRotateEffect(numTurns);
+		}
+		return this;
+	}
 
-    /**
-     * Adds a jump effect to the transformed shape. The trajectory is
-     * sinusoidal, with a total height of the given parameter. The jump vector
-     * is the rotated vector 90 degrees clockwise from the vector from the
-     * original and destiny shape.
-     *
-     * @param heightJump Height jump
-     * @return This object
-     */
-    public TransformMathExpressionParametersArray addJumpEffect(double heightJump) {
-        for (TransformMathExpressionParameters par : pars) {
-            par.addJumpEffect(heightJump);
-        }
-        return this;
-    }
+	/**
+	 * Adds a jump effect to the transformed shape. The trajectory is sinusoidal,
+	 * with a total height of the given parameter. The jump vector is the rotated
+	 * vector 90 degrees clockwise from the vector from the original and destiny
+	 * shape.
+	 *
+	 * @param heightJump Height jump
+	 * @return This object
+	 */
+	public TransformMathExpressionParametersArray addJumpEffect(double heightJump) {
+		for (TransformMathExpressionParameters par : pars) {
+			par.addJumpEffect(heightJump);
+		}
+		return this;
+	}
 
-     public TransformMathExpressionParametersArray addJumpEffect(double heightJump, AnimationEffect.JumpType jumpType) {
-       for (TransformMathExpressionParameters par : pars) {
-            par.addJumpEffect(heightJump,jumpType);
-        }
-        return this;
-    }
-    
-    
-    
-    /**
-     * Adds an alpha effect when transforming, multiplying the transformed shape
-     * alpha up to a given value, back and forth.
-     *
-     * @param alpha Alpha value to multiply.
-     * @return This object
-     */
-    public TransformMathExpressionParametersArray addAlphaEffect(double alpha) {
-        for (TransformMathExpressionParameters par : pars) {
-            par.addAlphaEffect(alpha);
-        }
-        return this;
-    }
+	public TransformMathExpressionParametersArray addJumpEffect(double heightJump, AnimationEffect.JumpType jumpType) {
+		for (TransformMathExpressionParameters par : pars) {
+			par.addJumpEffect(heightJump, jumpType);
+		}
+		return this;
+	}
 
-    /**
-     * Sets a scale effect when transforming, scaling the transformed shape by a
-     * given factor, back and forth.
-     *
-     * @param scale Scale to reach.
-     * @return This object
-     */
-    public TransformMathExpressionParametersArray addScaleEffect(double scale) {
-        for (TransformMathExpressionParameters par : pars) {
-            par.addScaleEffect(scale);
-        }
-        return this;
-    }
+	/**
+	 * Adds an alpha effect when transforming, multiplying the transformed shape
+	 * alpha up to a given value, back and forth.
+	 *
+	 * @param alpha Alpha value to multiply.
+	 * @return This object
+	 */
+	public TransformMathExpressionParametersArray addAlphaEffect(double alpha) {
+		for (TransformMathExpressionParameters par : pars) {
+			par.addAlphaEffect(alpha);
+		}
+		return this;
+	}
+
+	/**
+	 * Sets a scale effect when transforming, scaling the transformed shape by a
+	 * given factor, back and forth.
+	 *
+	 * @param scale Scale to reach.
+	 * @return This object
+	 */
+	public TransformMathExpressionParametersArray addScaleEffect(double scale) {
+		for (TransformMathExpressionParameters par : pars) {
+			par.addScaleEffect(scale);
+		}
+		return this;
+	}
 
 }

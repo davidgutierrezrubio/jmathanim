@@ -32,30 +32,30 @@ import com.jmathanim.mathobjects.Point;
  */
 public class Centroid extends Point implements Updateable {
 
-    private final JMPath path;
+	private final JMPath path;
 
-    public Centroid(JMPath path) {
-        super();
-        this.path = path;
-    }
+	public Centroid(JMPath path) {
+		super();
+		this.path = path;
+	}
 
-    @Override
-    public void update(JMathAnimScene scene) {
-        Vec resul = new Vec(0, 0);
-        for (int n = 0; n < path.size(); n++) {
-            resul.addInSite(path.getJMPoint(n).p.v);
-        }
-        resul.multInSite(1.0d / path.size());
-        this.v.copyFrom(resul);
-    }
+	@Override
+	public void update(JMathAnimScene scene) {
+		Vec resul = new Vec(0, 0);
+		for (int n = 0; n < path.size(); n++) {
+			resul.addInSite(path.getJMPoint(n).p.v);
+		}
+		resul.multInSite(1.0d / path.size());
+		this.v.copyFrom(resul);
+	}
 
-    @Override
-    public int getUpdateLevel() {
-        int level = -1;
-        for (JMPathPoint p : path.jmPathPoints) {
-            level = Math.max(level, p.getUpdateLevel());
-        }
-        return level;
-    }
+	@Override
+	public int getUpdateLevel() {
+		int level = -1;
+		for (JMPathPoint p : path.jmPathPoints) {
+			level = Math.max(level, p.getUpdateLevel());
+		}
+		return level;
+	}
 
 }

@@ -27,41 +27,42 @@ import com.jmathanim.mathobjects.Shape;
  */
 public class BooleanShape extends Shape {
 
-    private final Operation operation;
+	private final Operation operation;
 
-    public enum Operation {
-        UNION, INTERSECTION, SUBSTRACTION
-    }
-    Shape shape1, shape2;
+	public enum Operation {
+		UNION, INTERSECTION, SUBSTRACTION
+	}
 
-    public BooleanShape(Operation operation, Shape shape1, Shape shape2) {
-        this.shape1 = shape1;
-        this.shape2 = shape2;
-        this.operation = operation;
-    }
+	Shape shape1, shape2;
 
-    @Override
-    public void update(JMathAnimScene scene) {
-        JMPath newPath = null;
-        switch (this.operation) {
-            case UNION:
-                newPath = shape1.getUnionPath(shape2);
-                break;
-            case INTERSECTION:
-                newPath = shape1.getIntersectionPath(shape2);
-                break;
-            case SUBSTRACTION:
-                newPath = shape1.getSubstractPath(shape2);
-                break;
-        }
-        this.getPath().clear();
-        this.getPath().addJMPointsFrom(newPath);
-    }
+	public BooleanShape(Operation operation, Shape shape1, Shape shape2) {
+		this.shape1 = shape1;
+		this.shape2 = shape2;
+		this.operation = operation;
+	}
 
-    @Override
-    public int getUpdateLevel() {
-        return Math.max(shape1.getUpdateLevel(), shape2.getUpdateLevel()) + 1;
+	@Override
+	public void update(JMathAnimScene scene) {
+		JMPath newPath = null;
+		switch (this.operation) {
+		case UNION:
+			newPath = shape1.getUnionPath(shape2);
+			break;
+		case INTERSECTION:
+			newPath = shape1.getIntersectionPath(shape2);
+			break;
+		case SUBSTRACTION:
+			newPath = shape1.getSubstractPath(shape2);
+			break;
+		}
+		this.getPath().clear();
+		this.getPath().addJMPointsFrom(newPath);
+	}
 
-    }
+	@Override
+	public int getUpdateLevel() {
+		return Math.max(shape1.getUpdateLevel(), shape2.getUpdateLevel()) + 1;
+
+	}
 
 }

@@ -26,26 +26,26 @@ import com.jmathanim.mathobjects.Point;
  */
 public abstract class CreationStrategy extends Animation {
 
-    private final Point[] pencil;
+	private final Point[] pencil;
 
-    public CreationStrategy(double runtime) {
-        super(runtime);
-        this.pencil = new Point[2];
-    }
+	public CreationStrategy(double runtime) {
+		super(runtime);
+		this.pencil = new Point[2];
+	}
 
-    /**
-     * Returns the "pencil" position.
-     *
-     * @return An array with 2 point objects. The 0 index stores the previous
-     * position of the pencil and 1 stores the current
-     */
-    public Point[] getPencilPosition() {
-        return pencil;
-    }
+	/**
+	 * Returns the "pencil" position.
+	 *
+	 * @return An array with 2 point objects. The 0 index stores the previous
+	 *         position of the pencil and 1 stores the current
+	 */
+	public Point[] getPencilPosition() {
+		return pencil;
+	}
 
-    protected void setPencilPosition(Point previous, Point current) {
-        pencil[0] = previous;
-        pencil[1] = current;
-    }
+	protected void setPencilPosition(Point previous, Point current) {
+		pencil[0] = previous;
+		pencil[1] = current;
+	}
 
 }

@@ -26,29 +26,29 @@ import com.jmathanim.mathobjects.MathObjectGroup;
  */
 public class DestinyGroupLayout extends GroupLayout {
 
-    private MathObjectGroup destinyGroup;
+	private MathObjectGroup destinyGroup;
 
-    /**
-     * Creates a new DestinyGroupLayout. The destinty of n-th object of the
-     * MathObjectGroup to apply the layout is given by the n-th object of the
-     * destiny group
-     *
-     * @param destinyGroup Destiny group. The center of each object will be the
-     * center of group to apply the layout
-     */
-    public DestinyGroupLayout(MathObjectGroup destinyGroup) {
-        this.destinyGroup = destinyGroup;
-    }
+	/**
+	 * Creates a new DestinyGroupLayout. The destinty of n-th object of the
+	 * MathObjectGroup to apply the layout is given by the n-th object of the
+	 * destiny group
+	 *
+	 * @param destinyGroup Destiny group. The center of each object will be the
+	 *                     center of group to apply the layout
+	 */
+	public DestinyGroupLayout(MathObjectGroup destinyGroup) {
+		this.destinyGroup = destinyGroup;
+	}
 
-    @Override
-    public void applyLayout(MathObjectGroup group) {
-        for (int n = 0; n < group.size(); n++) {
-            group.get(n).moveTo(destinyGroup.get(n).getCenter());
-        }
-    }
+	@Override
+	public void applyLayout(MathObjectGroup group) {
+		for (int n = 0; n < group.size(); n++) {
+			group.get(n).moveTo(destinyGroup.get(n).getCenter());
+		}
+	}
 
-    @Override
-    public DestinyGroupLayout copy() {
-        return new DestinyGroupLayout(destinyGroup);
-    }
+	@Override
+	public DestinyGroupLayout copy() {
+		return new DestinyGroupLayout(destinyGroup);
+	}
 }

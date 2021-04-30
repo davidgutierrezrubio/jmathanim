@@ -29,55 +29,55 @@ import com.jmathanim.mathobjects.Point;
  */
 public class PointOnFunctionGraph extends Point {
 
-    FunctionGraph fg;
-    private final Point slopePointRight;
-    private final Point slopePointLeft;
+	FunctionGraph fg;
+	private final Point slopePointRight;
+	private final Point slopePointLeft;
 
-    /**
-     * Creates an updateable point which automatically updates the y-component
-     * to be so that lies in the function graph
-     *
-     * @param x The initial x component of the point
-     * @param fg Function graph
-     */
-    public PointOnFunctionGraph(double x, FunctionGraph fg) {
-        super();
-        this.fg = fg;
-        slopePointRight = Point.at(x, 0);
-        slopePointLeft = Point.at(x, 0);
-        this.v.x = x;
-        computePoints();
-    }
+	/**
+	 * Creates an updateable point which automatically updates the y-component to be
+	 * so that lies in the function graph
+	 *
+	 * @param x  The initial x component of the point
+	 * @param fg Function graph
+	 */
+	public PointOnFunctionGraph(double x, FunctionGraph fg) {
+		super();
+		this.fg = fg;
+		slopePointRight = Point.at(x, 0);
+		slopePointLeft = Point.at(x, 0);
+		this.v.x = x;
+		computePoints();
+	}
 
-    @Override
-    public int getUpdateLevel() {
-        return fg.getUpdateLevel() + 1;
-    }
+	@Override
+	public int getUpdateLevel() {
+		return fg.getUpdateLevel() + 1;
+	}
 
-    @Override
-    public void update(JMathAnimScene scene) {
-        computePoints();
-    }
+	@Override
+	public void update(JMathAnimScene scene) {
+		computePoints();
+	}
 
-    private void computePoints() {
-        this.v.y = this.fg.function.applyAsDouble(this.v.x);
-        slopePointRight.v.x = this.v.x + 1;
-        slopePointRight.v.y = this.v.y + this.fg.getSlope(this.v.x, -1);
+	private void computePoints() {
+		this.v.y = this.fg.function.applyAsDouble(this.v.x);
+		slopePointRight.v.x = this.v.x + 1;
+		slopePointRight.v.y = this.v.y + this.fg.getSlope(this.v.x, -1);
 
-        slopePointLeft.v.x = this.v.x - 1;
-        slopePointLeft.v.y = this.v.y - this.fg.getSlope(this.v.x, -1);
-    }
+		slopePointLeft.v.x = this.v.x - 1;
+		slopePointLeft.v.y = this.v.y - this.fg.getSlope(this.v.x, -1);
+	}
 
-    public FunctionGraph getFg() {
-        return fg;
-    }
+	public FunctionGraph getFg() {
+		return fg;
+	}
 
-    public Point getSlopePointRight() {
-        return slopePointRight;
-    }
+	public Point getSlopePointRight() {
+		return slopePointRight;
+	}
 
-    public Point getSlopePointLeft() {
-        return slopePointLeft;
-    }
+	public Point getSlopePointLeft() {
+		return slopePointLeft;
+	}
 
 }

@@ -25,126 +25,127 @@ import java.util.function.Function;
  */
 public class JMNumber extends LaTeXMathObject {
 
-    private double number;
-    Function<Double, String> lambdaText = t -> {
-        return "$" + t + "$";
-    };
+	private double number;
+	Function<Double, String> lambdaText = t -> {
+		return "$" + t + "$";
+	};
 
-    /**
-     * Creates a new LaTeXMathObject that shows a formatted number. The number
-     * can be changed easily with the method setNumber. A lambda function is
-     * used to format the number into a string
-     *
-     * @param number Number to show
-     * @return The new JMNumber object
-     */
-    public static JMNumber make(double number) {
-        JMNumber resul = new JMNumber(0);
-        resul.setNumber(number);
+	/**
+	 * Creates a new LaTeXMathObject that shows a formatted number. The number can
+	 * be changed easily with the method setNumber. A lambda function is used to
+	 * format the number into a string
+	 *
+	 * @param number Number to show
+	 * @return The new JMNumber object
+	 */
+	public static JMNumber make(double number) {
+		JMNumber resul = new JMNumber(0);
+		resul.setNumber(number);
 
-        return resul;
-    }
-    private double refHeight;
-    private String unitString;
+		return resul;
+	}
 
-    protected JMNumber(double number) {
-        super();
-        this.number = number;
-        this.unitString = "";
-        this.refHeight = 0;
-    }
+	private double refHeight;
+	private String unitString;
 
-    private void updateContents() {
-        double h = this.getHeight();
-        setLaTeX(lambdaText.apply(this.number) + unitString);
-        this.refHeight = this.getHeight();
+	protected JMNumber(double number) {
+		super();
+		this.number = number;
+		this.unitString = "";
+		this.refHeight = 0;
+	}
 
-        if (h > 0) {
-            scale(h / this.refHeight);
-        }
-    }
+	private void updateContents() {
+		double h = this.getHeight();
+		setLaTeX(lambdaText.apply(this.number) + unitString);
+		this.refHeight = this.getHeight();
 
-    /**
-     * Returns the number showed
-     *
-     * @return
-     */
-    public double getNumber() {
-        return number;
-    }
+		if (h > 0) {
+			scale(h / this.refHeight);
+		}
+	}
 
-    /**
-     * Sets the new number,updating the LaTeX content
-     *
-     * @param number New number
-     */
-    public final void setNumber(double number) {
-        this.number = number;
-        updateContents();
-    }
+	/**
+	 * Returns the number showed
+	 *
+	 * @return
+	 */
+	public double getNumber() {
+		return number;
+	}
 
-    /**
-     * Returns the lambda function used to convert the number into a string
-     *
-     * @return The lambda function
-     */
-    public Function<Double, String> getLambdaText() {
-        return lambdaText;
-    }
+	/**
+	 * Sets the new number,updating the LaTeX content
+	 *
+	 * @param number New number
+	 */
+	public final void setNumber(double number) {
+		this.number = number;
+		updateContents();
+	}
 
-    /**
-     * Sets the lambda formatting function, that converts a double number into a
-     * string. LaTeX content is automatically updated.
-     *
-     * @param lambdaText The new lambda function
-     */
-    public void setLambdaText(Function<Double, String> lambdaText) {
-        this.lambdaText = lambdaText;
-        updateContents();
-    }
+	/**
+	 * Returns the lambda function used to convert the number into a string
+	 *
+	 * @return The lambda function
+	 */
+	public Function<Double, String> getLambdaText() {
+		return lambdaText;
+	}
 
-    /**
-     * Sets the lambda formatting function to a integer format.
-     *
-     * @param <T> This subclass
-     * @return This object
-     */
-    public <T extends JMNumber> T setIntegerFormat() {
-        this.lambdaText = t -> {
-            return String.format("$%32.0f$", t);
-        };
-        updateContents();
-        return (T) this;
-    }
+	/**
+	 * Sets the lambda formatting function, that converts a double number into a
+	 * string. LaTeX content is automatically updated.
+	 *
+	 * @param lambdaText The new lambda function
+	 */
+	public void setLambdaText(Function<Double, String> lambdaText) {
+		this.lambdaText = lambdaText;
+		updateContents();
+	}
 
-    /**
-     * Sets the lambda formatting function to a decimal format, with a fixed
-     * number of decimals.
-     *
-     * @param <T> This subclass
-     * @param numDecimals Number of decimals to show
-     * @return This object
-     */
-    public <T extends JMNumber> T setDecimalFormat(int numDecimals) {
-        this.lambdaText = t -> {
-            return String.format("$%32." + numDecimals + "f$", t);
-        };
-        updateContents();
-        return (T) this;
-    }
+	/**
+	 * Sets the lambda formatting function to a integer format.
+	 *
+	 * @param <T> This subclass
+	 * @return This object
+	 */
+	public <T extends JMNumber> T setIntegerFormat() {
+		this.lambdaText = t -> {
+			return String.format("$%32.0f$", t);
+		};
+		updateContents();
+		return (T) this;
+	}
 
-    /**
-     * Sets the unit of the number, if any. For example, setUnit("cm") will add
-     * the LaTeX string "cm" to the number
-     *
-     * @param <T> This subclass
-     * @param unitString String with the unit "cm", "gr", etc.
-     * @return This object
-     */
-    public <T extends JMNumber> T setUnit(String unitString) {
-        this.unitString = unitString;
-        updateContents();
-        return (T) this;
-    }
+	/**
+	 * Sets the lambda formatting function to a decimal format, with a fixed number
+	 * of decimals.
+	 *
+	 * @param <T>         This subclass
+	 * @param numDecimals Number of decimals to show
+	 * @return This object
+	 */
+	public <T extends JMNumber> T setDecimalFormat(int numDecimals) {
+		this.lambdaText = t -> {
+			return String.format("$%32." + numDecimals + "f$", t);
+		};
+		updateContents();
+		return (T) this;
+	}
+
+	/**
+	 * Sets the unit of the number, if any. For example, setUnit("cm") will add the
+	 * LaTeX string "cm" to the number
+	 *
+	 * @param <T>        This subclass
+	 * @param unitString String with the unit "cm", "gr", etc.
+	 * @return This object
+	 */
+	public <T extends JMNumber> T setUnit(String unitString) {
+		this.unitString = unitString;
+		updateContents();
+		return (T) this;
+	}
 
 }

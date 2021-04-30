@@ -38,139 +38,142 @@ import com.jmathanim.mathobjects.Shape;
  */
 public class FirstDrawThenFillAnimation extends CreationStrategy {
 
-    /**
-     * Percentage (0 to 1) of time dedicated to drawing the path. The rest of
-     * time is dedicated to fill the paths.
-     */
-    public static final double PERCENT_DRAWING = 0.6d;
-    /**
-     * Delay percent. The delay is the time between starting one shape and the
-     * next one, in multishape objects. A DELAY_PERCENT of 0.4d means that the
-     * last shape begins to draw when reached the 40% of the runtime, and each
-     * individual shape will be drawed in the 60% of the runtime.
-     */
-    public final double delayPercent = 0.1d;
-    private final MathObject obj;
-    private double timegap;
-    private Animation anim;
+	/**
+	 * Percentage (0 to 1) of time dedicated to drawing the path. The rest of time
+	 * is dedicated to fill the paths.
+	 */
+	public static final double PERCENT_DRAWING = 0.6d;
+	/**
+	 * Delay percent. The delay is the time between starting one shape and the next
+	 * one, in multishape objects. A DELAY_PERCENT of 0.4d means that the last shape
+	 * begins to draw when reached the 40% of the runtime, and each individual shape
+	 * will be drawed in the 60% of the runtime.
+	 */
+	public final double delayPercent = 0.1d;
+	private final MathObject obj;
+	private double timegap;
+	private Animation anim;
 
-    public FirstDrawThenFillAnimation(double runtime, MathObject obj) {
-        super(runtime);
-        this.obj = obj;
+	public FirstDrawThenFillAnimation(double runtime, MathObject obj) {
+		super(runtime);
+		this.obj = obj;
 
-    }
+	}
 
-    @Override
-    public boolean processAnimation() {
-        return anim.processAnimation();
-    }
+	@Override
+	public boolean processAnimation() {
+		return anim.processAnimation();
+	}
 
-    /**
-     * Creates the animation to run in processAnimation
-     *
-     * @param obj
-     * @param runtime
-     */
-    private final Animation createAnimation(MathObject obj, double runtime) {
-        if (obj instanceof Shape) {
-            Concatenate con = new Concatenate();
-            MODrawProperties mpDst = obj.getMp().copy();
-            boolean firstDrawThenFillBackup=obj.getMp().getFirstMP().isFillColorIsDrawColor();
-            con.add(new SimpleShapeCreationAnimation(runtime * PERCENT_DRAWING, (Shape) obj));
-            con.add(Commands.setMP(runtime * (1 - PERCENT_DRAWING), mpDst, obj));
-            obj.fillWithDrawColor(firstDrawThenFillBackup);
-            return con;
-        }
-        if (obj instanceof MultiShapeObject) {
-            MultiShapeObject msh = (MultiShapeObject) obj;
-            double delay_time = (msh.getShapes().size() > 1 ? runtime * delayPercent / (msh.getShapes().size() - 1) : 0);
-            double time = runtime * (1 - delayPercent);
-            if (time <= 0) {
-                JMathAnimScene.logger.error("Time too short for draw-and-fill multishape, please take a higher runtime");
-                return null;
-            }
-            AnimationGroup ag = new AnimationGroup();
+	/**
+	 * Creates the animation to run in processAnimation
+	 *
+	 * @param obj
+	 * @param runtime
+	 */
+	private final Animation createAnimation(MathObject obj, double runtime) {
+		if (obj instanceof Shape) {
+			Concatenate con = new Concatenate();
+			MODrawProperties mpDst = obj.getMp().copy();
+			boolean firstDrawThenFillBackup = obj.getMp().getFirstMP().isFillColorIsDrawColor();
+			con.add(new SimpleShapeCreationAnimation(runtime * PERCENT_DRAWING, (Shape) obj));
+			con.add(Commands.setMP(runtime * (1 - PERCENT_DRAWING), mpDst, obj));
+			obj.fillWithDrawColor(firstDrawThenFillBackup);
+			return con;
+		}
+		if (obj instanceof MultiShapeObject) {
+			MultiShapeObject msh = (MultiShapeObject) obj;
+			double delay_time = (msh.getShapes().size() > 1 ? runtime * delayPercent / (msh.getShapes().size() - 1)
+					: 0);
+			double time = runtime * (1 - delayPercent);
+			if (time <= 0) {
+				JMathAnimScene.logger
+						.error("Time too short for draw-and-fill multishape, please take a higher runtime");
+				return null;
+			}
+			AnimationGroup ag = new AnimationGroup();
 
-            //time to start las shape: DELAY_TIME*(msh.getShapes().size()-1);
-            double delay = 0;
-            for (Shape sh : msh.getShapes()) {
-                Concatenate con = new Concatenate();
-                con.add(new WaitAnimation(delay));
-                con.add(new FirstDrawThenFillAnimation(time, sh));
-                ag.add(con);
-                delay += delay_time;
-            }
-            return ag;
-        }
+			// time to start las shape: DELAY_TIME*(msh.getShapes().size()-1);
+			double delay = 0;
+			for (Shape sh : msh.getShapes()) {
+				Concatenate con = new Concatenate();
+				con.add(new WaitAnimation(delay));
+				con.add(new FirstDrawThenFillAnimation(time, sh));
+				ag.add(con);
+				delay += delay_time;
+			}
+			return ag;
+		}
 
-        if (obj instanceof MathObjectGroup) {
-            MathObjectGroup mog = (MathObjectGroup) obj;
-            double time = runtime * (1 - delayPercent);
-            if (time <= 0) {
-                JMathAnimScene.logger.error("Time too short for draw-and-fill multishape, please take a higher runtime");
-                return null;
-            }
-            AnimationGroup ag = new AnimationGroup();
+		if (obj instanceof MathObjectGroup) {
+			MathObjectGroup mog = (MathObjectGroup) obj;
+			double time = runtime * (1 - delayPercent);
+			if (time <= 0) {
+				JMathAnimScene.logger
+						.error("Time too short for draw-and-fill multishape, please take a higher runtime");
+				return null;
+			}
+			AnimationGroup ag = new AnimationGroup();
 
-            //time to start las shape: DELAY_TIME*(msh.getShapes().size()-1);
-            double delay = 0;
-            for (MathObject sh : mog.getObjects()) {
-                Concatenate con = new Concatenate();
-                con.add(new WaitAnimation(delay));
-                con.add(new FirstDrawThenFillAnimation(time, sh));
-                ag.add(con);
-                delay += delayPercent;
-            }
-            return ag;
-        }
+			// time to start las shape: DELAY_TIME*(msh.getShapes().size()-1);
+			double delay = 0;
+			for (MathObject sh : mog.getObjects()) {
+				Concatenate con = new Concatenate();
+				con.add(new WaitAnimation(delay));
+				con.add(new FirstDrawThenFillAnimation(time, sh));
+				ag.add(con);
+				delay += delayPercent;
+			}
+			return ag;
+		}
 
-        //Returns null if the object type is not supported
-        return null;
-    }
+		// Returns null if the object type is not supported
+		return null;
+	}
 
-    @Override
-    public void initialize(JMathAnimScene scene) {
-        super.initialize(scene);
-        obj.getMp().setFillColorIsDrawColor(false);
-        anim = createAnimation(obj, this.runTime);
-        if (anim == null) {
-            JMathAnimScene.logger.error("Could'n crate FirstDrawThenFillAnimation for object type " + obj.getClass().getCanonicalName() + ". Animation will not be performed");
-        }
-        obj.getMp().getFillColor().alpha = 0; //Sets alpha to 0, to first draw objects without filling
-        anim.setLambda(lambda);
-        anim.initialize(scene);
-    }
+	@Override
+	public void initialize(JMathAnimScene scene) {
+		super.initialize(scene);
+		obj.getMp().setFillColorIsDrawColor(false);
+		anim = createAnimation(obj, this.runTime);
+		if (anim == null) {
+			JMathAnimScene.logger.error("Could'n crate FirstDrawThenFillAnimation for object type "
+					+ obj.getClass().getCanonicalName() + ". Animation will not be performed");
+		}
+		obj.getMp().getFillColor().alpha = 0; // Sets alpha to 0, to first draw objects without filling
+		anim.setLambda(lambda);
+		anim.initialize(scene);
+	}
 
-    @Override
-    public void doAnim(double t) {
-    }
+	@Override
+	public void doAnim(double t) {
+	}
 
-    @Override
-    public void finishAnimation() {
-        super.finishAnimation();
-        anim.finishAnimation();
-    }
+	@Override
+	public void finishAnimation() {
+		super.finishAnimation();
+		anim.finishAnimation();
+	}
 
-    public double getTimegap() {
-        return timegap;
-    }
+	public double getTimegap() {
+		return timegap;
+	}
 
-    public FirstDrawThenFillAnimation setTimegap(double timegap) {
-        this.timegap = timegap;
-        return this;
-    }
+	public FirstDrawThenFillAnimation setTimegap(double timegap) {
+		this.timegap = timegap;
+		return this;
+	}
 
-    /**
-     * Static constructor
-     *
-     * @param runtime Run time in seconds of animation
-     * @param obj Object to animate. Currently, a Shape, MultiShape or
-     * MathObjectGroup object
-     * @return The animation to be played with the JMathimScene.playAnimation
-     * method
-     */
-    public static FirstDrawThenFillAnimation make(double runtime, MathObject obj) {
-        return new FirstDrawThenFillAnimation(runtime, obj);
-    }
+	/**
+	 * Static constructor
+	 *
+	 * @param runtime Run time in seconds of animation
+	 * @param obj     Object to animate. Currently, a Shape, MultiShape or
+	 *                MathObjectGroup object
+	 * @return The animation to be played with the JMathimScene.playAnimation method
+	 */
+	public static FirstDrawThenFillAnimation make(double runtime, MathObject obj) {
+		return new FirstDrawThenFillAnimation(runtime, obj);
+	}
 
 }

@@ -29,27 +29,28 @@ import com.jmathanim.mathobjects.Shape;
  */
 public class DivideEquallyStrategy implements OptimizePathsStrategy {
 
-    @Override
-    public void optimizePaths(Shape sh1, Shape sh2) {
-        JMPath pa1 = sh1.getPath();
-        JMPath pa2 = sh2.getPath();
-        int n1 = pa1.getNumberOfConnectedComponents();
-        int n2 = pa2.getNumberOfConnectedComponents();
-        if ((n1 < 2) | (n2 > 1)) {
-            return; //Do nothing
-        }
+	@Override
+	public void optimizePaths(Shape sh1, Shape sh2) {
+		JMPath pa1 = sh1.getPath();
+		JMPath pa2 = sh2.getPath();
+		int n1 = pa1.getNumberOfConnectedComponents();
+		int n2 = pa2.getNumberOfConnectedComponents();
+		if ((n1 < 2) | (n2 > 1)) {
+			return; // Do nothing
+		}
 
-        int numSegments = pa2.size();
+		int numSegments = pa2.size();
 
-        int step = numSegments / n1;
-        //If there are more connected componentes than segments in destiny shape, do nothing
-        if (step == 0) {
-            return;
-        }
+		int step = numSegments / n1;
+		// If there are more connected componentes than segments in destiny shape, do
+		// nothing
+		if (step == 0) {
+			return;
+		}
 
-        for (int n = n2; n < n1; n++) {
-            pa2.separate(n + n * step);
-        }
-    }
+		for (int n = n2; n < n1; n++) {
+			pa2.separate(n + n * step);
+		}
+	}
 
 }

@@ -31,136 +31,136 @@ import java.util.function.DoubleUnaryOperator;
  */
 public class AnimationGroup extends AnimationWithEffects {
 
-    private final ArrayList<Animation> animations;
+	private final ArrayList<Animation> animations;
 
-    /**
-     * Returns the list of the animations to play
-     *
-     * @return An ArrayList with the animations
-     */
-    public ArrayList<Animation> getAnimations() {
-        return animations;
-    }
+	/**
+	 * Returns the list of the animations to play
+	 *
+	 * @return An ArrayList with the animations
+	 */
+	public ArrayList<Animation> getAnimations() {
+		return animations;
+	}
 
-    /**
-     * Creates a new AnimationGroup with the given animations
-     *
-     * @param anims Animations to add (varargs)
-     * @return The new AnimationGroup created
-     */
-    public static AnimationGroup make(Animation... anims) {
-        return new AnimationGroup(anims);
-    }
+	/**
+	 * Creates a new AnimationGroup with the given animations
+	 *
+	 * @param anims Animations to add (varargs)
+	 * @return The new AnimationGroup created
+	 */
+	public static AnimationGroup make(Animation... anims) {
+		return new AnimationGroup(anims);
+	}
 
-    /**
-     * Creates a new, empty, AnimationGroup. This class stores a group of
-     * animations, to be played at the same time.
-     */
-    public AnimationGroup() {
-        super(0);
-        this.animations = new ArrayList<>();
-    }
+	/**
+	 * Creates a new, empty, AnimationGroup. This class stores a group of
+	 * animations, to be played at the same time.
+	 */
+	public AnimationGroup() {
+		super(0);
+		this.animations = new ArrayList<>();
+	}
 
-    /**
-     * Creates a new AnimationGroup with given animations.This class stores a
-     * group of animations, to be played at the same time.
-     *
-     * @param animations Animations to add (varargs)
-     */
-    public AnimationGroup(Animation... animations) {
-        super(0);
-        this.animations = new ArrayList<>();
-        this.animations.addAll(Arrays.asList(animations));
+	/**
+	 * Creates a new AnimationGroup with given animations.This class stores a group
+	 * of animations, to be played at the same time.
+	 *
+	 * @param animations Animations to add (varargs)
+	 */
+	public AnimationGroup(Animation... animations) {
+		super(0);
+		this.animations = new ArrayList<>();
+		this.animations.addAll(Arrays.asList(animations));
 
-    }
+	}
 
-    @Override
-    public boolean processAnimation() {
-        boolean finishedAll = true;
-        for (Animation anim : animations) {
-            finishedAll = finishedAll & anim.processAnimation();
-        }
-        return finishedAll;
-    }
+	@Override
+	public boolean processAnimation() {
+		boolean finishedAll = true;
+		for (Animation anim : animations) {
+			finishedAll = finishedAll & anim.processAnimation();
+		}
+		return finishedAll;
+	}
 
-    /**
-     * Overloaded method. Creates a new AnimationGroup with given animations
-     * using an ArrayList.This class stores a group of animations, to be played
-     * at the same time.
-     *
-     * @param animations Animations to add (varargs)
-     */
-    public AnimationGroup(ArrayList<Animation> animations) {
-        super(0);
-        this.animations = animations;
-    }
+	/**
+	 * Overloaded method. Creates a new AnimationGroup with given animations using
+	 * an ArrayList.This class stores a group of animations, to be played at the
+	 * same time.
+	 *
+	 * @param animations Animations to add (varargs)
+	 */
+	public AnimationGroup(ArrayList<Animation> animations) {
+		super(0);
+		this.animations = animations;
+	}
 
-    /**
-     * Add the given animations to the list
-     *
-     * @param <T> Calling subclass
-     * @param anims Animations to add (varargs)
-     * @return This object
-     */
-    public <T extends AnimationGroup> T add(Animation... anims) {
-        for (Animation anim : anims) {
-            animations.add(anim);
-        }
-        return (T) this;
-    }
+	/**
+	 * Add the given animations to the list
+	 *
+	 * @param <T>   Calling subclass
+	 * @param anims Animations to add (varargs)
+	 * @return This object
+	 */
+	public <T extends AnimationGroup> T add(Animation... anims) {
+		for (Animation anim : anims) {
+			animations.add(anim);
+		}
+		return (T) this;
+	}
 
-    @Override
-    public void initialize(JMathAnimScene scene) {
-        super.initialize(scene);
-        for (Animation anim : animations) {
-            if (anim instanceof AnimationWithEffects) {
-                AnimationWithEffects animEf = (AnimationWithEffects) anim;
-                animEf.copyEffectParametersFrom(this);
-            }
-            anim.initialize(scene);
-        }
-    }
+	@Override
+	public void initialize(JMathAnimScene scene) {
+		super.initialize(scene);
+		for (Animation anim : animations) {
+			if (anim instanceof AnimationWithEffects) {
+				AnimationWithEffects animEf = (AnimationWithEffects) anim;
+				animEf.copyEffectParametersFrom(this);
+			}
+			anim.initialize(scene);
+		}
+	}
 
-    @Override
-    public void doAnim(double t) {
-        for (Animation anim : animations) {
-            anim.doAnim(t);
-        }
-    }
+	@Override
+	public void doAnim(double t) {
+		for (Animation anim : animations) {
+			anim.doAnim(t);
+		}
+	}
 
-    @Override
-    public void finishAnimation() {
-        super.finishAnimation();
-        for (Animation anim : animations) {
-            if (anim.getStatus() != Status.FINISHED) {
-                anim.finishAnimation();
-            }
-        }
-    }
+	@Override
+	public void finishAnimation() {
+		super.finishAnimation();
+		for (Animation anim : animations) {
+			if (anim.getStatus() != Status.FINISHED) {
+				anim.finishAnimation();
+			}
+		}
+	}
 
-    @Override
-    public <T extends Animation> T setLambda(DoubleUnaryOperator lambda) {
-        super.setLambda(lambda);
-        for (Animation anim : animations) {
-            anim.setLambda(lambda);
-        }
-        return (T) this;
-    }
+	@Override
+	public <T extends Animation> T setLambda(DoubleUnaryOperator lambda) {
+		super.setLambda(lambda);
+		for (Animation anim : animations) {
+			anim.setLambda(lambda);
+		}
+		return (T) this;
+	}
 
-    @Override
-    public <T extends Animation> T setUseObjectState(boolean shouldSaveState) {
-        for (Animation anim : animations) {
-            anim.setUseObjectState(shouldSaveState);
-        }
-        return (T) this;
-    }
+	@Override
+	public <T extends Animation> T setUseObjectState(boolean shouldSaveState) {
+		for (Animation anim : animations) {
+			anim.setUseObjectState(shouldSaveState);
+		}
+		return (T) this;
+	}
 
-    @Override
-    public <T extends Animation> T setAddObjectsToScene(boolean addToScene) {
-        for (Animation anim : animations) {
-            anim.setAddObjectsToScene(addToScene);
-        }
-        return (T) this;
-    }
+	@Override
+	public <T extends Animation> T setAddObjectsToScene(boolean addToScene) {
+		for (Animation anim : animations) {
+			anim.setAddObjectsToScene(addToScene);
+		}
+		return (T) this;
+	}
 
 }

@@ -32,60 +32,60 @@ import com.jmathanim.mathobjects.Shape;
  */
 public class MoveAlongPath extends Animation {
 
-    private JMPath path;
-    private MathObject mobjTransformed;
-    private Type anchorType;
+	private JMPath path;
+	private MathObject mobjTransformed;
+	private Type anchorType;
 
-    /**
-     * Animates an object moving it through a given path. An anchor determines
-     * what point of the object will locate at the moving point of the path
-     *
-     * @param runtime Duration in seconds
-     * @param sh Shape whose path will be the trajectory
-     * @param mobjTransformed Object to move
-     * @param anchorType Anchor that determines which point of the object will
-     * lie in the path
-     */
-    public MoveAlongPath(double runtime, Shape sh, MathObject mobjTransformed, Type anchorType) {
-        this(runtime, sh.getPath(), mobjTransformed, anchorType);
-    }
+	/**
+	 * Animates an object moving it through a given path. An anchor determines what
+	 * point of the object will locate at the moving point of the path
+	 *
+	 * @param runtime         Duration in seconds
+	 * @param sh              Shape whose path will be the trajectory
+	 * @param mobjTransformed Object to move
+	 * @param anchorType      Anchor that determines which point of the object will
+	 *                        lie in the path
+	 */
+	public MoveAlongPath(double runtime, Shape sh, MathObject mobjTransformed, Type anchorType) {
+		this(runtime, sh.getPath(), mobjTransformed, anchorType);
+	}
 
-    /**
-     * Animates an object moving it through a given path. An anchor determines
-     * what point of the object will locate at the moving point of the path
-     *
-     *
-     * @param runtime Duration in seconds
-     * @param path Trajectory path
-     * @param mobjTransformed Object to move
-     * @param anchorType Anchor that determines which point of the object will
-     * lie in the path
-     */
-    public MoveAlongPath(double runtime, JMPath path, MathObject mobjTransformed, Type anchorType) {
-        super(runtime);
-        this.path = path;
-        this.mobjTransformed = mobjTransformed;
-        this.anchorType = anchorType;
-    }
+	/**
+	 * Animates an object moving it through a given path. An anchor determines what
+	 * point of the object will locate at the moving point of the path
+	 *
+	 *
+	 * @param runtime         Duration in seconds
+	 * @param path            Trajectory path
+	 * @param mobjTransformed Object to move
+	 * @param anchorType      Anchor that determines which point of the object will
+	 *                        lie in the path
+	 */
+	public MoveAlongPath(double runtime, JMPath path, MathObject mobjTransformed, Type anchorType) {
+		super(runtime);
+		this.path = path;
+		this.mobjTransformed = mobjTransformed;
+		this.anchorType = anchorType;
+	}
 
-    @Override
-    public void initialize(JMathAnimScene scene) {
-        super.initialize(scene);
-        saveStates(mobjTransformed);
-        addObjectsToscene(mobjTransformed);
-    }
+	@Override
+	public void initialize(JMathAnimScene scene) {
+		super.initialize(scene);
+		saveStates(mobjTransformed);
+		addObjectsToscene(mobjTransformed);
+	}
 
-    @Override
-    public void doAnim(double t) {
-        double lt = lambda.applyAsDouble(t);
-        restoreStates(mobjTransformed);
-        mobjTransformed.stackTo(path.getPointAt(lt).p, this.anchorType);
-    }
+	@Override
+	public void doAnim(double t) {
+		double lt = lambda.applyAsDouble(t);
+		restoreStates(mobjTransformed);
+		mobjTransformed.stackTo(path.getPointAt(lt).p, this.anchorType);
+	}
 
-    @Override
-    public void finishAnimation() {
-        super.finishAnimation();
-        doAnim(1);
-    }
+	@Override
+	public void finishAnimation() {
+		super.finishAnimation();
+		doAnim(1);
+	}
 
 }

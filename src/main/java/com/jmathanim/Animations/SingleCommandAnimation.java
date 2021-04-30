@@ -23,22 +23,21 @@ package com.jmathanim.Animations;
  */
 public abstract class SingleCommandAnimation extends Animation {
 
-    public SingleCommandAnimation() {
-        super(0);
-    }
+	public SingleCommandAnimation() {
+		super(0);
+	}
 
-    @Override
-    public boolean processAnimation() {
-        super.processAnimation();
-        command();
-        return true;//Finish the animation inmediately
-    }
+	@Override
+	public boolean processAnimation() {
+		super.processAnimation();
+		command();
+		return true;// Finish the animation inmediately
+	}
 
-    public abstract void command();
+	public abstract void command();
 
-    @Override
-    public void doAnim(double t) {
-    }
-;
+	@Override
+	public void doAnim(double t) {
+	};
 
 }

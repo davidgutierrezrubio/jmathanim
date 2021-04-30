@@ -31,37 +31,37 @@ import javax.swing.JToggleButton;
  */
 public class PreviewWindow extends Frame {
 
-    Renderer renderer;
-    public JPanel drawPanel;
-    public JPanel buttonsPanel;
-    public JLabel statusLabel;
-    public JToggleButton pauseToggleButton;
+	Renderer renderer;
+	public JPanel drawPanel;
+	public JPanel buttonsPanel;
+	public JLabel statusLabel;
+	public JToggleButton pauseToggleButton;
 
-    public PreviewWindow(Renderer r) throws HeadlessException {
-        super();
-        this.renderer = r;
+	public PreviewWindow(Renderer r) throws HeadlessException {
+		super();
+		this.renderer = r;
 
-    }
+	}
 
-    public void buildGUI() {
-        this.setSize(renderer.getMediaWidth() + 20, renderer.getMediaHeight() + 60);//TODO: Scale window to fixed size
+	public void buildGUI() {
+		this.setSize(renderer.getMediaWidth() + 20, renderer.getMediaHeight() + 60);// TODO: Scale window to fixed size
 //            frame.setLayout(new BasicSplitPaneUI.BasicVerticalLayoutManager());
-        this.setLayout(new BorderLayout(0, 10));
-        drawPanel = new JPanel();
-        buttonsPanel = new JPanel();
-        drawPanel.setBounds(0, 0, renderer.getMediaWidth(), renderer.getMediaHeight());//x axis, y axis, width, height  
-        this.add(drawPanel, BorderLayout.CENTER);
-        statusLabel = new JLabel("");
+		this.setLayout(new BorderLayout(0, 10));
+		drawPanel = new JPanel();
+		buttonsPanel = new JPanel();
+		drawPanel.setBounds(0, 0, renderer.getMediaWidth(), renderer.getMediaHeight());// x axis, y axis, width, height
+		this.add(drawPanel, BorderLayout.CENTER);
+		statusLabel = new JLabel("");
 
-        pauseToggleButton = new JToggleButton("Pause");
-        buttonsPanel.add(pauseToggleButton);
+		pauseToggleButton = new JToggleButton("Pause");
+		buttonsPanel.add(pauseToggleButton);
 
-        buttonsPanel.add(statusLabel);
+		buttonsPanel.add(statusLabel);
 //            buttonsPanel.add(stepButton);
 //            stepButton.setEnabled(false);
 
-        this.add(buttonsPanel, BorderLayout.SOUTH);
-        this.add(statusLabel, BorderLayout.NORTH);
-    }
+		this.add(buttonsPanel, BorderLayout.SOUTH);
+		this.add(statusLabel, BorderLayout.NORTH);
+	}
 
 }

@@ -25,145 +25,146 @@ import com.jmathanim.Animations.AnimationEffect;
  */
 public class TransformMathExpressionParameters {
 
-    private double jumpHeight;
-    private double alphaMult;
-    private AnimationEffect.JumpType jumptype;
-    private double scale;
-    private int numTurns;
-    private TransformMathExpression.RemoveType removingStyle;
-    private TransformMathExpression.AddType addingStyle;
-    private TransformMathExpression.TransformType transformStyle;
+	private double jumpHeight;
+	private double alphaMult;
+	private AnimationEffect.JumpType jumptype;
+	private double scale;
+	private int numTurns;
+	private TransformMathExpression.RemoveType removingStyle;
+	private TransformMathExpression.AddType addingStyle;
+	private TransformMathExpression.TransformType transformStyle;
 
-    public TransformMathExpressionParameters() {
-        jumpHeight = 0d;
-        alphaMult = 1d;
-        scale = 1d;
-        numTurns = 0;
-        removingStyle = TransformMathExpression.RemoveType.FADE_OUT;
-        addingStyle = TransformMathExpression.AddType.FADE_IN;
-        transformStyle = TransformMathExpression.TransformType.INTERPOLATION;
-    }
-    /**
-     * Return the number of turns associated to the rotation effect
-     * @return The number of turns
-     */
-    protected int getNumTurns() {
-        return numTurns;
-    }
+	public TransformMathExpressionParameters() {
+		jumpHeight = 0d;
+		alphaMult = 1d;
+		scale = 1d;
+		numTurns = 0;
+		removingStyle = TransformMathExpression.RemoveType.FADE_OUT;
+		addingStyle = TransformMathExpression.AddType.FADE_IN;
+		transformStyle = TransformMathExpression.TransformType.INTERPOLATION;
+	}
 
-    /**
-     * Adds a rotation effect, rotating the transformed shape the specified
-     * number of turns.
-     *
-     * @param numTurns Number of turns. Positive is counterclockwise, negative
-     * clockwise.
-     * @return This object
-     */
-    public TransformMathExpressionParameters addRotateEffect(int numTurns) {
-        this.numTurns = numTurns;
-        return this;
-    }
+	/**
+	 * Return the number of turns associated to the rotation effect
+	 * 
+	 * @return The number of turns
+	 */
+	protected int getNumTurns() {
+		return numTurns;
+	}
 
-    protected double getJumpHeightFromJumpEffect() {
-        return jumpHeight;
-    }
+	/**
+	 * Adds a rotation effect, rotating the transformed shape the specified number
+	 * of turns.
+	 *
+	 * @param numTurns Number of turns. Positive is counterclockwise, negative
+	 *                 clockwise.
+	 * @return This object
+	 */
+	public TransformMathExpressionParameters addRotateEffect(int numTurns) {
+		this.numTurns = numTurns;
+		return this;
+	}
 
-    /**
-     * Adds a jump effect to the transformed shape. The trajectory is a
-     * semicirlce. The jump vector is the rotated vector 90 degrees clockwise
-     * from the vector from the original and destiny shape.
-     *
-     * @param heightJump Height jump
-     * @return This object
-     */
-    public TransformMathExpressionParameters addJumpEffect(double heightJump) {
-        this.jumpHeight = heightJump;
-        this.jumptype = AnimationEffect.JumpType.SEMICIRCLE;
-        return this;
-    }
+	protected double getJumpHeightFromJumpEffect() {
+		return jumpHeight;
+	}
 
-    /**
-     * Adds a jump effect to the transformed shape, with the trajectory
-     * specified and with a total height of the given parameter.The jump vector
-     * is the rotated vector 90 degrees clockwise from the vector from the
-     * original and destiny shape.
-     *
-     * @param heightJump Height jump
-     * @param jumpType Jump type, a value of the enum AnimationEffect.JumpType
-     * @return This object
-     */
-    public TransformMathExpressionParameters addJumpEffect(double heightJump, AnimationEffect.JumpType jumpType) {
-        this.jumpHeight = heightJump;
-        this.jumptype = jumpType;
-        return this;
-    }
+	/**
+	 * Adds a jump effect to the transformed shape. The trajectory is a semicirlce.
+	 * The jump vector is the rotated vector 90 degrees clockwise from the vector
+	 * from the original and destiny shape.
+	 *
+	 * @param heightJump Height jump
+	 * @return This object
+	 */
+	public TransformMathExpressionParameters addJumpEffect(double heightJump) {
+		this.jumpHeight = heightJump;
+		this.jumptype = AnimationEffect.JumpType.SEMICIRCLE;
+		return this;
+	}
 
-    protected TransformMathExpression.RemoveType getRemovingStyle() {
-        return removingStyle;
-    }
+	/**
+	 * Adds a jump effect to the transformed shape, with the trajectory specified
+	 * and with a total height of the given parameter.The jump vector is the rotated
+	 * vector 90 degrees clockwise from the vector from the original and destiny
+	 * shape.
+	 *
+	 * @param heightJump Height jump
+	 * @param jumpType   Jump type, a value of the enum AnimationEffect.JumpType
+	 * @return This object
+	 */
+	public TransformMathExpressionParameters addJumpEffect(double heightJump, AnimationEffect.JumpType jumpType) {
+		this.jumpHeight = heightJump;
+		this.jumptype = jumpType;
+		return this;
+	}
 
-    public void setRemovingStyle(TransformMathExpression.RemoveType removingStyle) {
-        this.removingStyle = removingStyle;
-    }
+	protected TransformMathExpression.RemoveType getRemovingStyle() {
+		return removingStyle;
+	}
 
-    protected TransformMathExpression.AddType getAddingStyle() {
-        return addingStyle;
-    }
+	public void setRemovingStyle(TransformMathExpression.RemoveType removingStyle) {
+		this.removingStyle = removingStyle;
+	}
 
-    public void setAddingStyle(TransformMathExpression.AddType addingStyle) {
-        this.addingStyle = addingStyle;
-    }
+	protected TransformMathExpression.AddType getAddingStyle() {
+		return addingStyle;
+	}
 
-    protected double getAlphaMultFromAlphaEffect() {
-        return alphaMult;
-    }
+	public void setAddingStyle(TransformMathExpression.AddType addingStyle) {
+		this.addingStyle = addingStyle;
+	}
 
-    /**
-     * Adds an alpha effect when transforming, multiplying the transformed shape
-     * alpha up to a given value, back and forth.
-     *
-     * @param alphaMult Alpha value to multiply.
-     * @return This object
-     */
-    public TransformMathExpressionParameters addAlphaEffect(double alphaMult) {
-        this.alphaMult = alphaMult;
-        return this;
-    }
+	protected double getAlphaMultFromAlphaEffect() {
+		return alphaMult;
+	}
 
-    protected double getScaleFromScaleEffect() {
-        return scale;
-    }
+	/**
+	 * Adds an alpha effect when transforming, multiplying the transformed shape
+	 * alpha up to a given value, back and forth.
+	 *
+	 * @param alphaMult Alpha value to multiply.
+	 * @return This object
+	 */
+	public TransformMathExpressionParameters addAlphaEffect(double alphaMult) {
+		this.alphaMult = alphaMult;
+		return this;
+	}
 
-    /**
-     * Sets a scale effect when transforming, scaling the transformed shape by a
-     * given factor, back and forth.
-     *
-     * @param scale Scale to reach.
-     * @return This object
-     */
-    public TransformMathExpressionParameters addScaleEffect(double scale) {
-        this.scale = scale;
-        return this;
-    }
+	protected double getScaleFromScaleEffect() {
+		return scale;
+	}
 
-    protected TransformMathExpression.TransformType getTransformStyle() {
-        return transformStyle;
-    }
+	/**
+	 * Sets a scale effect when transforming, scaling the transformed shape by a
+	 * given factor, back and forth.
+	 *
+	 * @param scale Scale to reach.
+	 * @return This object
+	 */
+	public TransformMathExpressionParameters addScaleEffect(double scale) {
+		this.scale = scale;
+		return this;
+	}
 
-    /**
-     * Sets the type of transformation to apply to a part of a math expression.
-     *
-     * @param transformStyle A value of TransformMathExpression.TransformType
-     * enum
-     * @return This object
-     */
-    public TransformMathExpressionParameters setTransformStyle(TransformMathExpression.TransformType transformStyle) {
-        this.transformStyle = transformStyle;
-        return this;
-    }
+	protected TransformMathExpression.TransformType getTransformStyle() {
+		return transformStyle;
+	}
 
-    protected AnimationEffect.JumpType getJumptype() {
-        return jumptype;
-    }
+	/**
+	 * Sets the type of transformation to apply to a part of a math expression.
+	 *
+	 * @param transformStyle A value of TransformMathExpression.TransformType enum
+	 * @return This object
+	 */
+	public TransformMathExpressionParameters setTransformStyle(TransformMathExpression.TransformType transformStyle) {
+		this.transformStyle = transformStyle;
+		return this;
+	}
+
+	protected AnimationEffect.JumpType getJumptype() {
+		return jumptype;
+	}
 
 }

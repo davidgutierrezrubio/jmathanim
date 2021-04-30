@@ -30,43 +30,43 @@ import com.jmathanim.mathobjects.Shape;
  */
 public abstract class GroupLayout {
 
-    public abstract void applyLayout(MathObjectGroup group);
+	public abstract void applyLayout(MathObjectGroup group);
 
-    /**
-     * Returns the bounding box that will have the specified group if layout is
-     * applied. The group is unaltered.
-     *
-     * @param group MathObjectGroup to apply layout
-     * @return The bounding box
-     */
-    public Rect getBoundingBox(MathObjectGroup group) {
-        if (group.isEmpty()) {//Nothing to show
-            return null;
-        }
-        MathObjectGroup boxedGroup = createBoxedGroup(group, 0, 0);
-        applyLayout(boxedGroup);
-        Rect bbox = boxedGroup.getBoundingBox();
-        return bbox;
-    }
+	/**
+	 * Returns the bounding box that will have the specified group if layout is
+	 * applied. The group is unaltered.
+	 *
+	 * @param group MathObjectGroup to apply layout
+	 * @return The bounding box
+	 */
+	public Rect getBoundingBox(MathObjectGroup group) {
+		if (group.isEmpty()) {// Nothing to show
+			return null;
+		}
+		MathObjectGroup boxedGroup = createBoxedGroup(group, 0, 0);
+		applyLayout(boxedGroup);
+		Rect bbox = boxedGroup.getBoundingBox();
+		return bbox;
+	}
 
-    /**
-     * Creates a simpler group with rectangles representing the bounding boxes
-     *
-     * @param group The MathObjectGroup to compute bounding boxes
-     * @param hgap Horizontal gap. The height of the rectangles will be
-     * increased by this gap.
-     * @param vgap Vertical gap. The width of the rectangles will be increased
-     * by this gap.
-     * @return A new MathObjectGroup, with rectangles representing the bounding
-     * boxes
-     */
-    protected MathObjectGroup createBoxedGroup(MathObjectGroup group, double hgap, double vgap) {
-        MathObjectGroup resul = MathObjectGroup.make();
-        for (MathObject ob : group) {
-            resul.add(Shape.rectangle(ob.getBoundingBox().addGap(hgap, vgap)));
-        }
-        return resul;
-    }
+	/**
+	 * Creates a simpler group with rectangles representing the bounding boxes
+	 *
+	 * @param group The MathObjectGroup to compute bounding boxes
+	 * @param hgap  Horizontal gap. The height of the rectangles will be increased
+	 *              by this gap.
+	 * @param vgap  Vertical gap. The width of the rectangles will be increased by
+	 *              this gap.
+	 * @return A new MathObjectGroup, with rectangles representing the bounding
+	 *         boxes
+	 */
+	protected MathObjectGroup createBoxedGroup(MathObjectGroup group, double hgap, double vgap) {
+		MathObjectGroup resul = MathObjectGroup.make();
+		for (MathObject ob : group) {
+			resul.add(Shape.rectangle(ob.getBoundingBox().addGap(hgap, vgap)));
+		}
+		return resul;
+	}
 
-    public abstract <T extends GroupLayout> T copy();
+	public abstract <T extends GroupLayout> T copy();
 }

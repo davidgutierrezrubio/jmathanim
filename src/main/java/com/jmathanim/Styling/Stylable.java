@@ -28,112 +28,112 @@ import javafx.scene.shape.StrokeLineCap;
  */
 public interface Stylable {
 
-    /**
-     * Returns a copy of this object. All objects are raw-copied.
-     *
-     * @return A raw copy of the object.
-     */
-    MODrawProperties copy();
+	/**
+	 * Returns a copy of this object. All objects are raw-copied.
+	 *
+	 * @return A raw copy of the object.
+	 */
+	MODrawProperties copy();
 
-    /**
-     * Absorb all non-null properties of a given properties class
-     *
-     * @param prop
-     */
-    void copyFrom(Stylable prop);
+	/**
+	 * Absorb all non-null properties of a given properties class
+	 *
+	 * @param prop
+	 */
+	void copyFrom(Stylable prop);
 
-    /**
-     * Copy the interpolated values from two MathObjecDrawingProperties. Only
-     * drawColor, fillColor and thickness are actually interpolated
-     *
-     * @param a base drawing parameters
-     * @param b Destination drawing parameters
-     * @param alpha Interpolation parameter
-     */
-    void interpolateFrom(Stylable a, Stylable b, double alpha);
+	/**
+	 * Copy the interpolated values from two MathObjecDrawingProperties. Only
+	 * drawColor, fillColor and thickness are actually interpolated
+	 *
+	 * @param a     base drawing parameters
+	 * @param b     Destination drawing parameters
+	 * @param alpha Interpolation parameter
+	 */
+	void interpolateFrom(Stylable a, Stylable b, double alpha);
 
-    /**
-     * Interpolate values with another MathObjecDrawingProperties. Only
-     * drawColor, fillColor and thickness are actually interpolated
-     *
-     * @param dst Destination drawing parameters
-     * @param alpha Interpolation parameter
-     */
-    void interpolateFrom(Stylable dst, double alpha);
+	/**
+	 * Interpolate values with another MathObjecDrawingProperties. Only drawColor,
+	 * fillColor and thickness are actually interpolated
+	 *
+	 * @param dst   Destination drawing parameters
+	 * @param alpha Interpolation parameter
+	 */
+	void interpolateFrom(Stylable dst, double alpha);
 
-    /**
-     * Load attributes from given style. If such style doesn't exist, no changes
-     * are done, and a warning log is showed.
-     *
-     * @param name The name of the style
-     */
-    void loadFromStyle(String name);
+	/**
+	 * Load attributes from given style. If such style doesn't exist, no changes are
+	 * done, and a warning log is showed.
+	 *
+	 * @param name The name of the style
+	 */
+	void loadFromStyle(String name);
 
-    /**
-     * Copy attributes from the given {@link MODrawProperties} object Null
-     * values are copied also
-     *
-     * @param mp The object to copy attributes from.
-     */
-    void rawCopyFrom(MODrawProperties mp);
+	/**
+	 * Copy attributes from the given {@link MODrawProperties} object Null values
+	 * are copied also
+	 *
+	 * @param mp The object to copy attributes from.
+	 */
+	void rawCopyFrom(MODrawProperties mp);
 
-    void restoreState();
+	void restoreState();
 
-    void saveState();
+	void saveState();
 
-    void setDrawAlpha(double alpha);
+	void setDrawAlpha(double alpha);
 
-    void setDrawColor(JMColor drawColor);
+	void setDrawColor(JMColor drawColor);
 
-    void setFillAlpha(double alpha);
+	void setFillAlpha(double alpha);
 
-    void setMultFillAlpha(double alpha);
+	void setMultFillAlpha(double alpha);
 
-    void setMultDrawAlpha(double alpha);
+	void setMultDrawAlpha(double alpha);
 
-    void setFillColor(JMColor fillColor);
+	void setFillColor(JMColor fillColor);
 
-    void setFillColorIsDrawColor(Boolean fillColorIsDrawColor);
+	void setFillColorIsDrawColor(Boolean fillColorIsDrawColor);
 
-    void setFilled(boolean fill);
+	void setFilled(boolean fill);
 
-    void setLayer(int layer);
+	void setLayer(int layer);
 
-    public Integer getLayer();
+	public Integer getLayer();
 
-    public JMColor getDrawColor();
+	public JMColor getDrawColor();
 
-    public JMColor getFillColor();
+	public JMColor getFillColor();
 
-    public StrokeLineCap getLinecap();
+	public StrokeLineCap getLinecap();
 
-    public void setLinecap(StrokeLineCap linecap);
+	public void setLinecap(StrokeLineCap linecap);
 
-    public Double getThickness();
+	public Double getThickness();
 
-    public void setThickness(Double thickness);
+	public void setThickness(Double thickness);
 
-    public void setDotStyle(Point.DotSyle dotStyle);
+	public void setDotStyle(Point.DotSyle dotStyle);
 
-    public Point.DotSyle getDotStyle();
+	public Point.DotSyle getDotStyle();
 
-    public void setDashStyle(MODrawProperties.DashStyle dashStyle);
+	public void setDashStyle(MODrawProperties.DashStyle dashStyle);
 
-    public MODrawProperties.DashStyle getDashStyle();
+	public MODrawProperties.DashStyle getDashStyle();
 
-    public Boolean isAbsoluteThickness();
+	public Boolean isAbsoluteThickness();
 
-    public void setAbsoluteThickness(Boolean absThickness);
+	public void setAbsoluteThickness(Boolean absThickness);
 
-    public void setVisible(Boolean absThickness);
+	public void setVisible(Boolean absThickness);
 
-    public Boolean isVisible();
+	public Boolean isVisible();
 
-    public Boolean isFillColorIsDrawColor();
+	public Boolean isFillColorIsDrawColor();
 
-    public Stylable getSubMP(int n);
+	public Stylable getSubMP(int n);
 
-    public void multThickness(double multT);
+	public void multThickness(double multT);
 
-    public MODrawProperties getFirstMP();
+	public MODrawProperties getFirstMP();
 }
