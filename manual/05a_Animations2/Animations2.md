@@ -241,9 +241,9 @@ waitSeconds(3);
 
 # Controlling the animations with lambda functions
 
-Each animation has a lambda object that represents a function fro [0,1] to [0,1]. This function takes the parameter t in the `doAnim(double t)` method and computes a new time value to apply the animation. The primary reason for this is to prevent the animations to perform in a linear way, without a smooth beginning or ending, but they can be used for many more effects.
+Each animation has a lambda object that represents a function from [0,1] to [0,1]. This function takes the parameter t in the `doAnim(double t)` method and computes a new time value to apply the animation. The primary reason for this is to prevent the animations to perform in a linear way, without a smooth beginning or ending, but they can be used for many more effects.
 
-The class `UsefulLambdas`, as its name suggests, holds several static method that returns different lambdas to obtain different effects to your animations. For example, the following code will draw the graphs (with time in x-axis) of the differente lambdas defined:
+The class `UsefulLambdas`, as its name suggests, holds several static methods that returns different lambdas to obtain different effects to your animations. For example, the following code will draw the graphs (with time in x-axis) of the differente lambdas defined:
 
 ```java
 @Override
@@ -279,7 +279,7 @@ private MathObjectGroup drawGraphFor(DoubleUnaryOperator lambda, String name) {
 
 ![image-20210430141530681](lambdas01.png)
 
-These graphs should be interpreted considering the the x-axis is the time from 0 to 1, and the y-axis is the amount of animation done (from 0 to 1 too), thus, a lambda function *g* that starts the animation and ends it properly should satisfy the conditions *g*(0)=0 and *g*(1)=1. Note that the `reverse()` method returns a lambda function which does the opposite. It is used to play animations backwards in time.
+These graphs should be interpreted considering that the x-axis is the time from 0 to 1, and the y-axis is the amount of animation done (from 0 to 1 too), thus, a lambda function *g* that starts the animation and ends it properly should satisfy the conditions *g*(0)=0 and *g*(1)=1. Note that the `reverse()` method returns a lambda function which does the opposite. It is used to play animations backwards in time.
 
 All animations use the `smooth()`method by default. There is a version with a parameter from 0 to 1 that controls the smoothness (0=straight line, 1=fully smoothed). The default value is 0.9.
 
