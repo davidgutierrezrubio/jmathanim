@@ -247,6 +247,12 @@ The class `UsefulLambdas`, as its name suggests, holds several static methods th
 
 ```java
 @Override
+public void setupSketch() {
+	config.parseFile("#preview.xml");
+	config.parseFile("#light.xml");
+}
+
+@Override
 public void runSketch() throws Exception {
     MathObjectGroup functions = MathObjectGroup.make(
         drawGraphFor(UsefulLambdas.smooth(), "{\\tt smooth()}"),
@@ -327,7 +333,7 @@ we have a bounce effect between the 20% and 75% of the animation runtime:
 
 
 
-With the following code you can see the graphs of the lambda parameters and how they affect the animation. You can experiment changing the definitions of `rotateLambda` and `shiftLambda`.
+With the following code you can see the graphs of the lambda parameters and how they affect the animation. You can experiment changing the definitions of `rotateLambda` and `shiftLambda`, and create your own lambda functions with the sintax `t->f(t)`.
 
 ```java
 Axes axes = new Axes();
