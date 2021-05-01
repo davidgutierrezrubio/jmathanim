@@ -286,6 +286,7 @@ Inside this tag, we may have:
 
   * The `<size/>`tag  with attributes `width`, `height` and `fps`. For example `<size width="1066" height="600" fps="30"/>`.
   * The `<createMovie>` tag with a boolean value, to determine if actually create a movie file or not. For example `<createMovie>false</createMovie>`.
+  * (Since version 0.9.3-SNAPSHOT) The `<saveToPNG>` tag with a boolean value, if each frame should be saved in a separate, autonumbered png file.  For example `<saveToPNG>false</saveToPNG>`. 
   * The `<showPreviewWindow>` to show or not the previsualization window. For example `<showPreviewWindow>true</showPreviewWindow>`.
   * The `<outputDir>` tag, that specifies the folder where to save the movie, if created. If this tag is not found, by default the generated movie will save on `ROOT_PROJECT_DIR/media` folder. For example `<outputDir>c:/my_generated_movies</outputDir>`.
   * The `<outputFileName>`tag sets part of the file name of the generated movie. A suffix with the media height is always added to the name. If this is tag is not found, by default the name will be the class name you are using as a subclass for `Scene2D`.

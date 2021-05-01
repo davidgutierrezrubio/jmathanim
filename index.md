@@ -10,6 +10,11 @@ You can also follow my [Youtube](https://www.youtube.com/channel/UCeczwEqSrAwZbP
 [Here you can find some examples made with this library ](Gallery/Gallery.html)
 
 # What's new?
+
+Version 0.9.3-SNAPSHOT
+
+* Added `saveToPNG` option to save each frame into a separate png file.
+
 Version 0.9.2:
 
 * Added lambda functions to add effects to animations
