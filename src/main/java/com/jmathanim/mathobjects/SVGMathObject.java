@@ -519,9 +519,9 @@ public class SVGMathObject extends MultiShapeObject {
 		}
 		if (!"".equals(el.getAttribute("stroke"))) {
 			JMColor strokeColor = JMColor.parse(el.getAttribute("stroke"));
-			ShMp.getDrawColor().copyFrom(strokeColor);
+			ShMp.setDrawColor(strokeColor);
 			if (getMp().isFillColorIsDrawColor()) {// For LaTeX documents, this applies
-				ShMp.getFillColor().copyFrom(strokeColor);
+				ShMp.setFillColor(strokeColor);
 			}
 		}
 
@@ -534,9 +534,9 @@ public class SVGMathObject extends MultiShapeObject {
 
 		if (!"".equals(el.getAttribute("fill"))) {
 			JMColor fillColor = JMColor.parse(el.getAttribute("fill"));
-			ShMp.getFillColor().copyFrom(fillColor);
+			ShMp.setFillColor(fillColor);
 			if (getMp().isFillColorIsDrawColor()) {// For LaTeX documents, this applies
-				ShMp.getDrawColor().copyFrom(fillColor);
+				ShMp.setDrawColor(fillColor);
 			}
 		}
 
@@ -549,16 +549,16 @@ public class SVGMathObject extends MultiShapeObject {
 			switch (decl[0]) {
 			case "fill":
 				JMColor fillColor = JMColor.parse(decl[1]);
-				ShMp.getFillColor().copyFrom(fillColor);
+				ShMp.setFillColor(fillColor);
 				if (getMp().isFillColorIsDrawColor()) {// For LaTeX documents, this applies
-					ShMp.getDrawColor().copyFrom(fillColor);
+					ShMp.setDrawColor(fillColor);
 				}
 				break;
 			case "stroke":
 				JMColor strokeColor = JMColor.parse(decl[1]);
-				ShMp.getDrawColor().copyFrom(strokeColor);
+				ShMp.setDrawColor(strokeColor);
 				if (getMp().isFillColorIsDrawColor()) {// For LaTeX documents, this applies
-					ShMp.getFillColor().copyFrom(strokeColor);
+					ShMp.setFillColor(strokeColor);
 				}
 				break;
 			}

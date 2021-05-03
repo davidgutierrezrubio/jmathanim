@@ -831,7 +831,7 @@ public class Commands {
 				super.initialize(scene);
 				JMathAnimScene.logger.debug("Initialized changeFillAlpha animation");
 				for (MathObject obj : objects) {
-					alphaOrig.add(obj.getMp().getFillColor().alpha);
+					alphaOrig.add(obj.getMp().getFillColor().getAlpha());
 				}
 				addObjectsToscene(mathObjects);
 			}

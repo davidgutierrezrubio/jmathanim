@@ -140,7 +140,7 @@ public class FirstDrawThenFillAnimation extends CreationStrategy {
 			JMathAnimScene.logger.error("Could'n crate FirstDrawThenFillAnimation for object type "
 					+ obj.getClass().getCanonicalName() + ". Animation will not be performed");
 		}
-		obj.getMp().getFillColor().alpha = 0; // Sets alpha to 0, to first draw objects without filling
+		obj.getMp().getFillColor().setAlpha(0); // Sets alpha to 0, to first draw objects without filling
 		anim.setLambda(lambda);
 		anim.initialize(scene);
 	}
