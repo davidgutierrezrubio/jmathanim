@@ -1,5 +1,7 @@
 package com.jmathanim.Styling;
 
+import com.jmathanim.Cameras.Camera;
+import com.jmathanim.Renderers.JavaFXRenderer;
 import javafx.scene.paint.Paint;
 
 /**
@@ -15,7 +17,7 @@ public interface PaintStyle {
 
     public void setAlpha(double alpha);
 
-    public Paint getFXPaint();
+    public Paint getFXPaint(JavaFXRenderer r,Camera cam);
 
     public PaintStyle copy();
 

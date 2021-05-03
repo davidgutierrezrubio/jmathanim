@@ -17,6 +17,8 @@
  */
 package com.jmathanim.Styling;
 
+import com.jmathanim.Cameras.Camera;
+import com.jmathanim.Renderers.JavaFXRenderer;
 import com.jmathanim.jmathanim.JMathAnimScene;
 
 import javafx.scene.paint.Paint;
@@ -225,7 +227,7 @@ public class JMColor implements PaintStyle {
     }
 
     @Override
-    public Paint getFXPaint() {
+    public Paint getFXPaint(JavaFXRenderer r, Camera cam) {
         return getFXColor();
     }
 
