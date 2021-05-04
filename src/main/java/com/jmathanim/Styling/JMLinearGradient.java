@@ -96,23 +96,27 @@ public class JMLinearGradient implements PaintStyle {
         }
         if (p instanceof JMLinearGradient) {
             JMLinearGradient lp = (JMLinearGradient) p;
-            JMLinearGradient resul = this.copy();
-            for (double tt : lp.stops.getColorHashMap().keySet()) {
-                resul.stops.addInterpolatedColor(tt);
-            }
-            for (double tt : resul.stops.getColorHashMap().keySet()) {
-                lp.stops.addInterpolatedColor(tt);
-            }
-            
-             for (double tt : resul.stops.getColorHashMap().keySet()) {
-                 JMColor colA=resul.stops.getColorHashMap().get(tt);
-                 JMColor colB=lp.stops.getColorHashMap().get(tt);
-                 resul.stops.add(tt, (JMColor) colA.interpolate(colB, t));
-                 
-             }
-             resul.start=resul.start.interpolate(lp.start, t);
-             resul.end=resul.end.interpolate(lp.end, t);
+            if (lp.relativeToShape == this.relativeToShape) {
+                JMLinearGradient resul = this.copy();
+                for (double tt : lp.stops.getColorHashMap().keySet()) {
+                    resul.stops.addInterpolatedColor(tt);
+                }
+                for (double tt : resul.stops.getColorHashMap().keySet()) {
+                    lp.stops.addInterpolatedColor(tt);
+                }
+
+                for (double tt : resul.stops.getColorHashMap().keySet()) {
+                    JMColor colA = resul.stops.getColorHashMap().get(tt);
+                    JMColor colB = lp.stops.getColorHashMap().get(tt);
+                    resul.stops.add(tt, (JMColor) colA.interpolate(colB, t));
+
+                }
+                resul.start = resul.start.interpolate(lp.start, t);
+                resul.end = resul.end.interpolate(lp.end, t);
+                resul.alpha=this.alpha;
                 return resul;
+            }
+
         }
 
         return this.copy();//Do nothing, return a copy of same object
