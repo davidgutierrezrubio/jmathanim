@@ -14,6 +14,7 @@ You can also follow my [Youtube](https://www.youtube.com/channel/UCeczwEqSrAwZbP
 Version 0.9.3-SNAPSHOT
 
 * Added `saveToPNG` option to save each frame into a separate png file.
+* Added support for gradients through `JMLinearGradient` and `JMRadialGradient` classes.
 
 Version 0.9.2:
 
