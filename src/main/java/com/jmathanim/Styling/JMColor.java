@@ -184,6 +184,9 @@ public class JMColor implements PaintStyle {
         if (p instanceof JMLinearGradient) {
             return ((JMLinearGradient) p).interpolate(this, 1 - t);
         }
+         if (p instanceof JMRadialGradient) {
+            return ((JMRadialGradient) p).interpolate(this, 1 - t);
+        }
         return this.copy();//I don't know what to do here, so I return the same.
     }
 
