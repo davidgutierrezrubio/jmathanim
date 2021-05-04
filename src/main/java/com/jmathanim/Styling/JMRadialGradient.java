@@ -105,6 +105,7 @@ public class JMRadialGradient implements PaintStyle {
                 JMColor col = interStops.getColorHashMap().get(tt);
                 interStops.add(tt, (JMColor) col.interpolate(pc, t));
             }
+             resul.alpha = (1 - t) * resul.alpha + t * pc.getAlpha();
             return resul;
         }
         if (p instanceof JMRadialGradient) {
