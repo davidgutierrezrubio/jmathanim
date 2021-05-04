@@ -118,6 +118,17 @@ public class JMColor implements PaintStyle {
     }
 
     /**
+     * Return a {@link java.awt.Color} object representing the color. Overloaded
+     * method with given alpha.
+     *
+     * @param alpha Alpha to apply to color
+     * @return Color
+     */
+    public javafx.scene.paint.Color getFXColor(double alpha) {
+        return new javafx.scene.paint.Color((float) r, (float) g, (float) b, (float) alpha);
+    }
+
+    /**
      * Computes the inverse color
      *
      * @return The inverse color
@@ -160,7 +171,7 @@ public class JMColor implements PaintStyle {
      * @return A JMcolor with components interpolated
      */
     @Override
-    public JMColor interpolate(PaintStyle p, double t) {
+    public PaintStyle interpolate(PaintStyle p, double t) {
         if (p instanceof JMColor) {
             JMColor B = (JMColor) p;
 
@@ -169,6 +180,9 @@ public class JMColor implements PaintStyle {
             double bb = (1 - t) * b + t * B.b;
             double aa = (1 - t) * alpha + t * B.alpha;
             return new JMColor(rr, gg, bb, aa);
+        }
+        if (p instanceof JMLinearGradient) {
+            return ((JMLinearGradient) p).interpolate(this, 1 - t);
         }
         return this.copy();//I don't know what to do here, so I return the same.
     }
