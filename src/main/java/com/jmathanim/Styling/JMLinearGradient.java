@@ -79,7 +79,7 @@ public class JMLinearGradient implements PaintStyle {
             ss = new double[]{start.v.x, 1 - start.v.y};
             ee = new double[]{end.v.x, 1 - end.v.y};
         }
-        return new LinearGradient(ss[0], ss[1], ee[0], ee[1], relativeToShape, CycleMethod.REFLECT, stops.toFXStop(alpha));
+        return new LinearGradient(ss[0], ss[1], ee[0], ee[1], relativeToShape, this.cycleMethod, stops.toFXStop(alpha));
     }
 
     @Override
@@ -96,7 +96,8 @@ public class JMLinearGradient implements PaintStyle {
         }
         if (p instanceof JMLinearGradient) {
             JMLinearGradient lp = (JMLinearGradient) p;
-            if (lp.relativeToShape == this.relativeToShape) {
+            //I need the 2 linear gradients to have same cycle method and relative flat to interpolate. If not, do nothing.
+            if ((lp.cycleMethod == this.cycleMethod) && (lp.relativeToShape == this.relativeToShape)) {
                 JMLinearGradient resul = this.copy();
                 for (double tt : lp.stops.getColorHashMap().keySet()) {
                     resul.stops.addInterpolatedColor(tt);
@@ -113,7 +114,7 @@ public class JMLinearGradient implements PaintStyle {
                 }
                 resul.start = resul.start.interpolate(lp.start, t);
                 resul.end = resul.end.interpolate(lp.end, t);
-                resul.alpha=this.alpha;
+                resul.alpha = this.alpha;
                 return resul;
             }
 

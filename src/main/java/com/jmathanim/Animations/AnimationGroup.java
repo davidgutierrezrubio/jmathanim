@@ -17,9 +17,12 @@
  */
 package com.jmathanim.Animations;
 
+import com.jmathanim.Utils.UsefulLambdas;
 import com.jmathanim.jmathanim.JMathAnimScene;
+import com.jmathanim.mathobjects.MathObject;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.function.DoubleUnaryOperator;
 
 /**
@@ -31,136 +34,172 @@ import java.util.function.DoubleUnaryOperator;
  */
 public class AnimationGroup extends AnimationWithEffects {
 
-	private final ArrayList<Animation> animations;
+    private final ArrayList<Animation> animations;
+    private double delayPercentage;
 
-	/**
-	 * Returns the list of the animations to play
-	 *
-	 * @return An ArrayList with the animations
-	 */
-	public ArrayList<Animation> getAnimations() {
-		return animations;
-	}
+    /**
+     * Returns the list of the animations to play
+     *
+     * @return An ArrayList with the animations
+     */
+    public ArrayList<Animation> getAnimations() {
+        return animations;
+    }
 
-	/**
-	 * Creates a new AnimationGroup with the given animations
-	 *
-	 * @param anims Animations to add (varargs)
-	 * @return The new AnimationGroup created
-	 */
-	public static AnimationGroup make(Animation... anims) {
-		return new AnimationGroup(anims);
-	}
+    /**
+     * Creates a new AnimationGroup with the given animations
+     *
+     * @param anims Animations to add (varargs)
+     * @return The new AnimationGroup created
+     */
+    public static AnimationGroup make(Animation... anims) {
+        return new AnimationGroup(anims);
+    }
 
-	/**
-	 * Creates a new, empty, AnimationGroup. This class stores a group of
-	 * animations, to be played at the same time.
-	 */
-	public AnimationGroup() {
-		super(0);
-		this.animations = new ArrayList<>();
-	}
+    /**
+     * Creates a new, empty, AnimationGroup. This class stores a group of
+     * animations, to be played at the same time.
+     */
+    public AnimationGroup() {
+        super(0);
+        this.animations = new ArrayList<>();
+    }
 
-	/**
-	 * Creates a new AnimationGroup with given animations.This class stores a group
-	 * of animations, to be played at the same time.
-	 *
-	 * @param animations Animations to add (varargs)
-	 */
-	public AnimationGroup(Animation... animations) {
-		super(0);
-		this.animations = new ArrayList<>();
-		this.animations.addAll(Arrays.asList(animations));
+    /**
+     * Creates a new AnimationGroup with given animations.This class stores a
+     * group of animations, to be played at the same time.
+     *
+     * @param animations Animations to add (varargs)
+     */
+    public AnimationGroup(Animation... animations) {
+        super(0);
+        this.animations = new ArrayList<>();
+        this.animations.addAll(Arrays.asList(animations));
+    }
 
-	}
+    /**
+     * Overloaded method. Creates a new AnimationGroup with given animations
+     * using an ArrayList.This class stores a group of animations, to be played
+     * at the same time.
+     *
+     * @param animations Animations to add (varargs)
+     */
+    public AnimationGroup(ArrayList<Animation> animations) {
+        super(0);
+        this.animations = animations;
+    }
 
-	@Override
-	public boolean processAnimation() {
-		boolean finishedAll = true;
-		for (Animation anim : animations) {
-			finishedAll = finishedAll & anim.processAnimation();
-		}
-		return finishedAll;
-	}
+    /**
+     * Add the given animations to the list
+     *
+     * @param <T> Calling subclass
+     * @param anims Animations to add (varargs)
+     * @return This object
+     */
+    public <T extends AnimationGroup> T add(Animation... anims) {
+        for (Animation anim : anims) {
+            animations.add(anim);
+        }
+        return (T) this;
+    }
 
-	/**
-	 * Overloaded method. Creates a new AnimationGroup with given animations using
-	 * an ArrayList.This class stores a group of animations, to be played at the
-	 * same time.
-	 *
-	 * @param animations Animations to add (varargs)
-	 */
-	public AnimationGroup(ArrayList<Animation> animations) {
-		super(0);
-		this.animations = animations;
-	}
+    @Override
+    public void initialize(JMathAnimScene scene) {
+        super.initialize(scene);
+        
+        int size = animations.size();
+        int k = 0;
+        if ((size > 1) && (delayPercentage > 0)) {// Only works when group has at least 2 members...
+            for (Animation anim : animations) {
+                double a = k * (delayPercentage) / (size - 1);
+                double b = 1 - delayPercentage;
+                anim.setLambda(anim.getLambda().compose(UsefulLambdas.allocateTo(a, a+b)));
+//                anim.setLambda(UsefulLambdas.allocateTo(a, a + b));
+                k++;
+            }
+        }
+        
+        
+        
+        for (Animation anim : animations) {
+            if (anim instanceof AnimationWithEffects) {
+                AnimationWithEffects animEf = (AnimationWithEffects) anim;
+                animEf.copyEffectParametersFrom(this);
+            }
+            anim.initialize(scene);
+        }
+        
+    }
 
-	/**
-	 * Add the given animations to the list
-	 *
-	 * @param <T>   Calling subclass
-	 * @param anims Animations to add (varargs)
-	 * @return This object
-	 */
-	public <T extends AnimationGroup> T add(Animation... anims) {
-		for (Animation anim : anims) {
-			animations.add(anim);
-		}
-		return (T) this;
-	}
+    @Override
+    public boolean processAnimation() {
+        boolean finishedAll = true;
+        for (Animation anim : animations) {
+            finishedAll = finishedAll & anim.processAnimation();
+        }
+        return finishedAll;
+    }
 
-	@Override
-	public void initialize(JMathAnimScene scene) {
-		super.initialize(scene);
-		for (Animation anim : animations) {
-			if (anim instanceof AnimationWithEffects) {
-				AnimationWithEffects animEf = (AnimationWithEffects) anim;
-				animEf.copyEffectParametersFrom(this);
-			}
-			anim.initialize(scene);
-		}
-	}
+    @Override
+    public void doAnim(double t) {
+        //Nothing to do here
+    }
 
-	@Override
-	public void doAnim(double t) {
-		for (Animation anim : animations) {
-			anim.doAnim(t);
-		}
-	}
+    @Override
+    public void finishAnimation() {
+        super.finishAnimation();
+        for (Animation anim : animations) {
+            if (anim.getStatus() != Status.FINISHED) {
+                anim.finishAnimation();
+            }
+        }
+    }
 
-	@Override
-	public void finishAnimation() {
-		super.finishAnimation();
-		for (Animation anim : animations) {
-			if (anim.getStatus() != Status.FINISHED) {
-				anim.finishAnimation();
-			}
-		}
-	}
+    @Override
+    public <T extends Animation> T setLambda(DoubleUnaryOperator lambda) {
+        super.setLambda(lambda);
+        for (Animation anim : animations) {
+            anim.setLambda(lambda);
+        }
+        return (T) this;
+    }
 
-	@Override
-	public <T extends Animation> T setLambda(DoubleUnaryOperator lambda) {
-		super.setLambda(lambda);
-		for (Animation anim : animations) {
-			anim.setLambda(lambda);
-		}
-		return (T) this;
-	}
+    @Override
+    public <T extends Animation> T setUseObjectState(boolean shouldSaveState) {
+        for (Animation anim : animations) {
+            anim.setUseObjectState(shouldSaveState);
+        }
+        return (T) this;
+    }
 
-	@Override
-	public <T extends Animation> T setUseObjectState(boolean shouldSaveState) {
-		for (Animation anim : animations) {
-			anim.setUseObjectState(shouldSaveState);
-		}
-		return (T) this;
-	}
+    @Override
+    public <T extends Animation> T setAddObjectsToScene(boolean addToScene) {
+        for (Animation anim : animations) {
+            anim.setAddObjectsToScene(addToScene);
+        }
+        return (T) this;
+    }
 
-	@Override
-	public <T extends Animation> T setAddObjectsToScene(boolean addToScene) {
-		for (Animation anim : animations) {
-			anim.setAddObjectsToScene(addToScene);
-		}
-		return (T) this;
-	}
+    /**
+     * Sets the delay percentage. A number between 0 and 1 that controls the
+     * time gap between consecutive objects when shifting multiple ones. For
+     * example, if you set the delay to 0.75, all shift animations will last 25
+     * percent of initial time, evenly spaced over the total duration of the
+     * animation. So, for an animation who shifts 3 objects for 2 seconds, each
+     * one will last 2*0.25=.5 seconds, starting at 0, .75 and 1.5 respectively
+     *
+     * @param <T> Calling subclass
+     * @param delayPercentage The delay. A number of 0 means no effect. A number
+     * greater than 0
+     * @return
+     */
+    public <T extends AnimationGroup> T addDelayEffect(double delayPercentage) {
+        if ((delayPercentage <= 0) || (delayPercentage >= 1)) {
+            return (T) this;
+        }
+        this.delayPercentage = delayPercentage;
+
+        return (T) this;
+    }
 
 }
