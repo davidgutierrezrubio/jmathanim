@@ -20,26 +20,40 @@ package com.jmathanim.Styling;
 import com.jmathanim.Cameras.Camera;
 import com.jmathanim.Renderers.JavaFXRenderer;
 import com.jmathanim.mathobjects.Point;
+import javafx.scene.paint.Color;
 import javafx.scene.paint.CycleMethod;
 import javafx.scene.paint.LinearGradient;
 import javafx.scene.paint.Paint;
+import javafx.scene.paint.RadialGradient;
+import javafx.scene.paint.Stop;
 
 /**
  *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
-public class JMLinearGradient implements PaintStyle {
+public class JMRadialGradient implements PaintStyle {
 
     private double alpha;
 
-    protected Point start, end;
+    protected Point center;
+    protected double focusAngle;
+    protected double focusDistance;
+    protected double radius;
+
     protected GradientStop stops;
     protected boolean relativeToShape;
     protected CycleMethod cycleMethod;
 
-    public JMLinearGradient(Point start, Point end) {
-        this.start = start;
-        this.end = end;
+    public JMRadialGradient(Point center, double radius) {
+        this(center, 0, 0, radius);
+    }
+
+    public JMRadialGradient(Point center, double focusAngle, double focusDistance, double radius) {
+        this.center = center;
+        this.focusAngle = focusAngle;
+        this.focusDistance = focusDistance;
+        this.radius = radius;
+
         this.stops = new GradientStop();
         relativeToShape = false;
         cycleMethod = CycleMethod.NO_CYCLE;
@@ -47,10 +61,9 @@ public class JMLinearGradient implements PaintStyle {
     }
 
     @Override
-    public JMLinearGradient copy() {
-        JMLinearGradient resul = new JMLinearGradient(start.copy(), end.copy());
+    public JMRadialGradient copy() {
+        JMRadialGradient resul = new JMRadialGradient(center.copy(), focusAngle, focusDistance, radius);
         resul.relativeToShape = this.relativeToShape;
-//        resul.getStops().getColorHashMap().putAll(stops.getColorHashMap());
         resul.stops = this.stops.copy();
         resul.cycleMethod = this.cycleMethod;
         return resul;
@@ -68,22 +81,25 @@ public class JMLinearGradient implements PaintStyle {
 
     @Override
     public Paint getFXPaint(JavaFXRenderer r, Camera cam) {
-        double[] ss, ee;
+        double[] cc;
+        double realRadius;
         if (!relativeToShape) {
-            ss = cam.mathToScreenFX(start.v);
-            ee = cam.mathToScreenFX(end.v);
+            cc = cam.mathToScreenFX(center.v);
+            realRadius=cam.mathToScreen(this.radius);
         } else {
-            ss = new double[]{start.v.x, 1 - start.v.y};
-            ee = new double[]{end.v.x, 1 - end.v.y};
+            cc = new double[]{center.v.x, 1 - center.v.y};
+            realRadius=this.radius;
         }
-        return new LinearGradient(ss[0], ss[1], ee[0], ee[1], relativeToShape, this.cycleMethod, stops.toFXStop(alpha));
+        
+        return new RadialGradient(focusAngle, focusDistance, cc[0], cc[1], realRadius, relativeToShape, cycleMethod, stops.toFXStop(alpha));
+//                cc[0], c[1], ee[0], ee[1], relativeToShape, this.cycleMethod, stops.toFXStop(alpha));
     }
 
     @Override
     public PaintStyle interpolate(PaintStyle p, double t) {
         if (p instanceof JMColor) {
             JMColor pc = (JMColor) p;
-            JMLinearGradient resul = this.copy();
+            JMRadialGradient resul = this.copy();
             GradientStop interStops = resul.getStops();
             for (double tt : interStops.getColorHashMap().keySet()) {
                 JMColor col = interStops.getColorHashMap().get(tt);
@@ -91,27 +107,29 @@ public class JMLinearGradient implements PaintStyle {
             }
             return resul;
         }
-        if (p instanceof JMLinearGradient) {
-            JMLinearGradient lp = (JMLinearGradient) p;
+        if (p instanceof JMRadialGradient) {
+            JMRadialGradient rp = (JMRadialGradient) p;
             //I need the 2 linear gradients to have same cycle method and relative flat to interpolate. If not, do nothing.
-            if ((lp.cycleMethod == this.cycleMethod) && (lp.relativeToShape == this.relativeToShape)) {
-                JMLinearGradient resul = this.copy();
-                for (double tt : lp.stops.getColorHashMap().keySet()) {
+            if ((rp.cycleMethod == this.cycleMethod) && (rp.relativeToShape == this.relativeToShape)) {
+                JMRadialGradient resul = this.copy();
+                for (double tt : rp.stops.getColorHashMap().keySet()) {
                     resul.stops.addInterpolatedColor(tt);
                 }
                 for (double tt : resul.stops.getColorHashMap().keySet()) {
-                    lp.stops.addInterpolatedColor(tt);
+                    rp.stops.addInterpolatedColor(tt);
                 }
 
                 for (double tt : resul.stops.getColorHashMap().keySet()) {
                     JMColor colA = resul.stops.getColorHashMap().get(tt);
-                    JMColor colB = lp.stops.getColorHashMap().get(tt);
+                    JMColor colB = rp.stops.getColorHashMap().get(tt);
                     resul.stops.add(tt, (JMColor) colA.interpolate(colB, t));
 
                 }
-                resul.start = resul.start.interpolate(lp.start, t);
-                resul.end = resul.end.interpolate(lp.end, t);
-                resul.alpha = t*resul.alpha+(1-t)*lp.alpha;
+                resul.center = resul.center.interpolate(rp.center, t);
+                resul.focusAngle = (1 - t) * resul.focusAngle + t * rp.focusAngle;
+                resul.focusDistance = (1 - t) * resul.focusDistance + t * rp.focusDistance;
+                resul.radius = (1 - t) * resul.radius + t * rp.radius;
+                resul.alpha = (1 - t) * resul.alpha + t * rp.alpha;
                 return resul;
             }
 
@@ -124,7 +142,7 @@ public class JMLinearGradient implements PaintStyle {
         return relativeToShape;
     }
 
-    public <T extends JMLinearGradient> T setRelativeToShape(boolean relativeToShape) {
+    public <T extends JMRadialGradient> T setRelativeToShape(boolean relativeToShape) {
         this.relativeToShape = relativeToShape;
         return (T) this;
     }
@@ -133,17 +151,17 @@ public class JMLinearGradient implements PaintStyle {
         return stops;
     }
 
-    public <T extends JMLinearGradient> T add(double t, String strCol) {
+    public <T extends JMRadialGradient> T add(double t, String strCol) {
         stops.add(t, JMColor.parse(strCol));
         return (T) this;
     }
 
-    public <T extends JMLinearGradient> T add(double t, JMColor col) {
+    public <T extends JMRadialGradient> T add(double t, JMColor col) {
         stops.add(t, col);
         return (T) this;
     }
 
-    public <T extends JMLinearGradient> T remove(double t) {
+    public <T extends JMRadialGradient> T remove(double t) {
         stops.remove(t);
         return (T) this;
     }
@@ -152,7 +170,7 @@ public class JMLinearGradient implements PaintStyle {
         return cycleMethod;
     }
 
-    public <T extends JMLinearGradient> T setCycleMethod(CycleMethod cycleMethod) {
+    public <T extends JMRadialGradient> T setCycleMethod(CycleMethod cycleMethod) {
         this.cycleMethod = cycleMethod;
         return (T) this;
     }
