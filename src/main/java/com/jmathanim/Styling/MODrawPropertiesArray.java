@@ -154,7 +154,7 @@ public class MODrawPropertiesArray implements Stylable, Stateable {
 	}
 
 	@Override
-	public void setDrawColor(JMColor drawColor) {
+	public void setDrawColor(PaintStyle drawColor) {
 		for (MathObject obj : objects) {
 			obj.getMp().setDrawColor(drawColor);
 		}
@@ -170,7 +170,7 @@ public class MODrawPropertiesArray implements Stylable, Stateable {
 	}
 
 	@Override
-	public void setFillColor(JMColor fillColor) {
+	public void setFillColor(PaintStyle fillColor) {
 		for (MathObject obj : objects) {
 			obj.getMp().setFillColor(fillColor);
 		}
@@ -223,12 +223,12 @@ public class MODrawPropertiesArray implements Stylable, Stateable {
 	}
 
 	@Override
-	public JMColor getDrawColor() {
+	public PaintStyle getDrawColor() {
 		return mpRef.getDrawColor();
 	}
 
 	@Override
-	public JMColor getFillColor() {
+	public PaintStyle getFillColor() {
 		return mpRef.getFillColor();
 	}
 

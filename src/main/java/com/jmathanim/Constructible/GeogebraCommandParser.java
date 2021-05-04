@@ -130,7 +130,7 @@ public class GeogebraCommandParser {
 		double alpha = Double.valueOf(objColor.getAttribute("alpha"));
 		JMColor col = JMColor.rgbInt(r, g, b, 255);
 		JMColor colFill = JMColor.rgbInt(r, g, b, 255);
-		colFill.alpha = alpha;
+		colFill.setAlpha(alpha);
 
 		resul.setDrawColor(col);
 		resul.setFillColor(colFill);

@@ -20,6 +20,7 @@ package com.jmathanim.Animations;
 import com.jmathanim.Cameras.Camera;
 import com.jmathanim.Styling.JMColor;
 import com.jmathanim.Styling.MODrawProperties;
+import com.jmathanim.Styling.PaintStyle;
 import com.jmathanim.Utils.AffineJTransform;
 import com.jmathanim.Utils.Anchor;
 import com.jmathanim.Utils.JMathAnimConfig;
@@ -398,7 +399,7 @@ public class Commands {
 	 * @param objects   MathObjects to animate (varargs)
 	 * @return The animation to be played with the playAnimation method
 	 */
-	public static AnimationGroup setColor(double runtime, JMColor drawColor, JMColor fillColor, MathObject... objects) {
+	public static AnimationGroup setColor(double runtime, PaintStyle drawColor, PaintStyle fillColor, MathObject... objects) {
 		AnimationGroup ag = new AnimationGroup();
 		for (MathObject ob : objects) {
 			MODrawProperties mpDst = MODrawProperties.makeNullValues();
@@ -831,7 +832,7 @@ public class Commands {
 				super.initialize(scene);
 				JMathAnimScene.logger.debug("Initialized changeFillAlpha animation");
 				for (MathObject obj : objects) {
-					alphaOrig.add(obj.getMp().getFillColor().alpha);
+					alphaOrig.add(obj.getMp().getFillColor().getAlpha());
 				}
 				addObjectsToscene(mathObjects);
 			}

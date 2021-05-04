@@ -20,6 +20,7 @@ package com.jmathanim.mathobjects;
 import com.jmathanim.Renderers.Renderer;
 import com.jmathanim.Styling.JMColor;
 import com.jmathanim.Styling.MODrawPropertiesArray;
+import com.jmathanim.Styling.PaintStyle;
 import com.jmathanim.Styling.Stylable;
 import com.jmathanim.Utils.AffineJTransform;
 import com.jmathanim.Utils.Anchor;
@@ -76,7 +77,7 @@ public class MultiShapeObject extends MathObject implements Iterable<Shape> {
 	}
 
 	@Override
-	public <T extends MathObject> T fillColor(JMColor fc) {
+	public <T extends MathObject> T fillColor(PaintStyle fc) {
 		for (Shape jmp : shapes) {
 			jmp.fillColor(fc);
 		}
@@ -84,7 +85,7 @@ public class MultiShapeObject extends MathObject implements Iterable<Shape> {
 	}
 
 	@Override
-	public <T extends MathObject> T drawColor(JMColor dc) {
+	public <T extends MathObject> T drawColor(PaintStyle dc) {
 		for (Shape jmp : shapes) {
 			jmp.drawColor(dc);
 		}

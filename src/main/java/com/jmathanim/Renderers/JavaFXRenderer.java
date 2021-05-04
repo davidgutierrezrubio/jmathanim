@@ -326,8 +326,8 @@ public class JavaFXRenderer extends Renderer {
 //        path.setSmooth(false);
 
         // Stroke width and color
-        path.setStroke(mobj.getMp().getDrawColor().getFXColor());
-
+        path.setStroke(mobj.getMp().getDrawColor().getFXPaint(this,camera));
+        
         // Compute thickness depending on camera
         // A thickness of 1 means a javafx thickness 1 in a 800x600with mathview of
         // width 4
@@ -336,9 +336,9 @@ public class JavaFXRenderer extends Renderer {
 
         // Fill color
         if (mobj.getMp().isFillColorIsDrawColor()) {
-            path.setFill(mobj.getMp().getDrawColor().getFXColor());
+            path.setFill(mobj.getMp().getDrawColor().getFXPaint(this,camera));
         } else {
-            path.setFill(mobj.getMp().getFillColor().getFXColor());
+            path.setFill(mobj.getMp().getFillColor().getFXPaint(this,camera));
         }
 
         // Dash pattern
@@ -433,7 +433,7 @@ public class JavaFXRenderer extends Renderer {
         imageView.setPreserveRatio(obj.preserveRatio);
         imageView.setSmooth(true);
         imageView.setCache(true);
-        imageView.setOpacity(obj.getMp().getDrawColor().alpha);
+        imageView.setOpacity(obj.getMp().getDrawColor().getAlpha());
         imageView.setRotate(-obj.rotateAngle / DEGREES);
         fxnodes.add(imageView);
     }

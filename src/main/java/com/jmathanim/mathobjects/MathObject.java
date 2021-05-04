@@ -19,6 +19,7 @@ package com.jmathanim.mathobjects;
 
 import com.jmathanim.Styling.JMColor;
 import com.jmathanim.Styling.MODrawProperties;
+import com.jmathanim.Styling.PaintStyle;
 import com.jmathanim.Styling.Stylable;
 import com.jmathanim.Utils.AffineJTransform;
 import com.jmathanim.Utils.Anchor;
@@ -318,7 +319,7 @@ public abstract class MathObject implements Drawable, Updateable, Stateable, Box
 	 * @param dc  A JMcolor object with the draw color
 	 * @return The MathObject subclass
 	 */
-	public <T extends MathObject> T drawColor(JMColor dc) {
+	public <T extends MathObject> T drawColor(PaintStyle dc) {
 		getMp().setDrawColor(dc);
 		return (T) this;
 	}
@@ -343,7 +344,7 @@ public abstract class MathObject implements Drawable, Updateable, Stateable, Box
 	 * @param fc  A JMcolor object with the fill color
 	 * @return The MathObject subclass
 	 */
-	public <T extends MathObject> T fillColor(JMColor fc) {
+	public <T extends MathObject> T fillColor(PaintStyle fc) {
 		getMp().setFillColor(fc);
 		return (T) this;
 	}

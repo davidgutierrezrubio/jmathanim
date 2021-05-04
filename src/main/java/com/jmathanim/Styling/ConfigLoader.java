@@ -175,10 +175,10 @@ public class ConfigLoader {
             Node item = childs.item(n);
             switch (item.getNodeName()) {
                 case "drawColor":
-                    mp.getDrawColor().copyFrom(JMColor.parse(item.getTextContent()));
+                    mp.setDrawColor(JMColor.parse(item.getTextContent()));
                     break;
                 case "fillColor":
-                    mp.getFillColor().copyFrom(JMColor.parse(item.getTextContent()));
+                    mp.setFillColor(JMColor.parse(item.getTextContent()));
                     break;
                 case "thickness":
                     mp.thickness = Double.parseDouble(item.getTextContent());

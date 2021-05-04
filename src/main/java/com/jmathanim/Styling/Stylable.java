@@ -83,7 +83,7 @@ public interface Stylable {
 
 	void setDrawAlpha(double alpha);
 
-	void setDrawColor(JMColor drawColor);
+	void setDrawColor(PaintStyle drawColor);
 
 	void setFillAlpha(double alpha);
 
@@ -91,7 +91,7 @@ public interface Stylable {
 
 	void setMultDrawAlpha(double alpha);
 
-	void setFillColor(JMColor fillColor);
+	void setFillColor(PaintStyle fillColor);
 
 	void setFillColorIsDrawColor(Boolean fillColorIsDrawColor);
 
@@ -101,9 +101,9 @@ public interface Stylable {
 
 	public Integer getLayer();
 
-	public JMColor getDrawColor();
+	public PaintStyle getDrawColor();
 
-	public JMColor getFillColor();
+	public PaintStyle getFillColor();
 
 	public StrokeLineCap getLinecap();
 

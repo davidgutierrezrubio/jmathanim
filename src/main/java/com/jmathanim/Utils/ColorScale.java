@@ -68,7 +68,7 @@ public class ColorScale {
 
 		double alpha = (x - a) / (b - a);
 		JMColor colB = colors.get(b);
-		return colA.getInterpolatedColor(colB, alpha);
+		return (JMColor)colA.interpolate(colB, alpha);
 	}
 
 	public ArrayList<Double> getMarkers() {
