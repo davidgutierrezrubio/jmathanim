@@ -30,43 +30,44 @@ import com.jmathanim.mathobjects.Point;
  */
 public class ArrowTransform extends AnimationWithEffects {
 
-	Arrow2D arOrig, arDst;
-	AnimationWithEffects anim;
+    Arrow2D arOrig, arDst;
+    AnimationWithEffects anim;
 
-	public ArrowTransform(double runTime, Arrow2D arOrig, Arrow2D arDst) {
-		super(runTime);
-		this.arOrig = arOrig;
-		this.arDst = arDst;
-	}
+    public ArrowTransform(double runTime, Arrow2D arOrig, Arrow2D arDst) {
+        super(runTime);
+        this.arOrig = arOrig;
+        this.arDst = arDst;
+    }
 
-	@Override
-	public void initialize(JMathAnimScene scene) {
-		super.initialize(scene);
-		Point a = arOrig.getStart().copy();
-		Point b = arOrig.getEnd().copy();
-		Point c = arDst.getStart().copy();
-		Point d = arDst.getEnd().copy();
-		anim = Commands.homothecy(runTime, a, b, c, d, arOrig);
-		anim.copyEffectParametersFrom(this);
-		anim.initialize(scene);
-	}
+    @Override
+    public void initialize(JMathAnimScene scene) {
+        super.initialize(scene);
+        Point a = arOrig.getStart().copy();
+        Point b = arOrig.getEnd().copy();
+        Point c = arDst.getStart().copy();
+        Point d = arDst.getEnd().copy();
+        anim = Commands.homothecy(runTime, a, b, c, d, arOrig);
+        this.copyEffectParametersTo(anim);
+        this.copyAnimationParametersTo(anim);
+        anim.initialize(scene);
+    }
 
-	@Override
-	public boolean processAnimation() {
-		super.processAnimation();
-		return anim.processAnimation();
-		// TODO: Implement creation/deletion of arrow heads (with shape transform)
-	}
+    @Override
+    public boolean processAnimation() {
+        super.processAnimation();
+        return anim.processAnimation();
+        // TODO: Implement creation/deletion of arrow heads (with shape transform)
+    }
 
-	@Override
-	public void doAnim(double t) {
-	}
+    @Override
+    public void doAnim(double t) {
+    }
 
-	@Override
-	public void finishAnimation() {
-		super.finishAnimation();
-		removeObjectsToscene(arOrig);
-		addObjectsToscene(arDst);
-	}
+    @Override
+    public void finishAnimation() {
+        super.finishAnimation();
+        removeObjectsToscene(arOrig);
+        addObjectsToscene(arDst);
+    }
 
 }

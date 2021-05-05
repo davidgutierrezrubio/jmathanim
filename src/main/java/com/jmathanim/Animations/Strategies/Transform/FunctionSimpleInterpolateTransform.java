@@ -18,6 +18,7 @@
 package com.jmathanim.Animations.Strategies.Transform;
 
 import com.jmathanim.Animations.Animation;
+import com.jmathanim.Styling.MODrawProperties;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.FunctionGraph;
 
@@ -28,33 +29,38 @@ import com.jmathanim.mathobjects.FunctionGraph;
  */
 public class FunctionSimpleInterpolateTransform extends Animation {
 
-	public final FunctionGraph gfObj, gfDst;
+    public final FunctionGraph gfObj, gfDst;
+    private final MODrawProperties mpBase;
 
-	public FunctionSimpleInterpolateTransform(double runtime, FunctionGraph gfObj, FunctionGraph gfDst) {
-		super(runtime);
-		this.gfObj = gfObj;
-		this.gfDst = gfDst;
-	}
+    public FunctionSimpleInterpolateTransform(double runtime, FunctionGraph gfObj, FunctionGraph gfDst) {
+        super(runtime);
+        this.gfObj = gfObj;
+        this.gfDst = gfDst;
+        mpBase = this.gfObj.getMp().copy();
+    }
 
-	@Override
-	public void initialize(JMathAnimScene scene) {
-		super.initialize(scene);
-		addObjectsToscene(gfObj);
-	}
+    @Override
+    public void initialize(JMathAnimScene scene) {
+        super.initialize(scene);
+        addObjectsToscene(gfObj);
+    }
 
-	@Override
-	public void doAnim(double t) {
-		double lt = lambda.applyAsDouble(t);
-		this.gfObj.function = (x) -> (1 - lt) * this.gfObj.functionBase.applyAsDouble(x)
-				+ lt * this.gfDst.function.applyAsDouble(x);
-		this.gfObj.updatePoints();
-	}
+    @Override
+    public void doAnim(double t) {
+        double lt = lambda.applyAsDouble(t);
+        this.gfObj.function = (x) -> (1 - lt) * this.gfObj.functionBase.applyAsDouble(x)
+                + lt * this.gfDst.function.applyAsDouble(x);
+        this.gfObj.updatePoints();
+        if (isShouldInterpolateStyles()) {
+            this.gfObj.getMp().interpolateFrom(mpBase, gfDst.getMp(), lt);
+        }
+    }
 
-	@Override
-	public void finishAnimation() {
-		super.finishAnimation();
-		// Base function is now the new function
-		this.gfObj.functionBase = this.gfDst.function;
-	}
+    @Override
+    public void finishAnimation() {
+        super.finishAnimation();
+        // Base function is now the new function
+        this.gfObj.functionBase = this.gfDst.function;
+    }
 
 }

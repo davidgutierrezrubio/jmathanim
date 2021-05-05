@@ -87,6 +87,7 @@ public class Transform extends AnimationWithEffects {
 		transformStrategy.setLambda(lambda);
 		transformStrategy.setAddObjectsToScene(this.isShouldAddObjectsToScene());
 		transformStrategy.setUseObjectState(this.isUseObjectState());
+		transformStrategy.setShouldInterpolateStyles(this.isShouldInterpolateStyles());
 		transformStrategy.initialize(scene);
 
 	}
@@ -200,7 +201,7 @@ public class Transform extends AnimationWithEffects {
 //        if (shouldApplyEffects()) {
 		if (transformStrategy instanceof AnimationWithEffects) {
 			AnimationWithEffects tr = (AnimationWithEffects) transformStrategy;
-			tr.copyEffectParametersFrom(this);
+			this.copyEffectParametersTo(tr);
 		} else {
 			JMathAnimScene.logger.error("Cannot apply effects to current transform");
 		}

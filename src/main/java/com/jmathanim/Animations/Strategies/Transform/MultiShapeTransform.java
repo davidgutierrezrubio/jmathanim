@@ -81,7 +81,7 @@ public class MultiShapeTransform extends AnimationWithEffects {
 
 		for (int n = 0; n < numAnims; n++) {
 			Transform transformAnim = new Transform(this.runTime, tr.get(n), dst.get(n));
-			transformAnim.copyEffectParametersFrom(this);
+			this.copyEffectParametersTo(transformAnim);
 			anim.add(transformAnim);
 		}
 		anim.initialize(scene);

@@ -88,6 +88,9 @@ public class ShowCreation extends Animation {
 			}
 			createStrategy();
 			creationStrategy.setLambda(lambda);
+			creationStrategy.setAddObjectsToScene(this.isShouldAddObjectsToScene());
+			creationStrategy.setShouldInterpolateStyles(this.isShouldInterpolateStyles());
+			creationStrategy.setUseObjectState(this.isUseObjectState());
 			creationStrategy.initialize(scene);
 		} catch (NullPointerException | ClassCastException e) {
 			JMathAnimScene.logger.error("Couldn't create ShowCreation strategy for "

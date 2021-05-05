@@ -32,101 +32,102 @@ import com.jmathanim.mathobjects.Shape;
  */
 public class PointInterpolationSimpleShapeTransform extends AnimationWithEffects {
 
-	private final Shape mobjTransformed;
-	private final Shape mobjDestiny;
-	private Shape originalShapeBaseCopy;
-	Point origCenter, dstCenter;
+    private final Shape mobjTransformed;
+    private final Shape mobjDestiny;
+    private Shape originalShapeBaseCopy;
+    Point origCenter, dstCenter;
 
-	public PointInterpolationSimpleShapeTransform(double runtime, Shape mobjTransformed, Shape mobjDestiny) {
-		super(runtime);
+    public PointInterpolationSimpleShapeTransform(double runtime, Shape mobjTransformed, Shape mobjDestiny) {
+        super(runtime);
 
-		this.mobjTransformed = mobjTransformed;
-		this.mobjDestiny = mobjDestiny;
-		origCenter = this.mobjTransformed.getCenter();
-		dstCenter = this.mobjDestiny.getCenter();
+        this.mobjTransformed = mobjTransformed;
+        this.mobjDestiny = mobjDestiny;
+        origCenter = this.mobjTransformed.getCenter();
+        dstCenter = this.mobjDestiny.getCenter();
 
-	}
+    }
 
-	@Override
-	public void initialize(JMathAnimScene scene) {
-		super.initialize(scene);
-		if (optimizeStrategy == null) {
-			optimizeStrategy = new SimpleConnectedPathsOptimizationStrategy(mobjTransformed, mobjDestiny);
-		}
+    @Override
+    public void initialize(JMathAnimScene scene) {
+        super.initialize(scene);
+        if (optimizeStrategy == null) {
+            optimizeStrategy = new SimpleConnectedPathsOptimizationStrategy(mobjTransformed, mobjDestiny);
+        }
 
-		alignNumberOfElements(mobjTransformed.getPath(), mobjDestiny.getPath());
-		optimizeStrategy.optimizePaths(mobjTransformed, mobjDestiny);
-		originalShapeBaseCopy = mobjTransformed.copy();
-		// Mark all points as curved during transformation
-		for (JMPathPoint jmp : mobjTransformed.getPath().jmPathPoints) {
-			jmp.isCurved = true;
-		}
-		addObjectsToscene(mobjTransformed);
+        alignNumberOfElements(mobjTransformed.getPath(), mobjDestiny.getPath());
+        optimizeStrategy.optimizePaths(mobjTransformed, mobjDestiny);
+        originalShapeBaseCopy = mobjTransformed.copy();
+        // Mark all points as curved during transformation
+        for (JMPathPoint jmp : mobjTransformed.getPath().jmPathPoints) {
+            jmp.isCurved = true;
+        }
+        addObjectsToscene(mobjTransformed);
 
-		prepareJumpPath(origCenter, dstCenter, mobjTransformed);
-	}
+        prepareJumpPath(origCenter, dstCenter, mobjTransformed);
+    }
 
-	@Override
-	public void doAnim(double t) {
-		double lt = lambda.applyAsDouble(t);
-		JMPathPoint interPoint, basePoint, dstPoint;
-		for (int n = 0; n < mobjTransformed.getPath().size(); n++) {
-			interPoint = mobjTransformed.getPath().getJMPoint(n);
-			basePoint = originalShapeBaseCopy.getPath().getJMPoint(n);
-			dstPoint = mobjDestiny.getPath().getJMPoint(n);
+    @Override
+    public void doAnim(double t) {
+        double lt = lambda.applyAsDouble(t);
+        JMPathPoint interPoint, basePoint, dstPoint;
+        for (int n = 0; n < mobjTransformed.getPath().size(); n++) {
+            interPoint = mobjTransformed.getPath().getJMPoint(n);
+            basePoint = originalShapeBaseCopy.getPath().getJMPoint(n);
+            dstPoint = mobjDestiny.getPath().getJMPoint(n);
 
-			// Interpolate point
-			interPoint.p.v.x = (1 - lt) * basePoint.p.v.x + lt * dstPoint.p.v.x;
-			interPoint.p.v.y = (1 - lt) * basePoint.p.v.y + lt * dstPoint.p.v.y;
-			interPoint.p.v.z = (1 - lt) * basePoint.p.v.z + lt * dstPoint.p.v.z;
+            // Interpolate point
+            interPoint.p.v.x = (1 - lt) * basePoint.p.v.x + lt * dstPoint.p.v.x;
+            interPoint.p.v.y = (1 - lt) * basePoint.p.v.y + lt * dstPoint.p.v.y;
+            interPoint.p.v.z = (1 - lt) * basePoint.p.v.z + lt * dstPoint.p.v.z;
 
-			// Interpolate control point 1
-			interPoint.cpExit.v.x = (1 - lt) * basePoint.cpExit.v.x + lt * dstPoint.cpExit.v.x;
-			interPoint.cpExit.v.y = (1 - lt) * basePoint.cpExit.v.y + lt * dstPoint.cpExit.v.y;
-			interPoint.cpExit.v.z = (1 - lt) * basePoint.cpExit.v.z + lt * dstPoint.cpExit.v.z;
+            // Interpolate control point 1
+            interPoint.cpExit.v.x = (1 - lt) * basePoint.cpExit.v.x + lt * dstPoint.cpExit.v.x;
+            interPoint.cpExit.v.y = (1 - lt) * basePoint.cpExit.v.y + lt * dstPoint.cpExit.v.y;
+            interPoint.cpExit.v.z = (1 - lt) * basePoint.cpExit.v.z + lt * dstPoint.cpExit.v.z;
 
-			// Interpolate control point 2
-			interPoint.cpEnter.v.x = (1 - lt) * basePoint.cpEnter.v.x + lt * dstPoint.cpEnter.v.x;
-			interPoint.cpEnter.v.y = (1 - lt) * basePoint.cpEnter.v.y + lt * dstPoint.cpEnter.v.y;
-			interPoint.cpEnter.v.z = (1 - lt) * basePoint.cpEnter.v.z + lt * dstPoint.cpEnter.v.z;
-		}
-		// Style interpolation
-		mobjTransformed.getMp().interpolateFrom(originalShapeBaseCopy.getMp(), mobjDestiny.getMp(), lt);
+            // Interpolate control point 2
+            interPoint.cpEnter.v.x = (1 - lt) * basePoint.cpEnter.v.x + lt * dstPoint.cpEnter.v.x;
+            interPoint.cpEnter.v.y = (1 - lt) * basePoint.cpEnter.v.y + lt * dstPoint.cpEnter.v.y;
+            interPoint.cpEnter.v.z = (1 - lt) * basePoint.cpEnter.v.z + lt * dstPoint.cpEnter.v.z;
+        }
+        if (isShouldInterpolateStyles()) {
+            // Style interpolation
+            mobjTransformed.getMp().interpolateFrom(originalShapeBaseCopy.getMp(), mobjDestiny.getMp(), lt);
+        }
+        // Transform effects
+        applyAnimationEffects(lt, mobjTransformed);
 
-		// Transform effects
-		applyAnimationEffects(lt, mobjTransformed);
+    }
 
-	}
+    @Override
+    public void finishAnimation() {
+        super.finishAnimation();
 
-	@Override
-	public void finishAnimation() {
-		super.finishAnimation();
+        for (int n = 0; n < mobjTransformed.getPath().size(); n++) {
+            JMPathPoint p1 = mobjTransformed.getPath().getJMPoint(n);
+            JMPathPoint p2 = mobjDestiny.getPath().getJMPoint(n);
+            p1.type = p2.type;
+            p1.isCurved = p2.isCurved;
+            p1.isThisSegmentVisible = p2.isThisSegmentVisible;
+            p1.cpExitvBackup = p2.cpExitvBackup;
+            p1.cpEntervBackup = p2.cpEntervBackup;
+        }
 
-		for (int n = 0; n < mobjTransformed.getPath().size(); n++) {
-			JMPathPoint p1 = mobjTransformed.getPath().getJMPoint(n);
-			JMPathPoint p2 = mobjDestiny.getPath().getJMPoint(n);
-			p1.type = p2.type;
-			p1.isCurved = p2.isCurved;
-			p1.isThisSegmentVisible = p2.isThisSegmentVisible;
-			p1.cpExitvBackup = p2.cpExitvBackup;
-			p1.cpEntervBackup = p2.cpEntervBackup;
-		}
+        mobjTransformed.getPath().removeInterpolationPoints();
+        mobjTransformed.getMp().copyFrom(mobjDestiny.getMp());
+        mobjTransformed.absoluteSize = mobjDestiny.absoluteSize;
+    }
 
-		mobjTransformed.getPath().removeInterpolationPoints();
-		mobjTransformed.getMp().copyFrom(mobjDestiny.getMp());
-		mobjTransformed.absoluteSize = mobjDestiny.absoluteSize;
-	}
-
-	private void alignNumberOfElements(JMPath path1, JMPath path2) {
-		JMPath pathSmall, pathBig;
-		if (path1.size() < path2.size()) {
-			pathSmall = path1;
-			pathBig = path2;
-		} else {
-			pathBig = path1;
-			pathSmall = path2;
-		}
-		pathSmall.alignPathsToGivenNumberOfElements(pathBig.size());
-	}
+    private void alignNumberOfElements(JMPath path1, JMPath path2) {
+        JMPath pathSmall, pathBig;
+        if (path1.size() < path2.size()) {
+            pathSmall = path1;
+            pathBig = path2;
+        } else {
+            pathBig = path1;
+            pathSmall = path2;
+        }
+        pathSmall.alignPathsToGivenNumberOfElements(pathBig.size());
+    }
 
 }

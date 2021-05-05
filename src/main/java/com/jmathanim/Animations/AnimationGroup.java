@@ -106,29 +106,27 @@ public class AnimationGroup extends AnimationWithEffects {
     @Override
     public void initialize(JMathAnimScene scene) {
         super.initialize(scene);
-        
+
         int size = animations.size();
         int k = 0;
         if ((size > 1) && (delayPercentage > 0)) {// Only works when group has at least 2 members...
             for (Animation anim : animations) {
                 double a = k * (delayPercentage) / (size - 1);
                 double b = 1 - delayPercentage;
-                anim.setLambda(anim.getLambda().compose(UsefulLambdas.allocateTo(a, a+b)));
+                anim.setLambda(anim.getLambda().compose(UsefulLambdas.allocateTo(a, a + b)));
 //                anim.setLambda(UsefulLambdas.allocateTo(a, a + b));
                 k++;
             }
         }
-        
-        
-        
+
         for (Animation anim : animations) {
             if (anim instanceof AnimationWithEffects) {
                 AnimationWithEffects animEf = (AnimationWithEffects) anim;
-                animEf.copyEffectParametersFrom(this);
+               this.copyEffectParametersTo(animEf);
             }
             anim.initialize(scene);
         }
-        
+
     }
 
     @Override
@@ -156,29 +154,38 @@ public class AnimationGroup extends AnimationWithEffects {
     }
 
     @Override
-    public <T extends Animation> T setLambda(DoubleUnaryOperator lambda) {
+    public AnimationGroup setLambda(DoubleUnaryOperator lambda) {
         super.setLambda(lambda);
         for (Animation anim : animations) {
             anim.setLambda(lambda);
         }
-        return (T) this;
+        return this;
     }
 
     @Override
-    public <T extends Animation> T setUseObjectState(boolean shouldSaveState) {
+    public AnimationGroup setUseObjectState(boolean shouldSaveState) {
         for (Animation anim : animations) {
             anim.setUseObjectState(shouldSaveState);
         }
-        return (T) this;
+        return this;
     }
 
     @Override
-    public <T extends Animation> T setAddObjectsToScene(boolean addToScene) {
+    public AnimationGroup setAddObjectsToScene(boolean addToScene) {
         for (Animation anim : animations) {
             anim.setAddObjectsToScene(addToScene);
         }
-        return (T) this;
+        return this;
     }
+
+    @Override
+    public AnimationGroup setShouldInterpolateStyles(boolean interpolateStyles) {
+        for (Animation anim : animations) {
+            anim.setShouldInterpolateStyles(interpolateStyles);
+        }
+        return this;
+    }
+
 
     /**
      * Sets the delay percentage. A number between 0 and 1 that controls the
