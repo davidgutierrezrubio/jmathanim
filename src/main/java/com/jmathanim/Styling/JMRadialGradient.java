@@ -20,12 +20,9 @@ package com.jmathanim.Styling;
 import com.jmathanim.Cameras.Camera;
 import com.jmathanim.Renderers.JavaFXRenderer;
 import com.jmathanim.mathobjects.Point;
-import javafx.scene.paint.Color;
 import javafx.scene.paint.CycleMethod;
-import javafx.scene.paint.LinearGradient;
 import javafx.scene.paint.Paint;
 import javafx.scene.paint.RadialGradient;
-import javafx.scene.paint.Stop;
 
 /**
  *
@@ -85,12 +82,12 @@ public class JMRadialGradient implements PaintStyle {
         double realRadius;
         if (!relativeToShape) {
             cc = cam.mathToScreenFX(center.v);
-            realRadius=cam.mathToScreen(this.radius);
+            realRadius = cam.mathToScreen(this.radius);
         } else {
             cc = new double[]{center.v.x, 1 - center.v.y};
-            realRadius=this.radius;
+            realRadius = this.radius;
         }
-        
+
         return new RadialGradient(focusAngle, focusDistance, cc[0], cc[1], realRadius, relativeToShape, cycleMethod, stops.toFXStop(alpha));
 //                cc[0], c[1], ee[0], ee[1], relativeToShape, this.cycleMethod, stops.toFXStop(alpha));
     }
@@ -105,7 +102,7 @@ public class JMRadialGradient implements PaintStyle {
                 JMColor col = interStops.getColorHashMap().get(tt);
                 interStops.add(tt, (JMColor) col.interpolate(pc, t));
             }
-             resul.alpha = (1 - t) * resul.alpha + t * pc.getAlpha();
+            resul.alpha = (1 - t) * resul.alpha + t * pc.getAlpha();
             return resul;
         }
         if (p instanceof JMRadialGradient) {
@@ -139,41 +136,96 @@ public class JMRadialGradient implements PaintStyle {
         return this.copy();//Do nothing, return a copy of same object
     }
 
+    /**
+     * Retusn the relative to shape flag
+     *
+     * @return If true, center, radius and focusDistance are computed relative
+     * to the bounding box of the shape to paint. If false, are computed in math
+     * coordinates.
+     */
     public boolean isRelativeToShape() {
         return relativeToShape;
     }
 
-    public <T extends JMRadialGradient> T setRelativeToShape(boolean relativeToShape) {
+    /**
+     * Sets the relative to shape flag. If true, center, radius and
+     * focusDistance are computed relative to the bounding box of the shape to
+     * paint.If false, are computed in math coordinates.
+     *
+     * @param relativeToShape Relative flag, a boolean value
+     * @return This object
+     */
+    public JMRadialGradient setRelativeToShape(boolean relativeToShape) {
         this.relativeToShape = relativeToShape;
-        return (T) this;
+        return this;
     }
 
+    /**
+     * Gets the color stops for this gradient
+     *
+     * @return A GradientStop instance with the colors
+     */
     public GradientStop getStops() {
         return stops;
     }
 
-    public <T extends JMRadialGradient> T add(double t, String strCol) {
+    /**
+     * Overloaded method. Adds a color mark for this gradient at specified
+     * parameter.
+     *
+     * @param t Position to add the gradient, from 0 to 1
+     * @param strCol A string with a valid color declaration to parse.
+     * @return This object
+     */
+    public JMRadialGradient add(double t, String strCol) {
         stops.add(t, JMColor.parse(strCol));
-        return (T) this;
+        return this;
     }
 
-    public <T extends JMRadialGradient> T add(double t, JMColor col) {
+    /**
+     * Adds a color mark for this gradient at specified parameter.
+     *
+     * @param t Position to add the gradient, from 0 to 1
+     * @param col JMColor to add
+     * @return This object
+     */
+    public JMRadialGradient add(double t, JMColor col) {
         stops.add(t, col);
-        return (T) this;
+        return this;
     }
 
-    public <T extends JMRadialGradient> T remove(double t) {
+    /**
+     * Removes the color from the specified position
+     *
+     * @param t Position to remove the color, from 0 to 1.
+     * @return This object
+     */
+    public JMRadialGradient remove(double t) {
         stops.remove(t);
-        return (T) this;
+        return this;
     }
 
+    /**
+     * Returns the currently cycle method, a JavaFX cycle for gradients
+     *
+     * @return A cycle method, a value from the enum
+     * javafx.scene.paint.CycleMethod
+     */
     public CycleMethod getCycleMethod() {
         return cycleMethod;
     }
 
-    public <T extends JMRadialGradient> T setCycleMethod(CycleMethod cycleMethod) {
+    /**
+     * Sets the cycle method for this gradient. The default cycle method is
+     * NO_CYCLE.
+     *
+     * @param cycleMethod
+     * @return A cycle method, a value from the enum
+     * javafx.scene.paint.CycleMethod
+     */
+    public JMRadialGradient setCycleMethod(CycleMethod cycleMethod) {
         this.cycleMethod = cycleMethod;
-        return (T) this;
+        return this;
     }
 
 }

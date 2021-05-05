@@ -13,14 +13,51 @@ import javafx.scene.paint.Paint;
  */
 public interface PaintStyle {
 
+    /**
+     * Returns the alpha parameter used for this paint style
+     *
+     * @return Alpha value. 0 means invisible, 1 fully opaque
+     */
     public double getAlpha();
 
+    /**
+     * Sets the alpha parameter used for this paint style
+     *
+     * @param alpha Alpha value. 0 means invisible, 1 fully opaque
+     */
     public void setAlpha(double alpha);
 
-    public Paint getFXPaint(JavaFXRenderer r,Camera cam);
+    /**
+     * returns a valid Paint object to be used in JavaFX methods
+     *
+     * @param r JavaFXrenderer instance to use
+     * @param cam Camera to compute math coordinates
+     * @return The Paint object to use in JavaFX
+     */
+    public Paint getFXPaint(JavaFXRenderer r, Camera cam);
 
+    /**
+     * Creates a copy of this PaintStyle
+     *
+     * @return A copy
+     */
     public PaintStyle copy();
 
+    /**
+     * Interpolates this PaintStyle with another one, generating a new with
+     * interpolated values. Not all implementations of this interface can be
+     * interpolated. In this case no interpolation is done and a copy of this
+     * object is returned. Currently the following interpolations can be done
+     * (in both ways): JMColor-JMColor, JMLinearGradient-JMColor,
+     * JMRadialGradient-JMColor, JMLinearGradient-JMLinearGradient (if they have
+     * the same relative flag and same cycle method) and
+     * JMRadialGradient-JMRadialGradient (same conditions as the previous one).
+     *
+     * @param p The other PaintStyle to interpolate
+     * @param t Interpolation parameter. 0 returns this object, 1 returns the
+     * other.
+     * @return A new PaintStyle representing the interpolated object.
+     */
     public PaintStyle interpolate(PaintStyle p, double t);
 
 }

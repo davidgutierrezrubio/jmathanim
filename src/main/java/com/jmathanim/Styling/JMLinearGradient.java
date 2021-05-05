@@ -25,6 +25,7 @@ import javafx.scene.paint.LinearGradient;
 import javafx.scene.paint.Paint;
 
 /**
+ * A class that representas a linear gradient
  *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
@@ -37,6 +38,11 @@ public class JMLinearGradient implements PaintStyle {
     protected boolean relativeToShape;
     protected CycleMethod cycleMethod;
 
+    /**
+     * Creates a new linear gradient. Both points should be in math coordinates if relativeShape flag is false or in relative coordinates (from 0 to 1 usually) otherwise.
+     * @param start Starting point
+     * @param end Ending point 
+     */
     public JMLinearGradient(Point start, Point end) {
         this.start = start;
         this.end = end;
@@ -112,7 +118,7 @@ public class JMLinearGradient implements PaintStyle {
                 }
                 resul.start = resul.start.interpolate(lp.start, t);
                 resul.end = resul.end.interpolate(lp.end, t);
-                resul.alpha = t*resul.alpha+(1-t)*lp.alpha;
+                resul.alpha = t * resul.alpha + (1 - t) * lp.alpha;
                 return resul;
             }
 

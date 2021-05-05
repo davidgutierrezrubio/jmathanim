@@ -22,6 +22,7 @@ import com.jmathanim.Renderers.Renderer;
 import com.jmathanim.Styling.ConfigLoader;
 import com.jmathanim.Styling.JMColor;
 import com.jmathanim.Styling.MODrawProperties;
+import com.jmathanim.Styling.PaintStyle;
 import com.jmathanim.Styling.Stylable;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.MathObject;
@@ -99,7 +100,7 @@ public class JMathAnimConfig {
     }
 
     // Background color, default black
-    private JMColor backgroundColor = JMColor.BLACK;
+    private PaintStyle backgroundColor = JMColor.BLACK;
     public boolean delay = true;
 
     // Shadow parameters
@@ -213,11 +214,11 @@ public class JMathAnimConfig {
         return renderer.getCamera();
     }
 
-    public JMColor getBackgroundColor() {
+    public PaintStyle getBackgroundColor() {
         return backgroundColor;
     }
 
-    public void setBackgroundColor(JMColor bakcgroundColor) {
+    public void setBackgroundColor(PaintStyle bakcgroundColor) {
         this.backgroundColor = bakcgroundColor;
     }
 

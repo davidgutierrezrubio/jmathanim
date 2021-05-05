@@ -142,6 +142,7 @@ public class JMColor implements PaintStyle {
      *
      * @return A raw copy of the JMColor, with identical attributes.
      */
+    @Override
     public JMColor copy() {
         return new JMColor(r, g, b, alpha);
     }
