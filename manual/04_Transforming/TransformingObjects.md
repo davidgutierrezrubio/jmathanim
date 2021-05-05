@@ -456,8 +456,8 @@ MathObjectGroup triangles = MathObjectGroup.make();
 int degree = 6;//Degree of the Sierpisnki triangle
 int num = (int) Math.pow(3, degree);//We need 3^degree triangles!
 for (int n = 0; n < num; n++) {
-    MathObject sq = Shape.regularPolygon(3).scale(.25);
-    triangles.add(sq);
+    MathObject tr = Shape.regularPolygon(3).scale(.25);
+    triangles.add(tr);
 }
 Point corner = Point.relAt(.5, .9);//Top corner of the Sierpinski triangle
 PascalLayout innerLayout = new PascalLayout(corner, 0, 0);

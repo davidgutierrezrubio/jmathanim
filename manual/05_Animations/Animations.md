@@ -174,7 +174,15 @@ Shape[] circles2 = new Shape[5];
 Shape[] circles3 = new Shape[5];
 Shape[] circles4 = new Shape[5];
 for (int n = 0; n < 5; n++) {
-    Shape s = Shape.circle().scale(.25).fillColor(JMColor.random());
+    //Creates a radial gradient with a random color
+    JMRadialGradient gr = new JMRadialGradient(Point.at(.25, .75), .8).setRelativeToShape(true);
+    JMColor col = (JMColor) JMColor.random();//Random color
+    gr.add(0, (JMColor) col.interpolate(JMColor.WHITE, .75));//The random color, but brighter
+    gr.add(1, col);
+    
+	//Base circle
+    Shape s = Shape.circle().scale(.25).fillColor(gr).thickness(2);
+    //Make 4 copies at random positions
     circles1[n] = s.copy().shift(Point.random().v);
     circles2[n] = s.copy().shift(Point.random().v);
     circles3[n] = s.copy().shift(Point.random().v);
@@ -184,20 +192,22 @@ for (int n = 0; n < 5; n++) {
         circles3[n],
         circles4[n]);
 }
-Shape center = Shape.square().center().scale(.5).fillColor(JMColor.random());
+Shape center = Shape.square().center().scale(.5).fillColor(JMColor.random()).thickness(4);
 add(center);
 camera.adjustToAllObjects();
 ShiftAnimation anim1 = Commands.stackTo(3, center, Anchor.Type.UPPER, 0, circles1);
 ShiftAnimation anim2 = Commands.stackTo(3, center, Anchor.Type.LEFT, 0, circles2);
 ShiftAnimation anim3 = Commands.stackTo(3, center, Anchor.Type.LOWER, 0, circles3);
 ShiftAnimation anim4 = Commands.stackTo(3, center, Anchor.Type.RIGHT, 0, circles4);
-playAnimation(anim1,anim2,anim3,anim4);
+playAnimation(anim1, anim2, anim3, anim4);
 waitSeconds(5);
 ```
 
 
 
 ![stackToAnimation](stackToAnimation.gif)
+
+The same effect can be easily achieved using the `MathObjectGroup` class and the `setLayout` method.
 
 
 
