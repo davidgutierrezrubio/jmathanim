@@ -354,7 +354,7 @@ This class has the attribute `spiralGap` that admits an integer parameter that c
 ```java
 int num=50;//Now we are creating more squares!
 ........
-SpiralLayout layout = new SpiralLayout(refPoint, SpiralLayout.Orientation.RIGHT_CLOCKWISE, .1, .1).setSpiralGap(1);
+SpiralLayout layout = new SpiralLayout(refPoint, SpiralLayout.Orientation.RIGHT_CLOCKWISE, 0, 0).setSpiralGap(1);
 ```
 
 You will obtain the following image:
