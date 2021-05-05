@@ -307,6 +307,8 @@ as thickness and color.
 
 > **WARNING**: After transforming object `A` into `B`, in some cases the transformed object becomes unusable. You should using `B` after that in a general case. In any case, `A` object is removed automatically from the scene.
 
+## Transform strategies
+
 The precise method of transform depends on the type of source and destination objects.  For example, in the previous case, a point-by-point interpolation was chosen. However, if both shapes are regular polygons with the same number of sides, an homothecy is chosen to transform. We will show another example, not using the "long" form given by the `play` object:
 
 ``` java
@@ -322,6 +324,38 @@ waitSeconds(1);
 While both methods may seem equal, the homothecy method ensures the object doesn’t get distorted in the way. If you want to force a concrete transform strategy, you can do it with the method `.setTransformMethod(method)` where method is a value of the enum `TransformMethod`.
 
 > **WARNING**: Forcing a concrete transform strategy may leads to errors in some cases. In most cases, no animation will be done and a message will be added to the logs.
+
+Currently, the following strategies are implemented:
+
+1. `INTERPOLATE_SIMPLE_SHAPES_BY_POINT`, for 2 simple shapes, a point-by-point interpolation. A simple shape has only one connected component, like squares or circles.
+2. `INTERPOLATE_POINT_BY_POINT`. A more general interpolation. The shape is converted in the so called canonical form. Applicable when the shapes have multiple componentes (for example the shape of a "B" letter has 3 components).
+3. `HOMOTHECY_TRANSFORM` A homothecy is created to transform the original shape into the destiny. The homothecy is created so that the 2 first points of the origin shape transform into the 2 first points of the destiny shape.
+4. `ROTATE_AND_SCALEXY_TRANSFORM` Similar to the homothecy, but scaling is not homogeneous. This animation is used to transform any rectangle into another one, to prevent distortions.
+5. `FUNCTION_INTERPOLATION` The name says it! Used  to transform one function to another, interpolating x-to-x
+6. `MULTISHAPE_TRANSFORM` For transforming Multishape objects (like LaTeXMathObject)
+7. `GENERAL_AFFINE_TRANSFORM` Like HomothecyTransform, but admits a more general affine transform. The 3 first point of origin go to the 3 first point of destiny.
+8. `ARROW_TRANSFORM` A specialized class that transforms arrows, delegating into a homothecy transform and properly handling arrow heads.
+
+To see the difference between one type or another, consider this code, where we transform one square into a rotated rectangle, forcing a `GENERAL_AFFINE_TRANSFORM` method:
+
+```java
+Shape sq = Shape.square().center().style("solidorange");
+Shape sq2 = Shape.square().scale(.25,1).style("solidorange").rotate(45 * DEGREES).moveTo(Point.at(1,0));
+Transform tr = new Transform(10, sq, sq2);//10 seconds so that you can see the details
+tr.setTransformMethod(Transform.TransformMethod.GENERAL_AFFINE_TRANSFORM);
+playAnimation(tr);
+waitSeconds(3);
+```
+
+We obtain the following animation:
+
+<img src="TransformStrategies01.gif" alt="TransformStrategies01" style="zoom:67%;" />
+
+Notice something strange? The transform is done, but the intermediate steps are not natural. That is because the intermediate figures are not rectangles. That's what the `ROTATE_AND_SCALEXY_TRANSFORM` was created for. Fortunately, the `Transform` class chooses the most appropriate transform so you don't have to worry. In this case, simply remove the line `tr.setTransformMethod(Transform.TransformMethod.GENERAL_AFFINE_TRANSFORM);` and JMathAnim will use the proper strategy:
+
+<img src="TransformStrategies02.gif" alt="TransformStrategies02" style="zoom:67%;" />
+
+## Transform optimizations
 
 Apart from different transform strategies, this class also allows different previous-to-transform optimization strategies (well, right now it only has one), listed in the enum `OptimizeMethod`.
 
