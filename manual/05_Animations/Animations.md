@@ -8,13 +8,7 @@ An `Animation` object has 4 important methods that should be understood if you w
 
 -   The `initialize(this)` method, which prepares the objects to be animated. It should be called immediately before the animation begins, that is, no modifications should be done to the objects between this method and the start of the animation. The only parameter it needs is the scene from where it is invoked, usually the own class, `this`.
 -   The `processAnimation`this method computes the time depending on the frame rate, and calls the next method. If the animation is finished, return `true`.
--   The `doAnim(double t)` method. This method actually performs the animation. The parameter `t` ranges from 0 to 1 where 0 is the beginning and 1 is the end. This is not actually the time, but the percentage of animation done. Internally a second parameter computed is a "smoothed" version of the parameter `t`, where a smooth function is applied so that the animation starts and ends in a soft way, rather than with the lineal `t`. Currently, the smooth function used is
-
-![lambda](lambda.png)
-
-![smoothFunction](smoothFunction.png)
-
-The smooth function is defined as a lambda java function, that you can get or set with `getLambda` and `setLambda` methods.
+-   The `doAnim(double t)` method. This method actually performs the animation. The parameter `t` ranges from 0 to 1 where 0 is the beginning and 1 is the end. This is not actually the time, but the percentage of animation done. Internally a second parameter computed is a "smoothed" version of the parameter `t`, where a smooth function is applied so that the animation starts and ends in a soft way, rather than with the lineal `t`.  The smooth function is defined as a lambda java function, that you can get or set with `getLambda` and `setLambda` methods. In the next chapter we will see other lambdas that you can use in your animations.
 
 -   The `finishAnimation()` method, that should do all the needed cleanup and finishing jobs.
 
@@ -27,6 +21,13 @@ while (!anim.processAnimation()) {
     advanceFrame();
 }
 ````
+
+is the same as
+
+```java
+Animation anim=<define here the animation>
+playAnimation(anim);
+```
 
 Also, there is a convenience object created, `play`, which stores shortcuts for most used animations.
 
