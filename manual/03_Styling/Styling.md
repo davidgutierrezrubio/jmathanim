@@ -34,6 +34,66 @@ The methods `.fillAlpha(double f)` and `.drawAlpha(double d)` sets directly the 
 Shape sq=Shape.square().fillColor("CADETBLUE").fillAlpha(.5);
 ```
 
+## Gradients
+
+All methods that accept colors also accept gradients (in fact, any class that inherits from `PaintStyle`).
+
+Linear gradients can be defined in a similar way of the JavaFX syntax:
+
+```java
+//A linear gradient from point (-1,0) to (1,0)
+JMLinearGradient gradientBG = new JMLinearGradient(Point.at(-1, 0), Point.at(1, 0));
+gradientBG.setRelativeToShape(false)
+    .add(0d, "orange")//at t=0 (point (-1,0)), orange color
+    .add(1d, "violet");//at t=1 (point (1,0)), violet color
+config.setBackgroundColor(gradientBG);
+
+Shape circle = Shape.circle();
+
+//A radial gradient from relative point (.25,.75) and relative radius .75
+JMRadialGradient gradientCircle = new JMRadialGradient(Point.at(.25, .75), .5);
+gradientCircle.setRelativeToShape(true)
+    .add(0d, "white")//At center of (.25,.75), white color
+    .add(1d, "steelblue");//With distance of the center >.5, steelblue color
+circle.fillColor(gradientCircle);
+add(circle);
+waitSeconds(3);
+```
+
+<img src="gradients01.png" alt="image-20210505161847146" style="zoom:50%;" />
+
+You can apply gradients both to fill and draw colors
+
+```java
+Rect view = getMathView().getBoundingBox();
+JMLinearGradient functionGradient = new JMLinearGradient(view.getLower(), view.getUpper());
+functionGradient.setRelativeToShape(false)
+    .add(0d, "blue")
+    .add(1d, "red");
+
+JMRadialGradient axesGradient = new JMRadialGradient(Point.origin(), 2);
+axesGradient.setRelativeToShape(false)
+    .add(0d, "black")
+    .add(1d, "violet");
+
+Axes axes = new Axes();
+axes.generatePrimaryXTicks(-2, 2, .5)
+    .generatePrimaryYTicks(-2, 2, .5)
+    .drawColor(axesGradient);
+
+FunctionGraph fg = FunctionGraph.make(x -> Math.sin(x), -2, 2);
+fg.drawColor(functionGradient).thickness(4);
+
+add(axes, fg);
+waitSeconds(3);
+```
+
+<img src="gradients02.png" alt="image-20210505162801513" style="zoom:50%;" />
+
+
+
+
+
 ## DashStyle
 
 The `dashStyle`method sets the dash used to draw the outline, chosen from the enum `DashStyle`. Currently, there are 3 different styles, `SOLID`, `DASHED`and `DOTTED`. The following code creates 3 pentagons with these dash styles.
