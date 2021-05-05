@@ -47,6 +47,12 @@ A point can be represented in different styles, defined in the `DotStyle` enum, 
 The code used was
 
 ``` java
+ @Override
+    public void setupSketch() {
+        config.parseFile("#preview.xml");
+        config.parseFile("#light.xml");
+    }
+
 @Override
 public void runSketch() throws Exception {
         Point A = Point.at(-.5, 0).dotStyle(Point.Syle.CIRCLE);
@@ -57,7 +63,7 @@ public void runSketch() throws Exception {
     }
 ```
 
-If you try to execute this code you’ll probably see the dots are white over black background. These are the default color values. I used another colors for this document. Don’t worry, we’ll see later how to change this. You’ll see that you can easily apply styles to your animations.
+The code in the `setupSketch` method loads default presets to preview the animation with creating a movie file, and using a style with white background.  We will consistently use this style for the rest of the manual.  You can read more about configuration files in the styling chapter.
 
 ## The `Shape` class
 
