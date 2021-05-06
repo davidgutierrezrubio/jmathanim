@@ -431,7 +431,7 @@ public abstract class MathObject implements Drawable, Updateable, Stateable, Box
 	 * @return This MathObject subclass
 	 */
 	public <T extends MathObject> T dashStyle(MODrawProperties.DashStyle dashStyle) {
-		mp.dashStyle = dashStyle;
+		getMp().setDashStyle(dashStyle);
 		return (T) this;
 	}
 

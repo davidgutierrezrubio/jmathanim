@@ -57,6 +57,7 @@ import javafx.scene.image.WritableImage;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Path;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.shape.StrokeLineCap;
 import javafx.scene.shape.StrokeLineJoin;
 import javafx.scene.shape.StrokeType;
 import javafx.scene.text.Font;
@@ -215,11 +216,11 @@ public class JavaFXRenderer extends Renderer {
         clip.setLayoutY(25);
         WritableImage img2;
         BufferedImage bi = new BufferedImage(config.mediaW, config.mediaH, BufferedImage.TYPE_INT_ARGB);
-        JavaFXRenderer r=this;
+        JavaFXRenderer r = this;
         FutureTask<WritableImage> task = new FutureTask<>(new Callable<WritableImage>() {
             @Override
             public WritableImage call() throws Exception {
-                 fxScene.setFill(config.getBackgroundColor().getFXPaint(r, camera));
+                fxScene.setFill(config.getBackgroundColor().getFXPaint(r, camera));
                 group.getChildren().clear();
                 groupDebug.getChildren().clear();
 
@@ -329,12 +330,13 @@ public class JavaFXRenderer extends Renderer {
 
         // Stroke width and color
         path.setStroke(mobj.getMp().getDrawColor().getFXPaint(this, camera));
+        double th = computeThickness(mobj);
 
         // Compute thickness depending on camera
         // A thickness of 1 means a javafx thickness 1 in a 800x600with mathview of
         // width 4
         // In a 800x600, it should mean 1 pixel
-        path.setStrokeWidth(computeThickness(mobj));
+        path.setStrokeWidth(th);
 
         // Fill color
         if (mobj.getMp().isFillColorIsDrawColor()) {
@@ -342,16 +344,19 @@ public class JavaFXRenderer extends Renderer {
         } else {
             path.setFill(mobj.getMp().getFillColor().getFXPaint(this, camera));
         }
-
+        Double thic = mobj.getMp().getThickness();
         // Dash pattern
         switch (mobj.getMp().getDashStyle()) {
             case SOLID:
                 break;
             case DASHED:
-                path.getStrokeDashArray().addAll(25d, 10d);
+                path.getStrokeDashArray().addAll(getThicknessForMathWidth(.025), getThicknessForMathWidth(.01));
+                path.setStrokeLineCap(StrokeLineCap.BUTT);
                 break;
             case DOTTED:
-                path.getStrokeDashArray().addAll(2d, 6d);
+//                path.getStrokeDashArray().addAll(2d*th,6d*th);
+                path.getStrokeDashArray().addAll(getThicknessForMathWidth(.0025), getThicknessForMathWidth(.01));
+                path.setStrokeLineCap(StrokeLineCap.BUTT);
                 break;
         }
     }
