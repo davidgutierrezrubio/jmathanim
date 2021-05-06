@@ -164,6 +164,10 @@ waitSeconds(1);
 
 ![fadeHighLightShrinkDemo](fadeHighLightShrinkDemo.gif)
 
+
+
+The use of the `play` object allows fast writing of simple animations, but if you need to fine tune some parameters, like the lambda time function, or add some effects, you will need to define it "the long way".
+
 ## Stacking and aligning
 
 The `stackTo` method also has an animated version. A variable number of objects can be animated at the same animation. In this case, the second object will be stacked to the first, and so on. To illustrate this, we create 4 arrays of circles with random colors and stack them to a central square:
@@ -254,7 +258,7 @@ waitSeconds(3);
 
 ![moveAlongpath](moveAlongpath.gif)
 
-You can try modifying the lambda function of each animation with the `setLambda` method to see what happens. For example, `anim.setLambda(x->x)` or `anim.setLambda(x->4*x*(1-x))`. 
+You can try modifying the lambda function of each animation with the `setLambda` method to see what happens. For example, `anim.setLambda(x->x)` or `anim.setLambda(x->4*x*(1-x))`.  We will see use of lambdas in the next chapter.
 
 # The ShowCreation animation
 
@@ -333,7 +337,7 @@ Currently, the following strategies are implemented:
 4. `ROTATE_AND_SCALEXY_TRANSFORM` Similar to the homothecy, but scaling is not homogeneous. This animation is used to transform any rectangle into another one, to prevent distortions.
 5. `FUNCTION_INTERPOLATION` The name says it! Used  to transform one function to another, interpolating x-to-x
 6. `MULTISHAPE_TRANSFORM` For transforming Multishape objects (like LaTeXMathObject)
-7. `GENERAL_AFFINE_TRANSFORM` Like HomothecyTransform, but admits a more general affine transform. The 3 first point of origin go to the 3 first point of destiny.
+7. `GENERAL_AFFINE_TRANSFORM` Like HomothecyTransform, but admits a more general affine transform. The 3 first points of origin go to the 3 first points of destiny.
 8. `ARROW_TRANSFORM` A specialized class that transforms arrows, delegating into a homothecy transform and properly handling arrow heads.
 
 To see the difference between one type or another, consider this code, where we transform one square into a rotated rectangle, forcing a `GENERAL_AFFINE_TRANSFORM` method:
@@ -411,15 +415,30 @@ for (Shape s : text) {
 
 So far, we have seen how to animate the position or shape of an object. In the `Transform` animation, style of the transformed object changes smoothly to match the style of destiny too. There are a few animations related to the style of an object:
 
-The `setColor` animation animates the colors of the objects to the specified. Draw color and fill color may be specified. If you do not wish to change one of them, you just set it to null. For example:
+The `setColor` animation animates the colors of the objects to the specified. Draw color and fill color may be specified. If you do not wish to change one of them, you just set it to null. 
+
+The `setStyle` performs in a similar way, but changes all drawing parameters to those stored in the given style.
+
+Note that, at the current version, only draw and fill colors/gradients, and thickness are interpolated. At the end of the animation, all the destiny attributes like layer, dash style, etc are copied.
 
 ``` java
-Shape sq=Shape.square().center().thickness(10);
-Arrow2D arrow=Arrow2D.makeSimpleArrow2D(Point.unitX(), Point.unitY()).thickness(10);
-add(sq,arrow);
-waitSeconds(3);
-Animation cmd = Commands.setColor(3, JMColor.RED, null, sq,arrow);
-playAnimation(cmd);
+Shape circle = Shape.circle().thickness(8);
+play.showCreation(circle);
+waitSeconds(1);
+
+//Animate the change of fill color to violet. Draw color is unaltered.
+playAnimation(Commands.setColor(2, null, JMColor.parse("VIOLET"), circle));
+
+waitSeconds(1);
+//Animate change to style solidorange
+playAnimation(Commands.setStyle(2, "solidorange", circle));
+
+//Animate change of fill to a gradient and draw to a fixed color
+JMRadialGradient gradient=new JMRadialGradient(Point.at(.25,.75),.5);
+gradient.setRelativeToShape(true)
+    .add(0, "white")
+    .add(1,"brown");
+playAnimation(Commands.setColor(2, JMColor.parse("STEELBLUE"),gradient,circle));
 waitSeconds(3);
 ```
 
@@ -427,16 +446,26 @@ Will generate the following animation:
 
 ![setColorAnimation](setColorAnimation.gif)
 
-The `setMP` animations works in a more general way, where you directly interpolate with the values of a specified `MODrawProperties`.
-Currently, only the draw and fill colors and thickness are interpolated. At the end of the animation, all the destiny attributes like layer, dash style, etc are copied.
+These methods have simplified fast-access versions in the object `play`:
 
-If you have styles defined via config files or with the command `createStyleFrom(obj)` , the ` setStyle` animation changes the drawing parameters of an object to that style. This command has a shortcut in the `play` object. So, for example, the following code:
-
-``` java
-play.setStyle(3,"solidBlue",circle);
+```java
+play.setColor(2, JMColor.parse("STEELBLUE"),gradient,circle);//Equivalent to the first playAnimation command in the previous code
+play.setStyle(2, "solidorange", circle);//Equivalent to the second playAnimation command in the previous code
 ```
 
-will progressively change the drawing parameters of the `circle` object to adjust to the style `solidBlue` defined previously.
+
+
+
+
+
+
+The `setMP` animations works in a more general way, where you directly interpolate with the values of a specified `MODrawProperties`. So, for example the following code will animate for 3 seconds a change of drawing properties of object A to math those of object B:
+
+```java
+playAnimation(Commands.setMP(3, B.getMp(), A));
+```
+
+
 
 # AffineTransform related animations
 
@@ -479,6 +508,8 @@ Here you can see a GIF from the movie generated:
 
 ![affineAnimation2](affineAnimation2.gif)
 
+This animation, which works on any affine transform, simply interpolates element-to-element the identity matrix with the transformation matrix. For special cases of affine transforms like the next ones, JMathAnim internally uses other algorithms to generate a convenient interpolated state.
+
 ## Reflection
 The animation `Commands.reflection(double runtime, Point A, Point B, MathObject… objects)` animates the reflection that maps point A into B. Note that the point A is also transformed, as it is an instance of a point of the shape.
 
@@ -518,14 +549,14 @@ waitSeconds(2);
 The animation `Commands.reflectionByAxis(double runtime, Point a, Point b, MathObject… objects)` animates the reflection given by the axis AB.
 
 ```java
-Shape sq = Shape.regularPolygon(6).style("solidred").center();
-Shape sq2 = sq.copy().style("solidorange");
-add(sq, sq2);
+Shape reg1 = Shape.regularPolygon(6).style("solidred").center();
+Shape reg2 = reg1.copy().style("solidorange");
+add(reg1, reg2);
 camera.scale(2);
-Point A=sq.getPoint(1);
-Point B=sq.getPoint(2);
+Point A=reg1.getPoint(1);
+Point B=reg1.getPoint(2);
 add(Line.make(A,B).dashStyle(MODrawProperties.DashStyle.DOTTED));
-Animation anim = Commands.reflectionByAxis(3, A, B, sq2);
+Animation anim = Commands.reflectionByAxis(3, A, B, reg2);
 playAnimation(anim);
 waitSeconds(2);
 ```
