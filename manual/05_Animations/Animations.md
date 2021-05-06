@@ -453,12 +453,6 @@ play.setColor(2, JMColor.parse("STEELBLUE"),gradient,circle);//Equivalent to the
 play.setStyle(2, "solidorange", circle);//Equivalent to the second playAnimation command in the previous code
 ```
 
-
-
-
-
-
-
 The `setMP` animations works in a more general way, where you directly interpolate with the values of a specified `MODrawProperties`. So, for example the following code will animate for 3 seconds a change of drawing properties of object A to math those of object B:
 
 ```java

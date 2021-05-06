@@ -28,6 +28,8 @@ JMColor col3 = JMColor.parse("#CDFA14A6");//Red: CD, Green: FA, Blue: 14 (hexade
 JMColor col4 = JMColor.parse("SNOW");//Color SNOW from the JavaFX palette
 ```
 
+The `LatexMathObject` has also the method `.setColor(JMColor col)` which changes both draw and fill colors, and a overloaded method which allows to change colors in specified glyphs (we will see this in the Mathematical Formulas chapter).
+
 The methods `.fillAlpha(double f)` and `.drawAlpha(double d)` sets directly the opacity of fill and draw colors. These methods, like most, can be nested:
 
 ```
