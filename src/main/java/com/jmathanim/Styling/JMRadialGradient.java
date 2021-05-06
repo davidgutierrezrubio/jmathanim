@@ -63,6 +63,7 @@ public class JMRadialGradient implements PaintStyle {
         resul.relativeToShape = this.relativeToShape;
         resul.stops = this.stops.copy();
         resul.cycleMethod = this.cycleMethod;
+        resul.alpha=this.alpha;
         return resul;
     }
 

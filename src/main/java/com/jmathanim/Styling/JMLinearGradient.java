@@ -59,6 +59,7 @@ public class JMLinearGradient implements PaintStyle {
 //        resul.getStops().getColorHashMap().putAll(stops.getColorHashMap());
         resul.stops = this.stops.copy();
         resul.cycleMethod = this.cycleMethod;
+        resul.alpha=this.alpha;
         return resul;
     }
 
