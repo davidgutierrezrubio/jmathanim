@@ -740,11 +740,6 @@ public abstract class MathObject implements Drawable, Updateable, Stateable, Box
 		return (T) this;
 	}
 
-	public <T extends MathObject> T fillWithDrawColor(boolean fcd) {
-		this.getMp().setFillColorIsDrawColor(fcd);
-		return (T) this;
-	}
-
 	// Updateable methods
 	@Override
 	public void update(JMathAnimScene scene) {

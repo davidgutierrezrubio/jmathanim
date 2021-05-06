@@ -339,12 +339,8 @@ public class JavaFXRenderer extends Renderer {
         path.setStrokeWidth(th);
 
         // Fill color
-        if (mobj.getMp().isFillColorIsDrawColor()) {
-            path.setFill(mobj.getMp().getDrawColor().getFXPaint(this, camera));
-        } else {
-            path.setFill(mobj.getMp().getFillColor().getFXPaint(this, camera));
-        }
-        Double thic = mobj.getMp().getThickness();
+        path.setFill(mobj.getMp().getFillColor().getFXPaint(this, camera));
+        
         // Dash pattern
         switch (mobj.getMp().getDashStyle()) {
             case SOLID:

@@ -93,8 +93,6 @@ public interface Stylable {
 
 	void setFillColor(PaintStyle fillColor);
 
-	void setFillColorIsDrawColor(Boolean fillColorIsDrawColor);
-
 	void setFilled(boolean fill);
 
 	void setLayer(int layer);
@@ -128,8 +126,6 @@ public interface Stylable {
 	public void setVisible(Boolean absThickness);
 
 	public Boolean isVisible();
-
-	public Boolean isFillColorIsDrawColor();
 
 	public Stylable getSubMP(int n);
 

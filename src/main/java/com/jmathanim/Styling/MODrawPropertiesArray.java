@@ -178,14 +178,6 @@ public class MODrawPropertiesArray implements Stylable, Stateable {
 	}
 
 	@Override
-	public void setFillColorIsDrawColor(Boolean fillColorIsDrawColor) {
-		for (MathObject obj : objects) {
-			obj.getMp().setFillColorIsDrawColor(fillColorIsDrawColor);
-		}
-		mpRef.setFillColorIsDrawColor(fillColorIsDrawColor);
-	}
-
-	@Override
 	public void setFilled(boolean fill) {
 		for (MathObject obj : objects) {
 			obj.getMp().setFilled(fill);
@@ -304,11 +296,6 @@ public class MODrawPropertiesArray implements Stylable, Stateable {
 			obj.getMp().setAbsoluteThickness(absThickness);
 		}
 		mpRef.setAbsoluteThickness(absThickness);
-	}
-
-	@Override
-	public Boolean isFillColorIsDrawColor() {
-		return mpRef.isFillColorIsDrawColor();
 	}
 
 	@Override

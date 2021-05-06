@@ -67,7 +67,6 @@ public class MODrawProperties implements Stylable, Stateable {
         nullMP.absoluteThickness = null;
         nullMP.dotStyle = null;
         nullMP.linecap = null;
-        nullMP.fillColorIsDrawColor = null;
         return nullMP;
     }
 
@@ -120,7 +119,6 @@ public class MODrawProperties implements Stylable, Stateable {
 
     private PaintStyle drawColor;
     private PaintStyle fillColor;
-    public Boolean fillColorIsDrawColor = false; // If true, fillColor is always overriden by drawColor
     private Integer layer = null;
     public StrokeLineCap linecap = StrokeLineCap.ROUND;
     private MODrawProperties mpBackup;
@@ -165,8 +163,6 @@ public class MODrawProperties implements Stylable, Stateable {
         dotStyle = (prop.getDotStyle() == null ? dotStyle : prop.getDotStyle());
         layer = (prop.getLayer() == null ? layer : prop.getLayer());
         linecap = (prop.getLinecap() == null ? linecap : prop.getLinecap());
-        fillColorIsDrawColor = (prop.isFillColorIsDrawColor() == null ? fillColorIsDrawColor
-                : prop.isFillColorIsDrawColor());
         visible = (prop.isVisible() == null ? visible : prop.isVisible());
     }
 
@@ -209,12 +205,6 @@ public class MODrawProperties implements Stylable, Stateable {
     public void setDrawColor(PaintStyle drawColor) {
         if (drawColor != null) {
             this.drawColor = drawColor.copy();
-            Boolean a = isFillColorIsDrawColor();
-            if (a != null) {
-                if (a == true) {
-                    this.fillColor = drawColor.copy();
-                }
-            }
         }
     }
 
@@ -233,11 +223,6 @@ public class MODrawProperties implements Stylable, Stateable {
         if (fillColor != null) {
             this.fillColor = fillColor.copy();
         }
-    }
-
-    @Override
-    public void setFillColorIsDrawColor(Boolean fillColorIsDrawColor) {
-        this.fillColorIsDrawColor = fillColorIsDrawColor;
     }
 
     public MODrawProperties getFirstMP() {
@@ -335,10 +320,6 @@ public class MODrawProperties implements Stylable, Stateable {
         return absoluteThickness;
     }
 
-    public Boolean isFillColorIsDrawColor() {
-        return fillColorIsDrawColor;
-    }
-
     public boolean isFilled() {
         return (this.fillColor.getAlpha() > 0);
     }
@@ -397,7 +378,6 @@ public class MODrawProperties implements Stylable, Stateable {
         layer = mp.layer;
         dotStyle = mp.dotStyle;
         linecap = mp.linecap;
-        fillColorIsDrawColor = mp.fillColorIsDrawColor;
         visible = mp.visible;
     }
 

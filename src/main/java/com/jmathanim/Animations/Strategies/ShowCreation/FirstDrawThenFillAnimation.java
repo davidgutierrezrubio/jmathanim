@@ -75,10 +75,8 @@ public class FirstDrawThenFillAnimation extends CreationStrategy {
 		if (obj instanceof Shape) {
 			Concatenate con = new Concatenate();
 			MODrawProperties mpDst = obj.getMp().copy();
-			boolean firstDrawThenFillBackup = obj.getMp().getFirstMP().isFillColorIsDrawColor();
 			con.add(new SimpleShapeCreationAnimation(runtime * PERCENT_DRAWING, (Shape) obj));
 			con.add(Commands.setMP(runtime * (1 - PERCENT_DRAWING), mpDst, obj));
-			obj.fillWithDrawColor(firstDrawThenFillBackup);
 			return con;
 		}
 		if (obj instanceof MultiShapeObject) {
@@ -134,7 +132,6 @@ public class FirstDrawThenFillAnimation extends CreationStrategy {
 	@Override
 	public void initialize(JMathAnimScene scene) {
 		super.initialize(scene);
-		obj.getMp().setFillColorIsDrawColor(false);
 		anim = createAnimation(obj, this.runTime);
 		if (anim == null) {
 			JMathAnimScene.logger.error("Could'n crate FirstDrawThenFillAnimation for object type "
