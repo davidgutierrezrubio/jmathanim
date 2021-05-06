@@ -19,19 +19,12 @@ package com.jmathanim.Styling;
 
 import com.jmathanim.Cameras.Camera;
 import com.jmathanim.Renderers.JavaFXRenderer;
-import com.jmathanim.Utils.ResourceLoader;
 import com.jmathanim.mathobjects.JMImage;
-import com.jmathanim.mathobjects.MathObject;
-import java.io.IOException;
-import java.net.URL;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javafx.scene.image.Image;
 import javafx.scene.paint.ImagePattern;
 import javafx.scene.paint.Paint;
 
 /**
- *
+ * Creates a new image pattern
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
 public class JMImagePattern extends PaintStyle {
