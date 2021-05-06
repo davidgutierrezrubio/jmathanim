@@ -11,21 +11,31 @@ import javafx.scene.paint.Paint;
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  *
  */
-public interface PaintStyle {
+public abstract class PaintStyle {
+
+    private double alpha;
+
+    public PaintStyle() {
+        this.alpha=1;
+    }
 
     /**
      * Returns the alpha parameter used for this paint style
      *
      * @return Alpha value. 0 means invisible, 1 fully opaque
      */
-    public double getAlpha();
+    public double getAlpha() {
+        return alpha;
+    }
 
     /**
      * Sets the alpha parameter used for this paint style
      *
      * @param alpha Alpha value. 0 means invisible, 1 fully opaque
      */
-    public void setAlpha(double alpha);
+    public void setAlpha(double alpha) {
+        this.alpha=alpha;
+    }
 
     /**
      * returns a valid Paint object to be used in JavaFX methods
@@ -34,14 +44,14 @@ public interface PaintStyle {
      * @param cam Camera to compute math coordinates
      * @return The Paint object to use in JavaFX
      */
-    public Paint getFXPaint(JavaFXRenderer r, Camera cam);
+    public abstract Paint getFXPaint(JavaFXRenderer r, Camera cam);
 
     /**
      * Creates a copy of this PaintStyle
      *
      * @return A copy
      */
-    public PaintStyle copy();
+    public abstract PaintStyle copy();
 
     /**
      * Interpolates this PaintStyle with another one, generating a new with
@@ -58,6 +68,6 @@ public interface PaintStyle {
      * other.
      * @return A new PaintStyle representing the interpolated object.
      */
-    public PaintStyle interpolate(PaintStyle p, double t);
+    public abstract PaintStyle interpolate(PaintStyle p, double t);
 
 }

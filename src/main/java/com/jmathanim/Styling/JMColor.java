@@ -29,7 +29,7 @@ import java.lang.reflect.Field;
  *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
-public class JMColor implements PaintStyle {
+public class JMColor extends PaintStyle {
 
     public static JMColor NONE = new JMColor(0, 0, 0, 0);
     public static JMColor WHITE = new JMColor(1, 1, 1, 1);

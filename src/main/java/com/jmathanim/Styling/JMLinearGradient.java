@@ -29,9 +29,7 @@ import javafx.scene.paint.Paint;
  *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
-public class JMLinearGradient implements PaintStyle {
-
-    private double alpha;
+public class JMLinearGradient extends PaintStyle {
 
     protected Point start, end;
     protected GradientStop stops;
@@ -39,17 +37,20 @@ public class JMLinearGradient implements PaintStyle {
     protected CycleMethod cycleMethod;
 
     /**
-     * Creates a new linear gradient. Both points should be in math coordinates if relativeShape flag is false or in relative coordinates (from 0 to 1 usually) otherwise.
+     * Creates a new linear gradient. Both points should be in math coordinates
+     * if relativeShape flag is false or in relative coordinates (from 0 to 1
+     * usually) otherwise.
+     *
      * @param start Starting point
-     * @param end Ending point 
+     * @param end Ending point
      */
     public JMLinearGradient(Point start, Point end) {
+        super();
         this.start = start;
         this.end = end;
         this.stops = new GradientStop();
         relativeToShape = false;
         cycleMethod = CycleMethod.NO_CYCLE;
-        alpha = 1;//Default alpha
     }
 
     @Override
@@ -59,18 +60,8 @@ public class JMLinearGradient implements PaintStyle {
 //        resul.getStops().getColorHashMap().putAll(stops.getColorHashMap());
         resul.stops = this.stops.copy();
         resul.cycleMethod = this.cycleMethod;
-        resul.alpha=this.alpha;
+        resul.setAlpha(this.getAlpha());
         return resul;
-    }
-
-    @Override
-    public double getAlpha() {
-        return alpha;//Change this!
-    }
-
-    @Override
-    public void setAlpha(double alpha) {
-        this.alpha = alpha;
     }
 
     @Override
@@ -83,7 +74,7 @@ public class JMLinearGradient implements PaintStyle {
             ss = new double[]{start.v.x, 1 - start.v.y};
             ee = new double[]{end.v.x, 1 - end.v.y};
         }
-        return new LinearGradient(ss[0], ss[1], ee[0], ee[1], relativeToShape, this.cycleMethod, stops.toFXStop(alpha));
+        return new LinearGradient(ss[0], ss[1], ee[0], ee[1], relativeToShape, this.cycleMethod, stops.toFXStop(getAlpha()));
     }
 
     @Override
@@ -96,7 +87,7 @@ public class JMLinearGradient implements PaintStyle {
                 JMColor col = interStops.getColorHashMap().get(tt);
                 interStops.add(tt, (JMColor) col.interpolate(pc, t));
             }
-            resul.alpha = (1 - t) * resul.alpha + t * pc.getAlpha();
+            resul.setAlpha((1 - t) * resul.getAlpha() + t * pc.getAlpha());
             return resul;
         }
         if (p instanceof JMLinearGradient) {
@@ -119,7 +110,7 @@ public class JMLinearGradient implements PaintStyle {
                 }
                 resul.start = resul.start.interpolate(lp.start, t);
                 resul.end = resul.end.interpolate(lp.end, t);
-                resul.alpha = t * resul.alpha + (1 - t) * lp.alpha;
+                resul.setAlpha((1 - t) * resul.getAlpha() + t * lp.getAlpha());
                 return resul;
             }
 

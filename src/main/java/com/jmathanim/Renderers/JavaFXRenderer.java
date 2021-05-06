@@ -26,6 +26,7 @@ import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import static com.jmathanim.jmathanim.JMathAnimScene.DEGREES;
 import com.jmathanim.mathobjects.AbstractJMImage;
+import com.jmathanim.mathobjects.JMImage;
 import com.jmathanim.mathobjects.JMPath;
 import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.Shape;
@@ -418,11 +419,15 @@ public class JavaFXRenderer extends Renderer {
         return r;
     }
 
+    public Image getImageFromCatalog(AbstractJMImage obj) {
+        return images.get(obj.getId());
+    }
+    
     @Override
     public void drawImage(AbstractJMImage obj) {
         ImageView imageView;
         if (obj.isCached()) {
-            Image image = images.get(obj.getId());
+            Image image = getImageFromCatalog(obj);
             imageView = new ImageView(image);
         } else {
             imageView = new ImageView(obj.getImage());

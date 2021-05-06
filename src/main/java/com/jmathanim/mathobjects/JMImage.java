@@ -17,6 +17,7 @@
  */
 package com.jmathanim.mathobjects;
 
+import com.jmathanim.Renderers.JavaFXRenderer;
 import com.jmathanim.Renderers.Renderer;
 import com.jmathanim.Utils.AffineJTransform;
 import com.jmathanim.Utils.JMathAnimConfig;
@@ -36,12 +37,12 @@ public class JMImage extends AbstractJMImage {
 		return new JMImage(filename);
 	}
 
-	private final Renderer renderer;
+	private final JavaFXRenderer renderer;
 
 	public JMImage(String filename) {
 		setCached(true);
 		this.filename = filename;
-		renderer = JMathAnimConfig.getConfig().getRenderer();
+		renderer = (JavaFXRenderer) JMathAnimConfig.getConfig().getRenderer();
 		this.bbox = renderer.createImage(filename);
 		double sc = renderer.getMediaHeight() * 1d / 1080d;// Scales it taking as reference 1920x1080 production output
 		this.scale(sc);
@@ -118,7 +119,7 @@ public class JMImage extends AbstractJMImage {
 
 	@Override
 	public Image getImage() {
-		return null;
+		return renderer.getImageFromCatalog(this);
 	}
 
 	@Override

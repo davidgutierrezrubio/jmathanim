@@ -28,9 +28,7 @@ import javafx.scene.paint.RadialGradient;
  *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
-public class JMRadialGradient implements PaintStyle {
-
-    private double alpha;
+public class JMRadialGradient extends PaintStyle {
 
     protected Point center;
     protected double focusAngle;
@@ -46,6 +44,7 @@ public class JMRadialGradient implements PaintStyle {
     }
 
     public JMRadialGradient(Point center, double focusAngle, double focusDistance, double radius) {
+        super();
         this.center = center;
         this.focusAngle = focusAngle;
         this.focusDistance = focusDistance;
@@ -54,7 +53,6 @@ public class JMRadialGradient implements PaintStyle {
         this.stops = new GradientStop();
         relativeToShape = false;
         cycleMethod = CycleMethod.NO_CYCLE;
-        alpha = 1;//Default alpha
     }
 
     @Override
@@ -63,18 +61,8 @@ public class JMRadialGradient implements PaintStyle {
         resul.relativeToShape = this.relativeToShape;
         resul.stops = this.stops.copy();
         resul.cycleMethod = this.cycleMethod;
-        resul.alpha=this.alpha;
+        resul.setAlpha(this.getAlpha());
         return resul;
-    }
-
-    @Override
-    public double getAlpha() {
-        return alpha;//Change this!
-    }
-
-    @Override
-    public void setAlpha(double alpha) {
-        this.alpha = alpha;
     }
 
     @Override
@@ -89,7 +77,7 @@ public class JMRadialGradient implements PaintStyle {
             realRadius = this.radius;
         }
 
-        return new RadialGradient(focusAngle, focusDistance, cc[0], cc[1], realRadius, relativeToShape, cycleMethod, stops.toFXStop(alpha));
+        return new RadialGradient(focusAngle, focusDistance, cc[0], cc[1], realRadius, relativeToShape, cycleMethod, stops.toFXStop(getAlpha()));
 //                cc[0], c[1], ee[0], ee[1], relativeToShape, this.cycleMethod, stops.toFXStop(alpha));
     }
 
@@ -103,7 +91,7 @@ public class JMRadialGradient implements PaintStyle {
                 JMColor col = interStops.getColorHashMap().get(tt);
                 interStops.add(tt, (JMColor) col.interpolate(pc, t));
             }
-            resul.alpha = (1 - t) * resul.alpha + t * pc.getAlpha();
+            resul.setAlpha((1 - t) * resul.getAlpha() + t * pc.getAlpha());
             return resul;
         }
         if (p instanceof JMRadialGradient) {
@@ -128,7 +116,7 @@ public class JMRadialGradient implements PaintStyle {
                 resul.focusAngle = (1 - t) * resul.focusAngle + t * rp.focusAngle;
                 resul.focusDistance = (1 - t) * resul.focusDistance + t * rp.focusDistance;
                 resul.radius = (1 - t) * resul.radius + t * rp.radius;
-                resul.alpha = (1 - t) * resul.alpha + t * rp.alpha;
+                resul.setAlpha((1 - t) * resul.getAlpha() + t * rp.getAlpha());
                 return resul;
             }
 
