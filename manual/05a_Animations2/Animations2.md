@@ -199,7 +199,43 @@ If you change the parameter .5 to .75, with `anim.addDelayEffect(.75)`  the anim
 
 ![delayEffect3](delayEffect3.gif)
 
+## Delay effect in AnimationGroup
 
+Since version 0.9.3-SNAPSHOT, the delay effect is also implemented in the `AnimationGroup`:
+
+```java
+@Override
+public void setupSketch() {
+    config.parseFile("#production.xml");
+    config.parseFile("#light.xml");
+}
+
+@Override
+public void runSketch() throws Exception {
+    double runtime = 3;
+    Shape box = Shape.square().scale(1.5, 1).center().style("solidgreen");
+
+    Delimiter delWidth = Delimiter.make(box.getBoundingBox().getUR(), box.getBoundingBox().getDR(), Delimiter.Type.BRACE, .1);
+    LaTeXMathObject textWidth = LaTeXMathObject.make("height").stackTo(delWidth, Anchor.Type.RIGHT, .1);
+
+    Delimiter delHeight = Delimiter.make(box.getBoundingBox().getDR(), box.getBoundingBox().getDL(), Delimiter.Type.BRACE, .1);
+    LaTeXMathObject textHeight = LaTeXMathObject.make("width").stackTo(delHeight, Anchor.Type.LOWER, .1);
+
+    AnimationGroup ag = AnimationGroup.make(
+        Commands.growIn(runtime, box),
+        AnimationGroup.make(//Note that we include this in its own group so that they are animated at the same time
+            new ShowCreation(runtime, delWidth),
+            new ShowCreation(runtime, textWidth),
+            new ShowCreation(runtime, delHeight),
+            new ShowCreation(runtime, textHeight))
+    );
+
+    playAnimation(ag.addDelayEffect(.25));
+    waitSeconds(3);
+}
+```
+
+![delayEffect4](delayEffect4.gif)
 
 # Creating complex animations
 
@@ -253,7 +289,7 @@ public void setupSketch() {
 }
 
 @Override
-public void runSketch() throws Exception {
+public void runSketch() {
     MathObjectGroup functions = MathObjectGroup.make(
         drawGraphFor(UsefulLambdas.smooth(), "{\\tt smooth()}"),
         drawGraphFor(UsefulLambdas.smooth(.25d), "{\\tt smooth(.25d)}"),
@@ -336,54 +372,63 @@ we have a bounce effect between the 20% and 75% of the animation runtime:
 With the following code you can see the graphs of the lambda parameters and how they affect the animation. You can experiment changing the definitions of `rotateLambda` and `shiftLambda`, and create your own lambda functions with the sintax `t->f(t)`.
 
 ```java
-Axes axes = new Axes();
-axes.generatePrimaryXTicks(0, 1, .25);
-axes.generatePrimaryYTicks(0, 1, .25);
-add(axes);
-//Lambdas for rotate and shift animation
-final DoubleUnaryOperator rotateLambda = UsefulLambdas.smooth().compose(UsefulLambdas.allocateTo(.3, .6));
-final DoubleUnaryOperator shiftLambda = UsefulLambdas.bounce1();
+@Override
+public void setupSketch() {
+	config.parseFile("#preview.xml");
+	config.parseFile("#light.xml");
+}
 
-//Draw the graph of the shift lambda and add a point with a legend that will move
-FunctionGraph fgShift = FunctionGraph.make(shiftLambda, 0, 1).drawColor("brown").thickness(4);
-//This is an updateable point permanently in the graph of the function
-PointOnFunctionGraph pointFgShift = new PointOnFunctionGraph(0, fgShift)
-    .drawColor("darkblue").thickness(1);
-MathObject legendShift = LaTeXMathObject.make("shift")
-    .drawColor("brown").scale(.5);
-//We register this updateable to put the legend always to the right of the point
-registerUpdateable(new AnchoredMathObject(legendShift, Anchor.Type.LEFT, pointFgShift, Anchor.Type.RIGHT, .05));
-add(legendShift,fgShift, pointFgShift);
+@Override
+public void runSketch() {
+    Axes axes = new Axes();
+    axes.generatePrimaryXTicks(0, 1, .25);
+    axes.generatePrimaryYTicks(0, 1, .25);
+    add(axes);
+    //Lambdas for rotate and shift animation
+    final DoubleUnaryOperator rotateLambda = UsefulLambdas.smooth().compose(UsefulLambdas.allocateTo(.3, .6));
+    final DoubleUnaryOperator shiftLambda = UsefulLambdas.bounce1();
 
-//We do the same for the graph of the rotate lambda
-FunctionGraph fgRotate = FunctionGraph.make(rotateLambda, 0, 1)
-    .drawColor("orange").thickness(4);
-PointOnFunctionGraph pointFgRotate = new PointOnFunctionGraph(0, fgRotate)
-    .drawColor("darkred").thickness(1);
-MathObject legendRotate = LaTeXMathObject.make("rotate")
-    .drawColor("orange").scale(.5);
-registerUpdateable(new AnchoredMathObject(legendRotate, Anchor.Type.LOWER, pointFgRotate, Anchor.Type.UPPER, .05));
-add(legendRotate,fgRotate, pointFgRotate);
+    //Draw the graph of the shift lambda and add a point with a legend that will move
+    FunctionGraph fgShift = FunctionGraph.make(shiftLambda, 0, 1).drawColor("brown").thickness(4);
+    //This is an updateable point permanently in the graph of the function
+    PointOnFunctionGraph pointFgShift = new PointOnFunctionGraph(0, fgShift)
+        .drawColor("darkblue").thickness(1);
+    MathObject legendShift = LaTeXMathObject.make("shift")
+        .drawColor("brown").scale(.5);
+    //We register this updateable to put the legend always to the right of the point
+    registerUpdateable(new AnchoredMathObject(legendShift, Anchor.Type.LEFT, pointFgShift, Anchor.Type.RIGHT, .05));
+    add(legendShift,fgShift, pointFgShift);
 
-camera.setMathXY(-1, 2, .25);
-Shape sq = Shape.square()
-    .scale(.25)
-    .style("solidblue")
-    .moveTo(Point.at(0, -.25));
+    //We do the same for the graph of the rotate lambda
+    FunctionGraph fgRotate = FunctionGraph.make(rotateLambda, 0, 1)
+        .drawColor("orange").thickness(4);
+    PointOnFunctionGraph pointFgRotate = new PointOnFunctionGraph(0, fgRotate)
+        .drawColor("darkred").thickness(1);
+    MathObject legendRotate = LaTeXMathObject.make("rotate")
+        .drawColor("orange").scale(.5);
+    registerUpdateable(new AnchoredMathObject(legendRotate, Anchor.Type.LOWER, pointFgRotate, Anchor.Type.UPPER, .05));
+    add(legendRotate,fgRotate, pointFgRotate);
 
-AnimationGroup ag = AnimationGroup.make(
-    Commands.shift(6, 1, 0, pointFgShift)
-   		.setLambda(t -> t),//Move point in the graph of lambda shift
-    Commands.shift(6, 1, 0, pointFgRotate)
-    	.setLambda(t -> t),//Move point in the graph of lambda rotate
-    Commands.shift(6, 1, 0, sq)
-    	.setLambda(shiftLambda),
-    Commands.rotate(6, PI * .5, sq)
-    	.setUseObjectState(false)
-    	.setLambda(rotateLambda)
-);
-playAnimation(ag);
-waitSeconds(1);
+    camera.setMathXY(-1, 2, .25);
+    Shape sq = Shape.square()
+        .scale(.25)
+        .style("solidblue")
+        .moveTo(Point.at(0, -.25));
+
+    AnimationGroup ag = AnimationGroup.make(
+        Commands.shift(6, 1, 0, pointFgShift)
+        .setLambda(t -> t),//Move point in the graph of lambda shift
+        Commands.shift(6, 1, 0, pointFgRotate)
+        .setLambda(t -> t),//Move point in the graph of lambda rotate
+        Commands.shift(6, 1, 0, sq)
+        .setLambda(shiftLambda),
+        Commands.rotate(6, PI * .5, sq)
+        .setUseObjectState(false)
+        .setLambda(rotateLambda)
+    );
+    playAnimation(ag);
+    waitSeconds(1);
+}
 ```
 
 ![lambdas04](lambdas04.gif)
