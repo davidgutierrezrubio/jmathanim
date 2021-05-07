@@ -113,8 +113,8 @@ public class AnimationGroup extends AnimationWithEffects {
             for (Animation anim : animations) {
                 double a = k * (delayPercentage) / (size - 1);
                 double b = 1 - delayPercentage;
-                anim.setLambda(anim.getLambda().compose(UsefulLambdas.allocateTo(a, a + b)));
-//                anim.setLambda(UsefulLambdas.allocateTo(a, a + b));
+//                anim.setLambda(anim.getLambda().compose(UsefulLambdas.allocateTo(a, a + b)));
+                anim.setLambda(UsefulLambdas.allocateTo(a, a + b));
                 k++;
             }
         }

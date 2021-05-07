@@ -34,14 +34,6 @@ public class Delimiter extends MathObject {
 	private SVGMathObject body;
 	private double delimiterScale;
 
-	@Override
-	public <T extends MathObject> T applyAffineTransform(AffineJTransform tr) {
-		A.applyAffineTransform(tr);
-		B.applyAffineTransform(tr);
-		tr.applyTransformsToDrawingProperties(this);
-		return (T) this;
-	}
-
 	/**
 	 * Type of delimiter
 	 */
@@ -113,7 +105,7 @@ public class Delimiter extends MathObject {
 		this.gap = gap;
 	}
 
-	private MultiShapeObject generateDelimiter() {
+	public MultiShapeObject getDelimiterShape() {
 		Point AA = A.interpolate(B, .5 * (1 - delimiterScale));
 		Point BB = B.interpolate(A, .5 * (1 - delimiterScale));
 		double width = AA.to(BB).norm();
@@ -167,14 +159,14 @@ public class Delimiter extends MathObject {
 			if (A.isEquivalentTo(B, 0)) {
 				return;// Do nothing
 			}
-			MultiShapeObject delimiterToDraw = generateDelimiter();// TODO: do this in the update method
+			MultiShapeObject delimiterToDraw = getDelimiterShape();// TODO: do this in the update method
 			delimiterToDraw.draw(scene, r);
 		}
 	}
 
 	@Override
 	public Rect getBoundingBox() {
-		return generateDelimiter().getBoundingBox();
+		return getDelimiterShape().getBoundingBox();
 	}
 
 	/**

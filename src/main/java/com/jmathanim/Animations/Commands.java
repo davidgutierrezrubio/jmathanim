@@ -631,12 +631,13 @@ public class Commands {
 
             @Override
             public void doAnim(double t) {
+                double lt=getLambda().applyAsDouble(t);
                 restoreStates(mathObjects);
                 for (MathObject obj : mathObjects) {
-                    obj.scale(t);
-                    obj.multDrawAlpha(t);
-                    obj.multFillAlpha(t);
-                    obj.rotate((1 - t) * angle);
+                    obj.scale(lt);
+                    obj.multDrawAlpha(lt);
+                    obj.multFillAlpha(lt);
+                    obj.rotate((1 - lt) * angle);
                 }
             }
 
@@ -676,10 +677,11 @@ public class Commands {
 
             @Override
             public void doAnim(double t) {
+                double lt=getLambda().applyAsDouble(t);
                 restoreStates(mathObjects);
                 for (MathObject obj : mathObjects) {
-                    obj.multDrawAlpha(t);
-                    obj.multFillAlpha(t);
+                    obj.multDrawAlpha(lt);
+                    obj.multFillAlpha(lt);
                 }
             }
 
@@ -716,10 +718,11 @@ public class Commands {
 
             @Override
             public void doAnim(double t) {
+                double lt=getLambda().applyAsDouble(t);
                 restoreStates(mathObjects);
                 for (MathObject obj : mathObjects) {
-                    obj.multDrawAlpha(1 - t);
-                    obj.multFillAlpha(1 - t);
+                    obj.multDrawAlpha(1 - lt);
+                    obj.multFillAlpha(1 - lt);
                 }
             }
 
