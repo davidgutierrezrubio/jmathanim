@@ -18,26 +18,36 @@
 package com.jmathanim.Animations;
 
 /**
+ * This animation execute a single command. It is used to encapsulate ceratin
+ * commands into an Animation container like AnimationGroup or Concatenate
  *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
 public abstract class SingleCommandAnimation extends Animation {
 
-	public SingleCommandAnimation() {
-		super(0);
-	}
+    /**
+     * Creates a new SingleCommandAnimation. The default duration of this
+     * animation is 0.
+     */
+    public SingleCommandAnimation() {
+        super(0);
+    }
 
-	@Override
-	public boolean processAnimation() {
-		super.processAnimation();
-		command();
-		return true;// Finish the animation inmediately
-	}
+    @Override
+    public boolean processAnimation() {
+        super.processAnimation();
+        command();
+        return true;// Finish the animation inmediately
+    }
 
-	public abstract void command();
+    /**
+     * Command to execute. This should be implemented in the implementing class
+     */
+    public abstract void command();
 
-	@Override
-	public void doAnim(double t) {
-	};
+    @Override
+    public void doAnim(double t) {
+    }
+;
 
 }
