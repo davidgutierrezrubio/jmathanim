@@ -393,7 +393,13 @@ public abstract class Animation {
         this.t = time;
     }
 
-    protected void copyAnimationParametersTo(Animation anim)  {
+    /**
+     * Copy basic parameters from this animation to another one. This method is
+     * used mainly when an Animation subclass contains another animation.
+     *
+     * @param anim Animation to copy parameters
+     */
+    protected void copyAnimationParametersTo(Animation anim) {
         anim.setLambda(this.getLambda());
         anim.setAddObjectsToScene(this.isShouldAddObjectsToScene());
         anim.setShouldInterpolateStyles(this.isShouldInterpolateStyles());

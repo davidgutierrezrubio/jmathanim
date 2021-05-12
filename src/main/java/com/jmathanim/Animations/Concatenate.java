@@ -34,6 +34,11 @@ public class Concatenate extends Animation {
 	private final ArrayList<Animation> animations;
 	private int currentAnim;
 
+        /**
+         * Creates a new Concatenate animation with the given animations
+         * @param anims Animations to concatenate (varargs)
+         * @return The created anuimation
+         */
 	public static Concatenate make(Animation... anims) {
 		return new Concatenate(anims);
 	}
