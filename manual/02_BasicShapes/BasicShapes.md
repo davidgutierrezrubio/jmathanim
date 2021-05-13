@@ -135,7 +135,7 @@ waitSeconds(5);
 
 Otherwise you will get an error. Fortunately, most commons java IDE, like Netbeans, automatically perform this change when copy-pasting an already written formula into the code editor. 
 
-By default, LaTeX formulas are placed so that their left side is centered at (0,0).
+By default, LaTeX formulas are placed at the center of the screen.
 
 ## The `Line` class
 
