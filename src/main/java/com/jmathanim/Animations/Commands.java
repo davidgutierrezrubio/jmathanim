@@ -177,7 +177,7 @@ public class Commands {
                 super.initialize(scene);
                 saveStates(mathObjects);
                 if (c != null) {
-                    rotationCenter = c.copy();
+                    rotationCenter = c;
                 }
                 addObjectsToscene(mathObjects);
             }
