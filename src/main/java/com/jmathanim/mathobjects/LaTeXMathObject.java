@@ -61,9 +61,9 @@ public class LaTeXMathObject extends SVGMathObject {
             t.setLaTeX(text);
         }
 
-        if (t.shapes.size() > 0)// Move UL to (0,0) by default
+        if (t.shapes.size() > 0)
         {
-            t.stackTo(new Point(0, 0), Anchor.Type.UL);
+            t.center();
         }
         return t;
     }
@@ -141,10 +141,10 @@ public class LaTeXMathObject extends SVGMathObject {
 //        Camera cam = JMathAnimConfig.getConfig().getFixedCamera();
 //        double hm = cam.getMathView().getHeight();
 //        double hm = cam.screenToMath(cam.screenHeight);
-        double hm = 2.5;
+        double hm = 2.5;//Default height view
         double sc = DEFAULT_SCALE_FACTOR * .4 * hm / 6.8 * 2.5;
         this.scale(getBoundingBox().getUL(), sc, sc, 1);
-        this.stackTo(center, Anchor.Type.CENTER);
+        this.moveTo(center);
         return (T) this;
     }
 
