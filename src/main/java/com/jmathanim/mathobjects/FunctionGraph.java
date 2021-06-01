@@ -33,6 +33,7 @@ public class FunctionGraph extends Shape {
 
     public static final double DELTA_DERIVATIVE = .00001d;
     public static final int DEFAULT_NUMBER_OF_POINTS = 49;
+    public static final double CONTINUUM_THRESHOLD=100;
 
     /**
      * Different ways to define a function. Right now only lambda is supported
@@ -110,7 +111,7 @@ public class FunctionGraph extends Shape {
      * Generate the Bezier control points of the Shape representing the graph of
      * the funcion Approximate derivatives are computed to compute these.
      */
-    private void generateControlPoints() {
+    protected void generateControlPoints() {
         for (int n = 0; n < xPoints.size(); n++) {
             JMPathPoint jmp = this.getPath().getJMPoint(n);
             double x = jmp.p.v.x;
@@ -123,6 +124,10 @@ public class FunctionGraph extends Shape {
                 final double deltaX = .3 * (xPoints.get(n - 1) - x);
                 Vec v = new Vec(deltaX, getSlope(x, -1) * deltaX);
                 jmp.cpEnter.copyFrom(jmp.p.add(v));
+                double h=x-xPoints.get(n - 1);
+                double deriv=(getFunctionValue(x)-getFunctionValue(xPoints.get(n-1)))/h;
+                jmp.isThisSegmentVisible=(Math.abs(deriv)<CONTINUUM_THRESHOLD);
+                System.out.println("deriv "+deriv);
             }
 
         }
@@ -185,23 +190,6 @@ public class FunctionGraph extends Shape {
         }
     }
 
-    /**
-     * Add the given x values of the abscises to the generation of the function
-     * curve. This is useful to explicity include singular points (for example,
-     * x=0 with (x)-&gt;Math.abs(x)) as graph may appear curved if this point is
-     * not explicitly include in the array of x-points. If the x coordinate is
-     * always included, this method has no effect, other than recalcuating
-     * control points.
-     *
-     * @param xPoints x coordinates of the abscise to include. Variable number
-     * of arguments.
-     */
-    public void addXPoint(Double... xPoints) {
-        for (double x : xPoints) {
-            addXPoint(x);
-        }
-        generateControlPoints();
-    }
 
     public double getSlope(double x, int direction) {
         double delta = direction * DELTA_DERIVATIVE;
@@ -241,6 +229,12 @@ public class FunctionGraph extends Shape {
         double ma = Math.min(a, b);
         double mb = Math.max(a, b);
         FunctionGraph funcAux = FunctionGraph.make(function, ma, mb);
+        for (double x: xPoints) {//Add any abscise from original function
+            if ((x>=ma)&&(x<=mb)) {
+                funcAux.addX(x);
+            }
+        }
+        funcAux.generateControlPoints();
         JMPath areaPath = funcAux.getPath();
         areaPath.addPoint(Point.at(mb, 0), Point.at(ma, 0));
         areaPath.getJMPoint(0).isThisSegmentVisible = true;
