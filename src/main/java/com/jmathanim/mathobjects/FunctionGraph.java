@@ -20,7 +20,9 @@ package com.jmathanim.mathobjects;
 import com.jmathanim.Utils.JMathAnimConfig;
 import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.Vec;
+import static com.jmathanim.jmathanim.JMathAnimScene.PI;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.function.DoubleUnaryOperator;
 
 /**
@@ -33,7 +35,8 @@ public class FunctionGraph extends Shape {
 
     public static final double DELTA_DERIVATIVE = .00001d;
     public static final int DEFAULT_NUMBER_OF_POINTS = 49;
-    public static final double CONTINUUM_THRESHOLD=100;
+    public static final double CONTINUUM_THRESHOLD = 100;
+    public static final double ANGLE_THRESHOLD = 30 * PI / 180;//10 degrees
 
     /**
      * Different ways to define a function. Right now only lambda is supported
@@ -94,6 +97,7 @@ public class FunctionGraph extends Shape {
     }
 
     private void generateFunctionPoints() {
+        adaptativeAddPoints();
         for (int n = 0; n < xPoints.size(); n++) {
             double x = xPoints.get(n);
             double y = getFunctionValue(x);
@@ -104,7 +108,46 @@ public class FunctionGraph extends Shape {
                 jmp.isThisSegmentVisible = false;
             }
         }
+
         generateControlPoints();
+    }
+
+    private void adaptativeAddPoints() {
+        ArrayList<Double> newPoints = new ArrayList<>();
+        //Add points where needed (adaptative)
+        //For 3 consecutive points in the grap p0,p1,p2
+       //compute the angle between p0p1 and p1p2
+       //if this angle is greater that the ANGLE_THRESHOLD (right now, this is set to 30 degrees)
+       //then add the 2 middle points between p0, p1 and p1, p2
+        boolean goon = true;
+        int recursionCounter = 0;
+        while (goon) {
+            goon = false; //By default this is false, so if in the first pass no new points are added, stop
+            for (int n = 0; n < xPoints.size() - 2; n++) {
+                double x0 = xPoints.get(n);
+                double x1 = xPoints.get(n + 1);
+                double x2 = xPoints.get(n + 2);
+                double y0 = getFunctionValue(x0);
+                double y1 = getFunctionValue(x1);
+                double y2 = getFunctionValue(x2);
+                Vec v1 = Vec.to(x1 - x0, y1 - y0);
+                Vec v2 = Vec.to(x2 - x1, y2 - y1);
+                double ang = v1.getAngle() - v2.getAngle();
+                if (Math.abs(ang) > ANGLE_THRESHOLD) {
+                    newPoints.add(.5 * (x1 + x2));
+                    newPoints.add(.5 * (x0 + x1));
+                    goon = true;//New points added, a new complete turn is worth the risk!
+                }
+            }
+            xPoints.addAll(newPoints);
+            Collections.sort(xPoints);
+            newPoints.clear();
+            recursionCounter++;
+            if (recursionCounter > 3) {//Make 3 complete turns to the array
+                goon = false;
+            }
+
+        }
     }
 
     /**
@@ -124,10 +167,9 @@ public class FunctionGraph extends Shape {
                 final double deltaX = .3 * (xPoints.get(n - 1) - x);
                 Vec v = new Vec(deltaX, getSlope(x, -1) * deltaX);
                 jmp.cpEnter.copyFrom(jmp.p.add(v));
-                double h=x-xPoints.get(n - 1);
-                double deriv=(getFunctionValue(x)-getFunctionValue(xPoints.get(n-1)))/h;
-                jmp.isThisSegmentVisible=(Math.abs(deriv)<CONTINUUM_THRESHOLD);
-                System.out.println("deriv "+deriv);
+                double h = x - xPoints.get(n - 1);
+                double deriv = (getFunctionValue(x) - getFunctionValue(xPoints.get(n - 1))) / h;
+                jmp.isThisSegmentVisible = (Math.abs(deriv) < CONTINUUM_THRESHOLD);
             }
 
         }
@@ -190,7 +232,6 @@ public class FunctionGraph extends Shape {
         }
     }
 
-
     public double getSlope(double x, int direction) {
         double delta = direction * DELTA_DERIVATIVE;
         double slope = (getFunctionValue(x + delta) - getFunctionValue(x)) / delta;
@@ -229,8 +270,8 @@ public class FunctionGraph extends Shape {
         double ma = Math.min(a, b);
         double mb = Math.max(a, b);
         FunctionGraph funcAux = FunctionGraph.make(function, ma, mb);
-        for (double x: xPoints) {//Add any abscise from original function
-            if ((x>=ma)&&(x<=mb)) {
+        for (double x : xPoints) {//Add any abscise from original function
+            if ((x >= ma) && (x <= mb)) {
                 funcAux.addX(x);
             }
         }
