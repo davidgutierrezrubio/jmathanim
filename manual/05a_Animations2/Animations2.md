@@ -32,7 +32,7 @@ Several animations inherit from a subclass called `AnimationWithEffects`that all
 
 ## The jump effect
 
-The `.setJumpHeight(double height)` adds a jump effect to the object(s) being shifted. The direction of the jump is the shift vector rotated 90 degrees clockwise. A negative height can be specified. We show an example adding a jump effect to a FlipTransform animation:
+The `.setJumpHeight(double height)` adds a jump effect to the object(s) being animated. The direction of the jump is the shift vector (the center of the object at its initial state to the center at is ending state) rotated 90 degrees clockwise. A negative height can be specified. We show an example adding a jump effect to a FlipTransform animation:
 
 ```java
 Shape hexagon = Shape.regularPolygon(6)
@@ -388,17 +388,22 @@ public void runSketch() {
     final DoubleUnaryOperator rotateLambda = UsefulLambdas.smooth().compose(UsefulLambdas.allocateTo(.3, .6));
     final DoubleUnaryOperator shiftLambda = UsefulLambdas.bounce1();
 
-    //Draw the graph of the shift lambda and add a point with a legend that will move
+    //Graph of the shift lambda
     FunctionGraph fgShift = FunctionGraph.make(shiftLambda, 0, 1).drawColor("brown").thickness(4);
+    
     //This is an updateable point permanently in the graph of the function
     PointOnFunctionGraph pointFgShift = new PointOnFunctionGraph(0, fgShift)
         .drawColor("darkblue").thickness(1);
     MathObject legendShift = LaTeXMathObject.make("shift")
         .drawColor("brown").scale(.5);
+    
     //We register this updateable to put the legend always to the right of the point
     registerUpdateable(new AnchoredMathObject(legendShift, Anchor.Type.LEFT, pointFgShift, Anchor.Type.RIGHT, .05));
+
+    //add the function graph, the point and the legend to the scene
     add(legendShift,fgShift, pointFgShift);
 
+    
     //We do the same for the graph of the rotate lambda
     FunctionGraph fgRotate = FunctionGraph.make(rotateLambda, 0, 1)
         .drawColor("orange").thickness(4);
@@ -410,6 +415,7 @@ public void runSketch() {
     add(legendRotate,fgRotate, pointFgRotate);
 
     camera.setMathXY(-1, 2, .25);
+    //The square that we will animate
     Shape sq = Shape.square()
         .scale(.25)
         .style("solidblue")
@@ -420,9 +426,9 @@ public void runSketch() {
         .setLambda(t -> t),//Move point in the graph of lambda shift
         Commands.shift(6, 1, 0, pointFgRotate)
         .setLambda(t -> t),//Move point in the graph of lambda rotate
-        Commands.shift(6, 1, 0, sq)
+        Commands.shift(6, 1, 0, sq)//Shift the square...
         .setLambda(shiftLambda),
-        Commands.rotate(6, PI * .5, sq)
+        Commands.rotate(6, PI * .5, sq)//...and rotate it
         .setUseObjectState(false)
         .setLambda(rotateLambda)
     );
