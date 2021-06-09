@@ -116,9 +116,9 @@ public class FunctionGraph extends Shape {
         ArrayList<Double> newPoints = new ArrayList<>();
         //Add points where needed (adaptative)
         //For 3 consecutive points in the grap p0,p1,p2
-       //compute the angle between p0p1 and p1p2
-       //if this angle is greater that the ANGLE_THRESHOLD (right now, this is set to 30 degrees)
-       //then add the 2 middle points between p0, p1 and p1, p2
+        //compute the angle between p0p1 and p1p2
+        //if this angle is greater that the ANGLE_THRESHOLD (right now, this is set to 30 degrees)
+        //then add the 2 middle points between p0, p1 and p1, p2
         boolean goon = true;
         int recursionCounter = 0;
         while (goon) {
@@ -213,23 +213,27 @@ public class FunctionGraph extends Shape {
      * point
      */
     public JMPathPoint addX(double x) {
-
         int n = 0;
-        double x0 = xPoints.get(0);
-        while (x0 < x) {
-            n++;
-            x0 = xPoints.get(n);
+        if (xPoints.size()>0) {
+            if (xPoints.get(xPoints.size() - 1) < x) {
+                n = xPoints.size();
+            } else {
+                double x0 = xPoints.get(0);
+                while (x0 < x) {
+                    n++;
+                    x0 = xPoints.get(n);
+                }
+                if (x0 == x) {
+                    return this.getPath().getJMPoint(n);
+                }
+            }
         }
-        if (x0 == x) {
-            return this.getPath().getJMPoint(n);
-        } else {
-            xPoints.add(n, x);
-            double y = getFunctionValue(x);
-            Point p = Point.at(x, y);
-            final JMPathPoint jmp = JMPathPoint.curveTo(p);
-            this.getPath().jmPathPoints.add(n, jmp);
-            return jmp;
-        }
+        xPoints.add(n, x);
+        double y = getFunctionValue(x);
+        Point p = Point.at(x, y);
+        final JMPathPoint jmp = JMPathPoint.curveTo(p);
+        this.getPath().jmPathPoints.add(n, jmp);
+        return jmp;
     }
 
     public double getSlope(double x, int direction) {
