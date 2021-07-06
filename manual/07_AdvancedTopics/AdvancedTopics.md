@@ -146,7 +146,7 @@ waitSeconds(5);
 
 ## Trail
 
-A trail is a `Shape` subclass that updates every frame adding the position of a marker point.  Let's draw a cycloid, using a combined `shift` and `rotate` animation (we will see the purpose of the method `setUseObjectState` in the next section):
+A trail is a `Shape` subclass that updates every frame adding the position of a marker point.  Let's draw a cycloid, using a combined `shift` and `rotate` animation:
 
 ```java
 double circleRadius=.25;
