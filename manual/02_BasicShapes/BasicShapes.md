@@ -112,7 +112,7 @@ In the `Shape` objects, apart from `.getCenter()`method, which returns the cente
 If you want to include mathematical expressions in any work, of course, the best software to use is `LaTeX`. This class renders a mathematical expression written in LaTeX and imports it so you can draw it and animate it in several ways. To do this you’ll need a working LaTeX distribution installed on your system and accessible from your path. So, if you put the following the code in the `runSketch()` method:
 
 ``` java
-LaTeXMathObject text = new LaTeXMathObject("Look mom, I'm \\LaTeX!");
+LaTeXMathObject text = LaTeXMathObject.make("Look mom, I'm \\LaTeX!");
 add(text);
 waitSeconds(5);
 ```
@@ -128,7 +128,7 @@ $$\int_0^\infty e^{-x}\,dx=1$$
 You’ll have to replace every single backslash "\\" with a double one "\\\\"
 
 ``` java
-LaTeXMathObject formula = new LaTeXMathObject("$$\\int_0^\\infty e^{-x}\\,dx=1$$");
+LaTeXMathObject formula = LaTeXMathObject.make("$$\\int_0^\\infty e^{-x}\\,dx=1$$");
 add(formula);
 waitSeconds(5);
 ```
