@@ -86,12 +86,12 @@ public abstract class Animation {
      * Lambda smooth function, ideally a growing function that maps 0 into 0 and
      * 1 into 1
      */
-    public DoubleUnaryOperator lambda;
+    protected DoubleUnaryOperator lambda;
 
-    private boolean useObjectState;
+    protected Boolean useObjectState;
 
-    private boolean shouldAddObjectsToScene;
-    private boolean shouldInterpolateStyles;
+    protected Boolean shouldAddObjectsToScene;
+    protected Boolean shouldInterpolateStyles;
 
     /**
      * Returns the interpolate styles flag. This flag controls whether the
@@ -100,7 +100,7 @@ public abstract class Animation {
      *
      * @return True if should animate styles, false otherwise.
      */
-    public boolean isShouldInterpolateStyles() {
+    public Boolean isShouldInterpolateStyles() {
         return shouldInterpolateStyles;
     }
 
@@ -123,7 +123,7 @@ public abstract class Animation {
      *
      * @return True if restore state, false otherwise
      */
-    public boolean isUseObjectState() {
+    public Boolean isUseObjectState() {
         return useObjectState;
     }
 
@@ -176,7 +176,6 @@ public abstract class Animation {
         this.useObjectState = true;
         this.shouldAddObjectsToScene = true;
         this.shouldInterpolateStyles = true;
-//        scene = JMathAnimConfig.getConfig().getScene();
         lambda = UsefulLambdas.smooth(.9d);
     }
 
@@ -209,7 +208,7 @@ public abstract class Animation {
             return true;
         }
         boolean resul;
-        if (t < 1 && t >= 0) {
+        if (t <= 1 && t >= 0) {
             this.doAnim(t);
 
             resul = false;
@@ -359,7 +358,7 @@ public abstract class Animation {
      * @return True if objects are automatically added to the scene when
      * initialized, false otherwise
      */
-    public boolean isShouldAddObjectsToScene() {
+    public Boolean isShouldAddObjectsToScene() {
         return shouldAddObjectsToScene;
     }
 
@@ -395,14 +394,27 @@ public abstract class Animation {
 
     /**
      * Copy basic parameters from this animation to another one. This method is
-     * used mainly when an Animation subclass contains another animation.
+     * used mainly when an Animation subclass contains another animation. Only
+     * copy non-null values for parameters. Some Animation subclasses, like
+     * AnimationGroup, can define null values for this parameter so they are not
+     * propagated to stored animations.
      *
      * @param anim Animation to copy parameters
      */
     protected void copyAnimationParametersTo(Animation anim) {
-        anim.setLambda(this.getLambda());
-        anim.setAddObjectsToScene(this.isShouldAddObjectsToScene());
-        anim.setShouldInterpolateStyles(this.isShouldInterpolateStyles());
-        anim.setAddObjectsToScene(this.isShouldAddObjectsToScene());
+        if (this.getLambda() != null) {
+            anim.setLambda(this.getLambda());
+        }
+
+        if (null != this.isShouldAddObjectsToScene()) {
+            anim.setAddObjectsToScene(this.isShouldAddObjectsToScene());
+        }
+        if (null != this.isShouldInterpolateStyles()) {
+            anim.setShouldInterpolateStyles(this.isShouldInterpolateStyles());
+        }
+
+        if (null != this.isShouldAddObjectsToScene()) {
+            anim.setAddObjectsToScene(this.isShouldAddObjectsToScene());
+        }
     }
 }

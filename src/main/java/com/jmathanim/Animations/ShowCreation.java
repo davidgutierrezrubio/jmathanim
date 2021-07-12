@@ -122,7 +122,7 @@ public class ShowCreation extends Animation {
 			creationStrategy.finishAnimation();
 		}
 		scene.remove(removeThisAtTheEnd);
-		scene.add(addThisAtTheEnd);
+                addObjectsToscene(addThisAtTheEnd);
 	}
 
 	/**

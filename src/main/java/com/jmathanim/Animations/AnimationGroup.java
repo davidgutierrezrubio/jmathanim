@@ -56,15 +56,14 @@ public class AnimationGroup extends AnimationWithEffects {
         return new AnimationGroup(anims);
     }
 
-    /**
-     * Creates a new, empty, AnimationGroup. This class stores a group of
-     * animations, to be played at the same time.
-     */
-    public AnimationGroup() {
-        super(0);
-        this.animations = new ArrayList<>();
-    }
-
+//    /**
+//     * Creates a new, empty, AnimationGroup. This class stores a group of
+//     * animations, to be played at the same time.
+//     */
+//    public AnimationGroup() {
+//        super(0);
+//        this.animations = new ArrayList<>();
+//    }
     /**
      * Creates a new AnimationGroup with given animations.This class stores a
      * group of animations, to be played at the same time.
@@ -75,6 +74,10 @@ public class AnimationGroup extends AnimationWithEffects {
         super(0);
         this.animations = new ArrayList<>();
         this.animations.addAll(Arrays.asList(animations));
+
+        this.useObjectState = null;
+        this.shouldAddObjectsToScene = null;
+        this.shouldInterpolateStyles = null;
     }
 
     /**
@@ -113,16 +116,19 @@ public class AnimationGroup extends AnimationWithEffects {
             for (Animation anim : animations) {
                 double a = k * (delayPercentage) / (size - 1);
                 double b = 1 - delayPercentage;
-//                anim.setLambda(anim.getLambda().compose(UsefulLambdas.allocateTo(a, a + b)));
-                anim.setLambda(UsefulLambdas.allocateTo(a, a + b));
+                anim.setLambda(anim.getLambda().compose(UsefulLambdas.allocateTo(a, a + b)));
+//                anim.setLambda(UsefulLambdas.allocateTo(a, a + b));
                 k++;
             }
+        }
+        for (Animation anim : animations) {
+           this.copyAnimationParametersTo(anim);
         }
 
         for (Animation anim : animations) {
             if (anim instanceof AnimationWithEffects) {
                 AnimationWithEffects animEf = (AnimationWithEffects) anim;
-               this.copyEffectParametersTo(animEf);
+                this.copyEffectParametersTo(animEf);
             }
             anim.initialize(scene);
         }
@@ -185,7 +191,6 @@ public class AnimationGroup extends AnimationWithEffects {
         }
         return this;
     }
-
 
     /**
      * Sets the delay percentage. A number between 0 and 1 that controls the
