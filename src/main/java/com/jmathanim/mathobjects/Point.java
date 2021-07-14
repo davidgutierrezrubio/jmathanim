@@ -168,6 +168,17 @@ public class Point extends MathObject {
 	public static Point at(double x, double y) {
 		return new Point(x, y);
 	}
+        /**
+	 * Static builder. Creates and returns a new point at given coordinates (3d space).
+	 *
+	 * @param x x coordinate
+	 * @param y y coordinate
+	 * @param z z coordinate
+	 * @return The created point
+	 */
+	public static Point at(double x, double y,double z) {
+		return new Point(x, y,z);
+	}
 
 	/**
 	 * Static builder.Creates and returns a new point at random coordinates, inside

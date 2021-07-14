@@ -17,7 +17,7 @@
  */
 package com.jmathanim.mathobjects;
 
-import com.jmathanim.Renderers.JavaFXRenderer;
+import com.jmathanim.Renderers.FXRenderer.JavaFXRenderer;
 import com.jmathanim.Renderers.Renderer;
 import com.jmathanim.Utils.AffineJTransform;
 import com.jmathanim.Utils.JMathAnimConfig;

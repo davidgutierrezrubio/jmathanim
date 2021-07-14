@@ -18,7 +18,7 @@
 package com.jmathanim.mathobjects;
 
 import com.jmathanim.Cameras.Camera;
-import com.jmathanim.Renderers.FXPathUtils;
+import com.jmathanim.Renderers.FXRenderer.FXPathUtils;
 import com.jmathanim.Renderers.Renderer;
 import com.jmathanim.Styling.JMColor;
 import com.jmathanim.Styling.MODrawProperties;

@@ -171,12 +171,12 @@ public class Vec implements Stateable {
 	 * @return The interpolated point
 	 */
 	public Vec interpolate(Vec v2, double alpha) {
-		return new Vec((1 - alpha) * x + alpha * v2.x, (1 - alpha) * y + alpha * v2.y);
+		return new Vec((1 - alpha) * x + alpha * v2.x, (1 - alpha) * y + alpha * v2.y,(1 - alpha) * z + alpha * v2.z);
 
 	}
 
 	public Vec copy() {
-		Vec resul = new Vec(x, y);
+		Vec resul = new Vec(x, y,z);
 		return resul;
 	}
 
@@ -204,7 +204,7 @@ public class Vec implements Stateable {
 	}
 
 	/**
-	 * Return the angle of the vector, between 0 and 2*PI
+	 * Return the angle of the vector, between 0 and 2*PI (2d version)
 	 *
 	 * @return The angle
 	 */
@@ -215,7 +215,7 @@ public class Vec implements Stateable {
 
 	/**
 	 * Rotates the vector the specified angle, storing the result in the original
-	 * vector.
+	 * vector (2d version)
 	 *
 	 * @param angle Rotation angle
 	 * @return This vector
@@ -232,7 +232,7 @@ public class Vec implements Stateable {
 
 	/**
 	 * Rotates the vector the specified angle, and returns the result.The original
-	 * vector is unaltered
+	 * vector is unaltered (2d version).
 	 *
 	 * @param angle Rotation angle
 	 * @return A new vector with the resul
@@ -243,7 +243,7 @@ public class Vec implements Stateable {
 	}
 
 	/**
-	 * Return the angle of the vector, between -PI and PI
+	 * Return the angle of the vector, between -PI and PI (2d version)
 	 *
 	 * @return The angle
 	 */

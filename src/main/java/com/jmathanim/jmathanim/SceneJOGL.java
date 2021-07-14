@@ -18,20 +18,22 @@
 package com.jmathanim.jmathanim;
 
 import com.jmathanim.Cameras.Camera;
+import com.jmathanim.Renderers.JOGLRenderer.JOGLRenderer;
 import com.jmathanim.Renderers.FXRenderer.JavaFXRenderer;
+import com.jmathanim.Utils.JMathAnimConfig;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- *
+ * Development, unstable class for testing the JOGL API for rendering purposes
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
-public abstract class Scene2D extends JMathAnimScene {
+public abstract class SceneJOGL extends JMathAnimScene {
 
-	protected JavaFXRenderer renderer;
+	protected JOGLRenderer renderer;
 	protected Camera camera;
 
-	public Scene2D() {
+	public SceneJOGL() {
 		super();
 	}
 
@@ -40,10 +42,8 @@ public abstract class Scene2D extends JMathAnimScene {
 		fps = getConfig().fps;
 		dt = 1. / fps;
 		try {
-			renderer = new JavaFXRenderer(this);
+			renderer = new JOGLRenderer(this);
                         renderer.initialize();
-		} catch (InterruptedException ex) {
-			Logger.getLogger(Scene2D.class.getName()).log(Level.SEVERE, null, ex);
 		} catch (Exception ex) {
 			Logger.getLogger(Scene2D.class.getName()).log(Level.SEVERE, null, ex);
 		}

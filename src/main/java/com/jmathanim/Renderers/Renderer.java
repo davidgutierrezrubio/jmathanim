@@ -33,60 +33,62 @@ import com.jmathanim.mathobjects.Shape;
  */
 public abstract class Renderer {
 
-	protected final JMathAnimConfig config;
-	protected final JMathAnimScene scene;
+    protected final JMathAnimConfig config;
+    protected final JMathAnimScene scene;
 
-	public Renderer(JMathAnimScene parentScene) {
-		this.scene = parentScene;
-		this.config = parentScene.getConfig();
-	}
+    public Renderer(JMathAnimScene parentScene) {
+        this.scene = parentScene;
+        this.config = parentScene.getConfig();
+    }
 
-	abstract public <T extends Camera> T getCamera();
+    abstract public void initialize();
 
-	public abstract Camera getFixedCamera();
+    abstract public <T extends Camera> T getCamera();
 
-	/**
-	 * Returns the width of the media output, in pixels
-	 *
-	 * @return the width of media
-	 */
-	public int getMediaWidth() {
-		return config.mediaW;
-	}
+    abstract public Camera getFixedCamera();
 
-	/**
-	 * Returns the height of the media output, in pixels
-	 *
-	 * @return the height of media
-	 */
-	public int getMediaHeight() {
-		return config.mediaH;
-	}
+    /**
+     * Returns the width of the media output, in pixels
+     *
+     * @return the width of media
+     */
+    public int getMediaWidth() {
+        return config.mediaW;
+    }
 
-	abstract public void saveFrame(int frameCount);
+    /**
+     * Returns the height of the media output, in pixels
+     *
+     * @return the height of media
+     */
+    public int getMediaHeight() {
+        return config.mediaH;
+    }
 
-	abstract public void finish(int frameCount);
+    abstract public void saveFrame(int frameCount);
 
-	/**
-	 * Clear current renderer, with the background color
-	 */
-	abstract public void clear();
+    abstract public void finish(int frameCount);
 
-	/**
-	 * Draws the path of a JMPathObject This method will draw most of the objects in
-	 * the screen
-	 *
-	 * @param mobj The JMPathObject
-	 */
-	abstract public void drawPath(Shape mobj);
+    /**
+     * Clear current renderer, with the background color
+     */
+    abstract public void clear();
 
-	abstract public void drawAbsoluteCopy(Shape sh, Vec anchor);
+    /**
+     * Draws the path of a JMPathObject This method will draw most of the
+     * objects in the screen
+     *
+     * @param mobj The JMPathObject
+     */
+    abstract public void drawPath(Shape mobj);
 
-	abstract public Rect createImage(String fileName);
+    abstract public void drawAbsoluteCopy(Shape sh, Vec anchor);
 
-	abstract public void drawImage(AbstractJMImage obj);
+    abstract public Rect createImage(String fileName);
 
-	abstract public void debugText(String text, Vec loc);
+    abstract public void drawImage(AbstractJMImage obj);
 
-	abstract public double getThicknessForMathWidth(double w);
+    abstract public void debugText(String text, Vec loc);
+
+    abstract public double getThicknessForMathWidth(double w);
 }

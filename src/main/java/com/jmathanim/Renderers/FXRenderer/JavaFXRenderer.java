@@ -15,11 +15,12 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-package com.jmathanim.Renderers;
+package com.jmathanim.Renderers.FXRenderer;
 
 import com.jmathanim.Cameras.Camera;
 import com.jmathanim.Renderers.MovieEncoders.VideoEncoder;
 import com.jmathanim.Renderers.MovieEncoders.XugglerVideoEncoder;
+import com.jmathanim.Renderers.Renderer;
 import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.ResourceLoader;
 import com.jmathanim.Utils.Vec;
@@ -105,16 +106,23 @@ public class JavaFXRenderer extends Renderer {
 
     public JavaFXRenderer(JMathAnimScene parentScene) throws Exception {
         super(parentScene);
-        camera = new Camera(parentScene, config.mediaW, config.mediaH);
-        camera.initialize(XMIN_DEFAULT, XMAX_DEFAULT, 0);
-        fixedCamera = new Camera(parentScene, config.mediaW, config.mediaH);
-        fixedCamera.initialize(XMIN_DEFAULT, XMAX_DEFAULT, 0);
-
         fxnodes = new ArrayList<>();
         debugFXnodes = new ArrayList<>();
         images = new HashMap<>();
         fXPathUtils = new FXPathUtils();
-        prepareEncoder();
+        camera = new Camera(scene, config.mediaW, config.mediaH);
+        fixedCamera = new Camera(scene, config.mediaW, config.mediaH);
+    }
+
+    @Override
+    public void initialize() {
+        camera.initialize(XMIN_DEFAULT, XMAX_DEFAULT, 0);
+        fixedCamera.initialize(XMIN_DEFAULT, XMAX_DEFAULT, 0);
+        try {
+            prepareEncoder();
+        } catch (Exception ex) {
+            Logger.getLogger(JavaFXRenderer.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     public final void prepareEncoder() throws Exception {
@@ -341,7 +349,7 @@ public class JavaFXRenderer extends Renderer {
 
         // Fill color
         path.setFill(mobj.getMp().getFillColor().getFXPaint(this, camera));
-        
+
         // Dash pattern
         switch (mobj.getMp().getDashStyle()) {
             case SOLID:
@@ -422,7 +430,7 @@ public class JavaFXRenderer extends Renderer {
     public Image getImageFromCatalog(AbstractJMImage obj) {
         return images.get(obj.getId());
     }
-    
+
     @Override
     public void drawImage(AbstractJMImage obj) {
         ImageView imageView;

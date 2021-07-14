@@ -1,7 +1,7 @@
 package com.jmathanim.Styling;
 
 import com.jmathanim.Cameras.Camera;
-import com.jmathanim.Renderers.JavaFXRenderer;
+import com.jmathanim.Renderers.FXRenderer.JavaFXRenderer;
 import javafx.scene.paint.Paint;
 
 /**
