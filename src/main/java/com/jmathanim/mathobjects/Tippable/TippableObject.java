@@ -322,7 +322,7 @@ public class TippableObject extends MathObject {
 
 	protected void updateLocations() {
 
-		this.pointLoc = shape.getPath().getPointAt(getLocation()).p;
+		this.pointLoc = shape.getPath().getJMPointAt(getLocation()).p;
 		Point slopeTo;
 
 		setTipCopy(getTip().copy());
@@ -336,10 +336,10 @@ public class TippableObject extends MathObject {
 		// Rotating
 		if (direction == TippableObject.slopeDirection.NEGATIVE) {
 //            this.pointTo = jmp.p.to(jmp.cpEnter);
-			slopeTo = shape.getPath().getPointAt(getLocation() - DELTA_DERIVATIVE).p;
+			slopeTo = shape.getPath().getJMPointAt(getLocation() - DELTA_DERIVATIVE).p;
 
 		} else {
-			slopeTo = shape.getPath().getPointAt(getLocation() + DELTA_DERIVATIVE).p;
+			slopeTo = shape.getPath().getJMPointAt(getLocation() + DELTA_DERIVATIVE).p;
 		}
 		pointTo = pointLoc.to(slopeTo);
 		double rotAngle = pointTo.getAngle();

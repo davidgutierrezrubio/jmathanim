@@ -88,7 +88,7 @@ public class SimpleShapeCreationAnimation extends CreationStrategy {
                 msh.shapes.get(n).visible(false);
             }
             Point current = msh.shapes.get(0).get(0).p.copy();
-            Vec v = current.to(msh.shapes.get(0).getPath().getPointAt(.01).p).mult(-1);
+            Vec v = current.to(msh.shapes.get(0).getPath().getJMPointAt(.01).p).mult(-1);
             previous.copyFrom(current.add(v));
             setPencilPosition(previous.copy(), current);// Put the pencil at the beginning
 

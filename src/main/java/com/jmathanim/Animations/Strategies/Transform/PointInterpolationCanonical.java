@@ -229,7 +229,7 @@ public class PointInterpolationCanonical extends AnimationWithEffects {
 //                throw new Exception("Paths should have at least 2 points!");
 //            }
             // Last point of conSmall
-            Point p = conSmall.get(n - 1).getPointAt(-1).p;
+            Point p = conSmall.get(n - 1).getJMPointAt(-1).p;
 
             // Create a dummy path with sizePathToAdd points, all equal
             JMPath pa = new JMPath();

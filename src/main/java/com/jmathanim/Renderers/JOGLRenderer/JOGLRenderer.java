@@ -78,7 +78,7 @@ public class JOGLRenderer extends Renderer {
 
     @Override
     public void saveFrame(int frameCount) {
-        JMathAnimScene.logger.info("JOGLRenderer: Saving frame");
+//        JMathAnimScene.logger.info("JOGLRenderer: Saving frame");
         glWindow.display();
     }
 
@@ -90,15 +90,15 @@ public class JOGLRenderer extends Renderer {
     @Override
     public void clear() {
         //This should delete the JOGL queue
-        JMathAnimScene.logger.info("JOGLRenderer: Clear frame");
+//        JMathAnimScene.logger.info("JOGLRenderer: Clear frame");
     }
 
     @Override
     public void drawPath(Shape mobj) {
         //This should create JOGL objects and add them to the queue
-        JMathAnimScene.logger.info("JOGLRenderer: Drawing path");
-        queue.addShapeFill(mobj);
-        queue.addShapeContour(mobj);
+//        JMathAnimScene.logger.info("JOGLRenderer: Drawing path");
+//        queue.addShapeFill(mobj);
+        queue.addShapeToQueue(mobj);
     }
 
     @Override

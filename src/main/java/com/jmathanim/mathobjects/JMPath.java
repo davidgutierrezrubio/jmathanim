@@ -302,7 +302,7 @@ public class JMPath implements Updateable, Stateable, Boxable {
 	 * @param alpha from 0 to 1, relative position inside the path
 	 * @return A (copy of) point that lies in the curve at relative position alpha.
 	 */
-	public JMPathPoint getPointAt(double alpha) {
+	public JMPathPoint getJMPointAt(double alpha) {
 		while (alpha > 1) {
 			alpha -= 1;
 		}
@@ -319,7 +319,7 @@ public class JMPath implements Updateable, Stateable, Boxable {
 		return resul;
 	}
 
-	private JMPathPoint getJMPointBetween(JMPathPoint v1, JMPathPoint v2, double t) {
+	public static JMPathPoint getJMPointBetween(JMPathPoint v1, JMPathPoint v2, double t) {
 		JMPathPoint resul;
 		if (v1.isCurved) {
 			// De Casteljau's Algorithm:
@@ -837,7 +837,7 @@ public class JMPath implements Updateable, Stateable, Boxable {
 	 * @param c Coefficient of term with degree 0
 	 * @return An array of results (empty if no solutions found).
 	 */
-	public double[] quadraticSolutions(double a, double b, double c) {
+	private double[] quadraticSolutions(double a, double b, double c) {
 		// If a=0 we are dealing with a lineal
 		if (a == 0) {
 			if (c != 0) {
