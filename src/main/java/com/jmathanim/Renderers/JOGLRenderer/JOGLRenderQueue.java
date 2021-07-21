@@ -370,7 +370,7 @@ public class JOGLRenderQueue implements GLEventListener {
          gl2.glLoadIdentity();
         Rect bb = config.getCamera().getMathView();
         gl2.glOrtho(bb.xmin, bb.xmax, bb.ymin, bb.ymax, -5, 5);
-//         gl2.glRotated(45, 1, 0, 1);
+//      gl2.glRotated(45, 1, 0, 1);
     }
 }
 
