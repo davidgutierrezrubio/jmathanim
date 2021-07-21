@@ -218,9 +218,7 @@ public class JOGLRenderQueue implements GLEventListener {
 //       gl2.glRotated(alpha, 0, 0, 1);
 //       gl2.glRotated(45, 1, 1, 0);
 //        alpha+=1;
-        gl2.glLoadIdentity();
-        Rect bb = config.getCamera().getMathView();
-        gl2.glOrtho(bb.xmin, bb.xmax, bb.ymin, bb.ymax, -5, 5);
+       
 //        alpha+=.02;
         final GLUgl2nurbsImpl glUgl2nurbsImpl = new GLUgl2nurbsImpl();
 
@@ -287,10 +285,24 @@ public class JOGLRenderQueue implements GLEventListener {
         gl2.glColor4d(col.r, col.g, col.b, col.getAlpha());
         GLUgl2.gluTessBeginPolygon(tess, null);
         GLUgl2.gluTessBeginContour(tess);
-        for (int n = 0; n <= sh.getPath().size(); n++) {
-            Point p = sh.getPoint(n);//.getJMPoint(n).p;
-            double[] po = new double[]{p.v.x, p.v.y, p.v.z};
-            GLUgl2.gluTessVertex(tess, po, 0, po);
+        //This draws only vertices
+//        for (int n = 0; n <= sh.getPath().size(); n++) {
+//            Point p = sh.getPoint(n);//.getJMPoint(n).p;
+//            double[] po = new double[]{p.v.x, p.v.y, p.v.z};
+//            GLUgl2.gluTessVertex(tess, po, 0, po);
+//        }
+        int num = 20;
+        JMPath path = sh.getPath();
+        for (int n = 0; n < path.size(); n++) {
+            for (int k = 0; k < num; k++) {
+                JMPathPoint p1 = path.getJMPoint(n);
+                JMPathPoint p2 = path.getJMPoint(n + 1);
+                Point p = JMPath.getJMPointBetween(p1, p2, 1d * k / num).p;
+//                Point p = p1.p;
+
+                double[] po = new double[]{p.v.x, p.v.y, p.v.z};
+                GLUgl2.gluTessVertex(tess, po, 0, po);
+            }
         }
 
         GLUgl2.gluTessEndContour(tess);
@@ -354,8 +366,11 @@ public class JOGLRenderQueue implements GLEventListener {
 //        glu.gluPerspective(60.0f , (float) w / h , 0.1f , 10000.0f);
 //        gl2.glMatrixMode(GLMatrixFunc.GL_MODELVIEW);
 //        gl2.glLoadIdentity();
-//        gl2.glRotated(45, 1, 0, 1);
-        gl2.glPushMatrix();
+//       
+         gl2.glLoadIdentity();
+        Rect bb = config.getCamera().getMathView();
+        gl2.glOrtho(bb.xmin, bb.xmax, bb.ymin, bb.ymax, -5, 5);
+//         gl2.glRotated(45, 1, 0, 1);
     }
 }
 
