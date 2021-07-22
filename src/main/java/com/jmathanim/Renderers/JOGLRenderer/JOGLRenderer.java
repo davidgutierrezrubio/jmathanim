@@ -18,6 +18,7 @@
 package com.jmathanim.Renderers.JOGLRenderer;
 
 import com.jmathanim.Cameras.Camera;
+import com.jmathanim.Renderers.MovieEncoders.VideoEncoder;
 import com.jmathanim.Renderers.Renderer;
 import com.jmathanim.Utils.JMathAnimConfig;
 import com.jmathanim.Utils.Rect;
@@ -52,8 +53,7 @@ public class JOGLRenderer extends Renderer {
     
     @Override
     public void initialize() {
-        queue=new JOGLRenderQueue();
-        queue.setConfig(config);
+        queue=new JOGLRenderQueue(config);
         queue.setCamera(camera);
         camera.initialize(XMIN_DEFAULT, XMAX_DEFAULT, 0);
         GLCapabilities caps = new GLCapabilities(GLProfile.get(GLProfile.GL2));
@@ -65,7 +65,7 @@ public class JOGLRenderer extends Renderer {
         glWindow.setSize(config.mediaW, config.mediaH);
         glWindow.setTitle("JMathAnim - " + config.getOutputFileName());
          glWindow.addGLEventListener(queue);
-        glWindow.setVisible(config.isShowPreview());
+        glWindow.setVisible(true);//For now it needs to always show the window...
     }
 
     @Override
@@ -81,6 +81,7 @@ public class JOGLRenderer extends Renderer {
     @Override
     public void saveFrame(int frameCount) {
 //        JMathAnimScene.logger.info("JOGLRenderer: Saving frame");
+        queue.frameCount=frameCount;
         glWindow.display();
                 
         
@@ -88,7 +89,22 @@ public class JOGLRenderer extends Renderer {
 
     @Override
     public void finish(int frameCount) {
-        JMathAnimScene.logger.info("JOGLRenderer: Finishing");
+        JMathAnimScene.logger.info(
+                String.format("%d frames created, %.2fs total time", frameCount, (1.f * frameCount) / config.fps));
+        if (config.isCreateMovie()) {
+            /**
+             * Encoders, like decoders, sometimes cache pictures so it can do
+             * the right key-frame optimizations. So, they need to be flushed as
+             * well. As with the decoders, the convention is to pass in a null
+             * input until the output is not complete.
+             */
+            JMathAnimScene.logger.info("Finishing movie...");
+            queue.videoEncoder.finish();
+            if (queue.videoEncoder.isFramesGenerated()) {
+                JMathAnimScene.logger.info("Movie created at " + queue.saveFilePath);
+            }
+
+        }
     }
 
     @Override

@@ -18,10 +18,14 @@
 package com.jmathanim.Renderers.JOGLRenderer;
 
 import com.jmathanim.Cameras.Camera;
+import com.jmathanim.Renderers.FXRenderer.JavaFXRenderer;
+import com.jmathanim.Renderers.MovieEncoders.VideoEncoder;
+import com.jmathanim.Renderers.MovieEncoders.XugglerVideoEncoder;
 import com.jmathanim.Styling.JMColor;
 import com.jmathanim.Styling.PaintStyle;
 import com.jmathanim.Utils.JMathAnimConfig;
 import com.jmathanim.Utils.Rect;
+import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.JMPath;
 import com.jmathanim.mathobjects.JMPathPoint;
 import com.jmathanim.mathobjects.Point;
@@ -44,10 +48,15 @@ import com.jogamp.opengl.util.awt.AWTGLReadBufferUtil;
 import com.jogamp.opengl.util.texture.Texture;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
+import java.io.File;
 import java.nio.Buffer;
 import java.nio.ByteBuffer;
 import java.nio.DoubleBuffer;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javafx.scene.effect.DropShadow;
+import javafx.scene.paint.Color;
 import jogamp.opengl.glu.tessellator.GLUtessellatorImpl;
 
 /**
@@ -62,21 +71,26 @@ public class JOGLRenderQueue implements GLEventListener {
     GLU glu;
     GLUgl2 glu2;
     final float zNear = 0.1f, zFar = 7000f;
-//
-//    /* 2nd pass texture size antialias SampleCount
-//           4 is usually enough */
-//    private final int[] sampleCount = new int[]{2};
-//
-//    /* variables used to update the PMVMatrix before rendering */
-//    private float xTranslate = -40f;
-//    private float yTranslate = 0f;
-//    private float zTranslate = -100f;
-//
-//    private final int renderModes = Region.VARWEIGHT_RENDERING_BIT;
     GL2ES2 gles2;
     private GL2 gl2;
     private Camera camera;
+    public VideoEncoder videoEncoder;
+    public File saveFilePath;
+    private int newLineCounter = 0;
+    public int frameCount;
 
+    public JOGLRenderQueue(JMathAnimConfig config) {
+        this.config = config;
+        shapes = new ArrayList<>();
+        
+         try {
+            prepareEncoder();
+        } catch (Exception ex) {
+            Logger.getLogger(JavaFXRenderer.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    
     public void setConfig(JMathAnimConfig config) {
         this.config = config;
     }
@@ -87,7 +101,7 @@ public class JOGLRenderQueue implements GLEventListener {
         gl2 = drawable.getGL().getGL2();
         glu = new GLU();
         glu2 = new GLUgl2();
-        shapes = new ArrayList<>();
+        
         gles2.setSwapInterval(1);
         gl2.glEnable(GL.GL_DEPTH_TEST);
         gles2.glEnable(GL.GL_DEPTH_TEST);
@@ -103,6 +117,23 @@ public class JOGLRenderQueue implements GLEventListener {
         gles2.glBlendFunc(GL2.GL_SRC_ALPHA, GL2.GL_ONE_MINUS_SRC_ALPHA);
         gles2.glEnable(GL2.GL_MULTISAMPLE);
 
+       
+
+    }
+
+    public final void prepareEncoder() throws Exception {
+
+        JMathAnimScene.logger.info("Preparing encoder");
+
+        if (config.isCreateMovie()) {
+            videoEncoder = new XugglerVideoEncoder();
+            File tempPath = new File(config.getOutputDir().getCanonicalPath());
+            tempPath.mkdirs();
+            saveFilePath = new File(config.getOutputDir().getCanonicalPath() + File.separator
+                    + config.getOutputFileName() + "_" + config.mediaH + ".mp4");
+            JMathAnimScene.logger.info("Creating movie encoder for {}", saveFilePath);
+            videoEncoder.createEncoder(saveFilePath, config);
+        }
     }
 
     @Override
@@ -129,10 +160,22 @@ public class JOGLRenderQueue implements GLEventListener {
         }
         shapes.clear();
         gl2.glFlush();
-//        BufferedImage image = screenshot(drawable);
-        screenshot2(gl2);
-    }
 
+        if (config.isCreateMovie()) {
+//            BufferedImage image = screenshot(drawable);
+            BufferedImage image = screenshot3(gl2,drawable);
+            videoEncoder.writeFrame(image, frameCount);
+        }
+
+//        screenshot2(gl2);
+    }
+public BufferedImage screenshot3(GL2 gl2,GLDrawable drawable) {
+        AWTGLReadBufferUtil aa = new AWTGLReadBufferUtil(drawable.getGLProfile(), true);
+        BufferedImage img = aa.readPixelsToBufferedImage(gl2, 0,0,config.mediaW,config.mediaH,true);
+        return img;
+}
+    
+    
     public void screenshot2(GL2 gl2) {
         GLReadBufferUtil util = new GLReadBufferUtil(false, true);
         util.readPixels(gl2, false);
@@ -145,7 +188,7 @@ public class JOGLRenderQueue implements GLEventListener {
         int height = config.mediaH;
         BufferedImage screenshot = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
         Graphics graphics = screenshot.getGraphics();
-        ByteBuffer buffer = ByteBuffer.allocate((width + 1) * (height + 1) * 3);
+        ByteBuffer buffer = ByteBuffer.allocate(1919998);
 
         gl2.glReadPixels(0, 0, width, height, GL.GL_RGB, GL.GL_BYTE, buffer);
 
