@@ -321,7 +321,8 @@ public class JMPath implements Updateable, Stateable, Boxable {
 
 	public static JMPathPoint getJMPointBetween(JMPathPoint v1, JMPathPoint v2, double t) {
 		JMPathPoint resul;
-		if (v1.isCurved) {
+		if (true) {//This is buggy. Sometimes the jmpathpoint is curved but marked as not curved!
+//		if (v1.isCurved) {
 			// De Casteljau's Algorithm:
 			// https://en.wikipedia.org/wiki/De_Casteljau%27s_algorithm
 			Point E = v1.p.interpolate(v1.cpExit, t); // New cp1 of v1

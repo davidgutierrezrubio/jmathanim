@@ -415,7 +415,7 @@ public class Shape extends MathObject {
      */
     public static Shape annulus(double minRadius, double maxRadius) {
         Shape extCircle = Shape.circle().scale(maxRadius);
-        Shape intCircle = Shape.circle().scale(.75);
+        Shape intCircle = Shape.circle().scale(minRadius);
         Shape obj = extCircle.merge(intCircle, false, true);
         obj.label = "annulus";
         return obj;

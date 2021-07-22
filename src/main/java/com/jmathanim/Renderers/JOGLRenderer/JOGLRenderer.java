@@ -26,6 +26,7 @@ import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.AbstractJMImage;
 import com.jmathanim.mathobjects.Shape;
 import com.jogamp.newt.opengl.GLWindow;
+import com.jogamp.opengl.GL2;
 import com.jogamp.opengl.GLCapabilities;
 import com.jogamp.opengl.GLProfile;
 import java.util.logging.Level;
@@ -53,6 +54,7 @@ public class JOGLRenderer extends Renderer {
     public void initialize() {
         queue=new JOGLRenderQueue();
         queue.setConfig(config);
+        queue.setCamera(camera);
         camera.initialize(XMIN_DEFAULT, XMAX_DEFAULT, 0);
         GLCapabilities caps = new GLCapabilities(GLProfile.get(GLProfile.GL2));
 //        GLCapabilities caps = new GLCapabilities(GLProfile.get(GLProfile.GL2ES2));
@@ -80,6 +82,8 @@ public class JOGLRenderer extends Renderer {
     public void saveFrame(int frameCount) {
 //        JMathAnimScene.logger.info("JOGLRenderer: Saving frame");
         glWindow.display();
+                
+        
     }
 
     @Override
@@ -103,7 +107,7 @@ public class JOGLRenderer extends Renderer {
 
     @Override
     public void drawAbsoluteCopy(Shape sh, Vec anchor) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        drawPath(sh);//TODO: Fix this
     }
 
     @Override

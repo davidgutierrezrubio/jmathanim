@@ -203,6 +203,52 @@ public class Commands {
         };
     }// End of rotate command
 
+    
+     public static Animation rotate3d(double runtime, double angx,double angy,double angz, MathObject... objects) {
+        return rotate3d(runtime, null, angx,angy,angz, objects);
+
+    }
+
+    public static Animation rotate3d(double runtime, Point c, double angx,double angy,double angz, MathObject... objects) {
+        return new Animation(runtime) {
+            double anglex = angx;
+            double angley = angy;
+            double anglez = angz;
+            Point rotationCenter = null;
+            MathObject[] mathObjects = objects;
+
+            @Override
+            public void initialize(JMathAnimScene scene) {
+                super.initialize(scene);
+                saveStates(mathObjects);
+                if (c != null) {
+                    rotationCenter = c;
+                }
+                addObjectsToscene(mathObjects);
+            }
+
+            @Override
+            public void doAnim(double t) {
+                double lt = lambda.applyAsDouble(t);
+                restoreStates(mathObjects);
+                for (MathObject obj : mathObjects) {
+                    if (rotationCenter == null) {
+                        obj.rotate3d(obj.getCenter(), anglex * lt,angley * lt,anglez * lt);
+                    } else {
+                        obj.rotate3d(rotationCenter, anglex * lt,angley * lt,anglez * lt);
+                    }
+                }
+            }
+
+            @Override
+            public void finishAnimation() {
+                super.finishAnimation();
+                doAnim(1);
+            }
+        };
+    }// End of rotate command
+    
+    
     public static AnimationWithEffects affineTransform(double runtime, Point a, Point b, Point c, Point d, Point e,
             Point f, MathObject... objects) {
         return new AnimationWithEffects(runtime) {
