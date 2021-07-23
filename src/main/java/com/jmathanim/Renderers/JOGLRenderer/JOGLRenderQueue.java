@@ -25,6 +25,7 @@ import com.jmathanim.Styling.JMColor;
 import com.jmathanim.Styling.PaintStyle;
 import com.jmathanim.Utils.JMathAnimConfig;
 import com.jmathanim.Utils.Rect;
+import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.JMPath;
 import com.jmathanim.mathobjects.JMPathPoint;
@@ -336,21 +337,21 @@ public BufferedImage screenshot3(GL2 gl2,GLDrawable drawable) {
 
     private void adjustCameraView(GLAutoDrawable drawable) throws GLException {
         final GL2 gl2 = drawable.getGL().getGL2();
-//        gl2.glViewport(x, y, w, h);
-////        gl2.glOrtho(-1, 1, -1, 1, 0, 100);
-//        gl2.glClear(GL.GL_COLOR_BUFFER_BIT);
-//        gl2.glMatrixMode(GLMatrixFunc.GL_PROJECTION);
-////        gl2.glLoadIdentity();
-////        glu.gluPerspective(60.0f , (float) w / h , 0.1f , 10000.0f);
         gl2.glMatrixMode(GLMatrixFunc.GL_MODELVIEW);
-////        gl2.glLoadIdentity();
 //
         gl2.glLoadIdentity();
         Rect bb = camera.getMathView();
 //        gl2.glOrtho(bb.xmin, bb.xmax, bb.ymin, bb.ymax, -5, 5);
 
-        glu.gluPerspective(30.0f, (float) bb.getWidth() / bb.getHeight(), 0.1f, 10000.0f);
-        glu.gluLookAt(0, -6, 2, 0, 0, 0, 0, 1, 0);
+        glu.gluPerspective(camera.fov, (float) bb.getWidth() / bb.getHeight(), 0.1f, 10000.0f);
+        Vec up=camera.getUpVector();//Inefficient way. Improve this.
+        glu.gluLookAt(
+        camera.eye.v.x,camera.eye.v.y,camera.eye.v.z,
+                camera.look.v.x,camera.look.v.y,camera.look.v.z,
+                up.x,up.y,up.z
+        );
+//                glu.gluLookAt(0, -6, 2, 0, 0, 0, 0, 1, 0);
+
     }
 
     public Camera getCamera() {
