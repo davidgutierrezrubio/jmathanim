@@ -29,6 +29,7 @@ import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.JMPath;
 import com.jmathanim.mathobjects.JMPathPoint;
+import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.Point;
 import com.jmathanim.mathobjects.Shape;
 import com.jogamp.opengl.GL;
@@ -67,6 +68,8 @@ import jogamp.opengl.glu.tessellator.GLUtessellatorImpl;
  */
 public class JOGLRenderQueue implements GLEventListener {
 
+    private static final double MIN_THICKNESS = .2d;
+
     JMathAnimConfig config;
     ArrayList<Shape> shapes;
     GLU glu;
@@ -75,6 +78,7 @@ public class JOGLRenderQueue implements GLEventListener {
     GL2ES2 gles2;
     private GL2 gl2;
     private Camera camera;
+    public Camera fixedCamera;
     public VideoEncoder videoEncoder;
     public File saveFilePath;
     private int newLineCounter = 0;
@@ -83,15 +87,14 @@ public class JOGLRenderQueue implements GLEventListener {
     public JOGLRenderQueue(JMathAnimConfig config) {
         this.config = config;
         shapes = new ArrayList<>();
-        
-         try {
+
+        try {
             prepareEncoder();
         } catch (Exception ex) {
             Logger.getLogger(JavaFXRenderer.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
-    
     public void setConfig(JMathAnimConfig config) {
         this.config = config;
     }
@@ -102,7 +105,7 @@ public class JOGLRenderQueue implements GLEventListener {
         gl2 = drawable.getGL().getGL2();
         glu = new GLU();
         glu2 = new GLUgl2();
-        
+
         gles2.setSwapInterval(1);
         gl2.glEnable(GL.GL_DEPTH_TEST);
         gles2.glEnable(GL.GL_DEPTH_TEST);
@@ -117,8 +120,6 @@ public class JOGLRenderQueue implements GLEventListener {
         gles2.glEnable(GL2.GL_BLEND);
         gles2.glBlendFunc(GL2.GL_SRC_ALPHA, GL2.GL_ONE_MINUS_SRC_ALPHA);
         gles2.glEnable(GL2.GL_MULTISAMPLE);
-
-       
 
     }
 
@@ -164,19 +165,19 @@ public class JOGLRenderQueue implements GLEventListener {
 
         if (config.isCreateMovie()) {
 //            BufferedImage image = screenshot(drawable);
-            BufferedImage image = screenshot3(gl2,drawable);
+            BufferedImage image = screenshot3(gl2, drawable);
             videoEncoder.writeFrame(image, frameCount);
         }
 
 //        screenshot2(gl2);
     }
-public BufferedImage screenshot3(GL2 gl2,GLDrawable drawable) {
+
+    public BufferedImage screenshot3(GL2 gl2, GLDrawable drawable) {
         AWTGLReadBufferUtil aa = new AWTGLReadBufferUtil(drawable.getGLProfile(), true);
-        BufferedImage img = aa.readPixelsToBufferedImage(gl2, 0,0,config.mediaW,config.mediaH,true);
+        BufferedImage img = aa.readPixelsToBufferedImage(gl2, 0, 0, config.mediaW, config.mediaH, true);
         return img;
-}
-    
-    
+    }
+
     public void screenshot2(GL2 gl2) {
         GLReadBufferUtil util = new GLReadBufferUtil(false, true);
         util.readPixels(gl2, false);
@@ -217,6 +218,7 @@ public BufferedImage screenshot3(GL2 gl2,GLDrawable drawable) {
 //            JMPathPoint p = path.getJMPoint(n);
 //            gl2.glVertex3d(p.p.v.x, p.p.v.y, p.p.v.z);
 //        }
+        gl2.glLineWidth(computeThickness(s));
         gl2.glBegin(GL2.GL_LINE_STRIP);
 
         int num = 30;
@@ -274,8 +276,8 @@ public BufferedImage screenshot3(GL2 gl2,GLDrawable drawable) {
             for (int k = 0; k <= num; k++) {
                 JMPathPoint p1 = path.getJMPoint(n);
                 JMPathPoint p2 = path.getJMPoint(n + 1);
-                if (true) {
-//                if (p2.isThisSegmentVisible) {
+//                if (true) {
+                if (p2.isThisSegmentVisible) {
                     Point p = JMPath.getJMPointBetween(p1, p2, 1d * k / num).p;
 //                Point p = p1.p;
 
@@ -341,15 +343,18 @@ public BufferedImage screenshot3(GL2 gl2,GLDrawable drawable) {
 //
         gl2.glLoadIdentity();
         Rect bb = camera.getMathView();
-//        gl2.glOrtho(bb.xmin, bb.xmax, bb.ymin, bb.ymax, -5, 5);
+        if (!camera.perspective) {
+            gl2.glOrtho(bb.xmin, bb.xmax, bb.ymin, bb.ymax, -5, 5);
+        } else {
+            glu.gluPerspective(camera.fov, (float) bb.getWidth() / bb.getHeight(), 0.1f, 10000.0f);
 
-        glu.gluPerspective(camera.fov, (float) bb.getWidth() / bb.getHeight(), 0.1f, 10000.0f);
-        Vec up=camera.getUpVector();//Inefficient way. Improve this.
-        glu.gluLookAt(
-        camera.eye.v.x,camera.eye.v.y,camera.eye.v.z,
-                camera.look.v.x,camera.look.v.y,camera.look.v.z,
-                up.x,up.y,up.z
-        );
+            Vec up = camera.getUpVector();//Inefficient way. Improve this.
+            glu.gluLookAt(
+                    camera.eye.v.x, camera.eye.v.y, camera.eye.v.z,
+                    camera.look.v.x, camera.look.v.y, camera.look.v.z,
+                    up.x, up.y, up.z
+            );
+        }
 //                glu.gluLookAt(0, -6, 2, 0, 0, 0, 0, 1, 0);
 
     }
@@ -360,6 +365,12 @@ public BufferedImage screenshot3(GL2 gl2,GLDrawable drawable) {
 
     public void setCamera(Camera camera) {
         this.camera = camera;
+    }
+
+    public float computeThickness(MathObject mobj) {
+        Camera cam = (mobj.getMp().isAbsoluteThickness() ? fixedCamera : camera);
+        float value = (float) Math.max(mobj.getMp().getThickness() / cam.getMathView().getWidth() * 2.5d, MIN_THICKNESS);
+        return value;
     }
 
 }

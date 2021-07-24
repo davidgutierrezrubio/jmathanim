@@ -31,7 +31,8 @@ import com.jmathanim.mathobjects.Point;
  * @author David Gutierrez Rubio davidgutierrezrubio@gmail.com
  */
 public class Camera {
-
+    public boolean perspective;
+    
     /**
      * Screen width size to be displayed 800x600, 1920x1280, etc.
      */
@@ -67,9 +68,10 @@ public class Camera {
         this.screenWidth = screenWidth;
         this.screenHeight = screenHeight;
         this.scene = scene;
+        perspective=false;//Default mode: ortographic
         fov = 90.0f;
-        eye = Point.at(0, 0, 8);
-        look = Point.at(0, 0, 0);
+        eye = Point.at(0, 0, 2).visible(false);
+        look = Point.at(0, 0, 0).visible(false);
         up = Vec.to(0, 0, 0);
 
     }

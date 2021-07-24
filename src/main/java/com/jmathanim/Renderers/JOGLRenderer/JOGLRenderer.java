@@ -41,6 +41,7 @@ import java.util.logging.Logger;
 public class JOGLRenderer extends Renderer {
 
     public Camera camera;
+    public Camera fixedCamera;
     private static final double XMIN_DEFAULT = -2;
     private static final double XMAX_DEFAULT = 2;
     private GLWindow glWindow;
@@ -49,13 +50,16 @@ public class JOGLRenderer extends Renderer {
     public JOGLRenderer(JMathAnimScene parentScene) {
         super(parentScene);
         camera = new Camera(parentScene, config.mediaW, config.mediaH);
+        fixedCamera = new Camera(parentScene, config.mediaW, config.mediaH);
     }
     
     @Override
     public void initialize() {
         queue=new JOGLRenderQueue(config);
         queue.setCamera(camera);
+        queue.fixedCamera=fixedCamera;
         camera.initialize(XMIN_DEFAULT, XMAX_DEFAULT, 0);
+        fixedCamera.initialize(XMIN_DEFAULT, XMAX_DEFAULT, 0);
         GLCapabilities caps = new GLCapabilities(GLProfile.get(GLProfile.GL2));
 //        GLCapabilities caps = new GLCapabilities(GLProfile.get(GLProfile.GL2ES2));
         caps.setSampleBuffers(true);
