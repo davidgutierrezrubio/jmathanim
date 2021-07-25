@@ -21,6 +21,8 @@ import com.jmathanim.Utils.Boxable;
 import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
+import static com.jmathanim.jmathanim.JMathAnimScene.DEGREES;
+import static com.jmathanim.jmathanim.JMathAnimScene.PI;
 import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.Point;
 
@@ -69,8 +71,9 @@ public class Camera {
         this.screenHeight = screenHeight;
         this.scene = scene;
         perspective=false;//Default mode: ortographic
-        fov = 90.0f;
-        eye = Point.at(0, 0, 2).visible(false);
+        fov = 60.0f;
+        System.out.println("Camera fov "+Math.tan(1d*fov*PI/360));
+        eye = Point.at(0, 0, 1.125d/Math.tan(1d*fov*PI/360)).visible(false);
         look = Point.at(0, 0, 0).visible(false);
         up = Vec.to(0, 0, 0);
 
