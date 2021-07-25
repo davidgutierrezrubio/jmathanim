@@ -18,6 +18,7 @@
 package com.jmathanim.Renderers.JOGLRenderer;
 
 import com.jmathanim.Cameras.Camera;
+import com.jmathanim.Cameras.Camera3D;
 import com.jmathanim.Renderers.FXRenderer.JavaFXRenderer;
 import com.jmathanim.Renderers.MovieEncoders.VideoEncoder;
 import com.jmathanim.Renderers.MovieEncoders.XugglerVideoEncoder;
@@ -77,8 +78,8 @@ public class JOGLRenderQueue implements GLEventListener {
     final float zNear = 0.1f, zFar = 7000f;
     GL2ES2 gles2;
     private GL2 gl2;
-    private Camera camera;
-    public Camera fixedCamera;
+    private Camera3D camera;
+    public Camera3D fixedCamera;
     public VideoEncoder videoEncoder;
     public File saveFilePath;
     private int newLineCounter = 0;
@@ -115,6 +116,8 @@ public class JOGLRenderQueue implements GLEventListener {
 
         gles2.glEnable(GL2.GL_LINE_SMOOTH);
         gles2.glEnable(GL2.GL_POLYGON_SMOOTH);
+        gles2.glEnable(GL2.GL_POINT_SMOOTH);
+        gles2.glHint(GL2.GL_POINT_SMOOTH, GL2.GL_NICEST);
         gles2.glHint(GL2.GL_POLYGON_SMOOTH_HINT, GL2.GL_NICEST);
         gles2.glHint(GL2.GL_LINE_SMOOTH_HINT, GL2.GL_NICEST);
         gles2.glEnable(GL2.GL_BLEND);
@@ -214,11 +217,12 @@ public class JOGLRenderQueue implements GLEventListener {
         }
 
         JMPath path = s.getPath();
+        final float thickness = computeThickness(s);
 //        for (int n = 0; n < path.size()+1; n++) {
 //            JMPathPoint p = path.getJMPoint(n);
 //            gl2.glVertex3d(p.p.v.x, p.p.v.y, p.p.v.z);
 //        }
-        gl2.glLineWidth(computeThickness(s));
+        gl2.glLineWidth(thickness);
         gl2.glBegin(GL2.GL_LINE_STRIP);
 
         int num = 30;
@@ -229,7 +233,7 @@ public class JOGLRenderQueue implements GLEventListener {
 //            if (true) {
 //                drawBezierSegment(num, p1, p2);
 //                    double[] po = new double[]{p.v.x, p.v.y, p.v.z};
-                for (int k = 0; k <= num; k++) {
+                for (int k = 0; k <= num; k++) {//TODO: Optimize this for straight segments
                     Point p = JMPath.getJMPointBetween(p1, p2, 1d * k / num).p;
 //                Point p = p1.p;
                     gl2.glVertex3d(p.v.x, p.v.y, p.v.z);
@@ -241,7 +245,17 @@ public class JOGLRenderQueue implements GLEventListener {
 
         }
         gl2.glEnd();
-
+        
+        
+          gl2.glPointSize(thickness*.5f);
+            gl2.glBegin(GL2.GL_POINTS);
+        for (int n = 0; n <= path.size(); n++) {//TODO: This needs to improve A LOT
+            JMPathPoint p = path.getJMPoint(n);
+            if (p.isThisSegmentVisible) {
+                 gl2.glVertex3d(p.p.v.x, p.p.v.y, p.p.v.z);
+            }
+        }
+          gl2.glEnd();
     }
 
     private void drawFill(Shape sh) {
@@ -355,15 +369,14 @@ public class JOGLRenderQueue implements GLEventListener {
                     up.x, up.y, up.z
             );
         }
-//                glu.gluLookAt(0, -6, 2, 0, 0, 0, 0, 1, 0);
 
     }
 
-    public Camera getCamera() {
+    public Camera3D getCamera() {
         return camera;
     }
 
-    public void setCamera(Camera camera) {
+    public void setCamera(Camera3D camera) {
         this.camera = camera;
     }
 

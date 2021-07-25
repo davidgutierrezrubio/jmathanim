@@ -62,20 +62,13 @@ public class Camera {
 
     private final JMathAnimScene scene;
     private double xminB, xmaxB, yminB, ymaxB;// Backup values for saveState()
-    public final Point eye, look;
-    public final Vec up;
-    public float fov;
+
 
     public Camera(JMathAnimScene scene, int screenWidth, int screenHeight) {
         this.screenWidth = screenWidth;
         this.screenHeight = screenHeight;
         this.scene = scene;
-        perspective=false;//Default mode: ortographic
-        fov = 60.0f;
-        System.out.println("Camera fov "+Math.tan(1d*fov*PI/360));
-        eye = Point.at(0, 0, 1.125d/Math.tan(1d*fov*PI/360)).visible(false);
-        look = Point.at(0, 0, 0).visible(false);
-        up = Vec.to(0, 0, 0);
+      
 
     }
 
@@ -355,23 +348,6 @@ public class Camera {
         resetValues = new double[]{xmin, xmax, ycenter};
     }
 
-    public void lookAt(Point eye, Point look) {
-        lookAt(eye, look, Vec.to(0, 0, 0));
-    }
-
-    public void lookAt(Point eye, Point look, Vec up) {
-        this.eye.copyFrom(eye);
-        this.look.copyFrom(look);
-        this.up.copyFrom(up);
-    }
-
-    public Vec getUpVector() {
-        Vec l = eye.to(look);
-        if ((l.x != 0) || (l.y != 0)) {
-            return Vec.to(0, 0, 1);
-        } else {
-            return Vec.to(0, 1, 0);
-        }
-    }
+  
 
 }

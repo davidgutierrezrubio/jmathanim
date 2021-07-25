@@ -18,6 +18,7 @@
 package com.jmathanim.Renderers.JOGLRenderer;
 
 import com.jmathanim.Cameras.Camera;
+import com.jmathanim.Cameras.Camera3D;
 import com.jmathanim.Renderers.MovieEncoders.VideoEncoder;
 import com.jmathanim.Renderers.Renderer;
 import com.jmathanim.Utils.JMathAnimConfig;
@@ -40,8 +41,8 @@ import java.util.logging.Logger;
  */
 public class JOGLRenderer extends Renderer {
 
-    public Camera camera;
-    public Camera fixedCamera;
+    public Camera3D camera;
+    public Camera3D fixedCamera;
     private static final double XMIN_DEFAULT = -2;
     private static final double XMAX_DEFAULT = 2;
     private GLWindow glWindow;
@@ -49,8 +50,8 @@ public class JOGLRenderer extends Renderer {
 
     public JOGLRenderer(JMathAnimScene parentScene) {
         super(parentScene);
-        camera = new Camera(parentScene, config.mediaW, config.mediaH);
-        fixedCamera = new Camera(parentScene, config.mediaW, config.mediaH);
+        camera = new Camera3D(parentScene, config.mediaW, config.mediaH);
+        fixedCamera = new Camera3D(parentScene, config.mediaW, config.mediaH);
     }
     
     @Override
