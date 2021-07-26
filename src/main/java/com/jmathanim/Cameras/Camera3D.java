@@ -52,8 +52,12 @@ public class Camera3D extends Camera {
         Rect bb=getMathView();
         double x=bb.getCenter().v.x;
         double y=bb.getCenter().v.y;
-        eye.copyFrom(Point.at(x, y, .5*bb.getHeight()/ Math.tan(1d * fov * PI / 360)));
+        eye.copyFrom(Point.at(x, y, getProperEyeHeight(bb)));
         look.copyFrom(Point.at(x,y,0));
+    }
+
+    public double getProperEyeHeight(Rect bb) {
+        return .5*bb.getHeight()/ Math.tan(1d * fov * PI / 360);
     }
     
     

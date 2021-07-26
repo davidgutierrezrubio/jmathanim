@@ -488,7 +488,8 @@ public class PlayAnim {
     }
 
     private void cameraScale(double runTime, Camera cam, double scale) {
-        scene.playAnimation(Commands.cameraZoomToRect(runTime, cam, cam.getMathView().scale(scale, scale)));
+//        scene.playAnimation(Commands.cameraZoomToRect(runTime, cam, cam.getMathView().scale(scale, scale)));
+        scene.playAnimation(Commands.cameraScale(runTime, cam, scale));
     }
 
     private void cameraShift(double runTime, Vec v, Camera cam) {

@@ -18,6 +18,7 @@
 package com.jmathanim.Animations;
 
 import com.jmathanim.Cameras.Camera;
+import com.jmathanim.Cameras.Camera3D;
 import com.jmathanim.Styling.JMColor;
 import com.jmathanim.Styling.MODrawProperties;
 import com.jmathanim.Styling.PaintStyle;
@@ -203,13 +204,12 @@ public class Commands {
         };
     }// End of rotate command
 
-    
-     public static Animation rotate3d(double runtime, double angx,double angy,double angz, MathObject... objects) {
-        return rotate3d(runtime, null, angx,angy,angz, objects);
+    public static Animation rotate3d(double runtime, double angx, double angy, double angz, MathObject... objects) {
+        return rotate3d(runtime, null, angx, angy, angz, objects);
 
     }
 
-    public static Animation rotate3d(double runtime, Point c, double angx,double angy,double angz, MathObject... objects) {
+    public static Animation rotate3d(double runtime, Point c, double angx, double angy, double angz, MathObject... objects) {
         return new Animation(runtime) {
             double anglex = angx;
             double angley = angy;
@@ -233,9 +233,9 @@ public class Commands {
                 restoreStates(mathObjects);
                 for (MathObject obj : mathObjects) {
                     if (rotationCenter == null) {
-                        obj.rotate3d(obj.getCenter(), anglex * lt,angley * lt,anglez * lt);
+                        obj.rotate3d(obj.getCenter(), anglex * lt, angley * lt, anglez * lt);
                     } else {
-                        obj.rotate3d(rotationCenter, anglex * lt,angley * lt,anglez * lt);
+                        obj.rotate3d(rotationCenter, anglex * lt, angley * lt, anglez * lt);
                     }
                 }
             }
@@ -247,8 +247,7 @@ public class Commands {
             }
         };
     }// End of rotate command
-    
-    
+
     public static AnimationWithEffects affineTransform(double runtime, Point a, Point b, Point c, Point d, Point e,
             Point f, MathObject... objects) {
         return new AnimationWithEffects(runtime) {
@@ -352,7 +351,7 @@ public class Commands {
      * @param A Origin point
      * @param B Destiny point
      * @param objects Objects to animate (varargs)
-     * @return Animation to run with      {@link JMathAnimScene#playAnimation(com.jmathanim.Animations.Animation...)
+     * @return Animation to run with null null null null null     {@link JMathAnimScene#playAnimation(com.jmathanim.Animations.Animation...)
 	 *         playAnimation} method
      */
     public static AnimationWithEffects reflection(double runtime, Point A, Point B, MathObject... objects) {
@@ -401,7 +400,7 @@ public class Commands {
      * @param b second axis point
      *
      * @param objects Objects to animate (varargs)
-     * @return Animation to run with      {@link JMathAnimScene#playAnimation(com.jmathanim.Animations.Animation...)
+     * @return Animation to run with null null null null null     {@link JMathAnimScene#playAnimation(com.jmathanim.Animations.Animation...)
 	 *         playAnimation} method
      */
     public static AnimationWithEffects reflectionByAxis(double runtime, Point a, Point b, MathObject... objects) {
@@ -476,7 +475,7 @@ public class Commands {
      * @param runtime Time duration in seconds
      * @param mp Destination {@link MODrawProperties}
      * @param objects Objects to animate (varargs)
-     * @return Animation to run with      {@link JMathAnimScene#playAnimation(com.jmathanim.Animations.Animation...)
+     * @return Animation to run with null null null null null     {@link JMathAnimScene#playAnimation(com.jmathanim.Animations.Animation...)
 	 *         playAnimation} method
      */
     public static Animation setMP(double runtime, MODrawProperties mp, MathObject... objects) {
@@ -515,7 +514,7 @@ public class Commands {
      * @param styleName Name of destination style
      * @param objects Objects to animate (varargs)
      *
-     * @return Animation to run with      {@link JMathAnimScene#playAnimation(com.jmathanim.Animations.Animation...)
+     * @return Animation to run with null null null null null     {@link JMathAnimScene#playAnimation(com.jmathanim.Animations.Animation...)
 	 *         playAnimation} method
      */
     public static Animation setStyle(double runtime, String styleName, MathObject... objects) {
@@ -529,34 +528,45 @@ public class Commands {
      * @param runtime Time duration in seconds
      * @param camera Camera to zoom
      * @param rectToZoom Area to zoom
-     * @return Animation to run with      {@link JMathAnimScene#playAnimation(com.jmathanim.Animations.Animation...)
+     * @return Animation to run with null null null null null     {@link JMathAnimScene#playAnimation(com.jmathanim.Animations.Animation...)
 	 *         playAnimation} method
      */
     public static Animation cameraZoomToRect(double runtime, Camera camera, Rect rectToZoom) {
-        return new Animation(runtime) {
-            Camera cam = camera;
-            Rect rDst = cam.getRectThatContains(rectToZoom);
-            Rect rSource;
+        if (camera instanceof Camera3D) {
+            Camera3D camera3d = (Camera3D) camera;
+            Vec vecLook = camera3d.look.to(rectToZoom.getCenter());
+            Vec vecEye = camera3d.eye.to(rectToZoom.getCenter());
+            vecEye.addInSite(Vec.to(0, 0, camera3d.getProperEyeHeight(rectToZoom)));
+            return AnimationGroup.make(
+                    shift(runtime, vecEye, camera3d.eye),
+                    shift(runtime, vecLook, camera3d.look)
+            );
+        } else {
+            return new Animation(runtime) {
+                Camera cam = camera;
+                Rect rDst = cam.getRectThatContains(rectToZoom);
+                Rect rSource;
 
-            @Override
-            public void initialize(JMathAnimScene scene) {
-                super.initialize(scene);
-                rSource = cam.getMathView();
-            }
+                @Override
+                public void initialize(JMathAnimScene scene) {
+                    super.initialize(scene);
+                    rSource = cam.getMathView();
+                }
 
-            @Override
-            public void doAnim(double t) {
-                double lt = getLambda().applyAsDouble(t);
-                Rect r = rSource.interpolate(rDst, lt);
-                cam.setMathView(r);
-            }
+                @Override
+                public void doAnim(double t) {
+                    double lt = getLambda().applyAsDouble(t);
+                    Rect r = rSource.interpolate(rDst, lt);
+                    cam.setMathView(r);
+                }
 
-            @Override
-            public void finishAnimation() {
-                super.finishAnimation();
-                doAnim(1);
-            }
-        };
+                @Override
+                public void finishAnimation() {
+                    super.finishAnimation();
+                    doAnim(1);
+                }
+            };
+        }
     }
 
     /**
@@ -566,17 +576,42 @@ public class Commands {
      * @param camera Camera to pan
      * @param shiftVector Shift vector
      *
-     * @return Animation to run with      {@link JMathAnimScene#playAnimation(com.jmathanim.Animations.Animation...)
+     * @return Animation to run with null null null null null     {@link JMathAnimScene#playAnimation(com.jmathanim.Animations.Animation...)
 	 *         playAnimation} method
      */
     public static Animation cameraShift(double runtime, Camera camera, Vec shiftVector) {
-        Rect r = camera.getMathView().shifted(shiftVector);
-        return cameraZoomToRect(runtime, camera, r);
-
+        if (camera instanceof Camera3D) {
+            Camera3D camera3d = (Camera3D) camera;
+            return shift(runtime, shiftVector, camera3d.eye, camera3d.look);
+        } else {
+            Rect r = camera.getMathView().shifted(shiftVector);
+            return cameraZoomToRect(runtime, camera, r);
+        }
     }
 
     public static Animation cameraScale(double runtime, Camera cam, double scale) {
-        return Commands.cameraZoomToRect(runtime, cam, cam.getMathView().scale(scale, scale));
+        if (cam instanceof Camera3D) {
+            Camera3D camera3d = (Camera3D) cam;
+            Vec shiftVector = camera3d.look.to(camera3d.eye).multInSite(scale - 1);
+            return shift(runtime, shiftVector, camera3d.eye);
+        } else {
+            return Commands.cameraZoomToRect(runtime, cam, cam.getMathView().scale(scale, scale));
+        }
+    }
+
+    public enum Axis {
+        X, Y, Z
+    }
+
+    public static Animation camera3DRotate(double runtime, Camera3D cam, double angle) {
+        return camera3DRotate(runtime, cam, angle, Axis.Z);
+    }
+
+    public static Animation camera3DRotate(double runtime, Camera3D cam, double angle, Axis axis) {
+        double anglex = (axis == Axis.X ? angle : 0);
+        double angley = (axis == Axis.Y ? angle : 0);
+        double anglez = (axis == Axis.Z ? angle : 0);
+        return Commands.rotate3d(runtime, cam.look, anglex, angley, anglez, cam.eye);
     }
 
     /**
@@ -585,7 +620,7 @@ public class Commands {
      *
      * @param runtime Run time (in seconds)
      * @param objects Objects to animate (varargs)
-     * @return Animation to run with      {@link JMathAnimScene#playAnimation(com.jmathanim.Animations.Animation...)
+     * @return Animation to run with null null null null null     {@link JMathAnimScene#playAnimation(com.jmathanim.Animations.Animation...)
 	 *         playAnimation} method
      */
     public static Animation shrinkOut(double runtime, MathObject... objects) {
@@ -600,7 +635,7 @@ public class Commands {
      * @param angle Angle to rotate, in radians
      * @param runtime Duration time in seconds
      * @param objects Objects to animate (varargs)
-     * @return Animation to run with      {@link JMathAnimScene#playAnimation(com.jmathanim.Animations.Animation...)
+     * @return Animation to run with null null null null null     {@link JMathAnimScene#playAnimation(com.jmathanim.Animations.Animation...)
 	 *         playAnimation} method
      */
     public static Animation shrinkOut(double runtime, double angle, MathObject... objects) {
@@ -643,7 +678,7 @@ public class Commands {
      *
      * @param runtime Duration time in seconds
      * @return Animation to run with
-     * @param objects Objects to animate (varargs)      {@link JMathAnimScene#playAnimation(com.jmathanim.Animations.Animation...)
+     * @param objects Objects to animate (varargs) null null null null null     {@link JMathAnimScene#playAnimation(com.jmathanim.Animations.Animation...)
 	 *                playAnimation} method
      */
     public static Animation growIn(double runtime, MathObject... objects) {
@@ -658,7 +693,7 @@ public class Commands {
      * @param angle Rotation angle
      * @param runtime Duration time in seconds
      * @param objects Objects to animate (varargs)
-     * @return Animation to run with      {@link JMathAnimScene#playAnimation(com.jmathanim.Animations.Animation...)
+     * @return Animation to run with null null null null null     {@link JMathAnimScene#playAnimation(com.jmathanim.Animations.Animation...)
 	 *         playAnimation} method
      */
     public static Animation growIn(double runtime, double angle, MathObject... objects) {
@@ -677,7 +712,7 @@ public class Commands {
 
             @Override
             public void doAnim(double t) {
-                double lt=getLambda().applyAsDouble(t);
+                double lt = getLambda().applyAsDouble(t);
                 restoreStates(mathObjects);
                 for (MathObject obj : mathObjects) {
                     obj.scale(lt);
@@ -703,7 +738,7 @@ public class Commands {
      *
      * @param runtime Duration time in seconds
      * @param objects Objects to animate (varargs)
-     * @return Animation to run with      {@link JMathAnimScene#playAnimation(com.jmathanim.Animations.Animation...)
+     * @return Animation to run with null null null null null     {@link JMathAnimScene#playAnimation(com.jmathanim.Animations.Animation...)
 	 *         playAnimation} method
      */
     public static Animation fadeIn(double runtime, MathObject... objects) {
@@ -723,7 +758,7 @@ public class Commands {
 
             @Override
             public void doAnim(double t) {
-                double lt=getLambda().applyAsDouble(t);
+                double lt = getLambda().applyAsDouble(t);
                 restoreStates(mathObjects);
                 for (MathObject obj : mathObjects) {
                     obj.multDrawAlpha(lt);
@@ -748,7 +783,7 @@ public class Commands {
      *
      * @param runtime Duration time in seconds
      * @param objects Object to animate
-     * @return Animation to run with      {@link JMathAnimScene#playAnimation(com.jmathanim.Animations.Animation...)
+     * @return Animation to run with null null null null null     {@link JMathAnimScene#playAnimation(com.jmathanim.Animations.Animation...)
 	 *         playAnimation} method
      */
     public static Animation fadeOut(double runtime, MathObject... objects) {
@@ -764,7 +799,7 @@ public class Commands {
 
             @Override
             public void doAnim(double t) {
-                double lt=getLambda().applyAsDouble(t);
+                double lt = getLambda().applyAsDouble(t);
                 restoreStates(mathObjects);
                 for (MathObject obj : mathObjects) {
                     obj.multDrawAlpha(1 - lt);
@@ -793,7 +828,7 @@ public class Commands {
      * Anchor.Type
      * @param gap Gap to apply between elements, in math units
      * @param group MathObjectGroup instance to apply the layout
-     * @return Animation to run with      {@link JMathAnimScene#playAnimation(com.jmathanim.Animations.Animation...)
+     * @return Animation to run with null null null null null     {@link JMathAnimScene#playAnimation(com.jmathanim.Animations.Animation...)
 	 *         playAnimation} method
      */
     public static ShiftAnimation setLayout(double runtime, MathObject corner, MathObjectGroup.Layout layout, double gap,
@@ -829,7 +864,7 @@ public class Commands {
      * @param runtime Duration in seconds
      * @param layout A GroupLayout subclass
      * @param group MathObjectGroup instance to apply the layout
-     * @return Animation to run with      {@link JMathAnimScene#playAnimation(com.jmathanim.Animations.Animation...)
+     * @return Animation to run with null null null null null     {@link JMathAnimScene#playAnimation(com.jmathanim.Animations.Animation...)
 	 *         playAnimation} method
      */
     public static ShiftAnimation setLayout(double runtime, GroupLayout layout, MathObjectGroup group) {
@@ -863,7 +898,7 @@ public class Commands {
      *
      * @param runTime Duration in seconds
      * @param objects MathObjects to apply the animation (varargs)
-     * @return Animation to run with      {@link JMathAnimScene#playAnimation(com.jmathanim.Animations.Animation...)
+     * @return Animation to run with null null null null null     {@link JMathAnimScene#playAnimation(com.jmathanim.Animations.Animation...)
 	 *         playAnimation} method
      */
     public static Animation changeFillAlpha(double runTime, MathObject... objects) {
