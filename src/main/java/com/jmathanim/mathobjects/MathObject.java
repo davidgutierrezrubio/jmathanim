@@ -90,7 +90,7 @@ public abstract class MathObject implements Drawable, Updateable, Stateable, Box
     }
 
     /**
-     * Scale from center of object (2D version)
+     * Shift object. Overloaded method
      *
      * @param <T> MathObject subclass
      * @param x x-coordinate of shift vector
@@ -99,6 +99,19 @@ public abstract class MathObject implements Drawable, Updateable, Stateable, Box
      */
     public final <T extends MathObject> T shift(double x, double y) {
         return shift(new Vec(x, y));
+    }
+
+    /**
+     * Shift object.Overloaded method.
+     *
+     * @param <T> MathObject subclass
+     * @param x x-coordinate of shift vector
+     * @param y y-coordinate of shift vector
+     * @param z z-coordinate of shift vector
+     * @return The same object, after shifting
+     */
+    public final <T extends MathObject> T shift(double x, double y, double z) {
+        return shift(new Vec(x, y, z));
     }
 
     /**
@@ -240,7 +253,7 @@ public abstract class MathObject implements Drawable, Updateable, Stateable, Box
      * @return The same object, after rotating
      */
     public <T extends MathObject> T rotate(double angle) {
-        return rotate(getCenter(),angle);
+        return rotate(getCenter(), angle);
     }
 
     /**
@@ -275,7 +288,9 @@ public abstract class MathObject implements Drawable, Updateable, Stateable, Box
      *
      * @param <T> MathObject subclass
      * @param center Rotation center
-     * @param angle Angle, in radism
+     * @param anglex Rotation angle in x axis, in radians
+     * @param angley Rotation angle in y axis, in radians
+     * @param anglez Rotation angle in z axis, in radians
      * @return The same object, after rotating
      */
     public <T extends MathObject> T rotate3d(Point center, double anglex, double angley, double anglez) {

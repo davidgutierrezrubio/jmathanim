@@ -123,6 +123,7 @@ public class JOGLRenderQueue implements GLEventListener {
         gles2.glEnable(GL2.GL_BLEND);
         gles2.glBlendFunc(GL2.GL_SRC_ALPHA, GL2.GL_ONE_MINUS_SRC_ALPHA);
         gles2.glEnable(GL2.GL_MULTISAMPLE);
+        gles2.glEnable(GL2. GL_SAMPLE_ALPHA_TO_COVERAGE);
 
     }
 
@@ -225,11 +226,11 @@ public class JOGLRenderQueue implements GLEventListener {
         gl2.glLineWidth(thickness);
         gl2.glBegin(GL2.GL_LINE_STRIP);
 
-        int num = 30;
         for (int n = 0; n <= path.size(); n++) {//TODO: This needs to improve A LOT
             JMPathPoint p1 = path.getJMPoint(n);
             JMPathPoint p2 = path.getJMPoint(n + 1);
             if (p2.isThisSegmentVisible) {
+                int num=(p2.isCurved ? 30: 1);
 //            if (true) {
 //                drawBezierSegment(num, p1, p2);
 //                    double[] po = new double[]{p.v.x, p.v.y, p.v.z};

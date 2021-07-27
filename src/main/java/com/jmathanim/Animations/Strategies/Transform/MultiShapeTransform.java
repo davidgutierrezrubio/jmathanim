@@ -58,8 +58,8 @@ public class MultiShapeTransform extends AnimationWithEffects {
 		super.initialize(scene);
 		tr = new MultiShapeObject();
 		dst = new MultiShapeObject();
-		int sizeTr = mobjTransformed.shapes.size();
-		int sizeDst = mobjDestiny.shapes.size();
+		int sizeTr = mobjTransformed.size();
+		int sizeDst = mobjDestiny.size();
 		int numAnims = Math.max(sizeTr, sizeDst);
 
 		if (sizeDst < sizeTr) {

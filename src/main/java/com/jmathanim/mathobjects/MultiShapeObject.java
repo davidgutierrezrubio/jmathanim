@@ -42,7 +42,7 @@ public class MultiShapeObject extends MathObject implements Iterable<Shape> {
 
 	private MODrawPropertiesArray mpMultiShape;
 	public boolean isAddedToScene;
-	public final ArrayList<Shape> shapes;
+	protected final ArrayList<Shape> shapes;
 
 	public static MultiShapeObject make(Shape... shapes) {
 		return new MultiShapeObject(shapes);
@@ -265,23 +265,27 @@ public class MultiShapeObject extends MathObject implements Iterable<Shape> {
 	public <T extends MultiShapeObject> T slice(boolean delete, Integer... indices) {
 		List<Integer> list = Arrays.asList(indices);
 		T resul = (T) this.copy();
-		for (int n = 0; n < resul.shapes.size(); n++) {
-			resul.shapes.set(n, new Shape());
+		for (int n = 0; n < resul.size(); n++) {
+			resul.set(n, new Shape());
 		}
 		for (int n = 0; n < this.shapes.size(); n++) {
 			if (list.contains(n)) {// if this index is marked for extraction...
 
 				if (delete) {
-					resul.shapes.set(n, this.get(n));
+					resul.set(n, this.get(n));
 					this.shapes.set(n, new Shape());
 				} else {
-					resul.shapes.set(n, this.get(n).copy());
+					resul.set(n, this.get(n).copy());
 				}
 			}
 		}
 
 		return resul;
 	}
+
+    public Shape set(int index, Shape element) {
+        return shapes.set(index, element);
+    }
 
 	/**
 	 * Overloaded method, equivalent to slice(true,indices)
@@ -340,5 +344,12 @@ public class MultiShapeObject extends MathObject implements Iterable<Shape> {
 		}
 		return false;
 	}
-
+/**
+	 * Returns an array of MathObject with the contents of the group.
+	 *
+	 * @return The array
+	 */
+	public Shape[] toArray() {
+		return shapes.toArray(new Shape[shapes.size()]);
+	}
 }

@@ -55,7 +55,7 @@ public class SimpleShapeCreationAnimation extends CreationStrategy {
         // attributes
         // This will be drawed instead of mobj during the ShowCreation animation
         msh = canonPath.createMultiShape(this.mobj);
-        for (int n = 0; n < msh.shapes.size(); n++) {
+        for (int n = 0; n < msh.size(); n++) {
             msh.get(n).label = "msh" + n;
         }
         mobj.visible(false);
@@ -72,23 +72,23 @@ public class SimpleShapeCreationAnimation extends CreationStrategy {
             lt = 1;
         }
         if (lt == 1) {
-            for (int n = 0; n < msh.shapes.size(); n++) {
+            for (int n = 0; n < msh.size(); n++) {
                 // Restore all paths because in each loop there will be modified
-                msh.shapes.get(n).getPath().clear();
+                msh.get(n).getPath().clear();
                 final JMPath path = canonPath.get(n);
-                msh.shapes.get(n).getPath().addJMPointsFrom(path);
-                Point current = msh.shapes.get(n).get(-1).p.copy();
+                msh.get(n).getPath().addJMPointsFrom(path);
+                Point current = msh.get(n).get(-1).p.copy();
                 setPencilPosition(previous.copy(), current);
                 previous.copyFrom(current);
             }
             return;
         }
         if (lt == 0) {
-            for (int n = 0; n < msh.shapes.size(); n++) {
-                msh.shapes.get(n).visible(false);
+            for (int n = 0; n < msh.size(); n++) {
+                msh.get(n).visible(false);
             }
-            Point current = msh.shapes.get(0).get(0).p.copy();
-            Vec v = current.to(msh.shapes.get(0).getPath().getJMPointAt(.01).p).mult(-1);
+            Point current = msh.get(0).get(0).p.copy();
+            Vec v = current.to(msh.get(0).getPath().getJMPointAt(.01).p).mult(-1);
             previous.copyFrom(current.add(v));
             setPencilPosition(previous.copy(), current);// Put the pencil at the beginning
 
@@ -102,26 +102,26 @@ public class SimpleShapeCreationAnimation extends CreationStrategy {
         int[] pl = canonPath.getSegmentLocation(k);
         int pathNumber = pl[0];
         k = pl[1];
-        for (int n = 0; n < msh.shapes.size(); n++) {
+        for (int n = 0; n < msh.size(); n++) {
             // Restore all paths because in each loop there will be modified
-            msh.shapes.get(n).getPath().clear();
+            msh.get(n).getPath().clear();
             final JMPath path = canonPath.get(n);
-            msh.shapes.get(n).getPath().addJMPointsFrom(path);
+            msh.get(n).getPath().addJMPointsFrom(path);
 
             if (n < pathNumber) {
-                msh.shapes.get(n).visible(true);// Draw whole path
+                msh.get(n).visible(true);// Draw whole path
             }
             if (n > pathNumber) {
-                msh.shapes.get(n).visible(false);// Still don't draw
+                msh.get(n).visible(false);// Still don't draw
             }
             if (n == pathNumber) {// This path should be drawn partly
-                msh.shapes.get(n).visible(true);
+                msh.get(n).visible(true);
                 // k=point in this path, and alpha 0-1 relative position between k-1 and k
-                final double alphaInThisPath = (k + alpha) / (msh.shapes.get(n).getPath().size() - 1);
+                final double alphaInThisPath = (k + alpha) / (msh.get(n).getPath().size() - 1);
                 JMPath subpath = canonPath.subpath(n, alphaInThisPath);
-                msh.shapes.get(n).getPath().clear();
-                msh.shapes.get(n).getPath().addJMPointsFrom(subpath);
-                Point current = msh.shapes.get(n).get(-1).p.copy();
+                msh.get(n).getPath().clear();
+                msh.get(n).getPath().addJMPointsFrom(subpath);
+                Point current = msh.get(n).get(-1).p.copy();
                 setPencilPosition(previous.copy(), current);
                 previous.copyFrom(current);
             }
