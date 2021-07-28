@@ -102,14 +102,14 @@ The `dashStyle`method sets the dash used to draw the outline, chosen from the en
 
 ```java
 Shape r1 = Shape.regularPolygon(5).thickness(5);
-Shape r2 = r1.copy().stackTo(r1, Anchor.RIGHT,.1);
-Shape r3 = r1.copy().stackTo(r2, Anchor.RIGHT,.1);
+Shape r2 = r1.copy().stackTo(r1, Anchor.Type.RIGHT,.1);
+Shape r3 = r1.copy().stackTo(r2, Anchor.Type.RIGHT,.1);
 r1.dashStyle(DashStyle.SOLID);
 r2.dashStyle(DashStyle.DASHED);
 r3.dashStyle(DashStyle.DOTTED);
-add(LaTeXMathObject.make("{\\tt SOLID}").stackTo(r1, Anchor.BY_CENTER));
-add(LaTeXMathObject.make("{\\tt DASHED}").stackTo(r2, Anchor.BY_CENTER));
-add(LaTeXMathObject.make("{\\tt DOTTED}").stackTo(r3, Anchor.BY_CENTER));
+add(LaTeXMathObject.make("{\\tt SOLID}").stackTo(r1, Anchor.Type.CENTER));
+add(LaTeXMathObject.make("{\\tt DASHED}").stackTo(r2, Anchor.Type.CENTER));
+add(LaTeXMathObject.make("{\\tt DOTTED}").stackTo(r3, Anchor.Type.CENTER));
 add(r1,r2,r3);
 camera.adjustToAllObjects();
 waitSeconds(5);
