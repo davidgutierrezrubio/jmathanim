@@ -392,6 +392,6 @@ public class MODrawProperties implements Stylable, Stateable {
     }
 
     public enum DashStyle {
-        SOLID, DASHED, DOTTED
+        SOLID, DASHED, DOTTED,DASHDOTTED
     }
 }

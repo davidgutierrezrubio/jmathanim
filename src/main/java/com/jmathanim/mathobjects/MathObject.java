@@ -73,7 +73,7 @@ public abstract class MathObject implements Drawable, Updateable, Stateable, Box
      * @return Vec object with center
      */
     public Point getCenter() {
-        return this.getBoundingBox().getCenter();
+        return this.getBoundingBox().getCenter();//TODO: Adapt this to 3D!
     }
 
     /**

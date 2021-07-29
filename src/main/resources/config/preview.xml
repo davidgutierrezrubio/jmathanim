@@ -1,7 +1,0 @@
-<JMathAnimConfig>
-    <video>
-        <size width="1066" height="600" fps="30"/>
-        <createMovie>false</createMovie>
-        <showPreviewWindow>true</showPreviewWindow>
-    </video>
-</JMathAnimConfig>
