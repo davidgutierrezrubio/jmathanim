@@ -81,7 +81,7 @@ public class JOGLRenderQueue implements GLEventListener {
     private static final double MIN_THICKNESS = .2d;
 
     JMathAnimConfig config;
-    ArrayList<Shape> shapes;
+    ArrayList<MathObject> objectsToDraw;
     GLU glu;
     GLUgl2 glu2;
     final float zNear = 0.1f, zFar = 7000f;
@@ -102,7 +102,7 @@ public class JOGLRenderQueue implements GLEventListener {
 
     public JOGLRenderQueue(JMathAnimConfig config) {
         this.config = config;
-        shapes = new ArrayList<>();
+        objectsToDraw = new ArrayList<>();
 
         try {
             prepareEncoder();
@@ -165,8 +165,8 @@ public class JOGLRenderQueue implements GLEventListener {
     public void dispose(GLAutoDrawable drawable) {
     }
 
-    public void addShapeToQueue(Shape s) {
-        shapes.add(s);
+    public void addToQueue(MathObject obj) {
+        objectsToDraw.add(obj);
     }
 
     @Override
@@ -179,11 +179,16 @@ public class JOGLRenderQueue implements GLEventListener {
             gles2.glClearColor((float) col.r, (float) col.g, (float) col.b, (float) col.getAlpha());
         }
         gles2.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT);
-        for (Shape s : shapes) {
-            drawFill(s);
-            drawShape(s);
+        for (MathObject obj : objectsToDraw) {
+
+            if (obj instanceof Shape) {
+                Shape s = (Shape) obj;
+                drawFill(s);
+                drawShape(s);
+            }
+
         }
-        shapes.clear();
+        objectsToDraw.clear();
         gl.glFlush();
 
         if (config.isCreateMovie()) {
@@ -429,7 +434,7 @@ public class JOGLRenderQueue implements GLEventListener {
         gl2.glGetFloatv(GL2.GL_MODELVIEW_MATRIX, modMat);
         gl2.glUniformMatrix4fv(unifProject, 1, false, projMat);
         gl2.glUniformMatrix4fv(unifModelMat, 1, false, modMat);
-        
+
     }
 
     public Camera3D getCamera() {
@@ -479,7 +484,7 @@ public class JOGLRenderQueue implements GLEventListener {
         if (ib.get(0) == GL2.GL_FALSE) {
             System.out.println("VAMOS A VER, QUE DA ERROR AL COMPILAR F");
         }
-         shaderprogram = gl.glCreateProgram();
+        shaderprogram = gl.glCreateProgram();
         gl.glAttachShader(shaderprogram, v);
         gl.glAttachShader(shaderprogram, f);
 

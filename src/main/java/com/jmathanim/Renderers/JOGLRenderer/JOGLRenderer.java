@@ -27,6 +27,7 @@ import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.AbstractJMImage;
 import com.jmathanim.mathobjects.Shape;
+import com.jmathanim.mathobjects.surface.Surface;
 import com.jogamp.newt.opengl.GLWindow;
 import com.jogamp.opengl.GL2;
 import com.jogamp.opengl.GLCapabilities;
@@ -53,12 +54,12 @@ public class JOGLRenderer extends Renderer {
         camera = new Camera3D(parentScene, config.mediaW, config.mediaH);
         fixedCamera = new Camera3D(parentScene, config.mediaW, config.mediaH);
     }
-    
+
     @Override
     public void initialize() {
-        queue=new JOGLRenderQueue(config);
+        queue = new JOGLRenderQueue(config);
         queue.setCamera(camera);
-        queue.fixedCamera=fixedCamera;
+        queue.fixedCamera = fixedCamera;
         camera.initialize(XMIN_DEFAULT, XMAX_DEFAULT, 0);
         fixedCamera.initialize(XMIN_DEFAULT, XMAX_DEFAULT, 0);
         GLCapabilities caps = new GLCapabilities(GLProfile.get(GLProfile.GL2));
@@ -69,7 +70,7 @@ public class JOGLRenderer extends Renderer {
         glWindow = GLWindow.create(caps);
         glWindow.setSize(config.mediaW, config.mediaH);
         glWindow.setTitle("JMathAnim - " + config.getOutputFileName());
-         glWindow.addGLEventListener(queue);
+        glWindow.addGLEventListener(queue);
         glWindow.setVisible(true);//For now it needs to always show the window...
     }
 
@@ -86,10 +87,9 @@ public class JOGLRenderer extends Renderer {
     @Override
     public void saveFrame(int frameCount) {
 //        JMathAnimScene.logger.info("JOGLRenderer: Saving frame");
-        queue.frameCount=frameCount;
+        queue.frameCount = frameCount;
         glWindow.display();
-                
-        
+
     }
 
     @Override
@@ -118,12 +118,17 @@ public class JOGLRenderer extends Renderer {
 //        JMathAnimScene.logger.info("JOGLRenderer: Clear frame");
     }
 
+    public void drawSurface(Surface surface) {
+        queue.addToQueue(surface);
+
+    }
+
     @Override
     public void drawPath(Shape mobj) {
         //This should create JOGL objects and add them to the queue
 //        JMathAnimScene.logger.info("JOGLRenderer: Drawing path");
 //        queue.addShapeFill(mobj);
-        queue.addShapeToQueue(mobj);
+        queue.addToQueue(mobj);
     }
 
     @Override

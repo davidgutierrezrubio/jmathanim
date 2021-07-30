@@ -17,10 +17,36 @@
  */
 package com.jmathanim.mathobjects.surface;
 
+import com.jmathanim.mathobjects.MultiShapeObject;
+import com.jmathanim.mathobjects.Point;
+import com.jmathanim.mathobjects.Shape;
+
 /**
  *
  * @author David Gutierrez Rubio davidgutierrezrubio@gmail.com
  */
-public class Surface {
-    
+public class SurfaceSimple extends MultiShapeObject {
+
+    public SurfaceSimple() {
+    }
+
+    public Shape addFace(Shape face) {
+        this.add(face);
+        return face;
+    }
+
+    public Shape addFace(Point... vertices) {
+        final Shape face = Shape.polygon(vertices);
+        return addFace(face);
+    }
+
+    public Shape addFace(double... coords) {
+        Point[] vertices = new Point[coords.length / 3];
+        int k = 0;
+        for (int i = 0; i < coords.length; i += 3) {
+            vertices[k] = Point.at(coords[i], coords[i + 1], coords[i + 2]);
+            k++;
+        }
+        return addFace(vertices);
+    }
 }
