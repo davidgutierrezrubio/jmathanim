@@ -112,17 +112,9 @@ public class AnimationGroup extends AnimationWithEffects {
 
         int size = animations.size();
         int k = 0;
-        if ((size > 1) && (delayPercentage > 0)) {// Only works when group has at least 2 members...
-            for (Animation anim : animations) {
-                double a = k * (delayPercentage) / (size - 1);
-                double b = 1 - delayPercentage;
-                anim.setLambda(anim.getLambda().compose(UsefulLambdas.allocateTo(a, a + b)));
-//                anim.setLambda(UsefulLambdas.allocateTo(a, a + b));
-                k++;
-            }
-        }
+
         for (Animation anim : animations) {
-           this.copyAnimationParametersTo(anim);
+            this.copyAnimationParametersTo(anim);
         }
 
         for (Animation anim : animations) {
@@ -132,7 +124,15 @@ public class AnimationGroup extends AnimationWithEffects {
             }
             anim.initialize(scene);
         }
-
+        if ((size > 1) && (delayPercentage > 0)) {// Only works when group has at least 2 members...
+            for (Animation anim : animations) {
+                double a = k * (delayPercentage) / (size - 1);
+                double b = 1 - delayPercentage;
+                anim.setLambda(anim.getLambda().compose(UsefulLambdas.allocateTo(a, a + b)));
+//                anim.setLambda(UsefulLambdas.allocateTo(a, a + b));
+                k++;
+            }
+        }
     }
 
     @Override
