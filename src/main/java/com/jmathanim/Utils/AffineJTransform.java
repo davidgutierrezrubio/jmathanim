@@ -246,68 +246,6 @@ public class AffineJTransform {
      */
     public void applyTransform(MathObject mObject) {
         mObject.applyAffineTransform(this);
-//        if (mObject instanceof MathObjectGroup) {
-//            MathObjectGroup mobj = (MathObjectGroup) mObject;
-//            for (MathObject obj : mobj.getObjects()) {
-//                applyTransform(obj);
-//            }
-//            return;
-//        }
-
-//        if (mObject instanceof MultiShapeObject) {
-//            MultiShapeObject mobj = (MultiShapeObject) mObject;
-//            for (Shape obj : mobj.shapes) {
-//                applyTransform(obj);
-//            }
-//            return;
-//        }
-//        if (mObject instanceof Line) {
-//            Line mobj = (Line) mObject;
-//            applyTransform(mobj.getP1());
-//            applyTransform(mobj.getP2());
-//            applyTransformsToDrawingProperties(mObject);
-//            return;
-//        }
-//        if (mObject instanceof Shape) {
-//            Shape mobj = (Shape) mObject;
-//            int size = mobj.getPath().size();
-//            for (int n = 0; n < size; n++) {
-//                applyTransform(mobj.getJMPoint(n));
-//            }
-//            applyTransformsToDrawingProperties(mObject);
-//            return;
-//        }
-//        if (mObject instanceof Arrow2D) {
-//            applyTransform(((Arrow2D) mObject).getBody());
-//            applyTransformsToDrawingProperties(mObject);
-//            return;
-//        }
-//        if (mObject instanceof JMPathPoint) {
-//            JMPathPoint jmPDst = (JMPathPoint) mObject;
-//            JMPathPoint pSrc = jmPDst.copy();
-//            Point pDst = getTransformedObject(pSrc.p);
-//            Point cp1Dst = getTransformedObject(pSrc.cpExit);
-//            Point cp2Dst = getTransformedObject(pSrc.cpEnter);
-//
-//            jmPDst.p.v.copyFrom(pDst.v);
-//            jmPDst.cpExit.v.copyFrom(cp1Dst.v);
-//            jmPDst.cpEnter.v.copyFrom(cp2Dst.v);
-//
-//            applyTransformsToDrawingProperties(mObject);
-//            return;
-//        }
-//        if (mObject instanceof Point) {
-//            Point p = (Point) mObject;
-//            RealMatrix pRow = new Array2DRowRealMatrix(new double[][]{{1d, p.v.x, p.v.y, p.v.z}});
-//            RealMatrix pNew = pRow.multiply(matrix);
-//
-//            p.v.x = pNew.getEntry(0, 1);
-//            p.v.y = pNew.getEntry(0, 2);
-//            p.v.z = pNew.getEntry(0, 3);
-//            applyTransformsToDrawingProperties(mObject);
-//            return;
-//        }
-//        JMathAnimScene.logger.warn("Don't know how to perform an Affine Transform on object " + mObject.getClass().getName());
     }
 
     public void applyTransformsToDrawingProperties(MathObject mObject) {

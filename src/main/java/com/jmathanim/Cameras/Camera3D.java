@@ -36,7 +36,7 @@ public class Camera3D extends Camera {
     public Camera3D(JMathAnimScene scene, int screenWidth, int screenHeight) {
         super(scene, screenWidth, screenHeight);
         perspective = true;//Default mode: perspective
-        fov = 60.0f;
+        fov = 45.0f;
         eye = Point.at(0, 0, 1.125d / Math.tan(1d * fov * PI / 360)).visible(false);
         look = Point.at(0, 0, 0).visible(false);
         up = Vec.to(0, 0, 0);

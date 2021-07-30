@@ -291,7 +291,7 @@ public class Point extends MathObject {
 	public String toString() {
 		String pattern = "##0.###########";
 		DecimalFormat decimalFormat = new DecimalFormat(pattern);
-		return label + "|Point(" + decimalFormat.format(v.x) + ",  " + decimalFormat.format(v.y) + ")";
+		return label + "|Point(" + decimalFormat.format(v.x) + ",  " + decimalFormat.format(v.y)+ ",  " + decimalFormat.format(v.z) + ")";
 
 	}
 

@@ -35,6 +35,8 @@ import com.jmathanim.mathobjects.JMPathPoint;
 import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.Point;
 import com.jmathanim.mathobjects.Shape;
+import com.jmathanim.mathobjects.surface.Face;
+import com.jmathanim.mathobjects.surface.Surface;
 import com.jogamp.opengl.GL;
 import com.jogamp.opengl.GL2;
 import com.jogamp.opengl.GL2ES2;
@@ -187,51 +189,25 @@ public class JOGLRenderQueue implements GLEventListener {
                 drawShape(s);
             }
 
+            if (obj instanceof Surface) {
+                drawSurface((Surface) obj);
+            }
+
         }
         objectsToDraw.clear();
         gl.glFlush();
 
         if (config.isCreateMovie()) {
 //            BufferedImage image = screenshot(drawable);
-            BufferedImage image = screenshot3(gl, drawable);
+            BufferedImage image = screenshot(gl, drawable);
             videoEncoder.writeFrame(image, frameCount);
         }
-
-//        screenshot2(gl2);
     }
 
-    public BufferedImage screenshot3(GL2 gl2, GLDrawable drawable) {
+    public BufferedImage screenshot(GL2 gl2, GLDrawable drawable) {
         AWTGLReadBufferUtil aa = new AWTGLReadBufferUtil(drawable.getGLProfile(), true);
         BufferedImage img = aa.readPixelsToBufferedImage(gl2, 0, 0, config.mediaW, config.mediaH, true);
         return img;
-    }
-
-    public void screenshot2(GL2 gl2) {
-        GLReadBufferUtil util = new GLReadBufferUtil(false, true);
-        util.readPixels(gl2, false);
-        Texture texture = util.getTexture();
-    }
-//Sloooooooooooooooooooooooooooooooooooooooooooooooooooooooooow
-
-    public BufferedImage screenshot(GLDrawable drawable) {
-        int width = config.mediaW;
-        int height = config.mediaH;
-        BufferedImage screenshot = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
-        Graphics graphics = screenshot.getGraphics();
-        ByteBuffer buffer = ByteBuffer.allocate(1919998);
-
-        gl.glReadPixels(0, 0, width, height, GL.GL_RGB, GL.GL_BYTE, buffer);
-
-        for (int h = 0; h < height; h++) {
-            for (int w = 0; w < width; w++) {
-                // The color are the three consecutive bytes, it's like referencing
-                // to the next consecutive array elements, so we got red, green, blue..
-                // red, green, blue, and so on..
-                graphics.setColor(new java.awt.Color(buffer.get() * 2, buffer.get() * 2, buffer.get() * 2));
-                graphics.drawRect(w, height - h, 1, 1); // height - h is for flipping the image
-            }
-        }
-        return screenshot;
     }
 
     private void drawShape(Shape s) {
@@ -275,7 +251,7 @@ public class JOGLRenderQueue implements GLEventListener {
 //          gl2.glEnd();
     }
 
-    private void processDrawingStyle(Shape s) {
+    private void processDrawingStyle(MathObject s) {
         //Thickness...
         final float thickness = computeThickness(s);
         gl.glLineWidth(thickness);
@@ -519,5 +495,37 @@ public class JOGLRenderQueue implements GLEventListener {
             System.out.println("Attribute " + n + ": type " + ib3.get(0) + ", name: " + StandardCharsets.UTF_8.decode(bb).toString());
         }
 
+    }
+
+    private void drawSurface(Surface surface) {
+        
+         JMColor col = (JMColor) surface.getMp().getFillColor();
+        if (col.getAlpha() > 0) {//Draw the surface fill then
+            gl.glPushAttrib(GL2.GL_ENABLE_BIT);
+             gl.glColor4d(col.r, col.g, col.b, col.getAlpha());
+             for (Face f : surface.faces) {
+            gl.glBegin(GL2.GL_POLYGON);
+            for (Point p:f.points) {
+                gl.glVertex3d(p.v.x, p.v.y, p.v.z);
+            }
+            gl.glEnd();
+        }
+             
+             
+             gl.glPopAttrib();
+        }
+        
+        
+        gl.glPushAttrib(GL2.GL_ENABLE_BIT);
+        processDrawingStyle(surface);
+        for (Face f : surface.faces) {
+            gl.glBegin(GL2.GL_LINE_LOOP);
+            for (Point p:f.points) {
+                gl.glVertex3d(p.v.x, p.v.y, p.v.z);
+            }
+            gl.glEnd();
+        }
+
+        gl.glPopAttrib();
     }
 }
