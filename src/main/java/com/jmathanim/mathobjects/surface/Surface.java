@@ -17,10 +17,45 @@
  */
 package com.jmathanim.mathobjects.surface;
 
+import com.jmathanim.Renderers.JOGLRenderer.JOGLRenderer;
+import com.jmathanim.Renderers.Renderer;
+import com.jmathanim.Utils.Rect;
+import com.jmathanim.jmathanim.JMathAnimScene;
+import com.jmathanim.mathobjects.MathObject;
+import java.util.ArrayList;
+
 /**
  *
  * @author David Gutierrez Rubio davidgutierrezrubio@gmail.com
  */
-public class Surface {
-    
+public class Surface extends MathObject {
+
+    public final ArrayList<Face> faces;
+
+    public Surface() {
+        faces = new ArrayList<>();
+    }
+
+    @Override
+    public Surface copy() {
+        Surface copy = new Surface();
+        for (Face f : this.faces) {
+            copy.faces.add(f.copy());
+        }
+        copy.getMp().copyFrom(this.getMp());
+        return copy;
+    }
+
+    @Override
+    public Rect getBoundingBox() {
+        return null;
+    }
+
+    @Override
+    public void draw(JMathAnimScene scene, Renderer r) {
+        if (r instanceof JOGLRenderer) {
+            ((JOGLRenderer) r).drawSurface(this);//Only for JOGL renderers
+        }
+    }
+
 }
