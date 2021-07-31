@@ -174,6 +174,10 @@ public class JOGLRenderQueue implements GLEventListener {
     @Override
     public void display(GLAutoDrawable drawable) {
         adjustCameraView(drawable);
+        
+        
+        
+        
         // clear screen
         PaintStyle backgroundColor = config.getBackgroundColor();
         if (backgroundColor instanceof JMColor) {
@@ -181,6 +185,10 @@ public class JOGLRenderQueue implements GLEventListener {
             gles2.glClearColor((float) col.r, (float) col.g, (float) col.b, (float) col.getAlpha());
         }
         gles2.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT);
+        
+
+        
+        
         for (MathObject obj : objectsToDraw) {
 
             if (obj instanceof Shape) {
@@ -417,7 +425,6 @@ public class JOGLRenderQueue implements GLEventListener {
 //        gl2.glGetFloatv(GL2.GL_MODELVIEW_MATRIX, modMat);
 //        gl2.glUniformMatrix4fv(unifProject, 1, false, projMat);
 //        gl2.glUniformMatrix4fv(unifModelMat, 1, false, modMat);
-
     }
 
     public Camera3D getCamera() {
