@@ -134,18 +134,18 @@ public class JOGLRenderQueue implements GLEventListener {
         gles2.glEnable(GL2.GL_LINE_SMOOTH);
         gles2.glEnable(GL2.GL_POLYGON_SMOOTH);
         gles2.glEnable(GL2.GL_POINT_SMOOTH);
-        gles2.glHint(GL2.GL_POINT_SMOOTH, GL2.GL_NICEST);
+//        gles2.glHint(GL2.GL_POINT_SMOOTH, GL2.GL_NICEST);
         gles2.glHint(GL2.GL_POLYGON_SMOOTH_HINT, GL2.GL_NICEST);
         gles2.glHint(GL2.GL_LINE_SMOOTH_HINT, GL2.GL_NICEST);
         gles2.glEnable(GL2.GL_BLEND);
         gles2.glBlendFunc(GL2.GL_SRC_ALPHA, GL2.GL_ONE_MINUS_SRC_ALPHA);
         gles2.glEnable(GL2.GL_MULTISAMPLE);
         gles2.glEnable(GL2.GL_SAMPLE_ALPHA_TO_COVERAGE);
-        try {
-            loadShaders();
-        } catch (IOException ex) {
-            Logger.getLogger(JOGLRenderQueue.class.getName()).log(Level.SEVERE, null, ex);
-        }
+//        try {
+//            loadShaders();
+//        } catch (IOException ex) {
+//            Logger.getLogger(JOGLRenderQueue.class.getName()).log(Level.SEVERE, null, ex);
+//        }
     }
 
     public final void prepareEncoder() throws Exception {
@@ -211,6 +211,9 @@ public class JOGLRenderQueue implements GLEventListener {
     }
 
     private void drawShape(Shape s) {
+        if ((s.isEmpty())) {
+            return;
+        }
         gl.glPushAttrib(GL2.GL_ENABLE_BIT);
         processDrawingStyle(s);
 
@@ -286,12 +289,15 @@ public class JOGLRenderQueue implements GLEventListener {
     }
 
     private void drawFill(Shape sh) {
+        if ((sh.isEmpty())) {
+            return;
+        }
         JMColor col = (JMColor) sh.getMp().getFillColor();
         if (col.getAlpha() == 0) {
             return;
         }
         //Fill
-        gl.glPolygonMode(com.jogamp.opengl.GL.GL_FRONT_AND_BACK, com.jogamp.opengl.GL.GL_POINTS);
+        gl.glPolygonMode(GL2.GL_FRONT_AND_BACK, GL2.GL_FILL);
 //        gl2.glDisable(com.jogamp.opengl.GL.GL_DEPTH_TEST);
 //        gl2.glDisable(com.jogamp.opengl.GL.GL_CULL_FACE);
         GLUtessellator tess = GLUtessellatorImpl.gluNewTess();
@@ -406,10 +412,11 @@ public class JOGLRenderQueue implements GLEventListener {
 //        mat.put(10, 1f);
 //        mat.put(15, 1f);
 
-        gl2.glGetFloatv(GL2.GL_PROJECTION_MATRIX, projMat);
-        gl2.glGetFloatv(GL2.GL_MODELVIEW_MATRIX, modMat);
-        gl2.glUniformMatrix4fv(unifProject, 1, false, projMat);
-        gl2.glUniformMatrix4fv(unifModelMat, 1, false, modMat);
+        //Custom shader uniform attributes
+//        gl2.glGetFloatv(GL2.GL_PROJECTION_MATRIX, projMat);
+//        gl2.glGetFloatv(GL2.GL_MODELVIEW_MATRIX, modMat);
+//        gl2.glUniformMatrix4fv(unifProject, 1, false, projMat);
+//        gl2.glUniformMatrix4fv(unifModelMat, 1, false, modMat);
 
     }
 
@@ -498,29 +505,27 @@ public class JOGLRenderQueue implements GLEventListener {
     }
 
     private void drawSurface(Surface surface) {
-        
-         JMColor col = (JMColor) surface.getMp().getFillColor();
+
+        JMColor col = (JMColor) surface.getMp().getFillColor();
         if (col.getAlpha() > 0) {//Draw the surface fill then
             gl.glPushAttrib(GL2.GL_ENABLE_BIT);
-             gl.glColor4d(col.r, col.g, col.b, col.getAlpha());
-             for (Face f : surface.faces) {
-            gl.glBegin(GL2.GL_POLYGON);
-            for (Point p:f.points) {
-                gl.glVertex3d(p.v.x, p.v.y, p.v.z);
+            gl.glColor4d(col.r, col.g, col.b, col.getAlpha());
+            for (Face f : surface.faces) {
+                gl.glBegin(GL2.GL_POLYGON);
+                for (Point p : f.points) {
+                    gl.glVertex3d(p.v.x, p.v.y, p.v.z);
+                }
+                gl.glEnd();
             }
-            gl.glEnd();
+
+            gl.glPopAttrib();
         }
-             
-             
-             gl.glPopAttrib();
-        }
-        
-        
+
         gl.glPushAttrib(GL2.GL_ENABLE_BIT);
         processDrawingStyle(surface);
         for (Face f : surface.faces) {
             gl.glBegin(GL2.GL_LINE_LOOP);
-            for (Point p:f.points) {
+            for (Point p : f.points) {
                 gl.glVertex3d(p.v.x, p.v.y, p.v.z);
             }
             gl.glEnd();
