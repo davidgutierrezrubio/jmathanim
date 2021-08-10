@@ -20,6 +20,7 @@ package com.jmathanim.Renderers.JOGLRenderer;
 import com.jmathanim.Styling.JMColor;
 import com.jmathanim.Styling.PaintStyle;
 import com.jmathanim.Utils.Vec;
+import com.jmathanim.mathobjects.JMPathPoint;
 import com.jmathanim.mathobjects.Shape;
 import com.jogamp.common.nio.Buffers;
 import com.jogamp.opengl.GL;
@@ -61,79 +62,117 @@ public class ShaderDrawer {
 
     }
 
+    public float[] getColor(Shape s) {
+        PaintStyle st = s.getMp().getDrawColor();
+        float r = 0;
+        float g = 0;
+        float b = 0;
+        float alpha = 1;
+        if (st instanceof JMColor) {
+            JMColor col = (JMColor) st;
+            r = (float) col.r;
+            g = (float) col.g;
+            b = (float) col.b;
+            alpha = (float) col.getAlpha();
+        }
+        return new float[]{r, g, b, alpha};
+    }
+
     void drawShape(Shape s) {
+        float[] shapeColors = getColor(s);
+        int size = s.size();
+        for (int n = 0; n < size; n++) {
+            JMPathPoint p = s.get(n);
+            JMPathPoint q = s.get(n + 1);
+            if (q.isThisSegmentVisible) {
+                //Draw Bezier curve
+                float vertices[] = new float[12];
+                vertices[0] = (float) p.cpExit.v.x;
+                vertices[1] = (float) p.cpExit.v.y;
+                vertices[2] = (float) p.cpExit.v.z;
+                vertices[3] = (float) p.p.v.x;
+                vertices[4] = (float) p.p.v.y;
+                vertices[5] = (float) p.p.v.z;
+                vertices[6] = (float) q.p.v.x;
+                vertices[7] = (float) q.p.v.y;
+                vertices[8] = (float) q.p.v.z;
+                vertices[9] = (float) q.cpEnter.v.x;
+                vertices[10] = (float) q.cpEnter.v.y;
+                vertices[11] = (float) q.cpEnter.v.z;
+
+                float[] colors = new float[16];
+                colors[0] = shapeColors[0];
+                colors[1] = shapeColors[1];
+                colors[2] = shapeColors[2];
+                colors[3] = shapeColors[3];
+                colors[4] = shapeColors[0];
+                colors[5] = shapeColors[1];
+                colors[6] = shapeColors[2];
+                colors[7] = shapeColors[3];
+                colors[8] = shapeColors[0];
+                colors[9] = shapeColors[1];
+                colors[10] = shapeColors[2];
+                colors[11] = shapeColors[3];
+                colors[12] = shapeColors[0];
+                colors[13] = shapeColors[1];
+                colors[14] = shapeColors[2];
+                colors[15] = shapeColors[3];
+
+                gl.glEnableClientState(GL2.GL_VERTEX_ARRAY);
+
+                FloatBuffer fbVertices = Buffers.newDirectFloatBuffer(vertices);
+                gl.glBindBuffer(GL3ES3.GL_ARRAY_BUFFER, vbo[0]);
+                gl.glBufferData(GL3ES3.GL_ARRAY_BUFFER, fbVertices.limit() * 4, fbVertices, GL3ES3.GL_STATIC_DRAW);
+                gl.glVertexAttribPointer(0, 3, GL.GL_FLOAT, false, 0, 0);
+                gl.glEnableVertexAttribArray(0);
+
+                FloatBuffer fbColors = Buffers.newDirectFloatBuffer(colors);
+                gl.glBindBuffer(GL3ES3.GL_ARRAY_BUFFER, vbo[1]);
+                gl.glBufferData(GL3ES3.GL_ARRAY_BUFFER, fbColors.limit() * 4, fbColors, GL3ES3.GL_STATIC_DRAW);
+                gl.glVertexAttribPointer(1, 4, GL.GL_FLOAT, false, 0, 0);
+                gl.glEnableVertexAttribArray(1);
+                gl.glDrawArrays(GL3ES3.GL_LINES_ADJACENCY_EXT , 0, size);
+                gl.glDisableVertexAttribArray(0);
+                gl.glDisableVertexAttribArray(1);
+
+            }
+        }
+    }
+
+    void drawShapeOld(Shape s) {
         int size = s.size() + 1;
         float vertices[] = new float[size * 3];
         float colors[] = new float[size * 4];
-        PaintStyle st = s.getMp().getDrawColor();
-        float r=0;
-        float g=0;
-        float b=0;
-        float alpha=1;
-        if (st instanceof JMColor) {
-            JMColor col=(JMColor) st;
-            r=(float) col.r;
-            g=(float) col.g;
-            b=(float) col.b;
-            alpha=(float) col.getAlpha();
-        }
+        float[] shapeColors = getColor(s);
         for (int n = 0; n < size; n++) {
-            Vec v = s.get(n).p.v;
-            vertices[3 * n] = (float) v.x;
-            vertices[3 * n + 1] = (float) v.y;
-            vertices[3 * n + 2] = (float) v.z;
+            JMPathPoint p = s.get(n);
+            vertices[3 * n + 0] = (float) p.p.v.x;
+            vertices[3 * n + 1] = (float) p.p.v.y;
+            vertices[3 * n + 2] = (float) p.p.v.z;
 
-            colors[4 * n] = r;
-            colors[4 * n + 1] = g;
-            colors[4 * n + 2] = b;
-            colors[4 * n + 3] = alpha;
-
+            colors[4 * n] = shapeColors[0];
+            colors[4 * n + 1] = shapeColors[1];
+            colors[4 * n + 2] = shapeColors[2];
+            colors[4 * n + 3] = shapeColors[3];
         }
 
         gl.glEnableClientState(GL2.GL_VERTEX_ARRAY);
 
         FloatBuffer fbVertices = Buffers.newDirectFloatBuffer(vertices);
-        gl.glBindBuffer(GL2ES2.GL_ARRAY_BUFFER, vbo[0]);
-        gl.glBufferData(GL2ES2.GL_ARRAY_BUFFER, fbVertices.limit() * 4, fbVertices, GL2ES2.GL_STATIC_DRAW);
+        gl.glBindBuffer(GL3ES3.GL_ARRAY_BUFFER, vbo[0]);
+        gl.glBufferData(GL3ES3.GL_ARRAY_BUFFER, fbVertices.limit() * 4, fbVertices, GL3ES3.GL_STATIC_DRAW);
         gl.glVertexAttribPointer(0, 3, GL.GL_FLOAT, false, 0, 0);
         gl.glEnableVertexAttribArray(0);
 
         FloatBuffer fbColors = Buffers.newDirectFloatBuffer(colors);
-        gl.glBindBuffer(GL2ES2.GL_ARRAY_BUFFER, vbo[1]);
-        gl.glBufferData(GL2ES2.GL_ARRAY_BUFFER, fbColors.limit() * 4, fbColors, GL2ES2.GL_STATIC_DRAW);
+        gl.glBindBuffer(GL3ES3.GL_ARRAY_BUFFER, vbo[1]);
+        gl.glBufferData(GL3ES3.GL_ARRAY_BUFFER, fbColors.limit() * 4, fbColors, GL3ES3.GL_STATIC_DRAW);
         gl.glVertexAttribPointer(1, 4, GL.GL_FLOAT, false, 0, 0);
         gl.glEnableVertexAttribArray(1);
-        gl.glDrawArrays(GL2ES2.GL_LINE_STRIP, 0, size); //Draw the vertices as triangle
-        gl.glDisableVertexAttribArray(0); // Allow release of vertex position memory
-        gl.glDisableVertexAttribArray(1); // Allow release of vertex color memory
+        gl.glDrawArrays(GL3ES3.GL_LINE_STRIP, 0, size);
+        gl.glDisableVertexAttribArray(0);
+        gl.glDisableVertexAttribArray(1);
 
-//
-//        // transfer data to VBO, this perform the copy of data from CPU -> GPU memory
-//        int numBytes = vertices.length * 3;
-//        gl.glBufferData(GL2ES2.GL_ARRAY_BUFFER, numBytes, fbVertices, GL2ES2.GL_STATIC_DRAW);
-//        fbVertices = null; // It is OK to release CPU vertices memory after transfer to GPU
-//        gl.glVertexAttribPointer(0, 3, GL2ES2.GL_FLOAT, false, 0, 0);
-//
-//        FloatBuffer fbColors = Buffers.newDirectFloatBuffer(colors);
-//
-//        // Select the VBO, GPU memory data, to use for colors
-//        gl.glBindBuffer(GL2ES2.GL_ARRAY_BUFFER, vboHandles[COLOR_IDX]);
-//
-//        numBytes = colors.length * 4;
-//        gl.glBufferData(GL2ES2.GL_ARRAY_BUFFER, numBytes, fbColors, GL2ES2.GL_STATIC_DRAW);
-//        fbColors = null; // It is OK to release CPU color memory after transfer to GPU
-//
-//        // Associate Vertex attribute 1 with the last bound VBO
-//        gl.glVertexAttribPointer(1 /* the vertex attribute */, 4 /* four possitions used for each vertex */,
-//                GL2ES2.GL_FLOAT, false /* normalized? */, 0 /* stride */,
-//                0 /* The bound VBO data offset */);
-//
-//        gl.glEnableVertexAttribArray(1);
-//
-//        gl.glDrawArrays(GL2ES2.GL_TRIANGLES, 0, 3); //Draw the vertices as triangle
-//
-//        gl.glDisableVertexAttribArray(0); // Allow release of vertex position memory
-//        gl.glDisableVertexAttribArray(1); // Allow release of vertex color memory
     }
 
 }
