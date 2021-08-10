@@ -40,6 +40,8 @@ import com.jmathanim.mathobjects.surface.Surface;
 import com.jogamp.opengl.GL;
 import com.jogamp.opengl.GL2;
 import com.jogamp.opengl.GL2ES2;
+import com.jogamp.opengl.GL3;
+import com.jogamp.opengl.GL3ES3;
 import com.jogamp.opengl.GLAutoDrawable;
 import com.jogamp.opengl.GLDrawable;
 import com.jogamp.opengl.GLEventListener;
@@ -81,28 +83,25 @@ import jogamp.opengl.glu.tessellator.GLUtessellatorImpl;
 public class JOGLRenderQueue implements GLEventListener {
 
     private static final double MIN_THICKNESS = .2d;
-
+    public boolean useCustomShaders = true;
     JMathAnimConfig config;
     ArrayList<MathObject> objectsToDraw;
     GLU glu;
     GLUgl2 glu2;
     final float zNear = 0.1f, zFar = 7000f;
-    GL2ES2 gles2;
-    private GL2 gl;
+    private GL3ES3 gles;
+    private GL3 gl;
     private Camera3D camera;
     public Camera3D fixedCamera;
     public VideoEncoder videoEncoder;
     public File saveFilePath;
     private int newLineCounter = 0;
     public int frameCount;
-    private int unifProject;
-    private int unifScal;
-    private float scaVal;
-    private int shaderprogram;
-    private int unifModelMat;
-    private int unifColor;
+    ShaderLoader shaderLoader;
+    ShaderDrawer shaderDrawer;
 
     public JOGLRenderQueue(JMathAnimConfig config) {
+
         this.config = config;
         objectsToDraw = new ArrayList<>();
 
@@ -119,33 +118,37 @@ public class JOGLRenderQueue implements GLEventListener {
 
     @Override
     public void init(GLAutoDrawable drawable) {
-        gles2 = drawable.getGL().getGL2ES2();
-        gl = drawable.getGL().getGL2();
+        gles = drawable.getGL().getGL3ES3();
+        gl = drawable.getGL().getGL3();
         glu = new GLU();
         glu2 = new GLUgl2();
 
-        gles2.setSwapInterval(1);
+        gles.setSwapInterval(1);
         gl.glEnable(GL.GL_DEPTH_TEST);
-        gles2.glEnable(GL.GL_DEPTH_TEST);
-        gles2.glEnable(GL.GL_BLEND);
-        gles2.glClearColor(1.0f, 0.0f, 1.0f, 1.0f);
+        gles.glEnable(GL.GL_DEPTH_TEST);
+        gles.glEnable(GL.GL_BLEND);
+        gles.glClearColor(1.0f, 0.0f, 1.0f, 1.0f);
         gl.glDepthFunc(GL.GL_LEQUAL);
 
-        gles2.glEnable(GL2.GL_LINE_SMOOTH);
-        gles2.glEnable(GL2.GL_POLYGON_SMOOTH);
-        gles2.glEnable(GL2.GL_POINT_SMOOTH);
+        gles.glEnable(GL2.GL_LINE_SMOOTH);
+        gles.glEnable(GL2.GL_POLYGON_SMOOTH);
+        gles.glEnable(GL2.GL_POINT_SMOOTH);
 //        gles2.glHint(GL2.GL_POINT_SMOOTH, GL2.GL_NICEST);
-        gles2.glHint(GL2.GL_POLYGON_SMOOTH_HINT, GL2.GL_NICEST);
-        gles2.glHint(GL2.GL_LINE_SMOOTH_HINT, GL2.GL_NICEST);
-        gles2.glEnable(GL2.GL_BLEND);
-        gles2.glBlendFunc(GL2.GL_SRC_ALPHA, GL2.GL_ONE_MINUS_SRC_ALPHA);
-        gles2.glEnable(GL2.GL_MULTISAMPLE);
-        gles2.glEnable(GL2.GL_SAMPLE_ALPHA_TO_COVERAGE);
-//        try {
-//            loadShaders();
-//        } catch (IOException ex) {
-//            Logger.getLogger(JOGLRenderQueue.class.getName()).log(Level.SEVERE, null, ex);
-//        }
+        gles.glHint(GL2.GL_POLYGON_SMOOTH_HINT, GL2.GL_NICEST);
+        gles.glHint(GL2.GL_LINE_SMOOTH_HINT, GL2.GL_NICEST);
+        gles.glEnable(GL2.GL_BLEND);
+        gles.glBlendFunc(GL2.GL_SRC_ALPHA, GL2.GL_ONE_MINUS_SRC_ALPHA);
+        gles.glEnable(GL2.GL_MULTISAMPLE);
+        gles.glEnable(GL2.GL_SAMPLE_ALPHA_TO_COVERAGE);
+        if (useCustomShaders) {
+            shaderLoader = new ShaderLoader(gles, gl);
+            try {
+                shaderLoader.loadShaders();
+            } catch (IOException ex) {
+                Logger.getLogger(JOGLRenderQueue.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            shaderDrawer = new ShaderDrawer(shaderLoader, gles, gl);
+        }
     }
 
     public final void prepareEncoder() throws Exception {
@@ -174,34 +177,45 @@ public class JOGLRenderQueue implements GLEventListener {
     @Override
     public void display(GLAutoDrawable drawable) {
         adjustCameraView(drawable);
-        
-        
-        
-        
+
         // clear screen
         PaintStyle backgroundColor = config.getBackgroundColor();
         if (backgroundColor instanceof JMColor) {
             JMColor col = (JMColor) backgroundColor;
-            gles2.glClearColor((float) col.r, (float) col.g, (float) col.b, (float) col.getAlpha());
+            gles.glClearColor((float) col.r, (float) col.g, (float) col.b, (float) col.getAlpha());
         }
-        gles2.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT);
-        
+        gles.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT);
 
-        
-        
-        for (MathObject obj : objectsToDraw) {
+        if (!useCustomShaders) {
 
-            if (obj instanceof Shape) {
-                Shape s = (Shape) obj;
-                drawFill(s);
-                drawShape(s);
-            }
-
-            if (obj instanceof Surface) {
-                drawSurface((Surface) obj);
-            }
-
+//            for (MathObject obj : objectsToDraw) {
+//
+//                if (obj instanceof Shape) {
+//                    Shape s = (Shape) obj;
+//                    drawFill(s);
+//                    drawShape(s);
+//                }
+//
+//                if (obj instanceof Surface) {
+//                    drawSurface((Surface) obj);
+//                }
+//
+//            }
         }
+        else
+        {//Custom shaders for drawing MathObjects
+            for (MathObject obj : objectsToDraw) {
+                 if (obj instanceof Shape) {
+                    Shape s = (Shape) obj;
+                    shaderDrawer.drawFill(s);
+                    shaderDrawer.drawShape(s);
+                }
+            }
+            
+            
+            
+        }
+
         objectsToDraw.clear();
         gl.glFlush();
 
@@ -212,180 +226,12 @@ public class JOGLRenderQueue implements GLEventListener {
         }
     }
 
-    public BufferedImage screenshot(GL2 gl2, GLDrawable drawable) {
+    public BufferedImage screenshot(GL3 gl2, GLDrawable drawable) {
         AWTGLReadBufferUtil aa = new AWTGLReadBufferUtil(drawable.getGLProfile(), true);
         BufferedImage img = aa.readPixelsToBufferedImage(gl2, 0, 0, config.mediaW, config.mediaH, true);
         return img;
     }
 
-    private void drawShape(Shape s) {
-        if ((s.isEmpty())) {
-            return;
-        }
-        gl.glPushAttrib(GL2.GL_ENABLE_BIT);
-        processDrawingStyle(s);
-
-        JMPath path = s.getPath();
-
-        gl.glBegin(GL2.GL_LINE_STRIP);
-
-        for (int n = 0; n <= path.size(); n++) {//TODO: This needs to improve A LOT
-            JMPathPoint p1 = path.getJMPoint(n);
-            JMPathPoint p2 = path.getJMPoint(n + 1);
-            if (p2.isThisSegmentVisible) {
-                int num = (p2.isCurved ? 30 : 1);
-//            if (true) {
-//                drawBezierSegment(num, p1, p2);
-//                    double[] po = new double[]{p.v.x, p.v.y, p.v.z};
-                for (int k = 0; k <= num; k++) {//TODO: Optimize this for straight segments
-                    Point p = JMPath.getJMPointBetween(p1, p2, 1d * k / num).p;
-//                Point p = p1.p;
-                    gl.glVertex3d(p.v.x, p.v.y, p.v.z);
-                }
-            } else {
-                gl.glEnd();
-                gl.glBegin(GL2.GL_LINE_STRIP);
-            }
-
-        }
-        gl.glEnd();
-        gl.glPopAttrib();
-
-//          gl2.glPointSize(thickness*.5f);
-//            gl2.glBegin(GL2.GL_POINTS);
-//        for (int n = 0; n <= path.size(); n++) {//TODO: This needs to improve A LOT
-//            JMPathPoint p = path.getJMPoint(n);
-//            if (p.isThisSegmentVisible) {
-//                 gl2.glVertex3d(p.p.v.x, p.p.v.y, p.p.v.z);
-//            }
-//        }
-//          gl2.glEnd();
-    }
-
-    private void processDrawingStyle(MathObject s) {
-        //Thickness...
-        final float thickness = computeThickness(s);
-        gl.glLineWidth(thickness);
-
-        //Color... (TODO: implement gradients)
-        PaintStyle drawColor = s.getMp().getDrawColor();
-        if (drawColor instanceof JMColor) {
-            JMColor col = (JMColor) drawColor;
-            gl.glColor4d(col.r, col.g, col.b, col.getAlpha());
-//           gl.glUniform4f(unifColor,(float)col.r, (float)col.g, (float)col.b, (float)col.getAlpha());
-        }
-
-        //Dash styles...
-        MODrawProperties.DashStyle dash = s.getMp().getDashStyle();
-        switch (dash) {//Default implementation is not good for thick lines!!!
-            case SOLID:
-                //Do nothing!
-                break;
-            case DASHED:
-                gl.glLineStipple(1, (short) 0b1111111111000000);
-                gl.glEnable(GL2.GL_LINE_STIPPLE);
-                break;
-            case DOTTED:
-                gl.glLineStipple(1, (short) 0b0000011111100000);
-                gl.glEnable(GL2.GL_LINE_STIPPLE);
-                break;
-            case DASHDOTTED:
-                gl.glLineStipple(1, (short) 0b1111111000010000);
-                gl.glEnable(GL2.GL_LINE_STIPPLE);
-                break;
-        }
-    }
-
-    private void drawFill(Shape sh) {
-        if ((sh.isEmpty())) {
-            return;
-        }
-        JMColor col = (JMColor) sh.getMp().getFillColor();
-        if (col.getAlpha() == 0) {
-            return;
-        }
-        //Fill
-        gl.glPolygonMode(GL2.GL_FRONT_AND_BACK, GL2.GL_FILL);
-//        gl2.glDisable(com.jogamp.opengl.GL.GL_DEPTH_TEST);
-//        gl2.glDisable(com.jogamp.opengl.GL.GL_CULL_FACE);
-        GLUtessellator tess = GLUtessellatorImpl.gluNewTess();
-        GLUtessellatorCallback tessbegin = new TessellatorCallback(glu2, gl);
-
-        glu.gluTessCallback(tess, GLU.GLU_TESS_BEGIN, tessbegin);
-        glu.gluTessCallback(tess, GLU.GLU_TESS_VERTEX, tessbegin);
-        glu.gluTessCallback(tess, GLU.GLU_TESS_END, tessbegin);
-        glu.gluTessCallback(tess, GLU.GLU_TESS_COMBINE, tessbegin);
-
-        gl.glColor4d(col.r, col.g, col.b, col.getAlpha());
-        GLUgl2.gluTessBeginPolygon(tess, null);
-        GLUgl2.gluTessBeginContour(tess);
-        //This draws only vertices
-//        for (int n = 0; n <= sh.getPath().size(); n++) {
-//            Point p = sh.getPoint(n);//.getJMPoint(n).p;
-//            double[] po = new double[]{p.v.x, p.v.y, p.v.z};
-//            GLUgl2.gluTessVertex(tess, po, 0, po);
-//        }
-        int num = 20;
-        JMPath path = sh.getPath();
-        for (int n = 0; n < path.size(); n++) {
-            for (int k = 0; k <= num; k++) {
-                JMPathPoint p1 = path.getJMPoint(n);
-                JMPathPoint p2 = path.getJMPoint(n + 1);
-//                if (true) {
-                if (p2.isThisSegmentVisible) {
-                    Point p = JMPath.getJMPointBetween(p1, p2, 1d * k / num).p;
-//                Point p = p1.p;
-
-                    double[] po = new double[]{p.v.x, p.v.y, p.v.z};
-                    GLUgl2.gluTessVertex(tess, po, 0, po);
-                } else {
-                    GLUgl2.gluTessEndContour(tess);
-                    GLUgl2.gluTessBeginContour(tess);
-
-                }
-            }
-        }
-
-        GLUgl2.gluTessEndContour(tess);
-        GLUgl2.gluTessEndPolygon(tess);
-        GLUgl2.gluDeleteTess(tess);
-    }
-
-    private void drawBezierSegment(int num, JMPathPoint p1, JMPathPoint p2) {
-//        for (int k = 0; k < num; k++) {
-//            JMPathPoint p = JMPath.getJMPointBetween(p1, p2, 1d * k / num);
-//            gl2.glVertex3d(p.p.v.x, p.p.v.y, p.p.v.z);
-//        }
-        //Prueba de evaluator
-        double[][] punticos = new double[][]{
-            {p1.p.v.x, p1.p.v.y, p1.p.v.z},
-            {p1.cpExit.v.x, p1.cpExit.v.y, p1.cpExit.v.z},
-            {p2.cpEnter.v.x, p2.cpEnter.v.y, p2.cpEnter.v.z},
-            {p2.p.v.x, p2.p.v.y, p2.p.v.z}
-        };
-        DoubleBuffer ctrlpointBuf = GLBuffers.newDirectDoubleBuffer(punticos[0].length
-                * punticos.length);
-        for (int i = 0; i < punticos.length; i++) {
-            ctrlpointBuf.put(punticos[i]);
-        }
-        ctrlpointBuf.rewind();
-
-        gl.glMap1d(GL2.GL_MAP1_VERTEX_3, 0f, 1f, 3, 4, ctrlpointBuf);
-        gl.glEnable(GL2.GL_MAP1_VERTEX_3);
-        gl.glBegin(GL2.GL_LINE_STRIP);
-        for (int i = 0; i <= num; i++) {
-            gl.glEvalCoord1d(1f * i / num);
-        }
-        gl.glEnd();
-//        gl2.glPointSize(3);
-//        gl2.glBegin(GL.GL_POINTS);
-//        for (int i = 0; i < punticos.length; i += 3) {
-//            gl2.glVertex3d(punticos[i][0], punticos[i][1], punticos[i][2]);
-//        }
-//        gl2.glEnd();
-//        
-
-    }
 
     @Override
     public void reshape(GLAutoDrawable drawable, int x, int y, int w, int h) {
@@ -412,19 +258,14 @@ public class JOGLRenderQueue implements GLEventListener {
         }
         FloatBuffer projMat = FloatBuffer.allocate(16);
         FloatBuffer modMat = FloatBuffer.allocate(16);
-//        for (int n = 0; n < 16; n++) {
-//            mat.put(n, 0);
-//        }
-//        mat.put(0, 1f);
-//        mat.put(5, 1f);
-//        mat.put(10, 1f);
-//        mat.put(15, 1f);
 
-        //Custom shader uniform attributes
-//        gl2.glGetFloatv(GL2.GL_PROJECTION_MATRIX, projMat);
-//        gl2.glGetFloatv(GL2.GL_MODELVIEW_MATRIX, modMat);
-//        gl2.glUniformMatrix4fv(unifProject, 1, false, projMat);
-//        gl2.glUniformMatrix4fv(unifModelMat, 1, false, modMat);
+        if (useCustomShaders) {
+//        Custom shader uniform attributes
+            gl2.glGetFloatv(GL2.GL_PROJECTION_MATRIX, projMat);
+            gl2.glGetFloatv(GL2.GL_MODELVIEW_MATRIX, modMat);
+            gl2.glUniformMatrix4fv(shaderLoader.unifProject, 1, false, projMat);
+            gl2.glUniformMatrix4fv(shaderLoader.unifModelMat, 1, false, modMat);
+        }
     }
 
     public Camera3D getCamera() {
@@ -441,103 +282,33 @@ public class JOGLRenderQueue implements GLEventListener {
         return value;
     }
 
-    public void loadShaders() throws IOException {
-        int v = gl.glCreateShader(GL2.GL_VERTEX_SHADER);
-        int f = gl.glCreateShader(GL2.GL_FRAGMENT_SHADER);
-
-        ResourceLoader rl = new ResourceLoader();
-        URL urlVS = rl.getResource("#default.vs", "shaders");
-        BufferedReader brv = new BufferedReader(new FileReader(urlVS.getFile()));
-        String vsrc = "";
-        String line;
-        while ((line = brv.readLine()) != null) {
-            vsrc += line + "\n";
-        }
-        gl.glShaderSource(v, 1, new String[]{vsrc}, null);
-        gl.glCompileShader(v);
-        IntBuffer ib = IntBuffer.allocate(1);
-        gl.glGetShaderiv(v, GL2.GL_COMPILE_STATUS, ib);
-        if (ib.get(0) == GL2.GL_FALSE) {
-            System.out.println("VAMOS A VER, QUE DA ERROR AL COMPILAR V");
-        }
-
-        URL urlFS = rl.getResource("#default.fs", "shaders");
-        BufferedReader brf = new BufferedReader(new FileReader(urlFS.getFile()));
-        String fsrc = "";
-        while ((line = brf.readLine()) != null) {
-            fsrc += line + "\n";
-        }
-        gl.glShaderSource(f, 1, new String[]{fsrc}, null);
-        gl.glCompileShader(f);
-        ib = IntBuffer.allocate(1);
-        gl.glGetShaderiv(f, GL2.GL_COMPILE_STATUS, ib);
-        if (ib.get(0) == GL2.GL_FALSE) {
-            System.out.println("VAMOS A VER, QUE DA ERROR AL COMPILAR F");
-        }
-        shaderprogram = gl.glCreateProgram();
-        gl.glAttachShader(shaderprogram, v);
-        gl.glAttachShader(shaderprogram, f);
-
-        gl.glLinkProgram(shaderprogram);
-
-        ib = IntBuffer.allocate(1);
-        gl.glGetProgramiv(shaderprogram, GL2.GL_LINK_STATUS, ib);
-        if (ib.get(0) == GL2.GL_FALSE) {
-            System.out.println("ERROR AL LINKEAR");
-        }
-
-        gl.glValidateProgram(shaderprogram);
-        //Uncomment this for tweaking shaders
-        gl.glUseProgram(shaderprogram);
-        unifProject = gl.glGetUniformLocation(shaderprogram, "projection");
-        unifModelMat = gl.glGetUniformLocation(shaderprogram, "modelMat");
-        unifColor = gl.glGetUniformLocation(shaderprogram, "currentColor");
-        System.out.println("projection at " + unifProject);
-        System.out.println("modelMat at " + unifModelMat);
-
-        ib = IntBuffer.allocate(1);
-        //Print attributes
-        gl.glGetProgramiv(shaderprogram, GL2.GL_ACTIVE_ATTRIBUTES, ib);
-        System.out.println("Hay " + ib.get(0) + " atributos");
-
-        for (int n = 0; n < ib.get(0); n++) {
-            IntBuffer ib1 = IntBuffer.allocate(16);
-            IntBuffer ib2 = IntBuffer.allocate(16);
-            IntBuffer ib3 = IntBuffer.allocate(16);
-            ByteBuffer bb = ByteBuffer.allocate(16);
-            gl.glGetActiveAttrib(shaderprogram, n, 16, ib1, ib2, ib3, bb);
-            System.out.println("Attribute " + n + ": type " + ib3.get(0) + ", name: " + StandardCharsets.UTF_8.decode(bb).toString());
-        }
-
-    }
-
-    private void drawSurface(Surface surface) {
-
-        JMColor col = (JMColor) surface.getMp().getFillColor();
-        if (col.getAlpha() > 0) {//Draw the surface fill then
-            gl.glPushAttrib(GL2.GL_ENABLE_BIT);
-            gl.glColor4d(col.r, col.g, col.b, col.getAlpha());
-            for (Face f : surface.faces) {
-                gl.glBegin(GL2.GL_POLYGON);
-                for (Point p : f.points) {
-                    gl.glVertex3d(p.v.x, p.v.y, p.v.z);
-                }
-                gl.glEnd();
-            }
-
-            gl.glPopAttrib();
-        }
-
-        gl.glPushAttrib(GL2.GL_ENABLE_BIT);
-        processDrawingStyle(surface);
-        for (Face f : surface.faces) {
-            gl.glBegin(GL2.GL_LINE_LOOP);
-            for (Point p : f.points) {
-                gl.glVertex3d(p.v.x, p.v.y, p.v.z);
-            }
-            gl.glEnd();
-        }
-
-        gl.glPopAttrib();
-    }
+//    private void drawSurface(Surface surface) {
+//
+//        JMColor col = (JMColor) surface.getMp().getFillColor();
+//        if (col.getAlpha() > 0) {//Draw the surface fill then
+//            gl.glPushAttrib(GL2.GL_ENABLE_BIT);
+//            gl.glColor4d(col.r, col.g, col.b, col.getAlpha());
+//            for (Face f : surface.faces) {
+//                gl.glBegin(GL2.GL_POLYGON);
+//                for (Point p : f.points) {
+//                    gl.glVertex3d(p.v.x, p.v.y, p.v.z);
+//                }
+//                gl.glEnd();
+//            }
+//
+//            gl.glPopAttrib();
+//        }
+//
+//        gl.glPushAttrib(GL2.GL_ENABLE_BIT);
+//        processDrawingStyle(surface);
+//        for (Face f : surface.faces) {
+//            gl.glBegin(GL2.GL_LINE_LOOP);
+//            for (Point p : f.points) {
+//                gl.glVertex3d(p.v.x, p.v.y, p.v.z);
+//            }
+//            gl.glEnd();
+//        }
+//
+//        gl.glPopAttrib();
+//    }
 }
