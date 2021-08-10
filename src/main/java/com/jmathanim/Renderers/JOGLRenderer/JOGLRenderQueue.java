@@ -83,11 +83,13 @@ import jogamp.opengl.glu.tessellator.GLUtessellatorImpl;
 public class JOGLRenderQueue implements GLEventListener {
 
     private static final double MIN_THICKNESS = .2d;
+    private int height;
     public boolean useCustomShaders = true;
     JMathAnimConfig config;
     ArrayList<MathObject> objectsToDraw;
     GLU glu;
     GLUgl2 glu2;
+    private int width;
     final float zNear = 0.1f, zFar = 7000f;
     private GL3ES3 gles;
     private GL3 gl;
@@ -235,6 +237,9 @@ public class JOGLRenderQueue implements GLEventListener {
 
     @Override
     public void reshape(GLAutoDrawable drawable, int x, int y, int w, int h) {
+        this.width=w;
+        this.height=h;
+               
         adjustCameraView(drawable);
     }
 
@@ -265,6 +270,9 @@ public class JOGLRenderQueue implements GLEventListener {
             gl2.glGetFloatv(GL2.GL_MODELVIEW_MATRIX, modMat);
             gl2.glUniformMatrix4fv(shaderLoader.unifProject, 1, false, projMat);
             gl2.glUniformMatrix4fv(shaderLoader.unifModelMat, 1, false, modMat);
+            gl2.glUniform1f(shaderLoader.unifMiterLimit, 3);
+            gl2.glUniform1f(shaderLoader.unifThickness, 60);
+            gl2.glUniform2f(shaderLoader.unifViewPort, this.width, this.height);
         }
     }
 

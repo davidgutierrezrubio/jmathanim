@@ -1,6 +1,14 @@
-#version 460
-in vec4 Color;
+#version 330
 
-void main(){
-gl_FragColor=vec4(0.,0.,0.,1.);
+//Adapted from https://github.com/vicrucann/shader-3dcurve
+//Code from Victoria Rudakova
+
+in VertexData{
+    vec2 mTexCoord;
+    vec4 mColor;
+} VertexIn;
+
+void main(void)
+{
+    gl_FragColor = VertexIn.mColor;
 }

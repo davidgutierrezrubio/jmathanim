@@ -41,10 +41,13 @@ public class ShaderLoader {
     private int shaderprogram;
 
     public float scaVal;
+    public int unifMiterLimit;
     public int unifModelMat;
     public int unifColor;
     public int unifProject;
     public int unifScal;
+    public int unifThickness;
+    public int unifViewPort;
 
     public ShaderLoader(GL3ES3 gles, GL3 gl) {
         this.gles3 = gles;
@@ -56,7 +59,6 @@ public class ShaderLoader {
         int f = gl.glCreateShader(GL2.GL_FRAGMENT_SHADER);
         int g = gl.glCreateShader(GL3.GL_GEOMETRY_SHADER);
 
-        
         //Vertex Shader
         ResourceLoader rl = new ResourceLoader();
         URL urlVS = rl.getResource("#default.vs", "shaders");
@@ -72,9 +74,11 @@ public class ShaderLoader {
         gl.glGetShaderiv(v, GL2.GL_COMPILE_STATUS, ib);
         if (ib.get(0) == GL2.GL_FALSE) {
             System.out.println("Error compiling Vertex Shader");
+        } else {
+            System.out.println("Sucesfully compiled Vertex Shader");
         }
 
-         //Geometry Shader
+        //Geometry Shader
         URL urlGS = rl.getResource("#default.gs", "shaders");
         BufferedReader brg = new BufferedReader(new FileReader(urlGS.getFile()));
         String gsrc = "";
@@ -86,10 +90,11 @@ public class ShaderLoader {
         ib = IntBuffer.allocate(1);
         gl.glGetShaderiv(g, GL2.GL_COMPILE_STATUS, ib);
         if (ib.get(0) == GL2.GL_FALSE) {
-                   System.out.println("Error compiling Geometry Shader");
+            System.out.println("Error compiling Geometry Shader");
+        } else {
+            System.out.println("Sucesfully compiled Geometry Shader");
         }
-        
-        
+
         //Fragment Shader
         URL urlFS = rl.getResource("#default.fs", "shaders");
         BufferedReader brf = new BufferedReader(new FileReader(urlFS.getFile()));
@@ -102,27 +107,16 @@ public class ShaderLoader {
         ib = IntBuffer.allocate(1);
         gl.glGetShaderiv(f, GL2.GL_COMPILE_STATUS, ib);
         if (ib.get(0) == GL2.GL_FALSE) {
-                   System.out.println("Error compiling Fragment Shader");
+            System.out.println("Error compiling Fragment Shader");
+        } else {
+            System.out.println("Sucesfully compiled Fragment Shader");
         }
-        
-        
-        
-        
-        
-        
-        
+
         shaderprogram = gl.glCreateProgram();
         gl.glAttachShader(shaderprogram, v);
         gl.glAttachShader(shaderprogram, g);
         gl.glAttachShader(shaderprogram, f);
 
-        
-             gl.glBindAttribLocation(shaderprogram, 0, "at_Posit");
-        gl.glBindAttribLocation(shaderprogram, 1, "at_Color");
-        
-        
-        
-        
         gl.glLinkProgram(shaderprogram);
 
         ib = IntBuffer.allocate(1);
@@ -136,7 +130,9 @@ public class ShaderLoader {
         gl.glUseProgram(shaderprogram);
         unifProject = gl.glGetUniformLocation(shaderprogram, "projection");
         unifModelMat = gl.glGetUniformLocation(shaderprogram, "modelMat");
-        unifColor = gl.glGetUniformLocation(shaderprogram, "currentColor");
+        unifThickness = gl.glGetUniformLocation(shaderprogram, "Thickness");
+        unifViewPort = gl.glGetUniformLocation(shaderprogram, "Viewport");
+        unifMiterLimit = gl.glGetUniformLocation(shaderprogram, "MiterLimit");
 
         ib = IntBuffer.allocate(1);
         //Print attributes
