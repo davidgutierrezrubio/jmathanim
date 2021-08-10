@@ -54,7 +54,10 @@ public class ShaderLoader {
     public void loadShaders() throws IOException {
         int v = gl.glCreateShader(GL2.GL_VERTEX_SHADER);
         int f = gl.glCreateShader(GL2.GL_FRAGMENT_SHADER);
+        int g = gl.glCreateShader(GL3.GL_GEOMETRY_SHADER);
 
+        
+        //Vertex Shader
         ResourceLoader rl = new ResourceLoader();
         URL urlVS = rl.getResource("#default.vs", "shaders");
         BufferedReader brv = new BufferedReader(new FileReader(urlVS.getFile()));
@@ -68,9 +71,26 @@ public class ShaderLoader {
         IntBuffer ib = IntBuffer.allocate(1);
         gl.glGetShaderiv(v, GL2.GL_COMPILE_STATUS, ib);
         if (ib.get(0) == GL2.GL_FALSE) {
-            System.out.println("VAMOS A VER, QUE DA ERROR AL COMPILAR V");
+            System.out.println("Error compiling Vertex Shader");
         }
 
+         //Geometry Shader
+        URL urlGS = rl.getResource("#default.gs", "shaders");
+        BufferedReader brg = new BufferedReader(new FileReader(urlGS.getFile()));
+        String gsrc = "";
+        while ((line = brg.readLine()) != null) {
+            gsrc += line + "\n";
+        }
+        gl.glShaderSource(g, 1, new String[]{gsrc}, null);
+        gl.glCompileShader(g);
+        ib = IntBuffer.allocate(1);
+        gl.glGetShaderiv(g, GL2.GL_COMPILE_STATUS, ib);
+        if (ib.get(0) == GL2.GL_FALSE) {
+                   System.out.println("Error compiling Geometry Shader");
+        }
+        
+        
+        //Fragment Shader
         URL urlFS = rl.getResource("#default.fs", "shaders");
         BufferedReader brf = new BufferedReader(new FileReader(urlFS.getFile()));
         String fsrc = "";
@@ -82,10 +102,18 @@ public class ShaderLoader {
         ib = IntBuffer.allocate(1);
         gl.glGetShaderiv(f, GL2.GL_COMPILE_STATUS, ib);
         if (ib.get(0) == GL2.GL_FALSE) {
-            System.out.println("VAMOS A VER, QUE DA ERROR AL COMPILAR F");
+                   System.out.println("Error compiling Fragment Shader");
         }
+        
+        
+        
+        
+        
+        
+        
         shaderprogram = gl.glCreateProgram();
         gl.glAttachShader(shaderprogram, v);
+        gl.glAttachShader(shaderprogram, g);
         gl.glAttachShader(shaderprogram, f);
 
         

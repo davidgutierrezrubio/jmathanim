@@ -42,7 +42,7 @@ public class ShaderDrawer {
     private GL3 gl;
 
     private int vao[] = new int[1];
-    private int vbo[] = new int[2];
+    private int vbo[] = new int[3];
 
     public ShaderDrawer(ShaderLoader sl, GL3ES3 gles3, GL3 gl) {
         this.sl = sl;
@@ -51,7 +51,7 @@ public class ShaderDrawer {
 
         gl.glGenVertexArrays(vao.length, vao, 0);
         gl.glBindVertexArray(vao[0]);
-        gl.glGenBuffers(2, vbo, 0);
+        gl.glGenBuffers(3, vbo, 0);
 
     }
 
@@ -86,21 +86,23 @@ public class ShaderDrawer {
             JMPathPoint q = s.get(n + 1);
             if (q.isThisSegmentVisible) {
                 //Draw Bezier curve
-                float vertices[] = new float[12];
-                vertices[0] = (float) p.cpExit.v.x;
-                vertices[1] = (float) p.cpExit.v.y;
-                vertices[2] = (float) p.cpExit.v.z;
-                vertices[3] = (float) p.p.v.x;
-                vertices[4] = (float) p.p.v.y;
-                vertices[5] = (float) p.p.v.z;
-                vertices[6] = (float) q.p.v.x;
-                vertices[7] = (float) q.p.v.y;
-                vertices[8] = (float) q.p.v.z;
-                vertices[9] = (float) q.cpEnter.v.x;
-                vertices[10] = (float) q.cpEnter.v.y;
-                vertices[11] = (float) q.cpEnter.v.z;
+                float vertices[] = new float[6];
+                vertices[0] = (float) p.p.v.x;
+                vertices[1] = (float) p.p.v.y;
+                vertices[2] = (float) p.p.v.z;
+                vertices[3] = (float) q.p.v.x;
+                vertices[4] = (float) q.p.v.y;
+                vertices[5] = (float) q.p.v.z;
+                
+                float cpoints[]=new float[6];
+                cpoints[0]=(float) p.cpExit.v.x;
+                cpoints[1]=(float) p.cpExit.v.y;
+                cpoints[2]=(float) p.cpExit.v.z;
+                cpoints[3]=(float) q.cpEnter.v.x;
+                cpoints[4]=(float) q.cpEnter.v.y;
+                cpoints[5]=(float) q.cpEnter.v.z;
 
-                float[] colors = new float[16];
+                float[] colors = new float[8];
                 colors[0] = shapeColors[0];
                 colors[1] = shapeColors[1];
                 colors[2] = shapeColors[2];
@@ -109,15 +111,6 @@ public class ShaderDrawer {
                 colors[5] = shapeColors[1];
                 colors[6] = shapeColors[2];
                 colors[7] = shapeColors[3];
-                colors[8] = shapeColors[0];
-                colors[9] = shapeColors[1];
-                colors[10] = shapeColors[2];
-                colors[11] = shapeColors[3];
-                colors[12] = shapeColors[0];
-                colors[13] = shapeColors[1];
-                colors[14] = shapeColors[2];
-                colors[15] = shapeColors[3];
-
                 gl.glEnableClientState(GL2.GL_VERTEX_ARRAY);
 
                 FloatBuffer fbVertices = Buffers.newDirectFloatBuffer(vertices);
@@ -131,9 +124,17 @@ public class ShaderDrawer {
                 gl.glBufferData(GL3ES3.GL_ARRAY_BUFFER, fbColors.limit() * 4, fbColors, GL3ES3.GL_STATIC_DRAW);
                 gl.glVertexAttribPointer(1, 4, GL.GL_FLOAT, false, 0, 0);
                 gl.glEnableVertexAttribArray(1);
-                gl.glDrawArrays(GL3ES3.GL_LINES_ADJACENCY_EXT , 0, size);
+                
+                 FloatBuffer fbControlPoints = Buffers.newDirectFloatBuffer(cpoints);
+                gl.glBindBuffer(GL3ES3.GL_ARRAY_BUFFER, vbo[2]);
+                gl.glBufferData(GL3ES3.GL_ARRAY_BUFFER, fbControlPoints.limit() * 4, fbColors, GL3ES3.GL_STATIC_DRAW);
+                gl.glVertexAttribPointer(2, 3, GL.GL_FLOAT, false, 0, 0);
+                gl.glEnableVertexAttribArray(2);
+                
+                gl.glDrawArrays(GL3ES3.GL_LINES , 0, size);
                 gl.glDisableVertexAttribArray(0);
                 gl.glDisableVertexAttribArray(1);
+                gl.glDisableVertexAttribArray(2);
 
             }
         }
