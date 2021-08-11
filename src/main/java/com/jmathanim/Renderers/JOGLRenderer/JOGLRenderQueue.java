@@ -81,7 +81,7 @@ import jogamp.opengl.glu.tessellator.GLUtessellatorImpl;
  * @author David Gutierrez Rubio davidgutierrezrubio@gmail.com
  */
 public class JOGLRenderQueue implements GLEventListener {
-
+    public boolean busy=false; //True if actually drawing
     private static final double MIN_THICKNESS = .2d;
     private int height;
     public boolean useCustomShaders = true;
@@ -177,7 +177,8 @@ public class JOGLRenderQueue implements GLEventListener {
     }
 
     @Override
-    public void display(GLAutoDrawable drawable) {
+    public synchronized void display(GLAutoDrawable drawable) {
+        busy=true;
         adjustCameraView(drawable);
 
         // clear screen
@@ -226,6 +227,8 @@ public class JOGLRenderQueue implements GLEventListener {
             BufferedImage image = screenshot(gl, drawable);
             videoEncoder.writeFrame(image, frameCount);
         }
+        busy=false;
+        this.notifyAll();
     }
 
     public BufferedImage screenshot(GL3 gl2, GLDrawable drawable) {
@@ -270,7 +273,7 @@ public class JOGLRenderQueue implements GLEventListener {
             gl2.glGetFloatv(GL2.GL_MODELVIEW_MATRIX, modMat);
             gl2.glUniformMatrix4fv(shaderLoader.unifProject, 1, false, projMat);
             gl2.glUniformMatrix4fv(shaderLoader.unifModelMat, 1, false, modMat);
-            gl2.glUniform1f(shaderLoader.unifMiterLimit, 3);
+            gl2.glUniform1f(shaderLoader.unifMiterLimit, 1);
             gl2.glUniform1f(shaderLoader.unifThickness, 60);
             gl2.glUniform2f(shaderLoader.unifViewPort, this.width, this.height);
         }

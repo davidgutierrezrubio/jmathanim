@@ -85,10 +85,17 @@ public class JOGLRenderer extends Renderer {
     }
 
     @Override
-    public void saveFrame(int frameCount) {
+    public synchronized void saveFrame(int frameCount) {
 //        JMathAnimScene.logger.info("JOGLRenderer: Saving frame");
         queue.frameCount = frameCount;
         glWindow.display();
+//        while (queue.busy) {}
+        if (queue.busy)
+        try {
+            this.wait();
+        } catch (InterruptedException ex) {
+            Logger.getLogger(JOGLRenderer.class.getName()).log(Level.SEVERE, null, ex);
+        }
 
     }
 
