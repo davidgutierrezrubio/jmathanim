@@ -13,7 +13,7 @@ uniform vec2 Viewport;
 uniform float MiterLimit;
 
 layout(lines_adjacency) in;
-layout(triangle_strip, max_vertices = 7) out;
+layout(triangle_strip, max_vertices = 85) out;
 
 in VertexData{
     vec4 mColor;
@@ -26,7 +26,7 @@ out VertexData{
 
 vec2 toScreenSpace(vec4 vertex)
 {
-    return vec2( vertex.xy / vertex.w ) * Viewport;
+    return vec2( vertex.xy / vertex.w )*Viewport;
 }
 
 float toZValue(vec4 vertex)

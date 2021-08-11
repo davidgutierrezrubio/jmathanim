@@ -273,7 +273,7 @@ public class JOGLRenderQueue implements GLEventListener {
             gl2.glGetFloatv(GL2.GL_MODELVIEW_MATRIX, modMat);
             gl2.glUniformMatrix4fv(shaderLoader.unifProject, 1, false, projMat);
             gl2.glUniformMatrix4fv(shaderLoader.unifModelMat, 1, false, modMat);
-            gl2.glUniform1f(shaderLoader.unifMiterLimit, 1);
+            gl2.glUniform1f(shaderLoader.unifMiterLimit, .5f);
             gl2.glUniform1f(shaderLoader.unifThickness, 60);
             gl2.glUniform2f(shaderLoader.unifViewPort, this.width, this.height);
         }

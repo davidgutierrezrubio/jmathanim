@@ -52,6 +52,8 @@ public class ShaderDrawer {
         gl.glGenVertexArrays(vao.length, vao, 0);
         gl.glBindVertexArray(vao[0]);
         gl.glGenBuffers(2, vbo, 0);
+        gl.glEnableVertexAttribArray(0);
+        gl.glEnableVertexAttribArray(1);
 
     }
 
@@ -86,19 +88,24 @@ public class ShaderDrawer {
             Vec q = s.get(n).p.v;
             Vec r = s.get(n + 1).p.v;
             Vec t = s.get(n + 2).p.v;
-            float vertices[] = new float[12];
+            float vertices[] = new float[16];
             vertices[0] = (float) p.x;
             vertices[1] = (float) p.y;
             vertices[2] = (float) p.z;
-            vertices[3] = (float) q.x;
-            vertices[4] = (float) q.y;
-            vertices[5] = (float) q.z;
-            vertices[6] = (float) r.x;
-            vertices[7] = (float) r.y;
-            vertices[8] = (float) r.z;
-            vertices[9] = (float) t.x;
-            vertices[10] = (float) t.y;
-            vertices[11] = (float) t.z;
+            vertices[3] = 1f;
+            vertices[4] = (float) q.x;
+            vertices[5] = (float) q.y;
+            vertices[6] = (float) q.z;
+            vertices[7] = 1f;
+            vertices[8] = (float) r.x;
+            vertices[9] = (float) r.y;
+            vertices[10] = (float) r.z;
+            vertices[11] = 1f;
+            vertices[12] = (float) t.x;
+            vertices[13] = (float) t.y;
+            vertices[14] = (float) t.z;
+            vertices[15] = 1f;
+            
 
             float[] colors = new float[16];
             colors[0] = shapeColors[0];
@@ -123,19 +130,19 @@ public class ShaderDrawer {
             FloatBuffer fbVertices = Buffers.newDirectFloatBuffer(vertices);
 //            System.out.println("Limit " + fbVertices.limit());
             gl.glBindBuffer(GL3ES3.GL_ARRAY_BUFFER, vbo[0]);
-            gl.glBufferData(GL3ES3.GL_ARRAY_BUFFER, fbVertices.limit() * 4, fbVertices, GL3ES3.GL_STREAM_DRAW);
-            gl.glVertexAttribPointer(0, 3, GL.GL_FLOAT, false, 0, 0);
-            gl.glEnableVertexAttribArray(0);
+            gl.glBufferData(GL3ES3.GL_ARRAY_BUFFER, fbVertices.limit() * 4, fbVertices, GL3ES3.GL_STATIC_DRAW);
+            gl.glVertexAttribPointer(0, 4, GL.GL_FLOAT, false, 0, 0);
+//            gl.glEnableVertexAttribArray(0);
 
             FloatBuffer fbColors = Buffers.newDirectFloatBuffer(colors);
             gl.glBindBuffer(GL3ES3.GL_ARRAY_BUFFER, vbo[1]);
-            gl.glBufferData(GL3ES3.GL_ARRAY_BUFFER, fbColors.limit() * 4, fbColors, GL3ES3.GL_STREAM_DRAW);
+            gl.glBufferData(GL3ES3.GL_ARRAY_BUFFER, fbColors.limit() * 4, fbColors, GL3ES3.GL_STATIC_DRAW);
             gl.glVertexAttribPointer(1, 4, GL.GL_FLOAT, false, 0, 0);
-            gl.glEnableVertexAttribArray(1);
+//            gl.glEnableVertexAttribArray(1);
 
-            gl.glDrawArrays(GL3ES3.GL_LINES_ADJACENCY_EXT, 0, size);
-            gl.glDisableVertexAttribArray(0);
-            gl.glDisableVertexAttribArray(1);
+            gl.glDrawArrays(GL3ES3.GL_LINES_ADJACENCY_EXT, 0, 4);
+//            gl.glDisableVertexAttribArray(0);
+//            gl.glDisableVertexAttribArray(1);
 
         }
     }
