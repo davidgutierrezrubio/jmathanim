@@ -28,6 +28,7 @@ import com.jogamp.opengl.GL2;
 import com.jogamp.opengl.GL2ES2;
 import com.jogamp.opengl.GL3;
 import com.jogamp.opengl.GL3ES3;
+import java.nio.DoubleBuffer;
 import java.nio.FloatBuffer;
 
 /**
@@ -88,65 +89,81 @@ public class ShaderDrawer {
             Vec q = s.get(n).p.v;
             Vec r = s.get(n + 1).p.v;
             Vec t = s.get(n + 2).p.v;
-            float vertices[] = new float[16];
-            vertices[0] = (float) p.x;
-            vertices[1] = (float) p.y;
-            vertices[2] = (float) p.z;
-            vertices[3] = 1f;
-            vertices[4] = (float) q.x;
-            vertices[5] = (float) q.y;
-            vertices[6] = (float) q.z;
-            vertices[7] = 1f;
-            vertices[8] = (float) r.x;
-            vertices[9] = (float) r.y;
-            vertices[10] = (float) r.z;
-            vertices[11] = 1f;
-            vertices[12] = (float) t.x;
-            vertices[13] = (float) t.y;
-            vertices[14] = (float) t.z;
-            vertices[15] = 1f;
-            
-
-            float[] colors = new float[16];
-            colors[0] = shapeColors[0];
-            colors[1] = shapeColors[1];
-            colors[2] = shapeColors[2];
-            colors[3] = shapeColors[3];
-            colors[4] = shapeColors[0];
-            colors[5] = shapeColors[1];
-            colors[6] = shapeColors[2];
-            colors[7] = shapeColors[3];
-            colors[8] = shapeColors[0];
-            colors[9] = shapeColors[1];
-            colors[10] = shapeColors[2];
-            colors[11] = shapeColors[3];
-            colors[12] = shapeColors[0];
-            colors[13] = shapeColors[1];
-            colors[14] = shapeColors[2];
-            colors[15] = shapeColors[3];
-
-            gl.glEnableClientState(GL2.GL_VERTEX_ARRAY);
-
-            FloatBuffer fbVertices = Buffers.newDirectFloatBuffer(vertices);
-//            System.out.println("Limit " + fbVertices.limit());
-            gl.glBindBuffer(GL3ES3.GL_ARRAY_BUFFER, vbo[0]);
-            gl.glBufferData(GL3ES3.GL_ARRAY_BUFFER, fbVertices.limit() * 4, fbVertices, GL3ES3.GL_STATIC_DRAW);
-            gl.glVertexAttribPointer(0, 4, GL.GL_FLOAT, false, 0, 0);
-//            gl.glEnableVertexAttribArray(0);
-
-            FloatBuffer fbColors = Buffers.newDirectFloatBuffer(colors);
-            gl.glBindBuffer(GL3ES3.GL_ARRAY_BUFFER, vbo[1]);
-            gl.glBufferData(GL3ES3.GL_ARRAY_BUFFER, fbColors.limit() * 4, fbColors, GL3ES3.GL_STATIC_DRAW);
-            gl.glVertexAttribPointer(1, 4, GL.GL_FLOAT, false, 0, 0);
-//            gl.glEnableVertexAttribArray(1);
-
-            gl.glDrawArrays(GL3ES3.GL_LINES_ADJACENCY_EXT, 0, 4);
-//            gl.glDisableVertexAttribArray(0);
-//            gl.glDisableVertexAttribArray(1);
+//            if (p.minus(q).norm()==0) return;
+//            if (q.minus(r).norm()==0) return;
+//            if (r.minus(t).norm()==0) return;
+            drawSegment(p, q, r, t, shapeColors);
 
         }
     }
 
+    /**
+     * Draw mited segment qr with reference points p, t
+     *
+     * @param p First reference point
+     * @param q First segment point to bw drawed
+     * @param r Second segment point to bw drawed
+     * @param t Second reference point
+     * @param shapeColors A float array with colors to apply
+     */
+    private void drawSegment(Vec p, Vec q, Vec r, Vec t, float[] shapeColors) {
+        float vertices[] = new float[16];
+        vertices[0] = (float) p.x;
+        vertices[1] = (float) p.y;
+        vertices[2] = (float) p.z;
+        vertices[3] = 1f;
+        vertices[4] = (float) q.x;
+        vertices[5] = (float) q.y;
+        vertices[6] = (float) q.z;
+        vertices[7] = 1f;
+        vertices[8] = (float) r.x;
+        vertices[9] = (float) r.y;
+        vertices[10] = (float) r.z;
+        vertices[11] = 1f;
+        vertices[12] = (float) t.x;
+        vertices[13] = (float) t.y;
+        vertices[14] = (float) t.z;
+        vertices[15] = 1f;
+
+        float[] colors = new float[16];
+        colors[0] = shapeColors[0];//TODO: this should be more concise, no need to repeat!
+        colors[1] = shapeColors[1];
+        colors[2] = shapeColors[2];
+        colors[3] = shapeColors[3];
+        colors[4] = shapeColors[0];
+        colors[5] = shapeColors[1];
+        colors[6] = shapeColors[2];
+        colors[7] = shapeColors[3];
+        colors[8] = shapeColors[0];
+        colors[9] = shapeColors[1];
+        colors[10] = shapeColors[2];
+        colors[11] = shapeColors[3];
+        colors[12] = shapeColors[0];
+        colors[13] = shapeColors[1];
+        colors[14] = shapeColors[2];
+        colors[15] = shapeColors[3];
+
+        gl.glEnableClientState(GL2.GL_VERTEX_ARRAY);
+
+        FloatBuffer fbVertices = Buffers.newDirectFloatBuffer(vertices);
+//            System.out.println("Limit " + fbVertices.limit());
+        gl.glBindBuffer(GL3ES3.GL_ARRAY_BUFFER, vbo[0]);
+        gl.glBufferData(GL3ES3.GL_ARRAY_BUFFER, fbVertices.limit() * 4, fbVertices, GL3ES3.GL_STATIC_DRAW);
+        gl.glVertexAttribPointer(0, 4, GL.GL_FLOAT, false, 0, 0);
+//            gl.glEnableVertexAttribArray(0);
+
+        FloatBuffer fbColors = Buffers.newDirectFloatBuffer(colors);
+        gl.glBindBuffer(GL3ES3.GL_ARRAY_BUFFER, vbo[1]);
+        gl.glBufferData(GL3ES3.GL_ARRAY_BUFFER, fbColors.limit() * 4, fbColors, GL3ES3.GL_STATIC_DRAW);
+        gl.glVertexAttribPointer(1, 4, GL.GL_FLOAT, false, 0, 0);
+//            gl.glEnableVertexAttribArray(1);
+
+        gl.glDrawArrays(GL3ES3.GL_LINES_ADJACENCY_EXT, 0, 4);
+//            gl.glDisableVertexAttribArray(0);
+//            gl.glDisableVertexAttribArray(1);
+    }
+
+     
     void drawShapeBezierOld(Shape s) {
         float[] shapeColors = getColor(s);
         int size = s.size();
