@@ -138,7 +138,7 @@ public class SVGMathObject extends MultiShapeObject {
 				case "path":
 					try {
 						JMPath path = processPathCommands(el.getAttribute("d"));
-                                                path.computeStraightSegments();
+                                                path.determineStraightSegments();
 						mpCopy = localMP.copy();
 						processAttributeCommands(el, mpCopy);
 						if (path.jmPathPoints.size() > 0) {

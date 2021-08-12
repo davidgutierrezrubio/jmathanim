@@ -1,13 +1,5 @@
 #version 330
 
-/* \brief Geometry GLSL shader that demonstrates how to draw basic thick and smooth lines in 3D.
- * This file is a part of shader-3dcurve example (https://github.com/vicrucann/shader-3dcurve).
- *
- * \author Victoria Rudakova
- * \date January 2017
- * \copyright MIT license
-*/
-
 uniform float Thickness;
 uniform vec2 Viewport;
 uniform float MiterLimit;

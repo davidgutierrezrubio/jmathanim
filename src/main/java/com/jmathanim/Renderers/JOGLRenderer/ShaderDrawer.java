@@ -21,6 +21,7 @@ import com.jmathanim.Styling.JMColor;
 import com.jmathanim.Styling.PaintStyle;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.mathobjects.JMPathPoint;
+import com.jmathanim.mathobjects.Point;
 import com.jmathanim.mathobjects.Shape;
 import com.jogamp.common.nio.Buffers;
 import com.jogamp.opengl.GL;
@@ -30,6 +31,7 @@ import com.jogamp.opengl.GL3;
 import com.jogamp.opengl.GL3ES3;
 import java.nio.DoubleBuffer;
 import java.nio.FloatBuffer;
+import java.util.ArrayList;
 
 /**
  * This class send appropiate VAO buffers to shaders
@@ -38,7 +40,7 @@ import java.nio.FloatBuffer;
  */
 public class ShaderDrawer {
 
-    ShaderLoader sl;
+    ShaderLoader shaderLoader;
     private GL3ES3 gles;
     private GL3 gl;
 
@@ -46,7 +48,7 @@ public class ShaderDrawer {
     private int vbo[] = new int[2];
 
     public ShaderDrawer(ShaderLoader sl, GL3ES3 gles3, GL3 gl) {
-        this.sl = sl;
+        this.shaderLoader = sl;
         this.gles = gles3;
         this.gl = gl;
 
@@ -81,32 +83,69 @@ public class ShaderDrawer {
         return new float[]{r, g, b, alpha};
     }
 
-    void drawShape(Shape s) {
-        float[] shapeColors = getColor(s);
-        int size = s.size();
-        for (int n = 0; n < size; n++) {
-            Vec p = s.get(n - 1).p.v;
-            Vec q = s.get(n).p.v;
-            Vec r = s.get(n + 1).p.v;
-            Vec t = s.get(n + 2).p.v;
-//            if (p.minus(q).norm()==0) return;
-//            if (q.minus(r).norm()==0) return;
-//            if (r.minus(t).norm()==0) return;
-            drawSegment(p, q, r, t, shapeColors);
-
+    void removeDuplicates(ArrayList<Point> piece) {
+        int n = 0;
+        while (n < piece.size() - 1) {
+            if (piece.get(n).isEquivalentTo(piece.get(n + 1), .0000001)) {
+                piece.remove(n + 1);
+                n = 0;
+            } else {
+                n++;
+            }
         }
     }
 
-    /**
-     * Draw mited segment qr with reference points p, t
-     *
-     * @param p First reference point
-     * @param q First segment point to bw drawed
-     * @param r Second segment point to bw drawed
-     * @param t Second reference point
-     * @param shapeColors A float array with colors to apply
-     */
-    private void drawSegment(Vec p, Vec q, Vec r, Vec t, float[] shapeColors) {
+    void drawShape(Shape s) {
+        float[] shapeColors = getColor(s);
+        double thickness = s.getMp().getThickness();
+        for (int n = 0; n <= s.size(); n++) {
+            JMPathPoint p = s.get(n);
+            JMPathPoint q = s.get(n + 1);
+            drawGLAdjacency(p.cpExit.v, p.p.v, q.p.v, q.cpEnter.v, shapeColors, thickness);
+        }
+    }
+
+    void drawShapeSlowButWorkingMethod(Shape s,ArrayList<ArrayList<Point>> pieces) {
+        //TODO: Implement this in glsl in a geometry shader
+        float[] shapeColors = getColor(s);
+        
+        for (ArrayList<Point> piece : pieces) {
+//            removeDuplicates(piece);
+            for (int n = 0; n < piece.size() - 1; n++) {
+                Vec p = piece.get(n).v;
+                Vec q = piece.get(n + 1).v;
+                Vec d = q.minus(p);
+                Vec r, t;
+                if (n > 0) {
+                    r = piece.get(n - 1).v;
+                } else {
+                    r = p.minus(d);
+                }
+                if (n < piece.size() - 2) {
+                    t = piece.get(n + 2).v;
+                } else {
+                    t = q.add(d);
+                }
+                if (n == piece.size() - 2) {
+                    if (piece.get(n + 1).isEquivalentTo(piece.get(0), .000001)) {
+                        t = piece.get(1).v;
+                    }
+                }
+                if (n == 0) {
+                    if (piece.get(piece.size() - 1).isEquivalentTo(piece.get(0), .000001)) {
+                        r = piece.get(piece.size() - 2).v;
+                    }
+                }
+
+                drawGLAdjacency(r, p, q, t, shapeColors, s.getMp().getThickness());
+//                drawSegment(Vec.to(0,0), p, q, Vec.to(0,0), shapeColors, s.getMp().getThickness());
+            }
+        }
+    }
+
+    private void drawGLAdjacency(Vec p, Vec q, Vec r, Vec t, float[] shapeColors, double thickness) {
+
+        gl.glUniform1f(shaderLoader.unifThickness, (float) thickness);
         float vertices[] = new float[16];
         vertices[0] = (float) p.x;
         vertices[1] = (float) p.y;
@@ -163,7 +202,6 @@ public class ShaderDrawer {
 //            gl.glDisableVertexAttribArray(1);
     }
 
-     
     void drawShapeBezierOld(Shape s) {
         float[] shapeColors = getColor(s);
         int size = s.size();

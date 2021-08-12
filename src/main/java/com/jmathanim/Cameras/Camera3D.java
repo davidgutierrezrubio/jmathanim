@@ -60,6 +60,11 @@ public class Camera3D extends Camera {
         return .5*bb.getHeight()/ Math.tan(1d * fov * PI / 360);
     }
     
+    public double getMathViewHeight3D(double zDepth) {
+        return 2* Math.tan(1d * fov * PI / 360)*zDepth;//TODO: store Tan to optimize
+        
+    }
+    
     
     
   public void lookAt(Point eye, Point look) {

@@ -210,8 +210,9 @@ public class JOGLRenderQueue implements GLEventListener {
             for (MathObject obj : objectsToDraw) {
                  if (obj instanceof Shape) {
                     Shape s = (Shape) obj;
+                    ArrayList<ArrayList<Point>> pieces = s.getPath().computePolygonalPieces(camera);
                     shaderDrawer.drawFill(s);
-                    shaderDrawer.drawShape(s);
+                    shaderDrawer.drawShapeSlowButWorkingMethod(s,pieces);
                 }
             }
             
@@ -274,7 +275,7 @@ public class JOGLRenderQueue implements GLEventListener {
             gl2.glUniformMatrix4fv(shaderLoader.unifProject, 1, false, projMat);
             gl2.glUniformMatrix4fv(shaderLoader.unifModelMat, 1, false, modMat);
             gl2.glUniform1f(shaderLoader.unifMiterLimit, .5f);
-            gl2.glUniform1f(shaderLoader.unifThickness, 60);
+            
             gl2.glUniform2f(shaderLoader.unifViewPort, this.width, this.height);
         }
     }

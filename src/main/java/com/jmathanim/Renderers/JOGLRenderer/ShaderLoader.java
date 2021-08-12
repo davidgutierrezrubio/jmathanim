@@ -23,6 +23,7 @@ import com.jogamp.opengl.GL2ES2;
 import com.jogamp.opengl.GL3;
 import com.jogamp.opengl.GL3ES3;
 import java.io.BufferedReader;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.net.URL;
@@ -48,6 +49,12 @@ public class ShaderLoader {
     public int unifScal;
     public int unifThickness;
     public int unifViewPort;
+//    private static String VERTEX_SHADER_FILE = "#bezier/BezierDraw.vs";
+//    private static String GEOMETRY_SHADER_FILE = "#bezier/BezierDrawGenPoints.gs";
+//    private static String FRAGMENT_SHADER_FILE = "#bezier/BezierDraw.fs";
+    private static String VERTEX_SHADER_FILE = "#default.vs";
+    private static String GEOMETRY_SHADER_FILE = "#default.gs";
+    private static String FRAGMENT_SHADER_FILE = "#default.fs";
 
     public ShaderLoader(GL3ES3 gles, GL3 gl) {
         this.gles3 = gles;
@@ -61,13 +68,8 @@ public class ShaderLoader {
 
         //Vertex Shader
         ResourceLoader rl = new ResourceLoader();
-        URL urlVS = rl.getResource("#default.vs", "shaders");
-        BufferedReader brv = new BufferedReader(new FileReader(urlVS.getFile()));
-        String vsrc = "";
-        String line;
-        while ((line = brv.readLine()) != null) {
-            vsrc += line + "\n";
-        }
+        URL urlVS = rl.getResource(VERTEX_SHADER_FILE, "shaders");
+        String vsrc = loadShaderFile(urlVS);
         gl.glShaderSource(v, 1, new String[]{vsrc}, null);
         gl.glCompileShader(v);
         IntBuffer ib = IntBuffer.allocate(1);
@@ -79,12 +81,9 @@ public class ShaderLoader {
         }
 
         //Geometry Shader
-        URL urlGS = rl.getResource("#default.gs", "shaders");
+        URL urlGS = rl.getResource(GEOMETRY_SHADER_FILE, "shaders");
         BufferedReader brg = new BufferedReader(new FileReader(urlGS.getFile()));
-        String gsrc = "";
-        while ((line = brg.readLine()) != null) {
-            gsrc += line + "\n";
-        }
+        String gsrc = loadShaderFile(urlGS);
         gl.glShaderSource(g, 1, new String[]{gsrc}, null);
         gl.glCompileShader(g);
         ib = IntBuffer.allocate(1);
@@ -96,12 +95,9 @@ public class ShaderLoader {
         }
 
         //Fragment Shader
-        URL urlFS = rl.getResource("#default.fs", "shaders");
+        URL urlFS = rl.getResource(FRAGMENT_SHADER_FILE, "shaders");
         BufferedReader brf = new BufferedReader(new FileReader(urlFS.getFile()));
-        String fsrc = "";
-        while ((line = brf.readLine()) != null) {
-            fsrc += line + "\n";
-        }
+        String fsrc = loadShaderFile(urlFS);
         gl.glShaderSource(f, 1, new String[]{fsrc}, null);
         gl.glCompileShader(f);
         ib = IntBuffer.allocate(1);
@@ -148,5 +144,15 @@ public class ShaderLoader {
             System.out.println("Attribute " + n + ": type " + ib3.get(0) + ", name: " + StandardCharsets.UTF_8.decode(bb).toString());
         }
 
+    }
+
+    private String loadShaderFile(URL urlVS) throws IOException, FileNotFoundException {
+        BufferedReader brv = new BufferedReader(new FileReader(urlVS.getFile()));
+        String vsrc = "";
+        String line;
+        while ((line = brv.readLine()) != null) {
+            vsrc += line + "\n";
+        }
+        return vsrc;
     }
 }
