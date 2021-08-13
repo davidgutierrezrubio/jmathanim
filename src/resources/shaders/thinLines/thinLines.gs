@@ -12,7 +12,6 @@ in VertexData{
 } VertexIn[4];
 
 out VertexData{
-    vec2 mTexCoord;
     vec4 mColor;
 } VertexOut;
 
@@ -69,17 +68,17 @@ void drawSegment(vec2 points[4], vec4 colors[4], float zValues[4])
 
         /* close the gap */
         if( dot( v0, n1 ) > 0 ) {
-            VertexOut.mTexCoord = vec2( 0, 0 );
+            // VertexOut.mTexCoord = vec2( 0, 0 );
             VertexOut.mColor = colors[1];
             gl_Position = vec4( ( p1 + Thickness * n0 ) / Viewport, zValues[1], 1.0 );
             EmitVertex();
 
-            VertexOut.mTexCoord = vec2( 0, 0 );
+            // VertexOut.mTexCoord = vec2( 0, 0 );
             VertexOut.mColor = colors[1];
             gl_Position = vec4( ( p1 + Thickness * n1 ) / Viewport, zValues[1], 1.0 );
             EmitVertex();
 
-            VertexOut.mTexCoord = vec2( 0, 0.5 );
+            // VertexOut.mTexCoord = vec2( 0, 0.5 );
             VertexOut.mColor = colors[1];
             gl_Position = vec4( p1 / Viewport, zValues[1], 1.0 );
             EmitVertex();
@@ -87,17 +86,17 @@ void drawSegment(vec2 points[4], vec4 colors[4], float zValues[4])
             EndPrimitive();
         }
         else {
-            VertexOut.mTexCoord = vec2( 0, 1 );
+            // VertexOut.mTexCoord = vec2( 0, 1 );
             VertexOut.mColor = colors[1];
             gl_Position = vec4( ( p1 - Thickness * n1 ) / Viewport, zValues[1], 1.0 );
             EmitVertex();
 
-            VertexOut.mTexCoord = vec2( 0, 1 );
+            // VertexOut.mTexCoord = vec2( 0, 1 );
             VertexOut.mColor = colors[1];
             gl_Position = vec4( ( p1 - Thickness * n0 ) / Viewport, zValues[1], 1.0 );
             EmitVertex();
 
-            VertexOut.mTexCoord = vec2( 0, 0.5 );
+            // VertexOut.mTexCoord = vec2( 0, 0.5 );
             VertexOut.mColor = colors[1];
             gl_Position = vec4( p1 / Viewport, zValues[1], 1.0 );
             EmitVertex();
@@ -110,22 +109,22 @@ void drawSegment(vec2 points[4], vec4 colors[4], float zValues[4])
         length_b = Thickness;
     }
     // generate the triangle strip
-    VertexOut.mTexCoord = vec2( 0, 0 );
+    // VertexOut.mTexCoord = vec2( 0, 0 );
     VertexOut.mColor = colors[1];
     gl_Position = vec4( ( p1 + length_a * miter_a ) / Viewport, zValues[1], 1.0 );
     EmitVertex();
 
-    VertexOut.mTexCoord = vec2( 0, 1 );
+    // VertexOut.mTexCoord = vec2( 0, 1 );
     VertexOut.mColor = colors[1];
     gl_Position = vec4( ( p1 - length_a * miter_a ) / Viewport, zValues[1], 1.0 );
     EmitVertex();
 
-    VertexOut.mTexCoord = vec2( 0, 0 );
+    // VertexOut.mTexCoord = vec2( 0, 0 );
     VertexOut.mColor = colors[2];
     gl_Position = vec4( ( p2 + length_b * miter_b ) / Viewport, zValues[2], 1.0 );
     EmitVertex();
 
-    VertexOut.mTexCoord = vec2( 0, 1 );
+    // VertexOut.mTexCoord = vec2( 0, 1 );
     VertexOut.mColor = colors[2];
     gl_Position = vec4( ( p2 - length_b * miter_b ) / Viewport, zValues[2], 1.0 );
     EmitVertex();

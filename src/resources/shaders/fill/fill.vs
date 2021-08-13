@@ -1,9 +1,8 @@
 #version 330
+//Default simple shader with no geometry shader
 uniform mat4 projection;
-uniform mat4 modelMat;
+uniform vec4 unifColor;
 
-//Adapted from https://github.com/vicrucann/shader-3dcurve
-//Code from Victoria Rudakova
 layout(location = 0) in vec4 Vertex;
 layout(location = 1) in vec4 Color;
 
@@ -14,5 +13,5 @@ out VertexData{
 void main()
 {
     VertexOut.mColor = Color;
-     gl_Position = projection*modelMat*Vertex;
+     gl_Position = projection*Vertex;
 }

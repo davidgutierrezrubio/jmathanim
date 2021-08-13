@@ -52,6 +52,7 @@ class TessellatorCallback implements GLUtessellatorCallback {
     @Override
     public void vertex(Object vertexData) {
         double[] data = (double[]) vertexData;
+        gl.glColor3f(.5f, .5f, .1f);
         gl.glVertex3d(data[0], data[1], data[2]);
     }
 

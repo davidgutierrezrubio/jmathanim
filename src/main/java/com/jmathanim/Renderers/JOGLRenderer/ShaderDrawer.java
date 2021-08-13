@@ -29,9 +29,14 @@ import com.jogamp.opengl.GL2;
 import com.jogamp.opengl.GL2ES2;
 import com.jogamp.opengl.GL3;
 import com.jogamp.opengl.GL3ES3;
+import com.jogamp.opengl.fixedfunc.GLMatrixFunc;
+import com.jogamp.opengl.glu.GLU;
+import com.jogamp.opengl.glu.GLUtessellator;
+import com.jogamp.opengl.glu.gl2.GLUgl2;
 import java.nio.DoubleBuffer;
 import java.nio.FloatBuffer;
 import java.util.ArrayList;
+import jogamp.opengl.glu.tessellator.GLUtessellatorImpl;
 
 /**
  * This class send appropiate VAO buffers to shaders
@@ -40,35 +45,175 @@ import java.util.ArrayList;
  */
 public class ShaderDrawer {
 
-    ShaderLoader shaderLoader;
-    private GL3ES3 gles;
-    private GL3 gl;
+    protected ShaderLoader thinLineShader;
+    protected ShaderLoader fillShader;
+//    private GL3ES3 gles;
+    private GL3 gl3;
+    private GL2 gl2;
+    private GLUgl2 glu;
 
     private int vao[] = new int[1];
     private int vbo[] = new int[2];
 
-    public ShaderDrawer(ShaderLoader sl, GL3ES3 gles3, GL3 gl) {
-        this.shaderLoader = sl;
-        this.gles = gles3;
-        this.gl = gl;
+    //Uniform variables for shaders
+    protected int unifColor;//Color of Shape (draw or fill)
+    protected int unifThickness;//Thickness
 
-        gl.glGenVertexArrays(vao.length, vao, 0);
-        gl.glBindVertexArray(vao[0]);
-        gl.glGenBuffers(2, vbo, 0);
-        gl.glEnableVertexAttribArray(0);
-        gl.glEnableVertexAttribArray(1);
+    public ShaderDrawer(GL3 gl3, GL2 gl2) {
+//        this.gles = gles3;
+        this.gl3 = gl3;
+        this.gl2 = gl2;
+
+        gl3.glGenVertexArrays(vao.length, vao, 0);
+        gl3.glBindVertexArray(vao[0]);
+        gl3.glGenBuffers(2, vbo, 0);
+        gl3.glEnableVertexAttribArray(0);
+        gl3.glEnableVertexAttribArray(1);
 
     }
 
-    void drawFill(Shape s) {
+    void drawFill(Shape s, ArrayList<ArrayList<Point>> pieces) {
         if (s.getMp().getFillColor().getAlpha() == 0) {
             return;
         }
+        float[] shapeColors = getFillColor(s);
+        gl2.glUniform4f(fillShader.getUniformVariable("unifColor"), shapeColors[0], shapeColors[1], shapeColors[2], shapeColors[3]);
+//        System.out.println("Shader uniform color: "+shapeColors[2]);
+        //Generates a triangle fan array
+        ArrayList<Float> coords = new ArrayList<>();
+        for (int k = 0; k < pieces.size(); k++) {
 
+            ArrayList<Point> piece = pieces.get(k);
+            Point P = piece.get(0);
+            coords.add((float) P.v.x);
+            coords.add((float) P.v.y);
+            coords.add((float) P.v.z);
+            coords.add(1f);
+            for (int n = 1; n < piece.size() - 1; n++) {
+                Point Q = piece.get(n);
+                Point R = piece.get(n + 1);
+                coords.add((float) Q.v.x);
+                coords.add((float) Q.v.y);
+                coords.add((float) Q.v.z);
+                coords.add(1f);
+                coords.add((float) R.v.x);
+                coords.add((float) R.v.y);
+                coords.add((float) R.v.z);
+                coords.add(1f);
+            }
+        }
+        float[] points = new float[coords.size()];
+        for (int i = 0; i < coords.size(); i++) {
+            points[i] = coords.get(i);
+        }
+
+        //bind an array of triangle fan
+        FloatBuffer fbVertices = Buffers.newDirectFloatBuffer(points);
+        gl3.glBindBuffer(GL3ES3.GL_ARRAY_BUFFER, vbo[0]);
+        gl3.glBufferData(GL3ES3.GL_ARRAY_BUFFER, fbVertices.limit() * 4, fbVertices, GL3ES3.GL_STATIC_DRAW);
+        gl3.glVertexAttribPointer(0, 4, GL.GL_FLOAT, false, 0, 0);
+
+        //Enable Stencil buffer to draw concave polygons
+        gl3.glEnable(GL3.GL_STENCIL_TEST);
+        gl3.glStencilMask(0xFF);
+        gl3.glClear(GL3.GL_STENCIL_BUFFER_BIT);
+
+        // set stencil buffer to invert value on draw, 0 to 1 and 1 to 0
+        gl3.glStencilFunc(GL.GL_ALWAYS, 0, 1);
+        gl3.glStencilOp(GL.GL_INVERT, GL.GL_INVERT, GL.GL_INVERT);
+
+        // disable writing to color buffer
+        gl3.glColorMask(false, false, false, false);
+
+        // draw polygon into stencil buffer
+        gl3.glDrawArrays(GL3ES3.GL_TRIANGLE_FAN, 0, fbVertices.limit() / 4);
+
+        // set stencil buffer to only keep pixels when value in buffer is 1
+        gl3.glStencilFunc(GL.GL_EQUAL, 1, 1);
+        gl3.glStencilOp(GL.GL_KEEP, GL.GL_KEEP, GL.GL_KEEP);
+
+        // enable color again
+        gl3.glColorMask(true, true, true, true);
+
+        drawWholeScreen();//Draw whole screen with current color
+//        gl3.glDrawArrays(GL3ES3.GL_TRIANGLE_FAN, 0, fbVertices.limit() / 4);
+
+        gl3.glDisable(GL.GL_STENCIL_TEST);
     }
 
-    public float[] getColor(Shape s) {
+    private void drawWholeScreen() {
+        FloatBuffer fbVertices;
+        // redraw polygon again, this time into color buffer.
+        //Set projection matrices to identity
+        gl2.glMatrixMode(GLMatrixFunc.GL_PROJECTION);
+        gl2.glPushMatrix();
+        gl2.glLoadIdentity();
+        FloatBuffer projMat = FloatBuffer.allocate(16);
+        gl2.glGetFloatv(GL2.GL_PROJECTION_MATRIX, projMat);
+        gl2.glUniformMatrix4fv(fillShader.getUniformVariable("projection"), 1, false, projMat);
+        float[] pp = new float[]{
+            -1f, 1f, 0f, 1f,
+            1f, 1f, 0f, 1f,
+            1f, -1f, 0f, 1f,
+            1f, -1f, 0f, 1f,
+            -1f, -1f, 0f, 1f
+        };
+        //bind an array of triangle fan
+        fbVertices = Buffers.newDirectFloatBuffer(pp);
+        gl3.glBindBuffer(GL3ES3.GL_ARRAY_BUFFER, vbo[0]);
+        gl3.glBufferData(GL3ES3.GL_ARRAY_BUFFER, fbVertices.limit() * 4, fbVertices, GL3ES3.GL_STATIC_DRAW);
+        gl3.glVertexAttribPointer(0, 4, GL.GL_FLOAT, false, 0, 0);
+        gl3.glDrawArrays(GL3ES3.GL_TRIANGLE_FAN, 0, fbVertices.limit() / 4);
+        gl2.glPopMatrix();
+        gl2.glGetFloatv(GL2.GL_PROJECTION_MATRIX, projMat);
+        gl2.glUniformMatrix4fv(fillShader.getUniformVariable("projection"), 1, false, projMat);
+    }
+
+    void drawFillSlowButWorking(Shape s, ArrayList<ArrayList<Point>> pieces) {
+        if (s.getMp().getFillColor().getAlpha() == 0) {
+            return;
+        }
+        float[] shapeColors = getFillColor(s);
+        gl2.glUniform4f(fillShader.getUniformVariable("unifColor"), shapeColors[0], shapeColors[1], shapeColors[2], shapeColors[3]);
+//        System.out.println("Shader uniform color: "+shapeColors[2]);
+        GLUtessellator tess = GLUtessellatorImpl.gluNewTess();
+        TessellatorCallback cb = new TessellatorCallback(glu, gl2);
+        GLU.gluTessCallback(tess, GLU.GLU_TESS_BEGIN, cb);
+        GLU.gluTessCallback(tess, GLU.GLU_TESS_END, cb);
+        GLU.gluTessCallback(tess, GLU.GLU_TESS_VERTEX, cb);
+        GLU.gluTessCallback(tess, GLU.GLU_TESS_COMBINE, cb);
+        GLU.gluTessCallback(tess, GLU.GLU_TESS_ERROR, cb);
+
+        GLU.gluTessBeginPolygon(tess, null);
+        for (ArrayList<Point> piece : pieces) {
+            GLU.gluTessBeginContour(tess);
+            for (Point p : piece) {
+                double[] coords = new double[]{p.v.x, p.v.y, p.v.z};
+                GLU.gluTessVertex(tess, coords, 0, coords);
+            }
+            GLU.gluTessEndContour(tess);
+        }
+        GLU.gluEndPolygon(tess);
+        GLU.gluDeleteTess(tess);
+    }
+    public float[] getDrawColor(Shape s) {
         PaintStyle st = s.getMp().getDrawColor();
+        float r = 0;
+        float g = 0;
+        float b = 0;
+        float alpha = 1;
+        if (st instanceof JMColor) {
+            JMColor col = (JMColor) st;
+            r = (float) col.r;
+            g = (float) col.g;
+            b = (float) col.b;
+            alpha = (float) col.getAlpha();
+        }
+        return new float[]{r, g, b, alpha};
+    }
+
+    public float[] getFillColor(Shape s) {
+        PaintStyle st = s.getMp().getFillColor();
         float r = 0;
         float g = 0;
         float b = 0;
@@ -96,7 +241,7 @@ public class ShaderDrawer {
     }
 
     void drawShape(Shape s) {
-        float[] shapeColors = getColor(s);
+        float[] shapeColors = getDrawColor(s);
         double thickness = s.getMp().getThickness();
         for (int n = 0; n <= s.size(); n++) {
             JMPathPoint p = s.get(n);
@@ -105,10 +250,14 @@ public class ShaderDrawer {
         }
     }
 
-    void drawShapeSlowButWorkingMethod(Shape s,ArrayList<ArrayList<Point>> pieces) {
+    void drawShapeSlowButWorkingMethod(Shape s, ArrayList<ArrayList<Point>> pieces) {
+        if (s.getMp().getDrawColor().getAlpha() == 0) {
+            return;
+        }
+
         //TODO: Implement this in glsl in a geometry shader
-        float[] shapeColors = getColor(s);
-        
+        float[] shapeColors = getDrawColor(s);
+        gl2.glUniform4f(unifColor, shapeColors[0], shapeColors[1], shapeColors[2], shapeColors[3]);
         for (ArrayList<Point> piece : pieces) {
 //            removeDuplicates(piece);
             for (int n = 0; n < piece.size() - 1; n++) {
@@ -145,7 +294,7 @@ public class ShaderDrawer {
 
     private void drawGLAdjacency(Vec p, Vec q, Vec r, Vec t, float[] shapeColors, double thickness) {
 
-        gl.glUniform1f(shaderLoader.unifThickness, (float) thickness);
+        gl3.glUniform1f(unifThickness, (float) thickness);
         float vertices[] = new float[16];
         vertices[0] = (float) p.x;
         vertices[1] = (float) p.y;
@@ -164,46 +313,34 @@ public class ShaderDrawer {
         vertices[14] = (float) t.z;
         vertices[15] = 1f;
 
-        float[] colors = new float[16];
-        colors[0] = shapeColors[0];//TODO: this should be more concise, no need to repeat!
-        colors[1] = shapeColors[1];
-        colors[2] = shapeColors[2];
-        colors[3] = shapeColors[3];
-        colors[4] = shapeColors[0];
-        colors[5] = shapeColors[1];
-        colors[6] = shapeColors[2];
-        colors[7] = shapeColors[3];
-        colors[8] = shapeColors[0];
-        colors[9] = shapeColors[1];
-        colors[10] = shapeColors[2];
-        colors[11] = shapeColors[3];
-        colors[12] = shapeColors[0];
-        colors[13] = shapeColors[1];
-        colors[14] = shapeColors[2];
-        colors[15] = shapeColors[3];
-
-        gl.glEnableClientState(GL2.GL_VERTEX_ARRAY);
+//        float[] colors = new float[16];
+//        colors[0] = shapeColors[0];//TODO: this should be more concise, no need to repeat!
+//        colors[1] = shapeColors[1];
+//        colors[2] = shapeColors[2];
+//        colors[3] = shapeColors[3];
+//        colors[4] = shapeColors[0];
+//        colors[5] = shapeColors[1];
+//        colors[6] = shapeColors[2];
+//        colors[7] = shapeColors[3];
+//        colors[8] = shapeColors[0];
+//        colors[9] = shapeColors[1];
+//        colors[10] = shapeColors[2];
+//        colors[11] = shapeColors[3];
+//        colors[12] = shapeColors[0];
+//        colors[13] = shapeColors[1];
+//        colors[14] = shapeColors[2];
+//        colors[15] = shapeColors[3];
+        gl3.glEnableClientState(GL2.GL_VERTEX_ARRAY);
 
         FloatBuffer fbVertices = Buffers.newDirectFloatBuffer(vertices);
-//            System.out.println("Limit " + fbVertices.limit());
-        gl.glBindBuffer(GL3ES3.GL_ARRAY_BUFFER, vbo[0]);
-        gl.glBufferData(GL3ES3.GL_ARRAY_BUFFER, fbVertices.limit() * 4, fbVertices, GL3ES3.GL_STATIC_DRAW);
-        gl.glVertexAttribPointer(0, 4, GL.GL_FLOAT, false, 0, 0);
-//            gl.glEnableVertexAttribArray(0);
-
-        FloatBuffer fbColors = Buffers.newDirectFloatBuffer(colors);
-        gl.glBindBuffer(GL3ES3.GL_ARRAY_BUFFER, vbo[1]);
-        gl.glBufferData(GL3ES3.GL_ARRAY_BUFFER, fbColors.limit() * 4, fbColors, GL3ES3.GL_STATIC_DRAW);
-        gl.glVertexAttribPointer(1, 4, GL.GL_FLOAT, false, 0, 0);
-//            gl.glEnableVertexAttribArray(1);
-
-        gl.glDrawArrays(GL3ES3.GL_LINES_ADJACENCY_EXT, 0, 4);
-//            gl.glDisableVertexAttribArray(0);
-//            gl.glDisableVertexAttribArray(1);
+        gl3.glBindBuffer(GL3ES3.GL_ARRAY_BUFFER, vbo[0]);
+        gl3.glBufferData(GL3ES3.GL_ARRAY_BUFFER, fbVertices.limit() * 4, fbVertices, GL3ES3.GL_STATIC_DRAW);
+        gl3.glVertexAttribPointer(0, 4, GL.GL_FLOAT, false, 0, 0);
+        gl3.glDrawArrays(GL3ES3.GL_LINES_ADJACENCY_EXT, 0, 4);
     }
 
     void drawShapeBezierOld(Shape s) {
-        float[] shapeColors = getColor(s);
+        float[] shapeColors = getDrawColor(s);
         int size = s.size();
         for (int n = 0; n < size; n++) {
             JMPathPoint p = s.get(n);
@@ -242,23 +379,23 @@ public class ShaderDrawer {
                 colors[13] = shapeColors[1];
                 colors[14] = shapeColors[2];
                 colors[15] = shapeColors[3];
-                gl.glEnableClientState(GL2.GL_VERTEX_ARRAY);
+                gl3.glEnableClientState(GL2.GL_VERTEX_ARRAY);
 
                 FloatBuffer fbVertices = Buffers.newDirectFloatBuffer(vertices);
-                gl.glBindBuffer(GL3ES3.GL_ARRAY_BUFFER, vbo[0]);
-                gl.glBufferData(GL3ES3.GL_ARRAY_BUFFER, fbVertices.limit() * 4, fbVertices, GL3ES3.GL_STATIC_DRAW);
-                gl.glVertexAttribPointer(0, 3, GL.GL_FLOAT, false, 0, 0);
-                gl.glEnableVertexAttribArray(0);
+                gl3.glBindBuffer(GL3ES3.GL_ARRAY_BUFFER, vbo[0]);
+                gl3.glBufferData(GL3ES3.GL_ARRAY_BUFFER, fbVertices.limit() * 4, fbVertices, GL3ES3.GL_STATIC_DRAW);
+                gl3.glVertexAttribPointer(0, 3, GL.GL_FLOAT, false, 0, 0);
+                gl3.glEnableVertexAttribArray(0);
 
                 FloatBuffer fbColors = Buffers.newDirectFloatBuffer(colors);
-                gl.glBindBuffer(GL3ES3.GL_ARRAY_BUFFER, vbo[1]);
-                gl.glBufferData(GL3ES3.GL_ARRAY_BUFFER, fbColors.limit() * 4, fbColors, GL3ES3.GL_STATIC_DRAW);
-                gl.glVertexAttribPointer(1, 4, GL.GL_FLOAT, false, 0, 0);
-                gl.glEnableVertexAttribArray(1);
+                gl3.glBindBuffer(GL3ES3.GL_ARRAY_BUFFER, vbo[1]);
+                gl3.glBufferData(GL3ES3.GL_ARRAY_BUFFER, fbColors.limit() * 4, fbColors, GL3ES3.GL_STATIC_DRAW);
+                gl3.glVertexAttribPointer(1, 4, GL.GL_FLOAT, false, 0, 0);
+                gl3.glEnableVertexAttribArray(1);
 
-                gl.glDrawArrays(GL3ES3.GL_LINES_ADJACENCY_EXT, 0, size);
-                gl.glDisableVertexAttribArray(0);
-                gl.glDisableVertexAttribArray(1);
+                gl3.glDrawArrays(GL3ES3.GL_LINES_ADJACENCY_EXT, 0, size);
+                gl3.glDisableVertexAttribArray(0);
+                gl3.glDisableVertexAttribArray(1);
 
             }
         }

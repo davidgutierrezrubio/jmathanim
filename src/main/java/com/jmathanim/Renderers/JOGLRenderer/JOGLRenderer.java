@@ -58,15 +58,17 @@ public class JOGLRenderer extends Renderer {
     @Override
     public void initialize() {
         queue = new JOGLRenderQueue(config);
+        queue.renderer = this;
         queue.setCamera(camera);
         queue.fixedCamera = fixedCamera;
         camera.initialize(XMIN_DEFAULT, XMAX_DEFAULT, 0);
         fixedCamera.initialize(XMIN_DEFAULT, XMAX_DEFAULT, 0);
         GLCapabilities caps = new GLCapabilities(GLProfile.get(GLProfile.GL2));
-//        GLCapabilities caps = new GLCapabilities(GLProfile.get(GLProfile.GL2ES2));
         caps.setSampleBuffers(true);
         caps.setNumSamples(6);
         caps.setAlphaBits(4);
+        caps.setDepthBits(32);
+        caps.setStencilBits(8);
         glWindow = GLWindow.create(caps);
         glWindow.setSize(config.mediaW, config.mediaH);
         glWindow.setTitle("JMathAnim - " + config.getOutputFileName());
@@ -88,14 +90,18 @@ public class JOGLRenderer extends Renderer {
     public synchronized void saveFrame(int frameCount) {
 //        JMathAnimScene.logger.info("JOGLRenderer: Saving frame");
         queue.frameCount = frameCount;
-        glWindow.display();
-//        while (queue.busy) {}
-        if (queue.busy)
-        try {
-            this.wait();
-        } catch (InterruptedException ex) {
-            Logger.getLogger(JOGLRenderer.class.getName()).log(Level.SEVERE, null, ex);
+        synchronized (queue) {
+            glWindow.display();
         }
+//        while (queue.busy) {}
+//        if (queue.busy)
+//        try {
+//            synchronized (queue) {
+//                queue.wait();
+//            }
+//        } catch (InterruptedException ex) {
+//            Logger.getLogger(JOGLRenderer.class.getName()).log(Level.SEVERE, null, ex);
+//        }
 
     }
 

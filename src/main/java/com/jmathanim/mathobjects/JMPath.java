@@ -929,7 +929,9 @@ public class JMPath implements Updateable, Stateable, Boxable {
                 connectedSegments = new ArrayList<>();
             }
         }
-        resul.add(connectedSegments);
+        if (!connectedSegments.isEmpty()) {
+            resul.add(connectedSegments);
+        }
         return resul;
     }
 
@@ -939,7 +941,6 @@ public class JMPath implements Updateable, Stateable, Boxable {
         }
         if (q.isCurved) {
             int num = appropiateSubdivisionNumber(p.p.v, q.p.v, cam);
-            System.out.println("subdivision number: " + num);
             for (int n = 1; n < num; n++) {
                 connectedSegments.add(p.interpolate(q, n * 1d / num).p.drawColor("blue"));
             }
