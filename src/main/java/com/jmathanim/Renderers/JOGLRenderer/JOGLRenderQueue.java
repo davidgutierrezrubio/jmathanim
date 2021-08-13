@@ -194,6 +194,9 @@ public class JOGLRenderQueue implements GLEventListener {
         synchronized (this) {
             busy = true;
             adjustCameraView(drawable);
+            
+            //Trying to get rid of the annoying z-fighting...
+            Vec toEye=camera.look.to(camera.eye);
 
             // clear screen
             PaintStyle backgroundColor = config.getBackgroundColor();
@@ -202,7 +205,8 @@ public class JOGLRenderQueue implements GLEventListener {
                 gl3.glClearColor((float) col.r, (float) col.g, (float) col.b, (float) col.getAlpha());
             }
             gl3.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT);
-
+            double zFightingStep=.001;
+            double zFightingParameter=0;
             for (MathObject obj : objectsToDraw) {
                 if (obj instanceof Shape) {
                     Shape s = (Shape) obj;
@@ -210,7 +214,9 @@ public class JOGLRenderQueue implements GLEventListener {
                     
                     //Fill
                     gl2.glUseProgram(fillShader.getShader());
-                    shaderDrawer.drawFill(s, pieces);
+                    
+                    zFightingParameter+=zFightingStep;
+                    shaderDrawer.drawFill(s, pieces,toEye.mult(zFightingParameter));
 //                    shaderDrawer.drawFillSlowButWorking(s, pieces);
                     
                     //Contour

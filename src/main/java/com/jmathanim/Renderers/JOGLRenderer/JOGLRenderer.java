@@ -65,8 +65,8 @@ public class JOGLRenderer extends Renderer {
         fixedCamera.initialize(XMIN_DEFAULT, XMAX_DEFAULT, 0);
         GLCapabilities caps = new GLCapabilities(GLProfile.get(GLProfile.GL2));
         caps.setSampleBuffers(true);
-        caps.setNumSamples(6);
-        caps.setAlphaBits(4);
+        caps.setNumSamples(32);
+        caps.setAlphaBits(8);
         caps.setDepthBits(32);
         caps.setStencilBits(8);
         glWindow = GLWindow.create(caps);

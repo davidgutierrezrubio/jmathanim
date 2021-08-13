@@ -72,12 +72,13 @@ public class ShaderDrawer {
 
     }
 
-    void drawFill(Shape s, ArrayList<ArrayList<Point>> pieces) {
+    void drawFill(Shape s, ArrayList<ArrayList<Point>> pieces, Vec zFighting) {
         if (s.getMp().getFillColor().getAlpha() == 0) {
             return;
         }
         float[] shapeColors = getFillColor(s);
         gl2.glUniform4f(fillShader.getUniformVariable("unifColor"), shapeColors[0], shapeColors[1], shapeColors[2], shapeColors[3]);
+        gl2.glUniform4f(fillShader.getUniformVariable("zFighting"), 0f, 0f, 0f, 0f);
 //        System.out.println("Shader uniform color: "+shapeColors[2]);
         //Generates a triangle fan array
         ArrayList<Float> coords = new ArrayList<>();
@@ -135,8 +136,10 @@ public class ShaderDrawer {
         // enable color again
         gl3.glColorMask(true, true, true, true);
 
-        drawWholeScreen();//Draw whole screen with current color
-//        gl3.glDrawArrays(GL3ES3.GL_TRIANGLE_FAN, 0, fbVertices.limit() / 4);
+//        drawWholeScreen();//Draw whole screen with current color
+        gl2.glUniform4f(fillShader.getUniformVariable("zFighting"), (float) zFighting.x, (float) zFighting.y, (float) zFighting.z, 0f);
+
+        gl3.glDrawArrays(GL3ES3.GL_TRIANGLE_FAN, 0, fbVertices.limit() / 4);
 
         gl3.glDisable(GL.GL_STENCIL_TEST);
     }
@@ -196,6 +199,7 @@ public class ShaderDrawer {
         GLU.gluEndPolygon(tess);
         GLU.gluDeleteTess(tess);
     }
+
     public float[] getDrawColor(Shape s) {
         PaintStyle st = s.getMp().getDrawColor();
         float r = 0;
