@@ -115,33 +115,34 @@ public class ShaderDrawer {
         gl3.glVertexAttribPointer(0, 4, GL.GL_FLOAT, false, 0, 0);
 
         //Enable Stencil buffer to draw concave polygons
-        gl3.glEnable(GL3.GL_STENCIL_TEST);
-        gl3.glStencilMask(0xFF);
-        gl3.glClear(GL3.GL_STENCIL_BUFFER_BIT);
+        gl3.glStencilMask(0b00000001);//Last bit for filling
 
         // set stencil buffer to invert value on draw, 0 to 1 and 1 to 0
-        gl3.glStencilFunc(GL.GL_ALWAYS, 0, 1);
-        gl3.glStencilOp(GL.GL_INVERT, GL.GL_ZERO, GL.GL_INVERT);
-        // disable writing to color buffer
-        gl3.glColorMask(false, false, false, false);
+        //Pass the stencil test if the pixel doesnt belong to the drawed contour
+        gl3.glStencilFunc(GL.GL_EQUAL, 0, 2);
+        if (!s.isIsConvex()) {
+            gl3.glStencilOp(GL.GL_ZERO, GL.GL_ZERO, GL.GL_INVERT);
+            // disable writing to color buffer
+            gl3.glColorMask(false, false, false, false);
+            // draw polygon into stencil buffer
+            gl3.glDrawArrays(GL3ES3.GL_TRIANGLE_FAN, 0, fbVertices.limit() / 4);
 
-        // draw polygon into stencil buffer
-        gl3.glDrawArrays(GL3ES3.GL_TRIANGLE_FAN, 0, fbVertices.limit() / 4);
+            // set stencil buffer to only keep pixels when value in buffer is 1
+            gl3.glStencilFunc(GL.GL_EQUAL, 1, 1);
+            gl3.glStencilOp(GL.GL_ZERO, GL.GL_ZERO, GL.GL_ZERO);
 
-        // set stencil buffer to only keep pixels when value in buffer is 1
-        gl3.glStencilFunc(GL.GL_EQUAL, 1, 1);
-        gl3.glStencilOp(GL.GL_ZERO, GL.GL_ZERO, GL.GL_ZERO);
-
-        // enable color again
-        gl3.glColorMask(true, true, true, true);
-        gl3.glDepthMask(false);
-        drawWholeScreen();//Draw whole screen with current color
-        gl3.glDepthMask(true);
+            // enable color again
+            gl3.glColorMask(true, true, true, true);
+            gl3.glDepthMask(false);
+            drawWholeScreen();//Draw whole screen with current color
+            gl3.glDepthMask(true);
+        } else {
+            gl3.glDrawArrays(GL3ES3.GL_TRIANGLE_FAN, 0, fbVertices.limit() / 4);
+        }
 
 //        gl2.glUniform4f(fillShader.getUniformVariable("zFighting"), (float) zFighting.x, (float) zFighting.y, (float) zFighting.z, 0f);
 //        gl3.glDrawArrays(GL3ES3.GL_TRIANGLE_FAN, 0, fbVertices.limit() / 4);
 //        gl2.glUniform4f(fillShader.getUniformVariable("zFighting"), 0f, 0f, 0f, 0f);
-        gl3.glDisable(GL.GL_STENCIL_TEST);
     }
 
     private void drawWholeScreen() {
@@ -254,9 +255,14 @@ public class ShaderDrawer {
         }
     }
 
-    void drawShapeSlowButWorkingMethod(Shape s, ArrayList<ArrayList<Point>> pieces) {
+    void drawThinShape(Shape s, ArrayList<ArrayList<Point>> pieces, boolean noFill) {
         if (s.getMp().getDrawColor().getAlpha() == 0) {
             return;
+        }
+        if (!noFill) {//If the shape is not filled, no need to do this
+            gl3.glStencilMask(0b00000010);//Second bit for contour
+            gl3.glStencilFunc(GL.GL_ALWAYS, 2, 2);
+            gl3.glStencilOp(GL.GL_ZERO, GL.GL_ZERO, GL.GL_REPLACE);
         }
 
         //TODO: Implement this in glsl in a geometry shader

@@ -41,6 +41,7 @@ public class Shape extends MathObject {
     private final JMPath jmpath;
     protected final ArrayList<JMPathPoint> vertices;
     private boolean showDebugPoints = false;
+    private boolean isConvex = false;
 
     public Shape() {
         this(new JMPath(), null);
@@ -311,13 +312,13 @@ public class Shape extends MathObject {
 
     /**
      * Creates a basic right-angled triangle (0,0)-(1,0)-(0,1)
-     * @return 
+     *
+     * @return
      */
     public static Shape triangle() {
-        return polygon(Point.at(0,0),Point.at(1,0), Point.at(0,1));
+        return polygon(Point.at(0, 0), Point.at(1, 0), Point.at(0, 1));
     }
-    
-    
+
     /**
      * Creates a regular polygon, with first vertex at (0,0) and side 1
      *
@@ -597,6 +598,26 @@ public class Shape extends MathObject {
             counter++;
         }
         System.out.println("-----------------------");
+    }
+
+    /**
+     * Returns the convex flag for this shape. This flag is false by default but
+     * can be manually changed. Convex shapes can be drawed using simpler, faster algorithms.
+     *
+     * @return True if the shape is convex, false if it is concave.
+     */
+    public boolean isIsConvex() {
+        return isConvex;
+    }
+
+    /**
+     * Mark this shape as convex. If convex, a simpler and faster algorithm to
+     * draw it can be used.
+     *
+     * @param isConvex True if the shape is convex, false if it is concave.
+     */
+    public void setIsConvex(boolean isConvex) {
+        this.isConvex = isConvex;
     }
 
 }

@@ -132,9 +132,6 @@ public class JOGLRenderQueue implements GLEventListener {
         gl3.glEnable(GL3.GL_MULTISAMPLE);
         gl3.glEnable(GL3.GL_SAMPLE_ALPHA_TO_COVERAGE);
 
-       
-
-
         //there is stencil buffer?
         IntBuffer ib = IntBuffer.allocate(1);
         gl3.glGetIntegerv(GL.GL_STENCIL_BITS, ib);
@@ -192,9 +189,9 @@ public class JOGLRenderQueue implements GLEventListener {
         synchronized (this) {
             busy = true;
             adjustCameraView(drawable);
-            
+
             //Trying to get rid of the annoying z-fighting...
-            Vec toEye=camera.look.to(camera.eye);
+            Vec toEye = camera.look.to(camera.eye);
 
             // clear screen
             PaintStyle backgroundColor = config.getBackgroundColor();
@@ -203,23 +200,41 @@ public class JOGLRenderQueue implements GLEventListener {
                 gl3.glClearColor((float) col.r, (float) col.g, (float) col.b, (float) col.getAlpha());
             }
             gl3.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT);
-            double zFightingStep=0;//.001;
-            double zFightingParameter=0;
+            double zFightingStep = 0;//.001;
+            double zFightingParameter = 0;
             for (MathObject obj : objectsToDraw) {
                 if (obj instanceof Shape) {
+                    //for drawing shape:
+                    //Convex, filled-> Not 2º stencil buffer
+                    //Thickness=1, not filled-> No thin shader, no fill method, no stencil
                     Shape s = (Shape) obj;
                     ArrayList<ArrayList<Point>> pieces = s.getPath().computePolygonalPieces(camera);
-                    
-                    //Fill
-                    gl2.glUseProgram(fillShader.getShader());
-                    
-                    zFightingParameter+=zFightingStep;
-                    shaderDrawer.drawFill(s, pieces,toEye.mult(zFightingParameter));
-//                    shaderDrawer.drawFillSlowButWorking(s, pieces);
-                    
+                    float[] fc = getFillColor(s);
+                    boolean noFill = (fc[3] == 0);//if true, shape is not filled
+
+                    //First clear the Stencil buffer if the shape is filled
+                    if (!noFill) {
+                        gl3.glEnable(GL3.GL_STENCIL_TEST);
+                        gl3.glStencilMask(0xFF);
+                        gl3.glClear(GL3.GL_STENCIL_BUFFER_BIT);
+                    } else {
+                        gl3.glDisable(GL3.GL_STENCIL_TEST);
+                    }
+
                     //Contour
                     gl2.glUseProgram(thinLinesShader.getShader());
-                    shaderDrawer.drawShapeSlowButWorkingMethod(s, pieces);
+                    if (s.getMp().getThickness() > 0) {
+                        shaderDrawer.drawThinShape(s, pieces, noFill);
+                    }
+
+                    //Fill
+                    gl2.glUseProgram(fillShader.getShader());
+
+//                    zFightingParameter += zFightingStep;
+                    shaderDrawer.drawFill(s, pieces, toEye.mult(zFightingParameter));
+//                    shaderDrawer.drawFillSlowButWorking(s, pieces);
+                    gl3.glDisable(GL.GL_STENCIL_TEST);
+
                 }
             }
 
@@ -259,7 +274,7 @@ public class JOGLRenderQueue implements GLEventListener {
         if (!camera.perspective) {
             gl2.glOrtho(bb.xmin, bb.xmax, bb.ymin, bb.ymax, -5, 5);
         } else {
-            glu.gluPerspective(camera.fov, (float) bb.getWidth() / bb.getHeight(), 1f, 10.0f);
+            glu.gluPerspective(camera.fov, (float) bb.getWidth() / bb.getHeight(), .1f, 10.0f);
 
             Vec up = camera.getUpVector();//Inefficient way. Improve this.
             glu.gluLookAt(
@@ -296,6 +311,22 @@ public class JOGLRenderQueue implements GLEventListener {
         Camera cam = (mobj.getMp().isAbsoluteThickness() ? fixedCamera : camera);
         float value = (float) Math.max(mobj.getMp().getThickness() / cam.getMathView().getWidth() * 2.5d, MIN_THICKNESS);
         return value;
+    }
+
+    public float[] getFillColor(Shape s) {
+        PaintStyle st = s.getMp().getFillColor();
+        float r = 0;
+        float g = 0;
+        float b = 0;
+        float alpha = 1;
+        if (st instanceof JMColor) {
+            JMColor col = (JMColor) st;
+            r = (float) col.r;
+            g = (float) col.g;
+            b = (float) col.b;
+            alpha = (float) col.getAlpha();
+        }
+        return new float[]{r, g, b, alpha};
     }
 
 //    private void drawSurface(Surface surface) {
