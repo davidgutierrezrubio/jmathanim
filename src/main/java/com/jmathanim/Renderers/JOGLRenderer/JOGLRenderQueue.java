@@ -118,8 +118,6 @@ public class JOGLRenderQueue implements GLEventListener {
 
 //        gles.setSwapInterval(1);
         gl3.glEnable(GL.GL_DEPTH_TEST);
-//        gles.glEnable(GL.GL_DEPTH_TEST);
-//        gles.glEnable(GL.GL_BLEND);
 //        gles.glClearColor(1.0f, 0.0f, 1.0f, 1.0f);
         gl3.glDepthFunc(GL.GL_LEQUAL);
 
@@ -205,7 +203,7 @@ public class JOGLRenderQueue implements GLEventListener {
                 gl3.glClearColor((float) col.r, (float) col.g, (float) col.b, (float) col.getAlpha());
             }
             gl3.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT);
-            double zFightingStep=.001;
+            double zFightingStep=0;//.001;
             double zFightingParameter=0;
             for (MathObject obj : objectsToDraw) {
                 if (obj instanceof Shape) {
@@ -261,7 +259,7 @@ public class JOGLRenderQueue implements GLEventListener {
         if (!camera.perspective) {
             gl2.glOrtho(bb.xmin, bb.xmax, bb.ymin, bb.ymax, -5, 5);
         } else {
-            glu.gluPerspective(camera.fov, (float) bb.getWidth() / bb.getHeight(), .1f, 1000.0f);
+            glu.gluPerspective(camera.fov, (float) bb.getWidth() / bb.getHeight(), 1f, 10.0f);
 
             Vec up = camera.getUpVector();//Inefficient way. Improve this.
             glu.gluLookAt(

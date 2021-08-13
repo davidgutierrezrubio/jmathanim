@@ -121,8 +121,7 @@ public class ShaderDrawer {
 
         // set stencil buffer to invert value on draw, 0 to 1 and 1 to 0
         gl3.glStencilFunc(GL.GL_ALWAYS, 0, 1);
-        gl3.glStencilOp(GL.GL_INVERT, GL.GL_INVERT, GL.GL_INVERT);
-
+        gl3.glStencilOp(GL.GL_INVERT, GL.GL_ZERO, GL.GL_INVERT);
         // disable writing to color buffer
         gl3.glColorMask(false, false, false, false);
 
@@ -131,16 +130,17 @@ public class ShaderDrawer {
 
         // set stencil buffer to only keep pixels when value in buffer is 1
         gl3.glStencilFunc(GL.GL_EQUAL, 1, 1);
-        gl3.glStencilOp(GL.GL_KEEP, GL.GL_KEEP, GL.GL_KEEP);
+        gl3.glStencilOp(GL.GL_ZERO, GL.GL_ZERO, GL.GL_ZERO);
 
         // enable color again
         gl3.glColorMask(true, true, true, true);
+        gl3.glDepthMask(false);
+        drawWholeScreen();//Draw whole screen with current color
+        gl3.glDepthMask(true);
 
-//        drawWholeScreen();//Draw whole screen with current color
-        gl2.glUniform4f(fillShader.getUniformVariable("zFighting"), (float) zFighting.x, (float) zFighting.y, (float) zFighting.z, 0f);
-
-        gl3.glDrawArrays(GL3ES3.GL_TRIANGLE_FAN, 0, fbVertices.limit() / 4);
-
+//        gl2.glUniform4f(fillShader.getUniformVariable("zFighting"), (float) zFighting.x, (float) zFighting.y, (float) zFighting.z, 0f);
+//        gl3.glDrawArrays(GL3ES3.GL_TRIANGLE_FAN, 0, fbVertices.limit() / 4);
+//        gl2.glUniform4f(fillShader.getUniformVariable("zFighting"), 0f, 0f, 0f, 0f);
         gl3.glDisable(GL.GL_STENCIL_TEST);
     }
 
