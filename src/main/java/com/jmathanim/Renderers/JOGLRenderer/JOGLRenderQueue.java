@@ -132,11 +132,6 @@ public class JOGLRenderQueue implements GLEventListener {
         gl3.glEnable(GL3.GL_MULTISAMPLE);
         gl3.glEnable(GL3.GL_SAMPLE_ALPHA_TO_COVERAGE);
 
-        //there is stencil buffer?
-        IntBuffer ib = IntBuffer.allocate(1);
-        gl3.glGetIntegerv(GL.GL_STENCIL_BITS, ib);
-        System.out.println("STENCIL BUFFER: " + ib.get(0));
-
         //Drawer class, we have to pass it the created shaders
         shaderDrawer = new ShaderDrawer(gl3, gl2);
         if (useCustomShaders) {
@@ -213,13 +208,13 @@ public class JOGLRenderQueue implements GLEventListener {
                     boolean noFill = (fc[3] == 0);//if true, shape is not filled
 
                     //First clear the Stencil buffer if the shape is filled
-                    if (!noFill) {
+//                    if (!noFill) {
                         gl3.glEnable(GL3.GL_STENCIL_TEST);
                         gl3.glStencilMask(0xFF);
                         gl3.glClear(GL3.GL_STENCIL_BUFFER_BIT);
-                    } else {
-                        gl3.glDisable(GL3.GL_STENCIL_TEST);
-                    }
+//                    } else {
+//                        gl3.glDisable(GL3.GL_STENCIL_TEST);
+//                    }
 
                     //Contour
                     gl2.glUseProgram(thinLinesShader.getShader());

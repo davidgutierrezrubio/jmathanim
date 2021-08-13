@@ -112,6 +112,7 @@ public class Shape extends MathObject {
         Shape resul = new Shape(jmpath.rawCopy(), copy);
         resul.absoluteSize = this.absoluteSize;
         resul.label = this.label + "_copy";
+        resul.isConvex=this.isConvex;
         return resul;
     }
 
@@ -602,7 +603,8 @@ public class Shape extends MathObject {
 
     /**
      * Returns the convex flag for this shape. This flag is false by default but
-     * can be manually changed. Convex shapes can be drawed using simpler, faster algorithms.
+     * can be manually changed. Convex shapes can be drawed using simpler,
+     * faster algorithms.
      *
      * @return True if the shape is convex, false if it is concave.
      */
@@ -618,6 +620,20 @@ public class Shape extends MathObject {
      */
     public void setIsConvex(boolean isConvex) {
         this.isConvex = isConvex;
+    }
+
+    /**
+     * Gets the normal vector of the shape, asumming the shape is planar.
+     * @return The normal vector
+     */
+    public Vec getNormalVector() {
+        if (size() < 3) {
+            return Vec.to(0, 0, 0);
+        }
+        Vec v1=get(size()/3).p.to(get(0).p);
+        Vec v2=get(size()/3).p.to(get(size()/2).p);
+        return v1.cross(v2);
+        
     }
 
 }
