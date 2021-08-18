@@ -147,7 +147,7 @@ public class ShaderDrawer {
         gl3.glBindBuffer(GL3ES3.GL_ARRAY_BUFFER, vbo[1]);
         gl3.glBufferData(GL3ES3.GL_ARRAY_BUFFER, fbNormals.limit() * 4, fbNormals, GL3ES3.GL_STATIC_DRAW);
         gl3.glVertexAttribPointer(1, 4, GL.GL_FLOAT, false, 0, 0);
-
+       
         //Enable Stencil buffer to draw concave polygons
         gl3.glStencilMask(0b00000001);//Last bit for filling
 
@@ -155,21 +155,24 @@ public class ShaderDrawer {
         //Pass the stencil test if the pixel doesnt belong to the drawed contour
         gl3.glStencilFunc(GL.GL_EQUAL, 0, 2);
 //        if (!s.isIsConvex()) {
-        gl3.glStencilOp(GL.GL_ZERO, GL.GL_ZERO, GL.GL_INVERT);
+        gl3.glStencilOp(GL.GL_INVERT, GL.GL_INVERT, GL.GL_INVERT);
         // disable writing to color buffer
         gl3.glColorMask(false, false, false, false);
         // draw polygon into stencil buffer
+        //Has to disable depth mask in order to avoid z fightint for concave polygons
+         gl3.glDepthMask(false);
         gl3.glDrawArrays(GL3ES3.GL_TRIANGLE_FAN, 0, fbVertices.limit() / 4);
-
+        gl3.glDepthMask(true);
         // set stencil buffer to only keep pixels when value in buffer is 1
         gl3.glStencilFunc(GL.GL_EQUAL, 1, 1);
         gl3.glStencilOp(GL.GL_ZERO, GL.GL_ZERO, GL.GL_ZERO);
 
         // enable color again
         gl3.glColorMask(true, true, true, true);
-        gl3.glDepthMask(false);
-        drawWholeScreen();//Draw whole screen with current color
-        gl3.glDepthMask(true);
+//        gl3.glDepthMask(false);
+//        drawWholeScreen();//Draw whole screen with current color
+        gl3.glDrawArrays(GL3ES3.GL_TRIANGLE_FAN, 0, fbVertices.limit() / 4);
+//        gl3.glDepthMask(true);
     }
 
     private void drawWholeScreen() {
@@ -227,6 +230,7 @@ public class ShaderDrawer {
         GLU.gluEndPolygon(tess);
         GLU.gluDeleteTess(tess);
     }
+
     public float[] getDrawColor(Shape s) {
         PaintStyle st = s.getMp().getDrawColor();
         float r = 0;
