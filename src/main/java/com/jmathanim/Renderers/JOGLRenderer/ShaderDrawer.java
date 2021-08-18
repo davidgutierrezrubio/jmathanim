@@ -86,15 +86,18 @@ public class ShaderDrawer {
         float ny = (float) normal.y;
         float nz = (float) normal.z;
         ArrayList<Float> coords = new ArrayList<>();
-        for (int k = 0; k < pieces.size(); k++) {
 
+        //We are going to generate a triangle strip
+        //This is the first and common point...
+        Point P = pieces.get(0).get(0);
+        coords.add((float) P.v.x);
+        coords.add((float) P.v.y);
+        coords.add((float) P.v.z);
+        coords.add(1f);
+        //Iterate over all connected components
+        for (int k = 0; k < pieces.size(); k++) {
             ArrayList<Point> piece = pieces.get(k);
-            Point P = piece.get(0);
-            coords.add((float) P.v.x);
-            coords.add((float) P.v.y);
-            coords.add((float) P.v.z);
-            coords.add(1f);
-            for (int n = 1; n < piece.size() - 1; n++) {
+            for (int n = (k == 0 ? 1 : 0); n < piece.size() - 1; n++) {
                 Point Q = piece.get(n);
                 Point R = piece.get(n + 1);
                 coords.add((float) Q.v.x);
@@ -107,6 +110,20 @@ public class ShaderDrawer {
                 coords.add(1f);
             }
         }
+        //It seems I need this triangles as well...
+        for (int k = 0; k < pieces.size() - 1; k++) {
+            Point Q = pieces.get(k).get(0);
+            Point R = pieces.get(k + 1).get(0);
+            coords.add((float) Q.v.x);
+            coords.add((float) Q.v.y);
+            coords.add((float) Q.v.z);
+            coords.add(1f);
+            coords.add((float) R.v.x);
+            coords.add((float) R.v.y);
+            coords.add((float) R.v.z);
+            coords.add(1f);
+        }
+
         float[] points = new float[coords.size()];//TODO: Optimize this
         float[] normals = new float[coords.size()];//TODO: Optimize this
         for (int i = 0; i < coords.size(); i += 4) {
@@ -138,21 +155,21 @@ public class ShaderDrawer {
         //Pass the stencil test if the pixel doesnt belong to the drawed contour
         gl3.glStencilFunc(GL.GL_EQUAL, 0, 2);
 //        if (!s.isIsConvex()) {
-            gl3.glStencilOp(GL.GL_ZERO, GL.GL_ZERO, GL.GL_INVERT);
-            // disable writing to color buffer
-            gl3.glColorMask(false, false, false, false);
-            // draw polygon into stencil buffer
-            gl3.glDrawArrays(GL3ES3.GL_TRIANGLE_FAN, 0, fbVertices.limit() / 4);
+        gl3.glStencilOp(GL.GL_ZERO, GL.GL_ZERO, GL.GL_INVERT);
+        // disable writing to color buffer
+        gl3.glColorMask(false, false, false, false);
+        // draw polygon into stencil buffer
+        gl3.glDrawArrays(GL3ES3.GL_TRIANGLE_FAN, 0, fbVertices.limit() / 4);
 
-            // set stencil buffer to only keep pixels when value in buffer is 1
-            gl3.glStencilFunc(GL.GL_EQUAL, 1, 1);
-            gl3.glStencilOp(GL.GL_ZERO, GL.GL_ZERO, GL.GL_ZERO);
+        // set stencil buffer to only keep pixels when value in buffer is 1
+        gl3.glStencilFunc(GL.GL_EQUAL, 1, 1);
+        gl3.glStencilOp(GL.GL_ZERO, GL.GL_ZERO, GL.GL_ZERO);
 
-            // enable color again
-            gl3.glColorMask(true, true, true, true);
-            gl3.glDepthMask(false);
-            drawWholeScreen();//Draw whole screen with current color
-            gl3.glDepthMask(true);
+        // enable color again
+        gl3.glColorMask(true, true, true, true);
+        gl3.glDepthMask(false);
+        drawWholeScreen();//Draw whole screen with current color
+        gl3.glDepthMask(true);
 //        } else {
 //            gl3.glDrawArrays(GL3ES3.GL_TRIANGLE_FAN, 0, fbVertices.limit() / 4);
 //        }
@@ -276,9 +293,9 @@ public class ShaderDrawer {
             return;
         }
 //        if (!noFill) {//If the shape is not filled, no need to do this
-            gl3.glStencilMask(0xFF);//Second bit for contour
-            gl3.glStencilFunc(GL.GL_ALWAYS, 2, 2);
-            gl3.glStencilOp(GL.GL_ZERO, GL.GL_ZERO, GL.GL_REPLACE);
+        gl3.glStencilMask(0xFF);//Second bit for contour
+        gl3.glStencilFunc(GL.GL_ALWAYS, 2, 2);
+        gl3.glStencilOp(GL.GL_ZERO, GL.GL_ZERO, GL.GL_REPLACE);
 //        }
 
         //TODO: Implement this in glsl in a geometry shader

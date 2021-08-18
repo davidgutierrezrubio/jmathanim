@@ -1,5 +1,7 @@
 #version 330
 uniform mat4 projection;
+uniform mat4 modelMatrix;
+
 uniform vec4 unifColor;
 
 layout(location = 0) in vec4 Vertex;

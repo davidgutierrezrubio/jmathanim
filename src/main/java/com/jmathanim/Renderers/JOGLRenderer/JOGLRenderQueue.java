@@ -28,6 +28,7 @@ import com.jmathanim.Utils.JMathAnimConfig;
 import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
+import static com.jmathanim.jmathanim.JMathAnimScene.PI;
 import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.Point;
 import com.jmathanim.mathobjects.Shape;
@@ -199,19 +200,31 @@ public class JOGLRenderQueue implements GLEventListener {
             double zFightingParameter = 0;
             for (MathObject obj : objectsToDraw) {
                 if (obj instanceof Shape) {
-                    //for drawing shape:
+
                     //Convex, filled-> Not 2º stencil buffer
                     //Thickness=1, not filled-> No thin shader, no fill method, no stencil
                     Shape s = (Shape) obj;
+                    gl2.glMatrixMode(GLMatrixFunc.GL_MODELVIEW);
+                    gl2.glLoadIdentity();
+                    if (s.faceToCamera) {
+                        //Compute model view matrix so that faces to the camera
+                        printModelMatrix();
+                        gl2.glRotatef((float) (PI / 4), 1, 1, 1);
+                        printModelMatrix();
+                        System.out.println("----");
+                    }
+
+                    loadModelMatrixIntoShaders();
+
                     ArrayList<ArrayList<Point>> pieces = s.getPath().computePolygonalPieces(camera);
                     float[] fc = getFillColor(s);
                     boolean noFill = (fc[3] == 0);//if true, shape is not filled
 
                     //First clear the Stencil buffer if the shape is filled
 //                    if (!noFill) {
-                        gl3.glEnable(GL3.GL_STENCIL_TEST);
-                        gl3.glStencilMask(0xFF);
-                        gl3.glClear(GL3.GL_STENCIL_BUFFER_BIT);
+                    gl3.glEnable(GL3.GL_STENCIL_TEST);
+                    gl3.glStencilMask(0xFF);
+                    gl3.glClear(GL3.GL_STENCIL_BUFFER_BIT);
 //                    } else {
 //                        gl3.glDisable(GL3.GL_STENCIL_TEST);
 //                    }
@@ -245,6 +258,27 @@ public class JOGLRenderQueue implements GLEventListener {
             notify();
         }
 
+    }
+
+    private void loadModelMatrixIntoShaders() {
+        FloatBuffer modMat = FloatBuffer.allocate(16);
+        gl2.glGetFloatv(GL2.GL_MODELVIEW_MATRIX, modMat);
+        gl2.glUseProgram(thinLinesShader.getShader());
+        gl2.glUniformMatrix4fv(thinLinesShader.getUniformVariable("modelMatrix"), 1, false, modMat);
+        gl2.glUseProgram(fillShader.getShader());
+        gl2.glUniformMatrix4fv(fillShader.getUniformVariable("modelMatrix"), 1, false, modMat);
+    }
+
+    private void printModelMatrix() {
+        FloatBuffer modMat = FloatBuffer.allocate(16);
+        gl2.glGetFloatv(GL2.GL_MODELVIEW_MATRIX, modMat);
+        for (int i = 0; i < 16; i++) {
+             if (i % 4 == 0) {
+                System.out.println("");
+            }
+            System.out.print(modMat.get(i) + " ");
+           
+        }
     }
 
     public BufferedImage screenshot(GL3 gl2, GLDrawable drawable) {

@@ -144,7 +144,7 @@ public class MultiShapeObject extends MathObject implements Iterable<Shape> {
 		scene.markAsAlreadyDrawed(this);
 	}
 
-	public <T extends MultiShapeObject> T showDebugIndices(boolean value) {
+	public <T extends MultiShapeObject> T setShowDebugIndices(boolean value) {
 		if (value) {
 			int k = 0;
 			for (Shape sh : shapes) {
