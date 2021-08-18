@@ -170,13 +170,6 @@ public class ShaderDrawer {
         gl3.glDepthMask(false);
         drawWholeScreen();//Draw whole screen with current color
         gl3.glDepthMask(true);
-//        } else {
-//            gl3.glDrawArrays(GL3ES3.GL_TRIANGLE_FAN, 0, fbVertices.limit() / 4);
-//        }
-//
-//        gl2.glUniform4f(fillShader.getUniformVariable("zFighting"), (float) zFighting.x, (float) zFighting.y, (float) zFighting.z, 0f);
-//        gl3.glDrawArrays(GL3ES3.GL_TRIANGLE_FAN, 0, fbVertices.limit() / 4);
-//        gl2.glUniform4f(fillShader.getUniformVariable("zFighting"), 0f, 0f, 0f, 0f);
     }
 
     private void drawWholeScreen() {
@@ -207,33 +200,33 @@ public class ShaderDrawer {
         gl2.glUniformMatrix4fv(fillShader.getUniformVariable("projection"), 1, false, projMat);
     }
 
-//    void drawFillSlowButWorking(Shape s, ArrayList<ArrayList<Point>> pieces) {
-//        if (s.getMp().getFillColor().getAlpha() == 0) {
-//            return;
-//        }
-//        float[] shapeColors = getFillColor(s);
-//        gl2.glUniform4f(fillShader.getUniformVariable("unifColor"), shapeColors[0], shapeColors[1], shapeColors[2], shapeColors[3]);
+    void drawFillSlowButWorking(Shape s, ArrayList<ArrayList<Point>> pieces) {
+        if (s.getMp().getFillColor().getAlpha() == 0) {
+            return;
+        }
+        float[] shapeColors = getFillColor(s);
+        gl2.glUniform4f(fillShader.getUniformVariable("unifColor"), shapeColors[0], shapeColors[1], shapeColors[2], shapeColors[3]);
 ////        System.out.println("Shader uniform color: "+shapeColors[2]);
-//        GLUtessellator tess = GLUtessellatorImpl.gluNewTess();
-//        TessellatorCallback cb = new TessellatorCallback(glu, gl2);
-//        GLU.gluTessCallback(tess, GLU.GLU_TESS_BEGIN, cb);
-//        GLU.gluTessCallback(tess, GLU.GLU_TESS_END, cb);
-//        GLU.gluTessCallback(tess, GLU.GLU_TESS_VERTEX, cb);
-//        GLU.gluTessCallback(tess, GLU.GLU_TESS_COMBINE, cb);
-//        GLU.gluTessCallback(tess, GLU.GLU_TESS_ERROR, cb);
-//
-//        GLU.gluTessBeginPolygon(tess, null);
-//        for (ArrayList<Point> piece : pieces) {
-//            GLU.gluTessBeginContour(tess);
-//            for (Point p : piece) {
-//                double[] coords = new double[]{p.v.x, p.v.y, p.v.z};
-//                GLU.gluTessVertex(tess, coords, 0, coords);
-//            }
-//            GLU.gluTessEndContour(tess);
-//        }
-//        GLU.gluEndPolygon(tess);
-//        GLU.gluDeleteTess(tess);
-//    }
+        GLUtessellator tess = GLUtessellatorImpl.gluNewTess();
+        TessellatorCallback cb = new TessellatorCallback(glu, gl2);
+        GLU.gluTessCallback(tess, GLU.GLU_TESS_BEGIN, cb);
+        GLU.gluTessCallback(tess, GLU.GLU_TESS_END, cb);
+        GLU.gluTessCallback(tess, GLU.GLU_TESS_VERTEX, cb);
+        GLU.gluTessCallback(tess, GLU.GLU_TESS_COMBINE, cb);
+        GLU.gluTessCallback(tess, GLU.GLU_TESS_ERROR, cb);
+
+        GLU.gluTessBeginPolygon(tess, null);
+        for (ArrayList<Point> piece : pieces) {
+            GLU.gluTessBeginContour(tess);
+            for (Point p : piece) {
+                double[] coords = new double[]{p.v.x, p.v.y, p.v.z};
+                GLU.gluTessVertex(tess, coords, 0, coords);
+            }
+            GLU.gluTessEndContour(tess);
+        }
+        GLU.gluEndPolygon(tess);
+        GLU.gluDeleteTess(tess);
+    }
     public float[] getDrawColor(Shape s) {
         PaintStyle st = s.getMp().getDrawColor();
         float r = 0;
