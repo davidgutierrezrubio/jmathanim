@@ -231,7 +231,7 @@ public class Point extends MathObject {
 		switch (getMp().getDotStyle()) {
 		case CROSS:
 //                st = mp.computeScreenThickness(r)/20;
-			st = getMp().getThickness() / 70;
+			st = getMp().getThickness() / 70;//TODO: Thickness should always be 1
 			dotShape = new Shape();
 			dotShape.getPath().addPoint(Point.at(-1, 1), Point.at(1, -1), Point.at(1, 1), Point.at(-1, -1));
 			dotShape.get(0).isThisSegmentVisible = false;
@@ -358,7 +358,7 @@ public class Point extends MathObject {
 
 	public boolean isEquivalentTo(Point p2, double epsilon) {
 		boolean resul = false;
-		if ((Math.abs(v.x - p2.v.x) < epsilon) & (Math.abs(v.y - p2.v.y) < epsilon)) {
+		if ((Math.abs(v.x - p2.v.x) < epsilon) & (Math.abs(v.y - p2.v.y)<epsilon) & (Math.abs(v.z - p2.v.z)< epsilon)) {
 			resul = true;
 		}
 		return resul;

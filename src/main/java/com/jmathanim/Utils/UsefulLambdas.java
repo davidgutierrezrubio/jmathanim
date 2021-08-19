@@ -93,7 +93,7 @@ public class UsefulLambdas {
      * Back and forth, in a linear way.
      *
      * @param percentage Percentage of runtime to divide the go and go back
-     * paths.
+     * paths. A value 0f 0.75 gives 75% of time to "go" and 25% to "back".
      * @return The lambda function
      */
     public static DoubleUnaryOperator backAndForthLinear(double percentage) {
