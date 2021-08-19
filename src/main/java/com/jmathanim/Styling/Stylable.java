@@ -17,6 +17,8 @@
  */
 package com.jmathanim.Styling;
 
+import com.jmathanim.Utils.Anchor;
+import com.jmathanim.Utils.Vec;
 import com.jmathanim.mathobjects.Point;
 import javafx.scene.shape.StrokeLineCap;
 
@@ -28,108 +30,116 @@ import javafx.scene.shape.StrokeLineCap;
  */
 public interface Stylable {
 
-	/**
-	 * Returns a copy of this object. All objects are raw-copied.
-	 *
-	 * @return A raw copy of the object.
-	 */
-	MODrawProperties copy();
+    /**
+     * Returns a copy of this object. All objects are raw-copied.
+     *
+     * @return A raw copy of the object.
+     */
+    MODrawProperties copy();
 
-	/**
-	 * Absorb all non-null properties of a given properties class
-	 *
-	 * @param prop
-	 */
-	void copyFrom(Stylable prop);
+    /**
+     * Absorb all non-null properties of a given properties class
+     *
+     * @param prop
+     */
+    void copyFrom(Stylable prop);
 
-	/**
-	 * Copy the interpolated values from two MathObjecDrawingProperties. Only
-	 * drawColor, fillColor and thickness are actually interpolated
-	 *
-	 * @param a     base drawing parameters
-	 * @param b     Destination drawing parameters
-	 * @param alpha Interpolation parameter
-	 */
-	void interpolateFrom(Stylable a, Stylable b, double alpha);
+    /**
+     * Copy the interpolated values from two MathObjecDrawingProperties. Only
+     * drawColor, fillColor and thickness are actually interpolated
+     *
+     * @param a base drawing parameters
+     * @param b Destination drawing parameters
+     * @param alpha Interpolation parameter
+     */
+    void interpolateFrom(Stylable a, Stylable b, double alpha);
 
-	/**
-	 * Interpolate values with another MathObjecDrawingProperties. Only drawColor,
-	 * fillColor and thickness are actually interpolated
-	 *
-	 * @param dst   Destination drawing parameters
-	 * @param alpha Interpolation parameter
-	 */
-	void interpolateFrom(Stylable dst, double alpha);
+    /**
+     * Interpolate values with another MathObjecDrawingProperties. Only
+     * drawColor, fillColor and thickness are actually interpolated
+     *
+     * @param dst Destination drawing parameters
+     * @param alpha Interpolation parameter
+     */
+    void interpolateFrom(Stylable dst, double alpha);
 
-	/**
-	 * Load attributes from given style. If such style doesn't exist, no changes are
-	 * done, and a warning log is showed.
-	 *
-	 * @param name The name of the style
-	 */
-	void loadFromStyle(String name);
+    /**
+     * Load attributes from given style. If such style doesn't exist, no changes
+     * are done, and a warning log is showed.
+     *
+     * @param name The name of the style
+     */
+    void loadFromStyle(String name);
 
-	/**
-	 * Copy attributes from the given {@link MODrawProperties} object Null values
-	 * are copied also
-	 *
-	 * @param mp The object to copy attributes from.
-	 */
-	void rawCopyFrom(MODrawProperties mp);
+    /**
+     * Copy attributes from the given {@link MODrawProperties} object Null
+     * values are copied also
+     *
+     * @param mp The object to copy attributes from.
+     */
+    void rawCopyFrom(MODrawProperties mp);
 
-	void restoreState();
+    void restoreState();
 
-	void saveState();
+    void saveState();
 
-	void setDrawAlpha(double alpha);
+    void setDrawAlpha(double alpha);
 
-	void setDrawColor(PaintStyle drawColor);
+    void setDrawColor(PaintStyle drawColor);
 
-	void setFillAlpha(double alpha);
+    void setFillAlpha(double alpha);
 
-	void setMultFillAlpha(double alpha);
+    void setMultFillAlpha(double alpha);
 
-	void setMultDrawAlpha(double alpha);
+    void setMultDrawAlpha(double alpha);
 
-	void setFillColor(PaintStyle fillColor);
+    void setFillColor(PaintStyle fillColor);
 
-	void setFilled(boolean fill);
+    void setFilled(boolean fill);
 
-	void setLayer(int layer);
+    void setLayer(int layer);
 
-	public Integer getLayer();
+    public Integer getLayer();
 
-	public PaintStyle getDrawColor();
+    public PaintStyle getDrawColor();
 
-	public PaintStyle getFillColor();
+    public PaintStyle getFillColor();
 
-	public StrokeLineCap getLinecap();
+    public StrokeLineCap getLinecap();
 
-	public void setLinecap(StrokeLineCap linecap);
+    public void setLinecap(StrokeLineCap linecap);
 
-	public Double getThickness();
+    public Double getThickness();
 
-	public void setThickness(Double thickness);
+    public void setThickness(Double thickness);
 
-	public void setDotStyle(Point.DotSyle dotStyle);
+    public void setDotStyle(Point.DotSyle dotStyle);
 
-	public Point.DotSyle getDotStyle();
+    public Point.DotSyle getDotStyle();
 
-	public void setDashStyle(MODrawProperties.DashStyle dashStyle);
+    public void setDashStyle(MODrawProperties.DashStyle dashStyle);
 
-	public MODrawProperties.DashStyle getDashStyle();
+    public MODrawProperties.DashStyle getDashStyle();
 
-	public Boolean isAbsoluteThickness();
+    public Boolean isAbsoluteThickness();
 
-	public void setAbsoluteThickness(Boolean absThickness);
+    public void setAbsoluteThickness(Boolean absThickness);
 
-	public void setVisible(Boolean absThickness);
+    public void setVisible(Boolean absThickness);
 
-	public Boolean isVisible();
+    public Boolean isVisible();
 
-	public Stylable getSubMP(int n);
+    public Boolean isFaceToCamera();
 
-	public void multThickness(double multT);
+    public Vec getFaceToCameraPivot();
 
-	public MODrawProperties getFirstMP();
+    public void setFaceToCamera(Boolean faceToCamera);
+
+    public void setFaceToCameraPivot(Vec pivot);
+    
+    public Stylable getSubMP(int n);
+
+    public void multThickness(double multT);
+
+    public MODrawProperties getFirstMP();
 }

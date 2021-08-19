@@ -54,7 +54,6 @@ public abstract class MathObject implements Drawable, Updateable, Stateable, Box
 
     public Point absoluteAnchorPoint;
     private Type absoluteAnchorType = Type.CENTER;
-    public boolean faceToCamera=false;
     public MathObject() {
         this(null);
     }

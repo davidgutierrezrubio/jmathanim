@@ -17,7 +17,9 @@
  */
 package com.jmathanim.Styling;
 
+import com.jmathanim.Utils.Anchor;
 import com.jmathanim.Utils.JMathAnimConfig;
+import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.Point.DotSyle;
 import com.jmathanim.mathobjects.Stateable;
@@ -67,6 +69,7 @@ public class MODrawProperties implements Stylable, Stateable {
         nullMP.absoluteThickness = null;
         nullMP.dotStyle = null;
         nullMP.linecap = null;
+        nullMP.faceToCamera = null;
         return nullMP;
     }
 
@@ -107,6 +110,9 @@ public class MODrawProperties implements Stylable, Stateable {
 
     // When added a new property here, remember to include it in rawCopyFrom and
     // copyFrom
+    public Boolean faceToCamera = false;
+    public Vec faceToCameraPivot = Vec.to(0,0);
+
     // If false, thickness is computed to be a percentage of the width
     // to ensure zoom or resolution doesn't affect the result
     public Boolean absoluteThickness = true;
@@ -127,6 +133,7 @@ public class MODrawProperties implements Stylable, Stateable {
     public MODrawProperties() {
         drawColor = new JMColor(1, 1, 1, 1);
         fillColor = new JMColor(0, 0, 0, 0);
+        faceToCamera = false;
     }
 
     /**
@@ -164,6 +171,8 @@ public class MODrawProperties implements Stylable, Stateable {
         layer = (prop.getLayer() == null ? layer : prop.getLayer());
         linecap = (prop.getLinecap() == null ? linecap : prop.getLinecap());
         visible = (prop.isVisible() == null ? visible : prop.isVisible());
+        faceToCamera = (prop.isFaceToCamera() == null ? faceToCamera : prop.isFaceToCamera());
+        faceToCameraPivot = (prop.getFaceToCameraPivot() == null ? faceToCameraPivot : prop.getFaceToCameraPivot());
     }
 
     @Override
@@ -379,6 +388,8 @@ public class MODrawProperties implements Stylable, Stateable {
         dotStyle = mp.dotStyle;
         linecap = mp.linecap;
         visible = mp.visible;
+        faceToCamera = mp.faceToCamera;
+        faceToCameraPivot = mp.faceToCameraPivot;
     }
 
     @Override
@@ -391,7 +402,27 @@ public class MODrawProperties implements Stylable, Stateable {
         this.mpBackup = this.copy();
     }
 
+    @Override
+    public Boolean isFaceToCamera() {
+        return faceToCamera;
+    }
+
+    @Override
+    public void setFaceToCamera(Boolean faceToCamera) {
+        this.faceToCamera = faceToCamera;
+    }
+
+    @Override
+    public Vec getFaceToCameraPivot() {
+        return faceToCameraPivot;
+    }
+
+    @Override
+    public void setFaceToCameraPivot(Vec pivot) {
+        this.faceToCameraPivot = pivot;
+    }
+
     public enum DashStyle {
-        SOLID, DASHED, DOTTED,DASHDOTTED
+        SOLID, DASHED, DOTTED, DASHDOTTED
     }
 }

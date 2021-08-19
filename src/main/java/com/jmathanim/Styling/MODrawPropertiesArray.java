@@ -17,7 +17,9 @@
  */
 package com.jmathanim.Styling;
 
+import com.jmathanim.Utils.Anchor;
 import com.jmathanim.Utils.JMathAnimConfig;
+import com.jmathanim.Utils.Vec;
 import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.Point;
 import com.jmathanim.mathobjects.Stateable;
@@ -30,279 +32,305 @@ import javafx.scene.shape.StrokeLineCap;
  */
 public class MODrawPropertiesArray implements Stylable, Stateable {
 
-	private ArrayList<MathObject> objects;
-	private final MODrawProperties mpRef;
+    private ArrayList<MathObject> objects;
+    private final MODrawProperties mpRef;
 
-	public MODrawPropertiesArray(MODrawProperties mp) {
-		mpRef = new MODrawProperties();
-		mpRef.copyFrom(mp);
-		objects = new ArrayList<>();
-	}
+    public MODrawPropertiesArray(MODrawProperties mp) {
+        mpRef = new MODrawProperties();
+        mpRef.copyFrom(mp);
+        objects = new ArrayList<>();
+    }
 
-	public MODrawPropertiesArray() {
-		mpRef = new MODrawProperties();
-		mpRef.copyFrom(JMathAnimConfig.getConfig().getDefaultMP());
-		objects = new ArrayList<>();
-	}
+    public MODrawPropertiesArray() {
+        mpRef = new MODrawProperties();
+        mpRef.copyFrom(JMathAnimConfig.getConfig().getDefaultMP());
+        objects = new ArrayList<>();
+    }
 
-	public MODrawPropertiesArray(ArrayList<MathObject> objects) {
-		this.objects = objects;
-		mpRef = new MODrawProperties();
-	}
+    public MODrawPropertiesArray(ArrayList<MathObject> objects) {
+        this.objects = objects;
+        mpRef = new MODrawProperties();
+    }
 
-	public ArrayList<MathObject> getObjects() {
-		return objects;
-	}
+    public ArrayList<MathObject> getObjects() {
+        return objects;
+    }
 
-	public void add(MathObject... objs) {
-		for (MathObject obj : objs) {
-			objects.add(obj);
-		}
-	}
+    public void add(MathObject... objs) {
+        for (MathObject obj : objs) {
+            objects.add(obj);
+        }
+    }
 
-	public void setObjects(ArrayList<MathObject> objects) {
-		this.objects = objects;
-	}
+    public void setObjects(ArrayList<MathObject> objects) {
+        this.objects = objects;
+    }
 
-	@Override
-	public void setVisible(Boolean visible) {
-		for (MathObject obj : objects) {
-			obj.getMp().setVisible(visible);
-		}
-		mpRef.setVisible(visible);
-	}
+    @Override
+    public void setVisible(Boolean visible) {
+        for (MathObject obj : objects) {
+            obj.getMp().setVisible(visible);
+        }
+        mpRef.setVisible(visible);
+    }
 
-	@Override
-	public Boolean isVisible() {
-		return mpRef.isVisible();
-	}
+    @Override
+    public Boolean isVisible() {
+        return mpRef.isVisible();
+    }
 
-	public boolean remove(MathObject o) {
-		return objects.remove(o);
-	}
+    public boolean remove(MathObject o) {
+        return objects.remove(o);
+    }
 
-	@Override
-	public MODrawProperties copy() {
-		return this.mpRef.copy();
-	}
+    @Override
+    public MODrawProperties copy() {
+        return this.mpRef.copy();
+    }
 
-	@Override
-	public void copyFrom(Stylable prop) {
-		for (MathObject obj : objects) {
-			obj.getMp().copyFrom(prop);
-		}
-		mpRef.copyFrom(prop);
-	}
+    @Override
+    public void copyFrom(Stylable prop) {
+        for (MathObject obj : objects) {
+            obj.getMp().copyFrom(prop);
+        }
+        mpRef.copyFrom(prop);
+    }
 
-	@Override
-	public void interpolateFrom(Stylable dst, double alpha) {
-		for (MathObject obj : objects) {
-			obj.getMp().interpolateFrom(dst, alpha);
-		}
-		mpRef.interpolateFrom(dst, alpha);
-	}
+    @Override
+    public void interpolateFrom(Stylable dst, double alpha) {
+        for (MathObject obj : objects) {
+            obj.getMp().interpolateFrom(dst, alpha);
+        }
+        mpRef.interpolateFrom(dst, alpha);
+    }
 
-	@Override
-	public void interpolateFrom(Stylable a, Stylable b, double alpha) {
-		for (MathObject obj : objects) {
-			obj.getMp().interpolateFrom(a, b, alpha);
-		}
-		mpRef.interpolateFrom(a, b, alpha);
-	}
+    @Override
+    public void interpolateFrom(Stylable a, Stylable b, double alpha) {
+        for (MathObject obj : objects) {
+            obj.getMp().interpolateFrom(a, b, alpha);
+        }
+        mpRef.interpolateFrom(a, b, alpha);
+    }
 
-	@Override
-	public void loadFromStyle(String name) {
-		for (MathObject obj : objects) {
-			obj.getMp().loadFromStyle(name);
+    @Override
+    public void loadFromStyle(String name) {
+        for (MathObject obj : objects) {
+            obj.getMp().loadFromStyle(name);
 
-		}
-		mpRef.loadFromStyle(name);
-	}
+        }
+        mpRef.loadFromStyle(name);
+    }
 
-	@Override
-	public void rawCopyFrom(MODrawProperties mp) {
-		for (MathObject obj : objects) {
-			obj.getMp().rawCopyFrom(mp);
-		}
-		mpRef.rawCopyFrom(mp);
-	}
+    @Override
+    public void rawCopyFrom(MODrawProperties mp) {
+        for (MathObject obj : objects) {
+            obj.getMp().rawCopyFrom(mp);
+        }
+        mpRef.rawCopyFrom(mp);
+    }
 
-	@Override
-	public void restoreState() {
-		for (MathObject obj : objects) {
-			obj.getMp().restoreState();
-		}
-		mpRef.restoreState();
+    @Override
+    public void restoreState() {
+        for (MathObject obj : objects) {
+            obj.getMp().restoreState();
+        }
+        mpRef.restoreState();
 
-	}
+    }
 
-	@Override
-	public void saveState() {
-		for (MathObject obj : objects) {
-			obj.getMp().saveState();
-		}
-		mpRef.saveState();
-	}
+    @Override
+    public void saveState() {
+        for (MathObject obj : objects) {
+            obj.getMp().saveState();
+        }
+        mpRef.saveState();
+    }
 
-	@Override
-	public void setDrawAlpha(double alpha) {
-		for (MathObject obj : objects) {
-			obj.getMp().setDrawAlpha(alpha);
-		}
-		mpRef.setDrawAlpha(alpha);
+    @Override
+    public void setDrawAlpha(double alpha) {
+        for (MathObject obj : objects) {
+            obj.getMp().setDrawAlpha(alpha);
+        }
+        mpRef.setDrawAlpha(alpha);
 
-	}
+    }
 
-	@Override
-	public void setDrawColor(PaintStyle drawColor) {
-		for (MathObject obj : objects) {
-			obj.getMp().setDrawColor(drawColor);
-		}
-		mpRef.setDrawColor(drawColor);
-	}
+    @Override
+    public void setDrawColor(PaintStyle drawColor) {
+        for (MathObject obj : objects) {
+            obj.getMp().setDrawColor(drawColor);
+        }
+        mpRef.setDrawColor(drawColor);
+    }
 
-	@Override
-	public void setFillAlpha(double alpha) {
-		for (MathObject obj : objects) {
-			obj.getMp().setFillAlpha(alpha);
-		}
-		mpRef.setFillAlpha(alpha);
-	}
+    @Override
+    public void setFillAlpha(double alpha) {
+        for (MathObject obj : objects) {
+            obj.getMp().setFillAlpha(alpha);
+        }
+        mpRef.setFillAlpha(alpha);
+    }
 
-	@Override
-	public void setFillColor(PaintStyle fillColor) {
-		for (MathObject obj : objects) {
-			obj.getMp().setFillColor(fillColor);
-		}
-		mpRef.setFillColor(fillColor);
-	}
+    @Override
+    public void setFillColor(PaintStyle fillColor) {
+        for (MathObject obj : objects) {
+            obj.getMp().setFillColor(fillColor);
+        }
+        mpRef.setFillColor(fillColor);
+    }
 
-	@Override
-	public void setFilled(boolean fill) {
-		for (MathObject obj : objects) {
-			obj.getMp().setFilled(fill);
-		}
-		mpRef.setFilled(fill);
-	}
+    @Override
+    public void setFilled(boolean fill) {
+        for (MathObject obj : objects) {
+            obj.getMp().setFilled(fill);
+        }
+        mpRef.setFilled(fill);
+    }
 
-	@Override
-	public void setLayer(int layer) {
-		for (MathObject obj : objects) {
-			obj.getMp().setLayer(layer);
-		}
-		mpRef.setLayer(layer);
-	}
+    @Override
+    public void setLayer(int layer) {
+        for (MathObject obj : objects) {
+            obj.getMp().setLayer(layer);
+        }
+        mpRef.setLayer(layer);
+    }
 
-	@Override
-	public Integer getLayer() {
-		return mpRef.getLayer();
-	}
+    @Override
+    public Integer getLayer() {
+        return mpRef.getLayer();
+    }
 
-	@Override
-	public void setMultFillAlpha(double alpha) {
-		for (MathObject obj : objects) {
-			obj.getMp().setMultFillAlpha(alpha);
-		}
-		mpRef.setMultFillAlpha(alpha);
-	}
+    @Override
+    public void setMultFillAlpha(double alpha) {
+        for (MathObject obj : objects) {
+            obj.getMp().setMultFillAlpha(alpha);
+        }
+        mpRef.setMultFillAlpha(alpha);
+    }
 
-	@Override
-	public void setMultDrawAlpha(double alpha) {
-		for (MathObject obj : objects) {
-			obj.getMp().setMultDrawAlpha(alpha);
-		}
-		mpRef.setMultDrawAlpha(alpha);
-	}
+    @Override
+    public void setMultDrawAlpha(double alpha) {
+        for (MathObject obj : objects) {
+            obj.getMp().setMultDrawAlpha(alpha);
+        }
+        mpRef.setMultDrawAlpha(alpha);
+    }
 
-	@Override
-	public PaintStyle getDrawColor() {
-		return mpRef.getDrawColor();
-	}
+    @Override
+    public PaintStyle getDrawColor() {
+        return mpRef.getDrawColor();
+    }
 
-	@Override
-	public PaintStyle getFillColor() {
-		return mpRef.getFillColor();
-	}
+    @Override
+    public PaintStyle getFillColor() {
+        return mpRef.getFillColor();
+    }
 
-	public Stylable getSubMP(int n) {
-		return objects.get(n).getMp();
-	}
+    public Stylable getSubMP(int n) {
+        return objects.get(n).getMp();
+    }
 
-	@Override
-	public MODrawProperties getFirstMP() {
-		return mpRef;
-	}
+    @Override
+    public MODrawProperties getFirstMP() {
+        return mpRef;
+    }
 
-	@Override
-	public StrokeLineCap getLinecap() {
-		return mpRef.getLinecap();
-	}
+    @Override
+    public StrokeLineCap getLinecap() {
+        return mpRef.getLinecap();
+    }
 
-	@Override
-	public void setLinecap(StrokeLineCap linecap) {
-		for (MathObject obj : objects) {
-			obj.getMp().setLinecap(linecap);
-		}
-		mpRef.setLinecap(linecap);
-	}
+    @Override
+    public void setLinecap(StrokeLineCap linecap) {
+        for (MathObject obj : objects) {
+            obj.getMp().setLinecap(linecap);
+        }
+        mpRef.setLinecap(linecap);
+    }
 
-	@Override
-	public Double getThickness() {
-		return mpRef.getThickness();
-	}
+    @Override
+    public Double getThickness() {
+        return mpRef.getThickness();
+    }
 
-	@Override
-	public void setThickness(Double thickness) {
-		for (MathObject obj : objects) {
-			obj.getMp().setThickness(thickness);
-		}
-		mpRef.setThickness(thickness);
-	}
+    @Override
+    public void setThickness(Double thickness) {
+        for (MathObject obj : objects) {
+            obj.getMp().setThickness(thickness);
+        }
+        mpRef.setThickness(thickness);
+    }
 
-	@Override
-	public void setDotStyle(Point.DotSyle dotStyle) {
-		for (MathObject obj : objects) {
-			obj.getMp().setDotStyle(dotStyle);
-		}
-		mpRef.setDotStyle(dotStyle);
-	}
+    @Override
+    public void setDotStyle(Point.DotSyle dotStyle) {
+        for (MathObject obj : objects) {
+            obj.getMp().setDotStyle(dotStyle);
+        }
+        mpRef.setDotStyle(dotStyle);
+    }
 
-	@Override
-	public Point.DotSyle getDotStyle() {
-		return mpRef.getDotStyle();
-	}
+    @Override
+    public Point.DotSyle getDotStyle() {
+        return mpRef.getDotStyle();
+    }
 
-	@Override
-	public void setDashStyle(MODrawProperties.DashStyle dashStyle) {
-		for (MathObject obj : objects) {
-			obj.getMp().setDashStyle(dashStyle);
-		}
-		mpRef.setDashStyle(dashStyle);
-	}
+    @Override
+    public void setDashStyle(MODrawProperties.DashStyle dashStyle) {
+        for (MathObject obj : objects) {
+            obj.getMp().setDashStyle(dashStyle);
+        }
+        mpRef.setDashStyle(dashStyle);
+    }
 
-	@Override
-	public MODrawProperties.DashStyle getDashStyle() {
-		return mpRef.getDashStyle();
-	}
+    @Override
+    public MODrawProperties.DashStyle getDashStyle() {
+        return mpRef.getDashStyle();
+    }
 
-	@Override
-	public Boolean isAbsoluteThickness() {
-		return mpRef.isAbsoluteThickness();
-	}
+    @Override
+    public Boolean isAbsoluteThickness() {
+        return mpRef.isAbsoluteThickness();
+    }
 
-	@Override
-	public void setAbsoluteThickness(Boolean absThickness) {
-		for (MathObject obj : objects) {
-			obj.getMp().setAbsoluteThickness(absThickness);
-		}
-		mpRef.setAbsoluteThickness(absThickness);
-	}
+    @Override
+    public void setAbsoluteThickness(Boolean absThickness) {
+        for (MathObject obj : objects) {
+            obj.getMp().setAbsoluteThickness(absThickness);
+        }
+        mpRef.setAbsoluteThickness(absThickness);
+    }
 
-	@Override
-	public void multThickness(double multT) {
-		for (MathObject obj : objects) {
-			obj.getMp().multThickness(multT);
-		}
-		mpRef.multThickness(multT);
-	}
+    @Override
+    public void multThickness(double multT) {
+        for (MathObject obj : objects) {
+            obj.getMp().multThickness(multT);
+        }
+        mpRef.multThickness(multT);
+    }
+
+    @Override
+    public Boolean isFaceToCamera() {
+        return mpRef.isFaceToCamera();
+    }
+
+    @Override
+    public void setFaceToCamera(Boolean faceToCamera) {
+        for (MathObject obj : objects) {
+            obj.getMp().setFaceToCamera(faceToCamera);
+        }
+        mpRef.setFaceToCamera(faceToCamera);
+    }
+
+    @Override
+    public Vec getFaceToCameraPivot() {
+        return mpRef.getFaceToCameraPivot();
+    }
+
+    @Override
+    public void setFaceToCameraPivot(Vec pivot) {
+          for (MathObject obj : objects) {
+            obj.getMp().setFaceToCameraPivot(pivot);
+        }
+        mpRef.setFaceToCameraPivot(pivot);
+    }
 }

@@ -200,16 +200,45 @@ public class JOGLRenderQueue implements GLEventListener {
             double zFightingParameter = 0;
             for (MathObject obj : objectsToDraw) {
                 if (obj instanceof Shape) {
-
                     //Convex, filled-> Not 2º stencil buffer
                     //Thickness=1, not filled-> No thin shader, no fill method, no stencil
                     Shape s = (Shape) obj;
                     gl2.glMatrixMode(GLMatrixFunc.GL_MODELVIEW);
                     gl2.glLoadIdentity();
-                    if (s.faceToCamera) {
+                    if (s.getMp().isFaceToCamera()) {
+
+                        final Vec center = s.getMp().getFaceToCameraPivot();//s.getCenter();
+                        float cx = (float) center.x;
+                        float cy = (float) center.y;
+                        float cz = (float) center.z;
+
+                        Vec vcamera = camera.look.to(camera.eye);
+                        float vx = (float) (vcamera.x);
+                        float vy = (float) (vcamera.y);
+                        float vz = (float) (vcamera.z);
+
+                        Vec vcameraRoll = Vec.to(vcamera.y, vcamera.x);
+                        Vec vcameraYaw = Vec.to(vcamera.z, Math.sqrt(vcamera.y * vcamera.y + vcamera.x * vcamera.x));
+                        double yaw = vcameraYaw.getAngle();
+                        double roll = vcameraRoll.getAngle();
+
                         //Compute model view matrix so that faces to the camera
+                        System.out.println("Identidad");
                         printModelMatrix();
-                        gl2.glRotatef((float) (PI / 4), 1, 1, 1);
+                        gl2.glTranslatef(cx, cy, cz);
+                        System.out.println("TR1");
+                        printModelMatrix();
+//                        gl2.glRotatef((float) (90-Math.atan(vz/vx)*180/PI), 0, 1, 0);
+                        if (roll != 0) {
+                            gl2.glRotatef((float) (180 - roll * 180 / PI), 0, 0, 1);
+                        }
+                        gl2.glRotatef((float) (yaw * 180 / PI), 1, 0, 0);
+//                        gl2.glRotatef(90, 0, 1, 0);
+//                        gl2.glRotatef(90, 1, 0, 0);
+                        System.out.println("ROT");
+                        printModelMatrix();
+                        gl2.glTranslatef(-cx, -cy, -cz);
+                        System.out.println("TR2");
                         printModelMatrix();
                         System.out.println("----");
                     }
@@ -272,13 +301,15 @@ public class JOGLRenderQueue implements GLEventListener {
     private void printModelMatrix() {
         FloatBuffer modMat = FloatBuffer.allocate(16);
         gl2.glGetFloatv(GL2.GL_MODELVIEW_MATRIX, modMat);
+        System.out.println("-----");
         for (int i = 0; i < 16; i++) {
-             if (i % 4 == 0) {
+            if (i % 4 == 0) {
                 System.out.println("");
             }
             System.out.print(modMat.get(i) + " ");
-           
+
         }
+        System.out.println("----");
     }
 
     public BufferedImage screenshot(GL3 gl2, GLDrawable drawable) {

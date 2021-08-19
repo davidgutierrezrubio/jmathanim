@@ -14,5 +14,5 @@ out VertexData{
 void main()
 {
     VertexOut.mColor = unifColor;
-     gl_Position = projection*Vertex;
+     gl_Position = projection*modelMatrix*Vertex;
 }

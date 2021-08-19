@@ -17,6 +17,6 @@ out vec4 FragPos;
 void main()
 {
     VertexOut.normal = (NormalVec).xyz;
-    gl_Position = projection*(Vertex+zFighting);
+    gl_Position = projection*modelMatrix*(Vertex+zFighting);
     FragPos=Vertex;
 }
