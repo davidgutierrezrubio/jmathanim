@@ -164,7 +164,13 @@ public class ShaderDrawer {
         gl3.glDrawArrays(GL3ES3.GL_TRIANGLE_FAN, 0, fbVertices.limit() / 4);
         gl3.glDepthMask(true);
         // set stencil buffer to only keep pixels when value in buffer is 1
-        gl3.glStencilFunc(GL.GL_EQUAL, 1, 1);
+        //Bit 2 is set to 1 if the contour is drawed in that fragment, so stencil
+        //mask has to be 01 in order to draw fill
+        //00->No fill, no contour
+        //10->Contour, no fill
+        //11->Contour&fill (don't draw fill here!)
+        //01->Fill only
+        gl3.glStencilFunc(GL.GL_EQUAL, 1, 3);
         gl3.glStencilOp(GL.GL_ZERO, GL.GL_ZERO, GL.GL_ZERO);
 
         // enable color again
