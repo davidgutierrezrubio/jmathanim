@@ -4,8 +4,6 @@ uniform mat4 projection;
 uniform mat4 modelMatrix;
 uniform vec4 unifColor;
 
-uniform vec4 zFighting;
-
 layout(location = 0) in vec4 Vertex;
 layout(location = 1) in vec4 NormalVec;
 
@@ -17,6 +15,6 @@ out vec4 FragPos;
 void main()
 {
     VertexOut.normal = (NormalVec).xyz;
-    gl_Position = projection*modelMatrix*(Vertex+zFighting);
+    gl_Position = projection*modelMatrix*Vertex;
     FragPos=Vertex;
 }

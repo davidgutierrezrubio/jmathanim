@@ -254,6 +254,8 @@ public class Point extends MathObject {
 					.fillColor(getMp().getDrawColor()).thickness(0);
 			break;
 		}
+                dotShape.getMp().setFaceToCamera(true);
+                dotShape.getMp().setFaceToCameraPivot(this.v);
 		return dotShape;
 	}
 

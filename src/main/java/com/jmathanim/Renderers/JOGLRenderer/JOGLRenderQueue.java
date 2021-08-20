@@ -152,8 +152,6 @@ public class JOGLRenderQueue implements GLEventListener {
 
             shaderDrawer.thinLineShader = thinLinesShader;
             shaderDrawer.fillShader = fillShader;
-            shaderDrawer.unifColor = thinLinesShader.getUniformVariable("unifColor");
-            shaderDrawer.unifThickness = thinLinesShader.getUniformVariable("Thickness");
         }
     }
 
@@ -198,6 +196,17 @@ public class JOGLRenderQueue implements GLEventListener {
             gl3.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT);
             double zFightingStep = 0;//.001;
             double zFightingParameter = 0;
+
+            Vec vcamera = camera.look.to(camera.eye);
+            float vx = (float) (vcamera.x);
+            float vy = (float) (vcamera.y);
+            float vz = (float) (vcamera.z);
+
+            Vec vcameraRoll = Vec.to(vcamera.y, vcamera.x);
+            Vec vcameraYaw = Vec.to(vcamera.z, Math.sqrt(vcamera.y * vcamera.y + vcamera.x * vcamera.x));
+            double yaw = vcameraYaw.getAngle();
+            double roll = vcameraRoll.getAngle();
+
             for (MathObject obj : objectsToDraw) {
                 if (obj instanceof Shape) {
                     //Convex, filled-> Not 2º stencil buffer
@@ -212,35 +221,13 @@ public class JOGLRenderQueue implements GLEventListener {
                         float cy = (float) center.y;
                         float cz = (float) center.z;
 
-                        Vec vcamera = camera.look.to(camera.eye);
-                        float vx = (float) (vcamera.x);
-                        float vy = (float) (vcamera.y);
-                        float vz = (float) (vcamera.z);
-
-                        Vec vcameraRoll = Vec.to(vcamera.y, vcamera.x);
-                        Vec vcameraYaw = Vec.to(vcamera.z, Math.sqrt(vcamera.y * vcamera.y + vcamera.x * vcamera.x));
-                        double yaw = vcameraYaw.getAngle();
-                        double roll = vcameraRoll.getAngle();
-
                         //Compute model view matrix so that faces to the camera
-                        System.out.println("Identidad");
-                        printModelMatrix();
                         gl2.glTranslatef(cx, cy, cz);
-                        System.out.println("TR1");
-                        printModelMatrix();
-//                        gl2.glRotatef((float) (90-Math.atan(vz/vx)*180/PI), 0, 1, 0);
                         if (roll != 0) {
                             gl2.glRotatef((float) (180 - roll * 180 / PI), 0, 0, 1);
                         }
                         gl2.glRotatef((float) (yaw * 180 / PI), 1, 0, 0);
-//                        gl2.glRotatef(90, 0, 1, 0);
-//                        gl2.glRotatef(90, 1, 0, 0);
-                        System.out.println("ROT");
-                        printModelMatrix();
                         gl2.glTranslatef(-cx, -cy, -cz);
-                        System.out.println("TR2");
-                        printModelMatrix();
-                        System.out.println("----");
                     }
 
                     loadModelMatrixIntoShaders();
@@ -268,7 +255,7 @@ public class JOGLRenderQueue implements GLEventListener {
                     gl2.glUseProgram(fillShader.getShader());
 
 //                    zFightingParameter += zFightingStep;
-                    shaderDrawer.drawFill(s, pieces, toEye.mult(zFightingParameter));
+                    shaderDrawer.drawFill(s, pieces);
 //                    shaderDrawer.drawFillSlowButWorking(s, pieces);
                     gl3.glDisable(GL.GL_STENCIL_TEST);
 
