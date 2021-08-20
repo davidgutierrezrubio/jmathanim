@@ -18,7 +18,10 @@
 package com.jmathanim.Renderers.JOGLRenderer;
 
 import com.jmathanim.Styling.JMColor;
+import com.jmathanim.Styling.JMLinearGradient;
+import com.jmathanim.Styling.JMRadialGradient;
 import com.jmathanim.Styling.PaintStyle;
+import com.jmathanim.Styling.Stylable;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.mathobjects.JMPathPoint;
 import com.jmathanim.mathobjects.Point;
@@ -33,6 +36,7 @@ import com.jogamp.opengl.fixedfunc.GLMatrixFunc;
 import com.jogamp.opengl.glu.GLU;
 import com.jogamp.opengl.glu.GLUtessellator;
 import com.jogamp.opengl.glu.gl2.GLUgl2;
+import java.nio.ByteBuffer;
 import java.nio.DoubleBuffer;
 import java.nio.FloatBuffer;
 import java.util.ArrayList;
@@ -73,8 +77,10 @@ public class ShaderDrawer {
         if (s.getMp().getFillColor().getAlpha() == 0) {
             return;
         }
-        float[] shapeColors = getFillColor(s);
-        gl2.glUniform4f(fillShader.getUniformVariable("unifColor"), shapeColors[0], shapeColors[1], shapeColors[2], shapeColors[3]);
+
+        final PaintStyle fillStylable = s.getMp().getFillColor();
+        ShaderLoader shader = fillShader;
+        defineColorParametersForShader(fillStylable, shader);
 //        System.out.println("Shader uniform color: "+shapeColors[2]);
         //Generates a triangle fan array
         Vec normal = s.getNormalVector();
@@ -143,7 +149,7 @@ public class ShaderDrawer {
         gl3.glBindBuffer(GL3ES3.GL_ARRAY_BUFFER, vbo[1]);
         gl3.glBufferData(GL3ES3.GL_ARRAY_BUFFER, fbNormals.limit() * 4, fbNormals, GL3ES3.GL_STATIC_DRAW);
         gl3.glVertexAttribPointer(1, 4, GL.GL_FLOAT, false, 0, 0);
-       
+
         //Enable Stencil buffer to draw concave polygons
         gl3.glStencilMask(0b00000001);//Last bit for filling
 
@@ -156,7 +162,7 @@ public class ShaderDrawer {
         gl3.glColorMask(false, false, false, false);
         // draw polygon into stencil buffer
         //Has to disable depth mask in order to avoid z fightint for concave polygons
-         gl3.glDepthMask(false);
+        gl3.glDepthMask(false);
         gl3.glDrawArrays(GL3ES3.GL_TRIANGLE_FAN, 0, fbVertices.limit() / 4);
         gl3.glDepthMask(true);
         // set stencil buffer to only keep pixels when value in buffer is 1
@@ -175,6 +181,27 @@ public class ShaderDrawer {
 //        drawWholeScreen();//Draw whole screen with current color
         gl3.glDrawArrays(GL3ES3.GL_TRIANGLE_FAN, 0, fbVertices.limit() / 4);
 //        gl3.glDepthMask(true);
+    }
+
+    private void defineColorParametersForShader(final PaintStyle fillStylable, ShaderLoader shader) {
+        if (fillStylable instanceof JMColor) {
+            float[] shapeColors = toColor((JMColor) fillStylable);
+            gl2.glUniform4f(shader.getUniformVariable("unifColor"), shapeColors[0], shapeColors[1], shapeColors[2], shapeColors[3]);
+            gl2.glUniform1i(shader.getUniformVariable("fillType"), 0);//Solid color
+        }
+        if (fillStylable instanceof JMLinearGradient) {
+            JMLinearGradient lg = (JMLinearGradient) fillStylable;
+            lg.getStops();
+            //TODO: Stuff to do here needed...
+            gl2.glUniform1i(shader.getUniformVariable("fillType"), 1);//Linear Gradient
+        }
+        if (fillStylable instanceof JMRadialGradient) {
+            JMRadialGradient rg = (JMRadialGradient) fillStylable;
+            rg.getStops();
+            //TODO: Stuff to do here needed...
+            gl2.glUniform1i(shader.getUniformVariable("fillType"), 2);//Radial Gradient
+        }
+
     }
 
     private void drawWholeScreen() {
@@ -232,7 +259,6 @@ public class ShaderDrawer {
 //        GLU.gluEndPolygon(tess);
 //        GLU.gluDeleteTess(tess);
 //    }
-
     public float[] getDrawColor(Shape s) {
         PaintStyle st = s.getMp().getDrawColor();
         float r = 0;
@@ -249,19 +275,11 @@ public class ShaderDrawer {
         return new float[]{r, g, b, alpha};
     }
 
-    public float[] getFillColor(Shape s) {
-        PaintStyle st = s.getMp().getFillColor();
-        float r = 0;
-        float g = 0;
-        float b = 0;
-        float alpha = 1;
-        if (st instanceof JMColor) {
-            JMColor col = (JMColor) st;
-            r = (float) col.r;
-            g = (float) col.g;
-            b = (float) col.b;
-            alpha = (float) col.getAlpha();
-        }
+    public float[] toColor(JMColor col) {
+        float r = (float) col.r;
+        float g = (float) col.g;
+        float b = (float) col.b;
+        float alpha = (float) col.getAlpha();
         return new float[]{r, g, b, alpha};
     }
 
@@ -281,11 +299,21 @@ public class ShaderDrawer {
         if (s.getMp().getDrawColor().getAlpha() == 0) {
             return;
         }
-        if (!noFill) {//If the shape is not filled, no need to do this
+//        if (!noFill) {//If the shape is not filled, no need to do this
         gl3.glStencilMask(0xFF);//Second bit for contour
         gl3.glStencilFunc(GL.GL_ALWAYS, 2, 2);
         gl3.glStencilOp(GL.GL_ZERO, GL.GL_ZERO, GL.GL_REPLACE);
+//        }
+        //Pruebas con glPolygonStipple
+        ByteBuffer bb = ByteBuffer.allocate(32*32);
+        byte value=(byte) 0b10101010;
+        for (int i = 0; i < 32; i++) {
+            for (int k = 0; k < 32; k++) {
+                bb.put(i*32+k, (byte) value);
+            }
         }
+        gl2.glPolygonStipple(bb);
+        gl2.glEnable(GL2.GL_POLYGON_STIPPLE);
 
         //TODO: Implement this in glsl in a geometry shader
         float[] shapeColors = getDrawColor(s);
@@ -412,5 +440,4 @@ public class ShaderDrawer {
 //            }
 //        }
 //    }
-
 }

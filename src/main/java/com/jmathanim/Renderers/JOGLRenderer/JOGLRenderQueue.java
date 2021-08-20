@@ -137,7 +137,7 @@ public class JOGLRenderQueue implements GLEventListener {
         shaderDrawer = new ShaderDrawer(gl3, gl2);
         if (useCustomShaders) {
             thinLinesShader = new ShaderLoader(gl3, "#thinLines/thinLines.vs", "#thinLines/thinLines.gs", "#thinLines/thinLines.fs");
-            fillShader = new ShaderLoader(gl3, "#fill/fill.vs", "", "#fill/fill.fs");
+            fillShader = new ShaderLoader(gl3, "#fill/fill.vs", "", "#fill/fillGradient.fs");
             try {
                 thinLinesShader.loadShaders();
                 fillShader.loadShaders();
