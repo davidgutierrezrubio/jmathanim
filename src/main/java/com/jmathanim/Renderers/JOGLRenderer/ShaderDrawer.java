@@ -304,16 +304,6 @@ public class ShaderDrawer {
         gl3.glStencilFunc(GL.GL_ALWAYS, 2, 2);
         gl3.glStencilOp(GL.GL_ZERO, GL.GL_ZERO, GL.GL_REPLACE);
 //        }
-        //Pruebas con glPolygonStipple
-        ByteBuffer bb = ByteBuffer.allocate(32*32);
-        byte value=(byte) 0b10101010;
-        for (int i = 0; i < 32; i++) {
-            for (int k = 0; k < 32; k++) {
-                bb.put(i*32+k, (byte) value);
-            }
-        }
-        gl2.glPolygonStipple(bb);
-        gl2.glEnable(GL2.GL_POLYGON_STIPPLE);
 
         //TODO: Implement this in glsl in a geometry shader
         float[] shapeColors = getDrawColor(s);
