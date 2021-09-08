@@ -11,20 +11,20 @@ void main(void)
 {
     vec3 ambient=vec3(1.,1.,1.);
     vec3 lightColor=vec3(1.,1.,1.);
-    vec3 lightPos=vec3(0.,3.,3.);
+    vec3 lightPos=vec3(0.,1.,3.);
     vec3 norm = normalize(VertexIn.normal);
     vec3 lightDir = normalize(lightPos - FragPos.xyz/FragPos.a);
-    //float diff = abs(dot(norm, lightDir));
-    float diff = max(dot(norm, lightDir), 0.0);
+    float diff = abs(dot(norm, lightDir));
+    // float diff = max(dot(norm, lightDir), 0.0);
     vec3 diffuse =  diff*lightColor;
 
 //Diffuse+ambient
-//vec3 result = (.7*ambient+1.*diffuse)*unifColor.rgb;
-//gl_FragColor = vec4(result, unifColor.a);
+vec3 result = (.0*ambient+1.*diffuse)*unifColor.rgb;
+gl_FragColor = vec4(result, unifColor.a);
 
 
 //Simple plain color
-gl_FragColor=unifColor;
+// gl_FragColor=unifColor;
 
 
 //Vertical gradient to blue

@@ -19,9 +19,7 @@ package com.jmathanim.Renderers.JOGLRenderer;
 
 import com.jmathanim.Cameras.Camera;
 import com.jmathanim.Cameras.Camera3D;
-import com.jmathanim.Renderers.MovieEncoders.VideoEncoder;
 import com.jmathanim.Renderers.Renderer;
-import com.jmathanim.Utils.JMathAnimConfig;
 import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
@@ -29,11 +27,8 @@ import com.jmathanim.mathobjects.AbstractJMImage;
 import com.jmathanim.mathobjects.Shape;
 import com.jmathanim.mathobjects.surface.Surface;
 import com.jogamp.newt.opengl.GLWindow;
-import com.jogamp.opengl.GL2;
 import com.jogamp.opengl.GLCapabilities;
 import com.jogamp.opengl.GLProfile;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * Development, unstable class for testing the JOGL API for rendering purposes

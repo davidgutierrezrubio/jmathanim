@@ -32,16 +32,14 @@ import static com.jmathanim.jmathanim.JMathAnimScene.PI;
 import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.Point;
 import com.jmathanim.mathobjects.Shape;
+import com.jmathanim.mathobjects.surface.Surface;
 import com.jogamp.opengl.GL;
 import com.jogamp.opengl.GL2;
 import com.jogamp.opengl.GL3;
-import com.jogamp.opengl.GL3ES3;
 import com.jogamp.opengl.GLAutoDrawable;
-import com.jogamp.opengl.GLCapabilities;
 import com.jogamp.opengl.GLDrawable;
 import com.jogamp.opengl.GLEventListener;
 import com.jogamp.opengl.GLException;
-import com.jogamp.opengl.GLProfile;
 import com.jogamp.opengl.fixedfunc.GLMatrixFunc;
 import com.jogamp.opengl.glu.GLU;
 import com.jogamp.opengl.util.awt.AWTGLReadBufferUtil;
@@ -49,11 +47,9 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.nio.FloatBuffer;
-import java.nio.IntBuffer;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import jogamp.opengl.egl.EGLGLCapabilities;
 
 /**
  * Manages the queue of objects to be rendered at every frame draw
@@ -137,7 +133,7 @@ public class JOGLRenderQueue implements GLEventListener {
         shaderDrawer = new ShaderDrawer(gl3, gl2);
         if (useCustomShaders) {
             thinLinesShader = new ShaderLoader(gl3, "#thinLines/thinLines.vs", "#thinLines/thinLines.gs", "#thinLines/thinLines.fs");
-            fillShader = new ShaderLoader(gl3, "#fill/fill.vs", "", "#fill/fillGradient.fs");
+            fillShader = new ShaderLoader(gl3, "#fill/fill.vs", "", "#fill/fill.fs");
             try {
                 thinLinesShader.loadShaders();
                 fillShader.loadShaders();
@@ -209,56 +205,10 @@ public class JOGLRenderQueue implements GLEventListener {
 
             for (MathObject obj : objectsToDraw) {
                 if (obj instanceof Shape) {
-                    //Convex, filled-> Not 2º stencil buffer
-                    //Thickness=1, not filled-> No thin shader, no fill method, no stencil
-                    Shape s = (Shape) obj;
-                    gl2.glMatrixMode(GLMatrixFunc.GL_MODELVIEW);
-                    gl2.glLoadIdentity();
-                    if (s.getMp().isFaceToCamera()) {
-
-                        final Vec center = s.getMp().getFaceToCameraPivot();//s.getCenter();
-                        float cx = (float) center.x;
-                        float cy = (float) center.y;
-                        float cz = (float) center.z;
-
-                        //Compute model view matrix so that faces to the camera
-                        gl2.glTranslatef(cx, cy, cz);
-                        if (roll != 0) {
-                            gl2.glRotatef((float) (180 - roll * 180 / PI), 0, 0, 1);
-                        }
-                        gl2.glRotatef((float) (yaw * 180 / PI), 1, 0, 0);
-                        gl2.glTranslatef(-cx, -cy, -cz);
-                    }
-
-                    loadModelMatrixIntoShaders();
-
-                    ArrayList<ArrayList<Point>> pieces = s.getPath().computePolygonalPieces(camera);
-                    float[] fc = getFillColor(s);
-                    boolean noFill = (fc[3] == 0);//if true, shape is not filled
-
-                    //First clear the Stencil buffer if the shape is filled
-//                    if (!noFill) {
-                    gl3.glEnable(GL3.GL_STENCIL_TEST);
-                    gl3.glStencilMask(0xFF);
-                    gl3.glClear(GL3.GL_STENCIL_BUFFER_BIT);
-//                    } else {
-//                        gl3.glDisable(GL3.GL_STENCIL_TEST);
-//                    }
-
-                    //Contour
-                    gl2.glUseProgram(thinLinesShader.getShader());
-                    if (s.getMp().getThickness() > 0) {
-                        shaderDrawer.drawThinShape(s, pieces, noFill);
-                    }
-
-                    //Fill
-                    gl2.glUseProgram(fillShader.getShader());
-
-//                    zFightingParameter += zFightingStep;
-                    shaderDrawer.drawFill(s, pieces);
-//                    shaderDrawer.drawFillSlowButWorking(s, pieces);
-                    gl3.glDisable(GL.GL_STENCIL_TEST);
-
+                    drawShape(obj, roll, yaw);
+                }
+                if (obj instanceof Surface) {
+                    drawSurface((Surface) obj);
                 }
             }
 
@@ -276,6 +226,62 @@ public class JOGLRenderQueue implements GLEventListener {
 
     }
 
+    /**
+     * Draw a 2D generic Shape, with thickness and fill
+     *
+     */
+    private void drawShape(MathObject obj, double roll, double yaw) {
+        //Convex, filled-> Not 2º stencil buffer
+        //Thickness=1, not filled-> No thin shader, no fill method, no stencil
+        Shape s = (Shape) obj;
+        gl2.glMatrixMode(GLMatrixFunc.GL_MODELVIEW);
+        gl2.glLoadIdentity();
+        if (s.getMp().isFaceToCamera()) {
+
+            final Vec center = s.getMp().getFaceToCameraPivot();//s.getCenter();
+            float cx = (float) center.x;
+            float cy = (float) center.y;
+            float cz = (float) center.z;
+
+            //Compute model view matrix so that faces to the camera
+            gl2.glTranslatef(cx, cy, cz);
+            if (roll != 0) {
+                gl2.glRotatef((float) (180 - roll * 180 / PI), 0, 0, 1);
+            }
+            gl2.glRotatef((float) (yaw * 180 / PI), 1, 0, 0);
+            gl2.glTranslatef(-cx, -cy, -cz);
+        }
+
+        loadModelMatrixIntoShaders();
+
+        ArrayList<ArrayList<Point>> pieces = s.getPath().computePolygonalPieces(camera);
+        float[] fc = getFillColor(s);
+        boolean noFill = (fc[3] == 0);//if true, shape is not filled
+
+        //First clear the Stencil buffer if the shape is filled
+//                    if (!noFill) {
+        gl3.glEnable(GL3.GL_STENCIL_TEST);
+        gl3.glStencilMask(0xFF);
+        gl3.glClear(GL3.GL_STENCIL_BUFFER_BIT);
+//                    } else {
+//                        gl3.glDisable(GL3.GL_STENCIL_TEST);
+//                    }
+
+//Contour
+        gl2.glUseProgram(thinLinesShader.getShader());
+        if (s.getMp().getThickness() > 0) {
+            shaderDrawer.drawThinShape(s, pieces, noFill);
+        }
+
+//Fill
+        gl2.glUseProgram(fillShader.getShader());
+
+//                    zFightingParameter += zFightingStep;
+        shaderDrawer.drawFill(s, pieces);
+//                    shaderDrawer.drawFillSlowButWorking(s, pieces);
+        gl3.glDisable(GL.GL_STENCIL_TEST);
+    }
+
     private void loadModelMatrixIntoShaders() {
         FloatBuffer modMat = FloatBuffer.allocate(16);
         gl2.glGetFloatv(GL2.GL_MODELVIEW_MATRIX, modMat);
@@ -285,7 +291,7 @@ public class JOGLRenderQueue implements GLEventListener {
         gl2.glUniformMatrix4fv(fillShader.getUniformVariable("modelMatrix"), 1, false, modMat);
     }
 
-    private void printModelMatrix() {
+    private void printModelMatrix() {//For debugging purposes
         FloatBuffer modMat = FloatBuffer.allocate(16);
         gl2.glGetFloatv(GL2.GL_MODELVIEW_MATRIX, modMat);
         System.out.println("-----");
@@ -321,7 +327,8 @@ public class JOGLRenderQueue implements GLEventListener {
         if (!camera.perspective) {
             gl2.glOrtho(bb.xmin, bb.xmax, bb.ymin, bb.ymax, -5, 5);
         } else {
-            glu.gluPerspective(camera.fov, (float) bb.getWidth() / bb.getHeight(), .1f, 10.0f);
+            float d = (float) camera.eye.to(camera.look).norm();
+            glu.gluPerspective(camera.fov, (float) bb.getWidth() / bb.getHeight(), .1f, d * 1.5f);
 
             Vec up = camera.getUpVector();//Inefficient way. Improve this.
             glu.gluLookAt(
@@ -376,33 +383,7 @@ public class JOGLRenderQueue implements GLEventListener {
         return new float[]{r, g, b, alpha};
     }
 
-//    private void drawSurface(Surface surface) {
-//
-//        JMColor col = (JMColor) surface.getMp().getFillColor();
-//        if (col.getAlpha() > 0) {//Draw the surface fill then
-//            gl.glPushAttrib(GL2.GL_ENABLE_BIT);
-//            gl.glColor4d(col.r, col.g, col.b, col.getAlpha());
-//            for (Face f : surface.faces) {
-//                gl.glBegin(GL2.GL_POLYGON);
-//                for (Point p : f.points) {
-//                    gl.glVertex3d(p.v.x, p.v.y, p.v.z);
-//                }
-//                gl.glEnd();
-//            }
-//
-//            gl.glPopAttrib();
-//        }
-//
-//        gl.glPushAttrib(GL2.GL_ENABLE_BIT);
-//        processDrawingStyle(surface);
-//        for (Face f : surface.faces) {
-//            gl.glBegin(GL2.GL_LINE_LOOP);
-//            for (Point p : f.points) {
-//                gl.glVertex3d(p.v.x, p.v.y, p.v.z);
-//            }
-//            gl.glEnd();
-//        }
-//
-//        gl.glPopAttrib();
-//    }
+    private void drawSurface(Surface s) {
+
+    }
 }

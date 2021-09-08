@@ -38,7 +38,7 @@ float toZValue(vec4 vertex)
 	// EndPrimitive();
 // }
 // }
-void generateCap(vec2 p,vec2 n0,float zValue,float th, int numPoints) {
+void generateCapOld(vec2 p,vec2 n0,float zValue,float th, int numPoints) {
 
 float delta=3.141592653/numPoints;//Step angle
 mat2 rot=mat2(cos(delta),-sin(delta),sin(delta),cos(delta));
@@ -53,8 +53,26 @@ for (int i=0;i<numPoints;i++) {
 	EmitVertex();
 	EndPrimitive();
 	}
+	}
+	
+//Generate a rounded cap at point p
+//Between (normalized) vectors n0 and n1, with given zValue, thickness and number of points to use
+void generateCap(vec2 p,vec2 n0,vec2 n1,float zValue,float th, int numPoints) {
+float angle=acos(dot(n0,n1));
 
-
+float delta=angle/numPoints;//Step angle
+mat2 rot=mat2(cos(delta),-sin(delta),sin(delta),cos(delta));
+vec2 n=n0;
+for (int i=0;i<numPoints;i++) {
+	gl_Position=vec4(p/Viewport,zValue,1.0);
+	EmitVertex();
+	gl_Position=vec4((p+n*th)/Viewport,zValue,1.0);
+	EmitVertex();
+	n=rot*n;
+	gl_Position=vec4((p+n*th)/Viewport,zValue,1.0);
+	EmitVertex();
+	EndPrimitive();
+	}
 	}
 
 void main(void)
@@ -89,25 +107,42 @@ void main(void)
 
 	float th=Thickness*.6666;//Manually chosen constant to (more or less) match JavaFX thickness
 	vec2 v0=normalize(points[2]-points[1]);
+	vec2 n0=vec2(v0.y,-v0.x);
 
-	vec2 n0=vec2(v0.y,-v0.x)*th;
+	vec2 v2;
+	vec2 n2;
+	if (length(points[2]-points[3])==0) {
+	n2=n0;
+	}
+	else {
+	v2=normalize(points[3]-points[2]);
+	n2=vec2(v2.y,-v2.x);//Normal unit vector from p2 to p3
+	}
+	float thSegment=th;
+	gl_Position = vec4( (points[1]-n0*thSegment) / Viewport, zValues[1], 1.0 );
+	EmitVertex();
+	gl_Position = vec4( (points[1]+n0*thSegment) / Viewport, zValues[1], 1.0 );
+	EmitVertex();
 
-	gl_Position = vec4( (points[1]-n0) / Viewport, zValues[1], 1.0 );
-	EmitVertex();
-	gl_Position = vec4( (points[1]+n0) / Viewport, zValues[1], 1.0 );
+	gl_Position = vec4((points[2]-n0*thSegment) / Viewport, zValues[1], 1.0 );
 	EmitVertex();
 
-	gl_Position = vec4((points[2]-n0) / Viewport, zValues[1], 1.0 );
+	gl_Position = vec4( (points[2]+n0*thSegment) / Viewport, zValues[1], 1.0 );
 	EmitVertex();
-
-	gl_Position = vec4( (points[2]+n0) / Viewport, zValues[1], 1.0 );
-	EmitVertex();
-	EndPrimitive();
+	EndPrimitive(); 	
 
     //Rounded butt, if thickness>1
     if (th>1) {
-		generateCap(points[1],n0,zValues[1],th*3,13);
-		generateCap(points[2],-n0,zValues[2],th*3,13);
+	
+		if (length(points[1]-points[0])<.1) {
+		// vec2 v1=normalize(points[1]-points[0]);
+		// vec2 n1=vec2(v1.y,-v1.x);//Normal unit vector from p0 to p1
+		generateCap(points[1],n0,-n0,zValues[1],th,10);
+		}
+		float dp=dot(n2,n0);
+		
+		generateCap(points[2],-n0,n0,zValues[2],th,10);
+			// generateCap(points[2],n2,n0,zValues[2],th,10);
     }
 }
 

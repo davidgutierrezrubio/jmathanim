@@ -53,6 +53,9 @@ public class Point extends MathObject {
 	public enum DotSyle {
 		CIRCLE, CROSS, PLUS
 	}
+        public enum ShadingStyle {
+            NO_SHADING,FLAT,SMOOTH,PHONG,GOURAUD 
+        }
 
 	/**
 	 * Static method. Returns a new point at (0,0), with default style

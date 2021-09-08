@@ -17,21 +17,23 @@
  */
 package com.jmathanim.mathobjects.surface;
 
-import com.jmathanim.mathobjects.Shape;
-import java.util.ArrayList;
-
 /**
  *
  * @author David Gutierrez Rubio davidgutierrezrubio@gmail.com
  */
-public class Face {
-    public final ArrayList<HalfEdge> faceHalfEdges;
-    
-    public Face() {
-     faceHalfEdges=new ArrayList<>();
+public class HalfEdge {
+    public int toVertex=-1;
+    public int face=-1;
+    public int thisEdge=-1;
+    public int oppositeEdge=-1;
+    public int nextEdge=-1;
+
+    public HalfEdge(int toVertex,int face,int oppositeEdge, int nextEdge) {
+        this.toVertex=toVertex;
+        this.face=face;
+        this.oppositeEdge=oppositeEdge;
+        this.nextEdge=nextEdge;
     }
+
     
-    public Face(ArrayList<HalfEdge> faceHalfEdges) {
-        this.faceHalfEdges = faceHalfEdges;
-    }
 }

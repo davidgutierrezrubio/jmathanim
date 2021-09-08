@@ -317,12 +317,12 @@ public class ShaderDrawer {
                 if (n > 0) {
                     r = piece.get(n - 1).v;
                 } else {
-                    r = p.minus(d);
+                    r = p.copy();
                 }
                 if (n < piece.size() - 2) {
                     t = piece.get(n + 2).v;
                 } else {
-                    t = q.add(d);
+                    t = q.copy();
                 }
                 if (n == piece.size() - 2) {
                     if (piece.get(n + 1).isEquivalentTo(piece.get(0), .000001)) {

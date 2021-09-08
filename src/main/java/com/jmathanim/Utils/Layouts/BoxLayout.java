@@ -70,7 +70,7 @@ public class BoxLayout extends AbstractBoxLayout {
 		computeDirections(direction);
 	}
 
-	private BoxLayout(int rowSize, Direction direction, double inRowGap, double inColGap) {
+	public BoxLayout(int rowSize, Direction direction, double inRowGap, double inColGap) {
 		this(null, rowSize, direction, inRowGap, inColGap);
 	}
 
