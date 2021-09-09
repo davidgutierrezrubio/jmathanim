@@ -229,6 +229,25 @@ public class UsefulLambdas {
     }
 
     /**
+     * Restrict the animations to start and end at determinate points. For
+     * example values of .25 and .5 will play the animation with the same
+     * runtime, starting at 25% of animation and ending at 50%.
+     *
+     * @param a Start time of animation (from 0 to 1)
+     * @param b End time of animation (from 0 to 1)
+     * @return The lambda function
+     */
+    public static DoubleUnaryOperator restrictTo(double a, double b) {
+        return new DoubleUnaryOperator() {
+            @Override
+            public double applyAsDouble(double t) {
+
+                return t * (b - a) + a;
+            }
+        };
+    }
+
+    /**
      * Reverse function. An animation with this lambda will play backwards in
      * time. Mostly used for composing with other lambdas.
      *

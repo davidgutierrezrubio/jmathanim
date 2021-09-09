@@ -72,6 +72,7 @@ public class AnimationGroup extends AnimationWithEffects {
      */
     public AnimationGroup(Animation... animations) {
         super(0);
+        this.lambda=null;
         this.animations = new ArrayList<>();
         this.animations.addAll(Arrays.asList(animations));
 
