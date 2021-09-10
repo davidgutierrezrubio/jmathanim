@@ -715,4 +715,69 @@ The animation of the candies allocating in the band is done with a single `setLa
 
 You can see a video of the animation [here](https://imgur.com/a/aVj0oXL)
 
+## Concentric circles that appear and disappear
+
+This animation show how using the MathObjectGroup class can achieve interesting effects easily.
+
+```java
+int numberSmallSquares = 24;//24 squares in each circle
+int numberConcentricCircles = 15;//15 concentric circles
+
+//This is the side lentgh of a regular polygon
+//circunscribed in a unit circle
+double scaleSmallCircle = 2 * Math.tan(PI / numberSmallSquares);
+
+//Creates a base shape (a square, that can be changed)
+//and put it to the right of the point (1,0)
+Shape baseShape = Shape.square().scale(scaleSmallCircle);
+baseShape.stackTo(Point.at(1, 0), Anchor.Type.RIGHT);
+
+//Colors to alternate in base shape
+JMColor col1 = JMColor.parse("#512D6D");
+JMColor col2 = JMColor.parse("#F8485E");
+
+//Each concentric circle is a MathObjectGroup
+MathObjectGroup[] circles = new MathObjectGroup[numberConcentricCircles];
+
+//Create the first MathObjectGroup, the outer circle
+double delta = 2 * PI / numberSmallSquares;
+circles[0] = new MathObjectGroup();
+boolean useFirstColor = false;
+for (int n = 0; n < numberSmallSquares; n++) {
+    MathObject smallCircle = baseShape.copy().fillColor(useFirstColor ? col1 : col2);
+    smallCircle.rotate(Point.origin(), delta * n);
+    circles[0].add(smallCircle);
+    useFirstColor = !useFirstColor;
+}
+//Create the next MathObjectGroups recursively, scaling appropiately
+double scale = 2d;
+for (int k = 1; k < circles.length; k++) {
+    circles[k] = circles[k - 1].copy().scale(scale / circles[k - 1].getWidth());
+    scale *= scale / circles[k - 1].getWidth();
+}
+
+//Add everything to the scene. If you add an array, each element of this array
+//will be added to the scene
+add(circles);
+camera.adjustToAllObjects();
+
+//Time to create animations, each one a rotation with alternating direction
+AnimationGroup ag = AnimationGroup.make();
+boolean reverse = false;
+for (int k = 0; k < circles.length; k++) {
+    ag.add(Commands.rotate(1, Point.origin(), delta * (reverse ? -1 : 1), circles[k]));
+    reverse = !reverse;
+}
+
+ag.setLambda(t -> t);//Linear movement
+playAnimation(ag);//Play...
+waitSeconds(1);//Wait...
+playAnimation(ag);//Play again...
+waitSeconds(1);//Wait...and done!
+```
+
+Here is a GIF from the movie generated:
+
+![OpticalIllusion](OpticalIllusion.gif)
+
 [home](https://davidgutierrezrubio.github.io/jmathanim/) [back](../index.html)
