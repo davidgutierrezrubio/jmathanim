@@ -725,11 +725,11 @@ int numberConcentricCircles = 15;//15 concentric circles
 
 //This is the side lentgh of a regular polygon
 //circunscribed in a unit circle
-double scaleSmallCircle = 2 * Math.tan(PI / numberSmallSquares);
+double scaleSmallSquare = 2 * Math.tan(PI / numberSmallSquares);
 
 //Creates a base shape (a square, that can be changed)
 //and put it to the right of the point (1,0)
-Shape baseShape = Shape.square().scale(scaleSmallCircle);
+Shape baseShape = Shape.square().scale(scaleSmallSquare);
 baseShape.stackTo(Point.at(1, 0), Anchor.Type.RIGHT);
 
 //Colors to alternate in base shape
@@ -744,9 +744,9 @@ double delta = 2 * PI / numberSmallSquares;
 circles[0] = new MathObjectGroup();
 boolean useFirstColor = false;
 for (int n = 0; n < numberSmallSquares; n++) {
-    MathObject smallCircle = baseShape.copy().fillColor(useFirstColor ? col1 : col2);
-    smallCircle.rotate(Point.origin(), delta * n);
-    circles[0].add(smallCircle);
+    MathObject smallSquare = baseShape.copy().fillColor(useFirstColor ? col1 : col2);
+    smallSquare.rotate(Point.origin(), delta * n);
+    circles[0].add(smallSquare);
     useFirstColor = !useFirstColor;
 }
 //Create the next MathObjectGroups recursively, scaling appropiately
