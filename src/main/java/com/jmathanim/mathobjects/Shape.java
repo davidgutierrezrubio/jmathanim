@@ -75,6 +75,10 @@ public class Shape extends MathObject {
         return jmpath;
     }
 
+    public Point getPointAt(double t) {
+        return jmpath.getJMPointAt(t).p;
+    }
+    
     protected final void computeVerticesFromPath() {
         vertices.clear();
         for (JMPathPoint p : jmpath.jmPathPoints) {
