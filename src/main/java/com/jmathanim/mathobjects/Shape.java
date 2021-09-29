@@ -75,6 +75,11 @@ public class Shape extends MathObject {
         return jmpath;
     }
 
+   /**
+    * Returns a new Point object lying in the Shape, at the given position
+    * @param t Position parameter, from 0 (beginning) to 1 (end)
+    * @return a new Point object at the specified position of the shape.
+    */
     public Point getPointAt(double t) {
         return jmpath.getJMPointAt(t).p;
     }
