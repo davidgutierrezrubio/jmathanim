@@ -18,7 +18,6 @@
 package com.jmathanim.mathobjects;
 
 import com.jmathanim.Renderers.Renderer;
-import com.jmathanim.Styling.JMColor;
 import com.jmathanim.Styling.MODrawPropertiesArray;
 import com.jmathanim.Styling.PaintStyle;
 import com.jmathanim.Styling.Stylable;
@@ -177,13 +176,6 @@ public class MultiShapeObject extends MathObject implements Iterable<Shape> {
 	}
 
 	@Override
-	public void registerChildrenToBeUpdated(JMathAnimScene scene) {
-		for (Shape o : shapes) {
-			o.registerChildrenToBeUpdated(scene);
-		}
-	}
-
-	@Override
 	public void update(JMathAnimScene scene) {
 		// No need to update as the shapes are already added to the scene
 	}
@@ -203,13 +195,6 @@ public class MultiShapeObject extends MathObject implements Iterable<Shape> {
 		getMp().saveState();
 		for (Shape o : shapes) {
 			o.saveState();
-		}
-	}
-
-	@Override
-	public void unregisterChildrenToBeUpdated(JMathAnimScene scene) {
-		for (Shape o : shapes) {
-			o.unregisterChildrenToBeUpdated(scene);
 		}
 	}
 

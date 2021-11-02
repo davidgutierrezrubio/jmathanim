@@ -19,17 +19,13 @@ package com.jmathanim.Renderers.JOGLRenderer;
 
 import com.jmathanim.Utils.ResourceLoader;
 import com.jogamp.opengl.GL2;
-import com.jogamp.opengl.GL2ES2;
 import com.jogamp.opengl.GL3;
-import com.jogamp.opengl.GL3ES3;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.net.URL;
-import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
-import java.nio.charset.StandardCharsets;
 
 /**
  *

@@ -18,7 +18,6 @@
 package com.jmathanim.Animations;
 
 import com.jmathanim.Cameras.Camera;
-import com.jmathanim.Styling.JMColor;
 import com.jmathanim.Styling.PaintStyle;
 import com.jmathanim.Utils.Anchor;
 import com.jmathanim.Utils.Rect;

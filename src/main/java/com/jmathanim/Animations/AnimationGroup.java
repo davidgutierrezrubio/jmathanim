@@ -19,10 +19,8 @@ package com.jmathanim.Animations;
 
 import com.jmathanim.Utils.UsefulLambdas;
 import com.jmathanim.jmathanim.JMathAnimScene;
-import com.jmathanim.mathobjects.MathObject;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.function.DoubleUnaryOperator;
 
 /**

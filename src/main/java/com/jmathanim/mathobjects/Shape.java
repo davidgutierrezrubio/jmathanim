@@ -152,13 +152,6 @@ public class Shape extends MathObject {
         return label + ":" + jmpath.toString();
     }
 
-    @Override
-    public void registerChildrenToBeUpdated(JMathAnimScene scene) {
-    }
-
-    @Override
-    public void unregisterChildrenToBeUpdated(JMathAnimScene scene) {
-    }
 
     @Override
     public void restoreState() {

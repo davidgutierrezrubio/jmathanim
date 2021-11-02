@@ -18,7 +18,6 @@
 package com.jmathanim.mathobjects;
 
 import com.jmathanim.Renderers.FXRenderer.JavaFXRenderer;
-import com.jmathanim.Renderers.Renderer;
 import com.jmathanim.Utils.AffineJTransform;
 import com.jmathanim.Utils.JMathAnimConfig;
 import com.jmathanim.Utils.Rect;
@@ -100,13 +99,6 @@ public class JMImage extends AbstractJMImage {
 		return (T) this;
 	}
 
-	@Override
-	public void registerChildrenToBeUpdated(JMathAnimScene scene) {
-	}
-
-	@Override
-	public void unregisterChildrenToBeUpdated(JMathAnimScene scene) {
-	}
 
 	public String getFilename() {
 		return filename;

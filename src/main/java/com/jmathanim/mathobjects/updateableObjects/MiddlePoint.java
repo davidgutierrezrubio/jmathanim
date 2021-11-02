@@ -67,10 +67,4 @@ public class MiddlePoint extends Point {
 		return Math.max(p1.getUpdateLevel(), p2.getUpdateLevel()) + 1;
 	}
 
-	@Override
-	public void registerChildrenToBeUpdated(JMathAnimScene scene) {
-		scene.registerUpdateable(p1);
-		scene.registerUpdateable(p2);
-	}
-
 }

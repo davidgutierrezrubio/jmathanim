@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2021 David Gutierrez Rubio davidgutierrezrubio@gmail.com
+ * Copyright (C) 2021 David
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -15,22 +15,21 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-package com.jmathanim.mathobjects.surface;
-
-import java.util.ArrayList;
+package com.jmathanim.Utils;
 
 /**
  *
- * @author David Gutierrez Rubio davidgutierrezrubio@gmail.com
+ * @author David
  */
-public class Face {
-    public final ArrayList<HalfEdge> faceHalfEdges;
-    
-    public Face() {
-     faceHalfEdges=new ArrayList<>();
+public class EmptyRect extends Rect{
+
+    public EmptyRect() {
+        super(0, 0, 0, 0);
+    }
+
+    @Override
+    public boolean isEmpty() {
+        return true;
     }
     
-    public Face(ArrayList<HalfEdge> faceHalfEdges) {
-        this.faceHalfEdges = faceHalfEdges;
-    }
 }

@@ -188,13 +188,6 @@ public class JMPathPoint extends MathObject implements Updateable, Stateable {
         return p.getBoundingBox();
     }
 
-    @Override
-    public void registerChildrenToBeUpdated(JMathAnimScene scene) {
-    }
-
-    @Override
-    public void unregisterChildrenToBeUpdated(JMathAnimScene scene) {
-    }
 
     @Override
     public void draw(JMathAnimScene scene, Renderer r) {

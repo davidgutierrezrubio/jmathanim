@@ -22,6 +22,7 @@ import com.jmathanim.Styling.MODrawPropertiesArray;
 import com.jmathanim.Styling.Stylable;
 import com.jmathanim.Utils.AffineJTransform;
 import com.jmathanim.Utils.Anchor;
+import com.jmathanim.Utils.EmptyRect;
 import com.jmathanim.Utils.Layouts.GroupLayout;
 import com.jmathanim.Utils.Rect;
 import com.jmathanim.jmathanim.JMathAnimScene;
@@ -186,7 +187,7 @@ public class MathObjectGroup extends MathObject implements Iterable<MathObject> 
     public Rect getBoundingBox() {
         //If group is empty, returns an empty rect
         if (objects.isEmpty()) {
-            return new Rect(Double.MAX_VALUE, Double.MAX_VALUE, Double.MIN_VALUE, Double.MIN_VALUE);
+            return new EmptyRect();
         }
 
         Rect bbox = objects.get(0).getBoundingBox();
@@ -207,13 +208,6 @@ public class MathObjectGroup extends MathObject implements Iterable<MathObject> 
     @Override
     public Iterator<MathObject> iterator() {
         return objects.iterator();
-    }
-
-    @Override
-    public void registerChildrenToBeUpdated(JMathAnimScene scene) {
-        for (MathObject obj : objects) {
-            obj.registerChildrenToBeUpdated(scene);
-        }
     }
 
     @Override
@@ -390,13 +384,6 @@ public class MathObjectGroup extends MathObject implements Iterable<MathObject> 
      */
     public MathObject[] toArray() {
         return objects.toArray(new MathObject[objects.size()]);
-    }
-
-    @Override
-    public void unregisterChildrenToBeUpdated(JMathAnimScene scene) {
-        for (MathObject obj : objects) {
-            obj.unregisterChildrenToBeUpdated(scene);
-        }
     }
 
     @Override

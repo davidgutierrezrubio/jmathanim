@@ -308,57 +308,6 @@ public class Axes extends MathObject {
     }
 
     @Override
-    public void registerChildrenToBeUpdated(JMathAnimScene scene) {
-    }
-
-//    @Override
-//    public <T extends MathObject> T style(String name) {
-//        super.style(name);
-//        applyMPToSubobjects();
-//        return (T) this;
-//    }
-//
-//    @Override
-//    public <T extends MathObject> T layer(int layer) {
-//        super.layer(layer);
-//        applyMPToSubobjects();
-//        return (T) this;
-//    }
-//
-//    @Override
-//    public <T extends MathObject> T drawAlpha(double alpha) {
-//        super.drawAlpha(alpha);
-//        applyMPToSubobjects();
-//        return (T) this;
-//    }
-//
-//    @Override
-//    public <T extends MathObject> T fillColor(JMColor fc) {
-//        super.fillColor(fc);
-//        applyMPToSubobjects();
-//        return (T) this;
-//    }
-//
-//    @Override
-//    public <T extends MathObject> T drawColor(JMColor dc) {
-//        super.drawColor(dc);
-//        applyMPToSubobjects();
-//        return (T) this;
-//    }
-//    private void applyMPToSubobjects() {
-//        xAxis.getMp().copyFrom(getMp());
-//        yAxis.getMp().copyFrom(getMp());
-//        for (TickAxes s : xticksBase) {
-//            s.legend.getMp().copyFrom(getMp());
-//            s.tick.getMp().copyFrom(getMp());
-//        }
-//        for (TickAxes s : yticksBase) {
-//            s.legend.getMp().copyFrom(getMp());
-//            s.tick.getMp().copyFrom(getMp());
-//        }
-//
-//    }
-    @Override
     public <T extends MathObject> T thickness(double newThickness) {
         xAxis.thickness(newThickness);
         yAxis.thickness(newThickness);
@@ -369,10 +318,6 @@ public class Axes extends MathObject {
             s.tick.thickness(newThickness);
         }
         return (T) this;
-    }
-
-    @Override
-    public void unregisterChildrenToBeUpdated(JMathAnimScene scene) {
     }
 
     @Override

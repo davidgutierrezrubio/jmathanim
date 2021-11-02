@@ -18,7 +18,6 @@
 package com.jmathanim.mathobjects;
 
 import com.jmathanim.Styling.JMColor;
-import com.jmathanim.Utils.Anchor;
 import com.jmathanim.Utils.JMathAnimConfig;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import java.io.BufferedReader;

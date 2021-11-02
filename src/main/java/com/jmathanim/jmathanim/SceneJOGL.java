@@ -17,11 +17,8 @@
  */
 package com.jmathanim.jmathanim;
 
-import com.jmathanim.Cameras.Camera;
 import com.jmathanim.Cameras.Camera3D;
 import com.jmathanim.Renderers.JOGLRenderer.JOGLRenderer;
-import com.jmathanim.Renderers.FXRenderer.JavaFXRenderer;
-import com.jmathanim.Utils.JMathAnimConfig;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 

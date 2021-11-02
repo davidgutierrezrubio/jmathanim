@@ -319,11 +319,11 @@ public abstract class MathObject implements Drawable, Updateable, Stateable, Box
         fillAlpha(t);
     }
 
-    public void registerChildrenToBeUpdated(JMathAnimScene scene) {
-    }
-
-    public void unregisterChildrenToBeUpdated(JMathAnimScene scene) {
-    }
+//    public void registerChildrenToBeUpdated(JMathAnimScene scene) {
+//    }
+//
+//    public void unregisterChildrenToBeUpdated(JMathAnimScene scene) {
+//    }
 
     @Override
     public void saveState() {
@@ -901,4 +901,9 @@ public abstract class MathObject implements Drawable, Updateable, Stateable, Box
         return (T) this;// By default does nothing
     }
 
+    
+    public void addToSceneHook(JMathAnimScene scene) {
+        
+    }
+    
 }

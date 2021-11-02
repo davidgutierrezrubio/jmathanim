@@ -330,16 +330,6 @@ public class Point extends MathObject {
 	}
 
 	@Override
-	public void registerChildrenToBeUpdated(JMathAnimScene scene) {
-		// Nothing to do here
-	}
-
-	@Override
-	public void unregisterChildrenToBeUpdated(JMathAnimScene scene) {
-		// Nothing to do here
-	}
-
-	@Override
 	public void saveState() {
 		super.saveState();
 		this.v.saveState();

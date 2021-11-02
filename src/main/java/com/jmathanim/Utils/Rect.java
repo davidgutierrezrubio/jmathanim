@@ -438,7 +438,8 @@ public class Rect implements Stateable, Boxable {// TODO: Adjust this to 3D coor
     }
 
     /**
-     * Return the smallest rect that contains this rect rotated the given angle (2D version)
+     * Return the smallest rect that contains this rect rotated the given angle
+     * (2D version)
      *
      * @param rotateAngle Rotation angle, in radians
      * @return A new Rect, the smallest containing the rotated rect.
@@ -514,5 +515,35 @@ public class Rect implements Stateable, Boxable {// TODO: Adjust this to 3D coor
     @Override
     public boolean isEmpty() {
         return false;
+    }
+
+    /**
+     * Return the specified boundary point given by an anchor
+     *
+     * @param anchor A value from Enum type Anchor.Type
+     * @return The specified boundary point
+     */
+    public Point getFromAnchor(Anchor.Type anchor) {
+        switch (anchor) {
+            case UPPER:
+                return getUpper();
+            case LOWER:
+                return getLower();
+            case LEFT:
+                return getLeft();
+            case RIGHT:
+                return getRight();
+            case UL:
+                return getUL();
+            case UR:
+                return getUR();
+            case DL:
+                return getDL();
+            case DR:
+                return getDR();
+            case CENTER:
+                return getCenter();
+        }
+        return null;//Unknow case, return null
     }
 }

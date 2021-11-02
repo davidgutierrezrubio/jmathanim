@@ -21,26 +21,17 @@ import com.jmathanim.Styling.JMColor;
 import com.jmathanim.Styling.JMLinearGradient;
 import com.jmathanim.Styling.JMRadialGradient;
 import com.jmathanim.Styling.PaintStyle;
-import com.jmathanim.Styling.Stylable;
 import com.jmathanim.Utils.Vec;
-import com.jmathanim.mathobjects.JMPathPoint;
 import com.jmathanim.mathobjects.Point;
 import com.jmathanim.mathobjects.Shape;
 import com.jogamp.common.nio.Buffers;
 import com.jogamp.opengl.GL;
 import com.jogamp.opengl.GL2;
-import com.jogamp.opengl.GL2ES2;
 import com.jogamp.opengl.GL3;
 import com.jogamp.opengl.GL3ES3;
 import com.jogamp.opengl.fixedfunc.GLMatrixFunc;
-import com.jogamp.opengl.glu.GLU;
-import com.jogamp.opengl.glu.GLUtessellator;
-import com.jogamp.opengl.glu.gl2.GLUgl2;
-import java.nio.ByteBuffer;
-import java.nio.DoubleBuffer;
 import java.nio.FloatBuffer;
 import java.util.ArrayList;
-import jogamp.opengl.glu.tessellator.GLUtessellatorImpl;
 
 /**
  * This class send appropiate VAO buffers to shaders

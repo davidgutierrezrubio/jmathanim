@@ -399,18 +399,6 @@ public class Arrow2D extends MathObject {
 		return r;
 	}
 
-	@Override
-	public void registerChildrenToBeUpdated(JMathAnimScene scene) {
-		scene.registerUpdateable(body);
-		scene.registerUpdateable(head1);
-	}
-
-	@Override
-	public void unregisterChildrenToBeUpdated(JMathAnimScene scene) {
-		scene.unregisterUpdateable(body);
-		scene.unregisterUpdateable(head1);
-	}
-
 	public double getScaleArrowHead1() {
 		return scaleFactorHead1;
 	}

@@ -283,7 +283,7 @@ public abstract class JMathAnimScene {
                     } else {
                         sceneObjects.add(obj);
                         registerUpdateable(obj);
-                        obj.registerChildrenToBeUpdated(this);
+                        obj.addToSceneHook(this);
                     }
                 }
             }

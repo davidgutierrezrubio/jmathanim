@@ -17,7 +17,6 @@
  */
 package com.jmathanim.Styling;
 
-import com.jmathanim.Utils.Anchor;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.mathobjects.Point;
 import javafx.scene.shape.StrokeLineCap;
