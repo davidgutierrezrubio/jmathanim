@@ -69,6 +69,7 @@ public class Transform extends AnimationWithEffects {
      */
     public Transform(double runTime, MathObject ob1, MathObject ob2) {
         super(runTime);
+        setDebugName("Transform");
         mobjTransformed = ob1;
         mobjDestiny = ob2;
         transformMethod = null;

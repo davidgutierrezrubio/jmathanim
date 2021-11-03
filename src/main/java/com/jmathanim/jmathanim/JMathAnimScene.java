@@ -420,9 +420,13 @@ public abstract class JMathAnimScene {
                     anim.setStatus(Animation.Status.NOT_INITIALIZED);
                 }
                 anim.initialize(this);// Perform needed steps immediately before playing
+                
+                if (!"".equals(anim.getDebugName())){
+                    JMathAnimScene.logger.info("Begin animation: "+ anim.getDebugName());
+                }
+                
                 if (animationIsDisabled) {
                     anim.setT(1);
-//                    anim.finishAnimation();
                 }
             }
         }

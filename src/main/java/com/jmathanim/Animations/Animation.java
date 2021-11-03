@@ -54,6 +54,8 @@ public abstract class Animation {
         FINISHED
     }
 
+    private String debugName;
+
     private Status status;
     /**
      * Default run time for animations, 1 second
@@ -92,6 +94,22 @@ public abstract class Animation {
 
     protected Boolean shouldAddObjectsToScene;
     protected Boolean shouldInterpolateStyles;
+
+    /**
+     * Creates an empty animation, with specified run time.This constructor
+     * should be called only from implementing subclasses.
+     *
+     * @param runTime Duration of animation, in seconds
+     */
+    protected Animation(double runTime) {
+        this.debugName = "";
+        this.status = Status.NOT_INITIALIZED;
+        this.runTime = runTime;
+        this.useObjectState = true;
+        this.shouldAddObjectsToScene = true;
+        this.shouldInterpolateStyles = true;
+        lambda = UsefulLambdas.smooth(.9d);
+    }
 
     /**
      * Returns the interpolate styles flag. This flag controls whether the
@@ -164,21 +182,6 @@ public abstract class Animation {
 //    public Animation() {
 //        this(DEFAULT_TIME);
 //    }
-    /**
-     * Creates an empty animation, with specified run time.This constructor
-     * should be called only from implementing subclasses.
-     *
-     * @param runTime Duration of animation, in seconds
-     */
-    public Animation(double runTime) {
-        this.status = Status.NOT_INITIALIZED;
-        this.runTime = runTime;
-        this.useObjectState = true;
-        this.shouldAddObjectsToScene = true;
-        this.shouldInterpolateStyles = true;
-        lambda = UsefulLambdas.smooth(.9d);
-    }
-
     /**
      * Sets the frames per second. This value is automatically set by the
      * initialize method
@@ -417,4 +420,25 @@ public abstract class Animation {
             anim.setAddObjectsToScene(this.isShouldAddObjectsToScene());
         }
     }
+
+    /**
+     * .
+     * Returns the debug message. Used to show info when running
+     *
+     * @return A String with the debug message
+     */
+    public String getDebugName() {
+        return debugName;
+    }
+
+    /**
+     * Sets the debug message. This message will be logged at INFO level when
+     * animation starts executing
+     *
+     * @param debugName Debug message
+     */
+    public void setDebugName(String debugName) {
+        this.debugName = debugName;
+    }
+
 }

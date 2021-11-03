@@ -68,6 +68,7 @@ public class ShowCreation extends Animation {
 	 */
 	public ShowCreation(double runtime, MathObject mobj) {
 		super(runtime);
+                setDebugName("showCreation");
 		this.mobj = mobj;
 
 		// If the object is a constructible one, get its visible object to animate

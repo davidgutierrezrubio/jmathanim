@@ -62,6 +62,7 @@ public class FlipTransform extends AnimationWithEffects {
      */
     public FlipTransform(double runTime, FlipType flipType, MathObject objOrig, MathObject objDst) {
         super(runTime);
+        setDebugName("FlipTransform");
         this.flipType = flipType;
         this.objDst = objDst;
         this.objOrig = objOrig;
