@@ -513,6 +513,7 @@ public abstract class MathObject implements Drawable, Updateable, Stateable, Box
     public <T extends MathObject> T setAbsoluteSize(Point p) {
         this.absoluteAnchorPoint = p;
         absoluteAnchorType = Type.BY_POINT;
+        absoluteSize=true;
         return (T) this;
 
     }
@@ -728,6 +729,7 @@ public abstract class MathObject implements Drawable, Updateable, Stateable, Box
     public <T extends MathObject> T setAbsoluteSize(Type anchorType) {
         absoluteSize = true;
         absoluteAnchorType = anchorType;
+        absoluteSize=true;
         return (T) this;
     }
 

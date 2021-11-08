@@ -60,8 +60,7 @@ public class LaTeXMathObject extends SVGMathObject {
             t.setLaTeX(text);
         }
 
-        if (t.shapes.size() > 0)
-        {
+        if (t.shapes.size() > 0) {
             t.center();
         }
         return t;
@@ -154,9 +153,9 @@ public class LaTeXMathObject extends SVGMathObject {
         // TODO: Add necessary packages here (UTF8?)
         // How to avoid having to write 2 backslashs??
         String beginDocument = "\\documentclass[preview]{standalone}\n" + "\\usepackage{xcolor}\n"
-                + "\\usepackage{amssymb}"  
-                + "\\usepackage{amsmath}" + 
-                "\\begin{document}\n";
+                + "\\usepackage{amssymb}"
+                + "\\usepackage{amsmath}"
+                + "\\begin{document}\n";
 
         String endDocument = "\\end{document}";
 
@@ -230,11 +229,12 @@ public class LaTeXMathObject extends SVGMathObject {
     @Override
     public LaTeXMathObject copy() {
         LaTeXMathObject resul = new LaTeXMathObject();
+        resul.getMp().copyFrom(getMp());
         for (Shape sh : shapes) {
             final Shape copy = sh.copy();
             resul.add(copy);
         }
-        resul.getMp().copyFrom(getMp());
+
         resul.absoluteSize = this.absoluteSize;
         return resul;
     }

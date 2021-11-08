@@ -101,7 +101,7 @@ public class MultiShapeObject extends MathObject implements Iterable<Shape> {
 	@Override
 	public MultiShapeObject copy() {
 		MultiShapeObject resul = new MultiShapeObject();
-                resul.getMp().copyFrom(getMp());
+//                resul.getMp().copyFrom(getMp());
 		for (Shape sh : shapes) {
 			final Shape copy = sh.copy();
 			resul.add(copy);
