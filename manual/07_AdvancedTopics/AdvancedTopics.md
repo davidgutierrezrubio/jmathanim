@@ -83,7 +83,7 @@ Generates the following animation:
 
 JMathAnim has some built-in updaters that maybe useful:
 
-## Camera always ajusted to objects
+## Camera always adjusted to objects
 
 With the `CameraAlwaysAdjusting`  updater, you can force the camera to show all objects in the scene. The camera will zoom out when needed, but not zoom in. Admits 3 parameters: the camera (currently there is only one), and the horizontal and vertical gaps. For example:
 
