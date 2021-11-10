@@ -61,6 +61,7 @@ This library uses the following 3rd party libraries:
 * [JavaFX](https://openjfx.io/) For the graphics part.
 * [Xuggler](http://www.xuggle.com/xuggler/) For creating videos.
 * [Logback Project](http://logback.qos.ch/) For logging purposes.
+* Also, you will need a working LaTeX distribution accessible from your path to generate texts and formula. 
 
 # License
 This project is licensed under the GNU v3 license (https://www.gnu.org/licenses/gpl-3.0.html)
