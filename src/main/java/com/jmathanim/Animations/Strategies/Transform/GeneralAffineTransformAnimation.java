@@ -21,6 +21,7 @@ import com.jmathanim.Animations.AnimationGroup;
 import com.jmathanim.Animations.AnimationWithEffects;
 import com.jmathanim.Animations.Commands;
 import com.jmathanim.jmathanim.JMathAnimScene;
+import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.Point;
 import com.jmathanim.mathobjects.Shape;
 
@@ -28,7 +29,7 @@ import com.jmathanim.mathobjects.Shape;
  *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
-public class GeneralAffineTransformAnimation extends AnimationWithEffects {
+public class GeneralAffineTransformAnimation extends TransformStrategy {
 
     private AnimationWithEffects affine;
 
@@ -53,8 +54,8 @@ public class GeneralAffineTransformAnimation extends AnimationWithEffects {
         Point d = this.mobjDestiny.getPoint(0);
         Point e = this.mobjDestiny.getPoint(1);
         Point f = this.mobjDestiny.getPoint(2);
-        
-        anim=new AnimationGroup();
+
+        anim = new AnimationGroup();
         affine = Commands.affineTransform(runTime, a, b, c, d, e, f, this.mobjTransformed);
         affine.setUseObjectState(this.isUseObjectState());
         anim.add(affine);
@@ -64,7 +65,7 @@ public class GeneralAffineTransformAnimation extends AnimationWithEffects {
         this.copyAnimationParametersTo(anim);
         this.copyEffectParametersTo(affine);
         affine.prepareJumpPath(this.mobjTransformed.getCenter(), this.mobjDestiny.getCenter(), this.mobjTransformed);
-        
+
         anim.initialize(scene);
     }
 
@@ -82,6 +83,11 @@ public class GeneralAffineTransformAnimation extends AnimationWithEffects {
     public void finishAnimation() {
         super.finishAnimation();
         anim.finishAnimation();
+    }
+
+    @Override
+    public MathObject getIntermediateTransformedObject() {
+        return mobjTransformed;
     }
 
 }

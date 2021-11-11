@@ -21,6 +21,7 @@ import com.jmathanim.Animations.AnimationWithEffects;
 import com.jmathanim.Animations.Commands;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.Arrow2D;
+import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.Point;
 
 /**
@@ -28,7 +29,7 @@ import com.jmathanim.mathobjects.Point;
  *
  * @author David Gutierrez Rubio davidgutierrezrubio@gmail.com
  */
-public class ArrowTransform extends AnimationWithEffects {
+public class ArrowTransform extends TransformStrategy {
 
     Arrow2D arOrig, arDst;
     AnimationWithEffects anim;
@@ -68,6 +69,11 @@ public class ArrowTransform extends AnimationWithEffects {
         super.finishAnimation();
         removeObjectsToscene(arOrig);
         addObjectsToscene(arDst);
+    }
+
+    @Override
+    public MathObject getIntermediateTransformedObject() {
+        return arOrig;
     }
 
 }
