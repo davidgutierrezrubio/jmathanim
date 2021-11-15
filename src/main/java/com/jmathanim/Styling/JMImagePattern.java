@@ -25,18 +25,29 @@ import javafx.scene.paint.Paint;
 
 /**
  * Creates a new image pattern
+ *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
 public class JMImagePattern extends PaintStyle {
 
     JMImage img;
 
+    /**
+     * Creates a new image pattern to be used as draw or fill style.
+     *
+     * @param str File name of image. By default, files will be searched at
+     * local resources/images folder unless used the modifier "!" to specify an
+     * absolute path.
+     */
     public JMImagePattern(String str) {
         super();
-            img=new JMImage(str);
+        img = new JMImage(str);
     }
-
-    
+  /**
+     * Creates a new image pattern to be used as draw or fill style.
+     *
+     * @param img a JMImage to be used as pattern
+     */
     public JMImagePattern(JMImage img) {
         super();
         this.img = img.copy();
@@ -49,7 +60,7 @@ public class JMImagePattern extends PaintStyle {
 
     @Override
     public Paint getFXPaint(JavaFXRenderer r, Camera cam) {
-        return new ImagePattern(img.getImage(),0,0,img.getWidth(),img.getHeight(),true);
+        return new ImagePattern(img.getImage(), 0, 0, img.getWidth(), img.getHeight(), true);
 //        return new ImagePattern(img);
     }
 
@@ -58,7 +69,7 @@ public class JMImagePattern extends PaintStyle {
         return this;//Can't interpolate an image yet
     }
 
-    public JMImagePattern  setPatternHeight(double h) {
+    public JMImagePattern setPatternHeight(double h) {
         img.setHeight(h);
         return this;
     }
@@ -68,7 +79,4 @@ public class JMImagePattern extends PaintStyle {
         return this;
     }
 
-    
-    
-    
 }

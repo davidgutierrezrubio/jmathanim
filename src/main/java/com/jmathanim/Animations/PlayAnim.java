@@ -350,7 +350,7 @@ public class PlayAnim {
         for (MathObject obj : objs) {
             r = Rect.union(r, obj.getBoundingBox());
         }
-        scene.playAnimation(Commands.rotate(runTime, r.getCenter(), angle, objs));
+        scene.playAnimation(Commands.rotate(runTime, null, angle, objs));
     }
 
     /**

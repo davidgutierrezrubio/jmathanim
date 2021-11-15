@@ -139,13 +139,13 @@ public class Commands {
         return resul;
     }
 
-    public static Animation rotate(double runtime, double ang, MathObject... objects) {
+    public static AnimationWithEffects rotate(double runtime, double ang, MathObject... objects) {
         return rotate(runtime, null, ang, objects);
 
     }
 
-    public static Animation rotate(double runtime, Point c, double ang, MathObject... objects) {
-        Animation resul = new Animation(runtime) {
+    public static AnimationWithEffects rotate(double runtime, Point c, double ang, MathObject... objects) {
+        AnimationWithEffects resul = new AnimationWithEffects(runtime) {
             double angle = ang;
             Point rotationCenter = null;
             MathObject[] mathObjects = objects;
@@ -170,7 +170,9 @@ public class Commands {
                     } else {
                         obj.rotate(rotationCenter, angle * lt);
                     }
+                    this.applyAnimationEffects(lt, obj);
                 }
+
             }
 
             @Override
@@ -337,7 +339,7 @@ public class Commands {
      * @param objects Objects to animate (varargs)
      * @return Animation to run with null null null null null null null null
      * null null null null null null null null null null null null null null
-     * null null     {@link JMathAnimScene#playAnimation(com.jmathanim.Animations.Animation...)
+     * null null null     {@link JMathAnimScene#playAnimation(com.jmathanim.Animations.Animation...)
 	 *         playAnimation} method
      */
     public static AnimationWithEffects reflection(double runtime, Point A, Point B, MathObject... objects) {
@@ -390,7 +392,7 @@ public class Commands {
      * @param objects Objects to animate (varargs)
      * @return Animation to run with null null null null null null null null
      * null null null null null null null null null null null null null null
-     * null null     {@link JMathAnimScene#playAnimation(com.jmathanim.Animations.Animation...)
+     * null null null     {@link JMathAnimScene#playAnimation(com.jmathanim.Animations.Animation...)
 	 *         playAnimation} method
      */
     public static AnimationWithEffects reflectionByAxis(double runtime, Point a, Point b, MathObject... objects) {
@@ -470,7 +472,7 @@ public class Commands {
      * @param objects Objects to animate (varargs)
      * @return Animation to run with null null null null null null null null
      * null null null null null null null null null null null null null null
-     * null null     {@link JMathAnimScene#playAnimation(com.jmathanim.Animations.Animation...)
+     * null null null     {@link JMathAnimScene#playAnimation(com.jmathanim.Animations.Animation...)
 	 *         playAnimation} method
      */
     public static Animation setMP(double runtime, MODrawProperties mp, MathObject... objects) {
@@ -513,7 +515,7 @@ public class Commands {
      *
      * @return Animation to run with null null null null null null null null
      * null null null null null null null null null null null null null null
-     * null null     {@link JMathAnimScene#playAnimation(com.jmathanim.Animations.Animation...)
+     * null null null     {@link JMathAnimScene#playAnimation(com.jmathanim.Animations.Animation...)
 	 *         playAnimation} method
      */
     public static Animation setStyle(double runtime, String styleName, MathObject... objects) {
@@ -531,7 +533,7 @@ public class Commands {
      * @param rectToZoom Area to zoom
      * @return Animation to run with null null null null null null null null
      * null null null null null null null null null null null null null null
-     * null null     {@link JMathAnimScene#playAnimation(com.jmathanim.Animations.Animation...)
+     * null null null     {@link JMathAnimScene#playAnimation(com.jmathanim.Animations.Animation...)
 	 *         playAnimation} method
      */
     public static Animation cameraZoomToRect(double runtime, Camera camera, Rect rectToZoom) {
@@ -584,7 +586,7 @@ public class Commands {
      *
      * @return Animation to run with null null null null null null null null
      * null null null null null null null null null null null null null null
-     * null null     {@link JMathAnimScene#playAnimation(com.jmathanim.Animations.Animation...)
+     * null null null     {@link JMathAnimScene#playAnimation(com.jmathanim.Animations.Animation...)
 	 *         playAnimation} method
      */
     public static Animation cameraShift(double runtime, Camera camera, Vec shiftVector) {
@@ -638,7 +640,7 @@ public class Commands {
      * @param objects Objects to animate (varargs)
      * @return Animation to run with null null null null null null null null
      * null null null null null null null null null null null null null null
-     * null null     {@link JMathAnimScene#playAnimation(com.jmathanim.Animations.Animation...)
+     * null null null     {@link JMathAnimScene#playAnimation(com.jmathanim.Animations.Animation...)
 	 *         playAnimation} method
      */
     public static Animation shrinkOut(double runtime, MathObject... objects) {
@@ -655,7 +657,7 @@ public class Commands {
      * @param objects Objects to animate (varargs)
      * @return Animation to run with null null null null null null null null
      * null null null null null null null null null null null null null null
-     * null null     {@link JMathAnimScene#playAnimation(com.jmathanim.Animations.Animation...)
+     * null null null     {@link JMathAnimScene#playAnimation(com.jmathanim.Animations.Animation...)
 	 *         playAnimation} method
      */
     public static Animation shrinkOut(double runtime, double angle, MathObject... objects) {
@@ -701,7 +703,7 @@ public class Commands {
      * @return Animation to run with
      * @param objects Objects to animate (varargs) null null null null null null
      * null null null null null null null null null null null null null null
-     * null null null null     {@link JMathAnimScene#playAnimation(com.jmathanim.Animations.Animation...)
+     * null null null null null     {@link JMathAnimScene#playAnimation(com.jmathanim.Animations.Animation...)
 	 *                playAnimation} method
      */
     public static Animation growIn(double runtime, MathObject... objects) {
@@ -718,7 +720,7 @@ public class Commands {
      * @param objects Objects to animate (varargs)
      * @return Animation to run with null null null null null null null null
      * null null null null null null null null null null null null null null
-     * null null     {@link JMathAnimScene#playAnimation(com.jmathanim.Animations.Animation...)
+     * null null null     {@link JMathAnimScene#playAnimation(com.jmathanim.Animations.Animation...)
 	 *         playAnimation} method
      */
     public static Animation growIn(double runtime, double angle, MathObject... objects) {
@@ -766,7 +768,7 @@ public class Commands {
      * @param objects Objects to animate (varargs)
      * @return Animation to run with null null null null null null null null
      * null null null null null null null null null null null null null null
-     * null null     {@link JMathAnimScene#playAnimation(com.jmathanim.Animations.Animation...)
+     * null null null     {@link JMathAnimScene#playAnimation(com.jmathanim.Animations.Animation...)
 	 *         playAnimation} method
      */
     public static Animation fadeIn(double runtime, MathObject... objects) {
@@ -814,7 +816,7 @@ public class Commands {
      * @param objects Object to animate
      * @return Animation to run with null null null null null null null null
      * null null null null null null null null null null null null null null
-     * null null     {@link JMathAnimScene#playAnimation(com.jmathanim.Animations.Animation...)
+     * null null null     {@link JMathAnimScene#playAnimation(com.jmathanim.Animations.Animation...)
 	 *         playAnimation} method
      */
     public static Animation fadeOut(double runtime, MathObject... objects) {
@@ -862,7 +864,7 @@ public class Commands {
      * @param group MathObjectGroup instance to apply the layout
      * @return Animation to run with null null null null null null null null
      * null null null null null null null null null null null null null null
-     * null null     {@link JMathAnimScene#playAnimation(com.jmathanim.Animations.Animation...)
+     * null null null     {@link JMathAnimScene#playAnimation(com.jmathanim.Animations.Animation...)
 	 *         playAnimation} method
      */
     public static ShiftAnimation setLayout(double runtime, MathObject corner, MathObjectGroup.Layout layout, double gap,
@@ -902,7 +904,7 @@ public class Commands {
      * @param group MathObjectGroup instance to apply the layout
      * @return Animation to run with null null null null null null null null
      * null null null null null null null null null null null null null null
-     * null null     {@link JMathAnimScene#playAnimation(com.jmathanim.Animations.Animation...)
+     * null null null     {@link JMathAnimScene#playAnimation(com.jmathanim.Animations.Animation...)
 	 *         playAnimation} method
      */
     public static ShiftAnimation setLayout(double runtime, GroupLayout layout, MathObjectGroup group) {
@@ -940,7 +942,7 @@ public class Commands {
      * @param objects MathObjects to apply the animation (varargs)
      * @return Animation to run with null null null null null null null null
      * null null null null null null null null null null null null null null
-     * null null     {@link JMathAnimScene#playAnimation(com.jmathanim.Animations.Animation...)
+     * null null null     {@link JMathAnimScene#playAnimation(com.jmathanim.Animations.Animation...)
 	 *         playAnimation} method
      */
     public static Animation changeFillAlpha(double runTime, MathObject... objects) {
@@ -1110,7 +1112,7 @@ public class Commands {
             }
 
         };
-        resul.setDebugName("align for "+mathobjects.length+" object(s)");
+        resul.setDebugName("align for " + mathobjects.length + " object(s)");
         return resul;
     }
 
@@ -1141,7 +1143,7 @@ public class Commands {
                 }
             }
         };
-        resul.setDebugName("stackTo for "+mathobjects.length+" object(s)");
+        resul.setDebugName("stackTo for " + mathobjects.length + " object(s)");
         return resul;
     }
 
