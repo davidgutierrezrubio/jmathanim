@@ -116,7 +116,7 @@ public class MathObjectGroup extends MathObject implements Iterable<MathObject> 
 
     public MathObjectGroup add(MathObject... objs) {
         for (MathObject obj : objs) {
-            objects.add(obj);
+            add(obj);
         }
         return this;
     }

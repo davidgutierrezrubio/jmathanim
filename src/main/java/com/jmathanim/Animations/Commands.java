@@ -139,13 +139,13 @@ public class Commands {
         return resul;
     }
 
-    public static Animation rotate(double runtime, double ang, MathObject... objects) {
+    public static AnimationWithEffects rotate(double runtime, double ang, MathObject... objects) {
         return rotate(runtime, null, ang, objects);
 
     }
 
-    public static Animation rotate(double runtime, Point c, double ang, MathObject... objects) {
-        Animation resul = new Animation(runtime) {
+    public static AnimationWithEffects rotate(double runtime, Point c, double ang, MathObject... objects) {
+        AnimationWithEffects resul = new AnimationWithEffects(runtime) {
             double angle = ang;
             Point rotationCenter = null;
             MathObject[] mathObjects = objects;
@@ -170,6 +170,7 @@ public class Commands {
                     } else {
                         obj.rotate(rotationCenter, angle * lt);
                     }
+                    applyAnimationEffects(lt, obj);
                 }
             }
 
@@ -769,8 +770,8 @@ public class Commands {
      * null null     {@link JMathAnimScene#playAnimation(com.jmathanim.Animations.Animation...)
 	 *         playAnimation} method
      */
-    public static Animation fadeIn(double runtime, MathObject... objects) {
-        Animation anim = new Animation(runtime) {
+    public static AnimationWithEffects fadeIn(double runtime, MathObject... objects) {
+        AnimationWithEffects anim = new AnimationWithEffects(runtime) {
             MathObject[] mathObjects = objects;
 
             @Override
@@ -791,6 +792,7 @@ public class Commands {
                 for (MathObject obj : mathObjects) {
                     obj.multDrawAlpha(lt);
                     obj.multFillAlpha(lt);
+                    applyAnimationEffects(lt, obj);
                 }
             }
 
@@ -817,8 +819,8 @@ public class Commands {
      * null null     {@link JMathAnimScene#playAnimation(com.jmathanim.Animations.Animation...)
 	 *         playAnimation} method
      */
-    public static Animation fadeOut(double runtime, MathObject... objects) {
-        Animation anim = new Animation(runtime) {
+    public static AnimationWithEffects fadeOut(double runtime, MathObject... objects) {
+        AnimationWithEffects anim = new AnimationWithEffects(runtime) {
             MathObject[] mathObjects = objects;
 
             @Override
@@ -835,6 +837,7 @@ public class Commands {
                 for (MathObject obj : mathObjects) {
                     obj.multDrawAlpha(1 - lt);
                     obj.multFillAlpha(1 - lt);
+                    applyAnimationEffects(lt, obj);
                 }
             }
 
@@ -943,8 +946,8 @@ public class Commands {
      * null null     {@link JMathAnimScene#playAnimation(com.jmathanim.Animations.Animation...)
 	 *         playAnimation} method
      */
-    public static Animation changeFillAlpha(double runTime, MathObject... objects) {
-        Animation resul = new Animation(runTime) {
+    public static AnimationWithEffects changeFillAlpha(double runTime, MathObject... objects) {
+        AnimationWithEffects resul = new AnimationWithEffects(runTime) {
             MathObject[] mathObjects = objects;
             ArrayList<Double> alphaOrig = new ArrayList<>();
 
@@ -960,10 +963,12 @@ public class Commands {
 
             @Override
             public void doAnim(double t) {
+                double lt = getLambda().applyAsDouble(t);
                 int n = 0;
                 for (MathObject obj : objects) {
-                    double a = alphaOrig.get(n) * lambda.applyAsDouble(t);
+                    double a = alphaOrig.get(n) * lt;
                     obj.getMp().setFillAlpha((float) a);
+                    applyAnimationEffects(lt, obj);
                 }
             }
 
