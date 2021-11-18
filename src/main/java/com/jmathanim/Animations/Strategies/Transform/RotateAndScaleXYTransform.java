@@ -21,6 +21,7 @@ import com.jmathanim.Animations.AnimationWithEffects;
 import com.jmathanim.Styling.MODrawProperties;
 import com.jmathanim.Utils.AffineJTransform;
 import com.jmathanim.jmathanim.JMathAnimScene;
+import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.Point;
 import com.jmathanim.mathobjects.Shape;
 
@@ -28,7 +29,7 @@ import com.jmathanim.mathobjects.Shape;
  *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
-public class RotateAndScaleXYTransform extends AnimationWithEffects {
+public class RotateAndScaleXYTransform extends TransformStrategy {
 
     private final Shape mobjDestiny;
     private final Shape mobjTransformed;
@@ -94,6 +95,11 @@ public class RotateAndScaleXYTransform extends AnimationWithEffects {
     public void finishAnimation() {
         super.finishAnimation();
         doAnim(1);
+    }
+
+    @Override
+    public MathObject getIntermediateTransformedObject() {
+        return mobjTransformed;
     }
 
 }
