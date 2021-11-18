@@ -22,7 +22,6 @@ import com.jmathanim.Animations.Strategies.Transform.Optimizers.SimpleConnectedP
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.JMPath;
 import com.jmathanim.mathobjects.JMPathPoint;
-import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.Point;
 import com.jmathanim.mathobjects.Shape;
 
@@ -31,7 +30,7 @@ import com.jmathanim.mathobjects.Shape;
  *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
-public class PointInterpolationSimpleShapeTransform extends TransformStrategy {
+public class PointInterpolationSimpleShapeTransform extends AnimationWithEffects {
 
     private final Shape mobjTransformed;
     private final Shape mobjDestiny;
@@ -129,11 +128,6 @@ public class PointInterpolationSimpleShapeTransform extends TransformStrategy {
             pathSmall = path2;
         }
         pathSmall.alignPathsToGivenNumberOfElements(pathBig.size());
-    }
-
-    @Override
-    public MathObject getIntermediateTransformedObject() {
-        return mobjTransformed;
     }
 
 }

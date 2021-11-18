@@ -21,7 +21,6 @@ import com.jmathanim.Animations.AnimationGroup;
 import com.jmathanim.Animations.AnimationWithEffects;
 import com.jmathanim.Animations.Commands;
 import com.jmathanim.jmathanim.JMathAnimScene;
-import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.Point;
 import com.jmathanim.mathobjects.Shape;
 
@@ -29,7 +28,7 @@ import com.jmathanim.mathobjects.Shape;
  *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
-public class HomothecyTransformAnimation extends TransformStrategy {
+public class HomothecyTransformAnimation extends AnimationWithEffects {
 
     AnimationGroup anim;
     private AnimationWithEffects homothecy;
@@ -82,11 +81,6 @@ public class HomothecyTransformAnimation extends TransformStrategy {
         super.finishAnimation();
         removeObjectsToscene(this.mobjTransformed);
         anim.finishAnimation();
-    }
-
-    @Override
-    public MathObject getIntermediateTransformedObject() {
-        return mobjTransformed;
     }
 
 }

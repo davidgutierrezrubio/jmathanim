@@ -21,14 +21,13 @@ import com.jmathanim.Animations.Animation;
 import com.jmathanim.Styling.MODrawProperties;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.FunctionGraph;
-import com.jmathanim.mathobjects.MathObject;
 
 /**
  * This function interpolates 2 graph functions.
  *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
-public class FunctionSimpleInterpolateTransform extends TransformStrategy {
+public class FunctionSimpleInterpolateTransform extends Animation {
 
     public final FunctionGraph gfObj, gfDst;
     private final MODrawProperties mpBase;
@@ -62,11 +61,6 @@ public class FunctionSimpleInterpolateTransform extends TransformStrategy {
         super.finishAnimation();
         // Base function is now the new function
         this.gfObj.functionBase = this.gfDst.function;
-    }
-
-    @Override
-    public MathObject getIntermediateTransformedObject() {
-        return gfObj;
     }
 
 }

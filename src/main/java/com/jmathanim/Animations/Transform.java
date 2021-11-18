@@ -26,7 +26,6 @@ import com.jmathanim.Animations.Strategies.Transform.Optimizers.NullOptimization
 import com.jmathanim.Animations.Strategies.Transform.PointInterpolationCanonical;
 import com.jmathanim.Animations.Strategies.Transform.PointInterpolationSimpleShapeTransform;
 import com.jmathanim.Animations.Strategies.Transform.RotateAndScaleXYTransform;
-import com.jmathanim.Animations.Strategies.Transform.TransformStrategy;
 import com.jmathanim.Utils.JMathAnimConfig;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.Arrow2D;
@@ -52,7 +51,7 @@ public class Transform extends AnimationWithEffects {
     private MathObject mobjTransformed;
     private TransformMethod transformMethod;
     private boolean shouldOptimizePathsFirst;
-    private TransformStrategy transformStrategy;
+    private Animation transformStrategy;
 
     public static Transform make(double runTime, MathObject ob1, MathObject ob2) {
         return new Transform(runTime, ob1, ob2);
@@ -271,10 +270,4 @@ public class Transform extends AnimationWithEffects {
         return transformStrategy.processAnimation();
     }
 
-    public MathObject getIntermediateTransformedObject() {
-        if (transformStrategy!=null) {
-            return transformStrategy.getIntermediateTransformedObject();
-        }else
-            return null;
-    }
 }
