@@ -24,6 +24,7 @@ import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.CanonicalJMPath;
 import com.jmathanim.mathobjects.JMPath;
 import com.jmathanim.mathobjects.JMPathPoint;
+import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.Point;
 import com.jmathanim.mathobjects.Shape;
 import java.util.ArrayList;
@@ -34,7 +35,7 @@ import java.util.Comparator;
  *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
-public class PointInterpolationCanonical extends AnimationWithEffects {
+public class PointInterpolationCanonical extends TransformStrategy {
 
     public CanonicalJMPath connectedOrigin, connectedDst, connectedOriginaRawCopy;
     private final ArrayList<Shape> addedAuxiliaryObjectsToScene;
@@ -275,4 +276,9 @@ public class PointInterpolationCanonical extends AnimationWithEffects {
 //
 //        return pathToDivide.canonicalForm();
 //    }
+
+    @Override
+    public MathObject getIntermediateTransformedObject() {
+        return mobjTransformed;
+    }
 }

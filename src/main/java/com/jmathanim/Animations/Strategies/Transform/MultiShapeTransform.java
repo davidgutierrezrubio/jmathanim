@@ -21,6 +21,7 @@ import com.jmathanim.Animations.AnimationGroup;
 import com.jmathanim.Animations.AnimationWithEffects;
 import com.jmathanim.Animations.Transform;
 import com.jmathanim.jmathanim.JMathAnimScene;
+import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.MultiShapeObject;
 
 /**
@@ -33,7 +34,7 @@ import com.jmathanim.mathobjects.MultiShapeObject;
  *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
-public class MultiShapeTransform extends AnimationWithEffects {
+public class MultiShapeTransform extends TransformStrategy {
 
 	private MultiShapeObject dst;
 	private MultiShapeObject tr;
@@ -95,5 +96,10 @@ public class MultiShapeTransform extends AnimationWithEffects {
 		removeObjectsToscene(tr, dst);
 		addObjectsToscene(mobjDestiny);
 	}
+
+    @Override
+    public MathObject getIntermediateTransformedObject() {
+        return null;//TODO: Implement this
+    }
 
 }
