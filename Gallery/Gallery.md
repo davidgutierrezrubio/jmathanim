@@ -768,4 +768,88 @@ Here is a GIF from the movie generated:
 
 ![OpticalIllusion](OpticalIllusion.gif)
 
+## A Truchet tiling
+
+An example showing how to generate a simple MathObjectGroup (a Truchet tile) and use the setLayout method to tile the plane. Add a zoom out and rotate effect to generate the optical illusion that the image is still rotating after the animation is finished.
+
+```java
+@Override
+public void setupSketch() {
+    config.parseFile("#dark.xml");
+    //Change this to "#production.xml" to automatically generate the final HD video
+    config.parseFile("#preview.xml");
+    config.setBackgroundColor(JMColor.parse("#303841"));
+}
+@Override
+public void runSketch() {
+    MathObjectGroup truchets = MathObjectGroup.make();
+    int size = 44;//A square of 44 rows/columns
+    final int numTiles = size * size;
+    final int rowSize = size;
+    for (int k = 0; k < numTiles; k++) {
+        boolean rand = (Math.random() < .5);
+        truchets.add(makeTruchet(rand));
+    }
+    truchets.setLayout(new BoxLayout(rowSize)).center();
+    add(truchets);
+
+    //A radial gradient, centered at origin and relative to screen
+    JMRadialGradient grad = new JMRadialGradient(
+        		truchets.getCenter(),
+        		truchets.getHeight() * .5);
+    grad.setRelativeToShape(false);
+    grad.add(0, JMColor.parse("#EEEEEE"));
+    grad.add(1, JMColor.parse("#FF5722"));
+    //Both draw an fill colors with this gradient
+    truchets.fillColor(grad).drawColor(grad);
+    camera.setMathXY(-1, 1, 0);
+    playAnimation(
+        Commands.rotate(20, 2 * PI, truchets).setLambda(t -> t),
+        Commands.cameraScale(20, camera, 20).setLambda(t -> t)
+    );
+    waitSeconds(5);//In this 5 seconds you will think that the picture is still moving :-)
+}
+
+
+//This method generates a single Truchet tile, rotated or not
+private MathObjectGroup makeTruchet(boolean turn) {
+    MathObjectGroup truchetTile = MathObjectGroup.make();
+    //This commented line added the outline of the tile. You can uncomment it
+    //to see the difference
+    //resul.add(Shape.square().drawColor("violet").fillColor("white"));
+  
+    //A quarter circle, with radius 1
+    Shape a = Shape.arc(.5 * PI);
+    //2 copies, scaled around center of the arc
+    double width = .375;
+    Shape inner = a.copy().scale(Point.origin(), .5 - width * .5, .5 - width * .5);
+    Shape outer = a.copy().scale(Point.origin(), .5 + width * .5, .5 + width * .5);
+    outer.getPath().reverse();//Reverse direction of the outer path
+    
+    //Add all shape points of outer to inner
+    inner.getPath().jmPathPoints.addAll(outer.getPath().jmPathPoints);
+   
+    //These commands will make visible the union
+    //between inner and outer, in a straight line
+    inner.get(0).isCurved = false;
+    inner.get(0).isThisSegmentVisible = true;
+    outer.get(0).isCurved = false;
+    outer.get(0).isThisSegmentVisible = true;
+
+    truchetTile.add(inner, inner.copy().rotate(Point.at(.5, .5), PI));
+    if (turn) {//Rotate the tile 90 degrees
+        truchetTile.rotate(.5 * PI);
+    }
+    return truchetTile;
+}
+```
+
+You can see the generated video [here](https://imgur.com/gallery/Jxpwz02)
+
+
+
+
+
+
+
 [home](https://davidgutierrezrubio.github.io/jmathanim/) [back](../index.html)
