@@ -75,15 +75,16 @@ public class Shape extends MathObject {
         return jmpath;
     }
 
-   /**
-    * Returns a new Point object lying in the Shape, at the given position
-    * @param t Position parameter, from 0 (beginning) to 1 (end)
-    * @return a new Point object at the specified position of the shape.
-    */
+    /**
+     * Returns a new Point object lying in the Shape, at the given position
+     *
+     * @param t Position parameter, from 0 (beginning) to 1 (end)
+     * @return a new Point object at the specified position of the shape.
+     */
     public Point getPointAt(double t) {
         return jmpath.getJMPointAt(t).p;
     }
-    
+
     protected final void computeVerticesFromPath() {
         vertices.clear();
         for (JMPathPoint p : jmpath.jmPathPoints) {
@@ -121,7 +122,7 @@ public class Shape extends MathObject {
         Shape resul = new Shape(jmpath.rawCopy(), copy);
         resul.absoluteSize = this.absoluteSize;
         resul.label = this.label + "_copy";
-        resul.isConvex=this.isConvex;
+        resul.isConvex = this.isConvex;
         return resul;
     }
 
@@ -152,7 +153,6 @@ public class Shape extends MathObject {
         return label + ":" + jmpath.toString();
     }
 
-
     @Override
     public void restoreState() {
         super.restoreState();
@@ -174,16 +174,14 @@ public class Shape extends MathObject {
      *
      * @param <T> Calling Shape subclass
      * @param sh Shape to merge
-     * @param connect If true, the 2 paths will be connected by a straight line
-     * @param reverse If true, reverse the points of the second shape. This is
-     * useful for filling purposes if you are trying to add a "hole" to a shape
+     * @param connectAtoB If true, the end of path A will be connected to the
+     * beginning of path B by a straight line
+     * @param connectBtoA If true, the end of path B will be connected to the
+     * beginning of path A by a straight line
      * @return This object
      */
-    public <T extends Shape> T merge(Shape sh, boolean connect, boolean reverse) {
+    public <T extends Shape> T merge(Shape sh, boolean connectAtoB, boolean connectBtoA) {
         JMPath pa = sh.getPath().copy();
-        if (reverse) {
-            pa.reverse();
-        }
         // If the first path is already a closed one, open it
         // with 2 identical points (old-fashioned style of closing shapes)
         final JMPathPoint jmPoint = jmpath.getJMPoint(0);
@@ -197,7 +195,17 @@ public class Shape extends MathObject {
         if (jmPoint2.isThisSegmentVisible) {
             pa.jmPathPoints.add(jmPoint2.copy());
         }
-        jmPoint2.isThisSegmentVisible = connect;
+        
+        //If connectAtoB, make last
+        jmPoint2.isThisSegmentVisible = connectAtoB;
+        if (connectAtoB) {
+            jmPoint2.isCurved = false;//Connect by a straight line
+        }
+        get(0).isThisSegmentVisible = connectBtoA;
+        if (connectBtoA) {
+            get(0).isCurved = false;//Connect by a straight line
+        }
+
         // Now you can add the points
         jmpath.jmPathPoints.addAll(pa.jmPathPoints);
         return (T) this;
@@ -410,7 +418,7 @@ public class Shape extends MathObject {
     public static Shape annulus(double minRadius, double maxRadius) {
         Shape extCircle = Shape.circle().scale(maxRadius);
         Shape intCircle = Shape.circle().scale(minRadius);
-        Shape obj = extCircle.merge(intCircle, false, true);
+        Shape obj = extCircle.merge(intCircle.reverse(), false, false);
         obj.label = "annulus";
         return obj;
     }
@@ -616,16 +624,26 @@ public class Shape extends MathObject {
 
     /**
      * Gets the normal vector of the shape, asumming the shape is planar.
+     *
      * @return The normal vector
      */
     public Vec getNormalVector() {
         if (size() < 3) {
             return Vec.to(0, 0, 0);
         }
-        Vec v1=get(size()/3).p.to(get(0).p);
-        Vec v2=get(size()/3).p.to(get(size()/2).p);
+        Vec v1 = get(size() / 3).p.to(get(0).p);
+        Vec v2 = get(size() / 3).p.to(get(size() / 2).p);
         return v1.cross(v2);
-        
+    }
+
+    /**
+     * Reverse the points of the path. First point becomes last.
+     *
+     * @return This object
+     */
+    public Shape reverse() {
+        getPath().reverse();
+        return this;
     }
 
 }
