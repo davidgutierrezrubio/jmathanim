@@ -824,17 +824,9 @@ private MathObjectGroup makeTruchet(boolean turn) {
     double width = .375;
     Shape inner = a.copy().scale(Point.origin(), .5 - width * .5, .5 - width * .5);
     Shape outer = a.copy().scale(Point.origin(), .5 + width * .5, .5 + width * .5);
-    outer.getPath().reverse();//Reverse direction of the outer path
     
-    //Add all shape points of outer to inner
-    inner.getPath().jmPathPoints.addAll(outer.getPath().jmPathPoints);
-   
-    //These commands will make visible the union
-    //between inner and outer, in a straight line
-    inner.get(0).isCurved = false;
-    inner.get(0).isThisSegmentVisible = true;
-    outer.get(0).isCurved = false;
-    outer.get(0).isThisSegmentVisible = true;
+    //Merge inner and reversed outer shape, connecting both ends
+    inner.merge(outer.reverse(), true,true);
 
     truchetTile.add(inner, inner.copy().rotate(Point.at(.5, .5), PI));
     if (turn) {//Rotate the tile 90 degrees
