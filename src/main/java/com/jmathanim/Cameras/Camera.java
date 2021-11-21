@@ -22,6 +22,7 @@ import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.MathObject;
+import com.jmathanim.mathobjects.MathObjectGroup;
 
 /**
  * This class converts math coordinates to screen cordinates. Screen coordinates
@@ -30,8 +31,9 @@ import com.jmathanim.mathobjects.MathObject;
  * @author David Gutierrez Rubio davidgutierrezrubio@gmail.com
  */
 public class Camera {
+
     public boolean perspective;
-    
+
     /**
      * Screen width size to be displayed 800x600, 1920x1280, etc.
      */
@@ -60,12 +62,10 @@ public class Camera {
     private final JMathAnimScene scene;
     private double xminB, xmaxB, yminB, ymaxB;// Backup values for saveState()
 
-
     public Camera(JMathAnimScene scene, int screenWidth, int screenHeight) {
         this.screenWidth = screenWidth;
         this.screenHeight = screenHeight;
         this.scene = scene;
-      
 
     }
 
@@ -248,6 +248,40 @@ public class Camera {
     }
 
     /**
+     * Center the camera around the given set of Boxable objects (MathObject or
+     * Rect) and adjusts the zoom so that objects are visible.
+     *
+     * @param objs Boxable objects to compute center, varargs.
+     * @return This camera.
+     */
+    public Camera centerAtObjects(Boxable... objs) {
+        Rect r = objs[0].getBoundingBox();
+        for (Boxable obj : objs) {
+            r = Rect.union(r, obj.getBoundingBox());
+        }
+        if (r != null) {
+            shift(getMathView().getCenter().to(r.getCenter()));
+            adjustToObjects(objs);
+        }
+        return this;
+    }
+
+    /**
+     * Center the camera around all current objects added to scene (including
+     * invisible ones) and adjusts the zoom so that objects are visible.
+     *
+     * @return This camera.
+     */
+    public Camera centerAtAllObjects() {
+        if (!scene.getObjects().isEmpty()) {
+            MathObject[] objs = scene.getObjects().toArray(new MathObject[scene.getObjects().size()]);
+            centerAtObjects(objs);
+        }
+        adjustToAllObjects();
+        return this;
+    }
+
+    /**
      * Zoom the camera so that the specified objects are visible (objects don't
      * need to be added to the scene). The setGaps method can be called before
      * to set the gaps between the view and the objects.
@@ -344,7 +378,5 @@ public class Camera {
         setMathXY(xmin, xmax, ycenter);
         resetValues = new double[]{xmin, xmax, ycenter};
     }
-
-  
 
 }

@@ -30,6 +30,7 @@ import com.jmathanim.mathobjects.JMPathPoint.JMPathPointType;
 import com.jmathanim.mathobjects.updateableObjects.Updateable;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -41,7 +42,7 @@ import java.util.stream.Stream;
  *
  * @author David Gutiérrez davidgutierrezrubio@gmail.com
  */
-public class JMPath implements Updateable, Stateable, Boxable {
+public class JMPath implements Updateable, Stateable, Boxable, Iterable<JMPathPoint> {
 
     static public final int MATHOBJECT = 1; // Arc, line, segment...
     static public final int SVG_PATH = 2; // SVG import, LaTeX object...
@@ -385,24 +386,19 @@ public class JMPath implements Updateable, Stateable, Boxable {
      * Cycle points in path.Point(0) becomes Point(step), Point(1) becomes
      * Point(step+1)... Useful to align paths minimizing distances
      *
-     * @param step
-     * @param direction
+     * @param step Initial gap to apply
+     * @param reverse If true, reverse the path
      */
-    public void cyclePoints(int step, int direction) {
-
-//        if (!isClosed) {
-//            if (direction == -1) {
-//                step = this.size() - 1;
-//            }
-//        }
+    public void cyclePoints(int step, boolean reverse) {
+        distille();
         JMPath tempPath = this.copy();
         jmPathPoints.clear();
+        int direction=(reverse ? -1:1);
 
         for (int n = 0; n < tempPath.size(); n++) {
             JMPathPoint point = tempPath.jmPathPoints.get(direction * n + step);
-            if (direction < 0) // If reverse the path, we must swap control points
+            if (reverse) // If reverse the path, we must swap control points
             {
-
                 double cpTempX = point.cpExit.v.x;
                 double cpTempY = point.cpExit.v.y;
                 double cpTempZ = point.cpExit.v.z;
@@ -410,6 +406,7 @@ public class JMPath implements Updateable, Stateable, Boxable {
                 point.cpEnter.v.x = cpTempX;
                 point.cpEnter.v.y = cpTempY;
                 point.cpEnter.v.z = cpTempZ;
+                point.isCurved=tempPath.jmPathPoints.get(direction * n + step+1).isCurved;
             }
             jmPathPoints.add(point);
         }
@@ -422,12 +419,12 @@ public class JMPath implements Updateable, Stateable, Boxable {
     public void reverse() {
         // TODO: implement this for more general path, using canonical form
         if (getNumberOfConnectedComponents() == 0) {
-            this.cyclePoints(0, -1);
+            this.cyclePoints(0, true);
         }
         if (getNumberOfConnectedComponents() == 1) {
             this.jmPathPoints.get(0).isThisSegmentVisible = true;
             this.jmPathPoints.get(-1).isThisSegmentVisible = false;
-            this.cyclePoints(-1, -1);
+            this.cyclePoints(-1, true);
         }
     }
 
@@ -759,6 +756,15 @@ public class JMPath implements Updateable, Stateable, Boxable {
                 n++;
             }
         }
+        for (int i = 0; i < jmPathPoints.size(); i++) {
+            JMPathPoint p=jmPathPoints.get(i);
+            JMPathPoint q=jmPathPoints.get(i-1);
+            if (!p.isCurved) {
+                p.cpEnter.copyFrom(p.p);
+                q.cpExit.copyFrom(q.p);
+            }
+        }
+
     }
 
     /**
@@ -978,5 +984,10 @@ public class JMPath implements Updateable, Stateable, Boxable {
             return 7;
         }
         return 5;
+    }
+
+    @Override
+    public Iterator<JMPathPoint> iterator() {
+        return jmPathPoints.iterator();
     }
 }

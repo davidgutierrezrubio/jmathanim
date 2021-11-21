@@ -43,7 +43,7 @@ public class SimpleConnectedPathsOptimizationStrategy implements OptimizePathsSt
 
 		ArrayList<Double> dists = new ArrayList<>();
 		for (int n = 1; n < pa1c.size(); n++) {
-			pa1c.cyclePoints(1, direction);
+			pa1c.cyclePoints(1, (direction<0));
 			double d = SumDistancesBetweenPaths(pa1c, pa2);
 //            double d = varAnglesBetweenPaths(pa1c, pa2);
 //            double d = varAnglesBetweenPaths(pa1c, pa2)+varDistancesBetweenPaths(pa1c, pa2);
@@ -52,7 +52,7 @@ public class SimpleConnectedPathsOptimizationStrategy implements OptimizePathsSt
 		}
 		int cycleMin = dists.indexOf(Collections.min(dists)) + 1;
 
-		shape1.getPath().cyclePoints(cycleMin, direction);
+		shape1.getPath().cyclePoints(cycleMin, (direction<0));
 	}
 
 	private double SumDistancesBetweenPaths(JMPath pa1, JMPath pa2) {
