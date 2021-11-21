@@ -17,6 +17,8 @@
 
 ## [Mathematical formulas](06_MathFormulas/MathFormulas.md)
 
+## [Dealing with paths](06a_DealingWithPaths/DealingWithPaths.md)
+
 ## [Advanced topics](07_AdvancedTopics/AdvancedTopics.html)
 
 
