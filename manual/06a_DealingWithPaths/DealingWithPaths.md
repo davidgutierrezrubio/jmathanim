@@ -39,7 +39,7 @@ private void addJMPathPointToScene(JMPathPoint p) {
 
 you will obtain the following image for 5 seconds:
 
-<img src="01_Ellipse.png" alt="01_Ellipse" style="zoom:50%;" />
+<img src="01_Ellipse.png" alt="Ellipse with control points" style="zoom:50%;" />
 
 Here we have drawed a `Shape`object with name `ellipse`. The method `ellipse.getPath()`returns the `JMPath`object of `ellipse`, and the method
 
@@ -83,7 +83,7 @@ ellipse.get(1).isThisSegmentVisible=false;
 
 The piece of curve that goes from point 0 to 1 will not be drawed:
 
-<img src="03_pieceInvisible.png" alt="03_pieceInvisible" style="zoom:50%;" />
+<img src="03_pieceInvisible.png" alt="An invisible piece" style="zoom:50%;" />
 
 
 
@@ -104,7 +104,7 @@ ellipse.get(1).isCurved=false;
 ```
 The piece of curve that goes from 0 to 1 is drawed in a straight line:
 
-<img src="03a_pieceStraight.png" alt="03a_pieceStraight" style="zoom:50%;" />
+<img src="03a_pieceStraight.png" alt="A straight piece" style="zoom:50%;" />
 
 You can also make a Bezier curve straight with the code:
 
@@ -120,7 +120,7 @@ You will have the same effect, with the control points altered:
 
 
 
-<img src="03b_pieceStraightOtherWay.png" alt="03b_pieceStraightOtherWay" style="zoom:50%;" />
+<img src="03b_pieceStraightOtherWay.png" alt="A straight piece" style="zoom:50%;" />
 
 
 
@@ -148,7 +148,7 @@ waitSeconds(5);//Smile, you're being screenshoted!
 
 Gives the following image:
 
-<img src="04a_Intersection.png" alt="04a_Intersection" style="zoom:50%;" />
+<img src="04a_Intersection.png" alt="Intersection" style="zoom:50%;" />
 
 JMathAnim uses a private method called `distille()`that get rids of redundant path points, in order to get the simplest result of the operation. However, it is known that in some cases, artifacts may occur, specially when dealing with multiple boolean operations in complex paths, due to the JavaFX algorithm.
 
@@ -185,7 +185,7 @@ waitSeconds(5);//Yes, screenshot!
 
 Will give the following figure:
 
-<img src="05_mergingExample.png" alt="05_mergingExample" style="zoom:50%;" />
+<img src="05_mergingExample.png" alt="Merging paths" style="zoom:50%;" />
 
 
 
