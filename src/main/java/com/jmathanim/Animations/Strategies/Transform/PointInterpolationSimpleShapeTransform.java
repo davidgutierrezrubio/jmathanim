@@ -51,6 +51,8 @@ public class PointInterpolationSimpleShapeTransform extends TransformStrategy {
     @Override
     public void initialize(JMathAnimScene scene) {
         super.initialize(scene);
+        mobjTransformed.getPath().distille();//Clean paths before transform
+        mobjDestiny.getPath().distille();
         if (optimizeStrategy == null) {
             optimizeStrategy = new SimpleConnectedPathsOptimizationStrategy(mobjTransformed, mobjDestiny);
         }

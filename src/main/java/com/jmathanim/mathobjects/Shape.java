@@ -395,7 +395,7 @@ public class Shape extends MathObject {
             x1 = Math.cos(alphaC);
             y1 = Math.sin(alphaC);
             Point p = new Point(x1, y1);
-            Vec v1 = new Vec(-y1, x1);
+            Vec v1 = new Vec(-y1, x1);//This vector is already normalized
 
             v1.multInSite(cte);
             Point cp1 = p.add(v1);

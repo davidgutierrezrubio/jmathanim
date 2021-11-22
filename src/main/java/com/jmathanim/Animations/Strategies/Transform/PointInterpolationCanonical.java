@@ -69,8 +69,8 @@ public class PointInterpolationCanonical extends TransformStrategy {
         // I ensure they have the same number of points
         // and be in connected components form.
         // Remove consecutive hidden vertices, in case.
-        this.mobjTransformed.getPath().removeConsecutiveHiddenVertices();
-        this.mobjDestiny.getPath().removeConsecutiveHiddenVertices();
+        this.mobjTransformed.getPath().distille();
+        this.mobjDestiny.getPath().distille();
         if (optimizeStrategy == null) {
             optimizeStrategy = new DivideOnSensiblePointsStrategy();
 //            optimizeStrategy = new DivideEquallyStrategy();

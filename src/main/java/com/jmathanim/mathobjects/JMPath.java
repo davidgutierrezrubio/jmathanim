@@ -743,12 +743,12 @@ public class JMPath implements Updateable, Stateable, Boxable, Iterable<JMPathPo
         this.removeConsecutiveHiddenVertices();
         double epsilon = .000001;
         int n = 0;
-        while (n < this.size()) {
+        while (n < this.size()-1) {
             JMPathPoint p1 = this.getJMPoint(n);
             JMPathPoint p2 = this.getJMPoint(n + 1);
             if (p1.p.isEquivalentTo(p2.p, epsilon)) {
                 p2.cpEnter.copyFrom(p1.cpEnter);
-                p1.isThisSegmentVisible = true;
+                p2.isThisSegmentVisible = p1.isThisSegmentVisible;
                 p2.isCurved = p1.isCurved;
                 this.jmPathPoints.remove(p1);
                 n = 0;
