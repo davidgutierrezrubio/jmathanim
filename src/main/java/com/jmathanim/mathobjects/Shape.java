@@ -181,33 +181,7 @@ public class Shape extends MathObject {
      * @return This object
      */
     public <T extends Shape> T merge(Shape sh, boolean connectAtoB, boolean connectBtoA) {
-        JMPath pa = sh.getPath().copy();
-        // If the first path is already a closed one, open it
-        // with 2 identical points (old-fashioned style of closing shapes)
-        final JMPathPoint jmPoint = jmpath.jmPathPoints.get(0);
-        if (jmPoint.isThisSegmentVisible) {
-            jmpath.jmPathPoints.add(jmPoint.copy());
-            jmPoint.isThisSegmentVisible = false;
-        }
-
-        // Do the same with the second path
-        final JMPathPoint jmPoint2 = pa.jmPathPoints.get(0);
-        if (jmPoint2.isThisSegmentVisible) {
-            pa.jmPathPoints.add(jmPoint2.copy());
-        }
-        
-        //If connectAtoB, make last
-        jmPoint2.isThisSegmentVisible = connectAtoB;
-        if (connectAtoB) {
-            jmPoint2.isCurved = false;//Connect by a straight line
-        }
-        get(0).isThisSegmentVisible = connectBtoA;
-        if (connectBtoA) {
-            get(0).isCurved = false;//Connect by a straight line
-        }
-
-        // Now you can add the points
-        jmpath.jmPathPoints.addAll(pa.jmPathPoints);
+        getPath().merge(sh.getPath(), connectAtoB, connectBtoA);
         return (T) this;
     }
 
@@ -646,4 +620,10 @@ public class Shape extends MathObject {
         return this;
     }
 
+    public Shape getSubShape(double a, double b) {
+        Shape subShape = new Shape();
+        subShape.getMp().copyFrom(this.getMp());
+        subShape.getPath().jmPathPoints.addAll(getPath().getSubPath(a, b).jmPathPoints);
+        return subShape;
+    }
 }

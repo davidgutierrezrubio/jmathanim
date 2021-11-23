@@ -62,7 +62,9 @@ public class JMPath implements Updateable, Stateable, Boxable, Iterable<JMPathPo
     }
 
     /**
-     * Static constructor. Generates a new JMPath object with the given JMpathPoints
+     * Static constructor. Generates a new JMPath object with the given
+     * JMpathPoints
+     *
      * @param jmps Varargs with jmpathpoints to create the path
      * @return The created JMPath object
      */
@@ -73,8 +75,9 @@ public class JMPath implements Updateable, Stateable, Boxable, Iterable<JMPathPo
     }
 
     /**
-     * Creates a new JMPath with specified points.
-     * All segments will be marked visible and not curved
+     * Creates a new JMPath with specified points. All segments will be marked
+     * visible and not curved
+     *
      * @param points An ArrayList of points to add
      */
     public JMPath(ArrayList<Point> points) {
@@ -106,7 +109,6 @@ public class JMPath implements Updateable, Stateable, Boxable, Iterable<JMPathPo
 //    public Point getControlPoint2(int n) {
 //        return jmPathPoints.get(n).cpEnter;
 //    }
-
     public int size() {
         return jmPathPoints.size();
     }
@@ -406,16 +408,16 @@ public class JMPath implements Updateable, Stateable, Boxable, Iterable<JMPathPo
         distille();
         JMPath tempPath = this.copy();
         jmPathPoints.clear();
-        int direction=(reverse ? -1:1);
+        int direction = (reverse ? -1 : 1);
         final int size = tempPath.size();
 
-        boolean[] curveds=new boolean[size];
-         boolean[] visibles=new boolean[size];
+        boolean[] curveds = new boolean[size];
+        boolean[] visibles = new boolean[size];
         for (int n = 0; n < size; n++) {
-            curveds[n]=tempPath.jmPathPoints.get(n).isCurved;
-            visibles[n]=tempPath.jmPathPoints.get(n).isThisSegmentVisible;
+            curveds[n] = tempPath.jmPathPoints.get(n).isCurved;
+            visibles[n] = tempPath.jmPathPoints.get(n).isThisSegmentVisible;
         }
-        
+
         for (int n = 0; n < size; n++) {
             final int k = direction * n + step;
             JMPathPoint point = tempPath.jmPathPoints.get(k);
@@ -428,8 +430,8 @@ public class JMPath implements Updateable, Stateable, Boxable, Iterable<JMPathPo
                 point.cpEnter.v.x = cpTempX;
                 point.cpEnter.v.y = cpTempY;
                 point.cpEnter.v.z = cpTempZ;
-                point.isCurved=curveds[(k+1+size) % size];
-                point.isThisSegmentVisible=visibles[(k+1+size) % size];
+                point.isCurved = curveds[(k + 1 + size) % size];
+                point.isThisSegmentVisible = visibles[(k + 1 + size) % size];
             }
             jmPathPoints.add(point);
         }
@@ -440,7 +442,7 @@ public class JMPath implements Updateable, Stateable, Boxable, Iterable<JMPathPo
      * Reverse the points of the path
      */
     public void reverse() {
-         this.cyclePoints(-1, true);
+        this.cyclePoints(-1, true);
     }
 
     /**
@@ -758,7 +760,7 @@ public class JMPath implements Updateable, Stateable, Boxable, Iterable<JMPathPo
         this.removeConsecutiveHiddenVertices();
         double epsilon = .000001;
         int n = 0;
-        while (n < this.size()-1) {
+        while (n < this.size() - 1) {
             JMPathPoint p1 = this.jmPathPoints.get(n);
             JMPathPoint p2 = this.jmPathPoints.get(n + 1);
             if (p1.p.isEquivalentTo(p2.p, epsilon)) {
@@ -772,8 +774,8 @@ public class JMPath implements Updateable, Stateable, Boxable, Iterable<JMPathPo
             }
         }
         for (int i = 0; i < jmPathPoints.size(); i++) {
-            JMPathPoint p=jmPathPoints.get(i);
-            JMPathPoint q=jmPathPoints.get(i-1);
+            JMPathPoint p = jmPathPoints.get(i);
+            JMPathPoint q = jmPathPoints.get(i - 1);
             if (!p.isCurved) {
                 p.cpEnter.copyFrom(p.p);
                 q.cpExit.copyFrom(q.p);
@@ -956,6 +958,16 @@ public class JMPath implements Updateable, Stateable, Boxable, Iterable<JMPathPo
         return resul;
     }
 
+    /**
+     * Get the nth-element of the path
+     *
+     * @param index Index of element of path to be retrieved
+     * @return A JMPathPoint with the nth-element of the path
+     */
+    public JMPathPoint get(int index) {
+        return jmPathPoints.get(index);
+    }
+
     private void computeStraightenedPoints(ArrayList<Point> connectedSegments, JMPathPoint p, JMPathPoint q, Camera cam) {
         if (connectedSegments.isEmpty()) {
             connectedSegments.add(p.p);
@@ -1005,4 +1017,118 @@ public class JMPath implements Updateable, Stateable, Boxable, Iterable<JMPathPo
     public Iterator<JMPathPoint> iterator() {
         return jmPathPoints.iterator();
     }
+
+    /**
+     * Returns a subpath of the given path. If beginning is greater than ending,
+     * the path is reversed
+     *
+     * @param a Beginning parameter, from 0 to 1
+     * @param b Ending parameter, from 0 to 1.
+     * @return The subpath
+     */
+    public JMPath getSubPath(double a, double b) {
+
+//        if (a>b) {
+//            JMPath tempPath = this.rawCopy();
+//            tempPath.merge(tempPath.rawCopy(), true, false);
+//            return tempPath.getSubPath(.5 * a, .5 + .5 * b);
+//        }
+        if (a > b) {
+            JMPath tempPath = this.rawCopy();
+            tempPath.reverse();
+            return tempPath.getSubPath(b, a);
+        }
+        JMPath tempPath = this.rawCopy();
+        //Open the path if it is closed
+        final JMPathPoint firstP = tempPath.jmPathPoints.get(0);
+        if (firstP.isThisSegmentVisible) {
+            tempPath.addJMPoint(firstP.copy());
+            firstP.isThisSegmentVisible = false;
+        }
+        int size = tempPath.size();
+
+        JMPathPoint beginning = tempPath.get(0);
+        JMPathPoint ending = tempPath.get(-1);
+
+        int k1 = (int) Math.floor(a * (size - 1));
+        double alpha1 = a * (size - 1) - k1;
+
+        int k2 = (int) Math.floor(b * (size - 1));
+        double alpha2 = b * (size - 1) - k2;
+
+        if (a > 0) {
+            beginning = tempPath.insertPointAt(k1, alpha1);
+            beginning.isThisSegmentVisible = false;
+            if (k1 == k2) {
+                alpha2 = (alpha2 - alpha1) / (1 - alpha1);
+            }
+
+            k2 = k2 + 1;
+        }
+
+        if (b < 1) {
+            ending = tempPath.insertPointAt(k2, alpha2);
+        }
+
+        int nBegin = tempPath.jmPathPoints.indexOf(beginning);
+        int nEnd = tempPath.jmPathPoints.indexOf(ending);
+        JMPath subPath = new JMPath();
+        subPath.jmPathPoints.addAll(tempPath.jmPathPoints.subList(nBegin, nEnd + 1));
+        return subPath;
+    }
+
+    /**
+     * Inserts a new JMPathPoint right after a given one, interpolating
+     * properly.
+     *
+     * @param k The index of the JMPathPoint to insert. New point will be at
+     * location k+1
+     * @param alpha Alpha parameter, between 0 to 1 to interpolate between point
+     * k and point k+1
+     * @return The new point created
+     */
+    public JMPathPoint insertPointAt(int k, double alpha) {
+        JMPathPoint v1 = jmPathPoints.get(k);
+        JMPathPoint v2 = jmPathPoints.get(k + 1);
+        JMPathPoint newPoint = getJMPointBetween(v1, v2, alpha);
+        jmPathPoints.add(k + 1, newPoint);
+        //Adjust the control points of v1 and v2
+        Point E = v1.p.interpolate(v1.cpExit, alpha); // New cpExit of v1
+        Point G = v2.cpEnter.interpolate(v2.p, alpha); // New cpEnter of v2
+        v1.cpExit.copyFrom(E);
+        v2.cpEnter.copyFrom(G);
+        return newPoint;
+    }
+
+    public JMPath merge(JMPath pa2, boolean connectAtoB, boolean connectBtoA) {
+        JMPath pa = pa2.copy();
+        // If the first path is already a closed one, open it
+        // with 2 identical points (old-fashioned style of closing shapes)
+        final JMPathPoint jmPoint = jmPathPoints.get(0);
+        if (jmPoint.isThisSegmentVisible) {
+            jmPathPoints.add(jmPoint.copy());
+            jmPoint.isThisSegmentVisible = false;
+        }
+
+        // Do the same with the second path
+        final JMPathPoint jmPoint2 = pa.jmPathPoints.get(0);
+        if (jmPoint2.isThisSegmentVisible) {
+            pa.jmPathPoints.add(jmPoint2.copy());
+        }
+
+        //If connectAtoB, make last
+        jmPoint2.isThisSegmentVisible = connectAtoB;
+        if (connectAtoB) {
+            jmPoint2.isCurved = false;//Connect by a straight line
+        }
+        get(0).isThisSegmentVisible = connectBtoA;
+        if (connectBtoA) {
+            get(0).isCurved = false;//Connect by a straight line
+        }
+
+        // Now you can add the points
+        jmPathPoints.addAll(pa.jmPathPoints);
+        return this;
+    }
+
 }
