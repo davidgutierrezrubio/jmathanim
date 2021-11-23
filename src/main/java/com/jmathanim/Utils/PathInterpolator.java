@@ -105,14 +105,14 @@ public class PathInterpolator {
 		JMPathPoint jp0, jp1;
 		Vec v;
 		// Compute cp1 and cp2 from first and last points
-		jp0 = path.getJMPoint(0);
+		jp0 = path.jmPathPoints.get(0);
 		if (!jp0.isThisSegmentVisible) {
-			jp1 = path.getJMPoint(1);
+			jp1 = path.jmPathPoints.get(1);
 			v = jp0.p.to(jp1.cpEnter).multInSite(PathInterpolator.DEFAULT_TENSION);
 			jp0.cpExit.copyFrom(jp0.p.add(v));
 
-			jp1 = path.getJMPoint(numPoints - 2);
-			jp0 = path.getJMPoint(numPoints - 1);
+			jp1 = path.jmPathPoints.get(numPoints - 2);
+			jp0 = path.jmPathPoints.get(numPoints - 1);
 			if (jp0.isCurved) {
 				v = jp0.p.to(jp1.cpExit).multInSite(PathInterpolator.DEFAULT_TENSION);
 				jp0.cpEnter.copyFrom(jp0.p.add(v));

@@ -156,7 +156,7 @@ public class FunctionGraph extends Shape {
      */
     protected void generateControlPoints() {
         for (int n = 0; n < xPoints.size(); n++) {
-            JMPathPoint jmp = this.getPath().getJMPoint(n);
+            JMPathPoint jmp = this.get(n);
             double x = jmp.p.v.x;
             if (n < xPoints.size() - 1) {
                 final double deltaX = .3 * (xPoints.get(n + 1) - x);
@@ -224,7 +224,7 @@ public class FunctionGraph extends Shape {
                     x0 = xPoints.get(n);
                 }
                 if (x0 == x) {
-                    return this.getPath().getJMPoint(n);
+                    return this.get(n);
                 }
             }
         }
@@ -282,7 +282,7 @@ public class FunctionGraph extends Shape {
         funcAux.generateControlPoints();
         JMPath areaPath = funcAux.getPath();
         areaPath.addPoint(Point.at(mb, 0), Point.at(ma, 0));
-        areaPath.getJMPoint(0).isThisSegmentVisible = true;
+        areaPath.jmPathPoints.get(0).isThisSegmentVisible = true;
         return new Shape(areaPath);
     }
 

@@ -54,16 +54,29 @@ public class JMPath implements Updateable, Stateable, Boxable, Iterable<JMPathPo
 
     private JMPath pathBackup;
 
+    /**
+     * Creates a new empty JMPath objectF
+     */
     public JMPath() {
         this(new ArrayList<Point>());
     }
 
+    /**
+     * Static constructor. Generates a new JMPath object with the given JMpathPoints
+     * @param jmps Varargs with jmpathpoints to create the path
+     * @return The created JMPath object
+     */
     public static JMPath make(JMPathPoint... jmps) {
         JMPath resul = new JMPath();
         resul.addJMPoint(jmps);
         return resul;
     }
 
+    /**
+     * Creates a new JMPath with specified points.
+     * All segments will be marked visible and not curved
+     * @param points An ArrayList of points to add
+     */
     public JMPath(ArrayList<Point> points) {
         this.jmPathPoints = new CircularArrayList<>();
         this.setPoints(points);
@@ -79,20 +92,20 @@ public class JMPath implements Updateable, Stateable, Boxable, Iterable<JMPathPo
         return resul;
     }
 
-    public final void setPoints(ArrayList<Point> points) {
+    private final void setPoints(ArrayList<Point> points) {
         this.jmPathPoints.clear();
         for (Point p : points) {
             this.jmPathPoints.add(new JMPathPoint(p, true, JMPathPointType.VERTEX));
         }
     }
 
-    public JMPathPoint getJMPoint(int n) {
-        return jmPathPoints.get(n);
-    }
-
-    public Point getControlPoint2(int n) {
-        return jmPathPoints.get(n).cpEnter;
-    }
+//    public JMPathPoint getJMPoint(int n) {
+//        return jmPathPoints.get(n);
+//    }
+//
+//    public Point getControlPoint2(int n) {
+//        return jmPathPoints.get(n).cpEnter;
+//    }
 
     public int size() {
         return jmPathPoints.size();
@@ -263,8 +276,8 @@ public class JMPath implements Updateable, Stateable, Boxable, Iterable<JMPathPo
      * @return The new JMPathPoint generated, and added to the Path
      */
     public JMPathPoint interpolateBetweenTwoPoints(int k, double alpha) {
-        JMPathPoint jmp1 = getJMPoint(k - 1);
-        JMPathPoint jmp2 = getJMPoint(k);
+        JMPathPoint jmp1 = jmPathPoints.get(k - 1);
+        JMPathPoint jmp2 = jmPathPoints.get(k);
         JMPathPoint interpolate;
         if (jmp2.isCurved) {//TODO: Replace this with interpolation method from JMPathPoint
             // De Casteljau's Algorithm:
@@ -321,15 +334,15 @@ public class JMPath implements Updateable, Stateable, Boxable, Iterable<JMPathPo
         final double size = (jmPathPoints.get(0).isThisSegmentVisible ? alpha * size() : alpha * (size() - 1));
         int k = (int) Math.floor(size);
         double t = size - k;
-        JMPathPoint v1 = getJMPoint(k);
-        JMPathPoint v2 = getJMPoint(k + 1);
+        JMPathPoint v1 = jmPathPoints.get(k);
+        JMPathPoint v2 = jmPathPoints.get(k + 1);
         resul = getJMPointBetween(v1, v2, t);
         return resul;
     }
 
     public static JMPathPoint getJMPointBetween(JMPathPoint v1, JMPathPoint v2, double t) {
         JMPathPoint resul;
-        if (true) {//This is buggy. Sometimes the jmpathpoint is curved but marked as not curved!
+        if (true) {//TODO: This is buggy. Sometimes the jmpathpoint is curved but marked as not curved!
 //		if (v1.isCurved) {
             // De Casteljau's Algorithm:
             // https://en.wikipedia.org/wiki/De_Casteljau%27s_algorithm
@@ -394,10 +407,19 @@ public class JMPath implements Updateable, Stateable, Boxable, Iterable<JMPathPo
         JMPath tempPath = this.copy();
         jmPathPoints.clear();
         int direction=(reverse ? -1:1);
+        final int size = tempPath.size();
 
-        for (int n = 0; n < tempPath.size(); n++) {
-            JMPathPoint point = tempPath.jmPathPoints.get(direction * n + step);
-            if (reverse) // If reverse the path, we must swap control points
+        boolean[] curveds=new boolean[size];
+         boolean[] visibles=new boolean[size];
+        for (int n = 0; n < size; n++) {
+            curveds[n]=tempPath.jmPathPoints.get(n).isCurved;
+            visibles[n]=tempPath.jmPathPoints.get(n).isThisSegmentVisible;
+        }
+        
+        for (int n = 0; n < size; n++) {
+            final int k = direction * n + step;
+            JMPathPoint point = tempPath.jmPathPoints.get(k);
+            if (reverse) // If the path is reversed, we must swap control points
             {
                 double cpTempX = point.cpExit.v.x;
                 double cpTempY = point.cpExit.v.y;
@@ -406,7 +428,8 @@ public class JMPath implements Updateable, Stateable, Boxable, Iterable<JMPathPo
                 point.cpEnter.v.x = cpTempX;
                 point.cpEnter.v.y = cpTempY;
                 point.cpEnter.v.z = cpTempZ;
-                point.isCurved=tempPath.jmPathPoints.get(direction * n + step+1).isCurved;
+                point.isCurved=curveds[(k+1+size) % size];
+                point.isThisSegmentVisible=visibles[(k+1+size) % size];
             }
             jmPathPoints.add(point);
         }
@@ -417,15 +440,7 @@ public class JMPath implements Updateable, Stateable, Boxable, Iterable<JMPathPo
      * Reverse the points of the path
      */
     public void reverse() {
-        // TODO: implement this for more general path, using canonical form
-        if (getNumberOfConnectedComponents() == 0) {
-            this.cyclePoints(0, true);
-        }
-        if (getNumberOfConnectedComponents() == 1) {
-            this.jmPathPoints.get(0).isThisSegmentVisible = true;
-            this.jmPathPoints.get(-1).isThisSegmentVisible = false;
-            this.cyclePoints(-1, true);
-        }
+         this.cyclePoints(-1, true);
     }
 
     /**
@@ -672,7 +687,7 @@ public class JMPath implements Updateable, Stateable, Boxable, Iterable<JMPathPo
      * @param k Where to separate path
      */
     public void separate(int k) {
-        JMPathPoint p = getJMPoint(k);
+        JMPathPoint p = jmPathPoints.get(k);
         JMPathPoint pnew = p.copy();
 
         pnew.isThisSegmentVisible = false;
@@ -744,8 +759,8 @@ public class JMPath implements Updateable, Stateable, Boxable, Iterable<JMPathPo
         double epsilon = .000001;
         int n = 0;
         while (n < this.size()-1) {
-            JMPathPoint p1 = this.getJMPoint(n);
-            JMPathPoint p2 = this.getJMPoint(n + 1);
+            JMPathPoint p1 = this.jmPathPoints.get(n);
+            JMPathPoint p2 = this.jmPathPoints.get(n + 1);
             if (p1.p.isEquivalentTo(p2.p, epsilon)) {
                 p2.cpEnter.copyFrom(p1.cpEnter);
                 p2.isThisSegmentVisible = p1.isThisSegmentVisible;
@@ -782,8 +797,8 @@ public class JMPath implements Updateable, Stateable, Boxable, Iterable<JMPathPo
             return false;
         }
         for (int n = 0; n < size(); n++) {
-            JMPathPoint pa1 = getJMPoint(n);
-            JMPathPoint pa2 = obj.getJMPoint(n);
+            JMPathPoint pa1 = jmPathPoints.get(n);
+            JMPathPoint pa2 = obj.jmPathPoints.get(n);
             if (!pa1.isEquivalentTo(pa2, epsilon)) {
                 return false;
             }
@@ -910,8 +925,8 @@ public class JMPath implements Updateable, Stateable, Boxable, Iterable<JMPathPo
 
     public void determineStraightSegments() {
         for (int n = 0; n < size(); n++) {
-            JMPathPoint p1 = getJMPoint(n);
-            JMPathPoint p2 = getJMPoint(n + 1);
+            JMPathPoint p1 = jmPathPoints.get(n);
+            JMPathPoint p2 = jmPathPoints.get(n + 1);
             if ((p1.p.to(p1.cpExit).norm() < .0001) && (p2.p.to(p2.cpEnter).norm() < .0001)) {
                 p2.isCurved = false;
             } else {

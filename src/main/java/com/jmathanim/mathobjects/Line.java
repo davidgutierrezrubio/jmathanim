@@ -115,7 +115,7 @@ public class Line extends Shape implements HasDirection {
 		visiblePiece.getPath().addJMPoint(bp1, bp2);
 		visiblePiece.getMp().copyFrom(this.getMp());
 		getPath().addPoint(p1, p2);
-		getPath().getJMPoint(0).isThisSegmentVisible = false;
+		get(0).isThisSegmentVisible = false;
 		mpArray.add(visiblePiece);
 	}
 

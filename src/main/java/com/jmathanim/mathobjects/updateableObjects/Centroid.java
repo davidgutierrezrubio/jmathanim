@@ -19,43 +19,45 @@ package com.jmathanim.mathobjects.updateableObjects;
 
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
-import com.jmathanim.mathobjects.JMPath;
 import com.jmathanim.mathobjects.JMPathPoint;
 import com.jmathanim.mathobjects.Point;
+import com.jmathanim.mathobjects.Shape;
 
 /**
- * This class represents middle point computed from 2 given ones. This class
+ * This class represents middle point computed from a set of given ones. This class
  * implements the interface updateable, which automatically updates its
- * components.
+ * components. 
+ * This object represents the centroid when a pure polgonal shape is given.
  *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
 public class Centroid extends Point implements Updateable {
 
-	private final JMPath path;
+    private final Shape shape;
 
-	public Centroid(JMPath path) {
-		super();
-		this.path = path;
-	}
+    public Centroid(Shape shape) {
+        super();
+        this.shape = shape;
+    }
 
-	@Override
-	public void update(JMathAnimScene scene) {
-		Vec resul = new Vec(0, 0);
-		for (int n = 0; n < path.size(); n++) {
-			resul.addInSite(path.getJMPoint(n).p.v);
-		}
-		resul.multInSite(1.0d / path.size());
-		this.v.copyFrom(resul);
-	}
+    @Override
+    public void update(JMathAnimScene scene) {
+        Vec resul = new Vec(0, 0);
+        for (int n = 0; n < shape.size(); n++) {
+            resul.addInSite(shape.get(n).p.v);
+        }
+        resul.multInSite(1.0d / shape.size());
+        this.v.copyFrom(resul);
+    }
 
-	@Override
-	public int getUpdateLevel() {
+    @Override
+    public int getUpdateLevel() {
 		int level = -1;
-		for (JMPathPoint p : path.jmPathPoints) {
+		for (JMPathPoint p : shape.getPath()) {
 			level = Math.max(level, p.getUpdateLevel());
 		}
 		return level;
-	}
+//        return shape.getPath().jmPathPoints.stream().max(Integer::compare).get();
+    }
 
 }

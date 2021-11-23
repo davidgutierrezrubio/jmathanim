@@ -89,9 +89,9 @@ public class FXPathUtils {
 		}
 		// //Be sure the last point is connected with the first (if closed)
 		if (resul.jmPathPoints.size() > 0) {
-			if (resul.getJMPoint(0).p.isEquivalentTo(resul.getJMPoint(-1).p, 1.0E-6)) {
-				JMPathPoint fp = resul.getJMPoint(0);
-				JMPathPoint lp = resul.getJMPoint(-1);
+			if (resul.jmPathPoints.get(0).p.isEquivalentTo(resul.jmPathPoints.get(-1).p, 1.0E-6)) {
+				JMPathPoint fp = resul.jmPathPoints.get(0);
+				JMPathPoint lp = resul.jmPathPoints.get(-1);
 				fp.cpEnter.v.x = lp.cpEnter.v.x;
 				fp.cpEnter.v.y = lp.cpEnter.v.y;
 				fp.isThisSegmentVisible = true;
@@ -113,21 +113,21 @@ public class FXPathUtils {
 	 */
 	public static Path createFXPathFromJMPath(JMPath jmpath, Camera camera) {
 		Path path = new Path();
-		Vec p = jmpath.getJMPoint(0).p.v;
+		Vec p = jmpath.jmPathPoints.get(0).p.v;
 		double[] scr = camera.mathToScreen(p.x, p.y);
 		path.getElements().add(new MoveTo(scr[0], scr[1]));
 		for (int n = 1; n < jmpath.size() + 1; n++) {
-			Vec point = jmpath.getJMPoint(n).p.v;
-			Vec cpoint1 = jmpath.getJMPoint(n - 1).cpExit.v;
-			Vec cpoint2 = jmpath.getJMPoint(n).cpEnter.v;
+			Vec point = jmpath.jmPathPoints.get(n).p.v;
+			Vec cpoint1 = jmpath.jmPathPoints.get(n - 1).cpExit.v;
+			Vec cpoint2 = jmpath.jmPathPoints.get(n).cpEnter.v;
 
 			double[] xy, cxy1, cxy2;
 
 			xy = camera.mathToScreenFX(point);
 			cxy1 = camera.mathToScreenFX(cpoint1);
 			cxy2 = camera.mathToScreenFX(cpoint2);
-			if (jmpath.getJMPoint(n).isThisSegmentVisible) {
-				if (jmpath.getJMPoint(n).isCurved) {
+			if (jmpath.jmPathPoints.get(n).isThisSegmentVisible) {
+				if (jmpath.jmPathPoints.get(n).isCurved) {
 					path.getElements().add(new CubicCurveTo(cxy1[0], cxy1[1], cxy2[0], cxy2[1], xy[0], xy[1]));
 				} else {
 					path.getElements().add(new LineTo(xy[0], xy[1]));

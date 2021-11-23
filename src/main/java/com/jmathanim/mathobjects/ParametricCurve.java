@@ -159,7 +159,7 @@ public class ParametricCurve extends Shape {
      */
     private void generateControlPoints() {
         for (int n = 0; n < tPoints.size(); n++) {
-            JMPathPoint jmp = this.getPath().getJMPoint(n);
+            JMPathPoint jmp = get(n);
             double t = tPoints.get(n);
             if (n < tPoints.size() - 1) {
                 final double delta = .3 * (tPoints.get(n + 1) - t);
@@ -241,7 +241,7 @@ public class ParametricCurve extends Shape {
             x0 = tPoints.get(n);
         }
         if (x0 == t) {
-            return this.getPath().getJMPoint(n);
+            return get(n);
         } else {
             tPoints.add(n, t);
             double x = getFunctionValueX(t);

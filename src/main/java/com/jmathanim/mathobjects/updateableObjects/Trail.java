@@ -53,7 +53,7 @@ public class Trail extends Shape {
 	public Trail(MathObject marker) {
 		this.marker = marker;
 		getPath().addPoint(marker.getCenter());
-		getPath().getJMPoint(0).isThisSegmentVisible = false;
+		get(0).isThisSegmentVisible = false;
 	}
 
 	@Override

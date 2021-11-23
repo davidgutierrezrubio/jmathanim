@@ -64,7 +64,7 @@ public class Shape extends MathObject {
     }
 
     public JMPathPoint get(int n) {
-        return jmpath.getJMPoint(n);
+        return jmpath.jmPathPoints.get(n);
     }
 
     public Point getPoint(int n) {
@@ -184,14 +184,14 @@ public class Shape extends MathObject {
         JMPath pa = sh.getPath().copy();
         // If the first path is already a closed one, open it
         // with 2 identical points (old-fashioned style of closing shapes)
-        final JMPathPoint jmPoint = jmpath.getJMPoint(0);
+        final JMPathPoint jmPoint = jmpath.jmPathPoints.get(0);
         if (jmPoint.isThisSegmentVisible) {
             jmpath.jmPathPoints.add(jmPoint.copy());
             jmPoint.isThisSegmentVisible = false;
         }
 
         // Do the same with the second path
-        final JMPathPoint jmPoint2 = pa.getJMPoint(0);
+        final JMPathPoint jmPoint2 = pa.jmPathPoints.get(0);
         if (jmPoint2.isThisSegmentVisible) {
             pa.jmPathPoints.add(jmPoint2.copy());
         }
@@ -369,7 +369,7 @@ public class Shape extends MathObject {
 //        obj.getPath().generateControlPoints();
 //        obj.getPath().jmPathPoints.remove(0);
 //        obj.getPath().jmPathPoints.remove(-1);
-        obj.getPath().getJMPoint(0).isThisSegmentVisible = false;// Open path
+        obj.getPath().jmPathPoints.get(0).isThisSegmentVisible = false;// Open path
 //        obj.get(0).cp1.v.copyFrom(obj.get(0).p.v);
 //        obj.get(-1).cp2.v.copyFrom(obj.get(-1).p.v);
         return obj;

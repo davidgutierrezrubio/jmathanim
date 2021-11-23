@@ -329,7 +329,7 @@ public class Arrow2D extends MathObject {
 			tr.applyTransform(arrowHeadToDraw1);
 
 //            arrowHeadToDraw1.draw(scene.getConfig().getRenderer());
-			JMPathPoint pa = bodyToDraw.getPath().getJMPoint(1);
+			JMPathPoint pa = bodyToDraw.get(1);
 			pa.p.v.copyFrom(arrowHeadToDraw1.get(0).get(anchorPoint1).p.v);
 			arrowHeadToDraw1.drawColor(getMp().getDrawColor());
 			arrowHeadToDraw1.fillColor(getMp().getDrawColor());
@@ -351,7 +351,7 @@ public class Arrow2D extends MathObject {
 			AffineJTransform tr = AffineJTransform.create2DRotationTransform(p1, -Math.PI / 2 + angle);
 			tr.applyTransform(arrowHeadToDraw2);
 
-			JMPathPoint pa = bodyToDraw.getPath().getJMPoint(0);
+			JMPathPoint pa = bodyToDraw.get(0);
 			pa.p.v.copyFrom(arrowHeadToDraw2.get(0).get(anchorPoint2).p.v);
 			arrowHeadToDraw2.drawColor(getMp().getDrawColor());
 			arrowHeadToDraw2.fillColor(getMp().getDrawColor());

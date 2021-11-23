@@ -115,9 +115,9 @@ public class PointInterpolationCanonical extends TransformStrategy {
             JMPath fromPath = connectedOriginaRawCopy.get(numConnected);
             JMPath toPath = connectedDst.get(numConnected);
             for (int n = 0; n < convertedPath.size(); n++) {
-                interPoint = convertedPath.getJMPoint(n);
-                basePoint = fromPath.getJMPoint(n);
-                dstPoint = toPath.getJMPoint(n);
+                interPoint = convertedPath.jmPathPoints.get(n);
+                basePoint = fromPath.jmPathPoints.get(n);
+                dstPoint = toPath.jmPathPoints.get(n);
 
                 // Interpolate point
                 interPoint.p.v.x = (1 - lt) * basePoint.p.v.x + lt * dstPoint.p.v.x;
@@ -238,7 +238,7 @@ public class PointInterpolationCanonical extends TransformStrategy {
                 JMPathPoint jmp = JMPathPoint.curveTo(p.copy());
                 pa.addJMPoint(jmp);
             }
-            pa.getJMPoint(0).isThisSegmentVisible = false;
+            pa.jmPathPoints.get(0).isThisSegmentVisible = false;
             // Add the new path created
             conSmall.add(pa);
         }

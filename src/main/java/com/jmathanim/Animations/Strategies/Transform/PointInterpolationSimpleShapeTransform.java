@@ -74,9 +74,9 @@ public class PointInterpolationSimpleShapeTransform extends TransformStrategy {
         double lt = lambda.applyAsDouble(t);
         JMPathPoint interPoint, basePoint, dstPoint;
         for (int n = 0; n < mobjTransformed.getPath().size(); n++) {
-            interPoint = mobjTransformed.getPath().getJMPoint(n);
-            basePoint = originalShapeBaseCopy.getPath().getJMPoint(n);
-            dstPoint = mobjDestiny.getPath().getJMPoint(n);
+            interPoint = mobjTransformed.get(n);
+            basePoint = originalShapeBaseCopy.get(n);
+            dstPoint = mobjDestiny.get(n);
 
             // Interpolate point
             interPoint.p.v.x = (1 - lt) * basePoint.p.v.x + lt * dstPoint.p.v.x;
@@ -107,8 +107,8 @@ public class PointInterpolationSimpleShapeTransform extends TransformStrategy {
         super.finishAnimation();
 
         for (int n = 0; n < mobjTransformed.getPath().size(); n++) {
-            JMPathPoint p1 = mobjTransformed.getPath().getJMPoint(n);
-            JMPathPoint p2 = mobjDestiny.getPath().getJMPoint(n);
+            JMPathPoint p1 = mobjTransformed.get(n);
+            JMPathPoint p2 = mobjDestiny.get(n);
             p1.type = p2.type;
             p1.isCurved = p2.isCurved;
             p1.isThisSegmentVisible = p2.isThisSegmentVisible;
