@@ -687,4 +687,13 @@ public class PlayAnim {
     public void stackTo(double runtime, MathObject dst, Anchor.Type type, double gap, MathObject... mobjects) {
         scene.playAnimation(Commands.stackTo(runtime, dst, type, gap, mobjects));
     }
+    
+    /**
+     * Plays an animation that hightlights the contour of a
+     * Shape object, with the duration of defaultRunTimeHighlight variable (default 1s)
+     * @param objs MathObjects to animate (varargs)
+     */
+    public void contourHighlight(MathObject...objs) {
+        scene.playAnimation(ContourHighlight.make(defaultRunTimeHighlight, objs));
+    }
 }

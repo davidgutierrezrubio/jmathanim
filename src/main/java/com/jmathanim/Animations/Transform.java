@@ -54,6 +54,17 @@ public class Transform extends AnimationWithEffects {
     private boolean shouldOptimizePathsFirst;
     private TransformStrategy transformStrategy;
 
+    /**
+     * Static constructor. Creates a new Transform animation. Chooses the best
+     * strategy to transform origin into destiny. After the transformation is
+     * done, origin is removed from scene and destiny is added. In most cases,
+     * origin object becomes unusable.
+     *
+     * @param runTime Duration in seconds
+     * @param ob1 Origin object
+     * @param ob2 Destiny object
+     * @return The animation ready to play with playAnim method
+     */
     public static Transform make(double runTime, MathObject ob1, MathObject ob2) {
         return new Transform(runTime, ob1, ob2);
     }
@@ -272,9 +283,10 @@ public class Transform extends AnimationWithEffects {
     }
 
     public MathObject getIntermediateTransformedObject() {
-        if (transformStrategy!=null) {
+        if (transformStrategy != null) {
             return transformStrategy.getIntermediateTransformedObject();
-        }else
+        } else {
             return null;
+        }
     }
 }

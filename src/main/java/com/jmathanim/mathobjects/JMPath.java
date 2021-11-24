@@ -1033,18 +1033,30 @@ public class JMPath implements Updateable, Stateable, Boxable, Iterable<JMPathPo
 //            tempPath.merge(tempPath.rawCopy(), true, false);
 //            return tempPath.getSubPath(.5 * a, .5 + .5 * b);
 //        }
+
+        //If a is greater than b, reverse the path
         if (a > b) {
             JMPath tempPath = this.rawCopy();
             tempPath.reverse();
             return tempPath.getSubPath(b, a);
         }
         JMPath tempPath = this.rawCopy();
+        
+
         //Open the path if it is closed
         final JMPathPoint firstP = tempPath.jmPathPoints.get(0);
         if (firstP.isThisSegmentVisible) {
             tempPath.addJMPoint(firstP.copy());
             firstP.isThisSegmentVisible = false;
         }
+        
+        //Stranges and buggy cases
+        if ((a == 1) && (b == 1)) {
+            JMPath res = JMPath.make();
+            res.addPoint(this.get(0).p.copy(), this.get(0).p.copy());
+            return res;
+        }
+
         int size = tempPath.size();
 
         JMPathPoint beginning = tempPath.get(0);
@@ -1092,6 +1104,7 @@ public class JMPath implements Updateable, Stateable, Boxable, Iterable<JMPathPo
         JMPathPoint v2 = jmPathPoints.get(k + 1);
         JMPathPoint newPoint = getJMPointBetween(v1, v2, alpha);
         jmPathPoints.add(k + 1, newPoint);
+        newPoint.isThisSegmentVisible = v2.isThisSegmentVisible;
         //Adjust the control points of v1 and v2
         Point E = v1.p.interpolate(v1.cpExit, alpha); // New cpExit of v1
         Point G = v2.cpEnter.interpolate(v2.p, alpha); // New cpEnter of v2

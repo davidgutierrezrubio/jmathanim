@@ -623,7 +623,8 @@ public class Shape extends MathObject {
     public Shape getSubShape(double a, double b) {
         Shape subShape = new Shape();
         subShape.getMp().copyFrom(this.getMp());
-        subShape.getPath().jmPathPoints.addAll(getPath().getSubPath(a, b).jmPathPoints);
+        final JMPath subPath = getPath().getSubPath(a, b);
+        subShape.getPath().jmPathPoints.addAll(subPath.jmPathPoints);
         return subShape;
     }
 }
