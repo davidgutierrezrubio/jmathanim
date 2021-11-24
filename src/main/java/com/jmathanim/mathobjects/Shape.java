@@ -123,6 +123,7 @@ public class Shape extends MathObject {
         resul.absoluteSize = this.absoluteSize;
         resul.label = this.label + "_copy";
         resul.isConvex = this.isConvex;
+        resul.showDebugPoints=this.showDebugPoints;
         return resul;
     }
 

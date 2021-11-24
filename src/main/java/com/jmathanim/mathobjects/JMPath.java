@@ -507,6 +507,14 @@ public class JMPath implements Updateable, Stateable, Boxable, Iterable<JMPathPo
         }
     }
 
+    /**
+     * Returns an array with the critical points of the Shape, that is, points
+     * where its derivative with respect to x (or y) is 0. These points are used
+     * to properly compute the bounding box.
+     *
+     * @return An ArrayList with all critical points. The bounding box of these
+     * point is the bounding box of the Shape.
+     */
     public ArrayList<Point> getCriticalPoints() {
         ArrayList<Point> criticalPoints = new ArrayList<>();
         for (int n = 0; n < jmPathPoints.size(); n++) {
@@ -1033,7 +1041,6 @@ public class JMPath implements Updateable, Stateable, Boxable, Iterable<JMPathPo
 //            tempPath.merge(tempPath.rawCopy(), true, false);
 //            return tempPath.getSubPath(.5 * a, .5 + .5 * b);
 //        }
-
         //If a is greater than b, reverse the path
         if (a > b) {
             JMPath tempPath = this.rawCopy();
@@ -1041,7 +1048,6 @@ public class JMPath implements Updateable, Stateable, Boxable, Iterable<JMPathPo
             return tempPath.getSubPath(b, a);
         }
         JMPath tempPath = this.rawCopy();
-        
 
         //Open the path if it is closed
         final JMPathPoint firstP = tempPath.jmPathPoints.get(0);
@@ -1049,7 +1055,7 @@ public class JMPath implements Updateable, Stateable, Boxable, Iterable<JMPathPo
             tempPath.addJMPoint(firstP.copy());
             firstP.isThisSegmentVisible = false;
         }
-        
+
         //Stranges and buggy cases
         if ((a == 1) && (b == 1)) {
             JMPath res = JMPath.make();
@@ -1069,7 +1075,7 @@ public class JMPath implements Updateable, Stateable, Boxable, Iterable<JMPathPo
         double alpha2 = b * (size - 1) - k2;
 
         if (a > 0) {
-            beginning = tempPath.insertPointAt(k1, alpha1);
+            beginning = tempPath.insertJMPointAt(k1, alpha1);
             beginning.isThisSegmentVisible = false;
             if (k1 == k2) {
                 alpha2 = (alpha2 - alpha1) / (1 - alpha1);
@@ -1079,7 +1085,7 @@ public class JMPath implements Updateable, Stateable, Boxable, Iterable<JMPathPo
         }
 
         if (b < 1) {
-            ending = tempPath.insertPointAt(k2, alpha2);
+            ending = tempPath.insertJMPointAt(k2, alpha2);
         }
 
         int nBegin = tempPath.jmPathPoints.indexOf(beginning);
@@ -1099,7 +1105,7 @@ public class JMPath implements Updateable, Stateable, Boxable, Iterable<JMPathPo
      * k and point k+1
      * @return The new point created
      */
-    public JMPathPoint insertPointAt(int k, double alpha) {
+    public JMPathPoint insertJMPointAt(int k, double alpha) {
         JMPathPoint v1 = jmPathPoints.get(k);
         JMPathPoint v2 = jmPathPoints.get(k + 1);
         JMPathPoint newPoint = getJMPointBetween(v1, v2, alpha);
