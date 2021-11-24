@@ -107,10 +107,10 @@ The piece of curve that goes from 0 to 1 is drawed in a straight line:
 You can also make a Bezier curve straight with the code:
 
 ```java
-//make coordiantes of control point exit of point 0 equals to that point
+//make coordinates of control point exit of point 0 equals to that point
 ellipse.get(0).cpExit.copyFrom(ellipse.get(0).p);
 
-//make coordiantes of control point enter of point 1 equals to that point
+//make coordinates of control point enter of point 1 equals to that point
 ellipse.get(1).cpEnter.copyFrom(ellipse.get(1).p);
 ```
 
