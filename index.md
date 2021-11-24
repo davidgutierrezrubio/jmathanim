@@ -13,9 +13,10 @@ You can also follow my [Youtube](https://www.youtube.com/channel/UCeczwEqSrAwZbP
 
 Version 0.9.3-SNAPSHOT
 
+* Getting ready for the 0.9.4 version at last!
+* Added ContourHighlight animation.
 * Fixed a bug in `reverse`method when applied to paths with both curved and straight parts.
 * Improved `merge` method for `Shape` objects.
-
 * Added Delimiter.stackTo builder to automatically stack a delimiter to a MathObject
 * Improved drawing algorithms for `FunctionGraph`, including adaptative sampling and continuity check.
 * Added `saveToPNG` option to save each frame into a separate png file.

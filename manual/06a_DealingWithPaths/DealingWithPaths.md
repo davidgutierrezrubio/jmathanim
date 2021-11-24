@@ -1,5 +1,3 @@
-[
-
 [home](https://davidgutierrezrubio.github.io/jmathanim/) [back](../index.html)
 
 # Dealing with paths
@@ -126,6 +124,69 @@ You will have the same effect, with the control points altered:
 
 
 
+# Retrieving points from paths
+
+There are several methods to get points from the path.
+
+```java
+Shape c=Shape.circle();
+JMPathPoint jmp = c.get(0); //Gets the first JMPathPoint of the path
+Point P=c.getPoint(0); //Gets the first Point. This is equivalent to Point P=c.get(0).p
+int size=c.size(); //Gets the number of JMPathPoint objects in the path
+```
+
+Sometimes we are interested in getting where a precise point should be in the path. JMathAnim has several methods to compute the interpolated JMPathPoint at a specified position. The interpolation parameter alpha ranges from 0 to 1 where 0 is the start of the Shape (point at index 0) and 1 is the end (point at index size()-1).
+
+```java
+Shape c=Shape.circle();
+Point interpP=c.getPointAt(.2); //Computes the interpolated point at alpha=.2;
+JMPathPoint interpJmp = pol.getPath().getJMPointAt(.2);//Interpolated JMPathPoint
+```
+
+Note that this parameter does not run in "constant velocity". For example, in a path with 3 elements like the figure:
+
+<img src="06_differentSpeeds.png" alt="06_differentSpeeds" style="zoom:50%;" />
+
+The whole range [0,.5] maps to the segment from point 0 to 1, but the equal-size range [.5,1] maps to the segment from point 1 to 2. Thus, if we animate a point moving with constant alpha velocity this point will travel faster from 1 to 2 than from 0 to 1:
+
+![06b_differentSpeeds](06b_differentSpeeds.gif)
+
+If you want to insert an interpolated JMPathPoint into a path, it is not enough to simply add it to the array of elements of the path, but it is also necessary to recompute the control points of the adjacent elements. This is done with the command `.getPath().insertJMPointAt(int k, double alpha) `. This command will insert a new `JMPathPoint` between the k-th and (k+1)-th ones, with the alpha parameter. An alpha value of 0 means the k-th point, 0.5 means the middle-path point, and 1 means the (k+1)-th point.
+
+For example, the following code draw an annulus and a copy with 3 new JMPathPoints inserted:
+
+```java
+Shape c = Shape.annulus(.5, 1);
+c.setShowDebugPoints(true);
+Shape c2 = c.copy().stackTo(c, Anchor.Type.RIGHT, .25);
+
+JMPathPoint newJmp1 = c2.getPath().insertJMPointAt(1, .5);
+JMPathPoint newJmp2 = c2.getPath().insertJMPointAt(3, .25);
+JMPathPoint newJmp3 = c2.getPath().insertJMPointAt(9, .9);
+
+//Note that we add the Point (.p) object, NOT the JMPathPoint!
+//The JMPathPoints don't have a draw() method so
+//they will not appear on the screen
+add(
+    newJmp1.p.thickness(5).drawColor("red"),
+    newJmp2.p.thickness(5).drawColor("green"),
+    newJmp3.p.thickness(5).drawColor("blue")
+);
+add(c, c2);
+camera.centerAtAllObjects();
+waitSeconds(3);
+```
+
+Note how the indices change (the index 0 is covered by the indices 4 and 7 respectively):
+
+
+
+<img src="06_interpolationInsert.png" alt="06_interpolationInsert" style="zoom:50%;" />
+
+
+
+
+
 # Boolean operations with paths
 
 JMathAnim allows boolean operations union, intersection and substract for `Shape`objects. These methods relay on the boolean methods of the JavaFX library.
@@ -186,6 +247,27 @@ waitSeconds(5);//Yes, screenshot!
 Will give the following figure:
 
 <img src="05_mergingExample.png" alt="Merging paths" style="zoom:50%;" />
+
+# Subpaths
+
+The `JMPath`command `.subpath(double a, double b)` returns the subpath that goes from a to b, where a and b are interpolation parameters as described before, from 0 to 1.
+
+You can directly extract the subshape with the `Shape` method `getSubShape(double a, double b)` that works in a similar way. A new shape with the same styling parameters will be created. For example:
+
+```java
+Shape c = LaTeXMathObject.make("F").get(0).center().setHeight(2);
+Shape c2=c.getSubShape(.2, .76);
+c.fillColor("violet").fillAlpha(.5);
+c2.style("default").thickness(5).drawColor("olive");//Load default style to clear the style latexdefault
+add(c,c2);
+waitSeconds(3);
+```
+
+gives the following image:
+
+<img src="07_Subpath.png" alt="07_Subpath" style="zoom: 50%;" />
+
+The `ContourHighlight` animation makes extensive use of the `getSubShape` method
 
 
 
