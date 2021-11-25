@@ -78,7 +78,6 @@ public class ContourHighlight extends Animation {
         double lt = getLambda().applyAsDouble(t);
         double b = UsefulLambdas.allocateTo(0, 1 - amplitude).applyAsDouble(lt);
         double a = UsefulLambdas.allocateTo(amplitude, 1).applyAsDouble(lt);
-        System.out.println("a=" + a + ", b" + b);
         for (MathObject obj : objs) {
             process(obj, a, b);
 
