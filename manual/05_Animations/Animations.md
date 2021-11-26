@@ -233,12 +233,19 @@ You can also make a contour highlight of the bounding box of an object, which ca
 ```java
 LaTeXMathObject obj = LaTeXMathObject.make("Look here!").center().scale(2);
 add(obj);
-ContourHighlight anim = ContourHighlight.make(2, obj.getBoundingBox().addGap(.1, .1));
-playAnimation(anim);
+
+//This animation is not very clear, because the shape is complex
+ContourHighlight anim1=ContourHighlight.make(2, obj);
+playAnimation(anim1);
+
+//Using a bounding box is simpler
+ContourHighlight anim2 = ContourHighlight.make(2, obj.getBoundingBox().addGap(.1, .1));
+anim2.setColor("green");
+playAnimation(anim2);
 waitSeconds(2);
 ```
 
-Not the method `.addGap` in the bounding box, to enlarge it .1 units in each of the 4 directions.
+Note the method `.addGap` in the bounding box, to enlarge it .1 units in each of the 4 directions.
 
 ![ContourHighlight2](ContourHighlight2.gif)
 
