@@ -51,11 +51,10 @@ public class ContourHighlight extends Animation {
         return new ContourHighlight(runTime, objs);
     }
 
-     public static ContourHighlight make(double runTime, Rect r) {
+    public static ContourHighlight make(double runTime, Rect r) {
         return new ContourHighlight(runTime, Shape.rectangle(r));
     }
-    
-    
+
     /**
      * Creates an animation that hightlights the contour of a Shape object.
      *
@@ -67,7 +66,7 @@ public class ContourHighlight extends Animation {
         this.objs = objs;
         highlightColor = JMColor.parse("red");
         this.thickness = 10;
-        this.amplitude = .1;
+        this.amplitude = .4;
 //        setLambda(t -> t);
     }
 
@@ -82,8 +81,8 @@ public class ContourHighlight extends Animation {
             return;
         }
         double lt = getLambda().applyAsDouble(t);
-        double b = UsefulLambdas.allocateTo(0, 1 - amplitude).applyAsDouble(lt);
-        double a = UsefulLambdas.allocateTo(amplitude, 1).applyAsDouble(lt);
+        double b = UsefulLambdas.allocateTo(0, 1 - .5 * amplitude).applyAsDouble(lt);
+        double a = UsefulLambdas.allocateTo(.5 * amplitude, 1).applyAsDouble(lt);
         for (MathObject obj : objs) {
             process(obj, a, b);
 
@@ -132,7 +131,9 @@ public class ContourHighlight extends Animation {
 
     /**
      * Sets the amplitude of the highlight, from 0 to 1. A value of .1 will draw
-     * the 10% of the Shape.
+     * the 10% of the Shape. This is not the real 10%-length of shape, as this
+     * dependes of the total of JMPathPoints in the path and the length of the
+     * Bezier curves they determine
      *
      * @param amplitude Amplitude parameter, from 0 to 1.
      * @return This object.

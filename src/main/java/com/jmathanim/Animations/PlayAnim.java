@@ -696,4 +696,10 @@ public class PlayAnim {
     public void contourHighlight(MathObject...objs) {
         scene.playAnimation(ContourHighlight.make(defaultRunTimeHighlight, objs));
     }
+    
+    public void twistAndScale(MathObject...objs) {
+        scene.playAnimation(Commands.twistAndScale(defaultRunTimefadeIn, objs));
+    }
+    
+    
 }
