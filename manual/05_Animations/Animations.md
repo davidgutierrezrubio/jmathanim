@@ -210,10 +210,9 @@ The `ContourHighlight` animation can be configured creating the object with its 
 Shape obj = Shape.circle();
 add(obj);
 ContourHighlight anim = ContourHighlight.make(2, obj);
-anim.setColor("green");
 
 //This parameter from 0 to 1 determines the max portion of shape to be drawed
-//The default value of 4.
+//The default value of 0.4.
 //A value of 1 will draw the whole shape and then undraw it.
 anim.setAmplitude(.5);
 
@@ -222,9 +221,28 @@ anim.setThickness(15);
 
 //The color of the "snake"
 anim.setColor("violet");
+
 playAnimation(anim);
 waitSeconds(2);
 ```
+
+![ContourHighlight1](ContourHighlight1.gif)
+
+You can also make a contour highlight of the bounding box of an object, which can be more clear in some cases. Just pass the bounding box of the object:
+
+```java
+LaTeXMathObject obj = LaTeXMathObject.make("Look here!").center().scale(2);
+add(obj);
+ContourHighlight anim = ContourHighlight.make(2, obj.getBoundingBox().addGap(.1, .1));
+playAnimation(anim);
+waitSeconds(2);
+```
+
+Not the method `.addGap` in the bounding box, to enlarge it .1 units in each of the 4 directions.
+
+![ContourHighlight2](ContourHighlight2.gif)
+
+
 
 
 
