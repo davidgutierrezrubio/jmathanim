@@ -214,7 +214,7 @@ ContourHighlight anim = ContourHighlight.make(2, obj);
 //This parameter from 0 to 1 determines the max portion of shape to be drawed
 //The default value of 0.4.
 //A value of 1 will draw the whole shape and then undraw it.
-anim.setAmplitude(.5);
+anim.setAmplitude(.85);
 
 //The thickness of the "snake"
 anim.setThickness(15);
