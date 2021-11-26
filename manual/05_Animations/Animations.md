@@ -129,9 +129,6 @@ play.shrinkOut(2,sq);
 //The same but it also applies a 45 degrees rotation
 play.shrinkOut(2,45*DEGREES,sq);
 
-//Scales briefly the object, to highlight it, for 1 second
-play.highlight(1,sq);
-
 //Moves the object from outside (direction is specified in the enum Anchor.Type {LEFT, RIGHT, LOWER, UPPER})
 play.moveIn(1,Anchor.Type.LEFT,sq);//Entering from the left
 
@@ -146,17 +143,17 @@ You can change the values of these variables as you need. Here is a demo animati
 ``` java
 LaTeXMathObject text;
 Shape sq = Shape.square().fillColor("#87556f").thickness(2).center();//
-text = LaTeXMathObject.make("{\\tt play.fadeIn(sq)}").stackToScreen(Anchor.LOWER, .1, .1);
+text = LaTeXMathObject.make("{\\tt play.fadeIn(sq)}").stackToScreen(Anchor.Type.LOWER, .1, .1);
 add(text);
 play.fadeIn(sq);
 waitSeconds(1);
 remove(text);
-text = LaTeXMathObject.make("{\\tt play.highlight(sq)}").stackToScreen(Anchor.LOWER, .1, .1);
+text = LaTeXMathObject.make("{\\tt play.scale(1,1.5,1,sq)}").stackToScreen(Anchor.Type.LOWER, .1, .1);
 add(text);
-play.highlight(sq);
+play.scale(1,1.5,1,sq);
 waitSeconds(1);
 remove(text);
-text = LaTeXMathObject.make("{\\tt play.shrinkOut(1,45*DEGREES, sq)}").stackToScreen(Anchor.LOWER, .1, .1);
+text = LaTeXMathObject.make("{\\tt play.shrinkOut(1,45*DEGREES, sq)}").stackToScreen(Anchor.Type.LOWER, .1, .1);
 add(text);
 play.shrinkOut(1,45*DEGREES, sq);
 waitSeconds(1);
@@ -167,6 +164,73 @@ waitSeconds(1);
 
 
 The use of the `play` object allows fast writing of simple animations, but if you need to fine tune some parameters, like the lambda time function, or add some effects, you will need to define it "the long way".
+
+## Highlighting
+
+These animations helps object to briefly get the attention of the person who is enjoying that beautiful animation you have created. 
+
+* The `Commands.highlight`animation will scale back and forth the given objects the amount we define. The default value is 150%.
+* The `Commands.twistAndScale` animation works in similar way than `highlight`, but adds a small twist movement, with a default angle of +/- 15 degrees.
+* The `ContourHighlight` animation will draw a `snake`running over the contour a shape. The color and thickness can be changed (default: color red and thickness 10).
+
+We see all of them with this example:
+
+```java
+Shape sq = Shape.square().center().scale(1);
+Point importantPoint1 = sq.getPoint(1).drawColor("red");
+LaTeXMathObject importantLabel1 = LaTeXMathObject.make("A").
+    stackTo(importantPoint1, Anchor.Type.RIGHT, .1);
+
+Point importantPoint2 = sq.getPoint(3).drawColor("blue");
+LaTeXMathObject importantLabel2 = LaTeXMathObject.make("B").
+    stackTo(importantPoint2, Anchor.Type.LEFT, .1);
+
+add(sq,
+    importantPoint1,
+    importantLabel1,
+    importantPoint2,
+    importantLabel2
+   );
+
+play.highlight(importantLabel1);
+play.twistAndScale(importantLabel2);
+play.contourHighlight(sq);
+waitSeconds(2);
+```
+
+Here is a GIF from the movie generated:
+
+![highlightExamples](highlightExamples.gif)
+
+
+
+The `ContourHighlight` animation can be configured creating the object with its static constructor:
+
+```java
+Shape obj = Shape.circle();
+add(obj);
+ContourHighlight anim = ContourHighlight.make(2, obj);
+anim.setColor("green");
+
+//This parameter from 0 to 1 determines the max portion of shape to be drawed
+//The default value of 4.
+//A value of 1 will draw the whole shape and then undraw it.
+anim.setAmplitude(.5);
+
+//The thickness of the "snake"
+anim.setThickness(15);
+
+//The color of the "snake"
+anim.setColor("violet");
+playAnimation(anim);
+waitSeconds(2);
+```
+
+
+
+
+
+
 
 ## Stacking and aligning
 
@@ -370,12 +434,12 @@ optimization:
 Shape circle = Shape.circle().scale(-1, 1).scale(.6).shift(-.5, .3);
 Shape circle2 = circle.copy();
 Shape square = Shape.square().shift(.5, 0).scale(.6).rotate(45*DEGREES);
-add(LaTeXMathObject.make("With optimization").stackToScreen(Anchor.LOWER, .1, .1));
+add(LaTeXMathObject.make("With optimization").stackToScreen(Anchor.Type.LOWER, .1, .1));
 Transform tr = new Transform(3, circle, square);
 playAnimation(tr);
 waitSeconds(1);
 play.fadeOutAll();
-add(LaTeXMathObject.make("Without optimization").stackToScreen(Anchor.LOWER, .1, .1));
+add(LaTeXMathObject.make("Without optimization").stackToScreen(Anchor.Type.LOWER, .1, .1));
 Transform tr2 = new Transform(3, circle2, square);
 tr2.optimizePaths(false);
 playAnimation(tr2);
