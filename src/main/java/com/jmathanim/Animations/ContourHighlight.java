@@ -18,6 +18,7 @@
 package com.jmathanim.Animations;
 
 import com.jmathanim.Styling.JMColor;
+import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.UsefulLambdas;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.Arrow2D;
@@ -50,6 +51,11 @@ public class ContourHighlight extends Animation {
         return new ContourHighlight(runTime, objs);
     }
 
+     public static ContourHighlight make(double runTime, Rect r) {
+        return new ContourHighlight(runTime, Shape.rectangle(r));
+    }
+    
+    
     /**
      * Creates an animation that hightlights the contour of a Shape object.
      *
