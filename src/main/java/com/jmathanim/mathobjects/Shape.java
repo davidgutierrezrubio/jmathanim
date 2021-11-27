@@ -296,6 +296,20 @@ public class Shape extends MathObject {
     }
 
     /**
+     * Generates a regular polygon inscribed in a unit circle. The first point of the shape lies in the coordinates (1,0)
+     * @param numSides Number of sides
+     * @return The generated Shape
+     */
+    public static Shape regularInscribedPolygon(int numSides) {
+        Point[] points=new Point[numSides];
+        for (int i = 0; i < numSides; i++) {
+        points[i]=Point.at(Math.cos(2*PI*i/numSides),Math.sin(2*PI*i/numSides));
+        }
+        return polygon(points);
+    }
+    
+    
+    /**
      * Creates a regular polygon, with first vertex at (0,0) and side 1
      *
      * @param numsides Number of sides

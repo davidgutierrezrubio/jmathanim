@@ -1049,12 +1049,7 @@ public class JMPath implements Updateable, Stateable, Boxable, Iterable<JMPathPo
         }
         JMPath tempPath = this.rawCopy();
 
-        //Open the path if it is closed
-        final JMPathPoint firstP = tempPath.jmPathPoints.get(0);
-        if (firstP.isThisSegmentVisible) {
-            tempPath.addJMPoint(firstP.copy());
-            firstP.isThisSegmentVisible = false;
-        }
+        tempPath.openPath();
 
         //Stranges and buggy cases
         if ((a == 1) && (b == 1)) {
@@ -1093,6 +1088,20 @@ public class JMPath implements Updateable, Stateable, Boxable, Iterable<JMPathPo
         JMPath subPath = new JMPath();
         subPath.jmPathPoints.addAll(tempPath.jmPathPoints.subList(nBegin, nEnd + 1));
         return subPath;
+    }
+
+    /**
+     * Opens the path. This process adds a new JMPathPoint (copy of the first)
+     * at the end. If the path is already opened (at index 0) this method has no effect.
+     *
+     */
+    public void openPath() {
+        //Open the path if it is closed
+        final JMPathPoint firstP = jmPathPoints.get(0);
+        if (firstP.isThisSegmentVisible) {
+            addJMPoint(firstP.copy());
+            firstP.isThisSegmentVisible = false;
+        }
     }
 
     /**
