@@ -122,7 +122,7 @@ You will have the same effect, with the control points altered:
 
 
 
-
+If you have a closed path and want to open it, you should duplicate the first JMPathPoint and make the segment between them invisible. That's what the `openPath` method does. If you want to open the previous shape, you can do it with the command `ellipse.getPath().openPath()`. The visual appearance of the shape is unaltered, but moving the first of last point of the shape will behave differently.
 
 # Retrieving points from paths
 
