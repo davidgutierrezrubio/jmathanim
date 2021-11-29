@@ -385,8 +385,8 @@ public void runSketch() {
     axes.generatePrimaryYTicks(0, 1, .25);
     add(axes);
     //Lambdas for rotate and shift animation
-    final DoubleUnaryOperator rotateLambda = UsefulLambdas.smooth().compose(UsefulLambdas.allocateTo(.3, .6));
-    final DoubleUnaryOperator shiftLambda = UsefulLambdas.bounce1();
+    DoubleUnaryOperator rotateLambda = UsefulLambdas.smooth().compose(UsefulLambdas.allocateTo(.3, .6));
+    DoubleUnaryOperator shiftLambda = UsefulLambdas.bounce1();
 
     //Graph of the shift lambda
     FunctionGraph fgShift = FunctionGraph.make(shiftLambda, 0, 1).drawColor("brown").thickness(4);
@@ -397,8 +397,10 @@ public void runSketch() {
     MathObject legendShift = LaTeXMathObject.make("shift")
         .drawColor("brown").scale(.5);
     
-    //We register this updateable to put the legend always to the right of the point
-    registerUpdateable(new AnchoredMathObject(legendShift, Anchor.Type.LEFT, pointFgShift, Anchor.Type.RIGHT, .05));
+    //Ensures the text legendShift is always located above the point pointFgShift
+    registerUpdateable(
+        new AnchoredMathObject(legendShift, Anchor.Type.LEFT, pointFgShift, Anchor.Type.RIGHT, .05)
+    	);
 
     //add the function graph, the point and the legend to the scene
     add(legendShift,fgShift, pointFgShift);
@@ -411,7 +413,12 @@ public void runSketch() {
         .drawColor("darkred").thickness(1);
     MathObject legendRotate = LaTeXMathObject.make("rotate")
         .drawColor("orange").scale(.5);
-    registerUpdateable(new AnchoredMathObject(legendRotate, Anchor.Type.LOWER, pointFgRotate, Anchor.Type.UPPER, .05));
+    
+    //Ensures the text legendRotate is always located above the point pointFgRotate
+    registerUpdateable(
+        new AnchoredMathObject(legendRotate, Anchor.Type.LOWER, pointFgRotate, Anchor.Type.UPPER, .05)
+    	);
+    
     add(legendRotate,fgRotate, pointFgRotate);
 
     camera.setMathXY(-1, 2, .25);
@@ -423,14 +430,14 @@ public void runSketch() {
 
     AnimationGroup ag = AnimationGroup.make(
         Commands.shift(6, 1, 0, pointFgShift)
-        .setLambda(t -> t),//Move point in the graph of lambda shift
+        	.setLambda(t -> t),//Move point in the graph of lambda shift
         Commands.shift(6, 1, 0, pointFgRotate)
-        .setLambda(t -> t),//Move point in the graph of lambda rotate
+        	.setLambda(t -> t),//Move point in the graph of lambda rotate
         Commands.shift(6, 1, 0, sq)//Shift the square...
-        .setLambda(shiftLambda),
+        	.setLambda(shiftLambda),
         Commands.rotate(6, PI * .5, sq)//...and rotate it
-        .setUseObjectState(false)
-        .setLambda(rotateLambda)
+        	.setUseObjectState(false)
+        	.setLambda(rotateLambda)
     );
     playAnimation(ag);
     waitSeconds(1);
