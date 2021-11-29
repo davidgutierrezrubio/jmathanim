@@ -1,6 +1,6 @@
 ![logo](logo.gif)
 
-JMathAnim is a library written in JAVA intended to simplify the process of doing mathematical animations. Current version is 0.9.2. 
+JMathAnim is a library written in JAVA intended to simplify the process of doing mathematical animations. Current version is 0.9.3. 
 
 If you use it and find a bug/missing feature, feel free to fill an issue [here](https://github.com/davidgutierrezrubio/jmathanim/issues). For any other question, you can contact me at davidgutierrezrubio@gmail.com.
 
@@ -11,9 +11,8 @@ You can also follow my [Youtube](https://www.youtube.com/channel/UCeczwEqSrAwZbP
 
 # What's new?
 
-Version 0.9.3-SNAPSHOT
+Version 0.9.3:
 
-* Getting ready for the 0.9.4 version at last!
 * Added ContourHighlight animation.
 * Fixed a bug in `reverse`method when applied to paths with both curved and straight parts.
 * Improved `merge` method for `Shape` objects.
