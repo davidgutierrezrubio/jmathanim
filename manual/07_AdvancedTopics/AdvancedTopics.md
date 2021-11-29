@@ -151,18 +151,25 @@ A trail is a `Shape` subclass that updates every frame adding the position of a 
 ```java
 double circleRadius=.25;
 Shape circle = Shape.circle()
-    .scale(circleRadius).fillColor("royalblue")
-    .thickness(3).stackToScreen(Anchor.Type.LEFT)
+    .scale(circleRadius)
+    .fillColor("royalblue")
+    .thickness(3)
+    .stackToScreen(Anchor.Type.LEFT)
     .rotate(-90 * DEGREES);//Rotate it so that point 0 touches the floor
+
 //By default a circle shape has 4 point, so point 0 and 2 make a diameter
-Shape radius=Shape.segment(circle.getPoint(0),circle.getPoint(2)).layer(1).thickness(2);
-//Note that, as radius is created with point instances of the Shape circle, we don't need to animate radius, only circle
+Shape diameter=Shape.segment(circle.getPoint(0),circle.getPoint(2)).layer(1).thickness(2);
+//Note that, as diameter is created with point instances of the Shape circle, we don't need to animate diameter, only circle
 
-Line floor = Line.XAxis().stackTo(circle, Anchor.Type.LOWER);//The "floor"
-add(floor,radius);//Add everyhing (no need to add circle because it will automatically added with the shift and rotate animation)
+//The "floor". An horizontal line that we put right under the circle
+Line floor = Line.XAxis().stackTo(circle, Anchor.Type.LOWER);
+add(floor,diameter);//Add everyhing (no need to add circle because it will automatically added with the shift and rotate animation)
 
-Trail trail = new Trail(circle.getPoint(0));  //The Trail object
-add(trail.layer(1).thickness(6).drawColor(JMColor.parse("tomato")));
+Trail trail = new Trail(circle.getPoint(0));//The Trail object
+trail.layer(1)
+    .thickness(6)
+    .drawColor(JMColor.parse("tomato"))
+add(trail);
 //Ok, time to move this!
 Animation shift = Commands.shift(10, 4 * PI*circleRadius, 0, circle);
 Animation rotate = Commands.rotate(10, -4 * PI, circle).setUseObjectState(false);
