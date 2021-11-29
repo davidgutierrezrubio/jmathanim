@@ -167,7 +167,7 @@ The use of the `play` object allows fast writing of simple animations, but if yo
 
 ## Highlighting
 
-These animations helps object to briefly get the attention of the person who is enjoying that beautiful animation you have created. 
+These animations help objects to briefly get the attention of the users who are enjoying that beautiful animation you have created. 
 
 * The `Commands.highlight`animation will scale back and forth the given objects the amount we define. The default value is 150%.
 * The `Commands.twistAndScale` animation works in similar way than `highlight`, but adds a small twist movement, with a default angle of +/- 15 degrees.
@@ -212,7 +212,7 @@ add(obj);
 ContourHighlight anim = ContourHighlight.make(2, obj);
 
 //This parameter from 0 to 1 determines the max portion of shape to be drawed
-//The default value of 0.4.
+//The default value is 0.4.
 //A value of 1 will draw the whole shape and then undraw it.
 anim.setAmplitude(.85);
 
