@@ -211,7 +211,7 @@ Gives the following image:
 
 <img src="04a_Intersection.png" alt="Intersection" style="zoom:50%;" />
 
-JMathAnim uses a private method called `distille()`that get rids of redundant path points, in order to get the simplest result of the operation. However, it is known that in some cases, artifacts may occur, specially when dealing with multiple boolean operations in complex paths, due to the JavaFX algorithm.
+JMathAnim uses a private method called `distille()`that gets rid of redundant path points, in order to get the simplest result of the operation. However, it is known that in some cases, artifacts may occur, specially when dealing with multiple boolean operations in complex paths, due to the JavaFX algorithm.
 
 # Merging paths
 
@@ -219,7 +219,7 @@ The `Shape`object admits the `merge` method with the syntax `A.merge(B,connectAt
 
 When using this method, the `reverse()` method may be useful to exchange beginning and ending points of a path.
 
-For example, the following code merges several semicircles to form a closed shape. Not e that the even arcs are reversed whereas odd ones are not:
+For example, the following code merges several semicircles to form a closed shape. Note that the even arcs are reversed whereas odd ones are not:
 
 ```java
 Shape upperLeaf = Shape.arc(PI);
@@ -234,7 +234,7 @@ for (int i = 2; i < numberOfArcs; i++) {
     reverse = !reverse;
 }
 //Now we made a copy of the upper leaf and merge them
-final Shape lowerLeaf = upperLeaf.copy()
+Shape lowerLeaf = upperLeaf.copy()
     .reverse()
     .scale(Point.origin(), 1, -1)
     .shift(0, -.5);
