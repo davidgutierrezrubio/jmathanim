@@ -38,58 +38,58 @@ import java.util.List;
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
 public class MultiShapeObject extends MathObject implements Iterable<Shape> {
-
-	private MODrawPropertiesArray mpMultiShape;
-	public boolean isAddedToScene;
-	protected final ArrayList<Shape> shapes;
-
-	public static MultiShapeObject make(Shape... shapes) {
-		return new MultiShapeObject(shapes);
-	}
-
-	public MultiShapeObject() {
-		this(new ArrayList<Shape>());
-	}
-
-	public MultiShapeObject(Shape... shapes) {
-		this(Arrays.asList(shapes));
-	}
-
-	public MultiShapeObject(List<Shape> jmps) {
-		super();
-		isAddedToScene = false;
-		this.shapes = new ArrayList<>();
-		this.shapes.addAll(jmps);
-		mpMultiShape = new MODrawPropertiesArray();
-		for (MathObject sh : shapes) {
-			mpMultiShape.add(sh);
-		}
-	}
-
-	public boolean add(Shape e) {
-		mpMultiShape.add(e);
-		return shapes.add(e);
-	}
-
-	public boolean addJMPathObject(JMPath p) {
-		return shapes.add(new Shape(p, null));
-	}
-
-	@Override
-	public <T extends MathObject> T fillColor(PaintStyle fc) {
-		for (Shape jmp : shapes) {
-			jmp.fillColor(fc);
-		}
-		return super.fillColor(fc);
-	}
-
-	@Override
-	public <T extends MathObject> T drawColor(PaintStyle dc) {
-		for (Shape jmp : shapes) {
-			jmp.drawColor(dc);
-		}
-		return super.drawColor(dc);
-	}
+    
+    protected MODrawPropertiesArray mpMultiShape;
+    public boolean isAddedToScene;
+    protected final ArrayList<Shape> shapes;
+    
+    public static MultiShapeObject make(Shape... shapes) {
+        return new MultiShapeObject(shapes);
+    }
+    
+    public MultiShapeObject() {
+        this(new ArrayList<Shape>());
+    }
+    
+    public MultiShapeObject(Shape... shapes) {
+        this(Arrays.asList(shapes));
+    }
+    
+    public MultiShapeObject(List<Shape> jmps) {
+        super();
+        isAddedToScene = false;
+        this.shapes = new ArrayList<>();
+        this.shapes.addAll(jmps);
+        mpMultiShape = new MODrawPropertiesArray();
+        for (MathObject sh : shapes) {
+            mpMultiShape.add(sh);
+        }
+    }
+    
+    public boolean add(Shape e) {
+        mpMultiShape.add(e);
+        return shapes.add(e);
+    }
+    
+    public boolean addJMPathObject(JMPath p) {
+        return shapes.add(new Shape(p, null));
+    }
+    
+    @Override
+    public <T extends MathObject> T fillColor(PaintStyle fc) {
+        for (Shape jmp : shapes) {
+            jmp.fillColor(fc);
+        }
+        return super.fillColor(fc);
+    }
+    
+    @Override
+    public <T extends MathObject> T drawColor(PaintStyle dc) {
+        for (Shape jmp : shapes) {
+            jmp.drawColor(dc);
+        }
+        return super.drawColor(dc);
+    }
 
 //    @Override
 //    public <T extends MathObject> T shift(Vec shiftVector) {
@@ -98,244 +98,244 @@ public class MultiShapeObject extends MathObject implements Iterable<Shape> {
 //        }
 //        return (T) this;
 //    }
-	@Override
-	public MultiShapeObject copy() {
-		MultiShapeObject resul = new MultiShapeObject();
+    @Override
+    public MultiShapeObject copy() {
+        MultiShapeObject resul = new MultiShapeObject();
 //                resul.getMp().copyFrom(getMp());
-		for (Shape sh : shapes) {
-			final Shape copy = sh.copy();
-			resul.add(copy);
-		}
-		
-		resul.absoluteSize = this.absoluteSize;
-		return resul;
-	}
-
-	@Override
-	public <T extends MathObject> T setAbsoluteSize(Anchor.Type anchorType) {
-		super.setAbsoluteSize(anchorType);
-		Point p = Anchor.getAnchorPoint(this, anchorType);
-		for (Shape sh : shapes) {
-			sh.setAbsoluteSize(p);
-		}
-
-		return (T) this;
-	}
-
-	@Override
-	public void draw(JMathAnimScene scene, Renderer r) {
-		if (isVisible()) {
-			int n = 0;
-			for (Shape jmp : shapes) {
-				if (jmp.isVisible()) {
-					if (absoluteSize) {
-						r.drawAbsoluteCopy(jmp, getAbsoluteAnchor().v);// TODO: This doesnt work for overrided methods
-																		// (e.g.: line)
-					} else {
-						jmp.draw(scene, r);
+        for (Shape sh : shapes) {
+            final Shape copy = sh.copy();
+            resul.add(copy);
+        }
+        
+        resul.absoluteSize = this.absoluteSize;
+        return resul;
+    }
+    
+    @Override
+    public <T extends MathObject> T setAbsoluteSize(Anchor.Type anchorType) {
+        super.setAbsoluteSize(anchorType);
+        Point p = Anchor.getAnchorPoint(this, anchorType);
+        for (Shape sh : shapes) {
+            sh.setAbsoluteSize(p);
+        }
+        
+        return (T) this;
+    }
+    
+    @Override
+    public void draw(JMathAnimScene scene, Renderer r) {
+        if (isVisible()) {
+            int n = 0;
+            for (Shape jmp : shapes) {
+                if (jmp.isVisible()) {
+                    if (absoluteSize) {
+                        r.drawAbsoluteCopy(jmp, getAbsoluteAnchor().v);// TODO: This doesnt work for overrided methods
+                        // (e.g.: line)
+                    } else {
+                        jmp.draw(scene, r);
 //                    if (isShowDebugText()) {
 //                        r.debugText("" + n, jmp.getCenter().v);
 //                    }
-					}
-				}
-				n++;
-			}
-		}
-		scene.markAsAlreadyDrawed(this);
-	}
-
-	public <T extends MultiShapeObject> T setShowDebugIndices(boolean value) {
-		if (value) {
-			int k = 0;
-			for (Shape sh : shapes) {
-				sh.debugText("" + k);
-				k++;
-			}
-		} else {
-			for (Shape sh : shapes) {
-				sh.debugText("");
-			}
-		}
-		return (T) this;
-	}
-
-	@Override
-	public Rect getBoundingBox() {
-		if (shapes.size() > 0) {
-			Rect resul = null;
-			for (Shape jmp : shapes) {
-				resul = Rect.union(resul, jmp.getBoundingBox());
-			}
-			return resul;
-		} else {
-			return null;
-		}
-	}
-
-	public Shape get(int n) {
-		return shapes.get(n);
-	}
-
-	@Override
-	public void update(JMathAnimScene scene) {
-		// No need to update as the shapes are already added to the scene
-	}
-
-	@Override
-	public void restoreState() {
-		super.restoreState();
-		getMp().restoreState();
-		for (Shape o : shapes) {
-			o.restoreState();
-		}
-	}
-
-	@Override
-	public void saveState() {
-		super.saveState();
-		getMp().saveState();
-		for (Shape o : shapes) {
-			o.saveState();
-		}
-	}
-
-	public ArrayList<Shape> getShapes() {
-		return shapes;
-	}
-
-	@Override
-	public Iterator<Shape> iterator() {
-		return shapes.iterator();
-	}
-
-	public int size() {
-		return shapes.size();
-	}
-
-	/**
-	 * Align with another MultiShape so that the center of one of its shapes is
-	 * aligned with the center of the shape of the other Multishape. This is
-	 * generally used for LaTeXMathObjects to align two equation by their equal sign
-	 *
-	 * @param <T>              Calling subclass
-	 * @param index            Shape index of the shape to align
-	 * @param otherObject      The other multishape object
-	 * @param indexOtherObject Index of the shape of the other multishape to align
-	 *                         with
-	 * @return This object
-	 */
-	public <T extends MultiShapeObject> T alignCenter(int index, MultiShapeObject otherObject, int indexOtherObject) {
-		shift(this.get(index).getCenter().to(otherObject.get(indexOtherObject).getCenter()));
-		return (T) this;
-	}
-
-	@Override
-	public boolean isEmpty() {
-		boolean resul = false;
-		for (Shape sh : shapes) {
-			resul = resul | sh.isEmpty();
-		}
-		return resul;
-	}
-
-	/**
-	 * Extracts a part of a MultiShape, given by a set of indices.Indices are
-	 * unaltered, so shape 5 after slicing is still shape 5.
-	 *
-	 * @param <T>     Multishape subclass
-	 * @param delete  If true, sliced shapes will be removed from the original and
-	 *                replaced with empty shapes.
-	 * @param indices indices to slice (varargs)
-	 * @return A new multishape instance with the extracted shapes.
-	 */
-	public <T extends MultiShapeObject> T slice(boolean delete, Integer... indices) {
-		List<Integer> list = Arrays.asList(indices);
-		T resul = (T) this.copy();
-		for (int n = 0; n < resul.size(); n++) {
-			resul.set(n, new Shape());
-		}
-		for (int n = 0; n < this.shapes.size(); n++) {
-			if (list.contains(n)) {// if this index is marked for extraction...
-
-				if (delete) {
-					resul.set(n, this.get(n));
-					this.shapes.set(n, new Shape());
-				} else {
-					resul.set(n, this.get(n).copy());
-				}
-			}
-		}
-
-		return resul;
-	}
-
-    public Shape set(int index, Shape element) {
-        return shapes.set(index, element);
+                    }
+                }
+                n++;
+            }
+        }
+        scene.markAsAlreadyDrawed(this);
+    }
+    
+    public <T extends MultiShapeObject> T setShowDebugIndices(boolean value) {
+        if (value) {
+            int k = 0;
+            for (Shape sh : shapes) {
+                sh.debugText("" + k);
+                k++;
+            }
+        } else {
+            for (Shape sh : shapes) {
+                sh.debugText("");
+            }
+        }
+        return (T) this;
+    }
+    
+    @Override
+    public Rect getBoundingBox() {
+        if (shapes.size() > 0) {
+            Rect resul = null;
+            for (Shape jmp : shapes) {
+                resul = Rect.union(resul, jmp.getBoundingBox());
+            }
+            return resul;
+        } else {
+            return null;
+        }
+    }
+    
+    public Shape get(int n) {
+        return shapes.get(n);
+    }
+    
+    @Override
+    public void update(JMathAnimScene scene) {
+        // No need to update as the shapes are already added to the scene
+    }
+    
+    @Override
+    public void restoreState() {
+        super.restoreState();
+        getMp().restoreState();
+        for (Shape o : shapes) {
+            o.restoreState();
+        }
+    }
+    
+    @Override
+    public void saveState() {
+        super.saveState();
+        getMp().saveState();
+        for (Shape o : shapes) {
+            o.saveState();
+        }
+    }
+    
+    public ArrayList<Shape> getShapes() {
+        return shapes;
+    }
+    
+    @Override
+    public Iterator<Shape> iterator() {
+        return shapes.iterator();
+    }
+    
+    public int size() {
+        return shapes.size();
     }
 
-	/**
-	 * Overloaded method, equivalent to slice(true,indices)
-	 *
-	 * @param <T>     Multishape subclass object
-	 * @param indices indices to slice (varargs)
-	 * @return A new multishape instance with the extracted shapes. The original
-	 *         multishape object is altered as the extracted shapes becomes null
-	 *         shapes
-	 */
-	public <T extends MultiShapeObject> T slice(Integer... indices) {
-		return slice(true, indices);
-	}
+    /**
+     * Align with another MultiShape so that the center of one of its shapes is
+     * aligned with the center of the shape of the other Multishape. This is
+     * generally used for LaTeXMathObjects to align two equation by their equal
+     * sign
+     *
+     * @param <T> Calling subclass
+     * @param index Shape index of the shape to align
+     * @param otherObject The other multishape object
+     * @param indexOtherObject Index of the shape of the other multishape to
+     * align with
+     * @return This object
+     */
+    public <T extends MultiShapeObject> T alignCenter(int index, MultiShapeObject otherObject, int indexOtherObject) {
+        shift(this.get(index).getCenter().to(otherObject.get(indexOtherObject).getCenter()));
+        return (T) this;
+    }
+    
+    @Override
+    public boolean isEmpty() {
+        boolean resul = false;
+        for (Shape sh : shapes) {
+            resul = resul | sh.isEmpty();
+        }
+        return resul;
+    }
 
-	/**
-	 * Gets an array of Shapes with the given indices. This method is used mostly to
-	 * combine with animations that accepts a varargs of MathObject
-	 *
-	 * @param indices
-	 * @return
-	 */
-	public Shape[] getSubArray(int... indices) {
-		Shape[] resul = new Shape[indices.length];
-		int k = 0;
-		for (int n : indices) {
-			resul[k] = shapes.get(n);
-			k++;
-		}
+    /**
+     * Extracts a part of a MultiShape, given by a set of indices.Indices are
+     * unaltered, so shape 5 after slicing is still shape 5.
+     *
+     * @param <T> Multishape subclass
+     * @param delete If true, sliced shapes will be removed from the original
+     * and replaced with empty shapes.
+     * @param indices indices to slice (varargs)
+     * @return A new multishape instance with the extracted shapes.
+     */
+    public <T extends MultiShapeObject> T slice(boolean delete, Integer... indices) {
+        List<Integer> list = Arrays.asList(indices);
+        T resul = (T) this.copy();
+        //Populate the new MultiShape with n empty shapes
+        for (int n = 0; n < resul.size(); n++) {
+            resul.shapes.set(n, new Shape());
+        }
+        for (int n = 0; n < this.shapes.size(); n++) {
+            if (list.contains(n)) {
+                final Shape copy = this.get(n).copy();
+                resul.shapes.set(n, copy);
+                resul.mpMultiShape.add(copy);
+                if (delete) {// if this index is marked for extraction...
+                    this.mpMultiShape.remove(this.get(n));
+                    this.shapes.set(n, new Shape());
+                    
+                }
+                
+            }
+        }
+        
+        return resul;
+    }
+    
+    /**
+     * Overloaded method, equivalent to slice(true,indices)
+     *
+     * @param <T> Multishape subclass object
+     * @param indices indices to slice (varargs)
+     * @return A new multishape instance with the extracted shapes. The original
+     * multishape object is altered as the extracted shapes becomes null shapes
+     */
+    public <T extends MultiShapeObject> T slice(Integer... indices) {
+        return slice(true, indices);
+    }
 
-		return resul;
-	}
+    /**
+     * Gets an array of Shapes with the given indices. This method is used
+     * mostly to combine with animations that accepts a varargs of MathObject
+     *
+     * @param indices
+     * @return
+     */
+    public Shape[] getSubArray(int... indices) {
+        Shape[] resul = new Shape[indices.length];
+        int k = 0;
+        for (int n : indices) {
+            resul[k] = shapes.get(n);
+            k++;
+        }
+        
+        return resul;
+    }
+    
+    @Override
+    public <T extends MathObject> T applyAffineTransform(AffineJTransform tr) {
+        for (Shape sh : shapes) {
+            sh.applyAffineTransform(tr);
+        }
+        tr.applyTransformsToDrawingProperties(this);
+        return (T) this;
+    }
+    
+    @Override
+    public final Stylable getMp() {
+        return mpMultiShape;
+    }
+    
+    public boolean containsPoint(Point p) {
+        return containsPoint(p.v);
+    }
+    
+    public boolean containsPoint(Vec v) {
+        for (Shape sh : shapes) {
+            if (sh.containsPoint(v)) {
+                return true;
+            }
+        }
+        return false;
+    }
 
-	@Override
-	public <T extends MathObject> T applyAffineTransform(AffineJTransform tr) {
-		for (Shape sh : shapes) {
-			sh.applyAffineTransform(tr);
-		}
-		tr.applyTransformsToDrawingProperties(this);
-		return (T) this;
-	}
-
-	@Override
-	public final Stylable getMp() {
-		return mpMultiShape;
-	}
-
-	public boolean containsPoint(Point p) {
-		return containsPoint(p.v);
-	}
-
-	public boolean containsPoint(Vec v) {
-		for (Shape sh : shapes) {
-			if (sh.containsPoint(v)) {
-				return true;
-			}
-		}
-		return false;
-	}
-/**
-	 * Returns an array of MathObject with the contents of the group.
-	 *
-	 * @return The array
-	 */
-	public Shape[] toArray() {
-		return shapes.toArray(new Shape[shapes.size()]);
-	}
+    /**
+     * Returns an array of MathObject with the contents of the group.
+     *
+     * @return The array
+     */
+    public Shape[] toArray() {
+        return shapes.toArray(new Shape[shapes.size()]);
+    }
 }
