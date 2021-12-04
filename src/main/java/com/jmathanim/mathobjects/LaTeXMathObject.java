@@ -217,7 +217,7 @@ public class LaTeXMathObject extends SVGMathObject {
             JMathAnimScene.logger.info("Compiling LaTeX string " + this.text);
             File dviFile = new File(baseFileName + ".dvi");
             String od = outputDir.getCanonicalPath();
-            runExternalCommand("letex -output-directory=" + od + " " + this.latexFile.getCanonicalPath());
+            runExternalCommand("latex -output-directory=" + od + " " + this.latexFile.getCanonicalPath());
             JMathAnimScene.logger.debug("Done compiling {}", latexFile.getCanonicalPath());
             runExternalCommand("dvisvgm -n1 " + dviFile.getCanonicalPath());
             JMathAnimScene.logger.debug("Done converting {}", dviFile.getCanonicalPath());

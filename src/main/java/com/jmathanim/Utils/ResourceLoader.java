@@ -17,6 +17,8 @@
  */
 package com.jmathanim.Utils;
 
+import com.jmathanim.jmathanim.JMathAnimScene;
+import com.sun.tools.javac.file.BaseFileManager;
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -31,69 +33,72 @@ import java.util.logging.Logger;
  */
 public class ResourceLoader {
 
-	JMathAnimConfig config;
+    JMathAnimConfig config;
 
-	public ResourceLoader() {
-		config = JMathAnimConfig.getConfig();
-	}
+    public ResourceLoader() {
+        config = JMathAnimConfig.getConfig();
+    }
 
-	/**
-	 * Returns an URL pointing the
-	 * resource.loadResource(&quot;c:/config/config.xml&quot;) will return an URL
-	 * pointing to external file loadResource(&quot;#config/config.xml&quot;) will
-	 * return an URL pointing to internal file located at
-	 * src/resources/config/config.xml
-	 *
-	 *
-	 * @param resource String with the path of the resource. If this string begins
-	 *                 with &quot;#&quot; it denotes a internal file located at
-	 *                 resources directory
-	 * @param folder   Folder where to look at (config, arrows,...)
-	 * @return URL with the resource location
-	 */
-	public URL getResource(String resource, String folder) {
-		if (resource.startsWith("!")) {
-			return parseExternalAbsoluteResource(resource.substring(1));
-		}
+    /**
+     * Returns an URL pointing the
+     * resource.loadResource(&quot;c:/config/config.xml&quot;) will return an
+     * URL pointing to external file
+     * loadResource(&quot;#config/config.xml&quot;) will return an URL pointing
+     * to internal file located at src/resources/config/config.xml
+     *
+     *
+     * @param resource String with the path of the resource. If this string
+     * begins with &quot;#&quot; it denotes a internal file located at resources
+     * directory
+     * @param folder Folder where to look at (config, arrows,...)
+     * @return URL with the resource location
+     */
+    public URL getResource(String resource, String folder) {
+        if (resource.startsWith("!")) {
+            return parseExternalAbsoluteResource(resource.substring(1));
+        }
 
-		if (resource.startsWith("#")) {
-			return parseInternalResource(resource.substring(1), folder);
-		} else {
-			return parseExternalRelativeResource(resource, folder);
-		}
-	}
+        if (resource.startsWith("#")) {
+            return parseInternalResource(resource.substring(1), folder);
+        } else {
+            return parseExternalRelativeResource(resource, folder);
+        }
+    }
 
-	private URL parseExternalRelativeResource(String resource, String folder) {
-		URL externalResource = null;
-		try {
-			File resourcesDir = JMathAnimConfig.getConfig().getResourcesDir();
-			String baseFileName = resourcesDir.getCanonicalPath() + File.separator + folder + File.separator + resource;
-			File file = new File(baseFileName);
-			externalResource = file.toURI().toURL();
-		} catch (MalformedURLException ex) {
-			Logger.getLogger(ResourceLoader.class.getName()).log(Level.SEVERE, null, ex);
-		} catch (IOException ex) {
-			Logger.getLogger(ResourceLoader.class.getName()).log(Level.SEVERE, null, ex);
-		}
-		return externalResource;
-	}
+    private URL parseExternalRelativeResource(String resource, String folder) {
+        URL externalResource = null;
+        String baseFileName = "";
+        try {
+            File resourcesDir = JMathAnimConfig.getConfig().getResourcesDir();
+            baseFileName = resourcesDir.getCanonicalPath() + File.separator + folder + File.separator + resource;
+            File file = new File(baseFileName);
+            externalResource = file.toURI().toURL();
+        } catch (MalformedURLException ex) {
+            JMathAnimScene.logger.error("Couldn't load resource " + baseFileName);
+        } catch (IOException ex) {
+            JMathAnimScene.logger.error("An unknown I/O error. Maybe you don't have permissions"
+                    + "to acces files on your working directory or simply this file doesn't exists at all!");
+            JMathAnimScene.logger.error("Couldn't load resource " + baseFileName);
+        }
+        return externalResource;
+    }
 
-	private URL parseInternalResource(String resource, String folder) {
-		String urlStr = folder + "/" + resource;
+    private URL parseInternalResource(String resource, String folder) {
+        String urlStr = folder + "/" + resource;
 
-		return this.getClass().getClassLoader().getResource(urlStr);
-	}
+        return this.getClass().getClassLoader().getResource(urlStr);
+    }
 
-	private URL parseExternalAbsoluteResource(String resource) {
-		URL externalResource = null;
-		try {
-			File file = new File(resource);
-			externalResource = file.toURI().toURL();
-		} catch (MalformedURLException ex) {
-			Logger.getLogger(ResourceLoader.class.getName()).log(Level.SEVERE, null, ex);
-		} catch (IOException ex) {
-			Logger.getLogger(ResourceLoader.class.getName()).log(Level.SEVERE, null, ex);
-		}
-		return externalResource;
-	}
+    private URL parseExternalAbsoluteResource(String resource) {
+        URL externalResource = null;
+        try {
+            File file = new File(resource);
+            externalResource = file.toURI().toURL();
+        } catch (MalformedURLException ex) {
+            Logger.getLogger(ResourceLoader.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            Logger.getLogger(ResourceLoader.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return externalResource;
+    }
 }
