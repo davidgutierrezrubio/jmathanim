@@ -11,6 +11,10 @@ You can also follow my [Youtube](https://www.youtube.com/channel/UCeczwEqSrAwZbP
 
 # What's new?
 
+Version 0.9.4-SNAPSHOT:
+
+* Fixed a bug that prevented properly styling sliced MultiShapeObjects or LaTexMathObjects.
+
 Version 0.9.3:
 
 * Added ContourHighlight animation.

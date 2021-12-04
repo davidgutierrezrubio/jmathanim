@@ -68,6 +68,10 @@ If you want to use the snapshot version, you need to add also the repository whe
 
 ![image-20201110150746477](07_install.png)
 
+# Javadocs
+
+The classes and methods are (almost all of them) documented in javadoc style. If you want to download them, in Netbeans is pretty straightforwad. Simply go to the project tree under the "Dependencies" folder and, right-click on "jmathanim" and select the "download javadoc" option.
+
 # Writing the basic code
 7) Hit the "Clean and build" button. This will tell Maven to download all needed dependencies. Should download JavaFX and Xuggler, which, depending on you bandwidth, may take a few minutes. Then we will make this class a subclass of `Scene2D`. If everything goes well, the autocomplete should show the `Scene2D`class, and it will require you to implement the 2 abstract methods `setupSketch()` and `runSketch()`:
 
