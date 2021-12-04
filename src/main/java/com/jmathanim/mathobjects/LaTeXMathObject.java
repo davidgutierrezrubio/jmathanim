@@ -111,9 +111,18 @@ public class LaTeXMathObject extends SVGMathObject {
             File f = new File(compileLaTeXFile());
             importSVG(f);
         } catch (IOException ex) {
-            Logger.getLogger(LaTeXMathObject.class.getName()).log(Level.SEVERE, null, ex);
+            if (ex.getLocalizedMessage().toUpperCase().startsWith("CANNOT RUN PROGRAM")) {
+                JMathAnimScene.logger.error("Oops, it seems JMathAnim cannot find your LaTeX executable."
+                        + " Make sure you have LaTeX installed on your system and the latex program"
+                        + " is accesible from your path");
+            } else {
+                JMathAnimScene.logger.error("An unknown I/O error. Maybe you don't have permissions"
+                        + "to write files on your working directory or there is not enough space on disk.");
+            }
+             JMathAnimScene.logger.warn("An empty LaTeXMathObject will be created");
         } catch (Exception ex) {
-            Logger.getLogger(LaTeXMathObject.class.getName()).log(Level.SEVERE, null, ex);
+            JMathAnimScene.logger.error("An unknown  error happened trying to create a LaTeXMathObject");
+            JMathAnimScene.logger.warn("An empty LaTeXMathObject will be created");
         }
 
         int n = 0;
@@ -194,6 +203,13 @@ public class LaTeXMathObject extends SVGMathObject {
         }
     }
 
+    /**
+     * Compile the LaTeX File to SVG
+     *
+     * @return The file name of the generated SVG
+     * @throws IOException
+     * @throws InterruptedException
+     */
     private String compileLaTeXFile() throws IOException, InterruptedException {
         String svgFilename = baseFileName + ".svg";
         File svgFile = new File(svgFilename);
@@ -201,7 +217,7 @@ public class LaTeXMathObject extends SVGMathObject {
             JMathAnimScene.logger.info("Compiling LaTeX string " + this.text);
             File dviFile = new File(baseFileName + ".dvi");
             String od = outputDir.getCanonicalPath();
-            runExternalCommand("latex -output-directory=" + od + " " + this.latexFile.getCanonicalPath());
+            runExternalCommand("letex -output-directory=" + od + " " + this.latexFile.getCanonicalPath());
             JMathAnimScene.logger.debug("Done compiling {}", latexFile.getCanonicalPath());
             runExternalCommand("dvisvgm -n1 " + dviFile.getCanonicalPath());
             JMathAnimScene.logger.debug("Done converting {}", dviFile.getCanonicalPath());
@@ -213,7 +229,7 @@ public class LaTeXMathObject extends SVGMathObject {
         String line;
         Process p = Runtime.getRuntime().exec(command, null, outputDir);
         BufferedReader bre;
-        try (BufferedReader bri = new BufferedReader(new InputStreamReader(p.getInputStream()))) {
+        try ( BufferedReader bri = new BufferedReader(new InputStreamReader(p.getInputStream()))) {
             bre = new BufferedReader(new InputStreamReader(p.getErrorStream()));
             while ((line = bri.readLine()) != null) {
                 JMathAnimScene.logger.debug(line);

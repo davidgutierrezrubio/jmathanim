@@ -23,6 +23,7 @@ import com.jmathanim.Styling.PaintStyle;
 import com.jmathanim.Styling.Stylable;
 import com.jmathanim.Utils.AffineJTransform;
 import com.jmathanim.Utils.Anchor;
+import com.jmathanim.Utils.EmptyRect;
 import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
@@ -168,7 +169,7 @@ public class MultiShapeObject extends MathObject implements Iterable<Shape> {
             }
             return resul;
         } else {
-            return null;
+            return new EmptyRect();
         }
     }
     

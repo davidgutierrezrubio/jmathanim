@@ -26,6 +26,7 @@ import com.jmathanim.Utils.ResourceLoader;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.JMPathPoint.JMPathPointType;
 import java.io.File;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -94,7 +95,7 @@ public class SVGMathObject extends MultiShapeObject {
 //        currentDrawColor = getMp().getDrawColor().copy();
 	}
 
-	protected final void importSVG(File file) throws Exception {
+	protected final void importSVG(File file) throws MalformedURLException, Exception{
 		JMathAnimScene.logger.debug("Importing SVG file {}", file.getCanonicalPath());
 		importSVG(file.toURI().toURL());
 	}
