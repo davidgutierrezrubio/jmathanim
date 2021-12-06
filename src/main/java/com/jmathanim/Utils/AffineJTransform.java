@@ -67,6 +67,11 @@ public class AffineJTransform {
         this.matrix = matrix;
     }
 
+    public AffineJTransform copy() {
+        RealMatrix copyMatrix = this.matrix.copy();
+        return new AffineJTransform(copyMatrix);
+    }
+    
     /**
      * Sets the imagen of the origin by this transform In practice, it changes
      * the first row of the matrix transform
@@ -603,6 +608,10 @@ public class AffineJTransform {
         AffineJTransform tr3 = AffineJTransform.createDirect2DHomothecy(A, B, D, E, lambda);// Interpolated here
         // The final transformation
         return tr1.compose(tr2).compose(tr1.getInverse()).compose(tr3);
+    }
+
+    public void copyFrom(AffineJTransform resul) {
+        this.setMatrix(resul.getMatrix().copy());
     }
 
 }

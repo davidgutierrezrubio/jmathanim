@@ -282,6 +282,16 @@ public class Transform extends AnimationWithEffects {
         return transformStrategy.processAnimation();
     }
 
+    /**
+     * Gets a reference to the intermediate transformed object. The transform
+     * animations from A to B usually works removing A, creating an auxiliary
+     * object C that will be transformed, and, after the animation is finished,
+     * C is removed and B is added to the scene. This method gets a reference to
+     * the C object. Animations must be initialized before calling this method
+     * or it will return null.
+     *
+     * @return The intermediate transformed object. 
+     */
     public MathObject getIntermediateTransformedObject() {
         if (transformStrategy != null) {
             return transformStrategy.getIntermediateTransformedObject();

@@ -18,10 +18,11 @@
 package com.jmathanim.Utils;
 
 /**
+ * Represents an empty rect. Should be returned and managed in special cases
+ * (for example, when computing the bounding box of an empty shape).
  *
- * @author David
  */
-public class EmptyRect extends Rect{
+public class EmptyRect extends Rect {
 
     public EmptyRect() {
         super(0, 0, 0, 0);
@@ -31,5 +32,5 @@ public class EmptyRect extends Rect{
     public boolean isEmpty() {
         return true;
     }
-    
+
 }

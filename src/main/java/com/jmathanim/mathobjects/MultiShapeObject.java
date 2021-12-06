@@ -72,10 +72,6 @@ public class MultiShapeObject extends MathObject implements Iterable<Shape> {
         return shapes.add(e);
     }
     
-    public boolean addJMPathObject(JMPath p) {
-        return shapes.add(new Shape(p, null));
-    }
-    
     @Override
     public <T extends MathObject> T fillColor(PaintStyle fc) {
         for (Shape jmp : shapes) {

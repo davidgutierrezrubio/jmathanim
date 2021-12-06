@@ -933,39 +933,6 @@ public class JMPath implements Updateable, Stateable, Boxable, Iterable<JMPathPo
         return li;
     }
 
-    public void determineStraightSegments() {
-        for (int n = 0; n < size(); n++) {
-            JMPathPoint p1 = jmPathPoints.get(n);
-            JMPathPoint p2 = jmPathPoints.get(n + 1);
-            if ((p1.p.to(p1.cpExit).norm() < .0001) && (p2.p.to(p2.cpEnter).norm() < .0001)) {
-                p2.isCurved = false;
-            } else {
-                p2.isCurved = true;
-            }
-        }
-    }
-
-    public ArrayList<ArrayList<Point>> computePolygonalPieces(Camera cam) {
-        ArrayList<ArrayList<Point>> resul = new ArrayList<>();
-        ArrayList<Point> connectedSegments = new ArrayList<>();
-        for (int n = 0; n < size(); n++) {
-            JMPathPoint p = jmPathPoints.get(n);
-            JMPathPoint q = jmPathPoints.get(n + 1);
-
-            if (q.isThisSegmentVisible) {
-                computeStraightenedPoints(connectedSegments, p, q, cam);
-//                connectedSegments.addAll(seg);
-            } else {
-                resul.add(connectedSegments);
-                connectedSegments = new ArrayList<>();
-            }
-        }
-        if (!connectedSegments.isEmpty()) {
-            resul.add(connectedSegments);
-        }
-        return resul;
-    }
-
     /**
      * Get the nth-element of the path
      *
@@ -974,51 +941,6 @@ public class JMPath implements Updateable, Stateable, Boxable, Iterable<JMPathPo
      */
     public JMPathPoint get(int index) {
         return jmPathPoints.get(index);
-    }
-
-    private void computeStraightenedPoints(ArrayList<Point> connectedSegments, JMPathPoint p, JMPathPoint q, Camera cam) {
-        if (connectedSegments.isEmpty()) {
-            connectedSegments.add(p.p);
-        }
-        if (q.isCurved) {
-            int num = appropiateSubdivisionNumber(p.p.v, q.p.v, cam);
-            for (int n = 1; n < num; n++) {
-                connectedSegments.add(p.interpolate(q, n * 1d / num).p.drawColor("blue"));
-            }
-
-        }
-        connectedSegments.add(q.p);
-    }
-
-    private int appropiateSubdivisionNumber(Vec v1, Vec v2, Camera cam) {
-        double mathviewHeight;
-        if (cam instanceof Camera3D) {
-            Camera3D cam3D = (Camera3D) cam;
-
-            double zDepth = v1.interpolate(v2, .5).minus(cam3D.eye.v).norm();
-            mathviewHeight = cam3D.getMathViewHeight3D(zDepth);
-        } else {
-            mathviewHeight = cam.getMathView().getHeight();
-        }
-
-        //An estimation of subdivision number, depending on the covered area
-        double d = (Math.abs(v1.x - v2.x) + Math.abs(v1.y - v2.y) + Math.abs(v1.z - v2.z)) / mathviewHeight;
-        if (d >= 1) {
-            return 30;
-        }
-        if (d > .5) {
-            return 20;
-        }
-        if (d > .2) {
-            return 15;
-        }
-        if (d > .1) {
-            return 10;
-        }
-        if (d > .05) {
-            return 7;
-        }
-        return 5;
     }
 
     @Override
@@ -1035,13 +957,6 @@ public class JMPath implements Updateable, Stateable, Boxable, Iterable<JMPathPo
      * @return The subpath
      */
     public JMPath getSubPath(double a, double b) {
-
-//        if (a>b) {
-//            JMPath tempPath = this.rawCopy();
-//            tempPath.merge(tempPath.rawCopy(), true, false);
-//            return tempPath.getSubPath(.5 * a, .5 + .5 * b);
-//        }
-        //If a is greater than b, reverse the path
         if (a > b) {
             JMPath tempPath = this.rawCopy();
             tempPath.reverse();
@@ -1092,7 +1007,8 @@ public class JMPath implements Updateable, Stateable, Boxable, Iterable<JMPathPo
 
     /**
      * Opens the path. This process adds a new JMPathPoint (copy of the first)
-     * at the end. If the path is already opened (at index 0) this method has no effect.
+     * at the end. If the path is already opened (at index 0) this method has no
+     * effect.
      *
      */
     public void openPath() {
@@ -1128,8 +1044,18 @@ public class JMPath implements Updateable, Stateable, Boxable, Iterable<JMPathPo
         return newPoint;
     }
 
-    public JMPath merge(JMPath pa2, boolean connectAtoB, boolean connectBtoA) {
-        JMPath pa = pa2.copy();
+    /**
+     * Merge this path A with another one B
+     *
+     * @param secondPath The second path to merge
+     * @param connectAtoB If true, the end of A will be connected to the
+     * beginning of B by a straight line
+     * @param connectBtoA If true, the end of B will be connected to the
+     * beginning of A by a straight line
+     * @return This object
+     */
+    public JMPath merge(JMPath secondPath, boolean connectAtoB, boolean connectBtoA) {
+        JMPath pa = secondPath.copy();
         // If the first path is already a closed one, open it
         // with 2 identical points (old-fashioned style of closing shapes)
         final JMPathPoint jmPoint = jmPathPoints.get(0);

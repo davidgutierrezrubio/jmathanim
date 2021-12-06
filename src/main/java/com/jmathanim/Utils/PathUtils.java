@@ -1,0 +1,229 @@
+/*
+ * Copyright (C) 2020 David Gutiérrez Rubio davidgutierrezrubio@gmail.com
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+ */
+package com.jmathanim.Utils;
+
+import com.jmathanim.Cameras.Camera;
+import com.jmathanim.Cameras.Camera3D;
+import com.jmathanim.mathobjects.JMPath;
+import com.jmathanim.mathobjects.JMPathPoint;
+import com.jmathanim.mathobjects.JMPathPoint.JMPathPointType;
+import com.jmathanim.mathobjects.Point;
+import java.util.ArrayList;
+
+/**
+ * Class with static methods to perform interpolations on path
+ *
+ * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
+ */
+public class PathUtils {
+
+    public static final double DEFAULT_TENSION = 0.7d;
+
+    public static void generateControlPointsBySimpleSlopes(JMPath path) {
+        generateControlPointsBySimpleSlopes(path, DEFAULT_TENSION);
+    }
+
+    /**
+     * Generate control points from a bezier cubic curve, so that control points
+     * of point n are parallel to the line from point n-1 and n+1. The distance
+     * from point n to the control points is multiplied by the 0 to 1 tension
+     * parameter. A 1 tension means straight lines. If first and last point are
+     * not connected, an approximation is used based on the control point of
+     * their neighbour points
+     *
+     * @param tension The tension to apply to the curve
+     */
+    public static void generateControlPointsBySimpleSlopes(JMPath path, double tension) // For now, only one method
+    {
+        // If this is a SVG path, don't generate control points
+        if (path.pathType == JMPath.SVG_PATH) {
+            return;
+        }
+        int numPoints = path.jmPathPoints.size();
+
+        for (int n = 0; n < numPoints + 1; n++) {
+            int i = n - 1;
+            int k = n + 1;
+            int L = n + 2;
+            JMPathPoint p1 = path.jmPathPoints.get(i);
+            JMPathPoint p2 = path.jmPathPoints.get(n);// Compute cp1 for this
+            JMPathPoint p3 = path.jmPathPoints.get(k);// Compute cp2 for this
+            JMPathPoint p4 = path.jmPathPoints.get(L);
+
+            double x1 = p1.p.v.x;
+            double y1 = p1.p.v.y;
+            double z1 = p1.p.v.z;
+            double x2 = p2.p.v.x;
+            double y2 = p2.p.v.y;
+            double z2 = p2.p.v.z;
+            double x3 = p3.p.v.x;
+            double y3 = p3.p.v.y;
+            double z3 = p3.p.v.z;
+            double x4 = p4.p.v.x;
+            double y4 = p4.p.v.y;
+            double z4 = p4.p.v.z;
+            if (p3.isCurved) {
+//                double mod31 = Math.sqrt((x3 - x1) * (x3 - x1) + (y3 - y1) * (y3 - y1));//||p1-p3||
+//                double mod42 = Math.sqrt((x4 - x2) * (x4 - x2) + (y4 - y2) * (y4 - y2));//||p2-p4||
+//                double mod23 = Math.sqrt((x3 - x2) * (x3 - x2) + (y3 - y2) * (y3 - y2));//||p2-p3||
+                double mod31 = p1.p.to(p3.p).norm();
+                double mod42 = p4.p.to(p2.p).norm();
+                double mod23 = p2.p.to(p3.p).norm();
+                double cx1 = x2 + mod23 / mod31 * (1 - tension) * (x3 - x1);
+                double cy1 = y2 + mod23 / mod31 * (1 - tension) * (y3 - y1);
+                double cz1 = z2 + mod23 / mod31 * (1 - tension) * (z3 - z1);
+                double cx2 = x3 - mod23 / mod42 * (1 - tension) * (x4 - x2);
+                double cy2 = y3 - mod23 / mod42 * (1 - tension) * (y4 - y2);
+                double cz2 = z3 - mod23 / mod42 * (1 - tension) * (z4 - z2);
+                p2.cpExit.v.x = cx1;
+                p2.cpExit.v.y = cy1;
+                p2.cpExit.v.z = cz1;
+                p3.cpEnter.v.x = cx2;
+                p3.cpEnter.v.y = cy2;
+                p3.cpEnter.v.z = cz2;
+            } else {
+                // If this path is straight, control points becomes vertices. Although this is
+                // not used
+                // when drawing straight paths, it becomes handy when doing transforms from
+                // STRAIGHT to CURVED paths
+                p2.cpExit.v.copyFrom(p2.p.v);
+                p3.cpEnter.v.copyFrom(p3.p.v);
+            }
+
+        }
+        JMPathPoint jp0, jp1;
+        Vec v;
+        // Compute cp1 and cp2 from first and last points
+        jp0 = path.jmPathPoints.get(0);
+        if (!jp0.isThisSegmentVisible) {
+            jp1 = path.jmPathPoints.get(1);
+            v = jp0.p.to(jp1.cpEnter).multInSite(PathUtils.DEFAULT_TENSION);
+            jp0.cpExit.copyFrom(jp0.p.add(v));
+
+            jp1 = path.jmPathPoints.get(numPoints - 2);
+            jp0 = path.jmPathPoints.get(numPoints - 1);
+            if (jp0.isCurved) {
+                v = jp0.p.to(jp1.cpExit).multInSite(PathUtils.DEFAULT_TENSION);
+                jp0.cpEnter.copyFrom(jp0.p.add(v));
+            }
+        }
+    }
+
+    public JMPathPoint getInterpolatedPoint(JMPathPoint jmp1, JMPathPoint jmp2, double alpha) {
+        JMPathPoint interpolate;
+        if (jmp2.isCurved) {
+            // De Casteljau's Algorithm:
+            // https://en.wikipedia.org/wiki/De_Casteljau%27s_algorithm
+            Point E = jmp1.p.interpolate(jmp1.cpExit, alpha); // New cp1 of v1
+            Point G = jmp2.cpEnter.interpolate(jmp2.p, alpha); // New cp2 of v2
+            Point F = jmp1.cpExit.interpolate(jmp2.cpEnter, alpha);
+            Point H = E.interpolate(F, alpha);// cp2 of interpolation point
+            Point J = F.interpolate(G, alpha);// cp1 of interpolation point
+            Point K = H.interpolate(J, alpha); // Interpolation point
+            interpolate = new JMPathPoint(K, jmp2.isThisSegmentVisible, JMPathPointType.INTERPOLATION_POINT);
+            interpolate.cpExit.v.copyFrom(J.v);
+            interpolate.cpEnter.v.copyFrom(H.v);
+
+        } else {
+            Point K = jmp1.p.interpolate(jmp2.p, alpha);
+            interpolate = new JMPathPoint(K, jmp2.isThisSegmentVisible, JMPathPointType.INTERPOLATION_POINT);
+        }
+        interpolate.isCurved = jmp2.isCurved;
+        return interpolate;
+    }
+
+    public void determineStraightSegments(JMPath path) {
+        CircularArrayList<JMPathPoint> jmPathPoints = path.jmPathPoints;
+        for (int n = 0; n < path.size(); n++) {
+            JMPathPoint p1 = jmPathPoints.get(n);
+            JMPathPoint p2 = jmPathPoints.get(n + 1);
+            if ((p1.p.to(p1.cpExit).norm() < .0001) && (p2.p.to(p2.cpEnter).norm() < .0001)) {
+                p2.isCurved = false;
+            } else {
+                p2.isCurved = true;
+            }
+        }
+    }
+
+    public ArrayList<ArrayList<Point>> computePolygonalPieces(Camera cam, JMPath path) {
+        CircularArrayList<JMPathPoint> jmPathPoints = path.jmPathPoints;
+        ArrayList<ArrayList<Point>> resul = new ArrayList<>();
+        ArrayList<Point> connectedSegments = new ArrayList<>();
+        for (int n = 0; n < path.size(); n++) {
+            JMPathPoint p = jmPathPoints.get(n);
+            JMPathPoint q = jmPathPoints.get(n + 1);
+
+            if (q.isThisSegmentVisible) {
+                computeStraightenedPoints(connectedSegments, p, q, cam);
+//                connectedSegments.addAll(seg);
+            } else {
+                resul.add(connectedSegments);
+                connectedSegments = new ArrayList<>();
+            }
+        }
+        if (!connectedSegments.isEmpty()) {
+            resul.add(connectedSegments);
+        }
+        return resul;
+    }
+
+    private void computeStraightenedPoints(ArrayList<Point> connectedSegments, JMPathPoint p, JMPathPoint q, Camera cam) {
+        if (connectedSegments.isEmpty()) {
+            connectedSegments.add(p.p);
+        }
+        if (q.isCurved) {
+            int num = appropiateSubdivisionNumber(p.p.v, q.p.v, cam);
+            for (int n = 1; n < num; n++) {
+                connectedSegments.add(p.interpolate(q, n * 1d / num).p.drawColor("blue"));
+            }
+
+        }
+        connectedSegments.add(q.p);
+    }
+
+    private int appropiateSubdivisionNumber(Vec v1, Vec v2, Camera cam) {
+        double mathviewHeight;
+        if (cam instanceof Camera3D) {
+            Camera3D cam3D = (Camera3D) cam;
+
+            double zDepth = v1.interpolate(v2, .5).minus(cam3D.eye.v).norm();
+            mathviewHeight = cam3D.getMathViewHeight3D(zDepth);
+        } else {
+            mathviewHeight = cam.getMathView().getHeight();
+        }
+
+        //An estimation of subdivision number, depending on the covered area
+        double d = (Math.abs(v1.x - v2.x) + Math.abs(v1.y - v2.y) + Math.abs(v1.z - v2.z)) / mathviewHeight;
+        if (d >= 1) {
+            return 30;
+        }
+        if (d > .5) {
+            return 20;
+        }
+        if (d > .2) {
+            return 15;
+        }
+        if (d > .1) {
+            return 10;
+        }
+        if (d > .05) {
+            return 7;
+        }
+        return 5;
+    }
+}

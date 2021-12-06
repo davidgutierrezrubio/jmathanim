@@ -52,7 +52,7 @@ public class ShowCreation extends Animation {
         ARROW_CREATION, DELIMITER_CREATION, GROUP_CREATION, AXES_CREATION
     }
 
-    public final Point[] pencilPosition;
+    protected final Point[] pencilPosition;
     MathObject mobj;
     CanonicalJMPath canonPath;
     private CreationStrategy creationStrategy;
@@ -89,7 +89,7 @@ public class ShowCreation extends Animation {
             removeThisAtTheEnd = this.mobj;
             addThisAtTheEnd = mobj;
         }
-        pencilPosition = new Point[2];
+        pencilPosition = new Point[]{Point.origin(), Point.origin()};
     }
 
     @Override
@@ -120,8 +120,8 @@ public class ShowCreation extends Animation {
     public boolean processAnimation() {
         if (creationStrategy != null) {
             boolean ret = creationStrategy.processAnimation();
-            pencilPosition[0] = creationStrategy.getPencilPosition()[0];
-            pencilPosition[1] = creationStrategy.getPencilPosition()[1];
+            pencilPosition[0].copyFrom(creationStrategy.getPencilPosition()[0]);
+            pencilPosition[1].copyFrom(creationStrategy.getPencilPosition()[1]);
             return ret;
         } else {
             return true;
@@ -273,10 +273,10 @@ public class ShowCreation extends Animation {
     }
 
     /**
-     * Returns the "pencil" position.
+     * Returns a reference to the "pencil" position.
      *
      * @return An array with 2 point objects. The 0 index stores the previous
-     * position of the pencil and 1 stores the current.
+     * position of the pencil and 1 stores the current direction
      */
     public Point[] getPencilPosition() {
         return pencilPosition;

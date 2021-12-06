@@ -19,6 +19,7 @@ package com.jmathanim.mathobjects;
 
 import com.jmathanim.Styling.JMColor;
 import com.jmathanim.Utils.JMathAnimConfig;
+import com.jmathanim.Utils.SVGUtils;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import java.io.BufferedReader;
 import java.io.File;
@@ -109,7 +110,8 @@ public class LaTeXMathObject extends SVGMathObject {
         try {
             generateLaTeXDocument();
             File f = new File(compileLaTeXFile());
-            importSVG(f);
+            SVGUtils svgu=new SVGUtils();
+            svgu.importSVG(f.toURI().toURL(),this);
         } catch (IOException ex) {
             if (ex.getLocalizedMessage().toUpperCase().startsWith("CANNOT RUN PROGRAM")) {
                 JMathAnimScene.logger.error("Oops, it seems JMathAnim cannot find your LaTeX executable."
