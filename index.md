@@ -13,6 +13,9 @@ You can also follow my [Youtube](https://www.youtube.com/channel/UCeczwEqSrAwZbP
 
 Version 0.9.4-SNAPSHOT:
 
+* Improved handling of thickness property.
+* SVG import now properly handless thickness and transform attributes.
+
 * Fixed a bug that prevented properly styling sliced MultiShapeObjects or LaTexMathObjects.
 
 Version 0.9.3:
