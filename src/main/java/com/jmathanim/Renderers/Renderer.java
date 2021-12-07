@@ -23,6 +23,7 @@ import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.AbstractJMImage;
+import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.Shape;
 
 /**
@@ -90,5 +91,7 @@ public abstract class Renderer {
 
     abstract public void debugText(String text, Vec loc);
 
-    abstract public double getThicknessForMathWidth(double w);
+    abstract public double MathWidthToThickness(double w);
+    abstract public double ThicknessToMathWidth(double th);
+    abstract public double ThicknessToMathWidth(MathObject obj);
 }

@@ -8,32 +8,37 @@
         <style name="default">
             <drawColor>black</drawColor>
             <fillColor>#00000000</fillColor>
-            <thickness>1</thickness>
+            <thickness>4</thickness>
         </style>
+          <style name="dotdefault">
+            <drawColor>black</drawColor>
+            <fillColor>#00000000</fillColor>
+            <thickness>30</thickness>
+        </style>  
         <style name="latexdefault">
             <drawColor>black</drawColor>
             <fillColor>black</fillColor>
-            <thickness>.5</thickness>
+            <thickness>1</thickness>
         </style>
         <style name="solidRed">
             <drawColor>black</drawColor>
             <fillColor>#f55652</fillColor>
-            <thickness>4</thickness>
+            <thickness>8</thickness>
         </style>
         <style name="solidBlue">
             <drawColor>black</drawColor>
             <fillColor>#7ca0c0</fillColor>
-            <thickness>4</thickness>
+            <thickness>8</thickness>
         </style>
         <style name="solidGreen">
             <drawColor>black</drawColor>
             <fillColor>#9bc693</fillColor>
-            <thickness>4</thickness>
+            <thickness>8</thickness>
         </style>
         <style name="solidOrange">
             <drawColor>black</drawColor>
             <fillColor>orange</fillColor>
-            <thickness>4</thickness>
+            <thickness>8</thickness>
         </style>
     </styles>
 </JMathAnimConfig>

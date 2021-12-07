@@ -157,6 +157,7 @@ public class Point extends MathObject {
 	public Point(double x, double y, double z, MODrawProperties mp) {
 		super(mp);
 		this.v = new Vec(x, y, z);
+                this.getMp().loadFromStyle("dotdefault");
 		this.getMp().setAbsoluteThickness(true);
 //        this.getMp().thickness = 8d;//default value
 	}
@@ -230,30 +231,29 @@ public class Point extends MathObject {
 	}
 
 	public Shape generateDotShape() {
-		double st;
+		double st=scene.getRenderer().ThicknessToMathWidth(this);
+		double th=scene.getRenderer().MathWidthToThickness(st);
 		switch (getMp().getDotStyle()) {
 		case CROSS:
 //                st = mp.computeScreenThickness(r)/20;
-			st = getMp().getThickness() / 70;//TODO: Thickness should always be 1
+//			st = getMp().getThickness() / 70;//TODO: Thickness should always be 1
 			dotShape = new Shape();
 			dotShape.getPath().addPoint(Point.at(-1, 1), Point.at(1, -1), Point.at(1, 1), Point.at(-1, -1));
 			dotShape.get(0).isThisSegmentVisible = false;
 			dotShape.get(2).isThisSegmentVisible = false;
-			dotShape.shift(v).scale(st).drawColor(getMp().getDrawColor()).thickness(getMp().getThickness());
+			dotShape.shift(v).scale(.5*st).drawColor(getMp().getDrawColor()).thickness(.25*th);
 			break;
 		case PLUS:
 //                st = mp.computeScreenThickness(r)/20;
-			st = getMp().getThickness() / 70;
 			dotShape = new Shape();
 			dotShape.getPath().addPoint(Point.at(0, 1), Point.at(0, -1), Point.at(1, 0), Point.at(-1, 0));
 			dotShape.get(0).isThisSegmentVisible = false;
 			dotShape.get(2).isThisSegmentVisible = false;
-			dotShape.shift(v).scale(st).drawColor(getMp().getDrawColor()).thickness(getMp().getThickness());
+			dotShape.shift(v).scale(.5*st).drawColor(getMp().getDrawColor()).thickness(.25*th);
 			break;
 		default:// Default case, includes CIRCLE
 //                st = mp.computeScreenThickness(r)/200;
-			st = getMp().getThickness() / 70;
-			dotShape = Shape.circle().shift(v).scale(st).drawColor(getMp().getDrawColor())
+			dotShape = Shape.circle().shift(v).scale(.5*st).drawColor(getMp().getDrawColor())
 					.fillColor(getMp().getDrawColor()).thickness(0);
 			break;
 		}

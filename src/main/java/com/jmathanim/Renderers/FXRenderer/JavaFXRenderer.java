@@ -102,6 +102,7 @@ public class JavaFXRenderer extends Renderer {
     private VideoEncoder videoEncoder;
     private File saveFilePath;
     private int newLineCounter = 0;
+    public double correctionThickness;
 
     public JavaFXRenderer(JMathAnimScene parentScene) throws Exception {
         super(parentScene);
@@ -111,6 +112,7 @@ public class JavaFXRenderer extends Renderer {
         fXPathUtils = new FXPathUtils();
         camera = new Camera(scene, config.mediaW, config.mediaH);
         fixedCamera = new Camera(scene, config.mediaW, config.mediaH);
+        correctionThickness = config.mediaW * 1d / 1066;//Correction factor for thickness
     }
 
     @Override
@@ -354,12 +356,16 @@ public class JavaFXRenderer extends Renderer {
             case SOLID:
                 break;
             case DASHED:
-                path.getStrokeDashArray().addAll(getThicknessForMathWidth(.025), getThicknessForMathWidth(.01));
+                path.getStrokeDashArray().addAll(MathWidthToThickness(.025), MathWidthToThickness(.005));
                 path.setStrokeLineCap(StrokeLineCap.BUTT);
                 break;
             case DOTTED:
 //                path.getStrokeDashArray().addAll(2d*th,6d*th);
-                path.getStrokeDashArray().addAll(getThicknessForMathWidth(.0025), getThicknessForMathWidth(.01));
+                path.getStrokeDashArray().addAll(MathWidthToThickness(.0025), MathWidthToThickness(.005));
+                path.setStrokeLineCap(StrokeLineCap.BUTT);
+                break;
+            case DASHDOTTED:
+                path.getStrokeDashArray().addAll(MathWidthToThickness(.025), MathWidthToThickness(.005),MathWidthToThickness(.0025), MathWidthToThickness(.005));
                 path.setStrokeLineCap(StrokeLineCap.BUTT);
                 break;
         }
@@ -367,13 +373,28 @@ public class JavaFXRenderer extends Renderer {
 
     public double computeThickness(MathObject mobj) {
         Camera cam = (mobj.getMp().isAbsoluteThickness() ? fixedCamera : camera);
-        return Math.max(mobj.getMp().getThickness() / cam.getMathView().getWidth() * 2.5d, MIN_THICKNESS);
+        //We use the correction factor mediaW/1066 in order to obtain the same apparent thickness
+        //regardless of the resolution chosen. The reference value 1066 is the width in the preview settings
+        return Math.max(mobj.getMp().getThickness() / cam.getMathView().getWidth() * correctionThickness, MIN_THICKNESS);
+//        return Math.max(mobj.getMp().getThickness() / cam.getMathView().getWidth() * 2.5d, MIN_THICKNESS);
     }
 
     @Override
-    public double getThicknessForMathWidth(double w) {
+    public double MathWidthToThickness(double w) {
 //        return mathScalar * config.mediaW / (xmax - ymin);
-        return camera.mathToScreen(w) / 1.25 * camera.getMathView().getWidth() / 2d;
+//        return camera.mathToScreen(w) / 1.25 * camera.getMathView().getWidth() / 2d;
+        return w * 1066;
+    }
+
+    @Override
+    public double ThicknessToMathWidth(double th) {
+        return th / 1066;
+    }
+
+    @Override
+    public double ThicknessToMathWidth(MathObject obj) {
+        Camera cam = (obj.getMp().isAbsoluteThickness() ? fixedCamera : camera);
+        return obj.getMp().getThickness() / 1066 * 4 / cam.getMathView().getWidth();
     }
 
     @Override

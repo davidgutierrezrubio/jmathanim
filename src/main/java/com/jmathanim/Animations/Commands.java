@@ -1226,7 +1226,7 @@ public class Commands {
         Shape s2 = Shape.segment(bbox.getUR(), bbox.getDL()).scale(.75).linecap(StrokeLineCap.BUTT)
                 .drawColor(JMColor.RED).layer(Integer.MAX_VALUE);
         double longi = .25 * s1.getPoint(0).to(s1.getPoint(1)).norm();
-        double width = JMathAnimConfig.getConfig().getRenderer().getThicknessForMathWidth(longi);
+        double width = JMathAnimConfig.getConfig().getRenderer().MathWidthToThickness(longi);
         s1.thickness(width).getMp().setAbsoluteThickness(false);
         s2.thickness(width).getMp().setAbsoluteThickness(false);
         Concatenate resul = new Concatenate(new ShowCreation(.5 * runtime, s1), new ShowCreation(.5 * runtime, s2));
