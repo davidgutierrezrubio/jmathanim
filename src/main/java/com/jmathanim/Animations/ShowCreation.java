@@ -120,8 +120,12 @@ public class ShowCreation extends Animation {
     public boolean processAnimation() {
         if (creationStrategy != null) {
             boolean ret = creationStrategy.processAnimation();
-            pencilPosition[0].copyFrom(creationStrategy.getPencilPosition()[0]);
-            pencilPosition[1].copyFrom(creationStrategy.getPencilPosition()[1]);
+            try {
+                pencilPosition[0].copyFrom(creationStrategy.getPencilPosition()[0]);
+                pencilPosition[1].copyFrom(creationStrategy.getPencilPosition()[1]);
+            } catch (java.lang.NullPointerException e) {
+                //do nothing
+            }
             return ret;
         } else {
             return true;

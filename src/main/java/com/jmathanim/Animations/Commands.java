@@ -1002,10 +1002,7 @@ public class Commands {
      *
      * @param runTime Duration in seconds
      * @param objects MathObjects to apply the animation (varargs)
-     * @return Animation to run with null null null null null null null null
-     * null null null null null null null null null null null null null null
-     * null null null null null null null     {@link JMathAnimScene#playAnimation(com.jmathanim.Animations.Animation...)
-	 *         playAnimation} method
+     * @return Animation to run with playAnim method
      */
     public static AnimationWithEffects changeFillAlpha(double runTime, MathObject... objects) {
         AnimationWithEffects resul = new AnimationWithEffects(runTime) {
