@@ -16,6 +16,7 @@ Shape r = Shape.regularPolygon(5)
     .drawColor(JMColor.parse("#041137"))
     .thickness(5);
 ```
+When added to the scene, it will show something like this:
 
 <img src="02_01_colors.png" alt="image-20201105234514407" style="zoom:25%;" />
 
@@ -98,20 +99,23 @@ waitSeconds(3);
 
 ## DashStyle
 
-The `dashStyle`method sets the dash used to draw the outline, chosen from the enum `DashStyle`. Currently, there are 3 different styles, `SOLID`, `DASHED`and `DOTTED`. The following code creates 3 pentagons with these dash styles.
+The `dashStyle`method sets the dash used to draw the outline, chosen from the enum `DashStyle`. Currently, there are 4 different styles, `SOLID`, `DASHED`, `DOTTED`and `DASHDOTTED`. The following code creates 4 pentagons with these dash styles.
 
 ```java
-Shape r1 = Shape.regularPolygon(5).thickness(5);
-Shape r2 = r1.copy().stackTo(r1, Anchor.Type.RIGHT,.1);
-Shape r3 = r1.copy().stackTo(r2, Anchor.Type.RIGHT,.1);
+Shape r1 = Shape.regularPolygon(5).thickness(10);
+Shape r2 = r1.copy().stackTo(r1, Anchor.Type.RIGHT, .1);
+Shape r3 = r1.copy().stackTo(r2, Anchor.Type.RIGHT, .1);
+Shape r4 = r1.copy().stackTo(r3, Anchor.Type.RIGHT, .1);
 r1.dashStyle(DashStyle.SOLID);
 r2.dashStyle(DashStyle.DASHED);
 r3.dashStyle(DashStyle.DOTTED);
+r4.dashStyle(DashStyle.DASHDOTTED);//Note: this style is available from 0.9.4-SNAPSHOT version
 add(LaTeXMathObject.make("{\\tt SOLID}").stackTo(r1, Anchor.Type.CENTER));
 add(LaTeXMathObject.make("{\\tt DASHED}").stackTo(r2, Anchor.Type.CENTER));
 add(LaTeXMathObject.make("{\\tt DOTTED}").stackTo(r3, Anchor.Type.CENTER));
-add(r1,r2,r3);
-camera.adjustToAllObjects();
+add(LaTeXMathObject.make("{\\tt DASHDOTTED}").stackTo(r4, Anchor.Type.CENTER));
+add(r1, r2, r3,r4);
+camera.centerAtAllObjects();
 waitSeconds(5);
 ```
 
@@ -122,7 +126,7 @@ waitSeconds(5);
 A concrete combination of drawing parameters can be saved in styles. The `config`objects stores the saved styles and has methods to manage them. To apply a style to an object, use the method `.style(styleName)`.
 
 ```java
-Shape triangle = Shape.regularPolygon(3).thickness(5).dashStyle(MODrawProperties.DashStyle.DASHED).fillColor("steelblue");
+Shape triangle = Shape.regularPolygon(3).thickness(8).dashStyle(MODrawProperties.DashStyle.DASHED).fillColor("steelblue");
 //Creates style named solidRed
 config.createStyleFrom(triangle, "myStyle");
 Shape circle = Shape.circle().scale(.5).stackTo(triangle, Anchor.Type.LEFT);
@@ -184,6 +188,8 @@ Where do JMathAnim look for the files? Well, there are 3 location types that you
 
 By default, the resources path is located at `<your current root project>/resources` folder. So if you want to add resources locally to your project you should create this folder. Of course, you can change the default `resources` folder with the method `config.setResourcesDir(newDir)`.
 
+This way, if you want to store all your precious resources in a system-wide scope, you can store them in a folder (say `/home/bob/myJMathAnimResources`) and make JMathAnim to look for resources there with the method `config.setResourcesDir("/home/bob/myJMathAnimResources")` at the beginning of the `setupSketch()` method (Note that the "!" modifier is not needed here).
+
 A typical `resources` folder follows this structure:
 ```
 resources/
@@ -205,8 +211,6 @@ A few examples:
 * the `config.parseFile("file.xml")` command will try to load `file.xml`located at `<your current root project>/resources/config` folder
 * the `config.parseFile("#file.xml") ` command will try to load `file.xml` internally stored at the jar library.
 * the `config.parseFile("!/home/user/myResources/file.xml") ` command will try to load `file.xml` from the location `/home/user/myResources/file.xml`.
-
-This way, if you want to store all your precious resources in a system-wide scope, you can store them in a folder (say `/home/bob/myJMathAnimResources`) and make JMathAnim to look for resources there with the method `config.setResourcesDir("/home/bob/myJMathAnimResources")` at the beginning of the `setupSketch()` method (Note that the "!" modifier is not needed here).
 
 > Note: The "!" modifier also can be used when specifying a file path in the config files, like background images, for example.
 
@@ -256,27 +260,32 @@ You can have several config files with different, independent aspects. This is t
         <style name="default">
             <drawColor>black</drawColor>
             <fillColor>#00000000</fillColor>
-            <thickness>1</thickness>
+            <thickness>4</thickness>
         </style>
         <style name="latexdefault">
             <drawColor>black</drawColor>
             <fillColor>black</fillColor>
-            <thickness>.5</thickness>
+            <thickness>1</thickness>
         </style>
         <style name="solidRed">
             <drawColor>black</drawColor>
             <fillColor>#f55652</fillColor>
-            <thickness>4</thickness>
+            <thickness>8</thickness>
         </style>
         <style name="solidBlue">
             <drawColor>black</drawColor>
             <fillColor>#7ca0c0</fillColor>
-            <thickness>4</thickness>
+            <thickness>8</thickness>
         </style>
-         <style name="solidGreen">
+        <style name="solidGreen">
             <drawColor>black</drawColor>
             <fillColor>#9bc693</fillColor>
-            <thickness>4</thickness>
+            <thickness>8</thickness>
+        </style>
+        <style name="solidOrange">
+            <drawColor>black</drawColor>
+            <fillColor>orange</fillColor>
+            <thickness>8</thickness>
         </style>
     </styles>
 </JMathAnimConfig>
@@ -287,24 +296,19 @@ The JAR of the JMathAnim library has several predefined config files that you ca
 * The `config.parseFile("#preview.xml")`  loads settings for previewing the animation, with low resolution of 1066x600 at 30pfs, show preview windows and not creating movie. Ideal for the creation process of the scene.
 * The `config.parseFile("#production.xml")` loads settings for generating the final animation, with high resolution 1920x1080 at 60pfs, not showing preview windows and creating a movie. This config should be loaded when the designing process is done and to create the final animation.
 * The `config.parseFile("#light.xml")` loads settings for black drawings over a white background. The default colors are black.
-* The `config.parseFile("#dark.xml")` loads settings for white drawings over a black background (well, almost black). The default colors are white.
+* The `config.parseFile("#dark.xml")` loads settings for white drawings over a black background. The default colors are white.
 
 You can check all the internal config files at the [github sources folder](https://github.com/davidgutierrezrubio/jmathanim/tree/master/src/resources/config).
 
 The `<styles>` tag allows defining styles to apply to your animation. There are some convention-named styles that are important (names are case-insensitive):
 
 *  Style `default`: All MathObjects (except the next ones mentioned) load this style when created.
-
-* Style `latexDefault`: Applied by default to all `LaTexMathObject` instances.
-
-* Style`functionGraphDefault`: For function graphs.
-
-* Style `axisdefault`: For x-axis and y-axis.
-
-* Style `axistickdefault`: For x-ticks and y-ticks in the axes.
-
-* Style `axislegenddefault`: For legends in ticks of axes.
-
+*  Style `dotdefault`: All `Point` objects load this style when created.
+*  Style `latexDefault`: Applied by default to all `LaTexMathObject` instances.
+*  Style`functionGraphDefault`: For function graphs.
+*  Style `axisdefault`: For x-axis and y-axis.
+*  Style `axistickdefault`: For x-ticks and y-ticks in the axes.
+*  Style `axislegenddefault`: For legends in ticks of axes.
 * If no style with these names is defined, a default style with white stroke and no fill will be applied.
 
 Below there is an example image, with the same scene, loading `dark.xml` and `light.xml` config files.  ![image-20201208101038042](darkVsLight.png)
@@ -317,24 +321,27 @@ The `<include>` tag that appears at the beginning loads another config files.  I
         <style name="dotRedCircle">
             <drawColor>RED</drawColor>
             <fillColor>TRANSPARENT</fillColor>
-            <thickness>.5</thickness>
+            <<JMathAnimConfig>  
+    <styles>
+        <style name="redCircle">
+            <drawColor>RED</drawColor>
+            <thickness>30</thickness>
             <dotStyle>circle</dotStyle>
         </style>
-        <style name="dotBlueCross">
+        <style name="blueCross">
             <drawColor>#6ca2e0</drawColor>
-            <fillColor>TRANSPARENT</fillColor>
-            <thickness>.5</thickness>
+            <thickness>30</thickness>
             <dotStyle>cross</dotStyle>
         </style>
-        <style name="dotYellowPlus">
+        <style name="yellowPlus">
             <drawColor>#FCE16D</drawColor>
-            <fillColor>TRANSPARENT</fillColor>
-            <thickness>.5</thickness>
+            <thickness>30</thickness>
             <dotStyle>plus</dotStyle>
         </style>
     </styles>
-</JMathAnimConfig>
 ```
+
+Note that the thickness required for a dot to be visible is higher than a Shape.  That is because a `Point`with thickness 4 will have the same width as a stroke from a `Shape` with the same thickness. `Point` objects require higher thickness parameter in order to be clearly visible.
 
 ## Configuration files syntax
 
@@ -365,7 +372,7 @@ Inside this tag, we may have:
   <style name="myStyle">
       <drawColor>WHITE</drawColor>
       <fillColor>#f55652</fillColor>
-      <thickness>4.5</thickness>
+      <thickness>7</thickness>
       <dashStyle>SOLID</dashStyle>
       <absoluteThickness>true</absoluteThickness>
       <dotStyle></dotStyle>
