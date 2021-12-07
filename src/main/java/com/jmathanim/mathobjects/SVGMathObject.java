@@ -17,29 +17,12 @@
  */
 package com.jmathanim.mathobjects;
 
-import com.jmathanim.Cameras.Camera;
-import com.jmathanim.Styling.JMColor;
-import com.jmathanim.Styling.MODrawProperties;
 import com.jmathanim.Utils.Anchor;
-import com.jmathanim.Utils.JMathAnimConfig;
-import com.jmathanim.Utils.PathUtils;
 import com.jmathanim.Utils.ResourceLoader;
 import com.jmathanim.Utils.SVGUtils;
-import com.jmathanim.jmathanim.JMathAnimScene;
-import com.jmathanim.mathobjects.JMPathPoint.JMPathPointType;
-import java.io.File;
-import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Iterator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 
 /**
  * This class manages import from SVG files and converting them into multipath
@@ -73,22 +56,26 @@ public class SVGMathObject extends MultiShapeObject {
         //This is the default style for SVG objects
         fillColor("black");
         drawColor("black");
+        double defaultThickness = scene.getRenderer().MathWidthToThickness(1);//Default thickness
+        getMp().setThickness(defaultThickness);
+        
         ResourceLoader rl = new ResourceLoader();
         URL urlImage = rl.getResource(fname, "images");
         try {
-            SVGUtils svgu = new SVGUtils();
+            SVGUtils svgu = new SVGUtils(scene);
             svgu.importSVG(urlImage, this);
         } catch (Exception ex) {
             Logger.getLogger(SVGMathObject.class.getName()).log(Level.SEVERE, null, ex);
         }
         getMp().setAbsoluteThickness(false);// Default behaviour
+
         stackTo(new Point(0, 0), Anchor.Type.UL);
     }
 
     public SVGMathObject(URL url) {
         super();
         try {
-            SVGUtils svgu = new SVGUtils();
+            SVGUtils svgu = new SVGUtils(scene);
             svgu.importSVG(url, this);
         } catch (Exception ex) {
             Logger.getLogger(SVGMathObject.class.getName()).log(Level.SEVERE, null, ex);

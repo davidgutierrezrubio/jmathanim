@@ -1,40 +1,46 @@
 <JMathAnimConfig>
     <include>#axes_and_functions_dark.xml</include>
-    <include>#dots.xml</include>
+    <!--<include>#dots.xml</include>-->
     <background>
         <color>#000000</color>
     </background>
     <styles>
+        <!--https://coolors.co/f94144-f3722c-f8961e-f9844a-f9c74f-90be6d-43aa8b-4d908e-577590-277da1-->
         <style name="default">
-            <drawColor>#FFFFFFFF</drawColor>
+            <drawColor>#277da1</drawColor>
             <fillColor>#00000000</fillColor>
-            <thickness>5</thickness>
+            <thickness>8</thickness>
         </style> 
         <style name="dotdefault">
-            <drawColor>#FFFFFFFF</drawColor>
+            <drawColor>#F94144</drawColor>
             <fillColor>#00000000</fillColor>
             <thickness>30</thickness>
         </style>  
         <style name="latexdefault">
-            <drawColor>#FFFFFFFF</drawColor>
-            <fillColor>#FFFFFFFF</fillColor>
+            <drawColor>white</drawColor>
+            <fillColor>white</fillColor>
             <thickness>1</thickness>
         </style>
         <style name="solidRed">
-            <drawColor>WHITE</drawColor>
-            <fillColor>#f55652</fillColor>
-            <thickness>8</thickness>
+            <drawColor>#F9C74F</drawColor>
+            <fillColor>#F94144</fillColor>
+            <thickness>12</thickness>
         </style>
         <style name="solidBlue">
-            <drawColor>WHITE</drawColor>
-            <fillColor>#7ca0c0</fillColor>
-            <thickness>8</thickness>
+            <drawColor>#277DA1</drawColor>
+            <fillColor>#577590</fillColor>
+            <thickness>12</thickness>
         </style>
         <style name="solidGreen">
-            <drawColor>WHITE</drawColor>
-            <fillColor>#9bc693</fillColor>
-            <thickness>8</thickness>
+            <drawColor>#43AA8B</drawColor>
+            <fillColor>#90BE6D</fillColor>
+            <thickness>12</thickness>
         </style>
+        <style name="solidOrange">
+            <drawColor>#F3722C</drawColor>
+            <fillColor>#F8961E</fillColor>
+            <thickness>8</thickness>
+        </style> 
          <style name="fn1">
             <drawColor>#277DA1</drawColor>
             <fillColor>none</fillColor>

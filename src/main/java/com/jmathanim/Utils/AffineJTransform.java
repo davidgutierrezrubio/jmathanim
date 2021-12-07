@@ -259,7 +259,9 @@ public class AffineJTransform {
         // det(A_xy)
         double det = matrix.getEntry(1, 1) * matrix.getEntry(2, 2) - matrix.getEntry(2, 1) * matrix.getEntry(1, 2);
         if (!mObject.getMp().isAbsoluteThickness()) {
-            mObject.getMp().multThickness(Math.sqrt(det));
+            final double sqrtDet = Math.sqrt(Math.abs(det));
+            final double th=mObject.getMp().getThickness();
+            mObject.getMp().multThickness(Math.sqrt(sqrtDet));
         }
 
     }

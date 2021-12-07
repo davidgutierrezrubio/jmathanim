@@ -173,7 +173,8 @@ public class ConfigLoader {
         NodeList childs = template.getChildNodes();
         for (int n = 0; n < childs.getLength(); n++) {
             Node item = childs.item(n);
-            switch (item.getNodeName()) {
+            String name=item.getNodeName();
+            switch (name) {
                 case "drawColor":
                     mp.setDrawColor(JMColor.parse(item.getTextContent()));
                     break;
@@ -192,6 +193,9 @@ public class ConfigLoader {
                 case "dotStyle":
                     mp.dotStyle = MODrawProperties.parseDotStyle(item.getTextContent());
                     break;
+//                default:
+//                    JMathAnimScene.logger.warn("Tag {} not recognized",name);
+                    
             }
         }
         return mp;

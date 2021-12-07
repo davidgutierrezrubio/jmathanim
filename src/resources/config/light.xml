@@ -40,5 +40,36 @@
             <fillColor>orange</fillColor>
             <thickness>8</thickness>
         </style>
+            <style name="1">
+            <drawColor>#07004D</drawColor>
+            <thickness>30</thickness>
+            <dotStyle>circle</dotStyle>
+        </style>
+        <style name="2">
+            <drawColor>#BF2500</drawColor>
+            <thickness>30</thickness>
+            <dotStyle>cross</dotStyle>
+        </style>
+        <style name="3">
+            <drawColor>#5D2E8C</drawColor>
+            <thickness>30</thickness>
+            <dotStyle>plus</dotStyle>
+        </style>
+          <style name="fn1">
+            <drawColor>#0F4C5C</drawColor>
+            <fillColor>none</fillColor>
+            <thickness>8</thickness>
+        </style> 
+         <style name="fn2">
+            <drawColor>#9A031E</drawColor>
+            <fillColor>none</fillColor>
+            <thickness>8</thickness>
+        </style> 
+         <style name="fn3">
+            <drawColor>#5F0F40</drawColor>
+            <fillColor>none</fillColor>
+            <dashStyle>DASHED</dashStyle>
+            <thickness>4</thickness>
+        </style> 
     </styles>
 </JMathAnimConfig>

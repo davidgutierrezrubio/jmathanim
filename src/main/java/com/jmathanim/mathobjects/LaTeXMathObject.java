@@ -110,7 +110,7 @@ public class LaTeXMathObject extends SVGMathObject {
         try {
             generateLaTeXDocument();
             File f = new File(compileLaTeXFile());
-            SVGUtils svgu=new SVGUtils();
+            SVGUtils svgu=new SVGUtils(scene);
             svgu.importSVG(f.toURI().toURL(),this);
         } catch (IOException ex) {
             if (ex.getLocalizedMessage().toUpperCase().startsWith("CANNOT RUN PROGRAM")) {

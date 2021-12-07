@@ -145,4 +145,22 @@ public abstract class AbstractBoxLayout extends GroupLayout {
 		this.corner = corner;
 	}
 
+    public double getInRowGap() {
+        return inRowGap;
+    }
+
+    public <T extends AbstractBoxLayout> T setInRowGap(double inRowGap) {
+        this.inRowGap = inRowGap;
+        return (T) this;
+    }
+
+    public double getInColGap() {
+        return inColGap;
+    }
+
+    public <T extends AbstractBoxLayout> T setInColGap(double inColGap) {
+        this.inColGap = inColGap;
+        return (T) this;
+    }
+
 }

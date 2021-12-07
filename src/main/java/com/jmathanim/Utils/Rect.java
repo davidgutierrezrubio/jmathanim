@@ -407,6 +407,17 @@ public class Rect implements Stateable, Boxable {// TODO: Adjust this to 3D coor
     }
 
     /**
+     * Scale the rectangle around center, and return a new one with the result.
+     * Does not affect the current rect.
+     *
+     * @param scale x scale
+     * @return The scaled rectangle.
+     */
+    public Rect scale(double scale) {
+        return scale(scale, scale, 1);
+    }
+
+    /**
      * Computes the {@link Rect} shifted by a given vector. Original Rect is not
      * modified
      *

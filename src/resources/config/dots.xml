@@ -2,19 +2,16 @@
     <styles>
         <style name="redCircle">
             <drawColor>RED</drawColor>
-            <fillColor>TRANSPARENT</fillColor>
             <thickness>30</thickness>
             <dotStyle>circle</dotStyle>
         </style>
         <style name="blueCross">
             <drawColor>#6ca2e0</drawColor>
-            <fillColor>TRANSPARENT</fillColor>
             <thickness>30</thickness>
             <dotStyle>cross</dotStyle>
         </style>
         <style name="yellowPlus">
             <drawColor>#FCE16D</drawColor>
-            <fillColor>TRANSPARENT</fillColor>
             <thickness>30</thickness>
             <dotStyle>plus</dotStyle>
         </style>
