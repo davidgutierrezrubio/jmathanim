@@ -1013,19 +1013,16 @@ public class Commands {
             public void initialize(JMathAnimScene scene) {
                 super.initialize(scene);
                 JMathAnimScene.logger.debug("Initialized changeFillAlpha animation");
-                for (MathObject obj : objects) {
-                    alphaOrig.add(obj.getMp().getFillColor().getAlpha());
-                }
                 addObjectsToscene(mathObjects);
+                saveStates(mathObjects);
             }
 
             @Override
             public void doAnim(double t) {
+                restoreStates(mathObjects);
                 double lt = getLambda().applyAsDouble(t);
-                int n = 0;
                 for (MathObject obj : objects) {
-                    double a = alphaOrig.get(n) * lt;
-                    obj.getMp().setFillAlpha((float) a);
+                    obj.getMp().setFillAlpha(obj.getMp().getFillColor().getAlpha()*lt);
                     applyAnimationEffects(lt, obj);
                 }
             }

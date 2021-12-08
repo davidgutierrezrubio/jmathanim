@@ -54,6 +54,7 @@ public abstract class MathObject implements Drawable, Updateable, Stateable, Box
 
     public Point absoluteAnchorPoint;
     private Type absoluteAnchorType = Type.CENTER;
+
     public MathObject() {
         this(null);
     }
@@ -308,6 +309,16 @@ public abstract class MathObject implements Drawable, Updateable, Stateable, Box
     abstract public <T extends MathObject> T copy();
 
     /**
+     * Copy state from another object of the same type. After this method is
+     * executed, the two objects should be identical.
+     *
+     * @param obj The object to copy state from.
+     */
+    public void copyStateFrom(MathObject obj) {
+        JMathAnimScene.logger.error("copyStateFrom method not implemented for this object, sorry");
+    }
+
+    /**
      * Returns the Bounding box with limits of the MathObject
      *
      * @return A Rect with (xmin,ymin,xmax,ymax)
@@ -324,7 +335,6 @@ public abstract class MathObject implements Drawable, Updateable, Stateable, Box
 //
 //    public void unregisterChildrenToBeUpdated(JMathAnimScene scene) {
 //    }
-
     @Override
     public void saveState() {
         getMp().saveState();
@@ -513,7 +523,7 @@ public abstract class MathObject implements Drawable, Updateable, Stateable, Box
     public <T extends MathObject> T setAbsoluteSize(Point p) {
         this.absoluteAnchorPoint = p;
         absoluteAnchorType = Type.BY_POINT;
-        absoluteSize=true;
+        absoluteSize = true;
         return (T) this;
 
     }
@@ -729,7 +739,7 @@ public abstract class MathObject implements Drawable, Updateable, Stateable, Box
     public <T extends MathObject> T setAbsoluteSize(Type anchorType) {
         absoluteSize = true;
         absoluteAnchorType = anchorType;
-        absoluteSize=true;
+        absoluteSize = true;
         return (T) this;
     }
 
@@ -903,9 +913,8 @@ public abstract class MathObject implements Drawable, Updateable, Stateable, Box
         return (T) this;// By default does nothing
     }
 
-    
     public void addToSceneHook(JMathAnimScene scene) {
-        
+
     }
-    
+
 }

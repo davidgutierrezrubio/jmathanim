@@ -188,7 +188,6 @@ public class JMPathPoint extends MathObject implements Updateable, Stateable {
         return p.getBoundingBox();
     }
 
-
     @Override
     public void draw(JMathAnimScene scene, Renderer r) {
         // Nothing to draw
@@ -198,6 +197,18 @@ public class JMPathPoint extends MathObject implements Updateable, Stateable {
         this.p.copyFrom(jmPoint.p);
         this.cpExit.copyFrom(jmPoint.cpExit);
         this.cpEnter.copyFrom(jmPoint.cpEnter);
+    }
+
+    @Override
+    public void copyStateFrom(MathObject obj) {
+        if (!(obj instanceof JMPathPoint)) {
+            return;
+        }
+
+        JMPathPoint jmp2 = (JMPathPoint) obj;
+        this.p.copyStateFrom(jmp2.p);
+        this.cpExit.copyStateFrom(jmp2.cpExit);
+        this.cpEnter.copyStateFrom(jmp2.cpEnter);
     }
 
     @Override

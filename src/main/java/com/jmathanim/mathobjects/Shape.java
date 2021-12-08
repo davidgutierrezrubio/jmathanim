@@ -123,8 +123,20 @@ public class Shape extends MathObject {
         resul.absoluteSize = this.absoluteSize;
         resul.label = this.label + "_copy";
         resul.isConvex = this.isConvex;
-        resul.showDebugPoints=this.showDebugPoints;
+        resul.showDebugPoints = this.showDebugPoints;
         return resul;
+    }
+
+    @Override
+    public void copyStateFrom(MathObject obj) {
+        if (!(obj instanceof Shape)) {
+            return;
+        }
+        Shape sh2 = (Shape) obj;
+        for (int i = 0; i < size(); i++) {
+            get(i).copyStateFrom(sh2.get(i));
+        }
+        this.getMp().copyFrom(sh2.getMp());
     }
 
     @Override
@@ -158,12 +170,14 @@ public class Shape extends MathObject {
     public void restoreState() {
         super.restoreState();
         jmpath.restoreState();
+        this.getMp().restoreState();
     }
 
     @Override
     public void saveState() {
         super.saveState();
         jmpath.saveState();
+        this.getMp().saveState();
     }
 
     /**
@@ -296,19 +310,20 @@ public class Shape extends MathObject {
     }
 
     /**
-     * Generates a regular polygon inscribed in a unit circle. The first point of the shape lies in the coordinates (1,0)
+     * Generates a regular polygon inscribed in a unit circle. The first point
+     * of the shape lies in the coordinates (1,0)
+     *
      * @param numSides Number of sides
      * @return The generated Shape
      */
     public static Shape regularInscribedPolygon(int numSides) {
-        Point[] points=new Point[numSides];
+        Point[] points = new Point[numSides];
         for (int i = 0; i < numSides; i++) {
-        points[i]=Point.at(Math.cos(2*PI*i/numSides),Math.sin(2*PI*i/numSides));
+            points[i] = Point.at(Math.cos(2 * PI * i / numSides), Math.sin(2 * PI * i / numSides));
         }
         return polygon(points);
     }
-    
-    
+
     /**
      * Creates a regular polygon, with first vertex at (0,0) and side 1
      *
