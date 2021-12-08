@@ -113,7 +113,7 @@ public class ShowCreation extends Animation {
 
     @Override
     public void doAnim(double t) {
-        // This should't be called, all process through processAnimation
+     creationStrategy.doAnim(t);
     }
 
     @Override
@@ -183,8 +183,8 @@ public class ShowCreation extends Animation {
             return;
         }
         if (mobj instanceof Shape) {
-            this.strategyType = ShowCreationStrategy.SIMPLE_SHAPE_CREATION;
-            return;
+//            this.strategyType = ShowCreationStrategy.SIMPLE_SHAPE_CREATION;
+            this.strategyType = ShowCreationStrategy.FIRST_DRAW_AND_THEN_FILL;
         }
 
     }

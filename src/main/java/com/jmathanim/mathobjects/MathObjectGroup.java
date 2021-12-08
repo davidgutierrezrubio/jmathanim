@@ -166,6 +166,21 @@ public class MathObjectGroup extends MathObject implements Iterable<MathObject> 
     }
 
     @Override
+    public void copyStateFrom(MathObject obj) {
+        if (!(obj instanceof MathObjectGroup)) {
+            return;
+        }
+        MathObjectGroup mg = (MathObjectGroup) obj;
+        
+        this.getMp().copyFrom(mg.getMp());
+        int n = 0;
+        for (MathObject o : getObjects()) {
+            o.copyStateFrom(mg.get(n));
+            n++;
+        }
+    }
+
+    @Override
     public void draw(JMathAnimScene scene, Renderer r) {
         if (isVisible()) {
             for (MathObject obj : this.getObjects()) {

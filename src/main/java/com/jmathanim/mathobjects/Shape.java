@@ -39,7 +39,6 @@ import javafx.scene.shape.PathElement;
 public class Shape extends MathObject {
 
     private final JMPath jmpath;
-    protected final ArrayList<JMPathPoint> vertices;
     private boolean showDebugPoints = false;
     private boolean isConvex = false;
 
@@ -53,13 +52,11 @@ public class Shape extends MathObject {
 
     public Shape(JMPath jmpath, MODrawProperties mp) {
         super(mp);
-        vertices = new ArrayList<>();
         this.jmpath = jmpath;
     }
 
     public Shape(MODrawProperties mp) {
         super(mp);
-        vertices = new ArrayList<>();
         jmpath = new JMPath();
     }
 
@@ -85,14 +82,6 @@ public class Shape extends MathObject {
         return jmpath.getJMPointAt(t).p;
     }
 
-    protected final void computeVerticesFromPath() {
-        vertices.clear();
-        for (JMPathPoint p : jmpath.jmPathPoints) {
-            if (p.type == JMPathPoint.JMPathPointType.VERTEX) {
-                vertices.add(p);
-            }
-        }
-    }
 
     public Point getCentroid() {
         Point resul = new Point(0, 0, 0);
@@ -133,10 +122,11 @@ public class Shape extends MathObject {
             return;
         }
         Shape sh2 = (Shape) obj;
+        this.getMp().copyFrom(sh2.getMp());
         for (int i = 0; i < size(); i++) {
             get(i).copyStateFrom(sh2.get(i));
         }
-        this.getMp().copyFrom(sh2.getMp());
+
     }
 
     @Override
@@ -650,6 +640,12 @@ public class Shape extends MathObject {
         return this;
     }
 
+    /**
+     * Gets 
+     * @param a
+     * @param b
+     * @return 
+     */
     public Shape getSubShape(double a, double b) {
         Shape subShape = new Shape();
         subShape.getMp().copyFrom(this.getMp());

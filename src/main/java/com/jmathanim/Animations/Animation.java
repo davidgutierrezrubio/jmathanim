@@ -21,6 +21,8 @@ import com.jmathanim.Animations.Strategies.Transform.Optimizers.OptimizePathsStr
 import com.jmathanim.Utils.UsefulLambdas;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.MathObject;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.function.DoubleUnaryOperator;
 
 /**
@@ -94,6 +96,7 @@ public abstract class Animation {
 
     protected Boolean shouldAddObjectsToScene;
     protected Boolean shouldInterpolateStyles;
+    private final HashMap<MathObject,MathObject> backups;
 
     /**
      * Creates an empty animation, with specified run time.This constructor
@@ -109,6 +112,7 @@ public abstract class Animation {
         this.shouldAddObjectsToScene = true;
         this.shouldInterpolateStyles = true;
         lambda = UsefulLambdas.smooth(.9d);
+        backups=new HashMap<>();
     }
 
     /**
@@ -303,29 +307,34 @@ public abstract class Animation {
     }
 
     /**
-     * Save state of all given mathobjects. If the useObjectState flag is set to
+     * Save state of all given mathobjects.If the useObjectState flag is set to
      * false, this method does nothing
      *
      * @param mathObjects MathObjects to save state (varargs)
      */
     protected void saveStates(MathObject... mathObjects) {
         if (this.isUseObjectState()) {
+            backups.clear();
             for (MathObject obj : mathObjects) {
-                obj.saveState();
+//                obj.saveState();
+                backups.put(obj,obj.copy());
             }
         }
     }
 
     /**
-     * Restore state of all given mathobjects. If the useObjectState flag is set
+     * Restore state of all given mathobjects.If the useObjectState flag is set
      * to false, this method does nothing
      *
      * @param mathObjects MathObjects to restore state (varargs)
      */
     protected void restoreStates(MathObject... mathObjects) {
         if (this.isUseObjectState()) {
+            int n = 0;
             for (MathObject obj : mathObjects) {
-                obj.restoreState();
+//                obj.restoreState();
+                obj.copyStateFrom(backups.get(obj));
+                n++;
             }
         }
     }

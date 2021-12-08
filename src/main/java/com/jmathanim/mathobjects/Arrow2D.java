@@ -379,6 +379,23 @@ public class Arrow2D extends MathObject {
 		return (T) copy;
 	}
 
+    @Override
+    public void copyStateFrom(MathObject obj) {
+        if (!(obj instanceof Arrow2D)) return;
+        Arrow2D ar=(Arrow2D) obj;
+        this.getMp().copyFrom(ar.getMp());
+        p1.copyStateFrom(ar.p1);
+        p2.copyStateFrom(ar.p2);
+//        this.type1=ar.type1;//Final variable
+//        this.type2=ar.type2;//Final variable
+        head1.copyStateFrom(ar.head1);
+        head2.copyStateFrom(ar.head2);
+        body.copyStateFrom(ar.body);
+    }
+
+        
+        
+        
 	@Override
 	public <T extends MathObject> T thickness(double th) {
 		body.thickness(th);

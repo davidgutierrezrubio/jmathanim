@@ -39,23 +39,23 @@ import java.util.List;
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
 public class MultiShapeObject extends MathObject implements Iterable<Shape> {
-    
+
     protected MODrawPropertiesArray mpMultiShape;
     public boolean isAddedToScene;
     protected final ArrayList<Shape> shapes;
-    
+
     public static MultiShapeObject make(Shape... shapes) {
         return new MultiShapeObject(shapes);
     }
-    
+
     public MultiShapeObject() {
         this(new ArrayList<Shape>());
     }
-    
+
     public MultiShapeObject(Shape... shapes) {
         this(Arrays.asList(shapes));
     }
-    
+
     public MultiShapeObject(List<Shape> jmps) {
         super();
         isAddedToScene = false;
@@ -66,12 +66,12 @@ public class MultiShapeObject extends MathObject implements Iterable<Shape> {
             mpMultiShape.add(sh);
         }
     }
-    
+
     public boolean add(Shape e) {
         mpMultiShape.add(e);
         return shapes.add(e);
     }
-    
+
     @Override
     public <T extends MathObject> T fillColor(PaintStyle fc) {
         for (Shape jmp : shapes) {
@@ -79,7 +79,7 @@ public class MultiShapeObject extends MathObject implements Iterable<Shape> {
         }
         return super.fillColor(fc);
     }
-    
+
     @Override
     public <T extends MathObject> T drawColor(PaintStyle dc) {
         for (Shape jmp : shapes) {
@@ -103,11 +103,27 @@ public class MultiShapeObject extends MathObject implements Iterable<Shape> {
             final Shape copy = sh.copy();
             resul.add(copy);
         }
-        
+
         resul.absoluteSize = this.absoluteSize;
         return resul;
     }
-    
+
+    @Override
+    public void copyStateFrom(MathObject obj) {
+        if (!(obj instanceof MultiShapeObject)) {
+            return;
+        }
+
+        MultiShapeObject msh = (MultiShapeObject) obj;
+        this.getMp().copyFrom(msh.getMp());
+        int n = 0;
+        for (Shape s:shapes){
+            s.copyStateFrom(msh.get(n));
+            n++;
+        }
+
+    }
+
     @Override
     public <T extends MathObject> T setAbsoluteSize(Anchor.Type anchorType) {
         super.setAbsoluteSize(anchorType);
@@ -115,10 +131,10 @@ public class MultiShapeObject extends MathObject implements Iterable<Shape> {
         for (Shape sh : shapes) {
             sh.setAbsoluteSize(p);
         }
-        
+
         return (T) this;
     }
-    
+
     @Override
     public void draw(JMathAnimScene scene, Renderer r) {
         if (isVisible()) {
@@ -140,7 +156,7 @@ public class MultiShapeObject extends MathObject implements Iterable<Shape> {
         }
         scene.markAsAlreadyDrawed(this);
     }
-    
+
     public <T extends MultiShapeObject> T setShowDebugIndices(boolean value) {
         if (value) {
             int k = 0;
@@ -155,7 +171,7 @@ public class MultiShapeObject extends MathObject implements Iterable<Shape> {
         }
         return (T) this;
     }
-    
+
     @Override
     public Rect getBoundingBox() {
         if (shapes.size() > 0) {
@@ -168,16 +184,16 @@ public class MultiShapeObject extends MathObject implements Iterable<Shape> {
             return new EmptyRect();
         }
     }
-    
+
     public Shape get(int n) {
         return shapes.get(n);
     }
-    
+
     @Override
     public void update(JMathAnimScene scene) {
         // No need to update as the shapes are already added to the scene
     }
-    
+
     @Override
     public void restoreState() {
         super.restoreState();
@@ -186,7 +202,7 @@ public class MultiShapeObject extends MathObject implements Iterable<Shape> {
             o.restoreState();
         }
     }
-    
+
     @Override
     public void saveState() {
         super.saveState();
@@ -195,16 +211,16 @@ public class MultiShapeObject extends MathObject implements Iterable<Shape> {
             o.saveState();
         }
     }
-    
+
     public ArrayList<Shape> getShapes() {
         return shapes;
     }
-    
+
     @Override
     public Iterator<Shape> iterator() {
         return shapes.iterator();
     }
-    
+
     public int size() {
         return shapes.size();
     }
@@ -226,7 +242,7 @@ public class MultiShapeObject extends MathObject implements Iterable<Shape> {
         shift(this.get(index).getCenter().to(otherObject.get(indexOtherObject).getCenter()));
         return (T) this;
     }
-    
+
     @Override
     public boolean isEmpty() {
         boolean resul = false;
@@ -261,15 +277,15 @@ public class MultiShapeObject extends MathObject implements Iterable<Shape> {
                 if (delete) {// if this index is marked for extraction...
                     this.mpMultiShape.remove(this.get(n));
                     this.shapes.set(n, new Shape());
-                    
+
                 }
-                
+
             }
         }
-        
+
         return resul;
     }
-    
+
     /**
      * Overloaded method, equivalent to slice(true,indices)
      *
@@ -296,10 +312,10 @@ public class MultiShapeObject extends MathObject implements Iterable<Shape> {
             resul[k] = shapes.get(n);
             k++;
         }
-        
+
         return resul;
     }
-    
+
     @Override
     public <T extends MathObject> T applyAffineTransform(AffineJTransform tr) {
         for (Shape sh : shapes) {
@@ -308,16 +324,16 @@ public class MultiShapeObject extends MathObject implements Iterable<Shape> {
         tr.applyTransformsToDrawingProperties(this);
         return (T) this;
     }
-    
+
     @Override
     public final Stylable getMp() {
         return mpMultiShape;
     }
-    
+
     public boolean containsPoint(Point p) {
         return containsPoint(p.v);
     }
-    
+
     public boolean containsPoint(Vec v) {
         for (Shape sh : shapes) {
             if (sh.containsPoint(v)) {

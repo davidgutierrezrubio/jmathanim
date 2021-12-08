@@ -148,7 +148,9 @@ public class AnimationGroup extends AnimationWithEffects {
     
     @Override
     public void doAnim(double t) {
-        //Nothing to do here
+        for (Animation anim : animations) {
+            anim.doAnim(t);
+        }
     }
     
     @Override

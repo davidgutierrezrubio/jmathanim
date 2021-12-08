@@ -19,7 +19,6 @@ package com.jmathanim.Animations;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 
 /**
  *
@@ -29,6 +28,10 @@ public class JoinAnimation extends Animation {
 
     ArrayList<Animation> animations;
 
+    public static JoinAnimation make(double runTime, Animation... anims) {
+        return new JoinAnimation(runTime, anims);
+    }
+
     public JoinAnimation(double runTime, Animation... anims) {
         super(runTime);
         animations = new ArrayList<>();
@@ -37,16 +40,19 @@ public class JoinAnimation extends Animation {
 
     @Override
     public void doAnim(double t) {
-        int size=animations.size();
+        int size = animations.size();
         double lt = getLambda().applyAsDouble(t);
         int num = (int) (lt * size);
         if (num == size) {
             num--;
         }
-        double lt2=size*lt-num;
-        Animation anim=animations.get(num);
-        if (anim.getStatus()==Status.NOT_INITIALIZED) {
-            anim.initialize(scene);
+        double lt2 = size * lt - num;
+        Animation anim = animations.get(num);
+        if (anim.getStatus() == Status.NOT_INITIALIZED) {
+            if (num>0) {
+                animations.get(num-1).finishAnimation();
+            }
+             anim.initialize(scene);
         }
         anim.doAnim(lt2);
     }
