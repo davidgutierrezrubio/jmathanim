@@ -17,8 +17,6 @@
  */
 package com.jmathanim.mathobjects;
 
-import com.jmathanim.Cameras.Camera;
-import com.jmathanim.Cameras.Camera3D;
 import com.jmathanim.Styling.JMColor;
 import com.jmathanim.Utils.Anchor;
 import com.jmathanim.Utils.Boxable;

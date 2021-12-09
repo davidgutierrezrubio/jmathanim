@@ -322,7 +322,7 @@ public class JavaFXRenderer extends Renderer {
         int numPoints = c.size();
 
         if (numPoints >= 2) {
-            Path path = fXPathUtils.createFXPathFromJMPath(c, cam);
+            Path path = FXPathUtils.createFXPathFromJMPath(c, cam);
             applyDrawingStyles(path, mobj);
             fxnodes.add(path);
         }

@@ -17,7 +17,6 @@
  */
 package com.jmathanim.Animations.Strategies.Transform;
 
-import com.jmathanim.Animations.AnimationWithEffects;
 import com.jmathanim.Styling.MODrawProperties;
 import com.jmathanim.Utils.AffineJTransform;
 import com.jmathanim.jmathanim.JMathAnimScene;

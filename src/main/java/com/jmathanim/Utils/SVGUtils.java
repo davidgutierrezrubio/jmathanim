@@ -17,7 +17,6 @@
  */
 package com.jmathanim.Utils;
 
-import com.jmathanim.Cameras.Camera;
 import com.jmathanim.Styling.JMColor;
 import com.jmathanim.Styling.MODrawProperties;
 import com.jmathanim.jmathanim.JMathAnimScene;

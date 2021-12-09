@@ -18,7 +18,6 @@
 package com.jmathanim.Utils;
 
 import com.jmathanim.jmathanim.JMathAnimScene;
-import com.sun.tools.javac.file.BaseFileManager;
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;

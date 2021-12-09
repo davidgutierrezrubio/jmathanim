@@ -17,7 +17,6 @@
  */
 package com.jmathanim.Animations.Strategies.Transform;
 
-import com.jmathanim.Animations.AnimationWithEffects;
 import com.jmathanim.Animations.Strategies.Transform.Optimizers.DivideOnSensiblePointsStrategy;
 import com.jmathanim.Styling.JMColor;
 import com.jmathanim.jmathanim.JMathAnimScene;

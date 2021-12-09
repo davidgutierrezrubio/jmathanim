@@ -126,7 +126,8 @@ public class AnimationGroup extends AnimationWithEffects {
             }
             anim.initialize(scene);
         }
-        if ((size > 1) && (delayPercentage > 0)) {// Only works when group has at least 2 members...
+
+        if ((size > 1) && (delayPercentage > 0)) {
             for (Animation anim : animations) {
                 double a = k * (delayPercentage) / (size - 1);
                 double b = 1 - delayPercentage;

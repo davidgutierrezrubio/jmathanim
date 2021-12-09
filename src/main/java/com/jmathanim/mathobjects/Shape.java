@@ -28,7 +28,6 @@ import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import static com.jmathanim.jmathanim.JMathAnimScene.PI;
-import java.util.ArrayList;
 import javafx.scene.shape.Path;
 import javafx.scene.shape.PathElement;
 
@@ -457,7 +456,7 @@ public class Shape extends MathObject {
         FXPathUtils fXPathUtils = new FXPathUtils();
 //        DummyCamera dummyCamera = new DummyCamera();
         Camera dummyCamera = JMathAnimConfig.getConfig().getCamera();
-        Path path = fXPathUtils.createFXPathFromJMPath(jmpath, dummyCamera);
+        Path path = FXPathUtils.createFXPathFromJMPath(jmpath, dummyCamera);
         path.setFill(JMColor.parse("black").getFXColor());// It's necessary that the javafx path is filled to work
         double xy[] = dummyCamera.mathToScreenFX(v);
         return path.contains(xy[0], xy[1]);
@@ -473,8 +472,8 @@ public class Shape extends MathObject {
         FXPathUtils fXPathUtils = new FXPathUtils();
 //        Camera dummyCamera = new DummyCamera();
         Camera dummyCamera = scene.getCamera();
-        Path path = fXPathUtils.createFXPathFromJMPath(jmpath, dummyCamera);
-        Path path2 = fXPathUtils.createFXPathFromJMPath(s2.getPath(), dummyCamera);
+        Path path = FXPathUtils.createFXPathFromJMPath(jmpath, dummyCamera);
+        Path path2 = FXPathUtils.createFXPathFromJMPath(s2.getPath(), dummyCamera);
         path.setFill(JMColor.parse("black").getFXColor());// It's necessary that the javafx path is filled to work
         path2.setFill(JMColor.parse("black").getFXColor());// It's necessary that the javafx path is filled to work
         javafx.scene.shape.Shape newpa = Path.intersect(path, path2);
@@ -512,8 +511,8 @@ public class Shape extends MathObject {
         FXPathUtils fXPathUtils = new FXPathUtils();
 //        DummyCamera dummyCamera = new DummyCamera();
         Camera dummyCamera = scene.getCamera();
-        Path path = fXPathUtils.createFXPathFromJMPath(jmpath, dummyCamera);
-        Path path2 = fXPathUtils.createFXPathFromJMPath(s2.getPath(), dummyCamera);
+        Path path = FXPathUtils.createFXPathFromJMPath(jmpath, dummyCamera);
+        Path path2 = FXPathUtils.createFXPathFromJMPath(s2.getPath(), dummyCamera);
         path.setFill(JMColor.parse("black").getFXColor());// It's necessary that the javafx path is filled to work
         path2.setFill(JMColor.parse("black").getFXColor());// It's necessary that the javafx path is filled to work
         javafx.scene.shape.Shape newpa = Path.union(path, path2);
@@ -548,8 +547,8 @@ public class Shape extends MathObject {
         FXPathUtils fXPathUtils = new FXPathUtils();
 //        Camera dummyCamera = new DummyCamera();
         Camera dummyCamera = scene.getCamera();
-        Path path = fXPathUtils.createFXPathFromJMPath(jmpath, dummyCamera);// TODO: Make a null camera
-        Path path2 = fXPathUtils.createFXPathFromJMPath(s2.getPath(), dummyCamera);
+        Path path = FXPathUtils.createFXPathFromJMPath(jmpath, dummyCamera);// TODO: Make a null camera
+        Path path2 = FXPathUtils.createFXPathFromJMPath(s2.getPath(), dummyCamera);
         path.setFill(JMColor.parse("black").getFXColor());// It's necessary that the javafx path is filled to work
         path2.setFill(JMColor.parse("black").getFXColor());// It's necessary that the javafx path is filled to work
         javafx.scene.shape.Shape newpa = Path.subtract(path, path2);

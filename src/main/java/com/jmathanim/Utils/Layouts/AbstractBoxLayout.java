@@ -28,122 +28,127 @@ import com.jmathanim.mathobjects.Point;
  */
 public abstract class AbstractBoxLayout extends GroupLayout {
 
-	public enum Direction {
-		RIGHT_UP, RIGHT_DOWN, LEFT_UP, LEFT_DOWN, UP_RIGHT, UP_LEFT, DOWN_RIGHT, DOWN_LEFT
-	}
+    public enum Direction {
+        RIGHT_UP, RIGHT_DOWN, LEFT_UP, LEFT_DOWN, UP_RIGHT, UP_LEFT, DOWN_RIGHT, DOWN_LEFT
+    }
 
-	public enum RowAlignType {
-		UPPER, LOWER, MIDDLE
-	}
+    public enum RowAlignType {
+        UPPER, LOWER, MIDDLE
+    }
 
-	protected Point corner;
-	protected double inRowGap;
-	protected double inColGap;
-	Anchor.Type inRowStack;
-	Anchor.Type inColStack;
-	Anchor.Type firstElementStack;
-	RowAlignType rowAlignType;
+    protected Point corner;
+    protected double inRowGap;
+    protected double inColGap;
+    Anchor.Type inRowStack;
+    Anchor.Type inColStack;
+    Anchor.Type firstElementStack;
+    RowAlignType rowAlignType;
 
-	public AbstractBoxLayout(Point corner, double inRowGap, double inColGap) {
-		this.inRowGap = inRowGap;
-		this.inColGap = inColGap;
-		this.corner = corner;
-	}
+    public AbstractBoxLayout(Point corner, double inRowGap, double inColGap) {
+        this.inRowGap = inRowGap;
+        this.inColGap = inColGap;
+        this.corner = corner;
+    }
 
-	protected final void computeDirections(Direction direction) {
-		switch (direction) {
-		case RIGHT_UP:
-			inRowStack = Anchor.Type.RIGHT;
-			inColStack = Anchor.Type.UPPER;
-			firstElementStack = Anchor.Type.DL;
-			break;
-		case RIGHT_DOWN:
-			inRowStack = Anchor.Type.RIGHT;
-			inColStack = Anchor.Type.LOWER;
-			firstElementStack = Anchor.Type.UL;
-			break;
-		case LEFT_UP:
-			inRowStack = Anchor.Type.LEFT;
-			inColStack = Anchor.Type.UPPER;
-			firstElementStack = Anchor.Type.DR;
-			break;
-		case LEFT_DOWN:
-			inRowStack = Anchor.Type.LEFT;
-			inColStack = Anchor.Type.LOWER;
-			firstElementStack = Anchor.Type.UR;
-			break;
-		case UP_RIGHT:
-			inRowStack = Anchor.Type.UPPER;
-			inColStack = Anchor.Type.RIGHT;
-			firstElementStack = Anchor.Type.DL;
-			break;
-		case UP_LEFT:
-			inRowStack = Anchor.Type.UPPER;
-			inColStack = Anchor.Type.LEFT;
-			firstElementStack = Anchor.Type.DR;
-			break;
-		case DOWN_RIGHT:
-			inRowStack = Anchor.Type.LOWER;
-			inColStack = Anchor.Type.RIGHT;
-			firstElementStack = Anchor.Type.UL;
-			break;
-		case DOWN_LEFT:
-			inRowStack = Anchor.Type.LOWER;
-			inColStack = Anchor.Type.LEFT;
-			firstElementStack = Anchor.Type.UR;
-			break;
-		default:
-			// Default case, rowSize goes to right, columns to the heaven
-			inRowStack = Anchor.Type.RIGHT;
-			inColStack = Anchor.Type.UPPER;
-			firstElementStack = Anchor.Type.DL;
-			break;
-		}
-	}
+    public <T extends AbstractBoxLayout> T setDirection(Direction dir) {
+        computeDirections(dir);
+        return (T) this;
+    }
 
-	public void setRowAlign(RowAlignType type) {
-		switch (type) {
-		case UPPER:
-			if (inRowStack == Anchor.Type.LEFT) {
-				inRowStack = Anchor.Type.UL;
-			}
-			if (inRowStack == Anchor.Type.RIGHT) {
-				inRowStack = Anchor.Type.UR;
-			}
-			if (inRowStack == Anchor.Type.UPPER) {
-				inRowStack = Anchor.Type.UL;
-			}
-			if (inRowStack == Anchor.Type.LOWER) {
-				inRowStack = Anchor.Type.DL;
-			}
+    protected final void computeDirections(Direction direction) {
+        switch (direction) {
+            case RIGHT_UP:
+                inRowStack = Anchor.Type.RIGHT;
+                inColStack = Anchor.Type.UPPER;
+                firstElementStack = Anchor.Type.DL;
+                break;
+            case RIGHT_DOWN:
+                inRowStack = Anchor.Type.RIGHT;
+                inColStack = Anchor.Type.LOWER;
+                firstElementStack = Anchor.Type.UL;
+                break;
+            case LEFT_UP:
+                inRowStack = Anchor.Type.LEFT;
+                inColStack = Anchor.Type.UPPER;
+                firstElementStack = Anchor.Type.DR;
+                break;
+            case LEFT_DOWN:
+                inRowStack = Anchor.Type.LEFT;
+                inColStack = Anchor.Type.LOWER;
+                firstElementStack = Anchor.Type.UR;
+                break;
+            case UP_RIGHT:
+                inRowStack = Anchor.Type.UPPER;
+                inColStack = Anchor.Type.RIGHT;
+                firstElementStack = Anchor.Type.DL;
+                break;
+            case UP_LEFT:
+                inRowStack = Anchor.Type.UPPER;
+                inColStack = Anchor.Type.LEFT;
+                firstElementStack = Anchor.Type.DR;
+                break;
+            case DOWN_RIGHT:
+                inRowStack = Anchor.Type.LOWER;
+                inColStack = Anchor.Type.RIGHT;
+                firstElementStack = Anchor.Type.UL;
+                break;
+            case DOWN_LEFT:
+                inRowStack = Anchor.Type.LOWER;
+                inColStack = Anchor.Type.LEFT;
+                firstElementStack = Anchor.Type.UR;
+                break;
+            default:
+                // Default case, rowSize goes to right, columns to the heaven
+                inRowStack = Anchor.Type.RIGHT;
+                inColStack = Anchor.Type.UPPER;
+                firstElementStack = Anchor.Type.DL;
+                break;
+        }
+    }
 
-			break;
-		case MIDDLE:
-			break;
-		case LOWER:
-			if (inRowStack == Anchor.Type.LEFT) {
-				inRowStack = Anchor.Type.DL;
-			}
-			if (inRowStack == Anchor.Type.RIGHT) {
-				inRowStack = Anchor.Type.DR;
-			}
-			if (inRowStack == Anchor.Type.UPPER) {
-				inRowStack = Anchor.Type.UR;
-			}
-			if (inRowStack == Anchor.Type.LOWER) {
-				inRowStack = Anchor.Type.DR;
-			}
-			break;
-		}
-	}
+    public void setRowAlign(RowAlignType type) {
+        switch (type) {
+            case UPPER:
+                if (inRowStack == Anchor.Type.LEFT) {
+                    inRowStack = Anchor.Type.UL;
+                }
+                if (inRowStack == Anchor.Type.RIGHT) {
+                    inRowStack = Anchor.Type.UR;
+                }
+                if (inRowStack == Anchor.Type.UPPER) {
+                    inRowStack = Anchor.Type.UL;
+                }
+                if (inRowStack == Anchor.Type.LOWER) {
+                    inRowStack = Anchor.Type.DL;
+                }
 
-	public Point getCorner() {
-		return corner;
-	}
+                break;
+            case MIDDLE:
+                break;
+            case LOWER:
+                if (inRowStack == Anchor.Type.LEFT) {
+                    inRowStack = Anchor.Type.DL;
+                }
+                if (inRowStack == Anchor.Type.RIGHT) {
+                    inRowStack = Anchor.Type.DR;
+                }
+                if (inRowStack == Anchor.Type.UPPER) {
+                    inRowStack = Anchor.Type.UR;
+                }
+                if (inRowStack == Anchor.Type.LOWER) {
+                    inRowStack = Anchor.Type.DR;
+                }
+                break;
+        }
+    }
 
-	public void setCorner(Point corner) {
-		this.corner = corner;
-	}
+    public Point getCorner() {
+        return corner;
+    }
+
+    public void setCorner(Point corner) {
+        this.corner = corner;
+    }
 
     public double getInRowGap() {
         return inRowGap;

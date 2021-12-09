@@ -37,6 +37,7 @@ public class GroupCreationAnimation extends CreationStrategy {
 		for (MathObject obj : group.getObjects()) {
 			this.anim.add(new ShowCreation(runtime, obj));
 		}
+this.anim.addDelayEffect(.5);
 	}
 
 	@Override
