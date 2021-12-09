@@ -21,7 +21,6 @@ import com.jmathanim.Animations.Animation;
 import com.jmathanim.Animations.AnimationGroup;
 import com.jmathanim.Animations.Commands;
 import com.jmathanim.Animations.Concatenate;
-import com.jmathanim.Animations.JoinAnimation;
 import com.jmathanim.Animations.WaitAnimation;
 import com.jmathanim.Styling.MODrawProperties;
 import com.jmathanim.jmathanim.JMathAnimScene;
@@ -29,7 +28,6 @@ import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.MathObjectGroup;
 import com.jmathanim.mathobjects.MultiShapeObject;
 import com.jmathanim.mathobjects.Shape;
-import java.util.function.DoubleUnaryOperator;
 
 /**
  * Animation that draws and object and then changes its alpha fill from 0 to
@@ -38,7 +36,7 @@ import java.util.function.DoubleUnaryOperator;
  *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
-public class FirstDrawThenFillAnimation extends AbstractCreationStrategy {
+public class FirstDrawThenFillAnimation1 extends AbstractCreationStrategy {
 
     /**
      * Percentage (0 to 1) of time dedicated to drawing the path. The rest of
@@ -55,12 +53,10 @@ public class FirstDrawThenFillAnimation extends AbstractCreationStrategy {
     private final MathObject obj;
     private double timegap;
     private Animation anim;
-    private double delayFactor;
 
-    public FirstDrawThenFillAnimation(double runtime, MathObject obj) {
+    public FirstDrawThenFillAnimation1(double runtime, MathObject obj) {
         super(runtime);
         this.obj = obj;
-        this.delayFactor = .2;
 
     }
 
@@ -77,21 +73,33 @@ public class FirstDrawThenFillAnimation extends AbstractCreationStrategy {
      */
     private final Animation createAnimation(MathObject obj, double runtime) {
         if (obj instanceof Shape) {
-            JoinAnimation join = JoinAnimation.make(runtime);
+            Concatenate con = new Concatenate();
             MODrawProperties mpDst = obj.getMp().copy();
-            join.add(new SimpleShapeCreationAnimation(runtime * PERCENT_DRAWING, (Shape) obj));
-            join.add(Commands.setMP(runtime * (1 - PERCENT_DRAWING), mpDst, obj));
-            return join;
+            con.add(new SimpleShapeCreationAnimation(runtime * PERCENT_DRAWING, (Shape) obj));
+            con.add(Commands.setMP(runtime * (1 - PERCENT_DRAWING), mpDst, obj));
+            return con;
         }
         if (obj instanceof MultiShapeObject) {
             MultiShapeObject msh = (MultiShapeObject) obj;
-            AnimationGroup ag = new AnimationGroup();
-            for (Shape sh : msh.getShapes()) {
-                JoinAnimation con = new JoinAnimation(runtime);
-                con.add(new FirstDrawThenFillAnimation(runtime, sh));
-                ag.add(con);
+            double delay_time = (msh.getShapes().size() > 1 ? runtime * delayPercent / (msh.getShapes().size() - 1)
+                    : 0);
+            double time = runtime * (1 - delayPercent);
+            if (time <= 0) {
+                JMathAnimScene.logger
+                        .error("Time too short for draw-and-fill multishape, please take a higher runtime");
+                return null;
             }
-            ag.addDelayEffect(delayFactor);
+            AnimationGroup ag = new AnimationGroup();
+
+            // time to start las shape: DELAY_TIME*(msh.getShapes().size()-1);
+            double delay = 0;
+            for (Shape sh : msh.getShapes()) {
+                Concatenate con = new Concatenate();
+                con.add(new WaitAnimation(delay));
+                con.add(new FirstDrawThenFillAnimation1(time, sh));
+                ag.add(con);
+                delay += delay_time;
+            }
             return ag;
         }
 
@@ -110,7 +118,7 @@ public class FirstDrawThenFillAnimation extends AbstractCreationStrategy {
             for (MathObject sh : mog.getObjects()) {
                 Concatenate con = new Concatenate();
                 con.add(new WaitAnimation(delay));
-                con.add(new FirstDrawThenFillAnimation(time, sh));
+                con.add(new FirstDrawThenFillAnimation1(time, sh));
                 ag.add(con);
                 delay += delayPercent;
             }
@@ -136,7 +144,6 @@ public class FirstDrawThenFillAnimation extends AbstractCreationStrategy {
 
     @Override
     public void doAnim(double t) {
-        anim.doAnim(t);
     }
 
     @Override
@@ -149,7 +156,7 @@ public class FirstDrawThenFillAnimation extends AbstractCreationStrategy {
         return timegap;
     }
 
-    public FirstDrawThenFillAnimation setTimegap(double timegap) {
+    public FirstDrawThenFillAnimation1 setTimegap(double timegap) {
         this.timegap = timegap;
         return this;
     }
@@ -163,22 +170,8 @@ public class FirstDrawThenFillAnimation extends AbstractCreationStrategy {
      * @return The animation to be played with the JMathimScene.playAnimation
      * method
      */
-    public static FirstDrawThenFillAnimation make(double runtime, MathObject obj) {
-        return new FirstDrawThenFillAnimation(runtime, obj);
+    public static FirstDrawThenFillAnimation1 make(double runtime, MathObject obj) {
+        return new FirstDrawThenFillAnimation1(runtime, obj);
     }
 
-    public FirstDrawThenFillAnimation setDelayEffect(double delay) {
-        delayFactor = delay;
-        return this;
-    }
-
-    @Override
-    public <T extends Animation> T setLambda(DoubleUnaryOperator lambda) {
-        super.setLambda(lambda);
-        try {
-            anim.setLambda(lambda);
-        } catch (NullPointerException e) {
-        }
-        return (T) this;
-    }
 }

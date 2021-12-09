@@ -27,7 +27,7 @@ import com.jmathanim.mathobjects.Shape;
  *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
-public class LineCreationAnimation extends CreationStrategy {
+public class LineCreationAnimation extends AbstractCreationStrategy {
 
 	Shape segment;
 	Line line;
@@ -58,6 +58,7 @@ public class LineCreationAnimation extends CreationStrategy {
 
 	@Override
 	public void doAnim(double t) {
+            anim.doAnim(t);
 	}
 
 	@Override

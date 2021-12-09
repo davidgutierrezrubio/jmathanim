@@ -20,12 +20,15 @@ package com.jmathanim.Animations.Strategies.ShowCreation;
 import com.jmathanim.Animations.AnimationGroup;
 import com.jmathanim.Animations.Commands;
 import com.jmathanim.Animations.Concatenate;
+import com.jmathanim.Animations.JoinAnimation;
 import com.jmathanim.Animations.ShowCreation;
 import com.jmathanim.Animations.WaitAnimation;
+import com.jmathanim.Utils.JMathAnimConfig;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.Axes.Axes;
 import com.jmathanim.mathobjects.Axes.TickAxes;
 import com.jmathanim.mathobjects.MathObject;
+import com.jmathanim.mathobjects.Point;
 import java.util.ArrayList;
 
 /**
@@ -34,81 +37,59 @@ import java.util.ArrayList;
  *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
-public class AxesCreationAnimation extends CreationStrategy {
+public class AxesCreationAnimation extends AnimationGroup implements CreationStrategy {
 
-	private final Axes axes;
-	ArrayList<MathObject> objectsToRemoveWhenFinished;
-	Concatenate anim;
+    private final Axes axes;
+//	ArrayList<MathObject> objectsToRemoveWhenFinished;
 
-	public AxesCreationAnimation(double runTime, Axes axes) {
-		super(runTime);
-		this.axes = axes;
-		objectsToRemoveWhenFinished = new ArrayList<>();
-	}
+    public AxesCreationAnimation(double runTime, Axes axes) {
+        super();
+        this.runTime = runTime;
+        this.axes = axes;
+//		objectsToRemoveWhenFinished = new ArrayList<>();
+        axes.update(JMathAnimConfig.getConfig().getScene());//In case we need to update elements
+        add(ShowCreation.make(runTime, axes.getxAxis()));
+        add(ShowCreation.make(runTime, axes.getyAxis()));
+        for (TickAxes t : axes.getXticks()) {
+            add(ShowCreation.make(runTime, t.getTick()));
+            add(ShowCreation.make(runTime, t.getLegend()));
+        }
+        for (TickAxes t : axes.getYticks()) {
+            add(ShowCreation.make(runTime, t.getTick()));
+            add(ShowCreation.make(runTime, t.getLegend()));
+        }
+        addDelayEffect(.4);
+    }
 
-	@Override
-	public void initialize(JMathAnimScene scene) {
-		super.initialize(scene);
-		anim = new Concatenate();
-		axes.update(scene);
+//    @Override
+//    public void initialize(JMathAnimScene scene) {
+//        super.initialize(scene);
+//
+//    }
 
-		// Axes
-		AnimationGroup ag = new AnimationGroup(new ShowCreation(.5 * runTime, axes.getxAxis()),
-				new ShowCreation(runTime, axes.getyAxis()));
-		anim.add(ag);
-		objectsToRemoveWhenFinished.add(axes.getxAxis());
-		objectsToRemoveWhenFinished.add(axes.getyAxis());
+//	@Override
+//	public boolean processAnimation() {
+//		return anim.processAnimation(); // To change body of generated methods, choose Tools | Templates.
+//	}
+//	@Override
+//	public void doAnim(double t) {
+//	}
+//	@Override
+//	public void finishAnimation() {
+//		super.finishAnimation();
+//		anim.finishAnimation();
+//		addObjectsToscene(axes);
+//		for (MathObject ob : objectsToRemoveWhenFinished) {
+//			removeObjectsToscene(ob);
+//		}
+//	}
+    @Override
+    public void setPencilPosition(Point previous, Point current) {
+    }
 
-		ag = new AnimationGroup();
-		// X Ticks
-		int n = 0;
-		for (TickAxes t : axes.getXticks()) {
-			if (t.shouldDraw(scene.getCamera())) {
-				ag.add(new Concatenate(new WaitAnimation(.15 * .5 * runTime * n / axes.getXticks().size()),
-						Commands.fadeIn(.85 * .5 * runTime, t.getLegend())));
-				ag.add(new Concatenate(new WaitAnimation(.15 * .5 * runTime * n / axes.getXticks().size()),
-						Commands.fadeIn(.85 * .5 * runTime, t.getTick())));
-				objectsToRemoveWhenFinished.add(t.getLegend());
-				objectsToRemoveWhenFinished.add(t.getTick());
-			}
-			n++;
-		}
-
-		// Y Ticks
-		n = 0;
-		for (TickAxes t : axes.getYticks()) {
-			if (t.shouldDraw(scene.getCamera())) {
-				ag.add(new Concatenate(new WaitAnimation(.15 * .5 * runTime * n / axes.getXticks().size()),
-						Commands.fadeIn(.85 * .5 * runTime, t.getLegend())));
-				ag.add(new Concatenate(new WaitAnimation(.15 * .5 * runTime * n / axes.getXticks().size()),
-						Commands.fadeIn(.85 * .5 * runTime, t.getTick())));
-				objectsToRemoveWhenFinished.add(t.getLegend());
-				objectsToRemoveWhenFinished.add(t.getTick());
-			}
-			n++;
-		}
-		anim.add(ag);
-
-		anim.initialize(scene);
-	}
-
-	@Override
-	public boolean processAnimation() {
-		return anim.processAnimation(); // To change body of generated methods, choose Tools | Templates.
-	}
-
-	@Override
-	public void doAnim(double t) {
-	}
-
-	@Override
-	public void finishAnimation() {
-		super.finishAnimation();
-		anim.finishAnimation();
-		addObjectsToscene(axes);
-		for (MathObject ob : objectsToRemoveWhenFinished) {
-			removeObjectsToscene(ob);
-		}
-	}
+    @Override
+    public Point[] getPencilPosition() {
+        return null;
+    }
 
 }

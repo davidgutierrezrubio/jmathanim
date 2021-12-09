@@ -18,13 +18,14 @@
 package com.jmathanim.Animations.Strategies.ShowCreation;
 
 import com.jmathanim.jmathanim.JMathAnimScene;
+import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.Shape;
 
 /**
  *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
-//public class SimpleShapeCreationAnimation extends CreationStrategy {
+//public class SimpleShapeCreationAnimation extends AbstractCreationStrategy {
 //
 //    private final Shape mobj;
 //    private MultiShapeObject msh;
@@ -139,9 +140,9 @@ import com.jmathanim.mathobjects.Shape;
  *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
-public class SimpleShapeCreationAnimation extends CreationStrategy {
+public class SimpleShapeCreationAnimation extends AbstractCreationStrategy {
 
-    private final Shape mobj;
+    private Shape mobj;
 
     public SimpleShapeCreationAnimation(double runtime, Shape mobj) {
         super(runtime);
@@ -151,19 +152,24 @@ public class SimpleShapeCreationAnimation extends CreationStrategy {
     @Override
     public void initialize(JMathAnimScene scene) {
         super.initialize(scene);
-        removeObjectsToscene(this.mobj);
+//        removeObjectsToscene(this.mobj);
         
     }
 
     @Override
     public void doAnim(double t) {
+        this.mobj.visible(false);
         double lt = getLambda().applyAsDouble(t);
-        scene.addOnce(this.mobj.getSubShape(0, lt));
+        intermediateShape = this.mobj.getSubShape(0, lt).visible(lt>0);
+        scene.addOnce(intermediateShape);
     }
+    private MathObject intermediateShape;
 
     @Override
     public void finishAnimation() {
         super.finishAnimation();
+        this.mobj.visible(true);
+        removeObjectsToscene(intermediateShape);
         double lt = getLambda().applyAsDouble(1);
         if (lt == 1) {
             addObjectsToscene(mobj);

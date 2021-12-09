@@ -19,6 +19,7 @@ package com.jmathanim.Animations;
 
 import com.jmathanim.Animations.Strategies.ShowCreation.ArrowCreationAnimation;
 import com.jmathanim.Animations.Strategies.ShowCreation.AxesCreationAnimation;
+import com.jmathanim.Animations.Strategies.ShowCreation.AbstractCreationStrategy;
 import com.jmathanim.Animations.Strategies.ShowCreation.CreationStrategy;
 import com.jmathanim.Animations.Strategies.ShowCreation.FirstDrawThenFillAnimation;
 import com.jmathanim.Animations.Strategies.ShowCreation.GroupCreationAnimation;
@@ -38,6 +39,7 @@ import com.jmathanim.mathobjects.MultiShapeObject;
 import com.jmathanim.mathobjects.Point;
 import com.jmathanim.mathobjects.SVGMathObject;
 import com.jmathanim.mathobjects.Shape;
+import java.util.function.DoubleUnaryOperator;
 
 /**
  * Animation that shows the creation of a MathObject. The precise strategy for
@@ -55,7 +57,7 @@ public class ShowCreation extends Animation {
     protected final Point[] pencilPosition;
     MathObject mobj;
     CanonicalJMPath canonPath;
-    private CreationStrategy creationStrategy;
+    private Animation creationStrategy;
     private ShowCreationStrategy strategyType = ShowCreationStrategy.NONE;
     private MathObject removeThisAtTheEnd = null;
     private MathObject addThisAtTheEnd = null;
@@ -113,16 +115,19 @@ public class ShowCreation extends Animation {
 
     @Override
     public void doAnim(double t) {
-     creationStrategy.doAnim(t);
+        creationStrategy.doAnim(t);
     }
 
     @Override
     public boolean processAnimation() {
-        if (creationStrategy != null) {
+        if ((creationStrategy != null)) {
             boolean ret = creationStrategy.processAnimation();
             try {
-                pencilPosition[0].copyFrom(creationStrategy.getPencilPosition()[0]);
-                pencilPosition[1].copyFrom(creationStrategy.getPencilPosition()[1]);
+                if (creationStrategy instanceof CreationStrategy) {
+                    CreationStrategy cs=(CreationStrategy) creationStrategy;
+                    pencilPosition[0].copyFrom(cs.getPencilPosition()[0]);
+                    pencilPosition[1].copyFrom(cs.getPencilPosition()[1]);
+                }
             } catch (java.lang.NullPointerException e) {
                 //do nothing
             }
@@ -214,7 +219,8 @@ public class ShowCreation extends Animation {
                 JMathAnimScene.logger.debug("ShowCreation method: GroupCreationStrategy");
                 break;
             case LINE_CREATION:
-                creationStrategy = new LineCreationAnimation(this.runTime, (Line) mobj);
+//                creationStrategy = new LineCreationAnimation(this.runTime, (Line) mobj);
+                creationStrategy=new SimpleShapeCreationAnimation(this.runTime,((Line)mobj).toSegment(scene.getCamera()));
                 JMathAnimScene.logger.debug("ShowCreation method: LineCreationStrategy");
                 break;
             case ARROW_CREATION:
@@ -223,7 +229,7 @@ public class ShowCreation extends Animation {
                 break;
             case DELIMITER_CREATION:
                 Delimiter del = (Delimiter) mobj;
-                creationStrategy = new CreationStrategy(runTime) {
+                creationStrategy = new AbstractCreationStrategy(runTime) {
                     @Override
                     public void initialize(JMathAnimScene scene) {
                         super.initialize(scene);
@@ -287,5 +293,16 @@ public class ShowCreation extends Animation {
 
     }
 
+    @Override
+    public <T extends Animation> T setLambda(DoubleUnaryOperator lambda) {
+         super.setLambda(lambda); 
+        try {
+            creationStrategy.setLambda(lambda);
+        } catch (NullPointerException e) {
+        }
+         return (T) this;
+    }
 
+    
+    
 }

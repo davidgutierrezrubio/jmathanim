@@ -24,7 +24,7 @@ import com.jmathanim.mathobjects.Shape;
  *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
-public class SimpleShapeCreationAnimation2 extends CreationStrategy {
+public class SimpleShapeCreationAnimation2 extends AbstractCreationStrategy {
 
     private final Shape mobj;
 

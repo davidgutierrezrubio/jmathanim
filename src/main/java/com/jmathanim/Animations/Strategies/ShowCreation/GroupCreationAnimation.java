@@ -22,45 +22,54 @@ import com.jmathanim.Animations.ShowCreation;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.MathObjectGroup;
+import com.jmathanim.mathobjects.Point;
 
 /**
  *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
-public class GroupCreationAnimation extends CreationStrategy {
+public class GroupCreationAnimation extends AnimationGroup implements CreationStrategy {
 
-	private final AnimationGroup anim;
 
-	public GroupCreationAnimation(double runtime, MathObjectGroup group) {
-		super(runtime);
-		this.anim = new AnimationGroup();
-		for (MathObject obj : group.getObjects()) {
-			this.anim.add(new ShowCreation(runtime, obj));
-		}
-this.anim.addDelayEffect(.5);
-	}
+    public GroupCreationAnimation(double runtime, MathObjectGroup group) {
+        super();
+        for (MathObject obj : group.getObjects()) {
+           add(new ShowCreation(runtime, obj));
+        }
+      addDelayEffect(.2);
+    }
 
-	@Override
-	public void initialize(JMathAnimScene scene) {
-		super.initialize(scene);
-		anim.setLambda(lambda);
-		anim.initialize(scene);
+//    @Override
+//    public void initialize(JMathAnimScene scene) {
+//        super.initialize(scene);
+//        anim.setLambda(lambda);
+//        anim.initialize(scene);
+//
+//    }
+//
+//    @Override
+//    public boolean processAnimation() {
+//        return anim.processAnimation();
+//    }
+//
+//    @Override
+//    public void finishAnimation() {
+//        super.finishAnimation();
+//        anim.finishAnimation();
+//    }
+//
+//    @Override
+//    public void doAnim(double t) {
+//        anim.doAnim(t);
+//    }
 
-	}
+    @Override
+    public void setPencilPosition(Point previous, Point current) {
+    }
 
-	@Override
-	public boolean processAnimation() {
-		return anim.processAnimation();
-	}
-
-	@Override
-	public void finishAnimation() {
-		super.finishAnimation();
-		anim.finishAnimation();
-	}
-
-	@Override
-	public void doAnim(double t) {
-	}
+    @Override
+    public Point[] getPencilPosition() {
+        return null;
+    }
 
 }

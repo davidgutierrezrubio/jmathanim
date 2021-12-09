@@ -36,6 +36,10 @@ public class JoinAnimation extends Animation {
         super(runTime);
         animations = new ArrayList<>();
         animations.addAll(Arrays.asList(anims));
+        this.setLambda(t -> t);//Default behaviour for this animation
+//        for (Animation anim:animations) {
+//            anim.setLambda(t->t);
+//        }
     }
 
     @Override
@@ -49,12 +53,31 @@ public class JoinAnimation extends Animation {
         double lt2 = size * lt - num;
         Animation anim = animations.get(num);
         if (anim.getStatus() == Status.NOT_INITIALIZED) {
-            if (num>0) {
-                animations.get(num-1).finishAnimation();
+            if (num > 0) {
+                for (int k = 0; k < num; k++) {
+                    if (animations.get(k).getStatus() == Status.NOT_INITIALIZED) {
+                        animations.get(k).initialize(scene);
+                        animations.get(k).doAnim(1);
+                    }
+                    animations.get(k).finishAnimation();
+                }
+
             }
-             anim.initialize(scene);
+            anim.initialize(scene);
         }
         anim.doAnim(lt2);
+    }
+
+    public boolean add(Animation e) {
+        return animations.add(e);
+    }
+
+    public void add(int index, Animation element) {
+        animations.add(index, element);
+    }
+
+    public ArrayList<Animation> getAnimations() {
+        return animations;
     }
 
 }

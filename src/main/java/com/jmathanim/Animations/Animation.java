@@ -449,4 +449,13 @@ public abstract class Animation {
         this.debugName = debugName;
     }
 
+    public double getRunTime() {
+        return runTime;
+    }
+
+    public <T extends Animation> T setRunTime(double runTime) {
+        this.runTime = runTime;
+        return (T) this;
+    }
+
 }

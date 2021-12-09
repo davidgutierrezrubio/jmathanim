@@ -3,22 +3,22 @@
         <style name="FunctionGraphDefault">
             <drawColor>white</drawColor>
             <fillColor>TRANSPARENT</fillColor>
-            <thickness>4</thickness>
+            <thickness>6</thickness>
         </style>
         <style name="axisdefault">
             <drawColor>#eff8ff</drawColor>
             <fillColor>TRANSPARENT</fillColor>
-            <thickness>4</thickness>
+            <thickness>6</thickness>
         </style>
         <style name="axisPrimaryTickDefault">
             <drawColor>#eff8ff</drawColor>
             <fillColor>transparent</fillColor>
-            <thickness>2</thickness>
+            <thickness>3</thickness>
         </style>
         <style name="axisSecondaryTickDefault">
             <drawColor>#eff8ff</drawColor>
             <fillColor>transparent</fillColor>
-            <thickness>1</thickness>
+            <thickness>3</thickness>
         </style>
         <style name="axisLegendDefault">
             <drawColor>#eff8ff</drawColor>

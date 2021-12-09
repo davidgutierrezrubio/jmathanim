@@ -262,4 +262,15 @@ public class Delimiter extends MathObject {
         return (T) make(A.copy(), B.copy(), type, gap);
     }
 
+    @Override
+    public void copyStateFrom(MathObject obj) {
+        if (!(obj instanceof Delimiter)) return;
+        
+        Delimiter del=(Delimiter) obj;
+        this.A.copyStateFrom(del.A);
+        this.B.copyStateFrom(del.B);
+        this.gap=del.gap;
+//        this.type=type;//Final variable
+    }
+    
 }

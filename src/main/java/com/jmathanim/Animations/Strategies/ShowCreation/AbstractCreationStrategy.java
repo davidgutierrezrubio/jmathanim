@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2021 David
+ * Copyright (C) 2021 David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -17,13 +17,37 @@
  */
 package com.jmathanim.Animations.Strategies.ShowCreation;
 
+import com.jmathanim.Animations.Animation;
 import com.jmathanim.mathobjects.Point;
 
 /**
  *
- * @author David
+ * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
-public interface CreationStrategy {
-    public void setPencilPosition(Point previous, Point current);
-    public Point[] getPencilPosition();
+public abstract class AbstractCreationStrategy extends Animation implements CreationStrategy{
+
+	private final Point[] pencil;
+
+	public AbstractCreationStrategy(double runtime) {
+		super(runtime);
+		this.pencil = new Point[2];
+	}
+
+	/**
+	 * Returns the "pencil" position.
+	 *
+	 * @return An array with 2 point objects. The 0 index stores the previous
+	 *         position of the pencil and 1 stores the current
+	 */
+        @Override
+	public Point[] getPencilPosition() {
+		return pencil;
+	}
+
+        @Override
+	public void setPencilPosition(Point previous, Point current) {
+		pencil[0] = previous;
+		pencil[1] = current;
+	}
+
 }
