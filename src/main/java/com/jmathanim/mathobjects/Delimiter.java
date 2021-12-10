@@ -20,6 +20,7 @@ package com.jmathanim.mathobjects;
 import com.jmathanim.Renderers.Renderer;
 import com.jmathanim.Utils.AffineJTransform;
 import com.jmathanim.Utils.Anchor;
+import com.jmathanim.Utils.EmptyRect;
 import com.jmathanim.Utils.JMathAnimConfig;
 import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.ResourceLoader;
@@ -72,7 +73,7 @@ public class Delimiter extends MathObject {
      * @return The delimiter
      */
     public static Delimiter make(Point A, Point B, Type type, double gap) {
-        Delimiter resul = new Delimiter(Shape.segment(A, B), type, gap);
+        Delimiter resul = new Delimiter(A, B, type, gap);
         ResourceLoader rl = new ResourceLoader();
         String name = "";
         switch (type) {
@@ -152,7 +153,8 @@ public class Delimiter extends MathObject {
      * are allowed. Other anchors return a null object and an error message.
      * @param delimiterType Delimiter type
      * @param gap Gap to put between anchor points and delimiter
-     * @param label Object to stack to the delimiter, at the same anchor that anchorType
+     * @param label Object to stack to the delimiter, at the same anchor that
+     * anchorType
      * @param labelGap Gap between the label and the delimiter
      * @return The delimiter
      */
@@ -166,9 +168,9 @@ public class Delimiter extends MathObject {
 
     }
 
-    private Delimiter(Shape sh, Type type, double gap) {
-        this.A = sh.getPoint(0);
-        this.B = sh.getPoint(1);
+    private Delimiter(Point A, Point B, Type type, double gap) {
+        this.A = A;
+        this.B = B;
         this.type = type;
         this.gap = gap;
     }
@@ -242,6 +244,9 @@ public class Delimiter extends MathObject {
 
     @Override
     public Rect getBoundingBox() {
+         if (A.isEquivalentTo(B, 0)) {
+                return new EmptyRect();
+            }
         return getDelimiterShape().getBoundingBox();
     }
 
@@ -264,13 +269,15 @@ public class Delimiter extends MathObject {
 
     @Override
     public void copyStateFrom(MathObject obj) {
-        if (!(obj instanceof Delimiter)) return;
-        
-        Delimiter del=(Delimiter) obj;
+        if (!(obj instanceof Delimiter)) {
+            return;
+        }
+
+        Delimiter del = (Delimiter) obj;
         this.A.copyStateFrom(del.A);
         this.B.copyStateFrom(del.B);
-        this.gap=del.gap;
+        this.gap = del.gap;
 //        this.type=type;//Final variable
     }
-    
+
 }

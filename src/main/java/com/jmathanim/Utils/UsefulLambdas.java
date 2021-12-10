@@ -262,4 +262,12 @@ public class UsefulLambdas {
         };
     }
 
+    public static DoubleUnaryOperator clone(int cloneNumber) {
+        return new DoubleUnaryOperator() {
+            @Override
+            public double applyAsDouble(double t) {
+                return t*cloneNumber-Math.floor(t*cloneNumber);
+            }
+        };
+    }
 }

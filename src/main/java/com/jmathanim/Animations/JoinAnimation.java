@@ -17,16 +17,20 @@
  */
 package com.jmathanim.Animations;
 
+import com.jmathanim.jmathanim.JMathAnimScene;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.stream.Collectors;
 
 /**
+ * Creates an animation that considers all contained animations as one.
  *
- * @author David
+ * @author David Gutiérrez Rubio
  */
 public class JoinAnimation extends Animation {
 
     ArrayList<Animation> animations;
+    double[] steps;
 
     public static JoinAnimation make(double runTime, Animation... anims) {
         return new JoinAnimation(runTime, anims);
@@ -37,23 +41,36 @@ public class JoinAnimation extends Animation {
         animations = new ArrayList<>();
         animations.addAll(Arrays.asList(anims));
         this.setLambda(t -> t);//Default behaviour for this animation
-//        for (Animation anim:animations) {
-//            anim.setLambda(t->t);
-//        }
+    }
+
+    @Override
+    public void initialize(JMathAnimScene scene) {
+        super.initialize(scene);
+        //Compute vector of steps
+        double totalSum = animations.stream().collect(Collectors.summingDouble(Animation::getRunTime));
+        steps = new double[animations.size() + 1];
+        steps[0] = 0;
+        double partialSum = 0;
+        for (int i = 0; i < animations.size(); i++) {
+            partialSum += animations.get(i).getRunTime();
+            steps[i + 1] = partialSum / totalSum;
+        }
     }
 
     @Override
     public void doAnim(double t) {
-        int size = animations.size();
         double lt = getLambda().applyAsDouble(t);
-        int num = (int) (lt * size);
-        if (num == size) {
-            num--;
-        }
-        double lt2 = size * lt - num;
+
+        int num = getAnimationNumberForTime(lt);
+
+        //Now normalize from 0 to 1
+        double ltNormalized = (lt - steps[num]) / (steps[num + 1] - steps[num]);
         Animation anim = animations.get(num);
         if (anim.getStatus() == Status.NOT_INITIALIZED) {
             if (num > 0) {
+                //If the previous animations didn't start yet, I have to ensure to be
+                //properly initalized and finished so that the next ones will save the 
+                //correct states of the objects
                 for (int k = 0; k < num; k++) {
                     if (animations.get(k).getStatus() == Status.NOT_INITIALIZED) {
                         animations.get(k).initialize(scene);
@@ -61,11 +78,22 @@ public class JoinAnimation extends Animation {
                     }
                     animations.get(k).finishAnimation();
                 }
-
             }
             anim.initialize(scene);
         }
-        anim.doAnim(lt2);
+        anim.doAnim(ltNormalized);
+    }
+
+    private int getAnimationNumberForTime(double t) {
+        if (t == 0) {
+            return 0;
+        }
+        int num = 0;
+        while (t > steps[num]) {
+            num++;
+        }
+        num--;
+        return num;
     }
 
     public boolean add(Animation e) {
