@@ -159,6 +159,7 @@ public class MathObjectGroup extends MathObject implements Iterable<MathObject> 
     @Override
     public MathObjectGroup copy() {
         MathObjectGroup copy = new MathObjectGroup();
+        copy.getMp().copyFrom(getMp());
         for (MathObject obj : this.getObjects()) {
             copy.add(obj.copy());
         }

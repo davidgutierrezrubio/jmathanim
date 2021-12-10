@@ -63,6 +63,13 @@ public class Shape extends MathObject {
         return jmpath.jmPathPoints.get(n);
     }
 
+    /**
+     * Returns a reference to the point at position n This is equivalent to
+     * get(n).p
+     *
+     * @param n Point number
+     * @return The point
+     */
     public Point getPoint(int n) {
         return get(n).p;
     }
@@ -80,7 +87,6 @@ public class Shape extends MathObject {
     public Point getPointAt(double t) {
         return jmpath.getJMPointAt(t).p;
     }
-
 
     public Point getCentroid() {
         Point resul = new Point(0, 0, 0);
@@ -640,10 +646,11 @@ public class Shape extends MathObject {
     }
 
     /**
-     * Gets 
+     * Gets
+     *
      * @param a
      * @param b
-     * @return 
+     * @return
      */
     public Shape getSubShape(double a, double b) {
         Shape subShape = new Shape();

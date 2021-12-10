@@ -34,7 +34,7 @@ import com.jmathanim.mathobjects.updateableObjects.AnchoredMathObject;
  */
 public class Delimiter extends MathObject {
 
-    private final Point A, B;
+    private Point A, B;
     private SVGMathObject body;
     private double delimiterScale;
 
@@ -110,8 +110,6 @@ public class Delimiter extends MathObject {
     public static Delimiter stackTo(MathObject obj, Anchor.Type anchorType, Type delimiterType, double gap) {
         JMathAnimScene sce = JMathAnimConfig.getConfig().getScene();//This should be better implemented, avoid static singletons
         Anchor.Type anchorA, anchorB;
-        Point A = Point.at(0, 0);
-        Point B = Point.at(0, 0);
         switch (anchorType) {
             case UPPER:
                 anchorA = Anchor.Type.UL;
@@ -133,6 +131,8 @@ public class Delimiter extends MathObject {
                 JMathAnimScene.logger.error("Invalid anchor for delimiter object " + anchorType.name());
                 return null;
         }
+        Point A = Anchor.getAnchorPoint(obj, anchorA);
+        Point B = Anchor.getAnchorPoint(obj, anchorB);
         //Register points A and B as updateable
         sce.registerUpdateable(new AnchoredMathObject(A, Anchor.Type.CENTER, obj, anchorA));
         sce.registerUpdateable(new AnchoredMathObject(B, Anchor.Type.CENTER, obj, anchorB));
@@ -263,21 +263,23 @@ public class Delimiter extends MathObject {
     }
 
     @Override
-    public <T extends MathObject> T copy() {
-        return (T) make(A.copy(), B.copy(), type, gap);
+    public Delimiter copy() {
+        Delimiter copy = make(A.copy(), B.copy(), type, gap);
+        copy.getMp().copyFrom(this.getMp());
+        return copy;
     }
 
     @Override
     public void copyStateFrom(MathObject obj) {
-        if (!(obj instanceof Delimiter)) {
-            return;
-        }
+        //This object should not be able to copy its state since
+        //it is a purely dependent object
+        //Only their drawing attributes!
+        getMp().copyFrom(obj.getMp());
+    }
 
-        Delimiter del = (Delimiter) obj;
-        this.A.copyStateFrom(del.A);
-        this.B.copyStateFrom(del.B);
-        this.gap = del.gap;
-//        this.type=type;//Final variable
+    @Override
+    public int getUpdateLevel() {
+       return Math.max(A.getUpdateLevel(),B.getUpdateLevel())+1;
     }
 
 }

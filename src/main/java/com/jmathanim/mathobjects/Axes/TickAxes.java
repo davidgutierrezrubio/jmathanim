@@ -102,7 +102,11 @@ public class TickAxes extends MathObject {
 	}
 
 	public TickAxes copy() {
-		return new TickAxes(location, legend.copy(), tick.copy(), orientation, maximumScaleToShow);
+            TickAxes copy = new TickAxes(location, legend.copy(), tick.copy(), orientation, maximumScaleToShow);
+            copy.getMp().copyFrom(this.getMp());
+            copy.getLegend().copyStateFrom(legend);
+            copy.getTick().copyStateFrom(tick);
+            return copy;
 	}
 
 	public void draw(JMathAnimScene scene, Renderer r) {
