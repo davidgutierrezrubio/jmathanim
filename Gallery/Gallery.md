@@ -334,16 +334,11 @@ Shape sq2 = Shape.square().scale(1.75, 1).style("solidred");
 sq2.stackTo(sq1, Anchor.Type.RIGHT, .5);
 add(sq1, sq2);
 
-//Brace delimiters...
-Delimiter del1X = Delimiter.stackTo(sq1, Anchor.Type.LOWER, Delimiter.Type.BRACE, .1);
-Delimiter del1Y = Delimiter.make(sq1.getPoint(0), sq1.getPoint(3), Delimiter.Type.BRACE, .1);
-Delimiter del2X = Delimiter.make(sq2.getPoint(1), sq2.getPoint(0), Delimiter.Type.BRACE, .1);
-Delimiter del2Y = Delimiter.make(sq2.getPoint(2), sq2.getPoint(1), Delimiter.Type.BRACE, .1);
 //And their legends
-LaTeXMathObject textA1 = LaTeXMathObject.make("$a$").stackTo(del1Y, Anchor.Type.LEFT, .05);
-LaTeXMathObject textA2 = LaTeXMathObject.make("$a$").stackTo(del2Y, Anchor.Type.RIGHT, .05);
-LaTeXMathObject textB = LaTeXMathObject.make("$b$").stackTo(del1X, Anchor.Type.LOWER, .05);
-LaTeXMathObject textC = LaTeXMathObject.make("$c$").stackTo(del2X, Anchor.Type.LOWER, .05);
+LaTeXMathObject textA1 = LaTeXMathObject.make("$a$");
+LaTeXMathObject textA2 = LaTeXMathObject.make("$a$");
+LaTeXMathObject textB = LaTeXMathObject.make("$b$");
+LaTeXMathObject textC = LaTeXMathObject.make("$c$");
 
 //The colors chosen to the symbols a, b and c
 JMColor colA = JMColor.parse("#34403C");
@@ -355,62 +350,74 @@ textA2.setColor(colA, 0);
 textB.setColor(colB, 0);
 textC.setColor(colC, 0);
 
-Delimiter del12X = Delimiter.make(sq1.getPoint(3), sq2.getPoint(2), Delimiter.Type.BRACE, .1);
+//Brace delimiters...  .1 is the distance from the braces to the rectangles,
+//and .05 is the distance from labels to the braces
+Delimiter del1X = Delimiter.stackTo(sq1, Anchor.Type.LOWER, Delimiter.Type.BRACE, .1, textB, .05);
+Delimiter del1Y = Delimiter.stackTo(sq1, Anchor.Type.LEFT, Delimiter.Type.BRACE, .1, textA1, .05);
+Delimiter del2X = Delimiter.stackTo(sq2, Anchor.Type.LOWER, Delimiter.Type.BRACE, .1, textC, .05);
+Delimiter del2Y = Delimiter.stackTo(sq2, Anchor.Type.RIGHT, Delimiter.Type.BRACE, .1, textA2, .05);
+
 LaTeXMathObject textBC = LaTeXMathObject.make("$b+c$");
-textBC.setColor(colB, 0);
-textBC.setColor(colC, 2);
+textBC.setColor(colB, 0);//"b" glyph
+textBC.setColor(colC, 2);//"c" glyph
+Delimiter del12X = Delimiter.stackTo(
+    MathObjectGroup.make(sq1, sq2),//We group these 2 rectangles so the brace adjust to the 2 combined
+    Anchor.Type.UPPER,
+    Delimiter.Type.BRACE, .1, textBC, .05);
 
-//This ensures that the text "b+c" is always centered under the brace
-registerUpdateable(new AnchoredMathObject(textBC, Anchor.Type.LOWER, del12X, Anchor.Type.UPPER, .05));
+//The upper formula  Area=a*b+a*c
+LaTeXMathObject formula1 = LaTeXMathObject.make("Area=$a\\cdot b+a\\cdot c$").scale(3);
+//Position formula .5 units above sq2...we will center it horizontally later
+formula1.stackTo(sq2, Anchor.Type.UPPER, .5);
+//Apply colors
+formula1.setColor(colArea, 0, 1, 2, 3);//"Area"
+formula1.setColor(colA, 5, 9);//The "a" glyphs
+formula1.setColor(colB, 7);//The "b" glyph
+formula1.setColor(colC, 11); //The "c" glyph
 
-LaTeXMathObject formula1 = LaTeXMathObject.make("\\'{A}rea=$a\\cdot b+a\\cdot c$").scale(3);
-formula1.stackTo(sq2.getPoint(3), Anchor.Type.UPPER, .5);
-formula1.setColor(colArea, 0, 1, 2, 3, 4);
-formula1.setColor(colA, 6, 10);
-formula1.setColor(colB, 8);
-formula1.setColor(colC, 12);
+//The upper formula  Area=a*(b+c)
+LaTeXMathObject formula2 = LaTeXMathObject.make("Area=$a\\cdot(b+c)$").scale(3);
+//Apply colors
+formula2.setColor(colArea, 0, 1, 2, 3);//"Area"
+formula2.setColor(colA, 5);//The "a" glyphs
+formula2.setColor(colB, 8);//The "b" glyph
+formula2.setColor(colC, 10);//The "c" glyph
 
-LaTeXMathObject formula2 = LaTeXMathObject.make("\\'{A}rea=$a\\cdot(b+c)$").scale(3);
-
-formula2.setColor(colArea, 0, 1, 2, 3, 4);
-formula2.setColor(colA, 6);
-formula2.setColor(colB, 9);
-formula2.setColor(colC, 11);
-
-add(del1X, del2X, del1Y, del2Y, textA1, textA2, textB, textC, formula1);
+add(del1X, del2X, del1Y, del2Y, formula1);
 camera.adjustToAllObjects();
 
-//Align horizontally formula1 and formula2 with it. Note that we have to do this after adjusting the camera
+//Align formula1 horizontally and formula2 with it. Note that we have to do this after adjusting the camera
 formula1.hCenter();
-formula2.alignCenter(5, formula1, 5);
+formula2.alignCenter(4, formula1, 4);//Align "=" sign of formula2 with that of the formula1
+
+//We make a copy of formula1 to make the inverse animation later
 LaTeXMathObject formula3 = formula1.copy();
 
 waitSeconds(2);
+Animation shiftSquareAnim = Commands.shift(3, .5, 0, sq1);
+Animation fadeBraceAnim = Commands.fadeIn(3, del12X, textBC);
 
-Animation an1 = Commands.shift(3, .5, 0, sq1, textA1, textB);
-Animation an2 = Commands.fadeIn(3, del12X, textBC);
+TransformMathExpression changeFormulaAnim = new TransformMathExpression(3, formula1, formula2);
+changeFormulaAnim.mapRange(0, 6, 0);//"Área=a\cdot"
+changeFormulaAnim.map(7, 8);//b -> b
+changeFormulaAnim.map(8, 9);//+ -> +
+changeFormulaAnim.map(9, 5).addJumpEffect(.5);//Second a -> a
+changeFormulaAnim.map(11, 10);//c -> c
 
-TransformMathExpression an3 = new TransformMathExpression(3, formula1, formula2);
-an3.mapRange(0, 7, 0);//"Área=a\cdot"
-an3.map(8, 9);//b -> b
-an3.map(9, 10);//+ -> +
-an3.map(10, 6).addJumpEffect(.5);//Second a -> a
-an3.map(12, 11);//c -> c
-
-playAnimation(an1, an2, an3);
+playAnimation(shiftSquareAnim, fadeBraceAnim, changeFormulaAnim);
 waitSeconds(3);
 
-//Inverse
-an1 = Commands.shift(3, -.5, 0, sq1, textA1, textB);
-an2 = Commands.fadeOut(3, del12X, textBC);
+//Inverse animation
+shiftSquareAnim = Commands.shift(3, -.5, 0, sq1);
+fadeBraceAnim = Commands.fadeOut(3, del12X, textBC);
 
-an3 = new TransformMathExpression(3, formula2, formula3);
-an3.mapRange(0, 7, 0);
-an3.map(9, 8);
-an3.map(10, 9);
-an3.map(6, 10).addJumpEffect(-.5);
-an3.map(11, 12);
-playAnimation(an1, an2, an3);
+changeFormulaAnim = new TransformMathExpression(3, formula2, formula3);
+changeFormulaAnim.mapRange(0, 6, 0);
+changeFormulaAnim.map(8, 7);
+changeFormulaAnim.map(9, 8);
+changeFormulaAnim.map(5, 9).addJumpEffect(-.5);
+changeFormulaAnim.map(10, 11);
+playAnimation(shiftSquareAnim, fadeBraceAnim, changeFormulaAnim);
 waitSeconds(3);
 ```
 
