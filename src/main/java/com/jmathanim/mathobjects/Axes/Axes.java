@@ -348,6 +348,11 @@ public class Axes extends MathObject {
         }
     }
 
+    @Override
+    public void copyStateFrom(MathObject obj) {
+        //Nothing to do by now
+    }
+
     public enum TickScale {
         PRIMARY, SECONDARY
     }

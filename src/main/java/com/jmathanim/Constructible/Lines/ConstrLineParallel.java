@@ -31,54 +31,54 @@ import com.jmathanim.mathobjects.Point;
  */
 public class ConstrLineParallel extends Constructible implements HasDirection {
 
-	Point A;
-	HasDirection dir;
-	private final Line lineToDraw;
+    Point A;
+    HasDirection dir;
+    private final Line lineToDraw;
 
-	public static ConstrLineParallel make(Point A, HasDirection dir) {
-		ConstrLineParallel resul = new ConstrLineParallel(A, dir);
-		resul.rebuildShape();
-		return resul;
-	}
+    public static ConstrLineParallel make(Point A, HasDirection dir) {
+        ConstrLineParallel resul = new ConstrLineParallel(A, dir);
+        resul.rebuildShape();
+        return resul;
+    }
 
-	private ConstrLineParallel(Point A, HasDirection dir) {
-		this.A = A;
-		this.dir = dir;
-		lineToDraw = new Line(A, this.dir.getDirection());
-	}
+    private ConstrLineParallel(Point A, HasDirection dir) {
+        this.A = A;
+        this.dir = dir;
+        lineToDraw = new Line(A, this.dir.getDirection());
+    }
 
-	@Override
-	public <T extends MathObject> T copy() {
-		return (T) make(A.copy(), dir);
-	}
+    @Override
+    public <T extends MathObject> T copy() {
+        return (T) make(A.copy(), dir);
+    }
 
-	@Override
-	public void draw(JMathAnimScene scene, Renderer r) {
-		lineToDraw.draw(scene, r);
-	}
+    @Override
+    public void draw(JMathAnimScene scene, Renderer r) {
+        lineToDraw.draw(scene, r);
+    }
 
-	@Override
-	public Vec getDirection() {
-		return dir.getDirection();
-	}
+    @Override
+    public Vec getDirection() {
+        return dir.getDirection();
+    }
 
-	@Override
-	public MathObject getMathObject() {
-		return lineToDraw;
-	}
+    @Override
+    public MathObject getMathObject() {
+        return lineToDraw;
+    }
 
-	@Override
-	public void rebuildShape() {
-		lineToDraw.getP1().v.x = A.v.x;
-		lineToDraw.getP1().v.y = A.v.y;
+    @Override
+    public void rebuildShape() {
+        lineToDraw.getP1().v.x = A.v.x;
+        lineToDraw.getP1().v.y = A.v.y;
 
-		lineToDraw.getP2().v.x = A.v.x + dir.getDirection().x;
-		lineToDraw.getP2().v.y = A.v.y + dir.getDirection().y;
-	}
+        lineToDraw.getP2().v.x = A.v.x + dir.getDirection().x;
+        lineToDraw.getP2().v.y = A.v.y + dir.getDirection().y;
+    }
 
-	@Override
-	public int getUpdateLevel() {
-		return Math.max(A.getUpdateLevel(), ((MathObject) dir).getUpdateLevel()) + 1;
-	}
+    @Override
+    public int getUpdateLevel() {
+        return Math.max(A.getUpdateLevel(), ((MathObject) dir).getUpdateLevel()) + 1;
+    }
 
 }

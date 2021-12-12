@@ -37,117 +37,122 @@ import com.jmathanim.mathobjects.Point;
  */
 public abstract class Constructible extends MathObject {
 
-	@Override
-	public <T extends MathObject> T applyAffineTransform(AffineJTransform transform) {
-		return (T) this;
-	}
+    @Override
+    public <T extends MathObject> T applyAffineTransform(AffineJTransform transform) {
+        return (T) this;
+    }
 
-	@Override
-	public <T extends MathObject> T align(Boxable obj, Align type) {
-		return (T) this;
-	}
+    @Override
+    public <T extends MathObject> T align(Boxable obj, Align type) {
+        return (T) this;
+    }
 
-	@Override
-	public <T extends MathObject> T moveTo(double x, double y) {
-		return (T) this;
-	}
+    @Override
+    public <T extends MathObject> T moveTo(double x, double y) {
+        return (T) this;
+    }
 
-	@Override
-	public <T extends MathObject> T stackToScreen(Anchor.Type anchorType, double xMargin, double yMargin) {
-		return (T) this;
-	}
+    @Override
+    public <T extends MathObject> T stackToScreen(Anchor.Type anchorType, double xMargin, double yMargin) {
+        return (T) this;
+    }
 
-	@Override
-	public <T extends MathObject> T stackTo(Boxable obj, Anchor.Type anchorType, double gap) {
-		return (T) this;
-	}
+    @Override
+    public <T extends MathObject> T stackTo(Boxable obj, Anchor.Type anchorType, double gap) {
+        return (T) this;
+    }
 
-	@Override
-	public <T extends MathObject> T stackToRW(Boxable dstObj, Anchor.Type anchorType, double gap) {
-		return (T) this;
-	}
+    @Override
+    public <T extends MathObject> T stackToRW(Boxable dstObj, Anchor.Type anchorType, double gap) {
+        return (T) this;
+    }
 
-	@Override
-	public <T extends MathObject> T stackToRH(Boxable dstObj, Anchor.Type anchorType, double gap) {
-		return (T) this;
-	}
+    @Override
+    public <T extends MathObject> T stackToRH(Boxable dstObj, Anchor.Type anchorType, double gap) {
+        return (T) this;
+    }
 
-	@Override
-	public <T extends MathObject> T stackToRH(Anchor.Type anchorObj, Boxable dstObj, Anchor.Type anchorType,
-			double gap) {
-		return (T) this;
-	}
+    @Override
+    public <T extends MathObject> T stackToRH(Anchor.Type anchorObj, Boxable dstObj, Anchor.Type anchorType,
+            double gap) {
+        return (T) this;
+    }
 
-	@Override
-	public <T extends MathObject> T stackToRW(Anchor.Type anchorObj, Boxable dstObj, Anchor.Type anchorType,
-			double gap) {
-		return (T) this;
-	}
+    @Override
+    public <T extends MathObject> T stackToRW(Anchor.Type anchorObj, Boxable dstObj, Anchor.Type anchorType,
+            double gap) {
+        return (T) this;
+    }
 
-	@Override
-	public <T extends MathObject> T stackTo(Anchor.Type anchorObj, Boxable dstObj, Anchor.Type anchorType, double hgap,
-			double vgap) {
-		return (T) this;
-	}
+    @Override
+    public <T extends MathObject> T stackTo(Anchor.Type anchorObj, Boxable dstObj, Anchor.Type anchorType, double hgap,
+            double vgap) {
+        return (T) this;
+    }
 
-	@Override
-	public <T extends MathObject> T stackTo(Anchor.Type anchorObj, Boxable dstObj, Anchor.Type anchorType, double gap) {
-		return (T) this;
-	}
+    @Override
+    public <T extends MathObject> T stackTo(Anchor.Type anchorObj, Boxable dstObj, Anchor.Type anchorType, double gap) {
+        return (T) this;
+    }
 
-	@Override
-	public <T extends MathObject> T rotate(double angle) {
-		return (T) this;
-	}
+    @Override
+    public <T extends MathObject> T rotate(double angle) {
+        return (T) this;
+    }
 
-	@Override
-	public <T extends MathObject> T rotate(Point center, double angle) {
-		return (T) this;
-	}
+    @Override
+    public <T extends MathObject> T rotate(Point center, double angle) {
+        return (T) this;
+    }
 
-	@Override
-	public <T extends MathObject> T scale(Point scaleCenter, double sx, double sy, double sz) {
-		return (T) this;
-	}
+    @Override
+    public <T extends MathObject> T scale(Point scaleCenter, double sx, double sy, double sz) {
+        return (T) this;
+    }
 
-	@Override
-	public <T extends MathObject> T scale(double s) {
-		return (T) this;
-	}
+    @Override
+    public <T extends MathObject> T scale(double s) {
+        return (T) this;
+    }
 
-	@Override
-	public <T extends MathObject> T scale(double sx, double sy) {
-		return (T) this;
-	}
+    @Override
+    public <T extends MathObject> T scale(double sx, double sy) {
+        return (T) this;
+    }
 
-	@Override
-	public <T extends MathObject> T shift(Vec shiftVector) {
-		return (T) this;
-	}
+    @Override
+    public <T extends MathObject> T shift(Vec shiftVector) {
+        return (T) this;
+    }
 
-	/**
-	 * Returns a proper Mathobject to work with animations
-	 *
-	 * @return
-	 */
-	public abstract MathObject getMathObject();
+    /**
+     * Returns a proper Mathobject to work with animations
+     *
+     * @return
+     */
+    public abstract MathObject getMathObject();
 
-	@Override
-	public Stylable getMp() {
-		return getMathObject().getMp();
-	}
+    @Override
+    public Stylable getMp() {
+        return getMathObject().getMp();
+    }
 
-	@Override
-	public void update(JMathAnimScene scene) {
-		rebuildShape();
-	}
+    @Override
+    public void update(JMathAnimScene scene) {
+        rebuildShape();
+    }
 
-	abstract public void rebuildShape();
+    abstract public void rebuildShape();
 
-	@Override
-	public Rect getBoundingBox() {
-		rebuildShape();
-		return getMathObject().getBoundingBox();
-	}
+    @Override
+    public Rect getBoundingBox() {
+        rebuildShape();
+        return getMathObject().getBoundingBox();
+    }
 
+    @Override
+    public void copyStateFrom(MathObject obj) {
+        //This object has no state, only its drawing attributes
+        this.getMp().copyFrom(obj.getMp());
+    }
 }

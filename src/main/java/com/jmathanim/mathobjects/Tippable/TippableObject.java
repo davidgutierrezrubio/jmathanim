@@ -129,8 +129,30 @@ public class TippableObject extends MathObject {
 
 	@Override
 	public <T extends MathObject> T copy() {
-		return (T) make(shape, getLocation(), direction, getTip().copy());
+            TippableObject copy = make(shape, getLocation(), direction, getTip().copy());
+            copy.copyStateFrom(this);
+            return (T) this;
 	}
+
+    @Override
+    public void copyStateFrom(MathObject obj) {
+        if (!(obj instanceof TippableObject)) return;
+        TippableObject t=(TippableObject) obj;
+        this.shape.copyStateFrom(t.shape);
+        this.pointLoc.copyStateFrom(t.pointLoc);
+        this.pointTo.copyFrom(t.pointTo);
+        this.totalRotationAngle=t.totalRotationAngle;
+        this.anchor=t.anchor;
+        this.direction=t.direction;
+        this.getMp().copyFrom(t.getMp());
+        this.offsetAngle=t.offsetAngle;
+        this.scaleFactorX=t.scaleFactorX;
+        this.scaleFactorY=t.scaleFactorY;
+        this.tLocation=t.tLocation;
+        this.tip.copyStateFrom(t.tip);
+        this.totalRotationAngle=t.totalRotationAngle;
+    }
+        
 
 	@Override
 	public void draw(JMathAnimScene scene, Renderer r) {

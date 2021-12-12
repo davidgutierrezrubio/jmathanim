@@ -28,31 +28,40 @@ import com.jmathanim.jmathanim.JMathAnimScene;
  */
 public class Scalar extends MathObject {
 
-	public final Double value;
+    public Double value;
 
-	public Scalar(double scalar) {
-		this.value = scalar;
-	}
+    public Scalar(double scalar) {
+        this.value = scalar;
+    }
 
-	@Override
-	public Scalar copy() {
-		double sc = this.value;
-		return new Scalar(sc);
-	}
+    @Override
+    public Scalar copy() {
+        double sc = this.value;
+        return new Scalar(sc);
+    }
 
-	@Override
-	public void draw(JMathAnimScene scene, Renderer r) {
-		// Nothing to do here
-	}
+    @Override
+    public void draw(JMathAnimScene scene, Renderer r) {
+        // Nothing to do here
+    }
 
-	@Override
-	public Rect getBoundingBox() {
-		return null;// Nothing
-	}
+    @Override
+    public Rect getBoundingBox() {
+        return null;// Nothing
+    }
 
-	@Override
-	public String toString() {
-		return "Scalar{" + "value=" + value + '}';
-	}
+    @Override
+    public String toString() {
+        return "Scalar{" + "value=" + value + '}';
+    }
+
+    @Override
+    public void copyStateFrom(MathObject obj) {
+        if (!(obj instanceof Scalar)) {
+            return;
+        }
+        Scalar sc = (Scalar) obj;
+        this.value = sc.value;
+    }
 
 }

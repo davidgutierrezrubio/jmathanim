@@ -31,44 +31,44 @@ import com.jmathanim.mathobjects.Point;
  */
 public class ConstrLinePointPoint extends Constructible implements HasDirection {
 
-	private final Line lineToDraw;
-	Point A, B;
+    private final Line lineToDraw;
+    Point A, B;
 
-	public static ConstrLinePointPoint make(Point A, Point B) {
-		ConstrLinePointPoint resul = new ConstrLinePointPoint(A, B);
-		resul.rebuildShape();
-		return resul;
-	}
+    public static ConstrLinePointPoint make(Point A, Point B) {
+        ConstrLinePointPoint resul = new ConstrLinePointPoint(A, B);
+        resul.rebuildShape();
+        return resul;
+    }
 
-	private ConstrLinePointPoint(Point A, Point B) {
-		this.A = A;
-		this.B = B;
-		lineToDraw = Line.make(A, B);
-	}
+    private ConstrLinePointPoint(Point A, Point B) {
+        this.A = A;
+        this.B = B;
+        lineToDraw = Line.make(A, B);
+    }
 
-	@Override
-	public <T extends MathObject> T copy() {
-		return (T) ConstrLinePointPoint.make(A.copy(), B.copy());
-	}
+    @Override
+    public <T extends MathObject> T copy() {
+        return (T) ConstrLinePointPoint.make(A.copy(), B.copy());
+    }
 
-	@Override
-	public void draw(JMathAnimScene scene, Renderer r) {
-		lineToDraw.draw(scene, r);
+    @Override
+    public void draw(JMathAnimScene scene, Renderer r) {
+        lineToDraw.draw(scene, r);
 
-	}
+    }
 
-	@Override
-	public MathObject getMathObject() {
-		return lineToDraw;
-	}
+    @Override
+    public MathObject getMathObject() {
+        return lineToDraw;
+    }
 
-	@Override
-	public void rebuildShape() {
-		// Nothing is needed, the line is updated by itself
-	}
+    @Override
+    public void rebuildShape() {
+        // Nothing is needed, the line is updated by itself
+    }
 
-	@Override
-	public Vec getDirection() {
-		return A.to(B);
-	}
+    @Override
+    public Vec getDirection() {
+        return A.to(B);
+    }
 }

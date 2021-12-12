@@ -69,9 +69,25 @@ public class DensityPlot extends AbstractJMImage {
 	}
 
 	public <T extends MathObject> T copy() {
-		return (T) new DensityPlot(bbox, densityLambdaFunction);
+            DensityPlot copy = new DensityPlot(bbox, densityLambdaFunction);
+            copy.colorScale.copyFrom(colorScale);
+            return (T) this;
 	}
 
+    @Override
+    public void copyStateFrom(MathObject obj) {
+        if (!(obj instanceof DensityPlot)) {
+            return;
+        }
+        DensityPlot dp=(DensityPlot) obj;
+        this.bbox.copyFrom(dp.bbox);
+        this.densityLambdaFunction=dp.densityLambdaFunction;
+        widthView=dp.widthView;
+        heightView=dp.heightView;
+        colorScale.copyFrom(dp.colorScale);
+    }
+        
+        
 	@Override
 	public int getUpdateLevel() {
 		return 0;

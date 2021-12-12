@@ -64,6 +64,18 @@ public class JMImage extends AbstractJMImage {
 		return resul;
 	}
 
+    @Override
+    public void copyStateFrom(MathObject obj) {
+        if (!(obj instanceof JMImage)) return;
+        JMImage img=(JMImage)obj;
+        bbox.copyFrom(img.bbox);
+        getMp().copyFrom(img.getMp());
+        preserveRatio=img.preserveRatio;
+        rotateAngle=img.rotateAngle;
+        rotateAngleBackup=img.rotateAngleBackup;
+    }
+        
+
 	@Override
 	public void update(JMathAnimScene scene) {
 	}
