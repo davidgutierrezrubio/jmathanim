@@ -351,11 +351,11 @@ textB.setColor(colB, 0);
 textC.setColor(colC, 0);
 
 //Brace delimiters...  .1 is the distance from the braces to the rectangles,
-//and .05 is the distance from labels to the braces
-Delimiter del1X = Delimiter.stackTo(sq1, Anchor.Type.LOWER, Delimiter.Type.BRACE, .1, textB, .05);
-Delimiter del1Y = Delimiter.stackTo(sq1, Anchor.Type.LEFT, Delimiter.Type.BRACE, .1, textA1, .05);
-Delimiter del2X = Delimiter.stackTo(sq2, Anchor.Type.LOWER, Delimiter.Type.BRACE, .1, textC, .05);
-Delimiter del2Y = Delimiter.stackTo(sq2, Anchor.Type.RIGHT, Delimiter.Type.BRACE, .1, textA2, .05);
+//and .1 is the distance of the label mark point to the brace. The text is centered around this point
+Delimiter del1X = Delimiter.stackTo(sq1, Anchor.Type.LOWER, Delimiter.Type.BRACE, .1).setLabel(textB,.1);
+Delimiter del1Y = Delimiter.stackTo(sq1, Anchor.Type.LEFT, Delimiter.Type.BRACE, .1).setLabel(textA1,.1);
+Delimiter del2X = Delimiter.stackTo(sq2, Anchor.Type.LOWER, Delimiter.Type.BRACE, .1).setLabel(textC,.1);
+Delimiter del2Y = Delimiter.stackTo(sq2, Anchor.Type.RIGHT, Delimiter.Type.BRACE, .1).setLabel(textA2,.1);
 
 LaTeXMathObject textBC = LaTeXMathObject.make("$b+c$");
 textBC.setColor(colB, 0);//"b" glyph
@@ -363,7 +363,8 @@ textBC.setColor(colC, 2);//"c" glyph
 Delimiter del12X = Delimiter.stackTo(
     MathObjectGroup.make(sq1, sq2),//We group these 2 rectangles so the brace adjust to the 2 combined
     Anchor.Type.UPPER,
-    Delimiter.Type.BRACE, .1, textBC, .05);
+    Delimiter.Type.BRACE, .1)
+    .setLabel(textBC,.1);
 
 //The upper formula  Area=a*b+a*c
 LaTeXMathObject formula1 = LaTeXMathObject.make("Area=$a\\cdot b+a\\cdot c$").scale(3);
@@ -395,7 +396,7 @@ LaTeXMathObject formula3 = formula1.copy();
 
 waitSeconds(2);
 Animation shiftSquareAnim = Commands.shift(3, .5, 0, sq1);
-Animation fadeBraceAnim = Commands.fadeIn(3, del12X, textBC);
+Animation fadeBraceAnim = Commands.fadeIn(3, del12X);
 
 TransformMathExpression changeFormulaAnim = new TransformMathExpression(3, formula1, formula2);
 changeFormulaAnim.mapRange(0, 6, 0);//"Área=a\cdot"
@@ -409,7 +410,7 @@ waitSeconds(3);
 
 //Inverse animation
 shiftSquareAnim = Commands.shift(3, -.5, 0, sq1);
-fadeBraceAnim = Commands.fadeOut(3, del12X, textBC);
+fadeBraceAnim = Commands.fadeOut(3, del12X);
 
 changeFormulaAnim = new TransformMathExpression(3, formula2, formula3);
 changeFormulaAnim.mapRange(0, 6, 0);
