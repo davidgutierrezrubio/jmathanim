@@ -260,10 +260,8 @@ public class AffineJTransform {
         double det = matrix.getEntry(1, 1) * matrix.getEntry(2, 2) - matrix.getEntry(2, 1) * matrix.getEntry(1, 2);
         if (!mObject.getMp().isAbsoluteThickness()) {
             final double sqrtDet = Math.sqrt(Math.abs(det));
-            final double th=mObject.getMp().getThickness();
             mObject.getMp().multThickness(Math.sqrt(sqrtDet));
         }
-
     }
 
     /**
@@ -443,7 +441,12 @@ public class AffineJTransform {
         Vec v3 = A.to(C);// Vector AC
         double d1 = v1.norm();
         double d2 = v2.norm();
-        angle = Math.acos(v1.dot(v2) / d1 / d2);
+        double dotProd = v1.dot(v2) / d1 / d2;
+        //In some cases, a smaaaaaaall round error can give numbers greater than 1
+        //making angle=NaN, so we have to be sure dotProd stays between -1 and 1
+        dotProd=(dotProd>1 ? 1 : dotProd);
+        dotProd=(dotProd<-1 ? -1 : dotProd);
+        angle = Math.acos(dotProd);
 
         // Need to compute also cross-product in order to stablish if clockwise or
         // counterclockwise

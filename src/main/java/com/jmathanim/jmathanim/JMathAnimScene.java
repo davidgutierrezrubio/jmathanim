@@ -82,7 +82,7 @@ public abstract class JMathAnimScene {
      * Renderer to perform drawings
      */
     protected Renderer renderer;
-
+    
     public Renderer getRenderer() {
         return renderer;
     }
@@ -154,7 +154,7 @@ public abstract class JMathAnimScene {
      * @return Exit code. 0 is no error, not 0 otherwise.
      */
     public final int execute() {
-
+        
         String sketchName = this.getClass().getName();
         LoggerContext loggerContext = (LoggerContext) LoggerFactory.getILoggerFactory();
         loggerContext.reset();
@@ -167,7 +167,7 @@ public abstract class JMathAnimScene {
             java.util.logging.Logger.getLogger(JMathAnimScene.class.getName()).log(Level.SEVERE, null, ex);
         }
         logger.info("Running sketch {} ", sketchName);
-
+        
         setupSketch();
         createRenderer();
         JMathAnimConfig.getConfig().setRenderer(renderer);
@@ -198,7 +198,7 @@ public abstract class JMathAnimScene {
     public ArrayList<MathObject> getObjects() {
         return sceneObjects;
     }
-
+    
     public MathObject[] everything() {
         MathObject[] arr = new MathObject[sceneObjects.size()];
         for (int n = 0; n < sceneObjects.size(); n++) {
@@ -297,7 +297,7 @@ public abstract class JMathAnimScene {
      */
     public synchronized final void remove(ArrayList<MathObject> objs) {
         remove((MathObject[]) objs.toArray(new MathObject[objs.size()]));
-
+        
     }
 
     /**
@@ -307,7 +307,7 @@ public abstract class JMathAnimScene {
      */
     public synchronized final void remove(MathObject... objs) {
         for (MathObject obj : objs) {
-
+            
             if (obj instanceof MultiShapeObject) {
                 MultiShapeObject msh = (MultiShapeObject) obj;
                 msh.isAddedToScene = true;
@@ -315,14 +315,14 @@ public abstract class JMathAnimScene {
                     this.remove(o);
                 }
             }
-
+            
             if (obj instanceof MathObjectGroup) {
                 MathObjectGroup msh = (MathObjectGroup) obj;
                 for (MathObject o : msh) {
                     this.remove(o);
                 }
             }
-
+            
             sceneObjects.remove(obj);
             unregisterUpdateable(obj);
         }
@@ -335,18 +335,7 @@ public abstract class JMathAnimScene {
      */
     protected final void doDraws() {
         objectsAlreadyDrawed.clear();
-        // For the array of sceneObjects to be updated (not necessarily drawn), I sort
-        // them by the updatelevel variable
-        // updatelevel 0 gets updated first.
-        // Objects with updatelevel n depend directly from those with level n-1
-        objectsToBeUpdated.sort((Updateable o1, Updateable o2) -> o1.getUpdateLevel() - o2.getUpdateLevel());
-
-        ArrayList<Updateable> updatesCopy = new ArrayList<Updateable>();
-        updatesCopy.addAll(objectsToBeUpdated);
-
-        for (Updateable obj : updatesCopy) {
-            obj.update(this);
-        }
+        doUpdates();
         if (!animationIsDisabled) {
             // Objects to be drawn on screen. Sort them by layer
             sceneObjects.sort((MathObject o1, MathObject o2) -> (o1.getLayer() - o2.getLayer()));
@@ -366,6 +355,24 @@ public abstract class JMathAnimScene {
     }
 
     /**
+     * Perform all needed updates
+     */
+    private void doUpdates() {
+        // For the array of sceneObjects to be updated (not necessarily drawn), I sort
+        // them by the updatelevel variable
+        // updatelevel 0 gets updated first (although negative values can be set too)
+        // Objects with updatelevel n depend directly from those with level n-1
+        objectsToBeUpdated.sort((Updateable o1, Updateable o2) -> o1.getUpdateLevel() - o2.getUpdateLevel());
+        
+        ArrayList<Updateable> updatesCopy = new ArrayList<Updateable>();
+        updatesCopy.addAll(objectsToBeUpdated);
+        
+        for (Updateable obj : updatesCopy) {
+                obj.update(this);
+        }
+    }
+
+    /**
      * Advance one frame, making all necessary drawings and saving frame
      */
     public final void advanceFrame() {
@@ -379,7 +386,7 @@ public abstract class JMathAnimScene {
             previousNanoTime = nanoTime;
             nanoTime = System.nanoTime();
         }
-
+        
     }
 
     /**
@@ -387,7 +394,7 @@ public abstract class JMathAnimScene {
      * to video, or any other format.
      */
     private void saveMPFrame() {
-
+        
         try {
             renderer.saveFrame(frameCount);
         } catch (Exception ex) {
@@ -420,9 +427,9 @@ public abstract class JMathAnimScene {
                     anim.setStatus(Animation.Status.NOT_INITIALIZED);
                 }
                 anim.initialize(this);// Perform needed steps immediately before playing
-                
-                if (!"".equals(anim.getDebugName())){
-                    JMathAnimScene.logger.info("Begin animation: "+ anim.getDebugName());
+
+                if (!"".equals(anim.getDebugName())) {
+                    JMathAnimScene.logger.info("Begin animation: " + anim.getDebugName());
                 }
                 
                 if (animationIsDisabled) {
@@ -430,7 +437,7 @@ public abstract class JMathAnimScene {
                 }
             }
         }
-
+        
         boolean finished = false;
         while (!finished) {
             finished = true;
@@ -465,7 +472,7 @@ public abstract class JMathAnimScene {
                 java.util.logging.Logger.getLogger(JMathAnimScene.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-
+        
     }
 
     /**
@@ -485,7 +492,7 @@ public abstract class JMathAnimScene {
     public Camera getFixedCamera() {
         return renderer.getFixedCamera();
     }
-
+    
     public void formulaHelper(String... formulas) {
         LaTeXMathObject[] texes = new LaTeXMathObject[formulas.length];
         int n = 0;
@@ -496,7 +503,7 @@ public abstract class JMathAnimScene {
         }
         formulaHelper(texes);
     }
-
+    
     public void formulaHelper(LaTeXMathObject... texes) {
         MathObjectGroup group = new MathObjectGroup();
         for (LaTeXMathObject lat : texes) {
@@ -511,7 +518,7 @@ public abstract class JMathAnimScene {
         renderer.getCamera().zoomToObjects(group);
         add(group);
     }
-
+    
     public JMathAnimConfig getConfig() {
         return config;
     }
@@ -523,7 +530,7 @@ public abstract class JMathAnimScene {
     public void disableAnimations() {
         this.animationIsDisabled = true;
     }
-
+    
     public void enableAnimations() {
         this.animationIsDisabled = false;
     }
@@ -604,5 +611,5 @@ public abstract class JMathAnimScene {
         }
         renderer.getCamera().reset();
     }
-
+    
 }

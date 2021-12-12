@@ -122,8 +122,10 @@ public class MathObjectGroup extends MathObject implements Iterable<MathObject> 
     }
 
     public MathObjectGroup add(MathObject e) {
-        objects.add(e);
-        mpArray.add(e);
+        if (e != null) {
+            objects.add(e);
+            mpArray.add(e);
+        }
         return this;
     }
 
@@ -172,7 +174,7 @@ public class MathObjectGroup extends MathObject implements Iterable<MathObject> 
             return;
         }
         MathObjectGroup mg = (MathObjectGroup) obj;
-        
+
         this.getMp().copyFrom(mg.getMp());
         int n = 0;
         for (MathObject o : getObjects()) {

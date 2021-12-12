@@ -160,7 +160,6 @@ public class Point extends MathObject {
         this.v = new Vec(x, y, z);
         this.getMp().loadFromStyle("dotdefault");
         this.getMp().setAbsoluteThickness(true);
-//        this.getMp().thickness = 8d;//default value
     }
 
     /**
@@ -207,13 +206,7 @@ public class Point extends MathObject {
 
     @Override
     public void draw(JMathAnimScene scene, Renderer r) {
-//        r.setBorderColor(mp.drawColor);
-//        double rad = mp.getThickness(r);
-//        r.drawCircle(v.x, v.y, rad);
-//        
-
-        dotShape = generateDotShape();
-        dotShape.setAbsoluteSize();
+        dotShape = generateDotShape();//TODO: Do this only when needed
         dotShape.setAbsoluteSize(this.copy());
         if (isVisible()) {
             dotShape.draw(scene, r);
@@ -234,7 +227,7 @@ public class Point extends MathObject {
         return this;
     }
 
-    public Shape generateDotShape() {
+    private Shape generateDotShape() {
         double st = scene.getRenderer().ThicknessToMathWidth(this);
         double th = scene.getRenderer().MathWidthToThickness(st);
         switch (getMp().getDotStyle()) {
@@ -364,9 +357,9 @@ public class Point extends MathObject {
         if (!(obj instanceof Point)) {
             return;
         }
-            Point p2=(Point) obj;
-            this.copyFrom(p2);//Copy coordinates
-            this.getMp().copyFrom(p2.getMp());
+        Point p2 = (Point) obj;
+        this.copyFrom(p2);//Copy coordinates
+        this.getMp().copyFrom(p2.getMp());
     }
 
     @Override

@@ -64,6 +64,7 @@ public abstract class MathObject implements Drawable, Updateable, Stateable, Box
         scene = JMathAnimConfig.getConfig().getScene();
         mp = JMathAnimConfig.getConfig().getDefaultMP();// Default MP values
         mp.copyFrom(prop);// Copy all non-null values from prop
+        //Default values for an object that always updates
     }
 
     /**
@@ -551,25 +552,35 @@ public abstract class MathObject implements Drawable, Updateable, Stateable, Box
      * matchs the RIGHT anchor of the destiny.
      *
      * @param <T> Mathobject subclass
-     * @param anchorObj Anchor of this object to use
-     * @param dstObj Destiny object to stack with
-     * @param anchorType Anchor of destiny object to use
-     * @param gap Amount of gap to leave between the anchors, in math units
+     * @param originAnchor Anchor of this object to use
+     * @param destinyObject Destiny object to stack with
+     * @param destinyAnchor Anchor of destiny object to use
+     * @param originGap Amount of gap to leave between the anchors, in math
+     * units. The direction of the gap will be computed using origin anchor as
+     * reference.
      * @return This object
      */
-    public <T extends MathObject> T stackTo(Type anchorObj, Boxable dstObj, Type anchorType, double gap) {
-        if (!dstObj.isEmpty()) {
-            Point B = Anchor.getAnchorPoint(dstObj, anchorType, gap);
-            Point A = Anchor.getAnchorPoint(this, anchorObj);
-            this.shift(A.to(B));
-        }
-        return (T) this;
+    public <T extends MathObject> T stackTo(Type originAnchor, Boxable destinyObject, Type destinyAnchor, double originGap) {
+        return stackTo(originAnchor, destinyObject, destinyAnchor, originGap, 0);
     }
 
-    public <T extends MathObject> T stackTo(Type anchorObj, Boxable dstObj, Type anchorType, double hgap, double vgap) {
-        if (!dstObj.isEmpty()) {
-            Point B = Anchor.getAnchorPoint(dstObj, anchorType, hgap, vgap);
-            Point A = Anchor.getAnchorPoint(this, anchorObj);
+    /**
+     * Stack the object to another using a specified anchor.For example
+     * stackTo(UPPER, obj, RIGHT) will move this object so that its UPPER anchor
+     * matchs the RIGHT anchor of the destiny.
+     *
+     * @param <T> Mathobject subclass
+     * @param originAnchor Anchor of this object to use
+     * @param destinyObject Destiny object to stack with
+     * @param destinyAnchor Anchor of destiny object to use
+     * @param originGap Amount of gap to leave in origin anchor, in math units
+     * @param destinyGap Amount of gap to leave in destiny anchor, in math units
+     * @return This object
+     */
+    public <T extends MathObject> T stackTo(Type originAnchor, Boxable destinyObject, Type destinyAnchor, double originGap, double destinyGap) {
+        if (!destinyObject.isEmpty()) {
+            Point B = Anchor.getAnchorPoint(destinyObject, destinyAnchor, destinyGap);
+            Point A = Anchor.getAnchorPoint(this, originAnchor, originGap);
             this.shift(A.to(B));
         }
         return (T) this;
@@ -799,6 +810,7 @@ public abstract class MathObject implements Drawable, Updateable, Stateable, Box
     // Updateable methods
     @Override
     public void update(JMathAnimScene scene) {
+        //Nothing to do by default
     }
 
     @Override
@@ -914,7 +926,6 @@ public abstract class MathObject implements Drawable, Updateable, Stateable, Box
     }
 
     public void addToSceneHook(JMathAnimScene scene) {
-
     }
 
 }

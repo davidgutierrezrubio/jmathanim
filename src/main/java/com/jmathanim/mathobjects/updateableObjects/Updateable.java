@@ -28,21 +28,21 @@ import com.jmathanim.jmathanim.JMathAnimScene;
  */
 public interface Updateable {
 
-	/**
-	 * Gets the update level. The update level will determine the order when
-	 * updating all updateables. 0 level corresponds to first objects to be updated.
-	 * If an updateable A depends on another updatable B to be computed, the update
-	 * level of A should be greater than of B.
-	 *
-	 * @return The update level.
-	 */
-	public int getUpdateLevel();
+    /**
+     * Gets the update level. The update level will determine the order when
+     * updating all updateables. 0 level corresponds to first objects to be
+     * updated. If an updateable A depends on another updatable B to be
+     * computed, the update level of A should be greater than of B.
+     *
+     * @return The update level.
+     */
+    public int getUpdateLevel();
 
-	/**
-	 * Performs the update. This method is called prior to draw all objects of the
-	 * scene.
-	 *
-	 * @param scene Scene where the object is being updated.
-	 */
-	public void update(JMathAnimScene scene);
+    /**
+     * Performs the update. This method is called prior to draw all objects of
+     * the scene.
+     *
+     * @param scene Scene where the object is being updated.
+     */
+    public void update(JMathAnimScene scene);
 }
