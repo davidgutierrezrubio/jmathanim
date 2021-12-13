@@ -79,8 +79,13 @@ public class FirstDrawThenFillAnimation extends AbstractCreationStrategy {
         if (obj instanceof Shape) {
             JoinAnimation join = JoinAnimation.make(runtime);
             MODrawProperties mpDst = obj.getMp().copy();
-            join.add(new SimpleShapeCreationAnimation(runtime * PERCENT_DRAWING, (Shape) obj));
-            join.add(Commands.setMP(runtime * (1 - PERCENT_DRAWING), mpDst, obj));
+            final Shape sh = (Shape) obj;
+            double alpha = sh.getMp().getFillColor().getAlpha();
+            double percentDrawing = alpha * PERCENT_DRAWING + (1 - alpha);
+            join.add(new SimpleShapeCreationAnimation(runtime * percentDrawing, sh));
+            if (percentDrawing < 1) {
+                join.add(Commands.setMP(runtime * (1 - percentDrawing), mpDst, sh));
+            }
             return join;
         }
         if (obj instanceof MultiShapeObject) {

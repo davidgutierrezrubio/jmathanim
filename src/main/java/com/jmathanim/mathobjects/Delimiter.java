@@ -102,7 +102,7 @@ public class Delimiter extends MathObject {
         resul.style("latexdefault");
         resul.drawAlpha(0);// This is necessary so that "stitches" are not seen when fadeIn or fadeOut
         resul.amplitudeScale = 1;
-        resul.delimiterScale=1;
+        resul.delimiterScale = 1;
         return resul;
     }
 
@@ -183,13 +183,12 @@ public class Delimiter extends MathObject {
         labelMarkPoint = Point.at(0, 0);
         this.rotateLabel = false;
         minimumWidthToShrink = .5;
-        delimiterScale=1;
-        amplitudeScale=1;
+        delimiterScale = 1;
+        amplitudeScale = 1;
     }
 
     public void setBody(SVGMathObject body) {
         this.body = body;
-        delimiterShapeWidth = body.getBoundingBox().getWidth();
     }
 
     public void setGap(double gap) {
@@ -204,7 +203,8 @@ public class Delimiter extends MathObject {
         Point BB = B.interpolate(A, .5 * (1 - amplitudeScale));
         double width = AA.to(BB).norm();//The final width of the delimiter
 
-        MultiShapeObject delimiterShape = body.copy();
+        MultiShapeObject bodyCopy = body.copy();
+        Shape delimiterShape=new Shape();
         body.getMp().copyFrom(this.getMp());
 //        for (Shape sh : delimiterShape) {
 //            sh.getMp().copyFrom(this.getMp());
@@ -212,40 +212,37 @@ public class Delimiter extends MathObject {
 
         if (type == Type.BRACE) {
             minimumWidthToShrink = .5;
-//            double wr = (width < minimumWidthToShrink ? a - (width - minimumWidthToShrink)
-//                    * (width - minimumWidthToShrink) / minimumWidthToShrink / minimumWidthToShrink : a);
-            double wr=.25*delimiterScale*UsefulLambdas.allocateTo(0, minimumWidthToShrink).applyAsDouble(width);
-            delimiterShape.setWidth(wr);
+            double wr = .25 * delimiterScale * UsefulLambdas.allocateTo(0, minimumWidthToShrink).applyAsDouble(width);
+            bodyCopy.setWidth(wr);
             double hasToGrow = Math.max(0, width - wr);
             // 0,1,2,3,4,5 shapes Shapes 1 and 4 are extensible
-            double w0 = delimiterShape.get(0).getBoundingBox().getWidth();
-            double w1 = delimiterShape.get(1).getBoundingBox().getWidth();
             double wSpace = .5 * (hasToGrow);
-            Shape brace = delimiterShape.get(0).copy();
-            brace.merge(delimiterShape.get(2).shift(wSpace, 0), true, false)
-                    .merge(delimiterShape.get(1).reverse().shift(2 * wSpace, 0), true, false)
-                    .merge(delimiterShape.get(3).shift(wSpace, 0), true, true);
-            delimiterShape = SVGMathObject.make(brace);
+            delimiterShape = bodyCopy.get(0).copy();
+            delimiterShape.merge(bodyCopy.get(2).shift(wSpace, 0), true, false)
+                    .merge(bodyCopy.get(1).shift(2 * wSpace, 0), true, false)
+                    .merge(bodyCopy.get(3).shift(wSpace, 0), true, true);
+        }
+        if (type == Type.BRACKET) {
+            minimumWidthToShrink = .5;
+            double wr = .8 * delimiterScale * UsefulLambdas.allocateTo(0, minimumWidthToShrink).applyAsDouble(width);
+            bodyCopy.setWidth(wr);
+            double hasToGrow = Math.max(0, width - wr);
+            double wSpace = hasToGrow;
+            delimiterShape = bodyCopy.get(0).copy();
+            delimiterShape.merge(bodyCopy.get(1).shift(wSpace, 0), true, true);
+        }
+        if (type == Type.PARENTHESIS) {
+            minimumWidthToShrink = .5;
+            double wr = 0.48 * delimiterScale * UsefulLambdas.allocateTo(0, minimumWidthToShrink).applyAsDouble(width);
+            bodyCopy.setWidth(wr);
+            double wSpace = Math.max(0, width - wr);
+            delimiterShape = bodyCopy.get(0).copy();
+            delimiterShape.merge(bodyCopy.get(1).shift(wSpace, 0), true, true);
         }
 
-        if ((type == Type.PARENTHESIS) || (type == Type.BRACKET)) {
-            double minimumWidthToShrink = 1.5;
-            double wr = (width < minimumWidthToShrink ? 1 - (width - minimumWidthToShrink)
-                    * (width - minimumWidthToShrink) / minimumWidthToShrink / minimumWidthToShrink : 1);
-            delimiterShape.setWidth(wr);
-            double hasToGrow = width - wr;
-            // 0,1,2,3 shapes where shapes 1 and 2 are extensible
-            double w = delimiterShape.get(1).getBoundingBox().getWidth();
-            double scale = 1 + .5 * hasToGrow / w;
-            delimiterShape.get(1).scale(delimiterShape.get(1).getBoundingBox().getLeft(), scale, 1);
-            delimiterShape.get(2).scale(delimiterShape.get(2).getBoundingBox().getRight(), scale, 1);
-            delimiterShape.get(0).shift(.5 * hasToGrow, 0);
-            delimiterShape.get(3).shift(-.5 * hasToGrow, 0);
-        }
-
-        Rect bb = delimiterShape.getBoundingBox();
-        delimiterShape.shift(0, gap);
-        labelMarkPoint.stackTo(delimiterShape, Anchor.Type.UPPER, labelMarkGap);
+        Rect bb = bodyCopy.getBoundingBox();
+        bodyCopy.shift(0, gap);
+        labelMarkPoint.stackTo(bodyCopy, Anchor.Type.UPPER, labelMarkGap);
         AffineJTransform tr = AffineJTransform.createDirect2DHomothecy(bb.getDL(), bb.getDR(), AA, BB, 1);
         MathObjectGroup resul = MathObjectGroup.make(delimiterShape);
         MathObject lab;
@@ -263,10 +260,8 @@ public class Delimiter extends MathObject {
                 lab.stackTo(labelMarkPoint, Anchor.Type.CENTER);
             }
         }
-
         return resul;
     }
-    private double delimiterShapeWidth;
 
     @Override
     public void draw(JMathAnimScene scene, Renderer r) {
@@ -292,10 +287,10 @@ public class Delimiter extends MathObject {
     }
 
     /**
-     * Returns the scale of the amplitude of delimiter. A value of 1 draws the delimiter from
-     * one anchor point to another. Smaller values scales the delimiter in the
-     * same proportion. This value is used mainly for showCreation
-     * animations-like.
+     * Returns the scale of the amplitude of delimiter. A value of 1 draws the
+     * delimiter from one anchor point to another. Smaller values scales the
+     * delimiter in the same proportion. This value is used mainly for
+     * showCreation animations-like.
      *
      * @param delimiterScale The delimiter scale, from 0 to 1
      */
@@ -303,8 +298,6 @@ public class Delimiter extends MathObject {
         this.amplitudeScale = delimiterScale;
     }
 
-   
-    
     @Override
     public Delimiter copy() {
         Delimiter copy = make(A.copy(), B.copy(), type, gap);
@@ -360,6 +353,8 @@ public class Delimiter extends MathObject {
         return (T) this;
     }
 
-    
-    
+    public Shape getShape() {
+        return (Shape) delimiterToDraw.get(0);//Shape
+    }
+
 }

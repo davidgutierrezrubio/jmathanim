@@ -84,6 +84,12 @@ public class JoinAnimation extends Animation {
         anim.doAnim(ltNormalized);
     }
 
+    @Override
+    public void finishAnimation() {
+        animations.get(animations.size()-1).finishAnimation();
+    }
+
+    
     private int getAnimationNumberForTime(double t) {
         if (t == 0) {
             return 0;
