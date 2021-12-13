@@ -37,7 +37,7 @@ public class SimpleConnectedPathsOptimizationStrategy implements OptimizePathsSt
 
 	@Override
 	public void optimizePaths(Shape shape1, Shape shape2) {
-		JMPath pa1c = shape1.getPath().rawCopy();
+		JMPath pa1c = shape1.getPath().copy();
 		JMPath pa2 = shape2.getPath();
 		int direction = pa1c.getOrientation() * pa2.getOrientation();
 

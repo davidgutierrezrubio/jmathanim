@@ -185,7 +185,7 @@ public class PointInterpolationCanonical extends TransformStrategy {
         alignNumberOfComponents(connectedOrigin, connectedDst);
         connectedOriginaRawCopy = new CanonicalJMPath();
         for (JMPath p : connectedOrigin.getPaths()) {
-            connectedOriginaRawCopy.add(p.rawCopy());
+            connectedOriginaRawCopy.add(p.copy());
         }
         // Mark all points as curved during the transform
         for (int numConnected = 0; numConnected < this.connectedDst.getNumberOfPaths(); numConnected++) {

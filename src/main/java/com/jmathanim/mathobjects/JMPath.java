@@ -320,8 +320,8 @@ public class JMPath implements Updateable, Stateable, Boxable, Iterable<JMPathPo
      * alpha=0 denotes beginning of path and alpha=1 denotes the end
      *
      * @param alpha from 0 to 1, relative position inside the path
-     * @return A (copy of) point that lies in the curve at relative position
-     * alpha.
+     * @return A (referencedCopy of) point that lies in the curve at relative position
+ alpha.
      */
     public JMPathPoint getJMPointAt(double alpha) {
         while (alpha > 1) {
@@ -369,7 +369,7 @@ public class JMPath implements Updateable, Stateable, Boxable, Iterable<JMPathPo
      *
      * @return A copy of the path
      */
-    public JMPath rawCopy() {
+    public JMPath copy() {
         JMPath resul = new JMPath();
 
         for (int n = 0; n < jmPathPoints.size(); n++) {
@@ -383,9 +383,9 @@ public class JMPath implements Updateable, Stateable, Boxable, Iterable<JMPathPo
      * Creates a copy of the path, with all their attributes. JMPathPoint
      * objects are referenced instead of copied
      *
-     * @return A copy of the path
+     * @return A referencedCopy of the path
      */
-    public JMPath copy() {
+    public JMPath referencedCopy() {
         JMPath resul = new JMPath();
         resul.jmPathPoints.addAll(jmPathPoints);
 
@@ -404,7 +404,7 @@ public class JMPath implements Updateable, Stateable, Boxable, Iterable<JMPathPo
      */
     public void cyclePoints(int step, boolean reverse) {
         distille();
-        JMPath tempPath = this.copy();
+        JMPath tempPath = this.referencedCopy();
         jmPathPoints.clear();
         int direction = (reverse ? -1 : 1);
         final int size = tempPath.size();
@@ -608,7 +608,7 @@ public class JMPath implements Updateable, Stateable, Boxable, Iterable<JMPathPo
      */
     public void setJMPoints(JMPath path) {
         this.clear();
-        this.addJMPointsFrom(path.rawCopy());
+        this.addJMPointsFrom(path.copy());
         this.pathType = path.pathType;
         this.visiblePoints.clear();
         this.visiblePoints.addAll(path.visiblePoints);
@@ -651,7 +651,7 @@ public class JMPath implements Updateable, Stateable, Boxable, Iterable<JMPathPo
             return new CanonicalJMPath();
         }
         ArrayList<JMPath> resul = new ArrayList<>();
-        JMPath workPath = this.copy();
+        JMPath workPath = this.referencedCopy();
         Integer offset = null;
         // Find backwards first invisible segment, if there is not, we have a closed
         // path, so open it
@@ -745,7 +745,7 @@ public class JMPath implements Updateable, Stateable, Boxable, Iterable<JMPathPo
      * Returns a path with all points visible. This is used mainly for filling
      * it properly
      *
-     * @return A raw copy of the path with all points visible
+     * @return A raw referencedCopy of the path with all points visible
      */
     public JMPath allVisible() {
         JMPath resul = new JMPath();
@@ -956,11 +956,11 @@ public class JMPath implements Updateable, Stateable, Boxable, Iterable<JMPathPo
      */
     public JMPath getSubPath(double a, double b) {
         if (a > b) {
-            JMPath tempPath = this.rawCopy();
+            JMPath tempPath = this.copy();
             tempPath.reverse();
             return tempPath.getSubPath(b, a);
         }
-        JMPath tempPath = this.rawCopy();
+        JMPath tempPath = this.copy();
 
         tempPath.openPath();
 
@@ -1053,7 +1053,7 @@ public class JMPath implements Updateable, Stateable, Boxable, Iterable<JMPathPo
      * @return This object
      */
     public JMPath merge(JMPath secondPath, boolean connectAtoB, boolean connectBtoA) {
-        JMPath pa = secondPath.copy();
+        JMPath pa = secondPath.referencedCopy();
         // If the first path is already a closed one, open it
         // with 2 identical points (old-fashioned style of closing shapes)
         final JMPathPoint jmPoint = jmPathPoints.get(0);

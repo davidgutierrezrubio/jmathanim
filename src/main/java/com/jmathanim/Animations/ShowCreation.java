@@ -238,7 +238,7 @@ public class ShowCreation extends Animation {
 
                     @Override
                     public void doAnim(double t) {
-                        del.setDelimiterScale(lambda.applyAsDouble(t));
+                        del.setAmplitudeScale(lambda.applyAsDouble(t));
                     }
 
                 };

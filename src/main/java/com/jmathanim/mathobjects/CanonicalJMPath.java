@@ -50,7 +50,7 @@ public class CanonicalJMPath {
             msh.getMp().copyFrom(mpCopy);
         }
         for (JMPath p : paths) {
-            final Shape shape = new Shape(p.copy());
+            final Shape shape = new Shape(p.referencedCopy());
             if (obj != null) {
                 shape.getMp().copyFrom(mpCopy);
             }
@@ -135,10 +135,10 @@ public class CanonicalJMPath {
      *
      * @param pathNumber Number of the path to compute the subpath
      * @param t
-     * @return A copy of the path (deep copy, points are not referenced)
+     * @return A referencedCopy of the path (deep referencedCopy, points are not referenced)
      */
     public JMPath subpath(int pathNumber, double t) {
-        JMPath resul = paths.get(pathNumber).rawCopy();
+        JMPath resul = paths.get(pathNumber).copy();
         if (t < 1) {
 
             double a = t * (resul.size() - 1);

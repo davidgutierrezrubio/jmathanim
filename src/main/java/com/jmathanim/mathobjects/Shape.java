@@ -113,7 +113,7 @@ public class Shape extends MathObject {
     @Override
     public Shape copy() {
         final MODrawProperties copy = getMp().copy();
-        Shape resul = new Shape(jmpath.rawCopy(), copy);
+        Shape resul = new Shape(jmpath.copy(), copy);
         resul.absoluteSize = this.absoluteSize;
         resul.label = this.label + "_copy";
         resul.isConvex = this.isConvex;
@@ -191,7 +191,7 @@ public class Shape extends MathObject {
      * @return This object
      */
     public <T extends Shape> T merge(Shape sh, boolean connectAtoB, boolean connectBtoA) {
-        getPath().merge(sh.getPath(), connectAtoB, connectBtoA);
+        getPath().merge(sh.getPath().copy(), connectAtoB, connectBtoA);
         return (T) this;
     }
 

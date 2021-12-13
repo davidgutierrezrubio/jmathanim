@@ -22,127 +22,13 @@ import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.Shape;
 
 /**
- *
- * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
- */
-//public class SimpleShapeCreationAnimation extends AbstractCreationStrategy {
-//
-//    private final Shape mobj;
-//    private MultiShapeObject msh;
-//    private CanonicalJMPath canonPath;
-//    private int numberOfSegments;
-//    private final Point previous;
-//
-//    public SimpleShapeCreationAnimation(double runtime, Shape mobj) {
-//        super(runtime);
-//        this.mobj = mobj;
-//        previous = Point.at(0, 0);
-//    }
-//
-//    @Override
-//    public void initialize(JMathAnimScene scene) {
-//        super.initialize(scene);
-//        if (mobj.getPath().size() == 0) {// If it is a empty shape, do nothing
-//            finishAnimation();
-//        }
-//        canonPath = mobj.getPath().canonicalForm();
-//
-//        // Create multishape with all canonical components and a copy of drawing
-//        // attributes
-//        // This will be drawed instead of mobj during the ShowCreation animation
-//        msh = canonPath.createMultiShape(this.mobj);
-//        for (int n = 0; n < msh.size(); n++) {
-//            msh.get(n).label = "msh" + n;
-//        }
-//        mobj.visible(false);
-//        scene.add(msh);//Always add this object to the scene
-//
-//        doAnim(0);
-//        numberOfSegments = canonPath.getTotalNumberOfSegments();
-//    }
-//
-//    @Override
-//    public void doAnim(double t) {
-//        double lt = lambda.applyAsDouble(t);
-//        if (lt > 1) {
-//            lt = 1;
-//        }
-//        if (lt == 1) {
-//            for (int n = 0; n < msh.size(); n++) {
-//                // Restore all paths because in each loop there will be modified
-//                msh.get(n).getPath().clear();
-//                final JMPath path = canonPath.get(n);
-//                msh.get(n).getPath().addJMPointsFrom(path);
-//                Point current = msh.get(n).get(-1).p.copy();
-//                setPencilPosition(previous.copy(), current);
-//                previous.copyFrom(current);
-//            }
-//            return;
-//        }
-//        if (lt == 0) {
-//            for (int n = 0; n < msh.size(); n++) {
-//                msh.get(n).visible(false);
-//            }
-//            Point current = msh.get(0).get(0).p.copy();
-//            Vec v = current.to(msh.get(0).getPath().getJMPointAt(.01).p).mult(-1);
-//            previous.copyFrom(current.add(v));
-//            setPencilPosition(previous.copy(), current);// Put the pencil at the beginning
-//
-//            return;
-//        }
-//
-//        double po = lt * numberOfSegments;
-//        int k = (int) Math.floor(po); // Number of segment
-//
-//        double alpha = po - k; // Alpha stores the 0-1 parameter inside the segment
-//        int[] pl = canonPath.getSegmentLocation(k);
-//        int pathNumber = pl[0];
-//        k = pl[1];
-//        for (int n = 0; n < msh.size(); n++) {
-//            // Restore all paths because in each loop there will be modified
-//            msh.get(n).getPath().clear();
-//            final JMPath path = canonPath.get(n);
-//            msh.get(n).getPath().addJMPointsFrom(path);
-//
-//            if (n < pathNumber) {
-//                msh.get(n).visible(true);// Draw whole path
-//            }
-//            if (n > pathNumber) {
-//                msh.get(n).visible(false);// Still don't draw
-//            }
-//            if (n == pathNumber) {// This path should be drawn partly
-//                msh.get(n).visible(true);
-//                // k=point in this path, and alpha 0-1 relative position between k-1 and k
-//                final double alphaInThisPath = (k + alpha) / (msh.get(n).getPath().size() - 1);
-//                JMPath subpath = canonPath.subpath(n, alphaInThisPath);
-//                msh.get(n).getPath().clear();
-//                msh.get(n).getPath().addJMPointsFrom(subpath);
-//                Point current = msh.get(n).get(-1).p.copy();
-//                setPencilPosition(previous.copy(), current);
-//                previous.copyFrom(current);
-//            }
-//        }
-//    }
-//
-//    @Override
-//    public void finishAnimation() {
-//        super.finishAnimation();
-//        if (mobj.getPath().size() > 0) {
-//            doAnim(1);
-//        }
-//        scene.remove(msh);
-//        mobj.visible(true);
-//        addObjectsToscene(mobj);
-//    }
-//
-//}
-/**
+ * An animation that draws a Shape
  *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
 public class SimpleShapeCreationAnimation extends AbstractCreationStrategy {
 
-    private Shape mobj;
+    private final Shape mobj;
 
     public SimpleShapeCreationAnimation(double runtime, Shape mobj) {
         super(runtime);
@@ -153,14 +39,14 @@ public class SimpleShapeCreationAnimation extends AbstractCreationStrategy {
     public void initialize(JMathAnimScene scene) {
         super.initialize(scene);
 //        removeObjectsToscene(this.mobj);
-        
+
     }
 
     @Override
     public void doAnim(double t) {
         this.mobj.visible(false);
         double lt = getLambda().applyAsDouble(t);
-        intermediateShape = this.mobj.getSubShape(0, lt).visible(lt>0);
+        intermediateShape = this.mobj.getSubShape(0, lt).visible(lt > 0);
         scene.addOnce(intermediateShape);
     }
     private MathObject intermediateShape;
