@@ -223,21 +223,38 @@ waitSeconds(1);
 
 The `Delimiter` is a extensible sign that adjust to 2 given control points A,B. May be brackets, braces, or parenthesis.  The precise form of the delimiter is recalculated every frame so if you animate the control points the delimiter will automatically adjust to them. Note that the delimiter always draws to the "left" of segment AB, if you are looking from A to B. The last parameter of the builder is the gap you want to apply between the control point and the delimiter.
 
+With the method `setLabel(obj,gap)` (from v0.9.4-SNAPSHOT) we can stack any `MathObject`as a label, with the given gap between both. The method admits the overloaded version with a `String`that will generate a `LaTeXMathObject` automatically:
+
 ```java
-Shape sq=Shape.square().center().style("solidBlue");
-//Brace
-Delimiter delim1 = Delimiter.make(sq.getPoint(2), sq.getPoint(1), Delimiter.Type.BRACE, .05).fillColor("#d35d6e");
-Delimiter delim2 = Delimiter.make(sq.getPoint(1), sq.getPoint(0), Delimiter.Type.BRACKET, .05).fillColor("#5aa469");
-Delimiter delim3 = Delimiter.make(sq.getPoint(0), sq.getPoint(3), Delimiter.Type.PARENTHESIS, .05).fillColor("#efb08c");
-add(delim1,delim2,delim3,sq);
-play.scale(3,.75,1.8,sq);
-play.scale(3,2,.25,sq);
-play.rotate(3,60*DEGREES,sq);
+ Shape sq = Shape.square().center().style("solidBlue");
+
+//A red brace with a x legend
+Delimiter delim1 = Delimiter.make(sq.getPoint(2), sq.getPoint(1), Delimiter.Type.BRACE, .05);
+delim1.setLabel("$x$", .1);
+delim1.fillColor("#d35d6e");//This will set the color both to label and delimiter
+
+//A green bracket with a yellow triangle as a legend. This triangle will rotate with the delimiter
+Delimiter delim2 = Delimiter.make(sq.getPoint(1), sq.getPoint(0), Delimiter.Type.BRACKET, .05);
+delim2.setLabel(Shape.regularPolygon(3).scale(.1), .1);
+delim2.fillColor("#5aa469");//This will set the fill color both to label and delimiter
+delim2.getDelimiterLabel().fillColor("yellow").thickness(6);//Change style of label only
+delim2.setRotateLabel(true);//Sets the rotate flag to true
+
+//An orange parenthesis
+Delimiter delim3 = Delimiter.make(sq.getPoint(0), sq.getPoint(3), Delimiter.Type.PARENTHESIS, .05);
+delim3.style("solidorange");
+delim3.setDelimiterScale(3);//Make a 3x bigger parenthesis
+delim3.setLabel("3", .2);//Note that style solidorange will not be applied to this label!
+
+add(delim1, delim2, delim3, sq);
+play.scale(3, .75, 1.8, sq);
+play.scale(3, 2, .25, sq);
+play.rotate(3, 60 * DEGREES, sq);
 play.shrinkOut(sq);
 waitSeconds(1);
 ```
 
-For this object the `drawAlpha` should be set to 0, that is, it should a purely fill object, otherwise, the "stitches" could be seen when fade in or fade out.
+
 
 ![delimiter01](delimiter01.gif)
 
