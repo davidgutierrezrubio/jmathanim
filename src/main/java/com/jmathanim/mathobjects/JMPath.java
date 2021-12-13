@@ -320,8 +320,8 @@ public class JMPath implements Updateable, Stateable, Boxable, Iterable<JMPathPo
      * alpha=0 denotes beginning of path and alpha=1 denotes the end
      *
      * @param alpha from 0 to 1, relative position inside the path
-     * @return A (referencedCopy of) point that lies in the curve at relative position
- alpha.
+     * @return A (referencedCopy of) point that lies in the curve at relative
+     * position alpha.
      */
     public JMPathPoint getJMPointAt(double alpha) {
         while (alpha > 1) {
@@ -1053,7 +1053,13 @@ public class JMPath implements Updateable, Stateable, Boxable, Iterable<JMPathPo
      * @return This object
      */
     public JMPath merge(JMPath secondPath, boolean connectAtoB, boolean connectBtoA) {
-        JMPath pa = secondPath.referencedCopy();
+        JMPath pa = secondPath.copy();
+        //Special case: if this path is empty
+        if (isEmpty()) {
+            jmPathPoints.addAll(pa.jmPathPoints);
+            return this;
+        }
+        
         // If the first path is already a closed one, open it
         // with 2 identical points (old-fashioned style of closing shapes)
         final JMPathPoint jmPoint = jmPathPoints.get(0);

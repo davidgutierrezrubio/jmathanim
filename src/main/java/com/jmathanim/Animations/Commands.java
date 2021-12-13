@@ -397,10 +397,7 @@ public class Commands {
      * @param A Origin point
      * @param B Destiny point
      * @param objects Objects to animate (varargs)
-     * @return Animation to run with null null null null null null null null
-     * null null null null null null null null null null null null null null
-     * null null null null null null null     {@link JMathAnimScene#playAnimation(com.jmathanim.Animations.Animation...)
-	 *         playAnimation} method
+     * @return Animation to run with playAnim method
      */
     public static AnimationWithEffects reflection(double runtime, Point A, Point B, MathObject... objects) {
         AnimationWithEffects resul = new AnimationWithEffects(runtime) {
@@ -450,10 +447,7 @@ public class Commands {
      * @param b second axis point
      *
      * @param objects Objects to animate (varargs)
-     * @return Animation to run with null null null null null null null null
-     * null null null null null null null null null null null null null null
-     * null null null null null null null     {@link JMathAnimScene#playAnimation(com.jmathanim.Animations.Animation...)
-	 *         playAnimation} method
+     * @return Animation to run with playAnim method
      */
     public static AnimationWithEffects reflectionByAxis(double runtime, Point a, Point b, MathObject... objects) {
         AnimationWithEffects resul = new AnimationWithEffects(runtime) {
@@ -530,10 +524,7 @@ public class Commands {
      * @param runtime Time duration in seconds
      * @param mp Destination {@link MODrawProperties}
      * @param objects Objects to animate (varargs)
-     * @return Animation to run with null null null null null null null null
-     * null null null null null null null null null null null null null null
-     * null null null null null null null     {@link JMathAnimScene#playAnimation(com.jmathanim.Animations.Animation...)
-	 *         playAnimation} method
+     * @return Animation to run with playAnim method
      */
     public static Animation setMP(double runtime, MODrawProperties mp, MathObject... objects) {
         Animation resul = new Animation(runtime) {
@@ -573,10 +564,7 @@ public class Commands {
      * @param styleName Name of destination style
      * @param objects Objects to animate (varargs)
      *
-     * @return Animation to run with null null null null null null null null
-     * null null null null null null null null null null null null null null
-     * null null null null null null null     {@link JMathAnimScene#playAnimation(com.jmathanim.Animations.Animation...)
-	 *         playAnimation} method
+     * @return Animation to run with playAnim method
      */
     public static Animation setStyle(double runtime, String styleName, MathObject... objects) {
         Animation resul = setMP(runtime, MODrawProperties.createFromStyle(styleName), objects);
@@ -591,10 +579,7 @@ public class Commands {
      * @param runtime Time duration in seconds
      * @param camera Camera to zoom
      * @param rectToZoom Area to zoom
-     * @return Animation to run with null null null null null null null null
-     * null null null null null null null null null null null null null null
-     * null null null null null null null     {@link JMathAnimScene#playAnimation(com.jmathanim.Animations.Animation...)
-	 *         playAnimation} method
+     * @return Animation to run with playAnim method
      */
     public static Animation cameraZoomToRect(double runtime, Camera camera, Rect rectToZoom) {
         Animation resul;
@@ -644,10 +629,7 @@ public class Commands {
      * @param camera Camera to pan
      * @param shiftVector Shift vector
      *
-     * @return Animation to run with null null null null null null null null
-     * null null null null null null null null null null null null null null
-     * null null null null null null null     {@link JMathAnimScene#playAnimation(com.jmathanim.Animations.Animation...)
-	 *         playAnimation} method
+     * @return Animation to run with playAnim method
      */
     public static Animation cameraShift(double runtime, Camera camera, Vec shiftVector) {
         Animation resul;
@@ -698,10 +680,7 @@ public class Commands {
      *
      * @param runtime Run time (in seconds)
      * @param objects Objects to animate (varargs)
-     * @return Animation to run with null null null null null null null null
-     * null null null null null null null null null null null null null null
-     * null null null null null null null     {@link JMathAnimScene#playAnimation(com.jmathanim.Animations.Animation...)
-	 *         playAnimation} method
+     * @return Animation to run with playAnim method
      */
     public static Animation shrinkOut(double runtime, MathObject... objects) {
         return shrinkOut(runtime, 0, objects);
@@ -715,10 +694,7 @@ public class Commands {
      * @param angle Angle to rotate, in radians
      * @param runtime Duration time in seconds
      * @param objects Objects to animate (varargs)
-     * @return Animation to run with null null null null null null null null
-     * null null null null null null null null null null null null null null
-     * null null null null null null null     {@link JMathAnimScene#playAnimation(com.jmathanim.Animations.Animation...)
-	 *         playAnimation} method
+     * @return Animation to run with playAnim method
      */
     public static Animation shrinkOut(double runtime, double angle, MathObject... objects) {
         Animation anim = new Animation(runtime) {
@@ -760,11 +736,8 @@ public class Commands {
      *
      *
      * @param runtime Duration time in seconds
-     * @return Animation to run with
-     * @param objects Objects to animate (varargs) null null null null null null
-     * null null null null null null null null null null null null null null
-     * null null null null null null null null null     {@link JMathAnimScene#playAnimation(com.jmathanim.Animations.Animation...)
-	 *                playAnimation} method
+     * @param objects Objects to animate
+     * @return Animation to run with playAnim method
      */
     public static Animation growIn(double runtime, MathObject... objects) {
         return growIn(runtime, 0, objects);
@@ -778,10 +751,7 @@ public class Commands {
      * @param angle Rotation angle
      * @param runtime Duration time in seconds
      * @param objects Objects to animate (varargs)
-     * @return Animation to run with null null null null null null null null
-     * null null null null null null null null null null null null null null
-     * null null null null null null null     {@link JMathAnimScene#playAnimation(com.jmathanim.Animations.Animation...)
-	 *         playAnimation} method
+     * @return Animation to run with playAnim method
      */
     public static Animation growIn(double runtime, double angle, MathObject... objects) {
         Animation anim = new Animation(runtime) {
@@ -826,10 +796,7 @@ public class Commands {
      *
      * @param runtime Duration time in seconds
      * @param objects Objects to animate (varargs)
-     * @return Animation to run with null null null null null null null null
-     * null null null null null null null null null null null null null null
-     * null null null null null null null     {@link JMathAnimScene#playAnimation(com.jmathanim.Animations.Animation...)
-	 *         playAnimation} method
+     * @return Animation to run with the playAnim method
      */
     public static AnimationWithEffects fadeIn(double runtime, MathObject... objects) {
         AnimationWithEffects anim = new AnimationWithEffects(runtime) {
@@ -875,10 +842,7 @@ public class Commands {
      *
      * @param runtime Duration time in seconds
      * @param objects Object to animate
-     * @return Animation to run with null null null null null null null null
-     * null null null null null null null null null null null null null null
-     * null null null null null null null     {@link JMathAnimScene#playAnimation(com.jmathanim.Animations.Animation...)
-	 *         playAnimation} method
+     * @return Animation to run with playAnim method
      */
     public static AnimationWithEffects fadeOut(double runtime, MathObject... objects) {
         AnimationWithEffects anim = new AnimationWithEffects(runtime) {
@@ -924,10 +888,7 @@ public class Commands {
      * Anchor.Type
      * @param gap Gap to apply between elements, in math units
      * @param group MathObjectGroup instance to apply the layout
-     * @return Animation to run with null null null null null null null null
-     * null null null null null null null null null null null null null null
-     * null null null null null null null     {@link JMathAnimScene#playAnimation(com.jmathanim.Animations.Animation...)
-	 *         playAnimation} method
+     * @return Animation to run with playAnim method
      */
     public static ShiftAnimation setLayout(double runtime, MathObject corner, MathObjectGroup.Layout layout, double gap,
             MathObjectGroup group) {
@@ -964,10 +925,7 @@ public class Commands {
      * @param runtime Duration in seconds
      * @param layout A GroupLayout subclass
      * @param group MathObjectGroup instance to apply the layout
-     * @return Animation to run with null null null null null null null null
-     * null null null null null null null null null null null null null null
-     * null null null null null null null     {@link JMathAnimScene#playAnimation(com.jmathanim.Animations.Animation...)
-	 *         playAnimation} method
+     * @return Animation to run with playAnim method
      */
     public static ShiftAnimation setLayout(double runtime, GroupLayout layout, MathObjectGroup group) {
         group.saveState();// TODO: Jump effect doesn't work yet

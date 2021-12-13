@@ -48,6 +48,7 @@ public class Delimiter extends MathObject {
     private MathObjectGroup delimiterToDraw;
     private double minimumWidthToShrink;
     private double delimiterScale;
+    private final Shape delimiterShape;
 
     /**
      * Type of delimiter
@@ -100,7 +101,6 @@ public class Delimiter extends MathObject {
         }
         resul.setBody(new SVGMathObject(rl.getResource(name, "delimiters")));
         resul.style("latexdefault");
-        resul.drawAlpha(0);// This is necessary so that "stitches" are not seen when fadeIn or fadeOut
         resul.amplitudeScale = 1;
         resul.delimiterScale = 1;
         return resul;
@@ -158,18 +158,14 @@ public class Delimiter extends MathObject {
     }
 
     public Delimiter setLabel(MathObject label, double labelGap) {
-        //Anchors the JMNumber
         mpDelimiter.add(label);
         this.labelMarkGap = labelGap;
-//        updateableLabel = new AnchoredMathObject(setLabel, Anchor.reverseAnchorPoint(anchorType), labelMarkPoint, anchorType, 0);
-//        scene.registerUpdateable(updateableLabel);
         this.delimiterLabel = label;
         return this;
     }
 
     public void removeLabel() {
         mpDelimiter.remove(delimiterLabel);
-//        scene.unregisterUpdateable(updateableLabel);
 
     }
 
@@ -185,6 +181,8 @@ public class Delimiter extends MathObject {
         minimumWidthToShrink = .5;
         delimiterScale = 1;
         amplitudeScale = 1;
+        delimiterShape = new Shape();
+        mpDelimiter.add(delimiterShape);
     }
 
     public void setBody(SVGMathObject body) {
@@ -204,8 +202,8 @@ public class Delimiter extends MathObject {
         double width = AA.to(BB).norm();//The final width of the delimiter
 
         MultiShapeObject bodyCopy = body.copy();
-        Shape delimiterShape=new Shape();
-        body.getMp().copyFrom(this.getMp());
+        delimiterShape.getPath().clear();
+//        body.getMp().copyFrom(this.getMp());
 //        for (Shape sh : delimiterShape) {
 //            sh.getMp().copyFrom(this.getMp());
 //        }
@@ -217,7 +215,7 @@ public class Delimiter extends MathObject {
             double hasToGrow = Math.max(0, width - wr);
             // 0,1,2,3,4,5 shapes Shapes 1 and 4 are extensible
             double wSpace = .5 * (hasToGrow);
-            delimiterShape = bodyCopy.get(0).copy();
+            delimiterShape.getPath().jmPathPoints.addAll(bodyCopy.get(0).getPath().jmPathPoints);
             delimiterShape.merge(bodyCopy.get(2).shift(wSpace, 0), true, false)
                     .merge(bodyCopy.get(1).shift(2 * wSpace, 0), true, false)
                     .merge(bodyCopy.get(3).shift(wSpace, 0), true, true);
@@ -228,7 +226,7 @@ public class Delimiter extends MathObject {
             bodyCopy.setWidth(wr);
             double hasToGrow = Math.max(0, width - wr);
             double wSpace = hasToGrow;
-            delimiterShape = bodyCopy.get(0).copy();
+            delimiterShape.merge(bodyCopy.get(0), false, false);
             delimiterShape.merge(bodyCopy.get(1).shift(wSpace, 0), true, true);
         }
         if (type == Type.PARENTHESIS) {
@@ -236,13 +234,13 @@ public class Delimiter extends MathObject {
             double wr = 0.48 * delimiterScale * UsefulLambdas.allocateTo(0, minimumWidthToShrink).applyAsDouble(width);
             bodyCopy.setWidth(wr);
             double wSpace = Math.max(0, width - wr);
-            delimiterShape = bodyCopy.get(0).copy();
+            delimiterShape.merge(bodyCopy.get(0), false, false);
             delimiterShape.merge(bodyCopy.get(1).shift(wSpace, 0), true, true);
         }
 
-        Rect bb = bodyCopy.getBoundingBox();
-        bodyCopy.shift(0, gap);
-        labelMarkPoint.stackTo(bodyCopy, Anchor.Type.UPPER, labelMarkGap);
+        Rect bb = delimiterShape.getBoundingBox();
+        delimiterShape.shift(0, gap);
+        labelMarkPoint.stackTo(delimiterShape, Anchor.Type.UPPER, labelMarkGap);
         AffineJTransform tr = AffineJTransform.createDirect2DHomothecy(bb.getDL(), bb.getDR(), AA, BB, 1);
         MathObjectGroup resul = MathObjectGroup.make(delimiterShape);
         MathObject lab;
@@ -270,6 +268,7 @@ public class Delimiter extends MathObject {
                 return;// Do nothing
             }
             delimiterToDraw = buildDelimiterShape();
+//            delimiterToDraw.getMp().copyFrom(this.getMp());
 
 //            delimiterToDraw.draw(scene, r);
             for (MathObject obj : delimiterToDraw) {
@@ -331,30 +330,79 @@ public class Delimiter extends MathObject {
         return mpDelimiter;
     }
 
+    /**
+     * Gets the label mark point. The label mark point is used to position the
+     * label. Labels are centered around this point. The gap parameter used when
+     * adding labels sets the distance between this point and the delimiter.
+     *
+     * @return The label mark point.
+     */
     public Point getLabelMarkPoint() {
         return labelMarkPoint;
     }
 
+    /**
+     * Returns the rotate label flag
+     *
+     * @return True if label should be rotated, false otherwise.
+     */
     public boolean isRotateLabel() {
         return rotateLabel;
     }
 
-    public Delimiter rotateLabel(boolean rotateLabel) {
+    /**
+     * Sets the rotate flag. If true, label will be rotated according to
+     * delimiter.
+     *
+     * @param rotateLabel True if label should be rotated, false otherwise.
+     * @return This object
+     */
+    public Delimiter setRotateLabel(boolean rotateLabel) {
         this.rotateLabel = rotateLabel;
         return this;
     }
 
+    /**
+     * Returns the delimiter scale. Higher values will result in thicker shapes.
+     *
+     * @return The actual scale.
+     */
     public double getDelimiterScale() {
         return delimiterScale;
     }
 
+    /**
+     * Sets the scale of the delimiter. Higher values will result in thicker
+     * shapes
+     *
+     * @param <T> Subclass
+     * @param delimiterScale Scale. Default value is 1.
+     * @return This object
+     */
     public <T extends Delimiter> T setDelimiterScale(double delimiterScale) {
         this.delimiterScale = delimiterScale;
         return (T) this;
     }
 
+    /**
+     * Gets the generated Shape for delimiter
+     *
+     * @return A Shape object with the current delimiter shape
+     */
     public Shape getShape() {
-        return (Shape) delimiterToDraw.get(0);//Shape
+        if (delimiterShape.isEmpty()) {//Ensure the Shape is generated
+            buildDelimiterShape();
+        }
+        return delimiterShape;//Shape
+    }
+
+    /**
+     * Gets the label MathObject
+     *
+     * @return The label
+     */
+    public MathObject getDelimiterLabel() {
+        return delimiterLabel;
     }
 
 }
