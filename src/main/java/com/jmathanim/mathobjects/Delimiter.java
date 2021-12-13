@@ -149,7 +149,6 @@ public class Delimiter extends MathObject {
         return resul;
     }
 
-
     public Delimiter setLabel(String text, double labelGap) {
         return setLabel(LaTeXMathObject.make(text), labelGap);
     }
@@ -190,6 +189,9 @@ public class Delimiter extends MathObject {
     }
 
     private MathObjectGroup buildDelimiterShape() {
+        if (delimiterScale == 0) {
+            return MathObjectGroup.make();
+        }
         Point AA = A.interpolate(B, .5 * (1 - delimiterScale));
         Point BB = B.interpolate(A, .5 * (1 - delimiterScale));
         double width = AA.to(BB).norm();
@@ -236,17 +238,17 @@ public class Delimiter extends MathObject {
         AffineJTransform tr = AffineJTransform.createDirect2DHomothecy(bb.getDL(), bb.getDR(), AA, BB, 1);
         MathObjectGroup resul = MathObjectGroup.make(delimiterShape);
         MathObject lab;
+        tr.applyTransform(resul);
+
         if (delimiterLabel != null) {
-            lab = delimiterLabel.copy();
+            lab = delimiterLabel.copy().scale(delimiterScale);
+            resul.add(lab);
             if (rotateLabel) {
                 lab.stackTo(labelMarkPoint, Anchor.Type.CENTER);
-                resul.add(lab);
-                tr.applyTransform(resul);
+                tr.applyTransform(lab);
                 tr.applyTransform(labelMarkPoint);
             } else {
-                tr.applyTransform(resul);
                 tr.applyTransform(labelMarkPoint);
-                resul.add(lab);
                 lab.stackTo(labelMarkPoint, Anchor.Type.CENTER);
             }
         }
@@ -260,7 +262,8 @@ public class Delimiter extends MathObject {
             if (A.isEquivalentTo(B, 0)) {
                 return;// Do nothing
             }
-            
+            delimiterToDraw = buildDelimiterShape();
+
 //            delimiterToDraw.draw(scene, r);
             for (MathObject obj : delimiterToDraw) {
                 obj.draw(scene, r);
@@ -268,15 +271,6 @@ public class Delimiter extends MathObject {
         }
     }
 
-    @Override
-    public void update(JMathAnimScene scene) {
-        super.update(scene);
-         delimiterToDraw = buildDelimiterShape();
-    }
-
-    
-    
-    
     @Override
     public Rect getBoundingBox() {
         if (A.isEquivalentTo(B, 0)) {
