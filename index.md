@@ -13,6 +13,10 @@ You can also follow my [Youtube](https://www.youtube.com/channel/UCeczwEqSrAwZbP
 
 Version 0.9.4-SNAPSHOT:
 
+* Added configuration flag `config.setShowDebugFrameNumbers` to superimpose frame number on animation.
+* Improved implementation of delimiters. Now they are proper Shape objects instead of pure fill objects .
+* Labels now can be easily added to delimiters with the method .setLabel.
+
 * Improved handling of thickness property.
 * SVG import now properly handless thickness and transform attributes.
 
