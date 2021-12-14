@@ -126,6 +126,12 @@ public class JMathAnimConfig {
      */
     public float shadowAlpha = .5f;
     private URL backGroundImage = null;
+    
+    /**
+     * If true, the frame number will be superimposed on screen, for debugging
+     * purposes
+     */
+    public boolean showFrameNumbers=false;
 
     public void setDrawShadow(boolean drawShadow) {
         this.drawShadow = drawShadow;
@@ -345,6 +351,10 @@ public class JMathAnimConfig {
      */
     public void setSaveToPNG(boolean saveToPNG) {
         this.saveToPNG = saveToPNG;
+    }
+
+    public void setShowDebugFrameNumbers(boolean showFrameNumbers) {
+        this.showFrameNumbers = showFrameNumbers;
     }
 
 }

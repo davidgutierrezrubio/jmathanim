@@ -46,6 +46,7 @@ import javafx.application.Platform;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.geometry.Bounds;
 import javafx.geometry.Rectangle2D;
+import javafx.geometry.VPos;
 import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.PerspectiveCamera;
@@ -62,6 +63,7 @@ import javafx.scene.shape.StrokeLineCap;
 import javafx.scene.shape.StrokeLineJoin;
 import javafx.scene.shape.StrokeType;
 import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.scene.transform.Rotate;
 import javafx.scene.transform.Translate;
@@ -241,6 +243,9 @@ public class JavaFXRenderer extends Renderer {
 
                 // Add all elements
                 group.getChildren().addAll(fxnodes);
+                if (config.showFrameNumbers) {
+                    showDebugFrame(frameCount, 1d * frameCount / config.fps);
+                }
                 groupDebug.getChildren().addAll(debugFXnodes);
                 if (config.drawShadow) {
                     group.setEffect(dropShadow);
@@ -362,7 +367,7 @@ public class JavaFXRenderer extends Renderer {
                 path.setStrokeLineCap(StrokeLineCap.BUTT);
                 break;
             case DASHDOTTED:
-                path.getStrokeDashArray().addAll(MathWidthToThickness(.025), MathWidthToThickness(.005),MathWidthToThickness(.0025), MathWidthToThickness(.005));
+                path.getStrokeDashArray().addAll(MathWidthToThickness(.025), MathWidthToThickness(.005), MathWidthToThickness(.0025), MathWidthToThickness(.005));
                 path.setStrokeLineCap(StrokeLineCap.BUTT);
                 break;
         }
@@ -488,6 +493,17 @@ public class JavaFXRenderer extends Renderer {
         rectangle.setStroke(Color.DARKBLUE);
 
         debugFXnodes.add(rectangle);
+        debugFXnodes.add(t);
+    }
+
+    private void showDebugFrame(int numFrame, double time) {
+        Text t = new Text("Frame: " + numFrame + " (" + String.format("%.2f", time) + "s)");
+        t.setFont(Font.font("Verdana", FontWeight.BOLD, 48));
+        t.setFill(Color.ALICEBLUE);
+        t.setStroke(Color.BLACK);
+        t.setX(0);
+        t.setY(0);
+        t.setTextOrigin(VPos.TOP);
         debugFXnodes.add(t);
     }
 
