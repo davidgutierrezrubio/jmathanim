@@ -318,12 +318,14 @@ public abstract class MathObject implements Drawable, Updateable, Stateable, Box
 //    public void copyStateFrom(MathObject obj) {
 //        JMathAnimScene.logger.error("copyStateFrom method not implemented for this object, sorry");
 //    }
-  abstract public void copyStateFrom(MathObject obj);
+    abstract public void copyStateFrom(MathObject obj);
+
     /**
      * Returns the Bounding box with limits of the MathObject
      *
      * @return A Rect with (xmin,ymin,xmax,ymax)
      */
+    @Override
     public abstract Rect getBoundingBox();
 
     public void setAlpha(double t) {
@@ -364,6 +366,34 @@ public abstract class MathObject implements Drawable, Updateable, Stateable, Box
      */
     public <T extends MathObject> T setMp(MODrawProperties newMp) {
         this.getMp().copyFrom(newMp);
+        return (T) this;
+    }
+
+    /**
+     * Changes both draw and fill color
+     *
+     * @param <T> Subclass
+     * @param dc A PaintStyle object. Can be a JMColor, a gradient or image
+     * pattern
+     * @return This object
+     */
+    public <T extends MathObject> T color(PaintStyle dc) {
+        drawColor(dc);
+        fillColor(dc);
+        return (T) this;
+    }
+
+    /**
+     * Overloaded method. Sets both draw and fill color
+     *
+     * @param <T> Calling subclass
+     * @param str A string representing the draw color, as in the JMcolor.parse
+     * method
+     * @return This object
+     */
+    public <T extends MathObject> T color(String str) {
+        drawColor(str);
+        fillColor(str);
         return (T) this;
     }
 
@@ -872,6 +902,7 @@ public abstract class MathObject implements Drawable, Updateable, Stateable, Box
      *
      * @return True if object is empty, false otherwise
      */
+    @Override
     public boolean isEmpty() {
         return false;
     }

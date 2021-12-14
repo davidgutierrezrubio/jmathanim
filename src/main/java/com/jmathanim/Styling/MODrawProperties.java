@@ -233,6 +233,7 @@ public class MODrawProperties implements Stylable, Stateable {
         }
     }
 
+    @Override
     public MODrawProperties getFirstMP() {
         return this;
     }

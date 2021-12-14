@@ -37,7 +37,8 @@ import com.jmathanim.mathobjects.updateableObjects.AnchoredMathObject;
  */
 public class Delimiter extends MathObject {
 
-    private Point A, B;
+    private final Point A;
+    private final Point B;
     private SVGMathObject body;
     private double amplitudeScale;
     private MathObject delimiterLabel;

@@ -184,13 +184,9 @@ public class FXPathUtils {
 			}
 			return true;
 		}
+            // A MoveTo with a closepath immediately after
 
-		// A MoveTo with a closepath immediately after
-		if ((el1 instanceof MoveTo) && (el2 instanceof ClosePath)) {
-			return true;
-		}
-
-		return false;
+		return (el1 instanceof MoveTo) && (el2 instanceof ClosePath);
 	}
 
 	private static boolean isFirstElementRedundant(Double xyPrevious[], PathElement el1, PathElement el2) {

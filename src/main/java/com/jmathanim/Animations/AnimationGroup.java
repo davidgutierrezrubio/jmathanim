@@ -31,7 +31,7 @@ import java.util.function.DoubleUnaryOperator;
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
 public class AnimationGroup extends AnimationWithEffects {
-    
+
     private final ArrayList<Animation> animations;
     private double delayPercentage;
 
@@ -73,7 +73,7 @@ public class AnimationGroup extends AnimationWithEffects {
         this.lambda = null;
         this.animations = new ArrayList<>();
         this.animations.addAll(Arrays.asList(animations));
-        
+
         this.useObjectState = null;
         this.shouldAddObjectsToScene = null;
         this.shouldInterpolateStyles = null;
@@ -99,32 +99,32 @@ public class AnimationGroup extends AnimationWithEffects {
      * @return This object
      */
     public <T extends AnimationGroup> T add(Animation... anims) {
-        for (Animation anim : anims) {
-            animations.add(anim);
-        }
+        animations.addAll(Arrays.asList(anims));
         return (T) this;
     }
-    
+
     @Override
     public void initialize(JMathAnimScene scene) {
         super.initialize(scene);
-        
+
         int size = animations.size();
         if (!"".equals(getDebugName())) {
             setDebugName("Animation group with " + size + " animations");
         }
         int k = 0;
-        
+
         for (Animation anim : animations) {
             this.copyAnimationParametersTo(anim);
         }
-        
+
         for (Animation anim : animations) {
-            if (anim instanceof AnimationWithEffects) {
-                AnimationWithEffects animEf = (AnimationWithEffects) anim;
-                this.copyEffectParametersTo(animEf);
+            if (anim != null) {
+                if (anim instanceof AnimationWithEffects) {
+                    AnimationWithEffects animEf = (AnimationWithEffects) anim;
+                    this.copyEffectParametersTo(animEf);
+                }
+                anim.initialize(scene);
             }
-            anim.initialize(scene);
         }
 
         if ((size > 1) && (delayPercentage > 0)) {
@@ -137,7 +137,7 @@ public class AnimationGroup extends AnimationWithEffects {
             }
         }
     }
-    
+
     @Override
     public boolean processAnimation() {
         boolean finishedAll = true;
@@ -146,14 +146,14 @@ public class AnimationGroup extends AnimationWithEffects {
         }
         return finishedAll;
     }
-    
+
     @Override
     public void doAnim(double t) {
         for (Animation anim : animations) {
             anim.doAnim(t);
         }
     }
-    
+
     @Override
     public void finishAnimation() {
         super.finishAnimation();
@@ -163,7 +163,7 @@ public class AnimationGroup extends AnimationWithEffects {
             }
         }
     }
-    
+
     @Override
     public AnimationGroup setLambda(DoubleUnaryOperator lambda) {
         super.setLambda(lambda);
@@ -172,7 +172,7 @@ public class AnimationGroup extends AnimationWithEffects {
         }
         return this;
     }
-    
+
     @Override
     public AnimationGroup setUseObjectState(boolean shouldSaveState) {
         for (Animation anim : animations) {
@@ -180,7 +180,7 @@ public class AnimationGroup extends AnimationWithEffects {
         }
         return this;
     }
-    
+
     @Override
     public AnimationGroup setAddObjectsToScene(boolean addToScene) {
         for (Animation anim : animations) {
@@ -188,7 +188,7 @@ public class AnimationGroup extends AnimationWithEffects {
         }
         return this;
     }
-    
+
     @Override
     public AnimationGroup setShouldInterpolateStyles(boolean interpolateStyles) {
         for (Animation anim : animations) {
@@ -215,8 +215,8 @@ public class AnimationGroup extends AnimationWithEffects {
             return (T) this;
         }
         this.delayPercentage = delayPercentage;
-        
+
         return (T) this;
     }
-    
+
 }

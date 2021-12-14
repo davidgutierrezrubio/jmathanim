@@ -109,20 +109,18 @@ public class Commands {
         return anim;
     }
 
-    
     /**
-     * Similar to the highlight animation, but adds a little twist of 15 degrees to the
-     * objects. The factor scale applied is 1.5.
+     * Similar to the highlight animation, but adds a little twist of 15 degrees
+     * to the objects. The factor scale applied is 1.5.
      *
-     * @param runtime Duration in seconds
-     * positive and negative direction
+     * @param runtime Duration in seconds positive and negative direction
      * @param objects Objects to animate
      * @return The animation, ready to play with the playAnim method
      */
-      public static AnimationGroup twistAndScale(double runtime,  MathObject... objects) {
-          return twistAndScale(runtime, 1.5,15*DEGREES,objects);
-      }
-    
+    public static AnimationGroup twistAndScale(double runtime, MathObject... objects) {
+        return twistAndScale(runtime, 1.5, 15 * DEGREES, objects);
+    }
+
     /**
      * Similar to the highlight animation, but adds a little twist to the
      * objects
@@ -632,15 +630,18 @@ public class Commands {
      * @return Animation to run with playAnim method
      */
     public static Animation cameraShift(double runtime, Camera camera, Vec shiftVector) {
-        Animation resul;
-        if (camera instanceof Camera3D) {
-            Camera3D camera3d = (Camera3D) camera;
-            resul = shift(runtime, shiftVector, camera3d.eye, camera3d.look);
-        } else {
-            Rect r = camera.getMathView().shifted(shiftVector);
-            resul = cameraZoomToRect(runtime, camera, r);
+        Animation resul=null;
+        if (camera != null) {
+            if (camera instanceof Camera3D) {
+                Camera3D camera3d = (Camera3D) camera;
+                resul = shift(runtime, shiftVector, camera3d.eye, camera3d.look);
+            } else {
+
+                Rect r = camera.getMathView().shifted(shiftVector);
+                resul = cameraZoomToRect(runtime, camera, r);
+            }
+            resul.setDebugName("cameraShift");
         }
-        resul.setDebugName("cameraShift");
         return resul;
     }
 
@@ -980,7 +981,7 @@ public class Commands {
                 restoreStates(mathObjects);
                 double lt = getLambda().applyAsDouble(t);
                 for (MathObject obj : objects) {
-                    obj.getMp().setFillAlpha(obj.getMp().getFillColor().getAlpha()*lt);
+                    obj.getMp().setFillAlpha(obj.getMp().getFillColor().getAlpha() * lt);
                     applyAnimationEffects(lt, obj);
                 }
             }
@@ -1012,8 +1013,7 @@ public class Commands {
                 JMathAnimScene.logger.debug("Initialized moveOut animation");
                 // Compute appropiate shift vectors
                 Rect r = JMathAnimConfig.getConfig().getCamera().getMathView();
-                for (int n = 0; n < mathObjects.length; n++) {
-                    MathObject obj = mathObjects[n];
+                for (MathObject obj : mathObjects) {
                     Point p = Anchor.getAnchorPoint(obj, Anchor.reverseAnchorPoint(exitAnchor));
                     Point q = Anchor.getAnchorPoint(Shape.rectangle(r), exitAnchor, 1);
                     switch (exitAnchor) {
@@ -1031,6 +1031,7 @@ public class Commands {
                 }
             }
 
+            @Override
             public void finishAnimation() {
                 super.finishAnimation();
                 for (MathObject obj : mathObjects) {
@@ -1062,8 +1063,7 @@ public class Commands {
             public void initialize(JMathAnimScene scene) {
                 super.initialize(scene);
                 JMathAnimScene.logger.debug("Initialized moveIn animation");
-                for (int n = 0; n < mathObjects.length; n++) {
-                    MathObject obj = mathObjects[n];
+                for (MathObject obj : mathObjects) {
                     final Anchor.Type reverseAnchor = Anchor.reverseAnchorPoint(enterAnchor);
                     Point p = Anchor.getAnchorPoint(obj, reverseAnchor);
                     Point q = Anchor.getAnchorPoint(Shape.rectangle(r), enterAnchor);

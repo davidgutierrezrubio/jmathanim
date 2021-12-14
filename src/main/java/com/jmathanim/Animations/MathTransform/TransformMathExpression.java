@@ -105,45 +105,41 @@ public class TransformMathExpression extends Animation {
         for (String name1 : maps.keySet()) {
             String name2 = maps.get(name1);
 
-            if (false) {
-                Shape sh1 = getShapeForGroup(or, name1, latexTransformed, removeInOrigParameters);
-                Shape sh2 = getShapeForGroup(dst, name2, latexDestiny, addInDstParameters);
-                if ((sh1.size() > 0) && (sh2.size() > 0)) {// If any of the shapes is empty...abort!
-                    createTransformSubAnimation(sh1, sh2, trParTransformParameters.get(name1));
-                }
-            } else {
-                // For each of the shapes of a origin group, makes a transform animation
-                // The destiny will be one merged shape of all shapes of destiny group
-                
-                   ArrayList<Shape> listDst = getShapeListForGroup(dst, name2, latexDestiny, addInDstParameters);
-                ArrayList<Shape> listOrig = getShapeListForGroup(or, name1, latexTransformed, removeInOrigParameters);
-                
-                 int nDst = listDst.size();
-                int nOrig = listOrig.size();
-                if (nDst<nOrig) {
+//            if (false) {
+//                Shape sh1 = getShapeForGroup(or, name1, latexTransformed, removeInOrigParameters);
+//                Shape sh2 = getShapeForGroup(dst, name2, latexDestiny, addInDstParameters);
+//                if ((sh1.size() > 0) && (sh2.size() > 0)) {// If any of the shapes is empty...abort!
+//                    createTransformSubAnimation(sh1, sh2, trParTransformParameters.get(name1));
+//                }
+//            } else {
+            // For each of the shapes of a origin group, makes a transform animation
+            // The destiny will be one merged shape of all shapes of destiny group
+            ArrayList<Shape> listDst = getShapeListForGroup(dst, name2, latexDestiny, addInDstParameters);
+            ArrayList<Shape> listOrig = getShapeListForGroup(or, name1, latexTransformed, removeInOrigParameters);
+
+            int nDst = listDst.size();
+            int nOrig = listOrig.size();
+            if (nDst < nOrig) {
                 for (Shape sh : listOrig) {
                     Shape sh2 = getShapeForGroup(dst, name2, latexDestiny, addInDstParameters);
                     createTransformSubAnimation(sh, sh2, trParTransformParameters.get(name1));
-                }}
-                else
-                {
-                    for (int k = 0; k < nOrig; k++) {
-                          Shape sh1=listOrig.get(k);
-                          Shape sh2=listDst.get(k);
-                           createTransformSubAnimation(sh1, sh2, trParTransformParameters.get(name1));
-                    }
-                    //If destiny has more shapes than origin, make copies of the last one of orig and map
-               
-                for (int k = 0; k < nDst - nOrig; k++) {
-                    Shape sh1=listOrig.get(nOrig-1).copy();
-                    Shape sh2=listDst.get(nOrig+k);
-                      createTransformSubAnimation(sh1, sh2, trParTransformParameters.get(name1));
                 }
+            } else {
+                for (int k = 0; k < nOrig; k++) {
+                    Shape sh1 = listOrig.get(k);
+                    Shape sh2 = listDst.get(k);
+                    createTransformSubAnimation(sh1, sh2, trParTransformParameters.get(name1));
                 }
-             
-                
+                //If destiny has more shapes than origin, make copies of the last one of orig and map
 
+                for (int k = 0; k < nDst - nOrig; k++) {
+                    Shape sh1 = listOrig.get(nOrig - 1).copy();
+                    Shape sh2 = listDst.get(nOrig + k);
+                    createTransformSubAnimation(sh1, sh2, trParTransformParameters.get(name1));
+                }
             }
+
+//            }
         }
         for (int n : removeInOrigParameters.keySet()) {
             createRemovingSubAnimation(n, removeInOrigParameters.get(n));

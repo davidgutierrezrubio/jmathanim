@@ -445,7 +445,7 @@ public abstract class Animation {
      *
      * @param debugName Debug message
      */
-    public void setDebugName(String debugName) {
+    public final void setDebugName(String debugName) {
         this.debugName = debugName;
     }
 

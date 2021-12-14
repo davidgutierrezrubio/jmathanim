@@ -33,14 +33,16 @@ public class JoinAnimation extends Animation {
     double[] steps;
 
     public static JoinAnimation make(double runTime, Animation... anims) {
-        return new JoinAnimation(runTime, anims);
+        JoinAnimation resul = new JoinAnimation(runTime, anims);
+        resul.setLambda(t -> t);//Default behaviour for this animation
+        return resul;
     }
 
-    public JoinAnimation(double runTime, Animation... anims) {
+    private JoinAnimation(double runTime, Animation... anims) {
         super(runTime);
         animations = new ArrayList<>();
         animations.addAll(Arrays.asList(anims));
-        this.setLambda(t -> t);//Default behaviour for this animation
+
     }
 
     @Override
@@ -86,10 +88,9 @@ public class JoinAnimation extends Animation {
 
     @Override
     public void finishAnimation() {
-        animations.get(animations.size()-1).finishAnimation();
+        animations.get(animations.size() - 1).finishAnimation();
     }
 
-    
     private int getAnimationNumberForTime(double t) {
         if (t == 0) {
             return 0;

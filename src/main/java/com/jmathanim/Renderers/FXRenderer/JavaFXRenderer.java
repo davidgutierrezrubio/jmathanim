@@ -101,7 +101,6 @@ public class JavaFXRenderer extends Renderer {
 
     private VideoEncoder videoEncoder;
     private File saveFilePath;
-    private int newLineCounter = 0;
     public double correctionThickness;
 
     public JavaFXRenderer(JMathAnimScene parentScene) throws Exception {
@@ -260,9 +259,7 @@ public class JavaFXRenderer extends Renderer {
         try {
             img2 = task.get();
             bi = SwingFXUtils.fromFXImage(img2, null);
-        } catch (InterruptedException ex) {
-            Logger.getLogger(JavaFXRenderer.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (ExecutionException ex) {
+        } catch (InterruptedException | ExecutionException ex) {
             Logger.getLogger(JavaFXRenderer.class.getName()).log(Level.SEVERE, null, ex);
         }
 

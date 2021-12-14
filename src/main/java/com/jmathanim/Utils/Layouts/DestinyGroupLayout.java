@@ -26,7 +26,7 @@ import com.jmathanim.mathobjects.MathObjectGroup;
  */
 public class DestinyGroupLayout extends GroupLayout {
 
-	private MathObjectGroup destinyGroup;
+	private final MathObjectGroup destinyGroup;
 
 	/**
 	 * Creates a new DestinyGroupLayout. The destinty of n-th object of the

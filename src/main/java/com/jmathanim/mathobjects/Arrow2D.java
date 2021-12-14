@@ -128,7 +128,7 @@ public class Arrow2D extends MathObject {
 //    private Arrow2D(Point p1, Point p2, Shape head1, Shape head2) {
 //        this(p1, p2, new MultiShapeObject(head1), new MultiShapeObject(head2));
 //    }
-	private final MultiShapeObject buildArrowHead(ArrowType type, int side) {
+	private MultiShapeObject buildArrowHead(ArrowType type, int side) {
 		int anchorValue;
 		double scaleDefaultValue;
 		switch (type) {// TODO: Improve this

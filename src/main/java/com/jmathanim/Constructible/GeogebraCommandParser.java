@@ -309,8 +309,6 @@ public class GeogebraCommandParser {
 				Constructible resul = ConstrCircleCenterRadius.make(p0, sc0);
 				registerGeogebraElement(label, resul);
 				JMathAnimScene.logger.debug("Imported Geogebra Circle " + label + ", center " + p0 + ", radius " + sc0);
-				return;
-
 			}
 
 		}

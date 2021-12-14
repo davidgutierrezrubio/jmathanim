@@ -75,7 +75,7 @@ public class FirstDrawThenFillAnimation extends AbstractCreationStrategy {
      * @param obj
      * @param runtime
      */
-    private final Animation createAnimation(MathObject obj, double runtime) {
+    private Animation createAnimation(MathObject obj, double runtime) {
         if (obj instanceof Shape) {
             JoinAnimation join = JoinAnimation.make(runtime);
             MODrawProperties mpDst = obj.getMp().copy();
@@ -92,8 +92,9 @@ public class FirstDrawThenFillAnimation extends AbstractCreationStrategy {
             MultiShapeObject msh = (MultiShapeObject) obj;
             AnimationGroup ag = new AnimationGroup();
             for (Shape sh : msh.getShapes()) {
-                JoinAnimation con = new JoinAnimation(runtime);
-                con.add(new FirstDrawThenFillAnimation(runtime, sh));
+                JoinAnimation con = JoinAnimation.make(
+                        runtime,
+                        new FirstDrawThenFillAnimation(runtime, sh));
                 ag.add(con);
             }
             ag.addDelayEffect(delayFactor);

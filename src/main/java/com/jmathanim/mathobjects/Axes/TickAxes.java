@@ -101,6 +101,7 @@ public class TickAxes extends MathObject {
         this.orientation = type;
     }
     
+    @Override
     public TickAxes copy() {
         TickAxes copy = new TickAxes(location, legend.copy(), tick.copy(), orientation, maximumScaleToShow);
         copy.copyStateFrom(this);
@@ -118,6 +119,7 @@ public class TickAxes extends MathObject {
         getTick().copyStateFrom(t.getTick());
     }
     
+    @Override
     public void draw(JMathAnimScene scene, Renderer r) {
         if (isVisible()) {
             if (shouldDraw(r.getCamera())) {
@@ -179,7 +181,7 @@ public class TickAxes extends MathObject {
         return (scaleCondition && locationCondition);
     }
     
-    enum TickOrientation {
+    public enum TickOrientation {
         XAXIS, YAXIS
     }
     

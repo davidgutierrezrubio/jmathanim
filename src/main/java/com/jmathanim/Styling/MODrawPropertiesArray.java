@@ -23,6 +23,7 @@ import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.Point;
 import com.jmathanim.mathobjects.Stateable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import javafx.scene.shape.StrokeLineCap;
 
 /**
@@ -56,9 +57,7 @@ public class MODrawPropertiesArray implements Stylable, Stateable {
     }
 
     public void add(MathObject... objs) {
-        for (MathObject obj : objs) {
-            objects.add(obj);
-        }
+        objects.addAll(Arrays.asList(objs));
     }
 
     public void setObjects(ArrayList<MathObject> objects) {
@@ -225,6 +224,7 @@ public class MODrawPropertiesArray implements Stylable, Stateable {
         return mpRef.getFillColor();
     }
 
+    @Override
     public Stylable getSubMP(int n) {
         return objects.get(n).getMp();
     }

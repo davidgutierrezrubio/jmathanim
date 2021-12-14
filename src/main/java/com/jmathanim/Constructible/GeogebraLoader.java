@@ -84,11 +84,7 @@ public class GeogebraLoader {
 			dBuilder = dbFactory.newDocumentBuilder();
 			doc = dBuilder.parse(inputStream);
 			doc.getDocumentElement().normalize();
-		} catch (ParserConfigurationException ex) {
-			Logger.getLogger(GeogebraLoader.class.getName()).log(Level.SEVERE, null, ex);
-		} catch (SAXException ex) {
-			Logger.getLogger(GeogebraLoader.class.getName()).log(Level.SEVERE, null, ex);
-		} catch (IOException ex) {
+		} catch (ParserConfigurationException | SAXException | IOException ex) {
 			Logger.getLogger(GeogebraLoader.class.getName()).log(Level.SEVERE, null, ex);
 		}
 
@@ -109,7 +105,7 @@ public class GeogebraLoader {
 
 			if (node instanceof Element) {
 				Element el = (Element) node;
-				if (el.getNodeName() == "construction") {
+				if ("construction".equals(el.getNodeName())) {
 					parseConstructionChildren(el);
 				}
 
@@ -126,10 +122,10 @@ public class GeogebraLoader {
 
 			if (node instanceof Element) {
 				Element el = (Element) node;
-				if (el.getNodeName() == "element") {
+				if ("element".equals(el.getNodeName())) {
 					parseGeogebraElement(el);
 				}
-				if (el.getNodeName() == "command") {
+				if ("command".equals(el.getNodeName())) {
 					parseGeogebraCommand(el);
 				}
 

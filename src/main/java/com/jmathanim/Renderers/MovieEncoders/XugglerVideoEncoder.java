@@ -34,6 +34,7 @@ import java.nio.ByteBuffer;
 import java.util.concurrent.TimeUnit;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.UnsupportedAudioFileException;
 
 /**
  *
@@ -216,10 +217,10 @@ public class XugglerVideoEncoder extends VideoEncoder {
 					// Here, do something useful with the audio data that's
 					// now in the audioBytes array...
 				}
-			} catch (Exception ex) {
+			} catch (IOException ex) {
 				// Handle the error...
 			}
-		} catch (Exception e) {
+		} catch (IOException | UnsupportedAudioFileException e) {
 			// Handle the error...
 		}
 	}

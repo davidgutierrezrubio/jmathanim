@@ -80,7 +80,9 @@ public class JMPath implements Updateable, Stateable, Boxable, Iterable<JMPathPo
      */
     public JMPath(ArrayList<Point> points) {
         this.jmPathPoints = new CircularArrayList<>();
-        this.setPoints(points);
+        for (Point p : points) {
+            this.jmPathPoints.add(new JMPathPoint(p, true, JMPathPointType.VERTEX));
+        }
         this.visiblePoints = new CircularArrayList<>();
         pathType = JMPath.MATHOBJECT;// Default value
     }
@@ -91,13 +93,6 @@ public class JMPath implements Updateable, Stateable, Boxable, Iterable<JMPathPo
             resul.add(jmp.p);
         }
         return resul;
-    }
-
-    private final void setPoints(ArrayList<Point> points) {
-        this.jmPathPoints.clear();
-        for (Point p : points) {
-            this.jmPathPoints.add(new JMPathPoint(p, true, JMPathPointType.VERTEX));
-        }
     }
 
 //    public JMPathPoint getJMPoint(int n) {
@@ -1059,7 +1054,7 @@ public class JMPath implements Updateable, Stateable, Boxable, Iterable<JMPathPo
             jmPathPoints.addAll(pa.jmPathPoints);
             return this;
         }
-        
+
         // If the first path is already a closed one, open it
         // with 2 identical points (old-fashioned style of closing shapes)
         final JMPathPoint jmPoint = jmPathPoints.get(0);

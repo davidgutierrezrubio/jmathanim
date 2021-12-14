@@ -76,7 +76,7 @@ public abstract class JMathAnimScene {
      * List of sceneObjects which needs to be removed immediately after
      * rendering
      */
-    final ArrayList<Updateable> objectsToBeRemoved;
+    final ArrayList<MathObject> objectsToBeRemoved;
 
     /**
      * Renderer to perform drawings
@@ -179,7 +179,6 @@ public abstract class JMathAnimScene {
         } catch (Exception ex) {
             exitCode = 1;
             logger.error(ex.toString());
-            ex.printStackTrace();
         } finally {
             // Try anyway to finish the rendering
             renderer.finish(frameCount);// Finish rendering jobs
@@ -364,7 +363,7 @@ public abstract class JMathAnimScene {
         // Objects with updatelevel n depend directly from those with level n-1
         objectsToBeUpdated.sort((Updateable o1, Updateable o2) -> o1.getUpdateLevel() - o2.getUpdateLevel());
         
-        ArrayList<Updateable> updatesCopy = new ArrayList<Updateable>();
+        ArrayList<Updateable> updatesCopy = new ArrayList<>();
         updatesCopy.addAll(objectsToBeUpdated);
         
         for (Updateable obj : updatesCopy) {

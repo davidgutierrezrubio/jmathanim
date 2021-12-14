@@ -23,7 +23,6 @@ import com.jmathanim.Animations.Strategies.ShowCreation.AbstractCreationStrategy
 import com.jmathanim.Animations.Strategies.ShowCreation.CreationStrategy;
 import com.jmathanim.Animations.Strategies.ShowCreation.FirstDrawThenFillAnimation;
 import com.jmathanim.Animations.Strategies.ShowCreation.GroupCreationAnimation;
-import com.jmathanim.Animations.Strategies.ShowCreation.LineCreationAnimation;
 import com.jmathanim.Animations.Strategies.ShowCreation.SimpleShapeCreationAnimation;
 import com.jmathanim.Constructible.Constructible;
 import com.jmathanim.jmathanim.JMathAnimScene;

@@ -362,12 +362,6 @@ public class Point extends MathObject {
         this.getMp().copyFrom(p2.getMp());
     }
 
-    @Override
-    public int hashCode() {
-        int hash = 7;
-        return hash;
-    }
-
     public boolean isEquivalentTo(Point p2, double epsilon) {
         boolean resul = false;
         if ((Math.abs(v.x - p2.v.x) <= epsilon) & (Math.abs(v.y - p2.v.y) <= epsilon) & (Math.abs(v.z - p2.v.z) <= epsilon)) {

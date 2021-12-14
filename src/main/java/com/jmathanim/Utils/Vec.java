@@ -213,10 +213,10 @@ public class Vec implements Stateable {
         double angle = Math.atan2(this.y, this.x);
         while (angle < 0) {
             angle += 2 * PI;
-        };
+        }
         while (angle > 2 * PI) {
             angle -= 2 * PI;
-        };
+        }
         return angle;
     }
 
@@ -286,10 +286,7 @@ public class Vec implements Stateable {
         if (Double.doubleToLongBits(this.y) != Double.doubleToLongBits(other.y)) {
             return false;
         }
-        if (Double.doubleToLongBits(this.z) != Double.doubleToLongBits(other.z)) {
-            return false;
-        }
-        return true;
+        return Double.doubleToLongBits(this.z) == Double.doubleToLongBits(other.z);
     }
 
     @Override

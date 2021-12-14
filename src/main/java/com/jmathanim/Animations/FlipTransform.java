@@ -46,9 +46,11 @@ public class FlipTransform extends AnimationWithEffects {
         BOTH
     }
 
-    private FlipType flipType;
-    private MathObject objOrig, objDst;
-    private Point origCenter, dstCenter;
+    private final FlipType flipType;
+    private final MathObject objOrig;
+    private final MathObject objDst;
+    private final Point origCenter;
+    private final Point dstCenter;
 
     /**
      * Creates a new FlipTransform animation, that flips the original object

@@ -18,18 +18,11 @@
 package com.jmathanim.Animations.Strategies.ShowCreation;
 
 import com.jmathanim.Animations.AnimationGroup;
-import com.jmathanim.Animations.Commands;
-import com.jmathanim.Animations.Concatenate;
-import com.jmathanim.Animations.JoinAnimation;
 import com.jmathanim.Animations.ShowCreation;
-import com.jmathanim.Animations.WaitAnimation;
 import com.jmathanim.Utils.JMathAnimConfig;
-import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.Axes.Axes;
 import com.jmathanim.mathobjects.Axes.TickAxes;
-import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.Point;
-import java.util.ArrayList;
 
 /**
  * Animation to crate axes. This strategy is automatically chosen by the

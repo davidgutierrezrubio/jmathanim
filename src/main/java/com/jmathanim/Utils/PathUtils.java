@@ -152,11 +152,7 @@ public class PathUtils {
         for (int n = 0; n < path.size(); n++) {
             JMPathPoint p1 = jmPathPoints.get(n);
             JMPathPoint p2 = jmPathPoints.get(n + 1);
-            if ((p1.p.to(p1.cpExit).norm() < .0001) && (p2.p.to(p2.cpEnter).norm() < .0001)) {
-                p2.isCurved = false;
-            } else {
-                p2.isCurved = true;
-            }
+            p2.isCurved = !((p1.p.to(p1.cpExit).norm() < .0001) && (p2.p.to(p2.cpEnter).norm() < .0001));
         }
     }
 

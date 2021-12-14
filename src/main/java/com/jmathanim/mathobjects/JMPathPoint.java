@@ -211,12 +211,6 @@ public class JMPathPoint extends MathObject implements Updateable, Stateable {
         this.cpEnter.copyStateFrom(jmp2.cpEnter);
     }
 
-    @Override
-    public int hashCode() {
-        int hash = 7;
-        return hash;
-    }
-
     public boolean isEquivalentTo(JMPathPoint p2, double epsilon) {
         if (p2.isThisSegmentVisible != isThisSegmentVisible) {
             return false;

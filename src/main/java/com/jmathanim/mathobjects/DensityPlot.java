@@ -68,6 +68,7 @@ public class DensityPlot extends AbstractJMImage {
 		scene = JMathAnimConfig.getConfig().getScene();
 	}
 
+        @Override
 	public <T extends MathObject> T copy() {
             DensityPlot copy = new DensityPlot(bbox, densityLambdaFunction);
             copy.colorScale.copyFrom(colorScale);
