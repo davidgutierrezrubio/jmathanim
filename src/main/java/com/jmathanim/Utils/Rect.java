@@ -500,7 +500,7 @@ public class Rect implements Stateable, Boxable {// TODO: Adjust this to 3D coor
      * @return The new Rect
      */
     public Rect copy() {
-        return new Rect(xmin, ymin, xmax, ymax, zmin, zmax);
+        return new Rect(xmin, ymin, zmin,xmax, ymax,  zmax);
     }
 
     /**

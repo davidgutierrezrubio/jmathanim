@@ -86,7 +86,7 @@ public class JMNumber extends LaTeXMathObject {
      * @param number Number to show
      * @return The new JMNumber object
      */
-    public static JMNumber make(double number) {
+    public static JMNumber makeJMnumber(double number) {
         JMNumber resul = new JMNumber(0);
         resul.setNumber(number);
 
