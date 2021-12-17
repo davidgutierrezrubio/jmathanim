@@ -100,7 +100,7 @@ public class Delimiter extends MathObject {
                 name = "#bracket.svg";
                 break;
         }
-        resul.setBody(new SVGMathObject(rl.getResource(name, "delimiters")));
+        resul.body=new SVGMathObject(rl.getResource(name, "delimiters"));
         resul.style("latexdefault");
         resul.amplitudeScale = 1;
         resul.delimiterScale = 1;
@@ -186,9 +186,6 @@ public class Delimiter extends MathObject {
         mpDelimiter.add(delimiterShape);
     }
 
-    public void setBody(SVGMathObject body) {
-        this.body = body;
-    }
 
     public void setGap(double gap) {
         this.gap = gap;
@@ -269,9 +266,6 @@ public class Delimiter extends MathObject {
                 return;// Do nothing
             }
             delimiterToDraw = buildDelimiterShape();
-//            delimiterToDraw.getMp().copyFrom(this.getMp());
-
-//            delimiterToDraw.draw(scene, r);
             for (MathObject obj : delimiterToDraw) {
                 obj.draw(scene, r);
             }

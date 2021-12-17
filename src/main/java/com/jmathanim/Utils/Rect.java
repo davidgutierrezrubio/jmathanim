@@ -414,7 +414,7 @@ public class Rect implements Stateable, Boxable {// TODO: Adjust this to 3D coor
      * @return The scaled rectangle.
      */
     public Rect scale(double scale) {
-        return scale(scale, scale, 1);
+        return scale(scale, scale, scale);
     }
 
     /**
