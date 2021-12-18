@@ -15,10 +15,13 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-package com.jmathanim.mathobjects;
+package com.jmathanim.mathobjects.Text;
 
+import com.jmathanim.mathobjects.Text.LaTeXMathObject;
 import com.jmathanim.Utils.Anchor;
 import com.jmathanim.jmathanim.JMathAnimScene;
+import com.jmathanim.mathobjects.Point;
+import com.jmathanim.mathobjects.Shape;
 import java.util.function.Function;
 
 /**
@@ -36,6 +39,18 @@ public class JMNumber extends LaTeXMathObject {
     private String unitString;
 
     /**
+     * Creates a JMNumber that automically adjust its content to the length
+     * between 2 given points
+     *
+     * @param A First point
+     * @param B Second point
+     * @return The created JMNumber object
+     */
+    public static JMNumber length(Point A, Point B) {
+        return new JMNumberLength(A, B);
+    }
+
+    /**
      * Creates a new LaTeXMathObject that shows a formatted number. The number
      * can be changed easily with the method setNumber. A lambda function is
      * used to format the number into a string
@@ -46,15 +61,19 @@ public class JMNumber extends LaTeXMathObject {
     public static JMNumber makeJMnumber(double number) {
         JMNumber resul = new JMNumber(0);
         resul.setNumber(number);
+        resul.style("latexdefault");
+        resul.setNumberDecimals(2);
 
         return resul;
     }
+    private int numDecimals;
 
     protected JMNumber(double number) {
         super();
         this.number = number;
         this.unitString = "";
         this.refHeight = 0;
+
     }
 
     private void updateContents() {
@@ -80,7 +99,7 @@ public class JMNumber extends LaTeXMathObject {
                 }
                 previous = shapeToAdd;
                 indexPrevious = index;
-                shapes.add(shapeToAdd);
+                add(shapeToAdd);
                 finalChars += String.valueOf(c);
             } else {
                 JMathAnimScene.logger.warn("Symbol " + String.valueOf(c) + " not found in table");
@@ -89,7 +108,7 @@ public class JMNumber extends LaTeXMathObject {
         //Align all shapes
         for (int n = 0; n < shapes.size(); n++) {
             Shape sh = shapes.get(n);
-            sh.getMp().copyFrom(getMp());
+//            sh.getMp().copyFrom(getMp());
             sh.align(Point.origin(), Align.LOWER);
 
             char c = finalChars.toCharArray()[n];
@@ -153,34 +172,21 @@ public class JMNumber extends LaTeXMathObject {
     }
 
     /**
-     * Sets the lambda formatting function to a integer format.
-     *
-     * @param <T> This subclass
-     * @return This object
-     */
-    public <T extends JMNumber> T setIntegerFormat() {
-        this.lambdaText = t -> {
-            return String.format("%32.0f", t).trim();
-        };
-        updateContents();
-        return (T) this;
-    }
-
-    /**
-     * Sets the lambda formatting function to a decimal format, with a fixed
-     * number of decimals.
+     * Sets the number of decimals to show
      *
      * @param <T> This subclass
      * @param numDecimals Number of decimals to show
      * @return This object
      */
-    public <T extends JMNumber> T setDecimalFormat(int numDecimals) {
-        this.lambdaText = t -> {
+    public <T extends JMNumber> T setNumberDecimals(int numDecimals) {
+        this.numDecimals=numDecimals;
+         this.lambdaText = t -> {
             return String.format("%32." + numDecimals + "f", t).trim();
         };
         updateContents();
         return (T) this;
     }
+
 
     private static void printArrayOfGaps() {
         String gapString = "{";
@@ -227,9 +233,9 @@ public class JMNumber extends LaTeXMathObject {
     @Override
     public JMNumber copy() {
         JMNumber copy = JMNumber.makeJMnumber(getNumber());
-        copy.lambdaText = lambdaText;
-        copy.unitString=unitString;
-        copy.refHeight=refHeight;
+        copy.setNumberDecimals(numDecimals);
+        copy.unitString = unitString;
+        copy.refHeight = refHeight;
         return copy;
     }
 

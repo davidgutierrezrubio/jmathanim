@@ -26,7 +26,7 @@ import com.jmathanim.Cameras.Camera;
 import com.jmathanim.Renderers.Renderer;
 import com.jmathanim.Utils.JMathAnimConfig;
 import com.jmathanim.Utils.Rect;
-import com.jmathanim.mathobjects.LaTeXMathObject;
+import com.jmathanim.mathobjects.Text.LaTeXMathObject;
 import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.MathObjectGroup;
 import com.jmathanim.mathobjects.MultiShapeObject;
@@ -82,7 +82,7 @@ public abstract class JMathAnimScene {
      * Renderer to perform drawings
      */
     protected Renderer renderer;
-    
+
     public Renderer getRenderer() {
         return renderer;
     }
@@ -154,7 +154,7 @@ public abstract class JMathAnimScene {
      * @return Exit code. 0 is no error, not 0 otherwise.
      */
     public final int execute() {
-        
+
         String sketchName = this.getClass().getName();
         LoggerContext loggerContext = (LoggerContext) LoggerFactory.getILoggerFactory();
         loggerContext.reset();
@@ -167,22 +167,29 @@ public abstract class JMathAnimScene {
             java.util.logging.Logger.getLogger(JMathAnimScene.class.getName()).log(Level.SEVERE, null, ex);
         }
         logger.info("Running sketch {} ", sketchName);
-        
+
         setupSketch();
         createRenderer();
         JMathAnimConfig.getConfig().setRenderer(renderer);
         exitCode = 0;
         // In the global variable store Scene, Renderer and main Camera
         config.setScene(this);
+//        try {
+//            runSketch();
+//        } catch (Exception ex) {
+//            exitCode = 1;
+//            logger.error(ex.toString());
+//        } finally {
+//            // Try anyway to finish the rendering
+//            renderer.finish(frameCount);// Finish rendering jobs
+//        }
         try {
             runSketch();
+            renderer.finish(frameCount);
         } catch (Exception ex) {
-            exitCode = 1;
-            logger.error(ex.toString());
-        } finally {
-            // Try anyway to finish the rendering
-            renderer.finish(frameCount);// Finish rendering jobs
+            java.util.logging.Logger.getLogger(JMathAnimScene.class.getName()).log(Level.SEVERE, null, ex);
         }
+
         if (exitCode != 0) {
             logger.error("An error ocurred. Check the logs.");
         }
@@ -197,7 +204,7 @@ public abstract class JMathAnimScene {
     public ArrayList<MathObject> getObjects() {
         return sceneObjects;
     }
-    
+
     public MathObject[] everything() {
         MathObject[] arr = new MathObject[sceneObjects.size()];
         for (int n = 0; n < sceneObjects.size(); n++) {
@@ -275,17 +282,20 @@ public abstract class JMathAnimScene {
                         }
                     } else if (obj instanceof MultiShapeObject) {
                         MultiShapeObject msh = (MultiShapeObject) obj;
-                        msh.isAddedToScene = true;
-                        for (Shape sh : msh) {
-                            add(sh);
-                        }
+//                        msh.isAddedToScene = true;
+//                        for (Shape sh : msh) {
+//                            add(sh);
+//                        }
+                        sceneObjects.add(obj);
                     } else {
                         sceneObjects.add(obj);
-                        registerUpdateable(obj);
-                        obj.addToSceneHook(this);
+
                     }
                 }
+                registerUpdateable(obj);
+                obj.addToSceneHook(this);
             }
+
         }
     }
 
@@ -296,7 +306,7 @@ public abstract class JMathAnimScene {
      */
     public synchronized final void remove(ArrayList<MathObject> objs) {
         remove((MathObject[]) objs.toArray(new MathObject[objs.size()]));
-        
+
     }
 
     /**
@@ -306,7 +316,7 @@ public abstract class JMathAnimScene {
      */
     public synchronized final void remove(MathObject... objs) {
         for (MathObject obj : objs) {
-            
+
             if (obj instanceof MultiShapeObject) {
                 MultiShapeObject msh = (MultiShapeObject) obj;
                 msh.isAddedToScene = true;
@@ -314,14 +324,14 @@ public abstract class JMathAnimScene {
                     this.remove(o);
                 }
             }
-            
+
             if (obj instanceof MathObjectGroup) {
                 MathObjectGroup msh = (MathObjectGroup) obj;
                 for (MathObject o : msh) {
                     this.remove(o);
                 }
             }
-            
+
             sceneObjects.remove(obj);
             unregisterUpdateable(obj);
         }
@@ -362,12 +372,12 @@ public abstract class JMathAnimScene {
         // updatelevel 0 gets updated first (although negative values can be set too)
         // Objects with updatelevel n depend directly from those with level n-1
         objectsToBeUpdated.sort((Updateable o1, Updateable o2) -> o1.getUpdateLevel() - o2.getUpdateLevel());
-        
+
         ArrayList<Updateable> updatesCopy = new ArrayList<>();
         updatesCopy.addAll(objectsToBeUpdated);
-        
+
         for (Updateable obj : updatesCopy) {
-                obj.update(this);
+            obj.update(this);
         }
     }
 
@@ -385,7 +395,7 @@ public abstract class JMathAnimScene {
             previousNanoTime = nanoTime;
             nanoTime = System.nanoTime();
         }
-        
+
     }
 
     /**
@@ -393,7 +403,7 @@ public abstract class JMathAnimScene {
      * to video, or any other format.
      */
     private void saveMPFrame() {
-        
+
         try {
             renderer.saveFrame(frameCount);
         } catch (Exception ex) {
@@ -430,13 +440,13 @@ public abstract class JMathAnimScene {
                 if (!"".equals(anim.getDebugName())) {
                     JMathAnimScene.logger.info("Begin animation: " + anim.getDebugName());
                 }
-                
+
                 if (animationIsDisabled) {
                     anim.setT(1);
                 }
             }
         }
-        
+
         boolean finished = false;
         while (!finished) {
             finished = true;
@@ -471,7 +481,7 @@ public abstract class JMathAnimScene {
                 java.util.logging.Logger.getLogger(JMathAnimScene.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-        
+
     }
 
     /**
@@ -491,7 +501,7 @@ public abstract class JMathAnimScene {
     public Camera getFixedCamera() {
         return renderer.getFixedCamera();
     }
-    
+
     public void formulaHelper(String... formulas) {
         LaTeXMathObject[] texes = new LaTeXMathObject[formulas.length];
         int n = 0;
@@ -502,7 +512,7 @@ public abstract class JMathAnimScene {
         }
         formulaHelper(texes);
     }
-    
+
     public void formulaHelper(LaTeXMathObject... texes) {
         MathObjectGroup group = new MathObjectGroup();
         for (LaTeXMathObject lat : texes) {
@@ -517,7 +527,7 @@ public abstract class JMathAnimScene {
         renderer.getCamera().zoomToObjects(group);
         add(group);
     }
-    
+
     public JMathAnimConfig getConfig() {
         return config;
     }
@@ -529,7 +539,7 @@ public abstract class JMathAnimScene {
     public void disableAnimations() {
         this.animationIsDisabled = true;
     }
-    
+
     public void enableAnimations() {
         this.animationIsDisabled = false;
     }
@@ -610,5 +620,5 @@ public abstract class JMathAnimScene {
         }
         renderer.getCamera().reset();
     }
-    
+
 }

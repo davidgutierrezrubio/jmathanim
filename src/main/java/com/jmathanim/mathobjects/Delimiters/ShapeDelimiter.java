@@ -73,9 +73,8 @@ public class ShapeDelimiter extends Delimiter {
         if (amplitudeScale == 0) {
             return MathObjectGroup.make();//Nothing
         }
-        Point AA = A.interpolate(B, .5 * (1 - amplitudeScale));
-        Point BB = B.interpolate(A, .5 * (1 - amplitudeScale));
-        double width = AA.to(BB).norm();//The final width of the delimiter
+      
+        double width = scaledA.to(scaledB).norm();//The final width of the delimiter
         double angle = A.to(B).getAngle();
         MultiShapeObject bodyCopy = body.copy();
         delimiterShape.getPath().clear();
@@ -137,7 +136,7 @@ public class ShapeDelimiter extends Delimiter {
                 }
         }
 
-        AffineJTransform tr = AffineJTransform.createDirect2DHomothecy(bb.getDL(), bb.getDR(), AA, BB, 1);
+        AffineJTransform tr = AffineJTransform.createDirect2DHomothecy(bb.getDL(), bb.getDR(), scaledA, scaledB, 1);
 
         tr.applyTransform(resul);
         tr.applyTransform(labelMarkPoint);

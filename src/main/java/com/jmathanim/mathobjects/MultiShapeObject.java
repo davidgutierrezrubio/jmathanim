@@ -140,7 +140,7 @@ public class MultiShapeObject extends MathObject implements Iterable<Shape> {
         if (isVisible()) {
             int n = 0;
             for (Shape jmp : shapes) {
-                if (jmp.isVisible()) {
+                if ((jmp.isVisible())&&(!scene.isAlreadyDrawed(jmp))) {
                     if (absoluteSize) {
                         r.drawAbsoluteCopy(jmp, getAbsoluteAnchor().v);// TODO: This doesnt work for overrided methods
                         // (e.g.: line)

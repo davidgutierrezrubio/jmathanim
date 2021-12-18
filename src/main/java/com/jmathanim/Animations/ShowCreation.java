@@ -30,7 +30,7 @@ import com.jmathanim.mathobjects.Arrow2D;
 import com.jmathanim.mathobjects.Axes.Axes;
 import com.jmathanim.mathobjects.CanonicalJMPath;
 import com.jmathanim.mathobjects.Delimiters.Delimiter;
-import com.jmathanim.mathobjects.LaTeXMathObject;
+import com.jmathanim.mathobjects.Text.LaTeXMathObject;
 import com.jmathanim.mathobjects.Line;
 import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.MathObjectGroup;
@@ -90,6 +90,10 @@ public class ShowCreation extends Animation {
             removeThisAtTheEnd = this.mobj;
             addThisAtTheEnd = mobj;
         }
+        if (mobj instanceof MultiShapeObject) {
+            addThisAtTheEnd = mobj;
+        }
+        
         pencilPosition = new Point[]{Point.origin(), Point.origin()};
     }
 
@@ -249,6 +253,7 @@ public class ShowCreation extends Animation {
                 JMathAnimScene.logger.debug("ShowCreation method: SimpleShapeCreationStrategy");
                 break;
             case MULTISHAPE_CREATION:
+                addThisAtTheEnd=mobj;
                 creationStrategy = new FirstDrawThenFillAnimation(runTime, (MultiShapeObject) mobj);
                 JMathAnimScene.logger.debug("ShowCreation method: MultiShapeCreationStrategy");
                 break;

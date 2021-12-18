@@ -25,7 +25,8 @@ import com.jmathanim.Utils.EmptyRect;
 import com.jmathanim.Utils.JMathAnimConfig;
 import com.jmathanim.Utils.Rect;
 import com.jmathanim.jmathanim.JMathAnimScene;
-import com.jmathanim.mathobjects.LaTeXMathObject;
+import com.jmathanim.mathobjects.Text.JMNumber;
+import com.jmathanim.mathobjects.Text.LaTeXMathObject;
 import com.jmathanim.mathobjects.LengthMeasure;
 import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.MathObjectGroup;
@@ -42,6 +43,8 @@ public abstract class Delimiter extends MathObject {
 
     protected final Point A;
     protected final Point B;
+    protected final Point scaledA;
+    protected final Point scaledB;
 
     protected double amplitudeScale;
     protected MathObject delimiterLabel;
@@ -57,8 +60,7 @@ public abstract class Delimiter extends MathObject {
     public enum Rotation {
         FIXED, SMART, ROTATE
     }
-    
-    
+
     /**
      * Type of delimiter
      */
@@ -170,11 +172,11 @@ public abstract class Delimiter extends MathObject {
         return setLabel(LaTeXMathObject.make(text), labelGap);
     }
 
-    public Delimiter setLabel(MathObject label, double labelGap) {
+    public <T extends Delimiter> T setLabel(MathObject label, double labelGap) {
         mpDelimiter.add(label);
         this.labelMarkGap = labelGap;
         this.delimiterLabel = label;
-        return this;
+        return (T) this;
     }
 
     public <T extends Delimiter> T removeLabel() {
@@ -183,14 +185,15 @@ public abstract class Delimiter extends MathObject {
         return (T) this;
     }
 
-
-public Delimiter(Point A, Point B, Type type, double gap) {
+    public Delimiter(Point A, Point B, Type type, double gap) {
         this.A = A;
         this.B = B;
+        this.scaledA = A.copy();
+        this.scaledB = B.copy();
         this.type = type;
         this.gap = gap;
         //An invisible path with only a point (to properly stack and align)
-        this.delimiterLabel = Shape.polyLine(Point.at(0,0)).visible(false);
+        this.delimiterLabel = Shape.polyLine(Point.at(0, 0)).visible(false);
         this.mpDelimiter = new MODrawPropertiesArray();
         labelMarkPoint = Point.at(0, 0);
         this.rotateLabel = Rotation.SMART;
@@ -205,24 +208,27 @@ public Delimiter(Point A, Point B, Type type, double gap) {
     }
 
     abstract protected MathObjectGroup buildDelimiterShape();
-      
+
     @Override
-        public void draw(JMathAnimScene scene, Renderer r) {
+    public void draw(JMathAnimScene scene, Renderer r) {
         if (isVisible()) {
-            if (delimiterScale==0) {
+            if (delimiterScale == 0) {
                 return;// Do nothing
             }
+            scaledA.v.copyFrom(A.interpolate(B, .5 * (1 - amplitudeScale)).v);
+            scaledB.v.copyFrom(B.interpolate(A, .5 * (1 - amplitudeScale)).v);
+            delimiterLabel.update(scene);
             delimiterToDraw = buildDelimiterShape();
             delimiterToDraw.draw(scene, r);
         }
     }
 
     @Override
-        public Rect getBoundingBox() {
-        if ((A.isEquivalentTo(B, 0)||(delimiterScale==0))) {
+    public Rect getBoundingBox() {
+        if ((A.isEquivalentTo(B, 0) || (delimiterScale == 0))) {
             return new EmptyRect();
         }
-        return  buildDelimiterShape().getBoundingBox();
+        return buildDelimiterShape().getBoundingBox();
     }
 
     /**
@@ -238,14 +244,14 @@ public Delimiter(Point A, Point B, Type type, double gap) {
     }
 
     @Override
-        public Delimiter copy() {
+    public Delimiter copy() {
         Delimiter copy = make(A.copy(), B.copy(), type, gap);
         copy.getMp().copyFrom(this.getMp());
         return copy;
     }
 
     @Override
-        public void copyStateFrom(MathObject obj) {
+    public void copyStateFrom(MathObject obj) {
         //This object should not be able to copy its state since
         //it is a purely dependent object
         //Only their drawing attributes!
@@ -253,12 +259,12 @@ public Delimiter(Point A, Point B, Type type, double gap) {
     }
 
     @Override
-        public int getUpdateLevel() {
+    public int getUpdateLevel() {
         return Math.max(A.getUpdateLevel(), B.getUpdateLevel()) + 1;
     }
 
     @Override
-        public final Stylable getMp() {
+    public final Stylable getMp() {
         return mpDelimiter;
     }
 
@@ -325,6 +331,10 @@ public Delimiter(Point A, Point B, Type type, double gap) {
         return delimiterLabel;
     }
 
-  
-    
+    public <T extends Delimiter> T measure(int numDigits,double gap) {
+        JMNumber jm = JMNumber.length(scaledA, scaledB);
+        jm.setNumberDecimals(numDigits);
+        return setLabel(jm, gap);
+    }
+
 }

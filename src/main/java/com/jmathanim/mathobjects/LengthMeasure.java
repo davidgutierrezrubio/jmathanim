@@ -122,7 +122,6 @@ public class LengthMeasure extends Delimiter {
                 }
         }
 
-
         delimiterLabelToDraw.stackTo(segment, Anchor.Type.RIGHT, hgap);
 
         labelMarkPoint.copyFrom(delimiterLabelToDraw.getCenter());
