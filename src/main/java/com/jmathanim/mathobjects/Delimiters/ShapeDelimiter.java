@@ -110,15 +110,18 @@ public class ShapeDelimiter extends Delimiter {
             delimiterShape.merge(bodyCopy.get(1).shift(wSpace, 0), true, true);
         }
 
+        MathObjectGroup resul = MathObjectGroup.make(delimiterShape);
+
         Rect bb = delimiterShape.getBoundingBox();
         delimiterShape.shift(0, gap * amplitudeScale);
+
         labelMarkPoint.stackTo(delimiterShape, Anchor.Type.UPPER, labelMarkGap * amplitudeScale);
-        AffineJTransform tr = AffineJTransform.createDirect2DHomothecy(bb.getDL(), bb.getDR(), AA, BB, 1);
-        MathObjectGroup resul = MathObjectGroup.make(delimiterShape);
-        tr.applyTransform(resul);
-        tr.applyTransform(labelMarkPoint);
 
         delimiterLabelToDraw = delimiterLabel.copy();
+        resul.add(delimiterLabelToDraw);
+
+        delimiterLabelToDraw.scale(amplitudeScale);
+        delimiterLabelToDraw.stackTo(labelMarkPoint, Anchor.Type.CENTER);
 
         //Manages rotation of label
         switch (rotateLabel) {
@@ -128,16 +131,16 @@ public class ShapeDelimiter extends Delimiter {
             case ROTATE:
                 break;
             case SMART:
-                 delimiterLabelToDraw.rotate(angle);
+//                delimiterLabelToDraw.rotate(-angle);
                 if ((angle > .5 * PI) && (angle < 1.5 * PI)) {
                     delimiterLabelToDraw.rotate(PI);
                 }
         }
 
-        delimiterLabelToDraw.scale(amplitudeScale);
+        AffineJTransform tr = AffineJTransform.createDirect2DHomothecy(bb.getDL(), bb.getDR(), AA, BB, 1);
 
-        delimiterLabelToDraw.stackTo(labelMarkPoint, Anchor.Type.CENTER);
-        resul.add(delimiterLabelToDraw);
+        tr.applyTransform(resul);
+        tr.applyTransform(labelMarkPoint);
 
         return resul;
     }
