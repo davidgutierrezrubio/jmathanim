@@ -21,6 +21,7 @@ import com.jmathanim.Styling.JMColor;
 import com.jmathanim.Utils.Anchor;
 import com.jmathanim.Utils.Boxable;
 import com.jmathanim.Utils.CircularArrayList;
+import com.jmathanim.Utils.EmptyRect;
 import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
@@ -526,7 +527,7 @@ public class JMPath implements Updateable, Stateable, Boxable, Iterable<JMPathPo
     @Override
     public Rect getBoundingBox() {
         if (jmPathPoints.isEmpty()) {
-            return null;
+            return new EmptyRect();
         }
         ArrayList<Point> points = new ArrayList<>();
         for (JMPathPoint jmp : jmPathPoints) {

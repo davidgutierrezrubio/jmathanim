@@ -97,7 +97,7 @@ public class GeogebraCommandParser {
 	}
 
 	public void registerGeogebraElement(String label, MathObject resul) {
-		resul.label = label;
+		resul.objectLabel = label;
 		geogebraElements.put(label, resul);
 	}
 
@@ -189,7 +189,7 @@ public class GeogebraCommandParser {
 		double y = Double.valueOf(elCoords.getAttribute("y"));
 		// TODO: Add a z value here
 		Point resul = Point.at(x, y);
-		resul.label = label;
+		resul.objectLabel = label;
 		geogebraElements.put(label, resul);
 //        resul.getMp().copyFrom(parseStylingOptions(el));
 		JMathAnimScene.logger.debug("Imported point {}", label);
@@ -203,7 +203,7 @@ public class GeogebraCommandParser {
 		Point p2 = (Point) geogebraElements.get(labelPoint2);
 		MathObject resul = ConstrSegmentPointPoint.make(p1, p2);
 		String label = firstElementWithTag(el, "output").getAttribute("a0");
-		resul.label = label;
+		resul.objectLabel = label;
 		geogebraElements.put(label, resul);
 		JMathAnimScene.logger.debug("Generated segment {}", label);
 	}

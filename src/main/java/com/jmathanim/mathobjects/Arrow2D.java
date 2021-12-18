@@ -80,9 +80,9 @@ public class Arrow2D extends MathObject {
 		this.body = Shape.segment(p1, p2);
 		this.head1 = buildArrowHead(type1, 1);
 		this.head2 = buildArrowHead(type2, 2);
-		this.body.label = "body";
-		this.head1.label = "head1";
-		this.head2.label = "head2";
+		this.body.objectLabel = "body";
+		this.head1.objectLabel = "head1";
+		this.head2.objectLabel = "head2";
 
 		head1.drawColor(this.body.getMp().getDrawColor());
 		head1.fillColor(this.body.getMp().getDrawColor());

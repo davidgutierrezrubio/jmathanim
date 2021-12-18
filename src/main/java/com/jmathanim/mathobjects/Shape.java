@@ -115,7 +115,7 @@ public class Shape extends MathObject {
         final MODrawProperties copy = getMp().copy();
         Shape resul = new Shape(jmpath.copy(), copy);
         resul.absoluteSize = this.absoluteSize;
-        resul.label = this.label + "_copy";
+        resul.objectLabel = this.objectLabel + "_copy";
         resul.isConvex = this.isConvex;
         resul.showDebugPoints = this.showDebugPoints;
         return resul;
@@ -158,7 +158,7 @@ public class Shape extends MathObject {
 
     @Override
     public String toString() {
-        return label + ":" + jmpath.toString();
+        return objectLabel + ":" + jmpath.toString();
     }
 
     @Override
@@ -202,7 +202,7 @@ public class Shape extends MathObject {
     // Static methods to build most used shapes
     public static Shape square() {
         Shape obj = Shape.square(new Point(0, 0), 1);
-        obj.label = "square";
+        obj.objectLabel = "square";
         return obj;
     }
 
@@ -290,7 +290,7 @@ public class Shape extends MathObject {
      */
     public static Shape polyLine(Point... points) {
         Shape obj = polygon(points);
-        obj.label = "polyLine";
+        obj.objectLabel = "polyLine";
         obj.get(0).isThisSegmentVisible = false;
         return obj;
     }
@@ -331,7 +331,7 @@ public class Shape extends MathObject {
 
     private static Shape regularPolygon(int numsides, Point A, double side) {
         Shape obj = new Shape();
-        obj.label = "regPol";
+        obj.objectLabel = "regPol";
         Point newPoint = (Point) A.copy();
         for (int n = 0; n < numsides; n++) {
             double alpha = 2 * n * Math.PI / numsides;
@@ -345,7 +345,7 @@ public class Shape extends MathObject {
 
     public static Shape arc(double angle) {
         Shape obj = new Shape();
-        obj.label = "arc";
+        obj.objectLabel = "arc";
         double x1, y1;
         int nSegs = 4;
         int segsForFullCircle = (int) (2 * PI * nSegs / angle);
@@ -386,7 +386,7 @@ public class Shape extends MathObject {
      */
     public static Shape circle(int numSegments) {
         Shape obj = new Shape();
-        obj.label = "circle";
+        obj.objectLabel = "circle";
         double x1, y1;
         double step = Math.PI * 2 / numSegments;
         double cte = 4d / 3 * Math.tan(.5 * Math.PI / numSegments);
@@ -418,7 +418,7 @@ public class Shape extends MathObject {
         Shape extCircle = Shape.circle().scale(maxRadius);
         Shape intCircle = Shape.circle().scale(minRadius);
         Shape obj = extCircle.merge(intCircle.reverse(), false, false);
-        obj.label = "annulus";
+        obj.objectLabel = "annulus";
         return obj;
     }
 

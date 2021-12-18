@@ -108,10 +108,10 @@ public class JMPathPoint extends MathObject implements Updateable, Stateable {
         String pattern = "##0.##";
         DecimalFormat decimalFormat = new DecimalFormat(pattern);
         String labelStr;
-        if (!"".equals(label)) {
-            labelStr = "[" + label + "]";
+        if (!"".equals(objectLabel)) {
+            labelStr = "[" + objectLabel + "]";
         } else {
-            labelStr = label;
+            labelStr = objectLabel;
         }
         String resul = labelStr + "(" + decimalFormat.format(p.v.x) + ", " + decimalFormat.format(p.v.y) + ")";
         if (type == JMPathPointType.INTERPOLATION_POINT) {

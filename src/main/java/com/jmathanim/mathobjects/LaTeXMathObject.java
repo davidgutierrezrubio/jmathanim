@@ -129,9 +129,9 @@ public class LaTeXMathObject extends SVGMathObject {
 
         int n = 0;
 
-        for (Shape sh : shapes) {// label them
+        for (Shape sh : shapes) {// objectLabel them
 //            sh.getMp().fillColorIsDrawColor = true;
-            sh.label = String.valueOf(n);
+            sh.objectLabel = String.valueOf(n);
             n++;
 
             if (isAddedToScene) {

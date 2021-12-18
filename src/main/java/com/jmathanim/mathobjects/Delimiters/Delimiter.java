@@ -15,19 +15,22 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-package com.jmathanim.mathobjects;
+package com.jmathanim.mathobjects.Delimiters;
 
 import com.jmathanim.Renderers.Renderer;
 import com.jmathanim.Styling.MODrawPropertiesArray;
 import com.jmathanim.Styling.Stylable;
-import com.jmathanim.Utils.AffineJTransform;
 import com.jmathanim.Utils.Anchor;
 import com.jmathanim.Utils.EmptyRect;
 import com.jmathanim.Utils.JMathAnimConfig;
 import com.jmathanim.Utils.Rect;
-import com.jmathanim.Utils.ResourceLoader;
-import com.jmathanim.Utils.UsefulLambdas;
 import com.jmathanim.jmathanim.JMathAnimScene;
+import com.jmathanim.mathobjects.LaTeXMathObject;
+import com.jmathanim.mathobjects.LengthMeasure;
+import com.jmathanim.mathobjects.MathObject;
+import com.jmathanim.mathobjects.MathObjectGroup;
+import com.jmathanim.mathobjects.Point;
+import com.jmathanim.mathobjects.Shape;
 import com.jmathanim.mathobjects.updateableObjects.AnchoredMathObject;
 
 /**
@@ -35,22 +38,27 @@ import com.jmathanim.mathobjects.updateableObjects.AnchoredMathObject;
  *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
-public class Delimiter extends MathObject {
+public abstract class Delimiter extends MathObject {
 
-    private final Point A;
-    private final Point B;
-    private SVGMathObject body;
-    private double amplitudeScale;
-    private MathObject delimiterLabel;
+    protected final Point A;
+    protected final Point B;
+
+    protected double amplitudeScale;
+    protected MathObject delimiterLabel;
+    protected MathObject delimiterLabelToDraw;
     protected MODrawPropertiesArray mpDelimiter;
-    private final Point labelMarkPoint;
-    private double labelMarkGap;
-    private boolean rotateLabel;
-    private MathObjectGroup delimiterToDraw;
-    private double minimumWidthToShrink;
-    private double delimiterScale;
-    private final Shape delimiterShape;
+    protected final Point labelMarkPoint;
+    protected double labelMarkGap;
+    protected Rotation rotateLabel;
+    protected MathObjectGroup delimiterToDraw;
 
+    protected double delimiterScale;
+
+    public enum Rotation {
+        FIXED, SMART, ROTATE
+    }
+    
+    
     /**
      * Type of delimiter
      */
@@ -66,14 +74,22 @@ public class Delimiter extends MathObject {
         /**
          * Brackets
          */
-        BRACKET
+        BRACKET,
+        /**
+         * Simple bar measure length
+         */
+        LENGTH_BRACKET,
+        /**
+         * Simple arrow measure length
+         */
+        LENGTH_ARROW
     }
 
-    private final Type type;
+    protected Type type;
     /**
      * Gap to apply between control points and delimiter
      */
-    private double gap;
+    protected double gap;
 
     /**
      * Constructs a new delimiter.The points mark the beginning and end of the
@@ -86,22 +102,18 @@ public class Delimiter extends MathObject {
      * @return The delimiter
      */
     public static Delimiter make(Point A, Point B, Type type, double gap) {
-        Delimiter resul = new Delimiter(A, B, type, gap);
-        ResourceLoader rl = new ResourceLoader();
-        String name = "";
+        Delimiter resul = null;
         switch (type) {
             case BRACE:
-                name = "#braces.svg";
-                break;
             case PARENTHESIS:
-                name = "#parenthesis.svg";
-                break;
             case BRACKET:
-                name = "#bracket.svg";
+                resul = ShapeDelimiter.make(A, B, type, gap);
+                break;
+            case LENGTH_ARROW:
+            case LENGTH_BRACKET:
+                resul = LengthMeasure.make(A, B, type, gap);
                 break;
         }
-        resul.body=new SVGMathObject(rl.getResource(name, "delimiters"));
-        resul.style("latexdefault");
         resul.amplitudeScale = 1;
         resul.delimiterScale = 1;
         return resul;
@@ -165,119 +177,52 @@ public class Delimiter extends MathObject {
         return this;
     }
 
-    public void removeLabel() {
+    public <T extends Delimiter> T removeLabel() {
         mpDelimiter.remove(delimiterLabel);
-
+        delimiterLabel = Shape.polyLine(Point.at(0, 0)).visible(false);
+        return (T) this;
     }
 
-    private Delimiter(Point A, Point B, Type type, double gap) {
+
+public Delimiter(Point A, Point B, Type type, double gap) {
         this.A = A;
         this.B = B;
         this.type = type;
         this.gap = gap;
-        this.delimiterLabel = null;
+        //An invisible path with only a point (to properly stack and align)
+        this.delimiterLabel = Shape.polyLine(Point.at(0,0)).visible(false);
         this.mpDelimiter = new MODrawPropertiesArray();
         labelMarkPoint = Point.at(0, 0);
-        this.rotateLabel = false;
-        minimumWidthToShrink = .5;
+        this.rotateLabel = Rotation.SMART;
+
         delimiterScale = 1;
         amplitudeScale = 1;
-        delimiterShape = new Shape();
-        mpDelimiter.add(delimiterShape);
-    }
 
+    }
 
     public void setGap(double gap) {
         this.gap = gap;
     }
 
-    private MathObjectGroup buildDelimiterShape() {
-        if (amplitudeScale == 0) {
-            return MathObjectGroup.make();
-        }
-        Point AA = A.interpolate(B, .5 * (1 - amplitudeScale));
-        Point BB = B.interpolate(A, .5 * (1 - amplitudeScale));
-        double width = AA.to(BB).norm();//The final width of the delimiter
-
-        MultiShapeObject bodyCopy = body.copy();
-        delimiterShape.getPath().clear();
-//        body.getMp().copyFrom(this.getMp());
-//        for (Shape sh : delimiterShape) {
-//            sh.getMp().copyFrom(this.getMp());
-//        }
-
-        if (type == Type.BRACE) {
-            minimumWidthToShrink = .5;
-            double wr = .25 * delimiterScale * UsefulLambdas.allocateTo(0, minimumWidthToShrink).applyAsDouble(width);
-            bodyCopy.setWidth(wr);
-            double hasToGrow = Math.max(0, width - wr);
-            // 0,1,2,3,4,5 shapes Shapes 1 and 4 are extensible
-            double wSpace = .5 * (hasToGrow);
-            delimiterShape.getPath().jmPathPoints.addAll(bodyCopy.get(0).getPath().jmPathPoints);
-            delimiterShape.merge(bodyCopy.get(2).shift(wSpace, 0), true, false)
-                    .merge(bodyCopy.get(1).shift(2 * wSpace, 0), true, false)
-                    .merge(bodyCopy.get(3).shift(wSpace, 0), true, true);
-        }
-        if (type == Type.BRACKET) {
-            minimumWidthToShrink = .5;
-            double wr = .8 * delimiterScale * UsefulLambdas.allocateTo(0, minimumWidthToShrink).applyAsDouble(width);
-            bodyCopy.setWidth(wr);
-            double hasToGrow = Math.max(0, width - wr);
-            double wSpace = hasToGrow;
-            delimiterShape.merge(bodyCopy.get(0), false, false);
-            delimiterShape.merge(bodyCopy.get(1).shift(wSpace, 0), true, true);
-        }
-        if (type == Type.PARENTHESIS) {
-            minimumWidthToShrink = .5;
-            double wr = 0.48 * delimiterScale * UsefulLambdas.allocateTo(0, minimumWidthToShrink).applyAsDouble(width);
-            bodyCopy.setWidth(wr);
-            double wSpace = Math.max(0, width - wr);
-            delimiterShape.merge(bodyCopy.get(0), false, false);
-            delimiterShape.merge(bodyCopy.get(1).shift(wSpace, 0), true, true);
-        }
-
-        Rect bb = delimiterShape.getBoundingBox();
-        delimiterShape.shift(0, gap);
-        labelMarkPoint.stackTo(delimiterShape, Anchor.Type.UPPER, labelMarkGap);
-        AffineJTransform tr = AffineJTransform.createDirect2DHomothecy(bb.getDL(), bb.getDR(), AA, BB, 1);
-        MathObjectGroup resul = MathObjectGroup.make(delimiterShape);
-        MathObject lab;
-        tr.applyTransform(resul);
-
-        if (delimiterLabel != null) {
-            lab = delimiterLabel.copy().scale(amplitudeScale);
-            resul.add(lab);
-            if (rotateLabel) {
-                lab.stackTo(labelMarkPoint, Anchor.Type.CENTER);
-                tr.applyTransform(lab);
-                tr.applyTransform(labelMarkPoint);
-            } else {
-                tr.applyTransform(labelMarkPoint);
-                lab.stackTo(labelMarkPoint, Anchor.Type.CENTER);
-            }
-        }
-        return resul;
-    }
-
+    abstract protected MathObjectGroup buildDelimiterShape();
+      
     @Override
-    public void draw(JMathAnimScene scene, Renderer r) {
+        public void draw(JMathAnimScene scene, Renderer r) {
         if (isVisible()) {
-            if (A.isEquivalentTo(B, 0)) {
+            if (delimiterScale==0) {
                 return;// Do nothing
             }
             delimiterToDraw = buildDelimiterShape();
-            for (MathObject obj : delimiterToDraw) {
-                obj.draw(scene, r);
-            }
+            delimiterToDraw.draw(scene, r);
         }
     }
 
     @Override
-    public Rect getBoundingBox() {
-        if (A.isEquivalentTo(B, 0)) {
+        public Rect getBoundingBox() {
+        if ((A.isEquivalentTo(B, 0)||(delimiterScale==0))) {
             return new EmptyRect();
         }
-        return buildDelimiterShape().getBoundingBox();
+        return  buildDelimiterShape().getBoundingBox();
     }
 
     /**
@@ -293,14 +238,14 @@ public class Delimiter extends MathObject {
     }
 
     @Override
-    public Delimiter copy() {
+        public Delimiter copy() {
         Delimiter copy = make(A.copy(), B.copy(), type, gap);
         copy.getMp().copyFrom(this.getMp());
         return copy;
     }
 
     @Override
-    public void copyStateFrom(MathObject obj) {
+        public void copyStateFrom(MathObject obj) {
         //This object should not be able to copy its state since
         //it is a purely dependent object
         //Only their drawing attributes!
@@ -308,20 +253,12 @@ public class Delimiter extends MathObject {
     }
 
     @Override
-    public int getUpdateLevel() {
+        public int getUpdateLevel() {
         return Math.max(A.getUpdateLevel(), B.getUpdateLevel()) + 1;
     }
 
     @Override
-    public void addToSceneHook(JMathAnimScene scene) {
-//        super.addToSceneHook(scene);
-//        if (setLabel != null) {
-//            scene.add(setLabel);
-//        }
-    }
-
-    @Override
-    public final Stylable getMp() {
+        public final Stylable getMp() {
         return mpDelimiter;
     }
 
@@ -341,7 +278,7 @@ public class Delimiter extends MathObject {
      *
      * @return True if label should be rotated, false otherwise.
      */
-    public boolean isRotateLabel() {
+    public Rotation getRotationType() {
         return rotateLabel;
     }
 
@@ -352,9 +289,9 @@ public class Delimiter extends MathObject {
      * @param rotateLabel True if label should be rotated, false otherwise.
      * @return This object
      */
-    public Delimiter setRotateLabel(boolean rotateLabel) {
+    public <T extends Delimiter> T setRotationType(Rotation rotateLabel) {
         this.rotateLabel = rotateLabel;
-        return this;
+        return (T) this;
     }
 
     /**
@@ -380,24 +317,14 @@ public class Delimiter extends MathObject {
     }
 
     /**
-     * Gets the generated Shape for delimiter
-     *
-     * @return A Shape object with the current delimiter shape
-     */
-    public Shape getShape() {
-        if (delimiterShape.isEmpty()) {//Ensure the Shape is generated
-            buildDelimiterShape();
-        }
-        return delimiterShape;//Shape
-    }
-
-    /**
      * Gets the label MathObject
      *
      * @return The label
      */
-    public MathObject getDelimiterLabel() {
+    public MathObject getLabel() {
         return delimiterLabel;
     }
 
+  
+    
 }

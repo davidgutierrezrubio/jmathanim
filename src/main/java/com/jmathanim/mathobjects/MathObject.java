@@ -48,7 +48,7 @@ public abstract class MathObject implements Drawable, Updateable, Stateable, Box
     private String debugText = "";
 
     private MODrawProperties mp;
-    public String label = "";
+    public String objectLabel = "";
 
     public boolean absoluteSize = false;
 
