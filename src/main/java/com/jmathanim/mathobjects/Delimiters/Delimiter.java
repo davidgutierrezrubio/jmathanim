@@ -50,7 +50,7 @@ public abstract class Delimiter extends MathObject {
     protected MathObject delimiterLabel;
     protected MathObject delimiterLabelToDraw;
     protected MODrawPropertiesArray mpDelimiter;
-    protected final Point labelMarkPoint;
+    public final Point labelMarkPoint;
     protected double labelMarkGap;
     protected Rotation rotateLabel;
     protected MathObjectGroup delimiterToDraw;

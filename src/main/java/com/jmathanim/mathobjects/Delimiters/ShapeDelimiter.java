@@ -57,6 +57,7 @@ public class ShapeDelimiter extends Delimiter {
         }
         resul.body = new SVGMathObject(rl.getResource(name, "delimiters"));
         resul.mpDelimiter.add(resul.body);
+        resul.style("latexdefault");
         return resul;
     }
 
@@ -73,7 +74,7 @@ public class ShapeDelimiter extends Delimiter {
         if (amplitudeScale == 0) {
             return MathObjectGroup.make();//Nothing
         }
-      
+
         double width = scaledA.to(scaledB).norm();//The final width of the delimiter
         double angle = A.to(B).getAngle();
         MultiShapeObject bodyCopy = body.copy();
@@ -120,7 +121,6 @@ public class ShapeDelimiter extends Delimiter {
         resul.add(delimiterLabelToDraw);
 
         delimiterLabelToDraw.scale(amplitudeScale);
-        delimiterLabelToDraw.stackTo(labelMarkPoint, Anchor.Type.CENTER);
 
         //Manages rotation of label
         switch (rotateLabel) {
@@ -135,7 +135,7 @@ public class ShapeDelimiter extends Delimiter {
                     delimiterLabelToDraw.rotate(PI);
                 }
         }
-
+        delimiterLabelToDraw.stackTo(Anchor.Type.LOWER, labelMarkPoint, Anchor.Type.UPPER, 0);
         AffineJTransform tr = AffineJTransform.createDirect2DHomothecy(bb.getDL(), bb.getDR(), scaledA, scaledB, 1);
 
         tr.applyTransform(resul);
