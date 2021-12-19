@@ -17,9 +17,11 @@
  */
 package com.jmathanim.mathobjects.Text;
 
+import com.jmathanim.Utils.AffineJTransform;
 import com.jmathanim.mathobjects.Text.LaTeXMathObject;
 import com.jmathanim.Utils.Anchor;
 import com.jmathanim.jmathanim.JMathAnimScene;
+import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.Point;
 import com.jmathanim.mathobjects.Shape;
 import java.util.function.Function;
@@ -31,6 +33,7 @@ import java.util.function.Function;
  */
 public class JMNumber extends LaTeXMathObject {
 
+    private final AffineJTransform modelMatrix;
     private double number;
     Function<Double, String> lambdaText = t -> {
         return "" + t + "";
@@ -73,7 +76,16 @@ public class JMNumber extends LaTeXMathObject {
         this.number = number;
         this.unitString = "";
         this.refHeight = 0;
+        modelMatrix = new AffineJTransform();
+    }
 
+    @Override
+    public JMNumber applyAffineTransform(AffineJTransform transform) {
+        super.applyAffineTransform(transform);
+        AffineJTransform compose = modelMatrix.compose(transform);
+        modelMatrix.copyFrom(compose);
+        updateContents();
+        return this;
     }
 
     private void updateContents() {
@@ -118,11 +130,16 @@ public class JMNumber extends LaTeXMathObject {
         }
         this.refHeight = this.getHeight();
 
-        if (h > 0) {
-            scale(h / this.refHeight);
-        }
-        if (center != null) {
-            this.moveTo(center);
+//        if (h > 0) {
+//            scale(h / this.refHeight);
+//        }
+//        if (center != null) {
+//            this.moveTo(center);
+//        }
+        //Apply transforms to shapes
+        for (Shape sh : shapes) {
+            sh.getMp().copyFrom(mpMultiShape);
+            sh.applyAffineTransform(modelMatrix);
         }
 
 //        for (Shape sh : shapes) {
@@ -179,14 +196,39 @@ public class JMNumber extends LaTeXMathObject {
      * @return This object
      */
     public <T extends JMNumber> T setNumberDecimals(int numDecimals) {
-        this.numDecimals=numDecimals;
-         this.lambdaText = t -> {
+        this.numDecimals = numDecimals;
+        this.lambdaText = t -> {
             return String.format("%32." + numDecimals + "f", t).trim();
         };
         updateContents();
         return (T) this;
     }
 
+    @Override
+    public void saveState() {
+           modelMatrix.saveState();
+        super.saveState();
+     
+    }
+
+    @Override
+    public void restoreState() {
+           modelMatrix.restoreState();
+        super.restoreState();
+     
+    }
+
+    @Override
+    public void copyStateFrom(MathObject obj) {
+        if (!(obj instanceof JMNumber)) {
+            return;
+        }
+        JMNumber n = (JMNumber) obj;
+         modelMatrix.copyFrom(n.modelMatrix);
+        super.copyStateFrom(obj);
+        updateContents();
+       
+    }
 
     private static void printArrayOfGaps() {
         String gapString = "{";
@@ -236,6 +278,7 @@ public class JMNumber extends LaTeXMathObject {
         copy.setNumberDecimals(numDecimals);
         copy.unitString = unitString;
         copy.refHeight = refHeight;
+        copy.modelMatrix.copyFrom(modelMatrix);
         return copy;
     }
 

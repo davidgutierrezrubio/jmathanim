@@ -139,7 +139,7 @@ public class FlipTransform extends AnimationWithEffects {
     @Override
     public void finishAnimation() {
         super.finishAnimation(); // To change body of generated methods, choose Tools | Templates.
-        removeObjectsToscene(objOrig);
+        removeObjectsFromScene(objOrig);
     }
 
     private double[] computeScale(double lt) {

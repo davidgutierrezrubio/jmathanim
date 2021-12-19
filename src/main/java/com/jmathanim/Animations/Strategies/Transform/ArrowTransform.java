@@ -67,7 +67,7 @@ public class ArrowTransform extends TransformStrategy {
     @Override
     public void finishAnimation() {
         super.finishAnimation();
-        removeObjectsToscene(arOrig);
+        removeObjectsFromScene(arOrig);
         addObjectsToscene(arDst);
     }
 

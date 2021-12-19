@@ -281,7 +281,7 @@ public abstract class JMathAnimScene {
                             add(subobj);
                         }
                     } else if (obj instanceof MultiShapeObject) {
-                        MultiShapeObject msh = (MultiShapeObject) obj;
+//                        MultiShapeObject msh = (MultiShapeObject) obj;
 //                        msh.isAddedToScene = true;
 //                        for (Shape sh : msh) {
 //                            add(sh);
@@ -318,11 +318,13 @@ public abstract class JMathAnimScene {
         for (MathObject obj : objs) {
 
             if (obj instanceof MultiShapeObject) {
-                MultiShapeObject msh = (MultiShapeObject) obj;
-                msh.isAddedToScene = true;
-                for (Shape o : msh) {
-                    this.remove(o);
-                }
+                sceneObjects.remove(obj);
+                 unregisterUpdateable(obj);
+//                MultiShapeObject msh = (MultiShapeObject) obj;
+//                msh.isAddedToScene = false;
+//                for (Shape o : msh) {
+//                    this.remove(o);
+//                }
             }
 
             if (obj instanceof MathObjectGroup) {

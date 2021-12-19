@@ -46,7 +46,7 @@ public class LineCreationAnimation extends AbstractCreationStrategy {
 		anim = new SimpleShapeCreationAnimation(this.runTime, segment);
 		anim.setLambda(lambda);
 		anim.initialize(scene);
-		removeObjectsToscene(line);
+		removeObjectsFromScene(line);
 		addObjectsToscene(segment);
 
 	}
@@ -65,7 +65,7 @@ public class LineCreationAnimation extends AbstractCreationStrategy {
 	public void finishAnimation() {
 		super.finishAnimation();
 		anim.finishAnimation();
-		removeObjectsToscene(segment);
+		removeObjectsFromScene(segment);
 		addObjectsToscene(line);
 
 	}

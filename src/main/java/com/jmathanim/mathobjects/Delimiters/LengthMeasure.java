@@ -15,7 +15,7 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-package com.jmathanim.mathobjects;
+package com.jmathanim.mathobjects.Delimiters;
 
 import com.jmathanim.Renderers.Renderer;
 import com.jmathanim.Utils.AffineJTransform;
@@ -24,6 +24,10 @@ import com.jmathanim.Utils.Rect;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import static com.jmathanim.jmathanim.JMathAnimScene.PI;
 import com.jmathanim.mathobjects.Delimiters.Delimiter;
+import com.jmathanim.mathobjects.MathObject;
+import com.jmathanim.mathobjects.MathObjectGroup;
+import com.jmathanim.mathobjects.Point;
+import com.jmathanim.mathobjects.Shape;
 
 /**
  *
@@ -48,26 +52,10 @@ public class LengthMeasure extends Delimiter {
         hgap = .05;
     }
 
-    @Override
-    public LengthMeasure copy() {
-        LengthMeasure copy = LengthMeasure.make(A, B, type, gap);
-        copy.copyStateFrom(this);
-        return this;
-    }
-
-    @Override
-    public void copyStateFrom(MathObject obj) {
-        super.copyStateFrom(obj);
-        if (!(obj instanceof LengthMeasure)) {
-            return;
-        }
-        LengthMeasure lm = (LengthMeasure) obj;
-    }
-
-    @Override
-    public Rect getBoundingBox() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
+//    @Override
+//    public Rect getBoundingBox() {
+//        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+//    }
 
 //    @Override
 //    public void draw(JMathAnimScene scene, Renderer r) {

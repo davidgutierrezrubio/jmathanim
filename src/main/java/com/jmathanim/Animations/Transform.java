@@ -235,7 +235,7 @@ public class Transform extends AnimationWithEffects {
         transformStrategy.finishAnimation();
         // Remove fist object and add the second to the scene
         addObjectsToscene(mobjDestiny);
-        removeObjectsToscene(mobjTransformed);
+        removeObjectsFromScene(mobjTransformed);
     }
 
     /**

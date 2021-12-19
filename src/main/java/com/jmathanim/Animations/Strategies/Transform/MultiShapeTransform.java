@@ -85,14 +85,14 @@ public class MultiShapeTransform extends TransformStrategy {
 			anim.add(transformAnim);
 		}
 		anim.initialize(scene);
-		removeObjectsToscene(mobjTransformed);
+		removeObjectsFromScene(mobjTransformed);
 	}
 
 	@Override
 	public void finishAnimation() {
 		super.finishAnimation();
 		anim.finishAnimation();
-		removeObjectsToscene(tr, dst);
+		removeObjectsFromScene(tr, dst);
 		addObjectsToscene(mobjDestiny);
 	}
 

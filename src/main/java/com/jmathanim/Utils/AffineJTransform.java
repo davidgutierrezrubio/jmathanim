@@ -19,6 +19,7 @@ package com.jmathanim.Utils;
 
 import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.Point;
+import com.jmathanim.mathobjects.Stateable;
 import org.apache.commons.math3.linear.LUDecomposition;
 import org.apache.commons.math3.linear.MatrixUtils;
 import org.apache.commons.math3.linear.RealMatrix;
@@ -32,14 +33,15 @@ import org.apache.commons.math3.linear.RealMatrix;
  *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
-public class AffineJTransform {
+public class AffineJTransform implements Stateable{
 
     /**
      * Matrix that stores the transform, with the following form: {{1, x, y, z},
      * {0, vx, vy, vz},{0, wx, wy, wz},{0 tx ty tz}} Where x,y,z is the image of
-     * (0,0,0) and v,w,z are the images of canonical vectors.
+     * (0,0,0) and v,w,t are the images of canonical vectors.
      */
     public RealMatrix matrix;
+    public RealMatrix matrixBackup;
 
     /**
      * Creates a new Identity transform
@@ -619,4 +621,18 @@ public class AffineJTransform {
         this.setMatrix(resul.getMatrix().copy());
     }
 
+    @Override
+    public void saveState() {
+        matrixBackup=matrix.copy();
+    
+    }
+    
+
+    @Override
+    public void restoreState() {
+        matrix=matrixBackup;
+    }
+
+    
+    
 }

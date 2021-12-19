@@ -80,7 +80,7 @@ public class HomothecyTransformAnimation extends TransformStrategy {
     @Override
     public void finishAnimation() {
         super.finishAnimation();
-        removeObjectsToscene(this.mobjTransformed);
+        removeObjectsFromScene(this.mobjTransformed);
         anim.finishAnimation();
     }
 

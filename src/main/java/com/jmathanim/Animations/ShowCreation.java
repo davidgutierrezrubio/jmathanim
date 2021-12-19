@@ -38,6 +38,7 @@ import com.jmathanim.mathobjects.MultiShapeObject;
 import com.jmathanim.mathobjects.Point;
 import com.jmathanim.mathobjects.SVGMathObject;
 import com.jmathanim.mathobjects.Shape;
+import java.util.ArrayList;
 import java.util.function.DoubleUnaryOperator;
 
 /**
@@ -58,8 +59,8 @@ public class ShowCreation extends Animation {
     CanonicalJMPath canonPath;
     private Animation creationStrategy;
     private ShowCreationStrategy strategyType = ShowCreationStrategy.NONE;
-    private MathObject removeThisAtTheEnd = null;
-    private MathObject addThisAtTheEnd = null;
+    private final ArrayList<MathObject> removeThisAtTheEnd;
+    private final ArrayList<MathObject> addThisAtTheEnd;
 
     /**
      * Static constructor. Creates an animation that shows the creation of the
@@ -83,17 +84,16 @@ public class ShowCreation extends Animation {
         super(runtime);
         setDebugName("showCreation");
         this.mobj = mobj;
+        addThisAtTheEnd = new ArrayList<>();
+        removeThisAtTheEnd = new ArrayList<>();
 
         // If the object is a constructible one, get its visible object to animate
         if (mobj instanceof Constructible) {
             this.mobj = ((Constructible) mobj).getMathObject();
-            removeThisAtTheEnd = this.mobj;
-            addThisAtTheEnd = mobj;
+            removeThisAtTheEnd.add(this.mobj);
+            addThisAtTheEnd.add(mobj);
         }
-        if (mobj instanceof MultiShapeObject) {
-            addThisAtTheEnd = mobj;
-        }
-        
+
         pencilPosition = new Point[]{Point.origin(), Point.origin()};
     }
 
@@ -127,7 +127,7 @@ public class ShowCreation extends Animation {
             boolean ret = creationStrategy.processAnimation();
             try {
                 if (creationStrategy instanceof CreationStrategy) {
-                    CreationStrategy cs=(CreationStrategy) creationStrategy;
+                    CreationStrategy cs = (CreationStrategy) creationStrategy;
                     pencilPosition[0].copyFrom(cs.getPencilPosition()[0]);
                     pencilPosition[1].copyFrom(cs.getPencilPosition()[1]);
                 }
@@ -146,7 +146,7 @@ public class ShowCreation extends Animation {
         if (creationStrategy != null) {
             creationStrategy.finishAnimation();
         }
-        scene.remove(removeThisAtTheEnd);
+        removeObjectsFromScene(removeThisAtTheEnd);
         addObjectsToscene(addThisAtTheEnd);
     }
 
@@ -223,7 +223,7 @@ public class ShowCreation extends Animation {
                 break;
             case LINE_CREATION:
 //                creationStrategy = new LineCreationAnimation(this.runTime, (Line) mobj);
-                creationStrategy=new SimpleShapeCreationAnimation(this.runTime,((Line)mobj).toSegment(scene.getCamera()));
+                creationStrategy = new SimpleShapeCreationAnimation(this.runTime, ((Line) mobj).toSegment(scene.getCamera()));
                 JMathAnimScene.logger.debug("ShowCreation method: LineCreationStrategy");
                 break;
             case ARROW_CREATION:
@@ -253,8 +253,10 @@ public class ShowCreation extends Animation {
                 JMathAnimScene.logger.debug("ShowCreation method: SimpleShapeCreationStrategy");
                 break;
             case MULTISHAPE_CREATION:
-                addThisAtTheEnd=mobj;
-                creationStrategy = new FirstDrawThenFillAnimation(runTime, (MultiShapeObject) mobj);
+                MultiShapeObject msh = (MultiShapeObject) mobj;
+                removeThisAtTheEnd.addAll(msh.getShapes());
+                addThisAtTheEnd.add(mobj);
+                creationStrategy = new FirstDrawThenFillAnimation(runTime, msh);
                 JMathAnimScene.logger.debug("ShowCreation method: MultiShapeCreationStrategy");
                 break;
             case FIRST_DRAW_AND_THEN_FILL:
@@ -262,7 +264,10 @@ public class ShowCreation extends Animation {
                 JMathAnimScene.logger.debug("ShowCreation method: FirstDrawThenFillStrategy");
                 break;
             case LATEX_CREATION:
-                creationStrategy = new FirstDrawThenFillAnimation(runTime, (MultiShapeObject) mobj);
+                  LaTeXMathObject lat = (LaTeXMathObject) mobj;
+                removeThisAtTheEnd.addAll(lat.getShapes());
+                addThisAtTheEnd.add(mobj);
+                creationStrategy = new FirstDrawThenFillAnimation(runTime, lat);
                 JMathAnimScene.logger.debug("ShowCreation method: FirstDrawThenFillStrategy (LaTeXMathObject)");
                 break;
             case AXES_CREATION:
@@ -299,14 +304,12 @@ public class ShowCreation extends Animation {
 
     @Override
     public <T extends Animation> T setLambda(DoubleUnaryOperator lambda) {
-         super.setLambda(lambda); 
+        super.setLambda(lambda);
         try {
             creationStrategy.setLambda(lambda);
         } catch (NullPointerException e) {
         }
-         return (T) this;
+        return (T) this;
     }
 
-    
-    
 }

@@ -27,7 +27,6 @@ import com.jmathanim.Utils.Rect;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.Text.JMNumber;
 import com.jmathanim.mathobjects.Text.LaTeXMathObject;
-import com.jmathanim.mathobjects.LengthMeasure;
 import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.MathObjectGroup;
 import com.jmathanim.mathobjects.Point;
@@ -247,34 +246,50 @@ public abstract class Delimiter extends MathObject {
     public Delimiter copy() {
         Delimiter copy = make(A.copy(), B.copy(), type, gap);
         copy.getMp().copyFrom(this.getMp());
+        if (delimiterLabel!=null) {
+            copy.setLabel(getLabel().copy(), labelMarkGap);
+        }
+        copy.amplitudeScale=amplitudeScale;
+        copy.delimiterScale=delimiterScale;
         return copy;
     }
 
     @Override
     public void copyStateFrom(MathObject obj) {
-        //This object should not be able to copy its state since
-        //it is a purely dependent object
-        //Only their drawing attributes!
+        if (!(obj instanceof Delimiter)) {
+            return;
+        }
+        Delimiter del=(Delimiter) obj;
         getMp().copyFrom(obj.getMp());
-    }
+        if (del.delimiterLabel != null) {
+            setLabel(del.getLabel().copy(), del.labelMarkGap);
+            getLabel().getMp().copyFrom(del.getLabel().getMp());
+        }
+        amplitudeScale=del.amplitudeScale;
+        delimiterScale=del.delimiterScale;
+        }
 
-    @Override
-    public int getUpdateLevel() {
+        @Override
+        public int getUpdateLevel
+        
+            () {
         return Math.max(A.getUpdateLevel(), B.getUpdateLevel()) + 1;
-    }
+        }
 
-    @Override
-    public final Stylable getMp() {
+        @Override
+        public final Stylable getMp
+        
+            () {
         return mpDelimiter;
-    }
-
-    /**
-     * Gets the label mark point. The label mark point is used to position the
-     * label. Labels are centered around this point. The gap parameter used when
-     * adding labels sets the distance between this point and the delimiter.
-     *
-     * @return The label mark point.
-     */
+        }
+        /**
+         * Gets the label mark point. The label mark point is used to position
+         * the label. Labels are centered around this point. The gap parameter
+         * used when adding labels sets the distance between this point and the
+         * delimiter.
+         *
+         * @return The label mark point.
+         */
     public Point getLabelMarkPoint() {
         return labelMarkPoint;
     }
@@ -331,10 +346,9 @@ public abstract class Delimiter extends MathObject {
         return delimiterLabel;
     }
 
-    public <T extends Delimiter> T measure(int numDigits,double gap) {
-        JMNumber jm = JMNumber.length(scaledA, scaledB);
-        jm.setNumberDecimals(numDigits);
-        return setLabel(jm, gap);
-    }
-
+//    public <T extends Delimiter> T measure(int numDigits,double gap) {
+//        JMNumber jm = JMNumber.length(scaledA, scaledB);
+//        jm.setNumberDecimals(numDigits);
+//        return setLabel(jm, gap);
+//    }
 }

@@ -38,7 +38,7 @@ public class SimpleShapeCreationAnimation extends AbstractCreationStrategy {
     @Override
     public void initialize(JMathAnimScene scene) {
         super.initialize(scene);
-//        removeObjectsToscene(this.mobj);
+//        removeObjectsFromScene(this.mobj);
 
     }
 
@@ -55,12 +55,12 @@ public class SimpleShapeCreationAnimation extends AbstractCreationStrategy {
     public void finishAnimation() {
         super.finishAnimation();
         this.mobj.visible(true);
-        removeObjectsToscene(intermediateShape);
+        removeObjectsFromScene(intermediateShape);
         double lt = getLambda().applyAsDouble(1);
         if (lt == 1) {
             addObjectsToscene(mobj);
         } else if (lt == 0) {
-            removeObjectsToscene(mobj);
+            removeObjectsFromScene(mobj);
         }
         if ((lt > 0) && (lt < 1)) {
             Shape sh = this.mobj.getSubShape(0, lt);

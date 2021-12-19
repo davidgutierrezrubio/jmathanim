@@ -630,7 +630,7 @@ public class Commands {
      * @return Animation to run with playAnim method
      */
     public static Animation cameraShift(double runtime, Camera camera, Vec shiftVector) {
-        Animation resul=null;
+        Animation resul = null;
         if (camera != null) {
             if (camera instanceof Camera3D) {
                 Camera3D camera3d = (Camera3D) camera;
@@ -724,6 +724,8 @@ public class Commands {
             public void finishAnimation() {
                 super.finishAnimation();
                 doAnim(1);
+                restoreStates(mathObjects);//Restore original states in case of reutilization
+                removeObjectsFromScene(mathObjects);
             }
         };
         anim.setLambda(t -> t);// Default
@@ -871,7 +873,7 @@ public class Commands {
             public void finishAnimation() {
                 super.finishAnimation();
                 restoreStates(mathObjects);// Restore original alphas in case of reutilization
-                removeObjectsToscene(mathObjects);
+                removeObjectsFromScene(mathObjects);
             }
         };
         anim.setLambda(t -> t);// Default value
@@ -1035,7 +1037,7 @@ public class Commands {
             public void finishAnimation() {
                 super.finishAnimation();
                 for (MathObject obj : mathObjects) {
-                    removeObjectsToscene(obj);
+                    removeObjectsFromScene(obj);
                 }
             }
 

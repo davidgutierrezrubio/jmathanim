@@ -21,6 +21,7 @@ import com.jmathanim.Animations.Strategies.Transform.Optimizers.OptimizePathsStr
 import com.jmathanim.Utils.UsefulLambdas;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.MathObject;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.function.DoubleUnaryOperator;
 
@@ -95,7 +96,7 @@ public abstract class Animation {
 
     protected Boolean shouldAddObjectsToScene;
     protected Boolean shouldInterpolateStyles;
-    private final HashMap<MathObject,MathObject> backups;
+    private final HashMap<MathObject, MathObject> backups;
 
     /**
      * Creates an empty animation, with specified run time.This constructor
@@ -111,7 +112,7 @@ public abstract class Animation {
         this.shouldAddObjectsToScene = true;
         this.shouldInterpolateStyles = true;
         lambda = UsefulLambdas.smooth(.9d);
-        backups=new HashMap<>();
+        backups = new HashMap<>();
     }
 
     /**
@@ -316,7 +317,7 @@ public abstract class Animation {
             backups.clear();
             for (MathObject obj : mathObjects) {
 //                obj.saveState();
-                backups.put(obj,obj.copy());
+                backups.put(obj, obj.copy());
             }
         }
     }
@@ -356,10 +357,18 @@ public abstract class Animation {
      *
      * @param mathObjects Objects to add (varargs)
      */
-    protected void removeObjectsToscene(MathObject... mathObjects) {
+    protected void removeObjectsFromScene(MathObject... mathObjects) {
         if (this.shouldAddObjectsToScene) {
             scene.remove(mathObjects);
         }
+    }
+
+    protected void removeObjectsFromScene(ArrayList<MathObject> removeThisAtTheEnd) {
+        removeObjectsFromScene(removeThisAtTheEnd.toArray(new MathObject[0]));
+    }
+
+    protected void addObjectsToscene(ArrayList<MathObject> addThisAtTheEnd) {
+        addObjectsToscene(addThisAtTheEnd.toArray(new MathObject[0]));
     }
 
     /**

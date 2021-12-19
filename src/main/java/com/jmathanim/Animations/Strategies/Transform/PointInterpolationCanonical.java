@@ -91,7 +91,7 @@ public class PointInterpolationCanonical extends TransformStrategy {
         mobjTransformed.getPath().clear();
         mobjTransformed.getPath().addJMPointsFrom(connectedOrigin.toJMPath());
         addObjectsToscene(mobjTransformed);
-        removeObjectsToscene(mobjTransformedOrig);
+        removeObjectsFromScene(mobjTransformedOrig);
 
         // Jump paths
         Point origCenter = this.mobjTransformedOrig.getCenter();
@@ -147,9 +147,9 @@ public class PointInterpolationCanonical extends TransformStrategy {
     @Override
     public void finishAnimation() {
         super.finishAnimation();
-        removeObjectsToscene(mobjTransformed);
+        removeObjectsFromScene(mobjTransformed);
         for (Shape shapesToRemove : addedAuxiliaryObjectsToScene) {
-            removeObjectsToscene(shapesToRemove);
+            removeObjectsFromScene(shapesToRemove);
         }
         addObjectsToscene(mobjDestinyOrig);
     }
