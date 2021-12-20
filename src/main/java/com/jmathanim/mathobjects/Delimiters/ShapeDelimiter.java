@@ -23,7 +23,6 @@ import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.ResourceLoader;
 import com.jmathanim.Utils.UsefulLambdas;
 import static com.jmathanim.jmathanim.JMathAnimScene.PI;
-import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.MathObjectGroup;
 import com.jmathanim.mathobjects.MultiShapeObject;
 import com.jmathanim.mathobjects.Point;
@@ -36,7 +35,6 @@ import com.jmathanim.mathobjects.Shape;
  */
 public class ShapeDelimiter extends Delimiter {
 
-    protected double minimumWidthToShrink;
     private SVGMathObject body;
     private Shape delimiterShape;
 
@@ -56,7 +54,7 @@ public class ShapeDelimiter extends Delimiter {
                 break;
         }
         resul.body = new SVGMathObject(rl.getResource(name, "delimiters"));
-        resul.mpDelimiter.add(resul.body);
+        resul.mpEverything.add(resul.body);
         resul.style("latexdefault");
         return resul;
     }
@@ -65,7 +63,7 @@ public class ShapeDelimiter extends Delimiter {
         super(A, B, type, gap);
         minimumWidthToShrink = .5;
         delimiterShape = new Shape();
-        mpDelimiter.add(delimiterShape);
+        mpEverything.add(delimiterShape);
     }
 
     @Override

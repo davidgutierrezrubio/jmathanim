@@ -48,13 +48,14 @@ public abstract class Delimiter extends MathObject {
     protected double amplitudeScale;
     protected MathObject delimiterLabel;
     protected MathObject delimiterLabelToDraw;
-    protected MODrawPropertiesArray mpDelimiter;
+    protected MODrawPropertiesArray mpEverything;
     public final Point labelMarkPoint;
     protected double labelMarkGap;
     protected Rotation rotateLabel;
     protected MathObjectGroup delimiterToDraw;
 
     protected double delimiterScale;
+    protected double minimumWidthToShrink;
 
     public enum Rotation {
         FIXED, SMART, ROTATE
@@ -172,14 +173,14 @@ public abstract class Delimiter extends MathObject {
     }
 
     public <T extends Delimiter> T setLabel(MathObject label, double labelGap) {
-        mpDelimiter.add(label);
+        mpEverything.add(label);
         this.labelMarkGap = labelGap;
         this.delimiterLabel = label;
         return (T) this;
     }
 
     public <T extends Delimiter> T removeLabel() {
-        mpDelimiter.remove(delimiterLabel);
+        mpEverything.remove(delimiterLabel);
         delimiterLabel = Shape.polyLine(Point.at(0, 0)).visible(false);
         return (T) this;
     }
@@ -193,7 +194,7 @@ public abstract class Delimiter extends MathObject {
         this.gap = gap;
         //An invisible path with only a point (to properly stack and align)
         this.delimiterLabel = Shape.polyLine(Point.at(0, 0)).visible(false);
-        this.mpDelimiter = new MODrawPropertiesArray();
+        this.mpEverything = new MODrawPropertiesArray();
         labelMarkPoint = Point.at(0, 0);
         this.rotateLabel = Rotation.SMART;
 
@@ -280,7 +281,7 @@ public abstract class Delimiter extends MathObject {
         public final Stylable getMp
         
             () {
-        return mpDelimiter;
+        return mpEverything;
         }
         /**
          * Gets the label mark point. The label mark point is used to position

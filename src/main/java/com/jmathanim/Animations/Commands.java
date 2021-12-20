@@ -724,7 +724,6 @@ public class Commands {
             public void finishAnimation() {
                 super.finishAnimation();
                 doAnim(1);
-                restoreStates(mathObjects);//Restore original states in case of reutilization
                 removeObjectsFromScene(mathObjects);
             }
         };
@@ -931,7 +930,7 @@ public class Commands {
      * @return Animation to run with playAnim method
      */
     public static ShiftAnimation setLayout(double runtime, GroupLayout layout, MathObjectGroup group) {
-        group.saveState();// TODO: Jump effect doesn't work yet
+        MathObjectGroup state = group.copy();
         group.setLayout(layout);
         HashMap<MathObject, Point> centers = new HashMap<>();
         int n = 0;
@@ -939,7 +938,7 @@ public class Commands {
             centers.put(ob, ob.getCenter());// The destination centers of the objects of the group
             n++;
         }
-        group.restoreState();
+        group.copyStateFrom(state);
         MathObject[] mathobjects = group.getObjects().toArray(new MathObject[group.size()]);
 
         ShiftAnimation resul = new ShiftAnimation(runtime, mathobjects) {

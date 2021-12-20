@@ -85,11 +85,11 @@ public class SVGMathObject extends MultiShapeObject {
     @Override
     public SVGMathObject copy() {
         SVGMathObject resul = new SVGMathObject();
+          resul.getMp().copyFrom(getMp());
         for (Shape sh : shapes) {
             final Shape copy = sh.copy();
             resul.add(copy);
         }
-        resul.getMp().copyFrom(getMp());
         resul.absoluteSize = this.absoluteSize;
         return resul;
     }

@@ -17,14 +17,10 @@
  */
 package com.jmathanim.mathobjects.Delimiters;
 
-import com.jmathanim.Renderers.Renderer;
 import com.jmathanim.Utils.AffineJTransform;
 import com.jmathanim.Utils.Anchor;
-import com.jmathanim.Utils.Rect;
-import com.jmathanim.jmathanim.JMathAnimScene;
+import com.jmathanim.Utils.UsefulLambdas;
 import static com.jmathanim.jmathanim.JMathAnimScene.PI;
-import com.jmathanim.mathobjects.Delimiters.Delimiter;
-import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.MathObjectGroup;
 import com.jmathanim.mathobjects.Point;
 import com.jmathanim.mathobjects.Shape;
@@ -50,32 +46,20 @@ public class LengthMeasure extends Delimiter {
         super(A, B, type, gap);
         this.gap = gap;
         hgap = .05;
-    }
+        minimumWidthToShrink = .5;
 
-//    @Override
-//    public Rect getBoundingBox() {
-//        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-//    }
-//    @Override
-//    public void draw(JMathAnimScene scene, Renderer r) {
-//        if (isVisible()) {
-//            if ((A.isEquivalentTo(B, 0)) || (innerScale == 0)) {
-//                return;// Do nothing
-//            }
-//            MathObjectGroup delimiterToDraw = buildDelimiterShape();
-//            for (MathObject obj : delimiterToDraw) {
-//                obj.draw(scene, r);
-//            }
-//        }
-//    }
+    }
     @Override
     protected MathObjectGroup buildDelimiterShape() {
-
+        delimiterLabelToDraw = delimiterLabel.copy();
         double width = A.to(B).norm();
         double angle = A.to(B).getAngle();
         Point AA = Point.at(0, 0);
         Point BB = Point.at(width, 0);
+        double realAmplitudeScale = UsefulLambdas.allocateTo(0, minimumWidthToShrink).applyAsDouble(width);
 
+        double gapToUse = hgap * realAmplitudeScale;
+        delimiterLabelToDraw.scale(realAmplitudeScale);
         double vCenter = .025 * delimiterScale;
         MathObjectGroup delShape = MathObjectGroup.make();
 //        Shape verticalBar = Shape.segment(Point.at(0, 0), Point.at(0, 2 * vCenter));
@@ -88,14 +72,12 @@ public class LengthMeasure extends Delimiter {
                 xOffset = 0;
                 break;
         }
-        Shape verticalBar = Shape.polyLine(Point.at(xOffset, 0), Point.at(0, vCenter), Point.at(xOffset, 2 * vCenter));
+        Shape verticalBar = Shape.polyLine(Point.at(xOffset, -vCenter), Point.at(0, 0), Point.at(xOffset, vCenter));
         delShape.add(verticalBar);
-        double segmentLength = .5 * (width - delimiterLabel.getWidth()) - hgap;
+        double segmentLength = .5 * (width - delimiterLabelToDraw.getWidth()) - gapToUse;
 //        segmentLength*=amplitudeScale;
-        final Shape segment = Shape.segment(Point.at(0, vCenter), Point.at(segmentLength, vCenter));
+        final Shape segment = Shape.segment(Point.at(0, 0), Point.at(segmentLength, 0));
         delShape.add(segment);
-
-        delimiterLabelToDraw = delimiterLabel.copy();
 
         //Manages rotation of label
         switch (rotateLabel) {
@@ -110,16 +92,16 @@ public class LengthMeasure extends Delimiter {
                 }
         }
 
-        delimiterLabelToDraw.stackTo(segment, Anchor.Type.RIGHT, hgap);
+        delimiterLabelToDraw.stackTo(segment, Anchor.Type.RIGHT, gapToUse);
 
         labelMarkPoint.copyFrom(delimiterLabelToDraw.getCenter());
-        delShape.add(segment.copy().stackTo(delimiterLabelToDraw, Anchor.Type.RIGHT, hgap));
+        delShape.add(segment.copy().stackTo(delimiterLabelToDraw, Anchor.Type.RIGHT, gapToUse));
         delShape.add(verticalBar.copy().scale(Point.at(0, 0), -1, 1).shift(width, 0));
-        delShape.shift(0, gap * amplitudeScale);
-        delimiterLabelToDraw.shift(0, gap * amplitudeScale);
+        delShape.shift(0, vCenter + gap * amplitudeScale);
+        delimiterLabelToDraw.shift(0, vCenter + gap * amplitudeScale);
         delimiterLabelToDraw.scale(amplitudeScale);
         delShape.scale(amplitudeScale);
-        delShape.getMp().copyFrom(mpDelimiter);
+        delShape.getMp().copyFrom(mpEverything);
         AffineJTransform tr = AffineJTransform.createDirect2DHomothecy(AA, BB, A, B, 1);
         tr.applyTransform(delShape);
         tr.applyTransform(delimiterLabelToDraw);
