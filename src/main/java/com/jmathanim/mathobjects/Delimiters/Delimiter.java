@@ -77,11 +77,11 @@ public abstract class Delimiter extends MathObject {
          */
         BRACKET,
         /**
-         * Simple bar measure length
+         * Simple bar addLengthLabel length
          */
         LENGTH_BRACKET,
         /**
-         * Simple arrow measure length
+         * Simple arrow addLengthLabel length
          */
         LENGTH_ARROW
     }
@@ -346,9 +346,27 @@ public abstract class Delimiter extends MathObject {
         return delimiterLabel;
     }
 
-//    public <T extends Delimiter> T measure(int numDigits,double gap) {
-//        JMNumber jm = JMNumber.length(scaledA, scaledB);
-//        jm.setNumberDecimals(numDigits);
-//        return setLabel(jm, gap);
-//    }
+    /**
+     * Adds a label that automatically updates to show the length of the delimiter.
+     * @param <T> Calling subclass
+     * @param format A string format, in the DecimalFormat class syntax
+     * @param gap Gap to leave between this label and the delimiter
+     * @return This object
+     */
+    public <T extends Delimiter> T addLengthLabel(String format,double gap) {
+        JMNumber jm = JMNumber.length(scaledA, scaledB);
+        jm.setFormat(format);
+        return setLabel(jm, gap);
+    }
+    
+    /**
+     * Overloaded function. Adds a label that automatically updates to show the length of the delimite,
+     * using 2 (at most) decimal places.
+     * @param <T> Calling subclass
+     * @param gap Gap to leave between this label and the delimiter
+     * @return This object
+     */
+      public <T extends Delimiter> T addLengthLabel(double gap) {
+          return addLengthLabel("#.##",gap);
+      }
 }

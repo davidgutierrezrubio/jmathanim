@@ -18,13 +18,12 @@
 package com.jmathanim.mathobjects.Text;
 
 import com.jmathanim.Utils.AffineJTransform;
-import com.jmathanim.mathobjects.Text.LaTeXMathObject;
 import com.jmathanim.Utils.Anchor;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.Point;
 import com.jmathanim.mathobjects.Shape;
-import java.util.function.Function;
+import java.text.DecimalFormat;
 
 /**
  * A LaTexMathObject representing a number, that can be dinamically changed
@@ -35,11 +34,7 @@ public class JMNumber extends LaTeXMathObject {
 
     private final AffineJTransform modelMatrix;
     private double number;
-    Function<Double, String> lambdaText = t -> {
-        return "" + t + "";
-    };
-    private double refHeight;
-    private String unitString;
+    private final DecimalFormat formatter;
 
     /**
      * Creates a JMNumber that automically adjust its content to the length
@@ -65,8 +60,6 @@ public class JMNumber extends LaTeXMathObject {
         JMNumber resul = new JMNumber(0);
         resul.setNumber(number);
         resul.style("latexdefault");
-        resul.setNumberDecimals(2);
-
         return resul;
     }
     private int numDecimals;
@@ -74,9 +67,8 @@ public class JMNumber extends LaTeXMathObject {
     protected JMNumber(double number) {
         super();
         this.number = number;
-        this.unitString = "";
-        this.refHeight = 0;
         modelMatrix = new AffineJTransform();
+        this.formatter = new DecimalFormat("#.##");
     }
 
     @Override
@@ -89,9 +81,10 @@ public class JMNumber extends LaTeXMathObject {
     }
 
     private void updateContents() {
-        double h = this.getHeight();
-        Point center = (shapes.isEmpty() ? null : this.getCenter());
-        String text = lambdaText.apply(this.number) + unitString;
+//        double h = this.getHeight();
+//        Point center = (shapes.isEmpty() ? null : this.getCenter());
+//        String text = lambdaText.apply(this.number) + unitString;
+        String text = formatter.format(getNumber());
 
         for (Shape sh : shapes) {
             scene.remove(sh);
@@ -128,7 +121,6 @@ public class JMNumber extends LaTeXMathObject {
             sh.shift(0, BASELINES[index]);
 
         }
-        this.refHeight = this.getHeight();
 
 //        if (h > 0) {
 //            scale(h / this.refHeight);
@@ -168,54 +160,50 @@ public class JMNumber extends LaTeXMathObject {
         updateContents();
     }
 
-    /**
-     * Returns the lambda function used to convert the number into a string
-     *
-     * @return The lambda function
-     */
-    public Function<Double, String> getLambdaText() {
-        return lambdaText;
-    }
-
-    /**
-     * Sets the lambda formatting function, that converts a double number into a
-     * string. LaTeX content is automatically updated.
-     *
-     * @param lambdaText The new lambda function
-     */
-    public void setLambdaText(Function<Double, String> lambdaText) {
-        this.lambdaText = lambdaText;
-        updateContents();
-    }
-
+//    /**
+//     * Returns the lambda function used to convert the number into a string
+//     *
+//     * @return The lambda function
+//     */
+//    public Function<Double, String> getLambdaText() {
+//        return lambdaText;
+//    }
+//
+//    /**
+//     * Sets the lambda formatting function, that converts a double number into a
+//     * string. LaTeX content is automatically updated.
+//     *
+//     * @param lambdaText The new lambda function
+//     */
+//    public void setLambdaText(Function<Double, String> lambdaText) {
+//        this.lambdaText = lambdaText;
+//        updateContents();
+//    }
     /**
      * Sets the number of decimals to show
      *
      * @param <T> This subclass
-     * @param numDecimals Number of decimals to show
+     * @param format Format in DecimalFormat syntax
      * @return This object
      */
-    public <T extends JMNumber> T setNumberDecimals(int numDecimals) {
-        this.numDecimals = numDecimals;
-        this.lambdaText = t -> {
-            return String.format("%32." + numDecimals + "f", t).trim();
-        };
+    public <T extends JMNumber> T setFormat(String format) {
+        formatter.applyPattern(format);
         updateContents();
         return (T) this;
     }
 
     @Override
     public void saveState() {
-           modelMatrix.saveState();
+        modelMatrix.saveState();
         super.saveState();
-     
+
     }
 
     @Override
     public void restoreState() {
-           modelMatrix.restoreState();
+        modelMatrix.restoreState();
         super.restoreState();
-     
+
     }
 
     @Override
@@ -224,10 +212,10 @@ public class JMNumber extends LaTeXMathObject {
             return;
         }
         JMNumber n = (JMNumber) obj;
-         modelMatrix.copyFrom(n.modelMatrix);
+        modelMatrix.copyFrom(n.modelMatrix);
         super.copyStateFrom(obj);
         updateContents();
-       
+
     }
 
     private static void printArrayOfGaps() {
@@ -275,13 +263,20 @@ public class JMNumber extends LaTeXMathObject {
     @Override
     public JMNumber copy() {
         JMNumber copy = JMNumber.makeJMnumber(getNumber());
-        copy.setNumberDecimals(numDecimals);
-        copy.unitString = unitString;
-        copy.refHeight = refHeight;
+        copy.getMp().copyFrom(getMp());
+        copy.setFormat(formatter.toPattern());
         copy.modelMatrix.copyFrom(modelMatrix);
+        copy.updateContents();
         return copy;
     }
 
+    public DecimalFormat getFormatter() {
+        return formatter;
+    }
+
+    
+    
+    
     private static final String SYMBOLS = "0123456789.,-abcdefghijklmnopqrstuvwxyz";
 
     private static final double[][] GAPS = new double[][]{{0.014468161764682463, 0.023624981617672347, 0.016482647058808197, 0.015017555147096573, 0.01245363970588187, 0.01648266544117405, 0.015017573529405581, 0.017581488970620285, 0.015017573529405581, 0.015017573529405581, 0.02307558823531508, 0.02307558823531508, 0.009340312500000891, 0.01501755514703973, 0.012453658088247721, 0.013552463235328105, 0.013552463235271262, 0.01245363970588187, 0.013369338235293071, 0.012453658088247721, 0.01318619485294903, 0.01336931985292722, 3.4926466696560965E-7, 0.012453658088247721, 0.013369319852984063, 0.013186194852892186, 0.01318619485294903, 0.01245363970588187, 0.01245363970588187, 0.013552463235271262, 0.012453658088190878, 0.013369338235293071, 0.01080540441176936, 0.013186213235314881, 0.010805422794135211, 0.010622279411791169, 0.009523455882344933, 0.01080540441176936, 0.012453658088247721},

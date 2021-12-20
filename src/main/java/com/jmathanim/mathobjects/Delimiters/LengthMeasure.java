@@ -56,7 +56,6 @@ public class LengthMeasure extends Delimiter {
 //    public Rect getBoundingBox() {
 //        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
 //    }
-
 //    @Override
 //    public void draw(JMathAnimScene scene, Renderer r) {
 //        if (isVisible()) {
@@ -92,6 +91,7 @@ public class LengthMeasure extends Delimiter {
         Shape verticalBar = Shape.polyLine(Point.at(xOffset, 0), Point.at(0, vCenter), Point.at(xOffset, 2 * vCenter));
         delShape.add(verticalBar);
         double segmentLength = .5 * (width - delimiterLabel.getWidth()) - hgap;
+//        segmentLength*=amplitudeScale;
         final Shape segment = Shape.segment(Point.at(0, vCenter), Point.at(segmentLength, vCenter));
         delShape.add(segment);
 

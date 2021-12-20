@@ -33,7 +33,6 @@ public final class JMNumberLength extends JMNumber {
         super(0);
         this.A = A;
         this.B = B;
-        setNumberDecimals(2);
         update(scene);
     }
 
