@@ -350,12 +350,43 @@ textA2.setColor(colA, 0);
 textB.setColor(colB, 0);
 textC.setColor(colC, 0);
 
+//Brace    //Two rectangles
+Shape sq1 = Shape.square().scale(2.5, 1).style("solidblue");
+Shape sq2 = Shape.square().scale(1.75, 1).style("solidred");
+sq2.stackTo(sq1, Anchor.Type.RIGHT, .5);
+add(sq1, sq2);
+
+//And their legends
+//        LaTeXMathObject textA1 = LaTeXMathObject.make("$a$");
+//        LaTeXMathObject textA2 = LaTeXMathObject.make("$a$");
+//        LaTeXMathObject textB = LaTeXMathObject.make("$b$");
+//        LaTeXMathObject textC = LaTeXMathObject.make("$c$");
+//The colors chosen to the symbols a, b and c
+JMColor colA = JMColor.parse("#34403C");
+JMColor colB = JMColor.parse("#961A4C");
+JMColor colC = JMColor.parse("#6A2A5C");
+JMColor colArea = JMColor.parse("#B73A1C");
+//        textA1.setColor(colA, 0);
+//        textA2.setColor(colA, 0);
+//        textB.setColor(colB, 0);
+//        textC.setColor(colC, 0);
+
 //Brace delimiters...  .1 is the distance from the braces to the rectangles,
-//and .1 is the distance of the label mark point to the brace. The text is centered around this point
-Delimiter del1X = Delimiter.stackTo(sq1, Anchor.Type.LOWER, Delimiter.Type.BRACE, .1).setLabel(textB,.1);
-Delimiter del1Y = Delimiter.stackTo(sq1, Anchor.Type.LEFT, Delimiter.Type.BRACE, .1).setLabel(textA1,.1);
-Delimiter del2X = Delimiter.stackTo(sq2, Anchor.Type.LOWER, Delimiter.Type.BRACE, .1).setLabel(textC,.1);
-Delimiter del2Y = Delimiter.stackTo(sq2, Anchor.Type.RIGHT, Delimiter.Type.BRACE, .1).setLabel(textA2,.1);
+//and .05 is the distance from labels to the braces
+Delimiter del1X = Delimiter.stackTo(sq1, Anchor.Type.LOWER, Delimiter.Type.BRACE, .1).setLabel("$b$", .1);
+Delimiter del1Y = Delimiter.stackTo(sq1, Anchor.Type.LEFT, Delimiter.Type.BRACE, .1).setLabel("$a$", .1);
+Delimiter del2X = Delimiter.stackTo(sq2, Anchor.Type.LOWER, Delimiter.Type.BRACE, .1).setLabel("$c$", .1);
+Delimiter del2Y = Delimiter.stackTo(sq2, Anchor.Type.RIGHT, Delimiter.Type.BRACE, .1).setLabel("$a$", .1);
+
+//Need to declare this so that labels do not appear rotated (vertical delimiters)
+del1Y.setRotationType(Delimiter.Rotation.FIXED);
+del2Y.setRotationType(Delimiter.Rotation.FIXED);
+
+//Set the colors for labels only
+del1X.getLabel().color(colB);
+del1Y.getLabel().color(colA);
+del2X.getLabel().color(colC);
+del2Y.getLabel().color(colA);
 
 LaTeXMathObject textBC = LaTeXMathObject.make("$b+c$");
 textBC.setColor(colB, 0);//"b" glyph
@@ -364,7 +395,7 @@ Delimiter del12X = Delimiter.stackTo(
     MathObjectGroup.make(sq1, sq2),//We group these 2 rectangles so the brace adjust to the 2 combined
     Anchor.Type.UPPER,
     Delimiter.Type.BRACE, .1)
-    .setLabel(textBC,.1);
+    .setLabel(textBC, .1);
 
 //The upper formula  Area=a*b+a*c
 LaTeXMathObject formula1 = LaTeXMathObject.make("Area=$a\\cdot b+a\\cdot c$").scale(3);

@@ -223,10 +223,14 @@ waitSeconds(1);
 
 The `Delimiter` is a extensible sign that adjust to 2 given control points A,B. May be brackets, braces, or parenthesis.  The precise form of the delimiter is recalculated every frame so if you animate the control points the delimiter will automatically adjust to them. Note that the delimiter always draws to the "left" of segment AB, if you are looking from A to B. The last parameter of the builder is the gap you want to apply between the control point and the delimiter.
 
-With the method `setLabel(obj,gap)` (from v0.9.4-SNAPSHOT) we can stack any `MathObject`as a label, with the given gap between both. The method admits the overloaded version with a `String`that will generate a `LaTeXMathObject` automatically:
+With the method `setLabel(obj,gap)` (from v0.9.4-SNAPSHOT) we can stack any `MathObject`as a label, with the given gap between both. The method admits the overloaded version with a `String`that will generate a `LaTeXMathObject` automatically. There is also the `addLengthLabel` method that creates a label that automatically updates its contents to the current length of the delimiter.
+
+Also, from this version there are 2 new delimiters, LENGTH_ARROW and LENGTH_BRACKET.
+
+Here you can see an example with delimiters:
 
 ```java
- Shape sq = Shape.square().center().style("solidBlue");
+Shape sq = Shape.square().center().style("solidBlue");
 
 //A red brace with a x legend
 Delimiter delim1 = Delimiter.make(sq.getPoint(2), sq.getPoint(1), Delimiter.Type.BRACE, .05);
@@ -237,8 +241,12 @@ delim1.fillColor("#d35d6e");//This will set the color both to label and delimite
 Delimiter delim2 = Delimiter.make(sq.getPoint(1), sq.getPoint(0), Delimiter.Type.BRACKET, .05);
 delim2.setLabel(Shape.regularPolygon(3).scale(.1), .1);
 delim2.fillColor("#5aa469");//This will set the fill color both to label and delimiter
-delim2.getDelimiterLabel().fillColor("yellow").thickness(6);//Change style of label only
-delim2.setRotateLabel(true);//Sets the rotate flag to true
+delim2.getLabel().fillColor("yellow").thickness(6);//Change style of label only
+
+//FIXED: Label doesn't rotate.
+//ROTATE: Label rotates with the delimiter
+//SMART: Label rotates trying not to get "upside-down" (default value)
+delim2.setRotationType(Delimiter.Rotation.FIXED);
 
 //An orange parenthesis
 Delimiter delim3 = Delimiter.make(sq.getPoint(0), sq.getPoint(3), Delimiter.Type.PARENTHESIS, .05);
