@@ -68,9 +68,21 @@ public class BoxLayout extends AbstractBoxLayout {
      */
     public BoxLayout(Point corner, int rowSize, Direction direction, double inRowGap, double inColGap) {
         super(corner, inRowGap, inColGap);
+        computeDirections(direction);
         this.rowSize = rowSize;
     }
 
+    /**
+     * Overloaded method. Creates a box layout with no corner
+     *
+     * @param rowSize Numbers of element in each row. Note that "row" becomes
+     * "columns" if direction is UP_LEFT, UP_RIGHT, DOWN_LEFT or DOWN_RIGHT
+     * @param direction Direction of the box. Specifies the direction to stack
+     * the elements. A direction of RIGHT_UP will stack the row in the RIGHT
+     * direction and then UP to allocate the next row
+     * @param inRowGap Gap between 2 consecutive elements in the same row
+     * @param inColGap Gap between 2 consecutive elements in the same column
+     */
     public BoxLayout(int rowSize, Direction direction, double inRowGap, double inColGap) {
         this(null, rowSize, direction, inRowGap, inColGap);
     }

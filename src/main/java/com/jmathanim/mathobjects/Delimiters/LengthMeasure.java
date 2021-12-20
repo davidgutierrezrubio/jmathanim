@@ -101,7 +101,7 @@ public class LengthMeasure extends Delimiter {
         delimiterLabelToDraw.shift(0, vCenter + gap * amplitudeScale);
         delimiterLabelToDraw.scale(amplitudeScale);
         delShape.scale(amplitudeScale);
-        delShape.getMp().copyFrom(mpEverything);
+        delShape.getMp().copyFrom(mpDelimiter);
         AffineJTransform tr = AffineJTransform.createDirect2DHomothecy(AA, BB, A, B, 1);
         tr.applyTransform(delShape);
         tr.applyTransform(delimiterLabelToDraw);

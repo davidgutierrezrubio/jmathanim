@@ -54,7 +54,7 @@ public class ShapeDelimiter extends Delimiter {
                 break;
         }
         resul.body = new SVGMathObject(rl.getResource(name, "delimiters"));
-        resul.mpEverything.add(resul.body);
+        resul.mpDelimiter.add(resul.body);
         resul.style("latexdefault");
         return resul;
     }
@@ -63,7 +63,7 @@ public class ShapeDelimiter extends Delimiter {
         super(A, B, type, gap);
         minimumWidthToShrink = .5;
         delimiterShape = new Shape();
-        mpEverything.add(delimiterShape);
+        mpDelimiter.add(delimiterShape);
     }
 
     @Override
