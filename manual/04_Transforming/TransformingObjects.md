@@ -55,10 +55,10 @@ Note that the `.moveTo(p)`method is equivalent to `.stackTo(p, Anchor.Type.CENTE
 The `stackTo` command allows to easily generate aligned objects:
 
 ``` java
-Shape previousPol = Shape.regularPolygon(3).fillColor(JMColor.random()).thickness(3);//First polygon, with random fill color
+Shape previousPol = Shape.regularPolygon(3).fillColor(JMColor.random()).thickness(8);//First polygon, with random fill color
 add(previousPol);
 for (int n = 4; n < 10; n++) {
-    Shape pol = Shape.regularPolygon(n).fillColor(JMColor.random()).thickness(3).stackTo(previousPol, Anchor.Type.RIGHT);
+    Shape pol = Shape.regularPolygon(n).fillColor(JMColor.random()).thickness(8).stackTo(previousPol, Anchor.Type.RIGHT);
     add(pol);
     previousPol = pol;//New polygon becomes previous in the next iteration
 }
@@ -75,8 +75,8 @@ You can change the `Anchor` to other values to see how these anchors work. Apart
 By default, the `stackTo` method takes appropiate origin anchor point to align with the destination anchor point. For example `stackTo(obj,Anchor.Type.RIGHT)` will move the object so that its `LEFT` anchor (the reverse of `RIGHT`) matches the `RIGHT` anchor of the destination object. You can specify the origin and destiny anchors too. For example, this code will put a square so that its center matches the right side of a circle:
 
 ```java
-Shape sq = Shape.square().scale(.5, .5).fillColor("orange").fillAlpha(.5).thickness(3);
-Shape c = Shape.circle().scale(.5).fillColor("yellow").fillAlpha(.5).thickness(3);
+Shape sq = Shape.square().scale(.5, .5).fillColor("orange").fillAlpha(.5).thickness(8);
+Shape c = Shape.circle().scale(.5).fillColor("yellow").fillAlpha(.5).thickness(8);
 add(c, sq);
 sq.stackTo(Anchor.Type.CENTER, c, Anchor.Type.RIGHT, 0);//Center of sq goes to RIGHT of c
 waitSeconds(3);
@@ -105,15 +105,17 @@ There is shortcut method if you want to simply put the object at the center scre
 The `MathObject`class has the method `align` which aligns the object with another one, using one of the aligns in the enum `Align: LEFT, RIGHT, UPPER, LOWER, HCENTER, VCENTER`.
 
 ```java
-Line floor=Line.XAxis();
+Line floor = Line.XAxis();
 add(floor);
 for (int n = 4; n < 10; n++) {
-    Shape pol = Shape.regularPolygon(n).center().shift(Point.random().v).scale(Math.random()*.5);
-    Shape pol2=pol.copy() //Creates a copy of the polygon...
+    Shape pol = Shape.regularPolygon(n) //Creates a regular polygon with n sides...
+        .moveTo(Point.random()) //Move its center to a random point on current view...
+        .scale(Math.random() * .5);//And scale it randomly between 0 and 0.5
+    Shape pol2 = pol.copy() //Creates a copy of the polygon...
         .fillColor(JMColor.random()) //fill it with a random color...
-        .thickness(3) //With this thicknes...
-        .align(floor, MathObject.Align.LOWER);//And align bottom of the object with floor
-    add(pol,pol2);
+        .thickness(6) //With this thickness...
+        .align(floor, MathObject.Align.LOWER);//And align the bottom of the object with object floor
+    add(pol, pol2);
 }
 camera.adjustToAllObjects();//Everyone should appear in the photo
 waitSeconds(5);//Smile!
@@ -128,10 +130,29 @@ waitSeconds(5);//Smile!
 All `MathObject` instances can be scaled with the `scale` command. Scaling can be done from a given scale center or by default, the center of the object  bounding box.
 
 ``` java
-add(Shape.circle().shift(-1, 0).scale(.5, 1));//x-scale and y-scale around center
-add(Shape.circle().shift(0, 1).scale(Point.at(0, 0), 1.3, .2));//x-scale and y-scale around (0,0)
-add(Shape.square().shift(1, 0).scale(.3)); //Uniform scale around center
-waitSeconds(5);
+@Override
+public void setupSketch() {
+    config.parseFile("#preview.xml");
+    config.parseFile("#light.xml");
+}
+
+@Override
+public void runSketch() throws Exception {
+    Shape s1=Shape.circle()//A circle...
+        .style("solidorange")//Style solidorange (included in #light.xml)
+        .shift(-1, 0) //Shifted 1 unit to the left
+        .scale(.5, 1);//x-scale and y-scale around center
+    Shape s2=Shape.regularPolygon(5)//A regular pentagon...
+        .style("solidred")//Style solidred (included in #light.xml)
+        .shift(0, 1)//Shifted 1 unit up
+        .scale(Point.at(0, 0), 1.3, .2);//x-scale and y-scale around (0,0)
+    Shape s3=Shape.square() //A square...
+        .style("solidblue")//Style solidblue (included in #light.xml)
+        .shift(1, 0)//shifted 1 unit to the left
+        .scale(.3); //Uniform scale around center
+    add(s1,s2,s3);
+    waitSeconds(5);
+}
 ```
 
 produces the result:
@@ -144,12 +165,13 @@ The `rotate` command rotates the object around a given center (or the center of 
 For example:
 
 ``` java
-Shape ellipse=Shape.circle().scale(.5,1);//Creates an ellipse
-Point rotationCenter=Point.at(.5,0);
-for (int n = 0; n < 180; n+=20) {
-    add(ellipse.copy().rotate(rotationCenter,n*DEGREES));
-}
-waitSeconds(5);
+   Shape ellipse = Shape.circle().scale(.5, 1);//Creates an ellipse
+        ellipse.fillColor("violet").fillAlpha(.25);//fill violet 25% opacity
+        Point rotationCenter = Point.at(.5, 0);
+        for (int n = 0; n < 180; n += 20) {
+            add(ellipse.copy().rotate(rotationCenter, n * DEGREES));
+        }
+        waitSeconds(5);
 ```
 
 Gives this spirograh-like picture:
@@ -230,7 +252,7 @@ waitSeconds(5);
 There is also a more general way to define an affine transform using `createAffineTransformation(Point A, Point B, Point C, Point D, Point E, Point F, double lambda)`. It returns the (only) affine transform that maps the points (A,B,C) into (D,E,F), with the `lambda` interpolation parameter as in the previous methods. Here’s an example:
 
 ``` java
-Shape sq = Shape.square().drawColor("brown").thickness(3);
+Shape sq = Shape.square().drawColor("brown").thickness(6);
 Shape circ = Shape.circle().scale(.5).shift(.5, .5).fillColor("orange").fillAlpha(.1);//A circle inscribed into the square
 //We create the points with layer(1) so that the draw over the square and circles (by default in layer 0)
 Point A = Point.at(0, 0).drawColor("darkblue").layer(1); 
@@ -265,7 +287,7 @@ The following code shows all current layouts, with a set of 10 increasing square
 MathObjectGroup group = MathObjectGroup.make();
 double h = 0;//This will hold the total height of the squares, to properly zoom out the camera later
 for (int n = 0; n < 10; n++) {
-    Shape square = Shape.square().scale(.2 + .1 * n).fillColor(JMColor.random()).fillAlpha(.5).thickness(3);
+    Shape square = Shape.square().scale(.2 + .1 * n).fillColor(JMColor.random()).fillAlpha(.5).thickness(6);
     h += square.getHeight();
     group.add(square);
 }
@@ -294,13 +316,13 @@ The `BoxLayout` allocates the objects in a matrix form:
 MathObjectGroup gr = MathObjectGroup.make();
 int num = 16;
 for (int n = 0; n < num; n++) {
-    MathObject sq = Shape.square().scale(.25).fillColor("violet").fillAlpha(1 - 1. * (n+1) / num).thickness(3);
+    MathObject sq = Shape.square().scale(.25).fillColor("violet").fillAlpha(1 - 1. * (n+1) / num).thickness(6);
     LaTeXMathObject t = LaTeXMathObject.make("" + n);
     t.stackTo(sq, Anchor.Type.CENTER).layer(1);
     gr.add(MathObjectGroup.make(sq, t));//Each object of the group is itself a group with 2 elements
 }
 Point refPoint = Point.origin(); //The reference point to locate the box
-add(refPoint.thickness(2).drawColor(JMColor.RED).layer(1));
+add(refPoint.thickness(40).drawColor(JMColor.RED).layer(1));
 BoxLayout layout = new BoxLayout(refPoint, 4, BoxLayout.Direction.RIGHT_UP, .1, .1);//This is where the magic happens
 add(gr.setLayout(layout));
 camera.zoomToAllObjects();
@@ -401,7 +423,7 @@ for (int n = 0; n < num; n++) {//Create random bars
 }
 double width = 2;
 final Point corner = Point.relAt(.1, .9);
-add(corner.thickness(2).drawColor("red").layer(1));
+add(corner.thickness(40).drawColor("red").layer(1));
 add(Line.YAxis().shift(corner.v.add(Vec.to(width, 0))));//Draw vertical lines to mark the margins
 add(Line.YAxis().shift(corner.v.add(Vec.to(0, 0))));
 FlowLayout flayout = new FlowLayout(corner, width, AbstractBoxLayout.Direction.RIGHT_DOWN, 0,0);
@@ -429,14 +451,14 @@ We illustrate this with an example. Here we use as inner layout a `BoxLayout` an
 MathObjectGroup gr = MathObjectGroup.make();
 int num = 54;
 for (int n = 0; n < num; n++) {//Creates a group with 54 numbered squares
-    MathObject sq = Shape.square().scale(.25).fillColor("violet").fillAlpha(1 - 1. * (n + 1) / num).thickness(3);
+    MathObject sq = Shape.square().scale(.25).fillColor("violet").fillAlpha(1 - 1. * (n + 1) / num).thickness(6);
     LaTeXMathObject t = LaTeXMathObject.make("" + n);
     t.stackTo(sq, Anchor.Type.CENTER).layer(1);
     gr.add(MathObjectGroup.make(sq, t));//Each object of the group is itself a group with 2 elements
 }
 
 Point refPoint = Point.origin(); //The reference point to locate the outer layout
-add(refPoint.thickness(2).drawColor(JMColor.RED).layer(1));//add this point so we can see it clearly
+add(refPoint.thickness(40).drawColor(JMColor.RED).layer(1));//add this point so we can see it clearly
 
 GroupLayout innerLayout = new BoxLayout(refPoint, 3, BoxLayout.Direction.RIGHT_DOWN, 0, 0);
 GroupLayout outerLayout = new PascalLayout(refPoint, .1, .1);

@@ -142,16 +142,16 @@ By default, LaTeX formulas are placed at the center of the screen.
 This class represents an infinite line. Of course, the "trick" is that in every frame it draws the visible part. Several static builder are implemented:
 
 ```java
-Point A=Point.at(1, 1);
-Point B=Point.at(0,1);
-Vec v=Vec.to(1,.2);
-Line line1=Line.make(A, B).drawColor(JMColor.RED).thickness(3);//Line that pass through A and B, color red
-Line line2=Line.make(A, v).drawColor(JMColor.BLUE).thickness(2);//Line that pass through A and A+v, color blue
-Line line3=Line.XAxis().drawColor("darkorange");//Line y=0, color dark orange
-Line line4=Line.YAxis().drawColor("darkmagenta");//Line x=0, color dark magenta
-Line line5=Line.XYBisector().drawColor("darkgreen");//Line y=x, color dark green
-add(line1,line2,line3,line4,line5);//Add everything to the scene
-play.shift(5, -1,-1.5, A);//Animates the point A moving (-1,-1.5) for 5 seconds
+Point A = Point.at(1, 1);
+Point B = Point.at(0, 1);
+Vec v = Vec.to(1, .2);
+Line line1 = Line.make(A, B).drawColor(JMColor.RED).thickness(6);//Line that pass through A and B, color red
+Line line2 = Line.make(A, v).drawColor(JMColor.BLUE).thickness(10);//Line that pass through A and A+v, color blue
+Line line3 = Line.XAxis().drawColor("darkorange");//Line y=0, color dark orange
+Line line4 = Line.YAxis().drawColor("darkmagenta");//Line x=0, color dark magenta
+Line line5 = Line.XYBisector().drawColor("darkgreen");//Line y=x, color dark green
+add(line1, line2, line3, line4, line5);//Add everything to the scene
+play.shift(5, -1, -1.5, A);//Animates the point A moving (-1,-1.5) for 5 seconds
 waitSeconds(3);
 ```
 

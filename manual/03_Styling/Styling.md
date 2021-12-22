@@ -14,7 +14,7 @@ Each object has 2 colors: the draw color (changed with `.drawColor`), used drawi
 Shape r = Shape.regularPolygon(5)
 	.fillColor(JMColor.parse("CADETBLUE"))
     .drawColor(JMColor.parse("#041137"))
-    .thickness(5);
+    .thickness(15);
 ```
 When added to the scene, it will show something like this:
 
@@ -85,7 +85,7 @@ axes.generatePrimaryXTicks(-2, 2, .5)
     .drawColor(axesGradient);
 
 FunctionGraph fg = FunctionGraph.make(x -> Math.sin(x), -2, 2);
-fg.drawColor(functionGradient).thickness(4);
+fg.drawColor(functionGradient).thickness(10);
 
 add(axes, fg);
 waitSeconds(3);
@@ -262,6 +262,11 @@ You can have several config files with different, independent aspects. This is t
             <fillColor>#00000000</fillColor>
             <thickness>4</thickness>
         </style>
+          <style name="dotdefault">
+            <drawColor>black</drawColor>
+            <fillColor>#00000000</fillColor>
+            <thickness>30</thickness>
+        </style>  
         <style name="latexdefault">
             <drawColor>black</drawColor>
             <fillColor>black</fillColor>
@@ -287,6 +292,37 @@ You can have several config files with different, independent aspects. This is t
             <fillColor>orange</fillColor>
             <thickness>8</thickness>
         </style>
+            <style name="1">
+            <drawColor>#07004D</drawColor>
+            <thickness>30</thickness>
+            <dotStyle>circle</dotStyle>
+        </style>
+        <style name="2">
+            <drawColor>#BF2500</drawColor>
+            <thickness>30</thickness>
+            <dotStyle>cross</dotStyle>
+        </style>
+        <style name="3">
+            <drawColor>#5D2E8C</drawColor>
+            <thickness>30</thickness>
+            <dotStyle>plus</dotStyle>
+        </style>
+          <style name="fn1">
+            <drawColor>#0F4C5C</drawColor>
+            <fillColor>none</fillColor>
+            <thickness>8</thickness>
+        </style> 
+         <style name="fn2">
+            <drawColor>#9A031E</drawColor>
+            <fillColor>none</fillColor>
+            <thickness>8</thickness>
+        </style> 
+         <style name="fn3">
+            <drawColor>#5F0F40</drawColor>
+            <fillColor>none</fillColor>
+            <dashStyle>DASHED</dashStyle>
+            <thickness>4</thickness>
+        </style> 
     </styles>
 </JMathAnimConfig>
 ```
