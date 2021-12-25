@@ -163,12 +163,12 @@ public class UsefulLambdas {
             @Override
             public double applyAsDouble(double t) {
                 if (t < a) {
-                    return norm * t * (a - t);
+                    return Math.min(1,norm * t * (a - t));
                 }
                 if (t < c) {
-                    return (a - t) * (t - c) * norm;
+                    return Math.min(1,(a - t) * (t - c) * norm);
                 } else {
-                    return (c - t) * (t - 1) * norm;
+                    return Math.min(1,(c - t) * (t - 1) * norm);
                 }
             }
         };

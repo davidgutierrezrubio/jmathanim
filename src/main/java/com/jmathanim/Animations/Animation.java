@@ -223,6 +223,10 @@ public abstract class Animation {
             resul = true;
         }
         t += dt;
+        //If t is closer to 1 than dt, make it 1
+        if ((t<1)&&(1 - t < dt)) {
+            t = 1;
+        }
         return resul;
     }
 

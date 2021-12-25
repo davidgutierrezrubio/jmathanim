@@ -62,9 +62,7 @@ public class JoinAnimation extends Animation {
     @Override
     public void doAnim(double t) {
         double lt = getLambda().applyAsDouble(t);
-
         int num = getAnimationNumberForTime(lt);
-
         //Now normalize from 0 to 1
         double ltNormalized = (lt - steps[num]) / (steps[num + 1] - steps[num]);
         Animation anim = animations.get(num);
