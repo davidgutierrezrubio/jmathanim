@@ -222,8 +222,11 @@ public class ShowCreation extends Animation {
                 JMathAnimScene.logger.debug("ShowCreation method: GroupCreationStrategy");
                 break;
             case LINE_CREATION:
+                final Shape lineToCreate = ((Line) mobj).toSegment(scene.getCamera());
+                removeThisAtTheEnd.add(lineToCreate);
+                addThisAtTheEnd.add(mobj);
 //                creationStrategy = new LineCreationAnimation(this.runTime, (Line) mobj);
-                creationStrategy = new SimpleShapeCreationAnimation(this.runTime, ((Line) mobj).toSegment(scene.getCamera()));
+                creationStrategy = new SimpleShapeCreationAnimation(this.runTime, lineToCreate);
                 JMathAnimScene.logger.debug("ShowCreation method: LineCreationStrategy");
                 break;
             case ARROW_CREATION:
@@ -264,7 +267,7 @@ public class ShowCreation extends Animation {
                 JMathAnimScene.logger.debug("ShowCreation method: FirstDrawThenFillStrategy");
                 break;
             case LATEX_CREATION:
-                  LaTeXMathObject lat = (LaTeXMathObject) mobj;
+                LaTeXMathObject lat = (LaTeXMathObject) mobj;
                 removeThisAtTheEnd.addAll(lat.getShapes());
                 addThisAtTheEnd.add(mobj);
                 creationStrategy = new FirstDrawThenFillAnimation(runTime, lat);
@@ -272,7 +275,6 @@ public class ShowCreation extends Animation {
                 break;
             case AXES_CREATION:
                 creationStrategy = new AxesCreationAnimation(runTime, (Axes) mobj);
-
             default:
                 break;
         }
