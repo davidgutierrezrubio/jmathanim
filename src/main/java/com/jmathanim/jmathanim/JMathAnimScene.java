@@ -320,11 +320,11 @@ public abstract class JMathAnimScene {
             if (obj instanceof MultiShapeObject) {
                 sceneObjects.remove(obj);
                  unregisterUpdateable(obj);
-//                MultiShapeObject msh = (MultiShapeObject) obj;
-//                msh.isAddedToScene = false;
-//                for (Shape o : msh) {
-//                    this.remove(o);
-//                }
+                MultiShapeObject msh = (MultiShapeObject) obj;
+                msh.isAddedToScene = false;
+                for (Shape o : msh) {
+                    this.remove(o);
+                }
             }
 
             if (obj instanceof MathObjectGroup) {
