@@ -199,81 +199,6 @@ If you change the parameter .5 to .75, with `anim.addDelayEffect(.75)`  the anim
 
 ![delayEffect3](delayEffect3.gif)
 
-## Delay effect in AnimationGroup
-
-Since version 0.9.3-SNAPSHOT, the delay effect is also implemented in the `AnimationGroup`:
-
-```java
-@Override
-public void setupSketch() {
-    config.parseFile("#production.xml");
-    config.parseFile("#light.xml");
-}
-
-@Override
-public void runSketch() throws Exception {
-    double runtime = 3;
-    Shape box = Shape.square().scale(1.5, 1).center().style("solidgreen");
-
-    Delimiter delWidth = Delimiter.make(box.getBoundingBox().getUR(), box.getBoundingBox().getDR(), Delimiter.Type.BRACE, .1);
-    LaTeXMathObject textWidth = LaTeXMathObject.make("height").stackTo(delWidth, Anchor.Type.RIGHT, .1);
-
-    Delimiter delHeight = Delimiter.make(box.getBoundingBox().getDR(), box.getBoundingBox().getDL(), Delimiter.Type.BRACE, .1);
-    LaTeXMathObject textHeight = LaTeXMathObject.make("width").stackTo(delHeight, Anchor.Type.LOWER, .1);
-
-    AnimationGroup ag = AnimationGroup.make(
-        Commands.growIn(runtime, box),
-        AnimationGroup.make(//Note that we include this in its own group so that they are animated at the same time
-            new ShowCreation(runtime, delWidth),
-            new ShowCreation(runtime, textWidth),
-            new ShowCreation(runtime, delHeight),
-            new ShowCreation(runtime, textHeight))
-    );
-
-    playAnimation(ag.addDelayEffect(.25));
-    waitSeconds(3);
-}
-```
-
-![delayEffect4](delayEffect4.gif)
-
-# Creating complex animations
-
-There are special subclasses of `Animation`that allows to build more complex animations using previously defined ones.
-
-## The wait animation
-
-This `WaitAnimation` does what it says. It simply waits for specified amount of time. Sounds exciting right? This is used for example in the `ShowCreation` animation when applied to a `LaTexMathObject`, where each shape must wait a certain time, to make the left-to-right appear illusion.
-
-## The concatenate animation
-
-The `Concatenate`class allows to play animations in sequence
-
-```java
-Shape sq = Shape.square().fillColor("seagreen").thickness(3).center();
-Animation shift = Commands.shift(2, 1, 0, sq);
-Animation rotate = Commands.rotate(2, -PI/2, sq);
-Concatenate c=new Concatenate(shift,rotate);
-playAnimation(c);
-waitSeconds(1);
-```
-
-
-
-![concatenate01](concatenate01.gif)
-
-## The AnimationGroup animation
-
-The `AnimationGroup` plays all the animations at the same. It finishes when the last one has ended. The example of the combined shift and rotate can be written as
-
-```java
-Shape sq = Shape.square().fillColor("seagreen").thickness(3).center();
-Animation shift = Commands.shift(5, 1, 0, sq);
-Animation rotate = Commands.rotate(5, -PI/2, sq).setUseObjectState(false);
-AnimationGroup ag=new AnimationGroup(shift,rotate);
-playAnimation(ag);
-waitSeconds(3);
-```
 
 # Controlling the animations with lambda functions
 
@@ -485,6 +410,115 @@ for (double t = 0;  t< numberOfSeconds; t+=dt) {
 Note that when the rotation is finished subsequent calls to `processAnimation` have no effect:
 
 ![procedural02](procedural02.gif)
+
+
+
+# Creating complex animations
+
+There are special subclasses of `Animation`that allows to build more complex animations using previously defined ones.
+
+## The wait animation
+
+This `WaitAnimation` does what it says. It simply waits for specified amount of time. Sounds exciting right? This is used for example in the `ShowCreation` animation when applied to a `LaTexMathObject`, where each shape must wait a certain time, to make the left-to-right appear illusion.
+
+## The AnimationGroup animation
+
+The `AnimationGroup` plays all the animations at the same. It finishes when the last one has ended. The example of the combined shift and rotate can be written as
+
+```java
+Shape sq = Shape.square().fillColor("seagreen").thickness(3).center();
+Animation shift = Commands.shift(5, 1, 0, sq);
+Animation rotate = Commands.rotate(5, -PI/2, sq).setUseObjectState(false);
+AnimationGroup ag=new AnimationGroup(shift,rotate);
+playAnimation(ag);
+waitSeconds(3);
+```
+
+## The concatenate animation
+
+The `Concatenate`class allows to play animations in sequence
+
+```java
+Shape sq = Shape.square().fillColor("seagreen").thickness(3).center();
+Animation shift = Commands.shift(2, 1, 0, sq);
+Animation rotate = Commands.rotate(2, -PI/2, sq);
+Concatenate c=new Concatenate(shift,rotate);
+playAnimation(c);
+waitSeconds(1);
+```
+
+![concatenate01](concatenate01.gif)
+
+## The JoinAnimation
+
+The `JoinAnimation`class is similar to the previous `Concatenate`animation, but treats all contained animations as one. For example, the code:
+
+```java
+Shape sq = Shape.regularPolygon(5).center().style("solidred");
+JoinAnimation anim = JoinAnimation
+        .make(6,
+        ShowCreation.make(2, sq),
+        Commands.shift(1, 1, 0, sq),
+        Commands.rotate(1, PI / 4, sq));
+playAnimation(anim);
+waitSeconds(3);
+```
+
+This code will create a single animation with a total duration of 6 seconds, that creates the square, shifts it and finally performs a rotation. The duration of each subanimation is proportional to its runtime. o, the `Showcreation`will take twice the time of the `shift` and `rotate`animations:
+
+![joinAnimation1](joinAnimation1.gif)
+
+The great advantage over `Concatenate`is that you can apply lambdas to the whole animation as one: If you add the following line right before the `playAnim` method
+
+```java
+anim.setLambda(UsefulLambdas.backAndForth());
+```
+
+You will get the animation played back and forth:
+
+![joinAnimation2](joinAnimation2.gif)
+
+
+
+Another advantage of this class is that you can reuse the animation after finished. In the next example we use an animation to "unwrap" the hexagon, and later reuse it with a different lambda to wrap it again:
+
+```java
+Shape polygon = Shape.regularPolygon(6)
+    .scale(.5)
+    .stackToScreen(Anchor.Type.LEFT,.1,.1)
+    .drawColor("steelblue")
+    .thickness(20);
+polygon.getPath().openPath();
+polygon.rotate(-60 * DEGREES);
+add(polygon);
+JoinAnimation unwrap = JoinAnimation.make(5);
+for (int i = 1; i < polygon.size(); i++) {
+    //MathObjectGroup with vertices i...6
+    MathObjectGroup vertices = MathObjectGroup.make();
+    vertices.getObjects().addAll(polygon.getPath().jmPathPoints.subList(i, polygon.size()));
+    unwrap.add(Commands.rotate(1, polygon.get(i).p, -60 * DEGREES, vertices).setLambda(t->t));
+}
+playAnimation(unwrap);
+
+Point A=polygon.getBoundingBox().getLeft();
+Point B=polygon.getBoundingBox().getRight();
+Delimiter del=Delimiter.make(B, A, Delimiter.Type.LENGTH_ARROW, .1);
+del.setLabel("Perimeter", .1);
+del.getLabel().scale(.5);
+play.showCreation(del);
+waitSeconds(3);
+play.fadeOut(del);
+//Set lambda of unwrap to play reverse
+unwrap.setLambda(UsefulLambdas.reverse());
+playAnimation(unwrap);//play it again
+waitSeconds(3);
+```
+Gives the following animation:
+
+![joinAnimation3](joinAnimation3.gif)
+
+
+
 
 [home](https://davidgutierrezrubio.github.io/jmathanim/) [back](../index.html)
 
