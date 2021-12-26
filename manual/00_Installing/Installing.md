@@ -22,7 +22,7 @@ JMathAnim is a Java library using Maven as deployment tool. As as result, you ca
 
 ![image-20201110145453859](04_Install.png)
 
-You need to add the dependencies to add JMathAnim library to your project. You can use the latest released version (right now v0.9.3) or a snapshot version. Currently I recommend using development snapshots because released versions <1.0.0 may still have bugs, that are periodically solved in the snapshot versions before releasing a new one.
+You need to add the dependencies to add JMathAnim library to your project. You can use the latest released version (right now v0.9.4) or a snapshot version. Currently I recommend using development snapshots because released versions <1.0.0 may still have bugs, that are periodically solved in the snapshot versions before releasing a new one.
 
 If you want the released version, add
 
@@ -31,7 +31,7 @@ If you want the released version, add
     <dependency>
         <groupId>com.github.davidgutierrezrubio</groupId>
         <artifactId>JMathAnim</artifactId>
-        <version>0.9.3</version>
+        <version>0.9.4</version>
     </dependency>
 </dependencies>
 ```
@@ -51,7 +51,7 @@ If you want to use the snapshot version, you need to add also the repository whe
     <dependency>
         <groupId>com.github.davidgutierrezrubio</groupId>
         <artifactId>JMathAnim</artifactId>
-        <version>0.9.4-SNAPSHOT</version>
+        <version>0.9.5-SNAPSHOT</version>
     </dependency>
 </dependencies>
 ```
@@ -70,7 +70,7 @@ If you want to use the snapshot version, you need to add also the repository whe
 
 # Javadocs
 
-The classes and methods are (almost all of them) documented in javadoc style. If you want to download them, in Netbeans is pretty straightforwad. Simply go to the project tree under the "Dependencies" folder and, right-click on "jmathanim" and select the "download javadoc" option.
+The classes and methods are (almost all of them) documented in javadoc style. If you want to download them, in Netbeans is pretty straightforward. Simply go to the project tree under the "Dependencies" folder and, right-click on "jmathanim" and select the "download javadoc" option.
 
 # Writing the basic code
 7) Hit the "Clean and build" button. This will tell Maven to download all needed dependencies. Should download JavaFX and Xuggler, which, depending on you bandwidth, may take a few minutes. Then we will make this class a subclass of `Scene2D`. If everything goes well, the autocomplete should show the `Scene2D`class, and it will require you to implement the 2 abstract methods `setupSketch()` and `runSketch()`:

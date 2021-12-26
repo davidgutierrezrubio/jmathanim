@@ -1,6 +1,6 @@
 ![logo](logo.gif)
 
-JMathAnim is a library written in JAVA intended to simplify the process of doing mathematical animations. Current version is 0.9.3. 
+JMathAnim is a library written in JAVA intended to simplify the process of doing mathematical animations. Current version is 0.9.4. 
 
 If you use it and find a bug/missing feature, feel free to fill an issue [here](https://github.com/davidgutierrezrubio/jmathanim/issues). For any other question, you can contact me at davidgutierrezrubio@gmail.com.
 
@@ -11,7 +11,7 @@ You can also follow my [Youtube](https://www.youtube.com/channel/UCeczwEqSrAwZbP
 
 # What's new?
 
-Version 0.9.4-SNAPSHOT:
+Version 0.9.4 released (12/26/2021)
 
 * Added configuration flag `config.setShowDebugFrameNumbers` to superimpose frame number on animation.
 * Improved implementation of delimiters. Now they are proper Shape objects instead of pure fill objects .
