@@ -158,6 +158,7 @@ public class Arrow2D extends MathObject {
 
 		MultiShapeObject resul = Arrow2D.buildArrowHead(type);
 		resul.getMp().copyFrom(getMp());
+                resul.thickness(4);
 		return resul;
 	}
 
