@@ -94,6 +94,7 @@ public class TippableObject extends MathObject {
 		MultiShapeObject arrowHead = Arrow2D.buildArrowHead(type);
 		arrowHead.fillColor(shape.getMp().getDrawColor());
 		arrowHead.drawColor(shape.getMp().getDrawColor());
+                arrowHead.thickness(4);
 		TippableObject resul = new TippableObject(); // shape,location,slopeDirection.POSITIVE,equalLengthTip);
 		resul.shape = shape;
 		resul.setLocation(location);
