@@ -464,7 +464,7 @@ playAnimation(anim);
 waitSeconds(3);
 ```
 
-This code will create a single animation with a total duration of 6 seconds, that creates the square, shifts it and finally performs a rotation. The duration of each subanimation is proportional to its runtime. o, the `Showcreation`will take twice the time of the `shift` and `rotate`animations:
+This code will create a single animation with a total duration of 6 seconds, that creates the square, shifts it and finally performs a rotation. The duration of each subanimation is proportional to its runtime. So, the `Showcreation`will take twice the time of the `shift` and `rotate`animations:
 
 ![joinAnimation1](joinAnimation1.gif)
 
@@ -479,6 +479,8 @@ You will get the animation played back and forth:
 ![joinAnimation2](joinAnimation2.gif)
 
 
+
+The default lambda in the `JoinAnimation`class is linear `t->t`.
 
 Another advantage of this class is that you can reuse the animation after finished. In the next example we use an animation to "unwrap" the hexagon, and later reuse it with a different lambda to wrap it again:
 
@@ -516,6 +518,41 @@ waitSeconds(3);
 Gives the following animation:
 
 ![joinAnimation3](joinAnimation3.gif)
+
+Most animations cannot be properly played again with different lambdas after used, unless contained in a `JoinAnimation`object. Consider the following example, where we have 2 rotating squares, the right one contained into a `JoinAnimation`. When playing reversed after finished,  the right one can properly play the animation:
+
+```java
+//2 squares...
+Shape sq = Shape.square().style("solidred");
+Shape sq2 = sq.copy().style("solidblue").shift(2, 0);
+//labels placed under the squares...
+LaTeXMathObject t1 = LaTeXMathObject.make("{\\tt Commands.rotate}")
+    .scale(.6).stackTo(sq, Anchor.Type.LOWER, .4);
+LaTeXMathObject t2 = LaTeXMathObject.make("{\\tt JoinAnimation}")
+    .scale(.6).stackTo(sq2, Anchor.Type.LOWER, .4);
+LaTeXMathObject type = LaTeXMathObject.make("Direct").color("darkblue");
+add(sq, sq2, t1, t2, type);
+camera.centerAtAllObjects();
+//After camera is updated, we put the type object in the upper side of visible part
+type.stackToScreen(Anchor.Type.UPPER, .2, .2);
+Animation rotate1 = Commands.rotate(5, PI / 4, sq);
+Animation rotate2 = JoinAnimation.make(5, Commands.rotate(5, PI / 4, sq2));
+playAnimation(rotate1, rotate2);
+type.setLaTeX("Reverse");
+rotate1.setLambda(UsefulLambdas.reverse());
+rotate2.setLambda(UsefulLambdas.reverse());
+//Play again the finished animations, in reverse:
+playAnimation(rotate1, rotate2);
+waitSeconds(2);
+```
+
+Here is a GIF from the movie generated when you can see how embedding the animation into a `JoinAnimation`returns the square to its original state after played in reverse:
+
+![joinAnimation4](joinAnimation4.gif)
+
+
+
+
 
 
 
