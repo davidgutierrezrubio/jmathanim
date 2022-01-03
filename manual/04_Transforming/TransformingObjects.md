@@ -339,12 +339,12 @@ The gaps are not the usual horizontal and vertical gaps, but the in-row-gap, and
 
 <img src="boxlayout02.png" alt="image-20210320114251701" style="zoom:67%;" />
 
-The `BoxLayout` has the methods `getRowGroups` and `getColumnGroups` which returns a `MathObjectGroup` with its elements others `MathObjectGroup` objects, each one with the elements of a row (or column).
+The `BoxLayout` has the methods `getRowGroups` and `getColumnGroups` which returns a `MathObjectGroup` with its elements other `MathObjectGroup` objects, each one with the elements of a row (or column).
 
 For example, if you add the following lines right before the `waitSeconds`command in the previous code, you can assign random fill colors to each row:
 
 ```java
-for(MathObject rows:layout.getRowGroups(gr)) {//Iterate over the rows
+for(MathObjectGroup rows:layout.getRowGroups(gr)) {//Iterate over the rows
 	rows.fillColor(JMColor.random());
 }
 ```
@@ -369,9 +369,9 @@ You will get the objects in a spiral form:
 
 <img src="spirallayout01.png" alt="image-20210317091043689" style="zoom: 50%;" />
 
-The orientation parameters specifies if spiral is clockwise or counterclockwise and the position of the second object relative to the first one (which is centered at the reference point). The gaps are the usual horizontal and vertical gaps.
+The orientation parameter specifies if the spiral is clockwise or counterclockwise and the position of the second object relative to the first one (which is centered at the reference point). The gaps are the usual horizontal and vertical gaps.
 
-This class has the attribute `spiralGap` that admits an integer parameter that controls the aperture of the spiral. The default value is 0. A value of 1 will leave a single space between consecutive turns of the spiral. A value of 2 will leave 2 spaces, etc. If in the previous example we make the following change in the number of squares and the creation of the layout:
+This class has the method`setSpiralGap` that admits an integer parameter that controls the aperture of the spiral. The default value is 0. A value of 1 will leave a single space between consecutive turns of the spiral. A value of 2 will leave 2 spaces, etc. If in the previous example we make the following change in the number of squares and the creation of the layout:
 
 ```java
 int num=50;//Now we are creating more squares!

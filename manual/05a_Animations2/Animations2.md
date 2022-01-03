@@ -464,7 +464,7 @@ playAnimation(anim);
 waitSeconds(3);
 ```
 
-This code will create a single animation with a total duration of 6 seconds, that creates the square, shifts it and finally performs a rotation. The duration of each subanimation is proportional to its runtime. So, the `Showcreation`will take twice the time of the `shift` and `rotate`animations:
+This code will create a single animation with a total duration of 6 seconds, that creates the pentagon, shifts it and finally performs a rotation. The duration of each subanimation is proportional to its runtime. So, the `Showcreation`will take twice the time of the `shift` and `rotate`animations:
 
 ![joinAnimation1](joinAnimation1.gif)
 
