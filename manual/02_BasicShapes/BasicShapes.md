@@ -340,7 +340,7 @@ Let's see with an example: I used a free SVG file example from https://freesvg.o
 
 ```java
 public void setupSketch() {
-    config.setBackgroundColor(JMColor.WHITE);
+    config.parseFile("#light.xml");
     }
 
     @Override
@@ -361,8 +361,6 @@ You'll obtain something like this:
 
 
 For this to work, the `donaldKnuth.svg` file must be located at `<your_project_root_dir>/resources/images/` folder. Later we will see the structure of the `resources` folder.
-
-Notice the command `config.setBackgroundColor(JMColor.WHITE)` we had to put in the `setupSketch` part. It's self-explicative. It simply sets the background color to white, so that we can see the svg we are importing.
 
 > **WARNING**: The SVG import capabilities are currently limited, not all SVG commands are implemented, like gradients or the ARC command. So, not all SVG files can be imported succesfully.
 

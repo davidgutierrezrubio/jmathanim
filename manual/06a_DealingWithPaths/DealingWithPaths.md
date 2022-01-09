@@ -48,8 +48,8 @@ Here we have drawed a `Shape`object with name `ellipse`. The method `ellipse.get
 iterates over all the elements of the path. Each element of a `JMPath` is a `JMpathPoint`class that stores 3 important `Point`objects:
 
 * The `.p` object that stores the actual point of the shape (in the picture, in green color).
-* The `.cpEnter`object that stores a control point that controls how the curve should approach to the point.
-* The `.cpExit`object that stores a control point that controls how the curve should get away from the point.
+* The `.cpEnter`object that stores a control point that controls how the curve should approach to the point (in the picture, in blue color).
+* The `.cpExit`object that stores a control point that controls how the curve should get away from the point (in the picture, in red color).
 
 Each `JMPathPoint` so, has information of the precise shape of the curve in this point. When passed this information to the renderer, a cubic Bezier curve is drawed using the parameters of 2 consecutive jmpathpoints.
 
@@ -59,7 +59,9 @@ If you set the flag to show debug points with the command `ellipse.setShowDebugP
 
 <img src="01b_EllipseDebug.png" alt="01b_EllipseDebug" style="zoom:50%;" />
 
- Each `JMPathPoint`is a subclass of the`MathObject` so you can apply the usual transformations like `rotate`,`scale`, `shift`or any affine transformation. JMathAnim will transform the shape point and the control points accordingly. For example, if we add the 3 lines right before the `waitSeconds` command:
+ Each `JMPathPoint`is a subclass of the`MathObject` so you can apply the usual transformations like `rotate`,`scale`, `shift`or any affine transformation. JMathAnim will transform the shape point and the control points accordingly. 
+
+You can also apply these transforms to individual jmpathpoints. For example, if we add the 3 lines right before the `waitSeconds` command:
 
 ```java
 play.shift(4,-1,0,ellipse.get(0));
@@ -177,7 +179,7 @@ camera.centerAtAllObjects();
 waitSeconds(3);
 ```
 
-Note how the indices change (the index 0 is covered by the indices 4 and 7 respectively):
+Note how the indices change (the index 0 is hidden by the indices 4 and 7 respectively):
 
 
 
@@ -255,10 +257,10 @@ The `JMPath`command `.subpath(double a, double b)` returns the subpath that goes
 You can directly extract the subshape with the `Shape` method `getSubShape(double a, double b)` that works in a similar way. A new shape with the same styling parameters will be created. For example:
 
 ```java
-Shape c = LaTeXMathObject.make("F").get(0).center().setHeight(2);
-Shape c2=c.getSubShape(.2, .76);
-c.fillColor("violet").fillAlpha(.5);
-c2.style("default").thickness(5).drawColor("olive");//Load default style to clear the style latexdefault
+Shape F = LaTeXMathObject.make("F").get(0).center().setHeight(2);
+Shape partialF=F.getSubShape(.2, .76);
+F.fillColor("violet").fillAlpha(.5);
+partialF.style("default").thickness(5).drawColor("olive");//Load default style to clear the style latexdefault
 add(c,c2);
 waitSeconds(3);
 ```
