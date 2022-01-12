@@ -35,6 +35,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -50,7 +51,7 @@ public class SVGUtils {
     private double closeY;
     private double previousX;
     private double previousY;
-    private final AffineJTransform currentTransform;
+    private AffineJTransform currentTransform;
     private final JMathAnimScene scene;
 
     public SVGUtils(JMathAnimScene scene) {
@@ -77,8 +78,15 @@ public class SVGUtils {
         org.w3c.dom.Document doc = dBuilder.parse(urlSvg.openStream());
 
         // Look for svg elements in the root document
+        currentTransform = new AffineJTransform();
         processChildNodes((doc.getDocumentElement()), msh.getMp().getFirstMP(), currentTransform, msh);
+    }
 
+    public MultiShapeObject converToMultiShape(Element root) {
+        MultiShapeObject resul = new MultiShapeObject();
+        currentTransform = new AffineJTransform();
+        processChildNodes(root, resul.getMp().getFirstMP(), currentTransform, resul);
+        return resul;
     }
 
     private void processChildNodes(Element gNode, MODrawProperties localMP, AffineJTransform transform, MultiShapeObject msh) throws NumberFormatException {
@@ -95,7 +103,7 @@ public class SVGUtils {
 
                 AffineJTransform transfCopy = transform.copy();
                 processTransformAttributeCommands(el, transfCopy);
-
+                System.out.println("Element: "+el.getTagName());
                 switch (el.getTagName()) {
                     case "g":
                         processChildNodes(el, mpCopy, transfCopy, msh);
@@ -156,6 +164,12 @@ public class SVGUtils {
      */
     private JMPath processPathCommands(String s) throws Exception {
         JMPath resul = new JMPath();
+        double qx0,//Quadratic Bezier coefficients
+                qy0,
+                qx1,
+                qy1,
+                qx2,
+                qy2;
         JMPathPoint previousPoint = new JMPathPoint(new Point(0, 0), true, JMPathPoint.JMPathPointType.VERTEX);
         String t = s.replace("-", " -");// Avoid errors with strings like "142.11998-.948884"
         t = t.replace("e -", "e-");// Avoid errors with numbers in scientific format
@@ -175,6 +189,10 @@ public class SVGUtils {
         t = t.replace("l", " l ");
         t = t.replace("Z", " Z ");
         t = t.replace("z", " z ");
+        t = t.replace("q", " q ");
+        t = t.replace("Q", " Q ");
+        t = t.replace("a", " a ");
+        t = t.replace("A", " A ");
         t = t.replaceAll(",", " ");// Replace all commas with spaces
         t = t.replaceAll("^ +| +$|( )+", "$1");// Removes duplicate spaces
 
@@ -219,10 +237,10 @@ public class SVGUtils {
                     throw new Exception("Arc command A still not implemented. Sorry.");
                 case "a":
                     throw new Exception("Arc command a still not implemented. Sorry.");
-                case "Q":
-                    throw new Exception("Quadratic Bezier command Q still not implemented. Sorry.");
-                case "q":
-                    throw new Exception("Quadratic Bezier command q still not implemented. Sorry.");
+//                case "Q":
+//                    throw new Exception("Quadratic Bezier command Q still not implemented. Sorry.");
+//                case "q":
+//                    throw new Exception("Quadratic Bezier command q still not implemented. Sorry.");
                 case "M":
                     previousCommand = token;
                     getPoint(it.next(), it.next());
@@ -292,6 +310,19 @@ public class SVGUtils {
                     currentY += yy;
                     previousPoint = pathLineTo(resul, currentX, currentY, true);
                     break;
+                case "Q": // Quadratic Bezier
+                    previousCommand = token;
+
+                    qx0 = currentX;
+                    qy0 = currentY;
+                    qx1 = Double.parseDouble(it.next());
+                    qy1 = -Double.parseDouble(it.next());
+                    getPoint(it.next(), it.next());
+                    qx2 = currentX;
+                    qy2 = currentY;
+
+                    previousPoint = pathQuadraticBezier(resul, previousPoint, qx0, qy0, qx1, qy1, qx2, qy2);
+                    break;
                 case "C": // Cubic Bezier
                     previousCommand = token;
 
@@ -303,6 +334,21 @@ public class SVGUtils {
                     previousPoint = pathCubicBezier(resul, previousPoint, cx1, cy1, cx2, cy2, currentX, currentY);
                     break;
                 // c 1,1 2,2 3,3 4,4 5,5 6,6 would become C 1,1 2,2 3,3 C 7,7 8,8 9,9
+                case "q": // Quadratic Bezier
+                    previousCommand = token;
+                    qx0 = previousPoint.p.v.x;
+                    qy0 = previousPoint.p.v.y;
+                    qx1 = qx0 + Double.parseDouble(it.next());
+                    qy1 = qy0 - Double.parseDouble(it.next());
+                    getPoint(it.next(), it.next());
+                    currentX += qx0;
+                    currentY += qy0;
+                    qx2 = currentX;
+                    qy2 = currentY;
+
+                    previousPoint = pathQuadraticBezier(resul, previousPoint, qx0, qy0, qx1, qy1, qx2, qy2);
+                    break;
+
                 case "c": // Cubic Bezier
                     previousCommand = token;
 
@@ -467,6 +513,19 @@ public class SVGUtils {
         return resul;
     }
 
+    private JMPathPoint pathQuadraticBezier(JMPath resul, JMPathPoint previousPoint, double qx0, double qy0, double qx1, double qy1, double qx2, double qy2) {
+        double cx1;
+        double cy1;
+        double cx2;
+        double cy2;
+        cx1 = qx0 + (2d / 3) * (qx1 - qx0);
+        cy1 = qy0 + (2d / 3) * (qy1 - qy0);
+        cx2 = qx2 + (2d / 3) * (qx1 - qx2);
+        cy2 = qy2 + (2d / 3) * (qy1 - qy2);
+        previousPoint = pathCubicBezier(resul, previousPoint, cx1, cy1, cx2, cy2, currentX, currentY);
+        return previousPoint;
+    }
+
     private void getPoint(String x, String y) throws NumberFormatException {
         getPointX(x);
         getPointY(y);
@@ -565,10 +624,10 @@ public class SVGUtils {
         String[] tokens = trans.split(delims);
         Iterator<String> it = Arrays.stream(tokens).iterator();
         while (it.hasNext()) {
-            String command = it.next();
-            String arguments = it.next();
+            String command = it.next().trim();
+            String arguments = it.next().trim();
             AffineJTransform tr = parseCommand(command.toUpperCase(), arguments);
-            transforms.add(0, tr);//Add it at position 0 so the array is inverted
+            transforms.add(tr);//Add it at position 0 so the array is inverted
         }
 
         //Now compose all transforms, right to left. As the array is inverted
