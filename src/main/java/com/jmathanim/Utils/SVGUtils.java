@@ -103,7 +103,6 @@ public class SVGUtils {
 
                 AffineJTransform transfCopy = transform.copy();
                 processTransformAttributeCommands(el, transfCopy);
-                System.out.println("Element: "+el.getTagName());
                 switch (el.getTagName()) {
                     case "g":
                         processChildNodes(el, mpCopy, transfCopy, msh);
