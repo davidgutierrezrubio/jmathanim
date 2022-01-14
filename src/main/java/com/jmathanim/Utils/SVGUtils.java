@@ -82,11 +82,9 @@ public class SVGUtils {
         processChildNodes((doc.getDocumentElement()), msh.getMp().getFirstMP(), currentTransform, msh);
     }
 
-    public MultiShapeObject converToMultiShape(Element root) {
-        MultiShapeObject resul = new MultiShapeObject();
+    public void importSVGFromDOM(Element root,MultiShapeObject msh) {
         currentTransform = new AffineJTransform();
-        processChildNodes(root, resul.getMp().getFirstMP(), currentTransform, resul);
-        return resul;
+        processChildNodes(root, msh.getMp().getFirstMP(), currentTransform, msh);
     }
 
     private void processChildNodes(Element gNode, MODrawProperties localMP, AffineJTransform transform, MultiShapeObject msh) throws NumberFormatException {

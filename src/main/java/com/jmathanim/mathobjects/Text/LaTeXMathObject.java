@@ -21,6 +21,7 @@ import com.jmathanim.Styling.JMColor;
 import com.jmathanim.Utils.JMathAnimConfig;
 import com.jmathanim.Utils.SVGUtils;
 import com.jmathanim.jmathanim.JMathAnimScene;
+import com.jmathanim.mathobjects.MultiShapeObject;
 import com.jmathanim.mathobjects.Point;
 import com.jmathanim.mathobjects.SVGMathObject;
 import com.jmathanim.mathobjects.Shape;
@@ -30,11 +31,22 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.io.Writer;
 import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.apache.batik.dom.GenericDOMImplementation;
+import org.apache.batik.svggen.DOMTreeManager;
+import org.apache.batik.svggen.SVGGeneratorContext;
+import org.apache.batik.svggen.SVGGraphics2D;
+import org.scilab.forge.jlatexmath.TeXConstants;
+import org.scilab.forge.jlatexmath.TeXFormula;
+import org.scilab.forge.jlatexmath.TeXIcon;
+import org.w3c.dom.DOMImplementation;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 /**
  *
@@ -43,6 +55,7 @@ import java.util.logging.Logger;
 public class LaTeXMathObject extends SVGMathObject {
 
     private String text;
+    private boolean rawTeX;
     private File latexFile;
     private String baseFileName;
     private File outputDir;
@@ -51,14 +64,27 @@ public class LaTeXMathObject extends SVGMathObject {
     // character has
     public static final double DEFAULT_SCALE_FACTOR = .05;
 
-    /**
+    
+     /**
      * Static constructor
      *
      * @param text LaTex text to compile
      * @return The LaTexMathObject
      */
     public static LaTeXMathObject make(String text) {
+        return make(text, false);
+    }
+
+    /**
+     * Static constructor
+     *
+     * @param text LaTex text to compile
+     * @param raw If true, the compiling text will not be enclosed in a mbox
+     * @return The LaTexMathObject
+     */
+    public static LaTeXMathObject make(String text, boolean raw) {
         LaTeXMathObject t = new LaTeXMathObject();
+        t.rawTeX = raw;
 
         if (!"".equals(text)) {
             t.setLaTeX(text);
@@ -110,28 +136,34 @@ public class LaTeXMathObject extends SVGMathObject {
         }
 
         shapes.clear();
-        try {
-            generateLaTeXDocument();
-            File f = new File(compileLaTeXFile());
-            SVGUtils svgu=new SVGUtils(scene);
-            svgu.importSVG(f.toURI().toURL(),this);
-        } catch (IOException ex) {
-            if (ex.getLocalizedMessage().toUpperCase().startsWith("CANNOT RUN PROGRAM")) {
-                JMathAnimScene.logger.error("Oops, it seems JMathAnim cannot find your LaTeX executable."
-                        + " Make sure you have LaTeX installed on your system and the latex program"
-                        + " is accesible from your path");
-            } else {
-                JMathAnimScene.logger.error("An unknown I/O error. Maybe you don't have permissions"
-                        + "to write files on your working directory or there is not enough space on disk.");
-            }
-             JMathAnimScene.logger.warn("An empty LaTeXMathObject will be created");
-        } catch (Exception ex) {
-            JMathAnimScene.logger.error("An unknown  error happened trying to create a LaTeXMathObject");
-            JMathAnimScene.logger.warn("An empty LaTeXMathObject will be created");
-        }
 
+//        
+//        try {
+//            generateLaTeXDocument();
+//            File f = new File(compileLaTeXFile());
+//            SVGUtils svgu=new SVGUtils(scene);
+//            svgu.importSVG(f.toURI().toURL(),this);
+//        } catch (IOException ex) {
+//            if (ex.getLocalizedMessage().toUpperCase().startsWith("CANNOT RUN PROGRAM")) {
+//                JMathAnimScene.logger.error("Oops, it seems JMathAnim cannot find your LaTeX executable."
+//                        + " Make sure you have LaTeX installed on your system and the latex program"
+//                        + " is accesible from your path");
+//            } else {
+//                JMathAnimScene.logger.error("An unknown I/O error. Maybe you don't have permissions"
+//                        + "to write files on your working directory or there is not enough space on disk.");
+//            }
+//             JMathAnimScene.logger.warn("An empty LaTeXMathObject will be created");
+//        } catch (Exception ex) {
+//            JMathAnimScene.logger.error("An unknown  error happened trying to create a LaTeXMathObject");
+//            JMathAnimScene.logger.warn("An empty LaTeXMathObject will be created");
+//        }
+        Element root = generateDOMTreeFromLaTeX(this.text);
+        SVGUtils svgUtils = new SVGUtils(scene);
+        svgUtils.importSVGFromDOM(root, this);
+
+        
+        this.style("latexdefault");
         int n = 0;
-
         for (Shape sh : shapes) {// objectLabel them
 //            sh.getMp().fillColorIsDrawColor = true;
             sh.objectLabel = String.valueOf(n);
@@ -158,6 +190,30 @@ public class LaTeXMathObject extends SVGMathObject {
         this.scale(getBoundingBox().getUL(), sc, sc, 1);
         this.moveTo(center);
         return (T) this;
+    }
+
+    private Element generateDOMTreeFromLaTeX(String text) {
+        Writer out = null;
+        DOMImplementation domImpl = GenericDOMImplementation.getDOMImplementation();
+        String latexText;
+        if (!rawTeX) {
+            latexText = "\\mbox{" + text + "}";
+        } else {
+            latexText = text;
+        }
+        TeXFormula formula = new TeXFormula(latexText);
+
+        TeXIcon icon = formula.createTeXIcon(TeXConstants.ALIGN_LEFT, 40);
+        String svgNS = "http://www.w3.org/2000/svg";
+        Document document = domImpl.createDocument(svgNS, "svg", null);
+        // Create an instance of the SVG Generator.
+        SVGGeneratorContext ctx = SVGGeneratorContext.createDefault(document);
+        SVGGraphics2D svgGenerator = new SVGGraphics2D(ctx, true);
+        ctx.setEmbeddedFontsOn(true);
+        icon.paintIcon(null, svgGenerator, 0, 0);
+        DOMTreeManager domTreeManager = svgGenerator.getDOMTreeManager();
+        Element domFactory = svgGenerator.getRoot();
+        return domFactory;
     }
 
     /**
@@ -234,7 +290,7 @@ public class LaTeXMathObject extends SVGMathObject {
         String line;
         Process p = Runtime.getRuntime().exec(command, null, outputDir);
         BufferedReader bre;
-        try ( BufferedReader bri = new BufferedReader(new InputStreamReader(p.getInputStream()))) {
+        try (BufferedReader bri = new BufferedReader(new InputStreamReader(p.getInputStream()))) {
             bre = new BufferedReader(new InputStreamReader(p.getErrorStream()));
             while ((line = bri.readLine()) != null) {
                 JMathAnimScene.logger.debug(line);
