@@ -55,7 +55,32 @@ import org.w3c.dom.Element;
 public class LaTeXMathObject extends SVGMathObject {
 
     private String text;
-    private boolean rawTeX;
+
+    /**
+     * Determines how LaTeX shapes will be created
+     */
+    public enum CompileMode {
+        /**
+         * Uses JLaTexMath library, enclosing text in a mbox. JLaTexMath
+         * compiles by default in math mode so this is necessary in order to
+         * generate normal text by default. This is the default mode used when
+         * creating a LaTeXMathObject without arguments.
+         */
+        JLaTexMath,
+        /**
+         * Uses JLaTexMath library with the unaltered text. Default to math
+         * mode. by default in math mode.
+         */
+        RawJLaTexMath,
+        /**
+         * Invokes an external LaTeX system to compile file and dvisvg to
+         * generate a svg object to import it. This is used for compatibiliy
+         * reasons and in the rare cases JLaTeXMath cannot compile the LaTeX
+         * string.
+         */
+        CompileFile
+    }
+    CompileMode mode;
     private File latexFile;
     private String baseFileName;
     private File outputDir;
@@ -64,27 +89,28 @@ public class LaTeXMathObject extends SVGMathObject {
     // character has
     public static final double DEFAULT_SCALE_FACTOR = .05;
 
-    
-     /**
+    /**
      * Static constructor
      *
-     * @param text LaTex text to compile
+     * @param text LaTex text to compile. By default this text is compiled using
+     * the compile mode JLaTexMath.
      * @return The LaTexMathObject
      */
     public static LaTeXMathObject make(String text) {
-        return make(text, false);
+        return make(text, CompileMode.JLaTexMath);
     }
 
     /**
      * Static constructor
      *
      * @param text LaTex text to compile
-     * @param raw If true, the compiling text will not be enclosed in a mbox
+     * @param compileMode How to generate the shapes from LaTeX string. A value
+     * from the enum CompileMode.
      * @return The LaTexMathObject
      */
-    public static LaTeXMathObject make(String text, boolean raw) {
+    public static LaTeXMathObject make(String text, CompileMode compileMode) {
         LaTeXMathObject t = new LaTeXMathObject();
-        t.rawTeX = raw;
+        t.mode = compileMode;
 
         if (!"".equals(text)) {
             t.setLaTeX(text);
@@ -137,31 +163,31 @@ public class LaTeXMathObject extends SVGMathObject {
 
         shapes.clear();
 
-//        
-//        try {
-//            generateLaTeXDocument();
-//            File f = new File(compileLaTeXFile());
-//            SVGUtils svgu=new SVGUtils(scene);
-//            svgu.importSVG(f.toURI().toURL(),this);
-//        } catch (IOException ex) {
-//            if (ex.getLocalizedMessage().toUpperCase().startsWith("CANNOT RUN PROGRAM")) {
-//                JMathAnimScene.logger.error("Oops, it seems JMathAnim cannot find your LaTeX executable."
-//                        + " Make sure you have LaTeX installed on your system and the latex program"
-//                        + " is accesible from your path");
-//            } else {
-//                JMathAnimScene.logger.error("An unknown I/O error. Maybe you don't have permissions"
-//                        + "to write files on your working directory or there is not enough space on disk.");
-//            }
-//             JMathAnimScene.logger.warn("An empty LaTeXMathObject will be created");
-//        } catch (Exception ex) {
-//            JMathAnimScene.logger.error("An unknown  error happened trying to create a LaTeXMathObject");
-//            JMathAnimScene.logger.warn("An empty LaTeXMathObject will be created");
-//        }
-        Element root = generateDOMTreeFromLaTeX(this.text);
-        SVGUtils svgUtils = new SVGUtils(scene);
-        svgUtils.importSVGFromDOM(root, this);
-
-        
+        if (mode == CompileMode.CompileFile) {
+            try {
+                generateLaTeXDocument();
+                File f = new File(compileLaTeXFile());
+                SVGUtils svgu = new SVGUtils(scene);
+                svgu.importSVG(f.toURI().toURL(), this);
+            } catch (IOException ex) {
+                if (ex.getLocalizedMessage().toUpperCase().startsWith("CANNOT RUN PROGRAM")) {
+                    JMathAnimScene.logger.error("Oops, it seems JMathAnim cannot find your LaTeX executable."
+                            + " Make sure you have LaTeX installed on your system and the latex program"
+                            + " is accesible from your path");
+                } else {
+                    JMathAnimScene.logger.error("An unknown I/O error. Maybe you don't have permissions"
+                            + "to write files on your working directory or there is not enough space on disk.");
+                }
+                JMathAnimScene.logger.warn("An empty LaTeXMathObject will be created");
+            } catch (Exception ex) {
+                JMathAnimScene.logger.error("An unknown  error happened trying to create a LaTeXMathObject");
+                JMathAnimScene.logger.warn("An empty LaTeXMathObject will be created");
+            }
+        } else {
+            Element root = generateDOMTreeFromLaTeX(this.text);
+            SVGUtils svgUtils = new SVGUtils(scene);
+            svgUtils.importSVGFromDOM(root, this);
+        }
         this.style("latexdefault");
         int n = 0;
         for (Shape sh : shapes) {// objectLabel them
@@ -196,7 +222,7 @@ public class LaTeXMathObject extends SVGMathObject {
         Writer out = null;
         DOMImplementation domImpl = GenericDOMImplementation.getDOMImplementation();
         String latexText;
-        if (!rawTeX) {
+        if (mode == CompileMode.JLaTexMath) {
             latexText = "\\mbox{" + text + "}";
         } else {
             latexText = text;
