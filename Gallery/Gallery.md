@@ -356,23 +356,13 @@ Shape sq2 = Shape.square().scale(1.75, 1).style("solidred");
 sq2.stackTo(sq1, Anchor.Type.RIGHT, .5);
 add(sq1, sq2);
 
-//And their legends
-//        LaTeXMathObject textA1 = LaTeXMathObject.make("$a$");
-//        LaTeXMathObject textA2 = LaTeXMathObject.make("$a$");
-//        LaTeXMathObject textB = LaTeXMathObject.make("$b$");
-//        LaTeXMathObject textC = LaTeXMathObject.make("$c$");
 //The colors chosen to the symbols a, b and c
 JMColor colA = JMColor.parse("#34403C");
 JMColor colB = JMColor.parse("#961A4C");
 JMColor colC = JMColor.parse("#6A2A5C");
 JMColor colArea = JMColor.parse("#B73A1C");
-//        textA1.setColor(colA, 0);
-//        textA2.setColor(colA, 0);
-//        textB.setColor(colB, 0);
-//        textC.setColor(colC, 0);
 
-//Brace delimiters...  .1 is the distance from the braces to the rectangles,
-//and .05 is the distance from labels to the braces
+//Brace delimiters
 Delimiter del1X = Delimiter.stackTo(sq1, Anchor.Type.LOWER, Delimiter.Type.BRACE, .1).setLabel("$b$", .1);
 Delimiter del1Y = Delimiter.stackTo(sq1, Anchor.Type.LEFT, Delimiter.Type.BRACE, .1).setLabel("$a$", .1);
 Delimiter del2X = Delimiter.stackTo(sq2, Anchor.Type.LOWER, Delimiter.Type.BRACE, .1).setLabel("$c$", .1);
@@ -393,8 +383,7 @@ textBC.setColor(colB, 0);//"b" glyph
 textBC.setColor(colC, 2);//"c" glyph
 Delimiter del12X = Delimiter.stackTo(
     MathObjectGroup.make(sq1, sq2),//We group these 2 rectangles so the brace adjust to the 2 combined
-    Anchor.Type.UPPER,
-    Delimiter.Type.BRACE, .1)
+    Anchor.Type.UPPER, Delimiter.Type.BRACE, .1)
     .setLabel(textBC, .1);
 
 //The upper formula  Area=a*b+a*c
@@ -735,7 +724,7 @@ waitSeconds(3);
 
 The animation of the candies allocating in the band is done with a single `setLayout` animation, with a jump effect with semicircular path and a delay effect of 0.5
 
-You can see a video of the animation [here](https://imgur.com/a/aVj0oXL)
+You can see a video of the animation [here](https://imgur.com/a/aVj0oXL) (note: the title of the video should say "7" instead of "9").
 
 ## Concentric circles that appear and disappear
 
