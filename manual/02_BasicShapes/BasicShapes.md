@@ -119,13 +119,15 @@ waitSeconds(5);
 
 ![LaTeX 1](LaTeX_1.png)
 
+>**UPDATE** : Since version 0.9.5-SNAPSHOT, the library [JLatexMath](https://github.com/opencollab/jlatexmath) is used by default to generate LaTeX formulas, so there is no need to have a working LaTeX distribution installed.
+
 A minor drawback when combining LaTeX and Java, is that one of the most used symbols in LaTeX is the backslash "\\", and Java doesn’t accept single backslashes in their strings, so, if you want to compile a LaTeX formula like this
 
 ``` latex
 $$\int_0^\infty e^{-x}\,dx=1$$
 ```
 
-You’ll have to replace every single backslash "\\" with a double one "\\\\"
+You’ll have to replace every single backslash "\\" with a double one "\\\\":
 
 ``` java
 LaTeXMathObject formula = LaTeXMathObject.make("$$\\int_0^\\infty e^{-x}\\,dx=1$$");

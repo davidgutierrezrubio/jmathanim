@@ -77,10 +77,11 @@ Right now, the library is still in development, so there may be bugs and missing
 
 # Dependencies
 This library uses the following 3rd party libraries:
-* [JavaFX](https://openjfx.io/) For the graphics part.
-* [Xuggler](http://www.xuggle.com/xuggler/) For creating videos.
+* [JavaFX](https://openjfx.io/) for 2D graphics generation.
+* [Xuggler](http://www.xuggle.com/xuggler/) for video creation.
+* [JLatexMath](https://github.com/opencollab/jlatexmath) for LaTeX shapes generation (text and mathematical expressions).
 * [Logback Project](http://logback.qos.ch/) For logging purposes.
-* Also, you will need a working LaTeX distribution accessible from your path to generate texts and formula. 
+* Optionally, a working LaTeX distribution accessible from your path can be used to generate texts and formulas as an alternative way to [JLatexMath](https://github.com/opencollab/jlatexmath)
 
 # License
 This project is licensed under the GNU v3 license (https://www.gnu.org/licenses/gpl-3.0.html)
