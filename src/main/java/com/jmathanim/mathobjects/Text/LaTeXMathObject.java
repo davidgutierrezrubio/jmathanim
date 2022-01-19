@@ -213,6 +213,9 @@ public class LaTeXMathObject extends SVGMathObject {
 //        double hm = cam.screenToMath(cam.screenHeight);
         double hm = 2.5;//Default height view
         double sc = DEFAULT_SCALE_FACTOR * .4 * hm / 6.8 * 2.5;
+        if ((mode == CompileMode.JLaTexMath) || (mode == CompileMode.RawJLaTexMath)) {
+            sc *= 0.24906237699889464;
+        }
         this.scale(getBoundingBox().getUL(), sc, sc, 1);
         this.moveTo(center);
         return (T) this;
