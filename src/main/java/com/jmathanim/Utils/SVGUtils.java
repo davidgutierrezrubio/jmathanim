@@ -82,7 +82,7 @@ public class SVGUtils {
         processChildNodes((doc.getDocumentElement()), msh.getMp().getFirstMP(), currentTransform, msh);
     }
 
-    public void importSVGFromDOM(Element root,MultiShapeObject msh) {
+    public void importSVGFromDOM(Element root, MultiShapeObject msh) {
         currentTransform = new AffineJTransform();
         processChildNodes(root, msh.getMp().getFirstMP(), currentTransform, msh);
     }
@@ -119,7 +119,31 @@ public class SVGUtils {
                     } catch (Exception ex) {
                         Logger.getLogger(SVGMathObject.class.getName()).log(Level.SEVERE, null, ex);
                     }
-
+                    break;
+                    case "polygon":
+                        try {
+                        Shape pol = processPolygonPoints(el.getAttribute("points"), true);
+                        if (pol.size() > 0) {
+                            transfCopy.applyTransform(pol);
+                            pol.getMp().copyFrom(mpCopy);
+                            msh.add(pol);
+                        }
+                    } catch (Exception ex) {
+                        Logger.getLogger(SVGUtils.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                    break;
+                    case "polyline":
+                        try {
+                        Shape pol = processPolygonPoints(el.getAttribute("points"), false);
+                        pol.getPath().openPath();
+                        if (pol.size() > 0) {
+                            transfCopy.applyTransform(pol);
+                            pol.getMp().copyFrom(mpCopy);
+                            msh.add(pol);
+                        }
+                    } catch (Exception ex) {
+                        Logger.getLogger(SVGUtils.class.getName()).log(Level.SEVERE, null, ex);
+                    }
                     break;
                     case "rect":
                         double x = Double.parseDouble(el.getAttribute("x"));
@@ -147,9 +171,28 @@ public class SVGUtils {
                         transfCopy.applyTransform(shape);
                         msh.add(shape);
                         break;
+                    default:
+                        JMathAnimScene.logger.error("Unknow command: <" + el.getTagName() + ">");
                 }
             }
         }
+    }
+
+    private Shape processPolygonPoints(String s, boolean polygon) throws Exception {
+        ArrayList<Point> points = new ArrayList<>();
+        ArrayList<String> tokens = getPointTokens(s);
+        Shape resul;
+        Iterator<String> it = tokens.iterator();
+        while (it.hasNext()) {
+            getPoint(it.next(), it.next());
+            points.add(Point.at(currentX, currentY));
+        }
+        if (polygon) {
+            resul = Shape.polygon(points.toArray(new Point[0]));
+        } else {
+            resul = Shape.polyLine(points.toArray(new Point[0]));
+        }
+        return resul;
     }
 
     /**
@@ -168,53 +211,7 @@ public class SVGUtils {
                 qx2,
                 qy2;
         JMPathPoint previousPoint = new JMPathPoint(new Point(0, 0), true, JMPathPoint.JMPathPointType.VERTEX);
-        String t = s.replace("-", " -");// Avoid errors with strings like "142.11998-.948884"
-        t = t.replace("e -", "e-");// Avoid errors with numbers in scientific format
-        t = t.replace("E -", "E-");// Avoid errors with numbers in scientific format
-        t = t.replace("M", " M ");// Adding spaces before and after to all commmands helps me to differentiate
-        // easily from coordinates
-        t = t.replace("m", " m ");
-        t = t.replace("H", " H ");
-        t = t.replace("h", " h ");
-        t = t.replace("V", " V ");
-        t = t.replace("v", " v ");
-        t = t.replace("C", " C ");
-        t = t.replace("c", " c ");
-        t = t.replace("S", " S ");
-        t = t.replace("s", " s ");
-        t = t.replace("L", " L ");
-        t = t.replace("l", " l ");
-        t = t.replace("Z", " Z ");
-        t = t.replace("z", " z ");
-        t = t.replace("q", " q ");
-        t = t.replace("Q", " Q ");
-        t = t.replace("a", " a ");
-        t = t.replace("A", " A ");
-        t = t.replaceAll(",", " ");// Replace all commas with spaces
-        t = t.replaceAll("^ +| +$|( )+", "$1");// Removes duplicate spaces
-
-        // Look for second decimal points and add a space. Chains like this "-.5.4"
-        // should change to "-.5 .4"
-        // TODO: Do it in a more efficient way, maybe with regex patterns
-        String[] tokens_1 = t.split(" ");
-        ArrayList<String> tokens = new ArrayList<>();
-        for (String tok : tokens_1) {
-            StringBuilder st = new StringBuilder(tok);
-            String tok2 = tok;
-            int index = st.indexOf(".");
-            if (index > -1) {
-                if (st.indexOf(".", index + 1) > -1) {// If there is a second point
-
-                    st.setCharAt(index, '|');// Replace first decimal point by '|'
-
-                    tok2 = st.toString();
-                    tok2 = tok2.replace(".", " .");
-                    tok2 = tok2.replace("- .", "-.");
-                    tok2 = tok2.replace("|", ".");
-                }
-            }
-            tokens.addAll(Arrays.asList(tok2.split(" ")));
-        }
+        ArrayList<String> tokens = getPointTokens(s);
 
         Iterator<String> it = tokens.iterator();
         double cx1, cx2, cy1, cy2;
@@ -510,6 +507,56 @@ public class SVGUtils {
         return resul;
     }
 
+    private ArrayList<String> getPointTokens(String s) {
+        String t = s.replace("-", " -");// Avoid errors with strings like "142.11998-.948884"
+        t = t.replace("e -", "e-");// Avoid errors with numbers in scientific format
+        t = t.replace("E -", "E-");// Avoid errors with numbers in scientific format
+        t = t.replace("M", " M ");// Adding spaces before and after to all commmands helps me to differentiate
+        // easily from coordinates
+        t = t.replace("m", " m ");
+        t = t.replace("H", " H ");
+        t = t.replace("h", " h ");
+        t = t.replace("V", " V ");
+        t = t.replace("v", " v ");
+        t = t.replace("C", " C ");
+        t = t.replace("c", " c ");
+        t = t.replace("S", " S ");
+        t = t.replace("s", " s ");
+        t = t.replace("L", " L ");
+        t = t.replace("l", " l ");
+        t = t.replace("Z", " Z ");
+        t = t.replace("z", " z ");
+        t = t.replace("q", " q ");
+        t = t.replace("Q", " Q ");
+        t = t.replace("a", " a ");
+        t = t.replace("A", " A ");
+        t = t.replaceAll(",", " ");// Replace all commas with spaces
+        t = t.replaceAll("^ +| +$|( )+", "$1");// Removes duplicate spaces
+        // Look for second decimal points and add a space. Chains like this "-.5.4"
+        // should change to "-.5 .4"
+        // TODO: Do it in a more efficient way, maybe with regex patterns
+        String[] tokens_1 = t.split(" ");
+        ArrayList<String> tokens = new ArrayList<>();
+        for (String tok : tokens_1) {
+            StringBuilder st = new StringBuilder(tok);
+            String tok2 = tok;
+            int index = st.indexOf(".");
+            if (index > -1) {
+                if (st.indexOf(".", index + 1) > -1) {// If there is a second point
+
+                    st.setCharAt(index, '|');// Replace first decimal point by '|'
+
+                    tok2 = st.toString();
+                    tok2 = tok2.replace(".", " .");
+                    tok2 = tok2.replace("- .", "-.");
+                    tok2 = tok2.replace("|", ".");
+                }
+            }
+            tokens.addAll(Arrays.asList(tok2.split(" ")));
+        }
+        return tokens;
+    }
+
     private JMPathPoint pathQuadraticBezier(JMPath resul, JMPathPoint previousPoint, double qx0, double qy0, double qx1, double qy1, double qx2, double qy2) {
         double cx1;
         double cy1;
@@ -623,7 +670,7 @@ public class SVGUtils {
         while (it.hasNext()) {
             String command = it.next().trim();
             String arguments = it.next().trim();
-            AffineJTransform tr = parseCommand(command.toUpperCase(), arguments);
+            AffineJTransform tr = parseTransformCommand(command.toUpperCase(), arguments);
             transforms.add(tr);//Add it at position 0 so the array is inverted
         }
 
@@ -637,7 +684,7 @@ public class SVGUtils {
         return resul;
     }
 
-    private AffineJTransform parseCommand(String command, String arguments) {
+    private AffineJTransform parseTransformCommand(String command, String arguments) {
         AffineJTransform resul = new AffineJTransform();//An identity transform
         String argDelims = "[ ,]+";
         String[] args = arguments.split(argDelims);
