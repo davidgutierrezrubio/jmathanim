@@ -11,8 +11,9 @@ You can also follow my [Youtube](https://www.youtube.com/channel/UCeczwEqSrAwZbP
 
 # What's new?
 
-Version 0.9.5-SNAPSHOT (16/01/2022)
+Version 0.9.5-SNAPSHOT (27/01/2022)
 
+* Added `polygon`and `polyline`import capabilities for SVG objects.
 * Now `LaTeXMathObject` are by default compiled using the excellent `JLaTeXMath`library, making it considerably faster and removing the need to install a LaTeX distribution.
 
 Version 0.9.4 released (12/26/2021)
