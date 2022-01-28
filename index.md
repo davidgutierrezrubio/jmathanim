@@ -14,7 +14,7 @@ You can also follow my [Youtube](https://www.youtube.com/channel/UCeczwEqSrAwZbP
 Version 0.9.5-SNAPSHOT (27/01/2022)
 
 * Added `polygon`and `polyline`import capabilities for SVG objects.
-* Now `LaTeXMathObject` are by default compiled using the excellent `JLaTeXMath`library, making it considerably faster and removing the need to install a LaTeX distribution.
+* Now `LaTeXMathObject` instances are by default compiled using the excellent `JLaTeXMath`library, making it considerably faster and removing the need to install a LaTeX distribution.
 
 Version 0.9.4 released (12/26/2021)
 
@@ -23,7 +23,7 @@ Version 0.9.4 released (12/26/2021)
 * Labels now can be easily added to delimiters with the method .setLabel.
 
 * Improved handling of thickness property.
-* SVG import now properly handless thickness and transform attributes.
+* SVG import now properly handles thickness and transform attributes.
 
 * Fixed a bug that prevented properly styling sliced MultiShapeObjects or LaTexMathObjects.
 
