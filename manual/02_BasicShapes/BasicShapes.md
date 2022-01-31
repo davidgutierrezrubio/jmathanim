@@ -161,6 +161,8 @@ waitSeconds(3);
 
 Note that the construction of `line2` only considers the direction vector at the build time. When moving the `A` point the direction changes. 
 
+Similarly, the `Ray`class allows to represent rays in a similar way than `Line` objects.
+
 ## The `Axes` class
 
 The `Axes` class represents a cartesian axis. Well, actually is just a container for a couple of `Line`objects (the x-axis and y-axis), `Shape` objects (the ticks) and `LaTeXMathObject`(the legends of the ticks).
