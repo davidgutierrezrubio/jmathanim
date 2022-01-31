@@ -13,6 +13,8 @@ You can also follow my [Youtube](https://www.youtube.com/channel/UCeczwEqSrAwZbP
 
 Version 0.9.5-SNAPSHOT (27/01/2022)
 
+* Added `Ray` object
+
 * Added `polygon`and `polyline`import capabilities for SVG objects.
 * Now `LaTeXMathObject` instances are by default compiled using the excellent `JLaTeXMath`library, making it considerably faster and removing the need to install a LaTeX distribution.
 
