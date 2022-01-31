@@ -160,7 +160,8 @@ public class PlayAnim {
     }
 
     /**
-     *Similar to fadeOutAll, but excludes given objects from the animation
+     * Similar to fadeOutAll, but excludes given objects from the animation
+     *
      * @param runtime Duration in seconds
      * @param objs Objects to exclude
      */
@@ -346,11 +347,18 @@ public class PlayAnim {
      * @param objs Mathobjects to animate (varargs)
      */
     public void rotate(double runTime, double angle, MathObject... objs) {
-        Rect r = objs[0].getBoundingBox();
-        for (MathObject obj : objs) {
-            r = Rect.union(r, obj.getBoundingBox());
+        Point center;
+        if (objs.length > 1) {
+            Rect r = objs[0].getBoundingBox();
+            for (MathObject obj : objs) {
+                r = Rect.union(r, obj.getBoundingBox());
+            }
+            center = r.getCenter();
+        } else {//If there is only one object, better call the getCenter method
+            center = objs[0].getCenter();
         }
-        scene.playAnimation(Commands.rotate(runTime, r.getCenter(), angle, objs));
+
+        scene.playAnimation(Commands.rotate(runTime, center, angle, objs));
     }
 
     /**
@@ -687,19 +695,19 @@ public class PlayAnim {
     public void stackTo(double runtime, MathObject dst, Anchor.Type type, double gap, MathObject... mobjects) {
         scene.playAnimation(Commands.stackTo(runtime, dst, type, gap, mobjects));
     }
-    
+
     /**
-     * Plays an animation that hightlights the contour of a
-     * Shape object, with the duration of defaultRunTimeHighlight variable (default 1s)
+     * Plays an animation that hightlights the contour of a Shape object, with
+     * the duration of defaultRunTimeHighlight variable (default 1s)
+     *
      * @param objs MathObjects to animate (varargs)
      */
-    public void contourHighlight(MathObject...objs) {
+    public void contourHighlight(MathObject... objs) {
         scene.playAnimation(ContourHighlight.make(defaultRunTimeHighlight, objs));
     }
-    
-    public void twistAndScale(MathObject...objs) {
+
+    public void twistAndScale(MathObject... objs) {
         scene.playAnimation(Commands.twistAndScale(defaultRunTimefadeIn, objs));
     }
-    
-    
+
 }

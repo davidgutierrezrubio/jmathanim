@@ -20,9 +20,12 @@ package com.jmathanim.Constructible.Lines;
 import com.jmathanim.Utils.Vec;
 
 /**
+ * Any object that has a direction,like segments, lines, vectors should
+ * implement this interface.
  *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
 public interface HasDirection {
-	public Vec getDirection();
+
+    public Vec getDirection();
 }

@@ -258,24 +258,6 @@ public abstract class Animation {
         status = Status.FINISHED;
     }
 
-    // Smooth function from
-    // https://math.stackexchange.com/questions/328868/how-to-build-a-smooth-transition-function-explicitly
-    // TODO: Adapt this to use Cubic Bezier splines
-    /**
-     * Default lambda function
-     *
-     * @param t Parameter to compute value, from 0 to 1
-     * @param smoothness 1 full smoothnes, 0 makes the function identity
-     * @return
-     */
-//	public static double lambdaDefault(double t, double smoothness) {
-//		double h = smoothFunctionAux(t);
-//		double h2 = smoothFunctionAux(1 - t);
-//		return (1 - smoothness) * t + smoothness * h / (h + h2);
-//
-////        return t * t * (3 - 2 * t);
-////        return t;
-//	}
     /**
      * Sets the optimization strategy.If null, the animation will try to find
      * the most suitable optimization.

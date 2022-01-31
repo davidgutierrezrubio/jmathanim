@@ -30,7 +30,7 @@ import com.jmathanim.mathobjects.Point;
  *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
-public class AxesCreationAnimation extends AnimationGroup implements CreationStrategy {
+public final class AxesCreationAnimation extends AnimationGroup implements CreationStrategy {
 
     private final Axes axes;
 //	ArrayList<MathObject> objectsToRemoveWhenFinished;

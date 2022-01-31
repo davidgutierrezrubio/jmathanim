@@ -84,7 +84,7 @@ public class ConstrCircleCenter3Points extends ConstrCircleCenterPoint {
 		double c = -(int) (x1 * x1) - (int) (y1 * y1) - 2 * g * x1 - 2 * f * y1;
 
 		// eqn of circle be x^2 + y^2 + 2*g*x + 2*f*y + c = 0
-		// where centre is (h = -g, k = -f) and radius r
+		// where center is (h = -g, k = -f) and radius r
 		// as r^2 = h^2 + k^2 - c
 		double h = -g;
 		double k = -f;

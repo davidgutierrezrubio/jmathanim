@@ -25,6 +25,7 @@ import java.io.InputStream;
 import java.net.URL;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.zip.ZipEntry;
@@ -42,7 +43,7 @@ import org.xml.sax.SAXException;
  *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
-public class GeogebraLoader {
+public class GeogebraLoader implements Iterable<MathObject> {
 
 	private final ResourceLoader rl;
 	private final URL url;
@@ -57,7 +58,7 @@ public class GeogebraLoader {
 		this.cp = new GeogebraCommandParser();
 	}
 
-	public static GeogebraLoader make(String fileName) {
+	public static GeogebraLoader parse(String fileName) {
 		GeogebraLoader resul = new GeogebraLoader(fileName);
 		resul.parseFile(fileName);
 		return resul;
@@ -176,6 +177,9 @@ public class GeogebraLoader {
 		case "LineBisector":
 			cp.processPerpBisector(el);
 			break;
+                case "Ray":
+                    cp.processRayCommand(el);
+                        //TODO: A lot of commands to implement still
 		}
 	}
 
@@ -190,5 +194,10 @@ public class GeogebraLoader {
 	public HashMap<String, MathObject> getDict() {
 		return cp.geogebraElements;
 	}
+
+    @Override
+    public Iterator<MathObject> iterator() {
+        return getObjects().iterator();
+    }
 
 }

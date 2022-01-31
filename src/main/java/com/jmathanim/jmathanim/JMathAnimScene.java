@@ -23,6 +23,7 @@ import ch.qos.logback.core.joran.spi.JoranException;
 import com.jmathanim.Animations.Animation;
 import com.jmathanim.Animations.PlayAnim;
 import com.jmathanim.Cameras.Camera;
+import com.jmathanim.Constructible.GeogebraLoader;
 import com.jmathanim.Renderers.Renderer;
 import com.jmathanim.Utils.JMathAnimConfig;
 import com.jmathanim.Utils.Rect;
@@ -268,6 +269,17 @@ public abstract class JMathAnimScene {
     }
 
     /**
+     * Overloaded method to add every MathObject from a Geogebra file
+     *
+     * @param gls GeogebraLoder with objects to add to scene
+     */
+    public synchronized final void add(GeogebraLoader... gls) {
+        for (GeogebraLoader gl : gls) {
+            add(gl.getObjects().toArray(new MathObject[0]));
+        }
+    }
+
+    /**
      * Add the specified MathObjects to the scene
      *
      * @param objs Mathobjects (varargs)
@@ -316,26 +328,28 @@ public abstract class JMathAnimScene {
      */
     public synchronized final void remove(MathObject... objs) {
         for (MathObject obj : objs) {
+            if (obj != null) {
+                if (obj instanceof MultiShapeObject) {
+                    sceneObjects.remove(obj);
+                    unregisterUpdateable(obj);
+                    MultiShapeObject msh = (MultiShapeObject) obj;
+                    msh.isAddedToScene = false;
+                    for (Shape o : msh) {
+                        this.remove(o);
+                    }
+                }
 
-            if (obj instanceof MultiShapeObject) {
+                if (obj instanceof MathObjectGroup) {
+                    MathObjectGroup msh = (MathObjectGroup) obj;
+                    for (MathObject o : msh) {
+                        this.remove(o);
+                    }
+                }
+
                 sceneObjects.remove(obj);
-                 unregisterUpdateable(obj);
-                MultiShapeObject msh = (MultiShapeObject) obj;
-                msh.isAddedToScene = false;
-                for (Shape o : msh) {
-                    this.remove(o);
-                }
+                obj.removedFromSceneHook(this);
+                unregisterUpdateable(obj);
             }
-
-            if (obj instanceof MathObjectGroup) {
-                MathObjectGroup msh = (MathObjectGroup) obj;
-                for (MathObject o : msh) {
-                    this.remove(o);
-                }
-            }
-
-            sceneObjects.remove(obj);
-            unregisterUpdateable(obj);
         }
     }
 

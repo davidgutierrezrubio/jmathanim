@@ -232,8 +232,6 @@ public class Point extends MathObject {
         double th = scene.getRenderer().MathWidthToThickness(st);
         switch (getMp().getDotStyle()) {
             case CROSS:
-//                st = mp.computeScreenThickness(r)/20;
-//			st = getMp().getThickness() / 70;//TODO: Thickness should always be 1
                 dotShape = new Shape();
                 dotShape.getPath().addPoint(Point.at(-1, 1), Point.at(1, -1), Point.at(1, 1), Point.at(-1, -1));
                 dotShape.get(0).isThisSegmentVisible = false;
@@ -241,7 +239,6 @@ public class Point extends MathObject {
                 dotShape.shift(v).scale(.5 * st).drawColor(getMp().getDrawColor()).thickness(.25 * th);
                 break;
             case PLUS:
-//                st = mp.computeScreenThickness(r)/20;
                 dotShape = new Shape();
                 dotShape.getPath().addPoint(Point.at(0, 1), Point.at(0, -1), Point.at(1, 0), Point.at(-1, 0));
                 dotShape.get(0).isThisSegmentVisible = false;
@@ -249,7 +246,6 @@ public class Point extends MathObject {
                 dotShape.shift(v).scale(.5 * st).drawColor(getMp().getDrawColor()).thickness(.25 * th);
                 break;
             default:// Default case, includes CIRCLE
-//                st = mp.computeScreenThickness(r)/200;
                 dotShape = Shape.circle().shift(v).scale(.5 * st).drawColor(getMp().getDrawColor())
                         .fillColor(getMp().getDrawColor()).thickness(0);
                 break;
