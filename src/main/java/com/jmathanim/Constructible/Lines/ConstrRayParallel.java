@@ -17,6 +17,7 @@
  */
 package com.jmathanim.Constructible.Lines;
 
+import com.jmathanim.Constructible.ConstrPoint;
 import com.jmathanim.Constructible.Constructible;
 import com.jmathanim.Renderers.Renderer;
 import com.jmathanim.Utils.Vec;
@@ -32,20 +33,20 @@ import com.jmathanim.mathobjects.Ray;
  */
 public class ConstrRayParallel extends Constructible implements HasDirection {
 
-    Point A;
+    ConstrPoint A;
     HasDirection dir;
     private final Ray rayToDraw;
 
-    public static ConstrRayParallel make(Point A, HasDirection dir) {
+    public static ConstrRayParallel make(ConstrPoint A, HasDirection dir) {
         ConstrRayParallel resul = new ConstrRayParallel(A, dir);
         resul.rebuildShape();
         return resul;
     }
 
-    private ConstrRayParallel(Point A, HasDirection dir) {
+    private ConstrRayParallel(ConstrPoint A, HasDirection dir) {
         this.A = A;
         this.dir = dir;
-        rayToDraw = new Ray(A, this.dir.getDirection());
+        rayToDraw = new Ray(A.getMathObject(), this.dir.getDirection());
     }
 
     @Override
@@ -70,11 +71,13 @@ public class ConstrRayParallel extends Constructible implements HasDirection {
 
     @Override
     public void rebuildShape() {
-        rayToDraw.getP1().v.x = A.v.x;
-        rayToDraw.getP1().v.y = A.v.y;
+        Vec v = A.getMathObject().v;
+        Vec direction = dir.getDirection();
+        rayToDraw.getP1().v.x = v.x;
+        rayToDraw.getP1().v.y = v.y;
 
-        rayToDraw.getP2().v.x = A.v.x + dir.getDirection().x;
-        rayToDraw.getP2().v.y = A.v.y + dir.getDirection().y;
+        rayToDraw.getP2().v.x = v.x + direction.x;
+        rayToDraw.getP2().v.y = v.y + direction.y;
     }
 
     @Override

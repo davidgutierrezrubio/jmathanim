@@ -49,8 +49,10 @@ public class ConstrVectorPointDirection extends Constructible implements HasDire
     }
 
     @Override
-    public <T extends MathObject> T copy() {
-        return (T) ConstrVectorPointDirection.make(this.A.copy(), v.copy());
+    public ConstrVectorPointDirection copy() {
+        ConstrVectorPointDirection copy = ConstrVectorPointDirection.make(this.A.copy(), v.copy());
+        copy.getMp().copyFrom(this.getMp());
+        return copy;
     }
 
     @Override
@@ -79,7 +81,7 @@ public class ConstrVectorPointDirection extends Constructible implements HasDire
 
     @Override
     public void rebuildShape() {
-       this.B.copyFrom(A.add(v));
+        this.B.copyFrom(A.add(v));
     }
 
 }

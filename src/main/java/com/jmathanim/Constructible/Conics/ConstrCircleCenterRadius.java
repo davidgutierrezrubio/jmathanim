@@ -17,6 +17,7 @@
  */
 package com.jmathanim.Constructible.Conics;
 
+import com.jmathanim.Constructible.ConstrPoint;
 import com.jmathanim.mathobjects.Point;
 import com.jmathanim.mathobjects.Scalar;
 
@@ -26,17 +27,16 @@ import com.jmathanim.mathobjects.Scalar;
  */
 public class ConstrCircleCenterRadius extends ConstrCircleCenterPoint {
 	Scalar scalarRadius;
-	private final Point A;
+	private final ConstrPoint A;
 
-	public static ConstrCircleCenterRadius make(Point A, Scalar radius) {
+	public static ConstrCircleCenterRadius make(ConstrPoint A, Scalar radius) {
 		ConstrCircleCenterRadius resul = new ConstrCircleCenterRadius(A, radius);
-
 		resul.rebuildShape();
 		return resul;
 	}
 
-	private ConstrCircleCenterRadius(Point A, Scalar radius) {
-		super(A, Point.origin());
+	private ConstrCircleCenterRadius(ConstrPoint A, Scalar radius) {
+		super(A, A);
 		this.A = A;
 		this.scalarRadius = radius;
 

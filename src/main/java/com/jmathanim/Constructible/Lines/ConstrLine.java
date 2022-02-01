@@ -17,6 +17,7 @@
  */
 package com.jmathanim.Constructible.Lines;
 
+import com.jmathanim.Constructible.ConstrPoint;
 import com.jmathanim.Constructible.Constructible;
 import com.jmathanim.Renderers.Renderer;
 import com.jmathanim.Utils.Vec;
@@ -29,37 +30,48 @@ import com.jmathanim.mathobjects.Point;
  *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
-public class ConstrLineParallel extends Constructible implements HasDirection {
+public class ConstrLine extends Constructible implements HasDirection {
 
-    Point A;
-    HasDirection dir;
+    private enum LineType {
+        PointPoint, PointVector
+    }
+    private LineType lineType;
     private final Line lineToDraw;
+    ConstrPoint A, B;
+    HasDirection dir;
 
-    public static ConstrLineParallel make(Point A, HasDirection dir) {
-        ConstrLineParallel resul = new ConstrLineParallel(A, dir);
+    public static ConstrLine make(ConstrPoint A, HasDirection dir) {
+        ConstrLine resul = new ConstrLine(A, A.add(dir.getDirection()));
+        resul.dir = dir;
+        resul.lineType = LineType.PointVector;
         resul.rebuildShape();
         return resul;
     }
 
-    private ConstrLineParallel(Point A, HasDirection dir) {
+    public static ConstrLine make(ConstrPoint A, ConstrPoint B) {
+        ConstrLine resul = new ConstrLine(A, B);
+        resul.lineType = LineType.PointPoint;
+        resul.rebuildShape();
+        return resul;
+    }
+
+    private ConstrLine(ConstrPoint A, ConstrPoint B) {
         this.A = A;
-        this.dir = dir;
-        lineToDraw = new Line(A, this.dir.getDirection());
+        this.B = B;
+        lineToDraw = Line.make(A.getMathObject(), B.getMathObject());
     }
 
     @Override
-    public <T extends MathObject> T copy() {
-        return (T) make(A.copy(), dir);
+    public ConstrLine copy() {
+        ConstrLine copy = ConstrLine.make(A.copy(), B.copy());
+        copy.getMp().copyFrom(this.getMp());
+        return copy;
     }
 
     @Override
     public void draw(JMathAnimScene scene, Renderer r) {
         lineToDraw.draw(scene, r);
-    }
 
-    @Override
-    public Vec getDirection() {
-        return dir.getDirection();
     }
 
     @Override
@@ -69,16 +81,23 @@ public class ConstrLineParallel extends Constructible implements HasDirection {
 
     @Override
     public void rebuildShape() {
-        lineToDraw.getP1().v.x = A.v.x;
-        lineToDraw.getP1().v.y = A.v.y;
-
-        lineToDraw.getP2().v.x = A.v.x + dir.getDirection().x;
-        lineToDraw.getP2().v.y = A.v.y + dir.getDirection().y;
+        switch (lineType) {
+            case PointPoint:
+//                v.copyFrom(A.to(B));
+                break;
+            case PointVector:
+                B.getMathObject().copyFrom(A.add(dir.getDirection()).getMathObject());
+        }
     }
 
     @Override
-    public int getUpdateLevel() {
-        return Math.max(A.getUpdateLevel(), ((MathObject) dir).getUpdateLevel()) + 1;
+    public Vec getDirection() {
+        switch (lineType) {
+            case PointPoint:
+                return A.to(B);
+            default:
+                return dir.getDirection();
+        }
     }
 
 }

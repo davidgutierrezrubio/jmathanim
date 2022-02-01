@@ -17,6 +17,7 @@
  */
 package com.jmathanim.Constructible.Conics;
 
+import com.jmathanim.Constructible.ConstrPoint;
 import com.jmathanim.Constructible.Constructible;
 import com.jmathanim.Renderers.Renderer;
 import com.jmathanim.Utils.Rect;
@@ -37,19 +38,19 @@ public class ConstrCircleCenterPoint extends Constructible {
 	// Circle(point,number)
 	// Circle(point,Segment)
 	// Circle(point,point,point)
-	Point A, B;
+	ConstrPoint A, B;
 	protected double radius;
 	public final Point circleCenter;
 	private final Shape originalCircle;
 	private final Shape circleToDraw;
 
-	public static ConstrCircleCenterPoint make(Point A, Point B) {
+	public static ConstrCircleCenterPoint make(ConstrPoint A, ConstrPoint B) {
 		ConstrCircleCenterPoint resul = new ConstrCircleCenterPoint(A, B);
 		resul.rebuildShape();
 		return resul;
 	}
 
-	protected ConstrCircleCenterPoint(Point A, Point B) {
+	protected ConstrCircleCenterPoint(ConstrPoint A, ConstrPoint B) {
 		super();
 		this.A = A;
 		this.B = B;

@@ -17,6 +17,7 @@
  */
 package com.jmathanim.Constructible.Lines;
 
+import com.jmathanim.Constructible.ConstrPoint;
 import com.jmathanim.Constructible.Constructible;
 import com.jmathanim.Renderers.Renderer;
 import com.jmathanim.Utils.Vec;
@@ -31,51 +32,53 @@ import com.jmathanim.mathobjects.Point;
  */
 public class ConstrPerpBisectorPointPoint extends Constructible implements HasDirection {
 
-	Point A, B;
-	private final Line lineToDraw;
+    ConstrPoint A, B;
+    private final Line lineToDraw;
 
-	public static ConstrPerpBisectorPointPoint make(Point A, Point B) {
-		ConstrPerpBisectorPointPoint resul = new ConstrPerpBisectorPointPoint(A, B);
-		resul.rebuildShape();
-		return resul;
-	}
+    public static ConstrPerpBisectorPointPoint make(ConstrPoint A, ConstrPoint B) {
+        ConstrPerpBisectorPointPoint resul = new ConstrPerpBisectorPointPoint(A, B);
+        resul.rebuildShape();
+        return resul;
+    }
 
-	private ConstrPerpBisectorPointPoint(Point A, Point B) {
-		this.A = A;
-		this.B = B;
-		lineToDraw = new Line(Point.origin(), Point.origin());// Irrelevant
-	}
+    private ConstrPerpBisectorPointPoint(ConstrPoint A, ConstrPoint B) {
+        this.A = A;
+        this.B = B;
+        lineToDraw = new Line(A.getMathObject(),B.getMathObject());
+    }
 
-	@Override
-	public <T extends MathObject> T copy() {
-		return (T) new ConstrPerpBisectorPointPoint(A.copy(), B.copy());
-	}
+    @Override
+    public ConstrPerpBisectorPointPoint copy() {
+        ConstrPerpBisectorPointPoint copy = new ConstrPerpBisectorPointPoint(A.copy(), B.copy());
+        copy.getMp().copyFrom(this.getMp());
+        return copy;
+    }
 
-	@Override
-	public void draw(JMathAnimScene scene, Renderer r) {
-		lineToDraw.draw(scene, r);
-	}
+    @Override
+    public void draw(JMathAnimScene scene, Renderer r) {
+        lineToDraw.draw(scene, r);
+    }
 
-	@Override
-	public Vec getDirection() {
-		return lineToDraw.getDirection();
-	}
+    @Override
+    public Vec getDirection() {
+        return lineToDraw.getDirection();
+    }
 
-	@Override
-	public MathObject getMathObject() {
-		return lineToDraw;
-	}
+    @Override
+    public MathObject getMathObject() {
+        return lineToDraw;
+    }
 
-	@Override
-	public void rebuildShape() {
-		Point C = A.interpolate(B, .5);
-		Vec v = A.to(B);
+    @Override
+    public void rebuildShape() {
+        Point C = A.getMathObject().interpolate(B.getMathObject(), .5);
+        Vec v = A.to(B);
 
-		lineToDraw.getP1().v.x = C.v.x;
-		lineToDraw.getP1().v.y = C.v.y;
+        lineToDraw.getP1().v.x = C.v.x;
+        lineToDraw.getP1().v.y = C.v.y;
 
-		lineToDraw.getP2().v.x = C.v.x - v.y;
-		lineToDraw.getP2().v.y = C.v.y + v.x;
-	}
+        lineToDraw.getP2().v.x = C.v.x - v.y;
+        lineToDraw.getP2().v.y = C.v.y + v.x;
+    }
 
 }

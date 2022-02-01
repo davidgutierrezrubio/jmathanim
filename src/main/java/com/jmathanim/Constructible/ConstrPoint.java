@@ -8,53 +8,63 @@
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR point PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-package com.jmathanim.mathobjects;
+package com.jmathanim.Constructible;
 
-import com.jmathanim.Constructible.Constructible;
 import com.jmathanim.Renderers.Renderer;
-import com.jmathanim.Utils.EmptyRect;
-import com.jmathanim.Utils.Rect;
+import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
+import com.jmathanim.mathobjects.MathObject;
+import com.jmathanim.mathobjects.Point;
 
 /**
- * A null MathObject
  *
- * @author David Gutierrez Rubio
+ * @author David
  */
-public class NullMathObject extends Constructible {
+public class ConstrPoint extends Constructible {
 
-    @Override
-    public NullMathObject copy() {
-        return new NullMathObject();
+    private final Point point;
+    public final Vec v;
+    public static ConstrPoint make(Point A) {
+        return new ConstrPoint(A);
     }
 
-    @Override
-    public void copyStateFrom(MathObject obj) {
+    private ConstrPoint(Point A) {
+        this.point=A;
+        this.v=A.v;
     }
-
     @Override
-    public Rect getBoundingBox() {
-        return new EmptyRect();
-    }
-
-    @Override
-    public void draw(JMathAnimScene scene, Renderer r) {
-    }
-
-    @Override
-    public MathObject getMathObject() {
-        return this;
+    public Point getMathObject() {
+        return point;
     }
 
     @Override
     public void rebuildShape() {
     }
+
+    @Override
+    public ConstrPoint copy() {
+        return make(point.copy());
+    }
+
+    @Override
+    public void draw(JMathAnimScene scene, Renderer r) {
+        point.draw(scene, r);
+    }
+
+    public Vec to(ConstrPoint B) {
+        return point.to(B.getMathObject());
+    }
+    
+    public ConstrPoint add(Vec v) {
+        return ConstrPoint.make(point.add(v));
+    }
+
 
 }

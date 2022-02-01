@@ -43,7 +43,7 @@ import org.xml.sax.SAXException;
  *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
-public class GeogebraLoader implements Iterable<MathObject> {
+public class GeogebraLoader implements Iterable<Constructible> {
 
     private final ResourceLoader rl;
     private final URL url;
@@ -188,20 +188,20 @@ public class GeogebraLoader implements Iterable<MathObject> {
         }
     }
 
-    public MathObject get(String key) {
+    public Constructible get(String key) {
         return cp.get(key);
     }
 
-    public Collection<MathObject> getObjects() {
+    public Collection<Constructible> getObjects() {
         return cp.geogebraElements.values();
     }
 
-    public HashMap<String, MathObject> getDict() {
+    public HashMap<String, Constructible> getDict() {
         return cp.geogebraElements;
     }
 
     @Override
-    public Iterator<MathObject> iterator() {
+    public Iterator<Constructible> iterator() {
         return getObjects().iterator();
     }
 

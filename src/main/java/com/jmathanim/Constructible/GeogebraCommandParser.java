@@ -20,11 +20,11 @@ package com.jmathanim.Constructible;
 import com.jmathanim.Constructible.Conics.ConstrCircleCenter3Points;
 import com.jmathanim.Constructible.Conics.ConstrCircleCenterPoint;
 import com.jmathanim.Constructible.Conics.ConstrCircleCenterRadius;
+import com.jmathanim.Constructible.Lines.ConstrLine;
 import com.jmathanim.Constructible.Lines.ConstrLineOrthogonal;
-import com.jmathanim.Constructible.Lines.ConstrLineParallel;
-import com.jmathanim.Constructible.Lines.ConstrLinePointPoint;
 import com.jmathanim.Constructible.Lines.ConstrPerpBisectorPointPoint;
 import com.jmathanim.Constructible.Lines.ConstrPerpBisectorSegment;
+import com.jmathanim.Constructible.Lines.ConstrPolygon;
 import com.jmathanim.Constructible.Lines.ConstrRayParallel;
 import com.jmathanim.Constructible.Lines.ConstrRayPointPoint;
 import com.jmathanim.Constructible.Lines.ConstrSegmentPointPoint;
@@ -51,7 +51,7 @@ import org.w3c.dom.Element;
  */
 public class GeogebraCommandParser {
 
-    protected final HashMap<String, MathObject> geogebraElements;
+    protected final HashMap<String, Constructible> geogebraElements;
 
     public GeogebraCommandParser() {
         this.geogebraElements = new HashMap<>();
@@ -80,7 +80,7 @@ public class GeogebraCommandParser {
         Matcher matcher = pattern.matcher(argument);
         if (matcher.find()) {
             System.out.println(matcher.group(1));
-            return Point.at(Double.valueOf(matcher.group(1)), Double.valueOf(matcher.group(2)));
+            return ConstrPoint.make(Point.at(Double.valueOf(matcher.group(1)), Double.valueOf(matcher.group(2))));
         }
 
         // Nothing recognized so far, throw an exception
@@ -92,7 +92,7 @@ public class GeogebraCommandParser {
         return null;
     }
 
-    public MathObject get(String key) {
+    public Constructible get(String key) {
         if (containsKey(key)) {
             return geogebraElements.get(key);
         } else {
@@ -104,7 +104,7 @@ public class GeogebraCommandParser {
         return geogebraElements.containsKey(key);
     }
 
-    public void registerGeogebraElement(String label, MathObject resul) {
+    public void registerGeogebraElement(String label, Constructible resul) {
         resul.objectLabel = label;
         geogebraElements.put(label, resul);
     }
@@ -199,7 +199,7 @@ public class GeogebraCommandParser {
         Element pointSize = firstElementWithTag(el, "pointSize");
         double th = Double.valueOf(pointSize.getAttribute("val")) * 30;
         // TODO: Add a z value here
-        Point resul = Point.at(x, y);
+        ConstrPoint resul = ConstrPoint.make(Point.at(x, y));
         resul.thickness(th);
         resul.objectLabel = label;
         geogebraElements.put(label, resul);
@@ -211,9 +211,9 @@ public class GeogebraCommandParser {
         Element elInput = firstElementWithTag(el, "input");
         String labelPoint1 = elInput.getAttribute("a0");
         String labelPoint2 = elInput.getAttribute("a1");
-        Point p1 = (Point) geogebraElements.get(labelPoint1);
-        Point p2 = (Point) geogebraElements.get(labelPoint2);
-        MathObject resul = ConstrSegmentPointPoint.make(p1, p2);
+        ConstrPoint p1 = (ConstrPoint) geogebraElements.get(labelPoint1);
+        ConstrPoint p2 = (ConstrPoint) geogebraElements.get(labelPoint2);
+        ConstrSegmentPointPoint resul = ConstrSegmentPointPoint.make(p1, p2);
         String label = firstElementWithTag(el, "output").getAttribute("a0");
         resul.objectLabel = label;
         geogebraElements.put(label, resul);
@@ -223,24 +223,24 @@ public class GeogebraCommandParser {
     protected void processLineCommand(Element el) {
         String label = getOutputArgument(el, 0);
         MathObject[] params = getArrayOfParameters(el);
-        Point A = (Point) params[0]; // First argument is always a point
+        ConstrPoint A = (ConstrPoint) params[0]; // First argument is always a point
         MathObject B = params[1];
-        if (B instanceof Point) {// A line given by 2 points
-            registerGeogebraElement(label, ConstrLinePointPoint.make(A, (Point) B));
+        if (B instanceof ConstrPoint) {// A line given by 2 points
+            registerGeogebraElement(label, ConstrLine.make(A, (ConstrPoint) B));
             return;
         }
         if (B instanceof HasDirection) {// Line parallel
-            registerGeogebraElement(label, ConstrLineParallel.make(A, (HasDirection) B));
+            registerGeogebraElement(label, ConstrLine.make(A, (HasDirection) B));
         }
     }
 
     protected void processRayCommand(Element el) {
         String label = getOutputArgument(el, 0);
         MathObject[] params = getArrayOfParameters(el);
-        Point A = (Point) params[0]; // First argument is always a point
+        ConstrPoint A = (ConstrPoint) params[0]; // First argument is always a point
         MathObject B = params[1];
-        if (B instanceof Point) {// A line given by 2 points
-            registerGeogebraElement(label, ConstrRayPointPoint.make(A, (Point) B));
+        if (B instanceof ConstrPoint) {// A line given by 2 points
+            registerGeogebraElement(label, ConstrRayPointPoint.make(A, (ConstrPoint) B));
             return;
         }
         if (B instanceof HasDirection) {// Line parallel
@@ -250,18 +250,15 @@ public class GeogebraCommandParser {
 
     protected void processVectorCommand(Element el) {
         String label = getOutputArgument(el, 0);
-        if ("w".equals(label))  {
-            System.out.println("AQUI");
-    }
             
         MathObject[] params = getArrayOfParameters(el);
-        Point A, B;
+        ConstrPoint A, B;
         if (params.length > 1) {
-            A = (Point) params[0];
-            B = (Point) params[1];
+            A = (ConstrPoint) params[0];
+            B = (ConstrPoint) params[1];
         } else {
-            A = Point.origin();
-            B = (Point) params[0];
+            A = ConstrPoint.make(Point.origin());
+            B = (ConstrPoint) params[0];
         }
 
         registerGeogebraElement(label, ConstrVectorPointPoint.make(A, B));
@@ -270,7 +267,7 @@ public class GeogebraCommandParser {
     protected void processOrthogonalLine(Element el) {
         String label = getOutputArgument(el, 0);
         MathObject[] params = getArrayOfParameters(el);
-        Point A = (Point) params[0]; // First argument is always a point
+        ConstrPoint A = (ConstrPoint) params[0]; // First argument is always a point
         MathObject B = params[1];
         if (B instanceof HasDirection) {
             registerGeogebraElement(label, ConstrLineOrthogonal.make(A, (HasDirection) B));
@@ -281,8 +278,8 @@ public class GeogebraCommandParser {
         String label = getOutputArgument(el, 0);
         MathObject[] params = getArrayOfParameters(el);
         if (params.length == 2) {// 2 points
-            Point A = (Point) params[0];
-            Point B = (Point) params[1];
+            ConstrPoint A = (ConstrPoint) params[0];
+            ConstrPoint B = (ConstrPoint) params[1];
             registerGeogebraElement(label, ConstrPerpBisectorPointPoint.make(A, B));
         }
         if (params.length == 1) {// 1 segment
@@ -297,11 +294,11 @@ public class GeogebraCommandParser {
         String label = outputs[0];
         MathObject[] objs = getArrayOfParameters(el);
         // Array of points of the polygon
-        Point[] points = new Point[objs.length];
+        ConstrPoint[] points = new ConstrPoint[objs.length];
         for (int i = 0; i < objs.length; i++) {
-            points[i] = (Point) objs[i];
+            points[i] = (ConstrPoint) objs[i];
         }
-        Shape resul = Shape.polygon(points);
+        ConstrPolygon resul=ConstrPolygon.make(points);
         geogebraElements.put(label, resul);
 
         // Now, build all segments
@@ -321,9 +318,9 @@ public class GeogebraCommandParser {
             String str1 = elInput.getAttribute("a1");
             String str2 = elInput.getAttribute("a2");
 
-            Point arg0 = (Point) parseArgument(str0);
-            Point arg1 = (Point) parseArgument(str1);
-            Point arg2 = (Point) parseArgument(str2);
+            ConstrPoint arg0 = (ConstrPoint) parseArgument(str0);
+            ConstrPoint arg1 = (ConstrPoint) parseArgument(str1);
+            ConstrPoint arg2 = (ConstrPoint) parseArgument(str2);
             Constructible resul = ConstrCircleCenter3Points.make(arg0, arg1, arg2);
             registerGeogebraElement(label, resul);
             JMathAnimScene.logger
@@ -340,16 +337,16 @@ public class GeogebraCommandParser {
             MathObject arg1 = parseArgument(str1);
 
             // A circle with center a point and another one in the perimeter
-            if ((arg0 instanceof Point) && (arg1 instanceof Point)) {
-                Point p0 = (Point) arg0;
-                Point p1 = (Point) arg1;
+            if ((arg0 instanceof ConstrPoint) && (arg1 instanceof ConstrPoint)) {
+                ConstrPoint p0 = (ConstrPoint) arg0;
+                ConstrPoint p1 = (ConstrPoint) arg1;
                 Constructible resul = ConstrCircleCenterPoint.make(p0, p1);
                 registerGeogebraElement(label, resul);
                 JMathAnimScene.logger.debug("Imported Geogebra Circle " + label + ", center " + p0 + ", point " + p1);
                 return;
             }
-            if ((arg0 instanceof Point) && (arg1 instanceof Scalar)) {
-                Point p0 = (Point) arg0;
+            if ((arg0 instanceof ConstrPoint) && (arg1 instanceof Scalar)) {
+                ConstrPoint p0 = (ConstrPoint) arg0;
                 Scalar sc0 = (Scalar) arg1;
                 Constructible resul = ConstrCircleCenterRadius.make(p0, sc0);
                 registerGeogebraElement(label, resul);

@@ -17,6 +17,7 @@
  */
 package com.jmathanim.Constructible.Conics;
 
+import com.jmathanim.Constructible.ConstrPoint;
 import com.jmathanim.mathobjects.Point;
 
 /**
@@ -25,16 +26,16 @@ import com.jmathanim.mathobjects.Point;
  */
 public class ConstrCircleCenter3Points extends ConstrCircleCenterPoint {
 
-	public final Point P0, P1, P2;
+	public final ConstrPoint P0, P1, P2;
 
-	public static ConstrCircleCenter3Points make(Point P0, Point P1, Point P2) {
+	public static ConstrCircleCenter3Points make(ConstrPoint P0, ConstrPoint P1, ConstrPoint P2) {
 		ConstrCircleCenter3Points resul = new ConstrCircleCenter3Points(P0, P1, P2);
 		resul.rebuildShape();
 		return resul;
 	}
 
-	private ConstrCircleCenter3Points(Point P0, Point P1, Point P2) {
-		super(Point.origin(), Point.origin());
+	private ConstrCircleCenter3Points(ConstrPoint P0, ConstrPoint P1, ConstrPoint P2) {
+		super(P0,P0);
 		this.P0 = P0;
 		this.P1 = P1;
 		this.P2 = P2;
@@ -94,7 +95,7 @@ public class ConstrCircleCenter3Points extends ConstrCircleCenterPoint {
 //        this.radius = Math.sqrt(sqr_of_r);//this doesn't work
 		this.circleCenter.v.x = h;
 		this.circleCenter.v.y = k;
-		this.radius = this.circleCenter.to(P0).norm();
+		this.radius = this.circleCenter.to(P0.getMathObject()).norm();
 		// Center (h,k)
 	}
 // This code is contributed by chandan_jnu

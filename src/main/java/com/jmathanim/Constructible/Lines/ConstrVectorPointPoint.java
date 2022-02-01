@@ -17,6 +17,7 @@
  */
 package com.jmathanim.Constructible.Lines;
 
+import com.jmathanim.Constructible.ConstrPoint;
 import com.jmathanim.Constructible.Constructible;
 import com.jmathanim.Renderers.Renderer;
 import com.jmathanim.Utils.Vec;
@@ -31,52 +32,55 @@ import com.jmathanim.mathobjects.Shape;
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
 public class ConstrVectorPointPoint extends Constructible implements HasDirection {
-	public final Point A, B;
-	private final Arrow2D arrowToDraw;
 
-	public static ConstrVectorPointPoint make(Point A, Point B) {
-		ConstrVectorPointPoint resul = new ConstrVectorPointPoint(A, B);
-		resul.rebuildShape();
-		return resul;
-	}
+    public final ConstrPoint A, B;
+    private final Arrow2D arrowToDraw;
 
-	private ConstrVectorPointPoint(Point A, Point B) {
-		this.A = A;
-		this.B = B;
-		arrowToDraw = Arrow2D.makeSimpleArrow2D(this.A, this.B);
-	}
+    public static ConstrVectorPointPoint make(ConstrPoint A, ConstrPoint B) {
+        ConstrVectorPointPoint resul = new ConstrVectorPointPoint(A, B);
+        resul.rebuildShape();
+        return resul;
+    }
 
-	@Override
-	public <T extends MathObject> T copy() {
-		return (T) ConstrVectorPointPoint.make(this.A.copy(), this.B.copy());
-	}
+    private ConstrVectorPointPoint(ConstrPoint A, ConstrPoint B) {
+        this.A = A;
+        this.B = B;
+        arrowToDraw = Arrow2D.makeSimpleArrow2D(this.A.getMathObject(), this.B.getMathObject());
+    }
 
-	@Override
-	public void draw(JMathAnimScene scene, Renderer r) {
-		arrowToDraw.draw(scene, r);
-	}
+    @Override
+    public ConstrVectorPointPoint copy() {
+        ConstrVectorPointPoint copy = ConstrVectorPointPoint.make(this.A.copy(), this.B.copy());
+        copy.getMp().copyFrom(this.getMp());
+        return copy;
+    }
 
-	@Override
-	public Vec getDirection() {
-		return A.to(B);
-	}
+    @Override
+    public void draw(JMathAnimScene scene, Renderer r) {
+        arrowToDraw.draw(scene, r);
+    }
 
-	@Override
-	public MathObject getMathObject() {
-		return arrowToDraw;
-	}
+    @Override
+    public Vec getDirection() {
+        return A.to(B);
+    }
 
-	public Point getA() {
-		return A;
-	}
+    @Override
+    public MathObject getMathObject() {
+        return arrowToDraw;
+    }
 
-	public Point getB() {
-		return B;
-	}
+//    public Point getA() {
+//        return A;
+//    }
+//
+//    public Point getB() {
+//        return B;
+//    }
 
-	@Override
-	public void rebuildShape() {
-		// Nothing to do here...
-	}
+    @Override
+    public void rebuildShape() {
+        // Nothing to do here...
+    }
 
 }

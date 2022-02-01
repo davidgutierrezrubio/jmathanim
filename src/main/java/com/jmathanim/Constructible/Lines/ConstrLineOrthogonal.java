@@ -17,6 +17,7 @@
  */
 package com.jmathanim.Constructible.Lines;
 
+import com.jmathanim.Constructible.ConstrPoint;
 import com.jmathanim.Constructible.Constructible;
 import com.jmathanim.Renderers.Renderer;
 import com.jmathanim.Utils.Vec;
@@ -31,25 +32,27 @@ import com.jmathanim.mathobjects.Point;
  */
 public class ConstrLineOrthogonal extends Constructible implements HasDirection {
 
-    Point A;
+    ConstrPoint A;
     HasDirection dir;
     private final Line lineToDraw;
 
-    public static ConstrLineOrthogonal make(Point A, HasDirection dir) {
+    public static ConstrLineOrthogonal make(ConstrPoint A, HasDirection dir) {
         ConstrLineOrthogonal resul = new ConstrLineOrthogonal(A, dir);
         resul.rebuildShape();
         return resul;
     }
 
-    private ConstrLineOrthogonal(Point A, HasDirection dir) {
+    private ConstrLineOrthogonal(ConstrPoint A, HasDirection dir) {
         this.A = A;
         this.dir = dir;
-        lineToDraw = new Line(A, Point.origin());// Irrelevant
+        lineToDraw = new Line(A.getMathObject(), Point.origin());// Irrelevant
     }
 
     @Override
-    public <T extends MathObject> T copy() {
-        return (T) make(A.copy(), dir);
+    public ConstrLineOrthogonal copy() {
+        ConstrLineOrthogonal copy = make(A.copy(), dir);
+        copy.getMp().copyFrom(this.getMp());
+        return copy;
     }
 
     @Override
@@ -69,11 +72,13 @@ public class ConstrLineOrthogonal extends Constructible implements HasDirection 
 
     @Override
     public void rebuildShape() {
-        lineToDraw.getP1().v.x = A.v.x;
-        lineToDraw.getP1().v.y = A.v.y;
+        Vec v = A.getMathObject().v;
+        Vec direction = dir.getDirection();
+        lineToDraw.getP1().v.x = v.x;
+        lineToDraw.getP1().v.y = v.y;
 
-        lineToDraw.getP2().v.x = A.v.x - dir.getDirection().y;
-        lineToDraw.getP2().v.y = A.v.y + dir.getDirection().x;
+        lineToDraw.getP2().v.x = v.x - direction.y;
+        lineToDraw.getP2().v.y = v.y + direction.x;
     }
 
     @Override

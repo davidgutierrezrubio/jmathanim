@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2021 David Gutiérrez Rubio davidgutierrezrubio@gmail.com
+ * Copyright (C) 2022 David
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -20,57 +20,58 @@ package com.jmathanim.Constructible.Lines;
 import com.jmathanim.Constructible.ConstrPoint;
 import com.jmathanim.Constructible.Constructible;
 import com.jmathanim.Renderers.Renderer;
-import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
-import com.jmathanim.mathobjects.Line;
 import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.Point;
-import com.jmathanim.mathobjects.Ray;
+import com.jmathanim.mathobjects.Shape;
+import java.util.ArrayList;
 
 /**
+ * A constructible polygon
  *
- * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
+ * @author David Gutierrez Rubio
  */
-public class ConstrRayPointPoint extends Constructible implements HasDirection {
+public class ConstrPolygon extends Constructible {
 
-    private final Ray rayToDraw;
-    ConstrPoint A, B;
+    private final Shape shapeToDraw;
+    private final ConstrPoint[] points;
 
-    public static ConstrRayPointPoint make(ConstrPoint A, ConstrPoint B) {
-        ConstrRayPointPoint resul = new ConstrRayPointPoint(A, B);
-        resul.rebuildShape();
-        return resul;
+    public static ConstrPolygon make(ConstrPoint... points) {
+        return new ConstrPolygon(points);
     }
 
-    private ConstrRayPointPoint(ConstrPoint A, ConstrPoint B) {
-        this.A = A;
-        this.B = B;
-        rayToDraw = Ray.make(A.getMathObject(), B.getMathObject());
+    public static ConstrPolygon make(ArrayList<ConstrPoint> points) {
+        return new ConstrPolygon(points.toArray(new ConstrPoint[0]));
     }
 
-    @Override
-    public <T extends MathObject> T copy() {
-        return (T) ConstrRayPointPoint.make(A.copy(), B.copy());
-    }
-
-    @Override
-    public void draw(JMathAnimScene scene, Renderer r) {
-        rayToDraw.draw(scene, r);
-
+    private ConstrPolygon(ConstrPoint... cpoints) {
+        Point[] points = new Point[cpoints.length];
+        for (int i = 0; i < cpoints.length; i++) {//TODO: Convert this to stream
+            points[i] = cpoints[i].getMathObject();
+        }
+        shapeToDraw = Shape.polygon(points);
+        this.points = cpoints;
     }
 
     @Override
     public MathObject getMathObject() {
-        return rayToDraw;
+        return shapeToDraw;
     }
 
     @Override
     public void rebuildShape() {
-        // Nothing is needed, the line is updated by itself
     }
 
     @Override
-    public Vec getDirection() {
-        return A.to(B);
+    public ConstrPolygon copy() {
+        ConstrPolygon copy = ConstrPolygon.make(this.points);
+        copy.getMp().copyFrom(this.getMp());
+        return copy;
     }
+
+    @Override
+    public void draw(JMathAnimScene scene, Renderer r) {
+        shapeToDraw.draw(scene, r);
+    }
+
 }
