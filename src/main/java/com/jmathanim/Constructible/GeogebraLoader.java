@@ -45,155 +45,160 @@ import org.xml.sax.SAXException;
  */
 public class GeogebraLoader implements Iterable<MathObject> {
 
-	private final ResourceLoader rl;
-	private final URL url;
-	private ZipFile zipFile;
-	private ZipEntry zipEntry;
-	private InputStream inputStream;
-	private final GeogebraCommandParser cp;
+    private final ResourceLoader rl;
+    private final URL url;
+    private ZipFile zipFile;
+    private ZipEntry zipEntry;
+    private InputStream inputStream;
+    private final GeogebraCommandParser cp;
 
-	private GeogebraLoader(String fileName) {
-		rl = new ResourceLoader();
-		url = rl.getResource(fileName, "geogebra");
-		this.cp = new GeogebraCommandParser();
-	}
+    private GeogebraLoader(String fileName) {
+        rl = new ResourceLoader();
+        url = rl.getResource(fileName, "geogebra");
+        this.cp = new GeogebraCommandParser();
+    }
 
-	public static GeogebraLoader parse(String fileName) {
-		GeogebraLoader resul = new GeogebraLoader(fileName);
-		resul.parseFile(fileName);
-		return resul;
-	}
+    public static GeogebraLoader parse(String fileName) {
+        GeogebraLoader resul = new GeogebraLoader(fileName);
+        resul.parseFile(fileName);
+        return resul;
+    }
 
-	private void parseFile(String fileName) {
-		try {
-			JMathAnimScene.logger.info("Loading Geogebra file {}", fileName);
-			zipFile = new ZipFile(url.getFile());
-			zipEntry = zipFile.getEntry("geogebra.xml");
-			inputStream = this.zipFile.getInputStream(zipEntry);
-			parseGeogebraContents(inputStream);
-		} catch (IOException ex) {
-			Logger.getLogger(GeogebraLoader.class.getName()).log(Level.SEVERE, null, ex);
-		}
+    private void parseFile(String fileName) {
+        try {
+            JMathAnimScene.logger.info("Loading Geogebra file {}", fileName);
+            zipFile = new ZipFile(url.getFile());
+            zipEntry = zipFile.getEntry("geogebra.xml");
+            inputStream = this.zipFile.getInputStream(zipEntry);
+            parseGeogebraContents(inputStream);
+        } catch (IOException ex) {
+            Logger.getLogger(GeogebraLoader.class.getName()).log(Level.SEVERE, null, ex);
+        }
 
-	}
+    }
 
-	private void parseGeogebraContents(InputStream inputStream) {
-		DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
-		DocumentBuilder dBuilder;
-		Document doc = null;
-		try {
-			dBuilder = dbFactory.newDocumentBuilder();
-			doc = dBuilder.parse(inputStream);
-			doc.getDocumentElement().normalize();
-		} catch (ParserConfigurationException | SAXException | IOException ex) {
-			Logger.getLogger(GeogebraLoader.class.getName()).log(Level.SEVERE, null, ex);
-		}
+    private void parseGeogebraContents(InputStream inputStream) {
+        DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+        DocumentBuilder dBuilder;
+        Document doc = null;
+        try {
+            dBuilder = dbFactory.newDocumentBuilder();
+            doc = dBuilder.parse(inputStream);
+            doc.getDocumentElement().normalize();
+        } catch (ParserConfigurationException | SAXException | IOException ex) {
+            Logger.getLogger(GeogebraLoader.class.getName()).log(Level.SEVERE, null, ex);
+        }
 
-		Element root = doc.getDocumentElement();
-		if (!"geogebra".equals(root.getNodeName())) {
-			try {
-				throw new Exception("XML File doesn't contain a valid Geogebra file");
-			} catch (Exception ex) {
-				Logger.getLogger(GeogebraLoader.class.getName()).log(Level.SEVERE, null, ex);
-			}
-		}
+        Element root = doc.getDocumentElement();
+        if (!"geogebra".equals(root.getNodeName())) {
+            try {
+                throw new Exception("XML File doesn't contain a valid Geogebra file");
+            } catch (Exception ex) {
+                Logger.getLogger(GeogebraLoader.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
 
-		// Iterate over all tags. Element and Command tags are the interesting ones
-		NodeList nodes = root.getChildNodes();
+        // Iterate over all tags. Element and Command tags are the interesting ones
+        NodeList nodes = root.getChildNodes();
 
-		for (int i = 0; i < nodes.getLength(); i++) {
-			Node node = nodes.item(i);
+        for (int i = 0; i < nodes.getLength(); i++) {
+            Node node = nodes.item(i);
 
-			if (node instanceof Element) {
-				Element el = (Element) node;
-				if ("construction".equals(el.getNodeName())) {
-					parseConstructionChildren(el);
-				}
+            if (node instanceof Element) {
+                Element el = (Element) node;
+                if ("construction".equals(el.getNodeName())) {
+                    parseConstructionChildren(el);
+                }
 
-			}
-		}
+            }
+        }
 
-	}
+    }
 
-	private void parseConstructionChildren(Element constructionNode) {
-		NodeList nodes = constructionNode.getChildNodes();
+    private void parseConstructionChildren(Element constructionNode) {
+        NodeList nodes = constructionNode.getChildNodes();
 
-		for (int i = 0; i < nodes.getLength(); i++) {
-			Node node = nodes.item(i);
+        for (int i = 0; i < nodes.getLength(); i++) {
+            Node node = nodes.item(i);
 
-			if (node instanceof Element) {
-				Element el = (Element) node;
-				if ("element".equals(el.getNodeName())) {
-					parseGeogebraElement(el);
-				}
-				if ("command".equals(el.getNodeName())) {
-					parseGeogebraCommand(el);
-				}
+            if (node instanceof Element) {
+                Element el = (Element) node;
+                if ("element".equals(el.getNodeName())) {
+                    parseGeogebraElement(el);
+                }
+                if ("command".equals(el.getNodeName())) {
+                    parseGeogebraCommand(el);
+                }
 
-			}
-		}
+            }
+        }
 
-	}
+    }
 
-	/**
-	 * Parse a geogebra element tag
-	 *
-	 * @param el
-	 */
-	private void parseGeogebraElement(Element el) {
-		String type = el.getAttribute("type");
-		String label = el.getAttribute("label");
-		switch (type) {
-		case "point":
-			cp.processPoint(el);
-			break;
-		}
+    /**
+     * Parse a geogebra element tag
+     *
+     * @param el
+     */
+    private void parseGeogebraElement(Element el) {
+        String type = el.getAttribute("type");
+        String label = el.getAttribute("label");
+        switch (type) {
+            case "point":
+                cp.processPoint(el);
+                break;
+        }
 
-		// If element already belongs to the hashMap, process styling options
-		if (cp.containsKey(label)) {
-			cp.get(label).getMp().copyFrom(cp.parseStylingOptions(el));
-		}
+        // If element already belongs to the hashMap, process styling options
+        if (cp.containsKey(label)) {
+            cp.get(label).getMp().copyFrom(cp.parseStylingOptions(el));
+        }
 
-	}
+    }
 
-	private void parseGeogebraCommand(Element el) {
-		String name = el.getAttribute("name");
-		switch (name) {
-		case "Segment":
-			cp.processSegmentCommand(el);
-			break;
-		case "Polygon":
-			cp.processPolygonCommand(el);
-			break;
-		case "Circle":
-			cp.processCircleCommand(el);
-			break;
-		case "Line":
-			cp.processLineCommand(el);
-			break;
-		case "OrthogonalLine":
-			cp.processOrthogonalLine(el);
-			break;
-		case "LineBisector":
-			cp.processPerpBisector(el);
-			break;
-                case "Ray":
-                    cp.processRayCommand(el);
-                        //TODO: A lot of commands to implement still
-		}
-	}
+    private void parseGeogebraCommand(Element el) {
+        String name = el.getAttribute("name");
+        switch (name) {
+            case "Segment":
+                cp.processSegmentCommand(el);
+                break;
+            case "Polygon":
+                cp.processPolygonCommand(el);
+                break;
+            case "Circle":
+                cp.processCircleCommand(el);
+                break;
+            case "Line":
+                cp.processLineCommand(el);
+                break;
+            case "OrthogonalLine":
+                cp.processOrthogonalLine(el);
+                break;
+            case "LineBisector":
+                cp.processPerpBisector(el);
+                break;
+            case "Ray":
+                cp.processRayCommand(el);
+                break;
+            case "Vector":
+                cp.processVectorCommand(el);
+            //TODO: A lot of commands to implement still
+            default:
+                JMathAnimScene.logger.warn("Geogebra element " + name + " not implemented yet, sorry.");
+        }
+    }
 
-	public MathObject get(Object key) {
-		return cp.get(key);
-	}
+    public MathObject get(String key) {
+        return cp.get(key);
+    }
 
-	public Collection<MathObject> getObjects() {
-		return cp.geogebraElements.values();
-	}
+    public Collection<MathObject> getObjects() {
+        return cp.geogebraElements.values();
+    }
 
-	public HashMap<String, MathObject> getDict() {
-		return cp.geogebraElements;
-	}
+    public HashMap<String, MathObject> getDict() {
+        return cp.geogebraElements;
+    }
 
     @Override
     public Iterator<MathObject> iterator() {

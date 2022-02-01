@@ -29,53 +29,57 @@ import com.jmathanim.mathobjects.Shape;
  *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
-public class ConstrSegmentPointPoint extends Constructible implements HasDirection {
-	public final Point A, B;
-	private final Shape segmentToDraw;
+public class ConstrVectorPointDirection extends Constructible implements HasDirection {
 
-	public static ConstrSegmentPointPoint make(Point A, Point B) {
-		ConstrSegmentPointPoint resul = new ConstrSegmentPointPoint(A, B);
-		resul.rebuildShape();
-		return resul;
-	}
+    public final Point A, B;
+    public final Vec v;
+    private final Shape segmentToDraw;
 
-	private ConstrSegmentPointPoint(Point A, Point B) {
-		this.A = A;
-		this.B = B;
-		segmentToDraw = Shape.segment(this.A, this.B);
-	}
+    public static ConstrVectorPointDirection make(Point A, Vec v) {
+        ConstrVectorPointDirection resul = new ConstrVectorPointDirection(A, v);
+        resul.rebuildShape();
+        return resul;
+    }
 
-	@Override
-	public <T extends MathObject> T copy() {
-		return (T) ConstrSegmentPointPoint.make(this.A.copy(), this.B.copy());
-	}
+    private ConstrVectorPointDirection(Point A, Vec v) {
+        this.A = A;
+        this.B = A.add(v);
+        this.v = v;
+        segmentToDraw = Shape.segment(this.A, B);
+    }
 
-	@Override
-	public void draw(JMathAnimScene scene, Renderer r) {
-		segmentToDraw.draw(scene, r);
-	}
+    @Override
+    public <T extends MathObject> T copy() {
+        return (T) ConstrVectorPointDirection.make(this.A.copy(), v.copy());
+    }
 
-	@Override
-	public Vec getDirection() {
-		return A.to(B);
-	}
+    @Override
+    public void draw(JMathAnimScene scene, Renderer r) {
+        rebuildShape();
+        segmentToDraw.draw(scene, r);
+    }
 
-	@Override
-	public MathObject getMathObject() {
-		return segmentToDraw;
-	}
+    @Override
+    public Vec getDirection() {
+        return v.copy();
+    }
 
-	public Point getA() {
-		return A;
-	}
+    @Override
+    public MathObject getMathObject() {
+        return segmentToDraw;
+    }
 
-	public Point getB() {
-		return B;
-	}
+    public Point getA() {
+        return A;
+    }
 
-	@Override
-	public void rebuildShape() {
-		// Nothing to do here...
-	}
+    public Point getB() {
+        return B;
+    }
+
+    @Override
+    public void rebuildShape() {
+       this.B.copyFrom(A.add(v));
+    }
 
 }

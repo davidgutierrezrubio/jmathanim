@@ -28,11 +28,13 @@ import com.jmathanim.Constructible.Lines.ConstrPerpBisectorSegment;
 import com.jmathanim.Constructible.Lines.ConstrRayParallel;
 import com.jmathanim.Constructible.Lines.ConstrRayPointPoint;
 import com.jmathanim.Constructible.Lines.ConstrSegmentPointPoint;
+import com.jmathanim.Constructible.Lines.ConstrVectorPointPoint;
 import com.jmathanim.Constructible.Lines.HasDirection;
 import com.jmathanim.Styling.JMColor;
 import com.jmathanim.Styling.MODrawProperties;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.MathObject;
+import com.jmathanim.mathobjects.NullMathObject;
 import com.jmathanim.mathobjects.Point;
 import com.jmathanim.mathobjects.Scalar;
 import com.jmathanim.mathobjects.Shape;
@@ -90,11 +92,15 @@ public class GeogebraCommandParser {
         return null;
     }
 
-    public MathObject get(Object key) {
-        return geogebraElements.get(key);
+    public MathObject get(String key) {
+        if (containsKey(key)) {
+            return geogebraElements.get(key);
+        } else {
+            return new NullMathObject();
+        }
     }
 
-    public boolean containsKey(Object key) {
+    public boolean containsKey(String key) {
         return geogebraElements.containsKey(key);
     }
 
@@ -167,7 +173,7 @@ public class GeogebraCommandParser {
         MathObject[] objs = new MathObject[elInput.getAttributes().getLength()];
         for (int i = 0; i < elInput.getAttributes().getLength(); i++) {
             String label = elInput.getAttribute("a" + i);
-            objs[i] = geogebraElements.get(label);
+            objs[i] = geogebraElements.get(label);//TODO: Include case where no point has been created previouslyN
         }
         return objs;
     }
@@ -240,6 +246,25 @@ public class GeogebraCommandParser {
         if (B instanceof HasDirection) {// Line parallel
             registerGeogebraElement(label, ConstrRayParallel.make(A, (HasDirection) B));
         }
+    }
+
+    protected void processVectorCommand(Element el) {
+        String label = getOutputArgument(el, 0);
+        if ("w".equals(label))  {
+            System.out.println("AQUI");
+    }
+            
+        MathObject[] params = getArrayOfParameters(el);
+        Point A, B;
+        if (params.length > 1) {
+            A = (Point) params[0];
+            B = (Point) params[1];
+        } else {
+            A = Point.origin();
+            B = (Point) params[0];
+        }
+
+        registerGeogebraElement(label, ConstrVectorPointPoint.make(A, B));
     }
 
     protected void processOrthogonalLine(Element el) {

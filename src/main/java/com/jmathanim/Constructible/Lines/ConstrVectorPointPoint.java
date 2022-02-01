@@ -21,6 +21,7 @@ import com.jmathanim.Constructible.Constructible;
 import com.jmathanim.Renderers.Renderer;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
+import com.jmathanim.mathobjects.Arrow2D;
 import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.Point;
 import com.jmathanim.mathobjects.Shape;
@@ -29,30 +30,30 @@ import com.jmathanim.mathobjects.Shape;
  *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
-public class ConstrSegmentPointPoint extends Constructible implements HasDirection {
+public class ConstrVectorPointPoint extends Constructible implements HasDirection {
 	public final Point A, B;
-	private final Shape segmentToDraw;
+	private final Arrow2D arrowToDraw;
 
-	public static ConstrSegmentPointPoint make(Point A, Point B) {
-		ConstrSegmentPointPoint resul = new ConstrSegmentPointPoint(A, B);
+	public static ConstrVectorPointPoint make(Point A, Point B) {
+		ConstrVectorPointPoint resul = new ConstrVectorPointPoint(A, B);
 		resul.rebuildShape();
 		return resul;
 	}
 
-	private ConstrSegmentPointPoint(Point A, Point B) {
+	private ConstrVectorPointPoint(Point A, Point B) {
 		this.A = A;
 		this.B = B;
-		segmentToDraw = Shape.segment(this.A, this.B);
+		arrowToDraw = Arrow2D.makeSimpleArrow2D(this.A, this.B);
 	}
 
 	@Override
 	public <T extends MathObject> T copy() {
-		return (T) ConstrSegmentPointPoint.make(this.A.copy(), this.B.copy());
+		return (T) ConstrVectorPointPoint.make(this.A.copy(), this.B.copy());
 	}
 
 	@Override
 	public void draw(JMathAnimScene scene, Renderer r) {
-		segmentToDraw.draw(scene, r);
+		arrowToDraw.draw(scene, r);
 	}
 
 	@Override
@@ -62,7 +63,7 @@ public class ConstrSegmentPointPoint extends Constructible implements HasDirecti
 
 	@Override
 	public MathObject getMathObject() {
-		return segmentToDraw;
+		return arrowToDraw;
 	}
 
 	public Point getA() {
