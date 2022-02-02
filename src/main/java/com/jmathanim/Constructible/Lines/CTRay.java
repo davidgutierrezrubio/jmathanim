@@ -17,71 +17,76 @@
  */
 package com.jmathanim.Constructible.Lines;
 
-import com.jmathanim.Constructible.Points.ConstrPoint;
-import com.jmathanim.Constructible.Constructible;
+import com.jmathanim.Constructible.Points.CTPoint;
 import com.jmathanim.Constructible.FixedConstructible;
 import com.jmathanim.Renderers.Renderer;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
-import com.jmathanim.mathobjects.Line;
 import com.jmathanim.mathobjects.MathObject;
-import com.jmathanim.mathobjects.Point;
+import com.jmathanim.mathobjects.Ray;
 
 /**
  *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
-public class ConstrAngleBisectorPointPoint extends ConstrLine {
+public class CTRay extends CTLine {
 
-    private enum LineType {
-        PointPointPoint, LineLine
+    private enum RayType {
+        PointPoint, PointVector
     }
-    private LineType lineType;
-    ConstrPoint C;
-    Point dirPoint;//The second point of the angle bisector. The first is B
+    private RayType rayType;
+    private final Ray rayToDraw;
 
-    public static ConstrAngleBisectorPointPoint make(ConstrPoint A, ConstrPoint B, ConstrPoint C) {
-        ConstrAngleBisectorPointPoint resul = new ConstrAngleBisectorPointPoint(A, B, C);
-        resul.lineType = LineType.PointPointPoint;
+    public static CTRay make(CTPoint A, HasDirection dir) {
+        CTRay resul = new CTRay(A, A.add(dir.getDirection()));
+        resul.dir = dir;
+        resul.rayType = RayType.PointVector;
         resul.rebuildShape();
         return resul;
     }
 
-    private ConstrAngleBisectorPointPoint(ConstrPoint A, ConstrPoint B, ConstrPoint C) {
+    public static CTRay make(CTPoint A, CTPoint B) {
+        CTRay resul = new CTRay(A, B);
+        resul.rayType = RayType.PointPoint;
+        resul.rebuildShape();
+        return resul;
+    }
+
+    private CTRay(CTPoint A, CTPoint B) {
         super(A,B);
-        this.C = C;
-        dirPoint=Point.origin();
-        lineToDraw = Line.make(B.getMathObject(), dirPoint);
+        this.A = A;
+        this.B = B;
+        rayToDraw = Ray.make(A.getMathObject(), B.getMathObject());
     }
 
     @Override
-    public ConstrAngleBisectorPointPoint copy() {
-        ConstrAngleBisectorPointPoint copy = ConstrAngleBisectorPointPoint.make(A.copy(), B.copy(),C.copy());
-        copy.getMp().copyFrom(this.getMp());
-        return copy;
+    public CTRay copy() {
+        return CTRay.make(A.copy(), B.copy());
     }
 
     @Override
     public void draw(JMathAnimScene scene, Renderer r) {
-        lineToDraw.draw(scene, r);
+        rayToDraw.draw(scene, r);
 
     }
 
     @Override
     public MathObject getMathObject() {
-        return lineToDraw;
+        return rayToDraw;
     }
 
     @Override
     public void rebuildShape() {
-        switch (lineType) {
-            case PointPointPoint:
-                Vec vdir=B.to(A).normalize().add(B.to(C).normalize());
-                dirPoint.copyFrom(B.getMathObject().add(vdir));
+        switch (rayType) {
+            case PointPoint:
                 break;
-            case LineLine:
-               //TODO: Implement
-                break;
+            case PointVector:
+                B.getMathObject().copyFrom(A.add(dir.getDirection()).getMathObject());
         }
+    }
+
+    @Override
+    public Vec getDirection() {
+       return rayToDraw.getDirection();
     }
 }

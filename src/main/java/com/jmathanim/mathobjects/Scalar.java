@@ -30,7 +30,11 @@ public class Scalar extends MathObject {
 
     public Double value;
 
-    public Scalar(double scalar) {
+    public static Scalar make(double scalar) {
+        return new Scalar(scalar);
+    }
+
+    private Scalar(double scalar) {
         this.value = scalar;
     }
 

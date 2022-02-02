@@ -17,7 +17,7 @@
  */
 package com.jmathanim.Constructible.Lines;
 
-import com.jmathanim.Constructible.Points.ConstrPoint;
+import com.jmathanim.Constructible.Points.CTPoint;
 import com.jmathanim.Constructible.FixedConstructible;
 import com.jmathanim.Renderers.Renderer;
 import com.jmathanim.Utils.Vec;
@@ -30,40 +30,45 @@ import com.jmathanim.mathobjects.Point;
  *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
-public class ConstrLine extends FixedConstructible implements HasDirection {
+public class CTLine extends FixedConstructible implements HasDirection {
 
     private enum LineType {
         PointPoint, PointVector
     }
     private LineType lineType;
     protected Line lineToDraw;
-    ConstrPoint A, B;
+    CTPoint A;
+    CTPoint B;
     HasDirection dir;
 
-    public static ConstrLine make(ConstrPoint A, HasDirection dir) {
-        ConstrLine resul = new ConstrLine(A, A.add(dir.getDirection()));
+    public static CTLine make(CTPoint A, HasDirection dir) {
+        CTLine resul = new CTLine(A, A.add(dir.getDirection()));
         resul.dir = dir;
         resul.lineType = LineType.PointVector;
         resul.rebuildShape();
         return resul;
     }
 
-    public static ConstrLine make(ConstrPoint A, ConstrPoint B) {
-        ConstrLine resul = new ConstrLine(A, B);
+    public static CTLine make(Point A, Point B) {
+        return CTLine.make(CTPoint.make(A), CTPoint.make(B));
+    }
+
+    public static CTLine make(CTPoint A, CTPoint B) {
+        CTLine resul = new CTLine(A, B);
         resul.lineType = LineType.PointPoint;
         resul.rebuildShape();
         return resul;
     }
 
-    protected ConstrLine(ConstrPoint A, ConstrPoint B) {
+    protected CTLine(CTPoint A, CTPoint B) {
         this.A = A;
         this.B = B;
         lineToDraw = Line.make(A.getMathObject(), B.getMathObject());
     }
 
     @Override
-    public ConstrLine copy() {
-        ConstrLine copy = ConstrLine.make(A.copy(), B.copy());
+    public CTLine copy() {
+        CTLine copy = CTLine.make(A.copy(), B.copy());
         copy.getMp().copyFrom(this.getMp());
         return copy;
     }

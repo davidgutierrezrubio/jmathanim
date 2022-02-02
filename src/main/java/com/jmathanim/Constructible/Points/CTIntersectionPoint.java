@@ -19,9 +19,9 @@ package com.jmathanim.Constructible.Points;
 
 import com.jmathanim.Constructible.Constructible;
 import com.jmathanim.Constructible.FixedConstructible;
-import com.jmathanim.Constructible.Lines.ConstrLine;
-import com.jmathanim.Constructible.Lines.ConstrRay;
-import com.jmathanim.Constructible.Lines.ConstrSegment;
+import com.jmathanim.Constructible.Lines.CTLine;
+import com.jmathanim.Constructible.Lines.CTRay;
+import com.jmathanim.Constructible.Lines.CTSegment;
 import com.jmathanim.Renderers.Renderer;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.Line;
@@ -35,22 +35,22 @@ import com.jmathanim.mathobjects.Ray;
  *
  * @author David
  */
-public class ConstrIntersectionPoint extends FixedConstructible {
+public class CTIntersectionPoint extends FixedConstructible {
 
-    private final ConstrPoint intersectionPoint;
+    private final CTPoint intersectionPoint;
     private final Constructible c2;
     private final Constructible c1;
 
-    public static ConstrIntersectionPoint make(Constructible c1, Constructible c2) {
-        ConstrIntersectionPoint resul = new ConstrIntersectionPoint(c1, c2);
+    public static CTIntersectionPoint make(Constructible c1, Constructible c2) {
+        CTIntersectionPoint resul = new CTIntersectionPoint(c1, c2);
         resul.rebuildShape();
         return resul;
     }
 
-    private ConstrIntersectionPoint(Constructible c1, Constructible c2) {
+    private CTIntersectionPoint(Constructible c1, Constructible c2) {
         this.c1 = c1;
         this.c2 = c2;
-        intersectionPoint = ConstrPoint.make(Point.at(0, 0));
+        intersectionPoint = CTPoint.make(Point.at(0, 0));
     }
 
     @Override
@@ -71,9 +71,9 @@ public class ConstrIntersectionPoint extends FixedConstructible {
         //Circle
         intersectionPoint.getMathObject().copyFrom(Point.at(0, .5));//Debug values to show on screen
         double x1, x2, x3, x4, y1, y2, y3, y4;
-        if ((c1 instanceof ConstrLine) && (c2 instanceof ConstrLine)) {
-            ConstrLine l1 = (ConstrLine) c1;
-            ConstrLine l2 = (ConstrLine) c2;
+        if ((c1 instanceof CTLine) && (c2 instanceof CTLine)) {
+            CTLine l1 = (CTLine) c1;
+            CTLine l2 = (CTLine) c2;
             x1 = l1.getP1().v.x;
             x2 = l1.getP2().v.x;
             x3 = l2.getP1().v.x;
@@ -88,10 +88,10 @@ public class ConstrIntersectionPoint extends FixedConstructible {
 
             //Consider cases of different intersecting objects
             boolean intersect = true;
-            intersect = intersect && !((c1 instanceof ConstrRay) && (sols[0] < 0));
-            intersect = intersect && !((c2 instanceof ConstrRay) && (sols[1] < 0));
-            intersect = intersect && !((c1 instanceof ConstrSegment) && ((sols[0] < 0) || (sols[0] > 1)));
-            intersect = intersect && !((c2 instanceof ConstrSegment) && ((sols[1] < 0) || (sols[1] > 1)));
+            intersect = intersect && !((c1 instanceof CTRay) && (sols[0] < 0));
+            intersect = intersect && !((c2 instanceof CTRay) && (sols[1] < 0));
+            intersect = intersect && !((c1 instanceof CTSegment) && ((sols[0] < 0) || (sols[0] > 1)));
+            intersect = intersect && !((c2 instanceof CTSegment) && ((sols[1] < 0) || (sols[1] > 1)));
 
             if (intersect) {
                 interX = x1 + sols[0] * (x2 - x1);
@@ -104,7 +104,7 @@ public class ConstrIntersectionPoint extends FixedConstructible {
     }
 
     @Override
-    public ConstrIntersectionPoint copy() {
+    public CTIntersectionPoint copy() {
         return make(c1.copy(), c2.copy());
     }
 

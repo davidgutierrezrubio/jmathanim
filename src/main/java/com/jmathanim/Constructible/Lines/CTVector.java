@@ -17,76 +17,59 @@
  */
 package com.jmathanim.Constructible.Lines;
 
-import com.jmathanim.Constructible.Points.ConstrPoint;
-import com.jmathanim.Constructible.FixedConstructible;
+import com.jmathanim.Constructible.Points.CTPoint;
 import com.jmathanim.Renderers.Renderer;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
+import com.jmathanim.mathobjects.Arrow2D;
 import com.jmathanim.mathobjects.MathObject;
-import com.jmathanim.mathobjects.Ray;
 
 /**
  *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
-public class ConstrRay extends ConstrLine {
+public class CTVector extends CTLine {
 
-    private enum RayType {
-        PointPoint, PointVector
-    }
-    private RayType rayType;
-    private final Ray rayToDraw;
+    private final Arrow2D arrowToDraw;
 
-    public static ConstrRay make(ConstrPoint A, HasDirection dir) {
-        ConstrRay resul = new ConstrRay(A, A.add(dir.getDirection()));
-        resul.dir = dir;
-        resul.rayType = RayType.PointVector;
+    public static CTVector make(CTPoint A, CTPoint B) {
+        CTVector resul = new CTVector(A, B);
         resul.rebuildShape();
         return resul;
     }
 
-    public static ConstrRay make(ConstrPoint A, ConstrPoint B) {
-        ConstrRay resul = new ConstrRay(A, B);
-        resul.rayType = RayType.PointPoint;
-        resul.rebuildShape();
-        return resul;
-    }
-
-    private ConstrRay(ConstrPoint A, ConstrPoint B) {
-        super(A,B);
+    private CTVector(CTPoint A, CTPoint B) {
+        super(A, B);
         this.A = A;
         this.B = B;
-        rayToDraw = Ray.make(A.getMathObject(), B.getMathObject());
+        arrowToDraw = Arrow2D.makeSimpleArrow2D(this.A.getMathObject(), this.B.getMathObject());
     }
 
     @Override
-    public ConstrRay copy() {
-        return ConstrRay.make(A.copy(), B.copy());
+    public CTVector copy() {
+        CTVector copy = CTVector.make(this.A.copy(), this.B.copy());
+        copy.getMp().copyFrom(this.getMp());
+        return copy;
     }
 
     @Override
     public void draw(JMathAnimScene scene, Renderer r) {
-        rayToDraw.draw(scene, r);
-
-    }
-
-    @Override
-    public MathObject getMathObject() {
-        return rayToDraw;
-    }
-
-    @Override
-    public void rebuildShape() {
-        switch (rayType) {
-            case PointPoint:
-                break;
-            case PointVector:
-                B.getMathObject().copyFrom(A.add(dir.getDirection()).getMathObject());
-        }
+        arrowToDraw.draw(scene, r);
     }
 
     @Override
     public Vec getDirection() {
-       return rayToDraw.getDirection();
+        return A.to(B);
     }
+
+    @Override
+    public MathObject getMathObject() {
+        return arrowToDraw;
+    }
+
+    @Override
+    public void rebuildShape() {
+        // Nothing to do here...
+    }
+
 }

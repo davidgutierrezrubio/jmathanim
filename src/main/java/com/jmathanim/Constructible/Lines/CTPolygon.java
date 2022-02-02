@@ -17,7 +17,7 @@
  */
 package com.jmathanim.Constructible.Lines;
 
-import com.jmathanim.Constructible.Points.ConstrPoint;
+import com.jmathanim.Constructible.Points.CTPoint;
 import com.jmathanim.Constructible.Constructible;
 import com.jmathanim.Constructible.FixedConstructible;
 import com.jmathanim.Renderers.Renderer;
@@ -32,20 +32,20 @@ import java.util.ArrayList;
  *
  * @author David Gutierrez Rubio
  */
-public class ConstrPolygon extends FixedConstructible {
+public class CTPolygon extends FixedConstructible {
 
     private final Shape shapeToDraw;
-    private final ConstrPoint[] points;
+    private final CTPoint[] points;
 
-    public static ConstrPolygon make(ConstrPoint... points) {
-        return new ConstrPolygon(points);
+    public static CTPolygon make(CTPoint... points) {
+        return new CTPolygon(points);
     }
 
-    public static ConstrPolygon make(ArrayList<ConstrPoint> points) {
-        return new ConstrPolygon(points.toArray(new ConstrPoint[0]));
+    public static CTPolygon make(ArrayList<CTPoint> points) {
+        return new CTPolygon(points.toArray(new CTPoint[0]));
     }
 
-    private ConstrPolygon(ConstrPoint... cpoints) {
+    private CTPolygon(CTPoint... cpoints) {
         Point[] points = new Point[cpoints.length];
         for (int i = 0; i < cpoints.length; i++) {//TODO: Convert this to stream
             points[i] = cpoints[i].getMathObject();
@@ -64,8 +64,8 @@ public class ConstrPolygon extends FixedConstructible {
     }
 
     @Override
-    public ConstrPolygon copy() {
-        ConstrPolygon copy = ConstrPolygon.make(this.points);
+    public CTPolygon copy() {
+        CTPolygon copy = CTPolygon.make(this.points);
         copy.getMp().copyFrom(this.getMp());
         return copy;
     }

@@ -28,15 +28,15 @@ import com.jmathanim.mathobjects.Point;
  *
  * @author David
  */
-public class ConstrPoint extends Constructible {
+public class CTPoint extends Constructible {
 
     private final Point point;
     public final Vec v;
-    public static ConstrPoint make(Point A) {
-        return new ConstrPoint(A);
+    public static CTPoint make(Point A) {
+        return new CTPoint(A);
     }
 
-    private ConstrPoint(Point A) {
+    private CTPoint(Point A) {
         this.point=A;
         this.v=A.v;
     }
@@ -50,7 +50,7 @@ public class ConstrPoint extends Constructible {
     }
 
     @Override
-    public ConstrPoint copy() {
+    public CTPoint copy() {
         return make(point.copy());
     }
 
@@ -59,12 +59,12 @@ public class ConstrPoint extends Constructible {
         point.draw(scene, r);
     }
 
-    public Vec to(ConstrPoint B) {
+    public Vec to(CTPoint B) {
         return point.to(B.getMathObject());
     }
     
-    public ConstrPoint add(Vec v) {
-        return ConstrPoint.make(point.add(v));
+    public CTPoint add(Vec v) {
+        return CTPoint.make(point.add(v));
     }
 
 

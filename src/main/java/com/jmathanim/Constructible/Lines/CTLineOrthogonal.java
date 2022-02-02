@@ -17,7 +17,7 @@
  */
 package com.jmathanim.Constructible.Lines;
 
-import com.jmathanim.Constructible.Points.ConstrPoint;
+import com.jmathanim.Constructible.Points.CTPoint;
 import com.jmathanim.Renderers.Renderer;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
@@ -27,21 +27,21 @@ import com.jmathanim.jmathanim.JMathAnimScene;
  *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
-public class ConstrLineOrthogonal extends ConstrLine {
+public class CTLineOrthogonal extends CTLine {
 
-    public static ConstrLineOrthogonal make(ConstrPoint A, HasDirection dir) {
-        ConstrLineOrthogonal resul = new ConstrLineOrthogonal(A, dir);
+    public static CTLineOrthogonal make(CTPoint A, HasDirection dir) {
+        CTLineOrthogonal resul = new CTLineOrthogonal(A, dir);
         resul.rebuildShape();
         return resul;
     }
 
-    private ConstrLineOrthogonal(ConstrPoint A, HasDirection dir) {
+    private CTLineOrthogonal(CTPoint A, HasDirection dir) {
         super(A,A.add(dir.getDirection()));
     }
 
     @Override
-    public ConstrLineOrthogonal copy() {
-        ConstrLineOrthogonal copy = make(A.copy(), dir);
+    public CTLineOrthogonal copy() {
+        CTLineOrthogonal copy = make(A.copy(), dir);
         copy.getMp().copyFrom(this.getMp());
         return copy;
     }

@@ -17,70 +17,56 @@
  */
 package com.jmathanim.Constructible.Lines;
 
-import com.jmathanim.Constructible.Points.ConstrPoint;
-import com.jmathanim.Constructible.FixedConstructible;
+import com.jmathanim.Constructible.Points.CTPoint;
 import com.jmathanim.Renderers.Renderer;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
-import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.Point;
-import com.jmathanim.mathobjects.Shape;
 
 /**
- * A finite segment,given by 2 points
  *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
-public class ConstrSegment extends ConstrLine {
+public class CTPerpBisector extends CTLine {
 
-    private final Shape segmentToDraw;
+    private Point C1,C2;
+    public static CTPerpBisector make(Point A, Point B) {
+        return CTPerpBisector.make(CTPoint.make(A), CTPoint.make(B));
+    }
 
-    public static ConstrSegment make(ConstrPoint A, ConstrPoint B) {
-        ConstrSegment resul = new ConstrSegment(A, B);
+    public static CTPerpBisector make(CTPoint A, CTPoint B) {
+        CTPerpBisector resul = new CTPerpBisector(A, B);
         resul.rebuildShape();
         return resul;
     }
 
-    private ConstrSegment(ConstrPoint A, ConstrPoint B) {
-        super(A, B);
-        segmentToDraw = Shape.segment(this.A.getMathObject(), this.B.getMathObject());
+    private CTPerpBisector(CTPoint A, CTPoint B) {
+        super(CTPoint.make(Point.at(1,0)), CTPoint.make(Point.at(0,01)));
+        this.A=A;
+        this.B=B;
     }
 
     @Override
-    public ConstrSegment copy() {
-        ConstrSegment copy = ConstrSegment.make(this.A.copy(), this.B.copy());
+    public CTPerpBisector copy() {
+        CTPerpBisector copy = new CTPerpBisector(A.copy(), B.copy());
         copy.getMp().copyFrom(this.getMp());
         return copy;
     }
 
     @Override
     public void draw(JMathAnimScene scene, Renderer r) {
-        segmentToDraw.draw(scene, r);
-    }
-
-    @Override
-    public Vec getDirection() {
-        return getP1().to(getP2());
-    }
-
-    @Override
-    public Point getP1() {
-        return this.A.getMathObject();
-    }
-
-    @Override
-    public Point getP2() {
-        return this.B.getMathObject();
-    }
-
-    @Override
-    public MathObject getMathObject() {
-        return segmentToDraw;
+        lineToDraw.draw(scene, r);
     }
 
     @Override
     public void rebuildShape() {
-        // Nothing to do here...
+        Point C = A.getMathObject().interpolate(B.getMathObject(), .5);
+        Vec v = A.to(B);
+        lineToDraw.getP1().v.x = C.v.x;
+        lineToDraw.getP1().v.y = C.v.y;
+
+        lineToDraw.getP2().v.x = C.v.x - v.y;
+        lineToDraw.getP2().v.y = C.v.y + v.x;
     }
 
 }
