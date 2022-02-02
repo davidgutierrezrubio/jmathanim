@@ -19,6 +19,7 @@ package com.jmathanim.Constructible.Lines;
 
 import com.jmathanim.Constructible.ConstrPoint;
 import com.jmathanim.Constructible.Constructible;
+import com.jmathanim.Constructible.FixedConstructible;
 import com.jmathanim.Renderers.Renderer;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
@@ -30,7 +31,7 @@ import com.jmathanim.mathobjects.Point;
  *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
-public class ConstrLineOrthogonal extends Constructible implements HasDirection {
+public class ConstrLineOrthogonal extends FixedConstructible implements HasDirection {
 
     ConstrPoint A;
     HasDirection dir;

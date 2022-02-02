@@ -19,70 +19,79 @@ package com.jmathanim.Constructible.Lines;
 
 import com.jmathanim.Constructible.ConstrPoint;
 import com.jmathanim.Constructible.Constructible;
+import com.jmathanim.Constructible.FixedConstructible;
 import com.jmathanim.Renderers.Renderer;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.Line;
 import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.Point;
-import com.jmathanim.mathobjects.Ray;
 
 /**
  *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
-public class ConstrRayParallel extends Constructible implements HasDirection {
+public class ConstrAngleBisectorPointPoint extends FixedConstructible implements HasDirection {
 
-    ConstrPoint A;
-    HasDirection dir;
-    private final Ray rayToDraw;
+    private enum LineType {
+        PointPointPoint, LineLine
+    }
+    private LineType lineType;
+    private final Line lineToDraw;
+    ConstrPoint A, B, C;
+    Point dirPoint;
+    Vec dir;
 
-    public static ConstrRayParallel make(ConstrPoint A, HasDirection dir) {
-        ConstrRayParallel resul = new ConstrRayParallel(A, dir);
+    public static ConstrAngleBisectorPointPoint make(ConstrPoint A, ConstrPoint B, ConstrPoint C) {
+        ConstrAngleBisectorPointPoint resul = new ConstrAngleBisectorPointPoint(A, B, C);
+        resul.lineType = LineType.PointPointPoint;
         resul.rebuildShape();
         return resul;
     }
 
-    private ConstrRayParallel(ConstrPoint A, HasDirection dir) {
+    private ConstrAngleBisectorPointPoint(ConstrPoint A, ConstrPoint B, ConstrPoint C) {
         this.A = A;
-        this.dir = dir;
-        rayToDraw = new Ray(A.getMathObject(), this.dir.getDirection());
+        this.B = B;
+        this.C = C;
+        dirPoint=Point.origin();
+        lineToDraw = Line.make(B.getMathObject(), dirPoint);
     }
 
     @Override
-    public <T extends MathObject> T copy() {
-        return (T) make(A.copy(), dir);
+    public ConstrAngleBisectorPointPoint copy() {
+        ConstrAngleBisectorPointPoint copy = ConstrAngleBisectorPointPoint.make(A.copy(), B.copy(),C.copy());
+        copy.getMp().copyFrom(this.getMp());
+        return copy;
     }
 
     @Override
     public void draw(JMathAnimScene scene, Renderer r) {
-        rayToDraw.draw(scene, r);
-    }
+        lineToDraw.draw(scene, r);
 
-    @Override
-    public Vec getDirection() {
-        return dir.getDirection();
     }
 
     @Override
     public MathObject getMathObject() {
-        return rayToDraw;
+        return lineToDraw;
     }
 
     @Override
     public void rebuildShape() {
-        Vec v = A.getMathObject().v;
-        Vec direction = dir.getDirection();
-        rayToDraw.getP1().v.x = v.x;
-        rayToDraw.getP1().v.y = v.y;
-
-        rayToDraw.getP2().v.x = v.x + direction.x;
-        rayToDraw.getP2().v.y = v.y + direction.y;
+        switch (lineType) {
+            case PointPointPoint:
+                dir=B.to(A).normalize().add(B.to(C).normalize());
+                dirPoint.copyFrom(B.getMathObject().add(dir));
+                break;
+            case LineLine:
+               //TODO: Implement
+                break;
+        }
     }
 
     @Override
-    public int getUpdateLevel() {
-        return Math.max(A.getUpdateLevel(), ((MathObject) dir).getUpdateLevel()) + 1;
+    public Vec getDirection() {
+       rebuildShape();
+       return dir;
     }
 
 }

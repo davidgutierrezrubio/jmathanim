@@ -20,14 +20,14 @@ package com.jmathanim.Constructible;
 import com.jmathanim.Constructible.Conics.ConstrCircleCenter3Points;
 import com.jmathanim.Constructible.Conics.ConstrCircleCenterPoint;
 import com.jmathanim.Constructible.Conics.ConstrCircleCenterRadius;
+import com.jmathanim.Constructible.Lines.ConstrAngleBisectorPointPoint;
 import com.jmathanim.Constructible.Lines.ConstrLine;
 import com.jmathanim.Constructible.Lines.ConstrLineOrthogonal;
 import com.jmathanim.Constructible.Lines.ConstrPerpBisectorPointPoint;
 import com.jmathanim.Constructible.Lines.ConstrPerpBisectorSegment;
 import com.jmathanim.Constructible.Lines.ConstrPolygon;
-import com.jmathanim.Constructible.Lines.ConstrRayParallel;
-import com.jmathanim.Constructible.Lines.ConstrRayPointPoint;
-import com.jmathanim.Constructible.Lines.ConstrSegmentPointPoint;
+import com.jmathanim.Constructible.Lines.ConstrRay;
+import com.jmathanim.Constructible.Lines.ConstrSegment;
 import com.jmathanim.Constructible.Lines.ConstrVectorPointPoint;
 import com.jmathanim.Constructible.Lines.HasDirection;
 import com.jmathanim.Styling.JMColor;
@@ -37,7 +37,6 @@ import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.NullMathObject;
 import com.jmathanim.mathobjects.Point;
 import com.jmathanim.mathobjects.Scalar;
-import com.jmathanim.mathobjects.Shape;
 import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -154,27 +153,25 @@ public class GeogebraCommandParser {
             //20:        MODrawProperties.DashStyle.DOTTED
             //30:         MODrawProperties.DashStyle.DASHDOTTED
             MODrawProperties.DashStyle dashStyle;
-            int dashType=Integer.valueOf(lineStyle.getAttribute("type"));
+            int dashType = Integer.valueOf(lineStyle.getAttribute("type"));
             switch (dashType) {
                 case 0:
-                    dashStyle=MODrawProperties.DashStyle.SOLID;
+                    dashStyle = MODrawProperties.DashStyle.SOLID;
                     break;
                 case 10:
                 case 15:
-                    dashStyle=MODrawProperties.DashStyle.DASHED;
+                    dashStyle = MODrawProperties.DashStyle.DASHED;
                     break;
                 case 20:
-                    dashStyle=MODrawProperties.DashStyle.DOTTED;
+                    dashStyle = MODrawProperties.DashStyle.DOTTED;
                     break;
-                case 30: 
-                    dashStyle=MODrawProperties.DashStyle.DASHDOTTED;
+                case 30:
+                    dashStyle = MODrawProperties.DashStyle.DASHDOTTED;
                     break;
                 default:
-                    dashStyle=MODrawProperties.DashStyle.SOLID;
+                    dashStyle = MODrawProperties.DashStyle.SOLID;
             }
             resul.setDashStyle(dashStyle);
-            
-
         }
         // Point size
         Element pointSize = firstElementWithTag(el, "pointSize");
@@ -240,7 +237,7 @@ public class GeogebraCommandParser {
         String labelPoint2 = elInput.getAttribute("a1");
         ConstrPoint p1 = (ConstrPoint) geogebraElements.get(labelPoint1);
         ConstrPoint p2 = (ConstrPoint) geogebraElements.get(labelPoint2);
-        ConstrSegmentPointPoint resul = ConstrSegmentPointPoint.make(p1, p2);
+        ConstrSegment resul = ConstrSegment.make(p1, p2);
         String label = firstElementWithTag(el, "output").getAttribute("a0");
         resul.objectLabel = label;
         geogebraElements.put(label, resul);
@@ -267,11 +264,11 @@ public class GeogebraCommandParser {
         ConstrPoint A = (ConstrPoint) params[0]; // First argument is always a point
         MathObject B = params[1];
         if (B instanceof ConstrPoint) {// A line given by 2 points
-            registerGeogebraElement(label, ConstrRayPointPoint.make(A, (ConstrPoint) B));
+            registerGeogebraElement(label, ConstrRay.make(A, (ConstrPoint) B));
             return;
         }
         if (B instanceof HasDirection) {// Line parallel
-            registerGeogebraElement(label, ConstrRayParallel.make(A, (HasDirection) B));
+            registerGeogebraElement(label, ConstrRay.make(A, (HasDirection) B));
         }
     }
 
@@ -310,10 +307,20 @@ public class GeogebraCommandParser {
             registerGeogebraElement(label, ConstrPerpBisectorPointPoint.make(A, B));
         }
         if (params.length == 1) {// 1 segment
-            ConstrSegmentPointPoint seg = (ConstrSegmentPointPoint) params[0];
+            ConstrSegment seg = (ConstrSegment) params[0];
             registerGeogebraElement(label, ConstrPerpBisectorSegment.make(seg));
         }
+    }
 
+    protected void processAngleBisector(Element el) {
+        String label = getOutputArgument(el, 0);
+        MathObject[] params = getArrayOfParameters(el);
+        if (params.length == 3) {// 3 points
+            ConstrPoint A = (ConstrPoint) params[0];
+            ConstrPoint B = (ConstrPoint) params[1];
+            ConstrPoint C = (ConstrPoint) params[2];
+            registerGeogebraElement(label, ConstrAngleBisectorPointPoint.make(A, B,C));
+        }
     }
 
     protected void processPolygonCommand(Element el) {
@@ -331,7 +338,7 @@ public class GeogebraCommandParser {
         // Now, build all segments
         for (int i = 0; i < points.length; i++) {
             int i2 = (i < outputs.length - 2 ? i + 1 : 0);
-            registerGeogebraElement(outputs[i + 1], ConstrSegmentPointPoint.make(points[i], points[i2]));
+            registerGeogebraElement(outputs[i + 1], ConstrSegment.make(points[i], points[i2]));
         }
 
     }

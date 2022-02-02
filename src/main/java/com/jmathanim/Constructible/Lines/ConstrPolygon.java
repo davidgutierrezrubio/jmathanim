@@ -19,6 +19,7 @@ package com.jmathanim.Constructible.Lines;
 
 import com.jmathanim.Constructible.ConstrPoint;
 import com.jmathanim.Constructible.Constructible;
+import com.jmathanim.Constructible.FixedConstructible;
 import com.jmathanim.Renderers.Renderer;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.MathObject;
@@ -31,7 +32,7 @@ import java.util.ArrayList;
  *
  * @author David Gutierrez Rubio
  */
-public class ConstrPolygon extends Constructible {
+public class ConstrPolygon extends FixedConstructible {
 
     private final Shape shapeToDraw;
     private final ConstrPoint[] points;

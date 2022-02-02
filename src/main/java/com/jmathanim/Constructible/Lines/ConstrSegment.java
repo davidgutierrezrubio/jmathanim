@@ -19,6 +19,7 @@ package com.jmathanim.Constructible.Lines;
 
 import com.jmathanim.Constructible.ConstrPoint;
 import com.jmathanim.Constructible.Constructible;
+import com.jmathanim.Constructible.FixedConstructible;
 import com.jmathanim.Renderers.Renderer;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
@@ -30,26 +31,26 @@ import com.jmathanim.mathobjects.Shape;
  *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
-public class ConstrSegmentPointPoint extends Constructible implements HasDirection {
+public class ConstrSegment extends FixedConstructible implements HasDirection {
 
     protected final ConstrPoint A, B;
     private final Shape segmentToDraw;
 
-    public static ConstrSegmentPointPoint make(ConstrPoint A, ConstrPoint B) {
-        ConstrSegmentPointPoint resul = new ConstrSegmentPointPoint(A, B);
+    public static ConstrSegment make(ConstrPoint A, ConstrPoint B) {
+        ConstrSegment resul = new ConstrSegment(A, B);
         resul.rebuildShape();
         return resul;
     }
 
-    private ConstrSegmentPointPoint(ConstrPoint A, ConstrPoint B) {
+    private ConstrSegment(ConstrPoint A, ConstrPoint B) {
         this.A = A;
         this.B = B;
         segmentToDraw = Shape.segment(this.A.getMathObject(), this.B.getMathObject());
     }
 
     @Override
-    public ConstrSegmentPointPoint copy() {
-        ConstrSegmentPointPoint copy = ConstrSegmentPointPoint.make(this.A.copy(), this.B.copy());
+    public ConstrSegment copy() {
+        ConstrSegment copy = ConstrSegment.make(this.A.copy(), this.B.copy());
         copy.getMp().copyFrom(this.getMp());
         return copy;
     }

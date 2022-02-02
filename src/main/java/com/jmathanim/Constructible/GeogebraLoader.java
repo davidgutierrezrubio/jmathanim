@@ -186,6 +186,9 @@ public class GeogebraLoader implements Iterable<Constructible>, hasCameraParamet
             case "LineBisector":
                 cp.processPerpBisector(el);
                 break;
+            case "AngularBisector":
+                  cp.processAngleBisector(el);
+                break;
             case "Ray":
                 cp.processRayCommand(el);
                 break;

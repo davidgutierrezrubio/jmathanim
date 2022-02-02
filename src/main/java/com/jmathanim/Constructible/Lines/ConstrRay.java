@@ -18,31 +18,43 @@
 package com.jmathanim.Constructible.Lines;
 
 import com.jmathanim.Constructible.ConstrPoint;
-import com.jmathanim.Constructible.Constructible;
+import com.jmathanim.Constructible.FixedConstructible;
 import com.jmathanim.Renderers.Renderer;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
-import com.jmathanim.mathobjects.Line;
 import com.jmathanim.mathobjects.MathObject;
-import com.jmathanim.mathobjects.Point;
 import com.jmathanim.mathobjects.Ray;
 
 /**
  *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
-public class ConstrRayPointPoint extends Constructible implements HasDirection {
+public class ConstrRay extends FixedConstructible implements HasDirection {
 
+    private enum RayType {
+        PointPoint, PointVector
+    }
+    private RayType rayType;
     private final Ray rayToDraw;
+    HasDirection dir;
     ConstrPoint A, B;
 
-    public static ConstrRayPointPoint make(ConstrPoint A, ConstrPoint B) {
-        ConstrRayPointPoint resul = new ConstrRayPointPoint(A, B);
+    public static ConstrRay make(ConstrPoint A, HasDirection dir) {
+        ConstrRay resul = new ConstrRay(A, A.add(dir.getDirection()));
+        resul.dir = dir;
+        resul.rayType = RayType.PointVector;
         resul.rebuildShape();
         return resul;
     }
 
-    private ConstrRayPointPoint(ConstrPoint A, ConstrPoint B) {
+    public static ConstrRay make(ConstrPoint A, ConstrPoint B) {
+        ConstrRay resul = new ConstrRay(A, B);
+        resul.rayType = RayType.PointPoint;
+        resul.rebuildShape();
+        return resul;
+    }
+
+    private ConstrRay(ConstrPoint A, ConstrPoint B) {
         this.A = A;
         this.B = B;
         rayToDraw = Ray.make(A.getMathObject(), B.getMathObject());
@@ -50,7 +62,7 @@ public class ConstrRayPointPoint extends Constructible implements HasDirection {
 
     @Override
     public <T extends MathObject> T copy() {
-        return (T) ConstrRayPointPoint.make(A.copy(), B.copy());
+        return (T) ConstrRay.make(A.copy(), B.copy());
     }
 
     @Override
@@ -66,11 +78,21 @@ public class ConstrRayPointPoint extends Constructible implements HasDirection {
 
     @Override
     public void rebuildShape() {
-        // Nothing is needed, the line is updated by itself
+        switch (rayType) {
+            case PointPoint:
+                break;
+            case PointVector:
+                B.getMathObject().copyFrom(A.add(dir.getDirection()).getMathObject());
+        }
     }
 
     @Override
     public Vec getDirection() {
-        return A.to(B);
+        switch (rayType) {
+            case PointPoint:
+                return A.to(B);
+            default:
+                return dir.getDirection();
+        }
     }
 }

@@ -18,6 +18,7 @@
 package com.jmathanim.Constructible.Lines;
 
 import com.jmathanim.Constructible.Constructible;
+import com.jmathanim.Constructible.FixedConstructible;
 import com.jmathanim.Renderers.Renderer;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
@@ -29,18 +30,18 @@ import com.jmathanim.mathobjects.Point;
  *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
-public class ConstrPerpBisectorSegment extends Constructible implements HasDirection {
+public class ConstrPerpBisectorSegment extends FixedConstructible implements HasDirection {
 
-    ConstrSegmentPointPoint segment;
+    ConstrSegment segment;
     private final Line lineToDraw;
 
-    public static ConstrPerpBisectorSegment make(ConstrSegmentPointPoint segment) {
+    public static ConstrPerpBisectorSegment make(ConstrSegment segment) {
         ConstrPerpBisectorSegment resul = new ConstrPerpBisectorSegment(segment);
         resul.rebuildShape();
         return resul;
     }
 
-    private ConstrPerpBisectorSegment(ConstrSegmentPointPoint segment) {
+    private ConstrPerpBisectorSegment(ConstrSegment segment) {
         this.segment = segment;
         lineToDraw = new Line(Point.origin(), Point.origin());// Irrelevant
     }
