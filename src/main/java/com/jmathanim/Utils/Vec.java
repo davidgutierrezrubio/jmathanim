@@ -318,4 +318,13 @@ public class Vec implements Stateable {
         }
     }
 
+    /**
+     * Checkif any of its components is Nan
+     *
+     * @return True if x, y or z is NaN. False otherwise
+     */
+    public boolean isNaN() {
+        return (Double.isNaN(x)) || (Double.isNaN(y)) || Double.isNaN(z);
+    }
+
 }

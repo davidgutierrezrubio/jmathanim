@@ -17,18 +17,21 @@
  */
 package com.jmathanim.mathobjects;
 
-import com.jmathanim.Constructible.Constructible;
+import com.jmathanim.Constructible.FixedConstructible;
 import com.jmathanim.Renderers.Renderer;
+import com.jmathanim.Styling.MODrawProperties;
+import com.jmathanim.Styling.Stylable;
 import com.jmathanim.Utils.EmptyRect;
 import com.jmathanim.Utils.Rect;
 import com.jmathanim.jmathanim.JMathAnimScene;
 
 /**
- * A null MathObject
+ * A null MathObject. This object should be used when the result of an operation
+ * gives an undetermined object (like an undefined point)
  *
  * @author David Gutierrez Rubio
  */
-public class NullMathObject extends Constructible {
+public class NullMathObject extends FixedConstructible {
 
     @Override
     public NullMathObject copy() {
@@ -55,6 +58,16 @@ public class NullMathObject extends Constructible {
 
     @Override
     public void rebuildShape() {
+    }
+
+    @Override
+    public Stylable getMp() {
+        return MODrawProperties.makeNullValues();
+    }
+
+    @Override
+    public int getUpdateLevel() {
+        return super.getUpdateLevel(); //To change body of generated methods, choose Tools | Templates.
     }
 
 }

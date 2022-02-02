@@ -206,6 +206,9 @@ public class Point extends MathObject {
 
     @Override
     public void draw(JMathAnimScene scene, Renderer r) {
+        if (v.isNaN()) {
+            return;
+        }
         dotShape = generateDotShape();//TODO: Do this only when needed
         dotShape.setAbsoluteSize(this.copy());
         if (isVisible()) {

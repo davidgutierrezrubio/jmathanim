@@ -17,7 +17,7 @@
  */
 package com.jmathanim.Constructible.Lines;
 
-import com.jmathanim.Constructible.ConstrPoint;
+import com.jmathanim.Constructible.Points.ConstrPoint;
 import com.jmathanim.Constructible.FixedConstructible;
 import com.jmathanim.Renderers.Renderer;
 import com.jmathanim.Utils.Vec;

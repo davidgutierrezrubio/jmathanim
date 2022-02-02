@@ -18,19 +18,15 @@
 package com.jmathanim.Constructible;
 
 import com.jmathanim.Utils.AffineJTransform;
-import com.jmathanim.Utils.Anchor;
-import com.jmathanim.Utils.Boxable;
-import com.jmathanim.Utils.Vec;
-import com.jmathanim.mathobjects.MathObject;
-import com.jmathanim.mathobjects.Point;
 
 /**
  *
  * @author David
  */
-public abstract class FixedConstructible extends Constructible{
-      @Override
-    public <T extends MathObject> T applyAffineTransform(AffineJTransform transform) {
-        return (T) this;
+public abstract class FixedConstructible extends Constructible {
+
+    @Override
+    public FixedConstructible applyAffineTransform(AffineJTransform transform) {
+        return this;
     }
 }

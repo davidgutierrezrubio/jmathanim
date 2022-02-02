@@ -15,8 +15,9 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-package com.jmathanim.Constructible;
+package com.jmathanim.Constructible.Points;
 
+import com.jmathanim.Constructible.Constructible;
 import com.jmathanim.Renderers.Renderer;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;

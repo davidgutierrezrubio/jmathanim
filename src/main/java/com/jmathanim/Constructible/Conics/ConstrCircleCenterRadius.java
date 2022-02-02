@@ -17,7 +17,7 @@
  */
 package com.jmathanim.Constructible.Conics;
 
-import com.jmathanim.Constructible.ConstrPoint;
+import com.jmathanim.Constructible.Points.ConstrPoint;
 import com.jmathanim.mathobjects.Point;
 import com.jmathanim.mathobjects.Scalar;
 

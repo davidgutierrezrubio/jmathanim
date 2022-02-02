@@ -18,10 +18,8 @@
 package com.jmathanim.Constructible;
 
 import com.jmathanim.Cameras.hasCameraParameters;
-import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.ResourceLoader;
 import com.jmathanim.jmathanim.JMathAnimScene;
-import com.jmathanim.mathobjects.MathObject;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
@@ -194,6 +192,10 @@ public class GeogebraLoader implements Iterable<Constructible>, hasCameraParamet
                 break;
             case "Vector":
                 cp.processVectorCommand(el);
+                break;
+            case "Intersect":
+                cp.processIntersectionCommand(el);
+                break;
             //TODO: A lot of commands to implement still
             default:
                 JMathAnimScene.logger.warn("Geogebra element " + name + " not implemented yet, sorry.");

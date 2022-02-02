@@ -17,6 +17,7 @@
  */
 package com.jmathanim.Constructible;
 
+import com.jmathanim.Constructible.Points.ConstrPoint;
 import com.jmathanim.Constructible.Conics.ConstrCircleCenter3Points;
 import com.jmathanim.Constructible.Conics.ConstrCircleCenterPoint;
 import com.jmathanim.Constructible.Conics.ConstrCircleCenterRadius;
@@ -30,6 +31,7 @@ import com.jmathanim.Constructible.Lines.ConstrRay;
 import com.jmathanim.Constructible.Lines.ConstrSegment;
 import com.jmathanim.Constructible.Lines.ConstrVectorPointPoint;
 import com.jmathanim.Constructible.Lines.HasDirection;
+import com.jmathanim.Constructible.Points.ConstrIntersectionPoint;
 import com.jmathanim.Styling.JMColor;
 import com.jmathanim.Styling.MODrawProperties;
 import com.jmathanim.jmathanim.JMathAnimScene;
@@ -197,7 +199,7 @@ public class GeogebraCommandParser {
         MathObject[] objs = new MathObject[elInput.getAttributes().getLength()];
         for (int i = 0; i < elInput.getAttributes().getLength(); i++) {
             String label = elInput.getAttribute("a" + i);
-            objs[i] = geogebraElements.get(label);//TODO: Include case where no point has been created previouslyN
+            objs[i] = parseArgument(label);
         }
         return objs;
     }
@@ -214,21 +216,23 @@ public class GeogebraCommandParser {
 
     // COMMANDS
     protected void processPoint(Element el) {
-        //TODO: Points are not being loaded with correct style
         String label = el.getAttribute("label");
-        // Get the coordinates
-        Element elCoords = firstElementWithTag(el, "coords");
-        double x = Double.valueOf(elCoords.getAttribute("x"));
-        double y = Double.valueOf(elCoords.getAttribute("y"));
-        Element pointSize = firstElementWithTag(el, "pointSize");
-        double th = Double.valueOf(pointSize.getAttribute("val")) * 30;
-        // TODO: Add a z value here
-        ConstrPoint resul = ConstrPoint.make(Point.at(x, y));
-        resul.thickness(th);
-        resul.objectLabel = label;
-        geogebraElements.put(label, resul);
-//        resul.getMp().copyFrom(parseStylingOptions(el));
-        JMathAnimScene.logger.debug("Imported point {}", label);
+        //If this object is already added, do not process it
+        //for example if it is the result of an intersection command
+        if (!geogebraElements.containsKey(label)) {
+            // Get the coordinates
+            Element elCoords = firstElementWithTag(el, "coords");
+            double x = Double.valueOf(elCoords.getAttribute("x"));
+            double y = Double.valueOf(elCoords.getAttribute("y"));
+            Element pointSize = firstElementWithTag(el, "pointSize");
+            double th = Double.valueOf(pointSize.getAttribute("val")) * 30;
+            // TODO: Add a z value here
+            ConstrPoint resul = ConstrPoint.make(Point.at(x, y));
+            resul.thickness(th);
+            resul.objectLabel = label;
+            geogebraElements.put(label, resul);
+            JMathAnimScene.logger.debug("Imported point {}", label);
+        }
     }
 
     protected void processSegmentCommand(Element el) {
@@ -319,7 +323,7 @@ public class GeogebraCommandParser {
             ConstrPoint A = (ConstrPoint) params[0];
             ConstrPoint B = (ConstrPoint) params[1];
             ConstrPoint C = (ConstrPoint) params[2];
-            registerGeogebraElement(label, ConstrAngleBisectorPointPoint.make(A, B,C));
+            registerGeogebraElement(label, ConstrAngleBisectorPointPoint.make(A, B, C));
         }
     }
 
@@ -388,6 +392,15 @@ public class GeogebraCommandParser {
             }
 
         }
+    }
+
+    void processIntersectionCommand(Element el) {
+        String label = getOutputArgument(el, 0);
+        MathObject[] objs = getArrayOfParameters(el);
+        Constructible ob1=(Constructible) objs[0];
+        Constructible ob2=(Constructible) objs[1];
+        registerGeogebraElement(label, ConstrIntersectionPoint.make(ob1,ob2));
+        JMathAnimScene.logger.debug("Imported intersection point of " + objs[0] + " and " + objs[1]);
     }
 
 }
