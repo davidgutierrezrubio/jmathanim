@@ -18,7 +18,6 @@
 package com.jmathanim.Constructible.Lines;
 
 import com.jmathanim.Constructible.Points.ConstrPoint;
-import com.jmathanim.Constructible.Constructible;
 import com.jmathanim.Constructible.FixedConstructible;
 import com.jmathanim.Renderers.Renderer;
 import com.jmathanim.Utils.Vec;
@@ -37,7 +36,7 @@ public class ConstrLine extends FixedConstructible implements HasDirection {
         PointPoint, PointVector
     }
     private LineType lineType;
-    private final Line lineToDraw;
+    protected Line lineToDraw;
     ConstrPoint A, B;
     HasDirection dir;
 
@@ -56,7 +55,7 @@ public class ConstrLine extends FixedConstructible implements HasDirection {
         return resul;
     }
 
-    private ConstrLine(ConstrPoint A, ConstrPoint B) {
+    protected ConstrLine(ConstrPoint A, ConstrPoint B) {
         this.A = A;
         this.B = B;
         lineToDraw = Line.make(A.getMathObject(), B.getMathObject());
@@ -93,12 +92,16 @@ public class ConstrLine extends FixedConstructible implements HasDirection {
 
     @Override
     public Vec getDirection() {
-        switch (lineType) {
-            case PointPoint:
-                return A.to(B);
-            default:
-                return dir.getDirection();
-        }
+        return lineToDraw.getDirection();
     }
 
+    @Override
+    public Point getP1() {
+        return lineToDraw.getP1();
+    }
+
+    @Override
+    public Point getP2() {
+        return lineToDraw.getP2();
+    }
 }

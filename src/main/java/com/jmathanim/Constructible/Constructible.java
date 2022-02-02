@@ -66,10 +66,10 @@ public abstract class Constructible extends MathObject {
         rebuildShape();
         return getMathObject().getBoundingBox();
     }
-
-    @Override
+      @Override
     public void copyStateFrom(MathObject obj) {
-        //This object has no state, only its drawing attributes
-        this.getMp().copyFrom(obj.getMp());
+        this.getMathObject().copyStateFrom(((Constructible)obj).getMathObject());
     }
+    
+   
 }

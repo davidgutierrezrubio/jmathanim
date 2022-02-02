@@ -181,6 +181,11 @@ public class Vec implements Stateable {
         return resul;
     }
 
+    public void copyFrom(double x, double y) {
+        this.x = x;
+        this.y = y;
+    }
+
     public void copyFrom(Vec v) {
         if (v != null) {
             this.x = v.x;

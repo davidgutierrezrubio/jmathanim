@@ -18,6 +18,7 @@
 package com.jmathanim.Constructible.Lines;
 
 import com.jmathanim.Utils.Vec;
+import com.jmathanim.mathobjects.Point;
 
 /**
  * Any object that has a direction,like segments, lines, vectors should
@@ -28,4 +29,6 @@ import com.jmathanim.Utils.Vec;
 public interface HasDirection {
 
     public Vec getDirection();
+    public Point getP1();
+    public Point getP2();
 }

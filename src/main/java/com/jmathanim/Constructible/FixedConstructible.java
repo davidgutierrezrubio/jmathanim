@@ -18,6 +18,7 @@
 package com.jmathanim.Constructible;
 
 import com.jmathanim.Utils.AffineJTransform;
+import com.jmathanim.mathobjects.MathObject;
 
 /**
  *
@@ -28,5 +29,10 @@ public abstract class FixedConstructible extends Constructible {
     @Override
     public FixedConstructible applyAffineTransform(AffineJTransform transform) {
         return this;
+    }
+     @Override
+    public void copyStateFrom(MathObject obj) {
+        //This object has no state, only its drawing attributes
+        this.getMp().copyFrom(obj.getMp());
     }
 }

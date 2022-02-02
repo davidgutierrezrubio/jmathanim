@@ -31,16 +31,14 @@ import com.jmathanim.mathobjects.Point;
  *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
-public class ConstrAngleBisectorPointPoint extends FixedConstructible implements HasDirection {
+public class ConstrAngleBisectorPointPoint extends ConstrLine {
 
     private enum LineType {
         PointPointPoint, LineLine
     }
     private LineType lineType;
-    private final Line lineToDraw;
-    ConstrPoint A, B, C;
-    Point dirPoint;
-    Vec dir;
+    ConstrPoint C;
+    Point dirPoint;//The second point of the angle bisector. The first is B
 
     public static ConstrAngleBisectorPointPoint make(ConstrPoint A, ConstrPoint B, ConstrPoint C) {
         ConstrAngleBisectorPointPoint resul = new ConstrAngleBisectorPointPoint(A, B, C);
@@ -50,8 +48,7 @@ public class ConstrAngleBisectorPointPoint extends FixedConstructible implements
     }
 
     private ConstrAngleBisectorPointPoint(ConstrPoint A, ConstrPoint B, ConstrPoint C) {
-        this.A = A;
-        this.B = B;
+        super(A,B);
         this.C = C;
         dirPoint=Point.origin();
         lineToDraw = Line.make(B.getMathObject(), dirPoint);
@@ -79,19 +76,12 @@ public class ConstrAngleBisectorPointPoint extends FixedConstructible implements
     public void rebuildShape() {
         switch (lineType) {
             case PointPointPoint:
-                dir=B.to(A).normalize().add(B.to(C).normalize());
-                dirPoint.copyFrom(B.getMathObject().add(dir));
+                Vec vdir=B.to(A).normalize().add(B.to(C).normalize());
+                dirPoint.copyFrom(B.getMathObject().add(vdir));
                 break;
             case LineLine:
                //TODO: Implement
                 break;
         }
     }
-
-    @Override
-    public Vec getDirection() {
-       rebuildShape();
-       return dir;
-    }
-
 }

@@ -18,7 +18,6 @@
 package com.jmathanim.Constructible.Lines;
 
 import com.jmathanim.Constructible.Points.ConstrPoint;
-import com.jmathanim.Constructible.Constructible;
 import com.jmathanim.Constructible.FixedConstructible;
 import com.jmathanim.Renderers.Renderer;
 import com.jmathanim.Utils.Vec;
@@ -28,12 +27,12 @@ import com.jmathanim.mathobjects.Point;
 import com.jmathanim.mathobjects.Shape;
 
 /**
+ * A finite segment,given by 2 points
  *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
-public class ConstrSegment extends FixedConstructible implements HasDirection {
+public class ConstrSegment extends ConstrLine {
 
-    protected final ConstrPoint A, B;
     private final Shape segmentToDraw;
 
     public static ConstrSegment make(ConstrPoint A, ConstrPoint B) {
@@ -43,8 +42,7 @@ public class ConstrSegment extends FixedConstructible implements HasDirection {
     }
 
     private ConstrSegment(ConstrPoint A, ConstrPoint B) {
-        this.A = A;
-        this.B = B;
+        super(A, B);
         segmentToDraw = Shape.segment(this.A.getMathObject(), this.B.getMathObject());
     }
 
@@ -62,7 +60,17 @@ public class ConstrSegment extends FixedConstructible implements HasDirection {
 
     @Override
     public Vec getDirection() {
-        return A.to(B);
+        return getP1().to(getP2());
+    }
+
+    @Override
+    public Point getP1() {
+        return this.A.getMathObject();
+    }
+
+    @Override
+    public Point getP2() {
+        return this.B.getMathObject();
     }
 
     @Override

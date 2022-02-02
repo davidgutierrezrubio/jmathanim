@@ -18,24 +18,16 @@
 package com.jmathanim.Constructible.Lines;
 
 import com.jmathanim.Constructible.Points.ConstrPoint;
-import com.jmathanim.Constructible.Constructible;
-import com.jmathanim.Constructible.FixedConstructible;
 import com.jmathanim.Renderers.Renderer;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
-import com.jmathanim.mathobjects.Line;
-import com.jmathanim.mathobjects.MathObject;
-import com.jmathanim.mathobjects.Point;
 
 /**
+ * A Constructible Line that pass through A and is orthogonal to a given direction
  *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
-public class ConstrLineOrthogonal extends FixedConstructible implements HasDirection {
-
-    ConstrPoint A;
-    HasDirection dir;
-    private final Line lineToDraw;
+public class ConstrLineOrthogonal extends ConstrLine {
 
     public static ConstrLineOrthogonal make(ConstrPoint A, HasDirection dir) {
         ConstrLineOrthogonal resul = new ConstrLineOrthogonal(A, dir);
@@ -44,9 +36,7 @@ public class ConstrLineOrthogonal extends FixedConstructible implements HasDirec
     }
 
     private ConstrLineOrthogonal(ConstrPoint A, HasDirection dir) {
-        this.A = A;
-        this.dir = dir;
-        lineToDraw = new Line(A.getMathObject(), Point.origin());// Irrelevant
+        super(A,A.add(dir.getDirection()));
     }
 
     @Override
@@ -62,16 +52,6 @@ public class ConstrLineOrthogonal extends FixedConstructible implements HasDirec
     }
 
     @Override
-    public Vec getDirection() {
-        return dir.getDirection();
-    }
-
-    @Override
-    public MathObject getMathObject() {
-        return lineToDraw;
-    }
-
-    @Override
     public void rebuildShape() {
         Vec v = A.getMathObject().v;
         Vec direction = dir.getDirection();
@@ -80,11 +60,6 @@ public class ConstrLineOrthogonal extends FixedConstructible implements HasDirec
 
         lineToDraw.getP2().v.x = v.x - direction.y;
         lineToDraw.getP2().v.y = v.y + direction.x;
-    }
-
-    @Override
-    public int getUpdateLevel() {
-        return Math.max(A.getUpdateLevel(), ((MathObject) dir).getUpdateLevel()) + 1;
     }
 
 }

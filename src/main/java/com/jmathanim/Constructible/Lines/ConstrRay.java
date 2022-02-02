@@ -29,15 +29,13 @@ import com.jmathanim.mathobjects.Ray;
  *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
-public class ConstrRay extends FixedConstructible implements HasDirection {
+public class ConstrRay extends ConstrLine {
 
     private enum RayType {
         PointPoint, PointVector
     }
     private RayType rayType;
     private final Ray rayToDraw;
-    HasDirection dir;
-    ConstrPoint A, B;
 
     public static ConstrRay make(ConstrPoint A, HasDirection dir) {
         ConstrRay resul = new ConstrRay(A, A.add(dir.getDirection()));
@@ -55,14 +53,15 @@ public class ConstrRay extends FixedConstructible implements HasDirection {
     }
 
     private ConstrRay(ConstrPoint A, ConstrPoint B) {
+        super(A,B);
         this.A = A;
         this.B = B;
         rayToDraw = Ray.make(A.getMathObject(), B.getMathObject());
     }
 
     @Override
-    public <T extends MathObject> T copy() {
-        return (T) ConstrRay.make(A.copy(), B.copy());
+    public ConstrRay copy() {
+        return ConstrRay.make(A.copy(), B.copy());
     }
 
     @Override
@@ -88,11 +87,6 @@ public class ConstrRay extends FixedConstructible implements HasDirection {
 
     @Override
     public Vec getDirection() {
-        switch (rayType) {
-            case PointPoint:
-                return A.to(B);
-            default:
-                return dir.getDirection();
-        }
+       return rayToDraw.getDirection();
     }
 }

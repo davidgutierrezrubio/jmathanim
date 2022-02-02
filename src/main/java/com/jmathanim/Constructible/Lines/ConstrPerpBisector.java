@@ -18,8 +18,6 @@
 package com.jmathanim.Constructible.Lines;
 
 import com.jmathanim.Constructible.Points.ConstrPoint;
-import com.jmathanim.Constructible.Constructible;
-import com.jmathanim.Constructible.FixedConstructible;
 import com.jmathanim.Renderers.Renderer;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
@@ -31,26 +29,21 @@ import com.jmathanim.mathobjects.Point;
  *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
-public class ConstrPerpBisectorPointPoint extends FixedConstructible implements HasDirection {
+public class ConstrPerpBisector extends ConstrLine {
 
-    ConstrPoint A, B;
-    private final Line lineToDraw;
-
-    public static ConstrPerpBisectorPointPoint make(ConstrPoint A, ConstrPoint B) {
-        ConstrPerpBisectorPointPoint resul = new ConstrPerpBisectorPointPoint(A, B);
+    public static ConstrPerpBisector make(ConstrPoint A, ConstrPoint B) {
+        ConstrPerpBisector resul = new ConstrPerpBisector(A, B);
         resul.rebuildShape();
         return resul;
     }
 
-    private ConstrPerpBisectorPointPoint(ConstrPoint A, ConstrPoint B) {
-        this.A = A;
-        this.B = B;
-        lineToDraw = new Line(A.getMathObject(),B.getMathObject());
+    private ConstrPerpBisector(ConstrPoint A, ConstrPoint B) {
+        super(A, B);
     }
 
     @Override
-    public ConstrPerpBisectorPointPoint copy() {
-        ConstrPerpBisectorPointPoint copy = new ConstrPerpBisectorPointPoint(A.copy(), B.copy());
+    public ConstrPerpBisector copy() {
+        ConstrPerpBisector copy = new ConstrPerpBisector(A.copy(), B.copy());
         copy.getMp().copyFrom(this.getMp());
         return copy;
     }
@@ -61,20 +54,9 @@ public class ConstrPerpBisectorPointPoint extends FixedConstructible implements 
     }
 
     @Override
-    public Vec getDirection() {
-        return lineToDraw.getDirection();
-    }
-
-    @Override
-    public MathObject getMathObject() {
-        return lineToDraw;
-    }
-
-    @Override
     public void rebuildShape() {
         Point C = A.getMathObject().interpolate(B.getMathObject(), .5);
         Vec v = A.to(B);
-
         lineToDraw.getP1().v.x = C.v.x;
         lineToDraw.getP1().v.y = C.v.y;
 

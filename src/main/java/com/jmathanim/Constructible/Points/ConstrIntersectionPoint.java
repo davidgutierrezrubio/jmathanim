@@ -19,45 +19,49 @@ package com.jmathanim.Constructible.Points;
 
 import com.jmathanim.Constructible.Constructible;
 import com.jmathanim.Constructible.FixedConstructible;
+import com.jmathanim.Constructible.Lines.ConstrLine;
+import com.jmathanim.Constructible.Lines.ConstrRay;
+import com.jmathanim.Constructible.Lines.ConstrSegment;
 import com.jmathanim.Renderers.Renderer;
 import com.jmathanim.jmathanim.JMathAnimScene;
+import com.jmathanim.mathobjects.Line;
 import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.MathObjectGroup;
 import com.jmathanim.mathobjects.Point;
+import com.jmathanim.mathobjects.Ray;
 
-/** 
+/**
  * Represents an intersection point of lines, rays, or circles
+ *
  * @author David
  */
-public class ConstrIntersectionPoint extends FixedConstructible{
-    private final ConstrPoint point1,point2;
+public class ConstrIntersectionPoint extends FixedConstructible {
+
+    private final ConstrPoint intersectionPoint;
     private final Constructible c2;
     private final Constructible c1;
-    private final MathObjectGroup points;
-    
+
     public static ConstrIntersectionPoint make(Constructible c1, Constructible c2) {
-        ConstrIntersectionPoint resul=new ConstrIntersectionPoint(c1,c2);
+        ConstrIntersectionPoint resul = new ConstrIntersectionPoint(c1, c2);
         resul.rebuildShape();
         return resul;
     }
-    
-    
-    
+
     private ConstrIntersectionPoint(Constructible c1, Constructible c2) {
-        this.c1=c1;
-        this.c2=c2;
-        point1=ConstrPoint.make(Point.at(0,0));
-        point2=ConstrPoint.make(Point.at(0,0));
-        points=MathObjectGroup.make(point1,point2);
+        this.c1 = c1;
+        this.c2 = c2;
+        intersectionPoint = ConstrPoint.make(Point.at(0, 0));
     }
-    
+
     @Override
     public MathObject getMathObject() {
-        return points;
+        return intersectionPoint;
     }
 
     @Override
     public void rebuildShape() {
+        double interX = Double.NaN;
+        double interY = Double.NaN;//Result
         //TODO: Implement intersection algorithms for:
         //Line-Line
         //Line-Ray
@@ -65,19 +69,56 @@ public class ConstrIntersectionPoint extends FixedConstructible{
         //Segment-Ray
         //Segment-Segment
         //Circle
-        point1.getMathObject().copyFrom(Point.at(0,.5));//Debug values to show on screen
-        point2.getMathObject().copyFrom(Point.at(0,-.5));
+        intersectionPoint.getMathObject().copyFrom(Point.at(0, .5));//Debug values to show on screen
+        double x1, x2, x3, x4, y1, y2, y3, y4;
+        if ((c1 instanceof ConstrLine) && (c2 instanceof ConstrLine)) {
+            ConstrLine l1 = (ConstrLine) c1;
+            ConstrLine l2 = (ConstrLine) c2;
+            x1 = l1.getP1().v.x;
+            x2 = l1.getP2().v.x;
+            x3 = l2.getP1().v.x;
+            x4 = l2.getP2().v.x;
+
+            y1 = l1.getP1().v.y;
+            y2 = l1.getP2().v.y;
+            y3 = l2.getP1().v.y;
+            y4 = l2.getP2().v.y;
+
+            double sols[] = BezierIntersect(x1, y1, x2, y2, x3, y3, x4, y4);
+
+            //Consider cases of different intersecting objects
+            boolean intersect = true;
+            intersect = intersect && !((c1 instanceof ConstrRay) && (sols[0] < 0));
+            intersect = intersect && !((c2 instanceof ConstrRay) && (sols[1] < 0));
+            intersect = intersect && !((c1 instanceof ConstrSegment) && ((sols[0] < 0) || (sols[0] > 1)));
+            intersect = intersect && !((c2 instanceof ConstrSegment) && ((sols[1] < 0) || (sols[1] > 1)));
+
+            if (intersect) {
+                interX = x1 + sols[0] * (x2 - x1);
+                interY = y1 + sols[0] * (y2 - y1);
+            }
+//        double interX2 = x3 + sols[1] * (x4 - x3);
+//        double interY2 = y3 + sols[1] * (y4 - y3);
+            intersectionPoint.getMathObject().v.copyFrom(interX, interY);
+        }
     }
 
     @Override
     public ConstrIntersectionPoint copy() {
-        return make(c1.copy(),c2.copy());
+        return make(c1.copy(), c2.copy());
     }
 
     @Override
     public void draw(JMathAnimScene scene, Renderer r) {
-        point1.draw(scene,r);
-        point2.draw(scene,r);
+        intersectionPoint.draw(scene, r);
     }
-    
+
+    public double[] BezierIntersect(double x1, double y1, double x2, double y2, double x3, double y3, double x4, double y4) {
+        double[] solutions = new double[2];
+        double det = (x1 - x2) * (y3 - y4) - (y1 - y2) * (x3 - x4);
+        solutions[0] = ((x1 - x3) * (y3 - y4) - (y1 - y3) * (x3 - x4)) / det;
+        solutions[1] = ((x1 - x3) * (y1 - y2) - (y1 - y3) * (x1 - x2)) / det;
+        return solutions;
+    }
+
 }

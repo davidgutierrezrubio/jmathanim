@@ -24,8 +24,7 @@ import com.jmathanim.Constructible.Conics.ConstrCircleCenterRadius;
 import com.jmathanim.Constructible.Lines.ConstrAngleBisectorPointPoint;
 import com.jmathanim.Constructible.Lines.ConstrLine;
 import com.jmathanim.Constructible.Lines.ConstrLineOrthogonal;
-import com.jmathanim.Constructible.Lines.ConstrPerpBisectorPointPoint;
-import com.jmathanim.Constructible.Lines.ConstrPerpBisectorSegment;
+import com.jmathanim.Constructible.Lines.ConstrPerpBisector;
 import com.jmathanim.Constructible.Lines.ConstrPolygon;
 import com.jmathanim.Constructible.Lines.ConstrRay;
 import com.jmathanim.Constructible.Lines.ConstrSegment;
@@ -308,12 +307,13 @@ public class GeogebraCommandParser {
         if (params.length == 2) {// 2 points
             ConstrPoint A = (ConstrPoint) params[0];
             ConstrPoint B = (ConstrPoint) params[1];
-            registerGeogebraElement(label, ConstrPerpBisectorPointPoint.make(A, B));
+            registerGeogebraElement(label, ConstrPerpBisector.make(A, B));
         }
-        if (params.length == 1) {// 1 segment
-            ConstrSegment seg = (ConstrSegment) params[0];
-            registerGeogebraElement(label, ConstrPerpBisectorSegment.make(seg));
-        }
+        //TODO: Implement this. A perpendicular from a segment
+//        if (params.length == 1) {// 1 segment
+//            ConstrSegment seg = (ConstrSegment) params[0];
+//            registerGeogebraElement(label, ConstrPerpBisectorSegment.make(seg));
+//        }
     }
 
     protected void processAngleBisector(Element el) {

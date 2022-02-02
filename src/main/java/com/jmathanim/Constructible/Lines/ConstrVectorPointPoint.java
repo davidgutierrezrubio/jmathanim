@@ -18,23 +18,18 @@
 package com.jmathanim.Constructible.Lines;
 
 import com.jmathanim.Constructible.Points.ConstrPoint;
-import com.jmathanim.Constructible.Constructible;
-import com.jmathanim.Constructible.FixedConstructible;
 import com.jmathanim.Renderers.Renderer;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.Arrow2D;
 import com.jmathanim.mathobjects.MathObject;
-import com.jmathanim.mathobjects.Point;
-import com.jmathanim.mathobjects.Shape;
 
 /**
  *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
-public class ConstrVectorPointPoint extends FixedConstructible implements HasDirection {
+public class ConstrVectorPointPoint extends ConstrLine {
 
-    public final ConstrPoint A, B;
     private final Arrow2D arrowToDraw;
 
     public static ConstrVectorPointPoint make(ConstrPoint A, ConstrPoint B) {
@@ -44,6 +39,7 @@ public class ConstrVectorPointPoint extends FixedConstructible implements HasDir
     }
 
     private ConstrVectorPointPoint(ConstrPoint A, ConstrPoint B) {
+        super(A, B);
         this.A = A;
         this.B = B;
         arrowToDraw = Arrow2D.makeSimpleArrow2D(this.A.getMathObject(), this.B.getMathObject());
@@ -70,14 +66,6 @@ public class ConstrVectorPointPoint extends FixedConstructible implements HasDir
     public MathObject getMathObject() {
         return arrowToDraw;
     }
-
-//    public Point getA() {
-//        return A;
-//    }
-//
-//    public Point getB() {
-//        return B;
-//    }
 
     @Override
     public void rebuildShape() {

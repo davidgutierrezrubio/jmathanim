@@ -315,9 +315,6 @@ public abstract class MathObject implements Drawable, Updateable, Stateable, Box
      *
      * @param obj The object to copy state from.
      */
-//    public void copyStateFrom(MathObject obj) {
-//        JMathAnimScene.logger.error("copyStateFrom method not implemented for this object, sorry");
-//    }
     abstract public void copyStateFrom(MathObject obj);
 
     /**
