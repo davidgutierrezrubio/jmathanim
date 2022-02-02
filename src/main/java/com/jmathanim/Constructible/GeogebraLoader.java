@@ -17,6 +17,8 @@
  */
 package com.jmathanim.Constructible;
 
+import com.jmathanim.Cameras.hasCameraParameters;
+import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.ResourceLoader;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.MathObject;
@@ -43,7 +45,7 @@ import org.xml.sax.SAXException;
  *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
-public class GeogebraLoader implements Iterable<Constructible> {
+public class GeogebraLoader implements Iterable<Constructible>, hasCameraParameters {
 
     private final ResourceLoader rl;
     private final URL url;
@@ -51,6 +53,9 @@ public class GeogebraLoader implements Iterable<Constructible> {
     private ZipEntry zipEntry;
     private InputStream inputStream;
     private final GeogebraCommandParser cp;
+    private double xmax;
+    private double xmin;
+    private double yCenter;
 
     private GeogebraLoader(String fileName) {
         rl = new ResourceLoader();
@@ -106,10 +111,14 @@ public class GeogebraLoader implements Iterable<Constructible> {
 
             if (node instanceof Element) {
                 Element el = (Element) node;
-                if ("construction".equals(el.getNodeName())) {
-                    parseConstructionChildren(el);
+                switch (el.getNodeName()) {
+                    case "construction":
+                        parseConstructionChildren(el);
+                        break;
+                    case "euclidianView":
+                        parseEuclidianView(el);
+                        break;
                 }
-
             }
         }
 
@@ -123,16 +132,16 @@ public class GeogebraLoader implements Iterable<Constructible> {
 
             if (node instanceof Element) {
                 Element el = (Element) node;
-                if ("element".equals(el.getNodeName())) {
-                    parseGeogebraElement(el);
+                switch (el.getNodeName()) {
+                    case "element":
+                        parseGeogebraElement(el);
+                        break;
+                    case "command":
+                        parseGeogebraCommand(el);
+                        break;
                 }
-                if ("command".equals(el.getNodeName())) {
-                    parseGeogebraCommand(el);
-                }
-
             }
         }
-
     }
 
     /**
@@ -205,4 +214,49 @@ public class GeogebraLoader implements Iterable<Constructible> {
         return getObjects().iterator();
     }
 
+    private void parseEuclidianView(Element euclidianViewNode) {
+        NodeList nodes = euclidianViewNode.getChildNodes();
+        double width = 4, height = 2.25;
+        double xZero = 0, yZero = 0, xScale = 1, yScale = 1;
+        for (int i = 0; i < nodes.getLength(); i++) {
+            Node node = nodes.item(i);
+
+            if (node instanceof Element) {
+                Element el = (Element) node;
+                switch (el.getNodeName()) {
+                    case "size":
+                        width = Double.valueOf(el.getAttribute("width"));
+                        height = Double.valueOf(el.getAttribute("height"));
+                        break;
+                    case "coordSystem":
+                        xZero = Double.valueOf(el.getAttribute("xZero"));
+                        yZero = Double.valueOf(el.getAttribute("yZero"));
+                        xScale = Double.valueOf(el.getAttribute("scale"));
+                        yScale = Double.valueOf(el.getAttribute("yscale"));
+                        break;
+                }
+            }
+        }
+        this.xmin = -xZero / xScale;
+        this.xmax = (width - xZero) / xScale;
+
+        double ymin = (yZero - height) / yScale;
+        double ymax = yZero / yScale;
+        this.yCenter = .5 * (ymin + ymax);
+    }
+
+    @Override
+    public double getMinX() {
+        return xmin;
+    }
+
+    @Override
+    public double getMaxX() {
+        return xmax;
+    }
+
+    @Override
+    public double getYCenter() {
+        return yCenter;
+    }
 }

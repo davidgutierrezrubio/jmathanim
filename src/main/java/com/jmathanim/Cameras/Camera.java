@@ -378,4 +378,8 @@ public class Camera {
         resetValues = new double[]{xmin, xmax, ycenter};
     }
 
+    public void setViewFrom(hasCameraParameters param) {
+        setMathXY(param.getMinX(), param.getMaxX(), param.getYCenter());
+    }
+    
 }
