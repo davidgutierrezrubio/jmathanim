@@ -21,13 +21,23 @@ import com.jmathanim.Constructible.Points.CTPoint;
 import com.jmathanim.Renderers.Renderer;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
+import com.jmathanim.mathobjects.Point;
 
 /**
- * A Constructible Line that pass through A and is orthogonal to a given direction
+ * A Constructible Line that pass through A and is orthogonal to a given
+ * direction
  *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
 public class CTLineOrthogonal extends CTLine {
+
+    public static CTLineOrthogonal make(Point A, Point B) {
+        return make(CTPoint.make(A), CTPoint.make(B));
+    }
+
+    public static CTLineOrthogonal make(CTPoint A, CTPoint B) {
+        return make(A, CTSegment.make(A, B));
+    }
 
     public static CTLineOrthogonal make(CTPoint A, HasDirection dir) {
         CTLineOrthogonal resul = new CTLineOrthogonal(A, dir);
@@ -36,7 +46,8 @@ public class CTLineOrthogonal extends CTLine {
     }
 
     private CTLineOrthogonal(CTPoint A, HasDirection dir) {
-        super(A,A.add(dir.getDirection()));
+        super(A, CTPoint.make(Point.at(0,0)));
+        this.dir=dir;
     }
 
     @Override
