@@ -148,6 +148,33 @@ public class GeogebraCommandParser {
         if (lineStyle != null) {
             double thickness = Double.valueOf(lineStyle.getAttribute("thickness"));
             resul.setThickness(thickness);
+            //Dash Style
+            //0 :         MODrawProperties.DashStyle.SOLID
+            //10,15:         MODrawProperties.DashStyle.DASHED
+            //20:        MODrawProperties.DashStyle.DOTTED
+            //30:         MODrawProperties.DashStyle.DASHDOTTED
+            MODrawProperties.DashStyle dashStyle;
+            int dashType=Integer.valueOf(lineStyle.getAttribute("type"));
+            switch (dashType) {
+                case 0:
+                    dashStyle=MODrawProperties.DashStyle.SOLID;
+                    break;
+                case 10:
+                case 15:
+                    dashStyle=MODrawProperties.DashStyle.DASHED;
+                    break;
+                case 20:
+                    dashStyle=MODrawProperties.DashStyle.DOTTED;
+                    break;
+                case 30: 
+                    dashStyle=MODrawProperties.DashStyle.DASHDOTTED;
+                    break;
+                default:
+                    dashStyle=MODrawProperties.DashStyle.SOLID;
+            }
+            resul.setDashStyle(dashStyle);
+            
+
         }
         // Point size
         Element pointSize = firstElementWithTag(el, "pointSize");
@@ -250,7 +277,7 @@ public class GeogebraCommandParser {
 
     protected void processVectorCommand(Element el) {
         String label = getOutputArgument(el, 0);
-            
+
         MathObject[] params = getArrayOfParameters(el);
         ConstrPoint A, B;
         if (params.length > 1) {
@@ -298,7 +325,7 @@ public class GeogebraCommandParser {
         for (int i = 0; i < objs.length; i++) {
             points[i] = (ConstrPoint) objs[i];
         }
-        ConstrPolygon resul=ConstrPolygon.make(points);
+        ConstrPolygon resul = ConstrPolygon.make(points);
         geogebraElements.put(label, resul);
 
         // Now, build all segments
