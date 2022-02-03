@@ -105,7 +105,9 @@ public class CTIntersectionPoint extends FixedConstructible {
 
     @Override
     public CTIntersectionPoint copy() {
-        return make(c1.copy(), c2.copy());
+        CTIntersectionPoint copy = make(c1.copy(), c2.copy());
+        copy.getMp().copyFrom(this.getMp());
+        return copy;
     }
 
     @Override

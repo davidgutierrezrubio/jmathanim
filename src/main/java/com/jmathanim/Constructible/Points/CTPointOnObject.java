@@ -96,4 +96,12 @@ public class CTPointOnObject extends CTPoint {
         }
     }
 
+    @Override
+    public CTPointOnObject copy() {
+        CTPointOnObject copy=CTPointOnObject.make((Constructible)owner.copy());
+        copy.getMp().copyFrom(this.getMp());
+        return copy;
+    }
+
+    
 }

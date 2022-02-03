@@ -70,6 +70,4 @@ public abstract class Constructible extends MathObject {
     public void copyStateFrom(MathObject obj) {
         this.getMathObject().copyStateFrom(((Constructible)obj).getMathObject());
     }
-    
-   
 }

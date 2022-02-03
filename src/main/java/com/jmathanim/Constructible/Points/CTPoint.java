@@ -57,7 +57,9 @@ public class CTPoint extends Constructible {
 
     @Override
     public CTPoint copy() {
-        return make(point.copy());
+        CTPoint copy = make(point.copy());
+        copy.getMp().copyFrom(this.getMp());
+        return copy;
     }
 
     @Override

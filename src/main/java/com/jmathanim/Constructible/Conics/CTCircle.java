@@ -123,12 +123,14 @@ public class CTCircle extends FixedConstructible {
                 copy = CTCircle.make(circleCenter.copy(), A.copy());
                 break;
             case THREE_POINTS:
-                copy=CTCircle.make(A.copy(),B.copy(),C.copy());
+                copy = CTCircle.make(A.copy(), B.copy(), C.copy());
                 break;
             case CENTER_RADIUS:
-                copy=CTCircle.make(circleCenter.copy(),radius.copy());
+                copy = CTCircle.make(circleCenter.copy(), radius.copy());
         }
-         copy.getMathObject().copyStateFrom(getMathObject());
+        if (copy != null) {
+            copy.getMp().copyFrom(this.getMp());
+        }
         return copy;
     }
 

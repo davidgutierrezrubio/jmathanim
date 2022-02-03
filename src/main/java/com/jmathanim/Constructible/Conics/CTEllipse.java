@@ -80,7 +80,7 @@ public class CTEllipse extends FixedConstructible {
     @Override
     public CTEllipse copy() {
         CTEllipse copy = CTEllipse.make(focus1.copy(), focus2.copy(), A.copy());
-        copy.getMathObject().copyStateFrom(getMathObject());
+        copy.getMp().copyFrom(this.getMp());
         return copy;
     }
 

@@ -53,7 +53,7 @@ public class CTRay extends CTLine {
     }
 
     private CTRay(CTPoint A, CTPoint B) {
-        super(A,B);
+        super(A, B);
         this.A = A;
         this.B = B;
         rayToDraw = Ray.make(A.getMathObject(), B.getMathObject());
@@ -61,7 +61,9 @@ public class CTRay extends CTLine {
 
     @Override
     public CTRay copy() {
-        return CTRay.make(A.copy(), B.copy());
+        CTRay copy = CTRay.make(A.copy(), B.copy());
+        copy.getMp().copyFrom(this.getMp());
+        return copy;
     }
 
     @Override
@@ -87,6 +89,6 @@ public class CTRay extends CTLine {
 
     @Override
     public Vec getDirection() {
-       return rayToDraw.getDirection();
+        return rayToDraw.getDirection();
     }
 }
