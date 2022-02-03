@@ -26,6 +26,7 @@ import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.Point;
 import com.jmathanim.mathobjects.Shape;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 /**
  * A constructible polygon
@@ -37,20 +38,22 @@ public class CTPolygon extends FixedConstructible {
     private final Shape shapeToDraw;
     private final CTPoint[] points;
 
-    public static CTPolygon make(CTPoint... points) {
-        return new CTPolygon(points);
+    public static CTPolygon make(Point... points) {
+        CTPoint[] ArrayCtpoints = Arrays.stream(points).map(t -> CTPoint.make(t)).toArray(CTPoint[]::new);
+        return new CTPolygon(ArrayCtpoints);
     }
 
-    public static CTPolygon make(ArrayList<CTPoint> points) {
-        return new CTPolygon(points.toArray(new CTPoint[0]));
+    public static CTPolygon make(CTPoint... ctPoints) {
+        return new CTPolygon(ctPoints);
+    }
+
+    public static CTPolygon make(ArrayList<CTPoint> ctPoints) {
+        return new CTPolygon(ctPoints.toArray(new CTPoint[0]));
     }
 
     private CTPolygon(CTPoint... cpoints) {
-        Point[] points = new Point[cpoints.length];
-        for (int i = 0; i < cpoints.length; i++) {//TODO: Convert this to stream
-            points[i] = cpoints[i].getMathObject();
-        }
-        shapeToDraw = Shape.polygon(points);
+        Point[] arrayPoints = Arrays.stream(cpoints).map(t -> t.getMathObject()).toArray(Point[]::new);
+        shapeToDraw = Shape.polygon(arrayPoints);
         this.points = cpoints;
     }
 

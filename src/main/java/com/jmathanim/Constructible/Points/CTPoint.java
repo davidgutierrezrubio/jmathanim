@@ -30,16 +30,22 @@ import com.jmathanim.mathobjects.Point;
  */
 public class CTPoint extends Constructible {
 
-    private final Point point;
+    protected final Point point;
     public final Vec v;
+
     public static CTPoint make(Point A) {
         return new CTPoint(A);
     }
 
-    private CTPoint(Point A) {
-        this.point=A;
-        this.v=A.v;
+    protected CTPoint() {
+        this(Point.origin());
     }
+
+    protected CTPoint(Point A) {
+        this.point = A;
+        this.v = A.v;
+    }
+
     @Override
     public Point getMathObject() {
         return point;
@@ -62,10 +68,9 @@ public class CTPoint extends Constructible {
     public Vec to(CTPoint B) {
         return point.to(B.getMathObject());
     }
-    
+
     public CTPoint add(Vec v) {
         return CTPoint.make(point.add(v));
     }
-
 
 }

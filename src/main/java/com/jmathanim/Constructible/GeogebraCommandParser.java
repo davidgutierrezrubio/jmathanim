@@ -29,6 +29,7 @@ import com.jmathanim.Constructible.Lines.CTSegment;
 import com.jmathanim.Constructible.Lines.CTVector;
 import com.jmathanim.Constructible.Lines.HasDirection;
 import com.jmathanim.Constructible.Points.CTIntersectionPoint;
+import com.jmathanim.Constructible.Points.CTPointOnObject;
 import com.jmathanim.Styling.JMColor;
 import com.jmathanim.Styling.MODrawProperties;
 import com.jmathanim.jmathanim.JMathAnimScene;
@@ -396,10 +397,18 @@ public class GeogebraCommandParser {
     void processIntersectionCommand(Element el) {
         String label = getOutputArgument(el, 0);
         MathObject[] objs = getArrayOfParameters(el);
-        Constructible ob1=(Constructible) objs[0];
-        Constructible ob2=(Constructible) objs[1];
-        registerGeogebraElement(label, CTIntersectionPoint.make(ob1,ob2));
+        Constructible ob1 = (Constructible) objs[0];
+        Constructible ob2 = (Constructible) objs[1];
+        registerGeogebraElement(label, CTIntersectionPoint.make(ob1, ob2));
         JMathAnimScene.logger.debug("Imported intersection point of " + objs[0] + " and " + objs[1]);
+    }
+
+    void processPointOnObject(Element el) {
+        String label = getOutputArgument(el, 0);
+        MathObject[] objs = getArrayOfParameters(el);
+        Constructible ob1 = (Constructible) objs[0];
+        registerGeogebraElement(label, CTPointOnObject.make(ob1));
+        JMathAnimScene.logger.debug("Imported point on object " + objs[0]);
     }
 
 }
