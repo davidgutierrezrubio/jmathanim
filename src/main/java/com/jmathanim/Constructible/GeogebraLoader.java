@@ -185,7 +185,7 @@ public class GeogebraLoader implements Iterable<Constructible>, hasCameraParamet
                 cp.processPerpBisector(el);
                 break;
             case "AngularBisector":
-                  cp.processAngleBisector(el);
+                cp.processAngleBisector(el);
                 break;
             case "Ray":
                 cp.processRayCommand(el);
@@ -198,6 +198,9 @@ public class GeogebraLoader implements Iterable<Constructible>, hasCameraParamet
                 break;
             case "Point": //A Point on object
                 cp.processPointOnObject(el);
+                break;
+            case "Ellipse": 
+                cp.processEllipse(el);
                 break;
             //TODO: A lot of commands to implement still
             default:

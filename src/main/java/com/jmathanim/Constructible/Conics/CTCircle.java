@@ -35,7 +35,7 @@ import com.jmathanim.mathobjects.Shape;
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
 public class CTCircle extends FixedConstructible {
-    
+
     private enum CircleType {
         THREE_POINTS, CENTER_POINT, CENTER_RADIUS
     };
@@ -79,11 +79,11 @@ public class CTCircle extends FixedConstructible {
         resul.rebuildShape();
         return resul;
     }
-    
+
     public static CTCircle make(Point center, double radius) {
         return make(CTPoint.make(center), Scalar.make(radius));
     }
-    
+
     public static CTCircle make(CTPoint center, Scalar radius) {
         CTCircle resul = new CTCircle();
         resul.circleType = CircleType.CENTER_RADIUS;
@@ -92,11 +92,11 @@ public class CTCircle extends FixedConstructible {
         resul.rebuildShape();
         return resul;
     }
-    
+
     public static CTCircle make(Point A, Point B, Point C) {
         return make(CTPoint.make(A), CTPoint.make(B), CTPoint.make(C));
     }
-    
+
     public static CTCircle make(CTPoint A, CTPoint B, CTPoint C) {
         CTCircle resul = new CTCircle();
         resul.circleType = CircleType.THREE_POINTS;
@@ -106,7 +106,7 @@ public class CTCircle extends FixedConstructible {
         resul.rebuildShape();
         return resul;
     }
-    
+
     protected CTCircle() {
         super();
         radius = Scalar.make(0);
@@ -114,17 +114,24 @@ public class CTCircle extends FixedConstructible {
         circleToDraw = new Shape();
         circleCenter = CTPoint.make(Point.at(0, 0));
     }
-    
+
     @Override
     public CTCircle copy() {
+        CTCircle copy = null;
         switch (circleType) {
             case CENTER_POINT:
-                return CTCircle.make(circleCenter.copy(), A.copy());
-            default:
-                return null;
+                copy = CTCircle.make(circleCenter.copy(), A.copy());
+                break;
+            case THREE_POINTS:
+                copy=CTCircle.make(A.copy(),B.copy(),C.copy());
+                break;
+            case CENTER_RADIUS:
+                copy=CTCircle.make(circleCenter.copy(),radius.copy());
         }
+         copy.getMathObject().copyStateFrom(getMathObject());
+        return copy;
     }
-    
+
     @Override
     public void copyStateFrom(MathObject obj) {
         CTCircle c = (CTCircle) obj;
@@ -137,34 +144,34 @@ public class CTCircle extends FixedConstructible {
         this.circleType = c.circleType;
         rebuildShape();
     }
-    
+
     @Override
     public void draw(JMathAnimScene scene, Renderer r) {
         circleToDraw.draw(scene, r);
     }
-    
+
     @Override
     public Rect getBoundingBox() {
         rebuildShape();
         return circleToDraw.getBoundingBox();
     }
-    
+
     @Override
     public MathObject getMathObject() {
         return circleToDraw;
     }
-    
+
     @Override
     public final void rebuildShape() {
-        
+
         computeCircleCenterRadius();
         circleToDraw.getPath().jmPathPoints.clear();
         circleToDraw.getPath().addJMPointsFrom(originalCircle.copy().getPath());
         circleToDraw.scale(this.radius.value);
         circleToDraw.shift(this.circleCenter.v);
-        
+
     }
-    
+
     public void computeCircleCenterRadius() {
         switch (circleType) {
             case CENTER_POINT:
@@ -188,13 +195,13 @@ public class CTCircle extends FixedConstructible {
     private void findCircleThatPassThroughThreePoints(double x1, double y1, double x2, double y2, double x3, double y3) {
         double x12 = x1 - x2;
         double x13 = x1 - x3;
-        
+
         double y12 = y1 - y2;
         double y13 = y1 - y3;
-        
+
         double y31 = y3 - y1;
         double y21 = y2 - y1;
-        
+
         double x31 = x3 - x1;
         double x21 = x2 - x1;
 
@@ -203,16 +210,16 @@ public class CTCircle extends FixedConstructible {
 
         // y1^2 - y3^2
         double sy13 = ((y1 * y1) - (y3 * y3));
-        
+
         double sx21 = ((x2 * x2) - (x1 * x1));
-        
+
         double sy21 = ((y2 * y2) - (y1 * y1));
-        
+
         double f = ((sx13) * (x12) + (sy13) * (x12) + (sx21) * (x13) + (sy21) * (x13))
                 / (2 * ((y31) * (x12) - (y21) * (x13)));
         double g = ((sx13) * (y12) + (sy13) * (y12) + (sx21) * (y13) + (sy21) * (y13))
                 / (2 * ((x31) * (y12) - (x21) * (y13)));
-        
+
         double c = -(int) (x1 * x1) - (int) (y1 * y1) - 2 * g * x1 - 2 * f * y1;
 
         // eqn of circle be x^2 + y^2 + 2*g*x + 2*f*y + c = 0

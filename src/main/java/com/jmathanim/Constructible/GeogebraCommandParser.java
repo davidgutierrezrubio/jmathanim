@@ -19,6 +19,7 @@ package com.jmathanim.Constructible;
 
 import com.jmathanim.Constructible.Points.CTPoint;
 import com.jmathanim.Constructible.Conics.CTCircle;
+import com.jmathanim.Constructible.Conics.CTEllipse;
 import com.jmathanim.Constructible.Lines.CTAngleBisector;
 import com.jmathanim.Constructible.Lines.CTLine;
 import com.jmathanim.Constructible.Lines.CTLineOrthogonal;
@@ -411,4 +412,23 @@ public class GeogebraCommandParser {
         JMathAnimScene.logger.debug("Imported point on object " + objs[0]);
     }
 
+    void processEllipse(Element el) {
+        String label = getOutputArgument(el, 0);
+        Element elInput = firstElementWithTag(el, "input");
+        int numberOfArguments = elInput.getAttributes().getLength();// Number of arguments
+        if (numberOfArguments == 3) {// A circle defined by 3 points
+            String str0 = elInput.getAttribute("a0");
+            String str1 = elInput.getAttribute("a1");
+            String str2 = elInput.getAttribute("a2");
+
+            CTPoint focus1 = (CTPoint) parseArgument(str0);
+            CTPoint focus2 = (CTPoint) parseArgument(str1);
+            CTPoint A = (CTPoint) parseArgument(str2);
+            CTEllipse resul = CTEllipse.make(focus1, focus2, A);
+            registerGeogebraElement(label, resul);
+            JMathAnimScene.logger
+                    .debug("Imported Geogebra Ellipse" + label + " by 3 points: " + focus1 + ", " + focus2 + ",  " + A);
+            return;
+        }
+    }
 }
