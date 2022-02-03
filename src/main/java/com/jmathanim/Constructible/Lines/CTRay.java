@@ -73,7 +73,7 @@ public class CTRay extends CTLine {
     }
 
     @Override
-    public MathObject getMathObject() {
+    public Ray getMathObject() {
         return rayToDraw;
     }
 

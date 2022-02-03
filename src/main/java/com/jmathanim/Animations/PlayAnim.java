@@ -636,7 +636,9 @@ public class PlayAnim {
     public void showCreation(double runtime, MathObject... mobjects) {
         ArrayList<Animation> anims = new ArrayList<>();
         for (MathObject obj : mobjects) {
-            anims.add(new ShowCreation(runtime, obj));
+            if (obj.isVisible()) {
+                anims.add(new ShowCreation(runtime, obj));
+            }
         }
         scene.playAnimation(anims);
     }

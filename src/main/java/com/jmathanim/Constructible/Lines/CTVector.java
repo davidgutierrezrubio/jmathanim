@@ -63,7 +63,7 @@ public class CTVector extends CTLine {
     }
 
     @Override
-    public MathObject getMathObject() {
+    public Arrow2D getMathObject() {
         return arrowToDraw;
     }
 

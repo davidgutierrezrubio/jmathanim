@@ -52,7 +52,7 @@ public class CTEllipse extends FixedConstructible {
     }
 
     @Override
-    public MathObject getMathObject() {
+    public Shape getMathObject() {
         return ellipseToDraw;
     }
 

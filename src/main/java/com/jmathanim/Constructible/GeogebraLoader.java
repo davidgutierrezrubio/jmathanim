@@ -20,9 +20,11 @@ package com.jmathanim.Constructible;
 import com.jmathanim.Cameras.hasCameraParameters;
 import com.jmathanim.Utils.ResourceLoader;
 import com.jmathanim.jmathanim.JMathAnimScene;
+import com.jmathanim.mathobjects.MathObject;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -269,5 +271,9 @@ public class GeogebraLoader implements Iterable<Constructible>, hasCameraParamet
     @Override
     public double getYCenter() {
         return yCenter;
+    }
+
+    public MathObject[] getMathObjects() {
+        return cp.geogebraElements.values().stream().map(t->t.getMathObject()).toArray(MathObject[]::new);
     }
 }

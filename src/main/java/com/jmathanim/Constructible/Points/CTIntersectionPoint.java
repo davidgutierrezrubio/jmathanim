@@ -35,7 +35,7 @@ import com.jmathanim.mathobjects.Ray;
  *
  * @author David
  */
-public class CTIntersectionPoint extends FixedConstructible {
+public class CTIntersectionPoint extends CTPoint {
 
     private final CTPoint intersectionPoint;
     private final Constructible c2;
@@ -54,8 +54,8 @@ public class CTIntersectionPoint extends FixedConstructible {
     }
 
     @Override
-    public MathObject getMathObject() {
-        return intersectionPoint;
+    public Point getMathObject() {
+        return intersectionPoint.getMathObject();
     }
 
     @Override

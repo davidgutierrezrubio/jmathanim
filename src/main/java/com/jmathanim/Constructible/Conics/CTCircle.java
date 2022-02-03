@@ -159,7 +159,7 @@ public class CTCircle extends FixedConstructible {
     }
 
     @Override
-    public MathObject getMathObject() {
+    public Shape getMathObject() {
         return circleToDraw;
     }
 

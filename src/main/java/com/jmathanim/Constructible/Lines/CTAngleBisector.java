@@ -73,7 +73,7 @@ public class CTAngleBisector extends CTLine {
     }
 
     @Override
-    public MathObject getMathObject() {
+    public Line getMathObject() {
         return lineToDraw;
     }
 

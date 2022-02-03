@@ -83,7 +83,7 @@ public class ShowCreation extends Animation {
     public ShowCreation(double runtime, MathObject mobj) {
         super(runtime);
         setDebugName("showCreation");
-        this.mobj = mobj;
+            this.mobj = mobj;
         addThisAtTheEnd = new ArrayList<>();
         removeThisAtTheEnd = new ArrayList<>();
 

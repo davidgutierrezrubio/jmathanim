@@ -76,7 +76,7 @@ public class CTSegment extends CTLine {
     }
 
     @Override
-    public MathObject getMathObject() {
+    public Shape getMathObject() {
         return segmentToDraw;
     }
 
