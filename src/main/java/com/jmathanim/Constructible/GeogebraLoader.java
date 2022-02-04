@@ -46,7 +46,7 @@ import org.xml.sax.SAXException;
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
 public class GeogebraLoader implements Iterable<Constructible>, hasCameraParameters {
-
+    
     private final ResourceLoader rl;
     private final URL url;
     private ZipFile zipFile;
@@ -56,19 +56,19 @@ public class GeogebraLoader implements Iterable<Constructible>, hasCameraParamet
     private double xmax;
     private double xmin;
     private double yCenter;
-
+    
     private GeogebraLoader(String fileName) {
         rl = new ResourceLoader();
         url = rl.getResource(fileName, "geogebra");
         this.cp = new GeogebraCommandParser();
     }
-
+    
     public static GeogebraLoader parse(String fileName) {
         GeogebraLoader resul = new GeogebraLoader(fileName);
         resul.parseFile(fileName);
         return resul;
     }
-
+    
     private void parseFile(String fileName) {
         try {
             JMathAnimScene.logger.info("Loading Geogebra file {}", fileName);
@@ -79,9 +79,9 @@ public class GeogebraLoader implements Iterable<Constructible>, hasCameraParamet
         } catch (IOException ex) {
             Logger.getLogger(GeogebraLoader.class.getName()).log(Level.SEVERE, null, ex);
         }
-
+        
     }
-
+    
     private void parseGeogebraContents(InputStream inputStream) {
         DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
         DocumentBuilder dBuilder;
@@ -93,7 +93,7 @@ public class GeogebraLoader implements Iterable<Constructible>, hasCameraParamet
         } catch (ParserConfigurationException | SAXException | IOException ex) {
             Logger.getLogger(GeogebraLoader.class.getName()).log(Level.SEVERE, null, ex);
         }
-
+        
         Element root = doc.getDocumentElement();
         if (!"geogebra".equals(root.getNodeName())) {
             try {
@@ -103,33 +103,39 @@ public class GeogebraLoader implements Iterable<Constructible>, hasCameraParamet
             }
         }
 
-        // Iterate over all tags. Element and Command tags are the interesting ones
+        // Iterate over all tags. 
         NodeList nodes = root.getChildNodes();
-
+        
         for (int i = 0; i < nodes.getLength(); i++) {
             Node node = nodes.item(i);
-
+            
             if (node instanceof Element) {
                 Element el = (Element) node;
                 switch (el.getNodeName()) {
                     case "construction":
-                        parseConstructionChildren(el);
+                        parseConstructionChildren(el);//Element and Command tags are the interesting ones here
                         break;
-                    case "euclidianView":
+                    case "euclidianView"://Data of the current view
                         parseEuclidianView(el);
                         break;
                 }
             }
         }
-
+        
     }
 
+    /**
+     * This method parse all Element and Command tags inside the construction
+     * node
+     *
+     * @param constructionNode The construction node
+     */
     private void parseConstructionChildren(Element constructionNode) {
         NodeList nodes = constructionNode.getChildNodes();
-
+        
         for (int i = 0; i < nodes.getLength(); i++) {
             Node node = nodes.item(i);
-
+            
             if (node instanceof Element) {
                 Element el = (Element) node;
                 switch (el.getNodeName()) {
@@ -161,10 +167,16 @@ public class GeogebraLoader implements Iterable<Constructible>, hasCameraParamet
         // If element already belongs to the hashMap, process styling options
         if (cp.containsKey(label)) {
             cp.get(label).getMp().copyFrom(cp.parseStylingOptions(el));
+        } else {
+            JMathAnimScene.logger.warn("Element " + label + " in Geogebra file without Command tag");
         }
-
+        
     }
-
+    /**
+     * Parse a Geogebra command. This command defines how the object is built.
+     * The element tag that will be read later includes styling data
+     * @param el 
+     */
     private void parseGeogebraCommand(Element el) {
         String name = el.getAttribute("name");
         switch (name) {
@@ -201,39 +213,42 @@ public class GeogebraLoader implements Iterable<Constructible>, hasCameraParamet
             case "Point": //A Point on object
                 cp.processPointOnObject(el);
                 break;
-            case "Ellipse": 
+            case "Ellipse":                
                 cp.processEllipse(el);
+                break;
+            case "Mirror":
+                cp.processMirror(el);
                 break;
             //TODO: A lot of commands to implement still
             default:
                 JMathAnimScene.logger.warn("Geogebra element " + name + " not implemented yet, sorry.");
         }
     }
-
+    
     public Constructible get(String key) {
         return cp.get(key);
     }
-
+    
     public Constructible[] getObjects() {
         return cp.geogebraElements.values().toArray(Constructible[]::new);
     }
-
+    
     public HashMap<String, Constructible> getDict() {
         return cp.geogebraElements;
     }
-
+    
     @Override
     public Iterator<Constructible> iterator() {
         return cp.geogebraElements.values().iterator();
     }
-
+    
     private void parseEuclidianView(Element euclidianViewNode) {
         NodeList nodes = euclidianViewNode.getChildNodes();
         double width = 4, height = 2.25;
         double xZero = 0, yZero = 0, xScale = 1, yScale = 1;
         for (int i = 0; i < nodes.getLength(); i++) {
             Node node = nodes.item(i);
-
+            
             if (node instanceof Element) {
                 Element el = (Element) node;
                 switch (el.getNodeName()) {
@@ -252,28 +267,28 @@ public class GeogebraLoader implements Iterable<Constructible>, hasCameraParamet
         }
         this.xmin = -xZero / xScale;
         this.xmax = (width - xZero) / xScale;
-
+        
         double ymin = (yZero - height) / yScale;
         double ymax = yZero / yScale;
         this.yCenter = .5 * (ymin + ymax);
     }
-
+    
     @Override
     public double getMinX() {
         return xmin;
     }
-
+    
     @Override
     public double getMaxX() {
         return xmax;
     }
-
+    
     @Override
     public double getYCenter() {
         return yCenter;
     }
-
+    
     public MathObject[] getMathObjects() {
-        return cp.geogebraElements.values().stream().map(t->t.getMathObject()).toArray(MathObject[]::new);
+        return cp.geogebraElements.values().stream().map(t -> t.getMathObject()).toArray(MathObject[]::new);
     }
 }

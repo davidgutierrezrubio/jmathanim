@@ -31,6 +31,7 @@ import com.jmathanim.Constructible.Lines.CTVector;
 import com.jmathanim.Constructible.Lines.HasDirection;
 import com.jmathanim.Constructible.Points.CTIntersectionPoint;
 import com.jmathanim.Constructible.Points.CTPointOnObject;
+import com.jmathanim.Constructible.Transforms.CTMirrorPoint;
 import com.jmathanim.Styling.JMColor;
 import com.jmathanim.Styling.MODrawProperties;
 import com.jmathanim.jmathanim.JMathAnimScene;
@@ -428,7 +429,15 @@ public class GeogebraCommandParser {
             registerGeogebraElement(label, resul);
             JMathAnimScene.logger
                     .debug("Imported Geogebra Ellipse" + label + " by 3 points: " + focus1 + ", " + focus2 + ",  " + A);
-            return;
         }
+    }
+
+    void processMirror(Element el) {//Right now, it only mirror points
+        String label = getOutputArgument(el, 0);
+        MathObject[] objs = getArrayOfParameters(el);
+        CTPoint pointToMirror = (CTPoint) objs[0];
+        Constructible mirrorAxis = (Constructible) objs[1];
+        registerGeogebraElement(label, CTMirrorPoint.make(pointToMirror, mirrorAxis));
+        JMathAnimScene.logger.debug("Imported intersection point of " + objs[0] + " and " + objs[1]);
     }
 }
