@@ -53,6 +53,7 @@ public class FirstDrawThenFillAnimation extends AbstractCreationStrategy {
      */
     public final double delayPercent = 0.1d;
     private final MathObject obj;
+    private boolean visible;
     private double timegap;
     private Animation anim;
     private double delayFactor;
@@ -61,6 +62,7 @@ public class FirstDrawThenFillAnimation extends AbstractCreationStrategy {
         super(runtime);
         this.obj = obj;
         this.delayFactor = .2;
+        visible=obj.isVisible();
 
     }
 

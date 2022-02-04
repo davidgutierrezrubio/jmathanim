@@ -52,7 +52,7 @@ public class ShowCreation extends Animation {
 
     public enum ShowCreationStrategy {
         NONE, FIRST_DRAW_AND_THEN_FILL, SIMPLE_SHAPE_CREATION, MULTISHAPE_CREATION, LATEX_CREATION, LINE_CREATION, RAY_CREATION,
-        ARROW_CREATION, DELIMITER_CREATION, GROUP_CREATION, AXES_CREATION
+        ARROW_CREATION, DELIMITER_CREATION, GROUP_CREATION, AXES_CREATION, POINT_CREATION
     }
 
     protected final Point[] pencilPosition;
@@ -159,6 +159,10 @@ public class ShowCreation extends Animation {
      */
     private void determineCreationStrategy(MathObject mobj) {
 
+        if (mobj instanceof Point) {
+            this.strategyType = ShowCreationStrategy.POINT_CREATION;
+            return;
+        }
         if (mobj instanceof Axes) {
             this.strategyType = ShowCreationStrategy.AXES_CREATION;
             return;
@@ -222,6 +226,9 @@ public class ShowCreation extends Animation {
      */
     private void createStrategy() throws ClassCastException {
         switch (this.strategyType) {
+            case POINT_CREATION:
+                creationStrategy=Commands.fadeIn(this.runTime, mobj);
+                break;
             case GROUP_CREATION:
                 creationStrategy = new GroupCreationAnimation(this.runTime, (MathObjectGroup) mobj);
                 JMathAnimScene.logger.debug("ShowCreation method: GroupCreationStrategy");

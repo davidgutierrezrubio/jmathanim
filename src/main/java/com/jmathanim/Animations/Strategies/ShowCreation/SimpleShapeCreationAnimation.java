@@ -29,10 +29,12 @@ import com.jmathanim.mathobjects.Shape;
 public class SimpleShapeCreationAnimation extends AbstractCreationStrategy {
 
     private final Shape mobj;
+    private boolean visible;
 
     public SimpleShapeCreationAnimation(double runtime, Shape mobj) {
         super(runtime);
         this.mobj = mobj;
+        visible=mobj.isVisible();
     }
 
     @Override
@@ -47,6 +49,7 @@ public class SimpleShapeCreationAnimation extends AbstractCreationStrategy {
         this.mobj.visible(false);
         double lt = getLambda().applyAsDouble(t);
         intermediateShape = this.mobj.getSubShape(0, lt).visible(lt > 0);
+        intermediateShape.visible(visible);
         scene.addOnce(intermediateShape);
     }
     private MathObject intermediateShape;
@@ -54,7 +57,7 @@ public class SimpleShapeCreationAnimation extends AbstractCreationStrategy {
     @Override
     public void finishAnimation() {
         super.finishAnimation();
-        this.mobj.visible(true);
+        this.mobj.visible(visible);
         removeObjectsFromScene(intermediateShape);
         double lt = getLambda().applyAsDouble(1);
         if (lt == 1) {
