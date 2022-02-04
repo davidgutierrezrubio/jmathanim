@@ -214,8 +214,8 @@ public class GeogebraLoader implements Iterable<Constructible>, hasCameraParamet
         return cp.get(key);
     }
 
-    public Collection<Constructible> getObjects() {
-        return cp.geogebraElements.values();
+    public Constructible[] getObjects() {
+        return cp.geogebraElements.values().toArray(Constructible[]::new);
     }
 
     public HashMap<String, Constructible> getDict() {
@@ -224,7 +224,7 @@ public class GeogebraLoader implements Iterable<Constructible>, hasCameraParamet
 
     @Override
     public Iterator<Constructible> iterator() {
-        return getObjects().iterator();
+        return cp.geogebraElements.values().iterator();
     }
 
     private void parseEuclidianView(Element euclidianViewNode) {

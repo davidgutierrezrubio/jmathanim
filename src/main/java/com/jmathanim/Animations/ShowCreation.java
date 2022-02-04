@@ -36,6 +36,7 @@ import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.MathObjectGroup;
 import com.jmathanim.mathobjects.MultiShapeObject;
 import com.jmathanim.mathobjects.Point;
+import com.jmathanim.mathobjects.Ray;
 import com.jmathanim.mathobjects.SVGMathObject;
 import com.jmathanim.mathobjects.Shape;
 import java.util.ArrayList;
@@ -50,7 +51,7 @@ import java.util.function.DoubleUnaryOperator;
 public class ShowCreation extends Animation {
 
     public enum ShowCreationStrategy {
-        NONE, FIRST_DRAW_AND_THEN_FILL, SIMPLE_SHAPE_CREATION, MULTISHAPE_CREATION, LATEX_CREATION, LINE_CREATION,
+        NONE, FIRST_DRAW_AND_THEN_FILL, SIMPLE_SHAPE_CREATION, MULTISHAPE_CREATION, LATEX_CREATION, LINE_CREATION, RAY_CREATION,
         ARROW_CREATION, DELIMITER_CREATION, GROUP_CREATION, AXES_CREATION
     }
 
@@ -83,7 +84,7 @@ public class ShowCreation extends Animation {
     public ShowCreation(double runtime, MathObject mobj) {
         super(runtime);
         setDebugName("showCreation");
-            this.mobj = mobj;
+        this.mobj = mobj;
         addThisAtTheEnd = new ArrayList<>();
         removeThisAtTheEnd = new ArrayList<>();
 
@@ -190,6 +191,10 @@ public class ShowCreation extends Animation {
             this.strategyType = ShowCreationStrategy.LINE_CREATION;
             return;
         }
+        if (mobj instanceof Ray) {
+            this.strategyType = ShowCreationStrategy.RAY_CREATION;
+            return;
+        }
         if (mobj instanceof Shape) {
 //            this.strategyType = ShowCreationStrategy.SIMPLE_SHAPE_CREATION;
             this.strategyType = ShowCreationStrategy.FIRST_DRAW_AND_THEN_FILL;
@@ -225,9 +230,15 @@ public class ShowCreation extends Animation {
                 final Shape lineToCreate = ((Line) mobj).toSegment(scene.getCamera());
                 removeThisAtTheEnd.add(lineToCreate);
                 addThisAtTheEnd.add(mobj);
-//                creationStrategy = new LineCreationAnimation(this.runTime, (Line) mobj);
                 creationStrategy = new SimpleShapeCreationAnimation(this.runTime, lineToCreate);
                 JMathAnimScene.logger.debug("ShowCreation method: LineCreationStrategy");
+                break;
+            case RAY_CREATION:
+                final Shape rayToCreate = ((Ray) mobj).toSegment(scene.getCamera());
+                removeThisAtTheEnd.add(rayToCreate);
+                addThisAtTheEnd.add(mobj);
+                creationStrategy = new SimpleShapeCreationAnimation(this.runTime, rayToCreate);
+                JMathAnimScene.logger.debug("ShowCreation method: RayCreationStrategy");
                 break;
             case ARROW_CREATION:
                 creationStrategy = new ArrowCreationAnimation(this.runTime, (Arrow2D) mobj);

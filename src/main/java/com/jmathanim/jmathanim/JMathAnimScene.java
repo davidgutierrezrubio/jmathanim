@@ -275,7 +275,7 @@ public abstract class JMathAnimScene {
      */
     public synchronized final void add(GeogebraLoader... gls) {
         for (GeogebraLoader gl : gls) {
-            add(gl.getObjects().toArray(new MathObject[0]));
+            add(gl.getObjects());
         }
     }
 
