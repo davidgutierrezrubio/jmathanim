@@ -243,6 +243,9 @@ public class GeogebraLoader implements Iterable<Constructible>, hasCameraParamet
             case "Translate":
                 cp.processTranslate(el);
                 break;
+                case "Rotate":
+                cp.processRotate(el);
+                break;
             //TODO: A lot of commands to implement still
             default:
                 JMathAnimScene.logger.warn("Geogebra element " + name + " not implemented yet, sorry.");

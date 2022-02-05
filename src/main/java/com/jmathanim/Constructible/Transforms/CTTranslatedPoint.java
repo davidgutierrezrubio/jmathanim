@@ -27,24 +27,24 @@ import com.jmathanim.mathobjects.Point;
  *
  * @author David
  */
-public class CTTranslatePoint extends CTPoint {
+public class CTTranslatedPoint extends CTPoint {
 
     private final CTVector translationVector;
     private final CTPoint originalPoint;
 
-    public static CTTranslatePoint make(Point originalPoint, Arrow2D translationVector) {
+    public static CTTranslatedPoint make(Point originalPoint, Arrow2D translationVector) {
         CTPoint A = CTPoint.make(translationVector.getStart());
         CTPoint B = CTPoint.make(translationVector.getEnd());
         return make(CTPoint.make(originalPoint), CTVector.makeVector(A, B));
     }
 
-    public static CTTranslatePoint make(CTPoint originalPoint, CTVector translationVector) {
-        CTTranslatePoint resul = new CTTranslatePoint(originalPoint, translationVector);
+    public static CTTranslatedPoint make(CTPoint originalPoint, CTVector translationVector) {
+        CTTranslatedPoint resul = new CTTranslatedPoint(originalPoint, translationVector);
         resul.rebuildShape();
         return resul;
     }
 
-    private CTTranslatePoint(CTPoint originalPoint, CTVector translationVector) {
+    private CTTranslatedPoint(CTPoint originalPoint, CTVector translationVector) {
         this.translationVector = translationVector;
         this.originalPoint = originalPoint;
     }
