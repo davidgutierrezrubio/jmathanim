@@ -18,6 +18,7 @@
 package com.jmathanim.Constructible;
 
 import com.jmathanim.Cameras.hasCameraParameters;
+import com.jmathanim.Styling.PaintStyle;
 import com.jmathanim.Utils.ResourceLoader;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.MathObject;
@@ -145,9 +146,18 @@ public class GeogebraLoader implements Iterable<Constructible>, hasCameraParamet
                     case "command":
                         parseGeogebraCommand(el);
                         break;
+                    case "expression":
+                        parseExpression(el);
+                        break;
                 }
             }
         }
+    }
+    
+    private void parseExpression(Element el) {
+        String expression = el.getAttribute("exp");
+        String label = el.getAttribute("label");
+        cp.registerExpression(label, expression);
     }
 
     /**
@@ -162,20 +172,31 @@ public class GeogebraLoader implements Iterable<Constructible>, hasCameraParamet
             case "point":
                 cp.processPoint(el);
                 break;
+            case "text":
+                cp.processLaTeXObjectElement(el);
+                break;
         }
 
         // If element already belongs to the hashMap, process styling options
         if (cp.containsKey(label)) {
-            cp.get(label).getMp().copyFrom(cp.parseStylingOptions(el));
+            Constructible ob = cp.get(label);
+            ob.getMp().copyFrom(cp.parseStylingOptions(el));
+            //Workaround: LaTeX Geogebra objects have the same fill and draw color
+            if (ob instanceof CTLaTeX) {
+                PaintStyle col = ob.getMp().getDrawColor();
+                ob.getMp().setFillColor(col);
+            }
         } else {
             JMathAnimScene.logger.warn("Element " + label + " in Geogebra file without Command tag");
         }
         
     }
+
     /**
      * Parse a Geogebra command. This command defines how the object is built.
      * The element tag that will be read later includes styling data
-     * @param el 
+     *
+     * @param el
      */
     private void parseGeogebraCommand(Element el) {
         String name = el.getAttribute("name");

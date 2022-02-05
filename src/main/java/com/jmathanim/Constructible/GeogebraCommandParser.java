@@ -34,6 +34,7 @@ import com.jmathanim.Constructible.Points.CTPointOnObject;
 import com.jmathanim.Constructible.Transforms.CTMirrorPoint;
 import com.jmathanim.Styling.JMColor;
 import com.jmathanim.Styling.MODrawProperties;
+import com.jmathanim.Utils.Anchor;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.NullMathObject;
@@ -53,9 +54,11 @@ import org.w3c.dom.Element;
 public class GeogebraCommandParser {
 
     protected final HashMap<String, Constructible> geogebraElements;
+    protected final HashMap<String, String> expressions;
 
     public GeogebraCommandParser() {
         this.geogebraElements = new HashMap<>();
+        this.expressions = new HashMap<>();
     }
 
     /**
@@ -214,6 +217,10 @@ public class GeogebraCommandParser {
         return outputs;
     }
 
+    public void registerExpression(String label, String expression) {
+        expressions.put(label, expression);
+    }
+
     // COMMANDS
     protected void processPoint(Element el) {
         String label = el.getAttribute("label");
@@ -233,6 +240,50 @@ public class GeogebraCommandParser {
             geogebraElements.put(label, resul);
             JMathAnimScene.logger.debug("Imported point {}", label);
         }
+    }
+
+    void processLaTeXObjectElement(Element el) {
+        CTPoint anchorPoint;
+        double size;
+        String label = el.getAttribute("label");
+        String text = expressions.get(label);
+        System.out.println("1"+text);
+        text=text.replace("\"","");
+         System.out.println("2"+text);
+        final Element isLatex = firstElementWithTag(el, "isLaTeX");
+         if (isLatex!=null) {
+             if ("TRUE".equals(isLatex.getAttribute("val").toUpperCase())) {
+                text="$"+text+"$";
+             }
+         }
+         
+         
+         
+         
+        //startPoint item defines anchor point (lower left)
+        //with attributes x,y...it is a new point
+        //with attribute exp it is an existing point
+        Element starPointElement = firstElementWithTag(el, "startPoint");
+        String labelAnchorPoint = starPointElement.getAttribute("exp");
+        if ("".equals(labelAnchorPoint)) {//Point doesn't exist, create a new one
+            double x = Double.valueOf(starPointElement.getAttribute("x"));
+            double y = Double.valueOf(starPointElement.getAttribute("y"));
+            anchorPoint = CTPoint.make(Point.at(x, y));
+        } else {
+            anchorPoint = (CTPoint)geogebraElements.get(labelAnchorPoint);
+        }
+        //Size
+          Element fontElement = firstElementWithTag(el, "font");
+          if (fontElement!=null) {
+              //TODO: Adjust import scale. Guess correct size
+               size = Double.valueOf(fontElement.getAttribute("size"))/36;
+          }
+          else {
+              size=5d/36;//Assume size is "small"
+          }
+
+        CTLaTeX cTLaTeX = CTLaTeX.make(text, anchorPoint, Anchor.Type.DL).scale(size);
+        registerGeogebraElement(label, cTLaTeX);
     }
 
     protected void processSegmentCommand(Element el) {
@@ -440,4 +491,5 @@ public class GeogebraCommandParser {
         registerGeogebraElement(label, CTMirrorPoint.make(pointToMirror, mirrorAxis));
         JMathAnimScene.logger.debug("Imported intersection point of " + objs[0] + " and " + objs[1]);
     }
+
 }
