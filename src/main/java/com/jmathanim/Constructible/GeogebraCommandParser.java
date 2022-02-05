@@ -32,6 +32,7 @@ import com.jmathanim.Constructible.Lines.HasDirection;
 import com.jmathanim.Constructible.Points.CTIntersectionPoint;
 import com.jmathanim.Constructible.Points.CTPointOnObject;
 import com.jmathanim.Constructible.Transforms.CTMirrorPoint;
+import com.jmathanim.Constructible.Transforms.CTTranslatePoint;
 import com.jmathanim.Styling.JMColor;
 import com.jmathanim.Styling.MODrawProperties;
 import com.jmathanim.Utils.Anchor;
@@ -247,19 +248,16 @@ public class GeogebraCommandParser {
         double size;
         String label = el.getAttribute("label");
         String text = expressions.get(label);
-        System.out.println("1"+text);
-        text=text.replace("\"","");
-         System.out.println("2"+text);
+        System.out.println("1" + text);
+        text = text.replace("\"", "");
+        System.out.println("2" + text);
         final Element isLatex = firstElementWithTag(el, "isLaTeX");
-         if (isLatex!=null) {
-             if ("TRUE".equals(isLatex.getAttribute("val").toUpperCase())) {
-                text="$"+text+"$";
-             }
-         }
-         
-         
-         
-         
+        if (isLatex != null) {
+            if ("TRUE".equals(isLatex.getAttribute("val").toUpperCase())) {
+                text = "$" + text + "$";
+            }
+        }
+
         //startPoint item defines anchor point (lower left)
         //with attributes x,y...it is a new point
         //with attribute exp it is an existing point
@@ -270,17 +268,16 @@ public class GeogebraCommandParser {
             double y = Double.valueOf(starPointElement.getAttribute("y"));
             anchorPoint = CTPoint.make(Point.at(x, y));
         } else {
-            anchorPoint = (CTPoint)geogebraElements.get(labelAnchorPoint);
+            anchorPoint = (CTPoint) geogebraElements.get(labelAnchorPoint);
         }
         //Size
-          Element fontElement = firstElementWithTag(el, "font");
-          if (fontElement!=null) {
-              //TODO: Adjust import scale. Guess correct size
-               size = Double.valueOf(fontElement.getAttribute("size"))/36;
-          }
-          else {
-              size=5d/36;//Assume size is "small"
-          }
+        Element fontElement = firstElementWithTag(el, "font");
+        if (fontElement != null) {
+            //TODO: Adjust import scale. Guess correct size
+            size = Double.valueOf(fontElement.getAttribute("size")) / 36;
+        } else {
+            size = 5d / 36;//Assume size is "small"
+        }
 
         CTLaTeX cTLaTeX = CTLaTeX.make(text, anchorPoint, Anchor.Type.DL).scale(size);
         registerGeogebraElement(label, cTLaTeX);
@@ -341,7 +338,7 @@ public class GeogebraCommandParser {
             B = (CTPoint) params[0];
         }
 
-        registerGeogebraElement(label, CTVector.make(A, B));
+        registerGeogebraElement(label, CTVector.makeVector(A, B));
     }
 
     protected void processOrthogonalLine(Element el) {
@@ -453,7 +450,7 @@ public class GeogebraCommandParser {
         Constructible ob1 = (Constructible) objs[0];
         Constructible ob2 = (Constructible) objs[1];
         registerGeogebraElement(label, CTIntersectionPoint.make(ob1, ob2));
-        JMathAnimScene.logger.debug("Imported intersection point of " + objs[0] + " and " + objs[1]);
+        JMathAnimScene.logger.debug("Imported intersection point "+label+" of " + objs[0] + " and " + objs[1]);
     }
 
     void processPointOnObject(Element el) {
@@ -461,7 +458,7 @@ public class GeogebraCommandParser {
         MathObject[] objs = getArrayOfParameters(el);
         Constructible ob1 = (Constructible) objs[0];
         registerGeogebraElement(label, CTPointOnObject.make(ob1));
-        JMathAnimScene.logger.debug("Imported point on object " + objs[0]);
+        JMathAnimScene.logger.debug("Imported point "+label+" on object " + objs[0]);
     }
 
     void processEllipse(Element el) {
@@ -489,7 +486,16 @@ public class GeogebraCommandParser {
         CTPoint pointToMirror = (CTPoint) objs[0];
         Constructible mirrorAxis = (Constructible) objs[1];
         registerGeogebraElement(label, CTMirrorPoint.make(pointToMirror, mirrorAxis));
-        JMathAnimScene.logger.debug("Imported intersection point of " + objs[0] + " and " + objs[1]);
+        JMathAnimScene.logger.debug("Imported mirror point "+label+" of " + objs[0] + " with axis " + objs[1]);
+    }
+
+    void processTranslate(Element el) {
+        String label = getOutputArgument(el, 0);
+        MathObject[] objs = getArrayOfParameters(el);
+        CTPoint pointToTranslate = (CTPoint) objs[0];
+        CTVector translateVector = (CTVector) objs[1];
+        registerGeogebraElement(label, CTTranslatePoint.make(pointToTranslate, translateVector));
+        JMathAnimScene.logger.debug("Imported translate point "+label+" of " + objs[0] + " with vector " + objs[1]);
     }
 
 }

@@ -32,7 +32,7 @@ public class CTVector extends CTLine {
 
     private final Arrow2D arrowToDraw;
 
-    public static CTVector make(CTPoint A, CTPoint B) {
+    public static CTVector makeVector(CTPoint A, CTPoint B) {
         CTVector resul = new CTVector(A, B);
         resul.rebuildShape();
         return resul;
@@ -47,7 +47,7 @@ public class CTVector extends CTLine {
 
     @Override
     public CTVector copy() {
-        CTVector copy = CTVector.make(this.A.copy(), this.B.copy());
+        CTVector copy = CTVector.makeVector(this.A.copy(), this.B.copy());
         copy.getMp().copyFrom(this.getMp());
         return copy;
     }
@@ -70,6 +70,12 @@ public class CTVector extends CTLine {
     @Override
     public void rebuildShape() {
         // Nothing to do here...
+    }
+
+    @Override
+    public String toString() {
+        Vec v=getDirection();
+        return String.format("CTVector[%.2f, %.2f]",v.x,v.y);
     }
 
 }

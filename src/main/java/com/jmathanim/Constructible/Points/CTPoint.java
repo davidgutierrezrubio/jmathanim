@@ -74,5 +74,8 @@ public class CTPoint extends Constructible {
     public CTPoint add(Vec v) {
         return CTPoint.make(point.add(v));
     }
-
+  @Override
+    public String toString() {
+        return String.format("CTPoint[%.2f, %.2f]",point.v.x,point.v.y);
+    }
 }
