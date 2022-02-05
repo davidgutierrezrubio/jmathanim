@@ -194,8 +194,10 @@ Given any `MathObject` instance, there are 2 main methods to use an `AffineJTran
     
 -   The `transform.getTransformed(object)` returns a copy of the object transformed. The original object is unaltered.
 
-## Homothecies
-The `createDirect2DHomothecy(Point A, Point B, Point C, Point D, double alpha)` is a combination of shifting, rotating and uniform scaling. This method generates the (only) direct homothecy that maps the points (A,B) into points (C,D). The `alpha` parameter is used for animations, as a value of `alpha=0` returns the identity transform and `alpha=1` returns the full transform. Intermediate values return intermediate transforms, interpolating the shifting, rotating, and scaling parameters adequately.
+## Isomorphic transformations
+The `createDirect2DIsomorphic(Point A, Point B, Point C, Point D, double alpha)` is a combination of shifting, rotating and uniform scaling. This method generates the (only) direct transform of this type that maps the points (A,B) into points (C,D). The `alpha` parameter is used for animations, as a value of `alpha=0` returns the identity transform and `alpha=1` returns the full transform. Intermediate values return intermediate transforms, interpolating the shifting, rotating, and scaling parameters adequately. These transforms preserve not the size, but the shape and proportions of the objects.
+
+Note: There is also a command named `createDirect2DHomothecy`. This command performs the same transformation as `createDirect2DIsomorphic`but it is left for compatibility reasons  , and it will be removed in future versions.
 
 Look at the following example:
 
@@ -207,13 +209,13 @@ Point C = Point.at(1.5, -1).drawColor("darkred");//Destiny point of A, dark red 
 Point D = Point.at(1.7, .5).drawColor("darkred");//Destiny point of B, dark red color
 add(A, B, C, D);
 for (double alpha = 0; alpha <= 1; alpha += .2) {
-    AffineJTransform transform = AffineJTransform.createDirect2DHomothecy(A, B, C, D, alpha);
+    AffineJTransform transform = AffineJTransform.createDirect2DIsomorphic(A, B, C, D, alpha);
     add(transform.getTransformedObject(sq));//Adds a copy of the square, transformed
 }
 waitSeconds(5);
 ```
 
-Produces the following sequence of interpolated transforms from one square to another. Note that an homothecy may change scale of objects, but proportions are unaltered:
+Produces the following sequence of interpolated transforms from one square to another. Note that this transform may change scale of objects, but proportions are unaltered:
 
 
 
@@ -221,7 +223,7 @@ Produces the following sequence of interpolated transforms from one square to an
 
 Notice also another new method here, the `getPoint(n)` method in a `Shape`, will return the n-th point at the shape.
 
-> **WARNING**: You should be careful, when defining the parameters of a transformation like `createDirect2DHomothecy(A, B, C, D, alpha)` if the points `A, B, C, D` are going to be actually modified by the transformation itself (for example, A is an instance of a point of the shape you are transforming). The safe approach in this case should be using copies of the points as parameters, with the `.copy()` method.
+> **WARNING**: You should be careful, when defining the parameters of a transformation like `createDirect2DIsomorphic(A, B, C, D, alpha)` if the points `A, B, C, D` are going to be actually modified by the transformation itself (for example, A is an instance of a point of the shape you are transforming). The safe approach in this case should be using copies of the points as parameters, with the `.copy()` method.
 
 ## Reflections
 If we want to make a reflection of an object, we can use the static methods `createReflection` and `createReflectionByAxis`. They differ in the way the transformation is specified:
@@ -230,7 +232,7 @@ If we want to make a reflection of an object, we can use the static methods `cre
     
 -   `createReflectionByAxis(Point E1, Point E2, double alpha)` creates the (only) reflection with axis the line specified by the points `E1` and `E2`.
 
-In both cases, the `alpha` parameter works in a similar way than the homothecy transform.
+In both cases, the `alpha` parameter works in a similar way than the isomorphic transform.
 
 An example of `createReflection` is showed in the following source code:
 
