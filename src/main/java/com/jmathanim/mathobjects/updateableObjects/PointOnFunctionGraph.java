@@ -60,7 +60,7 @@ public class PointOnFunctionGraph extends Point {
 	}
 
 	private void computePoints() {
-		this.v.y = this.fg.function.applyAsDouble(this.v.x);
+		this.v.y = this.fg.getFunctionValue(this.v.x);
 		slopePointRight.v.x = this.v.x + 1;
 		slopePointRight.v.y = this.v.y + this.fg.getSlope(this.v.x, -1);
 

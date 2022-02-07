@@ -18,9 +18,11 @@
 package com.jmathanim.Constructible;
 
 import com.jmathanim.Cameras.hasCameraParameters;
+import com.jmathanim.Constructible.Lines.CTLine;
 import com.jmathanim.Styling.PaintStyle;
 import com.jmathanim.Utils.ResourceLoader;
 import com.jmathanim.jmathanim.JMathAnimScene;
+import com.jmathanim.mathobjects.Line;
 import com.jmathanim.mathobjects.MathObject;
 import java.io.IOException;
 import java.io.InputStream;
@@ -62,6 +64,8 @@ public class GeogebraLoader implements Iterable<Constructible>, hasCameraParamet
         rl = new ResourceLoader();
         url = rl.getResource(fileName, "geogebra");
         this.cp = new GeogebraCommandParser();
+        cp.registerGeogebraElement("xAxis", CTLine.make(Line.XAxis()));
+        cp.registerGeogebraElement("yAxis", CTLine.make(Line.YAxis()));
     }
     
     public static GeogebraLoader parse(String fileName) {

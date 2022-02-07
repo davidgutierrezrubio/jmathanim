@@ -23,6 +23,7 @@ import com.jmathanim.Utils.Vec;
 import static com.jmathanim.jmathanim.JMathAnimScene.PI;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.function.DoubleBinaryOperator;
 import java.util.function.DoubleUnaryOperator;
 
 /**
@@ -31,12 +32,23 @@ import java.util.function.DoubleUnaryOperator;
  *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
-public class FunctionGraph extends Shape {
+public class FunctionGraph extends Shape implements hasScalarParameter {
 
     public static final double DELTA_DERIVATIVE = .00001d;
     public static final int DEFAULT_NUMBER_OF_POINTS = 49;
     public static final double CONTINUUM_THRESHOLD = 100;
     public static final double ANGLE_THRESHOLD = 30 * PI / 180;//10 degrees
+
+    @Override
+    public double getScalar() {
+        return this.w;
+    }
+
+    @Override
+    public void setScalar(double scalar) {
+        this.w = scalar;
+        updatePoints();
+    }
 
     /**
      * Different ways to define a function. Right now only lambda is supported
@@ -48,21 +60,31 @@ public class FunctionGraph extends Shape {
         LAMBDA
     }
 
-    public DoubleUnaryOperator function;
+    public DoubleBinaryOperator function;
     public final ArrayList<Double> xPoints;
     public FunctionDefinitionType functionType;
-    public DoubleUnaryOperator functionBase;
+    public DoubleBinaryOperator functionBase;
+    private double w;
 
-    public static FunctionGraph make(DoubleUnaryOperator function) {
+    public static FunctionGraph make(DoubleBinaryOperator function) {
         Rect r = JMathAnimConfig.getConfig().getCamera().getMathView();
         return new FunctionGraph(function, r.xmin, r.xmax);
     }
 
-    public static FunctionGraph make(DoubleUnaryOperator function, double xmin, double xmax) {
+    public static FunctionGraph make(DoubleBinaryOperator function, double xmin, double xmax) {
         return new FunctionGraph(function, xmin, xmax);
     }
 
-    public FunctionGraph(DoubleUnaryOperator function, double xmin, double xmax) {
+    public static FunctionGraph make(DoubleUnaryOperator function) {
+        Rect r = JMathAnimConfig.getConfig().getCamera().getMathView();
+        return new FunctionGraph((x, w) -> function.applyAsDouble(x), r.xmin, r.xmax);
+    }
+
+    public static FunctionGraph make(DoubleUnaryOperator function, double xmin, double xmax) {
+        return new FunctionGraph((x, w) -> function.applyAsDouble(x), xmin, xmax);
+    }
+
+    private FunctionGraph(DoubleBinaryOperator function, double xmin, double xmax) {
         this(function, xmin, xmax, DEFAULT_NUMBER_OF_POINTS);
     }
 
@@ -75,8 +97,9 @@ public class FunctionGraph extends Shape {
      * @param xmax Maximum x of the interval to draw the function
      * @param numPoints Number of points to calculate
      */
-    public FunctionGraph(DoubleUnaryOperator function, double xmin, double xmax, int numPoints) {
+    private FunctionGraph(DoubleBinaryOperator function, double xmin, double xmax, int numPoints) {
         style("FunctionGraphDefault");// Default style, if any
+        this.w = 1;
         this.function = function;
         this.functionBase = function;
         this.functionType = FunctionDefinitionType.LAMBDA;
@@ -88,7 +111,9 @@ public class FunctionGraph extends Shape {
         generateFunctionPoints();
     }
 
-    public FunctionGraph(DoubleUnaryOperator function, ArrayList<Double> xPoints) {
+    public FunctionGraph(DoubleBinaryOperator function, ArrayList<Double> xPoints) {
+        style("FunctionGraphDefault");// Default style, if any
+        this.w = 1;
         this.function = function;
         this.xPoints = xPoints;
         this.functionBase = function;
@@ -100,7 +125,7 @@ public class FunctionGraph extends Shape {
         adaptativeAddPoints();
         for (int n = 0; n < xPoints.size(); n++) {
             double x = xPoints.get(n);
-            double y = getFunctionValue(x);
+            double y = getFunctionValue(x, this.w);
             Point p = Point.at(x, y);
             final JMPathPoint jmp = JMPathPoint.curveTo(p);
             this.getPath().addJMPoint(jmp);
@@ -127,9 +152,9 @@ public class FunctionGraph extends Shape {
                 double x0 = xPoints.get(n);
                 double x1 = xPoints.get(n + 1);
                 double x2 = xPoints.get(n + 2);
-                double y0 = getFunctionValue(x0);
-                double y1 = getFunctionValue(x1);
-                double y2 = getFunctionValue(x2);
+                double y0 = getFunctionValue(x0, this.w);
+                double y1 = getFunctionValue(x1, this.w);
+                double y2 = getFunctionValue(x2, this.w);
                 Vec v1 = Vec.to(x1 - x0, y1 - y0);
                 Vec v2 = Vec.to(x2 - x1, y2 - y1);
                 double ang = v1.getAngle() - v2.getAngle();
@@ -168,7 +193,7 @@ public class FunctionGraph extends Shape {
                 Vec v = new Vec(deltaX, getSlope(x, -1) * deltaX);
                 jmp.cpEnter.copyFrom(jmp.p.add(v));
                 double h = x - xPoints.get(n - 1);
-                double deriv = (getFunctionValue(x) - getFunctionValue(xPoints.get(n - 1))) / h;
+                double deriv = (getFunctionValue(x, this.w) - getFunctionValue(xPoints.get(n - 1), this.w)) / h;
                 jmp.isThisSegmentVisible = (Math.abs(deriv) < CONTINUUM_THRESHOLD);
             }
 
@@ -182,21 +207,31 @@ public class FunctionGraph extends Shape {
      */
     public void updatePoints() {
         for (JMPathPoint jmp : this.getPath().jmPathPoints) {
-            jmp.p.v.y = getFunctionValue(jmp.p.v.x);
+            jmp.p.v.y = getFunctionValue(jmp.p.v.x, this.w);
         }
         generateControlPoints();
     }
-
-    /**
+ /**
      * Evaluate the function at the given abscise
      *
      * @param x The abscise
      * @return The value of the function
      */
     public double getFunctionValue(double x) {
+        return getFunctionValue(x, this.w);
+    }
+
+    /**
+     * Evaluate the function at the given abscise
+     *
+     * @param x The abscise
+     * @param w Second parameter of function
+     * @return The value of the function
+     */
+    public double getFunctionValue(double x, double w) {
         double y = 0;
         if (this.functionType == FunctionDefinitionType.LAMBDA) {
-            y = function.applyAsDouble(x);
+            y = function.applyAsDouble(x, w);
         }
 
         return y;
@@ -214,7 +249,7 @@ public class FunctionGraph extends Shape {
      */
     public JMPathPoint addX(double x) {
         int n = 0;
-        if (xPoints.size()>0) {
+        if (xPoints.size() > 0) {
             if (xPoints.get(xPoints.size() - 1) < x) {
                 n = xPoints.size();
             } else {
@@ -229,7 +264,7 @@ public class FunctionGraph extends Shape {
             }
         }
         xPoints.add(n, x);
-        double y = getFunctionValue(x);
+        double y = getFunctionValue(x, this.w);
         Point p = Point.at(x, y);
         final JMPathPoint jmp = JMPathPoint.curveTo(p);
         this.getPath().jmPathPoints.add(n, jmp);
@@ -238,7 +273,7 @@ public class FunctionGraph extends Shape {
 
     public double getSlope(double x, int direction) {
         double delta = direction * DELTA_DERIVATIVE;
-        double slope = (getFunctionValue(x + delta) - getFunctionValue(x)) / delta;
+        double slope = (getFunctionValue(x + delta, this.w) - getFunctionValue(x, this.w)) / delta;
         return slope;
     }
 

@@ -48,8 +48,10 @@ public class FunctionSimpleInterpolateTransform extends TransformStrategy {
     @Override
     public void doAnim(double t) {
         double lt = lambda.applyAsDouble(t);
-        this.gfObj.function = (x) -> (1 - lt) * this.gfObj.functionBase.applyAsDouble(x)
-                + lt * this.gfDst.function.applyAsDouble(x);
+        double w1=this.gfObj.getScalar();
+        double w2=this.gfDst.getScalar();
+        this.gfObj.function = (x,w) -> (1 - lt) * this.gfObj.functionBase.applyAsDouble(x,w1)
+                + lt * this.gfDst.function.applyAsDouble(x,w1);
         this.gfObj.updatePoints();
         if (isShouldInterpolateStyles()) {
             this.gfObj.getMp().interpolateFrom(mpBase, gfDst.getMp(), lt);

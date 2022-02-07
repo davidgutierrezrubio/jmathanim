@@ -294,14 +294,19 @@ public class GeogebraCommandParser {
         //startPoint item defines anchor point (lower left)
         //with attributes x,y...it is a new point
         //with attribute exp it is an existing point
-        Element starPointElement = firstElementWithTag(el, "startPoint");
-        String labelAnchorPoint = starPointElement.getAttribute("exp");
+        Element startPointElement = firstElementWithTag(el, "startPoint");
+        if (startPointElement!=null){
+        String labelAnchorPoint = startPointElement.getAttribute("exp");
         if ("".equals(labelAnchorPoint)) {//Point doesn't exist, create a new one
-            double x = Double.valueOf(starPointElement.getAttribute("x"));
-            double y = Double.valueOf(starPointElement.getAttribute("y"));
+            double x = Double.valueOf(startPointElement.getAttribute("x"));
+            double y = Double.valueOf(startPointElement.getAttribute("y"));
             anchorPoint = CTPoint.make(Point.at(x, y));
         } else {
             anchorPoint = (CTPoint) geogebraElements.get(labelAnchorPoint);
+        }
+        }
+        else {
+            anchorPoint=CTPoint.make(Point.random());
         }
         //Size
         Element fontElement = firstElementWithTag(el, "font");
@@ -415,6 +420,11 @@ public class GeogebraCommandParser {
         String label = outputs[0];
         MathObject[] objs = getArrayOfParameters(el);
         // Array of points of the polygon
+        //TODO: if a2 is a Scalar, is a regular polygon
+        if (objs[2] instanceof Scalar) {
+            processRegularPolygonCommand(el);
+            return;
+        }
         CTPoint[] points = new CTPoint[objs.length];
         for (int i = 0; i < objs.length; i++) {
             points[i] = (CTPoint) objs[i];
@@ -427,7 +437,10 @@ public class GeogebraCommandParser {
             int i2 = (i < outputs.length - 2 ? i + 1 : 0);
             registerGeogebraElement(outputs[i + 1], CTSegment.make(points[i], points[i2]));
         }
-
+    }
+    protected void processRegularPolygonCommand(Element el) {
+         JMathAnimScene.logger
+                    .debug("Imported regular polygon");
     }
 
     protected void processCircleCommand(Element el) {
