@@ -24,7 +24,8 @@ import com.jmathanim.Constructible.Lines.CTSegment;
 import com.jmathanim.Constructible.Points.CTPoint;
 import com.jmathanim.Utils.AffineJTransform;
 import com.jmathanim.jmathanim.JMathAnimScene;
-import com.jmathanim.mathobjects.NullMathObject;
+import com.jmathanim.mathobjects.Line;
+import com.jmathanim.mathobjects.Point;
 
 /**
  * A Constructible object mirrored by a Line or Segment or Ray
@@ -33,14 +34,26 @@ import com.jmathanim.mathobjects.NullMathObject;
  */
 public class CTMirrorPoint extends CTPoint {
 
-    private CTLine axis;
-    private CTPoint orig;
-    private CTPoint center;
+    private final CTLine axis;
+    private final CTPoint orig;
+    private final CTPoint center;
 
     private enum MirrorType {
         AXIAL, CENTRAL
     };
     private MirrorType mirrorType;
+
+    public static CTMirrorPoint make(Point orig, Line axis) {
+        CTMirrorPoint resul = new CTMirrorPoint(CTPoint.make(orig), CTLine.make(axis), null);
+        resul.mirrorType = MirrorType.AXIAL;
+        return resul;
+    }
+
+    public static CTMirrorPoint make(Point orig, Point A, Point B) {
+        CTMirrorPoint resul = new CTMirrorPoint(CTPoint.make(orig), CTSegment.make(A, B), null);
+        resul.mirrorType = MirrorType.AXIAL;
+        return resul;
+    }
 
     public static CTMirrorPoint make(CTPoint orig, Constructible axis) {
         if (axis instanceof CTLine) {

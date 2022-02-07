@@ -33,7 +33,7 @@ public class JMImagePattern extends PaintStyle {
 
     public JMImagePattern(String str) {
         super();
-            img=new JMImage(str);
+            img=JMImage.make(str);
     }
 
     

@@ -25,6 +25,7 @@ import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.AbstractJMImage;
 import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.Shape;
+import java.io.InputStream;
 
 /**
  * Coordinates x,y,z are always given in (0,0) to (w,h), where (0,0) is upper
@@ -85,7 +86,7 @@ public abstract class Renderer {
 
     abstract public void drawAbsoluteCopy(Shape sh, Vec anchor);
 
-    abstract public Rect createImage(String fileName);
+    abstract public Rect createImage(InputStream stream);
 
     abstract public void drawImage(AbstractJMImage obj);
 

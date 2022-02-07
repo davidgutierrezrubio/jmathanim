@@ -23,6 +23,7 @@ import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.Arrow2D;
 import com.jmathanim.mathobjects.MathObject;
+import com.jmathanim.mathobjects.Point;
 
 /**
  *
@@ -31,6 +32,12 @@ import com.jmathanim.mathobjects.MathObject;
 public class CTVector extends CTLine {
 
     private final Arrow2D arrowToDraw;
+
+    public static CTVector makeVector(Vec vector) {
+        CTVector resul = new CTVector(CTPoint.make(Point.origin()), CTPoint.make(Point.at(vector.x, vector.y)));
+        resul.rebuildShape();
+        return resul;
+    }
 
     public static CTVector makeVector(CTPoint A, CTPoint B) {
         CTVector resul = new CTVector(A, B);
@@ -74,8 +81,8 @@ public class CTVector extends CTLine {
 
     @Override
     public String toString() {
-        Vec v=getDirection();
-        return String.format("CTVector[%.2f, %.2f]",v.x,v.y);
+        Vec v = getDirection();
+        return String.format("CTVector[%.2f, %.2f]", v.x, v.y);
     }
 
 }

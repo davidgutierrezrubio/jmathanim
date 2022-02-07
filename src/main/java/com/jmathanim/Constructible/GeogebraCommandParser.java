@@ -29,6 +29,7 @@ import com.jmathanim.Constructible.Lines.CTRay;
 import com.jmathanim.Constructible.Lines.CTSegment;
 import com.jmathanim.Constructible.Lines.CTVector;
 import com.jmathanim.Constructible.Lines.HasDirection;
+import com.jmathanim.Constructible.Others.CTImage;
 import com.jmathanim.Constructible.Points.CTIntersectionPoint;
 import com.jmathanim.Constructible.Points.CTPointOnObject;
 import com.jmathanim.Constructible.Transforms.CTMirrorPoint;
@@ -39,15 +40,20 @@ import com.jmathanim.Styling.MODrawProperties;
 import com.jmathanim.Utils.Anchor;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import static com.jmathanim.jmathanim.JMathAnimScene.PI;
+import com.jmathanim.mathobjects.JMImage;
 import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.NullMathObject;
 import com.jmathanim.mathobjects.Point;
 import com.jmathanim.mathobjects.Scalar;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 import org.w3c.dom.Element;
 
 /**
@@ -90,12 +96,11 @@ public class GeogebraCommandParser {
         }
         //Well it's neither a scalar nor a vector. Maybe an angle?
         final char[] aa = argument.trim().toCharArray();
-        if (aa[aa.length-1]=='°') {//Yes, it is an angle
-            double value = Double.valueOf(argument.substring(0, argument.length()-1));
-            return Scalar.make(value*JMathAnimScene.DEGREES);//Angles are given in degrees in Geogebra
+        if (aa[aa.length - 1] == '°') {//Yes, it is an angle
+            double value = Double.valueOf(argument.substring(0, argument.length() - 1));
+            return Scalar.make(value * JMathAnimScene.DEGREES);//Angles are given in degrees in Geogebra
         }
-        
-        
+
         // Nothing recognized so far, throw an exception
         try {
             throw new Exception("Don't know how to parse this argument " + argument);
@@ -249,6 +254,26 @@ public class GeogebraCommandParser {
             geogebraElements.put(label, resul);
             JMathAnimScene.logger.debug("Imported point {}", label);
         }
+    }
+
+    void processImageElement(Element el, ZipFile zipFile) {
+        String label = el.getAttribute("label");
+        final Element fileEl = firstElementWithTag(el, "file");
+        ZipEntry entry = zipFile.getEntry(fileEl.getAttribute("name"));
+        try {
+            InputStream fileStream = zipFile.getInputStream(entry);
+            JMImage img = new JMImage(fileStream);
+            Element elStartPoint1 = (Element) el.getElementsByTagName("startPoint").item(0);
+            CTPoint A=(CTPoint) geogebraElements.get(elStartPoint1.getAttribute("exp"));
+               Element elStartPoint2 = (Element) el.getElementsByTagName("startPoint").item(1);
+            CTPoint B=(CTPoint) geogebraElements.get(elStartPoint2.getAttribute("exp"));
+            registerGeogebraElement(label, CTImage.make(A,B,img));
+            
+        } catch (IOException ex) {
+            JMathAnimScene.logger.error("Could'nt load file for image " + label);
+            return;
+        }
+
     }
 
     void processLaTeXObjectElement(Element el) {
@@ -491,6 +516,8 @@ public class GeogebraCommandParser {
     void processMirror(Element el) {//Right now, it only mirror points
         String label = getOutputArgument(el, 0);
         MathObject[] objs = getArrayOfParameters(el);
+        //TODO: An image (CTImage) can also be mirrored for example.
+        //Trying to import a mirrored image leads a to cast exception
         CTPoint pointToMirror = (CTPoint) objs[0];
         Constructible mirrorAxis = (Constructible) objs[1];
         registerGeogebraElement(label, CTMirrorPoint.make(pointToMirror, mirrorAxis));
@@ -512,7 +539,7 @@ public class GeogebraCommandParser {
         CTPoint pointToRotate = (CTPoint) objs[0];
         Scalar angle = (Scalar) objs[1];
         CTPoint rotationCenter = (CTPoint) objs[2];
-        registerGeogebraElement(label, CTRotatedPoint.make(pointToRotate, angle,rotationCenter));
+        registerGeogebraElement(label, CTRotatedPoint.make(pointToRotate, angle, rotationCenter));
         JMathAnimScene.logger.debug("Imported rotated point " + label + " of " + objs[0] + " with angle " + objs[1]);
     }
 

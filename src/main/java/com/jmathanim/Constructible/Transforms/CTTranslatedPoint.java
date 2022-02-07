@@ -20,6 +20,7 @@ package com.jmathanim.Constructible.Transforms;
 import com.jmathanim.Constructible.FixedConstructible;
 import com.jmathanim.Constructible.Lines.CTVector;
 import com.jmathanim.Constructible.Points.CTPoint;
+import com.jmathanim.Utils.Vec;
 import com.jmathanim.mathobjects.Arrow2D;
 import com.jmathanim.mathobjects.Point;
 
@@ -32,10 +33,8 @@ public class CTTranslatedPoint extends CTPoint {
     private final CTVector translationVector;
     private final CTPoint originalPoint;
 
-    public static CTTranslatedPoint make(Point originalPoint, Arrow2D translationVector) {
-        CTPoint A = CTPoint.make(translationVector.getStart());
-        CTPoint B = CTPoint.make(translationVector.getEnd());
-        return make(CTPoint.make(originalPoint), CTVector.makeVector(A, B));
+    public static CTTranslatedPoint make(Point originalPoint, Vec translationVector) {
+        return make(CTPoint.make(originalPoint), CTVector.makeVector(translationVector));
     }
 
     public static CTTranslatedPoint make(CTPoint originalPoint, CTVector translationVector) {

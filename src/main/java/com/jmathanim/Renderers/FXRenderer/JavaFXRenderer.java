@@ -33,6 +33,7 @@ import com.jmathanim.mathobjects.Shape;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -424,28 +425,23 @@ public class JavaFXRenderer extends Renderer {
     }
 
     @Override
-    public Rect createImage(String fileName) {
+    public Rect createImage(InputStream stream) {
         Rect r = new Rect(0, 0, 0, 0);
-
-        try {
-            Image image;
-            if (!images.containsKey(fileName)) {// If the image is not already loaded...
-                ResourceLoader rl = new ResourceLoader();
-                final URL imageResource = rl.getResource(fileName, "images");
-                image = new Image(imageResource.openStream());
-                images.put(fileName, image);
-                JMathAnimScene.logger.info("Loaded image " + fileName);
-            } else {
-                image = images.get(fileName);
-            }
-
-            // UL corner of bounding box initially set to (0,0)
-            r.ymin = -camera.screenToMath(image.getHeight());
-            r.xmax = camera.screenToMath(image.getWidth());
-        } catch (IOException ex) {
-            JMathAnimScene.logger.warn("Could'nt load image " + fileName);
+        String fileName = stream.toString();
+        Image image;
+        if (!images.containsKey(fileName)) {// If the image is not already loaded...
+            ResourceLoader rl = new ResourceLoader();
+            final URL imageResource = rl.getResource(fileName, "images");
+            image = new Image(stream);
+            images.put(fileName, image);
+            JMathAnimScene.logger.info("Loaded image " + fileName);
+        } else {
+            image = images.get(fileName);
         }
 
+        // UL corner of bounding box initially set to (0,0)
+        r.ymin = -camera.screenToMath(image.getHeight());
+        r.xmax = camera.screenToMath(image.getWidth());
         return r;
     }
 

@@ -41,6 +41,10 @@ public class CTLine extends FixedConstructible implements HasDirection {
     CTPoint B;
     HasDirection dir;
 
+    public static CTLine make(Line line) {
+        return make(line.getP1(), line.getP2());
+    }
+
     public static CTLine make(CTPoint A, HasDirection dir) {
         CTLine resul = new CTLine(A, A.add(dir.getDirection()));
         resul.dir = dir;

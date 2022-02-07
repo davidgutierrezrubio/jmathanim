@@ -175,6 +175,9 @@ public class GeogebraLoader implements Iterable<Constructible>, hasCameraParamet
             case "text":
                 cp.processLaTeXObjectElement(el);
                 break;
+            case "image":
+                cp.processImageElement(el,zipFile);
+                
         }
 
         // If element already belongs to the hashMap, process styling options
