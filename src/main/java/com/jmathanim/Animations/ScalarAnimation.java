@@ -15,16 +15,35 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-package com.jmathanim.mathobjects;
+package com.jmathanim.Animations;
+
+import com.jmathanim.mathobjects.hasScalarParameter;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
- * Any object that implements this interface depends on a scalar value that can
- * be animated
  *
- * @author David Gutierrez Rubio
+ * @author David
  */
-public interface hasScalarParameter {
+public class ScalarAnimation extends Animation{
 
-    public double getScalar();
-    public void setScalar(double scalar);
+    hasScalarParameter scalarToAnimate;
+    private final double b;
+    private final double a;
+
+    public ScalarAnimation(double runTime,hasScalarParameter scalarToAnimate,double a, double b) {
+        super(runTime);
+        this.scalarToAnimate=scalarToAnimate;
+        this.a=a;
+        this.b=b;
+        
+    }
+    
+    
+    @Override
+    public void doAnim(double t) {
+        double lt=lambda.applyAsDouble(t);
+        scalarToAnimate.setScalar(a+(b-a)*lt);
+    }
+    
 }
