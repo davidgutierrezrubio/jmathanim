@@ -1,11 +1,6 @@
 # Mathematical formulas
 
-Math formulas, as we have seen, are created with the `LaTexMathObject` class. The process to create the formula from the latex text is as follows:
-
-1. A LaTeX document is generated from the passed String (a preamble is created and some latex packages included).
-2. A hash of the document is computed, which will be the name of the tex file, to be saved in the project_root/text directory.
-3. The library tries to invoke the `LaTeX` executable to compile the file into a dvi, and then the `dvi2svgm` utility to convert the dvi to svg format. If the tex file already exists, this step is omitted, as `JMathAnim` assumes the svg is already generated from previous runs.
-4. The svg is imported using the `SVGMathObject` methods, from which `LaTexMathObject` inherits.
+Math formulas, as we have seen, are created with the `LaTexMathObject` class.  Since version 0.9.5-SNAPSHOT, the LaTeX code is compiled using the library `JLaTeXMath` removing the need to have a working LaTeX distribution installed in the system. All glyphs generated are converted into `Shape`objects.
 
 For example if we generate a math expression with the command
 
