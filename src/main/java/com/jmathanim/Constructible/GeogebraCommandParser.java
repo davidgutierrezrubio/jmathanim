@@ -26,6 +26,7 @@ import com.jmathanim.Constructible.Lines.CTLineOrthogonal;
 import com.jmathanim.Constructible.Lines.CTPerpBisector;
 import com.jmathanim.Constructible.Lines.CTPolygon;
 import com.jmathanim.Constructible.Lines.CTRay;
+import com.jmathanim.Constructible.Lines.CTRegularPolygon;
 import com.jmathanim.Constructible.Lines.CTSegment;
 import com.jmathanim.Constructible.Lines.CTVector;
 import com.jmathanim.Constructible.Lines.HasDirection;
@@ -47,6 +48,7 @@ import com.jmathanim.mathobjects.Point;
 import com.jmathanim.mathobjects.Scalar;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -264,11 +266,11 @@ public class GeogebraCommandParser {
             InputStream fileStream = zipFile.getInputStream(entry);
             JMImage img = new JMImage(fileStream);
             Element elStartPoint1 = (Element) el.getElementsByTagName("startPoint").item(0);
-            CTPoint A=(CTPoint) geogebraElements.get(elStartPoint1.getAttribute("exp"));
-               Element elStartPoint2 = (Element) el.getElementsByTagName("startPoint").item(1);
-            CTPoint B=(CTPoint) geogebraElements.get(elStartPoint2.getAttribute("exp"));
-            registerGeogebraElement(label, CTImage.make(A,B,img));
-            
+            CTPoint A = (CTPoint) geogebraElements.get(elStartPoint1.getAttribute("exp"));
+            Element elStartPoint2 = (Element) el.getElementsByTagName("startPoint").item(1);
+            CTPoint B = (CTPoint) geogebraElements.get(elStartPoint2.getAttribute("exp"));
+            registerGeogebraElement(label, CTImage.make(A, B, img));
+
         } catch (IOException ex) {
             JMathAnimScene.logger.error("Could'nt load file for image " + label);
             return;
@@ -295,18 +297,17 @@ public class GeogebraCommandParser {
         //with attributes x,y...it is a new point
         //with attribute exp it is an existing point
         Element startPointElement = firstElementWithTag(el, "startPoint");
-        if (startPointElement!=null){
-        String labelAnchorPoint = startPointElement.getAttribute("exp");
-        if ("".equals(labelAnchorPoint)) {//Point doesn't exist, create a new one
-            double x = Double.valueOf(startPointElement.getAttribute("x"));
-            double y = Double.valueOf(startPointElement.getAttribute("y"));
-            anchorPoint = CTPoint.make(Point.at(x, y));
+        if (startPointElement != null) {
+            String labelAnchorPoint = startPointElement.getAttribute("exp");
+            if ("".equals(labelAnchorPoint)) {//Point doesn't exist, create a new one
+                double x = Double.valueOf(startPointElement.getAttribute("x"));
+                double y = Double.valueOf(startPointElement.getAttribute("y"));
+                anchorPoint = CTPoint.make(Point.at(x, y));
+            } else {
+                anchorPoint = (CTPoint) geogebraElements.get(labelAnchorPoint);
+            }
         } else {
-            anchorPoint = (CTPoint) geogebraElements.get(labelAnchorPoint);
-        }
-        }
-        else {
-            anchorPoint=CTPoint.make(Point.random());
+            anchorPoint = CTPoint.make(Point.random());
         }
         //Size
         Element fontElement = firstElementWithTag(el, "font");
@@ -416,15 +417,21 @@ public class GeogebraCommandParser {
     }
 
     protected void processPolygonCommand(Element el) {
-        String[] outputs = getArrayOfOutputs(el);
-        String label = outputs[0];
         MathObject[] objs = getArrayOfParameters(el);
         // Array of points of the polygon
         //TODO: if a2 is a Scalar, is a regular polygon
         if (objs[2] instanceof Scalar) {
             processRegularPolygonCommand(el);
-            return;
+        } else {
+            processSimplePolygonCommand(el);
         }
+
+    }
+
+    protected void processSimplePolygonCommand(Element el) {
+        String[] outputs = getArrayOfOutputs(el);
+        String label = outputs[0];
+        MathObject[] objs = getArrayOfParameters(el);
         CTPoint[] points = new CTPoint[objs.length];
         for (int i = 0; i < objs.length; i++) {
             points[i] = (CTPoint) objs[i];
@@ -438,9 +445,42 @@ public class GeogebraCommandParser {
             registerGeogebraElement(outputs[i + 1], CTSegment.make(points[i], points[i2]));
         }
     }
+
     protected void processRegularPolygonCommand(Element el) {
-         JMathAnimScene.logger
-                    .debug("Imported regular polygon");
+        String[] outputs = getArrayOfOutputs(el);
+       
+        MathObject[] objs = getArrayOfParameters(el);
+        final double dSides = ((Scalar)objs[2]).value;
+        int sides=(int) dSides;
+        ArrayList<CTSegment> segments=new ArrayList<>();
+        ArrayList<CTPoint> vertices=new ArrayList<>();
+        //For a regular polygon of n sides, there are 1+n+n-2 (from 0 to 2n-2) outputs:
+        //0 output name
+        //1...n name of sides (CTSegment)
+        //n+1...2n-2 names of generated vertices (apart from 2 given vertices in input)
+         String label = outputs[0];
+         
+         //First, add the 2 defining points
+         vertices.add((CTPoint) objs[0]);
+         vertices.add((CTPoint) objs[1]);
+         for (int k=sides+1;k<=2*sides-2;k++) {
+             CTPoint P=CTPoint.make(new Point());//Should be computed in the constructor
+             vertices.add(P);
+             registerGeogebraElement(outputs[k], P);
+              JMathAnimScene.logger.debug("Generated Point {}", outputs[k]);
+         }
+         
+         for (int k = 1; k <= sides; k++) {
+            final CTSegment seg = CTSegment.make(vertices.get(k-1), vertices.get(k % sides));
+            segments.add(seg);
+             registerGeogebraElement(outputs[k], seg);
+             JMathAnimScene.logger.debug("Generated segment {}", outputs[k]);
+        }
+        
+        registerGeogebraElement(label, CTRegularPolygon.make(vertices));
+        
+        
+        JMathAnimScene.logger.debug("Imported regular polygon "+label);
     }
 
     protected void processCircleCommand(Element el) {
