@@ -91,12 +91,21 @@ public class GeogebraCommandParser {
         }
 
         // Try if it is a point expressed in (a,b) form (an anoynimous point)
-        Pattern pattern = Pattern.compile("\\((.*),(.*)\\)");
-        Matcher matcher = pattern.matcher(argument);
+        Pattern patternPoint = Pattern.compile("\\((.*),(.*)\\)");
+        Matcher matcher = patternPoint.matcher(argument);
         if (matcher.find()) {
             return CTPoint.make(Point.at(Double.valueOf(matcher.group(1)), Double.valueOf(matcher.group(2))));
         }
-        //Well it's neither a scalar nor a vector. Maybe an angle?
+        //Try if it is a command expressed in command[a,b,c..]
+          Pattern patternCmd = Pattern.compile("(.*)\\[.*\\]");
+         matcher = patternCmd.matcher(argument);
+        if (matcher.find()) {
+            JMathAnimScene.logger.error("Don't know still how to parse this command in an argument: "+argument);
+            return null;
+        }
+        
+        
+        //Well it's neither a scalar nor a vector nor a command. Maybe an angle?
         final char[] aa = argument.trim().toCharArray();
         if (aa[aa.length - 1] == '°') {//Yes, it is an angle
             double value = Double.valueOf(argument.substring(0, argument.length() - 1));
@@ -531,11 +540,17 @@ public class GeogebraCommandParser {
     }
 
     void processIntersectionCommand(Element el) {
+        int numPoint=0;
         String label = getOutputArgument(el, 0);
         MathObject[] objs = getArrayOfParameters(el);
         Constructible ob1 = (Constructible) objs[0];
         Constructible ob2 = (Constructible) objs[1];
-        registerGeogebraElement(label, CTIntersectionPoint.make(ob1, ob2));
+        if (objs.length>2) {//Third parameter, intersection number
+            numPoint=(int) ((Scalar)objs[2]).value;
+        }
+        //if a2="n" it computes only the n-th intersection point
+        //For line(A,B)-circle, "1" stands for closest point to A, "2" for farthest
+        registerGeogebraElement(label, CTIntersectionPoint.make(ob1, ob2,numPoint));
         JMathAnimScene.logger.debug("Imported intersection point " + label + " of " + objs[0] + " and " + objs[1]);
     }
 

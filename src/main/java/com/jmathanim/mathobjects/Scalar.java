@@ -28,7 +28,7 @@ import com.jmathanim.jmathanim.JMathAnimScene;
  */
 public class Scalar extends MathObject {
 
-    public Double value;
+    public double value;
 
     public static Scalar make(double scalar) {
         return new Scalar(scalar);

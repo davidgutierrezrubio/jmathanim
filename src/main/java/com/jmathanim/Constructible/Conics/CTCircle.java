@@ -186,7 +186,13 @@ public class CTCircle extends FixedConstructible {
             //Nothing to do, everything is already calculated!
         }
     }
+    public Scalar getRadius() {
+        return radius;
+    }
 
+    public CTPoint getCircleCenter() {
+        return circleCenter;
+    }
 //    @Override
 //    public int getUpdateLevel() {
 //        return Math.max(A.getUpdateLevel(), B.getUpdateLevel()) + 1;
