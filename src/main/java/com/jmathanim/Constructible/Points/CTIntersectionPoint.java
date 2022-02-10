@@ -44,9 +44,9 @@ public class CTIntersectionPoint extends CTPoint {
     }
     private IntersectionType intersectionType;
     private final CTPoint intersectionPoint;
-    private  CTLine ctline1, ctline2;
-    private  CTCircle ctcircle1, ctcircle2;
-    private final Constructible c1,c2;
+    private CTLine ctline1, ctline2;
+    private CTCircle ctcircle1, ctcircle2;
+    private final Constructible c1, c2;
     private final int solNumber;
 
     public static CTIntersectionPoint make(Constructible c1, Constructible c2) {
@@ -62,8 +62,8 @@ public class CTIntersectionPoint extends CTPoint {
     private CTIntersectionPoint(Constructible c1, Constructible c2, int solNumber) {
         intersectionPoint = CTPoint.make(Point.at(0, 0));
         this.solNumber = solNumber;
-        this.c1=c1;
-        this.c2=c2;
+        this.c1 = c1;
+        this.c2 = c2;
         //Determine intersecion type and define proper variables
         if ((c1 instanceof CTLine) && (c2 instanceof CTLine)) {
             ctline1 = (CTLine) c1;
@@ -90,6 +90,8 @@ public class CTIntersectionPoint extends CTPoint {
             ctcircle2 = null;
             intersectionType = IntersectionType.CIRCLE_CIRCLE;
             JMathAnimScene.logger.error("Don't know still how to compute intersection of 2 circles");
+        } else {
+            JMathAnimScene.logger.error("Don't know this intersection: "+c1+", "+c2);
         }
     }
 
@@ -134,6 +136,7 @@ public class CTIntersectionPoint extends CTPoint {
 //        double interX2 = x3 + sols[1] * (x4 - x3);
 //        double interY2 = y3 + sols[1] * (y4 - y3);
                 intersectionPoint.getMathObject().v.copyFrom(interX, interY);
+                break;
             case LINE_CIRCLE:
                 //A line/ray/segment with a circle
                 double radius = ctcircle1.getRadius().value;
@@ -147,20 +150,28 @@ public class CTIntersectionPoint extends CTPoint {
                 double drSq = dx * dx + dy * dy;
                 double D = A.v.x * B.v.y - B.v.x * A.v.y;
                 final double discr = Math.sqrt(radius * radius * drSq - D * D);
+                if (discr < 0) {
+                    intersectionPoint.getMathObject().v.copyFrom(Double.NaN, Double.NaN);
+                } else {
+                    //Coordinates of 2 intersection points
+                    x1 = (D * dy - (dy < 0 ? -1 : 1) * dx * discr) / drSq;
+                    y1 = (-D * dx - Math.abs(dy) * discr) / drSq;
 
-                //Coordinates of 2 intersection points
-                x1 = (D * dy - (dy < 0 ? -1 : 1) * dx * discr) / drSq;
-                y1 = (-D * dx - Math.abs(dy) * discr) / drSq;
-
-                x2 = (D * dy + (dy < 0 ? -1 : 1) * dx * discr) / drSq;
-                y2 = (-D * dx + Math.abs(dy) * discr) / drSq;
-                
-                //TODO:Determine the nearest solution to A
-                
-                
-                
-                intersectionPoint.getMathObject().v.copyFrom(x2, y2);
-                intersectionPoint.getMathObject().shift(center);
+                    x2 = (D * dy + (dy < 0 ? -1 : 1) * dx * discr) / drSq;
+                    y2 = (-D * dx + Math.abs(dy) * discr) / drSq;
+                    int sign = (this.solNumber == 1 ? 1 : -1);
+                    //TODO:Determine the nearest solution to A
+                    if (sign * ((x1 - A.v.x) * (x1 - A.v.x) + (y1 - A.v.y) * (y1 - A.v.y)) < sign * ((x1 - B.v.x) * (x1 - B.v.x) + (y1 - B.v.y) * (y1 - B.v.y))) {
+                        intersectionPoint.getMathObject().v.copyFrom(x1, y1);
+                        intersectionPoint.getMathObject().shift(center);
+                    } else {
+                        intersectionPoint.getMathObject().v.copyFrom(x2, y2);
+                        intersectionPoint.getMathObject().shift(center);
+                    }
+                }
+                break;
+            case CIRCLE_CIRCLE:
+                //Not yet...
         }
     }
 

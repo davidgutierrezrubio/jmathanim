@@ -97,14 +97,13 @@ public class GeogebraCommandParser {
             return CTPoint.make(Point.at(Double.valueOf(matcher.group(1)), Double.valueOf(matcher.group(2))));
         }
         //Try if it is a command expressed in command[a,b,c..]
-          Pattern patternCmd = Pattern.compile("(.*)\\[.*\\]");
-         matcher = patternCmd.matcher(argument);
+        Pattern patternCmd = Pattern.compile("(.*)\\[.*\\]");
+        matcher = patternCmd.matcher(argument);
         if (matcher.find()) {
-            JMathAnimScene.logger.error("Don't know still how to parse this command in an argument: "+argument);
+            JMathAnimScene.logger.error("Don't know still how to parse this command in an argument: " + argument);
             return null;
         }
-        
-        
+
         //Well it's neither a scalar nor a vector nor a command. Maybe an angle?
         final char[] aa = argument.trim().toCharArray();
         if (aa[aa.length - 1] == '°') {//Yes, it is an angle
@@ -457,39 +456,38 @@ public class GeogebraCommandParser {
 
     protected void processRegularPolygonCommand(Element el) {
         String[] outputs = getArrayOfOutputs(el);
-       
+
         MathObject[] objs = getArrayOfParameters(el);
-        final double dSides = ((Scalar)objs[2]).value;
-        int sides=(int) dSides;
-        ArrayList<CTSegment> segments=new ArrayList<>();
-        ArrayList<CTPoint> vertices=new ArrayList<>();
+        final double dSides = ((Scalar) objs[2]).value;
+        int sides = (int) dSides;
+        ArrayList<CTSegment> segments = new ArrayList<>();
+        ArrayList<CTPoint> vertices = new ArrayList<>();
         //For a regular polygon of n sides, there are 1+n+n-2 (from 0 to 2n-2) outputs:
         //0 output name
         //1...n name of sides (CTSegment)
         //n+1...2n-2 names of generated vertices (apart from 2 given vertices in input)
-         String label = outputs[0];
-         
-         //First, add the 2 defining points
-         vertices.add((CTPoint) objs[0]);
-         vertices.add((CTPoint) objs[1]);
-         for (int k=sides+1;k<=2*sides-2;k++) {
-             CTPoint P=CTPoint.make(new Point());//Should be computed in the constructor
-             vertices.add(P);
-             registerGeogebraElement(outputs[k], P);
-              JMathAnimScene.logger.debug("Generated Point {}", outputs[k]);
-         }
-         
-         for (int k = 1; k <= sides; k++) {
-            final CTSegment seg = CTSegment.make(vertices.get(k-1), vertices.get(k % sides));
-            segments.add(seg);
-             registerGeogebraElement(outputs[k], seg);
-             JMathAnimScene.logger.debug("Generated segment {}", outputs[k]);
+        String label = outputs[0];
+
+        //First, add the 2 defining points
+        vertices.add((CTPoint) objs[0]);
+        vertices.add((CTPoint) objs[1]);
+        for (int k = sides + 1; k <= 2 * sides - 2; k++) {
+            CTPoint P = CTPoint.make(new Point());//Should be computed in the constructor
+            vertices.add(P);
+            registerGeogebraElement(outputs[k], P);
+            JMathAnimScene.logger.debug("Generated Point {}", outputs[k]);
         }
-        
+
+        for (int k = 1; k <= sides; k++) {
+            final CTSegment seg = CTSegment.make(vertices.get(k - 1), vertices.get(k % sides));
+            segments.add(seg);
+            registerGeogebraElement(outputs[k], seg);
+            JMathAnimScene.logger.debug("Generated segment {}", outputs[k]);
+        }
+
         registerGeogebraElement(label, CTRegularPolygon.make(vertices));
-        
-        
-        JMathAnimScene.logger.debug("Imported regular polygon "+label);
+
+        JMathAnimScene.logger.debug("Imported regular polygon " + label);
     }
 
     protected void processCircleCommand(Element el) {
@@ -540,17 +538,26 @@ public class GeogebraCommandParser {
     }
 
     void processIntersectionCommand(Element el) {
-        int numPoint=0;
+        int numPoint = 0;
         String label = getOutputArgument(el, 0);
         MathObject[] objs = getArrayOfParameters(el);
         Constructible ob1 = (Constructible) objs[0];
         Constructible ob2 = (Constructible) objs[1];
-        if (objs.length>2) {//Third parameter, intersection number
-            numPoint=(int) ((Scalar)objs[2]).value;
+        if (objs.length > 2) {//Third parameter, intersection number
+            //if a2="n" it computes only the n-th intersection point
+            //For line(A,B)-circle, "1" stands for closest point to A, "2" for farthest
+            numPoint = (int) ((Scalar) objs[2]).value;
+            registerGeogebraElement(label, CTIntersectionPoint.make(ob1, ob2, numPoint));
+        } else {
+            if ((ob1 instanceof CTCircle) || (ob2 instanceof CTCircle)) {
+                registerGeogebraElement(label, CTIntersectionPoint.make(ob1, ob2, 1));
+                registerGeogebraElement(getOutputArgument(el, 1), CTIntersectionPoint.make(ob1, ob2, 2));
+            }else
+            {
+                 registerGeogebraElement(label, CTIntersectionPoint.make(ob1, ob2, 1));
+            }
         }
-        //if a2="n" it computes only the n-th intersection point
-        //For line(A,B)-circle, "1" stands for closest point to A, "2" for farthest
-        registerGeogebraElement(label, CTIntersectionPoint.make(ob1, ob2,numPoint));
+
         JMathAnimScene.logger.debug("Imported intersection point " + label + " of " + objs[0] + " and " + objs[1]);
     }
 
