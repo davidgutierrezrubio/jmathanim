@@ -182,7 +182,7 @@ public class Ray extends Shape implements HasDirection {
 
     @Override
     public void draw(JMathAnimScene scene, Renderer r) {
-        update(JMathAnimConfig.getConfig().getScene());// TODO: remove coupling
+        update(scene);
         if (isVisible()) {
             visiblePiece.draw(scene, r);
         }

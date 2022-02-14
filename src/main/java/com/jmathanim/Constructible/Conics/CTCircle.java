@@ -18,7 +18,6 @@
 package com.jmathanim.Constructible.Conics;
 
 import com.jmathanim.Constructible.Points.CTPoint;
-import com.jmathanim.Constructible.Constructible;
 import com.jmathanim.Constructible.FixedConstructible;
 import com.jmathanim.Renderers.Renderer;
 import com.jmathanim.Utils.Rect;

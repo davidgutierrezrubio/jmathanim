@@ -18,6 +18,7 @@
 package com.jmathanim.Constructible.Points;
 
 import com.jmathanim.Constructible.Conics.CTCircle;
+import com.jmathanim.Constructible.Conics.CTEllipse;
 import com.jmathanim.Constructible.Constructible;
 import com.jmathanim.Constructible.FixedConstructible;
 import com.jmathanim.Constructible.Lines.CTLine;
@@ -40,7 +41,7 @@ import com.jmathanim.mathobjects.Ray;
 public class CTIntersectionPoint extends CTPoint {
 
     private enum IntersectionType {
-        LINEAR, LINE_CIRCLE, CIRCLE_CIRCLE
+        LINEAR, LINE_CIRCLE, CIRCLE_CIRCLE, CIRCLE_CONIC
     }
     private IntersectionType intersectionType;
     private final CTPoint intersectionPoint;
@@ -76,7 +77,7 @@ public class CTIntersectionPoint extends CTPoint {
             ctline2 = null;
             ctcircle1 = (CTCircle) c2;
             ctcircle2 = null;
-            intersectionType = IntersectionType.LINE_CIRCLE;
+            intersectionType = IntersectionType.LINE_CIRCLE;//TODO: consider SEGMENT_CIRCLE
         } else if ((c1 instanceof CTCircle) && (c2 instanceof CTLine)) {
             ctline1 = (CTLine) c2;
             ctline2 = null;
@@ -86,12 +87,18 @@ public class CTIntersectionPoint extends CTPoint {
         } else if ((c1 instanceof CTCircle) && (c2 instanceof CTCircle)) {
             ctline1 = null;
             ctline2 = null;
-            ctcircle1 = null;
-            ctcircle2 = null;
+            ctcircle1 = (CTCircle) c1;
+            ctcircle2 = (CTCircle) c2;
             intersectionType = IntersectionType.CIRCLE_CIRCLE;
             JMathAnimScene.logger.error("Don't know still how to compute intersection of 2 circles");
+        } else if ((c1 instanceof CTCircle) && (c2 instanceof CTEllipse)) {
+            intersectionType = IntersectionType.CIRCLE_CONIC;
+            JMathAnimScene.logger.error("Don't know still how to compute intersection of 2 ellipses");
+        } else if ((c1 instanceof CTEllipse) && (c2 instanceof CTEllipse)) {
+            intersectionType = IntersectionType.CIRCLE_CONIC;
+            JMathAnimScene.logger.error("Don't know still how to compute intersection of 2 ellipses");
         } else {
-            JMathAnimScene.logger.error("Don't know this intersection: "+c1+", "+c2);
+            JMathAnimScene.logger.error("Don't know this intersection: " + c1 + ", " + c2);
         }
     }
 
@@ -103,7 +110,11 @@ public class CTIntersectionPoint extends CTPoint {
     @Override
     public void rebuildShape() {
         double interX = Double.NaN;
-        double interY = Double.NaN;//Result
+        double interY = Double.NaN;//Default result: no point at all
+        if (intersectionType == null) {
+            intersectionPoint.getMathObject().v.copyFrom(interX, interY);
+            return;
+        }
         //TODO: Implement intersection algorithms for:
         //Circle
         intersectionPoint.getMathObject().copyFrom(Point.at(0, .5));//Debug values to show on screen
@@ -162,17 +173,57 @@ public class CTIntersectionPoint extends CTPoint {
                     int sign = (this.solNumber == 1 ? 1 : -1);
                     //TODO:Determine the nearest solution to A
                     if (sign * ((x1 - A.v.x) * (x1 - A.v.x) + (y1 - A.v.y) * (y1 - A.v.y)) < sign * ((x1 - B.v.x) * (x1 - B.v.x) + (y1 - B.v.y) * (y1 - B.v.y))) {
-                        intersectionPoint.getMathObject().v.copyFrom(x1, y1);
-                        intersectionPoint.getMathObject().shift(center);
+                        interX = x1;
+                        interY = y1;
                     } else {
-                        intersectionPoint.getMathObject().v.copyFrom(x2, y2);
-                        intersectionPoint.getMathObject().shift(center);
+                        interX = x2;
+                        interY = y2;
                     }
+                    if (!validateSolutionForLines(ctline1, interX, interY)) {
+                        interX = Double.NaN;
+                        interY = Double.NaN;
+                    }
+                    intersectionPoint.getMathObject().v.copyFrom(interX, interY);
+                    intersectionPoint.getMathObject().shift(center);
                 }
                 break;
             case CIRCLE_CIRCLE:
-                //Not yet...
+                final Vec vecCenterCircles = ctcircle1.getCircleCenter().to(ctcircle2.getCircleCenter()).copy();
+                double d = vecCenterCircles.norm();
+                double r1 = ctcircle1.getRadius().value;
+                double r2 = ctcircle2.getRadius().value;
+                double alpha = .5 / d;
+                interX = alpha * (d * d - r2 * r2 + r1 * r1);
+
+                interY = alpha * Math.sqrt((-d + r2 - r1) * (-d - r2 + r1) * (-d + r2 + r1) * (d + r2 + r1));
+
+//                Point inter1 = Point.at(interX, interY).drawColor("blue");//First point in geogebra
+//                Point inter2 = Point.at(interX, -interY).drawColor("red");//Second
+                intersectionPoint.getMathObject().v.copyFrom(interX, (solNumber == 1 ? 1 : -1) * interY);
+                intersectionPoint.getMathObject().rotate(Point.origin(), vecCenterCircles.getAngle());
+                intersectionPoint.getMathObject().shift(ctcircle1.getCircleCenter().v);
+                break;
+            case CIRCLE_CONIC:
+                intersectionPoint.getMathObject().v.copyFrom(Double.NaN, Double.NaN);
         }
+    }
+
+    //Determines if given point P of line/ray/segment is valid or not
+    private boolean validateSolutionForLines(CTLine line, double x, double y) {
+        boolean valid = true;
+        Point A = line.getP1();
+        Point B = line.getP2();
+        Vec vLine = A.to(B);
+        Vec vP = Vec.to(x - A.v.x, y - A.v.y);
+        double lambda;
+        if (vLine.x != 0) {
+            lambda = vP.x / vLine.x;
+        } else {
+            lambda = vP.y / vLine.y;
+        }
+        valid = valid && !((line instanceof CTRay) && (lambda < 0));
+        valid = valid && !((line instanceof CTSegment) && ((lambda < 0) || (lambda > 1)));
+        return valid;
     }
 
     @Override
