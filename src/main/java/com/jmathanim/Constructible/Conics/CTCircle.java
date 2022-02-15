@@ -83,6 +83,10 @@ public class CTCircle extends FixedConstructible {
         return make(CTPoint.make(center), Scalar.make(radius));
     }
 
+    public static CTCircle make(CTPoint center, double radius) {
+        return make(center, Scalar.make(radius));
+    }
+
     public static CTCircle make(CTPoint center, Scalar radius) {
         CTCircle resul = new CTCircle();
         resul.circleType = CircleType.CENTER_RADIUS;
@@ -185,6 +189,7 @@ public class CTCircle extends FixedConstructible {
             //Nothing to do, everything is already calculated!
         }
     }
+
     public Scalar getRadius() {
         return radius;
     }
@@ -199,6 +204,7 @@ public class CTCircle extends FixedConstructible {
     // Function to find the circle on
     // which the given three points lie
     //Found in https://www.geeksforgeeks.org/equation-of-circle-when-three-points-on-the-circle-are-given/
+
     private void findCircleThatPassThroughThreePoints(double x1, double y1, double x2, double y2, double x3, double y3) {
         double x12 = x1 - x2;
         double x13 = x1 - x3;

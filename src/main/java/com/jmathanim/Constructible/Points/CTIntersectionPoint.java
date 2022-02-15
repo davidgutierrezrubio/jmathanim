@@ -44,7 +44,6 @@ public class CTIntersectionPoint extends CTPoint {
         LINEAR, LINE_CIRCLE, CIRCLE_CIRCLE, CIRCLE_CONIC
     }
     private IntersectionType intersectionType;
-    private final CTPoint intersectionPoint;
     private CTLine ctline1, ctline2;
     private CTCircle ctcircle1, ctcircle2;
     private final Constructible c1, c2;
@@ -61,11 +60,11 @@ public class CTIntersectionPoint extends CTPoint {
     }
 
     private CTIntersectionPoint(Constructible c1, Constructible c2, int solNumber) {
-        intersectionPoint = CTPoint.make(Point.at(0, 0));
         this.solNumber = solNumber;
         this.c1 = c1;
         this.c2 = c2;
         //Determine intersecion type and define proper variables
+        //TODO: Change this to a proper switch
         if ((c1 instanceof CTLine) && (c2 instanceof CTLine)) {
             ctline1 = (CTLine) c1;
             ctline2 = (CTLine) c2;
@@ -90,7 +89,6 @@ public class CTIntersectionPoint extends CTPoint {
             ctcircle1 = (CTCircle) c1;
             ctcircle2 = (CTCircle) c2;
             intersectionType = IntersectionType.CIRCLE_CIRCLE;
-            JMathAnimScene.logger.error("Don't know still how to compute intersection of 2 circles");
         } else if ((c1 instanceof CTCircle) && (c2 instanceof CTEllipse)) {
             intersectionType = IntersectionType.CIRCLE_CONIC;
             JMathAnimScene.logger.error("Don't know still how to compute intersection of 2 ellipses");
@@ -103,21 +101,16 @@ public class CTIntersectionPoint extends CTPoint {
     }
 
     @Override
-    public Point getMathObject() {
-        return intersectionPoint.getMathObject();
-    }
-
-    @Override
     public void rebuildShape() {
         double interX = Double.NaN;
         double interY = Double.NaN;//Default result: no point at all
         if (intersectionType == null) {
-            intersectionPoint.getMathObject().v.copyFrom(interX, interY);
+            getMathObject().v.copyFrom(interX, interY);
             return;
         }
         //TODO: Implement intersection algorithms for:
         //Circle
-        intersectionPoint.getMathObject().copyFrom(Point.at(0, .5));//Debug values to show on screen
+        getMathObject().copyFrom(Point.at(0, .5));//Debug values to show on screen
         double x1, x2, x3, x4, y1, y2, y3, y4;
         switch (intersectionType) {
             case LINEAR:
@@ -146,7 +139,7 @@ public class CTIntersectionPoint extends CTPoint {
                 }
 //        double interX2 = x3 + sols[1] * (x4 - x3);
 //        double interY2 = y3 + sols[1] * (y4 - y3);
-                intersectionPoint.getMathObject().v.copyFrom(interX, interY);
+                getMathObject().v.copyFrom(interX, interY);
                 break;
             case LINE_CIRCLE:
                 //A line/ray/segment with a circle
@@ -162,7 +155,7 @@ public class CTIntersectionPoint extends CTPoint {
                 double D = A.v.x * B.v.y - B.v.x * A.v.y;
                 final double discr = Math.sqrt(radius * radius * drSq - D * D);
                 if (discr < 0) {
-                    intersectionPoint.getMathObject().v.copyFrom(Double.NaN, Double.NaN);
+                    getMathObject().v.copyFrom(Double.NaN, Double.NaN);
                 } else {
                     //Coordinates of 2 intersection points
                     x1 = (D * dy - (dy < 0 ? -1 : 1) * dx * discr) / drSq;
@@ -183,8 +176,8 @@ public class CTIntersectionPoint extends CTPoint {
                         interX = Double.NaN;
                         interY = Double.NaN;
                     }
-                    intersectionPoint.getMathObject().v.copyFrom(interX, interY);
-                    intersectionPoint.getMathObject().shift(center);
+                    getMathObject().v.copyFrom(interX, interY);
+                    getMathObject().shift(center);
                 }
                 break;
             case CIRCLE_CIRCLE:
@@ -199,12 +192,12 @@ public class CTIntersectionPoint extends CTPoint {
 
 //                Point inter1 = Point.at(interX, interY).drawColor("blue");//First point in geogebra
 //                Point inter2 = Point.at(interX, -interY).drawColor("red");//Second
-                intersectionPoint.getMathObject().v.copyFrom(interX, (solNumber == 1 ? 1 : -1) * interY);
-                intersectionPoint.getMathObject().rotate(Point.origin(), vecCenterCircles.getAngle());
-                intersectionPoint.getMathObject().shift(ctcircle1.getCircleCenter().v);
+                getMathObject().v.copyFrom(interX, (solNumber == 1 ? 1 : -1) * interY);
+                getMathObject().rotate(Point.origin(), vecCenterCircles.getAngle());
+                getMathObject().shift(ctcircle1.getCircleCenter().v);
                 break;
             case CIRCLE_CONIC:
-                intersectionPoint.getMathObject().v.copyFrom(Double.NaN, Double.NaN);
+                getMathObject().v.copyFrom(Double.NaN, Double.NaN);
         }
     }
 
@@ -234,9 +227,8 @@ public class CTIntersectionPoint extends CTPoint {
     }
 
     @Override
-    public void draw(JMathAnimScene scene, Renderer r
-    ) {
-        intersectionPoint.draw(scene, r);
+    public void draw(JMathAnimScene scene, Renderer r) {
+        getMathObject().draw(scene, r);
     }
 
     public double[] BezierIntersect(double x1, double y1, double x2, double y2, double x3, double y3, double x4, double y4) {
