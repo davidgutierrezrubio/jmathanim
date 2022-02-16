@@ -74,9 +74,9 @@ public class AnimationGroup extends AnimationWithEffects {
         this.animations = new ArrayList<>();
         this.animations.addAll(Arrays.asList(animations));
 
-        this.useObjectState = null;
-        this.shouldAddObjectsToScene = null;
-        this.shouldInterpolateStyles = null;
+        this.useObjectState = false;
+        this.shouldAddObjectsToScene = false;
+        this.shouldInterpolateStyles = false;
     }
 
     /**

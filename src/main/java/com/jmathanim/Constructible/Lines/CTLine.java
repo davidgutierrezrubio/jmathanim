@@ -17,9 +17,10 @@
  */
 package com.jmathanim.Constructible.Lines;
 
+import com.jmathanim.Constructible.Constructible;
 import com.jmathanim.Constructible.Points.CTPoint;
-import com.jmathanim.Constructible.FixedConstructible;
 import com.jmathanim.Renderers.Renderer;
+import com.jmathanim.Utils.AffineJTransform;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.Line;
@@ -30,7 +31,7 @@ import com.jmathanim.mathobjects.Point;
  *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
-public class CTLine extends FixedConstructible implements HasDirection {
+public class CTLine extends Constructible implements HasDirection {
 
     private enum LineType {
         PointPoint, PointVector
@@ -113,4 +114,12 @@ public class CTLine extends FixedConstructible implements HasDirection {
     public Point getP2() {
         return lineToDraw.getP2();
     }
+
+    @Override
+    public <T extends MathObject> T applyAffineTransform(AffineJTransform transform) {
+        A.applyAffineTransform(transform);
+        B.applyAffineTransform(transform);
+        return (T) this;
+    }
+
 }

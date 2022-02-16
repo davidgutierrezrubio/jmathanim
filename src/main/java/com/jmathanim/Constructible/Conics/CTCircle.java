@@ -140,12 +140,20 @@ public class CTCircle extends FixedConstructible {
     @Override
     public void copyStateFrom(MathObject obj) {
         CTCircle c = (CTCircle) obj;
-        this.circleCenter = c.circleCenter;
-        this.A.copyStateFrom(c.A);
-        this.B.copyStateFrom(c.B);
-        this.C.copyStateFrom(c.C);
-        this.circleCenter.copyStateFrom(c.circleCenter);
-        this.radius.copyStateFrom(c.radius);
+        switch (circleType) {
+            case CENTER_POINT:
+                this.circleCenter = c.circleCenter;
+                this.A.copyStateFrom(c.A);
+                break;
+            case THREE_POINTS:
+                this.A.copyStateFrom(c.A);
+                this.B.copyStateFrom(c.B);
+                this.C.copyStateFrom(c.C);
+                break;
+            case CENTER_RADIUS:
+                this.circleCenter = c.circleCenter;
+                this.radius.copyStateFrom(c.radius);
+        }
         this.circleType = c.circleType;
         rebuildShape();
     }

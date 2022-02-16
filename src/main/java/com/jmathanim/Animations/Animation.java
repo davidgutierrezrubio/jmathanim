@@ -97,6 +97,8 @@ public abstract class Animation {
     protected Boolean shouldAddObjectsToScene;
     protected Boolean shouldInterpolateStyles;
     private final HashMap<MathObject, MathObject> backups;
+    protected final ArrayList<MathObject> removeThisAtTheEnd;
+    protected final ArrayList<MathObject> addThisAtTheEnd;
 
     /**
      * Creates an empty animation, with specified run time.This constructor
@@ -113,6 +115,8 @@ public abstract class Animation {
         this.shouldInterpolateStyles = true;
         lambda = UsefulLambdas.smooth(.9d);
         backups = new HashMap<>();
+        addThisAtTheEnd = new ArrayList<>();
+        removeThisAtTheEnd = new ArrayList<>();
     }
 
     /**
@@ -224,7 +228,7 @@ public abstract class Animation {
         }
         t += dt;
         //If t is closer to 1 than dt, make it 1
-        if ((t<1)&&(1 - t < dt)) {
+        if ((t < 1) && (1 - t < dt)) {
             t = 1;
         }
         return resul;
@@ -256,6 +260,8 @@ public abstract class Animation {
      */
     public void finishAnimation() {
         status = Status.FINISHED;
+        removeObjectsFromScene(removeThisAtTheEnd);
+        addObjectsToscene(addThisAtTheEnd);
     }
 
     /**

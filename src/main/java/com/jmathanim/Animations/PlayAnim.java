@@ -31,6 +31,8 @@ import com.jmathanim.mathobjects.Point;
 import com.jmathanim.mathobjects.SVGMathObject;
 import com.jmathanim.mathobjects.Shape;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.stream.Stream;
 
 /**
  * Several static methods to easily perform most common animations. This class
@@ -706,8 +708,23 @@ public class PlayAnim {
         scene.playAnimation(ContourHighlight.make(defaultRunTimeHighlight, objs));
     }
 
+      /**
+     * Plays an animation that hightlights the contour of a Shape object, with
+     * the duration of defaultRunTimeHighlight variable (default 1s)
+     *
+     * @param objs MathObjects to animate (varargs)
+     */
+    public void contourHighlightB(double runTime, double gap,MathObject... objs) {
+        scene.playAnimation(ContourHighlight.makeBBox(runTime, gap,objs));
+    }
+    
+    
     public void twistAndScale(MathObject... objs) {
-        scene.playAnimation(Commands.twistAndScale(defaultRunTimefadeIn, objs));
+        scene.playAnimation(Commands.twistAndScale(defaultRunTimeHighlight, objs));
+    }
+    
+      public void twistAndScale(double runTime,MathObject... objs) {
+        scene.playAnimation(Commands.twistAndScale(runTime, objs));
     }
 
 }

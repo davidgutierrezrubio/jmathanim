@@ -19,6 +19,7 @@ package com.jmathanim.Animations;
 
 import com.jmathanim.Cameras.Camera;
 import com.jmathanim.Cameras.Camera3D;
+import com.jmathanim.Constructible.Constructible;
 import com.jmathanim.Styling.JMColor;
 import com.jmathanim.Styling.MODrawProperties;
 import com.jmathanim.Styling.PaintStyle;
@@ -37,6 +38,8 @@ import com.jmathanim.mathobjects.MathObjectGroup;
 import com.jmathanim.mathobjects.Point;
 import com.jmathanim.mathobjects.Shape;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import javafx.scene.shape.StrokeLineCap;
 
@@ -1056,15 +1059,27 @@ public class Commands {
      */
     public static ShiftAnimation moveIn(double runtime, Anchor.Type enterAnchor, MathObject... mathObjects) {
 
-        // Compute appropiate shift vectors
         Rect r = JMathAnimConfig.getConfig().getCamera().getMathView();
 
-        ShiftAnimation resul = new ShiftAnimation(runtime, mathObjects) {
+        ArrayList<MathObject> toAnimateArrayList = new ArrayList<>();
+        ArrayList<MathObject> toRemove = new ArrayList<>();
+        for (MathObject obj : mathObjects) {
+            if (obj instanceof Constructible) {
+                toAnimateArrayList.add(((Constructible) obj).getMathObject());
+                toRemove.add(((Constructible) obj).getMathObject());
+            } else {
+                toAnimateArrayList.add(obj);
+            }
+        }
+        final MathObject[] toAnimateArray = toAnimateArrayList.toArray(MathObject[]::new);
+        ShiftAnimation resul = new ShiftAnimation(runtime, toAnimateArray) {
             @Override
             public void initialize(JMathAnimScene scene) {
                 super.initialize(scene);
+                addThisAtTheEnd.addAll(Arrays.asList(mathObjects));
+                removeThisAtTheEnd.addAll(toRemove);
                 JMathAnimScene.logger.debug("Initialized moveIn animation");
-                for (MathObject obj : mathObjects) {
+                for (MathObject obj : toAnimateArray) {
                     final Anchor.Type reverseAnchor = Anchor.reverseAnchorPoint(enterAnchor);
                     Point p = Anchor.getAnchorPoint(obj, reverseAnchor);
                     Point q = Anchor.getAnchorPoint(Shape.rectangle(r), enterAnchor);
@@ -1082,7 +1097,7 @@ public class Commands {
                     obj.shift(p.to(q));
                     this.setShiftVector(obj, q.to(p));
                 }
-                saveStates(mathObjects);
+                saveStates(toAnimateArray);
 
             }
 

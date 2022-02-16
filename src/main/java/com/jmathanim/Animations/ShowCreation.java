@@ -60,8 +60,7 @@ public class ShowCreation extends Animation {
     CanonicalJMPath canonPath;
     private Animation creationStrategy;
     private ShowCreationStrategy strategyType = ShowCreationStrategy.NONE;
-    private final ArrayList<MathObject> removeThisAtTheEnd;
-    private final ArrayList<MathObject> addThisAtTheEnd;
+
 
     /**
      * Static constructor. Creates an animation that shows the creation of the
@@ -84,14 +83,14 @@ public class ShowCreation extends Animation {
     public ShowCreation(double runtime, MathObject mobj) {
         super(runtime);
         setDebugName("showCreation");
-        this.mobj = mobj;
-        addThisAtTheEnd = new ArrayList<>();
-        removeThisAtTheEnd = new ArrayList<>();
 
         // If the object is a constructible one, get its visible object to animate
         if (mobj instanceof Constructible) {
             this.mobj = ((Constructible) mobj).getMathObject();
             removeThisAtTheEnd.add(this.mobj);
+            addThisAtTheEnd.add(mobj);
+        }else{
+            this.mobj = mobj;
             addThisAtTheEnd.add(mobj);
         }
 
@@ -143,12 +142,11 @@ public class ShowCreation extends Animation {
 
     @Override
     public void finishAnimation() {
-        super.finishAnimation();
         if (creationStrategy != null) {
             creationStrategy.finishAnimation();
         }
-        removeObjectsFromScene(removeThisAtTheEnd);
-        addObjectsToscene(addThisAtTheEnd);
+          super.finishAnimation();
+       
     }
 
     /**
@@ -236,14 +234,12 @@ public class ShowCreation extends Animation {
             case LINE_CREATION:
                 final Shape lineToCreate = ((Line) mobj).toSegment(scene.getCamera());
                 removeThisAtTheEnd.add(lineToCreate);
-                addThisAtTheEnd.add(mobj);
                 creationStrategy = new SimpleShapeCreationAnimation(this.runTime, lineToCreate);
                 JMathAnimScene.logger.debug("ShowCreation method: LineCreationStrategy");
                 break;
             case RAY_CREATION:
                 final Shape rayToCreate = ((Ray) mobj).toSegment(scene.getCamera());
                 removeThisAtTheEnd.add(rayToCreate);
-                addThisAtTheEnd.add(mobj);
                 creationStrategy = new SimpleShapeCreationAnimation(this.runTime, rayToCreate);
                 JMathAnimScene.logger.debug("ShowCreation method: RayCreationStrategy");
                 break;

@@ -49,6 +49,9 @@ public class CTIntersectionPoint extends CTPoint {
     private final Constructible c1, c2;
     private final int solNumber;
 
+    public static CTIntersectionPoint make(Line l1, Line l2) {
+        return make(CTLine.make(l1), CTLine.make(l2), 1);
+    }
     public static CTIntersectionPoint make(Constructible c1, Constructible c2) {
         return make(c1, c2, 1);
     }
@@ -221,7 +224,7 @@ public class CTIntersectionPoint extends CTPoint {
 
     @Override
     public CTIntersectionPoint copy() {
-        CTIntersectionPoint copy = make(c1.copy(), c2.copy());
+        CTIntersectionPoint copy = make((Constructible)c1.copy(), (Constructible)c2.copy());
         copy.getMp().copyFrom(this.getMp());
         return copy;
     }
