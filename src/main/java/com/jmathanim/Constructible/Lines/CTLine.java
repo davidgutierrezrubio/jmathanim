@@ -42,10 +42,25 @@ public class CTLine extends Constructible implements HasDirection {
     CTPoint B;
     HasDirection dir;
 
+    /**
+     * Creates a Constructible line from a Line
+     *
+     * @param line Line object
+     * @return The created object
+     */
     public static CTLine make(Line line) {
         return make(line.getP1(), line.getP2());
     }
 
+    /**
+     * Creates a Constructible line from a point and any object that implements
+     * the HasDirection interface
+     *
+     * @param A A point of the line
+     * @param dir A MathObject with a direction (Line, Ray, Arrow2D,
+     * CTSegment,CTLine...)
+     * @return The created object
+     */
     public static CTLine make(CTPoint A, HasDirection dir) {
         CTLine resul = new CTLine(A, A.add(dir.getDirection()));
         resul.dir = dir;
@@ -54,10 +69,24 @@ public class CTLine extends Constructible implements HasDirection {
         return resul;
     }
 
+    /**
+     * Creates a Constructible line given by 2 points
+     *
+     * @param A First point
+     * @param B Second point
+     * @return The created object
+     */
     public static CTLine make(Point A, Point B) {
         return CTLine.make(CTPoint.make(A), CTPoint.make(B));
     }
 
+    /**
+     * Creates a Constructible line given by 2 points
+     *
+     * @param A First point
+     * @param B Second point
+     * @return The created object
+     */
     public static CTLine make(CTPoint A, CTPoint B) {
         CTLine resul = new CTLine(A, B);
         resul.lineType = LineType.PointPoint;

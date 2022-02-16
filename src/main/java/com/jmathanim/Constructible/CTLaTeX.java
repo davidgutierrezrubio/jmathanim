@@ -33,6 +33,15 @@ public class CTLaTeX extends Constructible {
     private final LaTeXMathObject tex;
     private final Anchor.Type anchorType;
 
+    /**
+     * Creates a LaTeX text anchored to a given point
+     *
+     * @param text Text to show, in math LaTeX format
+     * @param anchor Anchor point
+     * @param anchorType Anchor type. For example a LEFT anchor will put the
+     * text so that its LEFT side is aligned with anchor point.
+     * @return The created object
+     */
     public static CTLaTeX make(String text, CTPoint anchor, Anchor.Type anchorType) {
         CTLaTeX resul = new CTLaTeX(text, anchor, anchorType);
         return resul;

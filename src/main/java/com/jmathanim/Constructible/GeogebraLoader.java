@@ -49,7 +49,7 @@ import org.xml.sax.SAXException;
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
 public class GeogebraLoader implements Iterable<Constructible>, hasCameraParameters {
-    
+
     private final ResourceLoader rl;
     private final URL url;
     private ZipFile zipFile;
@@ -59,7 +59,7 @@ public class GeogebraLoader implements Iterable<Constructible>, hasCameraParamet
     private double xmax;
     private double xmin;
     private double yCenter;
-    
+
     private GeogebraLoader(String fileName) {
         rl = new ResourceLoader();
         url = rl.getResource(fileName, "geogebra");
@@ -67,13 +67,21 @@ public class GeogebraLoader implements Iterable<Constructible>, hasCameraParamet
         cp.registerGeogebraElement("xAxis", CTLine.make(Line.XAxis()));
         cp.registerGeogebraElement("yAxis", CTLine.make(Line.YAxis()));
     }
-    
+
+    /**
+     * Creates a new GeogebraLoader object and parses contents of given Geogebra
+     * file
+     *
+     * @param fileName Filename. Special characters of resource loading are
+     * used. By default, the work folder is resources/geogebra.
+     * @return The created object
+     */
     public static GeogebraLoader parse(String fileName) {
         GeogebraLoader resul = new GeogebraLoader(fileName);
         resul.parseFile(fileName);
         return resul;
     }
-    
+
     private void parseFile(String fileName) {
         try {
             JMathAnimScene.logger.info("Loading Geogebra file {}", fileName);
@@ -84,9 +92,9 @@ public class GeogebraLoader implements Iterable<Constructible>, hasCameraParamet
         } catch (IOException ex) {
             Logger.getLogger(GeogebraLoader.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
+
     }
-    
+
     private void parseGeogebraContents(InputStream inputStream) {
         DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
         DocumentBuilder dBuilder;
@@ -98,7 +106,7 @@ public class GeogebraLoader implements Iterable<Constructible>, hasCameraParamet
         } catch (ParserConfigurationException | SAXException | IOException ex) {
             Logger.getLogger(GeogebraLoader.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
+
         Element root = doc.getDocumentElement();
         if (!"geogebra".equals(root.getNodeName())) {
             try {
@@ -110,10 +118,10 @@ public class GeogebraLoader implements Iterable<Constructible>, hasCameraParamet
 
         // Iterate over all tags. 
         NodeList nodes = root.getChildNodes();
-        
+
         for (int i = 0; i < nodes.getLength(); i++) {
             Node node = nodes.item(i);
-            
+
             if (node instanceof Element) {
                 Element el = (Element) node;
                 switch (el.getNodeName()) {
@@ -126,7 +134,7 @@ public class GeogebraLoader implements Iterable<Constructible>, hasCameraParamet
                 }
             }
         }
-        
+
     }
 
     /**
@@ -137,10 +145,10 @@ public class GeogebraLoader implements Iterable<Constructible>, hasCameraParamet
      */
     private void parseConstructionChildren(Element constructionNode) {
         NodeList nodes = constructionNode.getChildNodes();
-        
+
         for (int i = 0; i < nodes.getLength(); i++) {
             Node node = nodes.item(i);
-            
+
             if (node instanceof Element) {
                 Element el = (Element) node;
                 switch (el.getNodeName()) {
@@ -157,7 +165,7 @@ public class GeogebraLoader implements Iterable<Constructible>, hasCameraParamet
             }
         }
     }
-    
+
     private void parseExpression(Element el) {
         String expression = el.getAttribute("exp");
         String label = el.getAttribute("label");
@@ -180,8 +188,8 @@ public class GeogebraLoader implements Iterable<Constructible>, hasCameraParamet
                 cp.processLaTeXObjectElement(el);
                 break;
             case "image":
-                cp.processImageElement(el,zipFile);
-                
+                cp.processImageElement(el, zipFile);
+
         }
 
         // If element already belongs to the hashMap, process styling options
@@ -196,7 +204,7 @@ public class GeogebraLoader implements Iterable<Constructible>, hasCameraParamet
         } else {
             JMathAnimScene.logger.warn("Element " + label + " in Geogebra file without Command tag");
         }
-        
+
     }
 
     /**
@@ -241,7 +249,7 @@ public class GeogebraLoader implements Iterable<Constructible>, hasCameraParamet
             case "Point": //A Point on object
                 cp.processPointOnObject(el);
                 break;
-            case "Ellipse":                
+            case "Ellipse":
                 cp.processEllipse(el);
                 break;
             case "Mirror":
@@ -250,7 +258,7 @@ public class GeogebraLoader implements Iterable<Constructible>, hasCameraParamet
             case "Translate":
                 cp.processTranslate(el);
                 break;
-                case "Rotate":
+            case "Rotate":
                 cp.processRotate(el);
                 break;
             //TODO: A lot of commands to implement still
@@ -258,31 +266,48 @@ public class GeogebraLoader implements Iterable<Constructible>, hasCameraParamet
                 JMathAnimScene.logger.warn("Geogebra element " + name + " not implemented yet, sorry.");
         }
     }
-    
+
+    /**
+     * Get Constructible object with given name
+     *
+     * @param key Name of object. Should be the same as in the Geogebra file
+     * @return The Constructible object imported
+     */
     public Constructible get(String key) {
         return cp.get(key);
     }
-    
+
+    /**
+     * Get all Constructible objects imported
+     *
+     * @return An array with all objects imported
+     */
     public Constructible[] getObjects() {
         return cp.geogebraElements.values().toArray(Constructible[]::new);
     }
-    
+
+    /**
+     * Get the dictionary with imported Geogebra elements. This dictionary has
+     * the name of objects as keys and the objects as values.
+     *
+     * @return The dictionary
+     */
     public HashMap<String, Constructible> getDict() {
         return cp.geogebraElements;
     }
-    
+
     @Override
     public Iterator<Constructible> iterator() {
         return cp.geogebraElements.values().iterator();
     }
-    
+
     private void parseEuclidianView(Element euclidianViewNode) {
         NodeList nodes = euclidianViewNode.getChildNodes();
         double width = 4, height = 2.25;
         double xZero = 0, yZero = 0, xScale = 1, yScale = 1;
         for (int i = 0; i < nodes.getLength(); i++) {
             Node node = nodes.item(i);
-            
+
             if (node instanceof Element) {
                 Element el = (Element) node;
                 switch (el.getNodeName()) {
@@ -301,27 +326,31 @@ public class GeogebraLoader implements Iterable<Constructible>, hasCameraParamet
         }
         this.xmin = -xZero / xScale;
         this.xmax = (width - xZero) / xScale;
-        
+
         double ymin = (yZero - height) / yScale;
         double ymax = yZero / yScale;
         this.yCenter = .5 * (ymin + ymax);
     }
-    
+
     @Override
     public double getMinX() {
         return xmin;
     }
-    
+
     @Override
     public double getMaxX() {
         return xmax;
     }
-    
+
     @Override
     public double getYCenter() {
         return yCenter;
     }
-    
+
+    /**
+     * Return all internal MathObjects from the imported Constructibles
+     * @return An array of MathObjects
+     */
     public MathObject[] getMathObjects() {
         return cp.geogebraElements.values().stream().map(t -> t.getMathObject()).toArray(MathObject[]::new);
     }

@@ -19,18 +19,14 @@ package com.jmathanim.Constructible;
 
 import com.jmathanim.Styling.Stylable;
 import com.jmathanim.Utils.AffineJTransform;
-import com.jmathanim.Utils.Anchor;
-import com.jmathanim.Utils.Boxable;
 import com.jmathanim.Utils.Rect;
-import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.MathObject;
-import com.jmathanim.mathobjects.Point;
 
 /**
  * This class representas a constructible object, derived from another ones. For
  * example a circle that pass for 3 points is a constructible object. It cannot
- * be transformed nor animated by itself, only chaning the objects from which
+ * be transformed nor animated by itself, only changing the objects from which
  * depend
  *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
@@ -42,10 +38,11 @@ public abstract class Constructible extends MathObject {
         getMathObject().applyAffineTransform(transform);
         return (T) this;
     }
+
     /**
-     * Returns a proper Mathobject to work with animations
+     * Returns the computed Mathobject that will be showed on screen
      *
-     * @return
+     * @return The MathObject
      */
     public abstract MathObject getMathObject();
 
@@ -66,8 +63,9 @@ public abstract class Constructible extends MathObject {
         rebuildShape();
         return getMathObject().getBoundingBox();
     }
-      @Override
+
+    @Override
     public void copyStateFrom(MathObject obj) {
-        this.getMathObject().copyStateFrom(((Constructible)obj).getMathObject());
+        this.getMathObject().copyStateFrom(((Constructible) obj).getMathObject());
     }
 }

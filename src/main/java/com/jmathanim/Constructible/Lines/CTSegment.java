@@ -18,25 +18,39 @@
 package com.jmathanim.Constructible.Lines;
 
 import com.jmathanim.Constructible.Points.CTPoint;
-import com.jmathanim.Constructible.FixedConstructible;
 import com.jmathanim.Renderers.Renderer;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
-import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.Point;
 import com.jmathanim.mathobjects.Shape;
 
 /**
- * A finite segment,given by 2 points
+ * A straight segment,given by 2 points
  *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
 public class CTSegment extends CTLine {
 
     private final Shape segmentToDraw;
-  public static CTSegment make(Point A, Point B) {
-      return CTSegment.make(CTPoint.make(A), CTPoint.make(B));
-  }
+
+    /**
+     * Creates a Constructible segment between 2 points
+     *
+     * @param A First point
+     * @param B Second point
+     * @return The created object
+     */
+    public static CTSegment make(Point A, Point B) {
+        return CTSegment.make(CTPoint.make(A), CTPoint.make(B));
+    }
+
+    /**
+     * Creates a Constructible segment between 2 points
+     *
+     * @param A First point
+     * @param B Second point
+     * @return The created object
+     */
     public static CTSegment make(CTPoint A, CTPoint B) {
         CTSegment resul = new CTSegment(A, B);
         resul.rebuildShape();

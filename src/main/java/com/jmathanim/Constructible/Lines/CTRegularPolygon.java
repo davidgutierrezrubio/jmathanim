@@ -34,17 +34,34 @@ import java.util.ArrayList;
  */
 public class CTRegularPolygon extends Constructible {
 
-    private int nSides;
+    private final int nSides;
     private final CTPoint B;
     private final CTPoint A;
-    private Shape polygon,origPolygon;
+    private final Shape polygon;
+    private final Shape origPolygon;
 
-    public static CTRegularPolygon make(ArrayList<CTPoint> generatedPoints) {
+    /**
+     * Creates a new regular polygon from an ArrayList of CTPoints. All but the
+     * first 2 will be updated accordingly. Mostly used for Geogebra import.
+     *
+     * @param generatedPoints ArrayList of generated CTPoints.
+     * @return The generated polygon
+     */
+    public static CTRegularPolygon makeFromPointList(ArrayList<CTPoint> generatedPoints) {
         CTRegularPolygon resul = new CTRegularPolygon(generatedPoints);
         resul.rebuildShape();
         return resul;
     }
 
+    /**
+     * Creates a constructible regular polygon with a side given by 2 points and
+     * a number of side
+     *
+     * @param A First point of side
+     * @param B Second point of side
+     * @param nSides Number of sides
+     * @return The created object
+     */
     public static CTRegularPolygon make(CTPoint A, CTPoint B, int nSides) {
         ArrayList<CTPoint> vertices = new ArrayList<>();
         vertices.add(A);
@@ -52,19 +69,16 @@ public class CTRegularPolygon extends Constructible {
         for (int i = 0; i < nSides - 2; i++) {
             vertices.add(CTPoint.make(new Point()));
         }
-        return make(vertices);
+        return makeFromPointList(vertices);
     }
-    private final ArrayList<CTPoint> generatedPoints;
-
     private CTRegularPolygon(ArrayList<CTPoint> generatedPoints) {
         super();
-        this.generatedPoints = generatedPoints;
         this.nSides = generatedPoints.size();
         this.A = generatedPoints.get(0);
         this.B = generatedPoints.get(1);
         Point[] points = generatedPoints.stream().map(t -> (Point) t.getMathObject()).toArray(Point[]::new);
         polygon = Shape.polygon(points);
-        origPolygon=Shape.regularPolygon(nSides);//Base polygon q
+        origPolygon = Shape.regularPolygon(nSides);//Base polygon q
     }
 
     @Override
@@ -74,11 +88,11 @@ public class CTRegularPolygon extends Constructible {
 
     @Override
     public void rebuildShape() {
-                AffineJTransform tr=AffineJTransform.createDirect2DIsomorphic(origPolygon.get(0).p, origPolygon.get(1).p, A.getMathObject(), B.getMathObject(), 1);
+        AffineJTransform tr = AffineJTransform.createDirect2DIsomorphic(origPolygon.get(0).p, origPolygon.get(1).p, A.getMathObject(), B.getMathObject(), 1);
 
         for (int k = 2; k < nSides; k++) {
-            polygon.get(k).p.copyFrom(origPolygon.get(k).p);
-            tr.applyTransform(polygon.get(k).p);
+            polygon.get(k).copyFrom(origPolygon.get(k));
+            tr.applyTransform(polygon.get(k));
         }
     }
 

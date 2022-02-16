@@ -31,23 +31,53 @@ import com.jmathanim.mathobjects.Point;
  */
 public class CTLineOrthogonal extends CTLine {
 
+    /**
+     * A CTLine that pass through A and is perpendicular to the segment AB
+     *
+     * @param A First point
+     * @param B Second point
+     * @return The created object
+     */
     public static CTLineOrthogonal make(Point A, Point B) {
         return make(CTPoint.make(A), CTPoint.make(B));
     }
 
+    /**
+     * A CTLine that pass through A and is perpendicular to the segment AB
+     *
+     * @param A First point
+     * @param B Second point
+     * @return The created object
+     */
     public static CTLineOrthogonal make(CTPoint A, CTPoint B) {
         return make(A, CTSegment.make(A, B));
     }
 
+    /**
+     * A CTLine that pass through A and is perpendicular to a object with
+     * direction
+     *
+     * @param A Point of line
+     * @param dir An object that implements the HasDirection interface
+     * @return The created object
+     */
     public static CTLineOrthogonal make(CTPoint A, HasDirection dir) {
         CTLineOrthogonal resul = new CTLineOrthogonal(A, dir);
         resul.rebuildShape();
         return resul;
     }
 
+    /**
+     * A CTLine that pass through A and is perpendicular to a object with
+     * direction
+     *
+     * @param A Point of line
+     * @param dir An object that implements the HasDirection interface
+     * @return The created object
+     */
     private CTLineOrthogonal(CTPoint A, HasDirection dir) {
-        super(A, CTPoint.make(Point.at(0,0)));
-        this.dir=dir;
+        super(A, CTPoint.make(Point.at(0, 0)));
+        this.dir = dir;
     }
 
     @Override

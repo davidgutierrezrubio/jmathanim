@@ -21,16 +21,18 @@ import com.jmathanim.Utils.AffineJTransform;
 import com.jmathanim.mathobjects.MathObject;
 
 /**
+ * A Constructible object that cannot be transformed
  *
- * @author David
+ * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
 public abstract class FixedConstructible extends Constructible {
 
     @Override
     public FixedConstructible applyAffineTransform(AffineJTransform transform) {
-        return this;
+        return this; //Do nothing
     }
-     @Override
+
+    @Override
     public void copyStateFrom(MathObject obj) {
         //This object has no state, only its drawing attributes
         this.getMp().copyFrom(obj.getMp());

@@ -485,7 +485,7 @@ public class GeogebraCommandParser {
             JMathAnimScene.logger.debug("Generated segment {}", outputs[k]);
         }
 
-        registerGeogebraElement(label, CTRegularPolygon.make(vertices));
+        registerGeogebraElement(label, CTRegularPolygon.makeFromPointList(vertices));
 
         JMathAnimScene.logger.debug("Imported regular polygon " + label);
     }

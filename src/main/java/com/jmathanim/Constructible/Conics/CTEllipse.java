@@ -38,11 +38,29 @@ public class CTEllipse extends FixedConstructible {
     private final Shape originalShape;
     private final Shape ellipseToDraw;
 
+    /**
+     * Creates a constructible ellipse with given focus and a point of the
+     * ellipse
+     *
+     * @param focus1 First focus
+     * @param focus2 Second focus
+     * @param A A point from the ellipse
+     * @return The created constructible ellipse
+     */
     public static CTEllipse make(CTPoint focus1, CTPoint focus2, CTPoint A) {
         CTEllipse resul = new CTEllipse(focus1, focus2, A);
         return resul;
     }
 
+    /**
+     * Creates a constructible ellipse with given focus and a point of the
+     * ellipse
+     *
+     * @param focus1 First focus
+     * @param focus2 Second focus
+     * @param A A point from the ellipse
+     * @return The created constructible ellipse
+     */
     private CTEllipse(CTPoint focus1, CTPoint focus2, CTPoint A) {
         this.focus1 = focus1;
         this.focus2 = focus2;

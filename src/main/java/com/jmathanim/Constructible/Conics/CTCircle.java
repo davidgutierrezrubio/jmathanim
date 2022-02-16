@@ -53,7 +53,7 @@ public class CTCircle extends FixedConstructible {
     private final Shape circleToDraw;
 
     /**
-     * Creates a circle with given center that pass through P
+     * Creates a constructible circle with given center that pass through P
      *
      * @param center Center of circle
      * @param P Point of circle
@@ -64,7 +64,7 @@ public class CTCircle extends FixedConstructible {
     }
 
     /**
-     * Creates a circle with given center that pass through P
+     * Creates a constructible circle with given center that pass through P
      *
      * @param center Center of circle
      * @param P Point of circle
@@ -79,14 +79,35 @@ public class CTCircle extends FixedConstructible {
         return resul;
     }
 
+    /**
+     * Creates a constructible circle with given center and radius
+     *
+     * @param center Center of circle
+     * @param radius Radius of the circle
+     * @return Created constructible circle
+     */
     public static CTCircle make(Point center, double radius) {
         return make(CTPoint.make(center), Scalar.make(radius));
     }
 
+    /**
+     * Creates a constructible circle with given center and radius
+     *
+     * @param center Center of circle
+     * @param radius Radius of the circle
+     * @return Created constructible circle
+     */
     public static CTCircle make(CTPoint center, double radius) {
         return make(center, Scalar.make(radius));
     }
 
+    /**
+     * Creates a constructible circle with given center and radius
+     *
+     * @param center Center of circle
+     * @param radius Radius of the circle
+     * @return Created constructible circle
+     */
     public static CTCircle make(CTPoint center, Scalar radius) {
         CTCircle resul = new CTCircle();
         resul.circleType = CircleType.CENTER_RADIUS;
@@ -96,10 +117,26 @@ public class CTCircle extends FixedConstructible {
         return resul;
     }
 
+    /**
+     * Creates a constructible circle through 3 given points
+     *
+     * @param A First point of the circle
+     * @param B Second point of the circle
+     * @param C Third point of the circle
+     * @return Created constructible circle
+     */
     public static CTCircle make(Point A, Point B, Point C) {
         return make(CTPoint.make(A), CTPoint.make(B), CTPoint.make(C));
     }
 
+    /**
+     * Creates a constructible circle through 3 given points
+     *
+     * @param A First point of the circle
+     * @param B Second point of the circle
+     * @param C Third point of the circle
+     * @return Created constructible circle
+     */
     public static CTCircle make(CTPoint A, CTPoint B, CTPoint C) {
         CTCircle resul = new CTCircle();
         resul.circleType = CircleType.THREE_POINTS;
@@ -155,6 +192,7 @@ public class CTCircle extends FixedConstructible {
                 this.radius.copyStateFrom(c.radius);
         }
         this.circleType = c.circleType;
+        getMp().copyFrom(c.getMp());
         rebuildShape();
     }
 
