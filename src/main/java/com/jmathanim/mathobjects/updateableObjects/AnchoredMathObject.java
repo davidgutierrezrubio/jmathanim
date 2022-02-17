@@ -26,49 +26,59 @@ import com.jmathanim.mathobjects.MathObject;
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
 public class AnchoredMathObject implements Updateable {
-
-	private final MathObject mobj;
-	private final MathObject dstObject;
-	private Type dstType;
-	private Type origType;
-	private double gap;
-
-	public AnchoredMathObject(MathObject mobj, Type origType, MathObject dstObject, Type dstType) {
-		this(mobj, origType, dstObject, dstType, 0);
-	}
-
-	public AnchoredMathObject(MathObject mobj, Type origType, MathObject dstObject, Type dstType, double gap) {
-		this.mobj = mobj;
-		this.dstObject = dstObject;
-		this.origType = origType;
-		this.dstType = dstType;
-		this.gap = gap;
-	}
-
-	public double getGap() {
-		return gap;
-	}
-
-	public void setGap(double gap) {
-		this.gap = gap;
-	}
-
-	@Override
-	public int getUpdateLevel() {
-		return Math.max(this.mobj.getUpdateLevel(), dstObject.getUpdateLevel()) + 1;
-	}
-
-	@Override
-	public void update(JMathAnimScene scene) {
-		mobj.stackTo(origType, dstObject, dstType, gap);
-	}
-
-	public Type getAnchorType() {
-		return dstType;
-	}
-
-	public void setAnchorType(Type anchorType) {
-		this.dstType = anchorType;
-	}
-
+    
+    private final MathObject mobj;
+    private final MathObject dstObject;
+    private Type dstType;
+    private Type origType;
+    private double gap;
+    
+    public AnchoredMathObject(MathObject mobj, Type origType, MathObject dstObject, Type dstType) {
+        this(mobj, origType, dstObject, dstType, 0);
+    }
+    
+    public AnchoredMathObject(MathObject mobj, Type origType, MathObject dstObject, Type dstType, double gap) {
+        this.mobj = mobj;
+        this.dstObject = dstObject;
+        this.origType = origType;
+        this.dstType = dstType;
+        this.gap = gap;
+    }
+    
+    public double getGap() {
+        return gap;
+    }
+    
+    public void setGap(double gap) {
+        this.gap = gap;
+    }
+    
+    @Override
+    public int getUpdateLevel() {
+        return Math.max(this.mobj.getUpdateLevel(), dstObject.getUpdateLevel()) + 1;
+    }
+    
+    @Override
+    public void update(JMathAnimScene scene) {
+        mobj.stackTo(origType, dstObject, dstType, gap);
+    }
+    
+    public Type getAnchorType() {
+        return dstType;
+    }
+    
+    public void setAnchorType(Type anchorType) {
+        this.dstType = anchorType;
+    }
+    
+    @Override
+    public void registerUpdateableHook(JMathAnimScene scene) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+    
+    @Override
+    public void unregisterUpdateableHook(JMathAnimScene scene) {
+        scene.registerUpdateable(mobj, dstObject);
+    }
+    
 }

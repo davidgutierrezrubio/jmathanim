@@ -25,7 +25,7 @@ import com.jmathanim.mathobjects.Arrow2D;
 import com.jmathanim.mathobjects.Point;
 
 /**
- * A vector, which is draw as an Arrow2D MathObject
+ * A constructible vector, which is draw as an Arrow2D MathObject
  *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */

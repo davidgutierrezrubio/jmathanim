@@ -958,4 +958,12 @@ public abstract class MathObject implements Drawable, Updateable, Stateable, Box
 
     public void removedFromSceneHook(JMathAnimScene scene) {
     }
+
+    @Override
+    public void registerUpdateableHook(JMathAnimScene scene) {
+    }
+
+    @Override
+    public void unregisterUpdateableHook(JMathAnimScene scene) {
+    }
 }

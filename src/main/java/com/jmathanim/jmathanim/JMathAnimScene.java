@@ -241,8 +241,9 @@ public abstract class JMathAnimScene {
      */
     public synchronized final void registerUpdateable(Updateable... objs) {
         for (Updateable obj : objs) {
-            if (!objectsToBeUpdated.contains(obj)) {
+            if ((obj!=null)&&(!objectsToBeUpdated.contains(obj))) {
                 objectsToBeUpdated.add(obj);
+                obj.registerUpdateableHook(this);
             }
         }
     }

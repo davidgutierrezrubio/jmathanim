@@ -26,6 +26,7 @@ import com.jmathanim.Utils.AffineJTransform;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.Line;
 import com.jmathanim.mathobjects.Point;
+import com.jmathanim.mathobjects.updateableObjects.Updateable;
 
 /**
  * A Constructible object mirrored by a Line or Segment or Ray
@@ -105,5 +106,10 @@ public class CTMirrorPoint extends CTPoint {
                 getMathObject().scale(this.center.getMathObject(), -1, -1);
                 break;
         }
+    }
+
+    @Override
+    public void registerUpdateableHook(JMathAnimScene scene) {
+        scene.registerUpdateable(this.orig,this.axis,this.center);
     }
 }

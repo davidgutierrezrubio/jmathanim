@@ -17,11 +17,10 @@
  */
 package com.jmathanim.Constructible.Transforms;
 
-import com.jmathanim.Constructible.FixedConstructible;
 import com.jmathanim.Constructible.Lines.CTVector;
 import com.jmathanim.Constructible.Points.CTPoint;
 import com.jmathanim.Utils.Vec;
-import com.jmathanim.mathobjects.Arrow2D;
+import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.Point;
 
 /**
@@ -47,10 +46,16 @@ public class CTTranslatedPoint extends CTPoint {
         this.translationVector = translationVector;
         this.originalPoint = originalPoint;
     }
- @Override
+
+    @Override
     public void rebuildShape() {
         getMathObject().copyFrom(originalPoint.getMathObject());
         getMathObject().shift(translationVector.getDirection());
-        
+
+    }
+
+    @Override
+    public void registerUpdateableHook(JMathAnimScene scene) {
+        scene.registerUpdateable(this.translationVector, this.originalPoint);
     }
 }

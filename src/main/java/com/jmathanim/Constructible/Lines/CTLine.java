@@ -26,6 +26,7 @@ import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.Line;
 import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.Point;
+import com.jmathanim.mathobjects.updateableObjects.Updateable;
 
 /**
  *
@@ -33,10 +34,10 @@ import com.jmathanim.mathobjects.Point;
  */
 public class CTLine extends Constructible implements HasDirection {
 
-    private enum LineType {
+    protected enum LineType {
         PointPoint, PointVector
     }
-    private LineType lineType;
+    protected LineType lineType;
     protected Line lineToDraw;
     CTPoint A;
     CTPoint B;
@@ -150,5 +151,17 @@ public class CTLine extends Constructible implements HasDirection {
         B.applyAffineTransform(transform);
         return (T) this;
     }
-
+ @Override
+    public void registerUpdateableHook(JMathAnimScene scene) {
+        switch (lineType) {
+            case PointPoint:
+                scene.registerUpdateable(this.A, this.B);
+                break;
+            case PointVector:
+                scene.registerUpdateable(this.A);
+                if (this.dir instanceof Updateable) {
+                    scene.registerUpdateable((Updateable) this.dir);
+                }
+        }
+    }
 }

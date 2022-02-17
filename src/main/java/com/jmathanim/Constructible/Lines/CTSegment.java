@@ -23,6 +23,7 @@ import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.Point;
 import com.jmathanim.mathobjects.Shape;
+import com.jmathanim.mathobjects.updateableObjects.Updateable;
 
 /**
  * A straight segment,given by 2 points
@@ -97,6 +98,11 @@ public class CTSegment extends CTLine {
     @Override
     public void rebuildShape() {
         // Nothing to do here...
+    }
+
+    @Override
+    public void registerUpdateableHook(JMathAnimScene scene) {
+        scene.registerUpdateable(this.A, this.B);
     }
 
 }

@@ -18,6 +18,7 @@
 package com.jmathanim.Constructible.Transforms;
 
 import com.jmathanim.Constructible.Points.CTPoint;
+import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.Point;
 import com.jmathanim.mathobjects.Scalar;
 
@@ -27,11 +28,10 @@ import com.jmathanim.mathobjects.Scalar;
  */
 public class CTRotatedPoint extends CTPoint {
 
-      public static CTRotatedPoint make(Point pointToRotate, double angle, Point rotationCenter) {
-          return make(CTPoint.make(pointToRotate),Scalar.make(angle),CTPoint.make(rotationCenter));
-      }
-    
-    
+    public static CTRotatedPoint make(Point pointToRotate, double angle, Point rotationCenter) {
+        return make(CTPoint.make(pointToRotate), Scalar.make(angle), CTPoint.make(rotationCenter));
+    }
+
     public static CTRotatedPoint make(CTPoint pointToRotate, Scalar angle, CTPoint rotationCenter) {
         CTRotatedPoint resul = new CTRotatedPoint(pointToRotate, angle, rotationCenter);
         resul.rebuildShape();
@@ -46,10 +46,16 @@ public class CTRotatedPoint extends CTPoint {
         this.angle = angle;
         this.rotationCenter = rotationCenter;
     }
-     @Override
+
+    @Override
     public void rebuildShape() {
         getMathObject().copyFrom(pointToRotate.getMathObject());
         getMathObject().rotate(rotationCenter.getMathObject(), angle.value);
-        
+
+    }
+
+    @Override
+    public void registerUpdateableHook(JMathAnimScene scene) {
+        scene.registerUpdateable(this.pointToRotate, this.rotationCenter, this.angle);
     }
 }

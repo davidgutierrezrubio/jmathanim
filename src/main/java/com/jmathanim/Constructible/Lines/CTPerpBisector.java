@@ -24,12 +24,11 @@ import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.Point;
 
 /**
- *
+ * A perpendicular bisector of a segment (perpendicular line that pass through midpoint)
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
 public class CTPerpBisector extends CTLine {
 
-    private Point C1,C2;
     public static CTPerpBisector make(Point A, Point B) {
         return CTPerpBisector.make(CTPoint.make(A), CTPoint.make(B));
     }
@@ -42,6 +41,7 @@ public class CTPerpBisector extends CTLine {
 
     private CTPerpBisector(CTPoint A, CTPoint B) {
         super(CTPoint.make(Point.at(1,0)), CTPoint.make(Point.at(0,01)));
+        this.lineType=LineType.PointPoint;
         this.A=A;
         this.B=B;
     }

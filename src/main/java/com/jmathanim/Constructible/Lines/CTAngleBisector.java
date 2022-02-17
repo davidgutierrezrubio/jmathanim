@@ -23,6 +23,7 @@ import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.Line;
 import com.jmathanim.mathobjects.Point;
+import com.jmathanim.mathobjects.updateableObjects.Updateable;
 
 /**
  * A CTLine that is the angle bisector of 2 other lines or 3 points
@@ -34,7 +35,7 @@ public class CTAngleBisector extends CTLine {
     private enum LineType {
         PointPointPoint, LineLine
     }
-    private LineType lineType;
+    private LineType bisectorType;
     CTPoint C;
     Point dirPoint;//The second point of the angle bisector. The first is B
 
@@ -60,7 +61,7 @@ public class CTAngleBisector extends CTLine {
      */
     public static CTAngleBisector make(CTPoint A, CTPoint B, CTPoint C) {
         CTAngleBisector resul = new CTAngleBisector(A, B, C);
-        resul.lineType = LineType.PointPointPoint;
+        resul.bisectorType = LineType.PointPointPoint;
         resul.rebuildShape();
         return resul;
     }
@@ -92,7 +93,7 @@ public class CTAngleBisector extends CTLine {
 
     @Override
     public void rebuildShape() {
-        switch (lineType) {
+        switch (bisectorType) {
             case PointPointPoint:
                 Vec vdir = B.to(A).normalize().add(B.to(C).normalize());
                 dirPoint.copyFrom(B.getMathObject().add(vdir));
@@ -102,4 +103,16 @@ public class CTAngleBisector extends CTLine {
                 break;
         }
     }
+
+    @Override
+    public void registerUpdateableHook(JMathAnimScene scene) {
+        switch (bisectorType) {
+            case PointPointPoint:
+                scene.registerUpdateable(this.A, this.B, this.C);
+                break;
+            case LineLine:
+            //TODO: Implement
+        }
+    }
+
 }

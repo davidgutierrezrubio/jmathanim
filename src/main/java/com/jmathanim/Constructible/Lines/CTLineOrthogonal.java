@@ -77,6 +77,7 @@ public class CTLineOrthogonal extends CTLine {
      */
     private CTLineOrthogonal(CTPoint A, HasDirection dir) {
         super(A, CTPoint.make(Point.at(0, 0)));
+        this.lineType=LineType.PointVector;
         this.dir = dir;
     }
 

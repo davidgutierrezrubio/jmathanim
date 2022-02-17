@@ -21,33 +21,59 @@ import com.jmathanim.Constructible.Points.CTPoint;
 import com.jmathanim.Renderers.Renderer;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
+import com.jmathanim.mathobjects.MathObject;
+import com.jmathanim.mathobjects.Point;
 import com.jmathanim.mathobjects.Ray;
+import com.jmathanim.mathobjects.updateableObjects.Updateable;
 
 /**
+ * A Constructible ray
  *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
 public class CTRay extends CTLine {
 
-    private enum RayType {
-        PointPoint, PointVector
-    }
-    private RayType rayType;
     private final Ray rayToDraw;
 
+    /**
+     * Creates a new Constructible ray with given point and direction
+     *
+     * @param A Starting point
+     * @param dir Direction, given by any object that implements the interface
+     * HasDirection
+     * @return The created object
+     */
     public static CTRay make(CTPoint A, HasDirection dir) {
         CTRay resul = new CTRay(A, A.add(dir.getDirection()));
         resul.dir = dir;
-        resul.rayType = RayType.PointVector;
+        resul.lineType = LineType.PointVector;
         resul.rebuildShape();
         return resul;
     }
 
+    /**
+     * Creates a new Constructible ray with given 2 points
+     *
+     * @param A Starting point
+     * @param B Second point
+     * @return The created object
+     */
     public static CTRay make(CTPoint A, CTPoint B) {
         CTRay resul = new CTRay(A, B);
-        resul.rayType = RayType.PointPoint;
+        resul.lineType = LineType.PointPoint;
         resul.rebuildShape();
         return resul;
+    }
+
+    /**
+     * Creates a new Constructible ray with given 2 points
+     *
+     * @param A Starting point
+     * @param B Second point
+     * @return The created object
+     */
+    public static CTRay make(Point A, Point B) {
+        return make(CTPoint.make(A), CTPoint.make(B));
     }
 
     private CTRay(CTPoint A, CTPoint B) {
@@ -77,7 +103,7 @@ public class CTRay extends CTLine {
 
     @Override
     public void rebuildShape() {
-        switch (rayType) {
+        switch (lineType) {
             case PointPoint:
                 break;
             case PointVector:
@@ -89,4 +115,5 @@ public class CTRay extends CTLine {
     public Vec getDirection() {
         return rayToDraw.getDirection();
     }
+
 }

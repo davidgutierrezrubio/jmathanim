@@ -45,4 +45,18 @@ public interface Updateable {
      * @param scene Scene where the object is being updated.
      */
     public void update(JMathAnimScene scene);
+
+    /**
+     * This method is called when this object is registered in a scene
+     *
+     * @param scene Scene where object is registered to update
+     */
+    public void registerUpdateableHook(JMathAnimScene scene);
+
+    /**
+     * This method is called when this object is unregistered from a scene
+     *
+     * @param scene Scene where object is unregistered
+     */
+    public void unregisterUpdateableHook(JMathAnimScene scene);
 }

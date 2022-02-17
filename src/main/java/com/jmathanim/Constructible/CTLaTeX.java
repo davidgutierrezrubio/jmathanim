@@ -23,6 +23,7 @@ import com.jmathanim.Utils.Anchor;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.Text.LaTeXMathObject;
+import com.jmathanim.mathobjects.updateableObjects.Updateable;
 
 /**
  *
@@ -76,4 +77,8 @@ public class CTLaTeX extends Constructible {
         tex.draw(scene, r);
     }
 
+    @Override
+    public void registerUpdateableHook(JMathAnimScene scene) {
+        scene.registerUpdateable(this.anchor);
+    }
 }

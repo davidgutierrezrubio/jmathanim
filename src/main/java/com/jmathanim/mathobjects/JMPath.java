@@ -1085,4 +1085,12 @@ public class JMPath implements Updateable, Stateable, Boxable, Iterable<JMPathPo
         return this;
     }
 
+    @Override
+    public void registerUpdateableHook(JMathAnimScene scene) {
+    }
+
+    @Override
+    public void unregisterUpdateableHook(JMathAnimScene scene) {
+    }
+
 }

@@ -26,6 +26,7 @@ import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.Point;
 import com.jmathanim.mathobjects.Shape;
+import com.jmathanim.mathobjects.updateableObjects.Updateable;
 import java.util.ArrayList;
 
 /**
@@ -71,6 +72,7 @@ public class CTRegularPolygon extends Constructible {
         }
         return makeFromPointList(vertices);
     }
+
     private CTRegularPolygon(ArrayList<CTPoint> generatedPoints) {
         super();
         this.nSides = generatedPoints.size();
@@ -108,4 +110,8 @@ public class CTRegularPolygon extends Constructible {
         polygon.draw(scene, r);
     }
 
+    @Override
+    public void registerUpdateableHook(JMathAnimScene scene) {
+        scene.registerUpdateable(this.A, this.B);
+    }
 }

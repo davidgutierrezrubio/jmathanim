@@ -26,6 +26,7 @@ import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.Point;
 import com.jmathanim.mathobjects.Scalar;
 import com.jmathanim.mathobjects.Shape;
+import com.jmathanim.mathobjects.updateableObjects.Updateable;
 
 /**
  * Represents a Circle imported from Geogebra with 2 points (center and another
@@ -194,6 +195,21 @@ public class CTCircle extends FixedConstructible {
         this.circleType = c.circleType;
         getMp().copyFrom(c.getMp());
         rebuildShape();
+    }
+
+    @Override
+    public void registerUpdateableHook(JMathAnimScene scene) {
+        switch (circleType) {
+            case CENTER_POINT:
+                scene.registerUpdateable(this.circleCenter, this.A);
+                break;
+            case THREE_POINTS:
+                scene.registerUpdateable(this.A, this.B, this.C);
+                break;
+            case CENTER_RADIUS:
+                scene.registerUpdateable(this.circleCenter, this.radius);
+
+        }
     }
 
     @Override
