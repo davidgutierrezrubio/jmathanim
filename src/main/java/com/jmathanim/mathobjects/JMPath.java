@@ -41,8 +41,7 @@ import java.util.stream.Stream;
  *
  * @author David Gutiérrez davidgutierrezrubio@gmail.com
  */
-public class JMPath implements Updateable, Stateable, Boxable, Iterable<JMPathPoint> {
-
+public class JMPath implements Stateable, Boxable, Iterable<JMPathPoint> {
     static public final int MATHOBJECT = 1; // Arc, line, segment...
     static public final int SVG_PATH = 2; // SVG import, LaTeX object...
     static public final int CONNECTED_COMPONENT = 3; // Connected, open component. Every path should be able to put in
@@ -582,20 +581,6 @@ public class JMPath implements Updateable, Stateable, Boxable, Iterable<JMPathPo
         return resul;
     }
 
-    @Override
-    public int getUpdateLevel() {
-        int resul = -1;
-        for (JMPathPoint p : jmPathPoints) {
-            resul = Math.max(resul, p.getUpdateLevel());
-        }
-        return resul;
-    }
-
-    @Override
-    public void update(JMathAnimScene scene) {
-        // This should do nothing, let their points to update by themselves
-    }
-
     /**
      * Replaces the JMPathPoints of the path with copies of points from another
      * path. path.
@@ -1083,14 +1068,6 @@ public class JMPath implements Updateable, Stateable, Boxable, Iterable<JMPathPo
         // Now you can add the points
         jmPathPoints.addAll(pa.jmPathPoints);
         return this;
-    }
-
-    @Override
-    public void registerUpdateableHook(JMathAnimScene scene) {
-    }
-
-    @Override
-    public void unregisterUpdateableHook(JMathAnimScene scene) {
     }
 
 }

@@ -65,9 +65,4 @@ public class NullMathObject extends FixedConstructible {
         return MODrawProperties.makeNullValues();
     }
 
-    @Override
-    public int getUpdateLevel() {
-        return super.getUpdateLevel(); //To change body of generated methods, choose Tools | Templates.
-    }
-
 }

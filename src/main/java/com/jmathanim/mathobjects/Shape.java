@@ -28,6 +28,7 @@ import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import static com.jmathanim.jmathanim.JMathAnimScene.PI;
+import java.util.OptionalInt;
 import javafx.scene.shape.Path;
 import javafx.scene.shape.PathElement;
 
@@ -659,4 +660,15 @@ public class Shape extends MathObject {
         subShape.getPath().jmPathPoints.addAll(subPath.jmPathPoints);
         return subShape;
     }
+
+    @Override
+    public void registerUpdateableHook(JMathAnimScene scene) {
+        OptionalInt m = getPath().jmPathPoints.stream().mapToInt(t -> t.getUpdateLevel()).max();
+        if (m.isPresent()) {
+            setUpdateLevel(m.getAsInt() + 1);
+        } else {
+            setUpdateLevel(0);
+        }
+    }
+
 }

@@ -22,6 +22,7 @@ import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.Point;
 import java.util.Arrays;
 import java.util.List;
+import java.util.OptionalInt;
 
 /**
  * This class represents middle point computed from 2 given ones. This class
@@ -50,12 +51,13 @@ public class AveragePoint extends Point implements Updateable {
     }
 
     @Override
-    public int getUpdateLevel() {
-        int level = -1;
-        for (int n = 0; n < points.size(); n++) {
-            level = Math.max(level, points.get(n).getUpdateLevel());
+    public void registerUpdateableHook(JMathAnimScene scene) {
+        scene.registerUpdateable(points.toArray(Point[]::new));
+        OptionalInt m = points.stream().mapToInt(t -> t.getUpdateLevel()).max();
+        if (m.isPresent()) {
+            setUpdateLevel(m.getAsInt() + 1);
+        } else {
+            setUpdateLevel(0);
         }
-        return level + 1;
     }
-
 }

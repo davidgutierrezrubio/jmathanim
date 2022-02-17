@@ -58,11 +58,9 @@ public class BooleanShape extends Shape {
 		this.getPath().clear();
 		this.getPath().addJMPointsFrom(newPath);
 	}
-
-	@Override
-	public int getUpdateLevel() {
-		return Math.max(shape1.getUpdateLevel(), shape2.getUpdateLevel()) + 1;
-
-	}
-
+ @Override
+    public void registerUpdateableHook(JMathAnimScene scene) {
+        scene.registerUpdateable(shape1, shape2);
+        setUpdateLevel(Math.max(shape1.getUpdateLevel(),shape2.getUpdateLevel())+1);
+    }
 }

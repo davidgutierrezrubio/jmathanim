@@ -29,61 +29,61 @@ import com.jmathanim.mathobjects.Shape;
  */
 public class Trail extends Shape {
 
-	MathObject marker;
-	private boolean cutNext = true;
-	private boolean draw = true;
+    MathObject marker;
+    private boolean cutNext = true;
+    private boolean draw = true;
 
-	/**
-	 * Builds new Trail object. A trail is a updateable Shape that adds a copy of a
-	 * marker point every frame.
-	 *
-	 * @param marker Point to be followed
-	 * @return The new Trail object
-	 */
-	public static Trail make(MathObject marker) {
-		return new Trail(marker);
-	}
+    /**
+     * Builds new Trail object. A trail is a updateable Shape that adds a copy
+     * of a marker point every frame.
+     *
+     * @param marker Point to be followed
+     * @return The new Trail object
+     */
+    public static Trail make(MathObject marker) {
+        return new Trail(marker);
+    }
 
-	/**
-	 * Returns a new Trail object. A trail is a updateable Shape that adds a copy of
-	 * a marker point every frame.
-	 *
-	 * @param marker Point to be followed
-	 */
-	public Trail(MathObject marker) {
-		this.marker = marker;
-		getPath().addPoint(marker.getCenter());
-		get(0).isThisSegmentVisible = false;
-	}
+    /**
+     * Returns a new Trail object. A trail is a updateable Shape that adds a
+     * copy of a marker point every frame.
+     *
+     * @param marker Point to be followed
+     */
+    public Trail(MathObject marker) {
+        this.marker = marker;
+        getPath().addPoint(marker.getCenter());
+        get(0).isThisSegmentVisible = false;
+    }
 
-	@Override
-	public void update(JMathAnimScene scene) {
-		if (draw) {
-			JMPathPoint pa = JMPathPoint.lineTo(marker.getCenter());
-			pa.isThisSegmentVisible = !cutNext;
-			cutNext = false;
-			getPath().addJMPoint(pa);
-		}
-	}
+    @Override
+    public void update(JMathAnimScene scene) {
+        if (draw) {
+            JMPathPoint pa = JMPathPoint.lineTo(marker.getCenter());
+            pa.isThisSegmentVisible = !cutNext;
+            cutNext = false;
+            getPath().addJMPoint(pa);
+        }
+    }
 
-	@Override
-	public int getUpdateLevel() {
-		return Math.max(super.getUpdateLevel(), marker.getUpdateLevel()) + 1;
-	}
+    @Override
+    public void registerUpdateableHook(JMathAnimScene scene) {
+        setUpdateLevel(marker.getUpdateLevel() + 1);
+    }
 
-	/**
-	 * Disables adding new elements to the trail, until a call to {@link lowerPen}
-	 * is made.
-	 */
-	public void raisePen() {
-		draw = false;
-	}
+    /**
+     * Disables adding new elements to the trail, until a call to
+     * {@link lowerPen} is made.
+     */
+    public void raisePen() {
+        draw = false;
+    }
 
-	/**
-	 * Enables adding new elements to the trail. By default this is set.
-	 */
-	public void lowerPen() {
-		draw = true;
-		cutNext = true;
-	}
+    /**
+     * Enables adding new elements to the trail. By default this is set.
+     */
+    public void lowerPen() {
+        draw = true;
+        cutNext = true;
+    }
 }

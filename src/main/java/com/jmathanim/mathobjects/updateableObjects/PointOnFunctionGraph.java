@@ -50,11 +50,6 @@ public class PointOnFunctionGraph extends Point {
 	}
 
 	@Override
-	public int getUpdateLevel() {
-		return fg.getUpdateLevel() + 1;
-	}
-
-	@Override
 	public void update(JMathAnimScene scene) {
 		computePoints();
 	}
@@ -79,5 +74,12 @@ public class PointOnFunctionGraph extends Point {
 	public Point getSlopePointLeft() {
 		return slopePointLeft;
 	}
+
+    @Override
+    public void registerUpdateableHook(JMathAnimScene scene) {
+        setUpdateLevel(fg.getUpdateLevel()+1);
+    }
+        
+        
 
 }

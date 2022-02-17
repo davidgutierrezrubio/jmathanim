@@ -42,7 +42,8 @@ public final class JMNumberLength extends JMNumber {
     }
 
     @Override
-    public int getUpdateLevel() {
-        return Math.max(A.getUpdateLevel(), B.getUpdateLevel()) + 1;
+    public void registerUpdateableHook(JMathAnimScene scene) {
+        scene.registerUpdateable(A,B);
+        setUpdateLevel(Math.max(A.getUpdateLevel(), B.getUpdateLevel()) + 1);
     }
 }

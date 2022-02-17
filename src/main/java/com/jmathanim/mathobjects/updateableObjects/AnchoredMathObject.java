@@ -32,6 +32,7 @@ public class AnchoredMathObject implements Updateable {
     private Type dstType;
     private Type origType;
     private double gap;
+    private int updateLevel;
     
     public AnchoredMathObject(MathObject mobj, Type origType, MathObject dstObject, Type dstType) {
         this(mobj, origType, dstObject, dstType, 0);
@@ -55,7 +56,7 @@ public class AnchoredMathObject implements Updateable {
     
     @Override
     public int getUpdateLevel() {
-        return Math.max(this.mobj.getUpdateLevel(), dstObject.getUpdateLevel()) + 1;
+        return updateLevel;
     }
     
     @Override
@@ -73,12 +74,20 @@ public class AnchoredMathObject implements Updateable {
     
     @Override
     public void registerUpdateableHook(JMathAnimScene scene) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        scene.registerUpdateable(mobj, dstObject);
+        setUpdateLevel(Math.max(mobj.getUpdateLevel(),dstObject.getUpdateLevel())+1);
     }
     
     @Override
     public void unregisterUpdateableHook(JMathAnimScene scene) {
-        scene.registerUpdateable(mobj, dstObject);
+        
     }
+
+    @Override
+    public int setUpdateLevel(int level) {
+        updateLevel=level;
+        return level;
+    }
+    
     
 }

@@ -24,10 +24,10 @@ import com.jmathanim.mathobjects.Point;
 import com.jmathanim.mathobjects.Shape;
 
 /**
- * This class represents middle point computed from a set of given ones. This class
- * implements the interface updateable, which automatically updates its
- * components. 
- * This object represents the centroid when a pure polgonal shape is given.
+ * This class represents middle point computed from a set of given ones. This
+ * class implements the interface updateable, which automatically updates its
+ * components. This object represents the centroid when a pure polgonal shape is
+ * given.
  *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
@@ -51,13 +51,8 @@ public class Centroid extends Point implements Updateable {
     }
 
     @Override
-    public int getUpdateLevel() {
-		int level = -1;
-		for (JMPathPoint p : shape.getPath()) {
-			level = Math.max(level, p.getUpdateLevel());
-		}
-		return level;
-//        return shape.getPath().jmPathPoints.stream().max(Integer::compare).get();
+    public void registerUpdateableHook(JMathAnimScene scene) {
+        setUpdateLevel(shape.getUpdateLevel() + 1);
     }
 
 }

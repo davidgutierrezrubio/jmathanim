@@ -38,6 +38,8 @@ public interface Updateable {
      */
     public int getUpdateLevel();
 
+    public int setUpdateLevel(int level);
+
     /**
      * Performs the update. This method is called prior to draw all objects of
      * the scene.
@@ -47,7 +49,9 @@ public interface Updateable {
     public void update(JMathAnimScene scene);
 
     /**
-     * This method is called when this object is registered in a scene
+     * This method is called when this object is registered in a scene. The
+     * update level should be set here, using the setUpdate(value)
+     * method. Otherwise it is set to 0.
      *
      * @param scene Scene where object is registered to update
      */

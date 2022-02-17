@@ -232,8 +232,9 @@ public class Line extends Shape implements HasDirection {
     }
 
     @Override
-    public int getUpdateLevel() {
-        return Math.max(p1.getUpdateLevel(), p2.getUpdateLevel()) + 1;
+    public void registerUpdateableHook(JMathAnimScene scene) {
+        scene.registerUpdateable(p1, p2);
+        setUpdateLevel(Math.max(p1.getUpdateLevel(), p2.getUpdateLevel()) + 1);
     }
 
     @Override

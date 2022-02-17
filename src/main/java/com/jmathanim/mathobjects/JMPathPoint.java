@@ -134,11 +134,6 @@ public class JMPathPoint extends MathObject implements Updateable, Stateable {
     }
 
     @Override
-    public int getUpdateLevel() {
-        return Math.max(Math.max(p.getUpdateLevel(), cpExit.getUpdateLevel()), cpEnter.getUpdateLevel());
-    }
-
-    @Override
     public void saveState() {
         pState = new JMPathPoint(p, isThisSegmentVisible, type);
         p.saveState();
@@ -288,4 +283,14 @@ public class JMPathPoint extends MathObject implements Updateable, Stateable {
         interpolate.isCurved = q.isCurved; // The new point is curved iff v2 is
         return interpolate;
     }
+
+    @Override
+    public void registerUpdateableHook(JMathAnimScene scene) {
+        int m = Math.max(p.getUpdateLevel(),cpEnter.getUpdateLevel()); 
+        m=Math.max(m,cpExit.getUpdateLevel());
+        setUpdateLevel(m+1);
+        
+    }
+
+    
 }

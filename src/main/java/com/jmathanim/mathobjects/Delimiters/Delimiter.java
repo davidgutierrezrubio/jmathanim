@@ -247,11 +247,11 @@ public abstract class Delimiter extends MathObject {
     public Delimiter copy() {
         Delimiter copy = make(A.copy(), B.copy(), type, gap);
         copy.getMp().copyFrom(this.getMp());
-        if (delimiterLabel!=null) {
+        if (delimiterLabel != null) {
             copy.setLabel(getLabel().copy(), labelMarkGap);
         }
-        copy.amplitudeScale=amplitudeScale;
-        copy.delimiterScale=delimiterScale;
+        copy.amplitudeScale = amplitudeScale;
+        copy.delimiterScale = delimiterScale;
         return copy;
     }
 
@@ -260,37 +260,34 @@ public abstract class Delimiter extends MathObject {
         if (!(obj instanceof Delimiter)) {
             return;
         }
-        Delimiter del=(Delimiter) obj;
+        Delimiter del = (Delimiter) obj;
         getMp().copyFrom(obj.getMp());
         if (del.delimiterLabel != null) {
             setLabel(del.getLabel().copy(), del.labelMarkGap);
             getLabel().getMp().copyFrom(del.getLabel().getMp());
         }
-        amplitudeScale=del.amplitudeScale;
-        delimiterScale=del.delimiterScale;
-        }
+        amplitudeScale = del.amplitudeScale;
+        delimiterScale = del.delimiterScale;
+    }
 
-        @Override
-        public int getUpdateLevel
-        
-            () {
-        return Math.max(A.getUpdateLevel(), B.getUpdateLevel()) + 1;
-        }
+    @Override
+    public void registerUpdateableHook(JMathAnimScene scene) {
+        scene.registerUpdateable(A,B);
+        setUpdateLevel(Math.max(A.getUpdateLevel(), B.getUpdateLevel()) + 1);
+    }
 
-        @Override
-        public final Stylable getMp
-        
-            () {
+    @Override
+    public final Stylable getMp() {
         return mpDelimiter;
-        }
-        /**
-         * Gets the label mark point. The label mark point is used to position
-         * the label. Labels are centered around this point. The gap parameter
-         * used when adding labels sets the distance between this point and the
-         * delimiter.
-         *
-         * @return The label mark point.
-         */
+    }
+
+    /**
+     * Gets the label mark point. The label mark point is used to position the
+     * label. Labels are centered around this point. The gap parameter used when
+     * adding labels sets the distance between this point and the delimiter.
+     *
+     * @return The label mark point.
+     */
     public Point getLabelMarkPoint() {
         return labelMarkPoint;
     }
@@ -348,26 +345,29 @@ public abstract class Delimiter extends MathObject {
     }
 
     /**
-     * Adds a label that automatically updates to show the length of the delimiter.
+     * Adds a label that automatically updates to show the length of the
+     * delimiter.
+     *
      * @param <T> Calling subclass
      * @param format A string format, in the DecimalFormat class syntax
      * @param gap Gap to leave between this label and the delimiter
      * @return This object
      */
-    public <T extends Delimiter> T addLengthLabel(String format,double gap) {
+    public <T extends Delimiter> T addLengthLabel(String format, double gap) {
         JMNumber jm = JMNumber.length(scaledA, scaledB);
         jm.setFormat(format);
         return setLabel(jm, gap);
     }
-    
+
     /**
-     * Overloaded function. Adds a label that automatically updates to show the length of the delimite,
-     * using 2 (at most) decimal places.
+     * Overloaded function. Adds a label that automatically updates to show the
+     * length of the delimite, using 2 (at most) decimal places.
+     *
      * @param <T> Calling subclass
      * @param gap Gap to leave between this label and the delimiter
      * @return This object
      */
-      public <T extends Delimiter> T addLengthLabel(double gap) {
-          return addLengthLabel("#.##",gap);
-      }
+    public <T extends Delimiter> T addLengthLabel(double gap) {
+        return addLengthLabel("#.##", gap);
+    }
 }

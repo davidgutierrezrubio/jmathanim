@@ -43,7 +43,7 @@ public abstract class MathObject implements Drawable, Updateable, Stateable, Box
     public enum Align {
         LEFT, RIGHT, UPPER, LOWER, HCENTER, VCENTER
     }
-
+    private int updateLevel;
     protected JMathAnimScene scene;
     private String debugText = "";
 
@@ -60,6 +60,7 @@ public abstract class MathObject implements Drawable, Updateable, Stateable, Box
     }
 
     public MathObject(MODrawProperties prop) {
+        this.updateLevel = -1;
 
         scene = JMathAnimConfig.getConfig().getScene();
         mp = JMathAnimConfig.getConfig().getDefaultMP();// Default MP values
@@ -841,8 +842,20 @@ public abstract class MathObject implements Drawable, Updateable, Stateable, Box
     }
 
     @Override
-    public int getUpdateLevel() {
-        return 0;// Default value, objects that need to be updated should override this
+    public final int getUpdateLevel() {
+        if (updateLevel == -1) {//-1 means no update level has been defined yet
+            registerUpdateableHook(scene);//TODO: Remove coupling
+            if (updateLevel == -1) {//If it is still undefined, make it 0
+                updateLevel = 0;
+            }
+        }
+        return updateLevel;
+    }
+
+    @Override
+    public int setUpdateLevel(int level) {
+        updateLevel = level;
+        return level;
     }
 
     public String getDebugText() {

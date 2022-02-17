@@ -29,44 +29,44 @@ import com.jmathanim.mathobjects.Shape;
  */
 public class TransformedJMPath extends Shape {
 
-	private final AffineJTransform transform;
-	private final Shape srcOBj;
+    private final AffineJTransform transform;
+    private final Shape srcOBj;
 
-	public TransformedJMPath(Shape jmpobj, AffineJTransform tr) {
-		super();
-		this.transform = tr;
-		this.srcOBj = jmpobj;
-		this.getPath().setJMPoints(jmpobj.getPath());
-	}
+    public TransformedJMPath(Shape jmpobj, AffineJTransform tr) {
+        super();
+        this.transform = tr;
+        this.srcOBj = jmpobj;
+        this.getPath().setJMPoints(jmpobj.getPath());
+    }
 
-	@Override
-	public int getUpdateLevel() {
-		return srcOBj.getUpdateLevel() + 1;
-	}
+    @Override
+    public void registerUpdateableHook(JMathAnimScene scene) {
+        setUpdateLevel(srcOBj.getUpdateLevel() + 1);
+    }
 
-	@Override
-	public void update(JMathAnimScene scene) {
-		int size = srcOBj.getPath().size();
-		// TODO: This is already implemented
-		for (int n = 0; n < size; n++) {
-			JMPathPoint jmPDst = get(n);
-			JMPathPoint pSrc = srcOBj.get(n);
-			Point pDst = transform.getTransformedObject(pSrc.p);
-			Point cp1Dst = transform.getTransformedObject(pSrc.cpExit);
-			Point cp2Dst = transform.getTransformedObject(pSrc.cpEnter);
+    @Override
+    public void update(JMathAnimScene scene) {
+        int size = srcOBj.getPath().size();
+        // TODO: This is already implemented
+        for (int n = 0; n < size; n++) {
+            JMPathPoint jmPDst = get(n);
+            JMPathPoint pSrc = srcOBj.get(n);
+            Point pDst = transform.getTransformedObject(pSrc.p);
+            Point cp1Dst = transform.getTransformedObject(pSrc.cpExit);
+            Point cp2Dst = transform.getTransformedObject(pSrc.cpEnter);
 
-			jmPDst.p.v.x = pDst.v.x;
-			jmPDst.p.v.y = pDst.v.y;
-			jmPDst.p.v.z = pDst.v.z;
+            jmPDst.p.v.x = pDst.v.x;
+            jmPDst.p.v.y = pDst.v.y;
+            jmPDst.p.v.z = pDst.v.z;
 
-			jmPDst.cpExit.v.x = cp1Dst.v.x;
-			jmPDst.cpExit.v.y = cp1Dst.v.y;
-			jmPDst.cpExit.v.z = cp1Dst.v.z;
+            jmPDst.cpExit.v.x = cp1Dst.v.x;
+            jmPDst.cpExit.v.y = cp1Dst.v.y;
+            jmPDst.cpExit.v.z = cp1Dst.v.z;
 
-			jmPDst.cpEnter.v.x = cp2Dst.v.x;
-			jmPDst.cpEnter.v.y = cp2Dst.v.y;
-			jmPDst.cpEnter.v.z = cp2Dst.v.z;
-		}
-	}
+            jmPDst.cpEnter.v.x = cp2Dst.v.x;
+            jmPDst.cpEnter.v.y = cp2Dst.v.y;
+            jmPDst.cpEnter.v.z = cp2Dst.v.z;
+        }
+    }
 
 }

@@ -54,8 +54,12 @@ public class CameraAlwaysAdjusting implements Updateable {
     }
 
     @Override
+    public int setUpdateLevel(int level) {
+        return Integer.MAX_VALUE;
+    }
+
+    @Override
     public void registerUpdateableHook(JMathAnimScene scene) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
     @Override

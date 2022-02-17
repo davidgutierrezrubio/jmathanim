@@ -148,8 +148,8 @@ public class Ray extends Shape implements HasDirection {
     }
 
     /**
-     * Compute border points in the view area of the given renderer. This is need
-     * in order to draw an "infinite" ray which always extend to the whole
+     * Compute border points in the view area of the given renderer. This is
+     * need in order to draw an "infinite" ray which always extend to the whole
      * visible area. The border points is stored in bp2
      *
      * @param cam Camera with the view to compute bound points
@@ -243,8 +243,9 @@ public class Ray extends Shape implements HasDirection {
     }
 
     @Override
-    public int getUpdateLevel() {
-        return Math.max(p1.getUpdateLevel(), p2.getUpdateLevel()) + 1;
+    public void registerUpdateableHook(JMathAnimScene scene) {
+        scene.registerUpdateable(p1, p2);
+        setUpdateLevel(Math.max(p1.getUpdateLevel(), p2.getUpdateLevel()) + 1);
     }
 
     @Override
