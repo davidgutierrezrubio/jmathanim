@@ -113,5 +113,6 @@ public class CTRegularPolygon extends Constructible {
     @Override
     public void registerUpdateableHook(JMathAnimScene scene) {
         scene.registerUpdateable(this.A, this.B);
+        setUpdateLevel(Math.max(this.A.getUpdateLevel(), this.B.getUpdateLevel()) + 1);
     }
 }

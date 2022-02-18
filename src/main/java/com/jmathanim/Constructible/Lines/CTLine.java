@@ -98,6 +98,7 @@ public class CTLine extends Constructible implements HasDirection {
     protected CTLine(CTPoint A, CTPoint B) {
         this.A = A;
         this.B = B;
+        lineType = LineType.PointPoint;
         lineToDraw = Line.make(A.getMathObject(), B.getMathObject());
     }
 
@@ -151,16 +152,20 @@ public class CTLine extends Constructible implements HasDirection {
         B.applyAffineTransform(transform);
         return (T) this;
     }
- @Override
+
+    @Override
     public void registerUpdateableHook(JMathAnimScene scene) {
         switch (lineType) {
             case PointPoint:
                 scene.registerUpdateable(this.A, this.B);
+                setUpdateLevel(Math.max(this.A.getUpdateLevel(), this.B.getUpdateLevel()) + 1);
                 break;
             case PointVector:
                 scene.registerUpdateable(this.A);
+                setUpdateLevel(this.A.getUpdateLevel() + 1);
                 if (this.dir instanceof Updateable) {
                     scene.registerUpdateable((Updateable) this.dir);
+                    setUpdateLevel(Math.max(this.A.getUpdateLevel(), ((Updateable) this.dir).getUpdateLevel()) + 1);
                 }
         }
     }

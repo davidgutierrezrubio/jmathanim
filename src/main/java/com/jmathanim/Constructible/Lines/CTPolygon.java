@@ -28,6 +28,7 @@ import com.jmathanim.mathobjects.Shape;
 import com.jmathanim.mathobjects.updateableObjects.Updateable;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.OptionalInt;
 
 /**
  * A constructible polygon
@@ -82,5 +83,11 @@ public class CTPolygon extends FixedConstructible {
     @Override
     public void registerUpdateableHook(JMathAnimScene scene) {
         scene.registerUpdateable(points);
+         OptionalInt m = Arrays.stream(points).mapToInt(t -> t.getUpdateLevel()).max();
+        if (m.isPresent()) {
+            setUpdateLevel(m.getAsInt() + 1);
+        } else {
+            setUpdateLevel(0);
+        }
     }
 }

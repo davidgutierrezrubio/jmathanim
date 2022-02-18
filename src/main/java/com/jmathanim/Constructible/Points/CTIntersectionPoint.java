@@ -20,7 +20,6 @@ package com.jmathanim.Constructible.Points;
 import com.jmathanim.Constructible.Conics.CTCircle;
 import com.jmathanim.Constructible.Conics.CTEllipse;
 import com.jmathanim.Constructible.Constructible;
-import com.jmathanim.Constructible.FixedConstructible;
 import com.jmathanim.Constructible.Lines.CTLine;
 import com.jmathanim.Constructible.Lines.CTRay;
 import com.jmathanim.Constructible.Lines.CTSegment;
@@ -28,10 +27,9 @@ import com.jmathanim.Renderers.Renderer;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.Line;
-import com.jmathanim.mathobjects.MathObject;
-import com.jmathanim.mathobjects.MathObjectGroup;
 import com.jmathanim.mathobjects.Point;
-import com.jmathanim.mathobjects.Ray;
+import java.util.Arrays;
+import java.util.OptionalInt;
 
 /**
  * Represents an intersection point of lines, rays, or circles
@@ -52,6 +50,7 @@ public class CTIntersectionPoint extends CTPoint {
     public static CTIntersectionPoint make(Line l1, Line l2) {
         return make(CTLine.make(l1), CTLine.make(l2), 1);
     }
+
     public static CTIntersectionPoint make(Constructible c1, Constructible c2) {
         return make(c1, c2, 1);
     }
@@ -200,6 +199,7 @@ public class CTIntersectionPoint extends CTPoint {
                 getMathObject().shift(ctcircle1.getCircleCenter().v);
                 break;
             case CIRCLE_CONIC:
+                //Not implemented yet. Return a NaN point
                 getMathObject().v.copyFrom(Double.NaN, Double.NaN);
         }
     }
@@ -224,7 +224,7 @@ public class CTIntersectionPoint extends CTPoint {
 
     @Override
     public CTIntersectionPoint copy() {
-        CTIntersectionPoint copy = make((Constructible)c1.copy(), (Constructible)c2.copy());
+        CTIntersectionPoint copy = make((Constructible) c1.copy(), (Constructible) c2.copy());
         copy.getMp().copyFrom(this.getMp());
         return copy;
     }
@@ -234,12 +234,33 @@ public class CTIntersectionPoint extends CTPoint {
         getMathObject().draw(scene, r);
     }
 
-    public double[] BezierIntersect(double x1, double y1, double x2, double y2, double x3, double y3, double x4, double y4) {
+    private double[] BezierIntersect(double x1, double y1, double x2, double y2, double x3, double y3, double x4, double y4) {
         double[] solutions = new double[2];
         double det = (x1 - x2) * (y3 - y4) - (y1 - y2) * (x3 - x4);
         solutions[0] = ((x1 - x3) * (y3 - y4) - (y1 - y3) * (x3 - x4)) / det;
         solutions[1] = ((x1 - x3) * (y1 - y2) - (y1 - y3) * (x1 - x2)) / det;
         return solutions;
+    }
+
+    @Override
+    public void registerUpdateableHook(JMathAnimScene scene) {
+        switch (intersectionType) {
+            case CIRCLE_CIRCLE:
+                scene.registerUpdateable(ctcircle1, ctcircle1);
+                setUpdateLevel(Math.max(ctcircle1.getUpdateLevel(), ctcircle2.getUpdateLevel()) + 1);
+                break;
+            case CIRCLE_CONIC:
+                //Not implemented yet...
+                setUpdateLevel(0);
+                break;
+            case LINEAR:
+                scene.registerUpdateable(ctline1, ctline2);
+                setUpdateLevel(Math.max(ctline1.getUpdateLevel(), ctline2.getUpdateLevel()) + 1);
+                break;
+            case LINE_CIRCLE:
+                scene.registerUpdateable(ctline1, ctcircle1);
+                setUpdateLevel(Math.max(ctline1.getUpdateLevel(), ctcircle1.getUpdateLevel()) + 1);
+        }
     }
 
 }

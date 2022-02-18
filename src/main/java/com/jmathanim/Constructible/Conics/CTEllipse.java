@@ -111,5 +111,8 @@ public class CTEllipse extends FixedConstructible {
     @Override
     public void registerUpdateableHook(JMathAnimScene scene) {
         scene.registerUpdateable(this.focus1, this.focus2, this.A);
+         setUpdateLevel(
+                Math.max(Math.max(this.focus1.getUpdateLevel(),this.focus2.getUpdateLevel()),this.A.getUpdateLevel())+1
+                );
     }
 }

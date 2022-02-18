@@ -845,7 +845,7 @@ public abstract class MathObject implements Drawable, Updateable, Stateable, Box
     public final int getUpdateLevel() {
         if (updateLevel == -1) {//-1 means no update level has been defined yet
             registerUpdateableHook(scene);//TODO: Remove coupling
-            if (updateLevel == -1) {//If it is still undefined, make it 0
+            if (updateLevel == -1) {//If it is still undefined, make it 0, to avoid infinite recursion
                 updateLevel = 0;
             }
         }

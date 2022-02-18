@@ -57,5 +57,7 @@ public class CTRotatedPoint extends CTPoint {
     @Override
     public void registerUpdateableHook(JMathAnimScene scene) {
         scene.registerUpdateable(this.pointToRotate, this.rotationCenter, this.angle);
+        int m = Math.max(this.pointToRotate.getUpdateLevel(), this.rotationCenter.getUpdateLevel());
+        setUpdateLevel(Math.max(m, this.angle.getUpdateLevel()) + 1);
     }
 }

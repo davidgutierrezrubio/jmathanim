@@ -56,7 +56,7 @@ public class CTImage extends FixedConstructible {
 
     @Override
     public CTImage copy() {
-        return make(A.copy(),B.copy(),image.copy());
+        return make(A.copy(), B.copy(), image.copy());
     }
 
     @Override
@@ -64,4 +64,9 @@ public class CTImage extends FixedConstructible {
         image.draw(scene, r);
     }
 
+    @Override
+    public void registerUpdateableHook(JMathAnimScene scene) {
+        scene.registerUpdateable(this.A, this.B);
+        setUpdateLevel(Math.max(this.A.getUpdateLevel(), this.B.getUpdateLevel()) + 1);
+    }
 }

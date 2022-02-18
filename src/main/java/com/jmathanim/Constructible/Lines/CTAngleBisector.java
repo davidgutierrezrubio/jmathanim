@@ -109,6 +109,9 @@ public class CTAngleBisector extends CTLine {
         switch (bisectorType) {
             case PointPointPoint:
                 scene.registerUpdateable(this.A, this.B, this.C);
+                 setUpdateLevel(
+                Math.max(Math.max(this.A.getUpdateLevel(),this.B.getUpdateLevel()),this.C.getUpdateLevel())+1
+                );
                 break;
             case LineLine:
             //TODO: Implement

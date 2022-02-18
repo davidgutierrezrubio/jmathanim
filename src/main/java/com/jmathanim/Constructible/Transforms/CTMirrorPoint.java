@@ -26,7 +26,6 @@ import com.jmathanim.Utils.AffineJTransform;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.Line;
 import com.jmathanim.mathobjects.Point;
-import com.jmathanim.mathobjects.updateableObjects.Updateable;
 
 /**
  * A Constructible object mirrored by a Line or Segment or Ray
@@ -36,7 +35,7 @@ import com.jmathanim.mathobjects.updateableObjects.Updateable;
 public class CTMirrorPoint extends CTPoint {
 
     private final CTLine axis;
-    private final CTPoint orig;
+    private final CTPoint originalPoint;
     private final CTPoint center;
 
     private enum MirrorType {
@@ -88,7 +87,7 @@ public class CTMirrorPoint extends CTPoint {
 
     private CTMirrorPoint(CTPoint orig, CTLine axis, CTPoint center) {
         super();
-        this.orig = orig;
+        this.originalPoint = orig;
         this.axis = axis;
         this.center = center;
     }
@@ -98,11 +97,11 @@ public class CTMirrorPoint extends CTPoint {
         switch (mirrorType) {
             case AXIAL:
                 AffineJTransform tr = AffineJTransform.createReflectionByAxis(axis.getP1(), axis.getP2(), 1);
-                getMathObject().copyFrom(orig.getMathObject());
+                getMathObject().copyFrom(originalPoint.getMathObject());
                 tr.applyTransform(getMathObject());
                 break;
             case CENTRAL:
-                getMathObject().copyFrom(orig.getMathObject());
+                getMathObject().copyFrom(originalPoint.getMathObject());
                 getMathObject().scale(this.center.getMathObject(), -1, -1);
                 break;
         }
@@ -110,6 +109,15 @@ public class CTMirrorPoint extends CTPoint {
 
     @Override
     public void registerUpdateableHook(JMathAnimScene scene) {
-        scene.registerUpdateable(this.orig,this.axis,this.center);
+        switch (mirrorType) {
+            case AXIAL:
+                scene.registerUpdateable(axis, originalPoint);
+                setUpdateLevel(Math.max(axis.getUpdateLevel(), originalPoint.getUpdateLevel()) + 1);
+                break;
+            case CENTRAL:
+                scene.registerUpdateable(center, originalPoint);
+                setUpdateLevel(Math.max(center.getUpdateLevel(), originalPoint.getUpdateLevel()) + 1);
+                break;
+        }
     }
 }

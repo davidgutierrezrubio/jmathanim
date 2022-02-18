@@ -22,6 +22,7 @@ import com.jmathanim.Constructible.Lines.CTLine;
 import com.jmathanim.Constructible.Lines.CTRay;
 import com.jmathanim.Constructible.Lines.CTSegment;
 import com.jmathanim.Utils.Vec;
+import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.Point;
 
 /**
@@ -102,6 +103,10 @@ public class CTPointOnObject extends CTPoint {
         copy.getMp().copyFrom(this.getMp());
         return copy;
     }
-
+  @Override
+    public void registerUpdateableHook(JMathAnimScene scene) {
+        scene.registerUpdateable(owner);
+        setUpdateLevel(owner.getUpdateLevel()+1);
+    }
     
 }

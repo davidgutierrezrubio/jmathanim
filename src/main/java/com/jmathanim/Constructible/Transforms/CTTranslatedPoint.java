@@ -57,5 +57,8 @@ public class CTTranslatedPoint extends CTPoint {
     @Override
     public void registerUpdateableHook(JMathAnimScene scene) {
         scene.registerUpdateable(this.translationVector, this.originalPoint);
+        setUpdateLevel(
+                Math.max(this.translationVector.getUpdateLevel(),
+                        this.originalPoint.getUpdateLevel()) + 1);
     }
 }

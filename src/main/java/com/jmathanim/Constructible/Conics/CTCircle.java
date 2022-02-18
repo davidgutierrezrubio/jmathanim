@@ -202,13 +202,17 @@ public class CTCircle extends FixedConstructible {
         switch (circleType) {
             case CENTER_POINT:
                 scene.registerUpdateable(this.circleCenter, this.A);
+                setUpdateLevel(Math.max(this.circleCenter.getUpdateLevel(),this.A.getUpdateLevel())+1);
                 break;
             case THREE_POINTS:
                 scene.registerUpdateable(this.A, this.B, this.C);
+                setUpdateLevel(
+                Math.max(Math.max(this.A.getUpdateLevel(),this.B.getUpdateLevel()),this.C.getUpdateLevel())+1
+                );
                 break;
             case CENTER_RADIUS:
                 scene.registerUpdateable(this.circleCenter, this.radius);
-
+                setUpdateLevel(Math.max(this.circleCenter.getUpdateLevel(),this.radius.getUpdateLevel())+1);
         }
     }
 
