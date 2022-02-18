@@ -233,7 +233,7 @@ public void runSketch() {
 
 private MathObjectGroup drawGraphFor(DoubleUnaryOperator lambda, String name) {
     MathObjectGroup resul = MathObjectGroup.make();
-    FunctionGraph fg = new FunctionGraph(lambda, 0, 1).thickness(3).drawColor("darkblue");
+    FunctionGraph fg = FunctionGraph.make(lambda, 0, 1).thickness(3).drawColor("darkblue");
     LaTeXMathObject text = LaTeXMathObject.make(name).scale(.5).stackTo(fg, Anchor.Type.LOWER, .2);
     Shape segX = Shape.segment(Point.at(-.1, 0), Point.at(1.1, 0));
     Shape segY = segX.copy().rotate(Point.origin(), .5 * PI);
