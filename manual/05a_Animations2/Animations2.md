@@ -434,6 +434,27 @@ playAnimation(ag);
 waitSeconds(3);
 ```
 
+The `AnimationGroup` class also admits the `addDelayEffect`method. You can try different parameters for the delay effect:
+
+```java
+Shape[] rects=new Shape[10];
+AnimationGroup ag=AnimationGroup.make();
+for (int i = 0; i < 10; i++) {
+    //Create 10 rectangles
+    rects[i]=Shape.square().center().fillColor("orange").fillAlpha(.2);
+    //Create an animation for each square scaling it with parameters (.2,.7,1)
+    ag.add(Commands.scale(5, Point.origin(),2, .7, 1,rects[i]));
+}
+add(rects);
+ag.addDelayEffect(.5);//A delay effect of 50%
+playAnimation(ag);
+waitSeconds(1);
+```
+
+![delayEffect4](delayEffect4.gif)
+
+
+
 ## The concatenate animation
 
 The `Concatenate`class allows to play animations in sequence
