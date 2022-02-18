@@ -38,7 +38,7 @@ public interface Updateable {
      */
     public int getUpdateLevel();
 
-    public int setUpdateLevel(int level);
+    public void setUpdateLevel(int level);
 
     /**
      * Performs the update. This method is called prior to draw all objects of

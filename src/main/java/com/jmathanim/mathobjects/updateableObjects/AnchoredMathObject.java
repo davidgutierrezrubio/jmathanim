@@ -84,9 +84,8 @@ public class AnchoredMathObject implements Updateable {
     }
 
     @Override
-    public int setUpdateLevel(int level) {
+    public void setUpdateLevel(int level) {
         updateLevel=level;
-        return level;
     }
     
     

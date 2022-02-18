@@ -853,9 +853,8 @@ public abstract class MathObject implements Drawable, Updateable, Stateable, Box
     }
 
     @Override
-    public int setUpdateLevel(int level) {
+    public void setUpdateLevel(int level) {
         updateLevel = level;
-        return level;
     }
 
     public String getDebugText() {

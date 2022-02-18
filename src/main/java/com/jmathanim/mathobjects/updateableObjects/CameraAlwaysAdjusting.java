@@ -54,8 +54,7 @@ public class CameraAlwaysAdjusting implements Updateable {
     }
 
     @Override
-    public int setUpdateLevel(int level) {
-        return Integer.MAX_VALUE;
+    public void setUpdateLevel(int level) {
     }
 
     @Override
