@@ -14,18 +14,29 @@ The `disableAnimations()` and `enableAnimations()` methods allows to temporarily
 
 # Updaters
 
-An updater is an object whose state is automatically updated right before doing the draws on the screen. Any class that implements the `Updateable` interface can be registered as an updater. This interface implements the two following methods:
+An updater is an object whose state is automatically updated right before doing the draws on the screen. Any class that implements the `Updateable` interface can be registered as an updater. Any updater must be registered on the scene to be used, with the `registerUpdateable`method. Similarly, there is the `unregisterUpdateable` method that does the opposite.
+
+This interface implements the following methods:
 
 ```java
 public int getUpdateLevel();
+public void setUpdateLevel(int level);
 public void update(JMathAnimScene scene);
+public void registerUpdateableHook(JMathAnimScene scene);
+public void unregisterUpdateableHook(JMathAnimScene scene);
 ```
 
-The `getUpdateLevel` method returns the order of updating this object. Objects with level 0 update first, then all with level 1, etc. Thus, if you have an updater  A that depends on that another updater B to be previously updated before, you should set the update level of A greater than of B. All necessary updating commands should be set in the `update` method.
+The `getUpdateLevel` method returns the order of updating this object. Objects with level 0 update first, then all with level 1, etc. Thus, if you have an updater  A that depends on that another updater B to be previously updated before, you should set the update level of A greater than of B. 
 
-Any updater must be registered on the scene to be used, with the `registerUpdateable`method. Similarly, there is the `unregisterUpdateable` method that does the opposite.
+The `update` method it's where "magic" happens. The object is updated which whatever arcane and mystical procedure you choose.
 
-Every MathObjects implements the interface `Updateable` , and is registered when added to the scene.	
+The `setUpdateLevel` does as it name suggests. It sets the update level of the object. This is normally computed once when registering the object in the scene update queue.
+
+Every MathObjects implements the interface `Updateable` , and is registered when added to the scene.
+
+The methods `registerUpdateableHook` and `unregisterUpdateableHook` are called when the object is registered in the scene update queue. This is where normally the update level should be set.
+
+When creating a new `MathObject` subclass which depends on other objects, you should override the method `registerUpdateableHook`and sets the update level there.
 
 For example, let's suppose we have the following simple animation, where a `Point` object named `A` moves from the point (1,1) to (-1,1):
 
@@ -36,20 +47,15 @@ play.shift(3,-2,0,A);
 waitSeconds(3);
 ```
 
-We want to create a `Point`subclass that automatically locates at the normalized coordinates of point `A`, that is, the projection of `A` into the unit circle. As the `Point` class implements the `updateable` interface, the easiest way is to subclass the `Point` and override the `getUpdateLevel` and `update` methods.
+We want to create a `Point`subclass that automatically locates at the normalized coordinates of point `A`, that is, the projection of `A` into the unit circle. As the `Point` class implements the `Updateable` interface, the easiest way is to subclass the `Point` and override the `registerUpdateableHook` and `update` methods.
 
 ```java
 class UnitPoint extends Point {
+
     Point sourcePoint;
 
     public UnitPoint(Point sourcePoint) {
         this.sourcePoint = sourcePoint;
-    }
-
-    @Override
-    public int getUpdateLevel() {
-        //The update level of the source point plus 1, ensures that this object is updated after the source object
-        return sourcePoint.getUpdateLevel() + 1;
     }
 
     @Override
@@ -59,6 +65,16 @@ class UnitPoint extends Point {
             this.v.x = sourcePoint.v.x / norm;
             this.v.y = sourcePoint.v.y / norm;
         }
+    }
+
+    @Override
+    public void registerUpdateableHook(JMathAnimScene scene) {
+        //Register the source point to ensure is updated too 
+        //(if it is already registered, it has no effect)
+        scene.registerUpdateable(sourcePoint);
+        //Sets the update level one more than the update level of sourcePoint
+        //This way, we ensure this object will be updated after sourcePoint
+        setUpdateLevel(sourcePoint.getUpdateLevel() + 1);
     }
 }
 ```
@@ -79,7 +95,7 @@ Generates the following animation:
 
 ![Updater01](Updater01.gif)
 
-# Predefinied updaters
+# Predefined updaters
 
 JMathAnim has some built-in updaters that maybe useful:
 
@@ -149,7 +165,7 @@ waitSeconds(5);
 A trail is a `Shape` subclass that updates every frame adding the position of a marker point.  Let's draw a cycloid, using a combined `shift` and `rotate` animation:
 
 ```java
-double circleRadius=.25;
+double circleRadius = .25;
 Shape circle = Shape.circle()
     .scale(circleRadius)
     .fillColor("royalblue")
@@ -158,23 +174,23 @@ Shape circle = Shape.circle()
     .rotate(-90 * DEGREES);//Rotate it so that point 0 touches the floor
 
 //By default a circle shape has 4 point, so point 0 and 2 make a diameter
-Shape diameter=Shape.segment(circle.getPoint(0),circle.getPoint(2)).layer(1).thickness(2);
+Shape diameter = Shape.segment(circle.getPoint(0), circle.getPoint(2)).layer(1).thickness(2);
 //Note that, as diameter is created with point instances of the Shape circle, we don't need to animate diameter, only circle
 
 //The "floor". An horizontal line that we put right under the circle
 Line floor = Line.XAxis().stackTo(circle, Anchor.Type.LOWER);
-add(floor,diameter);//Add everyhing (no need to add circle because it will automatically added with the shift and rotate animation)
+add(floor, diameter);//Add everyhing (no need to add circle because it will automatically added with the shift and rotate animation)
 
 Trail trail = new Trail(circle.getPoint(0));//The Trail object
 trail.layer(1)
     .thickness(6)
-    .drawColor(JMColor.parse("tomato"))
+    .drawColor(JMColor.parse("tomato"));
 add(trail);
 //Ok, time to move this!
-Animation shift = Commands.shift(10, 4 * PI*circleRadius, 0, circle);
-Animation rotate = Commands.rotate(10, -4 * PI, circle).setUseObjectState(false);
+Animation shift = Commands.shift(10, 4 * PI * circleRadius, 0, circle).setLambda(t -> t);
+Animation rotate = Commands.rotate(10, -4 * PI, circle).setUseObjectState(false).setLambda(t -> t);
 playAnimation(shift, rotate);
-waitSeconds(3);
+waitSeconds(1);
 ```
 ![trail01](trail01.gif)
 
@@ -188,7 +204,7 @@ Not all `MathObject` and `Animation` combinations are compatible. Below is a tab
 
 | MathObject      | Affine transforms related: Shift, scale, rotate , grow in, shrink out, highlight | ShowCreation animation | Transform animation                                          |
 | --------------- | ------------------------------------------------------------ | ---------------------- | ------------------------------------------------------------ |
-| Point           | Yes                                                          | No (use fade in)       | No                                                           |
+| Point           | Yes                                                          | Yes (fadeIn is used)   | No                                                           |
 | Shape           | Yes                                                          | Yes                    | Yes                                                          |
 | Line            | Yes                                                          | Yes                    | Yes                                                          |
 | Axes            | No                                                           | Yes                    | No                                                           |
