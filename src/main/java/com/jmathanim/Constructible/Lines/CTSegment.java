@@ -23,7 +23,6 @@ import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.Point;
 import com.jmathanim.mathobjects.Shape;
-import com.jmathanim.mathobjects.updateableObjects.Updateable;
 
 /**
  * A straight segment,given by 2 points
@@ -61,6 +60,17 @@ public class CTSegment extends CTLine {
     private CTSegment(CTPoint A, CTPoint B) {
         super(A, B);
         segmentToDraw = Shape.segment(this.A.getMathObject(), this.B.getMathObject());
+    }
+
+    /**
+     * Creates a Constructible line from a Shape, considering only first and
+     * last point
+     *
+     * @param shape Shape object
+     * @return The created object
+     */
+    public static CTSegment make(Shape shape) {
+        return make(shape.getPoint(0), shape.getPoint(-1));
     }
 
     @Override

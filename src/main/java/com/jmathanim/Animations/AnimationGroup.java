@@ -22,6 +22,7 @@ import com.jmathanim.jmathanim.JMathAnimScene;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.function.DoubleUnaryOperator;
+import java.util.stream.Collectors;
 
 /**
  * Stores a group of animations, to be played at the same time. This class is
@@ -128,11 +129,10 @@ public class AnimationGroup extends AnimationWithEffects {
         }
 
         if ((size > 1) && (delayPercentage > 0)) {
+            double b = 1 - delayPercentage;
             for (Animation anim : animations) {
                 double a = k * (delayPercentage) / (size - 1);
-                double b = 1 - delayPercentage;
-                anim.setLambda(anim.getLambda().compose(UsefulLambdas.allocateTo(a, a + b)));
-//                anim.setLambda(UsefulLambdas.allocateTo(a, a + b));
+                anim.composeLambdaWithThis(UsefulLambdas.allocateTo(a, a + b));
                 k++;
             }
         }
@@ -155,6 +155,17 @@ public class AnimationGroup extends AnimationWithEffects {
     }
 
     @Override
+    public double getRunTime() {
+        double max=0;
+        for (Animation anim:animations) {
+            max=Math.max(max, anim.getRunTime());
+        }
+        return max;
+    }
+
+    
+    
+    @Override
     public void finishAnimation() {
         super.finishAnimation();
         for (Animation anim : animations) {
@@ -166,9 +177,24 @@ public class AnimationGroup extends AnimationWithEffects {
 
     @Override
     public AnimationGroup setLambda(DoubleUnaryOperator lambda) {
-        super.setLambda(lambda);
         for (Animation anim : animations) {
             anim.setLambda(lambda);
+        }
+        return this;
+    }
+
+    @Override
+    public AnimationGroup composeLambdaWithThis(DoubleUnaryOperator lambdaComp) {
+        for (Animation anim : animations) {
+            anim.composeLambdaWithThis(lambdaComp);
+        }
+        return this;
+    }
+
+    @Override
+    public AnimationGroup composeThisWithLambda(DoubleUnaryOperator lambdaComp) {
+        for (Animation anim : animations) {
+            anim.composeThisWithLambda(lambdaComp);
         }
         return this;
     }

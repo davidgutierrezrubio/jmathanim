@@ -143,7 +143,7 @@ public class Commands {
             ag.add(Commands.rotate(runtime, center, twistAngle, obj).setLambda(t -> Math.sin(4 * PI * t)));
             ag.add(Commands.scale(runtime, center, scale, obj).setLambda(UsefulLambdas.backAndForth()).setUseObjectState(false));
         }
-        ag.setDebugName("Highlight");
+        ag.setDebugName("TwistAndScale");
         return ag;
     }
 

@@ -171,6 +171,9 @@ public class SVGUtils {
                         transfCopy.applyTransform(shape);
                         msh.add(shape);
                         break;
+                    case "defs":
+                        //Nothing to do here yet...
+                        break;
                     default:
                         JMathAnimScene.logger.error("Unknow command: <" + el.getTagName() + ">");
                 }

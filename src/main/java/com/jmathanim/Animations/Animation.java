@@ -286,6 +286,16 @@ public abstract class Animation {
         return lambda;
     }
 
+    public <T extends Animation> T composeLambdaWithThis(DoubleUnaryOperator lambdaComp) {
+        lambda = lambda.compose(lambdaComp);
+        return (T) this;
+    }
+
+    public <T extends Animation> T composeThisWithLambda(DoubleUnaryOperator lambdaComp) {
+        lambda = lambdaComp.compose(lambda);
+        return (T) this;
+    }
+
     /**
      * Sets the smooth function
      *
