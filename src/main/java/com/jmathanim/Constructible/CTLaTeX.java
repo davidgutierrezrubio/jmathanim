@@ -25,8 +25,8 @@ import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.Text.LaTeXMathObject;
 
 /**
- *
- * @author David
+ * A constructible LaTeX expression, anchored to a CTPoint
+ * @author David Gutierrez Rubio davidgutierrezrubio@gmail.com
  */
 public class CTLaTeX extends Constructible {
 
