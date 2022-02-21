@@ -134,7 +134,7 @@ public class ShapeDelimiter extends Delimiter {
                 }
         }
         delimiterLabelToDraw.stackTo(Anchor.Type.LOWER, labelMarkPoint, Anchor.Type.UPPER, 0);
-        AffineJTransform tr = AffineJTransform.createDirect2DHomothecy(bb.getDL(), bb.getDR(), scaledA, scaledB, 1);
+        AffineJTransform tr = AffineJTransform.createDirect2DIsomorphic(bb.getDL(), bb.getDR(), scaledA, scaledB, 1);
 
         tr.applyTransform(resul);
         tr.applyTransform(labelMarkPoint);

@@ -102,7 +102,7 @@ public class LengthMeasure extends Delimiter {
         delimiterLabelToDraw.scale(amplitudeScale);
         delShape.scale(amplitudeScale);
         delShape.getMp().copyFrom(mpDelimiter);
-        AffineJTransform tr = AffineJTransform.createDirect2DHomothecy(AA, BB, A, B, 1);
+        AffineJTransform tr = AffineJTransform.createDirect2DIsomorphic(AA, BB, A, B, 1);
         tr.applyTransform(delShape);
         tr.applyTransform(delimiterLabelToDraw);
         delShape.add(delimiterLabelToDraw);

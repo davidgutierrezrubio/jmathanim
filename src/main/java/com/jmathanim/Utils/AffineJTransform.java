@@ -499,7 +499,7 @@ public class AffineJTransform implements Stateable {
     public static AffineJTransform createReflection(Point A, Point B, double alpha) {
         Point E1 = new Point(1, 0);
         Point E2 = new Point(-1, 0);
-        AffineJTransform canonize = AffineJTransform.createDirect2DHomothecy(A, B, E1, E2, 1);
+        AffineJTransform canonize = AffineJTransform.createDirect2DIsomorphic(A, B, E1, E2, 1);
         AffineJTransform invCanonize = canonize.getInverse();
         // A reflection from (1,0) to (-1,0) has a very simple form
         AffineJTransform canonizedReflection = new AffineJTransform();
@@ -517,7 +517,7 @@ public class AffineJTransform implements Stateable {
      * @return The reflection
      */
     public static AffineJTransform createReflectionByAxis(Point E1, Point E2, double alpha) {
-        AffineJTransform canonize = AffineJTransform.createDirect2DHomothecy(E1, E2, new Point(0, 0),
+        AffineJTransform canonize = AffineJTransform.createDirect2DIsomorphic(E1, E2, new Point(0, 0),
                 new Point(0, E2.v.norm()), 1);
         AffineJTransform invCanonize = canonize.getInverse();
         // A reflection from (1,0) to (-1,0) has a very simple form
@@ -625,7 +625,7 @@ public class AffineJTransform implements Stateable {
     public static AffineJTransform createRotateScaleXYTransformation(Point A, Point B, Point C, Point D, Point E,
             Point F, double lambda) {
         // First map A,B into (0,0) and (1,0)
-        AffineJTransform tr1 = AffineJTransform.createDirect2DHomothecy(A, B, new Point(0, 0), new Point(1, 0), 1);
+        AffineJTransform tr1 = AffineJTransform.createDirect2DIsomorphic(A, B, new Point(0, 0), new Point(1, 0), 1);
 
         // Now I create a transformation that adjust the y-scale, proportionally
         // This transform will be applied inversely too
@@ -634,7 +634,7 @@ public class AffineJTransform implements Stateable {
         tr2.setV2Img(0, proportionalHeight * lambda + (1 - lambda) * 1); // Interpolated here
 
         // Finally, and homothecy to carry A,B into D,E
-        AffineJTransform tr3 = AffineJTransform.createDirect2DHomothecy(A, B, D, E, lambda);// Interpolated here
+        AffineJTransform tr3 = AffineJTransform.createDirect2DIsomorphic(A, B, D, E, lambda);// Interpolated here
         // The final transformation
         return tr1.compose(tr2).compose(tr1.getInverse()).compose(tr3);
     }

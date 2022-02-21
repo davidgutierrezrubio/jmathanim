@@ -29,7 +29,7 @@ import com.jmathanim.mathobjects.Shape;
  *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
-public class HomothecyTransformAnimation extends TransformStrategy {
+public class IsomorphicTransformAnimation extends TransformStrategy {
 
     AnimationGroup anim;
     private AnimationWithEffects homothecy;
@@ -37,17 +37,21 @@ public class HomothecyTransformAnimation extends TransformStrategy {
     private final Shape mobjDestiny;
 //    private final Shape mobjTransformedOrig;
 
-    public HomothecyTransformAnimation(double runtime, Shape mobjTransformed, Shape mobjDestiny) {
+    public IsomorphicTransformAnimation(double runtime, Shape mobjTransformed, Shape mobjDestiny) {
         super(runtime);
         this.mobjTransformed = mobjTransformed;// .copy();
 //        this.mobjTransformedOrig = mobjTransformed;
         this.mobjDestiny = mobjDestiny;
+        removeThisAtTheEnd.add(this.mobjTransformed);
+        addThisAtTheEnd.add(this.mobjDestiny);
+       
 
     }
 
     @Override
     public void initialize(JMathAnimScene scene) {
         super.initialize(scene);
+         addObjectsToscene(mobjTransformed);
         Point a = this.mobjTransformed.getPoint(0);
         Point b = this.mobjTransformed.getPoint(1);
         Point c = this.mobjDestiny.getPoint(0);
@@ -59,7 +63,7 @@ public class HomothecyTransformAnimation extends TransformStrategy {
         if (this.isShouldInterpolateStyles()) {
             anim.add(Commands.setMP(runTime, mobjDestiny.getMp().copy(), this.mobjTransformed).setUseObjectState(false));
         }
-        this.copyAnimationParametersTo(anim);
+//        this.copyAnimationParametersTo(anim);
         this.copyEffectParametersTo(anim);
 //        homothecy.prepareJumpPath(this.mobjTransformed.getCenter(), this.mobjDestiny.getCenter(), this.mobjTransformed);
         anim.initialize(scene);
@@ -80,7 +84,6 @@ public class HomothecyTransformAnimation extends TransformStrategy {
     @Override
     public void finishAnimation() {
         super.finishAnimation();
-        removeObjectsFromScene(this.mobjTransformed);
         anim.finishAnimation();
     }
 

@@ -365,7 +365,7 @@ public class Commands {
                 super.initialize(scene);
                 saveStates(mathObjects);
                 addObjectsToscene(mathObjects);
-                tr = AffineJTransform.createDirect2DHomothecy(A, B, C, D, 1);
+                tr = AffineJTransform.createDirect2DIsomorphic(A, B, C, D, 1);
                 for (MathObject obj : mathObjects) {
                     Point center = obj.getCenter();
                     prepareJumpPath(center, tr.getTransformedObject(center), obj);
@@ -376,7 +376,7 @@ public class Commands {
             public void doAnim(double t) {
                 double lt = getLambda().applyAsDouble(t);
                 restoreStates(mathObjects);
-                tr = AffineJTransform.createDirect2DHomothecy(A, B, C, D, lt);
+                tr = AffineJTransform.createDirect2DIsomorphic(A, B, C, D, lt);
                 for (MathObject obj : mathObjects) {
                     tr.applyTransform(obj);
                     applyAnimationEffects(lt, obj);

@@ -252,7 +252,7 @@ public class AnimationEffect {
             if (jumpType == JumpType.ELLIPTICAL) {
                 jumpPath.scale(1, 1.25);
             }
-            AffineJTransform.createDirect2DHomothecy(jumpPath.getPoint(0), jumpPath.getPoint(-1), A, B, 1)
+            AffineJTransform.createDirect2DIsomorphic(jumpPath.getPoint(0), jumpPath.getPoint(-1), A, B, 1)
                     .applyTransform(jumpPath);
             jumpPaths.put(obj, jumpPath.getPath());
         }

@@ -20,7 +20,7 @@ package com.jmathanim.Animations;
 import com.jmathanim.Animations.Strategies.Transform.ArrowTransform;
 import com.jmathanim.Animations.Strategies.Transform.FunctionSimpleInterpolateTransform;
 import com.jmathanim.Animations.Strategies.Transform.GeneralAffineTransformAnimation;
-import com.jmathanim.Animations.Strategies.Transform.HomothecyTransformAnimation;
+import com.jmathanim.Animations.Strategies.Transform.IsomorphicTransformAnimation;
 import com.jmathanim.Animations.Strategies.Transform.MultiShapeTransform;
 import com.jmathanim.Animations.Strategies.Transform.Optimizers.NullOptimizationStrategy;
 import com.jmathanim.Animations.Strategies.Transform.PointInterpolationCanonical;
@@ -200,7 +200,7 @@ public class Transform extends AnimationWithEffects {
                 JMathAnimScene.logger.debug("Transform method: Point interpolation between 2 curves");
                 break;
             case HOMOTHECY_TRANSFORM:
-                transformStrategy = new HomothecyTransformAnimation(runTime, (Shape) mobjTransformed, (Shape) mobjDestiny);
+                transformStrategy = new IsomorphicTransformAnimation(runTime, (Shape) mobjTransformed, (Shape) mobjDestiny);
                 JMathAnimScene.logger.debug("Transform method: Homothecy");
 
                 break;

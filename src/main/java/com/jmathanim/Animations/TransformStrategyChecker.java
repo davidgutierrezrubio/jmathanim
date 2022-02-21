@@ -45,7 +45,7 @@ public class TransformStrategyChecker {
 			return false;
 		}
 		Point[] points = getIdealPoints(4, shORig, shDest);
-		AffineJTransform tr = AffineJTransform.createDirect2DHomothecy(points[0], points[1], points[2], points[3], 1);
+		AffineJTransform tr = AffineJTransform.createDirect2DIsomorphic(points[0], points[1], points[2], points[3], 1);
 		return testTransform(shORig, shDest, tr, epsilon);
 	}
 

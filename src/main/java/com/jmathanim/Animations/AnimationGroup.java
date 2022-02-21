@@ -113,9 +113,9 @@ public class AnimationGroup extends AnimationWithEffects {
         }
         int k = 0;
 
-        for (Animation anim : animations) {
-            this.copyAnimationParametersTo(anim);
-        }
+//        for (Animation anim : animations) {
+//            this.copyAnimationParametersTo(anim);
+//        }
 
         for (Animation anim : animations) {
             if (anim != null) {
