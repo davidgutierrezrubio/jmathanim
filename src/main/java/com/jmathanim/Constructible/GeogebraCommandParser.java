@@ -17,7 +17,6 @@
  */
 package com.jmathanim.Constructible;
 
-import com.jmathanim.Constructible.Points.CTPoint;
 import com.jmathanim.Constructible.Conics.CTCircle;
 import com.jmathanim.Constructible.Conics.CTEllipse;
 import com.jmathanim.Constructible.Lines.CTAngleBisector;
@@ -32,6 +31,7 @@ import com.jmathanim.Constructible.Lines.CTVector;
 import com.jmathanim.Constructible.Lines.HasDirection;
 import com.jmathanim.Constructible.Others.CTImage;
 import com.jmathanim.Constructible.Points.CTIntersectionPoint;
+import com.jmathanim.Constructible.Points.CTPoint;
 import com.jmathanim.Constructible.Points.CTPointOnObject;
 import com.jmathanim.Constructible.Transforms.CTMirrorPoint;
 import com.jmathanim.Constructible.Transforms.CTRotatedPoint;
@@ -40,7 +40,6 @@ import com.jmathanim.Styling.JMColor;
 import com.jmathanim.Styling.MODrawProperties;
 import com.jmathanim.Utils.Anchor;
 import com.jmathanim.jmathanim.JMathAnimScene;
-import static com.jmathanim.jmathanim.JMathAnimScene.PI;
 import com.jmathanim.mathobjects.JMImage;
 import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.NullMathObject;

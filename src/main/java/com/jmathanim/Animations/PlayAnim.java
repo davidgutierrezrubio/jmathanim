@@ -23,16 +23,14 @@ import com.jmathanim.Utils.Anchor;
 import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
-import com.jmathanim.mathobjects.Text.LaTeXMathObject;
 import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.MathObjectGroup;
 import com.jmathanim.mathobjects.MultiShapeObject;
 import com.jmathanim.mathobjects.Point;
 import com.jmathanim.mathobjects.SVGMathObject;
 import com.jmathanim.mathobjects.Shape;
+import com.jmathanim.mathobjects.Text.LaTeXMathObject;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.stream.Stream;
 
 /**
  * Several static methods to easily perform most common animations. This class

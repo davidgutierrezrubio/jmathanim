@@ -101,4 +101,9 @@ public class MultiShapeTransform extends TransformStrategy {
         return null;//TODO: Implement this
     }
 
+    @Override
+    public void doAnim(double t) {
+        anim.doAnim(t);
+    }
+
 }

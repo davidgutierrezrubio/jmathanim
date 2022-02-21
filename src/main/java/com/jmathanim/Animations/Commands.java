@@ -39,7 +39,6 @@ import com.jmathanim.mathobjects.Point;
 import com.jmathanim.mathobjects.Shape;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
 import javafx.scene.shape.StrokeLineCap;
 
@@ -193,8 +192,9 @@ public class Commands {
 
             @Override
             public void finishAnimation() {
-                super.finishAnimation();
                 doAnim(1);
+                super.finishAnimation();
+                
             }
         };
         resul.setDebugName("Scale");
@@ -238,8 +238,9 @@ public class Commands {
 
             @Override
             public void finishAnimation() {
-                super.finishAnimation();
                 doAnim(1);
+                super.finishAnimation();
+
             }
         };
         resul.setDebugName("Rotate");
@@ -285,8 +286,8 @@ public class Commands {
 
             @Override
             public void finishAnimation() {
-                super.finishAnimation();
                 doAnim(1);
+                super.finishAnimation();
             }
         };
     }// End of rotate command
@@ -328,8 +329,9 @@ public class Commands {
 
             @Override
             public void finishAnimation() {
-                super.finishAnimation();
                 doAnim(1);
+                super.finishAnimation();
+                
             }
         };
         resul.setDebugName("Affine Transform");
@@ -383,8 +385,9 @@ public class Commands {
 
             @Override
             public void finishAnimation() {
-                super.finishAnimation();
                 doAnim(1);
+                super.finishAnimation();
+                
             }
         };
         resul.setDebugName("Homothecy Transform");
@@ -432,8 +435,9 @@ public class Commands {
 
             @Override
             public void finishAnimation() {
-                super.finishAnimation();
                 doAnim(1);
+                super.finishAnimation();
+                
             }
         };
         resul.setDebugName("Reflection Transform");
@@ -482,8 +486,9 @@ public class Commands {
 
             @Override
             public void finishAnimation() {
-                super.finishAnimation();
                 doAnim(1);
+                super.finishAnimation();
+                
             }
         };
         resul.setDebugName("Reflexion by Axis Transform");
@@ -550,8 +555,9 @@ public class Commands {
 
             @Override
             public void finishAnimation() {
-                super.finishAnimation();
                 doAnim(1);
+                super.finishAnimation();
+                
             }
         };
         resul.setDebugName("setMP");
@@ -614,8 +620,9 @@ public class Commands {
 
                 @Override
                 public void finishAnimation() {
-                    super.finishAnimation();
                     doAnim(1);
+                    super.finishAnimation();
+                    
                 }
             };
         }
@@ -725,8 +732,8 @@ public class Commands {
 
             @Override
             public void finishAnimation() {
-                super.finishAnimation();
                 doAnim(1);
+                super.finishAnimation();
                 removeObjectsFromScene(mathObjects);
             }
         };
@@ -786,8 +793,9 @@ public class Commands {
 
             @Override
             public void finishAnimation() {
-                super.finishAnimation();
                 doAnim(1);
+                super.finishAnimation();
+                
             }
         };
         anim.setLambda(t -> t);// Default value
@@ -831,8 +839,9 @@ public class Commands {
 
             @Override
             public void finishAnimation() {
-                super.finishAnimation();
                 doAnim(1);
+                super.finishAnimation();
+                
             }
         };
         anim.setLambda(t -> t);// Default value
@@ -992,8 +1001,9 @@ public class Commands {
 
             @Override
             public void finishAnimation() {
-                super.finishAnimation();
                 doAnim(1);
+                super.finishAnimation();
+                
             }
         };
         resul.setDebugName("changeFillAlpha");

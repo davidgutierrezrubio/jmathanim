@@ -18,8 +18,6 @@
 package com.jmathanim.Animations;
 
 import com.jmathanim.mathobjects.hasScalarParameter;
-import java.util.HashSet;
-import java.util.Set;
 
 /**
  *

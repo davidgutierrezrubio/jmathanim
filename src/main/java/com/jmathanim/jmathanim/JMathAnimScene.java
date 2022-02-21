@@ -27,11 +27,11 @@ import com.jmathanim.Constructible.GeogebraLoader;
 import com.jmathanim.Renderers.Renderer;
 import com.jmathanim.Utils.JMathAnimConfig;
 import com.jmathanim.Utils.Rect;
-import com.jmathanim.mathobjects.Text.LaTeXMathObject;
 import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.MathObjectGroup;
 import com.jmathanim.mathobjects.MultiShapeObject;
 import com.jmathanim.mathobjects.Shape;
+import com.jmathanim.mathobjects.Text.LaTeXMathObject;
 import com.jmathanim.mathobjects.updateableObjects.Updateable;
 import java.net.URL;
 import java.util.ArrayList;
@@ -241,7 +241,7 @@ public abstract class JMathAnimScene {
      */
     public synchronized final void registerUpdateable(Updateable... objs) {
         for (Updateable obj : objs) {
-            if ((obj!=null)&&(!objectsToBeUpdated.contains(obj))) {
+            if ((obj != null) && (!objectsToBeUpdated.contains(obj))) {
                 objectsToBeUpdated.add(obj);
                 obj.registerUpdateableHook(this);
             }
@@ -452,8 +452,7 @@ public abstract class JMathAnimScene {
                 if (anim.getStatus() == Animation.Status.FINISHED) {// This allow to reuse ended animations
                     anim.setStatus(Animation.Status.NOT_INITIALIZED);
                 }
-                anim.initialize(this);// Perform needed steps immediately before playing
-
+                    anim.initialize(this);// Perform needed steps immediately before playing
                 if (!"".equals(anim.getDebugName())) {
                     JMathAnimScene.logger.info("Begin animation: " + anim.getDebugName());
                 }

@@ -24,7 +24,7 @@ import com.jmathanim.mathobjects.Point;
  *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
-public class AnimationWithEffects extends Animation {
+public abstract class AnimationWithEffects extends Animation {
 
     AnimationEffect effect;
 
@@ -36,10 +36,6 @@ public class AnimationWithEffects extends Animation {
 
     public AnimationEffect getEffect() {
         return effect;
-    }
-
-    @Override
-    public void doAnim(double t) {// Nothing to do here, it will be overriden
     }
 
     public void addJumpEffect(double height) {

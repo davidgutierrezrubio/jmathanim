@@ -19,11 +19,9 @@ package com.jmathanim.mathobjects;
 
 import com.jmathanim.Renderers.FXRenderer.JavaFXRenderer;
 import com.jmathanim.Utils.AffineJTransform;
-import com.jmathanim.Utils.Anchor;
 import com.jmathanim.Utils.JMathAnimConfig;
 import com.jmathanim.Utils.Rect;
 import com.jmathanim.jmathanim.JMathAnimScene;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;

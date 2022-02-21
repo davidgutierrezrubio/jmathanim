@@ -23,7 +23,6 @@ import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.Line;
 import com.jmathanim.mathobjects.Point;
-import com.jmathanim.mathobjects.updateableObjects.Updateable;
 
 /**
  * A CTLine that is the angle bisector of 2 other lines or 3 points

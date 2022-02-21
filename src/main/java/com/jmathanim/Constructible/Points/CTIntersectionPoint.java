@@ -28,8 +28,6 @@ import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.Line;
 import com.jmathanim.mathobjects.Point;
-import java.util.Arrays;
-import java.util.OptionalInt;
 
 /**
  * Represents an intersection point of lines, rays, or circles

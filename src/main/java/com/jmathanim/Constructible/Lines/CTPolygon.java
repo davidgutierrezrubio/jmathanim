@@ -17,15 +17,13 @@
  */
 package com.jmathanim.Constructible.Lines;
 
-import com.jmathanim.Constructible.Points.CTPoint;
-import com.jmathanim.Constructible.Constructible;
 import com.jmathanim.Constructible.FixedConstructible;
+import com.jmathanim.Constructible.Points.CTPoint;
 import com.jmathanim.Renderers.Renderer;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.Point;
 import com.jmathanim.mathobjects.Shape;
-import com.jmathanim.mathobjects.updateableObjects.Updateable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.OptionalInt;

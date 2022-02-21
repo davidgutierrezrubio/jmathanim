@@ -20,10 +20,8 @@ package com.jmathanim.Styling;
 import com.jmathanim.Cameras.Camera;
 import com.jmathanim.Renderers.FXRenderer.JavaFXRenderer;
 import com.jmathanim.jmathanim.JMathAnimScene;
-
-import javafx.scene.paint.Paint;
-
 import java.lang.reflect.Field;
+import javafx.scene.paint.Paint;
 
 /**
  *

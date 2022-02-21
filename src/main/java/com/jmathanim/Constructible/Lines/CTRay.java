@@ -21,10 +21,8 @@ import com.jmathanim.Constructible.Points.CTPoint;
 import com.jmathanim.Renderers.Renderer;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
-import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.Point;
 import com.jmathanim.mathobjects.Ray;
-import com.jmathanim.mathobjects.updateableObjects.Updateable;
 
 /**
  * A Constructible ray

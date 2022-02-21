@@ -19,10 +19,10 @@ package com.jmathanim.mathobjects.Tippable;
 
 import com.jmathanim.Utils.Anchor;
 import static com.jmathanim.jmathanim.JMathAnimScene.PI;
-import com.jmathanim.mathobjects.Text.LaTeXMathObject;
 import com.jmathanim.mathobjects.MathObjectGroup;
 import com.jmathanim.mathobjects.Point;
 import com.jmathanim.mathobjects.Shape;
+import com.jmathanim.mathobjects.Text.LaTeXMathObject;
 
 /**
  *

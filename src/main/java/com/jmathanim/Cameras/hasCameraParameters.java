@@ -17,8 +17,6 @@
  */
 package com.jmathanim.Cameras;
 
-import com.jmathanim.Utils.Rect;
-
 /**
  *
  * @author David

@@ -22,7 +22,6 @@ import com.jmathanim.jmathanim.JMathAnimScene;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.function.DoubleUnaryOperator;
-import java.util.stream.Collectors;
 
 /**
  * Stores a group of animations, to be played at the same time. This class is
