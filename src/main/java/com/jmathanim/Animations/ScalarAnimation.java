@@ -20,28 +20,43 @@ package com.jmathanim.Animations;
 import com.jmathanim.mathobjects.hasScalarParameter;
 
 /**
+ * Animates a Scalar object
  *
- * @author David
+ * @author David Gutierrez Rubio
  */
-public class ScalarAnimation extends Animation{
+public class ScalarAnimation extends Animation {
 
     hasScalarParameter scalarToAnimate;
     private final double b;
     private final double a;
 
-    public ScalarAnimation(double runTime,hasScalarParameter scalarToAnimate,double a, double b) {
-        super(runTime);
-        this.scalarToAnimate=scalarToAnimate;
-        this.a=a;
-        this.b=b;
-        
+    /**
+     * Creates a new Scalar animation that animates the Scalar object between a
+     * and b
+     *
+     * @param runTime Runtime in seconds
+     * @param scalarToAnimate Any object that implements the interface
+     * hasScalarParameter that will be animated
+     * @param a Initial value
+     * @param b End value
+     * @return The animation created
+     */
+    public static ScalarAnimation make(double runTime, hasScalarParameter scalarToAnimate, double a, double b) {
+        return new ScalarAnimation(runTime, scalarToAnimate, a, b);
     }
-    
-    
+
+    private ScalarAnimation(double runTime, hasScalarParameter scalarToAnimate, double a, double b) {
+        super(runTime);
+        this.scalarToAnimate = scalarToAnimate;
+        this.a = a;
+        this.b = b;
+
+    }
+
     @Override
     public void doAnim(double t) {
-        double lt=lambda.applyAsDouble(t);
-        scalarToAnimate.setScalar(a+(b-a)*lt);
+        double lt = lambda.applyAsDouble(t);
+        scalarToAnimate.setScalar(a + (b - a) * lt);
     }
-    
+
 }

@@ -23,6 +23,7 @@ import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.Point;
 import com.jmathanim.mathobjects.Shape;
+import com.jmathanim.mathobjects.hasScalarParameter;
 import java.text.DecimalFormat;
 
 /**
@@ -30,7 +31,7 @@ import java.text.DecimalFormat;
  *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
-public class JMNumber extends LaTeXMathObject {
+public class JMNumber extends LaTeXMathObject implements hasScalarParameter {
 
     private final AffineJTransform modelMatrix;
     private double number;
@@ -58,7 +59,7 @@ public class JMNumber extends LaTeXMathObject {
      */
     public static JMNumber makeJMnumber(double number) {
         JMNumber resul = new JMNumber(0);
-        resul.setNumber(number);
+        resul.setScalar(number);
         resul.style("latexdefault");
         return resul;
     }
@@ -84,7 +85,7 @@ public class JMNumber extends LaTeXMathObject {
 //        double h = this.getHeight();
 //        Point center = (shapes.isEmpty() ? null : this.getCenter());
 //        String text = lambdaText.apply(this.number) + unitString;
-        String text = formatter.format(getNumber());
+        String text = formatter.format(getScalar());
 
         for (Shape sh : shapes) {
             scene.remove(sh);
@@ -141,44 +142,17 @@ public class JMNumber extends LaTeXMathObject {
 //        }
     }
 
-    /**
-     * Returns the number showed
-     *
-     * @return
-     */
-    public double getNumber() {
+    @Override
+    public double getScalar() {
         return number;
     }
 
-    /**
-     * Sets the new number,updating the LaTeX content
-     *
-     * @param number New number
-     */
-    public final void setNumber(double number) {
-        this.number = number;
+    @Override
+    public void setScalar(double scalar) {
+        this.number = scalar;
         updateContents();
     }
 
-//    /**
-//     * Returns the lambda function used to convert the number into a string
-//     *
-//     * @return The lambda function
-//     */
-//    public Function<Double, String> getLambdaText() {
-//        return lambdaText;
-//    }
-//
-//    /**
-//     * Sets the lambda formatting function, that converts a double number into a
-//     * string. LaTeX content is automatically updated.
-//     *
-//     * @param lambdaText The new lambda function
-//     */
-//    public void setLambdaText(Function<Double, String> lambdaText) {
-//        this.lambdaText = lambdaText;
-//        updateContents();
-//    }
     /**
      * Sets the number of decimals to show
      *
@@ -262,7 +236,7 @@ public class JMNumber extends LaTeXMathObject {
 
     @Override
     public JMNumber copy() {
-        JMNumber copy = JMNumber.makeJMnumber(getNumber());
+        JMNumber copy = JMNumber.makeJMnumber(getScalar());
         copy.getMp().copyFrom(getMp());
         copy.setFormat(formatter.toPattern());
         copy.modelMatrix.copyFrom(modelMatrix);
@@ -274,9 +248,6 @@ public class JMNumber extends LaTeXMathObject {
         return formatter;
     }
 
-    
-    
-    
     private static final String SYMBOLS = "0123456789.,-abcdefghijklmnopqrstuvwxyz";
 
     private static final double[][] GAPS = new double[][]{{0.014468161764682463, 0.023624981617672347, 0.016482647058808197, 0.015017555147096573, 0.01245363970588187, 0.01648266544117405, 0.015017573529405581, 0.017581488970620285, 0.015017573529405581, 0.015017573529405581, 0.02307558823531508, 0.02307558823531508, 0.009340312500000891, 0.01501755514703973, 0.012453658088247721, 0.013552463235328105, 0.013552463235271262, 0.01245363970588187, 0.013369338235293071, 0.012453658088247721, 0.01318619485294903, 0.01336931985292722, 3.4926466696560965E-7, 0.012453658088247721, 0.013369319852984063, 0.013186194852892186, 0.01318619485294903, 0.01245363970588187, 0.01245363970588187, 0.013552463235271262, 0.012453658088190878, 0.013369338235293071, 0.01080540441176936, 0.013186213235314881, 0.010805422794135211, 0.010622279411791169, 0.009523455882344933, 0.01080540441176936, 0.012453658088247721},
@@ -321,4 +292,5 @@ public class JMNumber extends LaTeXMathObject {
 
     private static final double[] BASELINES = {-0.004029007352941177, 0.0, 0.0, -0.004029007352941177, 0.0, -0.004029007352941177, -0.004029007352941177, -0.004029007352941177, -0.004029007352941177, -0.004029007352941177, 0.0, -0.0353454044117647, 0.03424658088235294, -0.002014503676470575, -0.002014503676470575, -0.002014503676470575, -0.002014503676470575, -0.0020145036764705818, 0.0, -0.03772617647058826, 0.0, 0.0, -0.037543033088235284, 0.0, 0.0, 0.0, 0.0, -0.002014503676470575, -0.03552852941176471, -0.03552852941176471, 0.0, -0.002014503676470575, -0.0020145036764705818, -0.002014503676470575, -0.002014503676470575, -0.002014503676470575, 0.0, -0.037543033088235284, 0.0};
     private static final LaTeXMathObject glyphs = LaTeXMathObject.make(SYMBOLS);
+
 }
