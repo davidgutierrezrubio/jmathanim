@@ -194,7 +194,7 @@ public class Commands {
             public void finishAnimation() {
                 doAnim(1);
                 super.finishAnimation();
-                
+
             }
         };
         resul.setDebugName("Scale");
@@ -331,12 +331,29 @@ public class Commands {
             public void finishAnimation() {
                 doAnim(1);
                 super.finishAnimation();
-                
+
             }
         };
         resul.setDebugName("Affine Transform");
         return resul;
     }// End of affineTransform command
+
+    /**
+     * Deprecated. Animation command that transforms a MathObject through an
+     * isomorphism. This is left for compatibility reasons. Use isomorphism instead.
+     *
+     * @param runtime Run time (in seconds)
+     * @param a First origin point
+     * @param b Second origin point
+     * @param c First destiny point
+     * @param d Second destiny point
+     * @param objects Objects to animate (varargs)
+     * @return Animation to run playAnimation method method
+     */
+    public static AnimationWithEffects homothecy(double runtime, Point a, Point b, Point c, Point d,
+            MathObject... objects) {
+        return isomorphism(runtime, a, b, c, d, objects);
+    }
 
     /**
      * Animation command that transforms a MathObject through an homothecy.
@@ -350,7 +367,7 @@ public class Commands {
      * @param objects Objects to animate (varargs)
      * @return Animation to run playAnimation method method
      */
-    public static AnimationWithEffects homothecy(double runtime, Point a, Point b, Point c, Point d,
+    public static AnimationWithEffects isomorphism(double runtime, Point a, Point b, Point c, Point d,
             MathObject... objects) {
         AnimationWithEffects resul = new AnimationWithEffects(runtime) {
             Point A = a.copy();
@@ -387,7 +404,7 @@ public class Commands {
             public void finishAnimation() {
                 doAnim(1);
                 super.finishAnimation();
-                
+
             }
         };
         resul.setDebugName("Homothecy Transform");
@@ -437,7 +454,7 @@ public class Commands {
             public void finishAnimation() {
                 doAnim(1);
                 super.finishAnimation();
-                
+
             }
         };
         resul.setDebugName("Reflection Transform");
@@ -488,7 +505,7 @@ public class Commands {
             public void finishAnimation() {
                 doAnim(1);
                 super.finishAnimation();
-                
+
             }
         };
         resul.setDebugName("Reflexion by Axis Transform");
@@ -557,7 +574,7 @@ public class Commands {
             public void finishAnimation() {
                 doAnim(1);
                 super.finishAnimation();
-                
+
             }
         };
         resul.setDebugName("setMP");
@@ -622,7 +639,7 @@ public class Commands {
                 public void finishAnimation() {
                     doAnim(1);
                     super.finishAnimation();
-                    
+
                 }
             };
         }
@@ -795,7 +812,7 @@ public class Commands {
             public void finishAnimation() {
                 doAnim(1);
                 super.finishAnimation();
-                
+
             }
         };
         anim.setLambda(t -> t);// Default value
@@ -841,7 +858,7 @@ public class Commands {
             public void finishAnimation() {
                 doAnim(1);
                 super.finishAnimation();
-                
+
             }
         };
         anim.setLambda(t -> t);// Default value
@@ -1003,7 +1020,7 @@ public class Commands {
             public void finishAnimation() {
                 doAnim(1);
                 super.finishAnimation();
-                
+
             }
         };
         resul.setDebugName("changeFillAlpha");

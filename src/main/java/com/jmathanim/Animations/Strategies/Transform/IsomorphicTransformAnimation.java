@@ -32,7 +32,7 @@ import com.jmathanim.mathobjects.Shape;
 public class IsomorphicTransformAnimation extends TransformStrategy {
 
     AnimationGroup anim;
-    private AnimationWithEffects homothecy;
+    private AnimationWithEffects isomorphism;
     private final Shape mobjTransformed;
     private final Shape mobjDestiny;
 //    private final Shape mobjTransformedOrig;
@@ -57,9 +57,9 @@ public class IsomorphicTransformAnimation extends TransformStrategy {
         Point c = this.mobjDestiny.getPoint(0);
         Point d = this.mobjDestiny.getPoint(1);
         anim = new AnimationGroup();
-        homothecy = Commands.homothecy(runTime, a, b, c, d, this.mobjTransformed);
-        homothecy.setUseObjectState(isUseObjectState());
-        anim.add(homothecy);
+        isomorphism = Commands.isomorphism(runTime, a, b, c, d, this.mobjTransformed);
+        isomorphism.setUseObjectState(isUseObjectState());
+        anim.add(isomorphism);
         if (this.isShouldInterpolateStyles()) {
             anim.add(Commands.setMP(runTime, mobjDestiny.getMp().copy(), this.mobjTransformed).setUseObjectState(false));
         }

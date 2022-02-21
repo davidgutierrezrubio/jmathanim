@@ -201,7 +201,7 @@ public class Transform extends AnimationWithEffects {
                 break;
             case HOMOTHECY_TRANSFORM:
                 transformStrategy = new IsomorphicTransformAnimation(runTime, (Shape) mobjTransformed, (Shape) mobjDestiny);
-                JMathAnimScene.logger.debug("Transform method: Homothecy");
+                JMathAnimScene.logger.debug("Transform method: Isomorphic");
 
                 break;
             case ROTATE_AND_SCALEXY_TRANSFORM:
