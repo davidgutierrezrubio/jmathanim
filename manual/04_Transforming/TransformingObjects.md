@@ -197,7 +197,7 @@ Given any `MathObject` instance, there are 2 main methods to use an `AffineJTran
 ## Isomorphic transformations
 The `createDirect2DIsomorphic(Point A, Point B, Point C, Point D, double alpha)` is a combination of shifting, rotating and uniform scaling. This method generates the (only) direct transform of this type that maps the points (A,B) into points (C,D). The `alpha` parameter is used for animations, as a value of `alpha=0` returns the identity transform and `alpha=1` returns the full transform. Intermediate values return intermediate transforms, interpolating the shifting, rotating, and scaling parameters adequately. These transforms preserve not the size, but the shape and proportions of the objects.
 
-Note: There is also a command named `createDirect2DHomothecy`. This command performs the same transformation as `createDirect2DIsomorphic`but it is left for compatibility reasons  , and it will be removed in future versions.
+Note: This command was previously named `createDirect2DHomothecy`,vit performs the same transformation as `createDirect2DIsomorphic`but it is left for compatibility reasons, and it will be removed in future versions.
 
 Look at the following example:
 

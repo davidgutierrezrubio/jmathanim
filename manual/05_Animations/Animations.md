@@ -402,7 +402,7 @@ as thickness and color.
 
 ## Transform strategies
 
-The precise method of transform depends on the type of source and destination objects.  For example, in the previous case, a point-by-point interpolation was chosen. However, if both shapes are regular polygons with the same number of sides, an homothecy is chosen to transform. We will show another example, not using the "long" form given by the `play` object:
+The precise method of transform depends on the type of source and destination objects.  For example, in the previous case, a point-by-point interpolation was chosen. However, if both shapes are regular polygons with the same number of sides, an isomorphic transform is chosen. We will show another example, not using the "long" form given by the `play` object:
 
 ``` java
 Shape pentagon = Shape.regularPolygon(5).thickness(3).scale(.5).shift(-1,-1);
@@ -414,7 +414,7 @@ waitSeconds(1);
 
 ![transform2](transform2.gif)
 
-While both methods may seem equal, the homothecy method ensures the object doesn’t get distorted in the way. If you want to force a concrete transform strategy, you can do it with the method `.setTransformMethod(method)` where method is a value of the enum `TransformMethod`.
+While both methods may seem equal, the isomorphic method ensures the object doesn’t get distorted in the way. If you want to force a concrete transform strategy, you can do it with the method `.setTransformMethod(method)` where method is a value of the enum `TransformMethod`.
 
 > **WARNING**: Forcing a concrete transform strategy may leads to errors in some cases. In most cases, no animation will be done and a message will be added to the logs.
 
@@ -422,12 +422,12 @@ Currently, the following strategies are implemented:
 
 1. `INTERPOLATE_SIMPLE_SHAPES_BY_POINT`, for 2 simple shapes, a point-by-point interpolation. A simple shape has only one connected component, like squares or circles.
 2. `INTERPOLATE_POINT_BY_POINT`. A more general interpolation. The shape is converted in the so called canonical form. Applicable when the shapes have multiple componentes (for example the shape of a "B" letter has 3 components).
-3. `HOMOTHECY_TRANSFORM` A homothecy is created to transform the original shape into the destiny. The homothecy is created so that the 2 first points of the origin shape transform into the 2 first points of the destiny shape.
-4. `ROTATE_AND_SCALEXY_TRANSFORM` Similar to the homothecy, but scaling is not homogeneous. This animation is used to transform any rectangle into another one, to prevent distortions.
+3. `ISOMORPHIC_TRANSFORM` A direct isomorphism is created to transform the original shape into the destiny. The isomorphism is created so that the 2 first points of the origin shape transform into the 2 first points of the destiny shape.
+4. `ROTATE_AND_SCALEXY_TRANSFORM` Similar to the isomorphism , but scaling is not homogeneous. This animation is used to transform any rectangle into another one, to prevent distortions.
 5. `FUNCTION_INTERPOLATION` The name says it! Used  to transform one function to another, interpolating x-to-x
 6. `MULTISHAPE_TRANSFORM` For transforming Multishape objects (like LaTeXMathObject)
-7. `GENERAL_AFFINE_TRANSFORM` Like HomothecyTransform, but admits a more general affine transform. The 3 first points of origin go to the 3 first points of destiny.
-8. `ARROW_TRANSFORM` A specialized class that transforms arrows, delegating into a homothecy transform and properly handling arrow heads.
+7. `GENERAL_AFFINE_TRANSFORM` Like the isomorphic transform, but admits a more general affine transform. The 3 first points of origin go to the 3 first points of destiny.
+8. `ARROW_TRANSFORM` A specialized class that transforms arrows, delegating into a isomorphic transform and properly handling arrow heads.
 
 To see the difference between one type or another, consider this code, where we transform one square into a rotated rectangle, forcing a `GENERAL_AFFINE_TRANSFORM` method:
 
@@ -646,8 +646,8 @@ waitSeconds(2);
 
 ![reflection2Anim](reflection2Anim.gif)
 
-## Homothecies
-The animation `Commands.homothecy(double runtime, Point a, Point b, Point c, Point d, MathObject... objects)` animates the only direct homothecy that maps A into C and B into D:
+## Isomorphism
+The animation `Commands.isomorphism(double runtime, Point a, Point b, Point c, Point d, MathObject... objects)` animates the only direct isomorphism that maps A into C and B into D:
 
 ```java
 Point A = Point.origin().drawColor(JMColor.BLUE);
@@ -656,12 +656,14 @@ Point C = Point.at(1, .2).drawColor(JMColor.RED);
 Point D = Point.at(1.8, .6).drawColor(JMColor.RED);
 add(A,B,C,D);
 Shape triangle = Shape.polygon(A, B, Point.at(0, .5));
-Animation anim=Commands.homothecy(3, A, B, C, D, triangle);
+Animation anim=Commands.isomorphism(3, A, B, C, D, triangle);
 playAnimation(anim);
 waitSeconds(3);
 ```
 
 ![homothecyAnim](homothecyAnim.gif)
+
+Internally, JMathAnim creates the isomorphism as a composition of shifting, rotating and uniform scaling, so the precise form of the shapes is unaltered (except size).
 
 # Transforming math expressions
 
