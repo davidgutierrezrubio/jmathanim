@@ -40,6 +40,7 @@ import java.util.stream.Stream;
  * @author David Gutiérrez davidgutierrezrubio@gmail.com
  */
 public class JMPath implements Stateable, Boxable, Iterable<JMPathPoint> {
+
     static public final int MATHOBJECT = 1; // Arc, line, segment...
     static public final int SVG_PATH = 2; // SVG import, LaTeX object...
     static public final int CONNECTED_COMPONENT = 3; // Connected, open component. Every path should be able to put in
@@ -990,6 +991,9 @@ public class JMPath implements Stateable, Boxable, Iterable<JMPathPoint> {
      */
     public void openPath() {
         //Open the path if it is closed
+        if (isEmpty()) {
+            return;//Nothing to open
+        }
         final JMPathPoint firstP = jmPathPoints.get(0);
         if (firstP.isThisSegmentVisible) {
             addJMPoint(firstP.copy());

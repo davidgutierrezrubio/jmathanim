@@ -107,6 +107,7 @@ public class SVGUtils {
                     case "path":
                         try {
                         JMPath path = processPathCommands(el.getAttribute("d"));
+                        path.distille();
                         PathUtils pathUtils = new PathUtils();
                         pathUtils.determineStraightSegments(path);
                         if (path.jmPathPoints.size() > 0) {
