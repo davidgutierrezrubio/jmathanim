@@ -31,6 +31,7 @@ import com.jmathanim.Constructible.Lines.CTVector;
 import com.jmathanim.Constructible.Lines.HasDirection;
 import com.jmathanim.Constructible.Others.CTImage;
 import com.jmathanim.Constructible.Points.CTIntersectionPoint;
+import com.jmathanim.Constructible.Points.CTMidPoint;
 import com.jmathanim.Constructible.Points.CTPoint;
 import com.jmathanim.Constructible.Points.CTPointOnObject;
 import com.jmathanim.Constructible.Transforms.CTMirrorPoint;
@@ -551,9 +552,8 @@ public class GeogebraCommandParser {
             if ((ob1 instanceof CTCircle) || (ob2 instanceof CTCircle)) {
                 registerGeogebraElement(label, CTIntersectionPoint.make(ob1, ob2, 1));
                 registerGeogebraElement(getOutputArgument(el, 1), CTIntersectionPoint.make(ob1, ob2, 2));
-            }else
-            {
-                 registerGeogebraElement(label, CTIntersectionPoint.make(ob1, ob2, 1));
+            } else {
+                registerGeogebraElement(label, CTIntersectionPoint.make(ob1, ob2, 1));
             }
         }
 
@@ -615,6 +615,21 @@ public class GeogebraCommandParser {
         CTPoint rotationCenter = (CTPoint) objs[2];
         registerGeogebraElement(label, CTRotatedPoint.make(pointToRotate, angle, rotationCenter));
         JMathAnimScene.logger.debug("Imported rotated point " + label + " of " + objs[0] + " with angle " + objs[1]);
+    }
+
+    void processMidPoint(Element el) {
+        String label = getOutputArgument(el, 0);
+        MathObject[] objs = getArrayOfParameters(el);
+        //If there are 2 elements, they must be 2 points
+        if (objs.length==2) {
+            CTPoint A=(CTPoint)objs[0];
+            CTPoint B=(CTPoint)objs[1];
+            registerGeogebraElement(label, CTMidPoint.make(A,B));
+        }
+         if (objs.length==1) {//It must be a segment
+            CTSegment segment=(CTSegment)objs[0];
+            registerGeogebraElement(label, CTMidPoint.make(segment));
+        }
     }
 
 }
