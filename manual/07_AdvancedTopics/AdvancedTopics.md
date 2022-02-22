@@ -41,8 +41,8 @@ When creating a new `MathObject` subclass which depends on other objects, you sh
 For example, let's suppose we have the following simple animation, where a `Point` object named `A` moves from the point (1,1) to (-1,1):
 
 ```java
-add(new Axes());
-Point A = Point.at(1, 1);
+add(new Axes(),Shape.circle());
+Point A = Point.at(1, .5);
 play.shift(3,-2,0,A);
 waitSeconds(3);
 ```
@@ -82,10 +82,10 @@ class UnitPoint extends Point {
 and modify the scene, adding an instance of this class:
 
 ```java
-add(new Axes());
-Point A = Point.at(1, 1);
+add(new Axes(),Shape.circle());
+Point A = Point.at(1, .5);
 UnitPoint B = new UnitPoint(A);
-B.drawColor(JMColor.RED);
+B.drawColor("red");
 add(B);
 play.shift(3, -2, 0, A);
 waitSeconds(3);
@@ -209,7 +209,7 @@ Not all `MathObject` and `Animation` combinations are compatible. Below is a tab
 | Line            | Yes                                                          | Yes                    | Yes                                                          |
 | Axes            | No                                                           | Yes                    | No                                                           |
 | LaTeXMathObject | Yes                                                          | Yes                    | Yes (also you can use the specialized `TransformMathExpression` method) |
-| Arrow2D         | Yes                                                          | Yes                    | Yes (delegates in the homothecy transform)                   |
+| Arrow2D         | Yes                                                          | Yes                    | Yes (delegates in the isomorphic transform)                  |
 | Delimiter       | No (you have the transform the anchor points instead)        | Yes                    | No (transform anchor points instead)                         |
 
 [home](https://davidgutierrezrubio.github.io/jmathanim/) [back](../index.html)
