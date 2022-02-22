@@ -334,28 +334,6 @@ Shape sq2 = Shape.square().scale(1.75, 1).style("solidred");
 sq2.stackTo(sq1, Anchor.Type.RIGHT, .5);
 add(sq1, sq2);
 
-//And their legends
-LaTeXMathObject textA1 = LaTeXMathObject.make("$a$");
-LaTeXMathObject textA2 = LaTeXMathObject.make("$a$");
-LaTeXMathObject textB = LaTeXMathObject.make("$b$");
-LaTeXMathObject textC = LaTeXMathObject.make("$c$");
-
-//The colors chosen to the symbols a, b and c
-JMColor colA = JMColor.parse("#34403C");
-JMColor colB = JMColor.parse("#961A4C");
-JMColor colC = JMColor.parse("#6A2A5C");
-JMColor colArea = JMColor.parse("#B73A1C");
-textA1.setColor(colA, 0);
-textA2.setColor(colA, 0);
-textB.setColor(colB, 0);
-textC.setColor(colC, 0);
-
-//Brace    //Two rectangles
-Shape sq1 = Shape.square().scale(2.5, 1).style("solidblue");
-Shape sq2 = Shape.square().scale(1.75, 1).style("solidred");
-sq2.stackTo(sq1, Anchor.Type.RIGHT, .5);
-add(sq1, sq2);
-
 //The colors chosen to the symbols a, b and c
 JMColor colA = JMColor.parse("#34403C");
 JMColor colB = JMColor.parse("#961A4C");
@@ -580,7 +558,7 @@ Here is a gif from the movie generated:
 A solution for a simple puzzle. Can you invert the triangle moving only 3 coins?
 
 ```java
-Shape coinBase = Shape.circle().fillColor("gold").thickness(2);
+Shape coinBase = Shape.circle().fillColor("gold").thickness(8);
 Shape[] coin = new Shape[10];
 for (int n = 0; n < 10; n++) {
     coin[n] = coinBase.copy();
@@ -588,20 +566,35 @@ for (int n = 0; n < 10; n++) {
 double vertGap = Math.sqrt(3) - 2;//This negative gap is computed so that circles are tangent
 MathObjectGroup pyramid=MathObjectGroup.make(coin);
 pyramid.setLayout(new PascalLayout(0, vertGap));
+add(pyramid);
+camera.adjustToAllObjects();
+camera.scale(2);
 //The number of coins:
 //   0
 //  1 2
 // 3 4 5
 //6 7 8 9
-add(pyramid);
-camera.adjustToAllObjects();
-camera.scale(2);
+//To invert the pyramid, we need to:
+//Rotate coin 6 around coin 3,
+//rotate coin 9 around coin 8, and
+//rotate coin 0 around coin 2
 Animation anim1 = Commands.rotate(2, coin[3].getCenter(), -120 * DEGREES, coin[6]);
 Animation anim2 = Commands.rotate(2, coin[8].getCenter(), -120 * DEGREES, coin[9]);
 Animation anim3 = Commands.rotate(2, coin[2].getCenter(), -120 * DEGREES, coin[0]);
 
 playAnimation(anim1,anim2,anim3);
-waitSeconds(3);
+//Now they are arranged in this way:
+//6 1 2 0
+// 3 4 5
+//  7 8 
+//   9
+//So, we need to:
+//Rotate coin 6 around coin 1,
+//rotate coin 9 around 7, and
+//rotate coin 0 around coin 5
+//to invert the piramid again
+
+waitSeconds(3);//Take a breath...
 
 anim1 = Commands.rotate(2, coin[1].getCenter(), -120 * DEGREES, coin[6]);
 anim2 = Commands.rotate(2, coin[7].getCenter(), -120 * DEGREES, coin[9]);
