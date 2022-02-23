@@ -11,9 +11,11 @@ You can also follow my [Youtube](https://www.youtube.com/channel/UCeczwEqSrAwZbP
 
 # What's new?
 
-Version 0.9.5-SNAPSHOT (19/02/2022)
+Version 0.9.5-SNAPSHOT (23/02/2022)
 
+* Preparing for release of version 0.9.5! Added more `Constructible` objects, fixed bugs and bugs, and improved Geogebra files import.
 * Added first version of Constructible objects, like `CTLine`, `CTCircle`or `CTIntersectionPoint`.
+
 * Added Geogebra import capabilities. Some simple Geogebra documents can be imported and converted into Constructible objects.
 * Added `Ray` object
 * Added `polygon`and `polyline`import capabilities for SVG objects.
