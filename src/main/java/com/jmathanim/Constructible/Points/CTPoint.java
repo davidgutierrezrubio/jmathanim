@@ -77,4 +77,10 @@ public class CTPoint extends Constructible {
     public String toString() {
         return String.format("CTPoint[%.2f, %.2f]",point.v.x,point.v.y);
     }
+
+    public CTPoint dotStyle(Point.DotSyle dotStyle) {
+        point.dotStyle(dotStyle);
+        return this;
+    }
+    
 }
