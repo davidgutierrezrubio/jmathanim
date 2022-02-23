@@ -32,6 +32,12 @@ public class CTPoint extends Constructible {
     protected final Point point;
     public final Vec v;
 
+    /**
+     * Creates a CTPoint from a Point
+     *
+     * @param A Point object to wrap into
+     * @return The created object
+     */
     public static CTPoint make(Point A) {
         return new CTPoint(A);
     }
@@ -66,15 +72,29 @@ public class CTPoint extends Constructible {
         point.draw(scene, r);
     }
 
+    /**
+     * Computes the vector another CTPoint
+     *
+     * @param B Second CTPoint
+     * @return The vector
+     */
     public Vec to(CTPoint B) {
         return point.to(B.getMathObject());
     }
 
+    /**
+     * Creates a new CTPoint vector adding a given vector. The original CTPoint
+     * is unaltered
+     *
+     * @param v Vector to add
+     * @return The created object
+     */
     public CTPoint add(Vec v) {
         return CTPoint.make(point.add(v));
     }
-  @Override
+
+    @Override
     public String toString() {
-        return String.format("CTPoint[%.2f, %.2f]",point.v.x,point.v.y);
+        return String.format("CTPoint[%.2f, %.2f]", point.v.x, point.v.y);
     }
 }
