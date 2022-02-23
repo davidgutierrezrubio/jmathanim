@@ -30,7 +30,17 @@ Another object showed is the `CTCircle`. The static method `makeCenterPoint(A,B)
 
 Finally, we perform a `shift` animation to `B`. Note that all objects dependent on `B` are updated accordingly.
 
-Each `Constructible` object has its own static creations methods.
+Each `Constructible` object has its own static creations methods, with several parameters. For example the `CTPerpBisector`admits a static builder from a `CTSegment` but also wit 2 `CTPoint` objects. Also several builder method that admits `CTPoint` are overloaded so that admit `Point`objects (they simply wrap them into new `CTPoint` instances).
+
+## CTIntersection
+
+The `CTIntersection` object extends the `CTPoint` object and represents the intersection point between 2 constructible objects. At the current version, several static builders can be used:
+
+```java
+CTIntersectionPoint p1=CTIntersectionPoint.make()
+```
+
+
 
 [home](https://davidgutierrezrubio.github.io/jmathanim/) [back](../index.html)
 
