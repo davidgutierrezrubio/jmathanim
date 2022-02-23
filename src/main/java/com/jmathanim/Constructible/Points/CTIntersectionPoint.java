@@ -49,10 +49,30 @@ public class CTIntersectionPoint extends CTPoint {
         return make(CTLine.make(l1), CTLine.make(l2), 1);
     }
 
+    /**
+     * Overloaded method. Compute the first intersection point between 2 constructible objects.
+     * Curent version allows CTCircle, CTLine, CTRay and CTSegment
+     *
+     * @param c1 First Constructible to intersect.
+     * @param c2 Second Constructible to intersect.
+     * @return The intersection point created. If the objects do not have
+     * intersection at all, the point is created with coordinates NaN
+     */
     public static CTIntersectionPoint make(Constructible c1, Constructible c2) {
         return make(c1, c2, 1);
     }
 
+    /**
+     * Compute the n-th intersection point between 2 constructible objects.
+     * Curent version allows CTCircle, CTLine, CTRay and CTSegment
+     *
+     * @param c1 First Constructible to intersect.
+     * @param c2 Second Constructible to intersect.
+     * @param solNumber Solution number. For 2 lines, rays, or segments it
+     * should be always 1. For lines and circle, may be 1 or 2.
+     * @return The intersection point created. If the objects do not have
+     * intersection at all, the point is created with coordinates NaN
+     */
     public static CTIntersectionPoint make(Constructible c1, Constructible c2, int solNumber) {
         CTIntersectionPoint resul = new CTIntersectionPoint(c1, c2, solNumber);
         resul.rebuildShape();

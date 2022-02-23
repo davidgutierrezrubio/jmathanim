@@ -50,6 +50,16 @@ public class CTRay extends CTLine {
     }
 
     /**
+     * Creates a new CTRay from a Ray object
+     *
+     * @param ray Ray to wrap into
+     * @return The CTRay object created
+     */
+    public static CTRay make(Ray ray) {
+        return make(ray.getP1(), ray.getP2());
+    }
+
+    /**
      * Creates a new Constructible ray with given 2 points
      *
      * @param A Starting point
