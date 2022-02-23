@@ -71,7 +71,7 @@ waitSeconds(3);
 
 Generates the following image with the 2 solutions numbered. Which solution number we should choose?  If we parametrize the line AB where A is at t=0 and B is at t=1, and the intersections are located at parameter t1 and t2, then solution number 1 is at min(t1,t2) and number 2 is at max(t1,t2)
 
-<img src="02Intersect.png" alt="02Intersect" style="zoom: 50%;" />
+<img src="02Intersect.png" alt="02Intersect"  />
 
 If there is no intersection, the point returned will have coordinates `Double.NaN`. You can check if any of the coordinates a point is `NaN` with the `Vec` method `isNaN()`.
 
