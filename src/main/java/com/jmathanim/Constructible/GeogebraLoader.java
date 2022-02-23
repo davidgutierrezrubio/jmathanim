@@ -62,8 +62,8 @@ public class GeogebraLoader implements Iterable<Constructible>, hasCameraParamet
         rl = new ResourceLoader();
         url = rl.getResource(fileName, "geogebra");
         this.cp = new GeogebraCommandParser();
-        cp.registerGeogebraElement("xAxis", CTLine.make(Line.XAxis()));
-        cp.registerGeogebraElement("yAxis", CTLine.make(Line.YAxis()));
+        cp.registerGeogebraElement("xAxis", CTLine.make(Line.XAxis()).visible(false));
+        cp.registerGeogebraElement("yAxis", CTLine.make(Line.YAxis()).visible(false));
     }
 
     /**

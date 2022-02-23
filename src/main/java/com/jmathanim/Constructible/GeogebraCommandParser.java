@@ -326,7 +326,7 @@ public class GeogebraCommandParser {
             size = 5d / 36;//Assume size is "small"
         }
 
-        CTLaTeX cTLaTeX = CTLaTeX.make(text, anchorPoint, Anchor.Type.DL).scale(size);
+        CTLaTeX cTLaTeX = CTLaTeX.make(text, anchorPoint, Anchor.Type.DL,0).scale(size);
         registerGeogebraElement(label, cTLaTeX);
     }
 
@@ -407,10 +407,10 @@ public class GeogebraCommandParser {
             registerGeogebraElement(label, CTPerpBisector.make(A, B));
         }
         //TODO: Implement this. A perpendicular from a segment
-//        if (params.length == 1) {// 1 segment
-//            ConstrSegment seg = (ConstrSegment) params[0];
-//            registerGeogebraElement(label, ConstrPerpBisectorSegment.make(seg));
-//        }
+        if (params.length == 1) {// 1 segment
+            CTSegment seg = (CTSegment) params[0];
+            registerGeogebraElement(label, CTPerpBisector.make(seg));
+        }
     }
 
     protected void processAngleBisector(Element el) {

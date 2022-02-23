@@ -80,6 +80,7 @@ public class CTIntersectionPoint extends CTPoint {
     }
 
     private CTIntersectionPoint(Constructible c1, Constructible c2, int solNumber) {
+        super();
         this.solNumber = solNumber;
         this.c1 = c1;
         this.c2 = c2;
@@ -210,8 +211,6 @@ public class CTIntersectionPoint extends CTPoint {
 
                 interY = alpha * Math.sqrt((-d + r2 - r1) * (-d - r2 + r1) * (-d + r2 + r1) * (d + r2 + r1));
 
-//                Point inter1 = Point.at(interX, interY).drawColor("blue");//First point in geogebra
-//                Point inter2 = Point.at(interX, -interY).drawColor("red");//Second
                 getMathObject().v.copyFrom(interX, (solNumber == 1 ? 1 : -1) * interY);
                 getMathObject().rotate(Point.origin(), vecCenterCircles.getAngle());
                 getMathObject().shift(ctcircle1.getCircleCenter().v);

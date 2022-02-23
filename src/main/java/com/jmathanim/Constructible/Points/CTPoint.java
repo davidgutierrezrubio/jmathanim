@@ -41,7 +41,9 @@ public class CTPoint extends Constructible {
     public static CTPoint make(Point A) {
         return new CTPoint(A);
     }
-
+    public static CTPoint at(double x, double y) {
+        return new CTPoint(Point.at(x,y));
+    }
     protected CTPoint() {
         this(Point.origin());
     }

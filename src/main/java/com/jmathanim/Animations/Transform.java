@@ -179,52 +179,56 @@ public class Transform extends AnimationWithEffects {
 
     private void createTransformStrategy() {
         // Now I choose strategy
-        switch (transformMethod) {
-            case ARROW_TRANSFORM:
-                transformStrategy = new ArrowTransform(runTime, (Arrow2D) mobjTransformed, (Arrow2D) mobjDestiny);
-                JMathAnimScene.logger.debug("Transform method: Arrow2D");
-                break;
-            case MULTISHAPE_TRANSFORM:
-                transformStrategy = new MultiShapeTransform(runTime, convertToMultiShapeObject(mobjTransformed),
-                        convertToMultiShapeObject(mobjDestiny));
-                JMathAnimScene.logger.debug("Transform method: Multishape");
-                break;
-
-            case INTERPOLATE_SIMPLE_SHAPES_BY_POINT:
-                transformStrategy = new PointInterpolationSimpleShapeTransform(runTime, (Shape) mobjTransformed,
-                        (Shape) mobjDestiny);
-                JMathAnimScene.logger.debug("Transform method: Point interpolation between 2 simple closed curves");
-                break;
-            case INTERPOLATE_POINT_BY_POINT:
-                transformStrategy = new PointInterpolationCanonical(runTime, (Shape) mobjTransformed, (Shape) mobjDestiny);
-                JMathAnimScene.logger.debug("Transform method: Point interpolation between 2 curves");
-                break;
-            case HOMOTHECY_TRANSFORM:
-                transformStrategy = new IsomorphicTransformAnimation(runTime, (Shape) mobjTransformed, (Shape) mobjDestiny);
-                JMathAnimScene.logger.debug("Transform method: Isomorphic");
-
-                break;
-            case ROTATE_AND_SCALEXY_TRANSFORM:
-                transformStrategy = new RotateAndScaleXYTransform(runTime, (Shape) mobjTransformed, (Shape) mobjDestiny);
-                JMathAnimScene.logger.debug("Transform method: Rotate and Scale XY");
-                break;
-            case GENERAL_AFFINE_TRANSFORM:
-                transformStrategy = new GeneralAffineTransformAnimation(runTime, (Shape) mobjTransformed,
-                        (Shape) mobjDestiny);
-                JMathAnimScene.logger.debug("Transform method: General affine transform");
-                break;
-            case FUNCTION_INTERPOLATION:
-                transformStrategy = new FunctionSimpleInterpolateTransform(runTime, (FunctionGraph) mobjTransformed,
-                        (FunctionGraph) mobjDestiny);
-                JMathAnimScene.logger.debug("Transform method: Interpolation of functions");
-                break;
-        }
+        try {
+            switch (transformMethod) {
+                case ARROW_TRANSFORM:
+                    transformStrategy = new ArrowTransform(runTime, (Arrow2D) mobjTransformed, (Arrow2D) mobjDestiny);
+                    JMathAnimScene.logger.debug("Transform method: Arrow2D");
+                    break;
+                case MULTISHAPE_TRANSFORM:
+                    transformStrategy = new MultiShapeTransform(runTime, convertToMultiShapeObject(mobjTransformed),
+                            convertToMultiShapeObject(mobjDestiny));
+                    JMathAnimScene.logger.debug("Transform method: Multishape");
+                    break;
+                
+                case INTERPOLATE_SIMPLE_SHAPES_BY_POINT:
+                    transformStrategy = new PointInterpolationSimpleShapeTransform(runTime, (Shape) mobjTransformed,
+                            (Shape) mobjDestiny);
+                    JMathAnimScene.logger.debug("Transform method: Point interpolation between 2 simple closed curves");
+                    break;
+                case INTERPOLATE_POINT_BY_POINT:
+                    transformStrategy = new PointInterpolationCanonical(runTime, (Shape) mobjTransformed, (Shape) mobjDestiny);
+                    JMathAnimScene.logger.debug("Transform method: Point interpolation between 2 curves");
+                    break;
+                case HOMOTHECY_TRANSFORM:
+                    transformStrategy = new IsomorphicTransformAnimation(runTime, (Shape) mobjTransformed, (Shape) mobjDestiny);
+                    JMathAnimScene.logger.debug("Transform method: Isomorphic");
+                    
+                    break;
+                case ROTATE_AND_SCALEXY_TRANSFORM:
+                    transformStrategy = new RotateAndScaleXYTransform(runTime, (Shape) mobjTransformed, (Shape) mobjDestiny);
+                    JMathAnimScene.logger.debug("Transform method: Rotate and Scale XY");
+                    break;
+                case GENERAL_AFFINE_TRANSFORM:
+                    transformStrategy = new GeneralAffineTransformAnimation(runTime, (Shape) mobjTransformed,
+                            (Shape) mobjDestiny);
+                    JMathAnimScene.logger.debug("Transform method: General affine transform");
+                    break;
+                case FUNCTION_INTERPOLATION:
+                    transformStrategy = new FunctionSimpleInterpolateTransform(runTime, (FunctionGraph) mobjTransformed,
+                            (FunctionGraph) mobjDestiny);
+                    JMathAnimScene.logger.debug("Transform method: Interpolation of functions");
+                    break;
+            }
 //        if (shouldApplyEffects()) {
-        if (transformStrategy instanceof AnimationWithEffects) {
-            AnimationWithEffects tr = (AnimationWithEffects) transformStrategy;
-            this.copyEffectParametersTo(tr);
-        } else {
-            JMathAnimScene.logger.error("Cannot apply effects to current transform");
+            if (transformStrategy instanceof AnimationWithEffects) {
+                AnimationWithEffects tr = (AnimationWithEffects) transformStrategy;
+                this.copyEffectParametersTo(tr);
+            } else {
+                JMathAnimScene.logger.error("Cannot apply effects to current transform");
+            }
+        } catch (ClassCastException e) {
+            JMathAnimScene.logger.error("You are trying to animate something that I don't know how");
         }
 //        }
     }

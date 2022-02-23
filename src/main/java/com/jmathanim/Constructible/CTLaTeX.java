@@ -26,12 +26,14 @@ import com.jmathanim.mathobjects.Text.LaTeXMathObject;
 
 /**
  * A constructible LaTeX expression, anchored to a CTPoint
+ *
  * @author David Gutierrez Rubio davidgutierrezrubio@gmail.com
  */
 public class CTLaTeX extends Constructible {
 
     private final LaTeXMathObject tex;
     private final Anchor.Type anchorType;
+    private final double gap;
 
     /**
      * Creates a LaTeX text anchored to a given point
@@ -42,16 +44,19 @@ public class CTLaTeX extends Constructible {
      * text so that its LEFT side is aligned with anchor point.
      * @return The created object
      */
-    public static CTLaTeX make(String text, CTPoint anchor, Anchor.Type anchorType) {
-        CTLaTeX resul = new CTLaTeX(text, anchor, anchorType);
+    public static CTLaTeX make(String text, CTPoint anchor, Anchor.Type anchorType, double gap) {
+        CTLaTeX resul = new CTLaTeX(text, anchor, anchorType, gap);
         return resul;
     }
     private final CTPoint anchor;
+    private boolean visible;
 
-    private CTLaTeX(String text, CTPoint anchor, Anchor.Type anchorType) {
+    private CTLaTeX(String text, CTPoint anchor, Anchor.Type anchorType, double gap) {
         tex = LaTeXMathObject.make(text);
+        this.gap = gap;
         this.anchorType = anchorType;
         this.anchor = anchor;
+        this.visible=true;
     }
 
     @Override
@@ -61,12 +66,20 @@ public class CTLaTeX extends Constructible {
 
     @Override
     public void rebuildShape() {
-        tex.stackTo(anchorType, anchor, Anchor.Type.CENTER, 0);
+        if (anchor.v.isNaN()) {
+            //If anchor is NaN point, to prevent the shape to be completely NaN
+            //we made it invisible
+            visible=tex.isVisible();
+            tex.visible(false);
+        } else {
+            tex.visible(true);
+            tex.stackTo(anchorType, anchor, Anchor.Type.CENTER, this.gap);
+        }
     }
 
     @Override
     public CTLaTeX copy() {
-        CTLaTeX copy = make(tex.getText(), anchor, this.anchorType);
+        CTLaTeX copy = make(tex.getText(), anchor, this.anchorType, this.gap);
         copy.getMp().copyFrom(this.getMp());
         return copy;
     }
@@ -79,6 +92,6 @@ public class CTLaTeX extends Constructible {
     @Override
     public void registerUpdateableHook(JMathAnimScene scene) {
         scene.registerUpdateable(this.anchor);
-        setUpdateLevel(this.anchor.getUpdateLevel()+1);
+        setUpdateLevel(this.anchor.getUpdateLevel() + 1);
     }
 }
