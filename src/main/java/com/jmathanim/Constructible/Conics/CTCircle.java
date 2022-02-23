@@ -59,8 +59,8 @@ public class CTCircle extends FixedConstructible {
      * @param P Point of circle
      * @return Created constructible circle
      */
-    public static CTCircle make(Point center, Point P) {
-        return make(CTPoint.make(center), CTPoint.make(P));
+    public static CTCircle makeCenterPoint(Point center, Point P) {
+        return makeCenterPoint(CTPoint.make(center), CTPoint.make(P));
     }
 
     /**
@@ -70,7 +70,7 @@ public class CTCircle extends FixedConstructible {
      * @param P Point of circle
      * @return Created constructible circle
      */
-    public static CTCircle make(CTPoint center, CTPoint P) {
+    public static CTCircle makeCenterPoint(CTPoint center, CTPoint P) {
         CTCircle resul = new CTCircle();
         resul.circleType = CircleType.CENTER_POINT;
         resul.circleCenter = center;
@@ -86,8 +86,8 @@ public class CTCircle extends FixedConstructible {
      * @param radius Radius of the circle
      * @return Created constructible circle
      */
-    public static CTCircle make(Point center, double radius) {
-        return make(CTPoint.make(center), Scalar.make(radius));
+    public static CTCircle makeCenterRadius(Point center, double radius) {
+        return makeCenterRadius(CTPoint.make(center), Scalar.make(radius));
     }
 
     /**
@@ -97,8 +97,8 @@ public class CTCircle extends FixedConstructible {
      * @param radius Radius of the circle
      * @return Created constructible circle
      */
-    public static CTCircle make(CTPoint center, double radius) {
-        return make(center, Scalar.make(radius));
+    public static CTCircle makeCenterRadius(CTPoint center, double radius) {
+        return makeCenterRadius(center, Scalar.make(radius));
     }
 
     /**
@@ -108,7 +108,7 @@ public class CTCircle extends FixedConstructible {
      * @param radius Radius of the circle
      * @return Created constructible circle
      */
-    public static CTCircle make(CTPoint center, Scalar radius) {
+    public static CTCircle makeCenterRadius(CTPoint center, Scalar radius) {
         CTCircle resul = new CTCircle();
         resul.circleType = CircleType.CENTER_RADIUS;
         resul.circleCenter = center;
@@ -125,8 +125,8 @@ public class CTCircle extends FixedConstructible {
      * @param C Third point of the circle
      * @return Created constructible circle
      */
-    public static CTCircle make(Point A, Point B, Point C) {
-        return make(CTPoint.make(A), CTPoint.make(B), CTPoint.make(C));
+    public static CTCircle make3Points(Point A, Point B, Point C) {
+        return make3Points(CTPoint.make(A), CTPoint.make(B), CTPoint.make(C));
     }
 
     /**
@@ -137,7 +137,7 @@ public class CTCircle extends FixedConstructible {
      * @param C Third point of the circle
      * @return Created constructible circle
      */
-    public static CTCircle make(CTPoint A, CTPoint B, CTPoint C) {
+    public static CTCircle make3Points(CTPoint A, CTPoint B, CTPoint C) {
         CTCircle resul = new CTCircle();
         resul.circleType = CircleType.THREE_POINTS;
         resul.A = A;
@@ -160,13 +160,13 @@ public class CTCircle extends FixedConstructible {
         CTCircle copy = null;
         switch (circleType) {
             case CENTER_POINT:
-                copy = CTCircle.make(circleCenter.copy(), A.copy());
+                copy = CTCircle.makeCenterPoint(circleCenter.copy(), A.copy());
                 break;
             case THREE_POINTS:
-                copy = CTCircle.make(A.copy(), B.copy(), C.copy());
+                copy = CTCircle.make3Points(A.copy(), B.copy(), C.copy());
                 break;
             case CENTER_RADIUS:
-                copy = CTCircle.make(circleCenter.copy(), radius.copy());
+                copy = CTCircle.makeCenterRadius(circleCenter.copy(), radius.copy());
         }
         if (copy != null) {
             copy.getMp().copyFrom(this.getMp());

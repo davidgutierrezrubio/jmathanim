@@ -502,7 +502,7 @@ public class GeogebraCommandParser {
             CTPoint arg0 = (CTPoint) parseArgument(str0);
             CTPoint arg1 = (CTPoint) parseArgument(str1);
             CTPoint arg2 = (CTPoint) parseArgument(str2);
-            Constructible resul = CTCircle.make(arg0, arg1, arg2);
+            Constructible resul = CTCircle.make3Points(arg0, arg1, arg2);
             registerGeogebraElement(label, resul);
             JMathAnimScene.logger
                     .debug("Imported Geogebra Circle " + label + " by 3 points: " + arg0 + ", " + arg1 + ",  " + arg2);
@@ -521,7 +521,7 @@ public class GeogebraCommandParser {
             if ((arg0 instanceof CTPoint) && (arg1 instanceof CTPoint)) {
                 CTPoint p0 = (CTPoint) arg0;
                 CTPoint p1 = (CTPoint) arg1;
-                Constructible resul = CTCircle.make(p0, p1);
+                Constructible resul = CTCircle.makeCenterPoint(p0, p1);
                 registerGeogebraElement(label, resul);
                 JMathAnimScene.logger.debug("Imported Geogebra Circle " + label + ", center " + p0 + ", point " + p1);
                 return;
@@ -529,7 +529,7 @@ public class GeogebraCommandParser {
             if ((arg0 instanceof CTPoint) && (arg1 instanceof Scalar)) {
                 CTPoint p0 = (CTPoint) arg0;
                 Scalar sc0 = (Scalar) arg1;
-                Constructible resul = CTCircle.make(p0, sc0);
+                Constructible resul = CTCircle.makeCenterRadius(p0, sc0);
                 registerGeogebraElement(label, resul);
                 JMathAnimScene.logger.debug("Imported Geogebra Circle " + label + ", center " + p0 + ", radius " + sc0);
             }
