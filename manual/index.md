@@ -19,6 +19,8 @@
 
 ## [Dealing with paths](06a_DealingWithPaths/DealingWithPaths.md)
 
+## [Constructible objects](06b_ConstructibleObjects/ConstructibleObjects.md)
+
 ## [Advanced topics](07_AdvancedTopics/AdvancedTopics.html)
 
 
