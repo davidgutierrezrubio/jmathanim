@@ -134,7 +134,7 @@ The command
 add(gl);
 ```
 
-Is equivalent to add all stores objects to the scene.
+Is equivalent to add all imported objects to the scene.
 
 If you want to adjust the camera to the view of the original geogebra document, you can do it with the command:
 
@@ -142,19 +142,19 @@ If you want to adjust the camera to the view of the original geogebra document, 
 camera.setViewFrom(gl);
 ```
 
-However, bear in mind that proportions may not be the same, so the view is accurate.
+However, bear in mind that proportions may not be the same, so the view is approximate.
 
-And that's it! Well, not really.  If you want to animate elements, or simply access to them, you may use the original name that these objects had in Geogebra. For example, to access to the point A, you may do it with the command
-
-```java
-gl.get("A");
-```
 
 The imported document looks like this:
 
 <img src="03ImportedGeogebra.png" alt="03ImportedGeogebra" style="zoom:50%;" />
 
-Not bad, right? Note that axis and object labels are not imported. Let's add some animations to the creation of this scene to make it brighter!
+Not bad, right? Note that axis and object labels are not imported. And that's it! Well, not really.  If you want to animate elements, or simply access to them, you may use the original name that these objects had in Geogebra. For example, to access to the point A, you may do it with the command
+
+```java
+gl.get("A");
+```
+Now, let's add some animations to the creation of this scene to make it cooler!
 
 ```java
 GeogebraLoader gl = GeogebraLoader.parse("test.ggb");
