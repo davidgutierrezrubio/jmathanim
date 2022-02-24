@@ -67,7 +67,6 @@ public class Line extends Shape implements HasDirection {
     }
 
     private final JMPathPoint bp1, bp2;
-    MODrawPropertiesArray mpArray;
     private Point p1, p2;
     private final Shape visiblePiece;
 
@@ -88,22 +87,7 @@ public class Line extends Shape implements HasDirection {
      * @param p2 Second point
      */
     public Line(Point p1, Point p2) {
-        this(p1, p2, null);
-    }
-
-    /**
-     * Creates a new line that passes through given points, with specified
-     * MathDrawingProperties
-     *
-     * @param p1 First point
-     * @param p2 Second point
-     * @param mp MathDrawingProperties
-     */
-    public Line(Point p1, Point p2, MODrawProperties mp) {
-        super(mp);
-        mpArray = new MODrawPropertiesArray();
-        mpArray.copyFrom(JMathAnimConfig.getConfig().getDefaultMP());// Default MP values);
-        mpArray.copyFrom(mp);
+        super();
         this.p1 = p1;
         this.p2 = p2;
         getPath().clear(); // Super constructor adds p1, p2. Delete them
@@ -113,10 +97,8 @@ public class Line extends Shape implements HasDirection {
         // initialize objects
         visiblePiece = new Shape();
         visiblePiece.getPath().addJMPoint(bp1, bp2);
-        visiblePiece.getMp().copyFrom(this.getMp());
         getPath().addPoint(p1, p2);
         get(0).isThisSegmentVisible = false;
-        mpArray.add(visiblePiece);
     }
 
     @Override
@@ -150,15 +132,11 @@ public class Line extends Shape implements HasDirection {
             bp2.p.v.x = intersectLine[2];
             bp2.p.v.y = intersectLine[3];
         }
-        bp1.cpExit.v.x = bp1.p.v.x;
-        bp1.cpExit.v.y = bp1.p.v.y;
-        bp1.cpEnter.v.x = bp1.p.v.x;
-        bp1.cpEnter.v.y = bp1.p.v.y;
-        bp2.cpExit.v.x = bp2.p.v.x;
-        bp2.cpExit.v.y = bp2.p.v.y;
-        bp2.cpEnter.v.x = bp2.p.v.x;
-        bp2.cpEnter.v.y = bp2.p.v.y;
-
+        bp1.cpExit.copyFrom(bp1.p);
+        bp1.cpEnter.copyFrom(bp1.p);
+        bp2.cpExit.copyFrom(bp2.p);
+        bp2.cpEnter.copyFrom(bp2.p);
+        bp1.isThisSegmentVisible=false;
     }
 
     @Override
@@ -220,7 +198,7 @@ public class Line extends Shape implements HasDirection {
 
     @Override
     public Stylable getMp() {
-        return mpArray;
+        return visiblePiece.getMp();
     }
 
     public Point getP1() {
