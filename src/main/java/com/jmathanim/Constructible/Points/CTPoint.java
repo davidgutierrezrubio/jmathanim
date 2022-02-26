@@ -19,8 +19,10 @@ package com.jmathanim.Constructible.Points;
 
 import com.jmathanim.Constructible.Constructible;
 import com.jmathanim.Renderers.Renderer;
+import com.jmathanim.Utils.AffineJTransform;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
+import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.Point;
 
 /**
@@ -29,7 +31,7 @@ import com.jmathanim.mathobjects.Point;
  */
 public class CTPoint extends Constructible {
 
-    protected final Point point;
+    protected final Point pointToDraw;
     public final Vec v;
 
     /**
@@ -49,29 +51,30 @@ public class CTPoint extends Constructible {
     }
 
     protected CTPoint(Point A) {
-        this.point = A;
-        this.v = A.v;
+        this.pointToDraw = A;
+        this.v = A.v.copy();
     }
 
     @Override
     public Point getMathObject() {
-        return point;
+        return pointToDraw;
     }
 
     @Override
     public void rebuildShape() {
+        this.pointToDraw.v.copyFrom(this.v);
     }
 
     @Override
     public CTPoint copy() {
-        CTPoint copy = make(point.copy());
+        CTPoint copy = make(pointToDraw.copy());
         copy.getMp().copyFrom(this.getMp());
         return copy;
     }
 
     @Override
     public void draw(JMathAnimScene scene, Renderer r) {
-        point.draw(scene, r);
+        pointToDraw.draw(scene, r);
     }
 
     /**
@@ -81,7 +84,7 @@ public class CTPoint extends Constructible {
      * @return The vector
      */
     public Vec to(CTPoint B) {
-        return point.to(B.getMathObject());
+        return pointToDraw.to(B.getMathObject());
     }
 
     /**
@@ -92,17 +95,33 @@ public class CTPoint extends Constructible {
      * @return The created object
      */
     public CTPoint add(Vec v) {
-        return CTPoint.make(point.add(v));
+        return CTPoint.make(pointToDraw.add(v));
     }
 
     @Override
     public String toString() {
-        return String.format("CTPoint[%.2f, %.2f]", point.v.x, point.v.y);
+        return String.format("CTPoint[%.2f, %.2f]", this.v.x, this.v.y);
     }
 
     public CTPoint dotStyle(Point.DotSyle dotStyle) {
-        point.dotStyle(dotStyle);
+        pointToDraw.dotStyle(dotStyle);
         return this;
     }
-    
+     @Override
+    public <T extends MathObject> T applyAffineTransform(AffineJTransform transform) {
+        Point p=new Point(this.v);
+        p.applyAffineTransform(transform);
+        this.v.copyFrom(p.v);
+        rebuildShape();
+        return (T) this;
+    }
+     @Override
+    public void copyStateFrom(MathObject obj) {
+         if (obj instanceof CTPoint) {
+             CTPoint cTPoint = (CTPoint) obj;
+            this.pointToDraw.copyStateFrom(cTPoint.pointToDraw);
+            this.v.copyFrom(cTPoint.v);
+             
+         }
+    }
 }

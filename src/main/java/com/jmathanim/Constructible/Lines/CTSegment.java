@@ -59,7 +59,7 @@ public class CTSegment extends CTLine {
 
     private CTSegment(CTPoint A, CTPoint B) {
         super(A, B);
-        segmentToDraw = Shape.segment(this.A.getMathObject(), this.B.getMathObject());
+        segmentToDraw = Shape.segment(this.A.getMathObject().copy(), this.B.getMathObject().copy());
     }
 
     /**
@@ -91,23 +91,18 @@ public class CTSegment extends CTLine {
     }
 
     @Override
-    public Point getP1() {
-        return this.A.getMathObject();
-    }
-
-    @Override
-    public Point getP2() {
-        return this.B.getMathObject();
-    }
-
-    @Override
     public Shape getMathObject() {
         return segmentToDraw;
     }
 
     @Override
     public void rebuildShape() {
-        // Nothing to do here...
+        this.P1.v.copyFrom(this.A.v);
+        this.P2.v.copyFrom(this.B.v);
+        if (!isThisMathObjectFree()) {
+            segmentToDraw.get(0).p.v.copyFrom(this.P1.v);
+            segmentToDraw.get(1).p.v.copyFrom(this.P2.v);
+        }
     }
 
     @Override

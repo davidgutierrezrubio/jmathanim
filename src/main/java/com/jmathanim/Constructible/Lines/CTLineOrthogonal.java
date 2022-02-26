@@ -95,13 +95,14 @@ public class CTLineOrthogonal extends CTLine {
 
     @Override
     public void rebuildShape() {
-        Vec v = A.getMathObject().v;
+        Vec v = A.v;
         Vec direction = dir.getDirection();
-        lineToDraw.getP1().v.x = v.x;
-        lineToDraw.getP1().v.y = v.y;
+        P1.v.copyFrom(v);
 
-        lineToDraw.getP2().v.x = v.x - direction.y;
-        lineToDraw.getP2().v.y = v.y + direction.x;
+        P2.v.x = v.x - direction.y;
+        P2.v.y = v.y + direction.x;
+        
+        super.rebuildShape();
     }
 
 }

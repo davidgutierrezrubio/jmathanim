@@ -52,7 +52,8 @@ public class CTPolygon extends FixedConstructible {
     }
 
     private CTPolygon(CTPoint... cpoints) {
-        Point[] arrayPoints = Arrays.stream(cpoints).map(t -> t.getMathObject()).toArray(Point[]::new);
+        super();
+        Point[] arrayPoints = Arrays.stream(cpoints).map(t -> t.getMathObject().copy()).toArray(Point[]::new);
         shapeToDraw = Shape.polygon(arrayPoints);
         this.points = cpoints;
     }
@@ -64,6 +65,10 @@ public class CTPolygon extends FixedConstructible {
 
     @Override
     public void rebuildShape() {
+        for (int i = 0; i < points.length; i++) {
+            CTPoint point = points[i];
+            shapeToDraw.get(i).p.v.copyFrom(point.v);
+        }
     }
 
     @Override

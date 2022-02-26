@@ -88,7 +88,7 @@ public class CTRay extends CTLine {
         super(A, B);
         this.A = A;
         this.B = B;
-        rayToDraw = Ray.make(A.getMathObject(), B.getMathObject());
+        rayToDraw = Ray.make(A.getMathObject().copy(), B.getMathObject().copy());
     }
 
     @Override
@@ -113,9 +113,11 @@ public class CTRay extends CTLine {
     public void rebuildShape() {
         switch (lineType) {
             case PointPoint:
+                rayToDraw.getP1().v.copyFrom(A.v);
+                rayToDraw.getP2().v.copyFrom(B.v);
                 break;
             case PointVector:
-                B.getMathObject().copyFrom(A.add(dir.getDirection()).getMathObject());
+                rayToDraw.getP2().v.copyFrom(rayToDraw.getP1().v.add(dir.getDirection()));
         }
     }
 

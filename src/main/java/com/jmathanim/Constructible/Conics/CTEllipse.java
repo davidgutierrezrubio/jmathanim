@@ -23,6 +23,7 @@ import com.jmathanim.Renderers.Renderer;
 import com.jmathanim.Utils.AffineJTransform;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
+import com.jmathanim.mathobjects.JMPathPoint;
 import com.jmathanim.mathobjects.Point;
 import com.jmathanim.mathobjects.Shape;
 
@@ -48,6 +49,7 @@ public class CTEllipse extends FixedConstructible {
      */
     public static CTEllipse make(CTPoint focus1, CTPoint focus2, CTPoint A) {
         CTEllipse resul = new CTEllipse(focus1, focus2, A);
+        resul.rebuildShape();
         return resul;
     }
 
@@ -65,7 +67,7 @@ public class CTEllipse extends FixedConstructible {
         this.focus2 = focus2;
         this.A = A;
         originalShape = Shape.circle();
-        ellipseToDraw = new Shape();
+        ellipseToDraw = Shape.circle();
     }
 
     @Override
@@ -87,8 +89,12 @@ public class CTEllipse extends FixedConstructible {
         Point upperPoint = centerEllipse.add(centerToUpperPoint.mult(minAxis));
 
         //Now we "reset" the shape to draw to a unit circle and apply a linear transformation
-        ellipseToDraw.getPath().jmPathPoints.clear();
-        ellipseToDraw.getPath().addJMPointsFrom(originalShape.copy().getPath());
+         for (int i = 0; i < ellipseToDraw.size(); i++) {
+            JMPathPoint get = ellipseToDraw.get(i);
+            get.copyFrom(originalShape.get(i));
+        }
+        
+        
         //Create the affine transformation by 3 points: center, right and upper
         AffineJTransform tr = AffineJTransform.createAffineTransformation(Point.origin(), Point.at(1, 0), Point.at(0, 1), centerEllipse, rightPoint, upperPoint, 1);
         tr.applyTransform(ellipseToDraw);

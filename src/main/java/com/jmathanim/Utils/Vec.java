@@ -17,7 +17,9 @@
  */
 package com.jmathanim.Utils;
 
+import com.jmathanim.Constructible.Lines.HasDirection;
 import static com.jmathanim.jmathanim.JMathAnimScene.PI;
+import com.jmathanim.mathobjects.Point;
 import com.jmathanim.mathobjects.Stateable;
 import static java.lang.Math.sqrt;
 
@@ -26,7 +28,7 @@ import static java.lang.Math.sqrt;
  *
  * @author David Gutierrez Rubio davidgutierrezrubio@gmail.com
  */
-public class Vec implements Stateable {
+public class Vec implements Stateable, HasDirection{
 
     public double x, y, z;
     public double xState, yState, zState;
@@ -330,6 +332,21 @@ public class Vec implements Stateable {
      */
     public boolean isNaN() {
         return (Double.isNaN(x)) || (Double.isNaN(y)) || Double.isNaN(z);
+    }
+
+    @Override
+    public Vec getDirection() {
+        return this;
+    }
+
+    @Override
+    public Point getP1() {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    @Override
+    public Point getP2() {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
 }

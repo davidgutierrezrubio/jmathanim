@@ -29,7 +29,7 @@ import com.jmathanim.mathobjects.Text.LaTeXMathObject;
  *
  * @author David Gutierrez Rubio davidgutierrezrubio@gmail.com
  */
-public class CTLaTeX extends Constructible {
+public class CTLaTeX extends FixedConstructible {
 
     private final LaTeXMathObject tex;
     private final Anchor.Type anchorType;
@@ -56,7 +56,7 @@ public class CTLaTeX extends Constructible {
         this.gap = gap;
         this.anchorType = anchorType;
         this.anchor = anchor;
-        this.visible=true;
+        this.visible = true;
     }
 
     @Override
@@ -69,7 +69,7 @@ public class CTLaTeX extends Constructible {
         if (anchor.v.isNaN()) {
             //If anchor is NaN point, to prevent the shape to be completely NaN
             //we made it invisible
-            visible=tex.isVisible();
+            visible = tex.isVisible();
             tex.visible(false);
         } else {
             tex.visible(true);

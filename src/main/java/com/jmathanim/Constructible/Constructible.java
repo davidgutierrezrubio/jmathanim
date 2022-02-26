@@ -33,10 +33,18 @@ import com.jmathanim.mathobjects.MathObject;
  */
 public abstract class Constructible extends MathObject {
 
-    @Override
-    public <T extends MathObject> T applyAffineTransform(AffineJTransform transform) {
-        getMathObject().applyAffineTransform(transform);
-        return (T) this;
+    private boolean isMathObjectFree;
+
+    public Constructible() {
+        isMathObjectFree = false;
+    }
+
+    public boolean isThisMathObjectFree() {
+        return isMathObjectFree;
+    }
+
+    public void freeMathObject(boolean isMathObjectFree) {
+        this.isMathObjectFree = isMathObjectFree;
     }
 
     /**
@@ -64,8 +72,4 @@ public abstract class Constructible extends MathObject {
         return getMathObject().getBoundingBox();
     }
 
-    @Override
-    public void copyStateFrom(MathObject obj) {
-        this.getMathObject().copyStateFrom(((Constructible) obj).getMathObject());
-    }
 }

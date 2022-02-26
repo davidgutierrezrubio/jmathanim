@@ -18,9 +18,9 @@
 package com.jmathanim.Constructible.Lines;
 
 import com.jmathanim.Constructible.Constructible;
+import com.jmathanim.Constructible.FixedConstructible;
 import com.jmathanim.Constructible.Points.CTPoint;
 import com.jmathanim.Renderers.Renderer;
-import com.jmathanim.Utils.AffineJTransform;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.Line;
@@ -32,7 +32,7 @@ import com.jmathanim.mathobjects.updateableObjects.Updateable;
  *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
-public class CTLine extends Constructible implements HasDirection {
+public class CTLine extends FixedConstructible implements HasDirection {
 
     protected enum LineType {
         PointPoint, PointVector
@@ -42,6 +42,8 @@ public class CTLine extends Constructible implements HasDirection {
     CTPoint A;
     CTPoint B;
     HasDirection dir;
+    protected final Point P1;
+    protected final Point P2;
 
     /**
      * Creates a Constructible line from a Line
@@ -98,8 +100,10 @@ public class CTLine extends Constructible implements HasDirection {
     protected CTLine(CTPoint A, CTPoint B) {
         this.A = A;
         this.B = B;
+        this.P1 = Point.origin();
+        this.P2 = Point.origin();
         lineType = LineType.PointPoint;
-        lineToDraw = Line.make(A.getMathObject(), B.getMathObject());
+        lineToDraw = Line.make(A.getMathObject().copy(), B.getMathObject().copy());
     }
 
     @Override
@@ -124,33 +128,38 @@ public class CTLine extends Constructible implements HasDirection {
     public void rebuildShape() {
         switch (lineType) {
             case PointPoint:
-//                v.copyFrom(A.to(B));
+                P1.v.copyFrom(A.v);
+                P2.v.copyFrom(B.v);
                 break;
             case PointVector:
-                B.getMathObject().copyFrom(A.add(dir.getDirection()).getMathObject());
+                P1.v.copyFrom(A.v);
+                P2.v.copyFrom(A.v.add(dir.getDirection()));
+        }
+        if (!isThisMathObjectFree()) {
+            lineToDraw.getP1().v.copyFrom(P1.v);
+            lineToDraw.getP2().v.copyFrom(P2.v);
         }
     }
 
     @Override
     public Vec getDirection() {
-        return lineToDraw.getDirection();
+        switch (lineType) {
+            case PointPoint:
+                return A.to(B);
+            case PointVector:
+                return dir.getDirection();
+        }
+        return null;
     }
 
     @Override
     public Point getP1() {
-        return lineToDraw.getP1();
+        return P1;
     }
 
     @Override
     public Point getP2() {
-        return lineToDraw.getP2();
-    }
-
-    @Override
-    public <T extends MathObject> T applyAffineTransform(AffineJTransform transform) {
-        A.applyAffineTransform(transform);
-        B.applyAffineTransform(transform);
-        return (T) this;
+        return P2;
     }
 
     @Override

@@ -27,7 +27,7 @@ import com.jmathanim.mathobjects.Point;
  * @author David Gutierrez Rubio
  */
 public class CTMidPoint extends CTPoint {
-    
+
     public enum MidPointType {
         TWO_POINTS, SEGMENT
     };
@@ -62,6 +62,7 @@ public class CTMidPoint extends CTPoint {
 
     /**
      * Creates the midpoint of a given CTSegment
+     *
      * @param segment The CTSegment to compute midpoint
      * @return The created object
      */
@@ -69,7 +70,7 @@ public class CTMidPoint extends CTPoint {
         CTMidPoint resul = new CTMidPoint(MidPointType.SEGMENT, null, null, segment);
         return resul;
     }
-    
+
     private CTMidPoint(MidPointType midPointType, CTPoint A, CTPoint B, CTSegment segment) {
         super();
         this.midPointType = midPointType;
@@ -77,7 +78,7 @@ public class CTMidPoint extends CTPoint {
         this.B = B;
         this.segment = segment;
     }
-    
+
     @Override
     public CTMidPoint copy() {
         switch (midPointType) {
@@ -88,7 +89,7 @@ public class CTMidPoint extends CTPoint {
         }
         return null;
     }
-    
+
     @Override
     public void rebuildShape() {
         Point p = getMathObject();
@@ -96,18 +97,26 @@ public class CTMidPoint extends CTPoint {
             case SEGMENT:
                 Point p1 = segment.getP1();
                 Point p2 = segment.getP2();
-                p.v.x = .5 * (p1.v.x + p2.v.x);
-                p.v.y = .5 * (p1.v.y + p2.v.y);
-                p.v.z = .5 * (p1.v.z + p2.v.z);
+                v.x = .5 * (p1.v.x + p2.v.x);
+                v.y = .5 * (p1.v.y + p2.v.y);
+                v.z = .5 * (p1.v.z + p2.v.z);
                 break;
             case TWO_POINTS:
-                p.v.x = .5 * (A.v.x + B.v.x);
-                p.v.y = .5 * (A.v.y + B.v.y);
-                p.v.z = .5 * (A.v.z + B.v.z);
+                v.x = .5 * (A.v.x + B.v.x);
+                v.y = .5 * (A.v.y + B.v.y);
+                v.z = .5 * (A.v.z + B.v.z);
                 break;
         }
+        if (!isThisMathObjectFree()) {
+            p.v.copyFrom(v);
+        }
     }
-    
+
+    @Override
+    public void update(JMathAnimScene scene) {
+        rebuildShape();
+    }
+
     @Override
     public void registerUpdateableHook(JMathAnimScene scene) {
         switch (midPointType) {

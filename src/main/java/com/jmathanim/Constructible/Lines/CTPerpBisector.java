@@ -32,7 +32,9 @@ import com.jmathanim.mathobjects.Point;
 public class CTPerpBisector extends CTLine {
 
     public static CTPerpBisector make(Point A, Point B) {
-        return CTPerpBisector.make(CTPoint.make(A), CTPoint.make(B));
+        CTPerpBisector resul = CTPerpBisector.make(CTPoint.make(A), CTPoint.make(B));
+        resul.rebuildShape();
+        return resul;
     }
 
     public static CTPerpBisector make(CTPoint A, CTPoint B) {
@@ -42,14 +44,12 @@ public class CTPerpBisector extends CTLine {
     }
 
     public static CTPerpBisector make(CTSegment segment) {
-        return make(segment.getP1(), segment.getP2());
+        return make(segment.A, segment.B);
     }
 
     private CTPerpBisector(CTPoint A, CTPoint B) {
-        super(CTPoint.make(Point.at(1, 0)), CTPoint.make(Point.at(0, 01)));
+        super(A,B);
         this.lineType = LineType.PointPoint;
-        this.A = A;
-        this.B = B;
     }
 
     @Override
@@ -66,13 +66,11 @@ public class CTPerpBisector extends CTLine {
 
     @Override
     public void rebuildShape() {
-        Point C = A.getMathObject().interpolate(B.getMathObject(), .5);
+        P1.v.copyFrom(A.v.interpolate(B.v, .5));
         Vec v = A.to(B);
-        lineToDraw.getP1().v.x = C.v.x;
-        lineToDraw.getP1().v.y = C.v.y;
-
-        lineToDraw.getP2().v.x = C.v.x - v.y;
-        lineToDraw.getP2().v.y = C.v.y + v.x;
+        P2.v.copyFrom(P1.v.x-v.y,P1.v.y+v.x);
+        
+        super.rebuildShape();
     }
-
+    
 }

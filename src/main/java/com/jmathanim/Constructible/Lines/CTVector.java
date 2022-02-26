@@ -30,7 +30,7 @@ import com.jmathanim.mathobjects.Point;
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
 public class CTVector extends CTLine {
-    
+
     private final Arrow2D arrowToDraw;
 
     /**
@@ -69,45 +69,50 @@ public class CTVector extends CTLine {
     public static CTVector makeVector(Point A, Point B) {
         return makeVector(CTPoint.make(A), CTPoint.make(B));
     }
-    
+
     private CTVector(CTPoint A, CTPoint B) {
         super(A, B);
         this.A = A;
         this.B = B;
-        arrowToDraw = Arrow2D.makeSimpleArrow2D(this.A.getMathObject(), this.B.getMathObject());
+        arrowToDraw = Arrow2D.makeSimpleArrow2D(this.A.getMathObject().copy(), this.B.getMathObject().copy());
     }
-    
+
     @Override
     public CTVector copy() {
         CTVector copy = CTVector.makeVector(this.A.copy(), this.B.copy());
         copy.getMp().copyFrom(this.getMp());
         return copy;
     }
-    
+
     @Override
     public void draw(JMathAnimScene scene, Renderer r) {
         arrowToDraw.draw(scene, r);
     }
-    
+
     @Override
     public Vec getDirection() {
         return A.to(B);
     }
-    
+
     @Override
     public Arrow2D getMathObject() {
         return arrowToDraw;
     }
-    
+
     @Override
     public void rebuildShape() {
-        // Nothing to do here...
+        this.P1.v.copyFrom(this.A.v);
+        this.P2.v.copyFrom(this.B.v);
+        if (!isThisMathObjectFree()) {
+            arrowToDraw.getStart().v.copyFrom(this.P1.v);
+            arrowToDraw.getEnd().v.copyFrom(this.P2.v);
+        }
     }
-    
+
     @Override
     public String toString() {
         Vec v = getDirection();
         return String.format("CTVector[%.2f, %.2f]", v.x, v.y);
     }
-    
+
 }

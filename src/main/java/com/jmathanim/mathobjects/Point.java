@@ -124,16 +124,6 @@ public class Point extends MathObject {
         this(v.x, v.y, v.z);
     }
 
-    /**
-     * Creates a new Point with coordinates x,y,z, with default style.
-     *
-     * @param x x coordinate
-     * @param y y coordinate
-     * @param z z coordinate
-     */
-    public Point(double x, double y, double z) {
-        this(x, y, z, null);
-    }
 
     /**
      * Overloaded method. Creates a new Point with coordinates x,y, with default
@@ -143,20 +133,18 @@ public class Point extends MathObject {
      * @param y y coordinate
      */
     public Point(double x, double y) {
-        this(x, y, 0, null);
+        this(x, y, 0);
     }
 
-    /**
-     * Full constructor. Creates a new point with given coordinates and
-     * specified draw properties.
+     /**
+     * Creates a new Point with coordinates x,y,z, with default style.
      *
-     * @param x
-     * @param y
-     * @param z
-     * @param mp
+     * @param x x coordinate
+     * @param y y coordinate
+     * @param z z coordinate
      */
-    public Point(double x, double y, double z, MODrawProperties mp) {
-        super(mp);
+    public Point(double x, double y, double z) {
+        super();
         this.v = new Vec(x, y, z);
         this.getMp().loadFromStyle("dotdefault");
         this.getMp().setAbsoluteThickness(true);

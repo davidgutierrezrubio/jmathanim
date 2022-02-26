@@ -18,6 +18,7 @@
 package com.jmathanim.Constructible.Lines;
 
 import com.jmathanim.Constructible.Constructible;
+import com.jmathanim.Constructible.FixedConstructible;
 import com.jmathanim.Constructible.Points.CTPoint;
 import com.jmathanim.Renderers.Renderer;
 import com.jmathanim.Utils.AffineJTransform;
@@ -31,7 +32,7 @@ import java.util.ArrayList;
  *
  * @author David
  */
-public class CTRegularPolygon extends Constructible {
+public class CTRegularPolygon extends FixedConstructible {
 
     private final int nSides;
     private final CTPoint B;
@@ -76,6 +77,10 @@ public class CTRegularPolygon extends Constructible {
         this.nSides = generatedPoints.size();
         this.A = generatedPoints.get(0);
         this.B = generatedPoints.get(1);
+        generatedPoints.remove(0);
+        generatedPoints.remove(0);
+        generatedPoints.add(0,this.B.copy());
+        generatedPoints.add(0,this.A.copy());
         Point[] points = generatedPoints.stream().map(t -> (Point) t.getMathObject()).toArray(Point[]::new);
         polygon = Shape.polygon(points);
         origPolygon = Shape.regularPolygon(nSides);//Base polygon q
@@ -90,7 +95,7 @@ public class CTRegularPolygon extends Constructible {
     public void rebuildShape() {
         AffineJTransform tr = AffineJTransform.createDirect2DIsomorphic(origPolygon.get(0).p, origPolygon.get(1).p, A.getMathObject(), B.getMathObject(), 1);
 
-        for (int k = 2; k < nSides; k++) {
+        for (int k = 0; k < nSides; k++) {
             polygon.get(k).copyFrom(origPolygon.get(k));
             tr.applyTransform(polygon.get(k));
         }
@@ -113,4 +118,5 @@ public class CTRegularPolygon extends Constructible {
         scene.registerUpdateable(this.A, this.B);
         setUpdateLevel(Math.max(this.A.getUpdateLevel(), this.B.getUpdateLevel()) + 1);
     }
+
 }

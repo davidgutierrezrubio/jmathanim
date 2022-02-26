@@ -22,6 +22,7 @@ import com.jmathanim.Constructible.Points.CTPoint;
 import com.jmathanim.Renderers.Renderer;
 import com.jmathanim.Utils.Rect;
 import com.jmathanim.jmathanim.JMathAnimScene;
+import com.jmathanim.mathobjects.JMPathPoint;
 import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.Point;
 import com.jmathanim.mathobjects.Scalar;
@@ -151,7 +152,7 @@ public class CTCircle extends FixedConstructible {
         super();
         radius = Scalar.make(0);
         originalCircle = Shape.circle();
-        circleToDraw = new Shape();
+        circleToDraw = originalCircle.copy();
         circleCenter = CTPoint.make(Point.at(0, 0));
     }
 
@@ -235,8 +236,14 @@ public class CTCircle extends FixedConstructible {
     public final void rebuildShape() {
 
         computeCircleCenterRadius();
-        circleToDraw.getPath().jmPathPoints.clear();
-        circleToDraw.getPath().addJMPointsFrom(originalCircle.copy().getPath());
+//        circleToDraw.getPath().jmPathPoints.clear();
+//        circleToDraw.getPath().addJMPointsFrom(originalCircle.copy().getPath());
+        
+        for (int i = 0; i < circleToDraw.size(); i++) {
+            JMPathPoint get = circleToDraw.get(i);
+            get.copyFrom(originalCircle.get(i));
+        }
+        
         circleToDraw.scale(this.radius.value);
         circleToDraw.shift(this.circleCenter.v);
 

@@ -50,8 +50,9 @@ public class CTIntersectionPoint extends CTPoint {
     }
 
     /**
-     * Overloaded method. Compute the first intersection point between 2 constructible objects.
-     * Curent version allows CTCircle, CTLine, CTRay and CTSegment
+     * Overloaded method. Compute the first intersection point between 2
+     * constructible objects. Curent version allows CTCircle, CTLine, CTRay and
+     * CTSegment
      *
      * @param c1 First Constructible to intersect.
      * @param c2 Second Constructible to intersect.
@@ -126,7 +127,10 @@ public class CTIntersectionPoint extends CTPoint {
         double interX = Double.NaN;
         double interY = Double.NaN;//Default result: no point at all
         if (intersectionType == null) {
-            getMathObject().v.copyFrom(interX, interY);
+            this.v.copyFrom(interX, interY);
+            if (!isThisMathObjectFree()) {
+                getMathObject().v.copyFrom(this.v);
+            }
             return;
         }
         //TODO: Implement intersection algorithms for:
@@ -160,7 +164,7 @@ public class CTIntersectionPoint extends CTPoint {
                 }
 //        double interX2 = x3 + sols[1] * (x4 - x3);
 //        double interY2 = y3 + sols[1] * (y4 - y3);
-                getMathObject().v.copyFrom(interX, interY);
+                this.v.copyFrom(interX, interY);
                 break;
             case LINE_CIRCLE:
                 //A line/ray/segment with a circle
@@ -197,8 +201,8 @@ public class CTIntersectionPoint extends CTPoint {
                         interX = Double.NaN;
                         interY = Double.NaN;
                     }
-                    getMathObject().v.copyFrom(interX, interY);
-                    getMathObject().shift(center);
+                    this.v.copyFrom(interX, interY);
+                    this.v.addInSite(center);
                 }
                 break;
             case CIRCLE_CIRCLE:
@@ -210,15 +214,24 @@ public class CTIntersectionPoint extends CTPoint {
                 interX = alpha * (d * d - r2 * r2 + r1 * r1);
 
                 interY = alpha * Math.sqrt((-d + r2 - r1) * (-d - r2 + r1) * (-d + r2 + r1) * (d + r2 + r1));
-
-                getMathObject().v.copyFrom(interX, (solNumber == 1 ? 1 : -1) * interY);
-                getMathObject().rotate(Point.origin(), vecCenterCircles.getAngle());
-                getMathObject().shift(ctcircle1.getCircleCenter().v);
+                Point p = Point.origin();
+                p.v.copyFrom(interX, (solNumber == 1 ? 1 : -1) * interY);
+                p.rotate(Point.origin(), vecCenterCircles.getAngle());
+                p.shift(ctcircle1.getCircleCenter().v);
+                this.v.copyFrom(p.v);
                 break;
             case CIRCLE_CONIC:
-                //Not implemented yet. Return a NaN point
-                getMathObject().v.copyFrom(Double.NaN, Double.NaN);
+            //Not implemented yet. Returns a NaN point
         }
+        if (!isThisMathObjectFree()) {
+            getMathObject().v.copyFrom(this.v);
+        }
+
+    }
+
+    @Override
+    public void update(JMathAnimScene scene) {
+        rebuildShape();
     }
 
     //Determines if given point P of line/ray/segment is valid or not
