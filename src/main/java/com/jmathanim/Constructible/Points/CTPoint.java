@@ -43,9 +43,11 @@ public class CTPoint extends Constructible {
     public static CTPoint make(Point A) {
         return new CTPoint(A);
     }
+
     public static CTPoint at(double x, double y) {
-        return new CTPoint(Point.at(x,y));
+        return new CTPoint(Point.at(x, y));
     }
+
     protected CTPoint() {
         this(Point.origin());
     }
@@ -62,7 +64,9 @@ public class CTPoint extends Constructible {
 
     @Override
     public void rebuildShape() {
-        this.pointToDraw.v.copyFrom(this.v);
+        if (!isThisMathObjectFree()) {
+            this.pointToDraw.v.copyFrom(this.v);
+        }
     }
 
     @Override
@@ -84,7 +88,7 @@ public class CTPoint extends Constructible {
      * @return The vector
      */
     public Vec to(CTPoint B) {
-        return pointToDraw.to(B.getMathObject());
+        return B.v.minus(this.v);
     }
 
     /**
@@ -95,7 +99,7 @@ public class CTPoint extends Constructible {
      * @return The created object
      */
     public CTPoint add(Vec v) {
-        return CTPoint.make(pointToDraw.add(v));
+        return CTPoint.make(new Point(this.v));
     }
 
     @Override
@@ -107,21 +111,22 @@ public class CTPoint extends Constructible {
         pointToDraw.dotStyle(dotStyle);
         return this;
     }
-     @Override
-    public <T extends MathObject> T applyAffineTransform(AffineJTransform transform) {
-        Point p=new Point(this.v);
-        p.applyAffineTransform(transform);
-        this.v.copyFrom(p.v);
+
+    @Override
+    public Constructible applyAffineTransform(AffineJTransform transform) {
+        pointToDraw.applyAffineTransform(transform);
+        if (!isThisMathObjectFree()) {
+            this.v.copyFrom(pointToDraw.v);
+        }
         rebuildShape();
-        return (T) this;
+        return this;
     }
-     @Override
+
+    @Override
     public void copyStateFrom(MathObject obj) {
-         if (obj instanceof CTPoint) {
-             CTPoint cTPoint = (CTPoint) obj;
+        if (obj instanceof CTPoint) {
+            CTPoint cTPoint = (CTPoint) obj;
             this.pointToDraw.copyStateFrom(cTPoint.pointToDraw);
-            this.v.copyFrom(cTPoint.v);
-             
-         }
+        }
     }
 }

@@ -45,6 +45,7 @@ public abstract class Constructible extends MathObject {
 
     public void freeMathObject(boolean isMathObjectFree) {
         this.isMathObjectFree = isMathObjectFree;
+        rebuildShape();
     }
 
     /**
@@ -53,6 +54,8 @@ public abstract class Constructible extends MathObject {
      * @return The MathObject
      */
     public abstract MathObject getMathObject();
+    @Override
+    public abstract Constructible copy();
 
     @Override
     public Stylable getMp() {
@@ -70,6 +73,22 @@ public abstract class Constructible extends MathObject {
     public Rect getBoundingBox() {
         rebuildShape();
         return getMathObject().getBoundingBox();
+    }
+
+    @Override
+    public Constructible applyAffineTransform(AffineJTransform transform) {
+        getMathObject().applyAffineTransform(transform);
+        return this;
+    }
+
+    @Override
+    public void copyStateFrom(MathObject obj) {
+        if (obj instanceof Constructible) {
+            Constructible cnst = (Constructible) obj;
+            getMathObject().copyStateFrom(cnst.getMathObject());
+        } else {
+            getMathObject().copyStateFrom(obj);
+        }
     }
 
 }

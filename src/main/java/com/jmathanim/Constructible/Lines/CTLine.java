@@ -18,7 +18,6 @@
 package com.jmathanim.Constructible.Lines;
 
 import com.jmathanim.Constructible.Constructible;
-import com.jmathanim.Constructible.FixedConstructible;
 import com.jmathanim.Constructible.Points.CTPoint;
 import com.jmathanim.Renderers.Renderer;
 import com.jmathanim.Utils.Vec;
@@ -32,7 +31,7 @@ import com.jmathanim.mathobjects.updateableObjects.Updateable;
  *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
-public class CTLine extends FixedConstructible implements HasDirection {
+public class CTLine extends Constructible implements HasDirection {
 
     protected enum LineType {
         PointPoint, PointVector
@@ -108,8 +107,17 @@ public class CTLine extends FixedConstructible implements HasDirection {
 
     @Override
     public CTLine copy() {
-        CTLine copy = CTLine.make(A.copy(), B.copy());
-        copy.getMp().copyFrom(this.getMp());
+        CTLine copy = null;
+        switch (lineType) {
+            case PointPoint:
+                copy = CTLine.make(A.copy(), B.copy());
+                copy.getMp().copyFrom(this.getMp());
+                break;
+            case PointVector:
+                copy = CTLine.make(A.copy(), this.dir);
+                copy.getMp().copyFrom(this.getMp());
+                break;
+        }
         return copy;
     }
 
@@ -145,7 +153,7 @@ public class CTLine extends FixedConstructible implements HasDirection {
     public Vec getDirection() {
         switch (lineType) {
             case PointPoint:
-                return A.to(B);
+                return P1.to(P2);
             case PointVector:
                 return dir.getDirection();
         }

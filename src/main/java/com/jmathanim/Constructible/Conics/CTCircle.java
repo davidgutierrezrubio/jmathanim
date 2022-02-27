@@ -17,7 +17,7 @@
  */
 package com.jmathanim.Constructible.Conics;
 
-import com.jmathanim.Constructible.FixedConstructible;
+import com.jmathanim.Constructible.Constructible;
 import com.jmathanim.Constructible.Points.CTPoint;
 import com.jmathanim.Renderers.Renderer;
 import com.jmathanim.Utils.Rect;
@@ -34,7 +34,7 @@ import com.jmathanim.mathobjects.Shape;
  *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
-public class CTCircle extends FixedConstructible {
+public class CTCircle extends Constructible {
 
     private enum CircleType {
         THREE_POINTS, CENTER_POINT, CENTER_RADIUS

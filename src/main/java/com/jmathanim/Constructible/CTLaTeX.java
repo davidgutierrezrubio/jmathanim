@@ -29,7 +29,7 @@ import com.jmathanim.mathobjects.Text.LaTeXMathObject;
  *
  * @author David Gutierrez Rubio davidgutierrezrubio@gmail.com
  */
-public class CTLaTeX extends FixedConstructible {
+public class CTLaTeX extends Constructible {
 
     private final LaTeXMathObject tex;
     private final Anchor.Type anchorType;

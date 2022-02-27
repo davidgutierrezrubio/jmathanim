@@ -17,7 +17,7 @@
  */
 package com.jmathanim.Constructible.Conics;
 
-import com.jmathanim.Constructible.FixedConstructible;
+import com.jmathanim.Constructible.Constructible;
 import com.jmathanim.Constructible.Points.CTPoint;
 import com.jmathanim.Renderers.Renderer;
 import com.jmathanim.Utils.AffineJTransform;
@@ -32,7 +32,7 @@ import com.jmathanim.mathobjects.Shape;
  *
  * @author David Gutierrez Rubio
  */
-public class CTEllipse extends FixedConstructible {
+public class CTEllipse extends Constructible {
 
     CTPoint focus1, focus2, A;
     private final Shape originalShape;

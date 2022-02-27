@@ -18,7 +18,6 @@
 package com.jmathanim.Constructible.Lines;
 
 import com.jmathanim.Constructible.Constructible;
-import com.jmathanim.Constructible.FixedConstructible;
 import com.jmathanim.Constructible.Points.CTPoint;
 import com.jmathanim.Renderers.Renderer;
 import com.jmathanim.Utils.AffineJTransform;
@@ -32,7 +31,7 @@ import java.util.ArrayList;
  *
  * @author David
  */
-public class CTRegularPolygon extends FixedConstructible {
+public class CTRegularPolygon extends Constructible {
 
     private final int nSides;
     private final CTPoint B;

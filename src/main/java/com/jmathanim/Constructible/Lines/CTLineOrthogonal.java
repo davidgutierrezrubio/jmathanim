@@ -101,8 +101,10 @@ public class CTLineOrthogonal extends CTLine {
 
         P2.v.x = v.x - direction.y;
         P2.v.y = v.y + direction.x;
-        
-        super.rebuildShape();
+        if (!isThisMathObjectFree()) {
+            lineToDraw.getP1().v.copyFrom(P1.v);
+            lineToDraw.getP2().v.copyFrom(P2.v);
+        }
     }
 
 }

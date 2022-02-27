@@ -17,7 +17,7 @@
  */
 package com.jmathanim.Constructible.Lines;
 
-import com.jmathanim.Constructible.FixedConstructible;
+import com.jmathanim.Constructible.Constructible;
 import com.jmathanim.Constructible.Points.CTPoint;
 import com.jmathanim.Renderers.Renderer;
 import com.jmathanim.jmathanim.JMathAnimScene;
@@ -33,7 +33,7 @@ import java.util.OptionalInt;
  *
  * @author David Gutierrez Rubio
  */
-public class CTPolygon extends FixedConstructible {
+public class CTPolygon extends Constructible {
 
     private final Shape shapeToDraw;
     private final CTPoint[] points;
@@ -65,9 +65,11 @@ public class CTPolygon extends FixedConstructible {
 
     @Override
     public void rebuildShape() {
-        for (int i = 0; i < points.length; i++) {
-            CTPoint point = points[i];
-            shapeToDraw.get(i).p.v.copyFrom(point.v);
+        if (!isThisMathObjectFree()) {
+            for (int i = 0; i < points.length; i++) {
+                CTPoint point = points[i];
+                shapeToDraw.get(i).p.v.copyFrom(point.v);
+            }
         }
     }
 
@@ -86,11 +88,12 @@ public class CTPolygon extends FixedConstructible {
     @Override
     public void registerUpdateableHook(JMathAnimScene scene) {
         scene.registerUpdateable(points);
-         OptionalInt m = Arrays.stream(points).mapToInt(t -> t.getUpdateLevel()).max();
+        OptionalInt m = Arrays.stream(points).mapToInt(t -> t.getUpdateLevel()).max();
         if (m.isPresent()) {
             setUpdateLevel(m.getAsInt() + 1);
         } else {
             setUpdateLevel(0);
         }
     }
+    
 }

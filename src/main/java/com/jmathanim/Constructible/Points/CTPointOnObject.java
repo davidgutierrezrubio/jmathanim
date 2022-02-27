@@ -65,38 +65,38 @@ public class CTPointOnObject extends CTPoint {
     @Override
     public void rebuildShape() {
         Vec v1, v2;
-        Point projectionPoint;
+        Vec projectionPointCoordinates;
         double dotProd;
         switch (type) {
             case CTLine://Simple projection onto line
                 CTLine line = (CTLine) owner;
                 v1 = line.getDirection().normalize();
-                v2 = line.getP1().to(pointToDraw);
-                projectionPoint = line.getP1().add(v1.mult(v1.dot(v2)));
+                v2 = this.v.minus(line.getP1().v);
+                projectionPointCoordinates = line.getP1().v.add(v1.mult(v1.dot(v2)));
                 break;
             case CTSegment://Simple projection onto line
                 CTSegment seg = (CTSegment) owner;
                 v1 = seg.getDirection().normalize();
-                v2 = seg.getP1().to(pointToDraw);
+                v2 = this.v.minus(seg.getP1().v);
                 dotProd = v1.dot(v2);
                 dotProd = Math.max(dotProd, 0);
                 dotProd = Math.min(dotProd, seg.getDirection().norm());
-                projectionPoint = seg.getP1().add(v1.mult(dotProd));
+                projectionPointCoordinates = seg.getP1().v.add(v1.mult(dotProd));
                 break;
             case CTRay:
                 CTRay ray = (CTRay) owner;
                 v1 = ray.getDirection().normalize();
-                v2 = ray.getP1().to(pointToDraw);
+                v2 = this.v.minus(ray.getP1().v);
                 dotProd = v1.dot(v2);
                 dotProd = Math.max(dotProd, 0);
-                projectionPoint = ray.getP1().add(v1.mult(dotProd));
+                projectionPointCoordinates = ray.getP1().v.add(v1.mult(dotProd));
                 break;
             default:
-                projectionPoint = pointToDraw.copy();
+                projectionPointCoordinates = this.v;
         }
-        this.v.copyFrom(projectionPoint.v);
+        this.v.copyFrom(projectionPointCoordinates);
         if (!isThisMathObjectFree()) {
-            pointToDraw.copyFrom(projectionPoint);
+            pointToDraw.v.copyFrom(projectionPointCoordinates);
         }
     }
 

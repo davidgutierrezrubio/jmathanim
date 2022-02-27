@@ -17,7 +17,7 @@
  */
 package com.jmathanim.mathobjects;
 
-import com.jmathanim.Constructible.FixedConstructible;
+import com.jmathanim.Constructible.Constructible;
 import com.jmathanim.Renderers.Renderer;
 import com.jmathanim.Styling.MODrawProperties;
 import com.jmathanim.Styling.Stylable;
@@ -31,7 +31,7 @@ import com.jmathanim.jmathanim.JMathAnimScene;
  *
  * @author David Gutierrez Rubio
  */
-public class NullMathObject extends FixedConstructible {
+public class NullMathObject extends Constructible {
 
     @Override
     public NullMathObject copy() {

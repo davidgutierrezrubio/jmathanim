@@ -24,6 +24,7 @@ import com.jmathanim.Constructible.Lines.CTLine;
 import com.jmathanim.Constructible.Lines.CTRay;
 import com.jmathanim.Constructible.Lines.CTSegment;
 import com.jmathanim.Renderers.Renderer;
+import com.jmathanim.Utils.AffineJTransform;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.Line;
@@ -130,12 +131,11 @@ public class CTIntersectionPoint extends CTPoint {
             this.v.copyFrom(interX, interY);
             if (!isThisMathObjectFree()) {
                 getMathObject().v.copyFrom(this.v);
+                return;
             }
-            return;
         }
         //TODO: Implement intersection algorithms for:
         //Circle
-        getMathObject().copyFrom(Point.at(0, .5));//Debug values to show on screen
         double x1, x2, x3, x4, y1, y2, y3, y4;
         switch (intersectionType) {
             case LINEAR:
@@ -169,7 +169,7 @@ public class CTIntersectionPoint extends CTPoint {
             case LINE_CIRCLE:
                 //A line/ray/segment with a circle
                 double radius = ctcircle1.getRadius().value;
-                Vec center = ctcircle1.getCircleCenter().getMathObject().v;
+                Vec center = ctcircle1.getCircleCenter().v;
 
                 Point A = ctline1.getP1().copy().shift(center.mult(-1));
                 Point B = ctline1.getP2().copy().shift(center.mult(-1));
@@ -180,7 +180,8 @@ public class CTIntersectionPoint extends CTPoint {
                 double D = A.v.x * B.v.y - B.v.x * A.v.y;
                 final double discr = Math.sqrt(radius * radius * drSq - D * D);
                 if (discr < 0) {
-                    getMathObject().v.copyFrom(Double.NaN, Double.NaN);
+                    interX = Double.NaN;
+                    interY = Double.NaN;
                 } else {
                     //Coordinates of 2 intersection points
                     x1 = (D * dy - (dy < 0 ? -1 : 1) * dx * discr) / drSq;
@@ -201,9 +202,9 @@ public class CTIntersectionPoint extends CTPoint {
                         interX = Double.NaN;
                         interY = Double.NaN;
                     }
-                    this.v.copyFrom(interX, interY);
-                    this.v.addInSite(center);
                 }
+                this.v.copyFrom(interX, interY);
+                this.v.addInSite(center);
                 break;
             case CIRCLE_CIRCLE:
                 final Vec vecCenterCircles = ctcircle1.getCircleCenter().to(ctcircle2.getCircleCenter()).copy();
@@ -293,4 +294,9 @@ public class CTIntersectionPoint extends CTPoint {
         }
     }
 
+    @Override
+    public Constructible applyAffineTransform(AffineJTransform transform) {
+        getMathObject().applyAffineTransform(transform);
+        return this;
+    }
 }

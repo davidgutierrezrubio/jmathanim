@@ -17,7 +17,7 @@
  */
 package com.jmathanim.Constructible.Others;
 
-import com.jmathanim.Constructible.FixedConstructible;
+import com.jmathanim.Constructible.Constructible;
 import com.jmathanim.Constructible.Points.CTPoint;
 import com.jmathanim.Renderers.Renderer;
 import com.jmathanim.jmathanim.JMathAnimScene;
@@ -28,7 +28,7 @@ import com.jmathanim.mathobjects.MathObject;
  *
  * @author David
  */
-public class CTImage extends FixedConstructible {
+public class CTImage extends Constructible {
 
     private JMImage image;
     private CTPoint A;
