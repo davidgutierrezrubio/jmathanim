@@ -18,9 +18,9 @@
 package com.jmathanim.Constructible.Lines;
 
 import com.jmathanim.Constructible.Points.CTPoint;
-import com.jmathanim.Renderers.Renderer;
 import com.jmathanim.Utils.Vec;
-import com.jmathanim.jmathanim.JMathAnimScene;
+import com.jmathanim.mathobjects.Line;
+import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.Point;
 
 /**
@@ -29,7 +29,11 @@ import com.jmathanim.mathobjects.Point;
  *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
-public class CTPerpBisector extends CTLine {
+public class CTPerpBisector extends CTAbstractLine {
+
+    protected final CTPoint A;
+    protected final CTPoint B;
+    protected final Line lineToDraw;
 
     public static CTPerpBisector make(Point A, Point B) {
         CTPerpBisector resul = CTPerpBisector.makePerpBisector(CTPoint.make(A), CTPoint.make(B));
@@ -48,8 +52,10 @@ public class CTPerpBisector extends CTLine {
     }
 
     private CTPerpBisector(CTPoint A, CTPoint B) {
-        super(A, B);
-        this.lineType = LineType.PointPoint;
+        super();
+        this.A = A;
+        this.B = B;
+        lineToDraw=Line.XAxis();
     }
 
     @Override
@@ -57,11 +63,6 @@ public class CTPerpBisector extends CTLine {
         CTPerpBisector copy = CTPerpBisector.makePerpBisector(A.copy(), B.copy());
         copy.getMp().copyFrom(this.getMp());
         return copy;
-    }
-
-    @Override
-    public void draw(JMathAnimScene scene, Renderer r) {
-        lineToDraw.draw(scene, r);
     }
 
     @Override
@@ -73,6 +74,11 @@ public class CTPerpBisector extends CTLine {
             lineToDraw.getP1().v.copyFrom(P1.v);
             lineToDraw.getP2().v.copyFrom(P2.v);
         }
+    }
+
+    @Override
+    public MathObject getMathObject() {
+        return lineToDraw;
     }
 
 }

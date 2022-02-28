@@ -76,11 +76,6 @@ public class CTPoint extends Constructible {
         return copy;
     }
 
-    @Override
-    public void draw(JMathAnimScene scene, Renderer r) {
-        pointToDraw.draw(scene, r);
-    }
-
     /**
      * Computes the vector another CTPoint
      *

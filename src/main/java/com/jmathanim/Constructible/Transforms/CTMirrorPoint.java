@@ -18,6 +18,7 @@
 package com.jmathanim.Constructible.Transforms;
 
 import com.jmathanim.Constructible.Constructible;
+import com.jmathanim.Constructible.Lines.CTAbstractLine;
 import com.jmathanim.Constructible.Lines.CTLine;
 import com.jmathanim.Constructible.Lines.CTRay;
 import com.jmathanim.Constructible.Lines.CTSegment;
@@ -34,7 +35,7 @@ import com.jmathanim.mathobjects.Point;
  */
 public class CTMirrorPoint extends CTPoint {
 
-    private final CTLine axis;
+    private final CTAbstractLine axis;
     private final CTPoint originalPoint;
     private final CTPoint center;
 
@@ -56,8 +57,8 @@ public class CTMirrorPoint extends CTPoint {
     }
 
     public static CTMirrorPoint make(CTPoint orig, Constructible axis) {
-        if (axis instanceof CTLine) {
-            CTMirrorPoint resul = new CTMirrorPoint(orig, (CTLine) axis, null);
+        if (axis instanceof CTAbstractLine) {
+            CTMirrorPoint resul = new CTMirrorPoint(orig, (CTAbstractLine) axis, null);
             resul.mirrorType = MirrorType.AXIAL;
             return resul;
         }
@@ -85,7 +86,7 @@ public class CTMirrorPoint extends CTPoint {
         return null;
     }
 
-    private CTMirrorPoint(CTPoint orig, CTLine axis, CTPoint center) {
+    private CTMirrorPoint(CTPoint orig, CTAbstractLine axis, CTPoint center) {
         super();
         this.originalPoint = orig;
         this.axis = axis;

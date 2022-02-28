@@ -80,10 +80,6 @@ public class CTPolygon extends Constructible {
         return copy;
     }
 
-    @Override
-    public void draw(JMathAnimScene scene, Renderer r) {
-        shapeToDraw.draw(scene, r);
-    }
 
     @Override
     public void registerUpdateableHook(JMathAnimScene scene) {

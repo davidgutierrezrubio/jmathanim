@@ -60,11 +60,6 @@ public class CTImage extends Constructible {
     }
 
     @Override
-    public void draw(JMathAnimScene scene, Renderer r) {
-        image.draw(scene, r);
-    }
-
-    @Override
     public void registerUpdateableHook(JMathAnimScene scene) {
         scene.registerUpdateable(this.A, this.B);
         setUpdateLevel(Math.max(this.A.getUpdateLevel(), this.B.getUpdateLevel()) + 1);

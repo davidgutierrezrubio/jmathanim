@@ -18,7 +18,7 @@
 package com.jmathanim.Constructible.Points;
 
 import com.jmathanim.Constructible.Constructible;
-import com.jmathanim.Constructible.Lines.CTLine;
+import com.jmathanim.Constructible.Lines.CTAbstractLine;
 import com.jmathanim.Constructible.Lines.CTRay;
 import com.jmathanim.Constructible.Lines.CTSegment;
 import com.jmathanim.Utils.Vec;
@@ -40,7 +40,7 @@ public class CTPointOnObject extends CTPoint {
 
     public static CTPointOnObject make(Constructible owner, Point p) {
         CTPointOnObject resul = new CTPointOnObject(owner, p);
-        if (owner instanceof CTLine) {
+        if (owner instanceof CTAbstractLine) {
             resul.type = PointOnObjectType.CTLine;
         }
         if (owner instanceof CTSegment) {
@@ -69,7 +69,7 @@ public class CTPointOnObject extends CTPoint {
         double dotProd;
         switch (type) {
             case CTLine://Simple projection onto line
-                CTLine line = (CTLine) owner;
+                CTAbstractLine line = (CTAbstractLine) owner;
                 v1 = line.getDirection().normalize();
                 v2 = this.v.minus(line.getP1().v);
                 projectionPointCoordinates = line.getP1().v.add(v1.mult(v1.dot(v2)));

@@ -31,18 +31,14 @@ import com.jmathanim.mathobjects.updateableObjects.Updateable;
  *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
-public class CTLine extends Constructible implements HasDirection {
+public class CTLine extends CTAbstractLine {
 
-    protected enum LineType {
-        PointPoint, PointVector
-    }
-    protected LineType lineType;
+   
     protected Line lineToDraw;
-    CTPoint A;
-    CTPoint B;
+    protected CTPoint A;
+    protected CTPoint B;
     HasDirection dir;
-    protected final Point P1;
-    protected final Point P2;
+ 
 
     /**
      * Creates a Constructible line from a Line
@@ -97,10 +93,9 @@ public class CTLine extends Constructible implements HasDirection {
     }
 
     protected CTLine(CTPoint A, CTPoint B) {
+        super();
         this.A = A;
         this.B = B;
-        this.P1 = Point.origin();
-        this.P2 = Point.origin();
         lineType = LineType.PointPoint;
         lineToDraw = Line.make(A.getMathObject().copy(), B.getMathObject().copy());
     }
@@ -120,11 +115,15 @@ public class CTLine extends Constructible implements HasDirection {
         }
         return copy;
     }
-
-    @Override
-    public void draw(JMathAnimScene scene, Renderer r) {
-        lineToDraw.draw(scene, r);
-
+ @Override
+    public Vec getDirection() {
+        switch (lineType) {
+            case PointPoint:
+                return P1.to(P2);
+            case PointVector:
+                return dir.getDirection();
+        }
+        return null;
     }
 
     @Override
@@ -149,26 +148,6 @@ public class CTLine extends Constructible implements HasDirection {
         }
     }
 
-    @Override
-    public Vec getDirection() {
-        switch (lineType) {
-            case PointPoint:
-                return P1.to(P2);
-            case PointVector:
-                return dir.getDirection();
-        }
-        return null;
-    }
-
-    @Override
-    public Point getP1() {
-        return P1;
-    }
-
-    @Override
-    public Point getP2() {
-        return P2;
-    }
 
     @Override
     public void registerUpdateableHook(JMathAnimScene scene) {

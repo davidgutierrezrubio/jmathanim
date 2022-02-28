@@ -49,6 +49,7 @@ public class NullMathObject extends Constructible {
 
     @Override
     public void draw(JMathAnimScene scene, Renderer r) {
+        //Nothing to draw, folks, it's the NullMathObject!!
     }
 
     @Override

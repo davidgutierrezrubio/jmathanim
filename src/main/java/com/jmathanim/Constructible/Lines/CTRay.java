@@ -18,9 +18,7 @@
 package com.jmathanim.Constructible.Lines;
 
 import com.jmathanim.Constructible.Points.CTPoint;
-import com.jmathanim.Renderers.Renderer;
 import com.jmathanim.Utils.Vec;
-import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.Point;
 import com.jmathanim.mathobjects.Ray;
 
@@ -29,9 +27,12 @@ import com.jmathanim.mathobjects.Ray;
  *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
-public class CTRay extends CTLine {
+public class CTRay extends CTAbstractLine {
 
     private final Ray rayToDraw;
+    private HasDirection dir;
+    private final CTPoint A;
+    private final CTPoint B;
 
     /**
      * Creates a new Constructible ray with given point and direction
@@ -85,7 +86,7 @@ public class CTRay extends CTLine {
     }
 
     private CTRay(CTPoint A, CTPoint B) {
-        super(A, B);
+        super();
         this.A = A;
         this.B = B;
         rayToDraw = Ray.make(A.getMathObject().copy(), B.getMathObject().copy());
@@ -99,25 +100,23 @@ public class CTRay extends CTLine {
     }
 
     @Override
-    public void draw(JMathAnimScene scene, Renderer r) {
-        rayToDraw.draw(scene, r);
-
-    }
-
-    @Override
     public Ray getMathObject() {
         return rayToDraw;
     }
 
     @Override
     public void rebuildShape() {
+        this.P1.v.copyFrom(A.v);
         switch (lineType) {
             case PointPoint:
-                rayToDraw.getP1().v.copyFrom(A.v);
-                rayToDraw.getP2().v.copyFrom(B.v);
+                this.P2.v.copyFrom(B.v);
                 break;
             case PointVector:
-                rayToDraw.getP2().v.copyFrom(rayToDraw.getP1().v.add(dir.getDirection()));
+                this.P2.v.copyFrom(this.P1.v.add(dir.getDirection()));
+        }
+        if (!isThisMathObjectFree()) {
+            rayToDraw.getP1().v.copyFrom(this.P1.v);
+            rayToDraw.getP2().v.copyFrom(this.P2.v);
         }
     }
 

@@ -108,11 +108,6 @@ public class CTEllipse extends Constructible {
     }
 
     @Override
-    public void draw(JMathAnimScene scene, Renderer r) {
-        ellipseToDraw.draw(scene, r);
-    }
-
-    @Override
     public void registerUpdateableHook(JMathAnimScene scene) {
         scene.registerUpdateable(this.focus1, this.focus2, this.A);
          setUpdateLevel(

@@ -17,6 +17,7 @@
  */
 package com.jmathanim.Constructible;
 
+import com.jmathanim.Renderers.Renderer;
 import com.jmathanim.Styling.Stylable;
 import com.jmathanim.Utils.AffineJTransform;
 import com.jmathanim.Utils.Rect;
@@ -89,6 +90,11 @@ public abstract class Constructible extends MathObject {
         } else {
             getMathObject().copyStateFrom(obj);
         }
+    }
+
+    @Override
+    public void draw(JMathAnimScene scene, Renderer r) {
+        getMathObject().draw(scene, r);
     }
 
 }

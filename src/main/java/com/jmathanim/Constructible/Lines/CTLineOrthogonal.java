@@ -18,9 +18,9 @@
 package com.jmathanim.Constructible.Lines;
 
 import com.jmathanim.Constructible.Points.CTPoint;
-import com.jmathanim.Renderers.Renderer;
 import com.jmathanim.Utils.Vec;
-import com.jmathanim.jmathanim.JMathAnimScene;
+import com.jmathanim.mathobjects.Line;
+import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.Point;
 
 /**
@@ -29,7 +29,11 @@ import com.jmathanim.mathobjects.Point;
  *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
-public class CTLineOrthogonal extends CTLine {
+public class CTLineOrthogonal extends CTAbstractLine {
+
+    protected final CTPoint A;
+    protected final HasDirection dir;
+    protected final Line lineToDraw;
 
     /**
      * A CTLine that pass through A and is perpendicular to the segment AB
@@ -76,9 +80,11 @@ public class CTLineOrthogonal extends CTLine {
      * @return The created object
      */
     private CTLineOrthogonal(CTPoint A, HasDirection dir) {
-        super(A, CTPoint.make(Point.at(0, 0)));
-        this.lineType=LineType.PointVector;
+        super();
+        this.A = A;
+        this.lineType = LineType.PointVector;
         this.dir = dir;
+        this.lineToDraw = Line.XAxis();
     }
 
     @Override
@@ -86,11 +92,6 @@ public class CTLineOrthogonal extends CTLine {
         CTLineOrthogonal copy = make(A.copy(), dir);
         copy.getMp().copyFrom(this.getMp());
         return copy;
-    }
-
-    @Override
-    public void draw(JMathAnimScene scene, Renderer r) {
-        lineToDraw.draw(scene, r);
     }
 
     @Override
@@ -105,6 +106,11 @@ public class CTLineOrthogonal extends CTLine {
             lineToDraw.getP1().v.copyFrom(P1.v);
             lineToDraw.getP2().v.copyFrom(P2.v);
         }
+    }
+
+    @Override
+    public MathObject getMathObject() {
+        return lineToDraw;
     }
 
 }

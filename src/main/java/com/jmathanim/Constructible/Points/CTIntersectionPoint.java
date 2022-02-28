@@ -20,6 +20,7 @@ package com.jmathanim.Constructible.Points;
 import com.jmathanim.Constructible.Conics.CTCircle;
 import com.jmathanim.Constructible.Conics.CTEllipse;
 import com.jmathanim.Constructible.Constructible;
+import com.jmathanim.Constructible.Lines.CTAbstractLine;
 import com.jmathanim.Constructible.Lines.CTLine;
 import com.jmathanim.Constructible.Lines.CTRay;
 import com.jmathanim.Constructible.Lines.CTSegment;
@@ -41,7 +42,7 @@ public class CTIntersectionPoint extends CTPoint {
         LINEAR, LINE_CIRCLE, CIRCLE_CIRCLE, CIRCLE_CONIC
     }
     private IntersectionType intersectionType;
-    private CTLine ctline1, ctline2;
+    private CTAbstractLine ctline1, ctline2;
     private CTCircle ctcircle1, ctcircle2;
     private final Constructible c1, c2;
     private final int solNumber;
@@ -88,20 +89,20 @@ public class CTIntersectionPoint extends CTPoint {
         this.c2 = c2;
         //Determine intersecion type and define proper variables
         //TODO: Change this to a proper switch
-        if ((c1 instanceof CTLine) && (c2 instanceof CTLine)) {
-            ctline1 = (CTLine) c1;
-            ctline2 = (CTLine) c2;
+        if ((c1 instanceof CTAbstractLine) && (c2 instanceof CTAbstractLine)) {
+            ctline1 = (CTAbstractLine) c1;
+            ctline2 = (CTAbstractLine) c2;
             ctcircle1 = null;
             ctcircle2 = null;
             intersectionType = IntersectionType.LINEAR;
-        } else if ((c1 instanceof CTLine) && (c2 instanceof CTCircle)) {
-            ctline1 = (CTLine) c1;
+        } else if ((c1 instanceof CTAbstractLine) && (c2 instanceof CTCircle)) {
+            ctline1 = (CTAbstractLine) c1;
             ctline2 = null;
             ctcircle1 = (CTCircle) c2;
             ctcircle2 = null;
             intersectionType = IntersectionType.LINE_CIRCLE;//TODO: consider SEGMENT_CIRCLE
-        } else if ((c1 instanceof CTCircle) && (c2 instanceof CTLine)) {
-            ctline1 = (CTLine) c2;
+        } else if ((c1 instanceof CTCircle) && (c2 instanceof CTAbstractLine)) {
+            ctline1 = (CTAbstractLine) c2;
             ctline2 = null;
             ctcircle1 = (CTCircle) c1;
             ctcircle2 = null;
@@ -225,7 +226,7 @@ public class CTIntersectionPoint extends CTPoint {
             //Not implemented yet. Returns a NaN point
         }
         if (!isThisMathObjectFree()) {
-            getMathObject().v.copyFrom(this.v);
+            pointToDraw.v.copyFrom(this.v);
         }
 
     }
@@ -236,7 +237,7 @@ public class CTIntersectionPoint extends CTPoint {
     }
 
     //Determines if given point P of line/ray/segment is valid or not
-    private boolean validateSolutionForLines(CTLine line, double x, double y) {
+    private boolean validateSolutionForLines(CTAbstractLine line, double x, double y) {
         boolean valid = true;
         Point A = line.getP1();
         Point B = line.getP2();
@@ -258,11 +259,6 @@ public class CTIntersectionPoint extends CTPoint {
         CTIntersectionPoint copy = make((Constructible) c1.copy(), (Constructible) c2.copy());
         copy.getMp().copyFrom(this.getMp());
         return copy;
-    }
-
-    @Override
-    public void draw(JMathAnimScene scene, Renderer r) {
-        getMathObject().draw(scene, r);
     }
 
     private double[] BezierIntersect(double x1, double y1, double x2, double y2, double x3, double y3, double x4, double y4) {

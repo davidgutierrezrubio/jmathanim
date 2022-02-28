@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2021 David Gutiérrez Rubio davidgutierrezrubio@gmail.com
+ * Copyright (C) 2022 David Gutierrez Rubio davidgutierrezrubio@gmail.com
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -17,16 +17,39 @@
  */
 package com.jmathanim.Constructible.Lines;
 
+import com.jmathanim.Constructible.Constructible;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.mathobjects.Point;
 
 /**
- * Any object that has a direction,like segments, lines, vectors should
- * implement this interface.
  *
- * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
+ * @author David Gutierrez Rubio davidgutierrezrubio@gmail.com
  */
-public interface HasDirection {
+public abstract class CTAbstractLine extends Constructible implements HasDirection {
 
-    public Vec getDirection();
+    protected enum LineType {
+        PointPoint, PointVector
+    }
+    protected LineType lineType;
+    protected final Point P1;
+    protected final Point P2;
+
+    public CTAbstractLine() {
+        this.P1 = Point.origin();
+        this.P2 = Point.origin();
+    }
+
+    @Override
+    public Vec getDirection() {
+        return P1.to(P2);
+    }
+
+    public Point getP1() {
+        return P1;
+    }
+
+    public Point getP2() {
+        return P2;
+    }
+
 }

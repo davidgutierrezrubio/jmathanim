@@ -18,9 +18,7 @@
 package com.jmathanim.Constructible.Lines;
 
 import com.jmathanim.Constructible.Points.CTPoint;
-import com.jmathanim.Renderers.Renderer;
 import com.jmathanim.Utils.Vec;
-import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.Arrow2D;
 import com.jmathanim.mathobjects.Point;
 
@@ -29,9 +27,11 @@ import com.jmathanim.mathobjects.Point;
  *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
-public class CTVector extends CTLine {
+public class CTVector extends CTAbstractLine {
 
-    private final Arrow2D arrowToDraw;
+    protected final Arrow2D arrowToDraw;
+    protected final CTPoint A;
+    protected final CTPoint B;
 
     /**
      * Creates a new CTVector from a Vec object. The created vector is located
@@ -71,7 +71,7 @@ public class CTVector extends CTLine {
     }
 
     private CTVector(CTPoint A, CTPoint B) {
-        super(A, B);
+        super();
         this.A = A;
         this.B = B;
         arrowToDraw = Arrow2D.makeSimpleArrow2D(this.A.getMathObject().copy(), this.B.getMathObject().copy());
@@ -82,11 +82,6 @@ public class CTVector extends CTLine {
         CTVector copy = CTVector.makeVector(this.A.copy(), this.B.copy());
         copy.getMp().copyFrom(this.getMp());
         return copy;
-    }
-
-    @Override
-    public void draw(JMathAnimScene scene, Renderer r) {
-        arrowToDraw.draw(scene, r);
     }
 
     @Override

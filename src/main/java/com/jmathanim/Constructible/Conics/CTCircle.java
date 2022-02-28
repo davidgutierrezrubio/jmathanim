@@ -217,11 +217,6 @@ public class CTCircle extends Constructible {
     }
 
     @Override
-    public void draw(JMathAnimScene scene, Renderer r) {
-        circleToDraw.draw(scene, r);
-    }
-
-    @Override
     public Rect getBoundingBox() {
         rebuildShape();
         return circleToDraw.getBoundingBox();

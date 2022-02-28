@@ -18,7 +18,6 @@
 package com.jmathanim.Constructible;
 
 import com.jmathanim.Constructible.Points.CTPoint;
-import com.jmathanim.Renderers.Renderer;
 import com.jmathanim.Utils.Anchor;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.MathObject;
@@ -52,8 +51,7 @@ public class CTLaTeX extends Constructible {
     private boolean visible;
 
     private CTLaTeX(String text, CTPoint anchor, Anchor.Type anchorType, double gap) {
-        tex = LaTeXMathObject.make(text);
-        this.gap = gap;
+        tex = LaTeXMathObject.make(text);        this.gap = gap;
         this.anchorType = anchorType;
         this.anchor = anchor;
         this.visible = true;
@@ -82,11 +80,6 @@ public class CTLaTeX extends Constructible {
         CTLaTeX copy = make(tex.getText(), anchor, this.anchorType, this.gap);
         copy.getMp().copyFrom(this.getMp());
         return copy;
-    }
-
-    @Override
-    public void draw(JMathAnimScene scene, Renderer r) {
-        tex.draw(scene, r);
     }
 
     @Override

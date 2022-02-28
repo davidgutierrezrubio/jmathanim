@@ -29,13 +29,16 @@ import com.jmathanim.mathobjects.Point;
  *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
-public class CTAngleBisector extends CTLine {
+public class CTAngleBisector extends CTAbstractLine {
 
     private enum LineType {
         PointPointPoint, LineLine
     }
     private LineType bisectorType;
+    CTPoint A;
+    CTPoint B;
     CTPoint C;
+    private final Line lineToDraw;
     Point dirPoint;//The second point of the angle bisector. The first is B
 
     /**
@@ -66,7 +69,9 @@ public class CTAngleBisector extends CTLine {
     }
 
     private CTAngleBisector(CTPoint A, CTPoint B, CTPoint C) {
-        super(A, B);
+        super();
+        this.A = A;
+        this.B = B;
         this.C = C;
         dirPoint = Point.origin();
         lineToDraw = Line.make(B.getMathObject(), dirPoint);
@@ -77,12 +82,6 @@ public class CTAngleBisector extends CTLine {
         CTAngleBisector copy = CTAngleBisector.make(A.copy(), B.copy(), C.copy());
         copy.getMp().copyFrom(this.getMp());
         return copy;
-    }
-
-    @Override
-    public void draw(JMathAnimScene scene, Renderer r) {
-        lineToDraw.draw(scene, r);
-
     }
 
     @Override
@@ -108,8 +107,8 @@ public class CTAngleBisector extends CTLine {
         switch (bisectorType) {
             case PointPointPoint:
                 scene.registerUpdateable(this.A, this.B, this.C);
-                 setUpdateLevel(
-                Math.max(Math.max(this.A.getUpdateLevel(),this.B.getUpdateLevel()),this.C.getUpdateLevel())+1
+                setUpdateLevel(
+                        Math.max(Math.max(this.A.getUpdateLevel(), this.B.getUpdateLevel()), this.C.getUpdateLevel()) + 1
                 );
                 break;
             case LineLine:

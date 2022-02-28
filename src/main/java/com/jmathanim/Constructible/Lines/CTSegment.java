@@ -18,8 +18,6 @@
 package com.jmathanim.Constructible.Lines;
 
 import com.jmathanim.Constructible.Points.CTPoint;
-import com.jmathanim.Renderers.Renderer;
-import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.Point;
 import com.jmathanim.mathobjects.Shape;
@@ -29,8 +27,10 @@ import com.jmathanim.mathobjects.Shape;
  *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
-public class CTSegment extends CTLine {
+public class CTSegment extends CTAbstractLine {
 
+    protected final CTPoint B;
+    protected final CTPoint A;
     private final Shape segmentToDraw;
 
     /**
@@ -58,7 +58,9 @@ public class CTSegment extends CTLine {
     }
 
     private CTSegment(CTPoint A, CTPoint B) {
-        super(A, B);
+        super();
+        this.A = A;
+        this.B = B;
         segmentToDraw = Shape.segment(this.A.getMathObject().copy(), this.B.getMathObject().copy());
     }
 
@@ -78,16 +80,6 @@ public class CTSegment extends CTLine {
         CTSegment copy = CTSegment.make(this.A.copy(), this.B.copy());
         copy.getMp().copyFrom(this.getMp());
         return copy;
-    }
-
-    @Override
-    public void draw(JMathAnimScene scene, Renderer r) {
-        segmentToDraw.draw(scene, r);
-    }
-
-    @Override
-    public Vec getDirection() {
-        return getP1().to(getP2());
     }
 
     @Override
