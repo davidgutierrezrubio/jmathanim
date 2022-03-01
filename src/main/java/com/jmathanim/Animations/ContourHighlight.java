@@ -35,7 +35,7 @@ import java.util.Arrays;
  * @author David
  */
 public class ContourHighlight extends Animation {
-    
+
     MathObject[] objs;
     JMColor highlightColor;
     double thickness;
@@ -52,7 +52,7 @@ public class ContourHighlight extends Animation {
     public static ContourHighlight make(double runTime, MathObject... objs) {
         return new ContourHighlight(runTime, objs);
     }
-    
+
     public static ContourHighlight makeBBox(double runTime, double gap, MathObject... objs) {
         MathObject[] toArray = Arrays.stream(objs).map(t -> Shape.rectangle(t.getBoundingBox().addGap(gap, gap))).toArray(MathObject[]::new);
         return new ContourHighlight(runTime, toArray);
@@ -74,19 +74,19 @@ public class ContourHighlight extends Animation {
                 toAnimateArrayList.add(obj);
             }
         }
-        
+
         this.objs = toAnimateArrayList.toArray(MathObject[]::new);
         highlightColor = JMColor.parse("red");
         this.thickness = 10;
         this.amplitude = .4;
 //        setLambda(t -> t);
     }
-    
+
     @Override
     public void initialize(JMathAnimScene scene) {
         super.initialize(scene);
     }
-    
+
     @Override
     public void doAnim(double t) {
         if (t >= 1) {
@@ -97,10 +97,10 @@ public class ContourHighlight extends Animation {
         double a = UsefulLambdas.allocateTo(.5 * amplitude, 1).applyAsDouble(lt);
         for (MathObject obj : objs) {
             process(obj, a, b);
-            
+
         }
     }
-    
+
     private void process(MathObject obj, double a, double b) {
         if (obj instanceof Line) {
             Line line = ((Line) obj);
@@ -128,9 +128,9 @@ public class ContourHighlight extends Animation {
             Shape sh = ((Shape) obj);
             addSubShapeToScene(sh, a, b);
         }
-        
+
     }
-    
+
     private void addSubShapeToScene(Shape sh, double a, double b) {
         Shape sub = sh.getSubShape(Math.min(a, b), Math.max(a, b));
         sub
@@ -196,5 +196,5 @@ public class ContourHighlight extends Animation {
         this.thickness = thickness;
         return this;
     }
-    
+
 }

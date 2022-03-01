@@ -97,14 +97,41 @@ public class Commands {
      * @param runtime Duration in seconds
      * @param scale The factor to scale. A value of 1.5 will scale the objecs up
      * to 50% more.
-     * @param objects Objects to highlight
+     * @param mathObjects Objects to highlight
      * @return The animation, ready to play with the playAnim method
      */
-    public static Animation highlight(double runtime, double scale, MathObject... objects) {
-        MathObjectGroup group = MathObjectGroup.make(objects);
+    public static Animation highlight(double runtime, double scale, MathObject... mathObjects) {
+
+        Runnable initHook = new Runnable() {
+            @Override
+            public void run() {
+                for (MathObject obj : mathObjects) {
+                    if (obj instanceof Constructible) {
+                        Constructible cnstr = (Constructible) obj;
+                        cnstr.freeMathObject(true);
+                    }
+                }
+            }
+        };
+
+        Runnable finishHook = new Runnable() {
+            @Override
+            public void run() {
+                for (MathObject obj : mathObjects) {
+                    if (obj instanceof Constructible) {
+                        Constructible cnstr = (Constructible) obj;
+                        cnstr.freeMathObject(false);
+                    }
+                }
+            }
+        };
+
+        MathObjectGroup group = MathObjectGroup.make(mathObjects);
         Point center = group.getCenter();
 
         Animation anim = Commands.scale(runtime, center, scale, group);
+        anim.initRunnable = initHook;
+        anim.finishRunnable = finishHook;
         anim.setLambda(UsefulLambdas.backAndForth());
 
         anim.setDebugName("Highlight");
@@ -132,17 +159,43 @@ public class Commands {
      * to 50% more.
      * @param twistAngle Max angle of rotation. The twist will perform to
      * positive and negative direction
-     * @param objects Objects to animate
+     * @param mathObjects Objects to animate
      * @return The animation, ready to play with the playAnim method
      */
-    public static AnimationGroup twistAndScale(double runtime, double scale, double twistAngle, MathObject... objects) {
+    public static AnimationGroup twistAndScale(double runtime, double scale, double twistAngle, MathObject... mathObjects) {
+        Runnable initHook = new Runnable() {
+            @Override
+            public void run() {
+                for (MathObject obj : mathObjects) {
+                    if (obj instanceof Constructible) {
+                        Constructible cnstr = (Constructible) obj;
+                        cnstr.freeMathObject(true);
+                    }
+                }
+            }
+        };
+
+        Runnable finishHook = new Runnable() {
+            @Override
+            public void run() {
+                for (MathObject obj : mathObjects) {
+                    if (obj instanceof Constructible) {
+                        Constructible cnstr = (Constructible) obj;
+                        cnstr.freeMathObject(false);
+                    }
+                }
+            }
+        };
         AnimationGroup ag = new AnimationGroup();
-        Point center = MathObjectGroup.make(objects).getCenter();
-        for (MathObject obj : objects) {
-            ag.add(Commands.rotate(runtime, center, twistAngle, obj).setLambda(t -> Math.sin(4 * PI * t)));
+        Point center = MathObjectGroup.make(mathObjects).getCenter();
+        for (MathObject obj : mathObjects) {
+            Animation rotateAnim = Commands.rotate(runtime, center, twistAngle, obj).setLambda(t -> Math.sin(4 * PI * t));
+            ag.add(rotateAnim);
             ag.add(Commands.scale(runtime, center, scale, obj).setLambda(UsefulLambdas.backAndForth()).setUseObjectState(false));
         }
         ag.setDebugName("TwistAndScale");
+        ag.initRunnable = initHook;
+        ag.finishRunnable = finishHook;
         return ag;
     }
 
@@ -340,7 +393,8 @@ public class Commands {
 
     /**
      * Deprecated. Animation command that transforms a MathObject through an
-     * isomorphism. This is left for compatibility reasons. Use isomorphism instead.
+     * isomorphism. This is left for compatibility reasons. Use isomorphism
+     * instead.
      *
      * @param runtime Run time (in seconds)
      * @param a First origin point
@@ -407,7 +461,7 @@ public class Commands {
 
             }
         };
-        resul.setDebugName("Homothecy Transform");
+        resul.setDebugName("Isomorphism Transform");
         return resul;
     }// End of homothecy command
 
@@ -733,6 +787,12 @@ public class Commands {
                 super.initialize(scene);
                 saveStates(mathObjects);
                 addObjectsToscene(mathObjects);
+                for (MathObject obj : mathObjects) {
+                    if (obj instanceof Constructible) {
+                        Constructible cnstr = (Constructible) obj;
+                        cnstr.freeMathObject(true);
+                    }
+                }
             }
 
             @Override
@@ -752,6 +812,12 @@ public class Commands {
                 doAnim(1);
                 super.finishAnimation();
                 removeObjectsFromScene(mathObjects);
+                for (MathObject obj : mathObjects) {
+                    if (obj instanceof Constructible) {
+                        Constructible cnstr = (Constructible) obj;
+                        cnstr.freeMathObject(false);
+                    }
+                }
             }
         };
         anim.setLambda(t -> t);// Default
@@ -793,6 +859,10 @@ public class Commands {
                 addObjectsToscene(mathObjects);
                 for (MathObject obj : mathObjects) {
                     obj.visible(false);
+                    if (obj instanceof Constructible) {
+                        Constructible cnstr = (Constructible) obj;
+                        cnstr.freeMathObject(true);
+                    }
                 }
             }
 
@@ -812,7 +882,12 @@ public class Commands {
             public void finishAnimation() {
                 doAnim(1);
                 super.finishAnimation();
-
+                for (MathObject obj : mathObjects) {
+                    if (obj instanceof Constructible) {
+                        Constructible cnstr = (Constructible) obj;
+                        cnstr.freeMathObject(false);
+                    }
+                }
             }
         };
         anim.setLambda(t -> t);// Default value
@@ -1045,6 +1120,10 @@ public class Commands {
                 // Compute appropiate shift vectors
                 Rect r = JMathAnimConfig.getConfig().getCamera().getMathView();
                 for (MathObject obj : mathObjects) {
+                    if (obj instanceof Constructible) {
+                        Constructible cnstr = (Constructible) obj;
+                        cnstr.freeMathObject(true);
+                    }
                     Point p = Anchor.getAnchorPoint(obj, Anchor.reverseAnchorPoint(exitAnchor));
                     Point q = Anchor.getAnchorPoint(Shape.rectangle(r), exitAnchor, 1);
                     switch (exitAnchor) {
@@ -1067,6 +1146,10 @@ public class Commands {
                 super.finishAnimation();
                 for (MathObject obj : mathObjects) {
                     removeObjectsFromScene(obj);
+                    if (obj instanceof Constructible) {
+                        Constructible cnstr = (Constructible) obj;
+                        cnstr.freeMathObject(false);
+                    }
                 }
             }
 
@@ -1092,11 +1175,10 @@ public class Commands {
         ArrayList<MathObject> toRemove = new ArrayList<>();
         for (MathObject obj : mathObjects) {
             if (obj instanceof Constructible) {
-                toAnimateArrayList.add(((Constructible) obj).getMathObject());
-                toRemove.add(((Constructible) obj).getMathObject());
-            } else {
-                toAnimateArrayList.add(obj);
+                Constructible cnstr = (Constructible) obj;
+                cnstr.freeMathObject(true);
             }
+            toAnimateArrayList.add(obj);
         }
         final MathObject[] toAnimateArray = toAnimateArrayList.toArray(MathObject[]::new);
         ShiftAnimation resul = new ShiftAnimation(runtime, toAnimateArray) {
@@ -1125,11 +1207,21 @@ public class Commands {
                     this.setShiftVector(obj, q.to(p));
                 }
                 saveStates(toAnimateArray);
-
             }
 
+            @Override
+            public void finishAnimation() {
+                super.finishAnimation();
+                for (MathObject obj : mathObjects) {
+                    if (obj instanceof Constructible) {
+                        Constructible cnstr = (Constructible) obj;
+                        cnstr.freeMathObject(false);
+                    }
+                }
+            }
         };
-        resul.setDebugName("moveIn for " + mathObjects.length + " object(s)");
+        resul.setDebugName(
+                "moveIn for " + mathObjects.length + " object(s)");
         return resul;
     }
 

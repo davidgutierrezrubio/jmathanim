@@ -100,6 +100,9 @@ public abstract class Animation {
     protected final ArrayList<MathObject> removeThisAtTheEnd;
     protected final ArrayList<MathObject> addThisAtTheEnd;
 
+    protected Runnable finishRunnable;
+    protected Runnable initRunnable;
+
     /**
      * Creates an empty animation, with specified run time.This constructor
      * should be called only from implementing subclasses.
@@ -244,6 +247,9 @@ public abstract class Animation {
         this.scene = scene;
         setFps(scene.getConfig().fps);
         status = Status.INITIALIZED;
+          if (initRunnable != null) {
+            initRunnable.run();
+        }
     }
 
     /**
@@ -262,6 +268,9 @@ public abstract class Animation {
         status = Status.FINISHED;
         removeObjectsFromScene(removeThisAtTheEnd);
         addObjectsToscene(addThisAtTheEnd);
+        if (finishRunnable != null) {
+            finishRunnable.run();
+        }
     }
 
     /**

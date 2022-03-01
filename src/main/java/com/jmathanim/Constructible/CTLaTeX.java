@@ -51,7 +51,8 @@ public class CTLaTeX extends Constructible {
     private boolean visible;
 
     private CTLaTeX(String text, CTPoint anchor, Anchor.Type anchorType, double gap) {
-        tex = LaTeXMathObject.make(text);        this.gap = gap;
+        tex = LaTeXMathObject.make(text);
+        this.gap = gap;
         this.anchorType = anchorType;
         this.anchor = anchor;
         this.visible = true;
@@ -64,20 +65,23 @@ public class CTLaTeX extends Constructible {
 
     @Override
     public void rebuildShape() {
-        if (anchor.v.isNaN()) {
-            //If anchor is NaN point, to prevent the shape to be completely NaN
-            //we made it invisible
-            visible = tex.isVisible();
-            tex.visible(false);
-        } else {
-            tex.visible(true);
-            tex.stackTo(anchorType, anchor, Anchor.Type.CENTER, this.gap);
+        if (!isThisMathObjectFree()) {
+            if (anchor.v.isNaN()) {
+                //If anchor is NaN point, to prevent the shape to be completely NaN
+                //we made it invisible
+                visible = tex.isVisible();
+                tex.visible(false);
+            } else {
+                tex.visible(true);
+                tex.stackTo(anchorType, anchor, Anchor.Type.CENTER, this.gap);
+            }
         }
     }
 
     @Override
     public CTLaTeX copy() {
         CTLaTeX copy = make(tex.getText(), anchor, this.anchorType, this.gap);
+        copy.tex.copyStateFrom(tex);
         copy.getMp().copyFrom(this.getMp());
         return copy;
     }

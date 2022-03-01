@@ -636,7 +636,7 @@ public class PlayAnim {
     public void showCreation(double runtime, MathObject... mobjects) {
         ArrayList<Animation> anims = new ArrayList<>();
         for (MathObject obj : mobjects) {
-                anims.add(new ShowCreation(runtime, obj));
+            anims.add(new ShowCreation(runtime, obj));
         }
         scene.playAnimation(anims);
     }
@@ -706,22 +706,43 @@ public class PlayAnim {
         scene.playAnimation(ContourHighlight.make(defaultRunTimeHighlight, objs));
     }
 
-      /**
+    /**
+     * Plays an animation that hightlights the contour of a Shape object, with
+     * the duration of defaultRunTimeHighlight variable (default 1s)
+     *
+     * @param runTime time in seconds
+     * @param objs MathObjects to animate (varargs)
+     */
+    public void contourHighlight(double runTime, MathObject... objs) {
+        scene.playAnimation(ContourHighlight.make(runTime, objs));
+    }
+
+    /**
+     * Plays an animation that hightlights the contour of a Shape object, with
+     * the specified duration
+     *
+     * @param runTime time in seconds
+     * @param objs MathObjects to animate (varargs)
+     */
+    public void contourHighlightB(double runTime, double gap, MathObject... objs) {
+        scene.playAnimation(ContourHighlight.makeBBox(runTime, gap, objs));
+    }
+
+    /**
      * Plays an animation that hightlights the contour of a Shape object, with
      * the duration of defaultRunTimeHighlight variable (default 1s)
      *
      * @param objs MathObjects to animate (varargs)
      */
-    public void contourHighlightB(double runTime, double gap,MathObject... objs) {
-        scene.playAnimation(ContourHighlight.makeBBox(runTime, gap,objs));
+    public void contourHighlightB(double gap, MathObject... objs) {
+        scene.playAnimation(ContourHighlight.makeBBox(defaultRunTimeHighlight, gap, objs));
     }
-    
-    
+
     public void twistAndScale(MathObject... objs) {
         scene.playAnimation(Commands.twistAndScale(defaultRunTimeHighlight, objs));
     }
-    
-      public void twistAndScale(double runTime,MathObject... objs) {
+
+    public void twistAndScale(double runTime, MathObject... objs) {
         scene.playAnimation(Commands.twistAndScale(runTime, objs));
     }
 
