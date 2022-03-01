@@ -26,6 +26,7 @@ import com.jmathanim.Constructible.Points.CTPoint;
 import com.jmathanim.Utils.AffineJTransform;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.Line;
+import com.jmathanim.mathobjects.NullMathObject;
 import com.jmathanim.mathobjects.Point;
 
 /**
@@ -38,6 +39,7 @@ public class CTMirrorPoint extends CTPoint {
     private final CTAbstractLine axis;
     private final CTPoint originalPoint;
     private final CTPoint center;
+    private final Point pcenter;
 
     private enum MirrorType {
         AXIAL, CENTRAL
@@ -91,20 +93,32 @@ public class CTMirrorPoint extends CTPoint {
         this.originalPoint = orig;
         this.axis = axis;
         this.center = center;
+        if (this.center != null) {
+            this.pcenter = new Point(this.center.v);
+        } else {
+            this.pcenter = null;
+        }
     }
 
     @Override
     public void rebuildShape() {
+        AffineJTransform tr;
         switch (mirrorType) {
             case AXIAL:
-                AffineJTransform tr = AffineJTransform.createReflectionByAxis(axis.getP1(), axis.getP2(), 1);
-                getMathObject().copyFrom(originalPoint.getMathObject());
-                tr.applyTransform(getMathObject());
+                tr = AffineJTransform.createReflectionByAxis(axis.getP1(), axis.getP2(), 1);
                 break;
             case CENTRAL:
-                getMathObject().copyFrom(originalPoint.getMathObject());
-                getMathObject().scale(this.center.getMathObject(), -1, -1);
+                //Note that we don't use this.center.getMathObject() because 
+                //the mathobject may be free. Instead we create a new point pcenter
+                tr = AffineJTransform.createScaleTransform(pcenter, -1);
                 break;
+            default:
+                tr = new AffineJTransform();//An identity transform
+        }
+        this.v.copyFrom(originalPoint.v);
+        this.v.applyAffineTransform(tr);
+        if (!isThisMathObjectFree()) {
+            pointToDraw.v.copyFrom(v);
         }
     }
 

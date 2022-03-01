@@ -56,6 +56,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
+import javafx.scene.shape.Circle;
 import org.w3c.dom.Element;
 
 /**
@@ -133,8 +134,10 @@ public class GeogebraCommandParser {
     }
 
     public void registerGeogebraElement(String label, Constructible resul) {
-        resul.setLabel(label);
-        geogebraElements.put(label, resul);
+        if (resul != null) {
+            resul.setLabel(label);
+            geogebraElements.put(label, resul);
+        }
     }
 
 //    private String getInputArgument(Element el, int num) {
@@ -260,6 +263,21 @@ public class GeogebraCommandParser {
             // TODO: Add a z value here
             CTPoint resul = CTPoint.make(Point.at(x, y));
             resul.thickness(th);
+            
+            Element pointStyle = firstElementWithTag(el, "pointStyle");
+            Integer dotStyleCode = Integer.valueOf(pointStyle.getAttribute("val"));
+            Point.DotSyle dotStyle;
+            switch (dotStyleCode) {
+                case 1:
+                    dotStyle=Point.DotSyle.CROSS;
+                    break;
+                case 3:
+                     dotStyle=Point.DotSyle.PLUS;
+                    break;
+                default:
+                    dotStyle=Point.DotSyle.CIRCLE;
+            }
+            resul.dotStyle(dotStyle);
             resul.objectLabel = label;
             registerGeogebraElement(label, resul);
             JMathAnimScene.logger.debug("Imported point {}", label);
@@ -278,7 +296,7 @@ public class GeogebraCommandParser {
             Element elStartPoint2 = (Element) el.getElementsByTagName("startPoint").item(1);
             CTPoint B = (CTPoint) geogebraElements.get(elStartPoint2.getAttribute("exp"));
             registerGeogebraElement(label, CTImage.make(A, B, img));
-
+ 
         } catch (IOException ex) {
             JMathAnimScene.logger.error("Could'nt load file for image " + label);
             return;
@@ -326,7 +344,7 @@ public class GeogebraCommandParser {
             size = 5d / 36;//Assume size is "small"
         }
 
-        CTLaTeX cTLaTeX = CTLaTeX.make(text, anchorPoint, Anchor.Type.UL,0).scale(size);
+        CTLaTeX cTLaTeX = CTLaTeX.make(text, anchorPoint, Anchor.Type.UL, 0).scale(size);
         registerGeogebraElement(label, cTLaTeX);
     }
 
@@ -621,13 +639,13 @@ public class GeogebraCommandParser {
         String label = getOutputArgument(el, 0);
         MathObject[] objs = getArrayOfParameters(el);
         //If there are 2 elements, they must be 2 points
-        if (objs.length==2) {
-            CTPoint A=(CTPoint)objs[0];
-            CTPoint B=(CTPoint)objs[1];
-            registerGeogebraElement(label, CTMidPoint.make(A,B));
+        if (objs.length == 2) {
+            CTPoint A = (CTPoint) objs[0];
+            CTPoint B = (CTPoint) objs[1];
+            registerGeogebraElement(label, CTMidPoint.make(A, B));
         }
-         if (objs.length==1) {//It must be a segment
-            CTSegment segment=(CTSegment)objs[0];
+        if (objs.length == 1) {//It must be a segment
+            CTSegment segment = (CTSegment) objs[0];
             registerGeogebraElement(label, CTMidPoint.make(segment));
         }
     }

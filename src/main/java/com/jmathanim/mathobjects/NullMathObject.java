@@ -21,6 +21,7 @@ import com.jmathanim.Constructible.Constructible;
 import com.jmathanim.Renderers.Renderer;
 import com.jmathanim.Styling.MODrawProperties;
 import com.jmathanim.Styling.Stylable;
+import com.jmathanim.Utils.AffineJTransform;
 import com.jmathanim.Utils.EmptyRect;
 import com.jmathanim.Utils.Rect;
 import com.jmathanim.jmathanim.JMathAnimScene;
@@ -32,6 +33,14 @@ import com.jmathanim.jmathanim.JMathAnimScene;
  * @author David Gutierrez Rubio
  */
 public class NullMathObject extends Constructible {
+
+    public NullMathObject() {
+    }
+
+    @Override
+    public Constructible applyAffineTransform(AffineJTransform transform) {
+        return this;
+    }
 
     @Override
     public NullMathObject copy() {

@@ -19,6 +19,7 @@ package com.jmathanim.Constructible.Transforms;
 
 import com.jmathanim.Constructible.Lines.CTVector;
 import com.jmathanim.Constructible.Points.CTPoint;
+import com.jmathanim.Utils.AffineJTransform;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.Point;
@@ -30,7 +31,7 @@ import com.jmathanim.mathobjects.Point;
 public class CTTranslatedPoint extends CTPoint {
 
     private final CTVector translationVector;
-    private final CTPoint originalPoint;
+    private final CTPoint pointToTranslate;
 
     public static CTTranslatedPoint make(Point originalPoint, Vec translationVector) {
         return make(CTPoint.make(originalPoint), CTVector.makeVector(translationVector));
@@ -44,21 +45,24 @@ public class CTTranslatedPoint extends CTPoint {
 
     private CTTranslatedPoint(CTPoint originalPoint, CTVector translationVector) {
         this.translationVector = translationVector;
-        this.originalPoint = originalPoint;
+        this.pointToTranslate = originalPoint;
     }
 
     @Override
     public void rebuildShape() {
-        getMathObject().copyFrom(originalPoint.getMathObject());
-        getMathObject().shift(translationVector.getDirection());
-
+        AffineJTransform tr=AffineJTransform.createTranslationTransform(translationVector.getDirection());
+        this.v.copyFrom(this.pointToTranslate.v);
+        this.v.applyAffineTransform(tr);
+        if (!isThisMathObjectFree()) {
+            pointToDraw.v.copyFrom(v);
+        }
     }
 
     @Override
     public void registerUpdateableHook(JMathAnimScene scene) {
-        scene.registerUpdateable(this.translationVector, this.originalPoint);
+        scene.registerUpdateable(this.translationVector, this.pointToTranslate);
         setUpdateLevel(
                 Math.max(this.translationVector.getUpdateLevel(),
-                        this.originalPoint.getUpdateLevel()) + 1);
+                        this.pointToTranslate.getUpdateLevel()) + 1);
     }
 }

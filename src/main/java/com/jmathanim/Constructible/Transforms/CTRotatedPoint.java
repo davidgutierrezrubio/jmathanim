@@ -18,6 +18,7 @@
 package com.jmathanim.Constructible.Transforms;
 
 import com.jmathanim.Constructible.Points.CTPoint;
+import com.jmathanim.Utils.AffineJTransform;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.Point;
 import com.jmathanim.mathobjects.Scalar;
@@ -40,18 +41,24 @@ public class CTRotatedPoint extends CTPoint {
     private final CTPoint pointToRotate;
     private final Scalar angle;
     private final CTPoint rotationCenter;
+    private final Point protationCenter;
 
     private CTRotatedPoint(CTPoint pointToRotate, Scalar angle, CTPoint rotationCenter) {
         this.pointToRotate = pointToRotate;
         this.angle = angle;
         this.rotationCenter = rotationCenter;
+        this.protationCenter=new Point(rotationCenter.v);
     }
 
     @Override
     public void rebuildShape() {
-        getMathObject().copyFrom(pointToRotate.getMathObject());
-        getMathObject().rotate(rotationCenter.getMathObject(), angle.value);
-
+        this.v.copyFrom(pointToRotate.v);
+        AffineJTransform tr=AffineJTransform.create2DRotationTransform(this.protationCenter, angle.value);
+        this.v.copyFrom(this.pointToRotate.v);
+        this.v.applyAffineTransform(tr);
+        if (!isThisMathObjectFree()) {
+            pointToDraw.v.copyFrom(v);
+        }
     }
 
     @Override

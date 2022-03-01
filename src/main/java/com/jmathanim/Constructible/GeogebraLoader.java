@@ -24,6 +24,7 @@ import com.jmathanim.Utils.ResourceLoader;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.Line;
 import com.jmathanim.mathobjects.MathObject;
+import com.jmathanim.mathobjects.NullMathObject;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
@@ -47,7 +48,7 @@ import org.xml.sax.SAXException;
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
 public class GeogebraLoader implements Iterable<Constructible>, hasCameraParameters {
-
+    
     private final ResourceLoader rl;
     private final URL url;
     private ZipFile zipFile;
@@ -57,7 +58,7 @@ public class GeogebraLoader implements Iterable<Constructible>, hasCameraParamet
     private double xmax;
     private double xmin;
     private double yCenter;
-
+    
     private GeogebraLoader(String fileName) {
         rl = new ResourceLoader();
         url = rl.getResource(fileName, "geogebra");
@@ -79,7 +80,7 @@ public class GeogebraLoader implements Iterable<Constructible>, hasCameraParamet
         resul.parseFile(fileName);
         return resul;
     }
-
+    
     private void parseFile(String fileName) {
         try {
             JMathAnimScene.logger.info("Loading Geogebra file {}", fileName);
@@ -90,9 +91,9 @@ public class GeogebraLoader implements Iterable<Constructible>, hasCameraParamet
         } catch (IOException ex) {
             Logger.getLogger(GeogebraLoader.class.getName()).log(Level.SEVERE, null, ex);
         }
-
+        
     }
-
+    
     private void parseGeogebraContents(InputStream inputStream) {
         DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
         DocumentBuilder dBuilder;
@@ -104,7 +105,7 @@ public class GeogebraLoader implements Iterable<Constructible>, hasCameraParamet
         } catch (ParserConfigurationException | SAXException | IOException ex) {
             Logger.getLogger(GeogebraLoader.class.getName()).log(Level.SEVERE, null, ex);
         }
-
+        
         Element root = doc.getDocumentElement();
         if (!"geogebra".equals(root.getNodeName())) {
             try {
@@ -116,10 +117,10 @@ public class GeogebraLoader implements Iterable<Constructible>, hasCameraParamet
 
         // Iterate over all tags. 
         NodeList nodes = root.getChildNodes();
-
+        
         for (int i = 0; i < nodes.getLength(); i++) {
             Node node = nodes.item(i);
-
+            
             if (node instanceof Element) {
                 Element el = (Element) node;
                 switch (el.getNodeName()) {
@@ -132,7 +133,7 @@ public class GeogebraLoader implements Iterable<Constructible>, hasCameraParamet
                 }
             }
         }
-
+        
     }
 
     /**
@@ -143,10 +144,10 @@ public class GeogebraLoader implements Iterable<Constructible>, hasCameraParamet
      */
     private void parseConstructionChildren(Element constructionNode) {
         NodeList nodes = constructionNode.getChildNodes();
-
+        
         for (int i = 0; i < nodes.getLength(); i++) {
             Node node = nodes.item(i);
-
+            
             if (node instanceof Element) {
                 Element el = (Element) node;
                 switch (el.getNodeName()) {
@@ -163,7 +164,7 @@ public class GeogebraLoader implements Iterable<Constructible>, hasCameraParamet
             }
         }
     }
-
+    
     private void parseExpression(Element el) {
         String expression = el.getAttribute("exp");
         String label = el.getAttribute("label");
@@ -187,7 +188,7 @@ public class GeogebraLoader implements Iterable<Constructible>, hasCameraParamet
                 break;
             case "image":
                 cp.processImageElement(el, zipFile);
-
+            
         }
 
         // If element already belongs to the hashMap, process styling options
@@ -202,7 +203,7 @@ public class GeogebraLoader implements Iterable<Constructible>, hasCameraParamet
         } else {
             JMathAnimScene.logger.warn("Element " + label + " in Geogebra file without Command tag");
         }
-
+        
     }
 
     /**
@@ -275,7 +276,10 @@ public class GeogebraLoader implements Iterable<Constructible>, hasCameraParamet
      * @return The Constructible object imported
      */
     public Constructible get(String key) {
-        return cp.get(key);
+        if (cp.containsKey(key)) {
+            return cp.get(key);
+        } else
+            return new NullMathObject();
     }
 
     /**
@@ -296,19 +300,19 @@ public class GeogebraLoader implements Iterable<Constructible>, hasCameraParamet
     public HashMap<String, Constructible> getDict() {
         return cp.geogebraElements;
     }
-
+    
     @Override
     public Iterator<Constructible> iterator() {
         return cp.geogebraElements.values().iterator();
     }
-
+    
     private void parseEuclidianView(Element euclidianViewNode) {
         NodeList nodes = euclidianViewNode.getChildNodes();
         double width = 4, height = 2.25;
         double xZero = 0, yZero = 0, xScale = 1, yScale = 1;
         for (int i = 0; i < nodes.getLength(); i++) {
             Node node = nodes.item(i);
-
+            
             if (node instanceof Element) {
                 Element el = (Element) node;
                 switch (el.getNodeName()) {
@@ -327,22 +331,22 @@ public class GeogebraLoader implements Iterable<Constructible>, hasCameraParamet
         }
         this.xmin = -xZero / xScale;
         this.xmax = (width - xZero) / xScale;
-
+        
         double ymin = (yZero - height) / yScale;
         double ymax = yZero / yScale;
         this.yCenter = .5 * (ymin + ymax);
     }
-
+    
     @Override
     public double getMinX() {
         return xmin;
     }
-
+    
     @Override
     public double getMaxX() {
         return xmax;
     }
-
+    
     @Override
     public double getYCenter() {
         return yCenter;
@@ -350,6 +354,7 @@ public class GeogebraLoader implements Iterable<Constructible>, hasCameraParamet
 
     /**
      * Return all internal MathObjects from the imported Constructibles
+     *
      * @return An array of MathObjects
      */
     public MathObject[] getMathObjects() {
