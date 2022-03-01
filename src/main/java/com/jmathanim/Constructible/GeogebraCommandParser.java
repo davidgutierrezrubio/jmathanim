@@ -27,6 +27,7 @@ import com.jmathanim.Constructible.Lines.CTPolygon;
 import com.jmathanim.Constructible.Lines.CTRay;
 import com.jmathanim.Constructible.Lines.CTRegularPolygon;
 import com.jmathanim.Constructible.Lines.CTSegment;
+import com.jmathanim.Constructible.Lines.CTTransformedLine;
 import com.jmathanim.Constructible.Lines.CTVector;
 import com.jmathanim.Constructible.Lines.HasDirection;
 import com.jmathanim.Constructible.Others.CTImage;
@@ -263,19 +264,19 @@ public class GeogebraCommandParser {
             // TODO: Add a z value here
             CTPoint resul = CTPoint.make(Point.at(x, y));
             resul.thickness(th);
-            
+
             Element pointStyle = firstElementWithTag(el, "pointStyle");
             Integer dotStyleCode = Integer.valueOf(pointStyle.getAttribute("val"));
             Point.DotSyle dotStyle;
             switch (dotStyleCode) {
                 case 1:
-                    dotStyle=Point.DotSyle.CROSS;
+                    dotStyle = Point.DotSyle.CROSS;
                     break;
                 case 3:
-                     dotStyle=Point.DotSyle.PLUS;
+                    dotStyle = Point.DotSyle.PLUS;
                     break;
                 default:
-                    dotStyle=Point.DotSyle.CIRCLE;
+                    dotStyle = Point.DotSyle.CIRCLE;
             }
             resul.dotStyle(dotStyle);
             resul.objectLabel = label;
@@ -296,7 +297,7 @@ public class GeogebraCommandParser {
             Element elStartPoint2 = (Element) el.getElementsByTagName("startPoint").item(1);
             CTPoint B = (CTPoint) geogebraElements.get(elStartPoint2.getAttribute("exp"));
             registerGeogebraElement(label, CTImage.make(A, B, img));
- 
+
         } catch (IOException ex) {
             JMathAnimScene.logger.error("Could'nt load file for image " + label);
             return;
@@ -610,29 +611,65 @@ public class GeogebraCommandParser {
         MathObject[] objs = getArrayOfParameters(el);
         //TODO: An image (CTImage) can also be mirrored for example.
         //Trying to import a mirrored image leads a to cast exception
-        CTPoint pointToMirror = (CTPoint) objs[0];
-        Constructible mirrorAxis = (Constructible) objs[1];
-        registerGeogebraElement(label, CTMirrorPoint.make(pointToMirror, mirrorAxis));
-        JMathAnimScene.logger.debug("Imported mirror point " + label + " of " + objs[0] + " with axis " + objs[1]);
+        if (objs[0] instanceof CTPoint) {
+            CTPoint pointToMirror = (CTPoint) objs[0];
+            Constructible mirrorAxis = (Constructible) objs[1];
+            registerGeogebraElement(label, CTMirrorPoint.make(pointToMirror, mirrorAxis));
+            JMathAnimScene.logger.debug("Imported mirror point " + label + " of " + objs[0] + " with axis " + objs[1]);
+        }
+        if (objs[0] instanceof CTLine) {
+            CTLine lineToMirror = (CTLine) objs[0];
+            Constructible mirrorAxis = (Constructible) objs[1];
+            if (mirrorAxis instanceof CTLine) {
+                Constructible resul = CTTransformedLine.makeAxisReflectionLine(lineToMirror, (CTLine) mirrorAxis);
+                registerGeogebraElement(label, resul);
+                JMathAnimScene.logger.debug("Imported axis mirror line " + label + " of " + objs[0] + " with axis " + objs[1]);
+            }
+            if (mirrorAxis instanceof CTPoint) {
+                Constructible resul = CTTransformedLine.makePointReflectionLine(lineToMirror, (CTPoint) mirrorAxis);
+                registerGeogebraElement(label, resul);
+                JMathAnimScene.logger.debug("Imported central mirror of line " + label + " of " + objs[0] + " with axis " + objs[1]);
+            }
+
+        }
+
     }
 
     void processTranslate(Element el) {
         String label = getOutputArgument(el, 0);
         MathObject[] objs = getArrayOfParameters(el);
-        CTPoint pointToTranslate = (CTPoint) objs[0];
-        CTVector translateVector = (CTVector) objs[1];
-        registerGeogebraElement(label, CTTranslatedPoint.make(pointToTranslate, translateVector));
-        JMathAnimScene.logger.debug("Imported translate point " + label + " of " + objs[0] + " with vector " + objs[1]);
+        if (objs[0] instanceof CTPoint) {
+            CTPoint pointToTranslate = (CTPoint) objs[0];
+            CTVector translateVector = (CTVector) objs[1];
+            registerGeogebraElement(label, CTTranslatedPoint.make(pointToTranslate, translateVector));
+            JMathAnimScene.logger.debug("Imported translate point " + label + " of " + objs[0] + " with vector " + objs[1]);
+        }
+        if (objs[0] instanceof CTLine) {
+            CTLine cTLineToTranslate = (CTLine) objs[0];
+            CTVector translateVector = (CTVector) objs[1];
+            registerGeogebraElement(label, CTTransformedLine.makeTraslatedLine(cTLineToTranslate, translateVector));
+            JMathAnimScene.logger.debug("Imported translated line " + label + " of " + objs[0] + " with vector " + objs[1]);
+
+        }
     }
 
     void processRotate(Element el) {
         String label = getOutputArgument(el, 0);
         MathObject[] objs = getArrayOfParameters(el);
-        CTPoint pointToRotate = (CTPoint) objs[0];
-        Scalar angle = (Scalar) objs[1];
-        CTPoint rotationCenter = (CTPoint) objs[2];
-        registerGeogebraElement(label, CTRotatedPoint.make(pointToRotate, angle, rotationCenter));
-        JMathAnimScene.logger.debug("Imported rotated point " + label + " of " + objs[0] + " with angle " + objs[1]);
+        if (objs[0] instanceof CTPoint) {
+            CTPoint pointToRotate = (CTPoint) objs[0];
+            Scalar angle = (Scalar) objs[1];
+            CTPoint rotationCenter = (CTPoint) objs[2];
+            registerGeogebraElement(label, CTRotatedPoint.make(pointToRotate, rotationCenter, angle));
+            JMathAnimScene.logger.debug("Imported rotated point " + label + " of " + objs[0] + " with angle " + objs[1]);
+        }
+        if (objs[0] instanceof CTLine) {
+            CTLine lineToRotate = (CTLine) objs[0];
+            Scalar angle = (Scalar) objs[1];
+            CTPoint rotationCenter = (CTPoint) objs[2];
+            registerGeogebraElement(label, CTTransformedLine.makeRotatedLine(lineToRotate, rotationCenter, angle));
+            JMathAnimScene.logger.debug("Imported rotated point " + label + " of " + objs[0] + " with angle " + objs[1]);
+        }
     }
 
     void processMidPoint(Element el) {
@@ -648,6 +685,15 @@ public class GeogebraCommandParser {
             CTSegment segment = (CTSegment) objs[0];
             registerGeogebraElement(label, CTMidPoint.make(segment));
         }
+    }
+
+    void processNumeric(Element el) {
+        String label = el.getAttribute("label");
+        Element elCoords = firstElementWithTag(el, "value");
+        double value = Double.valueOf(elCoords.getAttribute("val"));
+        registerGeogebraElement(label, Scalar.make(value));
+        JMathAnimScene.logger.debug("Imported scalar value " + label + "=" + value);
+
     }
 
 }

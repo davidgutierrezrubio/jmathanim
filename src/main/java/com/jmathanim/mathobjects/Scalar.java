@@ -17,7 +17,9 @@
  */
 package com.jmathanim.mathobjects;
 
+import com.jmathanim.Constructible.Constructible;
 import com.jmathanim.Renderers.Renderer;
+import com.jmathanim.Utils.AffineJTransform;
 import com.jmathanim.Utils.Rect;
 import com.jmathanim.jmathanim.JMathAnimScene;
 
@@ -26,7 +28,7 @@ import com.jmathanim.jmathanim.JMathAnimScene;
  *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
-public class Scalar extends MathObject {
+public class Scalar extends Constructible implements hasScalarParameter{
 
     public double value;
 
@@ -66,6 +68,30 @@ public class Scalar extends MathObject {
         }
         Scalar sc = (Scalar) obj;
         this.value = sc.value;
+    }
+
+    @Override
+    public MathObject getMathObject() {
+        return new NullMathObject();
+    }
+
+    @Override
+    public void rebuildShape() {
+    }
+
+    @Override
+    public Constructible applyAffineTransform(AffineJTransform transform) {
+        return this;
+    }
+
+    @Override
+    public double getScalar() {
+        return value;
+    }
+
+    @Override
+    public void setScalar(double scalar) {
+        value=scalar;
     }
 
 }

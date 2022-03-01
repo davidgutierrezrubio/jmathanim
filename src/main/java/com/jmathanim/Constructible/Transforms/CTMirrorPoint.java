@@ -39,7 +39,6 @@ public class CTMirrorPoint extends CTPoint {
     private final CTAbstractLine axis;
     private final CTPoint originalPoint;
     private final CTPoint center;
-    private final Point pcenter;
 
     private enum MirrorType {
         AXIAL, CENTRAL
@@ -93,11 +92,6 @@ public class CTMirrorPoint extends CTPoint {
         this.originalPoint = orig;
         this.axis = axis;
         this.center = center;
-        if (this.center != null) {
-            this.pcenter = new Point(this.center.v);
-        } else {
-            this.pcenter = null;
-        }
     }
 
     @Override
@@ -110,7 +104,7 @@ public class CTMirrorPoint extends CTPoint {
             case CENTRAL:
                 //Note that we don't use this.center.getMathObject() because 
                 //the mathobject may be free. Instead we create a new point pcenter
-                tr = AffineJTransform.createScaleTransform(pcenter, -1);
+                tr = AffineJTransform.createScaleTransform(new Point(this.center.v), -1);
                 break;
             default:
                 tr = new AffineJTransform();//An identity transform

@@ -30,10 +30,10 @@ import com.jmathanim.mathobjects.Scalar;
 public class CTRotatedPoint extends CTPoint {
 
     public static CTRotatedPoint make(Point pointToRotate, double angle, Point rotationCenter) {
-        return make(CTPoint.make(pointToRotate), Scalar.make(angle), CTPoint.make(rotationCenter));
+        return make(CTPoint.make(pointToRotate), CTPoint.make(rotationCenter), Scalar.make(angle));
     }
 
-    public static CTRotatedPoint make(CTPoint pointToRotate, Scalar angle, CTPoint rotationCenter) {
+    public static CTRotatedPoint make(CTPoint pointToRotate, CTPoint rotationCenter, Scalar angle) {
         CTRotatedPoint resul = new CTRotatedPoint(pointToRotate, angle, rotationCenter);
         resul.rebuildShape();
         return resul;
@@ -47,13 +47,13 @@ public class CTRotatedPoint extends CTPoint {
         this.pointToRotate = pointToRotate;
         this.angle = angle;
         this.rotationCenter = rotationCenter;
-        this.protationCenter=new Point(rotationCenter.v);
+        this.protationCenter = new Point(rotationCenter.v);
     }
 
     @Override
     public void rebuildShape() {
         this.v.copyFrom(pointToRotate.v);
-        AffineJTransform tr=AffineJTransform.create2DRotationTransform(this.protationCenter, angle.value);
+        AffineJTransform tr = AffineJTransform.create2DRotationTransform(this.protationCenter, angle.value);
         this.v.copyFrom(this.pointToRotate.v);
         this.v.applyAffineTransform(tr);
         if (!isThisMathObjectFree()) {
