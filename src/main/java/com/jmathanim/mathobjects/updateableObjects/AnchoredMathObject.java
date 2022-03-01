@@ -20,24 +20,26 @@ package com.jmathanim.mathobjects.updateableObjects;
 import com.jmathanim.Utils.Anchor.Type;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.MathObject;
+import java.util.Arrays;
+import java.util.OptionalInt;
 
 /**
  *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
 public class AnchoredMathObject implements Updateable {
-    
+
     private final MathObject mobj;
     private final MathObject dstObject;
     private Type dstType;
     private Type origType;
     private double gap;
     private int updateLevel;
-    
+
     public AnchoredMathObject(MathObject mobj, Type origType, MathObject dstObject, Type dstType) {
         this(mobj, origType, dstObject, dstType, 0);
     }
-    
+
     public AnchoredMathObject(MathObject mobj, Type origType, MathObject dstObject, Type dstType, double gap) {
         this.mobj = mobj;
         this.dstObject = dstObject;
@@ -45,48 +47,46 @@ public class AnchoredMathObject implements Updateable {
         this.dstType = dstType;
         this.gap = gap;
     }
-    
+
     public double getGap() {
         return gap;
     }
-    
+
     public void setGap(double gap) {
         this.gap = gap;
     }
-    
+
     @Override
     public int getUpdateLevel() {
         return updateLevel;
     }
-    
+
     @Override
     public void update(JMathAnimScene scene) {
         mobj.stackTo(origType, dstObject, dstType, gap);
     }
-    
+
     public Type getAnchorType() {
         return dstType;
     }
-    
+
     public void setAnchorType(Type anchorType) {
         this.dstType = anchorType;
     }
-    
+
     @Override
     public void registerUpdateableHook(JMathAnimScene scene) {
         scene.registerUpdateable(mobj, dstObject);
-        setUpdateLevel(Math.max(mobj.getUpdateLevel(),dstObject.getUpdateLevel())+1);
+        setUpdateLevel(Math.max(mobj.getUpdateLevel(), dstObject.getUpdateLevel()) + 1);
     }
-    
+
     @Override
     public void unregisterUpdateableHook(JMathAnimScene scene) {
-        
+
     }
 
     @Override
     public void setUpdateLevel(int level) {
-        updateLevel=level;
+        updateLevel = level;
     }
-    
-    
 }

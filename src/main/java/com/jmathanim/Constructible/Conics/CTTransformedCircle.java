@@ -15,25 +15,29 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-package com.jmathanim.Constructible.Lines;
+package com.jmathanim.Constructible.Conics;
 
 import com.jmathanim.Constructible.Constructible;
+import com.jmathanim.Constructible.Lines.CTAbstractLine;
+import com.jmathanim.Constructible.Lines.CTLine;
+import com.jmathanim.Constructible.Lines.CTVector;
 import com.jmathanim.Constructible.Points.CTPoint;
 import com.jmathanim.Utils.AffineJTransform;
+import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
+import com.jmathanim.mathobjects.JMPathPoint;
 import com.jmathanim.mathobjects.Line;
 import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.Point;
 import com.jmathanim.mathobjects.Scalar;
-import com.jmathanim.mathobjects.updateableObjects.Updateable;
 
 /**
  *
  * @author David Gutierrez Rubio davidgutierrezrubio@gmail.com
  */
-public class CTTransformedLine extends CTAbstractLine {
+public class CTTransformedCircle extends CTCircle {
 
-    private final CTLine lineToTransform;
+    private final CTCircle circleToTransform;
     private final CTLine axis;
     private final CTPoint center;
     private final CTVector translation;
@@ -45,33 +49,33 @@ public class CTTransformedLine extends CTAbstractLine {
     private transformType transType;
     private final Line lineToDraw;
 
-    public static CTTransformedLine makeAxisReflectionLine(CTLine lineToTransform, CTLine axis) {
-        CTTransformedLine resul = new CTTransformedLine(lineToTransform, axis, null, null, null);
+    public static CTTransformedCircle makeAxisReflectionCircle(CTCircle circleToTransform, CTLine axis) {
+        CTTransformedCircle resul = new CTTransformedCircle(circleToTransform, axis, null, null, null);
         resul.transType = transformType.AXISMIRROR;
         return resul;
     }
 
-    public static CTTransformedLine makePointReflectionLine(CTLine lineToTransform, CTPoint center) {
-        CTTransformedLine resul = new CTTransformedLine(lineToTransform, null, center, null, null);
+    public static CTTransformedCircle makePointReflectionCircle(CTCircle circleToTransform, CTPoint center) {
+        CTTransformedCircle resul = new CTTransformedCircle(circleToTransform, null, center, null, null);
         resul.transType = transformType.CENTRALMIRROR;
         return resul;
     }
 
-    public static CTTransformedLine makeTranslatedLine(CTLine lineToTransform, CTVector vector) {
-        CTTransformedLine resul = new CTTransformedLine(lineToTransform, null, null, vector, null);
+    public static CTTransformedCircle makeTranslatedCircle(CTCircle circleToTransform, CTVector vector) {
+        CTTransformedCircle resul = new CTTransformedCircle(circleToTransform, null, null, vector, null);
         resul.transType = transformType.TRANSLATION;
         return resul;
     }
 
-    public static CTTransformedLine makeRotatedLine(CTLine lineToTransform, CTPoint center, Scalar angle) {
-        CTTransformedLine resul = new CTTransformedLine(lineToTransform, null, center, null, angle);
+    public static CTTransformedCircle makeRotatedCircle(CTCircle circleToTransform, CTPoint center, Scalar angle) {
+        CTTransformedCircle resul = new CTTransformedCircle(circleToTransform, null, center, null, angle);
         resul.transType = transformType.ROTATION;
         return resul;
     }
 
-    private CTTransformedLine(CTLine lineToTransform, CTLine axis, CTPoint center, CTVector translation, Scalar angle) {
+    private CTTransformedCircle(CTCircle circleToTransform, CTLine axis, CTPoint center, CTVector translation, Scalar angle) {
         super();
-        this.lineToTransform = lineToTransform;
+        this.circleToTransform = circleToTransform;
         this.axis = axis;
         this.center = center;
         this.translation = translation;
@@ -80,25 +84,20 @@ public class CTTransformedLine extends CTAbstractLine {
     }
 
     @Override
-    public MathObject getMathObject() {
-        return lineToDraw;
-    }
-
-    @Override
-    public Constructible copy() {
-        CTTransformedLine copy;
+    public CTCircle copy() {
+        CTTransformedCircle copy;
         switch (transType) {
             case AXISMIRROR:
-                copy = makeAxisReflectionLine(lineToTransform.copy(), axis.copy());
+                copy = makeAxisReflectionCircle(circleToTransform.copy(), axis.copy());
                 break;
             case CENTRALMIRROR:
-                copy = makePointReflectionLine(lineToTransform.copy(), center.copy());
+                copy = makePointReflectionCircle(circleToTransform.copy(), center.copy());
                 break;
             case TRANSLATION:
-                copy = makeTranslatedLine(lineToTransform.copy(), translation.copy());
+                copy = makeTranslatedCircle(circleToTransform.copy(), translation.copy());
                 break;
             default:
-                copy = makeRotatedLine(lineToTransform.copy(), center.copy(), angle.copy());
+                copy = makeRotatedCircle(circleToTransform.copy(), center.copy(), angle.copy());
         }
         copy.getMp().copyFrom(getMp());
         copy.rebuildShape();
@@ -118,16 +117,23 @@ public class CTTransformedLine extends CTAbstractLine {
             case TRANSLATION:
                 tr = AffineJTransform.createTranslationTransform(translation.getDirection());
                 break;
-            default:
+            case ROTATION:
                 tr = AffineJTransform.create2DRotationTransform(new Point(center.v), angle.value);
+                break;
+            default:
+                tr=null;
         }
-        getP1().v.copyFrom(lineToTransform.getP1().v);
-        getP2().v.copyFrom(lineToTransform.getP2().v);
-        getP1().v.applyAffineTransform(tr);
-        getP2().v.applyAffineTransform(tr);
+        final Vec vv = circleToTransform.getCenter().v;
+        getCircleCenter().v.copyFrom(vv);
+        this.radius.setScalar(circleToTransform.radius.getScalar());
+        getCircleCenter().v.applyAffineTransform(tr);
         if (!isThisMathObjectFree()) {
-            lineToDraw.getP1().v.copyFrom(getP1().v);
-            lineToDraw.getP2().v.copyFrom(getP2().v);
+            for (int i = 0; i < circleToDraw.size(); i++) {
+                JMPathPoint get = circleToDraw.get(i);
+                get.copyFrom(originalCircle.get(i));
+            }
+            circleToDraw.scale(this.radius.value);
+            circleToDraw.shift(this.circleCenter.v);
         }
     }
 
@@ -135,21 +141,22 @@ public class CTTransformedLine extends CTAbstractLine {
     public void registerUpdateableHook(JMathAnimScene scene) {
         switch (transType) {
             case AXISMIRROR:
-                scene.registerUpdateable(this.lineToTransform, this.axis);
-                setUpdateLevelAfter(this.lineToTransform, this.axis);
+                scene.registerUpdateable(this.circleToTransform, this.axis);
+                setUpdateLevelAfter(this.circleToTransform, this.axis);
                 break;
             case CENTRALMIRROR:
-                scene.registerUpdateable(this.lineToTransform, this.center);
-                setUpdateLevelAfter(this.lineToTransform, this.center);
+                scene.registerUpdateable(this.circleToTransform, this.center);
+                setUpdateLevelAfter(this.circleToTransform, this.center);
                 break;
             case ROTATION:
-                scene.registerUpdateable(this.lineToTransform, this.center, this.angle);
-                setUpdateLevelAfter(this.lineToTransform, this.center, this.angle);
+                scene.registerUpdateable(this.circleToTransform, this.center, this.angle);
+                setUpdateLevelAfter(this.circleToTransform, this.center, this.angle);
                 break;
             case TRANSLATION:
-                scene.registerUpdateable(this.lineToTransform, this.translation);
-                setUpdateLevelAfter(this.lineToTransform, this.translation);
+                scene.registerUpdateable(this.circleToTransform, this.translation);
+                setUpdateLevelAfter(this.circleToTransform, this.translation);
                 break;
         }
     }
+
 }

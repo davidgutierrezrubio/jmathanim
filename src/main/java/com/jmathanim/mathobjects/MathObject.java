@@ -30,6 +30,8 @@ import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.updateableObjects.Updateable;
+import java.util.Arrays;
+import java.util.OptionalInt;
 import javafx.scene.shape.StrokeLineCap;
 
 /**
@@ -855,6 +857,21 @@ public abstract class MathObject implements Drawable, Updateable, Stateable, Box
     @Override
     public void setUpdateLevel(int level) {
         updateLevel = level;
+    }
+
+    /**
+     * Sets the update level to the max of the given updateable objects plus 1
+     *
+     * @param upds Updateable objects (varargs). If this array is empty, a 0
+     * value is set for the update level.
+     */
+    public void setUpdateLevelAfter(Updateable... upds) {
+        OptionalInt m = Arrays.stream(upds).mapToInt(t -> t.getUpdateLevel()).max();
+        if (m.isPresent()) {
+            setUpdateLevel(m.getAsInt() + 1);
+        } else {
+            setUpdateLevel(0);
+        }
     }
 
     public String getDebugText() {

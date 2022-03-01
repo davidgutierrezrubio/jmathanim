@@ -27,6 +27,7 @@ import com.jmathanim.Constructible.Lines.CTPolygon;
 import com.jmathanim.Constructible.Lines.CTRay;
 import com.jmathanim.Constructible.Lines.CTRegularPolygon;
 import com.jmathanim.Constructible.Lines.CTSegment;
+import com.jmathanim.Constructible.Conics.CTTransformedCircle;
 import com.jmathanim.Constructible.Lines.CTTransformedLine;
 import com.jmathanim.Constructible.Lines.CTVector;
 import com.jmathanim.Constructible.Lines.HasDirection;
@@ -647,7 +648,7 @@ public class GeogebraCommandParser {
         if (objs[0] instanceof CTLine) {
             CTLine cTLineToTranslate = (CTLine) objs[0];
             CTVector translateVector = (CTVector) objs[1];
-            registerGeogebraElement(label, CTTransformedLine.makeTraslatedLine(cTLineToTranslate, translateVector));
+            registerGeogebraElement(label, CTTransformedLine.makeTranslatedLine(cTLineToTranslate, translateVector));
             JMathAnimScene.logger.debug("Imported translated line " + label + " of " + objs[0] + " with vector " + objs[1]);
 
         }
@@ -656,6 +657,7 @@ public class GeogebraCommandParser {
     void processRotate(Element el) {
         String label = getOutputArgument(el, 0);
         MathObject[] objs = getArrayOfParameters(el);
+        MathObject aa = objs[0];
         if (objs[0] instanceof CTPoint) {
             CTPoint pointToRotate = (CTPoint) objs[0];
             Scalar angle = (Scalar) objs[1];
@@ -670,6 +672,14 @@ public class GeogebraCommandParser {
             registerGeogebraElement(label, CTTransformedLine.makeRotatedLine(lineToRotate, rotationCenter, angle));
             JMathAnimScene.logger.debug("Imported rotated point " + label + " of " + objs[0] + " with angle " + objs[1]);
         }
+        if (aa instanceof CTCircle) {
+            CTCircle circleToRotate = (CTCircle) objs[0];
+            Scalar angle = (Scalar) objs[1];
+            CTPoint rotationCenter = (CTPoint) objs[2];
+            registerGeogebraElement(label, CTTransformedCircle.makeRotatedCircle(circleToRotate, rotationCenter, angle));
+            JMathAnimScene.logger.debug("Imported rotated point " + label + " of " + objs[0] + " with angle " + objs[1]);
+        }
+
     }
 
     void processMidPoint(Element el) {

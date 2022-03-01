@@ -34,35 +34,35 @@ import java.util.OptionalInt;
  * @author David Gutierrez Rubio
  */
 public class CTPolygon extends Constructible {
-
+    
     private final Shape shapeToDraw;
     private final CTPoint[] points;
-
+    
     public static CTPolygon make(Point... points) {
         CTPoint[] ArrayCtpoints = Arrays.stream(points).map(t -> CTPoint.make(t)).toArray(CTPoint[]::new);
         return new CTPolygon(ArrayCtpoints);
     }
-
+    
     public static CTPolygon make(CTPoint... ctPoints) {
         return new CTPolygon(ctPoints);
     }
-
+    
     public static CTPolygon make(ArrayList<CTPoint> ctPoints) {
         return new CTPolygon(ctPoints.toArray(new CTPoint[0]));
     }
-
+    
     private CTPolygon(CTPoint... cpoints) {
         super();
         Point[] arrayPoints = Arrays.stream(cpoints).map(t -> t.getMathObject().copy()).toArray(Point[]::new);
         shapeToDraw = Shape.polygon(arrayPoints);
         this.points = cpoints;
     }
-
+    
     @Override
     public MathObject getMathObject() {
         return shapeToDraw;
     }
-
+    
     @Override
     public void rebuildShape() {
         if (!isThisMathObjectFree()) {
@@ -72,24 +72,18 @@ public class CTPolygon extends Constructible {
             }
         }
     }
-
+    
     @Override
     public CTPolygon copy() {
         CTPolygon copy = CTPolygon.make(this.points);
         copy.getMp().copyFrom(this.getMp());
         return copy;
     }
-
-
+    
     @Override
     public void registerUpdateableHook(JMathAnimScene scene) {
         scene.registerUpdateable(points);
-        OptionalInt m = Arrays.stream(points).mapToInt(t -> t.getUpdateLevel()).max();
-        if (m.isPresent()) {
-            setUpdateLevel(m.getAsInt() + 1);
-        } else {
-            setUpdateLevel(0);
-        }
+        setUpdateLevelAfter(points);
     }
     
 }

@@ -19,8 +19,8 @@ package com.jmathanim.Constructible.Conics;
 
 import com.jmathanim.Constructible.Constructible;
 import com.jmathanim.Constructible.Points.CTPoint;
-import com.jmathanim.Renderers.Renderer;
 import com.jmathanim.Utils.Rect;
+import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.JMPathPoint;
 import com.jmathanim.mathobjects.MathObject;
@@ -48,10 +48,10 @@ public class CTCircle extends Constructible {
     CTPoint A;//Point of the circle
     CTPoint B;
     CTPoint C;
-    private Scalar radius;
-    private CTPoint circleCenter;
-    private final Shape originalCircle;
-    private final Shape circleToDraw;
+    protected Scalar radius;
+    protected CTPoint circleCenter;
+    protected final Shape originalCircle;
+    protected final Shape circleToDraw;
 
     /**
      * Creates a constructible circle with given center that pass through P
@@ -202,17 +202,17 @@ public class CTCircle extends Constructible {
         switch (circleType) {
             case CENTER_POINT:
                 scene.registerUpdateable(this.circleCenter, this.A);
-                setUpdateLevel(Math.max(this.circleCenter.getUpdateLevel(),this.A.getUpdateLevel())+1);
+                setUpdateLevel(Math.max(this.circleCenter.getUpdateLevel(), this.A.getUpdateLevel()) + 1);
                 break;
             case THREE_POINTS:
                 scene.registerUpdateable(this.A, this.B, this.C);
                 setUpdateLevel(
-                Math.max(Math.max(this.A.getUpdateLevel(),this.B.getUpdateLevel()),this.C.getUpdateLevel())+1
+                        Math.max(Math.max(this.A.getUpdateLevel(), this.B.getUpdateLevel()), this.C.getUpdateLevel()) + 1
                 );
                 break;
             case CENTER_RADIUS:
                 scene.registerUpdateable(this.circleCenter, this.radius);
-                setUpdateLevel(Math.max(this.circleCenter.getUpdateLevel(),this.radius.getUpdateLevel())+1);
+                setUpdateLevel(Math.max(this.circleCenter.getUpdateLevel(), this.radius.getUpdateLevel()) + 1);
         }
     }
 
@@ -228,20 +228,20 @@ public class CTCircle extends Constructible {
     }
 
     @Override
-    public final void rebuildShape() {
+    public void rebuildShape() {
 
         computeCircleCenterRadius();
 //        circleToDraw.getPath().jmPathPoints.clear();
 //        circleToDraw.getPath().addJMPointsFrom(originalCircle.copy().getPath());
-        
-        for (int i = 0; i < circleToDraw.size(); i++) {
-            JMPathPoint get = circleToDraw.get(i);
-            get.copyFrom(originalCircle.get(i));
-        }
-        
-        circleToDraw.scale(this.radius.value);
-        circleToDraw.shift(this.circleCenter.v);
 
+        if (!isThisMathObjectFree()) {
+            for (int i = 0; i < circleToDraw.size(); i++) {
+                JMPathPoint get = circleToDraw.get(i);
+                get.copyFrom(originalCircle.get(i));
+            }
+            circleToDraw.scale(this.radius.value);
+            circleToDraw.shift(this.circleCenter.v);
+        }
     }
 
     public void computeCircleCenterRadius() {
@@ -312,7 +312,8 @@ public class CTCircle extends Constructible {
 //        this.radius = Math.sqrt(sqr_of_r);//this doesn't work
         this.circleCenter.v.x = h;
         this.circleCenter.v.y = k;
-        this.radius.value = this.circleCenter.getMathObject().to(A.getMathObject()).norm();
+        final Vec radd = A.v.minus(this.circleCenter.v);
+        this.radius.value = radd.norm();
         // Center (h,k)
     }
 // This code is contributed by chandan_jnu
