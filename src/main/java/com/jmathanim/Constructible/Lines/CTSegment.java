@@ -103,4 +103,12 @@ public class CTSegment extends CTAbstractLine {
         setUpdateLevel(Math.max(this.A.getUpdateLevel(), this.B.getUpdateLevel()) + 1);
     }
 
+    
+    
+    
+    
+     @Override
+    public String toString() {
+        return String.format("CTSegment["+this.A.getLabel()+", "+this.B.getLabel()+"]");
+    }
 }

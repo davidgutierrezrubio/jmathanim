@@ -133,7 +133,7 @@ public class GeogebraCommandParser {
     }
 
     public void registerGeogebraElement(String label, Constructible resul) {
-        resul.objectLabel = label;
+        resul.setLabel(label);
         geogebraElements.put(label, resul);
     }
 
@@ -261,7 +261,7 @@ public class GeogebraCommandParser {
             CTPoint resul = CTPoint.make(Point.at(x, y));
             resul.thickness(th);
             resul.objectLabel = label;
-            geogebraElements.put(label, resul);
+            registerGeogebraElement(label, resul);
             JMathAnimScene.logger.debug("Imported point {}", label);
         }
     }
@@ -339,7 +339,7 @@ public class GeogebraCommandParser {
         CTSegment resul = CTSegment.make(p1, p2);
         String label = firstElementWithTag(el, "output").getAttribute("a0");
         resul.objectLabel = label;
-        geogebraElements.put(label, resul);
+        registerGeogebraElement(label, resul);
         JMathAnimScene.logger.debug("Generated segment {}", label);
     }
 
@@ -445,7 +445,7 @@ public class GeogebraCommandParser {
             points[i] = (CTPoint) objs[i];
         }
         CTPolygon resul = CTPolygon.make(points);
-        geogebraElements.put(label, resul);
+        registerGeogebraElement(label, resul);
 
         // Now, build all segments
         for (int i = 0; i < points.length; i++) {

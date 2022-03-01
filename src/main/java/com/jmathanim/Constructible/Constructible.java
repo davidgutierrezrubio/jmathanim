@@ -35,6 +35,7 @@ import com.jmathanim.mathobjects.MathObject;
 public abstract class Constructible extends MathObject {
 
     private boolean isMathObjectFree;
+    private String label;
 
     public Constructible() {
         isMathObjectFree = false;
@@ -55,6 +56,7 @@ public abstract class Constructible extends MathObject {
      * @return The MathObject
      */
     public abstract MathObject getMathObject();
+
     @Override
     public abstract Constructible copy();
 
@@ -95,6 +97,14 @@ public abstract class Constructible extends MathObject {
     @Override
     public void draw(JMathAnimScene scene, Renderer r) {
         getMathObject().draw(scene, r);
+    }
+
+    public String getLabel() {
+        return label;
+    }
+
+    public void setLabel(String label) {
+        this.label = label;
     }
 
 }

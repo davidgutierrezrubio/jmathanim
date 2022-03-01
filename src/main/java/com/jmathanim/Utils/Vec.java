@@ -19,16 +19,19 @@ package com.jmathanim.Utils;
 
 import com.jmathanim.Constructible.Lines.HasDirection;
 import static com.jmathanim.jmathanim.JMathAnimScene.PI;
+import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.Point;
 import com.jmathanim.mathobjects.Stateable;
 import static java.lang.Math.sqrt;
+import org.apache.commons.math3.linear.Array2DRowRealMatrix;
+import org.apache.commons.math3.linear.RealMatrix;
 
 /**
  * A vector in 3D
  *
  * @author David Gutierrez Rubio davidgutierrezrubio@gmail.com
  */
-public class Vec implements Stateable, HasDirection{
+public class Vec implements Stateable, HasDirection {
 
     public double x, y, z;
     public double xState, yState, zState;
@@ -336,6 +339,23 @@ public class Vec implements Stateable, HasDirection{
 
     @Override
     public Vec getDirection() {
+        return this;
+    }
+
+    /**
+     * Applies an affine transform to the vector. the transformed vector. The
+     * original vector is altered.
+     *
+     * @param tr Affine transform
+     * @return This object, with the transform applied
+     */
+    public Vec applyAffineTransform(AffineJTransform tr) {
+        RealMatrix pRow = new Array2DRowRealMatrix(new double[][]{{1d, x, y, z}});
+        RealMatrix pNew = pRow.multiply(tr.getMatrix());
+
+        x = pNew.getEntry(0, 1);
+        y = pNew.getEntry(0, 2);
+        z = pNew.getEntry(0, 3);
         return this;
     }
 

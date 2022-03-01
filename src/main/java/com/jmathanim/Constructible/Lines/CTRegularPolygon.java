@@ -26,6 +26,7 @@ import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.Point;
 import com.jmathanim.mathobjects.Shape;
 import java.util.ArrayList;
+import javax.naming.spi.DirStateFactory;
 
 /**
  *
@@ -36,8 +37,9 @@ public class CTRegularPolygon extends Constructible {
     private final int nSides;
     private final CTPoint B;
     private final CTPoint A;
-    private final Shape polygon;
+    private final Shape poligonToView;
     private final Shape origPolygon;
+    private final ArrayList<CTPoint> generatedPoints;
 
     /**
      * Creates a new regular polygon from an ArrayList of CTPoints. All but the
@@ -68,36 +70,44 @@ public class CTRegularPolygon extends Constructible {
         for (int i = 0; i < nSides - 2; i++) {
             vertices.add(CTPoint.make(new Point()));
         }
-        return makeFromPointList(vertices);
+        CTRegularPolygon resul = makeFromPointList(vertices);
+        resul.rebuildShape();
+        return resul;
     }
 
     private CTRegularPolygon(ArrayList<CTPoint> generatedPoints) {
         super();
+        this.generatedPoints = generatedPoints;
         this.nSides = generatedPoints.size();
         this.A = generatedPoints.get(0);
         this.B = generatedPoints.get(1);
-        generatedPoints.remove(0);
-        generatedPoints.remove(0);
-        generatedPoints.add(0,this.B.copy());
-        generatedPoints.add(0,this.A.copy());
-        Point[] points = generatedPoints.stream().map(t -> (Point) t.getMathObject()).toArray(Point[]::new);
-        polygon = Shape.polygon(points);
-        origPolygon = Shape.regularPolygon(nSides);//Base polygon q
+//        generatedPoints.remove(0);
+//        generatedPoints.remove(0);
+//        generatedPoints.add(0,this.B.copy());
+//        generatedPoints.add(0,this.A.copy());
+        Point[] pointsPolToView = generatedPoints.stream().map(t -> (Point) t.getMathObject().copy()).toArray(Point[]::new);
+        poligonToView = Shape.polygon(pointsPolToView);
+        origPolygon = Shape.regularPolygon(nSides).visible(false);//Base polygon q
     }
 
     @Override
     public MathObject getMathObject() {
-        return polygon;
+        return poligonToView;
     }
 
     @Override
     public void rebuildShape() {
         AffineJTransform tr = AffineJTransform.createDirect2DIsomorphic(origPolygon.get(0).p, origPolygon.get(1).p, A.getMathObject(), B.getMathObject(), 1);
-
         for (int k = 0; k < nSides; k++) {
-            polygon.get(k).copyFrom(origPolygon.get(k));
-            tr.applyTransform(polygon.get(k));
+            generatedPoints.get(k).v.copyFrom(origPolygon.get(k).p.v.copy().applyAffineTransform(tr));
         }
+
+        if (!isThisMathObjectFree()) {
+            for (int k = 0; k < nSides; k++) {
+                poligonToView.get(k).p.v.copyFrom(generatedPoints.get(k).v);
+            }
+        }
+
     }
 
     @Override
