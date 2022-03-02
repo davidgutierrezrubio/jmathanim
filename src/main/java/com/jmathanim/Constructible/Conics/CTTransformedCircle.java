@@ -17,8 +17,6 @@
  */
 package com.jmathanim.Constructible.Conics;
 
-import com.jmathanim.Constructible.Constructible;
-import com.jmathanim.Constructible.Lines.CTAbstractLine;
 import com.jmathanim.Constructible.Lines.CTLine;
 import com.jmathanim.Constructible.Lines.CTVector;
 import com.jmathanim.Constructible.Points.CTPoint;
@@ -27,7 +25,6 @@ import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.JMPathPoint;
 import com.jmathanim.mathobjects.Line;
-import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.Point;
 import com.jmathanim.mathobjects.Scalar;
 
@@ -141,20 +138,16 @@ public class CTTransformedCircle extends CTCircle {
     public void registerUpdateableHook(JMathAnimScene scene) {
         switch (transType) {
             case AXISMIRROR:
-                scene.registerUpdateable(this.circleToTransform, this.axis);
-                setUpdateLevelAfter(this.circleToTransform, this.axis);
+                dependsOn(scene, this.circleToTransform, this.axis);
                 break;
             case CENTRALMIRROR:
-                scene.registerUpdateable(this.circleToTransform, this.center);
-                setUpdateLevelAfter(this.circleToTransform, this.center);
+                dependsOn(scene, this.circleToTransform, this.center);
                 break;
             case ROTATION:
-                scene.registerUpdateable(this.circleToTransform, this.center, this.angle);
-                setUpdateLevelAfter(this.circleToTransform, this.center, this.angle);
+                dependsOn(scene, this.circleToTransform, this.center, this.angle);
                 break;
             case TRANSLATION:
-                scene.registerUpdateable(this.circleToTransform, this.translation);
-                setUpdateLevelAfter(this.circleToTransform, this.translation);
+                dependsOn(scene, this.circleToTransform, this.translation);
                 break;
         }
     }

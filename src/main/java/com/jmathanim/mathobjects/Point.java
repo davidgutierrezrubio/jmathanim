@@ -18,6 +18,7 @@
 package com.jmathanim.mathobjects;
 
 import com.jmathanim.Renderers.Renderer;
+import com.jmathanim.Styling.JMColor;
 import com.jmathanim.Styling.MODrawProperties;
 import com.jmathanim.Utils.AffineJTransform;
 import com.jmathanim.Utils.JMathAnimConfig;
@@ -51,7 +52,7 @@ public class Point extends MathObject {
     }
 
     public enum DotSyle {
-        CIRCLE, CROSS, PLUS
+        CIRCLE, CROSS, PLUS,RING
     }
 
     public enum ShadingStyle {
@@ -124,7 +125,6 @@ public class Point extends MathObject {
         this(v.x, v.y, v.z);
     }
 
-
     /**
      * Overloaded method. Creates a new Point with coordinates x,y, with default
      * style. The z coordinates is set to 0.
@@ -136,7 +136,7 @@ public class Point extends MathObject {
         this(x, y, 0);
     }
 
-     /**
+    /**
      * Creates a new Point with coordinates x,y,z, with default style.
      *
      * @param x x coordinate
@@ -235,6 +235,10 @@ public class Point extends MathObject {
                 dotShape.get(0).isThisSegmentVisible = false;
                 dotShape.get(2).isThisSegmentVisible = false;
                 dotShape.shift(v).scale(.5 * st).drawColor(getMp().getDrawColor()).thickness(.25 * th);
+                break;
+            case RING:
+                dotShape = Shape.circle().shift(v).scale(.5 * st).drawColor(getMp().getDrawColor())
+                        .fillColor(JMColor.NONE).thickness(.25 * th);
                 break;
             default:// Default case, includes CIRCLE
                 dotShape = Shape.circle().shift(v).scale(.5 * st).drawColor(getMp().getDrawColor())

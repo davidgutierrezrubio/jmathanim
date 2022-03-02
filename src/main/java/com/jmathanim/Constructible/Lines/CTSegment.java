@@ -21,13 +21,14 @@ import com.jmathanim.Constructible.Points.CTPoint;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.Point;
 import com.jmathanim.mathobjects.Shape;
+import com.jmathanim.mathobjects.hasScalarParameter;
 
 /**
  * A straight segment,given by 2 points
  *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
-public class CTSegment extends CTAbstractLine {
+public class CTSegment extends CTAbstractLine implements hasScalarParameter {
 
     protected final CTPoint B;
     protected final CTPoint A;
@@ -99,16 +100,21 @@ public class CTSegment extends CTAbstractLine {
 
     @Override
     public void registerUpdateableHook(JMathAnimScene scene) {
-        scene.registerUpdateable(this.A, this.B);
-        setUpdateLevel(Math.max(this.A.getUpdateLevel(), this.B.getUpdateLevel()) + 1);
+        dependsOn(scene, this.A, this.B);
     }
 
-    
-    
-    
-    
-     @Override
+    @Override
     public String toString() {
-        return String.format("CTSegment["+this.A.getLabel()+", "+this.B.getLabel()+"]");
+        return String.format("CTSegment[" + this.A.getLabel() + ", " + this.B.getLabel() + "]");
+    }
+
+    @Override
+    public double getScalar() {
+        return getP1().to(getP2()).norm();
+    }
+
+    @Override
+    public void setScalar(double scalar) {
+        //Cannot change
     }
 }

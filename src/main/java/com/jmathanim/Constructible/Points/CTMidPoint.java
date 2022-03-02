@@ -121,12 +121,10 @@ public class CTMidPoint extends CTPoint {
     public void registerUpdateableHook(JMathAnimScene scene) {
         switch (midPointType) {
             case SEGMENT:
-                scene.registerUpdateable(this.segment);
-                setUpdateLevel(this.segment.getUpdateLevel() + 1);
+                dependsOn(scene,this.segment);
                 break;
             case TWO_POINTS:
-                scene.registerUpdateable(this.A, this.B);
-                setUpdateLevel(Math.max(this.A.getUpdateLevel(), this.B.getUpdateLevel()) + 1);
+                dependsOn(scene,this.A, this.B);
         }
     }
 }

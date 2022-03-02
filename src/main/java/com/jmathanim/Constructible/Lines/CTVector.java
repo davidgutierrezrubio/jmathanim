@@ -19,6 +19,7 @@ package com.jmathanim.Constructible.Lines;
 
 import com.jmathanim.Constructible.Points.CTPoint;
 import com.jmathanim.Utils.Vec;
+import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.Arrow2D;
 import com.jmathanim.mathobjects.Point;
 
@@ -110,4 +111,8 @@ public class CTVector extends CTAbstractLine {
         return String.format("CTVector[%.2f, %.2f]", v.x, v.y);
     }
 
+    @Override
+    public void registerUpdateableHook(JMathAnimScene scene) {
+        dependsOn(scene, this.A, this.B);
+    }
 }

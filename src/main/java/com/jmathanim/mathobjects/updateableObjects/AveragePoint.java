@@ -32,14 +32,14 @@ import java.util.OptionalInt;
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
 public class AveragePoint extends Point implements Updateable {
-    
+
     final List<Point> points;
-    
+
     public AveragePoint(Point... points) {
         super();
         this.points = Arrays.asList(points);
     }
-    
+
     @Override
     public void update(JMathAnimScene scene) {
         Vec resul = new Vec(0, 0);
@@ -49,12 +49,11 @@ public class AveragePoint extends Point implements Updateable {
         resul.multInSite(1.0d / points.size());
         this.v.copyFrom(resul);
     }
-    
+
     @Override
     public void registerUpdateableHook(JMathAnimScene scene) {
-        scene.registerUpdateable(points.toArray(Point[]::new));
         Point[] arPoints = points.toArray(new Point[points.size()]);
-         setUpdateLevelAfter(arPoints);
-        
+        dependsOn(scene, arPoints);
+
     }
 }

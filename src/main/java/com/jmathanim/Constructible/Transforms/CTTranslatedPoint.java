@@ -50,7 +50,7 @@ public class CTTranslatedPoint extends CTPoint {
 
     @Override
     public void rebuildShape() {
-        AffineJTransform tr=AffineJTransform.createTranslationTransform(translationVector.getDirection());
+        AffineJTransform tr = AffineJTransform.createTranslationTransform(translationVector.getDirection());
         this.v.copyFrom(this.pointToTranslate.v);
         this.v.applyAffineTransform(tr);
         if (!isThisMathObjectFree()) {
@@ -60,9 +60,6 @@ public class CTTranslatedPoint extends CTPoint {
 
     @Override
     public void registerUpdateableHook(JMathAnimScene scene) {
-        scene.registerUpdateable(this.translationVector, this.pointToTranslate);
-        setUpdateLevel(
-                Math.max(this.translationVector.getUpdateLevel(),
-                        this.pointToTranslate.getUpdateLevel()) + 1);
+        dependsOn(scene, this.translationVector, this.pointToTranslate);
     }
 }

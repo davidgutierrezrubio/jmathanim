@@ -672,5 +672,15 @@ public class Shape extends MathObject {
             setUpdateLevel(0);
         }
     }
-
+  /**
+     * Check if the current object is empty (for example: a MultiShape with no
+     * objects). A empty object case should be considered as they return null
+     * bounding boxes.
+     *
+     * @return True if object is empty, false otherwise
+     */
+    @Override
+    public boolean isEmpty() {
+        return getPath().isEmpty();
+    }
 }

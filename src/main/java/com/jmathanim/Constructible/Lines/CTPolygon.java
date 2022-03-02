@@ -82,8 +82,7 @@ public class CTPolygon extends Constructible {
     
     @Override
     public void registerUpdateableHook(JMathAnimScene scene) {
-        scene.registerUpdateable(points);
-        setUpdateLevelAfter(points);
+        dependsOn(scene, points);
     }
     
 }

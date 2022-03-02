@@ -106,10 +106,7 @@ public class CTAngleBisector extends CTAbstractLine {
     public void registerUpdateableHook(JMathAnimScene scene) {
         switch (bisectorType) {
             case PointPointPoint:
-                scene.registerUpdateable(this.A, this.B, this.C);
-                setUpdateLevel(
-                        Math.max(Math.max(this.A.getUpdateLevel(), this.B.getUpdateLevel()), this.C.getUpdateLevel()) + 1
-                );
+                dependsOn(scene,this.A, this.B, this.C);
                 break;
             case LineLine:
             //TODO: Implement

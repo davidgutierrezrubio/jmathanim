@@ -19,8 +19,10 @@ package com.jmathanim.Constructible.Lines;
 
 import com.jmathanim.Constructible.Points.CTPoint;
 import com.jmathanim.Utils.Vec;
+import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.Point;
 import com.jmathanim.mathobjects.Ray;
+import com.jmathanim.mathobjects.updateableObjects.Updateable;
 
 /**
  * A Constructible ray
@@ -125,4 +127,19 @@ public class CTRay extends CTAbstractLine {
         return rayToDraw.getDirection();
     }
 
+    @Override
+    public void registerUpdateableHook(JMathAnimScene scene) {
+        switch (lineType) {
+            case PointPoint:
+                dependsOn(scene, this.A, this.B);
+                break;
+            case PointVector:
+                scene.registerUpdateable(this.A);
+                setUpdateLevel(this.A.getUpdateLevel() + 1);
+                if (this.dir instanceof Updateable) {
+                    scene.registerUpdateable((Updateable) this.dir);
+                    setUpdateLevel(Math.max(this.A.getUpdateLevel(), ((Updateable) this.dir).getUpdateLevel()) + 1);
+                }
+        }
+    }
 }

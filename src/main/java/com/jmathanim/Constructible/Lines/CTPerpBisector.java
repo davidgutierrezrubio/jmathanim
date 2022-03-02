@@ -19,6 +19,7 @@ package com.jmathanim.Constructible.Lines;
 
 import com.jmathanim.Constructible.Points.CTPoint;
 import com.jmathanim.Utils.Vec;
+import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.Line;
 import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.Point;
@@ -55,7 +56,7 @@ public class CTPerpBisector extends CTAbstractLine {
         super();
         this.A = A;
         this.B = B;
-        lineToDraw=Line.XAxis();
+        lineToDraw = Line.XAxis();
     }
 
     @Override
@@ -81,4 +82,8 @@ public class CTPerpBisector extends CTAbstractLine {
         return lineToDraw;
     }
 
+    @Override
+    public void registerUpdateableHook(JMathAnimScene scene) {
+        dependsOn(scene, this.A, this.B);
+    }
 }

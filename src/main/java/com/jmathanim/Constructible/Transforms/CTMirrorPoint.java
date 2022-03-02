@@ -120,12 +120,10 @@ public class CTMirrorPoint extends CTPoint {
     public void registerUpdateableHook(JMathAnimScene scene) {
         switch (mirrorType) {
             case AXIAL:
-                scene.registerUpdateable(axis, originalPoint);
-                setUpdateLevel(Math.max(axis.getUpdateLevel(), originalPoint.getUpdateLevel()) + 1);
+                dependsOn(scene, axis, originalPoint);
                 break;
             case CENTRAL:
-                scene.registerUpdateable(center, originalPoint);
-                setUpdateLevel(Math.max(center.getUpdateLevel(), originalPoint.getUpdateLevel()) + 1);
+                dependsOn(scene, center, originalPoint);
                 break;
         }
     }

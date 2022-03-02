@@ -18,7 +18,9 @@
 package com.jmathanim.Constructible;
 
 import com.jmathanim.Constructible.Conics.CTCircle;
+import com.jmathanim.Constructible.Conics.CTCircleArc;
 import com.jmathanim.Constructible.Conics.CTEllipse;
+import com.jmathanim.Constructible.Conics.CTSemiCircle;
 import com.jmathanim.Constructible.Lines.CTAngleBisector;
 import com.jmathanim.Constructible.Lines.CTLine;
 import com.jmathanim.Constructible.Lines.CTLineOrthogonal;
@@ -704,6 +706,23 @@ public class GeogebraCommandParser {
         registerGeogebraElement(label, Scalar.make(value));
         JMathAnimScene.logger.debug("Imported scalar value " + label + "=" + value);
 
+    }
+
+    void processSemicircle(Element el) {
+        String label = getOutputArgument(el, 0);
+        MathObject[] objs = getArrayOfParameters(el);
+        CTPoint A = (CTPoint) objs[0];
+        CTPoint B = (CTPoint) objs[1];
+        registerGeogebraElement(label, CTSemiCircle.make(A, B));
+    }
+
+    void processCircleArc(Element el) {
+         String label = getOutputArgument(el, 0);
+        MathObject[] objs = getArrayOfParameters(el);
+        CTPoint A = (CTPoint) objs[0];
+        CTPoint B = (CTPoint) objs[1];
+        CTPoint C = (CTPoint) objs[2];
+        registerGeogebraElement(label, CTCircleArc.make(A, B,C));
     }
 
 }

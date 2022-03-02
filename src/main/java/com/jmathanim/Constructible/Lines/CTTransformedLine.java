@@ -135,20 +135,16 @@ public class CTTransformedLine extends CTAbstractLine {
     public void registerUpdateableHook(JMathAnimScene scene) {
         switch (transType) {
             case AXISMIRROR:
-                scene.registerUpdateable(this.lineToTransform, this.axis);
-                setUpdateLevelAfter(this.lineToTransform, this.axis);
+                dependsOn(scene, this.lineToTransform, this.axis);
                 break;
             case CENTRALMIRROR:
-                scene.registerUpdateable(this.lineToTransform, this.center);
-                setUpdateLevelAfter(this.lineToTransform, this.center);
+                dependsOn(scene, this.lineToTransform, this.center);
                 break;
             case ROTATION:
-                scene.registerUpdateable(this.lineToTransform, this.center, this.angle);
-                setUpdateLevelAfter(this.lineToTransform, this.center, this.angle);
+                dependsOn(scene, this.lineToTransform, this.center, this.angle);
                 break;
             case TRANSLATION:
-                scene.registerUpdateable(this.lineToTransform, this.translation);
-                setUpdateLevelAfter(this.lineToTransform, this.translation);
+                dependsOn(scene, this.lineToTransform, this.translation);
                 break;
         }
     }

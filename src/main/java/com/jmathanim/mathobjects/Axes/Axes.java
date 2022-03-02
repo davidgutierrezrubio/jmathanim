@@ -50,6 +50,14 @@ public class Axes extends MathObject {
     private final Line yAxis;
     private final ArrayList<TickAxes> yticks, yticksBase;
 
+    public static Axes makeBasicAxes() {
+        Axes resul=new Axes();
+        resul.generatePrimaryXTicks(-2, 2, 1);
+        resul.generatePrimaryYTicks(-2, 2, 1);
+        return resul;
+    }
+    
+    
     public Axes() {
         mpArray = new MODrawPropertiesArray();
         getMp().loadFromStyle("axisdefault");

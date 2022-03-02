@@ -30,7 +30,9 @@ import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.updateableObjects.Updateable;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.OptionalInt;
 import javafx.scene.shape.StrokeLineCap;
 
@@ -56,6 +58,7 @@ public abstract class MathObject implements Drawable, Updateable, Stateable, Box
 
     public Point absoluteAnchorPoint;
     private Type absoluteAnchorType = Type.CENTER;
+    private final HashSet<MathObject> dependents;
 
     public MathObject() {
         this(null);
@@ -68,6 +71,7 @@ public abstract class MathObject implements Drawable, Updateable, Stateable, Box
         mp = JMathAnimConfig.getConfig().getDefaultMP();// Default MP values
         mp.copyFrom(prop);// Copy all non-null values from prop
         //Default values for an object that always updates
+        dependents=new HashSet<>();
     }
 
     /**
@@ -859,21 +863,6 @@ public abstract class MathObject implements Drawable, Updateable, Stateable, Box
         updateLevel = level;
     }
 
-    /**
-     * Sets the update level to the max of the given updateable objects plus 1
-     *
-     * @param upds Updateable objects (varargs). If this array is empty, a 0
-     * value is set for the update level.
-     */
-    public void setUpdateLevelAfter(Updateable... upds) {
-        OptionalInt m = Arrays.stream(upds).mapToInt(t -> t.getUpdateLevel()).max();
-        if (m.isPresent()) {
-            setUpdateLevel(m.getAsInt() + 1);
-        } else {
-            setUpdateLevel(0);
-        }
-    }
-
     public String getDebugText() {
         return debugText;
     }
@@ -995,4 +984,32 @@ public abstract class MathObject implements Drawable, Updateable, Stateable, Box
     @Override
     public void unregisterUpdateableHook(JMathAnimScene scene) {
     }
+    /**
+     * Returns the set of objects that depend on this to be properly updated
+     * @return A HashSet of the dependent MathObjects
+     */
+    public HashSet<MathObject> getDependentObjects() {
+        return dependents;
+    }
+    
+    protected void dependsOn(JMathAnimScene scene,MathObject...objs) {
+        
+        //Ensure all objects in objs is registered
+        scene.registerUpdateable(objs);
+        
+        //Sets the update level the max of objs +1
+         OptionalInt m = Arrays.stream(objs).mapToInt(t -> t.getUpdateLevel()).max();
+        if (m.isPresent()) {
+            setUpdateLevel(m.getAsInt() + 1);
+        } else {
+            setUpdateLevel(0);
+        }
+        //Register this object in the dependent list of objs
+        for (MathObject obj : objs) {
+            obj.dependents.add(this);
+        }
+    }
+    
+    
+    
 }

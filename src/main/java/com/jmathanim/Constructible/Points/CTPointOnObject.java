@@ -114,8 +114,7 @@ public class CTPointOnObject extends CTPoint {
 
     @Override
     public void registerUpdateableHook(JMathAnimScene scene) {
-        scene.registerUpdateable(owner);
-        setUpdateLevel(owner.getUpdateLevel() + 1);
+        dependsOn(scene,owner);
     }
 
 }

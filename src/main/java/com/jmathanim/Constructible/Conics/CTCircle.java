@@ -34,7 +34,7 @@ import com.jmathanim.mathobjects.Shape;
  *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
-public class CTCircle extends Constructible {
+public class CTCircle extends CTAbstractCircle {
 
     private enum CircleType {
         THREE_POINTS, CENTER_POINT, CENTER_RADIUS
@@ -201,18 +201,13 @@ public class CTCircle extends Constructible {
     public void registerUpdateableHook(JMathAnimScene scene) {
         switch (circleType) {
             case CENTER_POINT:
-                scene.registerUpdateable(this.circleCenter, this.A);
-                setUpdateLevel(Math.max(this.circleCenter.getUpdateLevel(), this.A.getUpdateLevel()) + 1);
+                dependsOn(scene, this.circleCenter, this.A);
                 break;
             case THREE_POINTS:
-                scene.registerUpdateable(this.A, this.B, this.C);
-                setUpdateLevel(
-                        Math.max(Math.max(this.A.getUpdateLevel(), this.B.getUpdateLevel()), this.C.getUpdateLevel()) + 1
-                );
+                dependsOn(scene, this.circleCenter, this.A, this.B, this.C);
                 break;
             case CENTER_RADIUS:
-                scene.registerUpdateable(this.circleCenter, this.radius);
-                setUpdateLevel(Math.max(this.circleCenter.getUpdateLevel(), this.radius.getUpdateLevel()) + 1);
+                dependsOn(scene, this.circleCenter, this.radius);
         }
     }
 
@@ -257,10 +252,12 @@ public class CTCircle extends Constructible {
         }
     }
 
+    @Override
     public Scalar getRadius() {
         return radius;
     }
 
+    @Override
     public CTPoint getCircleCenter() {
         return circleCenter;
     }

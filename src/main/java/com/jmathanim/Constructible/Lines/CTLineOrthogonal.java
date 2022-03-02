@@ -19,9 +19,11 @@ package com.jmathanim.Constructible.Lines;
 
 import com.jmathanim.Constructible.Points.CTPoint;
 import com.jmathanim.Utils.Vec;
+import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.Line;
 import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.Point;
+import com.jmathanim.mathobjects.updateableObjects.Updateable;
 
 /**
  * A Constructible Line that pass through A and is orthogonal to a given
@@ -113,4 +115,13 @@ public class CTLineOrthogonal extends CTAbstractLine {
         return lineToDraw;
     }
 
+    @Override
+    public void registerUpdateableHook(JMathAnimScene scene) {
+        scene.registerUpdateable(this.A);
+        setUpdateLevel(this.A.getUpdateLevel() + 1);
+        if (this.dir instanceof Updateable) {
+            scene.registerUpdateable((Updateable) this.dir);
+            setUpdateLevel(Math.max(this.A.getUpdateLevel(), ((Updateable) this.dir).getUpdateLevel()) + 1);
+        }
+    }
 }

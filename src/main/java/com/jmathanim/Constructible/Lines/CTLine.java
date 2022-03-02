@@ -153,8 +153,7 @@ public class CTLine extends CTAbstractLine {
     public void registerUpdateableHook(JMathAnimScene scene) {
         switch (lineType) {
             case PointPoint:
-                scene.registerUpdateable(this.A, this.B);
-                setUpdateLevel(Math.max(this.A.getUpdateLevel(), this.B.getUpdateLevel()) + 1);
+                dependsOn(scene, this.A, this.B);
                 break;
             case PointVector:
                 scene.registerUpdateable(this.A);

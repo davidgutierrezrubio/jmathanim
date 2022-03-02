@@ -273,20 +273,17 @@ public class CTIntersectionPoint extends CTPoint {
     public void registerUpdateableHook(JMathAnimScene scene) {
         switch (intersectionType) {
             case CIRCLE_CIRCLE:
-                scene.registerUpdateable(ctcircle1, ctcircle1);
-                setUpdateLevel(Math.max(ctcircle1.getUpdateLevel(), ctcircle2.getUpdateLevel()) + 1);
+                dependsOn(scene, ctcircle1, ctcircle1);
                 break;
             case CIRCLE_CONIC:
                 //Not implemented yet...
                 setUpdateLevel(0);
                 break;
             case LINEAR:
-                scene.registerUpdateable(ctline1, ctline2);
-                setUpdateLevel(Math.max(ctline1.getUpdateLevel(), ctline2.getUpdateLevel()) + 1);
+                dependsOn(scene, ctline1, ctline2);
                 break;
             case LINE_CIRCLE:
-                scene.registerUpdateable(ctline1, ctcircle1);
-                setUpdateLevel(Math.max(ctline1.getUpdateLevel(), ctcircle1.getUpdateLevel()) + 1);
+                dependsOn(scene, ctline1, ctcircle1);
         }
     }
 
