@@ -25,7 +25,6 @@ import com.jmathanim.mathobjects.Line;
 import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.Point;
 import com.jmathanim.mathobjects.Scalar;
-import com.jmathanim.mathobjects.updateableObjects.Updateable;
 
 /**
  *

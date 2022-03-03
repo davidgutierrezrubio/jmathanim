@@ -22,7 +22,6 @@ import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.Point;
 import java.util.Arrays;
 import java.util.List;
-import java.util.OptionalInt;
 
 /**
  * This class represents middle point computed from 2 given ones. This class

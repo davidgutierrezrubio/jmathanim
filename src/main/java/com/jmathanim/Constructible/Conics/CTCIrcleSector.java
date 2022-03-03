@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2022 David Gutierrez Rubio davidgutierrezrubio@gmail.com
+ * Copyright (C) 2022 David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -17,12 +17,12 @@
  */
 package com.jmathanim.Constructible.Conics;
 
-import com.jmathanim.Constructible.Constructible;
 import com.jmathanim.Constructible.Points.CTPoint;
 import com.jmathanim.Utils.AffineJTransform;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import static com.jmathanim.jmathanim.JMathAnimScene.PI;
+import com.jmathanim.mathobjects.JMPathPoint;
 import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.Point;
 import com.jmathanim.mathobjects.Scalar;
@@ -30,25 +30,26 @@ import com.jmathanim.mathobjects.Shape;
 
 /**
  *
- * @author David Gutierrez Rubio davidgutierrezrubio@gmail.com
+ * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
-public class CTCircleArc extends CTAbstractCircle {
+public class CTCIrcleSector extends CTAbstractCircle {
 
     private final CTPoint A;
     private final CTPoint B;
     private final CTPoint C;
-    private Shape arcTODraw;
+    private final Shape arcTODraw;
 
-    public static CTCircleArc make(CTPoint A, CTPoint B, CTPoint C) {
-        CTCircleArc resul = new CTCircleArc(A, B, C);
+    public static CTCIrcleSector make(CTPoint A, CTPoint B, CTPoint C) {
+        CTCIrcleSector resul = new CTCIrcleSector(A, B, C);
         resul.rebuildShape();
         return resul;
     }
 
-    private CTCircleArc(CTPoint A, CTPoint B, CTPoint C) {
+    private CTCIrcleSector(CTPoint A, CTPoint B, CTPoint C) {
         this.A = A;
         this.B = B;
         this.C = C;
+        arcTODraw=new Shape();
     }
 
     @Override
@@ -62,17 +63,27 @@ public class CTCircleArc extends CTAbstractCircle {
     }
 
     @Override
-    public MathObject getMathObject() {
+    public Shape getMathObject() {
         return arcTODraw;
     }
 
     @Override
-    public Constructible copy() {
-        CTCircleArc copy = CTCircleArc.make(A.copy(), B.copy(), C.copy());
+    public CTCIrcleSector copy() {
+        CTCIrcleSector copy = CTCIrcleSector.make(A.copy(), B.copy(), C.copy());
         copy.getMp().copyFrom(getMp());
         return copy;
     }
 
+    @Override
+    public void copyStateFrom(MathObject obj) {
+        if (obj instanceof CTCIrcleSector) {
+            CTCIrcleSector cnst = (CTCIrcleSector) obj;
+            arcTODraw.getPath().clear();
+            Shape copyArc = cnst.getMathObject().copy();
+            arcTODraw.getPath().jmPathPoints.addAll(copyArc.getPath().jmPathPoints);
+        } 
+    }
+    
     @Override
     public void rebuildShape() {
         AffineJTransform tr = AffineJTransform.createDirect2DIsomorphic(Point.at(0, 0), Point.at(1, 0), new Point(A.v), new Point(B.v), 1);
@@ -85,8 +96,18 @@ public class CTCircleArc extends CTAbstractCircle {
             if (angle < 0) {
                 angle += 2 * PI;
             }
-            arcTODraw = Shape.arc(angle);
-            arcTODraw.applyAffineTransform(tr);
+            Shape referenceArc = Shape.arc(angle);
+
+            referenceArc.get(0).cpEnter.copyFrom(referenceArc.get(0).p);
+            referenceArc.get(-1).cpExit.copyFrom(referenceArc.get(-1).p);
+            referenceArc.get(0).isThisSegmentVisible = true;
+            JMPathPoint pp = JMPathPoint.lineTo(Point.origin());
+            pp.cpEnter.copyFrom(pp.p);
+            pp.cpExit.copyFrom(pp.p);
+            referenceArc.getPath().jmPathPoints.add(0, pp);
+            referenceArc.applyAffineTransform(tr);
+             arcTODraw.getPath().clear();
+            arcTODraw.getPath().jmPathPoints.addAll(referenceArc.getPath().jmPathPoints);
         }
 
     }
@@ -95,5 +116,4 @@ public class CTCircleArc extends CTAbstractCircle {
     public void registerUpdateableHook(JMathAnimScene scene) {
         dependsOn(scene, A, B, C);
     }
-
 }

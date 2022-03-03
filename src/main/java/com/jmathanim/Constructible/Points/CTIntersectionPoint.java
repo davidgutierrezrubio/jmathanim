@@ -24,7 +24,6 @@ import com.jmathanim.Constructible.Lines.CTAbstractLine;
 import com.jmathanim.Constructible.Lines.CTLine;
 import com.jmathanim.Constructible.Lines.CTRay;
 import com.jmathanim.Constructible.Lines.CTSegment;
-import com.jmathanim.Renderers.Renderer;
 import com.jmathanim.Utils.AffineJTransform;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;

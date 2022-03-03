@@ -20,8 +20,6 @@ package com.jmathanim.mathobjects.updateableObjects;
 import com.jmathanim.Utils.Anchor.Type;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.MathObject;
-import java.util.Arrays;
-import java.util.OptionalInt;
 
 /**
  *

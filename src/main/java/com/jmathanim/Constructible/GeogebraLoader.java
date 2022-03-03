@@ -259,6 +259,9 @@ public class GeogebraLoader implements Iterable<Constructible>, hasCameraParamet
             case "CircleArc":
                 cp.processCircleArc(el);
                 break;
+            case "CircleSector":
+                cp.processCircleSector(el);
+                break;
             case "Mirror":
                 cp.processMirror(el);
                 break;

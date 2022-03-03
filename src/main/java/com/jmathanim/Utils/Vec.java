@@ -19,8 +19,6 @@ package com.jmathanim.Utils;
 
 import com.jmathanim.Constructible.Lines.HasDirection;
 import static com.jmathanim.jmathanim.JMathAnimScene.PI;
-import com.jmathanim.mathobjects.MathObject;
-import com.jmathanim.mathobjects.Point;
 import com.jmathanim.mathobjects.Stateable;
 import static java.lang.Math.sqrt;
 import org.apache.commons.math3.linear.Array2DRowRealMatrix;

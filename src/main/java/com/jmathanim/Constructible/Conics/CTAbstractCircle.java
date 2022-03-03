@@ -20,14 +20,24 @@ package com.jmathanim.Constructible.Conics;
 import com.jmathanim.Constructible.Constructible;
 import com.jmathanim.Constructible.Points.CTPoint;
 import com.jmathanim.mathobjects.Scalar;
+import com.jmathanim.mathobjects.hasScalarParameter;
 
 /**
  *
  * @author David Gutierrez Rubio davidgutierrezrubio@gmail.com
  */
-public abstract class CTAbstractCircle extends Constructible{
+public abstract class CTAbstractCircle extends Constructible implements hasScalarParameter {
 
     public abstract CTPoint getCircleCenter();
 
     public abstract Scalar getRadius();
+
+    @Override
+    public double getScalar() {
+        return getRadius().value;
+    }
+
+    @Override
+    public void setScalar(double scalar) {
+    }
 }

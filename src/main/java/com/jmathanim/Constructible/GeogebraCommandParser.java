@@ -17,10 +17,12 @@
  */
 package com.jmathanim.Constructible;
 
+import com.jmathanim.Constructible.Conics.CTCIrcleSector;
 import com.jmathanim.Constructible.Conics.CTCircle;
 import com.jmathanim.Constructible.Conics.CTCircleArc;
 import com.jmathanim.Constructible.Conics.CTEllipse;
 import com.jmathanim.Constructible.Conics.CTSemiCircle;
+import com.jmathanim.Constructible.Conics.CTTransformedCircle;
 import com.jmathanim.Constructible.Lines.CTAngleBisector;
 import com.jmathanim.Constructible.Lines.CTLine;
 import com.jmathanim.Constructible.Lines.CTLineOrthogonal;
@@ -29,7 +31,6 @@ import com.jmathanim.Constructible.Lines.CTPolygon;
 import com.jmathanim.Constructible.Lines.CTRay;
 import com.jmathanim.Constructible.Lines.CTRegularPolygon;
 import com.jmathanim.Constructible.Lines.CTSegment;
-import com.jmathanim.Constructible.Conics.CTTransformedCircle;
 import com.jmathanim.Constructible.Lines.CTTransformedLine;
 import com.jmathanim.Constructible.Lines.CTVector;
 import com.jmathanim.Constructible.Lines.HasDirection;
@@ -50,6 +51,7 @@ import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.NullMathObject;
 import com.jmathanim.mathobjects.Point;
 import com.jmathanim.mathobjects.Scalar;
+import com.jmathanim.mathobjects.hasScalarParameter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -60,7 +62,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
-import javafx.scene.shape.Circle;
 import org.w3c.dom.Element;
 
 /**
@@ -136,6 +137,7 @@ public class GeogebraCommandParser {
     public boolean containsKey(String key) {
         return geogebraElements.containsKey(key);
     }
+
 
     public void registerGeogebraElement(String label, Constructible resul) {
         if (resul != null) {
@@ -724,5 +726,12 @@ public class GeogebraCommandParser {
         CTPoint C = (CTPoint) objs[2];
         registerGeogebraElement(label, CTCircleArc.make(A, B,C));
     }
-
+void processCircleSector(Element el) {
+      String label = getOutputArgument(el, 0);
+        MathObject[] objs = getArrayOfParameters(el);
+        CTPoint A = (CTPoint) objs[0];
+        CTPoint B = (CTPoint) objs[1];
+        CTPoint C = (CTPoint) objs[2];
+        registerGeogebraElement(label, CTCIrcleSector.make(A, B,C));
+    }
 }

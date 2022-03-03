@@ -17,6 +17,7 @@
  */
 package com.jmathanim.mathobjects;
 
+
 /**
  * Any object that implements this interface depends on a scalar value that can
  * be animated

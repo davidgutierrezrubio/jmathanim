@@ -19,7 +19,6 @@ package com.jmathanim.mathobjects;
 
 import com.jmathanim.Renderers.Renderer;
 import com.jmathanim.Styling.JMColor;
-import com.jmathanim.Styling.MODrawProperties;
 import com.jmathanim.Utils.AffineJTransform;
 import com.jmathanim.Utils.JMathAnimConfig;
 import com.jmathanim.Utils.Rect;

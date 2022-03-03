@@ -345,33 +345,36 @@ public class Shape extends MathObject {
     }
 
     public static Shape arc(double angle) {
-        Shape obj = new Shape();
-        obj.objectLabel = "arc";
-        double x1, y1;
-        int nSegs = 4;
-        int segsForFullCircle = (int) (2 * PI * nSegs / angle);
-        double cte = 4d / 3 * Math.tan(.5 * Math.PI / segsForFullCircle);
-        for (int n = 0; n < nSegs + 1; n++) {
-            double alphaC = angle * n / nSegs;
-            x1 = Math.cos(alphaC);
-            y1 = Math.sin(alphaC);
-            Point p = new Point(x1, y1);
-            Vec v1 = new Vec(-y1, x1);
+//        Shape obj = new Shape();
+//        obj.objectLabel = "arc";
+//        double x1, y1;
+//        int nSegs = 4;
+//        int segsForFullCircle = (int) (2 * PI * nSegs / angle);
+//        double cte = 4d / 3 * Math.tan(.5 * Math.PI / segsForFullCircle);
+//        for (int n = 0; n < nSegs + 1; n++) {
+//            double alphaC = angle * n / nSegs;
+//            x1 = Math.cos(alphaC);
+//            y1 = Math.sin(alphaC);
+//            Point p = new Point(x1, y1);
+//            Vec v1 = new Vec(-y1, x1);
+//
+//            v1.multInSite(cte);
+//            Point cp1 = p.add(v1);
+//            Point cp2 = p.add(v1.multInSite(-1));
+//            JMPathPoint jmp = JMPathPoint.curveTo(p);
+//            jmp.cpExit.copyFrom(cp1);
+//            jmp.cpEnter.copyFrom(cp2);
+//            obj.jmpath.addJMPoint(jmp);
+//        }
+////        obj.getPath().generateControlPoints();
+////        obj.getPath().jmPathPoints.remove(0);
+////        obj.getPath().jmPathPoints.remove(-1);
+//        obj.getPath().jmPathPoints.get(0).isThisSegmentVisible = false;// Open path
+////        obj.get(0).cp1.v.copyFrom(obj.get(0).p.v);
+////        obj.get(-1).cp2.v.copyFrom(obj.get(-1).p.v);
+        Shape obj=Shape.circle().getSubShape(0, .5*angle/PI);
+         obj.objectLabel = "arc";
 
-            v1.multInSite(cte);
-            Point cp1 = p.add(v1);
-            Point cp2 = p.add(v1.multInSite(-1));
-            JMPathPoint jmp = JMPathPoint.curveTo(p);
-            jmp.cpExit.copyFrom(cp1);
-            jmp.cpEnter.copyFrom(cp2);
-            obj.jmpath.addJMPoint(jmp);
-        }
-//        obj.getPath().generateControlPoints();
-//        obj.getPath().jmPathPoints.remove(0);
-//        obj.getPath().jmPathPoints.remove(-1);
-        obj.getPath().jmPathPoints.get(0).isThisSegmentVisible = false;// Open path
-//        obj.get(0).cp1.v.copyFrom(obj.get(0).p.v);
-//        obj.get(-1).cp2.v.copyFrom(obj.get(-1).p.v);
         return obj;
     }
 

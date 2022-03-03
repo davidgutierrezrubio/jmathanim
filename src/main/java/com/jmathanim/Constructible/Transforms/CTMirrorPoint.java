@@ -26,7 +26,6 @@ import com.jmathanim.Constructible.Points.CTPoint;
 import com.jmathanim.Utils.AffineJTransform;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.Line;
-import com.jmathanim.mathobjects.NullMathObject;
 import com.jmathanim.mathobjects.Point;
 
 /**
