@@ -88,7 +88,7 @@ public class FXPathUtils {
 			}
 		}
 		// //Be sure the last point is connected with the first (if closed)
-		if (resul.jmPathPoints.size() > 0) {
+		if (!resul.jmPathPoints.isEmpty()) {
 			if (resul.jmPathPoints.get(0).p.isEquivalentTo(resul.jmPathPoints.get(-1).p, 1.0E-6)) {
 				JMPathPoint fp = resul.jmPathPoints.get(0);
 				JMPathPoint lp = resul.jmPathPoints.get(-1);

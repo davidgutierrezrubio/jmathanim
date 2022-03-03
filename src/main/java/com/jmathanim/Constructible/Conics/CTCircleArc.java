@@ -29,36 +29,45 @@ import com.jmathanim.mathobjects.Scalar;
 import com.jmathanim.mathobjects.Shape;
 
 /**
+ * A Constructible circle arc
  *
  * @author David Gutierrez Rubio davidgutierrezrubio@gmail.com
  */
 public class CTCircleArc extends CTAbstractCircle {
 
+    private final CTPoint center;
     private final CTPoint A;
     private final CTPoint B;
-    private final CTPoint C;
     private Shape arcTODraw;
 
-    public static CTCircleArc make(CTPoint A, CTPoint B, CTPoint C) {
-        CTCircleArc resul = new CTCircleArc(A, B, C);
+    /**
+     * Creates a new Constructible circle arc
+     *
+     * @param center Center of arc
+     * @param A Starting point. Arc will pass through this point
+     * @param B Point that determines the angle of the arc.
+     * @return The created arc
+     */
+    public static CTCircleArc make(CTPoint center, CTPoint A, CTPoint B) {
+        CTCircleArc resul = new CTCircleArc(center, A, B);
         resul.rebuildShape();
         return resul;
     }
 
-    private CTCircleArc(CTPoint A, CTPoint B, CTPoint C) {
+    private CTCircleArc(CTPoint center, CTPoint A, CTPoint B) {
+        this.center = center;
         this.A = A;
         this.B = B;
-        this.C = C;
     }
 
     @Override
     public CTPoint getCircleCenter() {
-        return A.copy();
+        return center.copy();
     }
 
     @Override
     public Scalar getRadius() {
-        return Scalar.make(A.to(B).norm());
+        return Scalar.make(center.to(A).norm());
     }
 
     @Override
@@ -68,17 +77,17 @@ public class CTCircleArc extends CTAbstractCircle {
 
     @Override
     public Constructible copy() {
-        CTCircleArc copy = CTCircleArc.make(A.copy(), B.copy(), C.copy());
+        CTCircleArc copy = CTCircleArc.make(center.copy(), A.copy(), B.copy());
         copy.getMp().copyFrom(getMp());
         return copy;
     }
 
     @Override
     public void rebuildShape() {
-        AffineJTransform tr = AffineJTransform.createDirect2DIsomorphic(Point.at(0, 0), Point.at(1, 0), new Point(A.v), new Point(B.v), 1);
+        AffineJTransform tr = AffineJTransform.createDirect2DIsomorphic(Point.at(0, 0), Point.at(1, 0), new Point(center.v), new Point(A.v), 1);
 
-        Vec v1 = A.to(B);
-        Vec v2 = A.to(C);
+        Vec v1 = center.to(A);
+        Vec v2 = center.to(B);
 
         if (!isThisMathObjectFree()) {
             double angle = v2.getAngle() - v1.getAngle();
@@ -93,7 +102,7 @@ public class CTCircleArc extends CTAbstractCircle {
 
     @Override
     public void registerUpdateableHook(JMathAnimScene scene) {
-        dependsOn(scene, A, B, C);
+        dependsOn(scene, center, A, B);
     }
 
 }

@@ -285,7 +285,7 @@ public class Axes extends MathObject {
     }
 
     @Override
-    public Stylable getMp() {
+    public final Stylable getMp() {
         return mpArray;
     }
 

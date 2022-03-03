@@ -29,37 +29,37 @@ import com.jmathanim.mathobjects.Scalar;
 import com.jmathanim.mathobjects.Shape;
 
 /**
- *
+ * Represents a Connstructible circle sector
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
 public class CTCIrcleSector extends CTAbstractCircle {
 
+    private final CTPoint center;
     private final CTPoint A;
     private final CTPoint B;
-    private final CTPoint C;
     private final Shape arcTODraw;
 
-    public static CTCIrcleSector make(CTPoint A, CTPoint B, CTPoint C) {
-        CTCIrcleSector resul = new CTCIrcleSector(A, B, C);
+    public static CTCIrcleSector make(CTPoint center, CTPoint A, CTPoint B) {
+        CTCIrcleSector resul = new CTCIrcleSector(center, A, B);
         resul.rebuildShape();
         return resul;
     }
 
-    private CTCIrcleSector(CTPoint A, CTPoint B, CTPoint C) {
+    private CTCIrcleSector(CTPoint center, CTPoint A, CTPoint B) {
+        this.center = center;
         this.A = A;
         this.B = B;
-        this.C = C;
         arcTODraw=new Shape();
     }
 
     @Override
     public CTPoint getCircleCenter() {
-        return A.copy();
+        return center.copy();
     }
 
     @Override
     public Scalar getRadius() {
-        return Scalar.make(A.to(B).norm());
+        return Scalar.make(center.to(A).norm());
     }
 
     @Override
@@ -69,7 +69,7 @@ public class CTCIrcleSector extends CTAbstractCircle {
 
     @Override
     public CTCIrcleSector copy() {
-        CTCIrcleSector copy = CTCIrcleSector.make(A.copy(), B.copy(), C.copy());
+        CTCIrcleSector copy = CTCIrcleSector.make(center.copy(), A.copy(), B.copy());
         copy.getMp().copyFrom(getMp());
         return copy;
     }
@@ -86,10 +86,10 @@ public class CTCIrcleSector extends CTAbstractCircle {
     
     @Override
     public void rebuildShape() {
-        AffineJTransform tr = AffineJTransform.createDirect2DIsomorphic(Point.at(0, 0), Point.at(1, 0), new Point(A.v), new Point(B.v), 1);
+        AffineJTransform tr = AffineJTransform.createDirect2DIsomorphic(Point.at(0, 0), Point.at(1, 0), new Point(center.v), new Point(A.v), 1);
 
-        Vec v1 = A.to(B);
-        Vec v2 = A.to(C);
+        Vec v1 = center.to(A);
+        Vec v2 = center.to(B);
 
         if (!isThisMathObjectFree()) {
             double angle = v2.getAngle() - v1.getAngle();
@@ -114,6 +114,6 @@ public class CTCIrcleSector extends CTAbstractCircle {
 
     @Override
     public void registerUpdateableHook(JMathAnimScene scene) {
-        dependsOn(scene, A, B, C);
+        dependsOn(scene, center, A, B);
     }
 }

@@ -51,7 +51,6 @@ import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.NullMathObject;
 import com.jmathanim.mathobjects.Point;
 import com.jmathanim.mathobjects.Scalar;
-import com.jmathanim.mathobjects.hasScalarParameter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -315,9 +314,7 @@ public class GeogebraCommandParser {
         double size;
         String label = el.getAttribute("label");
         String text = expressions.get(label);
-        System.out.println("1" + text);
         text = text.replace("\"", "");
-        System.out.println("2" + text);
         final Element isLatex = firstElementWithTag(el, "isLaTeX");
         if (isLatex != null) {
             if ("TRUE".equals(isLatex.getAttribute("val").toUpperCase())) {

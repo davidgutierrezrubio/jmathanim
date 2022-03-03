@@ -110,7 +110,7 @@ public class SVGUtils {
                         path.distille();
                         PathUtils pathUtils = new PathUtils();
                         pathUtils.determineStraightSegments(path);
-                        if (path.jmPathPoints.size() > 0) {
+                        if (!path.jmPathPoints.isEmpty()) {
                             path.pathType = JMPath.SVG_PATH; // Mark this as a SVG path
                             shape = new Shape(path, mpCopy);
                             transfCopy.applyTransform(shape);

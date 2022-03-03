@@ -108,17 +108,21 @@ public class LaTeXMathObject extends SVGMathObject {
      * @return The LaTexMathObject
      */
     public static LaTeXMathObject make(String text, CompileMode compileMode) {
-        LaTeXMathObject t = new LaTeXMathObject();
-        t.mode = compileMode;
+        LaTeXMathObject resul = new LaTeXMathObject();
+        resul.getMp().loadFromStyle("latexdefault");
+        resul.getMp().setAbsoluteThickness(true);
+//        resul.getMp().setFillColor(resul.getMp().getDrawColor());
+        resul.getMp().setThickness(1d);
+        resul.mode = compileMode;
 
         if (!"".equals(text)) {
-            t.setLaTeX(text);
+            resul.setLaTeX(text);
         }
 
-        if (t.shapes.size() > 0) {
-            t.center();
+        if (!resul.shapes.isEmpty()) {
+            resul.center();
         }
-        return t;
+        return resul;
     }
 
     /**
@@ -126,10 +130,6 @@ public class LaTeXMathObject extends SVGMathObject {
      */
     protected LaTeXMathObject() {
         super();
-        getMp().loadFromStyle("latexdefault");
-        getMp().setAbsoluteThickness(true);
-        getMp().setFillColor(getMp().getDrawColor());
-        getMp().setThickness(1d);
     }
 
     /**

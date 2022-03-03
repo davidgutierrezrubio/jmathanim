@@ -29,57 +29,72 @@ import com.jmathanim.mathobjects.Scalar;
 import com.jmathanim.mathobjects.Shape;
 
 /**
+ * Represents a Constructible semicircle
  *
  * @author David Gutierrez Rubio davidgutierrezrubio@gmail.com
  */
 public class CTSemiCircle extends CTAbstractCircle {
-    
+
     private final Shape arcTODraw;
     private final Shape arcTODrawOrig;
     private final CTPoint B;
     private final CTPoint A;
-    
-      public static CTSemiCircle make(Point A, Point B) {
-          return make(CTPoint.make(A),CTPoint.make(B));
-      }
-    
+
+    /**
+     * Overloaded method. Creates a Constructible semicircle from 2 given points. The semicircle
+     * will run counterclockwise from first to second point
+     *
+     * @param A First point
+     * @param B Second point
+     * @return The created object
+     */
+    public static CTSemiCircle make(Point A, Point B) {
+        return make(CTPoint.make(A), CTPoint.make(B));
+    }
+ /**
+     * Creates a Constructible semicircle from 2 given points. The semicircle
+     * will run counterclockwise from first to second point
+     *
+     * @param A First point
+     * @param B Second point
+     * @return The created object
+     */
     public static CTSemiCircle make(CTPoint A, CTPoint B) {
-        CTSemiCircle resul=new CTSemiCircle(A, B);
+        CTSemiCircle resul = new CTSemiCircle(A, B);
         resul.rebuildShape();
         return resul;
     }
-    
-    
+
     private CTSemiCircle(CTPoint A, CTPoint B) {
         this.A = A;
         this.B = B;
         arcTODraw = Shape.arc(PI);
         arcTODrawOrig = Shape.arc(PI);
     }
-    
+
     @Override
     public CTPoint getCircleCenter() {
         final Vec vv = A.v.interpolate(B.v, .5);
         return CTPoint.at(vv.x, vv.y);
     }
-    
+
     @Override
     public Scalar getRadius() {
         return Scalar.make(.5 * A.to(B).norm());
     }
-    
+
     @Override
     public MathObject getMathObject() {
         return arcTODraw;
     }
-    
+
     @Override
     public Constructible copy() {
         CTSemiCircle copy = new CTSemiCircle(A.copy(), B.copy());
         copy.getMp().copyFrom(getMp());
         return copy;
     }
-    
+
     @Override
     public void rebuildShape() {
         AffineJTransform tr = AffineJTransform.createDirect2DIsomorphic(Point.at(-1, 0), Point.at(1, 0), new Point(A.v), new Point(B.v), 1);
@@ -90,10 +105,10 @@ public class CTSemiCircle extends CTAbstractCircle {
             arcTODraw.applyAffineTransform(tr);
         }
     }
-    
+
     @Override
     public void registerUpdateableHook(JMathAnimScene scene) {
         dependsOn(scene, A, B);
     }
-    
+
 }

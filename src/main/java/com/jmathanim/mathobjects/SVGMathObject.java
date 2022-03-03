@@ -43,33 +43,35 @@ public class SVGMathObject extends MultiShapeObject {
 //    private double currentStrokeSize = .5d;
 
     public static SVGMathObject make(String fname) {
-        return new SVGMathObject(fname);
-    }
-
-    // This empty constructor is needed
-    public SVGMathObject() {
-        super();
-    }
-
-    public SVGMathObject(String fname) {
-        super();
+        SVGMathObject resul = new SVGMathObject(fname);
         //This is the default style for SVG objects
-        fillColor("black");
-        drawColor("black");
-        double defaultThickness = scene.getRenderer().MathWidthToThickness(1);//Default thickness
-        getMp().setThickness(defaultThickness);
-        
+        resul.fillColor("black");
+        resul.drawColor("black");
+        double defaultThickness = resul.scene.getRenderer().MathWidthToThickness(1);//Default thickness
+        resul.getMp().setThickness(defaultThickness);
+
         ResourceLoader rl = new ResourceLoader();
         URL urlImage = rl.getResource(fname, "images");
         try {
-            SVGUtils svgu = new SVGUtils(scene);
-            svgu.importSVG(urlImage, this);
+            SVGUtils svgu = new SVGUtils(resul.scene);
+            svgu.importSVG(urlImage, resul);
         } catch (Exception ex) {
             Logger.getLogger(SVGMathObject.class.getName()).log(Level.SEVERE, null, ex);
         }
-        getMp().setAbsoluteThickness(false);// Default behaviour
+        resul.getMp().setAbsoluteThickness(false);// Default behaviour
 
-        stackTo(new Point(0, 0), Anchor.Type.UL);
+        resul.stackTo(new Point(0, 0), Anchor.Type.UL);
+        return resul;
+    }
+
+    protected SVGMathObject() {
+        super();
+    }
+
+    private SVGMathObject(String fname) {
+        super();
+        this.filename = fname;
+
     }
 
     public SVGMathObject(URL url) {
@@ -85,7 +87,7 @@ public class SVGMathObject extends MultiShapeObject {
     @Override
     public SVGMathObject copy() {
         SVGMathObject resul = new SVGMathObject();
-          resul.getMp().copyFrom(getMp());
+        resul.getMp().copyFrom(getMp());
         for (Shape sh : shapes) {
             final Shape copy = sh.copy();
             resul.add(copy);

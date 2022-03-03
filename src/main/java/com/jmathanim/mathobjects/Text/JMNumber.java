@@ -192,48 +192,6 @@ public class JMNumber extends LaTeXMathObject implements hasScalarParameter {
 
     }
 
-    private static void printArrayOfGaps() {
-        String gapString = "{";
-        for (char c1 : SYMBOLS.toCharArray()) {
-            String combine = "";
-            for (char c2 : SYMBOLS.toCharArray()) {
-                combine += String.valueOf(c1) + String.valueOf(c2);
-            }
-
-            LaTeXMathObject texto = LaTeXMathObject.make(combine);
-            gapString += "{";
-            boolean addComma = false;
-            for (int n = 0; n < texto.size() - 1; n += 2) {
-                Shape s = texto.get(n);
-                Shape s2 = texto.get(n + 1);
-                double hor = s2.getBoundingBox().xmin - s.getBoundingBox().xmax;
-                gapString += (addComma ? ", " : "") + hor;
-                addComma = true;
-            }
-            gapString += "},\n";
-
-        }
-        gapString = gapString.substring(0, gapString.length() - 2) + "}";
-        System.out.println(gapString);
-    }
-
-    private static void creaBaseLines() {
-        String baselineString = "{";
-
-        LaTeXMathObject texto = LaTeXMathObject.make(SYMBOLS);
-
-        double base = texto.get(1).getBoundingBox().ymin;
-
-        boolean addComma = false;
-        for (Shape sh : texto) {
-            baselineString += (addComma ? "," : "") + (sh.getBoundingBox().ymin - base);
-            addComma = true;
-        }
-
-        baselineString += "}";
-        System.out.println(baselineString);
-    }
-
     @Override
     public JMNumber copy() {
         JMNumber copy = JMNumber.makeJMnumber(getScalar());

@@ -221,7 +221,7 @@ public class Camera {
      */
     public Camera adjustToAllObjects() {
         if (!scene.getObjects().isEmpty()) {
-            MathObject[] objs = scene.getObjects().toArray(new MathObject[scene.getObjects().size()]);
+            MathObject[] objs = scene.getObjects().toArray(MathObject[]::new);
             adjustToObjects(objs);
         }
         return this;
@@ -273,7 +273,7 @@ public class Camera {
      */
     public Camera centerAtAllObjects() {
         if (!scene.getObjects().isEmpty()) {
-            MathObject[] objs = scene.getObjects().toArray(new MathObject[scene.getObjects().size()]);
+            MathObject[] objs = scene.getObjects().toArray(MathObject[]::new);
             centerAtObjects(objs);
         }
         adjustToAllObjects();
@@ -305,7 +305,7 @@ public class Camera {
      */
     public Camera zoomToAllObjects() {
         if (!scene.getObjects().isEmpty()) {
-            MathObject[] objs = scene.getObjects().toArray(new MathObject[scene.getObjects().size()]);
+            MathObject[] objs = scene.getObjects().toArray(MathObject[]::new);
             zoomToObjects(objs);
         }
         return this;

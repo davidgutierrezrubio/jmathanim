@@ -327,16 +327,12 @@ public class Shape extends MathObject {
      * @return A Shape object representing the polygon
      */
     public static Shape regularPolygon(int numsides) {
-        return regularPolygon(numsides, new Point(0, 0), 1);
-    }
-
-    private static Shape regularPolygon(int numsides, Point A, double side) {
         Shape obj = new Shape();
         obj.objectLabel = "regPol";
-        Point newPoint = (Point) A.copy();
+        Point newPoint = Point.origin();
         for (int n = 0; n < numsides; n++) {
             double alpha = 2 * n * Math.PI / numsides;
-            Vec moveVector = new Vec(side * Math.cos(alpha), side * Math.sin(alpha));
+            Vec moveVector = new Vec(Math.cos(alpha), Math.sin(alpha));
             newPoint = newPoint.add(moveVector);
             JMPathPoint p = JMPathPoint.lineTo(newPoint);
             obj.getPath().addJMPoint(p);
@@ -344,46 +340,30 @@ public class Shape extends MathObject {
         return obj;
     }
 
+    /**
+     * Creates an arc with radius 1 and center origin. First point is (1,0)
+     *
+     * @param angle Angle in radians of the arc
+     * @return The created arc
+     */
     public static Shape arc(double angle) {
-//        Shape obj = new Shape();
-//        obj.objectLabel = "arc";
-//        double x1, y1;
-//        int nSegs = 4;
-//        int segsForFullCircle = (int) (2 * PI * nSegs / angle);
-//        double cte = 4d / 3 * Math.tan(.5 * Math.PI / segsForFullCircle);
-//        for (int n = 0; n < nSegs + 1; n++) {
-//            double alphaC = angle * n / nSegs;
-//            x1 = Math.cos(alphaC);
-//            y1 = Math.sin(alphaC);
-//            Point p = new Point(x1, y1);
-//            Vec v1 = new Vec(-y1, x1);
-//
-//            v1.multInSite(cte);
-//            Point cp1 = p.add(v1);
-//            Point cp2 = p.add(v1.multInSite(-1));
-//            JMPathPoint jmp = JMPathPoint.curveTo(p);
-//            jmp.cpExit.copyFrom(cp1);
-//            jmp.cpEnter.copyFrom(cp2);
-//            obj.jmpath.addJMPoint(jmp);
-//        }
-////        obj.getPath().generateControlPoints();
-////        obj.getPath().jmPathPoints.remove(0);
-////        obj.getPath().jmPathPoints.remove(-1);
-//        obj.getPath().jmPathPoints.get(0).isThisSegmentVisible = false;// Open path
-////        obj.get(0).cp1.v.copyFrom(obj.get(0).p.v);
-////        obj.get(-1).cp2.v.copyFrom(obj.get(-1).p.v);
-        Shape obj=Shape.circle().getSubShape(0, .5*angle/PI);
-         obj.objectLabel = "arc";
+        Shape obj = Shape.circle().getSubShape(0, .5 * angle / PI);
+        obj.objectLabel = "arc";
 
         return obj;
     }
 
+    /**
+     * Creates a new circle. Default shape has 4 jmpathpoints.
+     *
+     * @return The created circle
+     */
     public static Shape circle() {
         return circle(4);
     }
 
     /**
-     * Creates a circle with the given number of segments
+     * Creates a circle with the given number of jmpathpoints
      *
      * @param numSegments Number of segments
      * @return The circle
@@ -426,22 +406,34 @@ public class Shape extends MathObject {
         return obj;
     }
 
+    /**
+     * Return the value of boolean flag showDebugPoints
+     *
+     * @return If true, the point number will be superimposed on screen when
+     * drawing this shape
+     */
     public boolean isShowDebugPoints() {
         return showDebugPoints;
     }
 
+    /**
+     * Sets the vaue of boolean flag showDebugPoints. If true, the point number
+     * will be superimposed on screen when drawing this shape
+     *
+     * @param showDebugPoints
+     */
     public void setShowDebugPoints(boolean showDebugPoints) {
         this.showDebugPoints = showDebugPoints;
     }
 
     @Override
-    public <T extends MathObject> T applyAffineTransform(AffineJTransform tr) {
+    public Shape applyAffineTransform(AffineJTransform tr) {
         int size = getPath().size();
         for (int n = 0; n < size; n++) {
             get(n).applyAffineTransform(tr);
         }
         tr.applyTransformsToDrawingProperties(this);
-        return (T) this;
+        return this;
     }
 
     /**
@@ -593,17 +585,6 @@ public class Shape extends MathObject {
         return (Path) javafx.scene.shape.Shape.union(new Path(), shape);
     }
 
-    private void writeFXPathPoints(Path pa) {
-        System.out.println("FXPATH");
-        System.out.println("-----------------------");
-        int counter = 0;
-        for (PathElement el : pa.getElements()) {
-            System.out.println(counter + ":  " + el);
-            counter++;
-        }
-        System.out.println("-----------------------");
-    }
-
     /**
      * Returns the convex flag for this shape. This flag is false by default but
      * can be manually changed. Convex shapes can be drawed using simpler,
@@ -675,7 +656,8 @@ public class Shape extends MathObject {
             setUpdateLevel(0);
         }
     }
-  /**
+
+    /**
      * Check if the current object is empty (for example: a MultiShape with no
      * objects). A empty object case should be considered as they return null
      * bounding boxes.

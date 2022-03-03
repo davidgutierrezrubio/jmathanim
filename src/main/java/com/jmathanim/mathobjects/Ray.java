@@ -140,11 +140,11 @@ public class Ray extends Shape implements HasDirection {
     }
 
     @Override
-    public <T extends MathObject> T applyAffineTransform(AffineJTransform tr) {
+    public Ray applyAffineTransform(AffineJTransform tr) {
         getP1().applyAffineTransform(tr);
         getP2().applyAffineTransform(tr);
         tr.applyTransformsToDrawingProperties(this);
-        return (T) this;
+        return this;
     }
 
     /**
@@ -230,7 +230,7 @@ public class Ray extends Shape implements HasDirection {
     }
 
     @Override
-    public Stylable getMp() {
+    public final Stylable getMp() {
         return mpArray;
     }
 

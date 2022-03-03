@@ -100,11 +100,11 @@ public class Line extends Shape implements HasDirection {
     }
 
     @Override
-    public <T extends MathObject> T applyAffineTransform(AffineJTransform tr) {
+    public Line applyAffineTransform(AffineJTransform tr) {
         getP1().applyAffineTransform(tr);
         getP2().applyAffineTransform(tr);
         tr.applyTransformsToDrawingProperties(this);
-        return (T) this;
+        return this;
     }
 
     /**
@@ -134,7 +134,7 @@ public class Line extends Shape implements HasDirection {
         bp1.cpEnter.copyFrom(bp1.p);
         bp2.cpExit.copyFrom(bp2.p);
         bp2.cpEnter.copyFrom(bp2.p);
-        bp1.isThisSegmentVisible=false;
+        bp1.isThisSegmentVisible = false;
     }
 
     @Override

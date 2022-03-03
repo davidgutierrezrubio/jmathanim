@@ -318,7 +318,7 @@ public abstract class JMathAnimScene {
      * @param objs ArrayList of Mathobjects
      */
     public synchronized final void remove(ArrayList<MathObject> objs) {
-        remove((MathObject[]) objs.toArray(new MathObject[objs.size()]));
+        remove((MathObject[]) objs.toArray(MathObject[]::new));
 
     }
 
@@ -376,7 +376,7 @@ public abstract class JMathAnimScene {
         }
 
         // Now remove all marked sceneObjects from the scene
-        remove((MathObject[]) objectsToBeRemoved.toArray(new MathObject[objectsToBeRemoved.size()]));
+        remove((MathObject[]) objectsToBeRemoved.toArray(MathObject[]::new));
         objectsToBeRemoved.clear();
     }
 
@@ -628,10 +628,10 @@ public abstract class JMathAnimScene {
      * setting the camera to its default values
      */
     public void reset() {
-        for (MathObject obj : getObjects().toArray(new MathObject[getObjects().size()])) {
+        for (MathObject obj : getObjects()) {
             remove(obj);
         }
-        for (Updateable upd : getObjectsToBeUpdated().toArray(new Updateable[getObjectsToBeUpdated().size()])) {
+        for (Updateable upd : getObjectsToBeUpdated()) {
             unregisterUpdateable(upd);
         }
         renderer.getCamera().reset();

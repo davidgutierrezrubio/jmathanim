@@ -249,7 +249,7 @@ public class FunctionGraph extends Shape implements hasScalarParameter {
      */
     public JMPathPoint addX(double x) {
         int n = 0;
-        if (xPoints.size() > 0) {
+        if (!xPoints.isEmpty()) {
             if (xPoints.get(xPoints.size() - 1) < x) {
                 n = xPoints.size();
             } else {

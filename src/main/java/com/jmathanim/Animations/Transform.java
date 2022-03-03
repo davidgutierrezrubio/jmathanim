@@ -172,7 +172,7 @@ public class Transform extends AnimationWithEffects {
             return (MultiShapeObject) obj;
         }
         if (obj instanceof Shape) {
-            return new MultiShapeObject((Shape) obj);
+            return MultiShapeObject.make((Shape) obj);
         }
         return null;// Don't know how to convert it to multishape, return null
     }

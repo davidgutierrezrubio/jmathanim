@@ -23,13 +23,22 @@ import com.jmathanim.mathobjects.Scalar;
 import com.jmathanim.mathobjects.hasScalarParameter;
 
 /**
+ * An abstract class representing a Constructible circle or similar
  *
  * @author David Gutierrez Rubio davidgutierrezrubio@gmail.com
  */
 public abstract class CTAbstractCircle extends Constructible implements hasScalarParameter {
 
+    /**
+     * Returns the geometrical center of the circle or similar
+     * @return a newly created CTpoint with the coordinates of center
+     */
     public abstract CTPoint getCircleCenter();
 
+    /**
+     * Retruns the radius of the circle or similar
+     * @return A newly created Scalar object containing the radius
+     */
     public abstract Scalar getRadius();
 
     @Override

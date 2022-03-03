@@ -75,7 +75,7 @@ public class TippableObject extends MathObject {
      * @return The tippable object
      */
     public static TippableObject equalLengthTip(Shape shape, double location, int numberOfMarks) {
-        MultiShapeObject parallelSign = new MultiShapeObject();
+        MultiShapeObject parallelSign = MultiShapeObject.make();
         for (int i = 0; i < numberOfMarks; i++) {
             parallelSign.add(Shape.segment(Point.at(0, i), Point.at(2, i)));
         }
