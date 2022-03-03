@@ -340,7 +340,7 @@ waitSeconds(3);
 
 ## Importing SVG Objects
 
-Let's see with an example: I used a free SVG file example from https://freesvg.org/donald-knuth. As with the bitmap images, the SVG files are loaded by default from the `resources/images` folder.
+Let's see it with an example: I used a free SVG file example from https://freesvg.org/donald-knuth. As with the bitmap images, the SVG files are loaded by default from the `resources/images` folder.
 
 ```java
 public void setupSketch() {

@@ -617,7 +617,7 @@ This example illustrates the transform animation between two multishape objects.
 LaTeXMathObject text = LaTeXMathObject.make("I$\\heartsuit$pentagons").center();
 text.setColor(JMColor.parse("darkred"), 1);//Heart must be dark red
 
-MultiShapeObject pentagons = new MultiShapeObject();
+MultiShapeObject pentagons = MultiShapeObject.make();
 for (Shape sh : text) {//Iterates over the shapes
     //Creates a pentagon rotated with a random angle
     Shape pentagon = Shape.regularPolygon(5);
