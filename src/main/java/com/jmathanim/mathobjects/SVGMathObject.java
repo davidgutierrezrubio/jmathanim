@@ -20,6 +20,7 @@ package com.jmathanim.mathobjects;
 import com.jmathanim.Utils.Anchor;
 import com.jmathanim.Utils.ResourceLoader;
 import com.jmathanim.Utils.SVGUtils;
+import com.jmathanim.jmathanim.JMathAnimScene;
 import java.net.URL;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -56,7 +57,7 @@ public class SVGMathObject extends MultiShapeObject {
             SVGUtils svgu = new SVGUtils(resul.scene);
             svgu.importSVG(urlImage, resul);
         } catch (Exception ex) {
-            Logger.getLogger(SVGMathObject.class.getName()).log(Level.SEVERE, null, ex);
+            JMathAnimScene.logger.warn("File "+urlImage+ " not found. Empty SVGMathObject generated");
         }
         resul.getMp().setAbsoluteThickness(false);// Default behaviour
 

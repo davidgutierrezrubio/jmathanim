@@ -66,6 +66,19 @@ public class TransformMathExpression extends Animation {
     private final HashMap<Integer, TransformMathExpressionParameters> addInDstParameters;
 
     /**
+     * Static builder. Creates a new animation that transforms a math expression into another.
+     * Fine-tuning of the animation can be donde with the map, mapRange,
+     * defineDstGroup and defineOrigGroup commands.
+     *
+     * @param runTime Time in seconds
+     * @param latexTransformed Original math expression
+     * @param latexDestiny Destiny math expression
+     */
+    public static TransformMathExpression make(double runTime, MultiShapeObject latexTransformed, MultiShapeObject latexDestiny) {
+        return new TransformMathExpression(runTime, latexTransformed, latexDestiny);
+    }
+
+    /**
      * Creates a new animation that transforms a math expression into another.
      * Fine-tuning of the animation can be donde with the map, mapRange,
      * defineDstGroup and defineOrigGroup commands.

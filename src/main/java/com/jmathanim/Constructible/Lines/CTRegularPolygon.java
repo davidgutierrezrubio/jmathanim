@@ -73,6 +73,28 @@ public class CTRegularPolygon extends Constructible {
         return resul;
     }
 
+     /**
+     * Overloaded method. Creates a constructible regular polygon with a side given by 2 points and
+     * a number of side
+     *
+     * @param A First point of side
+     * @param B Second point of side
+     * @param nSides Number of sides
+     * @return The created object
+     */
+    public static CTRegularPolygon make(Point A, Point B, int nSides) {
+        ArrayList<CTPoint> vertices = new ArrayList<>();
+        vertices.add(CTPoint.make(A));
+        vertices.add(CTPoint.make(B));
+        for (int i = 0; i < nSides - 2; i++) {
+            vertices.add(CTPoint.make(new Point()));
+        }
+        CTRegularPolygon resul = makeFromPointList(vertices);
+        resul.rebuildShape();
+        return resul;
+    }
+    
+    
     private CTRegularPolygon(ArrayList<CTPoint> generatedPoints) {
         super();
         this.generatedPoints = generatedPoints;

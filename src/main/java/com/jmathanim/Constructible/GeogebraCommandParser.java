@@ -137,7 +137,6 @@ public class GeogebraCommandParser {
         return geogebraElements.containsKey(key);
     }
 
-
     public void registerGeogebraElement(String label, Constructible resul) {
         if (resul != null) {
             resul.setLabel(label);
@@ -258,35 +257,40 @@ public class GeogebraCommandParser {
         String label = el.getAttribute("label");
         //If this object is already added, do not process it
         //for example if it is the result of an intersection command
+        CTPoint resul;
         if (!geogebraElements.containsKey(label)) {
             // Get the coordinates
             Element elCoords = firstElementWithTag(el, "coords");
             double x = Double.valueOf(elCoords.getAttribute("x"));
             double y = Double.valueOf(elCoords.getAttribute("y"));
-            Element pointSize = firstElementWithTag(el, "pointSize");
-            double th = Double.valueOf(pointSize.getAttribute("val")) * 30;
-            // TODO: Add a z value here
-            CTPoint resul = CTPoint.make(Point.at(x, y));
-            resul.thickness(th);
-
-            Element pointStyle = firstElementWithTag(el, "pointStyle");
-            Integer dotStyleCode = Integer.valueOf(pointStyle.getAttribute("val"));
-            Point.DotSyle dotStyle;
-            switch (dotStyleCode) {
-                case 1:
-                    dotStyle = Point.DotSyle.CROSS;
-                    break;
-                case 3:
-                    dotStyle = Point.DotSyle.PLUS;
-                    break;
-                default:
-                    dotStyle = Point.DotSyle.CIRCLE;
-            }
-            resul.dotStyle(dotStyle);
-            resul.objectLabel = label;
-            registerGeogebraElement(label, resul);
-            JMathAnimScene.logger.debug("Imported point {}", label);
+            resul = CTPoint.make(Point.at(x, y));
+        } else {
+            resul = (CTPoint) geogebraElements.get(label);
         }
+
+        Element pointSize = firstElementWithTag(el, "pointSize");
+        double th = Double.valueOf(pointSize.getAttribute("val")) * 30;
+        // TODO: Add a z value here
+
+        resul.thickness(th);
+
+        Element pointStyle = firstElementWithTag(el, "pointStyle");
+        Integer dotStyleCode = Integer.valueOf(pointStyle.getAttribute("val"));
+        Point.DotSyle dotStyle;
+        switch (dotStyleCode) {
+            case 1:
+                dotStyle = Point.DotSyle.CROSS;
+                break;
+            case 3:
+                dotStyle = Point.DotSyle.PLUS;
+                break;
+            default:
+                dotStyle = Point.DotSyle.CIRCLE;
+        }
+        resul.dotStyle(dotStyle);
+        resul.objectLabel = label;
+        registerGeogebraElement(label, resul);
+        JMathAnimScene.logger.debug("Imported point {}", label);
     }
 
     void processImageElement(Element el, ZipFile zipFile) {
@@ -716,19 +720,20 @@ public class GeogebraCommandParser {
     }
 
     void processCircleArc(Element el) {
-         String label = getOutputArgument(el, 0);
+        String label = getOutputArgument(el, 0);
         MathObject[] objs = getArrayOfParameters(el);
         CTPoint A = (CTPoint) objs[0];
         CTPoint B = (CTPoint) objs[1];
         CTPoint C = (CTPoint) objs[2];
-        registerGeogebraElement(label, CTCircleArc.make(A, B,C));
+        registerGeogebraElement(label, CTCircleArc.make(A, B, C));
     }
-void processCircleSector(Element el) {
-      String label = getOutputArgument(el, 0);
+
+    void processCircleSector(Element el) {
+        String label = getOutputArgument(el, 0);
         MathObject[] objs = getArrayOfParameters(el);
         CTPoint A = (CTPoint) objs[0];
         CTPoint B = (CTPoint) objs[1];
         CTPoint C = (CTPoint) objs[2];
-        registerGeogebraElement(label, CTCIrcleSector.make(A, B,C));
+        registerGeogebraElement(label, CTCIrcleSector.make(A, B, C));
     }
 }
