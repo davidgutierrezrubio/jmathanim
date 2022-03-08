@@ -18,11 +18,35 @@
 package com.jmathanim.Cameras;
 
 /**
+ * Any object that implements this interface have parameters that can be passed
+ * to a camera. Camera parameters are defined by minimum and maximum x values
+ * and the vertical center.
  *
- * @author David
+ * @author David Gutierrez Rubio davidgutierrezrubio@gmail.com
  */
 public interface hasCameraParameters {
+
+    /**
+     * Returns the minimum, leftmost, horizontal value of viewable area, in math
+     * coordinates
+     *
+     * @return The minimum horizontal value
+     */
     public double getMinX();
+
+    /**
+     * Returns the maxium, rightmost, horizontal value of viewable area, in math
+     * coordinates
+     *
+     * @return The maxium horizontal value
+     */
     public double getMaxX();
+
+    /**
+     * Returns the vertical coordinate of the center of viewable area, in math
+     * coordinates
+     *
+     * @return The middle y coordinate
+     */
     public double getYCenter();
 }

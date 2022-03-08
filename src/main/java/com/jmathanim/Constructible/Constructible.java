@@ -37,14 +37,26 @@ public abstract class Constructible extends MathObject {
     private boolean isMathObjectFree;
     private String label;
 
-    public Constructible() {
+    protected Constructible() {
         isMathObjectFree = false;
     }
 
+    /**
+     * Returns the free object flag value
+     * @return True if drawed MathObject is not updated. False otherwise.
+     */
     public boolean isThisMathObjectFree() {
         return isMathObjectFree;
     }
 
+    /**
+     * Sets the behaviour of the graphical representation of this Constructible
+     * object. If true, drawed MathObject will not be updated and can be freely
+     * animated. Altering the drawed MathObject does not affect the
+     * Constructible parameters.
+     *
+     * @param isMathObjectFree Boolean flag
+     */
     public void freeMathObject(boolean isMathObjectFree) {
         this.isMathObjectFree = isMathObjectFree;
         rebuildShape();

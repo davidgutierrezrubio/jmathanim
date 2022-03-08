@@ -41,6 +41,7 @@ public class CTLaTeX extends Constructible {
      * @param anchor Anchor point
      * @param anchorType Anchor type. For example a LEFT anchor will put the
      * text so that its LEFT side is aligned with anchor point.
+     * @param gap Gap between anchor and text
      * @return The created object
      */
     public static CTLaTeX make(String text, CTPoint anchor, Anchor.Type anchorType, double gap) {
@@ -59,7 +60,7 @@ public class CTLaTeX extends Constructible {
     }
 
     @Override
-    public MathObject getMathObject() {
+    public LaTeXMathObject getMathObject() {
         return tex;
     }
 

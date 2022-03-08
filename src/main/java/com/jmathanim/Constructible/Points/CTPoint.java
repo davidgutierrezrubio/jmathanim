@@ -55,8 +55,8 @@ public class CTPoint extends Constructible {
     }
 
     protected CTPoint(Point A) {
-        this.pointToDraw = A;
-        this.v = A.v.copy();
+        this.pointToDraw = A.copy();
+        this.v = A.v;
     }
 
     @Override

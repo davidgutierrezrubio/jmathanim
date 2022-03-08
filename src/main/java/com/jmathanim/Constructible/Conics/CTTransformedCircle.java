@@ -44,26 +44,53 @@ public class CTTransformedCircle extends CTCircle {
         ROTATION, TRANSLATION, AXISMIRROR, CENTRALMIRROR
     };
     private transformType transType;
-    private final Line lineToDraw;
 
+    /**
+     * Creates a Constructible circle mirrored about a given axis
+     *
+     * @param circleToTransform Circle to be mirrored
+     * @param axis Mirror axis
+     * @return The created object
+     */
     public static CTTransformedCircle makeAxisReflectionCircle(CTCircle circleToTransform, CTLine axis) {
         CTTransformedCircle resul = new CTTransformedCircle(circleToTransform, axis, null, null, null);
         resul.transType = transformType.AXISMIRROR;
         return resul;
     }
 
+    /**
+     * Creates a Constructible circle mirrored about a given point
+     *
+     * @param circleToTransform Circle to be mirrored
+     * @param center Mirror center
+     * @return The created object
+     */
     public static CTTransformedCircle makePointReflectionCircle(CTCircle circleToTransform, CTPoint center) {
         CTTransformedCircle resul = new CTTransformedCircle(circleToTransform, null, center, null, null);
         resul.transType = transformType.CENTRALMIRROR;
         return resul;
     }
 
+    /**
+     * Creates a Constructible circle translated a given vector
+     *
+     * @param circleToTransform Circle to be translated
+     * @param vector Translation vector
+     * @return The created object
+     */
     public static CTTransformedCircle makeTranslatedCircle(CTCircle circleToTransform, CTVector vector) {
         CTTransformedCircle resul = new CTTransformedCircle(circleToTransform, null, null, vector, null);
         resul.transType = transformType.TRANSLATION;
         return resul;
     }
-
+ /**
+     * Creates a Constructible circle rotated arount a given point and angle
+     *
+     * @param circleToTransform Circle to be rotated
+     * @param center Rotation center
+     * @param angle Rotation angle
+     * @return The created object
+     */
     public static CTTransformedCircle makeRotatedCircle(CTCircle circleToTransform, CTPoint center, Scalar angle) {
         CTTransformedCircle resul = new CTTransformedCircle(circleToTransform, null, center, null, angle);
         resul.transType = transformType.ROTATION;
@@ -76,7 +103,6 @@ public class CTTransformedCircle extends CTCircle {
         this.axis = axis;
         this.center = center;
         this.translation = translation;
-        this.lineToDraw = Line.XAxis();
         this.angle = angle;
     }
 
@@ -118,7 +144,7 @@ public class CTTransformedCircle extends CTCircle {
                 tr = AffineJTransform.create2DRotationTransform(new Point(center.v), angle.value);
                 break;
             default:
-                tr=null;
+                tr = null;
         }
         final Vec vv = circleToTransform.getCenter().v;
         getCircleCenter().v.copyFrom(vv);

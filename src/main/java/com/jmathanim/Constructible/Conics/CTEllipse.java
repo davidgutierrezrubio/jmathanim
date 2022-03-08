@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2022 David
+ * Copyright (C) 2022 David Gutierrez Rubio
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -53,6 +53,21 @@ public class CTEllipse extends Constructible {
     }
 
     /**
+     * Overloaded method. Creates a constructible ellipse with given focus and a
+     * point of the ellipse
+     *
+     * @param focus1 First focus
+     * @param focus2 Second focus
+     * @param A A point from the ellipse
+     * @return The created constructible ellipse
+     */
+    public static CTEllipse make(Point focus1, Point focus2, Point A) {
+        CTEllipse resul = new CTEllipse(CTPoint.make(focus1), CTPoint.make(focus2), CTPoint.make(A));
+        resul.rebuildShape();
+        return resul;
+    }
+
+    /**
      * Creates a constructible ellipse with given focus and a point of the
      * ellipse
      *
@@ -88,12 +103,11 @@ public class CTEllipse extends Constructible {
         Point upperPoint = centerEllipse.add(centerToUpperPoint.mult(minAxis));
 
         //Now we "reset" the shape to draw to a unit circle and apply a linear transformation
-         for (int i = 0; i < ellipseToDraw.size(); i++) {
+        for (int i = 0; i < ellipseToDraw.size(); i++) {
             JMPathPoint get = ellipseToDraw.get(i);
             get.copyFrom(originalShape.get(i));
         }
-        
-        
+
         //Create the affine transformation by 3 points: center, right and upper
         AffineJTransform tr = AffineJTransform.createAffineTransformation(Point.origin(), Point.at(1, 0), Point.at(0, 1), centerEllipse, rightPoint, upperPoint, 1);
         tr.applyTransform(ellipseToDraw);

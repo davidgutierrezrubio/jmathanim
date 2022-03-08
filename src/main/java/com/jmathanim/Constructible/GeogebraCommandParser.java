@@ -17,7 +17,7 @@
  */
 package com.jmathanim.Constructible;
 
-import com.jmathanim.Constructible.Conics.CTCIrcleSector;
+import com.jmathanim.Constructible.Conics.CTCircleSector;
 import com.jmathanim.Constructible.Conics.CTCircle;
 import com.jmathanim.Constructible.Conics.CTCircleArc;
 import com.jmathanim.Constructible.Conics.CTEllipse;
@@ -67,7 +67,7 @@ import org.w3c.dom.Element;
  *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
-public class GeogebraCommandParser {
+class GeogebraCommandParser {
 
     protected final HashMap<String, Constructible> geogebraElements;
     protected final HashMap<String, String> expressions;
@@ -734,6 +734,6 @@ public class GeogebraCommandParser {
         CTPoint A = (CTPoint) objs[0];
         CTPoint B = (CTPoint) objs[1];
         CTPoint C = (CTPoint) objs[2];
-        registerGeogebraElement(label, CTCIrcleSector.make(A, B, C));
+        registerGeogebraElement(label, CTCircleSector.make(A, B, C));
     }
 }

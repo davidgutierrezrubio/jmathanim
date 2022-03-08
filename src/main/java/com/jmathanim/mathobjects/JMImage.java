@@ -21,6 +21,7 @@ import com.jmathanim.Renderers.FXRenderer.JavaFXRenderer;
 import com.jmathanim.Utils.AffineJTransform;
 import com.jmathanim.Utils.JMathAnimConfig;
 import com.jmathanim.Utils.Rect;
+import com.jmathanim.Utils.ResourceLoader;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import java.io.IOException;
 import java.io.InputStream;
@@ -40,21 +41,22 @@ public class JMImage extends AbstractJMImage {
 
     public static JMImage make(String filename) {
         try {
-            URL url=new URL(filename);
-             return new JMImage(url.openStream());
+            ResourceLoader rl = new ResourceLoader();
+            URL urlImage = rl.getResource(filename, "images");
+            return new JMImage(urlImage.openStream());
         } catch (MalformedURLException ex) {
-            JMathAnimScene.logger.error("Malformed url for image "+filename);
+            JMathAnimScene.logger.error("Malformed url for image " + filename);
         } catch (IOException ex) {
-            JMathAnimScene.logger.error("I/O error reading image "+filename);
+            JMathAnimScene.logger.error("I/O error reading image " + filename);
         }
-       return null;
+        return null;
     }
-    
+
     private final JavaFXRenderer renderer;
     private final InputStream stream;
 
     public JMImage(InputStream stream) {
-        this.stream=stream;
+        this.stream = stream;
         setCached(true);
         this.filename = stream.toString();
         renderer = (JavaFXRenderer) JMathAnimConfig.getConfig().getRenderer();

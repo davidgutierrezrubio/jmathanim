@@ -32,6 +32,24 @@ public class BoxLayout extends AbstractBoxLayout {
 
     int rowSize;
 
+    /**
+     * Creates a new BoxLayout. The default direction is RIGHT_UP.
+     *
+     * @param rowSize Number of elements per row
+     * @param colGap Column gap
+     * @param rowGap Row gap
+     * @return The created layout
+     */
+    public static BoxLayout make(int rowSize, double colGap, double rowGap) {
+        return new BoxLayout(rowSize, Direction.RIGHT_UP, colGap, rowGap);
+    }
+
+    /**
+     * Creates a new BoxLayout, with no gaps, and direction RIGHT_UP
+     *
+     * @param rowSize Number of elements per row
+     * @return The created layout
+     */
     public static BoxLayout make(int rowSize) {
         return new BoxLayout(rowSize);
     }
