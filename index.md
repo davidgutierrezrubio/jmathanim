@@ -9,6 +9,10 @@ You can also follow my [Youtube](https://www.youtube.com/channel/UCeczwEqSrAwZbP
 # Gallery
 [Here you can find some examples made with this library ](Gallery/Gallery.html)
 
+# Manual
+
+[A basic user's manual can be found here](manual/index.html).
+
 # What's new?
 
 Version 0.9.5-SNAPSHOT (08/03/2022)
@@ -75,9 +79,6 @@ Currently, the library is tested on
 
 # Installing
 This library is [Maven](https://maven.apache.org/) based, which means it is very easy, using a modern Java IDE, to create a project that automatically downloads all needed dependencies to run your animations. A detailed step-by-step tutorial to create a project that uses JMathAnim is detailed [here](manual\00_Installing\Installing.html).
-
-# Manual
-[A basic user's manual can be found here](manual/index.html).
 
 # Limitations
 Right now, the library is still in development, so there may be bugs and missing features.
