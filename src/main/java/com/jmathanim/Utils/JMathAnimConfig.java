@@ -26,6 +26,7 @@ import com.jmathanim.Styling.PaintStyle;
 import com.jmathanim.Styling.Stylable;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.MathObject;
+import com.jmathanim.mathobjects.Point;
 import java.io.File;
 import java.net.URL;
 import java.util.HashMap;
@@ -126,12 +127,12 @@ public class JMathAnimConfig {
      */
     public float shadowAlpha = .5f;
     private URL backGroundImage = null;
-    
+
     /**
      * If true, the frame number will be superimposed on screen, for debugging
      * purposes
      */
-    public boolean showFrameNumbers=false;
+    public boolean showFrameNumbers = false;
 
     public void setDrawShadow(boolean drawShadow) {
         this.drawShadow = drawShadow;
@@ -241,15 +242,23 @@ public class JMathAnimConfig {
      * Set default values, in case no xml config file is loaded
      */
     public final void setDefaultMP() {
-        MODrawProperties defaultMP = new MODrawProperties();
         // Default, boring values
+        //in case no style.xml file has been loaded
+        MODrawProperties defaultMP = new MODrawProperties();
         defaultMP.setDrawColor(JMColor.WHITE);
         defaultMP.setFillColor(JMColor.GRAY);
         defaultMP.setFillAlpha(0);// No filling by default
-        defaultMP.thickness = 1d;
+        defaultMP.thickness = 4d;
         defaultMP.dashStyle = MODrawProperties.DashStyle.SOLID;
         defaultMP.absoluteThickness = false;
         styles.put("DEFAULT", defaultMP);
+
+        MODrawProperties defaultDotMP = new MODrawProperties();
+        defaultDotMP.setDrawColor(JMColor.WHITE);
+        defaultDotMP.setFillColor(JMColor.GRAY);
+        defaultDotMP.setDotStyle(Point.DotSyle.CIRCLE);
+        defaultDotMP.thickness = 30d;
+        styles.put("DOTDEFAULT", defaultMP);
 
         MODrawProperties latexDefaultMP = defaultMP.copy();
         latexDefaultMP.setFillColor(JMColor.WHITE);
