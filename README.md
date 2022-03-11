@@ -56,7 +56,7 @@ If you are satisfied with the result and want to create a movie, you may add the
 ```java
     @Override
     public void setupSketch() {
-    	conf.setCreateMovie(true);
+    	config.setCreateMovie(true);
     }
 ```
 By default, it will create a movie into a subfolder of the project called `media`, with the name `<name_of_my_class>_widthInPX.mp4`.
@@ -71,6 +71,7 @@ This library uses the following 3rd party libraries:
 
 * [JavaFX](https://openjfx.io/) For the graphics part.
 * [Xuggler](http://www.xuggle.com/xuggler/) For creating videos.
+* [JLaTeXMath](https://github.com/opencollab/jlatexmath) For creating the LaTeX texts and mathematical expressions.
 * [Logback Project](http://logback.qos.ch/) For logging purposes.
 
 
