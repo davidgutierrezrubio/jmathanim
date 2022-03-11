@@ -18,7 +18,7 @@ public void runSketch() throws Exception {
     for (JMPathPoint p:ellipse.getPath()){
         addJMPathPointToScene(p);
     }
-    add(ellipse.thickness(5));
+    add(ellipse.thickness(8)));
     waitSeconds(5);//Time for a screenshot
 }
 
@@ -170,9 +170,9 @@ JMPathPoint newJmp3 = c2.getPath().insertJMPointAt(9, .9);
 //The JMPathPoints don't have a draw() method so
 //they will not appear on the screen
 add(
-    newJmp1.p.thickness(5).drawColor("red"),
-    newJmp2.p.thickness(5).drawColor("green"),
-    newJmp3.p.thickness(5).drawColor("blue")
+    newJmp1.p.thickness(20).drawColor("red"),
+    newJmp2.p.thickness(20).drawColor("green"),
+    newJmp3.p.thickness(20).drawColor("blue")
 );
 add(c, c2);
 camera.centerAtAllObjects();
@@ -194,7 +194,7 @@ Note how the indices change (the index 0 is hidden by the indices 4 and 7 respec
 JMathAnim allows boolean operations union, intersection and substract for `Shape`objects. These methods relay on the boolean methods of the JavaFX library.
 
 ```java
-Shape A = Shape.circle().thickness(4);
+Shape A = Shape.circle().thickness(8);
 Shape B = A.copy().shift(1, 0);
 Shape C = A.copy().shift(.5, -1);
 Shape intersect = A.copy().intersect(B).intersect(C).style("solidRed");
@@ -260,7 +260,7 @@ You can directly extract the subshape with the `Shape` method `getSubShape(doubl
 Shape F = LaTeXMathObject.make("F").get(0).center().setHeight(2);
 Shape partialF=F.getSubShape(.2, .76);
 F.fillColor("violet").fillAlpha(.5);
-partialF.style("default").thickness(5).drawColor("olive");//Load default style to clear the style latexdefault
+partialF.style("default").thickness(8).drawColor("olive");//Load default style to clear the style latexdefault
 add(c,c2);
 waitSeconds(3);
 ```

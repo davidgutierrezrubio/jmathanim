@@ -5,7 +5,7 @@
 Suppose you want a square to perform a shift and rotation at the same time. The first approach may be to play at the same this animations. However if you try with a code like this:
 
 ```java
-Shape sq = Shape.square().fillColor("seagreen").thickness(3).center();
+Shape sq = Shape.square().fillColor("seagreen").thickness(6).center();
 Animation shift = Commands.shift(5, 1, 0, sq);
 Animation rotate = Commands.rotate(5, PI/2, sq);
 playAnimation(shift, rotate);
@@ -15,7 +15,7 @@ waitSeconds(3);
 You'll obtain a square rotating, but not shifting at all. The reason is that each animation saves the state of the object in the `initialize` method and restore it at each call of `doAnim` where the changes are done. So, the restore state call of the `rotate` animation erases the changes made by the `shift` animation. The solution is quite simple, as every animation has the method `.setUseObjectState` that activates or deactivates the saving and restoring of states. In this case, as the `rotate` animation is executed each frame after the `shift`, we let this one to manage states, and deactivates it for the `rotate` animation.
 
 ```java
-Shape sq = Shape.square().fillColor("seagreen").thickness(3).center();
+Shape sq = Shape.square().fillColor("seagreen").thickness(6).center();
 Animation shift = Commands.shift(5, 1, 0, sq);
 Animation rotate = Commands.rotate(5, -PI/2, sq).setUseObjectState(false);
 playAnimation(shift, rotate);
@@ -38,11 +38,11 @@ The `.setJumpHeight(double height)` adds a jump effect to the object(s) being an
 Shape hexagon = Shape.regularPolygon(6)
     .scale(.25)
     .moveTo(Point.relAt(.25, .5))
-    .fillColor("steelblue").thickness(3);
+    .fillColor("steelblue");
 Shape triangle = Shape.regularPolygon(3)
     .scale(.5)
     .moveTo(Point.relAt(.75, .5))
-    .fillColor("orange").thickness(3);
+    .fillColor("orange");
 FlipTransform anim = new FlipTransform(5, FlipTransform.FlipType.HORIZONTAL, hexagon, triangle);
 anim.addJumpEffect(.5); //adds a jump effect
 playAnimation(anim);
@@ -75,7 +75,7 @@ Here you can see the different paths:
 The `.setScaleEffect(double scale)` adds a back and forth scale effect:
 
 ```java
-Shape pol = Shape.regularPolygon(6).scale(.25).center().fillColor("steelblue").thickness(3);
+Shape pol = Shape.regularPolygon(6).scale(.25).center().fillColor("steelblue");
 ShiftAnimation anim = Commands.shift(3, 1,0, pol);//shifts pol with vector (1,0)
 anim.addScaleEffect(2); //adds a scale effect
 playAnimation(anim);
@@ -90,7 +90,7 @@ playAnimation(anim);
 The `.setAlphaScaleEffect(double alphaScale)` adds a back and forth alpha effect:
 
 ```java
-Shape pol = Shape.regularPolygon(6).scale(.25).center().fillColor("steelblue").thickness(3);
+Shape pol = Shape.regularPolygon(6).scale(.25).center().fillColor("steelblue");
 ShiftAnimation anim = Commands.shift(5, 1, 0, pol);//shifts pol with vector (1,0)
 anim.addAlphaScaleEffect(.2);
 playAnimation(anim);
@@ -103,7 +103,7 @@ playAnimation(anim);
 The `.setRotateEffect(int numTurns)` adds a rotation, making the specified number of turns.
 
 ```java
-Shape pol = Shape.regularPolygon(6).scale(.25).center().fillColor("steelblue").thickness(3);
+Shape pol = Shape.regularPolygon(6).scale(.25).center().fillColor("steelblue");
 ShiftAnimation anim = Commands.shift(3, 1,0, pol);//shifts pol with vector (1,0)
 anim.addRotationEffect(-1); //Make a complete turn clockwise
 playAnimation(anim);
@@ -117,11 +117,11 @@ And, in case you are wondering, yes, these effects can be nested:
 Shape square = Shape.square()
     .scale(.25)
     .moveTo(Point.relAt(.25, .5))
-    .fillColor("steelblue").thickness(3);
+    .fillColor("steelblue");
 Shape circle = Shape.circle()
     .scale(.25)
     .moveTo(Point.relAt(.75, .5))
-    .fillColor("firebrick").thickness(3);
+    .fillColor("firebrick").;
 Transform anim = new Transform(5, square, circle);
 anim.addRotationEffect(1)
     .addScaleEffect(.5)
@@ -147,7 +147,7 @@ All methods to add effects have overloaded methods in the  `ShiftAnimation` clas
 ```java
 MathObjectGroup squares = MathObjectGroup.make();
 for (int n = 0; n < 10; n++) {
-    squares.add(Shape.square().scale(.1).thickness(3).fillColor(JMColor.random()));
+    squares.add(Shape.square().scale(.1).fillColor(JMColor.random()));
 }
 squares.setLayout(MathObjectGroup.Layout.RIGHT,.1).center();
 
@@ -172,7 +172,7 @@ This effect can be applied to shifting-type animations when several objects are 
 ```java
 MathObjectGroup smallSquaresGroup = MathObjectGroup.make();
 for (int n = 0; n < 10; n++) {
-    smallSquaresGroup.add(Shape.square().scale(.1).thickness(3).fillColor(JMColor.random()));
+    smallSquaresGroup.add(Shape.square().scale(.1).fillColor(JMColor.random()));
 }
 Shape centralSquare = Shape.square().scale(.25).stackToScreen(Anchor.Type.LOWER, .1, .1);
 smallSquaresGroup.setLayout(centralSquare, MathObjectGroup.Layout.LEFT, 0);
@@ -233,7 +233,7 @@ public void runSketch() {
 
 private MathObjectGroup drawGraphFor(DoubleUnaryOperator lambda, String name) {
     MathObjectGroup resul = MathObjectGroup.make();
-    FunctionGraph fg = FunctionGraph.make(lambda, 0, 1).thickness(3).drawColor("darkblue");
+    FunctionGraph fg = FunctionGraph.make(lambda, 0, 1).thickness(8).drawColor("darkblue");
     LaTeXMathObject text = LaTeXMathObject.make(name).scale(.5).stackTo(fg, Anchor.Type.LOWER, .2);
     Shape segX = Shape.segment(Point.at(-.1, 0), Point.at(1.1, 0));
     Shape segY = segX.copy().rotate(Point.origin(), .5 * PI);
@@ -314,7 +314,7 @@ public void runSketch() {
     DoubleUnaryOperator shiftLambda = UsefulLambdas.bounce1();
 
     //Graph of the shift lambda
-    FunctionGraph fgShift = FunctionGraph.make(shiftLambda, 0, 1).drawColor("brown").thickness(4);
+    FunctionGraph fgShift = FunctionGraph.make(shiftLambda, 0, 1).drawColor("brown").thickness(6);
 
     //This is an updateable point permanently in the graph of the function
     PointOnFunctionGraph pointFgShift = new PointOnFunctionGraph(0, fgShift)
@@ -332,7 +332,7 @@ public void runSketch() {
 
     //We do the same for the graph of the rotate lambda
     FunctionGraph fgRotate = FunctionGraph.make(rotateLambda, 0, 1)
-            .drawColor("orange").thickness(4);
+            .drawColor("orange").thickness(6);
     PointOnFunctionGraph pointFgRotate = new PointOnFunctionGraph(0, fgRotate)
             .drawColor("darkred").thickness(40);
     MathObject legendRotate = LaTeXMathObject.make("rotate")
@@ -425,7 +425,7 @@ This `WaitAnimation` does what it says. It simply waits for specified amount of 
 The `AnimationGroup` plays all the animations at the same. It finishes when the last one has ended. The example of the combined shift and rotate can be written as
 
 ```java
-Shape sq = Shape.square().fillColor("seagreen").thickness(3).center();
+Shape sq = Shape.square().fillColor("seagreen").thickness(7).center();
 Animation shift = Commands.shift(5, 1, 0, sq);
 Animation rotate = Commands.rotate(5, -PI/2, sq).setUseObjectState(false);
 AnimationGroup ag=new AnimationGroup(shift,rotate);
@@ -459,7 +459,7 @@ waitSeconds(1);
 The `Concatenate`class allows to play animations in sequence
 
 ```java
-Shape sq = Shape.square().fillColor("seagreen").thickness(3).center();
+Shape sq = Shape.square().fillColor("seagreen").thickness(7).center();
 Animation shift = Commands.shift(2, 1, 0, sq);
 Animation rotate = Commands.rotate(2, -PI/2, sq);
 Concatenate c=new Concatenate(shift,rotate);

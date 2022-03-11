@@ -41,7 +41,7 @@ The basic transformations also have their animated versions. They are defined as
 A gif (and its generating code) is worth a thousand words:
 
 ``` java
-Shape sq=Shape.square().fillColor("#87556f").thickness(2);
+Shape sq=Shape.square().fillColor("#87556f");
 //Animates a moving square, with 3 seconds of duration
 Animation shiftAnim = Commands.shift(3, Vec.to(.75,-.5), sq);
 playAnimation(shiftAnim);
@@ -55,7 +55,7 @@ We have performed a simple animation defining it in the variable `shiftAnim` and
 This animation and many other have a shorter access through the `play` object. The following code produces the same result:
 
 ``` java
-Shape sq=Shape.square().fillColor("#87556f").thickness(2);
+Shape sq=Shape.square().fillColor("#87556f");
 play.shift(3, Vec.to(.75,-.5), sq);
 waitSeconds(1);
 ```
@@ -142,7 +142,7 @@ You can change the values of these variables as you need. Here is a demo animati
 
 ``` java
 LaTeXMathObject text;
-Shape sq = Shape.square().fillColor("#87556f").thickness(2).center();//
+Shape sq = Shape.square().fillColor("#87556f").center();//
 text = LaTeXMathObject.make("{\\tt play.fadeIn(sq)}").stackToScreen(Anchor.Type.LOWER, .1, .1);
 add(text);
 play.fadeIn(sq);
@@ -335,7 +335,7 @@ The `MoveAlongPath` animations move an object along a specified path. You can pr
 In this example, we show 2 squares moving along  a circle:
 
 ```java
-Shape c = Shape.circle().fillColor("orange").thickness(3);
+Shape c = Shape.circle().fillColor("orange");
 Shape a = Shape.square().scale(.3).fillColor("darkblue").fillAlpha(.7);
 Shape b = a.copy();
 add(c, a, b);
@@ -358,7 +358,7 @@ Forcing a specified strategy may lead to errors in some cases, as some methods a
 Letâ€™s show it with an example. We use the short version with the `play` object:
 
 ``` java
-Shape sq=Shape.square().fillColor("#87556f").thickness(2).center();
+Shape sq=Shape.square().fillColor("#87556f").center();
 play.showCreation(2,sq);//Creates sq in 2 seconds
 //The other way to do this:
 //ShowCreation sc=new ShowCreation(2, sq);
@@ -405,8 +405,8 @@ as thickness and color.
 The precise method of transform depends on the type of source and destination objects.  For example, in the previous case, a point-by-point interpolation was chosen. However, if both shapes are regular polygons with the same number of sides, an isomorphic transform is chosen. We will show another example, not using the "long" form given by the `play` object:
 
 ``` java
-Shape pentagon = Shape.regularPolygon(5).thickness(3).scale(.5).shift(-1,-1);
-Shape pentagonDst = Shape.regularPolygon(5).thickness(3).scale(.8).shift(.5,-.5).rotate(45*DEGREES);
+Shape pentagon = Shape.regularPolygon(5).scale(.5).shift(-1,-1);
+Shape pentagonDst = Shape.regularPolygon(5).scale(.8).shift(.5,-.5).rotate(45*DEGREES);
 Transform tr = new Transform(3, pentagon, pentagonDst);
 playAnimation(tr);
 waitSeconds(1);
@@ -562,13 +562,13 @@ Axes axes = new Axes();
 axes.generatePrimaryXTicks(-2, 2, 1);
 axes.generatePrimaryYTicks(-2, 2, 1);
 add(axes);
-axes.thickness(3).drawColor("darkblue").layer(1);
+axes.thickness(6).drawColor("darkblue").layer(1);
 
 //Create a cartesian grid, a group of horizontal and vertical lines.
 MathObjectGroup grid = new MathObjectGroup();
 for (int i = -5; i < 5; i++) {
-    grid.add(Line.XAxis().shift(0, .5 * i).thickness(i % 2 == 0 ? 3 : 1));
-    grid.add(Line.YAxis().shift(.5 * i, 0).thickness(i % 2 == 0 ? 3 : 1));
+    grid.add(Line.XAxis().shift(0, .5 * i).thickness(i % 2 == 0 ? 4 : 2));
+    grid.add(Line.YAxis().shift(.5 * i, 0).thickness(i % 2 == 0 ? 4 : 2));
 }
 //Creates a B glyph, center it, make it height 1
 LaTeXMathObject bigB = LaTeXMathObject.make("B").center().setHeight(1).style("solidorange").fillAlpha(.5);
@@ -600,13 +600,13 @@ The animation `Commands.reflection(double runtime, Point A, Point B, MathObjectâ
 MathObjectGroup grid = new MathObjectGroup();
 //Create a grid
 for (int i = -15; i < 15; i++) {
-    grid.add(Line.XAxis().shift(0, .5 * i).thickness(i % 2 == 0 ? 3 : 1));
-    grid.add(Line.YAxis().shift(.5 * i, 0).thickness(i % 2 == 0 ? 3 : 1));
+    grid.add(Line.XAxis().shift(0, .5 * i).thickness(i % 2 == 0 ? 4 : 2));
+    grid.add(Line.YAxis().shift(.5 * i, 0).thickness(i % 2 == 0 ? 4 : 2));
 }
 
 //A pentagon
 Shape reg = Shape.regularPolygon(5)
-    .center().thickness(5)
+    .center()
     .fillColor("steelblue");
 //A text
 MathObject text = LaTeXMathObject.make("Pentagon")

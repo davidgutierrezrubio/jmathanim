@@ -110,11 +110,11 @@ registerUpdateable(new CameraAlwaysAdjusting(camera, .1, .1));
 ## Stacks permanently an object to another
 
 ```java
-Shape circ1=Shape.circle().scale(.3).fillColor(JMColor.BLUE).thickness(3);
+Shape circ1=Shape.circle().scale(.3).fillColor(JMColor.BLUE).thickness(8);
 Shape circ2=circ1.copy();
 Shape circ3=circ1.copy();
 Shape circ4=circ1.copy();
-Shape sq=Shape.square().center().thickness(4);
+Shape sq=Shape.square().center().thickness(8);
 add(circ1,circ2,circ3,circ4);
         
 //Stacks permantently the LEFT of circ1 with the RIGHT of sq
@@ -140,7 +140,7 @@ waitSeconds(3);
 A path that is always the image of another path, using an affine transformation.
 
 ```java
-Shape sq = Shape.square().fillColor("seagreen").thickness(3);//The original path
+Shape sq = Shape.square().fillColor("seagreen").thickness(6);//The original path
 Point A = Point.at(0, 0); //A maps to D
 Point B = Point.at(1, 0); //B maps to E
 Point C = Point.at(0, 1); //C maps to F
@@ -150,7 +150,7 @@ Point F = Point.at(1.75, .75).dotStyle(DotSyle.CROSS);
 
 AffineJTransform transform = AffineJTransform.createAffineTransformation(A, B, C, D, E, F, 1);
 Shape sqTransformed = new TransformedJMPath(sq, transform);//The transformed path
-sqTransformed.fillColor("steelblue").thickness(3);
+sqTransformed.fillColor("steelblue").thickness(6);
 add(sqTransformed, sq, A, B, C, D, E, F);
 
 camera.adjustToAllObjects();
@@ -169,12 +169,11 @@ double circleRadius = .25;
 Shape circle = Shape.circle()
     .scale(circleRadius)
     .fillColor("royalblue")
-    .thickness(3)
     .stackToScreen(Anchor.Type.LEFT)
     .rotate(-90 * DEGREES);//Rotate it so that point 0 touches the floor
 
 //By default a circle shape has 4 point, so point 0 and 2 make a diameter
-Shape diameter = Shape.segment(circle.getPoint(0), circle.getPoint(2)).layer(1).thickness(2);
+Shape diameter = Shape.segment(circle.getPoint(0), circle.getPoint(2)).layer(1).thickness(3);
 //Note that, as diameter is created with point instances of the Shape circle, we don't need to animate diameter, only circle
 
 //The "floor". An horizontal line that we put right under the circle

@@ -254,15 +254,15 @@ waitSeconds(5);
 There is also a more general way to define an affine transform using `createAffineTransformation(Point A, Point B, Point C, Point D, Point E, Point F, double lambda)`. It returns the (only) affine transform that maps the points (A,B,C) into (D,E,F), with the `lambda` interpolation parameter as in the previous methods. Here’s an example:
 
 ``` java
-Shape sq = Shape.square().drawColor("brown").thickness(6);
+Shape sq = Shape.square().drawColor("brown").thickness(4);
 Shape circ = Shape.circle().scale(.5).shift(.5, .5).fillColor("orange").fillAlpha(.1);//A circle inscribed into the square
 //We create the points with layer(1) so that the draw over the square and circles (by default in layer 0)
 Point A = Point.at(0, 0).drawColor("darkblue").layer(1); 
 Point B = Point.at(1, 0).drawColor("darkblue").layer(1); 
 Point C = Point.at(0, 1).drawColor("darkblue").layer(1); 
-Point D = Point.at(1.5, -.5).dotStyle(DotSyle.PLUS).thickness(2).drawColor("darkgreen");
-Point E = Point.at(2, 0).dotStyle(DotSyle.PLUS).thickness(2).drawColor("darkgreen");
-Point F = Point.at(1.75, .75).dotStyle(DotSyle.PLUS).thickness(2).drawColor("darkgreen");
+Point D = Point.at(1.5, -.5).dotStyle(DotSyle.PLUS).thickness(6)).drawColor("darkgreen");
+Point E = Point.at(2, 0).dotStyle(DotSyle.PLUS).thickness(6).drawColor("darkgreen");
+Point F = Point.at(1.75, .75).dotStyle(DotSyle.PLUS).thickness(6).drawColor("darkgreen");
 add(sq, circ, A, B, C, D, E, F);
 
 for (double alpha = 0; alpha <= 1; alpha += .2) {
