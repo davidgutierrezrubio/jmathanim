@@ -1002,6 +1002,20 @@ public class JMPath implements Stateable, Boxable, Iterable<JMPathPoint> {
     }
 
     /**
+     * Closes the path and removes redundant points if necessary
+     */
+    public void closePath() {
+        if (isEmpty()) {
+            return;//Nothing to close
+        }
+        final JMPathPoint jmp = jmPathPoints.get(0);
+        jmp.isThisSegmentVisible = true;
+        jmp.cpEnter.v.copyFrom(jmp.p.v);
+        jmPathPoints.get(-1).cpExit.v.copyFrom(jmPathPoints.get(-1).p.v);
+        distille();
+    }
+
+    /**
      * Inserts a new JMPathPoint right after a given one, interpolating
      * properly.
      *
