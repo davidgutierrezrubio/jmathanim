@@ -147,15 +147,11 @@ text = LaTeXMathObject.make("{\\tt play.fadeIn(sq)}").stackToScreen(Anchor.Type.
 add(text);
 play.fadeIn(sq);
 waitSeconds(1);
-remove(text);
-text = LaTeXMathObject.make("{\\tt play.scale(1,1.5,1,sq)}").stackToScreen(Anchor.Type.LOWER, .1, .1);
-add(text);
-play.scale(1,1.5,1,sq);
+text.setLaTeX("{\\tt play.scale(1,1.5,1,sq)}");
+play.scale(1, 1.5, 1, sq);
 waitSeconds(1);
-remove(text);
-text = LaTeXMathObject.make("{\\tt play.shrinkOut(1,45*DEGREES, sq)}").stackToScreen(Anchor.Type.LOWER, .1, .1);
-add(text);
-play.shrinkOut(1,45*DEGREES, sq);
+text.setLaTeX("{\\tt play.shrinkOut(1,45*DEGREES, sq)}");
+play.shrinkOut(1, 45 * DEGREES, sq);
 waitSeconds(1);
 ```
 
@@ -370,15 +366,17 @@ waitSeconds(1);
 
 In the case of a simple shape like this, the `SIMPLE_SHAPE_CREATION` strategy is used.
 
-In case of `MultiShape` objects, which include `LaTeXMathObject` and `SVGObject`, the strategy `FIRST_DRAW_AND_THEN_FILL` is chosen, where, as its name
-suggest, first draw the outline and then fill the shape.
+Another example: This time, we will show the creation of an equation, which is a `MultiShapeObject`. Note that all shapes are not created at the same time, but a small delay is added:
 
 ``` java
 LaTeXMathObject text=LaTeXMathObject.make("$a^2+b^2=c^2$").center().scale(3);
-play.showCreation(text);
+play.showCreation(2,text);
+waitSeconds(1);
 ```
 
 ![showCreation2](showCreation2.gif)
+
+If you specify a bigger time (10 seconds or so) you can see the details of the animation, first drawing the contour and then filling the glyphs.
 
 There are specific creation strategies for objects like axes, arrows or delimiters.
 
@@ -448,35 +446,9 @@ Notice something strange? The transform is done, but the intermediate steps are 
 
 <img src="TransformStrategies02.gif" alt="TransformStrategies02" style="zoom:67%;" />
 
-## Transform optimizations
-
-Apart from different transform strategies, this class also allows different previous-to-transform optimization strategies (well, right now it only has one), listed in the enum `OptimizeMethod`.
-
-By default, a transform animations converts the n-th point of Shape A into the n-th point of Shape B. The `SIMPLE_CONNECTED_PATHS` optimization aligns the paths cycling the transformed object, so that the sum of the distances between points of A from the points of B is minimal, ensuring a cleaner point-to-point transform from A to B. The following code compares the same transformation with and without
-optimization:
-
-``` java
-Shape circle = Shape.circle().scale(-1, 1).scale(.6).shift(-.5, .3);
-Shape circle2 = circle.copy();
-Shape square = Shape.square().shift(.5, 0).scale(.6).rotate(45*DEGREES);
-add(LaTeXMathObject.make("With optimization").stackToScreen(Anchor.Type.LOWER, .1, .1));
-Transform tr = new Transform(3, circle, square);
-playAnimation(tr);
-waitSeconds(1);
-play.fadeOutAll();
-add(LaTeXMathObject.make("Without optimization").stackToScreen(Anchor.Type.LOWER, .1, .1));
-Transform tr2 = new Transform(3, circle2, square);
-tr2.optimizePaths(false);
-playAnimation(tr2);
-waitSeconds(1);
-play.fadeOutAll();
-```
-
-![transform3](transform3.gif)
-
 ## Flip transforms
 
-A simpler transform animation, which works on any `MathObject` instance is `FlipTransform`. This animation scales the first object to 0 horizontally or vertically (or both) and then scales the second object from 0 to 1, giving the effect of flipping. The flip can be `HORIZONTAL`, `VERTICAL` or `BOTH`.
+A simpler transform animation which works on any `MathObject` instance is `FlipTransform`. This animation scales the first object to 0 horizontally or vertically (or both) and then scales the second object from 0 to 1, giving the effect of flipping. The flip can be `HORIZONTAL`, `VERTICAL` or `BOTH`.
 
 ```java
 LaTeXMathObject text = LaTeXMathObject.make("JMathAnim");
