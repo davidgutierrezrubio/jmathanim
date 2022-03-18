@@ -15,9 +15,10 @@ You can also follow my [Youtube](https://www.youtube.com/channel/UCeczwEqSrAwZbP
 
 # What's new?
 
-Version 0.9.5-SNAPSHOT (08/03/2022)
+Version 0.9.5-SNAPSHOT (18/03/2022)
 
 * Preparing for release of version 0.9.5! 
+* Added first version of `CrossMathElements`animation, that can be used to cross single or multiple elements of a formula.
 * Polished `Constructible` objects. Update levels are now computed at creation time, increasing the performance.
 * Added more `Constructible` objects, fixed bugs and bugs, and improved Geogebra files import.
 * Added first version of Constructible objects, like `CTLine`, `CTCircle`or `CTIntersectionPoint`.
