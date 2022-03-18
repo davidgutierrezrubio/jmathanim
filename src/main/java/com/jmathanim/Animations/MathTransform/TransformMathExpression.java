@@ -39,6 +39,28 @@ import java.util.List;
  */
 public class TransformMathExpression extends Animation {
 
+    private RemoveType defaultRemovingStyle;
+    private AddType defaultAddingStyle;
+
+    /**
+     * Sets the default removing style. Any item that has not defined its
+     * removing style will use this. Style by default is SHRINK_OUT.
+     *
+     * @param defaultRemovingStyle
+     */
+    public void setDefaultRemovingStyle(RemoveType defaultRemovingStyle) {
+        this.defaultRemovingStyle = defaultRemovingStyle;
+    }
+/**
+     * Sets the default adding style. Any item that has not defined its
+     * removing style will use this. Style by default is GROW_IN.
+     *
+     * @param defaultAddingStyle
+     */
+    public void setDefaultAddingStyle(AddType defaultAddingStyle) {
+        this.defaultAddingStyle = defaultAddingStyle;
+    }
+
     public enum AddType {
         FADE_IN, GROW_IN, MOVE_IN_UP, MOVE_IN_LEFT, MOVE_IN_RIGHT, MOVE_IN_DOWN
     }
@@ -66,9 +88,9 @@ public class TransformMathExpression extends Animation {
     private final HashMap<Integer, TransformMathExpressionParameters> addInDstParameters;
 
     /**
-     * Static builder. Creates a new animation that transforms a math expression into another.
-     * Fine-tuning of the animation can be donde with the map, mapRange,
-     * defineDstGroup and defineOrigGroup commands.
+     * Static builder. Creates a new animation that transforms a math expression
+     * into another. Fine-tuning of the animation can be donde with the map,
+     * mapRange, defineDstGroup and defineOrigGroup commands.
      *
      * @param runTime Time in seconds
      * @param latexTransformed Original math expression
@@ -100,6 +122,10 @@ public class TransformMathExpression extends Animation {
         trParTransformParameters = new HashMap<>();
         removeInOrigParameters = new HashMap<>();
         addInDstParameters = new HashMap<>();
+
+        defaultAddingStyle = AddType.GROW_IN;
+        defaultRemovingStyle = RemoveType.SHRINK_OUT;
+
         for (int n = 0; n < this.latexTransformed.size(); n++) {
             removeInOrigParameters.put(n, new TransformMathExpressionParameters());
         }
@@ -170,6 +196,10 @@ public class TransformMathExpression extends Animation {
         Shape sh = latexTransformed.get(n);
         addObjectsToscene(sh);
         AnimationGroup group = new AnimationGroup();
+        if (par.getRemovingStyle() == null) {
+            par.setRemovingStyle(defaultRemovingStyle);
+        }
+
         switch (par.getRemovingStyle()) {
             case FADE_OUT:
                 group.add(Commands.fadeOut(runTime, sh).setLambda(t -> Math.sqrt(t)));
@@ -201,6 +231,11 @@ public class TransformMathExpression extends Animation {
 
     private void createAddingSubAnimation(Shape sh, TransformMathExpressionParameters par) {
         AnimationGroup group = new AnimationGroup();
+
+        if (par.getAddingStyle() == null) {
+            par.setAddingStyle(defaultAddingStyle);
+        }
+
         switch (par.getAddingStyle()) {
             case FADE_IN:
                 anim.add(Commands.fadeIn(runTime, sh).setLambda(lambda));

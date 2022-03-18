@@ -268,10 +268,10 @@ public class Rect implements Stateable, Boxable {// TODO: Adjust this to 3D coor
      * @return A new {@link Rect} with the union of both rects
      */
     public static Rect union(Rect a, Rect b) {
-        if (a == null) {
+        if ((a == null)||(a instanceof EmptyRect)) {
             return b;
         }
-        if (b == null) {
+        if ((b == null)||(b instanceof EmptyRect)) {
             return a;
         }
         return new Rect(Math.min(a.xmin, b.xmin), Math.min(a.ymin, b.ymin), Math.min(a.zmin, b.zmin),

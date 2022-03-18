@@ -374,12 +374,12 @@ public abstract class Animation {
         }
     }
 
-    protected void removeObjectsFromScene(ArrayList<MathObject> removeThisAtTheEnd) {
-        removeObjectsFromScene(removeThisAtTheEnd.toArray(new MathObject[0]));
+    protected void removeObjectsFromScene(ArrayList<MathObject> objectsToRemove) {
+        removeObjectsFromScene(objectsToRemove.toArray(new MathObject[0]));
     }
 
-    protected void addObjectsToscene(ArrayList<MathObject> addThisAtTheEnd) {
-        addObjectsToscene(addThisAtTheEnd.toArray(new MathObject[0]));
+    protected void addObjectsToscene(ArrayList<MathObject> objectsToAdd) {
+        addObjectsToscene(objectsToAdd.toArray(new MathObject[0]));
     }
 
     /**

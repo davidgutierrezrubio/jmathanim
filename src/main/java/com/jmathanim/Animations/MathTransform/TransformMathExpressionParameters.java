@@ -39,7 +39,7 @@ public class TransformMathExpressionParameters {
 		alphaMult = 1d;
 		scale = 1d;
 		numTurns = 0;
-		removingStyle = TransformMathExpression.RemoveType.FADE_OUT;
+		removingStyle = null;
 		addingStyle = TransformMathExpression.AddType.FADE_IN;
 		transformStyle = TransformMathExpression.TransformType.INTERPOLATION;
 	}

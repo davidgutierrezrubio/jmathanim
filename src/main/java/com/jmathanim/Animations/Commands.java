@@ -801,8 +801,9 @@ public class Commands {
                 restoreStates(mathObjects);
                 for (MathObject obj : mathObjects) {
                     obj.scale(1 - lt);
-                    obj.multDrawAlpha(1 - lt);
-                    obj.multFillAlpha(1 - lt);
+//                    obj.multDrawAlpha(1 - lt);
+//                    obj.multFillAlpha(1 - lt);
+                    obj.thickness(obj.getMp().getThickness()*(1-lt));
                     obj.rotate(lt * angle);
                 }
             }
@@ -1316,8 +1317,39 @@ public class Commands {
         double width = JMathAnimConfig.getConfig().getRenderer().MathWidthToThickness(longi);
         s1.thickness(width).getMp().setAbsoluteThickness(false);
         s2.thickness(width).getMp().setAbsoluteThickness(false);
-        Concatenate resul = new Concatenate(new ShowCreation(.5 * runtime, s1), new ShowCreation(.5 * runtime, s2));
+        Concatenate resul = new Concatenate(
+                new ShowCreation(.5 * runtime, s1).setLambda(t->t), 
+                new ShowCreation(.5 * runtime, s2).setLambda(t->t)
+        );
         resul.setDebugName("crossOut");
         return resul;
     }
+    
+    public static JoinAnimation crossAndFadeOut(double runtime, MathObject obj) {
+        JoinAnimation resul=JoinAnimation.make(runtime);
+        Rect bb=obj.getBoundingBox();
+          final Point a = bb.getUR();
+        final Point b = bb.getDL();
+        double width = JMathAnimConfig.getConfig().getRenderer().MathWidthToThickness(a.to(b).norm());
+        Shape cross=Shape.segment(a, b).thickness(width*.25).drawColor("red");
+        cross.getMp().setLinecap(StrokeLineCap.SQUARE);
+        //This tricky lambda is necessary due to the squared linecap
+        resul.add(ShowCreation.make(1,cross).setLambda(UsefulLambdas.restrictTo(.1, 1)));
+        resul.add(Commands.fadeOut(1, obj,cross));
+        return resul;
+    }
+     public static JoinAnimation crossAndShrink(double runtime, MathObject obj) {
+        JoinAnimation resul=JoinAnimation.make(runtime);
+        Rect bb=obj.getBoundingBox();
+      final Point a = bb.getUR();
+        final Point b = bb.getDL();
+        double width = JMathAnimConfig.getConfig().getRenderer().MathWidthToThickness(a.to(b).norm());
+        Shape cross=Shape.segment(a, b).thickness(width*.25).drawColor("red");
+        cross.getMp().setLinecap(StrokeLineCap.SQUARE);
+        //This tricky lambda is necessary due to the squared linecap
+        resul.add(ShowCreation.make(2,cross).setLambda(UsefulLambdas.restrictTo(.1, 1)));
+        resul.add(Commands.shrinkOut(1, obj,cross));
+        return resul;
+    }
+    
 }

@@ -258,8 +258,8 @@ public class MultiShapeObject extends MathObject implements Iterable<Shape> {
      * @param indices indices to slice (varargs)
      * @return A new multishape instance with the extracted shapes.
      */
-    public <T extends MultiShapeObject> T slice(boolean delete, Integer... indices) {
-        List<Integer> list = Arrays.asList(indices);
+    public <T extends MultiShapeObject> T slice(boolean delete, int... indices) {
+        List<Integer> list = Arrays.stream(indices).boxed().toList();//Arrays.asList(indices);
         T resul = (T) this.copy();
         //Populate the new MultiShape with n empty shapes
         for (int n = 0; n < resul.size(); n++) {
@@ -290,7 +290,7 @@ public class MultiShapeObject extends MathObject implements Iterable<Shape> {
      * @return A new multishape instance with the extracted shapes. The original
      * multishape object is altered as the extracted shapes becomes null shapes
      */
-    public <T extends MultiShapeObject> T slice(Integer... indices) {
+    public <T extends MultiShapeObject> T slice(int... indices) {
         return slice(true, indices);
     }
 
