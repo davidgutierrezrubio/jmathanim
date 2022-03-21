@@ -29,7 +29,7 @@ import java.util.HashMap;
  *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
-public abstract class ShiftAnimation extends Animation {
+public abstract class ShiftAnimation extends AnimationWithEffects {
 
     private double delayPercentage;
 
@@ -124,8 +124,10 @@ public abstract class ShiftAnimation extends Animation {
     public Vec getShiftVector(MathObject obj) {
         return this.shiftVectors.get(obj);
     }
+
     /**
      * Sets the shift vector to given object
+     *
      * @param <T> Calling subclass
      * @param obj Object to set shift vector
      * @param shiftVector Shift vector
@@ -184,18 +186,18 @@ public abstract class ShiftAnimation extends Animation {
      * @param jumpType Jump path, a value of enum JumpType
      * @return This object
      */
-    public <T extends ShiftAnimation> T addJumpEffect(MathObject obj, double jumpHeight,
+    public ShiftAnimation addJumpEffect(MathObject obj, double jumpHeight,
             AnimationEffect.JumpType jumpType) {
         if (!effects.containsKey(obj)) {
             effects.put(obj, new AnimationEffect());
         }
         effects.get(obj).addJumpEffect(jumpHeight, jumpType);
-        return (T) this;
+        return this;
     }
 
     /**
-     * Adds a parabolical jump effect to the shift animation.The direction of the jump is
-     * the shift vector rotated 90 degrees counterclockwise.
+     * Adds a parabolical jump effect to the shift animation.The direction of
+     * the jump is the shift vector rotated 90 degrees counterclockwise.
      *
      * @param <T> The calling subccass
      * @param obj The mathobject to apply the jump
@@ -210,29 +212,29 @@ public abstract class ShiftAnimation extends Animation {
     /**
      * Sets the jump height for all the objects added to the animation
      *
-     * @param <T> The calling subclass
      * @param jumpHeight Height of the jump. Negative heights can be passed.
      * @return This object
      */
-    public <T extends ShiftAnimation> T addJumpEffect(double jumpHeight) {
+    @Override
+    public ShiftAnimation addJumpEffect(double jumpHeight) {
         for (MathObject obj : mathObjects) {
             addJumpEffect(obj, jumpHeight);
         }
-        return (T) this;
+        return this;
     }
 
     /**
      * Sets the jump height for all the objects added to the animation
      *
-     * @param <T> The calling subclass
      * @param jumpHeight Height of the jump. Negative heights can be passed.
+     * @param jumpType
      * @return This object
      */
-    public <T extends ShiftAnimation> T addJumpEffect(double jumpHeight, AnimationEffect.JumpType jumpType) {
+    public ShiftAnimation addJumpEffect(double jumpHeight, AnimationEffect.JumpType jumpType) {
         for (MathObject obj : mathObjects) {
             addJumpEffect(obj, jumpHeight, jumpType);
         }
-        return (T) this;
+        return this;
     }
 
     /**
@@ -253,16 +255,16 @@ public abstract class ShiftAnimation extends Animation {
      * Adds a scaling back and forth effect to all the objects added to the
      * animation
      *
-     * @param <T> The calling subclass
      * @param scaleEffect The amount to scale. A value of null or 1 means no
      * effect.
      * @return This object
      */
-    public <T extends ShiftAnimation> T addScaleEffect(double scaleEffect) {
+    @Override
+    public ShiftAnimation addScaleEffect(double scaleEffect) {
         for (MathObject obj : mathObjects) {
             addScaleEffect(obj, scaleEffect);
         }
-        return (T) this;
+        return this;
     }
 
     /**
@@ -281,15 +283,15 @@ public abstract class ShiftAnimation extends Animation {
     /**
      * Adds a rotation effect to every mathobject added to the animation
      *
-     * @param <T> The calling subclass
      * @param numTurns Angle ro rotate. A value of null or 0 means no effect
      * @return This object
      */
-    public <T extends ShiftAnimation> T addRotationEffect(int numTurns) {
+    @Override
+    public ShiftAnimation addRotationEffect(int numTurns) {
         for (MathObject obj : mathObjects) {
             addRotationEffect(obj, numTurns);
         }
-        return (T) this;
+        return this;
     }
 
     /**
@@ -357,4 +359,12 @@ public abstract class ShiftAnimation extends Animation {
 
         return (T) this;
     }
+
+    @Override
+    protected void copyEffectParametersFrom(AnimationWithEffects anim) {
+        for (MathObject obj : mathObjects) {
+            effects.get(obj).copyEffectParametersFrom(anim.getEffect());
+        }
+    }
+
 }

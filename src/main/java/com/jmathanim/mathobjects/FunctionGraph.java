@@ -68,20 +68,38 @@ public class FunctionGraph extends Shape implements hasScalarParameter {
 
     public static FunctionGraph make(DoubleBinaryOperator function) {
         Rect r = JMathAnimConfig.getConfig().getCamera().getMathView();
-        return new FunctionGraph(function, r.xmin, r.xmax);
+        FunctionGraph resul = new FunctionGraph(function, r.xmin, r.xmax);
+        resul.adaptativeAddPoints();
+        resul.generateFunctionPoints();
+        return resul;
     }
 
     public static FunctionGraph make(DoubleBinaryOperator function, double xmin, double xmax) {
-        return new FunctionGraph(function, xmin, xmax);
+        FunctionGraph resul = new FunctionGraph(function, xmin, xmax);
+        resul.adaptativeAddPoints();
+        resul.generateFunctionPoints();
+        return resul;
     }
 
     public static FunctionGraph make(DoubleUnaryOperator function) {
         Rect r = JMathAnimConfig.getConfig().getCamera().getMathView();
-        return new FunctionGraph((x, w) -> function.applyAsDouble(x), r.xmin, r.xmax);
+        FunctionGraph resul = new FunctionGraph((x, w) -> function.applyAsDouble(x), r.xmin, r.xmax);
+        resul.adaptativeAddPoints();
+        resul.generateFunctionPoints();
+        return resul;
     }
 
     public static FunctionGraph make(DoubleUnaryOperator function, double xmin, double xmax) {
-        return new FunctionGraph((x, w) -> function.applyAsDouble(x), xmin, xmax);
+        FunctionGraph resul = new FunctionGraph((x, w) -> function.applyAsDouble(x), xmin, xmax);
+        resul.adaptativeAddPoints();
+        resul.generateFunctionPoints();
+        return resul;
+    }
+
+    public static FunctionGraph make(DoubleUnaryOperator function, double xmin, double xmax, int numPoints) {
+        FunctionGraph resul = new FunctionGraph((x, w) -> function.applyAsDouble(x), xmin, xmax, numPoints);
+        resul.generateFunctionPoints();
+        return resul;
     }
 
     private FunctionGraph(DoubleBinaryOperator function, double xmin, double xmax) {
@@ -108,7 +126,7 @@ public class FunctionGraph extends Shape implements hasScalarParameter {
             double x = xmin + (xmax - xmin) * n / (numPoints - 1);
             xPoints.add(x);
         }
-        generateFunctionPoints();
+
     }
 
     public FunctionGraph(DoubleBinaryOperator function, ArrayList<Double> xPoints) {
@@ -122,7 +140,6 @@ public class FunctionGraph extends Shape implements hasScalarParameter {
     }
 
     private void generateFunctionPoints() {
-        adaptativeAddPoints();
         for (int n = 0; n < xPoints.size(); n++) {
             double x = xPoints.get(n);
             double y = getFunctionValue(x, this.w);
@@ -211,7 +228,8 @@ public class FunctionGraph extends Shape implements hasScalarParameter {
         }
         generateControlPoints();
     }
- /**
+
+    /**
      * Evaluate the function at the given abscise
      *
      * @param x The abscise

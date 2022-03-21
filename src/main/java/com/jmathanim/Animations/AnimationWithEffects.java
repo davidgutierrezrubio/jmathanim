@@ -38,8 +38,9 @@ public abstract class AnimationWithEffects extends Animation {
         return effect;
     }
 
-    public void addJumpEffect(double height) {
+    public <T extends AnimationWithEffects> T addJumpEffect(double height) {
         effect.addJumpEffect(height);
+        return (T) this;
     }
 
     public <T extends AnimationWithEffects> T addJumpEffect(double height, AnimationEffect.JumpType type) {
@@ -70,7 +71,7 @@ public abstract class AnimationWithEffects extends Animation {
         effect.applyAnimationEffects(lt, obj);
     }
 
-    private void copyEffectParametersFrom(AnimationWithEffects anim) {
+    protected void copyEffectParametersFrom(AnimationWithEffects anim) {
         effect.copyEffectParametersFrom(anim.getEffect());
     }
 

@@ -224,14 +224,14 @@ public class AnimationEffect {
                 jumpPath = SVGMathObject.make("#foliumJumpPath.svg").get(0).scale(1, -1);
                 break;
             case PARABOLICAL:
-                jumpPath = new Shape(FunctionGraph.make(t -> 4 * t * (1 - t), 0, 1).getPath());
+                jumpPath = new Shape(FunctionGraph.make(t -> 4 * t * (1 - t), 0, 1,2).getPath());
                 break;
             case SINUSOIDAL:
-                jumpPath = new Shape(FunctionGraph.make(t -> Math.sin(PI * t), 0, 1).getPath());
+                jumpPath = new Shape(FunctionGraph.make(t -> Math.sin(PI * t), 0, 1,2).getPath());
                 break;
             case SINUSOIDAL2:
 //                jumpPath = new Shape(FunctionGraph.make(t -> 10.39230484541326*t*(1-t)*(1-2*t), 0, 1).getPath());
-                jumpPath = new Shape(FunctionGraph.make(t -> Math.sin(2 * PI * t), 0, 1).getPath());
+                jumpPath = new Shape(FunctionGraph.make(t -> Math.sin(2 * PI * t), 0, 1,3).getPath());
                 break;
             case CRANE:
                 jumpPath = Shape.polyLine(Point.origin(), Point.at(0, .7), Point.at(0, 1), Point.at(.3, 1), Point.at(.7, 1),
@@ -260,7 +260,7 @@ public class AnimationEffect {
 
     protected void applyJumpEffect(double t, MathObject obj) {
         if (jumpPaths.containsKey(obj)) {
-            obj.moveTo(jumpPaths.get(obj).getJMPointAt(t).p);
+            obj.moveTo(jumpPaths.get(obj).getJMPointAt(t).p);//TODO BUG HERE!
         }
 
     }
