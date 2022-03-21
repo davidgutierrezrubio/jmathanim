@@ -17,17 +17,11 @@
  */
 package com.jmathanim.Animations.MathTransform;
 
-import com.jmathanim.Animations.Animation;
 import com.jmathanim.Animations.AnimationGroup;
 import com.jmathanim.Animations.Commands;
 import com.jmathanim.Animations.ShiftAnimation;
-import com.jmathanim.Animations.ShowCreation;
-import com.jmathanim.Animations.Transform;
-import com.jmathanim.Cameras.Camera;
-import com.jmathanim.Renderers.Renderer;
 import com.jmathanim.Styling.JMColor;
 import com.jmathanim.Styling.MODrawProperties;
-import com.jmathanim.Utils.JMathAnimConfig;
 import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
@@ -35,62 +29,107 @@ import com.jmathanim.mathobjects.JMPath;
 import com.jmathanim.mathobjects.MultiShapeObject;
 import com.jmathanim.mathobjects.Point;
 import com.jmathanim.mathobjects.Shape;
-import com.jmathanim.mathobjects.Text.LaTeXMathObject;
 import java.util.ArrayList;
 import java.util.function.DoubleUnaryOperator;
-import javafx.scene.shape.StrokeLineCap;
 
 /**
+ * Animates a cross out effect over a LaTeXFormula (more generally, any
+ * MultiShapeObject class). Once animation is done these crosses will be added
+ * as new shapes to the formula (this behaviour can be configured).
  *
  * @author David Gutierrez Rubio davidgutierrezrubio@gmail.com
  */
-public class CrossMathElements extends AnimationGroup {
+public class CrossOutMathElements extends AnimationGroup {
 
-    private final Renderer renderer;
     private final ArrayList<Shape> crossesShapes;
     private final MODrawProperties crossDrawProperties;
     private final ArrayList<int[]> crossIndices;
     private double ratio;
-    public static CrossMathElements make(double runTime, MultiShapeObject formula, int... indices) {
-        CrossMathElements resul = new CrossMathElements(runTime, formula);
+    private boolean shoulAddCrossesToFormulaAtEnd;
+
+    /**
+     * Static builder. Creates a new cross out animation.
+     * @param runTime Time in seconds
+     * @param formula Formula to apply the cross out
+     * @param indices Optional. Indices that should be crossed out (one cross per index)
+     * @return The created animation.
+     */
+    public static CrossOutMathElements make(double runTime, MultiShapeObject formula, int... indices) {
+        CrossOutMathElements resul = new CrossOutMathElements(runTime, formula);
         resul.shouldAddObjectsToScene = true;
         resul.addSmallCrosses(indices);
-        resul.setLambda(t->t);
+        resul.setLambda(t -> t);
         return resul;
     }
     private final MultiShapeObject formula;
+    private final MultiShapeObject generatedCrosses;
     private int[] createdCrossedIndices;
 
-    private CrossMathElements(double runTime, MultiShapeObject formula) {
+    private CrossOutMathElements(double runTime, MultiShapeObject formula) {
         super();
         this.runTime = runTime;
         this.formula = formula;
-        renderer = JMathAnimConfig.getConfig().getRenderer();
         crossDrawProperties = MODrawProperties.createFromStyle("default");
         crossDrawProperties.setDrawColor(JMColor.parse("red"));
         crossDrawProperties.setFillColor(JMColor.parse("red"));
         this.crossesShapes = new ArrayList<>();
         this.crossIndices = new ArrayList<>();
-        this.ratio=.05;//Default ratio
+        this.ratio = .05;//Default ratio
+        this.generatedCrosses = MultiShapeObject.make();
+        shoulAddCrossesToFormulaAtEnd = true;
     }
 
+    /**
+     * Whether created cross out should be added to the list of shapes of the
+     * formula or not. In this case they will be added at the end
+     *
+     * @param shoulAddCrossesToFormulaAtEnd True to add, false otherwise
+     */
+    public void setShoulAddCrossesToFormulaAtEnd(boolean shoulAddCrossesToFormulaAtEnd) {
+        this.shoulAddCrossesToFormulaAtEnd = shoulAddCrossesToFormulaAtEnd;
+    }
+
+    /**
+     * Gets the ratio height/width of cross out.
+     *
+     * @return The ratio.
+     */
     public double getCrossRatioWidth() {
         return ratio;
     }
 
-    public CrossMathElements crossRatioWidth(double ratio) {
+    /**
+     * Sets the ratio height/width of the cross out. A value of 1 draws squared
+     * ones. Small values of this ratio will give a thinner cross out.
+     *
+     * @param ratio
+     * @return This object
+     */
+    public CrossOutMathElements crossRatioWidth(double ratio) {
         this.ratio = ratio;
         return this;
     }
 
-    public CrossMathElements addSmallCrosses(int... indices) {
+    /**
+     * Add invididual cross out to the given indices (one per index).
+     *
+     * @param indices Indices to cross out (varargs)
+     * @return This object
+     */
+    public CrossOutMathElements addSmallCrosses(int... indices) {
         for (int index : indices) {
             this.crossIndices.add(new int[]{index});
         }
         return this;
     }
 
-    public CrossMathElements addBigCross(int... indices) {
+    /**
+     * Add one cross out that covers all given indices
+     *
+     * @param indices Indices to cross out (varargs)
+     * @return This object
+     */
+    public CrossOutMathElements addBigCross(int... indices) {
         this.crossIndices.add(indices);
         return this;
     }
@@ -98,24 +137,41 @@ public class CrossMathElements extends AnimationGroup {
     @Override
     public void finishAnimation() {
         super.finishAnimation();
+
         //Add created crosses to the multishape and store their indices
-        createdCrossedIndices=new int[crossesShapes.size()];
-        int offset=formula.size();
-        int k=0;
+        createdCrossedIndices = new int[crossesShapes.size()];
+        int offset = formula.size();
+        int k = 0;
         for (Shape cross : crossesShapes) {
-            formula.add(cross);
-            createdCrossedIndices[k]=k+offset;
-            k++;
+            generatedCrosses.add(cross);
+            if (shoulAddCrossesToFormulaAtEnd) {
+                formula.add(cross);
+                createdCrossedIndices[k] = k + offset;
+                k++;
+            }
         }
     }
 
+    /**
+     * Returns an int array with the indices of the crosses in the given
+     * formula. If the original formula had n elements, these cross should be
+     * added at positions n, n+1, ...
+     *
+     * @return The int array with the positions
+     */
     public int[] getCreatedCrossedIndices() {
         return createdCrossedIndices;
     }
 
-    
-    
-    
+    /**
+     * Returns a MultiShapeObject that holds all generated crosses out.
+     *
+     * @return The MultiShapeObject with all cross out.
+     */
+    public MultiShapeObject getGeneratedCrosses() {
+        return generatedCrosses;
+    }
+
     @Override
     public void initialize(JMathAnimScene scene) {
         generateCrosses();
@@ -128,7 +184,7 @@ public class CrossMathElements extends AnimationGroup {
             animShift.setLambda(lambda);
             this.add(animShift);
         }
-
+        
         super.initialize(scene);
         Shape[] toArray = crossesShapes.toArray(Shape[]::new);
         addObjectsToscene(toArray);
@@ -166,14 +222,18 @@ public class CrossMathElements extends AnimationGroup {
     }
 
     @Override
-    public CrossMathElements setLambda(DoubleUnaryOperator lambda) {
-        this.lambda=lambda;
+    public CrossOutMathElements setLambda(DoubleUnaryOperator lambda) {
+        this.lambda = lambda;
         return this;
     }
-    
-    
+
+    /**
+     * Return the current drawing attributes object
+     *
+     * @return The drawing attributes object
+     */
     public MODrawProperties getMp() {
         return crossDrawProperties;
     }
-    
+
 }
