@@ -180,7 +180,6 @@ public abstract class ShiftAnimation extends AnimationWithEffects {
      * Adds a jump effect to the shift animation.The direction of the jump is
      * the shift vector rotated 90 degrees counterclockwise.
      *
-     * @param <T> The calling subccass
      * @param obj The mathobject to apply the jump
      * @param jumpHeight Height of the jump. Negative heights can be passed.
      * @param jumpType Jump path, a value of enum JumpType

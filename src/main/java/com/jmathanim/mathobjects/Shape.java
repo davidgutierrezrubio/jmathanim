@@ -107,9 +107,9 @@ public class Shape extends MathObject {
 //        jmpath.shift(shiftVector);
 //        return (T) this;
 //    }
-    public void removeInterpolationPoints() {
-        jmpath.removeInterpolationPoints();
-    }
+//    public void removeInterpolationPoints() {
+//        jmpath.removeInterpolationPoints();
+//    }
 
     @Override
     public Shape copy() {

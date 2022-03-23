@@ -40,20 +40,21 @@ public class PathUtils {
 
     /**
      * Generate control points from a bezier cubic curve, so that control points
-     * of point n are parallel to the line from point n-1 and n+1. The distance
+     * of point n are parallel to the line from point n-1 and n+1.The distance
      * from point n to the control points is multiplied by the 0 to 1 tension
      * parameter. A 1 tension means straight lines. If first and last point are
      * not connected, an approximation is used based on the control point of
      * their neighbour points
      *
+     * @param path Path to compute control points
      * @param tension The tension to apply to the curve
      */
     public static void generateControlPointsBySimpleSlopes(JMPath path, double tension) // For now, only one method
     {
-        // If this is a SVG path, don't generate control points
-        if (path.pathType == JMPath.SVG_PATH) {
-            return;
+        for (JMPathPoint jMPathPoint : path) {
+            jMPathPoint.isCurved = true;
         }
+
         int numPoints = path.jmPathPoints.size();
 
         for (int n = 0; n < numPoints + 1; n++) {
@@ -77,33 +78,33 @@ public class PathUtils {
             double x4 = p4.p.v.x;
             double y4 = p4.p.v.y;
             double z4 = p4.p.v.z;
-            if (p3.isCurved) {
+//            if (p3.isCurved) {
 //                double mod31 = Math.sqrt((x3 - x1) * (x3 - x1) + (y3 - y1) * (y3 - y1));//||p1-p3||
 //                double mod42 = Math.sqrt((x4 - x2) * (x4 - x2) + (y4 - y2) * (y4 - y2));//||p2-p4||
 //                double mod23 = Math.sqrt((x3 - x2) * (x3 - x2) + (y3 - y2) * (y3 - y2));//||p2-p3||
-                double mod31 = p1.p.to(p3.p).norm();
-                double mod42 = p4.p.to(p2.p).norm();
-                double mod23 = p2.p.to(p3.p).norm();
-                double cx1 = x2 + mod23 / mod31 * (1 - tension) * (x3 - x1);
-                double cy1 = y2 + mod23 / mod31 * (1 - tension) * (y3 - y1);
-                double cz1 = z2 + mod23 / mod31 * (1 - tension) * (z3 - z1);
-                double cx2 = x3 - mod23 / mod42 * (1 - tension) * (x4 - x2);
-                double cy2 = y3 - mod23 / mod42 * (1 - tension) * (y4 - y2);
-                double cz2 = z3 - mod23 / mod42 * (1 - tension) * (z4 - z2);
-                p2.cpExit.v.x = cx1;
-                p2.cpExit.v.y = cy1;
-                p2.cpExit.v.z = cz1;
-                p3.cpEnter.v.x = cx2;
-                p3.cpEnter.v.y = cy2;
-                p3.cpEnter.v.z = cz2;
-            } else {
-                // If this path is straight, control points becomes vertices. Although this is
-                // not used
-                // when drawing straight paths, it becomes handy when doing transforms from
-                // STRAIGHT to CURVED paths
-                p2.cpExit.v.copyFrom(p2.p.v);
-                p3.cpEnter.v.copyFrom(p3.p.v);
-            }
+            double mod31 = p1.p.to(p3.p).norm();
+            double mod42 = p4.p.to(p2.p).norm();
+            double mod23 = p2.p.to(p3.p).norm();
+            double cx1 = x2 + mod23 / mod31 * (1 - tension) * (x3 - x1);
+            double cy1 = y2 + mod23 / mod31 * (1 - tension) * (y3 - y1);
+            double cz1 = z2 + mod23 / mod31 * (1 - tension) * (z3 - z1);
+            double cx2 = x3 - mod23 / mod42 * (1 - tension) * (x4 - x2);
+            double cy2 = y3 - mod23 / mod42 * (1 - tension) * (y4 - y2);
+            double cz2 = z3 - mod23 / mod42 * (1 - tension) * (z4 - z2);
+            p2.cpExit.v.x = cx1;
+            p2.cpExit.v.y = cy1;
+            p2.cpExit.v.z = cz1;
+            p3.cpEnter.v.x = cx2;
+            p3.cpEnter.v.y = cy2;
+            p3.cpEnter.v.z = cz2;
+//            } else {
+//                // If this path is straight, control points becomes vertices. Although this is
+//                // not used
+//                // when drawing straight paths, it becomes handy when doing transforms from
+//                // STRAIGHT to CURVED paths
+//                p2.cpExit.v.copyFrom(p2.p.v);
+//                p3.cpEnter.v.copyFrom(p3.p.v);
+//            }
 
         }
         JMPathPoint jp0, jp1;
@@ -117,10 +118,10 @@ public class PathUtils {
 
             jp1 = path.jmPathPoints.get(numPoints - 2);
             jp0 = path.jmPathPoints.get(numPoints - 1);
-            if (jp0.isCurved) {
-                v = jp0.p.to(jp1.cpExit).multInSite(PathUtils.DEFAULT_TENSION);
-                jp0.cpEnter.copyFrom(jp0.p.add(v));
-            }
+//            if (jp0.isCurved) {
+            v = jp0.p.to(jp1.cpExit).multInSite(PathUtils.DEFAULT_TENSION);
+            jp0.cpEnter.copyFrom(jp0.p.add(v));
+//            }
         }
     }
 

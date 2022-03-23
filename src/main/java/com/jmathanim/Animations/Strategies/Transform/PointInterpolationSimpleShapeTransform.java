@@ -115,7 +115,7 @@ public class PointInterpolationSimpleShapeTransform extends TransformStrategy {
             p1.cpEntervBackup = p2.cpEntervBackup;
         }
 
-        mobjTransformed.getPath().removeInterpolationPoints();
+//        mobjTransformed.getPath().removeInterpolationPoints();
         mobjTransformed.getMp().copyFrom(mobjDestiny.getMp());
         mobjTransformed.absoluteSize = mobjDestiny.absoluteSize;
     }

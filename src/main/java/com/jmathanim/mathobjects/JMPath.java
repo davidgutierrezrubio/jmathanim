@@ -127,32 +127,32 @@ public class JMPath implements Stateable, Boxable, Iterable<JMPathPoint> {
         jmPathPoints.clear();
     }
 
-    /**
-     * Remove interpolation points from path and mark it as no interpolated
-     */
-    public void removeInterpolationPoints() {
-        ArrayList<JMPathPoint> toRemove = new ArrayList<>();
-        for (JMPathPoint p : jmPathPoints) {
-            if (p.type == JMPathPointType.INTERPOLATION_POINT) {
-                toRemove.add(p);
-            }
-        }
-        jmPathPoints.removeAll(toRemove);// Remove all interpolation points
-        // Now, restore old control points
-        // for curved paths control points are modified so that a backup is necessary
-        for (JMPathPoint p : jmPathPoints) {
-            if (p.cpExitvBackup != null) {
-                p.cpExit.v.copyFrom(p.cpExitvBackup);
-                p.cpExitvBackup = null;
-            }
-            if (p.cpEntervBackup != null) {
-                p.cpEnter.v.copyFrom(p.cpEntervBackup);
-                p.cpEntervBackup = null;
-            }
-        }
-
-//        generateControlPoints();//Recompute control points
-    }
+//    /**
+//     * Remove interpolation points from path and mark it as no interpolated
+//     */
+//    public void removeInterpolationPoints() {
+//        ArrayList<JMPathPoint> toRemove = new ArrayList<>();
+//        for (JMPathPoint p : jmPathPoints) {
+//            if (p.type == JMPathPointType.INTERPOLATION_POINT) {
+//                toRemove.add(p);
+//            }
+//        }
+//        jmPathPoints.removeAll(toRemove);// Remove all interpolation points
+//        // Now, restore old control points
+//        // for curved paths control points are modified so that a backup is necessary
+//        for (JMPathPoint p : jmPathPoints) {
+//            if (p.cpExitvBackup != null) {
+//                p.cpExit.v.copyFrom(p.cpExitvBackup);
+//                p.cpExitvBackup = null;
+//            }
+//            if (p.cpEntervBackup != null) {
+//                p.cpEnter.v.copyFrom(p.cpEntervBackup);
+//                p.cpEntervBackup = null;
+//            }
+//        }
+//
+////        generateControlPoints();//Recompute control points
+//    }
 
     @Override
     public String toString() {
