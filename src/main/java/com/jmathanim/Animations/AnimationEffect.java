@@ -260,7 +260,8 @@ public class AnimationEffect {
 
     protected void applyJumpEffect(double t, MathObject obj) {
         if (jumpPaths.containsKey(obj)) {
-            obj.moveTo(jumpPaths.get(obj).getJMPointAt(t).p);//TODO BUG HERE!
+            obj.moveTo(jumpPaths.get(obj).getParametrizedPointAt(t));
+//            obj.moveTo(jumpPaths.get(obj).getJMPointAt(t).p);
         }
 
     }

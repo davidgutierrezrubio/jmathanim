@@ -22,6 +22,8 @@ import com.jmathanim.Utils.Anchor;
 import com.jmathanim.Utils.Boxable;
 import com.jmathanim.Utils.CircularArrayList;
 import com.jmathanim.Utils.EmptyRect;
+import com.jmathanim.Utils.JMathAnimConfig;
+import com.jmathanim.Utils.PathUtils;
 import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.mathobjects.JMPathPoint.JMPathPointType;
@@ -50,12 +52,15 @@ public class JMPath implements Stateable, Boxable, Iterable<JMPathPoint> {
     public int pathType; // Default value
 
     private JMPath pathBackup;
+    private final ArrayList<Point> rectifiedPoints;
+    private final ArrayList<Double> rectifiedPointDistances;
+    private double computedPathLength;
 
     /**
      * Creates a new empty JMPath objectF
      */
     public JMPath() {
-        this(new ArrayList<Point>());
+        this(new ArrayList<JMPathPoint>());
     }
 
     /**
@@ -77,30 +82,17 @@ public class JMPath implements Stateable, Boxable, Iterable<JMPathPoint> {
      *
      * @param points An ArrayList of points to add
      */
-    public JMPath(ArrayList<Point> points) {
+    public JMPath(ArrayList<JMPathPoint> points) {
         this.jmPathPoints = new CircularArrayList<>();
-        for (Point p : points) {
-            this.jmPathPoints.add(new JMPathPoint(p, true, JMPathPointType.VERTEX));
+        for (JMPathPoint p : points) {
+            this.jmPathPoints.add(p);
         }
         this.visiblePoints = new CircularArrayList<>();
         pathType = JMPath.MATHOBJECT;// Default value
+        rectifiedPoints = new ArrayList<>();
+        rectifiedPointDistances = new ArrayList<>();
     }
 
-    public ArrayList<Point> getPoints() {
-        ArrayList<Point> resul = new ArrayList<>();
-        for (JMPathPoint jmp : jmPathPoints) {
-            resul.add(jmp.p);
-        }
-        return resul;
-    }
-
-//    public JMPathPoint getJMPoint(int n) {
-//        return jmPathPoints.get(n);
-//    }
-//
-//    public Point getControlPoint2(int n) {
-//        return jmPathPoints.get(n).cpEnter;
-//    }
     public int size() {
         return jmPathPoints.size();
     }
@@ -115,16 +107,49 @@ public class JMPath implements Stateable, Boxable, Iterable<JMPathPoint> {
         jmPathPoints.addAll(Arrays.asList(points));
     }
 
-    public void addCPoint1(Point e) {
-        jmPathPoints.get(jmPathPoints.size() - 1).cpExit.v.copyFrom(e.v);
-    }
-
-    public void addCPoint2(Point e) {
-        jmPathPoints.get(jmPathPoints.size() - 1).cpEnter.v.copyFrom(e.v);
-    }
-
     public void clear() {
         jmPathPoints.clear();
+    }
+
+    private void computeRectifiedPoints() {
+        PathUtils pu = new PathUtils();
+        rectifiedPoints.clear();
+        rectifiedPointDistances.clear();
+        computedPathLength = 0;
+        ArrayList<ArrayList<Point>> arArRectPoints = pu.computePolygonalPieces(JMathAnimConfig.getConfig().getCamera(), this);
+        for (ArrayList<Point> arArRectPoint : arArRectPoints) {
+            if (!arArRectPoint.isEmpty()) {
+                Point previous = arArRectPoint.get(0);
+                for (Point rectPoint : arArRectPoint) {
+                    rectifiedPoints.add(rectPoint);
+                    double distance = rectPoint.to(previous).norm();
+                    rectifiedPointDistances.add(distance);
+                    computedPathLength += distance;
+                    previous = rectPoint;
+                }
+            }
+        }
+//        rectifiedPointDistances.remove(0);//Remove first distance computed as it is 0
+    }
+
+    public Point getParametrizedPointAt(double t) {
+        if (rectifiedPoints.isEmpty()) {
+            computeRectifiedPoints();
+        }
+        if (t == 0) {
+            return rectifiedPoints.get(0).copy();
+        }
+        double td = t * computedPathLength;
+        int n = 0;
+        double sum = 0;
+        while (sum < td) {
+            sum += rectifiedPointDistances.get(n);
+            n++;
+        }
+        n--;
+        sum -= rectifiedPointDistances.get(n);
+        double tLocal = (td - sum) / rectifiedPointDistances.get(n);
+        return rectifiedPoints.get(n - 1).interpolate(rectifiedPoints.get(n), tLocal);
     }
 
 //    /**
@@ -153,7 +178,6 @@ public class JMPath implements Stateable, Boxable, Iterable<JMPathPoint> {
 //
 ////        generateControlPoints();//Recompute control points
 //    }
-
     @Override
     public String toString() {
         String resul = "#" + jmPathPoints.size() + ":  ";

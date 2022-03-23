@@ -89,6 +89,17 @@ public class Shape extends MathObject {
         return jmpath.getJMPointAt(t).p;
     }
 
+    /**
+    * Returns a new Point object lying in the Shape, at the given parametrized position, considering the arclentgh of the curve.
+     *
+     * @param t Position parameter, from 0 (beginning) to 1 (end)
+     * @return a new Point object at the specified position of the shape.
+     */
+    public Point getParametrizedPointAt(double t) {
+        return jmpath.getParametrizedPointAt(t);
+    }
+    
+    
     public Point getCentroid() {
         Point resul = new Point(0, 0, 0);
         for (JMPathPoint p : jmpath.jmPathPoints) {
