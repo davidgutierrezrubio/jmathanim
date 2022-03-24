@@ -314,7 +314,7 @@ for (int n = 0; n < numPoints; n++) {
 }
 
 add(outerCircle, rotatingCircle);
-MoveAlongPath mov = new MoveAlongPath(10, path, rotatingCircle, Anchor.Type.CENTER);
+MoveAlongPath mov = MoveAlongPath.make(10, path, rotatingCircle, Anchor.Type.CENTER,false,false);
 Animation rot = Commands.rotate(10, -2 * PI, rotatingCircle).setUseObjectState(false);
 mov.setLambda(t -> t);//Uniform movement
 rot.setLambda(t -> t);//Uniform rotation
