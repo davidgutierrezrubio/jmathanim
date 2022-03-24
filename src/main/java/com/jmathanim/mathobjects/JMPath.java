@@ -129,15 +129,27 @@ public class JMPath implements Stateable, Boxable, Iterable<JMPathPoint> {
                 }
             }
         }
-//        rectifiedPointDistances.remove(0);//Remove first distance computed as it is 0
     }
 
+    /**
+     * Return a point at a given percentage of total arclenth of path. Note
+     * that, as path are composed of cubic Bezier curves, a rectified path must
+     * be computed. This is done automatically only once at first call of this
+     * method, so if you change the path after a a first call, the next calls to
+     * this method may give wrong results.
+     *
+     * @param t A value from 0 to 1. 0 means starting point and 1 ending point
+     * @return A new Point object with the computed location
+     */
     public Point getParametrizedPointAt(double t) {
         if (rectifiedPoints.isEmpty()) {
             computeRectifiedPoints();
         }
         if (t == 0) {
             return rectifiedPoints.get(0).copy();
+        }
+         if (t == 1) {
+            return rectifiedPoints.get(rectifiedPoints.size()-1).copy();
         }
         double td = t * computedPathLength;
         int n = 0;
@@ -335,10 +347,10 @@ public class JMPath implements Stateable, Boxable, Iterable<JMPathPoint> {
 
     /**
      * Get point (interpolated if necessary) that lies at position alpha where
-     * alpha=0 denotes beginning of path and alpha=1 denotes the end
+     * alpha=0 denotes beginning of path and alpha=1 denotes the end. Path is unaltered
      *
      * @param alpha from 0 to 1, relative position inside the path
-     * @return A (referencedCopy of) point that lies in the curve at relative
+     * @return A new JMPathPoint that describes the curve at relative
      * position alpha.
      */
     public JMPathPoint getJMPointAt(double alpha) {
