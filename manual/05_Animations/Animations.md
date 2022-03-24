@@ -326,24 +326,24 @@ waitSeconds(5);
 
 ## Moving along a path
 
-The `MoveAlongPath` animations move an object along a specified path. You can provide a `Shape` object or a `JMPath`objec to determine the path. The moved object will be located with the specified `Anchor` point.
+The `MoveAlongPath` animations move an object along a specified path. You can provide a `Shape` object or a `JMPath`objec to determine the path. The moved object will be located with the specified `Anchor` point. This animation admits 2 boolean parameters. First one determines if object should rotate the angle given by the tangent of the path at destiny point. Second determines if animation should use a parametrized equation of the curve or not. A parametrized equation ensures that movement is constant along arc length of path. Thus for example, a parametrized value of t=0.3 ensures that object will be located at 30% of total arc length. If this boolean flag is false, standard Bézier parametrization will be used.
 
-In this example, we show 2 squares moving along  a circle:
+In this example, we show 2 squares moving along  a circle. The blue one moves with constant velocity and the red one with the standard parametrization of Bézier curves. In general, standard parametrization of Bézier moves slower at sharp turns.
 
 ```java
-Shape c = Shape.circle().fillColor("orange");
-Shape a = Shape.square().scale(.3).fillColor("darkblue").fillAlpha(.7);
-Shape b = a.copy();
-add(c, a, b);
-Animation anim = new MoveAlongPath(5, c, a, Anchor.Type.UL);
-Animation anim2 = new MoveAlongPath(5, c, b, Anchor.Type.DR);
-playAnimation(anim, anim2);
-waitSeconds(3);
+Shape pathShape = Shape.circle().fillColor("orange");//A circle
+pathShape.get(2).shift(1, 0);//Move its left point one unit to get a piece of tangerine
+add(path);
+Shape squareToMove = Shape.square().scale(.1).fillColor("darkblue").fillAlpha(.4);
+Shape squareToMove2 = squareToMove.copy().fillColor("darkred").fillAlpha(.4);
+Animation anim = MoveAlongPath.make(5, pathShape, squareToMove, Anchor.Type.CENTER, true, true).setLambda(t -> t);
+Animation anim2 = MoveAlongPath.make(5, pathShape, squareToMove2, Anchor.Type.CENTER, true, false).setLambda(t -> t);
+playAnimation(anim,anim2);
 ```
 
 ![moveAlongpath](moveAlongpath.gif)
 
-You can try modifying the lambda function of each animation with the `setLambda` method to see what happens. For example, `anim.setLambda(x->x)` or `anim.setLambda(x->4*x*(1-x))`.  We will see use of lambdas in the next chapter.
+Here we have specified the lambda parameters in the animations with the  `.setLambda(t->t)` methods in order to move with uniform velocity. We will see the use of lambdas in next chapter.
 
 # The ShowCreation animation
 
