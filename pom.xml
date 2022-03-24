@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.github.davidgutierrezrubio</groupId>
     <artifactId>JMathAnim</artifactId>
-    <version>0.9.5-SNAPSHOT</version>
+    <version>0.9.6-SNAPSHOT</version>
     <packaging>jar</packaging>
     <name>JMathAnim</name>
     <description>A Java library to write mathematical animations</description>
@@ -107,7 +107,7 @@
             <plugin>
                 <groupId>org.sonatype.plugins</groupId>
                 <artifactId>nexus-staging-maven-plugin</artifactId>
-                <version>1.6.8</version>
+                <version>1.6.9</version>
                 <extensions>true</extensions>
                 <configuration>
                     <serverId>ossrh</serverId>
