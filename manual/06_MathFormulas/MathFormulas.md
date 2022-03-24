@@ -158,6 +158,8 @@ we make that the center of glyph number 1 of `t2` (its "=" sign) matches the cen
 
 ![equation04](equation04.gif)
 
+**Disclaimer:** This is not by far the best way to show the resolution of an equation like this! I show this specific animation for better understanding of the program.
+
 ## Type of transformations
 
 The method `.map` returns a `TransformMathExpressionParameters` object, which allows to control how the transformation is done,  with the method `setTransformStyle`. Transformation types are defined in the enum `TransformMathExpression.TransformType`, currently `INTERPOLATION`, `FLIP_HORIZONTALLY`, `FLIP_VERTICALLY` and `FLIP_BOTH`. By default, the `INTERPOLATION` method is used.
@@ -385,7 +387,7 @@ waitSeconds(3);
 
 ![equation12](equation12.gif)
 
-And finally, we show how the initial animation will look applying colors, mapping, and effects:
+And finally, we show how the initial animation will look applying colors, mapping, and effects (again, this is no the optimal way from the didactic point of view):
 
 ````java
 LaTeXMathObject t1 = LaTeXMathObject.make("$x+2=0$");
@@ -412,3 +414,103 @@ waitSeconds(3);
 ````
 
 ![equation13](equation13.gif)
+
+## Cross out of parts of a formula
+
+Since version 0.9.5, JMathAnim includes another animation that can be handy for manipulating equations called `CrossOutMathElements`. This animations, as its name suggests, cross out parts of a mathematical formula. Lets see with a simple example:
+
+```java
+LaTeXMathObject formula = LaTeXMathObject.make("$2\\over 2$");
+add(formula);
+camera.zoomToAllObjects();
+CrossOutMathElements anim=CrossOutMathElements.make(1, formula, 0,2);//Cross out glyps 0 and 2
+playAnimation(anim);
+waitSeconds(1);
+```
+
+Here is a GIF from the movie generated:
+
+![crossout1](crossout1.gif)
+
+You can define which elements to cross out as usual, specifying the indices. There are 2 ways:
+
+`.addSmallCrosses(int...indices)` generates one cross out for each individual glyph given by the index. This is the default behaviour for the static builder. So, another way to get the same result as before should be:
+
+```java
+CrossOutMathElements anim=CrossOutMathElements.make(1, formula).addSmallCrosses(0,2);//Cross out glyps 0 and 2
+```
+
+`.addBigCross(int...indices)` generates only one cross out that extends over all specified glyphs. For example:
+
+```java
+LaTeXMathObject formula = LaTeXMathObject.make("$x-y+2y-y$");
+add(formula);
+camera.zoomToAllObjects();
+CrossOutMathElements anim=CrossOutMathElements.make(1, formula);
+anim.addBigCross(1,7);//A "big" cross out for -y+2y-y
+playAnimation(anim);
+waitSeconds(1);
+```
+
+![crossout2](crossout2.gif)
+
+You can set appearance parameters for the drawed cross out through the `getMp()` method defined in the animation. For example if you want in the previous example the cross out to have 50% opacity and black border you can add the following lines to the previous code right before the `playAnimation` command:
+
+```java
+anim.getMp().setFillColor(JMColor.parse("violet"));
+anim.getMp().setFillAlpha(.5);
+anim.getMp().setDrawColor(JMColor.parse("black"));
+anim.getMp().setThickness(10d);
+anim.crossRatioWidth(.1);//Width of cross out is 10% of length (default value is 5%)
+```
+
+![crossout3](crossout3.gif)
+
+By default, all cross out made to a formula become part of this formula. In the previous example, the big, violet cross out adds itself to the formula at the first free index, which is  8. This way you can use them in further animations.
+
+
+
+Another example, where we use 2 `CrossOutMathElements` animations, one with different color. First animation adds 2 crossout at positions 13 and 14, and second at positions 15 and 16. Remember that, although `map`commands may seem confusing, using the  `formulaHelper` before gets thing much clearer. We show here the indices of the formulas we are going to work with:
+
+![crossoOut4FHelper](crossoOut4FHelper.png)
+
+We want to perform a simplification, crossing out the exponent of the 3 in the numerator, with the 3 in the denominator, later the 5 glyphs on both sides, and finally perform a transform to the simplified formula, removing all crossed out components. That's what we do in the following code:
+
+```java
+LaTeXMathObject eq1 = LaTeXMathObject.make("$3^2\\cdot 5\\cdot 7\\over 3\\cdot 5\\cdot 11$").center();
+LaTeXMathObject eq2 = LaTeXMathObject.make("$3\\cdot 7\\over 11$").center();
+camera.zoomToObjects(eq1, eq2);
+add(eq1);
+waitSeconds(1);
+
+//Cross out the exponent of numerator and the 3 of denominator
+CrossOutMathElements cross1 = CrossOutMathElements.make(1, eq1, 1, 7);
+cross1.getMp().loadFromStyle("solidred");
+playAnimation(cross1);
+waitSeconds(.5);
+
+//Cross out the 5 of numerator and denominator
+CrossOutMathElements cross2 = CrossOutMathElements.make(1, eq1, 3, 9);
+cross2.getMp().loadFromStyle("solidgreen");
+cross2.addDelayEffect(.2);
+playAnimation(cross2);
+
+waitSeconds(1);
+TransformMathExpression anim = TransformMathExpression.make(2, eq1, eq2);
+anim.map(0, 0);
+anim.map(4, 1);
+anim.map(5, 2);
+anim.map(6, 3);
+anim.map(11, 4);
+anim.map(12, 5);
+anim.setDefaultRemovingStyle(TransformMathExpression.RemoveType.FADE_OUT);
+
+//The crossed out parts (ant the crosses themselves) are removed moving them up (numerator) or down (denominator)
+anim.setRemovingStyle(TransformMathExpression.RemoveType.MOVE_OUT_UP, 1, 3, 13, 15);
+anim.setRemovingStyle(TransformMathExpression.RemoveType.MOVE_OUT_DOWN, 7, 9, 14, 16);
+
+playAnimation(anim);
+waitSeconds(1);
+```
+
+![crossout4](crossout4.gif)
