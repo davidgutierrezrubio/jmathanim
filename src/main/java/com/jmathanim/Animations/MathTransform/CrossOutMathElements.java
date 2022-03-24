@@ -100,9 +100,9 @@ public class CrossOutMathElements extends AnimationGroup {
 
     /**
      * Sets the ratio height/width of the cross out. A value of 1 draws squared
-     * ones. Small values of this ratio will give a thinner cross out.
+     * ones. Small values of this ratio will give a thinner cross out. The default value is 0.05
      *
-     * @param ratio
+     * @param ratio The desired ratio
      * @return This object
      */
     public CrossOutMathElements crossRatioWidth(double ratio) {
@@ -111,7 +111,7 @@ public class CrossOutMathElements extends AnimationGroup {
     }
 
     /**
-     * Add invididual cross out to the given indices (one per index).
+     * Add individual cross out to the given indices (one per index).
      *
      * @param indices Indices to cross out (varargs)
      * @return This object
@@ -145,6 +145,7 @@ public class CrossOutMathElements extends AnimationGroup {
         for (Shape cross : crossesShapes) {
             generatedCrosses.add(cross);
             if (shoulAddCrossesToFormulaAtEnd) {
+                scene.remove(cross);
                 formula.add(cross);
                 createdCrossedIndices[k] = k + offset;
                 k++;
