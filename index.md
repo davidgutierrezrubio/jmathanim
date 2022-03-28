@@ -18,9 +18,8 @@ You can also follow my [Youtube](https://www.youtube.com/channel/UCeczwEqSrAwZbP
 Version 0.9.5 (24/03/2022)
 
 * Added first version of `CrossMathElements`animation, that can be used to cross single or multiple elements of a formula.
-* Polished `Constructible` objects. Update levels are now computed at creation time, increasing the performance.
-* Added more `Constructible` objects, fixed bugs and bugs, and improved Geogebra files import.
-* Added first version of Constructible objects, like `CTLine`, `CTCircle`or `CTIntersectionPoint`.
+* Update levels are now computed at creation time, increasing the performance.
+* Added Constructible objects, like `CTLine`, `CTCircle`or `CTIntersectionPoint`.
 * Added Geogebra import capabilities. Some simple Geogebra documents can be imported and converted into Constructible objects.
 * Added `Ray` object
 * Added `polygon`and `polyline`import capabilities for SVG objects.
