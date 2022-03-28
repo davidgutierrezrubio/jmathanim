@@ -15,7 +15,7 @@ You can also follow my [Youtube](https://www.youtube.com/channel/UCeczwEqSrAwZbP
 
 # What's new?
 
-Version 0.9.5 (24/03/2022)
+Version 0.9.5 (03/24/2022)
 
 * Added first version of `CrossMathElements`animation, that can be used to cross single or multiple elements of a formula.
 * Update levels are now computed at creation time, increasing the performance.
