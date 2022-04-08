@@ -221,6 +221,7 @@ public abstract class Animation {
                     "Animation " + this.getClass().getCanonicalName() + " not initialized. Animation will not be done");
             return true;
         }
+        status=Status.RUNNING;
         boolean resul;
         if (t <= 1 && t >= 0) {
             this.doAnim(t);

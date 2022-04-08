@@ -77,7 +77,14 @@ public class PointOnFunctionGraph extends Point {
 
     @Override
     public void registerUpdateableHook(JMathAnimScene scene) {
-        setUpdateLevel(fg.getUpdateLevel()+1);
+        dependsOn(scene, fg);
+    }
+
+    @Override
+    public PointOnFunctionGraph copy() {
+        PointOnFunctionGraph copy=new PointOnFunctionGraph(this.v.x, fg);
+        copy.getMp().copyFrom(this.getMp());
+        return copy;
     }
         
         

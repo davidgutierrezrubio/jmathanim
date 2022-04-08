@@ -37,7 +37,11 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
+import java.util.Objects;
 import java.util.logging.Level;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -447,35 +451,37 @@ public abstract class JMathAnimScene {
      * @param anims An ArrayList with Animation sceneObjects.
      */
     public void playAnimation(ArrayList<Animation> anims) {
-        for (Animation anim : anims) {
-            if (anim != null) {
-                if (anim.getStatus() == Animation.Status.FINISHED) {// This allow to reuse ended animations
-                    anim.setStatus(Animation.Status.NOT_INITIALIZED);
-                }
-                    anim.initialize(this);// Perform needed steps immediately before playing
-                if (!"".equals(anim.getDebugName())) {
-                    JMathAnimScene.logger.info("Begin animation: " + anim.getDebugName());
-                }
+        List<Animation> listAnims = anims.stream().filter(Objects::nonNull).collect(Collectors.toList());
+        ArrayList<Animation> arAnims = new ArrayList<>(listAnims);
+        for (Animation anim : arAnims) {
+            if (anim.getStatus() == Animation.Status.FINISHED) {// This allow to reuse ended animations
+                anim.setStatus(Animation.Status.NOT_INITIALIZED);
+            }
+            anim.initialize(this);// Perform needed steps immediately before playing
+            if (!"".equals(anim.getDebugName())) {
+                JMathAnimScene.logger.info("Begin animation: " + anim.getDebugName());
+            }
 
-                if (animationIsDisabled) {
-                    anim.setT(1);
-                }
+            if (animationIsDisabled) {
+                anim.setT(1);
             }
         }
 
         boolean finished = false;
         while (!finished) {
             finished = true;
+             boolean anyAnimationRunning=false;
             for (Animation anim : anims) {
-                if (anim != null) {
-                    final boolean resultAnimation = anim.processAnimation();
-                    finished = finished & resultAnimation;
-                    if (resultAnimation) {
-                        anim.finishAnimation();
-                    }
+                anyAnimationRunning=anyAnimationRunning | (anim.getStatus()==Animation.Status.RUNNING);
+                final boolean resultAnimation = anim.processAnimation();
+                finished = finished & resultAnimation;
+                if (resultAnimation) {
+                    anim.finishAnimation();
                 }
             }
-            advanceFrame();
+            if ((!finished)&&(true)) {//If all animations are finished, no need to advance frame
+                advanceFrame();
+            }
         }
     }
 
@@ -628,10 +634,13 @@ public abstract class JMathAnimScene {
      * setting the camera to its default values
      */
     public void reset() {
-        for (MathObject obj : getObjects()) {
+        logger.info("Resetting scene");
+        ArrayList<MathObject> objects = new ArrayList<>(getObjects());
+        for (MathObject obj : objects) {
             remove(obj);
         }
-        for (Updateable upd : getObjectsToBeUpdated()) {
+        ArrayList<Updateable> updateables = new ArrayList<>(getObjectsToBeUpdated());
+        for (Updateable upd : updateables) {
             unregisterUpdateable(upd);
         }
         renderer.getCamera().reset();
