@@ -15,6 +15,11 @@ You can also follow my [Youtube](https://www.youtube.com/channel/UCeczwEqSrAwZbP
 
 # What's new?
 
+Version 0.9.6-SNAPSHOT (08/04/22)
+
+* Removed extra frame that appeared at the end of an animation.
+* Implemented proper `copy()` method for `PointOnFunctionGraph`.
+
 Version 0.9.5 (03/24/2022)
 
 * Added first version of `CrossMathElements`animation, that can be used to cross single or multiple elements of a formula.
