@@ -148,7 +148,6 @@ For each point of the Trifolium, we add the derivative vector rotated 90 degrees
 
 ```java
 ParametricCurve trifolium = ParametricCurve.makePolar(t -> 2 * Math.cos(t) * (4 * Math.sin(t) * Math.sin(t) - 1), t -> t, 0, PI);
-
 //The original coordinates of the points are irrelevant as they will be updated
 //prior to drawing the first frame.
 Point pointOnCurve = Point.at(0, 0).drawColor("darkblue");
@@ -160,9 +159,9 @@ registerUpdateable(new CameraAlwaysAdjusting(camera, .1, .1));
 double time = 10;
 for (double t = 0; t < time; t += dt) {
     final double t0 = PI * t / time;
-    final double[] p = trifolium.getFunctionValue(t0);
-    pointOnCurve.moveTo(p[0],p[1]);
-    Vec deriv = trifolium.getTangentVector(t0).normalize();
+    Vec v = trifolium.getFunctionValue(t0);
+    pointOnCurve.moveTo(new Point(v));
+    Vec deriv = trifolium.getTangentVector(t0,1).normalize();
     Vec normal = deriv.copy().rotate(-90 * DEGREES);
     pointToTrail.copyFrom(pointOnCurve.add(normal));
     advanceFrame();

@@ -119,7 +119,7 @@ waitSeconds(5);
 
 ![LaTeX 1](LaTeX_1.png)
 
->**UPDATE** : Since version 0.9.5-SNAPSHOT, the library [JLatexMath](https://github.com/opencollab/jlatexmath) is used by default to generate LaTeX formulas, so there is no need to have a working LaTeX distribution installed.
+>**UPDATE** : Since version 0.9.5, the library [JLatexMath](https://github.com/opencollab/jlatexmath) is used by default to generate LaTeX formulas, so there is no need to have a working LaTeX distribution installed.
 
 A minor drawback when combining LaTeX and Java, is that one of the most used symbols in LaTeX is the backslash "\\", and Java doesn’t accept single backslashes in their strings, so, if you want to compile a LaTeX formula like this
 
@@ -138,6 +138,16 @@ waitSeconds(5);
 Otherwise you will get an error. Fortunately, most commons java IDE, like Netbeans, automatically perform this change when copy-pasting an already written formula into the code editor. 
 
 By default, LaTeX formulas are placed at the center of the screen.
+
+Some commands, like `\begin{verbatim}` for example, are not supported by JLaTeXMath, so another method can be used. If you have a working LaTeX system installed in your computer you can specify that JMathAnim uses it to compile the text, by passing an optional argument:
+
+```java
+LaTeXMathObject formula=LaTeXMathObject.make(text, LaTeXMathObject.CompileMode.CompileFile);
+```
+
+This method will compile to a .dvi file, convert it to svg and import it into a `MultiShapeObject`. If the .svg was already generated in previous runs, JMathAnim will reuse it.
+
+
 
 ## The `Line` class
 
