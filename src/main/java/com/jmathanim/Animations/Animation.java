@@ -221,7 +221,10 @@ public abstract class Animation {
                     "Animation " + this.getClass().getCanonicalName() + " not initialized. Animation will not be done");
             return true;
         }
-        status=Status.RUNNING;
+        if (status == Status.INITIALIZED) {
+            t+=dt;
+            status = Status.RUNNING;
+        }
         boolean resul;
         if (t <= 1 && t >= 0) {
             this.doAnim(t);
@@ -248,7 +251,7 @@ public abstract class Animation {
         this.scene = scene;
         setFps(scene.getConfig().fps);
         status = Status.INITIALIZED;
-          if (initRunnable != null) {
+        if (initRunnable != null) {
             initRunnable.run();
         }
     }

@@ -62,7 +62,7 @@ public class ParametricCurve extends Shape {
      * @return The created curve
      */
     public static ParametricCurve make(DoubleUnaryOperator fx, DoubleUnaryOperator fy, double tmin, double tmax) {
-        return make(fx, fy, x->0, tmin, tmax, DEFAULT_NUMBER_OF_POINTS);
+        return make(fx, fy, x -> 0, tmin, tmax, DEFAULT_NUMBER_OF_POINTS);
     }
 
     /**
@@ -76,9 +76,9 @@ public class ParametricCurve extends Shape {
      * @param numPoints Number of points to compute
      * @return The created curve
      */
-    public static ParametricCurve make(DoubleUnaryOperator fx, DoubleUnaryOperator fy, DoubleUnaryOperator fz,double tmin, double tmax,
+    public static ParametricCurve make(DoubleUnaryOperator fx, DoubleUnaryOperator fy, DoubleUnaryOperator fz, double tmin, double tmax,
             int numPoints) {
-        ParametricCurve resul = new ParametricCurve(fx, fy, fz,tmin, tmax, numPoints);
+        ParametricCurve resul = new ParametricCurve(fx, fy, fz, tmin, tmax, numPoints);
         resul.functionType = FunctionDefinitionType.LAMBDA_CARTESIAN;
         resul.generateFunctionPoints();
         return resul;
@@ -112,13 +112,13 @@ public class ParametricCurve extends Shape {
      */
     public static ParametricCurve makePolar(DoubleUnaryOperator fr, DoubleUnaryOperator ftheta, double tmin,
             double tmax, int numPoints) {
-        ParametricCurve resul = new ParametricCurve(fr, ftheta, t->0,tmin, tmax, numPoints);
+        ParametricCurve resul = new ParametricCurve(fr, ftheta, t -> 0, tmin, tmax, numPoints);
         resul.functionType = FunctionDefinitionType.LAMBDA_POLAR;
         resul.generateFunctionPoints();
         return resul;
     }
 
-    private ParametricCurve(DoubleUnaryOperator fx, DoubleUnaryOperator fy, DoubleUnaryOperator fz,double tmin, double tmax, int numPoints) {
+    private ParametricCurve(DoubleUnaryOperator fx, DoubleUnaryOperator fy, DoubleUnaryOperator fz, double tmin, double tmax, int numPoints) {
         this.functionX = fx;
         this.functionY = fy;
         this.functionZ = fz;
@@ -133,6 +133,7 @@ public class ParametricCurve extends Shape {
     private ParametricCurve(DoubleUnaryOperator fx, DoubleUnaryOperator fy, ArrayList<Double> xPoints) {
         this.functionX = fx;
         this.functionY = fy;
+        this.functionZ = t -> 0;
         this.tPoints = xPoints;
         this.functionType = FunctionDefinitionType.LAMBDA_CARTESIAN;
     }
@@ -140,10 +141,8 @@ public class ParametricCurve extends Shape {
     private void generateFunctionPoints() {
         for (int n = 0; n < tPoints.size(); n++) {
             double t = tPoints.get(n);
-//            double x = getFunctionValueX(t);
-//            double y = getFunctionValueY(t);
-            double xyz[] = getFunctionValue(t);
-            Point p = Point.at(xyz[0], xyz[1],xyz[2]);
+            Vec v = getFunctionValue(t);
+            Point p = new Point(v);
             final JMPathPoint jmp = JMPathPoint.curveTo(p);
             this.getPath().addJMPoint(jmp);
 
@@ -162,50 +161,19 @@ public class ParametricCurve extends Shape {
             JMPathPoint jmp = get(n);
             double t = tPoints.get(n);
             if (n < tPoints.size() - 1) {
+                Vec tv = getTangentVector(t, 1);
                 final double delta = .3 * (tPoints.get(n + 1) - t);
-                Vec v = new Vec(getDerivX(t, 1) * delta, getDerivY(t, 1) * delta);
+                Vec v = tv.mult(delta);
                 jmp.cpExit.copyFrom(jmp.p.add(v));
             }
             if (n > 0) {
+                Vec tv = getTangentVector(t, -1);
                 final double delta = .3 * (tPoints.get(n - 1) - t);
-                Vec v = new Vec(getDerivX(t, -1) * delta, getDerivY(t, -1) * delta);
+                Vec v = tv.mult(delta);
                 jmp.cpEnter.copyFrom(jmp.p.add(v));
             }
 
         }
-    }
-
-    /**
-     * Gets the x component of the curve at the given parameter
-     *
-     * @param t Parameter in the domain of the function
-     * @return x(t)
-     */
-    public double getFunctionValueX(double t) {
-        double xy[] = getFunctionValue(t);
-        return xy[0];
-    }
-
-    /**
-     * Gets the y component of the curve at the given parameter
-     *
-     * @param t Parameter in the domain of the function
-     * @return y(t)
-     */
-    public double getFunctionValueY(double t) {
-        double xy[] = getFunctionValue(t);
-        return xy[1];
-    }
-    
-      /**
-     * Gets the y component of the curve at the given parameter
-     *
-     * @param t Parameter in the domain of the function
-     * @return y(t)
-     */
-    public double getFunctionValueZ(double t) {
-        double xyz[] = getFunctionValue(t);
-        return xyz[2];
     }
 
     /**
@@ -214,8 +182,8 @@ public class ParametricCurve extends Shape {
      * @param t Parameter in the domain of the function
      * @return An arrray containing the values {x(t),y(t)}
      */
-    public double[] getFunctionValue(double t) {
-        double[] value = new double[]{0, 0,0};
+    public Vec getFunctionValue(double t) {
+        double[] value = new double[]{0, 0, 0};
         switch (this.functionType) {
             case LAMBDA_CARTESIAN:
                 value[0] = functionX.applyAsDouble(t);
@@ -227,13 +195,13 @@ public class ParametricCurve extends Shape {
                 double theta = functionY.applyAsDouble(t);
                 value[0] = r * Math.cos(theta);
                 value[1] = r * Math.sin(theta);
-                value[2]=0;//TODO: adapt this to 3D
+                value[2] = 0;//TODO: adapt this to 3D
                 break;
         }
-        return value;
+        return Vec.to(value[0], value[1], value[2]);
     }
 
-    public JMPathPoint addT(double t) {
+    private JMPathPoint addT(double t) {
         int n = 0;
         double x0 = tPoints.get(0);
         while (x0 < t) {
@@ -244,10 +212,8 @@ public class ParametricCurve extends Shape {
             return get(n);
         } else {
             tPoints.add(n, t);
-            double x = getFunctionValueX(t);
-            double y = getFunctionValueY(t);
-            double z = getFunctionValueZ(t);
-            Point p = Point.at(x, y,z);
+            Vec v = getFunctionValue(t);
+            Point p = new Point(v);
             final JMPathPoint jmp = JMPathPoint.curveTo(p);
             this.getPath().jmPathPoints.add(n, jmp);
             return jmp;
@@ -255,7 +221,7 @@ public class ParametricCurve extends Shape {
     }
 
     /**
-     * Add the given x values of the abscises to the generation of the function
+     * Add the given t values of the parameter to the generation of the function
      * curve. This is useful to explicity include singular points as graph may
      * appear curved if this point is not explicitly include in the array of
      * t-points. If the t parameter is already included, this method has no
@@ -266,7 +232,7 @@ public class ParametricCurve extends Shape {
      */
     public void addTPoint(Double... tPoints) {
         for (double t : tPoints) {
-            addTPoint(t);
+            addT(t);
         }
         generateControlPoints();
     }
@@ -279,24 +245,11 @@ public class ParametricCurve extends Shape {
      * @param direction 1 forwards, -1 backwards
      * @return The value of the derivative
      */
-    public double getDerivY(double t, int direction) {
+    public Vec getTangentVector(double t, int direction) {
         double delta = direction * DELTA_DERIVATIVE;
-        double slope = (getFunctionValueY(t + delta) - getFunctionValueY(t)) / delta;
-        return slope;
-    }
-
-    /**
-     * Returns the (approximate) derivative in the x direction in cartesian
-     * coordinates
-     *
-     * @param t Position of the point of the curve
-     * @param direction 1 forwards, -1 backwards
-     * @return The value of the derivative
-     */
-    public double getDerivX(double t, int direction) {
-        double delta = direction * DELTA_DERIVATIVE;
-        double slope = (getFunctionValueX(t + delta) - getFunctionValueX(t)) / delta;
-        return slope;
+        Vec v1 = getFunctionValue(t + delta);
+        Vec v2 = getFunctionValue(t);
+        return v1.minusInSite(v2).multInSite(1 / delta);
     }
 
     @Override
@@ -323,15 +276,14 @@ public class ParametricCurve extends Shape {
         this.functionY = this.functionYBackup;
     }
 
-    /**
-     * Returns the tangent vector at a value of the independent variable. The
-     * componentes are the derivatives
-     *
-     * @param t0 Value to get the tangent vector
-     * @return The tangent vector (x'(t),y'(t))
-     */
-    public Vec getTangentVector(double t0) {
-        return new Vec(getDerivX(t0, 1), getDerivY(t0, 1));
-    }
-
+//    /**
+//     * Returns the tangent vector at a value of the independent variable. The
+//     * componentes are the derivatives
+//     *
+//     * @param t0 Value to get the tangent vector
+//     * @return The tangent vector (x'(t),y'(t))
+//     */
+//    public Vec getTangentVector(double t0) {
+//        return new Vec(getDerivX(t0, 1), getDerivY(t0, 1));
+//    }
 }

@@ -104,7 +104,7 @@
                     </execution>
                 </executions>
             </plugin>
-            <plugin>
+<!--            <plugin>
                 <groupId>org.sonatype.plugins</groupId>
                 <artifactId>nexus-staging-maven-plugin</artifactId>
                 <version>1.6.9</version>
@@ -114,14 +114,14 @@
                     <nexusUrl>https://oss.sonatype.org/</nexusUrl>
                     <autoReleaseAfterClose>true</autoReleaseAfterClose>
                 </configuration>
-                <!--                <dependencies>
+                                <dependencies>
                     <dependency>
                         <groupId>com.thoughtworks.xstream</groupId>
                         <artifactId>xstream</artifactId>
                         <version>1.4.15</version>  apparently this needs to be exactly this version 
                     </dependency>
-                </dependencies>-->
-            </plugin>
+                </dependencies>
+            </plugin>-->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-source-plugin</artifactId>
