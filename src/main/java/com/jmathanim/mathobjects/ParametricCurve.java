@@ -66,11 +66,12 @@ public class ParametricCurve extends Shape {
     }
 
     /**
-     * Creates a new parametric curve in cartesian coordinates (x(t),y(t)),
+     * Creates a new parametric curve (3D version) in cartesian coordinates (x(t),y(t),z(t)),
      * using the specified number of points.
      *
      * @param fx x(t), expressed as a lambda function
      * @param fy y(t), expressed as a lambda function
+     * @param fz z(t), expressed as a lambda function
      * @param tmin Starting t parameter
      * @param tmax Ending t parameter
      * @param numPoints Number of points to compute
