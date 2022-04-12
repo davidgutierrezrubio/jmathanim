@@ -33,6 +33,7 @@ public class ParametricCurve extends Shape {
     public static final int DEFAULT_NUMBER_OF_POINTS = 50;
     private DoubleUnaryOperator functionXBackup;
     private DoubleUnaryOperator functionYBackup;
+    private DoubleUnaryOperator functionZBackup;
 
     /**
      * Different ways to define a function. Right now only lambda is supported
@@ -66,8 +67,8 @@ public class ParametricCurve extends Shape {
     }
 
     /**
-     * Creates a new parametric curve (3D version) in cartesian coordinates (x(t),y(t),z(t)),
-     * using the specified number of points.
+     * Creates a new parametric curve (3D version) in cartesian coordinates
+     * (x(t),y(t),z(t)), using the specified number of points.
      *
      * @param fx x(t), expressed as a lambda function
      * @param fy y(t), expressed as a lambda function
@@ -268,6 +269,7 @@ public class ParametricCurve extends Shape {
         super.saveState();
         this.functionXBackup = this.functionX;
         this.functionYBackup = this.functionY;
+        this.functionZBackup = this.functionZ;
     }
 
     @Override
@@ -275,16 +277,17 @@ public class ParametricCurve extends Shape {
         super.restoreState();
         this.functionX = this.functionXBackup;
         this.functionY = this.functionYBackup;
+        this.functionZ = this.functionZBackup;
     }
 
-//    /**
-//     * Returns the tangent vector at a value of the independent variable. The
-//     * componentes are the derivatives
-//     *
-//     * @param t0 Value to get the tangent vector
-//     * @return The tangent vector (x'(t),y'(t))
-//     */
-//    public Vec getTangentVector(double t0) {
-//        return new Vec(getDerivX(t0, 1), getDerivY(t0, 1));
-//    }
+    /**
+     * Returns a Shape object with the form of the curve
+     *
+     * @return The Shape created
+     */
+    public Shape getShape() {
+        Shape resul = new Shape(getPath());
+        resul.getMp().copyFrom(getMp());
+        return resul;
+    }
 }

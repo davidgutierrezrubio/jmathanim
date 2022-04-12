@@ -18,6 +18,7 @@
 package com.jmathanim.Animations;
 
 import com.jmathanim.Cameras.Camera;
+import com.jmathanim.Cameras.hasCameraParameters;
 import com.jmathanim.Styling.PaintStyle;
 import com.jmathanim.Utils.Anchor;
 import com.jmathanim.Utils.Rect;
@@ -30,6 +31,7 @@ import com.jmathanim.mathobjects.Point;
 import com.jmathanim.mathobjects.SVGMathObject;
 import com.jmathanim.mathobjects.Shape;
 import com.jmathanim.mathobjects.Text.LaTeXMathObject;
+import com.jmathanim.mathobjects.hasScalarParameter;
 import java.util.ArrayList;
 
 /**
@@ -744,6 +746,10 @@ public class PlayAnim {
 
     public void twistAndScale(double runTime, MathObject... objs) {
         scene.playAnimation(Commands.twistAndScale(runTime, objs));
+    }
+
+    public void scalar(double runTime, double start, double end, hasScalarParameter... objs) {
+        scene.playAnimation(ScalarAnimation.make(runTime, start, end, objs));
     }
 
 }

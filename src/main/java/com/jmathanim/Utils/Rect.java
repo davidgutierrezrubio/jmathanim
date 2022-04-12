@@ -32,6 +32,15 @@ public class Rect implements Stateable, Boxable {// TODO: Adjust this to 3D coor
     public double xmin, ymin, xmax, ymax, zmin, zmax;
     private Rect rBackup;
 
+    public static Rect centeredUnitSquare() {
+        return make(
+                Point.at(-.5,-.5),
+                Point.at(.5,-.5),
+                Point.at(.5,.5),
+                Point.at(-.5,.5)
+        );
+    }
+    
     public static Rect make(Point... points) {
         return make(Arrays.asList(points));
     }

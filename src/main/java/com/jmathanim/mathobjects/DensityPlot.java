@@ -21,6 +21,7 @@ import com.jmathanim.Utils.AffineJTransform;
 import com.jmathanim.Utils.ColorScale;
 import com.jmathanim.Utils.JMathAnimConfig;
 import com.jmathanim.Utils.Rect;
+import com.jmathanim.Utils.TriFunction;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
@@ -39,14 +40,15 @@ import javafx.scene.image.WritableImage;
  *
  * @author David Gutiérrez davidgutierrezrubio@gmail.com
  */
-public class DensityPlot extends AbstractJMImage {
+public class DensityPlot extends AbstractJMImage implements hasScalarParameter {
 
-    BiFunction<Double, Double, Double> densityLambdaFunction;
+    TriFunction<Double, Double, Double, Double> densityLambdaFunction;
     WritableImage raster;
     double widthView, heightView;
     private int wRaster;
     private int hRaster;
     private ColorScale colorScale;
+    private double scalar;
 
     /**
      * Creates a new Densityplot with the given domain
@@ -56,15 +58,28 @@ public class DensityPlot extends AbstractJMImage {
      * @return The density plot created
      */
     public static DensityPlot make(Rect area, BiFunction<Double, Double, Double> densityMap) {
+        TriFunction<Double, Double, Double, Double> triMap = (x, y, t) -> densityMap.apply(x, y);
+        return new DensityPlot(area, triMap);
+    }
+
+    /**
+     * Creates a new Densityplot with the given domain
+     *
+     * @param area The domain to represent, in a Rect object
+     * @param densityMap A lambda function, for example (x,y)-&gt;x*y
+     * @return The density plot created
+     */
+    public static DensityPlot make(Rect area, TriFunction<Double, Double, Double, Double> densityMap) {
         return new DensityPlot(area, densityMap);
     }
 
-    public DensityPlot(Rect area, BiFunction<Double, Double, Double> densityMap) {
+    private DensityPlot(Rect area, TriFunction<Double, Double, Double, Double> densityMap) {
         this.bbox = area.copy();
         this.densityLambdaFunction = densityMap;
         widthView = -1;// Ensures that will create the raster image in the first update of the object
         heightView = -1;
         colorScale = new ColorScale();
+        this.scalar = 0;
         scene = JMathAnimConfig.getConfig().getScene();
     }
 
@@ -110,7 +125,9 @@ public class DensityPlot extends AbstractJMImage {
     }
 
     private void updatePixels() {
-
+        if (raster == null) {
+            return;
+        }
         FutureTask<Integer> task = new FutureTask<>(new Callable<Integer>() {
             @Override
             public Integer call() throws Exception {
@@ -119,7 +136,7 @@ public class DensityPlot extends AbstractJMImage {
                 for (int i = 0; i < wRaster; i++) {
                     for (int j = 0; j < hRaster; j++) {
                         Point p = bbox.getRelPoint(i * 1d / wRaster, 1 - j * 1d / hRaster);
-                        double z = densityLambdaFunction.apply(p.v.x, p.v.y);
+                        double z = densityLambdaFunction.apply(p.v.x, p.v.y, getScalar());
                         pixelWriter.setColor(i, j, colorScale.getColorValue(z).getFXColor());
                     }
                 }
@@ -143,7 +160,7 @@ public class DensityPlot extends AbstractJMImage {
             for (int i = 0; i < wRaster; i++) {
                 for (int j = 0; j < hRaster; j++) {
                     Point p = bbox.getRelPoint(i * 1d / wRaster, 1 - j * 1d / hRaster);
-                    double z = densityLambdaFunction.apply(p.v.x, p.v.y);
+                    double z = densityLambdaFunction.apply(p.v.x, p.v.y, getScalar());
                     if (z < a) {
                         a = z;
                     }
@@ -171,11 +188,16 @@ public class DensityPlot extends AbstractJMImage {
      *
      * @return
      */
-    public BiFunction<Double, Double, Double> getFunction() {
+    public TriFunction<Double, Double, Double, Double> getFunction() {
         return densityLambdaFunction;
     }
 
     public void setFunction(BiFunction<Double, Double, Double> densityMap) {
+        this.densityLambdaFunction = (x, y, t) -> densityMap.apply(x, y);
+        updatePixels();
+    }
+
+    public void setFunction(TriFunction<Double, Double, Double, Double> densityMap) {
         this.densityLambdaFunction = densityMap;
         updatePixels();
     }
@@ -192,6 +214,17 @@ public class DensityPlot extends AbstractJMImage {
     public <T extends MathObject> T applyAffineTransform(AffineJTransform tr) {
         // Nothing to do (for now...)
         return (T) this;
+    }
+
+    @Override
+    public double getScalar() {
+        return scalar;
+    }
+
+    @Override
+    public void setScalar(double scalar) {
+        this.scalar = scalar;
+        updatePixels();
     }
 
 }
