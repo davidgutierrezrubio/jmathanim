@@ -80,7 +80,7 @@ public abstract class MathObject implements Drawable, Updateable, Stateable, Box
      * @return Vec object with center
      */
     public Point getCenter() {
-        return this.getBoundingBox().getCenter();//TODO: Adapt this to 3D!
+        return this.getBoundingBox().getCenter();
     }
 
     /**
@@ -97,7 +97,7 @@ public abstract class MathObject implements Drawable, Updateable, Stateable, Box
     }
 
     /**
-     * Shift object. Overloaded method
+     * Shift object. Overloaded method (2D version)
      *
      * @param <T> MathObject subclass
      * @param x x-coordinate of shift vector
@@ -109,7 +109,7 @@ public abstract class MathObject implements Drawable, Updateable, Stateable, Box
     }
 
     /**
-     * Shift object.Overloaded method.
+     * Shift object.Overloaded method (3D version)
      *
      * @param <T> MathObject subclass
      * @param x x-coordinate of shift vector
@@ -144,18 +144,28 @@ public abstract class MathObject implements Drawable, Updateable, Stateable, Box
     public <T extends MathObject> T scale(double s) {
         return scale(getCenter(), s, s);
     }
-
+ /**
+     * Scale from a given center (uniform scale)
+     *
+     * @param <T> MathObject subclass
+     * @param scaleCenter Scale center
+     * @param scale scale factor
+     * @return The same object, after scaling
+     */
+    public final <T extends MathObject> T scale(Point scaleCenter, double scale) {
+        return scale(scaleCenter, scale, scale, scale);
+    }
     /**
      * Scale from a given center (2D version)
      *
      * @param <T> MathObject subclass
-     * @param p Scale center
+     * @param scaleCenter Scale center
      * @param sx x-scale factor
      * @param sy y-scale factor
      * @return The same object, after scaling
      */
-    public final <T extends MathObject> T scale(Point p, double sx, double sy) {
-        return scale(p, sx, sy, 1);
+    public final <T extends MathObject> T scale(Point scaleCenter, double sx, double sy) {
+        return scale(scaleCenter, sx, sy, 1);
     }
 
     /**
@@ -335,12 +345,6 @@ public abstract class MathObject implements Drawable, Updateable, Stateable, Box
         drawAlpha(t);
         fillAlpha(t);
     }
-
-//    public void registerChildrenToBeUpdated(JMathAnimScene scene) {
-//    }
-//
-//    public void unregisterChildrenToBeUpdated(JMathAnimScene scene) {
-//    }
     @Override
     public void saveState() {
         getMp().saveState();

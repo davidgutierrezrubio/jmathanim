@@ -29,31 +29,68 @@ import java.util.HashMap;
  */
 public class ColorScale {
 
-    public static ColorScale createDefault(double minValue, double maxValue) {
+    /**
+     * Creates a default color scale from blue to red
+     *
+     * @param minValue Minimum value (blue)
+     * @param maxValue Maximum value (red)
+     * @return The created ColorScale object
+     */
+    public static ColorScale createDefaultBR(double minValue, double maxValue) {
         ColorScale cs = new ColorScale();
         cs.addMarker(minValue, JMColor.BLUE);
         cs.addMarker(maxValue, JMColor.RED);
         return cs;
     }
 
+    /**
+     * Creates a default color scale from black to white
+     *
+     * @param minValue Minimum value (black)
+     * @param maxValue Maximum value (white)
+     * @return The created ColorScale object
+     */
+    public static ColorScale createDefaultBW(double minValue, double maxValue) {
+        ColorScale cs = new ColorScale();
+        cs.addMarker(minValue, JMColor.BLACK);
+        cs.addMarker(maxValue, JMColor.WHITE);
+        return cs;
+    }
+
     private final ArrayList<Double> markers;
     private final HashMap<Double, JMColor> colors;
 
+    /**
+     * Creates a new, empty ColorScale object
+     */
     public ColorScale() {
         markers = new ArrayList<>();
         colors = new HashMap<>();
 
     }
 
+    /**
+     * Add a new marker. The color scale should return the given color at the
+     * given parameter
+     *
+     * @param marker Color
+     * @param color Parameter
+     */
     public void addMarker(double marker, JMColor color) {
         markers.add(marker);
         colors.put(marker, color);
         Collections.sort(markers);
     }
 
-    public JMColor getColorValue(double x) {
+    /**
+     * Returns the computed color at the given parameter
+     *
+     * @param t Parameter
+     * @return The computed color, according to the scale
+     */
+    public JMColor getColorValue(double t) {
         int n = 0;
-        while (markers.get(n) <= x) {
+        while (markers.get(n) <= t) {
             n++;
             if (n == markers.size()) {
                 return colors.get(markers.get(markers.size() - 1));
@@ -66,7 +103,7 @@ public class ColorScale {
         double b = markers.get(n);
         JMColor colA = colors.get(a).copy();
 
-        double alpha = (x - a) / (b - a);
+        double alpha = (t - a) / (b - a);
         JMColor colB = colors.get(b);
         return (JMColor) colA.interpolate(colB, alpha);
     }
@@ -82,8 +119,8 @@ public class ColorScale {
             markers.add(m);
         }
         colors.clear();
-        for (Double c: colors.keySet()) {
-            double m=c;
+        for (Double c : colors.keySet()) {
+            double m = c;
             colors.put(m, colors.get(m).copy());
         }
     }

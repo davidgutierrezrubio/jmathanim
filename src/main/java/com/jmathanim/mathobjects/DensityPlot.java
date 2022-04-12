@@ -169,7 +169,7 @@ public class DensityPlot extends AbstractJMImage implements hasScalarParameter {
                     }
                 }
             }
-            colorScale = ColorScale.createDefault(-1, 1);
+            colorScale = ColorScale.createDefaultBR(-1, 1);
         }
     }
 

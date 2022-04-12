@@ -35,15 +35,6 @@ public class Vec implements Stateable, HasDirection {
     public double xState, yState, zState;
 
     /**
-     * Overloaded constructor
-     *
-     * @param xy A size-2 array with the coordinates
-     */
-    public Vec(double[] xy) {
-        this(xy[0], xy[1]);
-    }
-
-    /**
      * Returns a new Vec with the given coordinates
      *
      * @param x x coordinate
@@ -179,16 +170,19 @@ public class Vec implements Stateable, HasDirection {
 
     }
 
+    /**
+     * Returns a copy of the vector
+     * @return The copy
+     */
     public Vec copy() {
         Vec resul = new Vec(x, y, z);
         return resul;
     }
 
-    public void copyFrom(double x, double y) {
-        this.x = x;
-        this.y = y;
-    }
-
+    /**
+     * Copy coordinates from given vector
+     * @param v Vector to copy from
+     */
     public void copyFrom(Vec v) {
         if (v != null) {
             this.x = v.x;
@@ -229,6 +223,16 @@ public class Vec implements Stateable, HasDirection {
     }
 
     /**
+     * Return the angle of the vector, between -PI and PI (2d version)
+     *
+     * @return The angle
+     */
+    public double getAngleRightQuad() {
+        double angle = Math.atan(this.y / this.x);
+        return angle;
+    }
+
+    /**
      * Rotates the vector the specified angle, storing the result in the
      * original vector (2d version)
      *
@@ -254,17 +258,6 @@ public class Vec implements Stateable, HasDirection {
      */
     public Vec rotate(double angle) {
         return this.copy().rotateInSite(angle);
-
-    }
-
-    /**
-     * Return the angle of the vector, between -PI and PI (2d version)
-     *
-     * @return The angle
-     */
-    public double getAngleFirstQuad() {
-        double angle = Math.atan(this.y / this.x);
-        return angle;
     }
 
     @Override
