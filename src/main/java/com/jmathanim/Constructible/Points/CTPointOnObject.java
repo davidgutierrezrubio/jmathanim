@@ -109,12 +109,14 @@ public class CTPointOnObject extends CTPoint {
     public CTPointOnObject copy() {
         CTPointOnObject copy = CTPointOnObject.make((Constructible) owner.copy());
         copy.getMp().copyFrom(this.getMp());
+        copy.freeMathObject(this.isThisMathObjectFree());
+        copy.getMathObject().copyFrom(this.getMathObject());
         return copy;
     }
 
     @Override
     public void registerUpdateableHook(JMathAnimScene scene) {
-        dependsOn(scene,owner);
+        dependsOn(scene, owner);
     }
 
 }

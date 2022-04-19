@@ -75,6 +75,8 @@ public class CTPoint extends Constructible {
     public CTPoint copy() {
         CTPoint copy = make(pointToDraw.copy());
         copy.getMp().copyFrom(this.getMp());
+        copy.freeMathObject(this.isThisMathObjectFree());
+        copy.getMathObject().copyFrom(this.getMathObject());
         return copy;
     }
 
@@ -123,7 +125,8 @@ public class CTPoint extends Constructible {
     public void copyStateFrom(MathObject obj) {
         if (obj instanceof CTPoint) {
             CTPoint cTPoint = (CTPoint) obj;
-            this.pointToDraw.copyStateFrom(cTPoint.pointToDraw);
+            this.getMathObject().copyStateFrom(cTPoint.getMathObject());
+            this.freeMathObject(cTPoint.isThisMathObjectFree());
         }
     }
 }

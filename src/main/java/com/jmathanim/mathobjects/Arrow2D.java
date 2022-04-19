@@ -374,6 +374,7 @@ public class Arrow2D extends MathObject {
 	@Override
 	public <T extends MathObject> T copy() {
 		Arrow2D copy = new Arrow2D(p1.copy(), p2.copy(), this.type1, this.type2);
+                copy.getMp().copyFrom(this.getMp());
 		copy.head1.getMp().copyFrom(this.head1.getMp());
 		copy.head2.getMp().copyFrom(this.head2.getMp());
 		copy.body.getMp().copyFrom(this.body.getMp());

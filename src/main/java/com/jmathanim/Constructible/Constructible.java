@@ -101,6 +101,7 @@ public abstract class Constructible extends MathObject {
         if (obj instanceof Constructible) {
             Constructible cnst = (Constructible) obj;
             getMathObject().copyStateFrom(cnst.getMathObject());
+            this.freeMathObject(cnst.isThisMathObjectFree());
         } else {
             getMathObject().copyStateFrom(obj);
         }

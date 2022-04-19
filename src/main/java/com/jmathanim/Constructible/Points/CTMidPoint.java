@@ -81,13 +81,20 @@ public class CTMidPoint extends CTPoint {
 
     @Override
     public CTMidPoint copy() {
+        CTMidPoint copy = null;
         switch (midPointType) {
             case TWO_POINTS:
-                return new CTMidPoint(midPointType, A.copy(), B.copy(), null);
+                copy = new CTMidPoint(midPointType, A.copy(), B.copy(), null);
+                break;
             case SEGMENT:
-                return new CTMidPoint(midPointType, null, null, segment);
+                copy = new CTMidPoint(midPointType, null, null, segment);
         }
-        return null;
+        if (copy != null) {
+            copy.getMp().copyFrom(this.getMp());
+            copy.freeMathObject(this.isThisMathObjectFree());
+            copy.getMathObject().copyFrom(this.getMathObject());
+        }
+        return copy;
     }
 
     @Override
@@ -121,10 +128,10 @@ public class CTMidPoint extends CTPoint {
     public void registerUpdateableHook(JMathAnimScene scene) {
         switch (midPointType) {
             case SEGMENT:
-                dependsOn(scene,this.segment);
+                dependsOn(scene, this.segment);
                 break;
             case TWO_POINTS:
-                dependsOn(scene,this.A, this.B);
+                dependsOn(scene, this.A, this.B);
         }
     }
 }

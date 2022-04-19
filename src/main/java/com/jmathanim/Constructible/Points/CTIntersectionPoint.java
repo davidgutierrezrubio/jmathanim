@@ -257,6 +257,8 @@ public class CTIntersectionPoint extends CTPoint {
     public CTIntersectionPoint copy() {
         CTIntersectionPoint copy = make((Constructible) c1.copy(), (Constructible) c2.copy());
         copy.getMp().copyFrom(this.getMp());
+        copy.getMathObject().copyFrom(this.getMathObject());
+        copy.freeMathObject(this.isThisMathObjectFree());
         return copy;
     }
 
@@ -286,9 +288,9 @@ public class CTIntersectionPoint extends CTPoint {
         }
     }
 
-    @Override
-    public Constructible applyAffineTransform(AffineJTransform transform) {
-        getMathObject().applyAffineTransform(transform);
-        return this;
-    }
+//    @Override
+//    public Constructible applyAffineTransform(AffineJTransform transform) {
+//        getMathObject().applyAffineTransform(transform);
+//        return this;
+//    }
 }
