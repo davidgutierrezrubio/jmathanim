@@ -155,7 +155,7 @@ public class JavaFXRenderer extends Renderer {
     public final void initializeJavaFXWindow() throws Exception {
         new Thread(() -> Application.launch(StandaloneSnapshot.FXStarter.class)).start();
         // block until FX toolkit initialization is complete:
-        StandaloneSnapshot.FXStarter.awaitFXToolkit();
+        StandaloneSnapshot.FXStarter.waitForInit();
         JavaFXRenderer r = this;
         FutureTask<Integer> task = new FutureTask<>(new Callable<Integer>() {
 
