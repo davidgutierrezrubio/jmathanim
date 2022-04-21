@@ -15,8 +15,10 @@ You can also follow my [Youtube](https://www.youtube.com/channel/UCeczwEqSrAwZbP
 
 # What's new?
 
-Version 0.9.6-SNAPSHOT (11/04/22)
+Version 0.9.6-SNAPSHOT (21/04/22)
 
+* Updated to JavaFX 18
+* Fixed annoying bug that prevented JavaFX to properly draw cubic curves when control points matched destiny point
 * Removed extra frame that appeared at the end of an animation.
 * Implemented proper `copy()` method for `PointOnFunctionGraph`.
 * Fixed bugs and polished code in `ParametricCurve` class.
