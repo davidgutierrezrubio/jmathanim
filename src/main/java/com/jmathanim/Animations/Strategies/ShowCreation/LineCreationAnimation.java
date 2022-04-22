@@ -17,9 +17,11 @@
  */
 package com.jmathanim.Animations.Strategies.ShowCreation;
 
+import com.jmathanim.Animations.Animation;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.Line;
 import com.jmathanim.mathobjects.Shape;
+import java.util.function.DoubleUnaryOperator;
 
 /**
  * Animation to create infinite lines. Temporarily replaces the line with a
@@ -69,5 +71,10 @@ public class LineCreationAnimation extends AbstractCreationStrategy {
 		addObjectsToscene(line);
 
 	}
-
+  @Override
+    public <T extends Animation> T composeLambdaWithThis(DoubleUnaryOperator lambdaComp) {
+        anim.composeLambdaWithThis(lambdaComp);
+        return (T) this;
+    }
+    
 }

@@ -35,6 +35,7 @@ import com.jmathanim.mathobjects.Line;
 import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.MultiShapeObject;
 import com.jmathanim.mathobjects.Shape;
+import java.util.function.DoubleUnaryOperator;
 
 /**
  *
@@ -190,7 +191,7 @@ public class Transform extends AnimationWithEffects {
                             convertToMultiShapeObject(mobjDestiny));
                     JMathAnimScene.logger.debug("Transform method: Multishape");
                     break;
-                
+
                 case INTERPOLATE_SIMPLE_SHAPES_BY_POINT:
                     transformStrategy = new PointInterpolationSimpleShapeTransform(runTime, (Shape) mobjTransformed,
                             (Shape) mobjDestiny);
@@ -203,7 +204,7 @@ public class Transform extends AnimationWithEffects {
                 case HOMOTHECY_TRANSFORM:
                     transformStrategy = new IsomorphicTransformAnimation(runTime, (Shape) mobjTransformed, (Shape) mobjDestiny);
                     JMathAnimScene.logger.debug("Transform method: Isomorphic");
-                    
+
                     break;
                 case ROTATE_AND_SCALEXY_TRANSFORM:
                     transformStrategy = new RotateAndScaleXYTransform(runTime, (Shape) mobjTransformed, (Shape) mobjDestiny);
@@ -294,7 +295,7 @@ public class Transform extends AnimationWithEffects {
      * the C object. Animations must be initialized before calling this method
      * or it will return null.
      *
-     * @return The intermediate transformed object. 
+     * @return The intermediate transformed object.
      */
     public MathObject getIntermediateTransformedObject() {
         if (transformStrategy != null) {
@@ -303,4 +304,11 @@ public class Transform extends AnimationWithEffects {
             return null;
         }
     }
+
+    @Override
+    public <T extends Animation> T composeLambdaWithThis(DoubleUnaryOperator lambdaComp) {
+        transformStrategy.composeLambdaWithThis(lambdaComp);
+        return (T) this;
+    }
+
 }

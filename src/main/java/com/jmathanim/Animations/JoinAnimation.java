@@ -38,7 +38,7 @@ public class JoinAnimation extends Animation {
         return resul;
     }
 
-    private JoinAnimation(double runTime, Animation... anims) {
+    protected JoinAnimation(double runTime, Animation... anims) {
         super(runTime);
         animations = new ArrayList<>();
         animations.addAll(Arrays.asList(anims));

@@ -189,4 +189,13 @@ public class FirstDrawThenFillAnimation extends AbstractCreationStrategy {
         }
         return (T) this;
     }
+    
+     @Override
+    public <T extends Animation> T composeLambdaWithThis(DoubleUnaryOperator lambdaComp) {
+        anim.composeLambdaWithThis(lambdaComp);
+        return (T) this;
+    }
+    
+    
+    
 }

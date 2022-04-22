@@ -60,7 +60,6 @@ public class ShowCreation extends Animation {
     private Animation creationStrategy;
     private ShowCreationStrategy strategyType = ShowCreationStrategy.NONE;
 
-
     /**
      * Static constructor. Creates an animation that shows the creation of the
      * specified MathObject.
@@ -88,7 +87,7 @@ public class ShowCreation extends Animation {
             this.mobj = ((Constructible) mobj).getMathObject();
             removeThisAtTheEnd.add(this.mobj);
             addThisAtTheEnd.add(mobj);
-        }else{
+        } else {
             this.mobj = mobj;
             addThisAtTheEnd.add(mobj);
         }
@@ -144,8 +143,8 @@ public class ShowCreation extends Animation {
         if (creationStrategy != null) {
             creationStrategy.finishAnimation();
         }
-          super.finishAnimation();
-       
+        super.finishAnimation();
+
     }
 
     /**
@@ -224,7 +223,7 @@ public class ShowCreation extends Animation {
     private void createStrategy() throws ClassCastException {
         switch (this.strategyType) {
             case POINT_CREATION:
-                creationStrategy=Commands.fadeIn(this.runTime, mobj);
+                creationStrategy = Commands.fadeIn(this.runTime, mobj);
                 break;
             case GROUP_CREATION:
                 creationStrategy = new GroupCreationAnimation(this.runTime, (MathObjectGroup) mobj);
@@ -324,6 +323,12 @@ public class ShowCreation extends Animation {
             creationStrategy.setLambda(lambda);
         } catch (NullPointerException e) {
         }
+        return (T) this;
+    }
+
+    @Override
+    public <T extends Animation> T composeLambdaWithThis(DoubleUnaryOperator lambdaComp) {
+        creationStrategy.composeLambdaWithThis(lambdaComp);
         return (T) this;
     }
 
