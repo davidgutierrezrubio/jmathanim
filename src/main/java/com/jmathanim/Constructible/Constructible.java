@@ -43,6 +43,7 @@ public abstract class Constructible extends MathObject {
 
     /**
      * Returns the free object flag value
+     *
      * @return True if drawed MathObject is not updated. False otherwise.
      */
     public boolean isThisMathObjectFree() {
@@ -98,6 +99,9 @@ public abstract class Constructible extends MathObject {
 
     @Override
     public void copyStateFrom(MathObject obj) {
+        if (obj == null) {
+            return;
+        }
         if (obj instanceof Constructible) {
             Constructible cnst = (Constructible) obj;
             getMathObject().copyStateFrom(cnst.getMathObject());
@@ -105,6 +109,7 @@ public abstract class Constructible extends MathObject {
         } else {
             getMathObject().copyStateFrom(obj);
         }
+        getMp().copyFrom(obj.getMp());
     }
 
     @Override

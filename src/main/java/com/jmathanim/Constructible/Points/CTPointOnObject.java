@@ -30,14 +30,14 @@ import com.jmathanim.mathobjects.Point;
  * @author David
  */
 public class CTPointOnObject extends CTPoint {
-
+    
     private final Constructible owner;
-
+    
     private enum PointOnObjectType {
         CTLine, CTSegment, CTRay
     };
     PointOnObjectType type = null;
-
+    
     public static CTPointOnObject make(Constructible owner, Point p) {
         CTPointOnObject resul = new CTPointOnObject(owner, p);
         if (owner instanceof CTAbstractLine) {
@@ -52,16 +52,16 @@ public class CTPointOnObject extends CTPoint {
         resul.rebuildShape();
         return resul;
     }
-
+    
     public static CTPointOnObject make(Constructible owner) {
         return make(owner, Point.origin());
     }
-
+    
     private CTPointOnObject(Constructible owner, Point p) {
         super(p);
         this.owner = owner;
     }
-
+    
     @Override
     public void rebuildShape() {
         Vec v1, v2;
@@ -99,24 +99,22 @@ public class CTPointOnObject extends CTPoint {
             pointToDraw.v.copyFrom(projectionPointCoordinates);
         }
     }
-
+    
     @Override
     public void update(JMathAnimScene scene) {
         rebuildShape();
     }
-
+    
     @Override
     public CTPointOnObject copy() {
-        CTPointOnObject copy = CTPointOnObject.make((Constructible) owner.copy());
-        copy.getMp().copyFrom(this.getMp());
-        copy.freeMathObject(this.isThisMathObjectFree());
-        copy.getMathObject().copyFrom(this.getMathObject());
+        CTPointOnObject copy = CTPointOnObject.make(owner.copy());
+        copy.copyStateFrom(this);
         return copy;
     }
-
+    
     @Override
     public void registerUpdateableHook(JMathAnimScene scene) {
         dependsOn(scene, owner);
     }
-
+    
 }

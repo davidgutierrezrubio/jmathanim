@@ -97,7 +97,7 @@ public class CTRay extends CTAbstractLine {
     @Override
     public CTRay copy() {
         CTRay copy = CTRay.make(A.copy(), B.copy());
-        copy.getMp().copyFrom(this.getMp());
+        copy.copyStateFrom(this);
         return copy;
     }
 

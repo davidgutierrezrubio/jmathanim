@@ -258,16 +258,16 @@ class GeogebraCommandParser {
         //If this object is already added, do not process it
         //for example if it is the result of an intersection command
         CTPoint resul;
+        // Get the coordinates
+        Element elCoords = firstElementWithTag(el, "coords");
+        double x = Double.valueOf(elCoords.getAttribute("x"));
+        double y = Double.valueOf(elCoords.getAttribute("y"));
         if (!geogebraElements.containsKey(label)) {
-            // Get the coordinates
-            Element elCoords = firstElementWithTag(el, "coords");
-            double x = Double.valueOf(elCoords.getAttribute("x"));
-            double y = Double.valueOf(elCoords.getAttribute("y"));
             resul = CTPoint.make(Point.at(x, y));
         } else {
             resul = (CTPoint) geogebraElements.get(label);
+            resul.moveTo(x, y);
         }
-
         Element pointSize = firstElementWithTag(el, "pointSize");
         double th = Double.valueOf(pointSize.getAttribute("val")) * 30;
         // TODO: Add a z value here
@@ -589,7 +589,8 @@ class GeogebraCommandParser {
         String label = getOutputArgument(el, 0);
         MathObject[] objs = getArrayOfParameters(el);
         Constructible ob1 = (Constructible) objs[0];
-        registerGeogebraElement(label, CTPointOnObject.make(ob1));
+        final CTPointOnObject p = CTPointOnObject.make(ob1);
+        registerGeogebraElement(label, p);
         JMathAnimScene.logger.debug("Imported point " + label + " on object " + objs[0]);
     }
 

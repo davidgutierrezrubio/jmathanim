@@ -46,12 +46,14 @@ public class CTMirrorPoint extends CTPoint {
 
     public static CTMirrorPoint make(Point orig, Line axis) {
         CTMirrorPoint resul = new CTMirrorPoint(CTPoint.make(orig), CTLine.make(axis), null);
+        resul.rebuildShape();
         resul.mirrorType = MirrorType.AXIAL;
         return resul;
     }
 
     public static CTMirrorPoint make(Point orig, Point A, Point B) {
         CTMirrorPoint resul = new CTMirrorPoint(CTPoint.make(orig), CTSegment.make(A, B), null);
+        resul.rebuildShape();
         resul.mirrorType = MirrorType.AXIAL;
         return resul;
     }
@@ -60,6 +62,7 @@ public class CTMirrorPoint extends CTPoint {
         if (axis instanceof CTAbstractLine) {
             CTMirrorPoint resul = new CTMirrorPoint(orig, (CTAbstractLine) axis, null);
             resul.mirrorType = MirrorType.AXIAL;
+            resul.rebuildShape();
             return resul;
         }
         if (axis instanceof CTSegment) {
@@ -67,6 +70,7 @@ public class CTMirrorPoint extends CTPoint {
             CTLine line = CTLine.make(segment.getP1(), segment.getP1());
             CTMirrorPoint resul = new CTMirrorPoint(orig, line, null);
             resul.mirrorType = MirrorType.AXIAL;
+            resul.rebuildShape();
             return resul;
         }
         if (axis instanceof CTRay) {
@@ -74,12 +78,14 @@ public class CTMirrorPoint extends CTPoint {
             CTLine line = CTLine.make(ray.getP1(), ray.getP1());
             CTMirrorPoint resul = new CTMirrorPoint(orig, line, null);
             resul.mirrorType = MirrorType.AXIAL;
+            resul.rebuildShape();
             return resul;
         }
         if (axis instanceof CTPoint) {
             CTPoint cp = (CTPoint) axis;
             CTMirrorPoint resul = new CTMirrorPoint(orig, null, cp);
             resul.mirrorType = MirrorType.CENTRAL;
+            resul.rebuildShape();
             return resul;
         }
         JMathAnimScene.logger.warn("Don't know how to build this Mirror object with axis " + axis);

@@ -99,7 +99,7 @@ public class CTTransformedLine extends CTAbstractLine {
             default:
                 copy = makeRotatedLine(lineToTransform.copy(), center.copy(), angle.copy());
         }
-        copy.getMp().copyFrom(getMp());
+        copy.copyStateFrom(this);
         copy.rebuildShape();
         return copy;
     }

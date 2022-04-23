@@ -62,7 +62,7 @@ public class CTPerpBisector extends CTAbstractLine {
     @Override
     public CTPerpBisector copy() {
         CTPerpBisector copy = CTPerpBisector.makePerpBisector(A.copy(), B.copy());
-        copy.getMp().copyFrom(this.getMp());
+        copy.copyStateFrom(this);
         return copy;
     }
 

@@ -81,7 +81,7 @@ public class CTVector extends CTAbstractLine {
     @Override
     public CTVector copy() {
         CTVector copy = CTVector.makeVector(this.A.copy(), this.B.copy());
-        copy.getMp().copyFrom(this.getMp());
+        copy.copyStateFrom(this);
         return copy;
     }
 

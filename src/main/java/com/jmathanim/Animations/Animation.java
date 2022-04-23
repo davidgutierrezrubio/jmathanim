@@ -18,6 +18,7 @@
 package com.jmathanim.Animations;
 
 import com.jmathanim.Animations.Strategies.Transform.Optimizers.OptimizePathsStrategy;
+import com.jmathanim.Constructible.Constructible;
 import com.jmathanim.Utils.UsefulLambdas;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.MathObject;

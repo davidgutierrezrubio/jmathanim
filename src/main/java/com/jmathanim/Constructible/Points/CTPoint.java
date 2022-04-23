@@ -73,11 +73,21 @@ public class CTPoint extends Constructible {
 
     @Override
     public CTPoint copy() {
-        CTPoint copy = make(pointToDraw.copy());
-        copy.getMp().copyFrom(this.getMp());
+        CTPoint copy = make(new Point(this.v));
         copy.freeMathObject(this.isThisMathObjectFree());
         copy.getMathObject().copyFrom(this.getMathObject());
+        copy.getMp().copyFrom(this.getMp());
         return copy;
+    }
+
+    @Override
+    public void copyStateFrom(MathObject obj) {
+        if (obj instanceof CTPoint) {
+            CTPoint cnst = (CTPoint) obj;
+            this.v.copyFrom(cnst.v);
+            this.getMathObject().copyStateFrom(cnst.getMathObject());
+            this.freeMathObject(cnst.isThisMathObjectFree());
+        }
     }
 
     /**
@@ -121,12 +131,4 @@ public class CTPoint extends Constructible {
         return this;
     }
 
-    @Override
-    public void copyStateFrom(MathObject obj) {
-        if (obj instanceof CTPoint) {
-            CTPoint cTPoint = (CTPoint) obj;
-            this.getMathObject().copyStateFrom(cTPoint.getMathObject());
-            this.freeMathObject(cTPoint.isThisMathObjectFree());
-        }
-    }
 }

@@ -92,7 +92,7 @@ public class CTLineOrthogonal extends CTAbstractLine {
     @Override
     public CTLineOrthogonal copy() {
         CTLineOrthogonal copy = make(A.copy(), dir);
-        copy.getMp().copyFrom(this.getMp());
+        copy.copyStateFrom(this);
         return copy;
     }
 

@@ -31,12 +31,10 @@ import com.jmathanim.mathobjects.updateableObjects.Updateable;
  */
 public class CTLine extends CTAbstractLine {
 
-   
     protected Line lineToDraw;
     protected CTPoint A;
     protected CTPoint B;
     HasDirection dir;
- 
 
     /**
      * Creates a Constructible line from a Line
@@ -104,16 +102,17 @@ public class CTLine extends CTAbstractLine {
         switch (lineType) {
             case PointPoint:
                 copy = CTLine.make(A.copy(), B.copy());
-                copy.getMp().copyFrom(this.getMp());
+                 copy.copyStateFrom(this);
                 break;
             case PointVector:
                 copy = CTLine.make(A.copy(), this.dir);
-                copy.getMp().copyFrom(this.getMp());
+                 copy.copyStateFrom(this);
                 break;
         }
         return copy;
     }
- @Override
+
+    @Override
     public Vec getDirection() {
         switch (lineType) {
             case PointPoint:
@@ -145,7 +144,6 @@ public class CTLine extends CTAbstractLine {
             lineToDraw.getP2().v.copyFrom(P2.v);
         }
     }
-
 
     @Override
     public void registerUpdateableHook(JMathAnimScene scene) {

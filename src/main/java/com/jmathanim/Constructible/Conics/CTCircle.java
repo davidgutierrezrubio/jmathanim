@@ -169,7 +169,7 @@ public class CTCircle extends CTAbstractCircle {
                 copy = CTCircle.makeCenterRadius(circleCenter.copy(), radius.copy());
         }
         if (copy != null) {
-            copy.getMp().copyFrom(this.getMp());
+             copy.copyStateFrom(this);
         }
         return copy;
     }
@@ -179,7 +179,7 @@ public class CTCircle extends CTAbstractCircle {
         CTCircle c = (CTCircle) obj;
         switch (circleType) {
             case CENTER_POINT:
-                this.circleCenter = c.circleCenter;
+                this.circleCenter = c.getCircleCenter();
                 this.A.copyStateFrom(c.A);
                 break;
             case THREE_POINTS:
@@ -188,11 +188,11 @@ public class CTCircle extends CTAbstractCircle {
                 this.C.copyStateFrom(c.C);
                 break;
             case CENTER_RADIUS:
-                this.circleCenter = c.circleCenter;
+                this.circleCenter = c.getCircleCenter();
                 this.radius.copyStateFrom(c.radius);
         }
         this.circleType = c.circleType;
-        getMp().copyFrom(c.getMp());
+        super.copyStateFrom(obj);
         rebuildShape();
     }
 

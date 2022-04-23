@@ -79,7 +79,7 @@ public class CTSegment extends CTAbstractLine implements hasScalarParameter {
     @Override
     public CTSegment copy() {
         CTSegment copy = CTSegment.make(this.A.copy(), this.B.copy());
-        copy.getMp().copyFrom(this.getMp());
+        copy.copyStateFrom(this);
         return copy;
     }
 

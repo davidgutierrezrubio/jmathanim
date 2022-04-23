@@ -20,6 +20,7 @@ package com.jmathanim.Animations;
 import com.jmathanim.Cameras.Camera;
 import com.jmathanim.Cameras.Camera3D;
 import com.jmathanim.Constructible.Constructible;
+import com.jmathanim.Renderers.Renderer;
 import com.jmathanim.Styling.JMColor;
 import com.jmathanim.Styling.MODrawProperties;
 import com.jmathanim.Styling.PaintStyle;
@@ -1171,7 +1172,7 @@ public class Commands {
     public static ShiftAnimation moveIn(double runtime, Anchor.Type enterAnchor, MathObject... mathObjects) {
 
         Rect r = JMathAnimConfig.getConfig().getCamera().getMathView();
-
+        Renderer rend = JMathAnimConfig.getConfig().getRenderer();
         ArrayList<MathObject> toAnimateArrayList = new ArrayList<>();
         ArrayList<MathObject> toRemove = new ArrayList<>();
         for (MathObject obj : mathObjects) {
@@ -1190,9 +1191,10 @@ public class Commands {
                 removeThisAtTheEnd.addAll(toRemove);
                 JMathAnimScene.logger.debug("Initialized moveIn animation");
                 for (MathObject obj : toAnimateArray) {
+                    double gap=rend.ThicknessToMathWidth(obj)*2;
                     final Anchor.Type reverseAnchor = Anchor.reverseAnchorPoint(enterAnchor);
                     Point p = Anchor.getAnchorPoint(obj, reverseAnchor);
-                    Point q = Anchor.getAnchorPoint(Shape.rectangle(r), enterAnchor);
+                    Point q = Anchor.getAnchorPoint(Shape.rectangle(r.addGap(gap, gap)), enterAnchor);
                     switch (enterAnchor) {
                         case LEFT:
                             q.v.y = p.v.y;

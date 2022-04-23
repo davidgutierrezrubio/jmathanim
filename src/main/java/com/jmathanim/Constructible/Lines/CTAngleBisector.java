@@ -79,7 +79,7 @@ public class CTAngleBisector extends CTAbstractLine {
     @Override
     public CTAngleBisector copy() {
         CTAngleBisector copy = CTAngleBisector.make(A.copy(), B.copy(), C.copy());
-        copy.getMp().copyFrom(this.getMp());
+        copy.copyStateFrom(this);
         return copy;
     }
 
@@ -105,7 +105,7 @@ public class CTAngleBisector extends CTAbstractLine {
     public void registerUpdateableHook(JMathAnimScene scene) {
         switch (bisectorType) {
             case PointPointPoint:
-                dependsOn(scene,this.A, this.B, this.C);
+                dependsOn(scene, this.A, this.B, this.C);
                 break;
             case LineLine:
             //TODO: Implement

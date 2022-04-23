@@ -79,7 +79,7 @@ public class CTCircleSector extends CTAbstractCircle {
     @Override
     public CTCircleSector copy() {
         CTCircleSector copy = CTCircleSector.make(center.copy(), A.copy(), B.copy());
-        copy.getMp().copyFrom(getMp());
+       copy.copyStateFrom(this);
         return copy;
     }
 
@@ -87,10 +87,15 @@ public class CTCircleSector extends CTAbstractCircle {
     public void copyStateFrom(MathObject obj) {
         if (obj instanceof CTCircleSector) {
             CTCircleSector cnst = (CTCircleSector) obj;
-            arcTODraw.getPath().clear();
-            Shape copyArc = cnst.getMathObject().copy();
-            arcTODraw.getPath().jmPathPoints.addAll(copyArc.getPath().jmPathPoints);
+//            arcTODraw.getPath().clear();
+//            Shape copyArc = cnst.getMathObject().copy();
+//            arcTODraw.getPath().jmPathPoints.addAll(copyArc.getPath().jmPathPoints);
+            this.A.copyStateFrom(cnst.A);
+            this.B.copyStateFrom(cnst.B);
+            this.center.copyStateFrom(cnst.center);
         }
+        super.copyStateFrom(obj);
+        rebuildShape();
     }
 
     @Override

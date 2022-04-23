@@ -133,7 +133,7 @@ public class CTRegularPolygon extends Constructible {
     @Override
     public CTRegularPolygon copy() {
         CTRegularPolygon copy = make(this.A.copy(), this.B.copy(), this.nSides);
-        copy.getMp().copyFrom(this.getMp());
+         copy.copyStateFrom(this);
         return copy;
     }
 

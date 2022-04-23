@@ -85,14 +85,11 @@ public class CTMidPoint extends CTPoint {
         switch (midPointType) {
             case TWO_POINTS:
                 copy = new CTMidPoint(midPointType, A.copy(), B.copy(), null);
+                copy.copyStateFrom(this);
                 break;
             case SEGMENT:
                 copy = new CTMidPoint(midPointType, null, null, segment);
-        }
-        if (copy != null) {
-            copy.getMp().copyFrom(this.getMp());
-            copy.freeMathObject(this.isThisMathObjectFree());
-            copy.getMathObject().copyFrom(this.getMathObject());
+                copy.copyStateFrom(this);
         }
         return copy;
     }
