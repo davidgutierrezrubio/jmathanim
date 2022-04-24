@@ -9,7 +9,7 @@
         <style name="default">
             <drawColor>#277da1</drawColor>
             <fillColor>#00000000</fillColor>
-            <thickness>8</thickness>
+            <thickness>12</thickness>
         </style> 
         <style name="dotdefault">
             <drawColor>#F94144</drawColor>
@@ -21,41 +21,48 @@
             <fillColor>white</fillColor>
             <thickness>1</thickness>
         </style>
+        <style name="arrowdefault">
+            <drawColor>#277da1</drawColor>
+            <fillColor>#00000000</fillColor>
+            <thickness>24</thickness>
+            <scaleArrowHead1>2</scaleArrowHead1>
+            <scaleArrowHead2>2</scaleArrowHead2>
+        </style>
         <style name="solidRed">
             <drawColor>#F9C74F</drawColor>
             <fillColor>#F94144</fillColor>
-            <thickness>12</thickness>
+            <thickness>16</thickness>
         </style>
         <style name="solidBlue">
             <drawColor>#277DA1</drawColor>
             <fillColor>#577590</fillColor>
-            <thickness>12</thickness>
+            <thickness>16</thickness>
         </style>
         <style name="solidGreen">
             <drawColor>#43AA8B</drawColor>
             <fillColor>#90BE6D</fillColor>
-            <thickness>12</thickness>
+            <thickness>16</thickness>
         </style>
         <style name="solidOrange">
             <drawColor>#F3722C</drawColor>
             <fillColor>#F8961E</fillColor>
-            <thickness>8</thickness>
+            <thickness>16</thickness>
         </style> 
          <style name="fn1">
             <drawColor>#277DA1</drawColor>
             <fillColor>none</fillColor>
-            <thickness>8</thickness>
+            <thickness>12</thickness>
         </style> 
          <style name="fn2">
             <drawColor>#F94144</drawColor>
             <fillColor>none</fillColor>
-            <thickness>8</thickness>
+            <thickness>12</thickness>
         </style> 
          <style name="fn3">
             <drawColor>#F9C74F</drawColor>
             <fillColor>none</fillColor>
             <dashStyle>DASHED</dashStyle>
-            <thickness>4</thickness>
+            <thickness>12</thickness>
         </style> 
     </styles>
 </JMathAnimConfig>

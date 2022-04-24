@@ -158,7 +158,7 @@ class GeogebraCommandParser {
 
         // Visibility
         Element show = firstElementWithTag(el, "show");
-        resul.visible = ("true".equals(show.getAttribute("object")));
+        resul.setVisible("true".equals(show.getAttribute("object").toLowerCase()));
 
         // Layer
         Element layer = firstElementWithTag(el, "layer");

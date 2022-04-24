@@ -109,25 +109,27 @@ public class MODrawProperties implements Stylable, Stateable {
 
     // When added a new property here, remember to include it in rawCopyFrom and
     // copyFrom
-    public Boolean faceToCamera = false;
-    public Vec faceToCameraPivot = Vec.to(0,0);
+    private Boolean faceToCamera = false;
+    private Vec faceToCameraPivot = Vec.to(0,0);
 
     // If false, thickness is computed to be a percentage of the width
     // to ensure zoom or resolution doesn't affect the result
-    public Boolean absoluteThickness = true;
+    private Boolean absoluteThickness = true;
 
-    public Boolean visible = true;
-    public DashStyle dashStyle = DashStyle.SOLID;
+    private Boolean visible = true;
+    private DashStyle dashStyle = DashStyle.SOLID;
     // Styles used for specified objects
     // Point
-    public DotSyle dotStyle = DotSyle.CIRCLE;
+    private DotSyle dotStyle = DotSyle.CIRCLE;
 
     private PaintStyle drawColor;
     private PaintStyle fillColor;
     private Integer layer = null;
-    public StrokeLineCap linecap = StrokeLineCap.ROUND;
+    private StrokeLineCap linecap = StrokeLineCap.ROUND;
     private MODrawProperties mpBackup;
-    public Double thickness = 1d;
+    private Double thickness = 1d;
+    private Double scaleArrowHead1=1d;
+    private Double scaleArrowHead2=1d;
 
     public MODrawProperties() {
         drawColor = new JMColor(1, 1, 1, 1);
@@ -172,8 +174,37 @@ public class MODrawProperties implements Stylable, Stateable {
         visible = (prop.isVisible() == null ? visible : prop.isVisible());
         faceToCamera = (prop.isFaceToCamera() == null ? faceToCamera : prop.isFaceToCamera());
         faceToCameraPivot = (prop.getFaceToCameraPivot() == null ? faceToCameraPivot : prop.getFaceToCameraPivot());
+        scaleArrowHead1=(prop.getScaleArrowHead1()==null ? scaleArrowHead1: prop.getScaleArrowHead1());
+        scaleArrowHead2=(prop.getScaleArrowHead1()==null ? scaleArrowHead2: prop.getScaleArrowHead2());
+    
     }
 
+     /**
+     * Copy attributes from the given {@link MODrawProperties} object Null
+     * values are copied also
+     *
+     * @param mp The object to copy attributes from.
+     */
+    @Override
+    public void rawCopyFrom(MODrawProperties mp) {
+        drawColor = mp.drawColor.copy();
+        fillColor = mp.fillColor.copy();
+        thickness = mp.thickness;
+        dashStyle = mp.dashStyle;
+        absoluteThickness = mp.absoluteThickness;
+        dashStyle = mp.dashStyle;
+        layer = mp.layer;
+        dotStyle = mp.dotStyle;
+        linecap = mp.linecap;
+        visible = mp.visible;
+        faceToCamera = mp.faceToCamera;
+        faceToCameraPivot = mp.faceToCameraPivot;
+        scaleArrowHead1=mp.scaleArrowHead1;
+        scaleArrowHead2=mp.scaleArrowHead2;
+    }
+
+    
+    
     @Override
     public void setAbsoluteThickness(Boolean absThickness) {
         this.absoluteThickness = absThickness;
@@ -370,28 +401,7 @@ public class MODrawProperties implements Stylable, Stateable {
         setThickness(getThickness() * multT);
     }
 
-    /**
-     * Copy attributes from the given {@link MODrawProperties} object Null
-     * values are copied also
-     *
-     * @param mp The object to copy attributes from.
-     */
-    @Override
-    public void rawCopyFrom(MODrawProperties mp) {
-        drawColor = mp.drawColor.copy();
-        fillColor = mp.fillColor.copy();
-        thickness = mp.thickness;
-        dashStyle = mp.dashStyle;
-        absoluteThickness = mp.absoluteThickness;
-        dashStyle = mp.dashStyle;
-        layer = mp.layer;
-        dotStyle = mp.dotStyle;
-        linecap = mp.linecap;
-        visible = mp.visible;
-        faceToCamera = mp.faceToCamera;
-        faceToCameraPivot = mp.faceToCameraPivot;
-    }
-
+   
     @Override
     public void restoreState() {
         this.copyFrom(this.mpBackup);
@@ -422,7 +432,28 @@ public class MODrawProperties implements Stylable, Stateable {
         this.faceToCameraPivot = pivot;
     }
 
+    @Override
+    public void setScaleArrowHead1(Double scale) {
+        this.scaleArrowHead1=scale;
+    }
+
+    @Override
+    public void setScaleArrowHead2(Double scale) {
+        this.scaleArrowHead2=scale;
+    }
+
+    @Override
+    public Double getScaleArrowHead1() {
+        return scaleArrowHead1;
+    }
+
+    @Override
+    public Double getScaleArrowHead2() {
+         return scaleArrowHead2;
+    }
+
     public enum DashStyle {
         SOLID, DASHED, DOTTED, DASHDOTTED
     }
+    
 }

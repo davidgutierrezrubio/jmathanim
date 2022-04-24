@@ -248,22 +248,28 @@ public class JMathAnimConfig {
         defaultMP.setDrawColor(JMColor.WHITE);
         defaultMP.setFillColor(JMColor.GRAY);
         defaultMP.setFillAlpha(0);// No filling by default
-        defaultMP.thickness = 4d;
-        defaultMP.dashStyle = MODrawProperties.DashStyle.SOLID;
-        defaultMP.absoluteThickness = false;
+        defaultMP.setThickness(4d);
+        defaultMP.setDashStyle(MODrawProperties.DashStyle.SOLID);
+        defaultMP.setAbsoluteThickness(false);
         styles.put("DEFAULT", defaultMP);
 
         MODrawProperties defaultDotMP = new MODrawProperties();
         defaultDotMP.setDrawColor(JMColor.WHITE);
         defaultDotMP.setFillColor(JMColor.GRAY);
         defaultDotMP.setDotStyle(Point.DotSyle.CIRCLE);
-        defaultDotMP.thickness = 30d;
+        defaultDotMP.setThickness(30d);
         styles.put("DOTDEFAULT", defaultMP);
 
         MODrawProperties latexDefaultMP = defaultMP.copy();
         latexDefaultMP.setFillColor(JMColor.WHITE);
         latexDefaultMP.setFillAlpha(1);// Latex formulas are filled by default
         styles.put("LATEXDEFAULT", latexDefaultMP);
+        
+        MODrawProperties defaultArrowMP = new MODrawProperties();
+        defaultDotMP.setDrawColor(JMColor.WHITE);
+        defaultDotMP.setFillColor(JMColor.WHITE);
+        defaultDotMP.setThickness(8d);
+        styles.put("ARROWDEFAULT", defaultArrowMP);
     }
 
     public MODrawProperties getDefaultMP() {

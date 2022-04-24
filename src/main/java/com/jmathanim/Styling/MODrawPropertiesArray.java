@@ -327,9 +327,36 @@ public class MODrawPropertiesArray implements Stylable, Stateable {
 
     @Override
     public void setFaceToCameraPivot(Vec pivot) {
-          for (MathObject obj : objects) {
+        for (MathObject obj : objects) {
             obj.getMp().setFaceToCameraPivot(pivot);
         }
         mpRef.setFaceToCameraPivot(pivot);
     }
+
+    @Override
+    public void setScaleArrowHead1(Double scale) {
+        for (MathObject obj : objects) {
+            obj.getMp().setScaleArrowHead1(scale);
+        }
+        mpRef.setScaleArrowHead1(scale);
+    }
+
+    @Override
+    public void setScaleArrowHead2(Double scale) {
+        for (MathObject obj : objects) {
+            obj.getMp().setScaleArrowHead2(scale);
+        }
+        mpRef.setScaleArrowHead2(scale);
+    }
+
+    @Override
+    public Double getScaleArrowHead1() {
+        return mpRef.getScaleArrowHead1();
+    }
+
+    @Override
+    public Double getScaleArrowHead2() {
+           return mpRef.getScaleArrowHead2();
+    }
+    
 }

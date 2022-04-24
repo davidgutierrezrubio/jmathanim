@@ -135,7 +135,16 @@ public interface Stylable {
     public void setFaceToCamera(Boolean faceToCamera);
 
     public void setFaceToCameraPivot(Vec pivot);
+
+    public void setScaleArrowHead1(Double scale);
+
+    public void setScaleArrowHead2(Double scale);
     
+    
+    public Double getScaleArrowHead1();
+
+    public Double getScaleArrowHead2();
+
     public Stylable getSubMP(int n);
 
     public void multThickness(double multT);

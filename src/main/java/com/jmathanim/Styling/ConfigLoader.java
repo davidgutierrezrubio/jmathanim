@@ -173,7 +173,7 @@ public class ConfigLoader {
         NodeList childs = template.getChildNodes();
         for (int n = 0; n < childs.getLength(); n++) {
             Node item = childs.item(n);
-            String name=item.getNodeName();
+            String name = item.getNodeName();
             switch (name) {
                 case "drawColor":
                     mp.setDrawColor(JMColor.parse(item.getTextContent()));
@@ -182,20 +182,28 @@ public class ConfigLoader {
                     mp.setFillColor(JMColor.parse(item.getTextContent()));
                     break;
                 case "thickness":
-                    mp.thickness = Double.parseDouble(item.getTextContent());
+                    mp.setThickness(Double.parseDouble(item.getTextContent()));
                     break;
                 case "dashStyle":
-                    mp.dashStyle = MODrawProperties.parseDashStyle(item.getTextContent());
+                    mp.setDashStyle(MODrawProperties.parseDashStyle(item.getTextContent()));
                     break;
                 case "absoluteThickness":
-                    mp.absoluteThickness = Boolean.parseBoolean(item.getTextContent());
+                    mp.setAbsoluteThickness(Boolean.parseBoolean(item.getTextContent()));
                     break;
                 case "dotStyle":
-                    mp.dotStyle = MODrawProperties.parseDotStyle(item.getTextContent());
+                    mp.setDotStyle(MODrawProperties.parseDotStyle(item.getTextContent()));
                     break;
-//                default:
-//                    JMathAnimScene.logger.warn("Tag {} not recognized",name);
-                    
+                case "#text":
+                    break;
+                case "scaleArrowHead1":
+                    mp.setScaleArrowHead1(Double.parseDouble(item.getTextContent()));
+                    break;
+                case "scaleArrowHead2":
+                    mp.setScaleArrowHead2(Double.parseDouble(item.getTextContent()));
+                    break;
+                default:
+                    JMathAnimScene.logger.warn("Tag {} not recognized", name);
+
             }
         }
         return mp;
