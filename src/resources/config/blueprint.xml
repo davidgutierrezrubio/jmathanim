@@ -15,6 +15,13 @@
             <fillColor>#FFFFFFFF</fillColor>
             <thickness>1</thickness>
         </style>
+           <style name="arrowdefault">
+            <drawColor>#FFFFFFFF</drawColor>
+            <fillColor>#FFFFFFFF</fillColor>
+            <thickness>4</thickness>
+            <scaleArrowHead1>1</scaleArrowHead1>
+            <scaleArrowHead2>1</scaleArrowHead2>
+        </style>
         <style name="solidRed">
             <drawColor>WHITE</drawColor>
             <fillColor>#f55652</fillColor>
