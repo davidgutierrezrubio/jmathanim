@@ -566,4 +566,15 @@ public class Rect implements Stateable, Boxable {// TODO: Adjust this to 3D coor
         }
         return null;//Unknow case, return null
     }
+    public Rect getTransformedRect(AffineJTransform tr) {
+        Point a=getUL();
+        Point b=getDL();
+        Point c=getUR();
+        Point d=getDR();
+        return make(
+                a.applyAffineTransform(tr),
+                b.applyAffineTransform(tr),
+                c.applyAffineTransform(tr),
+                d.applyAffineTransform(tr));
+    }
 }

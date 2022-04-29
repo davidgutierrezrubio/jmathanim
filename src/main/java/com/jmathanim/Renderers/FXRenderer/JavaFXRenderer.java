@@ -21,12 +21,14 @@ import com.jmathanim.Cameras.Camera;
 import com.jmathanim.Renderers.MovieEncoders.VideoEncoder;
 import com.jmathanim.Renderers.MovieEncoders.XugglerVideoEncoder;
 import com.jmathanim.Renderers.Renderer;
+import com.jmathanim.Utils.AffineJTransform;
 import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.ResourceLoader;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import static com.jmathanim.jmathanim.JMathAnimScene.DEGREES;
 import com.jmathanim.mathobjects.AbstractJMImage;
+import com.jmathanim.mathobjects.JMImage;
 import com.jmathanim.mathobjects.JMPath;
 import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.Shape;
@@ -37,6 +39,7 @@ import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.FutureTask;
@@ -66,7 +69,10 @@ import javafx.scene.shape.StrokeType;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
+import javafx.scene.transform.Affine;
+import javafx.scene.transform.NonInvertibleTransformException;
 import javafx.scene.transform.Rotate;
+import javafx.scene.transform.Scale;
 import javafx.scene.transform.Translate;
 import javax.imageio.ImageIO;
 
@@ -426,7 +432,6 @@ public class JavaFXRenderer extends Renderer {
 
     @Override
     public Rect createImage(InputStream stream) {
-        Rect r = new Rect(0, 0, 0, 0);
         String fileName = stream.toString();
         Image image;
         if (!images.containsKey(fileName)) {// If the image is not already loaded...
@@ -439,7 +444,13 @@ public class JavaFXRenderer extends Renderer {
             image = images.get(fileName);
         }
 
+        return getBboxFromImageCatalog(fileName);
+    }
+
+    private Rect getBboxFromImageCatalog(String fileName) {
+        Image image = images.get(fileName);
         // UL corner of bounding box initially set to (0,0)
+        Rect r = new Rect(0, 0, 0, 0);
         r.ymin = -camera.screenToMath(image.getHeight());
         r.xmax = camera.screenToMath(image.getWidth());
         return r;
@@ -451,6 +462,7 @@ public class JavaFXRenderer extends Renderer {
 
     @Override
     public void drawImage(AbstractJMImage obj) {
+        Rect bbox = getBboxFromImageCatalog(obj.getId());
         ImageView imageView;
         if (obj.isCached()) {
             Image image = getImageFromCatalog(obj);
@@ -458,17 +470,16 @@ public class JavaFXRenderer extends Renderer {
         } else {
             imageView = new ImageView(obj.getImage());
         }
-        // setting the fit height and width of the image view
-        double[] xy = camera.mathToScreenFX(obj.bbox.getUL().v);
-        imageView.setX(xy[0]);
-        imageView.setY(xy[1]);
-        imageView.setFitHeight(camera.mathToScreen(obj.bbox.getHeight()));
-        imageView.setFitWidth(camera.mathToScreen(obj.bbox.getWidth()));
-        imageView.setPreserveRatio(obj.preserveRatio);
-        imageView.setSmooth(true);
-        imageView.setCache(true);
-        imageView.setOpacity(obj.getMp().getDrawColor().getAlpha());
-        imageView.setRotate(-obj.rotateAngle / DEGREES);
+        imageView.setFitHeight(bbox.getHeight());
+        imageView.setFitWidth(bbox.getWidth());
+       
+        Affine camToScreen = FXPathUtils.camToScreenAffineTransform(camera);
+        imageView.getTransforms().add(camToScreen);
+        
+        //Swap y coordinate
+        imageView.getTransforms().add(new Scale(1, -1));
+        imageView.getTransforms().add(FXPathUtils.affineJToAffine(obj.getCurrentViewTransform()));
+        imageView.getTransforms().add(new Scale(1, -1));
         fxnodes.add(imageView);
     }
 

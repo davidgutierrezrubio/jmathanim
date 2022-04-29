@@ -56,13 +56,14 @@ public class JMImage extends AbstractJMImage {
     private final InputStream stream;
 
     public JMImage(InputStream stream) {
+        super();
         this.stream = stream;
         setCached(true);
         this.filename = stream.toString();
         renderer = (JavaFXRenderer) JMathAnimConfig.getConfig().getRenderer();
         this.bbox = renderer.createImage(stream);
         double sc = renderer.getMediaHeight() * 1d / 1080d;// Scales it taking as reference 1920x1080 production output
-        this.scale(sc);
+//        this.scale(sc);
     }
 
     public void setImage(String fn) {
@@ -80,11 +81,7 @@ public class JMImage extends AbstractJMImage {
     @Override
     public JMImage copy() {
         JMImage resul = new JMImage(this.stream);
-        resul.bbox.copyFrom(this.bbox);
-        resul.getMp().copyFrom(this.getMp());
-        resul.preserveRatio = this.preserveRatio;
-        resul.rotateAngle = this.rotateAngle;
-        resul.rotateAngleBackup = this.rotateAngleBackup;
+        resul.copyStateFrom(this);
         return resul;
     }
 
@@ -97,8 +94,7 @@ public class JMImage extends AbstractJMImage {
         bbox.copyFrom(img.bbox);
         getMp().copyFrom(img.getMp());
         preserveRatio = img.preserveRatio;
-        rotateAngle = img.rotateAngle;
-        rotateAngleBackup = img.rotateAngleBackup;
+        this.currentViewTransform.copyFrom(img.currentViewTransform);
     }
 
     @Override
@@ -109,32 +105,22 @@ public class JMImage extends AbstractJMImage {
     public void restoreState() {
         super.restoreState();
         bbox.restoreState();
-        this.rotateAngle = this.rotateAngleBackup;
+        this.currentViewTransform.restoreState();
     }
 
     @Override
     public void saveState() {
         super.saveState();
         bbox.saveState();
-        this.rotateAngleBackup = this.rotateAngle;
+        this.currentViewTransform.saveState();
     }
 
-    @Override
-    public <T extends MathObject> T scale(Point scaleCenter, double sx, double sy, double sz) {
-        bbox.copyFrom(
-                Rect.make(bbox.getUL().scale(scaleCenter, sx, sy, sz), bbox.getDR().scale(scaleCenter, sx, sy, sz)));
-        return (T) this;
-    }
-
-    @Override
-    public <T extends MathObject> T rotate(Point center, double angle) {
-        Point centerBbox = bbox.getCenter();
-        centerBbox.rotate(center, angle);
-        bbox.copyFrom(bbox.shifted(bbox.getCenter().to(centerBbox)));
-        // For now, ignore rotate center
-        rotateAngle += angle;
-        return (T) this;
-    }
+//    @Override
+//    public <T extends MathObject> T scale(Point scaleCenter, double sx, double sy, double sz) {
+//        bbox.copyFrom(
+//                Rect.make(bbox.getUL().scale(scaleCenter, sx, sy, sz), bbox.getDR().scale(scaleCenter, sx, sy, sz)));
+//        return (T) this;
+//    }
 
     /**
      * Place the image adequately shifting, rotating and scaling so that lower
@@ -145,13 +131,10 @@ public class JMImage extends AbstractJMImage {
      * @return This object
      */
     public JMImage adjustTo(Point A, Point B) {
-        rotate(-rotateAngle);
-        double w = getBoundingBox().getWidth();
-        Point D = getBoundingBox().getDL();
-        shift(D.to(A));
-        rotate(A, A.to(B).getAngle());
-        double sc = A.to(B).norm() / w;
-        scale(A, sc, sc);
+
+        Point origA = bbox.getDL();
+        Point origB = bbox.getDR();
+        currentViewTransform = AffineJTransform.createDirect2DIsomorphic(origA, origB, A, B, 1);
         return this;
     }
 
@@ -169,9 +152,4 @@ public class JMImage extends AbstractJMImage {
         return renderer.getImageFromCatalog(this);
     }
 
-    @Override
-    public <T extends MathObject> T applyAffineTransform(AffineJTransform tr) {
-        // Nothing to do (for now...)
-        return (T) this;
-    }
 }

@@ -346,15 +346,28 @@ public class Commands {
         };
     }// End of rotate command
 
-    public static AnimationWithEffects affineTransform(double runtime, Point a, Point b, Point c, Point d, Point e,
-            Point f, MathObject... objects) {
+    /**
+     * Animates an affine transformation that maps A,B,C into D,E,F
+     *
+     * @param runtime
+     * @param A First origin point
+     * @param B Second origin point
+     * @param C Third origin point
+     * @param D Image of first origin point
+     * @param E Image of second origin point
+     * @param F Image of third origin point
+     * @param objects
+     * @return The transform
+     */
+    public static AnimationWithEffects affineTransform(double runtime, Point A, Point B, Point C, Point D, Point E,
+            Point F, MathObject... objects) {
         AnimationWithEffects resul = new AnimationWithEffects(runtime) {
-            Point orig1 = a.copy();
-            Point orig2 = b.copy();
-            Point orig3 = c.copy();
-            Point dst1 = d.copy();
-            Point dst2 = e.copy();
-            Point dst3 = f.copy();
+            Point orig1 = A.copy();
+            Point orig2 = B.copy();
+            Point orig3 = C.copy();
+            Point dst1 = D.copy();
+            Point dst2 = E.copy();
+            Point dst3 = F.copy();
             MathObject[] mathObjects = objects;
             AffineJTransform tr;
 
@@ -804,7 +817,7 @@ public class Commands {
                     obj.scale(1 - lt);
 //                    obj.multDrawAlpha(1 - lt);
 //                    obj.multFillAlpha(1 - lt);
-                    obj.thickness(obj.getMp().getThickness()*(1-lt));
+                    obj.thickness(obj.getMp().getThickness() * (1 - lt));
                     obj.rotate(lt * angle);
                 }
             }
@@ -1191,7 +1204,7 @@ public class Commands {
                 removeThisAtTheEnd.addAll(toRemove);
                 JMathAnimScene.logger.debug("Initialized moveIn animation");
                 for (MathObject obj : toAnimateArray) {
-                    double gap=rend.ThicknessToMathWidth(obj)*2;
+                    double gap = rend.ThicknessToMathWidth(obj) * 2;
                     final Anchor.Type reverseAnchor = Anchor.reverseAnchorPoint(enterAnchor);
                     Point p = Anchor.getAnchorPoint(obj, reverseAnchor);
                     Point q = Anchor.getAnchorPoint(Shape.rectangle(r.addGap(gap, gap)), enterAnchor);
@@ -1320,38 +1333,39 @@ public class Commands {
         s1.thickness(width).getMp().setAbsoluteThickness(false);
         s2.thickness(width).getMp().setAbsoluteThickness(false);
         Concatenate resul = new Concatenate(
-                new ShowCreation(.5 * runtime, s1).setLambda(t->t), 
-                new ShowCreation(.5 * runtime, s2).setLambda(t->t)
+                new ShowCreation(.5 * runtime, s1).setLambda(t -> t),
+                new ShowCreation(.5 * runtime, s2).setLambda(t -> t)
         );
         resul.setDebugName("crossOut");
         return resul;
     }
-    
+
     public static JoinAnimation crossAndFadeOut(double runtime, MathObject obj) {
-        JoinAnimation resul=JoinAnimation.make(runtime);
-        Rect bb=obj.getBoundingBox();
-          final Point a = bb.getUR();
+        JoinAnimation resul = JoinAnimation.make(runtime);
+        Rect bb = obj.getBoundingBox();
+        final Point a = bb.getUR();
         final Point b = bb.getDL();
         double width = JMathAnimConfig.getConfig().getRenderer().MathWidthToThickness(a.to(b).norm());
-        Shape cross=Shape.segment(a, b).thickness(width*.25).drawColor("red");
+        Shape cross = Shape.segment(a, b).thickness(width * .25).drawColor("red");
         cross.getMp().setLinecap(StrokeLineCap.SQUARE);
         //This tricky lambda is necessary due to the squared linecap
-        resul.add(ShowCreation.make(1,cross).setLambda(UsefulLambdas.restrictTo(.1, 1)));
-        resul.add(Commands.fadeOut(1, obj,cross));
+        resul.add(ShowCreation.make(1, cross).setLambda(UsefulLambdas.restrictTo(.1, 1)));
+        resul.add(Commands.fadeOut(1, obj, cross));
         return resul;
     }
-     public static JoinAnimation crossAndShrink(double runtime, MathObject obj) {
-        JoinAnimation resul=JoinAnimation.make(runtime);
-        Rect bb=obj.getBoundingBox();
-      final Point a = bb.getUR();
+
+    public static JoinAnimation crossAndShrink(double runtime, MathObject obj) {
+        JoinAnimation resul = JoinAnimation.make(runtime);
+        Rect bb = obj.getBoundingBox();
+        final Point a = bb.getUR();
         final Point b = bb.getDL();
         double width = JMathAnimConfig.getConfig().getRenderer().MathWidthToThickness(a.to(b).norm());
-        Shape cross=Shape.segment(a, b).thickness(width*.25).drawColor("red");
+        Shape cross = Shape.segment(a, b).thickness(width * .25).drawColor("red");
         cross.getMp().setLinecap(StrokeLineCap.SQUARE);
         //This tricky lambda is necessary due to the squared linecap
-        resul.add(ShowCreation.make(2,cross).setLambda(UsefulLambdas.restrictTo(.1, 1)));
-        resul.add(Commands.shrinkOut(1, obj,cross));
+        resul.add(ShowCreation.make(2, cross).setLambda(UsefulLambdas.restrictTo(.1, 1)));
+        resul.add(Commands.shrinkOut(1, obj, cross));
         return resul;
     }
-    
+
 }

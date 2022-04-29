@@ -18,16 +18,22 @@
 package com.jmathanim.Renderers.FXRenderer;
 
 import com.jmathanim.Cameras.Camera;
+import com.jmathanim.Utils.AffineJTransform;
+import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.mathobjects.JMPath;
 import com.jmathanim.mathobjects.JMPathPoint;
 import com.jmathanim.mathobjects.Point;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.scene.shape.ClosePath;
 import javafx.scene.shape.CubicCurveTo;
 import javafx.scene.shape.LineTo;
 import javafx.scene.shape.MoveTo;
 import javafx.scene.shape.Path;
 import javafx.scene.shape.PathElement;
+import javafx.scene.transform.Affine;
+import javafx.scene.transform.NonInvertibleTransformException;
 
 /**
  * This class holds several methods to distille paths created with JavaFX
@@ -130,7 +136,7 @@ public class FXPathUtils {
             if (jmpath.jmPathPoints.get(n).isThisSegmentVisible) {
                 JMPathPoint jp = jmpath.jmPathPoints.get(n);
                 //JavaFX has problems drawin CubicCurves when control points are equal than points
-                if ((!jmpath.jmPathPoints.get(n).isCurved)||((jp.p.isEquivalentTo(jp.cpEnter, .001))&&(jp.p.isEquivalentTo(jp.cpExit, .001)))){
+                if ((!jmpath.jmPathPoints.get(n).isCurved) || ((jp.p.isEquivalentTo(jp.cpEnter, .001)) && (jp.p.isEquivalentTo(jp.cpExit, .001)))) {
                     final LineTo el = new LineTo(xy[0], xy[1]);
                     path.getElements().add(el);
                 } else {
@@ -248,5 +254,45 @@ public class FXPathUtils {
             resul[1] = Double.NaN;
         }
         return resul;
+    }
+
+    public static Affine camToScreenAffineTransform(Camera cam) {
+        double[] m0 = cam.mathToScreen(0, 0);
+        double[] mx = cam.mathToScreen(1, 0);
+        double[] my = cam.mathToScreen(0, 1);
+        Affine resul = new Affine(mx[0] - m0[0], mx[1] - m0[1], m0[0],
+                          -my[0] + m0[0], -my[1] + m0[1], m0[1]
+        );
+//        Affine resul = new Affine(mx[0] - m0[0], my[0] - m0[0], m0[0],
+//                -mx[1] +m0[1], -my[1] + m0[1], m0[1]
+//        );
+    return resul;
+    }
+    
+    public static Affine screenToCamAffineTransfrom(Camera cam) {
+        try {
+            Affine resul=camToScreenAffineTransform(cam);
+            resul.invert();
+            return resul;
+        } catch (NonInvertibleTransformException ex) {
+            Logger.getLogger(FXPathUtils.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
+    }
+    /**
+     * Matrix that stores the transform, with the following form: {{1, x, y, z},
+     * {0, vx, vy, vz},{0, wx, wy, wz},{0 tx ty tz}} Where x,y,z is the image of
+     * (0,0,0) and v,w,t are the images of canonical vectors.
+     */
+    public static Affine affineJToAffine(AffineJTransform tr) {
+        double orig[] = tr.getMatrix().getRow(0);
+        double vx[] = tr.getMatrix().getRow(1);
+        double vy[] = tr.getMatrix().getRow(2);
+        double vz[] = tr.getMatrix().getRow(3);
+        return new Affine(
+                vx[1], vy[1], vz[1], orig[1],
+                vx[2], vy[2], vz[2], orig[2],
+                vx[3], vy[3], vz[3], orig[3]
+        );
     }
 }

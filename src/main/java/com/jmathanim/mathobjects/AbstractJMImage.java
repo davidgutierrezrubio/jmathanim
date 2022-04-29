@@ -18,6 +18,7 @@
 package com.jmathanim.mathobjects;
 
 import com.jmathanim.Renderers.Renderer;
+import com.jmathanim.Utils.AffineJTransform;
 import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
@@ -29,41 +30,50 @@ import javafx.scene.image.Image;
  */
 public abstract class AbstractJMImage extends MathObject {
 
-	public Rect bbox;
-	public boolean preserveRatio = false;
-	public double rotateAngle = 0;
-	public double rotateAngleBackup = 0;
-	private boolean cached = false;
+    protected Rect bbox;
+    public boolean preserveRatio = false;
+    private boolean cached = false;
+    protected AffineJTransform currentViewTransform;
 
-	@Override
-	public Rect getBoundingBox() {
-		return bbox.getRotatedRect(this.rotateAngle);
-	}
+    public AbstractJMImage() {
+        this.currentViewTransform = new AffineJTransform();
+    }
 
-	@Override
-	public <T extends MathObject> T shift(Vec shiftVector) {
-		bbox.copyFrom(bbox.shifted(shiftVector));
-		return (T) this;
-	}
+    
+    
+    @Override
+    public Rect getBoundingBox() {
+        return bbox.getTransformedRect(currentViewTransform);
+    }
 
-	@Override
-	public void draw(JMathAnimScene scene, Renderer r) {
-		if (isVisible()) {
-			r.drawImage(this);
-		}
-		scene.markAsAlreadyDrawed(this);
-	}
+    @Override
+    public <T extends MathObject> T applyAffineTransform(AffineJTransform tr) {
+        currentViewTransform = currentViewTransform.compose(tr);
+        return (T) this;
+    }
 
-	public boolean isCached() {
-		return cached;
-	}
+    @Override
+    public void draw(JMathAnimScene scene, Renderer r) {
+        if (isVisible()) {
+            r.drawImage(this);
+        }
+        scene.markAsAlreadyDrawed(this);
+    }
 
-	public void setCached(boolean cached) {
-		this.cached = cached;
-	}
+    public boolean isCached() {
+        return cached;
+    }
 
-	abstract public String getId();
+    public void setCached(boolean cached) {
+        this.cached = cached;
+    }
 
-	abstract public Image getImage();
+    abstract public String getId();
 
+    abstract public Image getImage();
+
+    public AffineJTransform getCurrentViewTransform() {
+        return currentViewTransform;
+    }
+    
 }
