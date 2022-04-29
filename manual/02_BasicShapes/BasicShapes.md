@@ -348,6 +348,10 @@ waitSeconds(3);
 
 ![image01](image01.gif)
 
+Since version 0.9.6-SNAPSHOT, any affine transformation can be done to a `JMImage`object.
+
+
+
 ## Importing SVG Objects
 
 Let's see it with an example: I used a free SVG file example from https://freesvg.org/donald-knuth. As with the bitmap images, the SVG files are loaded by default from the `resources/images` folder.
