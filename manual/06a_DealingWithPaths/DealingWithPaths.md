@@ -250,6 +250,8 @@ Will give the following figure:
 
 <img src="05_mergingExample.png" alt="Merging paths" style="zoom:50%;" />
 
+In the Gallery section you can see how to generate Koch and Hilbert curves iteratively using the `merge` method.
+
 # Subpaths
 
 The `JMPath`command `.subpath(double a, double b)` returns the subpath that goes from a to b, where a and b are interpolation parameters as described before, from 0 to 1.

@@ -67,7 +67,7 @@ The second method is where you should perform all the animations and drawings:
   @Override
     public void runSketch() throws Exception {
         Point p=Point.at(0,0);
-        play.shift(2,1,0,p);
+        play.shift(2,Vec.to(1,0),p);
         waitSeconds(3);
     }
 ```

@@ -258,7 +258,7 @@ public void runSketch() throws Exception {
 
 private Shape getNextHilbert(Shape box, Shape previous) {
     //Next iteration of hilbert is done scaling the previous to 50%,
-    //make 4 copies and merge them properly rotated and positioned
+    //making 4 copies and merging them properly rotated and positioned
 
     Shape nextHilbert = previous.copy().scale(box.getPoint(1), .5, .5);
     //Creates a reflection about a diagonal of s1 and apply to it
