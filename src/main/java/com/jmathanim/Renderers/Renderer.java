@@ -18,6 +18,7 @@
 package com.jmathanim.Renderers;
 
 import com.jmathanim.Cameras.Camera;
+import com.jmathanim.Renderers.FXRenderer.JavaFXRenderer;
 import com.jmathanim.Utils.JMathAnimConfig;
 import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.Vec;
@@ -25,7 +26,13 @@ import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.AbstractJMImage;
 import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.Shape;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.imageio.ImageIO;
 
 /**
  * Coordinates x,y,z are always given in (0,0) to (w,h), where (0,0) is upper
@@ -71,6 +78,28 @@ public abstract class Renderer {
 
     abstract public void finish(int frameCount);
 
+    abstract protected BufferedImage getRenderedImage(int frameCount);
+
+    public void saveImage() {
+        int frameCount = config.getScene().getFrameCount();
+        saveImage(config.getOutputFileName() + String.format("%06d", frameCount) + ".png", "png");
+    }
+
+    public void saveImage(String filename, String format) {
+        int frameCount = config.getScene().getFrameCount();
+        BufferedImage renderedImage = getRenderedImage(frameCount);
+        writeImageToPNG(filename, renderedImage, format);
+    }
+
+    protected void writeImageToPNG(String filename, BufferedImage renderedImage, String format) {
+        try {
+            File file = new File(config.getOutputDir().getCanonicalPath() + File.separator + filename);
+            ImageIO.write(renderedImage, format, file);
+        } catch (IOException ex) {
+            Logger.getLogger(JavaFXRenderer.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
     /**
      * Clear current renderer, with the background color
      */
@@ -93,6 +122,8 @@ public abstract class Renderer {
     abstract public void debugText(String text, Vec loc);
 
     abstract public double MathWidthToThickness(double w);
+
     abstract public double ThicknessToMathWidth(double th);
+
     abstract public double ThicknessToMathWidth(MathObject obj);
 }

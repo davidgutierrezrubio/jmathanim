@@ -229,6 +229,25 @@ public class JavaFXRenderer extends Renderer {
 
     @Override
     public void saveFrame(int frameCount) {
+        BufferedImage renderedImage = getRenderedImage(frameCount);
+
+        if (config.isCreateMovie()) {
+//			if ((frameCount % config.fps) == 0) {
+//				newLineCounter++;
+//				newLineCounter = 0;
+//			}
+            videoEncoder.writeFrame(renderedImage, frameCount);
+        }
+        if (config.isSaveToPNG()) {
+            String filename=config.getOutputFileName() + String.format("%06d", frameCount) + ".png";
+            writeImageToPNG(filename, renderedImage,"png");
+        }
+    }
+
+
+
+    @Override
+    protected BufferedImage getRenderedImage(int frameCount) {
         Rectangle clip = new Rectangle(8000, 6000);
         clip.setLayoutX(25);
         clip.setLayoutY(25);
@@ -266,7 +285,6 @@ public class JavaFXRenderer extends Renderer {
                 return fxScene.getRoot().snapshot(params, null);
             }
         });
-
         Platform.runLater(task);
         try {
             img2 = task.get();
@@ -274,22 +292,7 @@ public class JavaFXRenderer extends Renderer {
         } catch (InterruptedException | ExecutionException ex) {
             Logger.getLogger(JavaFXRenderer.class.getName()).log(Level.SEVERE, null, ex);
         }
-
-        if (config.isCreateMovie()) {
-//			if ((frameCount % config.fps) == 0) {
-//				newLineCounter++;
-//				newLineCounter = 0;
-//			}
-            videoEncoder.writeFrame(bi, frameCount);
-        }
-        if (config.isSaveToPNG()) {
-            try {
-                File fpng = new File(config.getOutputDir().getCanonicalPath() + File.separator + config.getOutputFileName() + String.format("%06d", frameCount) + ".png");
-                ImageIO.write(bi, "png", fpng);
-            } catch (IOException ex) {
-                Logger.getLogger(JavaFXRenderer.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        }
+        return bi;
     }
 
     @Override

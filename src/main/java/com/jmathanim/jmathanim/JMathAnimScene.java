@@ -39,6 +39,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -96,6 +97,10 @@ public abstract class JMathAnimScene {
      * Number of frames
      */
     protected int frameCount;
+
+    public int getFrameCount() {
+        return frameCount;
+    }
     /**
      * Frames per second used in the animation
      */
@@ -419,6 +424,27 @@ public abstract class JMathAnimScene {
 
     }
 
+    public final void saveImage(String filename) {
+        doDraws();
+        String fn;
+        String format;
+        //Determine extension
+        Optional<String> extension = Optional.ofNullable(filename)
+                .filter(f -> f.contains("."))
+                .map(f -> f.substring(filename.lastIndexOf(".") + 1));
+
+        if (extension.isEmpty()) {
+            //Add png as default extension
+            fn = filename + ".png";
+            format = "png";
+        } else {
+            format = extension.get();
+            fn=filename;
+        }
+
+        renderer.saveImage(fn, format);
+    }
+
     /**
      * Save the current frame using the renderer. Renderer should save the frame
      * to video, or any other format.
@@ -470,16 +496,16 @@ public abstract class JMathAnimScene {
         boolean finished = false;
         while (!finished) {
             finished = true;
-             boolean anyAnimationRunning=false;
+            boolean anyAnimationRunning = false;
             for (Animation anim : anims) {
-                anyAnimationRunning=anyAnimationRunning | (anim.getStatus()==Animation.Status.RUNNING);
+                anyAnimationRunning = anyAnimationRunning | (anim.getStatus() == Animation.Status.RUNNING);
                 final boolean resultAnimation = anim.processAnimation();
                 finished = finished & resultAnimation;
                 if (resultAnimation) {
                     anim.finishAnimation();
                 }
             }
-            if ((!finished)&&(true)) {//If all animations are finished, no need to advance frame
+            if ((!finished) && (true)) {//If all animations are finished, no need to advance frame
                 advanceFrame();
             }
         }
