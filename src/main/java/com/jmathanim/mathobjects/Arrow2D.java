@@ -159,6 +159,7 @@ public class Arrow2D extends MathObject {
         MultiShapeObject resul = Arrow2D.buildArrowHead(type);
         resul.getMp().copyFrom(getMp());
         resul.thickness(4);
+        resul.getMp().setLinecap(StrokeLineCap.SQUARE);
         return resul;
     }
 
@@ -312,7 +313,7 @@ public class Arrow2D extends MathObject {
         if (this.head1.size() > 0) {
             // Scaling
             double mw = scene.getCamera().getMathView().getHeight();
-            double sc1 = this.getMp().getScaleArrowHead1()* defaultArrowHead1Size1 * mw / head1.getBoundingBox().getHeight();
+            double sc1 = this.getMp().getScaleArrowHead1() * defaultArrowHead1Size1 * mw / head1.getBoundingBox().getHeight();
             arrowHeadToDraw1.scale(sc1);
 
             // Shifting
@@ -330,13 +331,14 @@ public class Arrow2D extends MathObject {
             pa.p.v.copyFrom(arrowHeadToDraw1.get(0).get(anchorPoint1).p.v);
             arrowHeadToDraw1.drawColor(getMp().getDrawColor());
             arrowHeadToDraw1.fillColor(getMp().getDrawColor());
+            arrowHeadToDraw1.thickness(0);//A purely fill object
         }
 
         if (this.head2.size() > 0) {
 
             // Scaling
             double mw = JMathAnimConfig.getConfig().getCamera().getMathView().getHeight();
-            double sc2 = this.getMp().getScaleArrowHead2()* defaultArrowHead1Size2 * mw / head2.getBoundingBox().getHeight();
+            double sc2 = this.getMp().getScaleArrowHead2() * defaultArrowHead1Size2 * mw / head2.getBoundingBox().getHeight();
             arrowHeadToDraw2.scale(sc2);
             // Shifting
             Point headPoint = this.arrowHeadToDraw2.getBoundingBox().getUpper();
@@ -352,6 +354,7 @@ public class Arrow2D extends MathObject {
             pa.p.v.copyFrom(arrowHeadToDraw2.get(0).get(anchorPoint2).p.v);
             arrowHeadToDraw2.drawColor(getMp().getDrawColor());
             arrowHeadToDraw2.fillColor(getMp().getDrawColor());
+            arrowHeadToDraw2.thickness(0);//A purely fill object
         }
     }
 
@@ -412,7 +415,6 @@ public class Arrow2D extends MathObject {
         }
         return r;
     }
-
 
     public MultiShapeObject getHead1() {
         return head1;
