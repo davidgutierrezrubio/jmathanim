@@ -424,6 +424,14 @@ public abstract class JMathAnimScene {
 
     }
 
+    /**
+     * Saves the current image into a file. Format is guessed from the extension
+     * of the file name. Formats supported depends on renderer used. 
+     * If no extension supplied, a png format is used.
+     * The file wil be saved in project_home/media directory.
+     *
+     * @param filename Name of the file to be saved. 
+     */
     public final void saveImage(String filename) {
         doDraws();
         String fn;
@@ -439,7 +447,7 @@ public abstract class JMathAnimScene {
             format = "png";
         } else {
             format = extension.get();
-            fn=filename;
+            fn = filename;
         }
 
         renderer.saveImage(fn, format);
