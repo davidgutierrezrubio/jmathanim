@@ -15,8 +15,10 @@ You can also follow my [Youtube](https://www.youtube.com/channel/UCeczwEqSrAwZbP
 
 # What's new?
 
-Version 0.9.6-SNAPSHOT (29/04/22)
+Version 0.9.6-SNAPSHOT (14/05/22)
 
+* Removed thickness from arrow heads.
+* Added `saveImage(filename)` to save still frames into a image file. 
 * `JMImage`objects now can be transformed using any affine transformation.
 * Updated to JavaFX 18
 * Fixed annoying bug that prevented JavaFX to properly draw cubic curves when control points matched destiny point
