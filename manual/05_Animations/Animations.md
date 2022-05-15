@@ -398,6 +398,57 @@ as thickness and color.
 
 > **WARNING**: After transforming object `A` into `B`, in some cases the transformed object becomes unusable. You should using `B` after that in a general case. In any case, `A` object is removed automatically from the scene.
 
+With this code you can see the intermediate steps, in this case, when we are transforming a regular triangle into a regular pentagon:
+
+```java
+//Regular triangle and pentagon
+Shape triangle = Shape.regularPolygon(3)
+    .drawColor("red")
+    .fillColor("gold")
+    .thickness(20);
+Shape pentagon = Shape.regularPolygon(5)
+    .drawColor("blue")
+    .fillColor("violet")
+    .thickness(20);
+//Stack the pentagon to the right, 5 units apart
+pentagon.stackTo(triangle, Anchor.Type.RIGHT, 5);
+
+//Make sure everything is correctly centered at screen
+camera.centerAtObjects(triangle, pentagon);
+camera.zoomToObjects(triangle, pentagon);
+
+//Create an animation that transforms the triangle into the pentagon
+Transform anim = Transform.make(2, triangle, pentagon);
+
+//This ensures the animation has constant velocity
+anim.setLambda(t -> t);
+anim.initialize(this);
+int num = 6; //Number of intermediate steps to show
+for (int i = 0; i < num; i++) {
+    double t = 1d * i / (num - 1);
+
+    //Compute the animation at time t
+    anim.doAnim(t);
+
+    //The getIntermediateTransformedObject gives us the intermediate object used in the animation
+    MathObject intermediate = anim.getIntermediateTransformedObject().copy();
+
+    //Generate a beautiful text, located below the intermediate object
+    LaTeXMathObject lat = LaTeXMathObject.make("{\\tt t=" + t + "}")
+        .stackTo(intermediate, Anchor.Type.LOWER, .2);
+
+    //Add both elements to the scene
+    add(intermediate, lat);
+}
+
+//And save it to a png file
+saveImage("intermediateSteps.png");
+```
+
+Gives a image like this:
+
+<img src="intermediateSteps.png" alt="intermediateSteps" style="zoom:67%;" />
+
 ## Transform strategies
 
 The precise method of transform depends on the type of source and destination objects.  For example, in the previous case, a point-by-point interpolation was chosen. However, if both shapes are regular polygons with the same number of sides, an isomorphic transform is chosen. We will show another example, not using the "long" form given by the `play` object:
