@@ -32,7 +32,7 @@ import java.text.DecimalFormat;
 public class JMPathPoint extends MathObject implements Updateable, Stateable {
 
     public enum JMPathPointType {
-        NONE, VERTEX, INTERPOLATION_POINT, CONTROL_POINT
+        VERTEX, INTERPOLATION_POINT
     }
 
     public final Point p;
@@ -80,17 +80,21 @@ public class JMPathPoint extends MathObject implements Updateable, Stateable {
     public JMPathPoint copy() {
         Point pCopy = p.copy();
         JMPathPoint resul = new JMPathPoint(pCopy, isThisSegmentVisible, type);
-        resul.cpExit.v.copyFrom(cpExit.v);
-        resul.cpEnter.v.copyFrom(cpEnter.v);
+        resul.copyStateFrom(this);
+        return resul;
+    }
 
+    public void copyStateFrom(JMPathPoint jp) {
+        p.copyStateFrom(jp.p);
+        cpExit.copyStateFrom(jp.cpExit);
+        cpEnter.copyStateFrom(jp.cpEnter);
+        isCurved = jp.isCurved;
+        isThisSegmentVisible = jp.isThisSegmentVisible;
         try { // cp1vBackup and cp2vBackup may be null, so I enclose with a try-catch
-            resul.cpExitvBackup = cpExitvBackup.copy();
-            resul.cpEntervBackup = cpEntervBackup.copy();
+            cpExitvBackup = jp.cpExitvBackup.copy();
+            cpEntervBackup = jp.cpEntervBackup.copy();
         } catch (NullPointerException e) {
         }
-        resul.isCurved = this.isCurved;
-        resul.isThisSegmentVisible = this.isThisSegmentVisible;
-        return resul;
     }
 
     void setControlPoint1(Point cp) {
@@ -286,11 +290,10 @@ public class JMPathPoint extends MathObject implements Updateable, Stateable {
 
     @Override
     public void registerUpdateableHook(JMathAnimScene scene) {
-        int m = Math.max(p.getUpdateLevel(),cpEnter.getUpdateLevel()); 
-        m=Math.max(m,cpExit.getUpdateLevel());
-        setUpdateLevel(m+1);
-        
+        int m = Math.max(p.getUpdateLevel(), cpEnter.getUpdateLevel());
+        m = Math.max(m, cpExit.getUpdateLevel());
+        setUpdateLevel(m + 1);
+
     }
 
-    
 }

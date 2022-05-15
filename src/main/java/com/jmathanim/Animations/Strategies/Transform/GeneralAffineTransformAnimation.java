@@ -77,6 +77,7 @@ public class GeneralAffineTransformAnimation extends TransformStrategy {
 
     @Override
     public void doAnim(double t) {
+        anim.doAnim(t);
     }
 
     @Override

@@ -44,7 +44,7 @@ import java.util.function.DoubleUnaryOperator;
 public class Transform extends AnimationWithEffects {
 
     public enum TransformMethod {
-        INTERPOLATE_SIMPLE_SHAPES_BY_POINT, INTERPOLATE_POINT_BY_POINT, HOMOTHECY_TRANSFORM,
+        INTERPOLATE_SIMPLE_SHAPES_BY_POINT, INTERPOLATE_POINT_BY_POINT, ISOMORPHIC_TRANSFORM,
         ROTATE_AND_SCALEXY_TRANSFORM, FUNCTION_INTERPOLATION, MULTISHAPE_TRANSFORM, GENERAL_AFFINE_TRANSFORM,
         ARROW_TRANSFORM
     }
@@ -144,8 +144,8 @@ public class Transform extends AnimationWithEffects {
             Shape shDst = (Shape) mobjDestiny;
             double epsilon = 0.000001;
 
-            if (TransformStrategyChecker.testDirectHomothecyTransform(shTr, shDst, epsilon)) {
-                transformMethod = TransformMethod.HOMOTHECY_TRANSFORM;
+            if (TransformStrategyChecker.testDirectIsomorphismTransform(shTr, shDst, epsilon)) {
+                transformMethod = TransformMethod.ISOMORPHIC_TRANSFORM;
                 return;
             }
             if (TransformStrategyChecker.testRotateScaleXYTransform(shTr, shDst, epsilon)) {
@@ -201,7 +201,7 @@ public class Transform extends AnimationWithEffects {
                     transformStrategy = new PointInterpolationCanonical(runTime, (Shape) mobjTransformed, (Shape) mobjDestiny);
                     JMathAnimScene.logger.debug("Transform method: Point interpolation between 2 curves");
                     break;
-                case HOMOTHECY_TRANSFORM:
+                case ISOMORPHIC_TRANSFORM:
                     transformStrategy = new IsomorphicTransformAnimation(runTime, (Shape) mobjTransformed, (Shape) mobjDestiny);
                     JMathAnimScene.logger.debug("Transform method: Isomorphic");
 
@@ -237,10 +237,12 @@ public class Transform extends AnimationWithEffects {
     @Override
     public void finishAnimation() {
         super.finishAnimation();
+        final MathObject intermediateTransformedObject = transformStrategy.getIntermediateTransformedObject();
+        mobjDestiny.copyStateFrom(intermediateTransformedObject);
         transformStrategy.finishAnimation();
-        // Remove fist object and add the second to the scene
+//        // Remove fist object and add the second to the scene
         addObjectsToscene(mobjDestiny);
-        removeObjectsFromScene(mobjTransformed);
+        removeObjectsFromScene(mobjTransformed,intermediateTransformedObject);
     }
 
     /**
@@ -279,7 +281,7 @@ public class Transform extends AnimationWithEffects {
 
     @Override
     public void doAnim(double t) {
-        // Nothing to do here, it delegates trough processAnimation()
+        transformStrategy.doAnim(t);
     }
 
     @Override

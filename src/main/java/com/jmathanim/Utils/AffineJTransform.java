@@ -633,7 +633,7 @@ public class AffineJTransform implements Stateable {
         final double proportionalHeight = (F.to(E).norm() / D.to(E).norm()) / (B.to(C).norm() / B.to(A).norm());
         tr2.setV2Img(0, proportionalHeight * lambda + (1 - lambda) * 1); // Interpolated here
 
-        // Finally, and homothecy to carry A,B into D,E
+        // Finally, and isomorphism to carry A,B into D,E
         AffineJTransform tr3 = AffineJTransform.createDirect2DIsomorphic(A, B, D, E, lambda);// Interpolated here
         // The final transformation
         return tr1.compose(tr2).compose(tr1.getInverse()).compose(tr3);

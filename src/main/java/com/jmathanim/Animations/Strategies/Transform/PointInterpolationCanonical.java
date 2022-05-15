@@ -38,8 +38,6 @@ public class PointInterpolationCanonical extends TransformStrategy {
 
     public CanonicalJMPath connectedOrigin, connectedDst, connectedOriginaRawCopy;
     private final ArrayList<Shape> addedAuxiliaryObjectsToScene;
-    private final Shape mobjTransformed;
-    private final Shape mobjDestiny;
     private final Shape mobjDestinyOrig;
     private Shape originalShapeBaseCopy;
     private static final boolean DEBUG_COLORS = false;
@@ -144,15 +142,17 @@ public class PointInterpolationCanonical extends TransformStrategy {
 
     }
 
-    @Override
-    public void finishAnimation() {
-        super.finishAnimation();
-        removeObjectsFromScene(mobjTransformed);
-        for (Shape shapesToRemove : addedAuxiliaryObjectsToScene) {
-            removeObjectsFromScene(shapesToRemove);
-        }
-        addObjectsToscene(mobjDestinyOrig);
-    }
+//    @Override
+//    public void finishAnimation() {
+//        super.finishAnimation();
+////           final MathObject intermediateTransformedObject = getIntermediateTransformedObject();
+////        mobjDestiny.copyStateFrom(intermediateTransformedObject);
+////        removeObjectsFromScene(mobjTransformed);
+////        for (Shape shapesToRemove : addedAuxiliaryObjectsToScene) {
+////            removeObjectsFromScene(shapesToRemove);
+////        }
+////        addObjectsToscene(mobjDestinyOrig);
+//    }
 
     /**
      * Creates connectedOrigin and connectedDst, two paths in their

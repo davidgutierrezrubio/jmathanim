@@ -105,19 +105,19 @@ public class PointInterpolationSimpleShapeTransform extends TransformStrategy {
     public void finishAnimation() {
         super.finishAnimation();
 
-        for (int n = 0; n < mobjTransformed.getPath().size(); n++) {
-            JMPathPoint p1 = mobjTransformed.get(n);
-            JMPathPoint p2 = mobjDestiny.get(n);
-            p1.type = p2.type;
-            p1.isCurved = p2.isCurved;
-            p1.isThisSegmentVisible = p2.isThisSegmentVisible;
-            p1.cpExitvBackup = p2.cpExitvBackup;
-            p1.cpEntervBackup = p2.cpEntervBackup;
-        }
-
-//        mobjTransformed.getPath().removeInterpolationPoints();
-        mobjTransformed.getMp().copyFrom(mobjDestiny.getMp());
-        mobjTransformed.absoluteSize = mobjDestiny.absoluteSize;
+//        for (int n = 0; n < mobjTransformed.getPath().size(); n++) {
+//            JMPathPoint p1 = mobjTransformed.get(n);
+//            JMPathPoint p2 = mobjDestiny.get(n);
+//            p1.type = p2.type;
+//            p1.isCurved = p2.isCurved;
+//            p1.isThisSegmentVisible = p2.isThisSegmentVisible;
+//            p1.cpExitvBackup = p2.cpExitvBackup;
+//            p1.cpEntervBackup = p2.cpEntervBackup;
+//        }
+//
+////        mobjTransformed.getPath().removeInterpolationPoints();
+//        mobjTransformed.getMp().copyFrom(mobjDestiny.getMp());
+//        mobjTransformed.absoluteSize = mobjDestiny.absoluteSize;
     }
 
     private void alignNumberOfElements(JMPath path1, JMPath path2) {

@@ -379,7 +379,7 @@ public class PlayAnim {
      * Animates a smooth transform from one MathObject to another. The specific
      * type of transform is chosen depending on the given objects. Currently
      * there are specific implementations FunctionSimpleInterpolateTransform,
-     * HomothecyStrategyTransform, PointInterpolationCanonical,
+     * IsomorphicTransformAnimation, PointInterpolationCanonical,
      * PointInterpolationSimpleShapeTransform, and
      * RotateAndScaleXYStrategyTransform. An optimization strategy is also
      * chosen, if available. In general, the transformed object may be unusable

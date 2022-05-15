@@ -83,7 +83,7 @@ public class RotateAndScaleXYTransform extends TransformStrategy {
         AffineJTransform tr2 = new AffineJTransform();
         final double proportionalHeight = (F.to(E).norm() / D.to(E).norm()) / (B.to(C).norm() / B.to(A).norm());
         tr2.setV2Img(0, proportionalHeight * lt + (1 - lt) * 1); // Interpolated here
-        // Finally, and homothecy to carry A,B into D,E
+        // Finally, and isomorphism to carry A,B into D,E
         AffineJTransform tr3 = AffineJTransform.createDirect2DIsomorphic(A, B, D, E, lt);// Interpolated here
         // The final transformation
         AffineJTransform tr = tr1.compose(tr2).compose(tr1.getInverse()).compose(tr3);

@@ -34,14 +34,14 @@ public class TransformStrategyChecker {
     }
 
     /**
-     * Test of one shape can be transformed to another one using an homothecy
+     * Test of one shape can be transformed to another one using an isomorphism
      *
      * @param shORig Origin Shape
      * @param shDest Destinty Shape
      * @param epsilon Max error
-     * @return True if a homothecy is supported. False otherwise
+     * @return True if an isomorphism is supported. False otherwise
      */
-    public static boolean testDirectHomothecyTransform(Shape shORig, Shape shDest, double epsilon) {
+    public static boolean testDirectIsomorphismTransform(Shape shORig, Shape shDest, double epsilon) {
         if (!checkMinimalPathRequirements(shORig, 2, shDest, 2)) {
             return false;
         }

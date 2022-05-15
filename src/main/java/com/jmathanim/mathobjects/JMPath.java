@@ -148,8 +148,8 @@ public class JMPath implements Stateable, Boxable, Iterable<JMPathPoint> {
         if (t == 0) {
             return rectifiedPoints.get(0).copy();
         }
-         if (t == 1) {
-            return rectifiedPoints.get(rectifiedPoints.size()-1).copy();
+        if (t == 1) {
+            return rectifiedPoints.get(rectifiedPoints.size() - 1).copy();
         }
         double td = t * computedPathLength;
         int n = 0;
@@ -347,11 +347,12 @@ public class JMPath implements Stateable, Boxable, Iterable<JMPathPoint> {
 
     /**
      * Get point (interpolated if necessary) that lies at position alpha where
-     * alpha=0 denotes beginning of path and alpha=1 denotes the end. Path is unaltered
+     * alpha=0 denotes beginning of path and alpha=1 denotes the end. Path is
+     * unaltered
      *
      * @param alpha from 0 to 1, relative position inside the path
-     * @return A new JMPathPoint that describes the curve at relative
-     * position alpha.
+     * @return A new JMPathPoint that describes the curve at relative position
+     * alpha.
      */
     public JMPathPoint getJMPointAt(double alpha) {
         while (alpha > 1) {
@@ -1120,6 +1121,21 @@ public class JMPath implements Stateable, Boxable, Iterable<JMPathPoint> {
         // Now you can add the points
         jmPathPoints.addAll(pa.jmPathPoints);
         return this;
+    }
+
+    public void copyStateFrom(JMPath path) {
+        long count = path.jmPathPoints.stream().filter(t -> t.type == JMPathPointType.VERTEX).count();
+        if (count == jmPathPoints.size()) {
+            //Equal number of vertices 
+            for (int i = 0; i < size(); i++) {
+                get(i).copyStateFrom(path.get(i));
+            }
+        } else { //If there are too many discrepances, better clear it and copy
+            jmPathPoints.clear();
+            for (JMPathPoint jp : path) {
+                jmPathPoints.add(jp.copy());
+            }
+        }
     }
 
 }

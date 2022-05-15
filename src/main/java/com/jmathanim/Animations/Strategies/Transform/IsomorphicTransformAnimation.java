@@ -66,6 +66,7 @@ public class IsomorphicTransformAnimation extends TransformStrategy {
 //        this.copyAnimationParametersTo(anim);
         this.copyEffectParametersTo(anim);
 //        homothecy.prepareJumpPath(this.mobjTransformed.getCenter(), this.mobjDestiny.getCenter(), this.mobjTransformed);
+        anim.setLambda(lambda);
         anim.initialize(scene);
 
     }
@@ -79,6 +80,7 @@ public class IsomorphicTransformAnimation extends TransformStrategy {
 
     @Override
     public void doAnim(double t) {
+        anim.doAnim(t);
     }
 
     @Override

@@ -90,7 +90,8 @@ public class Shape extends MathObject {
     }
 
     /**
-    * Returns a new Point object lying in the Shape, at the given parametrized position, considering the arclentgh of the curve.
+     * Returns a new Point object lying in the Shape, at the given parametrized
+     * position, considering the arclentgh of the curve.
      *
      * @param t Position parameter, from 0 (beginning) to 1 (end)
      * @return a new Point object at the specified position of the shape.
@@ -98,8 +99,7 @@ public class Shape extends MathObject {
     public Point getParametrizedPointAt(double t) {
         return jmpath.getParametrizedPointAt(t);
     }
-    
-    
+
     public Point getCentroid() {
         Point resul = new Point(0, 0, 0);
         for (JMPathPoint p : jmpath.jmPathPoints) {
@@ -121,15 +121,12 @@ public class Shape extends MathObject {
 //    public void removeInterpolationPoints() {
 //        jmpath.removeInterpolationPoints();
 //    }
-
     @Override
     public Shape copy() {
         final MODrawProperties copy = getMp().copy();
         Shape resul = new Shape(jmpath.copy(), copy);
-        resul.absoluteSize = this.absoluteSize;
         resul.objectLabel = this.objectLabel + "_copy";
-        resul.isConvex = this.isConvex;
-        resul.showDebugPoints = this.showDebugPoints;
+        resul.copyStateFrom(this);
         return resul;
     }
 
@@ -140,10 +137,11 @@ public class Shape extends MathObject {
         }
         Shape sh2 = (Shape) obj;
         this.getMp().copyFrom(sh2.getMp());
-        for (int i = 0; i < size(); i++) {
-            get(i).copyStateFrom(sh2.get(i));
-        }
 
+        getPath().copyStateFrom(sh2.getPath());
+        absoluteSize = sh2.absoluteSize;
+        isConvex = sh2.isConvex;
+        showDebugPoints = sh2.showDebugPoints;
     }
 
     @Override

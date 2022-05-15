@@ -47,7 +47,7 @@ public class ArrowTransform extends TransformStrategy {
         Point b = arOrig.getEnd().copy();
         Point c = arDst.getStart().copy();
         Point d = arDst.getEnd().copy();
-        anim = Commands.homothecy(runTime, a, b, c, d, arOrig);
+        anim = Commands.isomorphism(runTime, a, b, c, d, arOrig);
         this.copyEffectParametersTo(anim);
         this.copyAnimationParametersTo(anim);
         anim.initialize(scene);
