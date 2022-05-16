@@ -70,7 +70,7 @@ public abstract class AffineTransformStrategy extends TransformStrategy {
             intermediate.getMp().interpolateFrom(origin.getMp(), destiny.getMp(), lt);
         }
         // Transform effects
-        applyAnimationEffects(lt, origin);
+        applyAnimationEffects(lt, intermediate);
     }
 
     protected abstract AffineJTransform createIntermediateTransform(double lt);
