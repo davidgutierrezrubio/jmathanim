@@ -298,8 +298,10 @@ public class FunctionGraph extends Shape implements hasScalarParameter {
     @Override
     public FunctionGraph copy() {
         ArrayList<Double> xPointsCopy = new ArrayList<>(xPoints);
-        FunctionGraph resul = new FunctionGraph(function, xPointsCopy);
+        DoubleBinaryOperator functionCopy = function;
+        FunctionGraph resul = new FunctionGraph(functionCopy, xPointsCopy);
         resul.getMp().copyFrom(getMp());
+        resul.updatePoints();
         return resul;
     }
 
@@ -345,6 +347,8 @@ public class FunctionGraph extends Shape implements hasScalarParameter {
         }
         FunctionGraph fg = (FunctionGraph) obj;
         this.getMp().copyFrom(fg.getMp());
+        xPoints.clear();
+        xPoints.addAll(fg.xPoints);
 
         getPath().copyStateFrom(fg.getPath());
         function=fg.function;

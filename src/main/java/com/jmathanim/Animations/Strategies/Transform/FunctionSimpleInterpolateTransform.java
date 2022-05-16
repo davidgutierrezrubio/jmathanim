@@ -46,7 +46,7 @@ public class FunctionSimpleInterpolateTransform extends TransformStrategy {
         double w1 = this.origin.getScalar();
         double w2 = this.destiny.getScalar();
         this.intermediate.function = (x, w) -> (1 - lt) * originFunction.applyAsDouble(x, w1)
-                + lt * destinyFunction.applyAsDouble(x, w1);
+                + lt * destinyFunction.applyAsDouble(x, w2);
         this.intermediate.updatePoints();
         if (isShouldInterpolateStyles()) {
             this.intermediate.getMp().interpolateFrom(origin.getMp(), destiny.getMp(), lt);
