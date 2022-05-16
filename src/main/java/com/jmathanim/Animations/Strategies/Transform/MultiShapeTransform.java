@@ -17,11 +17,14 @@
  */
 package com.jmathanim.Animations.Strategies.Transform;
 
+import com.jmathanim.Animations.Animation;
 import com.jmathanim.Animations.AnimationGroup;
 import com.jmathanim.Animations.Transform;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.MultiShapeObject;
+import com.jmathanim.mathobjects.Shape;
+import java.util.ArrayList;
 
 /**
  * Animation strategy between 2 multishapes A and B. If size(A) equals size(B)
@@ -37,14 +40,16 @@ public class MultiShapeTransform extends TransformStrategy {
 
     private MultiShapeObject dst;
     private MultiShapeObject tr;
-    private final MultiShapeObject mobjTransformed;
-    private final MultiShapeObject mobjDestiny;
+    private final MultiShapeObject origin;
+    private final MultiShapeObject destiny;
+    private final MultiShapeObject intermediate;
     private final AnimationGroup anim;
 
-    public MultiShapeTransform(double runtime, MultiShapeObject mobjTransformed, MultiShapeObject mobjDestiny) {
+    public MultiShapeTransform(double runtime, MultiShapeObject origin, MultiShapeObject destiny) {
         super(runtime);
-        this.mobjDestiny = mobjDestiny;
-        this.mobjTransformed = mobjTransformed;
+        this.destiny = destiny;
+        this.origin = origin;
+        this.intermediate = origin.copy();
         anim = new AnimationGroup();
     }
 
@@ -54,56 +59,73 @@ public class MultiShapeTransform extends TransformStrategy {
     }
 
     @Override
+    public void doAnim(double t) {
+        anim.doAnim(t);
+    }
+
+    @Override
     public void initialize(JMathAnimScene scene) {
         super.initialize(scene);
         tr = MultiShapeObject.make();
         dst = MultiShapeObject.make();
-        int sizeTr = mobjTransformed.size();
-        int sizeDst = mobjDestiny.size();
+        int sizeTr = intermediate.size();
+        int sizeDst = destiny.size();
         int numAnims = Math.max(sizeTr, sizeDst);
 
         if (sizeDst < sizeTr) {
             for (int i = 0; i < sizeTr; i++) {
-                dst.add(mobjDestiny.get(i * sizeDst / sizeTr).copy());
+                dst.add(destiny.get(i * sizeDst / sizeTr).copy());//remove copy
             }
-            tr = mobjTransformed.copy();
+            tr = intermediate;
         }
         if (sizeTr < sizeDst) {
             for (int i = 0; i < sizeDst; i++) {
-                tr.add(mobjTransformed.get(i * sizeTr / sizeDst).copy());
+                tr.add(intermediate.get(i * sizeTr / sizeDst).copy());
             }
-            dst = mobjDestiny.copy();
+            dst = destiny;
         }
         if (sizeDst == sizeTr) {
-            dst = mobjDestiny.copy();
-            tr = mobjTransformed.copy();
+            dst = destiny;
+            tr = intermediate;
         }
 
         for (int n = 0; n < numAnims; n++) {
-            Transform transformAnim = new Transform(this.runTime, tr.get(n), dst.get(n));
+            Transform transformAnim = new Transform(this.runTime, origin.get(n), dst.get(n));
             this.copyEffectParametersTo(transformAnim);
             anim.add(transformAnim);
+            anim.setLambda(lambda);
         }
         anim.initialize(scene);
-        removeObjectsFromScene(mobjTransformed);
     }
 
     @Override
     public void finishAnimation() {
         super.finishAnimation();
         anim.finishAnimation();
-        removeObjectsFromScene(tr, dst, mobjTransformed);
-        addObjectsToscene(mobjDestiny);
+        removeObjectsFromScene(tr, dst, origin);
+        addObjectsToscene(destiny);
     }
 
     @Override
     public MathObject getIntermediateTransformedObject() {
-        return null;//TODO: Implement this
+        Shape[] shapes = new Shape[anim.getAnimations().size()];
+        int k = 0;
+        for (Animation animation : anim.getAnimations()) {
+            Transform tr = (Transform) animation;
+            shapes[k] = ((Shape) tr.getIntermediateTransformedObject());
+            k++;
+        }
+        return MultiShapeObject.make(shapes);
     }
 
     @Override
-    public void doAnim(double t) {
-        anim.doAnim(t);
+    public MathObject getOriginObject() {
+        return origin;
+    }
+
+    @Override
+    public MathObject getDestinyObject() {
+        return destiny;
     }
 
 }

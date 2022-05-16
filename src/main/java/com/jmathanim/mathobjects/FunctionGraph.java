@@ -338,5 +338,16 @@ public class FunctionGraph extends Shape implements hasScalarParameter {
         areaPath.jmPathPoints.get(0).isThisSegmentVisible = true;
         return new Shape(areaPath);
     }
+ @Override
+    public void copyStateFrom(MathObject obj) {
+        if (!(obj instanceof FunctionGraph)) {
+            return;
+        }
+        FunctionGraph fg = (FunctionGraph) obj;
+        this.getMp().copyFrom(fg.getMp());
 
+        getPath().copyStateFrom(fg.getPath());
+        function=fg.function;
+        setScalar(fg.getScalar());
+    }
 }

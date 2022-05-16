@@ -31,25 +31,27 @@ import com.jmathanim.mathobjects.Point;
  */
 public class ArrowTransform extends TransformStrategy {
 
-    Arrow2D arOrig, arDst;
+    private final Arrow2D origin;
+    private final Arrow2D destiny;
     AnimationWithEffects anim;
 
-    public ArrowTransform(double runTime, Arrow2D arOrig, Arrow2D arDst) {
+    public ArrowTransform(double runTime, Arrow2D origin, Arrow2D destiny) {
         super(runTime);
-        this.arOrig = arOrig;
-        this.arDst = arDst;
+        this.origin = origin;
+        this.destiny = destiny;
     }
 
     @Override
     public void initialize(JMathAnimScene scene) {
         super.initialize(scene);
-        Point a = arOrig.getStart().copy();
-        Point b = arOrig.getEnd().copy();
-        Point c = arDst.getStart().copy();
-        Point d = arDst.getEnd().copy();
-        anim = Commands.isomorphism(runTime, a, b, c, d, arOrig);
+        Point a = origin.getStart().copy();
+        Point b = origin.getEnd().copy();
+        Point c = destiny.getStart().copy();
+        Point d = destiny.getEnd().copy();
+        anim = Commands.isomorphism(runTime, a, b, c, d, origin);
         this.copyEffectParametersTo(anim);
         this.copyAnimationParametersTo(anim);
+        anim.setLambda(lambda);
         anim.initialize(scene);
     }
 
@@ -62,18 +64,29 @@ public class ArrowTransform extends TransformStrategy {
 
     @Override
     public void doAnim(double t) {
+        anim.doAnim(t);
     }
 
     @Override
     public void finishAnimation() {
         super.finishAnimation();
-        removeObjectsFromScene(arOrig);
-        addObjectsToscene(arDst);
+        removeObjectsFromScene(origin);
+        addObjectsToscene(destiny);
     }
 
     @Override
     public MathObject getIntermediateTransformedObject() {
-        return arOrig;
+        return origin;
+    }
+
+    @Override
+    public MathObject getOriginObject() {
+        return origin;
+    }
+
+    @Override
+    public MathObject getDestinyObject() {
+        return destiny;
     }
 
 }

@@ -20,6 +20,7 @@ package com.jmathanim.Animations.Strategies.Transform;
 import com.jmathanim.Animations.AnimationGroup;
 import com.jmathanim.Animations.AnimationWithEffects;
 import com.jmathanim.Animations.Commands;
+import com.jmathanim.Utils.AffineJTransform;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.Point;
@@ -29,69 +30,14 @@ import com.jmathanim.mathobjects.Shape;
  *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
-public class IsomorphicTransformAnimation extends TransformStrategy {
+public class IsomorphicTransformAnimation extends AffineTransformStrategy {
 
-    AnimationGroup anim;
-    private AnimationWithEffects isomorphism;
-    private final Shape mobjTransformed;
-    private final Shape mobjDestiny;
-//    private final Shape mobjTransformedOrig;
-
-    public IsomorphicTransformAnimation(double runtime, Shape mobjTransformed, Shape mobjDestiny) {
-        super(runtime);
-        this.mobjTransformed = mobjTransformed;// .copy();
-//        this.mobjTransformedOrig = mobjTransformed;
-        this.mobjDestiny = mobjDestiny;
-        removeThisAtTheEnd.add(this.mobjTransformed);
-        addThisAtTheEnd.add(this.mobjDestiny);
-       
-
+    public IsomorphicTransformAnimation(double runTime, Shape origin, Shape destiny) {
+        super(runTime, origin, destiny);
     }
 
     @Override
-    public void initialize(JMathAnimScene scene) {
-        super.initialize(scene);
-         addObjectsToscene(mobjTransformed);
-        Point a = this.mobjTransformed.getPoint(0);
-        Point b = this.mobjTransformed.getPoint(1);
-        Point c = this.mobjDestiny.getPoint(0);
-        Point d = this.mobjDestiny.getPoint(1);
-        anim = new AnimationGroup();
-        isomorphism = Commands.isomorphism(runTime, a, b, c, d, this.mobjTransformed);
-        isomorphism.setUseObjectState(isUseObjectState());
-        anim.add(isomorphism);
-        if (this.isShouldInterpolateStyles()) {
-            anim.add(Commands.setMP(runTime, mobjDestiny.getMp().copy(), this.mobjTransformed).setUseObjectState(false));
-        }
-//        this.copyAnimationParametersTo(anim);
-        this.copyEffectParametersTo(anim);
-//        homothecy.prepareJumpPath(this.mobjTransformed.getCenter(), this.mobjDestiny.getCenter(), this.mobjTransformed);
-        anim.setLambda(lambda);
-        anim.initialize(scene);
-
+    protected AffineJTransform createIntermediateTransform(double lt) {
+        return AffineJTransform.createDirect2DIsomorphic(A, B, D, E, lt);
     }
-
-    @Override
-    public boolean processAnimation() {
-        super.processAnimation();
-        boolean value = anim.processAnimation();
-        return value;
-    }
-
-    @Override
-    public void doAnim(double t) {
-        anim.doAnim(t);
-    }
-
-    @Override
-    public void finishAnimation() {
-        super.finishAnimation();
-        anim.finishAnimation();
-    }
-
-    @Override
-    public MathObject getIntermediateTransformedObject() {
-        return mobjTransformed;
-    }
-
 }

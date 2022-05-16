@@ -18,6 +18,7 @@
 package com.jmathanim.Animations.Strategies.Transform;
 
 import com.jmathanim.Animations.AnimationWithEffects;
+import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.Shape;
 
@@ -27,22 +28,31 @@ import com.jmathanim.mathobjects.Shape;
  */
 public abstract class TransformStrategy extends AnimationWithEffects {
 
-    protected Shape mobjTransformed;
-    protected Shape mobjDestiny;
+    
 
     public TransformStrategy(double runTime) {
         super(runTime);
     }
 
     abstract public MathObject getIntermediateTransformedObject();
+    abstract public MathObject getOriginObject();
+    abstract public MathObject getDestinyObject();
 
-//    @Override
-//    public void finishAnimation() {
-//        super.finishAnimation();
-//        final MathObject intermediateTransformedObject = getIntermediateTransformedObject();
-//        mobjDestiny.copyStateFrom(intermediateTransformedObject);
-//        // Remove fist object and add the second to the scene
-//        addObjectsToscene(mobjDestiny);
-////        removeObjectsFromScene(mobjTransformed, intermediateTransformedObject);
-//    }
+    @Override
+    public void initialize(JMathAnimScene scene) {
+        super.initialize(scene);
+        //Remove origin object from scene and add intermediate
+        removeObjectsFromScene(getOriginObject());
+        addObjectsToscene(getIntermediateTransformedObject());
+    }
+
+    @Override
+    public void finishAnimation() {
+        super.finishAnimation();
+        final MathObject intermediateTransformedObject = getIntermediateTransformedObject();
+        getDestinyObject().copyStateFrom(intermediateTransformedObject);
+        // Remove fist object and add the second to the scene
+        addObjectsToscene(getDestinyObject());
+        removeObjectsFromScene(getOriginObject(), intermediateTransformedObject);
+    }
 }

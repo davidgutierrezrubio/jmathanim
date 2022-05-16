@@ -20,6 +20,7 @@ package com.jmathanim.Animations.Strategies.Transform;
 import com.jmathanim.Animations.AnimationGroup;
 import com.jmathanim.Animations.AnimationWithEffects;
 import com.jmathanim.Animations.Commands;
+import com.jmathanim.Utils.AffineJTransform;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.Point;
@@ -29,66 +30,14 @@ import com.jmathanim.mathobjects.Shape;
  *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
-public class GeneralAffineTransformAnimation extends TransformStrategy {
+public class GeneralAffineTransformAnimation extends AffineTransformStrategy {
 
-    private AnimationWithEffects affine;
-
-    private AnimationGroup anim;
-
-    private final Shape mobjDestiny;
-
-    private final Shape mobjTransformed;
-
-    public GeneralAffineTransformAnimation(double runTime, Shape objTr, Shape objDst) {
-        super(runTime);
-        this.mobjTransformed = objTr;
-        this.mobjDestiny = objDst;
+    public GeneralAffineTransformAnimation(double runTime, Shape origin, Shape destiny) {
+        super(runTime, origin, destiny);
     }
 
     @Override
-    public void initialize(JMathAnimScene scene) {
-        super.initialize(scene);
-        Point a = this.mobjTransformed.getPoint(0);
-        Point b = this.mobjTransformed.getPoint(1);
-        Point c = this.mobjTransformed.getPoint(2);
-        Point d = this.mobjDestiny.getPoint(0);
-        Point e = this.mobjDestiny.getPoint(1);
-        Point f = this.mobjDestiny.getPoint(2);
-
-        anim = new AnimationGroup();
-        affine = Commands.affineTransform(runTime, a, b, c, d, e, f, this.mobjTransformed);
-        affine.setUseObjectState(this.isUseObjectState());
-        anim.add(affine);
-        if (this.isShouldInterpolateStyles()) {
-            anim.add(Commands.setMP(runTime, mobjDestiny.getMp().copy(), this.mobjTransformed).setUseObjectState(false));
-        }
-        this.copyAnimationParametersTo(anim);
-        this.copyEffectParametersTo(affine);
-        affine.prepareJumpPath(this.mobjTransformed.getCenter(), this.mobjDestiny.getCenter(), this.mobjTransformed);
-
-        anim.initialize(scene);
+    protected AffineJTransform createIntermediateTransform(double lt) {
+        return AffineJTransform.createAffineTransformation(A, B, C, D, E, F, lt);
     }
-
-    @Override
-    public boolean processAnimation() {
-        super.processAnimation();
-        return anim.processAnimation();
-    }
-
-    @Override
-    public void doAnim(double t) {
-        anim.doAnim(t);
-    }
-
-    @Override
-    public void finishAnimation() {
-        super.finishAnimation();
-        anim.finishAnimation();
-    }
-
-    @Override
-    public MathObject getIntermediateTransformedObject() {
-        return mobjTransformed;
-    }
-
 }

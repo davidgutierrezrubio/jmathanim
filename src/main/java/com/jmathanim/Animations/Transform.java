@@ -237,12 +237,12 @@ public class Transform extends AnimationWithEffects {
     @Override
     public void finishAnimation() {
         super.finishAnimation();
-        final MathObject intermediateTransformedObject = transformStrategy.getIntermediateTransformedObject();
-        mobjDestiny.copyStateFrom(intermediateTransformedObject);
+//        final MathObject intermediateTransformedObject = transformStrategy.getIntermediateTransformedObject();
+//        mobjDestiny.copyStateFrom(intermediateTransformedObject);
         transformStrategy.finishAnimation();
 //        // Remove fist object and add the second to the scene
-        addObjectsToscene(mobjDestiny);
-        removeObjectsFromScene(mobjTransformed,intermediateTransformedObject);
+//        addObjectsToscene(mobjDestiny);
+//        removeObjectsFromScene(mobjTransformed,intermediateTransformedObject);
     }
 
     /**

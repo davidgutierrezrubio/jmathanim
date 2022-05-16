@@ -36,19 +36,21 @@ import java.util.Comparator;
  */
 public class PointInterpolationCanonical extends TransformStrategy {
 
+    private final Shape origin;
+    private final Shape destiny;
+    private final Shape intermediate;
     public CanonicalJMPath connectedOrigin, connectedDst, connectedOriginaRawCopy;
     private final ArrayList<Shape> addedAuxiliaryObjectsToScene;
-    private final Shape mobjDestinyOrig;
-    private Shape originalShapeBaseCopy;
+//    private final Shape mobjDestinyOrig;
+//    private Shape originalShapeBaseCopy;
     private static final boolean DEBUG_COLORS = false;
-    private final Shape mobjTransformedOrig;
+//    private final Shape mobjTransformedOrig;
 
-    public PointInterpolationCanonical(double runtime, Shape mobjTransformed, Shape mobjDestiny) {
+    public PointInterpolationCanonical(double runtime, Shape origin, Shape destiny) {
         super(runtime);
-        this.mobjTransformed = mobjTransformed.copy();
-        this.mobjTransformedOrig = mobjTransformed;
-        this.mobjDestiny = mobjDestiny.copy();
-        this.mobjDestinyOrig = mobjDestiny;
+        this.origin = origin;
+        this.intermediate= origin.copy();
+        this.destiny = destiny;
         this.addedAuxiliaryObjectsToScene = new ArrayList<>();
     }
 
@@ -59,24 +61,24 @@ public class PointInterpolationCanonical extends TransformStrategy {
         // Prepare paths.
         // First, if any of the shapes is empty, don't do nothing
 
-        if ((mobjTransformed.size() == 0) || (mobjDestiny.size() == 0)) {
+        if ((intermediate.size() == 0) || (destiny.size() == 0)) {
             return;
         }
 
         // I ensure they have the same number of points
         // and be in connected components form.
         // Remove consecutive hidden vertices, in case.
-        this.mobjTransformed.getPath().distille();
-        this.mobjDestiny.getPath().distille();
+        this.intermediate.getPath().distille();
+        this.destiny.getPath().distille();
         if (optimizeStrategy == null) {
             optimizeStrategy = new DivideOnSensiblePointsStrategy();
 //            optimizeStrategy = new DivideEquallyStrategy();
         }
-        optimizeStrategy.optimizePaths(mobjTransformed, mobjDestiny);
-        optimizeStrategy.optimizePaths(mobjDestiny, mobjTransformed);
+        optimizeStrategy.optimizePaths(intermediate, destiny);
+        optimizeStrategy.optimizePaths(destiny, intermediate);
 
-        originalShapeBaseCopy = mobjTransformed.copy();
-        preparePaths(mobjTransformed.getPath(), mobjDestiny.getPath());
+//        originalShapeBaseCopy = intermediate.copy();
+        preparePaths(intermediate.getPath(), destiny.getPath());
         if (DEBUG_COLORS) {
             for (int n = 0; n < connectedOrigin.getNumberOfPaths(); n++) {
                 Shape sh = new Shape(connectedOrigin.get(n), null);
@@ -86,15 +88,15 @@ public class PointInterpolationCanonical extends TransformStrategy {
             }
 
         }
-        mobjTransformed.getPath().clear();
-        mobjTransformed.getPath().addJMPointsFrom(connectedOrigin.toJMPath());
-        addObjectsToscene(mobjTransformed);
-        removeObjectsFromScene(mobjTransformedOrig);
+        intermediate.getPath().clear();
+        intermediate.getPath().addJMPointsFrom(connectedOrigin.toJMPath());
+        addObjectsToscene(intermediate);
+        removeObjectsFromScene(origin);
 
         // Jump paths
-        Point origCenter = this.mobjTransformedOrig.getCenter();
-        Point dstCenter = this.mobjDestinyOrig.getCenter();
-        prepareJumpPath(origCenter, dstCenter, mobjTransformed);
+        Point origCenter = this.origin.getCenter();
+        Point dstCenter = this.destiny.getCenter();
+        prepareJumpPath(origCenter, dstCenter, origin);
 
     }
 
@@ -134,11 +136,11 @@ public class PointInterpolationCanonical extends TransformStrategy {
 
         }
         if (isShouldInterpolateStyles()) {
-            mobjTransformed.getMp().interpolateFrom(originalShapeBaseCopy.getMp(), mobjDestiny.getMp(), lt);
+            intermediate.getMp().interpolateFrom(origin.getMp(), destiny.getMp(), lt);
         }
 
         // Transform effects
-        applyAnimationEffects(lt, mobjTransformed);
+        applyAnimationEffects(lt, intermediate);
 
     }
 
@@ -153,7 +155,6 @@ public class PointInterpolationCanonical extends TransformStrategy {
 ////        }
 ////        addObjectsToscene(mobjDestinyOrig);
 //    }
-
     /**
      * Creates connectedOrigin and connectedDst, two paths in their
      * canonicalforms (and array of simple connected open paths)
@@ -275,9 +276,18 @@ public class PointInterpolationCanonical extends TransformStrategy {
 //
 //        return pathToDivide.canonicalForm();
 //    }
-
     @Override
     public MathObject getIntermediateTransformedObject() {
-        return mobjTransformed;
+        return intermediate;
+    }
+
+    @Override
+    public MathObject getOriginObject() {
+        return origin;
+    }
+
+    @Override
+    public MathObject getDestinyObject() {
+        return destiny;
     }
 }

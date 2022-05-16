@@ -17,10 +17,9 @@
  */
 package com.jmathanim.Animations.Strategies.Transform;
 
-import com.jmathanim.Styling.MODrawProperties;
-import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.FunctionGraph;
 import com.jmathanim.mathobjects.MathObject;
+import java.util.function.DoubleBinaryOperator;
 
 /**
  * This function interpolates 2 graph functions.
@@ -29,45 +28,44 @@ import com.jmathanim.mathobjects.MathObject;
  */
 public class FunctionSimpleInterpolateTransform extends TransformStrategy {
 
-    public final FunctionGraph gfObj, gfDst;
-    private final MODrawProperties mpBase;
+    public final FunctionGraph origin, destiny, intermediate;
+    private final DoubleBinaryOperator destinyFunction, originFunction;
 
-    public FunctionSimpleInterpolateTransform(double runtime, FunctionGraph gfObj, FunctionGraph gfDst) {
+    public FunctionSimpleInterpolateTransform(double runtime, FunctionGraph origin, FunctionGraph destiny) {
         super(runtime);
-        this.gfObj = gfObj;
-        this.gfDst = gfDst;
-        mpBase = this.gfObj.getMp().copy();
-    }
-
-    @Override
-    public void initialize(JMathAnimScene scene) {
-        super.initialize(scene);
-        addObjectsToscene(gfObj);
+        this.origin = origin;
+        this.intermediate = origin.copy();
+        this.destiny = destiny;
+        this.originFunction = this.origin.function;
+        this.destinyFunction = this.destiny.function;
     }
 
     @Override
     public void doAnim(double t) {
         double lt = lambda.applyAsDouble(t);
-        double w1=this.gfObj.getScalar();
-        double w2=this.gfDst.getScalar();
-        this.gfObj.function = (x,w) -> (1 - lt) * this.gfObj.functionBase.applyAsDouble(x,w1)
-                + lt * this.gfDst.function.applyAsDouble(x,w1);
-        this.gfObj.updatePoints();
+        double w1 = this.origin.getScalar();
+        double w2 = this.destiny.getScalar();
+        this.intermediate.function = (x, w) -> (1 - lt) * originFunction.applyAsDouble(x, w1)
+                + lt * destinyFunction.applyAsDouble(x, w1);
+        this.intermediate.updatePoints();
         if (isShouldInterpolateStyles()) {
-            this.gfObj.getMp().interpolateFrom(mpBase, gfDst.getMp(), lt);
+            this.intermediate.getMp().interpolateFrom(origin.getMp(), destiny.getMp(), lt);
         }
     }
 
     @Override
-    public void finishAnimation() {
-        super.finishAnimation();
-        // Base function is now the new function
-        this.gfObj.functionBase = this.gfDst.function;
+    public MathObject getIntermediateTransformedObject() {
+        return intermediate;
     }
 
     @Override
-    public MathObject getIntermediateTransformedObject() {
-        return gfObj;
+    public MathObject getOriginObject() {
+        return origin;
+    }
+
+    @Override
+    public MathObject getDestinyObject() {
+        return destiny;
     }
 
 }

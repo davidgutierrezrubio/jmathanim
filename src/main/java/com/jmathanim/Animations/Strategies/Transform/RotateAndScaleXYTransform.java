@@ -17,10 +17,7 @@
  */
 package com.jmathanim.Animations.Strategies.Transform;
 
-import com.jmathanim.Styling.MODrawProperties;
 import com.jmathanim.Utils.AffineJTransform;
-import com.jmathanim.jmathanim.JMathAnimScene;
-import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.Point;
 import com.jmathanim.mathobjects.Shape;
 
@@ -28,54 +25,16 @@ import com.jmathanim.mathobjects.Shape;
  *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
-public class RotateAndScaleXYTransform extends TransformStrategy {
+public class RotateAndScaleXYTransform extends AffineTransformStrategy {
 
-    private final Shape mobjDestiny;
-    private final Shape mobjTransformed;
-    private MODrawProperties mpBase;
-    Point A, B, C, D, E, F;
 
-    public RotateAndScaleXYTransform(double runtime, Shape mobjTransformed, Shape mobjDestiny) {
-        super(runtime);
-        this.mobjTransformed = mobjTransformed;
-        this.mobjDestiny = mobjDestiny;
+    public RotateAndScaleXYTransform(double runtime, Shape origin, Shape destiny) {
+        super(runtime,origin,destiny);
     }
+
 
     @Override
-    public void initialize(JMathAnimScene scene) {
-        super.initialize(scene);
-        mpBase = mobjTransformed.getMp().copy();
-        A = mobjTransformed.getPoint(0).copy();
-        B = mobjTransformed.getPoint(1).copy();
-        C = mobjTransformed.getPoint(2).copy();
-        D = mobjDestiny.getPoint(0).copy();
-        E = mobjDestiny.getPoint(1).copy();
-        F = mobjDestiny.getPoint(2).copy();
-        saveStates(mobjTransformed);
-        addObjectsToscene(mobjTransformed);
-        AffineJTransform tr = createIntermediateTransform(1);
-        prepareJumpPath(mobjTransformed.getCenter(), tr.getTransformedObject(mobjTransformed.getCenter()),
-                mobjTransformed);
-    }
-
-    @Override
-    public void doAnim(double t) {
-        double lt = lambda.applyAsDouble(t);
-        restoreStates(mobjTransformed);
-
-        AffineJTransform tr = createIntermediateTransform(lt);
-
-        tr.applyTransform(mobjTransformed);
-
-        if (isShouldInterpolateStyles()) {
-            mobjTransformed.getMp().interpolateFrom(mpBase, mobjDestiny.getMp(), lt);
-        }
-        // Transform effects
-        applyAnimationEffects(lt, mobjTransformed);
-
-    }
-
-    public AffineJTransform createIntermediateTransform(double lt) {
+    protected AffineJTransform createIntermediateTransform(double lt) {
         // First map A,B into (0,0) and (1,0)
         AffineJTransform tr1 = AffineJTransform.createDirect2DIsomorphic(A, B, new Point(0, 0), new Point(1, 0), 1);
         // Now I create a transformation that adjust the y-scale, proportionally
@@ -90,15 +49,5 @@ public class RotateAndScaleXYTransform extends TransformStrategy {
         return tr;
     }
 
-    @Override
-    public void finishAnimation() {
-        super.finishAnimation();
-        doAnim(1);
-    }
-
-    @Override
-    public MathObject getIntermediateTransformedObject() {
-        return mobjTransformed;
-    }
 
 }
