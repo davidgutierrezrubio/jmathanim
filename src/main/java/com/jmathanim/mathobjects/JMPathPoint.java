@@ -46,6 +46,27 @@ public class JMPathPoint extends MathObject implements Updateable, Stateable {
     // subdiving a path
     private JMPathPoint pState;
 
+    /**
+     * Builds a new JMPathPoint with given coordinates of vertex and control
+     * points. The result is marked as curved and visible.
+     *
+     * @param x1 x-coordinate of vertex
+     * @param y1 y-coordinate of vertex
+     * @param x2 x-coordinate of enter control point
+     * @param y2 y-coordinate of enter control point
+     * @param x3 x-coordinate of exit control point
+     * @param y3 y-coordinate of exit control point
+     * @return The new jmpathpoint created
+     */
+    public static JMPathPoint make(double x1, double y1, double x2, double y2, double x3, double y3) {
+        JMPathPoint resul = curveTo(Point.at(x1, y1));
+        resul.cpEnter.v.x = x2;
+        resul.cpEnter.v.y = y2;
+        resul.cpExit.v.x = x3;
+        resul.cpExit.v.y = y3;
+        return resul;
+    }
+
     // Builders
     public static JMPathPoint lineTo(double x, double y) {
         return lineTo(new Point(x, y));
@@ -95,16 +116,6 @@ public class JMPathPoint extends MathObject implements Updateable, Stateable {
             cpEntervBackup = jp.cpEntervBackup.copy();
         } catch (NullPointerException e) {
         }
-    }
-
-    void setControlPoint1(Point cp) {
-        cpExit.v.x = cp.v.x;
-        cpExit.v.y = cp.v.y;
-    }
-
-    void setControlPoint2(Point cp) {
-        cpEnter.v.x = cp.v.x;
-        cpEnter.v.y = cp.v.y;
     }
 
     @Override

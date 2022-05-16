@@ -211,25 +211,35 @@ public class Shape extends MathObject {
 
     // Static methods to build most used shapes
     public static Shape square() {
-        Shape obj = Shape.square(new Point(0, 0), 1);
+        Shape obj = Shape.rectangle(Point.origin(), Point.at(1, 1));
         obj.objectLabel = "square";
         return obj;
     }
 
     public static Shape square(Point A, double side) {
-
         return Shape.rectangle(A, A.add(new Vec(side, side)));
     }
 
+    /**
+     * Creates a rectangle shape from a Rect object
+     *
+     * @param r Then Rect object
+     * @return The created rectangle
+     */
     public static Shape rectangle(Rect r) {
         return Shape.rectangle(r.getDL(), r.getUR());
     }
 
-    public static Shape segment(Point A, Vec v) {
-        return segment(A, A.add(v));
-    }
-
     // Static methods to build most commons shapes
+    /**
+     * Creates a segment shape between 2 given points. The parameters points
+     * will be referenced to create the segment, so moving them will modify the
+     * segment.
+     *
+     * @param A First point
+     * @param B Second point
+     * @return The created segment.
+     */
     public static Shape segment(Point A, Point B) {
         Shape obj = new Shape();
         JMathAnimConfig.getConfig().getScene();
@@ -241,7 +251,7 @@ public class Shape extends MathObject {
     }
 
     /**
-     * Creates a rectangle from 2 opposite points
+     * Creates a rectangle shape from 2 opposite points
      *
      * @param A First point
      * @param B Second point
@@ -258,7 +268,7 @@ public class Shape extends MathObject {
     }
 
     /**
-     * Creates a rectangle from 3 consecutive points.
+     * Creates a rectangle shape from 3 consecutive points.
      *
      * @param A First point
      * @param B Second point. The fourth point will be the opposite of this
@@ -278,7 +288,7 @@ public class Shape extends MathObject {
     }
 
     /**
-     * Creates a polygon with the given points
+     * Creates a polygonal shape with the given points
      *
      * @param points Points of the polygon, varargs or array Point[]
      * @return The polygon
@@ -306,7 +316,7 @@ public class Shape extends MathObject {
     }
 
     /**
-     * Creates a basic right-angled triangle (0,0)-(1,0)-(0,1)
+     * Creates a basic right-angled triangle shape (0,0)-(1,0)-(0,1)
      *
      * @return
      */
@@ -315,8 +325,8 @@ public class Shape extends MathObject {
     }
 
     /**
-     * Generates a regular polygon inscribed in a unit circle. The first point
-     * of the shape lies in the coordinates (1,0)
+     * Generates a regular polygon shape inscribed in a unit circle. The first
+     * point of the shape lies in the coordinates (1,0)
      *
      * @param numSides Number of sides
      * @return The generated Shape
@@ -330,7 +340,7 @@ public class Shape extends MathObject {
     }
 
     /**
-     * Creates a regular polygon, with first vertex at (0,0) and side 1
+     * Creates a regular polygon shape, with first vertex at (0,0) and side 1
      *
      * @param numsides Number of sides
      * @return A Shape object representing the polygon
@@ -350,7 +360,8 @@ public class Shape extends MathObject {
     }
 
     /**
-     * Creates an arc with radius 1 and center origin. First point is (1,0)
+     * Creates an arc shape with radius 1 and center origin. First point is
+     * (1,0)
      *
      * @param angle Angle in radians of the arc
      * @return The created arc
@@ -358,24 +369,32 @@ public class Shape extends MathObject {
     public static Shape arc(double angle) {
         Shape obj = Shape.circle().getSubShape(0, .5 * angle / PI);
         obj.objectLabel = "arc";
-
         return obj;
     }
 
     /**
-     * Creates a new circle. Default shape has 4 jmpathpoints.
+     * Creates a new circle shape, with 4 points
      *
      * @return The created circle
      */
     public static Shape circle() {
-        return circle(4);
+        //precomputed parameter for control points
+        double d = 0.5522847498307935d;//=4/3*tan(PI/8)
+        Shape resul = new Shape();
+        JMPathPoint p1 = JMPathPoint.make(1, 0, 1, -d, 1, d);
+        JMPathPoint p2 = JMPathPoint.make(0, 1, d, 1, -d, 1);
+        JMPathPoint p3 = JMPathPoint.make(-1, 0, -1, d, -1, -d);
+        JMPathPoint p4 = JMPathPoint.make(0, -1, -d, -1, d, -1);
+        resul.getPath().addJMPoint(p1, p2, p3, p4);
+        resul.objectLabel = "circle";
+        return resul;
     }
 
     /**
-     * Creates a circle with the given number of jmpathpoints
+     * Creates a circle shape with the given number of jmpathpoints
      *
      * @param numSegments Number of segments
-     * @return The circle
+     * @return The created circle
      */
     public static Shape circle(int numSegments) {
         Shape obj = new Shape();
@@ -383,7 +402,8 @@ public class Shape extends MathObject {
         double x1, y1;
         double step = Math.PI * 2 / numSegments;
         double cte = 4d / 3 * Math.tan(.5 * Math.PI / numSegments);
-        for (double alphaC = 0; alphaC < 2 * Math.PI; alphaC += step) {
+        double alphaC = 0;
+        for (int k = 0; k < numSegments; k++) {
             x1 = Math.cos(alphaC);
             y1 = Math.sin(alphaC);
             Point p = new Point(x1, y1);
@@ -396,6 +416,8 @@ public class Shape extends MathObject {
             jmp.cpExit.copyFrom(cp1);
             jmp.cpEnter.copyFrom(cp2);
             obj.jmpath.addJMPoint(jmp);
+
+            alphaC += step;
         }
         return obj;
     }
