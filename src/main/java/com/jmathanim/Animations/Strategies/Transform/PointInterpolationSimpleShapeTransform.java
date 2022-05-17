@@ -33,6 +33,7 @@ import com.jmathanim.mathobjects.Shape;
 public class PointInterpolationSimpleShapeTransform extends TransformStrategy {
 
     private final Shape origin;
+    private Shape originBase;
     private final Shape destiny;
     private final Shape intermediate;
     Point origCenter, dstCenter;
@@ -63,6 +64,7 @@ public class PointInterpolationSimpleShapeTransform extends TransformStrategy {
         for (JMPathPoint jmp : intermediate.getPath().jmPathPoints) {
             jmp.isCurved = true;
         }
+        originBase=intermediate.copy();
         addObjectsToscene(intermediate);
         removeObjectsFromScene(origin);
 
@@ -75,7 +77,7 @@ public class PointInterpolationSimpleShapeTransform extends TransformStrategy {
         JMPathPoint interPoint, basePoint, dstPoint;
         for (int n = 0; n < intermediate.getPath().size(); n++) {
             interPoint = intermediate.get(n);
-            basePoint = origin.get(n);
+            basePoint = originBase.get(n);
             dstPoint = destiny.get(n);
 
             // Interpolate point
