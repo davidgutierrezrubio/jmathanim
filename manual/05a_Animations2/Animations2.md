@@ -121,7 +121,7 @@ Shape square = Shape.square()
 Shape circle = Shape.circle()
     .scale(.25)
     .moveTo(Point.relAt(.75, .5))
-    .fillColor("firebrick").;
+    .fillColor("firebrick");
 Transform anim = new Transform(5, square, circle);
 anim.addRotationEffect(1)
     .addScaleEffect(.5)

@@ -273,7 +273,31 @@ gives the following image:
 
 The `ContourHighlight` animation makes extensive use of the `getSubShape` method
 
+# Generating control points
 
+The class `PathUtils` has the static methods `generateControlPointsBySimpleSlopes` that adjust the control points of a `Shape` to give an spline-interpolated appearance. The following code creates a `polyLine` object and adjust the control points to give a smooth appearance, using a tension factor from 0 to 1.
+
+```java
+Point[] ps = new Point[5];
+ps[0] = Point.at(0, .25);
+ps[1] = Point.at(-1, .25);
+ps[2] = Point.at(0, -.25);
+ps[3] = Point.at(1, .25);
+ps[4] = Point.at(1, -.25);
+for (Point p : ps) {
+    p.dotStyle(Point.DotSyle.CROSS);
+    p.drawColor("blue").thickness(60);
+}
+Shape pol = Shape.polyLine(ps).thickness(10).drawColor("tomato");
+add(pol);//Add polyline
+add(ps);//Add all points
+
+//Generate control points with a tension of 0.7
+PathUtils.generateControlPointsBySimpleSlopes(pol.getPath(),.7);
+waitSeconds(3);//3 seconds for a screenshot!
+```
+
+<img src="07_generateCP.png" alt="07_generateCP" style="zoom:60%;" />
 
 [home](https://davidgutierrezrubio.github.io/jmathanim/) [back](../index.html)
 
