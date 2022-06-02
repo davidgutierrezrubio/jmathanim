@@ -229,8 +229,9 @@ public class JMColor extends PaintStyle {
     }
 
     @Override
-    public void setAlpha(double alpha) {
+    public JMColor setAlpha(double alpha) {
         this.alpha = alpha;
+        return this;
     }
 
 }

@@ -34,6 +34,16 @@ public class PathUtils {
 
     public static final double DEFAULT_TENSION = 0.7d;
 
+     /**
+     * Overloaded method. Generate control points from a bezier cubic curve, so that control points
+     * of point n are parallel to the line from point n-1 and n+1.The distance
+     * from point n to the control points is multiplied by the 0 to 1 tension
+     * parameter. A 1 tension means straight lines. If first and last point are
+     * not connected, an approximation is used based on the control point of
+     * their neighbour points. Default tension 0.7 is used
+     *
+     * @param path Path to compute control points
+     */
     public static void generateControlPointsBySimpleSlopes(JMPath path) {
         generateControlPointsBySimpleSlopes(path, DEFAULT_TENSION);
     }

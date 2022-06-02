@@ -33,8 +33,9 @@ public abstract class PaintStyle {
      *
      * @param alpha Alpha value. 0 means invisible, 1 fully opaque
      */
-    public void setAlpha(double alpha) {
+    public PaintStyle setAlpha(double alpha) {
         this.alpha=alpha;
+        return this;
     }
 
     /**
