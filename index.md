@@ -15,7 +15,7 @@ You can also follow my [Youtube](https://www.youtube.com/channel/UCeczwEqSrAwZbP
 
 # What's new?
 
-Version 0.9.6-SNAPSHOT (14/05/22)
+Version 0.9.6 (03/06/22)
 
 * Removed thickness from arrow heads.
 * Added `saveImage(filename)` to save still frames into a image file. 
