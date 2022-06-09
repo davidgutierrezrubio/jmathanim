@@ -41,6 +41,7 @@ public class JMathAnimConfig {
 
     private String outputFileName;
     private String ffmpegBinDir;
+    private boolean soundsEnabled;
     private File resourcesDir;
     private File outputDir;
     /**
@@ -166,8 +167,18 @@ public class JMathAnimConfig {
         resourcesDir = new File("." + File.separator + "resources");
         outputDir = new File("." + File.separator + "media");
         ffmpegBinDir="";
+        soundsEnabled=true;
     }
 
+    public boolean isSoundsEnabled() {
+        return soundsEnabled;
+    }
+
+    public void setSoundsEnabled(boolean enableSounds) {
+        this.soundsEnabled = enableSounds;
+    }
+
+    
     public String getFfmpegBinDir() {
         return ffmpegBinDir;
     }

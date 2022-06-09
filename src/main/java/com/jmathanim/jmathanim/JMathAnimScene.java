@@ -471,9 +471,13 @@ public abstract class JMathAnimScene {
      * Plays the specified sound at the current frame. Sound files are loaded
      * using the ResourceLoader class, so modifiers can be used
      *
-     * @param soundName Name of sound file. By default it looks in user_project/resources/sounds
+     * @param soundName Name of sound file. By default it looks in
+     * user_project/resources/sounds
      */
     public void playSound(String soundName) {
+        if (!config.isSoundsEnabled()) {
+            return;
+        }
         JMathAnimScene.logger.debug("Playing sound " + soundName);
         ResourceLoader rl = new ResourceLoader();
         URL soundURL = rl.getResource(soundName, "sounds");

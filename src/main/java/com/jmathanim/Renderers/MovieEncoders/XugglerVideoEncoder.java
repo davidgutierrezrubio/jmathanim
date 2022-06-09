@@ -196,41 +196,40 @@ public class XugglerVideoEncoder extends VideoEncoder {
 
             //Copy output file to temp
             FileUtils.copyFile(new File(dir + outputName), tmpFile);
-//            FileUtils.forceDeleteOnExit(tmpFile);
+            FileUtils.forceDeleteOnExit(tmpFile);
 
             File sound1 = new File(dir + tempSoundName + "0.flac");
             File sound2 = new File(dir + tempSoundName + "1.flac");
-//            FileUtils.forceDeleteOnExit(sound1);
-//            FileUtils.forceDeleteOnExit(sound2);
+            FileUtils.forceDeleteOnExit(sound1);
+            FileUtils.forceDeleteOnExit(sound2);
             String soundPath = Paths.get(soundURLs.get(0).toURI()).toString();
             //First encode
             final String firstEncode = config.getFfmpegBinDir() + "ffmpeg.exe -y -loglevel quiet -i " + soundPath + " -filter_complex \"[0:0]adelay=" + timeSoundStamps.get(0) +"|"+timeSoundStamps.get(0)+ "[mixout]\" -map [mixout] -c:a flac " + dir + tempSoundName + "1.flac";
-            JMathAnimScene.logger.info("Running external command: " + firstEncode);
-//            runExternalCommand(firstEncode);
+            JMathAnimScene.logger.info("Processing sound: [1/"+timeSoundStamps.size()+"]: " + firstEncode);
             Runtime.getRuntime().exec(firstEncode).waitFor();
             int index = 1;
             for (int i = 1; i < timeSoundStamps.size(); i++) {
                 Long timeStamp = timeSoundStamps.get(i);
                 soundPath = Paths.get(soundURLs.get(i).toURI()).toString();
                 final String cmd = config.getFfmpegBinDir() + "ffmpeg.exe -y -loglevel quiet -i " + dir + tempSoundName + index + ".flac -i " + soundPath + " -filter_complex \"[1:0]adelay=" + timeStamp +"|"+timeStamp+ "[delayed];[delayed][0:0]amix=inputs=2:duration=longest[mixin];[mixin]volume=6.0201dB[mixout]\" -map [mixout] -c:a flac " + dir + tempSoundName + (1 - index) + ".flac";
-                JMathAnimScene.logger.info("Running external command: " + cmd);
+                JMathAnimScene.logger.info("Processing sound: ["+(i+1)+"/"+timeSoundStamps.size()+"]: " + cmd);
                 Runtime.getRuntime().exec(cmd).waitFor();
                 index = 1 - index;
             }
             //Join everything
             final String cmdFinal = config.getFfmpegBinDir() + "ffmpeg.exe -y -loglevel quiet -i " + dir + "_" + outputName + " -i " + dir + tempSoundName + "" + index + ".flac " + dir + outputName;
 
-            JMathAnimScene.logger.info("Running external command: " + cmdFinal);
+            JMathAnimScene.logger.info("Joining everything: " + cmdFinal);
             Runtime.getRuntime().exec(cmdFinal).waitFor();
 
         } catch (IOException ex) {
             JMathAnimScene.logger.error("I/O error processing sounds. Maybe I cannot find the ffmpeg executable. Set it"
                     + " with the config.setFfmpegBinDir method.");
-//             Logger.getLogger(XugglerVideoEncoder.class.getName()).log(Level.SEVERE, null, ex);
         } catch (InterruptedException ex) {
             JMathAnimScene.logger.error("InterruptedException error processing sounds");
             Logger.getLogger(XugglerVideoEncoder.class.getName()).log(Level.SEVERE, null, ex);
         } catch (URISyntaxException ex) {
+             JMathAnimScene.logger.error("Malformed sound URL. Check if all sound files are correctly referenced.");
             Logger.getLogger(XugglerVideoEncoder.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
