@@ -239,12 +239,10 @@ public class JavaFXRenderer extends Renderer {
             videoEncoder.writeFrame(renderedImage, frameCount);
         }
         if (config.isSaveToPNG()) {
-            String filename=config.getOutputFileName() + String.format("%06d", frameCount) + ".png";
-            writeImageToPNG(filename, renderedImage,"png");
+            String filename = config.getOutputFileName() + String.format("%06d", frameCount) + ".png";
+            writeImageToPNG(filename, renderedImage, "png");
         }
     }
-
-
 
     @Override
     protected BufferedImage getRenderedImage(int frameCount) {
@@ -475,10 +473,10 @@ public class JavaFXRenderer extends Renderer {
         }
         imageView.setFitHeight(bbox.getHeight());
         imageView.setFitWidth(bbox.getWidth());
-       
+
         Affine camToScreen = FXPathUtils.camToScreenAffineTransform(camera);
         imageView.getTransforms().add(camToScreen);
-        
+
         //Swap y coordinate
         imageView.getTransforms().add(new Scale(1, -1));
         imageView.getTransforms().add(FXPathUtils.affineJToAffine(obj.getCurrentViewTransform()));
@@ -518,10 +516,11 @@ public class JavaFXRenderer extends Renderer {
     }
 
     public void addSound(File soundFile, int frameCount) {
+        JMathAnimScene.logger.debug("Playing sound " + soundFile.getName());
         try {
-            videoEncoder.addSound(soundFile, frameCount);
-        } catch (IOException ex) {
-            Logger.getLogger(JavaFXRenderer.class.getName()).log(Level.SEVERE, null, ex);
+            videoEncoder.addSound(soundFile, frameCount,config.fps);
+        } catch (NullPointerException ex) {
+            //Do nothing
         }
     }
 

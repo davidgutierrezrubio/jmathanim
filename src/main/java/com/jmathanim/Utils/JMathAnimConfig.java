@@ -40,6 +40,7 @@ import java.util.HashMap;
 public class JMathAnimConfig {
 
     private String outputFileName;
+    private String ffmpegBinDir;
     private File resourcesDir;
     private File outputDir;
     /**
@@ -164,6 +165,20 @@ public class JMathAnimConfig {
         setDefaultMP();// Load "default" drawing style in dictionary
         resourcesDir = new File("." + File.separator + "resources");
         outputDir = new File("." + File.separator + "media");
+        ffmpegBinDir="";
+    }
+
+    public String getFfmpegBinDir() {
+        return ffmpegBinDir;
+    }
+
+    public void setFfmpegBinDir(String ffmpegBinDir) {
+        this.ffmpegBinDir = ffmpegBinDir;
+        
+        if (ffmpegBinDir.charAt(ffmpegBinDir.length() - 1)!=File.separatorChar) {
+            this.ffmpegBinDir=this.ffmpegBinDir+File.separatorChar;
+        }
+        
     }
 
     /**
