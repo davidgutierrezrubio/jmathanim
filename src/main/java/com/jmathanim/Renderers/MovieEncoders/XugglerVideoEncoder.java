@@ -21,26 +21,18 @@ import com.jmathanim.Utils.JMathAnimConfig;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.xuggle.mediatool.IMediaWriter;
 import com.xuggle.mediatool.ToolFactory;
-import com.xuggle.xuggler.IAudioSamples;
 import com.xuggle.xuggler.ICodec;
-import com.xuggle.xuggler.IContainer;
-import com.xuggle.xuggler.IPacket;
-import com.xuggle.xuggler.IStream;
-import com.xuggle.xuggler.IStreamCoder;
-import com.xuggle.xuggler.IVideoPicture;
 import java.awt.image.BufferedImage;
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.nio.ByteBuffer;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.sound.sampled.AudioInputStream;
-import javax.sound.sampled.AudioSystem;
-import javax.sound.sampled.UnsupportedAudioFileException;
 import org.apache.commons.io.FileUtils;
 
 /**
@@ -56,14 +48,14 @@ public class XugglerVideoEncoder extends VideoEncoder {
     public static int NUM_CHANNELS = 2;
     private long soundFrame;
     private final ArrayList<Long> timeSoundStamps;
-    private final ArrayList<File> fileSounds;
+    private final ArrayList<URL> soundURLs;
     private JMathAnimConfig config;
     private File movieFilename;
 
     public XugglerVideoEncoder() {
         super();
         timeSoundStamps = new ArrayList<>();
-        fileSounds = new ArrayList<>();
+        soundURLs = new ArrayList<>();
     }
 
     @Override
@@ -79,11 +71,11 @@ public class XugglerVideoEncoder extends VideoEncoder {
     }
 
     @Override
-    public void addSound(File soundFile, long frameCount, int fps) {
+    public void addSound(URL soundURL, long frameCount, int fps) {
         //Compute miliseconds
         long miliSeconds = (frameCount * 1000) / fps;
         timeSoundStamps.add(miliSeconds);
-        fileSounds.add(soundFile);
+        soundURLs.add(soundURL);
     }
 
 //    public void addSound(File soundFile, int frameCount) throws IOException {
@@ -153,7 +145,6 @@ public class XugglerVideoEncoder extends VideoEncoder {
 //        audioCoder.close();
 //
 //    }
-
 //    private void addSilence(long numFrame) {
 //        // Generate silence for the given number of frames
 //        int size = (int) (numFrame / fps * NUM_CHANNELS * BITRATE);
@@ -166,7 +157,6 @@ public class XugglerVideoEncoder extends VideoEncoder {
 //        soundFrame += numFrame;
 //
 //    }
-
     @Override
     public void writeFrame(BufferedImage image, int frameCount) {
         framesGenerated = true;
@@ -203,32 +193,34 @@ public class XugglerVideoEncoder extends VideoEncoder {
             String tempSoundName = config.getOutputFileName();
             String outputName = movieFilename.getName();
             final File tmpFile = new File(dir + "_" + outputName);
+
             //Copy output file to temp
             FileUtils.copyFile(new File(dir + outputName), tmpFile);
-            FileUtils.forceDeleteOnExit(tmpFile);
+//            FileUtils.forceDeleteOnExit(tmpFile);
+
             File sound1 = new File(dir + tempSoundName + "0.flac");
             File sound2 = new File(dir + tempSoundName + "1.flac");
-            FileUtils.forceDeleteOnExit(sound1);
-            FileUtils.forceDeleteOnExit(sound2);
+//            FileUtils.forceDeleteOnExit(sound1);
+//            FileUtils.forceDeleteOnExit(sound2);
+            String soundPath = Paths.get(soundURLs.get(0).toURI()).toString();
             //First encode
-            final String firstEncode = config.getFfmpegBinDir() + "ffmpeg.exe -y -loglevel quiet -i " + fileSounds.get(0).getCanonicalPath() + " -filter_complex \"[0:0]adelay=" + timeSoundStamps.get(0) + "[mixout]\" -map [mixout] -c:a flac " + dir + tempSoundName + "1.flac";
-            System.out.println(firstEncode);
+            final String firstEncode = config.getFfmpegBinDir() + "ffmpeg.exe -y -loglevel quiet -i " + soundPath + " -filter_complex \"[0:0]adelay=" + timeSoundStamps.get(0) +"|"+timeSoundStamps.get(0)+ "[mixout]\" -map [mixout] -c:a flac " + dir + tempSoundName + "1.flac";
+            JMathAnimScene.logger.info("Running external command: " + firstEncode);
 //            runExternalCommand(firstEncode);
             Runtime.getRuntime().exec(firstEncode).waitFor();
             int index = 1;
             for (int i = 1; i < timeSoundStamps.size(); i++) {
                 Long timeStamp = timeSoundStamps.get(i);
-                String sound = fileSounds.get(i).getCanonicalPath();
-                final String cmd = config.getFfmpegBinDir() + "ffmpeg.exe -y -loglevel quiet -i " + dir + tempSoundName + index + ".flac -i " + sound + " -filter_complex \"[1:0]adelay=" + timeStamp + "[delayed];[delayed][0:0]amix=inputs=2:duration=longest[mixin];[mixin]volume=6.0201dB[mixout]\" -map [mixout] -c:a flac " + dir + tempSoundName + (1 - index) + ".flac";
-                System.out.println(cmd);
+                soundPath = Paths.get(soundURLs.get(i).toURI()).toString();
+                final String cmd = config.getFfmpegBinDir() + "ffmpeg.exe -y -loglevel quiet -i " + dir + tempSoundName + index + ".flac -i " + soundPath + " -filter_complex \"[1:0]adelay=" + timeStamp +"|"+timeStamp+ "[delayed];[delayed][0:0]amix=inputs=2:duration=longest[mixin];[mixin]volume=6.0201dB[mixout]\" -map [mixout] -c:a flac " + dir + tempSoundName + (1 - index) + ".flac";
+                JMathAnimScene.logger.info("Running external command: " + cmd);
                 Runtime.getRuntime().exec(cmd).waitFor();
-                System.out.println("Done");
                 index = 1 - index;
             }
             //Join everything
             final String cmdFinal = config.getFfmpegBinDir() + "ffmpeg.exe -y -loglevel quiet -i " + dir + "_" + outputName + " -i " + dir + tempSoundName + "" + index + ".flac " + dir + outputName;
 
-            System.out.println(cmdFinal);
+            JMathAnimScene.logger.info("Running external command: " + cmdFinal);
             Runtime.getRuntime().exec(cmdFinal).waitFor();
 
         } catch (IOException ex) {
@@ -236,11 +228,12 @@ public class XugglerVideoEncoder extends VideoEncoder {
                     + " with the config.setFfmpegBinDir method.");
 //             Logger.getLogger(XugglerVideoEncoder.class.getName()).log(Level.SEVERE, null, ex);
         } catch (InterruptedException ex) {
-              JMathAnimScene.logger.error("InterruptedException error processing sounds");
+            JMathAnimScene.logger.error("InterruptedException error processing sounds");
+            Logger.getLogger(XugglerVideoEncoder.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (URISyntaxException ex) {
             Logger.getLogger(XugglerVideoEncoder.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-
 
     private BufferedImage convertToType(BufferedImage sourceImage, int targetType) {
 
@@ -428,5 +421,4 @@ public class XugglerVideoEncoder extends VideoEncoder {
 //
 //        }
 //    }
-
 }

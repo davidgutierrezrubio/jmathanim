@@ -27,6 +27,7 @@ import com.jmathanim.Constructible.GeogebraLoader;
 import com.jmathanim.Renderers.Renderer;
 import com.jmathanim.Utils.JMathAnimConfig;
 import com.jmathanim.Utils.Rect;
+import com.jmathanim.Utils.ResourceLoader;
 import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.MathObjectGroup;
 import com.jmathanim.mathobjects.MultiShapeObject;
@@ -426,11 +427,11 @@ public abstract class JMathAnimScene {
 
     /**
      * Saves the current image into a file. Format is guessed from the extension
-     * of the file name. Formats supported depends on renderer used. 
-     * If no extension supplied, a png format is used.
-     * The file wil be saved in project_home/media directory.
+     * of the file name. Formats supported depends on renderer used. If no
+     * extension supplied, a png format is used. The file wil be saved in
+     * project_home/media directory.
      *
-     * @param filename Name of the file to be saved. 
+     * @param filename Name of the file to be saved.
      */
     public final void saveImage(String filename) {
         doDraws();
@@ -464,6 +465,19 @@ public abstract class JMathAnimScene {
         } catch (Exception ex) {
             java.util.logging.Logger.getLogger(JMathAnimScene.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
+
+    /**
+     * Plays the specified sound at the current frame. Sound files are loaded
+     * using the ResourceLoader class, so modifiers can be used
+     *
+     * @param soundName Name of sound file. By default it looks in user_project/resources/sounds
+     */
+    public void playSound(String soundName) {
+        JMathAnimScene.logger.debug("Playing sound " + soundName);
+        ResourceLoader rl = new ResourceLoader();
+        URL soundURL = rl.getResource(soundName, "sounds");
+        renderer.addSound(soundURL, frameCount);
     }
 
     /**

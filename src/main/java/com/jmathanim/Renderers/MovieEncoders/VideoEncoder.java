@@ -21,6 +21,7 @@ import com.jmathanim.Utils.JMathAnimConfig;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 
 /**
  *
@@ -36,5 +37,5 @@ public abstract class VideoEncoder {
 
 	public abstract boolean isFramesGenerated();
 
-	public abstract void addSound(File soundFile, long frameCount, int fps);
+	public abstract void addSound(URL soundURL, long frameCount, int fps);
 }

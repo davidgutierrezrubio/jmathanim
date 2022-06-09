@@ -30,6 +30,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.imageio.ImageIO;
@@ -126,4 +127,6 @@ public abstract class Renderer {
     abstract public double ThicknessToMathWidth(double th);
 
     abstract public double ThicknessToMathWidth(MathObject obj);
+
+    abstract public void addSound(URL soundURL, int frameCount);
 }

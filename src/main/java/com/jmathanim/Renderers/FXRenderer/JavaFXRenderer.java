@@ -515,10 +515,10 @@ public class JavaFXRenderer extends Renderer {
         debugFXnodes.add(t);
     }
 
-    public void addSound(File soundFile, int frameCount) {
-        JMathAnimScene.logger.debug("Playing sound " + soundFile.getName());
+    @Override
+    public void addSound(URL soundURL, int frameCount) {
         try {
-            videoEncoder.addSound(soundFile, frameCount,config.fps);
+            videoEncoder.addSound(soundURL, frameCount,config.fps);
         } catch (NullPointerException ex) {
             //Do nothing
         }
