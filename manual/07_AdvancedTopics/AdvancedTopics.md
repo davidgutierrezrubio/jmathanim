@@ -213,7 +213,7 @@ Not all `MathObject` and `Animation` combinations are compatible. Below is a tab
 
 # Sounds
 
-Since version 0.9.7-SNAPSHOT, JMathAnim can add sounds to created videos. To do so, an external `ffmpeg` executable is need. You can define the path where this executable is at the `setupSketch()` method with the command ` config.setFfmpegBinDir(path)` where `path` is a `String` with the full path to the `bin` directory of `ffmpeg`, like `C:\ffmpeg\bin` in Windows or `/home/bob/.ffmpeg/bin` in Linux.
+Since version 0.9.7-SNAPSHOT, JMathAnim can add sounds to created videos. To do so, an external `ffmpeg` executable is need. You can define the path where this executable is at the `setupSketch()` method with the command `config.setFfmpegBinDir(path)` where `path` is a `String` with the full path to the `bin` directory of `ffmpeg`, like `C:\ffmpeg\bin` in Windows or `/home/bob/.ffmpeg/bin` in Linux.
 
 > Note: The current version relies on the use of `ffmpeg` as the Xuggler library gives crashes problems when trying to perform the same tasks.  The aim of this project is to provide a easy to install solution without the need to install and reference additional software solutions, so work in progress is done to remove the need for a separate `ffmpeg` install.
 
