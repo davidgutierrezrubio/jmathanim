@@ -28,7 +28,7 @@ What's new?
 Version 0.9.7-SNAPSHOT (13/06/22)
 
 -   Sounds are here! Added the possibility of including sounds in the
-    animations, using a external ffmpeg executable. You may find a brief tutorial in the advanced topics section of the user manual.
+    animations, using an external `ffmpeg` executable. You may find a brief tutorial in the advanced topics section of the user manual.
 
 Version 0.9.6 (03/06/22)
 
