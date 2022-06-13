@@ -211,5 +211,64 @@ Not all `MathObject` and `Animation` combinations are compatible. Below is a tab
 | Arrow2D         | Yes                                                          | Yes                    | Yes (delegates in the isomorphic transform)                  |
 | Delimiter       | No (you have the transform the anchor points instead)        | Yes                    | No (transform anchor points instead)                         |
 
+# Sounds
+
+Since version 0.9.7-SNAPSHOT, JMathAnim can add sounds to created videos. To do so, an external `ffmpeg` executable is need. You can define the path where this executable is at the `setupSketch()` method with the command ` config.setFfmpegBinDir(path)` where `path` is a `String` with the full path to the `bin` directory of `ffmpeg`, like `C:\ffmpeg\bin` in Windows or `/home/bob/.ffmpeg/bin` in Linux.
+
+> Note: The current version relies on the use of `ffmpeg` as the Xuggler library gives crashes problems when trying to perform the same tasks.  The aim of this project is to provide a easy to install solution without the need to install and reference additional software solutions, so work in progress is done to remove the need for a separate `ffmpeg` install.
+
+To add a sound to a specific moment of the animation, you can use the command `playSound`. For example
+
+```java
+playSound("pop.wav");
+```
+
+Will add the given sound at the current frame. Note that adding a sound doesn't stop the animations. They simply are added at the current frame.
+
+The sound file is loaded using the `ResourceLoader` class, so usual conventions are used. In this case, JMathAnim will look for the file `pop.wav` in the directory `project_dir/resources/sounds`. Remember that you can use the "!" modifier to specify an absolute path.
+
+As `ffmpeg` is used as an external command to process the sound files, all most common formats are supported, like wav, mp3, ogg or flac.
+
+When added a sound to the animation, and after the video is created, JMatAnim will process all added sounds and merge them into the created video, so an extra time will be spent. If you don't want to add any sound at all to the animation you can disable them with the config command:
+
+```java
+config.setSoundsEnabled(false);
+```
+
+Another method to add a sound is with the animation `PlaySoundAt`. This is useful when you want to play a sound at a certain specific time of an animation. For example, suppose you have this animation of a square moving and rotating from the previous chapters, where rotating happens between 40% and 60% of animation.
+
+```java
+Shape sq = Shape.square().scale(.5).style("solidblue").moveTo(Point.at(-1, 0));
+AnimationGroup ag = AnimationGroup.make(
+    Commands.shift(6, 2, 0, sq),
+    Commands.rotate(6, PI * .5, sq)
+    		.setUseObjectState(false)
+		    .setLambda(UsefulLambdas.smooth().compose(UsefulLambdas.allocateTo(.4, .6)))
+);
+playAnimation(ag);
+```
+
+Suppose you want the square to translate quietly, but the rotation makes a `rotationSound.mp3` , which is located at the `home_project/resources/sounds` directory. You can achieve this if you define this animation and play it with the original one:
+
+```  java
+ playAnimation(ag, PlaySoundAt.make(6, .4, "rotationSound.mp3"));
+```
+
+Another (wrong) way of achieving this may be using lambdas, using the following definition:
+
+```java
+PlaySoundAt.make(6, 0, "rotationSound.mp3").compose(UsefulLambdas.allocateTo(.4, .6));
+```
+
+but if you create the animation, the sound will be played at the start of the animation. What happened here? Well, the `PlaySoundAt.make` defines an animation that will play the sound when runtime is greater or equal than the given time, in this case 0. The allocate function evaluated at any t<.4 will return 0, so the animation will play the sound at the first animation frame.
+
+To prevent this, the `makeStrict` method creates an animation where the sound will be played after runtime parameter is strictly greater than a given one. So, if you want to make the following code right you should use:
+
+```java
+PlaySoundAt.makeStrict(6, 0, "rotationSound.mp3").compose(UsefulLambdas.allocateTo(.4, .6));
+```
+
+
+
 [home](https://davidgutierrezrubio.github.io/jmathanim/) [back](../index.html)
 
