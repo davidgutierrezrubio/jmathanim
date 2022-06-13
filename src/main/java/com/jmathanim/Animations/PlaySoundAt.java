@@ -28,12 +28,25 @@ public class PlaySoundAt extends Animation {
     String soundResourceName;
     boolean greaterOrEqual;
 
+    /**
+     * Creates an animation that will play a given sound after runtime is strictly greater than a given one
+     * @param runTime Duration of animations (in seconds)
+     * @param timeToPlay Time parameter to play sound. A value between 0 and 1.
+     * @param soundResourceName Resource name of sound to play. Use the conventions of ResourceLoader class.
+     * @return The created animation
+     */
     public static PlaySoundAt makeStrict(double runTime, double timeToPlay, String soundResourceName) {
         PlaySoundAt resul = new PlaySoundAt(runTime, timeToPlay, soundResourceName);
         resul.greaterOrEqual=false;
         return resul;
     }
-    
+    /**
+     * Creates an animation that will play a given sound after runtime is greater or equal than a given one
+     * @param runTime Duration of animations (in seconds)
+     * @param timeToPlay Time parameter to play sound. A value between 0 and 1.
+     * @param soundResourceName Resource name of sound to play. Use the conventions of ResourceLoader class.
+     * @return The created animation
+     */
     public static PlaySoundAt make(double runTime, double timeToPlay, String soundResourceName) {
         PlaySoundAt resul = new PlaySoundAt(runTime, timeToPlay, soundResourceName);
         resul.greaterOrEqual=true;

@@ -469,7 +469,7 @@ public abstract class JMathAnimScene {
 
     /**
      * Plays the specified sound at the current frame. Sound files are loaded
-     * using the ResourceLoader class, so modifiers can be used
+     * using the ResourceLoader class, so usual modifiers can be used
      *
      * @param soundName Name of sound file. By default it looks in
      * user_project/resources/sounds
