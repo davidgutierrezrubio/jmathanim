@@ -121,8 +121,8 @@ public class FXPathUtils {
     public static Path createFXPathFromJMPath(JMPath jmpath, Camera camera) {
         Path path = new Path();
         Vec p = jmpath.jmPathPoints.get(0).p.v;
-        double[] scr = camera.mathToScreen(p.x, p.y);
-        path.getElements().add(new MoveTo(scr[0], scr[1]));
+        double[] prev = camera.mathToScreen(p.x, p.y);
+        path.getElements().add(new MoveTo(prev[0], prev[1]));
         for (int n = 1; n < jmpath.size() + 1; n++) {
             Vec point = jmpath.jmPathPoints.get(n).p.v;
             Vec cpoint1 = jmpath.jmPathPoints.get(n - 1).cpExit.v;
@@ -133,10 +133,11 @@ public class FXPathUtils {
             xy = camera.mathToScreenFX(point);
             cxy1 = camera.mathToScreenFX(cpoint1);
             cxy2 = camera.mathToScreenFX(cpoint2);
+
             if (jmpath.jmPathPoints.get(n).isThisSegmentVisible) {
                 JMPathPoint jp = jmpath.jmPathPoints.get(n);
                 //JavaFX has problems drawin CubicCurves when control points are equal than points
-                if ((!jmpath.jmPathPoints.get(n).isCurved) || ((jp.p.isEquivalentTo(jp.cpEnter, .001)) && (jp.p.isEquivalentTo(jp.cpExit, .001)))) {
+                if ((!jp.isCurved) || ((isAbsEquiv(prev, cxy1, .1)) && (isAbsEquiv(xy, cxy2, .1)))) {
                     final LineTo el = new LineTo(xy[0], xy[1]);
                     path.getElements().add(el);
                 } else {
@@ -151,8 +152,15 @@ public class FXPathUtils {
                     path.getElements().add(el);
                 }
             }
+            prev[0] = xy[0];
+            prev[1] = xy[1];
         }
         return path;
+    }
+
+    protected static boolean isAbsEquiv(double[] a, double[] b, double epsilon) {
+        final double nn = Math.abs(a[0] - b[0]) + Math.abs(a[1] - b[1]);
+        return nn < epsilon;
     }
 
     /**
@@ -261,17 +269,17 @@ public class FXPathUtils {
         double[] mx = cam.mathToScreen(1, 0);
         double[] my = cam.mathToScreen(0, 1);
         Affine resul = new Affine(mx[0] - m0[0], mx[1] - m0[1], m0[0],
-                          -my[0] + m0[0], -my[1] + m0[1], m0[1]
+                -my[0] + m0[0], -my[1] + m0[1], m0[1]
         );
 //        Affine resul = new Affine(mx[0] - m0[0], my[0] - m0[0], m0[0],
 //                -mx[1] +m0[1], -my[1] + m0[1], m0[1]
 //        );
-    return resul;
+        return resul;
     }
-    
+
     public static Affine screenToCamAffineTransfrom(Camera cam) {
         try {
-            Affine resul=camToScreenAffineTransform(cam);
+            Affine resul = camToScreenAffineTransform(cam);
             resul.invert();
             return resul;
         } catch (NonInvertibleTransformException ex) {
@@ -279,6 +287,7 @@ public class FXPathUtils {
         }
         return null;
     }
+
     /**
      * Matrix that stores the transform, with the following form: {{1, x, y, z},
      * {0, vx, vy, vz},{0, wx, wy, wz},{0 tx ty tz}} Where x,y,z is the image of

@@ -40,7 +40,7 @@ public class TransformMathExpressionParameters {
 		scale = 1d;
 		numTurns = 0;
 		removingStyle = null;
-		addingStyle = TransformMathExpression.AddType.FADE_IN;
+		addingStyle = null;
 		transformStyle = TransformMathExpression.TransformType.INTERPOLATION;
 	}
 
