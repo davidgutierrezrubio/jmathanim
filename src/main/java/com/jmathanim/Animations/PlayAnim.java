@@ -21,6 +21,7 @@ import com.jmathanim.Cameras.Camera;
 import com.jmathanim.Cameras.hasCameraParameters;
 import com.jmathanim.Styling.PaintStyle;
 import com.jmathanim.Utils.Anchor;
+import com.jmathanim.Utils.OrientationType;
 import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
@@ -560,7 +561,7 @@ public class PlayAnim {
      * @param runTime Duration in seconds
      */
     public void growIn(double runTime, double angle, MathObject... mobjs) {
-        scene.playAnimation(Commands.growIn(runTime, angle, mobjs));
+        scene.playAnimation(Commands.growIn(runTime, angle, OrientationType.BOTH, mobjs));
     }
 
     /**

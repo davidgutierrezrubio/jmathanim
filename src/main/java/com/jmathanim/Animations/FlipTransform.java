@@ -17,6 +17,7 @@
  */
 package com.jmathanim.Animations;
 
+import com.jmathanim.Utils.OrientationType;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.Point;
@@ -28,25 +29,25 @@ import com.jmathanim.mathobjects.Point;
  */
 public class FlipTransform extends AnimationWithEffects {
 
-    /**
-     * Flip type
-     */
-    public enum FlipType {
-        /**
-         * Horizontal flip. Scale in X and leaves Y scale unchanged.
-         */
-        HORIZONTAL, 
-        /**
-         * Vertical flip. Scale in Y and leaves X scale unchanged.
-         */
-        VERTICAL,
-        /**
-         * Flip both in X and Y 
-        */
-        BOTH
-    }
+//    /**
+//     * Flip type
+//     */
+//    public enum FlipType {
+//        /**
+//         * Horizontal flip. Scale in X and leaves Y scale unchanged.
+//         */
+//        HORIZONTAL, 
+//        /**
+//         * Vertical flip. Scale in Y and leaves X scale unchanged.
+//         */
+//        VERTICAL,
+//        /**
+//         * Flip both in X and Y 
+//        */
+//        BOTH
+//    }
 
-    private final FlipType flipType;
+    private final OrientationType flipType;
     private final MathObject objOrig;
     private final MathObject objDst;
     private final Point origCenter;
@@ -62,7 +63,7 @@ public class FlipTransform extends AnimationWithEffects {
      * @param objOrig Original object
      * @param objDst Destiny object
      */
-    public FlipTransform(double runTime, FlipType flipType, MathObject objOrig, MathObject objDst) {
+    public FlipTransform(double runTime, OrientationType flipType, MathObject objOrig, MathObject objDst) {
         super(runTime);
         setDebugName("FlipTransform");
         this.flipType = flipType;
@@ -81,7 +82,7 @@ public class FlipTransform extends AnimationWithEffects {
      * @return The animation to play with the playAnim method
      */
     public static FlipTransform HFlip(double runTime, MathObject objOrig, MathObject objDst) {
-        return new FlipTransform(runTime, FlipType.HORIZONTAL, objOrig, objDst);
+        return new FlipTransform(runTime, OrientationType.HORIZONTAL, objOrig, objDst);
     }
 
     /**
@@ -93,7 +94,7 @@ public class FlipTransform extends AnimationWithEffects {
      * @return The animation to play with the playAnim method
      */
     public static FlipTransform VFlip(double runTime, MathObject objOrig, MathObject objDst) {
-        return new FlipTransform(runTime, FlipType.VERTICAL, objOrig, objDst);
+        return new FlipTransform(runTime, OrientationType.VERTICAL, objOrig, objDst);
     }
 
     /**
@@ -105,7 +106,7 @@ public class FlipTransform extends AnimationWithEffects {
      * @return The animation to play with the playAnim method
      */
     public static FlipTransform Flip(double runTime, MathObject objOrig, MathObject objDst) {
-        return new FlipTransform(runTime, FlipType.BOTH, objOrig, objDst);
+        return new FlipTransform(runTime, OrientationType.BOTH, objOrig, objDst);
     }
 
     @Override

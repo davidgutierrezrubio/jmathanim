@@ -26,6 +26,7 @@ import com.jmathanim.Styling.MODrawProperties;
 import com.jmathanim.Styling.PaintStyle;
 import com.jmathanim.Utils.AffineJTransform;
 import com.jmathanim.Utils.Anchor;
+import com.jmathanim.Utils.OrientationType;
 import com.jmathanim.Utils.JMathAnimConfig;
 import com.jmathanim.Utils.Layouts.GroupLayout;
 import com.jmathanim.Utils.Rect;
@@ -793,6 +794,21 @@ public class Commands {
      * @return Animation to run with playAnim method
      */
     public static Animation shrinkOut(double runtime, double angle, MathObject... objects) {
+        return shrinkOut(runtime, angle, OrientationType.BOTH, objects);
+    }
+
+    /**
+     * Animation command that reduces the size and alpha of the MathObject.A
+     * rotation of a given angle is performed meanwhile.After finishing the
+     * animation, object is removed from the current scene.
+     *
+     * @param angle Angle to rotate, in radians
+     * @param runtime Duration time in seconds
+     * @param shrinkType How to shrink, HORIZONTAL, VERTICAL or BOTH
+     * @param objects Objects to animate (varargs)
+     * @return Animation to run with playAnim method
+     */
+    public static Animation shrinkOut(double runtime, double angle, OrientationType shrinkType, MathObject... objects) {
         Animation anim = new Animation(runtime) {
             MathObject[] mathObjects = objects;
 
@@ -812,11 +828,13 @@ public class Commands {
             @Override
             public void doAnim(double t) {
                 double lt = getLambda().applyAsDouble(t);
+                double sx = (shrinkType == OrientationType.VERTICAL ? 1 : 1 - lt);
+                double sy = (shrinkType == OrientationType.HORIZONTAL ? 1 : 1 - lt);
                 restoreStates(mathObjects);
                 for (MathObject obj : mathObjects) {
-                    obj.scale(1 - lt);
-//                    obj.multDrawAlpha(1 - lt);
-//                    obj.multFillAlpha(1 - lt);
+                    obj.scale(sx,sy);
+                    obj.multDrawAlpha(1 - lt);
+                    obj.multFillAlpha(1 - lt);
                     obj.thickness(obj.getMp().getThickness() * (1 - lt));
                     obj.rotate(lt * angle);
                 }
@@ -850,7 +868,7 @@ public class Commands {
      * @return Animation to run with playAnim method
      */
     public static Animation growIn(double runtime, MathObject... objects) {
-        return growIn(runtime, 0, objects);
+        return growIn(runtime, 0, OrientationType.BOTH, objects);
     }
 
     /**
@@ -864,6 +882,21 @@ public class Commands {
      * @return Animation to run with playAnim method
      */
     public static Animation growIn(double runtime, double angle, MathObject... objects) {
+        return growIn(runtime, angle, OrientationType.BOTH, objects);
+    }
+
+    /**
+     * Performs the inverse animation than {@link shrinkOut}, that its, scale
+     * the size and alpha of the object from zero. An inverse rotation from
+     * given angle to 0 is performed.
+     *
+     * @param angle Rotation angle
+     * @param runtime Duration time in seconds
+     * @param growType Scale type: HORIZONTAL, VERTICAL or BOTH
+     * @param objects Objects to animate (varargs)
+     * @return Animation to run with playAnim method
+     */
+    public static Animation growIn(double runtime, double angle, OrientationType growType, MathObject... objects) {
         Animation anim = new Animation(runtime) {
             MathObject[] mathObjects = objects;
 
@@ -884,9 +917,11 @@ public class Commands {
             @Override
             public void doAnim(double t) {
                 double lt = getLambda().applyAsDouble(t);
+                double sx = (growType == OrientationType.VERTICAL ? 1 : lt);
+                double sy = (growType == OrientationType.HORIZONTAL ? 1 : lt);
                 restoreStates(mathObjects);
                 for (MathObject obj : mathObjects) {
-                    obj.scale(lt);
+                    obj.scale(sx, sy);
                     obj.multDrawAlpha(lt);
                     obj.multFillAlpha(lt);
                     obj.rotate((1 - lt) * angle);
@@ -1253,7 +1288,7 @@ public class Commands {
      */
     public static FlipTransform flipTransform(double runtime, boolean horizontal, MathObject ob1, MathObject ob2) {
         return new FlipTransform(runtime,
-                (horizontal ? FlipTransform.FlipType.HORIZONTAL : FlipTransform.FlipType.VERTICAL), ob1, ob2);
+                (horizontal ? OrientationType.HORIZONTAL : OrientationType.VERTICAL), ob1, ob2);
     }
 
     /**

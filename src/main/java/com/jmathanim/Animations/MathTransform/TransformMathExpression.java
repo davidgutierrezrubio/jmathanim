@@ -24,6 +24,7 @@ import com.jmathanim.Animations.Commands;
 import com.jmathanim.Animations.FlipTransform;
 import com.jmathanim.Animations.Transform;
 import com.jmathanim.Utils.Anchor;
+import com.jmathanim.Utils.OrientationType;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import static com.jmathanim.jmathanim.JMathAnimScene.PI;
 import com.jmathanim.mathobjects.MultiShapeObject;
@@ -51,9 +52,10 @@ public class TransformMathExpression extends Animation {
     public void setDefaultRemovingStyle(RemoveType defaultRemovingStyle) {
         this.defaultRemovingStyle = defaultRemovingStyle;
     }
-/**
-     * Sets the default adding style. Any item that has not defined its
-     * removing style will use this. Style by default is GROW_IN.
+
+    /**
+     * Sets the default adding style. Any item that has not defined its removing
+     * style will use this. Style by default is GROW_IN.
      *
      * @param defaultAddingStyle
      */
@@ -62,11 +64,11 @@ public class TransformMathExpression extends Animation {
     }
 
     public enum AddType {
-        FADE_IN, GROW_IN, MOVE_IN_UP, MOVE_IN_LEFT, MOVE_IN_RIGHT, MOVE_IN_DOWN
+        FADE_IN, GROW_IN, GROWH_IN, GROWV_IN, MOVE_IN_UP, MOVE_IN_LEFT, MOVE_IN_RIGHT, MOVE_IN_DOWN
     }
 
     public enum RemoveType {
-        FADE_OUT, SHRINK_OUT, MOVE_OUT_UP, MOVE_OUT_LEFT, MOVE_OUT_RIGHT, MOVE_OUT_DOWN
+        FADE_OUT, SHRINK_OUT, SHRINKH_OUT, SHRINKV_OUT, MOVE_OUT_UP, MOVE_OUT_LEFT, MOVE_OUT_RIGHT, MOVE_OUT_DOWN
     }
 
     public enum TransformType {
@@ -207,6 +209,12 @@ public class TransformMathExpression extends Animation {
             case SHRINK_OUT:
                 group.add(Commands.shrinkOut(runTime, sh));
                 break;
+            case SHRINKH_OUT:
+                group.add(Commands.shrinkOut(runTime, 0, OrientationType.HORIZONTAL, sh));
+                break;
+            case SHRINKV_OUT:
+                group.add(Commands.shrinkOut(runTime, 0, OrientationType.VERTICAL, sh));
+                break;
             case MOVE_OUT_UP:
                 group.add(Commands.moveOut(runTime, Anchor.Type.UPPER, sh).setLambda(lambda));
                 break;
@@ -243,6 +251,13 @@ public class TransformMathExpression extends Animation {
             case GROW_IN:
                 anim.add(Commands.growIn(runTime, sh).setLambda(lambda));
                 break;
+            case GROWH_IN:
+                anim.add(Commands.growIn(runTime, 0, OrientationType.HORIZONTAL, sh).setLambda(lambda));
+                break;
+            case GROWV_IN:
+                anim.add(Commands.growIn(runTime, 0, OrientationType.VERTICAL, sh).setLambda(lambda));
+                break;
+
             case MOVE_IN_UP:
                 anim.add(Commands.moveIn(runTime, Anchor.Type.UPPER, sh).setLambda(lambda));
                 break;
@@ -272,13 +287,13 @@ public class TransformMathExpression extends Animation {
                 transform = new Transform(runTime, sh, sh2);
                 break;
             case FLIP_HORIZONTALLY:
-                transform = new FlipTransform(runTime, FlipTransform.FlipType.HORIZONTAL, sh, sh2);
+                transform = new FlipTransform(runTime, OrientationType.HORIZONTAL, sh, sh2);
                 break;
             case FLIP_VERTICALLY:
-                transform = new FlipTransform(runTime, FlipTransform.FlipType.VERTICAL, sh, sh2);
+                transform = new FlipTransform(runTime, OrientationType.VERTICAL, sh, sh2);
                 break;
             case FLIP_BOTH:
-                transform = new FlipTransform(runTime, FlipTransform.FlipType.BOTH, sh, sh2);
+                transform = new FlipTransform(runTime, OrientationType.BOTH, sh, sh2);
                 break;
         }
         transform.setLambda(lambda);
