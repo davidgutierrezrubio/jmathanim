@@ -19,6 +19,7 @@ package com.jmathanim.Renderers;
 
 import com.jmathanim.Cameras.Camera;
 import com.jmathanim.Renderers.FXRenderer.JavaFXRenderer;
+import com.jmathanim.Renderers.MovieEncoders.SoundItem;
 import com.jmathanim.Utils.JMathAnimConfig;
 import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.Vec;
@@ -128,5 +129,5 @@ public abstract class Renderer {
 
     abstract public double ThicknessToMathWidth(MathObject obj);
 
-    abstract public void addSound(URL soundURL, int frameCount);
+    abstract public void addSound(SoundItem soundItem);
 }

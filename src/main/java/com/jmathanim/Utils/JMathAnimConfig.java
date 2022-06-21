@@ -44,6 +44,15 @@ public class JMathAnimConfig {
     private boolean soundsEnabled;
     private File resourcesDir;
     private File outputDir;
+    private File saveFilePath;
+
+    public File getSaveFilePath() {
+        return saveFilePath;
+    }
+
+    public void setSaveFilePath(File saveFilePath) {
+        this.saveFilePath = saveFilePath;
+    }
     /**
      * Width of media screen. Typically 800 or 1920.
      */

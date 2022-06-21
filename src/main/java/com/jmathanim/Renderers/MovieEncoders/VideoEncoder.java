@@ -19,7 +19,6 @@ package com.jmathanim.Renderers.MovieEncoders;
 
 import com.jmathanim.Utils.JMathAnimConfig;
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 
@@ -29,13 +28,48 @@ import java.net.URL;
  */
 public abstract class VideoEncoder {
 
-	public abstract void createEncoder(File output, JMathAnimConfig config) throws IOException;
+    /**
+     * Creates and initializes the encoder. This method should be called before
+     * using the encoder
+     *
+     * @param config Config class
+     * @throws IOException
+     */
+    public abstract void createEncoder(JMathAnimConfig config) throws IOException;
 
-	public abstract void writeFrame(BufferedImage image, int frameCount);
+    /**
+     * Write the current generated frame to the encoder queue
+     *
+     * @param image Frame image
+     * @param frameCount Frame number
+     */
+    public abstract void writeFrame(BufferedImage image, int frameCount);
 
-	public abstract void finish();
+    /**
+     * Finish the encoding, closing the file and doing all necessary operations.
+     * If sounds were added to the scene, they are processed now.
+     */
+    public abstract void finish();
 
-	public abstract boolean isFramesGenerated();
+    /**
+     * Check if any frame is generated at all
+     *
+     * @return True if at least one frame was generated, false otherwise.
+     */
+    public abstract boolean isFramesGenerated();
 
-	public abstract void addSound(URL soundURL, long frameCount, int fps);
+    /**
+     * Adds a sound to the video encoder queue
+     *
+     * @param soundURL URL of sound file
+     * @param miliSeconds Time stamp in miliseconds
+     */
+    public abstract void addSound(URL soundURL, long miliSeconds);
+
+    /**
+     * Add a sound to the video encode queue
+     *
+     * @param soundItem A SoundItem object with the sound info
+     */
+    public abstract void addSound(SoundItem soundItem);
 }

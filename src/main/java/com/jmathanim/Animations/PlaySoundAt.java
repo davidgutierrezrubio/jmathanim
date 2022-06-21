@@ -27,6 +27,7 @@ public class PlaySoundAt extends Animation {
     boolean isPlayed;
     String soundResourceName;
     boolean greaterOrEqual;
+    double soundPitch;
 
     /**
      * Creates an animation that will play a given sound after runtime is strictly greater than a given one
@@ -59,8 +60,15 @@ public class PlaySoundAt extends Animation {
         this.isPlayed = false;
         this.soundResourceName = soundResourceName;
         this.greaterOrEqual = false;
+        this.soundPitch=1;
     }
 
+    public PlaySoundAt setSoundPitch(double soundPitch) {
+        this.soundPitch = soundPitch;
+        return this;
+    }
+
+    
     @Override
     public void doAnim(double t) {
         if (isPlayed) {
@@ -68,7 +76,7 @@ public class PlaySoundAt extends Animation {
         }
         double lt = getLambda().applyAsDouble(t);
         if (checkCondition(lt)) {
-            scene.playSound(soundResourceName);
+            scene.playSound(soundResourceName,soundPitch);
             isPlayed = true;
         }
     }

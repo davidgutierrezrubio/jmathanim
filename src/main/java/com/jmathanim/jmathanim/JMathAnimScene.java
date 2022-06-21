@@ -24,6 +24,7 @@ import com.jmathanim.Animations.Animation;
 import com.jmathanim.Animations.PlayAnim;
 import com.jmathanim.Cameras.Camera;
 import com.jmathanim.Constructible.GeogebraLoader;
+import com.jmathanim.Renderers.MovieEncoders.SoundItem;
 import com.jmathanim.Renderers.Renderer;
 import com.jmathanim.Utils.JMathAnimConfig;
 import com.jmathanim.Utils.Rect;
@@ -89,7 +90,7 @@ public abstract class JMathAnimScene {
      * Renderer to perform drawings
      */
     protected Renderer renderer;
-
+    
     public Renderer getRenderer() {
         return renderer;
     }
@@ -98,7 +99,7 @@ public abstract class JMathAnimScene {
      * Number of frames
      */
     protected int frameCount;
-
+    
     public int getFrameCount() {
         return frameCount;
     }
@@ -165,7 +166,7 @@ public abstract class JMathAnimScene {
      * @return Exit code. 0 is no error, not 0 otherwise.
      */
     public final int execute() {
-
+        
         String sketchName = this.getClass().getName();
         LoggerContext loggerContext = (LoggerContext) LoggerFactory.getILoggerFactory();
         loggerContext.reset();
@@ -178,7 +179,7 @@ public abstract class JMathAnimScene {
             java.util.logging.Logger.getLogger(JMathAnimScene.class.getName()).log(Level.SEVERE, null, ex);
         }
         logger.info("Running sketch {} ", sketchName);
-
+        
         setupSketch();
         createRenderer();
         JMathAnimConfig.getConfig().setRenderer(renderer);
@@ -200,7 +201,7 @@ public abstract class JMathAnimScene {
         } catch (Exception ex) {
             java.util.logging.Logger.getLogger(JMathAnimScene.class.getName()).log(Level.SEVERE, null, ex);
         }
-
+        
         if (exitCode != 0) {
             logger.error("An error ocurred. Check the logs.");
         }
@@ -215,7 +216,7 @@ public abstract class JMathAnimScene {
     public ArrayList<MathObject> getObjects() {
         return sceneObjects;
     }
-
+    
     public MathObject[] everything() {
         MathObject[] arr = new MathObject[sceneObjects.size()];
         for (int n = 0; n < sceneObjects.size(); n++) {
@@ -312,13 +313,13 @@ public abstract class JMathAnimScene {
                         sceneObjects.add(obj);
                     } else {
                         sceneObjects.add(obj);
-
+                        
                     }
                 }
                 registerUpdateable(obj);
                 obj.addToSceneHook(this);
             }
-
+            
         }
     }
 
@@ -329,7 +330,7 @@ public abstract class JMathAnimScene {
      */
     public synchronized final void remove(ArrayList<MathObject> objs) {
         remove((MathObject[]) objs.toArray(MathObject[]::new));
-
+        
     }
 
     /**
@@ -349,14 +350,14 @@ public abstract class JMathAnimScene {
                         this.remove(o);
                     }
                 }
-
+                
                 if (obj instanceof MathObjectGroup) {
                     MathObjectGroup msh = (MathObjectGroup) obj;
                     for (MathObject o : msh) {
                         this.remove(o);
                     }
                 }
-
+                
                 sceneObjects.remove(obj);
                 obj.removedFromSceneHook(this);
                 unregisterUpdateable(obj);
@@ -399,10 +400,10 @@ public abstract class JMathAnimScene {
         // updatelevel 0 gets updated first (although negative values can be set too)
         // Objects with updatelevel n depend directly from those with level n-1
         objectsToBeUpdated.sort((Updateable o1, Updateable o2) -> o1.getUpdateLevel() - o2.getUpdateLevel());
-
+        
         ArrayList<Updateable> updatesCopy = new ArrayList<>();
         updatesCopy.addAll(objectsToBeUpdated);
-
+        
         for (Updateable obj : updatesCopy) {
             obj.update(this);
         }
@@ -422,7 +423,7 @@ public abstract class JMathAnimScene {
             previousNanoTime = nanoTime;
             nanoTime = System.nanoTime();
         }
-
+        
     }
 
     /**
@@ -441,7 +442,7 @@ public abstract class JMathAnimScene {
         Optional<String> extension = Optional.ofNullable(filename)
                 .filter(f -> f.contains("."))
                 .map(f -> f.substring(filename.lastIndexOf(".") + 1));
-
+        
         if (extension.isEmpty()) {
             //Add png as default extension
             fn = filename + ".png";
@@ -450,7 +451,7 @@ public abstract class JMathAnimScene {
             format = extension.get();
             fn = filename;
         }
-
+        
         renderer.saveImage(fn, format);
     }
 
@@ -459,7 +460,7 @@ public abstract class JMathAnimScene {
      * to video, or any other format.
      */
     private void saveMPFrame() {
-
+        
         try {
             renderer.saveFrame(frameCount);
         } catch (Exception ex) {
@@ -468,22 +469,31 @@ public abstract class JMathAnimScene {
     }
 
     /**
-     * Plays the specified sound at the current frame. Sound files are loaded
-     * using the ResourceLoader class, so usual modifiers can be used
+     * Plays the specified sound at the current frame.Sound files are loaded
+ using the ResourceLoader class, so usual modifiers can be used
      *
      * @param soundName Name of sound file. By default it looks in
      * user_project/resources/sounds
+     * @param pitch
      */
-    public void playSound(String soundName) {
+    public void playSound(String soundName,double pitch) {
         if (!config.isSoundsEnabled()) {
             return;
         }
-        JMathAnimScene.logger.debug("Playing sound " + soundName);
+        JMathAnimScene.logger.debug("Playing sound " + soundName+" with pitch "+pitch);
         ResourceLoader rl = new ResourceLoader();
         URL soundURL = rl.getResource(soundName, "sounds");
-        renderer.addSound(soundURL, frameCount);
+        long miliSeconds = (frameCount * 1000) / config.fps;
+
+        SoundItem soundItem=SoundItem.make(soundURL, miliSeconds,pitch);
+        renderer.addSound(soundItem);
     }
 
+    public void playSound(String soundName) {
+        playSound(soundName, 1);
+    }
+
+    
     /**
      * Play the given animations, generating new frames automatically until all
      * animations have finished.
@@ -513,12 +523,12 @@ public abstract class JMathAnimScene {
             if (!"".equals(anim.getDebugName())) {
                 JMathAnimScene.logger.info("Begin animation: " + anim.getDebugName());
             }
-
+            
             if (animationIsDisabled) {
                 anim.setT(1);
             }
         }
-
+        
         boolean finished = false;
         while (!finished) {
             finished = true;
@@ -555,7 +565,7 @@ public abstract class JMathAnimScene {
                 java.util.logging.Logger.getLogger(JMathAnimScene.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-
+        
     }
 
     /**
@@ -575,7 +585,7 @@ public abstract class JMathAnimScene {
     public Camera getFixedCamera() {
         return renderer.getFixedCamera();
     }
-
+    
     public void formulaHelper(String... formulas) {
         LaTeXMathObject[] texes = new LaTeXMathObject[formulas.length];
         int n = 0;
@@ -586,7 +596,7 @@ public abstract class JMathAnimScene {
         }
         formulaHelper(texes);
     }
-
+    
     public void formulaHelper(LaTeXMathObject... texes) {
         MathObjectGroup group = new MathObjectGroup();
         for (LaTeXMathObject lat : texes) {
@@ -601,7 +611,7 @@ public abstract class JMathAnimScene {
         renderer.getCamera().zoomToObjects(group);
         add(group);
     }
-
+    
     public JMathAnimConfig getConfig() {
         return config;
     }
@@ -613,7 +623,7 @@ public abstract class JMathAnimScene {
     public void disableAnimations() {
         this.animationIsDisabled = true;
     }
-
+    
     public void enableAnimations() {
         this.animationIsDisabled = false;
     }
@@ -697,5 +707,5 @@ public abstract class JMathAnimScene {
         }
         renderer.getCamera().reset();
     }
-
+    
 }

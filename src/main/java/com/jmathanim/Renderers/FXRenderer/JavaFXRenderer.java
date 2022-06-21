@@ -18,6 +18,7 @@
 package com.jmathanim.Renderers.FXRenderer;
 
 import com.jmathanim.Cameras.Camera;
+import com.jmathanim.Renderers.MovieEncoders.SoundItem;
 import com.jmathanim.Renderers.MovieEncoders.VideoEncoder;
 import com.jmathanim.Renderers.MovieEncoders.XugglerVideoEncoder;
 import com.jmathanim.Renderers.Renderer;
@@ -147,7 +148,8 @@ public class JavaFXRenderer extends Renderer {
             saveFilePath = new File(config.getOutputDir().getCanonicalPath() + File.separator
                     + config.getOutputFileName() + "_" + config.mediaH + ".mp4");
             JMathAnimScene.logger.info("Creating movie encoder for {}", saveFilePath);
-            videoEncoder.createEncoder(saveFilePath, config);
+            config.setSaveFilePath(saveFilePath);
+            videoEncoder.createEncoder(config);
         }
         if (config.drawShadow) {
             dropShadow = new DropShadow();
@@ -516,12 +518,11 @@ public class JavaFXRenderer extends Renderer {
     }
 
     @Override
-    public void addSound(URL soundURL, int frameCount) {
-        try {
-            videoEncoder.addSound(soundURL, frameCount,config.fps);
+    public void addSound(SoundItem soundItem) {
+         try {
+            videoEncoder.addSound(soundItem);
         } catch (NullPointerException ex) {
             //Do nothing
         }
     }
-
 }
