@@ -17,6 +17,7 @@
  */
 package com.jmathanim.jmathanim;
 
+import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.joran.JoranConfigurator;
 import ch.qos.logback.core.joran.spi.JoranException;
@@ -44,9 +45,9 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
-import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+//import org.slf4j.Logger;
+//import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -57,7 +58,7 @@ public abstract class JMathAnimScene {
     /**
      * Logger class
      */
-    public final static Logger logger = LoggerFactory.getLogger("com.jmathanim.jmathanim.JMathAnimScene");
+    public final static Logger logger = (ch.qos.logback.classic.Logger) LoggerFactory.getLogger("com.jmathanim.jmathanim.JMathAnimScene");
     /**
      * Our loved constant PI
      */
@@ -521,7 +522,7 @@ public abstract class JMathAnimScene {
             }
             anim.initialize(this);// Perform needed steps immediately before playing
             if (!"".equals(anim.getDebugName())) {
-                JMathAnimScene.logger.info("Begin animation: " + anim.getDebugName());
+                JMathAnimScene.logger.info("Begin animation: " + anim.getDebugName()+" ["+anim.getRunTime()+"s]");
             }
             
             if (animationIsDisabled) {

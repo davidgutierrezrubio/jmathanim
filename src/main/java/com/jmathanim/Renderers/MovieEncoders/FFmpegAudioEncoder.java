@@ -21,9 +21,6 @@ import com.jmathanim.Utils.JMathAnimConfig;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import java.io.File;
 import java.io.IOException;
-import java.net.URISyntaxException;
-import java.nio.file.Paths;
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -39,6 +36,7 @@ public class FFmpegAudioEncoder {
 
     private final JMathAnimConfig config;
     String dir;
+    boolean conversionOk;
 
     public FFmpegAudioEncoder(JMathAnimConfig config) {
         this.config = config;
@@ -47,6 +45,7 @@ public class FFmpegAudioEncoder {
         } catch (IOException ex) {
             Logger.getLogger(FFmpegAudioEncoder.class.getName()).log(Level.SEVERE, null, ex);
         }
+        conversionOk = true;
     }
 
     /**
@@ -68,13 +67,13 @@ public class FFmpegAudioEncoder {
             final File tmpFile = new File(dir + tempVideoFileName);
             //Copy output file to temp
             FileUtils.copyFile(config.getSaveFilePath(), tmpFile);
-            FileUtils.forceDeleteOnExit(tmpFile);
+//            FileUtils.forceDeleteOnExit(tmpFile);
 
             //Create 2 temporary wav audio files that will be deleted
             File sound1 = new File(dir + tempAudioFileName + "0.wav");
             File sound2 = new File(dir + tempAudioFileName + "1.wav");
-            FileUtils.forceDeleteOnExit(sound1);
-            FileUtils.forceDeleteOnExit(sound2);
+//            FileUtils.forceDeleteOnExit(sound1);
+//            FileUtils.forceDeleteOnExit(sound2);
 
             //Ok, prepare to encode
             //First, encode first audio file within tempSoundName1.wav
@@ -86,16 +85,21 @@ public class FFmpegAudioEncoder {
             //                              tempSoundName1+sound(3) to tempSoundName0...
             int index = 1;
             for (int i = 1; i < soundItems.size(); i++) {
-                JMathAnimScene.logger.info("Processing sound: [" + (i + 1) + "/" + soundItems.size() + "]:");
+                JMathAnimScene.logger.info("Processing sound: [" + (i + 1) + "/" + soundItems.size() + "]");
                 runIntermediateFfmpegCommand(soundItems.get(i), tempAudioFileName + index + ".wav", tempAudioFileName + (1 - index) + ".wav");
                 index = 1 - index;
             }
 
             //And finally, do the final encoding
             //mixing tempVideoFile, tempAudioFile to finalVideoFile
-           
             JMathAnimScene.logger.info("Joining everything...");
             runFinalFFmpegCommand(tempVideoFileName, tempAudioFileName + index + ".wav", finalOutputFileName);
+            if (conversionOk) {
+                JMathAnimScene.logger.info("Conversion Ok");
+            }
+            else {
+                 JMathAnimScene.logger.error("Unexpected error converting. At least one of the ffmpeg calls returned error.");
+            }
 
         } catch (IOException ex) {
             Logger.getLogger(FFmpegAudioEncoder.class.getName()).log(Level.SEVERE, null, ex);
@@ -106,14 +110,13 @@ public class FFmpegAudioEncoder {
     }
 
     private void runFirstFfmpegCommand(SoundItem soundItem, String outputName) throws IOException, InterruptedException {
-         double pitch = Math.round(soundItem.getPitch() * 100) / 100d;
+        double pitch = Math.round(soundItem.getPitch() * 100) / 100d;
         final String cmd = config.getFfmpegBinDir() + "ffmpeg.exe -y -loglevel quiet"
                 + " -i " + soundItem.getPath()
-                + " -filter_complex \"[0:0]asetrate=44100*" + pitch + ",atempo=1/1[pitched];"
-                + "[pitched]adelay=" + soundItem.getTimeStamp() + "|" + soundItem.getTimeStamp() + "[mixout]\" -map [mixout]"
-                + " " + dir + outputName;
+                + getFilterComplex(0, pitch, soundItem.getTimeStamp())
+                + dir + outputName;
         JMathAnimScene.logger.debug(cmd);
-        Runtime.getRuntime().exec(cmd).waitFor();
+        runFfmpegProcess(cmd);
     }
 
     private void runIntermediateFfmpegCommand(SoundItem soundItem, String inputName, String outputName) throws IOException, InterruptedException {
@@ -124,25 +127,55 @@ public class FFmpegAudioEncoder {
                 + "ffmpeg.exe -y -loglevel quiet"
                 + inputName
                 + " -i " + soundPath
-                + " -filter_complex "
-                + "\"[1:0]asetrate=44100*" + pitch + ",atempo=1/1[pitched];"
-                + "[pitched]adelay=" + soundItem.getTimeStamp() + "|" + soundItem.getTimeStamp() + "[delayed];[delayed][0:0]amix=inputs=2:duration=longest[mixin];"//Adds the sound at the specified time stamp
-                + "[mixin]volume=6.0201dB[mixout]\""//This filter normalizes the volume
-                + " -map [mixout]"
-                + " " + dir + outputName;
+                + getFilterComplex(1, pitch, soundItem.getTimeStamp())
+                + dir + outputName;
         JMathAnimScene.logger.debug(cmd);
+        runFfmpegProcess(cmd);
+    }
 
-        Runtime.getRuntime().exec(cmd).waitFor();
+    private String getFilterComplex(int sourceId, double pitch, long delay) {
+        String filter = " -filter_complex \"";
+        String src = sourceId + ":0";
+        String dst = "pitched";
+        //Pitch
+        if (pitch != 1) {
+            filter += "[" + src + "]asetrate=44100*" + pitch + ",atempo=1/1[" + dst + "];";
+            src = dst;
+        }
+        //Delay
+        dst = "delayed";
+        filter += "[" + src + "]adelay=" + delay + "|" + delay + "[" + dst + "];";
+        src = dst;
+
+        //mix the audio sources
+        dst = "mixin";
+        filter += "[" + src + "][0:0]amix=inputs=2:duration=longest[" + dst + "];";//Adds the sound at the specified time stamp
+        src = dst;
+
+        //Volume filter
+        dst = "mixout";
+        filter += "[" + src + "]volume=6.0201dB[" + dst + "]";//This filter normalizes the volume
+
+        //Close filter and map
+        filter += "\" -map [" + dst + "] ";
+
+        return filter;
     }
 
     private void runFinalFFmpegCommand(String tempVideoName, String tempSoundName, String outputName) throws IOException, InterruptedException {
-        String cmd = "";
-        cmd = config.getFfmpegBinDir() + "ffmpeg.exe -y -loglevel quiet"
+        String cmd = config.getFfmpegBinDir() + "ffmpeg.exe -y -loglevel quiet"
                 + " -i " + dir + tempVideoName
                 + " -i " + dir + tempSoundName
                 + " " + dir + outputName;
         JMathAnimScene.logger.debug(cmd);
-        Runtime.getRuntime().exec(cmd).waitFor();
+        runFfmpegProcess(cmd);
     }
 
+    private void runFfmpegProcess(final String cmd) throws IOException, InterruptedException {
+        Process process = Runtime.getRuntime().exec(cmd);
+        process.waitFor();
+        if (process.exitValue() != 0) {
+            conversionOk = false;
+        }
+    }
 }
