@@ -70,16 +70,16 @@ public class FFmpegAudioEncoder {
             FileUtils.copyFile(config.getSaveFilePath(), tmpFile);
             FileUtils.forceDeleteOnExit(tmpFile);
 
-            //Create 2 temporary flac audio files that will be deleted
-            File sound1 = new File(dir + tempAudioFileName + "0.flac");
-            File sound2 = new File(dir + tempAudioFileName + "1.flac");
+            //Create 2 temporary wav audio files that will be deleted
+            File sound1 = new File(dir + tempAudioFileName + "0.wav");
+            File sound2 = new File(dir + tempAudioFileName + "1.wav");
             FileUtils.forceDeleteOnExit(sound1);
             FileUtils.forceDeleteOnExit(sound2);
 
             //Ok, prepare to encode
-            //First, encode first audio file within tempSoundName1.flac
+            //First, encode first audio file within tempSoundName1.wav
             JMathAnimScene.logger.info("Processing sound: [1/" + soundItems.size() + "]: ");
-            runFirstFfmpegCommand(soundItems.get(0), tempAudioFileName + "1.flac");
+            runFirstFfmpegCommand(soundItems.get(0), tempAudioFileName + "1.wav");
 
             //Now run a loop where encoding tempSoundName1+sound(1) to tempSoundName0
             //                              tempSoundName0+sound(2) to tempSoundName1
@@ -87,7 +87,7 @@ public class FFmpegAudioEncoder {
             int index = 1;
             for (int i = 1; i < soundItems.size(); i++) {
                 JMathAnimScene.logger.info("Processing sound: [" + (i + 1) + "/" + soundItems.size() + "]:");
-                runIntermediateFfmpegCommand(soundItems.get(i), tempAudioFileName + index + ".flac", tempAudioFileName + (1 - index) + ".flac");
+                runIntermediateFfmpegCommand(soundItems.get(i), tempAudioFileName + index + ".wav", tempAudioFileName + (1 - index) + ".wav");
                 index = 1 - index;
             }
 
@@ -95,7 +95,7 @@ public class FFmpegAudioEncoder {
             //mixing tempVideoFile, tempAudioFile to finalVideoFile
            
             JMathAnimScene.logger.info("Joining everything...");
-            runFinalFFmpegCommand(tempVideoFileName, tempAudioFileName + index + ".flac", finalOutputFileName);
+            runFinalFFmpegCommand(tempVideoFileName, tempAudioFileName + index + ".wav", finalOutputFileName);
 
         } catch (IOException ex) {
             Logger.getLogger(FFmpegAudioEncoder.class.getName()).log(Level.SEVERE, null, ex);
@@ -111,7 +111,7 @@ public class FFmpegAudioEncoder {
                 + " -i " + soundItem.getPath()
                 + " -filter_complex \"[0:0]asetrate=44100*" + pitch + ",atempo=1/1[pitched];"
                 + "[pitched]adelay=" + soundItem.getTimeStamp() + "|" + soundItem.getTimeStamp() + "[mixout]\" -map [mixout]"
-                + " -c:a flac " + dir + outputName;
+                + " " + dir + outputName;
         JMathAnimScene.logger.debug(cmd);
         Runtime.getRuntime().exec(cmd).waitFor();
     }
@@ -129,7 +129,7 @@ public class FFmpegAudioEncoder {
                 + "[pitched]adelay=" + soundItem.getTimeStamp() + "|" + soundItem.getTimeStamp() + "[delayed];[delayed][0:0]amix=inputs=2:duration=longest[mixin];"//Adds the sound at the specified time stamp
                 + "[mixin]volume=6.0201dB[mixout]\""//This filter normalizes the volume
                 + " -map [mixout]"
-                + " -c:a flac " + dir + outputName;
+                + " " + dir + outputName;
         JMathAnimScene.logger.debug(cmd);
 
         Runtime.getRuntime().exec(cmd).waitFor();
