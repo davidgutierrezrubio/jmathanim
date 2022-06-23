@@ -175,8 +175,8 @@ public class JMathAnimConfig {
         setDefaultMP();// Load "default" drawing style in dictionary
         resourcesDir = new File("." + File.separator + "resources");
         outputDir = new File("." + File.separator + "media");
-        ffmpegBinExecutable="";
-        soundsEnabled=true;
+        ffmpegBinExecutable = "";
+        soundsEnabled = true;
     }
 
     public boolean isSoundsEnabled() {
@@ -187,18 +187,12 @@ public class JMathAnimConfig {
         this.soundsEnabled = enableSounds;
     }
 
-    
     public String getFfmpegBinExecutable() {
         return ffmpegBinExecutable;
     }
 
     public void setFfmpegExecutable(String ffmpegBinDir) {
         this.ffmpegBinExecutable = ffmpegBinDir;
-        
-        if (ffmpegBinDir.charAt(ffmpegBinDir.length() - 1)!=File.separatorChar) {
-            this.ffmpegBinExecutable=this.ffmpegBinExecutable+File.separatorChar;
-        }
-        
     }
 
     /**
@@ -299,7 +293,7 @@ public class JMathAnimConfig {
         latexDefaultMP.setFillColor(JMColor.WHITE);
         latexDefaultMP.setFillAlpha(1);// Latex formulas are filled by default
         styles.put("LATEXDEFAULT", latexDefaultMP);
-        
+
         MODrawProperties defaultArrowMP = new MODrawProperties();
         defaultDotMP.setDrawColor(JMColor.WHITE);
         defaultDotMP.setFillColor(JMColor.WHITE);
