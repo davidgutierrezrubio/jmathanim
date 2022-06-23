@@ -54,8 +54,10 @@ public class FFmpegAudioEncoder {
      * @param soundItems An ArrayList with sound items
      */
     public void processSounds(ArrayList<SoundItem> soundItems) {
-        if ("".equals(config.getFfmpegBinExecutable())) {
-            JMathAnimScene.logger.warn("ffmpeg path executable not set. Sounds will not be processed.");
+        File ffmpegExecFile = new File(config.getFfmpegBinExecutable());
+        if (!ffmpegExecFile.exists()) {
+            JMathAnimScene.logger.warn("ffmpeg executable not found. Sounds will not be processed.");
+            JMathAnimScene.logger.warn("Set the ffmpeg executable location with config.setFfmpegExecutable in the setupSketch method");
             return;
         }
         if (soundItems.isEmpty()) {
@@ -114,8 +116,8 @@ public class FFmpegAudioEncoder {
 
     private void runFirstFfmpegCommand(SoundItem soundItem, String outputName) throws IOException, InterruptedException {
         double pitch = Math.round(soundItem.getPitch() * 100) / 100d;
-        final String cmd = config.getFfmpegBinExecutable() + 
-                " -y -loglevel quiet"
+        final String cmd = config.getFfmpegBinExecutable()
+                + " -y -loglevel quiet"
                 + " -i " + soundItem.getPath()
                 + getFilterComplex(0, pitch, soundItem.getTimeStamp(), false)
                 + dir + outputName;
@@ -173,8 +175,8 @@ public class FFmpegAudioEncoder {
     }
 
     private void runFinalFFmpegCommand(String tempVideoName, String tempSoundName, String outputName) throws IOException, InterruptedException {
-        String cmd = config.getFfmpegBinExecutable() + 
-                " -y -loglevel quiet"
+        String cmd = config.getFfmpegBinExecutable()
+                + " -y -loglevel quiet"
                 + " -i " + dir + tempVideoName
                 + " -i " + dir + tempSoundName
                 + " " + dir + outputName;
