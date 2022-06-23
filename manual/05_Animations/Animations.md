@@ -503,7 +503,7 @@ A simpler transform animation which works on any `MathObject` instance is `FlipT
 
 ```java
 LaTeXMathObject text = LaTeXMathObject.make("JMathAnim");
-FlipTransform.FlipType[] flips = new FlipTransform.FlipType[]{FlipTransform.FlipType.HORIZONTAL, FlipTransform.FlipType.VERTICAL, FlipTransform.FlipType.BOTH};
+OrientationType[] flips = new FlipTransform.FlipType[]{OrientationType.HORIZONTAL, OrientationType.VERTICAL, OrientationType.BOTH};
 
 //The MultiShapeObject and all its subclasses implement the iterable interface,
 //which allows to easily iterate over all the shapes this way:
