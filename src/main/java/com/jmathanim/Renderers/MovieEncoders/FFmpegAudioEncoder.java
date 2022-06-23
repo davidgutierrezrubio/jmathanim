@@ -110,7 +110,8 @@ public class FFmpegAudioEncoder {
 
     private void runFirstFfmpegCommand(SoundItem soundItem, String outputName) throws IOException, InterruptedException {
         double pitch = Math.round(soundItem.getPitch() * 100) / 100d;
-        final String cmd = config.getFfmpegBinDir() + "ffmpeg.exe -y -loglevel quiet"
+        final String cmd = config.getFfmpegBinExecutable() + 
+                " -y -loglevel quiet"
                 + " -i " + soundItem.getPath()
                 + getFilterComplex(0, pitch, soundItem.getTimeStamp(), false)
                 + dir + outputName;
@@ -122,8 +123,8 @@ public class FFmpegAudioEncoder {
         inputName = ("".equals(inputName) ? "" : " -i " + dir + inputName);
         String soundPath = soundItem.getPath();
         double pitch = Math.round(soundItem.getPitch() * 100) / 100d;
-        final String cmd = config.getFfmpegBinDir()
-                + "ffmpeg.exe -y -loglevel quiet"
+        final String cmd = config.getFfmpegBinExecutable()
+                + " -y -loglevel quiet"
                 + inputName
                 + " -i " + soundPath
                 + getFilterComplex(1, pitch, soundItem.getTimeStamp(), true)
@@ -168,7 +169,8 @@ public class FFmpegAudioEncoder {
     }
 
     private void runFinalFFmpegCommand(String tempVideoName, String tempSoundName, String outputName) throws IOException, InterruptedException {
-        String cmd = config.getFfmpegBinDir() + "ffmpeg.exe -y -loglevel quiet"
+        String cmd = config.getFfmpegBinExecutable() + 
+                " -y -loglevel quiet"
                 + " -i " + dir + tempVideoName
                 + " -i " + dir + tempSoundName
                 + " " + dir + outputName;

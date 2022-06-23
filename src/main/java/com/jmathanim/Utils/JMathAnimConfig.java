@@ -40,7 +40,7 @@ import java.util.HashMap;
 public class JMathAnimConfig {
 
     private String outputFileName;
-    private String ffmpegBinDir;
+    private String ffmpegBinExecutable;
     private boolean soundsEnabled;
     private File resourcesDir;
     private File outputDir;
@@ -175,7 +175,7 @@ public class JMathAnimConfig {
         setDefaultMP();// Load "default" drawing style in dictionary
         resourcesDir = new File("." + File.separator + "resources");
         outputDir = new File("." + File.separator + "media");
-        ffmpegBinDir="";
+        ffmpegBinExecutable="";
         soundsEnabled=true;
     }
 
@@ -188,15 +188,15 @@ public class JMathAnimConfig {
     }
 
     
-    public String getFfmpegBinDir() {
-        return ffmpegBinDir;
+    public String getFfmpegBinExecutable() {
+        return ffmpegBinExecutable;
     }
 
-    public void setFfmpegBinDir(String ffmpegBinDir) {
-        this.ffmpegBinDir = ffmpegBinDir;
+    public void setFfmpegExecutable(String ffmpegBinDir) {
+        this.ffmpegBinExecutable = ffmpegBinDir;
         
         if (ffmpegBinDir.charAt(ffmpegBinDir.length() - 1)!=File.separatorChar) {
-            this.ffmpegBinDir=this.ffmpegBinDir+File.separatorChar;
+            this.ffmpegBinExecutable=this.ffmpegBinExecutable+File.separatorChar;
         }
         
     }
