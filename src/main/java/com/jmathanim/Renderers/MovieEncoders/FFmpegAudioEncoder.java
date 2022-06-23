@@ -67,13 +67,13 @@ public class FFmpegAudioEncoder {
             final File tmpFile = new File(dir + tempVideoFileName);
             //Copy output file to temp
             FileUtils.copyFile(config.getSaveFilePath(), tmpFile);
-//            FileUtils.forceDeleteOnExit(tmpFile);
+            FileUtils.forceDeleteOnExit(tmpFile);
 
             //Create 2 temporary wav audio files that will be deleted
             File sound1 = new File(dir + tempAudioFileName + "0.wav");
             File sound2 = new File(dir + tempAudioFileName + "1.wav");
-//            FileUtils.forceDeleteOnExit(sound1);
-//            FileUtils.forceDeleteOnExit(sound2);
+            FileUtils.forceDeleteOnExit(sound1);
+            FileUtils.forceDeleteOnExit(sound2);
 
             //Ok, prepare to encode
             //First, encode first audio file within tempSoundName1.wav
