@@ -96,9 +96,8 @@ public class FFmpegAudioEncoder {
             runFinalFFmpegCommand(tempVideoFileName, tempAudioFileName + index + ".wav", finalOutputFileName);
             if (conversionOk) {
                 JMathAnimScene.logger.info("Conversion Ok");
-            }
-            else {
-                 JMathAnimScene.logger.error("Unexpected error converting. At least one of the ffmpeg calls returned error.");
+            } else {
+                JMathAnimScene.logger.error("Unexpected error converting. At least one of the ffmpeg calls returned error.");
             }
 
         } catch (IOException ex) {
@@ -113,7 +112,7 @@ public class FFmpegAudioEncoder {
         double pitch = Math.round(soundItem.getPitch() * 100) / 100d;
         final String cmd = config.getFfmpegBinDir() + "ffmpeg.exe -y -loglevel quiet"
                 + " -i " + soundItem.getPath()
-                + getFilterComplex(0, pitch, soundItem.getTimeStamp())
+                + getFilterComplex(0, pitch, soundItem.getTimeStamp(), false)
                 + dir + outputName;
         JMathAnimScene.logger.debug(cmd);
         runFfmpegProcess(cmd);
@@ -127,18 +126,23 @@ public class FFmpegAudioEncoder {
                 + "ffmpeg.exe -y -loglevel quiet"
                 + inputName
                 + " -i " + soundPath
-                + getFilterComplex(1, pitch, soundItem.getTimeStamp())
+                + getFilterComplex(1, pitch, soundItem.getTimeStamp(), true)
                 + dir + outputName;
         JMathAnimScene.logger.debug(cmd);
         runFfmpegProcess(cmd);
     }
 
-    private String getFilterComplex(int sourceId, double pitch, long delay) {
+    private String getFilterComplex(int sourceId, double pitch, long delay, boolean shouldMix) {
         String filter = " -filter_complex \"";
         String src = sourceId + ":0";
-        String dst = "pitched";
+        String dst;
+
         //Pitch
         if (pitch != 1) {
+            //Resample to 44100hz
+            dst = "resampled";
+            filter += "[" + src + "]aresample=44100[" + dst + "];";
+            src = dst;
             filter += "[" + src + "]asetrate=44100*" + pitch + ",atempo=1/1[" + dst + "];";
             src = dst;
         }
@@ -147,11 +151,12 @@ public class FFmpegAudioEncoder {
         filter += "[" + src + "]adelay=" + delay + "|" + delay + "[" + dst + "];";
         src = dst;
 
-        //mix the audio sources
-        dst = "mixin";
-        filter += "[" + src + "][0:0]amix=inputs=2:duration=longest[" + dst + "];";//Adds the sound at the specified time stamp
-        src = dst;
-
+        if (shouldMix) {//If true, there are 2 input audio sources and should be mixed
+            //mix the audio sources
+            dst = "mixin";
+            filter += "[" + src + "]amix=inputs=2:duration=longest[" + dst + "];";//Adds the sound at the specified time stamp
+            src = dst;
+        }
         //Volume filter
         dst = "mixout";
         filter += "[" + src + "]volume=6.0201dB[" + dst + "]";//This filter normalizes the volume
