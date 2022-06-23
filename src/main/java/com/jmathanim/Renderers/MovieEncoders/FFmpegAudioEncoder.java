@@ -54,6 +54,10 @@ public class FFmpegAudioEncoder {
      * @param soundItems An ArrayList with sound items
      */
     public void processSounds(ArrayList<SoundItem> soundItems) {
+        if ("".equals(config.getFfmpegBinExecutable())) {
+            JMathAnimScene.logger.warn("ffmpeg path executable not set. Sounds will not be processed.");
+            return;
+        }
         if (soundItems.isEmpty()) {
             return;
         }
