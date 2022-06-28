@@ -1,16 +1,16 @@
 # Mathematical formulas
 
-Math formulas, as we have seen, are created with the `LaTexMathObject` class.  Since version 0.9.5-SNAPSHOT, the LaTeX code is compiled using the library `JLaTeXMath` removing the need to have a working LaTeX distribution installed in the system. All glyphs generated are converted into `Shape`objects.
+As we have seen, math formulas are created with the `LaTexMathObject` class. Since version 0.9.5-SNAPSHOT, the LaTeX code is compiled using the library `JLaTeXMath` removing the need to have a working LaTeX distribution installed in the system. All glyphs generated are converted into `Shape`objects.
 
-For example if we generate a math expression with the command
+For example, if we generate a math expression with the command
 
 ```java
 LaTeXMathObject sum=LaTeXMathObject.make("$2+2=4$");
 ```
 
-It will generate 5 shapes, that we can access via `get` method. Thus, the command `sum.get(0)` will return the first shape ( the "2" glyph), `sum.get(1)` will return the "+" glyph, etc. These indices will be important to specify exactly how we want the animation from one expression to another to be done.
+It will generate 5 shapes, that we can access via the `get` method. Thus, the command `sum.get(0)` will return the first shape (the "2" glyph), `sum.get(1)` will return the "+" glyph, etc. These indices will be important to specify exactly how we want the animation from one expression to another to be done.
 
-The major drawback of this approach is that is not always clear which glyph of the formula corresponds to a given index.  For that, we have the method `formulaHelper` that takes a varargs of `LatexMathObject` objects, or `String` with the LaTeX code, overlays the shape number for each one, stacks the formulas vertically, zooms and adds them to the scene. For example:
+The major drawback of this approach is that it is not always clear which glyph of the formula corresponds to a given index. For that, we have the method `formulaHelper` that takes a varargs of `LatexMathObject` objects, or `String` with the LaTeX code, overlays the shape number for each one, stacks the formulas vertically, zooms and adds them to the scene. For example:
 
 ```java
 LaTeXMathObject t1 = LaTeXMathObject.make("$e^{i\\pi}+1=0$");
@@ -19,7 +19,7 @@ formulaHelper(t1, t2);
 waitSeconds(5);
 ```
 
-We'll obtain the following image for 5 seconds. You can make an screenshot to examine it more deeply:
+We'll obtain the following image for 5 seconds. You can make a screenshot to examine it more deeply:
 
 ![image-20210101131234148](equationFormHelper.png)
 
@@ -46,7 +46,7 @@ Note that the method changes both draw and fill colors.
 
 ## The slice method
 
-Sometimes you may need to separate a formula in parts so you can animate them separately. The `slice`method extracts a subformula with the given indexes and removes the extracted shapes from the original formula. For example, suppose we have the formula `$A=b\cdot h$` and want to initially show the "b" and "h" glyphs in a rectangle, prior to put them in their original place:
+Sometimes you may need to separate a formula into parts so you can animate them separately. The `slice` method extracts a subformula with the given indexes and removes the extracted shapes from the original formula. For example, suppose we have the formula `$A=b\cdot h$` and want to initially show the "b" and "h" glyphs in a rectangle before putting them in their original place:
 
 ```java
 Shape rectangle = Shape.square().scale(2,1).center().fillColor("chocolate");
@@ -76,11 +76,11 @@ waitSeconds(2);
 
 ![equationSlice](equationSlice.gif)
 
-Note that, although the sliced formula has only one element, the indexes remain the same. So, if the "b" glyph was in position 2 in the original formula, it is still in position 2 in the sliced formula, so that `sliceBase.get(2)` returns the "b" shape. The other indexes stores empty shapes.
+Note that, although the sliced formula has only one element, the indexes remain the same. So, if the "b" glyph was in position 2 in the original formula, it is still in position 2 in the sliced formula, so that `sliceBase.get(2)` returns the "b" shape. The other indexes store empty shapes.
 
-There is another version of the method, with a boolean flag that controls if the sliced shapes are removed from the original math expression or not. For example, in the previous example `LaTeXMathObject sliceBase=formula.slice(false,2)` will create a slice of the "b" glyph without altering the original formula.
+There is another version of the method, with a boolean flag that controls if the sliced shapes are removed from the original math expression or not. In the preceding example, `LaTeXMathObject sliceBase=formula.slice(false,2)` will generate a slice of the "b" glyph without changing the original formula.
 
-The `slice`method can be a powerful tool if you want to operate on part of complex math expressions. If you want to progressively show a complex formula, the easiest option is to slice it in the different parts you will be showing at  a concrete point of the animation.
+The `slice`method can be a powerful tool if you want to operate on parts of complex math expressions. If you want to progressively show a complex formula, the easiest option is to slice it into the different parts you will be showing at a concrete point in the animation.
 
 ## Animating transforms between equations
 
@@ -91,19 +91,19 @@ LaTeXMathObject t1=LaTeXMathObject.make("$x+2=0$");
 LaTeXMathObject t2=LaTeXMathObject.make("$x=-2$");
 ```
 
-and we want to define a precise, self-explaining animation, that transforms the first equation into the second.
+and we want to define a precise, self-explanatory animation, that transforms the first equation into the second.
 
-If we simply try with the command
+If we simply try the command
 
 ```java
 play.transform(4, t1, t2);
 ```
 
-we obtain the following:
+we will obtain the following animation:
 
 ![equation01](equation01.gif)
 
-It's nice, but not illustrative. It would be better to force the "+2" to convert into "-2", and the originals "x" and "=" glyphs to their counterparts "x" and "=" glyphs. For this we have the `TransformMathExpression` animation class. But first, we must be clear about the indexes of the different shapes that compose the latex objects. For that, we use the method `formulaHelper`:
+It's nice, but not illustrative. It would be better to force the "+2" to convert into "-2", and the original "x" and "=" glyphs to their counterparts "x" and "=" glyphs. For this, we have the `TransformMathExpression` animation class. But first, we must be clear about the indexes of the different shapes that compose the latex objects. For that, we use the method `formulaHelper`:
 
 ```java
 formulaHelper(t1,t2);
@@ -148,7 +148,7 @@ What about shape 4 (the "0" sign)? If we don't specify a destination, this shape
 
 ![equation03](equation03.gif)
 
-Ok, this is better, but there is still something that looks odd.  When manipulating equations, it's always desirable to mark the "=" sign a as pivotal point. We can achieve this by forcing that the origin and destiny formulas are aligned by the "=" sign. This sign is at position 3 in origin formula and in position 1 in destiny. With the command
+Ok, this is better, but there is still something that looks odd. When manipulating equations, it's always desirable to mark the "=" sign as a pivotal point. We can achieve this by forcing that the origin and destiny formulas are aligned by the "=" sign. This sign is at position 3 in the origin formula and at position 1 in destiny. With the command
 
 ```
 t2.alignCenter(1, t1, 3);
@@ -158,13 +158,13 @@ we make that the center of glyph number 1 of `t2` (its "=" sign) matches the cen
 
 ![equation04](equation04.gif)
 
-**Disclaimer:** This is not by far the best way to show the resolution of an equation like this! I show this specific animation for better understanding of the program.
+**Disclaimer:** This is not, by far, the best way to show the resolution of an equation like this! I show this specific animation for a better understanding of the program.
 
 ## Type of transformations
 
-The method `.map` returns a `TransformMathExpressionParameters` object, which allows to control how the transformation is done,  with the method `setTransformStyle`. Transformation types are defined in the enum `TransformMathExpression.TransformType`, currently `INTERPOLATION`, `FLIP_HORIZONTALLY`, `FLIP_VERTICALLY` and `FLIP_BOTH`. By default, the `INTERPOLATION` method is used.
+The method `.map` returns a `TransformMathExpressionParameters` object, which allows us to control how the transformation is done, with the method `setTransformStyle`. Transformation types are defined in the enum `TransformMathExpression.TransformType, currently INTERPOLATION, FLIP_HORIZONTALLY, FLIP_VERTICALLY and FLIP_BOTH`. By default, the `INTERPOLATION` method is used.
 
-Note: The `INTERPOLATION` method uses the `Transform` class to do the work, so, depending on the origin and destiny shapes, it may actually perform a point-to-point interpolation, or, if applicable, a homothecy or a more general affine transform. If you apply a `INTERPOLATION` type transform to, say, map a "2" sign into another "2" sign, it will use a homothecy as these 2 figures are equal except scale.
+Note: The `INTERPOLATION` method uses the `Transform` class to do the work, so, depending on the origin and destiny shapes, it may actually perform a point-to-point interpolation, or, if applicable, a homothecy or a more general affine transform. If you apply an `INTERPOLATION` type transform to, say, map a "2" sign into another "2", it will use a homothecy as these 2 figures are equal except scale.
 
 ```java
 LaTeXMathObject t1 = LaTeXMathObject.make("$a^2=a\\cdot a$");
@@ -202,36 +202,36 @@ tr.map(6,16);
 tr.map(7,17);
 ```
 
-Or, if you have two formulas which the same number of glyphs and one-to-one correspondence, the `mapAll()` method does all the work for you.
+Or, if you have two formulas with the same number of glyphs and one-to-one correspondence, the `mapAll()` method does all the work for you.
 
 ## Grouping 
 
-Suppose we have the following complex number expressions.  The second one is the first simplified. We want to animate a descriptive transition from `t1` to `t2`.
+Suppose we have the following complex number expressions., where the second one is the first simplified. We want to animate a descriptive transition from `t1` to `t2`.
 
 ```java
 LaTeXMathObject t1 = LaTeXMathObject.make("$2+3{\\color{blue}i}+5-{\\color{blue}i}$");
 LaTeXMathObject t2 = LaTeXMathObject.make("$7+2{\\color{blue}i}$");
 ```
 
-It is desirably that the "2" and "+5" shapes morph into single shape "7". For the complex part, the coefficients "+3" and "-" should morph into "+2", and the two "i" symbols from the origin should morph into the single "i" in the destination. This can be achieved defining groups, with the methods ` defineOrigGroup(name, i1,i2,...)` and `defineDstGroup(name, i1,i2,...)`. First of all, let's see a clear view of the indexes, with the `formulaHelper` method, as seen before:
+It is desirable that the "2" and "+5" shapes morph into the single shape, "7". For the complex part, the coefficients "+3" and "-" should morph into "+2", and the two "i" symbols from the origin should morph into the single "i" in the destination. This can be achieved by defining groups with the methods `defineOrigGroup(name, i1,i2,...)` and `defineDstGroup(name, i1,i2,...)`. First of all, let's see a clear view of the indexes with the `formulaHelper` method, as seen before:
 
 ![image-20201121172930831](equation05.png)
 
-We need to map orig-shapes 0, 4 and 5 into destiny-shape 7. We define a group in the origin with these indexes:
+We need to map orig-shapes 0, 4, and 5 into destiny-shape 7. We define a group in the origin with these indexes:
 
 ```java
 tr.defineOrigGroup("realPart", 0,4,5);
 ```
 
-We can use any string to name that group, with the only restriction that can't begin with an underscore "_".
+We can use any string to name that group, with the only restriction that it can't begin with an underscore "_".
 
-Now we can map this group into the "7" shape of the destiny, which has index 0:
+Now we can map this group into the "7" shape of destiny, which has index 0:
 
 ```java
 tr.map("realPart",0);
 ```
 
-Now we have to map "+3" and "-" of the imaginary part into "+2" of the destiny expression. We define one group in the origin, as we have done before:
+Now we have to map "+3" and "-" of the imaginary part into "+2" of the destiny expression. As before, we define one group at the beginning:
 
 ```java
 tr.defineOrigGroup("imagCoef", 1,2,6);//Shapes 1,2 and 6 in the original formula
@@ -271,7 +271,7 @@ waitSeconds(5);
 
 ## Effects
 
-Each mapping from one shape (or group) to another can be decorated with some effects. These can be added right after the `map` command, with the following methods. Let's show them with an example. Suppose we want to animate the commutative property of the sum. Define the 2 `LaTexMathObject` objects and make an animation:
+Each mapping from one shape (or group) to another can be decorated with some effects. These can be added right after the `map` command with the following methods. Let's show them with an example. Suppose we want to animate the commutative property of the sum. Define the 2 `LaTexMathObject` objects and make an animation:
 
 ```java
 LaTeXMathObject t1=LaTeXMathObject.make("$a+b$");
@@ -290,7 +290,7 @@ We have the following animation:
 
 ![equation06](equation06.gif)
 
-We will apply effects adding them to the `tr.map(0,2)` and `tr.map(2,0)` commands. First, the `.addScaleEffect(t)` applies a scaling factor back and forth.
+We will apply effects by adding them to the `tr.map(0,2)` and `tr.map(2,0)` commands. First, the .addScaleEffect`(t)` applies a scaling factor back and forth.
 
 ```java
 tr.map(0,2).addScaleEffect(.7);
@@ -326,7 +326,7 @@ tr.map(2,0).addJumpEffect(1);//Note that this "jump" is downward
 
 ![equation10](equation10.gif)
 
-By default, the shape of the jump is a semicircle, so that only the sign of the parameter is relevant. Other jump types can be specified since version 0.9.0, defined in the enum `AnimationEffect.JumpType`: `SEMICIRCLE, PARABOLICAL, ELLIPTICAL, TRIANGULAR, SINUSOIDAL, SINUSOIDAL2, CRANE`. These are explained with detail in the animation effects chapter. For example, you can set that the "a" glyph moves like grabbed by a crane, and that the "b" glyph follows a path resembling a triangular roof. We use the 
+By default, the shape of the jump is a semicircle, so that only the sign of the parameter is relevant. Other jump types can be specified since version 0.9.0, defined in the enum `AnimationEffect.JumpType: ``SEMICIRCLE, PARABOLICAL, ELLIPTICAL, TRIANGULAR, SINUSOIDAL, SINUSOIDAL2, CRANE`. These are explained in detail in the animation effects chapter. For example, you can set it so that the "a" glyph moves like a crane grabs it, and that the "b" glyph follows a path resembling a triangular roof. We use the 
 
 ```java
 tr.map(0, 2).addJumpEffect(t1.getHeight(), AnimationEffect.JumpType.CRANE);
@@ -387,7 +387,7 @@ waitSeconds(3);
 
 ![equation12](equation12.gif)
 
-And finally, we show how the initial animation will look applying colors, mapping, and effects (again, this is no the optimal way from the didactic point of view):
+And finally, we show how the initial animation will look applying colors, mapping, and effects (again, this is not the optimal way from the didactic point of view):
 
 ````java
 LaTeXMathObject t1 = LaTeXMathObject.make("$x+2=0$");
@@ -417,7 +417,7 @@ waitSeconds(3);
 
 ## Cross out of parts of a formula
 
-Since version 0.9.5, JMathAnim includes another animation that can be handy for manipulating equations called `CrossOutMathElements`. This animations, as its name suggests, cross out parts of a mathematical formula. Lets see with a simple example:
+Since version 0.9.5, JMathAnim includes another animation that can be handy for manipulating equations called `CrossOutMathElements`. These animations, as their name suggests, cross out parts of a mathematical formula. Let's see with a simple example:
 
 ```java
 LaTeXMathObject formula = LaTeXMathObject.make("$2\\over 2$");
@@ -454,28 +454,25 @@ waitSeconds(1);
 
 ![crossout2](crossout2.gif)
 
-You can set appearance parameters for the drawed cross out through the `getMp()` method defined in the animation. For example if you want in the previous example the cross out to have 50% opacity and black border you can add the following lines to the previous code right before the `playAnimation` command:
+You can set appearance parameters for the drawn cross through the `getMp()` method defined in the animation. For example, if you want the cross out in the previous example to have 50% opacity and a black border, you can add the following lines to the previous code right before the `playAnimation` command:
 
 ```java
-anim.getMp().setFillColor(JMColor.parse("violet"));
-anim.getMp().setFillAlpha(.5);
-anim.getMp().setDrawColor(JMColor.parse("black"));
-anim.getMp().setThickness(10d);
+anim.getMp().setFillColor(JMColor.parse("violet"))
+			.setFillAlpha(.5)
+			.setDrawColor(JMColor.parse("black"))
+    		.setThickness(10d);
 anim.crossRatioWidth(.1);//Width of cross out is 10% of length (default value is 5%)
 ```
 
 ![crossout3](crossout3.gif)
 
-By default, all cross out made to a formula become part of this formula. In the previous example, the big, violet cross out adds itself to the formula at the first free index, which is  8. This way you can use them in further animations.
+By default, all cross outs made to a formula become part of this formula. In the previous example, the big, violet cross out adds itself to the formula at the first free index, which is 8. This way, you can use them in further animations.
 
-
-
-Another example, where we use 2 `CrossOutMathElements` animations, one with different color. First animation adds 2 crossout at positions 13 and 14, and second at positions 15 and 16. Remember that, although `map`commands may seem confusing, using the  `formulaHelper` before gets thing much clearer. We show here the indices of the formulas we are going to work with:
+Another example, where we use 2 `CrossOutMathElements` animations, one with a different color. The first animation adds 2 crossouts at positions 13 and 14, and the second at positions 15 and 16. Remember that, although `map`commands may seem confusing, using the `formulaHelper` before makes things much clearer. We show here the indices of the formulas we are going to work with:
 
 ![crossoOut4FHelper](crossoOut4FHelper.png)
 
-We want to perform a simplification, crossing out the exponent of the 3 in the numerator, with the 3 in the denominator, later the 5 glyphs on both sides, and finally perform a transform to the simplified formula, removing all crossed out components. That's what we do in the following code:
-
+We want to perform a simplification, crossing out the exponent of the 3 in the numerator, with the 3 in the denominator, and later the 5 glyphs on both sides, and finally perform a transform to the simplified formula, removing all crossed out components. That's what we do in the following code: 
 ```java
 LaTeXMathObject eq1 = LaTeXMathObject.make("$3^2\\cdot 5\\cdot 7\\over 3\\cdot 5\\cdot 11$").center();
 LaTeXMathObject eq2 = LaTeXMathObject.make("$3\\cdot 7\\over 11$").center();
@@ -505,7 +502,7 @@ anim.map(11, 4);
 anim.map(12, 5);
 anim.setDefaultRemovingStyle(TransformMathExpression.RemoveType.FADE_OUT);
 
-//The crossed out parts (ant the crosses themselves) are removed moving them up (numerator) or down (denominator)
+//The crossed out parts (and the crosses themselves) are removed moving themselves up (numerator) or down (denominator)
 anim.setRemovingStyle(TransformMathExpression.RemoveType.MOVE_OUT_UP, 1, 3, 13, 15);
 anim.setRemovingStyle(TransformMathExpression.RemoveType.MOVE_OUT_DOWN, 7, 9, 14, 16);
 

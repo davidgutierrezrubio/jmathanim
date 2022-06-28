@@ -2,7 +2,7 @@
 
 
 # Combining animations
-Suppose you want a square to perform a shift and rotation at the same time. The first approach may be to play at the same this animations. However if you try with a code like this:
+Suppose you want a square to perform a shift and rotation at the same time. The first approach may be to play both animations at the same time. However, if you try with a code like this:
 
 ```java
 Shape sq = Shape.square().fillColor("seagreen").thickness(6).center();
@@ -12,7 +12,7 @@ playAnimation(shift, rotate);
 waitSeconds(3);
 ```
 
-You'll obtain a square rotating, but not shifting at all. The reason is that each animation saves the state of the object in the `initialize` method and restore it at each call of `doAnim` where the changes are done. So, the restore state call of the `rotate` animation erases the changes made by the `shift` animation. The solution is quite simple, as every animation has the method `.setUseObjectState` that activates or deactivates the saving and restoring of states. In this case, as the `rotate` animation is executed each frame after the `shift`, we let this one to manage states, and deactivates it for the `rotate` animation.
+You will obtain a square rotating, but not shifting at all. The reason is that each animation saves the state of the object in the `initialize` method and restores it at each call of `doAnim` where the changes are made. So, the restore state call of the `rotate` animation erases the changes made by the `shift` animation. The solution is quite simple, as every animation has the method `.setUseObjectState that activates or deactivates the saving and restoring of states. `In this case, as the `rotate` animation is executed each frame after the `shift`, we let this one manage states and deactivate it for the `rotate` animation.
 
 ```java
 Shape sq = Shape.square().fillColor("seagreen").thickness(6).center();
@@ -28,11 +28,11 @@ Now the square properly shifts and rotates:
 
 # Adding effects to animations
 
-Several animations inherit from a subclass called `AnimationWithEffects`that allows to apply certain effects. Currently, those animations are `Transform`, `FlipTransform`, `TransformMathExpression`, `shift`,  `stackTo`, `align`, `moveIn`, `moveOut` and `setLayout`.  We saw how to apply these effects in the `TransformMathExpression` animations in the math formulas chapter.
+Several animations inherit from a subclass called `AnimationWithEffects` that allows you to apply certain effects. Currently, those animations are `Transform`, `FlipTransform`, `TransformMathExpression`, `shift`, `stackTo`, `align`, `moveIn`, `moveOut` and `setLayout`. We saw how to apply these effects in the `TransformMathExpression` animations in the math formulas chapter.
 
 ## The jump effect
 
-The `.setJumpHeight(double height)` adds a jump effect to the object(s) being animated. The direction of the jump is the shift vector (the center of the object at its initial state to the center at is ending state) rotated 90 degrees clockwise. A negative height can be specified. We show an example adding a jump effect to a FlipTransform animation:
+The `.setJumpHeight(double height)` adds a jump effect to the object(s) being animated. The direction of the jump is the shift vector (the center of the object at its initial state to the center at its ending state) rotated 90 degrees clockwise. A negative height can be specified. We will show an example of adding a jump effect to a `FlipTransform` animation:
 
 ```java
 Shape hexagon = Shape.regularPolygon(6)
@@ -54,7 +54,7 @@ playAnimation(anim);
 
 ![jumpEffect](jumpEffect.gif)
 
-By default, the trajectory is a parabola (except in the `TransformMathExpression` which is semicircular). You can specify other jump types adding a second parameter to the `addJumpEffect` method, defined in the `AnimationEffect.JumpType` enum.
+By default, the trajectory is a parabola (except in the `TransformMathExpression` which is semicircular). You can specify other jump types by adding a second parameter to the `addJumpEffect` method, defined in the `AnimationEffect.JumpType` enum.
 
 ```java
 anim.addJumpEffect(.5,AnimationEffect.JumpType.CRANE);//A crane effect, with height .5
@@ -134,11 +134,11 @@ waitSeconds(3);
 
 # Effects in shift animations
 
-The shifting-type animations (`shift`,  `stackTo`, `align`, `moveIn`, `moveOut` and `setLayout`)  all inherit from the `ShiftAnimation`class. These methods allows additional effects:
+The shifting-type animations (`shift`,  `stackTo`, `align`, `moveIn`, `moveOut` and `setLayout`)  all inherit from the `ShiftAnimation`class. These methods allow additional effects:
 
 ## Rotation by any angle
 
-Apart from the `.addRotationEffect` you can also use the method `.addRotationEffectByAngle` to specify an arbitrary rotation angle. However, keep in mind that animations like `setLayout` or `stackTo` compute the shifting vectors without taking into account this.
+Apart from the `.addRotationEffect` you can also use the method `.addRotationEffectByAngle` to specify an arbitrary rotation angle. However, keep in mind that animations like `setLayout` or `stackTo` compute the shifting vectors without taking this into account.
 
 ## Setting animations for individual objects
 
@@ -167,7 +167,7 @@ waitSeconds(2);
 
 ## The delay effect
 
-This effect can be applied to shifting-type animations when several objects are animated. Instead of moving all object at the same time, a delay is applied creating the effect of a queue of moving objects. For example, let's create a simple animation that changes the layout of a group of squares, leaving commented the line that adds the delay effect:
+This effect can be applied to shifting-type animations when several objects are animated. Instead of moving all objects at the same time, a delay is applied, creating the effect of a queue of moving objects. For example, let's create a simple animation that changes the layout of a group of squares, leaving commented the line that adds the delay effect:
 
 ```java
 MathObjectGroup smallSquaresGroup = MathObjectGroup.make();
@@ -193,18 +193,18 @@ Now if we uncomment the method `anim.addDelayEffect(.5)` we have this:
 
 ![delayEffect2](delayEffect2.gif)
 
-When applying a delay effect with a parameter 0<t<1, each individual animation runtime is reduced by the factor 1-t and distributed evenly over the total runtime of the animation. Thus, for example an `addDelayEffect(.3)` will reduce all single animations to the 70% of the total runtime.
+When applying a delay effect with a parameter 0<t<1< span="">, each individual animation runtime is reduced by the factor 1-t and distributed evenly over the total runtime of the animation. Thus, for example an </t<1<>`addDelayEffect(.3)` will reduce all single animations to 70% of the total runtime.
 
-If you change the parameter .5 to .75, with `anim.addDelayEffect(.75)`  the animation produced looks like that:
+If you change the parameter .5 to .75, with `anim.addDelayEffect(.75)` the animation produced looks like this:
 
 ![delayEffect3](delayEffect3.gif)
 
 
 # Controlling the animations with lambda functions
 
-Each animation has a lambda object that represents a function from [0,1] to [0,1]. This function takes the parameter t in the `doAnim(double t)` method and computes a new time value to apply the animation. The primary reason for this is to prevent the animations to perform in a linear way, without a smooth beginning or ending, but they can be used for many more effects.
+Each animation has a lambda object that represents a function from [0,1] to [0,1]. This function takes the parameter t in the `doAnim(double t)` method and computes a new time value to apply the animation. The primary reason for this is to prevent the animations from performing in a linear way without a smooth beginning or ending, but they can be used for many more effects.
 
-The class `UsefulLambdas`, as its name suggests, holds several static methods that returns different lambdas to obtain different effects to your animations. For example, the following code will draw the graphs (with time in x-axis) of the differente lambdas defined:
+The class `UsefulLambdas`, as its name suggests, holds several static methods that return different lambdas to obtain different effects to your animations. For example, the following code will draw the graphs (with time in the x-axis) of the different lambdas defined:
 
 ```java
 @Override
@@ -246,17 +246,17 @@ private MathObjectGroup drawGraphFor(DoubleUnaryOperator lambda, String name) {
 
 ![image-20210430141530681](lambdas01.png)
 
-These graphs should be interpreted considering that the x-axis is the time from 0 to 1, and the y-axis is the amount of animation done (from 0 to 1 too), thus, a lambda function *g* that starts the animation and ends it properly should satisfy the conditions *g*(0)=0 and *g*(1)=1. Note that the `reverse()` method returns a lambda function which does the opposite. It is used to play animations backwards in time.
+These graphs should be interpreted considering that the x-axis is the time from 0 to 1, and the y-axis is the amount of animation done (from 0 to 1 too). Thus, a lambda function *g* that starts the animation and ends it properly should satisfy the conditions *g(0)=*0 and *g(1)=*1. Note that the `reverse()` method returns a lambda function which does the opposite. It is used to play animations backwards in time.
 
 All animations use the `smooth()`method by default. There is a version with a parameter from 0 to 1 that controls the smoothness (0=straight line, 1=fully smoothed). The default value is 0.9.
 
-If you want an animation that plays in a linear way you can use the method `.setLambda(t->t)` or `.setLamba(UsefulLambdas.smooth(0))`.
+If you want an animation that plays in a linear way, you can use the method `.setLambda(t->t)` or `.setLamba(UsefulLambdas.smooth(0))`.
 
 The bounce methods simulate a single or double bounce. Note that the `backAndForthBounce` methods take the value 0 when t=1, which means the animation is not complete at the end of the cycle, but the object is restored a their initial state.
 
-The lambda functions are `DoubleUnaryOperator` java objects, which support compositions via the `.compose` method. With the lambdas `.allocate` and `reverse` we can build useful variations of the base lambdas.
+The lambda functions are `DoubleUnaryOperator` Java objects, which support compositions via the `.compose` method. With the lambdas .allocate and reverse we can build useful variations of the base lambdas.
 
-The `allocate(a,b)` lambda performs a time scaling from a to b where 0<a<b<1. For example, an animation with a lambda function `allocate(.25,.75)`will start at 25% of the runtime and finish at 75%, which can be handy when playing with other animations simultaneously. For example, consider the previous code that shifts and rotates a square at the same time:
+The `allocate(a,b)` lambda performs a time scaling from a to b where 0<a<b<1< span="">. For example, an animation with a lambda function `allocate(.25,.75)`will start at 25% of the runtime and finish at 75%, which can be handy when playing with other animations simultaneously. For example, consider the previous code that shifts and rotates a square at the same time:
 
 ```java
 Shape sq = Shape.square().scale(.5).style("solidblue").moveTo(Point.at(-1, 0));
@@ -268,7 +268,7 @@ AnimationGroup ag = AnimationGroup.make(
 playAnimation(ag);
 ```
 
-The shifting and rotation both begin and end at the same time. Suppose we want the square to perform the rotation at some intermediate point. We may achieve this effect easily using lambdas. Add the following  code to the definition of the rotate animation:
+The shifting and rotation both begin and end at the same time. Suppose we want the square to perform the rotation at some intermediate point. We may achieve this effect easily by using lambdas. Add the following code to the definition of the rotate animation:
 
 ```java
  Commands.rotate(6, PI * .5, sq)
@@ -280,9 +280,9 @@ You will get the following animation:
 
 ![lambdas02](lambdas02.gif)
 
-The allocate lambdas rescales the time so that the rotation starts at 40% of runtime and ends at 60%. The allocate lambda itself is linear so that we compose it with the smooth lambda to get a smoothed rotation.
+The allocate lambda rescales the time so that the rotation starts at 40% of runtime and ends at 60%. The allocate lambda itself is linear, so we compose it with the smooth lambda to get a smooth rotation.
 
-Another example, if we change the lambda of the rotate animation with the line
+Another example if we change the lambda of the rotate animation with the line:
 
 ```java
  .setLambda(UsefulLambdas.bounce2().compose(UsefulLambdas.allocateTo(.2, .75)))
@@ -294,7 +294,7 @@ we have a bounce effect between the 20% and 75% of the animation runtime:
 
 
 
-With the following code you can see the graphs of the lambda parameters and how they affect the animation. You can experiment changing the definitions of `rotateLambda` and `shiftLambda`, and create your own lambda functions with the sintax `t->f(t)`.
+With the following code, you can see the graphs of the lambda parameters and how they affect the animation. You can experiment changing the definitions of `rotateLambda` and `shiftLambda`, and create your own lambda functions with the sintax `t->f(t)`.
 
 ```java
 @Override
@@ -372,7 +372,7 @@ public void runSketch() {
 
 # Making procedural animations
 
-For procedural animations we mean animations made "manually" performing the modifications to the objects and advancing a frame, most like a stop motion artist would do. This method is needed for complex movements that cannot be done with the predefined animations. For this, the `JMathAnimScene`class has a protected variable, `dt`, that holds the time step for each frame. The `advanceFrame()`method  does all necessary procedures to create the frame and save it. For example, let's make a program that moves a point with uniformly random steps:
+For procedural animations, we mean animations made "manually" by performing the modifications to the objects and advancing a frame, much like a stop motion artist would do. This method is needed for complex movements that cannot be done with the predefined animations. For this, the `JMathAnimScene`class has a protected variable, `dt`, that holds the time step for each frame. The `advanceFrame()`method does all the necessary procedures to create the frame and save it. For example, let's make a program that moves a point with uniformly random steps:
 
 ```java
 A=Point.origin();
@@ -390,7 +390,7 @@ If you execute it, you'll obtain a rather nervous point:
 
 ## Combining predefined procedural and animations
 
-Suppose you want to show the nervous point, but at the same time you want to execute a rotation on a square for example. Of course you could do this in a purely procedural way, but you can use also the `rotate` animation. After defining it, you must initialize it and, prior to each call of the `advanceFrame`, invoke the `processAnimation`method of the animation. 
+Suppose you want to show the nervous point, but at the same time you want to execute a rotation on a square, for example. Of course, you could do this in a purely procedural way, but you can also use the `rotate` animation. After defining it, you must initialize it and, prior to each call of the `advanceFrame`, invoke the `processAnimation`method of the animation. 
 
 ```java
 Point A=Point.origin();
@@ -418,11 +418,11 @@ There are special subclasses of `Animation`that allows to build more complex ani
 
 ## The wait animation
 
-This `WaitAnimation` does what it says. It simply waits for specified amount of time. Sounds exciting right? This is used for example in the `ShowCreation` animation when applied to a `LaTexMathObject`, where each shape must wait a certain time, to make the left-to-right appear illusion.
+This `WaitAnimation` does what it says. It simply waits for a specified amount of time. Sounds exciting, right? This is used, for example, in the `ShowCreation` animation when applied to a `LaTexMathObject`, where each shape must wait a certain time, to make the left-to-right appearing illusion.
 
 ## The AnimationGroup animation
 
-The `AnimationGroup` plays all the animations at the same. It finishes when the last one has ended. The example of the combined shift and rotate can be written as
+The `AnimationGroup` plays all the animations at the same time. It finishes when the last one has ended. The example of the combined shift and rotate can be written as
 
 ```java
 Shape sq = Shape.square().fillColor("seagreen").thickness(7).center();
@@ -456,7 +456,7 @@ waitSeconds(1);
 
 ## The concatenate animation
 
-The `Concatenate`class allows to play animations in sequence
+The `Concatenate`class allows you to play animations in sequence.
 
 ```java
 Shape sq = Shape.square().fillColor("seagreen").thickness(7).center();
@@ -471,7 +471,7 @@ waitSeconds(1);
 
 ## The JoinAnimation
 
-The `JoinAnimation`class is similar to the previous `Concatenate`animation, but treats all contained animations as one. For example, the code:
+The `JoinAnimation` class is similar to the previous `Concatenate` animation, but treats all contained animations as one. For example, the code:
 
 ```java
 Shape sq = Shape.regularPolygon(5).center().style("solidred");
@@ -484,11 +484,11 @@ playAnimation(anim);
 waitSeconds(3);
 ```
 
-This code will create a single animation with a total duration of 6 seconds, that creates the pentagon, shifts it and finally performs a rotation. The duration of each subanimation is proportional to its runtime. So, the `Showcreation`will take twice the time of the `shift` and `rotate`animations:
+This code will create a single animation with a total duration of 6 seconds, that creates the pentagon, shifts it and finally performs a rotation. The duration of each subanimation is proportional to its runtime. So, the `Showcreation` will take twice the time of the `shift`  and `rotate `animations:
 
 ![joinAnimation1](joinAnimation1.gif)
 
-The great advantage over `Concatenate`is that you can apply lambdas to the whole animation as one: If you add the following line right before the `playAnim` method
+The great advantage over `Concatenate` is that you can apply lambdas to the whole animation as one: If you add the following line right before the `playAnim` method.
 
 ```java
 anim.setLambda(UsefulLambdas.backAndForth());
@@ -500,9 +500,9 @@ You will get the animation played back and forth:
 
 
 
-The default lambda in the `JoinAnimation`class is linear `t->t`.
+The default lambda in the `JoinAnimation` class is linear `t->t`.
 
-Another advantage of this class is that you can reuse the animation after finished. In the next example we use an animation to "unwrap" the hexagon, and later reuse it with a different lambda to wrap it again:
+Another advantage of this class is that you can reuse the animation after it is finished. In the next example, we use an animation to "unwrap" the hexagon, and later reuse it with a different lambda to wrap it again:
 
 ```java
 Shape polygon = Shape.regularPolygon(6)
@@ -539,7 +539,7 @@ Gives the following animation:
 
 ![joinAnimation3](joinAnimation3.gif)
 
-Most animations cannot be properly played again with different lambdas after used, unless contained in a `JoinAnimation`object. Consider the following example, where we have 2 rotating squares, the right one contained into a `JoinAnimation`. When playing reversed after finished,  the right one can properly play the animation:
+Most animations cannot be properly played again with different lambdas after being used, unless contained in a `JoinAnimation`object. Consider the following example, where we have 2 rotating squares, the right one contained in a `JoinAnimation`. When playing reversed after finishing, the right one can properly play the animation:
 
 ```java
 //2 squares...
@@ -566,7 +566,7 @@ playAnimation(rotate1, rotate2);
 waitSeconds(2);
 ```
 
-Here is a GIF from the movie generated when you can see how embedding the animation into a `JoinAnimation`returns the square to its original state after played in reverse:
+Here is a GIF from the movie generated when you can see how embedding the animation into a `JoinAnimation` returns the square to its original state after playing in reverse:
 
 ![joinAnimation4](joinAnimation4.gif)
 

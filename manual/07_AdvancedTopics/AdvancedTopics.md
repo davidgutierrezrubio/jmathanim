@@ -1,7 +1,7 @@
 [home](https://davidgutierrezrubio.github.io/jmathanim/) [back](../index.html)
 
 # Disabling and enabling animations
-Suppose you are writing a rather long animation.  Usually this process involves several test runs to check if everything goes as planned. If you are fine tuning the last part of the animation, you don't need to run all from the beginning to do this. Instead, you can add these methods to your code:
+Suppose you are writing a rather long animation. Usually, this process involves several test runs to check if everything goes as planned. If you are fine tuning the last part of the animation, you don't need to run it all the way from the beginning to do this. Instead, you can add these methods to your code:
 
 ```java
 disableAnimations();
@@ -10,11 +10,11 @@ enableAnimations();
 //...animation code that I want to preview
 ```
 
-The `disableAnimations()` and `enableAnimations()` methods allows to temporarily disable animations and frame generations. Updating and object creations are done, but the non-essential parts, like drawing, writing to movie, or performing the animations is omitted, dramatically increasing speed. You can also use this to generate a movie with only specific parts of the sketch.
+The `disableAnimations()` and `enableAnimations()` methods allow you to temporarily disable animations and frame generation. Updating and object creation are done, but the non-essential parts, like drawing, writing to a movie, or performing the animations, are omitted, dramatically increasing speed. You can also use this to generate a movie with only specific parts of the sketch.
 
 # Updaters
 
-An updater is an object whose state is automatically updated right before doing the draws on the screen. Any class that implements the `Updateable` interface can be registered as an updater. Any updater must be registered on the scene to be used, with the `registerUpdateable`method. Similarly, there is the `unregisterUpdateable` method that does the opposite.
+An updater is an object whose state is automatically updated right before the drawing on the screen. Any class that implements the `Updateable` interface can be registered as an updater. Any updater must be registered on the scene to be used with the `registerUpdateable`method. Similarly, there is the `unregisterUpdateable` method that does the opposite.
 
 This interface implements the following methods:
 
@@ -26,17 +26,17 @@ public void registerUpdateableHook(JMathAnimScene scene);
 public void unregisterUpdateableHook(JMathAnimScene scene);
 ```
 
-The `getUpdateLevel` method returns the order of updating this object. Objects with level 0 update first, then all with level 1, etc. Thus, if you have an updater  A that depends on that another updater B to be previously updated before, you should set the update level of A greater than of B. 
+The `getUpdateLevel` method returns the order of updating this object. Objects with level 0 update first, then all with level 1, etc. Thus, if you have an updater A that depends on another updater B to be previously updated, you should set the update level of A greater than that of B.
 
-The `update` method it's where "magic" happens. The object is updated which whatever arcane and mystical procedure you choose.
+The `update` method it's where "magic" happens. The object is updated with whatever arcane and mystical procedure you choose.
 
-The `setUpdateLevel` does as it name suggests. It sets the update level of the object. This is normally computed once when registering the object in the scene update queue.
+The `setUpdateLevel` does as its name suggests. It sets the update level of the object. This is normally computed once when registering the object in the scene update queue.
 
 Every MathObjects implements the interface `Updateable` , and is registered when added to the scene.
 
-The methods `registerUpdateableHook` and `unregisterUpdateableHook` are called when the object is registered in the scene update queue. This is where normally the update level should be set.
+The methods `registerUpdateableHook` and `unregisterUpdateableHook` are called when the object is registered in the scene update queue. This is where, normally, the update level should be set.
 
-When creating a new `MathObject` subclass which depends on other objects, you should override the method `registerUpdateableHook`and sets the update level there.
+When creating a new `MathObject` subclass which depends on other objects, you should override the method `registerUpdateableHookand sets `the update level there.
 
 For example, let's suppose we have the following simple animation, where a `Point` object named `A` moves from the point (1,1) to (-1,1):
 
@@ -47,7 +47,7 @@ play.shift(3,-2,0,A);
 waitSeconds(3);
 ```
 
-We want to create a `Point`subclass that automatically locates at the normalized coordinates of point `A`, that is, the projection of `A` into the unit circle. As the `Point` class implements the `Updateable` interface, the easiest way is to subclass the `Point` and override the `registerUpdateableHook` and `update` methods.
+We want to create a `Point` subclass that automatically locates at the normalized coordinates of point `A`, that is, the projection of `A` into the unit circle. As the `Point` class implements the `Updateable` interface, the easiest way is to subclass the `Point` and override the `registerUpdateableHook` and `update` methods.
 
 ```java
 class UnitPoint extends Point {
@@ -162,7 +162,7 @@ waitSeconds(5);
 
 ## Trail
 
-A trail is a `Shape` subclass that updates every frame adding the position of a marker point.  Let's draw a cycloid, using a combined `shift` and `rotate` animation:
+A trail is a `Shape` subclass that updates every frame, adding the position of a marker point. Let's draw a cycloid using a combined `shift` and `rotate` animation:
 
 ```java
 double circleRadius = .25;
@@ -195,7 +195,7 @@ waitSeconds(1);
 
 # The addOnce method
 
-A useful method when creating procedural animations is the `addOnce(obj)` method. This method will add the specified object(s) to the scene but remove them after they are being drawed, so they "live" only for a frame. This method may be useful when you need to create an object for every frame, draw, and remove it because you will use another object in the next frame. 
+A useful method when creating procedural animations is the `addOnce(obj)` method. This method adds the specified object(s) to the scene but removes them after they are drawn, so they only "live" for a frame. This method may be useful when you need to create an object for every frame, draw it, and remove it because you will use another object in the next frame. 
 
 # Current status of methods implemented to MathObjects
 
@@ -221,19 +221,19 @@ To add a sound to a specific moment of the animation, you can use the command `p
 playSound("pop.wav");
 ```
 
-Will add the given sound at the current frame. Note that adding a sound doesn't stop the animations. They simply are added at the current frame.
+Will add the given sound at the current frame. Note that adding a sound doesn't stop the animations. They are simply added to the current frame.
 
 The sound file is loaded using the `ResourceLoader` class, so usual conventions are used. In this case, JMathAnim will look for the file `pop.wav` in the directory `project_dir/resources/sounds`. Remember that you can use the "!" modifier to specify an absolute path.
 
-As `ffmpeg` is used as an external command to process the sound files, all most common formats are supported, like wav, mp3, ogg or flac.
+As `ffmpeg` is used as an external command to process the sound files, all the most common formats are supported, like wav, mp3, ogg or flac.
 
-When added a sound to the animation, and after the video is created, JMatAnim will process all added sounds and merge them into the created video, so an extra time will be spent. If you don't want to add any sound at all to the animation you can disable them with the config command:
+When adding a sound to the animation, and after the video is created, JMatAnim will process all the added sounds and merge them into the created video, so extra time will be spent. If you don't want to add any sound at all to the animation, you can disable it with the config command:
 
 ```java
 config.setSoundsEnabled(false);
 ```
 
-Another method to add a sound is with the animation `PlaySoundAt`. This is useful when you want to play a sound at a certain specific time of an animation. For example, suppose you have this animation of a square moving and rotating from the previous chapters, where rotating happens between 40% and 60% of animation.
+Another method to add a sound is with the animation `PlaySoundAt`. This is useful when you want to play a sound at a specific time in an animation. For example, suppose you have this animation of a square moving and rotating from the previous chapters, where rotating happens between 40% and 60% of the animation.
 
 ```java
 Shape sq = Shape.square().scale(.5).style("solidblue").moveTo(Point.at(-1, 0));
@@ -258,9 +258,9 @@ Another (wrong) way of achieving this may be using lambdas, using the following 
 PlaySoundAt.make(6, 0, "rotationSound.mp3").compose(UsefulLambdas.allocateTo(.4, .6));
 ```
 
-but if you create the animation, the sound will be played at the start of the animation. What happened here? Well, the `PlaySoundAt.make` defines an animation that will play the sound when runtime is greater or equal than the given time, in this case 0. The allocate function evaluated at any t<.4 will return 0, so the animation will play the sound at the first animation frame.
+but if you create the animation, the sound will be played at the start of the animation. What happened here? Well, the `PlaySoundAt.make` defines an animation that will play the sound when runtime is greater or equal to the given time, in this case, 0. The allocate function evaluated at any t<.4 will return 0, so the animation will play the sound at the first animation frame.
 
-To prevent this, the `makeStrict` method creates an animation where the sound will be played after runtime parameter is strictly greater than a given one. So, if you want to make the following code right you should use:
+To prevent this, the `makeStrict` method creates an animation where the sound will be played after the runtime parameter is strictly greater than a given one. So, if you want to make the following code right, you should use:
 
 ```java
 PlaySoundAt.makeStrict(6, 0, "rotationSound.mp3").compose(UsefulLambdas.allocateTo(.4, .6));

@@ -29,9 +29,9 @@ Version 0.9.7-SNAPSHOT (15/06/22)
 
 -   Added horizontal, vertical and both scaling capabilities to `shrinkOut`, `growIn` and `TransformMathExpression`.
 -   Fixed bug where default adding animation was not used in `TransformMathExpression`.
--   Improved workaround for JavaFX bug that displays artifacts when drawing cubic lines with control points equal to vertices.
+-   Improved workaround for JavaFX bug that displays artifacts when drawing cubic lines with control points are equal to vertices.
 -   Sounds are here! Added the possibility of including sounds in the
-    animations, using an external `ffmpeg` executable. You may find a brief tutorial in the advanced topics section of the user manual.
+    animations, using an external `ffmpeg` executable. You can find a brief tutorial in the advanced topics section of the user manual.
 
 Version 0.9.6 (03/06/22)
 
