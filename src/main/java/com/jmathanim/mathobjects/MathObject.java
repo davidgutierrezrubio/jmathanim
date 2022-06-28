@@ -59,6 +59,8 @@ public abstract class MathObject implements Drawable, Updateable, Stateable, Box
     private Type absoluteAnchorType = Type.CENTER;
     private final HashSet<MathObject> dependents;
 
+    private double leftGap, upperGap, rightGap, lowerGap;
+
     public MathObject() {
         this(null);
     }
@@ -70,7 +72,13 @@ public abstract class MathObject implements Drawable, Updateable, Stateable, Box
         mp = JMathAnimConfig.getConfig().getDefaultMP();// Default MP values
         mp.copyFrom(prop);// Copy all non-null values from prop
         //Default values for an object that always updates
-        dependents=new HashSet<>();
+        dependents = new HashSet<>();
+
+        //Default gaps
+        leftGap = 0;
+        upperGap = 0;
+        rightGap = 0;
+        lowerGap = 0;
     }
 
     /**
@@ -144,7 +152,8 @@ public abstract class MathObject implements Drawable, Updateable, Stateable, Box
     public <T extends MathObject> T scale(double s) {
         return scale(getCenter(), s, s);
     }
- /**
+
+    /**
      * Scale from a given center (uniform scale)
      *
      * @param <T> MathObject subclass
@@ -155,6 +164,7 @@ public abstract class MathObject implements Drawable, Updateable, Stateable, Box
     public final <T extends MathObject> T scale(Point scaleCenter, double scale) {
         return scale(scaleCenter, scale, scale, scale);
     }
+
     /**
      * Scale from a given center (2D version)
      *
@@ -340,17 +350,16 @@ public abstract class MathObject implements Drawable, Updateable, Stateable, Box
      */
     @Override
     public final Rect getBoundingBox() {
-        return computeBoundingBox();
+        return computeBoundingBox().addGap(rightGap, upperGap, leftGap, lowerGap);
     }
+
     protected abstract Rect computeBoundingBox();
 
-    
-    
-    
     public void setAlpha(double t) {
         drawAlpha(t);
         fillAlpha(t);
     }
+
     @Override
     public void saveState() {
         getMp().saveState();
@@ -993,21 +1002,23 @@ public abstract class MathObject implements Drawable, Updateable, Stateable, Box
     @Override
     public void unregisterUpdateableHook(JMathAnimScene scene) {
     }
+
     /**
      * Returns the set of objects that depend on this to be properly updated
+     *
      * @return A HashSet of the dependent MathObjects
      */
     public HashSet<MathObject> getDependentObjects() {
         return dependents;
     }
-    
-    protected void dependsOn(JMathAnimScene scene,MathObject...objs) {
-        
+
+    protected void dependsOn(JMathAnimScene scene, MathObject... objs) {
+
         //Ensure all objects in objs is registered
         scene.registerUpdateable(objs);
-        
+
         //Sets the update level the max of objs +1
-         OptionalInt m = Arrays.stream(objs).mapToInt(t -> t.getUpdateLevel()).max();
+        OptionalInt m = Arrays.stream(objs).mapToInt(t -> t.getUpdateLevel()).max();
         if (m.isPresent()) {
             setUpdateLevel(m.getAsInt() + 1);
         } else {
@@ -1018,7 +1029,24 @@ public abstract class MathObject implements Drawable, Updateable, Stateable, Box
             obj.dependents.add(this);
         }
     }
-    
-    
-    
+
+    /**
+     * Sets the gaps for this object. These gaps will be added to the bounding
+     * box of the object.
+     *
+     * @param <T>
+     * @param rightGap Right gap
+     * @param upperGap Upper gap
+     * @param leftGap Left gap
+     * @param lowerGap Lower gap
+     * @return This object
+     */
+    public <T extends MathObject> T setGaps(double rightGap, double upperGap, double leftGap, double lowerGap) {
+        this.rightGap = rightGap;
+        this.upperGap = upperGap;
+        this.leftGap = leftGap;
+        this.lowerGap = lowerGap;
+        return (T) this;
+    }
+
 }

@@ -34,13 +34,13 @@ public class Rect implements Stateable, Boxable {// TODO: Adjust this to 3D coor
 
     public static Rect centeredUnitSquare() {
         return make(
-                Point.at(-.5,-.5),
-                Point.at(.5,-.5),
-                Point.at(.5,.5),
-                Point.at(-.5,.5)
+                Point.at(-.5, -.5),
+                Point.at(.5, -.5),
+                Point.at(.5, .5),
+                Point.at(-.5, .5)
         );
     }
-    
+
     public static Rect make(Point... points) {
         return make(Arrays.asList(points));
     }
@@ -277,10 +277,10 @@ public class Rect implements Stateable, Boxable {// TODO: Adjust this to 3D coor
      * @return A new {@link Rect} with the union of both rects
      */
     public static Rect union(Rect a, Rect b) {
-        if ((a == null)||(a instanceof EmptyRect)) {
+        if ((a == null) || (a instanceof EmptyRect)) {
             return b;
         }
-        if ((b == null)||(b instanceof EmptyRect)) {
+        if ((b == null) || (b instanceof EmptyRect)) {
             return a;
         }
         return new Rect(Math.min(a.xmin, b.xmin), Math.min(a.ymin, b.ymin), Math.min(a.zmin, b.zmin),
@@ -381,6 +381,20 @@ public class Rect implements Stateable, Boxable {// TODO: Adjust this to 3D coor
      */
     public Rect addGap(double xgap, double ygap) {
         return new Rect(xmin - xgap, ymin - ygap, zmin, xmax + xgap, ymax + ygap, zmax);
+    }
+
+    /**
+     * Computes a new Rect with the following gaps added (right, upper, left,
+     * lower).
+     *
+     * @param rightGap Right gap
+     * @param upperGap Upper gap
+     * @param leftGap Left gap
+     * @param lowerGap Lower gap
+     * @return A new {@link Rect} with the gaps applied
+     */
+    public Rect addGap(double rightGap, double upperGap, double leftGap, double lowerGap) {
+        return new Rect(xmin - leftGap, ymin - lowerGap, zmin, xmax + rightGap, ymax + upperGap, zmax);
     }
 
     /**
@@ -509,7 +523,7 @@ public class Rect implements Stateable, Boxable {// TODO: Adjust this to 3D coor
      * @return The new Rect
      */
     public Rect copy() {
-        return new Rect(xmin, ymin, zmin,xmax, ymax,  zmax);
+        return new Rect(xmin, ymin, zmin, xmax, ymax, zmax);
     }
 
     /**
@@ -566,11 +580,12 @@ public class Rect implements Stateable, Boxable {// TODO: Adjust this to 3D coor
         }
         return null;//Unknow case, return null
     }
+
     public Rect getTransformedRect(AffineJTransform tr) {
-        Point a=getUL();
-        Point b=getDL();
-        Point c=getUR();
-        Point d=getDR();
+        Point a = getUL();
+        Point b = getDL();
+        Point c = getUR();
+        Point d = getDR();
         return make(
                 a.applyAffineTransform(tr),
                 b.applyAffineTransform(tr),
