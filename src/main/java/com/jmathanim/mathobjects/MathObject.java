@@ -339,8 +339,14 @@ public abstract class MathObject implements Drawable, Updateable, Stateable, Box
      * @return A Rect with (xmin,ymin,xmax,ymax)
      */
     @Override
-    public abstract Rect getBoundingBox();
+    public final Rect getBoundingBox() {
+        return computeBoundingBox();
+    }
+    protected abstract Rect computeBoundingBox();
 
+    
+    
+    
     public void setAlpha(double t) {
         drawAlpha(t);
         fillAlpha(t);

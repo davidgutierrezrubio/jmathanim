@@ -211,7 +211,7 @@ public class CTCircle extends CTAbstractCircle {
     }
 
     @Override
-    public Rect getBoundingBox() {
+    public Rect computeBoundingBox() {
         rebuildShape();
         return circleToDraw.getBoundingBox();
     }

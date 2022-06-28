@@ -20,6 +20,7 @@ package com.jmathanim.mathobjects;
 import com.jmathanim.Constructible.Constructible;
 import com.jmathanim.Renderers.Renderer;
 import com.jmathanim.Utils.AffineJTransform;
+import com.jmathanim.Utils.EmptyRect;
 import com.jmathanim.Utils.Rect;
 import com.jmathanim.jmathanim.JMathAnimScene;
 
@@ -52,8 +53,8 @@ public class Scalar extends Constructible implements hasScalarParameter{
     }
 
     @Override
-    public Rect getBoundingBox() {
-        return null;// Nothing
+    public Rect computeBoundingBox() {
+        return new EmptyRect();// Nothing
     }
 
     @Override

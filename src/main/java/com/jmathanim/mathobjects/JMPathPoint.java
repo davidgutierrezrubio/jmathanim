@@ -194,8 +194,8 @@ public class JMPathPoint extends MathObject implements Updateable, Stateable {
     }
 
     @Override
-    public Rect getBoundingBox() {
-        return p.getBoundingBox();
+    public Rect computeBoundingBox() {
+        return p.computeBoundingBox();
     }
 
     @Override

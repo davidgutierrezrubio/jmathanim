@@ -169,7 +169,7 @@ public class MultiShapeObject extends MathObject implements Iterable<Shape> {
     }
 
     @Override
-    public Rect getBoundingBox() {
+    public Rect computeBoundingBox() {
         if (!shapes.isEmpty()) {
             Rect resul = null;
             for (Shape jmp : shapes) {

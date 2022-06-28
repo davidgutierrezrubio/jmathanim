@@ -86,7 +86,7 @@ public abstract class Constructible extends MathObject {
     abstract public void rebuildShape();
 
     @Override
-    public Rect getBoundingBox() {
+    public Rect computeBoundingBox() {
         rebuildShape();
         return getMathObject().getBoundingBox();
     }

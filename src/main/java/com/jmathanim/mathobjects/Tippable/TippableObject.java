@@ -182,7 +182,7 @@ public class TippableObject extends MathObject {
     }
 
     @Override
-    public Rect getBoundingBox() {
+    public Rect computeBoundingBox() {
         updateLocations();
         return getTipCopy().getBoundingBox();
     }

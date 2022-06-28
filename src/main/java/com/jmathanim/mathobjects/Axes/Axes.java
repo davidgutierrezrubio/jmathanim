@@ -267,7 +267,7 @@ public class Axes extends MathObject {
     }
 
     @Override
-    public Rect getBoundingBox() {
+    public Rect computeBoundingBox() {
         return JMathAnimConfig.getConfig().getCamera().getMathView();
     }
 

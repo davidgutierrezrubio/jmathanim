@@ -52,7 +52,7 @@ public class NullMathObject extends Constructible {
     }
 
     @Override
-    public Rect getBoundingBox() {
+    public Rect computeBoundingBox() {
         return new EmptyRect();
     }
 

@@ -224,7 +224,7 @@ public abstract class Delimiter extends MathObject {
     }
 
     @Override
-    public Rect getBoundingBox() {
+    public Rect computeBoundingBox() {
         if ((A.isEquivalentTo(B, 0) || (delimiterScale == 0))) {
             return new EmptyRect();
         }
