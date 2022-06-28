@@ -5,7 +5,7 @@
 ## The Vec class
 
 
-The `Vec` class represents a 2D vector (although it includes the z-coordinate too). All coordinates in the math view are represented by this class. Several methods are implemented for this class. For example, methods `add` and `mult` adds 2 vectors or multiply by a scalar,returning a new vector object with the result. These methods have their versions `addInSite` and `multInSite` which returns `void` and change the original vector.
+The `Vec` class represents a 2D vector (although it includes the z-coordinate too). All coordinates in the math view are represented by this class. Several methods are implemented for this class. For example, methods `add` and `mult` add 2 vectors or multiply by a scalar, returning a new vector object with the result. These methods have the versions `addInSite` and `multInSite` which return `void` and change the original vector.
 
 ``` java
 Vec v=new Vec(1,3); //Creates a new vector.
@@ -21,9 +21,7 @@ double angle=v.getAngle();//Returns the angle of v, from 0 to 2*PI
 
 ## The `Point` class
 
-
-Everything that you can draw in the screen is a subclass of the `MathObject` class (moreover, everything that implements the `Drawable`
-interface). So, they share a few common methods, like `scale`, `rotate` or `shift`. We’ll see this methods later.
+Everything that you can draw on the screen is a subclass of the `MathObject` class (more precisely, everything that implements the `Drawable` interface). So, they share a few common methods, like `scale`, `rotate` or `shift`. We’ll see these methods later.
 
 The `Point` class is the most basic `MathObject` and, yes, you’re right, it represents a single point.
 
@@ -40,7 +38,7 @@ double x=p.v.x; //x-coordinate of p
 double d=p.v.norm(); //Distance of p to the origin
 ```
 
-A point can be represented in different styles, defined in the `DotStyle` enum, namely `CIRCLE, CROSS, PLUS` which show as this:
+A point can be represented in different styles, defined in the `DotStyle` enum, namely `CIRCLE, CROSS, PLUS` which are shown as this:
 
 ![dots](dots.png)
 
@@ -63,15 +61,13 @@ public void runSketch() throws Exception {
     }
 ```
 
-The code in the `setupSketch` method loads default presets to preview the animation with creating a movie file, and using a style with white background.  We will consistently use this style for the rest of the manual.  You can read more about configuration files in the styling chapter.
+The code in the `setupSketch` method loads default presets to preview the animation by creating a movie file and using a style with a white background. We will consistently use this style for the rest of the manual. You can read more about configuration files in the styling chapter.
 
 ## The `Shape` class
 
+This class represents a shape defined by a curve. The truth is, it represents more than that, as it can represent a closed or open curve, or even a curve defined by many disconnected pieces.
 
-This class represents a shape defined by a curve. The truth is, it represents more than that, as it can represents a closed or open curve,
-or even a curve defined by many disconnected pieces.
-
-Several convenience static methods are defined to easily create most common shapes:
+Several convenient static methods are defined to easily create the most common shapes:
 
 ``` java
 //Generates a circle with radius 1 and centered at (0,0)
@@ -100,16 +96,16 @@ If you add all these objects to the scene with the command `add(circ,sq,reg,rect
 
 ![basicShapes](basicShapes.png)
 
-The `Shape` class is one of the most important and the most likely to be animated. Several other classed depend on it.
+The `Shape` class is one of the most important and the most likely to be animated. Several other classes depend on it.
 
-Each `Shape` object has a `JMPath` object which stores and manages the path represented. Each point of the path can be accesed with the method
-`getPoint(n)`. This is a circular array and zero-based, that is, if you have the object `pentagon` which is a shape with 5 vertices, `pentagon.getPoint(0)` will give you the first point of the shape, `pentagon.getPoint(1)` the second one,…​and `pentagon.getPoint(5)` instead of giving you an error, will return again the first point of the path. In the chapter "Dealing with paths" we see in more depth the path structure and how to access to its elements.
+Each `Shape` object has a `JMPath` object which stores and manages the path represented. Each point of the path can be accessed with the method
+`getPoint(n)`. This is a circular array and zero-based. That is, if you have the object `pentagon` which is a shape with 5 vertices, `pentagon.getPoint(0)` will give you the first point of the shape, `pentagon.getPoint(1)` the second one,…​and `pentagon.getPoint(5)` instead of giving you an error, will return again the first point of the path. In the chapter "Dealing with paths" we see in more depth the path structure and how to access to its elements.
 
-In the `Shape` objects, apart from `.getCenter()`method, which returns the center of its bounding box, there is also the `.getCentroid()`method which computes the centroid of the shape, defined by the average point of all its vertices. This method effectively returns the center of a regular polygon for example, instead of the `.getCenter()`method.
+In the `Shape` objects, apart from `.getCenter()`method, which returns the center of its bounding box, there is also the `.getCentroid()`method which computes the centroid of the shape, defined by the average point of all its vertices. This method effectively returns the geometrical center of a regular polygon for example, instead of the `.getCenter()`method.
 
 ## The `LaTeXMathObject` class
 
-If you want to include mathematical expressions in any work, of course, the best software to use is `LaTeX`. This class renders a mathematical expression written in LaTeX and imports it so you can draw it and animate it in several ways. To do this you’ll need a working LaTeX distribution installed on your system and accessible from your path. So, if you put the following the code in the `runSketch()` method:
+If you want to include mathematical expressions in any work, the best software to use is `LaTeX`. This class renders a mathematical expression written in LaTeX and imports it so you can draw it and animate it in several ways. To do this, you’ll need a working LaTeX distribution installed on your system and accessible from your path. So, if you put the following code in the `runSketch()` method:
 
 ``` java
 LaTeXMathObject text = LaTeXMathObject.make("Look mom, I'm \\LaTeX!");
@@ -121,7 +117,7 @@ waitSeconds(5);
 
 >**UPDATE** : Since version 0.9.5, the library [JLatexMath](https://github.com/opencollab/jlatexmath) is used by default to generate LaTeX formulas, so there is no need to have a working LaTeX distribution installed.
 
-A minor drawback when combining LaTeX and Java, is that one of the most used symbols in LaTeX is the backslash "\\", and Java doesn’t accept single backslashes in their strings, so, if you want to compile a LaTeX formula like this
+A minor drawback when combining LaTeX and Java, is that one of the most used symbols in LaTeX is the backslash "\\", and Java doesn’t accept single backslashes in its strings, so if you want to compile a LaTeX formula like this
 
 ``` latex
 $$\int_0^\infty e^{-x}\,dx=1$$
@@ -135,7 +131,7 @@ add(formula);
 waitSeconds(5);
 ```
 
-Otherwise you will get an error. Fortunately, most commons java IDE, like Netbeans, automatically perform this change when copy-pasting an already written formula into the code editor. 
+Otherwise, you will get an error. Fortunately, most common Java IDEs, like Netbeans, automatically perform this change when copy-pasting an already written formula into the code editor.
 
 By default, LaTeX formulas are placed at the center of the screen.
 
@@ -145,13 +141,13 @@ Some commands, like `\begin{verbatim}` for example, are not supported by JLaTeXM
 LaTeXMathObject formula=LaTeXMathObject.make(text, LaTeXMathObject.CompileMode.CompileFile);
 ```
 
-This method will compile to a .dvi file, convert it to svg and import it into a `MultiShapeObject`. If the .svg was already generated in previous runs, JMathAnim will reuse it.
+This method will compile to a `.dvi` file, convert it to `.svg` and import it into a `MultiShapeObject`. If the `.svg` file was already generated in previous runs, JMathAnim will reuse it.
 
 
 
 ## The `Line` class
 
-This class represents an infinite line. Of course, the "trick" is that in every frame it draws the visible part. Several static builder are implemented:
+This class represents an infinite line. Of course, the "trick" is that in every frame it draws the visible part. Several static builders are implemented:
 
 ```java
 Point A = Point.at(1, 1);
@@ -169,13 +165,13 @@ waitSeconds(3);
 
 ![Line01](Line01.gif)
 
-Note that the construction of `line2` only considers the direction vector at the build time. When moving the `A` point the direction changes. 
+Note that the construction of `line2` only considers the direction vector at the build time. When moving the `A` point, the direction changes. 
 
-Similarly, the `Ray`class allows to represent rays in a similar way than `Line` objects.
+Similarly, the `Ray` class allows us to represent rays in a similar way to`Line` objects.
 
 ## The `Axes` class
 
-The `Axes` class represents a cartesian axis. Well, actually is just a container for a couple of `Line`objects (the x-axis and y-axis), `Shape` objects (the ticks) and `LaTeXMathObject`(the legends of the ticks).
+The `Axes` class represents a cartesian axis. Well, actually it is just a container for a couple of `Line` objects (the x-axis and y-axis), `Shape` objects (the ticks), and `LaTeXMathObject` (the legends of the ticks).
 
 By default, axes without ticks are created. You can add them with the methods `generatePrimaryXTicks` and `generatePrimaryYTicks`. If you want to fine-tune the ticks, you can add individual ticks with latex expressions:
 
@@ -216,9 +212,9 @@ waitSeconds(4);
 
 <img src="arrow1.png" alt="image-20201112223825965"  />
 
-As you can see, there are 2 static builders, `makeSimpleArrow2D` and `makeDoubleArrow2D`, with parameters starting and ending points and type(s) of arrow(s). Currently there are 3 types of arrows, showed in the previous example. 
+As you can see, there are 2 static builders, `makeSimpleArrow2D` and `makeDoubleArrow2D`, with parameters starting and ending points and type(s) of arrow(s). Currently there are 3 types of arrows, as shown in the previous example.
 
-The arrow head is by default set to absolute size. This means that scaling the camera won't affect the size perceived of the object. In this code we perform a zoom and see that the size of the arrow doesn't change:
+The arrow head is by default set to absolute size. This means that scaling the camera won't affect the size of the object. In this code, we perform a zoom and see that the size of the arrow doesn't change:
 
 ```java
 Shape square1 = Shape.square().center();
@@ -235,7 +231,7 @@ waitSeconds(1);
 
 ## The `Delimiter` class
 
-The `Delimiter` is a extensible sign that adjust to 2 given control points A,B. May be brackets, braces, or parenthesis.  The precise form of the delimiter is recalculated every frame so if you animate the control points the delimiter will automatically adjust to them. Note that the delimiter always draws to the "left" of segment AB, if you are looking from A to B. The last parameter of the builder is the gap you want to apply between the control point and the delimiter.
+The `Delimiter` is a extensible sign that adjust to 2 given control points A,B, may be brackets, braces, or parenthesis.  The precise form of the delimiter is recalculated every frame, so if you animate the control points, the delimiter will automatically adjust to them. Note that the delimiter always draws to the "left" of segment AB, if you are looking from A to B. The last parameter of the builder is the gap you want to apply between the control point and the delimiter.
 
 With the method `setLabel(obj,gap)` (from v0.9.4-SNAPSHOT) we can stack any `MathObject`as a label, with the given gap between both. The method admits the overloaded version with a `String`that will generate a `LaTeXMathObject` automatically. There is also the `addLengthLabel` method that creates a label that automatically updates its contents to the current length of the delimiter.
 
@@ -282,7 +278,7 @@ waitSeconds(1);
 
 ## The `TippableObject` class
 
-A tippable object is a MathObject that marks a specified point of a `Shape`. Any mathobject can be used as a tip. Two static methods implements specific tips: the equal length symbols and arrow head symbols. A specialized subclass `LabelTip` attaches a LaTeX formula to a point of the shape. We'll use an hexagon to show you 6 examples in one:
+A tippable object is a MathObject that marks a specified point of a `Shape`. Any mathobject can be used as a tip. Two static methods implement specific tips: the equal length symbols and arrowhead symbols. A specialized subclass `LabelTip` attaches a LaTeX formula to a point of the shape. We'll use a hexagon to show you six examples in one:
 
 ```java
 Shape reg = Shape.regularPolygon(6).center().style("solidblue");
@@ -332,11 +328,11 @@ waitSeconds(3);
 # Importing images
 
 
-JMathAnim allows both bitmap and vectorial images. All bitmap formats supported by JavaFX can be added into the scene with `JMImage` class and SVG format is (partially) supported using the `SVGMathObject` class.
+JMathAnim allows both bitmap and vectorial images. All bitmap formats supported by JavaFX can be added into the scene with the `JMImage` class, and the SVG format is (partially) supported using the `SVGMathObject` class.
 
 ## Importing bitmap images
 
-JMathAnim can import and transform all bitmap images supported by JavaFX, like png, or jpg. Only basic transformations like shift, rotate and scale are supported, and its basic related animations. By default, the images are loaded in the `resources/images/` folder in your project (see the styling chapter about specifying another search paths).
+JMathAnim can import and transform all bitmap images supported by JavaFX, like png or jpg. Any affine transformation can be done to a `JMImage`object. By default, the images are loaded in the `resources/images/` folder in your project (see the styling chapter about specifying other search paths).
 
 ````java
 JMImage img=JMImage.make("euler.jpg").center().rotate(-5*DEGREES);
@@ -347,10 +343,6 @@ waitSeconds(3);
 ````
 
 ![image01](image01.gif)
-
-Since version 0.9.6-SNAPSHOT, any affine transformation can be done to a `JMImage`object.
-
-
 
 ## Importing SVG Objects
 
@@ -365,7 +357,7 @@ public void setupSketch() {
 public void runSketch() throws Exception {
 	SVGMathObject svg=SVGMathObject.make("donaldKnuth.svg");
     svg.setHeight(2).center();
-    play.showCreation(svg);
+    play.showCreation(svg);//Plays an animation drawing the svg object
     waitSeconds(3);
     }
 ```
@@ -386,7 +378,7 @@ Importing a SVG creates a `MultiShape`object, that holds many `Shape`objects. Ea
 
 # The MathObjectGroup class
 
-The `MathObjectGroup` class allows managing of large sets of `MathObject`instances as one single entity. For example, the following code creates a group with 3 shapes:
+The `MathObjectGroup` class allows the management of large sets of `MathObject`instances as one single entity. For example, the following code creates a group with 3 shapes:
 
 ```java
 Shape square=Shape.square();
@@ -395,7 +387,7 @@ Shape circle=Shape.circle();
 MathObjectGroup group=MathObjectGroup.make(square,triangle,circle);
 ```
 
-A `MathObjectGroup` inherits from the `MathObject`class, so that you can perform methods like shift, rotate, scale, etc.
+A `MathObjectGroup` inherits from the `MathObject`class so that you can perform methods like shift, rotate, scale, etc.
 
 Any style change will be applied to all elements in the group.
 
@@ -403,17 +395,17 @@ Any style change will be applied to all elements in the group.
 group.setFillColor("cadetblue"); //Apply this fillcolor to square, triangle and circle
 ```
 
-Note that you don't need to add the `MathObjectGroup` to the scene in order to show its members. You can add individually the objects you want to the scene. Adding a `MathObjectGroup` to the scene does not add the object itself, but is equivalent to add all its members to the scene.
+Note that you don't need to add the `MathObjectGroup` to the scene in order to show its members. You can add the objects you want to the scene individually. Adding a `MathObjectGroup` to the scene does not add the object itself, but is equivalent to adding all its members to the scene.
 
 ```java
 add(group);//Equivalent to add(square, triangle, circle)
 ```
 
-This class becomes handy when you want to animate or position a large amount of objects, as we will see in next chapters.
+This class becomes handy when you want to animate or position a large number of objects, as we will see in next chapters.
 
 # The `Rect` class
 
-The `Rect`class represents a bounding box. If you are familiar with game programming or similar, you will know this concept. The bounding box of an object is the smallest rectangle which contains that object and which is used as fast reference for collision detection. The bounding box itself is not drawable, but you can easily create a rectangle with its dimensions with the static method `Shape.rectangle(Rect bbox)`. 
+The `Rect` class represents a bounding box. If you are familiar with game programming or similar, you will know this concept. The bounding box of an object is the smallest rectangle which contains that object and which is used as a fast reference for collision detection. The bounding box itself is not drawable, but you can easily create a rectangle with its dimensions with the static method `Shape.rectangle(Rect bbox)`.
 
 Every `MathObject` (moreover, any class that implements the `Boxable` interface) has the method `.getBoundingBox()` to get precisely that.
 
@@ -429,7 +421,7 @@ waitSeconds(3);//Smile for the screenshot!
 
 <img src="boundingbox1.png" alt="image-20210418201105276" style="zoom:50%;" />
 
-Here are some useful methods that the `Rect`class implements (you can see more detailed information in the Javadocs). In the previous example, where `r` was a `Rect` representing the bounding box of the ellipse:
+Here are some useful methods that the `Rect` class implements (you can see more detailed information in the Javadocs). In the previous example, where `r` was a `Rect` representing the bounding box of the ellipse:
 
 ```java
 r.xmin;//The most left x-coordinate of the Rect
@@ -450,9 +442,9 @@ r.getRelPoint(.25, .25);//Returns a Point located at the relative coordinates (.
 r.getRelPoint(.5,.5);//This is the same as r.getCenter()
 ```
 
-Apart from bounding boxes, the `Rect` class is used to represent the mathview. The method `getMathView()` returns a `Rect` will represents all visible area that is currently being drawed.
+Apart from bounding boxes, the `Rect` class is used to represent the mathview. The method `getMathView()` returns a `Rect `will represent all the visible area that is currently being drawn.
 
-Thus, for example,  the following code will draw some dots at key points of the screen (the methods `thickness`, `drawColow` and `dotStyle` control the appearance of the points and will be seen in the Styling chapter):
+Thus, for example, the following code will draw some dots at key points of the screen (the methods `thickness`, `drawColor` and `dotStyle` control the appearance of the points and will be seen in the Styling chapter):
 
 ```java
 Rect mathView = getMathView();

@@ -2,17 +2,17 @@
 
 # Animations
 
-So far, we’ve learned to draw basic objects, and put them in the position we desire. What about animations? Well, this is what this library is meant for. We have the `Animation` class that will store any kind of animation you can do to an object. Not only `MathObject` instances can be animated, but also the `Camera` object can be animated too.
+So far, we’ve learned to draw basic objects and put them in the positions we desire. What about animations? Well, this is what this library is meant for. We have the `Animation` class that will store any kind of animation you can do to an object. Not only can `MathObject` instances be animated, but also the `Camera` object can be animated too.
 
-An `Animation` object has 4 important methods that should be understood if you want to implement your own animations or playing it manually with the `advanceFrame()` method 
+An `Animation` object has 4 important methods that should be understood if you want to implement your own animations or play them manually with the `advanceFrame()` method.
 
--   The `initialize(this)` method, which prepares the objects to be animated. It should be called immediately before the animation begins, that is, no modifications should be done to the objects between this method and the start of the animation. The only parameter it needs is the scene from where it is invoked, usually the own class, `this`.
--   The `processAnimation`this method computes the time depending on the frame rate, and calls the next method. If the animation is finished, return `true`.
--   The `doAnim(double t)` method. This method actually performs the animation. The parameter `t` ranges from 0 to 1 where 0 is the beginning and 1 is the end. This is not actually the time, but the percentage of animation done. Internally a second parameter computed is a "smoothed" version of the parameter `t`, where a smooth function is applied so that the animation starts and ends in a soft way, rather than with the lineal `t`.  The smooth function is defined as a lambda java function, that you can get or set with `getLambda` and `setLambda` methods. In the next chapter we will see other lambdas that you can use in your animations.
+-   The `initialize(this)` method prepares the objects to be animated. It should be called immediately before the animation begins, that is, no modifications should be made to the objects between this method and the start of the animation. The only parameter it needs is the scene from where it is invoked, usually the own class, `this`.
+-   The `processAnimation` method computes the time depending on the frame rate, and calls the next method. If the animation is finished, return `true`.
+-   The `doAnim(double t)` method. This method actually performs the animation. The parameter `t` ranges from 0 to 1 where 0 is the beginning and 1 is the end. This is not actually the time, but the percentage of animation done. Internally a second parameter computed is a "smoothed" version of the parameter `t`, where a smooth function is applied so that the animation starts and ends in a soft way, rather than with the lineal `t`.  The smooth function is defined as a lambda Java function, that you can get or set with the `getLambda` and `setLambda` methods. In the next chapter, we will see other lambdas that you can use in your animations.
 
--   The `finishAnimation()` method, that should do all the needed cleanup and finishing jobs.
+-   The `finishAnimation()` method, which does all the needed cleanup and finishing jobs.
 
-An `Animation` object can be played with the `playAnimation` method, which will handle all the necessary steps for you, but there is another way to play it in a more procedimental way. You can achieve the same effect with the following piece of code:
+An `Animation` object can be played with the `playAnimation` method, which will handle all the necessary steps for you, but there is another way to play it in a more procedural way. You can achieve the same effect with the following piece of code:
 
 ````java
 Animation anim=<define here the animation>
@@ -29,14 +29,14 @@ Animation anim=<define here the animation>
 playAnimation(anim);
 ```
 
-Also, there is a convenience object created, `play`, which stores shortcuts for most used animations.
+Also, there is a convenience object created, `play`, which stores shortcuts for most commonly used animations.
 
-In general, parameters of all animations always follow the structure `(runTime, parameters, object_1,…​,object_n)`. The last part is a varargs `MathObject`, so that you can apply the animation to an arbitrary number of objects.
+In general, the parameters of all animations always follow the structure `(runTime, parameters, object_1,…​,object_n)`. The last part is a varargs `MathObject`, so that you can apply the animation to an arbitrary number of objects.
 
 # Basic Animations
 
 
-The basic transformations also have their animated versions. They are defined as static methods in the `Commands` class.
+The basic transformations also have their own animated versions. They are defined as static methods in the `Commands` class.
 
 A gif (and its generating code) is worth a thousand words:
 
@@ -50,7 +50,7 @@ waitSeconds(1);
 
 ![animationShift1](animationShift1.gif)
 
-We have performed a simple animation defining it in the variable `shiftAnim` and playing it with the `playAnimation` method.
+We have performed a simple animation by defining it in the variable `shiftAnim` and playing it with the `playAnimation` method.
 
 This animation and many other have a shorter access through the `play` object. The following code produces the same result:
 
@@ -136,7 +136,7 @@ play.moveIn(1,Anchor.Type.LEFT,sq);//Entering from the left
 play.moveOut(1,Anchor.Type.LEFT,sq);//Exiting through the left
 ```
 
-Most of this commands can be called omitting the runtime parameter, using the default time for each one. For example, calling
+Most of these commands can be called by omitting the runtime parameter and using the default time for each one.  For example, calling
 `play.fadeIn(sq)` will execute the `fadeIn` animation in 1 second, which is the value defined in the public variable `play.defaultRunTimefadeIn`.
 You can change the values of these variables as you need. Here is a demo animation with its source code:
 
@@ -165,7 +165,7 @@ The use of the `play` object allows fast writing of simple animations, but if yo
 
 These animations help objects to briefly get the attention of the users who are enjoying that beautiful animation you have created. 
 
-* The `Commands.highlight`animation will scale back and forth the given objects the amount we define. The default value is 150%.
+* The `Commands.highlight`animation will scale back and forth the given objects by the amount we define. The default value is 150%.
 * The `Commands.twistAndScale` animation works in similar way than `highlight`, but adds a small twist movement, with a default angle of +/- 15 degrees.
 * The `ContourHighlight` animation will draw a `snake`running over the contour a shape. The color and thickness can be changed (default: color red and thickness 10).
 
@@ -255,7 +255,7 @@ Note the method `.addGap` in the bounding box, to enlarge it .1 units in each of
 
 ## Stacking and aligning
 
-The `stackTo` method also has an animated version. A variable number of objects can be animated at the same animation. In this case, the second object will be stacked to the first, and so on. To illustrate this, we create 4 arrays of circles with random colors and stack them to a central square:
+The `stackTo` method also has an animated version. A variable number of objects can be animated in the same animation. In this case, the second object will be stacked to the first, and so on. To illustrate this, we create 4 arrays of circles with random colors and stack them to a central square:
 
 ```java
 Shape[] circles1 = new Shape[5];
@@ -326,9 +326,9 @@ waitSeconds(5);
 
 ## Moving along a path
 
-The `MoveAlongPath` animations move an object along a specified path. You can provide a `Shape` object or a `JMPath`objec to determine the path. The moved object will be located with the specified `Anchor` point. This animation admits 2 boolean parameters. First one determines if object should rotate the angle given by the tangent of the path at destiny point. Second determines if animation should use a parametrized equation of the curve or not. A parametrized equation ensures that movement is constant along arc length of path. Thus for example, a parametrized value of t=0.3 ensures that object will be located at 30% of total arc length. If this boolean flag is false, standard Bézier parametrization will be used.
+The `MoveAlongPath` animations move an object along a specified path. You can provide a `Shape` object or a `JMPath`objec to determine the path. The moved object will be located at the specified `Anchor` point. This animation admits 2 boolean parameters. First, one determines if an object should rotate at the angle given by the tangent of the path at its destiny point. Second, it determines if animation should use a parametrized equation of the curve or not. A parametrized equation ensures that movement is constant along the arc length of the path. Thus, for example, a parametrized value of t=0.3 ensures that the object will be located at 30% of the total arc length. If this boolean flag is false, standard Bézier parametrization will be used.
 
-In this example, we show 2 squares moving along  a circle. The blue one moves with constant velocity and the red one with the standard parametrization of Bézier curves. In general, standard parametrization of Bézier moves slower at sharp turns.
+In this example, we show 2 squares moving along a circle. The blue one moves with constant velocity and the red one with the standard parametrization of Bézier curves. In general, the standard parametrization of Bézier moves slower at sharp turns.
 
 ```java
 Shape pathShape = Shape.circle().fillColor("orange");//A circle
@@ -343,11 +343,11 @@ playAnimation(anim,anim2);
 
 ![moveAlongpath](moveAlongpath.gif)
 
-Here we have specified the lambda parameters in the animations with the  `.setLambda(t->t)` methods in order to move with uniform velocity. We will see the use of lambdas in next chapter.
+Here we have specified the lambda parameters in the animations with the  `.setLambda(t->t)` methods in order to move with uniform velocity. We will see the use of lambdas in the next chapter.
 
 # The ShowCreation animation
 
-This animation draws the specified object and adds it to the scene. Depending on the object, several strategies (that is, several ways to actually create the object) are used, specified in the enum `ShowCreationStrategy`. Strategy is automatically chosen, but it can be overriden with the method `setStrategy`. 
+This animation draws the specified object and adds it to the scene. Depending on the object, several strategies (that is, several ways to actually create the object) are used, specified in the enum `ShowCreationStrategy`. Strategy is automatically chosen, but it can be overridden with the method `setStrategy`. 
 
 Forcing a specified strategy may lead to errors in some cases, as some methods are designed for specific subclasses, like `Line` or `Arrow2D`.
 
@@ -376,9 +376,9 @@ waitSeconds(1);
 
 ![showCreation2](showCreation2.gif)
 
-If you specify a bigger time (10 seconds or so) you can see the details of the animation, first drawing the contour and then filling the glyphs.
+If you specify a longer time (10 seconds or so), you can see the details of the animation, first drawing the contour and then filling the glyphs.
 
-There are specific creation strategies for objects like axes, arrows or delimiters.
+There are specific creation strategies for objects like axes, arrows, or delimiters.
 
 # The Transform animation
 
@@ -393,12 +393,11 @@ waitSeconds(3);
 
 ![transform1](transform1.gif)
 
-Note that the `transform` animation also interpolates drawing parameters
-as thickness and color.
+Note that the `transform` animation also interpolates drawing parameters as thickness and color.
 
 > **WARNING**: After transforming object `A` into `B`, in some cases the transformed object becomes unusable. You should using `B` after that in a general case. In any case, `A` object is removed automatically from the scene.
 
-With this code you can see the intermediate steps, in this case, when we are transforming a regular triangle into a regular pentagon:
+With this code, you can see the intermediate steps, in this case, when we are transforming a regular triangle into a regular pentagon:
 
 ```java
 //Regular triangle and pentagon
@@ -445,13 +444,13 @@ for (int i = 0; i < num; i++) {
 saveImage("intermediateSteps.png");
 ```
 
-Gives a image like this:
+Gives an image like this:
 
 <img src="intermediateSteps.png" alt="intermediateSteps" style="zoom:67%;" />
 
 ## Transform strategies
 
-The precise method of transform depends on the type of source and destination objects.  For example, in the previous case, a point-by-point interpolation was chosen. However, if both shapes are regular polygons with the same number of sides, an isomorphic transform is chosen. We will show another example, not using the "long" form given by the `play` object:
+The precise method of transform depends on the type of source and destination objects. In the previous example, a point-by-point interpolation was used. However, if both shapes are regular polygons with the same number of sides, an isomorphic transform is chosen. We will show another example, not using the "long" form given by the `play` object:
 
 ``` java
 Shape pentagon = Shape.regularPolygon(5).scale(.5).shift(-1,-1);
@@ -470,9 +469,9 @@ While both methods may seem equal, the isomorphic method ensures the object does
 Currently, the following strategies are implemented:
 
 1. `INTERPOLATE_SIMPLE_SHAPES_BY_POINT`, for 2 simple shapes, a point-by-point interpolation. A simple shape has only one connected component, like squares or circles.
-2. `INTERPOLATE_POINT_BY_POINT`. A more general interpolation. The shape is converted in the so called canonical form. Applicable when the shapes have multiple componentes (for example the shape of a "B" letter has 3 components).
-3. `ISOMORPHIC_TRANSFORM` A direct isomorphism is created to transform the original shape into the destiny. The isomorphism is created so that the 2 first points of the origin shape transform into the 2 first points of the destiny shape.
-4. `ROTATE_AND_SCALEXY_TRANSFORM` Similar to the isomorphism , but scaling is not homogeneous. This animation is used to transform any rectangle into another one, to prevent distortions.
+2. `INTERPOLATE_POINT_BY_POINT`. A more general interpolation. The shape is converted in the so called canonical form. Applicable when the shapes have multiple components (for example the shape of a "B" letter has 3 components).
+3. `ISOMORPHIC_TRANSFORM` A direct isomorphism is created to transform the original shape into the destiny shape. The isomorphism is created so that the 2 first points of the origin shape transform into the 2 first points of the destiny shape.
+4. `ROTATE_AND_SCALEXY_TRANSFORM` Similar to isomorphism , but scaling is not homogeneous. This animation is used to transform any rectangle into another one, to prevent distortions.
 5. `FUNCTION_INTERPOLATION` The name says it! Used  to transform one function to another, interpolating x-to-x
 6. `MULTISHAPE_TRANSFORM` For transforming Multishape objects (like LaTeXMathObject)
 7. `GENERAL_AFFINE_TRANSFORM` Like the isomorphic transform, but admits a more general affine transform. The 3 first points of origin go to the 3 first points of destiny.
@@ -493,7 +492,7 @@ We obtain the following animation:
 
 <img src="TransformStrategies01.gif" alt="TransformStrategies01" style="zoom:67%;" />
 
-Notice something strange? The transform is done, but the intermediate steps are not natural. That is because the intermediate figures are not rectangles. That's what the `ROTATE_AND_SCALEXY_TRANSFORM` was created for. Fortunately, the `Transform` class chooses the most appropriate transform so you don't have to worry. In this case, simply remove the line `tr.setTransformMethod(Transform.TransformMethod.GENERAL_AFFINE_TRANSFORM);` and JMathAnim will use the proper strategy:
+Notice anything strange? The transform is done, but the intermediate steps are not natural. That is because the intermediate figures are not rectangles. That's what the `ROTATE_AND_SCALEXY_TRANSFORM` was created for. Fortunately, the `Transform` class chooses the most appropriate transform, so you don't have to worry. In this case, simply remove the line `tr.setTransformMethod(Transform.TransformMethod.GENERAL_AFFINE_TRANSFORM);` and JMathAnim will use the proper strategy:
 
 <img src="TransformStrategies02.gif" alt="TransformStrategies02" style="zoom:67%;" />
 
@@ -686,10 +685,10 @@ waitSeconds(3);
 
 ![homothecyAnim](homothecyAnim.gif)
 
-Internally, JMathAnim creates the isomorphism as a composition of shifting, rotating and uniform scaling, so the precise form of the shapes is unaltered (except size).
+Internally, JMathAnim creates the isomorphism as a composition of shifting, rotating, and uniform scaling, so the precise form of the shapes is unaltered (except size).
 
 # Transforming math expressions
 
-LaTeX math expressions  admit a specialized animation called `TransformMathExpression`which allows to fine tune a transformation between one `LaTeXMathObject` and another. We will see how it works in the math expressions chapter.
+LaTeX math expressions  admit a specialized animation called `TransformMathExpression` which allows to fine tune a transformation between one `LaTeXMathObject` and another. We will see how it works in the math expressions chapter.
 
 [home](https://davidgutierrezrubio.github.io/jmathanim/) [back](../index.html)

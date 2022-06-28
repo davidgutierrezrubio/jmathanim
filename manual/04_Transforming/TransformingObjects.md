@@ -1,7 +1,7 @@
 [home](https://davidgutierrezrubio.github.io/jmathanim/) [back](../index.html)
 
 # Transforming Objects
-All classes that inherit from `MathObject` can be transformed. Several methods for shifting, rotating, scaling or aligning are defined, and most of them have their animated version. Note that also most of these methods return the object self, so that they can be applied consecutively like this  `object.method1().method2()…​`.
+All classes that inherit from `MathObject` can be transformed. Several methods for shifting, rotating, scaling, or aligning are defined, and most of them have an animated version. Note that most of these methods return the object self, so that they can be applied consecutively like this `object.method1().method2()….`
 
 # Positioning objects
 
@@ -27,7 +27,7 @@ Shape r=Shape.regularPolygon(5).moveTo(3,3);//A pentagon, with its bounding box 
 ```
 
 ## StackTo
-The `StackTo` command allows to position an object relative to another one. For example, the following code creates 4 circles, and stacks them into a square in different ways:
+The `StackTo` command allows us to position an object relative to another one. For example, the following code creates 4 circles and stacks them into a square in different ways:
 
 ``` java
 Shape c1 = Shape.circle().fillColor("orange").fillAlpha(.3);
@@ -52,7 +52,7 @@ You’ll notice two new methods here: The `copy()` method returns a copy of the 
 
 Note that the `.moveTo(p)`method is equivalent to `.stackTo(p, Anchor.Type.CENTER)`.
 
-The `stackTo` command allows to easily generate aligned objects:
+With the `stackTo` command you can easily generate aligned objects:
 
 ``` java
 Shape previousPol = Shape.regularPolygon(3).fillColor(JMColor.random()).thickness(8);//First polygon, with random fill color
@@ -70,9 +70,9 @@ Which produces this regular polygons pattern. Note that all polygons are vertica
 
 ![02b stackToExample2](02b_stackToExample2.png)
 
-You can change the `Anchor` to other values to see how these anchors work. Apart from `UPPER`, `LOWER`, `LEFT`, `RIGHT` and`CENTER` there are also `UR` (up-right), `UL` (up-left), `DR` (down-right) and `DL` (down-left).
+You can change the `Anchor` to other values to see how these anchors work. Apart from `UPPER`, `LOWER`, `LEFT`, `RIGHT` and `CENTER` there are also `UR` (up-right), `UL` (up-left), `DR` (down-right) and `DL` (down-left).
 
-By default, the `stackTo` method takes appropiate origin anchor point to align with the destination anchor point. For example `stackTo(obj,Anchor.Type.RIGHT)` will move the object so that its `LEFT` anchor (the reverse of `RIGHT`) matches the `RIGHT` anchor of the destination object. You can specify the origin and destiny anchors too. For example, this code will put a square so that its center matches the right side of a circle:
+By default, the `stackTo` method takes the appropriate origin anchor point to align with the destination anchor point. For example, `stackTo(obj,Anchor.Type.RIGHT)` will move the object so that its `LEFT` anchor (the reverse of `RIGHT`) matches the `RIGHT` anchor of the destination object. You can specify the origin and destiny anchors too. For example, this code will place a square so that its center matches the right side of a circle:
 
 ```java
 Shape sq = Shape.square().scale(.5, .5).fillColor("orange").fillAlpha(.5).thickness(8);
@@ -160,7 +160,7 @@ produces the result:
 <img src="04_ScaleExample1.png" alt="04 scaleExample1" style="zoom:50%;" />
 
 # Rotating objects
-The `rotate` command rotates the object around a given center (or the center of the object if none given). The angle is specified in radians, but can also be given in degrees using the `DEGREES` constant. The format is `object.rotate(center_of_rotation,angle)` or `object.rotate(angle)`. As in the `scale` method, if no center is specified, the center of the bounding box is chosen as rotation center.
+The `rotate` command rotates the object around a given center (or the center of the object if none is given). The angle is specified in radians but can also be given in degrees using the `DEGREES` constant. The format is `object.rotate(center_of_rotation,angle)` or `object.rotate(angle)`. As in the `scale` method, if no center is specified, the center of the bounding box is chosen as rotation center.
 
 For example:
 
@@ -183,7 +183,7 @@ Gives this spirograh-like picture:
 
 The `createTranslationTransform(Vec v)` or `createTranslationTransform(Point A, Point B)` creates a traslation transform. The `shift` command is just a shortcut for this transform. 
 
-The `create2DRotationTransform(Point center, double angle)` creates a rotation transform, used in the `rotate` command.
+The `create2DRotationTransform(Point center, double angle)` creates a rotation transform, which is used in the `rotate` command.
 
 The `createScaleTransform(Point center, double sx, double sy, double sz)` creates a scaling transform. The z-scale factor is here for
 compatibility to extend to the 3D case, but is currently not used. Used in the `scale` command.
@@ -197,7 +197,7 @@ Given any `MathObject` instance, there are 2 main methods to use an `AffineJTran
 ## Isomorphic transformations
 The `createDirect2DIsomorphic(Point A, Point B, Point C, Point D, double alpha)` is a combination of shifting, rotating and uniform scaling. This method generates the (only) direct transform of this type that maps the points (A,B) into points (C,D). The `alpha` parameter is used for animations, as a value of `alpha=0` returns the identity transform and `alpha=1` returns the full transform. Intermediate values return intermediate transforms, interpolating the shifting, rotating, and scaling parameters adequately. These transforms preserve not the size, but the shape and proportions of the objects.
 
-Note: This command was previously named `createDirect2DHomothecy`,vit performs the same transformation as `createDirect2DIsomorphic`but it is left for compatibility reasons, and it will be removed in future versions.
+Note: This command was previously named `createDirect2DHomothecy`, it performs the same transformation as `createDirect2DIsomorphic`but it is left for compatibility reasons, and it will be removed in future versions.
 
 Look at the following example:
 
@@ -215,26 +215,24 @@ for (double alpha = 0; alpha <= 1; alpha += .2) {
 waitSeconds(5);
 ```
 
-Produces the following sequence of interpolated transforms from one square to another. Note that this transform may change scale of objects, but proportions are unaltered:
+Produces the following sequence of interpolated transforms from one square to another. Note that this transformation may change the scale of objects, but proportions are unaltered:
 
 
 
 <img src="06_homothecy1.png" alt="06 homothecy1" style="zoom:50%;" />
-
-Notice also another new method here, the `getPoint(n)` method in a `Shape`, will return the n-th point at the shape.
 
 > **WARNING**: You should be careful, when defining the parameters of a transformation like `createDirect2DIsomorphic(A, B, C, D, alpha)` if the points `A, B, C, D` are going to be actually modified by the transformation itself (for example, A is an instance of a point of the shape you are transforming). The safe approach in this case should be using copies of the points as parameters, with the `.copy()` method.
 
 ## Reflections
 If we want to make a reflection of an object, we can use the static methods `createReflection` and `createReflectionByAxis`. They differ in the way the transformation is specified:
 
--   `createReflection(Point A, Point B, double alpha)` creates the (only) reflection that maps the point `A` into point `B`. The reflection axis is the perpendicular bisector of the segment joining the two points.
+-   `createReflection(Point A, Point B, double alpha)` creates the (only) reflection that maps point `A` into point `B`. The reflection axis is the perpendicular bisector of the segment joining the two points.
     
 -   `createReflectionByAxis(Point E1, Point E2, double alpha)` creates the (only) reflection with axis the line specified by the points `E1` and `E2`.
 
-In both cases, the `alpha` parameter works in a similar way than the isomorphic transform.
+In both cases, the `alpha` parameter works in a similar way to the isomorphic transform.
 
-An example of `createReflection` is showed in the following source code:
+An example of `createReflection` is shown in the following source code:
 
 ``` java
 Shape sq = Shape.regularPolygon(5).fillColor("violet").fillAlpha(.3);//Regular pentagon, fill violet, opacity 30%
@@ -281,7 +279,7 @@ That produces the following image:
 
 # Layouts
 
-The `MathObjectGroup`class allows applying layouts to its members through the `setLayout(layout,gap)` method which positions all object with the given layout and specified gap. The layouts are defined in the enum `MathObjectGroup.Layout` and currently are `CENTER`, `LEFT, RIGHT, UPPER` and `LOWER`, which aligns the objects centered in these directions. There also the versions `URIGHT, DRIGHT, ULEFT, DLEFT` which work in a similar way but aligning at top (U) o bottom (D), and `LUPPER, RUPPER, LLOWER, RLOWER` that align to the left (L) or right (R). There are also the `DIAG1, DIAG2, DIAG3, DIAG4` layouts that align in the main diagonals of the 4 sectors (45, 135, 225 and 315 degrees).
+The `MathObjectGroup`class allows applying layouts to its members through the `setLayout(layout,gap)` method, which positions all objects with the given layout and specified gap. The layouts are defined in the enum `MathObjectGroup.Layout` and currently are `CENTER`, `LEFT, RIGHT, UPPER` and `LOWER`, which aligns the objects centered in these directions. There are also the versions `URIGHT, DRIGHT, ULEFT, DLEFT` which work in a similar way but align at the top (U) o bottom (D), and `LUPPER, RUPPER, LLOWER, RLOWER` that align to the left (L) or right (R). There are also the `DIAG1`, `DIAG2`, `DIAG3`, and `DIAG4` layouts that align in the main diagonals of the 4 sectors (45, 135, 225 and 315 degrees).
 
 The following code shows all current layouts, with a set of 10 increasing squares:
 
@@ -308,7 +306,7 @@ for (MathObjectGroup.Layout layout : MathObjectGroup.Layout.values()) {//Iterate
 
 ![layouts](../02_BasicShapes/layouts.gif)
 
-There is a more advanced overloaded form of this method, where the layout is given as a subclass of the `GroupLayout` class. Since version 0.8.9, the `BoxLayout`, `SpiralLayout`, `HeapLayout` and `PascalLayout` are implemented. These methods works well when all elements of the group have the same dimensions.
+There is a more advanced overloaded form of this method, where the layout is given as a subclass of the `GroupLayout` class. Since version 0.8.9, the `BoxLayout`, `SpiralLayout`, `HeapLayout` and `PascalLayout` have been implemented. These methods work well when all elements of the group have the same dimensions. You can define your own layouts subclassing the `GroupLayout` abstract class.
 
 ## The BoxLayout
 
@@ -335,13 +333,13 @@ Gives a static image like this. The red dot is the reference point
 
 <img src="boxlayout01.png" alt="image-20210317090826194" style="zoom: 50%;" />
 
-The `BoxLayout.Direction.RIGHT_UP` tells the layout to fill first the row in the `RIGHT` direction, and go `UP` to move to the next one. You can try other values like `LEFT_DOWN`.
+The `BoxLayout.Direction.RIGHT_UP` tells the layout to first fill the row in the `RIGHT` direction, and then go `UP` to move to the next one. You can try other values, like `LEFT_DOWN`.
 
-The gaps are not the usual horizontal and vertical gaps, but the in-row-gap, and between-row gaps.  The "row" term in this case is not the usual horizontal row, but the low level groups of objects. For example, if direction is `RIGHT_DOWN`,`RIGHT_UP`, `LEFT_DOWN` or `LEFT_UP` the "rows" will be horizontal and the in-row-gap will act like an horizontal gap (and the between-rows-gap like a vertical gap), but if direction is `UP_RIGHT, UP_LEFT, DOWN_RIGHT`, or `DOWN_LEFT`, the "rows" will be vertical and the in-row-gap will act like a vertical gap.  An image is worth thousand words:
+The gaps are not the usual horizontal and vertical gaps, but the in-row-gap, and between-row gaps. The "row" term in this case is not the usual horizontal row, but the lower level groups of objects. For example, if direction is `RIGHT_DOWN` , `RIGHT_UP`, `LEFT_DOWN` or `LEFT_UP` the "rows" will be horizontal and the in-row-gap will act like a horizontal gap (and the between-rows-gap like a vertical gap), but if direction is `UP_RIGHT`, `UP_LEFT`, `DOWN_RIGHT`, or `DOWN_LEFT`, the "rows" will be vertical and the in-row-gap will act like a vertical gap. An image is worth a thousand words:
 
 <img src="boxlayout02.png" alt="image-20210320114251701" style="zoom:67%;" />
 
-The `BoxLayout` has the methods `getRowGroups` and `getColumnGroups` which returns a `MathObjectGroup` with its elements other `MathObjectGroup` objects, each one with the elements of a row (or column).
+The `BoxLayout` has the methods `getRowGroups` and `getColumnGroups` which return a `MathObjectGroup` with its elements other `MathObjectGroup` objects, each one with the elements of a row (or column).
 
 For example, if you add the following lines right before the `waitSeconds`command in the previous code, you can assign random fill colors to each row:
 
@@ -401,7 +399,7 @@ You will get a triangular pile of numbered squares:
 
 ## The PascalLayout
 
-The `PascalLayout` resembles the positions of numbers in the Pascal triangle. If you use instead the code:
+The `PascalLayout` resembles the positions of numbers in the Pascal triangle. If you use the code:
 
 ```java
 PascalLayout layout = new PascalLayout(refPoint,.1,.1);
@@ -410,8 +408,6 @@ PascalLayout layout = new PascalLayout(refPoint,.1,.1);
 You will obtain a layout like this:
 
 <img src="pascalLayout01.png" alt="pascalLayout01" style="zoom:67%;" />
-
-You can define your own layouts subclassing the `GroupLayout` abstract class.
 
 ## The FlowLayout
 
@@ -439,7 +435,7 @@ waitSeconds(2);
 
 ## Composing layouts
 
-From version 0.9.2-SNAPSHOT the `ComposeLayout` allows to create more complex layouts by composition.  The syntax to create a composite layout is
+From version 0.9.2-SNAPSHOT the `ComposeLayout` allows the creation of more complex layouts by composition. The syntax for creating a composite layout is
 
 ```java
 ComposeLayout composedLayout=new ComposeLayout(outerLayout, innerLayout, size);

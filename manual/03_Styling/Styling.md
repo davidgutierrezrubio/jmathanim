@@ -8,7 +8,7 @@ Each `MathObject` has an object implementing the  `Stylable` interface that stor
 
 ## Colors
 
-Each object has 2 colors: the draw color (changed with `.drawColor`), used drawing the contour  y the fill color (changed with `.fillColor`), used to fill the object. Each color is stores in a `JMColor`object, with the components red, green, blue and alpha. The `.thickness`method sets the thickness of the stroke used to draw the object.
+Each object has 2 colors: the draw color (changed with `.drawColor`), used for drawing the contour; and the fill color (changed with `.fillColor`), used to fill the object. Each color is stored in a `JMColor`object, with the components red, green, blue, and alpha. The `.thicknessmethod `sets the thickness of the stroke used to draw the object.
 
 ``` java
 Shape r = Shape.regularPolygon(5)
@@ -29,7 +29,7 @@ JMColor col3 = JMColor.parse("#CDFA14A6");//Red: CD, Green: FA, Blue: 14 (hexade
 JMColor col4 = JMColor.parse("SNOW");//Color SNOW from the JavaFX palette
 ```
 
-The `LatexMathObject` has also the method `.setColor(JMColor col)` which changes both draw and fill colors, and a overloaded method which allows to change colors in specified glyphs (we will see this in the Mathematical Formulas chapter).
+The `LatexMathObject` has also the method `.setColor(JMColor col)` which changes both draw and fill colors, and a overloaded method which allows changing colors in specified glyphs (we will see this in the Mathematical Formulas chapter).
 
 The methods `.fillAlpha(double f)` and `.drawAlpha(double d)` sets directly the opacity of fill and draw colors. These methods, like most, can be nested:
 
@@ -41,7 +41,7 @@ Shape sq=Shape.square().fillColor("CADETBLUE").fillAlpha(.5);
 
 All methods that accept colors also accept gradients (in fact, any class that inherits from `PaintStyle`).
 
-Linear gradients can be defined in a similar way of the JavaFX syntax:
+Linear gradients can be defined in a similar way to the JavaFX syntax:
 
 ```java
 //A linear gradient from point (-1,0) to (1,0)
@@ -65,7 +65,7 @@ waitSeconds(3);
 
 <img src="gradients01.png" alt="image-20210505161847146" style="zoom:50%;" />
 
-You can apply gradients both to fill and draw colors
+You can apply gradients both to fill and draw colors:
 
 ```java
 Rect view = getMathView().getBoundingBox();
@@ -99,7 +99,7 @@ waitSeconds(3);
 
 ## DashStyle
 
-The `dashStyle`method sets the dash used to draw the outline, chosen from the enum `DashStyle`. Currently, there are 4 different styles, `SOLID`, `DASHED`, `DOTTED`and `DASHDOTTED`. The following code creates 4 pentagons with these dash styles.
+The `dashStyle` method sets the dash used to draw the outline, chosen from the enum `DashStyle`. Currently, there are 4 different styles, `SOLID`, `DASHED`, `DOTTED` and `DASHDOTTED`. The following code creates 4 pentagons with these dash styles.
 
 ```java
 Shape r1 = Shape.regularPolygon(5).thickness(10);
@@ -123,7 +123,7 @@ waitSeconds(5);
 
 # Saving styles 
 
-A concrete combination of drawing parameters can be saved in styles. The `config`objects stores the saved styles and has methods to manage them. To apply a style to an object, use the method `.style(styleName)`.
+A concrete combination of drawing parameters can be saved in styles. The `config` objects stores the saved styles and have methods to manage them. To apply a style to an object, use the method `.style(styleName)`.
 
 ```java
 Shape triangle = Shape.regularPolygon(3).thickness(8).dashStyle(MODrawProperties.DashStyle.DASHED).fillColor("steelblue");
@@ -140,7 +140,7 @@ waitSeconds(5);
 
 
 
-Nevertheless, although using styles is an efficient way to organize the appearance of an animation, you don't need to create them to copy the drawing attributes from an object to another. With the `.getMP()`method you can access directly to the `Stylable`object that stores the drawing parameters. If you want to copy the style from object A to B you can invoke the `.copyFrom` method like this:
+Nevertheless, although using styles is an efficient way to organize the appearance of an animation, you don't need to create them to copy the drawing attributes from one object to another. With the `.getMP()`method you can access directly to the `Stylable`object that stores the drawing parameters. If you want to copy the style from object A to B, you can invoke the `.copyFrom` method like this:
 
 ```java
 B.getMP().copyFrom(A.getMP());
@@ -148,7 +148,7 @@ B.getMP().copyFrom(A.getMP());
 
 # Configuring the scene
 
-The `Scene` class has an instance of `JMathAnimConfig` class, named `config`, that allows to personalize global aspects of the animation. Most of these methods should be called only on the `setupSketch()`part of the animation. Invoking `config`methods in the `runSketch()`could lead to unpredictable behavior.
+The `Scene` class has an instance of `JMathAnimConfig` class, named `config`, that allows us to personalize global aspects of the animation. Most of these methods should be called only on the `setupSketch()`part of the animation. Invoking `config`methods in the `runSketch()`could lead to unpredictable behavior.
 
 ```java
 //Methods to adjust output
@@ -178,30 +178,34 @@ config.setResourcesDir("c:\\resources");//Specifies resources directory at absol
 
 ## Loading config files
 
-All the settings an definitions can be stored in `XML` files and loaded with the `ConfigLoader`class. This class holds the static method `ConfigLoader.parseFile("file.xml")` , which can be called also from the `config` object with `config.parseFile("file.xml")`.
+All the settings and definitions can be stored in `XML` files and loaded with the `ConfigLoader`class. This class holds the static method `ConfigLoader.parseFile("file.xml")`, which can be called from the `config` object with `config.parseFile("file.xml")`.
 
-Where do JMathAnim look for the files? Well, there are 3 location types that you can specify:
+Where does JMathAnim look for the files? Well, there are 3 location types that you can specify:
 
-* If the file name starts with "#" it refers to an internal config file included in the library jar.
-* If the file name starts with "!" it refers to an absolute path.
-* Otherwise, it will look into the `<default resources path>/config/` folder.
+- If the file name starts with `#` it refers to an internal config file included in the library jar.
 
-By default, the resources path is located at `<your current root project>/resources` folder. So if you want to add resources locally to your project you should create this folder. Of course, you can change the default `resources` folder with the method `config.setResourcesDir(newDir)`.
+- If the file name starts with `!` it refers to an absolute path.
 
-This way, if you want to store all your precious resources in a system-wide scope, you can store them in a folder (say `/home/bob/myJMathAnimResources`) and make JMathAnim to look for resources there with the method `config.setResourcesDir("/home/bob/myJMathAnimResources")` at the beginning of the `setupSketch()` method (Note that the "!" modifier is not needed here).
+- Otherwise, it will look into the `<default resources path>/config/` folder.
+
+By default, the resources path is located at /resources folder. So`` if you want to add resources locally to your project, you should create this folder. Of course, you can change the default `resources` folder with the method `config.setResourcesDir(newDir)`.
+
+This way, if you want to store all your precious resources in a system-wide scope, you can store them in a folder (say `/home/bob/myJMathAnimResources`) and make JMathAnim look for resources there with the method `config.setResourcesDir("/home/bob/myJMathAnimResources")` at the beginning of the `setupSketch()` method (Note that the "!" modifier is not needed here).
 
 A typical `resources` folder follows this structure:
+
 ```
 resources/
 ├── config/
 │   ├── configFile1.xml
 │   ├── configFile2.xml
 │   ├── ...
-└── images/
-    ├── image1.png
-    ├── image2.png
-    ├── image3.svg
-    └── ...
+├── images/
+│   ├── image1.png
+│   ├── image2.png
+│   ├── image3.svg
+│   └── ...
+...
 ```
 
 The `config.parseFile` will look into the `config` folder, and image-related objects like `SVGMathObject`or `JMImage`  will look into the `images` folder.
@@ -212,7 +216,7 @@ A few examples:
 * the `config.parseFile("#file.xml") ` command will try to load `file.xml` internally stored at the jar library.
 * the `config.parseFile("!/home/user/myResources/file.xml") ` command will try to load `file.xml` from the location `/home/user/myResources/file.xml`.
 
-> Note: The "!" modifier also can be used when specifying a file path in the config files, like background images, for example.
+> Note: The "!" modifier can also  be used when specifying a file path in the config files, like background images, for example.
 
 If the program cannot find the file, the logger will report an error but the execution won't be stopped.
 
@@ -245,7 +249,7 @@ And this for production, called `productionWithShadow.xml`. The `background` tag
 </JMathAnimConfig>
 ```
 
-This way, in the `setupSketch()` method, you can change program behavior just changing the config file loaded.
+This way, in the `setupSketch()` method, you can change program behavior by just changing the config file loaded.
 
 You can have several config files with different, independent aspects. This is the `light.xml` config I used in examples shown:
 
@@ -329,12 +333,12 @@ You can have several config files with different, independent aspects. This is t
 
 The JAR of the JMathAnim library has several predefined config files that you can load with "#" flag in the file name:
 
-* The `config.parseFile("#preview.xml")`  loads settings for previewing the animation, with low resolution of 1066x600 at 30pfs, show preview windows and not creating movie. Ideal for the creation process of the scene.
+* The `config.parseFile("#preview.xml")`  loads settings for previewing the animation, with a low resolution of 1066x600 at 30pfs, showing preview windows and not creating a movie, which is ideal for the creation process of the scene.
 * The `config.parseFile("#production.xml")` loads settings for generating the final animation, with high resolution 1920x1080 at 60pfs, not showing preview windows and creating a movie. This config should be loaded when the designing process is done and to create the final animation.
 * The `config.parseFile("#light.xml")` loads settings for black drawings over a white background. The default colors are black.
 * The `config.parseFile("#dark.xml")` loads settings for white drawings over a black background. The default colors are white.
 
-You can check all the internal config files at the [github sources folder](https://github.com/davidgutierrezrubio/jmathanim/tree/master/src/resources/config).
+You can check all the internal config files in the [github sources folder](https://github.com/davidgutierrezrubio/jmathanim/tree/master/src/resources/config).
 
 The `<styles>` tag allows defining styles to apply to your animation. There are some convention-named styles that are important (names are case-insensitive):
 
@@ -347,9 +351,9 @@ The `<styles>` tag allows defining styles to apply to your animation. There are 
 *  Style `axislegenddefault`: For legends in ticks of axes.
 * If no style with these names is defined, a default style with white stroke and no fill will be applied.
 
-Below there is an example image, with the same scene, loading `dark.xml` and `light.xml` config files.  ![image-20201208101038042](darkVsLight.png)
+Below there is an example image with the same scene, loading `dark.xml` and `light.xml` config files.  ![image-20201208101038042](darkVsLight.png)
 
-The `<include>` tag that appears at the beginning loads another config files.  In this case, a `dots.xml` file with styles to dots are defined:
+The `<include>` tag that appears at the beginning loads other config files. In this case, a `dots.xml` file with styles for dots is defined:
 
 ```xml
 <JMathAnimConfig>  
@@ -381,25 +385,25 @@ Note that the thickness required for a dot to be visible is higher than a Shape.
 
 ## Configuration files syntax
 
-As we said, the config files that you can read are in XML format. All files must have a root tag called `<JMathAnimConfig>`. Everything out of this tag is ignored.
+As we said, the config files that you can read are in XML format. All files must have a root tag called `<JMathAnimConfig>`. Everything outside of this tag is ignored.
 
 Inside this tag, we may have:
 
-* The `<include>` tag allows to load another XML config files. For example `<include>#axes_and_functions_dark.xml</include>` (an internal config file included in the jar library) or `<include>myColors.xml</include>` (a file include in the `resources/config` folder).
+* The `<include>` tag allows us to load another XML config files. For example `<include>#axes_and_functions_dark.xml</include>` (an internal config file included in the jar library) or `<include>myColors.xml</include>` (a file include in the `resources/config` folder).
 
-* The `<video>` tag that controls the output format. Inside this we may  have:
+* The `<video>` tag controls the output format. Inside this we may  have:
 
   * The `<size/>`tag  with attributes `width`, `height` and `fps`. For example `<size width="1066" height="600" fps="30"/>`.
   * The `<createMovie>` tag with a boolean value, to determine if actually create a movie file or not. For example `<createMovie>false</createMovie>`.
   * (Since version 0.9.3-SNAPSHOT) The `<saveToPNG>` tag with a boolean value, if each frame should be saved in a separate, autonumbered png file.  For example `<saveToPNG>false</saveToPNG>`. 
   * The `<showPreviewWindow>` to show or not the previsualization window. For example `<showPreviewWindow>true</showPreviewWindow>`.
-  * The `<outputDir>` tag, that specifies the folder where to save the movie, if created. If this tag is not found, by default the generated movie will save on `ROOT_PROJECT_DIR/media` folder. For example `<outputDir>c:/my_generated_movies</outputDir>`.
+  * The `<outputDir>` tag specifies the folder where to save the movie, if created. If this tag is not found, by default the generated movie will save on `ROOT_PROJECT_DIR/media` folder. For example `<outputDir>c:/my_generated_movies</outputDir>`.
   * The `<outputFileName>`tag sets part of the file name of the generated movie. A suffix with the media height is always added to the name. If this is tag is not found, by default the name will be the class name you are using as a subclass for `Scene2D`.
 
-* The `<background>` has tags related with the background and effects to apply:
+* The `<background>` has tags related to the background and effects to apply:
 
   * The `<color>` tag sets the background color. You can specify a color using a JavaFX color name case insensitive , like `<color>white</color>` or an hex format `<color>#F0A3C5</color>`. The hex format can be 8 bytes (RGBA), 6 bytes (RGB with alpha 1) or 3 bytes (RGB with alpha 1).
-  * The `<image>` tag allows to stablish a background image. You can use the "!" modifier to specify an absolute path. Otherwise, the program will look into `resources/images` folder. Note that no scaling or adjusting is made, so that the image should fit the dimensions of the `<size/>` tag.
+  * The `<image>` tag allows us to establish a background image. You can use the `!` modifier to specify an absolute path. Otherwise, the program will look into `resources/images` folder. Note that no scaling or adjusting is made, so that the image should fit the dimensions of the `<size/>` tag.
   * The `<shadow>` tag adds a shadow effect to every objects you draw in the screen, except for the background image. For example `<shadows kernelSize="8" offsetX="5" offsetY="5" alpha=".7">true</shadows>` sets a shadow with kernel size of 8 (the amount of shadow blurring), the offsets (15,15) of the shadow respect to their origin objects, and the alpha transparency of 70%.
 
 * The `<styles>` tag defines all the styles we may need, each one in the `<style>` subtag. For example:
@@ -415,10 +419,10 @@ Inside this tag, we may have:
   </style>
   ```
 
-  Is pretty self-explanatory. The attribute `name` defines the style name (case sensitive) and the `<drawColor>`, `<fillColor>`, `<thickness>` and `<dashStyle>` define their respective properties.  The `<dashStyle>` may take a value from the `enum DashStyle`, that is `SOLID`, `DASHED`,  or`DOTTED`.
+  It is pretty self-explanatory. The attribute `name` defines the style name (case sensitive) and the `<drawColor>`, `<fillColor>`, `<thickness>` and `<dashStyle>` define their respective properties.  The `<dashStyle>` may take a value from the `enum DashStyle`, that is `SOLID`, `DASHED`,  or`DOTTED`.
 
   The `<absoluteThickness>` thickness controls if the thickness of the object will be affected by scaling transformations. By default this is true, so that if you zoom in a circle, for example, its thickness will always be the same. For objects like SVG imports for example, the absolute thickness flag is set to false.
 
-  The `<dotStyle>` is one of the values of the `enum DotStyle` in the `Point` class and sets how a `Point`object with this style will be drawn. Currently, the possible values are `CIRCLE`, `CROSS` and `PLUS`.
+  The `<dotStyle>` is one of the values of the `enum DotStyle` in the `Point` class and sets how a `Point` object with this style will be drawn. Currently, the possible values are `CIRCLE`, `CROSS` and `PLUS`.
 
 [home](https://davidgutierrezrubio.github.io/jmathanim/) [back](../index.html)
