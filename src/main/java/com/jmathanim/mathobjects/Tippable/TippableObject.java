@@ -42,7 +42,7 @@ public class TippableObject extends MathObject {
     public enum slopeDirection {
         NEGATIVE, POSITIVE
     }
-
+    protected Point markPoint;
     public static final double DELTA_DERIVATIVE = .0001;
 
     /**
@@ -142,8 +142,8 @@ public class TippableObject extends MathObject {
         }
         TippableObject t = (TippableObject) obj;
         this.shape.copyStateFrom(t.shape);
-        this.pointLoc.copyStateFrom(t.pointLoc);
-        this.pointTo.copyFrom(t.pointTo);
+//        this.pointLoc.copyStateFrom(t.pointLoc);
+//        this.pointTo.copyFrom(t.pointTo);
         this.totalRotationAngle = t.totalRotationAngle;
         this.anchor = t.anchor;
         this.direction = t.direction;
@@ -372,5 +372,4 @@ public class TippableObject extends MathObject {
 //        tr.applyTransform(getTipCopy());
         getTipCopy().rotate(pointLoc, totalRotationAngle);
     }
-
 }
