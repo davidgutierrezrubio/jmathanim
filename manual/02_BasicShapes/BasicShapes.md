@@ -291,14 +291,17 @@ TippableObject tip1 = TippableObject.arrowHead(reg, .5 / 6,
 
 //A LaTeX expression, color darkslateblue, at the middle of one side
 //this expression rotates with the side, and the mark point is visible
-LabelTip tip2 = LabelTip.makeLabelTip(reg, 1.5 / 6, "$a+b$");
-tip2.visibleMarkPoint(true).layer(1); //Mark point is visible.
-tip2.drawColor("darkslateblue");
+LabelTip tip2 = LabelTip.makeLabelTip(reg, 1.5 / 6, "$a+b$")
+    .visibleMarkPoint(true)//Mark point is visible.
+    .color("darkslateblue")
+    .layer(1);
 
 //A LaTeX expression, color firebrick, attached to a side, that does not rotate with the shape
-LabelTip tip3 = LabelTip.makeLabelTip(reg, 2.5 / 6, "$x$").visibleMarkPoint(false);
-tip3.fixedAngle(true).layer(1); //The text shows with a fixed angle
-tip3.drawColor("firebrick");
+LabelTip tip3 = LabelTip.makeLabelTip(reg, 2.5 / 6, "$x$")
+    .visibleMarkPoint(false) //The mark point is not visible
+    .fixedAngle(true) //The text shows with a fixed angle (doesn't align with the slope of the Shape)
+    .color("firebrick")
+    .layer(1);
 
 //An "equal length" sign, with 2 marks
 TippableObject tip4 = TippableObject.equalLengthTip(reg, 3.5 / 6, 2).layer(1);
@@ -430,7 +433,7 @@ r.ymin;//The lowest y-coordinate of the Rect
 r.ymax;//The most upper y-coordinate of the Rect
 r.getWidth();//Returns the width of the Rect
 r.getHeight();//Returns the height of the Rect
-r.addGap(.1, .2);//Creates a new Rect increased by .1 in x and .2 in y
+r.addGap(.1, .2);//Creates a new Rect increased by .1 in x (left and right) and .2 in y (upper and lower)
 r.getCenter();//Gets a Point lying in the center of the Rect
 r.getUL();//Gets a Point lying the Upper-Left corner
 r.getUR();//Gets a Point lying the Upper-Right corner
