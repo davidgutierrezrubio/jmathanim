@@ -343,31 +343,33 @@ public abstract class Delimiter extends MathObject {
     public MathObject getLabel() {
         return delimiterLabel;
     }
+    
+    //TODO: Fix this
 
-    /**
-     * Adds a label that automatically updates to show the length of the
-     * delimiter.
-     *
-     * @param <T> Calling subclass
-     * @param format A string format, in the DecimalFormat class syntax
-     * @param gap Gap to leave between this label and the delimiter
-     * @return This object
-     */
-    public <T extends Delimiter> T addLengthLabel(String format, double gap) {
-        JMNumber jm = JMNumber.length(scaledA, scaledB);
-        jm.setFormat(format);
-        return setLabel(jm, gap);
-    }
+//    /**
+//     * Adds a label that automatically updates to show the length of the
+//     * delimiter.
+//     *
+//     * @param <T> Calling subclass
+//     * @param format A string format, in the DecimalFormat class syntax
+//     * @param gap Gap to leave between this label and the delimiter
+//     * @return This object
+//     */
+//    public <T extends Delimiter> T addLengthLabel(String format, double gap) {
+//        JMNumber jm = JMNumber.length(scaledA, scaledB);
+//        jm.setFormat(format);
+//        return setLabel(jm, gap);
+//    }
 
-    /**
-     * Overloaded function. Adds a label that automatically updates to show the
-     * length of the delimite, using 2 (at most) decimal places.
-     *
-     * @param <T> Calling subclass
-     * @param gap Gap to leave between this label and the delimiter
-     * @return This object
-     */
-    public <T extends Delimiter> T addLengthLabel(double gap) {
-        return addLengthLabel("#.##", gap);
-    }
+//    /**
+//     * Overloaded function. Adds a label that automatically updates to show the
+//     * length of the delimite, using 2 (at most) decimal places.
+//     *
+//     * @param <T> Calling subclass
+//     * @param gap Gap to leave between this label and the delimiter
+//     * @return This object
+//     */
+//    public <T extends Delimiter> T addLengthLabel(double gap) {
+//        return addLengthLabel("#.##", gap);
+//    }
 }

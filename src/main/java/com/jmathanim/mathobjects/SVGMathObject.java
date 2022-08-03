@@ -43,36 +43,10 @@ public class SVGMathObject extends MultiShapeObject {
 //    private JMColor currentDrawColor;
 //    private double currentStrokeSize = .5d;
 
-    public static SVGMathObject make(String fname) {
-        SVGMathObject resul = new SVGMathObject(fname);
-        //This is the default style for SVG objects
-        resul.fillColor("black");
-        resul.drawColor("black");
-        double defaultThickness = resul.scene.getRenderer().MathWidthToThickness(1);//Default thickness
-        resul.getMp().setThickness(defaultThickness);
+  
 
-        ResourceLoader rl = new ResourceLoader();
-        URL urlImage = rl.getResource(fname, "images");
-        try {
-            SVGUtils svgu = new SVGUtils(resul.scene);
-            svgu.importSVG(urlImage, resul);
-        } catch (Exception ex) {
-            JMathAnimScene.logger.warn("File "+urlImage+ " not found. Empty SVGMathObject generated");
-        }
-        resul.getMp().setAbsoluteThickness(false);// Default behaviour
-
-        resul.stackTo(new Point(0, 0), Anchor.Type.UL);
-        return resul;
-    }
-
-    protected SVGMathObject() {
+    public SVGMathObject() {
         super();
-    }
-
-    private SVGMathObject(String fname) {
-        super();
-        this.filename = fname;
-
     }
 
     public SVGMathObject(URL url) {

@@ -54,13 +54,13 @@ public class FFmpegAudioEncoder {
      * @param soundItems An ArrayList with sound items
      */
     public void processSounds(ArrayList<SoundItem> soundItems) {
+         if (soundItems.isEmpty()) {
+            return;
+        }
         File ffmpegExecFile = new File(config.getFfmpegBinExecutable());
         if (!ffmpegExecFile.exists()) {
             JMathAnimScene.logger.warn("ffmpeg executable not found. Sounds will not be processed.");
             JMathAnimScene.logger.warn("Set the ffmpeg executable location with config.setFfmpegExecutable in the setupSketch method");
-            return;
-        }
-        if (soundItems.isEmpty()) {
             return;
         }
         String tempVideoFileName = "";

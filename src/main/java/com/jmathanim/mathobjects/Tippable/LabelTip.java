@@ -22,15 +22,18 @@ import static com.jmathanim.jmathanim.JMathAnimScene.PI;
 import com.jmathanim.mathobjects.MathObjectGroup;
 import com.jmathanim.mathobjects.Point;
 import com.jmathanim.mathobjects.Shape;
+import com.jmathanim.mathobjects.Text.AbstractLaTeXMathObject;
 import com.jmathanim.mathobjects.Text.LaTeXMathObject;
+import com.jmathanim.mathobjects.Text.LaTeXMathObject;
+import com.jmathanim.mathobjects.hasScalarParameter;
 
 /**
  *
  * @author David Gutierrez Rubio davidgutierrezrubio@gmail.com
  */
-public class LabelTip extends TippableObject {
+public class LabelTip extends TippableObject implements hasScalarParameter {
 
-	private LaTeXMathObject latexLabel;
+	private AbstractLaTeXMathObject latexLabel;
 	private Point markPoint;
 
 	public static LabelTip makeLabelTip(Shape shape, double location, String text) {
@@ -47,7 +50,7 @@ public class LabelTip extends TippableObject {
 	 * @param text     LaTeX object
 	 * @return The tippable object
 	 */
-	public static LabelTip makeLabelTip(Shape shape, double location, LaTeXMathObject text) {
+	public static LabelTip makeLabelTip(Shape shape, double location, AbstractLaTeXMathObject text) {
 		LabelTip resul = new LabelTip();
 		resul.shape = shape;
 		resul.setLocation(location);
@@ -59,7 +62,7 @@ public class LabelTip extends TippableObject {
 		resul.setTextOffset(.5 * resul.latexLabel.getHeight());
 		resul.setTip(resul.group);
 		resul.setAnchor(Anchor.Type.LOWER);
-		resul.setOffsetAngle(-PI / 2);
+		resul.setOffsetAngle(PI / 2);
 		return resul;
 	}
 
@@ -166,5 +169,15 @@ public class LabelTip extends TippableObject {
 		markPoint.visible(visible);
 		return (T) this;
 	}
+
+    @Override
+    public double getScalar() {
+        return getLocation();
+    }
+
+    @Override
+    public void setScalar(double scalar) {
+        setLocation(scalar);
+    }
 
 }

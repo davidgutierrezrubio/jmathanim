@@ -23,6 +23,7 @@ import com.jmathanim.mathobjects.JMPath;
 import com.jmathanim.mathobjects.JMPathPoint;
 import com.jmathanim.mathobjects.JMPathPoint.JMPathPointType;
 import com.jmathanim.mathobjects.Point;
+import com.jmathanim.mathobjects.Shape;
 import java.util.ArrayList;
 
 /**
@@ -34,13 +35,13 @@ public class PathUtils {
 
     public static final double DEFAULT_TENSION = 0.7d;
 
-     /**
-     * Overloaded method. Generate control points from a bezier cubic curve, so that control points
-     * of point n are parallel to the line from point n-1 and n+1.The distance
-     * from point n to the control points is multiplied by the 0 to 1 tension
-     * parameter. A 1 tension means straight lines. If first and last point are
-     * not connected, an approximation is used based on the control point of
-     * their neighbour points. Default tension 0.7 is used
+    /**
+     * Overloaded method. Generate control points from a bezier cubic curve, so
+     * that control points of point n are parallel to the line from point n-1
+     * and n+1.The distance from point n to the control points is multiplied by
+     * the 0 to 1 tension parameter. A 1 tension means straight lines. If first
+     * and last point are not connected, an approximation is used based on the
+     * control point of their neighbour points. Default tension 0.7 is used
      *
      * @param path Path to compute control points
      */
@@ -165,6 +166,25 @@ public class PathUtils {
             JMPathPoint p2 = jmPathPoints.get(n + 1);
             p2.isCurved = !((p1.p.to(p1.cpExit).norm() < .0001) && (p2.p.to(p2.cpEnter).norm() < .0001));
         }
+    }
+
+    public Shape rectify(Camera cam, Shape shape) {
+        ArrayList<ArrayList<Point>> arPoints = computePolygonalPieces(cam, shape.getPath());
+        int size = 0;
+        ArrayList<Point> flattened=new ArrayList<>();
+        for (int i = 0; i < arPoints.size(); i++) {
+            ArrayList<Point> subArray = arPoints.get(i);
+            for (int j = 0; j < subArray.size()-1; j++) {//TODO: -1 if closed path!!
+                Point point = subArray.get(j);
+                flattened.add(point);
+            }
+            
+        }
+        Point[] pointsArray = flattened.toArray(Point[]::new);
+        
+       
+        Shape resul = Shape.polygon(pointsArray);//TODO: Add invisible points here
+        return resul;
     }
 
     public ArrayList<ArrayList<Point>> computePolygonalPieces(Camera cam, JMPath path) {

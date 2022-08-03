@@ -24,6 +24,7 @@ import com.jmathanim.Utils.JMathAnimConfig;
 import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
+import static com.jmathanim.jmathanim.JMathAnimScene.logger;
 import com.jmathanim.mathobjects.AbstractJMImage;
 import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.Shape;
@@ -91,6 +92,7 @@ public abstract class Renderer {
         int frameCount = config.getScene().getFrameCount();
         BufferedImage renderedImage = getRenderedImage(frameCount);
         writeImageToPNG(filename, renderedImage, format);
+        logger.info("Saved image "+filename);
     }
 
     protected void writeImageToPNG(String filename, BufferedImage renderedImage, String format) {
