@@ -38,7 +38,7 @@ public class CTCircleArc extends CTAbstractCircle {
     private final CTPoint center;
     private final CTPoint A;
     private final CTPoint B;
-    private Shape arcTODraw;
+    private final Shape arcTODraw;
 
     /**
      * Creates a new Constructible circle arc
@@ -72,6 +72,7 @@ public class CTCircleArc extends CTAbstractCircle {
         this.center = center;
         this.A = A;
         this.B = B;
+        arcTODraw=new Shape();
     }
 
     @Override
@@ -119,7 +120,8 @@ public class CTCircleArc extends CTAbstractCircle {
             if (angle < 0) {
                 angle += 2 * PI;
             }
-            arcTODraw = Shape.arc(angle);
+            arcTODraw.getPath().clear();
+            arcTODraw.getPath().copyStateFrom(Shape.arc(angle).getPath());
             arcTODraw.applyAffineTransform(tr);
         }
 

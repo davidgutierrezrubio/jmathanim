@@ -54,6 +54,20 @@ public class CTCircleSector extends CTAbstractCircle {
         return resul;
     }
 
+    /**
+     * Overloaded method. Creates a new Constructible circle sector
+     *
+     * @param center Center of circle sector
+     * @param A Starting point. This point also determines sector radius
+     * @param B A reference point to mark the sector angle.
+     * @return The created object
+     */
+    public static CTCircleSector make(Point center, Point A, Point B) {
+        CTCircleSector resul = new CTCircleSector(CTPoint.make(center), CTPoint.make(A), CTPoint.make(B));
+        resul.rebuildShape();
+        return resul;
+    }
+
     private CTCircleSector(CTPoint center, CTPoint A, CTPoint B) {
         this.center = center;
         this.A = A;
@@ -79,7 +93,7 @@ public class CTCircleSector extends CTAbstractCircle {
     @Override
     public CTCircleSector copy() {
         CTCircleSector copy = CTCircleSector.make(center.copy(), A.copy(), B.copy());
-       copy.copyStateFrom(this);
+        copy.copyStateFrom(this);
         return copy;
     }
 
