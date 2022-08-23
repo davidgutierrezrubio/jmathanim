@@ -350,7 +350,11 @@ public abstract class MathObject implements Drawable, Updateable, Stateable, Box
      */
     @Override
     public final Rect getBoundingBox() {
-        return computeBoundingBox().addGap(rightGap, upperGap, leftGap, lowerGap);
+        //This gives unexpected behaviour and I don't know why!
+//        return computeBoundingBox().addGap(rightGap, upperGap, leftGap, lowerGap);
+        Rect bb = computeBoundingBox();
+        bb.addGap(rightGap, upperGap, leftGap, lowerGap);
+        return bb;
     }
 
     protected abstract Rect computeBoundingBox();

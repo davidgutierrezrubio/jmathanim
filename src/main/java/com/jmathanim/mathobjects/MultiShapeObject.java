@@ -169,7 +169,7 @@ public class MultiShapeObject extends MathObject implements Iterable<Shape> {
     }
 
     @Override
-    public Rect computeBoundingBox() {
+    protected Rect computeBoundingBox() {
         if (!shapes.isEmpty()) {
             Rect resul = null;
             for (Shape jmp : shapes) {
@@ -273,7 +273,6 @@ public class MultiShapeObject extends MathObject implements Iterable<Shape> {
                 if (delete) {// if this index is marked for extraction...
                     this.mpMultiShape.remove(this.get(n));
                     this.shapes.set(n, new Shape());
-
                 }
 
             }

@@ -204,7 +204,7 @@ public class CrossOutMathElements extends AnimationGroup {
 
     }
 
-    private Shape buildCrossFromRect(Rect formulaRect) {
+    public Shape buildCrossFromRect(Rect formulaRect) {
         final Point ur = formulaRect.getUR();
         final Point dl = formulaRect.getDL();
         Vec diag = ur.to(dl);

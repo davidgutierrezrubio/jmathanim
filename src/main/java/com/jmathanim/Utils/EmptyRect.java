@@ -19,7 +19,7 @@ package com.jmathanim.Utils;
 
 /**
  * Represents an empty rect. Should be returned and managed in special cases
- * (for example, when computing the bounding box of an empty shape).
+ * (for example, when computing the bounding box of an empty shape, unions...)
  *
  */
 public class EmptyRect extends Rect {
@@ -31,6 +31,11 @@ public class EmptyRect extends Rect {
     @Override
     public boolean isEmpty() {
         return true;
+    }
+
+    @Override
+    public String toString() {
+        return "EmptyRect";
     }
 
 }

@@ -381,5 +381,10 @@ public class Camera {
     public void setViewFrom(hasCameraParameters param) {
         setMathXY(param.getMinX(), param.getMaxX(), param.getYCenter());
     }
+
+    @Override
+    public String toString() {
+        return "Camera (xmin, xmax, ycenter): ("+xmin+", "+xmax+", "+(ymin+ymax)/2+")";
+    }
     
 }
