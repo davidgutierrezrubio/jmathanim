@@ -40,6 +40,7 @@ public class JMNumber extends AbstractLaTeXMathObject implements hasScalarParame
 
     protected JMNumber(double value) {
         formatter = new DecimalFormat();
+        format = "";
     }
 
     @Override
@@ -50,7 +51,7 @@ public class JMNumber extends AbstractLaTeXMathObject implements hasScalarParame
     @Override
     public void setScalar(double scalar) {
         value = scalar;
-        String text = formatter.format(scalar);
+        String text = formatter.format(value);
         changeInnerLaTeX(text);
     }
 
@@ -101,6 +102,8 @@ public class JMNumber extends AbstractLaTeXMathObject implements hasScalarParame
     public JMNumber setFormat(String format) {
         formatter.applyPattern(format);
         this.format = format;
+        String text = formatter.format(value);
+        changeInnerLaTeX(text);
         return this;
     }
 

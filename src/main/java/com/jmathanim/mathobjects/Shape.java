@@ -459,10 +459,8 @@ public class Shape extends MathObject {
 
     @Override
     public Shape applyAffineTransform(AffineJTransform tr) {
-        int size = getPath().size();
-        for (int n = 0; n < size; n++) {
-            get(n).applyAffineTransform(tr);
-        }
+        getPath().applyAffineTransform(tr);
+       
         tr.applyTransformsToDrawingProperties(this);
         return this;
     }

@@ -42,7 +42,8 @@ public abstract class Constructible extends MathObject {
     }
 
     /**
-     * Returns the free object flag value
+     * Returns the free object flag value. If this flag is set to true,
+     * MathObject is not updated and can be freely transformed.
      *
      * @return True if drawed MathObject is not updated. False otherwise.
      */
@@ -60,7 +61,9 @@ public abstract class Constructible extends MathObject {
      */
     public void freeMathObject(boolean isMathObjectFree) {
         this.isMathObjectFree = isMathObjectFree;
-        rebuildShape();
+        if (isMathObjectFree) {
+            rebuildShape();
+        }
     }
 
     /**

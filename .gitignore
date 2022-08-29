@@ -5,3 +5,5 @@
 /src/main/java/com/jmathanim/Utils/jhlabs/
 /bin/
 /.settings/
+/src/main/java/com/jmathanim/mathobjects/Tippable/OldLabelTip.java
+/src/main/java/com/jmathanim/mathobjects/Tippable/OldTippableObject.java

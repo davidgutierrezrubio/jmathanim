@@ -1,10 +1,10 @@
 /*
- * Copyright (C) 2021 David Gutierrez Rubio davidgutierrezrubio@gmail.com
+ * Copyright (C) 2022 David Gutierrez Rubio davidgutierrezrubio@gmail.com
  *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -12,187 +12,64 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 package com.jmathanim.mathobjects.Tippable;
 
 import com.jmathanim.Utils.Anchor;
-import static com.jmathanim.jmathanim.JMathAnimScene.PI;
-import com.jmathanim.mathobjects.MathObjectGroup;
+import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.Point;
 import com.jmathanim.mathobjects.Shape;
 import com.jmathanim.mathobjects.Text.AbstractLaTeXMathObject;
 import com.jmathanim.mathobjects.Text.LaTeXMathObject;
-import com.jmathanim.mathobjects.Text.LaTeXMathObject;
-import com.jmathanim.mathobjects.hasScalarParameter;
+import java.awt.Label;
 
 /**
  *
  * @author David Gutierrez Rubio davidgutierrezrubio@gmail.com
  */
-public class LabelTip extends TippableObject implements hasScalarParameter {
+public class LabelTip extends AbstractTippableObject {
 
-    private AbstractLaTeXMathObject latexLabel;
-    private Point markPoint;
-
+    
+    private AbstractLaTeXMathObject abstractLaTeXMathObject;
+    
     public static LabelTip makeLabelTip(Shape shape, double location, String text) {
         return makeLabelTip(shape, location, LaTeXMathObject.make(text));
     }
-
-    /**
-     * Attach a LaTeX expression to a specific point of a Shape. The LaTeX is
-     * attached outside the point
+      /**
+     * Attach an AbstractLaTeXMathObject instance to a specific point of a Shape. The LaTeX is
+     * attached outside the point to a distance of the height.
      *
      * @param shape Shape to attach the tip
      * @param location Point of the shape to locate the tip. A parameter between
      * 0 and 1. Values outside this range are normalized.
-     * @param text LaTeX object
+     * @param tipLabel LaTeX object
      * @return The tippable object
      */
-    public static LabelTip makeLabelTip(Shape shape, double location, AbstractLaTeXMathObject text) {
-        LabelTip resul = new LabelTip();
-        resul.shape = shape;
-        resul.setLocation(location);
-        resul.group = MathObjectGroup.make();
-        resul.latexLabel = text;
-        resul.group.add(resul.latexLabel);
-        resul.markPoint = Point.at(0, 0).visible(false);
-        resul.group.add(resul.markPoint);
-        resul.setTextOffset(.5 * resul.latexLabel.getHeight());
-        resul.setTip(resul.group);
-        resul.setAnchor(Anchor.Type.LOWER);
-        resul.setOffsetAngle(-PI / 2);
+
+    public static LabelTip makeLabelTip(Shape shape, double location, AbstractLaTeXMathObject tipLabel) {
+        
+        LabelTip resul = new LabelTip(shape, tipLabel, Anchor.Type.CENTER, location);
+        resul.rebuildShape();
         return resul;
     }
 
-    private boolean fixedAngle;
-    private double textOffset;
-    protected MathObjectGroup group;
-
-    public double getTextOffset() {
-        return textOffset;
+    protected LabelTip(Shape shape, AbstractLaTeXMathObject tipLabel, Anchor.Type anchor, double location) {
+        super(shape, tipLabel, Anchor.getAnchorPoint(tipLabel, anchor), location);
+        abstractLaTeXMathObject=tipLabel;
+        correctionAngle=0;
+        distanceToShape=tipLabel.getHeight();
     }
 
-    /**
-     * Sets the distance between the marker point and the bottom line of the
-     * LaTeX expression.By default this value is half height of the LaTeX
-     * expression.
-     *
-     * @param <T> Calling subclass
-     * @param textOffset A positive value. Negative values are normalized.
-     * @return This object
-     */
-    public <T extends LabelTip> T setTextOffset(double textOffset) {
-        if (textOffset < 0) {
-            textOffset = -textOffset;
-        }
-        this.textOffset = textOffset;
-        group.setLayout(MathObjectGroup.Layout.LOWER, getTextOffset());
-        return (T) this;
-    }
-
-    /**
-     * Sets the distance between the marker point and the bottom line of the
-     * LaTeX expression. The difference with other similar methods is that in
-     * this case the distance is given relative to the current width of the
-     * LaTeX equation. By default this value is half height of the LaTeX
-     * expression.
-     *
-     * @param <T> Calling subclass
-     * @param textOffset A positive value, relative to the current width of the
-     * LaTeX expression.
-     * @return This object
-     */
-    public <T extends LabelTip> T setTextOffsetRW(double textOffset) {
-        return setTextOffset(textOffset * latexLabel.getWidth());
-    }
-
-    /**
-     * Sets the distance between the marker point and the bottom line of the
-     * LaTeX expression. The difference with other similar methods is that in
-     * this case the distance is given relative to the current height of the
-     * LaTeX equation. By default this value is half height of the LaTeX
-     * expression.
-     *
-     * @param <T> Calling subclass
-     * @param textOffset A positive value, relative to the current width of the
-     * LaTeX expression.
-     * @return This object
-     */
-    public <T extends LabelTip> T setTextOffsetRH(double textOffset) {
-        return setTextOffset(textOffset * latexLabel.getHeight());
-    }
-
-    private LabelTip() {
-        super();
-
+    protected LabelTip(Shape shape, MathObject tipObject, Point anchorPoint, double location) {
+        super(shape, tipObject, anchorPoint, location);
     }
 
     @Override
-    protected void updateLocations() {
-        super.updateLocations();
-        MathObjectGroup msh = (MathObjectGroup) getTipCopy();
-        if (fixedAngle) {
-            msh.get(0).rotate(-totalRotationAngle);
-        }
-    }
-
-    /**
-     * A flag whether the LaTeX expression should rotate according to the slope
-     * of the shape or not.
-     *
-     * @param fixedAngle True if LaTeX expression should rotate, false
-     * otherwise.
-     * @return This object
-     */
-    public LabelTip fixedAngle(boolean fixedAngle) {
-        this.fixedAngle = fixedAngle;
-        return this;
-    }
-
-    /**
-     * Mark point where the label locates
-     *
-     * @return A Point object
-     */
-    public Point getMarkPoint() {
-        return markPoint;
-    }
-
-    /**
-     * Sets the visibility of the mark point. This method is equivalent to
-     * this.getMarkPoint().visible(flag)
-     *
-     * @param <T> Calling subclass
-     * @param visible Visible flag
-     * @return This object
-     */
-    public <T extends LabelTip> T visibleMarkPoint(boolean visible) {
-        markPoint.visible(visible);
-        return (T) this;
-    }
-
-    /**
-     * Implementation of hasScalar interface. In this case, the scalar defines
-     * the position in Shape.
-     *
-     * @return The position in Shape (from 0 to 1)
-     */
-    @Override
-    public double getScalar() {
-        return getLocation();
-    }
-
-    /**
-     * Implementation of hasScalar interface. In this case, the scalar defines
-     * the position in Shape.
-     *
-     * @param scalar Position in Shape (from 0 to 1).
-     */
-    @Override
-    public void setScalar(double scalar) {
-        setLocation(scalar);
+    public LabelTip copy() {
+        LabelTip copy = new LabelTip(shape, mathobject.copy(), pivotPointRefMathObject.copy(), locationParameterOnShape);
+        copy.copyStateFrom(this);
+        return copy;
     }
 
 }

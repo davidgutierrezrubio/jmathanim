@@ -18,6 +18,7 @@
 package com.jmathanim.mathobjects;
 
 import com.jmathanim.Styling.JMColor;
+import com.jmathanim.Utils.AffineJTransform;
 import com.jmathanim.Utils.Anchor;
 import com.jmathanim.Utils.Boxable;
 import com.jmathanim.Utils.CircularArrayList;
@@ -55,6 +56,7 @@ public class JMPath implements Stateable, Boxable, Iterable<JMPathPoint> {
     private final ArrayList<Point> rectifiedPoints;
     private final ArrayList<Double> rectifiedPointDistances;
     private double computedPathLength;
+    public static final double DELTA_DERIVATIVE = .0001;
 
     /**
      * Creates a new empty JMPath objectF
@@ -151,6 +153,14 @@ public class JMPath implements Stateable, Boxable, Iterable<JMPathPoint> {
         if (t == 1) {
             return rectifiedPoints.get(rectifiedPoints.size() - 1).copy();
         }
+
+        while (t < 0) {
+            t++;
+        }
+        while (t > 1) {
+            t--;
+        }
+
         double td = t * computedPathLength;
         int n = 0;
         double sum = 0;
@@ -159,7 +169,13 @@ public class JMPath implements Stateable, Boxable, Iterable<JMPathPoint> {
             n++;
         }
         n--;
+//        //This is needed for collapsed paths (all vertices equal)
+//        if (n < 0) {
+//            n =1;
+//        }
+
         sum -= rectifiedPointDistances.get(n);
+
         double tLocal = (td - sum) / rectifiedPointDistances.get(n);
         return rectifiedPoints.get(n - 1).interpolate(rectifiedPoints.get(n), tLocal);
     }
@@ -1138,4 +1154,28 @@ public class JMPath implements Stateable, Boxable, Iterable<JMPathPoint> {
         }
     }
 
+    public Vec getSlopeAt(double t, boolean positiveDirection) {
+        Point p1 = getJMPointAt(t).p;
+        Point p2 = getJMPointAt(positiveDirection ? t + DELTA_DERIVATIVE : t - DELTA_DERIVATIVE).p;
+        return p1.to(p2);
+    }
+
+    public Vec getParametrizedSlopeAt(double t, boolean positiveDirection) {
+        Point p1 = getParametrizedPointAt(t);
+        Point p2 = getParametrizedPointAt(positiveDirection ? t + DELTA_DERIVATIVE : t - DELTA_DERIVATIVE);
+        return p1.to(p2);
+    }
+
+    void applyAffineTransform(AffineJTransform tr) {
+        int size = size();
+        for (int n = 0; n < size; n++) {
+            get(n).applyAffineTransform(tr);
+        }
+
+        //If this path has the rectified points computed, recompute it
+        if (!rectifiedPoints.isEmpty()) {
+            computeRectifiedPoints();
+        }
+
+    }
 }
