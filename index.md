@@ -25,8 +25,9 @@ Manual
 What's new?
 ===========
 
-Version 0.9.7-SNAPSHOT (15/06/22)
+Version 0.9.7-SNAPSHOT (29/08/22)
 
+-   Rewritten `TippableObject` and `LabelTip` classes, allowing more flexibility to animate tippable objects.
 -   Added horizontal, vertical and both scaling capabilities to `shrinkOut`, `growIn` and `TransformMathExpression`.
 -   Fixed bug where default adding animation was not used in `TransformMathExpression`.
 -   Improved workaround for JavaFX bug that displays artifacts when drawing cubic lines with control points are equal to vertices.
