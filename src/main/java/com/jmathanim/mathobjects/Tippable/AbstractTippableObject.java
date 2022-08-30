@@ -20,6 +20,7 @@ import com.jmathanim.Constructible.Constructible;
 import com.jmathanim.Styling.MODrawProperties;
 import com.jmathanim.Styling.MODrawPropertiesArray;
 import com.jmathanim.Styling.Stylable;
+import com.jmathanim.Utils.AffineJTransform;
 import com.jmathanim.Utils.Anchor;
 import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.Vec;
@@ -74,7 +75,7 @@ public abstract class AbstractTippableObject extends Constructible implements ha
         locationPoint = Point.origin().visible(false);
         isParametrized = false;
         scene.add(locationPoint);
-        mpArray=new MODrawPropertiesArray();
+        mpArray = new MODrawPropertiesArray();
         mpArray.add(refMathObject);
         mpArray.add(mathobject);
         mpArray.copyFrom(refMathObject.getMp());
@@ -119,6 +120,18 @@ public abstract class AbstractTippableObject extends Constructible implements ha
     public void setDistanceToShape(double distanceToShape) {
         this.distanceToShape = distanceToShape;
         rebuildShape();
+    }
+
+    @Override
+    public Constructible applyAffineTransform(AffineJTransform transform) {
+        if (isThisMathObjectFree()) {
+            getMathObject().applyAffineTransform(transform);
+        } else {
+            refMathObject.applyAffineTransform(transform);
+            pivotPointRefMathObject.applyAffineTransform(transform);
+            rebuildShape();
+        }
+        return this;
     }
 
     @Override

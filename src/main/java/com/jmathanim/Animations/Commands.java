@@ -189,8 +189,9 @@ public class Commands {
             }
         };
         AnimationGroup ag = new AnimationGroup();
-        Point center = MathObjectGroup.make(mathObjects).getCenter();
+      
         for (MathObject obj : mathObjects) {
+              Point center = obj.getCenter();
             Animation rotateAnim = Commands.rotate(runtime, center, twistAngle, obj).setLambda(t -> Math.sin(4 * PI * t));
             ag.add(rotateAnim);
             ag.add(Commands.scale(runtime, center, scale, obj).setLambda(UsefulLambdas.backAndForth()).setUseObjectState(false));
