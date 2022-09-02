@@ -17,21 +17,16 @@
 package com.jmathanim.mathobjects.Tippable;
 
 import com.jmathanim.Constructible.Constructible;
-import com.jmathanim.Styling.MODrawProperties;
 import com.jmathanim.Styling.MODrawPropertiesArray;
 import com.jmathanim.Styling.Stylable;
 import com.jmathanim.Utils.AffineJTransform;
 import com.jmathanim.Utils.Anchor;
-import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import static com.jmathanim.jmathanim.JMathAnimScene.PI;
-import com.jmathanim.mathobjects.Arrow2D;
 import com.jmathanim.mathobjects.MathObject;
-import com.jmathanim.mathobjects.MultiShapeObject;
 import com.jmathanim.mathobjects.Point;
 import com.jmathanim.mathobjects.Shape;
-import com.jmathanim.mathobjects.Text.LaTeXMathObject;
 import com.jmathanim.mathobjects.hasScalarParameter;
 
 /**

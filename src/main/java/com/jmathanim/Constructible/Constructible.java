@@ -28,7 +28,8 @@ import com.jmathanim.mathobjects.MathObject;
  * This class representas a constructible object, derived from another ones. For
  * example a circle that pass for 3 points is a constructible object. It cannot
  * be transformed nor animated by itself, only changing the objects from which
- * depend
+ * depend. It acts as a container of a MathObject that will be updated and
+ * drawed every frame.
  *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
@@ -57,13 +58,16 @@ public abstract class Constructible extends MathObject {
      * animated. Altering the drawed MathObject does not affect the
      * Constructible parameters.
      *
-     * @param isMathObjectFree Boolean flag
+     * @param isMathObjectFree Boolean flag. True if drawed MathObject is no
+     * longer to be updated with constructible parameters.
      */
     public void freeMathObject(boolean isMathObjectFree) {
-        this.isMathObjectFree = isMathObjectFree;
-        if (isMathObjectFree) {
-            rebuildShape();
+        if (!isMathObjectFree) {
+            if (this.isMathObjectFree) {
+                rebuildShape();
+            }
         }
+        this.isMathObjectFree = isMathObjectFree;
     }
 
     /**

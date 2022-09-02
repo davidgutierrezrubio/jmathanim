@@ -1166,29 +1166,31 @@ public class Commands {
         ShiftAnimation resul = new ShiftAnimation(runtime, mathObjects) {
             @Override
             public void initialize(JMathAnimScene scene) {
-                super.initialize(scene);
-                JMathAnimScene.logger.debug("Initialized moveOut animation");
-                // Compute appropiate shift vectors
-                Rect r = JMathAnimConfig.getConfig().getCamera().getMathView();
                 for (MathObject obj : mathObjects) {
                     if (obj instanceof Constructible) {
                         Constructible cnstr = (Constructible) obj;
                         cnstr.freeMathObject(true);
                     }
-                    Point p = Anchor.getAnchorPoint(obj, Anchor.reverseAnchorPoint(exitAnchor));
-                    Point q = Anchor.getAnchorPoint(Shape.rectangle(r), exitAnchor, 1);
+                }
+                 super.initialize(scene);
+                JMathAnimScene.logger.debug("Initialized moveOut animation");
+                // Compute appropiate shift vectors
+                Rect r = JMathAnimConfig.getConfig().getCamera().getMathView();
+                for (MathObject obj : mathObjects) {
+                    Point objAnchor = Anchor.getAnchorPoint(obj, Anchor.reverseAnchorPoint(exitAnchor));
+                    Point screenAnchor = Anchor.getAnchorPoint(Shape.rectangle(r), exitAnchor, 1);
                     switch (exitAnchor) {
                         case LEFT:
-                            q.v.y = p.v.y;
+                            screenAnchor.v.y = objAnchor.v.y;
                         case RIGHT:
-                            q.v.y = p.v.y;
+                            screenAnchor.v.y = objAnchor.v.y;
                             break;
                         case UPPER:
                         case LOWER:
-                            q.v.x = p.v.x;
+                            screenAnchor.v.x = objAnchor.v.x;
                             break;
                     }
-                    this.setShiftVector(obj, p.to(q));
+                    this.setShiftVector(obj, objAnchor.to(screenAnchor));
                 }
             }
 
@@ -1203,7 +1205,6 @@ public class Commands {
                     }
                 }
             }
-
         };
         resul.setDebugName("moveOut for " + mathObjects.length + " object(s)");
         return resul;
