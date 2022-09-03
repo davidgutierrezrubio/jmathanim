@@ -43,7 +43,7 @@ public abstract class AbstractTippableObject extends Constructible implements ha
     public double distanceToShape;
 
     public double rotationAngle;
-    public boolean fixed;
+    private boolean fixed;
 
     public final Point markPoint;
     public final Point locationPoint;
@@ -145,6 +145,18 @@ public abstract class AbstractTippableObject extends Constructible implements ha
         if (obj instanceof AbstractTippableObject) {
             AbstractTippableObject nt = (AbstractTippableObject) obj;
             pivotPointRefMathObject.copyFrom(nt.pivotPointRefMathObject);
+            correctionAngle=nt.correctionAngle;
+            this.mathobject.copyStateFrom(nt.mathobject);
+            this.refMathObject.copyStateFrom(nt.refMathObject);
+            this.pivotPointRefMathObject.copyStateFrom(nt.pivotPointRefMathObject);
+            this.locationParameterOnShape=nt.locationParameterOnShape;
+            this.distanceToShape=nt.distanceToShape;
+            this.fixed=nt.fixed;
+            this.rotationAngle=nt.rotationAngle;
+            this.markPoint.copyStateFrom(nt.markPoint);
+            this.locationPoint.copyStateFrom(nt.locationPoint);
+            this.isParametrized=nt.isParametrized;
+            rebuildShape();
         }
 
     }
