@@ -131,7 +131,7 @@ public class Arrow2D extends MathObject {
     private MultiShapeObject buildArrowHead(ArrowType type, int side) {
         int anchorValue;
         double scaleDefaultValue;
-        switch (type) {// TODO: Improve this
+        switch (type) {
             case TYPE_1:
                 anchorValue = 2;
                 scaleDefaultValue = 1.5;
@@ -167,7 +167,7 @@ public class Arrow2D extends MathObject {
         MultiShapeObject head;
         String name = "#arrow";
         if (type != ArrowType.NONE) {// If type=NONE, head=null
-            switch (type) {// TODO: Improve this
+            switch (type) {
                 case TYPE_1:
                     name += "1";
                     break;

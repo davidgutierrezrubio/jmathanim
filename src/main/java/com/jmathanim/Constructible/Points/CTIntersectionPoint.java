@@ -86,8 +86,7 @@ public class CTIntersectionPoint extends CTPoint {
         this.solNumber = solNumber;
         this.c1 = c1;
         this.c2 = c2;
-        //Determine intersecion type and define proper variables
-        //TODO: Change this to a proper switch
+        //Determine intersection type and define proper variables
         if ((c1 instanceof CTAbstractLine) && (c2 instanceof CTAbstractLine)) {
             ctline1 = (CTAbstractLine) c1;
             ctline2 = (CTAbstractLine) c2;

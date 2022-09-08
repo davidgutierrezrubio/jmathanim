@@ -178,7 +178,6 @@ class GeogebraCommandParser {
         resul.setFillColor(colFill);
 
         // Line style. Only thickness
-        //TODO: Parse dash style too
         Element lineStyle = firstElementWithTag(el, "lineStyle");
         if (lineStyle != null) {
             double thickness = Double.valueOf(lineStyle.getAttribute("thickness"));

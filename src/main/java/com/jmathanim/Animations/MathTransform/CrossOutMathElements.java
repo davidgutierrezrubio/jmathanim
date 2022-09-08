@@ -195,9 +195,6 @@ public class CrossOutMathElements extends AnimationGroup {
         for (int[] indices : crossIndices) {
             Rect formulaRect = formula.slice(false, indices).getBoundingBox();
             Shape cross = buildCrossFromRect(formulaRect);
-            //Copy style from crossDrawProperties, but only color
-            //TODO: If we change this to a rectangle, we can inherit all draw properties
-//            cross.drawColor(crossDrawProperties.getDrawColor());
             cross.getMp().copyFrom(crossDrawProperties);
             crossesShapes.add(cross);
         }

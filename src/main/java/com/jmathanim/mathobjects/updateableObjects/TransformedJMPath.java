@@ -47,7 +47,6 @@ public class TransformedJMPath extends Shape {
     @Override
     public void update(JMathAnimScene scene) {
         int size = srcOBj.getPath().size();
-        // TODO: This is already implemented
         for (int n = 0; n < size; n++) {
             JMPathPoint jmPDst = get(n);
             JMPathPoint pSrc = srcOBj.get(n);
@@ -55,17 +54,9 @@ public class TransformedJMPath extends Shape {
             Point cp1Dst = transform.getTransformedObject(pSrc.cpExit);
             Point cp2Dst = transform.getTransformedObject(pSrc.cpEnter);
 
-            jmPDst.p.v.x = pDst.v.x;
-            jmPDst.p.v.y = pDst.v.y;
-            jmPDst.p.v.z = pDst.v.z;
-
-            jmPDst.cpExit.v.x = cp1Dst.v.x;
-            jmPDst.cpExit.v.y = cp1Dst.v.y;
-            jmPDst.cpExit.v.z = cp1Dst.v.z;
-
-            jmPDst.cpEnter.v.x = cp2Dst.v.x;
-            jmPDst.cpEnter.v.y = cp2Dst.v.y;
-            jmPDst.cpEnter.v.z = cp2Dst.v.z;
+            jmPDst.p.v.copyFrom(pDst.v);
+            jmPDst.cpExit.v.copyFrom(cp1Dst.v);
+            jmPDst.cpEnter.v.copyFrom(cp2Dst.v);
         }
     }
 

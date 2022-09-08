@@ -344,7 +344,6 @@ public abstract class Delimiter extends MathObject {
         return delimiterLabel;
     }
     
-    //TODO: Fix this
 
 //    /**
 //     * Adds a label that automatically updates to show the length of the

@@ -141,7 +141,6 @@ public abstract class AbstractLaTeXMathObject extends SVGMathObject {
             SVGUtils svgUtils = new SVGUtils(scene);
             svgUtils.importSVGFromDOM(root, this);
         }
-        this.style("latexdefault"); //TODO: Quit this
         int n = 0;
         for (Shape sh : shapes) {
             // objectLabel them
