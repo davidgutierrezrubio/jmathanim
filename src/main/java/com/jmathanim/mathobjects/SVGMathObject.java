@@ -43,7 +43,11 @@ public class SVGMathObject extends MultiShapeObject {
 //    private JMColor currentDrawColor;
 //    private double currentStrokeSize = .5d;
 
-  
+  public static SVGMathObject make(String filename) {
+      ResourceLoader rl=new ResourceLoader();
+        URL url = rl.getResource(filename, "images");
+        return new SVGMathObject(url);
+  }
 
     public SVGMathObject() {
         super();
@@ -51,6 +55,7 @@ public class SVGMathObject extends MultiShapeObject {
 
     public SVGMathObject(URL url) {
         super();
+        this.getMp().setAbsoluteThickness(false);
         try {
             SVGUtils svgu = new SVGUtils(scene);
             svgu.importSVG(url, this);
