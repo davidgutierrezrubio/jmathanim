@@ -53,6 +53,10 @@ public class SVGMathObject extends MultiShapeObject {
         super();
     }
 
+    /**
+     * Creates a new SVGMathObject from the specified URL
+     * @param url An URL object pointing to a SVG file.
+     */
     public SVGMathObject(URL url) {
         super();
         this.getMp().setAbsoluteThickness(false);
