@@ -37,8 +37,9 @@ public class FunctionGraph extends Shape implements hasScalarParameter {
     public static final double DELTA_DERIVATIVE = .00001d;
     public static final int DEFAULT_NUMBER_OF_POINTS = 49;
     public static final double CONTINUUM_THRESHOLD = 100;
-    public static final double ANGLE_THRESHOLD = 30 * PI / 180;//10 degrees
-
+    public static final double ANGLE_THRESHOLD = 5 * PI / 180;//5 degrees
+    public static final int SLOPE_THRESHOLD_INFINITY = 10;
+    
     @Override
     public double getScalar() {
         return this.w;
@@ -201,8 +202,14 @@ public class FunctionGraph extends Shape implements hasScalarParameter {
             JMPathPoint jmp = this.get(n);
             double x = jmp.p.v.x;
             if (n < xPoints.size() - 1) {
-                final double deltaX = .3 * (xPoints.get(n + 1) - x);
-                Vec v = new Vec(deltaX, getSlope(x, 1) * deltaX);
+                double deltaX = .3 * (xPoints.get(n + 1) - x);
+                double slope = getSlope(x, 1);
+                if (Math.abs(slope)>SLOPE_THRESHOLD_INFINITY) {
+                    //If slope is too big, join to the next point with a straight line
+                    deltaX=0;
+                    slope=0;
+                }
+                Vec v = new Vec(deltaX, slope * deltaX);
                 jmp.cpExit.copyFrom(jmp.p.add(v));
             }
             if (n > 0) {
@@ -216,6 +223,7 @@ public class FunctionGraph extends Shape implements hasScalarParameter {
 
         }
     }
+
 
     /**
      * Update the value of the y-points of the graph. This method should be

@@ -224,8 +224,7 @@ public class AnimationEffect {
                 break;
             case FOLIUM:
                 ResourceLoader rl = new ResourceLoader();
-                URL pathURL = rl.getResource("#foliumJumpPath.svg", "images");
-                jumpPath = new SVGMathObject(pathURL).get(0).scale(1, -1);
+                jumpPath = SVGMathObject.make("#foliumJumpPath.svg").get(0).scale(1,-1);
                 break;
             case PARABOLICAL:
                 jumpPath = new Shape(FunctionGraph.make(t -> 4 * t * (1 - t), 0, 1, 2).getPath());
