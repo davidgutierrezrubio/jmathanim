@@ -25,12 +25,13 @@ Manual
 What's new?
 ===========
 
-Version 0.9.7-SNAPSHOT (29/08/22)
+Version 0.9.7-SNAPSHOT (19/09/22)
 
+-   Improved drawing algorithm in `FunctionGraph`for functions with infinity slope at some points.
 -   Rewritten `TippableObject` and `LabelTip` classes, allowing more flexibility to animate tippable objects.
 -   Added horizontal, vertical and both scaling capabilities to `shrinkOut`, `growIn` and `TransformMathExpression`.
 -   Fixed bug where default adding animation was not used in `TransformMathExpression`.
--   Improved workaround for JavaFX bug that displays artifacts when drawing cubic lines with control points are equal to vertices.
+-   Improved workaround for JavaFX bug that displays artifacts when drawing cubic lines when control points are equal to vertices.
 -   Sounds are here! Added the possibility of including sounds in the
     animations, using an external `ffmpeg` executable. You can find a brief tutorial in the advanced topics section of the user manual.
 
@@ -182,3 +183,4 @@ License
 
 This project is licensed under the GNU v3 license
 (https://www.gnu.org/licenses/gpl-3.0.html)
+
