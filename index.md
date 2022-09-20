@@ -25,7 +25,7 @@ Manual
 What's new?
 ===========
 
-Version 0.9.7-SNAPSHOT (19/09/22)
+Version 0.9.7 (20/09/22)
 
 -   Improved drawing algorithm in `FunctionGraph`for functions with infinity slope at some points.
 -   Rewritten `TippableObject` and `LabelTip` classes, allowing more flexibility to animate tippable objects.

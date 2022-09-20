@@ -94,7 +94,7 @@ Shape arc=Shape.arc(PI/4);
 
 If you add all these objects to the scene with the command `add(circ,sq,reg,rect,seg,arc)` you’ll obtain something like this:
 
-![basicShapes](basicShapes.png)
+<img src="basicShapes.png" alt="basicShapes"  />
 
 The `Shape` class is one of the most important and the most likely to be animated. Several other classes depend on it.
 
@@ -186,6 +186,29 @@ waitSeconds(5);//Time for a screenshot!
 ```
 
 ![image-20201207211508323](axes01.png)
+
+
+
+## The `CartesianGrid` class
+The name says it all!
+```java
+//A grid with reference point (0.0) and 
+//steps of 0.5 between both vertical and horizontal lines
+CartesianGrid grid = CartesianGrid.make(0, 0, .5, .5);
+grid.thickness(7).drawColor("gray");
+add(
+    grid,
+    Shape.circle() //A circle
+    .drawColor("blue") //drawed in blue
+    .fillColor("blue") //filled also in blue
+    .fillAlpha(.5) //with opacity 50%
+);
+waitSeconds(3);
+```
+
+<img src="cartesianGrid.png" alt="image-20220920180537862" style="zoom:50%;" />
+
+
 
 ## The `Arrow2D` class
 
