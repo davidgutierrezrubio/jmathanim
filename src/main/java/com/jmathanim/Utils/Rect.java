@@ -592,4 +592,35 @@ public class Rect implements Stateable, Boxable {// TODO: Adjust this to 3D coor
                 c.applyAffineTransform(tr),
                 d.applyAffineTransform(tr));
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Rect other = (Rect) obj;
+        if (Double.doubleToLongBits(this.xmin) != Double.doubleToLongBits(other.xmin)) {
+            return false;
+        }
+        if (Double.doubleToLongBits(this.ymin) != Double.doubleToLongBits(other.ymin)) {
+            return false;
+        }
+        if (Double.doubleToLongBits(this.xmax) != Double.doubleToLongBits(other.xmax)) {
+            return false;
+        }
+        if (Double.doubleToLongBits(this.ymax) != Double.doubleToLongBits(other.ymax)) {
+            return false;
+        }
+        if (Double.doubleToLongBits(this.zmin) != Double.doubleToLongBits(other.zmin)) {
+            return false;
+        }
+        return Double.doubleToLongBits(this.zmax) == Double.doubleToLongBits(other.zmax);
+    }
+    
 }

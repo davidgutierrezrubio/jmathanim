@@ -54,28 +54,6 @@ public final class AxesCreationAnimation extends AnimationGroup implements Creat
         addDelayEffect(.4);
     }
 
-//    @Override
-//    public void initialize(JMathAnimScene scene) {
-//        super.initialize(scene);
-//
-//    }
-
-//	@Override
-//	public boolean processAnimation() {
-//		return anim.processAnimation(); // To change body of generated methods, choose Tools | Templates.
-//	}
-//	@Override
-//	public void doAnim(double t) {
-//	}
-//	@Override
-//	public void finishAnimation() {
-//		super.finishAnimation();
-//		anim.finishAnimation();
-//		addObjectsToscene(axes);
-//		for (MathObject ob : objectsToRemoveWhenFinished) {
-//			removeObjectsToscene(ob);
-//		}
-//	}
     @Override
     public void setPencilPosition(Point previous, Point current) {
     }
