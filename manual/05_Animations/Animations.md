@@ -587,6 +587,7 @@ add(axes);
 axes.thickness(6).drawColor("darkblue").layer(1);
 
 //Create a cartesian grid, a group of horizontal and vertical lines.
+//We do not use the CartesianGrid class as its elements cannot be transformed
 MathObjectGroup grid = new MathObjectGroup();
 for (int i = -5; i < 5; i++) {
     grid.add(Line.XAxis().shift(0, .5 * i).thickness(i % 2 == 0 ? 4 : 2));
