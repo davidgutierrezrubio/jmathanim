@@ -46,12 +46,12 @@ public class TippableObject extends AbstractTippableObject {
         }
         parallelSign.setWidth(.05);
         parallelSign.setAbsoluteSize(Anchor.Type.CENTER);
-        //(Shape shape,double location, AbstractTippableObject.slopeDirection dir,MathObject tipObject, Anchor.Type anchor ) {
-        TippableObject resul = TippableObject.make(shape, location, AbstractTippableObject.slopeDirectionType.POSITIVE, parallelSign, Anchor.Type.CENTER);
+        //(Shape shape,double location, AbstractTippableObject.slopeDirectionType dir,MathObject tipObject, Anchor.Type anchor ) {
+        TippableObject resul = TippableObject.make(shape, location, AbstractTippableObject.SlopeDirectionType.POSITIVE, parallelSign, Anchor.Type.CENTER);
         return resul;
     }
 
-    public static TippableObject arrowHead(Shape shape, double location, slopeDirectionType dir, Arrow2D.ArrowType type) {
+    public static TippableObject arrowHead(Shape shape, double location, SlopeDirectionType dir, Arrow2D.ArrowType type) {
         MultiShapeObject arrowHead = Arrow2D.buildArrowHead(type);
         arrowHead.setAbsoluteSize(Anchor.Type.CENTER);
         arrowHead.thickness(0);
@@ -59,16 +59,16 @@ public class TippableObject extends AbstractTippableObject {
         arrowHead.fillColor(shape.getMp().getDrawColor());
         arrowHead.drawColor(shape.getMp().getDrawColor());
         Point anchor = Anchor.getAnchorPoint(arrowHead, Anchor.Type.UPPER);
-        TippableObject resul = new TippableObject(shape, arrowHead, anchor, location); // shape,location,slopeDirection.POSITIVE,equalLengthTip);
+        TippableObject resul = new TippableObject(shape, arrowHead, anchor, location); // shape,location,slopeDirectionType.POSITIVE,equalLengthTip);
         resul.slopeDirection(dir);
         return resul;
     }
 
-    public static TippableObject make(Shape shape, double location, AbstractTippableObject.slopeDirectionType dir, MathObject tipObject) {
+    public static TippableObject make(Shape shape, double location, AbstractTippableObject.SlopeDirectionType dir, MathObject tipObject) {
         return make(shape, location, dir, tipObject, Anchor.Type.CENTER);
     }
 
-    public static TippableObject make(Shape shape, double location, AbstractTippableObject.slopeDirectionType dir, MathObject tipObject, Anchor.Type anchor) {
+    public static TippableObject make(Shape shape, double location, AbstractTippableObject.SlopeDirectionType dir, MathObject tipObject, Anchor.Type anchor) {
         Point anchorPoint = Anchor.getAnchorPoint(tipObject, anchor);
         TippableObject resul = new TippableObject(shape, tipObject, anchorPoint, location);
         resul.slopeDirection(dir);

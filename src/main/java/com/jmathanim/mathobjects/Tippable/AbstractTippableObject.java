@@ -43,6 +43,7 @@ public abstract class AbstractTippableObject extends Constructible implements ha
     public double distanceToShape;
 
     public double rotationAngle;
+    protected double correctionAngle;
     private boolean fixed;
 
     public final Point markPoint;
@@ -51,10 +52,10 @@ public abstract class AbstractTippableObject extends Constructible implements ha
     public boolean isParametrized;
     private final MODrawPropertiesArray mpArray;
 
-    public enum slopeDirectionType {
+    public enum SlopeDirectionType {
         NEGATIVE, POSITIVE
     }
-    protected slopeDirectionType slopeDirection;
+    protected SlopeDirectionType slopeDirectionType;
 
     protected AbstractTippableObject(Shape shape, MathObject tipObject, Point anchorPoint, double location) {
         correctionAngle = PI / 2;
@@ -145,17 +146,17 @@ public abstract class AbstractTippableObject extends Constructible implements ha
         if (obj instanceof AbstractTippableObject) {
             AbstractTippableObject nt = (AbstractTippableObject) obj;
             pivotPointRefMathObject.copyFrom(nt.pivotPointRefMathObject);
-            correctionAngle=nt.correctionAngle;
+            correctionAngle = nt.correctionAngle;
             this.mathobject.copyStateFrom(nt.mathobject);
             this.refMathObject.copyStateFrom(nt.refMathObject);
             this.pivotPointRefMathObject.copyStateFrom(nt.pivotPointRefMathObject);
-            this.locationParameterOnShape=nt.locationParameterOnShape;
-            this.distanceToShape=nt.distanceToShape;
-            this.fixed=nt.fixed;
-            this.rotationAngle=nt.rotationAngle;
+            this.locationParameterOnShape = nt.locationParameterOnShape;
+            this.distanceToShape = nt.distanceToShape;
+            this.fixed = nt.fixed;
+            this.rotationAngle = nt.rotationAngle;
             this.markPoint.copyStateFrom(nt.markPoint);
             this.locationPoint.copyStateFrom(nt.locationPoint);
-            this.isParametrized=nt.isParametrized;
+            this.isParametrized = nt.isParametrized;
             rebuildShape();
         }
 
@@ -170,9 +171,9 @@ public abstract class AbstractTippableObject extends Constructible implements ha
         mathobject.copyStateFrom(refMathObject);
         Vec tangent;
         if (isParametrized) {
-            tangent = shape.getPath().getParametrizedSlopeAt(locationParameterOnShape, slopeDirection == slopeDirection.POSITIVE);
+            tangent = shape.getPath().getParametrizedSlopeAt(locationParameterOnShape, slopeDirectionType == slopeDirectionType.POSITIVE);
         } else {
-            tangent = shape.getPath().getSlopeAt(locationParameterOnShape, slopeDirection == slopeDirection.POSITIVE);
+            tangent = shape.getPath().getSlopeAt(locationParameterOnShape, slopeDirectionType == slopeDirectionType.POSITIVE);
         }
 
         Vec normal = Vec.to(-tangent.y, tangent.x).normalize();
@@ -196,7 +197,6 @@ public abstract class AbstractTippableObject extends Constructible implements ha
         mathobject.shift(shiftVector);
 
     }
-    protected double correctionAngle;
 
     @Override
     public double getScalar() {
@@ -209,12 +209,12 @@ public abstract class AbstractTippableObject extends Constructible implements ha
         rebuildShape();
     }
 
-    public slopeDirectionType getSlopeDirection() {
-        return slopeDirection;
+    public SlopeDirectionType getSlopeDirection() {
+        return slopeDirectionType;
     }
 
-    public AbstractTippableObject slopeDirection(slopeDirectionType slopeDirection) {
-        this.slopeDirection = slopeDirection;
+    public AbstractTippableObject slopeDirection(SlopeDirectionType slopeDirection) {
+        this.slopeDirectionType = slopeDirection;
         rebuildShape();
         return this;
     }
@@ -228,8 +228,8 @@ public abstract class AbstractTippableObject extends Constructible implements ha
         return markPoint;
     }
 
-    public AbstractTippableObject visibleMarkPoint(boolean visible) {
+    public <T extends AbstractTippableObject> T visibleMarkPoint(boolean visible) {
         markPoint.visible(visible);
-        return this;
+        return (T) this;
     }
 }
