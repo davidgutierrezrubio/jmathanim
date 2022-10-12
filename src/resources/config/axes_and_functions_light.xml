@@ -25,5 +25,15 @@
             <fillColor>#4F4F4F</fillColor>
             <thickness>1</thickness>
         </style>
+        <style name="gridPrimaryDefault">
+             <drawColor>black</drawColor>
+            <fillColor>TRANSPARENT</fillColor>
+            <thickness>8</thickness>
+        </style>
+         <style name="gridSecondaryDefault">
+             <drawColor>#A0A0A0</drawColor>
+            <fillColor>TRANSPARENT</fillColor>
+            <thickness>6</thickness>
+        </style>
     </styles>
 </JMathAnimConfig>

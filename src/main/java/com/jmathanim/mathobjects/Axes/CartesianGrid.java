@@ -40,7 +40,8 @@ public class CartesianGrid extends Constructible {
 
     /**
      * Creates a new cartesian grid located at a given reference point with
-     * given horizontal and vertical spaces between lines
+     * given horizontal and vertical spaces between lines. Grid with be drawed
+     * using the style gridPrimaryDefault, if available.
      *
      * @param centerX x coordinate of reference point
      * @param centerY y coordinate of reference point
@@ -50,10 +51,41 @@ public class CartesianGrid extends Constructible {
      */
     public static CartesianGrid make(double centerX, double centerY, double xStep, double yStep) {
         CartesianGrid resul = new CartesianGrid(centerX, centerY, xStep, yStep);
+        resul.style("gridPrimaryDefault");
         resul.layer(-Integer.MAX_VALUE);
         resul.recomputeGrid();
         resul.alignGridToScreen();
         return resul;
+    }
+
+    /**
+     * Creates a new cartesian grid with primary and secondary lines located at
+     * a given reference point with given horizontal and vertical spaces between
+     * lines. Grid with be drawed using the style gridPrimaryDefault and
+     * gridSecondaryDefault, if availables.
+     *
+     * @param centerX x coordinate of reference point
+     * @param centerY y coordinate of reference point
+     * @param xStep x step between vertical lines
+     * @param yStep y step between horizontal lines
+     * @param xStepSec x step between vertical lines for secondary lines
+     * @param yStepSec y step between vertical lines for secondary lines
+     * @return The created grid
+     */
+    public static MathObjectGroup make(double centerX, double centerY, double xStep, double yStep, double xStepSec, double yStepSec) {
+        CartesianGrid big = new CartesianGrid(centerX, centerY, xStep, yStep);
+        CartesianGrid small = new CartesianGrid(centerX, centerY, xStepSec, yStepSec);
+
+        big.style("gridPrimaryDefault");
+        big.layer(-Integer.MAX_VALUE + 1);
+        big.recomputeGrid();
+        big.alignGridToScreen();
+        small.style("gridSecondaryDefault");
+        small.layer(-Integer.MAX_VALUE);
+        small.recomputeGrid();
+        small.alignGridToScreen();
+        return MathObjectGroup.make(big, small);
+
     }
 
     protected CartesianGrid(double x, double y, double w, double h) {
