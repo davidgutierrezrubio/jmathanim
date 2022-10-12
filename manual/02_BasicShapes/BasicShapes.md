@@ -208,7 +208,21 @@ waitSeconds(3);
 
 <img src="cartesianGrid.png" alt="image-20220920180537862" style="zoom:50%;" />
 
+You can specify a second pair of parameters to include a secondary grid, in this case, returns a `MathObjectGroup` including 2 cartesian grids, the primary and secondary.
 
+```java
+MathObjectGroup grid = CartesianGrid.make(0, 0, .5, .5, .25, .25);
+add(
+    grid,
+    Shape.circle().drawColor("blue").fillColor("blue").fillAlpha(.5)
+);
+```
+
+
+
+<img src="grid02.png" alt="grid2" style="zoom: 67%;" />
+
+By default, grids are drawn using the `gridPrimaryDefault` and  `gridSecondaryDefault` styles. You can read more about styles in the next chapters.
 
 ## The `Arrow2D` class
 
