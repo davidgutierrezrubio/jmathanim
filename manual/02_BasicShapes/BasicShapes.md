@@ -308,7 +308,7 @@ Shape reg = Shape.regularPolygon(6).center().style("solidblue");
 
 //A black type 1 arrow head at the middle of one side
 TippableObject tip1 = TippableObject.arrowHead(reg, .5 / 6,
-	TippableObject.slopeDirection.POSITIVE,
+	TippableObject.SlopeDirection.POSITIVE,
     Arrow2D.ArrowType.TYPE_1
     ).layer(1);
 
@@ -331,13 +331,13 @@ TippableObject tip4 = TippableObject.equalLengthTip(reg, 3.5 / 6, 2).layer(1);
 
 //A solid orange circle
 TippableObject tip5 = TippableObject.make(reg, 4.5 / 6,
-	TippableObject.slopeDirection.POSITIVE,
+	TippableObject.SlopeDirection.POSITIVE,
     Shape.circle().scale(.05).style("solidOrange")
     ).layer(1);
 
 //A solid red square, aligned to the left of the shape point
 TippableObject tip6 = TippableObject.make(reg, 5.5 / 6,
-	TippableObject.slopeDirection.POSITIVE,
+	TippableObject.SlopeDirection.POSITIVE,
     Shape.square().scale(.1).style("solidRed")
                                          );
 tip6.setAnchor(Anchor.Type.LEFT).layer(1);
@@ -417,8 +417,8 @@ A `MathObjectGroup` inherits from the `MathObject`class so that you can perform 
 
 Any style change will be applied to all elements in the group.
 
-```
-group.setFillColor("cadetblue"); //Apply this fillcolor to square, triangle and circle
+```java
+group.setFillColor("cadetblue");//Apply this fillcolor to square, triangle and circle
 ```
 
 Note that you don't need to add the `MathObjectGroup` to the scene in order to show its members. You can add the objects you want to the scene individually. Adding a `MathObjectGroup` to the scene does not add the object itself, but is equivalent to adding all its members to the scene.
