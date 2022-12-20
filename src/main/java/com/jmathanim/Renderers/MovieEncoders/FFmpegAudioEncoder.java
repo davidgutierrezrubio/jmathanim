@@ -83,7 +83,7 @@ public class FFmpegAudioEncoder {
 
             //Ok, prepare to encode
             //First, encode first audio file within tempSoundName1.wav
-            JMathAnimScene.logger.info("Processing sound: [1/" + soundItems.size() + "]: ");
+            JMathAnimScene.logger.debug("Processing sound: [1/" + soundItems.size() + "]: ");
             runFirstFfmpegCommand(soundItems.get(0), tempAudioFileName + "1.wav");
 
             //Now run a loop where encoding tempSoundName1+sound(1) to tempSoundName0
@@ -91,17 +91,17 @@ public class FFmpegAudioEncoder {
             //                              tempSoundName1+sound(3) to tempSoundName0...
             int index = 1;
             for (int i = 1; i < soundItems.size(); i++) {
-                JMathAnimScene.logger.info("Processing sound: [" + (i + 1) + "/" + soundItems.size() + "]");
+                JMathAnimScene.logger.debug("Processing sound: [" + (i + 1) + "/" + soundItems.size() + "]");
                 runIntermediateFfmpegCommand(soundItems.get(i), tempAudioFileName + index + ".wav", tempAudioFileName + (1 - index) + ".wav");
                 index = 1 - index;
             }
 
             //And finally, do the final encoding
             //mixing tempVideoFile, tempAudioFile to finalVideoFile
-            JMathAnimScene.logger.info("Joining everything...");
+            JMathAnimScene.logger.debug("Joining sounds and video...");
             runFinalFFmpegCommand(tempVideoFileName, tempAudioFileName + index + ".wav", finalOutputFileName);
             if (conversionOk) {
-                JMathAnimScene.logger.info("Conversion Ok");
+                JMathAnimScene.logger.info("Sounds added succesfully");
             } else {
                 JMathAnimScene.logger.error("Unexpected error converting. At least one of the ffmpeg calls returned error.");
             }

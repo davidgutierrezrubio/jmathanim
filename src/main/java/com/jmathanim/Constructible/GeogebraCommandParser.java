@@ -289,7 +289,7 @@ class GeogebraCommandParser {
         resul.dotStyle(dotStyle);
         resul.objectLabel = label;
         registerGeogebraElement(label, resul);
-        JMathAnimScene.logger.debug("Imported point {}", label);
+        JMathAnimScene.logger.debug("Imported Geogebra point {}", label);
     }
 
     void processImageElement(Element el, ZipFile zipFile) {
@@ -511,7 +511,7 @@ class GeogebraCommandParser {
 
         registerGeogebraElement(label, CTRegularPolygon.makeFromPointList(vertices));
 
-        JMathAnimScene.logger.debug("Imported regular polygon " + label);
+        JMathAnimScene.logger.debug("Imported Geogebra regular polygon " + label);
     }
 
     protected void processCircleCommand(Element el) {
@@ -581,7 +581,7 @@ class GeogebraCommandParser {
             }
         }
 
-        JMathAnimScene.logger.debug("Imported intersection point " + label + " of " + objs[0] + " and " + objs[1]);
+        JMathAnimScene.logger.debug("Imported Geogebra intersection point " + label + " of " + objs[0] + " and " + objs[1]);
     }
 
     void processPointOnObject(Element el) {
@@ -590,7 +590,7 @@ class GeogebraCommandParser {
         Constructible ob1 = (Constructible) objs[0];
         final CTPointOnObject p = CTPointOnObject.make(ob1);
         registerGeogebraElement(label, p);
-        JMathAnimScene.logger.debug("Imported point " + label + " on object " + objs[0]);
+        JMathAnimScene.logger.debug("Imported Geogebra point " + label + " on object " + objs[0]);
     }
 
     void processEllipse(Element el) {
@@ -621,7 +621,7 @@ class GeogebraCommandParser {
             CTPoint pointToMirror = (CTPoint) objs[0];
             Constructible mirrorAxis = (Constructible) objs[1];
             registerGeogebraElement(label, CTMirrorPoint.make(pointToMirror, mirrorAxis));
-            JMathAnimScene.logger.debug("Imported mirror point " + label + " of " + objs[0] + " with axis " + objs[1]);
+            JMathAnimScene.logger.debug("Imported Geogebra mirror point " + label + " of " + objs[0] + " with axis " + objs[1]);
         }
         if (objs[0] instanceof CTLine) {
             CTLine lineToMirror = (CTLine) objs[0];
@@ -629,12 +629,12 @@ class GeogebraCommandParser {
             if (mirrorAxis instanceof CTLine) {
                 Constructible resul = CTTransformedLine.makeAxisReflectionLine(lineToMirror, (CTLine) mirrorAxis);
                 registerGeogebraElement(label, resul);
-                JMathAnimScene.logger.debug("Imported axis mirror line " + label + " of " + objs[0] + " with axis " + objs[1]);
+                JMathAnimScene.logger.debug("Imported Geogebra xis mirror line " + label + " of " + objs[0] + " with axis " + objs[1]);
             }
             if (mirrorAxis instanceof CTPoint) {
                 Constructible resul = CTTransformedLine.makePointReflectionLine(lineToMirror, (CTPoint) mirrorAxis);
                 registerGeogebraElement(label, resul);
-                JMathAnimScene.logger.debug("Imported central mirror of line " + label + " of " + objs[0] + " with axis " + objs[1]);
+                JMathAnimScene.logger.debug("Imported Geogebra central mirror of line " + label + " of " + objs[0] + " with axis " + objs[1]);
             }
 
         }
@@ -648,13 +648,13 @@ class GeogebraCommandParser {
             CTPoint pointToTranslate = (CTPoint) objs[0];
             CTVector translateVector = (CTVector) objs[1];
             registerGeogebraElement(label, CTTranslatedPoint.make(pointToTranslate, translateVector));
-            JMathAnimScene.logger.debug("Imported translate point " + label + " of " + objs[0] + " with vector " + objs[1]);
+            JMathAnimScene.logger.debug("Imported Geogebra translate point " + label + " of " + objs[0] + " with vector " + objs[1]);
         }
         if (objs[0] instanceof CTLine) {
             CTLine cTLineToTranslate = (CTLine) objs[0];
             CTVector translateVector = (CTVector) objs[1];
             registerGeogebraElement(label, CTTransformedLine.makeTranslatedLine(cTLineToTranslate, translateVector));
-            JMathAnimScene.logger.debug("Imported translated line " + label + " of " + objs[0] + " with vector " + objs[1]);
+            JMathAnimScene.logger.debug("Imported Geogebra translated line " + label + " of " + objs[0] + " with vector " + objs[1]);
 
         }
     }
@@ -668,21 +668,21 @@ class GeogebraCommandParser {
             Scalar angle = (Scalar) objs[1];
             CTPoint rotationCenter = (CTPoint) objs[2];
             registerGeogebraElement(label, CTRotatedPoint.make(pointToRotate, rotationCenter, angle));
-            JMathAnimScene.logger.debug("Imported rotated point " + label + " of " + objs[0] + " with angle " + objs[1]);
+            JMathAnimScene.logger.debug("Imported Geogebra rotated point " + label + " of " + objs[0] + " with angle " + objs[1]);
         }
         if (objs[0] instanceof CTLine) {
             CTLine lineToRotate = (CTLine) objs[0];
             Scalar angle = (Scalar) objs[1];
             CTPoint rotationCenter = (CTPoint) objs[2];
             registerGeogebraElement(label, CTTransformedLine.makeRotatedLine(lineToRotate, rotationCenter, angle));
-            JMathAnimScene.logger.debug("Imported rotated point " + label + " of " + objs[0] + " with angle " + objs[1]);
+            JMathAnimScene.logger.debug("Imported Geogebra rotated point " + label + " of " + objs[0] + " with angle " + objs[1]);
         }
         if (aa instanceof CTCircle) {
             CTCircle circleToRotate = (CTCircle) objs[0];
             Scalar angle = (Scalar) objs[1];
             CTPoint rotationCenter = (CTPoint) objs[2];
             registerGeogebraElement(label, CTTransformedCircle.makeRotatedCircle(circleToRotate, rotationCenter, angle));
-            JMathAnimScene.logger.debug("Imported rotated point " + label + " of " + objs[0] + " with angle " + objs[1]);
+            JMathAnimScene.logger.debug("Imported Geogebra rotated point " + label + " of " + objs[0] + " with angle " + objs[1]);
         }
 
     }
@@ -707,7 +707,7 @@ class GeogebraCommandParser {
         Element elCoords = firstElementWithTag(el, "value");
         double value = Double.valueOf(elCoords.getAttribute("val"));
         registerGeogebraElement(label, Scalar.make(value));
-        JMathAnimScene.logger.debug("Imported scalar value " + label + "=" + value);
+        JMathAnimScene.logger.debug("Imported Geogebra scalar value " + label + "=" + value);
 
     }
 
