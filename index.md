@@ -25,7 +25,7 @@ Manual
 What's new?
 ===========
 
-Version 0.9.7 (20/09/22)
+Version 0.9.7 (09/20/22)
 
 -   Improved drawing algorithm in `FunctionGraph`for functions with infinity slope at some points.
 -   Rewritten `TippableObject` and `LabelTip` classes, allowing more flexibility to animate tippable objects.
@@ -54,7 +54,7 @@ Version 0.9.6 (03/06/22)
 
 -   Fixed bugs and polished code in `ParametricCurve` class.
 
-Version 0.9.5 (03/24/2022)
+Version 0.9.5 (23/03/2022)
 
 -   Added first version of `CrossMathElements`animation, that can be used to
     cross single or multiple elements of a formula.
@@ -75,7 +75,7 @@ Version 0.9.5 (03/24/2022)
     `JLaTeXMath`library, making it considerably faster and removing the need to
     install a LaTeX distribution.
 
-Version 0.9.4 released (12/26/2021)
+Version 0.9.4 released (26/12/2021)
 
 -   Added configuration flag `config.setShowDebugFrameNumbers` to superimpose
     frame number on animation.
