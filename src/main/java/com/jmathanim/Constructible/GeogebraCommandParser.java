@@ -17,9 +17,9 @@
  */
 package com.jmathanim.Constructible;
 
-import com.jmathanim.Constructible.Conics.CTCircleSector;
 import com.jmathanim.Constructible.Conics.CTCircle;
 import com.jmathanim.Constructible.Conics.CTCircleArc;
+import com.jmathanim.Constructible.Conics.CTCircleSector;
 import com.jmathanim.Constructible.Conics.CTEllipse;
 import com.jmathanim.Constructible.Conics.CTSemiCircle;
 import com.jmathanim.Constructible.Conics.CTTransformedCircle;

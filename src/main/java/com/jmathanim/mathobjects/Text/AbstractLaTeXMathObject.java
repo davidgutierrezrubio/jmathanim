@@ -19,7 +19,6 @@ package com.jmathanim.mathobjects.Text;
 import com.jmathanim.Styling.JMColor;
 import com.jmathanim.Utils.AffineJTransform;
 import com.jmathanim.Utils.Anchor;
-import com.jmathanim.Utils.JMathAnimConfig;
 import com.jmathanim.Utils.SVGUtils;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.MathObject;

@@ -17,13 +17,11 @@
 package com.jmathanim.mathobjects.Tippable;
 
 import com.jmathanim.Utils.Anchor;
-import static com.jmathanim.jmathanim.JMathAnimScene.PI;
 import com.jmathanim.mathobjects.Arrow2D;
 import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.MultiShapeObject;
 import com.jmathanim.mathobjects.Point;
 import com.jmathanim.mathobjects.Shape;
-import com.jmathanim.mathobjects.Text.LaTeXMathObject;
 
 /**
  *

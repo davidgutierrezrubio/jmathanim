@@ -18,7 +18,6 @@
 package com.jmathanim.Animations;
 
 import com.jmathanim.Cameras.Camera;
-import com.jmathanim.Cameras.hasCameraParameters;
 import com.jmathanim.Styling.PaintStyle;
 import com.jmathanim.Utils.Anchor;
 import com.jmathanim.Utils.OrientationType;

@@ -20,7 +20,6 @@ package com.jmathanim.Constructible;
 import com.jmathanim.Constructible.Points.CTPoint;
 import com.jmathanim.Utils.Anchor;
 import com.jmathanim.jmathanim.JMathAnimScene;
-import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.Text.LaTeXMathObject;
 
 /**

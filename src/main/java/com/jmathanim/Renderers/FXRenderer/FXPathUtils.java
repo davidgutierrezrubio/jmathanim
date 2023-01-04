@@ -19,7 +19,6 @@ package com.jmathanim.Renderers.FXRenderer;
 
 import com.jmathanim.Cameras.Camera;
 import com.jmathanim.Utils.AffineJTransform;
-import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.mathobjects.JMPath;
 import com.jmathanim.mathobjects.JMPathPoint;

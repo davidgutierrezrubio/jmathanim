@@ -16,13 +16,12 @@
  */
 package com.jmathanim.mathobjects.Text;
 
-import com.jmathanim.Utils.Anchor;
 import com.jmathanim.mathobjects.MathObject;
-import com.jmathanim.mathobjects.SVGMathObject;
 import com.jmathanim.mathobjects.hasScalarParameter;
 import java.text.DecimalFormat;
 
 /**
+ * This class represents a number that can be changed.
  *
  * @author David Gutierrez Rubio davidgutierrezrubio@gmail.com
  */
@@ -34,6 +33,7 @@ public class JMNumber extends AbstractLaTeXMathObject implements hasScalarParame
 
     public static JMNumber make(double d) {
         JMNumber resul = new JMNumber(d);
+        resul.style("latexdefault");
         resul.setScalar(d);
         return resul;
     }
@@ -55,15 +55,6 @@ public class JMNumber extends AbstractLaTeXMathObject implements hasScalarParame
         changeInnerLaTeX(text);
     }
 
-//    @Override
-//    public newJMNumber copy() {
-//        newJMNumber copy = newJMNumber.make(value);
-//        copy.format = this.format;
-//        copy.setScalar(value);
-//        copy.getMp().copyFrom(this.getMp());
-//        copy.modelMatrix.copyFrom(modelMatrix);
-//        return copy;
-//    }
     @Override
     public JMNumber copy() {
         JMNumber resul = new JMNumber(getScalar());
@@ -83,18 +74,11 @@ public class JMNumber extends AbstractLaTeXMathObject implements hasScalarParame
         }
     }
 
-//    @Override
-//    public void copyStateFrom(MathObject obj) {
-//         super.copyStateFrom(obj);
-//        if (obj instanceof newJMNumber) {
-//            newJMNumber copy = (newJMNumber) obj;
-//            getMp().copyFrom(copy.getMp());
-//            format = copy.format;
-////            modelMatrix.copyFrom(copy.modelMatrix);
-////            setScalar(copy.getScalar());
-//        }
-//
-//    }
+    /**
+     * Returns the current format of the number
+     *
+     * @return The format, in the convention of DecimalFormat class.
+     */
     public String getFormat() {
         return format;
     }

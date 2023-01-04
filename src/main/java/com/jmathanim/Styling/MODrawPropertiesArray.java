@@ -358,5 +358,5 @@ public class MODrawPropertiesArray implements Stylable, Stateable {
     public Double getScaleArrowHead2() {
            return mpRef.getScaleArrowHead2();
     }
-    
+  
 }

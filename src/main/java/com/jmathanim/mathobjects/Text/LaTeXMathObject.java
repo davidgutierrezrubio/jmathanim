@@ -17,10 +17,6 @@
  */
 package com.jmathanim.mathobjects.Text;
 
-import com.jmathanim.Utils.AffineJTransform;
-import com.jmathanim.mathobjects.MathObject;
-import com.jmathanim.mathobjects.Shape;
-
 /**
  *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com

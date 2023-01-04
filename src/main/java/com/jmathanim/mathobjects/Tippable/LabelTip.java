@@ -22,7 +22,6 @@ import com.jmathanim.mathobjects.Point;
 import com.jmathanim.mathobjects.Shape;
 import com.jmathanim.mathobjects.Text.AbstractLaTeXMathObject;
 import com.jmathanim.mathobjects.Text.LaTeXMathObject;
-import java.awt.Label;
 
 /**
  *

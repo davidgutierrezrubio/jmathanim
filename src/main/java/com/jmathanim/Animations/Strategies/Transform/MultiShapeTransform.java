@@ -24,7 +24,6 @@ import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.MultiShapeObject;
 import com.jmathanim.mathobjects.Shape;
-import java.util.ArrayList;
 
 /**
  * Animation strategy between 2 multishapes A and B. If size(A) equals size(B)

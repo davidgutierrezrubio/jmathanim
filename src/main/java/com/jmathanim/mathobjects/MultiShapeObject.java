@@ -48,9 +48,11 @@ public class MultiShapeObject extends MathObject implements Iterable<Shape> {
         MultiShapeObject resul = new MultiShapeObject(Arrays.asList(shapes));
         return resul;
     }
+
     protected MultiShapeObject() {
-         this(new ArrayList<Shape>());
+        this(new ArrayList<Shape>());
     }
+
     private MultiShapeObject(List<Shape> jmps) {
         super();
         isAddedToScene = false;
@@ -346,4 +348,27 @@ public class MultiShapeObject extends MathObject implements Iterable<Shape> {
     public Shape[] toArray() {
         return shapes.toArray(Shape[]::new);
     }
+
+    /**
+     * Returns a Shape object with all shapes of this MultiShapeObject merged.
+     * Drawing style is copied from general drawing style from this object.
+     *
+     * @param connect If true, connect the ending of a shape with the beginning of the next one by a straight line.
+     * @param close If true, closes the resulting shape.
+     * @return The Shape object created.
+     */
+    public Shape merge(boolean connect, boolean close) {
+        Shape resul = new Shape();
+        for (Shape sht : this) {
+            Shape sh = sht.copy();
+            sh.getPath().openPath();
+            resul.merge(sh, connect, false);
+        }
+        if (close) {
+            resul.getPath().closePath();
+        }
+        resul.getMp().copyFrom(this.getMp());
+        return resul;
+    }
+
 }

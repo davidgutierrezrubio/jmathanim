@@ -30,7 +30,6 @@ import com.jmathanim.jmathanim.JMathAnimScene;
 import static com.jmathanim.jmathanim.JMathAnimScene.PI;
 import java.util.OptionalInt;
 import javafx.scene.shape.Path;
-import javafx.scene.shape.PathElement;
 
 /**
  *
