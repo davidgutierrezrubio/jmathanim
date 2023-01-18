@@ -20,6 +20,8 @@ package com.jmathanim.Styling;
 import com.jmathanim.Cameras.Camera;
 import com.jmathanim.Renderers.FXRenderer.JavaFXRenderer;
 import com.jmathanim.mathobjects.Point;
+import java.util.HashMap;
+import java.util.Objects;
 import javafx.scene.paint.CycleMethod;
 import javafx.scene.paint.Paint;
 import javafx.scene.paint.RadialGradient;
@@ -58,11 +60,44 @@ public class JMRadialGradient extends PaintStyle {
     @Override
     public JMRadialGradient copy() {
         JMRadialGradient resul = new JMRadialGradient(center.copy(), focusAngle, focusDistance, radius);
-        resul.relativeToShape = this.relativeToShape;
-        resul.stops = this.stops.copy();
-        resul.cycleMethod = this.cycleMethod;
-        resul.setAlpha(this.getAlpha());
+        resul.copyFrom(this);
         return resul;
+    }
+
+    @Override
+    public void copyFrom(PaintStyle A) {
+        if (A == null) {
+            return;
+        }
+        if (A instanceof JMRadialGradient) {
+            JMRadialGradient jmrg = (JMRadialGradient) A;
+            this.center.copyFrom(jmrg.center);
+            this.focusAngle = jmrg.focusAngle;
+            this.focusDistance = jmrg.focusDistance;
+            this.radius = jmrg.radius;
+            this.relativeToShape = jmrg.relativeToShape;
+            this.cycleMethod = jmrg.cycleMethod;
+            this.setAlpha(jmrg.getAlpha());
+            this.stops = jmrg.stops.copy();
+        }
+        //For a linear gradient, try to convert it to a radial one
+        if (A instanceof JMLinearGradient) {
+            JMLinearGradient jmlg = (JMLinearGradient) A;
+            this.center.copyFrom(jmlg.start);
+            this.radius = jmlg.start.to(jmlg.end).norm();
+            this.relativeToShape = jmlg.relativeToShape;
+            this.cycleMethod = jmlg.cycleMethod;
+            this.setAlpha(jmlg.getAlpha());
+            this.stops = jmlg.stops.copy();
+        }
+        //For a single color, simply generate a trivial color stop
+        if (A instanceof JMColor) {
+            JMColor jMColor = (JMColor) A;
+            HashMap<Double, JMColor> map = this.stops.getColorHashMap();
+            map.clear();
+            map.put(0d, jMColor);
+        }
+
     }
 
     @Override
@@ -215,6 +250,52 @@ public class JMRadialGradient extends PaintStyle {
     public JMRadialGradient setCycleMethod(CycleMethod cycleMethod) {
         this.cycleMethod = cycleMethod;
         return this;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 83 * hash + Objects.hashCode(this.center);
+        hash = 83 * hash + (int) (Double.doubleToLongBits(this.focusAngle) ^ (Double.doubleToLongBits(this.focusAngle) >>> 32));
+        hash = 83 * hash + (int) (Double.doubleToLongBits(this.focusDistance) ^ (Double.doubleToLongBits(this.focusDistance) >>> 32));
+        hash = 83 * hash + (int) (Double.doubleToLongBits(this.radius) ^ (Double.doubleToLongBits(this.radius) >>> 32));
+        hash = 83 * hash + Objects.hashCode(this.stops);
+        hash = 83 * hash + (this.relativeToShape ? 1 : 0);
+        hash = 83 * hash + Objects.hashCode(this.cycleMethod);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final JMRadialGradient other = (JMRadialGradient) obj;
+        if (Double.doubleToLongBits(this.focusAngle) != Double.doubleToLongBits(other.focusAngle)) {
+            return false;
+        }
+        if (Double.doubleToLongBits(this.focusDistance) != Double.doubleToLongBits(other.focusDistance)) {
+            return false;
+        }
+        if (Double.doubleToLongBits(this.radius) != Double.doubleToLongBits(other.radius)) {
+            return false;
+        }
+        if (this.relativeToShape != other.relativeToShape) {
+            return false;
+        }
+        if (!Objects.equals(this.center, other.center)) {
+            return false;
+        }
+        if (!Objects.equals(this.stops, other.stops)) {
+            return false;
+        }
+        return this.cycleMethod == other.cycleMethod;
     }
 
 }

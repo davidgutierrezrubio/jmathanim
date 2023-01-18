@@ -20,6 +20,7 @@ package com.jmathanim.Styling;
 import com.jmathanim.Cameras.Camera;
 import com.jmathanim.Renderers.FXRenderer.JavaFXRenderer;
 import com.jmathanim.mathobjects.JMImage;
+import java.util.Objects;
 import javafx.scene.paint.ImagePattern;
 import javafx.scene.paint.Paint;
 
@@ -48,6 +49,14 @@ public class JMImagePattern extends PaintStyle {
     }
 
     @Override
+    public void copyFrom(PaintStyle A) {
+        if (A instanceof JMImagePattern) {
+            JMImagePattern jmip = (JMImagePattern) A;
+            this.img=jmip.img.copy();
+        }
+    }
+
+    @Override
     public Paint getFXPaint(JavaFXRenderer r, Camera cam) {
         return new ImagePattern(img.getImage(),0,0,img.getWidth(),img.getHeight(),true);
 //        return new ImagePattern(img);
@@ -66,6 +75,28 @@ public class JMImagePattern extends PaintStyle {
     public JMImagePattern setPatternWidth(double w) {
         img.setWidth(w);
         return this;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 97 * hash + Objects.hashCode(this.img);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final JMImagePattern other = (JMImagePattern) obj;
+        return Objects.equals(this.img, other.img);
     }
 
     

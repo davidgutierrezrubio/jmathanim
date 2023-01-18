@@ -21,6 +21,8 @@ import com.jmathanim.Cameras.Camera;
 import com.jmathanim.Renderers.FXRenderer.JavaFXRenderer;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import java.lang.reflect.Field;
+import java.util.HashMap;
+import java.util.Iterator;
 import javafx.scene.paint.Paint;
 
 /**
@@ -124,13 +126,40 @@ public class JMColor extends PaintStyle {
      *
      * @param jmcolor The JMColor to copy values from
      */
-    public final void copyFrom(JMColor jmcolor) {
-        if (jmcolor != null) {
-            r = jmcolor.r;
-            g = jmcolor.g;
-            b = jmcolor.b;
-            alpha = jmcolor.alpha;
+    @Override
+    public final void copyFrom(PaintStyle ps) {
+        if (ps == null) {
+            return;
         }
+        if (ps instanceof JMColor) {
+            JMColor jmColor = (JMColor) ps;
+            r = jmColor.r;
+            g = jmColor.g;
+            b = jmColor.b;
+            alpha = jmColor.alpha;
+        }
+        //If PaintStyle is a linear gradient, take the first color
+
+        if (ps instanceof JMLinearGradient) {
+            JMLinearGradient jMLinearGradient = (JMLinearGradient) ps;
+            HashMap<Double, JMColor> stops = jMLinearGradient.getStops().getColorHashMap();
+            if (stops.isEmpty()) {
+                return;
+            }
+            Iterator<JMColor> iterator = stops.values().iterator();
+            this.copyFrom(iterator.next());
+        }
+        //The same for radial gradients
+        if (ps instanceof JMRadialGradient) {
+            JMRadialGradient jMRadialGradient = (JMRadialGradient) ps;
+            HashMap<Double, JMColor> stops = jMRadialGradient.getStops().getColorHashMap();
+            if (stops.isEmpty()) {
+                return;
+            }
+            Iterator<JMColor> iterator = stops.values().iterator();
+            this.copyFrom(iterator.next());
+        }
+        //TODO: For a image pattern, should compute the average color...
     }
 
     /**
@@ -175,8 +204,9 @@ public class JMColor extends PaintStyle {
     /**
      * Parse a string with color information and returns the JMColor associated.
      * If the string begins with "#" parses hexadecimal numbers in 3, 6 or 8
-     * digits. If the string equals one of the defined JavaFX color names ("white", "blue",
-     * etc.), returns this color. The names are case-insensitive.
+     * digits. If the string equals one of the defined JavaFX color names
+     * ("white", "blue", etc.), returns this color. The names are
+     * case-insensitive.
      *
      * @param str The string with the hex digits or the color name
      * @return A new JMColor with given parameters.
@@ -232,6 +262,40 @@ public class JMColor extends PaintStyle {
     public JMColor setAlpha(double alpha) {
         this.alpha = alpha;
         return this;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 53 * hash + (int) (Double.doubleToLongBits(this.r) ^ (Double.doubleToLongBits(this.r) >>> 32));
+        hash = 53 * hash + (int) (Double.doubleToLongBits(this.g) ^ (Double.doubleToLongBits(this.g) >>> 32));
+        hash = 53 * hash + (int) (Double.doubleToLongBits(this.b) ^ (Double.doubleToLongBits(this.b) >>> 32));
+        hash = 53 * hash + (int) (Double.doubleToLongBits(this.alpha) ^ (Double.doubleToLongBits(this.alpha) >>> 32));
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final JMColor other = (JMColor) obj;
+        if (Double.doubleToLongBits(this.r) != Double.doubleToLongBits(other.r)) {
+            return false;
+        }
+        if (Double.doubleToLongBits(this.g) != Double.doubleToLongBits(other.g)) {
+            return false;
+        }
+        if (Double.doubleToLongBits(this.b) != Double.doubleToLongBits(other.b)) {
+            return false;
+        }
+        return Double.doubleToLongBits(this.alpha) == Double.doubleToLongBits(other.alpha);
     }
 
 }

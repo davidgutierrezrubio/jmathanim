@@ -27,57 +27,57 @@ import java.util.ArrayList;
 
 public class CircularArrayList<E> extends ArrayList<E> {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	@Override
-	public E get(int index) throws ArrayIndexOutOfBoundsException {
+    @Override
+    public E get(int index) throws ArrayIndexOutOfBoundsException {
 
-		if (this.isEmpty()) {
-			throw new ArrayIndexOutOfBoundsException("Circular array with no elements");
-		}
-		while (index >= this.size()) {
-			index -= this.size();
-		}
+        if (this.isEmpty()) {
+            throw new ArrayIndexOutOfBoundsException("Circular array with no elements");
+        }
+        while (index >= this.size()) {
+            index -= this.size();
+        }
 
-		while (index < 0) {
-			index += this.size();
-		}
+        while (index < 0) {
+            index += this.size();
+        }
 
-		return super.get(index);
-	}
+        return super.get(index);
+    }
 
-	@Override
-	public E remove(int index) throws ArrayIndexOutOfBoundsException {
+    @Override
+    public E remove(int index) throws ArrayIndexOutOfBoundsException {
+        int size = this.size();
+        if (this.isEmpty()) {
+            throw new ArrayIndexOutOfBoundsException("Circular array with no elements");
+        }
+        while (index >= size) {
+            index -= size;
+        }
 
-		if (this.isEmpty()) {
-			throw new ArrayIndexOutOfBoundsException("Circular array with no elements");
-		}
-		while (index >= this.size()) {
-			index -= this.size();
-		}
+        while (index < 0) {
+            index += size;
+        }
 
-		while (index < 0) {
-			index += this.size();
-		}
+        return super.remove(index);
+    }
 
-		return super.remove(index);
-	}
+    @Override
+    public void add(int index, E element) {
+        int size = this.size();
+        if (!this.isEmpty()) {
 
-	@Override
-	public void add(int index, E element) {
+            while (index >= size) {
+                index -= size;
+            }
 
-		if (!this.isEmpty()) {
+            while (index < 0) {
+                index += size;
+            }
+        }
 
-			while (index >= this.size()) {
-				index -= this.size();
-			}
-
-			while (index < 0) {
-				index += this.size();
-			}
-		}
-
-		super.add(index, element); // To change body of generated methods, choose Tools | Templates.
-	}
+        super.add(index, element); // To change body of generated methods, choose Tools | Templates.
+    }
 
 }

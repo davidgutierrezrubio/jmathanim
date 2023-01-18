@@ -24,6 +24,7 @@ import com.jmathanim.mathobjects.Point.DotSyle;
 import com.jmathanim.mathobjects.Stateable;
 import java.awt.Color;
 import java.util.HashMap;
+import java.util.Objects;
 import java.util.concurrent.ThreadLocalRandom;
 import javafx.scene.shape.StrokeLineCap;
 
@@ -110,7 +111,7 @@ public class MODrawProperties implements Stylable, Stateable {
     // When added a new property here, remember to include it in rawCopyFrom and
     // copyFrom
     private Boolean faceToCamera = false;
-    private Vec faceToCameraPivot = Vec.to(0,0);
+    private Vec faceToCameraPivot = Vec.to(0, 0);
 
     // If false, thickness is computed to be a percentage of the width
     // to ensure zoom or resolution doesn't affect the result
@@ -128,8 +129,8 @@ public class MODrawProperties implements Stylable, Stateable {
     private StrokeLineCap linecap = StrokeLineCap.ROUND;
     private MODrawProperties mpBackup;
     private Double thickness = 1d;
-    private Double scaleArrowHead1=1d;
-    private Double scaleArrowHead2=1d;
+    private Double scaleArrowHead1 = 1d;
+    private Double scaleArrowHead2 = 1d;
 
     public MODrawProperties() {
         drawColor = new JMColor(1, 1, 1, 1);
@@ -174,12 +175,12 @@ public class MODrawProperties implements Stylable, Stateable {
         visible = (prop.isVisible() == null ? visible : prop.isVisible());
         faceToCamera = (prop.isFaceToCamera() == null ? faceToCamera : prop.isFaceToCamera());
         faceToCameraPivot = (prop.getFaceToCameraPivot() == null ? faceToCameraPivot : prop.getFaceToCameraPivot());
-        scaleArrowHead1=(prop.getScaleArrowHead1()==null ? scaleArrowHead1: prop.getScaleArrowHead1());
-        scaleArrowHead2=(prop.getScaleArrowHead1()==null ? scaleArrowHead2: prop.getScaleArrowHead2());
-    
+        scaleArrowHead1 = (prop.getScaleArrowHead1() == null ? scaleArrowHead1 : prop.getScaleArrowHead1());
+        scaleArrowHead2 = (prop.getScaleArrowHead1() == null ? scaleArrowHead2 : prop.getScaleArrowHead2());
+
     }
 
-     /**
+    /**
      * Copy attributes from the given {@link MODrawProperties} object Null
      * values are copied also
      *
@@ -199,12 +200,10 @@ public class MODrawProperties implements Stylable, Stateable {
         visible = mp.visible;
         faceToCamera = mp.faceToCamera;
         faceToCameraPivot = mp.faceToCameraPivot;
-        scaleArrowHead1=mp.scaleArrowHead1;
-        scaleArrowHead2=mp.scaleArrowHead2;
+        scaleArrowHead1 = mp.scaleArrowHead1;
+        scaleArrowHead2 = mp.scaleArrowHead2;
     }
 
-    
-    
     @Override
     public void setAbsoluteThickness(Boolean absThickness) {
         this.absoluteThickness = absThickness;
@@ -401,7 +400,6 @@ public class MODrawProperties implements Stylable, Stateable {
         setThickness(getThickness() * multT);
     }
 
-   
     @Override
     public void restoreState() {
         this.copyFrom(this.mpBackup);
@@ -434,12 +432,12 @@ public class MODrawProperties implements Stylable, Stateable {
 
     @Override
     public void setScaleArrowHead1(Double scale) {
-        this.scaleArrowHead1=scale;
+        this.scaleArrowHead1 = scale;
     }
 
     @Override
     public void setScaleArrowHead2(Double scale) {
-        this.scaleArrowHead2=scale;
+        this.scaleArrowHead2 = scale;
     }
 
     @Override
@@ -449,11 +447,39 @@ public class MODrawProperties implements Stylable, Stateable {
 
     @Override
     public Double getScaleArrowHead2() {
-         return scaleArrowHead2;
+        return scaleArrowHead2;
     }
 
     public enum DashStyle {
         SOLID, DASHED, DOTTED, DASHDOTTED
     }
-    
+
+    /**
+     * Returns a new MODrawProperties object with all values null except for those that have in common A and B
+     * @param A First MODrawProperties object to intersect
+     * @param B Second MODrawProperties object to intersect
+     * @return The intersection of both objects
+     */
+    public static MODrawProperties intersect(MODrawProperties A, MODrawProperties B) {
+        MODrawProperties intersect = MODrawProperties.makeNullValues();
+        if (A.getDrawColor().equals(B.getDrawColor())) {
+            intersect.getDrawColor().copyFrom(A.getDrawColor());
+        }
+        if (A.getFillColor().equals(B.getFillColor())) {
+            intersect.getFillColor().copyFrom(A.getFillColor());
+        }
+        intersect.thickness = (Objects.equals(A.thickness, B.thickness) ? A.thickness : intersect.thickness);
+        intersect.dashStyle = (Objects.equals(A.dashStyle, B.dashStyle) ? A.dashStyle : intersect.dashStyle);
+        intersect.absoluteThickness = (Objects.equals(A.absoluteThickness, B.absoluteThickness) ? A.absoluteThickness : intersect.absoluteThickness);
+        intersect.dotStyle = (Objects.equals(A.dotStyle, B.dotStyle) ? A.dotStyle : intersect.dotStyle);
+        intersect.layer = (Objects.equals(A.layer, B.layer) ? A.layer : intersect.layer);
+        intersect.linecap = (Objects.equals(A.linecap, B.linecap) ? A.linecap : intersect.linecap);
+        intersect.visible = (Objects.equals(A.visible, B.visible) ? A.visible : intersect.visible);
+        intersect.faceToCamera = (Objects.equals(A.faceToCamera, B.faceToCamera) ? A.faceToCamera : intersect.faceToCamera);
+        intersect.faceToCameraPivot = (Objects.equals(A.faceToCameraPivot, B.faceToCameraPivot) ? A.faceToCameraPivot : intersect.faceToCameraPivot);
+        intersect.scaleArrowHead1 = (Objects.equals(A.scaleArrowHead1, B.scaleArrowHead1) ? A.scaleArrowHead1 : intersect.scaleArrowHead1);
+        intersect.scaleArrowHead2 = (Objects.equals(A.scaleArrowHead2, B.scaleArrowHead2) ? A.scaleArrowHead2 : intersect.scaleArrowHead2);
+        return intersect;
+    }
+
 }

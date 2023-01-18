@@ -16,8 +16,10 @@ public abstract class PaintStyle {
     private double alpha;
 
     public PaintStyle() {
-        this.alpha=1;
+        this.alpha = 1;
     }
+
+    abstract public void copyFrom(PaintStyle A);
 
     /**
      * Returns the alpha parameter used for this paint style
@@ -34,9 +36,15 @@ public abstract class PaintStyle {
      * @param alpha Alpha value. 0 means invisible, 1 fully opaque
      */
     public PaintStyle setAlpha(double alpha) {
-        this.alpha=alpha;
+        this.alpha = alpha;
         return this;
     }
+
+    @Override
+    public abstract boolean equals(Object p);
+
+    @Override
+    public abstract int hashCode();
 
     /**
      * returns a valid Paint object to be used in JavaFX methods

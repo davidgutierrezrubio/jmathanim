@@ -19,7 +19,9 @@ package com.jmathanim.Styling;
 
 import com.jmathanim.Cameras.Camera;
 import com.jmathanim.Renderers.FXRenderer.JavaFXRenderer;
+import com.jmathanim.Utils.Vec;
 import com.jmathanim.mathobjects.Point;
+import java.util.Objects;
 import javafx.scene.paint.CycleMethod;
 import javafx.scene.paint.LinearGradient;
 import javafx.scene.paint.Paint;
@@ -56,12 +58,34 @@ public class JMLinearGradient extends PaintStyle {
     @Override
     public JMLinearGradient copy() {
         JMLinearGradient resul = new JMLinearGradient(start.copy(), end.copy());
-        resul.relativeToShape = this.relativeToShape;
-//        resul.getStops().getColorHashMap().putAll(stops.getColorHashMap());
-        resul.stops = this.stops.copy();
-        resul.cycleMethod = this.cycleMethod;
-        resul.setAlpha(this.getAlpha());
+        resul.copyFrom(this);
         return resul;
+    }
+
+    @Override
+    public void copyFrom(PaintStyle A) {
+        if (A == null) {
+            return;
+        }
+        if (A instanceof JMLinearGradient) {
+            JMLinearGradient jmlg = (JMLinearGradient) A;
+            this.start.copyFrom(jmlg.start);
+            this.end.copyFrom(jmlg.end);
+            this.relativeToShape = jmlg.relativeToShape;
+            this.cycleMethod = jmlg.cycleMethod;
+            this.stops = jmlg.stops.copy();
+            this.setAlpha(jmlg.getAlpha());
+        }
+        //Convert radial gradient into a linear one, horizontally
+         if (A instanceof JMRadialGradient) {
+            JMRadialGradient jmlg = (JMRadialGradient) A;
+            this.start.copyFrom(jmlg.center);
+            this.end.copyFrom(jmlg.center.add(Vec.to(jmlg.radius,0)));
+            this.relativeToShape = jmlg.relativeToShape;
+            this.cycleMethod = jmlg.cycleMethod;
+            this.stops = jmlg.stops.copy();
+            this.setAlpha(jmlg.getAlpha());
+        }
     }
 
     @Override
@@ -154,6 +178,44 @@ public class JMLinearGradient extends PaintStyle {
     public <T extends JMLinearGradient> T setCycleMethod(CycleMethod cycleMethod) {
         this.cycleMethod = cycleMethod;
         return (T) this;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 5;
+        hash = 13 * hash + Objects.hashCode(this.start);
+        hash = 13 * hash + Objects.hashCode(this.end);
+        hash = 13 * hash + Objects.hashCode(this.stops);
+        hash = 13 * hash + (this.relativeToShape ? 1 : 0);
+        hash = 13 * hash + Objects.hashCode(this.cycleMethod);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final JMLinearGradient other = (JMLinearGradient) obj;
+        if (this.relativeToShape != other.relativeToShape) {
+            return false;
+        }
+        if (!Objects.equals(this.start, other.start)) {
+            return false;
+        }
+        if (!Objects.equals(this.end, other.end)) {
+            return false;
+        }
+        if (!Objects.equals(this.stops, other.stops)) {
+            return false;
+        }
+        return this.cycleMethod == other.cycleMethod;
     }
 
 }
