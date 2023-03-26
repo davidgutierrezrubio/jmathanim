@@ -87,7 +87,6 @@ public class Transform extends AnimationWithEffects {
         mobjDestiny = ob2;
         transformMethod = null;
         shouldOptimizePathsFirst = true;
-        optimizeStrategy = null;
     }
 
     @Override

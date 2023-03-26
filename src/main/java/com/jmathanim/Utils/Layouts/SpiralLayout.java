@@ -102,6 +102,8 @@ public class SpiralLayout extends GroupLayout {
 
 	@Override
 	public void applyLayout(MathObjectGroup group) {
+            int[] turns=new int[]{0,0};//Experimental, to control horizontal/vertical ratio
+            int ii=0;
 		if (this.center != null) {// Stack first element to the center
 			group.get(0).stackTo(this.center, Anchor.Type.CENTER);
 		}
@@ -116,8 +118,9 @@ public class SpiralLayout extends GroupLayout {
 			numberOfStacks--;
 			if (numberOfStacks == 0) {// Ok, time to turn...
 				turnNumber++;
-				numberOfStacks = ((spiralGap + 1) * turnNumber + 1) / 2;// integer division: 1,1,2,2,3,3,4,4,....
+				numberOfStacks = turns[ii]+((spiralGap + 1) * turnNumber + 1) / 2;// integer division: 1,1,2,2,3,3,4,4,....
 				stackType = (stackType + 1) % 4;
+                                ii=(ii+1) % (turns.length);
 			}
 		}
 

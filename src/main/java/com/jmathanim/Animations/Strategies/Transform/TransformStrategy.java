@@ -18,6 +18,7 @@
 package com.jmathanim.Animations.Strategies.Transform;
 
 import com.jmathanim.Animations.AnimationWithEffects;
+import com.jmathanim.Animations.Strategies.Transform.Optimizers.OptimizePathsStrategy;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.MathObject;
 
@@ -27,15 +28,29 @@ import com.jmathanim.mathobjects.MathObject;
  */
 public abstract class TransformStrategy extends AnimationWithEffects {
 
-    
+    OptimizePathsStrategy optimizeStrategy = null;
 
     public TransformStrategy(double runTime) {
         super(runTime);
     }
 
     abstract public MathObject getIntermediateTransformedObject();
+
     abstract public MathObject getOriginObject();
+
     abstract public MathObject getDestinyObject();
+
+    /**
+     * Sets the optimization strategy.If null, the animation will try to find
+     * the most suitable optimization.
+     *
+     * @param strategy Optimization strategy
+     * @return This object
+     */
+    public TransformStrategy setOptimizationStrategy(OptimizePathsStrategy strategy) {
+        optimizeStrategy = strategy;
+        return this;
+    }
 
     @Override
     public void initialize(JMathAnimScene scene) {

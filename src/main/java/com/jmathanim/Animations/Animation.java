@@ -17,7 +17,6 @@
  */
 package com.jmathanim.Animations;
 
-import com.jmathanim.Animations.Strategies.Transform.Optimizers.OptimizePathsStrategy;
 import com.jmathanim.Utils.UsefulLambdas;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.MathObject;
@@ -82,10 +81,7 @@ public abstract class Animation {
      * Scene where this animation belongs
      */
     protected JMathAnimScene scene;
-    /**
-     * Optimization strategy to apply before performing the animation, if any
-     */
-    protected OptimizePathsStrategy optimizeStrategy = null;
+    
     /**
      * Lambda smooth function, ideally a growing function that maps 0 into 0 and
      * 1 into 1
@@ -277,18 +273,7 @@ public abstract class Animation {
         }
     }
 
-    /**
-     * Sets the optimization strategy.If null, the animation will try to find
-     * the most suitable optimization.
-     *
-     * @param <T> The calling subclass
-     * @param strategy Optimization strategy
-     * @return This object
-     */
-    public <T extends Animation> T setOptimizationStrategy(OptimizePathsStrategy strategy) {
-        optimizeStrategy = strategy;
-        return (T) this;
-    }
+   
 
     /**
      * Returns the smooth function
@@ -345,11 +330,8 @@ public abstract class Animation {
      */
     protected void restoreStates(MathObject... mathObjects) {
         if (this.isUseObjectState()) {
-            int n = 0;
             for (MathObject obj : mathObjects) {
-//                obj.restoreState();
                 obj.copyStateFrom(backups.get(obj));
-                n++;
             }
         }
     }

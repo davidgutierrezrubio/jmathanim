@@ -18,7 +18,7 @@
 package com.jmathanim.Animations;
 
 /**
- *
+ * An animation that plays a sound at a specific runtime
  * @author David Gutierrez Rubio davidgutierrezrubio@gmail.com
  */
 public class PlaySoundAt extends Animation {

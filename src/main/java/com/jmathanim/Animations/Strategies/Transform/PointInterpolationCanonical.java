@@ -18,6 +18,7 @@
 package com.jmathanim.Animations.Strategies.Transform;
 
 import com.jmathanim.Animations.Strategies.Transform.Optimizers.DivideOnSensiblePointsStrategy;
+import com.jmathanim.Animations.Strategies.Transform.Optimizers.OptimizePathsStrategy;
 import com.jmathanim.Styling.JMColor;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.CanonicalJMPath;
@@ -45,6 +46,10 @@ public class PointInterpolationCanonical extends TransformStrategy {
 //    private Shape originalShapeBaseCopy;
     private static final boolean DEBUG_COLORS = false;
 //    private final Shape mobjTransformedOrig;
+    /**
+     * Optimization strategy to apply before performing the animation, if any
+     */
+    protected OptimizePathsStrategy optimizeStrategy = null;
 
     public PointInterpolationCanonical(double runtime, Shape origin, Shape destiny) {
         super(runtime);

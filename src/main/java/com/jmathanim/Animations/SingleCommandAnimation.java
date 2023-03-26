@@ -48,6 +48,5 @@ public abstract class SingleCommandAnimation extends Animation {
     @Override
     public void doAnim(double t) {
     }
-;
 
 }

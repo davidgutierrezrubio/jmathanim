@@ -45,6 +45,7 @@ import java.util.HashMap;
 import javafx.scene.shape.StrokeLineCap;
 
 /**
+ * A convenience class that stores most common animations in static methods
  *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
@@ -189,9 +190,9 @@ public class Commands {
             }
         };
         AnimationGroup ag = new AnimationGroup();
-      
+
         for (MathObject obj : mathObjects) {
-              Point center = obj.getCenter();
+            Point center = obj.getCenter();
             Animation rotateAnim = Commands.rotate(runtime, center, twistAngle, obj).setLambda(t -> Math.sin(4 * PI * t));
             ag.add(rotateAnim);
             ag.add(Commands.scale(runtime, center, scale, obj).setLambda(UsefulLambdas.backAndForth()).setUseObjectState(false));
@@ -833,7 +834,7 @@ public class Commands {
                 double sy = (shrinkType == OrientationType.HORIZONTAL ? 1 : 1 - lt);
                 restoreStates(mathObjects);
                 for (MathObject obj : mathObjects) {
-                    obj.scale(sx,sy);
+                    obj.scale(sx, sy);
                     obj.multDrawAlpha(1 - lt);
                     obj.multFillAlpha(1 - lt);
                     obj.thickness(obj.getMp().getThickness() * (1 - lt));
@@ -1172,7 +1173,7 @@ public class Commands {
                         cnstr.freeMathObject(true);
                     }
                 }
-                 super.initialize(scene);
+                super.initialize(scene);
                 JMathAnimScene.logger.debug("Initialized moveOut animation");
                 // Compute appropiate shift vectors
                 Rect r = JMathAnimConfig.getConfig().getCamera().getMathView();
