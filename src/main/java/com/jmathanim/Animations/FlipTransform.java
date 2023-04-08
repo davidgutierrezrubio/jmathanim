@@ -121,7 +121,7 @@ public class FlipTransform extends AnimationWithEffects {
 
     @Override
     public void doAnim(double t) {
-        double lt = getLambda().applyAsDouble(t);
+        double lt = getTotalLambda().applyAsDouble(t);
         objOrig.visible(lt < .5);
         objDst.visible(lt >= .5);
         MathObject objectToScale;

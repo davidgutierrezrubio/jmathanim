@@ -216,16 +216,16 @@ public class TransformMathExpression extends Animation {
                 group.add(Commands.shrinkOut(runTime, 0, OrientationType.VERTICAL, sh));
                 break;
             case MOVE_OUT_UP:
-                group.add(Commands.moveOut(runTime, Anchor.Type.UPPER, sh).setLambda(lambda));
+                group.add(Commands.moveOut(runTime, Anchor.Type.UPPER, sh).setLambda(getTotalLambda()));
                 break;
             case MOVE_OUT_LEFT:
-                group.add(Commands.moveOut(runTime, Anchor.Type.LEFT, sh).setLambda(lambda));
+                group.add(Commands.moveOut(runTime, Anchor.Type.LEFT, sh).setLambda(getTotalLambda()));
                 break;
             case MOVE_OUT_RIGHT:
-                group.add(Commands.moveOut(runTime, Anchor.Type.RIGHT, sh).setLambda(lambda));
+                group.add(Commands.moveOut(runTime, Anchor.Type.RIGHT, sh).setLambda(getTotalLambda()));
                 break;
             case MOVE_OUT_DOWN:
-                group.add(Commands.moveOut(runTime, Anchor.Type.LOWER, sh).setLambda(lambda));
+                group.add(Commands.moveOut(runTime, Anchor.Type.LOWER, sh).setLambda(getTotalLambda()));
                 break;
         }
         if (par.getNumTurns() != 0) {
@@ -246,29 +246,29 @@ public class TransformMathExpression extends Animation {
 
         switch (par.getAddingStyle()) {
             case FADE_IN:
-                anim.add(Commands.fadeIn(runTime, sh).setLambda(lambda));
+                anim.add(Commands.fadeIn(runTime, sh).setLambda(getTotalLambda()));
                 break;
             case GROW_IN:
-                anim.add(Commands.growIn(runTime, sh).setLambda(lambda));
+                anim.add(Commands.growIn(runTime, sh).setLambda(getTotalLambda()));
                 break;
             case GROWH_IN:
-                anim.add(Commands.growIn(runTime, 0, OrientationType.HORIZONTAL, sh).setLambda(lambda));
+                anim.add(Commands.growIn(runTime, 0, OrientationType.HORIZONTAL, sh).setLambda(getTotalLambda()));
                 break;
             case GROWV_IN:
-                anim.add(Commands.growIn(runTime, 0, OrientationType.VERTICAL, sh).setLambda(lambda));
+                anim.add(Commands.growIn(runTime, 0, OrientationType.VERTICAL, sh).setLambda(getTotalLambda()));
                 break;
 
             case MOVE_IN_UP:
-                anim.add(Commands.moveIn(runTime, Anchor.Type.UPPER, sh).setLambda(lambda));
+                anim.add(Commands.moveIn(runTime, Anchor.Type.UPPER, sh).setLambda(getTotalLambda()));
                 break;
             case MOVE_IN_LEFT:
-                anim.add(Commands.moveIn(runTime, Anchor.Type.LEFT, sh).setLambda(lambda));
+                anim.add(Commands.moveIn(runTime, Anchor.Type.LEFT, sh).setLambda(getTotalLambda()));
                 break;
             case MOVE_IN_RIGHT:
-                anim.add(Commands.moveIn(runTime, Anchor.Type.RIGHT, sh).setLambda(lambda));
+                anim.add(Commands.moveIn(runTime, Anchor.Type.RIGHT, sh).setLambda(getTotalLambda()));
                 break;
             case MOVE_IN_DOWN:
-                anim.add(Commands.moveIn(runTime, Anchor.Type.LOWER, sh).setLambda(lambda));
+                anim.add(Commands.moveIn(runTime, Anchor.Type.LOWER, sh).setLambda(getTotalLambda()));
                 break;
         }
         if (par.getNumTurns() != 0) {
@@ -296,7 +296,7 @@ public class TransformMathExpression extends Animation {
                 transform = new FlipTransform(runTime, OrientationType.BOTH, sh, sh2);
                 break;
         }
-        transform.setLambda(lambda);
+        transform.setLambda(getTotalLambda());
 //        AnimationGroup group = new AnimationGroup(transform);
 
         if (par.getJumpHeightFromJumpEffect() != 0) {

@@ -73,7 +73,7 @@ public class PointInterpolationSimpleShapeTransform extends TransformStrategy {
 
     @Override
     public void doAnim(double t) {
-        double lt = lambda.applyAsDouble(t);
+        double lt = getTotalLambda().applyAsDouble(t);
         JMPathPoint interPoint, basePoint, dstPoint;
         for (int n = 0; n < intermediate.getPath().size(); n++) {
             interPoint = intermediate.get(n);

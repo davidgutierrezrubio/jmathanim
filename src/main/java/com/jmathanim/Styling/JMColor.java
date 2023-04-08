@@ -121,10 +121,10 @@ public class JMColor extends PaintStyle {
     }
 
     /**
-     * Set the RGBA values of those given by the parameter. If the given color
-     * is null, nothing is done
+     * Set the RGBA values of those given by the parameter.If the given color
+ is null, nothing is done
      *
-     * @param jmcolor The JMColor to copy values from
+     * @param ps PaintStyly to copy from
      */
     @Override
     public final void copyFrom(PaintStyle ps) {

@@ -81,12 +81,12 @@ public abstract class Animation {
      * Scene where this animation belongs
      */
     protected JMathAnimScene scene;
-    
+
     /**
      * Lambda smooth function, ideally a growing function that maps 0 into 0 and
      * 1 into 1
      */
-    protected DoubleUnaryOperator lambda;
+    private DoubleUnaryOperator lambda;
 
     protected Boolean useObjectState;
 
@@ -98,6 +98,9 @@ public abstract class Animation {
 
     protected Runnable finishRunnable;
     protected Runnable initRunnable;
+
+    protected double allocateStart;
+    protected double allocateEnd;
 
     /**
      * Creates an empty animation, with specified run time.This constructor
@@ -116,6 +119,8 @@ public abstract class Animation {
         backups = new HashMap<>();
         addThisAtTheEnd = new ArrayList<>();
         removeThisAtTheEnd = new ArrayList<>();
+        allocateStart = 0d;
+        allocateEnd = 1d;
     }
 
     /**
@@ -218,7 +223,7 @@ public abstract class Animation {
             return true;
         }
         if (status == Status.INITIALIZED) {
-            t+=dt;
+            t += dt;
             status = Status.RUNNING;
         }
         boolean resul;
@@ -273,32 +278,26 @@ public abstract class Animation {
         }
     }
 
-   
-
     /**
      * Returns the smooth function
      *
      * @return A lambda operator with the smooth function
      */
-    public DoubleUnaryOperator getLambda() {
-        return lambda;
+    public DoubleUnaryOperator getTotalLambda() {
+        return lambda.compose(UsefulLambdas.allocateTo(allocateStart, allocateEnd));
     }
 
-    public <T extends Animation> T composeLambdaWithThis(DoubleUnaryOperator lambdaComp) {
-        lambda = lambda.compose(lambdaComp);
-        return (T) this;
-    }
-
-    public <T extends Animation> T composeThisWithLambda(DoubleUnaryOperator lambdaComp) {
-        lambda = lambdaComp.compose(lambda);
-        return (T) this;
+    public void setAllocationParameters(double start, double end) {
+        this.allocateStart = start;
+        this.allocateEnd = end;
     }
 
     /**
-     * Sets the smooth function
+     * Sets the lambda function to control the time behaviour of the animation.
+     * A proper lambda is a function with range from 0 to 1 and dominion 0 to 1.
      *
      * @param <T> Animation subclass
-     * @param lambda A lambda operator with the new smooth function
+     * @param lambda A lambda operator with the new time function
      * @return The animation
      */
     public <T extends Animation> T setLambda(DoubleUnaryOperator lambda) {
@@ -419,8 +418,8 @@ public abstract class Animation {
      * @param anim Animation to copy parameters
      */
     protected void copyAnimationParametersTo(Animation anim) {
-        if (this.getLambda() != null) {
-            anim.setLambda(this.getLambda());
+        if (this.getTotalLambda() != null) {
+            anim.setLambda(this.getTotalLambda());
         }
 
         if (null != this.isShouldAddObjectsToScene()) {
@@ -433,6 +432,8 @@ public abstract class Animation {
         if (null != this.isShouldAddObjectsToScene()) {
             anim.setAddObjectsToScene(this.isShouldAddObjectsToScene());
         }
+        anim.allocateEnd = this.allocateEnd;
+        anim.allocateStart = this.allocateStart;
     }
 
     /**

@@ -103,7 +103,7 @@ public class ShowCreation extends Animation {
                 determineCreationStrategy(this.mobj);
             }
             createStrategy();
-            creationStrategy.setLambda(lambda);
+            creationStrategy.setLambda(getTotalLambda());
             creationStrategy.setAddObjectsToScene(this.isShouldAddObjectsToScene());
             creationStrategy.setShouldInterpolateStyles(this.isShouldInterpolateStyles());
             creationStrategy.setUseObjectState(this.isUseObjectState());
@@ -256,7 +256,7 @@ public class ShowCreation extends Animation {
 
                     @Override
                     public void doAnim(double t) {
-                        del.setAmplitudeScale(lambda.applyAsDouble(t));
+                        del.setAmplitudeScale(getTotalLambda().applyAsDouble(t));
                     }
 
                 };
@@ -326,10 +326,5 @@ public class ShowCreation extends Animation {
         return (T) this;
     }
 
-    @Override
-    public <T extends Animation> T composeLambdaWithThis(DoubleUnaryOperator lambdaComp) {
-        creationStrategy.composeLambdaWithThis(lambdaComp);
-        return (T) this;
-    }
 
 }

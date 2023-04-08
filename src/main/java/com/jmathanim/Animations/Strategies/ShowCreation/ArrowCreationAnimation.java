@@ -43,7 +43,7 @@ public class ArrowCreationAnimation extends AbstractCreationStrategy {
 
 	@Override
 	public void doAnim(double t) {
-		double lt = lambda.applyAsDouble(t);
+		double lt = getTotalLambda().applyAsDouble(t);
 		obj.restoreState();
 		// If there is only head 1 (the ending point), scale from the beginning
 		// if there are 2 heads (ending and beginning point), better scale from the

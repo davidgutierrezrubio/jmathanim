@@ -92,7 +92,7 @@ public class ContourHighlight extends Animation {
         if (t >= 1) {
             return;
         }
-        double lt = getLambda().applyAsDouble(t);
+        double lt = getTotalLambda().applyAsDouble(t);
         double b = UsefulLambdas.allocateTo(0, 1 - .5 * amplitude).applyAsDouble(lt);
         double a = UsefulLambdas.allocateTo(.5 * amplitude, 1).applyAsDouble(lt);
         for (MathObject obj : objs) {

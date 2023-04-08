@@ -74,7 +74,7 @@ public class PlaySoundAt extends Animation {
         if (isPlayed) {
             return;
         }
-        double lt = getLambda().applyAsDouble(t);
+        double lt = getTotalLambda().applyAsDouble(t);
         if (checkCondition(lt)) {
             scene.playSound(soundResourceName,soundPitch);
             isPlayed = true;

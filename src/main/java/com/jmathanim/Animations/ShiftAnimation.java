@@ -91,7 +91,7 @@ public abstract class ShiftAnimation extends AnimationWithEffects {
     @Override
     public void doAnim(double t) {
         int size = mathObjects.length;
-        double lt = getLambda().applyAsDouble(t);
+        double lt = getTotalLambda().applyAsDouble(t);
         restoreStates(mathObjects);
         double b = (1 - delayPercentage);
         for (MathObject obj : mathObjects) {
@@ -99,7 +99,7 @@ public abstract class ShiftAnimation extends AnimationWithEffects {
             if ((size > 1) && (delayPercentage > 0)) {
                 double a = beginningTimes.get(obj);
                 double newT = allocateToNewTime(a, a + b, t);
-                lt = getLambda().applyAsDouble(newT);
+                lt = getTotalLambda().applyAsDouble(newT);
             }
             obj.shift(v.mult(lt));
             effects.get(obj).applyAnimationEffects(lt, obj);

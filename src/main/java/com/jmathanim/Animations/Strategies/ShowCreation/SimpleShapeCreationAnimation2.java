@@ -41,14 +41,14 @@ public class SimpleShapeCreationAnimation2 extends AbstractCreationStrategy {
 
     @Override
     public void doAnim(double t) {
-        double lt = getLambda().applyAsDouble(t);
+        double lt = getTotalLambda().applyAsDouble(t);
         scene.addOnce(this.mobj.getSubShape(0, lt));
     }
 
     @Override
     public void finishAnimation() {
         super.finishAnimation();
-        double lt = getLambda().applyAsDouble(1);
+        double lt = getTotalLambda().applyAsDouble(1);
         if (lt == 1) {
             addObjectsToscene(mobj);
         } else if (lt == 0) {

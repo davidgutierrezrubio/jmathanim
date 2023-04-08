@@ -62,7 +62,7 @@ public abstract class AffineTransformStrategy extends TransformStrategy {
 
     @Override
     public void doAnim(double t) {
-        double lt = lambda.applyAsDouble(t);
+        double lt = getTotalLambda().applyAsDouble(t);
         restoreStates(intermediate);
         AffineJTransform tr = createIntermediateTransform(lt);
         tr.applyTransform(intermediate);

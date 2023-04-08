@@ -51,7 +51,7 @@ public class ArrowTransform extends TransformStrategy {
         anim = Commands.isomorphism(runTime, a, b, c, d, origin);
         this.copyEffectParametersTo(anim);
         this.copyAnimationParametersTo(anim);
-        anim.setLambda(lambda);
+        anim.setLambda(getTotalLambda());
         anim.initialize(scene);
     }
 

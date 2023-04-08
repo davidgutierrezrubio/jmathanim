@@ -107,7 +107,7 @@ public class PointInterpolationCanonical extends TransformStrategy {
 
     @Override
     public void doAnim(double t) {
-        double lt = lambda.applyAsDouble(t);
+        double lt = getTotalLambda().applyAsDouble(t);
         JMPathPoint interPoint, basePoint, dstPoint;
 
         if ((connectedOrigin.getNumberOfPaths() == 0) || (connectedDst.getNumberOfPaths() == 0)) {

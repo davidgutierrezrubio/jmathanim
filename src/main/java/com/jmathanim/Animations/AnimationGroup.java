@@ -70,7 +70,7 @@ public class AnimationGroup extends AnimationWithEffects {
      */
     public AnimationGroup(Animation... animations) {
         super(0);
-        this.lambda = null;
+        super.setLambda(null);
         this.animations = new ArrayList<>();
         this.animations.addAll(Arrays.asList(animations));
 
@@ -131,7 +131,7 @@ public class AnimationGroup extends AnimationWithEffects {
             double b = 1 - delayPercentage;
             for (Animation anim : animations) {
                 double a = k * (delayPercentage) / (size - 1);
-                anim.composeLambdaWithThis(UsefulLambdas.allocateTo(a, a + b));
+                anim.setAllocationParameters(a, a+b);
                 k++;
             }
         }
@@ -175,28 +175,13 @@ public class AnimationGroup extends AnimationWithEffects {
     }
 
     @Override
-    public AnimationGroup setLambda(DoubleUnaryOperator lambda) {
+    public final AnimationGroup setLambda(DoubleUnaryOperator lambda) {
         for (Animation anim : animations) {
             anim.setLambda(lambda);
         }
         return this;
     }
 
-    @Override
-    public AnimationGroup composeLambdaWithThis(DoubleUnaryOperator lambdaComp) {
-        for (Animation anim : animations) {
-            anim.composeLambdaWithThis(lambdaComp);
-        }
-        return this;
-    }
-
-    @Override
-    public AnimationGroup composeThisWithLambda(DoubleUnaryOperator lambdaComp) {
-        for (Animation anim : animations) {
-            anim.composeThisWithLambda(lambdaComp);
-        }
-        return this;
-    }
 
     @Override
     public AnimationGroup setUseObjectState(boolean shouldSaveState) {

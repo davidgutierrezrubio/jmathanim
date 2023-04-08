@@ -233,7 +233,7 @@ public class Commands {
 
             @Override
             public void doAnim(double t) {
-                double lt = lambda.applyAsDouble(t);
+                double lt = getTotalLambda().applyAsDouble(t);
                 restoreStates(mathObjects);
                 for (MathObject obj : mathObjects) {
                     double scax = 1 - lt + scalex * lt;
@@ -281,7 +281,7 @@ public class Commands {
 
             @Override
             public void doAnim(double t) {
-                double lt = lambda.applyAsDouble(t);
+                double lt = getTotalLambda().applyAsDouble(t);
                 restoreStates(mathObjects);
                 for (MathObject obj : mathObjects) {
                     if (rotationCenter == null) {
@@ -330,7 +330,7 @@ public class Commands {
 
             @Override
             public void doAnim(double t) {
-                double lt = lambda.applyAsDouble(t);
+                double lt = getTotalLambda().applyAsDouble(t);
                 restoreStates(mathObjects);
                 for (MathObject obj : mathObjects) {
                     if (rotationCenter == null) {
@@ -389,7 +389,7 @@ public class Commands {
             @Override
             public void doAnim(double t) {
                 restoreStates(mathObjects);
-                double lt = lambda.applyAsDouble(t);
+                double lt = getTotalLambda().applyAsDouble(t);
                 for (MathObject obj : mathObjects) {
                     tr = AffineJTransform.createAffineTransformation(orig1, orig2, orig3, dst1, dst2, dst3, lt);
                     tr.applyTransform(obj);
@@ -462,7 +462,7 @@ public class Commands {
 
             @Override
             public void doAnim(double t) {
-                double lt = getLambda().applyAsDouble(t);
+                double lt = getTotalLambda().applyAsDouble(t);
                 restoreStates(mathObjects);
                 tr = AffineJTransform.createDirect2DIsomorphic(A, B, C, D, lt);
                 for (MathObject obj : mathObjects) {
@@ -512,7 +512,7 @@ public class Commands {
 
             @Override
             public void doAnim(double t) {
-                double lt = getLambda().applyAsDouble(t);
+                double lt = getTotalLambda().applyAsDouble(t);
                 restoreStates(mathObjects);
                 for (MathObject obj : mathObjects) {
                     tr = AffineJTransform.createReflection(axis1, axis2, lt);
@@ -563,7 +563,7 @@ public class Commands {
 
             @Override
             public void doAnim(double t) {
-                double lt = getLambda().applyAsDouble(t);
+                double lt = getTotalLambda().applyAsDouble(t);
                 restoreStates(mathObjects);
                 for (MathObject obj : mathObjects) {
                     tr = AffineJTransform.createReflectionByAxis(axisPoint1, axisPoint2, lt);
@@ -634,7 +634,7 @@ public class Commands {
 
             @Override
             public void doAnim(double t) {
-                double lt = getLambda().applyAsDouble(t);
+                double lt = getTotalLambda().applyAsDouble(t);
                 restoreStates(mathObjects);
                 for (MathObject obj : mathObjects) {
                     obj.getMp().interpolateFrom(mpDst, lt);
@@ -701,7 +701,7 @@ public class Commands {
 
                 @Override
                 public void doAnim(double t) {
-                    double lt = getLambda().applyAsDouble(t);
+                    double lt = getTotalLambda().applyAsDouble(t);
                     Rect r = rSource.interpolate(rDst, lt);
                     cam.setMathView(r);
                 }
@@ -829,7 +829,7 @@ public class Commands {
 
             @Override
             public void doAnim(double t) {
-                double lt = getLambda().applyAsDouble(t);
+                double lt = getTotalLambda().applyAsDouble(t);
                 double sx = (shrinkType == OrientationType.VERTICAL ? 1 : 1 - lt);
                 double sy = (shrinkType == OrientationType.HORIZONTAL ? 1 : 1 - lt);
                 restoreStates(mathObjects);
@@ -918,7 +918,7 @@ public class Commands {
 
             @Override
             public void doAnim(double t) {
-                double lt = getLambda().applyAsDouble(t);
+                double lt = getTotalLambda().applyAsDouble(t);
                 double sx = (growType == OrientationType.VERTICAL ? 1 : lt);
                 double sy = (growType == OrientationType.HORIZONTAL ? 1 : lt);
                 restoreStates(mathObjects);
@@ -972,7 +972,7 @@ public class Commands {
 
             @Override
             public void doAnim(double t) {
-                double lt = getLambda().applyAsDouble(t);
+                double lt = getTotalLambda().applyAsDouble(t);
                 restoreStates(mathObjects);
                 for (MathObject obj : mathObjects) {
                     obj.multDrawAlpha(lt);
@@ -1015,7 +1015,7 @@ public class Commands {
 
             @Override
             public void doAnim(double t) {
-                double lt = getLambda().applyAsDouble(t);
+                double lt = getTotalLambda().applyAsDouble(t);
                 restoreStates(mathObjects);
                 for (MathObject obj : mathObjects) {
                     obj.multDrawAlpha(1 - lt);
@@ -1136,7 +1136,7 @@ public class Commands {
             @Override
             public void doAnim(double t) {
                 restoreStates(mathObjects);
-                double lt = getLambda().applyAsDouble(t);
+                double lt = getTotalLambda().applyAsDouble(t);
                 for (MathObject obj : objects) {
                     obj.getMp().setFillAlpha(obj.getMp().getFillColor().getAlpha() * lt);
                     applyAnimationEffects(lt, obj);

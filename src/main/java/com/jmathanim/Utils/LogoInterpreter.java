@@ -21,6 +21,8 @@ import com.jmathanim.mathobjects.JMPath;
 import com.jmathanim.mathobjects.JMPathPoint;
 import com.jmathanim.mathobjects.Shape;
 import java.util.StringTokenizer;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * This class interprets a string with logo commands and translate it into a
@@ -45,16 +47,17 @@ public class LogoInterpreter {
         reset();
     }
 
-    private void processRepeatCmd(StringTokenizer st) {
+    private void processRepeatCmd(StringTokenizer st) throws Exception {
         String commandsToRepeat = "";
         int numberOfRepetitions = Integer.parseInt(st.nextToken());
         String token = st.nextToken();
         if (!"[".equals(token)) {
             //Error here!
         }
+        token = st.nextToken();
         while (!"]".equals(token)) {
-            token = st.nextToken();
             commandsToRepeat += " " + token;
+            token = st.nextToken();
         }
         for (int i = 0; i < numberOfRepetitions; i++) {
             processString(commandsToRepeat);
@@ -85,60 +88,70 @@ public class LogoInterpreter {
      * @return The generated Shape object
      */
     public Shape toShape(String commands) {
-        String cmds = distilleCommandsString(commands);
-        processString(cmds);
+        String cmds;
+        try {
+            cmds = distilleCommandsString(commands);
+            processString(cmds);
+        } catch (Exception ex) {
+            JMathAnimScene.logger.warn("Error parsing LOGO commands, partial Shape generated");
+        }
+
         return new Shape(path);
     }
 
-    private void processString(String commands) {
-        StringTokenizer st = new StringTokenizer(commands, " ", false);
+    private void processString(String commands) throws Exception {
+        StringTokenizer st = new StringTokenizer(commands, " \n\t\r", false);
         while (st.hasMoreTokens()) {
             String command = st.nextToken();
             processCommand(command, st);
         }
     }
 
-    private void processCommand(String command, StringTokenizer st) {
+    private void processCommand(String command, StringTokenizer st) throws Exception {
         double amount;
         switch (command) {
-            case "FD" -> {
+            case "FD":
                 amount = Double.parseDouble(st.nextToken());
                 forwardCmd(amount);
-            }
+                break;
 
-            case "BK" -> {
+            case "BK":
                 amount = Double.parseDouble(st.nextToken());
                 forwardCmd(-amount);
-            }
+                break;
 
-            case "RT" -> {
+            case "RT":
                 amount = parseAngle(st);
                 currentAngle += amount;
-            }
+                break;
 
-            case "LT" -> {
+            case "LT":
                 amount = parseAngle(st);
                 currentAngle -= amount;
-            }
+                break;
 
-            case "PU" ->
+            case "PU":
                 visibleFlag = false;
+                break;
 
-            case "PD" ->
+            case "PD":
                 visibleFlag = true;
+                break;
 
-            case "REPEAT" ->
+            case "REPEAT":
                 processRepeatCmd(st);
+                break;
 
-            case "CLO" ->
+            case "CLO":
                 path.closePath();
-            default ->
+                break;
+            default:
                 JMathAnimScene.logger.error("Unrecognized LOGO command " + command);
-
+                throw new Exception();
         }
     }
 
-    private String distilleCommandsString(String commands) {
+    private String distilleCommandsString(String commands) throws Exception {
         String result = commands.toUpperCase();
 
         result = result.replaceAll("\\s*FORWARD\\s*", " FD ");

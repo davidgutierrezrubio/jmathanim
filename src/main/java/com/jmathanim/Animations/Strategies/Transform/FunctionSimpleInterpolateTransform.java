@@ -42,7 +42,7 @@ public class FunctionSimpleInterpolateTransform extends TransformStrategy {
 
     @Override
     public void doAnim(double t) {
-        double lt = lambda.applyAsDouble(t);
+        double lt = getTotalLambda().applyAsDouble(t);
         double w1 = this.origin.getScalar();
         double w2 = this.destiny.getScalar();
         this.intermediate.function = (x, w) -> (1 - lt) * originFunction.applyAsDouble(x, w1)

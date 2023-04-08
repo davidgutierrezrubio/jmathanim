@@ -105,7 +105,7 @@ public class Transform extends AnimationWithEffects {
             transformStrategy.setOptimizationStrategy(null);
         }
         // Copy preferences to this strategy
-        transformStrategy.setLambda(lambda);
+        transformStrategy.setLambda(getTotalLambda());
         transformStrategy.setAddObjectsToScene(this.isShouldAddObjectsToScene());
         transformStrategy.setUseObjectState(this.isUseObjectState());
         transformStrategy.setShouldInterpolateStyles(this.isShouldInterpolateStyles());
@@ -306,10 +306,5 @@ public class Transform extends AnimationWithEffects {
         }
     }
 
-    @Override
-    public <T extends Animation> T composeLambdaWithThis(DoubleUnaryOperator lambdaComp) {
-        transformStrategy.composeLambdaWithThis(lambdaComp);
-        return (T) this;
-    }
 
 }

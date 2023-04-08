@@ -182,7 +182,7 @@ public class CrossOutMathElements extends AnimationGroup {
             path.get(1).copyFrom(path.get(0));
             path.get(2).copyFrom(path.get(3));
             final ShiftAnimation animShift = Commands.shift(runTime, shiftVector, path.get(1), path.get(2));
-            animShift.setLambda(lambda);
+            animShift.setLambda(getTotalLambda());
             this.add(animShift);
         }
         
@@ -219,12 +219,7 @@ public class CrossOutMathElements extends AnimationGroup {
 //return Shape.rectangle(formulaRect);
     }
 
-    @Override
-    public CrossOutMathElements setLambda(DoubleUnaryOperator lambda) {
-        this.lambda = lambda;
-        return this;
-    }
-
+   
     /**
      * Return the current drawing attributes object
      *

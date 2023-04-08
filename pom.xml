@@ -4,13 +4,10 @@
     <groupId>com.github.davidgutierrezrubio</groupId>
     <artifactId>JMathAnim</artifactId>
     <version>0.9.8-SNAPSHOT</version>
-    <packaging>pom</packaging>
+    <packaging>jar</packaging>
     <name>JMathAnim</name>
     <description>A Java library to write mathematical animations</description>
     <url>https://github.com/davidgutierrezrubio/jmathanim</url>
-    <modules>
-        <module>dgdfgdfg</module>
-    </modules>
     <scm>
         <connection>scm:git:git://github.com/davidgutierrezrubio/jmathanim.git</connection>
         <url>https://github.com/davidgutierrezrubio/jmathanim</url>
@@ -172,14 +169,6 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-release-plugin</artifactId>
                 <version>3.0.0-M1</version>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <configuration>
-                    <source>16</source>
-                    <target>16</target>
-                </configuration>
             </plugin>
         </plugins>
     </build>

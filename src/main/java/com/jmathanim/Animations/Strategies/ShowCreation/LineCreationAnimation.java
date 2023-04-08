@@ -46,7 +46,7 @@ public class LineCreationAnimation extends AbstractCreationStrategy {
 		super.initialize(scene);
 		segment = line.toSegment(scene.getCamera());
 		anim = new SimpleShapeCreationAnimation(this.runTime, segment);
-		anim.setLambda(lambda);
+		anim.setLambda(getTotalLambda());
 		anim.initialize(scene);
 		removeObjectsFromScene(line);
 		addObjectsToscene(segment);
@@ -71,10 +71,5 @@ public class LineCreationAnimation extends AbstractCreationStrategy {
 		addObjectsToscene(line);
 
 	}
-  @Override
-    public <T extends Animation> T composeLambdaWithThis(DoubleUnaryOperator lambdaComp) {
-        anim.composeLambdaWithThis(lambdaComp);
-        return (T) this;
-    }
     
 }

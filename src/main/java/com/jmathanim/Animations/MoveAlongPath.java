@@ -106,7 +106,7 @@ public class MoveAlongPath extends Animation {
 
     @Override
     public void doAnim(double t) {
-        double lt = lambda.applyAsDouble(t);
+        double lt = getTotalLambda().applyAsDouble(t);
         restoreStates(mobjTransformed);
         Point destinyPoint = (parametrized ? path.getParametrizedPointAt(lt) : path.getJMPointAt(lt).p);
         Point anchPoint = Anchor.getAnchorPoint(mobjTransformed, anchorType);

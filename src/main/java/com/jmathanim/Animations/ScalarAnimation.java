@@ -55,7 +55,7 @@ public class ScalarAnimation extends Animation {
 
     @Override
     public void doAnim(double t) {
-        double lt = lambda.applyAsDouble(t);
+        double lt = getTotalLambda().applyAsDouble(t);
         for (hasScalarParameter obj : scalarsToAnimate) {
           obj.setScalar(a + (b - a) * lt);  
         }

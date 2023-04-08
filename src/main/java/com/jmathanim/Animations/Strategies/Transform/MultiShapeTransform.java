@@ -92,7 +92,7 @@ public class MultiShapeTransform extends TransformStrategy {
             Transform transformAnim = new Transform(this.runTime, origin.get(n), dst.get(n));
             this.copyEffectParametersTo(transformAnim);
             anim.add(transformAnim);
-            anim.setLambda(lambda);
+            anim.setLambda(getTotalLambda());
         }
         anim.initialize(scene);
     }

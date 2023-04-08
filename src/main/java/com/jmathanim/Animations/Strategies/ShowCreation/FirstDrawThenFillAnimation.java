@@ -138,7 +138,7 @@ public class FirstDrawThenFillAnimation extends AbstractCreationStrategy {
                     + obj.getClass().getCanonicalName() + ". Animation will not be performed");
         }
         obj.getMp().getFillColor().setAlpha(0); // Sets alpha to 0, to first draw objects without filling
-        anim.setLambda(lambda);
+        anim.setLambda(getTotalLambda());
         anim.initialize(scene);
     }
 
@@ -189,13 +189,6 @@ public class FirstDrawThenFillAnimation extends AbstractCreationStrategy {
         }
         return (T) this;
     }
-    
-     @Override
-    public <T extends Animation> T composeLambdaWithThis(DoubleUnaryOperator lambdaComp) {
-        anim.composeLambdaWithThis(lambdaComp);
-        return (T) this;
-    }
-    
     
     
 }

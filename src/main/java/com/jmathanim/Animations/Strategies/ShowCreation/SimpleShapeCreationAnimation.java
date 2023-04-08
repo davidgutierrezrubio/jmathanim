@@ -47,7 +47,7 @@ public class SimpleShapeCreationAnimation extends AbstractCreationStrategy {
     @Override
     public void doAnim(double t) {
         this.mobj.visible(false);
-        double lt = getLambda().applyAsDouble(t);
+        double lt = getTotalLambda().applyAsDouble(t);
         intermediateShape = this.mobj.getSubShape(0, lt).visible(lt > 0);
         intermediateShape.visible(visible);
         scene.addOnce(intermediateShape);
@@ -59,7 +59,7 @@ public class SimpleShapeCreationAnimation extends AbstractCreationStrategy {
         super.finishAnimation();
         this.mobj.visible(visible);
         removeObjectsFromScene(intermediateShape);
-        double lt = getLambda().applyAsDouble(1);
+        double lt = getTotalLambda().applyAsDouble(1);
         if (lt == 1) {
             addObjectsToscene(mobj);
         } else if (lt == 0) {
