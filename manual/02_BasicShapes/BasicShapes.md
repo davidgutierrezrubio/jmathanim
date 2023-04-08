@@ -96,6 +96,21 @@ If you add all these objects to the scene with the command `add(circ,sq,reg,rect
 
 <img src="basicShapes.png" alt="basicShapes"  />
 
+From version 0.9.8-SNAPSHOT, Shapes can also be defined using LOGO commands:
+
+``` java
+String logoCmd = "REPEAT 12 [FD .5 RT 150 FD .5 LT 120] CLO";
+Shape logoShape = lg.toShape(logoCmd);
+add(logoShape.center().style("solidblue"));//Centered on screen and with a style filled blue
+waitSeconds(3);
+```
+
+Which gives the following image for 3 seconds:
+
+<img src="C:\Users\David\Documents\NetBeansProjects\gh-pages\manual\02_BasicShapes\basicShapesLogo.png" alt="basicShapesLogo" style="zoom:50%;" />
+
+Apart from the classic LOGO commands (`FORWARD`, `BACKWARD`, etc.), the `CLO` command is added which means to close the path.
+
 The `Shape` class is one of the most important and the most likely to be animated. Several other classes depend on it.
 
 Each `Shape` object has a `JMPath` object which stores and manages the path represented. Each point of the path can be accessed with the method
