@@ -330,7 +330,7 @@ public abstract class JMathAnimScene {
      * @param objs ArrayList of Mathobjects
      */
     public synchronized final void remove(ArrayList<MathObject> objs) {
-        remove((MathObject[]) objs.toArray(MathObject[]::new));
+        remove((MathObject[]) objs.toArray(value -> new MathObject[value]));
         
     }
 
@@ -388,7 +388,7 @@ public abstract class JMathAnimScene {
         }
 
         // Now remove all marked sceneObjects from the scene
-        remove((MathObject[]) objectsToBeRemoved.toArray(MathObject[]::new));
+        remove((MathObject[]) objectsToBeRemoved.toArray(value -> new MathObject[value]));
         objectsToBeRemoved.clear();
     }
 

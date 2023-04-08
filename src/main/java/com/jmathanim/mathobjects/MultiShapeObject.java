@@ -40,17 +40,16 @@ import java.util.List;
  */
 public class MultiShapeObject extends MathObject implements Iterable<Shape> {
 
-    protected MODrawPropertiesArray mpMultiShape;
+    protected final MODrawPropertiesArray mpMultiShape;
     public boolean isAddedToScene;
     protected final ArrayList<Shape> shapes;
 
     public static MultiShapeObject make(Shape... shapes) {
-        MultiShapeObject resul = new MultiShapeObject(Arrays.asList(shapes));
-        return resul;
+        return new MultiShapeObject(Arrays.asList(shapes));
     }
 
     protected MultiShapeObject() {
-        this(new ArrayList<Shape>());
+        this(new ArrayList<>());
     }
 
     private MultiShapeObject(List<Shape> jmps) {
@@ -299,8 +298,6 @@ public class MultiShapeObject extends MathObject implements Iterable<Shape> {
      * Gets an array of Shapes with the given indices. This method is used
      * mostly to combine with animations that accepts a varargs of MathObject
      *
-     * @param indices
-     * @return
      */
     public Shape[] getSubArray(int... indices) {
         Shape[] resul = new Shape[indices.length];

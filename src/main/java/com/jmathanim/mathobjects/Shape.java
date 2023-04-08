@@ -24,6 +24,7 @@ import com.jmathanim.Styling.JMColor;
 import com.jmathanim.Styling.MODrawProperties;
 import com.jmathanim.Utils.AffineJTransform;
 import com.jmathanim.Utils.JMathAnimConfig;
+import com.jmathanim.Utils.LogoInterpreter;
 import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
@@ -437,6 +438,17 @@ public class Shape extends MathObject {
     }
 
     /**
+     * Generates a Shape from given LOGO commands
+     *
+     * @param logoCommands
+     * @return The generated Shape
+     */
+    public static Shape logo(String logoCommands) {
+        LogoInterpreter interpreter = new LogoInterpreter();
+        return interpreter.toShape(logoCommands);
+    }
+
+    /**
      * Return the value of boolean flag showDebugPoints
      *
      * @return If true, the point number will be superimposed on screen when
@@ -459,7 +471,7 @@ public class Shape extends MathObject {
     @Override
     public Shape applyAffineTransform(AffineJTransform tr) {
         getPath().applyAffineTransform(tr);
-       
+
         tr.applyTransformsToDrawingProperties(this);
         return this;
     }
