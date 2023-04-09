@@ -1,7 +1,7 @@
 ![logo](logo.gif)
 
 JMathAnim is a library written in JAVA intended to simplify the process of doing
-mathematical animations. Current version is 0.9.7.
+mathematical animations. Current version is 0.9.8.
 
 If you use it and find a bug/missing feature, feel free to fill an issue
 [here](https://github.com/davidgutierrezrubio/jmathanim/issues). For any other
@@ -24,6 +24,15 @@ Manual
 
 What's new?
 ===========
+
+Version 0.9.9-SNAPSHOT (09/04/23)
+
+* Added `PointOwner` interface to improve import of Geogebra Point on Object.
+
+Version 0.9.8 (08/04/23)
+
+* Added `LogoInterpreter` class to create `Shape` objects from a String of LOGO commands.
+* Improved handling of delay effect for animations.
 
 Version 0.9.7 (09/20/22)
 
