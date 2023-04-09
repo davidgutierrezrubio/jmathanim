@@ -113,6 +113,8 @@ Apart from the classic LOGO commands (`FORWARD`, `BACKWARD`, etc.), the `CLO` co
 
 The `Shape` class is one of the most important and the most likely to be animated. Several other classes depend on it.
 
+### Other methods
+
 Each `Shape` object has a `JMPath` object which stores and manages the path represented. Each point of the path can be accessed with the method
 `getPoint(n)`. This is a circular array and zero-based. That is, if you have the object `pentagon` which is a shape with 5 vertices, `pentagon.getPoint(0)` will give you the first point of the shape, `pentagon.getPoint(1)` the second one,…​and `pentagon.getPoint(5)` instead of giving you an error, will return again the first point of the path. In the chapter "Dealing with paths" we see in more depth the path structure and how to access to its elements.
 
