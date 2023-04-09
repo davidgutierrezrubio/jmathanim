@@ -20,6 +20,7 @@ package com.jmathanim.Constructible.Lines;
 import com.jmathanim.Constructible.Constructible;
 import com.jmathanim.Constructible.Points.CTPoint;
 import com.jmathanim.Utils.AffineJTransform;
+import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.Line;
 import com.jmathanim.mathobjects.MathObject;
@@ -146,5 +147,11 @@ public class CTTransformedLine extends CTAbstractLine {
                 dependsOn(scene, this.lineToTransform, this.translation);
                 break;
         }
+    }
+      @Override
+    public Vec getHoldCoordinates(Vec coordinates) {
+        Vec v1 = getDirection().normalize();
+        Vec v2 = coordinates.minus(getP1().v);
+        return(getP1().v.add(v1.mult(v1.dot(v2))));
     }
 }

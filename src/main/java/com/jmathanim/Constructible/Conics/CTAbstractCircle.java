@@ -18,6 +18,7 @@
 package com.jmathanim.Constructible.Conics;
 
 import com.jmathanim.Constructible.Constructible;
+import com.jmathanim.Constructible.PointOwner;
 import com.jmathanim.Constructible.Points.CTPoint;
 import com.jmathanim.mathobjects.Scalar;
 import com.jmathanim.mathobjects.hasScalarParameter;
@@ -27,7 +28,7 @@ import com.jmathanim.mathobjects.hasScalarParameter;
  *
  * @author David Gutierrez Rubio davidgutierrezrubio@gmail.com
  */
-public abstract class CTAbstractCircle extends Constructible implements hasScalarParameter {
+public abstract class CTAbstractCircle extends Constructible implements hasScalarParameter,PointOwner {
 
     /**
      * Returns the geometrical center of the circle or similar

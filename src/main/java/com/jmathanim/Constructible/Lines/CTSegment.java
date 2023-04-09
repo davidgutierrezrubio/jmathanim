@@ -18,6 +18,7 @@
 package com.jmathanim.Constructible.Lines;
 
 import com.jmathanim.Constructible.Points.CTPoint;
+import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.Point;
 import com.jmathanim.mathobjects.Shape;
@@ -81,6 +82,16 @@ public class CTSegment extends CTAbstractLine implements hasScalarParameter {
         CTSegment copy = CTSegment.make(this.A.copy(), this.B.copy());
         copy.copyStateFrom(this);
         return copy;
+    }
+
+    @Override
+    public Vec getHoldCoordinates(Vec coordinates) {
+        Vec v1 = getDirection().normalize();
+        Vec v2 = coordinates.minus(getP1().v);
+        double dotProd = v1.dot(v2);
+        dotProd = Math.max(dotProd, 0);
+        dotProd = Math.min(dotProd, getDirection().norm());
+        return getP1().v.add(v1.mult(dotProd));
     }
 
     @Override

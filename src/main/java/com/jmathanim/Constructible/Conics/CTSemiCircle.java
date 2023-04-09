@@ -27,13 +27,14 @@ import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.Point;
 import com.jmathanim.mathobjects.Scalar;
 import com.jmathanim.mathobjects.Shape;
+import com.jmathanim.Constructible.PointOwner;
 
 /**
  * Represents a Constructible semicircle
  *
  * @author David Gutierrez Rubio davidgutierrezrubio@gmail.com
  */
-public class CTSemiCircle extends CTAbstractCircle {
+public class CTSemiCircle extends CTAbstractCircle{
 
     private final Shape arcTODraw;
     private final Shape arcTODrawOrig;
@@ -41,8 +42,8 @@ public class CTSemiCircle extends CTAbstractCircle {
     private final CTPoint A;
 
     /**
-     * Overloaded method. Creates a Constructible semicircle from 2 given points. The semicircle
-     * will run counterclockwise from first to second point
+     * Overloaded method. Creates a Constructible semicircle from 2 given
+     * points. The semicircle will run clockwise from first to second point
      *
      * @param A First point
      * @param B Second point
@@ -51,7 +52,8 @@ public class CTSemiCircle extends CTAbstractCircle {
     public static CTSemiCircle make(Point A, Point B) {
         return make(CTPoint.make(A), CTPoint.make(B));
     }
- /**
+
+    /**
      * Creates a Constructible semicircle from 2 given points. The semicircle
      * will run counterclockwise from first to second point
      *
@@ -76,6 +78,23 @@ public class CTSemiCircle extends CTAbstractCircle {
     public CTPoint getCircleCenter() {
         final Vec vv = A.v.interpolate(B.v, .5);
         return CTPoint.at(vv.x, vv.y);
+    }
+
+    @Override
+    public Vec getHoldCoordinates(Vec coordinates) {
+        //Map A and B to (1,0) and (-1,0)
+        AffineJTransform tr = AffineJTransform.createDirect2DIsomorphic(B.getMathObject(), A.getMathObject(), Point.at(1, 0), Point.at(-1, 0), 1);
+        Vec v = coordinates.applyAffineTransform(tr);
+        if (v.x <= - 1) {
+            v.x = -1;
+            v.y = 0;
+        } else if (v.x >= 1) {
+            v.x = 1;
+            v.y = 0;
+        } else {
+            v.y = Math.sqrt(1 - v.x * v.x);
+        }
+        return v.applyAffineTransform(tr.getInverse());
     }
 
     @Override

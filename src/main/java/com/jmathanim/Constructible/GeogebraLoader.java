@@ -89,7 +89,7 @@ public class GeogebraLoader implements Iterable<Constructible>, hasCameraParamet
             inputStream = this.zipFile.getInputStream(zipEntry);
             parseGeogebraContents(inputStream);
         } catch (IOException ex) {
-            Logger.getLogger(GeogebraLoader.class.getName()).log(Level.SEVERE, null, ex);
+            JMathAnimScene.logger.warn("Error importing Geogebra file");
         }
 
     }

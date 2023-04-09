@@ -115,4 +115,10 @@ public class CTVector extends CTAbstractLine {
     public void registerUpdateableHook(JMathAnimScene scene) {
         dependsOn(scene, this.A, this.B);
     }
+      @Override
+    public Vec getHoldCoordinates(Vec coordinates) {
+        Vec v1 = getDirection().normalize();
+        Vec v2 = coordinates.minus(getP1().v);
+        return(getP1().v.add(v1.mult(v1.dot(v2))));
+    }
 }

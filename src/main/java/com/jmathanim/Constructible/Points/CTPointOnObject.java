@@ -17,10 +17,14 @@
  */
 package com.jmathanim.Constructible.Points;
 
+import com.jmathanim.Constructible.Conics.CTAbstractCircle;
+import com.jmathanim.Constructible.Conics.CTCircle;
+import com.jmathanim.Constructible.Conics.CTSemiCircle;
 import com.jmathanim.Constructible.Constructible;
 import com.jmathanim.Constructible.Lines.CTAbstractLine;
 import com.jmathanim.Constructible.Lines.CTRay;
 import com.jmathanim.Constructible.Lines.CTSegment;
+import com.jmathanim.Constructible.PointOwner;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.Point;
@@ -30,91 +34,48 @@ import com.jmathanim.mathobjects.Point;
  * @author David
  */
 public class CTPointOnObject extends CTPoint {
-    
-    private final Constructible owner;
-    
-    private enum PointOnObjectType {
-        CTLine, CTSegment, CTRay
-    };
-    PointOnObjectType type = null;
-    
-    public static CTPointOnObject make(Constructible owner, Point p) {
+
+    private final PointOwner owner;
+
+    public static CTPointOnObject make(PointOwner owner, Point p) {
         CTPointOnObject resul = new CTPointOnObject(owner, p);
-        if (owner instanceof CTAbstractLine) {
-            resul.type = PointOnObjectType.CTLine;
-        }
-        if (owner instanceof CTSegment) {
-            resul.type = PointOnObjectType.CTSegment;
-        }
-        if (owner instanceof CTRay) {
-            resul.type = PointOnObjectType.CTRay;
-        }
         resul.rebuildShape();
         return resul;
     }
-    
-    public static CTPointOnObject make(Constructible owner) {
+
+    public static CTPointOnObject make(PointOwner owner) {
         return make(owner, Point.origin());
     }
-    
-    private CTPointOnObject(Constructible owner, Point p) {
+
+    private CTPointOnObject(PointOwner owner, Point p) {
         super(p);
         this.owner = owner;
     }
-    
+
     @Override
     public void rebuildShape() {
-        Vec v1, v2;
-        Vec projectionPointCoordinates;
-        double dotProd;
-        switch (type) {
-            case CTLine://Simple projection onto line
-                CTAbstractLine line = (CTAbstractLine) owner;
-                v1 = line.getDirection().normalize();
-                v2 = this.v.minus(line.getP1().v);
-                projectionPointCoordinates = line.getP1().v.add(v1.mult(v1.dot(v2)));
-                break;
-            case CTSegment://Simple projection onto line
-                CTSegment seg = (CTSegment) owner;
-                v1 = seg.getDirection().normalize();
-                v2 = this.v.minus(seg.getP1().v);
-                dotProd = v1.dot(v2);
-                dotProd = Math.max(dotProd, 0);
-                dotProd = Math.min(dotProd, seg.getDirection().norm());
-                projectionPointCoordinates = seg.getP1().v.add(v1.mult(dotProd));
-                break;
-            case CTRay:
-                CTRay ray = (CTRay) owner;
-                v1 = ray.getDirection().normalize();
-                v2 = this.v.minus(ray.getP1().v);
-                dotProd = v1.dot(v2);
-                dotProd = Math.max(dotProd, 0);
-                projectionPointCoordinates = ray.getP1().v.add(v1.mult(dotProd));
-                break;
-            default:
-                projectionPointCoordinates = this.v;
-        }
+        Vec projectionPointCoordinates= owner.getHoldCoordinates(this.v);;
         this.v.copyFrom(projectionPointCoordinates);
         if (!isThisMathObjectFree()) {
             pointToDraw.v.copyFrom(projectionPointCoordinates);
         }
     }
-    
+
     @Override
     public void update(JMathAnimScene scene) {
         rebuildShape();
     }
-    
+
     @Override
     public CTPointOnObject copy() {
-        CTPointOnObject copy = CTPointOnObject.make(owner.copy());
+        CTPointOnObject copy = CTPointOnObject.make((PointOwner)((Constructible)owner).copy());
         copy.copyStateFrom(this);
         return copy;
     }
-    
+
     @Override
     public void registerUpdateableHook(JMathAnimScene scene) {
-        dependsOn(scene, owner);
+        dependsOn(scene, (Constructible)owner);
     }
-    
+
 }

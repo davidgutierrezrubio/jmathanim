@@ -144,4 +144,12 @@ public class CTCircleSector extends CTAbstractCircle {
     public void registerUpdateableHook(JMathAnimScene scene) {
         dependsOn(scene, center, A, B);
     }
+
+    @Override
+    public Vec getHoldCoordinates(Vec coordinates) {
+        //TODO: Implement this, for now, act as a simple circle
+        Vec v = coordinates.minus(getCircleCenter().v).normalize().mult(getRadius().value);
+        return getCircleCenter().v.add(v);
+
+    }
 }

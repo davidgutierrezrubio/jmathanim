@@ -18,6 +18,7 @@
 package com.jmathanim.Constructible.Lines;
 
 import com.jmathanim.Constructible.Constructible;
+import com.jmathanim.Constructible.PointOwner;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.mathobjects.Point;
 
@@ -25,7 +26,7 @@ import com.jmathanim.mathobjects.Point;
  *
  * @author David Gutierrez Rubio davidgutierrezrubio@gmail.com
  */
-public abstract class CTAbstractLine extends Constructible implements HasDirection {
+public abstract class CTAbstractLine extends Constructible implements HasDirection,PointOwner {
 
     protected enum LineType {
         PointPoint, PointVector

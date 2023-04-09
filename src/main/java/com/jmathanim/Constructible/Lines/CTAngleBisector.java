@@ -112,4 +112,10 @@ public class CTAngleBisector extends CTAbstractLine {
         }
     }
 
+    @Override
+    public Vec getHoldCoordinates(Vec coordinates) {
+        Vec v1 = getDirection().normalize();
+        Vec v2 = coordinates.minus(getP1().v);
+        return (getP1().v.add(v1.mult(v1.dot(v2))));
+    }
 }

@@ -35,6 +35,13 @@ import com.jmathanim.mathobjects.Shape;
  */
 public class CTCircle extends CTAbstractCircle {
 
+    @Override
+    public Vec getHoldCoordinates(Vec coordinates) {
+        Vec v=coordinates.minus(getCircleCenter().v).normalize().mult(getRadius().value);
+        return getCircleCenter().v.add(v);
+        
+    }
+
     private enum CircleType {
         THREE_POINTS, CENTER_POINT, CENTER_RADIUS
     };

@@ -585,12 +585,18 @@ class GeogebraCommandParser {
     }
 
     void processPointOnObject(Element el) {
+        //TODO: Implement PointIn command for points inside a region (polygon, circle...)
         String label = getOutputArgument(el, 0);
         MathObject[] objs = getArrayOfParameters(el);
-        Constructible ob1 = (Constructible) objs[0];
-        final CTPointOnObject p = CTPointOnObject.make(ob1);
-        registerGeogebraElement(label, p);
-        JMathAnimScene.logger.debug("Imported Geogebra point " + label + " on object " + objs[0]);
+        try {
+            PointOwner ob1 = (PointOwner) objs[0];
+            final CTPointOnObject p = CTPointOnObject.make(ob1);
+            registerGeogebraElement(label, p);
+            JMathAnimScene.logger.debug("Imported Geogebra point " + label + " on object " + objs[0]);
+        } catch (ClassCastException e) {
+            JMathAnimScene.logger.warn("Object type " + objs[0].getClass().getName() + " not implement yet to hold a point on object, sorry");
+        }
+
     }
 
     void processEllipse(Element el) {

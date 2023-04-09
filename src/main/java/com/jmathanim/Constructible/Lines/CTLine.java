@@ -102,11 +102,11 @@ public class CTLine extends CTAbstractLine {
         switch (lineType) {
             case PointPoint:
                 copy = CTLine.make(A.copy(), B.copy());
-                 copy.copyStateFrom(this);
+                copy.copyStateFrom(this);
                 break;
             case PointVector:
                 copy = CTLine.make(A.copy(), this.dir);
-                 copy.copyStateFrom(this);
+                copy.copyStateFrom(this);
                 break;
         }
         return copy;
@@ -121,6 +121,13 @@ public class CTLine extends CTAbstractLine {
                 return dir.getDirection();
         }
         return null;
+    }
+
+    @Override
+    public Vec getHoldCoordinates(Vec coordinates) {
+        Vec v1 = getDirection().normalize();
+        Vec v2 = coordinates.minus(getP1().v);
+        return(getP1().v.add(v1.mult(v1.dot(v2))));
     }
 
     @Override
@@ -146,7 +153,8 @@ public class CTLine extends CTAbstractLine {
     }
 
     @Override
-    public void registerUpdateableHook(JMathAnimScene scene) {
+    public void registerUpdateableHook(JMathAnimScene scene
+    ) {
         switch (lineType) {
             case PointPoint:
                 dependsOn(scene, this.A, this.B);
