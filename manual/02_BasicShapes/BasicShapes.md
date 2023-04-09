@@ -122,7 +122,7 @@ In the `Shape` objects, apart from `.getCenter()`method, which returns the cente
 
 ## The `LaTeXMathObject` class
 
-If you want to include mathematical expressions in any work, the best software to use is `LaTeX`. This class renders a mathematical expression written in LaTeX and imports it so you can draw it and animate it in several ways. To do this, you’ll need a working LaTeX distribution installed on your system and accessible from your path. So, if you put the following code in the `runSketch()` method:
+If you want to include mathematical expressions in any work, the best software to use is `LaTeX`. This class renders a mathematical expression written in LaTeX and imports it so you can draw it and animate it in several ways. So, if you put the following code in the `runSketch()` method:
 
 ``` java
 LaTeXMathObject text = LaTeXMathObject.make("Look mom, I'm \\LaTeX!");
@@ -132,7 +132,6 @@ waitSeconds(5);
 
 ![LaTeX 1](LaTeX_1.png)
 
->**UPDATE** : Since version 0.9.5, the library [JLatexMath](https://github.com/opencollab/jlatexmath) is used by default to generate LaTeX formulas, so there is no need to have a working LaTeX distribution installed.
 
 A minor drawback when combining LaTeX and Java, is that one of the most used symbols in LaTeX is the backslash "\\", and Java doesn’t accept single backslashes in its strings, so if you want to compile a LaTeX formula like this
 
