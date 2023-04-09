@@ -217,9 +217,28 @@ Produces the following sequence of interpolated transforms from one square to an
 
 
 
-<img src="06_homothecy1.png" alt="06 homothecy1" style="zoom:50%;" />
+<img src="06_homothecy1.png" alt="Direct Isomorphic transform example" style="zoom:50%;" />
 
 > **WARNING**: You should be careful, when defining the parameters of a transformation like `createDirect2DIsomorphic(A, B, C, D, alpha)` if the points `A, B, C, D` are going to be actually modified by the transformation itself (for example, A is an instance of a point of the shape you are transforming). The safe approach in this case should be using copies of the points as parameters, with the `.copy()` method.
+
+Since version 0.9.9-SNAPSHOT, the `createInverse2DIsomorphic` method is implemented too, that returns the (only) inverse isomorphic transform that maps A into C and B into D.
+
+```java
+Shape sq = LaTeXMathObject.make("R").get(0).scale(8).center().fillColor("steelblue").fillAlpha(.3);//Square, fill color dark green, and opacity 30%
+Point A = sq.getBoundingBox().getDL().drawColor("darkblue");//First vertex of the square (lower-left corner), dark blue color
+Point B = sq.getBoundingBox().getUL().drawColor("darkblue");//First vertex of the square (lower-right corner), dark blue color
+Point C = Point.at(3.5, -1).drawColor("darkred");//Destiny point of A, dark red color
+Point D = Point.at(3.7, .5).drawColor("darkred");//Destiny point of B, dark red color
+add(A, B, C, D);
+for (double alpha = 0; alpha <= 1; alpha += .2) {
+    AffineJTransform transform = AffineJTransform.createInverse2DIsomorphic(A, B, C, D, alpha);
+    add(transform.getTransformedObject(sq));//Adds a copy of the square, transformed
+}
+camera.adjustToAllObjects();
+waitSeconds(5);
+```
+
+<img src="06_inverseIso.png" alt="Inverse Isomorphic transform example" style="zoom:50%;" />
 
 ## Reflections
 If we want to make a reflection of an object, we can use the static methods `createReflection` and `createReflectionByAxis`. They differ in the way the transformation is specified:
