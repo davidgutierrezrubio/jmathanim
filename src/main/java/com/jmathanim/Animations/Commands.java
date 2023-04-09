@@ -427,8 +427,8 @@ public class Commands {
     }
 
     /**
-     * Animation command that transforms a MathObject through an homothecy.
-     * Homothecy is specified by 2 pairs of points (origin-destiny)
+     * Animation command that transforms a MathObject through a direct isomorphism.
+     * Isomorphism is specified by 2 pairs of points (origin-destiny)
      *
      * @param runtime Run time (in seconds)
      * @param a First origin point
@@ -481,6 +481,65 @@ public class Commands {
         resul.setDebugName("Isomorphism Transform");
         return resul;
     }// End of homothecy command
+    
+    
+     /**
+     * Animation command that transforms a MathObject through a inverse isomorphism.
+     * Isomorphism is specified by 2 pairs of points (origin-destiny)
+     *
+     * @param runtime Run time (in seconds)
+     * @param a First origin point
+     * @param b Second origin point
+     * @param c First destiny point
+     * @param d Second destiny point
+     * @param objects Objects to animate (varargs)
+     * @return Animation to run playAnimation method method
+     */
+    public static AnimationWithEffects inverseIsomorphism(double runtime, Point a, Point b, Point c, Point d,
+            MathObject... objects) {
+        AnimationWithEffects resul = new AnimationWithEffects(runtime) {
+            Point A = a.copy();
+            Point B = b.copy();
+            Point C = c.copy();
+            Point D = d.copy();
+            AffineJTransform tr;
+            MathObject[] mathObjects = objects;
+
+            @Override
+            public void initialize(JMathAnimScene scene) {
+                super.initialize(scene);
+                saveStates(mathObjects);
+                addObjectsToscene(mathObjects);
+                tr = AffineJTransform.createInverse2DIsomorphic(A, B, C, D, 1);
+                for (MathObject obj : mathObjects) {
+                    Point center = obj.getCenter();
+                    prepareJumpPath(center, tr.getTransformedObject(center), obj);
+                }
+            }
+
+            @Override
+            public void doAnim(double t) {
+                double lt = getTotalLambda().applyAsDouble(t);
+                restoreStates(mathObjects);
+                tr = AffineJTransform.createInverse2DIsomorphic(A, B, C, D, lt);
+                for (MathObject obj : mathObjects) {
+                    tr.applyTransform(obj);
+                    applyAnimationEffects(lt, obj);
+                }
+            }
+
+            @Override
+            public void finishAnimation() {
+                doAnim(1);
+                super.finishAnimation();
+
+            }
+        };
+        resul.setDebugName("Inverse isomorphism Transform");
+        return resul;
+    }// End of homothecy command
+    
+    
 
     /**
      * Animation command that perfoms a reflection that maps A into B
