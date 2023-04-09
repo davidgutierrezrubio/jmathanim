@@ -107,7 +107,7 @@ waitSeconds(3);
 
 Which gives the following image for 3 seconds:
 
-<img src="C:\Users\David\Documents\NetBeansProjects\gh-pages\manual\02_BasicShapes\basicShapesLogo.png" alt="basicShapesLogo" style="zoom:50%;" />
+<img src="basicShapesLogo.png" alt="Example of Shape created with LOGO commands" style="zoom:50%;" />
 
 Apart from the classic LOGO commands (`FORWARD`, `BACKWARD`, etc.), the `CLO` command is added which means to close the path.
 
