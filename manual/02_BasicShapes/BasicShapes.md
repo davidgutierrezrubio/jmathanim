@@ -110,7 +110,21 @@ Which gives the following image for 3 seconds:
 
 <img src="basicShapesLogo.png" alt="Example of Shape created with LOGO commands" style="zoom:50%;" />
 
-Apart from the classic LOGO commands (`FORWARD`, `BACKWARD`, etc.), the `CLO` command is added which means to close the path.
+The implemented LOGO commands are the following:
+
+```LOGO
+FORWARD or FD
+BACKWARD or BK
+RIGHT or RT
+LEFT or LT
+REPEAT
+PENUP or PU
+PENDOWN or PD
+```
+
+A full reference of these commands can be found for example [here](https://glinsklogoprogramming.weebly.com/logo-commands.html).
+
+Apart from these the `CLO` command is added to close the generated path.
 
 The `Shape` class is one of the most important and the most likely to be animated. Several other classes depend on it.
 
@@ -119,7 +133,7 @@ The `Shape` class is one of the most important and the most likely to be animate
 Each `Shape` object has a `JMPath` object which stores and manages the path represented. Each point of the path can be accessed with the method
 `getPoint(n)`. This is a circular array and zero-based. That is, if you have the object `pentagon` which is a shape with 5 vertices, `pentagon.getPoint(0)` will give you the first point of the shape, `pentagon.getPoint(1)` the second one,…​and `pentagon.getPoint(5)` instead of giving you an error, will return again the first point of the path. In the chapter "Dealing with paths" we see in more depth the path structure and how to access to its elements.
 
-In the `Shape` objects, apart from `.getCenter()`method, which returns the center of its bounding box, there is also the `.getCentroid()`method which computes the centroid of the shape, defined by the average point of all its vertices. This method effectively returns the geometrical center of a regular polygon for example, instead of the `.getCenter()`method.
+In the `Shape` objects, apart from the  `.getCenter()`method, which returns the center of its bounding box, there is also the `.getCentroid()`method which computes the centroid of the shape, defined by the average point of all its vertices. This method effectively returns the geometrical center of a regular polygon for example, instead of the `.getCenter()`method.
 
 ## The `LaTeXMathObject` class
 
