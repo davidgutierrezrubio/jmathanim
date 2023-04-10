@@ -100,7 +100,7 @@ From version 0.9.8-SNAPSHOT, Shapes can also be defined using LOGO commands:
 
 ``` java
 String logoCmd = "REPEAT 12 [FD .5 RT 150 FD .5 LT 120] CLO";
-Shape logoShape = lg.toShape(logoCmd);
+Shape logoShape = Shape.logo(logoCmd);
 add(logoShape.center().style("solidblue"));//Centered on screen and with a style filled blue
 waitSeconds(3);
 ```
