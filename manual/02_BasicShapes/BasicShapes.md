@@ -80,7 +80,8 @@ Shape sq=Shape.square();
 Shape reg=Shape.regularPolygon(5);
 
 //A closed polygon (in this case, a triangle)
-Shape poly=Shape.polygon(Point.at(0,0),Point.at(1,1),Point.at(0,1));
+Shape poly=Shape.polygon(Point.at(.25,-.5),Point.at(1.25,-.5),Point.at(.25,.5));
+
 
 //A rectangle with their sides parallel to the axes, with lower left and upper right vertices at (1,2) and (3,5) respectively.
 Shape rect=Shape.rectangle(Point.at(1,2),Point.at(3,5));
@@ -92,11 +93,11 @@ Shape seg=Shape.segment(Point.at(-1,-1),Point.at(-.5,1.5));
 Shape arc=Shape.arc(PI/4);
 ```
 
-If you add all these objects to the scene with the command `add(circ,sq,reg,rect,seg,arc)` you’ll obtain something like this:
+If you add all these objects to the scene with the command `add(circ,sq,reg,poly,rect,seg,arc)` you’ll obtain something like this:
 
-<img src="basicShapes.png" alt="basicShapes"  />
+<img src="basicShapes.png" alt="basicShapes" style="zoom:50%;" />
 
-From version 0.9.8-SNAPSHOT, Shapes can also be defined using LOGO commands:
+From version 0.9.8, Shapes can also be defined using LOGO commands:
 
 ``` java
 String logoCmd = "REPEAT 12 [FD .5 RT 150 FD .5 LT 120] CLO";
