@@ -105,26 +105,20 @@ public class Commands {
      */
     public static Animation highlight(double runtime, double scale, MathObject... mathObjects) {
 
-        Runnable initHook = new Runnable() {
-            @Override
-            public void run() {
-                for (MathObject obj : mathObjects) {
-                    if (obj instanceof Constructible) {
-                        Constructible cnstr = (Constructible) obj;
-                        cnstr.freeMathObject(true);
-                    }
+        Runnable initHook = () -> {
+            for (MathObject obj : mathObjects) {
+                if (obj instanceof Constructible) {
+                    Constructible cnstr = (Constructible) obj;
+                    cnstr.freeMathObject(true);
                 }
             }
         };
 
-        Runnable finishHook = new Runnable() {
-            @Override
-            public void run() {
-                for (MathObject obj : mathObjects) {
-                    if (obj instanceof Constructible) {
-                        Constructible cnstr = (Constructible) obj;
-                        cnstr.freeMathObject(false);
-                    }
+        Runnable finishHook = () -> {
+            for (MathObject obj : mathObjects) {
+                if (obj instanceof Constructible) {
+                    Constructible cnstr = (Constructible) obj;
+                    cnstr.freeMathObject(false);
                 }
             }
         };
@@ -166,26 +160,20 @@ public class Commands {
      * @return The animation, ready to play with the playAnim method
      */
     public static AnimationGroup twistAndScale(double runtime, double scale, double twistAngle, MathObject... mathObjects) {
-        Runnable initHook = new Runnable() {
-            @Override
-            public void run() {
-                for (MathObject obj : mathObjects) {
-                    if (obj instanceof Constructible) {
-                        Constructible cnstr = (Constructible) obj;
-                        cnstr.freeMathObject(true);
-                    }
+        Runnable initHook = () -> {
+            for (MathObject obj : mathObjects) {
+                if (obj instanceof Constructible) {
+                    Constructible cnstr = (Constructible) obj;
+                    cnstr.freeMathObject(true);
                 }
             }
         };
 
-        Runnable finishHook = new Runnable() {
-            @Override
-            public void run() {
-                for (MathObject obj : mathObjects) {
-                    if (obj instanceof Constructible) {
-                        Constructible cnstr = (Constructible) obj;
-                        cnstr.freeMathObject(false);
-                    }
+        Runnable finishHook = () -> {
+            for (MathObject obj : mathObjects) {
+                if (obj instanceof Constructible) {
+                    Constructible cnstr = (Constructible) obj;
+                    cnstr.freeMathObject(false);
                 }
             }
         };

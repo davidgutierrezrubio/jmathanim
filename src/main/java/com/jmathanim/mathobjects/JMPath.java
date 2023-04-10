@@ -491,40 +491,6 @@ public class JMPath implements Stateable, Boxable, Iterable<JMPathPoint> {
     }
 
     /**
-     * Compute the sum of distance of points from aligned paths This distance
-     * should be minimized in order to Transform more smoothly. The paths should
-     * have the same number of points.
-     *
-     * @param path2 The other path
-     * @return Distance. Null if paths have different number of points
-     */
-    public Double sumDistance(JMPath path2) {
-        if (this.size() != path2.size()) {
-            return null;
-        }
-        double resul = 0;
-//        double sumSq = 0;
-        double sum = 0;
-        for (int n = 0; n < this.size(); n++) {
-            Vec v1 = jmPathPoints.get(n).p.v;
-            Vec v2 = path2.jmPathPoints.get(n).p.v;
-            double dist = v1.minus(v2).norm();
-//            sumSq += dist;
-            sum += dist;
-        }
-        sum /= this.size();
-//        resul = sumSq / this.size() - (sum * sum);
-        resul = sum;
-        return resul;
-    }
-
-    void shift(Vec shiftVector) {
-        for (JMPathPoint p : jmPathPoints) {
-            p.shift(shiftVector);
-        }
-    }
-
-    /**
      * Returns the width of the path
      *
      * @return The width. If the path is empty, returns 0.

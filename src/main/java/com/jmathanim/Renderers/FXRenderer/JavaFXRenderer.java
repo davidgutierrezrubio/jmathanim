@@ -158,49 +158,45 @@ public class JavaFXRenderer extends Renderer {
         // block until FX toolkit initialization is complete:
         StandaloneSnapshot.FXStarter.waitForInit();
         JavaFXRenderer r = this;
-        FutureTask<Integer> task = new FutureTask<>(new Callable<Integer>() {
-
-            @Override
-            public Integer call() throws Exception {
-                group = new Group();
-                groupRoot = new Group();
-                groupBackground = new Group();
-                groupDebug = new Group();
-                // Create background
-                if (config.getBackGroundImage() != null) {
-                    ImageView background = new ImageView(new Image(config.getBackGroundImage().openStream()));
-                    Rectangle2D viewport = new Rectangle2D(0, 0, config.mediaW, config.mediaH);
-                    background.setViewport(viewport);
-                    groupBackground.getChildren().clear();
-                    groupBackground.getChildren().add(background);
-                }
-                groupRoot.getChildren().add(groupBackground);// Background image
-                groupRoot.getChildren().add(group);// Mathobjects
-                groupRoot.getChildren().add(groupDebug);// Debug things
-                fxScene = new Scene(groupRoot, config.mediaW, config.mediaH);
-                fxScene.setFill(config.getBackgroundColor().getFXPaint(r, camera));
-                StandaloneSnapshot.FXStarter.stage.setScene(fxScene);
-                // Proof with perspective camera
-                fxCamera = new PerspectiveCamera();
+        FutureTask<Integer> task = new FutureTask<>(() -> {
+            group = new Group();
+            groupRoot = new Group();
+            groupBackground = new Group();
+            groupDebug = new Group();
+            // Create background
+            if (config.getBackGroundImage() != null) {
+                ImageView background = new ImageView(new Image(config.getBackGroundImage().openStream()));
+                Rectangle2D viewport = new Rectangle2D(0, 0, config.mediaW, config.mediaH);
+                background.setViewport(viewport);
+                groupBackground.getChildren().clear();
+                groupBackground.getChildren().add(background);
+            }
+            groupRoot.getChildren().add(groupBackground);// Background image
+            groupRoot.getChildren().add(group);// Mathobjects
+            groupRoot.getChildren().add(groupDebug);// Debug things
+            fxScene = new Scene(groupRoot, config.mediaW, config.mediaH);
+            fxScene.setFill(config.getBackgroundColor().getFXPaint(r, camera));
+            StandaloneSnapshot.FXStarter.stage.setScene(fxScene);
+            // Proof with perspective camera
+            fxCamera = new PerspectiveCamera();
 //                fxCamera.setFieldOfView(.1);
-                // These are 3d tests, maybe for the future...
+// These are 3d tests, maybe for the future...
 //                fxCamera.getTransforms().addAll(
 //                        new Translate(config.mediaW/2, config.mediaH/2, 0),
 //                        new Rotate(45, Rotate.X_AXIS),
 //                        new Rotate(45, Rotate.Z_AXIS),
 //                        new Rotate(45, Rotate.Y_AXIS),
 //                        new Translate(-config.mediaW/2, -config.mediaH/2, 0));
-                fxScene.setCamera(fxCamera);
+fxScene.setCamera(fxCamera);
 
-                if (config.isShowPreview()) {
-                    JMathAnimScene.logger.debug("Creating preview window");
-                    // TODO: This gaps to add to the window are os-dependent
-                    StandaloneSnapshot.FXStarter.stage.setHeight(config.mediaH + 38);
-                    StandaloneSnapshot.FXStarter.stage.setWidth(config.mediaW + 16);
-                    StandaloneSnapshot.FXStarter.stage.show();
-                }
-                return 1;
-            }
+if (config.isShowPreview()) {
+    JMathAnimScene.logger.debug("Creating preview window");
+    // TODO: This gaps to add to the window are os-dependent
+    StandaloneSnapshot.FXStarter.stage.setHeight(config.mediaH + 38);
+    StandaloneSnapshot.FXStarter.stage.setWidth(config.mediaW + 16);
+    StandaloneSnapshot.FXStarter.stage.show();
+}
+return 1;
         });
 
         Platform.runLater(task);
@@ -247,36 +243,33 @@ public class JavaFXRenderer extends Renderer {
         WritableImage img2;
         BufferedImage bi = new BufferedImage(config.mediaW, config.mediaH, BufferedImage.TYPE_INT_ARGB);
         JavaFXRenderer r = this;
-        FutureTask<WritableImage> task = new FutureTask<>(new Callable<WritableImage>() {
-            @Override
-            public WritableImage call() throws Exception {
-                fxScene.setFill(config.getBackgroundColor().getFXPaint(r, camera));
-                group.getChildren().clear();
-                groupDebug.getChildren().clear();
-
-                fxCamera.getTransforms().clear();
-                fxCamera.getTransforms().addAll(new Translate(config.mediaW / 2, config.mediaH / 2, 0),
-                        new Rotate(FxCamerarotateX, Rotate.X_AXIS), new Rotate(FxCamerarotateY, Rotate.Y_AXIS),
-                        new Rotate(FxCamerarotateZ, Rotate.Z_AXIS),
-                        new Translate(-config.mediaW / 2, -config.mediaH / 2, 0));
-
-                // Add all elements
-                group.getChildren().addAll(fxnodes);
-                if (config.showFrameNumbers) {
-                    showDebugFrame(frameCount, 1d * frameCount / config.fps);
-                }
-                groupDebug.getChildren().addAll(debugFXnodes);
-                if (config.drawShadow) {
-                    group.setEffect(dropShadow);
-                }
-                // Snapshot parameters
-                final SnapshotParameters params = new SnapshotParameters();
-                params.setFill(config.getBackgroundColor().getFXPaint(r, camera));
-                params.setViewport(new Rectangle2D(0, 0, config.mediaW, config.mediaH));
-                params.setCamera(fxScene.getCamera());
-
-                return fxScene.getRoot().snapshot(params, null);
+        FutureTask<WritableImage> task = new FutureTask<>(() -> {
+            fxScene.setFill(config.getBackgroundColor().getFXPaint(r, camera));
+            group.getChildren().clear();
+            groupDebug.getChildren().clear();
+            
+            fxCamera.getTransforms().clear();
+            fxCamera.getTransforms().addAll(new Translate(config.mediaW / 2, config.mediaH / 2, 0),
+                    new Rotate(FxCamerarotateX, Rotate.X_AXIS), new Rotate(FxCamerarotateY, Rotate.Y_AXIS),
+                    new Rotate(FxCamerarotateZ, Rotate.Z_AXIS),
+                    new Translate(-config.mediaW / 2, -config.mediaH / 2, 0));
+            
+            // Add all elements
+            group.getChildren().addAll(fxnodes);
+            if (config.showFrameNumbers) {
+                showDebugFrame(frameCount, 1d * frameCount / config.fps);
             }
+            groupDebug.getChildren().addAll(debugFXnodes);
+            if (config.drawShadow) {
+                group.setEffect(dropShadow);
+            }
+            // Snapshot parameters
+            final SnapshotParameters params = new SnapshotParameters();
+            params.setFill(config.getBackgroundColor().getFXPaint(r, camera));
+            params.setViewport(new Rectangle2D(0, 0, config.mediaW, config.mediaH));
+            params.setCamera(fxScene.getCamera());
+            
+            return fxScene.getRoot().snapshot(params, null);
         });
         Platform.runLater(task);
         try {

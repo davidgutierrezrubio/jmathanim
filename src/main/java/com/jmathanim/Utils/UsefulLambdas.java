@@ -39,14 +39,11 @@ public class UsefulLambdas {
         final double aa = a;
         final double aaRoot = 1 / Math.sqrt(a);
         final double bb = b;
-        return new DoubleUnaryOperator() {
-            @Override
-            public double applyAsDouble(double t) {
-                if (t < aaRoot) {
-                    return aa * t * t;
-                } else {
-                    return 1 + bb * (t - aaRoot) * (t - 1);
-                }
+        return (double t) -> {
+            if (t < aaRoot) {
+                return aa * t * t;
+            } else {
+                return 1 + bb * (t - aaRoot) * (t - 1);
             }
         };
     }
@@ -66,16 +63,13 @@ public class UsefulLambdas {
         final double aaRoot1 = 1 / Math.sqrt(a);
         final double aaRoot2 = (2 - aaRoot1) * aaRoot1;
         final double bb = b;
-        return new DoubleUnaryOperator() {
-            @Override
-            public double applyAsDouble(double t) {
-                if (t < aaRoot1) {
-                    return aa * t * t;
-                } else if (t < aaRoot2) {
-                    return 1 + bb * (t - aaRoot1) * (t - aaRoot2);
-                } else {
-                    return 1 + bb * (t - 1) * (t - aaRoot2);
-                }
+        return (double t) -> {
+            if (t < aaRoot1) {
+                return aa * t * t;
+            } else if (t < aaRoot2) {
+                return 1 + bb * (t - aaRoot1) * (t - aaRoot2);
+            } else {
+                return 1 + bb * (t - 1) * (t - aaRoot2);
             }
         };
     }
@@ -97,14 +91,11 @@ public class UsefulLambdas {
      * @return The lambda function
      */
     public static DoubleUnaryOperator backAndForthLinear(double percentage) {
-        return new DoubleUnaryOperator() {
-            @Override
-            public double applyAsDouble(double t) {
-                if (t < percentage) {
-                    return t / percentage;
-                } else {
-                    return 1 - (t - percentage) / (1 - percentage);
-                }
+        return (double t) -> {
+            if (t < percentage) {
+                return t / percentage;
+            } else {
+                return 1 - (t - percentage) / (1 - percentage);
             }
         };
     }
@@ -115,12 +106,7 @@ public class UsefulLambdas {
      * @return The lambda function
      */
     public static DoubleUnaryOperator backAndForth() {
-        return new DoubleUnaryOperator() {
-            @Override
-            public double applyAsDouble(double t) {
-                return 4 * t * (1 - t);
-            }
-        };
+        return (double t) -> 4 * t * (1 - t);
     }
 
     /**
@@ -135,14 +121,11 @@ public class UsefulLambdas {
     private static DoubleUnaryOperator backAndForthBounce1(double a, double b) {
         final double aa = a;
         final double bb = b * 4 / (a * a);
-        return new DoubleUnaryOperator() {
-            @Override
-            public double applyAsDouble(double t) {
-                if (t < a) {
-                    return bb * t * (a - t);
-                } else {
-                    return (a - t) * (t - 1) * bb;
-                }
+        return (double t) -> {
+            if (t < a) {
+                return bb * t * (a - t);
+            } else {
+                return (a - t) * (t - 1) * bb;
             }
         };
     }
@@ -159,17 +142,14 @@ public class UsefulLambdas {
     private static DoubleUnaryOperator backAndForthBounce2(double a, double b) {
         final double norm = b * 4 / (a * a);
         double c = a + a * (1 - a);
-        return new DoubleUnaryOperator() {
-            @Override
-            public double applyAsDouble(double t) {
-                if (t < a) {
-                    return Math.min(1,norm * t * (a - t));
-                }
-                if (t < c) {
-                    return Math.min(1,(a - t) * (t - c) * norm);
-                } else {
-                    return Math.min(1,(c - t) * (t - 1) * norm);
-                }
+        return (double t) -> {
+            if (t < a) {
+                return Math.min(1,norm * t * (a - t));
+            }
+            if (t < c) {
+                return Math.min(1,(a - t) * (t - c) * norm);
+            } else {
+                return Math.min(1,(c - t) * (t - 1) * norm);
             }
         };
     }
@@ -191,16 +171,13 @@ public class UsefulLambdas {
      * @return The lambda function
      */
     public static DoubleUnaryOperator smooth(double smoothness) {
-        return new DoubleUnaryOperator() {
-            @Override
-            public double applyAsDouble(double t) {
-                double h = (t == 0 ? 0 : Math.exp(-1 / t));
-                double h2 = (t == 1 ? 0 : Math.exp(-1 / (1 - t)));
-                return (1 - smoothness) * t + smoothness * h / (h + h2);
-
+        return (double t) -> {
+            double h = (t == 0 ? 0 : Math.exp(-1 / t));
+            double h2 = (t == 1 ? 0 : Math.exp(-1 / (1 - t)));
+            return (1 - smoothness) * t + smoothness * h / (h + h2);
+            
 //        return t * t * (3 - 2 * t);
 //        return t;
-            }
         };
     }
 
@@ -214,17 +191,14 @@ public class UsefulLambdas {
      * @return The lambda function
      */
     public static DoubleUnaryOperator allocateTo(double a, double b) {
-        return new DoubleUnaryOperator() {
-            @Override
-            public double applyAsDouble(double t) {
-                if (t < a) {
-                    return 0;
-                }
-                if (t > b) {
-                    return 1;
-                }
-                return (t - a) / (b - a);
+        return (double t) -> {
+            if (t < a) {
+                return 0;
             }
+            if (t > b) {
+                return 1;
+            }
+            return (t - a) / (b - a);
         };
     }
 
@@ -238,13 +212,7 @@ public class UsefulLambdas {
      * @return The lambda function
      */
     public static DoubleUnaryOperator restrictTo(double a, double b) {
-        return new DoubleUnaryOperator() {
-            @Override
-            public double applyAsDouble(double t) {
-
-                return t * (b - a) + a;
-            }
-        };
+        return (double t) -> t * (b - a) + a;
     }
 
     /**
@@ -254,20 +222,10 @@ public class UsefulLambdas {
      * @return The lambda function
      */
     public static DoubleUnaryOperator reverse() {
-        return new DoubleUnaryOperator() {
-            @Override
-            public double applyAsDouble(double t) {
-                return 1 - t;
-            }
-        };
+        return (double t) -> 1 - t;
     }
 
     public static DoubleUnaryOperator clone(int cloneNumber) {
-        return new DoubleUnaryOperator() {
-            @Override
-            public double applyAsDouble(double t) {
-                return t*cloneNumber-Math.floor(t*cloneNumber);
-            }
-        };
+        return (double t) -> t*cloneNumber-Math.floor(t*cloneNumber);
     }
 }

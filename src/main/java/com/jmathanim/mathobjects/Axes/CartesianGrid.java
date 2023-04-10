@@ -85,7 +85,7 @@ public class CartesianGrid extends Constructible {
         small.recomputeGrid();
         small.alignGridToScreen();
         return MathObjectGroup.make(big, small);
-
+        //TODO: Fix this, it shouldnt be a MathObjectGroup, but a CartesianGrid object
     }
 
     protected CartesianGrid(double x, double y, double w, double h) {

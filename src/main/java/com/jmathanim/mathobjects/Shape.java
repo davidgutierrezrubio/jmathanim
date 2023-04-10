@@ -477,7 +477,7 @@ public class Shape extends MathObject {
     }
 
     /**
-     * Check if a given point is inside the shape
+     * Overloaded method. Check if a given point is inside the shape
      *
      * @param p Point to check
      * @return True if p lies inside of the shape (regardless of being filled or
@@ -488,7 +488,7 @@ public class Shape extends MathObject {
     }
 
     /**
-     * Overloaded method. Check if a given vector is inside the shape
+     * Check if a given vector is inside the shape
      *
      * @param v Vector to check
      * @return True if v lies inside of the shape (regardless of being filled or
@@ -503,6 +503,21 @@ public class Shape extends MathObject {
         double xy[] = dummyCamera.mathToScreenFX(v);
         return path.contains(xy[0], xy[1]);
     }
+    //Ray Casting algorithm. Only works for straight, simple polygons
+//
+//    public boolean pointInPolygon(Point point) {
+//        int numSides =size();
+//        int numIntersections = 0;
+//        for (int i = 0; i < numSides; i++) {
+//            Vec currentVertex = jmpath.get(i).p.v;
+//            Vec nextVertex = jmpath.get(i+1).p.v;
+//            if ((currentVertex.y > point.v.y) != (nextVertex.y > point.v.y)
+//                    && (point.v.x < (nextVertex.x - currentVertex.x) * (point.v.y - currentVertex.y) / (nextVertex.y - currentVertex.y) + currentVertex.x)) {
+//                numIntersections++;
+//            }
+//        }
+//        return numIntersections % 2 == 1;
+//    }
 
     /**
      * Computes the JMPath of the intersection of this Shape with another one
@@ -588,9 +603,9 @@ public class Shape extends MathObject {
     public JMPath getSubstractPath(Shape s2) {
         FXPathUtils fXPathUtils = new FXPathUtils();
 //        Camera dummyCamera = new DummyCamera();
-        Camera dummyCamera = scene.getCamera();
-        Path path = FXPathUtils.createFXPathFromJMPath(jmpath, dummyCamera);// TODO: Make a null camera
-        Path path2 = FXPathUtils.createFXPathFromJMPath(s2.getPath(), dummyCamera);
+        Camera camera = scene.getCamera();
+        Path path = FXPathUtils.createFXPathFromJMPath(jmpath, camera);//
+        Path path2 = FXPathUtils.createFXPathFromJMPath(s2.getPath(), camera);
         path.setFill(JMColor.parse("black").getFXColor());// It's necessary that the javafx path is filled to work
         path2.setFill(JMColor.parse("black").getFXColor());// It's necessary that the javafx path is filled to work
         javafx.scene.shape.Shape newpa = Path.subtract(path, path2);
@@ -598,7 +613,7 @@ public class Shape extends MathObject {
         // Distille!
 //        fXPathUtils.distille(convertToPath);
 
-        return fXPathUtils.createJMPathFromFXPath(convertToPath, dummyCamera);
+        return fXPathUtils.createJMPathFromFXPath(convertToPath, camera);
     }
 
     /**

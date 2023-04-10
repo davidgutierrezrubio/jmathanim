@@ -1016,6 +1016,13 @@ public abstract class MathObject implements Drawable, Updateable, Stateable, Box
         return dependents;
     }
 
+    /**
+     * Register dependence of this MathObject to other Mathobjects. This is done
+     * to ensure proper updating order.
+     *
+     * @param scene Scene 
+     * @param objs Objects that this object depends on
+     */
     protected void dependsOn(JMathAnimScene scene, MathObject... objs) {
 
         //Ensure all objects in objs is registered

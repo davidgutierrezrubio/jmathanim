@@ -95,8 +95,6 @@ public class ResourceLoader {
             externalResource = file.toURI().toURL();
         } catch (MalformedURLException ex) {
             Logger.getLogger(ResourceLoader.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (IOException ex) {
-            Logger.getLogger(ResourceLoader.class.getName()).log(Level.SEVERE, null, ex);
         }
         return externalResource;
     }
