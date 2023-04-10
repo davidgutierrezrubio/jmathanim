@@ -685,7 +685,7 @@ playAnimation(anim);
 waitSeconds(3);
 ```
 
-![homothecyAnim](homothecyAnim.gif)
+![directIso](directIso.gif)
 
 Internally, JMathAnim creates the isomorphism as a composition of shifting, rotating, and uniform scaling, so the precise form of the shapes is unaltered (except size).
 
