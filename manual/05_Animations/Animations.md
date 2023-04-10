@@ -328,7 +328,7 @@ waitSeconds(5);
 
 The `MoveAlongPath` animations move an object along a specified path. You can provide a `Shape` object or a `JMPath`objec to determine the path. The moved object will be located at the specified `Anchor` point. This animation admits 2 boolean parameters. First, one determines if an object should rotate at the angle given by the tangent of the path at its destiny point. Second, it determines if animation should use a parametrized equation of the curve or not. A parametrized equation ensures that movement is constant along the arc length of the path. Thus, for example, a parametrized value of t=0.3 ensures that the object will be located at 30% of the total arc length. If this boolean flag is false, standard Bézier parametrization will be used.
 
-In this example, we show 2 squares moving along a circle. The blue one moves with constant velocity and the red one with the standard parametrization of Bézier curves. In general, the standard parametrization of Bézier moves slower at sharp turns.
+In this example, we show 2 squares moving along a circle. The red square moves with constant velocity and the blue one with the standard parametrization of Bézier curves. In general, the standard parametrization of Bézier moves slower at sharp turns.
 
 ```java
 Shape pathShape = Shape.circle().fillColor("orange");//A circle
@@ -677,9 +677,10 @@ Point A = Point.origin().drawColor(JMColor.BLUE);
 Point B = Point.at(1, 0).drawColor(JMColor.BLUE);
 Point C = Point.at(1, .2).drawColor(JMColor.RED);
 Point D = Point.at(1.8, .6).drawColor(JMColor.RED);
-add(A,B,C,D);
-Shape triangle = Shape.polygon(A, B, Point.at(0, .5));
-Animation anim=Commands.isomorphism(3, A, B, C, D, triangle);
+Shape triangle = Shape.polygon(A.copy(), B.copy(), Point.at(0, .5));
+triangle.style("solidblue");
+add(triangle, A, B, C, D);
+Animation anim = Commands.isomorphism(3, A, B, C, D, triangle);
 playAnimation(anim);
 waitSeconds(3);
 ```
@@ -687,6 +688,16 @@ waitSeconds(3);
 ![homothecyAnim](homothecyAnim.gif)
 
 Internally, JMathAnim creates the isomorphism as a composition of shifting, rotating, and uniform scaling, so the precise form of the shapes is unaltered (except size).
+
+Since version 0.9.9, the other isomorphism (the inverse one, which includes a reflection) can be animated too. Simply replace in the previous code the animation with:
+
+```java
+Animation anim = Commands.inverseIsomorphism(3, A, B, C, D, triangle);
+```
+![inverseIso](inverseIso.gif)
+
+
+
 
 # Transforming math expressions
 
