@@ -17,6 +17,8 @@
  */
 package com.jmathanim.mathobjects;
 
+import com.jmathanim.Cameras.Camera;
+import com.jmathanim.Cameras.Camera3D;
 import com.jmathanim.Styling.JMColor;
 import com.jmathanim.Utils.AffineJTransform;
 import com.jmathanim.Utils.Anchor;
@@ -1144,4 +1146,74 @@ public class JMPath implements Stateable, Boxable, Iterable<JMPathPoint> {
         }
 
     }
+    
+    
+    
+    public ArrayList<ArrayList<Point>> computePolygonalPieces(Camera cam) {
+        ArrayList<ArrayList<Point>> resul = new ArrayList<>();
+        ArrayList<Point> connectedSegments = new ArrayList<>();
+        for (int n = 0; n < size(); n++) {
+            JMPathPoint p = jmPathPoints.get(n);
+            JMPathPoint q = jmPathPoints.get(n + 1);
+
+            if (q.isThisSegmentVisible) {
+                computeStraightenedPoints(connectedSegments, p, q, cam);
+//                connectedSegments.addAll(seg);
+            } else {
+                resul.add(connectedSegments);
+                connectedSegments = new ArrayList<>();
+            }
+        }
+        if (!connectedSegments.isEmpty()) {
+            resul.add(connectedSegments);
+        }
+        return resul;
+    }
+
+    private void computeStraightenedPoints(ArrayList<Point> connectedSegments, JMPathPoint p, JMPathPoint q, Camera cam) {
+        if (connectedSegments.isEmpty()) {
+            connectedSegments.add(p.p);
+        }
+        if (q.isCurved) {
+            int num = appropiateSubdivisionNumber(p.p.v, q.p.v, cam);
+            for (int n = 1; n < num; n++) {
+                connectedSegments.add(p.interpolate(q, n * 1d / num).p.drawColor("blue"));
+            }
+
+        }
+        connectedSegments.add(q.p);
+    }
+
+    private int appropiateSubdivisionNumber(Vec v1, Vec v2, Camera cam) {
+        double mathviewHeight;
+        if (cam instanceof Camera3D) {
+            Camera3D cam3D = (Camera3D) cam;
+
+            double zDepth = v1.interpolate(v2, .5).minus(cam3D.eye.v).norm();
+            mathviewHeight = cam3D.getMathViewHeight3D(zDepth);
+        } else {
+            mathviewHeight = cam.getMathView().getHeight();
+        }
+
+        //An estimation of subdivision number, depending on the covered area
+        double d = (Math.abs(v1.x - v2.x) + Math.abs(v1.y - v2.y) + Math.abs(v1.z - v2.z)) / mathviewHeight;
+        if (d >= 1) {
+            return 30;
+        }
+        if (d > .5) {
+            return 20;
+        }
+        if (d > .2) {
+            return 15;
+        }
+        if (d > .1) {
+            return 10;
+        }
+        if (d > .05) {
+            return 7;
+        }
+        return 5;
+    }
+    
+    
 }

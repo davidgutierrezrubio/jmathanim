@@ -251,9 +251,9 @@ public class Commands {
 
     }
 
-    public static AnimationWithEffects rotate(double runtime, Point c, double ang, MathObject... objects) {
+    public static AnimationWithEffects rotate(double runtime, Point rotationCenter, double rotationAngle, MathObject... objects) {
         AnimationWithEffects resul = new AnimationWithEffects(runtime) {
-            double angle = ang;
+            double angle = rotationAngle;
             Point rotationCenter = null;
             MathObject[] mathObjects = objects;
 
@@ -261,8 +261,8 @@ public class Commands {
             public void initialize(JMathAnimScene scene) {
                 super.initialize(scene);
                 saveStates(mathObjects);
-                if (c != null) {
-                    rotationCenter = c;
+                if (rotationCenter != null) {
+                    rotationCenter = rotationCenter;
                 }
                 addObjectsToscene(mathObjects);
             }

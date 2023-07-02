@@ -87,23 +87,23 @@ public class JavaFXRenderer extends Renderer {
 
     private final HashMap<String, Image> images;
 
-    private PerspectiveCamera fxCamera;
+    protected PerspectiveCamera fxCamera;
     public double FxCamerarotateX = 0;
     public double FxCamerarotateY = 0;
     public double FxCamerarotateZ = 0;
 
-    private Scene fxScene;
-    private Group group;
-    private Group groupRoot;
-    private Group groupBackground;
-    private Group groupDebug;
-    DropShadow dropShadow;
+    protected Scene fxScene;
+    protected Group group;
+    protected Group groupRoot;
+    protected Group groupBackground;
+    protected Group groupDebug;
+    protected DropShadow dropShadow;
 
-    private final ArrayList<Node> fxnodes;
-    private final ArrayList<Node> debugFXnodes;
+    protected final ArrayList<Node> fxnodes;
+    protected final ArrayList<Node> debugFXnodes;
 
-    private VideoEncoder videoEncoder;
-    private File saveFilePath;
+    protected VideoEncoder videoEncoder;
+    protected File saveFilePath;
     public double correctionThickness;
 
     public JavaFXRenderer(JMathAnimScene parentScene) throws Exception {
@@ -237,9 +237,6 @@ return 1;
 
     @Override
     protected BufferedImage getRenderedImage(int frameCount) {
-        Rectangle clip = new Rectangle(8000, 6000);
-        clip.setLayoutX(25);
-        clip.setLayoutY(25);
         WritableImage img2;
         BufferedImage bi = new BufferedImage(config.mediaW, config.mediaH, BufferedImage.TYPE_INT_ARGB);
         JavaFXRenderer r = this;
@@ -492,7 +489,7 @@ return 1;
         debugFXnodes.add(t);
     }
 
-    private void showDebugFrame(int numFrame, double time) {
+    protected void showDebugFrame(int numFrame, double time) {
         Text t = new Text("Frame: " + numFrame + " (" + String.format("%.2f", time) + "s)");
         t.setFont(Font.font("Verdana", FontWeight.BOLD, 48));
         t.setFill(Color.ALICEBLUE);

@@ -76,10 +76,29 @@ public abstract class Renderer {
         return config.mediaH;
     }
 
+    /**
+     * Saves the generated frame to movie or a set of still images, according to
+     * config
+     *
+     * @param frameCount Frame number
+     */
     abstract public void saveFrame(int frameCount);
 
+    /**
+     * Finish the render queue. Close the video stream if necessary and perform
+     * other cleaning operations
+     *
+     * @param frameCount Frame number
+     */
     abstract public void finish(int frameCount);
 
+    /**
+     * Gets the rendered frame
+     *
+     * @param frameCount Frame number. Neeed for superimposing it and in case of
+     * saving a screenshot
+     * @return A BufferedImage object with the drawn frame.
+     */
     abstract protected BufferedImage getRenderedImage(int frameCount);
 
     public void saveImage() {
@@ -91,7 +110,7 @@ public abstract class Renderer {
         int frameCount = config.getScene().getFrameCount();
         BufferedImage renderedImage = getRenderedImage(frameCount);
         writeImageToPNG(filename, renderedImage, format);
-        logger.info("Saved image "+filename);
+        logger.info("Saved image " + filename);
     }
 
     protected void writeImageToPNG(String filename, BufferedImage renderedImage, String format) {

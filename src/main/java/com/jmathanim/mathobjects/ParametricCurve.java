@@ -19,6 +19,7 @@ package com.jmathanim.mathobjects;
 
 import com.jmathanim.Utils.Vec;
 import java.util.ArrayList;
+import java.util.function.DoubleBinaryOperator;
 import java.util.function.DoubleUnaryOperator;
 
 /**
@@ -27,13 +28,28 @@ import java.util.function.DoubleUnaryOperator;
  *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
-public class ParametricCurve extends Shape {
+public class ParametricCurve extends Shape implements hasScalarParameter {
 
     public static final double DELTA_DERIVATIVE = .000001d;
     public static final int DEFAULT_NUMBER_OF_POINTS = 50;
-    private DoubleUnaryOperator functionXBackup;
-    private DoubleUnaryOperator functionYBackup;
-    private DoubleUnaryOperator functionZBackup;
+    private DoubleBinaryOperator functionXBackup;
+    private DoubleBinaryOperator functionYBackup;
+    private DoubleBinaryOperator functionZBackup;
+    private final int numPoints;
+    private final double tmax;
+    private final double tmin;
+    private double w;
+
+    @Override
+    public double getScalar() {
+        return this.w;
+    }
+
+    @Override
+    public void setScalar(double scalar) {
+        this.w = scalar;
+        generateFunctionPoints();
+    }
 
     /**
      * Different ways to define a function. Right now only lambda is supported
@@ -47,9 +63,9 @@ public class ParametricCurve extends Shape {
 
     public final ArrayList<Double> tPoints;
     public FunctionDefinitionType functionType;
-    public DoubleUnaryOperator functionX;
-    public DoubleUnaryOperator functionY;
-    public DoubleUnaryOperator functionZ;
+    public DoubleBinaryOperator functionX;
+    public DoubleBinaryOperator functionY;
+    public DoubleBinaryOperator functionZ;
 
     /**
      * Creates a new parametric curve in cartesian coordinates (x(t),y(t)),
@@ -67,6 +83,23 @@ public class ParametricCurve extends Shape {
     }
 
     /**
+     * Creates a new parametric curve in cartesian coordinates (x(t),y(t)),
+     * using the default number of points defined in
+     * {@link DEFAULT_NUMBER_OF_POINTS}. Functions are defined as 2 parameter
+     * function, where the second parameter can be animated with the play.scalar
+     * method.
+     *
+     * @param fx x(t), expressed as a lambda function
+     * @param fy y(t), expressed as a lambda function
+     * @param tmin Starting t parameter
+     * @param tmax Ending t parameter
+     * @return The created curve
+     */
+    public static ParametricCurve make(DoubleBinaryOperator fx, DoubleBinaryOperator fy, double tmin, double tmax) {
+        return make(fx, fy, (x, t) -> 0, tmin, tmax, DEFAULT_NUMBER_OF_POINTS);
+    }
+
+    /**
      * Creates a new parametric curve (3D version) in cartesian coordinates
      * (x(t),y(t),z(t)), using the specified number of points.
      *
@@ -79,6 +112,31 @@ public class ParametricCurve extends Shape {
      * @return The created curve
      */
     public static ParametricCurve make(DoubleUnaryOperator fx, DoubleUnaryOperator fy, DoubleUnaryOperator fz, double tmin, double tmax,
+            int numPoints) {
+        DoubleBinaryOperator bfx = (x, t) -> fx.applyAsDouble(x);
+        DoubleBinaryOperator bfy = (y, t) -> fy.applyAsDouble(y);
+        DoubleBinaryOperator bfz = (z, t) -> fz.applyAsDouble(z);
+        ParametricCurve resul = new ParametricCurve(bfx, bfy, bfz, tmin, tmax, numPoints);
+        resul.functionType = FunctionDefinitionType.LAMBDA_CARTESIAN;
+        resul.generateFunctionPoints();
+        return resul;
+    }
+
+    /**
+     * Creates a new parametric curve (3D version) in cartesian coordinates
+     * (x(t),y(t),z(t)), using the specified number of points. Functions are
+     * defined as 2 parameter function, where the second parameter can be
+     * animated with the play.scalar method.
+     *
+     * @param fx x(t), expressed as a lambda function
+     * @param fy y(t), expressed as a lambda function
+     * @param fz z(t), expressed as a lambda function
+     * @param tmin Starting t parameter
+     * @param tmax Ending t parameter
+     * @param numPoints Number of points to compute
+     * @return The created curve
+     */
+    public static ParametricCurve make(DoubleBinaryOperator fx, DoubleBinaryOperator fy, DoubleBinaryOperator fz, double tmin, double tmax,
             int numPoints) {
         ParametricCurve resul = new ParametricCurve(fx, fy, fz, tmin, tmax, numPoints);
         resul.functionType = FunctionDefinitionType.LAMBDA_CARTESIAN;
@@ -101,6 +159,23 @@ public class ParametricCurve extends Shape {
             double tmax) {
         return makePolar(fr, ftheta, tmin, tmax, DEFAULT_NUMBER_OF_POINTS);
     }
+ /**
+     * Creates a new parametric curve in polar coordinates (r(t),theta(t)),
+     * using the default number of points defined in
+     * {@link DEFAULT_NUMBER_OF_POINTS}. Functions are
+     * defined as 2 parameter function, where the second parameter can be
+     * animated with the play.scalar method.
+     *
+     * @param fr r(t), expressed as a lambda function
+     * @param ftheta theta(t), expressed as a lambda function
+     * @param tmin Starting t parameter
+     * @param tmax Ending t parameter
+     * @return The created curve
+     */
+    public static ParametricCurve makePolar(DoubleBinaryOperator fr, DoubleBinaryOperator ftheta, double tmin,
+            double tmax) {
+        return makePolar(fr, ftheta, tmin, tmax, DEFAULT_NUMBER_OF_POINTS);
+    }
 
     /**
      * Creates a new parametric curve in polar coordinates (r(t),theta(t)),
@@ -110,37 +185,49 @@ public class ParametricCurve extends Shape {
      * @param ftheta theta(t), expressed as a lambda function
      * @param tmin Starting t parameter
      * @param tmax Ending t parameter
+     * @param numPoints Number of points
      * @return The created curve
      */
     public static ParametricCurve makePolar(DoubleUnaryOperator fr, DoubleUnaryOperator ftheta, double tmin,
             double tmax, int numPoints) {
-        ParametricCurve resul = new ParametricCurve(fr, ftheta, t -> 0, tmin, tmax, numPoints);
+        DoubleBinaryOperator bfr = (r, t) -> fr.applyAsDouble(r);
+        DoubleBinaryOperator bftheta = (theta, t) -> ftheta.applyAsDouble(theta);
+
+        return makePolar(bfr, bftheta, tmin, tmax, numPoints);
+    }
+
+    public static ParametricCurve makePolar(DoubleBinaryOperator fr, DoubleBinaryOperator ftheta, double tmin,
+            double tmax, int numPoints) {
+        ParametricCurve resul = new ParametricCurve(fr, ftheta, (z, t) -> 0, tmin, tmax, numPoints);
         resul.functionType = FunctionDefinitionType.LAMBDA_POLAR;
         resul.generateFunctionPoints();
         return resul;
     }
 
-    private ParametricCurve(DoubleUnaryOperator fx, DoubleUnaryOperator fy, DoubleUnaryOperator fz, double tmin, double tmax, int numPoints) {
+    private ParametricCurve(DoubleBinaryOperator fx, DoubleBinaryOperator fy, DoubleBinaryOperator fz, double tmin, double tmax, int numPoints) {
         this.functionX = fx;
         this.functionY = fy;
         this.functionZ = fz;
         this.functionType = FunctionDefinitionType.LAMBDA_CARTESIAN;
         this.tPoints = new ArrayList<>();
+        this.tmin = tmin;
+        this.tmax = tmax;
+        this.numPoints = numPoints;
         for (int n = 0; n < numPoints; n++) {
             double t = tmin + (tmax - tmin) * n / (numPoints - 1);
             tPoints.add(t);
         }
     }
 
-    private ParametricCurve(DoubleUnaryOperator fx, DoubleUnaryOperator fy, ArrayList<Double> xPoints) {
-        this.functionX = fx;
-        this.functionY = fy;
-        this.functionZ = t -> 0;
-        this.tPoints = xPoints;
-        this.functionType = FunctionDefinitionType.LAMBDA_CARTESIAN;
-    }
-
+//    private ParametricCurve(DoubleUnaryOperator fx, DoubleUnaryOperator fy, ArrayList<Double> xPoints) {
+//        this.functionX = fx;
+//        this.functionY = fy;
+//        this.functionZ = t -> 0;
+//        this.tPoints = xPoints;
+//        this.functionType = FunctionDefinitionType.LAMBDA_CARTESIAN;
+//    }
     private void generateFunctionPoints() {
+        this.getPath().clear();
         for (int n = 0; n < tPoints.size(); n++) {
             double t = tPoints.get(n);
             Vec v = getFunctionValue(t);
@@ -188,13 +275,13 @@ public class ParametricCurve extends Shape {
         double[] value = new double[]{0, 0, 0};
         switch (this.functionType) {
             case LAMBDA_CARTESIAN:
-                value[0] = functionX.applyAsDouble(t);
-                value[1] = functionY.applyAsDouble(t);
-                value[2] = functionZ.applyAsDouble(t);
+                value[0] = functionX.applyAsDouble(t, this.w);
+                value[1] = functionY.applyAsDouble(t, this.w);
+                value[2] = functionZ.applyAsDouble(t, this.w);
                 break;
             case LAMBDA_POLAR:
-                double r = functionX.applyAsDouble(t);
-                double theta = functionY.applyAsDouble(t);
+                double r = functionX.applyAsDouble(t, this.w);
+                double theta = functionY.applyAsDouble(t, this.w);
                 value[0] = r * Math.cos(theta);
                 value[1] = r * Math.sin(theta);
                 value[2] = 0;//TODO: adapt this to 3D
@@ -257,7 +344,7 @@ public class ParametricCurve extends Shape {
     @Override
     public ParametricCurve copy() {
         ArrayList<Double> xPointsCopy = new ArrayList<>(tPoints);
-        ParametricCurve resul = new ParametricCurve(functionX, functionY, xPointsCopy);
+        ParametricCurve resul = ParametricCurve.make(functionX, functionY, functionZ, this.tmin, this.tmax, this.numPoints);
         resul.functionType = this.functionType;
         resul.generateFunctionPoints();
         resul.getMp().copyFrom(getMp());

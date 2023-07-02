@@ -87,6 +87,13 @@ public class JMColor extends PaintStyle {
      * @return Color
      */
     public javafx.scene.paint.Color getFXColor() {
+        r=(r<0 ? 0:r);
+        g=(g<0 ? 0:g);
+        b=(b<0 ? 0:b);
+        
+        r=(r>1 ? 1:r);
+        g=(r>1 ? 1:g);
+        b=(r>1 ? 1:b);
         return new javafx.scene.paint.Color((float) r, (float) g, (float) b, (float) alpha);
     }
 
@@ -173,6 +180,8 @@ public class JMColor extends PaintStyle {
      */
     @Override
     public PaintStyle interpolate(PaintStyle p, double t) {
+        t=(t<0 ? 0:t);
+        t=(t>1 ? 1:t);
         if (p instanceof JMColor) {
             JMColor B = (JMColor) p;
 
