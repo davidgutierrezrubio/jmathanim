@@ -25,9 +25,10 @@ Manual
 What's new?
 ===========
 
-Version 0.9.9-SNAPSHOT (09/04/23)
+Version 0.9.9-SNAPSHOT (06/07/2023)
 
 * Added `PointOwner` interface to improve import of Geogebra Point on Object.
+* Added `CTTangentLine` class that represents the tangent lines from a point to a circle.
 
 Version 0.9.8 (08/04/23)
 
