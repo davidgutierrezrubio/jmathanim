@@ -159,12 +159,13 @@ public class ParametricCurve extends Shape implements hasScalarParameter {
             double tmax) {
         return makePolar(fr, ftheta, tmin, tmax, DEFAULT_NUMBER_OF_POINTS);
     }
- /**
+
+    /**
      * Creates a new parametric curve in polar coordinates (r(t),theta(t)),
      * using the default number of points defined in
-     * {@link DEFAULT_NUMBER_OF_POINTS}. Functions are
-     * defined as 2 parameter function, where the second parameter can be
-     * animated with the play.scalar method.
+     * {@link DEFAULT_NUMBER_OF_POINTS}. Functions are defined as 2 parameter
+     * function, where the second parameter can be animated with the play.scalar
+     * method.
      *
      * @param fr r(t), expressed as a lambda function
      * @param ftheta theta(t), expressed as a lambda function
@@ -196,6 +197,21 @@ public class ParametricCurve extends Shape implements hasScalarParameter {
         return makePolar(bfr, bftheta, tmin, tmax, numPoints);
     }
 
+    /**
+     * Creates a new parametric curve in polar coordinates (r(t),theta(t)),
+     * using the specified number of points. Functions are defined as 2
+     * parameter function, where the second parameter can be animated with the
+     * play.scalar method.
+     *
+     *
+     * @param fr r(t), expressed as a lambda function
+     * @param ftheta theta(t), expressed as a lambda function
+     * @param tmin Starting t parameter
+     * @param tmax Ending t parameter
+     * @param numPoints Number of points
+     * @return The created curve
+     */
+
     public static ParametricCurve makePolar(DoubleBinaryOperator fr, DoubleBinaryOperator ftheta, double tmin,
             double tmax, int numPoints) {
         ParametricCurve resul = new ParametricCurve(fr, ftheta, (z, t) -> 0, tmin, tmax, numPoints);
@@ -213,7 +229,7 @@ public class ParametricCurve extends Shape implements hasScalarParameter {
         this.tmin = tmin;
         this.tmax = tmax;
         this.numPoints = numPoints;
-        for (int n = 0; n < numPoints; n++) {
+        for (int n = 0; n < numPoints; n++) {//TODO: Add adaptative points
             double t = tmin + (tmax - tmin) * n / (numPoints - 1);
             tPoints.add(t);
         }

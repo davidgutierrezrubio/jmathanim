@@ -51,13 +51,18 @@ public class Axes extends MathObject {
     private final ArrayList<TickAxes> yticks, yticksBase;
 
     public static Axes makeBasicAxes() {
-        Axes resul=new Axes();
-        resul.generatePrimaryXTicks(-2, 2, 1);
-        resul.generatePrimaryYTicks(-2, 2, 1);
+        return makeBasicAxes(0, -1);
+    }
+
+    public static Axes makeBasicAxes(int a, int b) {
+        Axes resul = new Axes();
+        if (a <= b) {
+            resul.generatePrimaryXTicks(a, b, 1);
+            resul.generatePrimaryYTicks(a, b, 1);
+        }
         return resul;
     }
-    
-    
+
     public Axes() {
         mpArray = new MODrawPropertiesArray();
         getMp().loadFromStyle("axisdefault");

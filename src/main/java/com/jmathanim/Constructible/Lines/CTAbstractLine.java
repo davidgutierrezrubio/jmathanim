@@ -26,7 +26,7 @@ import com.jmathanim.mathobjects.Point;
  *
  * @author David Gutierrez Rubio davidgutierrezrubio@gmail.com
  */
-public abstract class CTAbstractLine extends Constructible implements HasDirection,PointOwner {
+public abstract class CTAbstractLine extends Constructible implements HasDirection, PointOwner {
 
     protected enum LineType {
         PointPoint, PointVector
@@ -51,6 +51,13 @@ public abstract class CTAbstractLine extends Constructible implements HasDirecti
 
     public Point getP2() {
         return P2;
+    }
+
+    @Override
+    public Vec getHoldCoordinates(Vec coordinates) {
+        Vec v1 = getDirection().normalize();
+        Vec v2 = coordinates.minus(getP1().v);
+        return (getP1().v.add(v1.mult(v1.dot(v2))));
     }
 
 }

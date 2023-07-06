@@ -247,6 +247,9 @@ public class GeogebraLoader implements Iterable<Constructible>, hasCameraParamet
             case "Intersect":
                 cp.processIntersectionCommand(el);
                 break;
+            case "Tangent":
+                cp.processTangentCommand(el);
+                break;
             case "Point": //A Point on object
                 cp.processPointOnObject(el);
                 break;

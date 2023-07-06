@@ -292,7 +292,7 @@ public class Camera {
         for (MathObject obj : objs) {
             r = Rect.union(r, obj.getBoundingBox());
         }
-        adjustToRect(r.addGap(hgap, hgap));
+        adjustToRect(r.addGap(hgap, vgap));
         return this;
     }
 

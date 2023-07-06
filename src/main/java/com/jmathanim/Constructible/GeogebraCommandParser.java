@@ -31,6 +31,7 @@ import com.jmathanim.Constructible.Lines.CTPolygon;
 import com.jmathanim.Constructible.Lines.CTRay;
 import com.jmathanim.Constructible.Lines.CTRegularPolygon;
 import com.jmathanim.Constructible.Lines.CTSegment;
+import com.jmathanim.Constructible.Lines.CTTangentPointCircle;
 import com.jmathanim.Constructible.Lines.CTTransformedLine;
 import com.jmathanim.Constructible.Lines.CTVector;
 import com.jmathanim.Constructible.Lines.HasDirection;
@@ -45,6 +46,7 @@ import com.jmathanim.Constructible.Transforms.CTTranslatedPoint;
 import com.jmathanim.Styling.JMColor;
 import com.jmathanim.Styling.MODrawProperties;
 import com.jmathanim.Utils.Anchor;
+import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.JMImage;
 import com.jmathanim.mathobjects.MathObject;
@@ -68,10 +70,10 @@ import org.w3c.dom.Element;
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
 class GeogebraCommandParser {
-
+    
     protected final HashMap<String, Constructible> geogebraElements;
     protected final HashMap<String, String> expressions;
-
+    
     public GeogebraCommandParser() {
         this.geogebraElements = new HashMap<>();
         this.expressions = new HashMap<>();
@@ -124,7 +126,7 @@ class GeogebraCommandParser {
         }
         return null;
     }
-
+    
     public Constructible get(String key) {
         if (containsKey(key)) {
             return geogebraElements.get(key);
@@ -132,11 +134,11 @@ class GeogebraCommandParser {
             return new NullMathObject();
         }
     }
-
+    
     public boolean containsKey(String key) {
         return geogebraElements.containsKey(key);
     }
-
+    
     public void registerGeogebraElement(String label, Constructible resul) {
         if (resul != null) {
             resul.setLabel(label);
@@ -152,7 +154,7 @@ class GeogebraCommandParser {
         Element elOutput = firstElementWithTag(el, "output");
         return elOutput.getAttribute("a" + num);
     }
-
+    
     protected MODrawProperties parseStylingOptions(Element el) {
         MODrawProperties resul = MODrawProperties.makeNullValues();
 
@@ -173,7 +175,7 @@ class GeogebraCommandParser {
         JMColor col = JMColor.rgbInt(r, g, b, 255);
         JMColor colFill = JMColor.rgbInt(r, g, b, 255);
         colFill.setAlpha(alpha);
-
+        
         resul.setDrawColor(col);
         resul.setFillColor(colFill);
 
@@ -214,10 +216,10 @@ class GeogebraCommandParser {
             double thickness = Double.valueOf(pointSize.getAttribute("val")) * 6;// Scaling factor guessed...
             resul.setThickness(thickness);
         }
-
+        
         return resul;
     }
-
+    
     private Element firstElementWithTag(Element el, String name) {
         if (el.getElementsByTagName(name).getLength() > 0) {
             Element elInput = (Element) el.getElementsByTagName(name).item(0);
@@ -226,7 +228,7 @@ class GeogebraCommandParser {
             return null;
         }
     }
-
+    
     private MathObject[] getArrayOfParameters(Element el) {
         Element elInput = firstElementWithTag(el, "input");
         MathObject[] objs = new MathObject[elInput.getAttributes().getLength()];
@@ -236,7 +238,7 @@ class GeogebraCommandParser {
         }
         return objs;
     }
-
+    
     private String[] getArrayOfOutputs(Element el) {
         Element elInput = firstElementWithTag(el, "output");
         String[] outputs = new String[elInput.getAttributes().getLength()];
@@ -246,7 +248,7 @@ class GeogebraCommandParser {
         }
         return outputs;
     }
-
+    
     public void registerExpression(String label, String expression) {
         expressions.put(label, expression);
     }
@@ -272,7 +274,7 @@ class GeogebraCommandParser {
         // TODO: Add a z value here
 
         resul.thickness(th);
-
+        
         Element pointStyle = firstElementWithTag(el, "pointStyle");
         Integer dotStyleCode = Integer.valueOf(pointStyle.getAttribute("val"));
         Point.DotSyle dotStyle;
@@ -291,7 +293,7 @@ class GeogebraCommandParser {
         registerGeogebraElement(label, resul);
         JMathAnimScene.logger.debug("Imported Geogebra point {}", label);
     }
-
+    
     void processImageElement(Element el, ZipFile zipFile) {
         String label = el.getAttribute("label");
         final Element fileEl = firstElementWithTag(el, "file");
@@ -304,14 +306,14 @@ class GeogebraCommandParser {
             Element elStartPoint2 = (Element) el.getElementsByTagName("startPoint").item(1);
             CTPoint B = (CTPoint) geogebraElements.get(elStartPoint2.getAttribute("exp"));
             registerGeogebraElement(label, CTImage.make(A, B, img));
-
+            
         } catch (IOException ex) {
             JMathAnimScene.logger.error("Could'nt load file for image " + label);
             return;
         }
-
+        
     }
-
+    
     void processLaTeXObjectElement(Element el) {
         CTPoint anchorPoint;
         double size;
@@ -349,11 +351,11 @@ class GeogebraCommandParser {
         } else {
             size = 5d / 36;//Assume size is "small"
         }
-
+        
         CTLaTeX cTLaTeX = CTLaTeX.make(text, anchorPoint, Anchor.Type.UL, 0).scale(size);
         registerGeogebraElement(label, cTLaTeX);
     }
-
+    
     protected void processSegmentCommand(Element el) {
         Element elInput = firstElementWithTag(el, "input");
         String labelPoint1 = elInput.getAttribute("a0");
@@ -366,7 +368,7 @@ class GeogebraCommandParser {
         registerGeogebraElement(label, resul);
         JMathAnimScene.logger.debug("Generated segment {}", label);
     }
-
+    
     protected void processLineCommand(Element el) {
         String label = getOutputArgument(el, 0);
         MathObject[] params = getArrayOfParameters(el);
@@ -380,7 +382,7 @@ class GeogebraCommandParser {
             registerGeogebraElement(label, CTLine.make(A, (HasDirection) B));
         }
     }
-
+    
     protected void processRayCommand(Element el) {
         String label = getOutputArgument(el, 0);
         MathObject[] params = getArrayOfParameters(el);
@@ -394,10 +396,10 @@ class GeogebraCommandParser {
             registerGeogebraElement(label, CTRay.make(A, (HasDirection) B));
         }
     }
-
+    
     protected void processVectorCommand(Element el) {
         String label = getOutputArgument(el, 0);
-
+        
         MathObject[] params = getArrayOfParameters(el);
         CTPoint A;
         CTPoint B;
@@ -408,10 +410,10 @@ class GeogebraCommandParser {
             A = CTPoint.make(Point.origin());
             B = (CTPoint) params[0];
         }
-
+        
         registerGeogebraElement(label, CTVector.makeVector(A, B));
     }
-
+    
     protected void processOrthogonalLine(Element el) {
         String label = getOutputArgument(el, 0);
         MathObject[] params = getArrayOfParameters(el);
@@ -421,7 +423,7 @@ class GeogebraCommandParser {
             registerGeogebraElement(label, CTLineOrthogonal.make(A, (HasDirection) B));
         }
     }
-
+    
     void processPerpBisector(Element el) {
         String label = getOutputArgument(el, 0);
         MathObject[] params = getArrayOfParameters(el);
@@ -436,7 +438,7 @@ class GeogebraCommandParser {
             registerGeogebraElement(label, CTPerpBisector.make(seg));
         }
     }
-
+    
     protected void processAngleBisector(Element el) {
         String label = getOutputArgument(el, 0);
         MathObject[] params = getArrayOfParameters(el);
@@ -447,7 +449,7 @@ class GeogebraCommandParser {
             registerGeogebraElement(label, CTAngleBisector.make(A, B, C));
         }
     }
-
+    
     protected void processPolygonCommand(Element el) {
         MathObject[] objs = getArrayOfParameters(el);
         // Array of points of the polygon
@@ -457,9 +459,9 @@ class GeogebraCommandParser {
         } else {
             processSimplePolygonCommand(el);
         }
-
+        
     }
-
+    
     protected void processSimplePolygonCommand(Element el) {
         String[] outputs = getArrayOfOutputs(el);
         String label = outputs[0];
@@ -477,10 +479,10 @@ class GeogebraCommandParser {
             registerGeogebraElement(outputs[i + 1], CTSegment.make(points[i], points[i2]));
         }
     }
-
+    
     protected void processRegularPolygonCommand(Element el) {
         String[] outputs = getArrayOfOutputs(el);
-
+        
         MathObject[] objs = getArrayOfParameters(el);
         final double dSides = ((Scalar) objs[2]).value;
         int sides = (int) dSides;
@@ -501,19 +503,19 @@ class GeogebraCommandParser {
             registerGeogebraElement(outputs[k], P);
             JMathAnimScene.logger.debug("Generated Point {}", outputs[k]);
         }
-
+        
         for (int k = 1; k <= sides; k++) {
             final CTSegment seg = CTSegment.make(vertices.get(k - 1), vertices.get(k % sides));
             segments.add(seg);
             registerGeogebraElement(outputs[k], seg);
             JMathAnimScene.logger.debug("Generated segment {}", outputs[k]);
         }
-
+        
         registerGeogebraElement(label, CTRegularPolygon.makeFromPointList(vertices));
-
+        
         JMathAnimScene.logger.debug("Imported Geogebra regular polygon " + label);
     }
-
+    
     protected void processCircleCommand(Element el) {
         String label = getOutputArgument(el, 0);
         Element elInput = firstElementWithTag(el, "input");
@@ -522,7 +524,7 @@ class GeogebraCommandParser {
             String str0 = elInput.getAttribute("a0");
             String str1 = elInput.getAttribute("a1");
             String str2 = elInput.getAttribute("a2");
-
+            
             CTPoint arg0 = (CTPoint) parseArgument(str0);
             CTPoint arg1 = (CTPoint) parseArgument(str1);
             CTPoint arg2 = (CTPoint) parseArgument(str2);
@@ -531,13 +533,13 @@ class GeogebraCommandParser {
             JMathAnimScene.logger
                     .debug("Imported Geogebra Circle " + label + " by 3 points: " + arg0 + ", " + arg1 + ",  " + arg2);
             return;
-
+            
         }
-
+        
         if (numberOfArguments == 2) {
             String str0 = elInput.getAttribute("a0");
             String str1 = elInput.getAttribute("a1");
-
+            
             MathObject arg0 = parseArgument(str0);
             MathObject arg1 = parseArgument(str1);
 
@@ -557,10 +559,29 @@ class GeogebraCommandParser {
                 registerGeogebraElement(label, resul);
                 JMathAnimScene.logger.debug("Imported Geogebra Circle " + label + ", center " + p0 + ", radius " + sc0);
             }
-
+            
         }
     }
+    
+    void processTangentCommand(Element el) {
+        String label = getOutputArgument(el, 0);
+        MathObject[] objs = getArrayOfParameters(el);
+        Constructible ob1 = (Constructible) objs[0];
+        Constructible ob2 = (Constructible) objs[1];
+        //If Point-Circle: 2 tangent lines
+        //If Circle-Circle: 4 tangent lines (exterior and interior ones)
 
+        //TODO: Finish this
+        if (ob1 instanceof CTPoint) {
+            CTPoint point = (CTPoint) ob1;
+            CTCircle circle = (CTCircle) ob2;
+            registerGeogebraElement(label, CTTangentPointCircle.make(point, circle,1));
+            registerGeogebraElement(getOutputArgument(el, 1), CTTangentPointCircle.make(point, circle,2));
+            
+        }
+        
+    }
+    
     void processIntersectionCommand(Element el) {
         int numPoint = 0;
         String label = getOutputArgument(el, 0);
@@ -580,10 +601,10 @@ class GeogebraCommandParser {
                 registerGeogebraElement(label, CTIntersectionPoint.make(ob1, ob2, 1));
             }
         }
-
+        
         JMathAnimScene.logger.debug("Imported Geogebra intersection point " + label + " of " + objs[0] + " and " + objs[1]);
     }
-
+    
     void processPointOnObject(Element el) {
         //TODO: Implement PointIn command for points inside a region (polygon, circle...)
         String label = getOutputArgument(el, 0);
@@ -596,9 +617,9 @@ class GeogebraCommandParser {
         } catch (ClassCastException e) {
             JMathAnimScene.logger.warn("Object type " + objs[0].getClass().getName() + " not implement yet to hold a point on object, sorry");
         }
-
+        
     }
-
+    
     void processEllipse(Element el) {
         String label = getOutputArgument(el, 0);
         Element elInput = firstElementWithTag(el, "input");
@@ -607,7 +628,7 @@ class GeogebraCommandParser {
             String str0 = elInput.getAttribute("a0");
             String str1 = elInput.getAttribute("a1");
             String str2 = elInput.getAttribute("a2");
-
+            
             CTPoint focus1 = (CTPoint) parseArgument(str0);
             CTPoint focus2 = (CTPoint) parseArgument(str1);
             CTPoint A = (CTPoint) parseArgument(str2);
@@ -617,7 +638,7 @@ class GeogebraCommandParser {
                     .debug("Imported Geogebra Ellipse" + label + " by 3 points: " + focus1 + ", " + focus2 + ",  " + A);
         }
     }
-
+    
     void processMirror(Element el) {//Right now, it only mirror points
         String label = getOutputArgument(el, 0);
         MathObject[] objs = getArrayOfParameters(el);
@@ -642,11 +663,11 @@ class GeogebraCommandParser {
                 registerGeogebraElement(label, resul);
                 JMathAnimScene.logger.debug("Imported Geogebra central mirror of line " + label + " of " + objs[0] + " with axis " + objs[1]);
             }
-
+            
         }
-
+        
     }
-
+    
     void processTranslate(Element el) {
         String label = getOutputArgument(el, 0);
         MathObject[] objs = getArrayOfParameters(el);
@@ -661,10 +682,10 @@ class GeogebraCommandParser {
             CTVector translateVector = (CTVector) objs[1];
             registerGeogebraElement(label, CTTransformedLine.makeTranslatedLine(cTLineToTranslate, translateVector));
             JMathAnimScene.logger.debug("Imported Geogebra translated line " + label + " of " + objs[0] + " with vector " + objs[1]);
-
+            
         }
     }
-
+    
     void processRotate(Element el) {
         String label = getOutputArgument(el, 0);
         MathObject[] objs = getArrayOfParameters(el);
@@ -690,9 +711,9 @@ class GeogebraCommandParser {
             registerGeogebraElement(label, CTTransformedCircle.makeRotatedCircle(circleToRotate, rotationCenter, angle));
             JMathAnimScene.logger.debug("Imported Geogebra rotated point " + label + " of " + objs[0] + " with angle " + objs[1]);
         }
-
+        
     }
-
+    
     void processMidPoint(Element el) {
         String label = getOutputArgument(el, 0);
         MathObject[] objs = getArrayOfParameters(el);
@@ -707,16 +728,16 @@ class GeogebraCommandParser {
             registerGeogebraElement(label, CTMidPoint.make(segment));
         }
     }
-
+    
     void processNumeric(Element el) {
         String label = el.getAttribute("label");
         Element elCoords = firstElementWithTag(el, "value");
         double value = Double.valueOf(elCoords.getAttribute("val"));
         registerGeogebraElement(label, Scalar.make(value));
         JMathAnimScene.logger.debug("Imported Geogebra scalar value " + label + "=" + value);
-
+        
     }
-
+    
     void processSemicircle(Element el) {
         String label = getOutputArgument(el, 0);
         MathObject[] objs = getArrayOfParameters(el);
@@ -724,7 +745,7 @@ class GeogebraCommandParser {
         CTPoint B = (CTPoint) objs[1];
         registerGeogebraElement(label, CTSemiCircle.make(A, B));
     }
-
+    
     void processCircleArc(Element el) {
         String label = getOutputArgument(el, 0);
         MathObject[] objs = getArrayOfParameters(el);
@@ -733,7 +754,7 @@ class GeogebraCommandParser {
         CTPoint C = (CTPoint) objs[2];
         registerGeogebraElement(label, CTCircleArc.make(A, B, C));
     }
-
+    
     void processCircleSector(Element el) {
         String label = getOutputArgument(el, 0);
         MathObject[] objs = getArrayOfParameters(el);

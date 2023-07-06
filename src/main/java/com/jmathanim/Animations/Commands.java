@@ -415,8 +415,9 @@ public class Commands {
     }
 
     /**
-     * Animation command that transforms a MathObject through a direct isomorphism.
-     * Isomorphism is specified by 2 pairs of points (origin-destiny)
+     * Animation command that transforms a MathObject through a direct
+     * isomorphism. Isomorphism is specified by 2 pairs of points
+     * (origin-destiny)
      *
      * @param runtime Run time (in seconds)
      * @param a First origin point
@@ -469,11 +470,11 @@ public class Commands {
         resul.setDebugName("Isomorphism Transform");
         return resul;
     }// End of homothecy command
-    
-    
-     /**
-     * Animation command that transforms a MathObject through a inverse isomorphism.
-     * Isomorphism is specified by 2 pairs of points (origin-destiny)
+
+    /**
+     * Animation command that transforms a MathObject through a inverse
+     * isomorphism. Isomorphism is specified by 2 pairs of points
+     * (origin-destiny)
      *
      * @param runtime Run time (in seconds)
      * @param a First origin point
@@ -526,8 +527,6 @@ public class Commands {
         resul.setDebugName("Inverse isomorphism Transform");
         return resul;
     }// End of homothecy command
-    
-    
 
     /**
      * Animation command that perfoms a reflection that maps A into B
@@ -712,6 +711,23 @@ public class Commands {
         Animation resul = setMP(runtime, MODrawProperties.createFromStyle(styleName), objects);
         resul.setDebugName("setStyle");
         return resul;
+    }
+
+    /**
+     * Animation command that pans and zooms the camera to the selected objects.
+     * Gaps are automatically added to (via the camera.setGaps method).
+     *
+     * @param runtime Duration (in seconds)
+     * @param camera Camera to animate
+     * @param objs Mathobjects to zoom to (varargs)
+     * @return Animation to run with playAnim method 
+     */
+    public static Animation cameraZoomToObjects(double runtime, Camera camera, MathObject... objs) {
+        Rect r = objs[0].getBoundingBox();
+        for (MathObject obj : objs) {
+            r = Rect.union(r, obj.getBoundingBox());
+        }
+        return cameraZoomToRect(runtime, camera, r.addGap(camera.getGaps().x, camera.getGaps().y));
     }
 
     /**
