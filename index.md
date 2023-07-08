@@ -7,8 +7,7 @@ If you use it and find a bug/missing feature, feel free to fill an issue
 [here](https://github.com/davidgutierrezrubio/jmathanim/issues). For any other
 question, you can contact me at davidgutierrezrubio@gmail.com.
 
-You can also follow my
-[Youtube](https://www.youtube.com/channel/UCeczwEqSrAwZbPdHADN8rfQ) channel
+You can also follow my [Youtube](https://www.youtube.com/channel/UCeczwEqSrAwZbPdHADN8rfQ) channel
 where I occasionally upload math videos and my
 [Twitter](https://twitter.com/DavidCalculin) account (both mostly in Spanish).
 

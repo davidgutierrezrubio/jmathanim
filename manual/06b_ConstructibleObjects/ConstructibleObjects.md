@@ -3,9 +3,9 @@
 # Constructible objects
 Since version 0.9.5, JMathAnim has introduced constructible objects. These objects inherit from the abstract class `Constructible` which is itself a subclass of `MathObject`, so they have all the common properties of those, like styling.
 
-A constructible object is a mathobject that is built much like constructive geometry works. That's it, computing parallels, intersections, etc. The main difference with a normal `MathObject `is that they are dependent on other `Constructible` objects, and most of them are "rigid" in the sense that they cannot be shifted, rotated, or scaled (well, they can, but without effect). All `Constructible` objects have name with the prefix `CT`.
+A constructible object is a `MathObject`,that is built much like constructive geometry works. That's it, computing parallels, intersections, etc. The main difference with a normal `MathObject `is that they are dependent on other `Constructible` objects, and most of them are "rigid" in the sense that they cannot be shifted, rotated, or scaled (well, they can, but without effect). All `Constructible` objects have name with the prefix `CT`.
 
-An example is worth a thousand non-example words:
+For example, the following code:
 
 ```java
 CTPoint A = CTPoint.make(Point.at(0, 0)).dotStyle(Point.DotSyle.CROSS).drawColor("blue");
@@ -115,18 +115,18 @@ waitSeconds(3);
 
 # Geogebra import
 
-One of the advantages of `Constructible` objects is that they behave similarly to the objects of the Geogebra program. In the rare case you don't know it, Geogebra is an excellent open source software that allows you to make geometrical constructions (and many other things). JMathAnim can import Geogebra files in a limited way (bear in mind that Geogebra has literally hundreds of commands). For now, the following elements can be successfully imported: points, middle points, intersection points (lines, rays, segments, circles), lines, orthogonal, parallels, perpendicular bisector, polygons, regular polygons, vectors, mirrored, translated, and rotated points. JMathAnim will emit a warning when it finds an unknown command that cannot be imported. The process is quite simple. For example, suppose we have a document like this created in Geogebra, where we have calculated the circumcenter of a triangle, drawing the 3 perpendicular bisectors:
+One of the advantages of `Constructible` objects is that they behave similarly to the objects of the Geogebra program. In the rare case you don't know it, Geogebra is an excellent open source software that allows you to do geometrical constructions (and many other things). JMathAnim can import Geogebra files in a limited way (bear in mind that Geogebra has literally hundreds of commands). For now, the following elements can be successfully imported: points, midpoints, intersections (of lines, rays, segments, circles), lines, orthogonal, parallels, perpendicular bisector, polygons, regular polygons, vectors, mirrored, translated, and rotated points. JMathAnim will emit a warning when it finds an unknown command that cannot be imported. The process is quite simple. For example, suppose we have a document like this created in Geogebra, where we have calculated the circumcenter of a triangle, drawing the 3 perpendicular bisectors:
 
 <img src="03geogebraDoc.png" alt="03geogebraDoc" style="zoom:50%;" />
 
-Now, we save this in our disk under the name `test.gbb`, in a directory named `resources/geogebra` of our project. This will be the default location for geogebra files (remember, you can change this behavior with the `#` and `!`  flags). 
+Now, we save this in our disk under the name `test.gbb`, in a directory named `resources/geogebra` of our project. This will be the default location for Geogebra files (remember, you can change this behavior with the `#` and `!`  flags). 
 
 ```java
 //With this command we parse the file resources/geogebra/test.gbb
 GeogebraLoader gl = GeogebraLoader.parse("test.ggb");
 ```
 
-Now, JMathAnim will try to convert all Geogebra elements, logging a warning if there is an unknown command (and possibly throwing an exception if there are objects that depend on this unknown object). If everything goes well, the `gl` object will have a `Dictionary` with the created objects.
+Now, JMathAnim will try to convert all Geogebra elements, logging a warning if there is an unknown command (and possibly throwing an exception if there are objects that depend on this unknown object). If all goes well, the `gl` object will have a `Dictionary` with the created objects.
 
 The command
 
@@ -134,22 +134,22 @@ The command
 add(gl);
 ```
 
-Is equivalent to adding all imported objects to the scene.
+This is equivalent to adding all the imported objects to the scene.
 
-If you want to adjust the camera to the view of the original geogebra document, you can do it with the command:
+If you want to adjust the camera to the view of the original Geogebra document, you can do this with the command:
 
 ```java
 camera.setViewFrom(gl);
 ```
 
-However, bear in mind that proportions may not be the same, so the view is approximate.
+Note that the proportions may not be the same, so the view is approximate.
 
 
-The imported document looks like this:
+The imported document will look like this:
 
 <img src="03ImportedGeogebra.png" alt="03ImportedGeogebra" style="zoom:50%;" />
 
-Not bad, right? Note that axis and object labels are not imported. And that's it! Well, not really. If you want to animate elements, or simply access them, you may use the original names that these objects had in Geogebra. For example, to access point A, you may do it with the command
+Not bad, is it? Note that axis and object labels are not imported. And that's it! Well, not really. If you want to animate elements or simply access them, you can use the original names that these objects had in Geogebra. For example, to access point A, you can use the command
 
 ```java
 gl.get("A");
@@ -172,7 +172,9 @@ waitSeconds(3);
 
 ![03GeogebraCreation](03GeogebraCreation.gif)
 
+## Limitations
 
+Currently JMathAnim can import most common geometrical constructions, however other elements that cannot be imported yet. For instance, any element that is built from some algebraic expression given in a String cannot be imported. This applies to functions or points whose coordinates are not numbers, but formulas. 
 
 
 
