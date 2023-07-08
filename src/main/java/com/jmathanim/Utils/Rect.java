@@ -277,10 +277,10 @@ public class Rect implements Stateable, Boxable {// TODO: Adjust this to 3D coor
      * @return A new {@link Rect} with the union of both rects
      */
     public static Rect union(Rect a, Rect b) {
-        if ((a == null) || (a instanceof EmptyRect)) {
+        if ((a == null) || (a instanceof EmptyRect)||(a.isNan())) {
             return b;
         }
-        if ((b == null) || (b instanceof EmptyRect)) {
+        if ((b == null) || (b instanceof EmptyRect)||(b.isNan())) {
             return a;
         }
         return new Rect(Math.min(a.xmin, b.xmin), Math.min(a.ymin, b.ymin), Math.min(a.zmin, b.zmin),
@@ -313,6 +313,10 @@ public class Rect implements Stateable, Boxable {// TODO: Adjust this to 3D coor
      */
     public double getWidth() {
         return xmax - xmin;
+    }
+
+    private boolean isNan() {
+        return Double.isNaN(xmin)||Double.isNaN(xmax)||Double.isNaN(ymin)||Double.isNaN(ymax)||Double.isNaN(zmin)||Double.isNaN(zmax);
     }
 
     @Override

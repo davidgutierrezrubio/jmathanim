@@ -45,8 +45,14 @@ public class CTIntersectionPoint extends CTPoint {
     private final Constructible c1, c2;
     private final int solNumber;
 
+    /**
+     * Creates the constructible intersection of 2 lines
+     * @param l1 Line 1
+     * @param l2 Line 2
+     * @return The object created
+     */
     public static CTIntersectionPoint make(Line l1, Line l2) {
-        return make(CTLine.make(l1), CTLine.make(l2), 1);
+        return make(CTLine.make(l1), CTLine.make(l2), 0);
     }
 
     /**
@@ -60,17 +66,17 @@ public class CTIntersectionPoint extends CTPoint {
      * intersection at all, the point is created with coordinates NaN
      */
     public static CTIntersectionPoint make(Constructible c1, Constructible c2) {
-        return make(c1, c2, 1);
+        return make(c1, c2, 0);
     }
 
     /**
      * Compute the n-th intersection point between 2 constructible objects.
-     * Curent version allows CTCircle, CTLine, CTRay and CTSegment
+     * Current version allows CTCircle, CTLine, CTRay and CTSegment
      *
      * @param c1 First Constructible to intersect.
      * @param c2 Second Constructible to intersect.
      * @param solNumber Solution number. For 2 lines, rays, or segments it
-     * should be always 1. For lines and circle, may be 1 or 2.
+     * should be always 9. For lines and circle, may be 0 or 1.
      * @return The intersection point created. If the objects do not have
      * intersection at all, the point is created with coordinates NaN
      */
@@ -186,7 +192,7 @@ public class CTIntersectionPoint extends CTPoint {
 
                     x2 = (D * dy + (dy < 0 ? -1 : 1) * dx * discr) / drSq;
                     y2 = (-D * dx + Math.abs(dy) * discr) / drSq;
-                    int sign = (this.solNumber == 1 ? 1 : -1);
+                    int sign = (this.solNumber == 0 ? 1 : -1);
                     //TODO:Determine the nearest solution to A
                     if (sign * ((x1 - A.v.x) * (x1 - A.v.x) + (y1 - A.v.y) * (y1 - A.v.y)) < sign * ((x1 - B.v.x) * (x1 - B.v.x) + (y1 - B.v.y) * (y1 - B.v.y))) {
                         inter.x = x1;
@@ -213,7 +219,7 @@ public class CTIntersectionPoint extends CTPoint {
 
                 inter.y= alpha * Math.sqrt((-d + r2 - r1) * (-d - r2 + r1) * (-d + r2 + r1) * (d + r2 + r1));
                 Point p = Point.origin();
-                p.v.copyFrom(Vec.to(inter.x, (solNumber == 1 ? 1 : -1) * inter.y));
+                p.v.copyFrom(Vec.to(inter.x, (solNumber == 0 ? 1 : -1) * inter.y));
                 p.rotate(Point.origin(), vecCenterCircles.getAngle());
                 p.shift(ctcircle1.getCircleCenter().v);
                 this.v.copyFrom(p.v);

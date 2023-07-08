@@ -162,7 +162,8 @@ public class Vec implements Stateable, HasDirection {
      *
      * @param v2 The other point to interpolate
      * @param alpha Parameter of interpolation. 0 gives this point. 1 gives v2.
-     * 0.5 returns the middle point
+     * 0.5 returns the middle point. Values less than 0 and greater than 1 are
+     * allowed.
      * @return The interpolated point
      */
     public Vec interpolate(Vec v2, double alpha) {
@@ -172,6 +173,7 @@ public class Vec implements Stateable, HasDirection {
 
     /**
      * Returns a copy of the vector
+     *
      * @return The copy
      */
     public Vec copy() {
@@ -181,6 +183,7 @@ public class Vec implements Stateable, HasDirection {
 
     /**
      * Copy coordinates from given vector
+     *
      * @param v Vector to copy from
      */
     public void copyFrom(Vec v) {

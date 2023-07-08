@@ -16,7 +16,7 @@
  */
 package com.jmathanim.Constructible.Lines;
 
-import com.jmathanim.Constructible.Conics.CTCircle;
+import com.jmathanim.Constructible.Conics.CTAbstractCircle;
 import com.jmathanim.Constructible.Constructible;
 import com.jmathanim.Constructible.Points.CTPoint;
 import com.jmathanim.Utils.AffineJTransform;
@@ -33,7 +33,7 @@ public final class CTTangentPointCircle extends CTAbstractLine {
 
     protected CTPoint A;
     protected Line lineToDraw;
-    protected CTCircle C;
+    protected CTAbstractCircle C;
     int numTangent;
 
     /**
@@ -46,13 +46,13 @@ public final class CTTangentPointCircle extends CTAbstractLine {
      * circle. 2 means the left one.
      * @return The tangent line
      */
-    public static CTTangentPointCircle make(CTPoint A, CTCircle C, int numTangent) {
+    public static CTTangentPointCircle make(CTPoint A, CTAbstractCircle C, int numTangent) {
         CTTangentPointCircle resul = new CTTangentPointCircle(A, C, numTangent);
         resul.rebuildShape();
         return resul;
     }
 
-    private CTTangentPointCircle(CTPoint A, CTCircle C, int numTangent) {
+    private CTTangentPointCircle(CTPoint A, CTAbstractCircle C, int numTangent) {
         super();
         this.C = C;
         this.A = A;
@@ -62,7 +62,9 @@ public final class CTTangentPointCircle extends CTAbstractLine {
 
     @Override
     public Constructible copy() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        CTTangentPointCircle copy = CTTangentPointCircle.make((CTPoint) A.copy(), (CTAbstractCircle) C.copy(), numTangent);
+        copy.copyStateFrom(this);
+        return copy;
     }
 
     @Override
@@ -86,24 +88,26 @@ public final class CTTangentPointCircle extends CTAbstractLine {
         double r = C.getRadius().value;
         double dist = A.to(C.getCircleCenter()).norm();
         double p = dist / r;
-        double h = Math.sqrt(p * p - 1);
+        double h = Math.sqrt(p * p - 1);//If p<1 this returns Nan, and so xT and yT
 
         double xT = (p * p + 1 - h * h) / (2 * p);
         double yT = Math.sqrt(1 - xT * xT);
 
-        if (numTangent == 2) {
+        if (numTangent != 0) {
             yT = -yT;
         }
-
+        //Use Point.at(A.v.x,A.v.y) instead of A.getMathObject() since
+        //we cannot ensure that the associated mathoject is properly updated, and
+        //we must use Constructible data, not shown data!
         AffineJTransform transform = AffineJTransform.createDirect2DIsomorphic(
                 Point.origin(), Point.at(p, 0),
-                C.getCenter(), A.getMathObject(),
+                C.getCenter(), Point.at(A.v.x, A.v.y),
                 1);
 
         Vec v = Vec.to(xT, yT);
         v.applyAffineTransform(transform);
-        this.P2.v.copyFrom(v);
-        this.P1.v.copyFrom(this.A.v);
+        this.P2.v.copyFrom(v); //Tangent point
+        this.P1.v.copyFrom(this.A.v); //Exterior point
         lineToDraw.getP1().v.copyFrom(this.P1.v);
         lineToDraw.getP2().v.copyFrom(this.P2.v);
     }
