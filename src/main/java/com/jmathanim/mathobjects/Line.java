@@ -33,7 +33,7 @@ import com.jmathanim.mathobjects.JMPathPoint.JMPathPointType;
  *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
-public class Line extends Shape implements HasDirection {
+public class Line extends Shape implements HasDirection, shouldUdpateWithCamera {
 
     public static Line XAxis() {
         return new Line(new Point(0, 0), new Point(1, 0));
@@ -97,6 +97,7 @@ public class Line extends Shape implements HasDirection {
         visiblePiece.getPath().addJMPoint(bp1, bp2);
         getPath().addPoint(p1, p2);
         get(0).isThisSegmentVisible = false;
+        computeBoundPoints(JMathAnimConfig.getConfig().getCamera());
     }
 
     @Override
@@ -209,8 +210,9 @@ public class Line extends Shape implements HasDirection {
 
     @Override
     public void registerUpdateableHook(JMathAnimScene scene) {
-        scene.registerUpdateable(p1, p2);
-        setUpdateLevel(Math.max(p1.getUpdateLevel(), p2.getUpdateLevel()) + 1);
+        dependsOn(scene, p1,p2);
+//        scene.registerUpdateable(p1, p2);
+//        setUpdateLevel(Math.max(p1.getUpdateLevel(), p2.getUpdateLevel()) + 1);
     }
 
     @Override
@@ -250,7 +252,13 @@ public class Line extends Shape implements HasDirection {
     @Override
     public void update(JMathAnimScene scene) {
         super.update(scene);
+        System.out.println("Line update!!"+scene.getFrameCount());
         computeBoundPoints(scene.getCamera());
+    }
+
+    @Override
+    public void updateWithCamera(Camera camera) {
+        computeBoundPoints(camera);
     }
 
 }

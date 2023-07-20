@@ -17,6 +17,7 @@
  */
 package com.jmathanim.mathobjects;
 
+import com.jmathanim.Cameras.Camera;
 import com.jmathanim.Utils.JMathAnimConfig;
 import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.Vec;
@@ -25,6 +26,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.function.DoubleBinaryOperator;
 import java.util.function.DoubleUnaryOperator;
+import org.mariuszgromada.math.mxparser.Function;
 
 /**
  * Shape subclass that represents the graph of a single variable function
@@ -32,14 +34,16 @@ import java.util.function.DoubleUnaryOperator;
  *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
-public class FunctionGraph extends Shape implements hasScalarParameter {
+public class FunctionGraph extends Shape implements hasScalarParameter, shouldUdpateWithCamera {
 
     public static final double DELTA_DERIVATIVE = .00001d;
     public static final int DEFAULT_NUMBER_OF_POINTS = 49;
     public static final double CONTINUUM_THRESHOLD = 100;
     public static final double ANGLE_THRESHOLD = 5 * PI / 180;//5 degrees
     public static final int SLOPE_THRESHOLD_INFINITY = 10;
-    
+    private int numPoints;
+    private boolean dynamicRange;
+
     @Override
     public double getScalar() {
         return this.w;
@@ -49,6 +53,15 @@ public class FunctionGraph extends Shape implements hasScalarParameter {
     public void setScalar(double scalar) {
         this.w = scalar;
         updatePoints();
+    }
+
+    @Override
+    public void updateWithCamera(Camera camera) {
+        if (dynamicRange) {
+            recomputeBasePoints(camera.getMathView().xmin, camera.getMathView().xmax);
+            adaptativeAddPoints();
+            generateFunctionPoints();
+        }
     }
 
     /**
@@ -67,9 +80,22 @@ public class FunctionGraph extends Shape implements hasScalarParameter {
     public DoubleBinaryOperator functionBase;
     private double w;
 
+    public static FunctionGraph make(String function, double xmin, double xmax) {
+        Function f = new Function(function);
+        return make(x -> f.calculate(x), xmin, xmax);
+    }
+
+    public static FunctionGraph make(String function) {
+        Function f = new Function(function);
+        FunctionGraph resul = make(x -> f.calculate(x));
+        resul.setDynamicRange(true);
+        return resul;
+    }
+
     public static FunctionGraph make(DoubleBinaryOperator function) {
         Rect r = JMathAnimConfig.getConfig().getCamera().getMathView();
         FunctionGraph resul = new FunctionGraph(function, r.xmin, r.xmax);
+        resul.setDynamicRange(true);
         resul.adaptativeAddPoints();
         resul.generateFunctionPoints();
         return resul;
@@ -77,6 +103,7 @@ public class FunctionGraph extends Shape implements hasScalarParameter {
 
     public static FunctionGraph make(DoubleBinaryOperator function, double xmin, double xmax) {
         FunctionGraph resul = new FunctionGraph(function, xmin, xmax);
+        resul.setDynamicRange(false);
         resul.adaptativeAddPoints();
         resul.generateFunctionPoints();
         return resul;
@@ -85,6 +112,7 @@ public class FunctionGraph extends Shape implements hasScalarParameter {
     public static FunctionGraph make(DoubleUnaryOperator function) {
         Rect r = JMathAnimConfig.getConfig().getCamera().getMathView();
         FunctionGraph resul = new FunctionGraph((x, w) -> function.applyAsDouble(x), r.xmin, r.xmax);
+        resul.setDynamicRange(true);
         resul.adaptativeAddPoints();
         resul.generateFunctionPoints();
         return resul;
@@ -92,6 +120,7 @@ public class FunctionGraph extends Shape implements hasScalarParameter {
 
     public static FunctionGraph make(DoubleUnaryOperator function, double xmin, double xmax) {
         FunctionGraph resul = new FunctionGraph((x, w) -> function.applyAsDouble(x), xmin, xmax);
+        resul.setDynamicRange(false);
         resul.adaptativeAddPoints();
         resul.generateFunctionPoints();
         return resul;
@@ -99,10 +128,10 @@ public class FunctionGraph extends Shape implements hasScalarParameter {
 
     public static FunctionGraph make(DoubleUnaryOperator function, double xmin, double xmax, int numPoints) {
         FunctionGraph resul = new FunctionGraph((x, w) -> function.applyAsDouble(x), xmin, xmax, numPoints);
+        resul.setDynamicRange(false);
         resul.generateFunctionPoints();
         return resul;
     }
-
     private FunctionGraph(DoubleBinaryOperator function, double xmin, double xmax) {
         this(function, xmin, xmax, DEFAULT_NUMBER_OF_POINTS);
     }
@@ -123,11 +152,17 @@ public class FunctionGraph extends Shape implements hasScalarParameter {
         this.functionBase = function;
         this.functionType = FunctionDefinitionType.LAMBDA;
         this.xPoints = new ArrayList<>();
+        this.numPoints = numPoints;
+        recomputeBasePoints(xmin, xmax);
+
+    }
+
+    protected final void recomputeBasePoints(double xmin, double xmax) {
+        this.xPoints.clear();
         for (int n = 0; n < numPoints; n++) {
             double x = xmin + (xmax - xmin) * n / (numPoints - 1);
             xPoints.add(x);
         }
-
     }
 
     public FunctionGraph(DoubleBinaryOperator function, ArrayList<Double> xPoints) {
@@ -141,6 +176,7 @@ public class FunctionGraph extends Shape implements hasScalarParameter {
     }
 
     private void generateFunctionPoints() {
+        this.getPath().clear();
         for (int n = 0; n < xPoints.size(); n++) {
             double x = xPoints.get(n);
             double y = getFunctionValue(x, this.w);
@@ -204,10 +240,10 @@ public class FunctionGraph extends Shape implements hasScalarParameter {
             if (n < xPoints.size() - 1) {
                 double deltaX = .3 * (xPoints.get(n + 1) - x);
                 double slope = getSlope(x, 1);
-                if (Math.abs(slope)>SLOPE_THRESHOLD_INFINITY) {
+                if (Math.abs(slope) > SLOPE_THRESHOLD_INFINITY) {
                     //If slope is too big, join to the next point with a straight line
-                    deltaX=0;
-                    slope=0;
+                    deltaX = 0;
+                    slope = 0;
                 }
                 Vec v = new Vec(deltaX, slope * deltaX);
                 jmp.cpExit.copyFrom(jmp.p.add(v));
@@ -223,7 +259,6 @@ public class FunctionGraph extends Shape implements hasScalarParameter {
 
         }
     }
-
 
     /**
      * Update the value of the y-points of the graph. This method should be
@@ -348,7 +383,8 @@ public class FunctionGraph extends Shape implements hasScalarParameter {
         areaPath.jmPathPoints.get(0).isThisSegmentVisible = true;
         return new Shape(areaPath);
     }
- @Override
+
+    @Override
     public void copyStateFrom(MathObject obj) {
         if (!(obj instanceof FunctionGraph)) {
             return;
@@ -359,7 +395,27 @@ public class FunctionGraph extends Shape implements hasScalarParameter {
         xPoints.addAll(fg.xPoints);
 
         getPath().copyStateFrom(fg.getPath());
-        function=fg.function;
+        function = fg.function;
         setScalar(fg.getScalar());
+    }
+
+    /**
+     * Returns the dynamic range flag. If true, drawing range of function is
+     * automatically updated from the view of the camera
+     *
+     * @return The value of dynamic range flag
+     */
+    public boolean isDynamicRange() {
+        return dynamicRange;
+    }
+
+    /**
+     * Sets the dynamic range flag. If true, drawing range of function is
+     * automatically updated from the view of the camera
+     *
+     * @param dynamicRange The value of dynamic range flag
+     */
+    public void setDynamicRange(boolean dynamicRange) {
+        this.dynamicRange = dynamicRange;
     }
 }

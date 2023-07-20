@@ -35,6 +35,7 @@ import com.jmathanim.mathobjects.MathObjectGroup;
 import com.jmathanim.mathobjects.MultiShapeObject;
 import com.jmathanim.mathobjects.Shape;
 import com.jmathanim.mathobjects.Text.LaTeXMathObject;
+import com.jmathanim.mathobjects.shouldUdpateWithCamera;
 import com.jmathanim.mathobjects.updateableObjects.Updateable;
 import java.net.URL;
 import java.util.ArrayList;
@@ -214,7 +215,7 @@ public abstract class JMathAnimScene {
      *
      * @return An ArrayList of MathObject
      */
-    public ArrayList<MathObject> getObjects() {
+    public ArrayList<MathObject> getMathObjects() {
         return sceneObjects;
     }
     
@@ -320,7 +321,9 @@ public abstract class JMathAnimScene {
                 registerUpdateable(obj);
                 obj.addToSceneHook(this);
             }
-            
+            if (obj instanceof shouldUdpateWithCamera) {
+                renderer.getCamera().registerUpdateable((shouldUdpateWithCamera) obj);
+            }
         }
     }
 
@@ -362,6 +365,9 @@ public abstract class JMathAnimScene {
                 sceneObjects.remove(obj);
                 obj.removedFromSceneHook(this);
                 unregisterUpdateable(obj);
+            }
+              if (obj instanceof shouldUdpateWithCamera) {
+                renderer.getCamera().unregisterUpdateable((shouldUdpateWithCamera) obj);
             }
         }
     }
@@ -668,7 +674,7 @@ public abstract class JMathAnimScene {
         for (int k : layers) {
             arLayers.add(k);
         }
-        MathObject[] resul = getObjects().stream().filter(obj -> arLayers.contains(obj.getLayer()))
+        MathObject[] resul = getMathObjects().stream().filter(obj -> arLayers.contains(obj.getLayer()))
                 .toArray(MathObject[]::new);
         return resul;
     }
@@ -698,7 +704,7 @@ public abstract class JMathAnimScene {
      */
     public void reset() {
         logger.info("Resetting scene");
-        ArrayList<MathObject> objects = new ArrayList<>(getObjects());
+        ArrayList<MathObject> objects = new ArrayList<>(getMathObjects());
         for (MathObject obj : objects) {
             remove(obj);
         }

@@ -157,7 +157,7 @@ public class PlayAnim {
      * @param runtime Duration in seconds
      */
     public void fadeOutAll(double runtime) {
-        MathObject[] objects = scene.getObjects().toArray(MathObject[]::new);
+        MathObject[] objects = scene.getMathObjects().toArray(MathObject[]::new);
         scene.playAnimation(Commands.fadeOut(runtime, objects));
     }
 
@@ -169,7 +169,7 @@ public class PlayAnim {
      */
     public void fadeOutAllBut(double runtime, MathObject... objs) {
         ArrayList<MathObject> toRemove = new ArrayList<>();
-        toRemove.addAll(scene.getObjects());
+        toRemove.addAll(scene.getMathObjects());
         for (MathObject obj : objs) {
             if (obj instanceof MultiShapeObject) {
                 for (Shape sh : (MultiShapeObject) obj) {
@@ -417,7 +417,7 @@ public class PlayAnim {
     public void adjustCameraToAllObjects(double runtime) {
         final Vec gaps = scene.getCamera().getGaps();
         Rect r = scene.getCamera().getMathView();
-        for (MathObject obj : scene.getObjects()) {
+        for (MathObject obj : scene.getMathObjects()) {
             r = Rect.union(r, obj.getBoundingBox().addGap(gaps.x, gaps.y));
         }
         zoomToRect(runtime, r);

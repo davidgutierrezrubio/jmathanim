@@ -37,6 +37,7 @@ import com.jmathanim.Constructible.Lines.CTTangentPointCircle;
 import com.jmathanim.Constructible.Lines.CTTransformedLine;
 import com.jmathanim.Constructible.Lines.CTVector;
 import com.jmathanim.Constructible.Lines.HasDirection;
+import com.jmathanim.Constructible.Others.CTFunctionGraph;
 import com.jmathanim.Constructible.Others.CTImage;
 import com.jmathanim.Constructible.Points.CTIntersectionPoint;
 import com.jmathanim.Constructible.Points.CTMidPoint;
@@ -50,6 +51,7 @@ import com.jmathanim.Styling.MODrawProperties;
 import com.jmathanim.Utils.Anchor;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
+import com.jmathanim.mathobjects.FunctionGraph;
 import com.jmathanim.mathobjects.JMImage;
 import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.NullMathObject;
@@ -104,7 +106,12 @@ class GeogebraCommandParser {
         Pattern patternPoint = Pattern.compile("\\((.*),(.*)\\)");
         Matcher matcher = patternPoint.matcher(argument);
         if (matcher.find()) {
-            return CTPoint.make(Point.at(Double.valueOf(matcher.group(1)), Double.valueOf(matcher.group(2))));
+            try {
+                return CTPoint.make(Point.at(Double.parseDouble(matcher.group(1)), Double.parseDouble(matcher.group(2))));
+            } catch (NumberFormatException numberFormatException) {
+                JMathAnimScene.logger.warn("Unrecognized number in point coordinates at geogebra import: " + argument + ". Returning (0,0) instead!");
+                return CTPoint.at(0, 0);
+            }
         }
         //Try if it is a command expressed in command[a,b,c..]
         Pattern patternCmd = Pattern.compile("(.*)\\[.*\\]");
@@ -122,7 +129,7 @@ class GeogebraCommandParser {
         }
 
         // Nothing recognized so far, returns null and a warning
-        JMathAnimScene.logger.warn("Skipped unrecognized argument: "+argument);
+        JMathAnimScene.logger.warn("Skipped unrecognized argument: " + argument);
 //        try {
 //            throw new Exception("Don't know how to parse this argument " + argument);
 //        } catch (Exception ex) {
@@ -353,13 +360,19 @@ class GeogebraCommandParser {
         Element fontElement = firstElementWithTag(el, "font");
         if (fontElement != null) {
             //TODO: Adjust import scale. Guess correct size
-            size = Double.valueOf(fontElement.getAttribute("size")) / 36;
+            size = Double.parseDouble(fontElement.getAttribute("size")) / 36;
         } else {
             size = 5d / 36;//Assume size is "small"
         }
 
         CTLaTeX cTLaTeX = CTLaTeX.make(text, anchorPoint, Anchor.Type.UL, 0).scale(size);
         registerGeogebraElement(label, cTLaTeX);
+    }
+
+    protected void processFunctionElement(Element el) {
+        String label = el.getAttribute("label");
+        String text = expressions.get(label);
+        registerGeogebraElement(label, CTFunctionGraph.make(text));
     }
 
     protected void processSegmentCommand(Element el) {
@@ -587,10 +600,10 @@ class GeogebraCommandParser {
         if ((ob1 instanceof CTAbstractCircle) && (ob2 instanceof CTAbstractCircle)) {
             CTAbstractCircle c1 = (CTAbstractCircle) ob1;
             CTAbstractCircle c2 = (CTAbstractCircle) ob2;
-            registerGeogebraElement(label, CTTangentCircleCircle.make(c1, c2,0));
-            registerGeogebraElement(getOutputArgument(el, 1), CTTangentCircleCircle.make(c1, c2,1));
-            registerGeogebraElement(getOutputArgument(el, 2), CTTangentCircleCircle.make(c1, c2,2));
-            registerGeogebraElement(getOutputArgument(el, 3), CTTangentCircleCircle.make(c1, c2,3));
+            registerGeogebraElement(label, CTTangentCircleCircle.make(c1, c2, 0));
+            registerGeogebraElement(getOutputArgument(el, 1), CTTangentCircleCircle.make(c1, c2, 1));
+            registerGeogebraElement(getOutputArgument(el, 2), CTTangentCircleCircle.make(c1, c2, 2));
+            registerGeogebraElement(getOutputArgument(el, 3), CTTangentCircleCircle.make(c1, c2, 3));
         }
 
     }
@@ -599,19 +612,18 @@ class GeogebraCommandParser {
         int numPoint = 0;
         String label = getOutputArgument(el, 0);
         MathObject[] objs = getArrayOfParameters(el);
-        
+
         long nonNullArgs = Arrays.stream(objs)
                 .filter(obj -> obj != null)
                 .count();
-        
-        
+
         Constructible ob1 = (Constructible) objs[0];
         Constructible ob2 = (Constructible) objs[1];
         if (nonNullArgs > 2) {//Third parameter, intersection number
             //if a2="n" it computes only the n-th intersection point
             //For line(A,B)-circle, "1" stands for closest point to A, "2" for farthest
             numPoint = (int) ((Scalar) objs[2]).value;
-            registerGeogebraElement(label, CTIntersectionPoint.make(ob1, ob2, numPoint-1));
+            registerGeogebraElement(label, CTIntersectionPoint.make(ob1, ob2, numPoint - 1));
         }
         if (nonNullArgs == 2) {
             if ((ob1 instanceof CTCircle) || (ob2 instanceof CTCircle)) {
@@ -749,7 +761,7 @@ class GeogebraCommandParser {
         }
     }
 
-    void processNumeric(Element el) {
+    void processNumericElement(Element el) {
         String label = el.getAttribute("label");
         Element elCoords = firstElementWithTag(el, "value");
         double value = Double.valueOf(elCoords.getAttribute("val"));

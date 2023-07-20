@@ -44,9 +44,9 @@ public class CameraAlwaysAdjusting implements Updateable {
 
     @Override
     public void update(JMathAnimScene scene) {
-        if (!scene.getObjects().isEmpty()) {
+        if (!scene.getMathObjects().isEmpty()) {
             Rect bbox = camera.getMathView().addGap(-hgap, -vgap);
-            for (MathObject obj : scene.getObjects()) {
+            for (MathObject obj : scene.getMathObjects()) {
                 bbox = Rect.union(bbox, obj.getBoundingBox());
             }
             camera.adjustToRect(bbox.addGap(hgap, vgap));

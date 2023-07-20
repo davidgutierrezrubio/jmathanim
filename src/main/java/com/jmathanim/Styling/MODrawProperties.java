@@ -70,6 +70,7 @@ public class MODrawProperties implements Stylable, Stateable {
         nullMP.dotStyle = null;
         nullMP.linecap = null;
         nullMP.faceToCamera = null;
+        nullMP.visible=null;
         return nullMP;
     }
 

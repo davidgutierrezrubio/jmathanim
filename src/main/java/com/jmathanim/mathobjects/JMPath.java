@@ -762,7 +762,7 @@ public class JMPath implements Stateable, Boxable, Iterable<JMPathPoint> {
      * Removes unnecessary points from the path. Duplicated points or
      * consecutive hidden ones.
      */
-    public void distille() {
+    public JMPath distille() {
         // Delete points that are separated
         this.removeConsecutiveHiddenVertices();
         double epsilon = .000001;
@@ -788,7 +788,7 @@ public class JMPath implements Stateable, Boxable, Iterable<JMPathPoint> {
                 q.cpExit.copyFrom(q.p);
             }
         }
-
+        return this;
     }
 
     /**
@@ -1146,9 +1146,7 @@ public class JMPath implements Stateable, Boxable, Iterable<JMPathPoint> {
         }
 
     }
-    
-    
-    
+
     public ArrayList<ArrayList<Point>> computePolygonalPieces(Camera cam) {
         ArrayList<ArrayList<Point>> resul = new ArrayList<>();
         ArrayList<Point> connectedSegments = new ArrayList<>();
@@ -1214,6 +1212,5 @@ public class JMPath implements Stateable, Boxable, Iterable<JMPathPoint> {
         }
         return 5;
     }
-    
-    
+
 }

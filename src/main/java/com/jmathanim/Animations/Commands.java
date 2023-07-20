@@ -636,21 +636,19 @@ public class Commands {
      * @param objects MathObjects to animate (varargs)
      * @return The animation to be played with the playAnimation method
      */
-    public static AnimationGroup setColor(double runtime, PaintStyle drawColor, PaintStyle fillColor, MathObject... objects) {
-        AnimationGroup ag = new AnimationGroup();
-        for (MathObject ob : objects) {
-            MODrawProperties mpDst = MODrawProperties.makeNullValues();
-            if (drawColor != null) {
-                mpDst.setDrawColor(drawColor);
-            }
-            if (fillColor != null) {
-                mpDst.setFillColor(fillColor);
-            }
-            Animation cmd = setMP(runtime, mpDst, ob);
-            ag.add(cmd);
+    public static Animation setColor(double runtime, PaintStyle drawColor, PaintStyle fillColor, MathObject... objects) {
+        MODrawProperties mpDst = MODrawProperties.makeNullValues();
+        if (drawColor != null) {
+            mpDst.setDrawColor(drawColor);
         }
-        ag.setDebugName("setColor");
-        return ag;
+        if (fillColor != null) {
+            mpDst.setFillColor(fillColor);
+        }
+//            Animation cmd = setMP(runtime, mpDst, ob);
+        Animation cmd = setMP(runtime, mpDst, objects);
+
+        cmd.setDebugName("setColor");
+        return cmd;
     }
 
     /**
@@ -716,7 +714,7 @@ public class Commands {
      * @param runtime Duration (in seconds)
      * @param camera Camera to animate
      * @param objs Mathobjects to zoom to (varargs)
-     * @return Animation to run with playAnim method 
+     * @return Animation to run with playAnim method
      */
     public static Animation cameraZoomToObjects(double runtime, Camera camera, MathObject... objs) {
         Rect r = objs[0].getBoundingBox();

@@ -92,7 +92,12 @@
             <artifactId>batik-dom</artifactId>
             <version>1.14</version>
         </dependency>
-    </dependencies>
+            <dependency>
+                <groupId>org.mariuszgromada.math</groupId>
+                <artifactId>MathParser.org-mXparser</artifactId>
+                <version>5.2.1</version>
+            </dependency>
+        </dependencies>
     <build>
         <resources>
             <resource>

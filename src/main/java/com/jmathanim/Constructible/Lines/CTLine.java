@@ -160,8 +160,7 @@ public class CTLine extends CTAbstractLine {
                 dependsOn(scene, this.A, this.B);
                 break;
             case PointVector:
-                scene.registerUpdateable(this.A);
-                setUpdateLevel(this.A.getUpdateLevel() + 1);
+                 dependsOn(scene, this.A);
                 if (this.dir instanceof Updateable) {
                     scene.registerUpdateable((Updateable) this.dir);
                     setUpdateLevel(Math.max(this.A.getUpdateLevel(), ((Updateable) this.dir).getUpdateLevel()) + 1);

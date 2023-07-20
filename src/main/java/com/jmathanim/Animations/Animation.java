@@ -465,4 +465,9 @@ public abstract class Animation {
         return (T) this;
     }
 
+    @Override
+    public String toString() {
+        return "Animation "+  debugName;
+    }
+
 }

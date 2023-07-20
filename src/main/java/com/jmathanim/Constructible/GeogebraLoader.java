@@ -189,7 +189,10 @@ public class GeogebraLoader implements Iterable<Constructible>, hasCameraParamet
             case "image":
                 cp.processImageElement(el, zipFile);
             case "numeric":
-                cp.processNumeric(el);
+                cp.processNumericElement(el);
+                break;
+            case "function":
+                cp.processFunctionElement(el);
                 break;
         }
 

@@ -22,6 +22,8 @@ import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.MathObject;
+import com.jmathanim.mathobjects.shouldUdpateWithCamera;
+import java.util.ArrayList;
 
 /**
  * This class converts math coordinates to screen cordinates. Screen coordinates
@@ -31,6 +33,7 @@ import com.jmathanim.mathobjects.MathObject;
  */
 public class Camera {
 
+    private final ArrayList<shouldUdpateWithCamera> updateableObjects;
     public boolean perspective;
 
     /**
@@ -65,7 +68,14 @@ public class Camera {
         this.screenWidth = screenWidth;
         this.screenHeight = screenHeight;
         this.scene = scene;
+        this.updateableObjects = new ArrayList<>();
 
+    }
+
+    public void updateDependentObjectsFromThisCamera() {
+        for (shouldUdpateWithCamera updateableObject : updateableObjects) {
+            updateableObject.updateWithCamera(this);
+        }
     }
 
     /**
@@ -114,6 +124,7 @@ public class Camera {
         // (xmax-xmin)/(ymax-ymin)=ratioScreen, so...
         this.ymax = ycenter + .5 * (xmax - xmin) / ratioScreen;
         this.ymin = ycenter - .5 * (xmax - xmin) / ratioScreen;
+        updateDependentObjectsFromThisCamera();
         return this;
     }
 
@@ -160,6 +171,7 @@ public class Camera {
         xmax = xmaxB;
         ymin = yminB;
         ymax = ymaxB;
+        updateDependentObjectsFromThisCamera();
     }
 
     public void setWidth(double d) {
@@ -182,6 +194,7 @@ public class Camera {
     public void setGaps(double h, double v) {
         hgap = h;
         vgap = v;
+        updateDependentObjectsFromThisCamera();
     }
 
     public Camera setMathView(Rect r) {
@@ -220,8 +233,8 @@ public class Camera {
      * @return This object
      */
     public Camera adjustToAllObjects() {
-        if (!scene.getObjects().isEmpty()) {
-            MathObject[] objs = scene.getObjects().toArray(MathObject[]::new);
+        if (!scene.getMathObjects().isEmpty()) {
+            MathObject[] objs = scene.getMathObjects().toArray(MathObject[]::new);
             adjustToObjects(objs);
         }
         return this;
@@ -272,8 +285,8 @@ public class Camera {
      * @return This camera.
      */
     public Camera centerAtAllObjects() {
-        if (!scene.getObjects().isEmpty()) {
-            MathObject[] objs = scene.getObjects().toArray(MathObject[]::new);
+        if (!scene.getMathObjects().isEmpty()) {
+            MathObject[] objs = scene.getMathObjects().toArray(MathObject[]::new);
             centerAtObjects(objs);
         }
         adjustToAllObjects();
@@ -304,8 +317,8 @@ public class Camera {
      * @return This object
      */
     public Camera zoomToAllObjects() {
-        if (!scene.getObjects().isEmpty()) {
-            MathObject[] objs = scene.getObjects().toArray(MathObject[]::new);
+        if (!scene.getMathObjects().isEmpty()) {
+            MathObject[] objs = scene.getMathObjects().toArray(MathObject[]::new);
             zoomToObjects(objs);
         }
         return this;
@@ -384,7 +397,13 @@ public class Camera {
 
     @Override
     public String toString() {
-        return "Camera (xmin, xmax, ycenter): ("+xmin+", "+xmax+", "+(ymin+ymax)/2+")";
+        return "Camera (xmin, xmax, ycenter): (" + xmin + ", " + xmax + ", " + (ymin + ymax) / 2 + ")";
     }
-    
+
+    public void registerUpdateable(shouldUdpateWithCamera object) {
+        updateableObjects.add(object);
+    }
+     public void unregisterUpdateable(shouldUdpateWithCamera object) {
+        updateableObjects.remove(object);
+    }
 }

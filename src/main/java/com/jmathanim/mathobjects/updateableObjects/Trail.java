@@ -68,7 +68,7 @@ public class Trail extends Shape {
 
     @Override
     public void registerUpdateableHook(JMathAnimScene scene) {
-        setUpdateLevel(marker.getUpdateLevel() + 1);
+        dependsOn(scene, marker);
     }
 
     /**

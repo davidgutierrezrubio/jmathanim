@@ -88,7 +88,6 @@ public class CTLaTeX extends Constructible {
 
     @Override
     public void registerUpdateableHook(JMathAnimScene scene) {
-        scene.registerUpdateable(this.anchor);
-        setUpdateLevel(this.anchor.getUpdateLevel() + 1);
+        dependsOn(scene, this.anchor);
     }
 }
