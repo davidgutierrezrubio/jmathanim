@@ -105,6 +105,7 @@ public class Transform extends AnimationWithEffects {
             transformStrategy.setOptimizationStrategy(null);
         }
         // Copy preferences to this strategy
+        transformStrategy.setAllocationParameters(this.allocateStart, this.allocateEnd);
         transformStrategy.setLambda(getTotalLambda());
         transformStrategy.setAddObjectsToScene(this.isShouldAddObjectsToScene());
         transformStrategy.setUseObjectState(this.isUseObjectState());
@@ -304,6 +305,12 @@ public class Transform extends AnimationWithEffects {
         } else {
             return null;
         }
+    }
+
+    @Override
+    public void setAllocationParameters(double start, double end) {
+        super.setAllocationParameters(start, end);
+        transformStrategy.setAllocationParameters(start, end);
     }
 
 

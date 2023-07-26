@@ -169,7 +169,7 @@ public class ConfigLoader {
     }
 
     private static MODrawProperties parseMathObjectDrawingProperties(Node template) {
-        MODrawProperties mp = new MODrawProperties();
+        MODrawProperties mp = MODrawProperties.makeNullValues();
         NodeList childs = template.getChildNodes();
         for (int n = 0; n < childs.getLength(); n++) {
             Node item = childs.item(n);

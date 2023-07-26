@@ -17,6 +17,7 @@
 package com.jmathanim.mathobjects.Text;
 
 import com.jmathanim.Styling.JMColor;
+import com.jmathanim.Styling.PaintStyle;
 import com.jmathanim.Utils.AffineJTransform;
 import com.jmathanim.Utils.Anchor;
 import com.jmathanim.Utils.SVGUtils;
@@ -346,7 +347,7 @@ public abstract class AbstractLaTeXMathObject extends SVGMathObject {
      * @param indices Indices of glyps to change colors. 0 is the first glyph
      * @return This object
      */
-    public AbstractLaTeXMathObject setColor(JMColor col, int... indices) {
+    public AbstractLaTeXMathObject setColor(PaintStyle col, int... indices) {
         for (int i : indices) {
             this.get(i).drawColor(col);
             this.get(i).fillColor(col);

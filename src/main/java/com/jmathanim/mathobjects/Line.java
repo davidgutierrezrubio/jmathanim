@@ -252,7 +252,6 @@ public class Line extends Shape implements HasDirection, shouldUdpateWithCamera 
     @Override
     public void update(JMathAnimScene scene) {
         super.update(scene);
-        System.out.println("Line update!!"+scene.getFrameCount());
         computeBoundPoints(scene.getCamera());
     }
 
