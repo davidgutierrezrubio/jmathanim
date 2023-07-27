@@ -224,7 +224,7 @@ waitSeconds(2);
 
 ![ContourHighlight1](ContourHighlight1.gif)
 
-You can also make a contour highlight of the bounding box of an object, which can be more clear in some cases. Just pass the bounding box of the object:
+You can also make a contour highlight of the bounding box of an object, which can be more clear in some cases. Just use the `makeBBox` constructor:
 
 ```java
 LaTeXMathObject obj = LaTeXMathObject.make("Look here!").center().scale(2);
@@ -234,8 +234,10 @@ add(obj);
 ContourHighlight anim1=ContourHighlight.make(2, obj);
 playAnimation(anim1);
 
-//Using a bounding box is simpler
-ContourHighlight anim2 = ContourHighlight.make(2, obj.getBoundingBox().addGap(.1, .1));
+//Using a bounding box is simpler. The .1 parameter is the desired gap to add to the box
+ContourHighlight anim2 = ContourHighlight.makeBBox(2, .1, obj);
+//You can also use the default make with a gap and a Rect object
+//ContourHighlight anim2 = ContourHighlight.make(2, .1, obj.getBoundingBox());
 anim2.setColor("green");
 playAnimation(anim2);
 waitSeconds(2);
@@ -333,7 +335,7 @@ In this example, we show 2 squares moving along a circle. The red square moves w
 ```java
 Shape pathShape = Shape.circle().fillColor("orange");//A circle
 pathShape.get(2).shift(1, 0);//Move its left point one unit to get a piece of tangerine
-add(path);
+add(pathShape);
 Shape squareToMove = Shape.square().scale(.1).fillColor("darkblue").fillAlpha(.4);
 Shape squareToMove2 = squareToMove.copy().fillColor("darkred").fillAlpha(.4);
 Animation anim = MoveAlongPath.make(5, pathShape, squareToMove, Anchor.Type.CENTER, true, true).setLambda(t -> t);
