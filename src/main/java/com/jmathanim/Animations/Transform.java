@@ -308,9 +308,10 @@ public class Transform extends AnimationWithEffects {
     }
 
     @Override
-    public void setAllocationParameters(double start, double end) {
+    public Transform setAllocationParameters(double start, double end) {
         super.setAllocationParameters(start, end);
         transformStrategy.setAllocationParameters(start, end);
+        return this;
     }
 
 

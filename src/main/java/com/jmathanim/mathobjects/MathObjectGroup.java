@@ -29,6 +29,7 @@ import com.jmathanim.jmathanim.JMathAnimScene;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Iterator;
 
 /**
@@ -116,10 +117,10 @@ public class MathObjectGroup extends MathObject implements Iterable<MathObject> 
 
     public MathObjectGroup add(MathObject... objs) {
         for (MathObject obj : objs) {
-           if (obj != null) {
-            objects.add(obj);
-            mpArray.add(obj);
-        }
+            if (obj != null) {
+                objects.add(obj);
+                mpArray.add(obj);
+            }
         }
         return this;
     }
@@ -414,6 +415,13 @@ public class MathObjectGroup extends MathObject implements Iterable<MathObject> 
     @Override
     public Stylable getMp() {
         return mpArray;
+    }
+
+    /**
+     * Reverse the order of the elements in this group
+     */
+    public void reverse() {
+        Collections.reverse(objects);
     }
 
 }

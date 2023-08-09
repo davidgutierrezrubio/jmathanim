@@ -142,7 +142,7 @@ public abstract class JMathAnimScene {
     /**
      * A dictionary containing all loaded styles
      */
-    protected HashMap<String, MODrawProperties> styles;
+    private HashMap<String, MODrawProperties> styles;
 
     /**
      * Creates a new Scene with default settings.
@@ -730,5 +730,9 @@ public abstract class JMathAnimScene {
             JMathAnimScene.logger.warn("No style with name {} found, returning null style", name);
             return MODrawProperties.makeNullValues();
         }
+    }
+
+    public void infoMessage(String message) {
+        logger.info(message);
     }
 }

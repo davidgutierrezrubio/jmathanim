@@ -19,6 +19,7 @@ package com.jmathanim.Animations;
 
 import com.jmathanim.Constructible.Constructible;
 import com.jmathanim.Styling.JMColor;
+import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.UsefulLambdas;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.Arrow2D;
@@ -29,6 +30,7 @@ import com.jmathanim.mathobjects.MultiShapeObject;
 import com.jmathanim.mathobjects.Shape;
 import java.util.ArrayList;
 import java.util.Arrays;
+import javafx.geometry.BoundingBox;
 
 /**
  *
@@ -51,6 +53,12 @@ public class ContourHighlight extends Animation {
      */
     public static ContourHighlight make(double runTime, MathObject... objs) {
         return new ContourHighlight(runTime, objs);
+    }
+
+    public static ContourHighlight make(double runTime, double gap, Rect... objs) {
+        MathObject[] toArray = Arrays.stream(objs).map(t -> Shape.rectangle(t.addGap(gap, gap))).toArray(MathObject[]::new);
+
+        return new ContourHighlight(runTime, toArray);
     }
 
     public static ContourHighlight makeBBox(double runTime, double gap, MathObject... objs) {

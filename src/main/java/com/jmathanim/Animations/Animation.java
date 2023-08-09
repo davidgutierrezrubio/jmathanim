@@ -287,9 +287,10 @@ public abstract class Animation {
         return lambda.compose(UsefulLambdas.allocateTo(allocateStart, allocateEnd));
     }
 
-    public void setAllocationParameters(double start, double end) {
+    public Animation setAllocationParameters(double start, double end) {
         this.allocateStart = start;
         this.allocateEnd = end;
+        return this;
     }
 
     /**

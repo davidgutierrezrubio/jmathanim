@@ -65,6 +65,8 @@ public class Commands {
         return shift(runtime, new Vec(dx, dy), objects);
     }
 
+    
+    
     public static ShiftAnimation shift(double runtime, Vec sv, MathObject... objects) {
         ShiftAnimation resul = new ShiftAnimation(runtime, objects) {
             @Override

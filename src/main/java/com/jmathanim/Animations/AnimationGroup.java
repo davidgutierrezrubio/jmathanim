@@ -105,6 +105,11 @@ public class AnimationGroup extends AnimationWithEffects {
 
     @Override
     public void initialize(JMathAnimScene scene) {
+        //Compute runTime as the MAX runtime of all animations
+        this.runTime=0;
+        for (Animation an : animations) {
+            runTime=(runTime<an.getRunTime() ? an.getRunTime() : runTime);
+        }
         super.initialize(scene);
 
         int size = animations.size();
@@ -137,19 +142,20 @@ public class AnimationGroup extends AnimationWithEffects {
         }
     }
 
-    @Override
-    public boolean processAnimation() {
-        boolean finishedAll = true;
-        for (Animation anim : animations) {
-            finishedAll = finishedAll & anim.processAnimation();
-        }
-        return finishedAll;
-    }
+//    @Override
+//    public boolean processAnimation() {
+//        boolean finishedAll = true;
+//        for (Animation anim : animations) {
+//            finishedAll = finishedAll & anim.processAnimation();
+//        }
+//        return finishedAll;
+//    }
 
     @Override
     public void doAnim(double t) {
         for (Animation anim : animations) {
-            anim.doAnim(t);
+            double mt=t*runTime/anim.getRunTime();
+            anim.doAnim(UsefulLambdas.allocateTo(allocateStart, allocateEnd).applyAsDouble(mt));
         }
     }
 
