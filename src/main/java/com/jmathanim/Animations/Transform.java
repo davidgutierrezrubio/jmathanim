@@ -195,7 +195,7 @@ public class Transform extends AnimationWithEffects {
                 case INTERPOLATE_SIMPLE_SHAPES_BY_POINT:
                     transformStrategy = new PointInterpolationSimpleShapeTransform(runTime, (Shape) mobjTransformed,
                             (Shape) mobjDestiny);
-                    JMathAnimScene.logger.debug("Transform method: Point interpolation between 2 simple closed curves");
+                    JMathAnimScene.logger.debug("Transform method: Point interpolation between 2 simple closed curves (PointInterpolationSimpleShapeTransform)");
                     break;
                 case INTERPOLATE_POINT_BY_POINT:
                     transformStrategy = new PointInterpolationCanonical(runTime, (Shape) mobjTransformed, (Shape) mobjDestiny);

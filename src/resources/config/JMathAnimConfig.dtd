@@ -1,0 +1,111 @@
+<?xml version='1.0' encoding='UTF-8'?>
+
+<!--
+    TODO define vocabulary identification
+    PUBLIC ID: -//vendor//vocabulary//EN
+    SYSTEM ID: http://server/path/light.dtd
+
+-->
+
+<!--
+    An example how to use this DTD from your XML document:
+
+    <?xml version="1.0"?>
+
+    <!DOCTYPE JMathAnimConfig SYSTEM "light.dtd">
+
+    <JMathAnimConfig>
+    ...
+    </JMathAnimConfig>
+-->
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT JMathAnimConfig (include|background|styles)*>
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT include (#PCDATA)>
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT background (color)*>
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT color (#PCDATA)>
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT styles (style)*>
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT style (drawColor|fillColor|thickness|scaleArrowHead1|scaleArrowHead2|dotStyle|dashStyle)*>
+<!ATTLIST style
+    name CDATA #IMPLIED
+  >
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT drawColor (#PCDATA|linearGradient|radialGradient|getDrawColor|getFillColor)*>
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT fillColor (#PCDATA|linearGradient|radialGradient|getDrawColor|getFillColor)*>
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT thickness (#PCDATA)>
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT scaleArrowHead1 (#PCDATA)>
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT scaleArrowHead2 (#PCDATA)>
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT dotStyle (#PCDATA)>
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT dashStyle (#PCDATA)>
+
+<!ELEMENT getFillColor (#PCDATA)>
+<!ATTLIST getFillColor
+    style CDATA #IMPLIED
+  >
+
+<!ELEMENT getDrawColor (#PCDATA)>
+<!ATTLIST getDrawColor
+    style CDATA #IMPLIED
+  >
+
+
+
+<!ELEMENT linearGradient (start|end|stops)*>
+<!ATTLIST linearGradient
+    cycle CDATA #IMPLIED
+    relative CDATA #IMPLIED
+  >
+
+<!ELEMENT radialGradient (center|radius|stops)*>
+<!ATTLIST radialGradient
+    cycle CDATA #IMPLIED
+    relative CDATA #IMPLIED
+  >
+
+<!ELEMENT center (#PCDATA)>
+<!ATTLIST center
+    x CDATA #IMPLIED
+    y CDATA #IMPLIED
+  >
+<!ELEMENT radius (#PCDATA)>
+
+
+<!ELEMENT start (#PCDATA)>
+<!ATTLIST start
+    x CDATA #IMPLIED
+    y CDATA #IMPLIED
+  >
+<!ELEMENT end (#PCDATA)>
+<!ATTLIST end
+    x CDATA #IMPLIED
+    y CDATA #IMPLIED
+  >
+
+<!ELEMENT stops (stop)*>
+<!ELEMENT stop (#PCDATA)>
+<!ATTLIST stop
+    t CDATA #IMPLIED
+  >

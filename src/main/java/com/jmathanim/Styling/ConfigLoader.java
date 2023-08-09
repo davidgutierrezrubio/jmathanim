@@ -20,11 +20,13 @@ package com.jmathanim.Styling;
 import com.jmathanim.Utils.JMathAnimConfig;
 import com.jmathanim.Utils.ResourceLoader;
 import com.jmathanim.jmathanim.JMathAnimScene;
+import com.jmathanim.mathobjects.Point;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.scene.paint.CycleMethod;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -32,6 +34,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+import org.w3c.dom.Text;
 import org.xml.sax.SAXException;
 
 /**
@@ -158,7 +161,7 @@ public class ConfigLoader {
             NodeList templChilds = elStyle.getElementsByTagName("style");
             for (int n = 0; n < templChilds.getLength(); n++) {
                 Node item = templChilds.item(n);
-                MODrawProperties mp = parseMathObjectDrawingProperties(item);
+                MODrawProperties mp = parseMathObjectDrawingProperties(config, item);
                 if (item.getNodeType() == Node.ELEMENT_NODE) {
                     Element el = (Element) item;
                     config.getStyles().put(el.getAttribute("name").toUpperCase(), mp);
@@ -168,7 +171,7 @@ public class ConfigLoader {
         }
     }
 
-    private static MODrawProperties parseMathObjectDrawingProperties(Node template) {
+    private static MODrawProperties parseMathObjectDrawingProperties(JMathAnimConfig config, Node template) {
         MODrawProperties mp = MODrawProperties.makeNullValues();
         NodeList childs = template.getChildNodes();
         for (int n = 0; n < childs.getLength(); n++) {
@@ -176,19 +179,20 @@ public class ConfigLoader {
             String name = item.getNodeName();
             switch (name) {
                 case "drawColor":
-                    mp.setDrawColor(JMColor.parse(item.getTextContent()));
+                    mp.setDrawColor(parsePaintStyle(config, item));
                     break;
                 case "fillColor":
-                    mp.setFillColor(JMColor.parse(item.getTextContent()));
+                    mp.setFillColor(parsePaintStyle(config, item));
+//                    mp.setFillColor(JMColor.parse(item.getTextContent()));
                     break;
                 case "thickness":
-                    mp.setThickness(Double.parseDouble(item.getTextContent()));
+                    mp.setThickness(Double.valueOf(item.getTextContent()));
                     break;
                 case "dashStyle":
                     mp.setDashStyle(MODrawProperties.parseDashStyle(item.getTextContent()));
                     break;
                 case "absoluteThickness":
-                    mp.setAbsoluteThickness(Boolean.parseBoolean(item.getTextContent()));
+                    mp.setAbsoluteThickness(Boolean.valueOf(item.getTextContent()));
                     break;
                 case "dotStyle":
                     mp.setDotStyle(MODrawProperties.parseDotStyle(item.getTextContent()));
@@ -196,10 +200,10 @@ public class ConfigLoader {
                 case "#text":
                     break;
                 case "scaleArrowHead1":
-                    mp.setScaleArrowHead1(Double.parseDouble(item.getTextContent()));
+                    mp.setScaleArrowHead1(Double.valueOf(item.getTextContent()));
                     break;
                 case "scaleArrowHead2":
-                    mp.setScaleArrowHead2(Double.parseDouble(item.getTextContent()));
+                    mp.setScaleArrowHead2(Double.valueOf(item.getTextContent()));
                     break;
                 default:
                     JMathAnimScene.logger.warn("Tag {} not recognized", name);
@@ -207,6 +211,145 @@ public class ConfigLoader {
             }
         }
         return mp;
+    }
+
+    private static PaintStyle parsePaintStyle(JMathAnimConfig config, Node node) {
+        NodeList childs = node.getChildNodes();
+        for (int n = 0; n < childs.getLength(); n++) {
+            Node item = childs.item(n);
+            if (item instanceof Text) {//A single text, containing a color def
+                String st = item.getTextContent().trim();
+                if (!"".equals(st)) {
+                    return JMColor.parse(st);
+                }
+            }
+
+            if (item instanceof Element) {
+                String name = item.getNodeName();
+                switch (name) {
+                    case "getDrawColor"://Get the draw color/gradient from other style
+                        String styleDrawColor = ((Element) item).getAttribute("style").toUpperCase();
+                        return config.getStyles().get(styleDrawColor).getDrawColor();
+                    case "getFillColor"://Get the fill color/gradient from other style
+                        String styleFillColor = ((Element) item).getAttribute("style").toUpperCase();
+                        return config.getStyles().get(styleFillColor).getFillColor();
+                    case "linearGradient":
+                        return parseLinearGradient(config, (Element) item);
+                    case "radialGradient":
+                        return parseRadialGradient(config, (Element) item);
+
+                }
+
+            }
+
+        }
+
+        return null;
+    }
+
+    private static JMLinearGradient parseLinearGradient(JMathAnimConfig config, Element gradientElement) {
+        NodeList starts = gradientElement.getElementsByTagName("start");
+        Element start = (Element) starts.item(0);
+        Double x = Double.valueOf(start.getAttribute("x"));
+        Double y = Double.valueOf(start.getAttribute("y"));
+        Point startP = Point.at(x, y);
+
+        NodeList ends = gradientElement.getElementsByTagName("end");
+        Element end = (Element) ends.item(0);
+        x = Double.valueOf(end.getAttribute("x"));
+        y = Double.valueOf(end.getAttribute("y"));
+        Point endP = Point.at(x, y);
+        JMLinearGradient resul = new JMLinearGradient(startP, endP);
+
+        //Now process the stops
+        NodeList stopList = gradientElement.getElementsByTagName("stops");
+        if (stopList.getLength() > 0) {
+            Element stopsEl = (Element) stopList.item(0);
+            NodeList childs = stopsEl.getChildNodes();
+            for (int n = 0; n < childs.getLength(); n++) {
+                Node item = childs.item(n);
+                if (item instanceof Element) {
+                    Element stopEl = (Element) item;
+                    if ("stop".equals(stopEl.getNodeName())) {
+                        double stopTime = Double.parseDouble(stopEl.getAttribute("t"));
+                        JMColor col = JMColor.parse(stopEl.getTextContent());
+                        resul.add(stopTime, col);
+                    }
+                }
+            }
+        }
+        //Relative flag
+        String relativeText = gradientElement.getAttribute("relative");
+        boolean relative = Boolean.parseBoolean(relativeText);//Default:false
+        resul.setRelativeToShape(relative);
+        resul.setCycleMethod(CycleMethod.NO_CYCLE);
+
+        //Cycle method: none, repeat, reflect
+        String cycleMethod = gradientElement.getAttribute("cycle").trim().toUpperCase();
+        switch (cycleMethod) {
+            case "NONE":
+                resul.setCycleMethod(CycleMethod.NO_CYCLE);
+                break;
+            case "REPEAT":
+                resul.setCycleMethod(CycleMethod.REPEAT);
+                break;
+            case "REFLECT":
+                resul.setCycleMethod(CycleMethod.REFLECT);
+                break;
+        }
+        return resul;
+    }
+
+    private static JMRadialGradient parseRadialGradient(JMathAnimConfig config, Element gradientElement) {
+        NodeList starts = gradientElement.getElementsByTagName("center");
+        Element start = (Element) starts.item(0);
+        Double x = Double.valueOf(start.getAttribute("x"));
+        Double y = Double.valueOf(start.getAttribute("y"));
+        Point centerP = Point.at(x, y);
+
+        NodeList radiuses = gradientElement.getElementsByTagName("radius");
+        Element radiusEl = (Element) radiuses.item(0);
+        double radius = Double.parseDouble(radiusEl.getTextContent());
+        JMRadialGradient resul = new JMRadialGradient(centerP, radius);
+
+        //Now process the stops
+        NodeList stopList = gradientElement.getElementsByTagName("stops");
+        if (stopList.getLength() > 0) {
+            Element stopsEl = (Element) stopList.item(0);
+            NodeList childs = stopsEl.getChildNodes();
+            for (int n = 0; n < childs.getLength(); n++) {
+                Node item = childs.item(n);
+                if (item instanceof Element) {
+                    Element stopEl = (Element) item;
+                    if ("stop".equals(stopEl.getNodeName())) {
+                        double stopTime = Double.parseDouble(stopEl.getAttribute("t"));
+                        JMColor col = JMColor.parse(stopEl.getTextContent());
+                        resul.add(stopTime, col);
+                    }
+                }
+            }
+
+        }
+        //Relative flag
+        String relativeText = gradientElement.getAttribute("relative");
+        boolean relative = Boolean.parseBoolean(relativeText);//Default:false
+        resul.setRelativeToShape(relative);
+        resul.setCycleMethod(CycleMethod.NO_CYCLE);
+
+        //Cycle method: none, repeat, reflect
+        String cycleMethod = gradientElement.getAttribute("cycle").trim().toUpperCase();
+        switch (cycleMethod) {
+            case "NONE":
+                resul.setCycleMethod(CycleMethod.NO_CYCLE);
+                break;
+            case "REPEAT":
+                resul.setCycleMethod(CycleMethod.REPEAT);
+                break;
+            case "REFLECT":
+                resul.setCycleMethod(CycleMethod.REFLECT);
+                break;
+        }
+        return resul;
     }
 
     private static void parseLoadConfigOptions(NodeList includeTags) {

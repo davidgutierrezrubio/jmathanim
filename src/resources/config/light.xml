@@ -1,3 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE JMathAnimConfig SYSTEM "JMathAnimConfig.dtd">
+
 <JMathAnimConfig>
     <include>#axes_and_functions_light.xml</include>
     <include>#dots.xml</include>
