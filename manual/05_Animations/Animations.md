@@ -70,7 +70,7 @@ You can replace the animation method with one of this list of basic transforms, 
 play.rotate(3,45*DEGRESS,sq);
 
 //Rotates the square around the origin 120
-play.rotate(5,Point.at(0,0),120*DEGREES,sq);degress, in 5s
+play.rotate(5,Point.at(0,0),120*DEGREES,sq);
 
 //Scales the square uniformly at 70%, around its center, in 3s
 play.scale(3,.7,sq);
@@ -159,15 +159,15 @@ waitSeconds(1);
 
 
 
-The use of the `play` object allows fast writing of simple animations, but if you need to fine tune some parameters, like the lambda time function, or add some effects, you will need to define it "the long way".
+Using the `play` object allows you to quickly write simple animations, but if you need to fine-tune some parameters, such as the lambda time function, or add some effects, you will need to define it "the long way".
 
 ## Highlighting
 
-These animations help objects to briefly get the attention of the users who are enjoying that beautiful animation you have created. 
+These animations help objects to briefly attract the attention of users who enjoy the beautiful animation you have created. 
 
 * The `Commands.highlight`animation will scale back and forth the given objects by the amount we define. The default value is 150%.
 * The `Commands.twistAndScale` animation works in similar way than `highlight`, but adds a small twist movement, with a default angle of +/- 15 degrees.
-* The `ContourHighlight` animation will draw a `snake`running over the contour a shape. The color and thickness can be changed (default: color red and thickness 10).
+* The `ContourHighlight` animation will draw a "snake" running over the contour a shape. The color and thickness can be changed (default: color red and thickness 10).
 
 We see all of them with this example:
 
@@ -200,7 +200,7 @@ Here is a GIF from the movie generated:
 
 
 
-The `ContourHighlight` animation can be configured creating the object with its static constructor:
+The `ContourHighlight` animation can be configured by creating the object with its static constructor:
 
 ```java
 Shape obj = Shape.circle();
@@ -242,8 +242,6 @@ anim2.setColor("green");
 playAnimation(anim2);
 waitSeconds(2);
 ```
-
-Note the method `.addGap` in the bounding box, to enlarge it .1 units in each of the 4 directions.
 
 ![ContourHighlight2](ContourHighlight2.gif)
 
@@ -328,7 +326,7 @@ waitSeconds(5);
 
 ## Moving along a path
 
-The `MoveAlongPath` animations move an object along a specified path. You can provide a `Shape` object or a `JMPath`objec to determine the path. The moved object will be located at the specified `Anchor` point. This animation admits 2 boolean parameters. First, one determines if an object should rotate at the angle given by the tangent of the path at its destiny point. Second, it determines if animation should use a parametrized equation of the curve or not. A parametrized equation ensures that movement is constant along the arc length of the path. Thus, for example, a parametrized value of t=0.3 ensures that the object will be located at 30% of the total arc length. If this boolean flag is false, standard Bézier parametrization will be used.
+`MoveAlongPath` animations move an object along a specified path. You can use a `Shape` object or a `JMPath` object to specify the path. The moved object will be at the specified anchor point. This animation takes 2 boolean parameters. The first determines whether an object should rotate by the angle given by the tangent of the path at its destination point. Second, it determines whether or not the animation should use a parameterised equation for the curve. A parameterised equation ensures that the motion is constant along the arc length of the path. For example, a parameterised value of t=0.3 ensures that the object will be at 30% of the total arc length. If this boolean flag is false, the standard Bézier parameterisation is used.
 
 In this example, we show 2 squares moving along a circle. The red square moves with constant velocity and the blue one with the standard parametrization of Bézier curves. In general, the standard parametrization of Bézier moves slower at sharp turns.
 
@@ -346,6 +344,8 @@ playAnimation(anim,anim2);
 ![moveAlongpath](moveAlongpath.gif)
 
 Here we have specified the lambda parameters in the animations with the  `.setLambda(t->t)` methods in order to move with uniform velocity. We will see the use of lambdas in the next chapter.
+
+Although a `FunctionGraph`is a subclass of a `Shape` and admits the `MoveAlongPath` animation, it is recommended to use the `PointOnFunctionGraph`object instead if you want to animate a `Point` along the graph.
 
 # The ShowCreation animation
 

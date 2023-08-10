@@ -7,44 +7,53 @@
 A simple animation illustrating the updateable object `PointOnFunctionGraph` :
 
 ```java
-final Axes axes = new Axes();
-axes.generatePrimaryXTicks(-2, 2, 1);
-axes.generatePrimaryYTicks(-2, 2, 1);
-add(axes);
+@Override
+public void setupSketch() {
+    config.parseFile("#preview.xml"); //Change this to #production.xml to generate final HD video
+    config.parseFile("#light.xml");
+}
 
-//The function
-FunctionGraph cat = FunctionGraph.make(x -> (x - 1) * (x + 1) * (x - .5));
-cat.thickness(3).drawColor("darkblue");
+@Override
+public void runSketch() {
+	final Axes axes = new Axes();
+    axes.generatePrimaryXTicks(-2, 2, 1);
+    axes.generatePrimaryYTicks(-2, 2, 1);
+    add(axes);
+
+    //The function
+    FunctionGraph cat = FunctionGraph.make(x -> (x - 1) * (x + 1) * (x - .5));
+    cat.thickness(3).drawColor("darkblue");
 
 
-//The roots of f'(x)
-double root1 = -0.4342585459107;
-double root2 = 0.767591879244;
+    //The roots of f'(x)
+    double root1 = -0.4342585459107;
+    double root2 = 0.767591879244;
 
-double xStart = -1;
-PointOnFunctionGraph A = new PointOnFunctionGraph(xStart, cat);
-A.style("redcircle");
+    double xStart = -1;
+    PointOnFunctionGraph A = new PointOnFunctionGraph(xStart, cat);
+    A.style("redcircle");
 
-Line tangentLine = Line.make(A, A.getSlopePointRight()).drawColor("darkgreen");
+    Line tangentLine = Line.make(A, A.getSlopePointRight()).drawColor("darkgreen");
 
-//First, we animate the creation of the objects
-play.showCreation(cat);
-play.fadeIn(A);
-play.showCreation(tangentLine);
+    //First, we animate the creation of the objects
+    play.showCreation(cat);
+    play.fadeIn(A);
+    play.showCreation(tangentLine);
 
-//Now we shift the point A to the first root and fadeIn a illustrative text and a marker point
-play.shift(5, root1 - xStart, 0, A);
-Point marker1 = A.copy().dotStyle(Point.DotSyle.CROSS).drawColor("darkblue");
-play.fadeIn(2, LaTeXMathObject.make("$$f'(x)=0$$").scale(.5).stackTo(A, Anchor.Type.UPPER, .1), marker1);
+    //Now we shift the point A to the first root and fadeIn a illustrative text and a marker point
+    play.shift(5, root1 - xStart, 0, A);
+    Point marker1 = A.copy().dotStyle(Point.DotSyle.CROSS).drawColor("darkblue");
+    play.fadeIn(2, LaTeXMathObject.make("$$f'(x)=0$$").scale(.5).stackTo(A, Anchor.Type.UPPER, .1), marker1);
 
-//We do the same with the second root
-play.shift(5, root2 - root1, 0, A);
-Point marker2 = A.copy().dotStyle(Point.DotSyle.CROSS).drawColor("darkblue");
-play.fadeIn(2, LaTeXMathObject.make("$$f'(x)=0$$").scale(.5).stackTo(A, Anchor.Type.LOWER, .1), marker2);
+    //We do the same with the second root
+    play.shift(5, root2 - root1, 0, A);
+    Point marker2 = A.copy().dotStyle(Point.DotSyle.CROSS).drawColor("darkblue");
+    play.fadeIn(2, LaTeXMathObject.make("$$f'(x)=0$$").scale(.5).stackTo(A, Anchor.Type.LOWER, .1), marker2);
 
-play.shift(5, 1, 0, A);
+    play.shift(5, 1, 0, A);
 
-waitSeconds(5);
+    waitSeconds(5);
+}
 ```
 
 [You can see the video here](https://imgur.com/gallery/Iun5dD6)
@@ -54,6 +63,12 @@ waitSeconds(5);
 ## Taylor expansion of sin(x)
 
 ```java
+@Override
+public void setupSketch() {
+    config.parseFile("#preview.xml"); //Change this to #production.xml to generate final HD video
+    config.parseFile("#light.xml");
+}
+
 public void runSketch() throws Exception {
     int orderTaylor = 8;
     Axes axes = new Axes();
