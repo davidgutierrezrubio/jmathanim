@@ -29,6 +29,7 @@ import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.AbstractJMImage;
 import com.jmathanim.mathobjects.JMPath;
 import com.jmathanim.mathobjects.MathObject;
+import com.jmathanim.mathobjects.Point;
 import com.jmathanim.mathobjects.Shape;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -437,8 +438,8 @@ return 1;
         Image image = images.get(fileName);
         // UL corner of bounding box initially set to (0,0)
         Rect r = new Rect(0, 0, 0, 0);
-        r.ymin = -camera.screenToMath(image.getHeight());
-        r.xmax = camera.screenToMath(image.getWidth());
+        r.ymin = -fixedCamera.screenToMath(image.getHeight());
+        r.xmax = fixedCamera.screenToMath(image.getWidth());
         return r;
     }
 
@@ -462,7 +463,7 @@ return 1;
         Affine camToScreen = FXPathUtils.camToScreenAffineTransform(camera);
         imageView.getTransforms().add(camToScreen);
 
-        //Swap y coordinate
+//        //Swap y coordinate
         imageView.getTransforms().add(new Scale(1, -1));
         imageView.getTransforms().add(FXPathUtils.affineJToAffine(obj.getCurrentViewTransform()));
         imageView.getTransforms().add(new Scale(1, -1));

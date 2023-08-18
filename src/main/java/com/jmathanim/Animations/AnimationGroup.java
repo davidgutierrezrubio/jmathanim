@@ -20,7 +20,6 @@ package com.jmathanim.Animations;
 import com.jmathanim.Utils.UsefulLambdas;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.function.DoubleUnaryOperator;
 
 /**
@@ -72,7 +71,11 @@ public class AnimationGroup extends AnimationWithEffects {
         super(0);
         super.setLambda(null);
         this.animations = new ArrayList<>();
-        this.animations.addAll(Arrays.asList(animations));
+        for (Animation anim : animations) {
+            if (anim != null) {
+                this.animations.add(anim);
+            }
+        }
 
         this.useObjectState = false;
         this.shouldAddObjectsToScene = false;
@@ -81,34 +84,43 @@ public class AnimationGroup extends AnimationWithEffects {
 
     /**
      * Overloaded method. Creates a new AnimationGroup with given animations
-     * using an ArrayList.This class stores a group of animations, to be played
+     * using an ArrayList.This class stores a group of animations , to be played
      * at the same time.
      *
      * @param animations Animations to add (varargs)
      */
     public AnimationGroup(ArrayList<Animation> animations) {
         super(0);
-        this.animations = animations;
+        this.animations=new ArrayList<>();
+        for (Animation anim : animations) {
+            if (anim != null) {
+                this.animations.add(anim);
+            }
+        }
     }
 
     /**
      * Add the given animations to the list
      *
      * @param <T> Calling subclass
-     * @param anims Animations to add (varargs)
+     * @param animations Animations to add (varargs)
      * @return This object
      */
-    public <T extends AnimationGroup> T add(Animation... anims) {
-        animations.addAll(Arrays.asList(anims));
+    public <T extends AnimationGroup> T add(Animation... animations) {
+        for (Animation anim : animations) {
+            if (anim != null) {
+                this.animations.add(anim);
+            }
+        }
         return (T) this;
     }
 
     @Override
     public void initialize(JMathAnimScene scene) {
         //Compute runTime as the MAX runtime of all animations
-        this.runTime=0;
+        this.runTime = 0;
         for (Animation an : animations) {
-            runTime=(runTime<an.getRunTime() ? an.getRunTime() : runTime);
+            runTime = (runTime < an.getRunTime() ? an.getRunTime() : runTime);
         }
         super.initialize(scene);
 
@@ -121,7 +133,6 @@ public class AnimationGroup extends AnimationWithEffects {
 //        for (Animation anim : animations) {
 //            this.copyAnimationParametersTo(anim);
 //        }
-
         for (Animation anim : animations) {
             if (anim != null) {
                 if (anim instanceof AnimationWithEffects) {
@@ -136,7 +147,7 @@ public class AnimationGroup extends AnimationWithEffects {
             double b = 1 - delayPercentage;
             for (Animation anim : animations) {
                 double a = k * (delayPercentage) / (size - 1);
-                anim.setAllocationParameters(a, a+b);
+                anim.setAllocationParameters(a, a + b);
                 k++;
             }
         }
@@ -150,26 +161,23 @@ public class AnimationGroup extends AnimationWithEffects {
 //        }
 //        return finishedAll;
 //    }
-
     @Override
     public void doAnim(double t) {
         for (Animation anim : animations) {
-            double mt=t*runTime/anim.getRunTime();
+            double mt = t * runTime / anim.getRunTime();
             anim.doAnim(UsefulLambdas.allocateTo(allocateStart, allocateEnd).applyAsDouble(mt));
         }
     }
 
     @Override
     public double getRunTime() {
-        double max=0;
-        for (Animation anim:animations) {
-            max=Math.max(max, anim.getRunTime());
+        double max = 0;
+        for (Animation anim : animations) {
+            max = Math.max(max, anim.getRunTime());
         }
         return max;
     }
 
-    
-    
     @Override
     public void finishAnimation() {
         super.finishAnimation();
@@ -187,7 +195,6 @@ public class AnimationGroup extends AnimationWithEffects {
         }
         return this;
     }
-
 
     @Override
     public AnimationGroup setUseObjectState(boolean shouldSaveState) {

@@ -199,7 +199,7 @@ public class Transform extends AnimationWithEffects {
                     break;
                 case INTERPOLATE_POINT_BY_POINT:
                     transformStrategy = new PointInterpolationCanonical(runTime, (Shape) mobjTransformed, (Shape) mobjDestiny);
-                    JMathAnimScene.logger.debug("Transform method: Point interpolation between 2 curves");
+                    JMathAnimScene.logger.debug("Transform method: Point interpolation between 2 curves (PointInterpolationCanonical)");
                     break;
                 case ISOMORPHIC_TRANSFORM:
                     transformStrategy = new IsomorphicTransformAnimation(runTime, (Shape) mobjTransformed, (Shape) mobjDestiny);

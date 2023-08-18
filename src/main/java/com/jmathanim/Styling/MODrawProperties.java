@@ -347,6 +347,10 @@ public class MODrawProperties implements Stylable, Stateable {
         }
         if (b.getThickness() != null) {
             this.thickness = (1 - alpha) * a.getThickness() + alpha * b.getThickness();
+              System.out.println("Interpolando thickness "+a.getThickness()+"   "+b.getThickness());
+        }
+        else {
+            System.out.println("Ojo cuidado, un thicnkess NULL");
         }
     }
 
