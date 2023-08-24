@@ -309,14 +309,13 @@ for (int n = 0; n < 10; n++) {
     group.add(square);
 }
 camera.scale(2 * h / camera.getMathView().getHeight());//Zooms out so that the height of view is 2xTotal height
-add(group);//Add all squares to the scene (not the group object)
-LaTeXMathObject layoutName=LaTeXMathObject.make("");
+add(group);//This adds all squares to the scene, but not the group object itself.
+LaTeXMathObject layoutName = LaTeXMathObject.make("").scale(7);
 add(layoutName);
 for (MathObjectGroup.Layout layout : MathObjectGroup.Layout.values()) {//Iterate over all the layout values
     group.setLayout(layout, .1); //Set this layout, with .1 gap between objects
-    layoutName.setLaTeX(layout.name()).scale(7).stackToScreen(Anchor.Type.LOWER,.2,.2); //Change value of the label
-    waitSeconds(2);
-}
+    layoutName.setLaTeX(layout.name()).stackToScreen(Anchor.Type.LOWER, .2, .2); //Change value of the label
+    waitSeconds(3);
 ```
 
 
