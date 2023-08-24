@@ -735,4 +735,15 @@ public abstract class JMathAnimScene {
     public void infoMessage(String message) {
         logger.info(message);
     }
+
+    /**
+     * Convenience function. Returns the width of the current math view. Can be
+     * used to quicky acces to this parameter if you need to perform measures
+     * relative to the math view rather than math units, so .1*mw() stands for 10% of screen width.
+     *
+     * @return The current mathview width, in math units.
+     */
+    public double mw() {
+        return config.getCamera().getMathView().getWidth();
+    }
 }

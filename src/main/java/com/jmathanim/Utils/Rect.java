@@ -109,22 +109,22 @@ public class Rect implements Stateable, Boxable {// TODO: Adjust this to 3D coor
         // Particular cases:
         // Line lines in the left side
         if ((x1 == xmin) & (x2 == xmin)) {
-            // UL and DL corners
+            // ULEFT and DLEFT corners
             return new double[]{xmin, (y1 < y2 ? ymin : ymax), xmin, (y1 < y2 ? ymax : ymin)};
         }
         // Line lines in the right side
         if ((x1 == xmax) & (x2 == xmax)) {
-            // UR and DR corners
+            // URIGHT and DRIGHT corners
             return new double[]{xmax, (y1 < y2 ? ymin : ymax), xmax, (y1 < y2 ? ymax : ymin)};
         }
         // Line lines in the lower side
         if ((y1 == ymin) & (y2 == ymin)) {
-            // UL and UR corners
+            // ULEFT and URIGHT corners
             return new double[]{(x1 < x2 ? xmin : xmax), ymin, (x1 < x2 ? xmax : xmin), ymin};
         }
         // Line lines in the upper side
         if ((y1 == ymax) & (y2 == ymax)) {
-            // UL and UR corners
+            // ULEFT and URIGHT corners
             return new double[]{(x1 < x2 ? xmin : xmax), ymax, (x1 < x2 ? xmax : xmin), ymax};
         }
         double interx1 = xmin;
@@ -571,13 +571,13 @@ public class Rect implements Stateable, Boxable {// TODO: Adjust this to 3D coor
                 return getLeft();
             case RIGHT:
                 return getRight();
-            case UL:
+            case ULEFT:
                 return getUL();
-            case UR:
+            case URIGHT:
                 return getUR();
-            case DL:
+            case DLEFT:
                 return getDL();
-            case DR:
+            case DRIGHT:
                 return getDR();
             case CENTER:
                 return getCenter();

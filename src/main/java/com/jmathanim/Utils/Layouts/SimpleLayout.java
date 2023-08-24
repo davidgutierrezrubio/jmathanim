@@ -99,66 +99,66 @@ public class SimpleLayout extends GroupLayout {
 			vgap = this.verticalGap;
 			break;
 		case URIGHT:
-			anchor1 = Anchor.Type.UL;
-			anchor2 = Anchor.Type.UR;
+			anchor1 = Anchor.Type.ULEFT;
+			anchor2 = Anchor.Type.URIGHT;
 			hgap = this.horizontalGap;
 			break;
 		case ULEFT:
-			anchor1 = Anchor.Type.UR;
-			anchor2 = Anchor.Type.UL;
+			anchor1 = Anchor.Type.URIGHT;
+			anchor2 = Anchor.Type.ULEFT;
 			hgap = this.horizontalGap;
 			break;
 		case DRIGHT:
-			anchor1 = Anchor.Type.DL;
-			anchor2 = Anchor.Type.DR;
+			anchor1 = Anchor.Type.DLEFT;
+			anchor2 = Anchor.Type.DRIGHT;
 			hgap = this.horizontalGap;
 			break;
 		case DLEFT:
-			anchor1 = Anchor.Type.DR;
-			anchor2 = Anchor.Type.DL;
+			anchor1 = Anchor.Type.DRIGHT;
+			anchor2 = Anchor.Type.DLEFT;
 			hgap = this.horizontalGap;
 			break;
 		case RUPPER:
-			anchor1 = Anchor.Type.DR;
-			anchor2 = Anchor.Type.UR;
+			anchor1 = Anchor.Type.DRIGHT;
+			anchor2 = Anchor.Type.URIGHT;
 			vgap = this.verticalGap;
 			break;
 		case LUPPER:
-			anchor1 = Anchor.Type.DL;
-			anchor2 = Anchor.Type.UL;
+			anchor1 = Anchor.Type.DLEFT;
+			anchor2 = Anchor.Type.ULEFT;
 			vgap = this.verticalGap;
 			break;
 		case RLOWER:
-			anchor1 = Anchor.Type.UR;
-			anchor2 = Anchor.Type.DR;
+			anchor1 = Anchor.Type.URIGHT;
+			anchor2 = Anchor.Type.DRIGHT;
 			vgap = this.verticalGap;
 			break;
 		case LLOWER:
-			anchor1 = Anchor.Type.UL;
-			anchor2 = Anchor.Type.DL;
+			anchor1 = Anchor.Type.ULEFT;
+			anchor2 = Anchor.Type.DLEFT;
 			vgap = this.verticalGap;
 			break;
 		case DIAG1:
-			anchor1 = Anchor.Type.DL;
-			anchor2 = Anchor.Type.UR;
+			anchor1 = Anchor.Type.DLEFT;
+			anchor2 = Anchor.Type.URIGHT;
 			vgap = this.verticalGap;
 			hgap = this.horizontalGap;
 			break;
 		case DIAG2:
-			anchor1 = Anchor.Type.DR;
-			anchor2 = Anchor.Type.UL;
+			anchor1 = Anchor.Type.DRIGHT;
+			anchor2 = Anchor.Type.ULEFT;
 			vgap = this.verticalGap;
 			hgap = this.horizontalGap;
 			break;
 		case DIAG3:
-			anchor1 = Anchor.Type.UR;
-			anchor2 = Anchor.Type.DL;
+			anchor1 = Anchor.Type.URIGHT;
+			anchor2 = Anchor.Type.DLEFT;
 			vgap = this.verticalGap;
 			hgap = this.horizontalGap;
 			break;
 		case DIAG4:
-			anchor1 = Anchor.Type.UL;
-			anchor2 = Anchor.Type.DR;
+			anchor1 = Anchor.Type.ULEFT;
+			anchor2 = Anchor.Type.DRIGHT;
 			vgap = this.verticalGap;
 			hgap = this.horizontalGap;
 			break;

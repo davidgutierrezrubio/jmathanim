@@ -60,48 +60,48 @@ public abstract class AbstractBoxLayout extends GroupLayout {
             case RIGHT_UP:
                 inRowStack = Anchor.Type.RIGHT;
                 inColStack = Anchor.Type.UPPER;
-                firstElementStack = Anchor.Type.DL;
+                firstElementStack = Anchor.Type.DLEFT;
                 break;
             case RIGHT_DOWN:
                 inRowStack = Anchor.Type.RIGHT;
                 inColStack = Anchor.Type.LOWER;
-                firstElementStack = Anchor.Type.UL;
+                firstElementStack = Anchor.Type.ULEFT;
                 break;
             case LEFT_UP:
                 inRowStack = Anchor.Type.LEFT;
                 inColStack = Anchor.Type.UPPER;
-                firstElementStack = Anchor.Type.DR;
+                firstElementStack = Anchor.Type.DRIGHT;
                 break;
             case LEFT_DOWN:
                 inRowStack = Anchor.Type.LEFT;
                 inColStack = Anchor.Type.LOWER;
-                firstElementStack = Anchor.Type.UR;
+                firstElementStack = Anchor.Type.URIGHT;
                 break;
             case UP_RIGHT:
                 inRowStack = Anchor.Type.UPPER;
                 inColStack = Anchor.Type.RIGHT;
-                firstElementStack = Anchor.Type.DL;
+                firstElementStack = Anchor.Type.DLEFT;
                 break;
             case UP_LEFT:
                 inRowStack = Anchor.Type.UPPER;
                 inColStack = Anchor.Type.LEFT;
-                firstElementStack = Anchor.Type.DR;
+                firstElementStack = Anchor.Type.DRIGHT;
                 break;
             case DOWN_RIGHT:
                 inRowStack = Anchor.Type.LOWER;
                 inColStack = Anchor.Type.RIGHT;
-                firstElementStack = Anchor.Type.UL;
+                firstElementStack = Anchor.Type.ULEFT;
                 break;
             case DOWN_LEFT:
                 inRowStack = Anchor.Type.LOWER;
                 inColStack = Anchor.Type.LEFT;
-                firstElementStack = Anchor.Type.UR;
+                firstElementStack = Anchor.Type.URIGHT;
                 break;
             default:
                 // Default case, rowSize goes to right, columns to the heaven
                 inRowStack = Anchor.Type.RIGHT;
                 inColStack = Anchor.Type.UPPER;
-                firstElementStack = Anchor.Type.DL;
+                firstElementStack = Anchor.Type.DLEFT;
                 break;
         }
     }
@@ -110,16 +110,16 @@ public abstract class AbstractBoxLayout extends GroupLayout {
         switch (type) {
             case UPPER:
                 if (inRowStack == Anchor.Type.LEFT) {
-                    inRowStack = Anchor.Type.UL;
+                    inRowStack = Anchor.Type.ULEFT;
                 }
                 if (inRowStack == Anchor.Type.RIGHT) {
-                    inRowStack = Anchor.Type.UR;
+                    inRowStack = Anchor.Type.URIGHT;
                 }
                 if (inRowStack == Anchor.Type.UPPER) {
-                    inRowStack = Anchor.Type.UL;
+                    inRowStack = Anchor.Type.ULEFT;
                 }
                 if (inRowStack == Anchor.Type.LOWER) {
-                    inRowStack = Anchor.Type.DL;
+                    inRowStack = Anchor.Type.DLEFT;
                 }
 
                 break;
@@ -127,16 +127,16 @@ public abstract class AbstractBoxLayout extends GroupLayout {
                 break;
             case LOWER:
                 if (inRowStack == Anchor.Type.LEFT) {
-                    inRowStack = Anchor.Type.DL;
+                    inRowStack = Anchor.Type.DLEFT;
                 }
                 if (inRowStack == Anchor.Type.RIGHT) {
-                    inRowStack = Anchor.Type.DR;
+                    inRowStack = Anchor.Type.DRIGHT;
                 }
                 if (inRowStack == Anchor.Type.UPPER) {
-                    inRowStack = Anchor.Type.UR;
+                    inRowStack = Anchor.Type.URIGHT;
                 }
                 if (inRowStack == Anchor.Type.LOWER) {
-                    inRowStack = Anchor.Type.DR;
+                    inRowStack = Anchor.Type.DRIGHT;
                 }
                 break;
         }

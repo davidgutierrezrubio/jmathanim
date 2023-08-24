@@ -365,7 +365,7 @@ class GeogebraCommandParser {
             size = 5d / 36;//Assume size is "small"
         }
 
-        CTLaTeX cTLaTeX = CTLaTeX.make(text, anchorPoint, Anchor.Type.UL, 0).scale(size);
+        CTLaTeX cTLaTeX = CTLaTeX.make(text, anchorPoint, Anchor.Type.ULEFT, 0).scale(size);
         registerGeogebraElement(label, cTLaTeX);
     }
 

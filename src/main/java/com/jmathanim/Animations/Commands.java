@@ -412,6 +412,12 @@ public class Commands {
         return isomorphism(runtime, a, b, c, d, objects);
     }
 
+    
+    
+     public static AnimationWithEffects isomorphism(double runtime, Rect rOrig, Rect rDst,MathObject...objects) {
+         return isomorphism(runtime, rOrig.getUL(), rOrig.getDR(),rDst.getUL(),rDst.getDR(),objects);
+     }
+    
     /**
      * Animation command that transforms a MathObject through a direct
      * isomorphism. Isomorphism is specified by 2 pairs of points

@@ -31,6 +31,7 @@ import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.updateableObjects.Updateable;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.OptionalInt;
 import javafx.scene.shape.StrokeLineCap;
@@ -42,32 +43,35 @@ import javafx.scene.shape.StrokeLineCap;
  * @author David Gutierrez Rubio davidgutierrezrubio@gmail.com
  */
 public abstract class MathObject implements Drawable, Updateable, Stateable, Boxable {
-
+    
     public enum Align {
         LEFT, RIGHT, UPPER, LOWER, HCENTER, VCENTER
     }
     private int updateLevel;
     protected JMathAnimScene scene;
     private String debugText = "";
-
+    
     private MODrawProperties mp;
     public String objectLabel = "";
-
+    
     public boolean absoluteSize = false;
-
+    
     public Point absoluteAnchorPoint;
     private Type absoluteAnchorType = Type.CENTER;
     private final HashSet<MathObject> dependents;
-
+    
     private double leftGap, upperGap, rightGap, lowerGap;
-
+    
+    private final HashMap<String, Object> properties;
+    
     public MathObject() {
         this(null);
+        
     }
-
+    
     public MathObject(MODrawProperties prop) {
         this.updateLevel = -1;
-
+        
         scene = JMathAnimConfig.getConfig().getScene();
         mp = JMathAnimConfig.getConfig().getDefaultMP();// Default MP values
         mp.copyFrom(prop);// Copy all non-null values from prop
@@ -79,6 +83,7 @@ public abstract class MathObject implements Drawable, Updateable, Stateable, Box
         upperGap = 0;
         rightGap = 0;
         lowerGap = 0;
+        this.properties = new HashMap<>();
     }
 
     /**
@@ -356,19 +361,19 @@ public abstract class MathObject implements Drawable, Updateable, Stateable, Box
         bb.addGap(rightGap, upperGap, leftGap, lowerGap);
         return bb;
     }
-
+    
     protected abstract Rect computeBoundingBox();
-
+    
     public void setAlpha(double t) {
         drawAlpha(t);
         fillAlpha(t);
     }
-
+    
     @Override
     public void saveState() {
         getMp().saveState();
     }
-
+    
     @Override
     public void restoreState() {
         getMp().restoreState();
@@ -558,11 +563,11 @@ public abstract class MathObject implements Drawable, Updateable, Stateable, Box
         getMp().setVisible(visible);
         return (T) this;
     }
-
+    
     public Point getAbsoluteAnchor() {
         return Anchor.getAnchorPoint(this, absoluteAnchorType);
     }
-
+    
     public Point getAbsoluteAnchorPoint() {
         return absoluteAnchorPoint;
     }
@@ -582,7 +587,7 @@ public abstract class MathObject implements Drawable, Updateable, Stateable, Box
         absoluteAnchorType = Type.BY_POINT;
         absoluteSize = true;
         return (T) this;
-
+        
     }
 
     /**
@@ -809,7 +814,7 @@ public abstract class MathObject implements Drawable, Updateable, Stateable, Box
         absoluteSize = true;
         return (T) this;
     }
-
+    
     public <T extends MathObject> T setRelativeSize() {
         absoluteSize = false;
         return (T) this;
@@ -868,7 +873,7 @@ public abstract class MathObject implements Drawable, Updateable, Stateable, Box
     public void update(JMathAnimScene scene) {
         //Nothing to do by default
     }
-
+    
     @Override
     public final int getUpdateLevel() {
         if (updateLevel == -1) {//-1 means no update level has been defined yet
@@ -879,16 +884,16 @@ public abstract class MathObject implements Drawable, Updateable, Stateable, Box
         }
         return updateLevel;
     }
-
+    
     @Override
     public void setUpdateLevel(int level) {
         updateLevel = level;
     }
-
+    
     public String getDebugText() {
         return debugText;
     }
-
+    
     public <T extends MathObject> T debugText(String debugText) {
         this.debugText = debugText;
         return (T) this;
@@ -992,17 +997,17 @@ public abstract class MathObject implements Drawable, Updateable, Stateable, Box
     public <T extends MathObject> T applyAffineTransform(AffineJTransform transform) {
         return (T) this;// By default does nothing
     }
-
+    
     public void addToSceneHook(JMathAnimScene scene) {
     }
-
+    
     public void removedFromSceneHook(JMathAnimScene scene) {
     }
-
+    
     @Override
     public void registerUpdateableHook(JMathAnimScene scene) {
     }
-
+    
     @Override
     public void unregisterUpdateableHook(JMathAnimScene scene) {
     }
@@ -1020,7 +1025,7 @@ public abstract class MathObject implements Drawable, Updateable, Stateable, Box
      * Register dependence of this MathObject to other Mathobjects. This is done
      * to ensure proper updating order.
      *
-     * @param scene Scene 
+     * @param scene Scene
      * @param objs Objects that this object depends on
      */
     protected void dependsOn(JMathAnimScene scene, MathObject... objs) {
@@ -1059,5 +1064,13 @@ public abstract class MathObject implements Drawable, Updateable, Stateable, Box
         this.lowerGap = lowerGap;
         return (T) this;
     }
+    
+    public Object getProperty(String key) {
+        return properties.get(key);
+    }
 
+    public void setProperty(String key, Object obj) {
+        properties.put(key, obj);
+    }
+    
 }

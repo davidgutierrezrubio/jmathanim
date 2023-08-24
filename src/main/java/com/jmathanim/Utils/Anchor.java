@@ -28,227 +28,297 @@ import com.jmathanim.mathobjects.Point;
  */
 public class Anchor {
 
-	public enum Type {
-		/**
-		 * Anchor is specified by a given point
-		 */
-		BY_POINT,
-		/**
-		 * Anchor determined by the center of the object
-		 */
-		CENTER,
-		/**
-		 * Right anchor point. Vertically centered.
-		 */
-		RIGHT,
-		/**
-		 * Upper anchor point. Horizontally centered
-		 */
-		UPPER,
-		/**
-		 * Left anchor point. Vertically centered.
-		 */
-		LEFT,
-		/**
-		 * Lower anchor point. Horizontally centered
-		 */
-		LOWER,
-		/**
-		 * Down-Right anchor point
-		 */
-		DR,
-		/**
-		 * Up-Right anchor point
-		 */
-		UR,
-		/**
-		 * Up-Left anchor point
-		 */
-		UL,
-		/**
-		 * Down-Left anchor point
-		 */
-		DL
-	}
+    public enum Type {
+        /**
+         * Anchor is specified by a given point
+         */
+        BY_POINT,
+        /**
+         * Anchor determined by the center of the object
+         */
+        CENTER,
+        /**
+         * Right anchor point. Vertically centered.
+         */
+        RIGHT,
+        /**
+         * Upper anchor point. Horizontally centered
+         */
+        UPPER,
+        /**
+         * Left anchor point. Vertically centered.
+         */
+        LEFT,
+        /**
+         * Lower anchor point. Horizontally centered
+         */
+        LOWER,
+        /**
+         * Down-Right anchor point
+         */
+        DRIGHT,
+        /**
+         * Up-Right anchor point
+         */
+        URIGHT,
+        /**
+         * Up-Left anchor point
+         */
+        ULEFT,
+        /**
+         * Down-Left anchor point
+         */
+        DLEFT,
+        RLOWER,
+        RUPPER,
+        LLOWER,
+        LUPPER,
+        DIAG1,
+        DIAG2,
+        DIAG3,
+        DIAG4
+    }
 
-	/**
-	 * Return a {@link Point} object that represents the given anchor. For example
-	 * getAnchorPoint(obj, Anchor.LEFT) returns the upper point of the object
-	 * (determined by its bounding box)
-	 *
-	 * @param obj    Object to get anchor point
-	 * @param anchor Type of anchor defined in the enum Anchor.Type
-	 * @return The anchor point
-	 */
-	public static Point getAnchorPoint(Boxable obj, Type anchor) {
-		return getAnchorPoint(obj, anchor, 0, 0);
-	}
+    /**
+     * Return a {@link Point} object that represents the given anchor. For
+     * example getAnchorPoint(obj, Anchor.LEFT) returns the upper point of the
+     * object (determined by its bounding box)
+     *
+     * @param obj Object to get anchor point
+     * @param anchor Type of anchor defined in the enum Anchor.Type
+     * @return The anchor point
+     */
+    public static Point getAnchorPoint(Boxable obj, Type anchor) {
+        return getAnchorPoint(obj, anchor, 0, 0);
+    }
 
-	/**
-	 * Return a {@link Point} object that represents the given anchor.For example
-	 * getAnchorPoint(obj, Anchor.LEFT) returns the upper point of the object
-	 * (determined by its bounding box).A gap (in math coordinates) is added, equal
-	 * in x and y direction.
-	 *
-	 * @param obj    Object to get anchor point
-	 * @param anchor Type of anchor defined in the enum Anchor.Type
-	 * @param gap    Gap to add to the anchor
-	 * @return The anchor point
-	 */
-	public static Point getAnchorPoint(Boxable obj, Type anchor, double gap) {
-		return getAnchorPoint(obj, anchor, gap, gap);
-	}
+    /**
+     * Return a {@link Point} object that represents the given anchor.For
+     * example getAnchorPoint(obj, Anchor.LEFT) returns the upper point of the
+     * object (determined by its bounding box).A gap (in math coordinates) is
+     * added, equal in x and y direction.
+     *
+     * @param obj Object to get anchor point
+     * @param anchor Type of anchor defined in the enum Anchor.Type
+     * @param gap Gap to add to the anchor
+     * @return The anchor point
+     */
+    public static Point getAnchorPoint(Boxable obj, Type anchor, double gap) {
+        return getAnchorPoint(obj, anchor, gap, gap);
+    }
 
-	/**
-	 * Return a {@link Point} object that represents the given anchor.For example
-	 * getAnchorPoint(obj, Anchor.LEFT) returns the upper point of the object
-	 * (determined by its bounding box).A gap (in math coordinates) is added,
-	 * specified both by its x component and y component.
-	 *
-	 * @param obj    Object to get anchor point
-	 * @param anchor Type of anchor defined in the enum Anchor.Type
-	 * @param xgap   Horizontal gap
-	 * @param ygap   Vertical gap
-	 * @return The anchor point
-	 */
-	public static Point getAnchorPoint(Boxable obj, Type anchor, double xgap, double ygap) {
-		Point resul = new Point();
-		final Rect bb = obj.getBoundingBox();
-		switch (anchor) {
-		case BY_POINT:
-			if (obj instanceof Point) {
-				Point p = (Point) obj;
-				resul = p.copy();
-			} else {
-				if (obj instanceof MathObject) {
-					MathObject o = (MathObject) obj;
-					resul = o.getAbsoluteAnchorPoint();
-				}
-			}
-			break;
-		case CENTER:
-			resul = bb.getCenter();
-			break;
+    /**
+     * Return a {@link Point} object that represents the given anchor.For
+     * example getAnchorPoint(obj, Anchor.LEFT) returns the upper point of the
+     * object (determined by its bounding box).A gap (in math coordinates) is
+     * added, specified both by its x component and y component.
+     *
+     * @param obj Object to get anchor point
+     * @param anchor Type of anchor defined in the enum Anchor.Type
+     * @param xgap Horizontal gap. Applied to LEFT RIGHT, URIGHT, ULEFT, DRIGHT,
+     * DLEFT anchors
+     * @param ygap Vertical gap. Applied to UPPER, LOWER,
+     * @return The anchor point
+     */
+    public static Point getAnchorPoint(Boxable obj, Type anchor, double xgap, double ygap) {
+        Point resul = new Point();
+        final Rect bb = obj.getBoundingBox();
+        switch (anchor) {
+            case BY_POINT:
+                if (obj instanceof Point) {
+                    Point p = (Point) obj;
+                    resul = p.copy();
+                } else {
+                    if (obj instanceof MathObject) {
+                        MathObject o = (MathObject) obj;
+                        resul = o.getAbsoluteAnchorPoint();
+                    }
+                }
+                break;
+            case CENTER:
+                resul = bb.getCenter();
+                break;
 
-		case LEFT:
-			resul = bb.addGap(xgap, ygap).getLeft();
-			break;
-		case RIGHT:
-			resul = bb.addGap(xgap, ygap).getRight();
-			break;
-		case LOWER:
-			resul = bb.addGap(xgap, ygap).getLower();
-			break;
-		case UPPER:
-			resul = bb.addGap(xgap, ygap).getUpper();
-			break;
+            case LEFT:
+                resul = bb.addGap(xgap, 0).getLeft();
+                break;
+            case RIGHT:
+                resul = bb.addGap(xgap, 0).getRight();
+                break;
+            case LOWER:
+                resul = bb.addGap(0, ygap).getLower();
+                break;
+            case UPPER:
+                resul = bb.addGap(0, ygap).getUpper();
+                break;
 
-		case UL:
-			resul = bb.addGap(xgap, ygap).getUL();
-			break;
-		case UR:
-			resul = bb.addGap(xgap, ygap).getUR();
-			break;
-		case DL:
-			resul = bb.addGap(xgap, ygap).getDL();
-			break;
-		case DR:
-			resul = bb.addGap(xgap, ygap).getDR();
-			break;
+            case ULEFT:
+                resul = bb.addGap(xgap, 0).getUL();
+                break;
+            case URIGHT:
+                resul = bb.addGap(xgap, 0).getUR();
+                break;
+            case DLEFT:
+                resul = bb.addGap(xgap, 0).getDL();
+                break;
+            case DRIGHT:
+                resul = bb.addGap(xgap, 0).getDR();
+                break;
+            case RLOWER:
+                resul = bb.addGap(0, ygap).getDR();
+                break;
+            case RUPPER:
+                resul = bb.addGap(0, ygap).getUR();
+                break;
+            case LLOWER:
+                resul = bb.addGap(0, ygap).getDL();
+                break;
+            case LUPPER:
+                resul = bb.addGap(0, ygap).getUL();
+                break;
+            case DIAG1:
+                resul = bb.addGap(xgap, ygap).getUR();
+                break;
+            case DIAG2:
+                resul = bb.addGap(xgap, ygap).getUL();
+                break;
+            case DIAG3:
+                resul = bb.addGap(xgap, ygap).getDL();
+                break;
+            case DIAG4:
+                resul = bb.addGap(xgap, ygap).getDR();
+                break;
 
-		}
-		return resul;
-	}
+        }
+        return resul;
+    }
 
-	/**
-	 * Returns the reverse anchor (LEFT-RIGHT, UP-DOWN, etc.) The reverse of UR is
-	 * UL (not DL) so that we can anchor an object right to another and vertically
-	 * upper aligned
-	 *
-	 * @param anchorPoint Anchor to compute reverse
-	 * @return Reversed anchor
-	 */
-	public static Type reverseAnchorPoint(Type anchorPoint) {
-		Type resul = Type.CENTER;// Default
-		switch (anchorPoint) {
-		case BY_POINT:
-			resul = Type.BY_POINT;
-			break;
-		case CENTER:
-			resul = Type.CENTER;
-			break;
+    /**
+     * Returns the reverse anchor (LEFT-RIGHT, UP-DOWN, etc.) The reverse of
+     * URIGHT is ULEFT (not DLEFT) so that we can anchor an object right to
+     * another and vertically upper aligned
+     *
+     * @param anchorPoint Anchor to compute reverse
+     * @return Reversed anchor
+     */
+    public static Type reverseAnchorPoint(Type anchorPoint) {
+        Type resul = Type.CENTER;// Default
+        switch (anchorPoint) {
+            case BY_POINT:
+                resul = Type.BY_POINT;
+                break;
+            case CENTER:
+                resul = Type.CENTER;
+                break;
 
-		case LEFT:
-			resul = Type.RIGHT;
-			break;
-		case RIGHT:
-			resul = Type.LEFT;
-			break;
-		case LOWER:
-			resul = Type.UPPER;
-			break;
-		case UPPER:
-			resul = Type.LOWER;
-			break;
+            case LEFT:
+                resul = Type.RIGHT;
+                break;
+            case RIGHT:
+                resul = Type.LEFT;
+                break;
+            case LOWER:
+                resul = Type.UPPER;
+                break;
+            case UPPER:
+                resul = Type.LOWER;
+                break;
 
-		case UL:
-			resul = Type.UR;
-			break;
-		case UR:
-			resul = Type.UL;
-			break;
-		case DL:
-			resul = Type.DR;
-			break;
-		case DR:
-			resul = Type.DL;
-			break;
-		}
-		return resul;
-	}
+            case ULEFT:
+                resul = Type.URIGHT;
+                break;
+            case URIGHT:
+                resul = Type.ULEFT;
+                break;
+            case DLEFT:
+                resul = Type.DRIGHT;
+                break;
+            case DRIGHT:
+                resul = Type.DLEFT;
+                break;
+            case RLOWER:
+                resul = Type.RUPPER;
+                break;
+            case RUPPER:
+                resul = Type.RLOWER;
+                break;
+            case LLOWER:
+                resul = Type.LUPPER;
+                break;
+            case LUPPER:
+                resul = Type.LLOWER;
+                break;
+            case DIAG1:
+                resul = Type.DIAG3;
+                break;
+            case DIAG2:
+                resul = Type.DIAG4;
+                break;
+            case DIAG3:
+                resul = Type.DIAG1;
+                break;
+            case DIAG4:
+                resul = Type.DIAG2;
+                break;
+        }
+        return resul;
+    }
 
-	/**
-	 * Returns an anchor point relative to the current screen, in math coordinates
-	 *
-	 * @param anchor  Anchor type
-	 * @param xMargin x margin to apply to the anchor
-	 * @param yMargin y margin to apply to the anchor
-	 * @return A {@link Point} located at the current anchor
-	 */
-	public static Point getScreenAnchorPoint(Type anchor, double xMargin, double yMargin) {
-		Point resul = new Point();
-		Rect mathViewWithGap = JMathAnimConfig.getConfig().getCamera().getMathView().addGap(-xMargin, -yMargin);
-		switch (anchor) {
-		case CENTER:
-			resul = mathViewWithGap.getCenter();
-			break;
-		case LEFT:
-			resul = mathViewWithGap.getLeft();
-			break;
-		case RIGHT:
-			resul = mathViewWithGap.getRight();
-			break;
-		case LOWER:
-			resul = mathViewWithGap.getLower();
-			break;
-		case UPPER:
-			resul = mathViewWithGap.getUpper();
-			break;
+    /**
+     * Returns an anchor point relative to the current screen, in math
+     * coordinates
+     *
+     * @param anchor Anchor type
+     * @param xMargin x margin to apply to the anchor
+     * @param yMargin y margin to apply to the anchor
+     * @return A {@link Point} located at the current anchor
+     */
+    public static Point getScreenAnchorPoint(Type anchor, double xMargin, double yMargin) {
+        Point resul = new Point();
+        Rect mathViewWithGap = JMathAnimConfig.getConfig().getCamera().getMathView().addGap(-xMargin, -yMargin);
+        switch (anchor) {
+            case CENTER:
+                resul = mathViewWithGap.getCenter();
+                break;
+            case LEFT:
+                resul = mathViewWithGap.getLeft();
+                break;
+            case RIGHT:
+                resul = mathViewWithGap.getRight();
+                break;
+            case LOWER:
+                resul = mathViewWithGap.getLower();
+                break;
+            case UPPER:
+                resul = mathViewWithGap.getUpper();
+                break;
 
-		case UL:
-			resul = mathViewWithGap.getUL();
-			break;
-		case UR:
-			resul = mathViewWithGap.getUR();
-			break;
-		case DL:
-			resul = mathViewWithGap.getDL();
-			break;
-		case DR:
-			resul = mathViewWithGap.getDR();
-			break;
-		}
-		return resul;
-	}
+            case ULEFT:
+                resul = mathViewWithGap.getUL();
+                break;
+            case LUPPER:
+                resul = mathViewWithGap.getUL();
+                break;
+            case RUPPER:
+                resul = mathViewWithGap.getUR();
+                break;
+            case URIGHT:
+                resul = mathViewWithGap.getUR();
+                break;
+            case DLEFT:
+                resul = mathViewWithGap.getDL();
+                break;
+            case LLOWER:
+                resul = mathViewWithGap.getDL();
+                break;
+            case DRIGHT:
+                resul = mathViewWithGap.getDR();
+                break;
+            case RLOWER:
+                resul = mathViewWithGap.getDR();
+                break;
+        }
+        return resul;
+    }
 
 }
