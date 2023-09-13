@@ -55,6 +55,8 @@ public abstract class Animation {
         FINISHED
     }
 
+    protected double lastTComputed;
+
     private String debugName;
 
     private Status status;
@@ -62,7 +64,7 @@ public abstract class Animation {
      * Default run time for animations, 1 second
      */
     public static final double DEFAULT_TIME = 1;
-    private double t, dt;
+    protected double t, dt;
 //    public final MathObject mobj;
     /**
      * Time span of the animation, in seconds
@@ -86,7 +88,7 @@ public abstract class Animation {
      * Lambda smooth function, ideally a growing function that maps 0 into 0 and
      * 1 into 1
      */
-    private DoubleUnaryOperator lambda;
+    protected DoubleUnaryOperator lambda;
 
     protected Boolean useObjectState;
 
@@ -224,7 +226,6 @@ public abstract class Animation {
         }
         if (status == Status.INITIALIZED) {
             t += dt;
-            status = Status.RUNNING;
         }
         boolean resul;
         if (t <= 1 && t >= 0) {
@@ -255,6 +256,7 @@ public abstract class Animation {
         if (initRunnable != null) {
             initRunnable.run();
         }
+
     }
 
     /**
@@ -264,7 +266,13 @@ public abstract class Animation {
      * needed by some special animations. The lambda function should be used to
      * smooth animation.
      */
-    abstract public void doAnim(double t);
+    public void doAnim(double t) {
+        this.t = t;
+        if (status == Status.INITIALIZED) {
+            status = Status.RUNNING;//First time we use doAnim, let's prepare before!
+            prepareForAnim(t);
+        }
+    }
 
     /**
      * Finish animation, deleting auxiliary objects or anything necessary.
@@ -273,10 +281,28 @@ public abstract class Animation {
         status = Status.FINISHED;
         removeObjectsFromScene(removeThisAtTheEnd);
         addObjectsToscene(addThisAtTheEnd);
+        cleanAnimationAt(t);
         if (finishRunnable != null) {
             finishRunnable.run();
         }
     }
+
+    /**
+     * Perform necessary cleaning operations after stopping the animation.
+     * Should perform adequate cleaning operations depending on the time the
+     * animation is stopped.
+     *
+     * @param t Time at which the animation is stopped.
+     */
+    public abstract void cleanAnimationAt(double t);
+
+    /**
+     * Perform needed operations right before the animation starts. Usually
+     * adding or removing necessary objects
+     *
+     * @param t Time at which the animation starts
+     */
+    public abstract void prepareForAnim(double t);
 
     /**
      * Returns the smooth function
@@ -285,6 +311,13 @@ public abstract class Animation {
      */
     public DoubleUnaryOperator getTotalLambda() {
         return lambda.compose(UsefulLambdas.allocateTo(allocateStart, allocateEnd));
+    }
+
+    protected double getLT(double t) {
+        t = (t < 0 ? 0 : t);
+        t = (t > 1 ? 1 : t);
+
+        return getTotalLambda().applyAsDouble(t);
     }
 
     public Animation setAllocationParameters(double start, double end) {
@@ -419,8 +452,8 @@ public abstract class Animation {
      * @param anim Animation to copy parameters
      */
     protected void copyAnimationParametersTo(Animation anim) {
-        if (this.getTotalLambda() != null) {
-            anim.setLambda(this.getTotalLambda());
+        if (this.lambda != null) {
+            anim.setLambda(lambda);
         }
 
         if (null != this.isShouldAddObjectsToScene()) {
@@ -430,9 +463,14 @@ public abstract class Animation {
             anim.setShouldInterpolateStyles(this.isShouldInterpolateStyles());
         }
 
-        if (null != this.isShouldAddObjectsToScene()) {
-            anim.setAddObjectsToScene(this.isShouldAddObjectsToScene());
+        if (null != this.isUseObjectState()) {
+            anim.setUseObjectState(this.isUseObjectState());
         }
+         if (null != this.isShouldInterpolateStyles()) {
+            anim.setShouldInterpolateStyles(this.isShouldInterpolateStyles());
+        }
+        
+        
         anim.allocateEnd = this.allocateEnd;
         anim.allocateStart = this.allocateStart;
     }
@@ -468,7 +506,17 @@ public abstract class Animation {
 
     @Override
     public String toString() {
-        return "Animation "+  debugName;
+        return "Animation " + debugName;
     }
 
+    /**
+     * Gets the intermediate object(s) used by the animation. For simple
+     * animations like shift or rotate this is the original object, but more
+     * complex animations like showcreation or transform need to create an
+     * auxiliar intermediate object. If the animation is stopped at a time
+     * between 0 and 1, this is the object that should be in the scene.
+     *
+     * @return The intermediate object
+     */
+    public abstract MathObject getIntermediateObject();
 }

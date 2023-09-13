@@ -91,7 +91,6 @@ public class ShowCreation extends Animation {
             this.mobj = mobj;
             addThisAtTheEnd.add(mobj);
         }
-
         pencilPosition = new Point[]{Point.origin(), Point.origin()};
     }
 
@@ -116,28 +115,29 @@ public class ShowCreation extends Animation {
 
     @Override
     public void doAnim(double t) {
+        super.doAnim(t);
         creationStrategy.doAnim(t);
-    }
-
-    @Override
-    public boolean processAnimation() {
-        if ((creationStrategy != null)) {
-            boolean ret = creationStrategy.processAnimation();
-            try {
-                if (creationStrategy instanceof CreationStrategy) {
-                    CreationStrategy cs = (CreationStrategy) creationStrategy;
-                    pencilPosition[0].copyFrom(cs.getPencilPosition()[0]);
-                    pencilPosition[1].copyFrom(cs.getPencilPosition()[1]);
-                }
-            } catch (java.lang.NullPointerException e) {
-                //do nothing
+        try {
+            if (creationStrategy instanceof CreationStrategy) {
+                CreationStrategy cs = (CreationStrategy) creationStrategy;
+                pencilPosition[0].copyFrom(cs.getPencilPosition()[0]);
+                pencilPosition[1].copyFrom(cs.getPencilPosition()[1]);
             }
-            return ret;
-        } else {
-            return true;
+        } catch (java.lang.NullPointerException e) {
+            //do nothing
         }
     }
 
+//    @Override
+//    public boolean processAnimation() {
+//        if ((creationStrategy != null)) {
+//            boolean ret = creationStrategy.processAnimation();
+//          
+//            return ret;
+//        } else {
+//            return true;
+//        }
+//    }
     @Override
     public void finishAnimation() {
         if (creationStrategy != null) {
@@ -249,16 +249,29 @@ public class ShowCreation extends Animation {
                 Delimiter del = (Delimiter) mobj;
                 creationStrategy = new AbstractCreationStrategy(runTime) {
                     @Override
+                    public MathObject getIntermediateObject() {
+                        return del;
+                    }
+
+                    @Override
                     public void initialize(JMathAnimScene scene) {
                         super.initialize(scene);
-                        addObjectsToscene(del);
                     }
 
                     @Override
                     public void doAnim(double t) {
+                        super.doAnim(t);
                         del.setAmplitudeScale(getTotalLambda().applyAsDouble(t));
                     }
 
+                    @Override
+                    public void cleanAnimationAt(double t) {
+                    }
+
+                    @Override
+                    public void prepareForAnim(double t) {
+                        addObjectsToscene(del);
+                    }
                 };
                 JMathAnimScene.logger.debug("ShowCreation method: Delimiter (growIn)");
                 break;
@@ -291,6 +304,8 @@ public class ShowCreation extends Animation {
                 break;
         }
     }
+
+   
 
     /**
      * Sets the strategy used to create the object
@@ -326,5 +341,18 @@ public class ShowCreation extends Animation {
         return (T) this;
     }
 
+    @Override
+    public void cleanAnimationAt(double t) {
+        creationStrategy.cleanAnimationAt(t);
+    }
 
+    @Override
+    public void prepareForAnim(double t) {
+        creationStrategy.prepareForAnim(t);
+    }
+
+    @Override
+    public MathObject getIntermediateObject() {
+        return creationStrategy.getIntermediateObject();
+    }
 }

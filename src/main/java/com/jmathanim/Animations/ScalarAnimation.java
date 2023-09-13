@@ -17,6 +17,7 @@
  */
 package com.jmathanim.Animations;
 
+import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.hasScalarParameter;
 
 /**
@@ -41,11 +42,11 @@ public class ScalarAnimation extends Animation {
      * @param b End value
      * @return The animation created
      */
-    public static ScalarAnimation make(double runTime, double a, double b, hasScalarParameter...objects) {
+    public static ScalarAnimation make(double runTime, double a, double b, hasScalarParameter... objects) {
         return new ScalarAnimation(runTime, a, b, objects);
     }
 
-    private ScalarAnimation(double runTime, double a, double b, hasScalarParameter...scalarsToAnimate) {
+    private ScalarAnimation(double runTime, double a, double b, hasScalarParameter... scalarsToAnimate) {
         super(runTime);
         this.scalarsToAnimate = scalarsToAnimate;
         this.a = a;
@@ -55,11 +56,24 @@ public class ScalarAnimation extends Animation {
 
     @Override
     public void doAnim(double t) {
-        double lt = getTotalLambda().applyAsDouble(t);
+        super.doAnim(t);
+        double lt = getLT(t);
         for (hasScalarParameter obj : scalarsToAnimate) {
-          obj.setScalar(a + (b - a) * lt);  
+            obj.setScalar(a + (b - a) * lt);
         }
-        
+
     }
 
+    @Override
+    public void cleanAnimationAt(double t) {
+    }
+
+    @Override
+    public void prepareForAnim(double t) {
+    }
+
+    @Override
+    public MathObject getIntermediateObject() {
+        return null;
+    }
 }

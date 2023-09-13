@@ -25,10 +25,11 @@ import com.jmathanim.mathobjects.Shape;
 
 /**
  * A general abstract affine transform strategy
+ *
  * @author David Gutierrez Rubio davidgutierrezrubio@gmail.com
  */
 public abstract class AffineTransformStrategy extends TransformStrategy {
-    
+
     protected final Shape destiny;
     protected final Shape origin;
     protected final Shape intermediate;
@@ -39,11 +40,11 @@ public abstract class AffineTransformStrategy extends TransformStrategy {
     Point E;
     Point F;
 
-    public AffineTransformStrategy(double runTime,Shape origin,Shape destiny) {
+    public AffineTransformStrategy(double runTime, Shape origin, Shape destiny) {
         super(runTime);
-        this.destiny=destiny;
-        this.origin=origin;
-        this.intermediate=origin.copy();
+        this.destiny = destiny;
+        this.origin = origin;
+        this.intermediate = origin.copy();
     }
 
     @Override
@@ -62,7 +63,8 @@ public abstract class AffineTransformStrategy extends TransformStrategy {
 
     @Override
     public void doAnim(double t) {
-        double lt = getTotalLambda().applyAsDouble(t);
+        super.doAnim(t);
+        double lt = getLT(t);
         restoreStates(intermediate);
         AffineJTransform tr = createIntermediateTransform(lt);
         tr.applyTransform(intermediate);
@@ -82,7 +84,7 @@ public abstract class AffineTransformStrategy extends TransformStrategy {
     }
 
     @Override
-    public MathObject getIntermediateTransformedObject() {
+    public MathObject getIntermediateObject() {
         return intermediate;
     }
 
@@ -95,5 +97,28 @@ public abstract class AffineTransformStrategy extends TransformStrategy {
     public MathObject getDestinyObject() {
         return destiny;
     }
-    
+
+    @Override
+    public void cleanAnimationAt(double t) {
+        double lt = getLT(t);
+        if (lt == 0) {//If ends at t=0, keep original
+            removeObjectsFromScene(destiny, intermediate);
+            addObjectsToscene(origin);
+            return;
+        }
+        if (lt == 1) {//If ends at t=1 keep destiny
+            removeObjectsFromScene(origin, intermediate);
+            addObjectsToscene(destiny);
+            return;
+        }
+        //Case 0<t<1
+        removeObjectsFromScene(origin, destiny);
+        addObjectsToscene(intermediate);
+    }
+
+    @Override
+    public void prepareForAnim(double t) {
+        removeObjectsFromScene(origin);
+        addObjectsToscene(intermediate);
+    }
 }

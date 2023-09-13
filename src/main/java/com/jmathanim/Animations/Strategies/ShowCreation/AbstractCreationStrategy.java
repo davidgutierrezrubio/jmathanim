@@ -18,6 +18,7 @@
 package com.jmathanim.Animations.Strategies.ShowCreation;
 
 import com.jmathanim.Animations.Animation;
+import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.Point;
 
 /**
@@ -49,5 +50,6 @@ public abstract class AbstractCreationStrategy extends Animation implements Crea
 		pencil[0] = previous;
 		pencil[1] = current;
 	}
+     
 
 }

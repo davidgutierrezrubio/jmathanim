@@ -48,7 +48,7 @@ public class MultiShapeTransform extends TransformStrategy {
         super(runtime);
         this.destiny = destiny;
         this.origin = origin;
-        this.intermediate = origin.copy();
+        this.intermediate =  MultiShapeObject.make();
         anim = new AnimationGroup();
     }
 
@@ -59,15 +59,17 @@ public class MultiShapeTransform extends TransformStrategy {
 
     @Override
     public void doAnim(double t) {
+        super.doAnim(t);
         anim.doAnim(t);
     }
 
     @Override
     public void initialize(JMathAnimScene scene) {
         super.initialize(scene);
+        intermediate.copyStateFrom(origin);
         tr = MultiShapeObject.make();
         dst = MultiShapeObject.make();
-        int sizeTr = intermediate.size();
+        int sizeTr = origin.size();
         int sizeDst = destiny.size();
         int numAnims = Math.max(sizeTr, sizeDst);
 
@@ -105,7 +107,6 @@ public class MultiShapeTransform extends TransformStrategy {
         addObjectsToscene(destiny);
     }
 
-    @Override
     public MathObject getIntermediateTransformedObject() {
         Shape[] shapes = new Shape[anim.getAnimations().size()];
         int k = 0;
@@ -125,6 +126,34 @@ public class MultiShapeTransform extends TransformStrategy {
     @Override
     public MathObject getDestinyObject() {
         return destiny;
+    }
+
+    @Override
+    public void cleanAnimationAt(double t) {
+        double lt = getLT(t);
+        if (lt == 0) {//If ends at t=0, keep original
+            removeObjectsFromScene(destiny, intermediate);
+            addObjectsToscene(origin);
+            return;
+        }
+        if (lt == 1) {//If ends at t=1 keep destiny
+            removeObjectsFromScene(origin, intermediate);
+            addObjectsToscene(destiny);
+            return;
+        }
+        //Case 0<t<1
+        removeObjectsFromScene(origin, destiny);
+        addObjectsToscene(intermediate);
+    }
+
+    @Override
+    public void prepareForAnim(double t) {
+        addObjectsToscene(intermediate);
+    }
+
+    @Override
+    public MathObject getIntermediateObject() {
+        return intermediate;
     }
 
 }

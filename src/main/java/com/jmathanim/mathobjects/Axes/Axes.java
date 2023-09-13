@@ -54,11 +54,18 @@ public class Axes extends MathObject {
         return makeBasicAxes(0, -1);
     }
 
-    public static Axes makeBasicAxes(int a, int b) {
+    /**
+     * Generates Basic axes with ticks from specified values at integer values
+     *
+     * @param minValue Min value
+     * @param maxValue Max value
+     * @return The Axes object
+     */
+    public static Axes makeBasicAxes(int minValue, int maxValue) {
         Axes resul = new Axes();
-        if (a <= b) {
-            resul.generatePrimaryXTicks(a, b, 1);
-            resul.generatePrimaryYTicks(a, b, 1);
+        if (minValue <= maxValue) {
+            resul.generatePrimaryXTicks(minValue, maxValue, 1);
+            resul.generatePrimaryYTicks(minValue, maxValue, 1);
         }
         return resul;
     }

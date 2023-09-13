@@ -17,8 +17,11 @@
  */
 package com.jmathanim.Animations;
 
+import com.jmathanim.mathobjects.MathObject;
+
 /**
  * An animation that plays a sound at a specific runtime
+ *
  * @author David Gutierrez Rubio davidgutierrezrubio@gmail.com
  */
 public class PlaySoundAt extends Animation {
@@ -30,37 +33,44 @@ public class PlaySoundAt extends Animation {
     double soundPitch;
 
     /**
-     * Creates an animation that will play a given sound after runtime is strictly greater than a given one
+     * Creates an animation that will play a given sound after runtime is
+     * strictly greater than a given one
+     *
      * @param runTime Duration of animations (in seconds)
      * @param timeToPlay Time parameter to play sound. A value between 0 and 1.
-     * @param soundResourceName Resource name of sound to play. Use the conventions of ResourceLoader class.
+     * @param soundResourceName Resource name of sound to play. Use the
+     * conventions of ResourceLoader class.
      * @return The created animation
      */
     public static PlaySoundAt makeStrict(double runTime, double timeToPlay, String soundResourceName) {
         PlaySoundAt resul = new PlaySoundAt(runTime, timeToPlay, soundResourceName);
-        resul.greaterOrEqual=false;
+        resul.greaterOrEqual = false;
         return resul;
     }
+
     /**
-     * Creates an animation that will play a given sound after runtime is greater or equal than a given one
+     * Creates an animation that will play a given sound after runtime is
+     * greater or equal than a given one
+     *
      * @param runTime Duration of animations (in seconds)
      * @param timeToPlay Time parameter to play sound. A value between 0 and 1.
-     * @param soundResourceName Resource name of sound to play. Use the conventions of ResourceLoader class.
+     * @param soundResourceName Resource name of sound to play. Use the
+     * conventions of ResourceLoader class.
      * @return The created animation
      */
     public static PlaySoundAt make(double runTime, double timeToPlay, String soundResourceName) {
         PlaySoundAt resul = new PlaySoundAt(runTime, timeToPlay, soundResourceName);
-        resul.greaterOrEqual=true;
+        resul.greaterOrEqual = true;
         return resul;
     }
-    
+
     private PlaySoundAt(double runTime, double timeToPlay, String soundResourceName) {
         super(runTime);
         this.timeToPlay = timeToPlay;
         this.isPlayed = false;
         this.soundResourceName = soundResourceName;
         this.greaterOrEqual = false;
-        this.soundPitch=1;
+        this.soundPitch = 1;
     }
 
     public PlaySoundAt setSoundPitch(double soundPitch) {
@@ -68,15 +78,15 @@ public class PlaySoundAt extends Animation {
         return this;
     }
 
-    
     @Override
     public void doAnim(double t) {
+        super.doAnim(t);
         if (isPlayed) {
             return;
         }
-        double lt = getTotalLambda().applyAsDouble(t);
+        double lt = getLT(t);
         if (checkCondition(lt)) {
-            scene.playSound(soundResourceName,soundPitch);
+            scene.playSound(soundResourceName, soundPitch);
             isPlayed = true;
         }
     }
@@ -87,5 +97,18 @@ public class PlaySoundAt extends Animation {
         } else {
             return (lt > timeToPlay);
         }
+    }
+
+    @Override
+    public void cleanAnimationAt(double t) {
+    }
+
+    @Override
+    public void prepareForAnim(double t) {
+    }
+
+    @Override
+    public MathObject getIntermediateObject() {
+        return null;
     }
 }

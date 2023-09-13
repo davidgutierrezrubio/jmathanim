@@ -390,4 +390,15 @@ public class MathObjectGroup extends MathObject implements Iterable<MathObject> 
         Collections.reverse(objects);
     }
 
+    @Override
+    public boolean isEmpty() {
+        boolean resul=true;
+        for (MathObject thi : this) {
+            resul=resul&&thi.isEmpty();
+        }
+        return resul;
+        
+    }
+
+    
 }

@@ -301,7 +301,7 @@ public abstract class JMathAnimScene {
         }
     }
 
-    /**
+  /**
      * Add the specified MathObjects to the scene
      *
      * @param objs Mathobjects (varargs)
@@ -371,6 +371,7 @@ public abstract class JMathAnimScene {
                 }
 
                 sceneObjects.remove(obj);
+
                 obj.removedFromSceneHook(this);
                 unregisterUpdateable(obj);
             }
@@ -739,7 +740,8 @@ public abstract class JMathAnimScene {
     /**
      * Convenience function. Returns the width of the current math view. Can be
      * used to quicky acces to this parameter if you need to perform measures
-     * relative to the math view rather than math units, so .1*mw() stands for 10% of screen width.
+     * relative to the math view rather than math units, so .1*mw() stands for
+     * 10% of screen width.
      *
      * @return The current mathview width, in math units.
      */

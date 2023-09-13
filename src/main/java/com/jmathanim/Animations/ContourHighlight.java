@@ -42,6 +42,7 @@ public class ContourHighlight extends Animation {
     JMColor highlightColor;
     double thickness;
     double amplitude;
+    private final MultiShapeObject subshapes;
 
     /**
      * Static constuctor. Creates an animation that hightlights the contour of a
@@ -74,6 +75,7 @@ public class ContourHighlight extends Animation {
      */
     public ContourHighlight(double runTime, MathObject... objs) {
         super(runTime);
+        subshapes = MultiShapeObject.make();
         ArrayList<MathObject> toAnimateArrayList = new ArrayList<>();
         for (MathObject obj : objs) {
             if (obj instanceof Constructible) {
@@ -97,10 +99,12 @@ public class ContourHighlight extends Animation {
 
     @Override
     public void doAnim(double t) {
+        super.doAnim(t);
+        subshapes.getShapes().clear();
         if (t >= 1) {
             return;
         }
-        double lt = getTotalLambda().applyAsDouble(t);
+        double lt = getLT(t);
         double b = UsefulLambdas.allocateTo(0, 1 - .5 * amplitude).applyAsDouble(lt);
         double a = UsefulLambdas.allocateTo(.5 * amplitude, 1).applyAsDouble(lt);
         for (MathObject obj : objs) {
@@ -146,7 +150,7 @@ public class ContourHighlight extends Animation {
                 .thickness(thickness)
                 .fillAlpha(0)
                 .drawColor(highlightColor);
-        scene.addOnce(sub);
+        subshapes.add(sub);
     }
 
     /**
@@ -205,4 +209,18 @@ public class ContourHighlight extends Animation {
         return this;
     }
 
+    @Override
+    public void cleanAnimationAt(double t) {
+        removeObjectsFromScene(subshapes);
+    }
+
+    @Override
+    public void prepareForAnim(double t) {
+        addObjectsToscene(subshapes);
+    }
+
+    @Override
+    public MultiShapeObject getIntermediateObject() {
+        return subshapes;
+    }
 }

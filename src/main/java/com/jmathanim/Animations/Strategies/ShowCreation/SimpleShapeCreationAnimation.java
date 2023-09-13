@@ -28,50 +28,62 @@ import com.jmathanim.mathobjects.Shape;
  */
 public class SimpleShapeCreationAnimation extends AbstractCreationStrategy {
 
-    private final Shape mobj;
-    private boolean visible;
+    private final Shape originShape;
+    private final Shape originShapeBase;
+    private final Shape intermediateShape;
 
-    public SimpleShapeCreationAnimation(double runtime, Shape mobj) {
+    public SimpleShapeCreationAnimation(double runtime, Shape originShape) {
         super(runtime);
-        this.mobj = mobj;
-        visible=mobj.isVisible();
+        this.originShape =originShape;
+        this.originShapeBase =originShape.copy();
+        intermediateShape = new Shape();
+        intermediateShape.objectLabel=originShape.objectLabel+"_intermediate";
+        intermediateShape.getMp().copyFrom(originShape.getMp());
     }
 
     @Override
     public void initialize(JMathAnimScene scene) {
         super.initialize(scene);
-//        removeObjectsFromScene(this.mobj);
 
     }
 
     @Override
     public void doAnim(double t) {
-        this.mobj.visible(false);
-        double lt = getTotalLambda().applyAsDouble(t);
-        intermediateShape = this.mobj.getSubShape(0, lt).visible(lt > 0);
-        intermediateShape.visible(visible);
-        scene.addOnce(intermediateShape);
+        super.doAnim(t);
+        double lt = getLT(t);
+        intermediateShape.copyStateFrom(this.originShapeBase.getSubShape(0, lt).visible(lt > 0));
     }
-    private MathObject intermediateShape;
 
     @Override
     public void finishAnimation() {
         super.finishAnimation();
-        this.mobj.visible(visible);
-        removeObjectsFromScene(intermediateShape);
-        double lt = getTotalLambda().applyAsDouble(1);
-        if (lt == 1) {
-            addObjectsToscene(mobj);
-        } else if (lt == 0) {
-            removeObjectsFromScene(mobj);
-        }
-        if ((lt > 0) && (lt < 1)) {
-            Shape sh = this.mobj.getSubShape(0, lt);
-            this.mobj.getPath().clear();
-            this.mobj.getPath().addJMPointsFrom(sh.getPath());
-            addObjectsToscene(this.mobj);
-        }
-
     }
 
+    @Override
+    public void cleanAnimationAt(double t) {
+        double lt = getLT(t);
+        if (lt == 0) {//Ended at t=0, nothing remains...
+            removeObjectsFromScene(this.originShape, intermediateShape);
+            return;
+        }
+        if (lt == 1) {//Only remains the full line
+            removeObjectsFromScene(intermediateShape);
+            addObjectsToscene(this.originShape);
+            return;
+        }
+        //0<t<1, only remains the created segment
+        removeObjectsFromScene(this.originShape);
+        addObjectsToscene(intermediateShape);
+    }
+
+    @Override
+    public void prepareForAnim(double t) {
+        addObjectsToscene(intermediateShape);
+        removeObjectsFromScene(originShape);
+    }
+
+    @Override
+    public MathObject getIntermediateObject() {
+        return intermediateShape;
+    }
 }

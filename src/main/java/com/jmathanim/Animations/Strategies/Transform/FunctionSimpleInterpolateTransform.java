@@ -28,7 +28,8 @@ import java.util.function.DoubleBinaryOperator;
  */
 public class FunctionSimpleInterpolateTransform extends TransformStrategy {
 
-    public final FunctionGraph origin, destiny, intermediate;
+    public final FunctionGraph origin, destiny;
+    private final FunctionGraph intermediate;
     private final DoubleBinaryOperator destinyFunction, originFunction;
 
     public FunctionSimpleInterpolateTransform(double runtime, FunctionGraph origin, FunctionGraph destiny) {
@@ -42,7 +43,8 @@ public class FunctionSimpleInterpolateTransform extends TransformStrategy {
 
     @Override
     public void doAnim(double t) {
-        double lt = getTotalLambda().applyAsDouble(t);
+        super.doAnim(t);
+        double lt = getLT(t);
         double w1 = this.origin.getScalar();
         double w2 = this.destiny.getScalar();
         this.intermediate.function = (x, w) -> (1 - lt) * originFunction.applyAsDouble(x, w1)
@@ -51,11 +53,6 @@ public class FunctionSimpleInterpolateTransform extends TransformStrategy {
         if (isShouldInterpolateStyles()) {
             this.intermediate.getMp().interpolateFrom(origin.getMp(), destiny.getMp(), lt);
         }
-    }
-
-    @Override
-    public MathObject getIntermediateTransformedObject() {
-        return intermediate;
     }
 
     @Override
@@ -68,4 +65,32 @@ public class FunctionSimpleInterpolateTransform extends TransformStrategy {
         return destiny;
     }
 
+    @Override
+    public void cleanAnimationAt(double t) {
+        double lt = getLT(t);
+        if (lt == 0) {//If ends at t=0, keep original
+            removeObjectsFromScene(destiny, intermediate);
+            addObjectsToscene(origin);
+            return;
+        }
+        if (lt == 1) {//If ends at t=1 keep destiny
+            removeObjectsFromScene(origin, intermediate);
+            addObjectsToscene(destiny);
+            return;
+        }
+        //Case 0<t<1
+        removeObjectsFromScene(origin, destiny);
+        addObjectsToscene(intermediate);
+    }
+
+    @Override
+    public void prepareForAnim(double t) {
+        removeObjectsFromScene(origin);
+        addObjectsToscene(intermediate);
+    }
+
+    @Override
+    public MathObject getIntermediateObject() {
+        return intermediate;
+    }
 }

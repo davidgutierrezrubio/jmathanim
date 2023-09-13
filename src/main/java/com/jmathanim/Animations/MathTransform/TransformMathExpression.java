@@ -27,6 +27,7 @@ import com.jmathanim.Utils.Anchor;
 import com.jmathanim.Utils.OrientationType;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import static com.jmathanim.jmathanim.JMathAnimScene.PI;
+import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.MultiShapeObject;
 import com.jmathanim.mathobjects.Shape;
 import java.util.ArrayList;
@@ -556,4 +557,15 @@ public class TransformMathExpression extends Animation {
         return "";
     }
 
+    @Override
+    public void cleanAnimationAt(double t) {
+    }
+
+    @Override
+    public void prepareForAnim(double t) {
+    }
+  @Override
+    public MathObject getIntermediateObject() {
+        return null;
+    }
 }

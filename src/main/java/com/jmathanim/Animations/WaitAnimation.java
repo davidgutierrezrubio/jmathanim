@@ -17,23 +17,33 @@
  */
 package com.jmathanim.Animations;
 
+import com.jmathanim.mathobjects.MathObject;
+
 /**
  * Simple animation which does nothing
  *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
 public class WaitAnimation extends Animation {
-	/**
-	 * Creates a new WaitAnimation, that waits for the specified amount of time
-	 * 
-	 * @param runTime Duration in seconds
-	 */
-	public WaitAnimation(double runTime) {
-		super(runTime);
-	}
 
-	@Override
-	public void doAnim(double t) {
-	}
+    /**
+     * Creates a new WaitAnimation, that waits for the specified amount of time
+     *
+     * @param runTime Duration in seconds
+     */
+    public WaitAnimation(double runTime) {
+        super(runTime);
+    }
 
+    @Override
+    public void cleanAnimationAt(double t) {
+    }
+
+    @Override
+    public void prepareForAnim(double t) {
+    }
+     @Override
+    public MathObject getIntermediateObject() {
+        return null;
+    }
 }

@@ -89,6 +89,24 @@ public class Transform extends AnimationWithEffects {
         shouldOptimizePathsFirst = true;
     }
 
+    /**
+     * Returns the original object
+     *
+     * @return The original object
+     */
+    public MathObject getOriginObject() {
+        return mobjTransformed;
+    }
+
+    /**
+     * Returns the destiny object
+     *
+     * @return The destiny object
+     */
+    public MathObject getDestinyObject() {
+        return mobjDestiny;
+    }
+
     @Override
     public void initialize(JMathAnimScene scene) {
         super.initialize(scene);
@@ -105,11 +123,12 @@ public class Transform extends AnimationWithEffects {
             transformStrategy.setOptimizationStrategy(null);
         }
         // Copy preferences to this strategy
-        transformStrategy.setAllocationParameters(this.allocateStart, this.allocateEnd);
-        transformStrategy.setLambda(getTotalLambda());
-        transformStrategy.setAddObjectsToScene(this.isShouldAddObjectsToScene());
-        transformStrategy.setUseObjectState(this.isUseObjectState());
-        transformStrategy.setShouldInterpolateStyles(this.isShouldInterpolateStyles());
+//        transformStrategy.setAllocationParameters(this.allocateStart, this.allocateEnd);
+//        transformStrategy.setLambda(getTotalLambda());
+//        transformStrategy.setAddObjectsToScene(this.isShouldAddObjectsToScene());
+//        transformStrategy.setUseObjectState(this.isUseObjectState());
+//        transformStrategy.setShouldInterpolateStyles(this.isShouldInterpolateStyles());
+        copyAnimationParametersTo(transformStrategy);
         transformStrategy.initialize(scene);
 
     }
@@ -236,7 +255,8 @@ public class Transform extends AnimationWithEffects {
 
     @Override
     public void finishAnimation() {
-        super.finishAnimation();
+//        super.finishAnimation();
+
 //        final MathObject intermediateTransformedObject = transformStrategy.getIntermediateTransformedObject();
 //        mobjDestiny.copyStateFrom(intermediateTransformedObject);
         transformStrategy.finishAnimation();
@@ -244,6 +264,17 @@ public class Transform extends AnimationWithEffects {
 //        addObjectsToscene(mobjDestiny);
 //        removeObjectsFromScene(mobjTransformed,intermediateTransformedObject);
     }
+
+    @Override
+    public void cleanAnimationAt(double t) {
+        transformStrategy.cleanAnimationAt(t);
+    }
+
+    @Override
+    public void prepareForAnim(double t) {
+        transformStrategy.prepareForAnim(t);
+    }
+    
 
     /**
      * Sets if paths should be optimized in any available way, before doing the
@@ -281,13 +312,10 @@ public class Transform extends AnimationWithEffects {
 
     @Override
     public void doAnim(double t) {
+        super.doAnim(t);
         transformStrategy.doAnim(t);
     }
 
-    @Override
-    public boolean processAnimation() {
-        return transformStrategy.processAnimation();
-    }
 
     /**
      * Gets a reference to the intermediate transformed object. The transform
@@ -301,7 +329,7 @@ public class Transform extends AnimationWithEffects {
      */
     public MathObject getIntermediateTransformedObject() {
         if (transformStrategy != null) {
-            return transformStrategy.getIntermediateTransformedObject();
+            return transformStrategy.getIntermediateObject();
         } else {
             return null;
         }
@@ -313,6 +341,8 @@ public class Transform extends AnimationWithEffects {
         transformStrategy.setAllocationParameters(start, end);
         return this;
     }
-
-
+ @Override
+    public MathObject getIntermediateObject() {
+        return transformStrategy.getIntermediateObject();
+    }
 }

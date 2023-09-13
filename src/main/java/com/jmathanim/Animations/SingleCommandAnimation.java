@@ -17,6 +17,8 @@
  */
 package com.jmathanim.Animations;
 
+import com.jmathanim.mathobjects.MathObject;
+
 /**
  * This animation execute a single command. It is used to encapsulate ceratin
  * commands into an Animation container like AnimationGroup or Concatenate
@@ -47,6 +49,21 @@ public abstract class SingleCommandAnimation extends Animation {
 
     @Override
     public void doAnim(double t) {
+         super.doAnim(t);
     }
+
+    @Override
+    public void cleanAnimationAt(double t) {
+    }
+
+    @Override
+    public void prepareForAnim(double t) {
+    }
+
+    @Override
+    public MathObject getIntermediateObject() {
+        return null;
+    }
+    
 
 }

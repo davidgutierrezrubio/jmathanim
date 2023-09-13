@@ -20,6 +20,7 @@ package com.jmathanim.Animations;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.MathObject;
+import com.jmathanim.mathobjects.MathObjectGroup;
 import com.jmathanim.mathobjects.Point;
 import java.util.HashMap;
 
@@ -38,6 +39,7 @@ public abstract class ShiftAnimation extends AnimationWithEffects {
     private final HashMap<MathObject, AnimationEffect> effects;
     private final HashMap<MathObject, Double> beginningTimes;
     private final HashMap<MathObject, Double> rotationAngles;
+    private boolean[] shouldBeAdded;
 
     public ShiftAnimation(double runTime, MathObject[] mathObjects) {
         super(runTime);
@@ -57,7 +59,12 @@ public abstract class ShiftAnimation extends AnimationWithEffects {
     public void initialize(JMathAnimScene scene) {
         super.initialize(scene);
         saveStates(mathObjects);
-        addObjectsToscene(mathObjects);
+        shouldBeAdded=new boolean[mathObjects.length];
+        for (int i = 0; i < mathObjects.length; i++) {
+            //True if object is NOT added to the scene
+            shouldBeAdded[i]=!scene.getMathObjects().contains(mathObjects[i]);
+        }
+        
         int size = mathObjects.length;
         int k = 0;
         if (size > 1) {// Only works when group has at least 2 members...
@@ -90,8 +97,9 @@ public abstract class ShiftAnimation extends AnimationWithEffects {
 
     @Override
     public void doAnim(double t) {
+         super.doAnim(t);
         int size = mathObjects.length;
-        double lt = getTotalLambda().applyAsDouble(t);
+        double lt = getLT(t);
         restoreStates(mathObjects);
         double b = (1 - delayPercentage);
         for (MathObject obj : mathObjects) {
@@ -365,5 +373,31 @@ public abstract class ShiftAnimation extends AnimationWithEffects {
             effects.get(obj).copyEffectParametersFrom(anim.getEffect());
         }
     }
+
+    @Override
+    public void cleanAnimationAt(double t) {
+        double lt=getLT(t);
+        if (lt==0) {
+            for (int i = 0; i < mathObjects.length; i++) {
+                //If object initially wasn't in the scene, remove it
+                if (shouldBeAdded[i]){
+                    scene.remove(mathObjects[i]);
+                }
+            }
+        }
+    }
+
+    @Override
+    public void prepareForAnim(double t) {
+        //It is a good idea to ensure that objects we are moving are in the scene, just in case
+        addObjectsToscene(mathObjects);
+    }
+
+    @Override
+    public MathObjectGroup getIntermediateObject() {
+        return MathObjectGroup.make(mathObjects);
+    }
+    
+    
 
 }

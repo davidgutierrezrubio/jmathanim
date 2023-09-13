@@ -34,8 +34,6 @@ public abstract class TransformStrategy extends AnimationWithEffects {
         super(runTime);
     }
 
-    abstract public MathObject getIntermediateTransformedObject();
-
     abstract public MathObject getOriginObject();
 
     abstract public MathObject getDestinyObject();
@@ -57,13 +55,13 @@ public abstract class TransformStrategy extends AnimationWithEffects {
         super.initialize(scene);
         //Remove origin object from scene and add intermediate
         removeObjectsFromScene(getOriginObject());
-        addObjectsToscene(getIntermediateTransformedObject());
+        addObjectsToscene(getIntermediateObject());
     }
 
     @Override
     public void finishAnimation() {
         super.finishAnimation();
-        final MathObject intermediateTransformedObject = getIntermediateTransformedObject();
+        final MathObject intermediateTransformedObject = getIntermediateObject();
         getDestinyObject().copyStateFrom(intermediateTransformedObject);
         // Remove fist object and add the second to the scene
         addObjectsToscene(getDestinyObject());

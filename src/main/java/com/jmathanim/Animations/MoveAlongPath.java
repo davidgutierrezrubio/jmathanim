@@ -101,12 +101,12 @@ public class MoveAlongPath extends Animation {
     public void initialize(JMathAnimScene scene) {
         super.initialize(scene);
         saveStates(mobjTransformed);
-        addObjectsToscene(mobjTransformed);
     }
 
     @Override
     public void doAnim(double t) {
-        double lt = getTotalLambda().applyAsDouble(t);
+        super.doAnim(t);
+        double lt = getLT(t);
         restoreStates(mobjTransformed);
         Point destinyPoint = (parametrized ? path.getParametrizedPointAt(lt) : path.getJMPointAt(lt).p);
         Point anchPoint = Anchor.getAnchorPoint(mobjTransformed, anchorType);
@@ -125,4 +125,17 @@ public class MoveAlongPath extends Animation {
         doAnim(1);
     }
 
+    @Override
+    public void cleanAnimationAt(double t) {
+    }
+
+    @Override
+    public void prepareForAnim(double t) {
+        addObjectsToscene(mobjTransformed);
+    }
+
+    @Override
+    public MathObject getIntermediateObject() {
+        return mobjTransformed;
+    }
 }

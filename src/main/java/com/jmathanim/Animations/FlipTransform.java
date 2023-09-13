@@ -46,17 +46,18 @@ public class FlipTransform extends AnimationWithEffects {
 //        */
 //        BOTH
 //    }
-
     private final OrientationType flipType;
     private final MathObject objOrig;
     private final MathObject objDst;
-    private final Point origCenter;
-    private final Point dstCenter;
+    private MathObject intermediateObject;
+    private Point origCenter;
+    private Point dstCenter;
 
     /**
      * Creates a new FlipTransform animation, that flips the original object
      * horizontally or vertically to become the destiny object. When finished
-     * the animation, original object is removed from scene.
+     * the animation, original object is removed and destiniy object is added to
+     * scene.
      *
      * @param runTime Duration in seconds
      * @param flipType Flip type, a value of the enum variable FlipType
@@ -69,8 +70,7 @@ public class FlipTransform extends AnimationWithEffects {
         this.flipType = flipType;
         this.objDst = objDst;
         this.objOrig = objOrig;
-        origCenter = objOrig.getCenter();
-        dstCenter = objDst.getCenter();
+
     }
 
     /**
@@ -112,35 +112,67 @@ public class FlipTransform extends AnimationWithEffects {
     @Override
     public void initialize(JMathAnimScene scene) {
         super.initialize(scene);
+        origCenter = objOrig.getCenter();
+        dstCenter = objDst.getCenter();
         addObjectsToscene(objOrig, objDst);
         saveStates(objOrig, objDst);
         objDst.visible(false);// At first this is hidden
         prepareJumpPath(origCenter, dstCenter, objDst);
         prepareJumpPath(origCenter, dstCenter, objOrig);
+        intermediateObject = objOrig;
     }
 
     @Override
     public void doAnim(double t) {
-        double lt = getTotalLambda().applyAsDouble(t);
+        super.doAnim(t);
+        double lt = getLT(t);
         objOrig.visible(lt < .5);
         objDst.visible(lt >= .5);
-        MathObject objectToScale;
         if (lt < .5) {// Here we scale the first object, the second remains hidden
-            objectToScale = objOrig;
+            intermediateObject = objOrig;
         } else {
-            objectToScale = objDst;
+            intermediateObject = objDst;
         }
-        restoreStates(objectToScale);
+        restoreStates(intermediateObject);
         double scales[] = computeScale(lt);
-        objectToScale.scale(scales[0], scales[1]);
-        objectToScale.moveTo(origCenter.interpolate(dstCenter, lt));
-        applyAnimationEffects(lt, objectToScale);
+        intermediateObject.scale(scales[0], scales[1]);
+        intermediateObject.moveTo(origCenter.interpolate(dstCenter, lt));
+        applyAnimationEffects(lt, intermediateObject);
     }
 
     @Override
     public void finishAnimation() {
         super.finishAnimation(); // To change body of generated methods, choose Tools | Templates.
-        removeObjectsFromScene(objOrig);
+        cleanAnimationAt(t);
+    }
+
+    @Override
+    public void cleanAnimationAt(double t) {
+        double lt = getLT(t);
+        doAnim(t);
+        if (lt >= .5) {
+            restoreStates(objOrig);
+            removeObjectsFromScene(objOrig);
+            addObjectsToscene(objDst);
+            intermediateObject = objDst;
+        } else {
+            restoreStates(objDst);
+            removeObjectsFromScene(objDst);
+            addObjectsToscene(objOrig);
+            intermediateObject = objOrig;
+        }
+    }
+
+    @Override
+    public void prepareForAnim(double t) {
+        double lt = getLT(t);
+        if (lt >= .5) {
+            removeObjectsFromScene(objOrig);
+            addObjectsToscene(objDst);
+        } else {
+            removeObjectsFromScene(objDst);
+            addObjectsToscene(objOrig);
+        }
     }
 
     private double[] computeScale(double lt) {
@@ -163,4 +195,14 @@ public class FlipTransform extends AnimationWithEffects {
         return scales;
     }
 
+    /**
+     * Returns the intermediate transformed object. It is either an instance of
+     * origin object or destiny object depending on the actual animation time.
+     *
+     * @return The currently object being animated (origin or destiny)
+     */
+    @Override
+    public MathObject getIntermediateObject() {
+        return intermediateObject;
+    }
 }

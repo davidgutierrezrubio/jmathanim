@@ -46,15 +46,14 @@ public class PointInterpolationCanonical extends TransformStrategy {
 //    private Shape originalShapeBaseCopy;
     private static final boolean DEBUG_COLORS = false;
 //    private final Shape mobjTransformedOrig;
+
     /**
      * Optimization strategy to apply before performing the animation, if any
      */
-    protected OptimizePathsStrategy optimizeStrategy = null;
-
     public PointInterpolationCanonical(double runtime, Shape origin, Shape destiny) {
         super(runtime);
         this.origin = origin;
-        this.intermediate= origin.copy();
+        this.intermediate = new Shape();
         this.destiny = destiny;
         this.addedAuxiliaryObjectsToScene = new ArrayList<>();
     }
@@ -62,6 +61,7 @@ public class PointInterpolationCanonical extends TransformStrategy {
     @Override
     public void initialize(JMathAnimScene scene) {
         super.initialize(scene);
+        intermediate.copyStateFrom(origin);
         // This is the initialization for the point-to-point interpolation
         // Prepare paths.
         // First, if any of the shapes is empty, don't do nothing
@@ -95,8 +95,6 @@ public class PointInterpolationCanonical extends TransformStrategy {
         }
         intermediate.getPath().clear();
         intermediate.getPath().addJMPointsFrom(connectedOrigin.toJMPath());
-        addObjectsToscene(intermediate);
-        removeObjectsFromScene(origin);
 
         // Jump paths
         Point origCenter = this.origin.getCenter();
@@ -107,7 +105,8 @@ public class PointInterpolationCanonical extends TransformStrategy {
 
     @Override
     public void doAnim(double t) {
-        double lt = getTotalLambda().applyAsDouble(t);
+        super.doAnim(t);
+        double lt = getLT(t);
         JMPathPoint interPoint, basePoint, dstPoint;
 
         if ((connectedOrigin.getNumberOfPaths() == 0) || (connectedDst.getNumberOfPaths() == 0)) {
@@ -149,17 +148,6 @@ public class PointInterpolationCanonical extends TransformStrategy {
 
     }
 
-//    @Override
-//    public void finishAnimation() {
-//        super.finishAnimation();
-////           final MathObject intermediateTransformedObject = getIntermediateTransformedObject();
-////        mobjDestiny.copyStateFrom(intermediateTransformedObject);
-////        removeObjectsFromScene(mobjTransformed);
-////        for (Shape shapesToRemove : addedAuxiliaryObjectsToScene) {
-////            removeObjectsFromScene(shapesToRemove);
-////        }
-////        addObjectsToscene(mobjDestinyOrig);
-//    }
     /**
      * Creates connectedOrigin and connectedDst, two paths in their
      * canonicalforms (and array of simple connected open paths)
@@ -282,7 +270,7 @@ public class PointInterpolationCanonical extends TransformStrategy {
 //        return pathToDivide.canonicalForm();
 //    }
     @Override
-    public MathObject getIntermediateTransformedObject() {
+    public MathObject getIntermediateObject() {
         return intermediate;
     }
 
@@ -295,4 +283,29 @@ public class PointInterpolationCanonical extends TransformStrategy {
     public MathObject getDestinyObject() {
         return destiny;
     }
+
+    @Override
+    public void cleanAnimationAt(double t) {
+        double lt = getLT(t);
+        if (lt == 0) {//If ends at t=0, keep original
+            removeObjectsFromScene(destiny, intermediate);
+            addObjectsToscene(origin);
+            return;
+        }
+        if (lt == 1) {//If ends at t=1 keep destiny
+            removeObjectsFromScene(origin, intermediate);
+            addObjectsToscene(destiny);
+            return;
+        }
+        //Case 0<t<1
+        removeObjectsFromScene(origin, destiny);
+        addObjectsToscene(intermediate);
+    }
+
+    @Override
+    public void prepareForAnim(double t) {
+        addObjectsToscene(intermediate);
+        removeObjectsFromScene(origin);
+    }
+
 }

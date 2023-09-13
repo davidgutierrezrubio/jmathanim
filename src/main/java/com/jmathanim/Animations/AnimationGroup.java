@@ -19,6 +19,8 @@ package com.jmathanim.Animations;
 
 import com.jmathanim.Utils.UsefulLambdas;
 import com.jmathanim.jmathanim.JMathAnimScene;
+import com.jmathanim.mathobjects.MathObject;
+import com.jmathanim.mathobjects.MathObjectGroup;
 import java.util.ArrayList;
 import java.util.function.DoubleUnaryOperator;
 
@@ -33,6 +35,13 @@ public class AnimationGroup extends AnimationWithEffects {
 
     private final ArrayList<Animation> animations;
     private double delayPercentage;
+
+    @Override
+    public void cleanAnimationAt(double t) {
+        for (Animation animation : animations) {
+            animation.cleanAnimationAt(t);
+        }
+    }
 
     /**
      * Returns the list of the animations to play
@@ -91,7 +100,7 @@ public class AnimationGroup extends AnimationWithEffects {
      */
     public AnimationGroup(ArrayList<Animation> animations) {
         super(0);
-        this.animations=new ArrayList<>();
+        this.animations = new ArrayList<>();
         for (Animation anim : animations) {
             if (anim != null) {
                 this.animations.add(anim);
@@ -116,6 +125,15 @@ public class AnimationGroup extends AnimationWithEffects {
     }
 
     @Override
+    public MathObjectGroup getIntermediateObject() {
+        MathObjectGroup mg = MathObjectGroup.make();
+        for (Animation animation : animations) {
+            mg.add(animation.getIntermediateObject());
+        }
+        return mg;
+    }
+
+    @Override
     public void initialize(JMathAnimScene scene) {
         //Compute runTime as the MAX runtime of all animations
         this.runTime = 0;
@@ -130,9 +148,16 @@ public class AnimationGroup extends AnimationWithEffects {
         }
         int k = 0;
 
-//        for (Animation anim : animations) {
-//            this.copyAnimationParametersTo(anim);
-//        }
+          //Compute allocation parameters properly
+        if ((size > 1) && (delayPercentage > 0)) {
+            double b = 1 - delayPercentage;
+            for (Animation anim : animations) {
+                double a = k * (delayPercentage) / (size - 1);
+                anim.setAllocationParameters(a, a + b);
+                k++;
+            }
+        }
+        
         for (Animation anim : animations) {
             if (anim != null) {
                 if (anim instanceof AnimationWithEffects) {
@@ -143,14 +168,7 @@ public class AnimationGroup extends AnimationWithEffects {
             }
         }
 
-        if ((size > 1) && (delayPercentage > 0)) {
-            double b = 1 - delayPercentage;
-            for (Animation anim : animations) {
-                double a = k * (delayPercentage) / (size - 1);
-                anim.setAllocationParameters(a, a + b);
-                k++;
-            }
-        }
+      
     }
 
 //    @Override
@@ -163,6 +181,7 @@ public class AnimationGroup extends AnimationWithEffects {
 //    }
     @Override
     public void doAnim(double t) {
+        super.doAnim(t);
         for (Animation anim : animations) {
             double mt = t * runTime / anim.getRunTime();
             anim.doAnim(UsefulLambdas.allocateTo(allocateStart, allocateEnd).applyAsDouble(mt));
@@ -185,6 +204,13 @@ public class AnimationGroup extends AnimationWithEffects {
             if (anim.getStatus() != Status.FINISHED) {
                 anim.finishAnimation();
             }
+        }
+    }
+
+    @Override
+    public void prepareForAnim(double t) {
+        for (Animation animation : animations) {
+            animation.prepareForAnim(t);
         }
     }
 

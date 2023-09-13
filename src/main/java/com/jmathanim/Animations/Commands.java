@@ -65,8 +65,6 @@ public class Commands {
         return shift(runtime, new Vec(dx, dy), objects);
     }
 
-    
-    
     public static ShiftAnimation shift(double runtime, Vec sv, MathObject... objects) {
         ShiftAnimation resul = new ShiftAnimation(runtime, objects) {
             @Override
@@ -78,6 +76,20 @@ public class Commands {
             }
         };
         resul.setDebugName("Shift");
+        return resul;
+    }
+
+    public static ShiftAnimation moveTo(double runtime, Point destiny, MathObject... objects) {
+        ShiftAnimation resul = new ShiftAnimation(runtime, objects) {
+            @Override
+            public void initialize(JMathAnimScene scene) {
+                super.initialize(scene);
+                for (MathObject obj : objects) {
+                    setShiftVector(obj, obj.getCenter().to(destiny));
+                }
+            }
+        };
+        resul.setDebugName("MoveTo");
         return resul;
     }
 
@@ -193,11 +205,37 @@ public class Commands {
         return ag;
     }
 
-    public static Animation scale(double runtime, double sc, MathObject... objects) {
+    /**
+     * Animates a uniform scale change from centers of objects
+     *
+     * @param runtime Duration in seconds
+     * @param sc Scale to apply
+     * @param mathObjects Objects to animate
+     * @return The animation, ready to play with the playAnim method
+     */
+    public static Animation scale(double runtime, double sc, MathObject... mathObjects) {
         AnimationGroup ag = new AnimationGroup();
-        Point center = MathObjectGroup.make(objects).getCenter();
-        for (MathObject obj : objects) {
+        Point center = MathObjectGroup.make(mathObjects).getCenter();
+        for (MathObject obj : mathObjects) {
             ag.add(Commands.scale(runtime, center, sc, obj));
+        }
+        return ag;
+    }
+
+    /**
+     * Animates a scale change from centers of objects
+     *
+     * @param runtime Duration in seconds
+     * @param scx X scale to apply
+     * @param scy Y scale to apply
+     * @param mathObjects Objects to animate
+     * @return The animation, ready to play with the playAnim method
+     */
+    public static Animation scale(double runtime, double scx, double scy, MathObject... mathObjects) {
+        AnimationGroup ag = new AnimationGroup();
+        Point center = MathObjectGroup.make(mathObjects).getCenter();
+        for (MathObject obj : mathObjects) {
+            ag.add(Commands.scale(runtime, center, scx, scy, 1, obj));
         }
         return ag;
     }
@@ -218,12 +256,17 @@ public class Commands {
             public void initialize(JMathAnimScene scene) {
                 super.initialize(scene);
                 saveStates(mathObjects);
-                addObjectsToscene(mathObjects);
+            }
+
+            @Override
+            public MathObjectGroup getIntermediateObject() {
+                return MathObjectGroup.make(mathObjects);
             }
 
             @Override
             public void doAnim(double t) {
-                double lt = getTotalLambda().applyAsDouble(t);
+                super.doAnim(t);
+                double lt = getLT(t);
                 restoreStates(mathObjects);
                 for (MathObject obj : mathObjects) {
                     double scax = 1 - lt + scalex * lt;
@@ -241,7 +284,15 @@ public class Commands {
             public void finishAnimation() {
                 doAnim(1);
                 super.finishAnimation();
+            }
 
+            @Override
+            public void cleanAnimationAt(double t) {
+            }
+
+            @Override
+            public void prepareForAnim(double t) {
+                addObjectsToscene(mathObjects);
             }
         };
         resul.setDebugName("Scale");
@@ -257,17 +308,28 @@ public class Commands {
         AnimationWithEffects resul = new AnimationWithEffects(runtime) {
             double angle = rotationAngle;
             MathObject[] mathObjects = objects;
+            private boolean[] shouldBeAdded;
 
             @Override
             public void initialize(JMathAnimScene scene) {
                 super.initialize(scene);
                 saveStates(mathObjects);
-                addObjectsToscene(mathObjects);
+                shouldBeAdded = new boolean[mathObjects.length];
+                for (int i = 0; i < mathObjects.length; i++) {
+                    //True if object is NOT added to the scene
+                    shouldBeAdded[i] = !scene.getMathObjects().contains(mathObjects[i]);
+                }
+            }
+
+            @Override
+            public MathObjectGroup getIntermediateObject() {
+                return MathObjectGroup.make(mathObjects);
             }
 
             @Override
             public void doAnim(double t) {
-                double lt = getTotalLambda().applyAsDouble(t);
+                super.doAnim(t);
+                double lt = getLT(t);
                 restoreStates(mathObjects);
                 for (MathObject obj : mathObjects) {
                     if (rotationCenter == null) {
@@ -283,7 +345,24 @@ public class Commands {
             public void finishAnimation() {
                 doAnim(1);
                 super.finishAnimation();
+            }
 
+            @Override
+            public void cleanAnimationAt(double t) {
+                double lt = getLT(t);
+                if (lt == 0) {
+                    for (int i = 0; i < mathObjects.length; i++) {
+                        //If object initially wasn't in the scene, remove it
+                        if (shouldBeAdded[i]) {
+                            scene.remove(mathObjects[i]);
+                        }
+                    }
+                }
+            }
+
+            @Override
+            public void prepareForAnim(double t) {
+                addObjectsToscene(mathObjects);
             }
         };
         resul.setDebugName("Rotate");
@@ -305,18 +384,23 @@ public class Commands {
             MathObject[] mathObjects = objects;
 
             @Override
+            public MathObjectGroup getIntermediateObject() {
+                return MathObjectGroup.make(mathObjects);
+            }
+
+            @Override
             public void initialize(JMathAnimScene scene) {
                 super.initialize(scene);
                 saveStates(mathObjects);
                 if (c != null) {
                     rotationCenter = c;
                 }
-                addObjectsToscene(mathObjects);
             }
 
             @Override
             public void doAnim(double t) {
-                double lt = getTotalLambda().applyAsDouble(t);
+                super.doAnim(t);
+                double lt = getLT(t);
                 restoreStates(mathObjects);
                 for (MathObject obj : mathObjects) {
                     if (rotationCenter == null) {
@@ -331,6 +415,15 @@ public class Commands {
             public void finishAnimation() {
                 doAnim(1);
                 super.finishAnimation();
+            }
+
+            @Override
+            public void cleanAnimationAt(double t) {
+            }
+
+            @Override
+            public void prepareForAnim(double t) {
+                addObjectsToscene(mathObjects);
             }
         };
     }// End of rotate command
@@ -364,7 +457,6 @@ public class Commands {
             public void initialize(JMathAnimScene scene) {
                 super.initialize(scene);
                 saveStates(mathObjects);
-                addObjectsToscene(mathObjects);
                 for (MathObject obj : mathObjects) {
                     tr = AffineJTransform.createAffineTransformation(orig1, orig2, orig3, dst1, dst2, dst3, 1);
                     Point center = obj.getCenter();
@@ -373,9 +465,15 @@ public class Commands {
             }
 
             @Override
+            public MathObjectGroup getIntermediateObject() {
+                return MathObjectGroup.make(mathObjects);
+            }
+
+            @Override
             public void doAnim(double t) {
+                super.doAnim(t);
                 restoreStates(mathObjects);
-                double lt = getTotalLambda().applyAsDouble(t);
+                double lt = getLT(t);
                 for (MathObject obj : mathObjects) {
                     tr = AffineJTransform.createAffineTransformation(orig1, orig2, orig3, dst1, dst2, dst3, lt);
                     tr.applyTransform(obj);
@@ -385,9 +483,17 @@ public class Commands {
 
             @Override
             public void finishAnimation() {
-                doAnim(1);
+                doAnim(t);
                 super.finishAnimation();
+            }
 
+            @Override
+            public void cleanAnimationAt(double t) {
+            }
+
+            @Override
+            public void prepareForAnim(double t) {
+                addObjectsToscene(mathObjects);
             }
         };
         resul.setDebugName("Affine Transform");
@@ -412,12 +518,10 @@ public class Commands {
         return isomorphism(runtime, a, b, c, d, objects);
     }
 
-    
-    
-     public static AnimationWithEffects isomorphism(double runtime, Rect rOrig, Rect rDst,MathObject...objects) {
-         return isomorphism(runtime, rOrig.getUL(), rOrig.getDR(),rDst.getUL(),rDst.getDR(),objects);
-     }
-    
+    public static AnimationWithEffects isomorphism(double runtime, Rect rOrig, Rect rDst, MathObject... objects) {
+        return isomorphism(runtime, rOrig.getUL(), rOrig.getDR(), rDst.getUL(), rDst.getDR(), objects);
+    }
+
     /**
      * Animation command that transforms a MathObject through a direct
      * isomorphism. Isomorphism is specified by 2 pairs of points
@@ -445,7 +549,6 @@ public class Commands {
             public void initialize(JMathAnimScene scene) {
                 super.initialize(scene);
                 saveStates(mathObjects);
-                addObjectsToscene(mathObjects);
                 tr = AffineJTransform.createDirect2DIsomorphic(A, B, C, D, 1);
                 for (MathObject obj : mathObjects) {
                     Point center = obj.getCenter();
@@ -454,8 +557,14 @@ public class Commands {
             }
 
             @Override
+            public MathObjectGroup getIntermediateObject() {
+                return MathObjectGroup.make(mathObjects);
+            }
+
+            @Override
             public void doAnim(double t) {
-                double lt = getTotalLambda().applyAsDouble(t);
+                super.doAnim(t);
+                double lt = getLT(t);
                 restoreStates(mathObjects);
                 tr = AffineJTransform.createDirect2DIsomorphic(A, B, C, D, lt);
                 for (MathObject obj : mathObjects) {
@@ -466,9 +575,17 @@ public class Commands {
 
             @Override
             public void finishAnimation() {
-                doAnim(1);
+                doAnim(t);
                 super.finishAnimation();
+            }
 
+            @Override
+            public void cleanAnimationAt(double t) {
+            }
+
+            @Override
+            public void prepareForAnim(double t) {
+                addObjectsToscene(mathObjects);
             }
         };
         resul.setDebugName("Isomorphism Transform");
@@ -502,7 +619,6 @@ public class Commands {
             public void initialize(JMathAnimScene scene) {
                 super.initialize(scene);
                 saveStates(mathObjects);
-                addObjectsToscene(mathObjects);
                 tr = AffineJTransform.createInverse2DIsomorphic(A, B, C, D, 1);
                 for (MathObject obj : mathObjects) {
                     Point center = obj.getCenter();
@@ -511,8 +627,14 @@ public class Commands {
             }
 
             @Override
+            public MathObjectGroup getIntermediateObject() {
+                return MathObjectGroup.make(mathObjects);
+            }
+
+            @Override
             public void doAnim(double t) {
-                double lt = getTotalLambda().applyAsDouble(t);
+                super.doAnim(t);
+                double lt = getLT(t);
                 restoreStates(mathObjects);
                 tr = AffineJTransform.createInverse2DIsomorphic(A, B, C, D, lt);
                 for (MathObject obj : mathObjects) {
@@ -525,7 +647,15 @@ public class Commands {
             public void finishAnimation() {
                 doAnim(1);
                 super.finishAnimation();
+            }
 
+            @Override
+            public void cleanAnimationAt(double t) {
+            }
+
+            @Override
+            public void prepareForAnim(double t) {
+                addObjectsToscene(mathObjects);
             }
         };
         resul.setDebugName("Inverse isomorphism Transform");
@@ -552,7 +682,6 @@ public class Commands {
             public void initialize(JMathAnimScene scene) {
                 super.initialize(scene);
                 saveStates(mathObjects);
-                addObjectsToscene(mathObjects);
                 for (MathObject obj : mathObjects) {
                     tr = AffineJTransform.createReflection(axis1, axis2, 1);
                     Point center = obj.getCenter();
@@ -561,8 +690,14 @@ public class Commands {
             }
 
             @Override
+            public MathObjectGroup getIntermediateObject() {
+                return MathObjectGroup.make(mathObjects);
+            }
+
+            @Override
             public void doAnim(double t) {
-                double lt = getTotalLambda().applyAsDouble(t);
+                super.doAnim(t);
+                double lt = getLT(t);
                 restoreStates(mathObjects);
                 for (MathObject obj : mathObjects) {
                     tr = AffineJTransform.createReflection(axis1, axis2, lt);
@@ -573,9 +708,17 @@ public class Commands {
 
             @Override
             public void finishAnimation() {
-                doAnim(1);
+                doAnim(t);
                 super.finishAnimation();
+            }
 
+            @Override
+            public void cleanAnimationAt(double t) {
+            }
+
+            @Override
+            public void prepareForAnim(double t) {
+                addObjectsToscene(mathObjects);
             }
         };
         resul.setDebugName("Reflection Transform");
@@ -603,7 +746,6 @@ public class Commands {
             public void initialize(JMathAnimScene scene) {
                 super.initialize(scene);
                 saveStates(mathObjects);
-                addObjectsToscene(mathObjects);
                 for (MathObject obj : mathObjects) {
                     tr = AffineJTransform.createReflectionByAxis(axisPoint1, axisPoint2, 1);
                     Point center = obj.getCenter();
@@ -612,8 +754,14 @@ public class Commands {
             }
 
             @Override
+            public MathObjectGroup getIntermediateObject() {
+                return MathObjectGroup.make(mathObjects);
+            }
+
+            @Override
             public void doAnim(double t) {
-                double lt = getTotalLambda().applyAsDouble(t);
+                super.doAnim(t);
+                double lt = getLT(t);
                 restoreStates(mathObjects);
                 for (MathObject obj : mathObjects) {
                     tr = AffineJTransform.createReflectionByAxis(axisPoint1, axisPoint2, lt);
@@ -624,9 +772,17 @@ public class Commands {
 
             @Override
             public void finishAnimation() {
-                doAnim(1);
+                doAnim(t);
                 super.finishAnimation();
+            }
 
+            @Override
+            public void cleanAnimationAt(double t) {
+            }
+
+            @Override
+            public void prepareForAnim(double t) {
+                addObjectsToscene(mathObjects);
             }
         };
         resul.setDebugName("Reflexion by Axis Transform");
@@ -677,12 +833,17 @@ public class Commands {
             public void initialize(JMathAnimScene scene) {
                 super.initialize(scene);
                 saveStates(mathObjects);
-                addObjectsToscene(mathObjects);
+            }
+
+            @Override
+            public MathObjectGroup getIntermediateObject() {
+                return MathObjectGroup.make(mathObjects);
             }
 
             @Override
             public void doAnim(double t) {
-                double lt = getTotalLambda().applyAsDouble(t);
+                super.doAnim(t);
+                double lt = getLT(t);
                 restoreStates(mathObjects);
                 for (MathObject obj : mathObjects) {
                     obj.getMp().interpolateFrom(mpDst, lt);
@@ -691,9 +852,17 @@ public class Commands {
 
             @Override
             public void finishAnimation() {
-                doAnim(1);
+                doAnim(t);
                 super.finishAnimation();
+            }
 
+            @Override
+            public void cleanAnimationAt(double t) {
+            }
+
+            @Override
+            public void prepareForAnim(double t) {
+                addObjectsToscene(mathObjects);
             }
         };
         resul.setDebugName("setMP");
@@ -765,17 +934,30 @@ public class Commands {
                 }
 
                 @Override
+                public MathObject getIntermediateObject() {
+                    return null;
+                }
+
+                @Override
                 public void doAnim(double t) {
-                    double lt = getTotalLambda().applyAsDouble(t);
+                    super.doAnim(t);
+                    double lt = getLT(t);
                     Rect r = rSource.interpolate(rDst, lt);
                     cam.setMathView(r);
                 }
 
                 @Override
                 public void finishAnimation() {
-                    doAnim(1);
+                    doAnim(t);
                     super.finishAnimation();
+                }
 
+                @Override
+                public void cleanAnimationAt(double t) {
+                }
+
+                @Override
+                public void prepareForAnim(double t) {
                 }
             };
         }
@@ -883,7 +1065,6 @@ public class Commands {
             public void initialize(JMathAnimScene scene) {
                 super.initialize(scene);
                 saveStates(mathObjects);
-                addObjectsToscene(mathObjects);
                 for (MathObject obj : mathObjects) {
                     if (obj instanceof Constructible) {
                         Constructible cnstr = (Constructible) obj;
@@ -893,8 +1074,14 @@ public class Commands {
             }
 
             @Override
+            public MathObjectGroup getIntermediateObject() {
+                return MathObjectGroup.make(mathObjects);
+            }
+
+            @Override
             public void doAnim(double t) {
-                double lt = getTotalLambda().applyAsDouble(t);
+                super.doAnim(t);
+                double lt = getLT(t);
                 double sx = (shrinkType == OrientationType.VERTICAL ? 1 : 1 - lt);
                 double sy = (shrinkType == OrientationType.HORIZONTAL ? 1 : 1 - lt);
                 restoreStates(mathObjects);
@@ -909,7 +1096,7 @@ public class Commands {
 
             @Override
             public void finishAnimation() {
-                doAnim(1);
+                doAnim(t);
                 super.finishAnimation();
                 removeObjectsFromScene(mathObjects);
                 for (MathObject obj : mathObjects) {
@@ -918,6 +1105,19 @@ public class Commands {
                         cnstr.freeMathObject(false);
                     }
                 }
+            }
+
+            @Override
+            public void cleanAnimationAt(double t) {
+                double lt = getLT(t);
+                if (lt == 1) {
+                    removeObjectsFromScene(mathObjects);
+                }
+            }
+
+            @Override
+            public void prepareForAnim(double t) {
+                addObjectsToscene(mathObjects);
             }
         };
         anim.setLambda(t -> t);// Default
@@ -971,7 +1171,6 @@ public class Commands {
             public void initialize(JMathAnimScene scene) {
                 super.initialize(scene);
                 saveStates(mathObjects);
-                addObjectsToscene(mathObjects);
                 for (MathObject obj : mathObjects) {
                     obj.visible(false);
                     if (obj instanceof Constructible) {
@@ -982,8 +1181,14 @@ public class Commands {
             }
 
             @Override
+            public MathObjectGroup getIntermediateObject() {
+                return MathObjectGroup.make(mathObjects);
+            }
+
+            @Override
             public void doAnim(double t) {
-                double lt = getTotalLambda().applyAsDouble(t);
+                super.doAnim(t);
+                double lt = getLT(t);
                 double sx = (growType == OrientationType.VERTICAL ? 1 : lt);
                 double sy = (growType == OrientationType.HORIZONTAL ? 1 : lt);
                 restoreStates(mathObjects);
@@ -997,7 +1202,7 @@ public class Commands {
 
             @Override
             public void finishAnimation() {
-                doAnim(1);
+                doAnim(t);
                 super.finishAnimation();
                 for (MathObject obj : mathObjects) {
                     if (obj instanceof Constructible) {
@@ -1005,6 +1210,19 @@ public class Commands {
                         cnstr.freeMathObject(false);
                     }
                 }
+            }
+
+            @Override
+            public void cleanAnimationAt(double t) {
+                double lt = getLT(t);
+                if (lt == 0) {//if ended at the beginning, remove objects
+                    removeObjectsFromScene(mathObjects);
+                }
+            }
+
+            @Override
+            public void prepareForAnim(double t) {
+                addObjectsToscene(mathObjects);
             }
         };
         anim.setLambda(t -> t);// Default value
@@ -1029,15 +1247,20 @@ public class Commands {
                 super.initialize(scene);
                 this.mathObjects = objects;
                 saveStates(mathObjects);
-                addObjectsToscene(mathObjects);
                 for (MathObject obj : mathObjects) {
                     obj.visible(false);
                 }
             }
 
             @Override
+            public MathObjectGroup getIntermediateObject() {
+                return MathObjectGroup.make(mathObjects);
+            }
+
+            @Override
             public void doAnim(double t) {
-                double lt = getTotalLambda().applyAsDouble(t);
+                super.doAnim(t);
+                double lt = getLT(t);
                 restoreStates(mathObjects);
                 for (MathObject obj : mathObjects) {
                     obj.multDrawAlpha(lt);
@@ -1048,10 +1271,26 @@ public class Commands {
 
             @Override
             public void finishAnimation() {
-                doAnim(1);
+                doAnim(t);
                 super.finishAnimation();
 
             }
+
+            @Override
+            public void cleanAnimationAt(double t) {
+                double lt = getLT(t);
+                if (lt == 0) {//If ends at t=0, should remove objects from scene, as played in reverse
+                    removeObjectsFromScene(mathObjects);
+                } else {
+                    addObjectsToscene(mathObjects);
+                }
+            }
+
+            @Override
+            public void prepareForAnim(double t) {
+                addObjectsToscene(mathObjects);
+            }
+
         };
         anim.setLambda(t -> t);// Default value
         anim.setDebugName("fadeIn");
@@ -1072,15 +1311,20 @@ public class Commands {
             MathObject[] mathObjects = objects;
 
             @Override
-            public void initialize(JMathAnimScene sc) {
-                super.initialize(sc);
+            public void initialize(JMathAnimScene scene) {
+                super.initialize(scene);
                 saveStates(mathObjects);
-                sc.add(mathObjects);
+            }
+
+            @Override
+            public MathObjectGroup getIntermediateObject() {
+                return MathObjectGroup.make(mathObjects);
             }
 
             @Override
             public void doAnim(double t) {
-                double lt = getTotalLambda().applyAsDouble(t);
+                super.doAnim(t);
+                double lt = getLT(t);
                 restoreStates(mathObjects);
                 for (MathObject obj : mathObjects) {
                     obj.multDrawAlpha(1 - lt);
@@ -1091,9 +1335,23 @@ public class Commands {
 
             @Override
             public void finishAnimation() {
+                doAnim(t);
                 super.finishAnimation();
-                restoreStates(mathObjects);// Restore original alphas in case of reutilization
-                removeObjectsFromScene(mathObjects);
+
+            }
+
+            @Override
+            public void cleanAnimationAt(double t) {
+                double lt = getLT(t);
+                if (lt == 1) {
+                    restoreStates(mathObjects);// Restore original alphas in case of reutilization
+                    removeObjectsFromScene(mathObjects);
+                }
+            }
+
+            @Override
+            public void prepareForAnim(double t) {
+                addObjectsToscene(mathObjects);
             }
         };
         anim.setLambda(t -> t);// Default value
@@ -1194,14 +1452,19 @@ public class Commands {
             public void initialize(JMathAnimScene scene) {
                 super.initialize(scene);
                 JMathAnimScene.logger.debug("Initialized changeFillAlpha animation");
-                addObjectsToscene(mathObjects);
                 saveStates(mathObjects);
             }
 
             @Override
+            public MathObjectGroup getIntermediateObject() {
+                return MathObjectGroup.make(mathObjects);
+            }
+
+            @Override
             public void doAnim(double t) {
+                super.doAnim(t);
                 restoreStates(mathObjects);
-                double lt = getTotalLambda().applyAsDouble(t);
+                double lt = getLT(t);
                 for (MathObject obj : objects) {
                     obj.getMp().setFillAlpha(obj.getMp().getFillColor().getAlpha() * lt);
                     applyAnimationEffects(lt, obj);
@@ -1212,7 +1475,15 @@ public class Commands {
             public void finishAnimation() {
                 doAnim(1);
                 super.finishAnimation();
+            }
 
+            @Override
+            public void cleanAnimationAt(double t) {
+            }
+
+            @Override
+            public void prepareForAnim(double t) {
+                addObjectsToscene(mathObjects);
             }
         };
         resul.setDebugName("changeFillAlpha");
@@ -1263,8 +1534,12 @@ public class Commands {
             @Override
             public void finishAnimation() {
                 super.finishAnimation();
+                double lt = getTotalLambda().applyAsDouble(1);
+
                 for (MathObject obj : mathObjects) {
-                    removeObjectsFromScene(obj);
+                    if (lt == 1) {//Remove objects if completely moved out
+                        removeObjectsFromScene(obj);
+                    }
                     if (obj instanceof Constructible) {
                         Constructible cnstr = (Constructible) obj;
                         cnstr.freeMathObject(false);
@@ -1331,6 +1606,10 @@ public class Commands {
             @Override
             public void finishAnimation() {
                 super.finishAnimation();
+                double lt = getTotalLambda().applyAsDouble(1);
+                if (lt == 0) {
+                    removeObjectsFromScene(mathObjects);
+                }
                 for (MathObject obj : mathObjects) {
                     if (obj instanceof Constructible) {
                         Constructible cnstr = (Constructible) obj;

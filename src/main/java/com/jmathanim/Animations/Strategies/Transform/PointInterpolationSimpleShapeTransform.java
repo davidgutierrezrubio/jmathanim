@@ -40,9 +40,9 @@ public class PointInterpolationSimpleShapeTransform extends TransformStrategy {
 
     public PointInterpolationSimpleShapeTransform(double runtime, Shape origin, Shape destiny) {
         super(runtime);
-        this.origin=origin;
-        this.intermediate=origin.copy();
-        this.destiny=destiny;
+        this.origin = origin;
+        this.intermediate = new Shape();
+        this.destiny = destiny;
 
         origCenter = this.origin.getCenter();
         dstCenter = this.destiny.getCenter();
@@ -52,6 +52,7 @@ public class PointInterpolationSimpleShapeTransform extends TransformStrategy {
     @Override
     public void initialize(JMathAnimScene scene) {
         super.initialize(scene);
+        intermediate.copyStateFrom(origin);
         intermediate.getPath().distille();//Clean paths before transform
         destiny.getPath().distille();
         if (optimizeStrategy == null) {
@@ -64,16 +65,21 @@ public class PointInterpolationSimpleShapeTransform extends TransformStrategy {
         for (JMPathPoint jmp : intermediate.getPath().jmPathPoints) {
             jmp.isCurved = true;
         }
-        originBase=intermediate.copy();
-        addObjectsToscene(intermediate);
-        removeObjectsFromScene(origin);
+        originBase = intermediate.copy();
 
         prepareJumpPath(origCenter, dstCenter, intermediate);
     }
 
     @Override
+    public void prepareForAnim(double t) {
+        addObjectsToscene(intermediate);
+        removeObjectsFromScene(origin, destiny);
+    }
+
+    @Override
     public void doAnim(double t) {
-        double lt = getTotalLambda().applyAsDouble(t);
+        super.doAnim(t);
+        double lt = getLT(t);
         JMPathPoint interPoint, basePoint, dstPoint;
         for (int n = 0; n < intermediate.getPath().size(); n++) {
             interPoint = intermediate.get(n);
@@ -117,7 +123,7 @@ public class PointInterpolationSimpleShapeTransform extends TransformStrategy {
     }
 
     @Override
-    public MathObject getIntermediateTransformedObject() {
+    public MathObject getIntermediateObject() {
         return intermediate;
     }
 
@@ -129,6 +135,29 @@ public class PointInterpolationSimpleShapeTransform extends TransformStrategy {
     @Override
     public MathObject getDestinyObject() {
         return destiny;
+    }
+
+    @Override
+    public void finishAnimation() {
+        cleanAnimationAt(t);
+    }
+
+    @Override
+    public void cleanAnimationAt(double t) {
+        double lt = getLT(t);
+        if (lt == 0) {
+            removeObjectsFromScene(intermediate, destiny);
+            addObjectsToscene(origin);
+            return;
+        }
+        if (lt == 1) {
+            removeObjectsFromScene(intermediate, origin);
+            addObjectsToscene(destiny);
+            return;
+        }
+        removeObjectsFromScene(destiny, origin);
+        addObjectsToscene(intermediate);
+
     }
 
 }
