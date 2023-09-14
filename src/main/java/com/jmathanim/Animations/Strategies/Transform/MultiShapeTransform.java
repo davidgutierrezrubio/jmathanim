@@ -43,12 +43,13 @@ public class MultiShapeTransform extends TransformStrategy {
     private final MultiShapeObject destiny;
     private final MultiShapeObject intermediate;
     private final AnimationGroup anim;
+    public boolean originInScene;
 
     public MultiShapeTransform(double runtime, MultiShapeObject origin, MultiShapeObject destiny) {
         super(runtime);
         this.destiny = destiny;
         this.origin = origin;
-        this.intermediate =  MultiShapeObject.make();
+        this.intermediate = MultiShapeObject.make();
         anim = new AnimationGroup();
     }
 
@@ -66,6 +67,7 @@ public class MultiShapeTransform extends TransformStrategy {
     @Override
     public void initialize(JMathAnimScene scene) {
         super.initialize(scene);
+        originInScene = scene.getMathObjects().contains(origin);
         intermediate.copyStateFrom(origin);
         tr = MultiShapeObject.make();
         dst = MultiShapeObject.make();
@@ -101,10 +103,8 @@ public class MultiShapeTransform extends TransformStrategy {
 
     @Override
     public void finishAnimation() {
-        super.finishAnimation();
         anim.finishAnimation();
-        removeObjectsFromScene(tr, dst, origin);
-        addObjectsToscene(destiny);
+        super.finishAnimation();
     }
 
     public MathObject getIntermediateTransformedObject() {
@@ -131,9 +131,14 @@ public class MultiShapeTransform extends TransformStrategy {
     @Override
     public void cleanAnimationAt(double t) {
         double lt = getLT(t);
+        anim.cleanAnimationAt(t);
         if (lt == 0) {//If ends at t=0, keep original
             removeObjectsFromScene(destiny, intermediate);
-            addObjectsToscene(origin);
+            if (originInScene) {
+                addObjectsToscene(origin);
+            } else {
+                removeObjectsFromScene(origin);
+            }
             return;
         }
         if (lt == 1) {//If ends at t=1 keep destiny
@@ -148,6 +153,8 @@ public class MultiShapeTransform extends TransformStrategy {
 
     @Override
     public void prepareForAnim(double t) {
+        anim.prepareForAnim(t);
+        removeObjectsFromScene(origin, destiny);
         addObjectsToscene(intermediate);
     }
 

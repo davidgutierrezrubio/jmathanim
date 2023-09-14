@@ -18,7 +18,6 @@
 package com.jmathanim.Animations.Strategies.Transform;
 
 import com.jmathanim.Animations.Strategies.Transform.Optimizers.DivideOnSensiblePointsStrategy;
-import com.jmathanim.Animations.Strategies.Transform.Optimizers.OptimizePathsStrategy;
 import com.jmathanim.Styling.JMColor;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.CanonicalJMPath;
@@ -37,6 +36,7 @@ import java.util.Comparator;
  */
 public class PointInterpolationCanonical extends TransformStrategy {
 
+    private final Shape destinyCopy;
     private final Shape origin;
     private final Shape destiny;
     private final Shape intermediate;
@@ -46,25 +46,34 @@ public class PointInterpolationCanonical extends TransformStrategy {
 //    private Shape originalShapeBaseCopy;
     private static final boolean DEBUG_COLORS = false;
 //    private final Shape mobjTransformedOrig;
+    private boolean originWasAddedAtFirst, destinyWasAddedAtFirst;
 
     /**
-     * Optimization strategy to apply before performing the animation, if any
+     * Constructor
+     *
+     * @param runtime Duration in seconds
+     * @param origin Origin shape
+     * @param destiny Destinty Shape
      */
     public PointInterpolationCanonical(double runtime, Shape origin, Shape destiny) {
         super(runtime);
         this.origin = origin;
         this.intermediate = new Shape();
         this.destiny = destiny;
+        this.destinyCopy = new Shape();
         this.addedAuxiliaryObjectsToScene = new ArrayList<>();
     }
 
     @Override
     public void initialize(JMathAnimScene scene) {
         super.initialize(scene);
+        originWasAddedAtFirst = scene.getMathObjects().contains(origin);
+        destinyWasAddedAtFirst = scene.getMathObjects().contains(destiny);
         intermediate.copyStateFrom(origin);
+        destinyCopy.copyStateFrom(destiny);
         // This is the initialization for the point-to-point interpolation
         // Prepare paths.
-        // First, if any of the shapes is empty, don't do nothing
+        // First, if any of the shapes is empty, do nothing
 
         if ((intermediate.size() == 0) || (destiny.size() == 0)) {
             return;
@@ -74,16 +83,16 @@ public class PointInterpolationCanonical extends TransformStrategy {
         // and be in connected components form.
         // Remove consecutive hidden vertices, in case.
         this.intermediate.getPath().distille();
-        this.destiny.getPath().distille();
+        this.destinyCopy.getPath().distille();
         if (optimizeStrategy == null) {
             optimizeStrategy = new DivideOnSensiblePointsStrategy();
 //            optimizeStrategy = new DivideEquallyStrategy();
         }
-        optimizeStrategy.optimizePaths(intermediate, destiny);
-        optimizeStrategy.optimizePaths(destiny, intermediate);
+        optimizeStrategy.optimizePaths(intermediate, destinyCopy);
+        optimizeStrategy.optimizePaths(destinyCopy, intermediate);
 
 //        originalShapeBaseCopy = intermediate.copy();
-        preparePaths(intermediate.getPath(), destiny.getPath());
+        preparePaths(intermediate.getPath(), destinyCopy.getPath());
         if (DEBUG_COLORS) {
             for (int n = 0; n < connectedOrigin.getNumberOfPaths(); n++) {
                 Shape sh = new Shape(connectedOrigin.get(n), null);
@@ -289,23 +298,44 @@ public class PointInterpolationCanonical extends TransformStrategy {
         double lt = getLT(t);
         if (lt == 0) {//If ends at t=0, keep original
             removeObjectsFromScene(destiny, intermediate);
-            addObjectsToscene(origin);
+            for (Shape shape : addedAuxiliaryObjectsToScene) {
+                removeObjectsFromScene(shape);
+            }
+            if (originWasAddedAtFirst) {
+                addObjectsToscene(origin);
+            } else {
+                removeObjectsFromScene(origin);
+            }
+
             return;
+
         }
         if (lt == 1) {//If ends at t=1 keep destiny
             removeObjectsFromScene(origin, intermediate);
-            addObjectsToscene(destiny);
+            for (Shape shape : addedAuxiliaryObjectsToScene) {
+                removeObjectsFromScene(shape);
+            }
+            if (destinyWasAddedAtFirst) {
+                addObjectsToscene(destiny);
+            } else {
+                removeObjectsFromScene(destiny);
+            }
             return;
         }
         //Case 0<t<1
-        removeObjectsFromScene(origin, destiny);
+        removeObjectsFromScene(origin);
+        if (destinyWasAddedAtFirst) {
+            addObjectsToscene(destiny);
+        } else {
+            removeObjectsFromScene(destiny);
+        }
         addObjectsToscene(intermediate);
     }
 
     @Override
     public void prepareForAnim(double t) {
         addObjectsToscene(intermediate);
-        removeObjectsFromScene(origin);
+        removeObjectsFromScene(origin, destiny);
     }
 
 }

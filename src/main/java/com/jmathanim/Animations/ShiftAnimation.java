@@ -39,7 +39,7 @@ public abstract class ShiftAnimation extends AnimationWithEffects {
     private final HashMap<MathObject, AnimationEffect> effects;
     private final HashMap<MathObject, Double> beginningTimes;
     private final HashMap<MathObject, Double> rotationAngles;
-    private boolean[] shouldBeAdded;
+    protected boolean[] shouldBeAdded;
 
     public ShiftAnimation(double runTime, MathObject[] mathObjects) {
         super(runTime);

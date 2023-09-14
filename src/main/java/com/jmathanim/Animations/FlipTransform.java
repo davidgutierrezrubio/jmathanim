@@ -166,13 +166,9 @@ public class FlipTransform extends AnimationWithEffects {
     @Override
     public void prepareForAnim(double t) {
         double lt = getLT(t);
-        if (lt >= .5) {
-            removeObjectsFromScene(objOrig);
-            addObjectsToscene(objDst);
-        } else {
-            removeObjectsFromScene(objDst);
-            addObjectsToscene(objOrig);
-        }
+        addObjectsToscene(objDst, objOrig);
+        objOrig.visible(lt < .5);
+        objDst.visible(lt >= .5);
     }
 
     private double[] computeScale(double lt) {

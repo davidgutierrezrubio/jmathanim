@@ -22,6 +22,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 /**
+ * A class to store an array of separate paths that define a complex Shape, like
+ * a B letter
  *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
@@ -135,7 +137,8 @@ public class CanonicalJMPath {
      *
      * @param pathNumber Number of the path to compute the subpath
      * @param t
-     * @return A referencedCopy of the path (deep referencedCopy, points are not referenced)
+     * @return A referencedCopy of the path (deep referencedCopy, points are not
+     * referenced)
      */
     public JMPath subpath(int pathNumber, double t) {
         JMPath resul = paths.get(pathNumber).copy();

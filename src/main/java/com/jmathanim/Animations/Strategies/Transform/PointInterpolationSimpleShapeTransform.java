@@ -147,7 +147,7 @@ public class PointInterpolationSimpleShapeTransform extends TransformStrategy {
         double lt = getLT(t);
         if (lt == 0) {
             removeObjectsFromScene(intermediate, destiny);
-            addObjectsToscene(origin);
+//            addObjectsToscene(origin);
             return;
         }
         if (lt == 1) {
