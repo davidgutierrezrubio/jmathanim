@@ -104,19 +104,46 @@ public class MultiShapeObject extends MathObject implements Iterable<Shape> {
         return resul;
     }
 
+    //This is SLOOOOOOOOW for big multishapes
+//    @Override
+//    public void copyStateFrom(MathObject obj) {
+//        if (!(obj instanceof MultiShapeObject)) {
+//            return;
+//        }
+////        shapes.clear();
+//        MultiShapeObject msh = (MultiShapeObject) obj;
+//        this.getMp().copyFrom(msh.getMp());
+//        for (Shape sh : msh) {
+//            add(sh.copy());
+//            sh.getMp().copyFrom(sh.getMp());
+//        }
+//
+//    }
     @Override
     public void copyStateFrom(MathObject obj) {
         if (!(obj instanceof MultiShapeObject)) {
             return;
         }
-//        shapes.clear();
+
         MultiShapeObject msh = (MultiShapeObject) obj;
         this.getMp().copyFrom(msh.getMp());
-        for (Shape sh : msh) {
-            add(sh.copy());
-            sh.getMp().copyFrom(sh.getMp());
-        }
+        int n = 0;
+        //Assuming this shape and obj has the same number of items
+        if (size() == msh.size()) {
 
+            for (Shape s : shapes) {
+                s.copyStateFrom(msh.get(n));
+                s.getMp().copyFrom(msh.get(n).getMp());
+                n++;
+            }
+        } else {//If there is discrepancy, turn it off and on!
+            shapes.clear();
+            this.getMp().copyFrom(msh.getMp());
+            for (Shape sh : msh) {
+                add(sh.copy());
+                sh.getMp().copyFrom(sh.getMp());
+            }
+        }
     }
 
     @Override
@@ -348,7 +375,8 @@ public class MultiShapeObject extends MathObject implements Iterable<Shape> {
      * Returns a Shape object with all shapes of this MultiShapeObject merged.
      * Drawing style is copied from general drawing style from this object.
      *
-     * @param connect If true, connect the ending of a shape with the beginning of the next one by a straight line.
+     * @param connect If true, connect the ending of a shape with the beginning
+     * of the next one by a straight line.
      * @param close If true, closes the resulting shape.
      * @return The Shape object created.
      */
@@ -368,7 +396,7 @@ public class MultiShapeObject extends MathObject implements Iterable<Shape> {
 
     @Override
     public String toString() {
-        return "MultiShape " + objectLabel+ "("+size()+" elements)";
+        return "MultiShape " + objectLabel + "(" + size() + " elements)";
     }
 
 }
