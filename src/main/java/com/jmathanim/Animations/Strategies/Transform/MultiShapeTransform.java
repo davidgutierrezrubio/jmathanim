@@ -63,8 +63,6 @@ public class MultiShapeTransform extends TransformStrategy {
     @Override
     public void initialize(JMathAnimScene scene) {
         super.initialize(scene);
-//        isOriginInScene = scene.getMathObjects().contains(origin);
-//        mshIntermediate.copyStateFrom(mshOrigin);
 
         dst = MultiShapeObject.make();
         tr = MultiShapeObject.make();
@@ -78,7 +76,6 @@ public class MultiShapeTransform extends TransformStrategy {
             }
              tr.copyStateFrom(mshOrigin);
         }
-        
         
         if (sizeTr < sizeDst) {
             tr.getShapes().clear();
@@ -101,44 +98,6 @@ public class MultiShapeTransform extends TransformStrategy {
         anim.initialize(scene);
     }
 
-//    public MathObject getIntermediateTransformedObject() {
-//        Shape[] shapes = new Shape[anim.getAnimations().size()];
-//        int k = 0;
-//        for (Animation animation : anim.getAnimations()) {
-//            Transform tr = (Transform) animation;
-//            shapes[k] = ((Shape) tr.getIntermediateTransformedObject());
-//            k++;
-//        }
-//        return MultiShapeObject.make(shapes);
-//    }
-//    @Override
-//    public void cleanAnimationAt(double t) {
-//        double lt = getLT(t);
-//        anim.cleanAnimationAt(t);
-//        if (lt == 0) {//If ends at t=0, keep original
-//            removeObjectsFromScene(destiny, intermediate);
-//            if (isOriginInScene) {
-//                addObjectsToscene(origin);
-//            } else {
-//                removeObjectsFromScene(origin);
-//            }
-//            return;
-//        }
-//        if (lt == 1) {//If ends at t=1 keep destiny
-//            removeObjectsFromScene(origin, intermediate);
-//            addObjectsToscene(destiny);
-//            return;
-//        }
-//        //Case 0<t<1
-//        removeObjectsFromScene(origin, destiny);
-//        addObjectsToscene(intermediate);
-//    }
-//    @Override
-//    public void prepareForAnim(double t) {
-//        anim.prepareForAnim(t);
-//        removeObjectsFromScene(origin, destiny);
-//        addObjectsToscene(intermediate);
-//    }
     @Override
     public void prepareForAnim(double t) {
         anim.prepareForAnim(t);
@@ -149,7 +108,6 @@ public class MultiShapeTransform extends TransformStrategy {
     public void cleanAnimationAt(double t) {
         anim.cleanAnimationAt(t);
         super.cleanAnimationAt(t);
-        double lt=getLT(t);
         removeObjectsFromScene(dst);
         
         
