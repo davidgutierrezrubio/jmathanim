@@ -17,13 +17,10 @@
  */
 package com.jmathanim.Animations.Strategies.Transform;
 
-import com.jmathanim.Animations.Animation;
 import com.jmathanim.Animations.AnimationGroup;
 import com.jmathanim.Animations.Transform;
 import com.jmathanim.jmathanim.JMathAnimScene;
-import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.MultiShapeObject;
-import com.jmathanim.mathobjects.Shape;
 
 /**
  * Animation strategy between 2 multishapes A and B. If size(A) equals size(B)
@@ -61,8 +58,8 @@ public class MultiShapeTransform extends TransformStrategy {
     }
 
     @Override
-    public void initialize(JMathAnimScene scene) {
-        super.initialize(scene);
+    public boolean doInitialization() {
+        super.doInitialization();
 
         dst = MultiShapeObject.make();
         tr = MultiShapeObject.make();
@@ -74,9 +71,9 @@ public class MultiShapeTransform extends TransformStrategy {
             for (int i = 0; i < sizeTr; i++) {
                 dst.add(mshDestiny.get(i * sizeDst / sizeTr).copy());//remove copy
             }
-             tr.copyStateFrom(mshOrigin);
+            tr.copyStateFrom(mshOrigin);
         }
-        
+
         if (sizeTr < sizeDst) {
             tr.getShapes().clear();
             for (int i = 0; i < sizeDst; i++) {
@@ -95,7 +92,7 @@ public class MultiShapeTransform extends TransformStrategy {
             anim.add(transformAnim);
             anim.setLambda(getTotalLambda());
         }
-        anim.initialize(scene);
+        return anim.initialize(scene);
     }
 
     @Override
@@ -109,8 +106,7 @@ public class MultiShapeTransform extends TransformStrategy {
         anim.cleanAnimationAt(t);
         super.cleanAnimationAt(t);
         removeObjectsFromScene(dst);
-        
-        
+
     }
 
 }

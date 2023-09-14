@@ -17,12 +17,10 @@
  */
 package com.jmathanim.Animations.Strategies.ShowCreation;
 
-import com.jmathanim.Animations.Animation;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.Line;
 import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.Shape;
-import java.util.function.DoubleUnaryOperator;
 
 /**
  * Animation to create infinite lines. Temporarily replaces the line with a
@@ -47,14 +45,13 @@ public class LineCreationAnimation extends AbstractCreationStrategy {
         return segment;
     }
 
-    @Override
-    public void initialize(JMathAnimScene scene) {
-        super.initialize(scene);
+     @Override
+    public boolean doInitialization() {
+        super.doInitialization();
         segment = line.toSegment(scene.getCamera());
         anim = new SimpleShapeCreationAnimation(this.runTime, segment);
         anim.setLambda(getTotalLambda());
-        anim.initialize(scene);
-
+        return anim.initialize(scene);
     }
 
     @Override

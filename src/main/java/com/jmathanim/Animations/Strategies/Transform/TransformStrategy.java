@@ -64,13 +64,11 @@ public abstract class TransformStrategy extends AnimationWithEffects {
     }
 
     @Override
-    public void initialize(JMathAnimScene scene) {
-        super.initialize(scene);
+    public boolean doInitialization() {
+        super.doInitialization();
         destinyWasAddedAtFirst = scene.isInScene(destiny);
         originWasAddedAtFirst = scene.isInScene(origin);
-        //Remove origin object from scene and add intermediate
-//        removeObjectsFromScene(getOriginObject());
-//        addObjectsToscene(getIntermediateObject());
+        return true;
     }
 
     @Override

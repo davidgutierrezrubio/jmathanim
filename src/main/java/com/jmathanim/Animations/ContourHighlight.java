@@ -93,8 +93,8 @@ public class ContourHighlight extends Animation {
     }
 
     @Override
-    public void initialize(JMathAnimScene scene) {
-        super.initialize(scene);
+    public boolean doInitialization() {
+        return super.doInitialization();
     }
 
     @Override

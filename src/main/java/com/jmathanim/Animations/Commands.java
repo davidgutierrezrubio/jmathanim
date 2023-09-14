@@ -68,12 +68,14 @@ public class Commands {
     public static ShiftAnimation shift(double runtime, Vec sv, MathObject... objects) {
         ShiftAnimation resul = new ShiftAnimation(runtime, objects) {
             @Override
-            public void initialize(JMathAnimScene scene) {
-                super.initialize(scene);
+            public boolean doInitialization() {
+                super.doInitialization();
                 for (MathObject obj : objects) {
                     setShiftVector(obj, sv);
                 }
+                return true;
             }
+
         };
         resul.setDebugName("Shift");
         return resul;
@@ -82,11 +84,12 @@ public class Commands {
     public static ShiftAnimation moveTo(double runtime, Point destiny, MathObject... objects) {
         ShiftAnimation resul = new ShiftAnimation(runtime, objects) {
             @Override
-            public void initialize(JMathAnimScene scene) {
-                super.initialize(scene);
+            public boolean doInitialization() {
+                super.doInitialization();
                 for (MathObject obj : objects) {
                     setShiftVector(obj, obj.getCenter().to(destiny));
                 }
+                return true;
             }
         };
         resul.setDebugName("MoveTo");
@@ -253,9 +256,10 @@ public class Commands {
             MathObject[] mathObjects = objects;
 
             @Override
-            public void initialize(JMathAnimScene scene) {
-                super.initialize(scene);
+            public boolean doInitialization() {
+                super.doInitialization();
                 saveStates(mathObjects);
+                return true;
             }
 
             @Override
@@ -311,14 +315,15 @@ public class Commands {
             private boolean[] shouldBeAdded;
 
             @Override
-            public void initialize(JMathAnimScene scene) {
-                super.initialize(scene);
+            public boolean doInitialization() {
+                super.doInitialization();
                 saveStates(mathObjects);
                 shouldBeAdded = new boolean[mathObjects.length];
                 for (int i = 0; i < mathObjects.length; i++) {
                     //True if object is NOT added to the scene
                     shouldBeAdded[i] = !scene.isInScene(mathObjects[i]);
                 }
+                return true;
             }
 
             @Override
@@ -389,12 +394,13 @@ public class Commands {
             }
 
             @Override
-            public void initialize(JMathAnimScene scene) {
-                super.initialize(scene);
+            public boolean doInitialization() {
+                super.doInitialization();
                 saveStates(mathObjects);
                 if (c != null) {
                     rotationCenter = c;
                 }
+                return true;
             }
 
             @Override
@@ -413,7 +419,7 @@ public class Commands {
 
             @Override
             public void finishAnimation() {
-                doAnim(1);
+                doAnim(t);
                 super.finishAnimation();
             }
 
@@ -454,14 +460,15 @@ public class Commands {
             AffineJTransform tr;
 
             @Override
-            public void initialize(JMathAnimScene scene) {
-                super.initialize(scene);
+            public boolean doInitialization() {
+                super.doInitialization();
                 saveStates(mathObjects);
                 for (MathObject obj : mathObjects) {
                     tr = AffineJTransform.createAffineTransformation(orig1, orig2, orig3, dst1, dst2, dst3, 1);
                     Point center = obj.getCenter();
                     prepareJumpPath(center, tr.getTransformedObject(center), obj);
                 }
+                return true;
             }
 
             @Override
@@ -546,14 +553,15 @@ public class Commands {
             MathObject[] mathObjects = objects;
 
             @Override
-            public void initialize(JMathAnimScene scene) {
-                super.initialize(scene);
+            public boolean doInitialization() {
+                super.doInitialization();
                 saveStates(mathObjects);
                 tr = AffineJTransform.createDirect2DIsomorphic(A, B, C, D, 1);
                 for (MathObject obj : mathObjects) {
                     Point center = obj.getCenter();
                     prepareJumpPath(center, tr.getTransformedObject(center), obj);
                 }
+                return true;
             }
 
             @Override
@@ -616,14 +624,15 @@ public class Commands {
             MathObject[] mathObjects = objects;
 
             @Override
-            public void initialize(JMathAnimScene scene) {
-                super.initialize(scene);
+            public boolean doInitialization() {
+                super.doInitialization();
                 saveStates(mathObjects);
                 tr = AffineJTransform.createInverse2DIsomorphic(A, B, C, D, 1);
                 for (MathObject obj : mathObjects) {
                     Point center = obj.getCenter();
                     prepareJumpPath(center, tr.getTransformedObject(center), obj);
                 }
+                return true;
             }
 
             @Override
@@ -679,14 +688,15 @@ public class Commands {
             AffineJTransform tr;
 
             @Override
-            public void initialize(JMathAnimScene scene) {
-                super.initialize(scene);
+            public boolean doInitialization() {
+                super.doInitialization();
                 saveStates(mathObjects);
                 for (MathObject obj : mathObjects) {
                     tr = AffineJTransform.createReflection(axis1, axis2, 1);
                     Point center = obj.getCenter();
                     prepareJumpPath(center, tr.getTransformedObject(center), obj);
                 }
+                return true;
             }
 
             @Override
@@ -743,14 +753,15 @@ public class Commands {
             AffineJTransform tr;
 
             @Override
-            public void initialize(JMathAnimScene scene) {
-                super.initialize(scene);
+            public boolean doInitialization() {
+                super.doInitialization();
                 saveStates(mathObjects);
                 for (MathObject obj : mathObjects) {
                     tr = AffineJTransform.createReflectionByAxis(axisPoint1, axisPoint2, 1);
                     Point center = obj.getCenter();
                     prepareJumpPath(center, tr.getTransformedObject(center), obj);
                 }
+                return true;
             }
 
             @Override
@@ -830,9 +841,10 @@ public class Commands {
             MODrawProperties mpDst = mp;
 
             @Override
-            public void initialize(JMathAnimScene scene) {
-                super.initialize(scene);
+            public boolean doInitialization() {
+                super.doInitialization();
                 saveStates(mathObjects);
+                return true;
             }
 
             @Override
@@ -928,9 +940,10 @@ public class Commands {
                 Rect rSource;
 
                 @Override
-                public void initialize(JMathAnimScene scene) {
-                    super.initialize(scene);
+                public boolean doInitialization() {
+                    super.doInitialization();
                     rSource = cam.getMathView();
+                    return true;
                 }
 
                 @Override
@@ -1062,8 +1075,8 @@ public class Commands {
             MathObject[] mathObjects = objects;
 
             @Override
-            public void initialize(JMathAnimScene scene) {
-                super.initialize(scene);
+            public boolean doInitialization() {
+                super.doInitialization();
                 saveStates(mathObjects);
                 for (MathObject obj : mathObjects) {
                     if (obj instanceof Constructible) {
@@ -1071,6 +1084,7 @@ public class Commands {
                         cnstr.freeMathObject(true);
                     }
                 }
+                return true;
             }
 
             @Override
@@ -1168,8 +1182,8 @@ public class Commands {
             MathObject[] mathObjects = objects;
 
             @Override
-            public void initialize(JMathAnimScene scene) {
-                super.initialize(scene);
+            public boolean doInitialization() {
+                super.doInitialization();
                 saveStates(mathObjects);
                 for (MathObject obj : mathObjects) {
                     obj.visible(false);
@@ -1178,6 +1192,7 @@ public class Commands {
                         cnstr.freeMathObject(true);
                     }
                 }
+                return true;
             }
 
             @Override
@@ -1243,13 +1258,14 @@ public class Commands {
             MathObject[] mathObjects = objects;
 
             @Override
-            public void initialize(JMathAnimScene scene) {
-                super.initialize(scene);
+            public boolean doInitialization() {
+                super.doInitialization();
                 this.mathObjects = objects;
                 saveStates(mathObjects);
                 for (MathObject obj : mathObjects) {
                     obj.visible(false);
                 }
+                return true;
             }
 
             @Override
@@ -1311,9 +1327,10 @@ public class Commands {
             MathObject[] mathObjects = objects;
 
             @Override
-            public void initialize(JMathAnimScene scene) {
-                super.initialize(scene);
+            public boolean doInitialization() {
+                super.doInitialization();
                 saveStates(mathObjects);
+                return true;
             }
 
             @Override
@@ -1386,13 +1403,14 @@ public class Commands {
 
         ShiftAnimation resul = new ShiftAnimation(runtime, mathobjects) {
             @Override
-            public void initialize(JMathAnimScene scene) {
-                super.initialize(scene);
+            public boolean doInitialization() {
+                super.doInitialization();
                 JMathAnimScene.logger.debug("Initialized setLayout animation");
                 for (MathObject obj : mathobjects) {
                     Point dst = centers.get(obj);
                     setShiftVector(obj, obj.getCenter().to(dst));
                 }
+                return true;
             }
 
         };
@@ -1422,13 +1440,14 @@ public class Commands {
 
         ShiftAnimation resul = new ShiftAnimation(runtime, mathobjects) {
             @Override
-            public void initialize(JMathAnimScene scene) {
-                super.initialize(scene);
+            public boolean doInitialization() {
+                super.doInitialization();
                 JMathAnimScene.logger.debug("Initialized setLayout animation");
                 for (MathObject obj : mathobjects) {
                     Point dst = centers.get(obj);
                     setShiftVector(obj, obj.getCenter().to(dst));
                 }
+                return true;
             }
         };
         resul.setDebugName("setLayout");
@@ -1449,10 +1468,11 @@ public class Commands {
             ArrayList<Double> alphaOrig = new ArrayList<>();
 
             @Override
-            public void initialize(JMathAnimScene scene) {
-                super.initialize(scene);
+            public boolean doInitialization() {
+                super.doInitialization();
                 JMathAnimScene.logger.debug("Initialized changeFillAlpha animation");
                 saveStates(mathObjects);
+                return true;
             }
 
             @Override
@@ -1502,14 +1522,14 @@ public class Commands {
     public static ShiftAnimation moveOut(double runtime, Anchor.Type exitAnchor, MathObject... mathObjects) {
         ShiftAnimation resul = new ShiftAnimation(runtime, mathObjects) {
             @Override
-            public void initialize(JMathAnimScene scene) {
+            public boolean doInitialization() {
+                super.doInitialization();
                 for (MathObject obj : mathObjects) {
                     if (obj instanceof Constructible) {
                         Constructible cnstr = (Constructible) obj;
                         cnstr.freeMathObject(true);
                     }
                 }
-                super.initialize(scene);
                 JMathAnimScene.logger.debug("Initialized moveOut animation");
                 // Compute appropiate shift vectors
                 Rect r = JMathAnimConfig.getConfig().getCamera().getMathView();
@@ -1529,6 +1549,7 @@ public class Commands {
                     }
                     this.setShiftVector(obj, objAnchor.to(screenAnchor));
                 }
+                return true;
             }
 
             @Override
@@ -1576,8 +1597,8 @@ public class Commands {
         final MathObject[] toAnimateArray = toAnimateArrayList.toArray(MathObject[]::new);
         ShiftAnimation resul = new ShiftAnimation(runtime, toAnimateArray) {
             @Override
-            public void initialize(JMathAnimScene scene) {
-                super.initialize(scene);
+            public boolean doInitialization() {
+                super.doInitialization();
                 addThisAtTheEnd.addAll(Arrays.asList(mathObjects));
                 removeThisAtTheEnd.addAll(toRemove);
                 JMathAnimScene.logger.debug("Initialized moveIn animation");
@@ -1601,6 +1622,7 @@ public class Commands {
                     this.setShiftVector(obj, q.to(p));
                 }
                 saveStates(toAnimateArray);
+                return true;
             }
 
             @Override
@@ -1652,13 +1674,14 @@ public class Commands {
             MathObject... mathobjects) {
         ShiftAnimation resul = new ShiftAnimation(runtime, mathobjects) {
             @Override
-            public void initialize(JMathAnimScene scene) {
-                super.initialize(scene);
+            public boolean doInitialization() {
+                super.doInitialization();
                 JMathAnimScene.logger.debug("Initialized align animation");
                 for (MathObject obj : mathobjects) {
                     Point dstCenter = Shape.rectangle(obj.getBoundingBox()).align(dst, type).getCenter();
                     setShiftVector(obj, obj.getCenter().to(dstCenter));
                 }
+                return true;
             }
 
         };
@@ -1682,15 +1705,16 @@ public class Commands {
             MathObject... mathobjects) {
         ShiftAnimation resul = new ShiftAnimation(runtime, mathobjects) {
             @Override
-            public void initialize(JMathAnimScene scene) {
+            public boolean doInitialization() {
+                super.doInitialization();
                 MathObject previous = dst;
 
-                super.initialize(scene);
                 for (MathObject obj : mathobjects) {
                     MathObject objc = Shape.rectangle(obj.getBoundingBox()).stackTo(previous, type, gap);
                     setShiftVector(obj, obj.getCenter().to(objc.getCenter()));
                     previous = objc;
                 }
+                return true;
             }
         };
         resul.setDebugName("stackTo for " + mathobjects.length + " object(s)");

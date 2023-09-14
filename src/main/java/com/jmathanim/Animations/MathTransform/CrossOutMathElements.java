@@ -173,8 +173,9 @@ public class CrossOutMathElements extends AnimationGroup {
         return generatedCrosses;
     }
 
-    @Override
-    public void initialize(JMathAnimScene scene) {
+      @Override
+    public boolean doInitialization() {
+        super.doInitialization();
         generateCrosses();
         for (Shape cross : crossesShapes) {
             final JMPath path = cross.getPath();
@@ -186,9 +187,9 @@ public class CrossOutMathElements extends AnimationGroup {
             this.add(animShift);
         }
         
-        super.initialize(scene);
         Shape[] toArray = crossesShapes.toArray(Shape[]::new);
         addObjectsToscene(toArray);
+        return true;
     }
 
     private void generateCrosses() {

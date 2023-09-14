@@ -60,15 +60,15 @@ public class PointInterpolationCanonical extends TransformStrategy {
         this.intermediate = new Shape();
         this.destiny = destiny;
         this.destinyCopy = new Shape();
-        this.shOrigin=origin;
-        this.shDestiny=destiny;
-        this.shIntermediate=(Shape) intermediate;
+        this.shOrigin = origin;
+        this.shDestiny = destiny;
+        this.shIntermediate = (Shape) intermediate;
         this.addedAuxiliaryObjectsToScene = new ArrayList<>();
     }
 
     @Override
-    public void initialize(JMathAnimScene scene) {
-        super.initialize(scene);
+    public boolean doInitialization() {
+        super.doInitialization();
         originWasAddedAtFirst = scene.isInScene(origin);
         destinyWasAddedAtFirst = scene.isInScene(destiny);
         intermediate.copyStateFrom(origin);
@@ -78,7 +78,7 @@ public class PointInterpolationCanonical extends TransformStrategy {
         // First, if any of the shapes is empty, do nothing
 
         if ((shIntermediate.size() == 0) || (shDestiny.size() == 0)) {
-            return;
+            return false;
         }
 
         // I ensure they have the same number of points
@@ -111,7 +111,7 @@ public class PointInterpolationCanonical extends TransformStrategy {
         Point origCenter = this.origin.getCenter();
         Point dstCenter = this.destiny.getCenter();
         prepareJumpPath(origCenter, dstCenter, origin);
-
+        return true;
     }
 
     @Override

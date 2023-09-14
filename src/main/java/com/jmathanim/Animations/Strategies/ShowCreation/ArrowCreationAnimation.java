@@ -36,9 +36,10 @@ public class ArrowCreationAnimation extends AbstractCreationStrategy {
     }
 
     @Override
-    public void initialize(JMathAnimScene scene) {
-        super.initialize(scene);
+    public boolean doInitialization() {
+        super.doInitialization();
         saveStates(obj);
+        return true;
     }
 
     @Override

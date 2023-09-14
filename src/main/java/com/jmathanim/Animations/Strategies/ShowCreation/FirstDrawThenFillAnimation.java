@@ -46,14 +46,14 @@ public class FirstDrawThenFillAnimation extends AbstractCreationStrategy {
     public FirstDrawThenFillAnimation(double runtime, MathObject origin) {
         super(runtime);
         this.originObject = origin;
-        
+
         anim = AnimationGroup.make();
     }
 
     @Override
-    public void initialize(JMathAnimScene scene) {
-        super.initialize(scene);
-        originShapes=converToShapeArray(originObject);
+    public boolean doInitialization() {
+        super.doInitialization();
+        originShapes = converToShapeArray(originObject);
         this.intermediateShapes = new Shape[originShapes.length];
         for (int i = 0; i < originShapes.length; i++) {
             this.intermediateShapes[i] = originShapes[i].copy();
@@ -72,7 +72,7 @@ public class FirstDrawThenFillAnimation extends AbstractCreationStrategy {
             anim.add(createSingleAnimation(shouldAnimateFill, this.intermediateShapes[index], mpDst[index]));
         }
         anim.addDelayEffect(.2);
-        anim.initialize(scene);
+        return anim.initialize(scene);
     }
 
     public Animation createSingleAnimation(boolean shouldAnimateFill, Shape sh, MODrawProperties mp) {
@@ -101,10 +101,8 @@ public class FirstDrawThenFillAnimation extends AbstractCreationStrategy {
         anim.finishAnimation();
         super.finishAnimation();
     }
-    
-    
-    
-     private Shape[] converToShapeArray(MathObject obj) {
+
+    private Shape[] converToShapeArray(MathObject obj) {
         if (obj instanceof Shape) {
             Shape shape = (Shape) obj;
             return new Shape[]{shape};
@@ -115,10 +113,10 @@ public class FirstDrawThenFillAnimation extends AbstractCreationStrategy {
         }
         if (obj instanceof MathObjectGroup) {
             //This may lead to error if any element is not a Shape
-            MathObjectGroup mg=(MathObjectGroup) obj;
-            Shape[] shapes=new Shape[mg.size()];
+            MathObjectGroup mg = (MathObjectGroup) obj;
+            Shape[] shapes = new Shape[mg.size()];
             for (int i = 0; i < shapes.length; i++) {
-                shapes[i]=(Shape) mg.get(i);
+                shapes[i] = (Shape) mg.get(i);
             }
             return shapes;
         }

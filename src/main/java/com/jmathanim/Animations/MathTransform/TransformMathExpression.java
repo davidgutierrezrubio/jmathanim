@@ -142,9 +142,9 @@ public class TransformMathExpression extends Animation {
         }
     }
 
-    @Override
-    public void initialize(JMathAnimScene scene) {
-        super.initialize(scene);
+       @Override
+    public boolean doInitialization() {
+        super.doInitialization();
         removeObjectsFromScene(latexTransformedBase);
         HashMap<String, int[]> or = trParOrigGroups;
         HashMap<String, int[]> dst = trParDstGroups;
@@ -196,8 +196,7 @@ public class TransformMathExpression extends Animation {
             createAddingSubAnimation(sh, addInDstParameters.get(n));
         }
 
-        anim.initialize(scene);
-//        scene.add(mshOrig);
+        return anim.initialize(scene);
     }
 
     private void createRemovingSubAnimation(int n, TransformMathExpressionParameters par) {

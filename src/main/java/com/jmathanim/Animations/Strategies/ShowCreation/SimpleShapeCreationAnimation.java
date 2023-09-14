@@ -41,9 +41,11 @@ public class SimpleShapeCreationAnimation extends AbstractCreationStrategy {
         intermediateShape.getMp().copyFrom(originShape.getMp());
     }
 
-    @Override
-    public void initialize(JMathAnimScene scene) {
-        super.initialize(scene);
+     @Override
+    public boolean doInitialization() {
+        super.doInitialization();
+        
+        return true;
 
     }
 

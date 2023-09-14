@@ -134,13 +134,12 @@ public class AnimationGroup extends AnimationWithEffects {
     }
 
     @Override
-    public void initialize(JMathAnimScene scene) {
+    public boolean doInitialization() {
         //Compute runTime as the MAX runtime of all animations
         this.runTime = 0;
         for (Animation an : animations) {
             runTime = (runTime < an.getRunTime() ? an.getRunTime() : runTime);
         }
-        super.initialize(scene);
 
         int size = animations.size();
         if (!"".equals(getDebugName())) {
@@ -157,17 +156,17 @@ public class AnimationGroup extends AnimationWithEffects {
                 k++;
             }
         }
-        
+        boolean resul=true;
         for (Animation anim : animations) {
             if (anim != null) {
                 if (anim instanceof AnimationWithEffects) {
                     AnimationWithEffects animEf = (AnimationWithEffects) anim;
                     this.copyEffectParametersTo(animEf);
                 }
-                anim.initialize(scene);
+                resul=resul & anim.initialize(scene);
             }
         }
-
+        return resul;
       
     }
 

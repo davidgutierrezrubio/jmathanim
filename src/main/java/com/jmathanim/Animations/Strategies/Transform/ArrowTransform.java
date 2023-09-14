@@ -40,9 +40,9 @@ public class ArrowTransform extends TransformStrategy {
         intermediate = this.origin.copy();
     }
 
-    @Override
-    public void initialize(JMathAnimScene scene) {
-        super.initialize(scene);
+     @Override
+    public boolean doInitialization() {
+        super.doInitialization();
         Point a = ((Arrow2D)origin).getStart().copy();
         Point b = ((Arrow2D)origin).getEnd().copy();
         Point c = ((Arrow2D)destiny).getStart().copy();
@@ -53,6 +53,7 @@ public class ArrowTransform extends TransformStrategy {
         this.copyAnimationParametersTo(anim);
         anim.setLambda(getTotalLambda());
         anim.initialize(scene);
+        return true;
     }
 
     @Override

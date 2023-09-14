@@ -56,8 +56,8 @@ public abstract class ShiftAnimation extends AnimationWithEffects {
     }
 
     @Override
-    public void initialize(JMathAnimScene scene) {
-        super.initialize(scene);
+    public boolean doInitialization() {
+        super.doInitialization();
         saveStates(mathObjects);
         shouldBeAdded=new boolean[mathObjects.length];
         for (int i = 0; i < mathObjects.length; i++) {
@@ -73,7 +73,7 @@ public abstract class ShiftAnimation extends AnimationWithEffects {
                 k++;
             }
         }
-
+        return true;
     }
 
     /**

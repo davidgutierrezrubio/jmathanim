@@ -97,10 +97,11 @@ public class MoveAlongPath extends Animation {
         this.shouldRotate = shouldRotate;
     }
 
-    @Override
-    public void initialize(JMathAnimScene scene) {
-        super.initialize(scene);
+      @Override
+    public boolean doInitialization() {
+        super.doInitialization();
         saveStates(mobjTransformed);
+        return true;
     }
 
     @Override

@@ -92,11 +92,11 @@ public class Concatenate extends Animation {
         return animations.get(currentAnim).getIntermediateObject();
     }
 
-    @Override
-    public void initialize(JMathAnimScene scene) {
-        super.initialize(scene);
+     @Override
+    public boolean doInitialization() {
+        super.doInitialization();
         // Initialize the first...
-        animations.get(0).initialize(scene);
+        return animations.get(0).initialize(scene);
     }
 
     @Override

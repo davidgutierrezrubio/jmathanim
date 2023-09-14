@@ -110,8 +110,9 @@ public class FlipTransform extends AnimationWithEffects {
     }
 
     @Override
-    public void initialize(JMathAnimScene scene) {
-        super.initialize(scene);
+    public boolean doInitialization() {
+        //TODO: Implement exceptions for detailed errors initializating animations
+        super.doInitialization();
         origCenter = objOrig.getCenter();
         dstCenter = objDst.getCenter();
         addObjectsToscene(objOrig, objDst);
@@ -120,6 +121,7 @@ public class FlipTransform extends AnimationWithEffects {
         prepareJumpPath(origCenter, dstCenter, objDst);
         prepareJumpPath(origCenter, dstCenter, objOrig);
         intermediateObject = objOrig;
+        return true;
     }
 
     @Override

@@ -108,8 +108,8 @@ public class Transform extends AnimationWithEffects {
     }
 
     @Override
-    public void initialize(JMathAnimScene scene) {
-        super.initialize(scene);
+    public boolean doInitialization() {
+        super.doInitialization();
         // Determine optimal transformation, if nothing has been chosen prior to init
 
         if (transformMethod == null) {
@@ -130,7 +130,7 @@ public class Transform extends AnimationWithEffects {
 //        transformStrategy.setShouldInterpolateStyles(this.isShouldInterpolateStyles());
         copyAnimationParametersTo(transformStrategy);
         transformStrategy.initialize(scene);
-
+        return true;
     }
 
     private void determineTransformStrategy() {
@@ -274,7 +274,6 @@ public class Transform extends AnimationWithEffects {
     public void prepareForAnim(double t) {
         transformStrategy.prepareForAnim(t);
     }
-    
 
     /**
      * Sets if paths should be optimized in any available way, before doing the
@@ -316,7 +315,6 @@ public class Transform extends AnimationWithEffects {
         transformStrategy.doAnim(t);
     }
 
-
     /**
      * Gets a reference to the intermediate transformed object. The transform
      * animations from A to B usually works removing A, creating an auxiliary
@@ -341,7 +339,8 @@ public class Transform extends AnimationWithEffects {
         transformStrategy.setAllocationParameters(start, end);
         return this;
     }
- @Override
+
+    @Override
     public MathObject getIntermediateObject() {
         return transformStrategy.getIntermediateObject();
     }

@@ -49,8 +49,8 @@ public class JoinAnimation extends Animation {
     }
 
     @Override
-    public void initialize(JMathAnimScene scene) {
-        super.initialize(scene);
+    public boolean doInitialization() {
+        super.doInitialization();
         //Compute vector of steps
         double totalSum = animations.stream().collect(Collectors.summingDouble(Animation::getRunTime));
         steps = new double[animations.size() + 1];
@@ -76,7 +76,7 @@ public class JoinAnimation extends Animation {
             anim.cleanAnimationAt(0);
 
         }
-
+        return true;
     }
 
     public void doAnimOld(double t) {
@@ -193,7 +193,8 @@ public class JoinAnimation extends Animation {
     public ArrayList<Animation> getAnimations() {
         return animations;
     }
-  @Override
+
+    @Override
     public MathObject getIntermediateObject() {
         return previous.getIntermediateObject();
     }

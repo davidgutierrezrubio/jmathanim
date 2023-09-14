@@ -51,8 +51,8 @@ public class PointInterpolationSimpleShapeTransform extends TransformStrategy {
     }
 
     @Override
-    public void initialize(JMathAnimScene scene) {
-        super.initialize(scene);
+    public boolean doInitialization() {
+        super.doInitialization();
         shIntermediate.copyStateFrom(origin);
         shIntermediate.getPath().distille();//Clean paths before transform
         shDestiny.getPath().distille();
@@ -69,6 +69,7 @@ public class PointInterpolationSimpleShapeTransform extends TransformStrategy {
         originBase = intermediate.copy();
 
         prepareJumpPath(origCenter, dstCenter, intermediate);
+        return true;
     }
 
     @Override

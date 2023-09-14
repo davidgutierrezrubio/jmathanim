@@ -248,15 +248,36 @@ public abstract class Animation {
      * playing
      *
      * @param scene Scene where the animation is invoked from.
+     * @return True if animation was successfully initializated
      */
-    public void initialize(JMathAnimScene scene) {
+    public final boolean initialize(JMathAnimScene scene) {
         this.scene = scene;
         setFps(scene.getConfig().fps);
-        status = Status.INITIALIZED;
-        if (initRunnable != null) {
-            initRunnable.run();
-        }
 
+        if (status == Status.NOT_INITIALIZED) {
+            if (doInitialization()) {//If initialization returned sucess...
+                status = Status.INITIALIZED;
+                if (initRunnable != null) {
+                    initRunnable.run();
+                }
+                return true;
+            } else
+            {
+                JMathAnimScene.logger.error("Error initializating animation "+getDebugName());
+                return false;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Do specific initialition methods. This method is called from initialize
+     * if animation is not previously initalizated
+     *
+     * @return True if no problems were found initializating
+     */
+    protected boolean doInitialization() {
+        return true;
     }
 
     /**
@@ -466,11 +487,10 @@ public abstract class Animation {
         if (null != this.isUseObjectState()) {
             anim.setUseObjectState(this.isUseObjectState());
         }
-         if (null != this.isShouldInterpolateStyles()) {
+        if (null != this.isShouldInterpolateStyles()) {
             anim.setShouldInterpolateStyles(this.isShouldInterpolateStyles());
         }
-        
-        
+
         anim.allocateEnd = this.allocateEnd;
         anim.allocateStart = this.allocateStart;
     }

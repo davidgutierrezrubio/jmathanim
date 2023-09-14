@@ -95,8 +95,8 @@ public class ShowCreation extends Animation {
     }
 
     @Override
-    public void initialize(JMathAnimScene scene) {
-        super.initialize(scene);
+    public boolean doInitialization() {
+        super.doInitialization();
         try {
             if (strategyType == ShowCreationStrategy.NONE) {
                 determineCreationStrategy(this.mobj);
@@ -111,6 +111,7 @@ public class ShowCreation extends Animation {
             JMathAnimScene.logger.error("Couldn't create ShowCreation strategy for "
                     + this.mobj.getClass().getCanonicalName() + ". Animation will not be done. (" + e.toString() + ")");
         }
+        return true;
     }
 
     @Override
@@ -254,8 +255,8 @@ public class ShowCreation extends Animation {
                     }
 
                     @Override
-                    public void initialize(JMathAnimScene scene) {
-                        super.initialize(scene);
+                    public boolean doInitialization() {
+                        return super.doInitialization();
                     }
 
                     @Override
@@ -304,8 +305,6 @@ public class ShowCreation extends Animation {
                 break;
         }
     }
-
-   
 
     /**
      * Sets the strategy used to create the object

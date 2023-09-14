@@ -47,9 +47,9 @@ public abstract class AffineTransformStrategy extends TransformStrategy {
         this.intermediate = origin.copy();
     }
 
-    @Override
-    public void initialize(JMathAnimScene scene) {
-        super.initialize(scene);
+      @Override
+    public boolean doInitialization() {
+        super.doInitialization();
         A = shOrigin.getPoint(0).copy();
         B = shOrigin.getPoint(1).copy();
         C = shOrigin.getPoint(2).copy();
@@ -59,6 +59,7 @@ public abstract class AffineTransformStrategy extends TransformStrategy {
         saveStates(intermediate);
         AffineJTransform tr = createIntermediateTransform(1);
         prepareJumpPath(intermediate.getCenter(), tr.getTransformedObject(intermediate.getCenter()), intermediate);
+        return true;
     }
 
     @Override
