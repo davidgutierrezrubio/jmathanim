@@ -29,14 +29,27 @@ import com.jmathanim.mathobjects.MathObject;
 public abstract class TransformStrategy extends AnimationWithEffects {
 
     OptimizePathsStrategy optimizeStrategy = null;
+    protected MathObject origin;
+    protected MathObject destiny;
+    protected MathObject intermediate;
+    private boolean destinyWasAddedAtFirst, originWasAddedAtFirst;
 
     public TransformStrategy(double runTime) {
         super(runTime);
     }
 
-    abstract public MathObject getOriginObject();
+    @Override
+    public MathObject getIntermediateObject() {
+        return intermediate;
+    }
 
-    abstract public MathObject getDestinyObject();
+    public MathObject getOriginObject() {
+        return origin;
+    }
+
+    public MathObject getDestinyObject() {
+        return destiny;
+    }
 
     /**
      * Sets the optimization strategy.If null, the animation will try to find
@@ -53,19 +66,43 @@ public abstract class TransformStrategy extends AnimationWithEffects {
     @Override
     public void initialize(JMathAnimScene scene) {
         super.initialize(scene);
+        destinyWasAddedAtFirst = scene.getMathObjects().contains(destiny);
+        originWasAddedAtFirst = scene.getMathObjects().contains(origin);
         //Remove origin object from scene and add intermediate
-        removeObjectsFromScene(getOriginObject());
-        addObjectsToscene(getIntermediateObject());
+//        removeObjectsFromScene(getOriginObject());
+//        addObjectsToscene(getIntermediateObject());
     }
 
     @Override
-    public void finishAnimation() {
-        super.finishAnimation();
-//        final MathObject intermediateTransformedObject = getIntermediateObject();
-//        getDestinyObject().copyStateFrom(intermediateTransformedObject);
-        // Remove fist object and add the second to the scene
-//        addObjectsToscene(getDestinyObject());
-//        removeObjectsFromScene(getOriginObject(), intermediateTransformedObject);
+    public void cleanAnimationAt(double t) {
+        double lt = getLT(t);
+        if (lt == 0) {
+            removeObjectsFromScene(intermediate, destiny);
+            if (originWasAddedAtFirst) {
+                addObjectsToscene(origin);
+            } else {
+                removeObjectsFromScene(origin);
+            }
+            return;
+        }
+        if (lt == 1) {
+            removeObjectsFromScene(intermediate, origin);
+            addObjectsToscene(destiny);
+            return;
+        }
+        removeObjectsFromScene(destiny, origin);
+        addObjectsToscene(intermediate);
     }
-    
+
+    @Override
+    public void prepareForAnim(double t) {
+        removeObjectsFromScene(origin);
+        addObjectsToscene(intermediate);
+        if (destinyWasAddedAtFirst) {
+            addObjectsToscene(destiny);
+        } else {
+            removeObjectsFromScene(destiny);
+        }
+    }
+
 }

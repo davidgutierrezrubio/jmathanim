@@ -21,7 +21,6 @@ import com.jmathanim.Animations.Strategies.Transform.Optimizers.SimpleConnectedP
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.JMPath;
 import com.jmathanim.mathobjects.JMPathPoint;
-import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.Point;
 import com.jmathanim.mathobjects.Shape;
 
@@ -32,17 +31,19 @@ import com.jmathanim.mathobjects.Shape;
  */
 public class PointInterpolationSimpleShapeTransform extends TransformStrategy {
 
-    private final Shape origin;
     private Shape originBase;
-    private final Shape destiny;
-    private final Shape intermediate;
     Point origCenter, dstCenter;
+    private final Shape shDestiny;
+    private final Shape shIntermediate;
 
     public PointInterpolationSimpleShapeTransform(double runtime, Shape origin, Shape destiny) {
         super(runtime);
         this.origin = origin;
         this.intermediate = new Shape();
         this.destiny = destiny;
+        //Cast variables
+        this.shDestiny = destiny;
+        this.shIntermediate = (Shape) intermediate;
 
         origCenter = this.origin.getCenter();
         dstCenter = this.destiny.getCenter();
@@ -52,17 +53,17 @@ public class PointInterpolationSimpleShapeTransform extends TransformStrategy {
     @Override
     public void initialize(JMathAnimScene scene) {
         super.initialize(scene);
-        intermediate.copyStateFrom(origin);
-        intermediate.getPath().distille();//Clean paths before transform
-        destiny.getPath().distille();
+        shIntermediate.copyStateFrom(origin);
+        shIntermediate.getPath().distille();//Clean paths before transform
+        shDestiny.getPath().distille();
         if (optimizeStrategy == null) {
-            optimizeStrategy = new SimpleConnectedPathsOptimizationStrategy(intermediate, destiny);
+            optimizeStrategy = new SimpleConnectedPathsOptimizationStrategy(shIntermediate, shDestiny);
         }
 
-        alignNumberOfElements(intermediate.getPath(), destiny.getPath());
-        optimizeStrategy.optimizePaths(intermediate, destiny);
+        alignNumberOfElements(shIntermediate.getPath(), shDestiny.getPath());
+        optimizeStrategy.optimizePaths(shIntermediate, shDestiny);
         // Mark all points as curved during transformation
-        for (JMPathPoint jmp : intermediate.getPath().jmPathPoints) {
+        for (JMPathPoint jmp : shIntermediate.getPath().jmPathPoints) {
             jmp.isCurved = true;
         }
         originBase = intermediate.copy();
@@ -71,20 +72,14 @@ public class PointInterpolationSimpleShapeTransform extends TransformStrategy {
     }
 
     @Override
-    public void prepareForAnim(double t) {
-        addObjectsToscene(intermediate);
-        removeObjectsFromScene(origin, destiny);
-    }
-
-    @Override
     public void doAnim(double t) {
         super.doAnim(t);
         double lt = getLT(t);
         JMPathPoint interPoint, basePoint, dstPoint;
-        for (int n = 0; n < intermediate.getPath().size(); n++) {
-            interPoint = intermediate.get(n);
+        for (int n = 0; n < shIntermediate.getPath().size(); n++) {
+            interPoint = shIntermediate.get(n);
             basePoint = originBase.get(n);
-            dstPoint = destiny.get(n);
+            dstPoint = shDestiny.get(n);
 
             // Interpolate point
             interPoint.p.v.x = (1 - lt) * basePoint.p.v.x + lt * dstPoint.p.v.x;
@@ -121,43 +116,4 @@ public class PointInterpolationSimpleShapeTransform extends TransformStrategy {
         }
         pathSmall.alignPathsToGivenNumberOfElements(pathBig.size());
     }
-
-    @Override
-    public MathObject getIntermediateObject() {
-        return intermediate;
-    }
-
-    @Override
-    public MathObject getOriginObject() {
-        return origin;
-    }
-
-    @Override
-    public MathObject getDestinyObject() {
-        return destiny;
-    }
-
-    @Override
-    public void finishAnimation() {
-        cleanAnimationAt(t);
-    }
-
-    @Override
-    public void cleanAnimationAt(double t) {
-        double lt = getLT(t);
-        if (lt == 0) {
-            removeObjectsFromScene(intermediate, destiny);
-//            addObjectsToscene(origin);
-            return;
-        }
-        if (lt == 1) {
-            removeObjectsFromScene(intermediate, origin);
-            addObjectsToscene(destiny);
-            return;
-        }
-        removeObjectsFromScene(destiny, origin);
-        addObjectsToscene(intermediate);
-
-    }
-
 }

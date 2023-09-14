@@ -19,7 +19,6 @@ package com.jmathanim.Animations.Strategies.Transform;
 
 import com.jmathanim.Utils.AffineJTransform;
 import com.jmathanim.jmathanim.JMathAnimScene;
-import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.Point;
 import com.jmathanim.mathobjects.Shape;
 
@@ -30,9 +29,8 @@ import com.jmathanim.mathobjects.Shape;
  */
 public abstract class AffineTransformStrategy extends TransformStrategy {
 
-    protected final Shape destiny;
-    protected final Shape origin;
-    protected final Shape intermediate;
+    protected final Shape shDestiny;
+    protected final Shape shOrigin;
     Point A;
     Point B;
     Point C;
@@ -44,18 +42,20 @@ public abstract class AffineTransformStrategy extends TransformStrategy {
         super(runTime);
         this.destiny = destiny;
         this.origin = origin;
+        this.shOrigin=origin;
+        this.shDestiny=destiny;
         this.intermediate = origin.copy();
     }
 
     @Override
     public void initialize(JMathAnimScene scene) {
         super.initialize(scene);
-        A = origin.getPoint(0).copy();
-        B = origin.getPoint(1).copy();
-        C = origin.getPoint(2).copy();
-        D = destiny.getPoint(0).copy();
-        E = destiny.getPoint(1).copy();
-        F = destiny.getPoint(2).copy();
+        A = shOrigin.getPoint(0).copy();
+        B = shOrigin.getPoint(1).copy();
+        C = shOrigin.getPoint(2).copy();
+        D = shDestiny.getPoint(0).copy();
+        E = shDestiny.getPoint(1).copy();
+        F = shDestiny.getPoint(2).copy();
         saveStates(intermediate);
         AffineJTransform tr = createIntermediateTransform(1);
         prepareJumpPath(intermediate.getCenter(), tr.getTransformedObject(intermediate.getCenter()), intermediate);
@@ -77,48 +77,4 @@ public abstract class AffineTransformStrategy extends TransformStrategy {
 
     protected abstract AffineJTransform createIntermediateTransform(double lt);
 
-    @Override
-    public void finishAnimation() {
-        super.finishAnimation();
-        doAnim(1);
-    }
-
-    @Override
-    public MathObject getIntermediateObject() {
-        return intermediate;
-    }
-
-    @Override
-    public MathObject getOriginObject() {
-        return origin;
-    }
-
-    @Override
-    public MathObject getDestinyObject() {
-        return destiny;
-    }
-
-    @Override
-    public void cleanAnimationAt(double t) {
-        double lt = getLT(t);
-        if (lt == 0) {//If ends at t=0, keep original
-            removeObjectsFromScene(destiny, intermediate);
-            addObjectsToscene(origin);
-            return;
-        }
-        if (lt == 1) {//If ends at t=1 keep destiny
-            removeObjectsFromScene(origin, intermediate);
-            addObjectsToscene(destiny);
-            return;
-        }
-        //Case 0<t<1
-        removeObjectsFromScene(origin, destiny);
-        addObjectsToscene(intermediate);
-    }
-
-    @Override
-    public void prepareForAnim(double t) {
-        removeObjectsFromScene(origin);
-        addObjectsToscene(intermediate);
-    }
 }

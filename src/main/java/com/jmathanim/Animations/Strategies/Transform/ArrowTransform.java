@@ -31,27 +31,24 @@ import com.jmathanim.mathobjects.Point;
  */
 public class ArrowTransform extends TransformStrategy {
 
-    private final Arrow2D origin;
-    private final Arrow2D destiny;
-    private final Arrow2D intermediateObject;
     AnimationWithEffects anim;
 
     public ArrowTransform(double runTime, Arrow2D origin, Arrow2D destiny) {
         super(runTime);
         this.origin = origin;
         this.destiny = destiny;
-        intermediateObject = this.origin.copy();
+        intermediate = this.origin.copy();
     }
 
     @Override
     public void initialize(JMathAnimScene scene) {
         super.initialize(scene);
-        Point a = origin.getStart().copy();
-        Point b = origin.getEnd().copy();
-        Point c = destiny.getStart().copy();
-        Point d = destiny.getEnd().copy();
-        intermediateObject.copyStateFrom(this.origin);
-        anim = Commands.isomorphism(runTime, a, b, c, d, intermediateObject);
+        Point a = ((Arrow2D)origin).getStart().copy();
+        Point b = ((Arrow2D)origin).getEnd().copy();
+        Point c = ((Arrow2D)destiny).getStart().copy();
+        Point d = ((Arrow2D)destiny).getEnd().copy();
+        intermediate.copyStateFrom(this.origin);
+        anim = Commands.isomorphism(runTime, a, b, c, d, intermediate);
         this.copyEffectParametersTo(anim);
         this.copyAnimationParametersTo(anim);
         anim.setLambda(getTotalLambda());
@@ -70,41 +67,9 @@ public class ArrowTransform extends TransformStrategy {
         anim.finishAnimation();
     }
 
-    @Override
-    public MathObject getOriginObject() {
-        return origin;
-    }
-
-    @Override
-    public MathObject getDestinyObject() {
-        return destiny;
-    }
 
     @Override
     public MathObject getIntermediateObject() {
-        return intermediateObject;
-    }
-
-    @Override
-    public void cleanAnimationAt(double t) {
-        double lt = getLT(t);
-        if (lt == 0) {//If ends at t=0, keep original
-            removeObjectsFromScene(destiny, intermediateObject);
-            addObjectsToscene(origin);
-            return;
-        }
-        if (lt == 1) {//If ends at t=1 keep destiny
-            removeObjectsFromScene(origin, intermediateObject);
-            addObjectsToscene(destiny);
-            return;
-        }
-        //Case 0<t<1
-        removeObjectsFromScene(origin, destiny);
-        addObjectsToscene(intermediateObject);
-    }
-
-    @Override
-    public void prepareForAnim(double t) {
-        addObjectsToscene(intermediateObject);
+        return anim.getIntermediateObject();
     }
 }

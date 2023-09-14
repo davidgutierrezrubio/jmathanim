@@ -23,7 +23,6 @@ import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.CanonicalJMPath;
 import com.jmathanim.mathobjects.JMPath;
 import com.jmathanim.mathobjects.JMPathPoint;
-import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.Point;
 import com.jmathanim.mathobjects.Shape;
 import java.util.ArrayList;
@@ -37,9 +36,9 @@ import java.util.Comparator;
 public class PointInterpolationCanonical extends TransformStrategy {
 
     private final Shape destinyCopy;
-    private final Shape origin;
-    private final Shape destiny;
-    private final Shape intermediate;
+    private final Shape shOrigin;
+    private final Shape shDestiny;
+    private final Shape shIntermediate;
     public CanonicalJMPath connectedOrigin, connectedDst, connectedOriginaRawCopy;
     private final ArrayList<Shape> addedAuxiliaryObjectsToScene;
 //    private final Shape mobjDestinyOrig;
@@ -61,6 +60,9 @@ public class PointInterpolationCanonical extends TransformStrategy {
         this.intermediate = new Shape();
         this.destiny = destiny;
         this.destinyCopy = new Shape();
+        this.shOrigin=origin;
+        this.shDestiny=destiny;
+        this.shIntermediate=(Shape) intermediate;
         this.addedAuxiliaryObjectsToScene = new ArrayList<>();
     }
 
@@ -75,24 +77,24 @@ public class PointInterpolationCanonical extends TransformStrategy {
         // Prepare paths.
         // First, if any of the shapes is empty, do nothing
 
-        if ((intermediate.size() == 0) || (destiny.size() == 0)) {
+        if ((shIntermediate.size() == 0) || (shDestiny.size() == 0)) {
             return;
         }
 
         // I ensure they have the same number of points
         // and be in connected components form.
         // Remove consecutive hidden vertices, in case.
-        this.intermediate.getPath().distille();
+        this.shIntermediate.getPath().distille();
         this.destinyCopy.getPath().distille();
         if (optimizeStrategy == null) {
             optimizeStrategy = new DivideOnSensiblePointsStrategy();
 //            optimizeStrategy = new DivideEquallyStrategy();
         }
-        optimizeStrategy.optimizePaths(intermediate, destinyCopy);
-        optimizeStrategy.optimizePaths(destinyCopy, intermediate);
+        optimizeStrategy.optimizePaths(shIntermediate, destinyCopy);
+        optimizeStrategy.optimizePaths(destinyCopy, shIntermediate);
 
 //        originalShapeBaseCopy = intermediate.copy();
-        preparePaths(intermediate.getPath(), destinyCopy.getPath());
+        preparePaths(shIntermediate.getPath(), destinyCopy.getPath());
         if (DEBUG_COLORS) {
             for (int n = 0; n < connectedOrigin.getNumberOfPaths(); n++) {
                 Shape sh = new Shape(connectedOrigin.get(n), null);
@@ -102,8 +104,8 @@ public class PointInterpolationCanonical extends TransformStrategy {
             }
 
         }
-        intermediate.getPath().clear();
-        intermediate.getPath().addJMPointsFrom(connectedOrigin.toJMPath());
+        shIntermediate.getPath().clear();
+        shIntermediate.getPath().addJMPointsFrom(connectedOrigin.toJMPath());
 
         // Jump paths
         Point origCenter = this.origin.getCenter();
@@ -251,91 +253,6 @@ public class PointInterpolationCanonical extends TransformStrategy {
             alignNumberOfElements(conSmall.get(n), conBig.get(n));
         }
 
-    }
-
-//    private CanonicalJMPath divideConnectedComponent(JMPath pathToDivide, int numberOfDivisions) {
-//        if (pathToDivide.size() < numberOfDivisions + 1) {
-//            //I must ensure they have at least numDivs+1 points! (+1 if n<rest)
-//            pathToDivide.alignPathsToGivenNumberOfElements(numberOfDivisions + 1);
-//        }
-//        //Length of each SEGMENT
-//        int stepDiv = ((pathToDivide.size() - 1) / (numberOfDivisions)); //Euclidean quotient
-//        int rest = ((pathToDivide.size() - 1) % (numberOfDivisions));//Euclidean rest
-//
-//        //Now separate appropiate vertices
-//        int step = stepDiv;
-//        ArrayList<JMPathPoint> pointsToSeparate = new ArrayList<>();
-//        for (int k = 1; k < numberOfDivisions; k++) {
-//            pointsToSeparate.add(pathToDivide.getJMPoint(step));
-//            step += stepDiv;
-//            step += (k < rest ? 1 : 0);
-//        }
-//        //Now that I marked correspondent points to separate, do the separation
-//        for (JMPathPoint p : pointsToSeparate) {
-//            int k = pathToDivide.jmPathPoints.indexOf(p);
-//            pathToDivide.separate(k);
-//        }
-//
-//        return pathToDivide.canonicalForm();
-//    }
-    @Override
-    public MathObject getIntermediateObject() {
-        return intermediate;
-    }
-
-    @Override
-    public MathObject getOriginObject() {
-        return origin;
-    }
-
-    @Override
-    public MathObject getDestinyObject() {
-        return destiny;
-    }
-
-    @Override
-    public void cleanAnimationAt(double t) {
-        double lt = getLT(t);
-        if (lt == 0) {//If ends at t=0, keep original
-            removeObjectsFromScene(destiny, intermediate);
-            for (Shape shape : addedAuxiliaryObjectsToScene) {
-                removeObjectsFromScene(shape);
-            }
-            if (originWasAddedAtFirst) {
-                addObjectsToscene(origin);
-            } else {
-                removeObjectsFromScene(origin);
-            }
-
-            return;
-
-        }
-        if (lt == 1) {//If ends at t=1 keep destiny
-            removeObjectsFromScene(origin, intermediate);
-            for (Shape shape : addedAuxiliaryObjectsToScene) {
-                removeObjectsFromScene(shape);
-            }
-            if (destinyWasAddedAtFirst) {
-                addObjectsToscene(destiny);
-            } else {
-                removeObjectsFromScene(destiny);
-            }
-            return;
-        }
-        //Case 0<t<1
-        removeObjectsFromScene(origin);
-        if (destinyWasAddedAtFirst) {
-            addObjectsToscene(destiny);
-        } else {
-            removeObjectsFromScene(destiny);
-        }
-        addObjectsToscene(intermediate);
-    }
-
-    @Override
-    public void prepareForAnim(double t) {
-        addObjectsToscene(intermediate);
-        removeObjectsFromScene(origin, destiny);
     }
 
 }

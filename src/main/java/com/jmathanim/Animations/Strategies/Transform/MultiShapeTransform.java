@@ -39,23 +39,19 @@ public class MultiShapeTransform extends TransformStrategy {
 
     private MultiShapeObject dst;
     private MultiShapeObject tr;
-    private final MultiShapeObject origin;
-    private final MultiShapeObject destiny;
-    private final MultiShapeObject intermediate;
+    private final MultiShapeObject mshOrigin;
+    private final MultiShapeObject mshDestiny;
     private final AnimationGroup anim;
-    public boolean originInScene;
+//    public boolean isOriginInScene;
 
     public MultiShapeTransform(double runtime, MultiShapeObject origin, MultiShapeObject destiny) {
         super(runtime);
         this.destiny = destiny;
         this.origin = origin;
         this.intermediate = MultiShapeObject.make();
+        this.mshOrigin = origin;
+        this.mshDestiny = destiny;
         anim = new AnimationGroup();
-    }
-
-    @Override
-    public boolean processAnimation() {
-        return anim.processAnimation();
     }
 
     @Override
@@ -67,33 +63,37 @@ public class MultiShapeTransform extends TransformStrategy {
     @Override
     public void initialize(JMathAnimScene scene) {
         super.initialize(scene);
-        originInScene = scene.getMathObjects().contains(origin);
-        intermediate.copyStateFrom(origin);
-        tr = MultiShapeObject.make();
+//        isOriginInScene = scene.getMathObjects().contains(origin);
+//        mshIntermediate.copyStateFrom(mshOrigin);
+
         dst = MultiShapeObject.make();
-        int sizeTr = origin.size();
-        int sizeDst = destiny.size();
+        tr = MultiShapeObject.make();
+        int sizeTr = mshOrigin.size();
+        int sizeDst = mshDestiny.size();
         int numAnims = Math.max(sizeTr, sizeDst);
 
         if (sizeDst < sizeTr) {
             for (int i = 0; i < sizeTr; i++) {
-                dst.add(destiny.get(i * sizeDst / sizeTr).copy());//remove copy
+                dst.add(mshDestiny.get(i * sizeDst / sizeTr).copy());//remove copy
             }
-            tr = intermediate;
+             tr.copyStateFrom(mshOrigin);
         }
+        
+        
         if (sizeTr < sizeDst) {
+            tr.getShapes().clear();
             for (int i = 0; i < sizeDst; i++) {
-                tr.add(intermediate.get(i * sizeTr / sizeDst).copy());
+                tr.add(mshOrigin.get(i * sizeTr / sizeDst).copy());
             }
-            dst = destiny;
+            dst = mshDestiny.copy();
         }
         if (sizeDst == sizeTr) {
-            dst = destiny;
-            tr = intermediate;
+            dst = mshDestiny.copy();
+            tr.copyStateFrom(mshOrigin);
         }
 
         for (int n = 0; n < numAnims; n++) {
-            Transform transformAnim = new Transform(this.runTime, origin.get(n), dst.get(n));
+            Transform transformAnim = new Transform(this.runTime, tr.get(n), dst.get(n));
             this.copyEffectParametersTo(transformAnim);
             anim.add(transformAnim);
             anim.setLambda(getTotalLambda());
@@ -101,66 +101,58 @@ public class MultiShapeTransform extends TransformStrategy {
         anim.initialize(scene);
     }
 
+//    public MathObject getIntermediateTransformedObject() {
+//        Shape[] shapes = new Shape[anim.getAnimations().size()];
+//        int k = 0;
+//        for (Animation animation : anim.getAnimations()) {
+//            Transform tr = (Transform) animation;
+//            shapes[k] = ((Shape) tr.getIntermediateTransformedObject());
+//            k++;
+//        }
+//        return MultiShapeObject.make(shapes);
+//    }
+//    @Override
+//    public void cleanAnimationAt(double t) {
+//        double lt = getLT(t);
+//        anim.cleanAnimationAt(t);
+//        if (lt == 0) {//If ends at t=0, keep original
+//            removeObjectsFromScene(destiny, intermediate);
+//            if (isOriginInScene) {
+//                addObjectsToscene(origin);
+//            } else {
+//                removeObjectsFromScene(origin);
+//            }
+//            return;
+//        }
+//        if (lt == 1) {//If ends at t=1 keep destiny
+//            removeObjectsFromScene(origin, intermediate);
+//            addObjectsToscene(destiny);
+//            return;
+//        }
+//        //Case 0<t<1
+//        removeObjectsFromScene(origin, destiny);
+//        addObjectsToscene(intermediate);
+//    }
+//    @Override
+//    public void prepareForAnim(double t) {
+//        anim.prepareForAnim(t);
+//        removeObjectsFromScene(origin, destiny);
+//        addObjectsToscene(intermediate);
+//    }
     @Override
-    public void finishAnimation() {
-        anim.finishAnimation();
-        super.finishAnimation();
-    }
-
-    public MathObject getIntermediateTransformedObject() {
-        Shape[] shapes = new Shape[anim.getAnimations().size()];
-        int k = 0;
-        for (Animation animation : anim.getAnimations()) {
-            Transform tr = (Transform) animation;
-            shapes[k] = ((Shape) tr.getIntermediateTransformedObject());
-            k++;
-        }
-        return MultiShapeObject.make(shapes);
-    }
-
-    @Override
-    public MathObject getOriginObject() {
-        return origin;
-    }
-
-    @Override
-    public MathObject getDestinyObject() {
-        return destiny;
+    public void prepareForAnim(double t) {
+        anim.prepareForAnim(t);
+        super.prepareForAnim(t);
     }
 
     @Override
     public void cleanAnimationAt(double t) {
-        double lt = getLT(t);
         anim.cleanAnimationAt(t);
-        if (lt == 0) {//If ends at t=0, keep original
-            removeObjectsFromScene(destiny, intermediate);
-            if (originInScene) {
-                addObjectsToscene(origin);
-            } else {
-                removeObjectsFromScene(origin);
-            }
-            return;
-        }
-        if (lt == 1) {//If ends at t=1 keep destiny
-            removeObjectsFromScene(origin, intermediate);
-            addObjectsToscene(destiny);
-            return;
-        }
-        //Case 0<t<1
-        removeObjectsFromScene(origin, destiny);
-        addObjectsToscene(intermediate);
-    }
-
-    @Override
-    public void prepareForAnim(double t) {
-        anim.prepareForAnim(t);
-        removeObjectsFromScene(origin, destiny);
-        addObjectsToscene(intermediate);
-    }
-
-    @Override
-    public MathObject getIntermediateObject() {
-        return intermediate;
+        super.cleanAnimationAt(t);
+        double lt=getLT(t);
+        removeObjectsFromScene(dst);
+        
+        
     }
 
 }

@@ -1606,9 +1606,10 @@ public class Commands {
             @Override
             public void finishAnimation() {
                 super.finishAnimation();
-                double lt = getTotalLambda().applyAsDouble(1);
+                double lt = getTotalLambda().applyAsDouble(t);
                 if (lt == 0) {
                     removeObjectsFromScene(mathObjects);
+                    restoreStates(mathObjects);
                 }
                 for (MathObject obj : mathObjects) {
                     if (obj instanceof Constructible) {

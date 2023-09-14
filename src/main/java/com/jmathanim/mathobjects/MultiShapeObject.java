@@ -109,14 +109,12 @@ public class MultiShapeObject extends MathObject implements Iterable<Shape> {
         if (!(obj instanceof MultiShapeObject)) {
             return;
         }
-
+//        shapes.clear();
         MultiShapeObject msh = (MultiShapeObject) obj;
         this.getMp().copyFrom(msh.getMp());
-        int n = 0;
-        for (Shape s : shapes) {
-            s.copyStateFrom(msh.get(n));
-            s.getMp().copyFrom(msh.get(n).getMp());
-            n++;
+        for (Shape sh : msh) {
+            add(sh.copy());
+            sh.getMp().copyFrom(sh.getMp());
         }
 
     }
@@ -366,6 +364,11 @@ public class MultiShapeObject extends MathObject implements Iterable<Shape> {
         }
         resul.getMp().copyFrom(this.getMp());
         return resul;
+    }
+
+    @Override
+    public String toString() {
+        return "MultiShape " + objectLabel+ "("+size()+" elements)";
     }
 
 }
