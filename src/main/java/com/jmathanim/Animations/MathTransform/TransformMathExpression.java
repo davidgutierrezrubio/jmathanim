@@ -117,19 +117,24 @@ public class TransformMathExpression extends Animation {
      */
     public TransformMathExpression(double runTime, MultiShapeObject latexTransformedOrig, MultiShapeObject latexDestiny) {
         super(runTime);
-        this.latexTransformedBase = latexTransformedOrig.copy();
+        this.latexTransformedBase = MultiShapeObject.make();
         this.latexTransformedOrig = latexTransformedOrig;
         this.latexIntermediate = MultiShapeObject.make();
         this.latexDestiny = latexDestiny;
         anim = new AnimationGroup();
         toDelete = new ArrayList<>();
-
         trParOrigGroups = new HashMap<>();
         trParDstGroups = new HashMap<>();
         trParMaps = new HashMap<>();
         trParTransformParameters = new HashMap<>();
         removeInOrigParameters = new HashMap<>();
         addInDstParameters = new HashMap<>();
+    }
+
+    @Override
+    public boolean doInitialization() {
+        super.doInitialization();
+        this.latexTransformedBase.copyStateFrom(latexTransformedOrig);
 
         defaultAddingStyle = AddType.GROW_IN;
         defaultRemovingStyle = RemoveType.SHRINK_OUT;
@@ -140,12 +145,7 @@ public class TransformMathExpression extends Animation {
         for (int n = 0; n < this.latexDestiny.size(); n++) {
             addInDstParameters.put(n, new TransformMathExpressionParameters());
         }
-    }
 
-       @Override
-    public boolean doInitialization() {
-        super.doInitialization();
-        removeObjectsFromScene(latexTransformedBase);
         HashMap<String, int[]> or = trParOrigGroups;
         HashMap<String, int[]> dst = trParDstGroups;
         HashMap<String, String> maps = trParMaps;
