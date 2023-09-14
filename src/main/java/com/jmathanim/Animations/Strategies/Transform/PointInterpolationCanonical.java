@@ -69,8 +69,8 @@ public class PointInterpolationCanonical extends TransformStrategy {
     @Override
     public void initialize(JMathAnimScene scene) {
         super.initialize(scene);
-        originWasAddedAtFirst = scene.getMathObjects().contains(origin);
-        destinyWasAddedAtFirst = scene.getMathObjects().contains(destiny);
+        originWasAddedAtFirst = scene.isInScene(origin);
+        destinyWasAddedAtFirst = scene.isInScene(destiny);
         intermediate.copyStateFrom(origin);
         destinyCopy.copyStateFrom(destiny);
         // This is the initialization for the point-to-point interpolation

@@ -317,7 +317,7 @@ public class Commands {
                 shouldBeAdded = new boolean[mathObjects.length];
                 for (int i = 0; i < mathObjects.length; i++) {
                     //True if object is NOT added to the scene
-                    shouldBeAdded[i] = !scene.getMathObjects().contains(mathObjects[i]);
+                    shouldBeAdded[i] = !scene.isInScene(mathObjects[i]);
                 }
             }
 

@@ -301,7 +301,7 @@ public abstract class JMathAnimScene {
         }
     }
 
-  /**
+    /**
      * Add the specified MathObjects to the scene
      *
      * @param objs Mathobjects (varargs)
@@ -748,4 +748,31 @@ public abstract class JMathAnimScene {
     public double mw() {
         return config.getCamera().getMathView().getWidth();
     }
+
+    /**
+     * Check if an object is in the scene. MathObjectGroup objects are
+     * considered to be in the scene if all their elements are.
+     *
+     * @param mathobject Object to check
+     * @return True if object is in the scene. False otherwise.
+     */
+    public boolean isInScene(MathObject mathobject) {
+
+        //If a MathObjectGroup, it is considered to be in the scene if all its elements are
+        //An empty one returns true.
+        if (mathobject instanceof MathObjectGroup) {
+            MathObjectGroup mg = (MathObjectGroup) mathobject;
+            boolean resul = true;
+            for (MathObject subObj : mg) {
+                resul = resul & isInScene(subObj);
+                if (!resul) {
+                    return false;
+                }
+            }
+            return resul;
+        }
+        //Other case
+        return getMathObjects().contains(mathobject);
+    }
+
 }
