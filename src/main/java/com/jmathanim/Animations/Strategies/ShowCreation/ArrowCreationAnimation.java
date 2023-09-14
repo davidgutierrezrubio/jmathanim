@@ -35,19 +35,17 @@ public class ArrowCreationAnimation extends AbstractCreationStrategy {
         this.obj = obj;
     }
 
-   
-
     @Override
     public void initialize(JMathAnimScene scene) {
         super.initialize(scene);
-        obj.saveState();
+        saveStates(obj);
     }
 
     @Override
     public void doAnim(double t) {
         super.doAnim(t);
         double lt = getLT(t);
-        obj.restoreState();
+        restoreStates(obj);
         // If there is only head 1 (the ending point), scale from the beginning
         // if there are 2 heads (ending and beginning point), better scale from the
         // center
@@ -61,18 +59,24 @@ public class ArrowCreationAnimation extends AbstractCreationStrategy {
     @Override
     public void finishAnimation() {
         super.finishAnimation();
-        doAnim(1);
     }
 
     @Override
     public void cleanAnimationAt(double t) {
+        double lt = getLT(t);
+        if (lt == 0) {
+            removeObjectsFromScene(obj);
+        } else {
+            addObjectsToscene(obj);
+        }
     }
 
     @Override
     public void prepareForAnim(double t) {
         addObjectsToscene(obj);
     }
-     @Override
+
+    @Override
     public MathObject getIntermediateObject() {
         return this.obj;
     }
