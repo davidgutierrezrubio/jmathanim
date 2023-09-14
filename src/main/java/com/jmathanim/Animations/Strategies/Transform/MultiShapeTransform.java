@@ -108,5 +108,9 @@ public class MultiShapeTransform extends TransformStrategy {
         removeObjectsFromScene(dst);
 
     }
-
+  @Override
+    public void reset() {
+        super.reset();
+        anim.reset();
+    }
 }

@@ -21,6 +21,7 @@ import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.MathObject;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.stream.Collectors;
 
 /**
@@ -42,6 +43,7 @@ public class JoinAnimation extends Animation {
 
     protected JoinAnimation(double runTime, Animation... anims) {
         super(runTime);
+        setDebugName("JoinAnimation");
         previous = null;
         animations = new ArrayList<>();
         animations.addAll(Arrays.asList(anims));
@@ -182,8 +184,8 @@ public class JoinAnimation extends Animation {
         return num;
     }
 
-    public boolean add(Animation e) {
-        return animations.add(e);
+    public boolean add(Animation...anims) {
+        return animations.addAll(Arrays.asList(anims));
     }
 
     public void add(int index, Animation element) {
@@ -198,4 +200,13 @@ public class JoinAnimation extends Animation {
     public MathObject getIntermediateObject() {
         return previous.getIntermediateObject();
     }
+     @Override
+    public void reset() {
+        super.reset();
+        for (Animation anim : animations) {
+            anim.reset();
+            
+        }
+    }
+
 }

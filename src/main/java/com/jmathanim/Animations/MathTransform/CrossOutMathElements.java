@@ -183,7 +183,7 @@ public class CrossOutMathElements extends AnimationGroup {
             path.get(1).copyFrom(path.get(0));
             path.get(2).copyFrom(path.get(3));
             final ShiftAnimation animShift = Commands.shift(runTime, shiftVector, path.get(1), path.get(2));
-            animShift.setLambda(getTotalLambda());
+            animShift.initialize(scene);
             this.add(animShift);
         }
         

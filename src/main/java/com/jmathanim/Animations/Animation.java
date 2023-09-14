@@ -59,6 +59,8 @@ public abstract class Animation {
 
     private String debugName;
 
+   private boolean shouldResetAtFinish;
+    
     private Status status;
     /**
      * Default run time for animations, 1 second
@@ -116,6 +118,7 @@ public abstract class Animation {
         this.runTime = runTime;
         this.useObjectState = true;
         this.shouldAddObjectsToScene = true;
+        this.shouldResetAtFinish=true;
         this.shouldInterpolateStyles = true;
         lambda = UsefulLambdas.smooth(.9d);
         backups = new HashMap<>();
@@ -252,18 +255,16 @@ public abstract class Animation {
      */
     public final boolean initialize(JMathAnimScene scene) {
         this.scene = scene;
-        setFps(scene.getConfig().fps);
-
         if (status == Status.NOT_INITIALIZED) {
             if (doInitialization()) {//If initialization returned sucess...
+                setFps(scene.getConfig().fps);
                 status = Status.INITIALIZED;
                 if (initRunnable != null) {
                     initRunnable.run();
                 }
                 return true;
-            } else
-            {
-                JMathAnimScene.logger.error("Error initializating animation "+getDebugName());
+            } else {
+                JMathAnimScene.logger.error("Error initializating animation " + getDebugName());
                 return false;
             }
         }
@@ -539,4 +540,21 @@ public abstract class Animation {
      * @return The intermediate object
      */
     public abstract MathObject getIntermediateObject();
+    
+    /**
+     * Resets the animation so it can be reused with different initialization parameters.
+     */
+    public void reset() {
+        status=Status.NOT_INITIALIZED;
+    }
+
+    public boolean isShouldResetAtFinish() {
+        return shouldResetAtFinish;
+    }
+
+    public void setShouldResetAtFinish(boolean shouldResetAtFinish) {
+        this.shouldResetAtFinish = shouldResetAtFinish;
+    }
+    
+    
 }

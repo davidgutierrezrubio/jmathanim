@@ -24,6 +24,7 @@ import com.jmathanim.Renderers.Renderer;
 import com.jmathanim.Styling.JMColor;
 import com.jmathanim.Styling.MODrawProperties;
 import com.jmathanim.Styling.PaintStyle;
+import com.jmathanim.Styling.Stylable;
 import com.jmathanim.Utils.AffineJTransform;
 import com.jmathanim.Utils.Anchor;
 import com.jmathanim.Utils.JMathAnimConfig;
@@ -835,10 +836,10 @@ public class Commands {
      * @param objects Objects to animate (varargs)
      * @return Animation to run with playAnim method
      */
-    public static Animation setMP(double runtime, MODrawProperties mp, MathObject... objects) {
+    public static Animation setMP(double runtime, Stylable mp, MathObject... objects) {
         Animation resul = new Animation(runtime) {
             MathObject[] mathObjects = objects;
-            MODrawProperties mpDst = mp;
+            Stylable mpDst = mp;
 
             @Override
             public boolean doInitialization() {

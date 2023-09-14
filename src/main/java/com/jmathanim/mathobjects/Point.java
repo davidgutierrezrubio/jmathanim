@@ -159,6 +159,14 @@ public class Point extends MathObject {
     public static Point at(double x, double y) {
         return new Point(x, y);
     }
+    /**
+     * Returns a new Point with coordinates those of given vector. Vector coordinates are copied.
+     * @param v Vector with coordinates
+     * @return The new point
+     */
+     public static Point at(Vec v) {
+        return new Point(v.x, v.y);
+    }
 
     /**
      * Static builder. Creates and returns a new point at given coordinates (3d

@@ -531,8 +531,13 @@ public abstract class JMathAnimScene {
         List<Animation> listAnims = anims.stream().filter(Objects::nonNull).collect(Collectors.toList());
         ArrayList<Animation> arAnims = new ArrayList<>(listAnims);
         for (Animation anim : arAnims) {
+            anim.setT(0);
             if (anim.getStatus() == Animation.Status.FINISHED) {// This allow to reuse ended animations
-                anim.setStatus(Animation.Status.NOT_INITIALIZED);
+                if (anim.isShouldResetAtFinish()) {
+                    anim.setStatus(Animation.Status.NOT_INITIALIZED);
+                } else {
+                    anim.setStatus(Animation.Status.INITIALIZED);
+                }
             }
             anim.initialize(this);// Perform needed steps immediately before playing
             if (!"".equals(anim.getDebugName())) {

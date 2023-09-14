@@ -81,7 +81,7 @@ public class TransformMathExpression extends Animation {
 
     private final MultiShapeObject latexDestiny;
     private final MultiShapeObject latexTransformedBase;
-    private final AnimationGroup anim;
+    private final AnimationGroup animations;
 
     private final ArrayList<Shape> toDelete;
 
@@ -121,7 +121,7 @@ public class TransformMathExpression extends Animation {
         this.latexTransformedOrig = latexTransformedOrig;
         this.latexIntermediate = MultiShapeObject.make();
         this.latexDestiny = latexDestiny;
-        anim = new AnimationGroup();
+        animations = new AnimationGroup();
         toDelete = new ArrayList<>();
         trParOrigGroups = new HashMap<>();
         trParDstGroups = new HashMap<>();
@@ -196,7 +196,7 @@ public class TransformMathExpression extends Animation {
             createAddingSubAnimation(sh, addInDstParameters.get(n));
         }
 
-        return anim.initialize(scene);
+        return animations.initialize(scene);
     }
 
     private void createRemovingSubAnimation(int n, TransformMathExpressionParameters par) {
@@ -239,7 +239,7 @@ public class TransformMathExpression extends Animation {
             group.add(rotation);
         }
 
-        anim.add(group);
+        animations.add(group);
     }
 
     private void createAddingSubAnimation(Shape sh, TransformMathExpressionParameters par) {
@@ -251,29 +251,29 @@ public class TransformMathExpression extends Animation {
 
         switch (par.getAddingStyle()) {
             case FADE_IN:
-                anim.add(Commands.fadeIn(runTime, sh).setLambda(getTotalLambda()));
+                animations.add(Commands.fadeIn(runTime, sh).setLambda(getTotalLambda()));
                 break;
             case GROW_IN:
-                anim.add(Commands.growIn(runTime, sh).setLambda(getTotalLambda()));
+                animations.add(Commands.growIn(runTime, sh).setLambda(getTotalLambda()));
                 break;
             case GROWH_IN:
-                anim.add(Commands.growIn(runTime, 0, OrientationType.HORIZONTAL, sh).setLambda(getTotalLambda()));
+                animations.add(Commands.growIn(runTime, 0, OrientationType.HORIZONTAL, sh).setLambda(getTotalLambda()));
                 break;
             case GROWV_IN:
-                anim.add(Commands.growIn(runTime, 0, OrientationType.VERTICAL, sh).setLambda(getTotalLambda()));
+                animations.add(Commands.growIn(runTime, 0, OrientationType.VERTICAL, sh).setLambda(getTotalLambda()));
                 break;
 
             case MOVE_IN_UP:
-                anim.add(Commands.moveIn(runTime, Anchor.Type.UPPER, sh).setLambda(getTotalLambda()));
+                animations.add(Commands.moveIn(runTime, Anchor.Type.UPPER, sh).setLambda(getTotalLambda()));
                 break;
             case MOVE_IN_LEFT:
-                anim.add(Commands.moveIn(runTime, Anchor.Type.LEFT, sh).setLambda(getTotalLambda()));
+                animations.add(Commands.moveIn(runTime, Anchor.Type.LEFT, sh).setLambda(getTotalLambda()));
                 break;
             case MOVE_IN_RIGHT:
-                anim.add(Commands.moveIn(runTime, Anchor.Type.RIGHT, sh).setLambda(getTotalLambda()));
+                animations.add(Commands.moveIn(runTime, Anchor.Type.RIGHT, sh).setLambda(getTotalLambda()));
                 break;
             case MOVE_IN_DOWN:
-                anim.add(Commands.moveIn(runTime, Anchor.Type.LOWER, sh).setLambda(getTotalLambda()));
+                animations.add(Commands.moveIn(runTime, Anchor.Type.LOWER, sh).setLambda(getTotalLambda()));
                 break;
         }
         if (par.getNumTurns() != 0) {
@@ -281,7 +281,7 @@ public class TransformMathExpression extends Animation {
             rotation.setUseObjectState(false);
             group.add(rotation);
         }
-        anim.add(group);
+        animations.add(group);
         toDelete.add(sh);
     }
 
@@ -325,7 +325,7 @@ public class TransformMathExpression extends Animation {
         }
 
 //        anim.add(group);//, radius, rota));
-        anim.add(transform);
+        animations.add(transform);
         toDelete.add(sh);
         toDelete.add(sh2);
     }
@@ -359,12 +359,12 @@ public class TransformMathExpression extends Animation {
     @Override
     public void doAnim(double t) {
         super.doAnim(t);
-        anim.doAnim(t);
+        animations.doAnim(t);
     }
 
     @Override
     public void finishAnimation() {
-        anim.finishAnimation();
+        animations.finishAnimation();
         super.finishAnimation();
 
         for (Shape sh : toDelete) {
@@ -563,33 +563,39 @@ public class TransformMathExpression extends Animation {
     @Override
     public void cleanAnimationAt(double t) {
         double lt = getLT(t);
-        anim.cleanAnimationAt(t);
+        animations.cleanAnimationAt(t);
         if (lt == 0) {
             removeObjectsFromScene(latexDestiny, latexTransformedBase);
-            removeObjectsFromScene(anim.getIntermediateObject());
+            removeObjectsFromScene(animations.getIntermediateObject());
             addObjectsToscene(latexTransformedOrig);
             return;
         }
         if (lt == 1) {
-            MathObjectGroup a = anim.getIntermediateObject();
+            MathObjectGroup a = animations.getIntermediateObject();
             removeObjectsFromScene(latexTransformedOrig, latexTransformedBase);
-            removeObjectsFromScene(anim.getIntermediateObject());
+            removeObjectsFromScene(animations.getIntermediateObject());
             addObjectsToscene(latexDestiny);
             return;
         }
         removeObjectsFromScene(latexTransformedOrig, latexTransformedBase, latexDestiny);
-        addObjectsToscene(anim.getIntermediateObject());
+        addObjectsToscene(animations.getIntermediateObject());
     }
 
     @Override
     public void prepareForAnim(double t) {
-        anim.prepareForAnim(t);
+        animations.prepareForAnim(t);
         removeObjectsFromScene(latexDestiny, latexTransformedBase, latexTransformedOrig);
-        addObjectsToscene(anim.getIntermediateObject());
+        addObjectsToscene(animations.getIntermediateObject());
     }
 
     @Override
     public MathObject getIntermediateObject() {
         return null;
+    }
+
+    @Override
+    public void reset() {
+        super.reset();
+        animations.reset();
     }
 }

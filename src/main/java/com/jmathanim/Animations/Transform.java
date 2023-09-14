@@ -336,12 +336,22 @@ public class Transform extends AnimationWithEffects {
     @Override
     public Transform setAllocationParameters(double start, double end) {
         super.setAllocationParameters(start, end);
-        transformStrategy.setAllocationParameters(start, end);
+        if (transformStrategy != null) {
+            transformStrategy.setAllocationParameters(start, end);
+        }
         return this;
     }
 
     @Override
     public MathObject getIntermediateObject() {
         return transformStrategy.getIntermediateObject();
+    }
+     @Override
+    public void reset() {
+        super.reset();
+        if (getStatus() != Status.NOT_INITIALIZED) {
+            //This is to prevent calling the next line when the strategy is null
+            transformStrategy.reset();
+        }
     }
 }

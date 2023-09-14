@@ -18,8 +18,6 @@
 package com.jmathanim.Animations;
 
 import com.jmathanim.Utils.UsefulLambdas;
-import com.jmathanim.jmathanim.JMathAnimScene;
-import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.MathObjectGroup;
 import java.util.ArrayList;
 import java.util.function.DoubleUnaryOperator;
@@ -265,6 +263,15 @@ public class AnimationGroup extends AnimationWithEffects {
         this.delayPercentage = delayPercentage;
 
         return (T) this;
+    }
+
+    @Override
+    public void reset() {
+        super.reset();
+        for (Animation anim : animations) {
+            anim.reset();
+            
+        }
     }
 
 }

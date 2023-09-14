@@ -164,4 +164,15 @@ public class Concatenate extends Animation {
     @Override
     public void prepareForAnim(double t) {
     }
+    
+     @Override
+    public void reset() {
+        super.reset();
+        for (Animation anim : animations) {
+            anim.reset();
+            
+        }
+    }
+
+    
 }

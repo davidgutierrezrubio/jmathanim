@@ -17,6 +17,7 @@
  */
 package com.jmathanim.Animations.Strategies.ShowCreation;
 
+import com.jmathanim.Animations.Animation;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.Line;
 import com.jmathanim.mathobjects.MathObject;
@@ -45,7 +46,7 @@ public class LineCreationAnimation extends AbstractCreationStrategy {
         return segment;
     }
 
-     @Override
+    @Override
     public boolean doInitialization() {
         super.doInitialization();
         segment = line.toSegment(scene.getCamera());
@@ -67,9 +68,8 @@ public class LineCreationAnimation extends AbstractCreationStrategy {
 
     @Override
     public void finishAnimation() {
-           anim.finishAnimation();
+        anim.finishAnimation();
         super.finishAnimation();
-     
 
     }
 
@@ -94,5 +94,11 @@ public class LineCreationAnimation extends AbstractCreationStrategy {
     public void prepareForAnim(double t) {
         removeObjectsFromScene(line);
         addObjectsToscene(segment);
+    }
+
+    @Override
+    public void reset() {
+        super.reset();
+        anim.reset();
     }
 }

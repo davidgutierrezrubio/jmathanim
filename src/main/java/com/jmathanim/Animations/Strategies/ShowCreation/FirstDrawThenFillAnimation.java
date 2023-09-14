@@ -153,4 +153,9 @@ public class FirstDrawThenFillAnimation extends AbstractCreationStrategy {
         removeObjectsFromScene(originObject);
     }
 
+    @Override
+    public void reset() {
+        super.reset();
+        anim.reset();
+    }
 }

@@ -354,4 +354,14 @@ public class ShowCreation extends Animation {
     public MathObject getIntermediateObject() {
         return creationStrategy.getIntermediateObject();
     }
+
+    @Override
+    public void reset() {
+        super.reset();
+        if (getStatus() != Status.NOT_INITIALIZED) {
+            //This is to prevent calling the next line when the strategy is null
+            creationStrategy.reset();
+        }
+    }
+
 }

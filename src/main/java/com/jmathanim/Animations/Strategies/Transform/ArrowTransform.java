@@ -19,7 +19,6 @@ package com.jmathanim.Animations.Strategies.Transform;
 
 import com.jmathanim.Animations.AnimationWithEffects;
 import com.jmathanim.Animations.Commands;
-import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.Arrow2D;
 import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.Point;
@@ -40,13 +39,13 @@ public class ArrowTransform extends TransformStrategy {
         intermediate = this.origin.copy();
     }
 
-     @Override
+    @Override
     public boolean doInitialization() {
         super.doInitialization();
-        Point a = ((Arrow2D)origin).getStart().copy();
-        Point b = ((Arrow2D)origin).getEnd().copy();
-        Point c = ((Arrow2D)destiny).getStart().copy();
-        Point d = ((Arrow2D)destiny).getEnd().copy();
+        Point a = ((Arrow2D) origin).getStart().copy();
+        Point b = ((Arrow2D) origin).getEnd().copy();
+        Point c = ((Arrow2D) destiny).getStart().copy();
+        Point d = ((Arrow2D) destiny).getEnd().copy();
         intermediate.copyStateFrom(this.origin);
         anim = Commands.isomorphism(runTime, a, b, c, d, intermediate);
         this.copyEffectParametersTo(anim);
@@ -68,9 +67,14 @@ public class ArrowTransform extends TransformStrategy {
         anim.finishAnimation();
     }
 
-
     @Override
     public MathObject getIntermediateObject() {
         return anim.getIntermediateObject();
+    }
+
+    @Override
+    public void reset() {
+        super.reset();
+        anim.reset();
     }
 }
