@@ -397,7 +397,7 @@ waitSeconds(3);
 
 Note that the `transform` animation also interpolates drawing parameters as thickness and color.
 
-> **WARNING**: After transforming object `A` into `B`, in some cases the transformed object becomes unusable. You should using `B` after that in a general case. In any case, `A` object is removed automatically from the scene.
+The general procedure when the transformation from A to B is complete is to delete A from the scene and add B, so you should be using B from now on.
 
 With this code, you can see the intermediate steps, in this case, when we are transforming a regular triangle into a regular pentagon:
 
@@ -431,8 +431,8 @@ for (int i = 0; i < num; i++) {
     //Compute the animation at time t
     anim.doAnim(t);
 
-    //The getIntermediateTransformedObject gives us the intermediate object used in the animation
-    MathObject intermediate = anim.getIntermediateTransformedObject().copy();
+    //The getIntermediateObject gives us the intermediate object used in the animation
+    MathObject intermediate = anim.getIntermediateObject().copy();
 
     //Generate a beautiful text, located below the intermediate object
     LaTeXMathObject lat = LaTeXMathObject.make("{\\tt t=" + t + "}")
@@ -704,5 +704,4 @@ Animation anim = Commands.inverseIsomorphism(3, A, B, C, D, triangle);
 # Transforming math expressions
 
 LaTeX math expressions  admit a specialized animation called `TransformMathExpression` which allows to fine tune a transformation between one `LaTeXMathObject` and another. We will see how it works in the math expressions chapter.
-
 [home](https://davidgutierrezrubio.github.io/jmathanim/) [back](../index.html)
