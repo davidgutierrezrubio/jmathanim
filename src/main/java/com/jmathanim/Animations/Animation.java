@@ -59,7 +59,7 @@ public abstract class Animation {
 
     private String debugName;
 
-   private boolean shouldResetAtFinish;
+   private boolean shouldResetAtReuse;
     
     private Status status;
     /**
@@ -118,7 +118,7 @@ public abstract class Animation {
         this.runTime = runTime;
         this.useObjectState = true;
         this.shouldAddObjectsToScene = true;
-        this.shouldResetAtFinish=true;
+        this.shouldResetAtReuse=true;
         this.shouldInterpolateStyles = true;
         lambda = UsefulLambdas.smooth(.9d);
         backups = new HashMap<>();
@@ -548,12 +548,12 @@ public abstract class Animation {
         status=Status.NOT_INITIALIZED;
     }
 
-    public boolean isShouldResetAtFinish() {
-        return shouldResetAtFinish;
+    public boolean isShouldResetAtReuse() {
+        return shouldResetAtReuse;
     }
 
     public void setShouldResetAtFinish(boolean shouldResetAtFinish) {
-        this.shouldResetAtFinish = shouldResetAtFinish;
+        this.shouldResetAtReuse = shouldResetAtFinish;
     }
     
     

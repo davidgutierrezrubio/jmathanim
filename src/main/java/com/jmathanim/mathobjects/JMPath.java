@@ -552,13 +552,7 @@ public class JMPath implements Stateable, Boxable, Iterable<JMPathPoint> {
         for (JMPathPoint jmp : jmPathPoints) {
             points.add(jmp.p.copy().thickness(2));
         }
-//        List<Point> points = jmPathPoints.stream().map(p -> p.p).collect(Collectors.toList());
         points.addAll(getCriticalPoints());
-//        for (Point p: getCriticalPoints()) {
-//            System.out.println(""+p);
-//        }
-//        System.out.println("Rect "+Rect.make(points));
-
         return Rect.make(points);
     }
 

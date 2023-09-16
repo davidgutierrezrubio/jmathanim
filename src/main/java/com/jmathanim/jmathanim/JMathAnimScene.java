@@ -531,48 +531,50 @@ public abstract class JMathAnimScene {
         List<Animation> listAnims = anims.stream().filter(Objects::nonNull).collect(Collectors.toList());
         ArrayList<Animation> arAnims = new ArrayList<>(listAnims);
         for (Animation anim : arAnims) {
+            if (anim.isShouldResetAtReuse()) {
+                anim.reset();
+            }
             anim.setT(0);
             if (anim.getStatus() == Animation.Status.FINISHED) {// This allow to reuse ended animations
-                if (anim.isShouldResetAtFinish()) {
-                    anim.setStatus(Animation.Status.NOT_INITIALIZED);
-                } else {
-                    anim.setStatus(Animation.Status.INITIALIZED);
-                }
+                anim.setStatus(Animation.Status.INITIALIZED);
             }
-            anim.initialize(this);// Perform needed steps immediately before playing
-            if (!"".equals(anim.getDebugName())) {
-                JMathAnimScene.logger.info("Begin animation: " + anim.getDebugName() + " [" + anim.getRunTime() + "s]");
-            }
-
-            if (animationIsDisabled) {
-                anim.setT(1);
-            }
+        anim.initialize(this);// Perform needed steps immediately before playing
+        if (!"".equals(anim.getDebugName())) {
+            JMathAnimScene.logger.info("Begin animation: " + anim.getDebugName() + " [" + anim.getRunTime() + "s]");
         }
 
-        boolean finished = false;
-        while (!finished) {
-            finished = true;
-            boolean anyAnimationRunning = false;
-            for (Animation anim : anims) {
-                anyAnimationRunning = anyAnimationRunning | (anim.getStatus() == Animation.Status.RUNNING);
-                final boolean resultAnimation = anim.processAnimation();
-                finished = finished & resultAnimation;
-                if (resultAnimation) {
-                    anim.finishAnimation();
-                }
-            }
-            if ((!finished) && (true)) {//If all animations are finished, no need to advance frame
-                advanceFrame();
-            }
+        if (animationIsDisabled) {
+            anim.setT(1);
         }
     }
 
-    /**
-     * Wait the specified time, generating the frames.
-     *
-     * @param time Time in seconds.
-     */
-    public void waitSeconds(double time) {
+    boolean finished = false;
+    while (!finished
+
+    
+        ) {
+            finished = true;
+        boolean anyAnimationRunning = false;
+        for (Animation anim : anims) {
+            anyAnimationRunning = anyAnimationRunning | (anim.getStatus() == Animation.Status.RUNNING);
+            final boolean resultAnimation = anim.processAnimation();
+            finished = finished & resultAnimation;
+            if (resultAnimation) {
+                anim.finishAnimation();
+            }
+        }
+        if ((!finished) && (true)) {//If all animations are finished, no need to advance frame
+            advanceFrame();
+        }
+    }
+}
+
+/**
+ * Wait the specified time, generating the frames.
+ *
+ * @param time Time in seconds.
+ */
+public void waitSeconds(double time) {
         if (animationIsDisabled) {
             return;
         }
@@ -581,8 +583,11 @@ public abstract class JMathAnimScene {
         for (int n = 0; n < numFrames; n++) {
             try {
                 advanceFrame();
-            } catch (Exception ex) {
-                java.util.logging.Logger.getLogger(JMathAnimScene.class.getName()).log(Level.SEVERE, null, ex);
+
+} catch (Exception ex) {
+                java.util.logging.Logger.getLogger(JMathAnimScene.class  
+
+.getName()).log(Level.SEVERE, null, ex);
             }
         }
 

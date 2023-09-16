@@ -118,13 +118,9 @@ public class FlowLayout extends AbstractBoxLayout {
 		for (int n = 1; n < group.size(); n++) {
 			totalWidth += getAppropiateSize(group.get(n)) + inRowGap;
 			if (totalWidth <= rowLength.applyAsDouble(rowNumber)) {
-//                group.get(n).stackTo(group.get(n - 1), inRowStack, inRowGap);
 				currentRow.add(group.get(n));
-//                System.out.println("row " + rowNumber + ", size=" + totalWidth);
 			} else {
-//                System.out.println("Salto porque " + totalWidth);
 				rowNumber++;
-//                group.get(n).stackTo(firstOfTheRow, inColStack, inColGap);
 				firstOfTheRow = group.get(n);
 				totalWidth = getAppropiateSize(firstOfTheRow);
 				currentRow = MathObjectGroup.make(firstOfTheRow);
