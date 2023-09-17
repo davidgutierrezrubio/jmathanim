@@ -59,8 +59,8 @@ public abstract class Animation {
 
     private String debugName;
 
-   private boolean shouldResetAtReuse;
-    
+    private boolean shouldResetAtReuse;
+
     private Status status;
     /**
      * Default run time for animations, 1 second
@@ -118,7 +118,7 @@ public abstract class Animation {
         this.runTime = runTime;
         this.useObjectState = true;
         this.shouldAddObjectsToScene = true;
-        this.shouldResetAtReuse=true;
+        this.shouldResetAtReuse = true;
         this.shouldInterpolateStyles = true;
         lambda = UsefulLambdas.smooth(.9d);
         backups = new HashMap<>();
@@ -540,21 +540,22 @@ public abstract class Animation {
      * @return The intermediate object
      */
     public abstract MathObject getIntermediateObject();
-    
+
     /**
-     * Resets the animation so it can be reused with different initialization parameters.
+     * Resets the animation so it can be reused with different initialization
+     * parameters.
      */
     public void reset() {
-        status=Status.NOT_INITIALIZED;
+        status = Status.NOT_INITIALIZED;
     }
 
     public boolean isShouldResetAtReuse() {
         return shouldResetAtReuse;
     }
 
-    public void setShouldResetAtFinish(boolean shouldResetAtFinish) {
+    public <T extends Animation> T setShouldResetAtFinish(boolean shouldResetAtFinish) {
         this.shouldResetAtReuse = shouldResetAtFinish;
+        return (T) this;
     }
-    
-    
+
 }

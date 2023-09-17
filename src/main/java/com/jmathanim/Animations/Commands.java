@@ -1428,21 +1428,21 @@ public class Commands {
      * @return Animation to run with playAnim method
      */
     public static ShiftAnimation setLayout(double runtime, GroupLayout layout, MathObjectGroup group) {
-        MathObjectGroup state = group.copy();
-        group.setLayout(layout);
-        HashMap<MathObject, Point> centers = new HashMap<>();
-        int n = 0;
-        for (MathObject ob : group) {
-            centers.put(ob, ob.getCenter());// The destination centers of the objects of the group
-            n++;
-        }
-        group.copyStateFrom(state);
+
         MathObject[] mathobjects = group.getObjects().toArray(new MathObject[group.size()]);
 
         ShiftAnimation resul = new ShiftAnimation(runtime, mathobjects) {
+            HashMap<MathObject, Point> centers = new HashMap<>();
+
             @Override
             public boolean doInitialization() {
                 super.doInitialization();
+                MathObjectGroup groupCopy = group.copy();
+                groupCopy.setLayout(layout);
+                for (int n = 0; n < groupCopy.size(); n++) {
+                     centers.put(group.get(n), groupCopy.get(n).getCenter());// The destination centers of the objects of the group
+                }
+
                 JMathAnimScene.logger.debug("Initialized setLayout animation");
                 for (MathObject obj : mathobjects) {
                     Point dst = centers.get(obj);

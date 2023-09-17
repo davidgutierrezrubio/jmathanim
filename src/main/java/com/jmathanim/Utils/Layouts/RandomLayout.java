@@ -99,7 +99,7 @@ public class RandomLayout extends GroupLayout {
     public Vec getRandomVector() {
         switch (distribution) {
             case UNIFORM:
-                return Vec.to((random.nextDouble() - .5) * 4 * deviation, (random.nextDouble() - .5) * 4 * deviation);
+                return Vec.to((random.nextDouble() - .5) * 2 * deviation, (random.nextDouble() - .5) * 2 * deviation);
             case NORMAL:
                 return Vec.to(random.nextGaussian(0, deviation), random.nextGaussian(0, deviation));
             default:
