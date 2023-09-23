@@ -102,28 +102,16 @@ public class Ray extends Shape implements HasDirection {
     }
 
     /**
-     * Creates a line that passes through p1 and p2
-     *
-     * @param p1 First point
-     * @param p2 Second point
-     */
-    public Ray(Point p1, Point p2) {
-        this(p1, p2, null);
-    }
-
-    /**
      * Creates a new line that passes through given points, with specified
      * MathDrawingProperties
      *
      * @param p1 First point
      * @param p2 Second point
-     * @param mp MathDrawingProperties
      */
-    public Ray(Point p1, Point p2, MODrawProperties mp) {
-        super(mp);
+    public Ray(Point p1, Point p2) {
+        super(null);
         mpArray = new MODrawPropertiesArray();
         mpArray.copyFrom(JMathAnimConfig.getConfig().getDefaultMP());// Default MP values);
-        mpArray.copyFrom(mp);
         this.p1 = p1;
         this.p2 = p2;
         getPath().clear(); // Super constructor adds p1, p2. Delete them

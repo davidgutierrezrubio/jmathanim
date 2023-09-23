@@ -100,6 +100,10 @@ public class Axes extends MathObject {
         addXTicksLegend("$" + format.format(x) + "$", x, tickType, maxWidthToShow);
     }
 
+    public void addXTicksLegend(double x, TickAxes.TickType tickType) {
+        addXTicksLegend("$" + format.format(x) + "$", x, tickType, Double.POSITIVE_INFINITY);
+    }
+
     /**
      * Adds a pair (tick, legend text) at the given value in the y-axis, with
      * the specified latex string.The maxWidthToShow parameter is the maximum
@@ -117,6 +121,10 @@ public class Axes extends MathObject {
             xticksBase.add(tick);
             mpArray.add(tick);
         }
+    }
+
+    public void addXTicksLegend(String latex, double x, TickAxes.TickType tickType) {
+        addXTicksLegend(latex, x, tickType, Double.POSITIVE_INFINITY);
     }
 
     // /**
@@ -152,6 +160,10 @@ public class Axes extends MathObject {
         addYTicksLegend("$" + format.format(y) + "$", y, tickType, maxWidthToShow);
     }
 
+    public void addYTicksLegend(double y, TickAxes.TickType tickType) {
+        addYTicksLegend("$" + format.format(y) + "$", y, tickType, Double.POSITIVE_INFINITY);
+    }
+
     /**
      * Adds a pair (tick, legend text) at the given value in the y-axis, with
      * the specified latex string.The maxWidthToShow parameter is the maximum
@@ -166,6 +178,14 @@ public class Axes extends MathObject {
     public void addYTicksLegend(String latex, double y, TickAxes.TickType tickType, double maxWidthToShow) {
         if (!yticksBase.stream().anyMatch(t -> (t.location == y))) {
             TickAxes tick = TickAxes.makeYTick(y, latex, tickType, maxWidthToShow);
+            yticksBase.add(tick);
+            mpArray.add(tick);
+        }
+    }
+
+    public void addYTicksLegend(String latex, double y, TickAxes.TickType tickType) {
+        if (!yticksBase.stream().anyMatch(t -> (t.location == y))) {
+            TickAxes tick = TickAxes.makeYTick(y, latex, tickType, Double.POSITIVE_INFINITY);
             yticksBase.add(tick);
             mpArray.add(tick);
         }

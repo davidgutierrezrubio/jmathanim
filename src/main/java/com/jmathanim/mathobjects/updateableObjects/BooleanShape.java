@@ -18,7 +18,9 @@
 package com.jmathanim.mathobjects.updateableObjects;
 
 import com.jmathanim.jmathanim.JMathAnimScene;
+import com.jmathanim.mathobjects.Shape;
 import com.jmathanim.mathobjects.JMPath;
+import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.Shape;
 
 /**
@@ -27,40 +29,58 @@ import com.jmathanim.mathobjects.Shape;
  */
 public class BooleanShape extends Shape {
 
-	private final Operation operation;
+    private Operation operation;
 
-	public enum Operation {
-		UNION, INTERSECTION, SUBSTRACTION
-	}
+    public enum Operation {
+        UNION, INTERSECTION, SUBSTRACTION
+    }
 
-	Shape shape1, shape2;
+    Shape shape1, shape2;
 
-	public BooleanShape(Operation operation, Shape shape1, Shape shape2) {
-		this.shape1 = shape1;
-		this.shape2 = shape2;
-		this.operation = operation;
-	}
+    public BooleanShape(Operation operation, Shape shape1, Shape shape2) {
+        this.shape1 = shape1;
+        this.shape2 = shape2;
+        this.operation = operation;
+    }
 
-	@Override
-	public void update(JMathAnimScene scene) {
-		JMPath newPath = null;
-		switch (this.operation) {
-		case UNION:
-			newPath = shape1.getUnionPath(shape2);
-			break;
-		case INTERSECTION:
-			newPath = shape1.getIntersectionPath(shape2);
-			break;
-		case SUBSTRACTION:
-			newPath = shape1.getSubstractPath(shape2);
-			break;
-		}
-		this.getPath().clear();
-		this.getPath().addJMPointsFrom(newPath);
-	}
- @Override
+    @Override
+    public void update(JMathAnimScene scene) {
+        JMPath newPath = null;
+        switch (this.operation) {
+            case UNION:
+                newPath = shape1.getUnionPath(shape2);
+                break;
+            case INTERSECTION:
+                newPath = shape1.getIntersectionPath(shape2);
+                break;
+            case SUBSTRACTION:
+                newPath = shape1.getSubstractPath(shape2);
+                break;
+        }
+        this.getPath().clear();
+        this.getPath().addJMPointsFrom(newPath);
+    }
+
+    @Override
     public void registerUpdateableHook(JMathAnimScene scene) {
         scene.registerUpdateable(shape1, shape2);
-        setUpdateLevel(Math.max(shape1.getUpdateLevel(),shape2.getUpdateLevel())+1);
+        setUpdateLevel(Math.max(shape1.getUpdateLevel(), shape2.getUpdateLevel()) + 1);
     }
+
+    @Override
+    public Shape copy() {
+        return new BooleanShape(this.operation, shape1.copy(), shape2.copy());
+    }
+
+    @Override
+    public void copyStateFrom(MathObject obj) {
+        if (obj instanceof BooleanShape) {
+            BooleanShape bs = (BooleanShape) obj;
+            this.shape1.copyStateFrom(bs.shape1);
+            this.shape2.copyStateFrom(bs.shape2);
+            this.operation = bs.operation;
+
+        }
+    }
+
 }

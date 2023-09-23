@@ -323,6 +323,8 @@ public class MultiShapeObject extends MathObject implements Iterable<Shape> {
      * Gets an array of Shapes with the given indices. This method is used
      * mostly to combine with animations that accepts a varargs of MathObject
      *
+     * @param indices
+     * @return 
      */
     public Shape[] getSubArray(int... indices) {
         Shape[] resul = new Shape[indices.length];

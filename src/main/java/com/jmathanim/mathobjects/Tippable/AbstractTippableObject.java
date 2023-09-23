@@ -24,9 +24,9 @@ import com.jmathanim.Utils.Anchor;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import static com.jmathanim.jmathanim.JMathAnimScene.PI;
+import com.jmathanim.mathobjects.Shape;
 import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.Point;
-import com.jmathanim.mathobjects.Shape;
 import com.jmathanim.mathobjects.hasScalarParameter;
 
 /**

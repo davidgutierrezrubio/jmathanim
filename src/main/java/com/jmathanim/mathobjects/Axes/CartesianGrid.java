@@ -17,18 +17,19 @@
 package com.jmathanim.mathobjects.Axes;
 
 import com.jmathanim.Cameras.Camera;
-import com.jmathanim.Constructible.Constructible;
 import com.jmathanim.Utils.Rect;
 import com.jmathanim.mathobjects.Line;
 import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.MathObjectGroup;
+import com.jmathanim.mathobjects.MultiShapeObject;
+import com.jmathanim.mathobjects.shouldUdpateWithCamera;
 
 /**
  * A Cartesian Grid
  *
  * @author David Gutierrez Rubio davidgutierrezrubio@gmail.com
  */
-public class CartesianGrid extends Constructible {
+public class CartesianGrid extends MultiShapeObject implements shouldUdpateWithCamera {
 
     private double xStep;
     private double yStep;
@@ -36,7 +37,6 @@ public class CartesianGrid extends Constructible {
     private double centerY;
     private double centerX;
     private final Rect currentView;
-    public final MathObjectGroup lines;
 
     /**
      * Creates a new cartesian grid located at a given reference point with
@@ -96,11 +96,10 @@ public class CartesianGrid extends Constructible {
         this.yStep = h;
         this.cam = scene.getCamera();
         this.currentView = this.cam.getMathView().copy();
-        this.lines = MathObjectGroup.make();
     }
 
     private void recomputeGrid() {
-        this.lines.clear();
+        this.shapes.clear();
 
         Rect bb = this.cam.getMathView();
         double wv = 1 * bb.getWidth();
@@ -109,39 +108,59 @@ public class CartesianGrid extends Constructible {
         int nw = ((int) (wv / xStep)) + 2;
         int nh = ((int) (hv / yStep)) + 2;
 
-        this.lines.add(Line.XAxis().shift(this.centerX, this.centerY));
-        this.lines.add(Line.YAxis().shift(this.centerX, this.centerY));
+        this.add(Line.XAxis().shift(this.centerX, this.centerY).setObjectLabel("grid_xaxis"));
+        this.add(Line.YAxis().shift(this.centerX, this.centerY).setObjectLabel("grid_yaxis"));
         for (int n = 1; n < nw; n++) {
-            this.lines.add(Line.YAxis().shift(this.centerX + n * xStep, this.centerY));
-            this.lines.add(Line.YAxis().shift(this.centerX - n * xStep, this.centerY));
+            this.add(Line.YAxis().shift(this.centerX + n * xStep, this.centerY).setObjectLabel("grid_y1_" + n));
+            this.add(Line.YAxis().shift(this.centerX - n * xStep, this.centerY).setObjectLabel("grid_x1_" + n));
         }
         for (int n = 1; n < nh; n++) {
-            this.lines.add(Line.XAxis().shift(this.centerX, this.centerY + n * yStep));
-            this.lines.add(Line.XAxis().shift(this.centerX, this.centerY - n * yStep));
+            this.add(Line.XAxis().shift(this.centerX, this.centerY + n * yStep).setObjectLabel("grid_x2_" + n));
+            this.add(Line.XAxis().shift(this.centerX, this.centerY - n * yStep).setObjectLabel("grid_y2_" + n));
         }
 
         this.getMp().copyFrom(this.getMp());//Re-apply style to created lines
     }
 
-    private void alignGridToScreen() {
-        Rect bb = this.lines.getBoundingBox();
+    public void alignGridToScreen() {
+        Rect bb = this.getBoundingBox();
         Rect mv = this.cam.getMathView();
         while (bb.xmin > mv.xmin) {
-            this.lines.shift(-this.xStep, 0);
+            this.shift(-this.xStep, 0);
             bb.xmin -= this.xStep;
         }
+//        while (bb.xmin < mv.xmin) {
+//            this.shift(this.xStep, 0);
+//            bb.xmin += this.xStep;
+//        }
+
         while (bb.xmax < mv.xmax) {
-            this.lines.shift(this.xStep, 0);
+            this.shift(this.xStep, 0);
             bb.xmax += this.xStep;
         }
+//         while (bb.xmax > mv.xmax) {
+//            this.shift(-this.xStep, 0);
+//            bb.xmax -= this.xStep;
+//        }
+//        
+        
         while (bb.ymin > mv.ymin) {
-            this.lines.shift(0, -this.yStep);
+            this.shift(0, -this.yStep);
             bb.ymin -= this.yStep;
         }
+//         while (bb.ymin < mv.ymin) {
+//            this.shift(0, this.yStep);
+//            bb.ymin += this.yStep;
+//        }
+         
         while (bb.ymax < mv.ymax) {
-            this.lines.shift(0, this.yStep);
+            this.shift(0, this.yStep);
             bb.ymax += this.yStep;
         }
+//         while (bb.ymax >mv.ymax) {
+//            this.shift(0, -this.yStep);
+//            bb.ymax -= this.yStep;
+//        }
 
     }
 
@@ -160,12 +179,6 @@ public class CartesianGrid extends Constructible {
         }
     }
 
-    @Override
-    public MathObject getMathObject() {
-        return this.lines;
-    }
-
-    @Override
     public void rebuildShape() {
         final Rect mathView = cam.getMathView();
         if (!this.currentView.equals(mathView)) {
@@ -175,5 +188,11 @@ public class CartesianGrid extends Constructible {
             alignGridToScreen();
             this.currentView.copyFrom(mathView);
         }
+    }
+
+    @Override
+    public void updateWithCamera(Camera camera) {
+        recomputeGrid();
+        alignGridToScreen();
     }
 }

@@ -97,7 +97,7 @@ public class PointInterpolationCanonical extends TransformStrategy {
         preparePaths(shIntermediate.getPath(), destinyCopy.getPath());
         if (DEBUG_COLORS) {
             for (int n = 0; n < connectedOrigin.getNumberOfPaths(); n++) {
-                Shape sh = new Shape(connectedOrigin.get(n), null);
+                Shape sh = new Shape(connectedOrigin.get(n));
                 sh.drawColor(JMColor.random()).thickness(10);
                 addObjectsToscene(sh);
                 addedAuxiliaryObjectsToScene.add(sh);

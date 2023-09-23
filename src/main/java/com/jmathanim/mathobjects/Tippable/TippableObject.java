@@ -17,6 +17,7 @@
 package com.jmathanim.mathobjects.Tippable;
 
 import com.jmathanim.Utils.Anchor;
+import com.jmathanim.mathobjects.Shape;
 import com.jmathanim.mathobjects.Arrow2D;
 import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.MultiShapeObject;

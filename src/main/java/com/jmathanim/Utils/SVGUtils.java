@@ -136,7 +136,8 @@ public class SVGUtils {
                         pathUtils.determineStraightSegments(path);
                         if (!path.jmPathPoints.isEmpty()) {
                             path.pathType = JMPath.SVG_PATH; // Mark this as a SVG path
-                            shape = new Shape(path, mpCopy);
+                            shape = new Shape(path);
+                            shape.getMp().copyFrom(mpCopy);
                             transfCopy.applyTransform(shape);
                             msh.add(shape);
                         }

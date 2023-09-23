@@ -23,12 +23,19 @@ import com.jmathanim.Renderers.Renderer;
 import com.jmathanim.Styling.JMColor;
 import com.jmathanim.Styling.MODrawProperties;
 import com.jmathanim.Utils.AffineJTransform;
+import com.jmathanim.Utils.Boxable;
 import com.jmathanim.Utils.JMathAnimConfig;
 import com.jmathanim.Utils.LogoInterpreter;
 import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import static com.jmathanim.jmathanim.JMathAnimScene.PI;
+import static com.jmathanim.mathobjects.MathObject.Align.HCENTER;
+import static com.jmathanim.mathobjects.MathObject.Align.LEFT;
+import static com.jmathanim.mathobjects.MathObject.Align.LOWER;
+import static com.jmathanim.mathobjects.MathObject.Align.RIGHT;
+import static com.jmathanim.mathobjects.MathObject.Align.UPPER;
+import static com.jmathanim.mathobjects.MathObject.Align.VCENTER;
 import java.util.OptionalInt;
 import javafx.scene.shape.Path;
 
@@ -38,47 +45,23 @@ import javafx.scene.shape.Path;
  */
 public class Shape extends MathObject {
 
-    private final JMPath jmpath;
-    private boolean showDebugPoints = false;
-    private boolean isConvex = false;
+    protected final JMPath jmpath;
+    protected boolean showDebugPoints = false;
+    protected boolean isConvex = false;
 
     public Shape() {
-        this(new JMPath(), null);
+        super();
+        this.jmpath = new JMPath();
     }
 
     public Shape(JMPath jmpath) {
-        this(jmpath, null);
-    }
-
-    public Shape(JMPath jmpath, MODrawProperties mp) {
-        super(mp);
+        super();
         this.jmpath = jmpath;
     }
 
-    public Shape(MODrawProperties mp) {
-        super(mp);
-        jmpath = new JMPath();
-    }
-
-    public JMPathPoint get(int n) {
-        return jmpath.jmPathPoints.get(n);
-    }
-
-    /**
-     * Returns a reference to the point at position n This is equivalent to
-     * get(n).p
-     *
-     * @param n Point number
-     * @return The point
-     */
-    public Point getPoint(int n) {
-        return get(n).p;
-    }
-
-    public JMPath getPath() {
-        return jmpath;
-    }
-
+//    public Shape(JMPath jmpath, MODrawProperties mp) {
+//        super(jmpath,mp);
+//    }
     /**
      * Returns a new Point object lying in the Shape, at the given position
      *
@@ -113,6 +96,15 @@ public class Shape extends MathObject {
         return resul;
     }
 
+    @Override
+    public Shape copy() {
+        Shape resul = new Shape(jmpath.copy());
+        resul.getMp().copyFrom(getMp());
+        resul.objectLabel = this.objectLabel + "_copy";
+        resul.copyStateFrom(this);
+        return resul;
+    }
+
 //    @Override
 //    public <T extends MathObject> T shift(Vec shiftVector) {
 //        jmpath.shift(shiftVector);
@@ -121,94 +113,6 @@ public class Shape extends MathObject {
 //    public void removeInterpolationPoints() {
 //        jmpath.removeInterpolationPoints();
 //    }
-    @Override
-    public Shape copy() {
-        final MODrawProperties copy = getMp().copy();
-        Shape resul = new Shape(jmpath.copy(), copy);
-        resul.objectLabel = this.objectLabel + "_copy";
-        resul.copyStateFrom(this);
-        return resul;
-    }
-
-    @Override
-    public void copyStateFrom(MathObject obj) {
-        if (!(obj instanceof Shape)) {
-            return;
-        }
-        Shape sh2 = (Shape) obj;
-        this.getMp().copyFrom(sh2.getMp());
-
-        getPath().copyStateFrom(sh2.getPath());
-        absoluteSize = sh2.absoluteSize;
-        isConvex = sh2.isConvex;
-        showDebugPoints = sh2.showDebugPoints;
-    }
-
-    @Override
-    public void draw(JMathAnimScene scene, Renderer r) {
-        if (isVisible()) {
-            if (absoluteSize) {
-                r.drawAbsoluteCopy(this, getAbsoluteAnchor().v);
-            } else {
-                r.drawPath(this);
-                if (isShowDebugPoints()) {
-                    for (int n = 0; n < size(); n++) {
-                        r.debugText("" + n, getPoint(n).v);
-                    }
-
-                }
-            }
-        }
-    }
-
-    @Override
-    public Rect computeBoundingBox() {
-        return jmpath.getBoundingBox();
-    }
-
-    @Override
-    public String toString() {
-        return objectLabel + ":" + jmpath.toString();
-    }
-
-    @Override
-    public void restoreState() {
-        super.restoreState();
-        jmpath.restoreState();
-        this.getMp().restoreState();
-    }
-
-    @Override
-    public void saveState() {
-        super.saveState();
-        jmpath.saveState();
-        this.getMp().saveState();
-    }
-
-    /**
-     * Merges with the given Shape, adding all their jmpathpoints.If the shapes
-     * were disconnected they will remain so unless the connect parameter is set
-     * to true. In such case, the shapes will be connected by a straight line
-     * from the last point of the calling object to the first point of the given
-     * one.
-     *
-     * @param <T> Calling Shape subclass
-     * @param sh Shape to merge
-     * @param connectAtoB If true, the end of path A will be connected to the
-     * beginning of path B by a straight line
-     * @param connectBtoA If true, the end of path B will be connected to the
-     * beginning of path A by a straight line
-     * @return This object
-     */
-    public <T extends Shape> T merge(Shape sh, boolean connectAtoB, boolean connectBtoA) {
-        getPath().merge(sh.getPath().copy(), connectAtoB, connectBtoA);
-        return (T) this;
-    }
-
-    public int size() {
-        return jmpath.size();
-    }
-
     // Static methods to build most used shapes
     public static Shape square() {
         Shape obj = Shape.rectangle(Point.origin(), Point.at(1, 1));
@@ -449,31 +353,52 @@ public class Shape extends MathObject {
     }
 
     /**
-     * Return the value of boolean flag showDebugPoints
+     * Align this object with another one
      *
-     * @return If true, the point number will be superimposed on screen when
-     * drawing this shape
+     * @param <T> MathObject subclass
+     * @param obj Object to align with. This object remains unaltered.
+     * @param type Align type, a value from the enum Align
+     * @return This object
      */
-    public boolean isShowDebugPoints() {
-        return showDebugPoints;
-    }
-
-    /**
-     * Sets the vaue of boolean flag showDebugPoints. If true, the point number
-     * will be superimposed on screen when drawing this shape
-     *
-     * @param showDebugPoints
-     */
-    public void setShowDebugPoints(boolean showDebugPoints) {
-        this.showDebugPoints = showDebugPoints;
+    @Override
+    public <T extends MathObject> T align(Boxable obj, Align type) {
+        Vec shiftVector = Vec.to(0, 0);
+        Rect thisBoundingBox = this.getBoundingBox();
+        Rect objectBoundingBox = obj.getBoundingBox();
+        switch (type) {
+            case LOWER:
+                shiftVector.y = objectBoundingBox.ymin - thisBoundingBox.ymin;
+                break;
+            case UPPER:
+                shiftVector.y = objectBoundingBox.ymax - thisBoundingBox.ymax;
+                break;
+            case LEFT:
+                shiftVector.x = objectBoundingBox.xmin - thisBoundingBox.xmin;
+                break;
+            case RIGHT:
+                shiftVector.x = objectBoundingBox.xmax - thisBoundingBox.xmax;
+                break;
+            case VCENTER:
+                shiftVector.y = 0.5 * ((objectBoundingBox.ymin + objectBoundingBox.ymax) - (thisBoundingBox.ymin + thisBoundingBox.ymax));
+                break;
+            case HCENTER:
+                shiftVector.x = 0.5 * ((objectBoundingBox.xmin + objectBoundingBox.xmax) - (thisBoundingBox.xmin + thisBoundingBox.xmax));
+                break;
+        }
+        shift(shiftVector);
+        return (T) this;
     }
 
     @Override
-    public Shape applyAffineTransform(AffineJTransform tr) {
-        getPath().applyAffineTransform(tr);
-
+    public <T extends MathObject> T applyAffineTransform(AffineJTransform tr) {
+        jmpath.applyAffineTransform(tr);
         tr.applyTransformsToDrawingProperties(this);
-        return this;
+        return (T) this;
+    }
+
+    @Override
+    public Rect computeBoundingBox() {
+        return jmpath.getBoundingBox();
     }
 
     /**
@@ -495,29 +420,129 @@ public class Shape extends MathObject {
      * not). False otherwise.
      */
     public boolean containsPoint(Vec v) {
-        FXPathUtils fXPathUtils = new FXPathUtils();
-//        DummyCamera dummyCamera = new DummyCamera();
         Camera dummyCamera = JMathAnimConfig.getConfig().getCamera();
         Path path = FXPathUtils.createFXPathFromJMPath(jmpath, dummyCamera);
-        path.setFill(JMColor.parse("black").getFXColor());// It's necessary that the javafx path is filled to work
-        double xy[] = dummyCamera.mathToScreenFX(v);
+        path.setFill(JMColor.parse("black").getFXColor()); // It's necessary that the javafx path is filled to work
+        double[] xy = dummyCamera.mathToScreenFX(v);
         return path.contains(xy[0], xy[1]);
     }
     //Ray Casting algorithm. Only works for straight, simple polygons
-//
-//    public boolean pointInPolygon(Point point) {
-//        int numSides =size();
-//        int numIntersections = 0;
-//        for (int i = 0; i < numSides; i++) {
-//            Vec currentVertex = jmpath.get(i).p.v;
-//            Vec nextVertex = jmpath.get(i+1).p.v;
-//            if ((currentVertex.y > point.v.y) != (nextVertex.y > point.v.y)
-//                    && (point.v.x < (nextVertex.x - currentVertex.x) * (point.v.y - currentVertex.y) / (nextVertex.y - currentVertex.y) + currentVertex.x)) {
-//                numIntersections++;
-//            }
-//        }
-//        return numIntersections % 2 == 1;
-//    }
+    //
+    //    public boolean pointInPolygon(Point point) {
+    //        int numSides =size();
+    //        int numIntersections = 0;
+    //        for (int i = 0; i < numSides; i++) {
+    //            Vec currentVertex = jmpath.get(i).p.v;
+    //            Vec nextVertex = jmpath.get(i+1).p.v;
+    //            if ((currentVertex.y > point.v.y) != (nextVertex.y > point.v.y)
+    //                    && (point.v.x < (nextVertex.x - currentVertex.x) * (point.v.y - currentVertex.y) / (nextVertex.y - currentVertex.y) + currentVertex.x)) {
+    //                numIntersections++;
+    //            }
+    //        }
+    //        return numIntersections % 2 == 1;
+    //    }
+
+    protected Path convertToPath(javafx.scene.shape.Shape shape) {
+        if (shape == null) {
+            return null;
+        }
+        if (shape instanceof Path) {
+            return (Path) shape;
+        }
+        return (Path) javafx.scene.shape.Shape.union(new Path(), shape);
+    }
+
+    /**
+     * Returns the n-th JMPathPoint of path.
+     *
+     * @param n index. A cyclic index, so that 0 means the first point and -1
+     * the last one
+     * @return The JMPathPoint
+     */
+    public JMPathPoint get(int n) {
+        return jmpath.jmPathPoints.get(n);
+    }
+
+    /**
+     * Returns a reference to the point at position n This is equivalent to
+     * get(n).p
+     *
+     * @param n Point number. A cyclic index, so that 0 means the first point
+     * and -1 the last one
+     * @return The point
+     */
+    public Point getPoint(int n) {
+        return jmpath.get(n).p;
+    }
+
+    /**
+     * Returns the path associated to this Shape
+     *
+     * @return A JMPath object
+     */
+    public JMPath getPath() {
+        return jmpath;
+    }
+
+    /**
+     * Gets
+     *
+     * @param a
+     * @param b
+     * @return
+     */
+    public com.jmathanim.mathobjects.Shape getSubShape(double a, double b) {
+        com.jmathanim.mathobjects.Shape subShape = new com.jmathanim.mathobjects.Shape();
+        subShape.getMp().copyFrom(this.getMp());
+        if (!jmpath.isEmpty()) {
+            final JMPath subPath = jmpath.getSubPath(a, b);
+            subShape.getPath().jmPathPoints.addAll(subPath.jmPathPoints);
+        }
+        return subShape;
+    }
+
+    /**
+     * Computes the JMPath of the substraction of this Shape with another one
+     *
+     * @param s2 Shape to substract
+     * @return A JMpath object of the substraction
+     */
+    public JMPath getSubstractPath(Shape s2) {
+        FXPathUtils fXPathUtils = new FXPathUtils();
+        //        Camera dummyCamera = new DummyCamera();
+        Camera camera = scene.getCamera();
+        Path path = FXPathUtils.createFXPathFromJMPath(jmpath, camera); //
+        Path path2 = FXPathUtils.createFXPathFromJMPath(s2.getPath(), camera);
+        path.setFill(JMColor.parse("black").getFXColor()); // It's necessary that the javafx path is filled to work
+        path2.setFill(JMColor.parse("black").getFXColor()); // It's necessary that the javafx path is filled to work
+        javafx.scene.shape.Shape newpa = Path.subtract(path, path2);
+        Path convertToPath = convertToPath(newpa);
+        // Distille!
+        //        fXPathUtils.distille(convertToPath);
+        return fXPathUtils.createJMPathFromFXPath(convertToPath, camera);
+    }
+
+    /**
+     * Computes the JMPath of the union of this Shape with another one
+     *
+     * @param s2 Shape to compute the union
+     * @return A JMpath object of the union
+     */
+    public JMPath getUnionPath(Shape s2) {
+        FXPathUtils fXPathUtils = new FXPathUtils();
+        //        DummyCamera dummyCamera = new DummyCamera();
+        Camera dummyCamera = scene.getCamera();
+        Path path = FXPathUtils.createFXPathFromJMPath(jmpath, dummyCamera);
+        Path path2 = FXPathUtils.createFXPathFromJMPath(s2.getPath(), dummyCamera);
+        path.setFill(JMColor.parse("black").getFXColor()); // It's necessary that the javafx path is filled to work
+        path2.setFill(JMColor.parse("black").getFXColor()); // It's necessary that the javafx path is filled to work
+        javafx.scene.shape.Shape newpa = Path.union(path, path2);
+        Path convertToPath = convertToPath(newpa);
+        //        writeFXPathPoints(convertToPath);
+        // Distille!
+        fXPathUtils.distille(convertToPath);
+        return fXPathUtils.createJMPathFromFXPath(convertToPath, dummyCamera);
+    }
 
     /**
      * Computes the JMPath of the intersection of this Shape with another one
@@ -526,7 +551,7 @@ public class Shape extends MathObject {
      * @return A JMpath object of the intersection
      */
     public JMPath getIntersectionPath(Shape s2) {
-        FXPathUtils fXPathUtils = new FXPathUtils();
+//        FXPathUtils fXPathUtils = new FXPathUtils();
 //        Camera dummyCamera = new DummyCamera();
         Camera dummyCamera = scene.getCamera();
         Path path = FXPathUtils.createFXPathFromJMPath(jmpath, dummyCamera);
@@ -549,71 +574,28 @@ public class Shape extends MathObject {
      * another one. Styling properties of the new Shape are copied from calling
      * object.
      *
+     * @param <T> Calling class
      * @param s2 Shape to intersect with
      * @return A Shape with the intersecion
      */
-    public Shape intersect(Shape s2) {
-        Shape resul = new Shape(getIntersectionPath(s2));
+    public <T extends Shape> T intersect(Shape s2) {
+        com.jmathanim.mathobjects.Shape resul = new com.jmathanim.mathobjects.Shape(getIntersectionPath(s2));
         resul.getMp().copyFrom(this.getMp());
-        return resul;
-    }
-
-    /**
-     * Computes the JMPath of the union of this Shape with another one
-     *
-     * @param s2 Shape to compute the union
-     * @return A JMpath object of the union
-     */
-    public JMPath getUnionPath(Shape s2) {
-        FXPathUtils fXPathUtils = new FXPathUtils();
-//        DummyCamera dummyCamera = new DummyCamera();
-        Camera dummyCamera = scene.getCamera();
-        Path path = FXPathUtils.createFXPathFromJMPath(jmpath, dummyCamera);
-        Path path2 = FXPathUtils.createFXPathFromJMPath(s2.getPath(), dummyCamera);
-        path.setFill(JMColor.parse("black").getFXColor());// It's necessary that the javafx path is filled to work
-        path2.setFill(JMColor.parse("black").getFXColor());// It's necessary that the javafx path is filled to work
-        javafx.scene.shape.Shape newpa = Path.union(path, path2);
-        Path convertToPath = convertToPath(newpa);
-//        writeFXPathPoints(convertToPath);
-        // Distille!
-        fXPathUtils.distille(convertToPath);
-
-        return fXPathUtils.createJMPathFromFXPath(convertToPath, dummyCamera);
+        return (T) resul;
     }
 
     /**
      * Creates a new Shape object with the union of this Shape and another one.
      * Styling properties of the new Shape are copied from calling object.
      *
+     * @param <T> Calling class
      * @param s2 Shape to compute the union
      * @return A Shape with the union
      */
-    public Shape union(Shape s2) {
-        Shape resul = new Shape(getUnionPath(s2));
+    public <T extends Shape> T union(Shape s2) {
+        com.jmathanim.mathobjects.Shape resul = new com.jmathanim.mathobjects.Shape(getUnionPath(s2));
         resul.getMp().copyFrom(this.getMp());
-        return resul;
-    }
-
-    /**
-     * Computes the JMPath of the substraction of this Shape with another one
-     *
-     * @param s2 Shape to substract
-     * @return A JMpath object of the substraction
-     */
-    public JMPath getSubstractPath(Shape s2) {
-        FXPathUtils fXPathUtils = new FXPathUtils();
-//        Camera dummyCamera = new DummyCamera();
-        Camera camera = scene.getCamera();
-        Path path = FXPathUtils.createFXPathFromJMPath(jmpath, camera);//
-        Path path2 = FXPathUtils.createFXPathFromJMPath(s2.getPath(), camera);
-        path.setFill(JMColor.parse("black").getFXColor());// It's necessary that the javafx path is filled to work
-        path2.setFill(JMColor.parse("black").getFXColor());// It's necessary that the javafx path is filled to work
-        javafx.scene.shape.Shape newpa = Path.subtract(path, path2);
-        Path convertToPath = convertToPath(newpa);
-        // Distille!
-//        fXPathUtils.distille(convertToPath);
-
-        return fXPathUtils.createJMPathFromFXPath(convertToPath, camera);
+        return (T) resul;
     }
 
     /**
@@ -621,23 +603,26 @@ public class Shape extends MathObject {
      * another one. Styling properties of the new Shape are copied from calling
      * object.
      *
+     * @param <T> Calling class
      * @param s2 Shape to substract
      * @return A Shape with the substraction
      */
-    public Shape substract(Shape s2) {
-        Shape resul = new Shape(getSubstractPath(s2));
+    public <T extends Shape> T substract(Shape s2) {
+        com.jmathanim.mathobjects.Shape resul = new com.jmathanim.mathobjects.Shape(getSubstractPath(s2));
         resul.getMp().copyFrom(this.getMp());
-        return resul;
+        return (T) resul;
     }
 
-    private Path convertToPath(javafx.scene.shape.Shape shape) {
-        if (shape == null) {
-            return null;
-        }
-        if (shape instanceof Path) {
-            return (Path) shape;
-        }
-        return (Path) javafx.scene.shape.Shape.union(new Path(), shape);
+    /**
+     * Check if the current object is empty (for example: a MultiShape with no
+     * objects). A empty object case should be considered as they return null
+     * bounding boxes.
+     *
+     * @return True if object is empty, false otherwise
+     */
+    @Override
+    public boolean isEmpty() {
+        return getPath().isEmpty();
     }
 
     /**
@@ -652,6 +637,26 @@ public class Shape extends MathObject {
     }
 
     /**
+     * Return the value of boolean flag showDebugPoints
+     *
+     * @return If true, the point number will be superimposed on screen when
+     * drawing this shape
+     */
+    public boolean isShowDebugPoints() {
+        return showDebugPoints;
+    }
+
+    /**
+     * Sets the vaue of boolean flag showDebugPoints. If true, the point number
+     * will be superimposed on screen when drawing this shape
+     *
+     * @param showDebugPoints
+     */
+    public void setShowDebugPoints(boolean showDebugPoints) {
+        this.showDebugPoints = showDebugPoints;
+    }
+
+    /**
      * Mark this shape as convex. If convex, a simpler and faster algorithm to
      * draw it can be used.
      *
@@ -659,6 +664,15 @@ public class Shape extends MathObject {
      */
     public void setIsConvex(boolean isConvex) {
         this.isConvex = isConvex;
+    }
+
+    /**
+     * Returns the size, that is, the number of JMPathPoints of the Shape
+     *
+     * @return Number of JMPathPoints
+     */
+    public int size() {
+        return jmpath.size();
     }
 
     /**
@@ -676,30 +690,34 @@ public class Shape extends MathObject {
     }
 
     /**
-     * Reverse the points of the path. First point becomes last.
+     * Reverse the points of the path. First point becomes last. The object is
+     * altered
      *
+     * @param <T> Calling class
      * @return This object
      */
-    public Shape reverse() {
+    public <T extends Shape> T reverse() {
         getPath().reverse();
-        return this;
+        return (T) this;
     }
 
-    /**
-     * Gets
-     *
-     * @param a
-     * @param b
-     * @return
-     */
-    public Shape getSubShape(double a, double b) {
-        Shape subShape = new Shape();
-        subShape.getMp().copyFrom(this.getMp());
-        if (!getPath().isEmpty()) {
-            final JMPath subPath = getPath().getSubPath(a, b);
-            subShape.getPath().jmPathPoints.addAll(subPath.jmPathPoints);
-        }
-        return subShape;
+    @Override
+    public String toString() {
+        return objectLabel + ":" + jmpath.toString();
+    }
+
+    @Override
+    public void restoreState() {
+        super.restoreState();
+        jmpath.restoreState();
+        this.getMp().restoreState();
+    }
+
+    @Override
+    public void saveState() {
+        super.saveState();
+        jmpath.saveState();
+        this.getMp().saveState();
     }
 
     @Override
@@ -713,14 +731,54 @@ public class Shape extends MathObject {
     }
 
     /**
-     * Check if the current object is empty (for example: a MultiShape with no
-     * objects). A empty object case should be considered as they return null
-     * bounding boxes.
+     * Merges with the given Shape, adding all their jmpathpoints.If the shapes
+     * were disconnected they will remain so unless the connect parameter is set
+     * to true. In such case, the shapes will be connected by a straight line
+     * from the last point of the calling object to the first point of the given
+     * one.
      *
-     * @return True if object is empty, false otherwise
+     * @param <T> Calling Shape subclass
+     * @param sh Shape to merge
+     * @param connectAtoB If true, the end of path A will be connected to the
+     * beginning of path B by a straight line
+     * @param connectBtoA If true, the end of path B will be connected to the
+     * beginning of path A by a straight line
+     * @return This object
      */
-    @Override
-    public boolean isEmpty() {
-        return getPath().isEmpty();
+    public <T extends Shape> T merge(Shape sh, boolean connectAtoB, boolean connectBtoA) {
+        jmpath.merge(sh.getPath().copy(), connectAtoB, connectBtoA);
+        return (T) this;
     }
+
+    @Override
+    public void copyStateFrom(MathObject obj) {
+        if (!(obj instanceof Shape)) {
+            return;
+        }
+        Shape sh2 = (Shape) obj;
+        this.getMp().copyFrom(sh2.getMp());
+
+        getPath().copyStateFrom(sh2.getPath());
+        absoluteSize = sh2.absoluteSize;
+        isConvex = sh2.isConvex;
+        showDebugPoints = sh2.showDebugPoints;
+    }
+
+    @Override
+    public void draw(JMathAnimScene scene, Renderer r) {
+        if (isVisible()) {
+            if (absoluteSize) {
+                r.drawAbsoluteCopy(this, getAbsoluteAnchor().v);
+            } else {
+                r.drawPath(this);
+                if (isShowDebugPoints()) {
+                    for (int n = 0; n < size(); n++) {
+                        r.debugText("" + n, getPoint(n).v);
+                    }
+
+                }
+            }
+        }
+    }
+
 }

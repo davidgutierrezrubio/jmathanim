@@ -96,8 +96,6 @@ public class MathObjectGroup extends MathObject implements Iterable<MathObject> 
         return resul;
     }
 
-
-    
     MODrawPropertiesArray mpArray;
     private final ArrayList<MathObject> objects;
 
@@ -197,9 +195,9 @@ public class MathObjectGroup extends MathObject implements Iterable<MathObject> 
 //        }
 //        scene.markAsAlreadyDrawed(this);
 //    }
-        @Override
+    @Override
     public void draw(JMathAnimScene scene, Renderer r) {
-          scene.markAsAlreadyDrawed(this);
+        scene.markAsAlreadyDrawed(this);
     }
 
     public MathObject get(int index) {
@@ -285,7 +283,7 @@ public class MathObjectGroup extends MathObject implements Iterable<MathObject> 
         switch (layout) {
             case CENTER:
                 anchor = Anchor.Type.CENTER;
-                gap=0;
+                gap = 0;
                 break;
             case RIGHT:
                 anchor = Anchor.Type.RIGHT;
@@ -396,13 +394,45 @@ public class MathObjectGroup extends MathObject implements Iterable<MathObject> 
 
     @Override
     public boolean isEmpty() {
-        boolean resul=true;
+        boolean resul = true;
         for (MathObject thi : this) {
-            resul=resul&&thi.isEmpty();
+            resul = resul && thi.isEmpty();
         }
         return resul;
-        
+
     }
 
-    
+    /**
+     * Adjust gaps of all object so that bounding boxes are equal. Additional gaps are passed as parameters.
+     * @param rightGap Right Gap to add.
+     * @param upperGap Upper Gap to add.
+     * @param leftGap  Left Gap to add.
+     * @param lowerGap Lower Gap to add.
+     * @return 
+     */
+    public MathObjectGroup homogeneizeBoundingBoxes(double rightGap, double upperGap, double leftGap, double lowerGap) {
+        double hmax = 0;
+        double wmax = 0;
+        for (MathObject ob : this) {//Compute max of widths and heights
+            double w = ob.getWidth();
+            double h = ob.getHeight();
+            hmax = (hmax < h ? h : hmax);
+            wmax = (wmax < w ? w : wmax);
+        }
+        for (MathObject ob : this) {//Now add proper gaps
+            double w = ob.getWidth();
+            double h = ob.getHeight();
+            double rGap=(wmax-w)/2+rightGap;
+            double lGap=(wmax-w)/2+leftGap;
+            
+            double uGap=(hmax-h)/2+upperGap;
+            double loGap=(hmax-h)/2+lowerGap;
+            
+            ob.setGaps(rGap,uGap,lGap,loGap);
+            System.out.println(ob.getWidth()+" "+ob.getHeight());
+        }
+
+        return this;
+    }
+
 }

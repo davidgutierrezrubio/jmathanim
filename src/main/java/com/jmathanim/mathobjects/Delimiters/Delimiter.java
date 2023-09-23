@@ -218,6 +218,9 @@ public abstract class Delimiter extends MathObject {
             scaledB.v.copyFrom(B.interpolate(A, .5 * (1 - amplitudeScale)).v);
             delimiterLabel.update(scene);
             delimiterToDraw = buildDelimiterShape();
+            for (MathObject d : delimiterToDraw) {
+                d.draw(scene, r);
+            }
             delimiterToDraw.draw(scene, r);
         }
     }

@@ -22,6 +22,7 @@ import com.jmathanim.Styling.JMColor;
 import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.UsefulLambdas;
 import com.jmathanim.jmathanim.JMathAnimScene;
+import com.jmathanim.mathobjects.Shape;
 import com.jmathanim.mathobjects.Arrow2D;
 import com.jmathanim.mathobjects.Line;
 import com.jmathanim.mathobjects.MathObject;
