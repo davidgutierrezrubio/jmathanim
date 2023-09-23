@@ -434,5 +434,26 @@ public class MathObjectGroup extends MathObject implements Iterable<MathObject> 
 
         return this;
     }
+    
+    /**
+     * Add gaps (negative if necessary) to every object so that all have the same width and height
+     * @param width Desired width
+     * @param height Desired height
+     * @return This object
+     */
+    public MathObjectGroup homogeneizeBoundingBoxesTo(double width,double height) {
+         for (MathObject ob : this) {//Now add proper gaps
+            double w = ob.getWidth();
+            double h = ob.getHeight();
+            double rGap=(width-w)/2;
+            double lGap=(width-w)/2;
+            
+            double uGap=(height-h)/2;
+            double loGap=(height-h)/2;
+            
+            ob.setGaps(rGap,uGap,lGap,loGap);
+         }
+         return this;
+    }
 
 }
