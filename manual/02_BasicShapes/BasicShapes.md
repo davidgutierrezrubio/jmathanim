@@ -91,9 +91,11 @@ Shape seg=Shape.segment(Point.at(-1,-1),Point.at(-.5,1.5));
 
 //An arc centered at (0,0) with radius 1, and arclength of PI/4 radians
 Shape arc=Shape.arc(PI/4);
+add(circ, sq, reg, poly, rect, seg, arc);//Add everything to the scene
+waitSeconds(5);//5 seconds of contemplation...
 ```
 
-If you add all these objects to the scene with the command `add(circ,sq,reg,poly,rect,seg,arc)` you’ll obtain something like this:
+You’ll obtain something like this:
 
 <img src="basicShapes.png" alt="basicShapes" style="zoom:50%;" />
 
@@ -239,14 +241,15 @@ waitSeconds(3);
 
 <img src="cartesianGrid.png" alt="image-20220920180537862" style="zoom:50%;" />
 
-You can specify a second pair of parameters to include a secondary grid, in this case, returns a `MathObjectGroup` including 2 cartesian grids, the primary and secondary.
+You can specify a second pair of parameters to include a secondary grid, in this case, returns a `MathObjectGroup` including 2 cartesian grids, the primary and secondary. In this case, the `make` method will return a `MathObjectGroup` containing 2 `CartesianGrid` objects:
 
 ```java
 MathObjectGroup grid = CartesianGrid.make(0, 0, .5, .5, .25, .25);
 add(
     grid,
-    Shape.circle().drawColor("blue").fillColor("blue").fillAlpha(.5)
+    Shape.circle().drawColor("firebrick").fillColor("firebrick").fillAlpha(.5)
 );
+waitSeconds(3);
 ```
 
 
@@ -262,17 +265,17 @@ The `Arrow2D` class defines a vector, which consists of a segment and an arrow h
 ```java
 Point A = Point.at(0, 0);
 Point B = Point.at(1, 0);
-        
+
 Arrow2D ar = Arrow2D.makeSimpleArrow2D(A, B, ArrowType.TYPE_1);
 Arrow2D ar2 = Arrow2D.makeSimpleArrow2D(A.copy(), B.copy(), ArrowType.TYPE_2).stackTo(ar, Anchor.Type.LOWER);
 Arrow2D ar3 = Arrow2D.makeSimpleArrow2D(A.copy(), B.copy(), ArrowType.TYPE_3).stackTo(ar2, Anchor.Type.LOWER);
-Arrow2D ar4 = Arrow2D.makeDoubleArrow2D(A.copy(), B.copy(), ArrowType.TYPE_1,ArrowType.TYPE_1).stackTo(ar3, Anchor.Type.LOWER);
-Arrow2D ar5 = Arrow2D.makeDoubleArrow2D(A.copy(), B.copy(), ArrowType.TYPE_1,ArrowType.TYPE_2).stackTo(ar4, Anchor.Type.LOWER);
+Arrow2D ar4 = Arrow2D.makeDoubleArrow2D(A.copy(), B.copy(), ArrowType.TYPE_1, ArrowType.TYPE_1).stackTo(ar3, Anchor.Type.LOWER);
+Arrow2D ar5 = Arrow2D.makeDoubleArrow2D(A.copy(), B.copy(), ArrowType.TYPE_1, ArrowType.TYPE_2).stackTo(ar4, Anchor.Type.LOWER);
 ar5.scaleArrowHead1(2);
 ar5.scaleArrowHead2(2);
 
-add(ar,ar2,ar3,ar4,ar5);
-camera.adjustToAllObjects();
+add(ar, ar2, ar3, ar4, ar5);
+camera.zoomToAllObjects();
 waitSeconds(4);
 ```
 

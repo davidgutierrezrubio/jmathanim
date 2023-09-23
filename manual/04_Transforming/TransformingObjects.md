@@ -48,7 +48,7 @@ which produces the following image:
 
 <img src="02_stackToExample.png" alt="02 stackToExample" style="zoom:50%;" />
 
-You’ll notice two new methods here: The `copy()` method returns a copy of the object, and the `camera.adjustToAllObjects()` does as it says, rescales the camera so that everything fits into view.  The `fillColor` and `fillAlpha` sets the filling of the object. 
+You’ll notice two new methods here: The `copy()` method returns a copy of the object, and the `camera.adjustToAllObjects()` does as it says, rescales the camera so that everything fits into view, but it doesn't zoom in.  The `fillColor` and `fillAlpha` sets the filling of the object. 
 
 Note that the `.moveTo(p)`method is equivalent to `.stackTo(p, Anchor.Type.CENTER)`.
 
@@ -66,7 +66,7 @@ camera.adjustToAllObjects();//Everyone should appear in the photo
 waitSeconds(5);//Time for screenshot, but you already should know that
 ```
 
-Which produces this regular polygons pattern. Note that all polygons are vertically aligned and their bounding boxes are stacked horizontally.
+Which produces this regular polygons pattern. Note that all polygons are vertically aligned and their bounding boxes are stacked horizontally. Actually, you can achieve the same effect easier using layouts with `MathObjectGroup` as we will see later in this chapter.
 
 ![02b stackToExample2](02b_stackToExample2.png)
 
@@ -91,12 +91,23 @@ waitSeconds(3);
 This methods is similar to `stackTo`, but it positions the object relative to the current view.
 
 ``` java
-Shape sq=Shape.square();
-add(sq.stackToScreen(Anchor.Type.LEFT));//Stack square to the left of the screen, with no gaps
-add(sq.copy().stackToScreen(Anchor.Type.RIGHT,.3,.1));//Stack a copy of square to the left of the screen,with gaps of .3 horizontal and .1 vertical (here only horizontal one is used)
-add(Shape.circle().stackToScreen(Anchor.Type.UL));//Stack a unit circle to the upper left corner of the screen, with no gaps
+Shape sq=Shape.square().scale(.5).style("solidblue");
+
+//Stack square to the left of the screen, with no gaps
+add(sq.stackToScreen(Anchor.Type.LEFT));
+
+//Stack a copy of square to the left of the screen,with gaps of .3 horizontal and .1 vertical (here only horizontal one is used)
+add(sq.copy().style("solidgreen").stackToScreen(Anchor.Type.RIGHT,.3,.1));
+
+//Stack a unit circle to the upper left corner of the screen, with no gaps
+add(Shape.circle().style("solidred").scale(.25).stackToScreen(Anchor.Type.ULEFT));
+
 waitSeconds(5);
 ```
+
+![image-20210128172514664](04_StackToScreenExample2.png)
+
+
 
 There is shortcut method if you want to simply put the object at the center screen. The method `.center()` is equivalent to `.stackToScreen(Anchor.Type.CENTER)`.
 

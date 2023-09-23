@@ -12,9 +12,11 @@ Each object has 2 colors: the draw color (changed with `.drawColor`), used for d
 
 ``` java
 Shape r = Shape.regularPolygon(5)
-	.fillColor(JMColor.parse("CADETBLUE"))
+    .fillColor(JMColor.parse("CADETBLUE"))
     .drawColor(JMColor.parse("#041137"))
     .thickness(15);
+add(r.center());
+waitSeconds(3);
 ```
 When added to the scene, it will show something like this:
 
@@ -126,7 +128,7 @@ waitSeconds(5);
 A concrete combination of drawing parameters can be saved in styles. The `config` objects stores the saved styles and have methods to manage them. To apply a style to an object, use the method `.style(styleName)`.
 
 ```java
-Shape triangle = Shape.regularPolygon(3).thickness(8).dashStyle(MODrawProperties.DashStyle.DASHED).fillColor("steelblue");
+Shape triangle = Shape.regularPolygon(3).thickness(8).dashStyle(DashStyle.DASHED).fillColor("steelblue");
 //Creates style named solidRed
 config.createStyleFrom(triangle, "myStyle");
 Shape circle = Shape.circle().scale(.5).stackTo(triangle, Anchor.Type.LEFT);
