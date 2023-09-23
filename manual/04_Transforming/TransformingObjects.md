@@ -104,8 +104,11 @@ add(Shape.circle().style("solidred").scale(.25).stackToScreen(Anchor.Type.ULEFT)
 
 waitSeconds(5);
 ```
+You obtain objects stacked to the borders of the actual screen view:
 
-![image-20210128172514664](04_StackToScreenExample2.png)
+
+
+<img src="04a_StackToScreenExample2.png" alt="image-20210128172514664" style="zoom:50%;" />
 
 
 
@@ -176,13 +179,13 @@ The `rotate` command rotates the object around a given center (or the center of 
 For example:
 
 ``` java
-   Shape ellipse = Shape.circle().scale(.5, 1);//Creates an ellipse
-        ellipse.fillColor("violet").fillAlpha(.25);//fill violet 25% opacity
-        Point rotationCenter = Point.at(.5, 0);
-        for (int n = 0; n < 180; n += 20) {
-            add(ellipse.copy().rotate(rotationCenter, n * DEGREES));
-        }
-        waitSeconds(5);
+Shape ellipse = Shape.circle().scale(.5, 1);//Creates an ellipse
+ellipse.fillColor("violet").fillAlpha(.25);//fill violet 25% opacity
+Point rotationCenter = Point.at(.5, 0);
+for (int n = 0; n < 180; n += 20) {
+    add(ellipse.copy().rotate(rotationCenter, n * DEGREES));
+}
+waitSeconds(5);
 ```
 
 Gives this spirograh-like picture:
@@ -286,7 +289,7 @@ Shape circ = Shape.circle().scale(.5).shift(.5, .5).fillColor("orange").fillAlph
 Point A = Point.at(0, 0).drawColor("darkblue").layer(1); 
 Point B = Point.at(1, 0).drawColor("darkblue").layer(1); 
 Point C = Point.at(0, 1).drawColor("darkblue").layer(1); 
-Point D = Point.at(1.5, -.5).dotStyle(DotSyle.PLUS).thickness(6)).drawColor("darkgreen");
+Point D = Point.at(1.5, -.5).dotStyle(DotSyle.PLUS).thickness(6).drawColor("darkgreen");
 Point E = Point.at(2, 0).dotStyle(DotSyle.PLUS).thickness(6).drawColor("darkgreen");
 Point F = Point.at(1.75, .75).dotStyle(DotSyle.PLUS).thickness(6).drawColor("darkgreen");
 add(sq, circ, A, B, C, D, E, F);
