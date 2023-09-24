@@ -68,7 +68,7 @@ public class FlowLayout extends AbstractBoxLayout {
 	}
 
 	@Override
-	public void applyLayout(MathObjectGroup group) {
+	public void executeLayout(MathObjectGroup group) {
 		ArrayList<MathObjectGroup> rowGroups = getRowGroups(group);
 
 		rowGroups.get(0).get(0).stackTo(firstElementStack, this.corner, Anchor.Type.CENTER, 0);

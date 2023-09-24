@@ -49,7 +49,7 @@ public class ComposeLayout extends GroupLayout {
 	}
 
 	@Override
-	public void applyLayout(MathObjectGroup group) {
+	public void executeLayout(MathObjectGroup group) {
 		MathObjectGroup externalGroup = group.divide(sizeInternalGroups);
 		for (MathObject ig : externalGroup) {
 			MathObjectGroup internalGroup = (MathObjectGroup) ig;

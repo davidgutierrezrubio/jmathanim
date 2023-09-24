@@ -17,10 +17,12 @@
  */
 package com.jmathanim.Utils.Layouts;
 
+import com.jmathanim.Utils.Anchor;
 import com.jmathanim.Utils.Rect;
 import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.MathObjectGroup;
 import com.jmathanim.mathobjects.Shape;
+import java.util.ArrayList;
 
 /**
  * A basic abstract class to implement any layout that can be applied to a
@@ -30,43 +32,111 @@ import com.jmathanim.mathobjects.Shape;
  */
 public abstract class GroupLayout {
 
-	public abstract void applyLayout(MathObjectGroup group);
+    private final ArrayList<double[]> backupGaps;
+    private Anchor.innerType innerAnchor;
+    private double ugap, rgap, logap, lgap;
 
-	/**
-	 * Returns the bounding box that will have the specified group if layout is
-	 * applied. The group is unaltered.
-	 *
-	 * @param group MathObjectGroup to apply layout
-	 * @return The bounding box
-	 */
-	public Rect getBoundingBox(MathObjectGroup group) {
-		if (group.isEmpty()) {// Nothing to show
-			return null;
-		}
-		MathObjectGroup boxedGroup = createBoxedGroup(group, 0, 0);
-		applyLayout(boxedGroup);
-		Rect bbox = boxedGroup.getBoundingBox();
-		return bbox;
-	}
+    public GroupLayout() {
+        backupGaps = new ArrayList<>();
+        innerAnchor = null;
+        ugap = 0;
+        rgap = 0;
+        logap = 0;
+        lgap = 0;
+    }
 
-	/**
-	 * Creates a simpler group with rectangles representing the bounding boxes
-	 *
-	 * @param group The MathObjectGroup to compute bounding boxes
-	 * @param hgap  Horizontal gap. The height of the rectangles will be increased
-	 *              by this gap.
-	 * @param vgap  Vertical gap. The width of the rectangles will be increased by
-	 *              this gap.
-	 * @return A new MathObjectGroup, with rectangles representing the bounding
-	 *         boxes
-	 */
-	protected MathObjectGroup createBoxedGroup(MathObjectGroup group, double hgap, double vgap) {
-		MathObjectGroup resul = MathObjectGroup.make();
-		for (MathObject ob : group) {
-			resul.add(Shape.rectangle(ob.getBoundingBox().addGap(hgap, vgap)));
-		}
-		return resul;
-	}
+    public abstract void executeLayout(MathObjectGroup group);
 
-	public abstract <T extends GroupLayout> T copy();
+    public final void applyLayout(MathObjectGroup group) {
+        if (innerAnchor != null) {//Should homogeneize bounding boxes first
+            saveGaps(group);
+            group.homogeneizeBoundingBoxes(innerAnchor, rgap, ugap, logap, logap);
+        }
+        executeLayout(group);
+        if (innerAnchor != null) {
+            restoreGaps(group);
+        }
+    }
+
+    private void saveGaps(MathObjectGroup group) {
+        System.out.println("SAVE GAPS!");
+        backupGaps.clear();
+        for (MathObject ob : group) {
+            backupGaps.add(ob.getGaps());
+        }
+    }
+
+    private void restoreGaps(MathObjectGroup group) {
+        for (int i = 0; i < group.size(); i++) {
+            double[] gaps = backupGaps.get(i);
+            group.get(i).setGaps(
+                    gaps[0],
+                    gaps[1],
+                    gaps[2],
+                    gaps[3]);
+
+        }
+    }
+
+    /**
+     * Specify that bounding boxes of elements should be homogenezied when
+     * applying the layout. All elements will have bounding boxes with the
+     * maxium height and width of group elements and the gaps specified as
+     * parameters. The original bounding box is located according to the anchor
+     * specified (CENTER, UPPER, etc.)
+     *
+     * @param <T> Calling class
+     * @param anchor How to locate the original bounding box inside the new one
+     * @param upperGap Upper gap to add
+     * @param rightGap Right gap to add
+     * @param lowerGap Lower gap to add
+     * @param leftGap Left gap to add
+     * @return This object
+     */
+    public <T extends GroupLayout> T homogeneize(Anchor.innerType anchor, double upperGap, double rightGap, double lowerGap, double leftGap) {
+        innerAnchor = anchor;
+        this.ugap = upperGap;
+        this.rgap = rightGap;
+        this.logap = lowerGap;
+        this.lgap = leftGap;
+        return (T) this;
+    }
+
+    /**
+     * Returns the bounding box that will have the specified group if layout is
+     * applied. The group is unaltered.
+     *
+     * @param group MathObjectGroup to apply layout
+     * @return The bounding box
+     */
+    public Rect getBoundingBox(MathObjectGroup group) {
+        if (group.isEmpty()) {// Nothing to show
+            return null;
+        }
+        MathObjectGroup boxedGroup = createBoxedGroup(group, 0, 0);
+        applyLayout(boxedGroup);
+        Rect bbox = boxedGroup.getBoundingBox();
+        return bbox;
+    }
+
+    /**
+     * Creates a simpler group with rectangles representing the bounding boxes
+     *
+     * @param group The MathObjectGroup to compute bounding boxes
+     * @param hgap Horizontal gap. The height of the rectangles will be
+     * increased by this gap.
+     * @param vgap Vertical gap. The width of the rectangles will be increased
+     * by this gap.
+     * @return A new MathObjectGroup, with rectangles representing the bounding
+     * boxes
+     */
+    protected MathObjectGroup createBoxedGroup(MathObjectGroup group, double hgap, double vgap) {
+        MathObjectGroup resul = MathObjectGroup.make();
+        for (MathObject ob : group) {
+            resul.add(Shape.rectangle(ob.getBoundingBox().addGap(hgap, vgap)));
+        }
+        return resul;
+    }
+
+    public abstract <T extends GroupLayout> T copy();
 }

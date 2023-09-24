@@ -107,7 +107,7 @@ public class BoxLayout extends AbstractBoxLayout {
     }
 
     @Override
-    public void applyLayout(MathObjectGroup group) {
+    public void executeLayout(MathObjectGroup group) {
         int rowCounter = 0; // This counter checks if another row is necessary
         MathObject firstOfTheRow = group.get(0);
         // Stacks the first object to the corner point, if it exists

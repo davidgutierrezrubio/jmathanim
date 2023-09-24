@@ -78,6 +78,18 @@ public class Anchor {
         DIAG3,
         DIAG4
     }
+    public enum innerType {
+        CENTER,
+        UPPER,
+        RUPPER,
+        RIGHT,
+        RLOWER,
+        LOWER,
+        LLOWER,
+        LEFT,
+        LUPPER
+    }
+    
 
     /**
      * Return a {@link Point} object that represents the given anchor. For

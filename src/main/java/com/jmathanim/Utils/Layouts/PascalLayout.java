@@ -51,7 +51,7 @@ public class PascalLayout extends GroupLayout {
 	}
 
 	@Override
-	public void applyLayout(MathObjectGroup group) {
+	public void executeLayout(MathObjectGroup group) {
 		if (group.isEmpty()) {
 			return; // Nothing to do here...
 		}

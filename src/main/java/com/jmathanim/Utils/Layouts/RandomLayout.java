@@ -109,7 +109,7 @@ public class RandomLayout extends GroupLayout {
     }
 
     @Override
-    public void applyLayout(MathObjectGroup group) {
+    public void executeLayout(MathObjectGroup group) {
         Vec v;
         if (center != null) {
             v = center.v;

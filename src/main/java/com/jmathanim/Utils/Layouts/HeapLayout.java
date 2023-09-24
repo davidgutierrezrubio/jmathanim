@@ -59,7 +59,7 @@ public class HeapLayout extends GroupLayout {
 	}
 
 	@Override
-	public void applyLayout(MathObjectGroup group) {
+	public void executeLayout(MathObjectGroup group) {
 		center.clear();
 		rightSide.clear();
 		leftSide.clear();

@@ -67,7 +67,7 @@ public class SimpleLayout extends GroupLayout {
 	}
 
 	@Override
-	public void applyLayout(MathObjectGroup group) {
+	public void executeLayout(MathObjectGroup group) {
 		Anchor.Type anchor1 = Anchor.Type.CENTER;
 		Anchor.Type anchor2 = Anchor.Type.CENTER;
 

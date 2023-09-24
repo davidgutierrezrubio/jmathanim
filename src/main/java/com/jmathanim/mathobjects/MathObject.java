@@ -997,10 +997,23 @@ public abstract class MathObject implements Drawable, Updateable, Stateable, Box
         return (T) this;// By default does nothing
     }
 
+    /**
+     * This hook is invoked when this object is added to the scene. You can
+     * override this method if you are defining your own MathObject subclass.
+     *
+     * @param scene Scene where the object is added
+     */
     public void addToSceneHook(JMathAnimScene scene) {
+        this.scene=scene;
     }
-
+ /**
+     * This hook is invoked when this object is removed from the scene. You can
+     * override this method if you are defining your own MathObject subclass.
+     *
+     * @param scene Scene from where the object is removed
+     */
     public void removedFromSceneHook(JMathAnimScene scene) {
+        this.scene=null;
     }
 
     @Override
@@ -1050,13 +1063,13 @@ public abstract class MathObject implements Drawable, Updateable, Stateable, Box
      * box of the object.
      *
      * @param <T>
-     * @param rightGap Right gap
      * @param upperGap Upper gap
-     * @param leftGap Left gap
+     * @param rightGap Right gap
      * @param lowerGap Lower gap
+     * @param leftGap Left gap
      * @return This object
      */
-    public <T extends MathObject> T setGaps(double rightGap, double upperGap, double leftGap, double lowerGap) {
+    public <T extends MathObject> T setGaps(double upperGap, double rightGap, double lowerGap, double leftGap) {
         this.rightGap = rightGap;
         this.upperGap = upperGap;
         this.leftGap = leftGap;
@@ -1064,14 +1077,43 @@ public abstract class MathObject implements Drawable, Updateable, Stateable, Box
         return (T) this;
     }
 
+    /**
+     * Returns a double array with current bounding box gaps
+     *
+     * @return An array with values upperGap, rightGap, lowerGap, leftGap
+     */
+    public double[] getGaps() {
+        return new double[]{upperGap, rightGap, lowerGap, leftGap};
+    }
+
+    /**
+     * Retrieves the property with given key
+     *
+     * @param key A String with the key name
+     * @return The proporty
+     */
     public Object getProperty(String key) {
         return properties.get(key);
     }
 
+    /**
+     * Stores an object into an internal dictionary of the MathObject. This can
+     * be useful if additional information to this object needs to be saved
+     *
+     * @param key A String denoting the key
+     * @param obj Any Java Object
+     */
     public void setProperty(String key, Object obj) {
         properties.put(key, obj);
     }
 
+    /**
+     * Sets the label object. This is used mostly for debugging purposes
+     *
+     * @param <T> Calling subclass
+     * @param objectLabel The label
+     * @return This object
+     */
     public <T extends MathObject> T setObjectLabel(String objectLabel) {
         this.objectLabel = objectLabel;
         return (T) this;

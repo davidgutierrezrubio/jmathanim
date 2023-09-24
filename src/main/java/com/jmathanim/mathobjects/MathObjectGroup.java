@@ -22,6 +22,8 @@ import com.jmathanim.Styling.MODrawPropertiesArray;
 import com.jmathanim.Styling.Stylable;
 import com.jmathanim.Utils.AffineJTransform;
 import com.jmathanim.Utils.Anchor;
+import static com.jmathanim.Utils.Anchor.innerType.CENTER;
+import static com.jmathanim.Utils.Anchor.innerType.RIGHT;
 import com.jmathanim.Utils.EmptyRect;
 import com.jmathanim.Utils.Layouts.GroupLayout;
 import com.jmathanim.Utils.Rect;
@@ -403,14 +405,19 @@ public class MathObjectGroup extends MathObject implements Iterable<MathObject> 
     }
 
     /**
-     * Adjust gaps of all object so that bounding boxes are equal. Additional gaps are passed as parameters.
+     * Adjust gaps of all object so that bounding boxes are equal. Additional
+     * gaps are passed as parameters. Size of the bounding box (before adding
+     * gaps) is computed as the maximum of the bounding boxes of group elements.
+     *
+     * @param anchorType How to align previous bounding box into the new one
+     * (CENTER, UPPER...)
      * @param rightGap Right Gap to add.
      * @param upperGap Upper Gap to add.
-     * @param leftGap  Left Gap to add.
+     * @param leftGap Left Gap to add.
      * @param lowerGap Lower Gap to add.
-     * @return 
+     * @return This group
      */
-    public MathObjectGroup homogeneizeBoundingBoxes(double rightGap, double upperGap, double leftGap, double lowerGap) {
+    public MathObjectGroup homogeneizeBoundingBoxes(Anchor.innerType anchorType, double upperGap, double rightGap, double lowerGap, double leftGap) {
         double hmax = 0;
         double wmax = 0;
         for (MathObject ob : this) {//Compute max of widths and heights
@@ -419,41 +426,83 @@ public class MathObjectGroup extends MathObject implements Iterable<MathObject> 
             hmax = (hmax < h ? h : hmax);
             wmax = (wmax < w ? w : wmax);
         }
-        for (MathObject ob : this) {//Now add proper gaps
-            double w = ob.getWidth();
-            double h = ob.getHeight();
-            double rGap=(wmax-w)/2+rightGap;
-            double lGap=(wmax-w)/2+leftGap;
-            
-            double uGap=(hmax-h)/2+upperGap;
-            double loGap=(hmax-h)/2+lowerGap;
-            
-            ob.setGaps(rGap,uGap,lGap,loGap);
-            System.out.println(ob.getWidth()+" "+ob.getHeight());
-        }
+
+        homogeneizeBoundingBoxesTo(anchorType, wmax, hmax, upperGap, rightGap, lowerGap, leftGap);
 
         return this;
     }
-    
+
     /**
-     * Add gaps (negative if necessary) to every object so that all have the same width and height
+     * Add gaps (negative if necessary) to every object so that all have the
+     * same width and height
+     *
+     * @param anchorType How to align previous bounding box into the new one
+     * (CENTER, UPPER...)
      * @param width Desired width
      * @param height Desired height
+     * @param upperGap Upper Gap to add.
+     * @param rightGap Right Gap to add.
+     * @param lowerGap Lower Gap to add.
+     * @param leftGap Left Gap to add.
      * @return This object
      */
-    public MathObjectGroup homogeneizeBoundingBoxesTo(double width,double height) {
-         for (MathObject ob : this) {//Now add proper gaps
+    public MathObjectGroup homogeneizeBoundingBoxesTo(Anchor.innerType anchorType, double width, double height, double upperGap, double rightGap, double lowerGap, double leftGap) {
+        for (MathObject ob : this) {//Now add proper gaps
+            double rGap = 0, lGap = 0, uGap = 0, loGap = 0;
             double w = ob.getWidth();
             double h = ob.getHeight();
-            double rGap=(width-w)/2;
-            double lGap=(width-w)/2;
-            
-            double uGap=(height-h)/2;
-            double loGap=(height-h)/2;
-            
-            ob.setGaps(rGap,uGap,lGap,loGap);
-         }
-         return this;
+            switch (anchorType) {
+                case CENTER:
+                    rGap = (width - w) / 2;
+                    lGap = (width - w) / 2;
+                    uGap = (height - h) / 2;
+                    loGap = (height - h) / 2;
+                    break;
+                case RIGHT:
+                    lGap = (width - w);
+                    uGap = (height - h) / 2;
+                    loGap = (height - h) / 2;
+                    break;
+                case LEFT:
+                    rGap = (width - w);
+                    uGap = (height - h) / 2;
+                    loGap = (height - h) / 2;
+                    break;
+                case UPPER:
+                    rGap = (width - w) / 2;
+                    lGap = (width - w) / 2;
+                    loGap = (height - h);
+                    break;
+                case LOWER:
+                    rGap = (width - w) / 2;
+                    lGap = (width - w) / 2;
+                    uGap = (height - h);
+                    break;
+                case RUPPER:
+                    lGap = (width - w);
+                    loGap = (height - h);
+                    break;
+                case RLOWER:
+                    lGap = (width - w);
+                    uGap = (height - h);
+                    break;
+                case LLOWER:
+                    rGap = (width - w);
+                    uGap = (height - h);
+                    break;
+                case LUPPER:
+                    rGap = (width - w);
+                    loGap = (height - h);
+                    break;
+            }
+            rGap += rightGap;
+            lGap += leftGap;
+            uGap += upperGap;
+            loGap += lowerGap;
+
+            ob.setGaps(uGap,rGap, loGap, lGap);
+        }
+        return this;
     }
 
 }

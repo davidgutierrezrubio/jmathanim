@@ -41,7 +41,7 @@ public class DestinyGroupLayout extends GroupLayout {
 	}
 
 	@Override
-	public void applyLayout(MathObjectGroup group) {
+	public void executeLayout(MathObjectGroup group) {
             int numElementsToApply=Math.min(group.size(),destinyGroup.size());
 		for (int n = 0; n < numElementsToApply; n++) {
 			group.get(n).moveTo(destinyGroup.get(n).getCenter());
