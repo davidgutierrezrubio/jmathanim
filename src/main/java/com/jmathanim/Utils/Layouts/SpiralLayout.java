@@ -102,7 +102,12 @@ public class SpiralLayout extends GroupLayout {
         this.horizontalGap = hgap;
         this.verticalGap = vgap;
         this.spiralGap = 0;
-        switch (orientation) {
+       
+
+    }
+
+    public void computeStacks(Orientation orientation1) {
+        switch (orientation1) {
             case LEFT_CLOCKWISE:
                 stacks = new Anchor.Type[]{Anchor.Type.LEFT, Anchor.Type.UPPER, Anchor.Type.RIGHT, Anchor.Type.LOWER};
                 break;
@@ -128,11 +133,11 @@ public class SpiralLayout extends GroupLayout {
                 stacks = new Anchor.Type[]{Anchor.Type.LOWER, Anchor.Type.RIGHT, Anchor.Type.UPPER, Anchor.Type.LEFT};
                 break;
         }
-
     }
 
     @Override
     public void executeLayout(MathObjectGroup group) {
+         computeStacks(orientation);
         int[] turns = new int[]{0, 0};//Experimental, to control horizontal/vertical ratio
         int ii = 0;
         if (this.center != null) {// Stack first element to the center
