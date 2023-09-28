@@ -259,10 +259,10 @@ waitSeconds(3);
 By default, grids are drawn using the `gridPrimaryDefault` and  `gridSecondaryDefault` styles. You can read more about styles in the next chapters.
 
 ## The `Arrow2D` class
-> **WARNING**: This class is deprecated and is replaced by the better implemented `Arrow`class. You should consider using it instead.
+> **WARNING**: Since v0.9.10-SNAPSHOT this class is deprecated and is replaced by the better implemented `Arrow`class. You should consider using it instead.
 
 ## The `Arrow` class
-This class replaces the old `Arrow2D`class and provides a better and more flexible implementation.
+Since v0.9.10-SNAPSHOT this class replaces the old `Arrow2D`class and provides a better and more flexible implementation.
 ```java
 Point A = Point.at(0, 0);
 Point B = Point.at(1, 0);
