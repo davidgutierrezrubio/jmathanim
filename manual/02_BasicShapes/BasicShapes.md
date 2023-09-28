@@ -259,46 +259,42 @@ waitSeconds(3);
 By default, grids are drawn using the `gridPrimaryDefault` and  `gridSecondaryDefault` styles. You can read more about styles in the next chapters.
 
 ## The `Arrow2D` class
-
-The `Arrow2D` class defines a vector, which consists of a segment and an arrow head.  It is made with a static builder:
-
+> **WARNING**: This class is deprecated and is replaced by the better implemented `Arrow`class. You should consider using it instead.
+## The `Arrow` class
+This class replaces the old `Arrow2D`class and provides a better and more flexible implementation.
 ```java
 Point A = Point.at(0, 0);
 Point B = Point.at(1, 0);
-
-Arrow2D ar = Arrow2D.makeSimpleArrow2D(A, B, ArrowType.TYPE_1);
-Arrow2D ar2 = Arrow2D.makeSimpleArrow2D(A.copy(), B.copy(), ArrowType.TYPE_2).stackTo(ar, Anchor.Type.LOWER);
-Arrow2D ar3 = Arrow2D.makeSimpleArrow2D(A.copy(), B.copy(), ArrowType.TYPE_3).stackTo(ar2, Anchor.Type.LOWER);
-Arrow2D ar4 = Arrow2D.makeDoubleArrow2D(A.copy(), B.copy(), ArrowType.TYPE_1, ArrowType.TYPE_1).stackTo(ar3, Anchor.Type.LOWER);
-Arrow2D ar5 = Arrow2D.makeDoubleArrow2D(A.copy(), B.copy(), ArrowType.TYPE_1, ArrowType.TYPE_2).stackTo(ar4, Anchor.Type.LOWER);
-ar5.scaleArrowHead1(2);
-ar5.scaleArrowHead2(2);
-
+Arrow ar = Arrow.make(A, B, Arrow.ArrowType.ARROW1);
+Arrow ar2 = Arrow.make(A.copy(), B.copy(), ArrowType.ARROW2).stackTo(ar, Anchor.Type.LOWER, .1);
+Arrow ar3 = Arrow.make(A.copy(), B.copy(), ArrowType.ARROW3).stackTo(ar2, Anchor.Type.LOWER, .1);
+Arrow ar4 = Arrow.makeDouble(A.copy(), B.copy(), ArrowType.ARROW2, ArrowType.ARROW3).stackTo(ar3, Anchor.Type.LOWER, .1);
+Arrow ar5 = Arrow.makeDouble(A.copy(), B.copy(), ArrowType.SQUARE, ArrowType.SQUARE).stackTo(ar4, Anchor.Type.LOWER, .1);
 add(ar, ar2, ar3, ar4, ar5);
 camera.zoomToAllObjects();
 waitSeconds(4);
 ```
+Produces the following image:
+<img src="arrow1.png" alt="image-20201112223825965" style="zoom:50%;" />
 
-
-
-<img src="arrow1.png" alt="image-20201112223825965"  />
-
-As you can see, there are 2 static builders, `makeSimpleArrow2D` and `makeDoubleArrow2D`, with parameters starting and ending points and type(s) of arrow(s). Currently there are 3 types of arrows, as shown in the previous example.
-
-The arrow head is by default set to absolute size. This means that scaling the camera won't affect the size of the object. In this code, we perform a zoom and see that the size of the arrow doesn't change:
+`Arrow` objects admit a curvature parameter, that allows for curved arrows:
 
 ```java
-Shape square1 = Shape.square().center();
-Shape square2 = square1.copy().scale(.5);
-Shape square3 = square2.copy().scale(.5);
-Shape square4 = square3.copy().scale(.5);
-Arrow2D arrow = Arrow2D.makeSimpleArrow2D(Point.at(1, 0), Point.at(0, 0), Arrow2D.ArrowType.TYPE_1);
-add(square1, square2, square3, square4, arrow);
-play.cameraScale(5, .1);
-waitSeconds(1);
+Point A = Point.at(0, 0);
+Point B = Point.at(1, 0);
+Arrow ar = Arrow.make(A, B, Arrow.ArrowType.ARROW1);
+ar.setCurvature(60 * DEGREES);
+add(ar);
+camera.zoomToAllObjects();
+waitSeconds(3);
 ```
 
-![](arrowZoom.gif)
+<img src="arrow2.png" alt="image-20201112223825965" style="zoom:50%;" />
+
+An `Arrow` object is a subclass of `Shape` so you can apply usual styling methods (we will see about them in next chapter).
+
+
+
 
 ## The `Delimiter` class
 
