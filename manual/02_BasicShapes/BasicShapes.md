@@ -260,6 +260,7 @@ By default, grids are drawn using the `gridPrimaryDefault` and  `gridSecondaryDe
 
 ## The `Arrow2D` class
 > **WARNING**: This class is deprecated and is replaced by the better implemented `Arrow`class. You should consider using it instead.
+
 ## The `Arrow` class
 This class replaces the old `Arrow2D`class and provides a better and more flexible implementation.
 ```java
