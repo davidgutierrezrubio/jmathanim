@@ -549,6 +549,8 @@ public class JMPath implements Stateable, Boxable, Iterable<JMPathPoint> {
             return new EmptyRect();
         }
         ArrayList<Point> points = new ArrayList<>();
+
+
         for (JMPathPoint jmp : jmPathPoints) {
             points.add(jmp.p.copy().thickness(2));
         }

@@ -30,6 +30,7 @@ import com.jmathanim.Animations.Strategies.Transform.TransformStrategy;
 import com.jmathanim.Utils.JMathAnimConfig;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.Arrow2D;
+import com.jmathanim.mathobjects.Arrow;
 import com.jmathanim.mathobjects.FunctionGraph;
 import com.jmathanim.mathobjects.Line;
 import com.jmathanim.mathobjects.MathObject;
@@ -134,7 +135,7 @@ public class Transform extends AnimationWithEffects {
     }
 
     private void determineTransformStrategy() {
-        if ((mobjTransformed instanceof Arrow2D) && (mobjDestiny instanceof Arrow2D)) {
+        if ((mobjTransformed instanceof Arrow) && (mobjDestiny instanceof Arrow)) {
             transformMethod = TransformMethod.ARROW_TRANSFORM;
             return;
         }
@@ -202,7 +203,7 @@ public class Transform extends AnimationWithEffects {
         try {
             switch (transformMethod) {
                 case ARROW_TRANSFORM:
-                    transformStrategy = new ArrowTransform(runTime, (Arrow2D) mobjTransformed, (Arrow2D) mobjDestiny);
+                    transformStrategy = new ArrowTransform(runTime, (Arrow) mobjTransformed, (Arrow) mobjDestiny);
                     JMathAnimScene.logger.debug("Transform method: Arrow2D");
                     break;
                 case MULTISHAPE_TRANSFORM:

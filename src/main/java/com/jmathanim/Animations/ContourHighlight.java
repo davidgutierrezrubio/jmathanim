@@ -24,6 +24,7 @@ import com.jmathanim.Utils.UsefulLambdas;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.Shape;
 import com.jmathanim.mathobjects.Arrow2D;
+import com.jmathanim.mathobjects.Arrow;
 import com.jmathanim.mathobjects.Line;
 import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.MathObjectGroup;
@@ -118,11 +119,6 @@ public class ContourHighlight extends Animation {
         if (obj instanceof Line) {
             Line line = ((Line) obj);
             addSubShapeToScene(line.toSegment(scene.getCamera()), a, b);
-            return;
-        }
-        if (obj instanceof Arrow2D) {
-            Arrow2D ar = ((Arrow2D) obj);
-            addSubShapeToScene(ar.getBody(), a, b);
             return;
         }
         if (obj instanceof MultiShapeObject) {

@@ -20,7 +20,7 @@ package com.jmathanim.Constructible.Lines;
 import com.jmathanim.Constructible.Points.CTPoint;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
-import com.jmathanim.mathobjects.Arrow2D;
+import com.jmathanim.mathobjects.Arrow;
 import com.jmathanim.mathobjects.Point;
 
 /**
@@ -30,7 +30,7 @@ import com.jmathanim.mathobjects.Point;
  */
 public class CTVector extends CTAbstractLine {
 
-    protected final Arrow2D arrowToDraw;
+    protected final Arrow arrowToDraw;
     protected final CTPoint A;
     protected final CTPoint B;
 
@@ -75,7 +75,7 @@ public class CTVector extends CTAbstractLine {
         super();
         this.A = A;
         this.B = B;
-        arrowToDraw = Arrow2D.makeSimpleArrow2D(this.A.getMathObject().copy(), this.B.getMathObject().copy());
+        arrowToDraw = Arrow.make(this.A.getMathObject().copy(), this.B.getMathObject().copy(),Arrow.ArrowType.ARROW1);
     }
 
     @Override
@@ -91,7 +91,7 @@ public class CTVector extends CTAbstractLine {
     }
 
     @Override
-    public Arrow2D getMathObject() {
+    public Arrow getMathObject() {
         return arrowToDraw;
     }
 

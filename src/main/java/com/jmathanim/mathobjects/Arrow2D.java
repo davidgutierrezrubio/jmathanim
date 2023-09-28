@@ -30,7 +30,7 @@ import java.net.URL;
 import javafx.scene.shape.StrokeLineCap;
 
 /**
- *
+ * DEPRECATED. This class will be removed in future versions. Use Arrow class instead.
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
 public class Arrow2D extends MathObject {

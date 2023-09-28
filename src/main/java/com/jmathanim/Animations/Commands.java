@@ -1102,8 +1102,8 @@ public class Commands {
                 restoreStates(mathObjects);
                 for (MathObject obj : mathObjects) {
                     obj.scale(sx, sy);
-                    obj.multDrawAlpha(1 - lt);
-                    obj.multFillAlpha(1 - lt);
+                    obj.drawAlpha(obj.getMp().getDrawColor().getAlpha() * (1 - lt));
+                    obj.fillAlpha(obj.getMp().getFillColor().getAlpha() * (1 - lt));
                     obj.thickness(obj.getMp().getThickness() * (1 - lt));
                     obj.rotate(lt * angle);
                 }
@@ -1210,8 +1210,8 @@ public class Commands {
                 restoreStates(mathObjects);
                 for (MathObject obj : mathObjects) {
                     obj.scale(sx, sy);
-                    obj.multDrawAlpha(lt);
-                    obj.multFillAlpha(lt);
+                    obj.drawAlpha(obj.getMp().getDrawColor().getAlpha() * (1 - lt));
+                    obj.fillAlpha(obj.getMp().getFillColor().getAlpha() * (1 - lt));
                     obj.rotate((1 - lt) * angle);
                 }
             }
@@ -1280,8 +1280,8 @@ public class Commands {
                 double lt = getLT(t);
                 restoreStates(mathObjects);
                 for (MathObject obj : mathObjects) {
-                    obj.multDrawAlpha(lt);
-                    obj.multFillAlpha(lt);
+                    obj.drawAlpha(obj.getMp().getDrawColor().getAlpha() * (1 - lt));
+                    obj.fillAlpha(obj.getMp().getFillColor().getAlpha() * (1 - lt));
                     applyAnimationEffects(lt, obj);
                 }
             }
@@ -1345,8 +1345,8 @@ public class Commands {
                 double lt = getLT(t);
                 restoreStates(mathObjects);
                 for (MathObject obj : mathObjects) {
-                    obj.multDrawAlpha(1 - lt);
-                    obj.multFillAlpha(1 - lt);
+                    obj.drawAlpha(obj.getMp().getDrawColor().getAlpha() * (1 - lt));
+                    obj.fillAlpha(obj.getMp().getFillColor().getAlpha() * (1 - lt));
                     applyAnimationEffects(lt, obj);
                 }
             }
@@ -1440,7 +1440,7 @@ public class Commands {
                 MathObjectGroup groupCopy = group.copy();
                 groupCopy.setLayout(layout);
                 for (int n = 0; n < groupCopy.size(); n++) {
-                     centers.put(group.get(n), groupCopy.get(n).getCenter());// The destination centers of the objects of the group
+                    centers.put(group.get(n), groupCopy.get(n).getCenter());// The destination centers of the objects of the group
                 }
 
                 JMathAnimScene.logger.debug("Initialized setLayout animation");

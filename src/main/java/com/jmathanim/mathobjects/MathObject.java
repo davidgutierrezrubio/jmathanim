@@ -42,7 +42,7 @@ import javafx.scene.shape.StrokeLineCap;
  *
  * @author David Gutierrez Rubio davidgutierrezrubio@gmail.com
  */
-public abstract class MathObject implements Drawable, Updateable, Stateable, Boxable {
+public abstract class MathObject implements Drawable, Updateable, Stateable, Boxable, StyleHookable {
 
     public enum Align {
         LEFT, RIGHT, UPPER, LOWER, HCENTER, VCENTER
@@ -51,7 +51,7 @@ public abstract class MathObject implements Drawable, Updateable, Stateable, Box
     protected JMathAnimScene scene;
     private String debugText = "";
 
-    private MODrawProperties mp;
+    private final MODrawProperties mp;
     public String objectLabel = "";
 
     public boolean absoluteSize = false;
@@ -75,6 +75,7 @@ public abstract class MathObject implements Drawable, Updateable, Stateable, Box
         scene = JMathAnimConfig.getConfig().getScene();
         mp = JMathAnimConfig.getConfig().getDefaultMP();// Default MP values
         mp.copyFrom(prop);// Copy all non-null values from prop
+        mp.setParent(this);
         //Default values for an object that always updates
         dependents = new HashSet<>();
 
@@ -498,30 +499,6 @@ public abstract class MathObject implements Drawable, Updateable, Stateable, Box
      */
     public <T extends MathObject> T fillAlpha(double alpha) {
         getMp().setFillAlpha(alpha);
-        return (T) this;
-    }
-
-    /**
-     * Multiplies alpha fill color by a scale
-     *
-     * @param <T> Subclass of MathObject that calls the method
-     * @param alphaScale Scale to multiply alpha
-     * @return This MathObject subclass
-     */
-    public <T extends MathObject> T multFillAlpha(double alphaScale) {
-        getMp().setMultFillAlpha(alphaScale);
-        return (T) this;
-    }
-
-    /**
-     * Multiplies alpha draw color by a scale
-     *
-     * @param <T> Subclass of MathObject that calls the method
-     * @param alphaScale Scale to multiply alpha
-     * @return This MathObject subclass
-     */
-    public <T extends MathObject> T multDrawAlpha(double alphaScale) {
-        getMp().setMultDrawAlpha(alphaScale);
         return (T) this;
     }
 
@@ -1004,16 +981,17 @@ public abstract class MathObject implements Drawable, Updateable, Stateable, Box
      * @param scene Scene where the object is added
      */
     public void addToSceneHook(JMathAnimScene scene) {
-        this.scene=scene;
+        this.scene = scene;
     }
- /**
+
+    /**
      * This hook is invoked when this object is removed from the scene. You can
      * override this method if you are defining your own MathObject subclass.
      *
      * @param scene Scene from where the object is removed
      */
     public void removedFromSceneHook(JMathAnimScene scene) {
-        this.scene=null;
+        this.scene = null;
     }
 
     @Override
@@ -1118,5 +1096,41 @@ public abstract class MathObject implements Drawable, Updateable, Stateable, Box
         this.objectLabel = objectLabel;
         return (T) this;
     }
+    
+    //Style hooks
 
+    @Override
+    public void on_setDrawColor(PaintStyle color) {
+    }
+
+    @Override
+    public void on_setDrawAlpha(double alpha) {
+    }
+
+    @Override
+    public void on_setFillColor(PaintStyle color) {
+    }
+
+    @Override
+    public void on_setFillAlpha(double alpha) {
+    }
+
+    @Override
+    public void on_setThickness(double thickness) {
+    }
+    
+    @Override
+    public void on_setVisible(boolean visible) {
+    }
+
+   
+     @Override
+    public void on_setDashStyle(MODrawProperties.DashStyle style) {
+    }
+    
+     @Override
+    public void on_setLineCap(StrokeLineCap linecap) {
+    }
+    
+    
 }

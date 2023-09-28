@@ -88,13 +88,7 @@ public interface Stylable {
 
     void setFillAlpha(double alpha);
 
-    void setMultFillAlpha(double alpha);
-
-    void setMultDrawAlpha(double alpha);
-
     void setFillColor(PaintStyle fillColor);
-
-    void setFilled(boolean fill);
 
     void setLayer(int layer);
 

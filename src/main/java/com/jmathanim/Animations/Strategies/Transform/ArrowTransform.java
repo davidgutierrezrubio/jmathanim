@@ -19,12 +19,13 @@ package com.jmathanim.Animations.Strategies.Transform;
 
 import com.jmathanim.Animations.AnimationWithEffects;
 import com.jmathanim.Animations.Commands;
-import com.jmathanim.mathobjects.Arrow2D;
+import com.jmathanim.mathobjects.Arrow;
 import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.Point;
 
 /**
- * Transfom stratregy from one arrow to another
+ * Transfom stratregy from one arrow to another. Currently only changes
+ * starting/ending points, not head transform is done
  *
  * @author David Gutierrez Rubio davidgutierrezrubio@gmail.com
  */
@@ -32,7 +33,7 @@ public class ArrowTransform extends TransformStrategy {
 
     AnimationWithEffects anim;
 
-    public ArrowTransform(double runTime, Arrow2D origin, Arrow2D destiny) {
+    public ArrowTransform(double runTime, Arrow origin, Arrow destiny) {
         super(runTime);
         this.origin = origin;
         this.destiny = destiny;
@@ -42,10 +43,10 @@ public class ArrowTransform extends TransformStrategy {
     @Override
     public boolean doInitialization() {
         super.doInitialization();
-        Point a = ((Arrow2D) origin).getStart().copy();
-        Point b = ((Arrow2D) origin).getEnd().copy();
-        Point c = ((Arrow2D) destiny).getStart().copy();
-        Point d = ((Arrow2D) destiny).getEnd().copy();
+        Point a = ((Arrow) origin).getStart().copy();
+        Point b = ((Arrow) origin).getEnd().copy();
+        Point c = ((Arrow) destiny).getStart().copy();
+        Point d = ((Arrow) destiny).getEnd().copy();
         intermediate.copyStateFrom(this.origin);
         anim = Commands.isomorphism(runTime, a, b, c, d, intermediate);
         this.copyEffectParametersTo(anim);

@@ -17,8 +17,7 @@
  */
 package com.jmathanim.Animations.Strategies.ShowCreation;
 
-import com.jmathanim.jmathanim.JMathAnimScene;
-import com.jmathanim.mathobjects.Arrow2D;
+import com.jmathanim.mathobjects.Arrow;
 import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.Point;
 
@@ -28,9 +27,9 @@ import com.jmathanim.mathobjects.Point;
  */
 public class ArrowCreationAnimation extends AbstractCreationStrategy {
 
-    private final Arrow2D obj;
+    private final Arrow obj;
 
-    public ArrowCreationAnimation(double runTime, Arrow2D obj) {
+    public ArrowCreationAnimation(double runTime, Arrow obj) {
         super(runTime);
         this.obj = obj;
     }
@@ -50,11 +49,13 @@ public class ArrowCreationAnimation extends AbstractCreationStrategy {
         // If there is only head 1 (the ending point), scale from the beginning
         // if there are 2 heads (ending and beginning point), better scale from the
         // center
-        Point scaleCenter = (obj.getArrowHead2().size() > 0 ? obj.getCenter() : obj.getBody().getPoint(0));
-
-        obj.scale(scaleCenter, lt, lt);
-        obj.scaleArrowHead1(lt * obj.getMp().getScaleArrowHead1());
-        obj.scaleArrowHead2(lt * obj.getMp().getScaleArrowHead2());
+//        Point scaleCenter = (obj.getArrowHead2().size() > 0 ? obj.getCenter() : obj.getBody().getPoint(0));
+        Point scaleCenter = obj.getStart();
+//        obj.scale(scaleCenter, lt, lt);
+        obj.distScale = lt;
+        obj.setArrowThickness(obj.getArrowThickness() * lt);
+//        obj.scaleArrowHead1(lt * obj.getMp().getScaleArrowHead1());
+//        obj.scaleArrowHead2(lt * obj.getMp().getScaleArrowHead2());
     }
 
     @Override

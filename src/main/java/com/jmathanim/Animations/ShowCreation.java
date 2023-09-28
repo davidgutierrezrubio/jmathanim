@@ -27,6 +27,7 @@ import com.jmathanim.Animations.Strategies.ShowCreation.SimpleShapeCreationAnima
 import com.jmathanim.Constructible.Constructible;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.Arrow2D;
+import com.jmathanim.mathobjects.Arrow;
 import com.jmathanim.mathobjects.Axes.Axes;
 import com.jmathanim.mathobjects.CanonicalJMPath;
 import com.jmathanim.mathobjects.Delimiters.Delimiter;
@@ -176,7 +177,7 @@ public class ShowCreation extends Animation {
             this.strategyType = ShowCreationStrategy.FIRST_DRAW_AND_THEN_FILL;
             return;
         }
-        if (mobj instanceof Arrow2D) {
+        if (mobj instanceof Arrow) {
             this.strategyType = ShowCreationStrategy.ARROW_CREATION;
             return;
         }
@@ -243,7 +244,7 @@ public class ShowCreation extends Animation {
                 JMathAnimScene.logger.debug("ShowCreation method: RayCreationStrategy");
                 break;
             case ARROW_CREATION:
-                creationStrategy = new ArrowCreationAnimation(this.runTime, (Arrow2D) mobj);
+                creationStrategy = new ArrowCreationAnimation(this.runTime, (Arrow) mobj);
                 JMathAnimScene.logger.debug("ShowCreation method: ArrowCreationStrategy");
                 break;
             case DELIMITER_CREATION:

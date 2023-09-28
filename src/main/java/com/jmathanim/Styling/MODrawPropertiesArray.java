@@ -178,14 +178,6 @@ public class MODrawPropertiesArray implements Stylable, Stateable {
     }
 
     @Override
-    public void setFilled(boolean fill) {
-        for (MathObject obj : objects) {
-            obj.getMp().setFilled(fill);
-        }
-        mpRef.setFilled(fill);
-    }
-
-    @Override
     public void setLayer(int layer) {
         for (MathObject obj : objects) {
             obj.getMp().setLayer(layer);
@@ -198,23 +190,6 @@ public class MODrawPropertiesArray implements Stylable, Stateable {
         return mpRef.getLayer();
     }
 
-    @Override
-    public void setMultFillAlpha(double alpha) {
-        for (MathObject obj : objects) {
-            obj.getMp().setMultFillAlpha(alpha);
-        }
-        mpRef.setMultFillAlpha(alpha);
-    }
-
-    @Override
-    public void setMultDrawAlpha(double alpha) {
-        for (MathObject obj : objects) {
-            obj.getMp().setMultDrawAlpha(alpha);
-        }
-        mpRef.setMultDrawAlpha(alpha);
-    }
-
-    @Override
     public PaintStyle getDrawColor() {
         return mpRef.getDrawColor();
     }
@@ -356,7 +331,7 @@ public class MODrawPropertiesArray implements Stylable, Stateable {
 
     @Override
     public Double getScaleArrowHead2() {
-           return mpRef.getScaleArrowHead2();
+        return mpRef.getScaleArrowHead2();
     }
-  
+
 }

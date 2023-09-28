@@ -20,6 +20,7 @@ package com.jmathanim.Styling;
 import com.jmathanim.Utils.JMathAnimConfig;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
+import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.Point.DotSyle;
 import com.jmathanim.mathobjects.Stateable;
 import java.awt.Color;
@@ -70,7 +71,7 @@ public class MODrawProperties implements Stylable, Stateable {
         nullMP.dotStyle = null;
         nullMP.linecap = null;
         nullMP.faceToCamera = null;
-        nullMP.visible=null;
+        nullMP.visible = null;
         return nullMP;
     }
 
@@ -117,6 +118,7 @@ public class MODrawProperties implements Stylable, Stateable {
     // If false, thickness is computed to be a percentage of the width
     // to ensure zoom or resolution doesn't affect the result
     private Boolean absoluteThickness = true;
+    private MathObject parent;
 
     private Boolean visible = true;
     private DashStyle dashStyle = DashStyle.SOLID;
@@ -181,6 +183,10 @@ public class MODrawProperties implements Stylable, Stateable {
 
     }
 
+    public void setParent(MathObject parent) {
+        this.parent = parent;
+    }
+
     /**
      * Copy attributes from the given {@link MODrawProperties} object Null
      * values are copied also
@@ -242,14 +248,25 @@ public class MODrawProperties implements Stylable, Stateable {
 
     @Override
     public void setDrawColor(PaintStyle drawColor) {
-        if (drawColor != null) {
+        if (drawColor == null) {
+            return;
+        }
+        if (this.drawColor != drawColor) {
             this.drawColor = drawColor.copy();
+            if (parent != null) {
+                parent.on_setDrawColor(this.drawColor);
+            }
         }
     }
 
     @Override
     public void setFillAlpha(double alpha) {
-        this.fillColor.setAlpha(alpha);
+        if (this.fillColor.getAlpha() != alpha) {
+            this.fillColor.setAlpha(alpha);
+            if (parent != null) {
+                parent.on_setFillAlpha(alpha);
+            }
+        }
     }
 
     @Override
@@ -259,8 +276,14 @@ public class MODrawProperties implements Stylable, Stateable {
 
     @Override
     public void setFillColor(PaintStyle fillColor) {
-        if (fillColor != null) {
+        if (fillColor == null) {
+            return;
+        }
+        if (this.fillColor != fillColor) {
             this.fillColor = fillColor.copy();
+            if (parent != null) {
+                parent.on_setFillColor(this.fillColor);
+            }
         }
     }
 
@@ -289,23 +312,15 @@ public class MODrawProperties implements Stylable, Stateable {
 
     @Override
     public void setLinecap(StrokeLineCap linecap) {
-        this.linecap = linecap;
-    }
-
-    @Override
-    public void setMultDrawAlpha(double alphaScale) {
-        double newAlpha = getDrawColor().getAlpha() * alphaScale;
-        newAlpha = (newAlpha > 1 ? 1 : newAlpha);
-        newAlpha = (newAlpha < 0 ? 0 : newAlpha);
-        this.setDrawAlpha(newAlpha);
-    }
-
-    @Override
-    public void setMultFillAlpha(double alphaScale) {
-        double newAlpha = getFillColor().getAlpha() * alphaScale;
-        newAlpha = (newAlpha > 1 ? 1 : newAlpha);
-        newAlpha = (newAlpha < 0 ? 0 : newAlpha);
-        this.setFillAlpha(newAlpha);
+        if (linecap == null) {
+            return;
+        }
+        if (this.linecap != linecap) {
+            this.linecap = linecap;
+            if (parent != null) {
+                parent.on_setLineCap(this.linecap);
+            }
+        }
     }
 
     @Override
@@ -320,12 +335,22 @@ public class MODrawProperties implements Stylable, Stateable {
 
     @Override
     public void setThickness(Double thickness) {
-        this.thickness = thickness;
+        if (!Objects.equals(this.thickness, thickness)) {
+            this.thickness = thickness;
+            if (parent != null) {
+                parent.on_setThickness(thickness);
+            }
+        }
     }
 
     @Override
     public void setVisible(Boolean visible) {
-        this.visible = visible;
+        if (!Objects.equals(this.visible, visible)) {
+            this.visible = visible;
+            if (parent != null) {
+                parent.on_setVisible(visible);
+            }
+        }
     }
 
     @Override
@@ -362,16 +387,6 @@ public class MODrawProperties implements Stylable, Stateable {
 
     public boolean isFilled() {
         return (this.fillColor.getAlpha() > 0);
-    }
-
-    @Override
-    public void setFilled(boolean fill) {
-        if (fill && fillColor.getAlpha() == 0) {
-            setFillAlpha(1);
-        }
-        if (!fill) {
-            setFillAlpha(0);
-        }
     }
 
     @Override
@@ -456,7 +471,9 @@ public class MODrawProperties implements Stylable, Stateable {
     }
 
     /**
-     * Returns a new MODrawProperties object with all values null except for those that have in common A and B
+     * Returns a new MODrawProperties object with all values null except for
+     * those that have in common A and B
+     *
      * @param A First MODrawProperties object to intersect
      * @param B Second MODrawProperties object to intersect
      * @return The intersection of both objects
