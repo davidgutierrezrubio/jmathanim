@@ -143,7 +143,7 @@ public abstract class JMathAnimScene {
     /**
      * A dictionary containing all loaded styles
      */
-    private HashMap<String, MODrawProperties> styles;
+    private final HashMap<String, MODrawProperties> styles;
 
     /**
      * Creates a new Scene with default settings.
@@ -159,6 +159,7 @@ public abstract class JMathAnimScene {
         config.setOutputFileName(this.getClass().getSimpleName());
         animationIsDisabled = false;
         styles = config.getStyles();
+        logger.setLevel(ch.qos.logback.classic.Level.WARN);//Default log level: WARN
     }
 
     /**
@@ -539,43 +540,40 @@ public abstract class JMathAnimScene {
             if (anim.getStatus() == Animation.Status.FINISHED) {// This allow to reuse ended animations
                 anim.setStatus(Animation.Status.INITIALIZED);
             }
-        anim.initialize(this);// Perform needed steps immediately before playing
-        if (!"".equals(anim.getDebugName())) {
-            JMathAnimScene.logger.info("Begin animation: " + anim.getDebugName() + " [" + anim.getRunTime() + "s]");
-        }
+            anim.initialize(this);// Perform needed steps immediately before playing
+            if (!"".equals(anim.getDebugName())) {
+                JMathAnimScene.logger.info("Begin animation: " + anim.getDebugName() + " [" + anim.getRunTime() + "s]");
+            }
 
-        if (animationIsDisabled) {
-            anim.setT(1);
-        }
-    }
-
-    boolean finished = false;
-    while (!finished
-
-    
-        ) {
-            finished = true;
-        boolean anyAnimationRunning = false;
-        for (Animation anim : anims) {
-            anyAnimationRunning = anyAnimationRunning | (anim.getStatus() == Animation.Status.RUNNING);
-            final boolean resultAnimation = anim.processAnimation();
-            finished = finished & resultAnimation;
-            if (resultAnimation) {
-                anim.finishAnimation();
+            if (animationIsDisabled) {
+                anim.setT(1);
             }
         }
-        if ((!finished) && (true)) {//If all animations are finished, no need to advance frame
-            advanceFrame();
+
+        boolean finished = false;
+        while (!finished) {
+            finished = true;
+            boolean anyAnimationRunning = false;
+            for (Animation anim : anims) {
+                anyAnimationRunning = anyAnimationRunning | (anim.getStatus() == Animation.Status.RUNNING);
+                final boolean resultAnimation = anim.processAnimation();
+                finished = finished & resultAnimation;
+                if (resultAnimation) {
+                    anim.finishAnimation();
+                }
+            }
+            if ((!finished) && (true)) {//If all animations are finished, no need to advance frame
+                advanceFrame();
+            }
         }
     }
-}
 
-/**
- * Wait the specified time, generating the frames.
- *
- * @param time Time in seconds.
- */
-public void waitSeconds(double time) {
+    /**
+     * Wait the specified time, generating the frames.
+     *
+     * @param time Time in seconds.
+     */
+    public void waitSeconds(double time) {
         if (animationIsDisabled) {
             return;
         }
@@ -585,10 +583,9 @@ public void waitSeconds(double time) {
             try {
                 advanceFrame();
 
-} catch (Exception ex) {
-                java.util.logging.Logger.getLogger(JMathAnimScene.class  
-
-.getName()).log(Level.SEVERE, null, ex);
+            } catch (Exception ex) {
+                java.util.logging.Logger.getLogger(JMathAnimScene.class
+                        .getName()).log(Level.SEVERE, null, ex);
             }
         }
 
