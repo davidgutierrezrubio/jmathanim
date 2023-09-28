@@ -101,6 +101,7 @@ public class Arrow extends Shape {
         distScale = 1d;
         headStartMultiplier = 1d;
         headEndMultiplier = 1d;
+        getMp().loadFromStyle("ARROWDEFAULT");
     }
 
     private void loadModels() {
