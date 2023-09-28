@@ -37,12 +37,12 @@ public class Arrow extends Shape {
 
     public double distScale;
     private double angle;
-    private double baseHeight1;
-    private double baseHeight2;
-    private double baseRealHeight1;
-    private double baseRealHeight2;
+    private double baseHeightStart;
+    private double baseHeightEnd;
+    private double baseRealHeightStart;
+    private double baseRealHeightEnd;
 
-    private double gapA, gapB;
+    private double gapStart, gapEnd;
 
     //TODO: 
     //Hacer que sea / no sea zoom-independent
@@ -55,35 +55,43 @@ public class Arrow extends Shape {
         NONE_BUTT, NONE_ROUND, NONE_SQUARE, ARROW1, ARROW2, ARROW3, SQUARE
     }
 
-    private final Point A, B;
-    private double baseDist1, baseDist2;
+    private final Point startPoint, endPoint;
+    private double baseDistStart, baseDistEnd;
     private double arrowThickness;
-    private final Shape head1, head2;
-    double headHeight1, headHeight2;
-    private ArrowType typeA, typeB;
+    private final Shape startArrowHead, endArrowHead;
+    private ArrowType typeStart, typeEnd;
 
-    public static Arrow make(Point A, Point B, ArrowType type) {
-        Arrow resul = new Arrow(A, B);
-        resul.typeA = ArrowType.NONE_BUTT;
-        resul.typeB = type;
+    /**
+     * Creates a new Arrow from A to B.
+     *
+     * @param start Starting point
+     * @param end Ending point
+     * @param type Type of arrow. A value of enum ArrowType
+     * @return The created arrow
+     */
+    public static Arrow make(Point start, Point end, ArrowType type) {
+        Arrow resul = new Arrow(start, end);
+        resul.typeStart = ArrowType.NONE_BUTT;
+        resul.typeEnd = type;
         resul.loadModels();
         resul.rebuildShape();
         resul.scene = JMathAnimConfig.getConfig().getScene();
         return resul;
     }
 
-    public Point getStart() {
-        return A;
-    }
-
-    public Point getEnd() {
-        return B;
-    }
-
+    /**
+     * Creates a new double Arrow from A to B.
+     *
+     * @param A Starting point
+     * @param B Ending point
+     * @param typeA Type of starting arrow. A value of enum ArrowType
+     * @param typeB Type of ending arrow. A value of enum ArrowType
+     * @return The created arrow
+     */
     public static Arrow makeDouble(Point A, Point B, ArrowType typeA, ArrowType typeB) {
         Arrow resul = new Arrow(A, B);
-        resul.typeA = typeA;
-        resul.typeB = typeB;
+        resul.typeStart = typeA;
+        resul.typeEnd = typeB;
         resul.angle = 0;
         resul.loadModels();
         resul.rebuildShape();
@@ -92,40 +100,40 @@ public class Arrow extends Shape {
     }
 
     private Arrow(Point A, Point B) {
-        this.A = A;
-        this.B = B;
-        head1 = new Shape();
-        head2 = new Shape();
+        this.startPoint = A;
+        this.endPoint = B;
+        startArrowHead = new Shape();
+        endArrowHead = new Shape();
         arrowThickness = 20;//TODO: Default value. This should be in config file
         distScale = 1d;
     }
 
     private void loadModels() {
-        Shape h1 = loadHeadShape(typeA);
-        Shape h2 = loadHeadShape(typeB);
+        Shape h1 = loadHeadShape(typeStart);
+        Shape h2 = loadHeadShape(typeEnd);
         h2.scale(-1, -1);
 
         if (h1.getProperty("gap") != null) {
-            gapA = (double) h1.getProperty("gap");
+            gapStart = (double) h1.getProperty("gap");
         } else {
-            gapA = 0;
+            gapStart = 0;
         }
         if (h2.getProperty("gap") != null) {
-            gapB = (double) h2.getProperty("gap");
+            gapEnd = (double) h2.getProperty("gap");
         } else {
-            gapB = 0;
+            gapEnd = 0;
         }
 
-        head1.getPath().clear();
-        head2.getPath().clear();
-        head1.getPath().addJMPointsFrom(h1.getPath());
-        head2.getPath().addJMPointsFrom(h2.getPath());
-        baseDist1 = head1.getPoint(0).to(head1.getPoint(-1)).norm();
-        baseDist2 = head2.getPoint(0).to(head2.getPoint(-1)).norm();
-        baseHeight1 = head1.getBoundingBox().ymax - head1.getPoint(0).v.y;
-        baseHeight2 = head2.getPoint(0).v.y - head2.getBoundingBox().ymin;
-        baseRealHeight1 = head1.getHeight();
-        baseRealHeight2 = head2.getHeight();
+        startArrowHead.getPath().clear();
+        endArrowHead.getPath().clear();
+        startArrowHead.getPath().addJMPointsFrom(h1.getPath());
+        endArrowHead.getPath().addJMPointsFrom(h2.getPath());
+        baseDistStart = startArrowHead.getPoint(0).to(startArrowHead.getPoint(-1)).norm();
+        baseDistEnd = endArrowHead.getPoint(0).to(endArrowHead.getPoint(-1)).norm();
+        baseHeightStart = startArrowHead.getBoundingBox().ymax - startArrowHead.getPoint(0).v.y;
+        baseHeightEnd = endArrowHead.getPoint(0).v.y - endArrowHead.getBoundingBox().ymin;
+        baseRealHeightStart = startArrowHead.getHeight();
+        baseRealHeightEnd = endArrowHead.getHeight();
     }
 
     private Shape loadHeadShape(ArrowType type) {
@@ -156,7 +164,7 @@ public class Arrow extends Shape {
             case SQUARE:
                 arrowUrl = rl.getResource("#ArrowSquare.svg", "arrows");
                 resul = new SVGMathObject(arrowUrl).get(0);
-                 resul.setProperty("gap", -resul.getHeight()*.5);
+                resul.setProperty("gap", -resul.getHeight() * .5);
                 return resul;
             default:
                 throw new AssertionError();
@@ -164,41 +172,39 @@ public class Arrow extends Shape {
     }
 
     private void rebuildShape() {
-        Shape h1A = head1.copy();
-        Shape h1B = head2.copy();
-        double dist = A.to(B).norm() * distScale;
+        Shape h1A = startArrowHead.copy();
+        Shape h1B = endArrowHead.copy();
+        double dist = startPoint.to(endPoint).norm() * distScale;
         //Scale heads to adjust to thickness
         double rThickness = scene.getRenderer().ThicknessToMathWidth(arrowThickness);
 
-        double hh = (baseRealHeight1 - gapA) / baseDist1 + (baseRealHeight1 - gapB) / baseDist2;
+        double hh = (baseRealHeightStart - gapStart) / baseDistStart + (baseRealHeightStart - gapEnd) / baseDistEnd;
         rThickness = Math.min(rThickness, .75 * dist / hh);
-        h1A.scale(rThickness / baseDist1);
-        h1B.scale(rThickness / baseDist2);
+        h1A.scale(rThickness / baseDistStart);
+        h1B.scale(rThickness / baseDistEnd);
 
-        double rbaseHeight1 = baseHeight1 * rThickness / baseDist1;
-        double rbaseHeight2 = baseHeight2 * rThickness / baseDist2;
+        double rbaseHeightStart = baseHeightStart * rThickness / baseDistStart;
+        double rbaseHeightEnd = baseHeightEnd * rThickness / baseDistEnd;
 
         h1B.shift(h1B.getPoint(-1).to(h1A.getPoint(0)));//Align points 0 of bot shapes
-        headHeight1 = h1A.getHeight();
-        headHeight2 = h1B.getHeight();
-        double rgapA = gapA * rThickness / baseDist1;
-        double rgapB = gapB * rThickness / baseDist2;
+        double rgapStart = gapStart * rThickness / baseDistStart;
+        double rgapEnd = gapEnd * rThickness / baseDistEnd;
         getPath().clear();
-        double longBody = dist - rbaseHeight1 - rbaseHeight2 -rgapA - rgapB;
+        double longBody = dist - rbaseHeightStart - rbaseHeightEnd - rgapStart - rgapEnd;
         h1B.shift(0, -longBody);
-        Point startPoint = h1A.getBoundingBox().getUpper().shift(0, rgapA);
-        Point endPoint = h1B.getBoundingBox().getLower().shift(0, -rgapB);
+        
+        //These are the start/end points of the created Shape that must match A,B
+        Point refStartPoint = h1A.getBoundingBox().getUpper().shift(0, rgapStart);
+        Point refEndPoint = h1B.getBoundingBox().getLower().shift(0, -rgapEnd);
 
         if (angle == 0) {
             getPath().addJMPointsFrom(h1A.getPath());
             merge(h1B, true, true);
         } else {
+            //Create the appropiate arc shape.
+            h1A.rotate(refStartPoint, angle);
+            h1B.rotate(refEndPoint, -angle);
 
-            h1A.rotate(startPoint, angle);
-            h1B.rotate(endPoint, -angle);
-
-            //Rectas
-//        CTLine ct1 = CTLine.make(h1A.get(0).p, h1A.get(-1).p);
             CTPerpBisector ct1 = CTPerpBisector.make(h1A.get(0).p, h1B.get(-1).p);
             CTLine ct2 = CTLine.make(h1B.get(0).p, h1B.get(-1).p);
             CTIntersectionPoint inter = CTIntersectionPoint.make(ct1, ct2);
@@ -241,8 +247,8 @@ public class Arrow extends Shape {
 //            getPath().distille();
         }
 //        AffineJTransform trFinal = AffineJTransform.createDirect2DIsomorphic(upper, lower, A, B, 1);
-        AffineJTransform trShift = AffineJTransform.createTranslationTransform(startPoint.to(A));
-        AffineJTransform trRotate = AffineJTransform.create2DRotationTransform(A, A.to(B).getAngle() + .5 * PI);
+        AffineJTransform trShift = AffineJTransform.createTranslationTransform(refStartPoint.to(refStartPoint));
+        AffineJTransform trRotate = AffineJTransform.create2DRotationTransform(refStartPoint, refStartPoint.to(refEndPoint).getAngle() + .5 * PI);
         getPath().applyAffineTransform(trShift);
         getPath().applyAffineTransform(trRotate);
 //        getPath().shift(lower.to(A));
@@ -251,7 +257,7 @@ public class Arrow extends Shape {
 
     @Override
     public Arrow copy() {
-        Arrow copy = Arrow.makeDouble(A.copy(), B.copy(), typeA, typeB);
+        Arrow copy = Arrow.makeDouble(startPoint.copy(), endPoint.copy(), typeStart, typeEnd);
         copy.copyStateFrom(this);
         return copy;
     }
@@ -265,13 +271,13 @@ public class Arrow extends Shape {
             this.angle = ar.angle;
             this.scene = ar.scene;
             this.distScale = ar.distScale;
-            if ((this.typeA != ar.typeA) || (this.typeB != ar.typeB)) {
+            if ((this.typeStart != ar.typeStart) || (this.typeEnd != ar.typeEnd)) {
                 reloadModels = true;
             }
-            this.typeA = ar.typeA;
-            this.typeB = ar.typeB;
-            this.A.copyFrom(ar.A);
-            this.B.copyFrom(ar.B);
+            this.typeStart = ar.typeStart;
+            this.typeEnd = ar.typeEnd;
+            this.startPoint.copyFrom(ar.startPoint);
+            this.endPoint.copyFrom(ar.endPoint);
             if (reloadModels) {
                 this.loadModels();
             }
@@ -295,25 +301,49 @@ public class Arrow extends Shape {
         return this;
     }
 
-    public ArrowType getTypeA() {
-        return typeA;
+    /**
+     * Returns the starting arrow type.
+     *
+     * @return A value of enum ArrowType determining the arrow that points to
+     * the starting point.
+     */
+    public ArrowType getTypeStart() {
+        return typeStart;
     }
 
-    public void setTypeA(ArrowType typeA) {
-        if (typeA != this.typeA) {
-            this.typeA = typeA;
+    /**
+     * Sets the starting arrow type.
+     *
+     * @param typeStart A value of enum ArrowType determining the arrow that
+     * points to the starting point.
+     */
+    public void setTypeStart(ArrowType typeStart) {
+        if (typeStart != this.typeStart) {
+            this.typeStart = typeStart;
             loadModels();
             rebuildShape();
         }
     }
 
-    public ArrowType getTypeB() {
-        return typeB;
+    /**
+     * Returns the ending arrow type.
+     *
+     * @return A value of enum ArrowType determining the arrow that points to
+     * the ending point.
+     */
+    public ArrowType getTypeEnd() {
+        return typeEnd;
     }
 
-    public void setTypeB(ArrowType typeB) {
-        if (typeB != this.typeB) {
-            this.typeB = typeB;
+    /**
+     * Sets the ending arrow type.
+     *
+     * @param typeB A value of enum ArrowType determining the arrow that points
+     * to the ending point.
+     */
+    public void setTypeEnd(ArrowType typeB) {
+        if (typeB != this.typeEnd) {
+            this.typeEnd = typeB;
             loadModels();
             rebuildShape();
         }
@@ -322,20 +352,20 @@ public class Arrow extends Shape {
     @Override
     public <T extends MathObject> T applyAffineTransform(AffineJTransform tr) {
 //        super.applyAffineTransform(tr);
-        A.applyAffineTransform(tr);
-        B.applyAffineTransform(tr);
+        startPoint.applyAffineTransform(tr);
+        endPoint.applyAffineTransform(tr);
         rebuildShape();
         return (T) this;
     }
 
-    @Override
-    public void on_setLineCap(StrokeLineCap linecap) {
-        super.on_setLineCap(linecap);
-        loadModels();
-        rebuildShape();
-    }
-
-    public Arrow setRotation(double angle) {
+    /**
+     * Determines the curvature of the arrow. A value of 0 means a straight
+     * arrow. A value of PI/2 determines a semicircle.
+     *
+     * @param angle An angle in radians.
+     * @return This object
+     */
+    public Arrow setCurvature(double angle) {
         this.angle = angle;
         rebuildShape();
         return this;
@@ -346,6 +376,22 @@ public class Arrow extends Shape {
         rebuildShape();
         return getPath().getBoundingBox();
     }
-    
 
+    /**
+     * Returns the starting point
+     *
+     * @return A reference to the starting Point object
+     */
+    public Point getStart() {
+        return startPoint;
+    }
+
+    /**
+     * Returns the ending point
+     *
+     * @return A reference to the ending Point object
+     */
+    public Point getEnd() {
+        return endPoint;
+    }
 }
