@@ -181,7 +181,11 @@ public class Arrow extends Shape {
         double rbaseHeight1 = baseHeight1 * headStartMultiplier * rThickness / baseDist1;
         double rbaseHeight2 = baseHeight2 * rThickness / baseDist2;
 
-        h1B.shift(h1B.getPoint(-1).to(h1A.getPoint(0)));//Align points 0 of bot shapes
+        Point medA=h1A.getPoint(0).interpolate(h1A.getPoint(-1), .5);
+        Point medB=h1B.getPoint(0).interpolate(h1B.getPoint(-1), .5);
+        
+        h1B.shift(medB.to(medA));
+//        h1B.shift(h1B.getPoint(-1).to(h1A.getPoint(0)));//Align points 0 of bot shapes
         double rgapA = gapA * headStartMultiplier * rThickness / baseDist1;
         double rgapB = gapB * headEndMultiplier * rThickness / baseDist2;
         getPath().clear();
@@ -419,48 +423,48 @@ public class Arrow extends Shape {
         rebuildShape();
     }
 
-//    /**
-//     * Returns the head start multiplier. This value scales the start of the
-//     * arrow.
-//     *
-//     * @return Scale head start. A value of 1 means no change.
-//     */
-//    public double getHeadStartMultiplier() {
-//        return headStartMultiplier;
-//    }
-//
-//    /**
-//     * Sets the head start multiplier. This value scales the start of the arrow.
-//     *
-//     * @param headStartMultiplier Scale head start. A value of 1 means no
-//     * change.
-//     * @return This object
-//     */
-//    public Arrow setHeadStartMultiplier(double headStartMultiplier) {
-//        this.headStartMultiplier = headStartMultiplier;
-//        rebuildShape();
-//        return this;
-//    }
-//
-//    /**
-//     * Returns the head end multiplier. This value scales the end of the arrow.
-//     *
-//     * @return Scale head end. A value of 1 means no change.
-//     */
-//    public double getHeadEndMultiplier() {
-//        return headEndMultiplier;
-//    }
-//
-//    /**
-//     * Sets the head end multiplier. This value scales the start of the arrow.
-//     *
-//     * @param headEndMultiplier Scale head end. A value of 1 means no change.
-//     * @return This object
-//     */
-//    public Arrow setHeadEndMultiplier(double headEndMultiplier) {
-//        this.headEndMultiplier = headEndMultiplier;
-//        rebuildShape();
-//        return this;
-//    }
+    /**
+     * Returns the head start scale. This value scales the start of the
+     * arrow.
+     *
+     * @return Scale head start. A value of 1 means no change.
+     */
+    public double getStartScale() {
+        return headStartMultiplier;
+    }
+
+    /**
+     * Sets the head start scale. This value scales the start of the arrow.
+     *
+     * @param startScale Scale head start. A value of 1 means no
+     * change.
+     * @return This object
+     */
+    public Arrow setStartScale(double startScale) {
+        this.headStartMultiplier = startScale;
+        rebuildShape();
+        return this;
+    }
+
+    /**
+     * Returns the head end scale. This value scales the end of the arrow.
+     *
+     * @return Scale head end. A value of 1 means no change.
+     */
+    public double getEndScale() {
+        return headEndMultiplier;
+    }
+
+    /**
+     * Sets the head end scale. This value scales the start of the arrow.
+     *
+     * @param endScale Scale head end. A value of 1 means no change.
+     * @return This object
+     */
+    public Arrow setEndScale(double endScale) {
+        this.headEndMultiplier = endScale;
+        rebuildShape();
+        return this;
+    }
 
 }

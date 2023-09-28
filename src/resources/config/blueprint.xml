@@ -2,7 +2,7 @@
     <include>#axes_and_functions_dark.xml</include>
     <include>#dots.xml</include>
     <background>
-        <color>#192841</color>
+        <color>#2c52e5</color>
     </background>
     <styles>
         <style name="default">
@@ -15,12 +15,15 @@
             <fillColor>#FFFFFFFF</fillColor>
             <thickness>1</thickness>
         </style>
-           <style name="arrowdefault">
+        <style name="gridPrimaryDefault">
+            <drawColor>#FFFFFFFF</drawColor>
+            <fillColor>NONE</fillColor>
+            <thickness>1</thickness>
+        </style>
+        <style name="arrowdefault">
             <drawColor>#FFFFFFFF</drawColor>
             <fillColor>#FFFFFFFF</fillColor>
             <thickness>4</thickness>
-            <scaleArrowHead1>1</scaleArrowHead1>
-            <scaleArrowHead2>1</scaleArrowHead2>
         </style>
         <style name="solidRed">
             <drawColor>WHITE</drawColor>

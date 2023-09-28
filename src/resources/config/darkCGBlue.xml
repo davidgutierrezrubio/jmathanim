@@ -23,10 +23,13 @@
         </style>
         <style name="arrowdefault">
             <drawColor>#277da1</drawColor>
-            <fillColor>#00000000</fillColor>
-            <thickness>24</thickness>
-            <scaleArrowHead1>2</scaleArrowHead1>
-            <scaleArrowHead2>2</scaleArrowHead2>
+            <fillColor>#277da1</fillColor>
+            <thickness>0</thickness>
+        </style>
+           <style name="gridPrimaryDefault">
+            <drawColor>white</drawColor>
+            <fillColor>NONE</fillColor>
+            <thickness>2</thickness>
         </style>
         <style name="solidRed">
             <drawColor>#F9C74F</drawColor>
