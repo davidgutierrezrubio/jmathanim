@@ -36,7 +36,7 @@ import javafx.scene.shape.StrokeLineCap;
 public class Arrow extends Shape {
 
     public static Shape buildArrowHead(ArrowType type) {
-        Shape resul=loadHeadShape(type);
+        Shape resul = loadHeadShape(type);
         resul.getPath().closePath();
         return resul;
     }
@@ -60,7 +60,7 @@ public class Arrow extends Shape {
     //Implementar caps style proceduralmente
     //Añadir gap interno para modificar punto al que señalan flechas
     public enum ArrowType {
-        NONE_BUTT, NONE_ROUND, NONE_SQUARE, ARROW1, ARROW2, ARROW3, SQUARE
+        NONE_BUTT, NONE_ROUND, NONE_SQUARE, ARROW1, ARROW2, ARROW3, SQUARE, BULLET
     }
 
     private Point A, B;
@@ -167,6 +167,16 @@ public class Arrow extends Shape {
                 resul = new SVGMathObject(arrowUrl).get(0);
                 resul.setProperty("gap", -resul.getHeight() * .5);
                 return resul;
+            case BULLET:
+                resul = Shape.arc(1.75 * PI);
+                AffineJTransform tr = AffineJTransform.createDirect2DIsomorphic(resul.getPoint(0).copy(),
+                        resul.getPoint(-1).copy(),
+                        resul.getPoint(0).copy(),
+                        resul.getPoint(0).copy().shift(-1, 0),
+                        1);
+                tr.applyTransform(resul);
+                resul.setProperty("gap", -resul.getHeight() * .5);
+                return resul;
             default:
                 throw new AssertionError();
         }
@@ -179,17 +189,17 @@ public class Arrow extends Shape {
         //Scale heads to adjust to thickness
         double rThickness = scene.getRenderer().ThicknessToMathWidth(arrowThickness);
 
-        double hh = (baseRealHeight1 - gapA) / baseDist1 + (baseRealHeight1 - gapB) / baseDist2;
+        double hh = (baseRealHeight1 - gapA) / baseDist1 + (baseRealHeight2 - gapB) / baseDist2;
         rThickness = Math.min(rThickness, .75 * dist / hh);
         h1A.scale(headStartMultiplier * rThickness / baseDist1);
         h1B.scale(headEndMultiplier * rThickness / baseDist2);
 
         double rbaseHeight1 = baseHeight1 * headStartMultiplier * rThickness / baseDist1;
-        double rbaseHeight2 = baseHeight2 * rThickness / baseDist2;
+        double rbaseHeight2 = baseHeight2 * headEndMultiplier * rThickness / baseDist2;
 
-        Point medA=h1A.getPoint(0).interpolate(h1A.getPoint(-1), .5);
-        Point medB=h1B.getPoint(0).interpolate(h1B.getPoint(-1), .5);
-        
+        Point medA = h1A.getPoint(0).interpolate(h1A.getPoint(-1), .5);
+        Point medB = h1B.getPoint(0).interpolate(h1B.getPoint(-1), .5);
+
         h1B.shift(medB.to(medA));
 //        h1B.shift(h1B.getPoint(-1).to(h1A.getPoint(0)));//Align points 0 of bot shapes
         double rgapA = gapA * headStartMultiplier * rThickness / baseDist1;
@@ -250,6 +260,8 @@ public class Arrow extends Shape {
             merge(h1B, true, false);
             merge(shArc1, true, true);
         }
+        
+        //Finally, shift and rotate the built Shape to match A and B points
         AffineJTransform trShift = AffineJTransform.createTranslationTransform(startPoint.to(A));
         AffineJTransform trRotate = AffineJTransform.create2DRotationTransform(A, A.to(B).getAngle() + .5 * PI);
         getPath().applyAffineTransform(trShift);
@@ -430,8 +442,7 @@ public class Arrow extends Shape {
     }
 
     /**
-     * Returns the head start scale. This value scales the start of the
-     * arrow.
+     * Returns the head start scale. This value scales the start of the arrow.
      *
      * @return Scale head start. A value of 1 means no change.
      */
@@ -442,8 +453,7 @@ public class Arrow extends Shape {
     /**
      * Sets the head start scale. This value scales the start of the arrow.
      *
-     * @param startScale Scale head start. A value of 1 means no
-     * change.
+     * @param startScale Scale head start. A value of 1 means no change.
      * @return This object
      */
     public Arrow setStartScale(double startScale) {
