@@ -374,7 +374,7 @@ Shape reg = Shape.regularPolygon(6).center().style("solidblue");
 //A black type 1 arrow head at the middle of one side
 TippableObject tip1 = TippableObject.arrowHead(reg, .5 / 6,
 	TippableObject.SlopeDirectionType.POSITIVE,
-    Arrow2D.ArrowType.TYPE_1
+    Arrow.ArrowType.Arrow1
     ).layer(1);
 
 //A LaTeX expression, color darkslateblue, at the middle of one side
