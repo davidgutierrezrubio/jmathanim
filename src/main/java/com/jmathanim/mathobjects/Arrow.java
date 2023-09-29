@@ -35,6 +35,12 @@ import javafx.scene.shape.StrokeLineCap;
  */
 public class Arrow extends Shape {
 
+    public static Shape buildArrowHead(ArrowType type) {
+        Shape resul=loadHeadShape(type);
+        resul.getPath().closePath();
+        return resul;
+    }
+
     public double distScale;
     private double angle;
     private double baseHeight1;
@@ -132,7 +138,7 @@ public class Arrow extends Shape {
         baseRealHeight2 = head2.getHeight();
     }
 
-    private Shape loadHeadShape(ArrowType type) {
+    private static Shape loadHeadShape(ArrowType type) {
         ResourceLoader rl = new ResourceLoader();
         URL arrowUrl;
         Shape resul;

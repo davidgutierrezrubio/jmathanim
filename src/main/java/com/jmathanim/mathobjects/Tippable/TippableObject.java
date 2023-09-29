@@ -16,9 +16,10 @@
  */
 package com.jmathanim.mathobjects.Tippable;
 
+import com.jmathanim.Renderers.Renderer;
 import com.jmathanim.Utils.Anchor;
-import com.jmathanim.mathobjects.Shape;
-import com.jmathanim.mathobjects.Arrow2D;
+import com.jmathanim.Utils.JMathAnimConfig;
+import com.jmathanim.mathobjects.Arrow;
 import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.MultiShapeObject;
 import com.jmathanim.mathobjects.Point;
@@ -50,11 +51,12 @@ public class TippableObject extends AbstractTippableObject {
         return resul;
     }
 
-    public static TippableObject arrowHead(Shape shape, double location, SlopeDirectionType dir, Arrow2D.ArrowType type) {
-        MultiShapeObject arrowHead = Arrow2D.buildArrowHead(type);
+    public static TippableObject arrowHead(Shape shape, double location, SlopeDirectionType dir, Arrow.ArrowType type) {
+        Shape arrowHead = Arrow.buildArrowHead(type);
+        Renderer r = JMathAnimConfig.getConfig().getScene().getRenderer();
         arrowHead.setAbsoluteSize(Anchor.Type.CENTER);
-        arrowHead.thickness(0);
-        arrowHead.setWidth(.1);
+//        arrowHead.thickness(0);
+        arrowHead.setWidth(r.ThicknessToMathWidth(shape.getMp().getThickness()*5));
         arrowHead.fillColor(shape.getMp().getDrawColor());
         arrowHead.drawColor(shape.getMp().getDrawColor());
         Point anchor = Anchor.getAnchorPoint(arrowHead, Anchor.Type.UPPER);
