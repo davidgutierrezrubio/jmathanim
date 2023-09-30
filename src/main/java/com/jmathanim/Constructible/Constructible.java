@@ -58,16 +58,19 @@ public abstract class Constructible extends MathObject {
      * animated. Altering the drawed MathObject does not affect the
      * Constructible parameters.
      *
+     * @param <T> Class object
      * @param isMathObjectFree Boolean flag. True if drawed MathObject is no
      * longer to be updated with constructible parameters.
+     * @return This object
      */
-    public void freeMathObject(boolean isMathObjectFree) {
+    public <T extends Constructible> T freeMathObject(boolean isMathObjectFree) {
         if (!isMathObjectFree) {
             if (this.isMathObjectFree) {
                 rebuildShape();
             }
         }
         this.isMathObjectFree = isMathObjectFree;
+        return (T) this;
     }
 
     /**

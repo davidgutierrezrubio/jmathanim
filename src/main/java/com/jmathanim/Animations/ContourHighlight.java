@@ -18,13 +18,17 @@
 package com.jmathanim.Animations;
 
 import com.jmathanim.Constructible.Constructible;
+import com.jmathanim.Constructible.Points.CTPoint;
+import com.jmathanim.Renderers.Renderer;
 import com.jmathanim.Styling.JMColor;
+import com.jmathanim.Utils.JMathAnimConfig;
 import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.UsefulLambdas;
 import com.jmathanim.mathobjects.Line;
 import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.MathObjectGroup;
 import com.jmathanim.mathobjects.MultiShapeObject;
+import com.jmathanim.mathobjects.Point;
 import com.jmathanim.mathobjects.Shape;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -73,16 +77,7 @@ public class ContourHighlight extends Animation {
     public ContourHighlight(double runTime, MathObject... objs) {
         super(runTime);
         subshapes = MultiShapeObject.make();
-        ArrayList<MathObject> toAnimateArrayList = new ArrayList<>();
-        for (MathObject obj : objs) {
-            if (obj instanceof Constructible) {
-                toAnimateArrayList.add(((Constructible) obj).getMathObject());
-            } else {
-                toAnimateArrayList.add(obj);
-            }
-        }
-
-        this.objs = toAnimateArrayList.toArray(MathObject[]::new);
+        this.objs = objs;
         highlightColor = JMColor.parse("red");
         this.thickness = 10;
         this.amplitude = .4;
@@ -91,7 +86,31 @@ public class ContourHighlight extends Animation {
 
     @Override
     public boolean doInitialization() {
-        return super.doInitialization();
+        super.doInitialization();
+        ArrayList<MathObject> toAnimateArrayList = new ArrayList<>();
+        for (MathObject obj : objs) {
+            if (obj instanceof Constructible) {
+                if (obj instanceof CTPoint) {
+                    Point p = ((CTPoint) obj).getMathObject();
+                    double radius = scene.getRenderer().ThicknessToMathWidth(p.getMp().getThickness()) * .5;
+                    toAnimateArrayList.add(Shape.circle().scale(radius).moveTo(p));
+                } else {
+                    toAnimateArrayList.add(((Constructible) obj).getMathObject());
+                }
+            } else {
+                if (obj instanceof Point) {
+                    Point p = (Point) obj;
+                    double radius = scene.getRenderer().ThicknessToMathWidth(p.getMp().getThickness()) * .5;
+                    toAnimateArrayList.add(Shape.circle().scale(radius).moveTo(p));
+                } else {
+                    toAnimateArrayList.add(obj);
+                }
+            }
+
+        }
+
+        this.objs = toAnimateArrayList.toArray(MathObject[]::new);
+        return true;
     }
 
     @Override
