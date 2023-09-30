@@ -17,6 +17,7 @@
 package com.jmathanim.mathobjects;
 
 import com.jmathanim.Constructible.Conics.CTCircleArc;
+import com.jmathanim.Constructible.Constructible;
 import com.jmathanim.Constructible.Lines.CTLine;
 import com.jmathanim.Constructible.Lines.CTPerpBisector;
 import com.jmathanim.Constructible.Points.CTIntersectionPoint;
@@ -33,13 +34,7 @@ import javafx.scene.shape.StrokeLineCap;
  *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
-public class Arrow extends Shape {
-
-    public static Shape buildArrowHead(ArrowType type) {
-        Shape resul = loadHeadShape(type);
-        resul.getPath().closePath();
-        return resul;
-    }
+public class Arrow extends Constructible {
 
     public double distScale;
     private double angle;
@@ -47,10 +42,22 @@ public class Arrow extends Shape {
     private double baseHeight2;
     private double baseRealHeight1;
     private double baseRealHeight2;
+    private final Point Acopy, Bcopy;
 
     private double headStartMultiplier, headEndMultiplier;
-
+    private final Shape shapeToDraw;
     private double gapA, gapB;
+
+    public static Shape buildArrowHead(ArrowType type) {
+        Shape resul = loadHeadShape(type);
+        resul.getPath().closePath();
+        return resul;
+    }
+
+    @Override
+    public MathObject getMathObject() {
+        return shapeToDraw;
+    }
 
     //TODO: 
     //Hacer que sea / no sea zoom-independent
@@ -107,6 +114,9 @@ public class Arrow extends Shape {
         distScale = 1d;
         headStartMultiplier = 1d;
         headEndMultiplier = 1d;
+        shapeToDraw = new Shape();
+        Acopy = A.copy();
+        Bcopy = B.copy();
         getMp().loadFromStyle("ARROWDEFAULT");
     }
 
@@ -182,10 +192,18 @@ public class Arrow extends Shape {
         }
     }
 
-    private void rebuildShape() {
+    @Override
+    public void rebuildShape() {
+        if (scene == null) {
+            return;
+        }
+        if (!isThisMathObjectFree()) {
+            Acopy.v.copyFrom(A.v);
+            Bcopy.v.copyFrom(B.v);
+        }
         Shape h1A = head1.copy();
         Shape h1B = head2.copy();
-        double dist = A.to(B).norm() * distScale;
+        double dist = Acopy.to(Bcopy).norm() * distScale;
         //Scale heads to adjust to thickness
         double rThickness = scene.getRenderer().ThicknessToMathWidth(arrowThickness);
 
@@ -204,15 +222,15 @@ public class Arrow extends Shape {
 //        h1B.shift(h1B.getPoint(-1).to(h1A.getPoint(0)));//Align points 0 of bot shapes
         double rgapA = gapA * headStartMultiplier * rThickness / baseDist1;
         double rgapB = gapB * headEndMultiplier * rThickness / baseDist2;
-        getPath().clear();
+        shapeToDraw.getPath().clear();
         double longBody = dist - rbaseHeight1 - rbaseHeight2 - rgapA - rgapB;
         h1B.shift(0, -longBody);
         Point startPoint = h1A.getBoundingBox().getUpper().shift(0, rgapA);
         Point endPoint = h1B.getBoundingBox().getLower().shift(0, -rgapB);
 
         if (angle == 0) {
-            getPath().addJMPointsFrom(h1A.getPath());
-            merge(h1B, true, true);
+            shapeToDraw.getPath().addJMPointsFrom(h1A.getPath());
+            shapeToDraw.merge(h1B, true, true);
         } else {
 
             h1A.rotate(startPoint, angle);
@@ -255,17 +273,17 @@ public class Arrow extends Shape {
             }
 
             //Build the shape, adding h1c and merging with h2cF
-            getPath().addJMPointsFrom(h1A.getPath());
-            merge(shArc2, true, false);
-            merge(h1B, true, false);
-            merge(shArc1, true, true);
+            shapeToDraw.getPath().addJMPointsFrom(h1A.getPath());
+            shapeToDraw.merge(shArc2, true, false);
+            shapeToDraw.merge(h1B, true, false);
+            shapeToDraw.merge(shArc1, true, true);
         }
-        
+
         //Finally, shift and rotate the built Shape to match A and B points
-        AffineJTransform trShift = AffineJTransform.createTranslationTransform(startPoint.to(A));
-        AffineJTransform trRotate = AffineJTransform.create2DRotationTransform(A, A.to(B).getAngle() + .5 * PI);
-        getPath().applyAffineTransform(trShift);
-        getPath().applyAffineTransform(trRotate);
+        AffineJTransform trShift = AffineJTransform.createTranslationTransform(startPoint.to(Acopy));
+        AffineJTransform trRotate = AffineJTransform.create2DRotationTransform(Acopy, Acopy.to(Bcopy).getAngle() + .5 * PI);
+        shapeToDraw.getPath().applyAffineTransform(trShift);
+        shapeToDraw.getPath().applyAffineTransform(trRotate);
     }
 
     @Override
@@ -291,11 +309,15 @@ public class Arrow extends Shape {
             this.typeB = ar.typeB;
             this.A.copyFrom(ar.A);
             this.B.copyFrom(ar.B);
+            this.Acopy.copyFrom(ar.Acopy);
+            this.Bcopy.copyFrom(ar.Bcopy);
+            this.freeMathObject(ar.isThisMathObjectFree());
             if (reloadModels) {
                 this.loadModels();
             }
             this.rebuildShape();
             this.getMp().copyFrom(ar.getMp());
+            
         }
     }
 
@@ -370,18 +392,16 @@ public class Arrow extends Shape {
     }
 
     @Override
-    public <T extends MathObject> T applyAffineTransform(AffineJTransform tr) {
-        A.applyAffineTransform(tr);
-        B.applyAffineTransform(tr);
+    public Arrow applyAffineTransform(AffineJTransform tr) {
+        
+            Acopy.applyAffineTransform(tr);
+            Bcopy.applyAffineTransform(tr);
+        if (!isThisMathObjectFree()) {
+            A.applyAffineTransform(tr);
+            B.applyAffineTransform(tr);
+        }
         rebuildShape();
-        return (T) this;
-    }
-
-    @Override
-    public void on_setLineCap(StrokeLineCap linecap) {
-        super.on_setLineCap(linecap);
-        loadModels();
-        rebuildShape();
+        return this;
     }
 
     /**
@@ -400,7 +420,7 @@ public class Arrow extends Shape {
     @Override
     public Rect computeBoundingBox() {
         rebuildShape();
-        return getPath().getBoundingBox();
+        return shapeToDraw.getPath().getBoundingBox();
     }
 
     /**

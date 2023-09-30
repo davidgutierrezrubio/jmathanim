@@ -56,8 +56,8 @@ public class ShowCreation extends Animation {
     }
 
     protected final Point[] pencilPosition;
-    MathObject mobj;
-    CanonicalJMPath canonPath;
+    MathObject mobj;//Mathobject that will be created
+    Constructible origObj;//Original constructible object, in case
     private Animation creationStrategy;
     private ShowCreationStrategy strategyType = ShowCreationStrategy.NONE;
 
@@ -85,7 +85,8 @@ public class ShowCreation extends Animation {
 
         // If the object is a constructible one, get its visible object to animate
         if (mobj instanceof Constructible) {
-            this.mobj = ((Constructible) mobj).getMathObject();
+            origObj=(Constructible) mobj;
+            this.mobj = origObj.getMathObject();
             removeThisAtTheEnd.add(this.mobj);
             addThisAtTheEnd.add(mobj);
         } else {
@@ -177,7 +178,7 @@ public class ShowCreation extends Animation {
             this.strategyType = ShowCreationStrategy.FIRST_DRAW_AND_THEN_FILL;
             return;
         }
-        if (mobj instanceof Arrow) {
+        if (origObj instanceof Arrow) {
             this.strategyType = ShowCreationStrategy.ARROW_CREATION;
             return;
         }
@@ -244,7 +245,7 @@ public class ShowCreation extends Animation {
                 JMathAnimScene.logger.debug("ShowCreation method: RayCreationStrategy");
                 break;
             case ARROW_CREATION:
-                creationStrategy = new ArrowCreationAnimation(this.runTime, (Arrow) mobj);
+                creationStrategy = new ArrowCreationAnimation(this.runTime, (Arrow) origObj);
                 JMathAnimScene.logger.debug("ShowCreation method: ArrowCreationStrategy");
                 break;
             case DELIMITER_CREATION:
