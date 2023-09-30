@@ -17,9 +17,9 @@
 package com.jmathanim.mathobjects.Tippable;
 
 import com.jmathanim.Utils.Anchor;
-import com.jmathanim.mathobjects.Shape;
 import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.Point;
+import com.jmathanim.mathobjects.Shape;
 import com.jmathanim.mathobjects.Text.AbstractLaTeXMathObject;
 import com.jmathanim.mathobjects.Text.LaTeXMathObject;
 

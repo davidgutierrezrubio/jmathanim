@@ -17,13 +17,7 @@
  */
 package com.jmathanim.Constructible.Points;
 
-import com.jmathanim.Constructible.Conics.CTAbstractCircle;
-import com.jmathanim.Constructible.Conics.CTCircle;
-import com.jmathanim.Constructible.Conics.CTSemiCircle;
 import com.jmathanim.Constructible.Constructible;
-import com.jmathanim.Constructible.Lines.CTAbstractLine;
-import com.jmathanim.Constructible.Lines.CTRay;
-import com.jmathanim.Constructible.Lines.CTSegment;
 import com.jmathanim.Constructible.PointOwner;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;

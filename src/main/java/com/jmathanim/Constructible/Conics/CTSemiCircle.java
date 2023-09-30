@@ -27,7 +27,6 @@ import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.Point;
 import com.jmathanim.mathobjects.Scalar;
 import com.jmathanim.mathobjects.Shape;
-import com.jmathanim.Constructible.PointOwner;
 
 /**
  * Represents a Constructible semicircle

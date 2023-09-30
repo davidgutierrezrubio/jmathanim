@@ -21,10 +21,6 @@ import com.jmathanim.Constructible.Constructible;
 import com.jmathanim.Styling.JMColor;
 import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.UsefulLambdas;
-import com.jmathanim.jmathanim.JMathAnimScene;
-import com.jmathanim.mathobjects.Shape;
-import com.jmathanim.mathobjects.Arrow2D;
-import com.jmathanim.mathobjects.Arrow;
 import com.jmathanim.mathobjects.Line;
 import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.MathObjectGroup;
@@ -32,7 +28,6 @@ import com.jmathanim.mathobjects.MultiShapeObject;
 import com.jmathanim.mathobjects.Shape;
 import java.util.ArrayList;
 import java.util.Arrays;
-import javafx.geometry.BoundingBox;
 
 /**
  *

@@ -18,7 +18,6 @@
 package com.jmathanim.Animations;
 
 import com.jmathanim.Utils.OrientationType;
-import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.Point;
 

@@ -28,7 +28,6 @@ import com.jmathanim.Utils.ResourceLoader;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import static com.jmathanim.jmathanim.JMathAnimScene.PI;
 import java.net.URL;
-import javafx.scene.shape.StrokeLineCap;
 
 /**
  *

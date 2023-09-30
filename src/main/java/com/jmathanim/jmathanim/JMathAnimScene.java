@@ -31,7 +31,6 @@ import com.jmathanim.Styling.MODrawProperties;
 import com.jmathanim.Utils.JMathAnimConfig;
 import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.ResourceLoader;
-import com.jmathanim.mathobjects.Shape;
 import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.MathObjectGroup;
 import com.jmathanim.mathobjects.MultiShapeObject;
@@ -50,8 +49,6 @@ import java.util.Optional;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
 import org.slf4j.LoggerFactory;
-//import org.slf4j.Logger;
-//import org.slf4j.LoggerFactory;
 
 /**
  *

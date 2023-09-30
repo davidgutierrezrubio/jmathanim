@@ -21,7 +21,6 @@ import com.jmathanim.Cameras.Camera;
 import com.jmathanim.Renderers.FXRenderer.FXPathUtils;
 import com.jmathanim.Renderers.Renderer;
 import com.jmathanim.Styling.JMColor;
-import com.jmathanim.Styling.MODrawProperties;
 import com.jmathanim.Utils.AffineJTransform;
 import com.jmathanim.Utils.Boxable;
 import com.jmathanim.Utils.JMathAnimConfig;

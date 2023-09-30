@@ -22,12 +22,10 @@ import com.jmathanim.Animations.AnimationGroup;
 import com.jmathanim.Animations.Commands;
 import com.jmathanim.Animations.JoinAnimation;
 import com.jmathanim.Styling.MODrawProperties;
-import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.MathObjectGroup;
 import com.jmathanim.mathobjects.MultiShapeObject;
 import com.jmathanim.mathobjects.Shape;
-import java.util.ArrayList;
 
 /**
  * Animation that draws and object and then changes its alpha fill from 0 to
