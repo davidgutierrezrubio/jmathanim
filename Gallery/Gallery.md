@@ -2,7 +2,7 @@
 
 # Examples gallery
 
-The animations in this channel are mostly made with JMathAnim, except for some simple things made with Powerpoint. Kdenlive was used for video editing. In Spanish with English subtitles: https://www.youtube.com/@EltaxistadeHardy1729
+The animations in this channel are mostly made with JMathAnim, except for some simple things made with Powerpoint. Kdenlive was used for video editing. In Spanish with English subtitles: [El Taxista de Hardy](https://www.youtube.com/@EltaxistadeHardy1729)
 
 ## Function and its points with zero slope
 
