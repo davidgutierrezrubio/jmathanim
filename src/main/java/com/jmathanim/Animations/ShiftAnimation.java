@@ -384,6 +384,15 @@ public abstract class ShiftAnimation extends AnimationWithEffects {
                 }
             }
         }
+        else {
+            //for any other lt, object are automatically added to the scene
+            for (MathObject mathObject : mathObjects) {
+                scene.add(mathObject);
+            }
+    }
+        
+        
+        
     }
 
     @Override

@@ -287,34 +287,48 @@ public class Arrow extends Constructible {
 
     @Override
     public Arrow copy() {
-        Arrow copy = Arrow.makeDouble(A.copy(), B.copy(), typeA, typeB);
+        Arrow copy = new Arrow(A.copy(), B.copy());
         copy.copyStateFrom(this);
         return copy;
     }
 
     @Override
     public void copyStateFrom(MathObject obj) {
-        boolean reloadModels = false;
         if (obj instanceof Arrow) {
             Arrow ar = (Arrow) obj;
             this.arrowThickness = ar.arrowThickness;
             this.angle = ar.angle;
             this.scene = ar.scene;
             this.distScale = ar.distScale;
-            if ((this.typeA != ar.typeA) || (this.typeB != ar.typeB)) {
-                reloadModels = true;
-            }
+            this.baseHeight1=ar.baseHeight1;
+            this.baseHeight2=ar.baseHeight2;
+             this.baseRealHeight1=ar.baseRealHeight1;
+            this.baseRealHeight2=ar.baseRealHeight2;
+            this.headStartMultiplier=ar.headStartMultiplier;
+            this.headEndMultiplier=ar.headEndMultiplier;
             this.typeA = ar.typeA;
             this.typeB = ar.typeB;
             this.A.copyFrom(ar.A);
             this.B.copyFrom(ar.B);
             this.Acopy.copyFrom(ar.Acopy);
             this.Bcopy.copyFrom(ar.Bcopy);
+            this.gapA=ar.gapA;
+            this.gapB=ar.gapB;
+            this.baseDist1=ar.baseDist1;
+            this.baseDist2=ar.baseDist2;
             this.freeMathObject(ar.isThisMathObjectFree());
-            if (reloadModels) {
-                this.loadModels();
-            }
-            this.rebuildShape();
+            
+            this.head2.getPath().clear();
+            this.head2.copyStateFrom(ar.head2);
+            
+               this.head1.getPath().clear();
+            this.head1.copyStateFrom(ar.head1);
+            
+            this.shapeToDraw.getPath().clear();
+            this.shapeToDraw.copyStateFrom(ar.shapeToDraw);
+            
+            this.shapeToDraw.getPath().clear();
+            this.shapeToDraw.copyStateFrom(ar.shapeToDraw);
             this.getMp().copyFrom(ar.getMp());
             
         }

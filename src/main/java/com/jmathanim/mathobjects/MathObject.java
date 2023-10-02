@@ -982,6 +982,7 @@ public abstract class MathObject implements Drawable, Updateable, Stateable, Box
      */
     public void addToSceneHook(JMathAnimScene scene) {
         this.scene = scene;
+        setProperty("scene", scene);
     }
 
     /**
@@ -992,6 +993,7 @@ public abstract class MathObject implements Drawable, Updateable, Stateable, Box
      */
     public void removedFromSceneHook(JMathAnimScene scene) {
         this.scene = null;
+        setProperty("scene", null);
     }
 
     @Override
@@ -1096,9 +1098,8 @@ public abstract class MathObject implements Drawable, Updateable, Stateable, Box
         this.objectLabel = objectLabel;
         return (T) this;
     }
-    
-    //Style hooks
 
+    //Style hooks
     @Override
     public void on_setDrawColor(PaintStyle color) {
     }
@@ -1118,19 +1119,17 @@ public abstract class MathObject implements Drawable, Updateable, Stateable, Box
     @Override
     public void on_setThickness(double thickness) {
     }
-    
+
     @Override
     public void on_setVisible(boolean visible) {
     }
 
-   
-     @Override
+    @Override
     public void on_setDashStyle(MODrawProperties.DashStyle style) {
     }
-    
-     @Override
+
+    @Override
     public void on_setLineCap(StrokeLineCap linecap) {
     }
-    
-    
+
 }
