@@ -94,6 +94,8 @@ public class CTAngleBisector extends CTAbstractLine {
             case PointPointPoint:
                 Vec vdir = B.to(A).normalize().add(B.to(C).normalize());
                 dirPoint.copyFrom(B.getMathObject().add(vdir));
+                P1.v.copyFrom(B.v);
+                P2.v.copyFrom(dirPoint.v);
                 break;
             case LineLine:
                 //TODO: Implement

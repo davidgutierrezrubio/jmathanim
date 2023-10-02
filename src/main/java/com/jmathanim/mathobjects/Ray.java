@@ -108,7 +108,7 @@ public class Ray extends Shape implements HasDirection {
      * @param p2 Second point
      */
     public Ray(Point p1, Point p2) {
-        super(null);
+        super();
         mpArray = new MODrawPropertiesArray();
         mpArray.copyFrom(JMathAnimConfig.getConfig().getDefaultMP());// Default MP values);
         this.p1 = p1;
