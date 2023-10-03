@@ -292,15 +292,13 @@ waitSeconds(3);
 
 <img src="arrow2.png" alt="image-20201112223825965" style="zoom:50%;" />
 
-An `Arrow` object is a subclass of `Shape` so you can apply usual styling methods (we will see about them in next chapter).
-
 You can set individual scales for start and ending parts with the `setStartScale` and `setEndScale` methods:
 
 ```java
 //Points A,B are added to the scene in red color
 Point A = Point.at(0, 0).layer(1).drawColor("red");
 Point B = Point.at(2, 0).layer(1).drawColor("red");
-Arrow ar1 = Arrow.makeDouble(A, B, Arrow.ArrowType.NONE_BUTT, Arrow.ArrowType.ARROW2);
+Arrow ar1 = Arrow.make(A, B, Arrow.ArrowType.ARROW2);
 ar1.setArrowThickness(100);
 ar1.setCurvature(-45 * DEGREES);
 ar1.setStartScale(5);//Start is 5x the end
