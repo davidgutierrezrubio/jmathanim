@@ -270,7 +270,8 @@ public class Shape extends MathObject {
      * @return The created arc
      */
     public static Shape arc(double angle) {
-        Shape obj = Shape.circle().getSubShape(0, .5 * angle / PI);
+        double c = 0.15915494309189533576888376d;//0.5/PI
+        Shape obj = Shape.circle(32).getSubShape(0, c * angle);
         obj.objectLabel = "arc";
         return obj;
     }
