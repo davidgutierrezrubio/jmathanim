@@ -197,6 +197,15 @@ public class ConfigLoader {
                 case "thickness":
                     mp.setThickness(Double.valueOf(item.getTextContent()));
                     break;
+                case "fillAlpha":
+                    mp.setFillAlpha(Double.parseDouble(item.getTextContent()));
+                    break;
+                case "drawAlpha":
+                    mp.setDrawAlpha(Double.parseDouble(item.getTextContent()));
+                    break;
+                case "layer":
+                    mp.setLayer(Integer.parseInt(item.getTextContent()));
+                    break;
                 case "dashStyle":
                     mp.setDashStyle(MODrawProperties.parseDashStyle(item.getTextContent()));
                     break;
