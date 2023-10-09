@@ -24,6 +24,10 @@ Manual
 What's new?
 ===========
 
+Version 0.9.10-SNAPSHOT (09/10/2023)
+
+* Arrow class rewritten from scratch, old class `Arrow2D`is marked as obsolete now, use new `Arrow` class instead.
+
 Version 0.9.9 (16/09/2023)
 
 * Improved handling of animations to work better with containers like `JoinAnimation` or `AnimationGroup`
