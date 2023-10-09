@@ -353,4 +353,29 @@ public class Vec implements Stateable, HasDirection {
         return this;
     }
 
+    /**
+     * Scales the vector according to given parameters. The vector is modified.
+     *
+     * @param scx X scale
+     * @param scy Y scale
+     * @return This vector
+     */
+    public Vec scaleInSite(double scx, double scy) {
+        this.x *= scx;
+        this.y *= scy;
+        return this;
+    }
+
+    /**
+     * Returns a scaled version of the vector. The original vector is not
+     * modified
+     *
+     * @param scx X scale
+     * @param scy Y scale
+     * @return A copy of the vector, scaled.
+     */
+    public Vec scale(double scx, double scy) {
+        return this.copy().scaleInSite(scx, scy);
+    }
+
 }

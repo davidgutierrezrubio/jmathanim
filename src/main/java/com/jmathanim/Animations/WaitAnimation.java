@@ -26,12 +26,16 @@ import com.jmathanim.mathobjects.MathObject;
  */
 public class WaitAnimation extends Animation {
 
+    
+    public static WaitAnimation make(double runTime){
+        return new WaitAnimation(runTime);
+    }
     /**
      * Creates a new WaitAnimation, that waits for the specified amount of time
      *
      * @param runTime Duration in seconds
      */
-    public WaitAnimation(double runTime) {
+    private WaitAnimation(double runTime) {
         super(runTime);
     }
 

@@ -95,6 +95,17 @@ public class CTAngleMark extends Constructible {
                     .shift(center.v);
         }
         arcToDraw.merge(arc, true, true);
+        arcToDraw.getPath().distille();
+    }
+
+    public double getRadius() {
+        return radius;
+    }
+
+    public CTAngleMark setRadius(double radius) {
+        this.radius = radius;
+        rebuildShape();
+        return this;
     }
 
 }
