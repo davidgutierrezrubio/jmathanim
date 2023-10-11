@@ -259,5 +259,7 @@ public class Line extends Shape implements HasDirection, shouldUdpateWithCamera 
     public void updateWithCamera(Camera camera) {
         computeBoundPoints(camera);
     }
+    
+    
 
 }
