@@ -81,7 +81,7 @@ public class TransformMathExpression extends Animation {
         INTERPOLATION, FLIP_HORIZONTALLY, FLIP_VERTICALLY, FLIP_BOTH
     }
     
-    private final ArrayList<Shape> toDelete;
+    private final ArrayList<MathObject> toDelete;
 
     // Transformation parameters
     private final HashMap<String, int[]> trParOrigGroups;
@@ -289,7 +289,7 @@ public class TransformMathExpression extends Animation {
         toDelete.add(sh);
     }
     
-    private void createTransformSubAnimation(Shape sh, Shape sh2, TransformMathExpressionParameters par) {
+    private void createTransformSubAnimation(MathObject sh, MathObject sh2, TransformMathExpressionParameters par) {
         AnimationWithEffects transform = null;
         switch (par.getTransformStyle()) {
             case INTERPOLATION:
@@ -372,7 +372,7 @@ public class TransformMathExpression extends Animation {
         animations.finishAnimation();
         super.finishAnimation();
         
-        for (Shape sh : toDelete) {
+        for (MathObject sh : toDelete) {
             removeObjectsFromScene(sh);
         }
 //        addObjectsToscene(latexDestiny);
@@ -411,16 +411,16 @@ public class TransformMathExpression extends Animation {
      * TransformMathExpressionParametersArray to add uniformly the same effects
      * to all maps created
      *
-     * @param i1 First origin index to map (included)
-     * @param i2 Last origin index to map (included)
-     * @param j First destiny index to map
+     * @param start First origin index to map (included)
+     * @param end Last origin index to map (included)
+     * @param destiny First destiny index to map
      * @return Associated array transform parameter, to add effects.
      */
-    public TransformMathExpressionParametersArray mapRange(int i1, int i2, int j) {
+    public TransformMathExpressionParametersArray mapRange(int start, int end, int destiny) {
         TransformMathExpressionParametersArray ar = new TransformMathExpressionParametersArray();
-        for (int n = 0; n <= i2 - i1; n++) {
-            final int ind = i1 + n;
-            map(ind, j + n);
+        for (int n = 0; n <= end - start; n++) {
+            final int ind = start + n;
+            map(ind, destiny + n);
             ar.add(trParTransformParameters.get("_" + ind));
         }
         return ar;
