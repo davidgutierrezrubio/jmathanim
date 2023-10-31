@@ -70,6 +70,7 @@ public class SimpleShapeCreationAnimation extends AbstractCreationStrategy {
         if (lt == 1) {//Only remains the full line
             removeObjectsFromScene(intermediateShape);
             addObjectsToscene(this.originShape);
+            removeObjectsFromScene(removeThisAtTheEnd);
             return;
         }
         //0<t<1, only remains the created segment

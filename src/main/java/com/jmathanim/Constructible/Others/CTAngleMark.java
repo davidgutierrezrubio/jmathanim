@@ -31,6 +31,8 @@ import com.jmathanim.mathobjects.Shape;
  */
 public class CTAngleMark extends Constructible {
 
+    private boolean isRight;
+
     double radius;
     private final CTPoint center, A, B;
     private final Shape arcToDraw;
@@ -52,6 +54,7 @@ public class CTAngleMark extends Constructible {
         radius = .1;
         arcToDraw = new Shape();
         arcToDraw.style("anglemarkdefault");
+        isRight=false;
     }
 
     @Override
@@ -68,6 +71,12 @@ public class CTAngleMark extends Constructible {
         return arcToDraw;
     }
 
+    public CTAngleMark setIsRight(boolean b) {
+        isRight=b;
+        return this;
+    }
+
+
     @Override
     public void rebuildShape() {
         if (isThisMathObjectFree()) {
@@ -81,7 +90,7 @@ public class CTAngleMark extends Constructible {
         Vec v1 = center.to(A).normalize();
         Vec v2 = center.to(B).normalize();
         double dotProduct = v1.dot(v2);
-        if (dotProduct == 0) {//Right angle
+        if ((isRight)||(dotProduct == 0)) {//Right angle
             arc = Shape.polyLine(
                     Point.at(center.v.add(v1.mult(radius))),
                     Point.at(center.v.add(v1.mult(radius)).add(v2.mult(radius))),

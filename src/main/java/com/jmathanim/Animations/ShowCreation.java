@@ -343,6 +343,7 @@ public class ShowCreation extends Animation {
     @Override
     public void cleanAnimationAt(double t) {
         creationStrategy.cleanAnimationAt(t);
+          removeObjectsFromScene(removeThisAtTheEnd);
     }
 
     @Override
