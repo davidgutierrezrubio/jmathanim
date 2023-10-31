@@ -1210,8 +1210,8 @@ public class Commands {
                 restoreStates(mathObjects);
                 for (MathObject obj : mathObjects) {
                     obj.scale(sx, sy);
-                    obj.drawAlpha(obj.getMp().getDrawColor().getAlpha() * (1 - lt));
-                    obj.fillAlpha(obj.getMp().getFillColor().getAlpha() * (1 - lt));
+                    obj.drawAlpha(obj.getMp().getDrawColor().getAlpha() * lt);
+                    obj.fillAlpha(obj.getMp().getFillColor().getAlpha() * lt);
                     obj.rotate((1 - lt) * angle);
                 }
             }
