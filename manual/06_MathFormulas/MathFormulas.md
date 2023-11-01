@@ -19,7 +19,7 @@ formulaHelper(t1, t2);
 waitSeconds(5);
 ```
 
-We'll obtain the following image for 5 seconds. You can make a screenshot to examine it more deeply:
+We'll obtain the following image for 5 seconds. You can make a screenshot or save it to a file with the `saveImage` command to examine it more deeply:
 
 ![image-20210101131234148](equationFormHelper.png)
 
@@ -68,8 +68,8 @@ sliceHeight.stackTo(rectangle, Anchor.Type.RIGHT,.1);
 
 play.showCreation(rectangle, sliceBase,sliceHeight);
 play.showCreation(formula);//Draws the formula, except "b" and "h"
-ShiftAnimation anim1 = Commands.stackTo(3, sliceBaseCenter, Anchor.Type.BY_CENTER, 0, sliceBase);
-ShiftAnimation anim2 = Commands.stackTo(3, sliceHeightCenter, Anchor.Type.BY_CENTER, 0, sliceHeight);
+ShiftAnimation anim1 = Commands.moveTo(3, sliceBaseCenter, sliceBase);
+ShiftAnimation anim2 = Commands.moveTo(3, sliceHeightCenter, sliceHeight);
 playAnimation(anim1,anim2);//Restores the slices to their original positions
 waitSeconds(2);
 ```
@@ -151,7 +151,7 @@ What about shape 4 (the "0" sign)? If we don't specify a destination, this shape
 Ok, this is better, but there is still something that looks odd. When manipulating equations, it's always desirable to mark the "=" sign as a pivotal point. We can achieve this by forcing that the origin and destiny formulas are aligned by the "=" sign. This sign is at position 3 in the origin formula and at position 1 in destiny. With the command
 
 ```
-t2.alignCenter(1, t1, 3);
+    t2.alignCenter(1, t1, 3);
 ```
 
 we make that the center of glyph number 1 of `t2` (its "=" sign) matches the center of the glyph number 3 of `t1` (its "=" sign). If we execute this method prior to the animation now we have:
@@ -162,14 +162,14 @@ we make that the center of glyph number 1 of `t2` (its "=" sign) matches the cen
 
 ## Type of transformations
 
-The method `.map` returns a `TransformMathExpressionParameters` object, which allows us to control how the transformation is done, with the method `setTransformStyle`. Transformation types are defined in the enum `TransformMathExpression.TransformType, currently INTERPOLATION, FLIP_HORIZONTALLY, FLIP_VERTICALLY and FLIP_BOTH`. By default, the `INTERPOLATION` method is used.
+The `.map` method returns a `TransformMathExpressionParameters` object, which allows us to control how the transformation is done, with the method `setTransformStyle`. Transformation types are defined in the enum `TransformMathExpression.TransformType, currently INTERPOLATION, FLIP_HORIZONTALLY, FLIP_VERTICALLY and FLIP_BOTH`. By default, the `INTERPOLATION` method is used.
 
-Note: The `INTERPOLATION` method uses the `Transform` class to do the work, so, depending on the origin and destiny shapes, it may actually perform a point-to-point interpolation, or, if applicable, a homothecy or a more general affine transform. If you apply an `INTERPOLATION` type transform to, say, map a "2" sign into another "2", it will use a homothecy as these 2 figures are equal except scale.
+Note: The `INTERPOLATION` method uses the `Transform` class to do the work, so, depending on the origin and destination shapes, it may actually perform a point-to-point interpolation, or, if applicable, an isomorphism or a more general affine transform. For example, if you use an `INTERPOLATION` type transform to map a "2" character to another "2", it will use an isomorphism, since these 2 characters are the same except for scale.
 
 ```java
 LaTeXMathObject t1 = LaTeXMathObject.make("$a^2=a\\cdot a$");
 LaTeXMathObject t2 = LaTeXMathObject.make("$3^2=3\\cdot 3$");
-t1.alignCenter(2, t2, 2);
+t1.alignCenter(2, t2, 2);//Move t1 so its equal sign (glyph 2) matchs the t2 equal sign (glyph 2)
 camera.zoomToObjects(t1, t2);
 TransformMathExpression tr = new TransformMathExpression(5, t1, t2);
 tr.map(0, 0).setTransformStyle(TransformMathExpression.TransformType.FLIP_HORIZONTALLY);//The first "a"
@@ -206,68 +206,51 @@ Or, if you have two formulas with the same number of glyphs and one-to-one corre
 
 ## Grouping 
 
-Suppose we have the following complex number expressions., where the second one is the first simplified. We want to animate a descriptive transition from `t1` to `t2`.
+Suppose we have the following two arithmetic expressions
 
 ```java
-LaTeXMathObject t1 = LaTeXMathObject.make("$2+3{\\color{blue}i}+5-{\\color{blue}i}$");
-LaTeXMathObject t2 = LaTeXMathObject.make("$7+2{\\color{blue}i}$");
+LaTeXMathObject t1 = LaTeXMathObject.make("$(1+98)+(2+97)+\\cdots+(49+50)$");
+LaTeXMathObject t2 = LaTeXMathObject.make("$99+99+\\cdots+99$");
 ```
 
-It is desirable that the "2" and "+5" shapes morph into the single shape, "7". For the complex part, the coefficients "+3" and "-" should morph into "+2", and the two "i" symbols from the origin should morph into the single "i" in the destination. This can be achieved by defining groups with the methods `defineOrigGroup(name, i1,i2,...)` and `defineDstGroup(name, i1,i2,...)`. First of all, let's see a clear view of the indexes with the `formulaHelper` method, as seen before:
+ and we want to animate how these sums change all into 99. We want to perform a transform for each one of the sums into their simplified form. Our dear friend `formulaHelper` helps us to ellaborate a plan:
 
-![image-20201121172930831](equation05.png)
+<img src="equation05.png" alt="equation05"  />
 
-We need to map orig-shapes 0, 4, and 5 into destiny-shape 7. We define a group in the origin with these indexes:
 
-```java
-tr.defineOrigGroup("realPart", 0,4,5);
-```
 
-We can use any string to name that group, with the only restriction that it can't begin with an underscore "_".
-
-Now we can map this group into the "7" shape of destiny, which has index 0:
+We are interested in mapping 0-5 origin indices to 0,1 destiny indices, 7-12 to 3,4 and 18-24 to 10,11. But in all these cases this means mapping 6 indices to 2. The `map` method only maps one index to another. To achieve this, we can define source and destination groups. We will use the 3 transform methods to show you the effect:
 
 ```java
-tr.map("realPart",0);
-```
+LaTeXMathObject t1 = LaTeXMathObject.make("$(1+98)+(2+97)+\\cdots+(49+50)$");
+LaTeXMathObject t2 = LaTeXMathObject.make("$99+99+\\cdots+99$");
+TransformMathExpression tr=TransformMathExpression.make(10, t1, t2);
 
-Now we have to map "+3" and "-" of the imaginary part into "+2" of the destiny expression. As before, we define one group at the beginning:
+//Define groups of first sum. You can use any string as name of the group, as long as it doesn't start with "_"
+tr.defineOrigGroup("sum_1", 0,1,2,3,4,5);
+tr.defineDstGroup("99_1", 0,1);
+tr.map("sum_1","99_1").setTransformStyle(TransformMathExpression.TransformType.FLIP_HORIZONTALLY);
 
-```java
-tr.defineOrigGroup("imagCoef", 1,2,6);//Shapes 1,2 and 6 in the original formula
-tr.defineDstGroup("imagCoefDst", 1,2);//Shapes 1 and 2 in the destiny formula
-tr.map("imagCoef","imagCoefDst");
-```
+tr.map(6,2);//The first "+" sign
 
-As you can see, the `map` method admits any pair of group names or indexes.
+//Define groups of second sum
+tr.defineOrigGroup("sum_2", 7,8,9,10,11,12);
+tr.defineDstGroup("99_2", 3,4);
+tr.map("sum_2","99_2").setTransformStyle(TransformMathExpression.TransformType.FLIP_VERTICALLY);
 
-Finally, create a group with the "i" symbols in the origin (shapes 3 and 7) and map it into the "i" of the destiny (shape 3):
+tr.mapRange(13, 17, 5);//The "+...+" part
 
-```java
-tr.defineOrigGroup("i", 3,7);
-tr.map("i",3);
-```
-
-Here is the complete source code, with a `stackTo`command to position the second formula under the first one:
-
-```java
-LaTeXMathObject t1 = LaTeXMathObject.make("$2+3{\\color{blue}i}+5-{\\color{blue}i}$");
-LaTeXMathObject t2 = LaTeXMathObject.make("$7+2{\\color{blue}i}$");
-t2.stackTo(t1, Anchor.Type.LOWER,.5);
-camera.zoomToObjects(t1,t2);
-TransformMathExpression tr = new TransformMathExpression(5, t1, t2);
-tr.defineOrigGroup("realPart", 0,4,5);
-tr.map("realPart",0);
-tr.defineOrigGroup("imagCoef", 1,2,6);
-tr.defineDstGroup("imagCoefDst", 1,2);
-tr.map("imagCoef","imagCoefDst");
-tr.defineOrigGroup("i", 3,7);
-tr.map("i",3);
+//Define groups of third sum
+tr.defineOrigGroup("sum_3", 18,19,20,21,22,23,24);
+tr.defineDstGroup("99_3", 10,11);
+tr.map("sum_3","99_3").setTransformStyle(TransformMathExpression.TransformType.INTERPOLATION);
 playAnimation(tr);
-waitSeconds(5);
+waitSeconds(1);
 ```
 
-![equation05](equation05.gif)
+Here is the gif of the generated video. As you can see, grouping allows a bunch of indices to be managed as a single object. When applying the `INTERPOLATION` transformation method, the `MultiShapeTransform` is used, which handles correctly when the number of origin and destination shapes does not match.
+
+<img src="equation05.gif" alt="equation05a"  />
 
 ## Effects
 
@@ -326,7 +309,7 @@ tr.map(2,0).addJumpEffect(1);//Note that this "jump" is downward
 
 ![equation10](equation10.gif)
 
-By default, the shape of the jump is a semicircle, so that only the sign of the parameter is relevant. Other jump types can be specified since version 0.9.0, defined in the enum `AnimationEffect.JumpType: ``SEMICIRCLE, PARABOLICAL, ELLIPTICAL, TRIANGULAR, SINUSOIDAL, SINUSOIDAL2, CRANE`. These are explained in detail in the animation effects chapter. For example, you can set it so that the "a" glyph moves like a crane grabs it, and that the "b" glyph follows a path resembling a triangular roof. We use the 
+By default, the shape of the jump is a semicircle, so that only the sign of the parameter is relevant. Other jump types can be specified since version 0.9.0, defined in the enum `AnimationEffect.JumpType`: `SEMICIRCLE, PARABOLICAL, ELLIPTICAL, TRIANGULAR, SINUSOIDAL, SINUSOIDAL2, CRANE`. These are explained in detail in the animation effects chapter. For example, you can set it so that the "a" glyph moves like a crane grabs it, and that the "b" glyph follows a path resembling a triangular roof, with the following code:
 
 ```java
 tr.map(0, 2).addJumpEffect(t1.getHeight(), AnimationEffect.JumpType.CRANE);
@@ -352,7 +335,7 @@ tr.map(2,0).addJumpEffect(.1).addRotateEffect(1).addScaleEffect(.5);
 
 Any shape whose index is not mapped to a destiny index or group is marked for removal. Currently, there are 6  types, defined in the enum `TransformMathExpression.RemoveType`: `FADE_OUT, SHRINK_OUT, MOVE_OUT_UP, MOVE_OUT_LEFT, MOVE_OUT_RIGHT, MOVE_OUT_DOWN`.
 
-In a similar way, any destiny shape not mapped by a origin index or group is marked for adding, with one of the following ways, defined in the enum `TransformMathExpression.AddType`: `FADE_IN, GROW_IN, MOVE_IN_UP, MOVE_IN_LEFT, MOVE_IN_RIGHT, MOVE_IN_DOWN`.
+Similarly, any destiny shape that is not mapped by a origin index or group is marked for adding with one of the following ways, defined in the enum `TransformMathExpression.AddType`: `FADE_IN, GROW_IN, MOVE_IN_UP, MOVE_IN_LEFT, MOVE_IN_RIGHT, MOVE_IN_DOWN`.
 
 By default, `FADE_OUT` and `FADE_IN` are chosen for removing and adding. With the `setRemovingStyle` and `setAddingStyle` we can define individually the style for each shape.
 

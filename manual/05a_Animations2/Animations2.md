@@ -418,7 +418,7 @@ There are special subclasses of `Animation`that allows to build more complex ani
 
 ## The wait animation
 
-This `WaitAnimation` does what it says. It simply waits for a specified amount of time. Sounds exciting, right? This is used, for example, in the `ShowCreation` animation when applied to a `LaTexMathObject`, where each shape must wait a certain time, to make the left-to-right appearing illusion.
+This `WaitAnimation` does what it says. It simply waits for a specified amount of time. Sounds exciting, right? This is used mostly when you want to combine simple animations into complex ones and need to add some waiting time between them.
 
 ## The AnimationGroup animation
 

@@ -718,7 +718,7 @@ for (MathObject r : rows) {
         if (candyHeap.getObjects().contains(candyToFall)) {//if not an auxiliar candy...
             Concatenate conc = Concatenate.make();
             final double wt = 2d * counter / candyHeap.size();
-            conc.add(new WaitAnimation(wt));
+            conc.add(WaitAnimation.make(wt));
             conc.add(Commands.moveIn(1-.9*rowCounter/rows.size(), Anchor.Type.UPPER, 						candyToFall).setLambda(t -> t * t));
             anim.add(conc);
             counter++;
