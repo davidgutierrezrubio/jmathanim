@@ -46,6 +46,9 @@ public class Rect implements Stateable, Boxable {// TODO: Adjust this to 3D coor
     }
 
     public static Rect make(List<Point> points) {
+        if (points.isEmpty()) {
+            return new EmptyRect();
+        }
         double xmin = Double.MAX_VALUE;
         double xmax = -Double.MAX_VALUE;
         double ymin = Double.MAX_VALUE;

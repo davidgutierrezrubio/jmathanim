@@ -49,13 +49,24 @@ public class LogoInterpreter {
         String commandsToRepeat = "";
         int numberOfRepetitions = Integer.parseInt(st.nextToken());
         String token = st.nextToken();
+        int delimCounter = 0;
         if (!"[".equals(token)) {
             //Error here!
+        } else {
+            delimCounter++;
         }
-        token = st.nextToken();
-        while (!"]".equals(token)) {
-            commandsToRepeat += " " + token;
+        while (true) {
             token = st.nextToken();
+            if ("[".equals(token)) {
+                delimCounter++;
+            }
+            if ("]".equals(token)) {
+                delimCounter--;
+                if (delimCounter == 0) {
+                    break;
+                }
+            }
+            commandsToRepeat += " " + token;
         }
         for (int i = 0; i < numberOfRepetitions; i++) {
             processString(commandsToRepeat);

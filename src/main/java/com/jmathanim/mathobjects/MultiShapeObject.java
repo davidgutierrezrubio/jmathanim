@@ -196,14 +196,17 @@ public class MultiShapeObject extends MathObject implements Iterable<Shape> {
 
     @Override
     protected Rect computeBoundingBox() {
-        if (!shapes.isEmpty()) {
-            Rect resul = null;
-            for (Shape jmp : shapes) {
+        Rect resul = null;
+        for (Shape jmp : shapes) {
+            if (!jmp.isEmpty()) {
                 resul = Rect.union(resul, jmp.getBoundingBox());
             }
-            return resul;
-        } else {
+        }
+
+        if (resul == null) {
             return new EmptyRect();
+        } else {
+            return resul;
         }
     }
 
@@ -324,7 +327,7 @@ public class MultiShapeObject extends MathObject implements Iterable<Shape> {
      * mostly to combine with animations that accepts a varargs of MathObject
      *
      * @param indices
-     * @return 
+     * @return
      */
     public Shape[] getSubArray(int... indices) {
         Shape[] resul = new Shape[indices.length];
