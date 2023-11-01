@@ -239,7 +239,6 @@ public class Transform extends AnimationWithEffects {
                     JMathAnimScene.logger.debug("Transform method: Interpolation of functions");
                     break;
             }
-//        if (shouldApplyEffects()) {
             if (transformStrategy instanceof AnimationWithEffects) {
                 AnimationWithEffects tr = (AnimationWithEffects) transformStrategy;
                 this.copyEffectParametersTo(tr);
@@ -249,7 +248,6 @@ public class Transform extends AnimationWithEffects {
         } catch (ClassCastException e) {
             JMathAnimScene.logger.error("You are trying to animate something that I don't know how");
         }
-//        }
     }
 
     @Override

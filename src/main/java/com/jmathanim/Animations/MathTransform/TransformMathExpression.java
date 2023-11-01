@@ -40,7 +40,7 @@ import java.util.List;
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
 public class TransformMathExpression extends Animation {
-    
+
     private RemoveType defaultRemovingStyle;
     private AddType defaultAddingStyle;
     private final MultiShapeObject latexTransformedOrig;
@@ -68,19 +68,19 @@ public class TransformMathExpression extends Animation {
     public void setDefaultAddingStyle(AddType defaultAddingStyle) {
         this.defaultAddingStyle = defaultAddingStyle;
     }
-    
+
     public enum AddType {
         FADE_IN, GROW_IN, GROWH_IN, GROWV_IN, MOVE_IN_UP, MOVE_IN_LEFT, MOVE_IN_RIGHT, MOVE_IN_DOWN
     }
-    
+
     public enum RemoveType {
         FADE_OUT, SHRINK_OUT, SHRINKH_OUT, SHRINKV_OUT, MOVE_OUT_UP, MOVE_OUT_LEFT, MOVE_OUT_RIGHT, MOVE_OUT_DOWN
     }
-    
+
     public enum TransformType {
         INTERPOLATION, FLIP_HORIZONTALLY, FLIP_VERTICALLY, FLIP_BOTH
     }
-    
+
     private final ArrayList<MathObject> toDelete;
 
     // Transformation parameters
@@ -128,13 +128,13 @@ public class TransformMathExpression extends Animation {
         removeInOrigParameters = new HashMap<>();
         addInDstParameters = new HashMap<>();
     }
-    
+
     @Override
     public boolean doInitialization() {
         super.doInitialization();
         isOriginalAddedToScene = scene.isInScene(latexTransformedOrig);
         this.latexTransformedBase.copyStateFrom(latexTransformedOrig);
-        
+
         defaultAddingStyle = AddType.GROW_IN;
         defaultRemovingStyle = RemoveType.SHRINK_OUT;
 
@@ -149,7 +149,7 @@ public class TransformMathExpression extends Animation {
                 addInDstParameters.put(n, new TransformMathExpressionParameters());
             }
         }
-        
+
         HashMap<String, int[]> or = trParOrigGroups;
         HashMap<String, int[]> dst = trParDstGroups;
         HashMap<String, String> maps = trParMaps;
@@ -167,29 +167,87 @@ public class TransformMathExpression extends Animation {
             // The destiny will be one merged shape of all shapes of destiny group
             ArrayList<Shape> listDst = getShapeListForGroup(dst, name2, latexDestiny, addInDstParameters);
             ArrayList<Shape> listOrig = getShapeListForGroup(or, name1, latexTransformedBase, removeInOrigParameters);
+
+            MultiShapeObject mshDst = MultiShapeObject.make();
+            mshDst.getShapes().addAll(listDst);
+            MultiShapeObject mshOrig = MultiShapeObject.make();
+            mshOrig.getShapes().addAll(listOrig);
+
+              createTransformSubAnimation(mshOrig, mshDst, trParTransformParameters.get(name1));
             
+        }
+        for (int n : removeInOrigParameters.keySet()) {
+            createRemovingSubAnimation(n, removeInOrigParameters.get(n));
+        }
+        for (int n : addInDstParameters.keySet()) {
+            Shape sh = latexDestiny.get(n);
+            createAddingSubAnimation(sh, addInDstParameters.get(n));
+        }
+
+        return animations.initialize(scene);
+    }
+
+    public boolean doInitializationOrig() {
+        super.doInitialization();
+        isOriginalAddedToScene = scene.isInScene(latexTransformedOrig);
+        this.latexTransformedBase.copyStateFrom(latexTransformedOrig);
+
+        defaultAddingStyle = AddType.GROW_IN;
+        defaultRemovingStyle = RemoveType.SHRINK_OUT;
+
+        //Fill with default removing/adding parameters for those not specified before
+        for (int n = 0; n < this.latexTransformedBase.size(); n++) {
+            if (!removeInOrigParameters.containsKey(n)) {
+                removeInOrigParameters.put(n, new TransformMathExpressionParameters());
+            }
+        }
+        for (int n = 0; n < this.latexDestiny.size(); n++) {
+            if (!addInDstParameters.containsKey(n)) {
+                addInDstParameters.put(n, new TransformMathExpressionParameters());
+            }
+        }
+
+        HashMap<String, int[]> or = trParOrigGroups;
+        HashMap<String, int[]> dst = trParDstGroups;
+        HashMap<String, String> maps = trParMaps;
+        for (String name1 : maps.keySet()) {
+            String name2 = maps.get(name1);
+
+//            if (false) {
+//                Shape sh1 = getShapeForGroup(or, name1, latexTransformed, removeInOrigParameters);
+//                Shape sh2 = getShapeForGroup(dst, name2, latexDestiny, addInDstParameters);
+//                if ((sh1.size() > 0) && (sh2.size() > 0)) {// If any of the shapes is empty...abort!
+//                    createTransformSubAnimation(sh1, sh2, trParTransformParameters.get(name1));
+//                }
+//            } else {
+            // For each of the shapes of a origin group, makes a transform animation
+            // The destiny will be one merged shape of all shapes of destiny group
+            ArrayList<Shape> listDst = getShapeListForGroup(dst, name2, latexDestiny, addInDstParameters);
+            ArrayList<Shape> listOrig = getShapeListForGroup(or, name1, latexTransformedBase, removeInOrigParameters);
+
             int nDst = listDst.size();
             int nOrig = listOrig.size();
-            if (nDst < nOrig) {
-                for (Shape sh : listOrig) {
-                    Shape sh2 = getShapeForGroup(dst, name2, latexDestiny, addInDstParameters);
-                    createTransformSubAnimation(sh, sh2, trParTransformParameters.get(name1));
-                }
-            } else {
-                for (int k = 0; k < nOrig; k++) {
-                    Shape sh1 = listOrig.get(k);
-                    Shape sh2 = listDst.get(k);
-                    createTransformSubAnimation(sh1, sh2, trParTransformParameters.get(name1));
-                }
-                //If destiny has more shapes than origin, make copies of the last one of orig and map
+            if (nDst * nOrig != 0) {//both nDst and nOrig must be >0
+                if (nDst < nOrig) {
+                    for (Shape sh : listOrig) {
+                        Shape sh2 = getShapeForGroup(dst, name2, latexDestiny, addInDstParameters);
+                        createTransformSubAnimation(sh, sh2, trParTransformParameters.get(name1));
+                    }
+                } else {
+                    for (int k = 0; k < nOrig; k++) {
+                        Shape sh1 = listOrig.get(k);
+                        Shape sh2 = listDst.get(k);
+                        createTransformSubAnimation(sh1, sh2, trParTransformParameters.get(name1));
+                    }
+                    //If destiny has more shapes than origin, make copies of the last one of orig and map
 
-                for (int k = 0; k < nDst - nOrig; k++) {
-                    Shape sh1 = listOrig.get(nOrig - 1);
-                    Shape sh2 = listDst.get(nOrig + k);
-                    createTransformSubAnimation(sh1, sh2, trParTransformParameters.get(name1));
+                    for (int k = 0; k < nDst - nOrig; k++) {
+                        Shape sh1 = listOrig.get(nOrig - 1);
+                        Shape sh2 = listDst.get(nOrig + k);
+                        createTransformSubAnimation(sh1, sh2, trParTransformParameters.get(name1));
+                    }
                 }
             }
-
 //            }
         }
         for (int n : removeInOrigParameters.keySet()) {
@@ -199,10 +257,10 @@ public class TransformMathExpression extends Animation {
             Shape sh = latexDestiny.get(n);
             createAddingSubAnimation(sh, addInDstParameters.get(n));
         }
-        
+
         return animations.initialize(scene);
     }
-    
+
     private void createRemovingSubAnimation(int n, TransformMathExpressionParameters par) {
         Shape sh = latexTransformedBase.get(n);
         addObjectsToscene(sh);
@@ -210,7 +268,7 @@ public class TransformMathExpression extends Animation {
         if (par.getRemovingStyle() == null) {
             par.setRemovingStyle(defaultRemovingStyle);
         }
-        
+
         switch (par.getRemovingStyle()) {
             case FADE_OUT:
                 group.add(Commands.fadeOut(runTime, sh).setLambda(x -> Math.sqrt(x)));
@@ -242,17 +300,17 @@ public class TransformMathExpression extends Animation {
             rotation.setUseObjectState(false);
             group.add(rotation);
         }
-        
+
         animations.add(group);
     }
-    
+
     private void createAddingSubAnimation(Shape sh, TransformMathExpressionParameters par) {
         AnimationGroup group = new AnimationGroup();
-        
+
         if (par.getAddingStyle() == null) {
             par.setAddingStyle(defaultAddingStyle);
         }
-        
+
         switch (par.getAddingStyle()) {
             case FADE_IN:
                 animations.add(Commands.fadeIn(runTime, sh).setLambda(getTotalLambda()));
@@ -266,7 +324,7 @@ public class TransformMathExpression extends Animation {
             case GROWV_IN:
                 animations.add(Commands.growIn(runTime, 0, OrientationType.VERTICAL, sh).setLambda(getTotalLambda()));
                 break;
-            
+
             case MOVE_IN_UP:
                 animations.add(Commands.moveIn(runTime, Anchor.Type.UPPER, sh).setLambda(getTotalLambda()));
                 break;
@@ -288,7 +346,7 @@ public class TransformMathExpression extends Animation {
         animations.add(group);
         toDelete.add(sh);
     }
-    
+
     private void createTransformSubAnimation(MathObject sh, MathObject sh2, TransformMathExpressionParameters par) {
         AnimationWithEffects transform = null;
         switch (par.getTransformStyle()) {
@@ -334,19 +392,21 @@ public class TransformMathExpression extends Animation {
         toDelete.add(sh);
         toDelete.add(sh2);
     }
-    
+
     private ArrayList<Shape> getShapeListForGroup(HashMap<String, int[]> or, String names, MultiShapeObject lat,
             HashMap<Integer, TransformMathExpressionParameters> listRemainders) {
         ArrayList<Shape> resul = new ArrayList<>();
         int[] gr = or.get(names);
-        for (int n = 0; n < gr.length; n++) {
-            resul.add(lat.get(gr[n]));
+        if (gr != null) {
+            for (int n = 0; n < gr.length; n++) {
+                resul.add(lat.get(gr[n]));
 //            resul.add(lat.get(gr[n]).copy());
-            listRemainders.remove(gr[n]);
+                listRemainders.remove(gr[n]);
+            }
         }
         return resul;
     }
-    
+
     private Shape getShapeForGroup(HashMap<String, int[]> or, String names, MultiShapeObject lat,
             HashMap<Integer, TransformMathExpressionParameters> listRemainders) {
         int[] gr = or.get(names);
@@ -360,18 +420,18 @@ public class TransformMathExpression extends Animation {
         }
         return sh;
     }
-    
+
     @Override
     public void doAnim(double t) {
         super.doAnim(t);
         animations.doAnim(t);
     }
-    
+
     @Override
     public void finishAnimation() {
         animations.finishAnimation();
         super.finishAnimation();
-        
+
         for (MathObject sh : toDelete) {
             removeObjectsFromScene(sh);
         }
@@ -390,8 +450,16 @@ public class TransformMathExpression extends Animation {
      * @return Associated transform parameter, to add effects.
      */
     public TransformMathExpressionParameters map(int i, int j) {
-        return map(defineOrigGroup("_" + i, i), defineDstGroup("_" + j, j));
-        
+        String g2 = null;
+        String g1 = defineOrigGroup("_" + i, i);
+        if (g1 != null) {
+            g2 = defineDstGroup("_" + j, j);
+        }
+        if (g2 != null) {
+            return map(g1, g2);
+        } else {
+            return map(null, null);
+        }
     }
 
     /**
@@ -513,16 +581,35 @@ public class TransformMathExpression extends Animation {
      * @return The name of the group created
      */
     public String defineOrigGroup(String name, int... indices) {
-        
+        ArrayList<Integer> invalidIndexes = new ArrayList<>();
         for (int i : indices) {
             final String belongsToAnOrigGroup = belongsToAnOrigGroup(i);
             if (!"".equals(belongsToAnOrigGroup)) {
                 JMathAnimScene.logger.error("Index " + i + " already belongs to a created group " + belongsToAnOrigGroup
-                        + ". Weird results may occur.");
+                        + ". Index will be skipped.");
+                invalidIndexes.add(i);
+            }
+            if ((i < 0) || (i >= latexTransformedOrig.size())) {
+                JMathAnimScene.logger.error("Index " + i + " out of bounds for original formula (size " + latexTransformedOrig.size() + "). This index will be skipped.");
+                invalidIndexes.add(i);
             }
         }
-        trParOrigGroups.put(name, indices);
-        return name;
+        int[] validIndexes = new int[indices.length - invalidIndexes.size()];
+        int n = 0;
+        for (int indice : indices) {
+            if (!invalidIndexes.contains(indice)) {
+                validIndexes[n] = indice;
+                n++;
+            }
+        }
+
+        if (validIndexes.length > 0) {
+            trParOrigGroups.put(name, validIndexes);
+            return name;
+        } else {
+            return null;
+        }
+
     }
 
     /**
@@ -533,7 +620,7 @@ public class TransformMathExpression extends Animation {
      * @return The name of the group created
      */
     public String defineDstGroup(String name, int... indices) {
-        
+
         for (int i : indices) {
             final String belongsToADstGroup = belongsToADstGroup(i);
             if (!"".equals(belongsToADstGroup)) {
@@ -544,7 +631,7 @@ public class TransformMathExpression extends Animation {
         trParDstGroups.put(name, indices);
         return name;
     }
-    
+
     private String belongsToAnOrigGroup(int index) {
         for (String p : trParOrigGroups.keySet()) {
             int[] li = trParOrigGroups.get(p);
@@ -556,7 +643,7 @@ public class TransformMathExpression extends Animation {
         }
         return "";
     }
-    
+
     private String belongsToADstGroup(int index) {
         for (String p : trParDstGroups.keySet()) {
             List<int[]> ar = Arrays.asList(trParDstGroups.get(p));
@@ -566,7 +653,7 @@ public class TransformMathExpression extends Animation {
         }
         return "";
     }
-    
+
     @Override
     public void cleanAnimationAt(double t) {
         double lt = getLT(t);
@@ -591,19 +678,19 @@ public class TransformMathExpression extends Animation {
         removeObjectsFromScene(latexTransformedOrig, latexTransformedBase, latexDestiny);
         addObjectsToscene(animations.getIntermediateObject());
     }
-    
+
     @Override
     public void prepareForAnim(double t) {
         animations.prepareForAnim(t);
         removeObjectsFromScene(latexDestiny, latexTransformedBase, latexTransformedOrig);
         addObjectsToscene(animations.getIntermediateObject());
     }
-    
+
     @Override
     public MathObject getIntermediateObject() {
         return null;
     }
-    
+
     @Override
     public void reset() {
         super.reset();

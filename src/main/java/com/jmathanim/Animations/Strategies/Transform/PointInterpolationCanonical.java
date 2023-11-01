@@ -109,7 +109,7 @@ public class PointInterpolationCanonical extends TransformStrategy {
         // Jump paths
         Point origCenter = this.origin.getCenter();
         Point dstCenter = this.destiny.getCenter();
-        prepareJumpPath(origCenter, dstCenter, origin);
+        prepareJumpPath(origCenter, dstCenter, intermediate);
         return true;
     }
 
