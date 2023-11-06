@@ -458,6 +458,8 @@ return 1;
         imageView.setFitHeight(bbox.getHeight());
         imageView.setFitWidth(bbox.getWidth());
 
+        imageView.setOpacity(obj.getMp().getDrawColor().getAlpha());
+        
         Affine camToScreen = FXPathUtils.camToScreenAffineTransform(camera);
         imageView.getTransforms().add(camToScreen);
 

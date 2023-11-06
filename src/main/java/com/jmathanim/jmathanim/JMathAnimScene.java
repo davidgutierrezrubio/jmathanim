@@ -390,7 +390,7 @@ public abstract class JMathAnimScene {
         doUpdates();
         if (!animationIsDisabled) {
             // Objects to be drawn on screen. Sort them by layer
-            sceneObjects.sort((MathObject o1, MathObject o2) -> (o1.getLayer() - o2.getLayer()));
+            sceneObjects.sort((MathObject o1, MathObject o2) -> o1.getLayer().compareTo(o2.getLayer()));
             for (MathObject obj : sceneObjects) {
                 if (obj.isVisible()) {
                     if (!isAlreadyDrawed(obj)) {
