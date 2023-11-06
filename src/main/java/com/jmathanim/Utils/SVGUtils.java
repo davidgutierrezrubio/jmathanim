@@ -35,6 +35,11 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -75,8 +80,6 @@ public class SVGUtils {
 //        return resul;
 //    }
 //    
-    
-    
     public SVGUtils(JMathAnimScene scene) {
         this.scene = scene;
         this.currentX = 0;
@@ -799,5 +802,34 @@ public class SVGUtils {
         AffineJTransform sc2 = AffineJTransform.createScaleTransform(Point.origin(), 1, -1);
         resul = sc1.compose(resul).compose(sc2);
         return resul;
+    }
+
+    /**
+     * Writes a XML DOM object to a XML File
+     * @param rootElement Root element
+     * @param fileName File name
+     * @throws Exception 
+     */
+    public void writeElementToXMLFile(Element rootElement, String fileName) throws Exception {
+        DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
+        DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
+        Document document = docBuilder.newDocument();
+
+        // Importa el elemento al nuevo documento
+        Node importedNode = document.importNode(rootElement, true);
+        document.appendChild(importedNode);
+
+        TransformerFactory transformerFactory = TransformerFactory.newInstance();
+        Transformer transformer = transformerFactory.newTransformer();
+
+        // Opcional: Establecer opciones de formato
+        transformer.setOutputProperty(javax.xml.transform.OutputKeys.INDENT, "yes");
+        transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "2");
+
+        DOMSource source = new DOMSource(document);
+
+        StreamResult result = new StreamResult(fileName);
+
+        transformer.transform(source, result);
     }
 }

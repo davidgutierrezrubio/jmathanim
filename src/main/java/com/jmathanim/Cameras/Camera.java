@@ -177,19 +177,20 @@ public class Camera {
     public void setWidth(double d) {
         scale(d / getMathView().getWidth());
     }
+    
 
-    /**
-     * Set size of the screen to which the camera will compute coordinates
-     * Screen size usually is 800x600, 1920x1080, etc.
-     *
-     * @param w width
-     * @param h height
-     */
-    public void setSize(int w, int h) {
-        screenWidth = w;
-        screenHeight = h;
-
-    }
+//    /**
+//     * Set size of the screen to which the camera will compute coordinates
+//     * Screen size usually is 800x600, 1920x1080, etc.
+//     *
+//     * @param w width
+//     * @param h height
+//     */
+//    public void setSize(int w, int h) {
+//        screenWidth = w;
+//        screenHeight = h;
+//
+//    }
 
     public void setGaps(double h, double v) {
         hgap = h;

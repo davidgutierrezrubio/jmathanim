@@ -340,6 +340,22 @@ public class MultiShapeObject extends MathObject implements Iterable<Shape> {
         return resul;
     }
 
+    /**
+     * Gets a MultiShapeObject with the specified shapes of this object. The
+     * shapes are referenced.
+     *
+     * @param indices Indices of the shapes
+     * @return A new MultiShapeObject with the specified shapes
+     */
+    public MultiShapeObject getSubMultiShape(int... indices) {
+        MultiShapeObject resul = MultiShapeObject.make();
+        resul.getMp().copyFrom(this.getMp());
+        for (int n : indices) {
+            resul.add(shapes.get(n));
+        }
+        return resul;
+    }
+
     @Override
     public <T extends MathObject> T applyAffineTransform(AffineJTransform tr) {
         for (Shape sh : shapes) {

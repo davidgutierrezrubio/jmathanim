@@ -32,7 +32,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Dictionary;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * A class that manages sets of MathObjects. The objectes are not added to the
@@ -97,11 +101,13 @@ public class MathObjectGroup extends MathObject implements Iterable<MathObject> 
 
     MODrawPropertiesArray mpArray;
     private final ArrayList<MathObject> objects;
+    private final HashMap<String, MathObject> dict;
 
     public MathObjectGroup() {
         super();
         mpArray = new MODrawPropertiesArray();
         this.objects = new ArrayList<>();
+        this.dict = new HashMap<>();
     }
 
     public MathObjectGroup(MathObject... objects) {
@@ -111,12 +117,19 @@ public class MathObjectGroup extends MathObject implements Iterable<MathObject> 
     public MathObjectGroup(ArrayList<MathObject> objects) {
         super();
         mpArray = new MODrawPropertiesArray();
+        this.dict = new HashMap<>();
         this.objects = objects;
         for (MathObject o : objects) {
             mpArray.add(o);
         }
     }
 
+    /**
+     * Add the objects to the MathObjectGroup
+     *
+     * @param objs A vararg of MathObjects
+     * @return This MathObjectGroup
+     */
     public MathObjectGroup add(MathObject... objs) {
         for (MathObject obj : objs) {
             if (obj != null) {
@@ -124,6 +137,20 @@ public class MathObjectGroup extends MathObject implements Iterable<MathObject> 
                 mpArray.add(obj);
             }
         }
+        return this;
+    }
+
+    /**
+     * Add a object to the group and register it as a property with a given key,
+     * so it can be retrieved with getProperty
+     *
+     * @param key Key Name
+     * @param obj Object to add
+     * @return This MathObjectGroup
+     */
+    public MathObjectGroup addD(String key, MathObject obj) {
+        add(obj);
+        dict.put(key, obj);
         return this;
     }
 
@@ -142,6 +169,12 @@ public class MathObjectGroup extends MathObject implements Iterable<MathObject> 
         mpArray.getObjects().addAll(c);
     }
 
+    public void remove(MathObject obj) {
+        objects.remove(obj);
+    }
+    
+    
+    
     @Override
     public <T extends MathObject> T applyAffineTransform(AffineJTransform tr) {
         for (MathObject obj : objects) {
@@ -199,8 +232,27 @@ public class MathObjectGroup extends MathObject implements Iterable<MathObject> 
         scene.markAsAlreadyDrawed(this);
     }
 
+    /**
+     * Gets the MathObject stored at a given position
+     *
+     * @param index Index of the object
+     * @return The MathObject
+     */
     public MathObject get(int index) {
         return objects.get(index);
+    }
+
+    public MathObject get(String key) {
+        if (dict.containsKey(key)) {
+        return dict.get(key);}
+        else {
+            try {
+                throw  new Exception("Key "+key+" does not exists in MathObjectGroup "+this.objectLabel);
+            } catch (Exception ex) {
+                Logger.getLogger(MathObjectGroup.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        return null;
     }
 
     @Override
@@ -497,7 +549,7 @@ public class MathObjectGroup extends MathObject implements Iterable<MathObject> 
             uGap += upperGap;
             loGap += lowerGap;
 
-            ob.setGaps(uGap,rGap, loGap, lGap);
+            ob.setGaps(uGap, rGap, loGap, lGap);
         }
         return this;
     }
