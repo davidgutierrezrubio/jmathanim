@@ -158,10 +158,9 @@ public class Line extends Shape implements HasDirection, shouldUdpateWithCamera 
      * Returns the point of the line lying in the boundaries of the math view.
      * From the 2 points of the boundary, this is next to p1.
      *
-     * @param scene The scene, needed to obtain the math view
      * @return A referencedCopy of the boundary point
      */
-    public Point getBorderPoint1(JMathAnimScene scene) {
+    public Point getBorderPoint1() {
         update(scene);
         return bp1.p.copy();
     }
@@ -170,10 +169,9 @@ public class Line extends Shape implements HasDirection, shouldUdpateWithCamera 
      * Returns the point of the line lying in the boundaries of the math view.
      * From the 2 points of the boundary, this is next to p2.
      *
-     * @param scene The scene, needed to obtain the math view
      * @return A referencedCopy of the boundary point
      */
-    public Point getBorderPoint2(JMathAnimScene scene) {
+    public Point getBorderPoint2() {
         update(scene);
         return bp2.p.copy();
     }
