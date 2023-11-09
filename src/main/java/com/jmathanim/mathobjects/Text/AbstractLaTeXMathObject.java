@@ -171,7 +171,7 @@ public abstract class AbstractLaTeXMathObject extends SVGMathObject {
         this.stackTo(Point.origin(), anchor);
         modelMatrix.copyFrom(modelMatrixBackup);
         for (Shape sh : shapes) {
-//            sh.getMp().copyFrom(mpMultiShape);
+            sh.getMp().copyFrom(mpMultiShape);
             sh.applyAffineTransform(modelMatrix);
         }
     }
