@@ -61,6 +61,7 @@ public class AnchoredMathObject implements Updateable {
 
     @Override
     public void update(JMathAnimScene scene) {
+        
         mobj.stackTo(origType, dstObject, dstType, gap);
     }
 
