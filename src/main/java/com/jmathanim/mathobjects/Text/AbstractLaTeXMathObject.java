@@ -39,6 +39,8 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
 import org.apache.batik.dom.GenericDOMImplementation;
 import org.apache.batik.svggen.DOMTreeManager;
 import org.apache.batik.svggen.SVGGeneratorContext;
@@ -49,6 +51,7 @@ import org.scilab.forge.jlatexmath.TeXIcon;
 import org.w3c.dom.DOMImplementation;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 
 /**
  *
@@ -139,6 +142,11 @@ public abstract class AbstractLaTeXMathObject extends SVGMathObject {
         } else {
             Element root = generateDOMTreeFromLaTeX(this.text);
             SVGUtils svgUtils = new SVGUtils(scene);
+            try {
+                svgUtils.writeElementToXMLFile(root, "PRUEBA.xml");
+            } catch (Exception ex) {
+                Logger.getLogger(AbstractLaTeXMathObject.class.getName()).log(Level.SEVERE, null, ex);
+            }
             svgUtils.importSVGFromDOM(root, this);
         }
         int n = 0;
@@ -171,7 +179,7 @@ public abstract class AbstractLaTeXMathObject extends SVGMathObject {
         this.stackTo(Point.origin(), anchor);
         modelMatrix.copyFrom(modelMatrixBackup);
         for (Shape sh : shapes) {
-            sh.getMp().copyFrom(mpMultiShape);
+//            sh.getMp().copyFrom(mpMultiShape);
             sh.applyAffineTransform(modelMatrix);
         }
     }
@@ -363,5 +371,4 @@ public abstract class AbstractLaTeXMathObject extends SVGMathObject {
         this.anchor = anchor;
         return (T) this;
     }
-
 }

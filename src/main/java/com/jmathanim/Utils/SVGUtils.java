@@ -105,7 +105,10 @@ public class SVGUtils {
 
         // Look for svg elements in the root document
         currentTransform = new AffineJTransform();
-        processChildNodes((doc.getDocumentElement()), msh.getMp().getFirstMP(), currentTransform, msh);
+        Element root = doc.getDocumentElement();
+         MODrawProperties mpCopy=MODrawProperties.makeNullValues();
+        processStyleAttributeCommands(root, mpCopy);
+        processChildNodes(root, mpCopy, currentTransform, msh);
     }
 
     public void importSVGFromDOM(Element root, MultiShapeObject msh) {
@@ -806,9 +809,10 @@ public class SVGUtils {
 
     /**
      * Writes a XML DOM object to a XML File
+     *
      * @param rootElement Root element
      * @param fileName File name
-     * @throws Exception 
+     * @throws Exception
      */
     public void writeElementToXMLFile(Element rootElement, String fileName) throws Exception {
         DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
