@@ -87,13 +87,13 @@ public class JMColor extends PaintStyle {
      * @return Color
      */
     public javafx.scene.paint.Color getFXColor() {
-        r=(r<0 ? 0:r);
-        g=(g<0 ? 0:g);
-        b=(b<0 ? 0:b);
-        
-        r=(r>1 ? 1:r);
-        g=(r>1 ? 1:g);
-        b=(r>1 ? 1:b);
+        r = (r < 0 ? 0 : r);
+        g = (g < 0 ? 0 : g);
+        b = (b < 0 ? 0 : b);
+
+        r = (r > 1 ? 1 : r);
+        g = (r > 1 ? 1 : g);
+        b = (r > 1 ? 1 : b);
         return new javafx.scene.paint.Color((float) r, (float) g, (float) b, (float) alpha);
     }
 
@@ -128,8 +128,8 @@ public class JMColor extends PaintStyle {
     }
 
     /**
-     * Set the RGBA values of those given by the parameter.If the given color
- is null, nothing is done
+     * Set the RGBA values of those given by the parameter.If the given color is
+     * null, nothing is done
      *
      * @param ps PaintStyly to copy from
      */
@@ -180,8 +180,8 @@ public class JMColor extends PaintStyle {
      */
     @Override
     public PaintStyle interpolate(PaintStyle p, double t) {
-        t=(t<0 ? 0:t);
-        t=(t>1 ? 1:t);
+        t = (t < 0 ? 0 : t);
+        t = (t > 1 ? 1 : t);
         if (p instanceof JMColor) {
             JMColor B = (JMColor) p;
 
@@ -223,6 +223,11 @@ public class JMColor extends PaintStyle {
     public static JMColor parse(String str) {
         javafx.scene.paint.Color col = javafx.scene.paint.Color.WHITE;// Default color
         str = str.toUpperCase().trim();
+        JMColor colrgb = extractRGBValues(str);
+        if (colrgb != null) {//String is format "rgb(r,g,b) decimals or RGB(R,G,B) integers"
+            return colrgb;
+        }
+
         if ("NONE".equals(str)) {
             return new JMColor(0, 0, 0, 0);
         }
@@ -241,6 +246,56 @@ public class JMColor extends PaintStyle {
             }
         }
         return JMColor.fromFXColor(col);
+    }
+
+    /**
+     * Parse SVG strings rgb(R,G,B) and returns the generated color
+     *
+     * @param input A String with format rgb(R,G,B)
+     * @return The color. If the String has no valid format, returns null
+     */
+    private static JMColor extractRGBValues(String input) {
+//        // Verifica si la cadena comienza con "rgb(" y termina con ")"
+        if (input.startsWith("RGB(") && input.endsWith(")")) {
+            // Elimina los caracteres "rgb(" al principio y ")" al final
+            String valuesString = input.substring(4, input.length() - 1);
+
+            // Divide la cadena en partes utilizando la coma como separador
+            String[] valuesArray = valuesString.split(",");
+
+            try {
+                // Convierte las partes a números enteros
+                int red = Integer.parseInt(valuesArray[0].trim());
+                int green = Integer.parseInt(valuesArray[1].trim());
+                int blue = Integer.parseInt(valuesArray[2].trim());
+                int alpha;
+                if (valuesArray.length == 4) {
+                    alpha = Integer.parseInt(valuesArray[3].trim());
+                } else {
+                    alpha = 255;
+                }
+
+                return JMColor.rgbInt(red, green, blue, alpha);
+            } catch (NumberFormatException | ArrayIndexOutOfBoundsException e) {
+                //Try to parse double values
+                try {
+                    // Convierte las partes a números enteros
+                    float red = Float.parseFloat(valuesArray[0].trim());
+                    float green = Float.parseFloat(valuesArray[1].trim());
+                    float blue = Float.parseFloat(valuesArray[2].trim());
+                    float alpha;
+                    if (valuesArray.length == 4) {
+                        alpha = Float.parseFloat(valuesArray[3].trim());
+                    } else {
+                        alpha = 1;
+                    }
+                    return new JMColor(red, green, blue, alpha);
+                } catch (NumberFormatException | ArrayIndexOutOfBoundsException e2) {
+                    return null;
+                }
+            }
+        }
+        return null;
     }
 
     public static JMColor fromFXColor(javafx.scene.paint.Color col) {
