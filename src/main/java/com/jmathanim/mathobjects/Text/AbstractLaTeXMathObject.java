@@ -17,6 +17,7 @@
 package com.jmathanim.mathobjects.Text;
 
 import com.jmathanim.Styling.JMColor;
+import com.jmathanim.Styling.MODrawProperties;
 import com.jmathanim.Styling.PaintStyle;
 import com.jmathanim.Utils.AffineJTransform;
 import com.jmathanim.Utils.Anchor;
@@ -127,7 +128,7 @@ public abstract class AbstractLaTeXMathObject extends SVGMathObject {
                 generateLaTeXDocument();
                 File f = new File(compileLaTeXFile());
                 SVGUtils svgu = new SVGUtils(scene);
-                svgu.importSVG(f.toURI().toURL(), this);
+                svgu.importSVG(f.toURI().toURL(), this,MODrawProperties.createFromStyle("latexdefault"));
             } catch (IOException ex) {
                 if (ex.getLocalizedMessage().toUpperCase().startsWith("CANNOT RUN PROGRAM")) {
                     JMathAnimScene.logger.error("Oops, it seems JMathAnim cannot find your LaTeX executable." + " Make sure you have LaTeX installed on your system and the latex program" + " is accesible from your path");

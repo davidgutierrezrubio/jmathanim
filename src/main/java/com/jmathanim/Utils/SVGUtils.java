@@ -48,7 +48,7 @@ import org.w3c.dom.NodeList;
  * A class with useful methods to handle SVG files
  */
 public class SVGUtils {
-
+    
     private double currentX;
     private double currentY;
     private double closeX;
@@ -92,6 +92,10 @@ public class SVGUtils {
     }
 
     public void importSVG(URL urlSvg, MultiShapeObject msh) throws Exception {
+        importSVG(urlSvg, msh, MODrawProperties.makeNullValues());
+    }
+
+    public void importSVG(URL urlSvg, MultiShapeObject msh, MODrawProperties base) throws Exception {
         JMathAnimScene.logger.debug("Importing SVG file {}", urlSvg.toString());
         DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
         // Disabling these features will speed up the load of the svg
@@ -99,23 +103,23 @@ public class SVGUtils {
         dbFactory.setFeature("http://xml.org/sax/features/validation", false);
         dbFactory.setFeature("http://apache.org/xml/features/nonvalidating/load-dtd-grammar", false);
         dbFactory.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
-
+        
         DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
         org.w3c.dom.Document doc = dBuilder.parse(urlSvg.openStream());
 
         // Look for svg elements in the root document
         currentTransform = new AffineJTransform();
         Element root = doc.getDocumentElement();
-         MODrawProperties mpCopy=MODrawProperties.makeNullValues();
+        MODrawProperties mpCopy = base.copy();
         processStyleAttributeCommands(root, mpCopy);
         processChildNodes(root, mpCopy, currentTransform, msh);
     }
-
+    
     public void importSVGFromDOM(Element root, MultiShapeObject msh) {
         currentTransform = new AffineJTransform();
         processChildNodes(root, msh.getMp().getFirstMP(), currentTransform, msh);
     }
-
+    
     private void processChildNodes(Element gNode, MODrawProperties localMP, AffineJTransform transform, MultiShapeObject msh) throws NumberFormatException {
         Shape shape;
         NodeList nList = gNode.getChildNodes();
@@ -127,7 +131,7 @@ public class SVGUtils {
                 Element el = (Element) node;
                 mpCopy = localMP.copy();
                 processStyleAttributeCommands(el, mpCopy);
-
+                
                 AffineJTransform transfCopy = transform.copy();
                 processTransformAttributeCommands(el, transfCopy);
                 switch (el.getTagName()) {
@@ -211,7 +215,7 @@ public class SVGUtils {
             }
         }
     }
-
+    
     private Shape processPolygonPoints(String s, boolean polygon) throws Exception {
         ArrayList<Point> points = new ArrayList<>();
         ArrayList<String> tokens = getPointTokens(s);
@@ -246,7 +250,7 @@ public class SVGUtils {
                 qy2;
         JMPathPoint previousPoint = new JMPathPoint(new Point(0, 0), true, JMPathPoint.JMPathPointType.VERTEX);
         ArrayList<String> tokens = getPointTokens(s);
-
+        
         Iterator<String> it = tokens.iterator();
         double cx1, cx2, cy1, cy2;
         double xx, yy;
@@ -293,7 +297,7 @@ public class SVGUtils {
                     previousPoint.isThisSegmentVisible = false;
 //                    previousPoint = pathM(path, currentX, currentY);
                     break;
-
+                
                 case "L": // Line
                     previousCommand = token;
                     getPoint(it.next(), it.next());
@@ -308,17 +312,17 @@ public class SVGUtils {
                     currentY += yy;
                     previousPoint = pathLineTo(resul, currentX, currentY, true);
                     break;
-
+                
                 case "H": // Horizontal line
                     previousCommand = token;
-
+                    
                     getPointX(it.next());
                     previousPoint = pathLineTo(resul, currentX, currentY, true);
                     break;
-
+                
                 case "h": // Horizontal line
                     previousCommand = token;
-
+                    
                     xx = previousPoint.p.v.x;
                     getPointX(it.next());
                     currentX += xx;
@@ -326,13 +330,13 @@ public class SVGUtils {
                     break;
                 case "V": // Vertical line
                     previousCommand = token;
-
+                    
                     getPointY(it.next());
                     previousPoint = pathLineTo(resul, currentX, currentY, true);
                     break;
                 case "v": // Vertical line
                     previousCommand = token;
-
+                    
                     yy = previousPoint.p.v.y;
                     getPointY(it.next());
                     currentY += yy;
@@ -340,7 +344,7 @@ public class SVGUtils {
                     break;
                 case "Q": // Quadratic Bezier
                     previousCommand = token;
-
+                    
                     qx0 = currentX;
                     qy0 = currentY;
                     qx1 = Double.parseDouble(it.next());
@@ -348,12 +352,12 @@ public class SVGUtils {
                     getPoint(it.next(), it.next());
                     qx2 = currentX;
                     qy2 = currentY;
-
+                    
                     previousPoint = pathQuadraticBezier(resul, previousPoint, qx0, qy0, qx1, qy1, qx2, qy2);
                     break;
                 case "C": // Cubic Bezier
                     previousCommand = token;
-
+                    
                     cx1 = Double.parseDouble(it.next());
                     cy1 = -Double.parseDouble(it.next());
                     cx2 = Double.parseDouble(it.next());
@@ -373,13 +377,13 @@ public class SVGUtils {
                     currentY += qy0;
                     qx2 = currentX;
                     qy2 = currentY;
-
+                    
                     previousPoint = pathQuadraticBezier(resul, previousPoint, qx0, qy0, qx1, qy1, qx2, qy2);
                     break;
-
+                
                 case "c": // Cubic Bezier
                     previousCommand = token;
-
+                    
                     xx = previousPoint.p.v.x;
                     yy = previousPoint.p.v.y;
                     cx1 = xx + Double.parseDouble(it.next());
@@ -389,13 +393,13 @@ public class SVGUtils {
                     getPoint(it.next(), it.next());
                     currentX += xx;
                     currentY += yy;
-
+                    
                     previousPoint = pathCubicBezier(resul, previousPoint, cx1, cy1, cx2, cy2, currentX, currentY);
                     break;
                 case "S": // Simplified Cubic Bezier. Take first control point as a reflection of previous
                     // one
                     previousCommand = token;
-
+                    
                     cx1 = previousPoint.p.v.x - (previousPoint.cpEnter.v.x - previousPoint.p.v.x);
                     cy1 = previousPoint.p.v.y - (previousPoint.cpEnter.v.y - previousPoint.p.v.y);
                     cx2 = Double.parseDouble(it.next());
@@ -403,11 +407,11 @@ public class SVGUtils {
                     getPoint(it.next(), it.next());
                     previousPoint = pathCubicBezier(resul, previousPoint, cx1, cy1, cx2, cy2, currentX, currentY);
                     break;
-
+                
                 case "s": // Simplified relative Cubic Bezier. Take first control point as a reflection of
                     // previous one
                     previousCommand = token;
-
+                    
                     cx1 = previousPoint.p.v.x - (previousPoint.cpEnter.v.x - previousPoint.p.v.x);
                     cy1 = previousPoint.p.v.y - (previousPoint.cpEnter.v.y - previousPoint.p.v.y);
                     xx = previousPoint.p.v.x;
@@ -531,16 +535,16 @@ public class SVGUtils {
                                 break;
                             default:
                                 JMathAnimScene.logger.error("Unknow repeated command: <" + token + ">");
-
+                            
                         }
-
+                        
                     }
             }
         }
-
+        
         return resul;
     }
-
+    
     private ArrayList<String> getPointTokens(String s) {
         String t = s.replace("-", " -");// Avoid errors with strings like "142.11998-.948884"
         t = t.replace("e -", "e-");// Avoid errors with numbers in scientific format
@@ -590,7 +594,7 @@ public class SVGUtils {
         }
         return tokens;
     }
-
+    
     private JMPathPoint pathQuadraticBezier(JMPath resul, JMPathPoint previousPoint, double qx0, double qy0, double qx1, double qy1, double qx2, double qy2) {
         double cx1;
         double cy1;
@@ -603,22 +607,22 @@ public class SVGUtils {
         previousPoint = pathCubicBezier(resul, previousPoint, cx1, cy1, cx2, cy2, currentX, currentY);
         return previousPoint;
     }
-
+    
     private void getPoint(String x, String y) throws NumberFormatException {
         getPointX(x);
         getPointY(y);
     }
-
+    
     private void getPointX(String x) throws NumberFormatException {
         previousX = currentX;
         currentX = Double.parseDouble(x);
     }
-
+    
     private void getPointY(String y) throws NumberFormatException {
         previousY = currentY;
         currentY = -Double.parseDouble(y);
     }
-
+    
     private JMPathPoint pathCubicBezier(JMPath path, JMPathPoint previousPoint, double cx1, double cy1, double cx2,
             double cy2, double x, double y) {
         JMPathPoint point = new JMPathPoint(new Point(currentX, currentY), true, JMPathPoint.JMPathPointType.VERTEX);
@@ -642,7 +646,7 @@ public class SVGUtils {
         path.addJMPoint(point);
         return point;
     }
-
+    
     private void processStyleAttributeCommands(Element el, MODrawProperties ShMp) {
         if (!"".equals(el.getAttribute("style"))) {
             parseStyleAttribute(el.getAttribute("style"), ShMp);
@@ -651,26 +655,26 @@ public class SVGUtils {
             JMColor strokeColor = JMColor.parse(el.getAttribute("stroke"));
             ShMp.setDrawColor(strokeColor);
         }
-
+        
         if (!"".equals(el.getAttribute("stroke-width"))) {
             double th = Double.parseDouble(el.getAttribute("stroke-width"));
             double th2 = scene.getRenderer().MathWidthToThickness(th);
             ShMp.setThickness(th2);
         }
-
+        
         if (!"".equals(el.getAttribute("fill"))) {
             JMColor fillColor = JMColor.parse(el.getAttribute("fill"));
             ShMp.setFillColor(fillColor);
         }
-
+        
     }
-
+    
     private void processTransformAttributeCommands(Element el, AffineJTransform currentTransform) {
         if (!"".equals(el.getAttribute("transform"))) {
             parseTransformAttribute(el.getAttribute("transform"), currentTransform);
         }
     }
-
+    
     private void parseStyleAttribute(String str, MODrawProperties ShMp) {
         String[] decls = str.split(";");
         for (String pairs : decls) {
@@ -688,17 +692,17 @@ public class SVGUtils {
                     double th = Double.parseDouble(decl[1]);
                     double th2 = scene.getRenderer().MathWidthToThickness(th);
                     ShMp.setThickness(th2);
-
+                
             }
-
+            
         }
     }
-
+    
     private AffineJTransform parseTransformAttribute(String trans, AffineJTransform currentTransform) {
         ArrayList<AffineJTransform> transforms = new ArrayList<>();
         //First level: commands+arguments
         String delims = "[()]+";
-
+        
         String[] tokens = trans.split(delims);
         Iterator<String> it = Arrays.stream(tokens).iterator();
         while (it.hasNext()) {
@@ -717,7 +721,7 @@ public class SVGUtils {
         currentTransform.copyFrom(resul);
         return resul;
     }
-
+    
     private AffineJTransform parseTransformCommand(String command, String arguments) {
         AffineJTransform resul = new AffineJTransform();//An identity transform
         String argDelims = "[ ,]+";
@@ -822,18 +826,18 @@ public class SVGUtils {
         // Importa el elemento al nuevo documento
         Node importedNode = document.importNode(rootElement, true);
         document.appendChild(importedNode);
-
+        
         TransformerFactory transformerFactory = TransformerFactory.newInstance();
         Transformer transformer = transformerFactory.newTransformer();
 
         // Opcional: Establecer opciones de formato
         transformer.setOutputProperty(javax.xml.transform.OutputKeys.INDENT, "yes");
         transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "2");
-
+        
         DOMSource source = new DOMSource(document);
-
+        
         StreamResult result = new StreamResult(fileName);
-
+        
         transformer.transform(source, result);
     }
 }
