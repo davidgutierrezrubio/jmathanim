@@ -61,7 +61,7 @@ import org.w3c.dom.Node;
 public abstract class AbstractLaTeXMathObject extends SVGMathObject {
 
     protected Anchor.Type anchor;
-    
+
     /**
      * Determines how LaTeX shapes will be created
      */
@@ -100,7 +100,7 @@ public abstract class AbstractLaTeXMathObject extends SVGMathObject {
 
     protected AbstractLaTeXMathObject() {
         super();
-        anchor=Anchor.Type.CENTER;
+        anchor = Anchor.Type.CENTER;
         modelMatrix = new AffineJTransform();
     }
 
@@ -111,6 +111,7 @@ public abstract class AbstractLaTeXMathObject extends SVGMathObject {
         modelMatrix.copyFrom(compose);
         return this;
     }
+
     protected void changeInnerLaTeX(String text) {
         AffineJTransform modelMatrixBackup = modelMatrix.copy();
 //        if (text.equals(this.text)) {
@@ -128,7 +129,7 @@ public abstract class AbstractLaTeXMathObject extends SVGMathObject {
                 generateLaTeXDocument();
                 File f = new File(compileLaTeXFile());
                 SVGUtils svgu = new SVGUtils(scene);
-                svgu.importSVG(f.toURI().toURL(), this,MODrawProperties.createFromStyle("latexdefault"));
+                svgu.importSVG(f.toURI().toURL(), this, MODrawProperties.createFromStyle("latexdefault"));
             } catch (IOException ex) {
                 if (ex.getLocalizedMessage().toUpperCase().startsWith("CANNOT RUN PROGRAM")) {
                     JMathAnimScene.logger.error("Oops, it seems JMathAnim cannot find your LaTeX executable." + " Make sure you have LaTeX installed on your system and the latex program" + " is accesible from your path");
@@ -152,8 +153,8 @@ public abstract class AbstractLaTeXMathObject extends SVGMathObject {
         }
         int n = 0;
         for (Shape sh : shapes) {
-            // Workaround: Fill color should be the same as fill color
-                        sh.drawColor(sh.getMp().getFillColor());
+            // Workaround: Draw color should be the same as fill color
+            sh.drawColor(sh.getMp().getFillColor());
             sh.objectLabel = String.valueOf(n);
             n++;
             if (isAddedToScene) {
