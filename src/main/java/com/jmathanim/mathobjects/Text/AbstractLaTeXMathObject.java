@@ -144,11 +144,11 @@ public abstract class AbstractLaTeXMathObject extends SVGMathObject {
         } else {
             Element root = generateDOMTreeFromLaTeX(this.text);
             SVGUtils svgUtils = new SVGUtils(scene);
-            try {
-                svgUtils.writeElementToXMLFile(root, "PRUEBA.xml");
-            } catch (Exception ex) {
-                Logger.getLogger(AbstractLaTeXMathObject.class.getName()).log(Level.SEVERE, null, ex);
-            }
+//            try {
+//                svgUtils.writeElementToXMLFile(root, "PRUEBA.xml");
+//            } catch (Exception ex) {
+//                Logger.getLogger(AbstractLaTeXMathObject.class.getName()).log(Level.SEVERE, null, ex);
+//            }
             svgUtils.importSVGFromDOM(root, this);
         }
         int n = 0;
