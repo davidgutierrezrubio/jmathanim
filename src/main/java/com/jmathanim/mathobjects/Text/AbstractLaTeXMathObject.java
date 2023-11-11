@@ -152,8 +152,8 @@ public abstract class AbstractLaTeXMathObject extends SVGMathObject {
         }
         int n = 0;
         for (Shape sh : shapes) {
-            // objectLabel them
-            //            sh.getMp().fillColorIsDrawColor = true;
+            // Workaround: Fill color should be the same as fill color
+                        sh.drawColor(sh.getMp().getFillColor());
             sh.objectLabel = String.valueOf(n);
             n++;
             if (isAddedToScene) {
