@@ -61,7 +61,7 @@ public class TippableObject extends AbstractTippableObject {
         arrowHead.drawColor(shape.getMp().getDrawColor());
         Point anchor = Anchor.getAnchorPoint(arrowHead, Anchor.Type.UPPER);
         TippableObject resul = new TippableObject(shape, arrowHead, anchor, location); // shape,location,slopeDirectionType.POSITIVE,equalLengthTip);
-        resul.slopeDirection(dir);
+        resul.setSlopeDirection(dir);
         return resul;
     }
 
@@ -72,7 +72,7 @@ public class TippableObject extends AbstractTippableObject {
     public static TippableObject make(Shape shape, double location, AbstractTippableObject.SlopeDirectionType dir, MathObject tipObject, Anchor.Type anchor) {
         Point anchorPoint = Anchor.getAnchorPoint(tipObject, anchor);
         TippableObject resul = new TippableObject(shape, tipObject, anchorPoint, location);
-        resul.slopeDirection(dir);
+        resul.setSlopeDirection(dir);
         return resul;
     }
 

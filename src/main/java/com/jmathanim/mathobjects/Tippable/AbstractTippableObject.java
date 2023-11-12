@@ -93,7 +93,7 @@ public abstract class AbstractTippableObject extends Constructible implements ha
         return rotationAngle;
     }
 
-    public AbstractTippableObject rotationAngle(double rotationAngle) {
+    public AbstractTippableObject setRotationAngle(double rotationAngle) {
         this.rotationAngle = rotationAngle;
         rebuildShape();
         return this;
@@ -103,7 +103,7 @@ public abstract class AbstractTippableObject extends Constructible implements ha
         return fixed;
     }
 
-    public AbstractTippableObject fixedAngle(boolean fixed) {
+    public AbstractTippableObject setFixedAngle(boolean fixed) {
         this.fixed = fixed;
         rebuildShape();
         return this;
@@ -213,7 +213,7 @@ public abstract class AbstractTippableObject extends Constructible implements ha
         return slopeDirectionType;
     }
 
-    public AbstractTippableObject slopeDirection(SlopeDirectionType slopeDirection) {
+    public AbstractTippableObject setSlopeDirection(SlopeDirectionType slopeDirection) {
         this.slopeDirectionType = slopeDirection;
         rebuildShape();
         return this;
