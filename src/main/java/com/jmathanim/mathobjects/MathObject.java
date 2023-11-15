@@ -1099,20 +1099,39 @@ public abstract class MathObject implements Drawable, Updateable, Stateable, Box
         return (T) this;
     }
 
-    
     /**
-     * Move the object the minimum so that fits inside the given bounding box object. If the
-     * bounding box of the object is already inside the bounding box, this method has no effect.
+     * Move the object the minimum so that fits inside the given bounding box
+     * object and given gaps. If the bounding box of the object is already
+     * inside the bounding box, this method has no effect.
      *
      * @param <T> Calling subclass
-     * @param r Boxable to smash object. May be a Rect, MathObject or Camera
+     * @param containerBox Boxable to smash object. May be a Rect, MathObject or
+     * Camera
+     * @param horizontalGap Horizontal gap between the smashed object and the
+     * container bounding box
+     * @param verticalGap Vertical gap between the smashed object and the
+     * container bounding box
      * @return This object
      */
-    public <T extends MathObject> T smash(Boxable r) {
+    public <T extends MathObject> T smash(Boxable containerBox, double horizontalGap, double verticalGap) {
         Rect rObj = this.getBoundingBox();
-        rObj.smash(r);
+        rObj.smash(containerBox, horizontalGap, verticalGap);
         shift(getCenter().to(rObj.getCenter()));
         return (T) this;
+    }
+
+    /**
+     * Overloaded method. Move the object the minimum so that fits inside the
+     * given bounding box object and no gaps. If the bounding box of the object
+     * is already inside the bounding box, this method has no effect.
+     *
+     * @param <T> Calling subclass
+     * @param containerBox Boxable to smash object. May be a Rect, MathObject or
+     * Camera
+     * @return This object
+     */
+    public <T extends MathObject> T smash(Boxable containerBox) {
+        return smash(containerBox, 0, 0);
     }
 
     //Style hooks

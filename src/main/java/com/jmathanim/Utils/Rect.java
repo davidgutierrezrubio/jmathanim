@@ -635,21 +635,20 @@ public class Rect implements Stateable, Boxable {// TODO: Adjust this to 3D coor
      * Rect is wider or taller than r, no changes are made. The original object
      * is altered.
      *
-     * @param r Boxable object to fit in. May be a Rect, MathObject or Camera
+     * @param containerBox Boxable object to fit in. May be a Rect, MathObject or Camera
+     * @param horizontalGap Horizontal gap between the smashed rect and the container bounding box
+     * @param verticalGap Vertical gap between the smashed rect and the container bounding box
      * @return This object
      */
-    public Rect smash(Boxable r) {
-        return Rect.this.smashIn(r, 0, 0);
-    }
 
-    public Rect smashIn(Boxable r, double gapx, double gapy) {
-        smashInH(r, gapx);
-        smashInV(r, gapy);
+    public Rect smash(Boxable containerBox, double horizontalGap, double verticalGap) {
+        smashInH(containerBox, horizontalGap);
+        smashInV(containerBox, verticalGap);
         return this;
     }
 
-    private void smashInH(Boxable r, double gap) {
-        Rect rBig = r.getBoundingBox().addGap(-gap, 0);
+    private void smashInH(Boxable containerBox, double horizontalGap) {
+        Rect rBig = containerBox.getBoundingBox().addGap(-horizontalGap, 0);
         if (getWidth() >= rBig.getWidth()) {
             return;
         }
@@ -665,8 +664,8 @@ public class Rect implements Stateable, Boxable {// TODO: Adjust this to 3D coor
         }
     }
 
-    private Rect smashInV(Boxable r, double gap) {
-        Rect rBig = r.getBoundingBox().addGap(0, -gap);
+    private Rect smashInV(Boxable containerBox, double verticalGap) {
+        Rect rBig = containerBox.getBoundingBox().addGap(0, -verticalGap);
         if (getHeight() >= rBig.getHeight()) {
             return this;
         }
