@@ -31,7 +31,7 @@ import java.util.ArrayList;
  *
  * @author David Gutierrez Rubio davidgutierrezrubio@gmail.com
  */
-public class Camera {
+public class Camera implements Boxable {
 
     private final ArrayList<shouldUdpateWithCamera> updateableObjects;
     public boolean perspective;
@@ -70,6 +70,16 @@ public class Camera {
         this.scene = scene;
         this.updateableObjects = new ArrayList<>();
 
+    }
+
+    @Override
+    public Rect getBoundingBox() {
+        return getMathView();
+    }
+
+    @Override
+    public boolean isEmpty() {
+        return false;
     }
 
     public void updateDependentObjectsFromThisCamera() {

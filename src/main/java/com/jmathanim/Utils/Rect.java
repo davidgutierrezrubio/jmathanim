@@ -280,10 +280,10 @@ public class Rect implements Stateable, Boxable {// TODO: Adjust this to 3D coor
      * @return A new {@link Rect} with the union of both rects
      */
     public static Rect union(Rect a, Rect b) {
-        if ((a == null) || (a instanceof EmptyRect)||(a.isNan())) {
+        if ((a == null) || (a instanceof EmptyRect) || (a.isNan())) {
             return b;
         }
-        if ((b == null) || (b instanceof EmptyRect)||(b.isNan())) {
+        if ((b == null) || (b instanceof EmptyRect) || (b.isNan())) {
             return a;
         }
         return new Rect(Math.min(a.xmin, b.xmin), Math.min(a.ymin, b.ymin), Math.min(a.zmin, b.zmin),
@@ -319,7 +319,7 @@ public class Rect implements Stateable, Boxable {// TODO: Adjust this to 3D coor
     }
 
     private boolean isNan() {
-        return Double.isNaN(xmin)||Double.isNaN(xmax)||Double.isNaN(ymin)||Double.isNaN(ymax)||Double.isNaN(zmin)||Double.isNaN(zmax);
+        return Double.isNaN(xmin) || Double.isNaN(xmax) || Double.isNaN(ymin) || Double.isNaN(ymax) || Double.isNaN(zmin) || Double.isNaN(zmax);
     }
 
     @Override
@@ -629,5 +629,59 @@ public class Rect implements Stateable, Boxable {// TODO: Adjust this to 3D coor
         }
         return Double.doubleToLongBits(this.zmax) == Double.doubleToLongBits(other.zmax);
     }
-    
+
+    /**
+     * Move this Rect the minim amount to fit inside the given Rect r. If this
+     * Rect is wider or taller than r, no changes are made. The original object
+     * is altered.
+     *
+     * @param r Boxable object to fit in. May be a Rect, MathObject or Camera
+     * @return This object
+     */
+    public Rect smash(Boxable r) {
+        return Rect.this.smashIn(r, 0, 0);
+    }
+
+    public Rect smashIn(Boxable r, double gapx, double gapy) {
+        smashInH(r, gapx);
+        smashInV(r, gapy);
+        return this;
+    }
+
+    private void smashInH(Boxable r, double gap) {
+        Rect rBig = r.getBoundingBox().addGap(-gap, 0);
+        if (getWidth() >= rBig.getWidth()) {
+            return;
+        }
+        if (xmin < rBig.xmin) {
+            xmax += (rBig.xmin - xmin);
+            xmin = rBig.xmin;
+            return;
+        }
+
+        if (xmax > rBig.xmax) {
+            xmin -= (xmax - rBig.xmax);
+            xmax = rBig.xmax;
+        }
+    }
+
+    private Rect smashInV(Boxable r, double gap) {
+        Rect rBig = r.getBoundingBox().addGap(0, -gap);
+        if (getHeight() >= rBig.getHeight()) {
+            return this;
+        }
+        if (ymin < rBig.ymin) {
+            ymax += (rBig.ymin - ymin);
+            ymin = rBig.ymin;
+            return this;
+        }
+
+        if (ymax > rBig.ymax) {
+            ymin -= (ymax - rBig.ymax);
+            ymax = rBig.ymax;
+        }
+        return this;
+    }
+
+
 }

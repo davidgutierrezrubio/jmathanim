@@ -1099,6 +1099,22 @@ public abstract class MathObject implements Drawable, Updateable, Stateable, Box
         return (T) this;
     }
 
+    
+    /**
+     * Move the object the minimum so that fits inside the given bounding box object. If the
+     * bounding box of the object is already inside the bounding box, this method has no effect.
+     *
+     * @param <T> Calling subclass
+     * @param r Boxable to smash object. May be a Rect, MathObject or Camera
+     * @return This object
+     */
+    public <T extends MathObject> T smash(Boxable r) {
+        Rect rObj = this.getBoundingBox();
+        rObj.smash(r);
+        shift(getCenter().to(rObj.getCenter()));
+        return (T) this;
+    }
+
     //Style hooks
     @Override
     public void on_setDrawColor(PaintStyle color) {
