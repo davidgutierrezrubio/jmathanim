@@ -49,6 +49,7 @@ public class Arrow extends Constructible {
 
     public static Shape buildArrowHead(ArrowType type) {
         Shape resul = loadHeadShape(type);
+        resul.style("default");
         resul.getPath().closePath();
         return resul;
     }

@@ -764,13 +764,15 @@ public class Shape extends MathObject {
         showDebugPoints = sh2.showDebugPoints;
     }
 
+  
+
     @Override
-    public void draw(JMathAnimScene scene, Renderer r) {
+    public void draw(JMathAnimScene scene, Renderer r, Camera cam) {
         if (isVisible()) {
             if (absoluteSize) {
                 r.drawAbsoluteCopy(this, getAbsoluteAnchor().v);
             } else {
-                r.drawPath(this);
+                r.drawPath(this, cam);
                 if (isShowDebugPoints()) {
                     for (int n = 0; n < size(); n++) {
                         r.debugText("" + n, getPoint(n).v);

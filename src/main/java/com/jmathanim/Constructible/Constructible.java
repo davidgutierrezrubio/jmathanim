@@ -17,6 +17,7 @@
  */
 package com.jmathanim.Constructible;
 
+import com.jmathanim.Cameras.Camera;
 import com.jmathanim.Renderers.Renderer;
 import com.jmathanim.Styling.Stylable;
 import com.jmathanim.Utils.AffineJTransform;
@@ -123,8 +124,8 @@ public abstract class Constructible extends MathObject {
     }
 
     @Override
-    public void draw(JMathAnimScene scene, Renderer r) {
-        getMathObject().draw(scene, r);
+    public void draw(JMathAnimScene scene, Renderer r, Camera cam) {
+        getMathObject().draw(scene, r, cam);
     }
 
     public String getLabel() {

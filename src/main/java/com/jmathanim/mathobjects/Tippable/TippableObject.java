@@ -54,9 +54,10 @@ public class TippableObject extends AbstractTippableObject {
     public static TippableObject arrowHead(Shape shape, double location, SlopeDirectionType dir, Arrow.ArrowType type) {
         Shape arrowHead = Arrow.buildArrowHead(type);
         Renderer r = JMathAnimConfig.getConfig().getScene().getRenderer();
-        arrowHead.setAbsoluteSize(Anchor.Type.CENTER);
+//        arrowHead.setAbsoluteSize(Anchor.Type.CENTER);
 //        arrowHead.thickness(0);
         arrowHead.setWidth(r.ThicknessToMathWidth(shape.getMp().getThickness()*5));
+//        arrowHead.
         arrowHead.fillColor(shape.getMp().getDrawColor());
         arrowHead.drawColor(shape.getMp().getDrawColor());
         Point anchor = Anchor.getAnchorPoint(arrowHead, Anchor.Type.UPPER);

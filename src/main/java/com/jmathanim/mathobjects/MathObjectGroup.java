@@ -17,6 +17,7 @@
  */
 package com.jmathanim.mathobjects;
 
+import com.jmathanim.Cameras.Camera;
 import com.jmathanim.Renderers.Renderer;
 import com.jmathanim.Styling.MODrawPropertiesArray;
 import com.jmathanim.Styling.Stylable;
@@ -172,9 +173,7 @@ public class MathObjectGroup extends MathObject implements Iterable<MathObject> 
     public void remove(MathObject obj) {
         objects.remove(obj);
     }
-    
-    
-    
+
     @Override
     public <T extends MathObject> T applyAffineTransform(AffineJTransform tr) {
         for (MathObject obj : objects) {
@@ -228,10 +227,20 @@ public class MathObjectGroup extends MathObject implements Iterable<MathObject> 
 //        scene.markAsAlreadyDrawed(this);
 //    }
     @Override
-    public void draw(JMathAnimScene scene, Renderer r) {
+    public void draw(JMathAnimScene scene, Renderer r, Camera cam) {
         scene.markAsAlreadyDrawed(this);
     }
 
+    @Override
+    public <T extends MathObject> T  setCamera(Camera camera) {
+        for (MathObject obj : this) {
+            obj.setCamera(camera);
+        }
+        return (T) this;
+    }
+
+    
+    
     /**
      * Gets the MathObject stored at a given position
      *
@@ -244,10 +253,10 @@ public class MathObjectGroup extends MathObject implements Iterable<MathObject> 
 
     public MathObject get(String key) {
         if (dict.containsKey(key)) {
-        return dict.get(key);}
-        else {
+            return dict.get(key);
+        } else {
             try {
-                throw  new Exception("Key "+key+" does not exists in MathObjectGroup "+this.objectLabel);
+                throw new Exception("Key " + key + " does not exists in MathObjectGroup " + this.objectLabel);
             } catch (Exception ex) {
                 Logger.getLogger(MathObjectGroup.class.getName()).log(Level.SEVERE, null, ex);
             }

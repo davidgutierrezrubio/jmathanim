@@ -33,10 +33,10 @@ import com.jmathanim.mathobjects.Text.LaTeXMathObject;
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
 public class TickAxes extends MathObject {
-    
+
     private static final double INITIAL_LEGEND_SCALE = .3;
     private static final double INITIAL_MARK_SCALE = .025;
-    
+
     public static double getMarkScaleFortype(TickType type) {
         switch (type) {
             case PRIMARY:
@@ -47,7 +47,7 @@ public class TickAxes extends MathObject {
                 return 1;
         }
     }
-    
+
     public static String getStyleNameFortype(TickType type) {
         switch (type) {
             case PRIMARY:
@@ -58,7 +58,7 @@ public class TickAxes extends MathObject {
                 return "axisPrimaryTickDefault";
         }
     }
-    
+
     public static TickAxes makeXTick(double x, String latex, TickType tt, double maxShowScale) {
         double markScale = getMarkScaleFortype(tt);
         final Shape xtick = Shape
@@ -68,27 +68,27 @@ public class TickAxes extends MathObject {
         xtickLegend.scale(INITIAL_LEGEND_SCALE);
         return new TickAxes(x, xtickLegend, xtick, TickOrientation.XAXIS, maxShowScale);
     }
-    
+
     public static TickAxes makeYTick(double y, String latex, TickType tt, double maxShowScale) {
         double markScale = getMarkScaleFortype(tt);
         final Shape ytick = Shape
                 .segment(Point.at(-INITIAL_MARK_SCALE * markScale, y), Point.at(INITIAL_MARK_SCALE * markScale, y))
                 .style(getStyleNameFortype(tt));
-        
+
         final LaTeXMathObject ytickLegend = LaTeXMathObject.make(latex).style("axislegenddefault");
         ytickLegend.scale(INITIAL_LEGEND_SCALE);
         return new TickAxes(y, ytickLegend, ytick, TickOrientation.YAXIS, maxShowScale);
     }
-    
+
     LaTeXMathObject legend;
     double location;
     double maximumScaleToShow;
     MODrawPropertiesArray mpArray;
     TickOrientation orientation;
-    
+
     Shape tick;
     TickType tickType;
-    
+
     public TickAxes(double location, LaTeXMathObject legend, Shape mark, TickOrientation type,
             double maximumScaleToShow) {
         super();
@@ -100,14 +100,14 @@ public class TickAxes extends MathObject {
         this.maximumScaleToShow = maximumScaleToShow;
         this.orientation = type;
     }
-    
+
     @Override
     public TickAxes copy() {
         TickAxes copy = new TickAxes(location, legend.copy(), tick.copy(), orientation, maximumScaleToShow);
         copy.copyStateFrom(this);
         return copy;
     }
-    
+
     @Override
     public void copyStateFrom(MathObject obj) {
         if (!(obj instanceof TickAxes)) {
@@ -118,56 +118,56 @@ public class TickAxes extends MathObject {
         getLegend().copyStateFrom(t.getLegend());
         getTick().copyStateFrom(t.getTick());
     }
-    
+
     @Override
-    public void draw(JMathAnimScene scene, Renderer r) {
+    public void draw(JMathAnimScene scene, Renderer r, Camera cam) {
         if (isVisible()) {
             if (shouldDraw(r.getCamera())) {
-                legend.draw(scene, r);
-                tick.draw(scene, r);
+                legend.draw(scene, r, cam);
+                tick.draw(scene, r, cam);
             }
         }
         scene.markAsAlreadyDrawed(this);
-        
+
     }
-    
+
     @Override
     public Rect computeBoundingBox() {
         return Rect.union(tick.getBoundingBox(), legend.getBoundingBox());
     }
-    
+
     public LaTeXMathObject getLegend() {
         return legend;
     }
-    
+
     public double getLocation() {
         return location;
     }
-    
+
     public double getMaximumScaleToShow() {
         return maximumScaleToShow;
     }
-    
+
     @Override
     public Stylable getMp() {
         return mpArray;
     }
-    
+
     public TickOrientation getOrientation() {
         return orientation;
     }
-    
+
     public Shape getTick() {
         return tick;
     }
-    
+
     public TickType getTickType() {
         return tickType;
     }
-    
+
     public boolean shouldDraw(Camera cam) {
         boolean scaleCondition = (maximumScaleToShow == 0) | (cam.getMathView().getWidth() < maximumScaleToShow);
-        
+
         boolean locationCondition;
         if (orientation == TickOrientation.XAXIS) {
             double xmin = cam.getMathView().xmin;
@@ -180,13 +180,13 @@ public class TickAxes extends MathObject {
         }
         return (scaleCondition && locationCondition);
     }
-    
+
     public enum TickOrientation {
         XAXIS, YAXIS
     }
-    
+
     public enum TickType {
         PRIMARY, SECONDARY
     }
-    
+
 }

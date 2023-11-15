@@ -17,6 +17,8 @@
  */
 package com.jmathanim.mathobjects;
 
+import com.jmathanim.Cameras.Camera;
+import com.jmathanim.Renderers.Renderer;
 import com.jmathanim.Styling.JMColor;
 import com.jmathanim.Styling.MODrawProperties;
 import com.jmathanim.Styling.PaintStyle;
@@ -43,6 +45,17 @@ import javafx.scene.shape.StrokeLineCap;
  * @author David Gutierrez Rubio davidgutierrezrubio@gmail.com
  */
 public abstract class MathObject implements Drawable, Updateable, Stateable, Boxable, StyleHookable {
+
+    private Camera camera;
+
+    public Camera getCamera() {
+        return camera;
+    }
+
+    public <T extends MathObject> T setCamera(Camera camera) {
+        this.camera = camera;
+        return (T) this;
+    }
 
     public enum Align {
         LEFT, RIGHT, UPPER, LOWER, HCENTER, VCENTER
@@ -975,16 +988,22 @@ public abstract class MathObject implements Drawable, Updateable, Stateable, Box
     }
 
     /**
-     * This hook is invoked when this object is added to the scene. You can
+     * This hook is invoked when this object is added to the scene. You ca
      * override this method if you are defining your own MathObject subclass.
      *
      * @param scene Scene where the object is added
      */
     public void addToSceneHook(JMathAnimScene scene) {
         this.scene = scene;
+        if (camera == null) {
+            camera = scene.getCamera();
+        }
         setProperty("scene", scene);
     }
-
+  @Override
+    public void draw(JMathAnimScene scene, Renderer r) {
+        draw(scene, r, getCamera());
+    }
     /**
      * This hook is invoked when this object is removed from the scene. You can
      * override this method if you are defining your own MathObject subclass.

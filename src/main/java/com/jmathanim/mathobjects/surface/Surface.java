@@ -17,6 +17,7 @@
  */
 package com.jmathanim.mathobjects.surface;
 
+import com.jmathanim.Cameras.Camera;
 import com.jmathanim.Renderers.JOGLRenderer.JOGLRenderer;
 import com.jmathanim.Renderers.Renderer;
 import com.jmathanim.Utils.Rect;
@@ -86,9 +87,9 @@ public class Surface extends MathObject {
     }
 
     @Override
-    public void draw(JMathAnimScene scene, Renderer r) {
+    public void draw(JMathAnimScene scene, Renderer r, Camera cam) {
         if (r instanceof JOGLRenderer) {
-            this.vertices.draw(scene, r);
+            this.vertices.draw(scene, r, cam);
             JOGLRenderer jr = (JOGLRenderer) r;
             jr.drawSurface(this);
         }

@@ -17,6 +17,7 @@
  */
 package com.jmathanim.mathobjects;
 
+import com.jmathanim.Cameras.Camera;
 import com.jmathanim.Renderers.Renderer;
 import com.jmathanim.Styling.MODrawPropertiesArray;
 import com.jmathanim.Styling.Stylable;
@@ -97,38 +98,6 @@ public class Arrow2D extends MathObject {
         mpArray.add(body);
     }
 
-//    private Arrow2D(Point p1, Point p2, MultiShapeObject head1) {
-//        this(p1, p2, head1, new MultiShapeObject());
-//    }
-//
-//    private Arrow2D(Point p1, Point p2, MultiShapeObject msh1, MultiShapeObject msh2) {
-//        this.p1 = p1;
-//        this.p2 = p2;
-//        this.body = Shape.segment(p1, p2);
-//        this.head1 = msh1;
-//        this.head2 = msh2;
-//
-//        head1.drawColor(this.body.getMp().getDrawColor());
-//        head1.fillColor(this.body.getMp().getDrawColor());
-//        scaleArrowHead1(1);
-//        head1.fillWithDrawColor(true);
-//        head2.drawColor(this.body.getMp().getDrawColor());
-//        head2.fillColor(this.body.getMp().getDrawColor());
-//        scaleArrowHead2(1);
-//        head2.fillWithDrawColor(true);
-//        mpArray = new MODrawPropertiesArray();
-//        mpArray.add(head1);
-//        mpArray.add(head2);
-//        mpArray.add(body);
-//    }
-//
-//    private Arrow2D(Point p1, Point p2, Shape head) {
-//        this(p1, p2, new MultiShapeObject(head));
-//    }
-//
-//    private Arrow2D(Point p1, Point p2, Shape head1, Shape head2) {
-//        this(p1, p2, new MultiShapeObject(head1), new MultiShapeObject(head2));
-//    }
     private MultiShapeObject buildArrowHead(ArrowType type, int side) {
         int anchorValue;
         double scaleDefaultValue;
@@ -290,16 +259,17 @@ public class Arrow2D extends MathObject {
     }
 
     @Override
-    public void draw(JMathAnimScene scene, Renderer r) {
+    public void draw(JMathAnimScene scene, Renderer r,Camera cam) {
         updateDrawableParts();
         if (isVisible()) {
-            bodyToDraw.draw(scene, r);
-            arrowHeadToDraw1.draw(scene, r);
-            arrowHeadToDraw2.draw(scene, r);
+            bodyToDraw.draw(scene, r,cam);
+            arrowHeadToDraw1.draw(scene, r,cam);
+            arrowHeadToDraw2.draw(scene, r,cam);
         }
         scene.markAsAlreadyDrawed(this);
     }
 
+    
     @Override
     public void update(JMathAnimScene scene) {
         this.scene = scene;

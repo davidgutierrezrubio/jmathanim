@@ -135,11 +135,13 @@ public abstract class Renderer {
      */
     abstract public void drawPath(Shape mobj);
 
+    abstract public void drawPath(Shape mobj, Camera camera);
+
     abstract public void drawAbsoluteCopy(Shape sh, Vec anchor);
 
     abstract public Rect createImage(InputStream stream);
 
-    abstract public void drawImage(AbstractJMImage obj);
+    abstract public void drawImage(AbstractJMImage obj,Camera cam);
 
     abstract public void debugText(String text, Vec loc);
 

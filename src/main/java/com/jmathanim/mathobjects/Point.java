@@ -17,6 +17,7 @@
  */
 package com.jmathanim.mathobjects;
 
+import com.jmathanim.Cameras.Camera;
 import com.jmathanim.Renderers.Renderer;
 import com.jmathanim.Styling.JMColor;
 import com.jmathanim.Utils.AffineJTransform;
@@ -51,7 +52,7 @@ public class Point extends MathObject {
     }
 
     public enum DotSyle {
-        CIRCLE, CROSS, PLUS,RING
+        CIRCLE, CROSS, PLUS, RING
     }
 
     public enum ShadingStyle {
@@ -159,12 +160,15 @@ public class Point extends MathObject {
     public static Point at(double x, double y) {
         return new Point(x, y);
     }
+
     /**
-     * Returns a new Point with coordinates those of given vector. Vector coordinates are copied.
+     * Returns a new Point with coordinates those of given vector. Vector
+     * coordinates are copied.
+     *
      * @param v Vector with coordinates
      * @return The new point
      */
-     public static Point at(Vec v) {
+    public static Point at(Vec v) {
         return new Point(v.x, v.y);
     }
 
@@ -200,7 +204,7 @@ public class Point extends MathObject {
     }
 
     @Override
-    public void draw(JMathAnimScene scene, Renderer r) {
+    public void draw(JMathAnimScene scene, Renderer r, Camera cam) {
         if (v.isNaN()) {
             return;
         }

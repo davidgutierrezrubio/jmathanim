@@ -80,6 +80,11 @@ public class JOGLRenderer extends Renderer {
     }
 
     @Override
+    public void drawPath(Shape mobj, Camera camera) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    @Override
     protected BufferedImage getRenderedImage(int frameCount) {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
@@ -183,7 +188,7 @@ public class JOGLRenderer extends Renderer {
     }
 
     @Override
-    public void drawImage(AbstractJMImage obj) {
+    public void drawImage(AbstractJMImage obj, Camera cam) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 

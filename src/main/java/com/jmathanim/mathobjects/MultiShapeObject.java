@@ -17,6 +17,7 @@
  */
 package com.jmathanim.mathobjects;
 
+import com.jmathanim.Cameras.Camera;
 import com.jmathanim.Renderers.Renderer;
 import com.jmathanim.Styling.MODrawPropertiesArray;
 import com.jmathanim.Styling.PaintStyle;
@@ -159,21 +160,25 @@ public class MultiShapeObject extends MathObject implements Iterable<Shape> {
 
     @Override
     public void draw(JMathAnimScene scene, Renderer r) {
+        draw(scene, r, getCamera());
+    }
+
+    @Override
+    public void draw(JMathAnimScene scene, Renderer r, Camera cam) {
         if (isVisible()) {
-            int n = 0;
             for (Shape jmp : shapes) {
+                //Store camera and temporary use MultiShapeObject camera
                 if ((jmp.isVisible()) && (!scene.isAlreadyDrawed(jmp))) {
                     if (absoluteSize) {
                         r.drawAbsoluteCopy(jmp, getAbsoluteAnchor().v);// TODO: This doesnt work for overrided methods
                         // (e.g.: line)
                     } else {
-                        jmp.draw(scene, r);
+                        jmp.draw(scene, r, cam);
 //                    if (isShowDebugText()) {
 //                        r.debugText("" + n, jmp.getCenter().v);
 //                    }
                     }
                 }
-                n++;
             }
         }
         scene.markAsAlreadyDrawed(this);

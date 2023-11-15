@@ -17,6 +17,7 @@
  */
 package com.jmathanim.mathobjects.Axes;
 
+import com.jmathanim.Cameras.Camera;
 import com.jmathanim.Renderers.Renderer;
 import com.jmathanim.Styling.MODrawPropertiesArray;
 import com.jmathanim.Styling.Stylable;
@@ -203,20 +204,21 @@ public class Axes extends MathObject {
     }
 
     @Override
-    public void draw(JMathAnimScene scene, Renderer r) {
+    public void draw(JMathAnimScene scene, Renderer r, Camera cam) {
         if (isVisible()) {
-            xAxis.draw(scene, r);
-            yAxis.draw(scene, r);
+            xAxis.draw(scene, r, cam);
+            yAxis.draw(scene, r, cam);
 
             for (TickAxes xtick : xticks) {
-                xtick.draw(scene, r);
+                xtick.draw(scene, r, cam);
             }
             for (TickAxes ytick : yticks) {
-                ytick.draw(scene, r);
+                ytick.draw(scene, r, cam);
             }
         }
         scene.markAsAlreadyDrawed(this);
     }
+
 
     /**
      * Generates a set of pairs (ticks-legends) from start to finish (including)

@@ -17,6 +17,7 @@
  */
 package com.jmathanim.mathobjects.Delimiters;
 
+import com.jmathanim.Cameras.Camera;
 import com.jmathanim.Renderers.Renderer;
 import com.jmathanim.Styling.MODrawPropertiesArray;
 import com.jmathanim.Styling.Stylable;
@@ -209,7 +210,7 @@ public abstract class Delimiter extends MathObject {
     abstract protected MathObjectGroup buildDelimiterShape();
 
     @Override
-    public void draw(JMathAnimScene scene, Renderer r) {
+    public void draw(JMathAnimScene scene, Renderer r, Camera cam) {
         if (isVisible()) {
             if (delimiterScale == 0) {
                 return;// Do nothing
@@ -219,9 +220,9 @@ public abstract class Delimiter extends MathObject {
             delimiterLabel.update(scene);
             delimiterToDraw = buildDelimiterShape();
             for (MathObject d : delimiterToDraw) {
-                d.draw(scene, r);
+                d.draw(scene, r, cam);
             }
-            delimiterToDraw.draw(scene, r);
+            delimiterToDraw.draw(scene, r, cam);
         }
     }
 
@@ -274,7 +275,7 @@ public abstract class Delimiter extends MathObject {
 
     @Override
     public void registerUpdateableHook(JMathAnimScene scene) {
-        scene.registerUpdateable(A,B);
+        scene.registerUpdateable(A, B);
         setUpdateLevel(Math.max(A.getUpdateLevel(), B.getUpdateLevel()) + 1);
     }
 
@@ -345,7 +346,6 @@ public abstract class Delimiter extends MathObject {
     public MathObject getLabel() {
         return delimiterLabel;
     }
-    
 
 //    /**
 //     * Adds a label that automatically updates to show the length of the
@@ -361,7 +361,6 @@ public abstract class Delimiter extends MathObject {
 //        jm.setFormat(format);
 //        return setLabel(jm, gap);
 //    }
-
 //    /**
 //     * Overloaded function. Adds a label that automatically updates to show the
 //     * length of the delimite, using 2 (at most) decimal places.

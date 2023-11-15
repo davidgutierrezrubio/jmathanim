@@ -17,6 +17,7 @@
  */
 package com.jmathanim.mathobjects;
 
+import com.jmathanim.Cameras.Camera;
 import com.jmathanim.Renderers.Renderer;
 import com.jmathanim.Utils.AffineJTransform;
 import com.jmathanim.Utils.Rect;
@@ -52,9 +53,9 @@ public abstract class AbstractJMImage extends MathObject {
     }
 
     @Override
-    public void draw(JMathAnimScene scene, Renderer r) {
+    public void draw(JMathAnimScene scene, Renderer r,Camera cam) {
         if (isVisible()) {
-            r.drawImage(this);
+            r.drawImage(this,cam);
         }
         scene.markAsAlreadyDrawed(this);
     }

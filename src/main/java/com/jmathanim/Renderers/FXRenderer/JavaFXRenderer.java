@@ -186,16 +186,16 @@ public class JavaFXRenderer extends Renderer {
 //                        new Rotate(45, Rotate.Z_AXIS),
 //                        new Rotate(45, Rotate.Y_AXIS),
 //                        new Translate(-config.mediaW/2, -config.mediaH/2, 0));
-fxScene.setCamera(fxCamera);
+            fxScene.setCamera(fxCamera);
 
-if (config.isShowPreview()) {
-    JMathAnimScene.logger.debug("Creating preview window");
-    // TODO: This gaps to add to the window are os-dependent
-    StandaloneSnapshot.FXStarter.stage.setHeight(config.mediaH + 38);
-    StandaloneSnapshot.FXStarter.stage.setWidth(config.mediaW + 16);
-    StandaloneSnapshot.FXStarter.stage.show();
-}
-return 1;
+            if (config.isShowPreview()) {
+                JMathAnimScene.logger.debug("Creating preview window");
+                // TODO: This gaps to add to the window are os-dependent
+                StandaloneSnapshot.FXStarter.stage.setHeight(config.mediaH + 38);
+                StandaloneSnapshot.FXStarter.stage.setWidth(config.mediaW + 16);
+                StandaloneSnapshot.FXStarter.stage.show();
+            }
+            return 1;
         });
 
         Platform.runLater(task);
@@ -243,13 +243,13 @@ return 1;
             fxScene.setFill(config.getBackgroundColor().getFXPaint(r, camera));
             group.getChildren().clear();
             groupDebug.getChildren().clear();
-            
+
             fxCamera.getTransforms().clear();
             fxCamera.getTransforms().addAll(new Translate(config.mediaW / 2, config.mediaH / 2, 0),
                     new Rotate(FxCamerarotateX, Rotate.X_AXIS), new Rotate(FxCamerarotateY, Rotate.Y_AXIS),
                     new Rotate(FxCamerarotateZ, Rotate.Z_AXIS),
                     new Translate(-config.mediaW / 2, -config.mediaH / 2, 0));
-            
+
             // Add all elements
             group.getChildren().addAll(fxnodes);
             if (config.showFrameNumbers) {
@@ -264,7 +264,7 @@ return 1;
             params.setFill(config.getBackgroundColor().getFXPaint(r, camera));
             params.setViewport(new Rectangle2D(0, 0, config.mediaW, config.mediaH));
             params.setCamera(fxScene.getCamera());
-            
+
             return fxScene.getRoot().snapshot(params, null);
         });
         Platform.runLater(task);
@@ -307,10 +307,14 @@ return 1;
 
     @Override
     public void drawPath(Shape mobj) {
-        drawPath(mobj, camera);
+        Camera cam = mobj.getCamera();
+        if (cam == null) {
+            cam = camera;
+        }
+        drawPath(mobj, cam);
     }
-
-    private void drawPath(Shape mobj, Camera cam) {
+   @Override
+    public void drawPath(Shape mobj, Camera cam) {
 
         JMPath c = mobj.getPath();
         int numPoints = c.size();
@@ -446,7 +450,7 @@ return 1;
     }
 
     @Override
-    public void drawImage(AbstractJMImage obj) {
+    public void drawImage(AbstractJMImage obj, Camera cam) {
         Rect bbox = getBboxFromImageCatalog(obj.getId());
         ImageView imageView;
         if (obj.isCached()) {
@@ -459,8 +463,8 @@ return 1;
         imageView.setFitWidth(bbox.getWidth());
 
         imageView.setOpacity(obj.getMp().getDrawColor().getAlpha());
-        
-        Affine camToScreen = FXPathUtils.camToScreenAffineTransform(camera);
+
+        Affine camToScreen = FXPathUtils.camToScreenAffineTransform(cam);
         imageView.getTransforms().add(camToScreen);
 
 //        //Swap y coordinate
@@ -503,7 +507,7 @@ return 1;
 
     @Override
     public void addSound(SoundItem soundItem) {
-         try {
+        try {
             videoEncoder.addSound(soundItem);
         } catch (NullPointerException ex) {
             //Do nothing
