@@ -313,9 +313,14 @@ public class JavaFXRenderer extends Renderer {
         }
         drawPath(mobj, cam);
     }
-   @Override
-    public void drawPath(Shape mobj, Camera cam) {
 
+    @Override
+    public void drawPath(Shape mobj, Camera cam) {
+        if (cam == null) {
+            //If the object has not a camera assigned yet, set it to default
+            cam = getCamera();
+            mobj.setCamera(cam);
+        }
         JMPath c = mobj.getPath();
         int numPoints = c.size();
 
