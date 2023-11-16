@@ -281,12 +281,17 @@ public class Anchor {
      * Returns an anchor point relative to the current screen, in math
      * coordinates
      *
+     * @param camera Camera 
      * @param anchor Anchor type
      * @param xMargin x margin to apply to the anchor
      * @param yMargin y margin to apply to the anchor
      * @return A {@link Point} located at the current anchor
      */
     public static Point getScreenAnchorPoint(Camera camera, Type anchor, double xMargin, double yMargin) {
+        if (camera == null) {
+            //If not set, use default
+            camera = JMathAnimConfig.getConfig().getCamera();
+        }
         Point resul = new Point();
         Vec gaps = camera.getGaps();
         Rect mathViewWithGap = camera.getMathView().addGap(-xMargin - gaps.x, -yMargin - gaps.y);

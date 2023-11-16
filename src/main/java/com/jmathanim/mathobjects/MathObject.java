@@ -78,9 +78,11 @@ public abstract class MathObject implements Drawable, Updateable, Stateable, Box
 
     public MathObject(MODrawProperties prop) {
         this.updateLevel = -1;
+        JMathAnimConfig config = JMathAnimConfig.getConfig();
 
-        scene = JMathAnimConfig.getConfig().getScene();
-        mp = JMathAnimConfig.getConfig().getDefaultMP();// Default MP values
+        scene = config.getScene();
+        camera=scene.getCamera();//Default camera
+        mp = config.getDefaultMP();// Default MP values
         mp.copyFrom(prop);// Copy all non-null values from prop
         mp.setParent(this);
         //Default values for an object that always updates

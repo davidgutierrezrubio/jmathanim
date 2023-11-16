@@ -38,6 +38,10 @@ public interface Updateable {
      */
     public int getUpdateLevel();
 
+    /**
+     * Sets the update level for this object
+     * @param level Update level. An integer from 0 to MAX_VALUE.
+     */
     public void setUpdateLevel(int level);
 
     /**

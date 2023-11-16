@@ -22,22 +22,38 @@ import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.MathObject;
-import com.jmathanim.mathobjects.Point;
+import com.jmathanim.mathobjects.Shape;
 import java.util.Arrays;
 
 /**
+ * An Updateable subclass that updates a Camera to follow several Mathobjects.
+ * The center of the camera is located at the centroid of the centers of the
+ * objects.
  *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
 public class CameraFollowingObjects implements Updateable {
 
+    /**
+     * Creates a new Updateable class to be registereded into a scene with the
+     * registerupdateable method. The center of the camera is located at the
+     * centroid of the centers of the objects.
+     *
+     * @param camera Camera to update
+     * @param objs MathObjects
+     * @return The created object
+     */
+    public static Updateable make(Camera camera, MathObject... objs) {
+        return new CameraFollowingObjects(camera, objs);
+    }
+
     private final MathObject[] objects;
-    private Camera camera;
+    private final Camera camera;
     private int updateLevel;
 
-    public CameraFollowingObjects(Camera camera,MathObject... objects) {
+    private CameraFollowingObjects(Camera camera, MathObject... objects) {
         this.objects = objects;
-        this.camera=camera;
+        this.camera = camera;
         updateLevel = 0;
     }
 
@@ -48,11 +64,12 @@ public class CameraFollowingObjects implements Updateable {
 
     @Override
     public void setUpdateLevel(int level) {
+        updateLevel=level;
     }
 
     @Override
     public void registerUpdateableHook(JMathAnimScene scene) {
-        updateLevel = Arrays.stream(objects).mapToInt(MathObject::getUpdateLevel).max().orElse(0) + 1;
+        setUpdateLevel(Arrays.stream(objects).mapToInt(MathObject::getUpdateLevel).max().orElse(0) + 1);
     }
 
     @Override
@@ -61,16 +78,16 @@ public class CameraFollowingObjects implements Updateable {
 
     @Override
     public void update(JMathAnimScene scene) {
-        Vec centroid=Vec.to(0,0);
+        Vec centroid = Vec.to(0, 0);
         for (int i = 0; i < objects.length; i++) {
             Vec v = objects[i].getCenter().v;
             centroid.addInSite(v);
         }
-        centroid.multInSite(1d/objects.length);
-        Vec vcenter=camera.getMathView().getCenter().v;
+        centroid.multInSite(1d / objects.length);
+        Vec vcenter = camera.getMathView().getCenter().v;
         camera.shift(centroid.minus(vcenter));
-         Rect r = camera.getMathView();
-       for (Boxable obj : objects) {
+        Rect r = camera.getMathView();
+        for (Boxable obj : objects) {
             r = Rect.union(r, obj.getBoundingBox());
         }
         camera.adjustToRect(r);
