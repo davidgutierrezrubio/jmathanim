@@ -425,4 +425,6 @@ public class MultiShapeObject extends MathObject implements Iterable<Shape> {
         return "MultiShape " + objectLabel + "(" + size() + " elements)";
     }
 
+    
+    
 }

@@ -145,11 +145,12 @@ public class Line extends Shape implements HasDirection, shouldUdpateWithCamera 
         return resul;
     }
 
+    
     @Override
-    public void draw(JMathAnimScene scene, Renderer r) {
+    public void draw(JMathAnimScene scene, Renderer r,Camera cam) {
         update(JMathAnimConfig.getConfig().getScene());// TODO: remove coupling
         if (isVisible()) {
-            visiblePiece.draw(scene, r);
+            visiblePiece.draw(scene, r,cam);
         }
         scene.markAsAlreadyDrawed(this);
     }
