@@ -64,6 +64,34 @@ public class Camera implements Boxable {
     private final JMathAnimScene scene;
     private double xminB, xmaxB, yminB, ymaxB;// Backup values for saveState()
 
+    /**
+     * Copy all parameters from another camera.
+     * @param cam Camera to copy from
+     * @return This object
+     */
+    public Camera copyStateFrom(Camera cam) {
+        this.screenHeight=cam.screenHeight;
+        this.screenWidth=cam.screenWidth;
+        this.hgap=cam.hgap;
+        this.vgap=cam.vgap;
+        this.perspective=cam.perspective;
+        this.resetValues=cam.resetValues;
+        this.xmax=cam.xmax;
+        this.ymax=cam.ymax;
+        this.xmin=cam.xmin;
+        this.ymin=cam.ymin;
+        return this;
+    }
+    /**
+     * Makes a copy of the camera
+     * @return A new camera con same parameters, except its list of registered updateableobjects
+     */
+    public Camera copy() {
+        Camera copy=new Camera(scene,screenWidth,screenHeight);
+        copy.copyStateFrom(this);
+        return copy;
+    }
+    
     public Camera(JMathAnimScene scene, int screenWidth, int screenHeight) {
         this.screenWidth = screenWidth;
         this.screenHeight = screenHeight;
