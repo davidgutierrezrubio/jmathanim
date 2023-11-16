@@ -87,6 +87,7 @@ public class JMImage extends AbstractJMImage {
 
     @Override
     public void copyStateFrom(MathObject obj) {
+         super.copyStateFrom(obj);
         if (!(obj instanceof JMImage)) {
             return;
         }

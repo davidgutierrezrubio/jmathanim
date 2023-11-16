@@ -260,6 +260,7 @@ public abstract class Delimiter extends MathObject {
 
     @Override
     public void copyStateFrom(MathObject obj) {
+         super.copyStateFrom(obj);
         if (!(obj instanceof Delimiter)) {
             return;
         }

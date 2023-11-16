@@ -97,7 +97,8 @@ public class Line extends Shape implements HasDirection, shouldUdpateWithCamera 
         visiblePiece.getPath().addJMPoint(bp1, bp2);
         getPath().addPoint(p1, p2);
         get(0).isThisSegmentVisible = false;
-        computeBoundPoints(JMathAnimConfig.getConfig().getCamera());
+        setCamera(JMathAnimConfig.getConfig().getCamera());;//First default camera
+        computeBoundPoints(getCamera());
     }
 
     @Override
@@ -115,7 +116,7 @@ public class Line extends Shape implements HasDirection, shouldUdpateWithCamera 
      *
      * @param cam Camera with the view to compute bound points
      */
-    public final void computeBoundPoints(Camera cam) {
+    private void computeBoundPoints(Camera cam) {
         Rect rect = cam.getMathView();
         double[] intersectLine = rect.intersectLine(p1.v.x, p1.v.y, p2.v.x, p2.v.y);
 
@@ -251,7 +252,7 @@ public class Line extends Shape implements HasDirection, shouldUdpateWithCamera 
     @Override
     public void update(JMathAnimScene scene) {
         super.update(scene);
-        computeBoundPoints(scene.getCamera());
+        computeBoundPoints(getCamera());
     }
 
     @Override

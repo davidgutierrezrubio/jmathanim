@@ -91,6 +91,7 @@ public class DensityPlot extends AbstractJMImage implements hasScalarParameter {
 
     @Override
     public void copyStateFrom(MathObject obj) {
+         super.copyStateFrom(obj);
         if (!(obj instanceof DensityPlot)) {
             return;
         }
@@ -109,13 +110,13 @@ public class DensityPlot extends AbstractJMImage implements hasScalarParameter {
     }
 
     private void createRasterImage() {
-        double w = scene.getCamera().getMathView().getWidth();
-        double h = scene.getCamera().getMathView().getHeight();
+        double w = getCamera().getMathView().getWidth();
+        double h = getCamera().getMathView().getHeight();
         if ((w != widthView) || (h != heightView)) {// Only recreate it if necessary
             widthView = w;
             heightView = h;
-            double[] xy1 = scene.getCamera().mathToScreen(bbox.xmin, bbox.ymax);
-            double[] xy2 = scene.getCamera().mathToScreen(bbox.xmax, bbox.ymin);
+            double[] xy1 = getCamera().mathToScreen(bbox.xmin, bbox.ymax);
+            double[] xy2 = getCamera().mathToScreen(bbox.xmax, bbox.ymin);
             wRaster = (int) (xy2[0] - xy1[0]);
             hRaster = (int) (xy2[1] - xy1[1]);
             raster = new WritableImage(wRaster, hRaster);

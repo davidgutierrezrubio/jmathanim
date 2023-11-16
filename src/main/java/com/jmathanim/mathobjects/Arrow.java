@@ -295,6 +295,7 @@ public class Arrow extends Constructible {
 
     @Override
     public void copyStateFrom(MathObject obj) {
+         super.copyStateFrom(obj);
         if (obj instanceof Arrow) {
             Arrow ar = (Arrow) obj;
             this.arrowThickness = ar.arrowThickness;

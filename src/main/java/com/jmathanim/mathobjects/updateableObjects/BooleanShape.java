@@ -73,6 +73,7 @@ public class BooleanShape extends Shape {
 
     @Override
     public void copyStateFrom(MathObject obj) {
+         super.copyStateFrom(obj);
         if (obj instanceof BooleanShape) {
             BooleanShape bs = (BooleanShape) obj;
             this.shape1.copyStateFrom(bs.shape1);

@@ -283,7 +283,7 @@ public class Arrow2D extends MathObject {
         arrowHeadToDraw2 = this.head2.copy();
         if (this.head1.size() > 0) {
             // Scaling
-            double mw = scene.getCamera().getMathView().getHeight();
+            double mw = getCamera().getMathView().getHeight();
             double sc1 = this.getMp().getScaleArrowHead1() * defaultArrowHead1Size1 * mw / head1.getBoundingBox().getHeight();
             arrowHeadToDraw1.scale(sc1);
 
@@ -353,6 +353,7 @@ public class Arrow2D extends MathObject {
 
     @Override
     public void copyStateFrom(MathObject obj) {
+         super.copyStateFrom(obj);
         if (!(obj instanceof Arrow2D)) {
             return;
         }

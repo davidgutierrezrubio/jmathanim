@@ -397,7 +397,7 @@ public abstract class JMathAnimScene {
             for (MathObject obj : sceneObjects) {
                 if (obj.isVisible()) {
                     if (!isAlreadyDrawed(obj)) {
-                        obj.draw(this, renderer);
+                        obj.draw(this, renderer,obj.getCamera());
                         markAsAlreadyDrawed(obj);
                     }
                 }

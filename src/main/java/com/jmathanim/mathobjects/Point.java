@@ -211,7 +211,7 @@ public class Point extends MathObject {
         dotShape = generateDotShape();//TODO: Do this only when needed
         dotShape.setAbsoluteSize(this.copy());
         if (isVisible()) {
-            dotShape.draw(scene, r);
+            dotShape.draw(scene, r, cam);
         }
         scene.markAsAlreadyDrawed(this);
 
@@ -356,6 +356,7 @@ public class Point extends MathObject {
      */
     @Override
     public void copyStateFrom(MathObject obj) {
+         super.copyStateFrom(obj);
         if (!(obj instanceof Point)) {
             return;
         }

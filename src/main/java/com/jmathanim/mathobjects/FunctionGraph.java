@@ -386,6 +386,7 @@ public class FunctionGraph extends Shape implements hasScalarParameter, shouldUd
 
     @Override
     public void copyStateFrom(MathObject obj) {
+         super.copyStateFrom(obj);
         if (!(obj instanceof FunctionGraph)) {
             return;
         }

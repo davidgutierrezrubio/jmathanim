@@ -65,6 +65,7 @@ public class JMNumber extends AbstractLaTeXMathObject implements hasScalarParame
 
     @Override
     public void copyStateFrom(MathObject obj) {
+         super.copyStateFrom(obj);
         if (obj instanceof JMNumber) {
             JMNumber copy = (JMNumber) obj;
             this.anchor = copy.anchor;

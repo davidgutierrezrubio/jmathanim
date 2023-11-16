@@ -752,6 +752,7 @@ public class Shape extends MathObject {
 
     @Override
     public void copyStateFrom(MathObject obj) {
+        super.copyStateFrom(obj);
         if (!(obj instanceof Shape)) {
             return;
         }

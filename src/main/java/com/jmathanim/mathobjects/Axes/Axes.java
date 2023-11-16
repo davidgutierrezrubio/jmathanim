@@ -364,12 +364,12 @@ public class Axes extends MathObject {
 
     @Override
     public void update(JMathAnimScene scene) {
-        double xmax = scene.getCamera().getMathView().xmax;
-        double xmin = scene.getCamera().getMathView().xmin;
+        double xmax = getCamera().getMathView().xmax;
+        double xmin = getCamera().getMathView().xmin;
         double scale = (xmax - xmin) / 4;
         xticks.clear();
         for (int n = 0; n < xticksBase.size(); n++) {
-            if (xticksBase.get(n).shouldDraw(scene.getCamera())) {
+            if (xticksBase.get(n).shouldDraw(getCamera())) {
                 TickAxes copy = xticksBase.get(n).copy();
                 copy.tick.scale(scale);
                 copy.legend.scale(scale);
@@ -380,7 +380,7 @@ public class Axes extends MathObject {
 
         yticks.clear();
         for (int n = 0; n < yticksBase.size(); n++) {
-            if ((yticksBase.get(n).shouldDraw(scene.getCamera()))) {
+            if ((yticksBase.get(n).shouldDraw(getCamera()))) {
                 TickAxes copy = yticksBase.get(n).copy();
                 copy.tick.scale(scale);
                 copy.legend.scale(scale);
@@ -388,11 +388,6 @@ public class Axes extends MathObject {
                 yticks.add(copy);
             }
         }
-    }
-
-    @Override
-    public void copyStateFrom(MathObject obj) {
-        //Nothing to do by now
     }
 
     public enum TickScale {

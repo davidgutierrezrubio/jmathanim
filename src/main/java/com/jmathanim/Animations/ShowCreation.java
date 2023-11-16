@@ -231,13 +231,13 @@ public class ShowCreation extends Animation {
                 JMathAnimScene.logger.debug("ShowCreation method: GroupCreationStrategy");
                 break;
             case LINE_CREATION:
-                final Shape lineToCreate = ((Line) mobj).toSegment(scene.getCamera());
+                final Shape lineToCreate = ((Line) mobj).toSegment(mobj.getCamera());
                 removeThisAtTheEnd.add(lineToCreate);
                 creationStrategy = new SimpleShapeCreationAnimation(this.runTime, lineToCreate);
                 JMathAnimScene.logger.debug("ShowCreation method: LineCreationStrategy");
                 break;
             case RAY_CREATION:
-                final Shape rayToCreate = ((Ray) mobj).toSegment(scene.getCamera());
+                final Shape rayToCreate = ((Ray) mobj).toSegment(mobj.getCamera());
                 removeThisAtTheEnd.add(rayToCreate);
                 creationStrategy = new SimpleShapeCreationAnimation(this.runTime, rayToCreate);
                 JMathAnimScene.logger.debug("ShowCreation method: RayCreationStrategy");

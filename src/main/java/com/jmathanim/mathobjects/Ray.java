@@ -168,10 +168,10 @@ public class Ray extends Shape implements HasDirection {
     }
 
     @Override
-    public void draw(JMathAnimScene scene, Renderer r) {
+    public void draw(JMathAnimScene scene, Renderer r, Camera cam) {
         update(scene);
         if (isVisible()) {
-            visiblePiece.draw(scene, r);
+            visiblePiece.draw(scene, r,cam);
         }
         scene.markAsAlreadyDrawed(this);
     }
@@ -272,7 +272,7 @@ public class Ray extends Shape implements HasDirection {
     @Override
     public void update(JMathAnimScene scene) {
         super.update(scene);
-        computeBoundPoints(scene.getCamera());
+        computeBoundPoints(getCamera());
     }
 
 }

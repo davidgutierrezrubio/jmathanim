@@ -293,6 +293,7 @@ public abstract class AbstractLaTeXMathObject extends SVGMathObject {
 
     @Override
     public void copyStateFrom(MathObject obj) {
+         super.copyStateFrom(obj);
         if (obj instanceof AbstractLaTeXMathObject) {
             AbstractLaTeXMathObject copy = (AbstractLaTeXMathObject) obj;
             getMp().copyFrom(copy.getMp());

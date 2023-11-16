@@ -122,6 +122,7 @@ public class MultiShapeObject extends MathObject implements Iterable<Shape> {
 //    }
     @Override
     public void copyStateFrom(MathObject obj) {
+         super.copyStateFrom(obj);
         if (!(obj instanceof MultiShapeObject)) {
             return;
         }
@@ -158,10 +159,6 @@ public class MultiShapeObject extends MathObject implements Iterable<Shape> {
         return (T) this;
     }
 
-    @Override
-    public void draw(JMathAnimScene scene, Renderer r) {
-        draw(scene, r, getCamera());
-    }
 
     @Override
     public void draw(JMathAnimScene scene, Renderer r, Camera cam) {
@@ -423,6 +420,15 @@ public class MultiShapeObject extends MathObject implements Iterable<Shape> {
     @Override
     public String toString() {
         return "MultiShape " + objectLabel + "(" + size() + " elements)";
+    }
+
+    @Override
+    public <T extends MathObject> T setCamera(Camera camera) {
+        super.setCamera(camera);
+        for (Shape sh : this) {
+            sh.setCamera(camera);
+        }
+        return (T) this;
     }
 
     

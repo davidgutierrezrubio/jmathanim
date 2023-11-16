@@ -200,6 +200,7 @@ public class MathObjectGroup extends MathObject implements Iterable<MathObject> 
 
     @Override
     public void copyStateFrom(MathObject obj) {
+         super.copyStateFrom(obj);
         if (!(obj instanceof MathObjectGroup)) {
             return;
         }

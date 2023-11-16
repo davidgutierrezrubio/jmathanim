@@ -47,7 +47,7 @@ public class LineCreationAnimation extends AbstractCreationStrategy {
     @Override
     public boolean doInitialization() {
         super.doInitialization();
-        segment = line.toSegment(scene.getCamera());
+        segment = line.toSegment(line.getCamera());
         anim = new SimpleShapeCreationAnimation(this.runTime, segment);
         anim.setLambda(getTotalLambda());
         return anim.initialize(scene);

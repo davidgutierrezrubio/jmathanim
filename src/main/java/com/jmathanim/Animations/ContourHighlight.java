@@ -132,7 +132,7 @@ public class ContourHighlight extends Animation {
     private void process(MathObject obj, double a, double b) {
         if (obj instanceof Line) {
             Line line = ((Line) obj);
-            addSubShapeToScene(line.toSegment(scene.getCamera()), a, b);
+            addSubShapeToScene(line.toSegment(obj.getCamera()), a, b);
             return;
         }
         if (obj instanceof MultiShapeObject) {

@@ -88,6 +88,7 @@ public class CTPoint extends Constructible {
             this.getMathObject().copyStateFrom(cnst.getMathObject());
             this.freeMathObject(cnst.isThisMathObjectFree());
         }
+         super.copyStateFrom(obj);
     }
 
     /**

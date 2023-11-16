@@ -17,6 +17,7 @@
  */
 package com.jmathanim.mathobjects;
 
+import com.jmathanim.Cameras.Camera;
 import com.jmathanim.Constructible.Constructible;
 import com.jmathanim.Renderers.Renderer;
 import com.jmathanim.Utils.AffineJTransform;
@@ -48,7 +49,7 @@ public class Scalar extends Constructible implements hasScalarParameter{
     }
 
     @Override
-    public void draw(JMathAnimScene scene, Renderer r) {
+    public void draw(JMathAnimScene scene, Renderer r, Camera cam) {
         // Nothing to do here
     }
 
@@ -64,6 +65,7 @@ public class Scalar extends Constructible implements hasScalarParameter{
 
     @Override
     public void copyStateFrom(MathObject obj) {
+         super.copyStateFrom(obj);
         if (!(obj instanceof Scalar)) {
             return;
         }

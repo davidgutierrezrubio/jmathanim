@@ -18,7 +18,6 @@
 package com.jmathanim.mathobjects;
 
 import com.jmathanim.Cameras.Camera;
-import com.jmathanim.Renderers.Renderer;
 import com.jmathanim.Styling.JMColor;
 import com.jmathanim.Styling.MODrawProperties;
 import com.jmathanim.Styling.PaintStyle;
@@ -355,7 +354,9 @@ public abstract class MathObject implements Drawable, Updateable, Stateable, Box
      *
      * @param obj The object to copy state from.
      */
-    abstract public void copyStateFrom(MathObject obj);
+    public void copyStateFrom(MathObject obj) {
+        this.setCamera(obj.getCamera());
+    }
 
     /**
      * Returns the Bounding box with limits of the MathObject
@@ -994,11 +995,6 @@ public abstract class MathObject implements Drawable, Updateable, Stateable, Box
             camera = scene.getCamera();
         }
         setProperty("scene", scene);
-    }
-
-    @Override
-    public void draw(JMathAnimScene scene, Renderer r) {
-        draw(scene, r, getCamera());
     }
 
     /**

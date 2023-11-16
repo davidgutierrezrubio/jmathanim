@@ -110,6 +110,7 @@ public abstract class Constructible extends MathObject {
 
     @Override
     public void copyStateFrom(MathObject obj) {
+        super.copyStateFrom(obj);
         if (obj == null) {
             return;
         }

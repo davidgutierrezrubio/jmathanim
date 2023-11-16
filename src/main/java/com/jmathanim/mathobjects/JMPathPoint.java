@@ -212,6 +212,7 @@ public class JMPathPoint extends MathObject implements Updateable, Stateable {
 
     @Override
     public void copyStateFrom(MathObject obj) {
+         super.copyStateFrom(obj);
         if (!(obj instanceof JMPathPoint)) {
             return;
         }

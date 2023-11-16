@@ -110,6 +110,7 @@ public class TickAxes extends MathObject {
 
     @Override
     public void copyStateFrom(MathObject obj) {
+         super.copyStateFrom(obj);
         if (!(obj instanceof TickAxes)) {
             return;
         }

@@ -142,6 +142,7 @@ public abstract class AbstractTippableObject extends Constructible implements ha
 
     @Override
     public void copyStateFrom(MathObject obj) {
+         super.copyStateFrom(obj);
         super.copyStateFrom(obj);
         if (obj instanceof AbstractTippableObject) {
             AbstractTippableObject nt = (AbstractTippableObject) obj;

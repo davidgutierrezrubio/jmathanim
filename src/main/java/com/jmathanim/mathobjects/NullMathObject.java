@@ -17,6 +17,7 @@
  */
 package com.jmathanim.mathobjects;
 
+import com.jmathanim.Cameras.Camera;
 import com.jmathanim.Constructible.Constructible;
 import com.jmathanim.Renderers.Renderer;
 import com.jmathanim.Styling.MODrawProperties;
@@ -48,16 +49,12 @@ public class NullMathObject extends Constructible {
     }
 
     @Override
-    public void copyStateFrom(MathObject obj) {
-    }
-
-    @Override
     public Rect computeBoundingBox() {
         return new EmptyRect();
     }
 
     @Override
-    public void draw(JMathAnimScene scene, Renderer r) {
+    public void draw(JMathAnimScene scene, Renderer r,Camera cam) {
         //Nothing to draw, folks, it's the NullMathObject!!
     }
 

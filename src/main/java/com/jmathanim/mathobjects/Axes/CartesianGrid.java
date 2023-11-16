@@ -17,6 +17,7 @@
 package com.jmathanim.mathobjects.Axes;
 
 import com.jmathanim.Cameras.Camera;
+import com.jmathanim.Utils.JMathAnimConfig;
 import com.jmathanim.Utils.Rect;
 import com.jmathanim.mathobjects.Line;
 import com.jmathanim.mathobjects.MathObject;
@@ -33,7 +34,6 @@ public class CartesianGrid extends MultiShapeObject implements shouldUdpateWithC
 
     private double xStep;
     private double yStep;
-    Camera cam;
     private double centerY;
     private double centerX;
     private final Rect currentView;
@@ -51,6 +51,8 @@ public class CartesianGrid extends MultiShapeObject implements shouldUdpateWithC
      */
     public static CartesianGrid make(double centerX, double centerY, double xStep, double yStep) {
         CartesianGrid resul = new CartesianGrid(centerX, centerY, xStep, yStep);
+        //Default camera
+           resul.setCamera(JMathAnimConfig.getConfig().getCamera());
         resul.style("gridPrimaryDefault");
         resul.layer(-Integer.MAX_VALUE);
         resul.recomputeGrid();
@@ -76,6 +78,9 @@ public class CartesianGrid extends MultiShapeObject implements shouldUdpateWithC
         CartesianGrid big = new CartesianGrid(centerX, centerY, xStep, yStep);
         CartesianGrid small = new CartesianGrid(centerX, centerY, xStepSec, yStepSec);
 
+        //First default camera
+        big.setCamera(JMathAnimConfig.getConfig().getCamera());
+        small.setCamera(JMathAnimConfig.getConfig().getCamera());
         big.style("gridPrimaryDefault");
         big.layer(-Integer.MAX_VALUE + 1);
         big.recomputeGrid();
@@ -94,14 +99,13 @@ public class CartesianGrid extends MultiShapeObject implements shouldUdpateWithC
         this.centerY = y;
         this.xStep = w;
         this.yStep = h;
-        this.cam = scene.getCamera();
-        this.currentView = this.cam.getMathView().copy();
+        this.currentView = Rect.centeredUnitSquare();
     }
 
     private void recomputeGrid() {
         this.shapes.clear();
 
-        Rect bb = this.cam.getMathView();
+        Rect bb = this.getCamera().getMathView();
         double wv = 1 * bb.getWidth();
         double hv = 1 * bb.getHeight();
 
@@ -124,7 +128,7 @@ public class CartesianGrid extends MultiShapeObject implements shouldUdpateWithC
 
     public void alignGridToScreen() {
         Rect bb = this.getBoundingBox();
-        Rect mv = this.cam.getMathView();
+        Rect mv = this.getCamera().getMathView();
         while (bb.xmin > mv.xmin) {
             this.shift(-this.xStep, 0);
             bb.xmin -= this.xStep;
@@ -173,6 +177,7 @@ public class CartesianGrid extends MultiShapeObject implements shouldUdpateWithC
 
     @Override
     public void copyStateFrom(MathObject obj) {
+         super.copyStateFrom(obj);
         if (obj instanceof CartesianGrid) {
             CartesianGrid grid = (CartesianGrid) obj;
             this.getMp().copyFrom(grid.getMp());
@@ -180,7 +185,7 @@ public class CartesianGrid extends MultiShapeObject implements shouldUdpateWithC
     }
 
     public void rebuildShape() {
-        final Rect mathView = cam.getMathView();
+        final Rect mathView = getCamera().getMathView();
         if (!this.currentView.equals(mathView)) {
             if ((this.currentView.getWidth() != mathView.getWidth()) || (this.currentView.getHeight() != mathView.getHeight())) {
                 recomputeGrid();
