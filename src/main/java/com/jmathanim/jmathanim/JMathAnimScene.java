@@ -327,10 +327,13 @@ public abstract class JMathAnimScene {
                 }
                 registerUpdateable(obj);
                 obj.addToSceneHook(this);
+                Camera cam = (obj.getCamera() == null ? renderer.getCamera() : obj.getCamera());
+                if (obj instanceof shouldUdpateWithCamera) {
+                    cam.registerUpdateable((shouldUdpateWithCamera) obj);
+                }
+
             }
-            if (obj instanceof shouldUdpateWithCamera) {
-                renderer.getCamera().registerUpdateable((shouldUdpateWithCamera) obj);
-            }
+
         }
     }
 

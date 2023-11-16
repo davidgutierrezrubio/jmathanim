@@ -52,11 +52,6 @@ public abstract class MathObject implements Drawable, Updateable, Stateable, Box
         return camera;
     }
 
-    public <T extends MathObject> T setCamera(Camera camera) {
-        this.camera = camera;
-        return (T) this;
-    }
-
     public enum Align {
         LEFT, RIGHT, UPPER, LOWER, HCENTER, VCENTER
     }
@@ -1000,10 +995,12 @@ public abstract class MathObject implements Drawable, Updateable, Stateable, Box
         }
         setProperty("scene", scene);
     }
-  @Override
+
+    @Override
     public void draw(JMathAnimScene scene, Renderer r) {
         draw(scene, r, getCamera());
     }
+
     /**
      * This hook is invoked when this object is removed from the scene. You can
      * override this method if you are defining your own MathObject subclass.
@@ -1186,4 +1183,21 @@ public abstract class MathObject implements Drawable, Updateable, Stateable, Box
     public void on_setLineCap(StrokeLineCap linecap) {
     }
 
+    /**
+     * Set the associated camera to this object. The camera is used to compute
+     * the screen coordinates where it will be drawed. If not camera is set,
+     * default camera is associated when added to the scene.
+     *
+     * @param <T> Calling subclass
+     * @param camera Camera
+     * @return This object
+     */
+    public <T extends MathObject> T setCamera(Camera camera) {
+        if ((this instanceof shouldUdpateWithCamera) && (getCamera() != null)) {
+            getCamera().unregisterUpdateable((shouldUdpateWithCamera) this);
+            camera.registerUpdateable((shouldUdpateWithCamera) this);
+        }
+        this.camera = camera;
+        return (T) this;
+    }
 }

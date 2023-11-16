@@ -187,7 +187,6 @@ public class Camera implements Boxable {
     public void setWidth(double d) {
         scale(d / getMathView().getWidth());
     }
-    
 
 //    /**
 //     * Set size of the screen to which the camera will compute coordinates
@@ -201,7 +200,6 @@ public class Camera implements Boxable {
 //        screenHeight = h;
 //
 //    }
-
     public void setGaps(double h, double v) {
         hgap = h;
         vgap = v;
@@ -412,9 +410,13 @@ public class Camera implements Boxable {
     }
 
     public void registerUpdateable(shouldUdpateWithCamera object) {
+        if (updateableObjects.contains(object)) {
+            return;
+        }
         updateableObjects.add(object);
     }
-     public void unregisterUpdateable(shouldUdpateWithCamera object) {
+
+    public void unregisterUpdateable(shouldUdpateWithCamera object) {
         updateableObjects.remove(object);
     }
 }
