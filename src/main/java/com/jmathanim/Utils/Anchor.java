@@ -79,6 +79,7 @@ public class Anchor {
         DIAG3,
         DIAG4
     }
+
     public enum innerType {
         CENTER,
         UPPER,
@@ -90,7 +91,6 @@ public class Anchor {
         LEFT,
         LUPPER
     }
-    
 
     /**
      * Return a {@link Point} object that represents the given anchor. For
@@ -286,9 +286,10 @@ public class Anchor {
      * @param yMargin y margin to apply to the anchor
      * @return A {@link Point} located at the current anchor
      */
-    public static Point getScreenAnchorPoint(Camera camera,Type anchor, double xMargin, double yMargin) {
+    public static Point getScreenAnchorPoint(Camera camera, Type anchor, double xMargin, double yMargin) {
         Point resul = new Point();
-        Rect mathViewWithGap = camera.getMathView().addGap(-xMargin, -yMargin);
+        Vec gaps = camera.getGaps();
+        Rect mathViewWithGap = camera.getMathView().addGap(-xMargin - gaps.x, -yMargin - gaps.y);
         switch (anchor) {
             case CENTER:
                 resul = mathViewWithGap.getCenter();
