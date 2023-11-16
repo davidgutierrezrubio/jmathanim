@@ -741,7 +741,7 @@ public abstract class MathObject implements Drawable, Updateable, Stateable, Box
      * @return The current object
      */
     public <T extends MathObject> T stackToScreen(Type anchorType, double xMargin, double yMargin) {
-        Point B = Anchor.getScreenAnchorPoint(anchorType, xMargin, yMargin);
+        Point B = Anchor.getScreenAnchorPoint(getCamera(),anchorType, xMargin, yMargin);
         Point A = Anchor.getAnchorPoint(this, anchorType);
         return this.shift(A.to(B));
     }

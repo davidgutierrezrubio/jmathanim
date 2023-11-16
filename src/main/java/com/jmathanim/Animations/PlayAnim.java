@@ -407,7 +407,7 @@ public class PlayAnim {
     }
 
     /**
-     * Performs a pan and zoom out animation of the current camera to ensure all
+     * Performs a pan and zoom out animation of the default camera to ensure all
      * objects in the scene fit in the math view, using the specified run
      * time.You can set the gaps between objects and mathview borders, with the
      * camera.setGaps method. This method doesn't zoom in the view.
@@ -436,7 +436,7 @@ public class PlayAnim {
     }
 
     /**
-     * Performs a pan and zoom out animation of the current camera to ensure all
+     * Performs a pan and zoom out animation of the default camera to ensure all
      * given objects fit in the math view, using the specified run time. You can
      * set the gaps between objects and mathview borders, with the
      * camera.setGaps method. This method doesn't zoom in the view.
@@ -473,7 +473,7 @@ public class PlayAnim {
     }
 
     /**
-     * Zooms the camera so that it contains the given rect. The resulting
+     * Zooms the default camera so that it contains the given rect. The resulting
      * mathview is the smallest view containing the Rect specified.
      *
      * @param runTime Duration in seconds
@@ -506,7 +506,7 @@ public class PlayAnim {
     }
 
     /**
-     * Animates a camera pan with the given shift vector
+     * Animates a camera pan with the default camera and given shift vector
      *
      * @param runTime Duration in seconds
      * @param v Shift vector

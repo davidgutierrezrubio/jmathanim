@@ -55,7 +55,9 @@ public class CTImage extends Constructible {
 
     @Override
     public CTImage copy() {
-        return make(A.copy(), B.copy(), image.copy());
+        CTImage copy = make(A.copy(), B.copy(), image.copy());
+        copy.copyStateFrom(this);
+        return this;
     }
 
    @Override

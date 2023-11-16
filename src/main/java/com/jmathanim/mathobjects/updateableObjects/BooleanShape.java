@@ -68,7 +68,9 @@ public class BooleanShape extends Shape {
 
     @Override
     public Shape copy() {
-        return new BooleanShape(this.operation, shape1.copy(), shape2.copy());
+        BooleanShape copy = new BooleanShape(this.operation, shape1.copy(), shape2.copy());
+        copy.copyStateFrom(this);
+        return this;
     }
 
     @Override

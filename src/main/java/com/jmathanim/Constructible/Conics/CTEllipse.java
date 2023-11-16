@@ -23,6 +23,7 @@ import com.jmathanim.Utils.AffineJTransform;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.JMPathPoint;
+import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.Point;
 import com.jmathanim.mathobjects.Shape;
 
@@ -32,7 +33,7 @@ import com.jmathanim.mathobjects.Shape;
  * @author David Gutierrez Rubio
  */
 public class CTEllipse extends Constructible {
-
+    
     CTPoint focus1, focus2, A;
     private final Shape originalShape;
     private final Shape ellipseToDraw;
@@ -83,19 +84,19 @@ public class CTEllipse extends Constructible {
         originalShape = Shape.circle();
         ellipseToDraw = Shape.circle();
     }
-
+    
     @Override
     public Shape getMathObject() {
         return ellipseToDraw;
     }
-
+    
     @Override
     public void rebuildShape() {
         double centerToFocus = focus1.to(focus2).norm() / 2;
         double d = focus1.to(A).norm() + focus2.to(A).norm();
         double minAxis = Math.sqrt(.25 * d * d - centerToFocus * centerToFocus);
         double maxAxis = d / 2;
-
+        
         Point centerEllipse = focus1.getMathObject().interpolate(focus2.getMathObject(), .5);
         Vec centerToRightPoint = centerEllipse.to(focus2.getMathObject()).normalize();
         Point rightPoint = centerEllipse.add(centerToRightPoint.mult(maxAxis));
@@ -112,14 +113,20 @@ public class CTEllipse extends Constructible {
         AffineJTransform tr = AffineJTransform.createAffineTransformation(Point.origin(), Point.at(1, 0), Point.at(0, 1), centerEllipse, rightPoint, upperPoint, 1);
         tr.applyTransform(ellipseToDraw);
     }
-
+    
     @Override
     public CTEllipse copy() {
         CTEllipse copy = CTEllipse.make(focus1.copy(), focus2.copy(), A.copy());
-        copy.getMp().copyFrom(this.getMp());
+        copy.copyStateFrom(this);
         return copy;
     }
-
+    
+    @Override
+    public void copyStateFrom(MathObject obj) {
+        this.getMp().copyFrom(obj.getMp());
+        super.copyStateFrom(obj);
+    }
+    
     @Override
     public void registerUpdateableHook(JMathAnimScene scene) {
         dependsOn(scene, this.focus1, this.focus2, this.A);

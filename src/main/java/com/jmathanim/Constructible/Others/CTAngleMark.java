@@ -30,23 +30,23 @@ import com.jmathanim.mathobjects.Shape;
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
 public class CTAngleMark extends Constructible {
-
+    
     private boolean isRight;
-
+    
     double radius;
     private final CTPoint center, A, B;
     private final Shape arcToDraw;
-
+    
     public static CTAngleMark make(CTPoint center, CTPoint A, CTPoint B) {
         CTAngleMark resul = new CTAngleMark(center, A, B);
         resul.rebuildShape();
         return resul;
     }
-
+    
     public static CTAngleMark make(Point center, Point A, Point B) {
         return CTAngleMark.make(CTPoint.make(center), CTPoint.make(A), CTPoint.make(B));
     }
-
+    
     public CTAngleMark(CTPoint center, CTPoint A, CTPoint B) {
         this.center = center;
         this.A = A;
@@ -54,29 +54,37 @@ public class CTAngleMark extends Constructible {
         radius = .1;
         arcToDraw = new Shape();
         arcToDraw.style("anglemarkdefault");
-        isRight=false;
+        isRight = false;
     }
-
+    
     @Override
     public Constructible copy() {
         CTAngleMark copy = CTAngleMark.make(center.copy(), A.copy(), B.copy());
-        copy.freeMathObject(this.isThisMathObjectFree());
-        copy.getMathObject().copyStateFrom(this.getMathObject());
-        copy.getMp().copyFrom(this.getMp());
+        copy.copyStateFrom(this);
         return copy;
     }
-
+    
+    @Override
+    public void copyStateFrom(MathObject obj) {
+        super.copyStateFrom(obj);
+        if (obj instanceof CTAngleMark) {
+            CTAngleMark ang = (CTAngleMark) obj;
+            this.freeMathObject(ang.isThisMathObjectFree());
+            this.getMathObject().copyStateFrom(ang.getMathObject());
+            this.getMp().copyFrom(ang.getMp());
+        }
+    }
+    
     @Override
     public Shape getMathObject() {
         return arcToDraw;
     }
-
+    
     public CTAngleMark setIsRight(boolean b) {
-        isRight=b;
+        isRight = b;
         return this;
     }
-
-
+    
     @Override
     public void rebuildShape() {
         if (isThisMathObjectFree()) {
@@ -90,7 +98,7 @@ public class CTAngleMark extends Constructible {
         Vec v1 = center.to(A).normalize();
         Vec v2 = center.to(B).normalize();
         double dotProduct = v1.dot(v2);
-        if ((isRight)||(dotProduct == 0)) {//Right angle
+        if ((isRight) || (dotProduct == 0)) {//Right angle
             arc = Shape.polyLine(
                     Point.at(center.v.add(v1.mult(radius))),
                     Point.at(center.v.add(v1.mult(radius)).add(v2.mult(radius))),
@@ -106,15 +114,15 @@ public class CTAngleMark extends Constructible {
         arcToDraw.merge(arc, true, true);
         arcToDraw.getPath().distille();
     }
-
+    
     public double getRadius() {
         return radius;
     }
-
+    
     public CTAngleMark setRadius(double radius) {
         this.radius = radius;
         rebuildShape();
         return this;
     }
-
+    
 }

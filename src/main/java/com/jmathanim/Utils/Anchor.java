@@ -17,6 +17,7 @@
  */
 package com.jmathanim.Utils;
 
+import com.jmathanim.Cameras.Camera;
 import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.Point;
 
@@ -285,9 +286,9 @@ public class Anchor {
      * @param yMargin y margin to apply to the anchor
      * @return A {@link Point} located at the current anchor
      */
-    public static Point getScreenAnchorPoint(Type anchor, double xMargin, double yMargin) {
+    public static Point getScreenAnchorPoint(Camera camera,Type anchor, double xMargin, double yMargin) {
         Point resul = new Point();
-        Rect mathViewWithGap = JMathAnimConfig.getConfig().getCamera().getMathView().addGap(-xMargin, -yMargin);
+        Rect mathViewWithGap = camera.getMathView().addGap(-xMargin, -yMargin);
         switch (anchor) {
             case CENTER:
                 resul = mathViewWithGap.getCenter();
