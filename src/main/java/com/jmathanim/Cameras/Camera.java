@@ -46,6 +46,11 @@ public class Camera implements Boxable {
      */
     public int screenHeight;
 
+    
+    public int upperLeftX;
+    public int upperLeftY;
+    
+    
     /**
      * Boundaries of the view in the math world
      */
@@ -95,6 +100,8 @@ public class Camera implements Boxable {
     public Camera(JMathAnimScene scene, int screenWidth, int screenHeight) {
         this.screenWidth = screenWidth;
         this.screenHeight = screenHeight;
+        this.upperLeftX=0;
+        this.upperLeftY=0;
         this.scene = scene;
         this.updateableObjects = new ArrayList<>();
 
@@ -111,9 +118,13 @@ public class Camera implements Boxable {
     }
 
     public void updateDependentObjectsFromThisCamera() {
-        for (shouldUdpateWithCamera updateableObject : updateableObjects) {
-            updateableObject.updateWithCamera(this);
+        for (int i = 0; i < updateableObjects.size(); i++) {
+            shouldUdpateWithCamera updateableObject = updateableObjects.get(i);
+                 updateableObject.updateWithCamera(this);
         }
+//        for (shouldUdpateWithCamera updateableObject : updateableObjects) {
+//            updateableObject.updateWithCamera(this);
+//        }
     }
 
     /**
@@ -179,7 +190,7 @@ public class Camera implements Boxable {
         double x, y;
         x = (mathX - xmin) * screenWidth / (xmax - xmin);
         y = (ymax - mathY) * screenHeight / (ymax - ymin);
-        return new double[]{x, y};
+        return new double[]{x+upperLeftX, y+upperLeftY};
     }
 
     public double[] screenToMath(double x, double y) {
