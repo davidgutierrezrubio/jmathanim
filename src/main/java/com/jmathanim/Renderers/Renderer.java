@@ -20,6 +20,7 @@ package com.jmathanim.Renderers;
 import com.jmathanim.Cameras.Camera;
 import com.jmathanim.Renderers.FXRenderer.JavaFXRenderer;
 import com.jmathanim.Renderers.MovieEncoders.SoundItem;
+import com.jmathanim.Styling.RendererEffects;
 import com.jmathanim.Utils.JMathAnimConfig;
 import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.Vec;
@@ -52,6 +53,8 @@ public abstract class Renderer {
         this.config = parentScene.getConfig();
     }
 
+    abstract public RendererEffects buildRendererEffects();
+    
     abstract public void initialize();
 
     abstract public <T extends Camera> T getCamera();

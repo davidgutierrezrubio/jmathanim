@@ -19,6 +19,7 @@ package com.jmathanim.Constructible;
 
 import com.jmathanim.Cameras.Camera;
 import com.jmathanim.Renderers.Renderer;
+import com.jmathanim.Styling.RendererEffects;
 import com.jmathanim.Styling.Stylable;
 import com.jmathanim.Utils.AffineJTransform;
 import com.jmathanim.Utils.Rect;
@@ -135,6 +136,11 @@ public abstract class Constructible extends MathObject {
 
     public void setLabel(String label) {
         this.label = label;
+    }
+
+    @Override
+    public RendererEffects getRendererEffects() {
+        return getMathObject().getRendererEffects();
     }
 
 }

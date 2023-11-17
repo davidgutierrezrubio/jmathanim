@@ -21,6 +21,7 @@ import com.jmathanim.Cameras.Camera;
 import com.jmathanim.Styling.JMColor;
 import com.jmathanim.Styling.MODrawProperties;
 import com.jmathanim.Styling.PaintStyle;
+import com.jmathanim.Styling.RendererEffects;
 import com.jmathanim.Styling.Stylable;
 import com.jmathanim.Utils.AffineJTransform;
 import com.jmathanim.Utils.Anchor;
@@ -68,7 +69,7 @@ public abstract class MathObject implements Drawable, Updateable, Stateable, Box
     private final HashSet<MathObject> dependents;
 
     private double leftGap, upperGap, rightGap, lowerGap;
-
+    private final RendererEffects rendererEffects;
     private final HashMap<String, Object> properties;
 
     public MathObject() {
@@ -79,7 +80,7 @@ public abstract class MathObject implements Drawable, Updateable, Stateable, Box
     public MathObject(MODrawProperties prop) {
         this.updateLevel = -1;
         JMathAnimConfig config = JMathAnimConfig.getConfig();
-
+        rendererEffects=config.getRenderer().buildRendererEffects();
         scene = config.getScene();
         camera=scene.getCamera();//Default camera
         mp = config.getDefaultMP();// Default MP values
@@ -1198,4 +1199,10 @@ public abstract class MathObject implements Drawable, Updateable, Stateable, Box
         this.camera = camera;
         return (T) this;
     }
+
+    @Override
+    public RendererEffects getRendererEffects() {
+        return rendererEffects;
+    }
+    
 }

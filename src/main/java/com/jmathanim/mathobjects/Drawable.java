@@ -19,6 +19,7 @@ package com.jmathanim.mathobjects;
 
 import com.jmathanim.Cameras.Camera;
 import com.jmathanim.Renderers.Renderer;
+import com.jmathanim.Styling.RendererEffects;
 import com.jmathanim.jmathanim.JMathAnimScene;
 
 /**
@@ -29,4 +30,5 @@ import com.jmathanim.jmathanim.JMathAnimScene;
 public interface Drawable {
 
 	public void draw(JMathAnimScene scene, Renderer r,Camera camera);
+        public RendererEffects getRendererEffects();
 }

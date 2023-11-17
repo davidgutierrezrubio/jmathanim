@@ -22,6 +22,7 @@ import com.jmathanim.Renderers.MovieEncoders.SoundItem;
 import com.jmathanim.Renderers.MovieEncoders.VideoEncoder;
 import com.jmathanim.Renderers.MovieEncoders.XugglerVideoEncoder;
 import com.jmathanim.Renderers.Renderer;
+import com.jmathanim.Styling.RendererEffects;
 import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.ResourceLoader;
 import com.jmathanim.Utils.Vec;
@@ -52,6 +53,7 @@ import javafx.scene.PerspectiveCamera;
 import javafx.scene.Scene;
 import javafx.scene.SnapshotParameters;
 import javafx.scene.effect.DropShadow;
+import javafx.scene.effect.GaussianBlur;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.image.WritableImage;
@@ -327,6 +329,8 @@ public class JavaFXRenderer extends Renderer {
         if (numPoints >= 2) {
             Path path = FXPathUtils.createFXPathFromJMPath(c, cam);
             applyDrawingStyles(path, mobj);
+            applyRendererEffects(path, mobj.getRendererEffects());
+            path.setClip(new Rectangle(cam.upperLeftX, cam.upperLeftY, cam.screenWidth, cam.screenHeight));
             fxnodes.add(path);
         }
         if (!"".equals(mobj.getDebugText())) {
@@ -371,6 +375,12 @@ public class JavaFXRenderer extends Renderer {
                 path.getStrokeDashArray().addAll(MathWidthToThickness(.025), MathWidthToThickness(.005), MathWidthToThickness(.0025), MathWidthToThickness(.005));
                 path.setStrokeLineCap(StrokeLineCap.BUTT);
                 break;
+        }
+    }
+
+    private void applyRendererEffects(Node node, RendererEffects rendererEffects) {
+        if (rendererEffects.getGaussianBlurRadius()>0) {
+            node.setEffect(new GaussianBlur(rendererEffects.getGaussianBlurRadius()));
         }
     }
 
@@ -518,4 +528,10 @@ public class JavaFXRenderer extends Renderer {
             //Do nothing
         }
     }
+
+    @Override
+    public RendererEffects buildRendererEffects() {
+        return new JavaFXRendererEffects();
+    }
+
 }
