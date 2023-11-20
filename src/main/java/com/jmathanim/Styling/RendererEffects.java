@@ -21,19 +21,78 @@ package com.jmathanim.Styling;
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
 public class RendererEffects {
+
+    //Gaussian blur
     private double gaussianBlurRadius;
 
+    //Drop shadow
+    private double shadowKernelSize;
+    private double shadowOffsetX;
+    private double shadowOffsetY;
+    private JMColor shadowColor;
+
+    public void copyFrom(RendererEffects r) {
+        this.setGaussianBlurRadius(r.getGaussianBlurRadius());
+        this.setShadowKernelSize(r.getShadowKernelSize());
+        this.setShadowColor(r.getShadowColor());
+        this.setShadowOffset(r.getShadowOffsetX(), r.getShadowOffsetY());
+    }
+    
+    
+    
+    
     public RendererEffects() {
-        gaussianBlurRadius=0;
+        gaussianBlurRadius = 0;
+        shadowKernelSize = 0;
+        shadowOffsetX = 0;
+        shadowOffsetY = 0;
+        shadowColor = JMColor.BLACK;
+    }
+
+    public double getShadowKernelSize() {
+        return shadowKernelSize;
+    }
+
+    public RendererEffects setShadowKernelSize(double shadowKernelSize) {
+        this.shadowKernelSize = shadowKernelSize;
+        return this;
+    }
+
+    public double getShadowOffsetX() {
+        return shadowOffsetX;
+    }
+
+    public RendererEffects setShadowOffset(double shadowOffsetX, double shadowOffsetY) {
+        this.shadowOffsetX = shadowOffsetX;
+        this.shadowOffsetY = shadowOffsetY;
+        return this;
+    }
+
+    public double getShadowOffsetY() {
+        return shadowOffsetY;
+    }
+
+    public JMColor getShadowColor() {
+        return shadowColor;
+    }
+
+    public RendererEffects setShadowColor(JMColor shadowColor) {
+        this.shadowColor = shadowColor;
+        return this;
+    }
+
+    public RendererEffects setShadowColor(String color) {
+        this.shadowColor = JMColor.parse(color);
+           return this;
     }
 
     public double getGaussianBlurRadius() {
         return gaussianBlurRadius;
     }
 
-    public void setGaussianBlurRadius(double gaussianBlurRadius) {
+    public RendererEffects setGaussianBlurRadius(double gaussianBlurRadius) {
         this.gaussianBlurRadius = gaussianBlurRadius;
+        return this;
     }
-    
-    
+
 }

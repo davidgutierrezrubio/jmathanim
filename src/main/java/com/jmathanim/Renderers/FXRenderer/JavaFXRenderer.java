@@ -76,37 +76,37 @@ import javafx.scene.transform.Translate;
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
 public class JavaFXRenderer extends Renderer {
-
+    
     private static final double XMIN_DEFAULT = -2;
     private static final double XMAX_DEFAULT = 2;
-
+    
     private static final double MIN_THICKNESS = .2d;
-
+    
     public final FXPathUtils fXPathUtils;
     public Camera camera;
     public Camera fixedCamera;
-
+    
     private final HashMap<String, Image> images;
-
+    
     protected PerspectiveCamera fxCamera;
     public double FxCamerarotateX = 0;
     public double FxCamerarotateY = 0;
     public double FxCamerarotateZ = 0;
-
+    
     protected Scene fxScene;
     protected Group group;
     protected Group groupRoot;
     protected Group groupBackground;
     protected Group groupDebug;
     protected DropShadow dropShadow;
-
+    
     protected final ArrayList<Node> fxnodes;
     protected final ArrayList<Node> debugFXnodes;
-
+    
     protected VideoEncoder videoEncoder;
     protected File saveFilePath;
     public double correctionThickness;
-
+    
     public JavaFXRenderer(JMathAnimScene parentScene) throws Exception {
         super(parentScene);
         fxnodes = new ArrayList<>();
@@ -117,7 +117,7 @@ public class JavaFXRenderer extends Renderer {
         fixedCamera = new Camera(scene, config.mediaW, config.mediaH);
         correctionThickness = config.mediaW * 1d / 1066;//Correction factor for thickness
     }
-
+    
     @Override
     public void initialize() {
         camera.initialize(XMIN_DEFAULT, XMAX_DEFAULT, 0);
@@ -128,13 +128,13 @@ public class JavaFXRenderer extends Renderer {
             Logger.getLogger(JavaFXRenderer.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-
+    
     public final void prepareEncoder() throws Exception {
-
+        
         JMathAnimScene.logger.debug("Preparing encoder");
-
+        
         initializeJavaFXWindow();
-
+        
         if (config.isCreateMovie()) {
             videoEncoder = new XugglerVideoEncoder();
             File tempPath = new File(config.getOutputDir().getCanonicalPath());
@@ -152,8 +152,15 @@ public class JavaFXRenderer extends Renderer {
             dropShadow.setOffsetY(config.shadowOffsetY);
             dropShadow.setColor(Color.color(0, 0, 0, config.shadowAlpha));
         }
+        
+        dropShadow = new DropShadow();
+        dropShadow.setRadius(config.shadowKernelSize);
+        dropShadow.setOffsetX(config.shadowOffsetX);
+        dropShadow.setOffsetY(config.shadowOffsetY);
+        dropShadow.setColor(Color.color(0, 0, 0, config.shadowAlpha));
+        
     }
-
+    
     public final void initializeJavaFXWindow() throws Exception {
         new Thread(() -> Application.launch(StandaloneSnapshot.FXStarter.class)).start();
         // block until FX toolkit initialization is complete:
@@ -189,7 +196,7 @@ public class JavaFXRenderer extends Renderer {
 //                        new Rotate(45, Rotate.Y_AXIS),
 //                        new Translate(-config.mediaW/2, -config.mediaH/2, 0));
             fxScene.setCamera(fxCamera);
-
+            
             if (config.isShowPreview()) {
                 JMathAnimScene.logger.debug("Creating preview window");
                 // TODO: This gaps to add to the window are os-dependent
@@ -199,30 +206,30 @@ public class JavaFXRenderer extends Renderer {
             }
             return 1;
         });
-
+        
         Platform.runLater(task);
         task.get();
-
+        
     }
-
+    
     public final void endJavaFXEngine() {
         Platform.exit();
     }
-
+    
     @Override
     public Camera getCamera() {
         return camera;
     }
-
+    
     @Override
     public Camera getFixedCamera() {
         return fixedCamera;
     }
-
+    
     @Override
     public void saveFrame(int frameCount) {
         BufferedImage renderedImage = getRenderedImage(frameCount);
-
+        
         if (config.isCreateMovie()) {
 //			if ((frameCount % config.fps) == 0) {
 //				newLineCounter++;
@@ -235,7 +242,7 @@ public class JavaFXRenderer extends Renderer {
             writeImageToPNG(filename, renderedImage, "png");
         }
     }
-
+    
     @Override
     protected BufferedImage getRenderedImage(int frameCount) {
         WritableImage img2;
@@ -245,7 +252,7 @@ public class JavaFXRenderer extends Renderer {
             fxScene.setFill(config.getBackgroundColor().getFXPaint(r, camera));
             group.getChildren().clear();
             groupDebug.getChildren().clear();
-
+            
             fxCamera.getTransforms().clear();
             fxCamera.getTransforms().addAll(new Translate(config.mediaW / 2, config.mediaH / 2, 0),
                     new Rotate(FxCamerarotateX, Rotate.X_AXIS), new Rotate(FxCamerarotateY, Rotate.Y_AXIS),
@@ -266,7 +273,7 @@ public class JavaFXRenderer extends Renderer {
             params.setFill(config.getBackgroundColor().getFXPaint(r, camera));
             params.setViewport(new Rectangle2D(0, 0, config.mediaW, config.mediaH));
             params.setCamera(fxScene.getCamera());
-
+            
             return fxScene.getRoot().snapshot(params, null);
         });
         Platform.runLater(task);
@@ -278,7 +285,7 @@ public class JavaFXRenderer extends Renderer {
         }
         return bi;
     }
-
+    
     @Override
     public void finish(int frameCount) {
         JMathAnimScene.logger.info(
@@ -295,18 +302,18 @@ public class JavaFXRenderer extends Renderer {
             if (videoEncoder.isFramesGenerated()) {
                 JMathAnimScene.logger.info("Movie created at " + saveFilePath);
             }
-
+            
         }
         endJavaFXEngine();
-
+        
     }
-
+    
     @Override
     public void clear() {
         fxnodes.clear();
         debugFXnodes.clear();
     }
-
+    
     @Override
     public void drawPath(Shape mobj) {
         Camera cam = mobj.getCamera();
@@ -315,7 +322,7 @@ public class JavaFXRenderer extends Renderer {
         }
         drawPath(mobj, cam);
     }
-
+    
     @Override
     public void drawPath(Shape mobj, Camera cam) {
         if (cam == null) {
@@ -325,7 +332,7 @@ public class JavaFXRenderer extends Renderer {
         }
         JMPath c = mobj.getPath();
         int numPoints = c.size();
-
+        
         if (numPoints >= 2) {
             Path path = FXPathUtils.createFXPathFromJMPath(c, cam);
             applyDrawingStyles(path, mobj);
@@ -337,9 +344,9 @@ public class JavaFXRenderer extends Renderer {
             debugText(mobj.getDebugText(), mobj.getCenter().v);
         }
     }
-
+    
     private void applyDrawingStyles(Path path, Shape mobj) {
-
+        
         path.setStrokeLineCap(mobj.getMp().getLinecap());
         path.setStrokeLineJoin(StrokeLineJoin.ROUND);
         path.setStrokeType(StrokeType.CENTERED);
@@ -377,13 +384,23 @@ public class JavaFXRenderer extends Renderer {
                 break;
         }
     }
-
+    
     private void applyRendererEffects(Node node, RendererEffects rendererEffects) {
-        if (rendererEffects.getGaussianBlurRadius()>0) {
+        if (rendererEffects.getGaussianBlurRadius() > 0) {
             node.setEffect(new GaussianBlur(rendererEffects.getGaussianBlurRadius()));
         }
+        
+        if (rendererEffects.getShadowKernelSize() > 0) {
+            dropShadow = new DropShadow();
+            dropShadow.setRadius(rendererEffects.getShadowKernelSize());
+            dropShadow.setOffsetX(rendererEffects.getShadowOffsetX());
+            dropShadow.setOffsetY(rendererEffects.getShadowOffsetY());
+            dropShadow.setColor(rendererEffects.getShadowColor().getFXColor());
+            node.setEffect(dropShadow);
+        }
+        
     }
-
+    
     public double computeThickness(MathObject mobj) {
         Camera cam = (mobj.getMp().isAbsoluteThickness() ? fixedCamera : camera);
         //We use the correction factor mediaW/1066 in order to obtain the same apparent thickness
@@ -391,25 +408,25 @@ public class JavaFXRenderer extends Renderer {
         return Math.max(mobj.getMp().getThickness() / cam.getMathView().getWidth() * correctionThickness, MIN_THICKNESS);
 //        return Math.max(mobj.getMp().getThickness() / cam.getMathView().getWidth() * 2.5d, MIN_THICKNESS);
     }
-
+    
     @Override
     public double MathWidthToThickness(double w) {
 //        return mathScalar * config.mediaW / (xmax - ymin);
 //        return camera.mathToScreen(w) / 1.25 * camera.getMathView().getWidth() / 2d;
         return w * 1066;
     }
-
+    
     @Override
     public double ThicknessToMathWidth(double th) {
         return th / 1066;
     }
-
+    
     @Override
     public double ThicknessToMathWidth(MathObject obj) {
         Camera cam = (obj.getMp().isAbsoluteThickness() ? fixedCamera : camera);
         return obj.getMp().getThickness() / 1066 * 4 / cam.getMathView().getWidth();
     }
-
+    
     @Override
     public void drawAbsoluteCopy(Shape sh, Vec anchor) {
         Shape shape = sh.copy();
@@ -431,9 +448,9 @@ public class JavaFXRenderer extends Renderer {
         double[] ms = camera.mathToScreenFX(v);
         double[] coords = fixedCamera.screenToMath(ms[0], ms[1]);
         return new Vec(coords[0], coords[1]);
-
+        
     }
-
+    
     @Override
     public Rect createImage(InputStream stream) {
         String fileName = stream.toString();
@@ -447,10 +464,10 @@ public class JavaFXRenderer extends Renderer {
         } else {
             image = images.get(fileName);
         }
-
+        
         return getBboxFromImageCatalog(fileName);
     }
-
+    
     private Rect getBboxFromImageCatalog(String fileName) {
         Image image = images.get(fileName);
         // UL corner of bounding box initially set to (0,0)
@@ -459,11 +476,11 @@ public class JavaFXRenderer extends Renderer {
         r.xmax = fixedCamera.screenToMath(image.getWidth());
         return r;
     }
-
+    
     public Image getImageFromCatalog(AbstractJMImage obj) {
         return images.get(obj.getId());
     }
-
+    
     @Override
     public void drawImage(AbstractJMImage obj, Camera cam) {
         Rect bbox = getBboxFromImageCatalog(obj.getId());
@@ -476,9 +493,9 @@ public class JavaFXRenderer extends Renderer {
         }
         imageView.setFitHeight(bbox.getHeight());
         imageView.setFitWidth(bbox.getWidth());
-
+        
         imageView.setOpacity(obj.getMp().getDrawColor().getAlpha());
-
+        
         Affine camToScreen = FXPathUtils.camToScreenAffineTransform(cam);
         imageView.getTransforms().add(camToScreen);
 
@@ -488,7 +505,7 @@ public class JavaFXRenderer extends Renderer {
         imageView.getTransforms().add(new Scale(1, -1));
         fxnodes.add(imageView);
     }
-
+    
     @Override
     public void debugText(String text, Vec loc) {
         double[] xy = camera.mathToScreenFX(loc);
@@ -497,18 +514,18 @@ public class JavaFXRenderer extends Renderer {
         Bounds b1 = t.getLayoutBounds();
         t.setX(xy[0] - .5 * b1.getWidth());
         t.setY(xy[1] + .5 * b1.getHeight());
-
+        
         Bounds b = t.getLayoutBounds();
         double gap = 2;
         Rectangle rectangle = new Rectangle(b.getMinX() - gap, b.getMinY() - gap, b.getWidth() + gap,
                 b.getHeight() + gap);
         rectangle.setFill(Color.LIGHTBLUE);
         rectangle.setStroke(Color.DARKBLUE);
-
+        
         debugFXnodes.add(rectangle);
         debugFXnodes.add(t);
     }
-
+    
     protected void showDebugFrame(int numFrame, double time) {
         Text t = new Text("Frame: " + numFrame + " (" + String.format("%.2f", time) + "s)");
         t.setFont(Font.font("Verdana", FontWeight.BOLD, 48));
@@ -519,7 +536,7 @@ public class JavaFXRenderer extends Renderer {
         t.setTextOrigin(VPos.TOP);
         debugFXnodes.add(t);
     }
-
+    
     @Override
     public void addSound(SoundItem soundItem) {
         try {
@@ -528,10 +545,10 @@ public class JavaFXRenderer extends Renderer {
             //Do nothing
         }
     }
-
+    
     @Override
     public RendererEffects buildRendererEffects() {
         return new JavaFXRendererEffects();
     }
-
+    
 }
