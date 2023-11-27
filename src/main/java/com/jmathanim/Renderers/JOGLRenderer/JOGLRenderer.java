@@ -55,21 +55,23 @@ public class JOGLRenderer extends Renderer {
         fixedCamera = new Camera3D(parentScene, config.mediaW, config.mediaH);
     }
 
-    @Override
+     @Override
     public double MathWidthToThickness(double w) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+//        return mathScalar * config.mediaW / (xmax - ymin);
+//        return camera.mathToScreen(w) / 1.25 * camera.getMathView().getWidth() / 2d;
+        return w * 1066;
     }
-
+    
     @Override
     public double ThicknessToMathWidth(double th) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        return th / 1066;
     }
-
+    
     @Override
     public double ThicknessToMathWidth(MathObject obj) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        Camera cam = (obj.getMp().isAbsoluteThickness() ? fixedCamera : camera);
+        return obj.getMp().getThickness() / 1066 * 4 / cam.getMathView().getWidth();
     }
-
     @Override
     public void addSound(SoundItem soundItem) {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
@@ -77,7 +79,7 @@ public class JOGLRenderer extends Renderer {
 
     @Override
     public RendererEffects buildRendererEffects() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        return new RendererEffects();
     }
 
     @Override
@@ -87,7 +89,7 @@ public class JOGLRenderer extends Renderer {
 
     @Override
     public void drawPath(Shape mobj, Camera camera) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+         queue.addToQueue(mobj);
     }
 
     @Override

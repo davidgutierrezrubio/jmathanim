@@ -80,9 +80,15 @@ public abstract class MathObject implements Drawable, Updateable, Stateable, Box
     public MathObject(MODrawProperties prop) {
         this.updateLevel = -1;
         JMathAnimConfig config = JMathAnimConfig.getConfig();
-        rendererEffects=config.getRenderer().buildRendererEffects();
+        if (config.getRenderer() != null) {
+            rendererEffects = config.getRenderer().buildRendererEffects();
+        } else {
+            rendererEffects = new RendererEffects();
+        }
         scene = config.getScene();
-        camera=scene.getCamera();//Default camera
+        if (scene != null) {
+            camera = scene.getCamera();//Default camera
+        }
         mp = config.getDefaultMP();// Default MP values
         mp.copyFrom(prop);// Copy all non-null values from prop
         mp.setParent(this);
@@ -746,7 +752,7 @@ public abstract class MathObject implements Drawable, Updateable, Stateable, Box
      * @return The current object
      */
     public <T extends MathObject> T stackToScreen(Type anchorType, double xMargin, double yMargin) {
-        Point B = Anchor.getScreenAnchorPoint(getCamera(),anchorType, xMargin, yMargin);
+        Point B = Anchor.getScreenAnchorPoint(getCamera(), anchorType, xMargin, yMargin);
         Point A = Anchor.getAnchorPoint(this, anchorType);
         return this.shift(A.to(B));
     }
@@ -1206,5 +1212,5 @@ public abstract class MathObject implements Drawable, Updateable, Stateable, Box
     public RendererEffects getRendererEffects() {
         return rendererEffects;
     }
-    
+
 }

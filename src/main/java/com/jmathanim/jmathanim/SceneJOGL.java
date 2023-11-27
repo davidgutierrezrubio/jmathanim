@@ -39,12 +39,12 @@ public abstract class SceneJOGL extends JMathAnimScene {
 	void createRenderer() {
 		fps = getConfig().fps;
 		dt = 1. / fps;
-		try {
+//		try {
 			renderer = new JOGLRenderer(this);
                         renderer.initialize();
-		} catch (Exception ex) {
-			Logger.getLogger(Scene2D.class.getName()).log(Level.SEVERE, null, ex);
-		}
+//		} catch (Exception ex) {
+//			Logger.getLogger(Scene2D.class.getName()).log(Level.SEVERE, null, ex);
+//		}
 		camera = renderer.getCamera();
 		super.renderer = renderer;
 	}
