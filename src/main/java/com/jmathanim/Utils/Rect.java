@@ -405,57 +405,61 @@ public class Rect implements Stateable, Boxable {// TODO: Adjust this to 3D coor
     }
 
     /**
-     * Scale the rectangle around center, and return a new one with the result.
-     * Does not affect the current rect.
+     * Scale the rectangle around center. The current rect is modified.
      *
      * @param xs x scale
      * @param ys y scale
      * @param zs z scale
-     * @return The scaled rectangle.
+     * @return This object.
      */
     public Rect scale(double xs, double ys, double zs) {
         Point p = getCenter();
-        double xminNew = p.v.x - .5 * getWidth() * xs;
-        double xmaxNew = p.v.x + .5 * getWidth() * xs;
-        double yminNew = p.v.y - .5 * getHeight() * ys;
-        double ymaxNew = p.v.y + .5 * getHeight() * ys;
-        double zminNew = p.v.z - .5 * getHeight() * zs;
-        double zmaxNew = p.v.z + .5 * getHeight() * zs;
-        return new Rect(xminNew, yminNew, zminNew, xmaxNew, ymaxNew, zmaxNew);
+        double w = getWidth();
+        double h = getHeight();
+        xmin = p.v.x - .5 * w * xs;
+        xmax = p.v.x + .5 * w * xs;
+        ymin = p.v.y - .5 * h * ys;
+        ymax = p.v.y + .5 * h * ys;
+        zmin = p.v.z - .5 * h * zs;
+        zmax = p.v.z + .5 * h * zs;
+        return this;
     }
 
     /**
-     * Scale the rectangle around center, and return a new one with the result.
-     * Does not affect the current rect.
+     * Scale the rectangle around center. The current object is modified.
      *
      * @param xs x scale
      * @param ys y scale
-     * @return The scaled rectangle.
+     * @return This object
      */
     public Rect scale(double xs, double ys) {
         return scale(xs, ys, 1);
     }
 
     /**
-     * Scale the rectangle around center, and return a new one with the result.
-     * Does not affect the current rect.
+     * Scale the rectangle around center. The current object is modified.
      *
      * @param scale x scale
-     * @return The scaled rectangle.
+     * @return This object
      */
     public Rect scale(double scale) {
         return scale(scale, scale, scale);
     }
 
     /**
-     * Computes the {@link Rect} shifted by a given vector. Original Rect is not
-     * modified
+     * Shifts the rect by a given vector. The object is modified
      *
      * @param v Shift vector
-     * @return A copy of this Rect, shifted.
+     * @return This object.
      */
-    public Rect shifted(Vec v) {
-        return new Rect(xmin + v.x, ymin + v.y, zmin + v.z, xmax + v.x, ymax + v.y, zmax + v.z);
+    public Rect shift(Vec v) {
+        xmin += v.x;
+        ymin += v.y;
+        zmin += v.z;
+        xmax += v.x;
+        ymax += v.y;
+        zmax += v.z;
+        return this;
     }
 
     public void copyFrom(Rect r) {
@@ -534,11 +538,13 @@ public class Rect implements Stateable, Boxable {// TODO: Adjust this to 3D coor
     }
 
     /**
-     * Shifts the current rect so that its center is located at the given one
+     * Shifts the current rect so that its center is located at the given one.
+     * The current Rect is modified.
      *
      * @param dstCenter A point with the new center
+     * @return This object.
      */
-    public void centerAt(Point dstCenter) {
+    public Rect centerAt(Point dstCenter) {
         Vec v = getCenter().to(dstCenter);
         xmin += v.x;
         xmax += v.x;
@@ -546,6 +552,7 @@ public class Rect implements Stateable, Boxable {// TODO: Adjust this to 3D coor
         ymax += v.y;
         zmin += v.z;
         zmax += v.z;
+        return this;
     }
 
     @Override
@@ -588,6 +595,14 @@ public class Rect implements Stateable, Boxable {// TODO: Adjust this to 3D coor
         return null;//Unknow case, return null
     }
 
+    /**
+     * Gets the transformed Rect by the given affine transform. The current Rect
+     * is not modified. The transformed Rect is the smallest Rect that contains
+     * the transformed points of the original Rect.
+     *
+     * @param tr Affine transform.
+     * @return A new Rect representing the transformed Rect.
+     */
     public Rect getTransformedRect(AffineJTransform tr) {
         Point a = getUL();
         Point b = getDL();
@@ -635,12 +650,14 @@ public class Rect implements Stateable, Boxable {// TODO: Adjust this to 3D coor
      * Rect is wider or taller than r, no changes are made. The original object
      * is altered.
      *
-     * @param containerBox Boxable object to fit in. May be a Rect, MathObject or Camera
-     * @param horizontalGap Horizontal gap between the smashed rect and the container bounding box
-     * @param verticalGap Vertical gap between the smashed rect and the container bounding box
+     * @param containerBox Boxable object to fit in. May be a Rect, MathObject
+     * or Camera
+     * @param horizontalGap Horizontal gap between the smashed rect and the
+     * container bounding box
+     * @param verticalGap Vertical gap between the smashed rect and the
+     * container bounding box
      * @return This object
      */
-
     public Rect smash(Boxable containerBox, double horizontalGap, double verticalGap) {
         smashInH(containerBox, horizontalGap);
         smashInV(containerBox, verticalGap);
@@ -681,6 +698,5 @@ public class Rect implements Stateable, Boxable {// TODO: Adjust this to 3D coor
         }
         return this;
     }
-
 
 }

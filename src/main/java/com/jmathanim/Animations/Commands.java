@@ -996,7 +996,7 @@ public class Commands {
                 resul = shift(runtime, shiftVector, camera3d.eye, camera3d.look);
             } else {
 
-                Rect r = camera.getMathView().shifted(shiftVector);
+                Rect r = camera.getMathView().shift(shiftVector);
                 resul = cameraZoomToRect(runtime, camera, r);
             }
             resul.setDebugName("cameraShift");
