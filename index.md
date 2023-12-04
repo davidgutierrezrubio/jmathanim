@@ -1,14 +1,12 @@
 ![logo](logo.gif)
 
-JMathAnim is a library written in JAVA intended to simplify the process of doing
-mathematical animations. Current version is 0.9.10.
+JMathAnim is a library written in JAVA to simplify the process of creating mathematical animations.
+mathematical animations. The current version is 0.9.10.
 
 If you use it and find a bug/missing feature, feel free to fill an issue
-[here](https://github.com/davidgutierrezrubio/jmathanim/issues). For any other
-question, you can contact me at davidgutierrezrubio@gmail.com.
+[here](https://github.com/davidgutierrezrubio/jmathanim/issues). For any other questions, you can contact me at davidgutierrezrubio@gmail.com.
 
-You can also follow my Youtube channel [here](https://www.youtube.com/@EltaxistadeHardy1729) 
-where I occasionally upload math videos (spanish with english subtitles) and my
+You can also follow my Youtube channel [here](https://www.youtube.com/@EltaxistadeHardy1729) where I occasionally upload math videos (spanish with english subtitles) using this library, and my
 [Twitter](https://twitter.com/DavidCalculin) account (mostly in Spanish).
 
 Gallery
@@ -27,13 +25,13 @@ What's new?
 Version 0.9.10 (01/11/2023)
 
 * Arrow class rewritten from scratch, old class `Arrow2D`is marked as obsolete now, use new `Arrow` class instead.
-* Logo interpreter now admits nested REPEAT commands
+* Logo interpreter now admits nested REPEAT commands.
 * Improved handling of `TransformMathExpression` when grouping glyphs.
-* Lots of bug fixes
+* Lots of bug fixes.
 
 Version 0.9.9 (16/09/2023)
 
-* Improved handling of animations to work better with containers like `JoinAnimation` or `AnimationGroup`
+* Improved handling of animations to work better with containers like `JoinAnimation` or `AnimationGroup`.
 * Added `randomLayout` to locate elements of a `MathObjectGroup` in random positions.
 
 Version 0.9.9-SNAPSHOT (06/07/2023)
