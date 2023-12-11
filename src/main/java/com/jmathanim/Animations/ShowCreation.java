@@ -68,6 +68,9 @@ public class ShowCreation extends Animation {
      * @return The animation ready to play with playAnim method
      */
     public static ShowCreation make(double runtime, MathObject mobj) {
+        if (mobj == null) {
+            return null;
+        }
         return new ShowCreation(runtime, mobj);
     }
 
@@ -83,7 +86,7 @@ public class ShowCreation extends Animation {
 
         // If the object is a constructible one, get its visible object to animate
         if (mobj instanceof Constructible) {
-            origObj=(Constructible) mobj;
+            origObj = (Constructible) mobj;
             this.mobj = origObj.getMathObject();
             removeThisAtTheEnd.add(this.mobj);
             addThisAtTheEnd.add(mobj);
@@ -343,7 +346,7 @@ public class ShowCreation extends Animation {
     @Override
     public void cleanAnimationAt(double t) {
         creationStrategy.cleanAnimationAt(t);
-          removeObjectsFromScene(removeThisAtTheEnd);
+        removeObjectsFromScene(removeThisAtTheEnd);
     }
 
     @Override

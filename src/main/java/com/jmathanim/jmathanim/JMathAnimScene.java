@@ -397,7 +397,7 @@ public abstract class JMathAnimScene {
             for (MathObject obj : sceneObjects) {
                 if (obj.isVisible()) {
                     if (!isAlreadyDrawed(obj)) {
-                        obj.draw(this, renderer,obj.getCamera());
+                        obj.draw(this, renderer, obj.getCamera());
                         markAsAlreadyDrawed(obj);
                     }
                 }
@@ -531,8 +531,7 @@ public abstract class JMathAnimScene {
      */
     public void playAnimation(ArrayList<Animation> anims) {
         List<Animation> listAnims = anims.stream().filter(Objects::nonNull).collect(Collectors.toList());
-        ArrayList<Animation> arAnims = new ArrayList<>(listAnims);
-        for (Animation anim : arAnims) {
+        for (Animation anim : listAnims) {
             if (anim.isShouldResetAtReuse()) {
                 anim.reset();
             }
@@ -554,15 +553,15 @@ public abstract class JMathAnimScene {
         while (!finished) {
             finished = true;
             boolean anyAnimationRunning = false;
-            for (Animation anim : anims) {
-                anyAnimationRunning = anyAnimationRunning | (anim.getStatus() == Animation.Status.RUNNING);
-                final boolean resultAnimation = anim.processAnimation();
-                finished = finished & resultAnimation;
-                if (resultAnimation) {
-                    anim.finishAnimation();
-                }
+            for (Animation anim : listAnims) {
+                    anyAnimationRunning = anyAnimationRunning | (anim.getStatus() == Animation.Status.RUNNING);
+                    final boolean resultAnimation = anim.processAnimation();
+                    finished = finished & resultAnimation;
+                    if (resultAnimation) {
+                        anim.finishAnimation();
+                    }
             }
-            if ((!finished) && (true)) {//If all animations are finished, no need to advance frame
+            if (!finished) {//If all animations are finished, no need to advance frame
                 advanceFrame();
             }
         }

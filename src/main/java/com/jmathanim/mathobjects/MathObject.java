@@ -1103,11 +1103,14 @@ public abstract class MathObject implements Drawable, Updateable, Stateable, Box
      * Stores an object into an internal dictionary of the MathObject. This can
      * be useful if additional information to this object needs to be saved
      *
+     * @param <T> Subclass
      * @param key A String denoting the key
      * @param obj Any Java Object
+     * @return This object
      */
-    public void setProperty(String key, Object obj) {
+    public <T extends MathObject> T setProperty(String key, Object obj) {
         properties.put(key, obj);
+        return (T) this;
     }
 
     /**
