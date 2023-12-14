@@ -418,6 +418,7 @@ public class Camera implements Boxable {
             resul.ymin = r.ymin;
             resul.ymax = r.ymax;
         }
+        resul.addGap(hgap, vgap);
         return resul;
     }
 
