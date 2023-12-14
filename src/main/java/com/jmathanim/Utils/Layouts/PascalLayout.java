@@ -62,7 +62,7 @@ public class PascalLayout extends GroupLayout {
 			h = Math.max(h, g.getHeight());
 		}
 		Rect r = new Rect(0, 0, w, h);
-		r = r.addGap(.5 * this.horizontalGap, .5 * this.verticalGap);
+		r.addGap(.5 * this.horizontalGap, .5 * this.verticalGap);
 		MathObjectGroup workGroup = MathObjectGroup.make();
 
 		// Complete the last row in case it is not complete

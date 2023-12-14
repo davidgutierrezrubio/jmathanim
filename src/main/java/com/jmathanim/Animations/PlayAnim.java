@@ -20,6 +20,7 @@ package com.jmathanim.Animations;
 import com.jmathanim.Cameras.Camera;
 import com.jmathanim.Styling.PaintStyle;
 import com.jmathanim.Utils.Anchor;
+import com.jmathanim.Utils.Boxable;
 import com.jmathanim.Utils.OrientationType;
 import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.Vec;
@@ -447,34 +448,52 @@ public class PlayAnim {
     public void adjustToObjects(double runTime, MathObject... objs) {
         final Vec gaps = scene.getCamera().getGaps();
         Rect r = scene.getCamera().getMathView();
-        for (MathObject obj : objs) {
-            r = Rect.union(r, obj.getBoundingBox().addGap(gaps.x, gaps.y));
-        }
+        r = Rect.union(r, Rect.make(objs));
+        r.addGap(gaps.x, gaps.y);
         zoomToRect(runTime, r);
     }
 
     /**
      * This method is similar to adjustToObjects, but it performs a zoom in to
-     * use all availabla math view to show the specified objects
+     * use all availabla math view to show the specified objects. Default camera
+     * is used
      *
      * @param runTime Duration in seconds
      * @param objs Mathobjects to include in the view (varargs)
      */
-    public void zoomToObjects(double runTime, MathObject... objs) {
-        Rect r = objs[0].getBoundingBox();
-        for (MathObject obj : objs) {
-            r = Rect.union(r, obj.getBoundingBox());
-        }
+    public void zoomToObjects(double runTime, Boxable... objs) {
+        Rect r = Rect.make(objs);
         zoomToRect(runTime, r);
     }
 
+    /**
+     * This method is similar to adjustToObjects, but it performs a zoom in to
+     * use all availabla math view to show the specified objects, using the
+     * specified camera.
+     *
+     * @param runTime Duration in seconds
+     * @param cam Camera to use
+     * @param objs Mathobjects to include in the view (varargs)
+     */
+    public void zoomToObjects(double runTime, Camera cam, Boxable... objs) {
+        Rect r = Rect.make(objs);
+        zoomToRect(runTime, cam, r);
+    }
+
+    /**
+     * Deprecated: This method will be removed
+     *
+     * @param runTime
+     * @param cam
+     * @param r
+     */
     private void zoomToRect(double runTime, Camera cam, Rect r) {
         scene.playAnimation(Commands.cameraZoomToRect(runTime, cam, r));
     }
 
     /**
-     * Zooms the default camera so that it contains the given rect. The resulting
-     * mathview is the smallest view containing the Rect specified.
+     * Zooms the default camera so that it contains the given rect. The
+     * resulting mathview is the smallest view containing the Rect specified.
      *
      * @param runTime Duration in seconds
      * @param rect Rect to zoom to

@@ -911,7 +911,8 @@ public class Commands {
         for (MathObject obj : objs) {
             r = Rect.union(r, obj.getBoundingBox());
         }
-        return cameraZoomToRect(runtime, camera, r.addGap(camera.getGaps().x, camera.getGaps().y));
+        r.addGap(camera.getGaps().x, camera.getGaps().y);
+        return cameraZoomToRect(runtime, camera, r);
     }
 
     /**
@@ -1607,7 +1608,8 @@ public class Commands {
                     double gap = rend.ThicknessToMathWidth(obj) * 2;
                     final Anchor.Type reverseAnchor = Anchor.reverseAnchorPoint(enterAnchor);
                     Point p = Anchor.getAnchorPoint(obj, reverseAnchor);
-                    Point q = Anchor.getAnchorPoint(Shape.rectangle(r.addGap(gap, gap)), enterAnchor);
+                    Shape rectMathView = Shape.rectangle(r.copy().addGap(gap, gap));
+                    Point q = Anchor.getAnchorPoint(rectMathView, enterAnchor);
                     switch (enterAnchor) {
                         case LEFT:
                             q.v.y = p.v.y;

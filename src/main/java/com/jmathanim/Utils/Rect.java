@@ -41,31 +41,16 @@ public class Rect implements Stateable, Boxable {// TODO: Adjust this to 3D coor
         );
     }
 
-    public static Rect make(Point... points) {
-        return make(Arrays.asList(points));
+    public static Rect make(Boxable... objs) {
+        return make(Arrays.asList(objs));
     }
 
-    public static Rect make(List<Point> points) {
-        if (points.isEmpty()) {
-            return new EmptyRect();
+    public static Rect make(List<Boxable> objs) {
+        Rect resul = new EmptyRect();
+        for (Boxable obj : objs) {
+            resul = Rect.union(resul, obj.getBoundingBox());
         }
-        double xmin = Double.MAX_VALUE;
-        double xmax = -Double.MAX_VALUE;
-        double ymin = Double.MAX_VALUE;
-        double ymax = -Double.MAX_VALUE;
-        double zmin = Double.MAX_VALUE;
-        double zmax = -Double.MAX_VALUE;
-
-        for (Point p : points) {
-            xmin = (xmin < p.v.x ? xmin : p.v.x);
-            xmax = (xmax > p.v.x ? xmax : p.v.x);
-            ymin = (ymin < p.v.y ? ymin : p.v.y);
-            ymax = (ymax > p.v.y ? ymax : p.v.y);
-            zmin = (zmin < p.v.z ? zmin : p.v.z);
-            zmax = (zmax > p.v.z ? zmax : p.v.z);
-        }
-        return new Rect(xmin, ymin, zmin, xmax, ymax, zmax);
-
+        return resul;
     }
 
 //    public static Rect make(Point a, Point b) {
@@ -379,15 +364,21 @@ public class Rect implements Stateable, Boxable {// TODO: Adjust this to 3D coor
     }
 
     /**
-     * Computes a new Rect which is the original grown by a horizontal and
-     * vertical gap. The original Rect is unaffected.
+     * Growns horizontally and vertically the rect adding specified gaps. Each
+     * gap is added twice (hgap left and right, and vgap up and down). The
+     * original Rect is affected.
      *
      * @param xgap Horizontal gap
      * @param ygap Vertical gap
-     * @return A new {@link Rect} with the gaps applied
+     * @return This object
      */
     public Rect addGap(double xgap, double ygap) {
-        return new Rect(xmin - xgap, ymin - ygap, zmin, xmax + xgap, ymax + ygap, zmax);
+//        return new Rect(xmin - xgap, ymin - ygap, zmin, xmax + xgap, ymax + ygap, zmax);
+        xmin-=xgap;
+        ymin-=ygap;
+        xmax+=xgap;
+        ymax+=ygap;
+        return this;
     }
 
     /**

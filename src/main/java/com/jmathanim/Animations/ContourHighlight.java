@@ -58,7 +58,7 @@ public class ContourHighlight extends Animation {
     }
 
     public static ContourHighlight make(double runTime, double gap, Rect... objs) {
-        MathObject[] toArray = Arrays.stream(objs).map(t -> Shape.rectangle(t.addGap(gap, gap))).toArray(MathObject[]::new);
+        MathObject[] toArray = Arrays.stream(objs).map(t -> Shape.rectangle(t.copy().addGap(gap, gap))).toArray(MathObject[]::new);
 
         return new ContourHighlight(runTime, toArray);
     }
