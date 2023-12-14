@@ -120,7 +120,7 @@ public abstract class JMathAnimScene {
     /**
      * This class is used to easily access to most common animations
      */
-    protected final PlayAnim play;
+    public final PlayAnim play;
 
     /**
      * Nanotime, used to control frame rate in preview window

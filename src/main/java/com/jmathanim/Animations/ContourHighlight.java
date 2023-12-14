@@ -117,10 +117,14 @@ public class ContourHighlight extends Animation {
     public void doAnim(double t) {
         super.doAnim(t);
         subshapes.getShapes().clear();
+       
         if (t >= 1) {
             return;
         }
         double lt = getLT(t);
+         if (lt == 0) {//Don't draw a single point
+            return;
+        }
         double b = UsefulLambdas.allocateTo(0, 1 - .5 * amplitude).applyAsDouble(lt);
         double a = UsefulLambdas.allocateTo(.5 * amplitude, 1).applyAsDouble(lt);
         for (MathObject obj : objs) {
