@@ -564,4 +564,12 @@ public class MathObjectGroup extends MathObject implements Iterable<MathObject> 
         return this;
     }
 
+    @Override
+    public <T extends MathObject> T layer(int layer) {
+        for (MathObject thi : this) {
+            thi.layer(layer);
+        }
+        return (T) this;
+    }
+
 }
