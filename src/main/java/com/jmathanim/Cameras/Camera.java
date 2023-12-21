@@ -348,9 +348,9 @@ public class Camera implements Boxable {
      *
      * @return This object
      */
-    public Camera zoomToObjects(MathObject... objs) {
+    public Camera zoomToObjects(Boxable... objs) {
         Rect r = objs[0].getBoundingBox();
-        for (MathObject obj : objs) {
+        for (Boxable obj : objs) {
             r = Rect.union(r, obj.getBoundingBox());
         }
         adjustToRect(r.addGap(hgap, vgap));
