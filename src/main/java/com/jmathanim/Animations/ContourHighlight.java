@@ -21,6 +21,7 @@ import com.jmathanim.Constructible.Constructible;
 import com.jmathanim.Constructible.Points.CTPoint;
 import com.jmathanim.Renderers.Renderer;
 import com.jmathanim.Styling.JMColor;
+import com.jmathanim.Utils.Boxable;
 import com.jmathanim.Utils.JMathAnimConfig;
 import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.UsefulLambdas;
@@ -63,7 +64,7 @@ public class ContourHighlight extends Animation {
         return new ContourHighlight(runTime, toArray);
     }
 
-    public static ContourHighlight makeBBox(double runTime, double gap, MathObject... objs) {
+    public static ContourHighlight makeBBox(double runTime, double gap, Boxable... objs) {
         MathObject[] toArray = Arrays.stream(objs).map(t -> Shape.rectangle(t.getBoundingBox().addGap(gap, gap))).toArray(MathObject[]::new);
         return new ContourHighlight(runTime, toArray);
     }

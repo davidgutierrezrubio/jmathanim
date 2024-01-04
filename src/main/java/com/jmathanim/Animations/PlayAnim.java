@@ -755,7 +755,7 @@ public class PlayAnim {
      *
      * @param objs MathObjects to animate (varargs)
      */
-    public void contourHighlightB(double gap, MathObject... objs) {
+    public void contourHighlightB(double gap, Boxable... objs) {
         scene.playAnimation(ContourHighlight.makeBBox(defaultRunTimeHighlight, gap, objs));
     }
 

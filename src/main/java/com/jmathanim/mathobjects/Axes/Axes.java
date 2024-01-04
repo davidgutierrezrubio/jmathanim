@@ -384,7 +384,7 @@ public class Axes extends MathObject {
                 TickAxes copy = yticksBase.get(n).copy();
                 copy.tick.scale(scale);
                 copy.legend.scale(scale);
-                copy.legend.stackTo(copy.tick, Anchor.Type.RIGHT, LEGEND_TICKS_GAP * copy.legend.getHeight());
+                copy.legend.stackTo(copy.tick, Anchor.Type.LEFT, LEGEND_TICKS_GAP * copy.legend.getHeight());
                 yticks.add(copy);
             }
         }
