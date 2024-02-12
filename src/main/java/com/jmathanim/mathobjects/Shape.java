@@ -267,15 +267,26 @@ public class Shape extends MathObject {
      * (1,0)
      *
      * @param angle Angle in radians of the arc
+     * @param numSegments Number of segments
      * @return The created arc
      */
-    public static Shape arc(double angle) {
+    public static Shape arc(double angle,int numSegments) {
         double c = 0.15915494309189533576888376d;//0.5/PI
         Shape obj = Shape.circle(32).getSubShape(0, c * angle);
         obj.objectLabel = "arc";
         return obj;
     }
-
+ /**
+     * Creates an arc shape with radius 1 and center origin. First point is
+     * (1,0). Default value of 32 segments.
+     *
+     * @param angle Angle in radians of the arc
+     * @return The created arc
+     */
+    public static Shape arc(double angle) {
+        return arc(angle,32);
+    }
+    
     /**
      * Creates a new circle shape, with 4 points
      *
