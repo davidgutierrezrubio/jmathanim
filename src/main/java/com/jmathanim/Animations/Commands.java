@@ -1281,8 +1281,8 @@ public class Commands {
                 double lt = getLT(t);
                 restoreStates(mathObjects);
                 for (MathObject obj : mathObjects) {
-                    obj.drawAlpha(obj.getMp().getDrawColor().getAlpha() * (lt));
-                    obj.fillAlpha(obj.getMp().getFillColor().getAlpha() * (lt));
+                    obj.getMp().multDrawAlpha(lt);
+                    obj.getMp().multFillAlpha(lt);
                     applyAnimationEffects(lt, obj);
                 }
             }
@@ -1346,8 +1346,8 @@ public class Commands {
                 double lt = getLT(t);
                 restoreStates(mathObjects);
                 for (MathObject obj : mathObjects) {
-                    obj.drawAlpha(obj.getMp().getDrawColor().getAlpha() * (1 - lt));
-                    obj.fillAlpha(obj.getMp().getFillColor().getAlpha() * (1 - lt));
+                    obj.getMp().multDrawAlpha(1 - lt);
+                    obj.getMp().multFillAlpha(1 - lt);
                     applyAnimationEffects(lt, obj);
                 }
             }

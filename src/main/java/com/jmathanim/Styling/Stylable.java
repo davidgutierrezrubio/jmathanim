@@ -133,15 +133,33 @@ public interface Stylable {
     public void setScaleArrowHead1(Double scale);
 
     public void setScaleArrowHead2(Double scale);
-    
-    
+
     public Double getScaleArrowHead1();
 
     public Double getScaleArrowHead2();
 
     public Stylable getSubMP(int n);
 
+    /**
+     * Multiplies the current thickness by given factor
+     *
+     * @param multT Factor
+     */
     public void multThickness(double multT);
+
+    /**
+     * Multiplies the current draw alpha by given factor
+     *
+     * @param mult Factor
+     */
+    public void multDrawAlpha(double mult);
+
+    /**
+     * Multiplies the current fill alpha by given factor
+     *
+     * @param mult Factor
+     */
+    public void multFillAlpha(double mult);
 
     public MODrawProperties getFirstMP();
 }

@@ -260,6 +260,16 @@ public class MODrawProperties implements Stylable, Stateable {
     }
 
     @Override
+    public void multDrawAlpha(double mult) {
+        setDrawAlpha(getDrawColor().getAlpha() * mult);
+    }
+
+    @Override
+    public void multFillAlpha(double mult) {
+        setFillAlpha(getFillColor().getAlpha() * mult);
+    }
+
+    @Override
     public void setFillAlpha(double alpha) {
         if (this.fillColor.getAlpha() != alpha) {
             this.fillColor.setAlpha(alpha);

@@ -360,7 +360,9 @@ public class Shape extends MathObject {
      */
     public static Shape logo(String logoCommands) {
         LogoInterpreter interpreter = new LogoInterpreter();
-        return interpreter.toShape(logoCommands);
+        Shape resul = interpreter.toShape(logoCommands);
+        resul.style("default");
+        return resul;
     }
 
     /**
