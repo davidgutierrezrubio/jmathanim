@@ -28,7 +28,7 @@ import com.jmathanim.mathobjects.Point;
  * @author David
  */
 public class CTPoint extends Constructible {
-
+    
     protected final Point pointToDraw;
     public final Vec v;
 
@@ -43,34 +43,35 @@ public class CTPoint extends Constructible {
         resul.rebuildShape();
         return resul;
     }
-
+    
     public static CTPoint at(double x, double y) {
         CTPoint resul = new CTPoint(Point.at(x, y));
         resul.rebuildShape();
         return resul;
     }
-
+    
     protected CTPoint() {
         this(Point.origin());
     }
-
+    
     protected CTPoint(Point A) {
-        this.pointToDraw = A.copy();
+        this.pointToDraw = Point.origin();
+        this.pointToDraw.copyStateFrom(A);
         this.v = A.v;
     }
-
+    
     @Override
     public Point getMathObject() {
         return pointToDraw;
     }
-
+    
     @Override
     public void rebuildShape() {
         if (!isThisMathObjectFree()) {
             this.pointToDraw.v.copyFrom(this.v);
         }
     }
-
+    
     @Override
     public CTPoint copy() {
         CTPoint copy = make(new Point(this.v));
@@ -79,7 +80,7 @@ public class CTPoint extends Constructible {
         copy.getMp().copyFrom(this.getMp());
         return copy;
     }
-
+    
     @Override
     public void copyStateFrom(MathObject obj) {
         if (obj instanceof CTPoint) {
@@ -88,7 +89,7 @@ public class CTPoint extends Constructible {
             this.getMathObject().copyStateFrom(cnst.getMathObject());
             this.freeMathObject(cnst.isThisMathObjectFree());
         }
-         super.copyStateFrom(obj);
+        super.copyStateFrom(obj);
     }
 
     /**
@@ -111,17 +112,17 @@ public class CTPoint extends Constructible {
     public CTPoint add(Vec v) {
         return CTPoint.make(new Point(this.v));
     }
-
+    
     @Override
     public String toString() {
         return this.getLabel() + ":" + String.format("CTPoint[%.2f, %.2f]", this.v.x, this.v.y);
     }
-
+    
     public CTPoint dotStyle(Point.DotSyle dotStyle) {
         pointToDraw.dotStyle(dotStyle);
         return this;
     }
-
+    
     @Override
     public Constructible applyAffineTransform(AffineJTransform transform) {
         pointToDraw.applyAffineTransform(transform);
@@ -131,5 +132,5 @@ public class CTPoint extends Constructible {
         rebuildShape();
         return this;
     }
-
+    
 }

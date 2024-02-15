@@ -38,7 +38,7 @@ import com.jmathanim.mathobjects.MathObject;
 public abstract class Constructible extends MathObject {
 
     private boolean isMathObjectFree;
-    private String label;
+    private String label = "";
 
     protected Constructible() {
         isMathObjectFree = false;
@@ -141,6 +141,18 @@ public abstract class Constructible extends MathObject {
     @Override
     public RendererEffects getRendererEffects() {
         return getMathObject().getRendererEffects();
+    }
+
+    @Override
+    public void addToSceneHook(JMathAnimScene scene) {
+        super.addToSceneHook(scene);
+        getMathObject().addToSceneHook(scene);
+    }
+
+    @Override
+    public void removedFromSceneHook(JMathAnimScene scene) {
+        super.removedFromSceneHook(scene);
+        getMathObject().removedFromSceneHook(scene);
     }
 
 }

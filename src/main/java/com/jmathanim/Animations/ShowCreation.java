@@ -227,7 +227,8 @@ public class ShowCreation extends Animation {
     private void createStrategy() throws ClassCastException {
         switch (this.strategyType) {
             case POINT_CREATION:
-                creationStrategy = Commands.fadeIn(this.runTime, mobj);
+                creationStrategy = Commands.fadeIn(this.runTime, origObj);
+                removeThisAtTheEnd.remove(this.mobj);
                 break;
             case GROUP_CREATION:
                 creationStrategy = new GroupCreationAnimation(this.runTime, (MathObjectGroup) mobj);

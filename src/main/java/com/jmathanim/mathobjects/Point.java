@@ -205,7 +205,8 @@ public class Point extends MathObject {
 
     @Override
     public void draw(JMathAnimScene scene, Renderer r, Camera cam) {
-        if (v.isNaN()) {
+        if (v.isNaN())  {
+//        if ((v.isNaN()) || (this.scene == null))  {
             return;
         }
         dotShape = generateDotShape();//TODO: Do this only when needed
@@ -356,13 +357,14 @@ public class Point extends MathObject {
      */
     @Override
     public void copyStateFrom(MathObject obj) {
-         super.copyStateFrom(obj);
+        super.copyStateFrom(obj);
         if (!(obj instanceof Point)) {
             return;
         }
         Point p2 = (Point) obj;
         this.copyFrom(p2);//Copy coordinates
         this.getMp().copyFrom(p2.getMp());
+        this.scene=obj.scene;
     }
 
     public boolean isEquivalentTo(Point p2, double epsilon) {
