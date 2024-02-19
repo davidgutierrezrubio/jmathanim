@@ -20,6 +20,7 @@ anim.initialize(this);
 while (!anim.processAnimation()) {
     advanceFrame();
 }
+anim.finishAnimation();
 ````
 
 is the same as
