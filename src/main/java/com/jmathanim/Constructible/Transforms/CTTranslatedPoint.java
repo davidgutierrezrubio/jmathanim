@@ -54,7 +54,7 @@ public class CTTranslatedPoint extends CTPoint {
         this.v.copyFrom(this.pointToTranslate.v);
         this.v.applyAffineTransform(tr);
         if (!isThisMathObjectFree()) {
-            pointToDraw.v.copyFrom(v);
+            p.v.copyFrom(v);
         }
     }
 

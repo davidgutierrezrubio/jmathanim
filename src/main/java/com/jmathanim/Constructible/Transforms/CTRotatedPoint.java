@@ -57,7 +57,7 @@ public class CTRotatedPoint extends CTPoint {
         this.v.copyFrom(this.pointToRotate.v);
         this.v.applyAffineTransform(tr);
         if (!isThisMathObjectFree()) {
-            pointToDraw.v.copyFrom(v);
+            p.v.copyFrom(v);
         }
     }
 

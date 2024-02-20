@@ -29,7 +29,7 @@ import com.jmathanim.mathobjects.Point;
  */
 public class CTPoint extends Constructible {
     
-    protected final Point pointToDraw;
+    public final Point p;
     public final Vec v;
 
     /**
@@ -55,20 +55,20 @@ public class CTPoint extends Constructible {
     }
     
     protected CTPoint(Point A) {
-        this.pointToDraw = Point.origin();
-        this.pointToDraw.copyStateFrom(A);
+        this.p = Point.origin();
+        this.p.copyStateFrom(A);
         this.v = A.v;
     }
     
     @Override
     public Point getMathObject() {
-        return pointToDraw;
+        return p;
     }
     
     @Override
     public void rebuildShape() {
         if (!isThisMathObjectFree()) {
-            this.pointToDraw.v.copyFrom(this.v);
+            this.p.v.copyFrom(this.v);
         }
     }
     
@@ -119,15 +119,15 @@ public class CTPoint extends Constructible {
     }
     
     public CTPoint dotStyle(Point.DotSyle dotStyle) {
-        pointToDraw.dotStyle(dotStyle);
+        p.dotStyle(dotStyle);
         return this;
     }
     
     @Override
     public Constructible applyAffineTransform(AffineJTransform transform) {
-        pointToDraw.applyAffineTransform(transform);
+        p.applyAffineTransform(transform);
         if (!isThisMathObjectFree()) {
-            this.v.copyFrom(pointToDraw.v);
+            this.v.copyFrom(p.v);
         }
         rebuildShape();
         return this;

@@ -51,7 +51,7 @@ public class CTPointOnObject extends CTPoint {
         Vec projectionPointCoordinates= owner.getHoldCoordinates(this.v);;
         this.v.copyFrom(projectionPointCoordinates);
         if (!isThisMathObjectFree()) {
-            pointToDraw.v.copyFrom(projectionPointCoordinates);
+            p.v.copyFrom(projectionPointCoordinates);
         }
     }
 

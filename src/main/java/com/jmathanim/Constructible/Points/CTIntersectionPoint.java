@@ -228,7 +228,7 @@ public class CTIntersectionPoint extends CTPoint {
             //Not implemented yet. Returns a NaN point
         }
         if (!isThisMathObjectFree()) {
-            pointToDraw.v.copyFrom(this.v);
+            p.v.copyFrom(this.v);
         }
 
     }
