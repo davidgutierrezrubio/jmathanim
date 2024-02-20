@@ -33,7 +33,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Dictionary;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.logging.Level;
@@ -47,6 +47,22 @@ import java.util.logging.Logger;
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
 public class MathObjectGroup extends MathObject implements Iterable<MathObject> {
+
+    /**
+     * Simpe layouts to apply to the group
+     */
+    public enum Layout {
+        CENTER, RIGHT, LEFT, UPPER, LOWER, URIGHT, ULEFT, DRIGHT, DLEFT, RUPPER, LUPPER, RLOWER, LLOWER, DIAG1, DIAG2,
+        DIAG3, DIAG4
+    }
+
+    /**
+     * Orientation (for distribution method)
+     */
+    public enum Orientation {
+        VERTICAL,
+        HORIZONTAL
+    }
 
     public static MathObjectGroup make(MathObject... objects) {
         return new MathObjectGroup(objects);
@@ -149,7 +165,7 @@ public class MathObjectGroup extends MathObject implements Iterable<MathObject> 
      * @param obj Object to add
      * @return This MathObjectGroup
      */
-    public MathObjectGroup addD(String key, MathObject obj) {
+    public MathObjectGroup addWithKey(String key, MathObject obj) {
         add(obj);
         dict.put(key, obj);
         return this;
@@ -193,14 +209,23 @@ public class MathObjectGroup extends MathObject implements Iterable<MathObject> 
         MathObjectGroup copy = new MathObjectGroup();
         copy.getMp().copyFrom(getMp());
         for (MathObject obj : this.getObjects()) {
-            copy.add(obj.copy());
+            MathObject copyObject = obj.copy();
+            copy.add(copyObject);
+            //If this object is registered with a key, register the copied one with the same key
+            if (dict.containsValue(copyObject)) {
+                for (String key : dict.keySet()) {
+                    if (dict.get(key).equals(obj)) {
+                        copy.dict.put(key, copyObject);
+                    }
+                }
+            }
         }
         return copy;
     }
 
     @Override
     public void copyStateFrom(MathObject obj) {
-         super.copyStateFrom(obj);
+        super.copyStateFrom(obj);
         if (!(obj instanceof MathObjectGroup)) {
             return;
         }
@@ -233,15 +258,88 @@ public class MathObjectGroup extends MathObject implements Iterable<MathObject> 
     }
 
     @Override
-    public <T extends MathObject> T  setCamera(Camera camera) {
+    public <T extends MathObject> T setCamera(Camera camera) {
         for (MathObject obj : this) {
             obj.setCamera(camera);
         }
         return (T) this;
     }
 
-    
-    
+    /**
+     * Overloaded method. Distribute evenly spaced objects in the group,
+     * horizontally or vertically. x-order or y-order of objects is respected.
+     * Order of objects in MathObjectGroup is unaltered.
+     *
+     * @param <T> Calling subclass
+     * @param orientation A value of enum Orientation (HORIZONTAL or VERTICAL)
+     */
+    public <T extends MathObjectGroup> T distribute(Orientation orientation) {
+        return distribute(orientation, true);
+    }
+
+    /**
+     * Distribute evenly spaced objects in the group, horizontally or
+     * vertically.
+     *
+     * @param <T> Calling subclass
+     * @param orientation A value of enum Orientation (HORIZONTAL or VERTICAL)
+     * @param respectOrder If true, current x-order or y-order of objects is
+     * respected. Position of objects in the MathObjectGroup is unaltered. A
+     * value of false in a horizontal distribute por example, always puts the
+     * first element of the group in the left extreme.
+     * @return This object
+     */
+    public <T extends MathObjectGroup> T distribute(Orientation orientation, boolean respectOrder) {
+        ArrayList<MathObject> objectsToDistribute = new ArrayList<>();
+        objectsToDistribute.addAll(getObjects());
+        if (respectOrder) {
+            if (orientation == Orientation.HORIZONTAL) {
+                Collections.sort(objectsToDistribute, Comparator.comparingDouble(obj -> obj.getBoundingBox().xmin));
+            } else {
+                Collections.sort(objectsToDistribute, Comparator.comparingDouble(obj -> obj.getBoundingBox().ymin));
+            }
+        }
+        if (size() < 2) {
+            return (T) this;//Nothing to do here
+        }
+        double left, right, dstCoord;
+        double size = 0;
+        double gap;
+        Rect bb = getBoundingBox();
+//Compute left and right (bottom and top) margins
+//and sum of widths (heights)
+        if (orientation == Orientation.HORIZONTAL) {
+            left = bb.xmin;
+            right = bb.xmax;
+            for (MathObject thi : this) {
+                size += thi.getWidth();
+            }
+        } else {
+            left = bb.ymin;
+            right = bb.ymax;
+            for (MathObject thi : this) {
+                size += thi.getHeight();
+            }
+        }
+        dstCoord = left;//Starting coordinate (horizontal or vertical)
+        //Compute gap 
+        gap = ((right - left) - size) / (size() - 1);
+
+        //Move every object
+        for (int i = 0; i < size(); i++) {
+            MathObject obj = objectsToDistribute.get(i);
+
+            if (orientation == Orientation.HORIZONTAL) {
+                obj.shift(dstCoord - obj.getBoundingBox().xmin, 0);
+                dstCoord = obj.getBoundingBox().xmax + gap;
+            } else {
+                obj.shift(0, dstCoord - obj.getBoundingBox().ymin);
+                dstCoord = obj.getBoundingBox().ymax + gap;
+            }
+        }
+        return (T) this;
+    }
+
     /**
      * Gets the MathObject stored at a given position
      *
@@ -319,14 +417,6 @@ public class MathObjectGroup extends MathObject implements Iterable<MathObject> 
     @Override
     public <T extends MathObject> T setAbsoluteSize() {
         return super.setAbsoluteSize(); // To change body of generated methods, choose Tools | Templates.
-    }
-
-    /**
-     * Simpe layouts to apply to the group
-     */
-    public enum Layout {
-        CENTER, RIGHT, LEFT, UPPER, LOWER, URIGHT, ULEFT, DRIGHT, DLEFT, RUPPER, LUPPER, RLOWER, LLOWER, DIAG1, DIAG2,
-        DIAG3, DIAG4
     }
 
     public <T extends MathObjectGroup> T setLayout(GroupLayout layout) {
