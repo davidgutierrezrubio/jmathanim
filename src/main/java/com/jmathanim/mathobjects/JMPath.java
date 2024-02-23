@@ -550,7 +550,6 @@ public class JMPath implements Stateable, Boxable, Iterable<JMPathPoint> {
         }
         ArrayList<Point> points = new ArrayList<>();
 
-
         for (JMPathPoint jmp : jmPathPoints) {
             points.add(jmp.p.copy().thickness(2));
         }
@@ -952,10 +951,8 @@ public class JMPath implements Stateable, Boxable, Iterable<JMPathPoint> {
      * @return The subpath
      */
     public JMPath getSubPath(double a, double b) {
-        if (a > b) {
-            JMPath tempPath = this.copy();
-            tempPath.reverse();
-            return tempPath.getSubPath(b, a);
+        if (a > b) {//Still buggy
+            return getSubPathCyclic(a, b);
         }
         JMPath tempPath = this.copy();
 
@@ -996,7 +993,36 @@ public class JMPath implements Stateable, Boxable, Iterable<JMPathPoint> {
         int nBegin = tempPath.jmPathPoints.indexOf(beginning);
         int nEnd = tempPath.jmPathPoints.indexOf(ending);
         JMPath subPath = new JMPath();
-        subPath.jmPathPoints.addAll(tempPath.jmPathPoints.subList(nBegin, nEnd + 1));
+//        subPath.jmPathPoints.addAll(tempPath.jmPathPoints.subList(nBegin, nEnd + 1));
+        nEnd += (nEnd < nBegin ? tempPath.size() - 2 : 0);
+        for (int k = nBegin; k < nEnd + 1; k++) {
+            subPath.jmPathPoints.add(tempPath.jmPathPoints.get(k));
+        }
+
+        return subPath;
+    }
+
+    private JMPath getSubPathCyclic(double a, double b) {
+        JMPath tempPath = this.copy();
+        int size = tempPath.size();
+        int k1 = (int) Math.floor(a * (size - 1));
+        double alpha1 = a * (size - 1) - k1;
+        JMPathPoint beginning = tempPath.insertJMPointAt(k1, alpha1);
+        size++;
+
+        int k2 = (int) Math.floor(b * (size - 1));
+        double alpha2 = b * (size - 1) - k2;
+        JMPathPoint ending = tempPath.insertJMPointAt(k2, alpha2);
+        size++;
+
+        int nBegin = tempPath.jmPathPoints.indexOf(beginning);
+        int nEnd = tempPath.jmPathPoints.indexOf(ending) + size;
+
+        JMPath subPath = new JMPath();
+        for (int k = nBegin + 1; k < nEnd + 1; k++) {
+            subPath.jmPathPoints.add(tempPath.jmPathPoints.get(k));
+        }
+        subPath.openPath();
         return subPath;
     }
 
