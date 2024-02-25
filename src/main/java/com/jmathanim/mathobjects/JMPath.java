@@ -364,28 +364,28 @@ public class JMPath implements Stateable, Boxable, Iterable<JMPathPoint> {
     }
 
     /**
-     * Get point (interpolated if necessary) that lies at position alpha where
-     * alpha=0 denotes beginning of path and alpha=1 denotes the end. Path is
+     * Get point (interpolated if necessary) that lies at position t where
+     * t=0 denotes beginning of path and t=1 denotes the end. Path is
      * unaltered
      *
-     * @param alpha from 0 to 1, relative position inside the path
+     * @param t from 0 to 1, relative position inside the path
      * @return A new JMPathPoint that describes the curve at relative position
      * alpha.
      */
-    public JMPathPoint getJMPointAt(double alpha) {
-        while (alpha > 1) {
-            alpha -= 1;
+    public JMPathPoint getJMPointAt(double t) {
+        while (t > 1) {
+            t -= 1;
         }
-        while (alpha < 0) {
-            alpha += 1;
+        while (t < 0) {
+            t += 1;
         }
         JMPathPoint resul;
-        final double size = (jmPathPoints.get(0).isThisSegmentVisible ? alpha * size() : alpha * (size() - 1));
+        final double size = (jmPathPoints.get(0).isThisSegmentVisible ? t * size() : t * (size() - 1));
         int k = (int) Math.floor(size);
-        double t = size - k;
+        double t0 = size - k;
         JMPathPoint v1 = jmPathPoints.get(k);
         JMPathPoint v2 = jmPathPoints.get(k + 1);
-        resul = getJMPointBetween(v1, v2, t);
+        resul = getJMPointBetween(v1, v2, t0);
         return resul;
     }
 
@@ -951,32 +951,39 @@ public class JMPath implements Stateable, Boxable, Iterable<JMPathPoint> {
      * @return The subpath
      */
     public JMPath getSubPath(double a, double b) {
-        if (a > b) {//Still buggy
-            return getSubPathCyclic(a, b);
+        double orderedA,orderedB;
+        if (a < b) {//Still buggy
+           orderedA=a;
+           orderedB=b;
+        }
+        else{
+            orderedA=b;
+           orderedB=a;
         }
         JMPath tempPath = this.copy();
 
         tempPath.openPath();
 
         //Stranges and buggy cases
-        if ((a == 1) && (b == 1)) {
+        if ((orderedA == 1) && (orderedB == 1)) {
             JMPath res = JMPath.make();
             res.addPoint(this.get(0).p.copy(), this.get(0).p.copy());
             return res;
         }
-
+        
+        
         int size = tempPath.size();
 
         JMPathPoint beginning = tempPath.get(0);
         JMPathPoint ending = tempPath.get(-1);
 
-        int k1 = (int) Math.floor(a * (size - 1));
-        double alpha1 = a * (size - 1) - k1;
+        int k1 = (int) Math.floor(orderedA * (size - 1));
+        double alpha1 = orderedA * (size - 1) - k1;
 
-        int k2 = (int) Math.floor(b * (size - 1));
-        double alpha2 = b * (size - 1) - k2;
+        int k2 = (int) Math.floor(orderedB * (size - 1));
+        double alpha2 = orderedB * (size - 1) - k2;
 
-        if (a > 0) {
+        if (orderedA > 0) {
             beginning = tempPath.insertJMPointAt(k1, alpha1);
             beginning.isThisSegmentVisible = false;
             if (k1 == k2) {
@@ -986,15 +993,16 @@ public class JMPath implements Stateable, Boxable, Iterable<JMPathPoint> {
             k2 = k2 + 1;
         }
 
-        if (b < 1) {
+        if (orderedB < 1) {
             ending = tempPath.insertJMPointAt(k2, alpha2);
         }
 
-        int nBegin = tempPath.jmPathPoints.indexOf(beginning);
-        int nEnd = tempPath.jmPathPoints.indexOf(ending);
+        int nBegin = (a<b ? tempPath.jmPathPoints.indexOf(beginning) : tempPath.jmPathPoints.indexOf(ending));
+        int nEnd = (a<b ? tempPath.jmPathPoints.indexOf(ending) : tempPath.jmPathPoints.indexOf(beginning));
+//        int nEnd = tempPath.jmPathPoints.indexOf(ending);
         JMPath subPath = new JMPath();
 //        subPath.jmPathPoints.addAll(tempPath.jmPathPoints.subList(nBegin, nEnd + 1));
-        nEnd += (nEnd < nBegin ? tempPath.size() - 2 : 0);
+        nEnd += (nEnd < nBegin ? tempPath.size() : 0);
         for (int k = nBegin; k < nEnd + 1; k++) {
             subPath.jmPathPoints.add(tempPath.jmPathPoints.get(k));
         }
