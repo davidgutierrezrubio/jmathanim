@@ -20,55 +20,60 @@
             <fillColor>#FFFFFFFF</fillColor>
             <thickness>1</thickness>
         </style>
-           <style name="arrowdefault">
+        <style name="arrowdefault">
             <drawColor>#FFFFFFFF</drawColor>
             <fillColor>#FFFFFFFF</fillColor>
             <thickness>4</thickness>
             <scaleArrowHead1>1</scaleArrowHead1>
             <scaleArrowHead2>1</scaleArrowHead2>
         </style>
-           <style name="gridPrimaryDefault">
+        <style name="gridPrimaryDefault">
             <drawColor>white</drawColor>
             <fillColor>NONE</fillColor>
             <thickness>2</thickness>
         </style>
+    <style name="contourHighlight">
+        <drawColor>green</drawColor>
+        <fillColor>none</fillColor>
+        <thickness>30</thickness>
+    </style>
         
         
-        <style name="solidRed">
-            <drawColor>WHITE</drawColor>
-            <fillColor>#f55652</fillColor>
-            <thickness>15</thickness>
-        </style>
-        <style name="solidBlue">
-            <drawColor>WHITE</drawColor>
-            <fillColor>#7ca0c0</fillColor>
-            <thickness>15</thickness>
-        </style>
-        <style name="solidGreen">
-            <drawColor>WHITE</drawColor>
-            <fillColor>#9bc693</fillColor>
-            <thickness>15</thickness>
-        </style>
-          <style name="solidOrange">
-            <drawColor>WHITE</drawColor>
-            <fillColor>orange</fillColor>
-            <thickness>15</thickness>
-        </style>
-         <style name="fn1">
-            <drawColor>#277DA1</drawColor>
-            <fillColor>none</fillColor>
-            <thickness>10</thickness>
-        </style> 
-         <style name="fn2">
-            <drawColor>#F94144</drawColor>
-            <fillColor>none</fillColor>
-            <thickness>10</thickness>
-        </style> 
-         <style name="fn3">
-            <drawColor>#F9C74F</drawColor>
-            <fillColor>none</fillColor>
-            <dashStyle>DASHED</dashStyle>
-            <thickness>8</thickness>
-        </style> 
+    <style name="solidRed">
+        <drawColor>WHITE</drawColor>
+        <fillColor>#f55652</fillColor>
+        <thickness>15</thickness>
+    </style>
+    <style name="solidBlue">
+        <drawColor>WHITE</drawColor>
+        <fillColor>#7ca0c0</fillColor>
+        <thickness>15</thickness>
+    </style>
+    <style name="solidGreen">
+        <drawColor>WHITE</drawColor>
+        <fillColor>#9bc693</fillColor>
+        <thickness>15</thickness>
+    </style>
+    <style name="solidOrange">
+        <drawColor>WHITE</drawColor>
+        <fillColor>orange</fillColor>
+        <thickness>15</thickness>
+    </style>
+    <style name="fn1">
+        <drawColor>#277DA1</drawColor>
+        <fillColor>none</fillColor>
+        <thickness>10</thickness>
+    </style> 
+    <style name="fn2">
+        <drawColor>#F94144</drawColor>
+        <fillColor>none</fillColor>
+        <thickness>10</thickness>
+    </style> 
+    <style name="fn3">
+        <drawColor>#F9C74F</drawColor>
+        <fillColor>none</fillColor>
+        <dashStyle>DASHED</dashStyle>
+        <thickness>8</thickness>
+    </style> 
     </styles>
 </JMathAnimConfig>

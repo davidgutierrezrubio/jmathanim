@@ -90,10 +90,15 @@ public class ContourHighlight extends Animation {
         super.doInitialization();
         ArrayList<MathObject> toAnimateArrayList = new ArrayList<>();
         for (MathObject obj : objs) {
+            if (obj instanceof MathObjectGroup) {
+                  toAnimateArrayList.add(Shape.rectangle(obj.getBoundingBox()));
+            }
+            
+            
             if (obj instanceof Constructible) {
                 if (obj instanceof CTPoint) {
                     Point p = ((CTPoint) obj).getMathObject();
-                    double radius = scene.getRenderer().ThicknessToMathWidth(p.getMp().getThickness()) * .5;
+                    double radius = scene.getRenderer().ThicknessToMathWidth(p.getMp().getThickness()) * 1;
                     toAnimateArrayList.add(Shape.circle().scale(radius).moveTo(p));
                 } else {
                     toAnimateArrayList.add(((Constructible) obj).getMathObject());
@@ -101,7 +106,7 @@ public class ContourHighlight extends Animation {
             } else {
                 if (obj instanceof Point) {
                     Point p = (Point) obj;
-                    double radius = scene.getRenderer().ThicknessToMathWidth(p.getMp().getThickness()) * .5;
+                    double radius = scene.getRenderer().ThicknessToMathWidth(p.getMp().getThickness()) * 1;
                     toAnimateArrayList.add(Shape.circle().scale(radius).moveTo(p));
                 } else {
                     toAnimateArrayList.add(obj);
@@ -146,12 +151,12 @@ public class ContourHighlight extends Animation {
                 addSubShapeToScene(sh, a, b);
             }
         }
-        if (obj instanceof MathObjectGroup) {
-            MathObjectGroup mg = ((MathObjectGroup) obj);
-            for (MathObject subObject : mg) {
-                process(subObject, a, b);
-            }
-        }
+//        if (obj instanceof MathObjectGroup) {
+//            MathObjectGroup mg = ((MathObjectGroup) obj);
+//            for (MathObject subObject : mg) {
+//                process(subObject, a, b);
+//            }
+//        }
         if (obj instanceof Shape) {
             Shape sh = ((Shape) obj);
             addSubShapeToScene(sh, a, b);

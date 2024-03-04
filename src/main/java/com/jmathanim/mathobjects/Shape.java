@@ -505,7 +505,7 @@ public class Shape extends MathObject {
      * @return
      */
     public com.jmathanim.mathobjects.Shape getSubShape(double a, double b) {
-        com.jmathanim.mathobjects.Shape subShape = new com.jmathanim.mathobjects.Shape();
+        Shape subShape = new Shape();
         subShape.getMp().copyFrom(this.getMp());
         if (!jmpath.isEmpty()) {
             final JMPath subPath = jmpath.getSubPath(a, b);
@@ -664,9 +664,11 @@ public class Shape extends MathObject {
      * will be superimposed on screen when drawing this shape
      *
      * @param showDebugPoints
+     * @return This object
      */
-    public void setShowDebugPoints(boolean showDebugPoints) {
+    public Shape setShowDebugPoints(boolean showDebugPoints) {
         this.showDebugPoints = showDebugPoints;
+        return this;
     }
 
     /**

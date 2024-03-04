@@ -39,7 +39,11 @@ public class JMPathPoint extends MathObject implements Updateable, Stateable {
     public final Point p;
     public final Point cpExit, cpEnter; // Entering control point (cpFrom) and exit control point (cpTo)
     public Vec cpExitvBackup, cpEntervBackup;// Backup values, to restore after removing interpolation points
-    public boolean isThisSegmentVisible;//if false, segment ending in this point is not visible
+    
+    /**
+     * If false, segment ending in this point is not visible
+     */
+    public boolean isThisSegmentVisible;
     public boolean isCurved;
     public JMPathPointType type; // Vertex, interpolation point, etc.
 

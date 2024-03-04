@@ -243,7 +243,7 @@ class GeogebraCommandParser {
         int numberAttributes = elInput.getAttributes().getLength();
         for (int i = 0; i < numberAttributes; i++) {
             String label = elInput.getAttribute("a" + i);
-            objs[i] = parseArgument(label);;
+            objs[i] = parseArgument(label);
         }
         return objs;
     }
@@ -468,7 +468,7 @@ class GeogebraCommandParser {
     protected void processPolygonCommand(Element el) {
         MathObject[] objs = getArrayOfParameters(el);
         // Array of points of the polygon
-        //TODO: if a2 is a Scalar, is a regular polygon
+        //If a2 is a Scalar, is a regular polygon
         if (objs[2] instanceof Scalar) {
             processRegularPolygonCommand(el);
         } else {

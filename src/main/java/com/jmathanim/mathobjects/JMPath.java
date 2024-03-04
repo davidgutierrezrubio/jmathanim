@@ -364,9 +364,8 @@ public class JMPath implements Stateable, Boxable, Iterable<JMPathPoint> {
     }
 
     /**
-     * Get point (interpolated if necessary) that lies at position t where
-     * t=0 denotes beginning of path and t=1 denotes the end. Path is
-     * unaltered
+     * Get point (interpolated if necessary) that lies at position t where t=0
+     * denotes beginning of path and t=1 denotes the end. Path is unaltered
      *
      * @param t from 0 to 1, relative position inside the path
      * @return A new JMPathPoint that describes the curve at relative position
@@ -450,8 +449,9 @@ public class JMPath implements Stateable, Boxable, Iterable<JMPathPoint> {
      *
      * @param step Initial gap to apply
      * @param reverse If true, reverse the path
+     * @return This object
      */
-    public void cyclePoints(int step, boolean reverse) {
+    public JMPath cyclePoints(int step, boolean reverse) {
         distille();
         JMPath tempPath = this.referencedCopy();
         jmPathPoints.clear();
@@ -482,14 +482,17 @@ public class JMPath implements Stateable, Boxable, Iterable<JMPathPoint> {
             }
             jmPathPoints.add(point);
         }
-
+        return this;
     }
 
     /**
      * Reverse the points of the path
+     *
+     * @return This object
      */
-    public void reverse() {
+    public JMPath reverse() {
         this.cyclePoints(-1, true);
+        return this;
     }
 
     /**
@@ -944,94 +947,117 @@ public class JMPath implements Stateable, Boxable, Iterable<JMPathPoint> {
 
     /**
      * Returns a subpath of the given path. If beginning is greater than ending,
-     * the path is reversed
+     * the path is reversed. Beginning and ending parameter usually are given
+     * from 0 (start of path) to 1 (end of path). Negative values and greater
+     * than 1 are admitted. The subpath is created with copies of points of the
+     * original path, and is opened.
      *
-     * @param a Beginning parameter, from 0 to 1
-     * @param b Ending parameter, from 0 to 1.
-     * @return The subpath
+     * @param a Beginning parameter
+     * @param b Ending parameter
+     * @return The created subpath
      */
     public JMPath getSubPath(double a, double b) {
-        double orderedA,orderedB;
-        if (a < b) {//Still buggy
-           orderedA=a;
-           orderedB=b;
+
+        JMPath subPath = new JMPath();
+//First insert points at a and b
+        double tt0, tt1;//Unordered, mod 0-1
+        double t0, t1;//Ordered, mod 0-1
+        tt0 = a;
+        tt1 = b;
+        while (tt0 < 0) {
+            tt0++;
         }
-        else{
-            orderedA=b;
-           orderedB=a;
+        while (tt1 < 0) {
+            tt1++;
         }
+        while (tt0 > 1) {
+            tt0--;
+        }
+        while (tt1 > 1) {
+            tt1--;
+        }
+
+        //These mark the places where to insert (if needed) the new JMPathPoints
+        t0 = Math.min(tt0, tt1);
+        t1 = Math.max(tt0, tt1);
+
         JMPath tempPath = this.copy();
-
-        tempPath.openPath();
-
-        //Stranges and buggy cases
-        if ((orderedA == 1) && (orderedB == 1)) {
-            JMPath res = JMPath.make();
-            res.addPoint(this.get(0).p.copy(), this.get(0).p.copy());
-            return res;
-        }
-        
-        
         int size = tempPath.size();
+        //Stranges and buggy cases should go here.
 
-        JMPathPoint beginning = tempPath.get(0);
-        JMPathPoint ending = tempPath.get(-1);
+        //Location of point at parameter t0
+        //Interpolated points should be created in ascendent order
+        int k1 = (int) Math.floor(t0 * size);
+        double alpha1 = t0 * size - k1;
+        k1 = Math.floorMod(k1, size);
 
-        int k1 = (int) Math.floor(orderedA * (size - 1));
-        double alpha1 = orderedA * (size - 1) - k1;
+        int k2 = (int) Math.floor(t1 * size);
+        double alpha2 = t1 * size - k2;
+        int kk2 = Math.floorMod(k2, size);
 
-        int k2 = (int) Math.floor(orderedB * (size - 1));
-        double alpha2 = orderedB * (size - 1) - k2;
-
-        if (orderedA > 0) {
+        if (k1 == kk2) {
+            alpha2 = (alpha2 - alpha1) / (1 - alpha1);
+        }
+        int nBeginning, nEnding;
+        JMPathPoint beginning, ending;
+        if (alpha1 != 0) {
             beginning = tempPath.insertJMPointAt(k1, alpha1);
-            beginning.isThisSegmentVisible = false;
-            if (k1 == k2) {
-                alpha2 = (alpha2 - alpha1) / (1 - alpha1);
-            }
-
             k2 = k2 + 1;
+        } else {
+            beginning = tempPath.get(k1);
         }
+        size = tempPath.size();//Size adjusted
 
-        if (orderedB < 1) {
+        k2 = Math.floorMod(k2, size);
+
+        if (alpha2 != 0) {
             ending = tempPath.insertJMPointAt(k2, alpha2);
+        } else {
+            ending = tempPath.get(k2);
+        }
+        size = tempPath.size();//Size adjusted
+
+        if (tt0 < tt1) {
+            nBeginning = tempPath.jmPathPoints.indexOf(beginning);
+            nEnding = tempPath.jmPathPoints.indexOf(ending);
+        } else {
+            nBeginning = tempPath.jmPathPoints.indexOf(ending);
+            nEnding = tempPath.jmPathPoints.indexOf(beginning);
         }
 
-        int nBegin = (a<b ? tempPath.jmPathPoints.indexOf(beginning) : tempPath.jmPathPoints.indexOf(ending));
-        int nEnd = (a<b ? tempPath.jmPathPoints.indexOf(ending) : tempPath.jmPathPoints.indexOf(beginning));
-//        int nEnd = tempPath.jmPathPoints.indexOf(ending);
-        JMPath subPath = new JMPath();
-//        subPath.jmPathPoints.addAll(tempPath.jmPathPoints.subList(nBegin, nEnd + 1));
-        nEnd += (nEnd < nBegin ? tempPath.size() : 0);
-        for (int k = nBegin; k < nEnd + 1; k++) {
-            subPath.jmPathPoints.add(tempPath.jmPathPoints.get(k));
+        double a0 = a;
+        while (a0 >= 1) {
+            a0--;
+            nBeginning += size;
+        }
+        while (a0 < 0) {
+            a0++;
+            nBeginning -= size;
+        }
+        tt1 = b;
+        while (tt1 >= 1) {
+            tt1--;
+            nEnding += size;
+        }
+        while (tt1 < 0) {
+            tt1++;
+            nEnding -= size;
+        }
+
+        int begin = Math.min(nBeginning, nEnding);
+        int end = Math.max(nBeginning, nEnding);
+
+        for (int i = begin; i < end + 1; i++) {
+            subPath.addJMPoint(tempPath.get(i).copy());
+        }
+        subPath.get(0).isThisSegmentVisible = false;
+
+        if (a > b) {
+            subPath.reverse();
         }
 
         return subPath;
-    }
 
-    private JMPath getSubPathCyclic(double a, double b) {
-        JMPath tempPath = this.copy();
-        int size = tempPath.size();
-        int k1 = (int) Math.floor(a * (size - 1));
-        double alpha1 = a * (size - 1) - k1;
-        JMPathPoint beginning = tempPath.insertJMPointAt(k1, alpha1);
-        size++;
-
-        int k2 = (int) Math.floor(b * (size - 1));
-        double alpha2 = b * (size - 1) - k2;
-        JMPathPoint ending = tempPath.insertJMPointAt(k2, alpha2);
-        size++;
-
-        int nBegin = tempPath.jmPathPoints.indexOf(beginning);
-        int nEnd = tempPath.jmPathPoints.indexOf(ending) + size;
-
-        JMPath subPath = new JMPath();
-        for (int k = nBegin + 1; k < nEnd + 1; k++) {
-            subPath.jmPathPoints.add(tempPath.jmPathPoints.get(k));
-        }
-        subPath.openPath();
-        return subPath;
     }
 
     /**
@@ -1083,10 +1109,10 @@ public class JMPath implements Stateable, Boxable, Iterable<JMPathPoint> {
         jmPathPoints.add(k + 1, newPoint);
         newPoint.isThisSegmentVisible = v2.isThisSegmentVisible;
         //Adjust the control points of v1 and v2
-        Point E = v1.p.interpolate(v1.cpExit, alpha); // New cpExit of v1
-        Point G = v2.cpEnter.interpolate(v2.p, alpha); // New cpEnter of v2
-        v1.cpExit.copyFrom(E);
-        v2.cpEnter.copyFrom(G);
+        Vec vE = v1.p.v.interpolate(v1.cpExit.v, alpha); // New cpExit of v1
+        Vec vG = v2.cpEnter.v.interpolate(v2.p.v, alpha); // New cpEnter of v2
+        v1.cpExit.v.copyFrom(vE);
+        v2.cpEnter.v.copyFrom(vG);
         return newPoint;
     }
 

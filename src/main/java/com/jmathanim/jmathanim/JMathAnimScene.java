@@ -38,6 +38,8 @@ import com.jmathanim.mathobjects.Shape;
 import com.jmathanim.mathobjects.Text.LaTeXMathObject;
 import com.jmathanim.mathobjects.shouldUdpateWithCamera;
 import com.jmathanim.mathobjects.updateableObjects.Updateable;
+import java.io.File;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -135,6 +137,10 @@ public abstract class JMathAnimScene {
      * Exit code of program
      */
     private int exitCode;
+    
+    /**
+     * If true, frames are not generated and animations are instantly processed
+     */
     private boolean animationIsDisabled;
 
     /**
@@ -496,11 +502,27 @@ public abstract class JMathAnimScene {
      */
     public void playSound(String soundName, double pitch) {
         if (!config.isSoundsEnabled()) {
-            return;
+            if (!animationIsDisabled) {
+                return;
+            }
         }
-        JMathAnimScene.logger.debug("Playing sound " + soundName + " with pitch " + pitch);
+      
         ResourceLoader rl = new ResourceLoader();
         URL soundURL = rl.getResource(soundName, "sounds");
+         File file;
+        try {
+            file = new File(soundURL.toURI());
+        } catch (URISyntaxException ex) {
+             JMathAnimScene.logger.error("Sound " + soundName + " is not a correct URL resource.");
+             return;
+        }
+
+            if (!file.exists()) {
+               JMathAnimScene.logger.error("Sound " + soundName + " not found. Verify that the name is correct.");
+               return;
+            }
+        
+          JMathAnimScene.logger.debug("Playing sound " + soundName + " with pitch " + pitch);
         long miliSeconds = (frameCount * 1000) / config.fps;
 
         SoundItem soundItem = SoundItem.make(soundURL, miliSeconds, pitch);
