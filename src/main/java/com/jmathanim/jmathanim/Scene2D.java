@@ -30,6 +30,7 @@ public abstract class Scene2D extends JMathAnimScene {
 
 	protected JavaFXRenderer renderer;
 	protected Camera camera;
+	protected Camera fixedCamera;
 
 	public Scene2D() {
 		super();
@@ -48,6 +49,7 @@ public abstract class Scene2D extends JMathAnimScene {
 			Logger.getLogger(Scene2D.class.getName()).log(Level.SEVERE, null, ex);
 		}
 		camera = renderer.getCamera();
+		fixedCamera = renderer.getFixedCamera();
 		super.renderer = renderer;
 	}
 

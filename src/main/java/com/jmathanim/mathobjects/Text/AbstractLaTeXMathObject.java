@@ -52,7 +52,6 @@ import org.scilab.forge.jlatexmath.TeXIcon;
 import org.w3c.dom.DOMImplementation;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.w3c.dom.Node;
 
 /**
  *
@@ -111,8 +110,11 @@ public abstract class AbstractLaTeXMathObject extends SVGMathObject {
         modelMatrix.copyFrom(compose);
         return this;
     }
+    
+   
 
     protected void changeInnerLaTeX(String text) {
+       
         AffineJTransform modelMatrixBackup = modelMatrix.copy();
 //        if (text.equals(this.text)) {
 //            return;

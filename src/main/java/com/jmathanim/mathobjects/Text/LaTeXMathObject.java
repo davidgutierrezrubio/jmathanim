@@ -17,11 +17,24 @@
  */
 package com.jmathanim.mathobjects.Text;
 
+import com.jmathanim.jmathanim.JMathAnimScene;
+import com.jmathanim.mathobjects.Scalar;
+import com.jmathanim.mathobjects.hasArguments;
+import java.text.DecimalFormat;
+import java.util.Dictionary;
+import java.util.HashMap;
+import java.util.Hashtable;
+import java.util.function.Function;
+
 /**
  *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
-public class LaTeXMathObject extends AbstractLaTeXMathObject {
+public class LaTeXMathObject extends AbstractLaTeXMathObject implements hasArguments{
+
+    DecimalFormat df;
+    private String origText;
+    public final HashMap<Integer, Scalar> variables;
 
     /**
      * Static constructor
@@ -43,13 +56,14 @@ public class LaTeXMathObject extends AbstractLaTeXMathObject {
      * @return The LaTexMathObject
      */
     public static LaTeXMathObject make(String text, CompileMode compileMode) {
+
         LaTeXMathObject resul = new LaTeXMathObject();
         resul.getMp().loadFromStyle("latexdefault");
         resul.getMp().setAbsoluteThickness(true);
 //        resul.getMp().setFillColor(resul.getMp().getDrawColor());
         resul.getMp().setThickness(1d);
         resul.mode = compileMode;
-        
+
         if (!"".equals(text)) {
             resul.setLaTeX(text);
         }
@@ -61,6 +75,8 @@ public class LaTeXMathObject extends AbstractLaTeXMathObject {
      */
     protected LaTeXMathObject() {
         super();
+        df = new DecimalFormat("0.00");
+        variables = new HashMap<>();
     }
 
     /**
@@ -73,15 +89,53 @@ public class LaTeXMathObject extends AbstractLaTeXMathObject {
      * @return This object
      */
     public LaTeXMathObject setLaTeX(String text) {
+        origText = text;
+//        text = replaceInnerReferencesInText(text);
         changeInnerLaTeX(text);
         return this;
     }
 
+//    protected String replaceInnerReferencesInText(String text) {
+//        for (Integer index : variables.keySet()) {
+//            text = text.replace("{#" + index + "}", df.format(variables.get(index)));
+//        }
+//        return text;
+//    }
     @Override
     public LaTeXMathObject copy() {
         LaTeXMathObject resul = new LaTeXMathObject();
         resul.copyStateFrom(this);
         return resul;
+    }
+
+    @Override
+    public void update(JMathAnimScene scene) {
+        if (origText.contains("{#")) {
+            //Actualizo numeros
+            String newText = origText;
+            for (Integer index : variables.keySet()) {
+                newText = newText.replace("{#" + index + "}", df.format(variables.get(index).value));
+            }
+
+            changeInnerLaTeX(newText);
+            System.out.println("Update!");
+        }
+    }
+
+    public DecimalFormat getDecimalFormat() {
+        return df;
+    }
+    public void setFormat(String format) {
+        df=new DecimalFormat(format);
+    }
+
+    @Override
+    public Scalar getArg(int n) {
+        Scalar resul = variables.get(n);
+        if (resul == null) {
+            variables.put(n, Scalar.make(0));
+        }
+        return variables.get(n);
     }
 
 //    @Override

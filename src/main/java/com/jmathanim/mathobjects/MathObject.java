@@ -28,6 +28,7 @@ import com.jmathanim.Utils.Anchor;
 import com.jmathanim.Utils.Anchor.Type;
 import com.jmathanim.Utils.Boxable;
 import com.jmathanim.Utils.JMathAnimConfig;
+import com.jmathanim.Utils.Linkable;
 import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
@@ -44,7 +45,7 @@ import javafx.scene.shape.StrokeLineCap;
  *
  * @author David Gutierrez Rubio davidgutierrezrubio@gmail.com
  */
-public abstract class MathObject implements Drawable, Updateable, Stateable, Boxable, StyleHookable {
+public abstract class MathObject implements Drawable, Updateable, Stateable, Boxable, StyleHookable,Linkable {
 
     private Camera camera;
 

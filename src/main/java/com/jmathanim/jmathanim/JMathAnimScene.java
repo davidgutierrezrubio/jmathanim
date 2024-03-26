@@ -29,6 +29,8 @@ import com.jmathanim.Renderers.MovieEncoders.SoundItem;
 import com.jmathanim.Renderers.Renderer;
 import com.jmathanim.Styling.MODrawProperties;
 import com.jmathanim.Utils.JMathAnimConfig;
+import com.jmathanim.Utils.Link;
+import com.jmathanim.Utils.Linkable;
 import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.ResourceLoader;
 import com.jmathanim.mathobjects.MathObject;
@@ -79,6 +81,13 @@ public abstract class JMathAnimScene {
      */
     private final ArrayList<MathObject> sceneObjects;
     private final HashSet<MathObject> objectsAlreadyDrawed;
+    
+    
+    /**
+     * Links to be executed, right before the updates
+     */
+    private final ArrayList<Link> linksToBeDone;
+    
     /**
      * List of sceneObjects which needs to be updated (not necessarily drawn)
      */
@@ -156,6 +165,7 @@ public abstract class JMathAnimScene {
         objectsAlreadyDrawed = new HashSet<>();
         config = JMathAnimConfig.getConfig();
         config.setLowQuality();
+        linksToBeDone=new ArrayList<>();
         objectsToBeUpdated = new ArrayList<>();
         objectsToBeRemoved = new ArrayList<>();
         play = new PlayAnim(this);// Convenience class for fast access to common animations
@@ -396,6 +406,7 @@ public abstract class JMathAnimScene {
      */
     protected final void doDraws() {
         objectsAlreadyDrawed.clear();
+        doLinks();
         doUpdates();
         if (!animationIsDisabled) {
             // Objects to be drawn on screen. Sort them by layer
@@ -415,6 +426,13 @@ public abstract class JMathAnimScene {
         objectsToBeRemoved.clear();
     }
 
+    private void doLinks() {
+        for (Link link : linksToBeDone) {
+            link.apply();
+        }
+    }
+    
+    
     /**
      * Perform all needed updates
      */
@@ -804,4 +822,25 @@ public abstract class JMathAnimScene {
         return getMathObjects().contains(mathobject);
     }
 
+    /**
+     * Register a new Link to be done at every frame
+     * @param origin Origin object
+     * @param originType Origin link
+     * @param destiny Destiny object
+     * @param destinyType Destiny link
+     * @return The created link
+     */
+    public Link registerLink(Linkable origin,Link.LinkType originType,Linkable destiny, Link.LinkType destinyType) {
+        Link link = new Link(origin, originType, destiny, destinyType);
+        linksToBeDone.add(link);
+        return link;
+    }
+    /**
+     * Removes the given link from the list of links to be done
+     * @param link Link to remove
+     * @return True if link existed and was removed
+     */
+    public boolean unregisterLink(Link link) {
+        return linksToBeDone.remove(link);
+    }
 }
