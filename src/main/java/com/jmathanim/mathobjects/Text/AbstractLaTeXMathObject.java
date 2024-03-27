@@ -21,13 +21,14 @@ import com.jmathanim.Styling.MODrawProperties;
 import com.jmathanim.Styling.PaintStyle;
 import com.jmathanim.Utils.AffineJTransform;
 import com.jmathanim.Utils.Anchor;
+import com.jmathanim.Utils.EmptyRect;
+import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.SVGUtils;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.Point;
 import com.jmathanim.mathobjects.SVGMathObject;
 import com.jmathanim.mathobjects.Shape;
-import java.awt.Color;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileWriter;
@@ -40,8 +41,6 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
 import org.apache.batik.dom.GenericDOMImplementation;
 import org.apache.batik.svggen.DOMTreeManager;
 import org.apache.batik.svggen.SVGGeneratorContext;
@@ -97,9 +96,9 @@ public abstract class AbstractLaTeXMathObject extends SVGMathObject {
     protected String baseFileName;
     protected File outputDir;
 
-    protected AbstractLaTeXMathObject() {
+    protected AbstractLaTeXMathObject(Anchor.Type anchor) {
         super();
-        anchor = Anchor.Type.CENTER;
+        this.anchor = anchor;
         modelMatrix = new AffineJTransform();
     }
 
@@ -179,15 +178,29 @@ public abstract class AbstractLaTeXMathObject extends SVGMathObject {
         if ((mode == CompileMode.JLaTexMath) || (mode == CompileMode.RawJLaTexMath)) {
             sc *= 0.24906237699889464;
         }
-        this.scale(getBoundingBox().getUL(), sc, sc, 1);
-        this.stackTo(Point.origin(), anchor);
+        this.scale(sc, sc, 1);
+        this.stackTo(anchor,Point.origin(), Anchor.Type.CENTER,0);
         modelMatrix.copyFrom(modelMatrixBackup);
         for (Shape sh : shapes) {
 //            sh.getMp().copyFrom(mpMultiShape);
             sh.applyAffineTransform(modelMatrix);
         }
     }
+  @Override
+    protected Rect computeBoundingBox() {
+        Rect resul = null;
+        for (Shape jmp : shapes) {
+            if (!jmp.isEmpty()) {
+                resul = Rect.union(resul, jmp.getBoundingBox());
+            }
+        }
 
+        if (resul == null) {
+            return new EmptyRect();
+        } else {
+            return resul;
+        }
+    }
     private Element generateDOMTreeFromLaTeX(String text) {
         Writer out = null;
         DOMImplementation domImpl = GenericDOMImplementation.getDOMImplementation();
@@ -368,12 +381,12 @@ public abstract class AbstractLaTeXMathObject extends SVGMathObject {
         return this;
     }
 
-    public Anchor.Type getAnchor() {
-        return anchor;
-    }
-
-    public <T extends AbstractLaTeXMathObject> T setAnchor(Anchor.Type anchor) {
-        this.anchor = anchor;
-        return (T) this;
-    }
+//    public Anchor.Type getAnchor() {
+//        return anchor;
+//    }
+//
+//    public <T extends AbstractLaTeXMathObject> T setAnchor(Anchor.Type anchor) {
+//        this.anchor = anchor;
+//        return (T) this;
+//    }
 }

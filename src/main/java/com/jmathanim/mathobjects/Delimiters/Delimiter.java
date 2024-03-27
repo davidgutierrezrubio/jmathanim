@@ -359,7 +359,7 @@ public abstract class Delimiter extends MathObject {
 //     */
 //    public <T extends Delimiter> T addLengthLabel(String format, double gap) {
 //        JMNumber jm = JMNumber.length(scaledA, scaledB);
-//        jm.setFormat(format);
+//        jm.setArgumentsFormat(format);
 //        return setLabel(jm, gap);
 //    }
 //    /**

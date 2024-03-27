@@ -50,6 +50,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.function.DoubleUnaryOperator;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
 import org.slf4j.LoggerFactory;
@@ -81,13 +82,12 @@ public abstract class JMathAnimScene {
      */
     private final ArrayList<MathObject> sceneObjects;
     private final HashSet<MathObject> objectsAlreadyDrawed;
-    
-    
+
     /**
      * Links to be executed, right before the updates
      */
     private final ArrayList<Link> linksToBeDone;
-    
+
     /**
      * List of sceneObjects which needs to be updated (not necessarily drawn)
      */
@@ -146,7 +146,7 @@ public abstract class JMathAnimScene {
      * Exit code of program
      */
     private int exitCode;
-    
+
     /**
      * If true, frames are not generated and animations are instantly processed
      */
@@ -165,7 +165,7 @@ public abstract class JMathAnimScene {
         objectsAlreadyDrawed = new HashSet<>();
         config = JMathAnimConfig.getConfig();
         config.setLowQuality();
-        linksToBeDone=new ArrayList<>();
+        linksToBeDone = new ArrayList<>();
         objectsToBeUpdated = new ArrayList<>();
         objectsToBeRemoved = new ArrayList<>();
         play = new PlayAnim(this);// Convenience class for fast access to common animations
@@ -431,8 +431,7 @@ public abstract class JMathAnimScene {
             link.apply();
         }
     }
-    
-    
+
     /**
      * Perform all needed updates
      */
@@ -524,23 +523,23 @@ public abstract class JMathAnimScene {
                 return;
             }
         }
-      
+
         ResourceLoader rl = new ResourceLoader();
         URL soundURL = rl.getResource(soundName, "sounds");
-         File file;
+        File file;
         try {
             file = new File(soundURL.toURI());
         } catch (URISyntaxException ex) {
-             JMathAnimScene.logger.error("Sound " + soundName + " is not a correct URL resource.");
-             return;
+            JMathAnimScene.logger.error("Sound " + soundName + " is not a correct URL resource.");
+            return;
         }
 
-            if (!file.exists()) {
-               JMathAnimScene.logger.error("Sound " + soundName + " not found. Verify that the name is correct.");
-               return;
-            }
-        
-          JMathAnimScene.logger.debug("Playing sound " + soundName + " with pitch " + pitch);
+        if (!file.exists()) {
+            JMathAnimScene.logger.error("Sound " + soundName + " not found. Verify that the name is correct.");
+            return;
+        }
+
+        JMathAnimScene.logger.debug("Playing sound " + soundName + " with pitch " + pitch);
         long miliSeconds = (frameCount * 1000) / config.fps;
 
         SoundItem soundItem = SoundItem.make(soundURL, miliSeconds, pitch);
@@ -594,12 +593,12 @@ public abstract class JMathAnimScene {
             finished = true;
             boolean anyAnimationRunning = false;
             for (Animation anim : listAnims) {
-                    anyAnimationRunning = anyAnimationRunning | (anim.getStatus() == Animation.Status.RUNNING);
-                    final boolean resultAnimation = anim.processAnimation();
-                    finished = finished & resultAnimation;
-                    if (resultAnimation) {
-                        anim.finishAnimation();
-                    }
+                anyAnimationRunning = anyAnimationRunning | (anim.getStatus() == Animation.Status.RUNNING);
+                final boolean resultAnimation = anim.processAnimation();
+                finished = finished & resultAnimation;
+                if (resultAnimation) {
+                    anim.finishAnimation();
+                }
             }
             if (!finished) {//If all animations are finished, no need to advance frame
                 advanceFrame();
@@ -823,20 +822,41 @@ public abstract class JMathAnimScene {
     }
 
     /**
-     * Register a new Link to be done at every frame
+     * Register a new Link to be done at every frame. A double value will be
+     * extracted from the origin object and applied to the destiny
+     *
      * @param origin Origin object
      * @param originType Origin link
      * @param destiny Destiny object
      * @param destinyType Destiny link
      * @return The created link
      */
-    public Link registerLink(Linkable origin,Link.LinkType originType,Linkable destiny, Link.LinkType destinyType) {
-        Link link = new Link(origin, originType, destiny, destinyType);
+    public Link registerLink(Linkable origin, Link.LinkType originType, Linkable destiny, Link.LinkType destinyType) {
+        Link link = Link.make(origin, originType, destiny, destinyType);
         linksToBeDone.add(link);
         return link;
     }
+
+    /**
+     * Register a new Link to be done at every frame. A double value will be
+     * extracted from the origin object and applied to the destiny
+     *
+     * @param origin Origin object
+     * @param originType Origin link.
+     * @param destiny Destiny object
+     * @param destinyType Destiny link
+     * @param function Function to apply to the value before applying to the destiny object
+     * @return The created link
+     */
+    public Link registerLink(Linkable origin, Link.LinkType originType, Linkable destiny, Link.LinkType destinyType, DoubleUnaryOperator function) {
+        Link link = Link.make(origin, originType, destiny, destinyType,function);
+        linksToBeDone.add(link);
+        return link;
+    }
+
     /**
      * Removes the given link from the list of links to be done
+     *
      * @param link Link to remove
      * @return True if link existed and was removed
      */

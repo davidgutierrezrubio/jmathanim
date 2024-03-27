@@ -17,20 +17,18 @@
  */
 package com.jmathanim.mathobjects.Text;
 
+import com.jmathanim.Utils.Anchor;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.Scalar;
 import com.jmathanim.mathobjects.hasArguments;
 import java.text.DecimalFormat;
-import java.util.Dictionary;
 import java.util.HashMap;
-import java.util.Hashtable;
-import java.util.function.Function;
 
 /**
  *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
-public class LaTeXMathObject extends AbstractLaTeXMathObject implements hasArguments{
+public class LaTeXMathObject extends AbstractLaTeXMathObject implements hasArguments {
 
     DecimalFormat df;
     private String origText;
@@ -44,7 +42,20 @@ public class LaTeXMathObject extends AbstractLaTeXMathObject implements hasArgum
      * @return The LaTexMathObject
      */
     public static LaTeXMathObject make(String text) {
-        return make(text, CompileMode.JLaTexMath);
+        return make(text, CompileMode.JLaTexMath, Anchor.Type.CENTER);
+    }
+
+    /**
+     * Static constructor
+     *
+     * @param text LaTex text to compile. By default this text is compiled using
+     * the compile mode JLaTexMath.
+     * @param anchor Anchor to align. Default is CENTER. If LEFT, text will be
+     * anchored in its left margin to the reference point
+     * @return The LaTexMathObject
+     */
+    public static LaTeXMathObject make(String text, Anchor.Type anchor) {
+        return make(text, CompileMode.JLaTexMath, anchor);
     }
 
     /**
@@ -53,15 +64,17 @@ public class LaTeXMathObject extends AbstractLaTeXMathObject implements hasArgum
      * @param text LaTex text to compile
      * @param compileMode How to generate the shapes from LaTeX string. A value
      * from the enum CompileMode.
+     * @param anchor Anchor to align. Default is CENTER. If LEFT, text will be
+     * anchored in its left margin to the reference point
      * @return The LaTexMathObject
      */
-    public static LaTeXMathObject make(String text, CompileMode compileMode) {
+    public static LaTeXMathObject make(String text, CompileMode compileMode, Anchor.Type anchor) {
 
-        LaTeXMathObject resul = new LaTeXMathObject();
+        LaTeXMathObject resul = new LaTeXMathObject(anchor);
         resul.getMp().loadFromStyle("latexdefault");
         resul.getMp().setAbsoluteThickness(true);
 //        resul.getMp().setFillColor(resul.getMp().getDrawColor());
-        resul.getMp().setThickness(1d);
+//        resul.getMp().setThickness(1d);
         resul.mode = compileMode;
 
         if (!"".equals(text)) {
@@ -73,8 +86,8 @@ public class LaTeXMathObject extends AbstractLaTeXMathObject implements hasArgum
     /**
      * Creates a new LaTeX generated text
      */
-    protected LaTeXMathObject() {
-        super();
+    protected LaTeXMathObject(Anchor.Type anchor) {
+        super(anchor);
         df = new DecimalFormat("0.00");
         variables = new HashMap<>();
     }
@@ -103,7 +116,7 @@ public class LaTeXMathObject extends AbstractLaTeXMathObject implements hasArgum
 //    }
     @Override
     public LaTeXMathObject copy() {
-        LaTeXMathObject resul = new LaTeXMathObject();
+        LaTeXMathObject resul = new LaTeXMathObject(this.anchor);
         resul.copyStateFrom(this);
         return resul;
     }
@@ -116,17 +129,21 @@ public class LaTeXMathObject extends AbstractLaTeXMathObject implements hasArgum
             for (Integer index : variables.keySet()) {
                 newText = newText.replace("{#" + index + "}", df.format(variables.get(index).value));
             }
-
             changeInnerLaTeX(newText);
-            System.out.println("Update!");
         }
     }
 
     public DecimalFormat getDecimalFormat() {
         return df;
     }
-    public void setFormat(String format) {
-        df=new DecimalFormat(format);
+
+    /**
+     * Sets the decimal format for the arguments.
+     *
+     * @param format A string representing a format for the DecimalFormat class.
+     */
+    public void setArgumentsFormat(String format) {
+        df = new DecimalFormat(format);
     }
 
     @Override

@@ -19,8 +19,6 @@ package com.jmathanim.jmathanim;
 
 import com.jmathanim.Cameras.Camera3D;
 import com.jmathanim.Renderers.JOGLRenderer.JOGLRenderer;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * Development, unstable class for testing the JOGL API for rendering purposes

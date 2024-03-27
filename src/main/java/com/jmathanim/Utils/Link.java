@@ -22,7 +22,7 @@ import com.jmathanim.mathobjects.Point;
 import com.jmathanim.mathobjects.Scalar;
 import com.jmathanim.mathobjects.Text.LaTeXMathObject;
 import com.jmathanim.mathobjects.hasArguments;
-import java.util.HashMap;
+import java.util.function.DoubleUnaryOperator;
 
 /**
  * A link between 2 Linkable objects
@@ -32,18 +32,30 @@ import java.util.HashMap;
 public class Link {
 
     public enum LinkType {
-        X, Y, XY, VALUE, ARG0, ARG1, ARG2, ARG3, ARG4, ARG5, WIDTH, HEIGHT, XMIN, XMAX, YMIN, YMAX
+        X, Y, VALUE,
+        WIDTH, HEIGHT, XMIN, XMAX, YMIN, YMAX,
+        ARG0, ARG1, ARG2, ARG3, ARG4, ARG5, ARG6, ARG7, ARG8, ARG9
     };
     public Linkable origin;
     public LinkType originLinkType;
     public LinkType destinyLinkType;
     public Linkable destiny;
+    public DoubleUnaryOperator function;
 
-    public Link(Linkable origin, LinkType originLinkType, Linkable destiny, LinkType destinyLinkType) {
+    public static Link make(Linkable origin, LinkType originLinkType, Linkable destiny, LinkType destinyLinkType) {
+        return new Link(origin, originLinkType, destiny, destinyLinkType, t -> t);
+    }
+
+    public static Link make(Linkable origin, LinkType originLinkType, Linkable destiny, LinkType destinyLinkType, DoubleUnaryOperator function) {
+        return new Link(origin, originLinkType, destiny, destinyLinkType, function);
+    }
+
+    private Link(Linkable origin, LinkType originLinkType, Linkable destiny, LinkType destinyLinkType, DoubleUnaryOperator function) {
         this.origin = origin;
         this.originLinkType = originLinkType;
         this.destinyLinkType = destinyLinkType;
         this.destiny = destiny;
+        this.function = function;
     }
 
     /**
@@ -54,7 +66,8 @@ public class Link {
     public boolean apply() {
         try {
             //Get origin data
-            Object data = getLinkData();
+            double data = getLinkData();
+            data = function.applyAsDouble(data);
 
             //Apply data
             //*********************************************************
@@ -65,15 +78,11 @@ public class Link {
 
                 switch (destinyLinkType) {
                     case X:
-                        vshift.x = getX(data) - center.v.x;
+                        vshift.x = getValue(data) - center.v.x;
                         mathObject.shift(vshift);
                         break;
                     case Y:
-                        vshift.y = getY(data) - center.v.y;
-                        mathObject.shift(vshift);
-                        break;
-                    case XY:
-                        vshift.copyFrom(getXY(data).add(center.v.mult(-1)));
+                        vshift.y = getValue(data) - center.v.y;
                         mathObject.shift(vshift);
                         break;
                     case XMIN:
@@ -139,8 +148,21 @@ public class Link {
                         lat.getArg(4).setScalar(value);
                         break;
                     case ARG5:
-                        lat.getArg(4).setScalar(value);
+                        lat.getArg(5).setScalar(value);
                         break;
+                    case ARG6:
+                        lat.getArg(6).setScalar(value);
+                        break;
+                    case ARG7:
+                        lat.getArg(7).setScalar(value);
+                        break;
+                    case ARG8:
+                        lat.getArg(8).setScalar(value);
+                        break;
+                    case ARG9:
+                        lat.getArg(9).setScalar(value);
+                        break;
+
                 }
             }
         } catch (JLinkException e) {
@@ -149,14 +171,14 @@ public class Link {
         return true;
     }
 
-    private Object getLinkData() throws JLinkException {
+    private double getLinkData() throws JLinkException {
         switch (originLinkType) {
             case X:
                 return getX(origin);
             case Y:
                 return getY(origin);
-            case XY:
-                return getXY(origin);
+            case VALUE:
+                return getValue(origin);
             case ARG0:
                 return getArg(origin, 0);
             case ARG1:
@@ -183,7 +205,7 @@ public class Link {
                 return getBoundaryCoordinate(origin, 2);
         }
 
-        return null;
+        throw new JLinkException();
     }
 
     private Double getBoundaryCoordinate(Object obj, int num) throws JLinkException {
@@ -261,25 +283,21 @@ public class Link {
         throw new JLinkException();
     }
 
-    private Vec getXY(Object obj) throws JLinkException {
-
-        if (obj instanceof Point) {
-            Point point = (Point) obj;
-            return point.v;
+    private Double getValue(Object obj) throws JLinkException {
+        if (obj instanceof Scalar) {
+            Scalar scalar = (Scalar) obj;
+            return scalar.getScalar();
+        }
+        if (obj instanceof Double) {
+            return (Double) obj;
         }
         if (obj instanceof Vec) {
-            return (Vec) obj;
+            Vec vec = (Vec) obj;
+            return vec.norm();
         }
         if (obj instanceof Boxable) {
             Boxable boxable = (Boxable) obj;
-            return boxable.getBoundingBox().getCenter().v;
-        }
-        throw new JLinkException();
-    }
-
-    private Double getValue(Object obj) throws JLinkException {
-        if (obj instanceof Double) {
-            return (Double) obj;
+            return boxable.getBoundingBox().getCenter().v.norm();
         }
         throw new JLinkException();
     }
