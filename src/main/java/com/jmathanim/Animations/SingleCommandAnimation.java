@@ -18,6 +18,7 @@
 package com.jmathanim.Animations;
 
 import com.jmathanim.mathobjects.MathObject;
+import com.jmathanim.mathobjects.Text.LaTeXMathObject;
 
 /**
  * This animation execute a single command. It is used to encapsulate ceratin
@@ -27,18 +28,44 @@ import com.jmathanim.mathobjects.MathObject;
  */
 public abstract class SingleCommandAnimation extends Animation {
 
+    enum cmdStatus {
+        NEVER_DONE, DONE, UNDONE
+    };
+    private cmdStatus cmdStatus;
+
+    public static SingleCommandAnimation changeLaTeX(LaTeXMathObject latex, String newText) {
+        SingleCommandAnimation sc = new SingleCommandAnimation() {
+            String oldText = null;
+
+            @Override
+            public void command() {
+                oldText = latex.getText();
+                latex.setLaTeX(newText);
+            }
+
+            @Override
+            public void undo() {
+                if (oldText != null) {
+                    latex.setLaTeX(oldText);
+                }
+            }
+        };
+        return sc;
+    }
+
     /**
      * Creates a new SingleCommandAnimation. The default duration of this
      * animation is 0.
      */
     public SingleCommandAnimation() {
         super(0);
+        cmdStatus = cmdStatus.NEVER_DONE;
     }
 
     @Override
     public boolean processAnimation() {
         super.processAnimation();
-        command();
+        this.t = 1;
         return true;// Finish the animation inmediately
     }
 
@@ -47,13 +74,28 @@ public abstract class SingleCommandAnimation extends Animation {
      */
     public abstract void command();
 
+    public void undo() {
+    }
+
     @Override
     public void doAnim(double t) {
-         super.doAnim(t);
+        super.doAnim(t);
     }
 
     @Override
     public void cleanAnimationAt(double t) {
+        if (t == 1) {
+            if ((cmdStatus == cmdStatus.NEVER_DONE) || (cmdStatus == cmdStatus.UNDONE)) {
+                command();
+                cmdStatus = cmdStatus.DONE;
+            }
+        }
+        if (t == 0) {
+            if (cmdStatus == cmdStatus.DONE) {
+                undo();
+                cmdStatus = cmdStatus.UNDONE;
+            }
+        }
     }
 
     @Override
@@ -64,6 +106,5 @@ public abstract class SingleCommandAnimation extends Animation {
     public MathObject getIntermediateObject() {
         return null;
     }
-    
 
 }

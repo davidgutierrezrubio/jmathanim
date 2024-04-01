@@ -122,24 +122,36 @@ public class JoinAnimation extends Animation {
         //Now normalize from 0 to 1
         double ltNormalized = (lt - steps[num]) / (steps[num + 1] - steps[num]);
 
-        for (int k = 0; k < num; k++) {
-            animations.get(k).doAnim(0);
-            animations.get(k).cleanAnimationAt(0);
-            animations.get(k).doAnim(1);
-            animations.get(k).cleanAnimationAt(1);
-        }
-
         Animation anim = animations.get(num);
-        if ((previous != null) && (anim != previous)) { //if we changed animations between previous frame and actual...
-            int numPrev = animations.indexOf(previous);
+//        if ((previous != null) && (anim != previous)) { //if we changed animations between previous frame and actual...
 
+            
+            
+            if ((previous == null) && (num > 0)) {
+            for (int k = 0; k < num; k++) {
+                animations.get(k).doAnim(0);
+                animations.get(k).cleanAnimationAt(0);
+                animations.get(k).doAnim(1);
+                animations.get(k).cleanAnimationAt(1);
+            }
+//            if (num>0) {
+//                animations.get(num - 1).doAnim(1);
+//                animations.get(num - 1).cleanAnimationAt(1);
+//            }
+//            if (num+1<animations.size()) {
+//                animations.get(num + 1).cleanAnimationAt(0);
+//            }
+    
+            }
+            int numPrev = animations.indexOf(previous);
             if (numPrev > num) {
-                previous.cleanAnimationAt(0);
+//                previous.cleanAnimationAt(0);
+                animations.get(num + 1).cleanAnimationAt(0);
             }
             if (numPrev < num) {
-                previous.cleanAnimationAt(1);
+                animations.get(num - 1).cleanAnimationAt(1);
             }
-        }
+//        }
         anim.prepareForAnim(ltNormalized);
         anim.doAnim(ltNormalized);
         previous = anim;
@@ -156,9 +168,23 @@ public class JoinAnimation extends Animation {
     public void cleanAnimationAt(double t) {
         double lt = getLT(t);
         int num = getAnimationNumberForTime(lt);
-        //Now normalize from 0 to 1
-        double ltNormalized = (lt - steps[num]) / (steps[num + 1] - steps[num]);
-        animations.get(num).cleanAnimationAt(ltNormalized);
+        double thisT = steps[num + 1];
+
+        //This loop is necessary to handle 0-time animations like SingleCommandAnimation
+        while ((num + 1 < steps.length) && (steps[num + 1] == thisT)) {
+            //Now normalize from 0 to 1
+
+            double ltNormalized;
+
+            if (steps[num + 1] != steps[num]) {
+                ltNormalized = (lt - steps[num]) / (steps[num + 1] - steps[num]);
+            } else {
+                ltNormalized = (lt == 0 ? 0 : 1);
+            }
+            animations.get(num).cleanAnimationAt(ltNormalized);
+
+            num++;
+        }
     }
 
     @Override
@@ -174,6 +200,9 @@ public class JoinAnimation extends Animation {
         if (t == 0) {
             return 0;
         }
+//        if (t == 1) {
+//            return animations.size() - 1;
+//        }
         int num = 0;
         while (t > steps[num]) {
             num++;
@@ -182,7 +211,7 @@ public class JoinAnimation extends Animation {
         return num;
     }
 
-    public boolean add(Animation...anims) {
+    public boolean add(Animation... anims) {
         return animations.addAll(Arrays.asList(anims));
     }
 
@@ -198,12 +227,13 @@ public class JoinAnimation extends Animation {
     public MathObject getIntermediateObject() {
         return previous.getIntermediateObject();
     }
-     @Override
+
+    @Override
     public void reset() {
         super.reset();
         for (Animation anim : animations) {
             anim.reset();
-            
+
         }
     }
 
