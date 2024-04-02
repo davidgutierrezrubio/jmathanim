@@ -18,6 +18,7 @@
 package com.jmathanim.Animations;
 
 import com.jmathanim.mathobjects.MathObject;
+import com.jmathanim.mathobjects.Scalar;
 import com.jmathanim.mathobjects.Text.LaTeXMathObject;
 
 /**
@@ -53,6 +54,46 @@ public abstract class SingleCommandAnimation extends Animation {
         return sc;
     }
 
+    public static SingleCommandAnimation changeScalar(Scalar scalar, double value) {
+        SingleCommandAnimation sc = new SingleCommandAnimation() {
+            Double oldValue = null;
+
+            @Override
+            public void command() {
+                oldValue = scalar.getScalar();
+                scalar.setScalar(value);
+            }
+
+            @Override
+            public void undo() {
+                if (oldValue != null) {
+                    scalar.setScalar(oldValue);
+                }
+            }
+        };
+        return sc;
+    }
+
+    public static SingleCommandAnimation increaseScalar(Scalar scalar,  double delta) {
+        SingleCommandAnimation sc = new SingleCommandAnimation() {
+            Double oldValue = null;
+
+            @Override
+            public void command() {
+                oldValue = scalar.getScalar();
+                scalar.setScalar(oldValue+delta);
+            }
+
+            @Override
+            public void undo() {
+                if (oldValue != null) {
+                    scalar.setScalar(oldValue);
+                }
+            }
+        };
+        return sc;
+    }
+
     /**
      * Creates a new SingleCommandAnimation. The default duration of this
      * animation is 0.
@@ -74,8 +115,7 @@ public abstract class SingleCommandAnimation extends Animation {
      */
     public abstract void command();
 
-    public void undo() {
-    }
+    public abstract void undo();
 
     @Override
     public void doAnim(double t) {
