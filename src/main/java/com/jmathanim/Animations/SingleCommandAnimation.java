@@ -29,10 +29,10 @@ import com.jmathanim.mathobjects.Text.LaTeXMathObject;
  */
 public abstract class SingleCommandAnimation extends Animation {
 
-    enum cmdStatus {
+    enum cmdStatusType {
         NEVER_DONE, DONE, UNDONE
     };
-    private cmdStatus cmdStatus;
+    public cmdStatusType cmdStatus;
 
     public static SingleCommandAnimation changeLaTeX(LaTeXMathObject latex, String newText) {
         SingleCommandAnimation sc = new SingleCommandAnimation() {
@@ -126,6 +126,7 @@ public abstract class SingleCommandAnimation extends Animation {
     public void cleanAnimationAt(double t) {
         if (t == 1) {
             if ((cmdStatus == cmdStatus.NEVER_DONE) || (cmdStatus == cmdStatus.UNDONE)) {
+                System.out.println("COMMAND");
                 command();
                 cmdStatus = cmdStatus.DONE;
             }

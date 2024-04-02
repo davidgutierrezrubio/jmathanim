@@ -74,7 +74,6 @@ public class JoinAnimation extends Animation {
             Animation anim = animations.get(i);
             anim.doAnim(0);
             anim.cleanAnimationAt(0);
-
         }
         return true;
     }
