@@ -18,8 +18,11 @@ package com.jmathanim.Utils;
 
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.MathObject;
+import com.jmathanim.mathobjects.MathObjectGroup;
+import com.jmathanim.mathobjects.MultiShapeObject;
 import com.jmathanim.mathobjects.Point;
 import com.jmathanim.mathobjects.Scalar;
+import com.jmathanim.mathobjects.Shape;
 import com.jmathanim.mathobjects.Text.LaTeXMathObject;
 import com.jmathanim.mathobjects.hasArguments;
 import java.util.function.DoubleUnaryOperator;
@@ -32,7 +35,7 @@ import java.util.function.DoubleUnaryOperator;
 public class Link {
 
     public enum LinkType {
-        X, Y, VALUE,
+        X, Y, VALUE, COUNT,
         WIDTH, HEIGHT, XMIN, XMAX, YMIN, YMAX,
         ARG0, ARG1, ARG2, ARG3, ARG4, ARG5, ARG6, ARG7, ARG8, ARG9
     };
@@ -179,6 +182,8 @@ public class Link {
                 return getY(origin);
             case VALUE:
                 return getValue(origin);
+            case COUNT:
+                return getCount(origin);
             case ARG0:
                 return getArg(origin, 0);
             case ARG1:
@@ -203,6 +208,23 @@ public class Link {
                 return getBoundaryCoordinate(origin, 0);
             case YMIN:
                 return getBoundaryCoordinate(origin, 2);
+        }
+
+        throw new JLinkException();
+    }
+
+    private int getCount(Object obj) throws JLinkException {
+        if (obj instanceof Shape) {
+            Shape shape = (Shape) obj;
+            return shape.size();
+        }
+        if (obj instanceof MathObjectGroup) {
+            MathObjectGroup mg = (MathObjectGroup) obj;
+            return mg.size();
+        }
+           if (obj instanceof MultiShapeObject) {
+            MultiShapeObject msh = (MultiShapeObject) obj;
+            return msh.size();
         }
 
         throw new JLinkException();

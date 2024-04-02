@@ -144,6 +144,7 @@ public class JoinAnimation extends Animation {
     
             }
             int numPrev = animations.indexOf(previous);
+            if (numPrev!=-1) {
             if (numPrev > num) {
 //                previous.cleanAnimationAt(0);
                 animations.get(num + 1).cleanAnimationAt(0);
@@ -151,7 +152,7 @@ public class JoinAnimation extends Animation {
             if (numPrev < num) {
                 animations.get(num - 1).cleanAnimationAt(1);
             }
-//        }
+        }
         anim.prepareForAnim(ltNormalized);
         anim.doAnim(ltNormalized);
         previous = anim;
