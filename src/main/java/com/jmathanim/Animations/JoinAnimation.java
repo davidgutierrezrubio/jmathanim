@@ -33,6 +33,12 @@ public class JoinAnimation extends Animation {
     Animation previous;
     double[] steps;
 
+    public static JoinAnimation make(Animation... anims) {
+        JoinAnimation resul = new JoinAnimation(-1, anims);
+        resul.setLambda(t -> t);//Default behaviour for this animation
+        return resul;
+    }
+
     public static JoinAnimation make(double runTime, Animation... anims) {
         JoinAnimation resul = new JoinAnimation(runTime, anims);
         resul.setLambda(t -> t);//Default behaviour for this animation
@@ -51,16 +57,9 @@ public class JoinAnimation extends Animation {
     @Override
     public boolean doInitialization() {
         super.doInitialization();
-        //Compute vector of steps
-        double totalSum = animations.stream().collect(Collectors.summingDouble(Animation::getRunTime));
-        steps = new double[animations.size() + 1];
-        steps[0] = 0;
-        double partialSum = 0;
-        for (int i = 0; i < animations.size(); i++) {
-            partialSum += animations.get(i).getRunTime();
-            steps[i + 1] = partialSum / totalSum;
-        }
-        //Performs an initialization of all animations
+        
+        
+          //Performs an initialization of all animations
         for (int i = 0; i < animations.size(); i++) {
             Animation anim = animations.get(i);
             anim.initialize(scene);
@@ -75,6 +74,21 @@ public class JoinAnimation extends Animation {
             anim.doAnim(0);
             anim.cleanAnimationAt(0);
         }
+        
+        
+        //Compute vector of steps
+        double totalSum = animations.stream().collect(Collectors.summingDouble(Animation::getRunTime));
+        if (getRunTime() < 0) {//If runtime of JoinAnimation is <0, take the sum
+            setRunTime(totalSum);
+        }
+        steps = new double[animations.size() + 1];
+        steps[0] = 0;
+        double partialSum = 0;
+        for (int i = 0; i < animations.size(); i++) {
+            partialSum += animations.get(i).getRunTime();
+            steps[i + 1] = partialSum / totalSum;
+        }
+      
         return true;
     }
 
@@ -124,26 +138,17 @@ public class JoinAnimation extends Animation {
         Animation anim = animations.get(num);
 //        if ((previous != null) && (anim != previous)) { //if we changed animations between previous frame and actual...
 
-            
-            
-            if ((previous == null) && (num > 0)) {
+        if ((previous == null) && (num > 0)) {
             for (int k = 0; k < num; k++) {
                 animations.get(k).doAnim(0);
                 animations.get(k).cleanAnimationAt(0);
                 animations.get(k).doAnim(1);
                 animations.get(k).cleanAnimationAt(1);
             }
-//            if (num>0) {
-//                animations.get(num - 1).doAnim(1);
-//                animations.get(num - 1).cleanAnimationAt(1);
-//            }
-//            if (num+1<animations.size()) {
-//                animations.get(num + 1).cleanAnimationAt(0);
-//            }
-    
-            }
-            int numPrev = animations.indexOf(previous);
-            if (numPrev!=-1) {
+
+        }
+        int numPrev = animations.indexOf(previous);
+        if (numPrev != -1) {
             if (numPrev > num) {
 //                previous.cleanAnimationAt(0);
                 animations.get(num + 1).cleanAnimationAt(0);
