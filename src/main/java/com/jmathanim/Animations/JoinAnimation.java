@@ -18,6 +18,7 @@
 package com.jmathanim.Animations;
 
 import com.jmathanim.mathobjects.MathObject;
+import com.jmathanim.mathobjects.Shape;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.stream.Collectors;
@@ -29,6 +30,7 @@ import java.util.stream.Collectors;
  */
 public class JoinAnimation extends Animation {
 
+    public Shape mierda;
     ArrayList<Animation> animations;
     Animation previous;
     double[] steps;
@@ -57,25 +59,7 @@ public class JoinAnimation extends Animation {
     @Override
     public boolean doInitialization() {
         super.doInitialization();
-        
-        
-          //Performs an initialization of all animations
-        for (int i = 0; i < animations.size(); i++) {
-            Animation anim = animations.get(i);
-            anim.initialize(scene);
-            anim.doAnim(1);
-            anim.cleanAnimationAt(1);
-//            anim.finishAnimation();
-        }
 
-        //Now "rewind"
-        for (int i = animations.size() - 1; i >= 0; i--) {
-            Animation anim = animations.get(i);
-            anim.doAnim(0);
-            anim.cleanAnimationAt(0);
-        }
-        
-        
         //Compute vector of steps
         double totalSum = animations.stream().collect(Collectors.summingDouble(Animation::getRunTime));
         if (getRunTime() < 0) {//If runtime of JoinAnimation is <0, take the sum
@@ -88,7 +72,7 @@ public class JoinAnimation extends Animation {
             partialSum += animations.get(i).getRunTime();
             steps[i + 1] = partialSum / totalSum;
         }
-      
+
         return true;
     }
 
@@ -131,32 +115,70 @@ public class JoinAnimation extends Animation {
     public void doAnim(double t) {
         super.doAnim(t);
         double lt = getLT(t);
+
+//        if (lt == 1) {
+//            System.out.println("JOin animation Do lt=" + lt);
+//        }
+// if (lt >.4) {
+//            System.out.println("JOin animation Do lt=" + lt);
+//        }
         int num = getAnimationNumberForTime(lt);
         //Now normalize from 0 to 1
-        double ltNormalized = (lt - steps[num]) / (steps[num + 1] - steps[num]);
+        double ltNormalized = 0;
+        if (num+1 < steps.length) {
+            double delta = steps[num + 1] - steps[num];
+            if (delta > 0) {
+                ltNormalized = (lt - steps[num]) / delta;
+            }else
+                ltNormalized=0;
+        }
 
         Animation anim = animations.get(num);
 //        if ((previous != null) && (anim != previous)) { //if we changed animations between previous frame and actual...
 
-        if ((previous == null) && (num > 0)) {
-            for (int k = 0; k < num; k++) {
-                animations.get(k).doAnim(0);
-                animations.get(k).cleanAnimationAt(0);
-                animations.get(k).doAnim(1);
-                animations.get(k).cleanAnimationAt(1);
+        for (int k = 0; k < num; k++) {
+            Animation an = animations.get(k);
+            if (an.getStatus() != Status.FINISHED) {
+                an.initialize(scene);
+                an.doAnim(1);
+                an.t = 1;
+//                    an.cleanAnimationAt(1);
+                an.finishAnimation();
             }
+        }
+        if (num + 1 < animations.size()) {
+            for (int k = num + 1; k < animations.size(); k++) {
+                Animation an = animations.get(k);
+                if (an.t != 0) {
+                    an.doAnim(0);
+                    an.t = 0;
+                    an.finishAnimation();
+                }
+                if (an instanceof SingleCommandAnimation) {
+                    SingleCommandAnimation sc = (SingleCommandAnimation) an;
+                    if (sc.cmdStatus == SingleCommandAnimation.cmdStatusType.DONE) {
+                        sc.undo();
+                        sc.cmdStatus = SingleCommandAnimation.cmdStatusType.UNDONE;
+                    }
 
-        }
-        int numPrev = animations.indexOf(previous);
-        if (numPrev != -1) {
-            if (numPrev > num) {
-//                previous.cleanAnimationAt(0);
-                animations.get(num + 1).cleanAnimationAt(0);
-            }
-            if (numPrev < num) {
-                animations.get(num - 1).cleanAnimationAt(1);
+                }
             }
         }
+
+//        int numPrev = animations.indexOf(previous);
+//        if (numPrev != -1) {
+//            if (numPrev > num) {
+////                previous.cleanAnimationAt(0);
+//                animations.get(num + 1).cleanAnimationAt(0);
+//            }
+//            if (numPrev < num) {
+//                animations.get(num - 1).cleanAnimationAt(1);
+//            }
+//        }
+        if (anim.getStatus() == Status.NOT_INITIALIZED) {
+            anim.initialize(scene);
+        }
+
         anim.prepareForAnim(ltNormalized);
         anim.doAnim(ltNormalized);
         previous = anim;
@@ -194,24 +216,30 @@ public class JoinAnimation extends Animation {
 
     @Override
     public void prepareForAnim(double t) {
-        double lt = getLT(t);
-        int num = getAnimationNumberForTime(lt);
-        //Now normalize from 0 to 1
-        double ltNormalized = (lt - steps[num]) / (steps[num + 1] - steps[num]);
-        animations.get(num).prepareForAnim(ltNormalized);
+//        double lt = getLT(t);
+//        int num = getAnimationNumberForTime(lt);
+//        //Now normalize from 0 to 1
+//        double ltNormalized = (lt - steps[num]) / (steps[num + 1] - steps[num]);
+//        Animation an = animations.get(num);
+//        if (an.getStatus() == Status.NOT_INITIALIZED) {
+//            an.initialize(scene);
+//        }
+//        an.prepareForAnim(ltNormalized);
     }
 
-    private int getAnimationNumberForTime(double t) {
+   private int getAnimationNumberForTime(double t) {
         if (t == 0) {
             return 0;
         }
-//        if (t == 1) {
-//            return animations.size() - 1;
-//        }
         int num = 0;
-        while (t > steps[num]) {
-            num++;
+        try {
+            while (steps[num]<=t) {
+                num++;
+            }
+             } catch (ArrayIndexOutOfBoundsException e) {
+                 num--;
         }
+       
         num--;
         return num;
     }

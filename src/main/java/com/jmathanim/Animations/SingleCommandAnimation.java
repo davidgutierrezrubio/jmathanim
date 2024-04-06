@@ -120,13 +120,16 @@ public abstract class SingleCommandAnimation extends Animation {
     @Override
     public void doAnim(double t) {
         super.doAnim(t);
+        if ((cmdStatus == cmdStatus.NEVER_DONE) || (cmdStatus == cmdStatus.UNDONE)) {
+                command();
+                cmdStatus = cmdStatus.DONE;
+            }
     }
 
     @Override
     public void cleanAnimationAt(double t) {
         if (t == 1) {
             if ((cmdStatus == cmdStatus.NEVER_DONE) || (cmdStatus == cmdStatus.UNDONE)) {
-                System.out.println("COMMAND");
                 command();
                 cmdStatus = cmdStatus.DONE;
             }

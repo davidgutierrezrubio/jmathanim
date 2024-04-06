@@ -510,16 +510,31 @@ public abstract class Animation {
      * Sets the debug message. This message will be logged at INFO level when
      * animation starts executing
      *
+     * @param <T> Calling class
      * @param debugName Debug message
      */
-    public final void setDebugName(String debugName) {
+    public final <T extends Animation> T setDebugName(String debugName) {
         this.debugName = debugName;
+        return (T) this;
     }
 
+    /**
+     * Returns the current runtime
+     *
+     * @return The runtime
+     */
     public double getRunTime() {
         return runTime;
     }
 
+    /**
+     * Sets the runtime animation. This method should be called before
+     * initializing the animation.
+     *
+      * @param <T> Calling class
+     * @param runTime The new runtime
+     * @return This object
+     */
     public <T extends Animation> T setRunTime(double runTime) {
         this.runTime = runTime;
         return (T) this;

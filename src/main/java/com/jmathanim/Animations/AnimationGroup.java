@@ -133,11 +133,6 @@ public class AnimationGroup extends AnimationWithEffects {
 
     @Override
     public boolean doInitialization() {
-        //Compute runTime as the MAX runtime of all animations
-        this.runTime = 0;
-        for (Animation an : animations) {
-            runTime = (runTime < an.getRunTime() ? an.getRunTime() : runTime);
-        }
 
         int size = animations.size();
         if (!"".equals(getDebugName())) {
@@ -145,7 +140,7 @@ public class AnimationGroup extends AnimationWithEffects {
         }
         int k = 0;
 
-          //Compute allocation parameters properly
+        //Compute allocation parameters properly
         if ((size > 1) && (delayPercentage > 0)) {
             double b = 1 - delayPercentage;
             for (Animation anim : animations) {
@@ -154,18 +149,23 @@ public class AnimationGroup extends AnimationWithEffects {
                 k++;
             }
         }
-        boolean resul=true;
+        boolean resul = true;
         for (Animation anim : animations) {
             if (anim != null) {
                 if (anim instanceof AnimationWithEffects) {
                     AnimationWithEffects animEf = (AnimationWithEffects) anim;
                     this.copyEffectParametersTo(animEf);
                 }
-                resul=resul & anim.initialize(scene);
+                resul = resul & anim.initialize(scene);
             }
         }
+        //Compute runTime as the MAX runtime of all animations
+        this.runTime = 0;
+        for (Animation an : animations) {
+            runTime = (runTime < an.getRunTime() ? an.getRunTime() : runTime);
+        }
         return resul;
-      
+
     }
 
 //    @Override
@@ -270,7 +270,7 @@ public class AnimationGroup extends AnimationWithEffects {
         super.reset();
         for (Animation anim : animations) {
             anim.reset();
-            
+
         }
     }
 
