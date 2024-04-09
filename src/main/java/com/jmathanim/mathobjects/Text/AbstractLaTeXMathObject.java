@@ -24,6 +24,7 @@ import com.jmathanim.Utils.Anchor;
 import com.jmathanim.Utils.EmptyRect;
 import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.SVGUtils;
+import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.Point;
@@ -109,11 +110,9 @@ public abstract class AbstractLaTeXMathObject extends SVGMathObject {
         modelMatrix.copyFrom(compose);
         return this;
     }
-    
-   
 
     protected void changeInnerLaTeX(String text) {
-       
+
         AffineJTransform modelMatrixBackup = modelMatrix.copy();
 //        if (text.equals(this.text)) {
 //            return;
@@ -162,31 +161,41 @@ public abstract class AbstractLaTeXMathObject extends SVGMathObject {
                 scene.add(sh);
             }
         }
-        //        //Apply style to all subshapes
-        //        for (Shape sh : shapes) {
-        //            sh.getMp().copyFrom(getMp());
-        //        }
-        //Scale
-        //An "X" character in LaTeX has 6.8 (svg units) pixels height.
-        //This object should be scale by default to extend over
-        //DEFAULT_SCALE_FACTOR% of the screen
-        //        Camera cam = JMathAnimConfig.getConfig().getFixedCamera();
-        //        double hm = cam.getMathView().getHeight();
-        //        double hm = cam.screenToMath(cam.screenHeight);
+        if (shapes.isEmpty()) {
+            return;
+        }
         double hm = 2.5; //Default height view
         double sc = DEFAULT_SCALE_FACTOR * .4 * hm / 6.8 * 2.5;
         if ((mode == CompileMode.JLaTexMath) || (mode == CompileMode.RawJLaTexMath)) {
             sc *= 0.24906237699889464;
         }
         this.scale(sc, sc, 1);
-        this.stackTo(anchor,Point.origin(), Anchor.Type.CENTER,0);
+        Vec v=Vec.to(0,0);
+        switch(anchor) {
+            case CENTER,UPPER,LOWER:
+                v = Anchor.getAnchorPoint(this, anchor).v.mult(-1);
+                break;
+            case LEFT,ULEFT,DLEFT,LLOWER,LUPPER:
+                 v = Anchor.getAnchorPoint(this.get(0), anchor).v.mult(-1);
+                 break;
+            case RIGHT,URIGHT,DRIGHT,RLOWER,RUPPER:
+                v = Anchor.getAnchorPoint(this.get(-1), anchor).v.mult(-1);
+                 break;
+                        
+                
+        }
+        //this.stackTo(anchor,Point.origin(), Anchor.Type.CENTER,0);
+       
+        shift(v);
+
         modelMatrix.copyFrom(modelMatrixBackup);
         for (Shape sh : shapes) {
 //            sh.getMp().copyFrom(mpMultiShape);
             sh.applyAffineTransform(modelMatrix);
         }
     }
-  @Override
+
+    @Override
     protected Rect computeBoundingBox() {
         Rect resul = null;
         for (Shape jmp : shapes) {
@@ -201,6 +210,7 @@ public abstract class AbstractLaTeXMathObject extends SVGMathObject {
             return resul;
         }
     }
+
     private Element generateDOMTreeFromLaTeX(String text) {
         Writer out = null;
         DOMImplementation domImpl = GenericDOMImplementation.getDOMImplementation();
@@ -308,7 +318,7 @@ public abstract class AbstractLaTeXMathObject extends SVGMathObject {
 
     @Override
     public void copyStateFrom(MathObject obj) {
-         super.copyStateFrom(obj);
+        super.copyStateFrom(obj);
         if (obj instanceof AbstractLaTeXMathObject) {
             AbstractLaTeXMathObject copy = (AbstractLaTeXMathObject) obj;
             getMp().copyFrom(copy.getMp());

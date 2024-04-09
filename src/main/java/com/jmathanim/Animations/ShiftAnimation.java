@@ -119,7 +119,7 @@ public abstract class ShiftAnimation extends AnimationWithEffects {
     @Override
     public void finishAnimation() {
         super.finishAnimation();
-        doAnim(1);
+//        doAnim(this.t);
     }
 
     /**

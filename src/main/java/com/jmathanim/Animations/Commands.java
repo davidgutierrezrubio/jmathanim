@@ -287,7 +287,7 @@ public class Commands {
 
             @Override
             public void finishAnimation() {
-                doAnim(1);
+//                doAnim(1);
                 super.finishAnimation();
             }
 
@@ -349,7 +349,7 @@ public class Commands {
 
             @Override
             public void finishAnimation() {
-                doAnim(1);
+//                doAnim(1);
                 super.finishAnimation();
             }
 
@@ -655,7 +655,7 @@ public class Commands {
 
             @Override
             public void finishAnimation() {
-                doAnim(1);
+//                doAnim(1);
                 super.finishAnimation();
             }
 
@@ -1495,7 +1495,7 @@ public class Commands {
 
             @Override
             public void finishAnimation() {
-                doAnim(1);
+//                doAnim(1);
                 super.finishAnimation();
             }
 
