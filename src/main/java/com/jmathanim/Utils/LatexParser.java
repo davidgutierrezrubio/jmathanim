@@ -37,6 +37,7 @@ import org.scilab.forge.jlatexmath.BigOperatorAtom;
 import org.scilab.forge.jlatexmath.Box;
 import org.scilab.forge.jlatexmath.CharAtom;
 import org.scilab.forge.jlatexmath.CharBox;
+import org.scilab.forge.jlatexmath.CharFont;
 import org.scilab.forge.jlatexmath.DefaultTeXFont;
 import org.scilab.forge.jlatexmath.EmptyAtom;
 import org.scilab.forge.jlatexmath.FencedAtom;
@@ -58,6 +59,9 @@ import org.scilab.forge.jlatexmath.TypedAtom;
 
 public class LatexParser {
 
+    public final ArrayList<LatexToken> assignedTokens;
+    private int boxCounter;
+
     public List<MiddleAtom> list;
 
     public final ArrayList<LatexToken> tokens;
@@ -72,36 +76,29 @@ public class LatexParser {
         this.list = new ArrayList<MiddleAtom>();
         this.boxes = new ArrayList<Box>();
         this.tokens = new ArrayList<>();
+        this.assignedTokens = new ArrayList<>();
         this.modifier = Modifier.NORMAL;
     }
 
     public void parse(String texto) {
         this.tokens.clear();
+        this.assignedTokens.clear();
         TeXFormula formula = new TeXFormula(texto);
         TeXIcon icon = formula.createTeXIcon(TeXConstants.ALIGN_LEFT, 40);
-        
-        
-         Atom root = formula.root;
-            try {
-                parseAtom(root);
-            } catch (Exception ex2) {
-                JMathAnimScene.logger.warn("Error parsing LaTeX structure of " + texto);
-            }
-        
-        
-        
-        
+
+        Atom root = formula.root;
+        try {
+            parseAtom(root);
+        } catch (Exception ex2) {
+            JMathAnimScene.logger.warn("Error parsing LaTeX structure of " + texto);
+        }
+
         Field campo;
         try {
 
             DefaultTeXFont font = new DefaultTeXFont(40);
             TeXEnvironment te = new TeXEnvironment(0, font);
 
-            
-            
-            
-            
-            
             Class[] cArg = new Class[1];
             cArg[0] = TeXEnvironment.class;
             Method metodo = TeXFormula.class.getDeclaredMethod("createBox", cArg);
@@ -109,11 +106,10 @@ public class LatexParser {
             metodo.setAccessible(true);
             Box bo = (Box) metodo.invoke(formula, te);
             parseBox(bo);
+            assignTokens();
             System.out.println("Parse finished");
         } catch (Exception ex) {
             Logger.getLogger(LatexParser.class.getName()).log(Level.SEVERE, null, ex);
-
-           
 
         }
     }
@@ -276,17 +272,19 @@ public class LatexParser {
 
     private void parseBox(Box bo) throws Exception {
         Field campo;
-        System.out.println("Parsing Box: "+bo.getClass().getCanonicalName());
-        
+//        System.out.println("Parsing Box: "+bo.getClass().getCanonicalName()+"  "+bo);
+
         if (bo instanceof CharBox) {
             CharBox charBox = (CharBox) bo;
+            CharFont cf = getFontFromCharBox(charBox);
+            System.out.println((boxes.size()) + "   Char: " + cf.fontId + " " + (int) cf.c);
             boxes.add(charBox);
         }
-          
+
         if (bo instanceof org.scilab.forge.jlatexmath.HorizontalRule) {
+            System.out.println((boxes.size()) + "   Horizontal rule");
             boxes.add(bo);
         }
-        
         campo = Box.class.getDeclaredField("children");
         campo.setAccessible(true);
         LinkedList<Box> children = (LinkedList<Box>) campo.get(bo);
@@ -294,4 +292,124 @@ public class LatexParser {
             parseBox(box);
         }
     }
+
+    protected CharFont getFontFromCharBox(Box charBox) {
+        if (charBox instanceof CharBox) {
+            try {
+                CharBox charBox1 = (CharBox) charBox;
+                Field campo;
+                campo = CharBox.class.getDeclaredField("cf");
+                campo.setAccessible(true);
+                CharFont cf = (CharFont) campo.get(charBox1);
+                return cf;
+            } catch (Exception ex) {
+                Logger.getLogger(LatexParser.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        } else {
+            System.out.println("Intentado extraer font de algo que no es charbox!");
+            return null;
+        }
+        return null;
+    }
+
+    public void assignTokens() {
+        if (tokens.size() == boxes.size()) {//Easy
+            assignedTokens.addAll(tokens);
+            return;
+        }
+        boxCounter = 0;
+        for (int n = 0; n < tokens.size(); n++) {
+            LatexToken token = tokens.get(n);
+            switch (token.type) {
+                case CHAR, FRACTIONBAR, GREEKLETTER, NAMED_FUNCTION, OPERATOR, RELATION, NUMBER:
+                    //These are supposed to be the "easy tokens"
+                    assignedTokens.add(token);
+                    boxCounter++;
+                    break;
+                case DELIMITER:
+                    processDelimiter(token);
+                    break;
+                case SYMBOL:
+                    processSymbol(token);
+
+            }
+
+        }
+    }
+
+    private void processSymbol(LatexToken token) {
+        switch (token.name) {
+            case "vert":
+                processDelimiter(token);//Vert puede ser delimiter
+                break;
+            default:
+                assignedTokens.add(token);
+                boxCounter++;
+        }
+    }
+
+    private boolean compareCharFont(Box b, int fontId, int c) {
+        CharFont cf = getFontFromCharBox(b);
+        return ((cf.fontId == fontId) & (cf.c == (char) c));
+    }
+
+    private void processDelimiter(LatexToken token) {
+        //TODO: Add ALL delimiters: https://docs.aspose.com/tex/java/latex-math-delimiters/
+        switch (token.name) {
+            case "lbrack":
+                scanBigDelimiter(token, 18, 40, 1, 48, 1, 64);
+                break;
+            case "rbrack":
+                scanBigDelimiter(token, 18, 41, 1, 49, 1, 65);
+                break;
+            case "lbrace":
+                scanBigDelimiter(token, 8, 102, 1, 56, 1, 58);
+                break;
+            case "rbrace":
+                scanBigDelimiter(token, 8, 103, 1, 57, 1, 59);
+                break;
+            case "lsqbrack":
+                scanBigDelimiter(token, 18, 91, 1, 50, 1, 52);
+                break;
+            case "rsqbrack":
+                scanBigDelimiter(token, 18, 93, 1, 51, 1, 53);
+                break;
+            case "vert":
+                token.type=LatexToken.TokenType.DELIMITER;
+                scanBigDelimiter(token, 8, 106, 1, 175, 1, 175);
+                break;
+        }
+    }
+
+    protected void scanBigDelimiter(LatexToken token, int cfSmall, int cSmall, int cfBigUpper, int cBigUpper, int cfBigLower, int cBigLower) {
+        Box b = boxes.get(boxCounter);
+        if (compareCharFont(b, cfSmall, cSmall)) {//A small left parenthesis
+            assignedTokens.add(token);
+            boxCounter++;
+        }
+        if (compareCharFont(b, cfBigUpper, cBigUpper)) {//A big left upper side delimiter
+            assignedTokens.add(token);
+            boxCounter++;
+
+            boolean trailStarted = false;
+            while (true) {
+                if (boxCounter == boxes.size()) {
+                    break;
+                }
+                boolean found = compareCharFont(boxes.get(boxCounter), cfBigLower, cBigLower);
+
+                if (found) {
+                    trailStarted = true;
+                }
+
+                if (trailStarted & !found) {
+                    break;
+                }
+                assignedTokens.add(token);
+                boxCounter++;
+            }
+
+        }
+    }
+
 }

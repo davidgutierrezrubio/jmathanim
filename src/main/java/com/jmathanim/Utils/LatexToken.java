@@ -98,7 +98,7 @@ public class LatexToken {
             return "LatexToken[" + type + ", " + name + "]";
         }
     }
-    List<String> greekLetters = Arrays.asList(
+    private static final List<String> greekLetters = Arrays.asList(
             "Alpha", "alpha",
             "Beta", "beta",
             "Gamma", "gamma",
@@ -125,15 +125,15 @@ public class LatexToken {
             "Omega", "omega"
     );
 
-    List<String> numbers = Arrays.asList(
+    private static final List<String> numbers = Arrays.asList(
             "0", "1", "2", "3", "4", "5", "6", "7", "8", "9"
     );
 
-    List<String> operators = Arrays.asList(
+    private static final List<String> operators = Arrays.asList(
             "plus", "minus", "slash", "div",
             "cap", "cup", "wedge", "vee", "sum", "prod"
     );
-    List<String> relations = Arrays.asList(
+    private static final List<String> relations = Arrays.asList(
             "equals", "lt", "leq", "le", "gt", "geq", "ge",
             "neq", "equiv", "cong", "sim", "simeq",
             "approx", "propto", "parallel", "perp",
@@ -144,7 +144,7 @@ public class LatexToken {
             "forall", "exists", "mid", "nmid"
     );
 
-    List<String> delimiters = Arrays.asList(
+    private static final List<String> delimiters = Arrays.asList(
             "lbrack", "rbrack",
             "lsqbrack", "rsqbrack",
             "lbrace", "rbrace"
