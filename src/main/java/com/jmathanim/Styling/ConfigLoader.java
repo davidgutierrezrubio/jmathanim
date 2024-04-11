@@ -170,9 +170,11 @@ public class ConfigLoader {
             NodeList templChilds = elStyle.getElementsByTagName("style");
             for (int n = 0; n < templChilds.getLength(); n++) {
                 Node item = templChilds.item(n);
-                MODrawProperties mp = parseMathObjectDrawingProperties(config, item);
                 if (item.getNodeType() == Node.ELEMENT_NODE) {
                     Element el = (Element) item;
+                    String baseStyle = el.getAttribute("base");
+                    MODrawProperties mp = parseMathObjectDrawingProperties(config, baseStyle, item);
+
                     config.getStyles().put(el.getAttribute("name").toUpperCase(), mp);
                 }
 
@@ -180,8 +182,12 @@ public class ConfigLoader {
         }
     }
 
-    private static MODrawProperties parseMathObjectDrawingProperties(JMathAnimConfig config, Node template) {
+    private static MODrawProperties parseMathObjectDrawingProperties(JMathAnimConfig config, String baseStyle, Node template) {
         MODrawProperties mp = MODrawProperties.makeNullValues();
+        if (!"".equals(baseStyle)) {
+            mp.copyFrom(config.getStyles().get(baseStyle));
+        }
+
         NodeList childs = template.getChildNodes();
         for (int n = 0; n < childs.getLength(); n++) {
             Node item = childs.item(n);

@@ -71,6 +71,25 @@ public class LatexToken {
 
     }
 
+    /**
+     * Check if token characteristics match the given ones. A null parameter
+     * means that no comparison is done in that parameter.
+     *
+     * @param type Type to match. Null if no comparison needed.
+     * @param name Name to match. Null if no comparison needed.
+     * @return True if match. False otherwise.
+     */
+    public boolean match(TokenType type, String name) {
+        if (name == null) {
+            return type == this.type;
+        }
+        if (type == null) {
+            return name.equals(this.name);
+        }
+
+        return ((type == this.type) && (name.equals(this.name)));
+    }
+
     @Override
     public String toString() {
         if (math) {
@@ -112,7 +131,7 @@ public class LatexToken {
 
     List<String> operators = Arrays.asList(
             "plus", "minus", "slash", "div",
-            "cap", "cup", "wedge", "vee","sum","prod"
+            "cap", "cup", "wedge", "vee", "sum", "prod"
     );
     List<String> relations = Arrays.asList(
             "equals", "lt", "leq", "le", "gt", "geq", "ge",
