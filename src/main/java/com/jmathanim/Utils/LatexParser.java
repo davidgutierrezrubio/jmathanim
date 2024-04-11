@@ -22,6 +22,8 @@ package com.jmathanim.Utils;
  */
 import com.jmathanim.jmathanim.JMathAnimScene;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -32,7 +34,10 @@ import java.util.regex.Pattern;
 import org.scilab.forge.jlatexmath.ArrayOfAtoms;
 import org.scilab.forge.jlatexmath.Atom;
 import org.scilab.forge.jlatexmath.BigOperatorAtom;
+import org.scilab.forge.jlatexmath.Box;
 import org.scilab.forge.jlatexmath.CharAtom;
+import org.scilab.forge.jlatexmath.CharBox;
+import org.scilab.forge.jlatexmath.DefaultTeXFont;
 import org.scilab.forge.jlatexmath.EmptyAtom;
 import org.scilab.forge.jlatexmath.FencedAtom;
 import org.scilab.forge.jlatexmath.FractionAtom;
@@ -45,6 +50,7 @@ import org.scilab.forge.jlatexmath.ScriptsAtom;
 import org.scilab.forge.jlatexmath.SpaceAtom;
 import org.scilab.forge.jlatexmath.SymbolAtom;
 import org.scilab.forge.jlatexmath.TeXConstants;
+import org.scilab.forge.jlatexmath.TeXEnvironment;
 import org.scilab.forge.jlatexmath.TeXFormula;
 import org.scilab.forge.jlatexmath.TeXIcon;
 import org.scilab.forge.jlatexmath.TeXParser;
@@ -55,6 +61,7 @@ public class LatexParser {
     public List<MiddleAtom> list;
 
     public final ArrayList<LatexToken> tokens;
+    public final ArrayList<Box> boxes;
 
     public enum Modifier {
         NORMAL, TYPED
@@ -62,7 +69,8 @@ public class LatexParser {
     public Modifier modifier;
 
     public LatexParser() {
-        this.list=new ArrayList<MiddleAtom>();
+        this.list = new ArrayList<MiddleAtom>();
+        this.boxes = new ArrayList<Box>();
         this.tokens = new ArrayList<>();
         this.modifier = Modifier.NORMAL;
     }
@@ -71,31 +79,43 @@ public class LatexParser {
         this.tokens.clear();
         TeXFormula formula = new TeXFormula(texto);
         TeXIcon icon = formula.createTeXIcon(TeXConstants.ALIGN_LEFT, 40);
+        
+        
+         Atom root = formula.root;
+            try {
+                parseAtom(root);
+            } catch (Exception ex2) {
+                JMathAnimScene.logger.warn("Error parsing LaTeX structure of " + texto);
+            }
+        
+        
+        
+        
         Field campo;
         try {
-            campo = TeXFormula.class.getDeclaredField("parser");
-            campo.setAccessible(true);
-            TeXParser texParser = (TeXParser) campo.get(formula);
-            texParser.parse();
-            TeXParser tp2=new TeXParser(texto, formula, false);
-            tp2.parse();
-        } catch (NoSuchFieldException ex) {
-            Logger.getLogger(LatexParser.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (SecurityException ex) {
-            Logger.getLogger(LatexParser.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (IllegalArgumentException ex) {
-            Logger.getLogger(LatexParser.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            Logger.getLogger(LatexParser.class.getName()).log(Level.SEVERE, null, ex);
-        }
 
-        Atom root = formula.root;
-        try {
-            parseAtom(root);
+            DefaultTeXFont font = new DefaultTeXFont(40);
+            TeXEnvironment te = new TeXEnvironment(0, font);
+
+            
+            
+            
+            
+            
+            Class[] cArg = new Class[1];
+            cArg[0] = TeXEnvironment.class;
+            Method metodo = TeXFormula.class.getDeclaredMethod("createBox", cArg);
+
+            metodo.setAccessible(true);
+            Box bo = (Box) metodo.invoke(formula, te);
+            parseBox(bo);
+            System.out.println("Parse finished");
         } catch (Exception ex) {
-            JMathAnimScene.logger.warn("Error parsing LaTeX structure of " + texto);
-        }
+            Logger.getLogger(LatexParser.class.getName()).log(Level.SEVERE, null, ex);
 
+           
+
+        }
     }
 
     private void parseAtom(Object obj) throws Exception {
@@ -254,4 +274,24 @@ public class LatexParser {
 
     }
 
+    private void parseBox(Box bo) throws Exception {
+        Field campo;
+        System.out.println("Parsing Box: "+bo.getClass().getCanonicalName());
+        
+        if (bo instanceof CharBox) {
+            CharBox charBox = (CharBox) bo;
+            boxes.add(charBox);
+        }
+          
+        if (bo instanceof org.scilab.forge.jlatexmath.HorizontalRule) {
+            boxes.add(bo);
+        }
+        
+        campo = Box.class.getDeclaredField("children");
+        campo.setAccessible(true);
+        LinkedList<Box> children = (LinkedList<Box>) campo.get(bo);
+        for (Box box : children) {
+            parseBox(box);
+        }
+    }
 }
