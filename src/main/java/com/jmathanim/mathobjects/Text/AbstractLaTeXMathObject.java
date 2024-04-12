@@ -22,6 +22,7 @@ import com.jmathanim.Styling.PaintStyle;
 import com.jmathanim.Utils.AffineJTransform;
 import com.jmathanim.Utils.Anchor;
 import com.jmathanim.Utils.EmptyRect;
+import com.jmathanim.Utils.LatexParser;
 import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.SVGUtils;
 import com.jmathanim.Utils.Vec;
@@ -60,6 +61,7 @@ import org.w3c.dom.Element;
 public abstract class AbstractLaTeXMathObject extends SVGMathObject {
 
     protected Anchor.Type anchor;
+    protected LatexParser latexParser;
 
     /**
      * Determines how LaTeX shapes will be created
@@ -101,6 +103,7 @@ public abstract class AbstractLaTeXMathObject extends SVGMathObject {
         super();
         this.anchor = anchor;
         modelMatrix = new AffineJTransform();
+        this.latexParser = new LatexParser(this);
     }
 
     @Override
@@ -170,22 +173,21 @@ public abstract class AbstractLaTeXMathObject extends SVGMathObject {
             sc *= 0.24906237699889464;
         }
         this.scale(sc, sc, 1);
-        Vec v=Vec.to(0,0);
-        switch(anchor) {
-            case CENTER,UPPER,LOWER:
+        Vec v = Vec.to(0, 0);
+        switch (anchor) {
+            case CENTER, UPPER, LOWER:
                 v = Anchor.getAnchorPoint(this, anchor).v.mult(-1);
                 break;
-            case LEFT,ULEFT,DLEFT,LLOWER,LUPPER:
-                 v = Anchor.getAnchorPoint(this.get(0), anchor).v.mult(-1);
-                 break;
-            case RIGHT,URIGHT,DRIGHT,RLOWER,RUPPER:
+            case LEFT, ULEFT, DLEFT, LLOWER, LUPPER:
+                v = Anchor.getAnchorPoint(this.get(0), anchor).v.mult(-1);
+                break;
+            case RIGHT, URIGHT, DRIGHT, RLOWER, RUPPER:
                 v = Anchor.getAnchorPoint(this.get(-1), anchor).v.mult(-1);
-                 break;
-                        
-                
+                break;
+
         }
         //this.stackTo(anchor,Point.origin(), Anchor.Type.CENTER,0);
-       
+
         shift(v);
 
         modelMatrix.copyFrom(modelMatrixBackup);
@@ -193,6 +195,10 @@ public abstract class AbstractLaTeXMathObject extends SVGMathObject {
 //            sh.getMp().copyFrom(mpMultiShape);
             sh.applyAffineTransform(modelMatrix);
         }
+    }
+
+    public LatexParser getLatexParser() {
+        return latexParser;
     }
 
     @Override
@@ -222,6 +228,8 @@ public abstract class AbstractLaTeXMathObject extends SVGMathObject {
         }
         TeXFormula formula = new TeXFormula(latexText);
         TeXIcon icon = formula.createTeXIcon(TeXConstants.ALIGN_LEFT, 40);
+        latexParser.setJLatexFormulaParser(formula);
+        latexParser.parse();
         String svgNS = "http://www.w3.org/2000/svg";
         Document document = domImpl.createDocument(svgNS, "svg", null);
         // Create an instance of the SVG Generator.

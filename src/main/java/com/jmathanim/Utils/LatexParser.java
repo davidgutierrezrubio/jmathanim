@@ -24,6 +24,7 @@ import com.jmathanim.Styling.JMColor;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.MultiShapeObject;
 import com.jmathanim.mathobjects.Shape;
+import com.jmathanim.mathobjects.Text.AbstractLaTeXMathObject;
 import com.jmathanim.mathobjects.Text.LaTeXMathObject;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -49,6 +50,7 @@ import org.scilab.forge.jlatexmath.EmptyAtom;
 import org.scilab.forge.jlatexmath.FencedAtom;
 import org.scilab.forge.jlatexmath.FractionAtom;
 import org.scilab.forge.jlatexmath.HorizontalRule;
+import org.scilab.forge.jlatexmath.MathAtom;
 import org.scilab.forge.jlatexmath.MatrixAtom;
 import org.scilab.forge.jlatexmath.MiddleAtom;
 import org.scilab.forge.jlatexmath.NthRoot;
@@ -56,6 +58,7 @@ import org.scilab.forge.jlatexmath.RomanAtom;
 import org.scilab.forge.jlatexmath.RowAtom;
 import org.scilab.forge.jlatexmath.ScriptsAtom;
 import org.scilab.forge.jlatexmath.SpaceAtom;
+import org.scilab.forge.jlatexmath.StyleAtom;
 import org.scilab.forge.jlatexmath.SymbolAtom;
 import org.scilab.forge.jlatexmath.TeXConstants;
 import org.scilab.forge.jlatexmath.TeXEnvironment;
@@ -68,7 +71,8 @@ public class LatexParser {
 
     public final ArrayList<LatexToken> assignedTokens;
     private int boxCounter;
-    private final LaTeXMathObject latex;
+    private final AbstractLaTeXMathObject latex;
+    private TeXFormula formula;
 
     public List<MiddleAtom> list;
 
@@ -76,17 +80,19 @@ public class LatexParser {
     public final ArrayList<Box> boxes;
 
     public enum Modifier {
-        NORMAL, TYPED
+        NORMAL, TYPED;
     }
+    private LatexToken.SecondaryType secondaryType;
     public Modifier modifier;
 
-    public LatexParser(LaTeXMathObject latex) {
+    public LatexParser(AbstractLaTeXMathObject latex) {
         this.latex = latex;
         this.list = new ArrayList<MiddleAtom>();
         this.boxes = new ArrayList<Box>();
         this.tokens = new ArrayList<>();
         this.assignedTokens = new ArrayList<>();
         this.modifier = Modifier.NORMAL;
+        this.secondaryType=LatexToken.SecondaryType.NORMAL;
     }
 
     public Integer[] getMatchingIndices(LatexToken token) {
@@ -100,28 +106,37 @@ public class LatexParser {
         return indices.toArray(Integer[]::new);
     }
 
-    public void colorizeTokens(JMColor color, LatexToken.TokenType tokenType, LatexToken.DelimiterType delType, String name) {
-        Integer[] indices = getMatchingIndices(new LatexToken(tokenType, delType, name, true));
+    public void colorizeTokens(JMColor color, LatexToken.TokenType tokenType, LatexToken.SecondaryType delType, String name) {
+        Integer[] indices = getMatchingIndices(new LatexToken(tokenType, delType, name));
         for (Integer indice : indices) {
             latex.get(indice).color(color);
         }
     }
 
+    public TeXFormula getJLatexFormulaParser() {
+        return formula;
+    }
+
+    public void setJLatexFormulaParser(TeXFormula formula) {
+        this.formula = formula;
+    }
+
     public void parse() {
-        String texto = this.latex.getText();
+        if (this.formula == null) {
+            JMathAnimScene.logger.warn("Parser not initializated, cannot parse LaTeX tokens");
+            return;
+        }
+
         this.tokens.clear();
         this.assignedTokens.clear();
-        TeXFormula formula = new TeXFormula(texto);
-        TeXIcon icon = formula.createTeXIcon(TeXConstants.ALIGN_LEFT, 40);
 
-        Atom root = formula.root;
+        Atom root = this.formula.root;
         try {
             parseAtom(root);
         } catch (Exception ex2) {
-            JMathAnimScene.logger.warn("Error parsing LaTeX structure of " + texto);
+            JMathAnimScene.logger.warn("Error parsing LaTeX tokens of " + this.latex.getText());
         }
 
-        Field campo;
         try {
 
             DefaultTeXFont font = new DefaultTeXFont(40);
@@ -137,7 +152,7 @@ public class LatexParser {
             assignTokens();
             System.out.println("Parse finished");
         } catch (Exception ex) {
-            Logger.getLogger(LatexParser.class.getName()).log(Level.SEVERE, null, ex);
+            JMathAnimScene.logger.warn("Error parsing LaTeX boxes or assigning tokens of " + this.latex.getText());
 
         }
     }
@@ -154,10 +169,37 @@ public class LatexParser {
 
         Field campo;
 
-        JMathAnimScene.logger.info("Parsing " + atom.getClass().getCanonicalName());
+        JMathAnimScene.logger.debug("Parsing " + atom.getClass().getCanonicalName());
+
+        if (atom instanceof StyleAtom) {
+            StyleAtom styleAtom = (StyleAtom) atom;
+            campo = StyleAtom.class.getDeclaredField("at");
+            campo.setAccessible(true);
+            Atom field = (Atom) campo.get(styleAtom);
+            parseAtom(field);
+            return;
+        }
+
+        if (atom instanceof RomanAtom) {
+            RomanAtom romanAtom = (RomanAtom) atom;
+            campo = RomanAtom.class.getDeclaredField("base");
+            campo.setAccessible(true);
+            Atom field = (Atom) campo.get(romanAtom);
+            parseAtom(field);
+            return;
+        }
+        if (atom instanceof MathAtom) {
+            MathAtom mathAtom = (MathAtom) atom;
+            campo = MathAtom.class.getDeclaredField("base");
+            campo.setAccessible(true);
+            Atom field = (Atom) campo.get(mathAtom);
+            parseAtom(field);
+            return;
+        }
 
         if (atom instanceof EmptyAtom) {
             //Nothing to do here, remove this code later...
+            return;
         }
 
         if (atom instanceof RowAtom) {
@@ -169,25 +211,43 @@ public class LatexParser {
                 parseAtom(atom1);
 
             }
+            return;
         }
         if (atom instanceof CharAtom) {
             CharAtom charAtom = (CharAtom) atom;
             LatexToken.TokenType type = LatexToken.TokenType.CHAR;
+            LatexToken.SecondaryType secType = LatexToken.SecondaryType.NORMAL;
+
             switch (modifier) {
                 case TYPED:
                     type = LatexToken.TokenType.NAMED_FUNCTION;
                     break;
             }
-            tokens.add(new LatexToken(type, "" + charAtom.getCharacter(), charAtom.isMathMode()));//TODO: IMPROVE
+            LatexToken token = new LatexToken(type, "" + charAtom.getCharacter(), charAtom.isMathMode());
+            token.secondaryType = secondaryType;
+            tokens.add(token);//TODO: IMPROVE
+            return;
         }
         if (atom instanceof SymbolAtom) {
             SymbolAtom symbolAtom = (SymbolAtom) atom;
-            tokens.add(new LatexToken(LatexToken.TokenType.SYMBOL, "" + symbolAtom.getName(), true));//TODO: IMPROVE
+            LatexToken.TokenType type = LatexToken.TokenType.CHAR;
+            LatexToken.SecondaryType secType = LatexToken.SecondaryType.NORMAL;
+
+            switch (modifier) {
+                case TYPED:
+                    type = LatexToken.TokenType.NAMED_FUNCTION;
+                    break;
+            }
+            LatexToken token = new LatexToken(LatexToken.TokenType.SYMBOL, "" + symbolAtom.getName(), true);
+            token.secondaryType = secondaryType;
+            tokens.add(token);//TODO: IMPROVE
+            return;
         }
 
         if (atom instanceof BigDelimiterAtom) {
             BigDelimiterAtom bigDelimiterAtom = (BigDelimiterAtom) atom;
             tokens.add(new LatexToken(LatexToken.TokenType.SYMBOL, "" + bigDelimiterAtom.delim.getName(), true));//TODO: IMPROVE
+            return;
         }
 
         if (atom instanceof FencedAtom) {
@@ -211,6 +271,7 @@ public class LatexParser {
                 parseAtom(middleAtom);
 
             }
+            return;
         }
 
         if (atom instanceof NthRoot) {
@@ -225,6 +286,7 @@ public class LatexParser {
             campo = NthRoot.class.getDeclaredField("base");
             campo.setAccessible(true);
             parseAtom(campo.get(nthRoot));
+            return;
         }
 
         if (atom instanceof FractionAtom) {
@@ -239,6 +301,7 @@ public class LatexParser {
             campo = FractionAtom.class.getDeclaredField("denominator");
             campo.setAccessible(true);
             parseAtom(campo.get(fractionAtom));
+            return;
         }
 
         if (atom instanceof TypedAtom) {
@@ -247,6 +310,7 @@ public class LatexParser {
             Atom aa = typedAtom.getBase();
             parseAtom(aa);
             modifier = Modifier.NORMAL;
+            return;
         }
 
         if (atom instanceof RomanAtom) {
@@ -254,6 +318,7 @@ public class LatexParser {
             campo = RomanAtom.class.getDeclaredField("base");
             campo.setAccessible(true);
             parseAtom(campo.get(romanAtom));
+            return;
         }
 
         if (atom instanceof ScriptsAtom) {
@@ -264,27 +329,36 @@ public class LatexParser {
 
             campo = ScriptsAtom.class.getDeclaredField("superscript");
             campo.setAccessible(true);
+            secondaryType=LatexToken.SecondaryType.SUPERSCRIPT;
             parseAtom(campo.get(scriptsAtom));
 
             campo = ScriptsAtom.class.getDeclaredField("subscript");
             campo.setAccessible(true);
+              secondaryType=LatexToken.SecondaryType.SUBSCRIPT;
             parseAtom(campo.get(scriptsAtom));
+           secondaryType=LatexToken.SecondaryType.NORMAL;
+            return;
         }
 
         if (atom instanceof BigOperatorAtom) {
             BigOperatorAtom bigOperatorAtom = (BigOperatorAtom) atom;
 
+              secondaryType=LatexToken.SecondaryType.TO_INDEX;
             campo = BigOperatorAtom.class.getDeclaredField("over");
             campo.setAccessible(true);
             parseAtom((Atom) campo.get(bigOperatorAtom));
 
+            secondaryType=LatexToken.SecondaryType.NORMAL;
             campo = BigOperatorAtom.class.getDeclaredField("base");
             campo.setAccessible(true);
             parseAtom((Atom) campo.get(bigOperatorAtom));
 
+            secondaryType=LatexToken.SecondaryType.FROM_INDEX;
             campo = BigOperatorAtom.class.getDeclaredField("under");
             campo.setAccessible(true);
             parseAtom((Atom) campo.get(bigOperatorAtom));
+             secondaryType=LatexToken.SecondaryType.NORMAL;
+            return;
         }
         if (atom instanceof MatrixAtom) {
             MatrixAtom matrixAtom = (MatrixAtom) atom;
@@ -299,6 +373,7 @@ public class LatexParser {
                 }
 
             }
+            return;
         }
 
     }
@@ -380,7 +455,7 @@ public class LatexParser {
             boxCounter++;
         }
         assignedTokens.add(token);
-            boxCounter++;
+        boxCounter++;
     }
 
     private void processSymbol(LatexToken token) {
@@ -550,27 +625,27 @@ public class LatexParser {
         Box b = boxes.get(boxCounter);
 
         if (compareCharFont(b, cfSmall, cSmall)) {//Small delimiter
-            token.delimiterType = LatexToken.DelimiterType.NORMAL;
+            token.secondaryType = LatexToken.SecondaryType.DELIMITER_NORMAL;
             assignedTokens.add(token);
             boxCounter++;
             return;
         }
 
         if (compareCharFont(b, cfBig1, cBig1)) {//\big delimiter
-            token.delimiterType = LatexToken.DelimiterType.BIG1;
+            token.secondaryType = LatexToken.SecondaryType.DELIMITER_BIG1;
             assignedTokens.add(token);
             boxCounter++;
             return;
         }
         if (compareCharFont(b, cfBig2, cBig2)) {//\Big delimiter
-            token.delimiterType = LatexToken.DelimiterType.BIG2;
+            token.secondaryType = LatexToken.SecondaryType.DELIMITER_BIG2;
             assignedTokens.add(token);
             boxCounter++;
             return;
         }
 
         if (compareCharFont(b, cfExtensibleUpper, cExtensibleUpper)) {//A big left upper side delimiter
-            token.delimiterType = LatexToken.DelimiterType.EXTENSIBLE;
+            token.secondaryType = LatexToken.SecondaryType.DELIMITER_EXTENSIBLE;
             assignedTokens.add(token);
             boxCounter++;
             if (cExtensibleLower == -1) {//Special case where extensible delimiter is exactly 1 char (like \langle)
@@ -590,7 +665,7 @@ public class LatexParser {
                 if (trailStarted & !found) {
                     break;
                 }
-                token.delimiterType = LatexToken.DelimiterType.EXTENSIBLE;
+                token.secondaryType = LatexToken.SecondaryType.DELIMITER_EXTENSIBLE;
                 assignedTokens.add(token);
                 boxCounter++;
             }
