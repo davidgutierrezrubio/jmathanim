@@ -48,6 +48,7 @@ import org.scilab.forge.jlatexmath.DefaultTeXFont;
 import org.scilab.forge.jlatexmath.EmptyAtom;
 import org.scilab.forge.jlatexmath.FencedAtom;
 import org.scilab.forge.jlatexmath.FractionAtom;
+import org.scilab.forge.jlatexmath.HorizontalRule;
 import org.scilab.forge.jlatexmath.MatrixAtom;
 import org.scilab.forge.jlatexmath.MiddleAtom;
 import org.scilab.forge.jlatexmath.NthRoot;
@@ -220,7 +221,6 @@ public class LatexParser {
             parseAtom(campo.get(nthRoot));
 
             tokens.add(new LatexToken(LatexToken.TokenType.SQRT, "sqrt", true));//TODO: IMPROVE
-            tokens.add(new LatexToken(LatexToken.TokenType.SQRT, "sqrt", true));//TODO: IMPROVE
 
             campo = NthRoot.class.getDeclaredField("base");
             campo.setAccessible(true);
@@ -364,10 +364,23 @@ public class LatexParser {
                     break;
                 case SYMBOL:
                     processSymbol(token);
+                    break;
+                case SQRT:
+                    processSQRT(token);
+                    break;
 
             }
 
         }
+    }
+
+    private void processSQRT(LatexToken token) {
+        while (!(boxes.get(boxCounter) instanceof HorizontalRule)) {
+            assignedTokens.add(token);
+            boxCounter++;
+        }
+        assignedTokens.add(token);
+            boxCounter++;
     }
 
     private void processSymbol(LatexToken token) {
@@ -450,7 +463,7 @@ public class LatexParser {
                         1, 175,//Extensible upper part
                         1, 175);//Extensible lower part
                 break;
-                 case "Vert":
+            case "Vert":
                 token.type = LatexToken.TokenType.DELIMITER;
                 scanBigDelimiter(token,
                         8, 107,//Normal (LR)
