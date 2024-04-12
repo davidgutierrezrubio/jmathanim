@@ -343,15 +343,17 @@ public class LatexParser {
         if (atom instanceof BigOperatorAtom) {
             BigOperatorAtom bigOperatorAtom = (BigOperatorAtom) atom;
 
+             secondaryType=LatexToken.SecondaryType.NORMAL;
+            campo = BigOperatorAtom.class.getDeclaredField("base");
+            campo.setAccessible(true);
+            parseAtom((Atom) campo.get(bigOperatorAtom));
+            
               secondaryType=LatexToken.SecondaryType.TO_INDEX;
             campo = BigOperatorAtom.class.getDeclaredField("over");
             campo.setAccessible(true);
             parseAtom((Atom) campo.get(bigOperatorAtom));
 
-            secondaryType=LatexToken.SecondaryType.NORMAL;
-            campo = BigOperatorAtom.class.getDeclaredField("base");
-            campo.setAccessible(true);
-            parseAtom((Atom) campo.get(bigOperatorAtom));
+           
 
             secondaryType=LatexToken.SecondaryType.FROM_INDEX;
             campo = BigOperatorAtom.class.getDeclaredField("under");

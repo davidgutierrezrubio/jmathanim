@@ -34,33 +34,21 @@ public class LatexColorizer {
         this.colorizerItems = new ArrayList<>();
     }
     
-     public LatexColorizer setColorToGreek( String colorName) {
+     public LatexColorizer setColorTo(LatexToken.TokenType type,LatexToken.SecondaryType secType,String name, String colorName) {
        LatexColorizerItem  colorizerItem=new LatexColorizerItem();
-       colorizerItem.tokenEq=new LatexToken(LatexToken.TokenType.GREEKLETTER,null);
+       colorizerItem.tokenEq=new LatexToken(type,secType,name);
        colorizerItem.setColor(colorName);
         colorizerItems.add(colorizerItem);
         return this;
     }
-      public LatexColorizer setColorToOperations( String colorName) {
+     
+      public LatexColorizer setColorToChar(String name, String colorName) {
        LatexColorizerItem  colorizerItem=new LatexColorizerItem();
-       colorizerItem.tokenEq=new LatexToken(LatexToken.TokenType.OPERATOR,null);
+       colorizerItem.tokenEq=new LatexToken(LatexToken.TokenType.CHAR,name);
        colorizerItem.setColor(colorName);
         colorizerItems.add(colorizerItem);
         return this;
     }
-        public LatexColorizer setColorToSymbols( String colorName) {
-       LatexColorizerItem  colorizerItem=new LatexColorizerItem();
-       colorizerItem.tokenEq=new LatexToken(LatexToken.TokenType.SYMBOL,null);
-       colorizerItem.setColor(colorName);
-        colorizerItems.add(colorizerItem);
-        return this;
-    }
-    public LatexColorizer setColorToChar(String name, String colorName) {
-       LatexColorizerItem  colorizerItem=LatexColorizerItem.equalsChar(name, colorName);
-        colorizerItems.add(colorizerItem);
-        return this;
-    }
-    
     public void apply(AbstractLaTeXMathObject latex) {
         for (LatexColorizerItem colorizerItem : colorizerItems) {
             colorizerItem.apply(latex);
