@@ -20,7 +20,11 @@ package com.jmathanim.Utils;
  *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
+import com.jmathanim.Styling.JMColor;
 import com.jmathanim.jmathanim.JMathAnimScene;
+import com.jmathanim.mathobjects.MultiShapeObject;
+import com.jmathanim.mathobjects.Shape;
+import com.jmathanim.mathobjects.Text.LaTeXMathObject;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -31,8 +35,10 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import static javafx.scene.paint.Color.color;
 import org.scilab.forge.jlatexmath.ArrayOfAtoms;
 import org.scilab.forge.jlatexmath.Atom;
+import org.scilab.forge.jlatexmath.BigDelimiterAtom;
 import org.scilab.forge.jlatexmath.BigOperatorAtom;
 import org.scilab.forge.jlatexmath.Box;
 import org.scilab.forge.jlatexmath.CharAtom;
@@ -61,6 +67,7 @@ public class LatexParser {
 
     public final ArrayList<LatexToken> assignedTokens;
     private int boxCounter;
+    private final LaTeXMathObject latex;
 
     public List<MiddleAtom> list;
 
@@ -72,7 +79,8 @@ public class LatexParser {
     }
     public Modifier modifier;
 
-    public LatexParser() {
+    public LatexParser(LaTeXMathObject latex) {
+        this.latex=latex;
         this.list = new ArrayList<MiddleAtom>();
         this.boxes = new ArrayList<Box>();
         this.tokens = new ArrayList<>();
@@ -80,7 +88,29 @@ public class LatexParser {
         this.modifier = Modifier.NORMAL;
     }
 
-    public void parse(String texto) {
+    
+    public Integer[] getMatchingIndices(LatexToken token) {
+        ArrayList<Integer> indices=new ArrayList<>();
+        for (int i = 0; i < assignedTokens.size(); i++) {
+            if (assignedTokens.get(i).match(token)) {
+                indices.add(i);
+            }
+            
+        }
+        return indices.toArray(Integer[]::new);
+    }
+    
+    public void colorizeTokens(JMColor color,LatexToken.TokenType tokenType, LatexToken.DelimiterType delType, String name) {
+        Integer[] indices = getMatchingIndices(new LatexToken(tokenType, delType, name, true));
+        for (Integer indice : indices) {
+            latex.get(indice).color(color);
+        }
+    }
+    
+    
+    
+    public void parse() {
+        String texto = this.latex.getText();
         this.tokens.clear();
         this.assignedTokens.clear();
         TeXFormula formula = new TeXFormula(texto);
@@ -156,6 +186,12 @@ public class LatexParser {
             SymbolAtom symbolAtom = (SymbolAtom) atom;
             tokens.add(new LatexToken(LatexToken.TokenType.SYMBOL, "" + symbolAtom.getName(), true));//TODO: IMPROVE
         }
+        
+          if (atom instanceof BigDelimiterAtom) {
+            BigDelimiterAtom bigDelimiterAtom  = (BigDelimiterAtom) atom;
+            tokens.add(new LatexToken(LatexToken.TokenType.SYMBOL, "" + bigDelimiterAtom.delim.getName(), true));//TODO: IMPROVE
+        }
+        
         if (atom instanceof FencedAtom) {
             FencedAtom fencedAtom = (FencedAtom) atom;
             campo = FencedAtom.class.getDeclaredField("left");
@@ -313,10 +349,10 @@ public class LatexParser {
     }
 
     public void assignTokens() {
-        if (tokens.size() == boxes.size()) {//Easy
-            assignedTokens.addAll(tokens);
-            return;
-        }
+//        if (tokens.size() == boxes.size()) {//Easy
+//            assignedTokens.addAll(tokens);
+//            return;
+//        }
         boxCounter = 0;
         for (int n = 0; n < tokens.size(); n++) {
             LatexToken token = tokens.get(n);
@@ -357,37 +393,97 @@ public class LatexParser {
         //TODO: Add ALL delimiters: https://docs.aspose.com/tex/java/latex-math-delimiters/
         switch (token.name) {
             case "lbrack":
-                scanBigDelimiter(token, 18, 40, 1, 48, 1, 64);
+                scanBigDelimiter(token,
+                        18, 40, //Normal 
+                        1, 161, //\big 
+                        1, 179, //\Big
+                        1, 48,//Extensible upper part
+                        1, 64);//Extensible lower part
                 break;
             case "rbrack":
-                scanBigDelimiter(token, 18, 41, 1, 49, 1, 65);
+                scanBigDelimiter(token,
+                        18, 41, //Normal
+                        1, 162, //\big
+                        1, 180, //\Big
+                        1, 49, //Extensible upper part
+                        1, 65);//Extensible lower part
                 break;
             case "lbrace":
-                scanBigDelimiter(token, 8, 102, 1, 56, 1, 58);
+                scanBigDelimiter(token,
+                        8, 102, //Normal
+                        1, 169, //\big
+                        1, 110, //\Big
+                        1, 56, //Extensible upper part
+                        1, 58);//Extensible lower part
                 break;
             case "rbrace":
-                scanBigDelimiter(token, 8, 103, 1, 57, 1, 59);
+                scanBigDelimiter(token,
+                        8, 103, //Normal
+                         1, 170, //\big
+                        1, 111, //\Big
+                        1, 57, //Extensible upper part
+                        1, 59);//Extensible lower part
                 break;
             case "lsqbrack":
-                scanBigDelimiter(token, 18, 91, 1, 50, 1, 52);
+                scanBigDelimiter(token,
+                        18, 91, //Normal
+                         1, 163, //\big
+                        1, 104, //\Big
+                        1, 50,//Extensible upper part
+                        1, 52);//Extensible lower part
                 break;
             case "rsqbrack":
-                scanBigDelimiter(token, 18, 93, 1, 51, 1, 53);
+                scanBigDelimiter(token,
+                        18, 93, //Normal
+                         1, 164, //\big
+                        1, 105, //\Big
+                        1, 51,//Extensible upper part
+                        1, 53);//Extensible lower part
                 break;
             case "vert":
-                token.type=LatexToken.TokenType.DELIMITER;
-                scanBigDelimiter(token, 8, 106, 1, 175, 1, 175);
+                token.type = LatexToken.TokenType.DELIMITER;
+                scanBigDelimiter(token,
+                        8, 106,//Normal (LR)
+                         0, 0, //\big (LR)
+                        0, 0, //\Big(LR)
+                        1, 175,//Extensible upper part
+                        1, 175);//Extensible lower part
                 break;
         }
     }
 
-    protected void scanBigDelimiter(LatexToken token, int cfSmall, int cSmall, int cfBigUpper, int cBigUpper, int cfBigLower, int cBigLower) {
+    protected void scanBigDelimiter(LatexToken token,
+            int cfSmall, int cSmall,
+            int cfBig1, int cBig1,
+            int cfBig2, int cBig2,
+            int cfExtensibleUpper, int cExtensibleUpper,
+            int cfExtensibleLower, int cExtensibleLower) {
         Box b = boxes.get(boxCounter);
-        if (compareCharFont(b, cfSmall, cSmall)) {//A small left parenthesis
+        
+        
+        if (compareCharFont(b, cfSmall, cSmall)) {//Small delimiter
+            token.delimiterType=LatexToken.DelimiterType.NORMAL;
             assignedTokens.add(token);
             boxCounter++;
+            return;
         }
-        if (compareCharFont(b, cfBigUpper, cBigUpper)) {//A big left upper side delimiter
+        
+          if (compareCharFont(b, cfBig1, cBig1)) {//\big delimiter
+            token.delimiterType=LatexToken.DelimiterType.BIG1;
+            assignedTokens.add(token);
+            boxCounter++;
+            return;
+        }
+             if (compareCharFont(b, cfBig2, cBig2)) {//\Big delimiter
+            token.delimiterType=LatexToken.DelimiterType.BIG2;
+            assignedTokens.add(token);
+            boxCounter++;
+            return;
+        }
+        
+        
+        if (compareCharFont(b, cfExtensibleUpper, cExtensibleUpper)) {//A big left upper side delimiter
+             token.delimiterType=LatexToken.DelimiterType.EXTENSIBLE;
             assignedTokens.add(token);
             boxCounter++;
 
@@ -396,7 +492,7 @@ public class LatexParser {
                 if (boxCounter == boxes.size()) {
                     break;
                 }
-                boolean found = compareCharFont(boxes.get(boxCounter), cfBigLower, cBigLower);
+                boolean found = compareCharFont(boxes.get(boxCounter), cfExtensibleLower, cExtensibleLower);
 
                 if (found) {
                     trailStarted = true;
@@ -405,6 +501,7 @@ public class LatexParser {
                 if (trailStarted & !found) {
                     break;
                 }
+                token.delimiterType=LatexToken.DelimiterType.EXTENSIBLE;
                 assignedTokens.add(token);
                 boxCounter++;
             }
@@ -412,4 +509,6 @@ public class LatexParser {
         }
     }
 
+    
+    
 }

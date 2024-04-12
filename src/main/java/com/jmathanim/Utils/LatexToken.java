@@ -30,21 +30,40 @@ public class LatexToken {
     public enum TokenType {
         CHAR, NUMBER, SYMBOL, OPERATOR, RELATION, DELIMITER, SQRT, FRACTIONBAR, GREEKLETTER, NAMED_FUNCTION
     }
+
+    public enum DelimiterType {
+        NORMAL, BIG1, BIG2, EXTENSIBLE,
+    }
     public TokenType type;
+    public DelimiterType delimiterType;
 
     public String name;
 
+    public LatexToken(TokenType type, String name) {
+        this(type, null, name, true);
+    }
+
     public LatexToken(TokenType type, String name, boolean math) {
+        this(type, null, name, math);
+    }
+
+    public LatexToken(TokenType type, DelimiterType delimiterType, String name, boolean math) {
         this.type = type;
+        this.delimiterType = delimiterType;
         this.name = name;
         this.math = math;
         refineToken();
     }
 
+    public LatexToken setDelimiterType(DelimiterType type) {
+        this.delimiterType = type;
+        return this;
+    }
+
     private void refineToken() {
         switch (type) {
             case SYMBOL:
-                if (greekLetters.contains(name)) {
+                if (greekLetters.contains(name)) {//Check if name is in my list of greek letters
                     type = TokenType.GREEKLETTER;
                     break;
                 }
@@ -76,18 +95,24 @@ public class LatexToken {
      * means that no comparison is done in that parameter.
      *
      * @param type Type to match. Null if no comparison needed.
+     * @param delimiterType Delimiter type. Null if no comparison needed
      * @param name Name to match. Null if no comparison needed.
      * @return True if match. False otherwise.
      */
-    public boolean match(TokenType type, String name) {
-        if (name == null) {
-            return type == this.type;
-        }
-        if (type == null) {
-            return name.equals(this.name);
-        }
+    public boolean match(TokenType type, DelimiterType delimiterType, String name) {
+        boolean result = true;
+        result = result && ((type == null) || (this.type == type));
+        result = result && ((delimiterType == null) || (this.delimiterType == delimiterType));
+        result = result && ((name == null) || (this.name.equals(name)));
+        return result;
+    }
 
-        return ((type == this.type) && (name.equals(this.name)));
+    public boolean match(TokenType type, String name) {
+        return match(type, null, name);
+    }
+
+    public boolean match(LatexToken tok) {
+        return match(tok.type, tok.delimiterType, tok.name);
     }
 
     @Override
