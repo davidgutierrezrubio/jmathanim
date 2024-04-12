@@ -51,10 +51,6 @@ public class LatexToken {
         this(type, null, name);
     }
 
-    public LatexToken(TokenType type, String name, boolean math) {
-        this(type, null, name);
-    }
-
     public LatexToken(TokenType type, SecondaryType delimiterType, String name) {
         this.type = type;
         this.secondaryType = delimiterType;

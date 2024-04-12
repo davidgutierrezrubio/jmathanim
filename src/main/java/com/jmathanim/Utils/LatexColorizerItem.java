@@ -36,34 +36,44 @@ public class LatexColorizerItem {
     public LatexToken tokenDifPrev = null;
     public LatexToken tokenEqAfter = null;
     public LatexToken tokenDifAfter = null;
-    public MODrawProperties style  ;
+    public MODrawProperties style;
 
-    public static LatexColorizerItem equals(String equal, String color) {
-        return equals(null, equal, null, color);
+    public static LatexColorizerItem equalsChar(String equal, String color) {
+        return equalsChar(null, equal, null, color);
     }
-    public static LatexColorizerItem equals(String before, String equal, String after,String color) {
-        LatexColorizerItem resul=new LatexColorizerItem();
-        resul.tokenEqPrev=new LatexToken(null, before);
-        resul.tokenEq=new LatexToken(null, equal);
-        resul.tokenEqAfter=new LatexToken(null, after);
+
+    public static LatexColorizerItem equalsChar(String before, String equal, String after, String color) {
+        LatexColorizerItem resul = new LatexColorizerItem();
+        resul.tokenEqPrev = new LatexToken(null, before);
+        resul.tokenEq = new LatexToken(null, equal);
+        resul.tokenEqAfter = new LatexToken(null, after);
         JMColor col = JMColor.parse(color);
-        
+
         resul.style.setDrawColor(col);
         resul.style.setFillColor(col);
-        
+
         return resul;
     }
-    
+
     public LatexColorizerItem() {
-        this.style=JMathAnimConfig.getConfig().getStyles().get("LATEXDEFAULT").copy();
+//       this.tokenDif=new LatexToken(null, null, null);
+//       this.tokenEq=new LatexToken(null, null, null);
+//       this.tokenEqPrev=new LatexToken(null, null, null);
+//       this.tokenEqAfter=new LatexToken(null, null, null);
+//       this.tokenDif=new LatexToken(null, null, null);
+//       this.tokenDifAfter=new LatexToken(null, null, null);
+//       this.tokenDifPrev=new LatexToken(null, null, null);
+        this.style = JMathAnimConfig.getConfig().getStyles().get("LATEXDEFAULT").copy();
     }
 
-  
-    
-    
-    
+    public void setColor(String colorName) {
+        JMColor col = JMColor.parse(colorName);
+        style.setDrawColor(col);
+        style.setFillColor(col);
+    }
+
     public boolean match(LatexToken tokPrev, LatexToken tok, LatexToken tokAfter) {
-        boolean result=true;
+        boolean result = true;
         if (tokPrev != null) {
             if ((tokenEqPrev != null) && (!tokenEqPrev.match(tokPrev))) {
                 return false;
@@ -113,9 +123,9 @@ public class LatexColorizerItem {
 
         for (int i = 0; i < latex.size(); i++) {
             Shape latexShape = latex.get(i);
-            LatexToken tokPrev = (i > 0 ? tokens.get(i - 1) : new LatexToken(LatexToken.TokenType.NONE,LatexToken.SecondaryType.NONE, ""));
+            LatexToken tokPrev = (i > 0 ? tokens.get(i - 1) : new LatexToken(LatexToken.TokenType.NONE, LatexToken.SecondaryType.NONE, ""));
             LatexToken token = tokens.get(i);
-            LatexToken tokAfter = (i < tokens.size() - 1 ? tokens.get(i + 1) : new LatexToken(LatexToken.TokenType.NONE,LatexToken.SecondaryType.NONE, ""));
+            LatexToken tokAfter = (i < tokens.size() - 1 ? tokens.get(i + 1) : new LatexToken(LatexToken.TokenType.NONE, LatexToken.SecondaryType.NONE, ""));
 
             if (match(tokPrev, token, tokAfter)) {
                 latexShape.getMp().copyFrom(style);

@@ -16,10 +16,56 @@
  */
 package com.jmathanim.Utils;
 
+import com.jmathanim.mathobjects.Text.AbstractLaTeXMathObject;
+import java.util.ArrayList;
+
 /**
  * This class assign colors to elements of LaTeXMathObject, according to their identifying tokens
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
 public class LatexColorizer {
+    private final ArrayList<LatexColorizerItem> colorizerItems;
+
+    public static LatexColorizer make() {
+        return new LatexColorizer();
+    }
+    
+    public LatexColorizer() {
+        this.colorizerItems = new ArrayList<>();
+    }
+    
+     public LatexColorizer setColorToGreek( String colorName) {
+       LatexColorizerItem  colorizerItem=new LatexColorizerItem();
+       colorizerItem.tokenEq=new LatexToken(LatexToken.TokenType.GREEKLETTER,null);
+       colorizerItem.setColor(colorName);
+        colorizerItems.add(colorizerItem);
+        return this;
+    }
+      public LatexColorizer setColorToOperations( String colorName) {
+       LatexColorizerItem  colorizerItem=new LatexColorizerItem();
+       colorizerItem.tokenEq=new LatexToken(LatexToken.TokenType.OPERATOR,null);
+       colorizerItem.setColor(colorName);
+        colorizerItems.add(colorizerItem);
+        return this;
+    }
+        public LatexColorizer setColorToSymbols( String colorName) {
+       LatexColorizerItem  colorizerItem=new LatexColorizerItem();
+       colorizerItem.tokenEq=new LatexToken(LatexToken.TokenType.SYMBOL,null);
+       colorizerItem.setColor(colorName);
+        colorizerItems.add(colorizerItem);
+        return this;
+    }
+    public LatexColorizer setColorToChar(String name, String colorName) {
+       LatexColorizerItem  colorizerItem=LatexColorizerItem.equalsChar(name, colorName);
+        colorizerItems.add(colorizerItem);
+        return this;
+    }
+    
+    public void apply(AbstractLaTeXMathObject latex) {
+        for (LatexColorizerItem colorizerItem : colorizerItems) {
+            colorizerItem.apply(latex);
+            
+        }
+    }
     
 }

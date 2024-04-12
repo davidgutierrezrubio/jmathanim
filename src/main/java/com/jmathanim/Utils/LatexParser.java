@@ -223,7 +223,7 @@ public class LatexParser {
                     type = LatexToken.TokenType.NAMED_FUNCTION;
                     break;
             }
-            LatexToken token = new LatexToken(type, "" + charAtom.getCharacter(), charAtom.isMathMode());
+            LatexToken token = new LatexToken(type, "" + charAtom.getCharacter());
             token.secondaryType = secondaryType;
             tokens.add(token);//TODO: IMPROVE
             return;
@@ -238,7 +238,7 @@ public class LatexParser {
                     type = LatexToken.TokenType.NAMED_FUNCTION;
                     break;
             }
-            LatexToken token = new LatexToken(LatexToken.TokenType.SYMBOL, "" + symbolAtom.getName(), true);
+            LatexToken token = new LatexToken(LatexToken.TokenType.SYMBOL, "" + symbolAtom.getName());
             token.secondaryType = secondaryType;
             tokens.add(token);//TODO: IMPROVE
             return;
@@ -246,7 +246,7 @@ public class LatexParser {
 
         if (atom instanceof BigDelimiterAtom) {
             BigDelimiterAtom bigDelimiterAtom = (BigDelimiterAtom) atom;
-            tokens.add(new LatexToken(LatexToken.TokenType.SYMBOL, "" + bigDelimiterAtom.delim.getName(), true));//TODO: IMPROVE
+            tokens.add(new LatexToken(LatexToken.TokenType.SYMBOL, "" + bigDelimiterAtom.delim.getName()));//TODO: IMPROVE
             return;
         }
 
@@ -281,7 +281,7 @@ public class LatexParser {
             campo.setAccessible(true);
             parseAtom(campo.get(nthRoot));
 
-            tokens.add(new LatexToken(LatexToken.TokenType.SQRT, "sqrt", true));//TODO: IMPROVE
+            tokens.add(new LatexToken(LatexToken.TokenType.SQRT, "sqrt"));//TODO: IMPROVE
 
             campo = NthRoot.class.getDeclaredField("base");
             campo.setAccessible(true);
@@ -296,7 +296,7 @@ public class LatexParser {
             campo.setAccessible(true);
             parseAtom(campo.get(fractionAtom));
 
-            tokens.add(new LatexToken(LatexToken.TokenType.FRACTIONBAR, "fractionRule", true));//TODO: IMPROVE
+            tokens.add(new LatexToken(LatexToken.TokenType.FRACTIONBAR, "fractionRule"));//TODO: IMPROVE
 
             campo = FractionAtom.class.getDeclaredField("denominator");
             campo.setAccessible(true);
