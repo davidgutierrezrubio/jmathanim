@@ -22,7 +22,9 @@ import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.Scalar;
 import com.jmathanim.mathobjects.hasArguments;
 import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.util.HashMap;
+import java.util.Locale;
 
 /**
  *
@@ -89,6 +91,7 @@ public class LaTeXMathObject extends AbstractLaTeXMathObject implements hasArgum
     protected LaTeXMathObject(Anchor.Type anchor) {
         super(anchor);
         df = new DecimalFormat("0.00");
+        df.setDecimalFormatSymbols(DecimalFormatSymbols.getInstance(Locale.UK));
         variables = new HashMap<>();
     }
 

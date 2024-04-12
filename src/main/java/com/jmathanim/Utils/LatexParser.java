@@ -75,6 +75,7 @@ public class LatexParser {
     private TeXFormula formula;
 
     public List<MiddleAtom> list;
+    private LatexToken previousToken;
 
     public final ArrayList<LatexToken> tokens;
     public final ArrayList<Box> boxes;
@@ -92,7 +93,7 @@ public class LatexParser {
         this.tokens = new ArrayList<>();
         this.assignedTokens = new ArrayList<>();
         this.modifier = Modifier.NORMAL;
-        this.secondaryType=LatexToken.SecondaryType.NORMAL;
+        this.secondaryType = LatexToken.SecondaryType.NORMAL;
     }
 
     public Integer[] getMatchingIndices(LatexToken token) {
@@ -149,10 +150,25 @@ public class LatexParser {
             metodo.setAccessible(true);
             Box bo = (Box) metodo.invoke(formula, te);
             parseBox(bo);
+            distilleTokens();
             assignTokens();
-            System.out.println("Parse finished");
         } catch (Exception ex) {
             JMathAnimScene.logger.warn("Error parsing LaTeX boxes or assigning tokens of " + this.latex.getText());
+
+        }
+    }
+
+    private void distilleTokens() {
+        
+        //A dot followed by a number should be marked as number too
+        for (int i = 1; i < tokens.size(); i++) {
+            LatexToken token = tokens.get(i);
+            LatexToken prevToken = tokens.get(i - 1);
+            if (token.type == LatexToken.TokenType.NUMBER) {
+                if ("normaldot".equals(prevToken.name)) {
+                    prevToken.type = LatexToken.TokenType.NUMBER;
+                }
+            }
 
         }
     }
@@ -217,30 +233,17 @@ public class LatexParser {
             CharAtom charAtom = (CharAtom) atom;
             LatexToken.TokenType type = LatexToken.TokenType.CHAR;
             LatexToken.SecondaryType secType = LatexToken.SecondaryType.NORMAL;
-
-            switch (modifier) {
-                case TYPED:
-                    type = LatexToken.TokenType.NAMED_FUNCTION;
-                    break;
-            }
-            LatexToken token = new LatexToken(type, "" + charAtom.getCharacter());
-            token.secondaryType = secondaryType;
-            tokens.add(token);//TODO: IMPROVE
+            String name = "" + charAtom.getCharacter();
+            addTokenToList(type, name);
             return;
         }
         if (atom instanceof SymbolAtom) {
             SymbolAtom symbolAtom = (SymbolAtom) atom;
-            LatexToken.TokenType type = LatexToken.TokenType.CHAR;
-            LatexToken.SecondaryType secType = LatexToken.SecondaryType.NORMAL;
+            LatexToken.TokenType type = LatexToken.TokenType.SYMBOL;
+            String name = "" + symbolAtom.getName();
 
-            switch (modifier) {
-                case TYPED:
-                    type = LatexToken.TokenType.NAMED_FUNCTION;
-                    break;
-            }
-            LatexToken token = new LatexToken(LatexToken.TokenType.SYMBOL, "" + symbolAtom.getName());
-            token.secondaryType = secondaryType;
-            tokens.add(token);//TODO: IMPROVE
+            addTokenToList(type, name);
+            //TODO: IMPROVE
             return;
         }
 
@@ -329,37 +332,35 @@ public class LatexParser {
 
             campo = ScriptsAtom.class.getDeclaredField("superscript");
             campo.setAccessible(true);
-            secondaryType=LatexToken.SecondaryType.SUPERSCRIPT;
+            secondaryType = LatexToken.SecondaryType.SUPERSCRIPT;
             parseAtom(campo.get(scriptsAtom));
 
             campo = ScriptsAtom.class.getDeclaredField("subscript");
             campo.setAccessible(true);
-              secondaryType=LatexToken.SecondaryType.SUBSCRIPT;
+            secondaryType = LatexToken.SecondaryType.SUBSCRIPT;
             parseAtom(campo.get(scriptsAtom));
-           secondaryType=LatexToken.SecondaryType.NORMAL;
+            secondaryType = LatexToken.SecondaryType.NORMAL;
             return;
         }
 
         if (atom instanceof BigOperatorAtom) {
             BigOperatorAtom bigOperatorAtom = (BigOperatorAtom) atom;
 
-             secondaryType=LatexToken.SecondaryType.NORMAL;
+            secondaryType = LatexToken.SecondaryType.NORMAL;
             campo = BigOperatorAtom.class.getDeclaredField("base");
             campo.setAccessible(true);
             parseAtom((Atom) campo.get(bigOperatorAtom));
-            
-              secondaryType=LatexToken.SecondaryType.TO_INDEX;
+
+            secondaryType = LatexToken.SecondaryType.TO_INDEX;
             campo = BigOperatorAtom.class.getDeclaredField("over");
             campo.setAccessible(true);
             parseAtom((Atom) campo.get(bigOperatorAtom));
 
-           
-
-            secondaryType=LatexToken.SecondaryType.FROM_INDEX;
+            secondaryType = LatexToken.SecondaryType.FROM_INDEX;
             campo = BigOperatorAtom.class.getDeclaredField("under");
             campo.setAccessible(true);
             parseAtom((Atom) campo.get(bigOperatorAtom));
-             secondaryType=LatexToken.SecondaryType.NORMAL;
+            secondaryType = LatexToken.SecondaryType.NORMAL;
             return;
         }
         if (atom instanceof MatrixAtom) {
@@ -380,19 +381,28 @@ public class LatexParser {
 
     }
 
+    protected void addTokenToList(LatexToken.TokenType type, String name) {
+        switch (modifier) {
+            case TYPED:
+                type = LatexToken.TokenType.NAMED_FUNCTION;
+                break;
+        }
+
+        LatexToken token = new LatexToken(type, name);
+        token.secondaryType = secondaryType;
+        tokens.add(token);//TODO: IMPROVE
+        previousToken = token;
+    }
+
     private void parseBox(Box bo) throws Exception {
         Field campo;
-//        System.out.println("Parsing Box: "+bo.getClass().getCanonicalName()+"  "+bo);
 
         if (bo instanceof CharBox) {
             CharBox charBox = (CharBox) bo;
-            CharFont cf = getFontFromCharBox(charBox);
-            System.out.println((boxes.size()) + "   Char: " + cf.fontId + " " + (int) cf.c);
             boxes.add(charBox);
         }
 
         if (bo instanceof org.scilab.forge.jlatexmath.HorizontalRule) {
-            System.out.println((boxes.size()) + "   Horizontal rule");
             boxes.add(bo);
         }
         campo = Box.class.getDeclaredField("children");
