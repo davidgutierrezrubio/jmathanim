@@ -172,6 +172,9 @@ public class LatexToken {
     private static final List<String> delimiters = Arrays.asList(
             "lbrack", "rbrack",
             "lsqbrack", "rsqbrack",
-            "lbrace", "rbrace"
+            "lbrace", "rbrace",
+            "lfloor", "rfloor",
+            "lceil", "rceil",
+            "langle", "rangle"
     );
 }

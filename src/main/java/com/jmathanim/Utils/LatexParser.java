@@ -80,7 +80,7 @@ public class LatexParser {
     public Modifier modifier;
 
     public LatexParser(LaTeXMathObject latex) {
-        this.latex=latex;
+        this.latex = latex;
         this.list = new ArrayList<MiddleAtom>();
         this.boxes = new ArrayList<Box>();
         this.tokens = new ArrayList<>();
@@ -88,27 +88,24 @@ public class LatexParser {
         this.modifier = Modifier.NORMAL;
     }
 
-    
     public Integer[] getMatchingIndices(LatexToken token) {
-        ArrayList<Integer> indices=new ArrayList<>();
+        ArrayList<Integer> indices = new ArrayList<>();
         for (int i = 0; i < assignedTokens.size(); i++) {
             if (assignedTokens.get(i).match(token)) {
                 indices.add(i);
             }
-            
+
         }
         return indices.toArray(Integer[]::new);
     }
-    
-    public void colorizeTokens(JMColor color,LatexToken.TokenType tokenType, LatexToken.DelimiterType delType, String name) {
+
+    public void colorizeTokens(JMColor color, LatexToken.TokenType tokenType, LatexToken.DelimiterType delType, String name) {
         Integer[] indices = getMatchingIndices(new LatexToken(tokenType, delType, name, true));
         for (Integer indice : indices) {
             latex.get(indice).color(color);
         }
     }
-    
-    
-    
+
     public void parse() {
         String texto = this.latex.getText();
         this.tokens.clear();
@@ -186,12 +183,12 @@ public class LatexParser {
             SymbolAtom symbolAtom = (SymbolAtom) atom;
             tokens.add(new LatexToken(LatexToken.TokenType.SYMBOL, "" + symbolAtom.getName(), true));//TODO: IMPROVE
         }
-        
-          if (atom instanceof BigDelimiterAtom) {
-            BigDelimiterAtom bigDelimiterAtom  = (BigDelimiterAtom) atom;
+
+        if (atom instanceof BigDelimiterAtom) {
+            BigDelimiterAtom bigDelimiterAtom = (BigDelimiterAtom) atom;
             tokens.add(new LatexToken(LatexToken.TokenType.SYMBOL, "" + bigDelimiterAtom.delim.getName(), true));//TODO: IMPROVE
         }
-        
+
         if (atom instanceof FencedAtom) {
             FencedAtom fencedAtom = (FencedAtom) atom;
             campo = FencedAtom.class.getDeclaredField("left");
@@ -376,6 +373,9 @@ public class LatexParser {
     private void processSymbol(LatexToken token) {
         switch (token.name) {
             case "vert":
+                processDelimiter(token);//vert puede ser delimiter
+                break;
+            case "Vert":
                 processDelimiter(token);//Vert puede ser delimiter
                 break;
             default:
@@ -391,6 +391,7 @@ public class LatexParser {
 
     private void processDelimiter(LatexToken token) {
         //TODO: Add ALL delimiters: https://docs.aspose.com/tex/java/latex-math-delimiters/
+        //Para añadir delimiter nuevo: incluirlo en array delimiters de LatexToken
         switch (token.name) {
             case "lbrack":
                 scanBigDelimiter(token,
@@ -419,7 +420,7 @@ public class LatexParser {
             case "rbrace":
                 scanBigDelimiter(token,
                         8, 103, //Normal
-                         1, 170, //\big
+                        1, 170, //\big
                         1, 111, //\Big
                         1, 57, //Extensible upper part
                         1, 59);//Extensible lower part
@@ -427,7 +428,7 @@ public class LatexParser {
             case "lsqbrack":
                 scanBigDelimiter(token,
                         18, 91, //Normal
-                         1, 163, //\big
+                        1, 163, //\big
                         1, 104, //\Big
                         1, 50,//Extensible upper part
                         1, 52);//Extensible lower part
@@ -435,7 +436,7 @@ public class LatexParser {
             case "rsqbrack":
                 scanBigDelimiter(token,
                         18, 93, //Normal
-                         1, 164, //\big
+                        1, 164, //\big
                         1, 105, //\Big
                         1, 51,//Extensible upper part
                         1, 53);//Extensible lower part
@@ -444,11 +445,86 @@ public class LatexParser {
                 token.type = LatexToken.TokenType.DELIMITER;
                 scanBigDelimiter(token,
                         8, 106,//Normal (LR)
-                         0, 0, //\big (LR)
+                        0, 0, //\big (LR)
                         0, 0, //\Big(LR)
                         1, 175,//Extensible upper part
                         1, 175);//Extensible lower part
                 break;
+                 case "Vert":
+                token.type = LatexToken.TokenType.DELIMITER;
+                scanBigDelimiter(token,
+                        8, 107,//Normal (LR)
+                        0, 0, //\big (LR)
+                        0, 0, //\Big(LR)
+                        1, 176,//Extensible upper part
+                        1, 176);//Extensible lower part
+                break;
+            case "lfloor":
+                scanBigDelimiter(token,
+                        8, 98, //Normal
+                        1, 165, //\big
+                        1, 106, //\Big
+                        1, 54,//Extensible upper part
+                        1, 52);//Extensible lower part
+                break;
+            case "rfloor":
+                scanBigDelimiter(token,
+                        8, 99, //Normal
+                        1, 166, //\big
+                        1, 107, //\Big
+                        1, 55,//Extensible upper part
+                        1, 53);//Extensible lower part
+                break;
+            case "lceil":
+                scanBigDelimiter(token,
+                        8, 100, //Normal
+                        1, 167, //\big
+                        1, 108, //\Big
+                        1, 50,//Extensible upper part
+                        1, 54);//Extensible lower part
+                break;
+            case "rceil":
+                scanBigDelimiter(token,
+                        8, 101, //Normal
+                        1, 168, //\big
+                        1, 109, //\Big
+                        1, 51,//Extensible upper part
+                        1, 55);//Extensible lower part
+                break;
+
+            case "langle":
+                scanBigDelimiter(token,
+                        8, 104, //Normal
+                        1, 173, //\big
+                        1, 68, //\Big
+                        1, 42,//Extensible upper part
+                        1, -1);//Extensible lower part
+                break;
+            case "rangle":
+                scanBigDelimiter(token,
+                        8, 105, //Normal
+                        1, 174, //\big
+                        1, 69, //\Big
+                        1, 43,//Extensible upper part
+                        1, -1);//Extensible lower part
+                break;
+
+//             case "lname":
+//                scanBigDelimiter(token,
+//                        8,0, //Normal
+//                        1,0, //\big
+//                        1,0, //\Big
+//                        1,0,//Extensible upper part
+//                        1,0);//Extensible lower part
+//                break;
+//            case "rname":
+//                scanBigDelimiter(token,
+//                        8,0, //Normal
+//                        1,0, //\big
+//                        1,0, //\Big
+//                        1,0,//Extensible upper part
+//                        1,0);//Extensible lower part
+//                break;
         }
     }
 
@@ -459,34 +535,34 @@ public class LatexParser {
             int cfExtensibleUpper, int cExtensibleUpper,
             int cfExtensibleLower, int cExtensibleLower) {
         Box b = boxes.get(boxCounter);
-        
-        
-        if (compareCharFont(b, cfSmall, cSmall)) {//Small delimiter
-            token.delimiterType=LatexToken.DelimiterType.NORMAL;
-            assignedTokens.add(token);
-            boxCounter++;
-            return;
-        }
-        
-          if (compareCharFont(b, cfBig1, cBig1)) {//\big delimiter
-            token.delimiterType=LatexToken.DelimiterType.BIG1;
-            assignedTokens.add(token);
-            boxCounter++;
-            return;
-        }
-             if (compareCharFont(b, cfBig2, cBig2)) {//\Big delimiter
-            token.delimiterType=LatexToken.DelimiterType.BIG2;
-            assignedTokens.add(token);
-            boxCounter++;
-            return;
-        }
-        
-        
-        if (compareCharFont(b, cfExtensibleUpper, cExtensibleUpper)) {//A big left upper side delimiter
-             token.delimiterType=LatexToken.DelimiterType.EXTENSIBLE;
-            assignedTokens.add(token);
-            boxCounter++;
 
+        if (compareCharFont(b, cfSmall, cSmall)) {//Small delimiter
+            token.delimiterType = LatexToken.DelimiterType.NORMAL;
+            assignedTokens.add(token);
+            boxCounter++;
+            return;
+        }
+
+        if (compareCharFont(b, cfBig1, cBig1)) {//\big delimiter
+            token.delimiterType = LatexToken.DelimiterType.BIG1;
+            assignedTokens.add(token);
+            boxCounter++;
+            return;
+        }
+        if (compareCharFont(b, cfBig2, cBig2)) {//\Big delimiter
+            token.delimiterType = LatexToken.DelimiterType.BIG2;
+            assignedTokens.add(token);
+            boxCounter++;
+            return;
+        }
+
+        if (compareCharFont(b, cfExtensibleUpper, cExtensibleUpper)) {//A big left upper side delimiter
+            token.delimiterType = LatexToken.DelimiterType.EXTENSIBLE;
+            assignedTokens.add(token);
+            boxCounter++;
+            if (cExtensibleLower == -1) {//Special case where extensible delimiter is exactly 1 char (like \langle)
+                return;
+            }
             boolean trailStarted = false;
             while (true) {
                 if (boxCounter == boxes.size()) {
@@ -501,7 +577,7 @@ public class LatexParser {
                 if (trailStarted & !found) {
                     break;
                 }
-                token.delimiterType=LatexToken.DelimiterType.EXTENSIBLE;
+                token.delimiterType = LatexToken.DelimiterType.EXTENSIBLE;
                 assignedTokens.add(token);
                 boxCounter++;
             }
@@ -509,6 +585,4 @@ public class LatexParser {
         }
     }
 
-    
-    
 }
