@@ -135,9 +135,9 @@ public class LatexToken {
             return true;
         }
         boolean result = true;
-        result = result && ((tok.type == null) || (this.type != type));
-        result = result && ((tok.secondaryType == null) || (this.secondaryType != secondaryType));
-        result = result && ((tok.name == null) || (!this.name.equals(name)));
+        result = result && ((tok.type == null) || (tok.type != type));
+        result = result && ((tok.secondaryType == null) || (tok.secondaryType != secondaryType));
+        result = result && ((tok.name == null) || (!tok.name.equals(name)));
         return result;
     }
 

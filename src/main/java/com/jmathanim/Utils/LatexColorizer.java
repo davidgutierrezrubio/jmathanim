@@ -55,5 +55,9 @@ public class LatexColorizer {
             
         }
     }
+
+    public boolean add(LatexColorizerItem e) {
+        return colorizerItems.add(e);
+    }
     
 }

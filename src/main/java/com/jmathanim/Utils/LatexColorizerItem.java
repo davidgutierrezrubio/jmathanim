@@ -111,7 +111,12 @@ public class LatexColorizerItem {
      * @param latex An AbstractLaTeXMathObject representing a formula
      */
     public void apply(AbstractLaTeXMathObject latex) {
-        ArrayList<LatexToken> tokens = latex.getLatexParser().assignedTokens;
+        LatexParser latexParser = latex.getLatexParser();
+        if (latexParser==null) {
+              JMathAnimScene.logger.warn("This LaTeXMathObject has no parser, cannot colorize, sorry!");
+            return;
+        }
+        ArrayList<LatexToken> tokens = latexParser.assignedTokens;
         if (tokens == null) {
             JMathAnimScene.logger.warn("Cannot apply style to a LaTeX without assigned tokens");
             return;
@@ -133,5 +138,6 @@ public class LatexColorizerItem {
 
         }
     }
+    
 
 }
