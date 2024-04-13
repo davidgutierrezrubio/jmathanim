@@ -76,4 +76,5 @@
         <thickness>8</thickness>
     </style> 
     </styles>
+     <include>#latexStylesDark.xml</include>
 </JMathAnimConfig>

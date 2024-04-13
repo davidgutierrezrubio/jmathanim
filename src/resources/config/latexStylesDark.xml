@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<JMathAnimConfig>
+    <latexStyle name="colorful">
+        <latexStyleItem>
+            <equals>
+                <type></type>
+                <subtype></subtype>
+                <name></name>
+            </equals>
+             <differs>
+                <type></type>
+                <subtype></subtype>
+                <name></name>
+            </differs>
+             <equalsPrev>
+                <type></type>
+                <subtype></subtype>
+                <name></name>
+            </equalsPrev>
+             <differsPrev>
+                <type></type>
+                <subtype></subtype>
+                <name></name>
+            </differsPrev>
+             <equalsAfter>
+                <type></type>
+                <subtype></subtype>
+                <name></name>
+            </equalsAfter>
+             <differsAfter>
+                <type></type>
+                <subtype></subtype>
+                <name></name>
+            </differsAfter>
+        </latexStyleItem>
+        
+    </latexStyle>
+
+
+</JMathAnimConfig>
+    
+
