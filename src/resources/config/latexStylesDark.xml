@@ -2,6 +2,7 @@
 <JMathAnimConfig>
     <latexStyle name="colorful">
         <latexStyleItem>
+            <conditions>
             <equals>
                 <type></type>
                 <subtype></subtype>
@@ -32,6 +33,10 @@
                 <subtype></subtype>
                 <name></name>
             </differsAfter>
+            </conditions>
+            <style name="eq_number">
+                <color>#BEE7B8</color>
+            </style>
         </latexStyleItem>
         
     </latexStyle>

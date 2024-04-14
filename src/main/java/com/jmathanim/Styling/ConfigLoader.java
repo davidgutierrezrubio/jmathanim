@@ -194,11 +194,15 @@ public class ConfigLoader {
             String name = item.getNodeName();
             switch (name) {
                 case "drawColor":
-                    mp.setDrawColor(parsePaintStyle(config, item));
+
                     break;
                 case "fillColor":
                     mp.setFillColor(parsePaintStyle(config, item));
-//                    mp.setFillColor(JMColor.parse(item.getTextContent()));
+                    break;
+                case "color":
+                    PaintStyle color = parsePaintStyle(config, item);
+                    mp.setDrawColor(color);
+                    mp.setFillColor(color);
                     break;
                 case "thickness":
                     mp.setThickness(Double.valueOf(item.getTextContent()));
