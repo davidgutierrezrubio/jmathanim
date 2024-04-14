@@ -158,6 +158,8 @@ public class LaTeXMathObject extends AbstractLaTeXMathObject implements hasArgum
         return variables.get(n);
     }
 
+    
+    
 //    @Override
 //    public void copyStateFrom(MathObject obj) {
 //        super.copyStateFrom(obj);
@@ -167,4 +169,9 @@ public class LaTeXMathObject extends AbstractLaTeXMathObject implements hasArgum
 //            modelMatrix.copyFrom(copy.modelMatrix);
 //        }
 //    }
+
+    @Override
+    public String toString() {
+        return "LaTeXMathObject{" + "origText=" + origText + '}';
+    }
 }

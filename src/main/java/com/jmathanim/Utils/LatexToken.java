@@ -34,27 +34,42 @@ public class LatexToken {
         SYMBOL, //A math symbol
         OPERATOR,
         RELATION,
-        DELIMITER, 
-        SQRT, 
+        DELIMITER,
+        SQRT,
         FRACTIONBAR,
         GREEKLETTER,
         NAMED_FUNCTION
     }
 
-    public enum SecondaryType {
-        NONE,//This token will not be assigned never. It is used to always returns false when matching tokens
-        NORMAL,//Normal size, no modifications
-        DELIMITER_NORMAL, //A normal sized delimiter
-        DELIMITER_BIG1, //A delimiter with command \big, like \big(
-        DELIMITER_BIG2, //A delimiter with command \Big, like \Big(
-        DELIMITER_EXTENSIBLE, //An extensible delimiter, like \left(
-        SUPERSCRIPT, //Superscript style, like power exponents
-        SUBSCRIPT, //Subscript style
-        FROM_INDEX, //In sums, products, integrals...the "from" part
-        TO_INDEX//In sums, products, integrals...the "to" part
-    }
+//    public enum SecondaryType {
+//        NONE,//This token will not be assigned never. It is used to always returns false when matching tokens
+//        NORMAL,//Normal size, no modifications
+//        DELIMITER_NORMAL, //A normal sized delimiter
+//        DELIMITER_BIG1, //A delimiter with command \big, like \big(
+//        DELIMITER_BIG2, //A delimiter with command \Big, like \Big(
+//        DELIMITER_EXTENSIBLE, //An extensible delimiter, like \left(
+//        SUPERSCRIPT, //Superscript style, like power exponents
+//        SUBSCRIPT, //Subscript style
+//        FROM_INDEX, //In sums, products, integrals...the "from" part
+//        TO_INDEX,//In sums, products, integrals...the "to" part
+//        NUMERATOR,//Numerator of a fraction
+//        DENOMINATOR//Denominator of a fraction
+//    }
+    public static final int SEC_NONE = 0b00000000;
+    public static final int SEC_NORMAL = 0b00000001;
+    public static final int SEC_DELIMITER_NORMAL = 0b00000010;
+    public static final int SEC_DELIMITER_BIG1 = 0b00000100;
+    public static final int SEC_DELIMITER_BIG2 = 0b00001000;
+    public static final int SEC_DELIMITER_EXTENSIBLE = 0b00010000;
+    public static final int SEC_SUPERSCRIPT = 0b00100000;
+    public static final int SEC_SUBSCRIPT = 0b01000000;
+    public static final int SEC_FROM_INDEX = 0b10000000;
+    public static final int SEC_TO_INDEX = 0b0000000100000000;
+    public static final int SEC_NUMERATOR = 0b0000001000000000;
+    public static final int SEC_DENOMINATOR = 0b0000010000000000;
+
     public TokenType type;
-    public SecondaryType secondaryType;
+    public Integer secondaryFlags;
 
     public String name;
 
@@ -62,15 +77,20 @@ public class LatexToken {
         this(type, null, name);
     }
 
-    public LatexToken(TokenType type, SecondaryType delimiterType, String name) {
+    public LatexToken(TokenType type, Integer delimiterType, String name) {
         this.type = type;
-        this.secondaryType = delimiterType;
+        this.secondaryFlags = delimiterType;
         this.name = name;
         refineToken();
     }
 
-    public LatexToken setSecondaryType(SecondaryType type) {
-        this.secondaryType = type;
+    public LatexToken setSecondaryTypeFlag(Integer type) {
+        this.secondaryFlags |= type;
+        return this;
+    }
+
+    public LatexToken unsetSecondaryTypeFlag(Integer type) {
+        this.secondaryFlags &= ~type;
         return this;
     }
 
@@ -104,7 +124,25 @@ public class LatexToken {
             default:
 
         }
+        this.secondaryFlags = refineSecondaryType(this.secondaryFlags);
 
+    }
+
+    private Integer refineSecondaryType(Integer secType) {
+        if (secType == null) {
+            return null;
+        }
+        if (((secType & SEC_SUPERSCRIPT) != 0) || ((secType & SEC_SUPERSCRIPT) != 0)) {
+            secType &= ~SEC_NORMAL;//Delete NORMAL bit   
+        }
+        if (((secType & SEC_NUMERATOR) != 0)) {
+            secType &= ~SEC_DENOMINATOR;//Delete DENOMINATOR bit   
+        }
+        if (((secType & SEC_DENOMINATOR) != 0)) {
+            secType &= ~SEC_NUMERATOR;//Delete NUMERATOR bit   
+        }
+
+        return secType;
     }
 
     /**
@@ -112,31 +150,40 @@ public class LatexToken {
      * means that no comparison is done in that parameter.
      *
      * @param type Type to match. Null if no comparison needed.
-     * @param secondaryType Secondary type. Null if no comparison needed
+     *
      * @param name Name to match. Null if no comparison needed.
+     * @param secondaryType An integer with secondary bit attributes SEC_XXX
      * @return True if match. False otherwise.
      */
-    public boolean match(TokenType type, SecondaryType secondaryType, String name) {
+    public boolean match(TokenType type, String name, Integer secondaryType) {
         boolean result = true;
         result = result && ((type == null) || (this.type == null) || (this.type == type));
-        result = result && ((secondaryType == null) || (this.secondaryType == null) || (this.secondaryType == secondaryType));
+        result = result && matchSecType(secondaryType);
         result = result && ((name == null) || (this.name == null) || (this.name.equals(name)));
         return result;
     }
 
+    private boolean matchSecType(Integer secondaryFlags) {
+        if ((secondaryFlags == null) || (this.secondaryFlags == null)) {
+            return true;
+        }
+        return ((this.secondaryFlags & secondaryFlags) == this.secondaryFlags);
+    }
+
     public boolean match(TokenType type, String name) {
-        return match(type, null, name);
+        return match(type, name, null);
     }
 
     public boolean match(LatexToken tok) {
         if (tok == null) {
             return true;
         }
-        return match(tok.type, tok.secondaryType, tok.name);
+        return match(tok.type, tok.name, tok.secondaryFlags);
     }
 
     /**
-     * Returns true if all its non-null properties are different from this token
+     * Returns true if ALL of its non-null properties are different from this
+     * token.
      *
      * @param tok Token to compare
      * @return True if all non-null properties are different, false otherwise
@@ -147,14 +194,14 @@ public class LatexToken {
         }
         boolean result = true;
         result = result && ((tok.type == null) || (tok.type != type));
-        result = result && ((tok.secondaryType == null) || (tok.secondaryType != secondaryType));
+        result = result && ((tok.secondaryFlags == null) || (this.secondaryFlags == null) || ((~tok.secondaryFlags & secondaryFlags) != 0));
         result = result && ((tok.name == null) || (!tok.name.equals(name)));
         return result;
     }
 
     @Override
     public String toString() {
-        return "LatexToken[" + type + ", " + secondaryType + "," + name + "]";
+        return "LatexToken[" + type + ", " + secondaryFlags + "," + name + "]";
     }
     private static final List<String> greekLetters = Arrays.asList(
             "Alpha", "alpha",

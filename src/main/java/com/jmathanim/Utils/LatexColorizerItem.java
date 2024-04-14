@@ -18,6 +18,7 @@ package com.jmathanim.Utils;
 
 import com.jmathanim.Styling.JMColor;
 import com.jmathanim.Styling.MODrawProperties;
+import com.jmathanim.Styling.PaintStyle;
 import com.jmathanim.Styling.Stylable;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.Shape;
@@ -55,21 +56,37 @@ public class LatexColorizerItem {
         return resul;
     }
 
-    public LatexColorizerItem() {
-//       this.tokenDif=new LatexToken(null, null, null);
-//       this.tokenEq=new LatexToken(null, null, null);
-//       this.tokenEqPrev=new LatexToken(null, null, null);
-//       this.tokenEqAfter=new LatexToken(null, null, null);
-//       this.tokenDif=new LatexToken(null, null, null);
-//       this.tokenDifAfter=new LatexToken(null, null, null);
-//       this.tokenDifPrev=new LatexToken(null, null, null);
-        this.style = JMathAnimConfig.getConfig().getStyles().get("LATEXDEFAULT").copy();
+    public static LatexColorizerItem make(String color) {
+        if (color != null) {
+            return new LatexColorizerItem(JMColor.parse(color));
+        } else {
+            return new LatexColorizerItem();
+        }
     }
 
-    public void setColor(String colorName) {
+    public LatexColorizerItem() {
+        this(null);
+    }
+
+    public LatexColorizerItem(PaintStyle color) {
+        this.style = JMathAnimConfig.getConfig().getStyles().get("LATEXDEFAULT").copy();
+        if (color != null) {
+            this.style.setDrawColor(color);
+            this.style.setFillColor(color);
+        }
+    }
+
+    public LatexColorizerItem setColor(String colorName) {
         JMColor col = JMColor.parse(colorName);
         style.setDrawColor(col);
         style.setFillColor(col);
+        return this;
+    }
+
+    public LatexColorizerItem setColor(PaintStyle paintStyle) {
+        style.setDrawColor(paintStyle);
+        style.setFillColor(paintStyle);
+        return this;
     }
 
     public boolean match(LatexToken tokPrev, LatexToken tok, LatexToken tokAfter) {
@@ -100,6 +117,34 @@ public class LatexColorizerItem {
         }
         return true;//All Ok!
     }
+//  public boolean match(LatexToken tokPrev, LatexToken tok, LatexToken tokAfter) {
+//        boolean result = true;
+//        if (tokPrev != null) {
+//            if ((tokenEqPrev != null) && (!tokPrev.match(tokenEqPrev))) {
+//                return false;
+//            }
+//            if ((tokenDifPrev != null) && (!tokPrev.differs(tokenDifPrev))) {
+//                return false;
+//            }
+//        }
+//        if (tok != null) {
+//            if ((tokenEq != null) && (!tok.match(tokenEq))) {
+//                return false;
+//            }
+//            if ((tokenDif != null) && (!tok.differs(tokenDif))) {
+//                return false;
+//            }
+//        }
+//        if (tokAfter != null) {
+//            if ((tokenEqAfter != null) && (!tokAfter.match(tokenEqAfter))) {
+//                return false;
+//            }
+//            if ((tokenDifAfter != null) && (!tokAfter.differs(tokenDifAfter))) {
+//                return false;
+//            }
+//        }
+//        return true;//All Ok!
+//    }
 
     public boolean match(LatexToken tok) {
         return match(null, tok, null);
@@ -112,8 +157,8 @@ public class LatexColorizerItem {
      */
     public void apply(AbstractLaTeXMathObject latex) {
         LatexParser latexParser = latex.getLatexParser();
-        if (latexParser==null) {
-              JMathAnimScene.logger.warn("This LaTeXMathObject has no parser, cannot colorize, sorry!");
+        if (latexParser == null) {
+            JMathAnimScene.logger.warn("This LaTeXMathObject has no parser, cannot colorize, sorry!");
             return;
         }
         ArrayList<LatexToken> tokens = latexParser.assignedTokens;
@@ -128,9 +173,9 @@ public class LatexColorizerItem {
 
         for (int i = 0; i < latex.size(); i++) {
             Shape latexShape = latex.get(i);
-            LatexToken tokPrev = (i > 0 ? tokens.get(i - 1) : new LatexToken(LatexToken.TokenType.NONE, LatexToken.SecondaryType.NONE, ""));
+            LatexToken tokPrev = (i > 0 ? tokens.get(i - 1) : new LatexToken(LatexToken.TokenType.NONE, LatexToken.SEC_NONE, ""));
             LatexToken token = tokens.get(i);
-            LatexToken tokAfter = (i < tokens.size() - 1 ? tokens.get(i + 1) : new LatexToken(LatexToken.TokenType.NONE, LatexToken.SecondaryType.NONE, ""));
+            LatexToken tokAfter = (i < tokens.size() - 1 ? tokens.get(i + 1) : new LatexToken(LatexToken.TokenType.NONE, LatexToken.SEC_NONE, ""));
 
             if (match(tokPrev, token, tokAfter)) {
                 latexShape.getMp().copyFrom(style);
@@ -138,6 +183,5 @@ public class LatexColorizerItem {
 
         }
     }
-    
 
 }

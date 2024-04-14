@@ -34,7 +34,7 @@ public class LatexColorizer {
         this.colorizerItems = new ArrayList<>();
     }
     
-     public LatexColorizer setColorTo(LatexToken.TokenType type,LatexToken.SecondaryType secType,String name, String colorName) {
+     public LatexColorizer setColorTo(LatexToken.TokenType type,Integer secType,String name, String colorName) {
        LatexColorizerItem  colorizerItem=new LatexColorizerItem();
        colorizerItem.tokenEq=new LatexToken(type,secType,name);
        colorizerItem.setColor(colorName);
