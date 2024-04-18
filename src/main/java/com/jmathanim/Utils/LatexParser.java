@@ -129,6 +129,7 @@ public class LatexParser {
         }
 
         this.tokens.clear();
+          boxes.clear();
         this.assignedTokens.clear();
 
         Atom root = this.formula.root;
@@ -149,6 +150,8 @@ public class LatexParser {
 
             metodo.setAccessible(true);
             Box bo = (Box) metodo.invoke(formula, te);
+            boxCounter=0;
+          
             parseBox(bo);
             distilleTokens();
             assignTokens();
@@ -409,6 +412,8 @@ public class LatexParser {
         if (bo instanceof CharBox) {
             CharBox charBox = (CharBox) bo;
             boxes.add(charBox);
+            CharFont bb = getFontFromCharBox(bo);
+            System.out.println(boxes.size()+" Charbox "+bb.fontId+"  "+((int)bb.c)+"  "+bb.c);
         }
 
         if (bo instanceof org.scilab.forge.jlatexmath.HorizontalRule) {
@@ -495,6 +500,7 @@ public class LatexParser {
 
     private boolean compareCharFont(Box b, int fontId, int c) {
         CharFont cf = getFontFromCharBox(b);
+        int aa=cf.c;
         return ((cf.fontId == fontId) & (cf.c == (char) c));
     }
 
@@ -507,6 +513,7 @@ public class LatexParser {
                         18, 40, //Normal 
                         1, 161, //\big 
                         1, 179, //\Big
+                        1, 195, //\Bigg
                         1, 48,//Extensible upper part
                         1, 64);//Extensible lower part
                 break;
@@ -515,6 +522,7 @@ public class LatexParser {
                         18, 41, //Normal
                         1, 162, //\big
                         1, 180, //\Big
+                       1, 33, //\Bigg
                         1, 49, //Extensible upper part
                         1, 65);//Extensible lower part
                 break;
@@ -523,6 +531,7 @@ public class LatexParser {
                         8, 102, //Normal
                         1, 169, //\big
                         1, 110, //\Big
+                          1, 40, //\Bigg
                         1, 56, //Extensible upper part
                         1, 58);//Extensible lower part
                 break;
@@ -531,6 +540,7 @@ public class LatexParser {
                         8, 103, //Normal
                         1, 170, //\big
                         1, 111, //\Big
+                          1, 41, //\Bigg
                         1, 57, //Extensible upper part
                         1, 59);//Extensible lower part
                 break;
@@ -539,6 +549,7 @@ public class LatexParser {
                         18, 91, //Normal
                         1, 163, //\big
                         1, 104, //\Big
+                        1, 34, //\Bigg
                         1, 50,//Extensible upper part
                         1, 52);//Extensible lower part
                 break;
@@ -547,6 +558,7 @@ public class LatexParser {
                         18, 93, //Normal
                         1, 164, //\big
                         1, 105, //\Big
+                        1, 35, //\Bigg
                         1, 51,//Extensible upper part
                         1, 53);//Extensible lower part
                 break;
@@ -556,6 +568,7 @@ public class LatexParser {
                         8, 106,//Normal (LR)
                         0, 0, //\big (LR)
                         0, 0, //\Big(LR)
+                          0, 0, //\Bigg (LR)
                         1, 175,//Extensible upper part
                         1, 175);//Extensible lower part
                 break;
@@ -565,6 +578,7 @@ public class LatexParser {
                         8, 107,//Normal (LR)
                         0, 0, //\big (LR)
                         0, 0, //\Big(LR)
+                          0, 0, //\Bigg (LR)
                         1, 176,//Extensible upper part
                         1, 176);//Extensible lower part
                 break;
@@ -573,6 +587,7 @@ public class LatexParser {
                         8, 98, //Normal
                         1, 165, //\big
                         1, 106, //\Big
+                          1, 36, //\Bigg
                         1, 54,//Extensible upper part
                         1, 52);//Extensible lower part
                 break;
@@ -581,6 +596,7 @@ public class LatexParser {
                         8, 99, //Normal
                         1, 166, //\big
                         1, 107, //\Big
+                          1, 37, //\Bigg
                         1, 55,//Extensible upper part
                         1, 53);//Extensible lower part
                 break;
@@ -589,6 +605,7 @@ public class LatexParser {
                         8, 100, //Normal
                         1, 167, //\big
                         1, 108, //\Big
+                         1, 38, //\Bigg
                         1, 50,//Extensible upper part
                         1, 54);//Extensible lower part
                 break;
@@ -597,6 +614,7 @@ public class LatexParser {
                         8, 101, //Normal
                         1, 168, //\big
                         1, 109, //\Big
+                          1, 39, //\Bigg
                         1, 51,//Extensible upper part
                         1, 55);//Extensible lower part
                 break;
@@ -606,16 +624,18 @@ public class LatexParser {
                         8, 104, //Normal
                         1, 173, //\big
                         1, 68, //\Big
+                          1, 191, //\Bigg
                         1, 42,//Extensible upper part
-                        1, -1);//Extensible lower part
+                        1, -1);//Extensible lower part (-1=none, only upper symbol)
                 break;
             case "rangle":
                 scanBigDelimiter(token,
                         8, 105, //Normal
                         1, 174, //\big
                         1, 69, //\Big
+                          1, 192, //\Bigg
                         1, 43,//Extensible upper part
-                        1, -1);//Extensible lower part
+                        1, -1);//Extensible lower part (-1=none, only upper symbol)
                 break;
 
 //             case "lname":
@@ -641,6 +661,7 @@ public class LatexParser {
             int cfSmall, int cSmall,
             int cfBig1, int cBig1,
             int cfBig2, int cBig2,
+            int cfBig3, int cBig3,
             int cfExtensibleUpper, int cExtensibleUpper,
             int cfExtensibleLower, int cExtensibleLower) {
         Box b = boxes.get(boxCounter);
@@ -667,6 +688,13 @@ public class LatexParser {
             boxCounter++;
             return;
         }
+         if (compareCharFont(b, cfBig3, cBig3)) {//\Big delimiter
+            token.secondaryFlags |= LatexToken.SEC_DELIMITER_BIG3;
+            assignedTokens.add(token);
+            token.secondaryFlags &= ~LatexToken.SEC_DELIMITER_BIG3;
+            boxCounter++;
+            return;
+        }
 
         if (compareCharFont(b, cfExtensibleUpper, cExtensibleUpper)) {//A big left upper side delimiter
             token.secondaryFlags |= LatexToken.SEC_DELIMITER_EXTENSIBLE;
@@ -689,6 +717,7 @@ public class LatexParser {
                 if (trailStarted & !found) {
                     break;
                 }
+                   token.secondaryFlags |= LatexToken.SEC_DELIMITER_EXTENSIBLE;
                 assignedTokens.add(token);
                 token.secondaryFlags &= ~LatexToken.SEC_DELIMITER_EXTENSIBLE;
                 boxCounter++;

@@ -67,6 +67,7 @@ public class LatexToken {
     public static final int SEC_TO_INDEX = 0b0000000100000000;
     public static final int SEC_NUMERATOR = 0b0000001000000000;
     public static final int SEC_DENOMINATOR = 0b0000010000000000;
+    public static final int SEC_DELIMITER_BIG3 = 0b0000100000000000;
 
     public TokenType type;
     public Integer secondaryFlags;
