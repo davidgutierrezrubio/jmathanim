@@ -27,18 +27,23 @@ import java.util.List;
  */
 public class LatexToken {
 
+    public LatexToken copy() {
+        LatexToken copy=new LatexToken(type, secondaryFlags, string);
+        return copy;
+    }
+
     public enum TokenType {
         NONE, //This token will not be assigned never. It is used to always returns false when matching tokens
         CHAR,//A char token, mostly a letter
         NUMBER, //0-9 digits, including point if used in the decimal context
         SYMBOL, //A math symbol
-        OPERATOR,
-        RELATION,
-        DELIMITER,
-        SQRT,
-        FRACTIONBAR,
-        GREEKLETTER,
-        NAMED_FUNCTION
+        OPERATOR, //An operator like +, -, \div
+        RELATION, // A math relation like =, \geq, \leq, etc.
+        DELIMITER, //Parenthesis, brackets...of any size
+        SQRT, // Square (or nth-) root symbol
+        FRACTION_BAR, //That is, the fraction bar :-)
+        GREEK_LETTER, //Any greek letter like \pi or \varepsilon
+        NAMED_FUNCTION //A named function like \log or \ln
     }
 
 //    public enum SecondaryType {
@@ -72,7 +77,7 @@ public class LatexToken {
     public TokenType type;
     public Integer secondaryFlags;
 
-    public String name;
+    public String string;
 
     public LatexToken(TokenType type, String name) {
         this(type, null, name);
@@ -81,7 +86,7 @@ public class LatexToken {
     public LatexToken(TokenType type, Integer delimiterType, String name) {
         this.type = type;
         this.secondaryFlags = delimiterType;
-        this.name = name;
+        this.string = name;
         refineToken();
     }
 
@@ -101,24 +106,24 @@ public class LatexToken {
         }
         switch (type) {
             case SYMBOL:
-                if (greekLetters.contains(name)) {//Check if name is in my list of greek letters
-                    type = TokenType.GREEKLETTER;
+                if (greekLetters.contains(string)) {//Check if string is in my list of greek letters
+                    type = TokenType.GREEK_LETTER;
                     break;
                 }
-                if (operators.contains(name)) {
+                if (operators.contains(string)) {
                     type = TokenType.OPERATOR;
                     break;
                 }
-                if (delimiters.contains(name)) {
+                if (delimiters.contains(string)) {
                     type = TokenType.DELIMITER;
                     break;
                 }
-                if (relations.contains(name)) {
+                if (relations.contains(string)) {
                     type = TokenType.RELATION;
                     break;
                 }
             case CHAR:
-                if (numbers.contains(name)) {
+                if (numbers.contains(string)) {
                     type = TokenType.NUMBER;
                     break;
                 }
@@ -160,7 +165,7 @@ public class LatexToken {
         boolean result = true;
         result = result && ((type == null) || (this.type == null) || (this.type == type));
         result = result && matchSecType(secondaryType);
-        result = result && ((name == null) || (this.name == null) || (this.name.equals(name)));
+        result = result && ((name == null) || (this.string == null) || (this.string.equals(name)));
         return result;
     }
 
@@ -179,7 +184,7 @@ public class LatexToken {
         if (tok == null) {
             return true;
         }
-        return match(tok.type, tok.name, tok.secondaryFlags);
+        return match(tok.type, tok.string, tok.secondaryFlags);
     }
 
     /**
@@ -196,13 +201,13 @@ public class LatexToken {
         boolean result = true;
         result = result && ((tok.type == null) || (tok.type != type));
         result = result && ((tok.secondaryFlags == null) || (this.secondaryFlags == null) || ((~tok.secondaryFlags & secondaryFlags) != 0));
-        result = result && ((tok.name == null) || (!tok.name.equals(name)));
+        result = result && ((tok.string == null) || (!tok.string.equals(string)));
         return result;
     }
 
     @Override
     public String toString() {
-        return "LatexToken[" + type + ", " + secondaryFlags + "," + name + "]";
+        return "LatexToken[" + type + ", " + secondaryFlags + "," + string + "]";
     }
     private static final List<String> greekLetters = Arrays.asList(
             "Alpha", "alpha",
@@ -237,7 +242,10 @@ public class LatexToken {
 
     private static final List<String> operators = Arrays.asList(
             "plus", "minus", "slash", "div",
-            "cap", "cup", "wedge", "vee", "sum", "prod"
+            "cap", "cup", "wedge", "vee", 
+            "sum", "prod",
+            "int","iint","iiint","iiiint",
+            "oint"
     );
     private static final List<String> relations = Arrays.asList(
             "equals", "lt", "leq", "le", "gt", "geq", "ge",

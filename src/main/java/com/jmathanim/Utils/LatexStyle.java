@@ -20,44 +20,60 @@ import com.jmathanim.mathobjects.Text.AbstractLaTeXMathObject;
 import java.util.ArrayList;
 
 /**
- * This class assign colors to elements of LaTeXMathObject, according to their identifying tokens
+ * This class assign colors to elements of LaTeXMathObject, according to their
+ * identifying tokens
+ *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
-public class LatexColorizer {
-    private final ArrayList<LatexColorizerItem> colorizerItems;
+public class LatexStyle {
 
-    public static LatexColorizer make() {
-        return new LatexColorizer();
+    private final ArrayList<LatexStyleItem> colorizerItems;
+
+    public static LatexStyle make() {
+        return new LatexStyle();
     }
-    
-    public LatexColorizer() {
+
+    public LatexStyle() {
         this.colorizerItems = new ArrayList<>();
     }
-    
-     public LatexColorizer setColorTo(LatexToken.TokenType type,Integer secType,String name, String colorName) {
-       LatexColorizerItem  colorizerItem=new LatexColorizerItem();
-       colorizerItem.tokenEq=new LatexToken(type,secType,name);
-       colorizerItem.setColor(colorName);
+
+    public LatexStyle setColorTo(LatexToken.TokenType type, Integer secType, String name, String colorName) {
+        LatexStyleItem colorizerItem = new LatexStyleItem();
+        colorizerItem.tokenEq = new LatexToken(type, secType, name);
+        colorizerItem.setColor(colorName);
         colorizerItems.add(colorizerItem);
         return this;
     }
-     
-      public LatexColorizer setColorToChar(String name, String colorName) {
-       LatexColorizerItem  colorizerItem=new LatexColorizerItem();
-       colorizerItem.tokenEq=new LatexToken(LatexToken.TokenType.CHAR,name);
-       colorizerItem.setColor(colorName);
+
+    public LatexStyle setColorToChar(String name, String colorName) {
+        LatexStyleItem colorizerItem = new LatexStyleItem();
+        colorizerItem.tokenEq = new LatexToken(LatexToken.TokenType.CHAR, name);
+        colorizerItem.setColor(colorName);
         colorizerItems.add(colorizerItem);
         return this;
     }
+
     public void apply(AbstractLaTeXMathObject latex) {
-        for (LatexColorizerItem colorizerItem : colorizerItems) {
+        for (LatexStyleItem colorizerItem : colorizerItems) {
             colorizerItem.apply(latex);
-            
+
         }
     }
 
-    public boolean add(LatexColorizerItem e) {
+    public boolean add(LatexStyleItem e) {
         return colorizerItems.add(e);
     }
-    
+
+    public LatexStyle copy() {
+        LatexStyle copy = new LatexStyle();
+        for (LatexStyleItem colorizerItem : colorizerItems) {
+            copy.add(colorizerItem.copy());
+        }
+        return copy;
+    }
+
+    public LatexStyleItem get(int index) {
+        return colorizerItems.get(index);
+    }
+
 }

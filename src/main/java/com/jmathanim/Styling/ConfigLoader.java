@@ -18,11 +18,15 @@
 package com.jmathanim.Styling;
 
 import com.jmathanim.Utils.JMathAnimConfig;
+import com.jmathanim.Utils.LatexStyle;
+import com.jmathanim.Utils.LatexStyleItem;
+import com.jmathanim.Utils.LatexToken;
 import com.jmathanim.Utils.ResourceLoader;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.Point;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.Field;
 import java.net.URL;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -80,6 +84,7 @@ public class ConfigLoader {
             parseVideoOptions(config, root.getElementsByTagName("video"));
             parseBackgroundOptions(config, root.getElementsByTagName("background"));
             parseStyles(config, root.getElementsByTagName("styles"));
+            parseLatexStyles(config, root.getElementsByTagName("latexStyles"));
 
         } catch (IOException | SAXException | ParserConfigurationException | NullPointerException ex) {
             JMathAnimScene.logger.error("Error loading config file " + filename + ": " + ex.toString());
@@ -180,6 +185,144 @@ public class ConfigLoader {
 
             }
         }
+    }
+
+    private static void parseLatexStyles(JMathAnimConfig config, NodeList styles) {
+        for (int k = 0; k < styles.getLength(); k++) {
+            Element elStyle = (Element) styles.item(k);
+            NodeList templChilds = elStyle.getElementsByTagName("latexStyle");
+            for (int n = 0; n < templChilds.getLength(); n++) {
+                Node item = templChilds.item(n);
+                if (item.getNodeType() == Node.ELEMENT_NODE) {
+                    Element elementLatexStyle = (Element) item;
+                    String baseStyle = elementLatexStyle.getAttribute("baseLatexStyle");
+                    System.out.println("Parsing latexStyle " + elementLatexStyle.getAttribute("name").toUpperCase());
+                    LatexStyle latexStyle = parseLatexStyle(config, baseStyle, elementLatexStyle);
+
+                  
+
+                    config.getLatexStyles().put(elementLatexStyle.getAttribute("name").toUpperCase(), latexStyle);
+                }
+            }
+        }
+    }
+
+    private static LatexStyle parseLatexStyle(JMathAnimConfig config, String baseLatexStyle, Element parent) {
+        LatexStyle latexStyle;
+        if (!"".equals(baseLatexStyle)) {
+            latexStyle = config.getLatexStyles().get(baseLatexStyle).copy();
+        } else {
+            latexStyle = new LatexStyle();
+        }
+
+        NodeList templChilds = parent.getElementsByTagName("latexStyleItem");
+        for (int n = 0; n < templChilds.getLength(); n++) {
+            Node item = templChilds.item(n);
+            if (item.getNodeType() == Node.ELEMENT_NODE) {
+                Element el = (Element) item;
+                LatexStyleItem latexStyleItem = parseLatexStyleItem(config, el);
+                latexStyle.add(latexStyleItem);
+            }
+        }
+
+        return latexStyle;
+
+    }
+
+    private static LatexStyleItem parseLatexStyleItem(JMathAnimConfig config, Element parent) {
+
+        //Conditions item. LatexToken inside <conditions> tag
+        Element conditionElement = getFirstChildElementWithName(parent, "conditions");
+        LatexToken ltEquals = parseLatexToken(getFirstChildElementWithName(conditionElement, "equals"));
+        LatexToken ltEqualsPrev = parseLatexToken(getFirstChildElementWithName(conditionElement, "equalsPrev"));
+        LatexToken ltEqualsAfter = parseLatexToken(getFirstChildElementWithName(conditionElement, "equalsAfter"));
+        LatexToken ltDiff = parseLatexToken(getFirstChildElementWithName(conditionElement, "differs"));
+        LatexToken ltDiffPrev = parseLatexToken(getFirstChildElementWithName(conditionElement, "differsPrev"));
+        LatexToken ltDiffAfter = parseLatexToken(getFirstChildElementWithName(conditionElement, "differsAfter"));
+        LatexStyleItem latexStyleItem = new LatexStyleItem();
+        latexStyleItem.tokenEq = ltEquals;
+        latexStyleItem.tokenEqPrev = ltEqualsPrev;
+        latexStyleItem.tokenEqAfter = ltEqualsAfter;
+        latexStyleItem.tokenDif = ltDiff;
+        latexStyleItem.tokenDifPrev = ltDiffPrev;
+        latexStyleItem.tokenDifAfter = ltDiffAfter;
+        Element styleElement = getFirstChildElementWithName(parent, "style");
+         String baseStyle = styleElement.getAttribute("base");
+         if ("".equals(baseStyle)) baseStyle="LATEXDEFAULT";
+        MODrawProperties mo = parseMathObjectDrawingProperties(config, baseStyle, styleElement);
+        latexStyleItem.style = mo;
+        return latexStyleItem;
+    }
+
+    private static LatexToken parseLatexToken(Element el) {
+        if (el == null) {//No node, no token!
+            return null;
+        }
+        String type = getFirstChildValueByName(el, "type");
+        String subTypeStr = getFirstChildValueByName(el, "subtype");
+        String string = getFirstChildValueByName(el, "string");
+
+        LatexToken.TokenType tokenType = null;
+
+        if (type != null) {
+            //Convert String type to the corresponding enum value, catching possible errors
+            try {
+                tokenType = LatexToken.TokenType.valueOf(type);
+            } catch (IllegalArgumentException e) {
+                JMathAnimScene.logger.warn("Token type " + type + " not recognized parsing LatexToken config file");
+                tokenType = null;
+            }
+        }
+
+        //Parse string "SEC_NORMAL,SEC_NUMERATOR,..." into integer with proper bits set to 1
+        Integer tokenSubType = null;
+        if (subTypeStr != null) {
+            tokenSubType = 0;
+            for (String str : subTypeStr.split(",")) {
+                Field campo;
+                try {
+                    campo = LatexToken.class.getField(str); //Get variable with that name
+                    int value = campo.getInt(null);
+                    tokenSubType |= value;
+                } catch (NoSuchFieldException ex) {
+                    JMathAnimScene.logger.warn("SubToken type " + str + " not recognized parsing LatexToken config file");
+                } catch (IllegalArgumentException | IllegalAccessException ex) {
+                    JMathAnimScene.logger.warn("Illegal argument exception parsing LatexToken config file");
+                }
+
+            }
+        }
+
+        return new LatexToken(tokenType, tokenSubType, string);
+    }
+
+    public static String getFirstChildValueByName(Element parent, String name) {
+        NodeList nodeList = parent.getElementsByTagName(name);
+
+        if (nodeList.getLength() > 0) {
+            Node firstChild = nodeList.item(0).getFirstChild();
+            if (firstChild != null) {
+                String resul = firstChild.getNodeValue();
+                if ("".equals(resul)) {
+                    return null;
+                } else {
+                    return resul;
+                }
+            }
+        }
+        return null;
+    }
+
+    public static Element getFirstChildElementWithName(Element parent, String name) {
+        NodeList nodeList = parent.getElementsByTagName(name);
+
+        if (nodeList.getLength() > 0) {
+            Node firstChild = nodeList.item(0);
+            if (firstChild != null) {
+                return (Element) firstChild;
+            }
+        }
+        return null;
     }
 
     private static MODrawProperties parseMathObjectDrawingProperties(JMathAnimConfig config, String baseStyle, Node template) {

@@ -29,7 +29,6 @@ import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.Point;
 import java.io.File;
 import java.net.URL;
-import java.util.HashMap;
 
 /**
  * Stores all the data related to global configuration, to be accessed from any
@@ -96,8 +95,13 @@ public class JMathAnimConfig {
     /**
      * A dictionary of the styles to be used in the objects
      */
-    private final HashMap<String, MODrawProperties> styles;
+    private final HashMapUpper<String, MODrawProperties> styles;
 
+     /**
+     * A dictionary of the latexStyles to be used in LaTexMathObjects
+     */
+    private final HashMapUpper<String, LatexStyle> latexStyles;
+    
     /**
      * Returns the config, using the singleton pattern.
      *
@@ -171,7 +175,8 @@ public class JMathAnimConfig {
     }
 
     private JMathAnimConfig() {// Private constructor
-        styles = new HashMap<>();
+        styles = new HashMapUpper<>();
+        latexStyles = new HashMapUpper<>();
         setDefaultMP();// Load "default" drawing style in dictionary
         resourcesDir = new File("." + File.separator + "resources");
         outputDir = new File("." + File.separator + "media");
@@ -339,8 +344,12 @@ public class JMathAnimConfig {
         this.outputDir = outputDir;
     }
 
-    public HashMap<String, MODrawProperties> getStyles() {
+    public HashMapUpper<String, MODrawProperties> getStyles() {
         return styles;
+    }
+    
+    public HashMapUpper<String, LatexStyle> getLatexStyles() {
+        return latexStyles;
     }
 
     public boolean isCreateMovie() {

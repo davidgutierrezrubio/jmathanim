@@ -22,7 +22,7 @@ import com.jmathanim.Styling.PaintStyle;
 import com.jmathanim.Utils.AffineJTransform;
 import com.jmathanim.Utils.Anchor;
 import com.jmathanim.Utils.EmptyRect;
-import com.jmathanim.Utils.LatexColorizer;
+import com.jmathanim.Utils.LatexStyle;
 import com.jmathanim.Utils.LatexParser;
 import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.SVGUtils;
@@ -63,7 +63,7 @@ public abstract class AbstractLaTeXMathObject extends SVGMathObject {
     
     protected Anchor.Type anchor;
     protected LatexParser latexParser;
-    protected LatexColorizer latexColorizer;
+    protected LatexStyle latexColorizer;
 
     /**
      * Determines how LaTeX shapes will be created
@@ -109,11 +109,11 @@ public abstract class AbstractLaTeXMathObject extends SVGMathObject {
         this.latexColorizer = null;
     }
     
-    public LatexColorizer getLatexColorizer() {
+    public LatexStyle getLatexColorizer() {
         return latexColorizer;
     }
     
-    public void setLatexColorizer(LatexColorizer latexColorizer) {
+    public void setLatexStyle(LatexStyle latexColorizer) {
         this.latexColorizer = latexColorizer;
         changeInnerLaTeX(this.text);
     }

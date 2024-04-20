@@ -29,7 +29,7 @@ import java.util.ArrayList;
  *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
-public class LatexColorizerItem {
+public class LatexStyleItem {
 
     public LatexToken tokenEq = null;
     public LatexToken tokenDif = null;
@@ -39,12 +39,12 @@ public class LatexColorizerItem {
     public LatexToken tokenDifAfter = null;
     public MODrawProperties style;
 
-    public static LatexColorizerItem equalsChar(String equal, String color) {
+    public static LatexStyleItem equalsChar(String equal, String color) {
         return equalsChar(null, equal, null, color);
     }
 
-    public static LatexColorizerItem equalsChar(String before, String equal, String after, String color) {
-        LatexColorizerItem resul = new LatexColorizerItem();
+    public static LatexStyleItem equalsChar(String before, String equal, String after, String color) {
+        LatexStyleItem resul = new LatexStyleItem();
         resul.tokenEqPrev = new LatexToken(null, before);
         resul.tokenEq = new LatexToken(null, equal);
         resul.tokenEqAfter = new LatexToken(null, after);
@@ -56,19 +56,19 @@ public class LatexColorizerItem {
         return resul;
     }
 
-    public static LatexColorizerItem make(String color) {
+    public static LatexStyleItem make(String color) {
         if (color != null) {
-            return new LatexColorizerItem(JMColor.parse(color));
+            return new LatexStyleItem(JMColor.parse(color));
         } else {
-            return new LatexColorizerItem();
+            return new LatexStyleItem();
         }
     }
 
-    public LatexColorizerItem() {
+    public LatexStyleItem() {
         this(null);
     }
 
-    public LatexColorizerItem(PaintStyle color) {
+    public LatexStyleItem(PaintStyle color) {
         this.style = JMathAnimConfig.getConfig().getStyles().get("LATEXDEFAULT").copy();
         if (color != null) {
             this.style.setDrawColor(color);
@@ -76,14 +76,26 @@ public class LatexColorizerItem {
         }
     }
 
-    public LatexColorizerItem setColor(String colorName) {
+    public LatexStyleItem copy() {
+        LatexStyleItem copyObject=new LatexStyleItem();
+        copyObject.tokenEq=this.tokenEq.copy();
+        copyObject.tokenEqAfter=this.tokenEqAfter.copy();
+        copyObject.tokenEqPrev=this.tokenEqPrev.copy();
+        copyObject.tokenDif=this.tokenDif.copy();
+        copyObject.tokenDifAfter=this.tokenDifAfter.copy();
+        copyObject.tokenDifPrev=this.tokenDifPrev.copy();
+        copyObject.style=copyObject.style.copy();
+        return copyObject;
+    }
+
+    public LatexStyleItem setColor(String colorName) {
         JMColor col = JMColor.parse(colorName);
         style.setDrawColor(col);
         style.setFillColor(col);
         return this;
     }
 
-    public LatexColorizerItem setColor(PaintStyle paintStyle) {
+    public LatexStyleItem setColor(PaintStyle paintStyle) {
         style.setDrawColor(paintStyle);
         style.setFillColor(paintStyle);
         return this;
