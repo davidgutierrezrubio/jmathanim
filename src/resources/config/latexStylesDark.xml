@@ -5,97 +5,36 @@
             <latexStyleItem>
                 <conditions>
                     <equals>
-                        <string>x</string>
-                    </equals>
-                </conditions>
-                <style>
-                    <color>#5d9cec</color>
-                </style>
-            </latexStyleItem>
-            <latexStyleItem>
-                <conditions>
-                    <equals>
-                        <string>y</string>
-                    </equals>
-                </conditions>
-                <style>
-                    <color>#fb6e52</color>
-                </style>
-            </latexStyleItem>
-            <latexStyleItem>
-                <conditions>
-                    <equals>
-                        <string>n</string>
-                    </equals>
-                </conditions>
-                <style>
-                    <color>#ffce55</color>
-                </style>
-            </latexStyleItem>
-                 
-            <latexStyleItem>
-                <conditions>
-                    <equals>
-                        <string>m</string>
-                    </equals>
-                </conditions>
-                <style>
-                    <color>#ff9555</color>
-                </style>
-            </latexStyleItem>
-     
-     
-     
-                
-            <latexStyleItem>
-                <conditions>
-                    <equals>
                         <type>NUMBER</type>
                     </equals>
                 </conditions>
                 <style>
-                    <color>#a0d468</color>
+                    <color>#BBCC33</color>
                 </style>
             </latexStyleItem>
+            
+            <latexStyleItem>
+                <conditions>
+                    <equals>
+                        <type>SYMBOL</type>
+                    </equals>
+                </conditions>
+                <style>
+                    <color>#AAAA00</color>
+                </style>
+            </latexStyleItem>
+            
             <latexStyleItem>
                 <conditions>
                     <equals>
                         <type>CHAR</type>
-                        <string>e</string>
                     </equals>
                 </conditions>
                 <style>
-                    <color>#8cc0b0</color>
+                    <color>#EEDD88</color>
                 </style>
             </latexStyleItem>
-            <latexStyleItem>
-                <conditions>
-                    <equals>
-                        <type>OPERATOR</type>
-                        <string>sum</string>
-                    </equals>
-                </conditions>
-                  <conditions>
-                    <equals>
-                        <type>OPERATOR</type>
-                        <string>int</string>
-                    </equals>
-                </conditions>
-                <style>
-                    <color>#db4453</color>
-                </style>
-            </latexStyleItem>
-            <latexStyleItem>
-                <conditions>
-                    <equals>
-                        <type>GREEK_LETTER</type>
-                        <string>pi</string>
-                    </equals>
-                </conditions>
-                <style>
-                    <color>#8cc0b0</color>
-                </style>
-            </latexStyleItem>
+            
             <latexStyleItem>
                 <conditions>
                     <equals>
@@ -103,9 +42,90 @@
                     </equals>
                 </conditions>
                 <style>
-                    <color>#ac92ec</color>
+                    <color>#44BB99</color>
                 </style>
             </latexStyleItem>
+            
+            <latexStyleItem>
+                <conditions>
+                    <equals>
+                        <type>OPERATOR</type>
+                    </equals>
+                </conditions>
+                <style>
+                    <color>#44BB99</color>
+                </style>
+            </latexStyleItem>
+            
+            <latexStyleItem>
+                <conditions>
+                    <equals>
+                        <type>GREEK_LETTER</type>
+                    </equals>
+                </conditions>
+                <style>
+                    <color>#99DDFF</color>
+                </style>
+            </latexStyleItem>
+            
+            <latexStyleItem>
+                <conditions>
+                    <equals>
+                        <type>DELIMITER</type>
+                    </equals>
+                </conditions>
+                <style>
+                    <color>#DDDDDD</color>
+                </style>
+            </latexStyleItem>
+            
+              
+            <latexStyleItem>
+                <conditions>
+                    <equals>
+                        <type>CHAR</type>
+                        <string>x</string>
+                    </equals>
+                </conditions>
+                <style>
+                    <color>#77AADD</color>
+                </style>
+            </latexStyleItem>
+                 <latexStyleItem>
+                <conditions>
+                    <equals>
+                        <type>CHAR</type>
+                        <string>y</string>
+                    </equals>
+                </conditions>
+                <style>
+                    <color>#EE8866</color>
+                </style>
+            </latexStyleItem>
+            
+              <latexStyleItem>
+                <conditions>
+                    <equals>
+                        <type>CHAR</type>
+                        <string>m</string>
+                    </equals>
+                </conditions>
+                <style>
+                    <color>#FFCCCC</color>
+                </style>
+            </latexStyleItem>
+                 <latexStyleItem>
+                <conditions>
+                    <equals>
+                        <type>CHAR</type>
+                        <string>n</string>
+                    </equals>
+                </conditions>
+                <style>
+                    <color>#CCDDAA</color>
+                </style>
+            </latexStyleItem>
+            
         </latexStyle>
     </latexStyles> 
 </JMathAnimConfig>

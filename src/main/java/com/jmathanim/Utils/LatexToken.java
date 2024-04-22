@@ -37,7 +37,7 @@ public class LatexToken {
         CHAR,//A char token, mostly a letter
         NUMBER, //0-9 digits, including point if used in the decimal context
         SYMBOL, //A math symbol
-        OPERATOR, //An operator like +, -, \div
+        OPERATOR, //An operator like \sum, \int
         RELATION, // A math relation like =, \geq, \leq, etc.
         DELIMITER, //Parenthesis, brackets...of any size
         SQRT, // Square (or nth-) root symbol
@@ -73,6 +73,7 @@ public class LatexToken {
     public static final int SEC_NUMERATOR = 0b0000001000000000;
     public static final int SEC_DENOMINATOR = 0b0000010000000000;
     public static final int SEC_DELIMITER_BIG3 = 0b0000100000000000;
+    public static final int SEC_DELIMITER_BIG4 = 0b0001000000000000;
 
     public TokenType type;
     public Integer secondaryFlags;
