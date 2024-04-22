@@ -71,11 +71,14 @@ public class LatexParser {
 
     public final ArrayList<LatexToken> assignedTokens;
     private int boxCounter;
+    private TeXFormula formula2;
+    public TeXIcon icon;
     private final AbstractLaTeXMathObject latex;
     private TeXFormula formula;
 
     public List<MiddleAtom> list;
     private LatexToken previousToken;
+    private Atom rootCopy;
 
     public final ArrayList<LatexToken> tokens;
     public final ArrayList<Box> boxes;
@@ -118,8 +121,9 @@ public class LatexParser {
         return formula;
     }
 
-    public void setJLatexFormulaParser(TeXFormula formula) {
+    public void setJLatexFormulaParser(TeXFormula formula,TeXFormula formula2) {
         this.formula = formula;
+        this.formula2 = formula2;
     }
 
     public void parse() {
@@ -133,14 +137,16 @@ public class LatexParser {
         this.assignedTokens.clear();
 
         Atom root = this.formula.root;
+        rootCopy = root.clone();
         try {
             parseAtom(root);
+            distilleTokens();
         } catch (Exception ex2) {
             JMathAnimScene.logger.warn("Error parsing LaTeX tokens of " + this.latex.getText());
         }
 
         try {
-
+            icon=formula2.createTeXIcon(TeXConstants.ALIGN_LEFT, 40);
             DefaultTeXFont font = new DefaultTeXFont(40);
             TeXEnvironment te = new TeXEnvironment(0, font);
 
@@ -149,11 +155,10 @@ public class LatexParser {
             Method metodo = TeXFormula.class.getDeclaredMethod("createBox", cArg);
 
             metodo.setAccessible(true);
-            Box bo = (Box) metodo.invoke(formula, te);
+            Box bo = (Box) metodo.invoke(formula2, te);
             boxCounter=0;
           
             parseBox(bo);
-            distilleTokens();
             assignTokens();
         } catch (Exception ex) {
             JMathAnimScene.logger.warn("Error parsing LaTeX boxes or assigning tokens of " + this.latex.getText());

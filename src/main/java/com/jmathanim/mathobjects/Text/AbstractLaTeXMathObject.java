@@ -244,9 +244,11 @@ public abstract class AbstractLaTeXMathObject extends SVGMathObject {
         } else {
             latexText = text;
         }
+        //Needs to use 2 repeated parsers as the first one gets corrupted after createbox method
         TeXFormula formula = new TeXFormula(latexText);
-        TeXIcon icon = formula.createTeXIcon(TeXConstants.ALIGN_LEFT, 40);
-        latexParser.setJLatexFormulaParser(formula);
+        TeXFormula formula2 = new TeXFormula(latexText);
+//        TeXIcon icon = formula2.createTeXIcon(TeXConstants.ALIGN_LEFT, 40);
+        latexParser.setJLatexFormulaParser(formula,formula2);
         latexParser.parse();
         String svgNS = "http://www.w3.org/2000/svg";
         Document document = domImpl.createDocument(svgNS, "svg", null);
@@ -254,7 +256,7 @@ public abstract class AbstractLaTeXMathObject extends SVGMathObject {
         SVGGeneratorContext ctx = SVGGeneratorContext.createDefault(document);
         SVGGraphics2D svgGenerator = new SVGGraphics2D(ctx, true);
         ctx.setEmbeddedFontsOn(true);
-        icon.paintIcon(null, svgGenerator, 0, 0);
+        latexParser.icon.paintIcon(null, svgGenerator, 0, 0);
         DOMTreeManager domTreeManager = svgGenerator.getDOMTreeManager();
         Element domFactory = svgGenerator.getRoot();
         return domFactory;

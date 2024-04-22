@@ -78,9 +78,9 @@
             <version>2.3.2</version>
         </dependency>
         <dependency>
-            <groupId>org.scilab.forge</groupId>
-            <artifactId>jlatexmath</artifactId>
-            <version>1.0.7</version>
+            <groupId>com.github.davidgutierrezrubio</groupId>
+            <artifactId>myjlatexmath</artifactId>
+            <version>1.0.9</version>
         </dependency>
         <dependency>
             <groupId>org.apache.xmlgraphics</groupId>
