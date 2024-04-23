@@ -27,21 +27,21 @@ import java.util.ArrayList;
  */
 public class LatexStyle {
 
-    private final ArrayList<LatexStyleItem> colorizerItems;
+    private final ArrayList<LatexStyleItem> latexStyleItems;
 
     public static LatexStyle make() {
         return new LatexStyle();
     }
 
     public LatexStyle() {
-        this.colorizerItems = new ArrayList<>();
+        this.latexStyleItems = new ArrayList<>();
     }
 
     public LatexStyle setColorTo(LatexToken.TokenType type, Integer secType, String name, String colorName) {
         LatexStyleItem colorizerItem = new LatexStyleItem();
         colorizerItem.tokenEq = new LatexToken(type, secType, name);
         colorizerItem.setColor(colorName);
-        colorizerItems.add(colorizerItem);
+        latexStyleItems.add(colorizerItem);
         return this;
     }
 
@@ -49,31 +49,36 @@ public class LatexStyle {
         LatexStyleItem colorizerItem = new LatexStyleItem();
         colorizerItem.tokenEq = new LatexToken(LatexToken.TokenType.CHAR, name);
         colorizerItem.setColor(colorName);
-        colorizerItems.add(colorizerItem);
+        latexStyleItems.add(colorizerItem);
         return this;
     }
 
     public void apply(AbstractLaTeXMathObject latex) {
-        for (LatexStyleItem colorizerItem : colorizerItems) {
+        for (LatexStyleItem colorizerItem : latexStyleItems) {
             colorizerItem.apply(latex);
 
         }
     }
 
     public boolean add(LatexStyleItem e) {
-        return colorizerItems.add(e);
+        return latexStyleItems.add(e);
     }
 
     public LatexStyle copy() {
         LatexStyle copy = new LatexStyle();
-        for (LatexStyleItem colorizerItem : colorizerItems) {
+        for (LatexStyleItem colorizerItem : latexStyleItems) {
             copy.add(colorizerItem.copy());
         }
         return copy;
     }
 
     public LatexStyleItem get(int index) {
-        return colorizerItems.get(index);
+        return latexStyleItems.get(index);
     }
 
+    public ArrayList<LatexStyleItem> getLatexStyleItems() {
+        return latexStyleItems;
+    }
+    
+    
 }

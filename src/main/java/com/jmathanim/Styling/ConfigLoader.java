@@ -80,64 +80,85 @@ public class ConfigLoader {
                 }
             }
 
-            parseLoadConfigOptions(root.getElementsByTagName("include"));
-            parseVideoOptions(config, root.getElementsByTagName("video"));
-            parseBackgroundOptions(config, root.getElementsByTagName("background"));
-            parseStyles(config, root.getElementsByTagName("styles"));
-            parseLatexStyles(config, root.getElementsByTagName("latexStyles"));
+            NodeList nodeList = root.getChildNodes();
+            for (int i = 0; i < nodeList.getLength(); i++) {
+                Node node = nodeList.item(i);
+                // Verificar si el nodo es un elemento (etiqueta)
+                if (node.getNodeType() == Node.ELEMENT_NODE) {
+                    Element element = (Element) node;
+                    // Llamar al método correspondiente según el nombre de la etiqueta
+                    switch (element.getTagName()) {
+                        case "include":
+                            parseLoadConfigOptions(element);
+                            break;
+                        case "video":
+                            parseVideoOptions(config, element);
+                            break;
+                        case "background":
+                            parseBackgroundOptions(config, element);
+                            break;
+                        case "styles":
+                            parseStyles(config, element);
+                            break;
+                        case "latexStyles":
+                            parseLatexStyles(config, element);
+                            break;
+                        // Agregar más casos según sea necesario para otras etiquetas
+                    }
+                }
+            }
 
+//            parseLoadConfigOptions(root.getElementsByTagName("include"));
+//            parseVideoOptions(config, root.getElementsByTagName("video"));
+//            parseBackgroundOptions(config, root.getElementsByTagName("background"));
+//            parseStyles(config, root.getElementsByTagName("styles"));
+//            parseLatexStyles(config, root.getElementsByTagName("latexStyles"));
         } catch (IOException | SAXException | ParserConfigurationException | NullPointerException ex) {
             JMathAnimScene.logger.error("Error loading config file " + filename + ": " + ex.toString());
         }
     }
 
-    private static void parseVideoOptions(JMathAnimConfig config, NodeList videos) {
-        for (int k = 0; k < videos.getLength(); k++) {
-            NodeList videoChilds = videos.item(k).getChildNodes();
-            for (int n = 0; n < videoChilds.getLength(); n++) {
-                Node item = videoChilds.item(n);
-                switch (item.getNodeName()) {
-                    case "size":
-                        Element el = (Element) item;
-                        config.mediaW = Integer.parseInt(el.getAttribute("width"));
-                        config.mediaH = Integer.parseInt(el.getAttribute("height"));
-                        config.fps = Integer.parseInt(el.getAttribute("fps"));
-                        JMathAnimScene.logger.debug("Config read: Dimensions set to ({},{}), {} fps", config.mediaW,
-                                config.mediaH, config.fps);
-                        break;
-                    case "createMovie":
-                        final boolean createMovie = Boolean.parseBoolean(item.getTextContent());
-                        config.setCreateMovie(createMovie);
-                        JMathAnimScene.logger.debug("Config read: Create movie set to {}", createMovie);
-                        break;
-                    case "saveToPNG":
-                        final boolean saveToPNG = Boolean.parseBoolean(item.getTextContent());
-                        config.setSaveToPNG(saveToPNG);
-                        JMathAnimScene.logger.debug("Config read: Save to PNG flag set to {}", saveToPNG);
-                        break;
-                    case "showPreviewWindow":
-                        final boolean previewWindow = Boolean.parseBoolean(item.getTextContent());
-                        config.setShowPreviewWindow(previewWindow);
-                        JMathAnimScene.logger.debug("Config read: Show preview window set to {}", previewWindow);
-                        break;
-                    case "outputDir":
-                        config.setOutputDir(item.getTextContent());
-                        JMathAnimScene.logger.debug("Config read: Output dir set to {}", item.getTextContent());
-                        break;
-                    case "outputFileName":
-                        config.setOutputFileName(item.getTextContent());
-                        JMathAnimScene.logger.debug("Config read: Output filename set to {}", item.getTextContent());
-                        break;
-                }
+    private static void parseVideoOptions(JMathAnimConfig config, Element video) {
+        NodeList videoChilds = video.getChildNodes();
+        for (int n = 0; n < videoChilds.getLength(); n++) {
+            Node item = videoChilds.item(n);
+            switch (item.getNodeName()) {
+                case "size":
+                    Element el = (Element) item;
+                    config.mediaW = Integer.parseInt(el.getAttribute("width"));
+                    config.mediaH = Integer.parseInt(el.getAttribute("height"));
+                    config.fps = Integer.parseInt(el.getAttribute("fps"));
+                    JMathAnimScene.logger.debug("Config read: Dimensions set to ({},{}), {} fps", config.mediaW,
+                            config.mediaH, config.fps);
+                    break;
+                case "createMovie":
+                    final boolean createMovie = Boolean.parseBoolean(item.getTextContent());
+                    config.setCreateMovie(createMovie);
+                    JMathAnimScene.logger.debug("Config read: Create movie set to {}", createMovie);
+                    break;
+                case "saveToPNG":
+                    final boolean saveToPNG = Boolean.parseBoolean(item.getTextContent());
+                    config.setSaveToPNG(saveToPNG);
+                    JMathAnimScene.logger.debug("Config read: Save to PNG flag set to {}", saveToPNG);
+                    break;
+                case "showPreviewWindow":
+                    final boolean previewWindow = Boolean.parseBoolean(item.getTextContent());
+                    config.setShowPreviewWindow(previewWindow);
+                    JMathAnimScene.logger.debug("Config read: Show preview window set to {}", previewWindow);
+                    break;
+                case "outputDir":
+                    config.setOutputDir(item.getTextContent());
+                    JMathAnimScene.logger.debug("Config read: Output dir set to {}", item.getTextContent());
+                    break;
+                case "outputFileName":
+                    config.setOutputFileName(item.getTextContent());
+                    JMathAnimScene.logger.debug("Config read: Output filename set to {}", item.getTextContent());
+                    break;
             }
         }
     }
 
-    private static void parseBackgroundOptions(JMathAnimConfig config, NodeList backgrounds) throws IOException {
-        if (backgrounds.getLength() == 0) {
-            return;
-        }
-        Node background = backgrounds.item(backgrounds.getLength() - 1);// Load only last item
+    private static void parseBackgroundOptions(JMathAnimConfig config, Element background) throws IOException {
         NodeList bgChilds = background.getChildNodes();
         for (int n = 0; n < bgChilds.getLength(); n++) {
             Node item = bgChilds.item(n);
@@ -169,40 +190,33 @@ public class ConfigLoader {
         }
     }
 
-    private static void parseStyles(JMathAnimConfig config, NodeList styles) {
-        for (int k = 0; k < styles.getLength(); k++) {
-            Element elStyle = (Element) styles.item(k);
-            NodeList templChilds = elStyle.getElementsByTagName("style");
-            for (int n = 0; n < templChilds.getLength(); n++) {
-                Node item = templChilds.item(n);
-                if (item.getNodeType() == Node.ELEMENT_NODE) {
-                    Element el = (Element) item;
-                    String baseStyle = el.getAttribute("base");
-                    MODrawProperties mp = parseMathObjectDrawingProperties(config, baseStyle, item);
-
-                    config.getStyles().put(el.getAttribute("name").toUpperCase(), mp);
-                }
-
+    private static void parseStyles(JMathAnimConfig config, Element styles) {
+        NodeList templChilds = styles.getElementsByTagName("style");
+        for (int n = 0; n < templChilds.getLength(); n++) {
+            Node item = templChilds.item(n);
+            if (item.getNodeType() == Node.ELEMENT_NODE) {
+                Element el = (Element) item;
+                String baseStyle = el.getAttribute("base");
+                MODrawProperties mp = parseMathObjectDrawingProperties(config, baseStyle, item);
+                String styleName = el.getAttribute("name").toUpperCase().trim();
+                config.getStyles().put(styleName, mp);
+                JMathAnimScene.logger.debug("Parsed style " + styleName);
             }
+
         }
     }
 
-    private static void parseLatexStyles(JMathAnimConfig config, NodeList styles) {
-        for (int k = 0; k < styles.getLength(); k++) {
-            Element elStyle = (Element) styles.item(k);
-            NodeList templChilds = elStyle.getElementsByTagName("latexStyle");
-            for (int n = 0; n < templChilds.getLength(); n++) {
-                Node item = templChilds.item(n);
-                if (item.getNodeType() == Node.ELEMENT_NODE) {
-                    Element elementLatexStyle = (Element) item;
-                    String baseStyle = elementLatexStyle.getAttribute("baseLatexStyle");
-                    System.out.println("Parsing latexStyle " + elementLatexStyle.getAttribute("name").toUpperCase());
-                    LatexStyle latexStyle = parseLatexStyle(config, baseStyle, elementLatexStyle);
-
-                  
-
-                    config.getLatexStyles().put(elementLatexStyle.getAttribute("name").toUpperCase(), latexStyle);
-                }
+    private static void parseLatexStyles(JMathAnimConfig config, Element latexStyles) {
+        NodeList templChilds = latexStyles.getElementsByTagName("latexStyle");
+        for (int n = 0; n < templChilds.getLength(); n++) {
+            Node item = templChilds.item(n);
+            if (item.getNodeType() == Node.ELEMENT_NODE) {
+                Element elementLatexStyle = (Element) item;
+                String baseStyle = elementLatexStyle.getAttribute("baseLatexStyle");
+                LatexStyle latexStyle = parseLatexStyle(config, baseStyle, elementLatexStyle);
+                String styleName = elementLatexStyle.getAttribute("name").toUpperCase();
+                config.getLatexStyles().put(styleName, latexStyle);
+                JMathAnimScene.logger.debug("Parsed LaTeX style " + styleName);
             }
         }
     }
@@ -247,8 +261,10 @@ public class ConfigLoader {
         latexStyleItem.tokenDifPrev = ltDiffPrev;
         latexStyleItem.tokenDifAfter = ltDiffAfter;
         Element styleElement = getFirstChildElementWithName(parent, "style");
-         String baseStyle = styleElement.getAttribute("base");
-         if ("".equals(baseStyle)) baseStyle="LATEXDEFAULT";
+        String baseStyle = styleElement.getAttribute("base");
+        if ("".equals(baseStyle)) {
+            baseStyle = "LATEXDEFAULT";
+        }
         MODrawProperties mo = parseMathObjectDrawingProperties(config, baseStyle, styleElement);
         latexStyleItem.style = mo;
         return latexStyleItem;
@@ -328,27 +344,30 @@ public class ConfigLoader {
     private static MODrawProperties parseMathObjectDrawingProperties(JMathAnimConfig config, String baseStyle, Node template) {
         MODrawProperties mp = MODrawProperties.makeNullValues();
         if (!"".equals(baseStyle)) {
-            mp.copyFrom(config.getStyles().get(baseStyle));
+            MODrawProperties baseStyleMP = config.getStyles().get(baseStyle);
+            mp.copyFrom(baseStyleMP);
         }
-
+        PaintStyle color;
         NodeList childs = template.getChildNodes();
         for (int n = 0; n < childs.getLength(); n++) {
             Node item = childs.item(n);
             String name = item.getNodeName();
             switch (name) {
                 case "drawColor":
-
+                    color = parsePaintStyle(config, item);
+                    mp.setDrawColor(color);
                     break;
                 case "fillColor":
                     mp.setFillColor(parsePaintStyle(config, item));
                     break;
                 case "color":
-                    PaintStyle color = parsePaintStyle(config, item);
+                    color = parsePaintStyle(config, item);
                     mp.setDrawColor(color);
                     mp.setFillColor(color);
                     break;
                 case "thickness":
-                    mp.setThickness(Double.valueOf(item.getTextContent()));
+                    Double th = Double.valueOf(item.getTextContent());
+                    mp.setThickness(th);
                     break;
                 case "fillAlpha":
                     mp.setFillAlpha(Double.parseDouble(item.getTextContent()));
@@ -523,12 +542,8 @@ public class ConfigLoader {
         return resul;
     }
 
-    private static void parseLoadConfigOptions(NodeList includeTags) {
-        for (int n = 0; n < includeTags.getLength(); n++) {
-            Node item = includeTags.item(n);
-            JMathAnimScene.logger.debug("Including file {}", item.getTextContent());
-            ConfigLoader.parseFile(item.getTextContent());
-        }
+    private static void parseLoadConfigOptions(Element include) {
+        JMathAnimScene.logger.debug("Including file {}", include.getTextContent());
+        ConfigLoader.parseFile(include.getTextContent());
     }
-
 }

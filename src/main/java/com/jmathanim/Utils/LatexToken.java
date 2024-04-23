@@ -28,7 +28,7 @@ import java.util.List;
 public class LatexToken {
 
     public LatexToken copy() {
-        LatexToken copy=new LatexToken(type, secondaryFlags, string);
+        LatexToken copy = new LatexToken(type, secondaryFlags, string);
         return copy;
     }
 
@@ -38,28 +38,16 @@ public class LatexToken {
         NUMBER, //0-9 digits, including point if used in the decimal context
         SYMBOL, //A math symbol
         OPERATOR, //An operator like \sum, \int
+        BINARY_OPERATOR, //An simpler binary operator like +, -, \cap,\cup...
         RELATION, // A math relation like =, \geq, \leq, etc.
         DELIMITER, //Parenthesis, brackets...of any size
         SQRT, // Square (or nth-) root symbol
         FRACTION_BAR, //That is, the fraction bar :-)
         GREEK_LETTER, //Any greek letter like \pi or \varepsilon
-        NAMED_FUNCTION //A named function like \log or \ln
+        NAMED_FUNCTION, //A named function like \log or \ln
+        ARROW //An arrow
     }
 
-//    public enum SecondaryType {
-//        NONE,//This token will not be assigned never. It is used to always returns false when matching tokens
-//        NORMAL,//Normal size, no modifications
-//        DELIMITER_NORMAL, //A normal sized delimiter
-//        DELIMITER_BIG1, //A delimiter with command \big, like \big(
-//        DELIMITER_BIG2, //A delimiter with command \Big, like \Big(
-//        DELIMITER_EXTENSIBLE, //An extensible delimiter, like \left(
-//        SUPERSCRIPT, //Superscript style, like power exponents
-//        SUBSCRIPT, //Subscript style
-//        FROM_INDEX, //In sums, products, integrals...the "from" part
-//        TO_INDEX,//In sums, products, integrals...the "to" part
-//        NUMERATOR,//Numerator of a fraction
-//        DENOMINATOR//Denominator of a fraction
-//    }
     public static final int SEC_NONE = 0b00000000;
     public static final int SEC_NORMAL = 0b00000001;
     public static final int SEC_DELIMITER_NORMAL = 0b00000010;
@@ -74,6 +62,9 @@ public class LatexToken {
     public static final int SEC_DENOMINATOR = 0b0000010000000000;
     public static final int SEC_DELIMITER_BIG3 = 0b0000100000000000;
     public static final int SEC_DELIMITER_BIG4 = 0b0001000000000000;
+    public static final int SEC_LEFT_ARROW = 0b0010000000000000;
+    public static final int SEC_RIGHT_ARROW = 0b0100000000000000;
+    public static final int SEC_LEFTRIGHT_ARROW = 0b1000000000000000;
 
     public TokenType type;
     public Integer secondaryFlags;
@@ -84,9 +75,13 @@ public class LatexToken {
         this(type, null, name);
     }
 
-    public LatexToken(TokenType type, Integer delimiterType, String name) {
+    public LatexToken(TokenType type, Integer secondaryFlags, String name) {
         this.type = type;
-        this.secondaryFlags = delimiterType;
+        if (secondaryFlags != null) {
+            this.secondaryFlags = secondaryFlags;
+        } else {
+            this.secondaryFlags = 0;
+        }
         this.string = name;
         refineToken();
     }
@@ -113,8 +108,17 @@ public class LatexToken {
                 }
                 if (operators.contains(string)) {
                     type = TokenType.OPERATOR;
+
+                  
                     break;
                 }
+                  if (binaryOperators.contains(string)) {
+                       type = TokenType.BINARY_OPERATOR;
+
+                  
+                    break;
+                    }
+                
                 if (delimiters.contains(string)) {
                     type = TokenType.DELIMITER;
                     break;
@@ -123,6 +127,7 @@ public class LatexToken {
                     type = TokenType.RELATION;
                     break;
                 }
+
             case CHAR:
                 if (numbers.contains(string)) {
                     type = TokenType.NUMBER;
@@ -242,12 +247,15 @@ public class LatexToken {
     );
 
     private static final List<String> operators = Arrays.asList(
-            "plus", "minus", "slash", "div",
-            "cap", "cup", "wedge", "vee", 
             "sum", "prod",
-            "int","iint","iiint","iiiint",
+            "int", "iint", "iiint", "iiiint",
             "oint"
     );
+    private static final List<String> binaryOperators = Arrays.asList(
+            "plus", "minus", "slash", "div",
+            "cap", "cup", "wedge", "vee"
+    );
+
     private static final List<String> relations = Arrays.asList(
             "equals", "lt", "leq", "le", "gt", "geq", "ge",
             "neq", "equiv", "cong", "sim", "simeq",

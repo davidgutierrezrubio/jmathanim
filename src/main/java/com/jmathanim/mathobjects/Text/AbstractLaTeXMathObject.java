@@ -60,7 +60,7 @@ import org.w3c.dom.Element;
  * @author David Gutierrez Rubio davidgutierrezrubio@gmail.com
  */
 public abstract class AbstractLaTeXMathObject extends SVGMathObject {
-    
+
     protected Anchor.Type anchor;
     protected LatexParser latexParser;
     protected LatexStyle latexColorizer;
@@ -100,7 +100,7 @@ public abstract class AbstractLaTeXMathObject extends SVGMathObject {
     protected File latexFile;
     protected String baseFileName;
     protected File outputDir;
-    
+
     protected AbstractLaTeXMathObject(Anchor.Type anchor) {
         super();
         this.anchor = anchor;
@@ -108,16 +108,16 @@ public abstract class AbstractLaTeXMathObject extends SVGMathObject {
         this.latexParser = new LatexParser(this);
         this.latexColorizer = null;
     }
-    
+
     public LatexStyle getLatexColorizer() {
         return latexColorizer;
     }
-    
+
     public void setLatexStyle(LatexStyle latexColorizer) {
         this.latexColorizer = latexColorizer;
-        changeInnerLaTeX(this.text);
+        this.latexColorizer.apply(this);
     }
-    
+
     @Override
     public AbstractLaTeXMathObject applyAffineTransform(AffineJTransform transform) {
         super.applyAffineTransform(transform);
@@ -125,9 +125,9 @@ public abstract class AbstractLaTeXMathObject extends SVGMathObject {
         modelMatrix.copyFrom(compose);
         return this;
     }
-    
+
     protected void changeInnerLaTeX(String text) {
-        
+
         AffineJTransform modelMatrixBackup = modelMatrix.copy();
 //        if (text.equals(this.text)) {
 //            return;
@@ -135,10 +135,10 @@ public abstract class AbstractLaTeXMathObject extends SVGMathObject {
 //            this.text = text;
 //        }
         this.text = text;
-        for (Shape sh : shapes) {
+        for (Shape sh : this) {
             scene.remove(sh);
         }
-        shapes.clear();
+        clearShapes();
         if (mode == CompileMode.CompileFile) {
             try {
                 generateLaTeXDocument();
@@ -167,11 +167,13 @@ public abstract class AbstractLaTeXMathObject extends SVGMathObject {
             svgUtils.importSVGFromDOM(root, this);
             latexParser.parse();
         }
-        
+
         int n = 0;
-        for (Shape sh : shapes) {
+        mpMultiShape.getObjects().clear();
+        for (Shape sh : this) {
+            mpMultiShape.add(sh);
             // Workaround: Draw color should be the same as fill color
-            sh.drawColor(sh.getMp().getFillColor());
+//            sh.drawColor(sh.getMp().getFillColor());
             sh.objectLabel = String.valueOf(n);
             n++;
             if (isAddedToScene) {
@@ -181,8 +183,8 @@ public abstract class AbstractLaTeXMathObject extends SVGMathObject {
         if (latexColorizer != null) {
             latexColorizer.apply(this);
         }
-        
-        if (shapes.isEmpty()) {
+
+        if (size() == 0) {
             return;
         }
         double hm = 2.5; //Default height view
@@ -202,39 +204,39 @@ public abstract class AbstractLaTeXMathObject extends SVGMathObject {
             case RIGHT, URIGHT, DRIGHT, RLOWER, RUPPER:
                 v = Anchor.getAnchorPoint(this.get(-1), anchor).v.mult(-1);
                 break;
-            
+
         }
         //this.stackTo(anchor,Point.origin(), Anchor.Type.CENTER,0);
 
         shift(v);
-        
+
         modelMatrix.copyFrom(modelMatrixBackup);
-        for (Shape sh : shapes) {
+        for (Shape sh : this) {
 //            sh.getMp().copyFrom(mpMultiShape);
             sh.applyAffineTransform(modelMatrix);
         }
     }
-    
+
     public LatexParser getLatexParser() {
         return latexParser;
     }
-    
+
     @Override
     protected Rect computeBoundingBox() {
         Rect resul = null;
-        for (Shape jmp : shapes) {
+        for (Shape jmp : this) {
             if (!jmp.isEmpty()) {
                 resul = Rect.union(resul, jmp.getBoundingBox());
             }
         }
-        
+
         if (resul == null) {
             return new EmptyRect();
         } else {
             return resul;
         }
     }
-    
+
     private Element generateDOMTreeFromLaTeX(String text) {
         Writer out = null;
         DOMImplementation domImpl = GenericDOMImplementation.getDOMImplementation();
@@ -248,7 +250,7 @@ public abstract class AbstractLaTeXMathObject extends SVGMathObject {
         TeXFormula formula = new TeXFormula(latexText);
         TeXFormula formula2 = new TeXFormula(latexText);
 //        TeXIcon icon = formula2.createTeXIcon(TeXConstants.ALIGN_LEFT, 40);
-        latexParser.setJLatexFormulaParser(formula,formula2);
+        latexParser.setJLatexFormulaParser(formula, formula2);
         latexParser.parse();
         String svgNS = "http://www.w3.org/2000/svg";
         Document document = domImpl.createDocument(svgNS, "svg", null);
@@ -288,7 +290,7 @@ public abstract class AbstractLaTeXMathObject extends SVGMathObject {
             Logger.getLogger(LaTeXMathObject.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
+
     private String getMd5(String input) {
         try {
             MessageDigest md = MessageDigest.getInstance("MD5");
@@ -326,7 +328,7 @@ public abstract class AbstractLaTeXMathObject extends SVGMathObject {
         }
         return svgFilename;
     }
-    
+
     private void runExternalCommand(String command) throws IOException, InterruptedException {
         String line;
         Process p = Runtime.getRuntime().exec(command, null, outputDir);
@@ -343,15 +345,15 @@ public abstract class AbstractLaTeXMathObject extends SVGMathObject {
         bre.close();
         p.waitFor();
     }
-    
+
     @Override
     public void copyStateFrom(MathObject obj) {
         super.copyStateFrom(obj);
         if (obj instanceof AbstractLaTeXMathObject) {
             AbstractLaTeXMathObject copy = (AbstractLaTeXMathObject) obj;
             getMp().copyFrom(copy.getMp());
-            shapes.clear();
-            for (Shape sh : copy.shapes) {
+            clearShapes();
+            for (Shape sh : copy) {
                 final Shape copyShape = sh.copy();
                 add(copyShape);
             }
@@ -359,12 +361,7 @@ public abstract class AbstractLaTeXMathObject extends SVGMathObject {
             this.modelMatrix.copyFrom(copy.modelMatrix);
         }
     }
-    
-    @Override
-    public int size() {
-        return shapes.size();
-    }
-    
+
     public String getText() {
         return text;
     }

@@ -56,7 +56,7 @@ public class BoxLayout extends AbstractBoxLayout {
     
 
     public BoxLayout(int rowSize) {
-        this(null, rowSize, Direction.RIGHT_UP, 0, 0);
+        this(null, rowSize, Direction.RIGHT_DOWN, 0, 0);
     }
 
     /**

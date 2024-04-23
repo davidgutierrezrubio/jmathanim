@@ -43,7 +43,7 @@ public class MultiShapeObject extends MathObject implements Iterable<Shape> {
 
     protected final MODrawPropertiesArray mpMultiShape;
     public boolean isAddedToScene;
-    protected final ArrayList<Shape> shapes;
+    private final ArrayList<Shape> shapes;
 
     public static MultiShapeObject make(Shape... shapes) {
         return new MultiShapeObject(Arrays.asList(shapes));
@@ -67,6 +67,17 @@ public class MultiShapeObject extends MathObject implements Iterable<Shape> {
     public boolean add(Shape e) {
         mpMultiShape.add(e);
         return shapes.add(e);
+    }
+
+    public Shape setShapeAt(int index, Shape element) {
+        mpMultiShape.add(element);
+        return shapes.set(index, element);
+
+    }
+
+    public void clearShapes() {
+        shapes.clear();
+        mpMultiShape.getObjects().clear();
     }
 
     @Override
@@ -122,7 +133,7 @@ public class MultiShapeObject extends MathObject implements Iterable<Shape> {
 //    }
     @Override
     public void copyStateFrom(MathObject obj) {
-         super.copyStateFrom(obj);
+        super.copyStateFrom(obj);
         if (!(obj instanceof MultiShapeObject)) {
             return;
         }
@@ -158,7 +169,6 @@ public class MultiShapeObject extends MathObject implements Iterable<Shape> {
 
         return (T) this;
     }
-
 
     @Override
     public void draw(JMathAnimScene scene, Renderer r, Camera cam) {
@@ -294,16 +304,15 @@ public class MultiShapeObject extends MathObject implements Iterable<Shape> {
         T resul = (T) this.copy();
         //Populate the new MultiShape with n empty shapes
         for (int n = 0; n < resul.size(); n++) {
-            resul.shapes.set(n, new Shape());
+            resul.setShapeAt(n, new Shape());
         }
         for (int n = 0; n < this.shapes.size(); n++) {
             if (list.contains(n)) {
                 final Shape copy = this.get(n).copy();
-                resul.shapes.set(n, copy);
-                resul.mpMultiShape.add(copy);
+                resul.setShapeAt(n, copy);
                 if (delete) {// if this index is marked for extraction...
                     this.mpMultiShape.remove(this.get(n));
-                    this.shapes.set(n, new Shape());
+                    this.setShapeAt(n, new Shape());
                 }
 
             }
@@ -431,6 +440,4 @@ public class MultiShapeObject extends MathObject implements Iterable<Shape> {
         return (T) this;
     }
 
-    
-    
 }

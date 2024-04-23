@@ -103,7 +103,7 @@ public class CartesianGrid extends MultiShapeObject implements shouldUdpateWithC
     }
 
     private void recomputeGrid() {
-        this.shapes.clear();
+        this.clearShapes();
 
         Rect bb = this.getCamera().getMathView();
         double wv = 1 * bb.getWidth();

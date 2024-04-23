@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <JMathAnimConfig>
     <latexStyles>
-        <latexStyle name="colorful">
+        <latexStyle name="blindcolor">
             <latexStyleItem>
                 <conditions>
                     <equals>
@@ -9,7 +9,7 @@
                     </equals>
                 </conditions>
                 <style>
-                    <color>#BBCC33</color>
+                    <color>#3d8d47</color>
                 </style>
             </latexStyleItem>
             
@@ -20,42 +20,45 @@
                     </equals>
                 </conditions>
                 <style>
-                    <color>#AAAA00</color>
+                    <color>#999933</color>
                 </style>
             </latexStyleItem>
             
-            <latexStyleItem>
-                <conditions>
-                    <equals>
-                        <type>CHAR</type>
-                    </equals>
-                </conditions>
-                <style>
-                    <color>#EEDD88</color>
-                </style>
-            </latexStyleItem>
-            
-            <latexStyleItem>
+             <latexStyleItem>
                 <conditions>
                     <equals>
                         <type>NAMED_FUNCTION</type>
                     </equals>
                 </conditions>
                 <style>
-                    <color>#44BB99</color>
+                    <color>#999933</color>
                 </style>
             </latexStyleItem>
+            
+            
             
             <latexStyleItem>
                 <conditions>
                     <equals>
-                        <type>OPERATOR</type>
+                        <type>BINARY_OPERATOR</type>
                     </equals>
                 </conditions>
                 <style>
-                    <color>#44BB99</color>
+                    <color>#CC6677</color>
                 </style>
             </latexStyleItem>
+            
+              <latexStyleItem>
+                <conditions>
+                    <equals>
+                        <type>RELATION</type>
+                    </equals>
+                </conditions>
+                <style>
+                    <color>#CC6677</color>
+                </style>
+            </latexStyleItem>
+            
             
             <latexStyleItem>
                 <conditions>
@@ -64,22 +67,35 @@
                     </equals>
                 </conditions>
                 <style>
-                    <color>#99DDFF</color>
+                    <color>#cebd54</color>
                 </style>
             </latexStyleItem>
             
-            <latexStyleItem>
+             <latexStyleItem>
                 <conditions>
                     <equals>
-                        <type>DELIMITER</type>
+                        <type>CHAR</type>
+                        <string>e</string>
                     </equals>
                 </conditions>
                 <style>
-                    <color>#77AADD</color>
+                    <color>#cebd54</color>
                 </style>
             </latexStyleItem>
             
-              
+             <latexStyleItem>
+                <conditions>
+                    <equals>
+                        <type>CHAR</type>
+                        <string>i</string>
+                    </equals>
+                </conditions>
+                <style>
+                    <color>#AA4499</color>
+                </style>
+            </latexStyleItem>
+            
+            
             <latexStyleItem>
                 <conditions>
                     <equals>
@@ -88,10 +104,10 @@
                     </equals>
                 </conditions>
                 <style>
-                    <color>#77AADD</color>
+                    <color>#547fae</color>
                 </style>
             </latexStyleItem>
-                 <latexStyleItem>
+            <latexStyleItem>
                 <conditions>
                     <equals>
                         <type>CHAR</type>
@@ -99,11 +115,86 @@
                     </equals>
                 </conditions>
                 <style>
-                    <color>#EE8866</color>
+                    <color>#ae477f</color>
                 </style>
             </latexStyleItem>
             
+               <latexStyleItem>
+                <conditions>
+                    <equals>
+                        <type>CHAR</type>
+                        <string>a</string>
+                    </equals>
+                </conditions>
+                <style>
+                    <color>#547fae</color>
+                </style>
+            </latexStyleItem>
+            <latexStyleItem>
+                <conditions>
+                    <equals>
+                        <type>CHAR</type>
+                        <string>b</string>
+                    </equals>
+                </conditions>
+                <style>
+                    <color>#ae477f</color>
+                </style>
+            </latexStyleItem>
+            
+            
+                <latexStyleItem>
+                <conditions>
+                    <equals>
+                        <type>CHAR</type>
+                        <string>A</string>
+                    </equals>
+                </conditions>
+                <style>
+                    <color>#547fae</color>
+                </style>
+            </latexStyleItem>
+            <latexStyleItem>
+                <conditions>
+                    <equals>
+                        <type>CHAR</type>
+                        <string>B</string>
+                    </equals>
+                </conditions>
+                <style>
+                    <color>#ae477f</color>
+                </style>
+            </latexStyleItem>
+            
+            
+            
+            
               <latexStyleItem>
+                <conditions>
+                    <equals>
+                        <type>CHAR</type>
+                        <string>u</string>
+                    </equals>
+                </conditions>
+                <style>
+                    <color>#009988</color>
+                </style>
+            </latexStyleItem>
+            <latexStyleItem>
+                <conditions>
+                    <equals>
+                        <type>CHAR</type>
+                        <string>v</string>
+                    </equals>
+                </conditions>
+                <style>
+                    <color>#33BBEE</color>
+                </style>
+            </latexStyleItem>
+            
+            
+            
+            <latexStyleItem>
                 <conditions>
                     <equals>
                         <type>CHAR</type>
@@ -111,10 +202,11 @@
                     </equals>
                 </conditions>
                 <style>
-                    <color>#FFCCCC</color>
+                    <color>#6fceef</color>
                 </style>
             </latexStyleItem>
-                 <latexStyleItem>
+            
+            <latexStyleItem>
                 <conditions>
                     <equals>
                         <type>CHAR</type>
@@ -122,10 +214,9 @@
                     </equals>
                 </conditions>
                 <style>
-                    <color>#CCDDAA</color>
+                    <color>#ef6f7f</color>
                 </style>
             </latexStyleItem>
-            
         </latexStyle>
     </latexStyles> 
 </JMathAnimConfig>

@@ -70,7 +70,7 @@ public class SVGMathObject extends MultiShapeObject {
     public SVGMathObject copy() {
         SVGMathObject resul = new SVGMathObject();
         resul.getMp().copyFrom(getMp());
-        for (Shape sh : shapes) {
+        for (Shape sh : this) {
             final Shape copy = sh.copy();
             resul.add(copy);
         }

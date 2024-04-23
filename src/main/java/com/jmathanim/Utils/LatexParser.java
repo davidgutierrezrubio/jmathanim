@@ -58,6 +58,7 @@ import org.scilab.forge.jlatexmath.OverUnderBox;
 import org.scilab.forge.jlatexmath.OverUnderDelimiter;
 import org.scilab.forge.jlatexmath.RomanAtom;
 import org.scilab.forge.jlatexmath.RowAtom;
+import org.scilab.forge.jlatexmath.ScaleBox;
 import org.scilab.forge.jlatexmath.ScriptsAtom;
 import org.scilab.forge.jlatexmath.SpaceAtom;
 import org.scilab.forge.jlatexmath.StyleAtom;
@@ -68,11 +69,13 @@ import org.scilab.forge.jlatexmath.TeXFormula;
 import org.scilab.forge.jlatexmath.TeXIcon;
 import org.scilab.forge.jlatexmath.TeXParser;
 import org.scilab.forge.jlatexmath.TypedAtom;
+import org.scilab.forge.jlatexmath.UnderOverArrowAtom;
 
 public class LatexParser {
 
     public final ArrayList<LatexToken> assignedTokens;
     private int boxCounter;
+    private Atom currentAtom;
     private TeXFormula formula2;
     public TeXIcon icon;
     private final AbstractLaTeXMathObject latex;
@@ -242,7 +245,6 @@ public class LatexParser {
             CharAtom charAtom = (CharAtom) atom;
             LatexToken.TokenType type = LatexToken.TokenType.CHAR;
             String name = "" + charAtom.getCharacter();
-            JMathAnimScene.logger.debug("Parsing char " + name);
             addTokenToList(type, name);
             return;
         }
@@ -325,9 +327,7 @@ public class LatexParser {
             TypedAtom typedAtom = (TypedAtom) atom;
             modifier = Modifier.TYPED;
             Atom aa = typedAtom.getBase();
-            JMathAnimScene.logger.debug("Entering typed atom");
             parseAtom(aa);
-            JMathAnimScene.logger.debug("Exiting typed atom");
             modifier = Modifier.NORMAL;
             return;
         }
@@ -349,10 +349,45 @@ public class LatexParser {
             campo.setAccessible(true);
             parseAtom(campo.get(overUnderDelimiter));
             //Under/over the brace
-              campo = OverUnderDelimiter.class.getDeclaredField("script");
+            campo = OverUnderDelimiter.class.getDeclaredField("script");
             campo.setAccessible(true);
             parseAtom(campo.get(overUnderDelimiter));
             return;
+        }
+
+        if (atom instanceof UnderOverArrowAtom) {
+            UnderOverArrowAtom underOverArrowAtom = (UnderOverArrowAtom) atom;
+
+            campo = UnderOverArrowAtom.class.getDeclaredField("over");
+            campo.setAccessible(true);
+            boolean over = (boolean) campo.get(underOverArrowAtom);
+
+            //Determine type of arrow 
+            //dble =true if double arrow
+            //left=true if is left arrow
+            campo = UnderOverArrowAtom.class.getDeclaredField("dble");
+            campo.setAccessible(true);
+            boolean dble = (boolean) campo.get(underOverArrowAtom);
+
+            campo = UnderOverArrowAtom.class.getDeclaredField("left");
+            campo.setAccessible(true);
+            boolean left = (boolean) campo.get(underOverArrowAtom);
+            String arrowTypeName = "overleftrightarrow";
+            if (!dble) {
+                arrowTypeName = (left ? "overleftarrow" : "overrightarrow");
+
+            }
+            campo = UnderOverArrowAtom.class.getDeclaredField("base");
+            campo.setAccessible(true);
+            Atom base = (Atom) campo.get(underOverArrowAtom);
+
+            if (over) {
+                addTokenToList(LatexToken.TokenType.DELIMITER, arrowTypeName);
+                parseAtom(base);
+            } else {
+                parseAtom(base);
+                addTokenToList(LatexToken.TokenType.DELIMITER, arrowTypeName);
+            }
         }
 
         if (atom instanceof ScriptsAtom) {
@@ -383,19 +418,16 @@ public class LatexParser {
             BigOperatorAtom bigOperatorAtom = (BigOperatorAtom) atom;
 
             campo = BigOperatorAtom.class.getDeclaredField("base");
-            JMathAnimScene.logger.debug("Parsing base from bigoperator");
             campo.setAccessible(true);
             parseAtom((Atom) campo.get(bigOperatorAtom));
 
             secondaryType |= LatexToken.SEC_TO_INDEX;
-            JMathAnimScene.logger.debug("Parsing over from bigoperator");
             campo = BigOperatorAtom.class.getDeclaredField("over");
             campo.setAccessible(true);
             parseAtom((Atom) campo.get(bigOperatorAtom));
             secondaryType &= ~LatexToken.SEC_TO_INDEX;
 
             secondaryType |= LatexToken.SEC_FROM_INDEX;
-            JMathAnimScene.logger.debug("Parsing under from bigoperator");
             campo = BigOperatorAtom.class.getDeclaredField("under");
             campo.setAccessible(true);
             parseAtom((Atom) campo.get(bigOperatorAtom));
@@ -428,7 +460,7 @@ public class LatexParser {
         }
 
         LatexToken token = new LatexToken(type, name);
-        token.secondaryFlags = secondaryType;
+        token.secondaryFlags|= secondaryType;
         tokens.add(token);//TODO: IMPROVE
         previousToken = token;
     }
@@ -441,6 +473,7 @@ public class LatexParser {
             boxes.add(charBox);
             CharFont bb = getFontFromCharBox(bo);
 //            System.out.println(boxes.size()+" Charbox "+bb.fontId+"  "+((int)bb.c)+"  "+bb.c);
+
         }
 
         if (bo instanceof OverUnderBox) {
@@ -458,6 +491,15 @@ public class LatexParser {
         if (bo instanceof org.scilab.forge.jlatexmath.HorizontalRule) {
             boxes.add(bo);
         }
+
+        if (bo instanceof ScaleBox) {
+            ScaleBox scaleBox = (ScaleBox) bo;
+            campo = ScaleBox.class.getDeclaredField("box");
+            campo.setAccessible(true);
+            Box box = (Box) campo.get(scaleBox);
+            parseBox(box);
+        }
+
         campo = Box.class.getDeclaredField("children");
         campo.setAccessible(true);
         LinkedList<Box> children = (LinkedList<Box>) campo.get(bo);
@@ -494,7 +536,7 @@ public class LatexParser {
         for (int n = 0; n < tokens.size(); n++) {
             LatexToken token = tokens.get(n);
             switch (token.type) {
-                case CHAR, FRACTION_BAR, GREEK_LETTER, NAMED_FUNCTION, OPERATOR, RELATION, NUMBER:
+                case CHAR, FRACTION_BAR, GREEK_LETTER, NAMED_FUNCTION, OPERATOR, BINARY_OPERATOR,RELATION, NUMBER, ARROW:
                     //These are supposed to be the "easy tokens"
                     assignedTokens.add(token);
                     boxCounter++;
@@ -539,8 +581,6 @@ public class LatexParser {
 
     private boolean compareCharFont(Box b, int fontId, int c) {
         CharFont cf = getFontFromCharBox(b);
-        int aa = cf.c;
-        System.out.println("Delimiter code: " + cf.fontId + ", " + aa);
         return ((cf.fontId == fontId) & (cf.c == (char) c));
     }
 
@@ -559,7 +599,7 @@ public class LatexParser {
                         1, 64,//Extensible lower part
                         1, 0,//Extensible over right part
                         1, 0//Extensible over left part
-);
+                );
 
                 break;
             case "rbrack":
@@ -573,7 +613,7 @@ public class LatexParser {
                         1, 65,//Extensible lower part
                         1, 0,//Extensible over right part
                         1, 0//Extensible over left part
-);
+                );
                 break;
             case "lbrace":
                 scanBigDelimiter(token,
@@ -586,7 +626,7 @@ public class LatexParser {
                         1, 58,//Extensible lower part
                         1, 56,//Extensible over right part
                         1, 58//Extensible over left part
-);
+                );
                 break;
             case "rbrace":
                 scanBigDelimiter(token,
@@ -599,7 +639,7 @@ public class LatexParser {
                         1, 59,//Extensible lower part
                         1, 0,//Extensible over right part
                         1, 0//Extensible over left part
-);
+                );
                 break;
             case "lsqbrack":
                 scanBigDelimiter(token,
@@ -612,7 +652,7 @@ public class LatexParser {
                         1, 52,//Extensible lower part
                         1, 0,//Extensible over right part
                         1, 0//Extensible over left part
-);
+                );
                 break;
             case "rsqbrack":
                 scanBigDelimiter(token,
@@ -625,7 +665,7 @@ public class LatexParser {
                         1, 53,//Extensible lower part
                         1, 0,//Extensible over right part
                         1, 0//Extensible over left part
-);
+                );
                 break;
             case "vert":
                 token.type = LatexToken.TokenType.DELIMITER;
@@ -639,7 +679,7 @@ public class LatexParser {
                         1, 175,//Extensible lower part
                         1, 0,//Extensible over right part
                         1, 0//Extensible over left part
-);
+                );
                 break;
             case "Vert":
                 token.type = LatexToken.TokenType.DELIMITER;
@@ -653,7 +693,7 @@ public class LatexParser {
                         1, 176,//Extensible lower part
                         1, 0,//Extensible over right part
                         1, 0//Extensible over left part
-);
+                );
                 break;
             case "lfloor":
                 scanBigDelimiter(token,
@@ -666,7 +706,7 @@ public class LatexParser {
                         1, 52,//Extensible lower part
                         1, 0,//Extensible over right part
                         1, 0//Extensible over left part
-);
+                );
                 break;
             case "rfloor":
                 scanBigDelimiter(token,
@@ -679,7 +719,7 @@ public class LatexParser {
                         1, 53,//Extensible lower part
                         1, 0,//Extensible over right part
                         1, 0//Extensible over left part
-);
+                );
                 break;
             case "lceil":
                 scanBigDelimiter(token,
@@ -692,7 +732,7 @@ public class LatexParser {
                         1, 54,//Extensible lower part
                         1, 0,//Extensible over right part
                         1, 0//Extensible over left part
-);
+                );
                 break;
             case "rceil":
                 scanBigDelimiter(token,
@@ -705,7 +745,7 @@ public class LatexParser {
                         1, 55,//Extensible lower part
                         1, 0,//Extensible over right part
                         1, 0//Extensible over left part
-);
+                );
                 break;
 
             case "langle":
@@ -719,7 +759,7 @@ public class LatexParser {
                         1, -1,//Extensible lower part (-1=none, only upper symbol)
                         1, 0,//Extensible over right part
                         1, 0//Extensible over left part
-);
+                );
                 break;
             case "rangle":
                 scanBigDelimiter(token,
@@ -732,7 +772,54 @@ public class LatexParser {
                         1, -1,//Extensible lower part (-1=none, only upper symbol)
                         1, 0,//Extensible over right part
                         1, 0//Extensible over left part
-);
+                );
+                break;
+            case "overrightarrow":
+                token.type = LatexToken.TokenType.ARROW;
+                token.secondaryFlags |= LatexToken.SEC_RIGHT_ARROW;
+                scanBigDelimiter(token,
+                        8, 33, //Normal
+                        0, 0, //\big
+                        0, 0, //\Big
+                        0, 0, //\Bigg
+                        0, 0, //\Bigg4
+                        8, 161,//Extensible upper part
+                        8, 33,//Extensible lower part (-1=none, only upper symbol)
+                        1, 0,//Extensible over right part
+                        1, 0//Extensible over left part
+                );
+                break;
+            case "overleftarrow":
+                //This case es special, as begins with cf(8,195) and may have
+                //arbitrary (0 or more) cf(8,161) tokens, without a terminating token
+//                scanBigDelimiter(token,
+//                        8, 195, //Normal
+//                        1, 174, //\big
+//                        1, 69, //\Big
+//                        1, 192, //\Bigg
+//                        0, 0, //\Bigg4
+//                        8, 195,//Extensible upper part
+//                        8, 161,//Extensible lower part (-1=none, only upper symbol)
+//                        1, 0,//Extensible over right part
+//                        1, 0//Extensible over left part
+//                );
+                scanLeftArrow(token, 8, 195, 8, 161);
+
+                break;
+            case "overleftrightarrow":
+                token.type = LatexToken.TokenType.ARROW;
+                token.secondaryFlags |= LatexToken.SEC_LEFTRIGHT_ARROW;
+                scanBigDelimiter(token,
+                        8, 33, //Normal FIX THIS
+                        1, 174, //\big
+                        1, 69, //\Big
+                        1, 192, //\Bigg
+                        0, 0, //\Bigg4
+                        8, 195,//Extensible upper part
+                        8, 33,//Extensible lower part (-1=none, only upper symbol)
+                        1, 0,//Extensible over right part
+                        1, 0//Extensible over left part
+                );
                 break;
 
 //             case "lname":
@@ -752,6 +839,24 @@ public class LatexParser {
 //                        1,0);//Extensible lower part
 //                break;
         }
+    }
+
+    protected void scanLeftArrow(LatexToken token, int cfStart, int cStart, int cfContinue, int cContinue) {
+        Box b = boxes.get(boxCounter);
+        if (compareCharFont(b, cfStart, cStart)) {
+            token.secondaryFlags |= LatexToken.SEC_LEFT_ARROW;
+            token.type = LatexToken.TokenType.ARROW;
+            assignedTokens.add(token);
+            boxCounter++;
+            b = boxes.get(boxCounter);
+            while (compareCharFont(b, cfContinue, cContinue)) {
+                assignedTokens.add(token);
+                boxCounter++;
+                b = boxes.get(boxCounter);
+            }
+
+        }
+
     }
 
     protected void scanBigDelimiter(LatexToken token,
