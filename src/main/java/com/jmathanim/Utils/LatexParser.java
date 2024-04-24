@@ -74,18 +74,23 @@ import org.scilab.forge.jlatexmath.TeXParser;
 import org.scilab.forge.jlatexmath.TypedAtom;
 import org.scilab.forge.jlatexmath.UnderOverArrowAtom;
 
+/**
+ * Handles the parsing of elements of a LaTeX objects and assign to each
+ * generated Shape a LatexToken describing the glyph. It relies in the parsing
+ * capabilities of the JLaTeXMath library.
+ *
+ * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
+ */
 public class LatexParser {
 
     public final ArrayList<LatexToken> assignedTokens;
     private int boxCounter;
-    private Atom currentAtom;
     private TeXFormula formula2;
     public TeXIcon icon;
     private final AbstractLaTeXMathObject latex;
     private TeXFormula formula;
 
     private boolean takesStyleFromNextFlag;
-    private boolean takesStyleFromPreviousFlag;
 
     public List<MiddleAtom> list;
     private LatexToken previousToken;
@@ -95,39 +100,22 @@ public class LatexParser {
     public final ArrayList<Box> boxes;
 
     public enum Modifier {
-        NORMAL, TYPED;
+        NORMAL, //Normal math
+        TYPED,//A function name
+        RAW_TEXT;//Raw, normal text
     }
     private Integer secondaryType;
     public Modifier modifier;
 
     public LatexParser(AbstractLaTeXMathObject latex) {
         this.latex = latex;
-        this.list = new ArrayList<MiddleAtom>();
-        this.boxes = new ArrayList<Box>();
+        this.list = new ArrayList<>();
+        this.boxes = new ArrayList<>();
         this.tokens = new ArrayList<>();
         this.assignedTokens = new ArrayList<>();
         this.modifier = Modifier.NORMAL;
         this.secondaryType = LatexToken.SEC_NORMAL;
         takesStyleFromNextFlag = false;
-        takesStyleFromPreviousFlag = false;
-    }
-
-    public Integer[] getMatchingIndices(LatexToken token) {
-        ArrayList<Integer> indices = new ArrayList<>();
-        for (int i = 0; i < assignedTokens.size(); i++) {
-            if (assignedTokens.get(i).match(token)) {
-                indices.add(i);
-            }
-
-        }
-        return indices.toArray(Integer[]::new);
-    }
-
-    public void colorizeTokens(JMColor color, LatexToken.TokenType tokenType, Integer delType, String name) {
-        Integer[] indices = getMatchingIndices(new LatexToken(tokenType, delType, name));
-        for (Integer indice : indices) {
-            latex.get(indice).color(color);
-        }
     }
 
     public TeXFormula getJLatexFormulaParser() {
@@ -155,7 +143,9 @@ public class LatexParser {
             parseAtom(root);
             distilleTokens();
         } catch (Exception ex2) {
-            JMathAnimScene.logger.warn("Error parsing LaTeX tokens of " + this.latex.getText());
+            JMathAnimScene.logger.warn("Error parsing LaTeX tokens of " + this.latex.getText() + ":" + ex2.getLocalizedMessage() + " ");
+            ex2.printStackTrace();
+
         }
 
         try {
@@ -174,7 +164,8 @@ public class LatexParser {
             parseBox(bo);
             assignTokens();
         } catch (Exception ex) {
-            JMathAnimScene.logger.warn("Error parsing LaTeX boxes or assigning tokens of " + this.latex.getText());
+            JMathAnimScene.logger.warn("Error parsing LaTeX boxes or assigning tokens of " + this.latex.getText() + ":" + ex.getLocalizedMessage());
+            ex.printStackTrace();
 
         }
     }
@@ -194,7 +185,7 @@ public class LatexParser {
         }
     }
 
-    private void parseAtom(Object obj) throws Exception {
+    private void parseAtom(Object obj) throws NoSuchFieldException, IllegalArgumentException, IllegalAccessException {
         //Some Atom subclasses may have null children (like ScripAtom.subscript), so
         //we have to check if the passed object is really an Atom. If null, do nothing.
         Atom atom;
@@ -217,11 +208,28 @@ public class LatexParser {
         }
 
         if (atom instanceof RomanAtom) {
+            Modifier bkModifier = modifier;
+            if (modifier == Modifier.NORMAL) {
+                modifier = Modifier.RAW_TEXT;
+            }
             RomanAtom romanAtom = (RomanAtom) atom;
             campo = RomanAtom.class.getDeclaredField("base");
             campo.setAccessible(true);
             Atom field = (Atom) campo.get(romanAtom);
             parseAtom(field);
+            modifier = bkModifier;
+            return;
+        }
+
+        if (atom instanceof MathAtom) {
+            Modifier bkModifier = modifier;
+            modifier = Modifier.NORMAL;
+            MathAtom mathAtom = (MathAtom) atom;
+            campo = MathAtom.class.getDeclaredField("base");
+            campo.setAccessible(true);
+            Atom field = (Atom) campo.get(mathAtom);
+            parseAtom(field);
+            modifier = bkModifier;
             return;
         }
 
@@ -250,20 +258,6 @@ public class LatexParser {
             return;
         }
 
-        if (atom instanceof MathAtom) {
-            MathAtom mathAtom = (MathAtom) atom;
-            campo = MathAtom.class.getDeclaredField("base");
-            campo.setAccessible(true);
-            Atom field = (Atom) campo.get(mathAtom);
-            parseAtom(field);
-            return;
-        }
-
-        if (atom instanceof EmptyAtom) {
-            //Nothing to do here, remove this code later...
-            return;
-        }
-
         if (atom instanceof RowAtom) {
             RowAtom rowAtom = (RowAtom) atom;
             campo = RowAtom.class.getDeclaredField("elements");
@@ -288,7 +282,6 @@ public class LatexParser {
             String name = "" + symbolAtom.getName();
 
             addTokenToList(type, name);
-            //TODO: IMPROVE
             return;
         }
 
@@ -447,40 +440,77 @@ public class LatexParser {
 
             campo = ScriptsAtom.class.getDeclaredField("superscript");
             campo.setAccessible(true);
-            secondaryType |= LatexToken.SEC_SUPERSCRIPT;//Activate superscript flag
-            secondaryType &= ~LatexToken.SEC_NORMAL;//Deactivate normal flag
+            activateSecondaryBit(LatexToken.SEC_SUPERSCRIPT);
+            deactivateSecondaryBit(LatexToken.SEC_NORMAL);
             parseAtom(campo.get(scriptsAtom));
-            secondaryType |= LatexToken.SEC_NORMAL;//Reactivate normal flag
-            secondaryType &= ~LatexToken.SEC_SUPERSCRIPT;//Deactivate superscript flag
+            deactivateSecondaryBit(LatexToken.SEC_SUPERSCRIPT);
+            activateSecondaryBit(LatexToken.SEC_NORMAL);
 
             campo = ScriptsAtom.class.getDeclaredField("subscript");
             campo.setAccessible(true);
-            secondaryType |= LatexToken.SEC_SUBSCRIPT;//Activate superscript flag
-            secondaryType &= ~LatexToken.SEC_NORMAL;//Deactivate normal flag
+
+            activateSecondaryBit(LatexToken.SEC_SUBSCRIPT);
+            deactivateSecondaryBit(LatexToken.SEC_NORMAL);
             parseAtom(campo.get(scriptsAtom));
-            secondaryType |= LatexToken.SEC_NORMAL;//Reactivate normal flag
-            secondaryType &= ~LatexToken.SEC_SUBSCRIPT;//Deactivate superscript flag
+            deactivateSecondaryBit(LatexToken.SEC_SUBSCRIPT);
+            activateSecondaryBit(LatexToken.SEC_NORMAL);
             return;
         }
 
         if (atom instanceof BigOperatorAtom) {
             BigOperatorAtom bigOperatorAtom = (BigOperatorAtom) atom;
 
-            campo = BigOperatorAtom.class.getDeclaredField("base");
-            campo.setAccessible(true);
-            parseAtom((Atom) campo.get(bigOperatorAtom));
-
-            secondaryType |= LatexToken.SEC_TO_INDEX;
             campo = BigOperatorAtom.class.getDeclaredField("over");
             campo.setAccessible(true);
-            parseAtom((Atom) campo.get(bigOperatorAtom));
-            secondaryType &= ~LatexToken.SEC_TO_INDEX;
+            Atom overAtom = (Atom) campo.get(bigOperatorAtom);
 
-            secondaryType |= LatexToken.SEC_FROM_INDEX;
+            campo = BigOperatorAtom.class.getDeclaredField("base");
+            campo.setAccessible(true);
+            Atom baseAtom = (Atom) campo.get(bigOperatorAtom);
+
+            //Retrieve the command name for the big operator
+            campo = SymbolAtom.class.getDeclaredField("name");
+            campo.setAccessible(true);
+            String opName = (String) campo.get(baseAtom);
+
             campo = BigOperatorAtom.class.getDeclaredField("under");
             campo.setAccessible(true);
-            parseAtom((Atom) campo.get(bigOperatorAtom));
-            secondaryType &= ~LatexToken.SEC_FROM_INDEX;
+            Atom underAtom = (Atom) campo.get(bigOperatorAtom);
+
+            //Depending on the specific operator command, shape order is altered
+            if (opName.contains("int")) {
+                //base, over, under
+                parseAtom(baseAtom);
+
+                activateSecondaryBit(LatexToken.SEC_TO_INDEX);
+                deactivateSecondaryBit(LatexToken.SEC_NORMAL);
+                parseAtom(overAtom);
+                deactivateSecondaryBit(LatexToken.SEC_TO_INDEX);
+                activateSecondaryBit(LatexToken.SEC_NORMAL);
+
+                activateSecondaryBit(LatexToken.SEC_FROM_INDEX);
+                deactivateSecondaryBit(LatexToken.SEC_NORMAL);
+                parseAtom(underAtom);
+                deactivateSecondaryBit(LatexToken.SEC_FROM_INDEX);
+                activateSecondaryBit(LatexToken.SEC_NORMAL);
+
+            } else {//over, base, under
+
+                activateSecondaryBit(LatexToken.SEC_TO_INDEX);
+                deactivateSecondaryBit(LatexToken.SEC_NORMAL);
+                parseAtom(overAtom);
+                deactivateSecondaryBit(LatexToken.SEC_TO_INDEX);
+                activateSecondaryBit(LatexToken.SEC_NORMAL);
+
+                parseAtom(baseAtom);
+
+                activateSecondaryBit(LatexToken.SEC_FROM_INDEX);
+                deactivateSecondaryBit(LatexToken.SEC_NORMAL);
+                parseAtom(underAtom);
+                deactivateSecondaryBit(LatexToken.SEC_FROM_INDEX);
+                activateSecondaryBit(LatexToken.SEC_NORMAL);
+            }
+
             return;
         }
         if (atom instanceof MatrixAtom) {
@@ -506,17 +536,20 @@ public class LatexParser {
             case TYPED:
                 type = LatexToken.TokenType.NAMED_FUNCTION;
                 break;
+            case RAW_TEXT:
+                type=LatexToken.TokenType.NON_MATH_CHAR;
+                break;
         }
 
         LatexToken token = new LatexToken(type, name);
-        if (secondaryType != 0) {
-            if (token.secondaryFlags == null) {
-                token.secondaryFlags = 0;
-            }
-            token.secondaryFlags |= secondaryType;
-        }
+//        if (secondaryType != 0) {
+//            if (token.secondaryFlags == null) {
+//                token.secondaryFlags = 0;
+//            }
+        token.activateSecondaryBit(secondaryType);
+//        }
         token.takesStyleFromNext = this.takesStyleFromNextFlag;
-        tokens.add(token);//TODO: IMPROVE
+        tokens.add(token);
         previousToken = token;
     }
 
@@ -591,7 +624,7 @@ public class LatexParser {
         for (int n = 0; n < tokens.size(); n++) {
             LatexToken token = tokens.get(n);
             switch (token.type) {
-                case CHAR, FRACTION_BAR, GREEK_LETTER, NAMED_FUNCTION, OPERATOR, BINARY_OPERATOR, RELATION, NUMBER, ARROW:
+                case NON_MATH_CHAR, CHAR, FRACTION_BAR, GREEK_LETTER, NAMED_FUNCTION, OPERATOR, BINARY_OPERATOR, RELATION, NUMBER, ARROW:
                     //These are supposed to be the "easy tokens"
                     assignedTokens.add(token);
                     boxCounter++;
@@ -605,7 +638,9 @@ public class LatexParser {
                 case SQRT:
                     processSQRT(token);
                     break;
-
+                default:
+                    JMathAnimScene.logger.warn("Token not recognized when trying to assign: " + token);
+                    break;
             }
 
         }
@@ -623,10 +658,10 @@ public class LatexParser {
     private void processSymbol(LatexToken token) {
         switch (token.string) {
             case "vert":
-                processDelimiter(token);//vert puede ser delimiter
+                processDelimiter(token);//vert can be a delimiter
                 break;
             case "Vert":
-                processDelimiter(token);//Vert puede ser delimiter
+                processDelimiter(token);//Vert can be a delimiter
                 break;
             default:
                 assignedTokens.add(token);
@@ -831,7 +866,7 @@ public class LatexParser {
                 break;
             case "overrightarrow":
                 token.type = LatexToken.TokenType.ARROW;
-                token.secondaryFlags |= LatexToken.SEC_RIGHT_ARROW;
+                token.activateSecondaryBit(LatexToken.SEC_RIGHT_ARROW);
                 scanBigDelimiter(token,
                         8, 33, //Normal
                         0, 0, //\big
@@ -843,6 +878,7 @@ public class LatexParser {
                         1, 0,//Extensible over right part
                         1, 0//Extensible over left part
                 );
+                token.deactivateSecondaryBit(LatexToken.SEC_RIGHT_ARROW);
                 break;
             case "overleftarrow":
                 //This case es special, as begins with cf(8,195) and may have
@@ -863,7 +899,7 @@ public class LatexParser {
                 break;
             case "overleftrightarrow":
                 token.type = LatexToken.TokenType.ARROW;
-                token.secondaryFlags |= LatexToken.SEC_LEFTRIGHT_ARROW;
+                token.activateSecondaryBit(LatexToken.SEC_LEFTRIGHT_ARROW);
                 scanBigDelimiter(token,
                         8, 33, //Normal FIX THIS
                         1, 174, //\big
@@ -875,6 +911,7 @@ public class LatexParser {
                         1, 0,//Extensible over right part
                         1, 0//Extensible over left part
                 );
+                token.deactivateSecondaryBit(LatexToken.SEC_LEFTRIGHT_ARROW);
                 break;
 
 //             case "lname":
@@ -899,7 +936,7 @@ public class LatexParser {
     protected void scanLeftArrow(LatexToken token, int cfStart, int cStart, int cfContinue, int cContinue) {
         Box b = boxes.get(boxCounter);
         if (compareCharFont(b, cfStart, cStart)) {
-            token.secondaryFlags |= LatexToken.SEC_LEFT_ARROW;
+            token.activateSecondaryBit(LatexToken.SEC_LEFT_ARROW);
             token.type = LatexToken.TokenType.ARROW;
             assignedTokens.add(token);
             boxCounter++;
@@ -909,7 +946,7 @@ public class LatexParser {
                 boxCounter++;
                 b = boxes.get(boxCounter);
             }
-
+            token.deactivateSecondaryBit(LatexToken.SEC_LEFT_ARROW);
         }
 
     }
@@ -928,45 +965,46 @@ public class LatexParser {
         Box b = boxes.get(boxCounter);
 
         if (compareCharFont(b, cfSmall, cSmall)) {//Small delimiter
-            token.secondaryFlags |= LatexToken.SEC_DELIMITER_NORMAL;
+            token.activateSecondaryBit(LatexToken.SEC_DELIMITER_NORMAL);
             assignedTokens.add(token);
-            token.secondaryFlags &= ~LatexToken.SEC_DELIMITER_NORMAL;
+            token.deactivateSecondaryBit(LatexToken.SEC_DELIMITER_NORMAL);
             boxCounter++;
             return;
         }
 
         if (compareCharFont(b, cfBig1, cBig1)) {//\big delimiter
-            token.secondaryFlags |= LatexToken.SEC_DELIMITER_BIG1;
+            token.activateSecondaryBit(LatexToken.SEC_DELIMITER_BIG1);
             assignedTokens.add(token);
-            token.secondaryFlags &= ~LatexToken.SEC_DELIMITER_BIG1;
+            token.deactivateSecondaryBit(LatexToken.SEC_DELIMITER_BIG1);
             boxCounter++;
             return;
         }
         if (compareCharFont(b, cfBig2, cBig2)) {//\Big delimiter
-            token.secondaryFlags |= LatexToken.SEC_DELIMITER_BIG2;
+            token.activateSecondaryBit(LatexToken.SEC_DELIMITER_BIG2);
             assignedTokens.add(token);
-            token.secondaryFlags &= ~LatexToken.SEC_DELIMITER_BIG2;
+            token.deactivateSecondaryBit(LatexToken.SEC_DELIMITER_BIG2);
             boxCounter++;
             return;
         }
         if (compareCharFont(b, cfBig3, cBig3)) {//\Big delimiter
-            token.secondaryFlags |= LatexToken.SEC_DELIMITER_BIG3;
+            token.activateSecondaryBit(LatexToken.SEC_DELIMITER_BIG3);
             assignedTokens.add(token);
-            token.secondaryFlags &= ~LatexToken.SEC_DELIMITER_BIG3;
+            token.deactivateSecondaryBit(LatexToken.SEC_DELIMITER_BIG3);
             boxCounter++;
             return;
         }
         if (compareCharFont(b, cfBig4, cBig4)) {//\Big4 delimiter
-            token.secondaryFlags |= LatexToken.SEC_DELIMITER_BIG4;
+            token.activateSecondaryBit(LatexToken.SEC_DELIMITER_BIG4);
             assignedTokens.add(token);
-            token.secondaryFlags &= ~LatexToken.SEC_DELIMITER_BIG4;
+            token.deactivateSecondaryBit(LatexToken.SEC_DELIMITER_BIG4);
             boxCounter++;
             return;
         }
 
         if (compareCharFont(b, cfExtensibleUpper, cExtensibleUpper)) {//A big left upper side delimiter
-            token.secondaryFlags |= LatexToken.SEC_DELIMITER_EXTENSIBLE;
+            token.activateSecondaryBit(LatexToken.SEC_DELIMITER_EXTENSIBLE);
             assignedTokens.add(token);
+            token.deactivateSecondaryBit(LatexToken.SEC_DELIMITER_EXTENSIBLE);
             boxCounter++;
             if (cExtensibleLower == -1) {//Special case where extensible delimiter is exactly 1 char (like \langle)
                 return;
@@ -985,23 +1023,23 @@ public class LatexParser {
                 if (trailStarted & !found) {
                     break;
                 }
-                token.secondaryFlags |= LatexToken.SEC_DELIMITER_EXTENSIBLE;
+                token.activateSecondaryBit(LatexToken.SEC_DELIMITER_EXTENSIBLE);
                 assignedTokens.add(token);
-                token.secondaryFlags &= ~LatexToken.SEC_DELIMITER_EXTENSIBLE;
+                token.deactivateSecondaryBit(LatexToken.SEC_DELIMITER_EXTENSIBLE);
                 boxCounter++;
             }
 
         }
     }
 
-    public void activateSecondaryBit(int bit) {
+    private void activateSecondaryBit(int bit) {
         if (secondaryType == null) {
             secondaryType = 0;
         }
         secondaryType |= bit;
     }
 
-    public void deactivateSecondaryBit(int bit) {
+    private void deactivateSecondaryBit(int bit) {
         if (secondaryType == null) {
             return;
         }

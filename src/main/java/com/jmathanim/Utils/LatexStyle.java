@@ -59,6 +59,13 @@ public class LatexStyle {
         return this;
     }
 
+    /**
+     * Apply this style to the given AbstractLaTeXMathObject object. LaTeX code
+     * must be compiled using the JLaTeXMath option to work, as it need its
+     * parsing capabilities.
+     *
+     * @param latex LaTeX expression to parse and colouring
+     */
     public void apply(AbstractLaTeXMathObject latex) {
         for (LatexStyleItem colorizerItem : latexStyleItems) {
             colorizerItem.apply(latex);
@@ -66,10 +73,22 @@ public class LatexStyle {
         }
     }
 
-    public boolean add(LatexStyleItem e) {
-        return latexStyleItems.add(e);
+    /**
+     * Add the given style item to the list
+     *
+     * @param styleItem The style item to add
+     * @return This object
+     */
+    public LatexStyle add(LatexStyleItem styleItem) {
+        latexStyleItems.add(styleItem);
+        return this;
     }
 
+    /**
+     * Returns a copy of this LatexStyle object
+     *
+     * @return The copy object
+     */
     public LatexStyle copy() {
         LatexStyle copy = new LatexStyle();
         for (LatexStyleItem colorizerItem : latexStyleItems) {
@@ -78,10 +97,21 @@ public class LatexStyle {
         return copy;
     }
 
+    /**
+     * Returns the nth style item
+     *
+     * @param index The index of the style item
+     * @return The style item
+     */
     public LatexStyleItem get(int index) {
         return latexStyleItems.get(index);
     }
 
+    /**
+     * Returns the list of Latex Style to apply
+     *
+     * @return An ArrayList with all the LatexStyleItem objects
+     */
     public ArrayList<LatexStyleItem> getLatexStyleItems() {
         return latexStyleItems;
     }

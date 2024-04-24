@@ -170,7 +170,7 @@ public class LatexStyleItem {
     public void apply(AbstractLaTeXMathObject latex) {
         LatexParser latexParser = latex.getLatexParser();
         if (latexParser == null) {
-            JMathAnimScene.logger.warn("This LaTeXMathObject has no parser, cannot colorize, sorry!");
+            JMathAnimScene.logger.warn("This LaTeXMathObject has no parser. It cannot be coloured, sorry!");
             return;
         }
         ArrayList<LatexToken> tokens = latexParser.assignedTokens;
