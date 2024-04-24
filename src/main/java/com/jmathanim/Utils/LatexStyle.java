@@ -16,6 +16,8 @@
  */
 package com.jmathanim.Utils;
 
+import com.jmathanim.Styling.JMColor;
+import com.jmathanim.Styling.PaintStyle;
 import com.jmathanim.mathobjects.Text.AbstractLaTeXMathObject;
 import java.util.ArrayList;
 
@@ -46,6 +48,10 @@ public class LatexStyle {
     }
 
     public LatexStyle setColorToChar(String name, String colorName) {
+        return setColorToChar(name, JMColor.parse(colorName));
+    }
+
+    public LatexStyle setColorToChar(String name, PaintStyle colorName) {
         LatexStyleItem colorizerItem = new LatexStyleItem();
         colorizerItem.tokenEq = new LatexToken(LatexToken.TokenType.CHAR, name);
         colorizerItem.setColor(colorName);
@@ -79,6 +85,5 @@ public class LatexStyle {
     public ArrayList<LatexStyleItem> getLatexStyleItems() {
         return latexStyleItems;
     }
-    
-    
+
 }

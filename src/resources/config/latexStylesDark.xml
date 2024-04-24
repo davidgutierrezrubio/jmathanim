@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <JMathAnimConfig>
     <latexStyles>
-        <latexStyle name="blindcolor">
+        <latexStyle name="colorblind">
             <latexStyleItem>
                 <conditions>
                     <equals>
@@ -44,7 +44,7 @@
                     </equals>
                 </conditions>
                 <style>
-                    <color>#CC6677</color>
+                    <color>#4477AA</color>
                 </style>
             </latexStyleItem>
             
@@ -55,7 +55,7 @@
                     </equals>
                 </conditions>
                 <style>
-                    <color>#CC6677</color>
+                    <color>#4477AA</color>
                 </style>
             </latexStyleItem>
                 <latexStyleItem>
@@ -65,7 +65,7 @@
                     </equals>
                 </conditions>
                 <style>
-                    <color>#CC6677</color>
+                    <color>#4477AA</color>
                 </style>
             </latexStyleItem>
             
@@ -76,17 +76,7 @@
                     </equals>
                 </conditions>
                 <style>
-                    <color>#CC6677</color>
-                </style>
-            </latexStyleItem>
-            <latexStyleItem>
-                <conditions>
-                    <equals>
-                        <type>RELATION</type>
-                    </equals>
-                </conditions>
-                <style>
-                    <color>#CC6677</color>
+                    <color>#4477AA</color>
                 </style>
             </latexStyleItem>
             
@@ -97,7 +87,7 @@
                     </equals>
                 </conditions>
                 <style>
-                    <color>#4477AA</color>
+                    <color>#66CCEE</color>
                 </style>
             </latexStyleItem>
             

@@ -343,17 +343,18 @@ public class LatexParser {
 
             campo = FractionAtom.class.getDeclaredField("numerator");
             campo.setAccessible(true);
-            secondaryType |= LatexToken.SEC_NUMERATOR;
+            activateSecondaryBit(LatexToken.SEC_NUMERATOR);
             parseAtom(campo.get(fractionAtom));
-            secondaryType &= ~LatexToken.SEC_NUMERATOR;
+            deactivateSecondaryBit(LatexToken.SEC_NUMERATOR);
 
             addTokenToList(LatexToken.TokenType.FRACTION_BAR, "fractionRule");
 
             campo = FractionAtom.class.getDeclaredField("denominator");
             campo.setAccessible(true);
-            secondaryType |= LatexToken.SEC_DENOMINATOR;
+            activateSecondaryBit(LatexToken.SEC_DENOMINATOR);
             parseAtom(campo.get(fractionAtom));
-            secondaryType &= ~LatexToken.SEC_DENOMINATOR;;
+            deactivateSecondaryBit(LatexToken.SEC_DENOMINATOR);
+
             return;
         }
 
@@ -391,12 +392,11 @@ public class LatexParser {
 
         if (atom instanceof OverlinedAtom) {
             OverlinedAtom overlinedAtom = (OverlinedAtom) atom;
-            
-            this.takesStyleFromNextFlag=true;
+
+            this.takesStyleFromNextFlag = true;
             addTokenToList(LatexToken.TokenType.SYMBOL, "overbar");
-            this.takesStyleFromNextFlag=false;
-            
-            
+            this.takesStyleFromNextFlag = false;
+
             campo = OverlinedAtom.class.getDeclaredField("base");
             campo.setAccessible(true);
             parseAtom(campo.get(overlinedAtom));
@@ -509,8 +509,12 @@ public class LatexParser {
         }
 
         LatexToken token = new LatexToken(type, name);
-        token.secondaryFlags |= secondaryType;
-
+        if (secondaryType != 0) {
+            if (token.secondaryFlags == null) {
+                token.secondaryFlags = 0;
+            }
+            token.secondaryFlags |= secondaryType;
+        }
         token.takesStyleFromNext = this.takesStyleFromNextFlag;
         tokens.add(token);//TODO: IMPROVE
         previousToken = token;
@@ -990,4 +994,17 @@ public class LatexParser {
         }
     }
 
+    public void activateSecondaryBit(int bit) {
+        if (secondaryType == null) {
+            secondaryType = 0;
+        }
+        secondaryType |= bit;
+    }
+
+    public void deactivateSecondaryBit(int bit) {
+        if (secondaryType == null) {
+            return;
+        }
+        secondaryType &= ~bit;
+    }
 }

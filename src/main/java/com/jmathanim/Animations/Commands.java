@@ -112,8 +112,7 @@ public class Commands {
 
     /**
      * Creates an animation that scales back and forth the specified objets up
-     * to given scale.The center of the scale will be the same for all objects,
-     * and equals to the center of combined bounding box.
+     * to given scale.
      *
      * @param runtime Duration in seconds
      * @param scale The factor to scale. A value of 1.5 will scale the objecs up
@@ -141,10 +140,11 @@ public class Commands {
             }
         };
 
-        MathObjectGroup group = MathObjectGroup.make(mathObjects);
-        Point center = group.getCenter();
-
-        Animation anim = Commands.scale(runtime, center, scale, group);
+        AnimationGroup anim=AnimationGroup.make();
+        for (MathObject mathObject : mathObjects) {
+         anim.add(Commands.scale(runtime,  scale, mathObject));   
+        }
+//        Animation anim = Commands.scale(runtime, center, scale, group);
         anim.initRunnable = initHook;
         anim.finishRunnable = finishHook;
         anim.setLambda(UsefulLambdas.backAndForth());

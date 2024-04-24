@@ -29,7 +29,7 @@ public class LatexToken {
 
     public LatexToken copy() {
         LatexToken copy = new LatexToken(type, secondaryFlags, string);
-        copy.takesStyleFromNext=this.takesStyleFromNext;
+        copy.takesStyleFromNext = this.takesStyleFromNext;
         return copy;
     }
 
@@ -79,12 +79,8 @@ public class LatexToken {
 
     public LatexToken(TokenType type, Integer secondaryFlags, String name) {
         this.type = type;
-        takesStyleFromNext=false;
-        if (secondaryFlags != null) {
-            this.secondaryFlags = secondaryFlags;
-        } else {
-            this.secondaryFlags = 0;
-        }
+        takesStyleFromNext = false;
+        this.secondaryFlags = secondaryFlags;
         this.string = name;
         refineToken();
     }
@@ -112,16 +108,14 @@ public class LatexToken {
                 if (operators.contains(string)) {
                     type = TokenType.OPERATOR;
 
-                  
                     break;
                 }
-                  if (binaryOperators.contains(string)) {
-                       type = TokenType.BINARY_OPERATOR;
+                if (binaryOperators.contains(string)) {
+                    type = TokenType.BINARY_OPERATOR;
 
-                  
                     break;
-                    }
-                
+                }
+
                 if (delimiters.contains(string)) {
                     type = TokenType.DELIMITER;
                     break;
@@ -216,7 +210,7 @@ public class LatexToken {
 
     @Override
     public String toString() {
-        return "LatexToken[" + type + ", " + secondaryFlags + "," + string + "]"+(takesStyleFromNext ? "takes style from next":"");
+        return "LatexToken[" + type + ", " + secondaryFlags + "," + string + "]" + (takesStyleFromNext ? "takes style from next" : "");
     }
     private static final List<String> greekLetters = Arrays.asList(
             "Alpha", "alpha",
@@ -255,36 +249,35 @@ public class LatexToken {
             "oint"
     );
     private static final List<String> binaryOperators = Arrays.asList(
-            "plus", "minus", "slash", "div","pm","mp",
+            "plus", "minus", "slash", "div", "pm", "mp",
             "cap", "cup", "wedge", "vee",
-            "cdot","times","ast",
-            "otimes","oplus","ominus","oslash","odot",
-            "bigcirc","dagger",
-            "star","circ","bullet","diamond",
-            "bigtriangleup","bigtriangledown",
-            "triangleleft","triangleright",
-            "unlhd","unrhd"
+            "cdot", "times", "ast",
+            "otimes", "oplus", "ominus", "oslash", "odot",
+            "bigcirc", "dagger",
+            "star", "circ", "bullet", "diamond",
+            "bigtriangleup", "bigtriangledown",
+            "triangleleft", "triangleright",
+            "unlhd", "unrhd"
     );
 
     private static final List<String> relations = Arrays.asList(
             "equals", "lt", "leq", "le", "gt", "geq", "ge",
-            "triangleq","thicksim","doteq","circeq","thickapprox",
-            "bumpeq","risingdotseq","Bumpeq","approxeq","asymp",
-            "mid","nmid","shortmid","shortparallel","nshortmid","nshortparallel",
-            "models","cong","ncong",
+            "triangleq", "thicksim", "doteq", "circeq", "thickapprox",
+            "bumpeq", "risingdotseq", "Bumpeq", "approxeq", "asymp",
+            "mid", "nmid", "shortmid", "shortparallel", "nshortmid", "nshortparallel",
+            "models", "cong", "ncong",
             "neq", "equiv", "cong", "sim", "simeq",
-            "approx", "propto", "parallel", "perp","ne",
-            "subset","supset","in","notin",
+            "approx", "propto", "parallel", "perp", "ne",
+            "subset", "supset", "in", "notin",
             "subseteq", "supseteq",
             "nsubseteq", "nsupseteq",
-            "parallel","nparallel",
+            "parallel", "nparallel",
             "in", "notin", "ni", "mapsto", "rightarrow",
             "Rightarrow", "longrightarrow", "Leftarrow",
             "leftrightarrow", "Leftrightarrow", "implies", "iff",
             "forall", "exists", "mid", "nmid",
-            "nless","ngtr","leqslant","geqslant",
-            "nleq","ngeq","nleqslant","ngeqslant"
-            
+            "nless", "ngtr", "leqslant", "geqslant",
+            "nleq", "ngeq", "nleqslant", "ngeqslant"
     );
 
     private static final List<String> delimiters = Arrays.asList(

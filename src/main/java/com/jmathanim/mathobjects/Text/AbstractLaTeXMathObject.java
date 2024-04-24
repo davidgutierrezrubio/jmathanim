@@ -24,11 +24,13 @@ import com.jmathanim.Utils.Anchor;
 import com.jmathanim.Utils.EmptyRect;
 import com.jmathanim.Utils.LatexStyle;
 import com.jmathanim.Utils.LatexParser;
+import com.jmathanim.Utils.LatexToken;
 import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.SVGUtils;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.MathObject;
+import com.jmathanim.mathobjects.MultiShapeObject;
 import com.jmathanim.mathobjects.Point;
 import com.jmathanim.mathobjects.SVGMathObject;
 import com.jmathanim.mathobjects.Shape;
@@ -416,12 +418,24 @@ public abstract class AbstractLaTeXMathObject extends SVGMathObject {
         return this;
     }
 
-//    public Anchor.Type getAnchor() {
-//        return anchor;
-//    }
-//
-//    public <T extends AbstractLaTeXMathObject> T setAnchor(Anchor.Type anchor) {
-//        this.anchor = anchor;
-//        return (T) this;
-//    }
+    /**
+     * Returns a MultiShapeObject with all shapes with match given token
+     * LaTex code must be compiled with the JLaTeXMath option to use this method.
+     * @param token Token to match
+     * @return A MultiShapeObject with all matching shapes
+     */
+    public MultiShapeObject getShapesWith(LatexToken token) {
+        MultiShapeObject resul = MultiShapeObject.make();
+        if (latexParser == null) {
+            return resul;
+        }
+        for (int i = 0; i < latexParser.assignedTokens.size(); i++) {
+            LatexToken shapeToken = latexParser.assignedTokens.get(i);
+            if (shapeToken.match(token)) {
+                resul.add(get(i));
+            }
+        }
+        return resul;
+    }
+
 }
