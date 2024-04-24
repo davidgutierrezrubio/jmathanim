@@ -206,12 +206,12 @@ public class LatexParser {
             parseAtom(field);
             return;
         }
-        
-          if (atom instanceof BoldAtom) {
+
+        if (atom instanceof BoldAtom) {
             BoldAtom boldAtom = (BoldAtom) atom;
             campo = BoldAtom.class.getDeclaredField("base");
             campo.setAccessible(true);
-              activateSecondaryBit(LatexToken.SEC_BOLD_FONT);
+            activateSecondaryBit(LatexToken.SEC_BOLD_FONT);
             Atom field = (Atom) campo.get(boldAtom);
             parseAtom(field);
             deactivateSecondaryBit(LatexToken.SEC_BOLD_FONT);
@@ -228,7 +228,7 @@ public class LatexParser {
             campo.setAccessible(true);
             Atom field = (Atom) campo.get(romanAtom);
             parseAtom(field);
-            modifier = bkModifier;
+//            modifier = bkModifier;
             return;
         }
 
@@ -240,7 +240,7 @@ public class LatexParser {
             campo.setAccessible(true);
             Atom field = (Atom) campo.get(mathAtom);
             parseAtom(field);
-            modifier = bkModifier;
+//            modifier = bkModifier;
             return;
         }
 
@@ -488,7 +488,7 @@ public class LatexParser {
                 TypedAtom typedAtom = (TypedAtom) baseAtom;
                 //base, over, under
                 parseAtom(typedAtom);
-                 activateSecondaryBit(LatexToken.SEC_TO_INDEX);
+                activateSecondaryBit(LatexToken.SEC_TO_INDEX);
                 deactivateSecondaryBit(LatexToken.SEC_NORMAL);
                 parseAtom(overAtom);
                 deactivateSecondaryBit(LatexToken.SEC_TO_INDEX);
@@ -563,13 +563,15 @@ public class LatexParser {
     }
 
     protected void addTokenToList(LatexToken.TokenType type, String name) {
-        switch (modifier) {
-            case TYPED:
-                type = LatexToken.TokenType.NAMED_FUNCTION;
-                break;
-            case RAW_TEXT:
-                type = LatexToken.TokenType.NON_MATH_CHAR;
-                break;
+        if (type == LatexToken.TokenType.CHAR) {
+            switch (modifier) {
+                case TYPED:
+                    type = LatexToken.TokenType.NAMED_FUNCTION;
+                    break;
+                case RAW_TEXT:
+                    type = LatexToken.TokenType.NON_MATH_CHAR;
+                    break;
+            }
         }
 
         LatexToken token = new LatexToken(type, name);
