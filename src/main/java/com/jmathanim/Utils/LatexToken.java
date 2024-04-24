@@ -29,6 +29,7 @@ public class LatexToken {
 
     public LatexToken copy() {
         LatexToken copy = new LatexToken(type, secondaryFlags, string);
+        copy.takesStyleFromNext=this.takesStyleFromNext;
         return copy;
     }
 
@@ -254,7 +255,7 @@ public class LatexToken {
             "oint"
     );
     private static final List<String> binaryOperators = Arrays.asList(
-            "plus", "minus", "slash", "div",
+            "plus", "minus", "slash", "div","pm","mp",
             "cap", "cup", "wedge", "vee",
             "cdot","times","ast",
             "otimes","oplus","ominus","oslash","odot",

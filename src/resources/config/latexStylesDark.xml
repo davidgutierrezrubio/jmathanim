@@ -48,6 +48,27 @@
                 </style>
             </latexStyleItem>
             
+             <latexStyleItem>
+                <conditions>
+                    <equals>
+                        <type>FRACTION_BAR</type>
+                    </equals>
+                </conditions>
+                <style>
+                    <color>#CC6677</color>
+                </style>
+            </latexStyleItem>
+                <latexStyleItem>
+                <conditions>
+                    <equals>
+                        <type>SQRT</type>
+                    </equals>
+                </conditions>
+                <style>
+                    <color>#CC6677</color>
+                </style>
+            </latexStyleItem>
+            
               <latexStyleItem>
                 <conditions>
                     <equals>
@@ -56,6 +77,27 @@
                 </conditions>
                 <style>
                     <color>#CC6677</color>
+                </style>
+            </latexStyleItem>
+            <latexStyleItem>
+                <conditions>
+                    <equals>
+                        <type>RELATION</type>
+                    </equals>
+                </conditions>
+                <style>
+                    <color>#CC6677</color>
+                </style>
+            </latexStyleItem>
+            
+              <latexStyleItem>
+                <conditions>
+                    <equals>
+                        <type>DELIMITER</type>
+                    </equals>
+                </conditions>
+                <style>
+                    <color>#4477AA</color>
                 </style>
             </latexStyleItem>
             
