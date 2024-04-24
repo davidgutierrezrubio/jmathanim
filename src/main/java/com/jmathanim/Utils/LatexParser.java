@@ -37,10 +37,12 @@ import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import static javafx.scene.paint.Color.color;
+import org.scilab.forge.jlatexmath.AccentedAtom;
 import org.scilab.forge.jlatexmath.ArrayOfAtoms;
 import org.scilab.forge.jlatexmath.Atom;
 import org.scilab.forge.jlatexmath.BigDelimiterAtom;
 import org.scilab.forge.jlatexmath.BigOperatorAtom;
+import org.scilab.forge.jlatexmath.BoldAtom;
 import org.scilab.forge.jlatexmath.Box;
 import org.scilab.forge.jlatexmath.CharAtom;
 import org.scilab.forge.jlatexmath.CharBox;
@@ -56,6 +58,7 @@ import org.scilab.forge.jlatexmath.MiddleAtom;
 import org.scilab.forge.jlatexmath.NthRoot;
 import org.scilab.forge.jlatexmath.OverUnderBox;
 import org.scilab.forge.jlatexmath.OverUnderDelimiter;
+import org.scilab.forge.jlatexmath.OverlinedAtom;
 import org.scilab.forge.jlatexmath.RomanAtom;
 import org.scilab.forge.jlatexmath.RowAtom;
 import org.scilab.forge.jlatexmath.ScaleBox;
@@ -81,6 +84,9 @@ public class LatexParser {
     private final AbstractLaTeXMathObject latex;
     private TeXFormula formula;
 
+    private boolean takesStyleFromNextFlag;
+    private boolean takesStyleFromPreviousFlag;
+
     public List<MiddleAtom> list;
     private LatexToken previousToken;
     private Atom rootCopy;
@@ -102,6 +108,8 @@ public class LatexParser {
         this.assignedTokens = new ArrayList<>();
         this.modifier = Modifier.NORMAL;
         this.secondaryType = LatexToken.SEC_NORMAL;
+        takesStyleFromNextFlag = false;
+        takesStyleFromPreviousFlag = false;
     }
 
     public Integer[] getMatchingIndices(LatexToken token) {
@@ -216,6 +224,32 @@ public class LatexParser {
             parseAtom(field);
             return;
         }
+
+        if (atom instanceof BoldAtom) {
+            BoldAtom boldAtom = (BoldAtom) atom;
+            campo = BoldAtom.class.getDeclaredField("base");
+            campo.setAccessible(true);
+            Atom field = (Atom) campo.get(boldAtom);
+            parseAtom(field);
+            return;
+        }
+        if (atom instanceof AccentedAtom) {
+            AccentedAtom accentedAtom = (AccentedAtom) atom;
+            //First accent
+            campo = AccentedAtom.class.getDeclaredField("accent");
+            campo.setAccessible(true);
+            Atom field = (Atom) campo.get(accentedAtom);
+            this.takesStyleFromNextFlag = true;
+            parseAtom(field);
+            this.takesStyleFromNextFlag = false;
+            //Then base
+            campo = AccentedAtom.class.getDeclaredField("base");
+            campo.setAccessible(true);
+            field = (Atom) campo.get(accentedAtom);
+            parseAtom(field);
+            return;
+        }
+
         if (atom instanceof MathAtom) {
             MathAtom mathAtom = (MathAtom) atom;
             campo = MathAtom.class.getDeclaredField("base");
@@ -355,6 +389,19 @@ public class LatexParser {
             return;
         }
 
+        if (atom instanceof OverlinedAtom) {
+            OverlinedAtom overlinedAtom = (OverlinedAtom) atom;
+            
+            this.takesStyleFromNextFlag=true;
+            addTokenToList(LatexToken.TokenType.SYMBOL, "overbar");
+            this.takesStyleFromNextFlag=false;
+            
+            
+            campo = OverlinedAtom.class.getDeclaredField("base");
+            campo.setAccessible(true);
+            parseAtom(campo.get(overlinedAtom));
+        }
+
         if (atom instanceof UnderOverArrowAtom) {
             UnderOverArrowAtom underOverArrowAtom = (UnderOverArrowAtom) atom;
 
@@ -382,7 +429,9 @@ public class LatexParser {
             Atom base = (Atom) campo.get(underOverArrowAtom);
 
             if (over) {
+                this.takesStyleFromNextFlag = true;
                 addTokenToList(LatexToken.TokenType.DELIMITER, arrowTypeName);
+                this.takesStyleFromNextFlag = false;
                 parseAtom(base);
             } else {
                 parseAtom(base);
@@ -460,7 +509,9 @@ public class LatexParser {
         }
 
         LatexToken token = new LatexToken(type, name);
-        token.secondaryFlags|= secondaryType;
+        token.secondaryFlags |= secondaryType;
+
+        token.takesStyleFromNext = this.takesStyleFromNextFlag;
         tokens.add(token);//TODO: IMPROVE
         previousToken = token;
     }
@@ -536,7 +587,7 @@ public class LatexParser {
         for (int n = 0; n < tokens.size(); n++) {
             LatexToken token = tokens.get(n);
             switch (token.type) {
-                case CHAR, FRACTION_BAR, GREEK_LETTER, NAMED_FUNCTION, OPERATOR, BINARY_OPERATOR,RELATION, NUMBER, ARROW:
+                case CHAR, FRACTION_BAR, GREEK_LETTER, NAMED_FUNCTION, OPERATOR, BINARY_OPERATOR, RELATION, NUMBER, ARROW:
                     //These are supposed to be the "easy tokens"
                     assignedTokens.add(token);
                     boxCounter++;

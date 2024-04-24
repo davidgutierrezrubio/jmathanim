@@ -77,14 +77,14 @@ public class LatexStyleItem {
     }
 
     public LatexStyleItem copy() {
-        LatexStyleItem copyObject=new LatexStyleItem();
-        copyObject.tokenEq=this.tokenEq.copy();
-        copyObject.tokenEqAfter=this.tokenEqAfter.copy();
-        copyObject.tokenEqPrev=this.tokenEqPrev.copy();
-        copyObject.tokenDif=this.tokenDif.copy();
-        copyObject.tokenDifAfter=this.tokenDifAfter.copy();
-        copyObject.tokenDifPrev=this.tokenDifPrev.copy();
-        copyObject.style=copyObject.style.copy();
+        LatexStyleItem copyObject = new LatexStyleItem();
+        copyObject.tokenEq = this.tokenEq.copy();
+        copyObject.tokenEqAfter = this.tokenEqAfter.copy();
+        copyObject.tokenEqPrev = this.tokenEqPrev.copy();
+        copyObject.tokenDif = this.tokenDif.copy();
+        copyObject.tokenDifAfter = this.tokenDifAfter.copy();
+        copyObject.tokenDifPrev = this.tokenDifPrev.copy();
+        copyObject.style = copyObject.style.copy();
         return copyObject;
     }
 
@@ -191,7 +191,16 @@ public class LatexStyleItem {
 
             if (match(tokPrev, token, tokAfter)) {
                 latexShape.getMp().copyFrom(style);
+
             }
+            for (int k = 1; k <= i; k++) {
+                if (tokens.get(i - k).takesStyleFromNext) {
+                    latex.get(i - k).getMp().copyFrom(latexShape.getMp());
+                } else {
+                    break;
+                }
+            }
+
 
         }
     }

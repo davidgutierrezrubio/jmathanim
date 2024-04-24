@@ -70,6 +70,7 @@ public class LatexToken {
     public Integer secondaryFlags;
 
     public String string;
+    public boolean takesStyleFromNext;
 
     public LatexToken(TokenType type, String name) {
         this(type, null, name);
@@ -77,6 +78,7 @@ public class LatexToken {
 
     public LatexToken(TokenType type, Integer secondaryFlags, String name) {
         this.type = type;
+        takesStyleFromNext=false;
         if (secondaryFlags != null) {
             this.secondaryFlags = secondaryFlags;
         } else {
@@ -213,7 +215,7 @@ public class LatexToken {
 
     @Override
     public String toString() {
-        return "LatexToken[" + type + ", " + secondaryFlags + "," + string + "]";
+        return "LatexToken[" + type + ", " + secondaryFlags + "," + string + "]"+(takesStyleFromNext ? "takes style from next":"");
     }
     private static final List<String> greekLetters = Arrays.asList(
             "Alpha", "alpha",
@@ -253,18 +255,35 @@ public class LatexToken {
     );
     private static final List<String> binaryOperators = Arrays.asList(
             "plus", "minus", "slash", "div",
-            "cap", "cup", "wedge", "vee"
+            "cap", "cup", "wedge", "vee",
+            "cdot","times","ast",
+            "otimes","oplus","ominus","oslash","odot",
+            "bigcirc","dagger",
+            "star","circ","bullet","diamond",
+            "bigtriangleup","bigtriangledown",
+            "triangleleft","triangleright",
+            "unlhd","unrhd"
     );
 
     private static final List<String> relations = Arrays.asList(
             "equals", "lt", "leq", "le", "gt", "geq", "ge",
+            "triangleq","thicksim","doteq","circeq","thickapprox",
+            "bumpeq","risingdotseq","Bumpeq","approxeq","asymp",
+            "mid","nmid","shortmid","shortparallel","nshortmid","nshortparallel",
+            "models","cong","ncong",
             "neq", "equiv", "cong", "sim", "simeq",
-            "approx", "propto", "parallel", "perp",
-            "subset", "subseteq", "supset", "supseteq",
+            "approx", "propto", "parallel", "perp","ne",
+            "subset","supset","in","notin",
+            "subseteq", "supseteq",
+            "nsubseteq", "nsupseteq",
+            "parallel","nparallel",
             "in", "notin", "ni", "mapsto", "rightarrow",
             "Rightarrow", "longrightarrow", "Leftarrow",
             "leftrightarrow", "Leftrightarrow", "implies", "iff",
-            "forall", "exists", "mid", "nmid"
+            "forall", "exists", "mid", "nmid",
+            "nless","ngtr","leqslant","geqslant",
+            "nleq","ngeq","nleqslant","ngeqslant"
+            
     );
 
     private static final List<String> delimiters = Arrays.asList(
