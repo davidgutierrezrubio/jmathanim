@@ -206,6 +206,17 @@ public class LatexParser {
             parseAtom(field);
             return;
         }
+        
+          if (atom instanceof BoldAtom) {
+            BoldAtom boldAtom = (BoldAtom) atom;
+            campo = BoldAtom.class.getDeclaredField("base");
+            campo.setAccessible(true);
+              activateSecondaryBit(LatexToken.SEC_BOLD_FONT);
+            Atom field = (Atom) campo.get(boldAtom);
+            parseAtom(field);
+            deactivateSecondaryBit(LatexToken.SEC_BOLD_FONT);
+            return;
+        }
 
         if (atom instanceof RomanAtom) {
             Modifier bkModifier = modifier;
@@ -458,6 +469,7 @@ public class LatexParser {
         }
 
         if (atom instanceof BigOperatorAtom) {
+            String opName = null;
             BigOperatorAtom bigOperatorAtom = (BigOperatorAtom) atom;
 
             campo = BigOperatorAtom.class.getDeclaredField("over");
@@ -468,14 +480,33 @@ public class LatexParser {
             campo.setAccessible(true);
             Atom baseAtom = (Atom) campo.get(bigOperatorAtom);
 
-            //Retrieve the command name for the big operator
-            campo = SymbolAtom.class.getDeclaredField("name");
-            campo.setAccessible(true);
-            String opName = (String) campo.get(baseAtom);
-
             campo = BigOperatorAtom.class.getDeclaredField("under");
             campo.setAccessible(true);
             Atom underAtom = (Atom) campo.get(bigOperatorAtom);
+
+            if (baseAtom instanceof TypedAtom) {//Its something like \\sin^2
+                TypedAtom typedAtom = (TypedAtom) baseAtom;
+                //base, over, under
+                parseAtom(typedAtom);
+                 activateSecondaryBit(LatexToken.SEC_TO_INDEX);
+                deactivateSecondaryBit(LatexToken.SEC_NORMAL);
+                parseAtom(overAtom);
+                deactivateSecondaryBit(LatexToken.SEC_TO_INDEX);
+                activateSecondaryBit(LatexToken.SEC_NORMAL);
+
+                activateSecondaryBit(LatexToken.SEC_FROM_INDEX);
+                deactivateSecondaryBit(LatexToken.SEC_NORMAL);
+                parseAtom(underAtom);
+                deactivateSecondaryBit(LatexToken.SEC_FROM_INDEX);
+                activateSecondaryBit(LatexToken.SEC_NORMAL);
+                return;
+
+            } else {
+                //Retrieve the command name for the big operator
+                campo = SymbolAtom.class.getDeclaredField("name");
+                campo.setAccessible(true);
+                opName = (String) campo.get(baseAtom);
+            }
 
             //Depending on the specific operator command, shape order is altered
             if (opName.contains("int")) {
@@ -537,7 +568,7 @@ public class LatexParser {
                 type = LatexToken.TokenType.NAMED_FUNCTION;
                 break;
             case RAW_TEXT:
-                type=LatexToken.TokenType.NON_MATH_CHAR;
+                type = LatexToken.TokenType.NON_MATH_CHAR;
                 break;
         }
 

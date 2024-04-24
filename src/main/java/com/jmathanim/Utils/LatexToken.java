@@ -72,6 +72,7 @@ public class LatexToken {
     public static final int SEC_LEFT_ARROW = 0b0010000000000000; //This token is a left arrow
     public static final int SEC_RIGHT_ARROW = 0b0100000000000000;//This token is a right arrow
     public static final int SEC_LEFTRIGHT_ARROW = 0b1000000000000000;//This token is a leftright arrow
+    public static final int SEC_BOLD_FONT = 0b10000000000000000;//This token is a leftright arrow
 
     public TokenType type;
     private Integer secondaryFlags;
