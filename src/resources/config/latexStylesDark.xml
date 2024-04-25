@@ -127,7 +127,72 @@
                 </style>
             </latexStyleItem>
         </latexStyle>
-    </latexStyles> 
+    
+        <latexStyle name="colorful">
+            <latexStyleItem>
+                <conditions>
+                    <equals>
+                        <type>NUMBER</type>
+                    </equals>
+                </conditions>
+                <style>
+                    <color>#267FFF</color>
+                </style>
+            </latexStyleItem>
+            
+              <latexStyleItem>
+                <conditions>
+                    <equals>
+                        <type>DELIMITER</type>
+                    </equals>
+                </conditions>
+                <style>
+                    <color>#CBFF0F</color>
+                </style>
+            </latexStyleItem>
+            
+              <latexStyleItem>
+                <conditions>
+                    <equals>
+                        <type>NAMED_FUNCTION</type>
+                    </equals>
+                </conditions>
+                <style>
+                    <color>#FF3C24</color>
+                </style>
+            </latexStyleItem>
+              <latexStyleItem>
+                <conditions>
+                    <equals>
+                        <type>GREEK_LETTER</type>
+                    </equals>
+                </conditions>
+                <style>
+                    <color>#AD635A</color>
+                </style>
+            </latexStyleItem>
+            <latexStyleItem>
+                <conditions>
+                    <equals>
+                        <type>BINARY_OPERATOR</type>
+                    </equals>
+                </conditions>
+                <style>
+                    <color>#818A63</color>
+                </style>
+            </latexStyleItem>
+              <latexStyleItem>
+                <conditions>
+                    <equals>
+                        <type>OPERATOR</type>
+                    </equals>
+                </conditions>
+                <style>
+                    <color>#AD635A</color>
+                </style>
+            </latexStyleItem>
+        </latexStyle>
+    </latexStyles>
 </JMathAnimConfig>
     
 

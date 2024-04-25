@@ -282,6 +282,7 @@ public class ConfigLoader {
 
         if (type != null) {
             //Convert String type to the corresponding enum value, catching possible errors
+            type=type.toUpperCase();
             try {
                 tokenType = LatexToken.TokenType.valueOf(type);
             } catch (IllegalArgumentException e) {
@@ -295,6 +296,7 @@ public class ConfigLoader {
         if (subTypeStr != null) {
             tokenSubType = 0;
             for (String str : subTypeStr.split(",")) {
+                str=str.toUpperCase();
                 Field campo;
                 try {
                     campo = LatexToken.class.getField(str); //Get variable with that name
