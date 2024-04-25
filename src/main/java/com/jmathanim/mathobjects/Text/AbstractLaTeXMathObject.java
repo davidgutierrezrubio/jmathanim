@@ -117,7 +117,9 @@ public abstract class AbstractLaTeXMathObject extends SVGMathObject {
 
     public void setLatexStyle(LatexStyle latexColorizer) {
         this.latexColorizer = latexColorizer;
-        this.latexColorizer.apply(this);
+        if (latexColorizer != null) {
+            this.latexColorizer.apply(this);
+        }
     }
 
     @Override
@@ -419,8 +421,9 @@ public abstract class AbstractLaTeXMathObject extends SVGMathObject {
     }
 
     /**
-     * Returns a MultiShapeObject with all shapes with match given token
-     * LaTex code must be compiled with the JLaTeXMath option to use this method.
+     * Returns a MultiShapeObject with all shapes with match given token LaTex
+     * code must be compiled with the JLaTeXMath option to use this method.
+     *
      * @param token Token to match
      * @return A MultiShapeObject with all matching shapes
      */

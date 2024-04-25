@@ -56,8 +56,8 @@ public class ConfigLoader {
             URL configURL = resourceLoader.getResource(filename, "config");
             JMathAnimScene.logger.info("Loading config file {}", filename);
             DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
-//            dbFactory.setValidating(false);
-//            dbFactory.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
+            dbFactory.setValidating(false);
+            dbFactory.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
             DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
 //            dBuilder.setEntityResolver(new EntityResolver() {
 //                @Override

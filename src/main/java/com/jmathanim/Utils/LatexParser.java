@@ -228,7 +228,7 @@ public class LatexParser {
             campo.setAccessible(true);
             Atom field = (Atom) campo.get(romanAtom);
             parseAtom(field);
-//            modifier = bkModifier;
+            modifier = bkModifier;
             return;
         }
 

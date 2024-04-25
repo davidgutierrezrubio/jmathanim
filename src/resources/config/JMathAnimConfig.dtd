@@ -19,8 +19,11 @@
     </JMathAnimConfig>
 -->
 
+<!--- Entities -->
+<!--- LatexToken types -->
+
 <!--- Put your DTDDoc comment here. -->
-<!ELEMENT JMathAnimConfig (include|background|styles)*>
+<!ELEMENT JMathAnimConfig (include|video|background|styles|latexStyles)*>
 
 <!--- Put your DTDDoc comment here. -->
 <!ELEMENT include (#PCDATA)>
@@ -28,14 +31,27 @@
 <!--- Put your DTDDoc comment here. -->
 <!ELEMENT background (color)*>
 
+
+<!ELEMENT video (size|createMovie|showPreviewWindow)*>
+
+
+<!ELEMENT size (color)*>
+<!ATTLIST size width CDATA #REQUIRED>
+<!ATTLIST size height CDATA #REQUIRED>
+<!ATTLIST size fps CDATA #REQUIRED>
+<!ELEMENT createMovie (#PCDATA)>
+<!ELEMENT showPreviewWindow (#PCDATA)>
+
+
 <!--- Put your DTDDoc comment here. -->
+
 <!ELEMENT color (#PCDATA)>
 
 <!--- Put your DTDDoc comment here. -->
 <!ELEMENT styles (style)*>
 
 <!--- Put your DTDDoc comment here. -->
-<!ELEMENT style (drawColor|fillColor|thickness|scaleArrowHead1|scaleArrowHead2|dotStyle|dashStyle)*>
+<!ELEMENT style (color|drawColor|fillColor|thickness|scaleArrowHead1|scaleArrowHead2|dotStyle|dashStyle)*>
 <!ATTLIST style
     name CDATA #IMPLIED
   >
@@ -109,3 +125,30 @@
 <!ATTLIST stop
     t CDATA #IMPLIED
   >
+
+
+<!--- LatexStyles -->
+<!ELEMENT latexStyles (latexStyle)*>
+
+<!ELEMENT latexStyle (latexStyleItem)*>
+<!ATTLIST latexStyle
+    name CDATA #IMPLIED
+  >
+
+
+<!ELEMENT latexStyleItem (conditions|style)*>
+
+<!ELEMENT conditions (equals|equalsPrev|equalsAfter|differs|differsPrev|differsAfter)*>
+
+<!ELEMENT equals (type|subtype|string)*>
+<!ELEMENT equalsPrev (type|subtype|string)*>
+<!ELEMENT equalsAfter (type|subtype|string)*>
+<!ELEMENT differs (type|subtype|string)*>
+<!ELEMENT differsPrev (type|subtype|string)*>
+<!ELEMENT differsAfter (type|subtype|string)*>
+
+<!ELEMENT type (#PCDATA)>
+<!ELEMENT subtype (#PCDATA)>
+<!ELEMENT string (#PCDATA)>
+
+
