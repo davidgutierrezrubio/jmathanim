@@ -106,6 +106,7 @@ public class LatexParser {
     }
     private Integer secondaryType;
     public Modifier modifier;
+    private int delimiterDepth;
 
     public LatexParser(AbstractLaTeXMathObject latex) {
         this.latex = latex;
@@ -116,6 +117,7 @@ public class LatexParser {
         this.modifier = Modifier.NORMAL;
         this.secondaryType = LatexToken.SEC_NORMAL;
         takesStyleFromNextFlag = false;
+        delimiterDepth = 0;
     }
 
     public TeXFormula getJLatexFormulaParser() {
@@ -136,6 +138,8 @@ public class LatexParser {
         this.tokens.clear();
         boxes.clear();
         this.assignedTokens.clear();
+        delimiterDepth = 0;
+        this.modifier = Modifier.NORMAL;
 
         Atom root = this.formula.root;
         rootCopy = root.clone();
@@ -582,6 +586,7 @@ public class LatexParser {
         token.activateSecondaryBit(secondaryType);
 //        }
         token.takesStyleFromNext = this.takesStyleFromNextFlag;
+        token.delimiterDepth=this.delimiterDepth;
         tokens.add(token);
         previousToken = token;
     }
@@ -659,8 +664,7 @@ public class LatexParser {
             switch (token.type) {
                 case NON_MATH_CHAR, CHAR, FRACTION_BAR, GREEK_LETTER, NAMED_FUNCTION, OPERATOR, BINARY_OPERATOR, RELATION, NUMBER, ARROW:
                     //These are supposed to be the "easy tokens"
-                    assignedTokens.add(token);
-                    boxCounter++;
+                  addAssignedTokenToList(token);
                     break;
                 case DELIMITER:
                     processDelimiter(token);
@@ -678,14 +682,18 @@ public class LatexParser {
 
         }
     }
+    public void addAssignedTokenToList(LatexToken token) {
+          token.delimiterDepth=this.delimiterDepth;
+                    assignedTokens.add(token);
+                    boxCounter++;
+    }
 
     private void processSQRT(LatexToken token) {
         while (!(boxes.get(boxCounter) instanceof HorizontalRule)) {
             assignedTokens.add(token);
             boxCounter++;
         }
-        assignedTokens.add(token);
-        boxCounter++;
+        addAssignedTokenToList(token);
     }
 
     private void processSymbol(LatexToken token) {
@@ -697,8 +705,7 @@ public class LatexParser {
                 processDelimiter(token);//Vert can be a delimiter
                 break;
             default:
-                assignedTokens.add(token);
-                boxCounter++;
+               addAssignedTokenToList(token);
         }
     }
 
@@ -712,6 +719,7 @@ public class LatexParser {
         //Para añadir delimiter nuevo: incluirlo en array delimiters de LatexToken
         switch (token.string) {
             case "lbrack":
+                this.delimiterDepth++;
                 scanBigDelimiter(token,
                         18, 40, //Normal 
                         1, 161, //\big 
@@ -726,6 +734,7 @@ public class LatexParser {
 
                 break;
             case "rbrack":
+                this.delimiterDepth--;
                 scanBigDelimiter(token,
                         18, 41, //Normal
                         1, 162, //\big
@@ -739,6 +748,7 @@ public class LatexParser {
                 );
                 break;
             case "lbrace":
+                this.delimiterDepth++;
                 scanBigDelimiter(token,
                         8, 102, //Normal
                         1, 169, //\big
@@ -752,6 +762,7 @@ public class LatexParser {
                 );
                 break;
             case "rbrace":
+                this.delimiterDepth--;
                 scanBigDelimiter(token,
                         8, 103, //Normal
                         1, 170, //\big
@@ -765,6 +776,7 @@ public class LatexParser {
                 );
                 break;
             case "lsqbrack":
+                this.delimiterDepth++;
                 scanBigDelimiter(token,
                         18, 91, //Normal
                         1, 163, //\big
@@ -778,6 +790,7 @@ public class LatexParser {
                 );
                 break;
             case "rsqbrack":
+                this.delimiterDepth--;
                 scanBigDelimiter(token,
                         18, 93, //Normal
                         1, 164, //\big
@@ -819,6 +832,7 @@ public class LatexParser {
                 );
                 break;
             case "lfloor":
+                this.delimiterDepth++;
                 scanBigDelimiter(token,
                         8, 98, //Normal
                         1, 165, //\big
@@ -832,6 +846,7 @@ public class LatexParser {
                 );
                 break;
             case "rfloor":
+                this.delimiterDepth--;
                 scanBigDelimiter(token,
                         8, 99, //Normal
                         1, 166, //\big
@@ -845,6 +860,7 @@ public class LatexParser {
                 );
                 break;
             case "lceil":
+                this.delimiterDepth++;
                 scanBigDelimiter(token,
                         8, 100, //Normal
                         1, 167, //\big
@@ -858,6 +874,7 @@ public class LatexParser {
                 );
                 break;
             case "rceil":
+                this.delimiterDepth--;
                 scanBigDelimiter(token,
                         8, 101, //Normal
                         1, 168, //\big
@@ -872,6 +889,7 @@ public class LatexParser {
                 break;
 
             case "langle":
+                this.delimiterDepth++;
                 scanBigDelimiter(token,
                         8, 104, //Normal
                         1, 173, //\big
@@ -885,6 +903,7 @@ public class LatexParser {
                 );
                 break;
             case "rangle":
+                this.delimiterDepth--;
                 scanBigDelimiter(token,
                         8, 105, //Normal
                         1, 174, //\big

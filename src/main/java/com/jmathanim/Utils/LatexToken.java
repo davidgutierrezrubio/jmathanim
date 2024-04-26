@@ -29,11 +29,7 @@ import java.util.List;
  */
 public class LatexToken {
 
-    public LatexToken copy() {
-        LatexToken copy = new LatexToken(type, secondaryFlags, string);
-        copy.takesStyleFromNext = this.takesStyleFromNext;
-        return copy;
-    }
+  
 
     public enum TokenType {
         NONE, //This token will not be assigned never. It is used to always returns false when matching tokens
@@ -79,6 +75,7 @@ public class LatexToken {
 
     public String string;
     public boolean takesStyleFromNext;
+    public int delimiterDepth=0;
 
     /**
      * Creates a new LaTexToken. The secondary flag has the null value
@@ -265,9 +262,17 @@ public class LatexToken {
         return result;
     }
 
+      public LatexToken copy() {
+        LatexToken copy = new LatexToken(type, secondaryFlags, string);
+        copy.takesStyleFromNext = this.takesStyleFromNext;
+        copy.delimiterDepth=this.delimiterDepth;
+        return copy;
+    }
+    
+    
     @Override
     public String toString() {
-        return "LatexToken[" + type + ", " + secondaryFlags + "," + string + "]" + (takesStyleFromNext ? "takes style from next" : "") + "\t"
+        return "LatexToken[" + type + ", " + secondaryFlags + "," + string + "]" + (takesStyleFromNext ? "takes style from next" : "") +"delimDepth="+delimiterDepth+ "\t"
                 + secFlagsToString(secondaryFlags);
     }
 
