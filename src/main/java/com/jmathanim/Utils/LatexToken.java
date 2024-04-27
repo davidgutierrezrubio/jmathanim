@@ -29,8 +29,6 @@ import java.util.List;
  */
 public class LatexToken {
 
-  
-
     public enum TokenType {
         NONE, //This token will not be assigned never. It is used to always returns false when matching tokens
         NON_MATH_CHAR,//Normal, non mathematical text
@@ -63,43 +61,42 @@ public class LatexToken {
     public static final int SEC_SUBSCRIPT = 0b01000000;//This token is in a subscript
     public static final int SEC_FROM_INDEX = 0b10000000;//This token is in the "from" part of an \int, \sum...
     public static final int SEC_TO_INDEX = 0b0000000100000000;//This token is in the "to" part of an \int, \sum...
-    public static final int SEC_NUMERATOR = 0b0000001000000000;//This token is the numerator part of a fraction
-    public static final int SEC_DENOMINATOR = 0b0000010000000000;//This token is the denominator part of a fraction
+    public static final int SEC_NUMERATOR = 0b0000001000000000;//This token is in the numerator part of a fraction
+    public static final int SEC_DENOMINATOR = 0b0000010000000000;//This token is in the denominator part of a fraction
     public static final int SEC_LEFT_ARROW = 0b0010000000000000; //This token is a left arrow
     public static final int SEC_RIGHT_ARROW = 0b0100000000000000;//This token is a right arrow
     public static final int SEC_LEFTRIGHT_ARROW = 0b1000000000000000;//This token is a leftright arrow
-    public static final int SEC_BOLD_FONT = 0b10000000000000000;//This token is a leftright arrow
+    public static final int SEC_BOLD_FONT = 0b10000000000000000;//This token is in bold math
 
-    public TokenType type;
+    private TokenType type;
     private Integer secondaryFlags;
 
-    public String string;
+    private String string;
     public boolean takesStyleFromNext;
-    public int delimiterDepth=0;
+    private Integer delimiterDepth;
 
     /**
-     * Creates a new LaTexToken. The secondary flag has the null value
+     * Returns a new LatexToken with all its attributes set to null
      *
-     * @param type Token type
-     * @param name String name (usually the LaTeX command or character)
+     * @return The created LatexToken
      */
-    public LatexToken(TokenType type, String name) {
-        this(type, null, name);
+    public static LatexToken make() {
+        return new LatexToken();
     }
 
-    /**
-     * Creates a new LaTexToken.
-     *
-     * @param type Token type
-     * @param secondaryFlags Secondary flags
-     * @param name String name (usually the LaTeX command or character)
-     */
-    public LatexToken(TokenType type, Integer secondaryFlags, String name) {
-        this.type = type;
-        takesStyleFromNext = false;
-        this.secondaryFlags = secondaryFlags;
-        this.string = name;
-        refineToken();
+    public static LatexToken make(TokenType type, Integer secFlags, String name) {
+        return LatexToken.make()
+                .setType(type)
+                .setSecondaryTypeFlag(secFlags)
+                .setString(name);
+    }
+
+    protected LatexToken() {
+        this.type = null;
+        this.secondaryFlags = null;
+        this.string = null;
+        this.delimiterDepth = null;
+
     }
 
     /**
@@ -110,7 +107,12 @@ public class LatexToken {
      * @return This object
      */
     public LatexToken setSecondaryTypeFlag(Integer secFlag) {
-        this.secondaryFlags |= secFlag;
+        if (this.secondaryFlags == null) {
+            this.secondaryFlags = secFlag;
+        } else {
+            this.secondaryFlags |= secFlag;
+        }
+        refineToken();
         return this;
     }
 
@@ -123,6 +125,71 @@ public class LatexToken {
      */
     public LatexToken unsetSecondaryTypeFlag(Integer secFlag) {
         this.secondaryFlags &= ~secFlag;
+        return this;
+    }
+
+    /**
+     * Sets the token type
+     *
+     * @param type Token type, a value of enum LatexToken.TokenType
+     * @return This object
+     */
+    public LatexToken setType(TokenType type) {
+        this.type = type;
+        refineToken();
+        return this;
+    }
+
+    /**
+     * Sets the string name of the token. Usually the character or LaTeX command
+     * without backslashes
+     *
+     * @param string The name
+     * @return This object
+     */
+    public LatexToken setString(String string) {
+        if (string != null) {
+            switch (string) {//Some special cases to make it easier
+                case ",":
+                    string = "comma";
+                    break;
+                case ".":
+                    string = "normaldot";
+                    break;
+                case ";":
+                    string = "semicolon";
+                    break;
+                case ":":
+                    string = "colon";
+                    break;
+            }
+        }
+
+        this.string = string;
+        refineToken();
+        return this;
+    }
+
+    /**
+     * Returns the delimiter depth of this glyph, that is, how many delimiters
+     * the glyph is "buried" in.
+     *
+     * @return The delimiter depth. 0 if the token is not inside of any
+     * delimiter.
+     */
+    public Integer getDelimiterDepth() {
+        return delimiterDepth;
+    }
+
+    /**
+     * Sets the delimiter depth
+     *
+     * @param delimiterDepth The new delimiter depth.
+     * @return This object
+     */
+    public LatexToken setDelimiterDepth(Integer delimiterDepth) {
+        this.delimiterDepth = delimiterDepth;
+        refineToken();
         return this;
     }
 
@@ -159,6 +226,23 @@ public class LatexToken {
                     break;
                 }
 
+                if (arrows.contains(string)) {
+                    type = TokenType.ARROW;
+                    String strl = string.toLowerCase();
+                    if (strl.contains("leftright")) {
+                        activateSecondaryFlag(SEC_LEFTRIGHT_ARROW);
+
+                    } else {
+                        if (strl.contains("left")) {
+                            activateSecondaryFlag(SEC_LEFT_ARROW);
+                        }
+                        if (strl.contains("right")) {
+                            activateSecondaryFlag(SEC_RIGHT_ARROW);
+                        }
+                    }
+                    break;
+                }
+
             case CHAR:
                 if (numbers.contains(string)) {
                     type = TokenType.NUMBER;
@@ -188,42 +272,65 @@ public class LatexToken {
         return secType;
     }
 
-    public void activateSecondaryBit(int bit) {
+    /**
+     * Activates a flag given by the static variables SEC_
+     *
+     * @param flag The flag, an static LatexToken variable starting with SEC_
+     * @return This object
+     */
+    public LatexToken activateSecondaryFlag(int flag) {
         if (this.secondaryFlags == null) {
             this.secondaryFlags = 0;
         }
-        this.secondaryFlags |= bit;
+        this.secondaryFlags |= flag;
+        return this;
     }
 
-    public void deactivateSecondaryBit(int bit) {
+    /**
+     * Dectivates a flag given by the static variables SEC_
+     *
+     * @param flag The flag, an static LatexToken variable starting with SEC_
+     * @return This object
+     */
+    public LatexToken deactivateSecondaryFlag(int flag) {
         if (this.secondaryFlags == null) {
-            return;
+            return this;
         }
-        this.secondaryFlags &= ~bit;
+        this.secondaryFlags &= ~flag;
+        return this;
     }
 
     public Integer getSecondaryFlags() {
         return secondaryFlags;
     }
 
-    /**
-     * Check if token characteristics match the given ones. A null passed as a
-     * parameter means that no comparison is done in that parameter.
-     *
-     * @param type Type to match. Null if no comparison needed.
-     * @param name Name to match. Null if no comparison needed.
-     * @param secondaryType An integer with secondary bit attributes SEC_XXX.
-     * Null if no comparison needed.
-     * @return True if match. False otherwise.
-     */
-    public boolean match(TokenType type, String name, Integer secondaryType) {
-        boolean result = true;
-        result = result && ((type == null) || (this.type == null) || (this.type == type));
-        result = result && matchSecType(secondaryType);
-        result = result && ((name == null) || (this.string == null) || (this.string.equals(name)));
-        return result;
+    public TokenType getType() {
+        return type;
     }
 
+    public String getString() {
+        return string;
+    }
+
+//    /**
+//     * Check if token characteristics match the given ones. A null passed as a
+//     * parameter means that no comparison is done in that parameter.
+//     *
+//     * @param type Type to match. Null if no comparison needed.
+//     * @param name Name to match. Null if no comparison needed.
+//     * @param secondaryType An integer with secondary bit attributes SEC_XXX.
+//     * Null if no comparison needed.
+//     * @param delimiterDepth
+//     * @return True if match. False otherwise.
+//     */
+//    public boolean match(TokenType type, String name, Integer secondaryType, Integer delimiterDepth) {
+//        boolean result = true;
+//        result = result && ((type == null) || (this.type == null) || (this.type == type));
+//        result = result && matchSecType(secondaryType);
+//        result = result && ((name == null) || (this.string == null) || (this.string.equals(name)));
+//          result = result && ((delimiterDepth == null) || (this.delimiterDepth == null) || (this.delimiterDepth == delimiterDepth));
+//        return result;
+//    }
     private boolean matchSecType(Integer secondaryFlags) {
         if ((secondaryFlags == null) || (this.secondaryFlags == null)) {
             return true;
@@ -232,7 +339,9 @@ public class LatexToken {
     }
 
     /**
-     * Check if token characteristics match with another given token.
+     * Check if token characteristics match with another given token. If a given
+     * characteristic is null (for example string name), this comparison will
+     * not be done.
      *
      * @param token Token to compare
      * @return True if match, false otherwise
@@ -241,43 +350,55 @@ public class LatexToken {
         if (token == null) {
             return true;
         }
-        return match(token.type, token.string, token.secondaryFlags);
+        boolean result = true;
+        result = result && ((token.type == null) || (this.type == null) || (this.type == token.type));
+        result = result && matchSecType(token.secondaryFlags);
+        result = result && ((token.string == null) || (this.string == null) || (this.string.equals(token.string)));
+        result = result && ((token.delimiterDepth == null) || (this.delimiterDepth == null) || (this.delimiterDepth == token.delimiterDepth));
+        return result;
     }
 
     /**
      * Returns true if ALL of its non-null properties are different from this
-     * token.
+     * token. Token attributes set to null are not compared.
      *
-     * @param tok Token to compare
+     * @param token Token to compare
      * @return True if all non-null properties are different, false otherwise
      */
-    public boolean differs(LatexToken tok) {
-        if (tok == null) {
+    public boolean differs(LatexToken token) {
+        if (token == null) {
             return true;
         }
         boolean result = true;
-        result = result && ((tok.type == null) || (tok.type != type));
-        result = result && ((tok.secondaryFlags == null) || (this.secondaryFlags == null) || ((~tok.secondaryFlags & secondaryFlags) != 0));
-        result = result && ((tok.string == null) || (!tok.string.equals(string)));
+        result = result && ((token.type == null) || (this.type == null) || (token.type != this.type));
+        result = result && ((token.secondaryFlags == null) || (this.secondaryFlags == null) || ((~token.secondaryFlags & secondaryFlags) != 0));
+        result = result && ((token.string == null) || (!token.string.equals(string)));
+        result = result && ((token.delimiterDepth == null) || (this.delimiterDepth == null) || (token.delimiterDepth != this.delimiterDepth));
         return result;
     }
 
-      public LatexToken copy() {
-        LatexToken copy = new LatexToken(type, secondaryFlags, string);
+    public LatexToken copy() {
+        LatexToken copy = LatexToken.make()
+                .setType(this.type)
+                .setSecondaryTypeFlag(this.secondaryFlags)
+                .setString(this.string)
+                .setDelimiterDepth(this.delimiterDepth);
         copy.takesStyleFromNext = this.takesStyleFromNext;
-        copy.delimiterDepth=this.delimiterDepth;
         return copy;
     }
-    
-    
+
     @Override
     public String toString() {
-        return "LatexToken[" + type + ", " + secondaryFlags + "," + string + "]" + (takesStyleFromNext ? "takes style from next" : "") +"delimDepth="+delimiterDepth+ "\t"
+        String delDepth = (delimiterDepth == null ? "null" : delimiterDepth + "");
+        return "LatexToken[" + type + ", \"" + string + "\"]" + (takesStyleFromNext ? " <takes style from next> " : " ") + "[delimDepth=" + delDepth + "] "
                 + secFlagsToString(secondaryFlags);
     }
 
-    private String secFlagsToString(int N) {
-        StringBuilder variablesActivadas = new StringBuilder();
+    private String secFlagsToString(Integer secFlag) {
+        if (secFlag == null) {
+            return "null";
+        }
+        StringBuilder activatedFlags = new StringBuilder();
 //
         try {
             // Obtener todas las variables de la clase ActivadorDeBits
@@ -288,9 +409,9 @@ public class LatexToken {
                     // Obtener el valor del campo
                     int valorCampo = field.getInt(null);
                     // Verificar si el bit correspondiente está activado en N
-                    if ((N & valorCampo) != 0) {
+                    if ((secFlag & valorCampo) != 0) {
                         // Agregar el nombre del campo a la lista de variables activadas
-                        variablesActivadas.append(field.getName()).append(" ");
+                        activatedFlags.append(field.getName()).append(" ");
                     }
                 }
             }
@@ -298,7 +419,7 @@ public class LatexToken {
             e.printStackTrace();
         }
 
-        return variablesActivadas.toString().trim();
+        return activatedFlags.toString().trim();
     }
 
     private static final List<String> greekLetters = Arrays.asList(
@@ -361,9 +482,7 @@ public class LatexToken {
             "subseteq", "supseteq",
             "nsubseteq", "nsupseteq",
             "parallel", "nparallel",
-            "in", "notin", "ni", "mapsto", "rightarrow",
-            "Rightarrow", "longrightarrow", "Leftarrow",
-            "leftrightarrow", "Leftrightarrow", "implies", "iff",
+            "in", "notin", "ni",
             "forall", "exists", "mid", "nmid",
             "nless", "ngtr", "leqslant", "geqslant",
             "nleq", "ngeq", "nleqslant", "ngeqslant"
@@ -376,5 +495,33 @@ public class LatexToken {
             "lfloor", "rfloor",
             "lceil", "rceil",
             "langle", "rangle"
+    );
+
+    private static final List<String> arrows = Arrays.asList(
+            "rightarrow",
+            "leftarrow",
+            "Rightarrow",
+            "Leftarrow",
+            "leftrightarrow",
+            "longleftrightarrow",
+            "Leftrightarrow",
+            "mapsto",
+            "longrightarrow",
+            "longleftarrow",
+            "Longrightarrow",
+            "Longleftarrow",
+            "longleftrightarrow",
+            "longmapsto",
+            "hookrightarrow",
+            "hookleftarrow",
+            "uparrow",
+            "downarrow",
+            "Uparrow",
+            "Downarrow",
+            "nearrow",
+            "searrow",
+            "swarrow",
+            "nwarrow",
+            "implies", "iff"
     );
 }

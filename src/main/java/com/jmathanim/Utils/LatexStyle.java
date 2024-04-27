@@ -41,7 +41,11 @@ public class LatexStyle {
 
     public LatexStyle setColorTo(LatexToken.TokenType type, Integer secType, String name, String colorName) {
         LatexStyleItem colorizerItem = new LatexStyleItem();
-        colorizerItem.tokenEq = new LatexToken(type, secType, name);
+        LatexToken token=LatexToken.make()
+                .setType(type)
+                .setSecondaryTypeFlag(secType)
+                .setString(name);
+        colorizerItem.mustMatchTo(token);
         colorizerItem.setColor(colorName);
         latexStyleItems.add(colorizerItem);
         return this;
@@ -53,7 +57,10 @@ public class LatexStyle {
 
     public LatexStyle setColorToChar(String name, PaintStyle colorName) {
         LatexStyleItem colorizerItem = new LatexStyleItem();
-        colorizerItem.tokenEq = new LatexToken(LatexToken.TokenType.CHAR, name);
+        LatexToken token=LatexToken.make()
+                .setType(LatexToken.TokenType.CHAR)
+                .setString(name);
+        colorizerItem.mustMatchTo(token);
         colorizerItem.setColor(colorName);
         latexStyleItems.add(colorizerItem);
         return this;

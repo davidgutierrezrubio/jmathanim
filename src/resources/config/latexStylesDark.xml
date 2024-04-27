@@ -25,6 +25,18 @@
                 </style>
             </latexStyleItem>
             
+            
+              <latexStyleItem>
+                <conditions>
+                    <equals>
+                        <type>ARROW</type>
+                    </equals> 
+               </conditions>
+                <style>
+                    <color>#ee6999</color>
+                </style>
+            </latexStyleItem>
+            
              <latexStyleItem>
                 <conditions>
                     <equals>
@@ -38,7 +50,7 @@
             
             
             
-            <latexStyleItem>
+<!--            <latexStyleItem>
                 <conditions>
                     <equals>
                         <type>BINARY_OPERATOR</type>
@@ -68,9 +80,9 @@
                 <style>
                     <color>#4477AA</color>
                 </style>
-            </latexStyleItem>
+            </latexStyleItem>-->
             
-              <latexStyleItem>
+<!--              <latexStyleItem>
                 <conditions>
                     <equals>
                         <type>RELATION</type>
@@ -79,7 +91,7 @@
                 <style>
                     <color>#4477AA</color>
                 </style>
-            </latexStyleItem>
+            </latexStyleItem>-->
             
               <latexStyleItem>
                 <conditions>
@@ -88,7 +100,8 @@
                     </equals>
                 </conditions>
                 <style>
-                    <color>#66CCEE</color>
+                    <color>#ddc180</color>
+                    <!--<color>#66CCEE</color>-->
                 </style>
             </latexStyleItem>
             
@@ -100,7 +113,7 @@
                     </equals>
                 </conditions>
                 <style>
-                    <color>#cebd54</color>
+                    <color>#44AA99</color>
                 </style>
             </latexStyleItem>
             
@@ -112,7 +125,7 @@
                     </equals>
                 </conditions>
                 <style>
-                    <color>#cebd54</color>
+                    <color>#999933</color>
                 </style>
             </latexStyleItem>
             
@@ -127,7 +140,45 @@
                     <color>#AA4499</color>
                 </style>
             </latexStyleItem>
-        </latexStyle>
+        
+          <latexStyleItem>
+                <conditions>
+                    <equals>
+                        <type>CHAR</type>
+                        <string>x</string>
+                    </equals>
+                </conditions>
+                <style>
+                    <color>#33BBEE</color>
+                </style>
+            </latexStyleItem>
+  
+        
+         <latexStyleItem>
+                <conditions>
+                    <equals>
+                        <type>CHAR</type>
+                        <string>y</string>
+                    </equals>
+                </conditions>
+                <style>
+                    <color>#EE7733</color>
+                </style>
+            </latexStyleItem>
+        
+          <latexStyleItem>
+                <conditions>
+                    <equals>
+                        <type>CHAR</type>
+                        <string>n</string>
+                    </equals>
+                </conditions>
+                <style>
+                    <color>#44AA99</color>
+                </style>
+            </latexStyleItem>
+      </latexStyle>
+        
     
         <latexStyle name="colorful">
              <latexStyleItem>

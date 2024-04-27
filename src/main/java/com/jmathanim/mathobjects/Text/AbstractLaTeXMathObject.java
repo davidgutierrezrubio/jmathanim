@@ -432,9 +432,9 @@ public abstract class AbstractLaTeXMathObject extends SVGMathObject {
         if (latexParser == null) {
             return resul;
         }
-        for (int i = 0; i < latexParser.assignedTokens.size(); i++) {
-            LatexToken shapeToken = latexParser.assignedTokens.get(i);
-            if (shapeToken.match(token)) {
+        for (int i = 0; i < latexParser.getTokensList().size(); i++) {
+            LatexToken shapeToken = latexParser.get(i);
+            if (token.match(shapeToken)) {
                 resul.add(get(i));
             }
         }
