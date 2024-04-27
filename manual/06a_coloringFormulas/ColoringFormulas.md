@@ -258,14 +258,17 @@ Finally, you can store LaTeX coloring styles into config files too. The previous
 You can achieve the same effect saving this file under your `resources/config` directory with a proper name (for example, `matrixColor.xml`) and the following code:
 
 ```java
-config.parseFile("matrixColor.xml");//You can parse config files with styles in the runSketch() method at any time
-LaTeXMathObject formula = LaTeXMathObject.make("$$\\left("
-                                               + "\\begin{array}{ccc}"
-                                               + "a_{1,1} & a_{1,2} & a_{1,3} \\\\"
-                                               + "a_{2,1} & a_{2,2} & a_{2,3} \\\\"
-                                               + "a_{3,1} & a_{3,2} & a_{3,3}"
-                                               + "\\end{array}"
-                                               + "\\right)$$");
+//You can parse config files with styles
+//in the runSketch() method at any time
+config.parseFile("matrixColor.xml");
+LaTeXMathObject formula = 
+    LaTeXMathObject.make("$$\\left("
+                         + "\\begin{array}{ccc}"
+                         + "a_{1,1} & a_{1,2} & a_{1,3} \\\\"
+                         + "a_{2,1} & a_{2,2} & a_{2,3} \\\\"
+                         + "a_{3,1} & a_{3,2} & a_{3,3}"
+                         + "\\end{array}"
+                         + "\\right)$$");
 add(formula);
 LatexStyle latexStyle = config.getLatexStyles().get("rowColMatrixStyle");
 formula.setLatexStyle(latexStyle);
