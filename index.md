@@ -1,7 +1,7 @@
 ![logo](logo.gif)
 
 JMathAnim is a library written in JAVA to simplify the process of creating mathematical animations.
-mathematical animations. The current version is 0.9.10.
+mathematical animations. The current version is 0.9.11.
 
 If you use it and find a bug/missing feature, feel free to fill an issue
 [here](https://github.com/davidgutierrezrubio/jmathanim/issues). For any other questions, you can contact me at davidgutierrezrubio@gmail.com.
@@ -21,6 +21,12 @@ Manual
 
 What's new?
 ===========
+
+Version 0.9.11 (27/04/2024) 
+
+* Added automatic coloring capabilities to LaTeX formulas, using the `LatexStyle`class
+* Improved handling of zero-time animations
+* Many, many bug fixes.
 
 Version 0.9.10 (01/11/2023)
 

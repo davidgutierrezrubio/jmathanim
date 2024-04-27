@@ -30,7 +30,7 @@ If you want the released version, add
     <dependency>
         <groupId>com.github.davidgutierrezrubio</groupId>
         <artifactId>JMathAnim</artifactId>
-        <version>0.9.10</version>
+        <version>0.9.11</version>
     </dependency>
 </dependencies>
 ```
@@ -50,7 +50,7 @@ If you want to use the snapshot version, you must also add the repository where 
     <dependency>
         <groupId>com.github.davidgutierrezrubio</groupId>
         <artifactId>JMathAnim</artifactId>
-        <version>0.9.11-SNAPSHOT</version>
+        <version>0.9.12-SNAPSHOT</version>
     </dependency>
 </dependencies>
 ```
