@@ -5,14 +5,14 @@
 The easy way to colorize some parts of a mathematical expression is shown in this example:
 
 ```java
-LaTeXMathObject eulerFormula=LaTeXMathObject.make("$${-b\\pm\\sqrt{b^2-4ac}\\over 2a}$$");
+LaTeXMathObject formula=LaTeXMathObject.make("$${-b\\pm\\sqrt{b^2-4ac}\\over 2a}$$");
 LatexStyle latexStyle=LatexStyle.make();//Creates a latex style class that holds several "instructions"
 latexStyle.setColorToChar("a", "red"); //All "a" glyphs should be red
 latexStyle.setColorToChar("b", "green");//All "b" glyphs should be green
 latexStyle.setColorToChar("c", "blue");//All "c" glyphs should be blue
 
-eulerFormula.setLatexStyle(latexStyle);
-add(eulerFormula);
+formula.setLatexStyle(latexStyle);
+add(formula);
 camera.zoomToAllObjects();
 waitSeconds(3);//Smile for the screenshot!
 ```
