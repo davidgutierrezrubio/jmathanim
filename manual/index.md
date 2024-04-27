@@ -17,9 +17,11 @@
 
 ## [Mathematical formulas](06_MathFormulas/MathFormulas.md)
 
-## [Dealing with paths](06a_DealingWithPaths/DealingWithPaths.md)
+## [Coloring formulas](06a_coloringFormulas/ColoringFormulas.md)
 
-## [Constructible objects](06b_ConstructibleObjects/ConstructibleObjects.md)
+## [Dealing with paths](06b_DealingWithPaths/DealingWithPaths.md)
+
+## [Constructible objects](06c_ConstructibleObjects/ConstructibleObjects.md)
 
 ## [Advanced topics](07_AdvancedTopics/AdvancedTopics.html)
 

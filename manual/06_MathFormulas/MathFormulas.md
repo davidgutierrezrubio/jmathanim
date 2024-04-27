@@ -42,7 +42,7 @@ waitSeconds(5);
 
 ![image-20210101123616556](equationColor.png)
 
-Note that the method changes both draw and fill colors.
+Note that the method changes both draw and fill colors. Since version 0.9.11 there is another, easier way to automatically assign colors, which we will see in the next chapter.
 
 ## The slice method
 
