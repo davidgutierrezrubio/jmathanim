@@ -135,7 +135,7 @@ Will generate an animation like this:
 
 ![color03](color03.gif)
 
-Currently, the `LatextStyle`class can use up to 6 `LatexToken` to compare:
+Currently, the `LatexStyle`class can use up to 6 `LatexToken` to compare:
 
 ```java
 latexStyleItem.mustMatchTo(token);//The token to be colored must match with this
@@ -153,17 +153,21 @@ It is important to note that "match" or "differ" means to match/differ in all it
 With the next example we can see the flexibility of this method: Suppose we want to show a 3x3 matrix, and assign different colors to row and column indices. Both are numbers in a subscript style. Using the `previousTokenMustMatchTo` and `nextTokenMustMatchTo` we can infer if they are the first or second subscript, with a code like this:
 
 ```java
-LaTeXMathObject formula = LaTeXMathObject.make("$$\\left("
-                                               + "\\begin{array}{ccc}"
-                                               + "a_{1,1} & a_{1,2} & a_{1,3} \\\\"
-                                               + "a_{2,1} & a_{2,2} & a_{2,3} \\\\"
-                                               + "a_{3,1} & a_{3,2} & a_{3,3}"
-                                               + "\\end{array}"
-                                               + "\\right)$$");
+LaTeXMathObject formula = 
+    LaTeXMathObject.make("$$\\left("
+                         + "\\begin{array}{ccc}"
+                         + "a_{1,1} & a_{1,2} & a_{1,3} \\\\"
+                         + "a_{2,1} & a_{2,2} & a_{2,3} \\\\"
+                         + "a_{3,1} & a_{3,2} & a_{3,3}"
+                         + "\\end{array}"
+                         + "\\right)$$");
 add(formula);
-LatexStyle latexStyle = LatexStyle.make();//This style will hold 2 latexStyle items, one for row and other for colum subscripts
+//This style will hold 2 latexStyle items,
+//one for row and other for colum subscripts
+LatexStyle latexStyle = LatexStyle.make();
 
-//The style for the row subscript: applies to all subscript numbers with a comma immediately after
+//The style for the row subscript: applies to all
+//subscript numbers with a comma immediately after
 LatexStyleItem rowSubscriptStyle = LatexStyleItem.make("slateblue");
 rowSubscriptStyle.mustMatchTo(//Must be a number and a subscript
     LatexToken.make()
@@ -177,7 +181,8 @@ rowSubscriptStyle.nextTokenMustMatchTo(//The next token must be a comma
     .setString(",")
 );
 
-//The style for the col subscript: applies to all subscript numbers with a comma immediately before
+//The style for the col subscript: applies to all
+//subscript numbers with a comma immediately before
 LatexStyleItem colSubscriptStyle = LatexStyleItem.make("coral");
 colSubscriptStyle.mustMatchTo(//Must be a number and a subscript
     LatexToken.make()
