@@ -293,13 +293,9 @@ The definition of a `LatexStleItem` in XML format has the following syntax:
 </latexStyleItem>
 ```
 
-Each one of the six different condition types may have the following optional items:
+Each one of the six different condition types may have the following optional items `<type>`, `<subtype>`, `<string>`, `<delimiterDepth>`.
 
-```xml
-<type> </type> <!-- Token type. A value of the enum LatexToken.Type-->
-```
-
-This token defines the type token. For example the following definition:
+The `<type>` element, as its name says, defines the type token. For example the following definition:
 
 ```xml
 <equals>
@@ -317,13 +313,7 @@ will match any LaTeX token which is a number, and
 
 will match any LaTex token which is not a Greek letter.
 
-The element 
-
-```xml
-<subtype> </subtype> <!-- Token subtype flags. A comma separated list of strings-->
-```
-
-will set the flags of the token. For example:
+The element  `<subtype>` will set the flags of the token. For example:
 
 ```xml
 <equals>
@@ -343,13 +333,7 @@ The element
 
 will match any LaTeX token which is not in the "from" position of an operator, like `\int` or `\sum`.
 
-The element
-
-```xml
-<string> </string> <!-- Token string name -->
-```
-
-Refers to the LaTeX name this token has. Usually the character ("a") or the command without backslashes ("sqrt", "cdot", etc.). So, for example:
+The element `<string> ` refers to the LaTeX name this token has. Usually the character ("a") or the command without backslashes ("sqrt", "cdot", etc.). So, for example:
 
 ```xml
 <differs>
