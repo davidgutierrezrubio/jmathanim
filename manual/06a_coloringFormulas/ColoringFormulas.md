@@ -213,7 +213,7 @@ Note that this code will only work if the row and column indices consist of only
 
 Finally, you can store LaTeX coloring styles into config files too. The previous style used can be stored in a config file like follows:
 
-```XML
+```xml
 <?xml version="1.0" encoding="UTF-8"?>
 <JMathAnimConfig>
     <latexStyles>
@@ -277,3 +277,96 @@ camera.zoomToAllObjects();
 waitSeconds(3);//Smile for the screenshot!
 ```
 
+The definition of a `LatexStleItem` in XML format has the following syntax:
+
+```xml
+<latexStyleItem>
+    <conditions>
+        <equals>...</equals> <!-- Optional. Must match the conditions specified inside-->
+        <equalsPrev>...</equalsPrev> <!-- Optional. Previous token must match the conditions specified inside-->
+        <equalsAfter>...</equalsAfter> <!-- Optional. Next token must match the conditions specified inside-->
+        <differs>...</differs> <!-- Optional. Must differ in at least one of the conditions specified inside-->
+        <differsPrev>...</differsPrev> <!-- Optional. Previous token must differ in at least one of the conditions specified inside-->
+        <differsAfter>...</differsAfter> <!-- Optional. Next token must differ in at least one of the conditions specified inside-->
+    </conditions>
+    <style>...</style> <!-- Style definitions here (see Chapter "Styling") -->
+</latexStyleItem>
+```
+
+Each one of the six different condition types may have the following optional items:
+
+```xml
+<type> </type> <!-- Token type. A value of the enum LatexToken.Type-->
+```
+
+This token defines the type token. For example the following definition:
+
+```xml
+<equals>
+    <type>NUMBER</type>
+</equals>
+```
+
+will match any LaTeX token which is a number, and 
+
+```xml
+<differs>
+    <type>GREEK_LETTER</type>
+</differs>
+```
+
+will match any LaTex token which is not a Greek letter.
+
+The element 
+
+```xml
+<subtype> </subtype> <!-- Token subtype flags. A comma separated list of strings-->
+```
+
+will set the flags of the token. For example:
+
+```xml
+<equals>
+    <subtype>SEC_NUMERATOR,SEC_SUBSCRIPT</subtype>
+</equals>
+```
+
+will match any LaTeX token in a fraction numerator and in a subscript position.
+
+The element
+
+```xml
+<differs>
+    <subtype>SEC_FROM_INDEX</subtype>
+</differs>
+```
+
+will match any LaTeX token which is not in the "from" position of an operator, like `\int` or `\sum`.
+
+The element
+
+```xml
+<string> </string> <!-- Token string name -->
+```
+
+Refers to the LaTeX name this token has. Usually the character ("a") or the command without backslashes ("sqrt", "cdot", etc.). So, for example:
+
+```xml
+<differs>
+    <string>x</string>
+</differs>
+```
+
+Anything that is not the "x" char (case sensitive) will match this condition.
+
+Finally the element `delimiterDepth` sets how many delimiters embrace this token. So, for example
+
+```xml
+<equals>
+    <delimiterDepth>0</delimiterDepth>
+</equals>
+```
+
+will match any token which is not enclosed in any delimiter (parenthesis, brackets, etc.)
+
+[home](https://davidgutierrezrubio.github.io/jmathanim/) [back](../index.html)
