@@ -19,6 +19,8 @@
 
 ## [Coloring formulas](06a_coloringFormulas/ColoringFormulas.md)
 
+## [Dynamic text. Linking](06aa_DynamicText/DynamicText.md)
+
 ## [Dealing with paths](06b_DealingWithPaths/DealingWithPaths.md)
 
 ## [Constructible objects](06c_ConstructibleObjects/ConstructibleObjects.md)
