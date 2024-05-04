@@ -36,7 +36,7 @@ while (!anim.processAnimation()) {//Main animation loop
 
 You will have the following animation:
 
-<img src="C:\Users\David\Documents\NetBeansProjects\gh-pages\manual\06aa_DynamicText\01_dynamic.gif" alt="01_dynamic" style="zoom:75	%;" />
+<img src="01_dynamic.gif" alt="01_dynamic" style="zoom:75	%;" />
 
 
 
