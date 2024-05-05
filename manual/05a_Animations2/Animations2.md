@@ -502,6 +502,7 @@ You will get the animation played back and forth:
 
 The default lambda in the `JoinAnimation` class is linear `t->t`.
 
+<!---
 In the next example, we use an animation to "unwrap" the hexagon, and later reuse it with a different lambda to wrap it again:
 
 ```java
@@ -538,6 +539,6 @@ waitSeconds(3);
 Gives the following animation:
 
 ![joinAnimation3](joinAnimation3.gif)
-
+--->
 [home](https://davidgutierrezrubio.github.io/jmathanim/) [back](../index.html)
 
