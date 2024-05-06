@@ -173,7 +173,6 @@ public abstract class JMathAnimScene {
         config.setOutputFileName(this.getClass().getSimpleName());
         animationIsDisabled = false;
         styles = config.getStyles();
-        logger.setLevel(ch.qos.logback.classic.Level.WARN);//Default log level: WARN
     }
 
     /**
@@ -204,6 +203,7 @@ public abstract class JMathAnimScene {
         } catch (JoranException ex) {
             java.util.logging.Logger.getLogger(JMathAnimScene.class.getName()).log(Level.SEVERE, null, ex);
         }
+        logger.setLevel(ch.qos.logback.classic.Level.INFO);//Default log level: INFO
         logger.info("Running sketch {} ", sketchName);
 
         setupSketch();
@@ -850,7 +850,8 @@ public abstract class JMathAnimScene {
      * @param originType Origin link.
      * @param destiny Destiny object
      * @param destinyType Destiny link
-     * @param function Function to apply to the value before applying to the destiny object
+     * @param function Function to apply to the value before applying to the
+     * destiny object
      * @return The created link
      */
     public LinkArguments registerLink(Linkable origin, LinkArguments.LinkType originType, Linkable destiny, LinkArguments.LinkType destinyType, DoubleUnaryOperator function) {

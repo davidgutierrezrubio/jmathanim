@@ -175,8 +175,8 @@ public class JMathAnimConfig {
     }
 
     private JMathAnimConfig() {// Private constructor
-        styles = new HashMapUpper<>();
-        latexStyles = new HashMapUpper<>();
+        styles = new HashMapUpper<>("styles");
+        latexStyles = new HashMapUpper<>("latex styles");
         setDefaultMP();// Load "default" drawing style in dictionary
         resourcesDir = new File("." + File.separator + "resources");
         outputDir = new File("." + File.separator + "media");

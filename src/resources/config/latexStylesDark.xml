@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE JMathAnimConfig SYSTEM "JMathAnimConfig.dtd">
 <JMathAnimConfig>
     <latexStyles>
         <latexStyle name="colorblind">
@@ -17,10 +18,22 @@
                 <conditions>
                     <equals>
                         <type>SYMBOL</type>
-                    </equals>
-                </conditions>
+                    </equals> 
+               </conditions>
                 <style>
                     <color>#999933</color>
+                </style>
+            </latexStyleItem>
+            
+            
+              <latexStyleItem>
+                <conditions>
+                    <equals>
+                        <type>ARROW</type>
+                    </equals> 
+               </conditions>
+                <style>
+                    <color>#ee6999</color>
                 </style>
             </latexStyleItem>
             
@@ -37,7 +50,7 @@
             
             
             
-            <latexStyleItem>
+<!--            <latexStyleItem>
                 <conditions>
                     <equals>
                         <type>BINARY_OPERATOR</type>
@@ -67,9 +80,9 @@
                 <style>
                     <color>#4477AA</color>
                 </style>
-            </latexStyleItem>
+            </latexStyleItem>-->
             
-              <latexStyleItem>
+<!--              <latexStyleItem>
                 <conditions>
                     <equals>
                         <type>RELATION</type>
@@ -78,7 +91,7 @@
                 <style>
                     <color>#4477AA</color>
                 </style>
-            </latexStyleItem>
+            </latexStyleItem>-->
             
               <latexStyleItem>
                 <conditions>
@@ -87,7 +100,8 @@
                     </equals>
                 </conditions>
                 <style>
-                    <color>#66CCEE</color>
+                    <color>#ddc180</color>
+                    <!--<color>#66CCEE</color>-->
                 </style>
             </latexStyleItem>
             
@@ -99,7 +113,7 @@
                     </equals>
                 </conditions>
                 <style>
-                    <color>#cebd54</color>
+                    <color>#44AA99</color>
                 </style>
             </latexStyleItem>
             
@@ -111,7 +125,7 @@
                     </equals>
                 </conditions>
                 <style>
-                    <color>#cebd54</color>
+                    <color>#999933</color>
                 </style>
             </latexStyleItem>
             
@@ -126,71 +140,133 @@
                     <color>#AA4499</color>
                 </style>
             </latexStyleItem>
-        </latexStyle>
+        
+          <latexStyleItem>
+                <conditions>
+                    <equals>
+                        <type>CHAR</type>
+                        <string>x</string>
+                    </equals>
+                </conditions>
+                <style>
+                    <color>#33BBEE</color>
+                </style>
+            </latexStyleItem>
+  
+        
+         <latexStyleItem>
+                <conditions>
+                    <equals>
+                        <type>CHAR</type>
+                        <string>y</string>
+                    </equals>
+                </conditions>
+                <style>
+                    <color>#EE7733</color>
+                </style>
+            </latexStyleItem>
+        
+          <latexStyleItem>
+                <conditions>
+                    <equals>
+                        <type>CHAR</type>
+                        <string>n</string>
+                    </equals>
+                </conditions>
+                <style>
+                    <color>#44AA99</color>
+                </style>
+            </latexStyleItem>
+      </latexStyle>
+        
     
         <latexStyle name="colorful">
-            <latexStyleItem>
+             <latexStyleItem>
                 <conditions>
                     <equals>
                         <type>NUMBER</type>
                     </equals>
                 </conditions>
                 <style>
-                    <color>#267FFF</color>
+                    <color>lawngreen</color>
                 </style>
             </latexStyleItem>
             
-              <latexStyleItem>
-                <conditions>
-                    <equals>
-                        <type>DELIMITER</type>
-                    </equals>
-                </conditions>
-                <style>
-                    <color>#CBFF0F</color>
-                </style>
-            </latexStyleItem>
-            
-              <latexStyleItem>
-                <conditions>
-                    <equals>
-                        <type>NAMED_FUNCTION</type>
-                    </equals>
-                </conditions>
-                <style>
-                    <color>#FF3C24</color>
-                </style>
-            </latexStyleItem>
-              <latexStyleItem>
+               <latexStyleItem>
                 <conditions>
                     <equals>
                         <type>GREEK_LETTER</type>
                     </equals>
                 </conditions>
                 <style>
-                    <color>#AD635A</color>
+                    <color>gold</color>
                 </style>
             </latexStyleItem>
-            <latexStyleItem>
+            
+             <latexStyleItem>
                 <conditions>
                     <equals>
-                        <type>BINARY_OPERATOR</type>
+                        <type>NAMED_FUNCTION</type>
                     </equals>
                 </conditions>
                 <style>
-                    <color>#818A63</color>
+                    <color>sandybrown</color>
                 </style>
             </latexStyleItem>
+            
+            
+             
+             <latexStyleItem>
+                <conditions>
+                    <equals>
+                        <type>CHAR</type>
+                        <string>x</string>
+                    </equals>
+                </conditions>
+                <style>
+                    <color>red</color>
+                </style>
+            </latexStyleItem>
+            
               <latexStyleItem>
                 <conditions>
                     <equals>
-                        <type>OPERATOR</type>
+                        <type>CHAR</type>
+                        <string>y</string>
                     </equals>
                 </conditions>
                 <style>
-                    <color>#AD635A</color>
+                    <color>deepskyblue</color>
                 </style>
             </latexStyleItem>
+            
+<!--              <latexStyleItem>
+                <conditions>
+                    <equals>
+                        <type>CHAR</type>
+                        <string>n</string>
+                    </equals>
+                </conditions>
+                <style>
+                    <color>orange</color>
+                </style>
+            </latexStyleItem>
+            
+              <latexStyleItem>
+                <conditions>
+                    <equals>
+                        <type>CHAR</type>
+                        <string>m</string>
+                    </equals>
+                </conditions>
+                <style>
+                    <color>magenta</color>
+                </style>
+            </latexStyleItem>-->
+            
+            
+            
+            
         </latexStyle>
     </latexStyles>
 </JMathAnimConfig>

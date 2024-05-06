@@ -16,6 +16,7 @@
  */
 package com.jmathanim.Utils;
 
+import com.jmathanim.jmathanim.JMathAnimScene;
 import java.util.HashMap;
 
 /**
@@ -27,6 +28,12 @@ import java.util.HashMap;
  */
 public class HashMapUpper<K, V> extends HashMap<String, V> {
 
+    private final String dictName;
+
+    public HashMapUpper(String dictName) {
+        this.dictName = dictName;
+    }
+
     @Override
     public V put(String key, V value) {
         return super.put(key.toUpperCase(), value);
@@ -37,7 +44,12 @@ public class HashMapUpper<K, V> extends HashMap<String, V> {
         if (!(key instanceof String)) {
             return null;
         }
-        return super.get(((String) key).toUpperCase());
+        String name = ((String) key).toUpperCase();
+        V result = super.get(name);
+        if (result == null) {
+            JMathAnimScene.logger.warn("Key " + name + " not found in " + dictName + " dictionary");
+        }
+        return result;
     }
 
 }

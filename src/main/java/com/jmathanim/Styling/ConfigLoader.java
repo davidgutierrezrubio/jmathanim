@@ -56,8 +56,8 @@ public class ConfigLoader {
             URL configURL = resourceLoader.getResource(filename, "config");
             JMathAnimScene.logger.info("Loading config file {}", filename);
             DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
-//            dbFactory.setValidating(false);
-//            dbFactory.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
+            dbFactory.setValidating(false);
+            dbFactory.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
             DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
 //            dBuilder.setEntityResolver(new EntityResolver() {
 //                @Override
@@ -254,19 +254,19 @@ public class ConfigLoader {
         LatexToken ltDiffPrev = parseLatexToken(getFirstChildElementWithName(conditionElement, "differsPrev"));
         LatexToken ltDiffAfter = parseLatexToken(getFirstChildElementWithName(conditionElement, "differsAfter"));
         LatexStyleItem latexStyleItem = new LatexStyleItem();
-        latexStyleItem.tokenEq = ltEquals;
-        latexStyleItem.tokenEqPrev = ltEqualsPrev;
-        latexStyleItem.tokenEqAfter = ltEqualsAfter;
-        latexStyleItem.tokenDif = ltDiff;
-        latexStyleItem.tokenDifPrev = ltDiffPrev;
-        latexStyleItem.tokenDifAfter = ltDiffAfter;
+        latexStyleItem.mustMatchTo(ltEquals);
+        latexStyleItem.previousTokenMustMatchTo(ltEqualsPrev);
+        latexStyleItem.nextTokenMustMatchTo(ltEqualsAfter);
+        latexStyleItem.mustDifferFrom(ltDiff);
+        latexStyleItem.previousTokenMustDifferFrom(ltDiffPrev);
+        latexStyleItem.nextTokenMustDifferFrom(ltDiffAfter);
         Element styleElement = getFirstChildElementWithName(parent, "style");
         String baseStyle = styleElement.getAttribute("base");
         if ("".equals(baseStyle)) {
             baseStyle = "LATEXDEFAULT";
         }
         MODrawProperties mo = parseMathObjectDrawingProperties(config, baseStyle, styleElement);
-        latexStyleItem.style = mo;
+        latexStyleItem.setStyle(mo);
         return latexStyleItem;
     }
 
@@ -277,6 +277,7 @@ public class ConfigLoader {
         String type = getFirstChildValueByName(el, "type");
         String subTypeStr = getFirstChildValueByName(el, "subtype");
         String string = getFirstChildValueByName(el, "string");
+        String delDepthStr = getFirstChildValueByName(el, "delimiterDepth");
 
         LatexToken.TokenType tokenType = null;
 
@@ -310,8 +311,12 @@ public class ConfigLoader {
 
             }
         }
-
-        return new LatexToken(tokenType, tokenSubType, string);
+        Integer delimiterDepth=((delDepthStr==null)||("".equals(delDepthStr)) ? null: Integer.valueOf(delDepthStr));
+        return LatexToken.make()
+                .setType(tokenType)
+                .setSecondaryTypeFlag(tokenSubType)
+                .setString(string)
+                .setDelimiterDepth(delimiterDepth);
     }
 
     public static String getFirstChildValueByName(Element parent, String name) {

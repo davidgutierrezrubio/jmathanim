@@ -31,28 +31,24 @@ import java.util.ArrayList;
  */
 public class LatexStyleItem {
 
-    public LatexToken tokenEq = null;
-    public LatexToken tokenDif = null;
-    public LatexToken tokenEqPrev = null;
-    public LatexToken tokenDifPrev = null;
-    public LatexToken tokenEqAfter = null;
-    public LatexToken tokenDifAfter = null;
-    public MODrawProperties style;
+    private LatexToken tokenEq = null;
+    private LatexToken tokenDif = null;
+    private LatexToken tokenEqPrev = null;
+    private LatexToken tokenDifPrev = null;
+    private LatexToken tokenEqAfter = null;
+    private LatexToken tokenDifAfter = null;
+    private MODrawProperties style;
 
-    public static LatexStyleItem equalsChar(String equal, String color) {
-        return equalsChar(null, equal, null, color);
-    }
-
-    public static LatexStyleItem equalsChar(String before, String equal, String after, String color) {
-        LatexStyleItem resul = new LatexStyleItem();
-        resul.tokenEqPrev = new LatexToken(null, before);
-        resul.tokenEq = new LatexToken(null, equal);
-        resul.tokenEqAfter = new LatexToken(null, after);
-        JMColor col = JMColor.parse(color);
-
-        resul.style.setDrawColor(col);
-        resul.style.setFillColor(col);
-
+    /**
+     * Returns a LatexStyleItem that matches the given glyph name, assigning the color specified
+     * @param name Name glyph to match
+     * @param color Color to assign, a String
+     * @return The LatexStyleItem created
+     */
+    public static LatexStyleItem equalsChar(String name, String color) {
+          LatexStyleItem resul = new LatexStyleItem();
+        resul.tokenEqPrev = LatexToken.make().setString(name);
+        resul.setColor(color);
         return resul;
     }
 
@@ -129,37 +125,35 @@ public class LatexStyleItem {
         }
         return true;//All Ok!
     }
-//  public boolean match(LatexToken tokPrev, LatexToken tok, LatexToken tokAfter) {
-//        boolean result = true;
-//        if (tokPrev != null) {
-//            if ((tokenEqPrev != null) && (!tokPrev.match(tokenEqPrev))) {
-//                return false;
-//            }
-//            if ((tokenDifPrev != null) && (!tokPrev.differs(tokenDifPrev))) {
-//                return false;
-//            }
-//        }
-//        if (tok != null) {
-//            if ((tokenEq != null) && (!tok.match(tokenEq))) {
-//                return false;
-//            }
-//            if ((tokenDif != null) && (!tok.differs(tokenDif))) {
-//                return false;
-//            }
-//        }
-//        if (tokAfter != null) {
-//            if ((tokenEqAfter != null) && (!tokAfter.match(tokenEqAfter))) {
-//                return false;
-//            }
-//            if ((tokenDifAfter != null) && (!tokAfter.differs(tokenDifAfter))) {
-//                return false;
-//            }
-//        }
-//        return true;//All Ok!
-//    }
 
-    public boolean match(LatexToken tok) {
-        return match(null, tok, null);
+    public LatexStyleItem mustMatchTo(LatexToken token) {
+        tokenEq = token;
+        return this;
+    }
+
+    public LatexStyleItem mustDifferFrom(LatexToken token) {
+        tokenDif = token;
+        return this;
+    }
+
+    public LatexStyleItem previousTokenMustMatchTo(LatexToken token) {
+        tokenEqPrev = token;
+        return this;
+    }
+
+    public LatexStyleItem previousTokenMustDifferFrom(LatexToken token) {
+        tokenDifPrev = token;
+        return this;
+    }
+
+    public LatexStyleItem nextTokenMustMatchTo(LatexToken token) {
+        tokenEqAfter = token;
+        return this;
+    }
+
+    public LatexStyleItem nextTokenMustDifferFrom(LatexToken token) {
+        tokenDifAfter = token;
+        return this;
     }
 
     /**
@@ -173,7 +167,7 @@ public class LatexStyleItem {
             JMathAnimScene.logger.warn("This LaTeXMathObject has no parser. It cannot be coloured, sorry!");
             return;
         }
-        ArrayList<LatexToken> tokens = latexParser.assignedTokens;
+        ArrayList<LatexToken> tokens = latexParser.getTokensList();
         if (tokens == null) {
             JMathAnimScene.logger.warn("Cannot apply style to a LaTeX without assigned tokens");
             return;
@@ -185,9 +179,9 @@ public class LatexStyleItem {
 
         for (int i = 0; i < latex.size(); i++) {
             Shape latexShape = latex.get(i);
-            LatexToken tokPrev = (i > 0 ? tokens.get(i - 1) : new LatexToken(LatexToken.TokenType.NONE, LatexToken.SEC_NONE, ""));
+            LatexToken tokPrev = (i > 0 ? tokens.get(i - 1) : LatexToken.make(LatexToken.TokenType.NONE, LatexToken.SEC_NONE, ""));
             LatexToken token = tokens.get(i);
-            LatexToken tokAfter = (i < tokens.size() - 1 ? tokens.get(i + 1) : new LatexToken(LatexToken.TokenType.NONE, LatexToken.SEC_NONE, ""));
+            LatexToken tokAfter = (i < tokens.size() - 1 ? tokens.get(i + 1) : LatexToken.make(LatexToken.TokenType.NONE, LatexToken.SEC_NONE, ""));
 
             if (match(tokPrev, token, tokAfter)) {
                 latexShape.getMp().copyFrom(style);
@@ -201,8 +195,15 @@ public class LatexStyleItem {
                 }
             }
 
-
         }
+    }
+
+    public MODrawProperties getStyle() {
+        return style;
+    }
+
+    public void setStyle(MODrawProperties style) {
+        this.style = style;
     }
 
 }
