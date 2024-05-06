@@ -412,6 +412,69 @@ Note that when the rotation is finished subsequent calls to `processAnimation` h
 
 
 
+
+# Reusing animations
+
+The exact flow of any animation is as follows:
+
+1) Creation of the animation object, where most of the necessary auxiliary objects are created.
+
+2) Initialization. In this method the states of all objects involved in the animation are stored (state at t=0)
+
+3) For each value of t, namely t', the `doAnim(t)` computes the actual frame of the animation. To do this:
+
+   1) Restore all objects to its initial state t=0.
+   2) Apply the required transformations to recreate the animation at time t=t'.
+
+4) At the exit of the animation, the method `cleanAnimationAt(t)` performs the necessary cleaning operations, depending on the moment of the animation that we want to exit. For example, most transformation or creation animations use intermediate, auxiliary objects that should be deleted when exiting at the beginning or end.
+
+We recall specially the point 3). If we want to reuse the created animation in other context, the animation should be reinitializated, otherwise it will use the old object states from previous run. For example, suppose we have a rectangle we want to rotate 45 degrees and then rotate it back to its initial position. Suppose we want to simply use the same animation but using the lambda `reverse()` which plays backwards in time.
+```java
+Shape sq=Shape.square().scale(2,1).center().style("solidgreen");
+Animation rotate=Commands.rotate(2, 45*DEGREES, sq).setLambda(t->t);
+playAnimation(rotate);
+waitSeconds(1);
+playAnimation(rotate.setLambda(UsefulLambdas.reverse()));
+waitSeconds(1);
+````
+The animation we got looks like this, which is not that we expected:
+
+![resettingAnimations1](resettingAnimations1.gif)
+
+The problem lies in the second call to the `rotate` animation. After being called again, the animation reinitialises and saves the states of the animated objects (in this case the rectangle) according to its current state.
+
+We can avoid the automatic reinitialisation of animations by simply setting the flag `setShouldResetAtFinish` to `false`
+```java
+Shape sq=Shape.square().scale(2,1).center().style("solidgreen");
+Animation rotate=Commands.rotate(2, 45*DEGREES, sq).setLambda(t->t);
+rotate.setShouldResetAtFinish(false);
+playAnimation(rotate);
+waitSeconds(1);
+playAnimation(rotate.setLambda(UsefulLambdas.reverse()));
+waitSeconds(1);
+````
+The result is much better now, except for one small detail at the end...
+
+![resettingAnimations1](resettingAnimations2.gif)
+
+The rectangle disappears at the end! Why does this happen? Well, sometimes JMathAnim is just too "smart". Remember that for some animations, like move or rotate, if the object is not in the scene, it is automatically added? Well, if you play the animation in reverse and exit at t=0, JMathAnim will try to leave everything as it found it, i.e. with the rectangle outside the scene. If you don't want this to happen, just make sure that the rectangle is added to the scene before it is animated:
+
+```java
+Shape sq=Shape.square().scale(2,1).center().style("solidgreen");
+add(sq);
+Animation rotate=Commands.rotate(2, 45*DEGREES, sq).setLambda(t->t);
+rotate.setShouldResetAtFinish(false);
+playAnimation(rotate);
+waitSeconds(1);
+playAnimation(rotate.setLambda(UsefulLambdas.reverse()));
+waitSeconds(1);
+````
+![resettingAnimations1](resettingAnimations3.gif)
+
+
+
+
+
 # Creating complex animations
 
 There are special subclasses of `Animation`that allows to build more complex animations using previously defined ones.
@@ -502,8 +565,8 @@ You will get the animation played back and forth:
 
 The default lambda in the `JoinAnimation` class is linear `t->t`.
 
-<!---
-In the next example, we use an animation to "unwrap" the hexagon, and later reuse it with a different lambda to wrap it again:
+
+In the next example, we use an animation to "unwrap" the hexagon, and later reuse it with a different lambda to wrap it again. Note the use of the method `.setShouldResetAtFinish(false)`, which deactivates the reset of the animation to be able to use it again without overwriting the initial state of the objects.
 
 ```java
 Shape polygon = Shape.regularPolygon(6)
@@ -521,6 +584,7 @@ for (int i = 1; i < polygon.size(); i++) {
     vertices.getObjects().addAll(polygon.getPath().jmPathPoints.subList(i, polygon.size()));
     unwrap.add(Commands.rotate(1, polygon.get(i).p, -60 * DEGREES, vertices).setLambda(t->t));
 }
+unwrap.setShouldResetAtFinish(false);
 playAnimation(unwrap);
 
 Point A=polygon.getBoundingBox().getLeft();
@@ -539,6 +603,5 @@ waitSeconds(3);
 Gives the following animation:
 
 ![joinAnimation3](joinAnimation3.gif)
---->
 [home](https://davidgutierrezrubio.github.io/jmathanim/) [back](../index.html)
 
