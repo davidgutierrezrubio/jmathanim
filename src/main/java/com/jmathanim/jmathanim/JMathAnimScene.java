@@ -28,8 +28,9 @@ import com.jmathanim.Constructible.GeogebraLoader;
 import com.jmathanim.Renderers.MovieEncoders.SoundItem;
 import com.jmathanim.Renderers.Renderer;
 import com.jmathanim.Styling.MODrawProperties;
-import com.jmathanim.Utils.JMathAnimConfig;
 import com.jmathanim.Utils.Link;
+import com.jmathanim.Utils.JMathAnimConfig;
+import com.jmathanim.Utils.LinkArguments;
 import com.jmathanim.Utils.Linkable;
 import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.ResourceLoader;
@@ -820,7 +821,11 @@ public abstract class JMathAnimScene {
         //Other case
         return getMathObjects().contains(mathobject);
     }
-
+    public Link registerLink(Link link) {
+         linksToBeDone.add(link);
+        return link;
+    }
+    
     /**
      * Register a new Link to be done at every frame. A double value will be
      * extracted from the origin object and applied to the destiny
@@ -831,8 +836,8 @@ public abstract class JMathAnimScene {
      * @param destinyType Destiny link
      * @return The created link
      */
-    public Link registerLink(Linkable origin, Link.LinkType originType, Linkable destiny, Link.LinkType destinyType) {
-        Link link = Link.make(origin, originType, destiny, destinyType);
+    public LinkArguments registerLink(Linkable origin, LinkArguments.LinkType originType, Linkable destiny, LinkArguments.LinkType destinyType) {
+        LinkArguments link = LinkArguments.make(origin, originType, destiny, destinyType);
         linksToBeDone.add(link);
         return link;
     }
@@ -848,8 +853,8 @@ public abstract class JMathAnimScene {
      * @param function Function to apply to the value before applying to the destiny object
      * @return The created link
      */
-    public Link registerLink(Linkable origin, Link.LinkType originType, Linkable destiny, Link.LinkType destinyType, DoubleUnaryOperator function) {
-        Link link = Link.make(origin, originType, destiny, destinyType,function);
+    public LinkArguments registerLink(Linkable origin, LinkArguments.LinkType originType, Linkable destiny, LinkArguments.LinkType destinyType, DoubleUnaryOperator function) {
+        LinkArguments link = LinkArguments.make(origin, originType, destiny, destinyType,function);
         linksToBeDone.add(link);
         return link;
     }
@@ -857,10 +862,10 @@ public abstract class JMathAnimScene {
     /**
      * Removes the given link from the list of links to be done
      *
-     * @param link Link to remove
+     * @param link LinkArguments to remove
      * @return True if link existed and was removed
      */
-    public boolean unregisterLink(Link link) {
+    public boolean unregisterLink(LinkArguments link) {
         return linksToBeDone.remove(link);
     }
 }

@@ -19,6 +19,7 @@ package com.jmathanim.mathobjects.Text;
 
 import com.jmathanim.Utils.Anchor;
 import com.jmathanim.jmathanim.JMathAnimScene;
+import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.Scalar;
 import com.jmathanim.mathobjects.hasArguments;
 import java.text.DecimalFormat;
@@ -125,18 +126,27 @@ public class LaTeXMathObject extends AbstractLaTeXMathObject implements hasArgum
     }
 
     @Override
-    public void update(JMathAnimScene scene) {
-        if (origText.contains("{#")) {
-            //Actualizo numeros
-            String newText = origText;
-            for (Integer index : variables.keySet()) {
-                newText = newText.replace("{#" + index + "}", df.format(variables.get(index).value));
-            }
-            changeInnerLaTeX(newText);
-        }
+    public void copyStateFrom(MathObject obj) {
+        super.copyStateFrom(obj);
+        LaTeXMathObject copy = (LaTeXMathObject) obj;
+        this.origText = copy.origText;
+        this.anchor = copy.anchor;
     }
 
-    public DecimalFormat getDecimalFormat() {
+    @Override
+    public void update(JMathAnimScene scene) {
+        if (origText == null) {
+            origText = getText();
+        }
+        //Actualizo numeros
+        String newText = origText;
+        for (Integer index : variables.keySet()) {
+            newText = newText.replace("{#" + index + "}", df.format(variables.get(index).value));
+        }
+        changeInnerLaTeX(newText);
+    }
+
+public DecimalFormat getDecimalFormat() {
         return df;
     }
 
@@ -150,7 +160,7 @@ public class LaTeXMathObject extends AbstractLaTeXMathObject implements hasArgum
     }
 
     @Override
-    public Scalar getArg(int n) {
+public Scalar getArg(int n) {
         Scalar resul = variables.get(n);
         if (resul == null) {
             variables.put(n, Scalar.make(0));
@@ -171,7 +181,7 @@ public class LaTeXMathObject extends AbstractLaTeXMathObject implements hasArgum
 //    }
 
     @Override
-    public String toString() {
+public String toString() {
         return "LaTeXMathObject{" + "origText=" + origText + '}';
     }
 }

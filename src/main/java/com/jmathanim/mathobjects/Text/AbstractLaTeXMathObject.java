@@ -351,8 +351,10 @@ public abstract class AbstractLaTeXMathObject extends SVGMathObject {
     @Override
     public void copyStateFrom(MathObject obj) {
         super.copyStateFrom(obj);
+
         if (obj instanceof AbstractLaTeXMathObject) {
             AbstractLaTeXMathObject copy = (AbstractLaTeXMathObject) obj;
+            this.text = copy.getText();
             getMp().copyFrom(copy.getMp());
             clearShapes();
             for (Shape sh : copy) {
@@ -361,6 +363,7 @@ public abstract class AbstractLaTeXMathObject extends SVGMathObject {
             }
             this.absoluteSize = copy.absoluteSize;
             this.modelMatrix.copyFrom(copy.modelMatrix);
+            this.latexColorizer = copy.latexColorizer;
         }
     }
 
@@ -419,8 +422,9 @@ public abstract class AbstractLaTeXMathObject extends SVGMathObject {
     }
 
     /**
-     * Returns a MultiShapeObject with all shapes with match given token
-     * LaTex code must be compiled with the JLaTeXMath option to use this method.
+     * Returns a MultiShapeObject with all shapes with match given token LaTex
+     * code must be compiled with the JLaTeXMath option to use this method.
+     *
      * @param token Token to match
      * @return A MultiShapeObject with all matching shapes
      */
