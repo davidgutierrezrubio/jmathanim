@@ -319,7 +319,7 @@ public class ConfigLoader {
                 .setDelimiterDepth(delimiterDepth);
     }
 
-    public static String getFirstChildValueByName(Element parent, String name) {
+    private static String getFirstChildValueByName(Element parent, String name) {
         NodeList nodeList = parent.getElementsByTagName(name);
 
         if (nodeList.getLength() > 0) {
@@ -336,18 +336,18 @@ public class ConfigLoader {
         return null;
     }
 
-    public static Element getFirstChildElementWithName(Element parent, String name) {
-        NodeList nodeList = parent.getElementsByTagName(name);
-
-        if (nodeList.getLength() > 0) {
-            Node firstChild = nodeList.item(0);
-            if (firstChild != null) {
-                return (Element) firstChild;
-            }
+    private static Element getFirstChildElementWithName(Element parent, String name) {
+    NodeList nodeList = parent.getElementsByTagName(name);
+    for (int i = 0; i < nodeList.getLength(); i++) {
+        Node child = nodeList.item(i);
+        if (child instanceof Element) {
+            return (Element) child;
         }
-        return null;
     }
-
+    return null;
+}
+    
+    
     private static MODrawProperties parseMathObjectDrawingProperties(JMathAnimConfig config, String baseStyle, Node template) {
         MODrawProperties mp = MODrawProperties.makeNullValues();
         if (!"".equals(baseStyle)) {

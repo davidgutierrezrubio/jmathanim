@@ -17,7 +17,7 @@
 package com.jmathanim.Utils;
 
 /**
- *
+ * Base class for a link between 2 or more objects
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
 public abstract class Link {
