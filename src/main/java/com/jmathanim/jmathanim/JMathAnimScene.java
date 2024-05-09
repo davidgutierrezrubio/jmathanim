@@ -402,13 +402,14 @@ public abstract class JMathAnimScene {
 
     /**
      * This method performs the necessary drawing methods. First updates all
-     * updateable objects and then draw all objects added to the scene. Objects
+     * updateable objects, apply links, and draw all objects added to the scene. Objects
      * are sorted by layer, so that lower layers means drawing under.
      */
     protected final void doDraws() {
         objectsAlreadyDrawed.clear();
-        doLinks();
         doUpdates();
+        doLinks();
+        
         if (!animationIsDisabled) {
             // Objects to be drawn on screen. Sort them by layer
             sceneObjects.sort((MathObject o1, MathObject o2) -> o1.getLayer().compareTo(o2.getLayer()));
