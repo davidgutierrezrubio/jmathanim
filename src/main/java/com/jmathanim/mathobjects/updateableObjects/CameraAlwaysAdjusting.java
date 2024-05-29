@@ -19,6 +19,7 @@ package com.jmathanim.mathobjects.updateableObjects;
 
 import com.jmathanim.Cameras.Camera;
 import com.jmathanim.Utils.Rect;
+import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.MathObject;
 
@@ -45,11 +46,13 @@ public class CameraAlwaysAdjusting implements Updateable {
     @Override
     public void update(JMathAnimScene scene) {
         if (!scene.getMathObjects().isEmpty()) {
-            Rect bbox = camera.getMathView().addGap(-hgap, -vgap);
+            Vec cameraGaps=camera.getGaps();
+            Rect bbox = camera.getMathView().addGap(-hgap, -vgap).addGap(-cameraGaps.x,-cameraGaps.y);
             for (MathObject obj : scene.getMathObjects()) {
                 bbox = Rect.union(bbox, obj.getBoundingBox());
             }
-            camera.adjustToRect(bbox.addGap(hgap, vgap));
+//            camera.adjustToRect(bbox.addGap(hgap, vgap));
+            camera.adjustToRect(bbox);
         }
     }
 
