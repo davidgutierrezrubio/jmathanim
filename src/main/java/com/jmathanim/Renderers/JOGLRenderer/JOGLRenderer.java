@@ -22,18 +22,35 @@ import com.jmathanim.Cameras.Camera3D;
 import com.jmathanim.Renderers.MovieEncoders.SoundItem;
 import com.jmathanim.Renderers.Renderer;
 import com.jmathanim.Styling.RendererEffects;
+import com.jmathanim.Utils.PathUtils;
 import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.AbstractJMImage;
 import com.jmathanim.mathobjects.MathObject;
+import com.jmathanim.mathobjects.Point;
 import com.jmathanim.mathobjects.Shape;
 import com.jmathanim.mathobjects.surface.Surface;
-import com.jogamp.newt.opengl.GLWindow;
-import com.jogamp.opengl.GLCapabilities;
-import com.jogamp.opengl.GLProfile;
 import java.awt.image.BufferedImage;
 import java.io.InputStream;
+import java.util.ArrayList;
+import static org.lwjgl.glfw.GLFW.GLFW_FALSE;
+import static org.lwjgl.glfw.GLFW.GLFW_RESIZABLE;
+import static org.lwjgl.glfw.GLFW.GLFW_TRUE;
+import static org.lwjgl.glfw.GLFW.GLFW_VISIBLE;
+import static org.lwjgl.glfw.GLFW.glfwCreateWindow;
+import static org.lwjgl.glfw.GLFW.glfwDefaultWindowHints;
+import static org.lwjgl.glfw.GLFW.glfwInit;
+import static org.lwjgl.glfw.GLFW.glfwMakeContextCurrent;
+import static org.lwjgl.glfw.GLFW.glfwPollEvents;
+import static org.lwjgl.glfw.GLFW.glfwShowWindow;
+import static org.lwjgl.glfw.GLFW.glfwSwapInterval;
+import static org.lwjgl.glfw.GLFW.glfwWindowHint;
+import org.lwjgl.glfw.GLFWErrorCallback;
+import org.lwjgl.opengl.GL;
+import org.lwjgl.opengl.GLCapabilities;
+import org.lwjgl.opengl.GLXCapabilities;
+import static org.lwjgl.system.MemoryUtil.NULL;
 
 /**
  * Development, unstable class for testing the JOGL API for rendering purposes
@@ -46,32 +63,37 @@ public class JOGLRenderer extends Renderer {
     public Camera3D fixedCamera;
     private static final double XMIN_DEFAULT = -2;
     private static final double XMAX_DEFAULT = 2;
-    private GLWindow glWindow;
-    JOGLRenderQueue queue;
+    private long glWindow;
+//    JOGLRenderQueue queue;
+    ShaderDrawer shaderDrawer;
+    PathUtils pathUtils;
 
     public JOGLRenderer(JMathAnimScene parentScene) {
         super(parentScene);
         camera = new Camera3D(parentScene, config.mediaW, config.mediaH);
         fixedCamera = new Camera3D(parentScene, config.mediaW, config.mediaH);
+        shaderDrawer=new ShaderDrawer();
+        pathUtils=new PathUtils();
     }
 
-     @Override
+    @Override
     public double MathWidthToThickness(double w) {
 //        return mathScalar * config.mediaW / (xmax - ymin);
 //        return camera.mathToScreen(w) / 1.25 * camera.getMathView().getWidth() / 2d;
         return w * 1066;
     }
-    
+
     @Override
     public double ThicknessToMathWidth(double th) {
         return th / 1066;
     }
-    
+
     @Override
     public double ThicknessToMathWidth(MathObject obj) {
         Camera cam = (obj.getMp().isAbsoluteThickness() ? fixedCamera : camera);
         return obj.getMp().getThickness() / 1066 * 4 / cam.getMathView().getWidth();
     }
+
     @Override
     public void addSound(SoundItem soundItem) {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
@@ -87,10 +109,7 @@ public class JOGLRenderer extends Renderer {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
-    @Override
-    public void drawPath(Shape mobj, Camera camera) {
-         queue.addToQueue(mobj);
-    }
+  
 
     @Override
     protected BufferedImage getRenderedImage(int frameCount) {
@@ -99,23 +118,42 @@ public class JOGLRenderer extends Renderer {
 
     @Override
     public void initialize() {
-        queue = new JOGLRenderQueue(config);
-        queue.renderer = this;
-        queue.setCamera(camera);
-        queue.fixedCamera = fixedCamera;
+//        queue = new JOGLRenderQueue(config);
+//        queue.renderer = this;
+//        queue.setCamera(camera);
+//        queue.fixedCamera = fixedCamera;
         camera.initialize(XMIN_DEFAULT, XMAX_DEFAULT, 0);
         fixedCamera.initialize(XMIN_DEFAULT, XMAX_DEFAULT, 0);
-        GLCapabilities caps = new GLCapabilities(GLProfile.get(GLProfile.GL2));
-        caps.setSampleBuffers(true);
-        caps.setNumSamples(32);
-        caps.setAlphaBits(8);
-        caps.setDepthBits(32);
-        caps.setStencilBits(8);
-        glWindow = GLWindow.create(caps);
-        glWindow.setSize(config.mediaW, config.mediaH);
-        glWindow.setTitle("JMathAnim - " + config.getOutputFileName());
-        glWindow.addGLEventListener(queue);
-        glWindow.setVisible(true);//TODO: For now it needs to always show the window...
+//        GLCapabilities caps = new GLXCapabilities
+//        caps.setSampleBuffers(true);
+//        caps.setNumSamples(32);
+//        caps.setAlphaBits(8);
+//        caps.setDepthBits(32);
+//        caps.setStencilBits(8);
+//        glWindow = GLWindow.create(caps);
+//        glWindow.setSize(config.mediaW, config.mediaH);
+//        glWindow.setTitle("JMathAnim - " + config.getOutputFileName());
+//        glWindow.addGLEventListener(queue);
+//        glWindow.setVisible(true);//TODO: For now it needs to always show the window...
+        GLFWErrorCallback.createPrint(System.err).set();
+
+        if (!glfwInit()) {
+            throw new IllegalStateException("Unable to initialize GLFW");
+        }
+
+        glfwDefaultWindowHints();
+        glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
+        glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE);
+        glWindow = glfwCreateWindow(config.mediaW, config.mediaH, "JMathAnim", NULL, NULL);
+        if (glWindow == NULL) {
+            throw new RuntimeException("Failed to create the GLFW window");
+        }
+        glfwMakeContextCurrent(glWindow);
+        glfwSwapInterval(1);
+        glfwShowWindow(glWindow);
+
+        GL.createCapabilities();
+
     }
 
     @Override
@@ -131,18 +169,9 @@ public class JOGLRenderer extends Renderer {
     @Override
     public synchronized void saveFrame(int frameCount) {
 //        JMathAnimScene.logger.info("JOGLRenderer: Saving frame");
-        queue.frameCount = frameCount;
-        synchronized (queue) {
-            glWindow.display();
-        }
-//        while (queue.busy) {}
-//        if (queue.busy)
-//        try {
-//            synchronized (queue) {
-//                queue.wait();
-//            }
-//        } catch (InterruptedException ex) {
-//            Logger.getLogger(JOGLRenderer.class.getName()).log(Level.SEVERE, null, ex);
+//        queue.frameCount = frameCount;
+//        synchronized (queue) {
+//            glWindow.display();
 //        }
 
     }
@@ -159,10 +188,10 @@ public class JOGLRenderer extends Renderer {
              * input until the output is not complete.
              */
             JMathAnimScene.logger.info("Finishing movie...");
-            queue.videoEncoder.finish();
-            if (queue.videoEncoder.isFramesGenerated()) {
-                JMathAnimScene.logger.info("Movie created at " + queue.saveFilePath);
-            }
+//            queue.videoEncoder.finish();
+//            if (queue.videoEncoder.isFramesGenerated()) {
+//                JMathAnimScene.logger.info("Movie created at " + queue.saveFilePath);
+//            }
 
         }
     }
@@ -174,16 +203,29 @@ public class JOGLRenderer extends Renderer {
     }
 
     public void drawSurface(Surface surface) {
-        queue.addToQueue(surface);
+//        queue.addToQueue(surface);
+        System.out.println("Draw surface lwjgl");
 
     }
 
+      @Override
+    public void drawPath(Shape mobj, Camera camera) {
+//        queue.addToQueue(mobj);
+        System.out.println("Draw lwjgl path");
+        ArrayList<ArrayList<Point>> aa = pathUtils.computePolygonalPieces(camera, mobj.getPath());
+        shaderDrawer.drawFill(mobj, aa);
+          glfwPollEvents();
+        
+    }
+    
+    
     @Override
     public void drawPath(Shape mobj) {
         //This should create JOGL objects and add them to the queue
 //        JMathAnimScene.logger.info("JOGLRenderer: Drawing path");
 //        queue.addShapeFill(mobj);
-        queue.addToQueue(mobj);
+//        queue.addToQueue(mobj);
+        drawPath(mobj,camera);
     }
 
     @Override

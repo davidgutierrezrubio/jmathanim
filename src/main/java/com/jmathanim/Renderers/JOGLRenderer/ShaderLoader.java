@@ -18,14 +18,29 @@
 package com.jmathanim.Renderers.JOGLRenderer;
 
 import com.jmathanim.Utils.ResourceLoader;
-import com.jogamp.opengl.GL2;
-import com.jogamp.opengl.GL3;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.net.URL;
 import java.nio.IntBuffer;
+import static org.lwjgl.opengl.GL11.GL_FALSE;
+import static org.lwjgl.opengl.GL20.GL_COMPILE_STATUS;
+import static org.lwjgl.opengl.GL20.GL_FRAGMENT_SHADER;
+import static org.lwjgl.opengl.GL20.GL_LINK_STATUS;
+import static org.lwjgl.opengl.GL20.GL_VERTEX_SHADER;
+import static org.lwjgl.opengl.GL20.glAttachShader;
+import static org.lwjgl.opengl.GL20.glCompileShader;
+import static org.lwjgl.opengl.GL20.glCreateProgram;
+import static org.lwjgl.opengl.GL20.glCreateShader;
+import static org.lwjgl.opengl.GL20.glDeleteShader;
+import static org.lwjgl.opengl.GL20.glGetProgramInfoLog;
+import static org.lwjgl.opengl.GL20.glGetProgrami;
+import static org.lwjgl.opengl.GL20.glGetShaderInfoLog;
+import static org.lwjgl.opengl.GL20.glGetShaderi;
+import static org.lwjgl.opengl.GL20.glLinkProgram;
+import static org.lwjgl.opengl.GL20.glShaderSource;
+import static org.lwjgl.opengl.GL32.GL_GEOMETRY_SHADER;
 
 /**
  *
@@ -33,7 +48,6 @@ import java.nio.IntBuffer;
  */
 public class ShaderLoader {
 
-    private GL3 gl;
     private int shaderprogram;
 
 //    public float scaVal;
@@ -50,121 +64,70 @@ public class ShaderLoader {
 //    private static String VERTEX_SHADER_FILE = "#default.vs";
 //    private static String GEOMETRY_SHADER_FILE = "#default.gs";
 //    private static String FRAGMENT_SHADER_FILE = "#default.fs";
-    private final String vertexShader;
-    private final String geomShader;
-    private final String fragmentShader;
+    private int vertexShader;
+    private int geometryShader;
+    private int fragmentShader;
+    private String vertexShaderName;
+    private String geomShaderName;
+    private String fragmentShaderName;
 
-    public ShaderLoader(GL3 gl, String vertexShader, String geomShader, String fragmentShader) {
-        this.vertexShader = vertexShader;
-        this.geomShader = geomShader;
-        this.fragmentShader = fragmentShader;
-        this.gl = gl;
+    public ShaderLoader(String vertexShaderName, String geomShaderName, String fragmentShaderName) {
+        this.vertexShaderName = vertexShaderName;
+        this.geomShaderName = geomShaderName;
+        this.fragmentShaderName = fragmentShaderName;
     }
 
-    public void loadShaders() throws IOException {
-        int v = gl.glCreateShader(GL2.GL_VERTEX_SHADER);
-        int f = gl.glCreateShader(GL2.GL_FRAGMENT_SHADER);
-        int g = gl.glCreateShader(GL3.GL_GEOMETRY_SHADER);
+    public int loadShaders() throws IOException {
         ResourceLoader rl = new ResourceLoader();
         IntBuffer ib = IntBuffer.allocate(1);
 
         //Vertex Shader
-        if (!"".equals(vertexShader)) {
+        if (!"".equals(vertexShaderName)) {
 
-            URL urlVS = rl.getResource(vertexShader, "shaders");
+            URL urlVS = rl.getResource(vertexShaderName, "shaders");
             String vsrc = loadShaderFile(urlVS);
-            gl.glShaderSource(v, 1, new String[]{vsrc}, null);
-            gl.glCompileShader(v);
+            vertexShader = createShader(GL_VERTEX_SHADER, vsrc);
 
-            gl.glGetShaderiv(v, GL2.GL_COMPILE_STATUS, ib);
-            if (ib.get(0) == GL2.GL_FALSE) {
-                System.out.println("Error compiling Vertex Shader");
-            } else {
-                System.out.println("Sucesfully compiled Vertex Shader");
-            }
         }
         //Geometry Shader
-        if (!"".equals(geomShader)) {
-            URL urlGS = rl.getResource(geomShader, "shaders");
-            BufferedReader brg = new BufferedReader(new FileReader(urlGS.getFile()));
+        if (!"".equals(geomShaderName)) {
+            URL urlGS = rl.getResource(geomShaderName, "shaders");
             String gsrc = loadShaderFile(urlGS);
-            gl.glShaderSource(g, 1, new String[]{gsrc}, null);
-            gl.glCompileShader(g);
-            ib = IntBuffer.allocate(1);
-            gl.glGetShaderiv(g, GL2.GL_COMPILE_STATUS, ib);
-            if (ib.get(0) == GL2.GL_FALSE) {
-                System.out.println("Error compiling Geometry Shader");
-            } else {
-                System.out.println("Sucesfully compiled Geometry Shader");
-            }
+            geometryShader = createShader(GL_GEOMETRY_SHADER, gsrc);
         }
         //Fragment Shader
-        if (!"".equals(fragmentShader)) {
-            URL urlFS = rl.getResource(fragmentShader, "shaders");
-            BufferedReader brf = new BufferedReader(new FileReader(urlFS.getFile()));
+        if (!"".equals(fragmentShaderName)) {
+            URL urlFS = rl.getResource(fragmentShaderName, "shaders");
             String fsrc = loadShaderFile(urlFS);
-            gl.glShaderSource(f, 1, new String[]{fsrc}, null);
-            gl.glCompileShader(f);
-            ib = IntBuffer.allocate(1);
-            gl.glGetShaderiv(f, GL2.GL_COMPILE_STATUS, ib);
-            if (ib.get(0) == GL2.GL_FALSE) {
-                System.out.println("Error compiling Fragment Shader");
-            } else {
-                System.out.println("Sucesfully compiled Fragment Shader");
-            }
+            fragmentShader = createShader(GL_FRAGMENT_SHADER, fsrc);
         }
 
-        shaderprogram = gl.glCreateProgram();
-        if (!"".equals(vertexShader)) {
-            gl.glAttachShader(shaderprogram, v);
-        }
-        if (!"".equals(geomShader)) {
-            gl.glAttachShader(shaderprogram, g);
-        }
-        if (!"".equals(fragmentShader)) {
-            gl.glAttachShader(shaderprogram, f);
-        }
-        gl.glLinkProgram(shaderprogram);
+        int program = glCreateProgram();
+        glAttachShader(program, vertexShader);
+        glAttachShader(program, geometryShader);
+        glAttachShader(program, fragmentShader);
+        glLinkProgram(program);
 
-        ib = IntBuffer.allocate(1);
-        gl.glGetProgramiv(shaderprogram, GL2.GL_LINK_STATUS, ib);
-        if (ib.get(0) == GL2.GL_FALSE) {
-            System.out.println("ERROR AL LINKEAR");
+        if (glGetProgrami(program, GL_LINK_STATUS) == GL_FALSE) {
+            throw new RuntimeException("Failed to link shader program: " + glGetProgramInfoLog(program));
         }
 
-        gl.glValidateProgram(shaderprogram);
-//        gl.glUseProgram(shaderprogram);
-//        unifProject = gl.glGetUniformLocation(shaderprogram, "projection");
-//        unifModelMat = gl.glGetUniformLocation(shaderprogram, "modelMat");
-//        unifThickness = gl.glGetUniformLocation(shaderprogram, "Thickness");
-//        unifViewPort = gl.glGetUniformLocation(shaderprogram, "Viewport");
-//        unifMiterLimit = gl.glGetUniformLocation(shaderprogram, "MiterLimit");
-//        unifColor = gl.glGetUniformLocation(shaderprogram, "unifColor");
+        glDeleteShader(vertexShader);
+        glDeleteShader(geometryShader);
+        glDeleteShader(fragmentShader);
 
-//        ib = IntBuffer.allocate(1);
-//        //Print attributes
-//        gl.glGetProgramiv(shaderprogram, GL2.GL_ACTIVE_ATTRIBUTES, ib);
-//        System.out.println("Hay " + ib.get(0) + " atributos");
-//
-//        for (int n = 0; n < ib.get(0); n++) {
-//            IntBuffer ib1 = IntBuffer.allocate(16);
-//            IntBuffer ib2 = IntBuffer.allocate(16);
-//            IntBuffer ib3 = IntBuffer.allocate(16);
-//            ByteBuffer bb = ByteBuffer.allocate(16);
-//            gl.glGetActiveAttrib(shaderprogram, n, 16, ib1, ib2, ib3, bb);
-//            System.out.println("Attribute " + n + ": type " + ib3.get(0) + ", name: " + StandardCharsets.UTF_8.decode(bb).toString());
-//        }
+        return program;
     }
 
-    /**
-     * Returns a handle for the specified uniform variable
-     *
-     * @param value Name of the uniform variable
-     * @return A handle to be used with jogl
-     */
-    public int getUniformVariable(String value) {
-        return gl.glGetUniformLocation(shaderprogram, value);
-    }
+//    /**
+//     * Returns a handle for the specified uniform variable
+//     *
+//     * @param value Name of the uniform variable
+//     * @return A handle to be used with jogl
+//     */
+//    public int getUniformVariable(String value) {
+//        return gl.glGetUniformLocation(shaderprogram, value);
+//    }
 
     /**
      * Returns the shader id
@@ -183,5 +146,17 @@ public class ShaderLoader {
             vsrc += line + "\n";
         }
         return vsrc;
+    }
+
+    private int createShader(int type, String shaderCode) {
+        int shader = glCreateShader(type);
+        glShaderSource(shader, shaderCode);
+        glCompileShader(shader);
+
+        if (glGetShaderi(shader, GL_COMPILE_STATUS) == GL_FALSE) {
+            throw new RuntimeException("Failed to compile shader: " + glGetShaderInfoLog(shader));
+        }
+
+        return shader;
     }
 }
