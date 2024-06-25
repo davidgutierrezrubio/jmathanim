@@ -21,6 +21,16 @@ package com.jmathanim.Utils;
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
 import com.jmathanim.Styling.JMColor;
+import static com.jmathanim.Utils.LatexToken.TokenType.ARROW;
+import static com.jmathanim.Utils.LatexToken.TokenType.BINARY_OPERATOR;
+import static com.jmathanim.Utils.LatexToken.TokenType.CHAR;
+import static com.jmathanim.Utils.LatexToken.TokenType.FRACTION_BAR;
+import static com.jmathanim.Utils.LatexToken.TokenType.GREEK_LETTER;
+import static com.jmathanim.Utils.LatexToken.TokenType.NAMED_FUNCTION;
+import static com.jmathanim.Utils.LatexToken.TokenType.NON_MATH_CHAR;
+import static com.jmathanim.Utils.LatexToken.TokenType.NUMBER;
+import static com.jmathanim.Utils.LatexToken.TokenType.OPERATOR;
+import static com.jmathanim.Utils.LatexToken.TokenType.RELATION;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.MultiShapeObject;
 import com.jmathanim.mathobjects.Shape;
@@ -88,6 +98,7 @@ public class LatexParser implements Iterable<LatexToken> {
 
     private final ArrayList<LatexToken> assignedTokens;
     private int boxCounter;
+    private int tokenCounter;
     private TeXFormula formula2;
     public TeXIcon icon;
     private final AbstractLaTeXMathObject latex;
@@ -691,29 +702,105 @@ public class LatexParser implements Iterable<LatexToken> {
 //            assignedTokens.addAll(tokens);
 //            return;
 //        }
+        System.out.println("Assign tokens");
         boxCounter = 0;
-        for (int n = 0; n < tokens.size(); n++) {
-            LatexToken token = tokens.get(n);
+        tokenCounter = 0;
+        while (tokenCounter < tokens.size()) {
+            LatexToken token = tokens.get(tokenCounter);
             switch (token.getType()) {
-                case NON_MATH_CHAR, CHAR, FRACTION_BAR, GREEK_LETTER, NAMED_FUNCTION, OPERATOR, BINARY_OPERATOR, RELATION, NUMBER, ARROW:
+                case NON_MATH_CHAR:
+                    int sizeLigature = checkLigatures(token);
                     //These are supposed to be the "easy tokens"
+                    if (sizeLigature == 0) {
+                        addAssignedTokenToList(token);
+                        tokenCounter++;
+                    } else {
+                        tokenCounter += sizeLigature;
+                    }
+                    break;
+                case CHAR, FRACTION_BAR, GREEK_LETTER, NAMED_FUNCTION, OPERATOR, BINARY_OPERATOR, RELATION, NUMBER, ARROW:
                     addAssignedTokenToList(token);
+                    tokenCounter++;
                     break;
                 case DELIMITER:
                     processDelimiter(token);
+                    tokenCounter++;
                     break;
                 case SYMBOL:
                     processSymbol(token);
+                    tokenCounter++;
                     break;
                 case SQRT:
                     processSQRT(token);
+                    tokenCounter++;
                     break;
                 default:
-                    JMathAnimScene.logger.warn("Token not recognized when trying to assign: " + token);
+                    JMathAnimScene.logger.warn("Token " + tokenCounter + " not recognized when trying to assign to box " + boxCounter + ": " + token);
+                    tokenCounter++;
                     break;
             }
-
+//            System.out.println("aaaa "+tokenCounter);
         }
+
+    }
+
+    /**
+     * Checks if this token is a ligature ff, fi, fl, ffi, ffl and register the
+     * corresponding token
+     *
+     * @param token Token
+     * @return 2 if double ligature, 3 if tripe ligature. 0 otherwise
+     */
+    private int checkLigatures(LatexToken token) {
+        if (!tokenIsNonMathChar(token, "f")) {
+            return 0;
+        }
+        LatexToken tok1 = null;
+        LatexToken tok2 = null;
+        if (tokenCounter + 2 < tokens.size()) {//3 chars ligature
+            tok1 = tokens.get(tokenCounter + 1);
+            tok2 = tokens.get(tokenCounter + 2);
+            if (tokenIsNonMathChar(tok1, "f")) {
+                if (tokenIsNonMathChar(tok2, "i"))//ffi case
+                {
+                    token.setString("ffi");
+                    addAssignedTokenToList(token);
+                    return 3;
+                }
+                if (tokenIsNonMathChar(tok2, "l"))//ffl case
+                {
+                    token.setString("ffl");
+                    addAssignedTokenToList(token);
+                    return 3;
+                }
+            }
+        }
+        if (tokenCounter + 1 < tokens.size()) {//2 chars ligature
+            tok1 = tokens.get(tokenCounter + 1);
+            if (tokenIsNonMathChar(tok1, "f"))//ff case
+            {
+                token.setString("ff");
+                addAssignedTokenToList(token);
+                return 2;
+            }
+            if (tokenIsNonMathChar(tok1, "i"))//fi case
+            {
+                token.setString("fi");
+                addAssignedTokenToList(token);
+                return 2;
+            }
+            if (tokenIsNonMathChar(tok1, "l"))//fl case
+            {
+                token.setString("fl");
+                addAssignedTokenToList(token);
+                return 2;
+            }
+        }
+        return 0;
+    }
+
+    private boolean tokenIsNonMathChar(LatexToken token, String letter) {
+        return ((token.getType() == LatexToken.TokenType.NON_MATH_CHAR) && (letter.equals(token.getString())));
     }
 
     public void addAssignedTokenToList(LatexToken token) {

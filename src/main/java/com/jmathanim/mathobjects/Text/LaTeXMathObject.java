@@ -32,7 +32,7 @@ import java.util.Locale;
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
 public class LaTeXMathObject extends AbstractLaTeXMathObject implements hasArguments {
-
+    
     DecimalFormat df;
     private String origText;
     public final HashMap<Integer, Scalar> variables;
@@ -72,14 +72,14 @@ public class LaTeXMathObject extends AbstractLaTeXMathObject implements hasArgum
      * @return The LaTexMathObject
      */
     public static LaTeXMathObject make(String text, CompileMode compileMode, Anchor.Type anchor) {
-
+        
         LaTeXMathObject resul = new LaTeXMathObject(anchor);
         resul.getMp().loadFromStyle("latexdefault");
         resul.getMp().setAbsoluteThickness(true);
 //        resul.getMp().setFillColor(resul.getMp().getDrawColor());
 //        resul.getMp().setThickness(1d);
         resul.mode = compileMode;
-
+        
         if (!"".equals(text)) {
             resul.setLaTeX(text);
         }
@@ -124,7 +124,7 @@ public class LaTeXMathObject extends AbstractLaTeXMathObject implements hasArgum
         resul.copyStateFrom(this);
         return resul;
     }
-
+    
     @Override
     public void copyStateFrom(MathObject obj) {
         super.copyStateFrom(obj);
@@ -132,7 +132,7 @@ public class LaTeXMathObject extends AbstractLaTeXMathObject implements hasArgum
         this.origText = copy.origText;
         this.anchor = copy.anchor;
     }
-
+    
     @Override
     public void update(JMathAnimScene scene) {
         if (origText == null) {
@@ -143,10 +143,12 @@ public class LaTeXMathObject extends AbstractLaTeXMathObject implements hasArgum
         for (Integer index : variables.keySet()) {
             newText = newText.replace("{#" + index + "}", df.format(variables.get(index).value));
         }
-        changeInnerLaTeX(newText);
+        if (!newText.equals(origText)) {//No need to update if text has not changed
+            changeInnerLaTeX(newText);
+        }
     }
-
-public DecimalFormat getDecimalFormat() {
+    
+    public DecimalFormat getDecimalFormat() {
         return df;
     }
 
@@ -158,9 +160,9 @@ public DecimalFormat getDecimalFormat() {
     public void setArgumentsFormat(String format) {
         df = new DecimalFormat(format);
     }
-
+    
     @Override
-public Scalar getArg(int n) {
+    public Scalar getArg(int n) {
         Scalar resul = variables.get(n);
         if (resul == null) {
             variables.put(n, Scalar.make(0));
@@ -168,8 +170,6 @@ public Scalar getArg(int n) {
         return variables.get(n);
     }
 
-    
-    
 //    @Override
 //    public void copyStateFrom(MathObject obj) {
 //        super.copyStateFrom(obj);
@@ -179,9 +179,8 @@ public Scalar getArg(int n) {
 //            modelMatrix.copyFrom(copy.modelMatrix);
 //        }
 //    }
-
     @Override
-public String toString() {
+    public String toString() {
         return "LaTeXMathObject{" + "origText=" + origText + '}';
     }
 }
