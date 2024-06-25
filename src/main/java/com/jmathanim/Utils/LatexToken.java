@@ -162,6 +162,27 @@ public class LatexToken {
                 case ":":
                     string = "colon";
                     break;
+                case "|":
+                    string = "vert";
+                    break;
+                case "(":
+                    string = "lbrack";
+                    break;
+                case ")":
+                    string = "rbrack";
+                    break;
+                case "{":
+                    string = "lbrace";
+                    break;
+                case "}":
+                    string = "rbrace";
+                    break;
+                case "[":
+                    string = "lsqbrack";
+                    break;
+                case "]":
+                    string = "rsqbrack";
+                    break;
             }
         }
 

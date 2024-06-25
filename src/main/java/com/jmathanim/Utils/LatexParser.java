@@ -118,6 +118,7 @@ public class LatexParser implements Iterable<LatexToken> {
         TYPED,//A function name
         RAW_TEXT;//Raw, normal text
     }
+    public boolean isMathMode;
     private Integer secondaryType;
     public Modifier modifier;
     private int delimiterDepth;
@@ -154,6 +155,7 @@ public class LatexParser implements Iterable<LatexToken> {
         this.assignedTokens.clear();
         delimiterDepth = 0;
         this.modifier = Modifier.NORMAL;
+        isMathMode=false;
 
         Atom root = this.formula.root;
         rootCopy = root.clone();
@@ -178,7 +180,7 @@ public class LatexParser implements Iterable<LatexToken> {
             metodo.setAccessible(true);
             Box bo = (Box) metodo.invoke(formula2, te);
             boxCounter = 0;
-
+            
             parseBox(bo);
             assignTokens();
         } catch (Exception ex) {
@@ -259,11 +261,13 @@ public class LatexParser implements Iterable<LatexToken> {
         if (atom instanceof MathAtom) {
             Modifier bkModifier = modifier;
             modifier = Modifier.NORMAL;
+            isMathMode=true;
             MathAtom mathAtom = (MathAtom) atom;
             classField = MathAtom.class.getDeclaredField("base");
             classField.setAccessible(true);
             Atom field = (Atom) classField.get(mathAtom);
             parseAtom(field);
+             isMathMode=false;
 //            modifier = bkModifier;
             return;
         }
@@ -333,7 +337,9 @@ public class LatexParser implements Iterable<LatexToken> {
 
         if (atom instanceof CharAtom) {
             CharAtom charAtom = (CharAtom) atom;
-            LatexToken.TokenType type = LatexToken.TokenType.CHAR;
+            LatexToken.TokenType type;
+            type=(isMathMode ? LatexToken.TokenType.CHAR : LatexToken.TokenType.NON_MATH_CHAR);
+
             String name = "" + charAtom.getCharacter();
             addTokenToList(type, name);
             return;
