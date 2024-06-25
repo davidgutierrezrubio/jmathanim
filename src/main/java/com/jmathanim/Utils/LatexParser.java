@@ -702,7 +702,6 @@ public class LatexParser implements Iterable<LatexToken> {
 //            assignedTokens.addAll(tokens);
 //            return;
 //        }
-        System.out.println("Assign tokens");
         boxCounter = 0;
         tokenCounter = 0;
         while (tokenCounter < tokens.size()) {
@@ -739,7 +738,6 @@ public class LatexParser implements Iterable<LatexToken> {
                     tokenCounter++;
                     break;
             }
-//            System.out.println("aaaa "+tokenCounter);
         }
 
     }
