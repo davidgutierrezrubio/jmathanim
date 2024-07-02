@@ -25,6 +25,7 @@ What's new?
 Version 0.9.11-SNAPSHOT (01/06/2024) 
 
 * Fixed a bug for updater `CameraAlwaysAdjusting` when camera gaps were not 0.
+* Added support for ligatures in `LatexParser` class.
 
 Version 0.9.11 (27/04/2024) 
 
