@@ -122,7 +122,7 @@ public class MultiShapeObject extends MathObject implements Iterable<Shape> {
 //        if (!(obj instanceof MultiShapeObject)) {
 //            return;
 //        }
-////        shapes.clear();
+////        shapes.clearAndPrepareCanvasForAnotherFrame();
 //        MultiShapeObject msh = (MultiShapeObject) obj;
 //        this.getMp().copyFrom(msh.getMp());
 //        for (Shape sh : msh) {

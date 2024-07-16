@@ -231,10 +231,6 @@ public class JavaFXRenderer extends Renderer {
         BufferedImage renderedImage = getRenderedImage(frameCount);
         
         if (config.isCreateMovie()) {
-//			if ((frameCount % config.fps) == 0) {
-//				newLineCounter++;
-//				newLineCounter = 0;
-//			}
             videoEncoder.writeFrame(renderedImage, frameCount);
         }
         if (config.isSaveToPNG()) {
@@ -309,7 +305,7 @@ public class JavaFXRenderer extends Renderer {
     }
     
     @Override
-    public void clear() {
+    public void clearAndPrepareCanvasForAnotherFrame() {
         fxnodes.clear();
         debugFXnodes.clear();
     }

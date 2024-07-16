@@ -457,7 +457,7 @@ public abstract class JMathAnimScene {
      */
     public final void advanceFrame() {
         if (!animationIsDisabled) {
-            renderer.clear();
+            renderer.clearAndPrepareCanvasForAnotherFrame();
         }
         doDraws();
         if (!animationIsDisabled) {

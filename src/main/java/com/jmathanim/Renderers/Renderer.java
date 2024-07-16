@@ -128,7 +128,7 @@ public abstract class Renderer {
     /**
      * Clear current renderer, with the background color
      */
-    abstract public void clear();
+    abstract public void clearAndPrepareCanvasForAnotherFrame();
 
     /**
      * Draws the path of a JMPathObject This method will draw most of the

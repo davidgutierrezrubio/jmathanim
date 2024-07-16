@@ -45,7 +45,7 @@ import javafx.scene.shape.StrokeLineCap;
  *
  * @author David Gutierrez Rubio davidgutierrezrubio@gmail.com
  */
-public abstract class MathObject implements Drawable, Updateable, Stateable, Boxable, StyleHookable,Linkable {
+public abstract class MathObject implements Drawable, Updateable, Stateable, Boxable, StyleHookable, Linkable {
 
     private Camera camera;
 
@@ -367,7 +367,9 @@ public abstract class MathObject implements Drawable, Updateable, Stateable, Box
     public void copyStateFrom(MathObject obj) {
         this.setCamera(obj.getCamera());
         this.getMp().copyFrom(obj.getMp());
-        this.getRendererEffects().copyFrom(rendererEffects);
+        if (this.getRendererEffects() != null) {
+            this.getRendererEffects().copyFrom(rendererEffects);
+        }
     }
 
     /**
