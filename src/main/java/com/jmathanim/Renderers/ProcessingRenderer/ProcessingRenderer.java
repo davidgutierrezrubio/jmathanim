@@ -110,20 +110,22 @@ public class ProcessingRenderer extends Renderer {
         }
 
     }
-
-    @Override
+  @Override
     public double MathWidthToThickness(double w) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+//        return mathScalar * config.mediaW / (xmax - ymin);
+//        return camera.mathToScreen(w) / 1.25 * camera.getMathView().getWidth() / 2d;
+        return w * 1066;
     }
 
     @Override
     public double ThicknessToMathWidth(double th) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        return th / 1066;
     }
-
+    
     @Override
     public double ThicknessToMathWidth(MathObject obj) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        Camera cam = (obj.getMp().isAbsoluteThickness() ? fixedCamera : camera);
+        return obj.getMp().getThickness() / 1066 * 4 / cam.getMathView().getWidth();
     }
 
     @Override
@@ -154,9 +156,27 @@ public class ProcessingRenderer extends Renderer {
 
     @Override
     public void drawAbsoluteCopy(Shape sh, Vec anchor) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        Shape shape = sh.copy();
+        Vec vFixed = defaultToFixedCamera(anchor);
+        shape.shift(vFixed.minus(anchor));
+        drawPath(shape, fixedCamera);
     }
 
+    /**
+     * Returns equivalent position from default camera to fixed camera. For
+     * example if you pass the Vec (1,1) to this method, it will return a new
+     * set of coordinates so that, when rendered with the fixed camera, appears
+     * in the same position as (1,1) with default camera.
+     *
+     * @param v Vector that marks the position
+     * @return The coordinates to be used with the fixed camera
+     */
+    public Vec defaultToFixedCamera(Vec v) {
+        double[] ms = camera.mathToScreenFX(v);
+        double[] coords = fixedCamera.screenToMath(ms[0], ms[1]);
+        return new Vec(coords[0], coords[1]);
+        
+    }
     @Override
     public void drawImage(AbstractJMImage obj, Camera cam) {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
@@ -167,55 +187,62 @@ public class ProcessingRenderer extends Renderer {
         drawPath(mobj, camera);
     }
 
-    @Override
+     @Override
     public void drawPath(Shape mobj, Camera camera) {
-        prApplet.applyStyle(mobj, (MODrawProperties) mobj.getMp());
-        int numPoints = mobj.size(); //TODO improve if closed
-
-        boolean closed = (mobj.get(0).isThisSegmentVisible);
-
-        float[] xx1 = new float[numPoints];
-        float[] yy1 = new float[numPoints];
-        float[] zz1 = new float[numPoints];
-        float[] mx1 = new float[numPoints];
-        float[] my1 = new float[numPoints];
-        float[] mz1 = new float[numPoints];
-        float[] mx2 = new float[numPoints];
-        float[] my2 = new float[numPoints];
-        float[] mz2 = new float[numPoints];
-        float[] xx2 = new float[numPoints];
-        float[] yy2 = new float[numPoints];
-        float[] zz2 = new float[numPoints];
-        CircularArrayList<JMPathPoint> jmps = mobj.getPath().jmPathPoints;
-        for (int i = 0; i < numPoints - (closed ? 0 : 1); i++) {
-            Vec p1 = jmps.get(i).p.v;
-            Vec pm1 = jmps.get(i).cpExit.v;
-            Vec pm2 = jmps.get(i + 1).cpEnter.v;
-            Vec p2 = jmps.get(i + 1).p.v;
-            double[] vv1 = camera.mathToScreen(p1.x, p1.y);//TODO: To handle 3D, change this, use procesing camera
-            double[] vvm1 = camera.mathToScreen(pm1.x, pm1.y);
-            double[] vvm2 = camera.mathToScreen(pm2.x, pm2.y);
-            double[] vv2 = camera.mathToScreen(p2.x, p2.y);
-            xx1[i] = (float) vv1[0];//(int) Math.round(vv1[0]);
-            yy1[i] = (float) vv1[1];//(int) Math.round(vv1[1]);
-            zz1[i] = 0f;
-            mx1[i] = (float) vvm1[0];//(int) Math.round(vvm1[0]);
-            my1[i] = (float) vvm1[1];//(int) Math.round(vvm1[1]);
-            mz1[i] = 0f;
-            mx2[i] = (float) vvm2[0];//(int) Math.round(vvm2[0]);
-            my2[i] = (float) vvm2[1];//(int) Math.round(vvm2[1]);
-            mz2[i] = 0f;
-            xx2[i] = (float) vv2[0];//(int) Math.round(vv2[0]);
-            yy2[i] = (float) vv2[1];//(int) Math.round(vv2[1]);
-            zz2[i] = 0f;
-        }
-        prApplet.drawShape(
-                xx1, yy1, zz1,
-                mx1, my1, mz1,
-                mx2, my2, mz2,
-                xx2, yy2, zz2,
-                false);
+        prApplet.drawPath(mobj, camera);
+        
     }
+    
+    
+//    @Override
+//    public void drawPath(Shape mobj, Camera camera) {
+//        prApplet.applyStyle(mobj, (MODrawProperties) mobj.getMp());
+//        int numPoints = mobj.size(); //TODO improve if closed
+//
+//        boolean closed = (mobj.get(0).isThisSegmentVisible);
+//
+//        float[] xx1 = new float[numPoints];
+//        float[] yy1 = new float[numPoints];
+//        float[] zz1 = new float[numPoints];
+//        float[] mx1 = new float[numPoints];
+//        float[] my1 = new float[numPoints];
+//        float[] mz1 = new float[numPoints];
+//        float[] mx2 = new float[numPoints];
+//        float[] my2 = new float[numPoints];
+//        float[] mz2 = new float[numPoints];
+//        float[] xx2 = new float[numPoints];
+//        float[] yy2 = new float[numPoints];
+//        float[] zz2 = new float[numPoints];
+//        CircularArrayList<JMPathPoint> jmps = mobj.getPath().jmPathPoints;
+//        for (int i = 0; i < numPoints - (closed ? 0 : 1); i++) {
+//            Vec p1 = jmps.get(i).p.v;
+//            Vec pm1 = jmps.get(i).cpExit.v;
+//            Vec pm2 = jmps.get(i + 1).cpEnter.v;
+//            Vec p2 = jmps.get(i + 1).p.v;
+//            double[] vv1 = camera.mathToScreen(p1.x, p1.y);//TODO: To handle 3D, change this, use procesing camera
+//            double[] vvm1 = camera.mathToScreen(pm1.x, pm1.y);
+//            double[] vvm2 = camera.mathToScreen(pm2.x, pm2.y);
+//            double[] vv2 = camera.mathToScreen(p2.x, p2.y);
+//            xx1[i] = (float) vv1[0];//(int) Math.round(vv1[0]);
+//            yy1[i] = (float) vv1[1];//(int) Math.round(vv1[1]);
+//            zz1[i] = 0f;
+//            mx1[i] = (float) vvm1[0];//(int) Math.round(vvm1[0]);
+//            my1[i] = (float) vvm1[1];//(int) Math.round(vvm1[1]);
+//            mz1[i] = 0f;
+//            mx2[i] = (float) vvm2[0];//(int) Math.round(vvm2[0]);
+//            my2[i] = (float) vvm2[1];//(int) Math.round(vvm2[1]);
+//            mz2[i] = 0f;
+//            xx2[i] = (float) vv2[0];//(int) Math.round(vv2[0]);
+//            yy2[i] = (float) vv2[1];//(int) Math.round(vv2[1]);
+//            zz2[i] = 0f;
+//        }
+//        prApplet.drawShape(
+//                xx1, yy1, zz1,
+//                mx1, my1, mz1,
+//                mx2, my2, mz2,
+//                xx2, yy2, zz2,
+//                false);
+//    }
 
     @Override
     public void finish(int frameCount) {

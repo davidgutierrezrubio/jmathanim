@@ -19,8 +19,14 @@ package com.jmathanim.Renderers.ProcessingRenderer;
 import com.jmathanim.Cameras.Camera;
 import com.jmathanim.Styling.JMColor;
 import com.jmathanim.Styling.MODrawProperties;
+import com.jmathanim.Styling.PaintStyle;
+import com.jmathanim.Styling.Stylable;
 import com.jmathanim.Utils.JMathAnimConfig;
+import com.jmathanim.Utils.Rect;
+import com.jmathanim.Utils.Vec;
+import com.jmathanim.mathobjects.JMPathPoint;
 import com.jmathanim.mathobjects.MathObject;
+import com.jmathanim.mathobjects.Shape;
 import java.awt.image.BufferedImage;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.CountDownLatch;
@@ -105,7 +111,11 @@ public class ProcessingApplet extends PApplet {
             synchronized (pg) {
                 pg.beginDraw();
                 pg.clear();
-                pg.background(255); // TODO Fondo blanco
+                PaintStyle bgColor = config.getBackgroundColor();
+                if (bgColor instanceof JMColor) {
+                    JMColor c = (JMColor) bgColor;
+                    pg.background((float)(255*c.r),(float)(255*c.g),(float)(255*c.b));
+                }
             }
         });
     }
@@ -133,48 +143,80 @@ public class ProcessingApplet extends PApplet {
         });
     }
 
-    public void applyStyle(MathObject obj, MODrawProperties style) {
+    public void applyStyle(MathObject obj, Stylable style) {
         JMColor drawColor = (JMColor) style.getDrawColor();
         JMColor fillColor = (JMColor) style.getFillColor();
         float fillAlpha = (float) (255 * fillColor.getAlpha());
         float drawAlpha = (float) (255 * drawColor.getAlpha());
         float th = computeThickness(obj, style.getThickness());
-        queue.add(() -> {
-            synchronized (pg) {
+//        queue.add(() -> {
+//            synchronized (pg) {
                 pg.stroke((float) (255 * drawColor.r), (float) (255 * drawColor.g), (float) (255 * drawColor.b), drawAlpha);
                 pg.fill((float) (255 * fillColor.r), (float) (255 * fillColor.g), (float) (255 * fillColor.b), fillAlpha);
                 pg.strokeWeight(th);
-            }
-        });
+//            }
+//        });
     }
 
-    public void drawShape(
-            float[] xx1, float yy1[], float zz1[],
-            float[] mx1, float[] my1, float mz1[],
-            float[] mx2, float[] my2, float mz2[],
-            float[] xx2, float yy2[], float zz2[],
-            boolean closed) {
+    public void drawPath(Shape mobj, Camera camera) {
         queue.add(() -> {
-            synchronized (pg) {
-                pg.beginShape();
-                pg.vertex(xx1[0], yy1[0], zz1[0]);
-                for (int i = 0; i < xx1.length - (closed ? 0 : 1); i++) {
-//                    pg.vertex(xx[i], yy[i]);
-                    pg.bezierVertex(
-                            mx1[i], my1[i], mz1[i],
-                            mx2[i], my2[i], mz2[i],
-                            xx2[i], yy2[i], zz2[i]
-                    );
-                }
-                if (closed) {
-                    pg.endShape(CLOSE);
-                } else {
-                    pg.endShape();
-                }
+            setupCamera(camera);
+            applyStyle(mobj, mobj.getMp());
+            pg.beginShape();
+            for (int i = 0; i < mobj.size(); i++) {
+                JMPathPoint p = mobj.get(i);
+                float x = (float) p.p.v.x;
+                float y = (float) p.p.v.y;
+                float z = (float) p.p.v.z;
+                pg.vertex(x, y, z);
             }
+            pg.endShape();
         });
     }
 
+    void setupCamera(Camera camera) {
+        Rect bb = camera.getMathView();
+        float centerX = (float) bb.getCenter().v.x;
+        float centerY = (float) bb.getCenter().v.y;
+// Calcular la altura visible en base al ancho y la proporción de la ventana
+        float h = (float) bb.getHeight();
+        float w = (float) bb.getWidth();
+//        pg.translate(width / 2, height / 2, 0);
+//        pg.ortho(centerX-w/2,centerX+w/2,centerY-h/2,centerY+h/2);
+
+        // Configurar la vista ortográfica
+        pg.ortho(centerX - w / 2, centerX + w / 2, centerY + h / 2, centerY - h / 2, -10, 10);
+        // Posicionar la cámara en el centro de la pantalla
+        pg.camera(centerX, centerY, (float) ((4 / 2.0) / tan((float) (PI * 30.0 / 180.0))), centerX, centerY, 0, 0, 1, 0);
+    }
+
+//    public void drawShape(
+//            float[] xx1, float yy1[], float zz1[],
+//            float[] mx1, float[] my1, float mz1[],
+//            float[] mx2, float[] my2, float mz2[],
+//            float[] xx2, float yy2[], float zz2[],
+//            boolean closed) {
+//        queue.add(() -> {
+//            synchronized (pg) {
+//                pg.beginShape();
+//                pg.bezierDetail(50);
+//                pg.vertex(xx1[0], yy1[0], zz1[0]);
+//                for (int i = 0; i < xx1.length - (closed ? 0 : 1); i++) {
+////                    pg.vertex(xx[i], yy[i]);
+//                    pg.bezierVertex(
+//                            mx1[i], my1[i], mz1[i],
+//                            mx2[i], my2[i], mz2[i],
+//                            xx2[i], yy2[i], zz2[i]
+//                    );
+//                }
+//                if (closed) {
+//                    pg.endShape(CLOSE);
+//                } else {
+//                    pg.endShape();
+//                }
+//            }
+//        });
+//    }
     public synchronized BufferedImage getRenderedImage() {
         return pgToBufferedImage(pg);
     }
