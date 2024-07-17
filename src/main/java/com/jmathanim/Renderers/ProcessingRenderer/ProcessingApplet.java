@@ -66,13 +66,12 @@ public class ProcessingApplet extends PApplet {
 
     public void settings() {
         size(config.mediaW, config.mediaH, P3D); // Tamaño de la ventana con P3D
-
+        smooth(16);
     }
 
     public void setup() {
-        smooth(4);
         pg = createGraphics(config.mediaW, config.mediaH, P3D);
-        pg.smooth(4);
+        pg.smooth(16);
         surface.setResizable(false);
         latch.countDown(); // Signal that setup is complete
         noLoop();
@@ -114,7 +113,7 @@ public class ProcessingApplet extends PApplet {
                 PaintStyle bgColor = config.getBackgroundColor();
                 if (bgColor instanceof JMColor) {
                     JMColor c = (JMColor) bgColor;
-                    pg.background((float)(255*c.r),(float)(255*c.g),(float)(255*c.b));
+                    pg.background((float) (255 * c.r), (float) (255 * c.g), (float) (255 * c.b));
                 }
             }
         });
@@ -134,15 +133,6 @@ public class ProcessingApplet extends PApplet {
 
     }
 
-    public void drawCircle(int x, int y, int radius) {
-        queue.add(() -> {
-            synchronized (pg) {
-                pg.fill(0, 100, 255); // Color del círculo
-                pg.ellipse(x, y, radius * 2, radius * 2); // Dibuja el círculo
-            }
-        });
-    }
-
     public void applyStyle(MathObject obj, Stylable style) {
         JMColor drawColor = (JMColor) style.getDrawColor();
         JMColor fillColor = (JMColor) style.getFillColor();
@@ -151,27 +141,73 @@ public class ProcessingApplet extends PApplet {
         float th = computeThickness(obj, style.getThickness());
 //        queue.add(() -> {
 //            synchronized (pg) {
-                pg.stroke((float) (255 * drawColor.r), (float) (255 * drawColor.g), (float) (255 * drawColor.b), drawAlpha);
-                pg.fill((float) (255 * fillColor.r), (float) (255 * fillColor.g), (float) (255 * fillColor.b), fillAlpha);
-                pg.strokeWeight(th);
+        pg.stroke((float) (255 * drawColor.r), (float) (255 * drawColor.g), (float) (255 * drawColor.b), drawAlpha);
+        pg.fill((float) (255 * fillColor.r), (float) (255 * fillColor.g), (float) (255 * fillColor.b), fillAlpha);
+        pg.strokeWeight(th);
 //            }
 //        });
     }
 
     public void drawPath(Shape mobj, Camera camera) {
         queue.add(() -> {
+            boolean isContour = false;
             setupCamera(camera);
             applyStyle(mobj, mobj.getMp());
             pg.beginShape();
-            for (int i = 0; i < mobj.size(); i++) {
-                JMPathPoint p = mobj.get(i);
-                float x = (float) p.p.v.x;
-                float y = (float) p.p.v.y;
-                float z = (float) p.p.v.z;
-                pg.vertex(x, y, z);
+            pg.bezierDetail(50);
+            //First point, a pg.vertex command
+            Vec v = mobj.get(0).p.v;
+            pg.vertex((float) v.x, (float) v.y, (float) v.z);
+
+            for (int i = 0; i <= mobj.size(); i++) {
+                JMPathPoint p1 = mobj.get(i);
+                JMPathPoint p2 = mobj.get(i + 1);
+                float[] x = getJPMPathPointCoordinates(p1, p2);
+                if (p2.isThisSegmentVisible) {
+
+                    if (p2.isCurved) {
+                        pg.bezierVertex(
+                                x[3], x[4], x[5],
+                                x[6], x[7], x[8],
+                                x[9], x[10], x[11]
+                        );
+                    } else {
+                        pg.vertex(x[9], x[10], x[11]);
+                    }
+                } else {//Time to do contours!!
+                    if (isContour) {
+                        pg.endContour();
+                    }
+                    pg.beginContour();
+                    isContour = true;
+                    pg.vertex(x[9], x[10], x[11]);
+                }
+            }
+            if (isContour) {
+                pg.endContour();
             }
             pg.endShape();
         });
+    }
+
+    public float[] getJPMPathPointCoordinates(JMPathPoint p1, JMPathPoint p2) {
+        float[] x = new float[12];
+        x[0] = (float) p1.p.v.x;
+        x[1] = (float) p1.p.v.y;
+        x[2] = (float) p1.p.v.z;
+
+        x[3] = (float) p1.cpExit.v.x;
+        x[4] = (float) p1.cpExit.v.y;
+        x[5] = (float) p1.cpExit.v.z;
+
+        x[6] = (float) p2.cpEnter.v.x;
+        x[7] = (float) p2.cpEnter.v.y;
+        x[8] = (float) p2.cpEnter.v.z;
+
+        x[9] = (float) p2.p.v.x;
+        x[10] = (float) p2.p.v.y;
+        x[11] = (float) p2.p.v.z;
+        return x;
     }
 
     void setupCamera(Camera camera) {
