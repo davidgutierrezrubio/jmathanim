@@ -402,14 +402,14 @@ public abstract class JMathAnimScene {
 
     /**
      * This method performs the necessary drawing methods. First updates all
-     * updateable objects, apply links, and draw all objects added to the scene. Objects
-     * are sorted by layer, so that lower layers means drawing under.
+     * updateable objects, apply links, and draw all objects added to the scene.
+     * Objects are sorted by layer, so that lower layers means drawing under.
      */
     protected final void doDraws() {
         objectsAlreadyDrawed.clear();
         doUpdates();
         doLinks();
-        
+
         if (!animationIsDisabled) {
             // Objects to be drawn on screen. Sort them by layer
             sceneObjects.sort((MathObject o1, MathObject o2) -> o1.getLayer().compareTo(o2.getLayer()));
@@ -478,6 +478,7 @@ public abstract class JMathAnimScene {
      * @param filename Name of the file to be saved.
      */
     public final void saveImage(String filename) {
+        renderer.clearAndPrepareCanvasForAnotherFrame();
         doDraws();
         String fn;
         String format;
@@ -822,11 +823,12 @@ public abstract class JMathAnimScene {
         //Other case
         return getMathObjects().contains(mathobject);
     }
+
     public Link registerLink(Link link) {
-         linksToBeDone.add(link);
+        linksToBeDone.add(link);
         return link;
     }
-    
+
     /**
      * Register a new Link to be done at every frame. A double value will be
      * extracted from the origin object and applied to the destiny
@@ -856,7 +858,7 @@ public abstract class JMathAnimScene {
      * @return The created link
      */
     public LinkArguments registerLink(Linkable origin, LinkArguments.LinkType originType, Linkable destiny, LinkArguments.LinkType destinyType, DoubleUnaryOperator function) {
-        LinkArguments link = LinkArguments.make(origin, originType, destiny, destinyType,function);
+        LinkArguments link = LinkArguments.make(origin, originType, destiny, destinyType, function);
         linksToBeDone.add(link);
         return link;
     }

@@ -176,6 +176,7 @@ public abstract class AbstractLaTeXMathObject extends SVGMathObject {
         mpMultiShape.getObjects().clear();
         for (Shape sh : this) {
             mpMultiShape.add(sh);
+            sh.getMp().copyFrom(mpMultiShape);
             // Workaround: Draw color should be the same as fill color
 //            sh.drawColor(sh.getMp().getFillColor());
             sh.objectLabel = String.valueOf(n);
