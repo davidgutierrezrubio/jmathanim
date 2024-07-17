@@ -76,13 +76,13 @@ public class ProcessingRenderer extends Renderer {
 
     @Override
     public void initialize() {
-        prApplet = new ProcessingApplet(this, config, latch);
+        prApplet = new ProcessingApplet(this, config, new CountDownLatch(2));
         camera.initialize(XMIN_DEFAULT, XMAX_DEFAULT, 0);
         fixedCamera.initialize(XMIN_DEFAULT, XMAX_DEFAULT, 0);
         Thread thread = new Thread(() -> PApplet.runSketch(new String[]{"ProcessingApplet"}, prApplet));
         thread.start();
         try {
-            latch.await(); // Espera hasta que prAppletPrueba esté listo
+            prApplet.setupLatch.await(); // Espera hasta que prAppletPrueba esté listo
         } catch (InterruptedException e) {
             e.printStackTrace();
         }

@@ -27,6 +27,7 @@ import com.jmathanim.Utils.Vec;
 import com.jmathanim.mathobjects.JMPathPoint;
 import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.Shape;
+import com.jogamp.opengl.GL2;
 import java.awt.image.BufferedImage;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.CountDownLatch;
@@ -36,6 +37,8 @@ import java.util.logging.Logger;
 import processing.core.PApplet;
 import static processing.core.PConstants.P3D;
 import processing.core.PGraphics;
+import processing.opengl.PGL;
+import processing.opengl.PGraphicsOpenGL;
 
 /**
  *
@@ -50,7 +53,11 @@ public class ProcessingApplet extends PApplet {
     private final Object lock = new Object();
 
     private PGraphics pg;
-    private static CountDownLatch latch;
+
+    PGL pgl;
+    GL2 gl;
+
+    public CountDownLatch setupLatch;
     private static BlockingQueue<Runnable> queue = new LinkedBlockingQueue<>();
     private final ProcessingRenderer pRenderer;
     public double correctionThickness;
@@ -59,7 +66,7 @@ public class ProcessingApplet extends PApplet {
     public ProcessingApplet(ProcessingRenderer pRenderer, JMathAnimConfig config, CountDownLatch latch) {
         this.config = config;
         this.pRenderer = pRenderer;
-        ProcessingApplet.latch = latch;
+        this.setupLatch = latch;
 
         correctionThickness = config.mediaW * 1d / 1066;//Correction factor for thickness
     }
@@ -67,20 +74,29 @@ public class ProcessingApplet extends PApplet {
     public void settings() {
         size(config.mediaW, config.mediaH, P3D); // Tamaño de la ventana con P3D
         smooth(16);
+        noLoop();
+        setupLatch.countDown(); // Signal that setup is complete
     }
 
     public void setup() {
+
         pg = createGraphics(config.mediaW, config.mediaH, P3D);
         pg.smooth(16);
         surface.setResizable(false);
-        latch.countDown(); // Signal that setup is complete
-        noLoop();
+        setupLatch.countDown(); // Signal that setup is complete
     }
 
     public void draw() {
 
         synchronized (lock) {
-            processQueue();
+
+            while (!queue.isEmpty()) {
+                try {
+                    queue.take().run();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
             image(pg, 0, 0); // Dibuja el PGraphics en la ventana principal
         }
         if (this.drawLatch2 != null) {
@@ -91,30 +107,20 @@ public class ProcessingApplet extends PApplet {
     public synchronized void redrawAndWait(CountDownLatch latch, CountDownLatch latch2) {
         this.drawLatch2 = latch2;
         redraw(); // Force redraw THIS DONT REDRAW INMEDIATELY BUT IN THE NEXT THREAD LOOP!!!!!!!!
-        latch.countDown();
-
-    }
-
-    private void processQueue() {
-        while (!queue.isEmpty()) {
-            try {
-                queue.take().run();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
     }
 
     public void beginDraw() {
         queue.add(() -> {
             synchronized (pg) {
-                pg.beginDraw();
-                pg.clear();
                 PaintStyle bgColor = config.getBackgroundColor();
                 if (bgColor instanceof JMColor) {
                     JMColor c = (JMColor) bgColor;
-                    pg.background((float) (255 * c.r), (float) (255 * c.g), (float) (255 * c.b));
+//                    pg.background((float) (255 * c.r), (float) (255 * c.g), (float) (255 * c.b));
+//                    background((float) (255 * c.r), (float) (255 * c.g), (float) (255 * c.b));
                 }
+                pg.beginDraw();
+                pg.clear();
+
             }
         });
     }
@@ -151,7 +157,7 @@ public class ProcessingApplet extends PApplet {
     public void drawPath(Shape mobj, Camera camera) {
         queue.add(() -> {
             boolean isContour = false;
-            setupCamera(camera);
+            applyCamera(camera);
             applyStyle(mobj, mobj.getMp());
             pg.beginShape();
             pg.bezierDetail(50);
@@ -210,7 +216,7 @@ public class ProcessingApplet extends PApplet {
         return x;
     }
 
-    void setupCamera(Camera camera) {
+    private void applyCamera(Camera camera) {
         Rect bb = camera.getMathView();
         float centerX = (float) bb.getCenter().v.x;
         float centerY = (float) bb.getCenter().v.y;
@@ -224,6 +230,8 @@ public class ProcessingApplet extends PApplet {
         pg.ortho(centerX - w / 2, centerX + w / 2, centerY + h / 2, centerY - h / 2, -10, 10);
         // Posicionar la cámara en el centro de la pantalla
         pg.camera(centerX, centerY, (float) ((4 / 2.0) / tan((float) (PI * 30.0 / 180.0))), centerX, centerY, 0, 0, 1, 0);
+        pg.rotateX(-PI / 6);
+        pg.rotateY(PI / 3);
     }
 
 //    public void drawShape(
