@@ -48,26 +48,29 @@ public class Camera3D extends Camera {
         adjustLookAtToMathView();
         return this;
     }
+
+    /**
+     * Adjust both eye and look variables to a ortographic projection with the
+     * current mathview
+     */
     private void adjustLookAtToMathView() {
-        Rect bb=getMathView();
-        double x=bb.getCenter().v.x;
-        double y=bb.getCenter().v.y;
+        Rect bb = getMathView();
+        double x = bb.getCenter().v.x;
+        double y = bb.getCenter().v.y;
         eye.copyFrom(Point.at(x, y, getProperEyeHeight(bb)));
-        look.copyFrom(Point.at(x,y,0));
+        look.copyFrom(Point.at(x, y, 0));
     }
 
     public double getProperEyeHeight(Rect bb) {
-        return .5*bb.getHeight()/ Math.tan(1d * fov * PI / 360);
+        return .5 * bb.getHeight() / Math.tan(1d * fov * PI / 360);
     }
-    
+
     public double getMathViewHeight3D(double zDepth) {
-        return 2* Math.tan(1d * fov * PI / 360)*zDepth;//TODO: store Tan to optimize
-        
+        return 2 * Math.tan(1d * fov * PI / 360) * zDepth;//TODO: store Tan to optimize
+
     }
-    
-    
-    
-  public void lookAt(Point eye, Point look) {
+
+    public void lookAt(Point eye, Point look) {
         lookAt(eye, look, Vec.to(0, 0, 0));
     }
 
@@ -85,6 +88,5 @@ public class Camera3D extends Camera {
             return Vec.to(0, 1, 0);
         }
     }
-    
-    
+
 }

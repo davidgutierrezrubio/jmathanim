@@ -59,7 +59,7 @@ public abstract class Renderer {
 
     abstract public <T extends Camera> T getCamera();
 
-    abstract public Camera getFixedCamera();
+    abstract public <T extends Camera> T getFixedCamera();
 
     /**
      * Returns the width of the media output, in pixels

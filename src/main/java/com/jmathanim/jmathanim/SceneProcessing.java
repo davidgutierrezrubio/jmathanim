@@ -17,6 +17,7 @@
 package com.jmathanim.jmathanim;
 
 import com.jmathanim.Cameras.Camera;
+import com.jmathanim.Cameras.Camera3D;
 import com.jmathanim.Renderers.ProcessingRenderer.ProcessingRenderer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -27,8 +28,8 @@ import java.util.logging.Logger;
  */
 public abstract class SceneProcessing extends JMathAnimScene {
 
-    protected Camera camera;
-    protected Camera fixedCamera;
+    protected Camera3D camera;
+    protected Camera3D fixedCamera;
 
     public SceneProcessing() {
         super();

@@ -17,6 +17,7 @@
 package com.jmathanim.Renderers.ProcessingRenderer;
 
 import com.jmathanim.Cameras.Camera;
+import com.jmathanim.Cameras.Camera3D;
 import com.jmathanim.Styling.JMColor;
 import com.jmathanim.Styling.MODrawProperties;
 import com.jmathanim.Styling.PaintStyle;
@@ -37,6 +38,7 @@ import java.util.logging.Logger;
 import processing.core.PApplet;
 import static processing.core.PConstants.P3D;
 import processing.core.PGraphics;
+import processing.core.PImage;
 import processing.opengl.PGL;
 import processing.opengl.PGraphicsOpenGL;
 
@@ -73,7 +75,7 @@ public class ProcessingApplet extends PApplet {
 
     public void settings() {
         size(config.mediaW, config.mediaH, P3D); // Tamaño de la ventana con P3D
-        smooth(16);
+        smooth(4);
         noLoop();
         setupLatch.countDown(); // Signal that setup is complete
     }
@@ -81,7 +83,7 @@ public class ProcessingApplet extends PApplet {
     public void setup() {
 
         pg = createGraphics(config.mediaW, config.mediaH, P3D);
-        pg.smooth(16);
+        pg.smooth(4);
         surface.setResizable(false);
         setupLatch.countDown(); // Signal that setup is complete
     }
@@ -99,6 +101,9 @@ public class ProcessingApplet extends PApplet {
             }
             image(pg, 0, 0); // Dibuja el PGraphics en la ventana principal
         }
+        if (drawLatch != null) {
+            drawLatch.countDown(); // Signal that drawing is done
+        }
         if (this.drawLatch2 != null) {
             this.drawLatch2.countDown();
         }
@@ -112,14 +117,17 @@ public class ProcessingApplet extends PApplet {
     public void beginDraw() {
         queue.add(() -> {
             synchronized (pg) {
+                clear();
+                  pg.beginDraw();
                 PaintStyle bgColor = config.getBackgroundColor();
                 if (bgColor instanceof JMColor) {
                     JMColor c = (JMColor) bgColor;
-//                    pg.background((float) (255 * c.r), (float) (255 * c.g), (float) (255 * c.b));
+//                    pg.background(100, 200, 100,255);
+                    pg.background((float) (255 * c.r), (float) (255 * c.g), (float) (255 * c.b),255);
 //                    background((float) (255 * c.r), (float) (255 * c.g), (float) (255 * c.b));
                 }
-                pg.beginDraw();
-                pg.clear();
+              
+                
 
             }
         });
@@ -132,9 +140,7 @@ public class ProcessingApplet extends PApplet {
                 pg.loadPixels();
                 renderedImage = pgToBufferedImage(pg);
             }
-            if (drawLatch != null) {
-                drawLatch.countDown(); // Signal that drawing is done
-            }
+
         });
 
     }
@@ -150,11 +156,12 @@ public class ProcessingApplet extends PApplet {
         pg.stroke((float) (255 * drawColor.r), (float) (255 * drawColor.g), (float) (255 * drawColor.b), drawAlpha);
         pg.fill((float) (255 * fillColor.r), (float) (255 * fillColor.g), (float) (255 * fillColor.b), fillAlpha);
         pg.strokeWeight(th);
+        pg.strokeCap(ROUND);
 //            }
 //        });
     }
 
-    public void drawPath(Shape mobj, Camera camera) {
+    public void drawPath(Shape mobj, Camera3D camera) {
         queue.add(() -> {
             boolean isContour = false;
             applyCamera(camera);
@@ -216,7 +223,8 @@ public class ProcessingApplet extends PApplet {
         return x;
     }
 
-    private void applyCamera(Camera camera) {
+    private void applyCamera(Camera3D camera) {
+
         Rect bb = camera.getMathView();
         float centerX = (float) bb.getCenter().v.x;
         float centerY = (float) bb.getCenter().v.y;
@@ -225,13 +233,34 @@ public class ProcessingApplet extends PApplet {
         float w = (float) bb.getWidth();
 //        pg.translate(width / 2, height / 2, 0);
 //        pg.ortho(centerX-w/2,centerX+w/2,centerY-h/2,centerY+h/2);
+        boolean prueba3D = true;
+        if (!prueba3D) {
+            // Configurar la vista ortográfica. Esto funciona para la cámara 2D
+            pg.ortho(centerX - w / 2, centerX + w / 2, centerY + h / 2, centerY - h / 2, -10, 10);
+            // Posicionar la cámara en el centro de la pantalla
+            pg.camera(centerX, centerY, (float) ((4 / 2.0) / tan((float) (PI * 30.0 / 180.0))), centerX, centerY, 0, 0, 1, 0);
+//        pg.rotateX(-PI / 6);
+//        pg.rotateY(PI / 3);
+        } else {
+            //pruebas camara 3D
+//            pg.ortho(centerX - w / 2, centerX + w / 2, centerY + h / 2, centerY - h / 2, -10, 10);
+//            pg.perspective();
 
-        // Configurar la vista ortográfica
-        pg.ortho(centerX - w / 2, centerX + w / 2, centerY + h / 2, centerY - h / 2, -10, 10);
-        // Posicionar la cámara en el centro de la pantalla
-        pg.camera(centerX, centerY, (float) ((4 / 2.0) / tan((float) (PI * 30.0 / 180.0))), centerX, centerY, 0, 0, 1, 0);
-        pg.rotateX(-PI / 6);
-        pg.rotateY(PI / 3);
+            float fov = (float) (PI / 4.0);
+            float cameraZ = (float) ((height / 2.0) / tan((float) (fov / 2.0)));
+            pg.perspective(fov, width * 1f / height, .1f, 100);
+            pg.camera(
+                    (float) camera.eye.v.x,
+                    (float) camera.eye.v.y,
+                    (float) camera.eye.v.z,
+                    (float) camera.look.v.x,
+                    (float) camera.look.v.y,
+                    (float) camera.look.v.z,
+                    0, 1, 0
+            );
+            pg.scale(1, -1, 1);
+        }
+
     }
 
 //    public void drawShape(
@@ -266,10 +295,21 @@ public class ProcessingApplet extends PApplet {
     }
 
     private BufferedImage pgToBufferedImage(PGraphics pg) {
-        BufferedImage img = new BufferedImage(pg.width, pg.height, BufferedImage.TYPE_INT_ARGB);
+        BufferedImage img = new BufferedImage(pg.width, pg.height, BufferedImage.TYPE_INT_RGB);
         img.setRGB(0, 0, pg.width, pg.height, pg.pixels, 0, pg.width);
         return img;
     }
+//    BufferedImage pgToBufferedImage(PGraphics pg) {
+//        PImage pImg = pg.get();
+//        BufferedImage bImg = new BufferedImage(pImg.width, pImg.height, BufferedImage.TYPE_INT_RGB);
+//        for (int y = 0; y < pImg.height; y++) {
+//            for (int x = 0; x < pImg.width; x++) {
+//                int pixel = pImg.get(x, y);
+//                bImg.setRGB(x, y, pixel);
+//            }
+//        }
+//        return bImg;
+//    }
 
     public void exitSketch() {
         exit(); // Termina el sketch de Processing

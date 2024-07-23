@@ -17,6 +17,7 @@
 package com.jmathanim.Renderers.ProcessingRenderer;
 
 import com.jmathanim.Cameras.Camera;
+import com.jmathanim.Cameras.Camera3D;
 import com.jmathanim.Renderers.FXRenderer.FXPathUtils;
 import com.jmathanim.Renderers.FXRenderer.JavaFXRenderer;
 import com.jmathanim.Renderers.MovieEncoders.SoundItem;
@@ -58,8 +59,8 @@ public class ProcessingRenderer extends Renderer {
     private static final double MIN_THICKNESS = .2d;
 
     public final FXPathUtils fXPathUtils;
-    public Camera camera;
-    public Camera fixedCamera;
+    public Camera3D camera;
+    public Camera3D fixedCamera;
     public double correctionThickness;
 
     protected VideoEncoder videoEncoder;
@@ -69,8 +70,8 @@ public class ProcessingRenderer extends Renderer {
         super(parentScene);
 
         fXPathUtils = new FXPathUtils();
-        camera = new Camera(scene, config.mediaW, config.mediaH);
-        fixedCamera = new Camera(scene, config.mediaW, config.mediaH);
+        camera = new Camera3D(scene, config.mediaW, config.mediaH);
+        fixedCamera = new Camera3D(scene, config.mediaW, config.mediaH);
         correctionThickness = config.mediaW * 1d / 1066;//Correction factor for thickness
     }
 
@@ -189,8 +190,7 @@ public class ProcessingRenderer extends Renderer {
 
      @Override
     public void drawPath(Shape mobj, Camera camera) {
-        prApplet.drawPath(mobj, camera);
-        
+        prApplet.drawPath(mobj, (Camera3D) camera);
     }
     
     
