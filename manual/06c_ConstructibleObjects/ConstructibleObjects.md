@@ -1,9 +1,9 @@
 [home](https://davidgutierrezrubio.github.io/jmathanim/) [back](../index.html)
 
 # Constructible objects
-Since version 0.9.5, JMathAnim has introduced constructible objects. These objects inherit from the abstract class `Constructible` which is itself a subclass of `MathObject`, so they have all the common properties of those, like styling.
+Since version 0.9.5, JMathAnim has introduced constructible objects. These objects inherit from the abstract class `Constructible` which is itself a subclass of `MathObject`, so they have all the common properties of those, such as styling, for example.
 
-A constructible object is a `MathObject`,that is built much like constructive geometry works. That's it, computing parallels, intersections, etc. The main difference with a normal `MathObject `is that they are dependent on other `Constructible` objects, and most of them are "rigid" in the sense that they cannot be shifted, rotated, or scaled (well, they can, but without effect). All `Constructible` objects have name with the prefix `CT`.
+A constructible object is a `MathObject`,that is built in a similar way as constructive geometry works. That's it, computing parallels, intersections, etc. The main difference with a normal `MathObject `is that they depend on other `Constructible` objects, and most of them are "rigid" in the sense that they cannot be shifted, rotated, or scaled (well, they can, but with no effect). All `Constructible` objects have names with the prefix `CT`.
 
 For example, the following code:
 
@@ -22,19 +22,19 @@ Will give an animation like this:
 
 <img src="../06a_DealingWithPaths/01_basicExample.gif" alt="01_basicExample" style="zoom:67%;" />
 
-In this example, we have created 2 `CTPoint`objects. These are almost identical to the classical `Pointobject`. The `CTSegment` object represents a segment between 2 `CTPoint` objects. Note that this object is not a `Shape` in the sense that you can transform it into another `Shape` for example, but it always remains as a segment. These objects are more rigid, but they allow for richer properties depending on the context.
+In this example, we have created 2 `CTPoint` objects. These are almost identical to the classic `Pointobject`. The `CTSegment` object represents a segment between 2 `CTPoint` objects. Note that this object is not a `Shape` in the sense that you can transform it into another `Shape` for example, but it always remains as a segment. These objects are more rigid, but they allow for richer properties depending on the context.
 
-The `CTPerpBisector` does as its name says, build the perpendicular bisector of the given segment.
+The `CTPerpBisector` does as its name suggests, constructs the perpendicular bisector of the given segment.
 
-Another object shown is the `CTCircle`. The static method `makeCenterPoint(A,B)`builds the circle with center `A` that passes through the point `B`.
+Another object shown is the `CTCircle`. The static method `makeCenterPoint(A,B)` creates the circle with center `A` passing through point `B`.
 
-Finally, we perform a `shift` animation to `B`. Note that all objects dependent on `B` are updated accordingly.
+Finally, we perform a `shift` animation to `B`. Note that all objects that depend on `B` are updated accordingly.
 
-Each `Constructible` object has its own static creation method with several parameters. For example, the `CTPerpBisector`admits a static builder from a `CTSegment` but also with 2 `CTPoint` objects. Also, several builder methods that admit `CTPoint` are overloaded so that they admit `Point`objects (they simply wrap them into new `CTPoint` instances).
+Each `Constructible` object has its own static constructor method with several parameters. For example, the `CTPerpBisector` allows a static constructor from a `CTSegment` but also with 2 `CTPoint` objects. Also, several builder methods that accept `CTPoint` are overloaded to accept `Point`objects (they simply wrap them into new `CTPoint` instances).
 
 ## Constructible lines
 
-The class `CTLine` has several subclasses such as `CTRay`, `CTSegment`, `CTAngleBisector`, `CTLineOrthogonal`, `CTPerpBisector`, or `CTVector`. These are fairly self-explanatory, but one thing they have in common is that they all implement the interface `hasDirection` means that this object has an inherent direction (not oriented). So, we can use any of these objects as a parameter that admits a direction. For example, we can build a orthogonal line that passes through a `CTPoint` and is perpendicular to a `CTLine`, `CTSegment`, or `CTVector`. Other non constructible objects, like `Line`, `Ray` or `Arrow2D` also implement this interface.
+The class `CTLine` has several subclasses such as `CTRay`, `CTSegment`, `CTAngleBisector`, `CTLineOrthogonal`, `CTPerpBisector`, or `CTVector`. These are fairly self-explanatory, but one thing they have in common is that they all implement the interface `hasDirection` means that this object has an inherent direction (not oriented). So, we can use any of these objects as a parameter that admits a direction. For example, we can build a orthogonal line that passes through a `CTPoint` and is perpendicular to a `CTLine`, `CTSegment`, or `CTVector`. Other non-constructible objects, like `Line`, `Ray` or `Arrow2D` also implement this interface.
 
 ## CTLaTeX
 
@@ -115,7 +115,7 @@ waitSeconds(3);
 
 # Geogebra import
 
-One of the advantages of `Constructible` objects is that they behave similarly to the objects of the Geogebra program. In the rare case you don't know it, Geogebra is an excellent open source software that allows you to do geometrical constructions (and many other things). JMathAnim can import Geogebra files in a limited way (bear in mind that Geogebra has literally hundreds of commands). For now, the following elements can be successfully imported: points, midpoints, intersections (of lines, rays, segments, circles), lines, orthogonal, parallels, perpendicular bisector, polygons, regular polygons, vectors, mirrored, translated, and rotated points. JMathAnim will emit a warning when it finds an unknown command that cannot be imported. The process is quite simple. For example, suppose we have a document like this created in Geogebra, where we have calculated the circumcenter of a triangle, drawing the 3 perpendicular bisectors:
+One of the advantages of `Constructible` objects is that they behave similarly to the objects of the Geogebra program. In the rare case you don't know it, Geogebra is an excellent open source software that allows you to do geometric constructions (and many other things). JMathAnim can import Geogebra files in a limited way (keep in mind that Geogebra has literally hundreds of commands!). For now, the following elements can be successfully imported: points, midpoints, intersections (of lines, rays, segments, circles), lines, orthogonal, parallel, perpendicular bisectors, polygons, regular polygons, vectors, mirrored, translated, and rotated points. JMathAnim will log a warning when it finds an unknown command that cannot be imported. The process is quite simple. For example, suppose we have a document like this created in Geogebra, where we have calculated the circumcenter of a triangle, drawing the 3 perpendicular bisectors:
 
 <img src="03geogebraDoc.png" alt="03geogebraDoc" style="zoom:50%;" />
 
@@ -149,7 +149,7 @@ The imported document will look like this:
 
 <img src="03ImportedGeogebra.png" alt="03ImportedGeogebra" style="zoom:50%;" />
 
-Not bad, is it? Note that axis and object labels are not imported. And that's it! Well, not really. If you want to animate elements or simply access them, you can use the original names that these objects had in Geogebra. For example, to access point A, you can use the command
+Not bad, right? Note that axis and object labels are not imported. And that's it! Well, not really. If you want to animate elements or simply access them, you can use the original names that these objects had in Geogebra. For example, to access point A, you can use the command
 
 ```java
 gl.get("A");
@@ -174,7 +174,7 @@ waitSeconds(3);
 
 ## Limitations
 
-Currently JMathAnim can import most common geometrical constructions, however other elements that cannot be imported yet. For instance, any element that is built from some algebraic expression given in a String cannot be imported. This applies to functions or points whose coordinates are not numbers, but formulas. 
+Currently JMathAnim can import most common geometric constructions, but there are other elements that cannot be imported yet. For example, any element that is built from an algebraic expression given in a string cannot be imported. This applies to functions or points whose coordinates are not numbers but formulas. 
 
 
 
