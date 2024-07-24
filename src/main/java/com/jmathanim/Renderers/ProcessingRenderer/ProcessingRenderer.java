@@ -160,7 +160,7 @@ public class ProcessingRenderer extends Renderer {
         Shape shape = sh.copy();
         Vec vFixed = defaultToFixedCamera(anchor);
         shape.shift(vFixed.minus(anchor));
-        drawPath(shape, fixedCamera);
+        drawPath(shape, sh.getCamera());
     }
 
     /**

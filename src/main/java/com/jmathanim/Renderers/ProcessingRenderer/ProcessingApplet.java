@@ -126,8 +126,14 @@ public class ProcessingApplet extends PApplet {
                     pg.background((float) (255 * c.r), (float) (255 * c.g), (float) (255 * c.b), 255);
 //                    background((float) (255 * c.r), (float) (255 * c.g), (float) (255 * c.b));
                 }
-
-            }
+//                pg.fill(100,100,100,50);
+//                pg.beginShape();
+//                pg.vertex(-1000, -1000,0);
+//                pg.vertex(1000,  -1000,0);
+//                pg.vertex(1000,  1000,0);
+//                pg.vertex(-1000,  1000,0);
+//                pg.endShape(CLOSE);
+            }//End of synchronized
         });
     }
 
@@ -143,20 +149,37 @@ public class ProcessingApplet extends PApplet {
 
     }
 
+    private float[] getCol(JMColor col) {
+        float[] resul = new float[4];
+        resul[0] = (float) (255 * col.r);
+        resul[1] = (float) (255 * col.g);
+        resul[2] = (float) (255 * col.b);
+        resul[3] = (float) (255 * col.getAlpha());
+        return resul;
+    }
+
     public void applyStyle(MathObject obj, Stylable style) {
-        JMColor drawColor = (JMColor) style.getDrawColor();
-        JMColor fillColor = (JMColor) style.getFillColor();
-        float fillAlpha = (float) (255 * fillColor.getAlpha());
-        float drawAlpha = (float) (255 * drawColor.getAlpha());
-        float th = computeThickness(obj, style.getThickness());
-//        queue.add(() -> {
-//            synchronized (pg) {
-        pg.stroke((float) (255 * drawColor.r), (float) (255 * drawColor.g), (float) (255 * drawColor.b), drawAlpha);
-        pg.fill((float) (255 * fillColor.r), (float) (255 * fillColor.g), (float) (255 * fillColor.b), fillAlpha);
-        pg.strokeWeight(th);
+        applyColor(obj, style.getDrawColor(), true);
+        applyColor(obj, style.getFillColor(), false);
+        pg.strokeWeight(computeThickness(obj, style.getThickness()));
         pg.strokeCap(ROUND);
-//            }
-//        });
+    }
+
+    /**
+     *
+     * @param obj
+     * @param paintStyle
+     * @param stroke True to apply to stroke, false to fill
+     */
+    private void applyColor(MathObject obj, PaintStyle paintStyle, boolean stroke) {
+        if (paintStyle instanceof JMColor) {
+            float[] col = getCol((JMColor) paintStyle);
+            if (stroke) {
+                pg.stroke(col[0], col[1], col[2], col[3]);
+            } else {
+                pg.fill(col[0], col[1], col[2], col[3]);
+            }
+        }
     }
 
     public void drawPath(Shape mobj, Camera3D camera) {
@@ -222,25 +245,24 @@ public class ProcessingApplet extends PApplet {
     }
 
     private void applyCameraNew(Camera3D camera) {
-        pg.scale(1, -1, 1);
+
         // Calcular el vector de dirección de la cámara (dónde está mirando)
         Vec direction = camera.eye.to(camera.look).normalize();
         direction.y = -direction.y;
         direction.z = -direction.z;
         // Definir el vector "arriba" para asegurar que el eje Z está hacia arriba
-        Vec up = new Vec(0, 1, 0);
-        up.y=-up.y;
-        up.z=-up.z;
-        double interpFactor = 100 * (Math.abs(direction.y) + Math.abs(direction.x));
-        if (interpFactor > 1) {
-            up = Vec.to(0, 0, 1);
-        } else {
-            up = up.interpolate(Vec.to(0, 0, 1), interpFactor).normalize();
-        }
-        System.out.println("aa" + up);
+        Vec up = camera.getUpVector();
+        up.y = -up.y;
+//        up.z=-up.z;
+//        double interpFactor = 100 * (Math.abs(direction.y) + Math.abs(direction.x));
+//        if (interpFactor > 1) {
+//            up = Vec.to(0, 0, 1);
+//        } else {
+//            up = up.interpolate(Vec.to(0, 0, 1), interpFactor).normalize();
+//        }
 
         // Configurar la proyección de perspectiva
-        float fov = PI / 3; // Campo de visión
+        float fov = PI / 4; // Campo de visión
         float aspect = width * 1f / height;
         float zNear = 0.1f;
         float zFar = 100;
@@ -255,7 +277,7 @@ public class ProcessingApplet extends PApplet {
         pg.camera(eyeX, eyeY, eyeZ, // Posición de la cámara
                 lookX, lookY, lookZ, // Punto al que la cámara está mirando
                 (float) up.x, (float) up.y, (float) up.z);      // Vector "arriba"
-
+        pg.scale(1, -1, -1);
     }
 
     private void applyCameraOld(Camera3D camera) {
