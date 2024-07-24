@@ -118,16 +118,14 @@ public class ProcessingApplet extends PApplet {
         queue.add(() -> {
             synchronized (pg) {
                 clear();
-                  pg.beginDraw();
+                pg.beginDraw();
                 PaintStyle bgColor = config.getBackgroundColor();
                 if (bgColor instanceof JMColor) {
                     JMColor c = (JMColor) bgColor;
 //                    pg.background(100, 200, 100,255);
-                    pg.background((float) (255 * c.r), (float) (255 * c.g), (float) (255 * c.b),255);
+                    pg.background((float) (255 * c.r), (float) (255 * c.g), (float) (255 * c.b), 255);
 //                    background((float) (255 * c.r), (float) (255 * c.g), (float) (255 * c.b));
                 }
-              
-                
 
             }
         });
@@ -164,7 +162,7 @@ public class ProcessingApplet extends PApplet {
     public void drawPath(Shape mobj, Camera3D camera) {
         queue.add(() -> {
             boolean isContour = false;
-            applyCamera(camera);
+            applyCameraNew(camera);
             applyStyle(mobj, mobj.getMp());
             pg.beginShape();
             pg.bezierDetail(50);
@@ -223,7 +221,44 @@ public class ProcessingApplet extends PApplet {
         return x;
     }
 
-    private void applyCamera(Camera3D camera) {
+    private void applyCameraNew(Camera3D camera) {
+        pg.scale(1, -1, 1);
+        // Calcular el vector de dirección de la cámara (dónde está mirando)
+        Vec direction = camera.eye.to(camera.look).normalize();
+        direction.y = -direction.y;
+        direction.z = -direction.z;
+        // Definir el vector "arriba" para asegurar que el eje Z está hacia arriba
+        Vec up = new Vec(0, 1, 0);
+        up.y=-up.y;
+        up.z=-up.z;
+        double interpFactor = 100 * (Math.abs(direction.y) + Math.abs(direction.x));
+        if (interpFactor > 1) {
+            up = Vec.to(0, 0, 1);
+        } else {
+            up = up.interpolate(Vec.to(0, 0, 1), interpFactor).normalize();
+        }
+        System.out.println("aa" + up);
+
+        // Configurar la proyección de perspectiva
+        float fov = PI / 3; // Campo de visión
+        float aspect = width * 1f / height;
+        float zNear = 0.1f;
+        float zFar = 100;
+        pg.perspective(fov, aspect, zNear, zFar);
+        float eyeX = (float) camera.eye.v.x;
+        float eyeY = (float) camera.eye.v.y;
+        float eyeZ = -(float) camera.eye.v.z;
+        float lookX = (float) camera.look.v.x;
+        float lookY = (float) camera.look.v.y;
+        float lookZ = -(float) camera.look.v.z;
+        // Configurar la cámara
+        pg.camera(eyeX, eyeY, eyeZ, // Posición de la cámara
+                lookX, lookY, lookZ, // Punto al que la cámara está mirando
+                (float) up.x, (float) up.y, (float) up.z);      // Vector "arriba"
+
+    }
+
+    private void applyCameraOld(Camera3D camera) {
 
         Rect bb = camera.getMathView();
         float centerX = (float) bb.getCenter().v.x;
@@ -249,16 +284,36 @@ public class ProcessingApplet extends PApplet {
             float fov = (float) (PI / 4.0);
             float cameraZ = (float) ((height / 2.0) / tan((float) (fov / 2.0)));
             pg.perspective(fov, width * 1f / height, .1f, 100);
+
+            // Calcular el vector "arriba" dinámicamente
+            // Asegurar que el eje Y apunte hacia arriba en la pantalla
+            float eyeX = (float) camera.eye.v.x;
+            float eyeY = (float) camera.eye.v.y;
+            float eyeZ = (float) camera.eye.v.z;
+            float lookX = (float) camera.look.v.x;
+            float lookY = (float) camera.look.v.y;
+            float lookZ = (float) camera.look.v.z;
+            float upX = 0;
+            float upY = 0;
+            float upZ = 1;
+
+            if (abs(eyeX - lookX) < 0.01 && abs(eyeZ - lookZ) < 0.01) {
+                // Si estamos mirando directamente hacia abajo o hacia arriba, ajustar el vector "arriba"
+                upX = 0;
+                upY = eyeY > lookY ? -1 : 1;
+                upZ = 0; // Determinar la dirección "arriba"
+            }
+
             pg.camera(
-                    (float) camera.eye.v.x,
-                    (float) camera.eye.v.y,
-                    (float) camera.eye.v.z,
-                    (float) camera.look.v.x,
-                    (float) camera.look.v.y,
-                    (float) camera.look.v.z,
-                    0, 1, 0
+                    eyeX,
+                    eyeY,
+                    eyeZ,
+                    lookX,
+                    lookY,
+                    lookZ,
+                    upX, upY, upZ
             );
-            pg.scale(1, -1, 1);
+            pg.scale(1, -1, -1);
         }
 
     }

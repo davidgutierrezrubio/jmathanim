@@ -295,7 +295,7 @@ public class Vec implements Stateable, HasDirection {
 
     @Override
     public String toString() {
-        return "Vec(" + x + ", " + y + ')';
+        return "Vec(" + x + ", " + y + ", "+z+')';
     }
 
     public static Vec to(double x, double y, double z) {
