@@ -31,13 +31,14 @@ public class Camera3D extends Camera {
 
     public final Point eye, look;
     public final Vec up;
-    public float fov;
+    public double fov;
 
     public Camera3D(JMathAnimScene scene, int screenWidth, int screenHeight) {
         super(scene, screenWidth, screenHeight);
         perspective = true;//Default mode: perspective
-        fov = 45.0f;
-        eye = Point.at(0, 0, 1.125d / Math.tan(1d * fov * PI / 360)).visible(false);
+        fov = PI/3;
+        eye = Point.at(0, 0, 1.125d / Math.tan(.5d*fov)).visible(false);
+//        eye = Point.at(0, 0, 1.125d / Math.tan(1d * fov * PI / 180 / 2)).visible(false);
         look = Point.at(0, 0, 0).visible(false);
         up = Vec.to(0, 0, 0);
     }
@@ -62,11 +63,11 @@ public class Camera3D extends Camera {
     }
 
     public double getProperEyeHeight(Rect bb) {
-        return .5 * bb.getHeight() / Math.tan(1d * fov * PI / 360);
+        return .5 * bb.getHeight() / Math.tan(.5d*fov);
     }
 
     public double getMathViewHeight3D(double zDepth) {
-        return 2 * Math.tan(1d * fov * PI / 360) * zDepth;//TODO: store Tan to optimize
+        return 2 * Math.tan(.5d*fov) * zDepth;//TODO: store Tan to optimize
 
     }
 

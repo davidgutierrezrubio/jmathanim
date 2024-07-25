@@ -245,24 +245,8 @@ public class ProcessingApplet extends PApplet {
     }
 
     private void applyCameraNew(Camera3D camera) {
-
-        // Calcular el vector de dirección de la cámara (dónde está mirando)
-        Vec direction = camera.eye.to(camera.look).normalize();
-        direction.y = -direction.y;
-        direction.z = -direction.z;
-        // Definir el vector "arriba" para asegurar que el eje Z está hacia arriba
         Vec up = camera.getUpVector();
-        up.y = -up.y;
-//        up.z=-up.z;
-//        double interpFactor = 100 * (Math.abs(direction.y) + Math.abs(direction.x));
-//        if (interpFactor > 1) {
-//            up = Vec.to(0, 0, 1);
-//        } else {
-//            up = up.interpolate(Vec.to(0, 0, 1), interpFactor).normalize();
-//        }
-
-        // Configurar la proyección de perspectiva
-        float fov = PI / 4; // Campo de visión
+        float fov = (float) camera.fov;
         float aspect = width * 1f / height;
         float zNear = 0.1f;
         float zFar = 100;
@@ -277,96 +261,9 @@ public class ProcessingApplet extends PApplet {
         pg.camera(eyeX, eyeY, eyeZ, // Posición de la cámara
                 lookX, lookY, lookZ, // Punto al que la cámara está mirando
                 (float) up.x, (float) up.y, (float) up.z);      // Vector "arriba"
-        pg.scale(1, -1, -1);
+        pg.scale(1, 1, -1);
     }
 
-    private void applyCameraOld(Camera3D camera) {
-
-        Rect bb = camera.getMathView();
-        float centerX = (float) bb.getCenter().v.x;
-        float centerY = (float) bb.getCenter().v.y;
-// Calcular la altura visible en base al ancho y la proporción de la ventana
-        float h = (float) bb.getHeight();
-        float w = (float) bb.getWidth();
-//        pg.translate(width / 2, height / 2, 0);
-//        pg.ortho(centerX-w/2,centerX+w/2,centerY-h/2,centerY+h/2);
-        boolean prueba3D = true;
-        if (!prueba3D) {
-            // Configurar la vista ortográfica. Esto funciona para la cámara 2D
-            pg.ortho(centerX - w / 2, centerX + w / 2, centerY + h / 2, centerY - h / 2, -10, 10);
-            // Posicionar la cámara en el centro de la pantalla
-            pg.camera(centerX, centerY, (float) ((4 / 2.0) / tan((float) (PI * 30.0 / 180.0))), centerX, centerY, 0, 0, 1, 0);
-//        pg.rotateX(-PI / 6);
-//        pg.rotateY(PI / 3);
-        } else {
-            //pruebas camara 3D
-//            pg.ortho(centerX - w / 2, centerX + w / 2, centerY + h / 2, centerY - h / 2, -10, 10);
-//            pg.perspective();
-
-            float fov = (float) (PI / 4.0);
-            float cameraZ = (float) ((height / 2.0) / tan((float) (fov / 2.0)));
-            pg.perspective(fov, width * 1f / height, .1f, 100);
-
-            // Calcular el vector "arriba" dinámicamente
-            // Asegurar que el eje Y apunte hacia arriba en la pantalla
-            float eyeX = (float) camera.eye.v.x;
-            float eyeY = (float) camera.eye.v.y;
-            float eyeZ = (float) camera.eye.v.z;
-            float lookX = (float) camera.look.v.x;
-            float lookY = (float) camera.look.v.y;
-            float lookZ = (float) camera.look.v.z;
-            float upX = 0;
-            float upY = 0;
-            float upZ = 1;
-
-            if (abs(eyeX - lookX) < 0.01 && abs(eyeZ - lookZ) < 0.01) {
-                // Si estamos mirando directamente hacia abajo o hacia arriba, ajustar el vector "arriba"
-                upX = 0;
-                upY = eyeY > lookY ? -1 : 1;
-                upZ = 0; // Determinar la dirección "arriba"
-            }
-
-            pg.camera(
-                    eyeX,
-                    eyeY,
-                    eyeZ,
-                    lookX,
-                    lookY,
-                    lookZ,
-                    upX, upY, upZ
-            );
-            pg.scale(1, -1, -1);
-        }
-
-    }
-
-//    public void drawShape(
-//            float[] xx1, float yy1[], float zz1[],
-//            float[] mx1, float[] my1, float mz1[],
-//            float[] mx2, float[] my2, float mz2[],
-//            float[] xx2, float yy2[], float zz2[],
-//            boolean closed) {
-//        queue.add(() -> {
-//            synchronized (pg) {
-//                pg.beginShape();
-//                pg.bezierDetail(50);
-//                pg.vertex(xx1[0], yy1[0], zz1[0]);
-//                for (int i = 0; i < xx1.length - (closed ? 0 : 1); i++) {
-////                    pg.vertex(xx[i], yy[i]);
-//                    pg.bezierVertex(
-//                            mx1[i], my1[i], mz1[i],
-//                            mx2[i], my2[i], mz2[i],
-//                            xx2[i], yy2[i], zz2[i]
-//                    );
-//                }
-//                if (closed) {
-//                    pg.endShape(CLOSE);
-//                } else {
-//                    pg.endShape();
-//                }
-//            }
-//        });
-//    }
     public synchronized BufferedImage getRenderedImage() {
         return pgToBufferedImage(pg);
     }
