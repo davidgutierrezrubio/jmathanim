@@ -97,7 +97,7 @@ public void runSketch() throws Exception {
             .thickness(4);
         texts[n]=LaTeXMathObject.make("Taylor order "+n)
             .scale(3)
-            .stackToScreen(Anchor.Type.UL,.2,.2);
+            .stackToScreen(Anchor.Type.ULEFT,.2,.2);
         texts[n].setColor("#153e90").layer(2);
     }
     final Rect r = texts[1].getBoundingBox().addGap(.1, .1);
