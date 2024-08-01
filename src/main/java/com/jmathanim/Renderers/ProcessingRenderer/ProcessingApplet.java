@@ -37,6 +37,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import processing.core.PApplet;
 import static processing.core.PConstants.P3D;
+import processing.core.PFont;
 import processing.core.PGraphics;
 import processing.core.PImage;
 import processing.opengl.PGL;
@@ -163,6 +164,7 @@ public class ProcessingApplet extends PApplet {
         applyColor(obj, style.getFillColor(), false);
         pg.strokeWeight(computeThickness(obj, style.getThickness()));
         pg.strokeCap(ROUND);
+        pg.strokeJoin(ROUND);
     }
 
     /**
@@ -176,18 +178,32 @@ public class ProcessingApplet extends PApplet {
             float[] col = getCol((JMColor) paintStyle);
             if (stroke) {
                 pg.stroke(col[0], col[1], col[2], col[3]);
-            } else {
-                pg.fill(col[0], col[1], col[2], col[3]);
-            }
+                if (col[3] == 0) {
+                    pg.noStroke();
+                }
+        } else {
+            pg.fill(col[0], col[1], col[2], col[3]);
+               if (col[3] == 0) {
+                    pg.noFill();
+                }
         }
     }
+}
 
-    public void drawPath(Shape mobj, Camera3D camera) {
+public void drawPath(Shape mobj, Camera3D camera) {
         queue.add(() -> {
             boolean isContour = false;
             applyCameraNew(camera);
+            if (!"".equals(mobj.getDebugText())) {
+                Vec vCenter = mobj.getCenter().v;
+                float scX = screenX((float) vCenter.x, (float) vCenter.y, (float) vCenter.z);
+                float scY = screenY((float) vCenter.x, (float) vCenter.y, (float) vCenter.z);
+                drawRectWithNumber(mobj.getDebugText(), scX, scY);
+            }
             applyStyle(mobj, mobj.getMp());
             pg.beginShape();
+            pg.strokeCap(ROUND);
+            pg.strokeJoin(ROUND);
             pg.bezierDetail(50);
             //First point, a pg.vertex command
             Vec v = mobj.get(0).p.v;
@@ -221,7 +237,32 @@ public class ProcessingApplet extends PApplet {
                 pg.endContour();
             }
             pg.endShape();
+
         });
+    }
+
+    void drawRectWithNumber(String debugText, float x, float y) {
+        // Configura la fuente
+        PFont font = createFont("Arial", 10);
+//        pg.camera();
+        pg.textFont(font);
+        // Dimensiones del rectángulo
+        float rectWidth = 200;
+        float rectHeight = 100;
+
+        // Coordenadas para centrar el rectángulo en (x, y)
+        float rectX = x - rectWidth / 2;
+        float rectY = y - rectHeight / 2;
+
+//        camera();
+        // Dibuja un rectángulo azul
+        pg.fill(0, 0, 255); // Color azul
+        pg.rect(rectX, rectY, rectWidth, rectHeight); // Coordenadas (rectX, rectY) y tamaño (ancho, alto)
+
+        // Dibuja el número en negro
+        pg.fill(0); // Color negro
+        pg.textAlign(CENTER, CENTER); // Alineación del texto
+        pg.text(debugText, x, y); // Posición del texto en el centro del rectángulo
     }
 
     public float[] getJPMPathPointCoordinates(JMPathPoint p1, JMPathPoint p2) {
@@ -277,7 +318,7 @@ public class ProcessingApplet extends PApplet {
         pg.camera(eyeX, eyeY, eyeZ, // Posición de la cámara
                 lookX, lookY, lookZ, // Punto al que la cámara está mirando
                 (float) up.x, (float) up.y, (float) up.z);      // Vector "arriba"
-        pg.scale(1, -1, -1);
+        pg.scale(1, 1, -1);
     }
 
     private void applyCameraOld(Camera3D camera) {

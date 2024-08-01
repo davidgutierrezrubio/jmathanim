@@ -37,12 +37,16 @@ import com.jogamp.opengl.GL;
 import com.jogamp.opengl.GL2;
 import com.jogamp.opengl.GL3;
 import com.jogamp.opengl.GLAutoDrawable;
+import com.jogamp.opengl.GLCapabilities;
 import com.jogamp.opengl.GLDrawable;
 import com.jogamp.opengl.GLEventListener;
 import com.jogamp.opengl.GLException;
+import com.jogamp.opengl.GLProfile;
 import com.jogamp.opengl.fixedfunc.GLMatrixFunc;
 import com.jogamp.opengl.glu.GLU;
 import com.jogamp.opengl.util.awt.AWTGLReadBufferUtil;
+import com.jogamp.opengl.util.awt.TextRenderer;
+import java.awt.Font;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -50,6 +54,7 @@ import java.nio.FloatBuffer;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.scene.paint.Color;
 
 /**
  * Manages the queue of objects to be rendered at every frame draw
@@ -61,7 +66,9 @@ public class JOGLRenderQueue implements GLEventListener {
     public boolean busy = false; //True if actually drawing
     private static final double MIN_THICKNESS = .2d;
     private int height;
+    public BufferedImage savedImage;
     public boolean useCustomShaders = true;
+    public boolean saveImageFlag = false;
     JMathAnimConfig config;
     ArrayList<MathObject> objectsToDraw;
     GLU glu;
@@ -78,7 +85,10 @@ public class JOGLRenderQueue implements GLEventListener {
     private int newLineCounter = 0;
     public int frameCount;
 
+    private final TextRenderer textRenderer;
+
     //Shaders and uniform variables
+    //Shader that draws thin, rounded cap lines
     ShaderLoader thinLinesShader;
     ShaderLoader fillShader;
     int unifProject;//Projection matrix
@@ -90,7 +100,7 @@ public class JOGLRenderQueue implements GLEventListener {
     public JOGLRenderer renderer;
 
     public JOGLRenderQueue(JMathAnimConfig config) {
-
+        textRenderer = new TextRenderer(new Font("SansSerif", Font.BOLD, 36));
         this.config = config;
         objectsToDraw = new ArrayList<>();
 
@@ -107,27 +117,34 @@ public class JOGLRenderQueue implements GLEventListener {
 
     @Override
     public void init(GLAutoDrawable drawable) {
+        // Establece el perfil de OpenGL
+//        GLProfile glp = GLProfile.get(GLProfile.GL2);
+//        GLCapabilities caps = new GLCapabilities(glp);
+        // Habilita el multisampling (antialiasing)
+//        caps.setSampleBuffers(true);
+//        caps.setNumSamples(16); // Ejemplo con 4 muestras por píxel
+//  GL2 gl = drawable.getGL().getGL2();
+
+        // Habilita el multisampling en OpenGL
+//        gl.glEnable(GL.GL_MULTISAMPLE);
 //        gles = drawable.getGL().getGL3ES3();
         gl3 = drawable.getGL().getGL3();
         gl2 = drawable.getGL().getGL2();
         glu = new GLU();
-//        glu2 = new GLUgl2();
-
-//        gles.setSwapInterval(1);
         gl3.glEnable(GL.GL_DEPTH_TEST);
-//        gles.glClearColor(1.0f, 0.0f, 1.0f, 1.0f);
         gl3.glDepthFunc(GL.GL_LEQUAL);
-
         gl3.glEnable(GL3.GL_LINE_SMOOTH);
         gl3.glEnable(GL3.GL_POLYGON_SMOOTH);
-//        gl3.glEnable(GL3.GL_POINT_SMOOTH);
-//        gl3.glHint(GL3.GL_POINT_SMOOTH, GL3.GL_NICEST);
         gl3.glHint(GL3.GL_POLYGON_SMOOTH_HINT, GL3.GL_NICEST);
         gl3.glHint(GL3.GL_LINE_SMOOTH_HINT, GL3.GL_NICEST);
         gl3.glEnable(GL3.GL_BLEND);
         gl3.glBlendFunc(GL3.GL_SRC_ALPHA, GL3.GL_ONE_MINUS_SRC_ALPHA);
+        gl2.glEnable(GL2.GL_BLEND);
+        gl2.glBlendFunc(GL2.GL_SRC_ALPHA, GL2.GL_ONE_MINUS_SRC_ALPHA);
         gl3.glEnable(GL3.GL_MULTISAMPLE);
         gl3.glEnable(GL3.GL_SAMPLE_ALPHA_TO_COVERAGE);
+        gl2.glEnable(GL2.GL_MULTISAMPLE);
+        gl2.glEnable(GL2.GL_SAMPLE_ALPHA_TO_COVERAGE);
 
         //Drawer class, we have to pass it the created shaders
         shaderDrawer = new ShaderDrawer(gl3, gl2);
@@ -156,7 +173,7 @@ public class JOGLRenderQueue implements GLEventListener {
         JMathAnimScene.logger.info("Preparing encoder");
 
         if (config.isCreateMovie()) {
-              videoEncoder = new XugglerVideoEncoder();
+            videoEncoder = new XugglerVideoEncoder();
             File tempPath = new File(config.getOutputDir().getCanonicalPath());
             tempPath.mkdirs();
             saveFilePath = new File(config.getOutputDir().getCanonicalPath() + File.separator
@@ -207,6 +224,13 @@ public class JOGLRenderQueue implements GLEventListener {
             for (MathObject obj : objectsToDraw) {
                 if (obj instanceof Shape) {
                     drawShape(obj, roll, yaw);
+                    if (!"".equals(obj.getDebugText())) {
+                        gl3.glUseProgram(0);
+                        textRenderer.beginRendering(drawable.getSurfaceWidth(), drawable.getSurfaceHeight());
+                        textRenderer.setColor(java.awt.Color.red); // Color rojo
+                        textRenderer.draw(obj.getDebugText(), 1, 1);
+                        textRenderer.endRendering();
+                    }
                 }
                 if (obj instanceof Surface) {
                     drawSurface((Surface) obj);
@@ -216,6 +240,10 @@ public class JOGLRenderQueue implements GLEventListener {
             objectsToDraw.clear();
             gl3.glFlush();
 
+            if (saveImageFlag) {
+                savedImage = screenshot(gl3, drawable);
+                saveImageFlag = false;
+            }
             if (config.isCreateMovie()) {
 //            BufferedImage image = screenshot(drawable);
                 BufferedImage image = screenshot(gl3, drawable);

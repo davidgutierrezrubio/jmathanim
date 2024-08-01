@@ -395,6 +395,24 @@ public class Rect implements Stateable, Boxable {// TODO: Adjust this to 3D coor
         return new Rect(xmin - leftGap, ymin - lowerGap, zmin, xmax + rightGap, ymax + upperGap, zmax);
     }
 
+     /**
+     * Computes a new Rect with the following gaps added (right, upper, left,
+     * lower).
+     *
+     * @param rightGap Right gap
+     * @param upperGap Upper gap
+     * @param leftGap Left gap
+     * @param lowerGap Lower gap
+     * @param zMinGap Lower z gap
+     * @param zMaxGap Upper z gap
+     * @return A new {@link Rect} with the gaps applied
+     */
+    public Rect addGap(double rightGap, double upperGap, double leftGap, double lowerGap,double zMinGap, double zMaxGap) {
+        return new Rect(xmin - leftGap, ymin - lowerGap, zmin-zMinGap, xmax + rightGap, ymax + upperGap, zmax+zMaxGap);
+    }
+    
+    
+    
     /**
      * Scale the rectangle around center. The current rect is modified.
      *

@@ -57,7 +57,7 @@ for (int i=0;i<numPoints;i++) {
 	
 //Generate a rounded cap at point p
 //Between (normalized) vectors n0 and n1, with given zValue, thickness and number of points to use
-void generateCap(vec2 p,vec2 n0,vec2 n1,float zValue,float th, int numPoints) {
+void generateRoundedCap(vec2 p,vec2 n0,vec2 n1,float zValue,float th, int numPoints) {
 float angle=acos(dot(n0,n1));
 
 float delta=angle/numPoints;//Step angle
@@ -134,16 +134,11 @@ void main(void)
     //Rounded butt, if thickness>1
     if (th>1) {
 	
-		if (length(points[1]-points[0])<.1) {
-		// vec2 v1=normalize(points[1]-points[0]);
-		// vec2 n1=vec2(v1.y,-v1.x);//Normal unit vector from p0 to p1
-		generateCap(points[1],n0,-n0,zValues[1],th,10);
-		}
-		float dp=dot(n2,n0);
-		
-		generateCap(points[2],-n0,n0,zValues[2],th,10);
-			// generateCap(points[2],n2,n0,zValues[2],th,10);
+		generateRoundedCap(points[1],n0,-n0,zValues[1],th,10);
+		generateRoundedCap(points[2],-n0,n0,zValues[2],th,10);
     }
+        
+    //Straight joined
 }
 
     

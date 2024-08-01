@@ -18,6 +18,7 @@
 package com.jmathanim.Renderers.JOGLRenderer;
 
 import com.jmathanim.Utils.ResourceLoader;
+import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jogamp.opengl.GL2;
 import com.jogamp.opengl.GL3;
 import java.io.BufferedReader;
@@ -78,9 +79,9 @@ public class ShaderLoader {
 
             gl.glGetShaderiv(v, GL2.GL_COMPILE_STATUS, ib);
             if (ib.get(0) == GL2.GL_FALSE) {
-                System.out.println("Error compiling Vertex Shader");
+                JMathAnimScene.logger.error("Error compiling Vertex Shader " + vertexShader);
             } else {
-                System.out.println("Sucesfully compiled Vertex Shader");
+                JMathAnimScene.logger.debug("Sucesfully compiled Vertex Shader " + vertexShader);
             }
         }
         //Geometry Shader
@@ -93,9 +94,9 @@ public class ShaderLoader {
             ib = IntBuffer.allocate(1);
             gl.glGetShaderiv(g, GL2.GL_COMPILE_STATUS, ib);
             if (ib.get(0) == GL2.GL_FALSE) {
-                System.out.println("Error compiling Geometry Shader");
+                JMathAnimScene.logger.error("Error compiling Geometry Shader " + geomShader);
             } else {
-                System.out.println("Sucesfully compiled Geometry Shader");
+                JMathAnimScene.logger.debug("Sucesfully compiled Geometry Shader " + geomShader);
             }
         }
         //Fragment Shader
@@ -108,9 +109,9 @@ public class ShaderLoader {
             ib = IntBuffer.allocate(1);
             gl.glGetShaderiv(f, GL2.GL_COMPILE_STATUS, ib);
             if (ib.get(0) == GL2.GL_FALSE) {
-                System.out.println("Error compiling Fragment Shader");
+                JMathAnimScene.logger.error("Error compiling Fragment Shader " + fragmentShader);
             } else {
-                System.out.println("Sucesfully compiled Fragment Shader");
+                JMathAnimScene.logger.debug("Sucesfully compiled Fragment Shader " + fragmentShader);
             }
         }
 
@@ -129,31 +130,10 @@ public class ShaderLoader {
         ib = IntBuffer.allocate(1);
         gl.glGetProgramiv(shaderprogram, GL2.GL_LINK_STATUS, ib);
         if (ib.get(0) == GL2.GL_FALSE) {
-            System.out.println("ERROR AL LINKEAR");
+          JMathAnimScene.logger.error("An error ocurred linking shaders!");
         }
 
         gl.glValidateProgram(shaderprogram);
-//        gl.glUseProgram(shaderprogram);
-//        unifProject = gl.glGetUniformLocation(shaderprogram, "projection");
-//        unifModelMat = gl.glGetUniformLocation(shaderprogram, "modelMat");
-//        unifThickness = gl.glGetUniformLocation(shaderprogram, "Thickness");
-//        unifViewPort = gl.glGetUniformLocation(shaderprogram, "Viewport");
-//        unifMiterLimit = gl.glGetUniformLocation(shaderprogram, "MiterLimit");
-//        unifColor = gl.glGetUniformLocation(shaderprogram, "unifColor");
-
-//        ib = IntBuffer.allocate(1);
-//        //Print attributes
-//        gl.glGetProgramiv(shaderprogram, GL2.GL_ACTIVE_ATTRIBUTES, ib);
-//        System.out.println("Hay " + ib.get(0) + " atributos");
-//
-//        for (int n = 0; n < ib.get(0); n++) {
-//            IntBuffer ib1 = IntBuffer.allocate(16);
-//            IntBuffer ib2 = IntBuffer.allocate(16);
-//            IntBuffer ib3 = IntBuffer.allocate(16);
-//            ByteBuffer bb = ByteBuffer.allocate(16);
-//            gl.glGetActiveAttrib(shaderprogram, n, 16, ib1, ib2, ib3, bb);
-//            System.out.println("Attribute " + n + ": type " + ib3.get(0) + ", name: " + StandardCharsets.UTF_8.decode(bb).toString());
-//        }
     }
 
     /**

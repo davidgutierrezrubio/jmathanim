@@ -823,7 +823,7 @@ public class JMPath implements Stateable, Boxable, Iterable<JMPathPoint> {
 
     private ArrayList<Point> getCriticalPoints(JMPathPoint pOrig, JMPathPoint pDst) {
         // https://floris.briolas.nl/floris/2009/10/bounding-box-of-cubic-bezier/
-        ArrayList<Point> resul = new ArrayList<>();
+        ArrayList<Point> resul = new ArrayList<>();//TODO: Adapt this to 3d case
         Vec P0 = pOrig.p.v;
         Vec P1 = pOrig.cpExit.v;
         Vec P2 = pDst.cpEnter.v;

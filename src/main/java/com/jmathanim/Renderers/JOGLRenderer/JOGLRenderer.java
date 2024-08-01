@@ -30,10 +30,14 @@ import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.Shape;
 import com.jmathanim.mathobjects.surface.Surface;
 import com.jogamp.newt.opengl.GLWindow;
+import com.jogamp.opengl.GL2;
 import com.jogamp.opengl.GLCapabilities;
 import com.jogamp.opengl.GLProfile;
+import com.jogamp.opengl.util.awt.AWTGLReadBufferUtil;
 import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.InputStream;
+import javax.imageio.ImageIO;
 
 /**
  * Development, unstable class for testing the JOGL API for rendering purposes
@@ -55,23 +59,24 @@ public class JOGLRenderer extends Renderer {
         fixedCamera = new Camera3D(parentScene, config.mediaW, config.mediaH);
     }
 
-     @Override
+    @Override
     public double MathWidthToThickness(double w) {
 //        return mathScalar * config.mediaW / (xmax - ymin);
 //        return camera.mathToScreen(w) / 1.25 * camera.getMathView().getWidth() / 2d;
         return w * 1066;
     }
-    
+
     @Override
     public double ThicknessToMathWidth(double th) {
         return th / 1066;
     }
-    
+
     @Override
     public double ThicknessToMathWidth(MathObject obj) {
         Camera cam = (obj.getMp().isAbsoluteThickness() ? fixedCamera : camera);
         return obj.getMp().getThickness() / 1066 * 4 / cam.getMathView().getWidth();
     }
+
     @Override
     public void addSound(SoundItem soundItem) {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
@@ -89,12 +94,16 @@ public class JOGLRenderer extends Renderer {
 
     @Override
     public void drawPath(Shape mobj, Camera camera) {
-         queue.addToQueue(mobj);
+        queue.addToQueue(mobj);
     }
 
     @Override
     protected BufferedImage getRenderedImage(int frameCount) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        queue.saveImageFlag=true;
+         synchronized (queue) {
+            glWindow.display();
+        }
+        return queue.savedImage;
     }
 
     @Override
@@ -107,7 +116,7 @@ public class JOGLRenderer extends Renderer {
         fixedCamera.initialize(XMIN_DEFAULT, XMAX_DEFAULT, 0);
         GLCapabilities caps = new GLCapabilities(GLProfile.get(GLProfile.GL2));
         caps.setSampleBuffers(true);
-        caps.setNumSamples(32);
+        caps.setNumSamples(64);
         caps.setAlphaBits(8);
         caps.setDepthBits(32);
         caps.setStencilBits(8);
@@ -135,16 +144,6 @@ public class JOGLRenderer extends Renderer {
         synchronized (queue) {
             glWindow.display();
         }
-//        while (queue.busy) {}
-//        if (queue.busy)
-//        try {
-//            synchronized (queue) {
-//                queue.wait();
-//            }
-//        } catch (InterruptedException ex) {
-//            Logger.getLogger(JOGLRenderer.class.getName()).log(Level.SEVERE, null, ex);
-//        }
-
     }
 
     @Override
