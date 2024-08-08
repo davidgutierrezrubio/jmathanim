@@ -1,6 +1,6 @@
 #version 330
 uniform mat4 projection;
-uniform mat4 modelMatrix;
+uniform mat4 view;
 
 uniform vec4 unifColor;//Uniform color
 
@@ -15,5 +15,5 @@ out VertexData{
 void main()
 {
     VertexOut.mColor = unifColor;
-     gl_Position = projection*modelMatrix*Vertex;
+     gl_Position = projection*view*Vertex;
 }

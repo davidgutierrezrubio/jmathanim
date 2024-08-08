@@ -25,6 +25,7 @@ import com.jmathanim.mathobjects.Stateable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import javafx.scene.shape.StrokeLineCap;
+import javafx.scene.shape.StrokeLineJoin;
 
 /**
  *
@@ -185,8 +186,8 @@ public class MODrawPropertiesArray implements Stylable, Stateable {
         mpRef.multFillAlpha(mult);
     }
 
-@Override
-public void setFillColor(PaintStyle fillColor) {
+    @Override
+    public void setFillColor(PaintStyle fillColor) {
         for (MathObject obj : objects) {
             obj.getMp().setFillColor(fillColor);
         }
@@ -194,7 +195,7 @@ public void setFillColor(PaintStyle fillColor) {
     }
 
     @Override
-public void setLayer(int layer) {
+    public void setLayer(int layer) {
         for (MathObject obj : objects) {
             obj.getMp().setLayer(layer);
         }
@@ -202,7 +203,7 @@ public void setLayer(int layer) {
     }
 
     @Override
-public Integer getLayer() {
+    public Integer getLayer() {
         return mpRef.getLayer();
     }
 
@@ -211,27 +212,32 @@ public Integer getLayer() {
     }
 
     @Override
-public PaintStyle getFillColor() {
+    public PaintStyle getFillColor() {
         return mpRef.getFillColor();
     }
 
     @Override
-public Stylable getSubMP(int n) {
+    public Stylable getSubMP(int n) {
         return objects.get(n).getMp();
     }
 
     @Override
-public MODrawProperties getFirstMP() {
+    public MODrawProperties getFirstMP() {
         return mpRef;
     }
 
     @Override
-public StrokeLineCap getLinecap() {
-        return mpRef.getLinecap();
+    public StrokeLineCap getLineCap() {
+        return mpRef.getLineCap();
     }
 
     @Override
-public void setLinecap(StrokeLineCap linecap) {
+    public StrokeLineJoin getLineJoin() {
+        return mpRef.getLineJoin();
+    }
+
+    @Override
+    public void setLinecap(StrokeLineCap linecap) {
         for (MathObject obj : objects) {
             obj.getMp().setLinecap(linecap);
         }
@@ -239,12 +245,20 @@ public void setLinecap(StrokeLineCap linecap) {
     }
 
     @Override
-public Double getThickness() {
+    public void setLineJoin(StrokeLineJoin linejoin) {
+        for (MathObject obj : objects) {
+            obj.getMp().setLineJoin(linejoin);
+        }
+        mpRef.setLineJoin(linejoin);
+    }
+
+    @Override
+    public Double getThickness() {
         return mpRef.getThickness();
     }
 
     @Override
-public void setThickness(Double thickness) {
+    public void setThickness(Double thickness) {
         for (MathObject obj : objects) {
             obj.getMp().setThickness(thickness);
         }
@@ -252,7 +266,7 @@ public void setThickness(Double thickness) {
     }
 
     @Override
-public void setDotStyle(Point.DotSyle dotStyle) {
+    public void setDotStyle(Point.DotSyle dotStyle) {
         for (MathObject obj : objects) {
             obj.getMp().setDotStyle(dotStyle);
         }
@@ -260,12 +274,12 @@ public void setDotStyle(Point.DotSyle dotStyle) {
     }
 
     @Override
-public Point.DotSyle getDotStyle() {
+    public Point.DotSyle getDotStyle() {
         return mpRef.getDotStyle();
     }
 
     @Override
-public void setDashStyle(MODrawProperties.DashStyle dashStyle) {
+    public void setDashStyle(MODrawProperties.DashStyle dashStyle) {
         for (MathObject obj : objects) {
             obj.getMp().setDashStyle(dashStyle);
         }
@@ -273,17 +287,17 @@ public void setDashStyle(MODrawProperties.DashStyle dashStyle) {
     }
 
     @Override
-public MODrawProperties.DashStyle getDashStyle() {
+    public MODrawProperties.DashStyle getDashStyle() {
         return mpRef.getDashStyle();
     }
 
     @Override
-public Boolean isAbsoluteThickness() {
+    public Boolean isAbsoluteThickness() {
         return mpRef.isAbsoluteThickness();
     }
 
     @Override
-public void setAbsoluteThickness(Boolean absThickness) {
+    public void setAbsoluteThickness(Boolean absThickness) {
         for (MathObject obj : objects) {
             obj.getMp().setAbsoluteThickness(absThickness);
         }
@@ -291,7 +305,7 @@ public void setAbsoluteThickness(Boolean absThickness) {
     }
 
     @Override
-public void multThickness(double multT) {
+    public void multThickness(double multT) {
         for (MathObject obj : objects) {
             obj.getMp().multThickness(multT);
         }
@@ -299,12 +313,12 @@ public void multThickness(double multT) {
     }
 
     @Override
-public Boolean isFaceToCamera() {
+    public Boolean isFaceToCamera() {
         return mpRef.isFaceToCamera();
     }
 
     @Override
-public void setFaceToCamera(Boolean faceToCamera) {
+    public void setFaceToCamera(Boolean faceToCamera) {
         for (MathObject obj : objects) {
             obj.getMp().setFaceToCamera(faceToCamera);
         }
@@ -312,12 +326,12 @@ public void setFaceToCamera(Boolean faceToCamera) {
     }
 
     @Override
-public Vec getFaceToCameraPivot() {
+    public Vec getFaceToCameraPivot() {
         return mpRef.getFaceToCameraPivot();
     }
 
     @Override
-public void setFaceToCameraPivot(Vec pivot) {
+    public void setFaceToCameraPivot(Vec pivot) {
         for (MathObject obj : objects) {
             obj.getMp().setFaceToCameraPivot(pivot);
         }
@@ -325,7 +339,7 @@ public void setFaceToCameraPivot(Vec pivot) {
     }
 
     @Override
-public void setScaleArrowHead1(Double scale) {
+    public void setScaleArrowHead1(Double scale) {
         for (MathObject obj : objects) {
             obj.getMp().setScaleArrowHead1(scale);
         }
@@ -333,7 +347,7 @@ public void setScaleArrowHead1(Double scale) {
     }
 
     @Override
-public void setScaleArrowHead2(Double scale) {
+    public void setScaleArrowHead2(Double scale) {
         for (MathObject obj : objects) {
             obj.getMp().setScaleArrowHead2(scale);
         }
@@ -341,12 +355,12 @@ public void setScaleArrowHead2(Double scale) {
     }
 
     @Override
-public Double getScaleArrowHead1() {
+    public Double getScaleArrowHead1() {
         return mpRef.getScaleArrowHead1();
     }
 
     @Override
-public Double getScaleArrowHead2() {
+    public Double getScaleArrowHead2() {
         return mpRef.getScaleArrowHead2();
     }
 

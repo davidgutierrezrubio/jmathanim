@@ -78,6 +78,13 @@
             <version>2.3.2</version>
         </dependency>
         <dependency>
+            <groupId>org.joml</groupId>
+            <artifactId>joml</artifactId>
+            <version>1.10.8</version>
+        </dependency>
+        
+        
+        <dependency>
             <groupId>org.scilab.forge</groupId>
             <artifactId>jlatexmath</artifactId>
             <version>1.0.7</version>
@@ -92,12 +99,12 @@
             <artifactId>batik-dom</artifactId>
             <version>1.14</version>
         </dependency>
-            <dependency>
-                <groupId>org.mariuszgromada.math</groupId>
-                <artifactId>MathParser.org-mXparser</artifactId>
-                <version>5.2.1</version>
-            </dependency>
-        </dependencies>
+        <dependency>
+            <groupId>org.mariuszgromada.math</groupId>
+            <artifactId>MathParser.org-mXparser</artifactId>
+            <version>5.2.1</version>
+        </dependency>
+    </dependencies>
     <build>
         <resources>
             <resource>

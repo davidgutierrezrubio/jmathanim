@@ -80,6 +80,13 @@ public class ShaderLoader {
             gl.glGetShaderiv(v, GL2.GL_COMPILE_STATUS, ib);
             if (ib.get(0) == GL2.GL_FALSE) {
                 JMathAnimScene.logger.error("Error compiling Vertex Shader " + vertexShader);
+                int[] infoLogLength = new int[1];
+                gl.glGetShaderiv(v, GL2.GL_INFO_LOG_LENGTH, infoLogLength, 0);
+                byte[] infoLog = new byte[infoLogLength[0]];
+                gl.glGetShaderInfoLog(v, infoLogLength[0], null, 0, infoLog, 0);
+
+                JMathAnimScene.logger.error(new String(infoLog));
+                System.exit(0);
             } else {
                 JMathAnimScene.logger.debug("Sucesfully compiled Vertex Shader " + vertexShader);
             }
@@ -87,7 +94,6 @@ public class ShaderLoader {
         //Geometry Shader
         if (!"".equals(geomShader)) {
             URL urlGS = rl.getResource(geomShader, "shaders");
-            BufferedReader brg = new BufferedReader(new FileReader(urlGS.getFile()));
             String gsrc = loadShaderFile(urlGS);
             gl.glShaderSource(g, 1, new String[]{gsrc}, null);
             gl.glCompileShader(g);
@@ -95,6 +101,13 @@ public class ShaderLoader {
             gl.glGetShaderiv(g, GL2.GL_COMPILE_STATUS, ib);
             if (ib.get(0) == GL2.GL_FALSE) {
                 JMathAnimScene.logger.error("Error compiling Geometry Shader " + geomShader);
+                int[] infoLogLength = new int[1];
+                gl.glGetShaderiv(g, GL2.GL_INFO_LOG_LENGTH, infoLogLength, 0);
+                byte[] infoLog = new byte[infoLogLength[0]];
+                gl.glGetShaderInfoLog(g, infoLogLength[0], null, 0, infoLog, 0);
+
+                JMathAnimScene.logger.error(new String(infoLog));
+                System.exit(0);
             } else {
                 JMathAnimScene.logger.debug("Sucesfully compiled Geometry Shader " + geomShader);
             }
@@ -102,7 +115,6 @@ public class ShaderLoader {
         //Fragment Shader
         if (!"".equals(fragmentShader)) {
             URL urlFS = rl.getResource(fragmentShader, "shaders");
-            BufferedReader brf = new BufferedReader(new FileReader(urlFS.getFile()));
             String fsrc = loadShaderFile(urlFS);
             gl.glShaderSource(f, 1, new String[]{fsrc}, null);
             gl.glCompileShader(f);
@@ -110,6 +122,15 @@ public class ShaderLoader {
             gl.glGetShaderiv(f, GL2.GL_COMPILE_STATUS, ib);
             if (ib.get(0) == GL2.GL_FALSE) {
                 JMathAnimScene.logger.error("Error compiling Fragment Shader " + fragmentShader);
+                int[] infoLogLength = new int[1];
+                gl.glGetShaderiv(f, GL2.GL_INFO_LOG_LENGTH, infoLogLength, 0);
+                byte[] infoLog = new byte[infoLogLength[0]];
+                gl.glGetShaderInfoLog(f, infoLogLength[0], null, 0, infoLog, 0);
+
+                JMathAnimScene.logger.error(new String(infoLog));
+                System.exit(0);
+                
+                
             } else {
                 JMathAnimScene.logger.debug("Sucesfully compiled Fragment Shader " + fragmentShader);
             }
@@ -130,7 +151,7 @@ public class ShaderLoader {
         ib = IntBuffer.allocate(1);
         gl.glGetProgramiv(shaderprogram, GL2.GL_LINK_STATUS, ib);
         if (ib.get(0) == GL2.GL_FALSE) {
-          JMathAnimScene.logger.error("An error ocurred linking shaders!");
+            JMathAnimScene.logger.error("An error ocurred linking shaders!");
         }
 
         gl.glValidateProgram(shaderprogram);

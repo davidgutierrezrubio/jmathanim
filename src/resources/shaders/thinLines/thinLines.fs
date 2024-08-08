@@ -10,5 +10,5 @@ in VertexData{
 void main(void)
 {
     gl_FragColor = unifColor;
-    //gl_FragColor = vec4(0.,0.,0.,.5);//unifColor;
+  //  gl_FragColor = vec4(0.,0.,0.,.5);//unifColor;
 }

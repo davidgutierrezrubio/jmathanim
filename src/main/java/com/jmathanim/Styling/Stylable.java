@@ -20,6 +20,7 @@ package com.jmathanim.Styling;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.mathobjects.Point;
 import javafx.scene.shape.StrokeLineCap;
+import javafx.scene.shape.StrokeLineJoin;
 
 /**
  * Anything that can be changes its style. May be a single object or a
@@ -98,9 +99,13 @@ public interface Stylable {
 
     public PaintStyle getFillColor();
 
-    public StrokeLineCap getLinecap();
+    public StrokeLineCap getLineCap();
+    
+    public StrokeLineJoin getLineJoin();
 
     public void setLinecap(StrokeLineCap linecap);
+    
+    public void setLineJoin(StrokeLineJoin linejoin);
 
     public Double getThickness();
 

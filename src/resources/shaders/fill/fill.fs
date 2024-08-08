@@ -20,7 +20,7 @@ void main(void)
 
 //Diffuse+ambient
 vec3 result = (.0*ambient+1.*diffuse)*unifColor.rgb;
-gl_FragColor = vec4(result, unifColor.a);
+gl_FragColor = unifColor;//vec4(result, unifColor.a);
 //gl_FragColor = vec4(FragPos.z,FragPos.z,FragPos.z,1.);
 
 

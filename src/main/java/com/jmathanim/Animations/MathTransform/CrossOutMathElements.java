@@ -39,7 +39,7 @@ import java.util.ArrayList;
  */
 public class CrossOutMathElements extends AnimationGroup {
 
-    private final ArrayList<Shape> crossesShapes;
+    public final ArrayList<Shape> crossesShapes;
     private final MODrawProperties crossDrawProperties;
     private final ArrayList<int[]> crossIndices;
     private double ratio;
@@ -47,9 +47,11 @@ public class CrossOutMathElements extends AnimationGroup {
 
     /**
      * Static builder. Creates a new cross out animation.
+     *
      * @param runTime Time in seconds
      * @param formula Formula to apply the cross out
-     * @param indices Optional. Indices that should be crossed out (one cross per index)
+     * @param indices Optional. Indices that should be crossed out (one cross
+     * per index)
      * @return The created animation.
      */
     public static CrossOutMathElements make(double runTime, MultiShapeObject formula, int... indices) {
@@ -98,7 +100,8 @@ public class CrossOutMathElements extends AnimationGroup {
 
     /**
      * Sets the ratio height/width of the cross out. A value of 1 draws squared
-     * ones. Small values of this ratio will give a thinner cross out. The default value is 0.05
+     * ones. Small values of this ratio will give a thinner cross out. The
+     * default value is 0.05
      *
      * @param ratio The desired ratio
      * @return This object
@@ -152,9 +155,10 @@ public class CrossOutMathElements extends AnimationGroup {
     }
 
     /**
-     * Returns an int array with the indices of the crosses in the given
-     * formula. If the original formula had n elements, these cross should be
-     * added at positions n, n+1, ...
+     * Returns an int array with the indices of the generated crosses that will
+     * keep after animation is finished in the given formula. If the original
+     * formula had n elements, these cross should be added at positions n, n+1,
+     * ...
      *
      * @return The int array with the positions
      */
@@ -171,9 +175,9 @@ public class CrossOutMathElements extends AnimationGroup {
         return generatedCrosses;
     }
 
-      @Override
+    @Override
     public boolean doInitialization() {
-        super.doInitialization();
+
         generateCrosses();
         for (Shape cross : crossesShapes) {
             final JMPath path = cross.getPath();
@@ -181,18 +185,20 @@ public class CrossOutMathElements extends AnimationGroup {
             path.get(1).copyFrom(path.get(0));
             path.get(2).copyFrom(path.get(3));
             final ShiftAnimation animShift = Commands.shift(runTime, shiftVector, path.get(1), path.get(2));
-            animShift.initialize(scene);
+//            animShift.initialize(scene);
             this.add(animShift);
         }
-        
+
         Shape[] toArray = crossesShapes.toArray(Shape[]::new);
         addObjectsToscene(toArray);
+        super.doInitialization();
         return true;
     }
 
     private void generateCrosses() {
         for (int[] indices : crossIndices) {
-            Rect formulaRect = formula.slice(false, indices).getBoundingBox();
+            MultiShapeObject slice = formula.slice(false, indices);
+            Rect formulaRect = slice.getBoundingBox();
             Shape cross = buildCrossFromRect(formulaRect);
             cross.getMp().copyFrom(crossDrawProperties);
             crossesShapes.add(cross);
@@ -218,7 +224,6 @@ public class CrossOutMathElements extends AnimationGroup {
 //return Shape.rectangle(formulaRect);
     }
 
-   
     /**
      * Return the current drawing attributes object
      *

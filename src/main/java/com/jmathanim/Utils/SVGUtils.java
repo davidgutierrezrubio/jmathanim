@@ -676,6 +676,7 @@ public class SVGUtils {
     }
     
     private void parseStyleAttribute(String str, MODrawProperties ShMp) {
+        str = str.replaceAll("(?<=[;:])\\s*", "");
         String[] decls = str.split(";");
         for (String pairs : decls) {
             String[] decl = pairs.split(":");

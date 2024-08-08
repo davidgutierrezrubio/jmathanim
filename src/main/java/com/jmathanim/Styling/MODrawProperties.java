@@ -28,6 +28,7 @@ import java.util.HashMap;
 import java.util.Objects;
 import java.util.concurrent.ThreadLocalRandom;
 import javafx.scene.shape.StrokeLineCap;
+import javafx.scene.shape.StrokeLineJoin;
 
 /**
  * This class stores all drawing properties of a MathObject like color,
@@ -70,6 +71,7 @@ public class MODrawProperties implements Stylable, Stateable {
         nullMP.absoluteThickness = null;
         nullMP.dotStyle = null;
         nullMP.linecap = null;
+        nullMP.linejoin = null;
         nullMP.faceToCamera = null;
         nullMP.visible = null;
         return nullMP;
@@ -118,6 +120,7 @@ public class MODrawProperties implements Stylable, Stateable {
     // If false, thickness is computed to be a percentage of the width
     // to ensure zoom or resolution doesn't affect the result
     private Boolean absoluteThickness = true;
+    private StrokeLineJoin linejoin;
     private MathObject parent;
 
     private Boolean visible = true;
@@ -174,7 +177,8 @@ public class MODrawProperties implements Stylable, Stateable {
         absoluteThickness = (prop.isAbsoluteThickness() == null ? absoluteThickness : prop.isAbsoluteThickness());
         dotStyle = (prop.getDotStyle() == null ? dotStyle : prop.getDotStyle());
         layer = (prop.getLayer() == null ? layer : prop.getLayer());
-        linecap = (prop.getLinecap() == null ? linecap : prop.getLinecap());
+        linecap = (prop.getLineCap() == null ? linecap : prop.getLineCap());
+        linejoin = (prop.getLineJoin() == null ? linejoin : prop.getLineJoin());
         visible = (prop.isVisible() == null ? visible : prop.isVisible());
         faceToCamera = (prop.isFaceToCamera() == null ? faceToCamera : prop.isFaceToCamera());
         faceToCameraPivot = (prop.getFaceToCameraPivot() == null ? faceToCameraPivot : prop.getFaceToCameraPivot());
@@ -204,6 +208,7 @@ public class MODrawProperties implements Stylable, Stateable {
         layer = mp.layer;
         dotStyle = mp.dotStyle;
         linecap = mp.linecap;
+        linejoin = mp.linejoin;
         visible = mp.visible;
         faceToCamera = mp.faceToCamera;
         faceToCameraPivot = mp.faceToCameraPivot;
@@ -316,8 +321,13 @@ public class MODrawProperties implements Stylable, Stateable {
     }
 
     @Override
-    public StrokeLineCap getLinecap() {
+    public StrokeLineCap getLineCap() {
         return this.linecap;
+    }
+
+    @Override
+    public StrokeLineJoin getLineJoin() {
+        return this.linejoin;
     }
 
     @Override
@@ -329,6 +339,18 @@ public class MODrawProperties implements Stylable, Stateable {
             this.linecap = linecap;
             if (parent != null) {
                 parent.on_setLineCap(this.linecap);
+            }
+        }
+    }
+
+    public void setLineJoin(StrokeLineJoin linejoin) {
+        if (linejoin == null) {
+            return;
+        }
+        if (this.linejoin != linejoin) {
+            this.linejoin = linejoin;
+            if (parent != null) {
+                parent.on_setLineJoin(this.linejoin);
             }
         }
     }

@@ -1,7 +1,7 @@
 #version 330
 
 uniform float Thickness;
-uniform int capStyle;//0=rounded, 1=butt, 2=square
+uniform uint capStyle;//0=rounded,
 uniform vec2 Viewport;//Size of the screen
 uniform float MiterLimit;
 
@@ -25,6 +25,36 @@ float toZValue(vec4 vertex)
 {
     return (vertex.z/vertex.w);
 }
+
+// void generateCap(vec2 point, float zValue, float th,int numPoints) {
+    // for (int i=0;i<numPoints;i++) {
+    // float ang=i*2*3.141592653/numPoints;
+    // float ang2=(i+1)*2*3.141592653/numPoints;
+    // gl_Position=vec4(point / Viewport, zValue, 1.0 );
+	// EmitVertex();
+    // gl_Position=vec4((point+vec2(cos(ang),sin(ang))*th) / Viewport, zValue, 1.0 );
+	// EmitVertex();
+	// gl_Position=vec4((point+vec2(cos(ang2),sin(ang2))*th) / Viewport, zValue, 1.0 );
+    // EmitVertex();
+	// EndPrimitive();
+// }
+// }
+void generateCapOld(vec2 p,vec2 n0,float zValue,float th, int numPoints) {
+
+float delta=3.141592653/numPoints;//Step angle
+mat2 rot=mat2(cos(delta),-sin(delta),sin(delta),cos(delta));
+vec2 n=n0;
+for (int i=0;i<numPoints;i++) {
+	gl_Position=vec4(p/Viewport,zValue,1.0);
+	EmitVertex();
+	gl_Position=vec4((p+n)/Viewport,zValue,1.0);
+	EmitVertex();
+	n=rot*n;
+	gl_Position=vec4((p+n)/Viewport,zValue,1.0);
+	EmitVertex();
+	EndPrimitive();
+	}
+	}
 	
 //Generate a rounded cap at point p
 //Between (normalized) vectors n0 and n1, with given zValue, thickness and number of points to use
@@ -32,7 +62,7 @@ void generateRoundedCap(vec2 p,vec2 n0,vec2 n1,float zValue,float th, int numPoi
 float angle=acos(dot(n0,n1));
 
 float delta=angle/numPoints;//Step angle
-mat2 rot=mat2(cos(delta),sin(delta),-sin(delta),cos(delta));
+mat2 rot=mat2(cos(delta),-sin(delta),sin(delta),cos(delta));
 vec2 n=n0;
 for (int i=0;i<numPoints;i++) {
 	gl_Position=vec4(p/Viewport,zValue,1.0);
@@ -77,74 +107,36 @@ void main(void)
 	zValues[3] = toZValue(Points[3]);
 
 	float th=Thickness*.6666;//Manually chosen constant to (more or less) match JavaFX thickness
-	
-	
-	
-	
-	vec2 v1=points[2]-points[1];
-	vec2 n1=normalize(vec2(-v1.y,v1.x));//Normal unit vector from p1 to p2 rotated 90º clockwise
+	vec2 v0=normalize(points[2]-points[1]);
+	vec2 n0=vec2(v0.y,-v0.x);
 
-	vec2 v0=points[1]-points[0];;
-	vec2 n0;
-	if (v0.x==0 && v0.y==0) {
-		n0=-n1;
-	}
-	else {
-			n0=normalize(vec2(-v0.y,v0.x));//Normal unit vector from p0 to p1 rotated 90º clockwise
-	}
-
-
-	vec2 v2=points[3]-points[2];;
+	vec2 v2;
 	vec2 n2;
-	if (v2.x==0 && v2.y==0) {
-		n2=-n1;
+	if (length(points[2]-points[3])==0) {
+	n2=n0;
 	}
 	else {
-		n2=normalize(vec2(-v2.y,v2.x));//Normal unit vector from p2 to p3 rotated 90º clockwise
-		}
+	v2=normalize(points[3]-points[2]);
+	n2=vec2(v2.y,-v2.x);//Normal unit vector from p2 to p3
+	}
 	float thSegment=th;
-	gl_Position = vec4( (points[1]-n1*thSegment) / Viewport, zValues[1], 1.0 );
+	gl_Position = vec4( (points[1]-n0*thSegment) / Viewport, zValues[1], 1.0 );
 	EmitVertex();
-	gl_Position = vec4( (points[1]+n1*thSegment) / Viewport, zValues[1], 1.0 );
-	EmitVertex();
-
-	gl_Position = vec4((points[2]-n1*thSegment) / Viewport, zValues[1], 1.0 );
+	gl_Position = vec4( (points[1]+n0*thSegment) / Viewport, zValues[1], 1.0 );
 	EmitVertex();
 
-	gl_Position = vec4( (points[2]+n1*thSegment) / Viewport, zValues[1], 1.0 );
+	gl_Position = vec4((points[2]-n0*thSegment) / Viewport, zValues[1], 1.0 );
+	EmitVertex();
+
+	gl_Position = vec4( (points[2]+n0*thSegment) / Viewport, zValues[1], 1.0 );
 	EmitVertex();
 	EndPrimitive(); 	
-	
-	int numPoints;
-	if (capStyle==0) 
-	{
-		numPoints=10;
-	}
-	if (capStyle==1) 
-	{
-		numPoints=1;
-	}
+
     //Rounded butt, if thickness>1
-	float cross01=sign(v0.x*v1.y-v0.y*v1.x); //>0 is a "turn left", <0 a "turn right", 0 "straight" OR coincident!
-	float cross12=sign(v1.x*v2.y-v1.y*v2.x); //>0 is a "turn left", <0 a "turn right", 0 "straight" OR coincident!
     if (th>1) {
 	
-	if (cross01<0) {
-		generateRoundedCap(points[1],n1,n0,zValues[1],th,10);
-		}
-	if (cross01>0)
-		{
-		generateRoundedCap(points[1],-n0,-n1,zValues[1],th,10);
-		}
-	if (cross01==0) {
-	if ((v0.x == 0.0 && v0.y == 0.0))
-		generateRoundedCap(points[1],-n0,n0,zValues[1],th,numPoints);
-	}
-	
-	if (cross12==0) {
-		if ((v2.x == 0.0 && v2.y == 0.0))
-			generateRoundedCap(points[2],-n1,n1,zValues[1],th,numPoints);
-		}
+		generateRoundedCap(points[1],n0,-n0,zValues[1],th,10);
+		generateRoundedCap(points[2],-n0,n0,zValues[2],th,10);
     }
         
     //Straight joined

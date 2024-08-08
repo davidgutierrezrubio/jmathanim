@@ -30,14 +30,10 @@ import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.Shape;
 import com.jmathanim.mathobjects.surface.Surface;
 import com.jogamp.newt.opengl.GLWindow;
-import com.jogamp.opengl.GL2;
 import com.jogamp.opengl.GLCapabilities;
 import com.jogamp.opengl.GLProfile;
-import com.jogamp.opengl.util.awt.AWTGLReadBufferUtil;
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.InputStream;
-import javax.imageio.ImageIO;
 
 /**
  * Development, unstable class for testing the JOGL API for rendering purposes
@@ -114,7 +110,7 @@ public class JOGLRenderer extends Renderer {
         queue.fixedCamera = fixedCamera;
         camera.initialize(XMIN_DEFAULT, XMAX_DEFAULT, 0);
         fixedCamera.initialize(XMIN_DEFAULT, XMAX_DEFAULT, 0);
-        GLCapabilities caps = new GLCapabilities(GLProfile.get(GLProfile.GL2));
+        GLCapabilities caps = new GLCapabilities(GLProfile.get(GLProfile.GL3));
         caps.setSampleBuffers(true);
         caps.setNumSamples(64);
         caps.setAlphaBits(8);
@@ -125,6 +121,7 @@ public class JOGLRenderer extends Renderer {
         glWindow.setTitle("JMathAnim - " + config.getOutputFileName());
         glWindow.addGLEventListener(queue);
         glWindow.setVisible(true);//TODO: For now it needs to always show the window...
+     
     }
 
     @Override

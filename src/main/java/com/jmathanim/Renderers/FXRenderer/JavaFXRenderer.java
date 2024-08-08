@@ -343,8 +343,8 @@ public class JavaFXRenderer extends Renderer {
     
     private void applyDrawingStyles(Path path, Shape mobj) {
         
-        path.setStrokeLineCap(mobj.getMp().getLinecap());
-        path.setStrokeLineJoin(StrokeLineJoin.ROUND);
+        path.setStrokeLineCap(mobj.getMp().getLineCap());
+        path.setStrokeLineJoin(mobj.getMp().getLineJoin());
         path.setStrokeType(StrokeType.CENTERED);
 //        path.setSmooth(false);
 

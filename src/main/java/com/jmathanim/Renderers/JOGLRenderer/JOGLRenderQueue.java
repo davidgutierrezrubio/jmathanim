@@ -28,33 +28,29 @@ import com.jmathanim.Utils.JMathAnimConfig;
 import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
-import static com.jmathanim.jmathanim.JMathAnimScene.PI;
 import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.Point;
 import com.jmathanim.mathobjects.Shape;
 import com.jmathanim.mathobjects.surface.Surface;
-import com.jogamp.opengl.GL;
-import com.jogamp.opengl.GL2;
 import com.jogamp.opengl.GL3;
 import com.jogamp.opengl.GLAutoDrawable;
-import com.jogamp.opengl.GLCapabilities;
 import com.jogamp.opengl.GLDrawable;
 import com.jogamp.opengl.GLEventListener;
 import com.jogamp.opengl.GLException;
-import com.jogamp.opengl.GLProfile;
-import com.jogamp.opengl.fixedfunc.GLMatrixFunc;
-import com.jogamp.opengl.glu.GLU;
 import com.jogamp.opengl.util.awt.AWTGLReadBufferUtil;
 import com.jogamp.opengl.util.awt.TextRenderer;
 import java.awt.Font;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javafx.scene.paint.Color;
+import javax.imageio.ImageIO;
+import org.joml.Matrix4f;
+import org.joml.Vector3f;
 
 /**
  * Manages the queue of objects to be rendered at every frame draw
@@ -71,13 +67,10 @@ public class JOGLRenderQueue implements GLEventListener {
     public boolean saveImageFlag = false;
     JMathAnimConfig config;
     ArrayList<MathObject> objectsToDraw;
-    GLU glu;
-//    GLUgl2 glu2;
     private int width;
     final float zNear = 0.1f, zFar = 7000f;
 //    private GL3ES3 gles;
     private GL3 gl3;
-    private GL2 gl2;
     private Camera3D camera;
     public Camera3D fixedCamera;
     public VideoEncoder videoEncoder;
@@ -95,7 +88,6 @@ public class JOGLRenderQueue implements GLEventListener {
     int unifModelMat;//Model matrix
     int unifMiterLimit;//Miter limit (for rendering thin lines)
     int unifViewPort;//Viewport (for rendering thin lines)
-
     ShaderDrawer shaderDrawer;
     public JOGLRenderer renderer;
 
@@ -129,25 +121,25 @@ public class JOGLRenderQueue implements GLEventListener {
 //        gl.glEnable(GL.GL_MULTISAMPLE);
 //        gles = drawable.getGL().getGL3ES3();
         gl3 = drawable.getGL().getGL3();
-        gl2 = drawable.getGL().getGL2();
-        glu = new GLU();
-        gl3.glEnable(GL.GL_DEPTH_TEST);
-        gl3.glDepthFunc(GL.GL_LEQUAL);
+        gl3.glDepthMask(true);
+        gl3.glEnable(GL3.GL_DEPTH_TEST);
+        gl3.glDepthFunc(GL3.GL_LESS);
+//        gl3.glDepthFunc(GL3.GL_LEQUAL);
         gl3.glEnable(GL3.GL_LINE_SMOOTH);
         gl3.glEnable(GL3.GL_POLYGON_SMOOTH);
         gl3.glHint(GL3.GL_POLYGON_SMOOTH_HINT, GL3.GL_NICEST);
         gl3.glHint(GL3.GL_LINE_SMOOTH_HINT, GL3.GL_NICEST);
         gl3.glEnable(GL3.GL_BLEND);
         gl3.glBlendFunc(GL3.GL_SRC_ALPHA, GL3.GL_ONE_MINUS_SRC_ALPHA);
-        gl2.glEnable(GL2.GL_BLEND);
-        gl2.glBlendFunc(GL2.GL_SRC_ALPHA, GL2.GL_ONE_MINUS_SRC_ALPHA);
         gl3.glEnable(GL3.GL_MULTISAMPLE);
         gl3.glEnable(GL3.GL_SAMPLE_ALPHA_TO_COVERAGE);
-        gl2.glEnable(GL2.GL_MULTISAMPLE);
-        gl2.glEnable(GL2.GL_SAMPLE_ALPHA_TO_COVERAGE);
+        gl3.glDisable(GL3.GL_CULL_FACE);
 
+        
         //Drawer class, we have to pass it the created shaders
-        shaderDrawer = new ShaderDrawer(gl3, gl2);
+        shaderDrawer = new ShaderDrawer(gl3);
+        shaderDrawer.width = this.width;
+        shaderDrawer.height = this.height;
         if (useCustomShaders) {
             thinLinesShader = new ShaderLoader(gl3, "#thinLines/thinLines.vs", "#thinLines/thinLines.gs", "#thinLines/thinLines.fs");
             fillShader = new ShaderLoader(gl3, "#fill/fill.vs", "", "#fill/fill.fs");
@@ -196,7 +188,11 @@ public class JOGLRenderQueue implements GLEventListener {
     public synchronized void display(GLAutoDrawable drawable) {
         synchronized (this) {
             busy = true;
-            adjustCameraView(drawable);
+            try {
+                adjustCameraView(drawable);
+            } catch (Exception ex) {
+                System.out.println("EXCEPTION");
+            }
 
             //Trying to get rid of the annoying z-fighting...
             Vec toEye = camera.look.to(camera.eye);
@@ -207,30 +203,11 @@ public class JOGLRenderQueue implements GLEventListener {
                 JMColor col = (JMColor) backgroundColor;
                 gl3.glClearColor((float) col.r, (float) col.g, (float) col.b, (float) col.getAlpha());
             }
-            gl3.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT);
-            double zFightingStep = 0;//.001;
-            double zFightingParameter = 0;
-
-            Vec vcamera = camera.look.to(camera.eye);
-            float vx = (float) (vcamera.x);
-            float vy = (float) (vcamera.y);
-            float vz = (float) (vcamera.z);
-
-            Vec vcameraRoll = Vec.to(vcamera.y, vcamera.x);
-            Vec vcameraYaw = Vec.to(vcamera.z, Math.sqrt(vcamera.y * vcamera.y + vcamera.x * vcamera.x));
-            double yaw = vcameraYaw.getAngle();
-            double roll = vcameraRoll.getAngle();
+            gl3.glClear(GL3.GL_COLOR_BUFFER_BIT | GL3.GL_DEPTH_BUFFER_BIT | GL3.GL_STENCIL_BUFFER_BIT);
 
             for (MathObject obj : objectsToDraw) {
                 if (obj instanceof Shape) {
-                    drawShape(obj, roll, yaw);
-                    if (!"".equals(obj.getDebugText())) {
-                        gl3.glUseProgram(0);
-                        textRenderer.beginRendering(drawable.getSurfaceWidth(), drawable.getSurfaceHeight());
-                        textRenderer.setColor(java.awt.Color.red); // Color rojo
-                        textRenderer.draw(obj.getDebugText(), 1, 1);
-                        textRenderer.endRendering();
-                    }
+                    drawShape(obj);
                 }
                 if (obj instanceof Surface) {
                     drawSurface((Surface) obj);
@@ -239,6 +216,7 @@ public class JOGLRenderQueue implements GLEventListener {
 
             objectsToDraw.clear();
             gl3.glFlush();
+            
 
             if (saveImageFlag) {
                 savedImage = screenshot(gl3, drawable);
@@ -249,40 +227,29 @@ public class JOGLRenderQueue implements GLEventListener {
                 BufferedImage image = screenshot(gl3, drawable);
                 videoEncoder.writeFrame(image, frameCount);
             }
+            
+            // Check for GL errors
+            int error = gl3.glGetError();
+            if (error != GL3.GL_NO_ERROR) {
+                System.err.println("OpenGL Error: " + error);
+            }
             busy = false;
             notify();
         }
-
+        int error = gl3.glGetError();
+        if (error != GL3.GL_NO_ERROR) {
+            System.err.println("OpenGL Error: " + error);
+        }
     }
 
     /**
      * Draw a 2D generic Shape, with thickness and fill
      *
      */
-    private void drawShape(MathObject obj, double roll, double yaw) {
-        //Convex, filled-> Not 2º stencil buffer
-        //Thickness=1, not filled-> No thin shader, no fill method, no stencil
+    private void drawShape(MathObject obj) {
         Shape s = (Shape) obj;
-        gl2.glMatrixMode(GLMatrixFunc.GL_MODELVIEW);
-        gl2.glLoadIdentity();
-        if (s.getMp().isFaceToCamera()) {
 
-            final Vec center = s.getMp().getFaceToCameraPivot();//s.getCenter();
-            float cx = (float) center.x;
-            float cy = (float) center.y;
-            float cz = (float) center.z;
-
-            //Compute model view matrix so that faces to the camera
-            gl2.glTranslatef(cx, cy, cz);
-            if (roll != 0) {
-                gl2.glRotatef((float) (180 - roll * 180 / PI), 0, 0, 1);
-            }
-            gl2.glRotatef((float) (yaw * 180 / PI), 1, 0, 0);
-            gl2.glTranslatef(-cx, -cy, -cz);
-        }
-
-        loadModelMatrixIntoShaders();
-
+        loadProjectionViewMatrixIntoShaders();
         ArrayList<ArrayList<Point>> pieces = s.getPath().computePolygonalPieces(camera);
         float[] fc = getFillColor(s);
         boolean noFill = (fc[3] == 0);//if true, shape is not filled
@@ -290,53 +257,96 @@ public class JOGLRenderQueue implements GLEventListener {
         //First clear the Stencil buffer if the shape is filled
 //                    if (!noFill) {
         gl3.glEnable(GL3.GL_STENCIL_TEST);
+        gl3.glClear(GL3.GL_STENCIL_BUFFER_BIT);
+
         gl3.glStencilMask(0xFF);
         gl3.glClear(GL3.GL_STENCIL_BUFFER_BIT);
-//                    } else {
-//                        gl3.glDisable(GL3.GL_STENCIL_TEST);
-//                    }
 
 //Contour
-        gl2.glUseProgram(thinLinesShader.getShader());
+        gl3.glUseProgram(thinLinesShader.getShader());
+        shaderDrawer.thinLineShader = thinLinesShader;
         if (s.getMp().getThickness() > 0) {
             shaderDrawer.drawThinShape(s, pieces, noFill);
         }
 
 //Fill
-        gl2.glUseProgram(fillShader.getShader());
-
+        gl3.glUseProgram(fillShader.getShader());
+        shaderDrawer.fillShader = fillShader;
 //                    zFightingParameter += zFightingStep;
         shaderDrawer.drawFill(s, pieces);
+        // Check for GL errors
+        int error = gl3.glGetError();
+        if (error != GL3.GL_NO_ERROR) {
+            System.err.println("OpenGL Error: " + error);
+        }
+
 //                    shaderDrawer.drawFillSlowButWorking(s, pieces);
-        gl3.glDisable(GL.GL_STENCIL_TEST);
+        gl3.glDisable(GL3.GL_STENCIL_TEST);
     }
 
-    private void loadModelMatrixIntoShaders() {
-        FloatBuffer modMat = FloatBuffer.allocate(16);
-        gl2.glGetFloatv(GL2.GL_MODELVIEW_MATRIX, modMat);
-        gl2.glUseProgram(thinLinesShader.getShader());
-        gl2.glUniformMatrix4fv(thinLinesShader.getUniformVariable("modelMatrix"), 1, false, modMat);
-        gl2.glUseProgram(fillShader.getShader());
-        gl2.glUniformMatrix4fv(fillShader.getUniformVariable("modelMatrix"), 1, false, modMat);
-    }
+    private void loadProjectionViewMatrixIntoShaders() {
+        Matrix4f projection;
+        Matrix4f view;
+        Rect bb = camera.getMathView();
+        float d = (float) camera.eye.to(camera.look).norm();
+        float aspectRatio = (float) (bb.getWidth() / bb.getHeight());
+        projection = new Matrix4f().perspective((float) (1f * camera.fov),
+                aspectRatio, // Relación de aspecto
+                0.1f, // Cota de cerca
+                d * 1.5f // Cota de lejanía
+        );
+        Vec up = camera.getUpVector();//Inefficient way. Improve this.
+        view = new Matrix4f().lookAt(
+                new Vector3f(
+                        (float) camera.eye.v.x,
+                        (float) camera.eye.v.y,
+                        (float) camera.eye.v.z
+                ), // Posición de la cámara
+                new Vector3f(
+                        (float) camera.look.v.x,
+                        (float) camera.look.v.y,
+                        (float) camera.look.v.z
+                ), // Punto hacia el cual está mirando
+                new Vector3f(
+                        (float) up.x,
+                        (float) up.y,
+                        (float) up.z
+                ) // Vector hacia arriba
+        );
+        if (useCustomShaders) {
+//            projection = new Matrix4f().identity();
+//            view = new Matrix4f().identity();
 
-    private void printModelMatrix() {//For debugging purposes
-        FloatBuffer modMat = FloatBuffer.allocate(16);
-        gl2.glGetFloatv(GL2.GL_MODELVIEW_MATRIX, modMat);
-        System.out.println("-----");
-        for (int i = 0; i < 16; i++) {
-            if (i % 4 == 0) {
-                System.out.println("");
-            }
-            System.out.print(modMat.get(i) + " ");
+            gl3.glUseProgram(thinLinesShader.getShader());
+            int projLoc = gl3.glGetUniformLocation(thinLinesShader.getShader(), "projection");
+            int viewLoc = gl3.glGetUniformLocation(thinLinesShader.getShader(), "view");
+
+            gl3.glUniformMatrix4fv(projLoc, 1, false, projection.get(new float[16]), 0);
+            gl3.glUniformMatrix4fv(viewLoc, 1, false, view.get(new float[16]), 0);
+
+            gl3.glUniform2f(thinLinesShader.getUniformVariable("Viewport"), (float) this.width, (float) this.height);
+
+            gl3.glUseProgram(fillShader.getShader());
+            projLoc = gl3.glGetUniformLocation(fillShader.getShader(), "projection");
+            viewLoc = gl3.glGetUniformLocation(fillShader.getShader(), "view");
+
+            gl3.glUniformMatrix4fv(projLoc, 1, false, projection.get(new float[16]), 0);
+            gl3.glUniformMatrix4fv(viewLoc, 1, false, view.get(new float[16]), 0);
 
         }
-        System.out.println("----");
+
+//        
+//        FloatBuffer modMat = FloatBuffer.allocate(16);
+////        gl3.glGetFloatv(GL3.GL_MODELVIEW_MATRIX, modMat);
+//        gl3.glUseProgram(thinLinesShader.getShader());
+//        gl3.glUniformMatrix4fv(thinLinesShader.getUniformVariable("modelMatrix"), 1, false, modMat);
+//        gl3.glUseProgram(fillShader.getShader());
+//        gl3.glUniformMatrix4fv(fillShader.getUniformVariable("modelMatrix"), 1, false, modMat);
     }
 
-    public BufferedImage screenshot(GL3 gl2, GLDrawable drawable) {
+    public BufferedImage screenshot(GL3 gl3, GLDrawable drawable) {
         AWTGLReadBufferUtil aa = new AWTGLReadBufferUtil(drawable.getGLProfile(), true);
-        BufferedImage img = aa.readPixelsToBufferedImage(gl2, 0, 0, config.mediaW, config.mediaH, true);
+        BufferedImage img = aa.readPixelsToBufferedImage(gl3, 0, 0, config.mediaW, config.mediaH, true);
         return img;
     }
 
@@ -345,41 +355,54 @@ public class JOGLRenderQueue implements GLEventListener {
         this.width = w;
         this.height = h;
 
-        adjustCameraView(drawable);
+        try {
+            adjustCameraView(drawable);
+        } catch (Exception ex) {
+            System.out.println("EXCEPTION2");
+        }
     }
 
     private void adjustCameraView(GLAutoDrawable drawable) throws GLException {
-        final GL2 gl2 = drawable.getGL().getGL2();
-        gl2.glMatrixMode(GLMatrixFunc.GL_PROJECTION);
-        gl2.glLoadIdentity();
-        Rect bb = camera.getMathView();
-        if (!camera.perspective) {
-            gl2.glOrtho(bb.xmin, bb.xmax, bb.ymin, bb.ymax, -5, 5);
-        } else {
-            float d = (float) camera.eye.to(camera.look).norm();
-            glu.gluPerspective(camera.fov, (float) bb.getWidth() / bb.getHeight(), .1f, d * 1.5f);
-
-            Vec up = camera.getUpVector();//Inefficient way. Improve this.
-            glu.gluLookAt(
-                    camera.eye.v.x, camera.eye.v.y, camera.eye.v.z,
-                    camera.look.v.x, camera.look.v.y, camera.look.v.z,
-                    up.x, up.y, up.z
-            );
-        }
-        FloatBuffer projMat = FloatBuffer.allocate(16);
-
-        if (useCustomShaders) {
-//        Custom shader uniform attributes
-            gl2.glGetFloatv(GL2.GL_PROJECTION_MATRIX, projMat);
-
-            gl2.glUseProgram(thinLinesShader.getShader());
-            gl2.glUniformMatrix4fv(unifProject, 1, false, projMat);
-            gl2.glUniform1f(unifMiterLimit, .5f);
-            gl2.glUniform2f(unifViewPort, this.width, this.height);
-
-            gl2.glUseProgram(fillShader.getShader());
-            gl2.glUniformMatrix4fv(fillShader.getUniformVariable("projection"), 1, false, projMat);
-        }
+//        Matrix4f projection;
+//        Matrix4f view;
+//        Rect bb = camera.getMathView();
+//        float d = (float) camera.eye.to(camera.look).norm();
+//        projection = new Matrix4f().perspective(
+//                (float) Math.toRadians(camera.fov),
+//                (float) (// Campo de visión en radianes
+//                (bb.getWidth()) / bb.getHeight()), // Relación de aspecto
+//                0.1f, // Cota de cerca
+//                d * 1.5f // Cota de lejanía
+//        );
+//        Vec up = camera.getUpVector();//Inefficient way. Improve this.
+//        view = new Matrix4f().lookAt(
+//                new Vector3f(
+//                        (float) camera.eye.v.x,
+//                        (float) camera.eye.v.y,
+//                        (float) camera.eye.v.z
+//                ), // Posición de la cámara
+//                new Vector3f(
+//                        (float) camera.look.v.x,
+//                        (float) camera.look.v.y,
+//                        (float) camera.look.v.z
+//                ), // Punto hacia el cual está mirando
+//                new Vector3f(
+//                        (float) up.x,
+//                        (float) up.y,
+//                        (float) up.z
+//                ) // Vector hacia arriba
+//        );
+//        if (useCustomShaders) {
+//            projection = new Matrix4f().identity();
+//            view = new Matrix4f().identity();
+//
+//            gl3.glUseProgram(thinLinesShader.getShader());
+//            int projLoc = gl3.glGetUniformLocation(thinLinesShader.getShader(), "projection");
+//            int viewLoc = gl3.glGetUniformLocation(thinLinesShader.getShader(), "view");
+//
+//            gl3.glUniformMatrix4fv(projLoc, 1, false, projection.get(new float[16]), 0);
+//            gl3.glUniformMatrix4fv(viewLoc, 1, false, view.get(new float[16]), 0);
+//        }
     }
 
     public Camera3D getCamera() {
@@ -415,4 +438,5 @@ public class JOGLRenderQueue implements GLEventListener {
     private void drawSurface(Surface s) {
 
     }
+
 }

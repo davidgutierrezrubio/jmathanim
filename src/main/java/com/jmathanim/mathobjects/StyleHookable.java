@@ -19,6 +19,7 @@ package com.jmathanim.mathobjects;
 import com.jmathanim.Styling.MODrawProperties;
 import com.jmathanim.Styling.PaintStyle;
 import javafx.scene.shape.StrokeLineCap;
+import javafx.scene.shape.StrokeLineJoin;
 
 /**
  *
@@ -28,45 +29,54 @@ public interface StyleHookable {
 
     /**
      * Called when draw color is changed
+     *
      * @param color New color
      */
     public void on_setDrawColor(PaintStyle color);
 
     /**
      * Called when fill color is changed
+     *
      * @param color New color
      */
     public void on_setFillColor(PaintStyle color);
 
     /**
      * Called when draw alpha is changed
+     *
      * @param alpha New alpha value
      */
     public void on_setDrawAlpha(double alpha);
 
     /**
      * Called when fill alpha is changed
+     *
      * @param alpha New alpha value
      */
     public void on_setFillAlpha(double alpha);
-/**
+
+    /**
      * Called when thickness is changed.
+     *
      * @param thickness New thickness value
      */
     public void on_setThickness(double thickness);
-    
+
     /**
      * Called when visible flag is changed
+     *
      * @param visible The new visible flag value
      */
     public void on_setVisible(boolean visible);
-    
+
     /**
      * Called when dash style is changed
+     *
      * @param style New dash style
      */
     public void on_setDashStyle(MODrawProperties.DashStyle style);
-    
-    
+
     public void on_setLineCap(StrokeLineCap linecap);
+
+    public void on_setLineJoin(StrokeLineJoin linejoin);
 }

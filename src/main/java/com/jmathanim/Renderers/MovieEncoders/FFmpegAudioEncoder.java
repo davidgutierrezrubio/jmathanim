@@ -185,7 +185,8 @@ public class FFmpegAudioEncoder {
     }
 
     private void runFfmpegProcess(final String cmd) throws IOException, InterruptedException {
-        Process process = Runtime.getRuntime().exec(cmd);
+        String[] c={"sh","-c",cmd};
+        Process process = Runtime.getRuntime().exec(c);
         process.waitFor();
         //This return value gives problems as it differs from OS
 //        if (process.exitValue() != 0) {

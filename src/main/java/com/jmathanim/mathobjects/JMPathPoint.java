@@ -39,7 +39,7 @@ public class JMPathPoint extends MathObject implements Updateable, Stateable {
     public final Point p;
     public final Point cpExit, cpEnter; // Entering control point (cpFrom) and exit control point (cpTo)
     public Vec cpExitvBackup, cpEntervBackup;// Backup values, to restore after removing interpolation points
-    
+
     /**
      * If false, segment ending in this point is not visible
      */
@@ -216,7 +216,7 @@ public class JMPathPoint extends MathObject implements Updateable, Stateable {
 
     @Override
     public void copyStateFrom(MathObject obj) {
-         super.copyStateFrom(obj);
+        super.copyStateFrom(obj);
         if (!(obj instanceof JMPathPoint)) {
             return;
         }
@@ -272,7 +272,9 @@ public class JMPathPoint extends MathObject implements Updateable, Stateable {
     }
 
     /**
-     * Computes an interpolated JMPathPoint between this and another one
+     * Computes an interpolated JMPathPoint between this and another one. The
+     * interpolation is not the usual linear one, but Bezier interpolation if it
+     * is curved.
      *
      * @param q Second JMPathPoint to interpolate
      * @param alpha Interpolation parameter. 0 returns a copy of this object. 1

@@ -38,6 +38,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.OptionalInt;
 import javafx.scene.shape.StrokeLineCap;
+import javafx.scene.shape.StrokeLineJoin;
 
 /**
  * This class represents a mathematical object that can be drawed on screen,
@@ -1194,6 +1195,10 @@ public abstract class MathObject implements Drawable, Updateable, Stateable, Box
 
     @Override
     public void on_setLineCap(StrokeLineCap linecap) {
+    }
+
+    @Override
+    public void on_setLineJoin(StrokeLineJoin linejoin) {
     }
 
     /**
