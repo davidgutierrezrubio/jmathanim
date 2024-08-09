@@ -16,6 +16,9 @@ out VertexData{
     vec4 mColor;
 } VertexOut;
 
+out vec4 pointA;
+out vec4 pointB;
+
  
 vec2 toScreenSpace(vec4 vertex)
 {
@@ -55,6 +58,8 @@ void main(void)
 	Points[2] = gl_in[2].gl_Position;
 	Points[3] = gl_in[3].gl_Position;
 
+	pointA=Points[1];
+	pointB=Points[2];
 	// 4 attached colors
 	vec4 colors[4];
 	colors[0] = VertexIn[0].mColor;

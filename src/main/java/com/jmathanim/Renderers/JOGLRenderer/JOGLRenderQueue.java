@@ -293,7 +293,7 @@ public class JOGLRenderQueue implements GLEventListener {
         projection = new Matrix4f().perspective((float) (1f * camera.fov),
                 aspectRatio, // Relación de aspecto
                 0.1f, // Cota de cerca
-                d * 1.5f // Cota de lejanía
+                d * 5f // Cota de lejanía
         );
         Vec up = camera.getUpVector();//Inefficient way. Improve this.
         view = new Matrix4f().lookAt(
