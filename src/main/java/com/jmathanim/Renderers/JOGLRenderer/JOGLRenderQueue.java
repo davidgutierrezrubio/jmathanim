@@ -123,8 +123,8 @@ public class JOGLRenderQueue implements GLEventListener {
         gl3 = drawable.getGL().getGL3();
         gl3.glDepthMask(true);
         gl3.glEnable(GL3.GL_DEPTH_TEST);
-        gl3.glDepthFunc(GL3.GL_LESS);
-//        gl3.glDepthFunc(GL3.GL_LEQUAL);
+//        gl3.glDepthFunc(GL3.GL_LESS);
+        gl3.glDepthFunc(GL3.GL_LEQUAL);
         gl3.glEnable(GL3.GL_LINE_SMOOTH);
         gl3.glEnable(GL3.GL_POLYGON_SMOOTH);
         gl3.glHint(GL3.GL_POLYGON_SMOOTH_HINT, GL3.GL_NICEST);
@@ -138,8 +138,8 @@ public class JOGLRenderQueue implements GLEventListener {
         
         //Drawer class, we have to pass it the created shaders
         shaderDrawer = new ShaderDrawer(gl3);
-        shaderDrawer.width = this.width;
-        shaderDrawer.height = this.height;
+//        shaderDrawer.width = this.width;
+//        shaderDrawer.height = this.height;
         if (useCustomShaders) {
             thinLinesShader = new ShaderLoader(gl3, "#thinLines/thinLines.vs", "#thinLines/thinLines.gs", "#thinLines/thinLines.fs");
             fillShader = new ShaderLoader(gl3, "#fill/fill.vs", "", "#fill/fill.fs");
