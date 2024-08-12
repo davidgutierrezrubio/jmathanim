@@ -216,16 +216,12 @@ public class ShaderDrawer {
         }
     }
 
-    void drawThinShape(Shape s, ArrayList<ArrayList<Point>> pieces, boolean noFill) {
+    void drawContour(Shape s, ArrayList<ArrayList<Point>> pieces) {
         if (s.getMp().getDrawColor().getAlpha() == 0) {
             return;
         }
 
-//        if (!noFill) {//If the shape is not filled, no need to do this
-        gl3.glStencilMask(0xFF);//Second bit for contour
-        gl3.glStencilFunc(GL.GL_ALWAYS, 2, 2);
-        gl3.glStencilOp(GL.GL_ZERO, GL.GL_ZERO, GL.GL_REPLACE);
-//        }
+     
 
         //Set uniform variables
         float[] shapeColors = toColor(s.getMp().getDrawColor());

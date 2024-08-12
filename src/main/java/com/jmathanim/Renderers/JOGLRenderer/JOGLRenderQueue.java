@@ -32,6 +32,7 @@ import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.Point;
 import com.jmathanim.mathobjects.Shape;
 import com.jmathanim.mathobjects.surface.Surface;
+import com.jogamp.opengl.GL;
 import com.jogamp.opengl.GL3;
 import com.jogamp.opengl.GLAutoDrawable;
 import com.jogamp.opengl.GLDrawable;
@@ -135,10 +136,9 @@ public class JOGLRenderQueue implements GLEventListener {
         gl3.glEnable(GL3.GL_SAMPLE_ALPHA_TO_COVERAGE);
         gl3.glDisable(GL3.GL_CULL_FACE);
 
-        
         //Drawer class, we have to pass it the created shaders
         shaderDrawer = new ShaderDrawer(gl3);
-        shaderDrawer.queue=this;
+        shaderDrawer.queue = this;
 //        shaderDrawer.width = this.width;
 //        shaderDrawer.height = this.height;
         if (useCustomShaders) {
@@ -217,7 +217,6 @@ public class JOGLRenderQueue implements GLEventListener {
 
             objectsToDraw.clear();
             gl3.glFlush();
-            
 
             if (saveImageFlag) {
                 savedImage = screenshot(gl3, drawable);
@@ -228,7 +227,7 @@ public class JOGLRenderQueue implements GLEventListener {
                 BufferedImage image = screenshot(gl3, drawable);
                 videoEncoder.writeFrame(image, frameCount);
             }
-            
+
             // Check for GL errors
             int error = gl3.glGetError();
             if (error != GL3.GL_NO_ERROR) {
@@ -252,22 +251,24 @@ public class JOGLRenderQueue implements GLEventListener {
 
         loadProjectionViewMatrixIntoShaders();
         ArrayList<ArrayList<Point>> pieces = s.getPath().computePolygonalPieces(camera);
-        float[] fc = getFillColor(s);
-        boolean noFill = (fc[3] == 0);//if true, shape is not filled
 
         //First clear the Stencil buffer if the shape is filled
 //                    if (!noFill) {
         gl3.glEnable(GL3.GL_STENCIL_TEST);
-        gl3.glClear(GL3.GL_STENCIL_BUFFER_BIT);
+//        gl3.glClear(GL3.GL_STENCIL_BUFFER_BIT);
 
         gl3.glStencilMask(0xFF);
         gl3.glClear(GL3.GL_STENCIL_BUFFER_BIT);
+
+//        gl3.glStencilMask(0xFF);
+        gl3.glStencilFunc(GL.GL_ALWAYS, 0b10, 0b10);//Second bit for contour
+        gl3.glStencilOp(GL.GL_ZERO, GL.GL_REPLACE, GL.GL_REPLACE);
 
 //Contour
         gl3.glUseProgram(thinLinesShader.getShader());
         shaderDrawer.thinLineShader = thinLinesShader;
         if (s.getMp().getThickness() > 0) {
-            shaderDrawer.drawThinShape(s, pieces, noFill);
+            shaderDrawer.drawContour(s, pieces);
         }
 
 //Fill
