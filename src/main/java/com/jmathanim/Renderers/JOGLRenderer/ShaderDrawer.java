@@ -221,8 +221,6 @@ public class ShaderDrawer {
             return;
         }
 
-     
-
         //Set uniform variables
         float[] shapeColors = toColor(s.getMp().getDrawColor());
         float thickness = s.getMp().getThickness().floatValue();
@@ -238,8 +236,13 @@ public class ShaderDrawer {
         gl3.glUniform3f(thinLineShader.getUniformVariable("lookAt"), lookX, lookY, lookZ);
 
         gl3.glUniform1f(thinLineShader.getUniformVariable("Thickness"), thickness);
-
-        //TODO: Implement this in glsl in a geometry shader
+        int size = 0;
+        for (ArrayList<Point> piece : pieces) {
+            size += piece.size();//Each piece has these number of segments...
+        }
+        size *= 16;//and each segment is defined by 4 points with 4 coordinates each one
+        float[] vertexArray = new float[size];
+        int counter = 0;
         for (ArrayList<Point> piece : pieces) {
             for (int n = 0; n < piece.size() - 1; n++) {
                 Vec p = piece.get(n).v;
@@ -267,37 +270,35 @@ public class ShaderDrawer {
                     }
                 }
 //TODO: Make all drawings in single call should be more efficient
-                drawGLAdjacency(r, p, q, t);
+//                drawGLAdjacencyNEW(r, p, q, t);
+//drawGLAdjacencyNEW(Vec p, Vec q, Vec r, Vec t) {
+//change p-->r, q--->p, r--->q
+                vertexArray[counter + 0] = (float) r.x;
+                vertexArray[counter + 1] = (float) r.y;
+                vertexArray[counter + 2] = (float) r.z;
+                vertexArray[counter + 3] = 1f;
+                vertexArray[counter + 4] = (float) p.x;
+                vertexArray[counter + 5] = (float) p.y;
+                vertexArray[counter + 6] = (float) p.z;
+                vertexArray[counter + 7] = 1f;
+                vertexArray[counter + 8] = (float) q.x;
+                vertexArray[counter + 9] = (float) q.y;
+                vertexArray[counter + 10] = (float) q.z;
+                vertexArray[counter + 11] = 1f;
+                vertexArray[counter + 12] = (float) t.x;
+                vertexArray[counter + 13] = (float) t.y;
+                vertexArray[counter + 14] = (float) t.z;
+                vertexArray[counter + 15] = 1f;
+                counter += 16;
+
             }
         }
-    }
-
-    private void drawGLAdjacency(Vec p, Vec q, Vec r, Vec t) {
-
-        float vertices[] = new float[16];
-        vertices[0] = (float) p.x;
-        vertices[1] = (float) p.y;
-        vertices[2] = (float) p.z;
-        vertices[3] = 1f;
-        vertices[4] = (float) q.x;
-        vertices[5] = (float) q.y;
-        vertices[6] = (float) q.z;
-        vertices[7] = 1f;
-        vertices[8] = (float) r.x;
-        vertices[9] = (float) r.y;
-        vertices[10] = (float) r.z;
-        vertices[11] = 1f;
-        vertices[12] = (float) t.x;
-        vertices[13] = (float) t.y;
-        vertices[14] = (float) t.z;
-        vertices[15] = 1f;
         gl3.glEnableClientState(GL2.GL_VERTEX_ARRAY);
-
-        FloatBuffer fbVertices = Buffers.newDirectFloatBuffer(vertices);
+        FloatBuffer fbVertices = Buffers.newDirectFloatBuffer(vertexArray);
         gl3.glBindBuffer(GL3ES3.GL_ARRAY_BUFFER, vbo[0]);
         gl3.glBufferData(GL3ES3.GL_ARRAY_BUFFER, fbVertices.limit() * 4, fbVertices, GL3ES3.GL_STATIC_DRAW);
         gl3.glVertexAttribPointer(0, 4, GL.GL_FLOAT, false, 0, 0);
-        gl3.glDrawArrays(GL3ES3.GL_LINES_ADJACENCY_EXT, 0, 4);
+        gl3.glDrawArrays(GL3ES3.GL_LINES_ADJACENCY_EXT, 0, vertexArray.length / 4);
     }
 
 }
