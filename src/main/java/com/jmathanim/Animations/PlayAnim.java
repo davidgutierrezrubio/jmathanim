@@ -288,7 +288,7 @@ public class PlayAnim {
      * @param objs Mathobjects to animate (varargs)
      */
     public void scale(double runTime, double scaleFactor, MathObject... objs) {
-        scale(runTime, scaleFactor, scaleFactor, objs);
+        scale(runTime, scaleFactor, scaleFactor, scaleFactor, objs);
     }
 
     /**
@@ -303,11 +303,27 @@ public class PlayAnim {
      * @param objs Mathobjects to animate (varargs)
      */
     public void scale(double runTime, double scx, double scy, MathObject... objs) {
+        scale(runTime, scx, scy, 1, objs);
+    }
+
+    /**
+     * Animates a scaling of the given objects with a x, y and z scales.The scale
+     * center is the center of the combined bounding box of all objects.If you
+     * want to scale each object around its own center, use one scale animation
+     * for each object.
+     *
+     * @param runTime Duration in seconds
+     * @param scx x scale factor
+     * @param scy y scale factor
+     * @param scz z scale factor
+     * @param objs Mathobjects to animate (varargs)
+     */
+    public void scale(double runTime, double scx, double scy, double scz, MathObject... objs) {
         Rect r = objs[0].getBoundingBox();
         for (MathObject obj : objs) {
             r = Rect.union(r, obj.getBoundingBox());
         }
-        scene.playAnimation(Commands.scale(runTime, r.getCenter(), scx, scy, 1, objs));
+        scene.playAnimation(Commands.scale(runTime, r.getCenter(), scx, scy, scz, objs));
     }
 
     /**

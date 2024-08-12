@@ -4,6 +4,8 @@ uniform float Thickness;
 uniform int capStyle;//0=rounded, 1=butt, 2=square
 uniform vec2 Viewport;//Size of the screen
 uniform float MiterLimit;
+uniform vec3 eye;
+uniform vec3 lookAt;
 
 layout(lines_adjacency) in;
 layout(triangle_strip, max_vertices = 85) out;
@@ -81,8 +83,10 @@ void main(void)
 	zValues[2] = toZValue(Points[2]);
 	zValues[3] = toZValue(Points[3]);
 
-	float th=Thickness*.6666;//Manually chosen constant to (more or less) match JavaFX thickness
-	
+	float th=Thickness*.3333;//Manually chosen constant to (more or less) match JavaFX thickness
+	float dRef=distance(eye,lookAt);
+	float d1=abs(Points[1].z);//distance(eye,Points[1].xyz);
+	float d2=abs(Points[2].z);//distance(eye,Points[2].xyz);
 	
 	
 	
@@ -107,16 +111,17 @@ void main(void)
 	else {
 		n2=normalize(vec2(-v2.y,v2.x));//Normal unit vector from p2 to p3 rotated 90º clockwise
 		}
-	float thSegment=th;
-	gl_Position = vec4( (points[1]-n1*thSegment) / Viewport, zValues[1], 1.0 );
+	float th1=th*dRef/d1;
+	float th2=th*dRef/d2;
+	gl_Position = vec4( (points[1]-n1*th1) / Viewport, zValues[1], 1.0 );
 	EmitVertex();
-	gl_Position = vec4( (points[1]+n1*thSegment) / Viewport, zValues[1], 1.0 );
-	EmitVertex();
-
-	gl_Position = vec4((points[2]-n1*thSegment) / Viewport, zValues[1], 1.0 );
+	gl_Position = vec4( (points[1]+n1*th1) / Viewport, zValues[1], 1.0 );
 	EmitVertex();
 
-	gl_Position = vec4( (points[2]+n1*thSegment) / Viewport, zValues[1], 1.0 );
+	gl_Position = vec4((points[2]-n1*th2) / Viewport, zValues[2], 1.0 );
+	EmitVertex();
+
+	gl_Position = vec4( (points[2]+n1*th2) / Viewport, zValues[2], 1.0 );
 	EmitVertex();
 	EndPrimitive(); 	
 	
@@ -135,20 +140,20 @@ void main(void)
     if (th>1) {
 	
 	if (cross01<0) {
-		generateRoundedCap(points[1],n1,n0,zValues[1],th,10);
+		generateRoundedCap(points[1],n1,n0,zValues[1],th1,10);
 		}
 	if (cross01>0)
 		{
-		generateRoundedCap(points[1],-n0,-n1,zValues[1],th,10);
+		generateRoundedCap(points[1],-n0,-n1,zValues[1],th1,10);
 		}
 	if (cross01==0) {
 	if ((v0.x == 0.0 && v0.y == 0.0))
-		generateRoundedCap(points[1],-n0,n0,zValues[1],th,numPoints);
+		generateRoundedCap(points[1],-n0,n0,zValues[1],th1,numPoints);
 	}
 	
 	if (cross12==0) {
 		if ((v2.x == 0.0 && v2.y == 0.0))
-			generateRoundedCap(points[2],-n1,n1,zValues[1],th,numPoints);
+			generateRoundedCap(points[2],-n1,n1,zValues[2],th2,numPoints);
 		}
     }
         

@@ -243,7 +243,9 @@ import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.Shape;
 import com.jmathanim.mathobjects.surface.Surface;
 import com.jogamp.newt.opengl.GLWindow;
+import com.jogamp.opengl.GL;
 import com.jogamp.opengl.GLCapabilities;
+import com.jogamp.opengl.GLContext;
 import com.jogamp.opengl.GLProfile;
 import java.awt.image.BufferedImage;
 import java.io.InputStream;
@@ -308,8 +310,8 @@ public class JOGLRenderer extends Renderer {
 
     @Override
     protected BufferedImage getRenderedImage(int frameCount) {
-        queue.saveImageFlag=true;
-         synchronized (queue) {
+        queue.saveImageFlag = true;
+        synchronized (queue) {
             glWindow.display();
         }
         return queue.savedImage;
@@ -318,6 +320,8 @@ public class JOGLRenderer extends Renderer {
     @Override
     public void initialize() {
         queue = new JOGLRenderQueue(config);
+        queue.width=this.getMediaWidth();
+        queue.height=this.getMediaHeight();
         queue.renderer = this;
         queue.setCamera(camera);
         queue.fixedCamera = fixedCamera;
@@ -325,16 +329,35 @@ public class JOGLRenderer extends Renderer {
         fixedCamera.initialize(XMIN_DEFAULT, XMAX_DEFAULT, 0);
         GLCapabilities caps = new GLCapabilities(GLProfile.get(GLProfile.GL3));
         caps.setSampleBuffers(true);
-        caps.setNumSamples(64);
+        caps.setNumSamples(8);
         caps.setAlphaBits(8);
-//        caps.setDepthBits(32);
         caps.setStencilBits(8);
+
         glWindow = GLWindow.create(caps);
         glWindow.setSize(config.mediaW, config.mediaH);
         glWindow.setTitle("JMathAnim - " + config.getOutputFileName());
         glWindow.addGLEventListener(queue);
+//
+//// Verifica soporte de anti-aliasing y establece un valor seguro
+//        if (GLContext.getCurrent().isExtensionAvailable("GL_ARB_multisample")) {
+//
+//            int[] maxSamples = new int[1];
+//            GLContext.getCurrent().getGL().glGetIntegerv(GL.GL_MAX_SAMPLES, maxSamples, 0);
+//            caps.setNumSamples(Math.min(8, maxSamples[0])); // Usa 8 o el máximo permitido
+//
+//        }
+//
+//// Verifica soporte de bits alfa y stencil
+//        int[] alphaBits = new int[1];
+//        GLContext.getCurrent().getGL().glGetIntegerv(GL.GL_ALPHA_BITS, alphaBits, 0);
+//        caps.setAlphaBits(Math.min(8, alphaBits[0]));
+//
+//        int[] stencilBits = new int[1];
+//        GLContext.getCurrent().getGL().glGetIntegerv(GL.GL_STENCIL_BITS, stencilBits, 0);
+//        caps.setStencilBits(Math.min(8, stencilBits[0]));
+
         glWindow.setVisible(true);//TODO: For now it needs to always show the window...
-     
+
     }
 
     @Override

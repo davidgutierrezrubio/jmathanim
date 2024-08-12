@@ -61,17 +61,17 @@ public class JOGLRenderQueue implements GLEventListener {
 
     public boolean busy = false; //True if actually drawing
     private static final double MIN_THICKNESS = .2d;
-    private int height;
+    public int height;
     public BufferedImage savedImage;
     public boolean useCustomShaders = true;
     public boolean saveImageFlag = false;
     JMathAnimConfig config;
     ArrayList<MathObject> objectsToDraw;
-    private int width;
+    public int width;
     final float zNear = 0.1f, zFar = 7000f;
 //    private GL3ES3 gles;
     private GL3 gl3;
-    private Camera3D camera;
+    public Camera3D camera;
     public Camera3D fixedCamera;
     public VideoEncoder videoEncoder;
     public File saveFilePath;
@@ -138,6 +138,7 @@ public class JOGLRenderQueue implements GLEventListener {
         
         //Drawer class, we have to pass it the created shaders
         shaderDrawer = new ShaderDrawer(gl3);
+        shaderDrawer.queue=this;
 //        shaderDrawer.width = this.width;
 //        shaderDrawer.height = this.height;
         if (useCustomShaders) {
