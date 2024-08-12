@@ -32,6 +32,7 @@ import com.jogamp.opengl.GL3ES3;
 import com.jogamp.opengl.fixedfunc.GLMatrixFunc;
 import java.nio.FloatBuffer;
 import java.util.ArrayList;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * This class send appropiate VAO buffers to shaders
@@ -242,57 +243,22 @@ public class ShaderDrawer {
         }
         size *= 16;//and each segment is defined by 4 points with 4 coordinates each one
         float[] vertexArray = new float[size];
-        int counter = 0;
-        for (ArrayList<Point> piece : pieces) {
-            for (int n = 0; n < piece.size() - 1; n++) {
+        AtomicInteger counter = new AtomicInteger(0);
+
+        pieces.parallelStream().forEach(piece -> {
+            int pieceSize = piece.size();
+            boolean isClosedLoop = piece.get(pieceSize - 1).isEquivalentTo(piece.get(0), 0.000001);
+
+            for (int n = 0; n < pieceSize - 1; n++) {
                 Vec p = piece.get(n).v;
                 Vec q = piece.get(n + 1).v;
-                Vec d = q.minus(p);
-                Vec r, t;
-                if (n > 0) {
-                    r = piece.get(n - 1).v;
-                } else {
-                    r = p.copy();
-                }
-                if (n < piece.size() - 2) {
-                    t = piece.get(n + 2).v;
-                } else {
-                    t = q.copy();
-                }
-                if (n == piece.size() - 2) {
-                    if (piece.get(n + 1).isEquivalentTo(piece.get(0), .000001)) {
-                        t = piece.get(1).v;
-                    }
-                }
-                if (n == 0) {
-                    if (piece.get(piece.size() - 1).isEquivalentTo(piece.get(0), .000001)) {
-                        r = piece.get(piece.size() - 2).v;
-                    }
-                }
-//TODO: Make all drawings in single call should be more efficient
-//                drawGLAdjacencyNEW(r, p, q, t);
-//drawGLAdjacencyNEW(Vec p, Vec q, Vec r, Vec t) {
-//change p-->r, q--->p, r--->q
-                vertexArray[counter + 0] = (float) r.x;
-                vertexArray[counter + 1] = (float) r.y;
-                vertexArray[counter + 2] = (float) r.z;
-                vertexArray[counter + 3] = 1f;
-                vertexArray[counter + 4] = (float) p.x;
-                vertexArray[counter + 5] = (float) p.y;
-                vertexArray[counter + 6] = (float) p.z;
-                vertexArray[counter + 7] = 1f;
-                vertexArray[counter + 8] = (float) q.x;
-                vertexArray[counter + 9] = (float) q.y;
-                vertexArray[counter + 10] = (float) q.z;
-                vertexArray[counter + 11] = 1f;
-                vertexArray[counter + 12] = (float) t.x;
-                vertexArray[counter + 13] = (float) t.y;
-                vertexArray[counter + 14] = (float) t.z;
-                vertexArray[counter + 15] = 1f;
-                counter += 16;
+                Vec r = (n > 0) ? piece.get(n - 1).v : (isClosedLoop ? piece.get(pieceSize - 2).v : p.copy());
+                Vec t = (n < pieceSize - 2) ? piece.get(n + 2).v : (isClosedLoop && n == pieceSize - 2 ? piece.get(1).v : q.copy());
 
+                int localCounter = counter.getAndAdd(16);
+                fillVertexArray(vertexArray, localCounter, r, p, q, t);
             }
-        }
+        });
         gl3.glEnableClientState(GL2.GL_VERTEX_ARRAY);
         FloatBuffer fbVertices = Buffers.newDirectFloatBuffer(vertexArray);
         gl3.glBindBuffer(GL3ES3.GL_ARRAY_BUFFER, vbo[0]);
@@ -301,4 +267,17 @@ public class ShaderDrawer {
         gl3.glDrawArrays(GL3ES3.GL_LINES_ADJACENCY_EXT, 0, vertexArray.length / 4);
     }
 
+    private void fillVertexArray(float[] array, int startIndex, Vec r, Vec p, Vec q, Vec t) {
+        addVecToArray(array, startIndex, r);
+        addVecToArray(array, startIndex + 4, p);
+        addVecToArray(array, startIndex + 8, q);
+        addVecToArray(array, startIndex + 12, t);
+    }
+
+    private void addVecToArray(float[] array, int startIndex, Vec v) {
+        array[startIndex] = (float) v.x;
+        array[startIndex + 1] = (float) v.y;
+        array[startIndex + 2] = (float) v.z;
+        array[startIndex + 3] = 1f;
+    }
 }
