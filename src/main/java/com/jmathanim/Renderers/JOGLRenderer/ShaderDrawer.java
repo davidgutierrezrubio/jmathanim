@@ -266,7 +266,7 @@ public class ShaderDrawer {
                         r = piece.get(piece.size() - 2).v;
                     }
                 }
-
+//TODO: Make all drawings in single call should be more efficient
                 drawGLAdjacency(r, p, q, t);
             }
         }

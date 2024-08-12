@@ -261,8 +261,8 @@ public class JOGLRenderQueue implements GLEventListener {
         gl3.glClear(GL3.GL_STENCIL_BUFFER_BIT);
 
 //        gl3.glStencilMask(0xFF);
-        gl3.glStencilFunc(GL.GL_ALWAYS, 0b10, 0b10);//Second bit for contour
-        gl3.glStencilOp(GL.GL_ZERO, GL.GL_REPLACE, GL.GL_REPLACE);
+        gl3.glStencilFunc(GL.GL_NOTEQUAL, 0b10, 0b10);//Second bit for contour
+        gl3.glStencilOp(GL.GL_KEEP, GL.GL_REPLACE, GL.GL_REPLACE);
 
 //Contour
         gl3.glUseProgram(thinLinesShader.getShader());
