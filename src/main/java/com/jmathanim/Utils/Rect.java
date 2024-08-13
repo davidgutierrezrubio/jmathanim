@@ -309,7 +309,7 @@ public class Rect implements Stateable, Boxable {// TODO: Adjust this to 3D coor
 
     @Override
     public String toString() {
-        return "Rect{" + "xmin=" + xmin + ", ymin=" + ymin + ", xmax=" + xmax + ", ymax=" + ymax + '}';
+        return "Rect{" + "xmin=" + xmin + ", ymin=" + ymin + ", zmin=" + zmin +", xmax=" + xmax + ", ymax=" + ymax + ", zmax=" + zmax +'}';
     }
 
     /**
@@ -362,8 +362,16 @@ public class Rect implements Stateable, Boxable {// TODO: Adjust this to 3D coor
     public Point getDR() {
         return new Point(xmax, ymin, .5 * (zmin + zmax));
     }
+    
+    public Point getZTOP() {
+        return new Point(.5*(xmin+xmax),.5*(ymin+ymax),zmax);
+    }
+     public Point getZBOTTOM() {
+        return new Point(.5*(xmin+xmax),.5*(ymin+ymax),zmin);
+    }
 
-    /**
+     
+      /**
      * Growns horizontally and vertically the rect adding specified gaps. Each
      * gap is added twice (hgap left and right, and vgap up and down). The
      * original Rect is affected.
@@ -373,11 +381,27 @@ public class Rect implements Stateable, Boxable {// TODO: Adjust this to 3D coor
      * @return This object
      */
     public Rect addGap(double xgap, double ygap) {
+        return addGap(xgap,ygap,0);
+    }
+     
+    /**
+     * Growns horizontally, vertically and in z axis the rect adding specified gaps. Each
+     * gap is added twice (hgap left and right, and vgap up and down). The
+     * original Rect is affected.
+     *
+     * @param xgap Horizontal gap
+     * @param ygap Vertical gap
+     * @param zgap Z gap
+     * @return This object
+     */
+    public Rect addGap(double xgap, double ygap,double zgap) {
 //        return new Rect(xmin - xgap, ymin - ygap, zmin, xmax + xgap, ymax + ygap, zmax);
         xmin-=xgap;
         ymin-=ygap;
         xmax+=xgap;
         ymax+=ygap;
+        zmin-=zgap;
+        zmax+=zgap;
         return this;
     }
 
@@ -674,7 +698,7 @@ public class Rect implements Stateable, Boxable {// TODO: Adjust this to 3D coor
     }
 
     private void smashInH(Boxable containerBox, double horizontalGap) {
-        Rect rBig = containerBox.getBoundingBox().addGap(-horizontalGap, 0);
+        Rect rBig = containerBox.getBoundingBox().addGap(-horizontalGap, 0,0);
         if (getWidth() >= rBig.getWidth()) {
             return;
         }
@@ -691,7 +715,7 @@ public class Rect implements Stateable, Boxable {// TODO: Adjust this to 3D coor
     }
 
     private Rect smashInV(Boxable containerBox, double verticalGap) {
-        Rect rBig = containerBox.getBoundingBox().addGap(0, -verticalGap);
+        Rect rBig = containerBox.getBoundingBox().addGap(0, -verticalGap,0);
         if (getHeight() >= rBig.getHeight()) {
             return this;
         }

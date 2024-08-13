@@ -77,7 +77,9 @@ public class Anchor {
         DIAG1,
         DIAG2,
         DIAG3,
-        DIAG4
+        DIAG4,
+        ZTOP,
+        ZBOTTOM
     }
 
     public enum innerType {
@@ -102,7 +104,7 @@ public class Anchor {
      * @return The anchor point
      */
     public static Point getAnchorPoint(Boxable obj, Type anchor) {
-        return getAnchorPoint(obj, anchor, 0, 0);
+        return getAnchorPoint(obj, anchor, 0, 0, 0);
     }
 
     /**
@@ -117,7 +119,7 @@ public class Anchor {
      * @return The anchor point
      */
     public static Point getAnchorPoint(Boxable obj, Type anchor, double gap) {
-        return getAnchorPoint(obj, anchor, gap, gap);
+        return getAnchorPoint(obj, anchor, gap, gap, gap);
     }
 
     /**
@@ -131,9 +133,10 @@ public class Anchor {
      * @param xgap Horizontal gap. Applied to LEFT RIGHT, URIGHT, ULEFT, DRIGHT,
      * DLEFT anchors
      * @param ygap Vertical gap. Applied to UPPER, LOWER,
+     * @param zgap Z Gap. Applied to ZTOP and ZBOTTOM
      * @return The anchor point
      */
-    public static Point getAnchorPoint(Boxable obj, Type anchor, double xgap, double ygap) {
+    public static Point getAnchorPoint(Boxable obj, Type anchor, double xgap, double ygap, double zgap) {
         Point resul = new Point();
         final Rect bb = obj.getBoundingBox();
         switch (anchor) {
@@ -200,6 +203,12 @@ public class Anchor {
                 break;
             case DIAG4:
                 resul = bb.addGap(xgap, ygap).getDR();
+                break;
+            case ZTOP:
+                resul = bb.addGap(0, 0, zgap).getZTOP();
+                break;
+            case ZBOTTOM:
+                resul = bb.addGap(0, 0, zgap).getZBOTTOM();
                 break;
 
         }
@@ -273,6 +282,12 @@ public class Anchor {
             case DIAG4:
                 resul = Type.DIAG2;
                 break;
+            case ZTOP:
+                resul = Type.ZBOTTOM;
+                break;
+            case ZBOTTOM:
+                resul = Type.ZTOP;
+                break;
         }
         return resul;
     }
@@ -281,7 +296,7 @@ public class Anchor {
      * Returns an anchor point relative to the current screen, in math
      * coordinates
      *
-     * @param camera Camera 
+     * @param camera Camera
      * @param anchor Anchor type
      * @param xMargin x margin to apply to the anchor
      * @param yMargin y margin to apply to the anchor

@@ -247,16 +247,18 @@ public class ShaderDrawer {
 
         pieces.parallelStream().forEach(piece -> {
             int pieceSize = piece.size();
-            boolean isClosedLoop = piece.get(pieceSize - 1).isEquivalentTo(piece.get(0), 0.000001);
+            if (!piece.isEmpty()) {
+                boolean isClosedLoop = piece.get(pieceSize - 1).isEquivalentTo(piece.get(0), 0.000001);
 
-            for (int n = 0; n < pieceSize - 1; n++) {
-                Vec p = piece.get(n).v;
-                Vec q = piece.get(n + 1).v;
-                Vec r = (n > 0) ? piece.get(n - 1).v : (isClosedLoop ? piece.get(pieceSize - 2).v : p.copy());
-                Vec t = (n < pieceSize - 2) ? piece.get(n + 2).v : (isClosedLoop && n == pieceSize - 2 ? piece.get(1).v : q.copy());
+                for (int n = 0; n < pieceSize - 1; n++) {
+                    Vec p = piece.get(n).v;
+                    Vec q = piece.get(n + 1).v;
+                    Vec r = (n > 0) ? piece.get(n - 1).v : (isClosedLoop ? piece.get(pieceSize - 2).v : p.copy());
+                    Vec t = (n < pieceSize - 2) ? piece.get(n + 2).v : (isClosedLoop && n == pieceSize - 2 ? piece.get(1).v : q.copy());
 
-                int localCounter = counter.getAndAdd(16);
-                fillVertexArray(vertexArray, localCounter, r, p, q, t);
+                    int localCounter = counter.getAndAdd(16);
+                    fillVertexArray(vertexArray, localCounter, r, p, q, t);
+                }
             }
         });
         gl3.glEnableClientState(GL2.GL_VERTEX_ARRAY);
