@@ -189,14 +189,6 @@ public class JOGLRenderQueue implements GLEventListener {
     public synchronized void display(GLAutoDrawable drawable) {
         synchronized (this) {
             busy = true;
-            try {
-                adjustCameraView(drawable);
-            } catch (Exception ex) {
-                System.out.println("EXCEPTION");
-            }
-
-            //Trying to get rid of the annoying z-fighting...
-            Vec toEye = camera.look.to(camera.eye);
 
             // clear screen
             PaintStyle backgroundColor = config.getBackgroundColor();
@@ -294,8 +286,8 @@ public class JOGLRenderQueue implements GLEventListener {
         float aspectRatio = (float) (bb.getWidth() / bb.getHeight());
         projection = new Matrix4f().perspective((float) (1f * camera.fov),
                 aspectRatio, // Relación de aspecto
-                0.1f, // Cota de cerca
-                d * 5f // Cota de lejanía
+                0.001f, // Cota de cerca
+                d * 15f // Cota de lejanía
         );
         Vec up = camera.getUpVector();//Inefficient way. Improve this.
         view = new Matrix4f().lookAt(
@@ -356,55 +348,6 @@ public class JOGLRenderQueue implements GLEventListener {
     public void reshape(GLAutoDrawable drawable, int x, int y, int w, int h) {
         this.width = w;
         this.height = h;
-
-        try {
-            adjustCameraView(drawable);
-        } catch (Exception ex) {
-            System.out.println("EXCEPTION2");
-        }
-    }
-
-    private void adjustCameraView(GLAutoDrawable drawable) throws GLException {
-//        Matrix4f projection;
-//        Matrix4f view;
-//        Rect bb = camera.getMathView();
-//        float d = (float) camera.eye.to(camera.look).norm();
-//        projection = new Matrix4f().perspective(
-//                (float) Math.toRadians(camera.fov),
-//                (float) (// Campo de visión en radianes
-//                (bb.getWidth()) / bb.getHeight()), // Relación de aspecto
-//                0.1f, // Cota de cerca
-//                d * 1.5f // Cota de lejanía
-//        );
-//        Vec up = camera.getUpVector();//Inefficient way. Improve this.
-//        view = new Matrix4f().lookAt(
-//                new Vector3f(
-//                        (float) camera.eye.v.x,
-//                        (float) camera.eye.v.y,
-//                        (float) camera.eye.v.z
-//                ), // Posición de la cámara
-//                new Vector3f(
-//                        (float) camera.look.v.x,
-//                        (float) camera.look.v.y,
-//                        (float) camera.look.v.z
-//                ), // Punto hacia el cual está mirando
-//                new Vector3f(
-//                        (float) up.x,
-//                        (float) up.y,
-//                        (float) up.z
-//                ) // Vector hacia arriba
-//        );
-//        if (useCustomShaders) {
-//            projection = new Matrix4f().identity();
-//            view = new Matrix4f().identity();
-//
-//            gl3.glUseProgram(thinLinesShader.getShader());
-//            int projLoc = gl3.glGetUniformLocation(thinLinesShader.getShader(), "projection");
-//            int viewLoc = gl3.glGetUniformLocation(thinLinesShader.getShader(), "view");
-//
-//            gl3.glUniformMatrix4fv(projLoc, 1, false, projection.get(new float[16]), 0);
-//            gl3.glUniformMatrix4fv(viewLoc, 1, false, view.get(new float[16]), 0);
-//        }
     }
 
     public Camera3D getCamera() {

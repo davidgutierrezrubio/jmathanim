@@ -464,6 +464,25 @@ public class AffineJTransform implements Stateable {
         return rotation.compose(scale).compose(traslation);
     }
 
+    public static AffineJTransform createDirect3DIsomorphic(Point A, Point B, Point C, Point D, double alpha) {
+        double angle;// Angle between AB and CD
+        Vec v1 = A.to(B);// Vector AB
+        Vec v2 = C.to(D);// Vector CD
+        Vec v3 = A.to(C);// Vector AC
+        double d1 = v1.norm();
+        double d2 = v2.norm();
+        double d = d2 / d1;
+        // The rotation part
+        AffineJTransform rotation = AffineJTransform.create3DRotationTransform(v1, v2, alpha);
+
+        // The scale part
+        AffineJTransform scale = AffineJTransform.createScaleTransform(A, (1 - alpha) + d * alpha);
+
+        // The traslation part
+        AffineJTransform traslation = AffineJTransform.createTranslationTransform(v3.mult(alpha));
+        return rotation.compose(scale).compose(traslation);
+    }
+
     /**
      * Creates a inverse 2D isomorphic transform in the plane (a
      * rotation+traslation+uniform scale) which transforms the point A into
@@ -551,6 +570,43 @@ public class AffineJTransform implements Stateable {
 
         return resul;
 
+    }
+
+    public static AffineJTransform create3DRotationTransform(Vec v1, Vec v2, double alpha) {
+        Vec a = v1.normalize();
+        Vec b = v2.normalize();
+        Vec v = a.cross(b);
+               
+        if (v.norm() < .00001) {
+            return new AffineJTransform();//Identity
+        } else {
+            v=v.normalize();
+        }
+
+        double dot = a.dot(b);
+        double theta = alpha * Math.acos(dot);
+        double cosTheta = Math.cos(theta);
+        double sinTheta = Math.sin(theta);
+
+        AffineJTransform resul = new AffineJTransform();
+        resul.setV1Img(
+                cosTheta + v.x * v.x * (1 - cosTheta),
+                v.y * v.x * (1 - cosTheta) + v.z * sinTheta,
+                v.z * v.x * (1 - cosTheta) - v.y * sinTheta
+        );
+
+        resul.setV2Img(
+                v.x * v.y * (1 - cosTheta) - v.z * sinTheta,
+                cosTheta + v.y * v.y * (1 - cosTheta),
+                v.z * v.y * (1 - cosTheta) + v.x * sinTheta
+        );
+
+        resul.setV3Img(
+                v.x * v.z * (1 - cosTheta) + v.y * sinTheta,
+                v.y * v.z * (1 - cosTheta) - v.x * sinTheta,
+                cosTheta + v.z * v.z * (1 - cosTheta)
+        );
+        return resul;
     }
 
     /**
