@@ -16,6 +16,7 @@
  */
 package com.jmathanim.mathobjects;
 
+import com.jmathanim.Cameras.Camera3D;
 import com.jmathanim.Constructible.Conics.CTCircleArc;
 import com.jmathanim.Constructible.Constructible;
 import com.jmathanim.Constructible.Lines.CTLine;
@@ -25,6 +26,7 @@ import com.jmathanim.Utils.AffineJTransform;
 import com.jmathanim.Utils.JMathAnimConfig;
 import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.ResourceLoader;
+import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import static com.jmathanim.jmathanim.JMathAnimScene.PI;
 import java.net.URL;
@@ -260,6 +262,7 @@ public class Arrow extends Constructible {
                 shArc1 = (Shape) arc1.getMathObject();
                 shArc2 = (Shape) arc2.getMathObject();
 
+                //Move arrow extremes to the right point
                 tr = AffineJTransform.createDirect2DIsomorphic(shArc1.get(0).p, shArc1.get(-1).p, h1A.get(0).p, h1B.get(-1).p, 1);
                 shArc1.applyAffineTransform(tr);
                 tr = AffineJTransform.createDirect2DIsomorphic(shArc2.get(0).p, shArc2.get(-1).p, h1A.get(-1).p, h1B.get(0).p, 1);
@@ -280,10 +283,29 @@ public class Arrow extends Constructible {
         }
 
         //Finally, shift and rotate the built Shape to match A and B points
-        AffineJTransform trShift = AffineJTransform.createTranslationTransform(startPoint.to(Acopy));
-        AffineJTransform trRotate = AffineJTransform.create2DRotationTransform(Acopy, Acopy.to(Bcopy).getAngle() + .5 * PI);
-        shapeToDraw.getPath().applyAffineTransform(trShift);
-        shapeToDraw.getPath().applyAffineTransform(trRotate);
+//        AffineJTransform trShift = AffineJTransform.createTranslationTransform(startPoint.to(Acopy));
+//        AffineJTransform trRotate = AffineJTransform.create2DRotationTransform(Acopy, Acopy.to(Bcopy).getAngle() + .5 * PI);
+//        shapeToDraw.getPath().applyAffineTransform(trShift);
+//        shapeToDraw.getPath().applyAffineTransform(trRotate);
+        Point z1 = startPoint.copy().shift(0, 0, 1);
+        Point C;
+        Vec v = A.to(B);
+        if ((v.x == 0) && (v.y == 0)) {
+            C = A.copy().shift(0, 1, 0);
+        } else {
+            C = A.copy().shift(0, 0, 1);
+        }
+        AffineJTransform tr = AffineJTransform.createDirect3DIsomorphic(startPoint, endPoint, z1, A, B, C, 1);
+        shapeToDraw.getPath().applyAffineTransform(tr);
+        //Now, rotate to face camera3d..
+        if (scene.getCamera() instanceof Camera3D) {
+            Camera3D cam = (Camera3D) scene.getCamera();
+//            Point C = A.copy().shift(0, 0, 1);
+            v= cam.look.to(cam.eye);
+            Point C2 = A.copy().shift(v);
+            tr = AffineJTransform.createDirect3DIsomorphic(A, B, C, A, B, C2, 1);
+            shapeToDraw.applyAffineTransform(tr);
+        }
     }
 
     @Override
@@ -295,44 +317,44 @@ public class Arrow extends Constructible {
 
     @Override
     public void copyStateFrom(MathObject obj) {
-         super.copyStateFrom(obj);
+        super.copyStateFrom(obj);
         if (obj instanceof Arrow) {
             Arrow ar = (Arrow) obj;
             this.arrowThickness = ar.arrowThickness;
             this.angle = ar.angle;
             this.scene = ar.scene;
             this.distScale = ar.distScale;
-            this.baseHeight1=ar.baseHeight1;
-            this.baseHeight2=ar.baseHeight2;
-             this.baseRealHeight1=ar.baseRealHeight1;
-            this.baseRealHeight2=ar.baseRealHeight2;
-            this.headStartMultiplier=ar.headStartMultiplier;
-            this.headEndMultiplier=ar.headEndMultiplier;
+            this.baseHeight1 = ar.baseHeight1;
+            this.baseHeight2 = ar.baseHeight2;
+            this.baseRealHeight1 = ar.baseRealHeight1;
+            this.baseRealHeight2 = ar.baseRealHeight2;
+            this.headStartMultiplier = ar.headStartMultiplier;
+            this.headEndMultiplier = ar.headEndMultiplier;
             this.typeA = ar.typeA;
             this.typeB = ar.typeB;
             this.A.copyFrom(ar.A);
             this.B.copyFrom(ar.B);
             this.Acopy.copyFrom(ar.Acopy);
             this.Bcopy.copyFrom(ar.Bcopy);
-            this.gapA=ar.gapA;
-            this.gapB=ar.gapB;
-            this.baseDist1=ar.baseDist1;
-            this.baseDist2=ar.baseDist2;
+            this.gapA = ar.gapA;
+            this.gapB = ar.gapB;
+            this.baseDist1 = ar.baseDist1;
+            this.baseDist2 = ar.baseDist2;
             this.freeMathObject(ar.isThisMathObjectFree());
-            
+
             this.head2.getPath().clear();
             this.head2.copyStateFrom(ar.head2);
-            
-               this.head1.getPath().clear();
+
+            this.head1.getPath().clear();
             this.head1.copyStateFrom(ar.head1);
-            
+
             this.shapeToDraw.getPath().clear();
             this.shapeToDraw.copyStateFrom(ar.shapeToDraw);
-            
+
             this.shapeToDraw.getPath().clear();
             this.shapeToDraw.copyStateFrom(ar.shapeToDraw);
             this.getMp().copyFrom(ar.getMp());
-            
+
         }
     }
 
@@ -359,6 +381,7 @@ public class Arrow extends Constructible {
      */
     public Arrow setArrowThickness(double arrowThickness) {
         this.arrowThickness = arrowThickness;
+        rebuildShape();
         return this;
     }
 
@@ -408,9 +431,9 @@ public class Arrow extends Constructible {
 
     @Override
     public Arrow applyAffineTransform(AffineJTransform tr) {
-        
-            Acopy.applyAffineTransform(tr);
-            Bcopy.applyAffineTransform(tr);
+
+        Acopy.applyAffineTransform(tr);
+        Bcopy.applyAffineTransform(tr);
         if (!isThisMathObjectFree()) {
             A.applyAffineTransform(tr);
             B.applyAffineTransform(tr);

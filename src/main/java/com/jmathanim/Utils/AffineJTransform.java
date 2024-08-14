@@ -410,8 +410,6 @@ public class AffineJTransform implements Stateable {
         double[] angles = ro.getAngles(RotationOrder.XYZ, RotationConvention.VECTOR_OPERATOR);
         Rotation ro2 = new Rotation(RotationOrder.XYZ, RotationConvention.VECTOR_OPERATOR, alpha * angles[0], alpha * angles[1], alpha * angles[2]);
         double[][] ma2 = ro2.getMatrix();
-        System.out.println(angles[0] + ", " + angles[1] + ", " + angles[2]);
-//        AffineJTransform tr=AffineJTransform.create3DRotationTransform(null, angles[0], angles[1], angles[2],alpha);
         AffineJTransform tr = new AffineJTransform();
         tr.setV1Img(ma2[0][0], ma2[1][0], ma2[2][0]);
         tr.setV2Img(ma2[0][1], ma2[1][1], ma2[2][1]);
