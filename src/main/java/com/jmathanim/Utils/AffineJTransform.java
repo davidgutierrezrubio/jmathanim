@@ -21,8 +21,11 @@ import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.Point;
 import com.jmathanim.mathobjects.Stateable;
 import org.apache.commons.math3.linear.LUDecomposition;
-import org.apache.commons.math3.linear.MatrixUtils;
+import org.apache.commons.math3.geometry.euclidean.threed.Rotation;
+import org.apache.commons.math3.geometry.euclidean.threed.RotationConvention;
+import org.apache.commons.math3.geometry.euclidean.threed.RotationOrder;
 import org.apache.commons.math3.linear.RealMatrix;
+import org.apache.commons.math3.linear.MatrixUtils;
 
 /**
  * This class handles affine transform, both in 2D and 3D To restrict transforms
@@ -347,32 +350,73 @@ public class AffineJTransform implements Stateable {
     }
 
     /**
-     * Returns a 3D rotation transform
+     * Creates the 3d rotation given the center and angles.
      *
      * @param center Center of the rotation
      * @param anglex Rotation angle around the x axis
      * @param angley Rotation angle around the y axis
      * @param anglez Rotation angle around the z axis
+     * @param alpha Alpha interpolation parameter from 0 to 1 (0=no rotation,
+     * 1=full rotation)
      * @return A new AffineTransform with the rotation
      */
-    public static AffineJTransform create3DRotationTransform(Point center, double anglex, double angley, double anglez) {
+    public static AffineJTransform create3DRotationTransform(Point center, double anglex, double angley, double anglez, double alpha) {
         AffineJTransform resul = new AffineJTransform();
-        final double sinz = Math.sin(anglez);
-        final double cosz = Math.cos(anglez);
+        final double sinz = Math.sin(alpha * anglez);
+        final double cosz = Math.cos(alpha * anglez);
 
-        final double siny = Math.sin(angley);
-        final double cosy = Math.cos(angley);
+        final double siny = Math.sin(alpha * angley);
+        final double cosy = Math.cos(alpha * angley);
 
-        final double sinx = Math.sin(anglex);
-        final double cosx = Math.cos(anglex);
+        final double sinx = Math.sin(alpha * anglex);
+        final double cosx = Math.cos(alpha * anglex);
         resul.setV1Img(cosz * cosy, cosz * siny * sinx - sinz * cosx, cosz * siny * cosx + sinz * sinx);
         resul.setV2Img(sinz * cosy, sinz * siny * sinx + cosz * cosx, sinz * siny * cosx - cosz * sinx);
         resul.setV3Img(-siny, cosy * sinx, cosy * cosx);
+        if (center != null) {
+            AffineJTransform tr1 = AffineJTransform.createTranslationTransform(center.v.mult(-1));
+            AffineJTransform tr2 = AffineJTransform.createTranslationTransform(center.v);
+            return tr1.compose(resul.compose(tr2));
+        } else {
+            return resul;
+        }
+    }
 
-        AffineJTransform tr1 = AffineJTransform.createTranslationTransform(center.v.mult(-1));
-        AffineJTransform tr2 = AffineJTransform.createTranslationTransform(center.v);
+    /**
+     * Creates the 3d rotation that maps the vectors AB1,AB2 into CD1,CD2. This
+     * transformation does not map A into C, only performs the rotation. If you
+     * want to perform the full transformation, use isometric3D instead.
+     *
+     * @param A First point of the origin axes
+     * @param B1 Second point of the origin axes
+     * @param B2 Third point of the origin axes
+     * @param C First point of the destiny axes
+     * @param D1 Second point of the destiny axes
+     * @param D2 Third point of the destiny axes
+     * @param alpha Alpha interpolation parameter from 0 to 1 (0=no rotation,
+     * 1=full rotation)
+     * @return A new AffineTransform with the rotation
+     */
+    public static AffineJTransform create3DRotationTransform(Point A, Point B1, Point B2, Point C, Point D1, Point D2, double alpha) {
+        Vec v1 = A.to(B1).normalize();
+        Vec v2 = v1.cross(A.to(B2)).normalize();
+        Vec v3 = v1.cross(v2).normalize();
 
-        return tr1.compose(resul.compose(tr2));
+        Vec w1 = C.to(D1).normalize();
+        Vec w2 = w1.cross(C.to(D2)).normalize();
+        Vec w3 = w1.cross(w2).normalize();
+        double[][] ma = EulerAnglesCalculator.calculateRotationMatrix(v1, v2, v3, w1, w2, w3);
+        Rotation ro = new Rotation(ma, .000001);
+        double[] angles = ro.getAngles(RotationOrder.XYZ, RotationConvention.VECTOR_OPERATOR);
+        Rotation ro2 = new Rotation(RotationOrder.XYZ, RotationConvention.VECTOR_OPERATOR, alpha * angles[0], alpha * angles[1], alpha * angles[2]);
+        double[][] ma2 = ro2.getMatrix();
+        System.out.println(angles[0] + ", " + angles[1] + ", " + angles[2]);
+//        AffineJTransform tr=AffineJTransform.create3DRotationTransform(null, angles[0], angles[1], angles[2],alpha);
+        AffineJTransform tr = new AffineJTransform();
+        tr.setV1Img(ma2[0][0], ma2[1][0], ma2[2][0]);
+        tr.setV2Img(ma2[0][1], ma2[1][1], ma2[2][1]);
+        tr.setV3Img(ma2[0][2], ma2[1][2], ma2[2][2]);
+        return tr;
     }
 
     /**
@@ -430,8 +474,8 @@ public class AffineJTransform implements Stateable {
      * @param B Second origin point
      * @param C Image of the first origin point
      * @param D Image of the second origin point
-     * @param alpha Alpha parameter to animate the transform. 0 means unaltered.
-     * 1 means the full transform done.
+     * @param alpha Alpha interpolation parameter from 0 to 1 (0=no transform,
+     * 1=full transform)
      * @return The transform
      */
     public static AffineJTransform createDirect2DIsomorphic(Point A, Point B, Point C, Point D, double alpha) {
@@ -464,22 +508,39 @@ public class AffineJTransform implements Stateable {
         return rotation.compose(scale).compose(traslation);
     }
 
-    public static AffineJTransform createDirect3DIsomorphic(Point A, Point B, Point C, Point D, double alpha) {
+    /**
+     * Creates the only direct 3d isomorphic transform that maps A into C, B1
+     * into B2 and plane AB1B2 into CD1D2. Objects are scaled with relation
+     * AB2/AB1.
+     *
+     * @param A First origin point
+     * @param B1 Second origin point
+     * @param B2 Third point to determine origin plane
+     * @param C First destiny point
+     * @param D1 Second destiny point
+     * @param D2 Third point to determine destiny plane
+     * @param alpha Alpha interpolation parameter from 0 to 1 (0=no transform,
+     * 1=full transform)
+     * @return The created transform
+     */
+    public static AffineJTransform createDirect3DIsomorphic(Point A, Point B1, Point B2, Point C, Point D1, Point D2, double alpha) {
         double angle;// Angle between AB and CD
-        Vec v1 = A.to(B);// Vector AB
-        Vec v2 = C.to(D);// Vector CD
-        Vec v3 = A.to(C);// Vector AC
-        double d1 = v1.norm();
-        double d2 = v2.norm();
+        Vec vShift = A.to(C);
+
+        double d1 = A.to(B1).norm();
+        double d2 = C.to(D1).norm();
         double d = d2 / d1;
         // The rotation part
-        AffineJTransform rotation = AffineJTransform.create3DRotationTransform(v1, v2, alpha);
+        //Compute the alpha, beta, gamma angles
+
+        // Calcular los ángulos de Euler a partir de la matriz de rotación R
+        AffineJTransform rotation = AffineJTransform.create3DRotationTransform(A, B1, B2, C, D1, D2, alpha);
 
         // The scale part
         AffineJTransform scale = AffineJTransform.createScaleTransform(A, (1 - alpha) + d * alpha);
 
         // The traslation part
-        AffineJTransform traslation = AffineJTransform.createTranslationTransform(v3.mult(alpha));
+        AffineJTransform traslation = AffineJTransform.createTranslationTransform(vShift.mult(alpha));
         return rotation.compose(scale).compose(traslation);
     }
 
@@ -571,43 +632,43 @@ public class AffineJTransform implements Stateable {
         return resul;
 
     }
-
-    public static AffineJTransform create3DRotationTransform(Vec v1, Vec v2, double alpha) {
-        Vec a = v1.normalize();
-        Vec b = v2.normalize();
-        Vec v = a.cross(b);
-               
-        if (v.norm() < .00001) {
-            return new AffineJTransform();//Identity
-        } else {
-            v=v.normalize();
-        }
-
-        double dot = a.dot(b);
-        double theta = alpha * Math.acos(dot);
-        double cosTheta = Math.cos(theta);
-        double sinTheta = Math.sin(theta);
-
-        AffineJTransform resul = new AffineJTransform();
-        resul.setV1Img(
-                cosTheta + v.x * v.x * (1 - cosTheta),
-                v.y * v.x * (1 - cosTheta) + v.z * sinTheta,
-                v.z * v.x * (1 - cosTheta) - v.y * sinTheta
-        );
-
-        resul.setV2Img(
-                v.x * v.y * (1 - cosTheta) - v.z * sinTheta,
-                cosTheta + v.y * v.y * (1 - cosTheta),
-                v.z * v.y * (1 - cosTheta) + v.x * sinTheta
-        );
-
-        resul.setV3Img(
-                v.x * v.z * (1 - cosTheta) + v.y * sinTheta,
-                v.y * v.z * (1 - cosTheta) - v.x * sinTheta,
-                cosTheta + v.z * v.z * (1 - cosTheta)
-        );
-        return resul;
-    }
+//
+//    public static AffineJTransform create3DRotationTransform(Vec v1, Vec v2, double alpha) {
+//        Vec a = v1.normalize();
+//        Vec b = v2.normalize();
+//        Vec v = a.cross(b);
+//
+//        if (v.norm() < .00001) {
+//            return new AffineJTransform();//Identity
+//        } else {
+//            v = v.normalize();
+//        }
+//
+//        double dot = a.dot(b);
+//        double theta = alpha * Math.acos(dot);
+//        double cosTheta = Math.cos(theta);
+//        double sinTheta = Math.sin(theta);
+//
+//        AffineJTransform resul = new AffineJTransform();
+//        resul.setV1Img(
+//                cosTheta + v.x * v.x * (1 - cosTheta),
+//                v.y * v.x * (1 - cosTheta) + v.z * sinTheta,
+//                v.z * v.x * (1 - cosTheta) - v.y * sinTheta
+//        );
+//
+//        resul.setV2Img(
+//                v.x * v.y * (1 - cosTheta) - v.z * sinTheta,
+//                cosTheta + v.y * v.y * (1 - cosTheta),
+//                v.z * v.y * (1 - cosTheta) + v.x * sinTheta
+//        );
+//
+//        resul.setV3Img(
+//                v.x * v.z * (1 - cosTheta) + v.y * sinTheta,
+//                v.y * v.z * (1 - cosTheta) - v.x * sinTheta,
+//                cosTheta + v.z * v.z * (1 - cosTheta)
+//        );
+//        return resul;
+//    }
 
     /**
      * Interpolate current transform with a given one. The transform is not
@@ -733,4 +794,101 @@ public class AffineJTransform implements Stateable {
         matrix = matrixBackup;
     }
 
+}
+
+class EulerAnglesCalculator {
+
+    public static double[][] calculateRotationMatrix(Vec A, Vec B1, Vec B2,
+            Vec C, Vec D1, Vec D2) {
+        // Matriz M1 con vectores A, B1, B2
+        double[][] M1 = {
+            {A.x, B1.x, B2.x},
+            {A.y, B1.y, B2.y},
+            {A.z, B1.z, B2.z}
+        };
+
+        // Matriz M2 con vectores C, D1, D2
+        double[][] M2 = {
+            {C.x, D1.x, D2.x},
+            {C.y, D1.y, D2.y},
+            {C.z, D1.z, D2.z}
+        };
+
+        // Calcular la matriz de rotación R = M2 * M1^T
+        return multiplyMatrices(M2, transposeMatrix(M1));
+    }
+
+    public static double[][] transposeMatrix(double[][] matrix) {
+        double[][] transpose = new double[matrix[0].length][matrix.length];
+        for (int i = 0; i < matrix.length; i++) {
+            for (int j = 0; j < matrix[0].length; j++) {
+                transpose[j][i] = matrix[i][j];
+            }
+        }
+        return transpose;
+    }
+
+    public static double[][] multiplyMatrices(double[][] matrix1, double[][] matrix2) {
+        double[][] result = new double[matrix1.length][matrix2[0].length];
+        for (int i = 0; i < matrix1.length; i++) {
+            for (int j = 0; j < matrix2[0].length; j++) {
+                for (int k = 0; k < matrix1[0].length; k++) {
+                    result[i][j] += matrix1[i][k] * matrix2[k][j];
+                }
+            }
+        }
+        return result;
+    }
+
+    public static double[] calculateEulerAngles(double[][] R) {
+        double alpha, beta, gamma;
+
+        // Calcular el ángulo β (rotación alrededor del eje Y)
+        beta = Math.asin(-R[2][0]);
+
+        // Comprobación de gimbal lock
+        if (Math.abs(Math.cos(beta)) > 1e-6) {
+            // Si no hay gimbal lock, calcular α y γ
+            alpha = Math.atan2(R[2][1], R[2][2]);
+            gamma = Math.atan2(R[1][0], R[0][0]);
+        } else {
+            // En caso de gimbal lock
+            alpha = 0.0;
+            if (R[2][0] == -1) {
+                beta = Math.PI / 2;
+                gamma = Math.atan2(R[0][1], R[0][2]);
+            } else {
+                beta = -Math.PI / 2;
+                gamma = -Math.atan2(R[0][1], R[0][2]);
+            }
+        }
+
+        return new double[]{alpha, beta, gamma};
+    }
+
+    public static double[] calculateEulerAnglesOld(double[][] R) {
+        double alpha, beta, gamma;
+
+        // Calcular el ángulo β (rotación alrededor del eje Y)
+        beta = Math.asin(-R[2][0]);
+
+        // Comprobación de gimbal lock
+        if (Math.abs(Math.cos(beta)) > 1e-6) {
+            // Si no hay gimbal lock, calcular α y γ
+            alpha = Math.atan2(R[2][1], R[2][2]);
+            gamma = Math.atan2(R[1][0], R[0][0]);
+        } else {
+            // En caso de gimbal lock
+            alpha = 0.0;
+            if (R[2][0] == -1) {
+                beta = Math.PI / 2;
+                gamma = Math.atan2(R[0][1], R[0][2]);
+            } else {
+                beta = -Math.PI / 2;
+                gamma = -Math.atan2(R[0][1], R[0][2]);
+            }
+        }
+
+        return new double[]{alpha, beta, gamma};
+    }
 }

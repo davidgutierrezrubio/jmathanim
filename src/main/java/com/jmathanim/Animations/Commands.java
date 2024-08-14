@@ -140,9 +140,9 @@ public class Commands {
             }
         };
 
-        AnimationGroup anim=AnimationGroup.make();
+        AnimationGroup anim = AnimationGroup.make();
         for (MathObject mathObject : mathObjects) {
-         anim.add(Commands.scale(runtime,  scale, mathObject));   
+            anim.add(Commands.scale(runtime, scale, mathObject));
         }
 //        Animation anim = Commands.scale(runtime, center, scale, group);
         anim.initRunnable = initHook;
@@ -599,7 +599,67 @@ public class Commands {
         };
         resul.setDebugName("Isomorphism Transform");
         return resul;
-    }// End of homothecy command
+    }// End of Isomorphism command
+
+    public static AnimationWithEffects isomorphism3d(double runtime, Point a, Point b1, Point b2, Point c, Point d1, Point d2,
+            MathObject... objects) {
+        AnimationWithEffects resul = new AnimationWithEffects(runtime) {
+            Point A = a.copy();
+            Point B1 = b1.copy();
+            Point B2 = b2.copy();
+            Point C = c.copy();
+            Point D1 = d1.copy();
+            Point D2 = d2.copy();
+            AffineJTransform tr;
+            MathObject[] mathObjects = objects;
+
+            @Override
+            public boolean doInitialization() {
+                super.doInitialization();
+                saveStates(mathObjects);
+                tr = AffineJTransform.createDirect3DIsomorphic(A, B1, B2, C, D1, D2, 1);
+                for (MathObject obj : mathObjects) {
+                    Point center = obj.getCenter();
+                    prepareJumpPath(center, tr.getTransformedObject(center), obj);
+                }
+                return true;
+            }
+
+            @Override
+            public MathObjectGroup getIntermediateObject() {
+                return MathObjectGroup.make(mathObjects);
+            }
+
+            @Override
+            public void doAnim(double t) {
+                super.doAnim(t);
+                double lt = getLT(t);
+                restoreStates(mathObjects);
+                tr = AffineJTransform.createDirect3DIsomorphic(A, B1, B2, C, D1, D2, lt);
+                for (MathObject obj : mathObjects) {
+                    tr.applyTransform(obj);
+                    applyAnimationEffects(lt, obj);
+                }
+            }
+
+            @Override
+            public void finishAnimation() {
+                doAnim(t);
+                super.finishAnimation();
+            }
+
+            @Override
+            public void cleanAnimationAt(double t) {
+            }
+
+            @Override
+            public void prepareForAnim(double t) {
+                addObjectsToscene(mathObjects);
+            }
+        };
+        resul.setDebugName("Isomorphism3d Transform");
+        return resul;
+    }// End of Isomorphism command
 
     /**
      * Animation command that transforms a MathObject through a inverse

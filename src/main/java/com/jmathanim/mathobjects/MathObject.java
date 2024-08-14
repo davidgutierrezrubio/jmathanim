@@ -345,7 +345,7 @@ public abstract class MathObject implements Drawable, Updateable, Stateable, Box
      * @return The same object, after rotating
      */
     public <T extends MathObject> T rotate3d(Point center, double anglex, double angley, double anglez) {
-        AffineJTransform tr = AffineJTransform.create3DRotationTransform(center, anglex, angley, anglez);
+        AffineJTransform tr = AffineJTransform.create3DRotationTransform(center, anglex, angley, anglez,1);
         tr.applyTransform(this);
         return (T) this;
     }
