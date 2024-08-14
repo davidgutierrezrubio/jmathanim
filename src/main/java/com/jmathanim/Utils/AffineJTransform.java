@@ -526,7 +526,8 @@ public class AffineJTransform implements Stateable {
     public static AffineJTransform createDirect3DIsomorphic(Point A, Point B1, Point B2, Point C, Point D1, Point D2, double alpha) {
         double angle;// Angle between AB and CD
         Vec vShift = A.to(C);
-
+        Vec v1=A.v.mult(-1);
+        Vec v2=A.v;
         double d1 = A.to(B1).norm();
         double d2 = C.to(D1).norm();
         double d = d2 / d1;
@@ -534,6 +535,8 @@ public class AffineJTransform implements Stateable {
         //Compute the alpha, beta, gamma angles
 
         // Calcular los ángulos de Euler a partir de la matriz de rotación R
+        AffineJTransform shift1=AffineJTransform.createTranslationTransform(v1);
+        AffineJTransform shift2=AffineJTransform.createTranslationTransform(v2);
         AffineJTransform rotation = AffineJTransform.create3DRotationTransform(A, B1, B2, C, D1, D2, alpha);
 
         // The scale part
@@ -541,7 +544,8 @@ public class AffineJTransform implements Stateable {
 
         // The traslation part
         AffineJTransform traslation = AffineJTransform.createTranslationTransform(vShift.mult(alpha));
-        return rotation.compose(scale).compose(traslation);
+        return shift1.compose(rotation).compose(scale).compose(shift2).compose(traslation);
+//        return rotation.compose(scale).compose(traslation);
     }
 
     /**
