@@ -261,7 +261,6 @@ public class ShaderDrawer {
                 }
             }
         });
-        gl3.glEnableClientState(GL2.GL_VERTEX_ARRAY);
         FloatBuffer fbVertices = Buffers.newDirectFloatBuffer(vertexArray);
         gl3.glBindBuffer(GL3ES3.GL_ARRAY_BUFFER, vbo[0]);
         gl3.glBufferData(GL3ES3.GL_ARRAY_BUFFER, fbVertices.limit() * 4, fbVertices, GL3ES3.GL_STATIC_DRAW);
