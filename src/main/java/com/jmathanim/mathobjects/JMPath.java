@@ -59,12 +59,15 @@ public class JMPath implements Stateable, Boxable, Iterable<JMPathPoint> {
     private final ArrayList<Double> rectifiedPointDistances;
     private double computedPathLength;
     public static final double DELTA_DERIVATIVE = .0001;
+    
+    private final ArrayList<ArrayList<Point>> rectifiedPath;
 
     /**
      * Creates a new empty JMPath objectF
      */
     public JMPath() {
         this(new ArrayList<JMPathPoint>());
+        
     }
 
     /**
@@ -93,8 +96,13 @@ public class JMPath implements Stateable, Boxable, Iterable<JMPathPoint> {
         }
         this.visiblePoints = new CircularArrayList<>();
         pathType = JMPath.MATHOBJECT;// Default value
+        rectifiedPath=new ArrayList<>();
         rectifiedPoints = new ArrayList<>();
         rectifiedPointDistances = new ArrayList<>();
+    }
+
+    public ArrayList<ArrayList<Point>> getPolygonalPieces() {
+        return rectifiedPath;
     }
 
     public int size() {
@@ -1196,15 +1204,15 @@ public class JMPath implements Stateable, Boxable, Iterable<JMPathPoint> {
             get(n).applyAffineTransform(tr);
         }
 
-        //If this path has the rectified points computed, recompute it
-        if (!rectifiedPoints.isEmpty()) {
-            computeRectifiedPoints();
-        }
+//        //If this path has the rectified points computed, recompute it
+//        if (!rectifiedPoints.isEmpty()) {
+//            computeRectifiedPoints();
+//        }
 
     }
 
     public ArrayList<ArrayList<Point>> computePolygonalPieces(Camera cam) {
-        ArrayList<ArrayList<Point>> resul = new ArrayList<>();
+        rectifiedPath.clear();
         ArrayList<Point> connectedSegments = new ArrayList<>();
         for (int n = 0; n < size(); n++) {
             JMPathPoint p = jmPathPoints.get(n);
@@ -1214,14 +1222,14 @@ public class JMPath implements Stateable, Boxable, Iterable<JMPathPoint> {
                 computeStraightenedPoints(connectedSegments, p, q, cam);
 //                connectedSegments.addAll(seg);
             } else {
-                resul.add(connectedSegments);
+                rectifiedPath.add(connectedSegments);
                 connectedSegments = new ArrayList<>();
             }
         }
         if (!connectedSegments.isEmpty()) {
-            resul.add(connectedSegments);
+            rectifiedPath.add(connectedSegments);
         }
-        return resul;
+        return rectifiedPath;
     }
 
     private void computeStraightenedPoints(ArrayList<Point> connectedSegments, JMPathPoint p, JMPathPoint q, Camera cam) {

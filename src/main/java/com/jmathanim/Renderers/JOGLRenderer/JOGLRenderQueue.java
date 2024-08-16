@@ -47,6 +47,7 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.imageio.ImageIO;
@@ -198,6 +199,12 @@ public class JOGLRenderQueue implements GLEventListener {
             }
             gl3.glClear(GL3.GL_COLOR_BUFFER_BIT | GL3.GL_DEPTH_BUFFER_BIT | GL3.GL_STENCIL_BUFFER_BIT);
 
+            
+            objectsToDraw.parallelStream()
+              .filter(obj -> obj instanceof Shape) 
+              .map(obj -> (Shape) obj) 
+              .forEach(Shape::computePolygonalPieces); //Compute rectified path (need to optimize this!!)
+            
             for (MathObject obj : objectsToDraw) {
                 if (obj instanceof Shape) {
                     drawShape(obj);
@@ -242,7 +249,7 @@ public class JOGLRenderQueue implements GLEventListener {
         Shape s = (Shape) obj;
 
         loadProjectionViewMatrixIntoShaders();
-        ArrayList<ArrayList<Point>> pieces = s.getPath().computePolygonalPieces(camera);
+        ArrayList<ArrayList<Point>> pieces = s.getPath().getPolygonalPieces();
 
         //First clear the Stencil buffer if the shape is filled
 //                    if (!noFill) {
@@ -260,14 +267,14 @@ public class JOGLRenderQueue implements GLEventListener {
         gl3.glUseProgram(thinLinesShader.getShader());
         shaderDrawer.thinLineShader = thinLinesShader;
         if (s.getMp().getThickness() > 0) {
-            shaderDrawer.drawContour(s, pieces);
+            shaderDrawer.drawContour(s);
         }
 
 //Fill
         gl3.glUseProgram(fillShader.getShader());
         shaderDrawer.fillShader = fillShader;
 //                    zFightingParameter += zFightingStep;
-        shaderDrawer.drawFill(s, pieces);
+        shaderDrawer.drawFill(s);
         // Check for GL errors
         int error = gl3.glGetError();
         if (error != GL3.GL_NO_ERROR) {

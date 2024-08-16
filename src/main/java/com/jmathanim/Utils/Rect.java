@@ -32,19 +32,46 @@ public class Rect implements Stateable, Boxable {// TODO: Adjust this to 3D coor
     public double xmin, ymin, xmax, ymax, zmin, zmax;
     private Rect rBackup;
 
+    /**
+     * Generates a basic Rect 2D square, side 1, centered at origin
+     *
+     * @return The generated Rect
+     */
     public static Rect centeredUnitSquare() {
         return make(
                 Point.at(-.5, -.5),
-                Point.at(.5, -.5),
-                Point.at(.5, .5),
-                Point.at(-.5, .5)
+                Point.at(.5, .5)
         );
     }
 
+    /**
+     * Generates a basic Rect 3D Cube, side 1, centered at origin
+     *
+     * @return The generated Rect
+     */
+    public static Rect centeredUnitCube() {
+        return make(
+                Point.at(-.5, -.5, -.5),
+                Point.at(.5, .5, .5)
+        );
+    }
+
+    /**
+     * Return the smallest rect that contains all specified objects
+     *
+     * @param objs An array of Boxable objects.
+     * @return The generated Rect
+     */
     public static Rect make(Boxable... objs) {
         return make(Arrays.asList(objs));
     }
 
+    /**
+     * Return the smallest rect that contains all specified objects
+     *
+     * @param objs A list of Boxable objects.
+     * @return The generated Rect
+     */
     public static Rect make(List<Boxable> objs) {
         Rect resul = new EmptyRect();
         for (Boxable obj : objs) {
@@ -53,19 +80,30 @@ public class Rect implements Stateable, Boxable {// TODO: Adjust this to 3D coor
         return resul;
     }
 
-//    public static Rect make(Point a, Point b) {
-//        double xmin = Math.min(a.v.x, b.v.x);
-//        double xmax = Math.max(a.v.x, b.v.x);
-//        double ymin = Math.min(a.v.y, b.v.y);
-//        double ymax = Math.max(a.v.y, b.v.y);
-//        double zmin = Math.min(a.v.z, b.v.z);
-//        double zmax = Math.max(a.v.z, b.v.z);
-//        return new Rect(xmin, ymin, zmin, xmax, ymax, zmax);
-//    }
+    /**
+     * Generates a Rect with the given lower-left and upper-right corners (2D
+     * version)
+     *
+     * @param xmin x-min coordinate
+     * @param ymin y-min coordinate
+     * @param xmax x-max coordinate
+     * @param ymax y-max coordinate
+     */
     public Rect(double xmin, double ymin, double xmax, double ymax) {
         this(xmin, ymin, 0, xmax, ymax, 0);
     }
 
+    /**
+     * Generates a Rect with the given lower-left and upper-right corners (3D
+     * version)
+     *
+     * @param xmin x-min coordinate
+     * @param ymin y-min coordinate
+     * @param zmin z-min coordinate
+     * @param xmax x-max coordinate
+     * @param ymax y-max coordinate
+     * @param zmax z-max coordinate
+     */
     public Rect(double xmin, double ymin, double zmin, double xmax, double ymax, double zmax) {
         this.xmin = xmin;
         this.ymin = ymin;
@@ -309,7 +347,7 @@ public class Rect implements Stateable, Boxable {// TODO: Adjust this to 3D coor
 
     @Override
     public String toString() {
-        return "Rect{" + "xmin=" + xmin + ", ymin=" + ymin + ", zmin=" + zmin +", xmax=" + xmax + ", ymax=" + ymax + ", zmax=" + zmax +'}';
+        return "Rect{" + "xmin=" + xmin + ", ymin=" + ymin + ", zmin=" + zmin + ", xmax=" + xmax + ", ymax=" + ymax + ", zmax=" + zmax + '}';
     }
 
     /**
@@ -362,16 +400,16 @@ public class Rect implements Stateable, Boxable {// TODO: Adjust this to 3D coor
     public Point getDR() {
         return new Point(xmax, ymin, .5 * (zmin + zmax));
     }
-    
+
     public Point getZTOP() {
-        return new Point(.5*(xmin+xmax),.5*(ymin+ymax),zmax);
-    }
-     public Point getZBOTTOM() {
-        return new Point(.5*(xmin+xmax),.5*(ymin+ymax),zmin);
+        return new Point(.5 * (xmin + xmax), .5 * (ymin + ymax), zmax);
     }
 
-     
-      /**
+    public Point getZBOTTOM() {
+        return new Point(.5 * (xmin + xmax), .5 * (ymin + ymax), zmin);
+    }
+
+    /**
      * Growns horizontally and vertically the rect adding specified gaps. Each
      * gap is added twice (hgap left and right, and vgap up and down). The
      * original Rect is affected.
@@ -381,27 +419,27 @@ public class Rect implements Stateable, Boxable {// TODO: Adjust this to 3D coor
      * @return This object
      */
     public Rect addGap(double xgap, double ygap) {
-        return addGap(xgap,ygap,0);
+        return addGap(xgap, ygap, 0);
     }
-     
+
     /**
-     * Growns horizontally, vertically and in z axis the rect adding specified gaps. Each
-     * gap is added twice (hgap left and right, and vgap up and down). The
-     * original Rect is affected.
+     * Growns horizontally, vertically and in z axis the rect adding specified
+     * gaps. Each gap is added twice (hgap left and right, and vgap up and
+     * down). The original Rect is affected.
      *
      * @param xgap Horizontal gap
      * @param ygap Vertical gap
      * @param zgap Z gap
      * @return This object
      */
-    public Rect addGap(double xgap, double ygap,double zgap) {
+    public Rect addGap(double xgap, double ygap, double zgap) {
 //        return new Rect(xmin - xgap, ymin - ygap, zmin, xmax + xgap, ymax + ygap, zmax);
-        xmin-=xgap;
-        ymin-=ygap;
-        xmax+=xgap;
-        ymax+=ygap;
-        zmin-=zgap;
-        zmax+=zgap;
+        xmin -= xgap;
+        ymin -= ygap;
+        xmax += xgap;
+        ymax += ygap;
+        zmin -= zgap;
+        zmax += zgap;
         return this;
     }
 
@@ -419,7 +457,7 @@ public class Rect implements Stateable, Boxable {// TODO: Adjust this to 3D coor
         return new Rect(xmin - leftGap, ymin - lowerGap, zmin, xmax + rightGap, ymax + upperGap, zmax);
     }
 
-     /**
+    /**
      * Computes a new Rect with the following gaps added (right, upper, left,
      * lower).
      *
@@ -431,12 +469,10 @@ public class Rect implements Stateable, Boxable {// TODO: Adjust this to 3D coor
      * @param zMaxGap Upper z gap
      * @return A new {@link Rect} with the gaps applied
      */
-    public Rect addGap(double rightGap, double upperGap, double leftGap, double lowerGap,double zMinGap, double zMaxGap) {
-        return new Rect(xmin - leftGap, ymin - lowerGap, zmin-zMinGap, xmax + rightGap, ymax + upperGap, zmax+zMaxGap);
+    public Rect addGap(double rightGap, double upperGap, double leftGap, double lowerGap, double zMinGap, double zMaxGap) {
+        return new Rect(xmin - leftGap, ymin - lowerGap, zmin - zMinGap, xmax + rightGap, ymax + upperGap, zmax + zMaxGap);
     }
-    
-    
-    
+
     /**
      * Scale the rectangle around center. The current rect is modified.
      *
@@ -528,9 +564,7 @@ public class Rect implements Stateable, Boxable {// TODO: Adjust this to 3D coor
         Point B = this.getUR().rotate(center, rotateAngle);
         Point C = this.getDR().rotate(center, rotateAngle);
         Point D = this.getDL().rotate(center, rotateAngle);
-        Rect r1 = Rect.make(A, C);
-        Rect r2 = Rect.make(B, D);
-        return Rect.union(r1, r2);
+        return Rect.make(A, B, C, D);
     }
 
     /**
@@ -544,20 +578,20 @@ public class Rect implements Stateable, Boxable {// TODO: Adjust this to 3D coor
      * @return A Point with the relative coordinates
      */
     public Point getRelPoint(double relX, double relY) {
-        return Point.at(xmin + relX * (xmax - xmin), ymin + relY * (ymax - ymin));
+        return Point.at(xmin + relX * (xmax - xmin), ymin + relY * (ymax - ymin), 0);
     }
 
     /**
      * Gets the point inside the rect with the relative coordinates from 0 to 1.
      * The point (0,0) refers to the DL corner, the (1,1) the UR corner, and
-     * (.5,.5) the center of the rect
+     * (.5,.5) the center of the rect (3D version).
      *
      * @param relX x relative coordinate, from 0 to 1
      * @param relY y relative coordinate, from 0 to 1
      * @param relZ z relative coordinate, from 0 to 1
      * @return A Point with the relative coordinates
      */
-    public Point getRelPoint3D(double relX, double relY, double relZ) {
+    public Point getRelPoint(double relX, double relY, double relZ) {
         return Point.at(xmin + relX * (xmax - xmin), ymin + relY * (ymax - ymin), zmin + relZ * (zmax - zmin));
     }
 
@@ -698,7 +732,7 @@ public class Rect implements Stateable, Boxable {// TODO: Adjust this to 3D coor
     }
 
     private void smashInH(Boxable containerBox, double horizontalGap) {
-        Rect rBig = containerBox.getBoundingBox().addGap(-horizontalGap, 0,0);
+        Rect rBig = containerBox.getBoundingBox().addGap(-horizontalGap, 0, 0);
         if (getWidth() >= rBig.getWidth()) {
             return;
         }
@@ -715,7 +749,7 @@ public class Rect implements Stateable, Boxable {// TODO: Adjust this to 3D coor
     }
 
     private Rect smashInV(Boxable containerBox, double verticalGap) {
-        Rect rBig = containerBox.getBoundingBox().addGap(0, -verticalGap,0);
+        Rect rBig = containerBox.getBoundingBox().addGap(0, -verticalGap, 0);
         if (getHeight() >= rBig.getHeight()) {
             return this;
         }

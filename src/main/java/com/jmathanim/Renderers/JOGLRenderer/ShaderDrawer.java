@@ -65,7 +65,11 @@ public class ShaderDrawer {
 
     }
 
-    void drawFill(Shape s, ArrayList<ArrayList<Point>> pieces) {
+    void drawFill(Shape s) {
+         ArrayList<ArrayList<Point>> pieces = s.getPath().getPolygonalPieces();
+        if (pieces.isEmpty()) {
+            s.computePolygonalPieces();
+        }
         if (s.getMp().getFillColor().getAlpha() == 0) {
             return;
         }
@@ -217,7 +221,17 @@ public class ShaderDrawer {
         }
     }
 
-    void drawContour(Shape s, ArrayList<ArrayList<Point>> pieces) {
+    /**
+     * Draw a thin contour line
+     *
+     * @param s Shape to draw
+     * @param pieces Rectified
+     */
+    void drawContour(Shape s) {
+        ArrayList<ArrayList<Point>> pieces = s.getPath().getPolygonalPieces();
+        if (pieces.isEmpty()) {
+            s.computePolygonalPieces();
+        }
         if (s.getMp().getDrawColor().getAlpha() == 0) {
             return;
         }

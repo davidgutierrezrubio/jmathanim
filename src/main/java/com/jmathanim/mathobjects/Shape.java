@@ -35,6 +35,7 @@ import static com.jmathanim.mathobjects.MathObject.Align.LOWER;
 import static com.jmathanim.mathobjects.MathObject.Align.RIGHT;
 import static com.jmathanim.mathobjects.MathObject.Align.UPPER;
 import static com.jmathanim.mathobjects.MathObject.Align.VCENTER;
+import java.util.ArrayList;
 import java.util.OptionalInt;
 import javafx.scene.shape.Path;
 
@@ -798,5 +799,11 @@ public class Shape extends MathObject {
             }
         }
     }
+
+    public ArrayList<ArrayList<Point>> computePolygonalPieces() {
+        return jmpath.computePolygonalPieces(scene.getCamera());
+    }
+    
+    
 
 }

@@ -508,8 +508,8 @@ public class AffineJTransform implements Stateable {
 
     /**
      * Creates the only direct 3d isomorphic transform that maps A into C, B1
-     * into B2 and plane AB1B2 into CD1D2. Objects are scaled with relation
-     * AB2/AB1.
+     * into D1 and plane AB1B2 into CD1D2. Objects are scaled uniformly with relation
+     * AD1/AB1.
      *
      * @param A First origin point
      * @param B1 Second origin point

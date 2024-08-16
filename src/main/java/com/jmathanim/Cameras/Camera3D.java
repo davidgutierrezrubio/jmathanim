@@ -40,7 +40,7 @@ public class Camera3D extends Camera {
         eye = Point.at(0, 0, 1.125d / Math.tan(.5d*fov)).visible(false);
 //        eye = Point.at(0, 0, 1.125d / Math.tan(1d * fov * PI / 180 / 2)).visible(false);
         look = Point.at(0, 0, 0).visible(false);
-        up = Vec.to(0, 0, 0);
+        up = Vec.to(0, 0, 1);
     }
 
     @Override

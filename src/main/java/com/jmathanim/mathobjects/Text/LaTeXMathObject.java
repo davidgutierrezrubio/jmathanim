@@ -17,9 +17,13 @@
  */
 package com.jmathanim.mathobjects.Text;
 
+import com.jmathanim.Cameras.Camera3D;
+import com.jmathanim.Utils.AffineJTransform;
 import com.jmathanim.Utils.Anchor;
+import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.MathObject;
+import com.jmathanim.mathobjects.Point;
 import com.jmathanim.mathobjects.Scalar;
 import com.jmathanim.mathobjects.hasArguments;
 import java.text.DecimalFormat;
@@ -32,7 +36,11 @@ import java.util.Locale;
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
 public class LaTeXMathObject extends AbstractLaTeXMathObject implements hasArguments {
-    
+
+    private Point anchor3DA;
+    private Point anchor3DC;
+    private Point anchor3DD;
+
     DecimalFormat df;
     private String origText;
     public final HashMap<Integer, Scalar> variables;
@@ -72,14 +80,14 @@ public class LaTeXMathObject extends AbstractLaTeXMathObject implements hasArgum
      * @return The LaTexMathObject
      */
     public static LaTeXMathObject make(String text, CompileMode compileMode, Anchor.Type anchor) {
-        
+
         LaTeXMathObject resul = new LaTeXMathObject(anchor);
         resul.getMp().loadFromStyle("latexdefault");
         resul.getMp().setAbsoluteThickness(true);
 //        resul.getMp().setFillColor(resul.getMp().getDrawColor());
 //        resul.getMp().setThickness(1d);
         resul.mode = compileMode;
-        
+
         if (!"".equals(text)) {
             resul.setLaTeX(text);
         }
@@ -124,7 +132,7 @@ public class LaTeXMathObject extends AbstractLaTeXMathObject implements hasArgum
         resul.copyStateFrom(this);
         return resul;
     }
-    
+
     @Override
     public void copyStateFrom(MathObject obj) {
         super.copyStateFrom(obj);
@@ -132,7 +140,7 @@ public class LaTeXMathObject extends AbstractLaTeXMathObject implements hasArgum
         this.origText = copy.origText;
         this.anchor = copy.anchor;
     }
-    
+
     @Override
     public void update(JMathAnimScene scene) {
         if (origText == null) {
@@ -146,8 +154,28 @@ public class LaTeXMathObject extends AbstractLaTeXMathObject implements hasArgum
         if (!newText.equals(origText)) {//No need to update if text has not changed
             changeInnerLaTeX(newText);
         }
+//        anchor3DA = getBoundingBox().getLower();
+//        anchor3DC = anchor3DA.copy().shift(0, 1, 0);
+//        anchor3DD = anchor3DA.copy().shift(0, 0, 1);
+//        alignTo3DView();
     }
-    
+
+    private void alignTo3DView() {
+        if (scene.getCamera() instanceof Camera3D) {
+            Camera3D cam = (Camera3D) scene.getCamera();
+            Point anchor3DCdest = anchor3DA.copy().shift(cam.up);
+            Point anchor3DDdest = anchor3DA.copy().shift(cam.look.to(cam.eye));
+            AffineJTransform tr = AffineJTransform.createDirect3DIsomorphic(
+                anchor3DA, anchor3DD, anchor3DC,
+                anchor3DA.copy(), anchor3DDdest, anchor3DCdest,
+                1);
+            tr.applyTransform(this);
+//            tr.applyTransform(anchor3DA);
+            tr.applyTransform(anchor3DC);
+            tr.applyTransform(anchor3DD);
+        }
+    }
+
     public DecimalFormat getDecimalFormat() {
         return df;
     }
@@ -160,7 +188,7 @@ public class LaTeXMathObject extends AbstractLaTeXMathObject implements hasArgum
     public void setArgumentsFormat(String format) {
         df = new DecimalFormat(format);
     }
-    
+
     @Override
     public Scalar getArg(int n) {
         Scalar resul = variables.get(n);
