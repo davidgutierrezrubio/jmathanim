@@ -1,4 +1,4 @@
-#version 330
+#version 410 core
 
 uniform float Thickness;
 uniform int capStyle;//0=rounded, 1=butt, 2=square

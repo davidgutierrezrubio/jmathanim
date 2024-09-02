@@ -1,4 +1,4 @@
-#version 330
+#version 410 core
 
 uniform vec4 unifColor;//Uniform color
 uniform vec2 resolution;//Screen resolution
@@ -32,11 +32,13 @@ float viewportHeight=resolution.y;
  float dashSize = .1f;
         float gapSize = .05f;
         float patternLength = dashSize + gapSize;
+ 
  if (mod(t, patternLength) < dashSize) {
         // Está en un dash
       FragColor = unifColor;
     } else {
-        discard; 
+	  FragColor = unifColor;
+        //discard; 
     }
 
     

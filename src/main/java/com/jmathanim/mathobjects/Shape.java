@@ -800,7 +800,7 @@ public class Shape extends MathObject {
         }
     }
 
-    public ArrayList<ArrayList<Point>> computePolygonalPieces() {
+    public ArrayList<ArrayList<float[]>> computePolygonalPieces() {
         return jmpath.computePolygonalPieces(scene.getCamera());
     }
     

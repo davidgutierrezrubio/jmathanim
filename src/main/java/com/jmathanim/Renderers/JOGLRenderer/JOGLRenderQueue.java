@@ -29,28 +29,23 @@ import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.MathObject;
-import com.jmathanim.mathobjects.Point;
 import com.jmathanim.mathobjects.Shape;
 import com.jmathanim.mathobjects.surface.Surface;
 import com.jogamp.opengl.GL;
-import com.jogamp.opengl.GL3;
+import com.jogamp.opengl.GL4;
+//import com.jogamp.opengl.GL3;
 import com.jogamp.opengl.GLAutoDrawable;
 import com.jogamp.opengl.GLDrawable;
 import com.jogamp.opengl.GLEventListener;
-import com.jogamp.opengl.GLException;
 import com.jogamp.opengl.util.awt.AWTGLReadBufferUtil;
 import com.jogamp.opengl.util.awt.TextRenderer;
 import java.awt.Font;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.nio.ByteBuffer;
-import java.nio.FloatBuffer;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.imageio.ImageIO;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 
@@ -63,6 +58,7 @@ public class JOGLRenderQueue implements GLEventListener {
 
     public boolean busy = false; //True if actually drawing
     private static final double MIN_THICKNESS = .2d;
+    private boolean hasToRectify=true;
     public int height;
     public BufferedImage savedImage;
     public boolean useCustomShaders = true;
@@ -72,7 +68,7 @@ public class JOGLRenderQueue implements GLEventListener {
     public int width;
     final float zNear = 0.1f, zFar = 7000f;
 //    private GL3ES3 gles;
-    private GL3 gl3;
+    private GL4 gl4;
     public Camera3D camera;
     public Camera3D fixedCamera;
     public VideoEncoder videoEncoder;
@@ -122,29 +118,29 @@ public class JOGLRenderQueue implements GLEventListener {
         // Habilita el multisampling en OpenGL
 //        gl.glEnable(GL.GL_MULTISAMPLE);
 //        gles = drawable.getGL().getGL3ES3();
-        gl3 = drawable.getGL().getGL3();
-        gl3.glDepthMask(true);
-        gl3.glEnable(GL3.GL_DEPTH_TEST);
-//        gl3.glDepthFunc(GL3.GL_LESS);
-        gl3.glDepthFunc(GL3.GL_LEQUAL);
-        gl3.glEnable(GL3.GL_LINE_SMOOTH);
-        gl3.glEnable(GL3.GL_POLYGON_SMOOTH);
-        gl3.glHint(GL3.GL_POLYGON_SMOOTH_HINT, GL3.GL_NICEST);
-        gl3.glHint(GL3.GL_LINE_SMOOTH_HINT, GL3.GL_NICEST);
-        gl3.glEnable(GL3.GL_BLEND);
-        gl3.glBlendFunc(GL3.GL_SRC_ALPHA, GL3.GL_ONE_MINUS_SRC_ALPHA);
-        gl3.glEnable(GL3.GL_MULTISAMPLE);
-        gl3.glEnable(GL3.GL_SAMPLE_ALPHA_TO_COVERAGE);
-        gl3.glDisable(GL3.GL_CULL_FACE);
+        gl4 = drawable.getGL().getGL4();
+        gl4.glDepthMask(true);
+        gl4.glEnable(GL4.GL_DEPTH_TEST);
+//        gl3.glDepthFunc(GL4.GL_LESS);
+        gl4.glDepthFunc(GL4.GL_LEQUAL);
+        gl4.glEnable(GL4.GL_LINE_SMOOTH);
+        gl4.glEnable(GL4.GL_POLYGON_SMOOTH);
+        gl4.glHint(GL4.GL_POLYGON_SMOOTH_HINT, GL4.GL_NICEST);
+        gl4.glHint(GL4.GL_LINE_SMOOTH_HINT, GL4.GL_NICEST);
+        gl4.glEnable(GL4.GL_BLEND);
+        gl4.glBlendFunc(GL4.GL_SRC_ALPHA, GL4.GL_ONE_MINUS_SRC_ALPHA);
+        gl4.glEnable(GL4.GL_MULTISAMPLE);
+        gl4.glEnable(GL4.GL_SAMPLE_ALPHA_TO_COVERAGE);
+        gl4.glDisable(GL4.GL_CULL_FACE);
 
         //Drawer class, we have to pass it the created shaders
-        shaderDrawer = new ShaderDrawer(gl3);
+        shaderDrawer = new ShaderDrawer(gl4);
         shaderDrawer.queue = this;
 //        shaderDrawer.width = this.width;
 //        shaderDrawer.height = this.height;
         if (useCustomShaders) {
-            thinLinesShader = new ShaderLoader(gl3, "#thinLines/thinLines.vs", "#thinLines/thinLines.gs", "#thinLines/thinLines.fs");
-            fillShader = new ShaderLoader(gl3, "#fill/fill.vs", "", "#fill/fill.fs");
+            thinLinesShader = new ShaderLoader(gl4, "#thinLines/thinLines.vs", "#thinLines/thinLines.gs", "#thinLines/thinLines.fs");
+            fillShader = new ShaderLoader(gl4, "#fill/fill.vs", "", "#fill/fill.fs");
             try {
                 thinLinesShader.loadShaders();
                 fillShader.loadShaders();
@@ -195,16 +191,12 @@ public class JOGLRenderQueue implements GLEventListener {
             PaintStyle backgroundColor = config.getBackgroundColor();
             if (backgroundColor instanceof JMColor) {
                 JMColor col = (JMColor) backgroundColor;
-                gl3.glClearColor((float) col.r, (float) col.g, (float) col.b, (float) col.getAlpha());
+                gl4.glClearColor((float) col.r, (float) col.g, (float) col.b, (float) col.getAlpha());
             }
-            gl3.glClear(GL3.GL_COLOR_BUFFER_BIT | GL3.GL_DEPTH_BUFFER_BIT | GL3.GL_STENCIL_BUFFER_BIT);
+            gl4.glClear(GL4.GL_COLOR_BUFFER_BIT | GL4.GL_DEPTH_BUFFER_BIT | GL4.GL_STENCIL_BUFFER_BIT);
 
-            
-            objectsToDraw.parallelStream()
-              .filter(obj -> obj instanceof Shape) 
-              .map(obj -> (Shape) obj) 
-              .forEach(Shape::computePolygonalPieces); //Compute rectified path (need to optimize this!!)
-            
+            computeRectifiedVersionOfAllShapes();
+
             for (MathObject obj : objectsToDraw) {
                 if (obj instanceof Shape) {
                     drawShape(obj);
@@ -215,30 +207,48 @@ public class JOGLRenderQueue implements GLEventListener {
             }
 
             objectsToDraw.clear();
-            gl3.glFlush();
+            gl4.glFlush();
 
             if (saveImageFlag) {
-                savedImage = screenshot(gl3, drawable);
+                savedImage = screenshot(gl4, drawable);
                 saveImageFlag = false;
             }
             if (config.isCreateMovie()) {
 //            BufferedImage image = screenshot(drawable);
-                BufferedImage image = screenshot(gl3, drawable);
+                BufferedImage image = screenshot(gl4, drawable);
                 videoEncoder.writeFrame(image, frameCount);
             }
 
             // Check for GL errors
-            int error = gl3.glGetError();
-            if (error != GL3.GL_NO_ERROR) {
+            int error = gl4.glGetError();
+            if (error != GL4.GL_NO_ERROR) {
                 System.err.println("OpenGL Error: " + error);
             }
             busy = false;
             notify();
         }
-        int error = gl3.glGetError();
-        if (error != GL3.GL_NO_ERROR) {
+        int error = gl4.glGetError();
+        if (error != GL4.GL_NO_ERROR) {
             System.err.println("OpenGL Error: " + error);
         }
+    }
+
+    private void computeRectifiedVersionOfAllShapes() {
+//        if (hasToRectify) {
+            hasToRectify=false;
+            objectsToDraw.parallelStream()
+                    .filter(obj -> obj instanceof Shape)
+                    .map(obj -> (Shape) obj)
+                    .forEach(Shape::computePolygonalPieces); //Compute rectified path (need to optimize this!!)
+//        }
+//        int numberOfBezierCurves=0;//Number of Bezier Curves to interpolate TODO: consider straight segments case
+//        for (MathObject obj : objectsToDraw) {
+//            if (obj instanceof Shape) {
+//                Shape shape = (Shape) obj;
+//                numberOfBezierCurves+=shape.getPath().jmPathPoints.stream().filter(t->t.isThisSegmentVisible).count();
+//            }
+//        }
+
     }
 
     /**
@@ -247,42 +257,36 @@ public class JOGLRenderQueue implements GLEventListener {
      */
     private void drawShape(MathObject obj) {
         Shape s = (Shape) obj;
+        boolean needsFill = (s.getMp().getFillColor().getAlpha() > 0);
 
         loadProjectionViewMatrixIntoShaders();
-        ArrayList<ArrayList<Point>> pieces = s.getPath().getPolygonalPieces();
-
-        //First clear the Stencil buffer if the shape is filled
-//                    if (!noFill) {
-        gl3.glEnable(GL3.GL_STENCIL_TEST);
-//        gl3.glClear(GL3.GL_STENCIL_BUFFER_BIT);
-
-        gl3.glStencilMask(0xFF);
-        gl3.glClear(GL3.GL_STENCIL_BUFFER_BIT);
-
-//        gl3.glStencilMask(0xFF);
-        gl3.glStencilFunc(GL.GL_NOTEQUAL, 0b10, 0b10);//Second bit for contour
-        gl3.glStencilOp(GL.GL_KEEP, GL.GL_REPLACE, GL.GL_REPLACE);
-
-//Contour
-        gl3.glUseProgram(thinLinesShader.getShader());
-        shaderDrawer.thinLineShader = thinLinesShader;
-        if (s.getMp().getThickness() > 0) {
+        if (needsFill) {//TODO: This method (a stencil for each shape is EXPENSIVE)
+            //If shape needs to be filled, enable stencil test
+            //Mark second stencil bit for contour (will prevent filled area to overwrite this)
+            gl4.glEnable(GL4.GL_STENCIL_TEST);
+            gl4.glStencilMask(0xFF);
+            gl4.glClear(GL4.GL_STENCIL_BUFFER_BIT);
+            gl4.glStencilFunc(GL.GL_NOTEQUAL, 0b10, 0b10);//Second bit for contour
+            gl4.glStencilOp(GL.GL_KEEP, GL.GL_REPLACE, GL.GL_REPLACE);
+        }
+        if ((s.getMp().getThickness() > 0) && (s.getMp().getDrawColor().getAlpha() > 0)) {
+            gl4.glUseProgram(thinLinesShader.getShader());
+            shaderDrawer.thinLineShader = thinLinesShader;
             shaderDrawer.drawContour(s);
         }
 
-//Fill
-        gl3.glUseProgram(fillShader.getShader());
-        shaderDrawer.fillShader = fillShader;
-//                    zFightingParameter += zFightingStep;
-        shaderDrawer.drawFill(s);
-        // Check for GL errors
-        int error = gl3.glGetError();
-        if (error != GL3.GL_NO_ERROR) {
-            System.err.println("OpenGL Error: " + error);
+        if (needsFill) {
+//Draw fill
+            gl4.glUseProgram(fillShader.getShader());
+            shaderDrawer.fillShader = fillShader;
+            shaderDrawer.drawFill(s);
+            // Check for GL errors
+            int error = gl4.glGetError();
+            if (error != GL4.GL_NO_ERROR) {
+                System.err.println("OpenGL Error: " + error);
+            }
+            gl4.glDisable(GL4.GL_STENCIL_TEST);
         }
-
-//                    shaderDrawer.drawFillSlowButWorking(s, pieces);
-        gl3.glDisable(GL3.GL_STENCIL_TEST);
     }
 
     private void loadProjectionViewMatrixIntoShaders() {
@@ -318,36 +322,36 @@ public class JOGLRenderQueue implements GLEventListener {
 //            projection = new Matrix4f().identity();
 //            view = new Matrix4f().identity();
 
-            gl3.glUseProgram(thinLinesShader.getShader());
-            int projLoc = gl3.glGetUniformLocation(thinLinesShader.getShader(), "projection");
-            int viewLoc = gl3.glGetUniformLocation(thinLinesShader.getShader(), "view");
+            gl4.glUseProgram(thinLinesShader.getShader());
+            int projLoc = gl4.glGetUniformLocation(thinLinesShader.getShader(), "projection");
+            int viewLoc = gl4.glGetUniformLocation(thinLinesShader.getShader(), "view");
 
-            gl3.glUniformMatrix4fv(projLoc, 1, false, projection.get(new float[16]), 0);
-            gl3.glUniformMatrix4fv(viewLoc, 1, false, view.get(new float[16]), 0);
+            gl4.glUniformMatrix4fv(projLoc, 1, false, projection.get(new float[16]), 0);
+            gl4.glUniformMatrix4fv(viewLoc, 1, false, view.get(new float[16]), 0);
 
-            gl3.glUniform2f(thinLinesShader.getUniformVariable("Viewport"), (float) this.width, (float) this.height);
+            gl4.glUniform2f(thinLinesShader.getUniformVariable("Viewport"), (float) this.width, (float) this.height);
 
-            gl3.glUseProgram(fillShader.getShader());
-            projLoc = gl3.glGetUniformLocation(fillShader.getShader(), "projection");
-            viewLoc = gl3.glGetUniformLocation(fillShader.getShader(), "view");
+            gl4.glUseProgram(fillShader.getShader());
+            projLoc = gl4.glGetUniformLocation(fillShader.getShader(), "projection");
+            viewLoc = gl4.glGetUniformLocation(fillShader.getShader(), "view");
 
-            gl3.glUniformMatrix4fv(projLoc, 1, false, projection.get(new float[16]), 0);
-            gl3.glUniformMatrix4fv(viewLoc, 1, false, view.get(new float[16]), 0);
+            gl4.glUniformMatrix4fv(projLoc, 1, false, projection.get(new float[16]), 0);
+            gl4.glUniformMatrix4fv(viewLoc, 1, false, view.get(new float[16]), 0);
 
         }
 
 //        
 //        FloatBuffer modMat = FloatBuffer.allocate(16);
-////        gl3.glGetFloatv(GL3.GL_MODELVIEW_MATRIX, modMat);
+////        gl3.glGetFloatv(GL4.GL_MODELVIEW_MATRIX, modMat);
 //        gl3.glUseProgram(thinLinesShader.getShader());
 //        gl3.glUniformMatrix4fv(thinLinesShader.getUniformVariable("modelMatrix"), 1, false, modMat);
 //        gl3.glUseProgram(fillShader.getShader());
 //        gl3.glUniformMatrix4fv(fillShader.getUniformVariable("modelMatrix"), 1, false, modMat);
     }
 
-    public BufferedImage screenshot(GL3 gl3, GLDrawable drawable) {
+    public BufferedImage screenshot(GL4 gl4, GLDrawable drawable) {
         AWTGLReadBufferUtil aa = new AWTGLReadBufferUtil(drawable.getGLProfile(), true);
-        BufferedImage img = aa.readPixelsToBufferedImage(gl3, 0, 0, config.mediaW, config.mediaH, true);
+        BufferedImage img = aa.readPixelsToBufferedImage(gl4, 0, 0, config.mediaW, config.mediaH, true);
         return img;
     }
 

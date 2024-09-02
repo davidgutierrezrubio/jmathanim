@@ -60,14 +60,14 @@ public class JMPath implements Stateable, Boxable, Iterable<JMPathPoint> {
     private double computedPathLength;
     public static final double DELTA_DERIVATIVE = .0001;
     
-    private final ArrayList<ArrayList<Point>> rectifiedPath;
+    private final ArrayList<ArrayList<float[]>> rectifiedPath;
 
     /**
      * Creates a new empty JMPath objectF
      */
     public JMPath() {
         this(new ArrayList<JMPathPoint>());
-        
+
     }
 
     /**
@@ -96,12 +96,12 @@ public class JMPath implements Stateable, Boxable, Iterable<JMPathPoint> {
         }
         this.visiblePoints = new CircularArrayList<>();
         pathType = JMPath.MATHOBJECT;// Default value
-        rectifiedPath=new ArrayList<>();
+        rectifiedPath = new ArrayList<>();
         rectifiedPoints = new ArrayList<>();
         rectifiedPointDistances = new ArrayList<>();
     }
 
-    public ArrayList<ArrayList<Point>> getPolygonalPieces() {
+    public ArrayList<ArrayList<float[]>> getPolygonalPieces() {
         return rectifiedPath;
     }
 
@@ -1208,12 +1208,11 @@ public class JMPath implements Stateable, Boxable, Iterable<JMPathPoint> {
 //        if (!rectifiedPoints.isEmpty()) {
 //            computeRectifiedPoints();
 //        }
-
     }
 
-    public ArrayList<ArrayList<Point>> computePolygonalPieces(Camera cam) {
+    public ArrayList<ArrayList<float[]>> computePolygonalPieces(Camera cam) {
         rectifiedPath.clear();
-        ArrayList<Point> connectedSegments = new ArrayList<>();
+        ArrayList<float[]> connectedSegments = new ArrayList<>();
         for (int n = 0; n < size(); n++) {
             JMPathPoint p = jmPathPoints.get(n);
             JMPathPoint q = jmPathPoints.get(n + 1);
@@ -1232,18 +1231,27 @@ public class JMPath implements Stateable, Boxable, Iterable<JMPathPoint> {
         return rectifiedPath;
     }
 
-    private void computeStraightenedPoints(ArrayList<Point> connectedSegments, JMPathPoint p, JMPathPoint q, Camera cam) {
+    private void computeStraightenedPoints(ArrayList<float[]> connectedSegments, JMPathPoint p, JMPathPoint q, Camera cam) {
         if (connectedSegments.isEmpty()) {
-            connectedSegments.add(p.p);
+            addPoint(connectedSegments, p.p.v,0);
         }
+        Vec vPrevious=p.p.v;
         if (q.isCurved) {
             int num = appropiateSubdivisionNumber(p.p.v, q.p.v, cam);
             for (int n = 1; n < num; n++) {
-                connectedSegments.add(p.interpolate(q, n * 1d / num).p.drawColor("blue"));
+                Vec vNext = p.interpolate(q, n * 1d / num).p.v;
+                double d=vPrevious.minus(vNext).norm();
+                addPoint(connectedSegments, vNext,d);
+                vPrevious=vNext;
             }
 
         }
-        connectedSegments.add(q.p);
+         double d=vPrevious.minus(q.p.v).norm();
+        addPoint(connectedSegments, q.p.v,d);
+    }
+
+    private void addPoint(ArrayList<float[]> connectedSegments, Vec v,double dist) {
+        connectedSegments.add(new float[]{(float) v.x, (float) v.y, (float) v.z, (float)dist});
     }
 
     private int appropiateSubdivisionNumber(Vec v1, Vec v2, Camera cam) {
