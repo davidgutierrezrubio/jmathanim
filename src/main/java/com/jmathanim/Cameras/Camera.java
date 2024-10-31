@@ -282,7 +282,7 @@ public class Camera implements Boxable {
      */
     public Camera adjustToAllObjects() {
         if (!scene.getMathObjects().isEmpty()) {
-            MathObject[] objs = scene.getMathObjects().toArray(MathObject[]::new);
+            MathObject[] objs = scene.getMathObjects().toArray(new MathObject[0]);
             adjustToObjects(objs);
         }
         return this;
@@ -334,7 +334,7 @@ public class Camera implements Boxable {
      */
     public Camera centerAtAllObjects() {
         if (!scene.getMathObjects().isEmpty()) {
-            MathObject[] objs = scene.getMathObjects().toArray(MathObject[]::new);
+            MathObject[] objs = scene.getMathObjects().toArray(new MathObject[0]);
             centerAtObjects(objs);
         }
         adjustToAllObjects();
@@ -366,7 +366,7 @@ public class Camera implements Boxable {
      */
     public Camera zoomToAllObjects() {
         if (!scene.getMathObjects().isEmpty()) {
-            MathObject[] objs = scene.getMathObjects().toArray(MathObject[]::new);
+            MathObject[] objs = scene.getMathObjects().toArray(new MathObject[0]);
             zoomToObjects(objs);
         }
         return this;

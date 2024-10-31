@@ -32,6 +32,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * This class stores multiple JMPathObjects, and properly apply transforms and
@@ -300,7 +301,7 @@ public class MultiShapeObject extends MathObject implements Iterable<Shape> {
      * @return A new multishape instance with the extracted shapes.
      */
     public <T extends MultiShapeObject> T slice(boolean delete, int... indices) {
-        List<Integer> list = Arrays.stream(indices).boxed().toList();//Arrays.asList(indices);
+        List<Integer> list = Arrays.stream(indices).boxed().collect(Collectors.toList());//Arrays.asList(indices);
         T resul = (T) this.copy();
         //Populate the new MultiShape with n empty shapes
         for (int n = 0; n < resul.size(); n++) {
@@ -400,7 +401,7 @@ public class MultiShapeObject extends MathObject implements Iterable<Shape> {
      * @return The array
      */
     public Shape[] toArray() {
-        return shapes.toArray(Shape[]::new);
+        return shapes.toArray(new Shape[0]);
     }
 
     /**

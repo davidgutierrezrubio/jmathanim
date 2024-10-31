@@ -116,7 +116,7 @@ public class JOGLRenderer extends Renderer {
         caps.setSampleBuffers(true);
         caps.setNumSamples(8);
         caps.setAlphaBits(8);
-        caps.setStencilBits(8);
+        caps.setStencilBits(3);
 
         glWindow = GLWindow.create(caps);
         glWindow.setSize(config.mediaW, config.mediaH);

@@ -516,7 +516,7 @@ public class MathObjectGroup extends MathObject implements Iterable<MathObject> 
      * @return The array
      */
     public MathObject[] toArray() {
-        return objects.toArray(MathObject[]::new);
+        return objects.toArray(new MathObject[0]);
     }
 
     @Override

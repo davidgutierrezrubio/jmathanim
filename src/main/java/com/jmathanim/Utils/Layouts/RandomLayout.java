@@ -101,7 +101,7 @@ public class RandomLayout extends GroupLayout {
             case UNIFORM:
                 return Vec.to((random.nextDouble() - .5) * 2 * deviation, (random.nextDouble() - .5) * 2 * deviation);
             case NORMAL:
-                return Vec.to(random.nextGaussian(0, deviation), random.nextGaussian(0, deviation));
+                return Vec.to(random.nextGaussian()*deviation, random.nextGaussian()*deviation);
             default:
                 return Vec.to(0, 0);
         }

@@ -200,13 +200,43 @@ public abstract class AbstractLaTeXMathObject extends SVGMathObject {
         this.scale(sc, sc, 1);
         Vec v = Vec.to(0, 0);
         switch (anchor) {
-            case CENTER, UPPER, LOWER:
+            case CENTER:
                 v = Anchor.getAnchorPoint(this, anchor).v.mult(-1);
                 break;
-            case LEFT, ULEFT, DLEFT, LLOWER, LUPPER:
+            case UPPER:
+                v = Anchor.getAnchorPoint(this, anchor).v.mult(-1);
+                break;
+            case LOWER:
+                v = Anchor.getAnchorPoint(this, anchor).v.mult(-1);
+                break;
+            case LEFT:
                 v = Anchor.getAnchorPoint(this.get(0), anchor).v.mult(-1);
                 break;
-            case RIGHT, URIGHT, DRIGHT, RLOWER, RUPPER:
+            case ULEFT:
+                v = Anchor.getAnchorPoint(this.get(0), anchor).v.mult(-1);
+                break;
+            case DLEFT:
+                v = Anchor.getAnchorPoint(this.get(0), anchor).v.mult(-1);
+                break;
+            case LLOWER:
+                v = Anchor.getAnchorPoint(this.get(0), anchor).v.mult(-1);
+                break;
+            case LUPPER:
+                v = Anchor.getAnchorPoint(this.get(0), anchor).v.mult(-1);
+                break;
+            case RIGHT:
+                v = Anchor.getAnchorPoint(this.get(-1), anchor).v.mult(-1);
+                break;
+            case URIGHT:
+                v = Anchor.getAnchorPoint(this.get(-1), anchor).v.mult(-1);
+                break;
+            case DRIGHT:
+                v = Anchor.getAnchorPoint(this.get(-1), anchor).v.mult(-1);
+                break;
+            case RLOWER:
+                v = Anchor.getAnchorPoint(this.get(-1), anchor).v.mult(-1);
+                break;
+            case RUPPER:
                 v = Anchor.getAnchorPoint(this.get(-1), anchor).v.mult(-1);
                 break;
 

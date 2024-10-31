@@ -565,7 +565,7 @@ public class JMPath implements Stateable, Boxable, Iterable<JMPathPoint> {
             points.add(jmp.p.copy().thickness(2));
         }
         points.addAll(getCriticalPoints());
-        return Rect.make(points.toArray(Point[]::new));
+        return Rect.make(points.toArray(new Point[0]));
     }
 
     @Override

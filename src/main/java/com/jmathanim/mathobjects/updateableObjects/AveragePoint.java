@@ -51,7 +51,7 @@ public class AveragePoint extends Point implements Updateable {
 
     @Override
     public void registerUpdateableHook(JMathAnimScene scene) {
-        Point[] arPoints = points.toArray(Point[]::new);
+        Point[] arPoints = points.toArray(new Point[0]);
         dependsOn(scene, arPoints);
 
     }

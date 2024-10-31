@@ -257,7 +257,7 @@ public class JOGLRenderQueue implements GLEventListener {
      */
     private void drawShape(MathObject obj) {
         Shape s = (Shape) obj;
-        boolean needsFill = (s.getMp().getFillColor().getAlpha() > 0);
+        boolean needsFill = false;//(s.getMp().getFillColor().getAlpha() > 0);
 
         loadProjectionViewMatrixIntoShaders();
         if (needsFill) {//TODO: This method (a stencil for each shape is EXPENSIVE)

@@ -180,7 +180,7 @@ public class PathUtils {
             }
             
         }
-        Point[] pointsArray = flattened.toArray(Point[]::new);
+        Point[] pointsArray = flattened.toArray(new Point[0]);
         
        
         Shape resul = Shape.polygon(pointsArray);//TODO: Add invisible points here

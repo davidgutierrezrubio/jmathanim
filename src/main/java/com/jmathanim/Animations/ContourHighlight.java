@@ -57,13 +57,21 @@ public class ContourHighlight extends Animation {
     }
 
     public static ContourHighlight make(double runTime, double gap, Rect... objs) {
-        MathObject[] toArray = Arrays.stream(objs).map(t -> Shape.rectangle(t.copy().addGap(gap, gap))).toArray(MathObject[]::new);
+//        MathObject[] toArray = Arrays.stream(objs).map(t -> Shape.rectangle(t.copy().addGap(gap, gap))).toArray(new MathObject[0]);
+        MathObject[] toArray = new MathObject[objs.length];
+        for (int i = 0; i < objs.length; i++) {
+            toArray[i]=Shape.rectangle(objs[i].copy().addGap(gap, gap));
+        }
 
         return new ContourHighlight(runTime, toArray);
     }
 
     public static ContourHighlight makeBBox(double runTime, double gap, Boxable... objs) {
-        MathObject[] toArray = Arrays.stream(objs).map(t -> Shape.rectangle(t.getBoundingBox().addGap(gap, gap))).toArray(MathObject[]::new);
+//        MathObject[] toArray = Arrays.stream(objs).map(t -> Shape.rectangle(t.getBoundingBox().addGap(gap, gap))).toArray(new MathObject[0]);
+         MathObject[] toArray = new MathObject[objs.length];
+        for (int i = 0; i < objs.length; i++) {
+            toArray[i]=Shape.rectangle(objs[i].getBoundingBox().addGap(gap, gap));
+        }
         return new ContourHighlight(runTime, toArray);
     }
 
@@ -89,10 +97,9 @@ public class ContourHighlight extends Animation {
         ArrayList<MathObject> toAnimateArrayList = new ArrayList<>();
         for (MathObject obj : objs) {
             if (obj instanceof MathObjectGroup) {
-                  toAnimateArrayList.add(Shape.rectangle(obj.getBoundingBox()));
+                toAnimateArrayList.add(Shape.rectangle(obj.getBoundingBox()));
             }
-            
-            
+
             if (obj instanceof Constructible) {
                 if (obj instanceof CTPoint) {
                     Point p = ((CTPoint) obj).getMathObject();
@@ -113,7 +120,7 @@ public class ContourHighlight extends Animation {
 
         }
 
-        this.objs = toAnimateArrayList.toArray(MathObject[]::new);
+        this.objs = toAnimateArrayList.toArray(new MathObject[0]);
         return true;
     }
 
@@ -121,12 +128,12 @@ public class ContourHighlight extends Animation {
     public void doAnim(double t) {
         super.doAnim(t);
         subshapes.getShapes().clear();
-       
+
         if (t >= 1) {
             return;
         }
         double lt = getLT(t);
-         if (lt == 0) {//Don't draw a single point
+        if (lt == 0) {//Don't draw a single point
             return;
         }
         double b = UsefulLambdas.allocateTo(0, 1 - .5 * amplitude).applyAsDouble(lt);

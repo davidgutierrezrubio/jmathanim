@@ -360,7 +360,8 @@ public abstract class JMathAnimScene {
      * @param objs ArrayList of Mathobjects
      */
     public synchronized final void remove(ArrayList<MathObject> objs) {
-        remove((MathObject[]) objs.toArray(value -> new MathObject[value]));
+        remove((MathObject[]) objs.toArray());
+//        remove((MathObject[]) objs.toArray(value -> new MathObject[value]));
 
     }
 
@@ -424,7 +425,8 @@ public abstract class JMathAnimScene {
         }
 
         // Now remove all marked sceneObjects from the scene
-        remove((MathObject[]) objectsToBeRemoved.toArray(value -> new MathObject[value]));
+         remove((MathObject[]) objectsToBeRemoved.toArray());
+//        remove((MathObject[]) objectsToBeRemoved.toArray(value -> new MathObject[value]));
         objectsToBeRemoved.clear();
     }
 
@@ -487,7 +489,7 @@ public abstract class JMathAnimScene {
                 .filter(f -> f.contains("."))
                 .map(f -> f.substring(filename.lastIndexOf(".") + 1));
 
-        if (extension.isEmpty()) {
+        if ("".equals(extension.toString())) {
             //Add png as default extension
             fn = filename + ".png";
             format = "png";
@@ -731,9 +733,13 @@ public abstract class JMathAnimScene {
         for (int k : layers) {
             arLayers.add(k);
         }
-        MathObject[] resul = getMathObjects().stream().filter(obj -> arLayers.contains(obj.getLayer()))
-                .toArray(MathObject[]::new);
-        return resul;
+        ArrayList<MathObject> resul=new ArrayList<>();
+        for (MathObject mathObject : getMathObjects()) {
+            if (arLayers.contains(mathObject.getLayer())) {
+                resul.add(mathObject);
+            }
+        }
+        return (MathObject[]) resul.toArray();
     }
 
     /**

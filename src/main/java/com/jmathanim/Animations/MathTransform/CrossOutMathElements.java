@@ -189,7 +189,7 @@ public class CrossOutMathElements extends AnimationGroup {
             this.add(animShift);
         }
 
-        Shape[] toArray = crossesShapes.toArray(Shape[]::new);
+        Shape[] toArray = crossesShapes.toArray(new Shape[0]);
         addObjectsToscene(toArray);
         super.doInitialization();
         return true;

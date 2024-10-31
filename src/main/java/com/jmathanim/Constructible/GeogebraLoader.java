@@ -32,6 +32,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Stream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import javax.xml.parsers.DocumentBuilder;
@@ -306,7 +307,7 @@ public class GeogebraLoader implements Iterable<Constructible>, hasCameraParamet
      * @return An array with all objects imported
      */
     public Constructible[] getObjects() {
-        return cp.geogebraElements.values().toArray(Constructible[]::new);
+        return cp.geogebraElements.values().toArray(new Constructible[0]);
     }
 
     /**
@@ -376,6 +377,12 @@ public class GeogebraLoader implements Iterable<Constructible>, hasCameraParamet
      * @return An array of MathObjects
      */
     public MathObject[] getMathObjects() {
-        return cp.geogebraElements.values().stream().map(t -> t.getMathObject()).toArray(MathObject[]::new);
+        MathObject[] resul = new MathObject[cp.geogebraElements.size()];
+        int counter = 0;
+        for (String key : cp.geogebraElements.keySet()) {
+            resul[counter] = cp.geogebraElements.get(key).getMathObject();
+            counter++;
+        }
+        return resul;
     }
 }

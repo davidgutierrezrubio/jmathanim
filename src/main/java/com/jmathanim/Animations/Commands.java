@@ -1656,7 +1656,7 @@ public class Commands {
             }
             toAnimateArrayList.add(obj);
         }
-        final MathObject[] toAnimateArray = toAnimateArrayList.toArray(MathObject[]::new);
+        final MathObject[] toAnimateArray = toAnimateArrayList.toArray(new MathObject[0]);
         ShiftAnimation resul = new ShiftAnimation(runtime, toAnimateArray) {
             @Override
             public boolean doInitialization() {

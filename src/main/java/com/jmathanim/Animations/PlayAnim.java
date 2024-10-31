@@ -158,7 +158,7 @@ public class PlayAnim {
      * @param runtime Duration in seconds
      */
     public void fadeOutAll(double runtime) {
-        MathObject[] objects = scene.getMathObjects().toArray(MathObject[]::new);
+        MathObject[] objects = scene.getMathObjects().toArray(new MathObject[0]);
         scene.playAnimation(Commands.fadeOut(runtime, objects));
     }
 
@@ -185,7 +185,7 @@ public class PlayAnim {
 
             toRemove.remove(obj);
         }
-        MathObject[] objects = toRemove.toArray(MathObject[]::new);
+        MathObject[] objects = toRemove.toArray(new MathObject[0]);
         scene.playAnimation(Commands.fadeOut(runtime, objects));
     }
 

@@ -155,7 +155,7 @@ public class LatexParser implements Iterable<LatexToken> {
         this.assignedTokens.clear();
         delimiterDepth = 0;
         this.modifier = Modifier.NORMAL;
-        isMathMode=false;
+        isMathMode = false;
 
         Atom root = this.formula.root;
         rootCopy = root.clone();
@@ -180,7 +180,7 @@ public class LatexParser implements Iterable<LatexToken> {
             metodo.setAccessible(true);
             Box bo = (Box) metodo.invoke(formula2, te);
             boxCounter = 0;
-            
+
             parseBox(bo);
             assignTokens();
         } catch (Exception ex) {
@@ -261,13 +261,13 @@ public class LatexParser implements Iterable<LatexToken> {
         if (atom instanceof MathAtom) {
             Modifier bkModifier = modifier;
             modifier = Modifier.NORMAL;
-            isMathMode=true;
+            isMathMode = true;
             MathAtom mathAtom = (MathAtom) atom;
             classField = MathAtom.class.getDeclaredField("base");
             classField.setAccessible(true);
             Atom field = (Atom) classField.get(mathAtom);
             parseAtom(field);
-             isMathMode=false;
+            isMathMode = false;
 //            modifier = bkModifier;
             return;
         }
@@ -338,7 +338,7 @@ public class LatexParser implements Iterable<LatexToken> {
         if (atom instanceof CharAtom) {
             CharAtom charAtom = (CharAtom) atom;
             LatexToken.TokenType type;
-            type=(isMathMode ? LatexToken.TokenType.CHAR : LatexToken.TokenType.NON_MATH_CHAR);
+            type = (isMathMode ? LatexToken.TokenType.CHAR : LatexToken.TokenType.NON_MATH_CHAR);
 
             String name = "" + charAtom.getCharacter();
             addTokenToList(type, name);
@@ -723,7 +723,39 @@ public class LatexParser implements Iterable<LatexToken> {
                         tokenCounter += sizeLigature;
                     }
                     break;
-                case CHAR, FRACTION_BAR, GREEK_LETTER, NAMED_FUNCTION, OPERATOR, BINARY_OPERATOR, RELATION, NUMBER, ARROW:
+                case CHAR:
+                    addAssignedTokenToList(token);
+                    tokenCounter++;
+                    break;
+                case FRACTION_BAR:
+                    addAssignedTokenToList(token);
+                    tokenCounter++;
+                    break;
+                case GREEK_LETTER:
+                    addAssignedTokenToList(token);
+                    tokenCounter++;
+                    break;
+                case NAMED_FUNCTION:
+                    addAssignedTokenToList(token);
+                    tokenCounter++;
+                    break;
+                case OPERATOR:
+                    addAssignedTokenToList(token);
+                    tokenCounter++;
+                    break;
+                case BINARY_OPERATOR:
+                    addAssignedTokenToList(token);
+                    tokenCounter++;
+                    break;
+                case RELATION:
+                    addAssignedTokenToList(token);
+                    tokenCounter++;
+                    break;
+                case NUMBER:
+                    addAssignedTokenToList(token);
+                    tokenCounter++;
+                    break;
+                case ARROW:
                     addAssignedTokenToList(token);
                     tokenCounter++;
                     break;
