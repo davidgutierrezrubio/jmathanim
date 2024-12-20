@@ -38,7 +38,8 @@ public final class LinkArguments extends Link {
         X, Y, VALUE, COUNT,
         WIDTH, HEIGHT, XMIN, XMAX, YMIN, YMAX,
         ARG0, ARG1, ARG2, ARG3, ARG4, ARG5, ARG6, ARG7, ARG8, ARG9
-    };
+    }
+
     public Linkable origin;
     public LinkType originLinkType;
     public LinkType destinyLinkType;

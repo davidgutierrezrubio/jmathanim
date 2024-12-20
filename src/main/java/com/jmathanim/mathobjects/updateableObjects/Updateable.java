@@ -36,13 +36,13 @@ public interface Updateable {
      *
      * @return The update level.
      */
-    public int getUpdateLevel();
+    int getUpdateLevel();
 
     /**
      * Sets the update level for this object
      * @param level Update level. An integer from 0 to MAX_VALUE.
      */
-    public void setUpdateLevel(int level);
+    void setUpdateLevel(int level);
 
     /**
      * Performs the update. This method is called prior to draw all objects of
@@ -50,7 +50,7 @@ public interface Updateable {
      *
      * @param scene Scene where the object is being updated.
      */
-    public void update(JMathAnimScene scene);
+    void update(JMathAnimScene scene);
 
     /**
      * This method is called when this object is registered in a scene. The
@@ -59,12 +59,12 @@ public interface Updateable {
      *
      * @param scene Scene where object is registered to update
      */
-    public void registerUpdateableHook(JMathAnimScene scene);
+    void registerUpdateableHook(JMathAnimScene scene);
 
     /**
      * This method is called when this object is unregistered from a scene
      *
      * @param scene Scene where object is unregistered
      */
-    public void unregisterUpdateableHook(JMathAnimScene scene);
+    void unregisterUpdateableHook(JMathAnimScene scene);
 }

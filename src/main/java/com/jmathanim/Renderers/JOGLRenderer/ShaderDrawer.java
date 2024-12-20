@@ -47,8 +47,8 @@ public class ShaderDrawer {
     private final GL4 gl4;
 //    private GLUgl2 glu;
 
-    private final int vao[] = new int[1];
-    private final int vbo[] = new int[2];
+    private final int[] vao = new int[1];
+    private final int[] vbo = new int[2];
 
     public ShaderDrawer(GL4 gl4) {
         this.gl4 = gl4;
@@ -159,12 +159,12 @@ public class ShaderDrawer {
 // bind an array of triangle fan
         FloatBuffer fbVertices = Buffers.newDirectFloatBuffer(points);
         gl4.glBindBuffer(GL4.GL_ARRAY_BUFFER, vbo[0]);
-        gl4.glBufferData(GL4.GL_ARRAY_BUFFER, fbVertices.limit() * 4, fbVertices, GL4.GL_STATIC_DRAW);
+        gl4.glBufferData(GL4.GL_ARRAY_BUFFER, fbVertices.limit() * 4L, fbVertices, GL4.GL_STATIC_DRAW);
         gl4.glVertexAttribPointer(0, 4, GL4.GL_FLOAT, false, 0, 0);
 
         FloatBuffer fbNormals = Buffers.newDirectFloatBuffer(normals);
         gl4.glBindBuffer(GL4.GL_ARRAY_BUFFER, vbo[1]);
-        gl4.glBufferData(GL4.GL_ARRAY_BUFFER, fbNormals.limit() * 4, fbNormals, GL4.GL_STATIC_DRAW);
+        gl4.glBufferData(GL4.GL_ARRAY_BUFFER, fbNormals.limit() * 4L, fbNormals, GL4.GL_STATIC_DRAW);
         gl4.glVertexAttribPointer(1, 4, GL4.GL_FLOAT, false, 0, 0);
 
 // Enable Stencil buffer to draw concave polygons
@@ -265,12 +265,12 @@ public class ShaderDrawer {
         //bind an array of triangle fan
         FloatBuffer fbVertices = Buffers.newDirectFloatBuffer(points);
         gl4.glBindBuffer(GL4.GL_ARRAY_BUFFER, vbo[0]);
-        gl4.glBufferData(GL4.GL_ARRAY_BUFFER, fbVertices.limit() * 4, fbVertices, GL4.GL_STATIC_DRAW);
+        gl4.glBufferData(GL4.GL_ARRAY_BUFFER, fbVertices.limit() * 4L, fbVertices, GL4.GL_STATIC_DRAW);
         gl4.glVertexAttribPointer(0, 4, GL4.GL_FLOAT, false, 0, 0);
 
         FloatBuffer fbNormals = Buffers.newDirectFloatBuffer(normals);
         gl4.glBindBuffer(GL4.GL_ARRAY_BUFFER, vbo[1]);
-        gl4.glBufferData(GL4.GL_ARRAY_BUFFER, fbNormals.limit() * 4, fbNormals, GL4.GL_STATIC_DRAW);
+        gl4.glBufferData(GL4.GL_ARRAY_BUFFER, fbNormals.limit() * 4L, fbNormals, GL4.GL_STATIC_DRAW);
         gl4.glVertexAttribPointer(1, 4, GL4.GL_FLOAT, false, 0, 0);
 
         //Enable Stencil buffer to draw concave polygons
@@ -310,7 +310,7 @@ public class ShaderDrawer {
         gl4.glUniform2f(shader.getUniformVariable("resolution"), queue.width, queue.height);
 
         if (fillStylable instanceof JMColor) {
-            float[] shapeColors = toColor((JMColor) fillStylable);
+            float[] shapeColors = toColor(fillStylable);
             gl4.glUniform4f(shader.getUniformVariable("unifColor"), shapeColors[0], shapeColors[1], shapeColors[2], shapeColors[3]);
             gl4.glUniform1i(shader.getUniformVariable("fillType"), 0);//Solid color
         }
@@ -405,7 +405,7 @@ public class ShaderDrawer {
         });
         FloatBuffer fbVertices = Buffers.newDirectFloatBuffer(vertexArray);
         gl4.glBindBuffer(GL4.GL_ARRAY_BUFFER, vbo[0]);
-        gl4.glBufferData(GL4.GL_ARRAY_BUFFER, fbVertices.limit() * 4, fbVertices, GL4.GL_STATIC_DRAW);
+        gl4.glBufferData(GL4.GL_ARRAY_BUFFER, fbVertices.limit() * 4L, fbVertices, GL4.GL_STATIC_DRAW);
         gl4.glVertexAttribPointer(0, 4, GL4.GL_FLOAT, false, 0, 0);
         gl4.glDrawArrays(GL4.GL_LINES_ADJACENCY_EXT, 0, vertexArray.length / 4);
     }

@@ -105,7 +105,7 @@ public class CTRegularPolygon extends Constructible {
 //        generatedPoints.remove(0);
 //        generatedPoints.add(0,this.B.copy());
 //        generatedPoints.add(0,this.A.copy());
-        Point[] pointsPolToView = generatedPoints.stream().map(t -> (Point) t.getMathObject().copy()).toArray(Point[]::new);
+        Point[] pointsPolToView = generatedPoints.stream().map(t -> t.getMathObject().copy()).toArray(Point[]::new);
         poligonToView = Shape.polygon(pointsPolToView);
         origPolygon = Shape.regularPolygon(nSides).visible(false);//Base polygon q
     }

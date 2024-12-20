@@ -116,7 +116,7 @@ public class LatexParser implements Iterable<LatexToken> {
     public enum Modifier {
         NORMAL, //Normal math
         TYPED,//A function name
-        RAW_TEXT;//Raw, normal text
+        RAW_TEXT//Raw, normal text
     }
     public boolean isMathMode;
     private Integer secondaryType;
@@ -288,7 +288,7 @@ public class LatexParser implements Iterable<LatexToken> {
             String str = (String) classField.get(javaFontRenderingAtom);
 
             LatexToken.TokenType type = LatexToken.TokenType.CHAR;
-            String name = "" + str;
+            String name = str;
             addTokenToList(type, name);
 
             return;
@@ -347,7 +347,7 @@ public class LatexParser implements Iterable<LatexToken> {
         if (atom instanceof SymbolAtom) {
             SymbolAtom symbolAtom = (SymbolAtom) atom;
             LatexToken.TokenType type = LatexToken.TokenType.SYMBOL;
-            String name = "" + symbolAtom.getName();
+            String name = symbolAtom.getName();
 
             addTokenToList(type, name);
             return;
@@ -356,7 +356,7 @@ public class LatexParser implements Iterable<LatexToken> {
         if (atom instanceof BigDelimiterAtom) {
             BigDelimiterAtom bigDelimiterAtom = (BigDelimiterAtom) atom;
             //Secondary type is stablished later, when assigning tokens from box list.
-            addTokenToList(LatexToken.TokenType.SYMBOL, "" + bigDelimiterAtom.delim.getName());
+            addTokenToList(LatexToken.TokenType.SYMBOL, bigDelimiterAtom.delim.getName());
             return;
         }
 
@@ -614,7 +614,6 @@ public class LatexParser implements Iterable<LatexToken> {
                 }
 
             }
-            return;
         }
 
     }

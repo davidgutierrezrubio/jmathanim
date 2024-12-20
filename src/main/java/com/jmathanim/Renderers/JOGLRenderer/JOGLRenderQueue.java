@@ -73,7 +73,7 @@ public class JOGLRenderQueue implements GLEventListener {
     public Camera3D fixedCamera;
     public VideoEncoder videoEncoder;
     public File saveFilePath;
-    private int newLineCounter = 0;
+    private final int newLineCounter = 0;
     public int frameCount;
 
     private final TextRenderer textRenderer;

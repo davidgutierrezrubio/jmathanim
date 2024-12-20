@@ -287,7 +287,7 @@ public class Point extends MathObject {
      * @return Original point+addVector
      */
     public Point add(Vec addVector) {
-        Point resul = (Point) this.copy();
+        Point resul = this.copy();
         resul.v.addInSite(addVector);
         return resul;
     }
@@ -368,10 +368,7 @@ public class Point extends MathObject {
     }
 
     public boolean isEquivalentTo(Point p2, double epsilon) {
-        boolean resul = false;
-        if ((Math.abs(v.x - p2.v.x) <= epsilon) & (Math.abs(v.y - p2.v.y) <= epsilon) & (Math.abs(v.z - p2.v.z) <= epsilon)) {
-            resul = true;
-        }
+        boolean resul = (Math.abs(v.x - p2.v.x) <= epsilon) & (Math.abs(v.y - p2.v.y) <= epsilon) & (Math.abs(v.z - p2.v.z) <= epsilon);
         return resul;
     }
 

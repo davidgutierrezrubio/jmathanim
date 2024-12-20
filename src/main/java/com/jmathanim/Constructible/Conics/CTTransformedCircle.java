@@ -41,7 +41,8 @@ public class CTTransformedCircle extends CTCircle {
 
     private enum transformType {
         ROTATION, TRANSLATION, AXISMIRROR, CENTRALMIRROR
-    };
+    }
+
     private transformType transType;
 
     /**

@@ -119,9 +119,7 @@ public class LatexStyleItem {
             if ((tokenEqAfter != null) && (!tokenEqAfter.match(tokAfter))) {
                 return false;
             }
-            if ((tokenDifAfter != null) && (!tokenDifAfter.differs(tokAfter))) {
-                return false;
-            }
+            return (tokenDifAfter == null) || (tokenDifAfter.differs(tokAfter));
         }
         return true;//All Ok!
     }

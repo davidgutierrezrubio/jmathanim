@@ -425,7 +425,7 @@ public class MathObjectGroup extends MathObject implements Iterable<MathObject> 
     }
 
     public <T extends MathObjectGroup> T setLayout(Layout layout, double gap) {
-        return (T) setLayout(null, layout, gap);
+        return setLayout(null, layout, gap);
     }
 
     public <T extends MathObjectGroup> T setLayout(MathObject corner, Layout layout, double gap) {

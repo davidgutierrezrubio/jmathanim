@@ -32,7 +32,7 @@ public interface hasCameraParameters {
      *
      * @return The minimum horizontal value
      */
-    public double getMinX();
+    double getMinX();
 
     /**
      * Returns the maxium, rightmost, horizontal value of viewable area, in math
@@ -40,7 +40,7 @@ public interface hasCameraParameters {
      *
      * @return The maxium horizontal value
      */
-    public double getMaxX();
+    double getMaxX();
 
     /**
      * Returns the vertical coordinate of the center of viewable area, in math
@@ -48,5 +48,5 @@ public interface hasCameraParameters {
      *
      * @return The middle y coordinate
      */
-    public double getYCenter();
+    double getYCenter();
 }

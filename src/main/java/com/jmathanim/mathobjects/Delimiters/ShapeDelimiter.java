@@ -36,7 +36,7 @@ import com.jmathanim.mathobjects.Shape;
 public class ShapeDelimiter extends Delimiter {
 
     private SVGMathObject body;
-    private Shape delimiterShape;
+    private final Shape delimiterShape;
 
     public static ShapeDelimiter make(Point A, Point B, Delimiter.Type type, double gap) {
         ShapeDelimiter resul = new ShapeDelimiter(A, B, type, gap);

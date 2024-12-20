@@ -30,7 +30,7 @@ public class AnchoredMathObject implements Updateable {
     private final MathObject mobj;
     private final MathObject dstObject;
     private Type dstType;
-    private Type origType;
+    private final Type origType;
     private double gap;
     private int updateLevel;
 

@@ -27,5 +27,5 @@ public interface hasArguments {
      * @param n Number of argument
      * @return A double representing the value of the argument
      */
-    public Scalar getArg(int n);
+    Scalar getArg(int n);
 }

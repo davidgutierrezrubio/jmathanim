@@ -29,9 +29,9 @@ import com.jmathanim.mathobjects.MathObject;
  */
 public class CTImage extends Constructible {
 
-    private JMImage image;
-    private CTPoint A;
-    private CTPoint B;
+    private final JMImage image;
+    private final CTPoint A;
+    private final CTPoint B;
 
     public static CTImage make(CTPoint A, CTPoint B, JMImage image) {
         return new CTImage(A, B, image);

@@ -87,7 +87,8 @@ public class Ray extends Shape implements HasDirection {
 
     private final JMPathPoint bp1, bp2;
     MODrawPropertiesArray mpArray;
-    private Point p1, p2;
+    private final Point p1;
+    private final Point p2;
     private final Shape visiblePiece;
 
     /**

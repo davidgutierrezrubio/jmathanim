@@ -30,5 +30,5 @@ public interface PointOwner {
      * @param coordinates of the point to project
      * @return Projected coordinates
      */
-    public Vec getHoldCoordinates(Vec coordinates);
+    Vec getHoldCoordinates(Vec coordinates);
 }

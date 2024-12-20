@@ -28,6 +28,6 @@ import com.jmathanim.mathobjects.Shape;
  */
 public interface OptimizePathsStrategy {
 
-	public void optimizePaths(Shape sh1, Shape sh2);
+	void optimizePaths(Shape sh1, Shape sh2);
 
 }

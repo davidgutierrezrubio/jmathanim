@@ -30,7 +30,8 @@ public class CTMidPoint extends CTPoint {
 
     public enum MidPointType {
         TWO_POINTS, SEGMENT
-    };
+    }
+
     MidPointType midPointType;
     private final CTPoint A;
     private final CTPoint B;

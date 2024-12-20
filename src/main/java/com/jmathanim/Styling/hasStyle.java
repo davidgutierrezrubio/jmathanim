@@ -22,5 +22,5 @@ package com.jmathanim.Styling;
  * @author David
  */
 public interface hasStyle {
-     public Stylable getMp();
+     Stylable getMp();
 }

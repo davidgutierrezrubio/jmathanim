@@ -34,7 +34,7 @@ import java.nio.IntBuffer;
  */
 public class ShaderLoader {
 
-    private GL3 gl;
+    private final GL3 gl;
     private int shaderprogram;
 
 //    public float scaVal;
@@ -176,7 +176,7 @@ public class ShaderLoader {
         return shaderprogram;
     }
 
-    private String loadShaderFile(URL urlVS) throws IOException, FileNotFoundException {
+    private String loadShaderFile(URL urlVS) throws IOException {
         BufferedReader brv = new BufferedReader(new FileReader(urlVS.getFile()));
         String vsrc = "";
         String line;

@@ -23,5 +23,5 @@ import com.jmathanim.Cameras.Camera;
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
 public interface shouldUdpateWithCamera {
-    public void updateWithCamera(Camera camera);
+    void updateWithCamera(Camera camera);
 }

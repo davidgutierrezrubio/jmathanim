@@ -27,5 +27,5 @@ import com.jmathanim.Utils.Vec;
  */
 public interface HasDirection {
 
-    public Vec getDirection();
+    Vec getDirection();
 }

@@ -41,7 +41,8 @@ public class CTTransformedLine extends CTAbstractLine {
 
     private enum transformType {
         ROTATION, TRANSLATION, AXISMIRROR, CENTRALMIRROR
-    };
+    }
+
     private transformType transType;
     private final Line lineToDraw;
 

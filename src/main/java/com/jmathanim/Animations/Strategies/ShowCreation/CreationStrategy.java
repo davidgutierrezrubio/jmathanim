@@ -24,6 +24,6 @@ import com.jmathanim.mathobjects.Point;
  * @author David
  */
 public interface CreationStrategy {
-    public void setPencilPosition(Point previous, Point current);
-    public Point[] getPencilPosition();
+    void setPencilPosition(Point previous, Point current);
+    Point[] getPencilPosition();
 }

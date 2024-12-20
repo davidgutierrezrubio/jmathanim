@@ -169,7 +169,7 @@ public class FXPathUtils {
      */
     public void distille(Path path) {
         int n = 0;
-        Double xyPrevious[] = new Double[]{null, null};
+        Double[] xyPrevious = new Double[]{null, null};
         while (n < path.getElements().size() - 1) {
             PathElement el1 = path.getElements().get(n);
             PathElement el2 = path.getElements().get(n + 1);
@@ -188,7 +188,7 @@ public class FXPathUtils {
         }
     }
 
-    private static boolean isSecondElementRedundant(Double xyPrevious[], PathElement el1, PathElement el2) {
+    private static boolean isSecondElementRedundant(Double[] xyPrevious, PathElement el1, PathElement el2) {
 
         // If the second element doesn't move from the first, is redundant
         if (sameXY(el1, el2)) {
@@ -208,7 +208,7 @@ public class FXPathUtils {
         return (el1 instanceof MoveTo) && (el2 instanceof ClosePath);
     }
 
-    private static boolean isFirstElementRedundant(Double xyPrevious[], PathElement el1, PathElement el2) {
+    private static boolean isFirstElementRedundant(Double[] xyPrevious, PathElement el1, PathElement el2) {
         // 2 consecutive MoveTo
         if ((el1 instanceof MoveTo) && (el2 instanceof MoveTo)) {
             return true;
@@ -223,17 +223,15 @@ public class FXPathUtils {
             Vec v2 = Vec.to(xy2[0] - xyPrevious[0], xy2[1] - xyPrevious[1]);
             double n1 = v1.norm();
             double n2 = v2.norm();
-            if (v1.dot(v2) / (n1 * n2) == 1) {
-                return true;
-            }
+            return v1.dot(v2) / (n1 * n2) == 1;
         }
 
         return false;
     }
 
     private static boolean sameXY(PathElement el1, PathElement el2) {
-        Double xy1[] = getXYFromPathElement(el1);
-        Double xy2[] = getXYFromPathElement(el2);
+        Double[] xy1 = getXYFromPathElement(el1);
+        Double[] xy2 = getXYFromPathElement(el2);
 
         return ((Math.abs(xy1[0] - xy2[0]) < EPSILON) && (Math.abs(xy1[1] - xy2[1]) < EPSILON));
 
@@ -293,10 +291,10 @@ public class FXPathUtils {
      * (0,0,0) and v,w,t are the images of canonical vectors.
      */
     public static Affine affineJToAffine(AffineJTransform tr) {
-        double orig[] = tr.getMatrix().getRow(0);
-        double vx[] = tr.getMatrix().getRow(1);
-        double vy[] = tr.getMatrix().getRow(2);
-        double vz[] = tr.getMatrix().getRow(3);
+        double[] orig = tr.getMatrix().getRow(0);
+        double[] vx = tr.getMatrix().getRow(1);
+        double[] vy = tr.getMatrix().getRow(2);
+        double[] vz = tr.getMatrix().getRow(3);
         return new Affine(
                 vx[1], vy[1], vz[1], orig[1],
                 vx[2], vy[2], vz[2], orig[2],

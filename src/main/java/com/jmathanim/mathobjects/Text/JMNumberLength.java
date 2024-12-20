@@ -29,7 +29,7 @@ public final class JMNumberLength extends JMNumber {
     private final Point A;
     private final Point B;
 
-    protected JMNumberLength(Point A, Point B) {
+    private JMNumberLength(Point A, Point B) {
         super(0);
         this.A = A;
         this.B = B;

@@ -31,7 +31,8 @@ public abstract class SingleCommandAnimation extends Animation {
 
     enum cmdStatusType {
         NEVER_DONE, DONE, UNDONE
-    };
+    }
+
     public cmdStatusType cmdStatus;
 
     public static SingleCommandAnimation changeLaTeX(LaTeXMathObject latex, String newText) {
@@ -100,7 +101,7 @@ public abstract class SingleCommandAnimation extends Animation {
      */
     public SingleCommandAnimation() {
         super(0);
-        cmdStatus = cmdStatus.NEVER_DONE;
+        cmdStatus = cmdStatusType.NEVER_DONE;
     }
 
     @Override
@@ -120,24 +121,24 @@ public abstract class SingleCommandAnimation extends Animation {
     @Override
     public void doAnim(double t) {
         super.doAnim(t);
-        if ((cmdStatus == cmdStatus.NEVER_DONE) || (cmdStatus == cmdStatus.UNDONE)) {
+        if ((cmdStatus == cmdStatusType.NEVER_DONE) || (cmdStatus == cmdStatusType.UNDONE)) {
                 command();
-                cmdStatus = cmdStatus.DONE;
+                cmdStatus = cmdStatusType.DONE;
             }
     }
 
     @Override
     public void cleanAnimationAt(double t) {
         if (t == 1) {
-            if ((cmdStatus == cmdStatus.NEVER_DONE) || (cmdStatus == cmdStatus.UNDONE)) {
+            if ((cmdStatus == cmdStatusType.NEVER_DONE) || (cmdStatus == cmdStatusType.UNDONE)) {
                 command();
-                cmdStatus = cmdStatus.DONE;
+                cmdStatus = cmdStatusType.DONE;
             }
         }
         if (t == 0) {
-            if (cmdStatus == cmdStatus.DONE) {
+            if (cmdStatus == cmdStatusType.DONE) {
                 undo();
-                cmdStatus = cmdStatus.UNDONE;
+                cmdStatus = cmdStatusType.UNDONE;
             }
         }
     }

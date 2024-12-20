@@ -32,10 +32,10 @@ import com.jmathanim.mathobjects.shouldUdpateWithCamera;
  */
 public class CartesianGrid extends MultiShapeObject implements shouldUdpateWithCamera {
 
-    private double xStep;
-    private double yStep;
-    private double centerY;
-    private double centerX;
+    private final double xStep;
+    private final double yStep;
+    private final double centerY;
+    private final double centerX;
     private final Rect currentView;
 
     /**

@@ -44,7 +44,8 @@ public class CTCircle extends CTAbstractCircle {
 
     private enum CircleType {
         THREE_POINTS, CENTER_POINT, CENTER_RADIUS
-    };
+    }
+
     private CircleType circleType;
     //Currently Geogebra has these methods to create circles:
     // Circle(point,point)

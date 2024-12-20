@@ -112,7 +112,7 @@ public class ShowCreation extends Animation {
             creationStrategy.initialize(scene);
         } catch (NullPointerException | ClassCastException e) {
             JMathAnimScene.logger.error("Couldn't create ShowCreation strategy for "
-                    + this.mobj.getClass().getCanonicalName() + ". Animation will not be done. (" + e.toString() + ")");
+                    + this.mobj.getClass().getCanonicalName() + ". Animation will not be done. (" + e + ")");
         }
         return true;
     }

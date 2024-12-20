@@ -33,19 +33,19 @@ public abstract class Polyhedron extends MathObjectGroup {
 
     
     
-    protected void buildVerticesFromArray(float coords[]) {
+    protected void buildVerticesFromArray(float[] coords) {
         for (int i = 0; i < coords.length; i += 3) {
             vertices.add(Point.at(coords[i], coords[i + 1], coords[i + 2]));
         }
     }
 
-    protected void buildEdgesFromArray(int indices[]) {
+    protected void buildEdgesFromArray(int[] indices) {
         for (int i = 0; i < indices.length; i += 2) {
             buildEdge(indices[i], indices[i + 1]);
         }
     }
 
-    protected void buildFacesFromArray(int numSides, int indices[]) {
+    protected void buildFacesFromArray(int numSides, int[] indices) {
         for (int i = 0; i < indices.length; i += numSides) {
             buildFace(Arrays.copyOfRange(indices, i, i + numSides));
         }
@@ -59,8 +59,8 @@ public abstract class Polyhedron extends MathObjectGroup {
                     (Point) vertices.get(b));
         } else {
             edge = Shape.segment(
-                    (Point) vertices.get(a).copy(),
-                    (Point) vertices.get(b).copy());
+                    vertices.get(a).copy(),
+                    vertices.get(b).copy());
         }
 
         edges.add(edge);
@@ -77,7 +77,7 @@ public abstract class Polyhedron extends MathObjectGroup {
         else
         {
              for (int i = 0; i < indices.length; i++) {
-                points[i] = ((Point) vertices.get(indices[i])).copy();
+                points[i] = vertices.get(indices[i]).copy();
             }
         }
         Shape face = Shape.polygon(points);

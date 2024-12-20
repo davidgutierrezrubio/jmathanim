@@ -537,7 +537,7 @@ public abstract class JMathAnimScene {
         }
 
         JMathAnimScene.logger.debug("Playing sound " + soundName + " with pitch " + pitch);
-        long miliSeconds = (frameCount * 1000) / config.fps;
+        long miliSeconds = (frameCount * 1000L) / config.fps;
 
         SoundItem soundItem = SoundItem.make(soundURL, miliSeconds, pitch);
         renderer.addSound(soundItem);

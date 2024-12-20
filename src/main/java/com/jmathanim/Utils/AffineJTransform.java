@@ -281,7 +281,7 @@ public class AffineJTransform implements Stateable {
 
         T resul = obj.copy();
         applyTransform(resul);
-        return (T) resul;
+        return resul;
     }
 
     /**

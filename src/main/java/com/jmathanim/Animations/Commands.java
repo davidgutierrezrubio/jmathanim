@@ -250,11 +250,11 @@ public class Commands {
 
     public static Animation scale(double runtime, Point c, double scx, double scy, double scz, MathObject... objects) {
         Animation resul = new Animation(runtime) {
-            double scalex = scx;
-            double scaley = scy;
-            double scalez = scz;
-            Point scaleCenter = c;
-            MathObject[] mathObjects = objects;
+            final double scalex = scx;
+            final double scaley = scy;
+            final double scalez = scz;
+            final Point scaleCenter = c;
+            final MathObject[] mathObjects = objects;
 
             @Override
             public boolean doInitialization() {
@@ -311,8 +311,8 @@ public class Commands {
 
     public static AnimationWithEffects rotate(double runtime, Point rotationCenter, double rotationAngle, MathObject... objects) {
         AnimationWithEffects resul = new AnimationWithEffects(runtime) {
-            double angle = rotationAngle;
-            MathObject[] mathObjects = objects;
+            final double angle = rotationAngle;
+            final MathObject[] mathObjects = objects;
             private boolean[] shouldBeAdded;
 
             @Override
@@ -383,11 +383,11 @@ public class Commands {
 
     public static Animation rotate3d(double runtime, Point c, double angx, double angy, double angz, MathObject... objects) {
         return new Animation(runtime) {
-            double anglex = angx;
-            double angley = angy;
-            double anglez = angz;
+            final double anglex = angx;
+            final double angley = angy;
+            final double anglez = angz;
             Point rotationCenter = null;
-            MathObject[] mathObjects = objects;
+            final MathObject[] mathObjects = objects;
 
             @Override
             public MathObjectGroup getIntermediateObject() {
@@ -451,13 +451,13 @@ public class Commands {
     public static AnimationWithEffects affineTransform(double runtime, Point A, Point B, Point C, Point D, Point E,
             Point F, MathObject... objects) {
         AnimationWithEffects resul = new AnimationWithEffects(runtime) {
-            Point orig1 = A.copy();
-            Point orig2 = B.copy();
-            Point orig3 = C.copy();
-            Point dst1 = D.copy();
-            Point dst2 = E.copy();
-            Point dst3 = F.copy();
-            MathObject[] mathObjects = objects;
+            final Point orig1 = A.copy();
+            final Point orig2 = B.copy();
+            final Point orig3 = C.copy();
+            final Point dst1 = D.copy();
+            final Point dst2 = E.copy();
+            final Point dst3 = F.copy();
+            final MathObject[] mathObjects = objects;
             AffineJTransform tr;
 
             @Override
@@ -546,12 +546,12 @@ public class Commands {
     public static AnimationWithEffects isomorphism(double runtime, Point a, Point b, Point c, Point d,
             MathObject... objects) {
         AnimationWithEffects resul = new AnimationWithEffects(runtime) {
-            Point A = a.copy();
-            Point B = b.copy();
-            Point C = c.copy();
-            Point D = d.copy();
+            final Point A = a.copy();
+            final Point B = b.copy();
+            final Point C = c.copy();
+            final Point D = d.copy();
             AffineJTransform tr;
-            MathObject[] mathObjects = objects;
+            final MathObject[] mathObjects = objects;
 
             @Override
             public boolean doInitialization() {
@@ -604,14 +604,14 @@ public class Commands {
     public static AnimationWithEffects isomorphism3d(double runtime, Point a, Point b1, Point b2, Point c, Point d1, Point d2,
             MathObject... objects) {
         AnimationWithEffects resul = new AnimationWithEffects(runtime) {
-            Point A = a.copy();
-            Point B1 = b1.copy();
-            Point B2 = b2.copy();
-            Point C = c.copy();
-            Point D1 = d1.copy();
-            Point D2 = d2.copy();
+            final Point A = a.copy();
+            final Point B1 = b1.copy();
+            final Point B2 = b2.copy();
+            final Point C = c.copy();
+            final Point D1 = d1.copy();
+            final Point D2 = d2.copy();
             AffineJTransform tr;
-            MathObject[] mathObjects = objects;
+            final MathObject[] mathObjects = objects;
 
             @Override
             public boolean doInitialization() {
@@ -677,12 +677,12 @@ public class Commands {
     public static AnimationWithEffects inverseIsomorphism(double runtime, Point a, Point b, Point c, Point d,
             MathObject... objects) {
         AnimationWithEffects resul = new AnimationWithEffects(runtime) {
-            Point A = a.copy();
-            Point B = b.copy();
-            Point C = c.copy();
-            Point D = d.copy();
+            final Point A = a.copy();
+            final Point B = b.copy();
+            final Point C = c.copy();
+            final Point D = d.copy();
             AffineJTransform tr;
-            MathObject[] mathObjects = objects;
+            final MathObject[] mathObjects = objects;
 
             @Override
             public boolean doInitialization() {
@@ -743,9 +743,9 @@ public class Commands {
      */
     public static AnimationWithEffects reflection(double runtime, Point A, Point B, MathObject... objects) {
         AnimationWithEffects resul = new AnimationWithEffects(runtime) {
-            MathObject[] mathObjects = objects;
-            Point axis1 = A.copy();
-            Point axis2 = B.copy();
+            final MathObject[] mathObjects = objects;
+            final Point axis1 = A.copy();
+            final Point axis2 = B.copy();
             AffineJTransform tr;
 
             @Override
@@ -808,9 +808,9 @@ public class Commands {
      */
     public static AnimationWithEffects reflectionByAxis(double runtime, Point a, Point b, MathObject... objects) {
         AnimationWithEffects resul = new AnimationWithEffects(runtime) {
-            MathObject[] mathObjects = objects;
-            Point axisPoint1 = a.copy();
-            Point axisPoint2 = b.copy();
+            final MathObject[] mathObjects = objects;
+            final Point axisPoint1 = a.copy();
+            final Point axisPoint2 = b.copy();
             AffineJTransform tr;
 
             @Override
@@ -898,8 +898,8 @@ public class Commands {
      */
     public static Animation setMP(double runtime, Stylable mp, MathObject... objects) {
         Animation resul = new Animation(runtime) {
-            MathObject[] mathObjects = objects;
-            Stylable mpDst = mp;
+            final MathObject[] mathObjects = objects;
+            final Stylable mpDst = mp;
 
             @Override
             public boolean doInitialization() {
@@ -997,8 +997,8 @@ public class Commands {
             );
         } else {
             resul = new Animation(runtime) {
-                Camera cam = camera;
-                Rect rDst = cam.getRectThatContains(rectToZoom);
+                final Camera cam = camera;
+                final Rect rDst = cam.getRectThatContains(rectToZoom);
                 Rect rSource;
 
                 @Override
@@ -1134,7 +1134,7 @@ public class Commands {
      */
     public static Animation shrinkOut(double runtime, double angle, OrientationType shrinkType, MathObject... objects) {
         Animation anim = new Animation(runtime) {
-            MathObject[] mathObjects = objects;
+            final MathObject[] mathObjects = objects;
 
             @Override
             public boolean doInitialization() {
@@ -1241,7 +1241,7 @@ public class Commands {
      */
     public static Animation growIn(double runtime, double angle, OrientationType growType, MathObject... objects) {
         Animation anim = new Animation(runtime) {
-            MathObject[] mathObjects = objects;
+            final MathObject[] mathObjects = objects;
 
             @Override
             public boolean doInitialization() {
@@ -1386,7 +1386,7 @@ public class Commands {
      */
     public static AnimationWithEffects fadeOut(double runtime, MathObject... objects) {
         AnimationWithEffects anim = new AnimationWithEffects(runtime) {
-            MathObject[] mathObjects = objects;
+            final MathObject[] mathObjects = objects;
 
             @Override
             public boolean doInitialization() {
@@ -1493,7 +1493,7 @@ public class Commands {
         MathObject[] mathobjects = group.getObjects().toArray(new MathObject[group.size()]);
 
         ShiftAnimation resul = new ShiftAnimation(runtime, mathobjects) {
-            HashMap<MathObject, Point> centers = new HashMap<>();
+            final HashMap<MathObject, Point> centers = new HashMap<>();
 
             @Override
             public boolean doInitialization() {
@@ -1526,8 +1526,8 @@ public class Commands {
      */
     public static AnimationWithEffects changeFillAlpha(double runTime, MathObject... objects) {
         AnimationWithEffects resul = new AnimationWithEffects(runTime) {
-            MathObject[] mathObjects = objects;
-            ArrayList<Double> alphaOrig = new ArrayList<>();
+            final MathObject[] mathObjects = objects;
+            final ArrayList<Double> alphaOrig = new ArrayList<>();
 
             @Override
             public boolean doInitialization() {

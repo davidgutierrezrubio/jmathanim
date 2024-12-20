@@ -41,7 +41,8 @@ public class CTMirrorPoint extends CTPoint {
 
     private enum MirrorType {
         AXIAL, CENTRAL
-    };
+    }
+
     private MirrorType mirrorType;
 
     public static CTMirrorPoint make(Point orig, Line axis) {

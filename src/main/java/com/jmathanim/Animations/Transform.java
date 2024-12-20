@@ -240,7 +240,7 @@ public class Transform extends AnimationWithEffects {
                     break;
             }
             if (transformStrategy instanceof AnimationWithEffects) {
-                AnimationWithEffects tr = (AnimationWithEffects) transformStrategy;
+                AnimationWithEffects tr = transformStrategy;
                 this.copyEffectParametersTo(tr);
             } else {
                 JMathAnimScene.logger.error("Cannot apply effects to current transform");

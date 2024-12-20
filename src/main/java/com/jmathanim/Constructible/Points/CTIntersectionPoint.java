@@ -152,7 +152,7 @@ public class CTIntersectionPoint extends CTPoint {
                 y3 = ctline2.getP1().v.y;
                 y4 = ctline2.getP2().v.y;
 
-                double sols[] = BezierIntersect(x1, y1, x2, y2, x3, y3, x4, y4);
+                double[] sols = BezierIntersect(x1, y1, x2, y2, x3, y3, x4, y4);
 
                 //Consider cases of different intersecting objects
                 boolean intersect = true;
@@ -259,7 +259,7 @@ public class CTIntersectionPoint extends CTPoint {
 
     @Override
     public CTIntersectionPoint copy() {
-        CTIntersectionPoint copy = make((Constructible) c1.copy(), (Constructible) c2.copy());
+        CTIntersectionPoint copy = make(c1.copy(), c2.copy());
         copy.getMp().copyFrom(this.getMp());
         copy.getMathObject().copyFrom(this.getMathObject());
         copy.freeMathObject(this.isThisMathObjectFree());

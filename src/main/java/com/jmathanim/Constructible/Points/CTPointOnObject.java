@@ -48,7 +48,7 @@ public class CTPointOnObject extends CTPoint {
 
     @Override
     public void rebuildShape() {
-        Vec projectionPointCoordinates= owner.getHoldCoordinates(this.v);;
+        Vec projectionPointCoordinates= owner.getHoldCoordinates(this.v);
         this.v.copyFrom(projectionPointCoordinates);
         if (!isThisMathObjectFree()) {
             p.v.copyFrom(projectionPointCoordinates);

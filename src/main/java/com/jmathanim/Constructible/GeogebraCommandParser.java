@@ -55,6 +55,7 @@ import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.NullMathObject;
 import com.jmathanim.mathobjects.Point;
 import com.jmathanim.mathobjects.Scalar;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -64,10 +65,10 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
+
 import org.w3c.dom.Element;
 
 /**
- *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
 class GeogebraCommandParser {
@@ -153,7 +154,7 @@ class GeogebraCommandParser {
         }
     }
 
-//    private String getInputArgument(Element el, int num) {
+    //    private String getInputArgument(Element el, int num) {
 //        Element elInput = firstElementWithTag(el, "input");
 //        return elInput.getAttribute("a" + num);
 //    }
@@ -167,7 +168,7 @@ class GeogebraCommandParser {
 
         // Visibility
         Element show = firstElementWithTag(el, "show");
-        resul.setVisible("true".equals(show.getAttribute("object").toLowerCase()));
+        resul.setVisible("true".equalsIgnoreCase(show.getAttribute("object")));
 
         // Layer
         Element layer = firstElementWithTag(el, "layer");
@@ -306,6 +307,7 @@ class GeogebraCommandParser {
     void processImageElement(Element el, ZipFile zipFile) {
         String label = el.getAttribute("label");
         final Element fileEl = firstElementWithTag(el, "file");
+        if (fileEl == null) return;
         ZipEntry entry = zipFile.getEntry(fileEl.getAttribute("name"));
         try {
             InputStream fileStream = zipFile.getInputStream(entry);
@@ -318,7 +320,6 @@ class GeogebraCommandParser {
 
         } catch (IOException ex) {
             JMathAnimScene.logger.error("Could'nt load file for image " + label);
-            return;
         }
 
     }
@@ -331,7 +332,7 @@ class GeogebraCommandParser {
         text = text.replace("\"", "");
         final Element isLatex = firstElementWithTag(el, "isLaTeX");
         if (isLatex != null) {
-            if ("TRUE".equals(isLatex.getAttribute("val").toUpperCase())) {
+            if ("TRUE".equalsIgnoreCase(isLatex.getAttribute("val"))) {
                 text = "$" + text + "$";
             }
         }
@@ -343,8 +344,8 @@ class GeogebraCommandParser {
         if (startPointElement != null) {
             String labelAnchorPoint = startPointElement.getAttribute("exp");
             if ("".equals(labelAnchorPoint)) {//Point doesn't exist, create a new one
-                double x = Double.valueOf(startPointElement.getAttribute("x"));
-                double y = Double.valueOf(startPointElement.getAttribute("y"));
+                double x = Double.parseDouble(startPointElement.getAttribute("x"));
+                double y = Double.parseDouble(startPointElement.getAttribute("y"));
                 anchorPoint = CTPoint.make(Point.at(x, y));
             } else {
                 anchorPoint = (CTPoint) geogebraElements.get(labelAnchorPoint);
@@ -545,8 +546,7 @@ class GeogebraCommandParser {
             CTPoint arg2 = (CTPoint) parseArgument(str2);
             Constructible resul = CTCircle.make3Points(arg0, arg1, arg2);
             registerGeogebraElement(label, resul);
-            JMathAnimScene.logger
-                    .debug("Imported Geogebra Circle " + label + " by 3 points: " + arg0 + ", " + arg1 + ",  " + arg2);
+            JMathAnimScene.logger.debug("Imported Geogebra Circle " + label + " by 3 points: " + arg0 + ", " + arg1 + ",  " + arg2);
             return;
 
         }
@@ -609,9 +609,7 @@ class GeogebraCommandParser {
         String label = getOutputArgument(el, 0);
         MathObject[] objs = getArrayOfParameters(el);
 
-        long nonNullArgs = Arrays.stream(objs)
-                .filter(obj -> obj != null)
-                .count();
+        long nonNullArgs = Arrays.stream(objs).filter(obj -> obj != null).count();
 
         Constructible ob1 = (Constructible) objs[0];
         Constructible ob2 = (Constructible) objs[1];
@@ -662,8 +660,7 @@ class GeogebraCommandParser {
             CTPoint A = (CTPoint) parseArgument(str2);
             CTEllipse resul = CTEllipse.make(focus1, focus2, A);
             registerGeogebraElement(label, resul);
-            JMathAnimScene.logger
-                    .debug("Imported Geogebra Ellipse" + label + " by 3 points: " + focus1 + ", " + focus2 + ",  " + A);
+            JMathAnimScene.logger.debug("Imported Geogebra Ellipse" + label + " by 3 points: " + focus1 + ", " + focus2 + ",  " + A);
         }
     }
 

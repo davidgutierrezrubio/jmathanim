@@ -32,7 +32,7 @@ public class SimpleLayout extends GroupLayout {
 	private final double horizontalGap;
 	private final MathObjectGroup.Layout layout;
 	private final double verticalGap;
-	private Point refPoint;
+	private final Point refPoint;
 
 	/**
 	 * Creates a simple layout

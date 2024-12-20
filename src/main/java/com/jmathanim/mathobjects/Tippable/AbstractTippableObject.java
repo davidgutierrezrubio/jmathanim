@@ -172,9 +172,9 @@ public abstract class AbstractTippableObject extends Constructible implements ha
         mathobject.copyStateFrom(refMathObject);
         Vec tangent;
         if (isParametrized) {
-            tangent = shape.getPath().getParametrizedSlopeAt(locationParameterOnShape, slopeDirectionType == slopeDirectionType.POSITIVE);
+            tangent = shape.getPath().getParametrizedSlopeAt(locationParameterOnShape, slopeDirectionType == SlopeDirectionType.POSITIVE);
         } else {
-            tangent = shape.getPath().getSlopeAt(locationParameterOnShape, slopeDirectionType == slopeDirectionType.POSITIVE);
+            tangent = shape.getPath().getSlopeAt(locationParameterOnShape, slopeDirectionType == SlopeDirectionType.POSITIVE);
         }
 
         Vec normal = Vec.to(-tangent.y, tangent.x).normalize();

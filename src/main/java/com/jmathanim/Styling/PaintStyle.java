@@ -19,6 +19,11 @@ public abstract class PaintStyle {
         this.alpha = 1;
     }
 
+    /**
+     * Copies the attributes of the specified PaintStyle object into this PaintStyle object.
+     *
+     * @param A The PaintStyle object from which to copy the attributes. It must not be null.
+     */
     abstract public void copyFrom(PaintStyle A);
 
     /**

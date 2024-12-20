@@ -31,9 +31,9 @@ import com.jmathanim.mathobjects.Point;
  */
 public final class CTTangentPointCircle extends CTAbstractLine {
 
-    protected CTPoint A;
-    protected Line lineToDraw;
-    protected CTAbstractCircle C;
+    private CTPoint A;
+    private Line lineToDraw;
+    private CTAbstractCircle C;
     int numTangent;
 
     /**
@@ -62,7 +62,7 @@ public final class CTTangentPointCircle extends CTAbstractLine {
 
     @Override
     public Constructible copy() {
-        CTTangentPointCircle copy = CTTangentPointCircle.make((CTPoint) A.copy(), (CTAbstractCircle) C.copy(), numTangent);
+        CTTangentPointCircle copy = CTTangentPointCircle.make(A.copy(), (CTAbstractCircle) C.copy(), numTangent);
         copy.copyStateFrom(this);
         return copy;
     }

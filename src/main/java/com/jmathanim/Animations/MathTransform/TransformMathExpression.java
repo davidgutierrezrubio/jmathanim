@@ -30,10 +30,8 @@ import static com.jmathanim.jmathanim.JMathAnimScene.PI;
 import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.MultiShapeObject;
 import com.jmathanim.mathobjects.Shape;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
+
+import java.util.*;
 
 /**
  *
@@ -646,7 +644,7 @@ public class TransformMathExpression extends Animation {
 
     private String belongsToADstGroup(int index) {
         for (String p : trParDstGroups.keySet()) {
-            List<int[]> ar = Arrays.asList(trParDstGroups.get(p));
+            List<int[]> ar = Collections.singletonList(trParDstGroups.get(p));
             if (ar.contains(index)) {
                 return p;
             }

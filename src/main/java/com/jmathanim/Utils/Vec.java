@@ -154,7 +154,7 @@ public class Vec implements Stateable, HasDirection {
     }
 
     public double norm() {
-        return (double) sqrt(x * x + y * y + z * z);
+        return sqrt(x * x + y * y + z * z);
     }
 
     /**

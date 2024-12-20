@@ -23,10 +23,10 @@ import javafx.scene.shape.StrokeLineCap;
 import javafx.scene.shape.StrokeLineJoin;
 
 /**
- * Anything that can be changes its style. May be a single object or a
- * collection of them.
- *
- * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
+ * The {@code Stylable} interface provides a contract for objects that
+ * possess styling properties such as colors, transparency, thickness,
+ * and other graphical attributes. It also supports state management,
+ * interpolation, and hierarchical styling through child sub-properties.
  */
 public interface Stylable {
 
@@ -93,78 +93,78 @@ public interface Stylable {
 
     void setLayer(int layer);
 
-    public Integer getLayer();
+    Integer getLayer();
 
-    public PaintStyle getDrawColor();
+    PaintStyle getDrawColor();
 
-    public PaintStyle getFillColor();
+    PaintStyle getFillColor();
 
-    public StrokeLineCap getLineCap();
+    StrokeLineCap getLineCap();
     
-    public StrokeLineJoin getLineJoin();
+    StrokeLineJoin getLineJoin();
 
-    public void setLinecap(StrokeLineCap linecap);
+    void setLinecap(StrokeLineCap linecap);
     
-    public void setLineJoin(StrokeLineJoin linejoin);
+    void setLineJoin(StrokeLineJoin linejoin);
 
-    public Double getThickness();
+    Double getThickness();
 
-    public void setThickness(Double thickness);
+    void setThickness(Double thickness);
 
-    public void setDotStyle(Point.DotSyle dotStyle);
+    void setDotStyle(Point.DotSyle dotStyle);
 
-    public Point.DotSyle getDotStyle();
+    Point.DotSyle getDotStyle();
 
-    public void setDashStyle(MODrawProperties.DashStyle dashStyle);
+    void setDashStyle(MODrawProperties.DashStyle dashStyle);
 
-    public MODrawProperties.DashStyle getDashStyle();
+    MODrawProperties.DashStyle getDashStyle();
 
-    public Boolean isAbsoluteThickness();
+    Boolean isAbsoluteThickness();
 
-    public void setAbsoluteThickness(Boolean absThickness);
+    void setAbsoluteThickness(Boolean absThickness);
 
-    public void setVisible(Boolean absThickness);
+    void setVisible(Boolean absThickness);
 
-    public Boolean isVisible();
+    Boolean isVisible();
 
-    public Boolean isFaceToCamera();
+    Boolean isFaceToCamera();
 
-    public Vec getFaceToCameraPivot();
+    Vec getFaceToCameraPivot();
 
-    public void setFaceToCamera(Boolean faceToCamera);
+    void setFaceToCamera(Boolean faceToCamera);
 
-    public void setFaceToCameraPivot(Vec pivot);
+    void setFaceToCameraPivot(Vec pivot);
 
-    public void setScaleArrowHead1(Double scale);
+    void setScaleArrowHead1(Double scale);
 
-    public void setScaleArrowHead2(Double scale);
+    void setScaleArrowHead2(Double scale);
 
-    public Double getScaleArrowHead1();
+    Double getScaleArrowHead1();
 
-    public Double getScaleArrowHead2();
+    Double getScaleArrowHead2();
 
-    public Stylable getSubMP(int n);
+    Stylable getSubMP(int n);
 
     /**
      * Multiplies the current thickness by given factor
      *
      * @param multT Factor
      */
-    public void multThickness(double multT);
+    void multThickness(double multT);
 
     /**
      * Multiplies the current draw alpha by given factor
      *
      * @param mult Factor
      */
-    public void multDrawAlpha(double mult);
+    void multDrawAlpha(double mult);
 
     /**
      * Multiplies the current fill alpha by given factor
      *
      * @param mult Factor
      */
-    public void multFillAlpha(double mult);
+    void multFillAlpha(double mult);
 
-    public MODrawProperties getFirstMP();
+    MODrawProperties getFirstMP();
 }

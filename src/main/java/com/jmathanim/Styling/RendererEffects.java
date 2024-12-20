@@ -17,8 +17,8 @@
 package com.jmathanim.Styling;
 
 /**
- *
- * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
+ * Represents a set of graphical effects that can be applied during the rendering process.
+ * This class provides properties and methods to control effects such as Gaussian blur and drop shadow.
  */
 public class RendererEffects {
 

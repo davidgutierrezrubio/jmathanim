@@ -135,7 +135,7 @@ public class FlipTransform extends AnimationWithEffects {
             intermediateObject = objDst;
         }
         restoreStates(intermediateObject);
-        double scales[] = computeScale(lt);
+        double[] scales = computeScale(lt);
         intermediateObject.scale(scales[0], scales[1]);
         intermediateObject.moveTo(origCenter.interpolate(dstCenter, lt));
         applyAnimationEffects(lt, intermediateObject);

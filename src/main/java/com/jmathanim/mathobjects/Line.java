@@ -65,7 +65,8 @@ public class Line extends Shape implements HasDirection, shouldUdpateWithCamera 
     }
 
     private final JMPathPoint bp1, bp2;
-    private Point p1, p2;
+    private final Point p1;
+    private final Point p2;
     private final Shape visiblePiece;
 
     /**
@@ -97,7 +98,7 @@ public class Line extends Shape implements HasDirection, shouldUdpateWithCamera 
         visiblePiece.getPath().addJMPoint(bp1, bp2);
         getPath().addPoint(p1, p2);
         get(0).isThisSegmentVisible = false;
-        setCamera(JMathAnimConfig.getConfig().getCamera());;//First default camera
+        setCamera(JMathAnimConfig.getConfig().getCamera());//First default camera
         computeBoundPoints(getCamera());
     }
 

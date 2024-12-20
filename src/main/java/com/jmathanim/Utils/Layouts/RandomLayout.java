@@ -44,7 +44,7 @@ public class RandomLayout extends GroupLayout {
          * Normal, Gaussian distribution with 0 mean
          */
         NORMAL
-    };
+    }
 
     /**
      * Returns a new RandomLayout object with no center, Normal distribution and
