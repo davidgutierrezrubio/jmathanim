@@ -41,6 +41,7 @@ import com.jmathanim.mathobjects.Shape;
 import com.jmathanim.mathobjects.Text.LaTeXMathObject;
 import com.jmathanim.mathobjects.shouldUdpateWithCamera;
 import com.jmathanim.mathobjects.updateableObjects.Updateable;
+
 import java.io.File;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -54,10 +55,10 @@ import java.util.Optional;
 import java.util.function.DoubleUnaryOperator;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
+
 import org.slf4j.LoggerFactory;
 
 /**
- *
  * @author David Gutierrez Rubio davidgutierrezrubio@gmail.com
  */
 public abstract class JMathAnimScene {
@@ -79,61 +80,35 @@ public abstract class JMathAnimScene {
      */
     public static final double DEGREES = PI / 180;
     /**
-     * List of sceneObjects which needs to be drawn on the screen
+     * This class is used to easily access to most common animations
      */
-    private final ArrayList<MathObject> sceneObjects;
-    private final HashSet<MathObject> objectsAlreadyDrawed;
-
-    /**
-     * Links to be executed, right before the updates
-     */
-    private final ArrayList<Link> linksToBeDone;
-
+    public final PlayAnim play;
     /**
      * List of sceneObjects which needs to be updated (not necessarily drawn)
      */
     final ArrayList<Updateable> objectsToBeUpdated;
-
     /**
      * List of sceneObjects which needs to be removed immediately after
      * rendering
      */
     final ArrayList<MathObject> objectsToBeRemoved;
-
     /**
-     * Renderer to perform drawings
+     * List of sceneObjects which needs to be drawn on the screen
      */
-    protected Renderer renderer;
-
-    public Renderer getRenderer() {
-        return renderer;
-    }
-
+    private final ArrayList<MathObject> sceneObjects;
+    private final HashSet<MathObject> objectsAlreadyDrawed;
     /**
-     * Number of frames
+     * Links to be executed, right before the updates
      */
-    protected int frameCount;
-
-    public int getFrameCount() {
-        return frameCount;
-    }
+    private final ArrayList<Link> linksToBeDone;
     /**
-     * Frames per second used in the animation
+     * A dictionary containing all loaded styles
      */
-    protected double fps;
-    /**
-     * Time step.
-     */
-    protected double dt;
+    private final HashMap<String, MODrawProperties> styles;
     /**
      * Configuration
      */
     public JMathAnimConfig config;
-    /**
-     * This class is used to easily access to most common animations
-     */
-    public final PlayAnim play;
-
     /**
      * Nanotime, used to control frame rate in preview window
      */
@@ -144,19 +119,29 @@ public abstract class JMathAnimScene {
      */
     public long previousNanoTime;
     /**
+     * Renderer to perform drawings
+     */
+    protected Renderer renderer;
+    /**
+     * Number of frames
+     */
+    protected int frameCount;
+    /**
+     * Frames per second used in the animation
+     */
+    protected double fps;
+    /**
+     * Time step.
+     */
+    protected double dt;
+    /**
      * Exit code of program
      */
     private int exitCode;
-
     /**
      * If true, frames are not generated and animations are instantly processed
      */
     private boolean animationIsDisabled;
-
-    /**
-     * A dictionary containing all loaded styles
-     */
-    private final HashMap<String, MODrawProperties> styles;
 
     /**
      * Creates a new Scene with default settings.
@@ -173,6 +158,14 @@ public abstract class JMathAnimScene {
         config.setOutputFileName(this.getClass().getSimpleName());
         animationIsDisabled = false;
         styles = config.getStyles();
+    }
+
+    public Renderer getRenderer() {
+        return renderer;
+    }
+
+    public int getFrameCount() {
+        return frameCount;
     }
 
     /**
@@ -266,7 +259,7 @@ public abstract class JMathAnimScene {
      * here.
      *
      * @throws Exception Any expecption which may occur while performing the
-     * animations
+     *                   animations
      */
     public abstract void runSketch() throws Exception;
 
@@ -425,7 +418,8 @@ public abstract class JMathAnimScene {
         }
 
         // Now remove all marked sceneObjects from the scene
-         remove((MathObject[]) objectsToBeRemoved.toArray());
+        if (!objectsToBeRemoved.isEmpty())
+            remove((MathObject[]) objectsToBeRemoved.toArray());
 //        remove((MathObject[]) objectsToBeRemoved.toArray(value -> new MathObject[value]));
         objectsToBeRemoved.clear();
     }
@@ -485,9 +479,7 @@ public abstract class JMathAnimScene {
         String fn;
         String format;
         //Determine extension
-        Optional<String> extension = Optional.ofNullable(filename)
-                .filter(f -> f.contains("."))
-                .map(f -> f.substring(filename.lastIndexOf(".") + 1));
+        Optional<String> extension = Optional.ofNullable(filename).filter(f -> f.contains(".")).map(f -> f.substring(filename.lastIndexOf(".") + 1));
 
         if ("".equals(extension.toString())) {
             //Add png as default extension
@@ -519,7 +511,7 @@ public abstract class JMathAnimScene {
      * using the ResourceLoader class, so usual modifiers can be used
      *
      * @param soundName Name of sound file. By default it looks in
-     * user_project/resources/sounds
+     *                  user_project/resources/sounds
      * @param pitch
      */
     public void playSound(String soundName, double pitch) {
@@ -627,8 +619,7 @@ public abstract class JMathAnimScene {
                 advanceFrame();
 
             } catch (Exception ex) {
-                java.util.logging.Logger.getLogger(JMathAnimScene.class
-                        .getName()).log(Level.SEVERE, null, ex);
+                java.util.logging.Logger.getLogger(JMathAnimScene.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
 
@@ -733,7 +724,7 @@ public abstract class JMathAnimScene {
         for (int k : layers) {
             arLayers.add(k);
         }
-        ArrayList<MathObject> resul=new ArrayList<>();
+        ArrayList<MathObject> resul = new ArrayList<>();
         for (MathObject mathObject : getMathObjects()) {
             if (arLayers.contains(mathObject.getLayer())) {
                 resul.add(mathObject);
@@ -839,9 +830,9 @@ public abstract class JMathAnimScene {
      * Register a new Link to be done at every frame. A double value will be
      * extracted from the origin object and applied to the destiny
      *
-     * @param origin Origin object
-     * @param originType Origin link
-     * @param destiny Destiny object
+     * @param origin      Origin object
+     * @param originType  Origin link
+     * @param destiny     Destiny object
      * @param destinyType Destiny link
      * @return The created link
      */
@@ -855,12 +846,12 @@ public abstract class JMathAnimScene {
      * Register a new Link to be done at every frame. A double value will be
      * extracted from the origin object and applied to the destiny
      *
-     * @param origin Origin object
-     * @param originType Origin link.
-     * @param destiny Destiny object
+     * @param origin      Origin object
+     * @param originType  Origin link.
+     * @param destiny     Destiny object
      * @param destinyType Destiny link
-     * @param function Function to apply to the value before applying to the
-     * destiny object
+     * @param function    Function to apply to the value before applying to the
+     *                    destiny object
      * @return The created link
      */
     public LinkArguments registerLink(Linkable origin, LinkArguments.LinkType originType, Linkable destiny, LinkArguments.LinkType destinyType, DoubleUnaryOperator function) {
