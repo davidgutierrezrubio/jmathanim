@@ -142,6 +142,7 @@ public class PascalLayout extends GroupLayout {
 	}
 
 	@Override
+	@SuppressWarnings("unchecked")
 	public PascalLayout copy() {
 		if (top != null) {
 			return new PascalLayout(top.copy(), horizontalGap, verticalGap);

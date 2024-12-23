@@ -72,6 +72,10 @@ public abstract class JMathAnimScene {
      */
     public static final double PI = 3.14159265358979323846;
     /**
+     * 2PI
+     */
+    public static final double PI2 = 2*PI;
+    /**
      * The golden ratio
      */
     public static final double GOLDEN_RATIO = 1.6180339887498948482045868;
@@ -236,14 +240,6 @@ public abstract class JMathAnimScene {
         return sceneObjects;
     }
 
-    public MathObject[] everything() {
-        MathObject[] arr = new MathObject[sceneObjects.size()];
-        for (int n = 0; n < sceneObjects.size(); n++) {
-            arr[n] = sceneObjects.get(n);
-        }
-        return arr;
-    }
-
     /**
      * Returns the list of objects to be updated. Note that this doesn't
      * necessarily matchs with objects drawn
@@ -255,10 +251,10 @@ public abstract class JMathAnimScene {
     }
 
     /**
-     * An abstract method to be overriden. Actual animations are implemented
+     * An abstract method to be overridden. Actual animations are implemented
      * here.
      *
-     * @throws Exception Any expecption which may occur while performing the
+     * @throws Exception Any exception which may occur while performing the
      *                   animations
      */
     public abstract void runSketch() throws Exception;

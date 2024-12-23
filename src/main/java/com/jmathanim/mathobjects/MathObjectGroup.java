@@ -414,10 +414,6 @@ public class MathObjectGroup extends MathObject implements Iterable<MathObject> 
         return (T) this;
     }
 
-    @Override
-    public <T extends MathObject> T setAbsoluteSize() {
-        return super.setAbsoluteSize(); // To change body of generated methods, choose Tools | Templates.
-    }
 
     public <T extends MathObjectGroup> T setLayout(GroupLayout layout) {
         layout.applyLayout(this);
@@ -519,9 +515,6 @@ public class MathObjectGroup extends MathObject implements Iterable<MathObject> 
         return objects.toArray(new MathObject[0]);
     }
 
-    @Override
-    public void update(JMathAnimScene scene) {
-    }
 
     @Override
     public <T extends MathObject> T visible(boolean visible) {

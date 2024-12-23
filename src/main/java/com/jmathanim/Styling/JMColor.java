@@ -26,8 +26,10 @@ import java.util.Iterator;
 import javafx.scene.paint.Paint;
 
 /**
- *
- * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
+ * JMColor is a class representing a color with red (r), green (g), blue (b),
+ * and alpha (transparency) components. Components are expressed as values
+ * between 0 and 1. It provides methods for managing colors, including creation,
+ * conversion, interpolation, inversion, and parsing from string formats.
  */
 public class JMColor extends PaintStyle {
 
@@ -43,8 +45,8 @@ public class JMColor extends PaintStyle {
     private double alpha;
 
     /**
-     * Creates a new JMColor with the specified red, green, blue, and alha
-     * componentes, from 0 to 1.
+     * Creates a new JMColor with the specified red, green, blue, and alpha
+     * components, from 0 to 1.
      *
      * @param r Red component 0-1
      * @param g Green component 0-1
@@ -60,7 +62,7 @@ public class JMColor extends PaintStyle {
 
     /**
      * Creates a new JMColor with the specified red, green, blue, and alha
-     * componentes, from 0 to 256.
+     * components, from 0 to 256.
      *
      * @param r Red component 0-255
      * @param g Green component 0-255
@@ -87,13 +89,13 @@ public class JMColor extends PaintStyle {
      * @return Color
      */
     public javafx.scene.paint.Color getFXColor() {
-        r = (r < 0 ? 0 : r);
-        g = (g < 0 ? 0 : g);
-        b = (b < 0 ? 0 : b);
+        r = r < 0 ? 0 : r;
+        g = g < 0 ? 0 : g;
+        b = b < 0 ? 0 : b;
 
-        r = (r > 1 ? 1 : r);
-        g = (r > 1 ? 1 : g);
-        b = (r > 1 ? 1 : b);
+        r = r > 1 ? 1 : r;
+        g = g > 1 ? 1 : g;
+        b = b > 1 ? 1 : b;
         return new javafx.scene.paint.Color((float) r, (float) g, (float) b, (float) alpha);
     }
 

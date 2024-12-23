@@ -28,7 +28,7 @@ public abstract class Link {
     /**
      * Apply current link
      *
-     * @return True if link has been applied succesfully. False otherwise.
+     * @return True if link has been applied successfully. False otherwise.
      */
     public abstract boolean apply();
     

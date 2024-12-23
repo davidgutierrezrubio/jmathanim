@@ -31,7 +31,7 @@ public class LatexToken {
 
     public enum TokenType {
         NONE, //This token will not be assigned never. It is used to always returns false when matching tokens
-        NON_MATH_CHAR,//Normal, non mathematical text
+        NON_MATH_CHAR,//Normal, non-mathematical text
         CHAR,//A char token, mostly a letter
         NUMBER, //0-9 digits, including point if used in the decimal context
         SYMBOL, //A math symbol
@@ -280,7 +280,7 @@ public class LatexToken {
         if (secType == null) {
             return null;
         }
-        if (((secType & SEC_SUPERSCRIPT) != 0) || ((secType & SEC_SUPERSCRIPT) != 0)) {
+        if (((secType & SEC_SUBSCRIPT) != 0) || ((secType & SEC_SUPERSCRIPT) != 0)) {
             secType &= ~SEC_NORMAL;//Delete NORMAL bit   
         }
         if (((secType & SEC_NUMERATOR) != 0)) {
@@ -342,7 +342,7 @@ public class LatexToken {
 //     * @param secondaryType An integer with secondary bit attributes SEC_XXX.
 //     * Null if no comparison needed.
 //     * @param delimiterDepth
-//     * @return True if match. False otherwise.
+//     * @return True if matched. False otherwise.
 //     */
 //    public boolean match(TokenType type, String name, Integer secondaryType, Integer delimiterDepth) {
 //        boolean result = true;
@@ -375,7 +375,7 @@ public class LatexToken {
         result = result && ((token.type == null) || (this.type == null) || (this.type == token.type));
         result = result && matchSecType(token.secondaryFlags);
         result = result && ((token.string == null) || (this.string == null) || (this.string.equals(token.string)));
-        result = result && ((token.delimiterDepth == null) || (this.delimiterDepth == null) || (this.delimiterDepth == token.delimiterDepth));
+        result = result && ((token.delimiterDepth == null) || (this.delimiterDepth == null) || (this.delimiterDepth.equals(token.delimiterDepth)));
         return result;
     }
 
@@ -394,7 +394,7 @@ public class LatexToken {
         result = result && ((token.type == null) || (this.type == null) || (token.type != this.type));
         result = result && ((token.secondaryFlags == null) || (this.secondaryFlags == null) || ((~token.secondaryFlags & secondaryFlags) != 0));
         result = result && ((token.string == null) || (!token.string.equals(string)));
-        result = result && ((token.delimiterDepth == null) || (this.delimiterDepth == null) || (token.delimiterDepth != this.delimiterDepth));
+        result = result && ((token.delimiterDepth == null) || (this.delimiterDepth == null) || (!token.delimiterDepth.equals(this.delimiterDepth)));
         return result;
     }
 

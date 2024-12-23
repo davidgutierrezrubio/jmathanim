@@ -117,10 +117,9 @@ public class HeapLayout extends GroupLayout {
 		}
 
 		whole.add(center);
-		for (int col = 0; col < rightSide.size(); col++) {
-			MathObjectGroup get = rightSide.get(col);
-			whole.add(get);
-		}
+        for (MathObjectGroup get : rightSide) {
+            whole.add(get);
+        }
 		// Stack them horizontally
 		whole.setLayout(MathObjectGroup.Layout.DRIGHT, this.horizontalGap);
 		// Allocates them properly
@@ -132,8 +131,9 @@ public class HeapLayout extends GroupLayout {
 	}
 
 	@Override
+	@SuppressWarnings("unchecked")
 	public HeapLayout copy() {
-		return new HeapLayout(base.copy(), verticalGap, verticalGap);
+		return new HeapLayout(base.copy(), horizontalGap, verticalGap);
 	}
 
 }

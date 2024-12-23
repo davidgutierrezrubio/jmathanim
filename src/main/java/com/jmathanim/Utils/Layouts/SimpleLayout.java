@@ -175,6 +175,7 @@ public class SimpleLayout extends GroupLayout {
 	}
 
 	@Override
+	@SuppressWarnings("unchecked")
 	public SimpleLayout copy() {
 		if (refPoint != null) {
 			return new SimpleLayout(refPoint.copy(), layout, verticalGap, verticalGap);

@@ -17,14 +17,15 @@
  */
 package com.jmathanim.Utils;
 
-/**
- * An ArrayList where elements can be accesed cyclicly. get(size()+k) returns
- * get(k)
- *
- * @author David
- */
+
 import java.util.ArrayList;
 
+/**
+ * An ArrayList where elements can be accessed cyclically. get(size()+k) returns
+ * get(k)
+ *
+ * @author David Gutiérrez Rubio
+ */
 public class CircularArrayList<E> extends ArrayList<E> {
 
     private static final long serialVersionUID = 1L;
@@ -63,7 +64,7 @@ public class CircularArrayList<E> extends ArrayList<E> {
             }
         }
 
-        super.add(index, element); // To change body of generated methods, choose Tools | Templates.
+        super.add(index, element);
     }
 
 }

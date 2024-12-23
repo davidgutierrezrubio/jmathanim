@@ -149,9 +149,6 @@ public class JMPathPoint extends MathObject implements Updateable, Stateable {
         return resul;
     }
 
-    @Override
-    public void update(JMathAnimScene scene) {
-    }
 
     @Override
     public void saveState() {

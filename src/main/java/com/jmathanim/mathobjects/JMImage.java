@@ -98,9 +98,6 @@ public class JMImage extends AbstractJMImage {
         this.currentViewTransform.copyFrom(img.currentViewTransform);
     }
 
-    @Override
-    public void update(JMathAnimScene scene) {
-    }
 
     @Override
     public void restoreState() {

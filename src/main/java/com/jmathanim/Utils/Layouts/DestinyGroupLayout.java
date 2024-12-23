@@ -29,7 +29,7 @@ public class DestinyGroupLayout extends GroupLayout {
 	private final MathObjectGroup destinyGroup;
 
 	/**
-	 * Creates a new DestinyGroupLayout. The destinty of n-th object of the
+	 * Creates a new DestinyGroupLayout. The destiny of n-th object of the
 	 * MathObjectGroup to apply the layout is given by the n-th object of the
 	 * destiny group
 	 *

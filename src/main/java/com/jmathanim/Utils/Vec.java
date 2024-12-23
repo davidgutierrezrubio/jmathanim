@@ -19,6 +19,7 @@ package com.jmathanim.Utils;
 
 import com.jmathanim.Constructible.Lines.HasDirection;
 import static com.jmathanim.jmathanim.JMathAnimScene.PI;
+
 import com.jmathanim.mathobjects.Stateable;
 import static java.lang.Math.sqrt;
 import org.apache.commons.math3.linear.Array2DRowRealMatrix;
@@ -33,6 +34,7 @@ public class Vec implements Stateable, HasDirection {
 
     public double x, y, z;
     public double xState, yState, zState;
+    public static final double PI2 = 2 * PI;
 
     /**
      * Returns a new Vec with the given coordinates
@@ -177,8 +179,7 @@ public class Vec implements Stateable, HasDirection {
      * @return The copy
      */
     public Vec copy() {
-        Vec resul = new Vec(x, y, z);
-        return resul;
+        return new Vec(x, y, z);
     }
 
     /**
@@ -216,11 +217,12 @@ public class Vec implements Stateable, HasDirection {
      */
     public double getAngle() {
         double angle = Math.atan2(this.y, this.x);
+
         while (angle < 0) {
-            angle += 2 * PI;
+            angle += PI2;
         }
-        while (angle > 2 * PI) {
-            angle -= 2 * PI;
+        while (angle > PI2) {
+            angle -= PI2;
         }
         return angle;
     }
@@ -231,8 +233,7 @@ public class Vec implements Stateable, HasDirection {
      * @return The angle
      */
     public double getAngleRightQuad() {
-        double angle = Math.atan(this.y / this.x);
-        return angle;
+        return Math.atan(this.y / this.x);
     }
 
     /**
@@ -266,9 +267,9 @@ public class Vec implements Stateable, HasDirection {
     @Override
     public int hashCode() {
         int hash = 7;
-        hash = 29 * hash + (int) (Double.doubleToLongBits(this.x) ^ (Double.doubleToLongBits(this.x) >>> 32));
-        hash = 29 * hash + (int) (Double.doubleToLongBits(this.y) ^ (Double.doubleToLongBits(this.y) >>> 32));
-        hash = 29 * hash + (int) (Double.doubleToLongBits(this.z) ^ (Double.doubleToLongBits(this.z) >>> 32));
+        hash = 29 * hash + Long.hashCode(Double.doubleToLongBits(this.x));
+        hash = 29 * hash + Long.hashCode(Double.doubleToLongBits(this.y));
+        hash = 29 * hash + Long.hashCode(Double.doubleToLongBits(this.z));
         return hash;
     }
 

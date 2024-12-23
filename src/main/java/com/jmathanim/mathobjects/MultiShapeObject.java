@@ -227,10 +227,6 @@ public class MultiShapeObject extends MathObject implements Iterable<Shape> {
         return shapes.get(n);
     }
 
-    @Override
-    public void update(JMathAnimScene scene) {
-        // No need to update as the shapes are already added to the scene
-    }
 
     @Override
     public void restoreState() {

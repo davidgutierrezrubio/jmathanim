@@ -25,7 +25,9 @@ import com.jmathanim.Utils.JMathAnimConfig;
 import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
+
 import java.text.DecimalFormat;
+
 import org.apache.commons.math3.linear.Array2DRowRealMatrix;
 import org.apache.commons.math3.linear.RealMatrix;
 
@@ -64,11 +66,11 @@ public class Point extends MathObject {
      *
      * @return The created Point
      */
-    public static final Point origin() {
+    public static Point origin() {
         return Point.at(0, 0);
     }
 
-    public static final Point relAt(double x, double y) {
+    public static Point relAt(double x, double y) {
         return JMathAnimConfig.getConfig().getCamera().getMathView().getRelPoint(x, y);
     }
 
@@ -77,7 +79,7 @@ public class Point extends MathObject {
      *
      * @return The created Point
      */
-    public static final Point unitX() {
+    public static Point unitX() {
         return Point.at(1, 0);
     }
 
@@ -86,15 +88,15 @@ public class Point extends MathObject {
      *
      * @return The created Point
      */
-    public static final Point unitY() {
+    public static Point unitY() {
         return Point.at(0, 1);
     }
 
-    public static final Point unitZ() {
+    public static Point unitZ() {
         return new Point(0, 0, 1);
     }
 
-    public static final Point segmentIntersection(Point A, Point B, Point C, Point D) {
+    public static Point segmentIntersection(Point A, Point B, Point C, Point D) {
         AffineJTransform tr = AffineJTransform.createAffineTransformation(A, B, C, Point.unitX(), Point.unitY(),
                 Point.origin(), 1);
         Point P = tr.getTransformedObject(D);
@@ -205,7 +207,7 @@ public class Point extends MathObject {
 
     @Override
     public void draw(JMathAnimScene scene, Renderer r, Camera cam) {
-        if (v.isNaN())  {
+        if (v.isNaN()) {
 //        if ((v.isNaN()) || (this.scene == null))  {
             return;
         }
@@ -222,7 +224,7 @@ public class Point extends MathObject {
      * Stablishes dot style.
      *
      * @param dotStyle Style dot. DOT_STYLE_CIRCLE, DOT_STYLE_CROSS,
-     * DOT_STYLE_PLUS
+     *                 DOT_STYLE_PLUS
      * @return The object
      */
     public Point dotStyle(DotSyle dotStyle) {
@@ -364,7 +366,7 @@ public class Point extends MathObject {
         Point p2 = (Point) obj;
         this.copyFrom(p2);//Copy coordinates
         this.getMp().copyFrom(p2.getMp());
-        this.scene=obj.scene;
+        this.scene = obj.scene;
     }
 
     public boolean isEquivalentTo(Point p2, double epsilon) {

@@ -39,6 +39,8 @@ import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
+
+import org.jetbrains.annotations.NotNull;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -546,66 +548,102 @@ public class SVGUtils {
     }
     
     private ArrayList<String> getPointTokens(String s) {
-        String t = s.replace("-", " -");// Avoid errors with strings like "142.11998-.948884"
-        t = t.replace("e -", "e-");// Avoid errors with numbers in scientific format
-        t = t.replace("E -", "E-");// Avoid errors with numbers in scientific format
-        t = t.replace("M", " M ");// Adding spaces before and after to all commmands helps me to differentiate
-        // easily from coordinates
-        t = t.replace("m", " m ");
-        t = t.replace("H", " H ");
-        t = t.replace("h", " h ");
-        t = t.replace("V", " V ");
-        t = t.replace("v", " v ");
-        t = t.replace("C", " C ");
-        t = t.replace("c", " c ");
-        t = t.replace("S", " S ");
-        t = t.replace("s", " s ");
-        t = t.replace("L", " L ");
-        t = t.replace("l", " l ");
-        t = t.replace("Z", " Z ");
-        t = t.replace("z", " z ");
-        t = t.replace("q", " q ");
-        t = t.replace("Q", " Q ");
-        t = t.replace("a", " a ");
-        t = t.replace("A", " A ");
-        t = t.replaceAll(",", " ");// Replace all commas with spaces
-        t = t.replaceAll("^ +| +$|( )+", "$1");// Removes duplicate spaces
-        // Look for second decimal points and add a space. Chains like this "-.5.4"
-        // should change to "-.5 .4"
-        // TODO: Do it in a more efficient way, maybe with regex patterns
+        String t = sanitizeString(s);
         String[] tokens_1 = t.split(" ");
         ArrayList<String> tokens = new ArrayList<>();
         for (String tok : tokens_1) {
-            StringBuilder st = new StringBuilder(tok);
-            String tok2 = tok;
-            int index = st.indexOf(".");
-            if (index > -1) {
-                if (st.indexOf(".", index + 1) > -1) {// If there is a second point
-
-                    st.setCharAt(index, '|');// Replace first decimal point by '|'
-
-                    tok2 = st.toString();
-                    tok2 = tok2.replace(".", " .");
-                    tok2 = tok2.replace("- .", "-.");
-                    tok2 = tok2.replace("|", ".");
-                }
-            }
+            String tok2 = sanitizeTokens(tok);
             tokens.addAll(Arrays.asList(tok2.split(" ")));
         }
         return tokens;
     }
-    
-    private JMPathPoint pathQuadraticBezier(JMPath resul, JMPathPoint previousPoint, double qx0, double qy0, double qx1, double qy1, double qx2, double qy2) {
-        double cx1;
-        double cy1;
-        double cx2;
-        double cy2;
-        cx1 = qx0 + (2d / 3) * (qx1 - qx0);
-        cy1 = qy0 + (2d / 3) * (qy1 - qy0);
-        cx2 = qx2 + (2d / 3) * (qx1 - qx2);
-        cy2 = qy2 + (2d / 3) * (qy1 - qy2);
-        previousPoint = pathCubicBezier(resul, previousPoint, cx1, cy1, cx2, cy2, currentX, currentY);
-        return previousPoint;
+
+    private static @NotNull String sanitizeTokens(String tok) {
+        StringBuilder st = new StringBuilder(tok);
+        String tok2 = tok;
+        int index = st.indexOf(".");
+        if (index > -1) {
+            if (st.indexOf(".", index + 1) > -1) {// If there is a second point
+
+                st.setCharAt(index, '|');// Replace first decimal point by '|'
+
+                tok2 = st.toString();
+                tok2 = tok2.replace(".", " .");
+                tok2 = tok2.replace("- .", "-.");
+                tok2 = tok2.replace("|", ".");
+            }
+        }
+        return tok2;
+    }
+    private static @NotNull String sanitizeString(String input) {
+        String sanitizedString = input.replace("-", " -") // Avoid errors with strings like "142.11998-.948884"
+                .replace("e -", "e-") // Avoid errors with numbers in scientific format
+                .replace("E -", "E-") // Avoid errors with numbers in scientific format
+                .replaceAll("([MmHhVvCcSsLlZzQqAa])", " $1 ") // Add spaces before and after all SVG commands
+                .replaceAll(",", " ") // Replace all commas with spaces
+                .replaceAll("^ +| +$|( )+", "$1"); // Remove duplicate spaces
+        return sanitizedString;
+    }
+//    private static @NotNull String sanitizeString(String s) {
+//        String t = s.replace("-", " -");// Avoid errors with strings like "142.11998-.948884"
+//        t = t.replace("e -", "e-");// Avoid errors with numbers in scientific format
+//        t = t.replace("E -", "E-");// Avoid errors with numbers in scientific format
+//        t = t.replace("M", " M ");// Adding spaces before and after to all commands helps me to differentiate
+//        // easily from coordinates
+//        t = t.replace("m", " m ");
+//        t = t.replace("H", " H ");
+//        t = t.replace("h", " h ");
+//        t = t.replace("V", " V ");
+//        t = t.replace("v", " v ");
+//        t = t.replace("C", " C ");
+//        t = t.replace("c", " c ");
+//        t = t.replace("S", " S ");
+//        t = t.replace("s", " s ");
+//        t = t.replace("L", " L ");
+//        t = t.replace("l", " l ");
+//        t = t.replace("Z", " Z ");
+//        t = t.replace("z", " z ");
+//        t = t.replace("q", " q ");
+//        t = t.replace("Q", " Q ");
+//        t = t.replace("a", " a ");
+//        t = t.replace("A", " A ");
+//        t = t.replaceAll(",", " ");// Replace all commas with spaces
+//        t = t.replaceAll("^ +| +$|( )+", "$1");// Removes duplicate spaces
+//        return t;
+//    }
+
+    private static final double CONTROL_POINT_RATIO = 2d / 3;
+
+    /**
+     * Creates a quadratic Bezier path segment and adds it to the provided JMPath.
+     * This method calculates intermediate control points needed to approximate the quadratic Bezier
+     * curve using a cubic Bezier curve and then delegates the processing to a cubic Bezier method.
+     *
+     * @param pathResult The JMPath to which the quadratic Bezier segment will be added.
+     * @param previousPoint The previous point in the path, used as a reference for continuity.
+     * @param startX The x-coordinate of the starting point of the quadratic Bezier segment.
+     * @param startY The y-coordinate of the starting point of the quadratic Bezier segment.
+     * @param controlX The x-coordinate of the control point for the quadratic Bezier curve.
+     * @param controlY The y-coordinate of the control point for the quadratic Bezier curve.
+     * @param endX The x-coordinate of the ending point of the quadratic Bezier segment.
+     * @param endY The y-coordinate of the ending point of the quadratic Bezier segment.
+     * @return The last JMPathPoint created for this segment, representing its endpoint.
+     */
+    private JMPathPoint pathQuadraticBezier(JMPath pathResult, JMPathPoint previousPoint, double startX, double startY, double controlX, double controlY, double endX, double endY) {
+        double[] firstControlPoint = calculateControlPoint(startX, startY, controlX, controlY);
+        double[] secondControlPoint = calculateControlPoint(endX, endY, controlX, controlY);
+
+        JMPathPoint previous = pathCubicBezier(pathResult, previousPoint,
+                firstControlPoint[0], firstControlPoint[1],
+                secondControlPoint[0], secondControlPoint[1],
+                currentX, currentY);
+        return previous;
+    }
+
+    private double[] calculateControlPoint(double pointX, double pointY, double controlX, double controlY) {
+        double derivedX = pointX + CONTROL_POINT_RATIO * (controlX - pointX);
+        double derivedY = pointY + CONTROL_POINT_RATIO * (controlY - pointY);
+        return new double[]{derivedX, derivedY};
     }
     
     private void getPoint(String x, String y) throws NumberFormatException {
@@ -623,6 +661,21 @@ public class SVGUtils {
         currentY = -Double.parseDouble(y);
     }
     
+    /**
+     * Creates a cubic Bezier path segment and adds it to the provided JMPath.
+     * This method sets the control points for the cubic Bezier curve and adds
+     * the new point as a curved vertex to the path.
+     *
+     * @param path The JMPath to which the cubic Bezier segment will be added.
+     * @param previousPoint The previous point in the path, used to define the exit control point.
+     * @param cx1 The x-coordinate of the first control point for the cubic Bezier curve.
+     * @param cy1 The y-coordinate of the first control point for the cubic Bezier curve.
+     * @param cx2 The x-coordinate of the second control point for the cubic Bezier curve.
+     * @param cy2 The y-coordinate of the second control point for the cubic Bezier curve.
+     * @param x The x-coordinate of the ending point of the cubic Bezier segment.
+     * @param y The y-coordinate of the ending point of the cubic Bezier segment.
+     * @return The last JMPathPoint created for this segment, representing its endpoint.
+     */
     private JMPathPoint pathCubicBezier(JMPath path, JMPathPoint previousPoint, double cx1, double cy1, double cx2,
             double cy2, double x, double y) {
         JMPathPoint point = new JMPathPoint(new Point(currentX, currentY), true, JMPathPoint.JMPathPointType.VERTEX);

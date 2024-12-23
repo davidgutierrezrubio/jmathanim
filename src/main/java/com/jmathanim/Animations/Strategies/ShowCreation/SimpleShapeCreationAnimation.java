@@ -55,10 +55,6 @@ public class SimpleShapeCreationAnimation extends AbstractCreationStrategy {
         intermediateShape.copyStateFrom(this.originShapeBase.getSubShape(0, lt).visible(lt > 0));
     }
 
-    @Override
-    public void finishAnimation() {
-        super.finishAnimation();
-    }
 
     @Override
     public void cleanAnimationAt(double t) {

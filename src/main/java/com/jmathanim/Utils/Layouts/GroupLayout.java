@@ -22,6 +22,7 @@ import com.jmathanim.Utils.Rect;
 import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.MathObjectGroup;
 import com.jmathanim.mathobjects.Shape;
+
 import java.util.ArrayList;
 
 /**
@@ -45,8 +46,26 @@ public abstract class GroupLayout {
         lgap = 0;
     }
 
-    public abstract void executeLayout(MathObjectGroup group);
 
+    /**
+     * Executes the layout logic specific to the implementing class
+     * for the provided MathObjectGroup. This method is responsible
+     * for arranging the elements within the group as per the layout's
+     * definition. This method should not be called directly, but it is
+     * automatically called from the applyLayout method.
+     *
+     * @param group The MathObjectGroup to which the layout logic will
+     *              be applied.
+     */
+    protected abstract void executeLayout(MathObjectGroup group);
+
+    /**
+     * Applies the layout configuration to the specified MathObjectGroup.
+     * This method ensures proper arrangement of elements within the group
+     * by optionally homogenizing bounding boxes and executing the defined layout logic.
+     *
+     * @param group The MathObjectGroup to which the layout is applied.
+     */
     public final void applyLayout(MathObjectGroup group) {
         if (innerAnchor != null) {//Should homogeneize bounding boxes first
             saveGaps(group);
@@ -59,7 +78,6 @@ public abstract class GroupLayout {
     }
 
     private void saveGaps(MathObjectGroup group) {
-        System.out.println("SAVE GAPS!");
         backupGaps.clear();
         for (MathObject ob : group) {
             backupGaps.add(ob.getGaps());
@@ -79,21 +97,21 @@ public abstract class GroupLayout {
     }
 
     /**
-     * Specify that bounding boxes of elements should be homogenezied when
+     * Specify that bounding boxes of elements should be homogenized when
      * applying the layout. All elements will have bounding boxes with the
-     * maxium height and width of group elements and the gaps specified as
+     * maximum height and width of group elements and the gaps specified as
      * parameters. The original bounding box is located according to the anchor
      * specified (CENTER, UPPER, etc.)
      *
-     * @param <T> Calling class
-     * @param anchor How to locate the original bounding box inside the new one
+     * @param <T>      Calling class
+     * @param anchor   How to locate the original bounding box inside the new one
      * @param upperGap Upper gap to add
      * @param rightGap Right gap to add
      * @param lowerGap Lower gap to add
-     * @param leftGap Left gap to add
+     * @param leftGap  Left gap to add
      * @return This object
      */
-    public <T extends GroupLayout> T homogeneize(Anchor.innerType anchor, double upperGap, double rightGap, double lowerGap, double leftGap) {
+    public <T extends GroupLayout> T homogenize(Anchor.innerType anchor, double upperGap, double rightGap, double lowerGap, double leftGap) {
         innerAnchor = anchor;
         this.ugap = upperGap;
         this.rgap = rightGap;
@@ -123,10 +141,10 @@ public abstract class GroupLayout {
      * Creates a simpler group with rectangles representing the bounding boxes
      *
      * @param group The MathObjectGroup to compute bounding boxes
-     * @param hgap Horizontal gap. The height of the rectangles will be
-     * increased by this gap.
-     * @param vgap Vertical gap. The width of the rectangles will be increased
-     * by this gap.
+     * @param hgap  Horizontal gap. The height of the rectangles will be
+     *              increased by this gap.
+     * @param vgap  Vertical gap. The width of the rectangles will be increased
+     *              by this gap.
      * @return A new MathObjectGroup, with rectangles representing the bounding
      * boxes
      */

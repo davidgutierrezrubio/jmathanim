@@ -42,8 +42,11 @@ import org.w3c.dom.Text;
 import org.xml.sax.SAXException;
 
 /**
- *
- * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
+ * The ConfigLoader class provides methods for loading and parsing XML configuration files
+ * for the JMathAnim framework. It processes configuration details such as video settings,
+ * background options, styles, LaTeX configurations, and drawing properties, and applies them
+ * to the provided JMathAnimConfig object. This class internally uses a resource loader
+ * to resolve file references.
  */
 public class ConfigLoader {
 

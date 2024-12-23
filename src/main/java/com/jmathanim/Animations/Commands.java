@@ -44,6 +44,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import javafx.scene.shape.StrokeLineCap;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * A convenience class that stores most common animations in static methods
@@ -1463,6 +1464,11 @@ public class Commands {
         group.restoreState();
         MathObject[] mathobjects = group.getObjects().toArray(new MathObject[group.size()]);
 
+        ShiftAnimation resul = getShiftAnimation(runtime, mathobjects, centers);
+        return resul;
+    }
+
+    private static @NotNull ShiftAnimation getShiftAnimation(double runtime, MathObject[] mathobjects, HashMap<MathObject, Point> centers) {
         ShiftAnimation resul = new ShiftAnimation(runtime, mathobjects) {
             @Override
             public boolean doInitialization() {

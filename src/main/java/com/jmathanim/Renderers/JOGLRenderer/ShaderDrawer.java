@@ -26,6 +26,8 @@ import com.jmathanim.mathobjects.Shape;
 import com.jogamp.common.nio.Buffers;
 //import com.jogamp.opengl.GL;
 import com.jogamp.opengl.GL4;
+import org.jetbrains.annotations.NotNull;
+
 import java.nio.FloatBuffer;
 import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -210,44 +212,7 @@ public class ShaderDrawer {
         float nx = (float) normal.x;
         float ny = (float) normal.y;
         float nz = (float) normal.z;
-        ArrayList<Float> coords = new ArrayList<>();
-
-        //We are going to generate a triangle strip
-        //This is the first and common point...
-        float[] P = pieces.get(0).get(0);
-        coords.add(P[0]);
-        coords.add(P[1]);
-        coords.add(P[2]);
-        coords.add(1f);
-        //Iterate over all connected components
-        for (int k = 0; k < pieces.size(); k++) {
-            ArrayList<float[]> piece = pieces.get(k);
-            for (int n = (k == 0 ? 1 : 0); n < piece.size() - 1; n++) {
-                float[] Q = piece.get(n);
-                float[] R = piece.get(n + 1);
-                coords.add(Q[0]);
-                coords.add(Q[1]);
-                coords.add(Q[2]);
-                coords.add(1f);
-                coords.add(R[0]);
-                coords.add(R[1]);
-                coords.add(R[2]);
-                coords.add(1f);
-            }
-        }
-        //It seems I need this triangles as well...
-        for (int k = 0; k < pieces.size() - 1; k++) {
-            float[] Q = pieces.get(k).get(0);
-            float[] R = pieces.get(k + 1).get(0);
-            coords.add(Q[0]);
-            coords.add(Q[1]);
-            coords.add(Q[2]);
-            coords.add(1f);
-            coords.add(R[0]);
-            coords.add(R[1]);
-            coords.add(R[2]);
-            coords.add(1f);
-        }
+        ArrayList<Float> coords = getFloats(pieces);
 
         float[] points = new float[coords.size()];//TODO: Optimize this
         float[] normals = new float[coords.size()];//TODO: Optimize this
@@ -304,6 +269,48 @@ public class ShaderDrawer {
 //        drawWholeScreen();//Draw whole screen with current color
         gl4.glDrawArrays(GL4.GL_TRIANGLE_FAN, 0, fbVertices.limit() / 4);
 //        gl3.glDepthMask(true);
+    }
+
+    private static @NotNull ArrayList<Float> getFloats(ArrayList<ArrayList<float[]>> pieces) {
+        ArrayList<Float> coords = new ArrayList<>();
+
+        //We are going to generate a triangle strip
+        //This is the first and common point...
+        float[] P = pieces.get(0).get(0);
+        coords.add(P[0]);
+        coords.add(P[1]);
+        coords.add(P[2]);
+        coords.add(1f);
+        //Iterate over all connected components
+        for (int k = 0; k < pieces.size(); k++) {
+            ArrayList<float[]> piece = pieces.get(k);
+            for (int n = (k == 0 ? 1 : 0); n < piece.size() - 1; n++) {
+                float[] Q = piece.get(n);
+                float[] R = piece.get(n + 1);
+                coords.add(Q[0]);
+                coords.add(Q[1]);
+                coords.add(Q[2]);
+                coords.add(1f);
+                coords.add(R[0]);
+                coords.add(R[1]);
+                coords.add(R[2]);
+                coords.add(1f);
+            }
+        }
+        //It seems I need this triangles as well...
+        for (int k = 0; k < pieces.size() - 1; k++) {
+            float[] Q = pieces.get(k).get(0);
+            float[] R = pieces.get(k + 1).get(0);
+            coords.add(Q[0]);
+            coords.add(Q[1]);
+            coords.add(Q[2]);
+            coords.add(1f);
+            coords.add(R[0]);
+            coords.add(R[1]);
+            coords.add(R[2]);
+            coords.add(1f);
+        }
+        return coords;
     }
 
     private void defineColorParametersForFillShader(final PaintStyle fillStylable, ShaderLoader shader) {

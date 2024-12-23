@@ -116,12 +116,6 @@ public abstract class ShiftAnimation extends AnimationWithEffects {
         }
     }
 
-    @Override
-    public void finishAnimation() {
-        super.finishAnimation();
-//        doAnim(this.t);
-    }
-
     /**
      * Returns the current shift vector for the given object
      *

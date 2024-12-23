@@ -16,28 +16,10 @@
  */
 package com.jmathanim.Utils;
 
-/**
- *
- * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
- */
-import com.jmathanim.Styling.JMColor;
-import static com.jmathanim.Utils.LatexToken.TokenType.ARROW;
-import static com.jmathanim.Utils.LatexToken.TokenType.BINARY_OPERATOR;
-import static com.jmathanim.Utils.LatexToken.TokenType.CHAR;
-import static com.jmathanim.Utils.LatexToken.TokenType.FRACTION_BAR;
-import static com.jmathanim.Utils.LatexToken.TokenType.GREEK_LETTER;
-import static com.jmathanim.Utils.LatexToken.TokenType.NAMED_FUNCTION;
-import static com.jmathanim.Utils.LatexToken.TokenType.NON_MATH_CHAR;
-import static com.jmathanim.Utils.LatexToken.TokenType.NUMBER;
-import static com.jmathanim.Utils.LatexToken.TokenType.OPERATOR;
-import static com.jmathanim.Utils.LatexToken.TokenType.RELATION;
 import com.jmathanim.jmathanim.JMathAnimScene;
-import com.jmathanim.mathobjects.MultiShapeObject;
-import com.jmathanim.mathobjects.Shape;
 import com.jmathanim.mathobjects.Text.AbstractLaTeXMathObject;
-import com.jmathanim.mathobjects.Text.LaTeXMathObject;
+
 import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -45,9 +27,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import static javafx.scene.paint.Color.color;
+
 import org.scilab.forge.jlatexmath.AccentedAtom;
 import org.scilab.forge.jlatexmath.ArrayOfAtoms;
 import org.scilab.forge.jlatexmath.Atom;
@@ -59,7 +39,6 @@ import org.scilab.forge.jlatexmath.CharAtom;
 import org.scilab.forge.jlatexmath.CharBox;
 import org.scilab.forge.jlatexmath.CharFont;
 import org.scilab.forge.jlatexmath.DefaultTeXFont;
-import org.scilab.forge.jlatexmath.EmptyAtom;
 import org.scilab.forge.jlatexmath.FencedAtom;
 import org.scilab.forge.jlatexmath.FractionAtom;
 import org.scilab.forge.jlatexmath.HorizontalRule;
@@ -75,21 +54,19 @@ import org.scilab.forge.jlatexmath.RomanAtom;
 import org.scilab.forge.jlatexmath.RowAtom;
 import org.scilab.forge.jlatexmath.ScaleBox;
 import org.scilab.forge.jlatexmath.ScriptsAtom;
-import org.scilab.forge.jlatexmath.SpaceAtom;
 import org.scilab.forge.jlatexmath.StyleAtom;
 import org.scilab.forge.jlatexmath.SymbolAtom;
 import org.scilab.forge.jlatexmath.TeXConstants;
 import org.scilab.forge.jlatexmath.TeXEnvironment;
 import org.scilab.forge.jlatexmath.TeXFormula;
 import org.scilab.forge.jlatexmath.TeXIcon;
-import org.scilab.forge.jlatexmath.TeXParser;
 import org.scilab.forge.jlatexmath.TypedAtom;
 import org.scilab.forge.jlatexmath.UnderOverArrowAtom;
 import org.scilab.forge.jlatexmath.VRowAtom;
 
 /**
  * Handles the parsing of elements of a LaTeX objects and assign to each
- * generated Shape a LatexToken describing the glyph. It relies in the parsing
+ * generated Shape a LatexToken describing the glyph. It relies on the parsing
  * capabilities of the JLaTeXMath library.
  *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
@@ -173,12 +150,12 @@ public class LatexParser implements Iterable<LatexToken> {
             DefaultTeXFont font = new DefaultTeXFont(40);
             TeXEnvironment te = new TeXEnvironment(0, font);
 
-            Class[] cArg = new Class[1];
+            Class<?>[] cArg = new Class<?>[1];
             cArg[0] = TeXEnvironment.class;
-            Method metodo = TeXFormula.class.getDeclaredMethod("createBox", cArg);
+            Method method = TeXFormula.class.getDeclaredMethod("createBox", cArg);
 
-            metodo.setAccessible(true);
-            Box bo = (Box) metodo.invoke(formula2, te);
+            method.setAccessible(true);
+            Box bo = (Box) method.invoke(formula2, te);
             boxCounter = 0;
 
             parseBox(bo);
@@ -272,14 +249,14 @@ public class LatexParser implements Iterable<LatexToken> {
             return;
         }
 
-        if (atom instanceof BoldAtom) {
-            BoldAtom boldAtom = (BoldAtom) atom;
-            classField = BoldAtom.class.getDeclaredField("base");
-            classField.setAccessible(true);
-            Atom field = (Atom) classField.get(boldAtom);
-            parseAtom(field);
-            return;
-        }
+//        if (atom instanceof BoldAtom) {
+//            BoldAtom boldAtom = (BoldAtom) atom;
+//            classField = BoldAtom.class.getDeclaredField("base");
+//            classField.setAccessible(true);
+//            Atom field = (Atom) classField.get(boldAtom);
+//            parseAtom(field);
+//            return;
+//        }
 
         if (atom instanceof JavaFontRenderingAtom) {//For symbols like º or ª
             JavaFontRenderingAtom javaFontRenderingAtom = (JavaFontRenderingAtom) atom;
@@ -288,8 +265,7 @@ public class LatexParser implements Iterable<LatexToken> {
             String str = (String) classField.get(javaFontRenderingAtom);
 
             LatexToken.TokenType type = LatexToken.TokenType.CHAR;
-            String name = str;
-            addTokenToList(type, name);
+            addTokenToList(type, str);
 
             return;
         }
@@ -428,13 +404,13 @@ public class LatexParser implements Iterable<LatexToken> {
             return;
         }
 
-        if (atom instanceof RomanAtom) {
-            RomanAtom romanAtom = (RomanAtom) atom;
-            classField = RomanAtom.class.getDeclaredField("base");
-            classField.setAccessible(true);
-            parseAtom(classField.get(romanAtom));
-            return;
-        }
+//        if (atom instanceof RomanAtom) {
+//            RomanAtom romanAtom = (RomanAtom) atom;
+//            classField = RomanAtom.class.getDeclaredField("base");
+//            classField.setAccessible(true);
+//            parseAtom(classField.get(romanAtom));
+//            return;
+//        }
 
         if (atom instanceof OverUnderDelimiter) {
             OverUnderDelimiter overUnderDelimiter = (OverUnderDelimiter) atom;
@@ -690,8 +666,7 @@ public class LatexParser implements Iterable<LatexToken> {
                 Field campo;
                 campo = CharBox.class.getDeclaredField("cf");
                 campo.setAccessible(true);
-                CharFont cf = (CharFont) campo.get(charBox1);
-                return cf;
+                return (CharFont) campo.get(charBox1);
             } catch (Exception ex) {
                 Logger.getLogger(LatexParser.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -790,8 +765,8 @@ public class LatexParser implements Iterable<LatexToken> {
         if (!tokenIsNonMathChar(token, "f")) {
             return 0;
         }
-        LatexToken tok1 = null;
-        LatexToken tok2 = null;
+        LatexToken tok1;
+        LatexToken tok2;
         if (tokenCounter + 2 < tokens.size()) {//3 chars ligature
             tok1 = tokens.get(tokenCounter + 1);
             tok2 = tokens.get(tokenCounter + 2);

@@ -74,11 +74,11 @@ public class Arrow2D extends MathObject {
     public static Arrow2D makeDoubleArrow2D(Point p1, Point p2, ArrowType type1, ArrowType type2) {
         Arrow2D resul = new Arrow2D(p1, p2, type1, type2);
         resul.style("arrowdefault");
-        JMathAnimScene.logger.warn("Class Arrow2D is DEPRECATED. You should consider using Arrow instead");
         return resul;
     }
     
     private Arrow2D(Point p1, Point p2, ArrowType type1, ArrowType type2) {
+        JMathAnimScene.logger.warn("Class Arrow2D is DEPRECATED. You should consider using Arrow instead");
         this.type1 = type1;
         this.type2 = type2;
         this.p1 = p1;

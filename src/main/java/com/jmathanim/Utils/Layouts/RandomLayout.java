@@ -124,6 +124,7 @@ public class RandomLayout extends GroupLayout {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public RandomLayout copy() {
         return new RandomLayout(center.copy(), distribution, deviation);
     }

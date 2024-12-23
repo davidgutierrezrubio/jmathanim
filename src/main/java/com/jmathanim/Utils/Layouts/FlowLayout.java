@@ -131,14 +131,6 @@ public class FlowLayout extends AbstractBoxLayout {
 		return resul;
 	}
 
-	private MathObjectGroup.Layout getInRowLayout() {
-		MathObjectGroup.Layout resul = null;
-		switch (direction) {
-
-		}
-		return resul;
-	}
-
 	@Override
 	public FlowLayout copy() {
 		if (this.corner != null) {
