@@ -76,14 +76,14 @@ public class Transform extends AnimationWithEffects {
      * unusable.
      *
      * @param runTime Duration in seconds
-     * @param ob1 Origin object
-     * @param ob2 Destiny object
+     * @param originObject Origin object
+     * @param destinyObject Destiny object
      */
-    public Transform(double runTime, MathObject ob1, MathObject ob2) {
+    public Transform(double runTime, MathObject originObject, MathObject destinyObject) {
         super(runTime);
         setDebugName("Transform");
-        mobjTransformed = ob1;
-        mobjDestiny = ob2;
+        mobjTransformed = originObject;
+        mobjDestiny = destinyObject;
         transformMethod = null;
         shouldOptimizePathsFirst = true;
     }
