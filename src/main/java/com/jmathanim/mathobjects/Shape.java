@@ -239,33 +239,36 @@ public class Shape extends MathObject {
     }
 
     /**
-     * Creates an arch Shape from A to B with given absolute value of radius. The arc is drawn counterclockwise
-     * if radius is positive and clockwise if radius is negative.
+     * Creates an arch Shape from A to B with given radius. The arc can be drawn
+     * counterclockwise or clockwise depending on the boolean parameter.
      * If the radius is too small to draw an arc, an straight segment is drawn instead.
      *
-     * @param A      Starting point
-     * @param B      Ending point
-     * @param radius Signed radius of the arc, positive=counterclockwise, negative=clockwise
+     * @param A                Starting point
+     * @param B                Ending point
+     * @param radius           Radius of the arc
+     * @param counterClockWise If true, draws the counterclockwise arc, clockwise otherwise.
      * @return The created arc
      */
-    public static Shape arc(Point A, Point B, double radius) {
+    public static Shape arc(Point A, Point B, double radius, boolean counterClockWise) {
         //First, compute arc center
-        Point origin=(radius>0 ? A : B);
-        Point destiny=(radius>0 ? B : A);
-        Vec halfAB = origin.to(destiny).mult(.5);
+        Vec halfAB = A.to(B).mult(.5);
         Vec toRadius = halfAB.rotate(PI / 2).normalize();
         double discr = radius * radius - halfAB.dot(halfAB);
-        if (discr <= 0) return Shape.segment(origin, destiny);//This is the Shape you are looking for...
+        if (discr <= 0) return Shape.segment(A, B);//This is the Shape you are looking for...
         double modulusToRadius = Math.sqrt(discr);
-        Point arcCenter = origin.copy().shift(halfAB).shift(toRadius.mult(modulusToRadius));
+        Point arcCenter = A.copy().shift(halfAB).shift(toRadius.mult(modulusToRadius));
 
 
         AffineJTransform tr = AffineJTransform.createDirect2DIsomorphic(
-                origin, arcCenter,
+                A, arcCenter,
                 Point.at(1, 0), Point.origin(),
                 1
         );
-        Point Btr = tr.getTransformedObject(destiny);
+
+        if (!counterClockWise) {
+            tr = tr.compose(AffineJTransform.createReflectionByAxis(Point.origin(), Point.at(1, 0), 1));
+        }
+        Point Btr = tr.getTransformedObject(B);
         double angle = Btr.v.getAngle();
         Shape resul = Shape.arc(angle);
         return resul.applyAffineTransform(tr.getInverse());
