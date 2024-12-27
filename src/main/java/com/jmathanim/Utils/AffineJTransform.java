@@ -464,23 +464,23 @@ public class AffineJTransform implements Stateable {
 
     /**
      * Creates a 2D isomorphic transform in the plane (a
-     * rotation+traslation+uniform scale) which transforms the point A into
-     * point C and point B into point D. There are 2 such transforms that
+     * rotation+traslation+uniform scale) which transforms the point originA into
+     * point destinyA and originB into destinyB. There are 2 such transforms that
      * accomplish this, inverse and direct. This method returns the direct.
      *
-     * @param A First origin point
-     * @param B Second origin point
-     * @param C Image of the first origin point
-     * @param D Image of the second origin point
+     * @param originA First origin point
+     * @param originB Second origin point
+     * @param destinyA Image of the first origin point
+     * @param destinyB Image of the second origin point
      * @param alpha Alpha interpolation parameter from 0 to 1 (0=no transform,
      * 1=full transform)
      * @return The transform
      */
-    public static AffineJTransform createDirect2DIsomorphic(Point A, Point B, Point C, Point D, double alpha) {
+    public static AffineJTransform createDirect2DIsomorphic(Point originA, Point originB, Point destinyA, Point destinyB, double alpha) {
         double angle;// Angle between AB and CD
-        Vec v1 = A.to(B);// Vector AB
-        Vec v2 = C.to(D);// Vector CD
-        Vec v3 = A.to(C);// Vector AC
+        Vec v1 = originA.to(originB);// Vector AB
+        Vec v2 = destinyA.to(destinyB);// Vector CD
+        Vec v3 = originA.to(destinyA);// Vector AC
         double d1 = v1.norm();
         double d2 = v2.norm();
         double dotProd = v1.dot(v2) / d1 / d2;
@@ -496,10 +496,10 @@ public class AffineJTransform implements Stateable {
             angle = -angle;
         }
         // The rotation part
-        AffineJTransform rotation = AffineJTransform.create2DRotationTransform(A, angle * alpha);
+        AffineJTransform rotation = AffineJTransform.create2DRotationTransform(originA, angle * alpha);
 
         // The scale part
-        AffineJTransform scale = AffineJTransform.createScaleTransform(A, (1 - alpha) + d2 / d1 * alpha);
+        AffineJTransform scale = AffineJTransform.createScaleTransform(originA, (1 - alpha) + d2 / d1 * alpha);
 
         // The traslation part
         AffineJTransform traslation = AffineJTransform.createTranslationTransform(v3.mult(alpha));
@@ -544,23 +544,23 @@ public class AffineJTransform implements Stateable {
 
     /**
      * Creates a inverse 2D isomorphic transform in the plane (a
-     * rotation+traslation+uniform scale) which transforms the point A into
-     * point C and point B into point D. There are 2 such transforms that
+     * rotation+traslation+uniform scale) which transforms the point originA into
+     * destinyC and originB into destinyD. There are 2 such transforms that
      * accomplish this, inverse and direct. This method returns the inverse.
      *
-     * @param A First origin point
-     * @param B Second origin point
-     * @param C Image of the first origin point
-     * @param D Image of the second origin point
+     * @param originA First origin point
+     * @param originB Second origin point
+     * @param destinyA Image of the first origin point
+     * @param destinyB Image of the second origin point
      * @param alpha Alpha parameter to animate the transform. 0 means unaltered.
      * 1 means the full transform done.
      * @return The transform
      */
-    public static AffineJTransform createInverse2DIsomorphic(Point A, Point B, Point C, Point D, double alpha) {
+    public static AffineJTransform createInverse2DIsomorphic(Point originA, Point originB, Point destinyA, Point destinyB, double alpha) {
         double angle;// Angle between AB and CD
-        Vec v1 = A.to(B);// Vector AB
-        Vec v2 = D.to(C);// Vector CD
-        Vec v3 = A.to(D);// Vector AC
+        Vec v1 = originA.to(originB);// Vector AB
+        Vec v2 = destinyB.to(destinyA);// Vector CD
+        Vec v3 = originA.to(destinyB);// Vector AC
         double d1 = v1.norm();
         double d2 = v2.norm();
         double dotProd = v1.dot(v2) / d1 / d2;
@@ -570,21 +570,21 @@ public class AffineJTransform implements Stateable {
         dotProd = (dotProd < -1 ? -1 : dotProd);
         angle = Math.acos(dotProd);
 
-        // Need to compute also cross-product in order to stablish if clockwise or
+        // Need to compute also cross-product in order to establish if it is clockwise or
         // counterclockwise
         if (v1.x * v2.y - v1.y * v2.x < 0) {
             angle = -angle;
         }
         // The rotation part
-        AffineJTransform rotation = AffineJTransform.create2DRotationTransform(A, angle * alpha);
+        AffineJTransform rotation = AffineJTransform.create2DRotationTransform(originA, angle * alpha);
         double scaleFactorY = (1 - alpha) + d2 / d1 * alpha;
         double scaleFactorX = (1 - alpha) + d2 / d1 * alpha;
 
         // The scale part
-        AffineJTransform scale = AffineJTransform.createScaleTransform(A, scaleFactorX, scaleFactorY);
-        AffineJTransform reflection = AffineJTransform.createReflection(A, B, alpha);
+        AffineJTransform scale = AffineJTransform.createScaleTransform(originA, scaleFactorX, scaleFactorY);
+        AffineJTransform reflection = AffineJTransform.createReflection(originA, originB, alpha);
 
-        // The traslation part
+        // The translation part
         AffineJTransform traslation = AffineJTransform.createTranslationTransform(v3.mult(alpha));
         return reflection.compose(rotation).compose(scale).compose(traslation);
     }

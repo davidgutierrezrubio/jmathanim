@@ -21,26 +21,16 @@ import com.jmathanim.Cameras.Camera;
 import com.jmathanim.Renderers.FXRenderer.FXPathUtils;
 import com.jmathanim.Renderers.Renderer;
 import com.jmathanim.Styling.JMColor;
-import com.jmathanim.Utils.AffineJTransform;
-import com.jmathanim.Utils.Boxable;
-import com.jmathanim.Utils.JMathAnimConfig;
-import com.jmathanim.Utils.LogoInterpreter;
-import com.jmathanim.Utils.Rect;
-import com.jmathanim.Utils.Vec;
+import com.jmathanim.Utils.*;
 import com.jmathanim.jmathanim.JMathAnimScene;
-import static com.jmathanim.jmathanim.JMathAnimScene.PI;
-import static com.jmathanim.mathobjects.MathObject.Align.HCENTER;
-import static com.jmathanim.mathobjects.MathObject.Align.LEFT;
-import static com.jmathanim.mathobjects.MathObject.Align.LOWER;
-import static com.jmathanim.mathobjects.MathObject.Align.RIGHT;
-import static com.jmathanim.mathobjects.MathObject.Align.UPPER;
-import static com.jmathanim.mathobjects.MathObject.Align.VCENTER;
-import java.util.ArrayList;
-import java.util.OptionalInt;
 import javafx.scene.shape.Path;
 
+import java.util.ArrayList;
+import java.util.OptionalInt;
+
+import static com.jmathanim.jmathanim.JMathAnimScene.PI;
+
 /**
- *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
 public class Shape extends MathObject {
@@ -62,50 +52,8 @@ public class Shape extends MathObject {
 //    public Shape(JMPath jmpath, MODrawProperties mp) {
 //        super(jmpath,mp);
 //    }
-    /**
-     * Returns a new Point object lying in the Shape, at the given position
-     *
-     * @param t Position parameter, from 0 (beginning) to 1 (end)
-     * @return a new Point object at the specified position of the shape.
-     */
-    public Point getPointAt(double t) {
-        return jmpath.getJMPointAt(t).p;
-    }
 
-    /**
-     * Returns a new Point object lying in the Shape, at the given parametrized
-     * position, considering the arclentgh of the curve.
-     *
-     * @param t Position parameter, from 0 (beginning) to 1 (end)
-     * @return a new Point object at the specified position of the shape.
-     */
-    public Point getParametrizedPointAt(double t) {
-        return jmpath.getParametrizedPointAt(t);
-    }
-
-    public Point getCentroid() {
-        Point resul = new Point(0, 0, 0);
-        for (JMPathPoint p : jmpath.jmPathPoints) {
-            resul.v.x += p.p.v.x;
-            resul.v.y += p.p.v.y;
-            resul.v.z += p.p.v.z;
-        }
-        resul.v.x /= jmpath.size();
-        resul.v.y /= jmpath.size();
-        resul.v.z /= jmpath.size();
-        return resul;
-    }
-
-    @Override
-    public Shape copy() {
-        Shape resul = new Shape(jmpath.copy());
-        resul.getMp().copyFrom(getMp());
-        resul.objectLabel = this.objectLabel + "_copy";
-        resul.copyStateFrom(this);
-        return resul;
-    }
-
-//    @Override
+    //    @Override
 //    public <T extends MathObject> T shift(Vec shiftVector) {
 //        jmpath.shift(shiftVector);
 //        return (T) this;
@@ -134,7 +82,6 @@ public class Shape extends MathObject {
         return Shape.rectangle(r.getDL(), r.getUR());
     }
 
-    // Static methods to build most commons shapes
     /**
      * Creates a segment shape between 2 given points. The parameters points
      * will be referenced to create the segment, so moving them will modify the
@@ -176,7 +123,7 @@ public class Shape extends MathObject {
      *
      * @param A First point
      * @param B Second point. The fourth point will be the opposite of this
-     * point. This will be the point with index 0 in the path.
+     *          point. This will be the point with index 0 in the path.
      * @param C Third point
      * @return The rectangle
      */
@@ -205,6 +152,8 @@ public class Shape extends MathObject {
         }
         return obj;
     }
+
+    // Static methods to build most commons shapes
 
     /**
      * Creates a shape composed of multiple connected segments
@@ -267,17 +216,18 @@ public class Shape extends MathObject {
      * Creates an arc shape with radius 1 and center origin. First point is
      * (1,0)
      *
-     * @param angle Angle in radians of the arc
+     * @param angle       Angle in radians of the arc
      * @param numSegments Number of segments
      * @return The created arc
      */
-    public static Shape arc(double angle,int numSegments) {
+    public static Shape arc(double angle, int numSegments) {
         double c = 0.15915494309189533576888376d;//0.5/PI
         Shape obj = Shape.circle(32).getSubShape(0, c * angle);
         obj.objectLabel = "arc";
         return obj;
     }
- /**
+
+    /**
      * Creates an arc shape with radius 1 and center origin. First point is
      * (1,0). Default value of 32 segments.
      *
@@ -285,9 +235,44 @@ public class Shape extends MathObject {
      * @return The created arc
      */
     public static Shape arc(double angle) {
-        return arc(angle,32);
+        return arc(angle, 32);
     }
-    
+
+    /**
+     * Creates an arch Shape from A to B with given absolute value of radius. The arc is drawn counterclockwise
+     * if radius is positive and clockwise if radius is negative.
+     * If the radius is too small to draw an arc, an straight segment is drawn instead.
+     *
+     * @param A      Starting point
+     * @param B      Ending point
+     * @param radius Signed radius of the arc, positive=counterclockwise, negative=clockwise
+     * @return The created arc
+     */
+    public static Shape arc(Point A, Point B, double radius) {
+        //First, compute arc center
+        Point origin=(radius>0 ? A : B);
+        Point destiny=(radius>0 ? B : A);
+        Vec halfAB = origin.to(destiny).mult(.5);
+        Vec toRadius = halfAB.rotate(PI / 2).normalize();
+        double discr = radius * radius - halfAB.dot(halfAB);
+        if (discr <= 0) return Shape.segment(origin, destiny);//This is the Shape you are looking for...
+        double modulusToRadius = Math.sqrt(discr);
+        Point arcCenter = origin.copy().shift(halfAB).shift(toRadius.mult(modulusToRadius));
+
+
+        AffineJTransform tr = AffineJTransform.createDirect2DIsomorphic(
+                origin, arcCenter,
+                Point.at(1, 0), Point.origin(),
+                1
+        );
+        Point Btr = tr.getTransformedObject(destiny);
+        double angle = Btr.v.getAngle();
+        Shape resul = Shape.arc(angle);
+        return resul.applyAffineTransform(tr.getInverse());
+
+
+    }
+
     /**
      * Creates a new circle shape, with 4 points
      *
@@ -367,10 +352,53 @@ public class Shape extends MathObject {
     }
 
     /**
+     * Returns a new Point object lying in the Shape, at the given position
+     *
+     * @param t Position parameter, from 0 (beginning) to 1 (end)
+     * @return a new Point object at the specified position of the shape.
+     */
+    public Point getPointAt(double t) {
+        return jmpath.getJMPointAt(t).p;
+    }
+
+    /**
+     * Returns a new Point object lying in the Shape, at the given parametrized
+     * position, considering the arclentgh of the curve.
+     *
+     * @param t Position parameter, from 0 (beginning) to 1 (end)
+     * @return a new Point object at the specified position of the shape.
+     */
+    public Point getParametrizedPointAt(double t) {
+        return jmpath.getParametrizedPointAt(t);
+    }
+
+    public Point getCentroid() {
+        Point resul = new Point(0, 0, 0);
+        for (JMPathPoint p : jmpath.jmPathPoints) {
+            resul.v.x += p.p.v.x;
+            resul.v.y += p.p.v.y;
+            resul.v.z += p.p.v.z;
+        }
+        resul.v.x /= jmpath.size();
+        resul.v.y /= jmpath.size();
+        resul.v.z /= jmpath.size();
+        return resul;
+    }
+
+    @Override
+    public Shape copy() {
+        Shape resul = new Shape(jmpath.copy());
+        resul.getMp().copyFrom(getMp());
+        resul.objectLabel = this.objectLabel + "_copy";
+        resul.copyStateFrom(this);
+        return resul;
+    }
+
+    /**
      * Align this object with another one
      *
-     * @param <T> MathObject subclass
-     * @param obj Object to align with. This object remains unaltered.
+     * @param <T>  MathObject subclass
+     * @param obj  Object to align with. This object remains unaltered.
      * @param type Align type, a value from the enum Align
      * @return This object
      */
@@ -470,7 +498,7 @@ public class Shape extends MathObject {
      * Returns the n-th JMPathPoint of path.
      *
      * @param n index. A cyclic index, so that 0 means the first point and -1
-     * the last one
+     *          the last one
      * @return The JMPathPoint
      */
     public JMPathPoint get(int n) {
@@ -482,7 +510,7 @@ public class Shape extends MathObject {
      * get(n).p
      *
      * @param n Point number. A cyclic index, so that 0 means the first point
-     * and -1 the last one
+     *          and -1 the last one
      * @return The point
      */
     public Point getPoint(int n) {
@@ -589,7 +617,7 @@ public class Shape extends MathObject {
      * object.
      *
      * @param <T> Calling class
-     * @param s2 Shape to intersect with
+     * @param s2  Shape to intersect with
      * @return A Shape with the intersecion
      */
     public <T extends Shape> T intersect(Shape s2) {
@@ -603,7 +631,7 @@ public class Shape extends MathObject {
      * Styling properties of the new Shape are copied from calling object.
      *
      * @param <T> Calling class
-     * @param s2 Shape to compute the union
+     * @param s2  Shape to compute the union
      * @return A Shape with the union
      */
     public <T extends Shape> T union(Shape s2) {
@@ -618,7 +646,7 @@ public class Shape extends MathObject {
      * object.
      *
      * @param <T> Calling class
-     * @param s2 Shape to substract
+     * @param s2  Shape to substract
      * @return A Shape with the substraction
      */
     public <T extends Shape> T substract(Shape s2) {
@@ -651,6 +679,16 @@ public class Shape extends MathObject {
     }
 
     /**
+     * Mark this shape as convex. If convex, a simpler and faster algorithm to
+     * draw it can be used.
+     *
+     * @param isConvex True if the shape is convex, false if it is concave.
+     */
+    public void setIsConvex(boolean isConvex) {
+        this.isConvex = isConvex;
+    }
+
+    /**
      * Return the value of boolean flag showDebugPoints
      *
      * @return If true, the point number will be superimposed on screen when
@@ -670,16 +708,6 @@ public class Shape extends MathObject {
     public Shape setShowDebugPoints(boolean showDebugPoints) {
         this.showDebugPoints = showDebugPoints;
         return this;
-    }
-
-    /**
-     * Mark this shape as convex. If convex, a simpler and faster algorithm to
-     * draw it can be used.
-     *
-     * @param isConvex True if the shape is convex, false if it is concave.
-     */
-    public void setIsConvex(boolean isConvex) {
-        this.isConvex = isConvex;
     }
 
     /**
@@ -753,12 +781,12 @@ public class Shape extends MathObject {
      * from the last point of the calling object to the first point of the given
      * one.
      *
-     * @param <T> Calling Shape subclass
-     * @param sh Shape to merge
+     * @param <T>         Calling Shape subclass
+     * @param sh          Shape to merge
      * @param connectAtoB If true, the end of path A will be connected to the
-     * beginning of path B by a straight line
+     *                    beginning of path B by a straight line
      * @param connectBtoA If true, the end of path B will be connected to the
-     * beginning of path A by a straight line
+     *                    beginning of path A by a straight line
      * @return This object
      */
     public <T extends Shape> T merge(Shape sh, boolean connectAtoB, boolean connectBtoA) {
@@ -781,7 +809,6 @@ public class Shape extends MathObject {
         showDebugPoints = sh2.showDebugPoints;
     }
 
-  
 
     @Override
     public void draw(JMathAnimScene scene, Renderer r, Camera cam) {
@@ -803,7 +830,6 @@ public class Shape extends MathObject {
     public ArrayList<ArrayList<float[]>> computePolygonalPieces() {
         return jmpath.computePolygonalPieces(scene.getCamera());
     }
-    
-    
+
 
 }

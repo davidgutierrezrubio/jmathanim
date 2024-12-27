@@ -147,7 +147,7 @@ public class SVGUtils {
                         PathUtils pathUtils = new PathUtils();
                         pathUtils.determineStraightSegments(path);
                         if (!path.jmPathPoints.isEmpty()) {
-                            path.pathType = JMPath.SVG_PATH; // Mark this as a SVG path
+                            path.pathType = JMPath.SVG_PATH; // Mark this as an SVG path
                             shape = new Shape(path);
                             shape.getMp().copyFrom(mpCopy);
                             transfCopy.applyTransform(shape);
@@ -160,7 +160,7 @@ public class SVGUtils {
                     case "polygon":
                         try {
                         Shape pol = processPolygonPoints(el.getAttribute("points"), true);
-                        if (pol.size() > 0) {
+                        if (!pol.isEmpty()) {
                             transfCopy.applyTransform(pol);
                             pol.getMp().copyFrom(mpCopy);
                             msh.add(pol);
@@ -173,7 +173,7 @@ public class SVGUtils {
                         try {
                         Shape pol = processPolygonPoints(el.getAttribute("points"), false);
                         pol.getPath().openPath();
-                        if (pol.size() > 0) {
+                        if (!pol.isEmpty()) {
                             transfCopy.applyTransform(pol);
                             pol.getMp().copyFrom(mpCopy);
                             msh.add(pol);
@@ -218,7 +218,7 @@ public class SVGUtils {
         }
     }
     
-    private Shape processPolygonPoints(String s, boolean polygon) throws Exception {
+    private Shape processPolygonPoints(String s, boolean polygon)  {
         ArrayList<Point> points = new ArrayList<>();
         ArrayList<String> tokens = getPointTokens(s);
         Shape resul;
@@ -252,7 +252,7 @@ public class SVGUtils {
                 qy2;
         JMPathPoint previousPoint = new JMPathPoint(new Point(0, 0), true, JMPathPoint.JMPathPointType.VERTEX);
         ArrayList<String> tokens = getPointTokens(s);
-        
+
         Iterator<String> it = tokens.iterator();
         double cx1, cx2, cy1, cy2;
         double xx, yy;
@@ -299,7 +299,7 @@ public class SVGUtils {
                     previousPoint.isThisSegmentVisible = false;
 //                    previousPoint = pathM(path, currentX, currentY);
                     break;
-                
+
                 case "L": // Line
                     previousCommand = token;
                     getPoint(it.next(), it.next());
@@ -314,17 +314,17 @@ public class SVGUtils {
                     currentY += yy;
                     previousPoint = pathLineTo(resul, currentX, currentY, true);
                     break;
-                
+
                 case "H": // Horizontal line
                     previousCommand = token;
-                    
+
                     getPointX(it.next());
                     previousPoint = pathLineTo(resul, currentX, currentY, true);
                     break;
-                
+
                 case "h": // Horizontal line
                     previousCommand = token;
-                    
+
                     xx = previousPoint.p.v.x;
                     getPointX(it.next());
                     currentX += xx;
@@ -332,13 +332,13 @@ public class SVGUtils {
                     break;
                 case "V": // Vertical line
                     previousCommand = token;
-                    
+
                     getPointY(it.next());
                     previousPoint = pathLineTo(resul, currentX, currentY, true);
                     break;
                 case "v": // Vertical line
                     previousCommand = token;
-                    
+
                     yy = previousPoint.p.v.y;
                     getPointY(it.next());
                     currentY += yy;
@@ -346,7 +346,7 @@ public class SVGUtils {
                     break;
                 case "Q": // Quadratic Bezier
                     previousCommand = token;
-                    
+
                     qx0 = currentX;
                     qy0 = currentY;
                     qx1 = Double.parseDouble(it.next());
@@ -354,12 +354,12 @@ public class SVGUtils {
                     getPoint(it.next(), it.next());
                     qx2 = currentX;
                     qy2 = currentY;
-                    
+
                     previousPoint = pathQuadraticBezier(resul, previousPoint, qx0, qy0, qx1, qy1, qx2, qy2);
                     break;
                 case "C": // Cubic Bezier
                     previousCommand = token;
-                    
+
                     cx1 = Double.parseDouble(it.next());
                     cy1 = -Double.parseDouble(it.next());
                     cx2 = Double.parseDouble(it.next());
@@ -379,13 +379,13 @@ public class SVGUtils {
                     currentY += qy0;
                     qx2 = currentX;
                     qy2 = currentY;
-                    
+
                     previousPoint = pathQuadraticBezier(resul, previousPoint, qx0, qy0, qx1, qy1, qx2, qy2);
                     break;
-                
+
                 case "c": // Cubic Bezier
                     previousCommand = token;
-                    
+
                     xx = previousPoint.p.v.x;
                     yy = previousPoint.p.v.y;
                     cx1 = xx + Double.parseDouble(it.next());
@@ -395,13 +395,13 @@ public class SVGUtils {
                     getPoint(it.next(), it.next());
                     currentX += xx;
                     currentY += yy;
-                    
+
                     previousPoint = pathCubicBezier(resul, previousPoint, cx1, cy1, cx2, cy2, currentX, currentY);
                     break;
                 case "S": // Simplified Cubic Bezier. Take first control point as a reflection of previous
                     // one
                     previousCommand = token;
-                    
+
                     cx1 = previousPoint.p.v.x - (previousPoint.cpEnter.v.x - previousPoint.p.v.x);
                     cy1 = previousPoint.p.v.y - (previousPoint.cpEnter.v.y - previousPoint.p.v.y);
                     cx2 = Double.parseDouble(it.next());
@@ -409,11 +409,11 @@ public class SVGUtils {
                     getPoint(it.next(), it.next());
                     previousPoint = pathCubicBezier(resul, previousPoint, cx1, cy1, cx2, cy2, currentX, currentY);
                     break;
-                
+
                 case "s": // Simplified relative Cubic Bezier. Take first control point as a reflection of
                     // previous one
                     previousCommand = token;
-                    
+
                     cx1 = previousPoint.p.v.x - (previousPoint.cpEnter.v.x - previousPoint.p.v.x);
                     cy1 = previousPoint.p.v.y - (previousPoint.cpEnter.v.y - previousPoint.p.v.y);
                     xx = previousPoint.p.v.x;
@@ -537,16 +537,16 @@ public class SVGUtils {
                                 break;
                             default:
                                 JMathAnimScene.logger.error("Unknow repeated command: <" + token + ">");
-                            
+
                         }
-                        
+
                     }
             }
         }
-        
+
         return resul;
     }
-    
+
     private ArrayList<String> getPointTokens(String s) {
         String t = sanitizeString(s);
         String[] tokens_1 = t.split(" ");
@@ -576,13 +576,18 @@ public class SVGUtils {
         return tok2;
     }
     private static @NotNull String sanitizeString(String input) {
-        String sanitizedString = input.replace("-", " -") // Avoid errors with strings like "142.11998-.948884"
+        // Avoid errors with strings like "142.11998-.948884"
+        // Avoid errors with numbers in scientific format
+        // Avoid errors with numbers in scientific format
+        // Add spaces before and after all SVG commands
+        // Replace all commas with spaces
+        // Remove duplicate spaces
+        return input.replace("-", " -") // Avoid errors with strings like "142.11998-.948884"
                 .replace("e -", "e-") // Avoid errors with numbers in scientific format
                 .replace("E -", "E-") // Avoid errors with numbers in scientific format
                 .replaceAll("([MmHhVvCcSsLlZzQqAa])", " $1 ") // Add spaces before and after all SVG commands
                 .replaceAll(",", " ") // Replace all commas with spaces
-                .replaceAll("^ +| +$|( )+", "$1"); // Remove duplicate spaces
-        return sanitizedString;
+                .replaceAll("^ +| +$|( )+", "$1");
     }
 //    private static @NotNull String sanitizeString(String s) {
 //        String t = s.replace("-", " -");// Avoid errors with strings like "142.11998-.948884"
@@ -615,18 +620,18 @@ public class SVGUtils {
     private static final double CONTROL_POINT_RATIO = 2d / 3;
 
     /**
-     * Creates a quadratic Bezier path segment and adds it to the provided JMPath.
-     * This method calculates intermediate control points needed to approximate the quadratic Bezier
-     * curve using a cubic Bezier curve and then delegates the processing to a cubic Bezier method.
+     * Creates a quadratic Bézier path segment and adds it to the provided JMPath.
+     * This method calculates intermediate control points needed to approximate the quadratic Bézier
+     * curve using a cubic Bézier curve and then delegates the processing to a cubic Bezier method.
      *
-     * @param pathResult The JMPath to which the quadratic Bezier segment will be added.
+     * @param pathResult The JMPath to which the quadratic Bézier segment will be added.
      * @param previousPoint The previous point in the path, used as a reference for continuity.
-     * @param startX The x-coordinate of the starting point of the quadratic Bezier segment.
-     * @param startY The y-coordinate of the starting point of the quadratic Bezier segment.
-     * @param controlX The x-coordinate of the control point for the quadratic Bezier curve.
-     * @param controlY The y-coordinate of the control point for the quadratic Bezier curve.
-     * @param endX The x-coordinate of the ending point of the quadratic Bezier segment.
-     * @param endY The y-coordinate of the ending point of the quadratic Bezier segment.
+     * @param startX The x-coordinate of the starting point of the quadratic Bézier segment.
+     * @param startY The y-coordinate of the starting point of the quadratic Bézier segment.
+     * @param controlX The x-coordinate of the control point for the quadratic Bézier curve.
+     * @param controlY The y-coordinate of the control point for the quadratic Bézier curve.
+     * @param endX The x-coordinate of the ending point of the quadratic Bézier segment.
+     * @param endY The y-coordinate of the ending point of the quadratic Bézier segment.
      * @return The last JMPathPoint created for this segment, representing its endpoint.
      */
     private JMPathPoint pathQuadraticBezier(JMPath pathResult, JMPathPoint previousPoint, double startX, double startY, double controlX, double controlY, double endX, double endY) {
@@ -645,35 +650,35 @@ public class SVGUtils {
         double derivedY = pointY + CONTROL_POINT_RATIO * (controlY - pointY);
         return new double[]{derivedX, derivedY};
     }
-    
+
     private void getPoint(String x, String y) throws NumberFormatException {
         getPointX(x);
         getPointY(y);
     }
-    
+
     private void getPointX(String x) throws NumberFormatException {
         previousX = currentX;
         currentX = Double.parseDouble(x);
     }
-    
+
     private void getPointY(String y) throws NumberFormatException {
         previousY = currentY;
         currentY = -Double.parseDouble(y);
     }
-    
+
     /**
      * Creates a cubic Bezier path segment and adds it to the provided JMPath.
-     * This method sets the control points for the cubic Bezier curve and adds
+     * This method sets the control points for the cubic Bézier curve and adds
      * the new point as a curved vertex to the path.
      *
-     * @param path The JMPath to which the cubic Bezier segment will be added.
+     * @param path The JMPath to which the cubic Bézier segment will be added.
      * @param previousPoint The previous point in the path, used to define the exit control point.
-     * @param cx1 The x-coordinate of the first control point for the cubic Bezier curve.
-     * @param cy1 The y-coordinate of the first control point for the cubic Bezier curve.
-     * @param cx2 The x-coordinate of the second control point for the cubic Bezier curve.
-     * @param cy2 The y-coordinate of the second control point for the cubic Bezier curve.
-     * @param x The x-coordinate of the ending point of the cubic Bezier segment.
-     * @param y The y-coordinate of the ending point of the cubic Bezier segment.
+     * @param cx1 The x-coordinate of the first control point for the cubic Bézier curve.
+     * @param cy1 The y-coordinate of the first control point for the cubic Bézier curve.
+     * @param cx2 The x-coordinate of the second control point for the cubic Bézier curve.
+     * @param cy2 The y-coordinate of the second control point for the cubic Bézier curve.
+     * @param x The x-coordinate of the ending point of the cubic Bézier segment.
+     * @param y The y-coordinate of the ending point of the cubic Bézier segment.
      * @return The last JMPathPoint created for this segment, representing its endpoint.
      */
     private JMPathPoint pathCubicBezier(JMPath path, JMPathPoint previousPoint, double cx1, double cy1, double cx2,
@@ -866,7 +871,7 @@ public class SVGUtils {
     }
 
     /**
-     * Writes a XML DOM object to a XML File
+     * Writes an XML DOM object to an XML File
      *
      * @param rootElement Root element
      * @param fileName File name
