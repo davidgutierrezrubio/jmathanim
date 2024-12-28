@@ -237,7 +237,6 @@ public class MODrawPropertiesArray implements Stylable, Stateable {
 
     /**
      * Restores the state of this MODrawPropertiesArray object and its associated MathObjects and properties.
-     * <ul>
      * This method iterates through the list of MathObjects contained in the `objects` field
      * and calls the `restoreState` method on each object's `MathProperties` instance. It
      * ensures that all associated MathObject properties are reverted to their previously
@@ -505,7 +504,7 @@ public class MODrawPropertiesArray implements Stylable, Stateable {
     /**
      * Retrieves the dot style associated with this object.
      *
-     * @return The current {@link Point.DotStyle} as defined in the referenced object.
+     * @return The current DotStyle as defined in the referenced object.
      */
     @Override
     public Point.DotSyle getDotStyle() {
