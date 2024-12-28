@@ -268,13 +268,13 @@ public class SVGUtils {
                 case "":
                     break;
                 case "A":
-                    throw new Exception("Arc command A still not implemented. Sorry.");
+                    previousCommand = token;
+                    previousPoint=processArcCommand(resul,it);
+                    break;
                 case "a":
-                    throw new Exception("Arc command a still not implemented. Sorry.");
-//                case "Q":
-//                    throw new Exception("Quadratic Bezier command Q still not implemented. Sorry.");
-//                case "q":
-//                    throw new Exception("Quadratic Bezier command q still not implemented. Sorry.");
+                    previousCommand = token;
+                    previousPoint=processArcCommand(resul, it);
+                    break;
                 case "M":
                     previousCommand = token;
                     getPoint(it.next(), it.next());
@@ -545,6 +545,36 @@ public class SVGUtils {
         }
 
         return resul;
+    }
+
+    private JMPathPoint processArcCommand(JMPath resul, Iterator<String> it) {
+
+        double rx = Double.parseDouble(it.next());
+        double ry = Double.parseDouble(it.next());
+        double rotationAngle = Double.parseDouble(it.next());
+        int large = Integer.parseInt(it.next());
+        String next = it.next();
+        int sweep = Integer.parseInt(next);
+
+        //previousX,previousY; origin point
+        //currentX,currentY; destiny point
+        getPoint(it.next(), it.next());
+        Point O1 = Point.at(previousX, -previousY);
+        Point O2 = Point.at(currentX, -currentY);
+        sweep=1-sweep;
+        Shape arc=computeSVGArc(
+                O1,
+                rx,
+                ry,
+                -rotationAngle,
+                large,
+                sweep,
+                O2);
+        if (large!=sweep) arc.reverse();
+
+        arc.scale(Point.origin(),1,-1);
+        resul.jmPathPoints.addAll(arc.getPath().jmPathPoints);
+        return arc.get(-1);
     }
 
     private ArrayList<String> getPointTokens(String s) {
@@ -898,5 +928,41 @@ public class SVGUtils {
         StreamResult result = new StreamResult(fileName);
         
         transformer.transform(source, result);
+    }
+
+    /**
+     * Compute SVG Arc
+     * @param originPoint Origin Point
+     * @param rx Radius-X
+     * @param ry Radius-Y
+     * @param axisRotation Rotation axis
+     * @param large Large flag (0,1)
+     * @param sweep Sweep flag (0,1)
+     * @param destinyPoint Destiny Point
+     * @return The created curve
+     */
+    public Shape computeSVGArc(Point originPoint, double rx, double ry, double axisRotation, int large, int sweep, Point destinyPoint) {
+        Point O1 = (large == sweep ? originPoint.copy() : destinyPoint.copy());
+        Point O2 = (large == sweep ? destinyPoint.copy() : originPoint.copy());
+        AffineJTransform tr = AffineJTransform.create2DRotationTransform(O1, axisRotation);
+
+        double rad;
+        if (rx<ry) {
+            tr = tr.compose(AffineJTransform.createScaleTransform(O1, ry / rx, 1));
+            rad = ry;
+        } else {
+            tr = tr.compose(AffineJTransform.createScaleTransform(O1, 1, rx / ry));
+            rad = rx;
+        }
+        O2.applyAffineTransform(tr);
+        //If radius is too small, upscale it
+        double halfDistanceO1O2 = O1.to(O2).norm()*.5;
+        System.out.println("HalfDist="+halfDistanceO1O2+" radius="+rad);
+        if (rad< halfDistanceO1O2) {
+            rad=halfDistanceO1O2;
+        }
+        Shape resul = Shape.arc(O1, O2, rad, (large == 0));
+        resul.applyAffineTransform(tr.getInverse());
+        return resul;
     }
 }

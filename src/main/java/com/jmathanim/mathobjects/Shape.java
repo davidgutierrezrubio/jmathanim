@@ -253,8 +253,8 @@ public class Shape extends MathObject {
         //First, compute arc center
         Vec halfAB = A.to(B).mult(.5);
         Vec toRadius = halfAB.rotate(PI / 2).normalize();
-        double discr = radius * radius - halfAB.dot(halfAB);
-        if (discr <= 0) return Shape.segment(A, B);//This is the Shape you are looking for...
+        double dot = halfAB.dot(halfAB);
+        double discr = Math.max(0,radius * radius - dot);
         double modulusToRadius = Math.sqrt(discr);
         Point arcCenter = A.copy().shift(halfAB).shift(toRadius.mult(modulusToRadius));
 
