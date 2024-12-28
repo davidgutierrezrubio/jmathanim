@@ -20,12 +20,12 @@ package com.jmathanim.mathobjects.Text;
 import com.jmathanim.Cameras.Camera3D;
 import com.jmathanim.Utils.AffineJTransform;
 import com.jmathanim.Utils.Anchor;
-import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.Point;
 import com.jmathanim.mathobjects.Scalar;
 import com.jmathanim.mathobjects.hasArguments;
+
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.HashMap;

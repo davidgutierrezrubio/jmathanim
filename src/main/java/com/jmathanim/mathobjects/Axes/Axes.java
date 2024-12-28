@@ -26,10 +26,10 @@ import com.jmathanim.Utils.Anchor;
 import com.jmathanim.Utils.JMathAnimConfig;
 import com.jmathanim.Utils.Rect;
 import com.jmathanim.jmathanim.JMathAnimScene;
-import static com.jmathanim.mathobjects.Axes.Axes.LEGEND_TICKS_GAP;
 import com.jmathanim.mathobjects.Line;
 import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.Point;
+
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;

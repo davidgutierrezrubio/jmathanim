@@ -23,16 +23,12 @@ import com.jmathanim.Utils.Vec;
 import com.jmathanim.mathobjects.JMPath;
 import com.jmathanim.mathobjects.JMPathPoint;
 import com.jmathanim.mathobjects.Point;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javafx.scene.shape.ClosePath;
-import javafx.scene.shape.CubicCurveTo;
-import javafx.scene.shape.LineTo;
-import javafx.scene.shape.MoveTo;
-import javafx.scene.shape.Path;
-import javafx.scene.shape.PathElement;
+import javafx.scene.shape.*;
 import javafx.scene.transform.Affine;
 import javafx.scene.transform.NonInvertibleTransformException;
+
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * This class holds several methods to distille paths created with JavaFX

@@ -19,6 +19,7 @@ package com.jmathanim.jmathanim;
 
 import com.jmathanim.Cameras.Camera;
 import com.jmathanim.Renderers.FXRenderer.JavaFXRenderer;
+
 import java.util.logging.Level;
 import java.util.logging.Logger;
 

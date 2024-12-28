@@ -25,26 +25,22 @@ import com.jmathanim.Styling.JMColor;
 import com.jmathanim.Styling.MODrawProperties;
 import com.jmathanim.Styling.PaintStyle;
 import com.jmathanim.Styling.Stylable;
-import com.jmathanim.Utils.AffineJTransform;
-import com.jmathanim.Utils.Anchor;
-import com.jmathanim.Utils.JMathAnimConfig;
+import com.jmathanim.Utils.*;
 import com.jmathanim.Utils.Layouts.GroupLayout;
-import com.jmathanim.Utils.OrientationType;
-import com.jmathanim.Utils.Rect;
-import com.jmathanim.Utils.UsefulLambdas;
-import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
-import static com.jmathanim.jmathanim.JMathAnimScene.DEGREES;
-import static com.jmathanim.jmathanim.JMathAnimScene.PI;
 import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.MathObjectGroup;
 import com.jmathanim.mathobjects.Point;
 import com.jmathanim.mathobjects.Shape;
+import javafx.scene.shape.StrokeLineCap;
+import org.jetbrains.annotations.NotNull;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import javafx.scene.shape.StrokeLineCap;
-import org.jetbrains.annotations.NotNull;
+
+import static com.jmathanim.jmathanim.JMathAnimScene.DEGREES;
+import static com.jmathanim.jmathanim.JMathAnimScene.PI;
 
 /**
  * A convenience class that stores most common animations in static methods

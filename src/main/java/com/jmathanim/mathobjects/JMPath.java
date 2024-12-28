@@ -20,16 +20,9 @@ package com.jmathanim.mathobjects;
 import com.jmathanim.Cameras.Camera;
 import com.jmathanim.Cameras.Camera3D;
 import com.jmathanim.Styling.JMColor;
-import com.jmathanim.Utils.AffineJTransform;
-import com.jmathanim.Utils.Anchor;
-import com.jmathanim.Utils.Boxable;
-import com.jmathanim.Utils.CircularArrayList;
-import com.jmathanim.Utils.EmptyRect;
-import com.jmathanim.Utils.JMathAnimConfig;
-import com.jmathanim.Utils.PathUtils;
-import com.jmathanim.Utils.Rect;
-import com.jmathanim.Utils.Vec;
+import com.jmathanim.Utils.*;
 import com.jmathanim.mathobjects.JMPathPoint.JMPathPointType;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;

@@ -19,11 +19,7 @@ package com.jmathanim.mathobjects.Tippable;
 import com.jmathanim.Renderers.Renderer;
 import com.jmathanim.Utils.Anchor;
 import com.jmathanim.Utils.JMathAnimConfig;
-import com.jmathanim.mathobjects.Arrow;
-import com.jmathanim.mathobjects.MathObject;
-import com.jmathanim.mathobjects.MultiShapeObject;
-import com.jmathanim.mathobjects.Point;
-import com.jmathanim.mathobjects.Shape;
+import com.jmathanim.mathobjects.*;
 
 /**
  *

@@ -17,24 +17,11 @@
  */
 package com.jmathanim.Animations;
 
-import com.jmathanim.Animations.Strategies.Transform.ArrowTransform;
-import com.jmathanim.Animations.Strategies.Transform.FunctionSimpleInterpolateTransform;
-import com.jmathanim.Animations.Strategies.Transform.GeneralAffineTransformAnimation;
-import com.jmathanim.Animations.Strategies.Transform.IsomorphicTransformAnimation;
-import com.jmathanim.Animations.Strategies.Transform.MultiShapeTransform;
+import com.jmathanim.Animations.Strategies.Transform.*;
 import com.jmathanim.Animations.Strategies.Transform.Optimizers.NullOptimizationStrategy;
-import com.jmathanim.Animations.Strategies.Transform.PointInterpolationCanonical;
-import com.jmathanim.Animations.Strategies.Transform.PointInterpolationSimpleShapeTransform;
-import com.jmathanim.Animations.Strategies.Transform.RotateAndScaleXYTransform;
-import com.jmathanim.Animations.Strategies.Transform.TransformStrategy;
 import com.jmathanim.Utils.JMathAnimConfig;
 import com.jmathanim.jmathanim.JMathAnimScene;
-import com.jmathanim.mathobjects.Arrow;
-import com.jmathanim.mathobjects.FunctionGraph;
-import com.jmathanim.mathobjects.Line;
-import com.jmathanim.mathobjects.MathObject;
-import com.jmathanim.mathobjects.MultiShapeObject;
-import com.jmathanim.mathobjects.Shape;
+import com.jmathanim.mathobjects.*;
 
 /**
  *

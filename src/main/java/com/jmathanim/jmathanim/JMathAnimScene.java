@@ -28,35 +28,19 @@ import com.jmathanim.Constructible.GeogebraLoader;
 import com.jmathanim.Renderers.MovieEncoders.SoundItem;
 import com.jmathanim.Renderers.Renderer;
 import com.jmathanim.Styling.MODrawProperties;
-import com.jmathanim.Utils.Link;
-import com.jmathanim.Utils.JMathAnimConfig;
-import com.jmathanim.Utils.LinkArguments;
-import com.jmathanim.Utils.Linkable;
-import com.jmathanim.Utils.Rect;
-import com.jmathanim.Utils.ResourceLoader;
-import com.jmathanim.mathobjects.MathObject;
-import com.jmathanim.mathobjects.MathObjectGroup;
-import com.jmathanim.mathobjects.MultiShapeObject;
-import com.jmathanim.mathobjects.Shape;
+import com.jmathanim.Utils.*;
+import com.jmathanim.mathobjects.*;
 import com.jmathanim.mathobjects.Text.LaTeXMathObject;
-import com.jmathanim.mathobjects.shouldUdpateWithCamera;
 import com.jmathanim.mathobjects.updateableObjects.Updateable;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.DoubleUnaryOperator;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
-
-import org.slf4j.LoggerFactory;
 
 /**
  * @author David Gutierrez Rubio davidgutierrezrubio@gmail.com

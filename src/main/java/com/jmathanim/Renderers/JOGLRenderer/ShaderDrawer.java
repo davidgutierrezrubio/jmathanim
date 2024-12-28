@@ -24,7 +24,6 @@ import com.jmathanim.Styling.PaintStyle;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.mathobjects.Shape;
 import com.jogamp.common.nio.Buffers;
-//import com.jogamp.opengl.GL;
 import com.jogamp.opengl.GL4;
 import org.jetbrains.annotations.NotNull;
 

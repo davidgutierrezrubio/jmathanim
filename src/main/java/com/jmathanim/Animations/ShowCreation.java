@@ -17,27 +17,14 @@
  */
 package com.jmathanim.Animations;
 
-import com.jmathanim.Animations.Strategies.ShowCreation.AbstractCreationStrategy;
-import com.jmathanim.Animations.Strategies.ShowCreation.ArrowCreationAnimation;
-import com.jmathanim.Animations.Strategies.ShowCreation.AxesCreationAnimation;
-import com.jmathanim.Animations.Strategies.ShowCreation.CreationStrategy;
-import com.jmathanim.Animations.Strategies.ShowCreation.FirstDrawThenFillAnimation;
-import com.jmathanim.Animations.Strategies.ShowCreation.GroupCreationAnimation;
-import com.jmathanim.Animations.Strategies.ShowCreation.SimpleShapeCreationAnimation;
+import com.jmathanim.Animations.Strategies.ShowCreation.*;
 import com.jmathanim.Constructible.Constructible;
 import com.jmathanim.jmathanim.JMathAnimScene;
-import com.jmathanim.mathobjects.Arrow;
+import com.jmathanim.mathobjects.*;
 import com.jmathanim.mathobjects.Axes.Axes;
 import com.jmathanim.mathobjects.Delimiters.Delimiter;
-import com.jmathanim.mathobjects.Line;
-import com.jmathanim.mathobjects.MathObject;
-import com.jmathanim.mathobjects.MathObjectGroup;
-import com.jmathanim.mathobjects.MultiShapeObject;
-import com.jmathanim.mathobjects.Point;
-import com.jmathanim.mathobjects.Ray;
-import com.jmathanim.mathobjects.SVGMathObject;
-import com.jmathanim.mathobjects.Shape;
 import com.jmathanim.mathobjects.Text.LaTeXMathObject;
+
 import java.util.function.DoubleUnaryOperator;
 
 /**

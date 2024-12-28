@@ -21,14 +21,11 @@ import com.jmathanim.Cameras.Camera;
 import com.jmathanim.Renderers.Renderer;
 import com.jmathanim.Styling.MODrawPropertiesArray;
 import com.jmathanim.Styling.Stylable;
-import com.jmathanim.Utils.AffineJTransform;
-import com.jmathanim.Utils.JMathAnimConfig;
-import com.jmathanim.Utils.Rect;
-import com.jmathanim.Utils.ResourceLoader;
-import com.jmathanim.Utils.Vec;
+import com.jmathanim.Utils.*;
 import com.jmathanim.jmathanim.JMathAnimScene;
-import java.net.URL;
 import javafx.scene.shape.StrokeLineCap;
+
+import java.net.URL;
 
 /**
  * DEPRECATED. This class will be removed in future versions. Use Arrow class

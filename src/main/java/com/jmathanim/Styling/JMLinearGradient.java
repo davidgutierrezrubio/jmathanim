@@ -21,10 +21,11 @@ import com.jmathanim.Cameras.Camera;
 import com.jmathanim.Renderers.FXRenderer.JavaFXRenderer;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.mathobjects.Point;
-import java.util.Objects;
 import javafx.scene.paint.CycleMethod;
 import javafx.scene.paint.LinearGradient;
 import javafx.scene.paint.Paint;
+
+import java.util.Objects;
 
 /**
  * A class that representas a linear gradient

@@ -19,20 +19,11 @@ package com.jmathanim.Animations;
 
 import com.jmathanim.Cameras.Camera;
 import com.jmathanim.Styling.PaintStyle;
-import com.jmathanim.Utils.Anchor;
-import com.jmathanim.Utils.Boxable;
-import com.jmathanim.Utils.OrientationType;
-import com.jmathanim.Utils.Rect;
-import com.jmathanim.Utils.Vec;
+import com.jmathanim.Utils.*;
 import com.jmathanim.jmathanim.JMathAnimScene;
-import com.jmathanim.mathobjects.MathObject;
-import com.jmathanim.mathobjects.MathObjectGroup;
-import com.jmathanim.mathobjects.MultiShapeObject;
-import com.jmathanim.mathobjects.Point;
-import com.jmathanim.mathobjects.SVGMathObject;
-import com.jmathanim.mathobjects.Shape;
+import com.jmathanim.mathobjects.*;
 import com.jmathanim.mathobjects.Text.LaTeXMathObject;
-import com.jmathanim.mathobjects.hasScalarParameter;
+
 import java.util.ArrayList;
 
 /**

@@ -18,7 +18,6 @@
 package com.jmathanim.mathobjects.updateableObjects;
 
 import com.jmathanim.Utils.AffineJTransform;
-import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.FunctionGraph;
 import com.jmathanim.mathobjects.MathObject;

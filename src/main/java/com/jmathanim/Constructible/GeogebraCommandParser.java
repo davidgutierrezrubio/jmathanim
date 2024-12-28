@@ -17,26 +17,8 @@
  */
 package com.jmathanim.Constructible;
 
-import com.jmathanim.Constructible.Conics.CTAbstractCircle;
-import com.jmathanim.Constructible.Conics.CTCircle;
-import com.jmathanim.Constructible.Conics.CTCircleArc;
-import com.jmathanim.Constructible.Conics.CTCircleSector;
-import com.jmathanim.Constructible.Conics.CTEllipse;
-import com.jmathanim.Constructible.Conics.CTSemiCircle;
-import com.jmathanim.Constructible.Conics.CTTransformedCircle;
-import com.jmathanim.Constructible.Lines.CTAngleBisector;
-import com.jmathanim.Constructible.Lines.CTLine;
-import com.jmathanim.Constructible.Lines.CTLineOrthogonal;
-import com.jmathanim.Constructible.Lines.CTPerpBisector;
-import com.jmathanim.Constructible.Lines.CTPolygon;
-import com.jmathanim.Constructible.Lines.CTRay;
-import com.jmathanim.Constructible.Lines.CTRegularPolygon;
-import com.jmathanim.Constructible.Lines.CTSegment;
-import com.jmathanim.Constructible.Lines.CTTangentCircleCircle;
-import com.jmathanim.Constructible.Lines.CTTangentPointCircle;
-import com.jmathanim.Constructible.Lines.CTTransformedLine;
-import com.jmathanim.Constructible.Lines.CTVector;
-import com.jmathanim.Constructible.Lines.HasDirection;
+import com.jmathanim.Constructible.Conics.*;
+import com.jmathanim.Constructible.Lines.*;
 import com.jmathanim.Constructible.Others.CTFunctionGraph;
 import com.jmathanim.Constructible.Others.CTImage;
 import com.jmathanim.Constructible.Points.CTIntersectionPoint;
@@ -50,11 +32,8 @@ import com.jmathanim.Styling.JMColor;
 import com.jmathanim.Styling.MODrawProperties;
 import com.jmathanim.Utils.Anchor;
 import com.jmathanim.jmathanim.JMathAnimScene;
-import com.jmathanim.mathobjects.JMImage;
-import com.jmathanim.mathobjects.MathObject;
-import com.jmathanim.mathobjects.NullMathObject;
-import com.jmathanim.mathobjects.Point;
-import com.jmathanim.mathobjects.Scalar;
+import com.jmathanim.mathobjects.*;
+import org.w3c.dom.Element;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -65,8 +44,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
-
-import org.w3c.dom.Element;
 
 /**
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com

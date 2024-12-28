@@ -21,11 +21,7 @@ import com.jmathanim.Constructible.Points.CTPoint;
 import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
-import com.jmathanim.mathobjects.JMPathPoint;
-import com.jmathanim.mathobjects.MathObject;
-import com.jmathanim.mathobjects.Point;
-import com.jmathanim.mathobjects.Scalar;
-import com.jmathanim.mathobjects.Shape;
+import com.jmathanim.mathobjects.*;
 
 /**
  * Represents a Circle imported from Geogebra with 2 points (center and another

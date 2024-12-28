@@ -31,23 +31,19 @@ import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.Shape;
 import com.jmathanim.mathobjects.surface.Surface;
-import com.jogamp.opengl.GL;
-import com.jogamp.opengl.GL4;
-//import com.jogamp.opengl.GL3;
-import com.jogamp.opengl.GLAutoDrawable;
-import com.jogamp.opengl.GLDrawable;
-import com.jogamp.opengl.GLEventListener;
+import com.jogamp.opengl.*;
 import com.jogamp.opengl.util.awt.AWTGLReadBufferUtil;
 import com.jogamp.opengl.util.awt.TextRenderer;
-import java.awt.Font;
+import org.joml.Matrix4f;
+import org.joml.Vector3f;
+
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.joml.Matrix4f;
-import org.joml.Vector3f;
 
 /**
  * Manages the queue of objects to be rendered at every frame draw

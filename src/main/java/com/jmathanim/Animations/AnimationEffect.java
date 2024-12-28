@@ -20,14 +20,11 @@ package com.jmathanim.Animations;
 import com.jmathanim.Utils.AffineJTransform;
 import com.jmathanim.Utils.ResourceLoader;
 import com.jmathanim.Utils.UsefulLambdas;
-import static com.jmathanim.jmathanim.JMathAnimScene.PI;
-import com.jmathanim.mathobjects.FunctionGraph;
-import com.jmathanim.mathobjects.JMPath;
-import com.jmathanim.mathobjects.MathObject;
-import com.jmathanim.mathobjects.Point;
-import com.jmathanim.mathobjects.SVGMathObject;
-import com.jmathanim.mathobjects.Shape;
+import com.jmathanim.mathobjects.*;
+
 import java.util.HashMap;
+
+import static com.jmathanim.jmathanim.JMathAnimScene.PI;
 
 /**
  * This class holds and manages information about animation effects

@@ -19,6 +19,7 @@ package com.jmathanim.Utils;
 import com.jmathanim.Styling.JMColor;
 import com.jmathanim.Styling.PaintStyle;
 import com.jmathanim.mathobjects.Text.AbstractLaTeXMathObject;
+
 import java.util.ArrayList;
 
 /**

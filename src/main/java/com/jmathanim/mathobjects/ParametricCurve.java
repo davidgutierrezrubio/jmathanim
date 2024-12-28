@@ -18,6 +18,7 @@
 package com.jmathanim.mathobjects;
 
 import com.jmathanim.Utils.Vec;
+
 import java.util.ArrayList;
 import java.util.function.DoubleBinaryOperator;
 import java.util.function.DoubleUnaryOperator;

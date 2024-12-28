@@ -18,6 +18,7 @@
 package com.jmathanim.Renderers.MovieEncoders;
 
 import com.jmathanim.Utils.JMathAnimConfig;
+
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.net.URL;

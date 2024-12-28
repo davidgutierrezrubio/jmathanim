@@ -19,10 +19,10 @@ package com.jmathanim.Utils;
 import com.jmathanim.Styling.JMColor;
 import com.jmathanim.Styling.MODrawProperties;
 import com.jmathanim.Styling.PaintStyle;
-import com.jmathanim.Styling.Stylable;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.Shape;
 import com.jmathanim.mathobjects.Text.AbstractLaTeXMathObject;
+
 import java.util.ArrayList;
 
 /**

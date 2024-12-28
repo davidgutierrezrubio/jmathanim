@@ -17,8 +17,9 @@
  */
 package com.jmathanim.Styling;
 
-import java.util.HashMap;
 import javafx.scene.paint.Stop;
+
+import java.util.HashMap;
 
 /**
  * Holds a bunch of colors to define a linear or radial gradient

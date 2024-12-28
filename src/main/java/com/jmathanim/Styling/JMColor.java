@@ -20,10 +20,11 @@ package com.jmathanim.Styling;
 import com.jmathanim.Cameras.Camera;
 import com.jmathanim.Renderers.FXRenderer.JavaFXRenderer;
 import com.jmathanim.jmathanim.JMathAnimScene;
+import javafx.scene.paint.Paint;
+
 import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Iterator;
-import javafx.scene.paint.Paint;
 
 /**
  * JMColor is a class representing a color with red (r), green (g), blue (b),

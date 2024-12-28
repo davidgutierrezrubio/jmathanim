@@ -18,12 +18,12 @@
 package com.jmathanim.Utils;
 
 import com.jmathanim.Constructible.Lines.HasDirection;
-import static com.jmathanim.jmathanim.JMathAnimScene.PI;
-
 import com.jmathanim.mathobjects.Stateable;
-import static java.lang.Math.sqrt;
 import org.apache.commons.math3.linear.Array2DRowRealMatrix;
 import org.apache.commons.math3.linear.RealMatrix;
+
+import static com.jmathanim.jmathanim.JMathAnimScene.PI;
+import static java.lang.Math.sqrt;
 
 /**
  * A vector in 3D

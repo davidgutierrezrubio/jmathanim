@@ -20,6 +20,7 @@ import com.jmathanim.Utils.Vec;
 import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.MathObjectGroup;
 import com.jmathanim.mathobjects.Point;
+
 import java.util.Random;
 
 /**

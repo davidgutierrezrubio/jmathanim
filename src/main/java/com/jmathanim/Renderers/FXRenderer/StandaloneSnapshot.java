@@ -5,9 +5,10 @@
  */
 package com.jmathanim.Renderers.FXRenderer;
 
-import java.util.concurrent.CountDownLatch;
 import javafx.application.Application;
 import javafx.stage.Stage;
+
+import java.util.concurrent.CountDownLatch;
 
 /**
  * A class to ensure a StandAlone JavaFX thread that allows to take snapshots to

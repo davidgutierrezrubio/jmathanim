@@ -24,6 +24,7 @@ import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.updateableObjects.Updateable;
+
 import java.text.DecimalFormat;
 
 /**

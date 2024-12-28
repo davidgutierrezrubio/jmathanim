@@ -19,14 +19,11 @@ package com.jmathanim.Utils;
 
 import com.jmathanim.Cameras.Camera;
 import com.jmathanim.Renderers.Renderer;
-import com.jmathanim.Styling.ConfigLoader;
-import com.jmathanim.Styling.JMColor;
-import com.jmathanim.Styling.MODrawProperties;
-import com.jmathanim.Styling.PaintStyle;
-import com.jmathanim.Styling.Stylable;
+import com.jmathanim.Styling.*;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.Point;
+
 import java.io.File;
 import java.net.URL;
 

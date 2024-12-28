@@ -19,11 +19,7 @@ package com.jmathanim.mathobjects.Axes;
 import com.jmathanim.Cameras.Camera;
 import com.jmathanim.Utils.JMathAnimConfig;
 import com.jmathanim.Utils.Rect;
-import com.jmathanim.mathobjects.Line;
-import com.jmathanim.mathobjects.MathObject;
-import com.jmathanim.mathobjects.MathObjectGroup;
-import com.jmathanim.mathobjects.MultiShapeObject;
-import com.jmathanim.mathobjects.shouldUdpateWithCamera;
+import com.jmathanim.mathobjects.*;
 
 /**
  * A Cartesian Grid

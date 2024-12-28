@@ -20,11 +20,12 @@ package com.jmathanim.Styling;
 import com.jmathanim.Cameras.Camera;
 import com.jmathanim.Renderers.FXRenderer.JavaFXRenderer;
 import com.jmathanim.mathobjects.Point;
-import java.util.HashMap;
-import java.util.Objects;
 import javafx.scene.paint.CycleMethod;
 import javafx.scene.paint.Paint;
 import javafx.scene.paint.RadialGradient;
+
+import java.util.HashMap;
+import java.util.Objects;
 
 /**
  *

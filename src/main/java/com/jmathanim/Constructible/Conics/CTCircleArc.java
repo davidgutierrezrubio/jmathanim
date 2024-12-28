@@ -22,11 +22,12 @@ import com.jmathanim.Constructible.Points.CTPoint;
 import com.jmathanim.Utils.AffineJTransform;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
-import static com.jmathanim.jmathanim.JMathAnimScene.PI;
 import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.Point;
 import com.jmathanim.mathobjects.Scalar;
 import com.jmathanim.mathobjects.Shape;
+
+import static com.jmathanim.jmathanim.JMathAnimScene.PI;
 
 /**
  * A Constructible circle arc

@@ -19,6 +19,7 @@ package com.jmathanim.mathobjects;
 
 import com.jmathanim.Utils.ResourceLoader;
 import com.jmathanim.Utils.SVGUtils;
+
 import java.net.URL;
 import java.util.logging.Level;
 import java.util.logging.Logger;

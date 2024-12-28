@@ -20,6 +20,7 @@ import com.jmathanim.Styling.MODrawProperties;
 import com.jmathanim.Utils.AffineJTransform;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.MathObject;
+
 import java.util.HashMap;
 
 /**

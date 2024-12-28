@@ -19,6 +19,7 @@ package com.jmathanim.Animations.Strategies.Transform.Optimizers;
 
 import com.jmathanim.mathobjects.JMPath;
 import com.jmathanim.mathobjects.Shape;
+
 import java.util.ArrayList;
 import java.util.Collections;
 

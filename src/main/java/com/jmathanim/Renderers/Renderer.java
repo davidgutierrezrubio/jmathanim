@@ -25,17 +25,19 @@ import com.jmathanim.Utils.JMathAnimConfig;
 import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
-import static com.jmathanim.jmathanim.JMathAnimScene.logger;
 import com.jmathanim.mathobjects.AbstractJMImage;
 import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.Shape;
+
+import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.imageio.ImageIO;
+
+import static com.jmathanim.jmathanim.JMathAnimScene.logger;
 
 /**
  * Coordinates x,y,z are always given in (0,0) to (w,h), where (0,0) is upper

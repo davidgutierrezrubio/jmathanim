@@ -22,10 +22,11 @@ import com.jmathanim.Utils.Vec;
 import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.Point;
 import com.jmathanim.mathobjects.Stateable;
-import java.util.ArrayList;
-import java.util.Arrays;
 import javafx.scene.shape.StrokeLineCap;
 import javafx.scene.shape.StrokeLineJoin;
+
+import java.util.ArrayList;
+import java.util.Arrays;
 
 /**
  * Represents an array of mathematical object drawing properties.

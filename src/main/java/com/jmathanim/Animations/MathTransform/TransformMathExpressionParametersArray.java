@@ -18,6 +18,7 @@
 package com.jmathanim.Animations.MathTransform;
 
 import com.jmathanim.Animations.AnimationEffect;
+
 import java.util.ArrayList;
 
 /**

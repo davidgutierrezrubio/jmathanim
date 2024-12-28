@@ -25,11 +25,10 @@ import com.jmathanim.Utils.JMathAnimConfig;
 import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
-
-import java.text.DecimalFormat;
-
 import org.apache.commons.math3.linear.Array2DRowRealMatrix;
 import org.apache.commons.math3.linear.RealMatrix;
+
+import java.text.DecimalFormat;
 
 /**
  * This class represents a point in 2D or 3D space

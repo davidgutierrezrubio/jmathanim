@@ -20,11 +20,7 @@ package com.jmathanim.Animations;
 import com.jmathanim.Utils.Anchor;
 import com.jmathanim.Utils.Anchor.Type;
 import com.jmathanim.Utils.Vec;
-import com.jmathanim.mathobjects.JMPath;
-import com.jmathanim.mathobjects.JMPathPoint;
-import com.jmathanim.mathobjects.MathObject;
-import com.jmathanim.mathobjects.Point;
-import com.jmathanim.mathobjects.Shape;
+import com.jmathanim.mathobjects.*;
 
 /**
  * This class animates an object moving it through a given path. An anchor

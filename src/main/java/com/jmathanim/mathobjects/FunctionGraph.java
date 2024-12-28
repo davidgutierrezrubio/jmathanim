@@ -21,12 +21,14 @@ import com.jmathanim.Cameras.Camera;
 import com.jmathanim.Utils.JMathAnimConfig;
 import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.Vec;
-import static com.jmathanim.jmathanim.JMathAnimScene.PI;
+import org.mariuszgromada.math.mxparser.Function;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.function.DoubleBinaryOperator;
 import java.util.function.DoubleUnaryOperator;
-import org.mariuszgromada.math.mxparser.Function;
+
+import static com.jmathanim.jmathanim.JMathAnimScene.PI;
 
 /**
  * Shape subclass that represents the graph of a single variable function

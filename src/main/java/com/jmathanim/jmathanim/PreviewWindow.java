@@ -18,12 +18,9 @@
 package com.jmathanim.jmathanim;
 
 import com.jmathanim.Renderers.Renderer;
-import java.awt.BorderLayout;
-import java.awt.Frame;
-import java.awt.HeadlessException;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JToggleButton;
+
+import javax.swing.*;
+import java.awt.*;
 
 /**
  *

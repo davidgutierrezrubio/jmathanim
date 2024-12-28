@@ -20,10 +20,11 @@ package com.jmathanim.mathobjects.Delimiters;
 import com.jmathanim.Utils.AffineJTransform;
 import com.jmathanim.Utils.Anchor;
 import com.jmathanim.Utils.UsefulLambdas;
-import static com.jmathanim.jmathanim.JMathAnimScene.PI;
 import com.jmathanim.mathobjects.MathObjectGroup;
 import com.jmathanim.mathobjects.Point;
 import com.jmathanim.mathobjects.Shape;
+
+import static com.jmathanim.jmathanim.JMathAnimScene.PI;
 
 /**
  *

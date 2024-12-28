@@ -22,6 +22,7 @@ import com.jmathanim.jmathanim.JMathAnimScene;
 import com.xuggle.mediatool.IMediaWriter;
 import com.xuggle.mediatool.ToolFactory;
 import com.xuggle.xuggler.ICodec;
+
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.net.URL;

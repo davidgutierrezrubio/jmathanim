@@ -32,6 +32,7 @@ import com.jmathanim.mathobjects.surface.Surface;
 import com.jogamp.newt.opengl.GLWindow;
 import com.jogamp.opengl.GLCapabilities;
 import com.jogamp.opengl.GLProfile;
+
 import java.awt.image.BufferedImage;
 import java.io.InputStream;
 

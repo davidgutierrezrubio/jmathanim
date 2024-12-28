@@ -17,17 +17,10 @@
  */
 package com.jmathanim.mathobjects.Delimiters;
 
-import com.jmathanim.Utils.AffineJTransform;
-import com.jmathanim.Utils.Anchor;
-import com.jmathanim.Utils.Rect;
-import com.jmathanim.Utils.ResourceLoader;
-import com.jmathanim.Utils.UsefulLambdas;
+import com.jmathanim.Utils.*;
+import com.jmathanim.mathobjects.*;
+
 import static com.jmathanim.jmathanim.JMathAnimScene.PI;
-import com.jmathanim.mathobjects.MathObjectGroup;
-import com.jmathanim.mathobjects.MultiShapeObject;
-import com.jmathanim.mathobjects.Point;
-import com.jmathanim.mathobjects.SVGMathObject;
-import com.jmathanim.mathobjects.Shape;
 
 /**
  *

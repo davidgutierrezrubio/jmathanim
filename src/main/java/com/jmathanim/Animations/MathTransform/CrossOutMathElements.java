@@ -28,6 +28,7 @@ import com.jmathanim.mathobjects.JMPath;
 import com.jmathanim.mathobjects.MultiShapeObject;
 import com.jmathanim.mathobjects.Point;
 import com.jmathanim.mathobjects.Shape;
+
 import java.util.ArrayList;
 
 /**

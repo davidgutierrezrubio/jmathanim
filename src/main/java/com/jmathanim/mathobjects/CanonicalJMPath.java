@@ -18,6 +18,7 @@
 package com.jmathanim.mathobjects;
 
 import com.jmathanim.Styling.MODrawProperties;
+
 import java.util.ArrayList;
 import java.util.Collection;
 

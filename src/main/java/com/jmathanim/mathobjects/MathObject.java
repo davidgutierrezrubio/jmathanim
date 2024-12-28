@@ -18,27 +18,18 @@
 package com.jmathanim.mathobjects;
 
 import com.jmathanim.Cameras.Camera;
-import com.jmathanim.Styling.JMColor;
-import com.jmathanim.Styling.MODrawProperties;
-import com.jmathanim.Styling.PaintStyle;
-import com.jmathanim.Styling.RendererEffects;
-import com.jmathanim.Styling.Stylable;
-import com.jmathanim.Utils.AffineJTransform;
-import com.jmathanim.Utils.Anchor;
+import com.jmathanim.Styling.*;
+import com.jmathanim.Utils.*;
 import com.jmathanim.Utils.Anchor.Type;
-import com.jmathanim.Utils.Boxable;
-import com.jmathanim.Utils.JMathAnimConfig;
-import com.jmathanim.Utils.Linkable;
-import com.jmathanim.Utils.Rect;
-import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.updateableObjects.Updateable;
+import javafx.scene.shape.StrokeLineCap;
+import javafx.scene.shape.StrokeLineJoin;
+
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.OptionalInt;
-import javafx.scene.shape.StrokeLineCap;
-import javafx.scene.shape.StrokeLineJoin;
 
 /**
  * This class represents a mathematical object that can be drawed on screen,

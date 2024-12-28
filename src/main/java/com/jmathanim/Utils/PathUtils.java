@@ -24,6 +24,7 @@ import com.jmathanim.mathobjects.JMPathPoint;
 import com.jmathanim.mathobjects.JMPathPoint.JMPathPointType;
 import com.jmathanim.mathobjects.Point;
 import com.jmathanim.mathobjects.Shape;
+
 import java.util.ArrayList;
 
 /**

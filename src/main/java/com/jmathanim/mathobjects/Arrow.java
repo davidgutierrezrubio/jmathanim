@@ -22,14 +22,12 @@ import com.jmathanim.Constructible.Constructible;
 import com.jmathanim.Constructible.Lines.CTLine;
 import com.jmathanim.Constructible.Lines.CTPerpBisector;
 import com.jmathanim.Constructible.Points.CTIntersectionPoint;
-import com.jmathanim.Utils.AffineJTransform;
-import com.jmathanim.Utils.JMathAnimConfig;
-import com.jmathanim.Utils.Rect;
-import com.jmathanim.Utils.ResourceLoader;
-import com.jmathanim.Utils.Vec;
+import com.jmathanim.Utils.*;
 import com.jmathanim.jmathanim.JMathAnimScene;
-import static com.jmathanim.jmathanim.JMathAnimScene.PI;
+
 import java.net.URL;
+
+import static com.jmathanim.jmathanim.JMathAnimScene.PI;
 
 /**
  *

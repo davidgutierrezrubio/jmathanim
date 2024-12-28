@@ -17,21 +17,18 @@
  */
 package com.jmathanim.mathobjects;
 
-import com.jmathanim.Utils.AffineJTransform;
-import com.jmathanim.Utils.ColorScale;
-import com.jmathanim.Utils.JMathAnimConfig;
-import com.jmathanim.Utils.Rect;
-import com.jmathanim.Utils.TriFunction;
+import com.jmathanim.Utils.*;
 import com.jmathanim.jmathanim.JMathAnimScene;
+import javafx.application.Platform;
+import javafx.scene.image.Image;
+import javafx.scene.image.PixelWriter;
+import javafx.scene.image.WritableImage;
+
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.FutureTask;
 import java.util.function.BiFunction;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javafx.application.Platform;
-import javafx.scene.image.Image;
-import javafx.scene.image.PixelWriter;
-import javafx.scene.image.WritableImage;
 
 /**
  * This class represents a density plot in a specified area given by a Rect

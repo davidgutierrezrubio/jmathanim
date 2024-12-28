@@ -19,6 +19,7 @@ package com.jmathanim.Animations;
 
 import com.jmathanim.Utils.UsefulLambdas;
 import com.jmathanim.mathobjects.MathObjectGroup;
+
 import java.util.ArrayList;
 import java.util.function.DoubleUnaryOperator;
 

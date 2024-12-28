@@ -19,6 +19,7 @@ package com.jmathanim.mathobjects.Text;
 import com.jmathanim.Utils.Anchor;
 import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.hasScalarParameter;
+
 import java.text.DecimalFormat;
 
 /**

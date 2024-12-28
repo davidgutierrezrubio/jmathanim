@@ -23,14 +23,9 @@ import com.jmathanim.Styling.JMColor;
 import com.jmathanim.Utils.Boxable;
 import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.UsefulLambdas;
-import com.jmathanim.mathobjects.Line;
-import com.jmathanim.mathobjects.MathObject;
-import com.jmathanim.mathobjects.MathObjectGroup;
-import com.jmathanim.mathobjects.MultiShapeObject;
-import com.jmathanim.mathobjects.Point;
-import com.jmathanim.mathobjects.Shape;
+import com.jmathanim.mathobjects.*;
+
 import java.util.ArrayList;
-import java.util.Arrays;
 
 /**
  *

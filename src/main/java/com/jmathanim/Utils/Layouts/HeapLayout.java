@@ -19,6 +19,7 @@ package com.jmathanim.Utils.Layouts;
 
 import com.jmathanim.mathobjects.MathObjectGroup;
 import com.jmathanim.mathobjects.Point;
+
 import java.util.ArrayList;
 
 /**

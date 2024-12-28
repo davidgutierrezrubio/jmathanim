@@ -18,6 +18,7 @@ package com.jmathanim.Utils;
 
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.Text.AbstractLaTeXMathObject;
+import org.scilab.forge.jlatexmath.*;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -27,42 +28,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import org.scilab.forge.jlatexmath.AccentedAtom;
-import org.scilab.forge.jlatexmath.ArrayOfAtoms;
-import org.scilab.forge.jlatexmath.Atom;
-import org.scilab.forge.jlatexmath.BigDelimiterAtom;
-import org.scilab.forge.jlatexmath.BigOperatorAtom;
-import org.scilab.forge.jlatexmath.BoldAtom;
-import org.scilab.forge.jlatexmath.Box;
-import org.scilab.forge.jlatexmath.CharAtom;
-import org.scilab.forge.jlatexmath.CharBox;
-import org.scilab.forge.jlatexmath.CharFont;
-import org.scilab.forge.jlatexmath.DefaultTeXFont;
-import org.scilab.forge.jlatexmath.FencedAtom;
-import org.scilab.forge.jlatexmath.FractionAtom;
-import org.scilab.forge.jlatexmath.HorizontalRule;
-import org.scilab.forge.jlatexmath.JavaFontRenderingAtom;
-import org.scilab.forge.jlatexmath.MathAtom;
-import org.scilab.forge.jlatexmath.MatrixAtom;
-import org.scilab.forge.jlatexmath.MiddleAtom;
-import org.scilab.forge.jlatexmath.NthRoot;
-import org.scilab.forge.jlatexmath.OverUnderBox;
-import org.scilab.forge.jlatexmath.OverUnderDelimiter;
-import org.scilab.forge.jlatexmath.OverlinedAtom;
-import org.scilab.forge.jlatexmath.RomanAtom;
-import org.scilab.forge.jlatexmath.RowAtom;
-import org.scilab.forge.jlatexmath.ScaleBox;
-import org.scilab.forge.jlatexmath.ScriptsAtom;
-import org.scilab.forge.jlatexmath.StyleAtom;
-import org.scilab.forge.jlatexmath.SymbolAtom;
-import org.scilab.forge.jlatexmath.TeXConstants;
-import org.scilab.forge.jlatexmath.TeXEnvironment;
-import org.scilab.forge.jlatexmath.TeXFormula;
-import org.scilab.forge.jlatexmath.TeXIcon;
-import org.scilab.forge.jlatexmath.TypedAtom;
-import org.scilab.forge.jlatexmath.UnderOverArrowAtom;
-import org.scilab.forge.jlatexmath.VRowAtom;
 
 /**
  * Handles the parsing of elements of a LaTeX objects and assign to each
