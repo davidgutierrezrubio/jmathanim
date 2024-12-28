@@ -526,7 +526,7 @@ r.getUR();//Gets a Point lying the Upper-Right corner
 r.getDL();//Gets a Point lying the Lower-Left corner
 r.getDL();//Gets a Point lying the Lower-Right corner
 r.centerAt(dst);//Moves the Rect so that its center lies in dst
-r.getRotatedRect(45*DEGREES);//Returns the smallest Rect that containts the original rotated 45 degrees
+r.getRotatedRect(45*DEGREES);//Returns the smallest Rect that contains the original rotated 45 degrees
 r.getRelPoint(.25, .25);//Returns a Point located at the relative coordinates (.25,.25) of the Rect
 r.getRelPoint(.5,.5);//This is the same as r.getCenter()
 ```

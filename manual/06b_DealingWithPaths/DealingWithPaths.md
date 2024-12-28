@@ -206,7 +206,7 @@ add(
     LaTeXMathObject.make("$A\\cap B\\cap C$").stackTo(intersect, Anchor.Type.CENTER)
 );
 camera.centerAtAllObjects();
-waitSeconds(5);//Smile, you're being screenshoted!
+waitSeconds(5);//Smile, you're being screenshot!
 ```
 
 Gives the following image:

@@ -169,7 +169,7 @@ Note: The `INTERPOLATION` method uses the `Transform` class to do the work, so, 
 ```java
 LaTeXMathObject t1 = LaTeXMathObject.make("$a^2=a\\cdot a$");
 LaTeXMathObject t2 = LaTeXMathObject.make("$3^2=3\\cdot 3$");
-t1.alignCenter(2, t2, 2);//Move t1 so its equal sign (glyph 2) matchs the t2 equal sign (glyph 2)
+t1.alignCenter(2, t2, 2);//Move t1 so its equal sign (glyph 2) matches the t2 equal sign (glyph 2)
 camera.zoomToObjects(t1, t2);
 TransformMathExpression tr = new TransformMathExpression(5, t1, t2);
 tr.map(0, 0).setTransformStyle(TransformMathExpression.TransformType.FLIP_HORIZONTALLY);//The first "a"
@@ -213,7 +213,7 @@ LaTeXMathObject t1 = LaTeXMathObject.make("$(1+98)+(2+97)+\\cdots+(49+50)$");
 LaTeXMathObject t2 = LaTeXMathObject.make("$99+99+\\cdots+99$");
 ```
 
- and we want to animate how these sums change all into 99. We want to perform a transform for each one of the sums into their simplified form. Our dear friend `formulaHelper` helps us to ellaborate a plan:
+ and we want to animate how these sums change all into 99. We want to perform a transform for each one of the sums into their simplified form. Our dear friend `formulaHelper` helps us to elaborate a plan:
 
 <img src="equation05.png" alt="equation05"  />
 
@@ -406,7 +406,7 @@ Since version 0.9.5, JMathAnim includes another animation that can be handy for 
 LaTeXMathObject formula = LaTeXMathObject.make("$2\\over 2$");
 add(formula);
 camera.zoomToAllObjects();
-CrossOutMathElements anim=CrossOutMathElements.make(1, formula, 0,2);//Cross out glyps 0 and 2
+CrossOutMathElements anim=CrossOutMathElements.make(1, formula, 0,2);//Cross out glyphs 0 and 2
 playAnimation(anim);
 waitSeconds(1);
 ```
@@ -420,7 +420,7 @@ You can define which elements to cross out as usual, specifying the indices. The
 `.addSmallCrosses(int...indices)` generates one cross out for each individual glyph given by the index. This is the default behaviour for the static builder. So, another way to get the same result as before should be:
 
 ```java
-CrossOutMathElements anim=CrossOutMathElements.make(1, formula).addSmallCrosses(0,2);//Cross out glyps 0 and 2
+CrossOutMathElements anim=CrossOutMathElements.make(1, formula).addSmallCrosses(0,2);//Cross out glyphs 0 and 2
 ```
 
 `.addBigCross(int...indices)` generates only one cross out that extends over all specified glyphs. For example:

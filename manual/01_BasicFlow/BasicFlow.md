@@ -59,7 +59,7 @@ The `config.parseFile("#dark.xml")`command tells JMathAnim to set the default co
 
 The `config.setCreateMovie(true)` tells the library that it should generate a movie. In practice, you should generate a movie in the last stages of your design, so by default this flag is set to `false`.
 
-The `config.setLowQuality()` command establishes dimensions of 854x480 and 30 frames per second. Aditionally there is `config.setMediumQuality()` with 1280x720 at 30fps and `config.setHighQuality()` with 1920x1080 at 60fps. All these settings are 16:9.
+The `config.setLowQuality()` command establishes dimensions of 854x480 and 30 frames per second. Additionally there is `config.setMediumQuality()` with 1280x720 at 30fps and `config.setHighQuality()` with 1920x1080 at 60fps. All these settings are 16:9.
 
 The second method is where you should perform all the animations and drawings:
 

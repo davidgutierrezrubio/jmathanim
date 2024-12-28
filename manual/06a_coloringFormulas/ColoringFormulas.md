@@ -49,7 +49,8 @@ Token number 5: LatexToken[RELATION, "equals"] [delimDepth=0] SEC_NORMAL
 Token number 6: LatexToken[NUMBER, "0"] [delimDepth=0] SEC_NORMAL
 ```
 
-There are several useful attributes in the token. The first,is the type, accesed through the `getType()` method, defines what family this glyph belongs to. Currently there are the following types, defined in the `LatexToken.TokenType` enum:
+There are several useful attributes in the token. The first,is the type, accessed through the `getType()` method, defines what family this glyph belongs to. Currently there are the following types, defined in the `LatexToken.TokenType` enum:
+
 
 ```java
 public enum TokenType {
@@ -110,7 +111,7 @@ LatexToken subscriptToken = LatexToken.make();//Generates a LatexToken with all 
 subscriptToken.activateSecondaryFlag(LatexToken.SEC_SUBSCRIPT);//Any token in a subscript will match this one
 
 LatexStyleItem latexStyleItem = LatexStyleItem.make("gold");//This item will apply the color gold to...
-latexStyleItem.mustMatchTo(subscriptToken);//Any token that matchs the given token
+latexStyleItem.mustMatchTo(subscriptToken);//Any token that matches the given token
 
 latexStyle.add(latexStyleItem);//Add to the latex style
 

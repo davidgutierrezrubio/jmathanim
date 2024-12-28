@@ -1,6 +1,6 @@
 # Dynamic Text and Linking MathObjects
 
-The method `setLatex()` of the `LatexMathObject` allows to change and recompile the LaTeX code, but there is another way to add text that changes its content while animating, using the `Link` class. Let's see this with an example. Suppose you have the following code in the `runSketch()` method, that rotates a red point along the unit circunference:
+The method `setLatex()` of the `LatexMathObject` allows to change and recompile the LaTeX code, but there is another way to add text that changes its content while animating, using the `Link` class. Let's see this with an example. Suppose you have the following code in the `runSketch()` method, that rotates a red point along the unit circumference:
 
 ```java
 Point A=Point.at(1,0).thickness(30).drawColor("red");
@@ -22,7 +22,7 @@ Animation anim = Commands.rotate(5, Point.origin(), 2 * PI, A);
 //stacked to the left part of the old text (the default value is CENTER)
 LaTeXMathObject text = LaTeXMathObject.make("$(1,0)$",Anchor.Type.LEFT);
 
-//Put the text in the upper left scren corner
+//Put the text in the upper left screen corner
 text.stackToScreen(Anchor.Type.ULEFT);
 add(text);
 
@@ -50,8 +50,8 @@ We illustrate this with an example:
 
 ```java
  Point A = Point.at(1, 0).thickness(30).drawColor("red");
-//The LEFT parameter says that, when changin text, the new text should be
-//stacked to the left part of the old text (the defaulta value is CENTER)
+//The LEFT parameter says that, when changing text, the new text should be
+//stacked to the left part of the old text (the default value is CENTER)
 LaTeXMathObject text = LaTeXMathObject.make("$({#0},{#1})$", Anchor.Type.LEFT);
 
 registerLink(A, //From object A...
@@ -67,7 +67,7 @@ registerLink(A, //From object A...
             );
 
 
-//Put the text in the upper left scren corner
+//Put the text in the upper left screen corner
 text.stackToScreen(Anchor.Type.ULEFT);
 add(text);
 
@@ -92,7 +92,7 @@ registerLink(A, //From object A...
             );
 ```
 
- The comments tell how it works. The first parameter is the source object, where to extract the information. The second parameter is a `LinkType` enum that defines the type of information. Depending on the object type and this value a certain value is extracted, and JMathAnim do its best to extract the appropiate information. For example in this case, X coordinate of the point is extracted. If A were a `MathObjectGroup`for example, the x coordinate of the center of the object will be extracted.
+ The comments tell how it works. The first parameter is the source object, where to extract the information. The second parameter is a `LinkType` enum that defines the type of information. Depending on the object type and this value a certain value is extracted, and JMathAnim do its best to extract the appropriate information. For example in this case, X coordinate of the point is extracted. If A were a `MathObjectGroup`for example, the x coordinate of the center of the object will be extracted.
 
 The third and fourth parameters define the destiny object and the type of attribute to change in this object. In this case the value `ARG0` means to change the value of the first argument.
 

@@ -195,7 +195,7 @@ Gives this spirograh-like picture:
 # Affine Transforms
 `shift`, `rotate` and `scale` are particular cases of a more general affine transform implemented by the `AffineJTransform` class. This class defines general affine transforms in the 2D plane, and has several static convenience methods for some of the most common transforms:
 
-The `createTranslationTransform(Vec v)` or `createTranslationTransform(Point A, Point B)` creates a traslation transform. The `shift` command is just a shortcut for this transform. 
+The `createTranslationTransform(Vec v)` or `createTranslationTransform(Point A, Point B)` creates a translation transform. The `shift` command is just a shortcut for this transform. 
 
 The `create2DRotationTransform(Point center, double angle)` creates a rotation transform, which is used in the `rotate` command.
 
@@ -503,7 +503,7 @@ Another example: we use composite layouts to draw a Sierpinski triangle using a 
 
 ```java
 MathObjectGroup triangles = MathObjectGroup.make();
-int degree = 6;//Degree of the Sierpisnki triangle
+int degree = 6;//Degree of the Sierpinski triangle
 int num = (int) Math.pow(3, degree);//We need 3^degree triangles!
 for (int n = 0; n < num; n++) {
     MathObject tr = Shape.regularPolygon(3).scale(.25);

@@ -208,7 +208,7 @@ Shape obj = Shape.circle();
 add(obj);
 ContourHighlight anim = ContourHighlight.make(2, obj);
 
-//This parameter from 0 to 1 determines the max portion of shape to be drawed
+//This parameter from 0 to 1 determines the max portion of shape to be drawn
 //The default value is 0.4.
 //A value of 1 will draw the whole shape and then undraw it.
 anim.setAmplitude(.85);
@@ -327,7 +327,7 @@ waitSeconds(5);
 
 ## Moving along a path
 
-`MoveAlongPath` animations move an object along a specified path. You can use a `Shape` object or a `JMPath` object to specify the path. The moved object will be at the specified anchor point. This animation takes 2 boolean parameters. The first determines whether an object should rotate by the angle given by the tangent of the path at its destination point. Second, it determines whether or not the animation should use a parameterised equation for the curve. A parameterised equation ensures that the motion is constant along the arc length of the path. For example, a parameterised value of t=0.3 ensures that the object will be at 30% of the total arc length. If this boolean flag is false, the standard Bézier parameterisation is used.
+`MoveAlongPath` animations move an object along a specified path. You can use a `Shape` object or a `JMPath` object to specify the path. The moved object will be at the specified anchor point. This animation takes 2 boolean parameters. The first determines whether an object should rotate by the angle given by the tangent of the path at its destination point. Second, it determines whether or not the animation should use a parameterised equation for the curve. A parameterised equation ensures that the motion is constant along the arc length of the path. For example, a parameterised value of t=0.3 ensures that the object will be at 30% of the total arc length. If this boolean flag is false, the standard Bézier parameterization is used.
 
 In this example, we show 2 squares moving along a circle. The red square moves with constant velocity and the blue one with the standard parametrization of Bézier curves. In general, the standard parametrization of Bézier moves slower at sharp turns.
 

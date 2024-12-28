@@ -294,7 +294,7 @@ we have a bounce effect between the 20% and 75% of the animation runtime:
 
 
 
-With the following code, you can see the graphs of the lambda parameters and how they affect the animation. You can experiment changing the definitions of `rotateLambda` and `shiftLambda`, and create your own lambda functions with the sintax `t->f(t)`.
+With the following code, you can see the graphs of the lambda parameters and how they affect the animation. You can experiment changing the definitions of `rotateLambda` and `shiftLambda`, and create your own lambda functions with the syntax `t->f(t)`.
 
 ```java
 @Override

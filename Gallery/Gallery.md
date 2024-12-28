@@ -242,7 +242,7 @@ private Shape getNextKochIteration(Shape previousShape) {
         .rotate(s1.getPoint(0), PI / 3)//rotated 60 degrees around left point of s1...
         .shift(s1.getPoint(0).to(s1.getPoint(-1)));//and moved to start at right point of s1...
     Shape s3 = s1.copy()//A copy of s1...
-        .rotate(s1.getPoint(0), -PI / 3)//rotated -60 degress around left point of s1...
+        .rotate(s1.getPoint(0), -PI / 3)//rotated -60 degrees around left point of s1...
         .shift(s1.getPoint(0).to(s2.getPoint(-1)));//and moved to start at right point of s2...
     Shape s4 = s1.copy()//A copy of s1...
         .shift(s1.getPoint(0).to(s3.getPoint(-1)));//moved to start at right point of s3..
@@ -318,7 +318,7 @@ for (int n = 0; n < numPoints * 2; n++) {
     add(Shape.segment(p1, p2).drawColor(JMColor.GRAY).thickness(.5));
 }
 
-//A group contatining the rotating circle and the marker points
+//A group containing the rotating circle and the marker points
 MathObjectGroup rotatingCircle = MathObjectGroup.make();
 //Circle that moves inside
 Shape circleSmall = Shape.circle()
@@ -610,7 +610,7 @@ playAnimation(anim1,anim2,anim3);
 //Rotate coin 6 around coin 1,
 //rotate coin 9 around 7, and
 //rotate coin 0 around coin 5
-//to invert the piramid again
+//to invert the pyramid again
 
 waitSeconds(3);//Take a breath...
 
@@ -643,7 +643,7 @@ for (Shape sh : text) {//Iterates over the shapes
     AffineJTransform tr = AffineJTransform.createAffineTransformation(pentagon.getBoundingBox(), sh.getBoundingBox(), 1);
     //Transforms the pentagon so that fits in the bounding box of the current letter
     tr.applyTransform(pentagon);
-    //Pentagon will be drawed and filled with a random color
+    //Pentagon will be drawn and filled with a random color
     JMColor col = JMColor.random();
     pentagon.fillColor(col)
         .fillAlpha(.5)
@@ -699,7 +699,7 @@ PascalLayout layout = new PascalLayout(Point.origin(), 0, vgap);//The reference 
 auxCandyHeap.setLayout(layout);
 auxCandyHeap.stackTo(refPoint, Anchor.Type.UPPER);
 
-//Note that we used auxCandyHeap only the set the layout of all alements of group candyHeap
+//Note that we used auxCandyHeap only the set the layout of all elements of group candyHeap
 //Now perform animations. We will shuffle all elements in each row
 AnimationGroup anim = AnimationGroup.make();
 MathObjectGroup rows = layout.getRowGroups(auxCandyHeap);
@@ -745,8 +745,8 @@ This animation show how using the MathObjectGroup class can achieve interesting 
 int numberSmallSquares = 24;//24 squares in each circle
 int numberConcentricCircles = 15;//15 concentric circles
 
-//This is the side lentgh of a regular polygon
-//circunscribed in a unit circle
+//This is the side length of a regular polygon
+//circumscribed in a unit circle
 double scaleSmallSquare = 2 * Math.tan(PI / numberSmallSquares);
 
 //Creates a base shape (a square, that can be changed)
@@ -771,7 +771,7 @@ for (int n = 0; n < numberSmallSquares; n++) {
     circles[0].add(smallSquare);
     useFirstColor = !useFirstColor;
 }
-//Create the next MathObjectGroups recursively, scaling appropiately
+//Create the next MathObjectGroups recursively, scaling appropriately
 double scale = 2d;
 for (int k = 1; k < circles.length; k++) {
     circles[k] = circles[k - 1].copy().scale(scale / circles[k - 1].getWidth());
