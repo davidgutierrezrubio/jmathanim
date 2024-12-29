@@ -22,10 +22,11 @@ Manual
 What's new?
 ===========
 
-Version 0.9.11-SNAPSHOT (28/12/2024) 
+Version 0.9.12-SNAPSHOT (29/12/2024) 
 
 * Added `Shape.arc(Point A, Point B, double radius, boolean counterClockWise) `that draws an arc from A to B with given radius.
 * Added arc SVG import capabilities.
+* Fixed bugs importing SVG.
 * Fixed a bug for updater `CameraAlwaysAdjusting` when camera gaps were not 0.
 * Added support for ligatures in `LatexParser` class.
 
