@@ -50,7 +50,7 @@ public class GradientStop {
     }
 
     /**
-     * Converts the current color marks for appropiate use with the JavaFX
+     * Converts the current color marks for appropriate use with the JavaFX
      * library. If there are no marks, it generates a basic white-to-black
      * gradient
      *
@@ -70,6 +70,11 @@ public class GradientStop {
         return resul;
     }
 
+    /**
+     * Add the properly interpolated color at given time.
+     * Mostly used when interpolating 2 gradients that need to align stop marks before.
+     * @param t
+     */
     protected void addInterpolatedColor(double t) {
         if (colors.containsKey(t)) return;
         //Get the lower and upper value
