@@ -97,4 +97,8 @@ public class Scalar extends Constructible implements hasScalarParameter{
         value=scalar;
     }
 
+    @Override
+    public boolean isVisible() {
+        return false;
+    }
 }

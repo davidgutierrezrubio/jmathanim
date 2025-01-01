@@ -72,4 +72,13 @@ public class NullMathObject extends Constructible {
         return MODrawProperties.makeNullValues();
     }
 
+    @Override
+    public void addToSceneHook(JMathAnimScene scene) {
+        //Do nothing
+    }
+
+    @Override
+    public boolean isVisible() {
+        return false;
+    }
 }

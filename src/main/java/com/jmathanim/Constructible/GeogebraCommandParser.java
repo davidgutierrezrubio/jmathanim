@@ -34,6 +34,7 @@ import com.jmathanim.Utils.Anchor;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.*;
 import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -145,25 +146,28 @@ class GeogebraCommandParser {
 
         // Visibility
         Element show = firstElementWithTag(el, "show");
-        resul.setVisible("true".equalsIgnoreCase(show.getAttribute("object")));
+        if (show != null)
+            resul.setVisible("true".equalsIgnoreCase(show.getAttribute("object")));
 
         // Layer
         Element layer = firstElementWithTag(el, "layer");
-        resul.setLayer(Integer.valueOf(layer.getAttribute("val")));
+        if (layer != null)
+            resul.setLayer(Integer.valueOf(layer.getAttribute("val")));
 
         // Color
         Element objColor = firstElementWithTag(el, "objColor");
-        int r = Integer.valueOf(objColor.getAttribute("r"));
-        int g = Integer.valueOf(objColor.getAttribute("g"));
-        int b = Integer.valueOf(objColor.getAttribute("b"));
-        double alpha = Double.valueOf(objColor.getAttribute("alpha"));
-        JMColor col = JMColor.rgbInt(r, g, b, 255);
-        JMColor colFill = JMColor.rgbInt(r, g, b, 255);
-        colFill.setAlpha(alpha);
+        if (objColor != null) {
+            int r = Integer.valueOf(objColor.getAttribute("r"));
+            int g = Integer.valueOf(objColor.getAttribute("g"));
+            int b = Integer.valueOf(objColor.getAttribute("b"));
+            double alpha = Double.valueOf(objColor.getAttribute("alpha"));
+            JMColor col = JMColor.rgbInt(r, g, b, 255);
+            JMColor colFill = JMColor.rgbInt(r, g, b, 255);
+            colFill.setAlpha(alpha);
 
-        resul.setDrawColor(col);
-        resul.setFillColor(colFill);
-
+            resul.setDrawColor(col);
+            resul.setFillColor(colFill);
+        }
         // Line style. Only thickness
         Element lineStyle = firstElementWithTag(el, "lineStyle");
         if (lineStyle != null) {
@@ -206,8 +210,9 @@ class GeogebraCommandParser {
     }
 
     private Element firstElementWithTag(Element el, String name) {
-        if (el.getElementsByTagName(name).getLength() > 0) {
-            Element elInput = (Element) el.getElementsByTagName(name).item(0);
+        NodeList elementsByTagName = el.getElementsByTagName(name);
+        if (elementsByTagName.getLength() > 0) {
+            Element elInput = (Element) elementsByTagName.item(0);
             return elInput;
         } else {
             return null;

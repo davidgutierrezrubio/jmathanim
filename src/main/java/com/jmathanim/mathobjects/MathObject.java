@@ -547,7 +547,7 @@ public abstract class MathObject implements Drawable, Updateable, Stateable, Box
      * renderer, although it still will be in the scene.
      *
      * @param <T> Subclass of MathObject that calls the method
-     * @param visible
+     * @param visible True if objet is visible, false otherwise
      * @return This MathObject subclass
      */
     public <T extends MathObject> T visible(boolean visible) {
