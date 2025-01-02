@@ -63,6 +63,7 @@ public class Trail extends Shape {
 
     @Override
     public void update(JMathAnimScene scene) {
+        super.update(scene);
         if (draw) {
             JMPathPoint pa = JMPathPoint.lineTo(marker.getCenter());
             pa.isThisSegmentVisible = !cutNext;

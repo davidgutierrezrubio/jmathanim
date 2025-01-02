@@ -364,6 +364,7 @@ public class Axes extends MathObject {
 
     @Override
     public void update(JMathAnimScene scene) {
+        super.update(scene);
         double xmax = getCamera().getMathView().xmax;
         double xmin = getCamera().getMathView().xmin;
         double scale = (xmax - xmin) / 4;

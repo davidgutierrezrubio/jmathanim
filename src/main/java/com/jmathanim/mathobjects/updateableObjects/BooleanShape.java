@@ -44,6 +44,7 @@ public class BooleanShape extends Shape {
 
     @Override
     public void update(JMathAnimScene scene) {
+        super.update(scene);
         JMPath newPath = null;
         switch (this.operation) {
             case UNION:

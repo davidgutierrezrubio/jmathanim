@@ -767,4 +767,18 @@ public class Rect implements Stateable, Boxable {// TODO: Adjust this to 3D coor
         return this;
     }
 
+    /**
+     * Return Compute a vector in rect-coordinates. The original vector is unaltered.
+     * @param v Vector in spatial coordinates
+     * @return Vector in rect-coordinates. (0,0) is lower-left corner of the Rect, (1,1) upper-right.
+     */
+    public Vec toRelCoordinates(Vec  v) {
+        AffineJTransform tr=AffineJTransform.createAffineTransformation(this,
+                Rect.centeredUnitSquare().shift(Vec.to(.5,.5)),1);
+        return v.copy().applyAffineTransform(tr);
+    }
+
+
+
+
 }

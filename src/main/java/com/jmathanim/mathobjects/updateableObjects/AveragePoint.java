@@ -42,6 +42,7 @@ public class AveragePoint extends Point implements Updateable {
 
     @Override
     public void update(JMathAnimScene scene) {
+        super.update(scene);
         Vec resul = new Vec(0, 0);
         for (int n = 0; n < points.size(); n++) {
             resul.addInSite(points.get(n).v);

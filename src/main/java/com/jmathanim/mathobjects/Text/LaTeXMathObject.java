@@ -143,6 +143,7 @@ public class LaTeXMathObject extends AbstractLaTeXMathObject implements hasArgum
 
     @Override
     public void update(JMathAnimScene scene) {
+        super.update(scene);
         if (origText == null) {
             origText = getText();
         }

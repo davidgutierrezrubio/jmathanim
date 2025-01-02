@@ -38,6 +38,7 @@ public final class JMNumberLength extends JMNumber {
 
     @Override
     public void update(JMathAnimScene scene) {
+        super.update(scene);
         setScalar(A.to(B).norm());
     }
 

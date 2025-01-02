@@ -64,6 +64,7 @@ public class PointOnFunctionGraph extends Point {
 
     @Override
     public void update(JMathAnimScene scene) {
+        super.update(scene);
         computePoints();
     }
 

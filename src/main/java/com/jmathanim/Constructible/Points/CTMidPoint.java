@@ -119,6 +119,7 @@ public class CTMidPoint extends CTPoint {
 
     @Override
     public void update(JMathAnimScene scene) {
+        super.update(scene);
         rebuildShape();
     }
 

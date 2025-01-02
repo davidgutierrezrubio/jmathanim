@@ -243,38 +243,36 @@ public class Shape extends MathObject {
      * counterclockwise or clockwise depending on the boolean parameter.
      * If the radius is too small to draw an arc, an straight segment is drawn instead.
      *
-     * @param A                Starting point
-     * @param B                Ending point
+     * @param startPoint                Starting point
+     * @param endPoint                Ending point
      * @param radius           Radius of the arc
-     * @param counterClockWise If true, draws the counterclockwise arc, clockwise otherwise.
+     * @param isCounterClockwise If true, draws the counterclockwise arc, clockwise otherwise.
      * @return The created arc
      */
-    public static Shape arc(Point A, Point B, double radius, boolean counterClockWise) {
-        //First, compute arc center
-        Vec halfAB = A.to(B).mult(.5);
-        Vec toRadius = halfAB.rotate(PI / 2).normalize();
-        double dot = halfAB.dot(halfAB);
-        double discr = Math.max(0,radius * radius - dot);
-        double modulusToRadius = Math.sqrt(discr);
-        Point arcCenter = A.copy().shift(halfAB).shift(toRadius.mult(modulusToRadius));
 
+public static Shape arc(Point startPoint, Point endPoint, double radius, boolean isCounterClockwise) {
+    // First, compute arc center
+    Vec midpointVector = startPoint.to(endPoint).mult(0.5);
+    Vec radiusVector = midpointVector.rotate(PI / 2).normalize();
+    double squaredDistance = midpointVector.dot(midpointVector);
+    double discriminant = Math.max(0, radius * radius - squaredDistance);
+    double radiusOffset = Math.sqrt(discriminant);
+    Point arcCenter = startPoint.copy().shift(midpointVector).shift(radiusVector.mult(radiusOffset));
 
-        AffineJTransform tr = AffineJTransform.createDirect2DIsomorphic(
-                A, arcCenter,
-                Point.at(1, 0), Point.origin(),
-                1
-        );
+    AffineJTransform transformation = AffineJTransform.createDirect2DIsomorphic(
+            startPoint, arcCenter,
+            Point.at(1, 0), Point.origin(),
+            1
+    );
 
-        if (!counterClockWise) {
-            tr = tr.compose(AffineJTransform.createReflectionByAxis(Point.origin(), Point.at(1, 0), 1));
-        }
-        Point Btr = tr.getTransformedObject(B);
-        double angle = Btr.v.getAngle();
-        Shape resul = Shape.arc(angle);
-        return resul.applyAffineTransform(tr.getInverse());
-
-
+    if (!isCounterClockwise) {
+        transformation = transformation.compose(AffineJTransform.createReflectionByAxis(Point.origin(), Point.at(1, 0), 1));
     }
+    Point transformedEndPoint = transformation.getTransformedObject(endPoint);
+    double angle = transformedEndPoint.v.getAngle();
+    Shape arcShape = Shape.arc(angle);
+    return arcShape.applyAffineTransform(transformation.getInverse());
+}
 
     /**
      * Creates a new circle shape, with 4 points
@@ -283,7 +281,7 @@ public class Shape extends MathObject {
      */
     public static Shape circle() {
         //precomputed parameter for control points
-        double d = 0.5522847498307935d;//=4/3*tan(PI/8)
+        final double d = 0.5522847498307935d;//=4/3*tan(PI/8)
         Shape resul = new Shape();
         JMPathPoint p1 = JMPathPoint.make(1, 0, 1, -d, 1, d);
         JMPathPoint p2 = JMPathPoint.make(0, 1, d, 1, -d, 1);

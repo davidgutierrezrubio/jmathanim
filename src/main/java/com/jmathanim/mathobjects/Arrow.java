@@ -358,6 +358,7 @@ public class Arrow extends Constructible {
 
     @Override
     public void update(JMathAnimScene scene) {
+        super.update(scene);
         rebuildShape();
     }
 

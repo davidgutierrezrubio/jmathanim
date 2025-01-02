@@ -51,6 +51,7 @@ public class TransformedJMPath extends Shape {
 
     @Override
     public void update(JMathAnimScene scene) {
+        super.update(scene);
         int size = srcOBj.getPath().size();
         for (int n = 0; n < size; n++) {
             JMPathPoint jmPDst = get(n);

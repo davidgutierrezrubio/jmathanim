@@ -270,6 +270,7 @@ public class Arrow2D extends MathObject {
     
     @Override
     public void update(JMathAnimScene scene) {
+        super.update(scene);
         this.scene = scene;
         updateDrawableParts();
         
