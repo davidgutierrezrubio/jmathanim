@@ -44,18 +44,17 @@ public class JMPath implements Stateable, Boxable, Iterable<JMPathPoint> {
     static public final int MATHOBJECT = 1; // Arc, line, segment...
     static public final int SVG_PATH = 2; // SVG import, LaTeX object...
     static public final int CONNECTED_COMPONENT = 3; // Connected, open component. Every path should be able to put in
+    public static final double DELTA_DERIVATIVE = .0001;
     // this way
     public final CircularArrayList<JMPathPoint> jmPathPoints; // points from the curve
     public final CircularArrayList<Boolean> visiblePoints;// Whether this point is visible or not
-    public int pathType; // Default value
-
-    private JMPath pathBackup;
     private final ArrayList<Point> rectifiedPoints;
     private final ArrayList<Double> rectifiedPointDistances;
-    private double computedPathLength;
-    public static final double DELTA_DERIVATIVE = .0001;
-    
     private final ArrayList<ArrayList<float[]>> rectifiedPath;
+    public int pathType; // Default value
+    private JMPath pathBackup;
+    private double computedPathLength;
+    private Boolean isConvex=null;
 
     /**
      * Creates a new empty JMPath objectF
@@ -63,19 +62,6 @@ public class JMPath implements Stateable, Boxable, Iterable<JMPathPoint> {
     public JMPath() {
         this(new ArrayList<JMPathPoint>());
 
-    }
-
-    /**
-     * Static constructor. Generates a new JMPath object with the given
-     * JMpathPoints
-     *
-     * @param jmps Varargs with jmpathpoints to create the path
-     * @return The created JMPath object
-     */
-    public static JMPath make(JMPathPoint... jmps) {
-        JMPath resul = new JMPath();
-        resul.addJMPoint(jmps);
-        return resul;
     }
 
     /**
@@ -94,6 +80,43 @@ public class JMPath implements Stateable, Boxable, Iterable<JMPathPoint> {
         rectifiedPath = new ArrayList<>();
         rectifiedPoints = new ArrayList<>();
         rectifiedPointDistances = new ArrayList<>();
+    }
+
+    /**
+     * Static constructor. Generates a new JMPath object with the given
+     * JMpathPoints
+     *
+     * @param jmps Varargs with jmpathpoints to create the path
+     * @return The created JMPath object
+     */
+    public static JMPath make(JMPathPoint... jmps) {
+        JMPath resul = new JMPath();
+        resul.addJMPoint(jmps);
+        return resul;
+    }
+
+    public static JMPathPoint getJMPointBetween(JMPathPoint v1, JMPathPoint v2, double t) {
+        JMPathPoint resul;
+        if (v2.isCurved) {//TODO: This is buggy. Sometimes the jmpathpoint is curved but marked as not curved!
+//		if (v1.isCurved) {
+            // De Casteljau's Algorithm:
+            // https://en.wikipedia.org/wiki/De_Casteljau%27s_algorithm
+            Point E = v1.p.interpolate(v1.cpExit, t); // New cpEnter of v1
+            Point G = v2.cpEnter.interpolate(v2.p, t); // New cpExit of v2
+            Point F = v1.cpExit.interpolate(v2.cpEnter, t);
+            Point H = E.interpolate(F, t);// cpEnter of interpolation point
+            Point J = F.interpolate(G, t);// cpExit of interpolation point
+//            resul = H.interpolate(J, t); //Interpolation point
+            resul = JMPathPoint.curveTo(H.interpolate(J, t));
+
+            resul.cpExit.copyFrom(J);
+            resul.cpEnter.copyFrom(H);
+        } else {
+            resul = JMPathPoint.lineTo(v1.p.interpolate(v2.p, t));
+            resul.cpExit.copyFrom(v1.p);
+            resul.cpEnter.copyFrom(v2.p);
+        }
+        return resul;
     }
 
     public ArrayList<ArrayList<float[]>> getPolygonalPieces() {
@@ -119,24 +142,82 @@ public class JMPath implements Stateable, Boxable, Iterable<JMPathPoint> {
     }
 
     private void computeRectifiedPoints() {
+        isConvex = true;//for now...
         PathUtils pu = new PathUtils();
         rectifiedPoints.clear();
         rectifiedPointDistances.clear();
         computedPathLength = 0;
         ArrayList<ArrayList<Point>> arArRectPoints = pu.computePolygonalPieces(JMathAnimConfig.getConfig().getCamera(), this);
+        isConvex = (arArRectPoints.size() == 1);//If only one piece, is convex...for now...
+//        if (isConvex)
+//            isConvex = (arArRectPoints.get(0).size() <= 3);//if it is a triangle or a segment, is convex...for now...
+        Point previous;
+        Point prePrevious=null;
+        boolean isPositive = false;
         for (ArrayList<Point> arArRectPoint : arArRectPoints) {
             if (!arArRectPoint.isEmpty()) {
-                Point previous = arArRectPoint.get(0);
-                for (Point rectPoint : arArRectPoint) {
+                previous = arArRectPoint.get(arArRectPoint.size() - 2);//Last and first point are equal...
+                if (isConvex) {
+                    prePrevious = arArRectPoint.get(arArRectPoint.size() - 3);
+                }
+                for (int i = 0; i < arArRectPoint.size(); i++) {
+                    Point rectPoint = arArRectPoint.get(i);
                     rectifiedPoints.add(rectPoint);
                     double distance = rectPoint.to(previous).norm();
                     rectifiedPointDistances.add(distance);
                     computedPathLength += distance;
+
+                    //check if path is convex
+                    if (isConvex) {
+
+                            Vec v1=prePrevious.to(previous);
+                            Vec v2=previous.to(rectPoint);
+                            double z = v1.x*v2.y-v1.y*v2.x;
+                        System.out.println(z==0);
+
+                        if (i == 0) {
+                            isPositive=(z>0);
+                        }else {
+                            if ((z > 0) != isPositive  && z!=0) {
+                                isConvex=false;//Sorry, not convex!!
+                            }
+                        }
+
+                    }
+
+                    if (isConvex)
+                        prePrevious = previous;
                     previous = rectPoint;
+
                 }
             }
         }
     }
+
+//    /**
+//     * Remove interpolation points from path and mark it as no interpolated
+//     */
+//    public void removeInterpolationPoints() {
+//        ArrayList<JMPathPoint> toRemove = new ArrayList<>();
+//        for (JMPathPoint p : jmPathPoints) {
+//            if (p.type == JMPathPointType.INTERPOLATION_POINT) {
+//                toRemove.add(p);
+//            }
+//        }
+//        jmPathPoints.removeAll(toRemove);// Remove all interpolation points
+//        // Now, restore old control points
+//        // for curved paths control points are modified so that a backup is necessary
+//        for (JMPathPoint p : jmPathPoints) {
+//            if (p.cpExitvBackup != null) {
+//                p.cpExit.v.copyFrom(p.cpExitvBackup);
+//                p.cpExitvBackup = null;
+//            }
+//            if (p.cpEntervBackup != null) {
+//                p.cpEnter.v.copyFrom(p.cpEntervBackup);
+//                p.cpEntervBackup = null;
+//            }
+//        }
+//
 
     /**
      * Return a point at a given percentage of total arclenth of path. Note
@@ -185,31 +266,7 @@ public class JMPath implements Stateable, Boxable, Iterable<JMPathPoint> {
         return rectifiedPoints.get(n - 1).interpolate(rectifiedPoints.get(n), tLocal);
     }
 
-//    /**
-//     * Remove interpolation points from path and mark it as no interpolated
-//     */
-//    public void removeInterpolationPoints() {
-//        ArrayList<JMPathPoint> toRemove = new ArrayList<>();
-//        for (JMPathPoint p : jmPathPoints) {
-//            if (p.type == JMPathPointType.INTERPOLATION_POINT) {
-//                toRemove.add(p);
-//            }
-//        }
-//        jmPathPoints.removeAll(toRemove);// Remove all interpolation points
-//        // Now, restore old control points
-//        // for curved paths control points are modified so that a backup is necessary
-//        for (JMPathPoint p : jmPathPoints) {
-//            if (p.cpExitvBackup != null) {
-//                p.cpExit.v.copyFrom(p.cpExitvBackup);
-//                p.cpExitvBackup = null;
-//            }
-//            if (p.cpEntervBackup != null) {
-//                p.cpEnter.v.copyFrom(p.cpEntervBackup);
-//                p.cpEntervBackup = null;
-//            }
-//        }
-//
-////        generateControlPoints();//Recompute control points
+    /// /        generateControlPoints();//Recompute control points
 //    }
     @Override
     public String toString() {
@@ -238,7 +295,7 @@ public class JMPath implements Stateable, Boxable, Iterable<JMPathPoint> {
      * generated points are marked as INTERPOLATION_POINT
      *
      * @param newNumPoints New number of points. Must be greater or equal than
-     * actual number of points in the path
+     *                     actual number of points in the path
      */
     public void alignPathsToGivenNumberOfElements(int newNumPoints) {
         if (newNumPoints <= this.size()) {
@@ -277,21 +334,6 @@ public class JMPath implements Stateable, Boxable, Iterable<JMPathPoint> {
 
     }
 
-    /**
-     * Divide path from point(k) to point(k-1) into an equal number of parts.
-     *
-     * @param k index of end point
-     * @param numDivForThisVertex Number of subdivisions
-     */
-    public synchronized void dividePathSegment(int k, int numDivForThisVertex) {
-        if (numDivForThisVertex < 2) {
-            return;
-        }
-        double alpha = 1.0d / numDivForThisVertex;
-        interpolateBetweenTwoPoints(k, alpha);
-        dividePathSegment(k + 1, numDivForThisVertex - 1);// Keep subdividing until numDivForThisVertex=1
-    }
-
 //    public Point getPointAt(double t){
 //        Point pointAt;
 //        //First, get the segment
@@ -317,12 +359,28 @@ public class JMPath implements Stateable, Boxable, Iterable<JMPathPoint> {
 //        return pointAt;
 //    }
 //    
+
+    /**
+     * Divide path from point(k) to point(k-1) into an equal number of parts.
+     *
+     * @param k                   index of end point
+     * @param numDivForThisVertex Number of subdivisions
+     */
+    public synchronized void dividePathSegment(int k, int numDivForThisVertex) {
+        if (numDivForThisVertex < 2) {
+            return;
+        }
+        double alpha = 1.0d / numDivForThisVertex;
+        interpolateBetweenTwoPoints(k, alpha);
+        dividePathSegment(k + 1, numDivForThisVertex - 1);// Keep subdividing until numDivForThisVertex=1
+    }
+
     /**
      * Adds an interpolation point at alpha parameter between point(k-1) and
      * point(k) This method alters the control points of the points k-1 and k,
      * storing them into cp1vbackup and cp2vbackup
      *
-     * @param k inded of the point to be interpolated
+     * @param k     inded of the point to be interpolated
      * @param alpha Alpha parameter
      * @return The new JMPathPoint generated, and added to the Path
      */
@@ -391,30 +449,6 @@ public class JMPath implements Stateable, Boxable, Iterable<JMPathPoint> {
         return resul;
     }
 
-    public static JMPathPoint getJMPointBetween(JMPathPoint v1, JMPathPoint v2, double t) {
-        JMPathPoint resul;
-        if (v2.isCurved) {//TODO: This is buggy. Sometimes the jmpathpoint is curved but marked as not curved!
-//		if (v1.isCurved) {
-            // De Casteljau's Algorithm:
-            // https://en.wikipedia.org/wiki/De_Casteljau%27s_algorithm
-            Point E = v1.p.interpolate(v1.cpExit, t); // New cpEnter of v1
-            Point G = v2.cpEnter.interpolate(v2.p, t); // New cpExit of v2
-            Point F = v1.cpExit.interpolate(v2.cpEnter, t);
-            Point H = E.interpolate(F, t);// cpEnter of interpolation point
-            Point J = F.interpolate(G, t);// cpExit of interpolation point
-//            resul = H.interpolate(J, t); //Interpolation point
-            resul = JMPathPoint.curveTo(H.interpolate(J, t));
-
-            resul.cpExit.copyFrom(J);
-            resul.cpEnter.copyFrom(H);
-        } else {
-            resul = JMPathPoint.lineTo(v1.p.interpolate(v2.p, t));
-            resul.cpExit.copyFrom(v1.p);
-            resul.cpEnter.copyFrom(v2.p);
-        }
-        return resul;
-    }
-
     /**
      * Returns a full copy of the path. JMPathPoint objects are also copied
      *
@@ -450,7 +484,7 @@ public class JMPath implements Stateable, Boxable, Iterable<JMPathPoint> {
      * Cycle points in path.Point(0) becomes Point(step), Point(1) becomes
      * Point(step+1)... Useful to align paths minimizing distances
      *
-     * @param step Initial gap to apply
+     * @param step    Initial gap to apply
      * @param reverse If true, reverse the path
      * @return This object
      */
@@ -731,7 +765,7 @@ public class JMPath implements Stateable, Boxable, Iterable<JMPathPoint> {
      * lead to 0-length segments, which can cause errors when transforming, so
      * these (unnecessary) points are removed.
      */
-    public void removeConsecutiveHiddenVertices() {
+    private void removeConsecutiveHiddenVertices() {
         ArrayList<JMPathPoint> toRemove = new ArrayList<>();
         for (int n = 0; n < jmPathPoints.size(); n++) {
             JMPathPoint p1 = jmPathPoints.get(n);
@@ -815,7 +849,6 @@ public class JMPath implements Stateable, Boxable, Iterable<JMPathPoint> {
     }
 
 
-
     /**
      * Removes unnecessary points from the path. Duplicated points or
      * consecutive hidden ones.
@@ -854,7 +887,7 @@ public class JMPath implements Stateable, Boxable, Iterable<JMPathPoint> {
      * used to determine if another path is the affine transformation of
      * another, for example.
      *
-     * @param obj The other path to compare.
+     * @param obj     The other path to compare.
      * @param epsilon A threshold value to compare.
      * @return True if all distances are smaller than the threshold value. False
      * otherwise
@@ -964,7 +997,7 @@ public class JMPath implements Stateable, Boxable, Iterable<JMPathPoint> {
      * box
      *
      * @param type What side of the bounding box: UPPER, LOWER, RIGHT or LEFT.
-     * The other types return null.
+     *             The other types return null.
      * @return A List with all the points that lies in the specified side of the
      * boundary box
      */
@@ -1124,7 +1157,6 @@ public class JMPath implements Stateable, Boxable, Iterable<JMPathPoint> {
      * Opens the path. This process adds a new JMPathPoint (copy of the first)
      * at the end. If the path is already opened (at index 0) this method has no
      * effect.
-     *
      */
     public void openPath() {
         //Open the path if it is closed
@@ -1156,10 +1188,10 @@ public class JMPath implements Stateable, Boxable, Iterable<JMPathPoint> {
      * Inserts a new JMPathPoint right after a given one, interpolating
      * properly.
      *
-     * @param k The index of the JMPathPoint to insert. New point will be at
-     * location k+1
+     * @param k     The index of the JMPathPoint to insert. New point will be at
+     *              location k+1
      * @param alpha Alpha parameter, between 0 to 1 to interpolate between point
-     * k and point k+1
+     *              k and point k+1
      * @return The new point created
      */
     public JMPathPoint insertJMPointAt(int k, double alpha) {
@@ -1179,11 +1211,11 @@ public class JMPath implements Stateable, Boxable, Iterable<JMPathPoint> {
     /**
      * Merge this path A with another one B
      *
-     * @param secondPath The second path to merge
+     * @param secondPath  The second path to merge
      * @param connectAtoB If true, the end of A will be connected to the
-     * beginning of B by a straight line
+     *                    beginning of B by a straight line
      * @param connectBtoA If true, the end of B will be connected to the
-     * beginning of A by a straight line
+     *                    beginning of A by a straight line
      * @return This object
      */
     public JMPath merge(JMPath secondPath, boolean connectAtoB, boolean connectBtoA) {
@@ -1262,6 +1294,11 @@ public class JMPath implements Stateable, Boxable, Iterable<JMPathPoint> {
 //        }
     }
 
+    public Boolean isConvex() {
+        if (isConvex==null) computeRectifiedPoints();
+        return isConvex;
+    }
+
     public ArrayList<ArrayList<float[]>> computePolygonalPieces(Camera cam) {
         rectifiedPath.clear();
         ArrayList<float[]> connectedSegments = new ArrayList<>();
@@ -1285,25 +1322,25 @@ public class JMPath implements Stateable, Boxable, Iterable<JMPathPoint> {
 
     private void computeStraightenedPoints(ArrayList<float[]> connectedSegments, JMPathPoint p, JMPathPoint q, Camera cam) {
         if (connectedSegments.isEmpty()) {
-            addPoint(connectedSegments, p.p.v,0);
+            addPoint(connectedSegments, p.p.v, 0);
         }
-        Vec vPrevious=p.p.v;
+        Vec vPrevious = p.p.v;
         if (q.isCurved) {
             int num = appropiateSubdivisionNumber(p.p.v, q.p.v, cam);
             for (int n = 1; n < num; n++) {
                 Vec vNext = p.interpolate(q, n * 1d / num).p.v;
-                double d=vPrevious.minus(vNext).norm();
-                addPoint(connectedSegments, vNext,d);
-                vPrevious=vNext;
+                double d = vPrevious.minus(vNext).norm();
+                addPoint(connectedSegments, vNext, d);
+                vPrevious = vNext;
             }
 
         }
-         double d=vPrevious.minus(q.p.v).norm();
-        addPoint(connectedSegments, q.p.v,d);
+        double d = vPrevious.minus(q.p.v).norm();
+        addPoint(connectedSegments, q.p.v, d);
     }
 
-    private void addPoint(ArrayList<float[]> connectedSegments, Vec v,double dist) {
-        connectedSegments.add(new float[]{(float) v.x, (float) v.y, (float) v.z, (float)dist});
+    private void addPoint(ArrayList<float[]> connectedSegments, Vec v, double dist) {
+        connectedSegments.add(new float[]{(float) v.x, (float) v.y, (float) v.z, (float) dist});
     }
 
     private int appropiateSubdivisionNumber(Vec v1, Vec v2, Camera cam) {

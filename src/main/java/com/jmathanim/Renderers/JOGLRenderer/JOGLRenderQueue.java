@@ -260,13 +260,15 @@ public class JOGLRenderQueue implements GLEventListener {
         if (needsFill) {//TODO: This method (a stencil for each shape is EXPENSIVE). Also: Only needed for CONCAVE shapes
             //If shape needs to be filled, enable stencil test
             //Mark second stencil bit for contour (will prevent filled area to overwrite this)
-            activateScissors(s);
+//            if (!s.isIsConvex()) {
+                activateScissors(s);
 
-            gl4.glEnable(GL4.GL_STENCIL_TEST);
-            gl4.glStencilMask(0xFF);
-            gl4.glClear(GL4.GL_STENCIL_BUFFER_BIT);
-            gl4.glStencilFunc(GL.GL_NOTEQUAL, 0b10, 0b10);//Second bit for contour
-            gl4.glStencilOp(GL.GL_KEEP, GL.GL_REPLACE, GL.GL_REPLACE);
+                gl4.glEnable(GL4.GL_STENCIL_TEST);
+                gl4.glStencilMask(0xFF);
+                gl4.glClear(GL4.GL_STENCIL_BUFFER_BIT);
+                gl4.glStencilFunc(GL.GL_NOTEQUAL, 0b10, 0b10);//Second bit for contour
+                gl4.glStencilOp(GL.GL_KEEP, GL.GL_REPLACE, GL.GL_REPLACE);
+//            }
         }
         if ((s.getMp().getThickness() > 0) && (s.getMp().getDrawColor().getAlpha() > 0)) {
             gl4.glUseProgram(thinLinesShader.getShader());
@@ -275,19 +277,21 @@ public class JOGLRenderQueue implements GLEventListener {
         }
 
         if (needsFill) {
+//            if (!s.isIsConvex()) {
 //Draw fill
-            gl4.glUseProgram(fillShader.getShader());
-            shaderDrawer.fillShader = fillShader;
-            shaderDrawer.drawFill(s);
-            // Check for GL errors
-            int error = gl4.glGetError();
-            if (error != GL4.GL_NO_ERROR) {
-                System.err.println("OpenGL Error: " + error);
-            }
-            gl4.glDisable(GL4.GL_STENCIL_TEST);
-        }
-        gl4.glDisable(GL4.GL_SCISSOR_TEST);
+                gl4.glUseProgram(fillShader.getShader());
+                shaderDrawer.fillShader = fillShader;
+                shaderDrawer.drawFill(s);
+                // Check for GL errors
+                int error = gl4.glGetError();
+                if (error != GL4.GL_NO_ERROR) {
+                    System.err.println("OpenGL Error: " + error);
+                }
+                gl4.glDisable(GL4.GL_STENCIL_TEST);
 
+            gl4.glDisable(GL4.GL_SCISSOR_TEST);
+//            }
+        }
     }
 
     private void activateScissors(Shape s) {
