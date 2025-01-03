@@ -30,6 +30,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static com.jmathanim.jmathanim.JMathAnimScene.logger;
+
 /**
  * This class stores info for drawing a curve with control points, tension...
  * It's independent of the renderer, which should translate it to proper drawing
@@ -756,6 +758,63 @@ public class JMPath implements Stateable, Boxable, Iterable<JMPathPoint> {
         }
         return resul;
     }
+
+    /**
+     * Calculates the centroid of the polygon defined by the path points.
+     * Shape is rectified if Bézier curves are used.
+     *
+     * @return Point representing the centroid of the polygon.
+     * If the polygon has area 0, the center of the bounding box is returned.
+     */
+    public Point getCentroid() {
+        double area = 0.0;
+        double centroidX = 0.0;
+        double centroidY = 0.0;
+        computeRectifiedPoints();
+
+        int n = rectifiedPoints.size();
+        if (n == 2) return rectifiedPoints.get(0).interpolate(rectifiedPoints.get(1), .5);
+
+        for (int i = 0; i < n; i++) {
+            Vec current = rectifiedPoints.get(i).v;
+            Vec next = rectifiedPoints.get((i + 1) % n).v;
+            double crossProduct = current.x * next.y - current.y * next.x;
+
+            area += crossProduct;
+            centroidX += (current.x + next.x) * crossProduct;
+            centroidY += (current.y + next.y) * crossProduct;
+        }
+
+        area = Math.abs(area) / 2.0;
+        if (area == 0) {
+            logger.warn("Warning: Polygon with area 0, using center of bounding box instead");
+            return getBoundingBox().getCenter();
+        }
+        centroidX = centroidX / (6.0 * area);
+        centroidY = centroidY / (6.0 * area);
+
+        return Point.at(centroidX, centroidY);
+    }
+
+    public double getArea() {
+        double area = 0.0;
+        computeRectifiedPoints();
+
+        int n = rectifiedPoints.size();
+        if (n == 2) return 0;
+
+        for (int i = 0; i < n; i++) {
+            Vec current = rectifiedPoints.get(i).v;
+            Vec next = rectifiedPoints.get((i + 1) % n).v;
+            double crossProduct = current.x * next.y - current.y * next.x;
+
+            area += crossProduct;
+        }
+
+        return Math.abs(area) / 2.0;
+    }
+
+
 
     /**
      * Removes unnecessary points from the path. Duplicated points or

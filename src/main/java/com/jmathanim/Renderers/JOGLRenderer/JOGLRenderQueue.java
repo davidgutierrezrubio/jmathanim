@@ -36,6 +36,7 @@ import com.jogamp.opengl.util.awt.AWTGLReadBufferUtil;
 import com.jogamp.opengl.util.awt.TextRenderer;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
+import org.joml.Vector4f;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -52,28 +53,24 @@ import java.util.logging.Logger;
  */
 public class JOGLRenderQueue implements GLEventListener {
 
-    public boolean busy = false; //True if actually drawing
     private static final double MIN_THICKNESS = .2d;
-    private boolean hasToRectify=true;
+    final float zNear = 0.1f, zFar = 7000f;
+    private final int newLineCounter = 0;
+    private final TextRenderer textRenderer;
+    public boolean busy = false; //True if actually drawing
     public int height;
     public BufferedImage savedImage;
     public boolean useCustomShaders = true;
     public boolean saveImageFlag = false;
-    JMathAnimConfig config;
-    ArrayList<MathObject> objectsToDraw;
     public int width;
-    final float zNear = 0.1f, zFar = 7000f;
-//    private GL3ES3 gles;
-    private GL4 gl4;
     public Camera3D camera;
     public Camera3D fixedCamera;
     public VideoEncoder videoEncoder;
     public File saveFilePath;
-    private final int newLineCounter = 0;
     public int frameCount;
-
-    private final TextRenderer textRenderer;
-
+    public JOGLRenderer renderer;
+    JMathAnimConfig config;
+    ArrayList<MathObject> objectsToDraw;
     //Shaders and uniform variables
     //Shader that draws thin, rounded cap lines
     ShaderLoader thinLinesShader;
@@ -83,7 +80,11 @@ public class JOGLRenderQueue implements GLEventListener {
     int unifMiterLimit;//Miter limit (for rendering thin lines)
     int unifViewPort;//Viewport (for rendering thin lines)
     ShaderDrawer shaderDrawer;
-    public JOGLRenderer renderer;
+    Matrix4f projectionMatrix;
+    Matrix4f viewMatrix;
+    private boolean hasToRectify = true;
+    //    private GL3ES3 gles;
+    private GL4 gl4;
 
     public JOGLRenderQueue(JMathAnimConfig config) {
         textRenderer = new TextRenderer(new Font("SansSerif", Font.BOLD, 36));
@@ -231,11 +232,11 @@ public class JOGLRenderQueue implements GLEventListener {
 
     private void computeRectifiedVersionOfAllShapes() {
 //        if (hasToRectify) {
-            hasToRectify=false;
-            objectsToDraw.parallelStream()
-                    .filter(obj -> obj instanceof Shape)
-                    .map(obj -> (Shape) obj)
-                    .forEach(Shape::computePolygonalPieces); //Compute rectified path (need to optimize this!!)
+        hasToRectify = false;
+        objectsToDraw.parallelStream()
+                .filter(obj -> obj instanceof Shape)
+                .map(obj -> (Shape) obj)
+                .forEach(Shape::computePolygonalPieces); //Compute rectified path (need to optimize this!!)
 //        }
 //        int numberOfBezierCurves=0;//Number of Bezier Curves to interpolate TODO: consider straight segments case
 //        for (MathObject obj : objectsToDraw) {
@@ -249,16 +250,18 @@ public class JOGLRenderQueue implements GLEventListener {
 
     /**
      * Draw a 2D generic Shape, with thickness and fill
-     *
      */
     private void drawShape(MathObject obj) {
         Shape s = (Shape) obj;
-        boolean needsFill = false;//(s.getMp().getFillColor().getAlpha() > 0);
+        boolean needsFill = ((s.getMp().getFillColor().getAlpha() > 0) && (s.size() > 2));
 
         loadProjectionViewMatrixIntoShaders();
-        if (needsFill) {//TODO: This method (a stencil for each shape is EXPENSIVE)
+
+        if (needsFill) {//TODO: This method (a stencil for each shape is EXPENSIVE). Also: Only needed for CONCAVE shapes
             //If shape needs to be filled, enable stencil test
             //Mark second stencil bit for contour (will prevent filled area to overwrite this)
+            activateScissors(s);
+
             gl4.glEnable(GL4.GL_STENCIL_TEST);
             gl4.glStencilMask(0xFF);
             gl4.glClear(GL4.GL_STENCIL_BUFFER_BIT);
@@ -283,21 +286,110 @@ public class JOGLRenderQueue implements GLEventListener {
             }
             gl4.glDisable(GL4.GL_STENCIL_TEST);
         }
+        gl4.glDisable(GL4.GL_SCISSOR_TEST);
+
+    }
+
+    private void activateScissors(Shape s) {
+        Matrix4f mvpMatrix = new Matrix4f();
+        projectionMatrix.mul(viewMatrix, mvpMatrix);
+        int[] viewport = new int[]{0, 0, config.mediaW, config.mediaH};
+
+        int[] coords = computeScissorRegion(mvpMatrix, viewport, s);
+
+        gl4.glEnable(GL4.GL_SCISSOR_TEST);
+        int gap = 0;
+        gl4.glScissor(coords[0] - gap, coords[1] - gap, coords[2] + gap, coords[3] + gap);
+    }
+
+    private int[] computeScissorRegion(Matrix4f mvpMatrix, int[] viewport, Shape s) {
+        Rect bb = s.getBoundingBox();//TODO: Ensure that this Box holds z information!!
+        float[] p0 = new float[3];
+        float[] p1 = new float[3];
+        float[] p2 = new float[3];
+        float[] p3 = new float[3];
+        float[] p4 = new float[3];
+        float[] p5 = new float[3];
+        float[] p6 = new float[3];
+        float[] p7 = new float[3];
+        calculateWindowCoordinates(mvpMatrix, viewport, bb.xmin, bb.ymin, bb.zmin, p0);
+        calculateWindowCoordinates(mvpMatrix, viewport, bb.xmin, bb.ymin, bb.zmax, p1);
+        calculateWindowCoordinates(mvpMatrix, viewport, bb.xmin, bb.ymax, bb.zmin, p2);
+        calculateWindowCoordinates(mvpMatrix, viewport, bb.xmin, bb.ymax, bb.zmax, p3);
+        calculateWindowCoordinates(mvpMatrix, viewport, bb.xmax, bb.ymin, bb.zmin, p4);
+        calculateWindowCoordinates(mvpMatrix, viewport, bb.xmax, bb.ymin, bb.zmax, p5);
+        calculateWindowCoordinates(mvpMatrix, viewport, bb.xmax, bb.ymax, bb.zmin, p6);
+        calculateWindowCoordinates(mvpMatrix, viewport, bb.xmax, bb.ymax, bb.zmax, p7);
+
+        return calculateScissorParams(p0, p1, p2, p3, p4, p5, p6, p7);
+    }
+
+    public boolean calculateWindowCoordinates(Matrix4f mvpMatrix, int[] viewport,
+                                              double x, double y, double z, float[] windowCoordinates) {
+
+        // Vector en espacio del modelo
+        Vector4f modelCoords = new Vector4f((float) x, (float) y, (float) z, 1.0f);
+
+        // Transformar a espacio recortado
+        Vector4f clipCoords = new Vector4f();
+        mvpMatrix.transform(modelCoords, clipCoords);
+
+        // Normalizar las coordenadas homogéneas
+        if (clipCoords.w == 0.0f) {
+            return false; // No se puede dividir entre cero
+        }
+        clipCoords.div(clipCoords.w);
+
+        // Transformar a espacio de ventana
+        windowCoordinates[0] = ((clipCoords.x + 1.0f) * 0.5f) * viewport[2] + viewport[0];
+        windowCoordinates[1] = ((clipCoords.y + 1.0f) * 0.5f) * viewport[3] + viewport[1];
+        windowCoordinates[2] = (clipCoords.z + 1.0f) * 0.5f; // Profundidad normalizada
+
+        return true;
+    }
+
+    public int[] calculateScissorParams(
+            float[] p0, float[] p1, float[] p2, float[] p3,
+            float[] p4, float[] p5, float[] p6, float[] p7
+    ) {
+
+        float minXa = Math.min(Math.min(p0[0], p1[0]), Math.min(p2[0], p3[0]));
+        float minXb = Math.min(Math.min(p4[0], p5[0]), Math.min(p6[0], p7[0]));
+        float minX = Math.min(minXa, minXb);
+
+        float minYa = Math.min(Math.min(p0[1], p1[1]), Math.min(p2[1], p3[1]));
+        float minYb = Math.min(Math.min(p4[1], p5[1]), Math.min(p6[1], p7[1]));
+        float minY = Math.min(minYa, minYb);
+
+
+        float maxXa = Math.max(Math.max(p0[0], p1[0]), Math.max(p2[0], p3[0]));
+        float maxXb = Math.max(Math.max(p4[0], p5[0]), Math.max(p6[0], p7[0]));
+        float maxX = Math.max(maxXa, maxXb);
+
+        float maxYa = Math.max(Math.max(p0[1], p1[1]), Math.max(p2[1], p3[1]));
+        float maxYb = Math.max(Math.max(p4[1], p5[1]), Math.max(p6[1], p7[1]));
+        float maxY = Math.max(maxYa, maxYb);
+
+        int scissorX = Math.round(minX);
+        int scissorY = Math.round(minY);
+        int scissorWidth = Math.round(maxX - minX);
+        int scissorHeight = Math.round(maxY - minY);
+        int gap=5;
+        return new int[]{scissorX-gap, scissorY-gap, scissorWidth+gap, scissorHeight+gap};
     }
 
     private void loadProjectionViewMatrixIntoShaders() {
-        Matrix4f projection;
-        Matrix4f view;
+
         Rect bb = camera.getMathView();
         float d = (float) camera.eye.to(camera.look).norm();
         float aspectRatio = (float) (bb.getWidth() / bb.getHeight());
-        projection = new Matrix4f().perspective((float) (1f * camera.fov),
+        projectionMatrix = new Matrix4f().perspective((float) (1f * camera.fov),
                 aspectRatio, // Relación de aspecto
                 0.001f, // Cota de cerca
                 d * 15f // Cota de lejanía
         );
         Vec up = camera.getUpVector();//Inefficient way. Improve this.
-        view = new Matrix4f().lookAt(
+        viewMatrix = new Matrix4f().lookAt(
                 new Vector3f(
                         (float) camera.eye.v.x,
                         (float) camera.eye.v.y,
@@ -322,8 +414,8 @@ public class JOGLRenderQueue implements GLEventListener {
             int projLoc = gl4.glGetUniformLocation(thinLinesShader.getShader(), "projection");
             int viewLoc = gl4.glGetUniformLocation(thinLinesShader.getShader(), "view");
 
-            gl4.glUniformMatrix4fv(projLoc, 1, false, projection.get(new float[16]), 0);
-            gl4.glUniformMatrix4fv(viewLoc, 1, false, view.get(new float[16]), 0);
+            gl4.glUniformMatrix4fv(projLoc, 1, false, projectionMatrix.get(new float[16]), 0);
+            gl4.glUniformMatrix4fv(viewLoc, 1, false, viewMatrix.get(new float[16]), 0);
 
             gl4.glUniform2f(thinLinesShader.getUniformVariable("Viewport"), (float) this.width, (float) this.height);
 
@@ -331,8 +423,8 @@ public class JOGLRenderQueue implements GLEventListener {
             projLoc = gl4.glGetUniformLocation(fillShader.getShader(), "projection");
             viewLoc = gl4.glGetUniformLocation(fillShader.getShader(), "view");
 
-            gl4.glUniformMatrix4fv(projLoc, 1, false, projection.get(new float[16]), 0);
-            gl4.glUniformMatrix4fv(viewLoc, 1, false, view.get(new float[16]), 0);
+            gl4.glUniformMatrix4fv(projLoc, 1, false, projectionMatrix.get(new float[16]), 0);
+            gl4.glUniformMatrix4fv(viewLoc, 1, false, viewMatrix.get(new float[16]), 0);
 
         }
 
