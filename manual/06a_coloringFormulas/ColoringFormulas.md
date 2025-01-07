@@ -21,9 +21,9 @@ You should obtain something like that:
 
 <img src="color01.png" alt="color01" style="zoom:50%;" />
 
-Easy, right? Well, to get the job done, a lot of internal work had to be done, mostly to correctly identifying which `Shape`objects correspond to certain LaTeX tokens.  When creating the `LatexMathObject` using the JLaTeXMath library to generate the formula, parsing capabilities of this library (and a bit of tweaking) are used to properly assign a `LatexToken` object to each generated `Shape`, that holds useful information to identify and assign colors to it.
+Easy, right? Well, to get the job done, a lot of internal work had to be done, mostly to correctly identify which `Shape`objects correspond to certain LaTeX tokens.  When creating the `LatexMathObject` using the JLaTeXMath library to generate the formula, the parsing capabilities of that library (and a bit of tweaking) are used to properly assign a `LatexToken` object to each generated `Shape`, that holds useful information to identify and assign colors to it.
 
-This is the most simple use of the coloring capabilities, but there is a lot more, using the `LatexToken` class.  If you want to get more fine-tuned coloring effects, continue reading the next subsections.
+This is the simplest use of the colouring capabilities, but there are many more, using the `LatexToken` class.  If you want to get more fine-tuned colouring effects,  read the next subsections.
 
 ## A closer look into the LatexToken class
 
@@ -71,13 +71,13 @@ public enum TokenType {
 }
 ```
 
-So, we can see the generated formula if composed of 2 `CHAR`s, a `GREEK_LETTER` (\\pi), a `BINARY_OPERATOR` (\plus), etc.
+So, we can see the generated formula consists of 2 `CHAR`s, a `GREEK_LETTER` (\\pi), a `BINARY_OPERATOR` (\plus), etc.
 
 The second `LatexToken` attribute is the string, accessible through the `getString()` method, which is basically the LaTeX command which generated the glyph, without the backslashes.
 
-The `getDelimiterDepth` method indicates the "depth" of the glyph in the delimiters, i.e. how many groups of parentheses the glyph is "buried" in. In this case, all glyphs have a `delimDepth` value of 0, as there are no parentheses or brackets (or any delimiters).
+The `getDelimiterDepth` method returns the "depth" of the glyph in the delimiters, i.e. how many groups of delimiters the glyph is "buried" in. In this case, all glyphs have a `delimDepth` value of 0, as there are no parentheses or brackets (or any delimiters).
 
-The `getSecondaryFlags()` method retrieves some bit flags to add additional classification to the token. Currently these are the different flags:
+The `getSecondaryFlags()` method gets some bit flags to add additional classification to the token. Currently these are the various flags:
 
 ```java
     public static final int SEC_NONE = 0b00000000;//None. A value of 0 should never be matched
