@@ -357,7 +357,7 @@ public class MathObjectGroup extends MathObject implements Iterable<MathObject> 
     }
 
     @Override
-    public Rect computeBoundingBox() {
+    protected Rect computeBoundingBox() {
         //If group is empty, returns an empty rect
         if (objects.isEmpty()) {
             return new EmptyRect();
