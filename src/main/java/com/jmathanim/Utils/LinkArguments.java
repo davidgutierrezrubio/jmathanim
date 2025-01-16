@@ -16,10 +16,13 @@
  */
 package com.jmathanim.Utils;
 
+import com.jmathanim.Animations.Animation;
+import com.jmathanim.Animations.AnimationGroup;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.*;
 import com.jmathanim.mathobjects.Text.LaTeXMathObject;
 
+import java.util.AbstractCollection;
 import java.util.function.DoubleUnaryOperator;
 
 /**
@@ -35,21 +38,21 @@ public final class LinkArguments extends Link {
         ARG0, ARG1, ARG2, ARG3, ARG4, ARG5, ARG6, ARG7, ARG8, ARG9
     }
 
-    public Linkable origin;
+    public Object origin;
     public LinkType originLinkType;
     public LinkType destinyLinkType;
     public Linkable destiny;
     public DoubleUnaryOperator function;
 
-    public static LinkArguments make(Linkable origin, LinkType originLinkType, Linkable destiny, LinkType destinyLinkType) {
+    public static LinkArguments make(Object origin, LinkType originLinkType, Linkable destiny, LinkType destinyLinkType) {
         return new LinkArguments(origin, originLinkType, destiny, destinyLinkType, t -> t);
     }
 
-    public static LinkArguments make(Linkable origin, LinkType originLinkType, Linkable destiny, LinkType destinyLinkType, DoubleUnaryOperator function) {
+    public static LinkArguments make(Object origin, LinkType originLinkType, Linkable destiny, LinkType destinyLinkType, DoubleUnaryOperator function) {
         return new LinkArguments(origin, originLinkType, destiny, destinyLinkType, function);
     }
 
-    private LinkArguments(Linkable origin, LinkType originLinkType, Linkable destiny, LinkType destinyLinkType, DoubleUnaryOperator function) {
+    private LinkArguments(Object origin, LinkType originLinkType, Linkable destiny, LinkType destinyLinkType, DoubleUnaryOperator function) {
         this.origin = origin;
         this.originLinkType = originLinkType;
         this.destinyLinkType = destinyLinkType;
@@ -219,6 +222,20 @@ public final class LinkArguments extends Link {
             MultiShapeObject msh = (MultiShapeObject) obj;
             return msh.size();
         }
+           if (obj instanceof AnimationGroup) {
+               int count=0;
+               AnimationGroup anim = (AnimationGroup) obj;
+               for (Animation animation : anim.getAnimations()) {
+                   count += (animation.getTotalLambda().applyAsDouble(animation.getT()) ==1 ? 1 : 0);
+               }
+                return count;
+           }
+        if (obj instanceof AbstractCollection) {
+            AbstractCollection o = (AbstractCollection) obj;
+            return o.size();
+
+        }
+
 
         throw new JLinkException();
     }

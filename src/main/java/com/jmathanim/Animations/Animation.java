@@ -466,6 +466,14 @@ public abstract class Animation {
     }
 
     /**
+     * Gets the current animation time
+     * @return A value from 0 to 1
+     */
+    public double getT() {
+        return t;
+    }
+
+    /**
      * Copy basic parameters from this animation to another one. This method is
      * used mainly when an Animation subclass contains another animation. Only
      * copy non-null values for parameters. Some Animation subclasses, like

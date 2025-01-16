@@ -816,7 +816,7 @@ public abstract class JMathAnimScene {
      * @param destinyType Destiny link
      * @return The created link
      */
-    public LinkArguments registerLink(Linkable origin, LinkArguments.LinkType originType, Linkable destiny, LinkArguments.LinkType destinyType) {
+    public LinkArguments registerLink(Object origin, LinkArguments.LinkType originType, Linkable destiny, LinkArguments.LinkType destinyType) {
         LinkArguments link = LinkArguments.make(origin, originType, destiny, destinyType);
         linksToBeDone.add(link);
         return link;

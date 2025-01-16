@@ -17,6 +17,7 @@
  */
 package com.jmathanim.Animations;
 
+import com.jmathanim.Utils.Linkable;
 import com.jmathanim.Utils.UsefulLambdas;
 import com.jmathanim.mathobjects.MathObjectGroup;
 
@@ -30,45 +31,12 @@ import java.util.function.DoubleUnaryOperator;
  *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
-public class AnimationGroup extends AnimationWithEffects {
+public class AnimationGroup extends AnimationWithEffects implements Linkable {
 
     private final ArrayList<Animation> animations;
+    int finishedAnimations;
     private double delayPercentage;
 
-    @Override
-    public void cleanAnimationAt(double t) {
-        for (Animation animation : animations) {
-            animation.cleanAnimationAt(t);
-        }
-    }
-
-    /**
-     * Returns the list of the animations to play
-     *
-     * @return An ArrayList with the animations
-     */
-    public ArrayList<Animation> getAnimations() {
-        return animations;
-    }
-
-    /**
-     * Creates a new AnimationGroup with the given animations
-     *
-     * @param anims Animations to add (varargs)
-     * @return The new AnimationGroup created
-     */
-    public static AnimationGroup make(Animation... anims) {
-        return new AnimationGroup(anims);
-    }
-
-//    /**
-//     * Creates a new, empty, AnimationGroup. This class stores a group of
-//     * animations, to be played at the same time.
-//     */
-//    public AnimationGroup() {
-//        super(0);
-//        this.animations = new ArrayList<>();
-//    }
     /**
      * Creates a new AnimationGroup with given animations.This class stores a
      * group of animations, to be played at the same time.
@@ -84,6 +52,7 @@ public class AnimationGroup extends AnimationWithEffects {
                 this.animations.add(anim);
             }
         }
+        finishedAnimations=0;
 
         this.useObjectState = false;
         this.shouldAddObjectsToScene = false;
@@ -108,9 +77,44 @@ public class AnimationGroup extends AnimationWithEffects {
     }
 
     /**
+     * Creates a new AnimationGroup with the given animations
+     *
+     * @param anims Animations to add (varargs)
+     * @return The new AnimationGroup created
+     */
+    public static AnimationGroup make(Animation... anims) {
+        return new AnimationGroup(anims);
+    }
+
+//    /**
+//     * Creates a new, empty, AnimationGroup. This class stores a group of
+//     * animations, to be played at the same time.
+//     */
+//    public AnimationGroup() {
+//        super(0);
+//        this.animations = new ArrayList<>();
+//    }
+
+    @Override
+    public void cleanAnimationAt(double t) {
+        for (Animation animation : animations) {
+            animation.cleanAnimationAt(t);
+        }
+    }
+
+    /**
+     * Returns the list of the animations to play
+     *
+     * @return An ArrayList with the animations
+     */
+    public ArrayList<Animation> getAnimations() {
+        return animations;
+    }
+
+    /**
      * Add the given animations to the list
      *
-     * @param <T> Calling subclass
+     * @param <T>        Calling subclass
      * @param animations Animations to add (varargs)
      * @return This object
      */
@@ -169,7 +173,7 @@ public class AnimationGroup extends AnimationWithEffects {
 
     }
 
-//    @Override
+    //    @Override
 //    public boolean processAnimation() {
 //        boolean finishedAll = true;
 //        for (Animation anim : animations) {
@@ -252,9 +256,9 @@ public class AnimationGroup extends AnimationWithEffects {
      * animation. So, for an animation who shifts 3 objects for 2 seconds, each
      * one will last 2*0.25=.5 seconds, starting at 0, .75 and 1.5 respectively
      *
-     * @param <T> Calling subclass
+     * @param <T>             Calling subclass
      * @param delayPercentage The delay. A number of 0 means no effect. A number
-     * greater than 0
+     *                        greater than 0
      * @return
      */
     public <T extends AnimationGroup> T addDelayEffect(double delayPercentage) {

@@ -34,6 +34,14 @@ public class FlowLayout extends AbstractBoxLayout {
 	public IntToDoubleFunction rowLength;
 	BoxLayout.Direction direction;
 
+	/**
+	 * Creates a new FlowLayout
+	 * @param corner
+	 * @param width
+	 * @param direction
+	 * @param inRowGap
+	 * @param inColGap
+	 */
 	public FlowLayout(Point corner, double width, BoxLayout.Direction direction, double inRowGap, double inColGap) {
 		super(corner, inRowGap, inColGap);
 		rowLength = (int row) -> width;
