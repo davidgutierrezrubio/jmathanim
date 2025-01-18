@@ -17,6 +17,8 @@
  */
 package com.jmathanim.Utils;
 
+import com.jmathanim.mathobjects.Point;
+
 /**
  * Represents an empty rect. Should be returned and managed in special cases
  * (for example, when computing the bounding box of an empty shape, unions...)
@@ -38,4 +40,33 @@ public class EmptyRect extends Rect {
         return "EmptyRect";
     }
 
+    @Override
+    public Rect addGap(double rightGap, double upperGap, double leftGap, double lowerGap, double zMinGap, double zMaxGap) {
+        return this;
+    }
+
+    @Override
+    public Rect scale(double xs, double ys, double zs) {
+        return this;
+    }
+
+    @Override
+    public Rect shift(Vec v) {
+        return this;
+    }
+
+    @Override
+    public Rect getRotatedRect(double rotateAngle) {
+        return this;
+    }
+
+    @Override
+    public Rect centerAt(Point dstCenter) {
+        return this;
+    }
+
+    @Override
+    public Rect getTransformedRect(AffineJTransform tr) {
+        return this;
+    }
 }

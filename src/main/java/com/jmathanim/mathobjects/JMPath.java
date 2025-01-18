@@ -163,17 +163,17 @@ public class JMPath implements Stateable, Boxable, Iterable<JMPathPoint> {
                 for (int i = 0; i < arArRectPoint.size(); i++) {
                     Point rectPoint = arArRectPoint.get(i);
                     rectifiedPoints.add(rectPoint);
-                    double distance = rectPoint.to(previous).norm();
-                    rectifiedPointDistances.add(distance);
-                    computedPathLength += distance;
-
+                    if (i>0) {
+                        double distance = rectPoint.to(previous).norm();
+                        rectifiedPointDistances.add(distance);
+                        computedPathLength += distance;
+                    }
                     //check if path is convex
                     if (isConvex) {
 
                             Vec v1=prePrevious.to(previous);
                             Vec v2=previous.to(rectPoint);
                             double z = v1.x*v2.y-v1.y*v2.x;
-                        System.out.println(z==0);
 
                         if (i == 0) {
                             isPositive=(z>0);
@@ -233,18 +233,17 @@ public class JMPath implements Stateable, Boxable, Iterable<JMPathPoint> {
         if (rectifiedPoints.isEmpty()) {
             computeRectifiedPoints();
         }
-        if (t == 0) {
-            return rectifiedPoints.get(0).copy();
-        }
-        if (t == 1) {
-            return rectifiedPoints.get(rectifiedPoints.size() - 1).copy();
-        }
-
         while (t < 0) {
             t++;
         }
         while (t > 1) {
             t--;
+        }
+        if (t == 0) {
+            return rectifiedPoints.get(0).copy();
+        }
+        if (t == 1) {
+            return rectifiedPoints.get(rectifiedPoints.size() - 1).copy();
         }
 
         double td = t * computedPathLength;
@@ -259,11 +258,10 @@ public class JMPath implements Stateable, Boxable, Iterable<JMPathPoint> {
 //        if (n < 0) {
 //            n =1;
 //        }
-
         sum -= rectifiedPointDistances.get(n);
 
         double tLocal = (td - sum) / rectifiedPointDistances.get(n);
-        return rectifiedPoints.get(n - 1).interpolate(rectifiedPoints.get(n), tLocal);
+        return rectifiedPoints.get(n).interpolate(rectifiedPoints.get(n+1), tLocal);
     }
 
     /// /        generateControlPoints();//Recompute control points

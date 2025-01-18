@@ -102,6 +102,9 @@ public class LaTeXMathObject extends AbstractLaTeXMathObject implements hasArgum
         df = new DecimalFormat("0.00");
         df.setDecimalFormatSymbols(DecimalFormatSymbols.getInstance(Locale.UK));
         variables = new HashMap<>();
+        for (int n = 0; n < 9; n++) {
+            variables.put(n, Scalar.make(0));
+        }
     }
 
     /**
@@ -115,17 +118,17 @@ public class LaTeXMathObject extends AbstractLaTeXMathObject implements hasArgum
      */
     public LaTeXMathObject setLaTeX(String text) {
         origText = text;
-//        text = replaceInnerReferencesInText(text);
+        text = replaceInnerReferencesInText(text);
         changeInnerLaTeX(text);
         return this;
     }
 
-//    protected String replaceInnerReferencesInText(String text) {
-//        for (Integer index : variables.keySet()) {
-//            text = text.replace("{#" + index + "}", df.format(variables.get(index)));
-//        }
-//        return text;
-//    }
+    protected String replaceInnerReferencesInText(String text) {
+        for (Integer index : variables.keySet()) {
+            text = text.replace("{#" + index + "}", df.format(variables.get(index).value));
+        }
+        return text;
+    }
     @Override
     public LaTeXMathObject copy() {
         LaTeXMathObject resul = new LaTeXMathObject(this.anchor);

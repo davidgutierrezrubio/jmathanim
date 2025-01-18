@@ -45,19 +45,27 @@ public class LatexStyleItem {
      * @param color Color to assign, a String
      * @return The LatexStyleItem created
      */
-    public static LatexStyleItem equalsChar(String name, String color) {
+    public static LatexStyleItem equalsChar(String name, JMColor color) {
           LatexStyleItem resul = new LatexStyleItem();
         resul.tokenEqPrev = LatexToken.make().setString(name);
         resul.setColor(color);
         return resul;
     }
 
-    public static LatexStyleItem make(String color) {
+    public static LatexStyleItem equalsChar(String name, String color) {
+        return equalsChar(name, JMColor.parse(color));
+    }
+
+    public static LatexStyleItem make(JMColor color) {
         if (color != null) {
-            return new LatexStyleItem(JMColor.parse(color));
+            return new LatexStyleItem(color);
         } else {
             return new LatexStyleItem();
         }
+    }
+
+    public static LatexStyleItem make(String color) {
+        return make(JMColor.parse(color));
     }
 
     public LatexStyleItem() {
