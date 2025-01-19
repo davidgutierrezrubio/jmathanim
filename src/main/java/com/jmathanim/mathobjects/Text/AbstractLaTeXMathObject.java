@@ -459,4 +459,7 @@ public abstract class AbstractLaTeXMathObject extends SVGMathObject {
         return resul;
     }
 
+    public AffineJTransform getModelMatrix() {
+        return modelMatrix;
+    }
 }

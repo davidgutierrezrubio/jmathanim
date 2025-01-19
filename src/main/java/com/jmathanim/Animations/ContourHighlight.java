@@ -83,6 +83,7 @@ public class ContourHighlight extends Animation {
         highlightColor = JMColor.parse("red");
         this.thickness = 10;
         this.amplitude = .4;
+        this.setDebugName("Contour highlight");
 //        setLambda(t -> t);
     }
 
