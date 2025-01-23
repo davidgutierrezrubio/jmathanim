@@ -84,7 +84,7 @@ public class ContourHighlight extends Animation {
         this.thickness = 10;
         this.amplitude = .4;
         this.setDebugName("Contour highlight");
-//        setLambda(t -> t);
+        setLambda(t -> t);
     }
 
     @Override
