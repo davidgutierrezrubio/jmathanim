@@ -849,4 +849,12 @@ public abstract class JMathAnimScene {
     public boolean unregisterLink(LinkArguments link) {
         return linksToBeDone.remove(link);
     }
+
+    /**
+     * Returns the current time step for each frame.
+     * @return The time step
+     */
+    public double getDt() {
+        return dt;
+    }
 }
