@@ -148,10 +148,10 @@ public class SVGUtils {
 
     private void processSVGAttributes(Element el) {
         if (!el.getAttribute("width").isEmpty()) {
-            width = Double.parseDouble(el.getAttribute("width"));
+            width = Double.parseDouble(extractNumbers(el.getAttribute("width")));
         }
         if (!el.getAttribute("height").isEmpty()) {
-            height = Double.parseDouble(el.getAttribute("height"));
+            height = Double.parseDouble(extractNumbers(el.getAttribute("height")));
         }
         if (!el.getAttribute("viewBox").isEmpty()) {
             //format: viewBox="0 0 900 625.73422"
@@ -982,5 +982,8 @@ public class SVGUtils {
         Shape resul = Shape.arc(O1, O2, rad, (large == 0));
         resul.applyAffineTransform(tr.getInverse());
         return resul;
+    }
+    private String extractNumbers(String input) {
+             return input.replaceAll("[^0-9.]", "");
     }
 }
