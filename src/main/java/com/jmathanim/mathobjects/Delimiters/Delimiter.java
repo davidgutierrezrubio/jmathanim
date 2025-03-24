@@ -163,7 +163,7 @@ public abstract class Delimiter extends MathObject {
                                     String format) {
         setLabel("${#0}$", .1);
         LaTeXMathObject t = (LaTeXMathObject) getLabel();
-        t.setArgumentsFormat(lengthFormat);
+        t.setArgumentsFormat(format);
         JMathAnimConfig
                 .getConfig()
                 .getScene()
