@@ -21,10 +21,7 @@ import com.jmathanim.Cameras.Camera;
 import com.jmathanim.Renderers.Renderer;
 import com.jmathanim.Styling.MODrawPropertiesArray;
 import com.jmathanim.Styling.Stylable;
-import com.jmathanim.Utils.Anchor;
-import com.jmathanim.Utils.EmptyRect;
-import com.jmathanim.Utils.JMathAnimConfig;
-import com.jmathanim.Utils.Rect;
+import com.jmathanim.Utils.*;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.MathObjectGroup;
@@ -40,67 +37,53 @@ import com.jmathanim.mathobjects.updateableObjects.AnchoredMathObject;
  */
 public abstract class Delimiter extends MathObject {
 
+    public final Point labelMarkPoint;
     protected final Point A;
     protected final Point B;
     protected final Point scaledA;
     protected final Point scaledB;
-
     protected double amplitudeScale;
     protected MathObject delimiterLabel;
     protected MathObject delimiterLabelToDraw;
     protected MODrawPropertiesArray mpDelimiter;
-    public final Point labelMarkPoint;
     protected double labelMarkGap;
     protected Rotation rotateLabel;
     protected MathObjectGroup delimiterToDraw;
 
     protected double delimiterScale;
     protected double minimumWidthToShrink;
-
-    public enum Rotation {
-        FIXED, SMART, ROTATE
-    }
-
-    /**
-     * Type of delimiter
-     */
-    public enum Type {
-        /**
-         * Brace {
-         */
-        BRACE,
-        /**
-         * Parenthesis (
-         */
-        PARENTHESIS,
-        /**
-         * Brackets
-         */
-        BRACKET,
-        /**
-         * Simple bar addLengthLabel length
-         */
-        LENGTH_BRACKET,
-        /**
-         * Simple arrow addLengthLabel length
-         */
-        LENGTH_ARROW
-    }
-
     protected Type type;
     /**
      * Gap to apply between control points and delimiter
      */
     protected double gap;
 
+    public Delimiter(Point A, Point B, Type type, double gap) {
+        this.A = A;
+        this.B = B;
+        this.scaledA = A.copy();
+        this.scaledB = B.copy();
+        this.type = type;
+        this.gap = gap;
+        //An invisible path with only a point (to properly stack and align)
+        this.delimiterLabel = Shape.polyLine(Point.at(0, 0)).visible(false);
+        this.mpDelimiter = new MODrawPropertiesArray();
+        labelMarkPoint = Point.at(0, 0);
+        this.rotateLabel = Rotation.SMART;
+
+        delimiterScale = 1;
+        amplitudeScale = 1;
+
+    }
+
     /**
      * Constructs a new delimiter.The points mark the beginning and end of the
      * delimiter.The delimiter lies at the "left" of vector AB.
      *
-     * @param A Beginning point
-     * @param B Ending point
+     * @param A    Beginning point
+     * @param B    Ending point
      * @param type Type of delimiter, one enum {@link Type}
-     * @param gap Gap between control points and delimiter
+     * @param gap  Gap between control points and delimiter
      * @return The delimiter
      */
     public static Delimiter make(Point A, Point B, Type type, double gap) {
@@ -128,10 +111,10 @@ public abstract class Delimiter extends MathObject {
      * being rotated.
      *
      * @param obj
-     * @param anchorType Anchor to use. Currently UPPER, LOWER, RIGHT and LEFT
-     * are allowed. Other anchors return a null object and an error message.
+     * @param anchorType    Anchor to use. Currently UPPER, LOWER, RIGHT and LEFT
+     *                      are allowed. Other anchors return a null object and an error message.
      * @param delimiterType Delimiter type
-     * @param gap Gap to put between anchor points and delimiter
+     * @param gap           Gap to put between anchor points and delimiter
      * @return The delimiter
      */
     public static Delimiter stackTo(MathObject obj, Anchor.Type anchorType, Type delimiterType, double gap) {
@@ -168,6 +151,62 @@ public abstract class Delimiter extends MathObject {
         return resul;
     }
 
+    /**
+     * Adds a label with the length.The points mark the beginning and end of the
+     * delimiter.The delimiter lies at the "left" of vector AB.
+     *
+     * @param gap          Gap between control delimiter and label
+     * @param format Format to print the length, for example "0.00"
+     * @return The Label, a LatexMathObject
+     */
+    public LaTeXMathObject addLengthLabel(double gap,
+                                    String format) {
+        setLabel("${#0}$", .1);
+        LaTeXMathObject t = (LaTeXMathObject) getLabel();
+        t.setArgumentsFormat(lengthFormat);
+        JMathAnimConfig
+                .getConfig()
+                .getScene()
+                .registerLink(
+                        new Link() {
+                            @Override
+                            public boolean apply() {
+                                t.getArg(0).setScalar(A.to(B).norm());
+                                return true;
+                            }
+                        }
+                );
+        return (LaTeXMathObject) getLabel();
+    }
+    /**
+     * Adds a label with the vector coordinates.The points mark the beginning and end of the
+     * delimiter.The delimiter lies at the "left" of vector AB.
+     *
+     * @param gap          Gap between control delimiter and label
+     * @param format Format to print the numbers, for example "0.00"
+     * @return The Label, a LatexMathObject
+     */
+    public LaTeXMathObject addVecLabel(double gap, String format) {
+        setLabel("$({#0},{#1})$", .1);
+        LaTeXMathObject t = (LaTeXMathObject) getLabel();
+//        t.setArgumentsFormat("#0.0");
+        JMathAnimConfig
+                .getConfig()
+                .getScene()
+                .registerLink(
+                        new Link() {
+                            @Override
+                            public boolean apply() {
+                                Vec v=A.to(B);
+                                t.getArg(0).setScalar(v.x);
+                                t.getArg(1).setScalar(v.y);
+                                return true;
+                            }
+                        }
+                );
+        return (LaTeXMathObject) getLabel();
+    }
+
     public Delimiter setLabel(String text, double labelGap) {
         return setLabel(LaTeXMathObject.make(text), labelGap);
     }
@@ -183,24 +222,6 @@ public abstract class Delimiter extends MathObject {
         mpDelimiter.remove(delimiterLabel);
         delimiterLabel = Shape.polyLine(Point.at(0, 0)).visible(false);
         return (T) this;
-    }
-
-    public Delimiter(Point A, Point B, Type type, double gap) {
-        this.A = A;
-        this.B = B;
-        this.scaledA = A.copy();
-        this.scaledB = B.copy();
-        this.type = type;
-        this.gap = gap;
-        //An invisible path with only a point (to properly stack and align)
-        this.delimiterLabel = Shape.polyLine(Point.at(0, 0)).visible(false);
-        this.mpDelimiter = new MODrawPropertiesArray();
-        labelMarkPoint = Point.at(0, 0);
-        this.rotateLabel = Rotation.SMART;
-
-        delimiterScale = 1;
-        amplitudeScale = 1;
-
     }
 
     public void setGap(double gap) {
@@ -260,7 +281,7 @@ public abstract class Delimiter extends MathObject {
 
     @Override
     public void copyStateFrom(MathObject obj) {
-         super.copyStateFrom(obj);
+        super.copyStateFrom(obj);
         if (!(obj instanceof Delimiter)) {
             return;
         }
@@ -330,7 +351,7 @@ public abstract class Delimiter extends MathObject {
      * Sets the scale of the delimiter. Higher values will result in thicker
      * shapes
      *
-     * @param <T> Subclass
+     * @param <T>            Subclass
      * @param delimiterScale Scale. Default value is 1.
      * @return This object
      */
@@ -346,6 +367,36 @@ public abstract class Delimiter extends MathObject {
      */
     public MathObject getLabel() {
         return delimiterLabel;
+    }
+
+    public enum Rotation {
+        FIXED, SMART, ROTATE
+    }
+
+    /**
+     * Type of delimiter
+     */
+    public enum Type {
+        /**
+         * Brace {
+         */
+        BRACE,
+        /**
+         * Parenthesis (
+         */
+        PARENTHESIS,
+        /**
+         * Brackets
+         */
+        BRACKET,
+        /**
+         * Simple bar addLengthLabel length
+         */
+        LENGTH_BRACKET,
+        /**
+         * Simple arrow addLengthLabel length
+         */
+        LENGTH_ARROW
     }
 
 //    /**

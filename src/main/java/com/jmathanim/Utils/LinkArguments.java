@@ -18,6 +18,7 @@ package com.jmathanim.Utils;
 
 import com.jmathanim.Animations.Animation;
 import com.jmathanim.Animations.AnimationGroup;
+import com.jmathanim.Constructible.Lines.CTSegment;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.*;
 import com.jmathanim.mathobjects.Text.LaTeXMathObject;
@@ -326,6 +327,10 @@ public final class LinkArguments extends Link {
         if (obj instanceof Vec) {
             Vec vec = (Vec) obj;
             return vec.norm();
+        }
+        if (obj instanceof CTSegment) {
+            CTSegment cts=(CTSegment) obj;
+            return cts.getP1().to(cts.getP2()).norm();
         }
         if (obj instanceof Boxable) {
             Boxable boxable = (Boxable) obj;
