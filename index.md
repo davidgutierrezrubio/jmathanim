@@ -22,8 +22,9 @@ Manual
 What's new?
 ===========
 
-Version 0.9.12-SNAPSHOT (29/12/2024) 
+Version 0.9.12-SNAPSHOT (24/03/2025) 
 
+* Added `addLengthLabel`and `addVecLabel` static build methods to `Delimiter`class that automatically create delimiters with length or vector coordinates that update automatically.
 * Added `Shape.arc(Point A, Point B, double radius, boolean counterClockWise) `that draws an arc from A to B with given radius.
 * Added arc SVG import capabilities.
 * Fixed bugs importing SVG.
