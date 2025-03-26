@@ -169,6 +169,7 @@ public abstract class AbstractTippableObject extends Constructible implements ha
         if (isThisMathObjectFree()) {
             return;
         }
+        if (shape.isEmpty()) return;
         //Reset
         mathobject.copyStateFrom(refMathObject);
         Vec tangent;

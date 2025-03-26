@@ -117,7 +117,7 @@ public abstract class Delimiter extends MathObject {
      * @param gap           Gap to put between anchor points and delimiter
      * @return The delimiter
      */
-    public static Delimiter stackTo(MathObject obj, Anchor.Type anchorType, Type delimiterType, double gap) {
+    public static Delimiter makeStacked(MathObject obj, Anchor.Type anchorType, Type delimiterType, double gap) {
         JMathAnimScene sce = JMathAnimConfig.getConfig().getScene();//This should be better implemented, avoid static singletons
         Anchor.Type anchorA, anchorB;
         switch (anchorType) {
@@ -178,6 +178,37 @@ public abstract class Delimiter extends MathObject {
                 );
         return (LaTeXMathObject) getLabel();
     }
+    /**
+     * Adds a label that displays the count of objects in a given MathObjectGroup.
+     * The label is positioned based on the delimiter's label mark point.
+     *
+     * <p>This method sets the label format to display the count of the MathObjectGroup
+     * size. The label will automatically update whenever the size of the group changes.</p>
+     *
+     * @param gap The gap between the delimiter and the label.
+     * @param mg The MathObjectGroup whose size will be counted and displayed in the label.
+     * @return The label as a LaTeXMathObject that shows the count of objects in the group.
+     */
+    public LaTeXMathObject addCountLabel(double gap,MathObjectGroup mg) {
+        setLabel("${#0}$", .1);
+        LaTeXMathObject t = (LaTeXMathObject) getLabel();
+        t.setArgumentsFormat("#");
+        JMathAnimConfig
+                .getConfig()
+                .getScene()
+                .registerLink(
+                        new Link() {
+                            @Override
+                            public boolean apply() {
+                                t.getArg(0).setScalar(mg.size());
+                                return true;
+                            }
+                        }
+                );
+        return (LaTeXMathObject) getLabel();
+    }
+
+
     /**
      * Adds a label with the vector coordinates.The points mark the beginning and end of the
      * delimiter.The delimiter lies at the "left" of vector AB.

@@ -96,7 +96,8 @@ public class ShapeDelimiter extends Delimiter {
             minimumWidthToShrink = .5;
             double wr = 0.48 * delimiterScale * UsefulLambdas.allocateTo(0, minimumWidthToShrink).applyAsDouble(width);
             bodyCopy.setWidth(wr);
-            double wSpace = Math.max(0, width - wr);
+            double hasToGrow = Math.max(0, width - wr);
+            double wSpace = hasToGrow;
             delimiterShape.merge(bodyCopy.get(0), false, false);
             delimiterShape.merge(bodyCopy.get(1).shift(wSpace, 0), true, true);
         }
@@ -130,7 +131,7 @@ public class ShapeDelimiter extends Delimiter {
         AffineJTransform tr = AffineJTransform.createDirect2DIsomorphic(bb.getDL(), bb.getDR(), scaledA, scaledB, 1);
 
         tr.applyTransform(resul);
-        tr.applyTransform(labelMarkPoint);
+//        tr.applyTransform(labelMarkPoint);
 
         return resul;
     }

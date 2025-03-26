@@ -16,36 +16,61 @@
  */
 package com.jmathanim.mathobjects;
 
+import com.jmathanim.Cameras.Camera;
 import com.jmathanim.Cameras.Camera3D;
 import com.jmathanim.Constructible.Conics.CTCircleArc;
 import com.jmathanim.Constructible.Constructible;
 import com.jmathanim.Constructible.Lines.CTLine;
 import com.jmathanim.Constructible.Lines.CTPerpBisector;
 import com.jmathanim.Constructible.Points.CTIntersectionPoint;
+import com.jmathanim.Renderers.Renderer;
 import com.jmathanim.Utils.*;
 import com.jmathanim.jmathanim.JMathAnimScene;
+import com.jmathanim.mathobjects.Text.LaTeXMathObject;
+import com.jmathanim.mathobjects.Tippable.LabelTip;
 
 import java.net.URL;
 
 import static com.jmathanim.jmathanim.JMathAnimScene.PI;
 
 /**
- *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
 public class Arrow extends Constructible {
 
+    public final Shape labelArc;
+    private final Point Acopy, Bcopy;
+    private final Shape shapeToDraw;
+    private final Shape head1, head2;
     public double distScale;
     private double angle;
     private double baseHeight1;
     private double baseHeight2;
     private double baseRealHeight1;
     private double baseRealHeight2;
-    private final Point Acopy, Bcopy;
-
     private double headStartMultiplier, headEndMultiplier;
-    private final Shape shapeToDraw;
     private double gapA, gapB;
+    private Point A, B;
+    private double baseDist1, baseDist2;
+    private double arrowThickness;
+    private ArrowType typeA, typeB;
+    private LabelTip arrowLabel;
+
+    private Arrow(Point A, Point B) {
+        this.A = A;
+        this.B = B;
+        this.labelArc = new Shape();
+        head1 = new Shape();
+        head2 = new Shape();
+        arrowThickness = 20;//TODO: Default value. This should be in config file
+        distScale = 1d;
+        headStartMultiplier = 1d;
+        headEndMultiplier = 1d;
+        shapeToDraw = new Shape();
+        Acopy = A.copy();
+        Bcopy = B.copy();
+        getMp().loadFromStyle("ARROWDEFAULT");
+    }
 
     public static Shape buildArrowHead(ArrowType type) {
         Shape resul = loadHeadShape(type);
@@ -54,33 +79,11 @@ public class Arrow extends Constructible {
         return resul;
     }
 
-    @Override
-    public MathObject getMathObject() {
-        return shapeToDraw;
-    }
-
-    //TODO: 
-    //Hacer que sea / no sea zoom-independent
-    //Archivo editable Inkscape con todas las flechas
-    //SVG: Flechas,
-    //Procedural: cuadrados, semicírculos, cuascírculos
-    //Implementar caps style proceduralmente
-    //Añadir gap interno para modificar punto al que señalan flechas
-    public enum ArrowType {
-        NONE_BUTT, NONE_ROUND, NONE_SQUARE, ARROW1, ARROW2, ARROW3, SQUARE, BULLET
-    }
-
-    private Point A, B;
-    private double baseDist1, baseDist2;
-    private double arrowThickness;
-    private final Shape head1, head2;
-    private ArrowType typeA, typeB;
-
     /**
      * Creates a new Arrow object with given start/end points and arrow type.
      *
-     * @param A Starting point
-     * @param B Ending point
+     * @param A    Starting point
+     * @param B    Ending point
      * @param type Arrow type. A value of enum Arrowtype
      * @return The created object
      */
@@ -105,55 +108,12 @@ public class Arrow extends Constructible {
         return resul;
     }
 
-    private Arrow(Point A, Point B) {
-        this.A = A;
-        this.B = B;
-        head1 = new Shape();
-        head2 = new Shape();
-        arrowThickness = 20;//TODO: Default value. This should be in config file
-        distScale = 1d;
-        headStartMultiplier = 1d;
-        headEndMultiplier = 1d;
-        shapeToDraw = new Shape();
-        Acopy = A.copy();
-        Bcopy = B.copy();
-        getMp().loadFromStyle("ARROWDEFAULT");
-    }
-
-    private void loadModels() {
-        Shape h1 = loadHeadShape(typeA);
-        Shape h2 = loadHeadShape(typeB);
-        h2.scale(-1, -1);
-
-        if (h1.getProperty("gap") != null) {
-            gapA = (double) h1.getProperty("gap");
-        } else {
-            gapA = 0;
-        }
-        if (h2.getProperty("gap") != null) {
-            gapB = (double) h2.getProperty("gap");
-        } else {
-            gapB = 0;
-        }
-
-        head1.getPath().clear();
-        head2.getPath().clear();
-        head1.getPath().addJMPointsFrom(h1.getPath());
-        head2.getPath().addJMPointsFrom(h2.getPath());
-        baseDist1 = head1.getPoint(0).to(head1.getPoint(-1)).norm();
-        baseDist2 = head2.getPoint(0).to(head2.getPoint(-1)).norm();
-        baseHeight1 = head1.getBoundingBox().ymax - head1.getPoint(0).v.y;
-        baseHeight2 = head2.getPoint(0).v.y - head2.getBoundingBox().ymin;
-        baseRealHeight1 = head1.getHeight();
-        baseRealHeight2 = head2.getHeight();
-    }
-
     private static Shape loadHeadShape(ArrowType type) {
         ResourceLoader rl = new ResourceLoader();
         URL arrowUrl;
         Shape resul;
         switch (type) {
-            //Always FIRST point to the RIGHT, 
+            //Always FIRST point to the RIGHT,
             //LAST point to the LEFT
             case NONE_BUTT:
                 return Shape.segment(Point.at(1, 0), Point.at(0, 0));
@@ -190,6 +150,39 @@ public class Arrow extends Constructible {
             default:
                 throw new AssertionError();
         }
+    }
+
+    @Override
+    public MathObject getMathObject() {
+        return shapeToDraw;
+    }
+
+    private void loadModels() {
+        Shape h1 = loadHeadShape(typeA);
+        Shape h2 = loadHeadShape(typeB);
+        h2.scale(-1, -1);
+
+        if (h1.getProperty("gap") != null) {
+            gapA = (double) h1.getProperty("gap");
+        } else {
+            gapA = 0;
+        }
+        if (h2.getProperty("gap") != null) {
+            gapB = (double) h2.getProperty("gap");
+        } else {
+            gapB = 0;
+        }
+
+        head1.getPath().clear();
+        head2.getPath().clear();
+        head1.getPath().addJMPointsFrom(h1.getPath());
+        head2.getPath().addJMPointsFrom(h2.getPath());
+        baseDist1 = head1.getPoint(0).to(head1.getPoint(-1)).norm();
+        baseDist2 = head2.getPoint(0).to(head2.getPoint(-1)).norm();
+        baseHeight1 = head1.getBoundingBox().ymax - head1.getPoint(0).v.y;
+        baseHeight2 = head2.getPoint(0).v.y - head2.getBoundingBox().ymin;
+        baseRealHeight1 = head1.getHeight();
+        baseRealHeight2 = head2.getHeight();
     }
 
     @Override
@@ -231,6 +224,12 @@ public class Arrow extends Constructible {
         if (angle == 0) {
             shapeToDraw.getPath().addJMPointsFrom(h1A.getPath());
             shapeToDraw.merge(h1B, true, true);
+
+            labelArc.getPath().clear();
+            labelArc.getPath().addPoint(h1B.get(-1).p.copy());
+            labelArc.getPath().addPoint(h1A.get(0).p.copy());
+            labelArc.get(0).isThisSegmentVisible = false;
+
         } else {
 
             h1A.rotate(startPoint, angle);
@@ -272,6 +271,8 @@ public class Arrow extends Constructible {
             } else {
                 shArc1.reverse();
             }
+            labelArc.getPath().clear();
+            labelArc.getPath().copyStateFrom(shArc1.getPath());
 
             //Build the shape, adding h1c and merging with h2cF
             shapeToDraw.getPath().addJMPointsFrom(h1A.getPath());
@@ -295,14 +296,16 @@ public class Arrow extends Constructible {
         }
         AffineJTransform tr = AffineJTransform.createDirect3DIsomorphic(startPoint, endPoint, z1, A, B, C, 1);
         shapeToDraw.getPath().applyAffineTransform(tr);
+        labelArc.getPath().applyAffineTransform(tr);
         //Now, rotate to face camera3d..
         if (scene.getCamera() instanceof Camera3D) {
             Camera3D cam = (Camera3D) scene.getCamera();
 //            Point C = A.copy().shift(0, 0, 1);
-            v= cam.look.to(cam.eye);
+            v = cam.look.to(cam.eye);
             Point C2 = A.copy().shift(v);
             tr = AffineJTransform.createDirect3DIsomorphic(A, B, C, A, B, C2, 1);
             shapeToDraw.applyAffineTransform(tr);
+            labelArc.applyAffineTransform(tr);
         }
     }
 
@@ -360,6 +363,7 @@ public class Arrow extends Constructible {
     public void update(JMathAnimScene scene) {
         super.update(scene);
         rebuildShape();
+        if (arrowLabel!=null) arrowLabel.update(scene);
     }
 
     /**
@@ -470,15 +474,6 @@ public class Arrow extends Constructible {
     }
 
     /**
-     * Returns the ending point
-     *
-     * @return A reference to the ending Point object
-     */
-    public Point getEnd() {
-        return B;
-    }
-
-    /**
      * Sets the starting point
      *
      * @param A Starting point
@@ -486,6 +481,15 @@ public class Arrow extends Constructible {
     public void setStart(Point A) {
         this.A = A;
         rebuildShape();
+    }
+
+    /**
+     * Returns the ending point
+     *
+     * @return A reference to the ending Point object
+     */
+    public Point getEnd() {
+        return B;
     }
 
     /**
@@ -539,5 +543,80 @@ public class Arrow extends Constructible {
         rebuildShape();
         return this;
     }
+
+    /**
+     * Adds a label with the length.The points mark the beginning and end of the
+     * delimiter.The delimiter lies at the "left" of vector AB.
+     *
+     * @param gap    Gap between control delimiter and label
+     * @param format Format to print the length, for example "0.00"
+     * @return The Label, a LatexMathObject
+     */
+    public LaTeXMathObject addLengthLabel(double gap,
+                                          String format) {
+         arrowLabel = LabelTip.makeLabelTip(labelArc, .5, "${#0}$");
+                 LaTeXMathObject t = (LaTeXMathObject) arrowLabel.getMathObject();
+        t.setArgumentsFormat(format);
+        JMathAnimConfig
+                .getConfig()
+                .getScene()
+                .registerLink(
+                        new Link() {
+                            @Override
+                            public boolean apply() {
+                                t.getArg(0).setScalar(A.to(B).norm());
+                                return true;
+                            }
+                        }
+                );
+        return t;
+    }
+
+    /**
+     * Adds a label with the vector coordinates.The points mark the beginning and end of the
+     * delimiter.The delimiter lies at the "left" of vector AB.
+     *
+     * @param gap    Gap between control delimiter and label
+     * @param format Format to print the numbers, for example "0.00"
+     * @return The Label, a LatexMathObject
+     */
+    public LaTeXMathObject addVecLabel(double gap, String format) {
+        arrowLabel = LabelTip.makeLabelTip(labelArc, .5, "$({#0},{#1})$");
+        LaTeXMathObject t = (LaTeXMathObject) arrowLabel.getMathObject();
+        t.setArgumentsFormat(format);
+        JMathAnimConfig
+                .getConfig()
+                .getScene()
+                .registerLink(
+                        new Link() {
+                            @Override
+                            public boolean apply() {
+                                Vec v = A.to(B);
+                                t.getArg(0).setScalar(v.x);
+                                t.getArg(1).setScalar(v.y);
+                                return true;
+                            }
+                        }
+                );
+        return t;
+    }
+
+    @Override
+    public void draw(JMathAnimScene scene, Renderer r, Camera cam) {
+        super.draw(scene, r, cam);
+        if (arrowLabel!=null) arrowLabel.draw(scene,r,cam);
+    }
+
+    //TODO:
+    //Hacer que sea / no sea zoom-independent
+    //Archivo editable Inkscape con todas las flechas
+    //SVG: Flechas,
+    //Procedural: cuadrados, semicírculos, cuascírculos
+    //Implementar caps style proceduralmente
+    //Añadir gap interno para modificar punto al que señalan flechas
+    public enum ArrowType {
+        NONE_BUTT, NONE_ROUND, NONE_SQUARE, ARROW1, ARROW2, ARROW3, SQUARE, BULLET
+    }
+
 
 }
