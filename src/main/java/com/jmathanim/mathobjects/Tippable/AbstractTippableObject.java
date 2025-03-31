@@ -26,6 +26,7 @@ import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.Point;
 import com.jmathanim.mathobjects.Shape;
+import com.jmathanim.mathobjects.Text.LaTeXMathObject;
 import com.jmathanim.mathobjects.hasScalarParameter;
 
 import static com.jmathanim.jmathanim.JMathAnimScene.PI;
@@ -170,8 +171,10 @@ public abstract class AbstractTippableObject extends Constructible implements ha
             return;
         }
         if (shape.isEmpty()) return;
-        //Reset
+        //Reset. There may be a problem with scalars, as copyStateFrom overwrites scalars
+        LaTeXMathObject t= (LaTeXMathObject) mathobject;
         mathobject.copyStateFrom(refMathObject);
+        mathobject.update(scene);//This is needed as text content must be recreated if scalars changed
         Vec tangent;
         if (isParametrized) {
             tangent = shape.getPath().getParametrizedSlopeAt(locationParameterOnShape, slopeDirectionType == SlopeDirectionType.POSITIVE);
@@ -235,4 +238,5 @@ public abstract class AbstractTippableObject extends Constructible implements ha
         markPoint.visible(visible);
         return (T) this;
     }
+
 }

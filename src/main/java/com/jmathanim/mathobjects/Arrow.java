@@ -28,6 +28,7 @@ import com.jmathanim.Utils.*;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.Text.LaTeXMathObject;
 import com.jmathanim.mathobjects.Tippable.LabelTip;
+import com.jmathanim.mathobjects.updaters.Updater;
 
 import java.net.URL;
 
@@ -55,11 +56,14 @@ public class Arrow extends Constructible {
     private double arrowThickness;
     private ArrowType typeA, typeB;
     private LabelTip arrowLabel;
+    private int labelType;//0=normal, 1=distance, 2=coordinates
 
     private Arrow(Point A, Point B) {
         this.A = A;
         this.B = B;
+        labelType=0;
         this.labelArc = new Shape();
+        this.arrowLabel=null;
         head1 = new Shape();
         head2 = new Shape();
         arrowThickness = 20;//TODO: Default value. This should be in config file
@@ -307,6 +311,27 @@ public class Arrow extends Constructible {
             shapeToDraw.applyAffineTransform(tr);
             labelArc.applyAffineTransform(tr);
         }
+//        if (arrowLabel!=null) {
+//            if (labelType>0) {//Distance or coordinates
+//                LaTeXMathObject t=(LaTeXMathObject) arrowLabel.getMathObject();
+//                Vec vAB=A.to(B);
+//                System.out.println(vAB);
+//                switch(labelType) {
+//                    case 1:
+////                        t.getArg(0).setScalar(vAB.norm());
+//                        t.setLaTeX(""+vAB.norm());
+//                        break;
+//                    case 2:
+//                        t.getArg(0).setScalar(vAB.x);
+//                        t.getArg(1).setScalar(vAB.y);
+//                        break;
+//                    default:
+//                        System.out.println("No he hecho nada!!");
+//                        break;
+//                }
+//            }
+//        }
+
     }
 
     @Override
@@ -554,6 +579,7 @@ public class Arrow extends Constructible {
      */
     public LaTeXMathObject addLengthLabel(double gap,
                                           String format) {
+        labelType=1;
          arrowLabel = LabelTip.makeLabelTip(labelArc, .5, "${#0}$");
                  LaTeXMathObject t = (LaTeXMathObject) arrowLabel.getMathObject();
         t.setArgumentsFormat(format);
@@ -564,7 +590,7 @@ public class Arrow extends Constructible {
                         new Link() {
                             @Override
                             public boolean apply() {
-                                t.getArg(0).setScalar(A.to(B).norm());
+                                t.getArg(0).setScalar(2);
                                 return true;
                             }
                         }
@@ -581,23 +607,21 @@ public class Arrow extends Constructible {
      * @return The Label, a LatexMathObject
      */
     public LaTeXMathObject addVecLabel(double gap, String format) {
+        labelType=2;
         arrowLabel = LabelTip.makeLabelTip(labelArc, .5, "$({#0},{#1})$");
         LaTeXMathObject t = (LaTeXMathObject) arrowLabel.getMathObject();
         t.setArgumentsFormat(format);
-        JMathAnimConfig
-                .getConfig()
-                .getScene()
-                .registerLink(
-                        new Link() {
-                            @Override
-                            public boolean apply() {
-                                Vec v = A.to(B);
-                                t.getArg(0).setScalar(v.x);
-                                t.getArg(1).setScalar(v.y);
-                                return true;
-                            }
-                        }
-                );
+        t.registerUpdater(new Updater() {
+            @Override
+            public void computeUpdateLevel() {
+                this.updateLevel=Math.max(A.getUpdateLevel(),B.getUpdateLevel())+1;
+            }
+
+            @Override
+            public void update(JMathAnimScene scene) {
+                t.getArg(0).setScalar(A.to(B).norm());
+            }
+        });
         return t;
     }
 

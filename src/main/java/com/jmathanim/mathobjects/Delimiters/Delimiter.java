@@ -176,6 +176,7 @@ public abstract class Delimiter extends MathObject {
                             }
                         }
                 );
+
         return (LaTeXMathObject) getLabel();
     }
     /**
