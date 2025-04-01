@@ -31,7 +31,12 @@ public class LabelTip extends AbstractTippableObject {
 
     
     private AbstractLaTeXMathObject abstractLaTeXMathObject;
-    
+
+    public static LabelTip makeLabelTip(Point A, Point B,String text) {
+        return makeLabelTip(Shape.segment(A,B),.5,text);
+    }
+
+
     public static LabelTip makeLabelTip(Shape shape, double location, String text) {
         return makeLabelTip(shape, location, LaTeXMathObject.make(text));
     }

@@ -146,6 +146,7 @@ public abstract class JMathAnimScene {
         config.setOutputFileName(this.getClass().getSimpleName());
         animationIsDisabled = false;
         styles = config.getStyles();
+        Locale.setDefault(Locale.US);
     }
 
     public Renderer getRenderer() {

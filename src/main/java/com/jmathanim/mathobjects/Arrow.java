@@ -311,27 +311,6 @@ public class Arrow extends Constructible {
             shapeToDraw.applyAffineTransform(tr);
             labelArc.applyAffineTransform(tr);
         }
-//        if (arrowLabel!=null) {
-//            if (labelType>0) {//Distance or coordinates
-//                LaTeXMathObject t=(LaTeXMathObject) arrowLabel.getMathObject();
-//                Vec vAB=A.to(B);
-//                System.out.println(vAB);
-//                switch(labelType) {
-//                    case 1:
-////                        t.getArg(0).setScalar(vAB.norm());
-//                        t.setLaTeX(""+vAB.norm());
-//                        break;
-//                    case 2:
-//                        t.getArg(0).setScalar(vAB.x);
-//                        t.getArg(1).setScalar(vAB.y);
-//                        break;
-//                    default:
-//                        System.out.println("No he hecho nada!!");
-//                        break;
-//                }
-//            }
-//        }
-
     }
 
     @Override
@@ -387,8 +366,9 @@ public class Arrow extends Constructible {
     @Override
     public void update(JMathAnimScene scene) {
         super.update(scene);
-        rebuildShape();
         if (arrowLabel!=null) arrowLabel.update(scene);
+        rebuildShape();
+
     }
 
     /**
@@ -583,19 +563,20 @@ public class Arrow extends Constructible {
          arrowLabel = LabelTip.makeLabelTip(labelArc, .5, "${#0}$");
                  LaTeXMathObject t = (LaTeXMathObject) arrowLabel.getMathObject();
         t.setArgumentsFormat(format);
-        JMathAnimConfig
-                .getConfig()
-                .getScene()
-                .registerLink(
-                        new Link() {
-                            @Override
-                            public boolean apply() {
-                                t.getArg(0).setScalar(2);
-                                return true;
-                            }
-                        }
-                );
-        return t;
+
+        t.registerUpdater(new Updater() {
+            @Override
+            public void computeUpdateLevel() {
+                this.updateLevel=Math.max(A.getUpdateLevel(),B.getUpdateLevel())+1;
+            }
+
+            @Override
+            public void update(JMathAnimScene scene) {
+                t.getArg(0).setScalar(A.to(B).norm());
+
+            }
+        });
+        return (LaTeXMathObject) arrowLabel.getRefMathObject();
     }
 
     /**
@@ -619,10 +600,12 @@ public class Arrow extends Constructible {
 
             @Override
             public void update(JMathAnimScene scene) {
-                t.getArg(0).setScalar(A.to(B).norm());
+                Vec vAB=A.to(B);
+                t.getArg(0).setScalar(vAB.x);
+                t.getArg(1).setScalar(vAB.y);
             }
         });
-        return t;
+        return (LaTeXMathObject) arrowLabel.getRefMathObject();
     }
 
     @Override

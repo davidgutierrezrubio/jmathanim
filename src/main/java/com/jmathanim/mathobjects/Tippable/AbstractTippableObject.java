@@ -239,4 +239,7 @@ public abstract class AbstractTippableObject extends Constructible implements ha
         return (T) this;
     }
 
+    public MathObject getRefMathObject() {
+        return refMathObject;
+    }
 }
