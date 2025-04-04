@@ -76,4 +76,7 @@ public class LabelTip extends AbstractTippableObject {
         return copy;
     }
 
+    public AbstractLaTeXMathObject getLaTeXObject() {
+        return (AbstractLaTeXMathObject) mathobject;
+    }
 }

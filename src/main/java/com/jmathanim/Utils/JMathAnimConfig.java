@@ -66,6 +66,12 @@ public class JMathAnimConfig {
      * Singleton pattern to ensure there is a common config class for whole
      * execution
      */
+
+    /**
+     * If true, FPS will be restricted in preview windows. If false, animation will be played at max speed possible.
+     */
+    private boolean limitFPS;
+
     private static JMathAnimConfig singletonConfig;
     /**
      * The scene used
@@ -179,6 +185,7 @@ public class JMathAnimConfig {
         outputDir = new File("." + File.separator + "media");
         ffmpegBinExecutable = "";
         soundsEnabled = true;
+        limitFPS=false;
     }
 
     public boolean isSoundsEnabled() {
@@ -407,4 +414,12 @@ public class JMathAnimConfig {
         this.showFrameNumbers = showFrameNumbers;
     }
 
+
+    public boolean isLimitFPS() {
+        return limitFPS;
+    }
+
+    public void setLimitFPS(boolean limitFPS) {
+        this.limitFPS = limitFPS;
+    }
 }

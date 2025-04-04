@@ -49,7 +49,6 @@ public abstract class AbstractLaTeXMathObject extends SVGMathObject {
 
     protected Anchor.Type anchor;
     protected LatexParser latexParser;
-    protected LatexStyle latexColorizer;
 
     /**
      * Determines how LaTeX shapes will be created
@@ -92,19 +91,18 @@ public abstract class AbstractLaTeXMathObject extends SVGMathObject {
         this.anchor = anchor;
         modelMatrix = new AffineJTransform();
         this.latexParser = new LatexParser(this);
-        this.latexColorizer = null;
     }
 
-    public LatexStyle getLatexColorizer() {
-        return latexColorizer;
-    }
 
-    public void setLatexStyle(LatexStyle latexColorizer) {
-        this.latexColorizer = latexColorizer;
-        if (latexColorizer != null) {
-            this.latexColorizer.apply(this);
+    public void setLatexStyle(LatexStyle latexStyle) {
+        this.getMp().getFirstMP().setLatexStyle(latexStyle);
+        if (latexStyle != null) {
+            latexStyle.apply(this);
         }
     }
+
+
+
 
     @Override
     public AbstractLaTeXMathObject applyAffineTransform(AffineJTransform transform) {
@@ -169,8 +167,8 @@ public abstract class AbstractLaTeXMathObject extends SVGMathObject {
                 scene.add(sh);
             }
         }
-        if (latexColorizer != null) {
-            latexColorizer.apply(this);
+        if (getMp().getLatexStyle() != null) {
+            getMp().getLatexStyle().apply(this);
         }
 
         if (size() == 0) {
@@ -380,7 +378,7 @@ public abstract class AbstractLaTeXMathObject extends SVGMathObject {
             }
             this.absoluteSize = copy.absoluteSize;
             this.modelMatrix.copyFrom(copy.modelMatrix);
-            this.latexColorizer = copy.latexColorizer;
+            this.getMp().setLatexStyle(copy.getMp().getLatexStyle());
         }
     }
 
@@ -432,8 +430,13 @@ public abstract class AbstractLaTeXMathObject extends SVGMathObject {
      */
     public AbstractLaTeXMathObject setColor(PaintStyle col, int... indices) {
         for (int i : indices) {
-            this.get(i).drawColor(col);
-            this.get(i).fillColor(col);
+            if ((i>=0)&&(i<size())) {
+                this.get(i).drawColor(col);
+                this.get(i).fillColor(col);
+            } else
+            {
+                JMathAnimScene.logger.warn("Index "+i+" out of bounds when applying setColor to LaTeX");
+            }
         }
         return this;
     }

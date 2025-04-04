@@ -153,6 +153,11 @@ public class ConfigLoader {
                     config.setShowPreviewWindow(previewWindow);
                     JMathAnimScene.logger.debug("Config read: Show preview window set to {}", previewWindow);
                     break;
+                case "limitFPS":
+                    final boolean limitFPS = Boolean.parseBoolean(item.getTextContent());
+                    config.setLimitFPS(limitFPS);
+                    JMathAnimScene.logger.debug("Config read: Limit FPS {}", limitFPS);
+                    break;
                 case "outputDir":
                     config.setOutputDir(item.getTextContent());
                     JMathAnimScene.logger.debug("Config read: Output dir set to {}", item.getTextContent());

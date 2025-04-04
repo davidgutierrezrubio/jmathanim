@@ -18,6 +18,7 @@
 package com.jmathanim.Styling;
 
 import com.jmathanim.Utils.JMathAnimConfig;
+import com.jmathanim.Utils.LatexStyle;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.Point;
@@ -30,18 +31,18 @@ import java.util.Arrays;
 
 /**
  * Represents an array of mathematical object drawing properties.
- *
+ * <p>
  * This class encapsulates a collection of MathObject instances, along with
  * reference properties used for styling and drawing. It provides functionality
  * for managing the styling, visibility, state preservation, interpolations,
  * and visual attributes of associated MathObjects. The core functionality
  * includes copying, restoring, saving states, and managing layers and colors
  * for the drawing and filling processes.
- *
+ * <p>
  * Fields:
  * - `objects`: A list containing the associated MathObject instances.
  * - `mpRef`: A reference to the main MODrawProperties used for styling and rendering.
- *
+ * <p>
  * This class is intended as a utility for handling collections of styled and
  * drawable mathematical objects within a visual or computational context. Instances
  * can be initialized with default properties or copied from existing objects, with
@@ -49,8 +50,9 @@ import java.util.Arrays;
  */
 public class MODrawPropertiesArray implements Stylable, Stateable {
 
+    private final MODrawPropertiesLaTeX mpRef;
     private ArrayList<MathObject> objects;
-    private final MODrawProperties mpRef;
+    private LatexStyle latexStyle = null;
 
     /**
      * Constructs a new MODrawPropertiesArray instance by copying the properties from the provided MODrawProperties object.
@@ -59,21 +61,21 @@ public class MODrawPropertiesArray implements Stylable, Stateable {
      * @param mp The MODrawProperties object from which the properties are copied to initialize the new instance.
      */
     public MODrawPropertiesArray(MODrawProperties mp) {
-        mpRef = new MODrawProperties();
+        mpRef = new MODrawPropertiesLaTeX();
         mpRef.copyFrom(mp);
         objects = new ArrayList<>();
     }
 
     /**
      * Default constructor for the MODrawPropertiesArray class.
-     *
+     * <p>
      * This constructor initializes a new instance of MODrawPropertiesArray with the following defaults:
      * - Creates a new instance of MODrawProperties and assigns it to mpRef.
      * - Copies the default MODrawProperties settings from JMathAnimConfig's configuration into mpRef.
      * - Initializes the objects field as an empty ArrayList of MathObject.
      */
     public MODrawPropertiesArray() {
-        mpRef = new MODrawProperties();
+        mpRef = new MODrawPropertiesLaTeX();
         mpRef.copyFrom(JMathAnimConfig.getConfig().getDefaultMP());
         objects = new ArrayList<>();
     }
@@ -85,8 +87,29 @@ public class MODrawPropertiesArray implements Stylable, Stateable {
      */
     public MODrawPropertiesArray(ArrayList<MathObject> objects) {
         this.objects = objects;
-        mpRef = new MODrawProperties();
+        mpRef = new MODrawPropertiesLaTeX();
     }
+
+
+    /**
+     * Returns the LaTeXStyle of the associated AbstractLaTeXMathObject
+     *
+     * @return A LaTeXStyle instance, or null if there is no style defined
+     */
+    public LatexStyle getLatexStyle() {
+        return latexStyle;
+    }
+
+    /**
+     * Sets the currente LaTeXStyle for the associated AbstractLaTeXMathObject
+     * The LaTeXStyle class manages automatic coloring of LaTeX tokens
+     *
+     * @param latexStyle LaTeXStyle to set
+     */
+    public void setLatexStyle(LatexStyle latexStyle) {
+        this.latexStyle = latexStyle;
+    }
+
 
     /**
      * Retrieves the list of MathObject instances contained within this object.
@@ -98,21 +121,21 @@ public class MODrawPropertiesArray implements Stylable, Stateable {
     }
 
     /**
-     * Adds one or more MathObject instances to the collection of objects.
-     *
-     * @param objs The MathObject instances to be added.
-     */
-    public void add(MathObject... objs) {
-        objects.addAll(Arrays.asList(objs));
-    }
-
-    /**
      * Sets the list of MathObject instances for this object.
      *
      * @param objects The ArrayList of MathObject instances to be set.
      */
     public void setObjects(ArrayList<MathObject> objects) {
         this.objects = objects;
+    }
+
+    /**
+     * Adds one or more MathObject instances to the collection of objects.
+     *
+     * @param objs The MathObject instances to be added.
+     */
+    public void add(MathObject... objs) {
+        objects.addAll(Arrays.asList(objs));
     }
 
     /**
@@ -172,13 +195,30 @@ public class MODrawPropertiesArray implements Stylable, Stateable {
             obj.getMp().copyFrom(prop);
         }
         mpRef.copyFrom(prop);
+        if (prop instanceof MODrawPropertiesLaTeX) {
+            MODrawPropertiesLaTeX moDrawPropertiesLaTeX = (MODrawPropertiesLaTeX) prop;
+            if (moDrawPropertiesLaTeX.latexStyle != null)
+                mpRef.latexStyle = moDrawPropertiesLaTeX.latexStyle;
+
+        }
+    }
+
+    public void copyFrom(MODrawPropertiesArray prop) {
+        if (prop.objects.size() == objects.size()) {//Copy all styles separately
+            for (int i = 0; i < prop.objects.size(); i++) {
+                objects.get(i).getMp().copyFrom(prop.objects.get(i).getMp());
+            }
+            mpRef.copyFrom(prop.mpRef);
+        } else {
+            copyFrom(prop.mpRef);
+        }
     }
 
     /**
      * Interpolates the properties of the current object from the specified destination object
      * using the given interpolation parameter.
      *
-     * @param dst The destination Stylable object from which to interpolate properties.
+     * @param dst   The destination Stylable object from which to interpolate properties.
      * @param alpha The interpolation parameter, where 0 represents the current object and 1 represents the destination.
      */
     @Override
@@ -194,8 +234,8 @@ public class MODrawPropertiesArray implements Stylable, Stateable {
      * using the specified interpolation parameter. The interpolation is applied to all
      * child objects and an internal reference.
      *
-     * @param a The first Stylable object representing the starting state of the interpolation.
-     * @param b The second Stylable object representing the ending state of the interpolation.
+     * @param a     The first Stylable object representing the starting state of the interpolation.
+     * @param b     The second Stylable object representing the ending state of the interpolation.
      * @param alpha The interpolation parameter. Values range from 0.0 (fully state "a") to 1.0 (fully state "b").
      */
     @Override
@@ -241,7 +281,7 @@ public class MODrawPropertiesArray implements Stylable, Stateable {
      * and calls the `restoreState` method on each object's `MathProperties` instance. It
      * ensures that all associated MathObject properties are reverted to their previously
      * saved state.
-     *
+     * <p>
      * Additionally, it calls the `restoreState` method on the `mpRef` field (a reference
      * to this object's MathProperties), restoring the preserved state of its main properties.
      */
@@ -281,19 +321,6 @@ public class MODrawPropertiesArray implements Stylable, Stateable {
         }
         mpRef.setDrawAlpha(alpha);
 
-    }
-
-    /**
-     * Sets the draw color of the current object and all its sub-objects.
-     *
-     * @param drawColor The {@link PaintStyle} instance representing the desired draw color.
-     */
-    @Override
-    public void setDrawColor(PaintStyle drawColor) {
-        for (MathObject obj : objects) {
-            obj.getMp().setDrawColor(drawColor);
-        }
-        mpRef.setDrawColor(drawColor);
     }
 
     /**
@@ -339,18 +366,13 @@ public class MODrawPropertiesArray implements Stylable, Stateable {
     }
 
     /**
-     * Sets the fill color for all the {@link MathObject} instances in the collection
-     * and updates the reference {@link MODrawProperties}.
+     * Retrieves the layer value associated with the object.
      *
-     * @param fillColor The {@link PaintStyle} instance representing the fill color
-     *                  to be applied.
+     * @return the layer value as an Integer, or the default value if it is not set.
      */
     @Override
-    public void setFillColor(PaintStyle fillColor) {
-        for (MathObject obj : objects) {
-            obj.getMp().setFillColor(fillColor);
-        }
-        mpRef.setFillColor(fillColor);
+    public Integer getLayer() {
+        return mpRef.getLayer();
     }
 
     /**
@@ -367,22 +389,25 @@ public class MODrawPropertiesArray implements Stylable, Stateable {
     }
 
     /**
-     * Retrieves the layer value associated with the object.
-     *
-     * @return the layer value as an Integer, or the default value if it is not set.
-     */
-    @Override
-    public Integer getLayer() {
-        return mpRef.getLayer();
-    }
-
-    /**
      * Retrieves the current drawing color associated with this object.
      *
      * @return The drawing color represented as a PaintStyle object.
      */
     public PaintStyle getDrawColor() {
         return mpRef.getDrawColor();
+    }
+
+    /**
+     * Sets the draw color of the current object and all its sub-objects.
+     *
+     * @param drawColor The {@link PaintStyle} instance representing the desired draw color.
+     */
+    @Override
+    public void setDrawColor(PaintStyle drawColor) {
+        for (MathObject obj : objects) {
+            obj.getMp().setDrawColor(drawColor);
+        }
+        mpRef.setDrawColor(drawColor);
     }
 
     /**
@@ -393,6 +418,21 @@ public class MODrawPropertiesArray implements Stylable, Stateable {
     @Override
     public PaintStyle getFillColor() {
         return mpRef.getFillColor();
+    }
+
+    /**
+     * Sets the fill color for all the {@link MathObject} instances in the collection
+     * and updates the reference {@link MODrawProperties}.
+     *
+     * @param fillColor The {@link PaintStyle} instance representing the fill color
+     *                  to be applied.
+     */
+    @Override
+    public void setFillColor(PaintStyle fillColor) {
+        for (MathObject obj : objects) {
+            obj.getMp().setFillColor(fillColor);
+        }
+        mpRef.setFillColor(fillColor);
     }
 
     /**
@@ -414,7 +454,7 @@ public class MODrawPropertiesArray implements Stylable, Stateable {
      * @return The first `MODrawProperties` instance, referenced by `mpRef`.
      */
     @Override
-    public MODrawProperties getFirstMP() {
+    public MODrawPropertiesLaTeX getFirstMP() {
         return mpRef;
     }
 
@@ -422,7 +462,7 @@ public class MODrawPropertiesArray implements Stylable, Stateable {
      * Retrieves the currently defined line cap style for the stroke.
      *
      * @return The {@code StrokeLineCap} value representing the style of the line cap.
-     *         This determines how the end of a line or path is rendered.
+     * This determines how the end of a line or path is rendered.
      */
     @Override
     public StrokeLineCap getLineCap() {
@@ -440,19 +480,6 @@ public class MODrawPropertiesArray implements Stylable, Stateable {
     }
 
     /**
-     * Sets the line cap style for the stroke in all objects within the array and the reference object.
-     *
-     * @param linecap The {@link StrokeLineCap} style to be applied. Determines the shape used at the ends of open paths when stroked.
-     */
-    @Override
-    public void setLinecap(StrokeLineCap linecap) {
-        for (MathObject obj : objects) {
-            obj.getMp().setLinecap(linecap);
-        }
-        mpRef.setLinecap(linecap);
-    }
-
-    /**
      * Sets the style of the line join for all contained MathObject instances and the reference drawing properties.
      *
      * @param linejoin the {@link StrokeLineJoin} style to be applied to configure the way lines in shapes are joined.
@@ -463,6 +490,19 @@ public class MODrawPropertiesArray implements Stylable, Stateable {
             obj.getMp().setLineJoin(linejoin);
         }
         mpRef.setLineJoin(linejoin);
+    }
+
+    /**
+     * Sets the line cap style for the stroke in all objects within the array and the reference object.
+     *
+     * @param linecap The {@link StrokeLineCap} style to be applied. Determines the shape used at the ends of open paths when stroked.
+     */
+    @Override
+    public void setLinecap(StrokeLineCap linecap) {
+        for (MathObject obj : objects) {
+            obj.getMp().setLinecap(linecap);
+        }
+        mpRef.setLinecap(linecap);
     }
 
     /**
@@ -489,6 +529,16 @@ public class MODrawPropertiesArray implements Stylable, Stateable {
     }
 
     /**
+     * Retrieves the dot style associated with this object.
+     *
+     * @return The current DotStyle as defined in the referenced object.
+     */
+    @Override
+    public Point.DotSyle getDotStyle() {
+        return mpRef.getDotStyle();
+    }
+
+    /**
      * Sets the dot style of all MathObject instances in the collection as well as the referenced MODrawProperties object.
      *
      * @param dotStyle The dot style to apply. This parameter is of type Point.DotStyle, which determines the style of dots to be set.
@@ -502,13 +552,13 @@ public class MODrawPropertiesArray implements Stylable, Stateable {
     }
 
     /**
-     * Retrieves the dot style associated with this object.
+     * Retrieves the dash style property from the referenced MODrawProperties.
      *
-     * @return The current DotStyle as defined in the referenced object.
+     * @return The dash style of type {@link MODrawProperties.DashStyle}.
      */
     @Override
-    public Point.DotSyle getDotStyle() {
-        return mpRef.getDotStyle();
+    public MODrawProperties.DashStyle getDashStyle() {
+        return mpRef.getDashStyle();
     }
 
     /**
@@ -522,16 +572,6 @@ public class MODrawPropertiesArray implements Stylable, Stateable {
             obj.getMp().setDashStyle(dashStyle);
         }
         mpRef.setDashStyle(dashStyle);
-    }
-
-    /**
-     * Retrieves the dash style property from the referenced MODrawProperties.
-     *
-     * @return The dash style of type {@link MODrawProperties.DashStyle}.
-     */
-    @Override
-    public MODrawProperties.DashStyle getDashStyle() {
-        return mpRef.getDashStyle();
     }
 
     /**
@@ -576,7 +616,7 @@ public class MODrawPropertiesArray implements Stylable, Stateable {
      * Determines whether the associated object is oriented to face the camera.
      *
      * @return Boolean value indicating if the object is facing the camera. Returns true if it is,
-     *         otherwise false.
+     * otherwise false.
      */
     @Override
     public Boolean isFaceToCamera() {
@@ -623,6 +663,16 @@ public class MODrawPropertiesArray implements Stylable, Stateable {
     }
 
     /**
+     * Retrieves the scaling factor for the first arrowhead associated with the current object.
+     *
+     * @return A {@code Double} representing the scaling factor of the first arrowhead, or {@code null} if not set.
+     */
+    @Override
+    public Double getScaleArrowHead1() {
+        return mpRef.getScaleArrowHead1();
+    }
+
+    /**
      * Sets the scale of the first arrowhead for all associated MathObjects and the reference draw properties.
      *
      * @param scale The new scale value for the first arrowhead, represented as a Double.
@@ -636,6 +686,16 @@ public class MODrawPropertiesArray implements Stylable, Stateable {
     }
 
     /**
+     * Retrieves the scaling factor for the second arrowhead.
+     *
+     * @return The scaling factor applied to the second arrowhead as a Double.
+     */
+    @Override
+    public Double getScaleArrowHead2() {
+        return mpRef.getScaleArrowHead2();
+    }
+
+    /**
      * Sets the scaling factor for the second arrowhead of the objects and the reference properties.
      *
      * @param scale The scaling factor to be applied to the second arrowhead.
@@ -646,26 +706,6 @@ public class MODrawPropertiesArray implements Stylable, Stateable {
             obj.getMp().setScaleArrowHead2(scale);
         }
         mpRef.setScaleArrowHead2(scale);
-    }
-
-    /**
-     * Retrieves the scaling factor for the first arrowhead associated with the current object.
-     *
-     * @return A {@code Double} representing the scaling factor of the first arrowhead, or {@code null} if not set.
-     */
-    @Override
-    public Double getScaleArrowHead1() {
-        return mpRef.getScaleArrowHead1();
-    }
-
-    /**
-     * Retrieves the scaling factor for the second arrowhead.
-     *
-     * @return The scaling factor applied to the second arrowhead as a Double.
-     */
-    @Override
-    public Double getScaleArrowHead2() {
-        return mpRef.getScaleArrowHead2();
     }
 
 }

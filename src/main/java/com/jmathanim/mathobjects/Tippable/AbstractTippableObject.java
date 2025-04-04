@@ -75,7 +75,7 @@ public abstract class AbstractTippableObject extends Constructible implements ha
         scene.add(locationPoint);
         mpArray = new MODrawPropertiesArray();
         mpArray.add(refMathObject);
-        mpArray.add(mathobject);
+        mpArray.add(mathobject);//This is needed?
         mpArray.copyFrom(refMathObject.getMp());
     }
 

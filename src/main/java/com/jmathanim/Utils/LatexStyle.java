@@ -32,38 +32,48 @@ public class LatexStyle {
 
     private final ArrayList<LatexStyleItem> latexStyleItems;
 
-    public static LatexStyle make() {
-        return new LatexStyle();
-    }
-
     public LatexStyle() {
         this.latexStyleItems = new ArrayList<>();
     }
 
+    public static LatexStyle make() {
+        return new LatexStyle();
+    }
+
     public LatexStyle setColorTo(LatexToken.TokenType type, Integer secType, String name, String colorName) {
         LatexStyleItem colorizerItem = new LatexStyleItem();
-        LatexToken token=LatexToken.make()
-                .setType(type)
-                .setSecondaryTypeFlag(secType)
-                .setString(name);
+        LatexToken token = LatexToken.make().setType(type).setSecondaryTypeFlag(secType).setString(name);
         colorizerItem.mustMatchTo(token);
         colorizerItem.setColor(colorName);
         latexStyleItems.add(colorizerItem);
         return this;
     }
 
-    public LatexStyle setColorToChar(String name, String colorName) {
-        return setColorToChar(name, JMColor.parse(colorName));
+    /**
+     * Adds a match to a specific char in the token list, applying the given color to matching tokens.
+     * Bear in mind that this char is for math mode only. Non-math-char are ignored
+     *
+     * @param charStr Character to match
+     * @param colorName String representing color.
+     * @return This LatexStyle object
+     */
+    public LatexStyle setColorToChar(String charStr, String colorName) {
+        return setColorToChar(charStr, JMColor.parse(colorName));
     }
-
-    public LatexStyle setColorToChar(String name, PaintStyle colorName) {
-        LatexStyleItem colorizerItem = new LatexStyleItem();
-        LatexToken token=LatexToken.make()
-                .setType(LatexToken.TokenType.CHAR)
-                .setString(name);
-        colorizerItem.mustMatchTo(token);
-        colorizerItem.setColor(colorName);
-        latexStyleItems.add(colorizerItem);
+    /**
+     * Adds a match to a specific char in the token list, applying given style to matching tokens.
+     * Bear in mind that this char is for math mode only. Non-math-char are ignored
+     *
+     * @param charStr Character to match
+     * @param paintStyle PaintStyle to apply to matching tokens
+     * @return This LatexStyle object
+     */
+    public LatexStyle setColorToChar(String charStr, PaintStyle paintStyle) {
+        LatexStyleItem latexStyleItem = new LatexStyleItem();
+        LatexToken token = LatexToken.make().setType(LatexToken.TokenType.CHAR).setString(charStr);
+        latexStyleItem.mustMatchTo(token);
+        latexStyleItem.setColor(paintStyle);
+        latexStyleItems.add(latexStyleItem);
         return this;
     }
 

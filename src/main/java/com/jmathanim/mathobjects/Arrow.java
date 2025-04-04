@@ -587,7 +587,7 @@ public class Arrow extends Constructible {
      * @param format Format to print the numbers, for example "0.00"
      * @return The Label, a LatexMathObject
      */
-    public LaTeXMathObject addVecLabel(double gap, String format) {
+    public LabelTip addVecLabel(double gap, String format) {
         labelType=2;
         arrowLabel = LabelTip.makeLabelTip(labelArc, .5, "$({#0},{#1})$");
         LaTeXMathObject t = (LaTeXMathObject) arrowLabel.getMathObject();
@@ -605,7 +605,8 @@ public class Arrow extends Constructible {
                 t.getArg(1).setScalar(vAB.y);
             }
         });
-        return (LaTeXMathObject) arrowLabel.getRefMathObject();
+        return arrowLabel;
+//        return (LaTeXMathObject) arrowLabel.getRefMathObject();
     }
 
     @Override

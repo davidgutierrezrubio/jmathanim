@@ -58,7 +58,7 @@ public abstract class JMathAnimScene {
     /**
      * 2PI
      */
-    public static final double PI2 = 2*PI;
+    public static final double PI2 = 2 * PI;
     /**
      * The golden ratio
      */
@@ -125,6 +125,17 @@ public abstract class JMathAnimScene {
     /**
      * Exit code of program
      */
+
+    /**
+     * Time in milliseconds per frame
+     */
+    protected long timeMillisPerFrame;
+
+    /**
+     * Last time in milliseconds. Used to control fps
+     */
+    protected long lastTimeMillis;
+
     private int exitCode;
     /**
      * If true, frames are not generated and animations are instantly processed
@@ -433,6 +444,9 @@ public abstract class JMathAnimScene {
      * Advance one frame, making all necessary drawings and saving frame
      */
     public final void advanceFrame() {
+        long now = System.currentTimeMillis();
+
+
         if (!animationIsDisabled) {
             renderer.clearAndPrepareCanvasForAnotherFrame();
         }
@@ -442,8 +456,20 @@ public abstract class JMathAnimScene {
             saveMPFrame();
             previousNanoTime = nanoTime;
             nanoTime = System.nanoTime();
-        }
 
+
+            if (config.isLimitFPS()) {
+                long elapsedTime = System.currentTimeMillis() - now;
+                if (elapsedTime < timeMillisPerFrame) {
+                    try {
+                        Thread.sleep(timeMillisPerFrame - elapsedTime);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+                lastTimeMillis = System.currentTimeMillis();
+            }
+        }
     }
 
     /**
@@ -853,6 +879,7 @@ public abstract class JMathAnimScene {
 
     /**
      * Returns the current time step for each frame.
+     *
      * @return The time step
      */
     public double getDt() {

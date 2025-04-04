@@ -371,7 +371,7 @@ public class MultiShapeObject extends MathObject implements Iterable<Shape> {
     }
 
     @Override
-    public final Stylable getMp() {
+    public MODrawPropertiesArray getMp() {
         return mpMultiShape;
     }
 
