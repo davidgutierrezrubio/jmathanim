@@ -15,10 +15,10 @@ public class RectUpdater extends Updater {
         rect = Shape.square().drawColor("gold");//default style
     }
 
-    @Override
-    public void computeUpdateLevel() {
-        setUpdateLevel(getMathObject().getUpdateLevel() + 1);
-    }
+//    @Override
+//    public int computeUpdateLevel() {
+//        return getMathObject().getUpdateLevel() + 1;
+//    }
 
     @Override
     public void update(JMathAnimScene scene) {

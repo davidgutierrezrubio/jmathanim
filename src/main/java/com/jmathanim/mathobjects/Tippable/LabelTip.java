@@ -16,67 +16,101 @@
  */
 package com.jmathanim.mathobjects.Tippable;
 
+import com.jmathanim.Styling.Stylable;
 import com.jmathanim.Utils.Anchor;
+import com.jmathanim.Utils.LatexStyle;
+import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.Point;
 import com.jmathanim.mathobjects.Shape;
 import com.jmathanim.mathobjects.Text.AbstractLaTeXMathObject;
 import com.jmathanim.mathobjects.Text.LaTeXMathObject;
+import com.jmathanim.mathobjects.updaters.Updater;
 
 /**
+ * A tippable LaTexMathObject
  *
  * @author David Gutierrez Rubio davidgutierrezrubio@gmail.com
  */
 public class LabelTip extends AbstractTippableObject {
 
-    
+
     private AbstractLaTeXMathObject abstractLaTeXMathObject;
 
-    public static LabelTip makeLabelTip(Point A, Point B,String text) {
-        return makeLabelTip(Shape.segment(A,B),.5,text);
+    protected LabelTip(Shape shape, AbstractLaTeXMathObject tipLabel, Anchor.Type anchor, double location) {
+        super(shape, tipLabel, Anchor.getAnchorPoint(tipLabel, anchor), location);
+        abstractLaTeXMathObject = tipLabel;
+        correctionAngle = 0;
+        distanceToShape = tipLabel.getHeight();
     }
 
+
+    protected LabelTip(Shape shape, AbstractLaTeXMathObject tipObject, Point anchorPoint, double location) {
+        super(shape, tipObject, anchorPoint, location);
+        abstractLaTeXMathObject = tipObject;
+        correctionAngle = 0;
+        distanceToShape = tipObject.getHeight();
+    }
+
+    public static LabelTip makeLabelTip(Point A, Point B, String text) {
+        return makeLabelTip(Shape.segment(A, B), .5, text);
+    }
 
     public static LabelTip makeLabelTip(Shape shape, double location, String text) {
         return makeLabelTip(shape, location, LaTeXMathObject.make(text));
     }
-      /**
+
+    public static LabelTip makeLengthLabel(Point A, Point B, String format){
+        LaTeXMathObject t = LaTeXMathObject.make("${#0}$");
+        LabelTip resul=new LabelTip(Shape.segment(A,B),t, Anchor.Type.UPPER,.5);
+
+        t.registerUpdater(new Updater() {
+            @Override
+            public void update(JMathAnimScene scene) {
+                t.getArg(0).setScalar(A.to(B).norm());
+            }
+        });
+        return resul;
+    }
+
+
+    /**
      * Attach an AbstractLaTeXMathObject instance to a specific point of a Shape. The LaTeX is
      * attached outside the point to a distance of the height.
      *
-     * @param shape Shape to attach the tip
+     * @param shape    Shape to attach the tip
      * @param location Point of the shape to locate the tip. A parameter between
-     * 0 and 1. Values outside this range are normalized.
+     *                 0 and 1. Values outside this range are normalized.
      * @param tipLabel LaTeX object
      * @return The tippable object
      */
 
     public static LabelTip makeLabelTip(Shape shape, double location, AbstractLaTeXMathObject tipLabel) {
-        
+
         LabelTip resul = new LabelTip(shape, tipLabel, Anchor.Type.CENTER, location);
         resul.rebuildShape();
         return resul;
     }
 
-    protected LabelTip(Shape shape, AbstractLaTeXMathObject tipLabel, Anchor.Type anchor, double location) {
-        super(shape, tipLabel, Anchor.getAnchorPoint(tipLabel, anchor), location);
-        abstractLaTeXMathObject=tipLabel;
-        correctionAngle=0;
-        distanceToShape=tipLabel.getHeight();
-    }
-
-    protected LabelTip(Shape shape, MathObject tipObject, Point anchorPoint, double location) {
-        super(shape, tipObject, anchorPoint, location);
-    }
-
     @Override
     public LabelTip copy() {
-        LabelTip copy = new LabelTip(shape, mathobject.copy(), pivotPointRefMathObject.copy(), locationParameterOnShape);
+        LabelTip copy = new LabelTip(shape, abstractLaTeXMathObject, pivotPointRefMathObject.copy(), locationParameterOnShape);
         copy.copyStateFrom(this);
         return copy;
     }
 
     public AbstractLaTeXMathObject getLaTeXObject() {
-        return (AbstractLaTeXMathObject) mathobject;
+        return abstractLaTeXMathObject;
+    }
+
+    public LabelTip setLatexStyle(LatexStyle latexStyle) {
+        abstractLaTeXMathObject.setLatexStyle(latexStyle);
+        return this;
+    }
+
+
+    @Override
+    public Stylable getMp() {
+        return abstractLaTeXMathObject.getMp();
     }
 }

@@ -21,15 +21,13 @@ import com.jmathanim.Cameras.Camera3D;
 import com.jmathanim.Utils.AffineJTransform;
 import com.jmathanim.Utils.Anchor;
 import com.jmathanim.jmathanim.JMathAnimScene;
-import com.jmathanim.mathobjects.MathObject;
-import com.jmathanim.mathobjects.Point;
-import com.jmathanim.mathobjects.Scalar;
-import com.jmathanim.mathobjects.hasArguments;
+import com.jmathanim.mathobjects.*;
 
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 
 /**
  *
@@ -139,9 +137,16 @@ public class LaTeXMathObject extends AbstractLaTeXMathObject implements hasArgum
     @Override
     public void copyStateFrom(MathObject obj) {
         super.copyStateFrom(obj);
-        LaTeXMathObject copy = (LaTeXMathObject) obj;
-        this.origText = copy.origText;
-        this.anchor = copy.anchor;
+        if (obj instanceof LaTeXMathObject) {
+            LaTeXMathObject copy = (LaTeXMathObject) obj;
+            this.origText = copy.origText;
+            this.anchor = copy.anchor;
+            //copy all variable values
+            for (Map.Entry<Integer,Scalar> pair : copy.variables.entrySet()) {
+                variables.get(pair.getKey()).setScalar(pair.getValue().value);
+            };
+        }
+        
     }
 
     @Override
@@ -202,15 +207,8 @@ public class LaTeXMathObject extends AbstractLaTeXMathObject implements hasArgum
         return variables.get(n);
     }
 
-//    @Override
-//    public void copyStateFrom(MathObject obj) {
-//        super.copyStateFrom(obj);
-//        if (obj instanceof NewLaTeXMathObject) {
-//            NewLaTeXMathObject copy = (NewLaTeXMathObject) obj;
-//            super.copyStateFrom(copy);
-//            modelMatrix.copyFrom(copy.modelMatrix);
-//        }
-//    }
+
+
     @Override
     public String toString() {
         return "LaTeXMathObject{" + "origText=" + origText + '}';

@@ -121,7 +121,7 @@ public abstract class Animation {
         this.shouldAddObjectsToScene = true;
         this.shouldResetAtReuse = true;
         this.shouldInterpolateStyles = true;
-        lambda = UsefulLambdas.smooth(.9d);
+        lambda = UsefulLambdas.smooth();
         backups = new HashMap<>();
         addThisAtTheEnd = new ArrayList<>();
         removeThisAtTheEnd = new ArrayList<>();

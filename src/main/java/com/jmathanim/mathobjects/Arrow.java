@@ -61,9 +61,9 @@ public class Arrow extends Constructible {
     private Arrow(Point A, Point B) {
         this.A = A;
         this.B = B;
-        labelType=0;
+        labelType = 0;
         this.labelArc = new Shape();
-        this.arrowLabel=null;
+        this.arrowLabel = null;
         head1 = new Shape();
         head2 = new Shape();
         arrowThickness = 20;//TODO: Default value. This should be in config file
@@ -191,16 +191,21 @@ public class Arrow extends Constructible {
 
     @Override
     public void rebuildShape() {
+        if (isThisMathObjectFree()) return;
         if (scene == null) {
             return;
         }
-        if (!isThisMathObjectFree()) {
-            Acopy.v.copyFrom(A.v);
-            Bcopy.v.copyFrom(B.v);
-        }
+        //The distScale manages which scale should be the arrow drawn. It is used mostly by ShowCreation animation
+
+        Acopy.v.copyFrom(A.v);
+        Bcopy.v.copyFrom(A.interpolate(B, distScale).v);
         Shape h1A = head1.copy();
         Shape h1B = head2.copy();
-        double dist = Acopy.to(Bcopy).norm() * distScale;
+        double dist = Acopy.to(Bcopy).norm();
+        if (arrowLabel != null)
+            arrowLabel.getMathObject().scale(arrowLabel.pivotPointRefMathObject,distScale);
+
+
         //Scale heads to adjust to thickness
         double rThickness = scene.getRenderer().ThicknessToMathWidth(arrowThickness);
 
@@ -292,13 +297,13 @@ public class Arrow extends Constructible {
 //        shapeToDraw.getPath().applyAffineTransform(trRotate);
         Point z1 = startPoint.copy().shift(0, 0, 1);
         Point C;
-        Vec v = A.to(B);
+        Vec v = Acopy.to(Bcopy);
         if ((v.x == 0) && (v.y == 0)) {
-            C = A.copy().shift(0, 1, 0);
+            C = Acopy.copy().shift(0, 1, 0);
         } else {
-            C = A.copy().shift(0, 0, 1);
+            C = Acopy.copy().shift(0, 0, 1);
         }
-        AffineJTransform tr = AffineJTransform.createDirect3DIsomorphic(startPoint, endPoint, z1, A, B, C, 1);
+        AffineJTransform tr = AffineJTransform.createDirect3DIsomorphic(startPoint, endPoint, z1, Acopy, Bcopy, C, 1);
         shapeToDraw.getPath().applyAffineTransform(tr);
         labelArc.getPath().applyAffineTransform(tr);
         //Now, rotate to face camera3d..
@@ -306,8 +311,8 @@ public class Arrow extends Constructible {
             Camera3D cam = (Camera3D) scene.getCamera();
 //            Point C = A.copy().shift(0, 0, 1);
             v = cam.look.to(cam.eye);
-            Point C2 = A.copy().shift(v);
-            tr = AffineJTransform.createDirect3DIsomorphic(A, B, C, A, B, C2, 1);
+            Point C2 = Acopy.copy().shift(v);
+            tr = AffineJTransform.createDirect3DIsomorphic(Acopy, Bcopy, C, Acopy, Bcopy, C2, 1);
             shapeToDraw.applyAffineTransform(tr);
             labelArc.applyAffineTransform(tr);
         }
@@ -366,7 +371,7 @@ public class Arrow extends Constructible {
     @Override
     public void update(JMathAnimScene scene) {
         super.update(scene);
-        if (arrowLabel!=null) arrowLabel.update(scene);
+        if (arrowLabel != null) arrowLabel.update(scene);
         rebuildShape();
 
     }
@@ -557,18 +562,21 @@ public class Arrow extends Constructible {
      * @param format Format to print the length, for example "0.00"
      * @return The Label, a LatexMathObject
      */
-    public LaTeXMathObject addLengthLabel(double gap,
+    public LabelTip addLengthLabel(double gap,
                                           String format) {
-        labelType=1;
-         arrowLabel = LabelTip.makeLabelTip(labelArc, .5, "${#0}$");
-                 LaTeXMathObject t = (LaTeXMathObject) arrowLabel.getMathObject();
+        labelType = 1;
+        arrowLabel = LabelTip.makeLabelTip(labelArc, .5, "${#0}$");
+        arrowLabel.distanceToShape=gap;
+        arrowLabel.setAnchor(Anchor.Type.LOWER);
+
+        LaTeXMathObject t = (LaTeXMathObject) arrowLabel.getMathObject();
         t.setArgumentsFormat(format);
 
         t.registerUpdater(new Updater() {
-            @Override
-            public void computeUpdateLevel() {
-                this.updateLevel=Math.max(A.getUpdateLevel(),B.getUpdateLevel())+1;
-            }
+//            @Override
+//            public int computeUpdateLevel() {
+//                return Math.max(A.getUpdateLevel(), B.getUpdateLevel()) + 1;
+//            }
 
             @Override
             public void update(JMathAnimScene scene) {
@@ -576,7 +584,7 @@ public class Arrow extends Constructible {
 
             }
         });
-        return (LaTeXMathObject) arrowLabel.getRefMathObject();
+        return arrowLabel;
     }
 
     /**
@@ -588,19 +596,21 @@ public class Arrow extends Constructible {
      * @return The Label, a LatexMathObject
      */
     public LabelTip addVecLabel(double gap, String format) {
-        labelType=2;
+        labelType = 2;
         arrowLabel = LabelTip.makeLabelTip(labelArc, .5, "$({#0},{#1})$");
+        arrowLabel.distanceToShape=gap;
+        arrowLabel.setAnchor(Anchor.Type.LOWER);
         LaTeXMathObject t = (LaTeXMathObject) arrowLabel.getMathObject();
         t.setArgumentsFormat(format);
         t.registerUpdater(new Updater() {
-            @Override
-            public void computeUpdateLevel() {
-                this.updateLevel=Math.max(A.getUpdateLevel(),B.getUpdateLevel())+1;
-            }
+//            @Override
+//            public void computeUpdateLevel() {
+//                this.updateLevel = Math.max(A.getUpdateLevel(), B.getUpdateLevel()) + 1;
+//            }
 
             @Override
             public void update(JMathAnimScene scene) {
-                Vec vAB=A.to(B);
+                Vec vAB = A.to(B);
                 t.getArg(0).setScalar(vAB.x);
                 t.getArg(1).setScalar(vAB.y);
             }
@@ -612,7 +622,7 @@ public class Arrow extends Constructible {
     @Override
     public void draw(JMathAnimScene scene, Renderer r, Camera cam) {
         super.draw(scene, r, cam);
-        if (arrowLabel!=null) arrowLabel.draw(scene,r,cam);
+        if (arrowLabel != null) arrowLabel.draw(scene, r, cam);
     }
 
     //TODO:

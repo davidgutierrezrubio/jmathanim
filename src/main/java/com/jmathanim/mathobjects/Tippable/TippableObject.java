@@ -22,16 +22,27 @@ import com.jmathanim.Utils.JMathAnimConfig;
 import com.jmathanim.mathobjects.*;
 
 /**
+ * Convenience static constructors for some common tippable objects
  *
  * @author David Gutierrez Rubio davidgutierrezrubio@gmail.com
  */
 public class TippableObject extends AbstractTippableObject {
 
+    //    public static AbstractTippableObject makeLabel(Shape shape, String text, Anchor.Type anchor, double location) {
+//        LaTeXMathObject tipObject = LaTeXMathObject.make(text);
+//        Point anchorPoint = Anchor.getAnchorPoint(tipObject, anchor);
+//        AbstractTippableObject resul = new TippableObject(shape, tipObject, anchorPoint, location);
+//        return resul;
+//    }
+    protected TippableObject(Shape shape, MathObject tipObject, Point anchorPoint, double location) {
+        super(shape, tipObject, anchorPoint, location);
+    }
+
     /**
      * Creates a parallel sign
      *
-     * @param shape Shape to anchor to
-     * @param location Location of the shape. A number between 0 and 1.
+     * @param shape         Shape to anchor to
+     * @param location      Location of the shape. A number between 0 and 1.
      * @param numberOfMarks Number of marks to draw
      * @return The tippable object
      */
@@ -52,7 +63,7 @@ public class TippableObject extends AbstractTippableObject {
         Renderer r = JMathAnimConfig.getConfig().getScene().getRenderer();
 //        arrowHead.setAbsoluteSize(Anchor.Type.CENTER);
 //        arrowHead.thickness(0);
-        arrowHead.setWidth(r.ThicknessToMathWidth(shape.getMp().getThickness()*5));
+        arrowHead.setWidth(r.ThicknessToMathWidth(shape.getMp().getThickness() * 5));
 //        arrowHead.
         arrowHead.fillColor(shape.getMp().getDrawColor());
         arrowHead.drawColor(shape.getMp().getDrawColor());
@@ -76,16 +87,6 @@ public class TippableObject extends AbstractTippableObject {
     public static TippableObject make(Shape shape, MathObject tipObject, Point anchorPoint, double location) {
         TippableObject resul = new TippableObject(shape, tipObject, anchorPoint, location);
         return resul;
-    }
-
-//    public static AbstractTippableObject makeLabel(Shape shape, String text, Anchor.Type anchor, double location) {
-//        LaTeXMathObject tipObject = LaTeXMathObject.make(text);
-//        Point anchorPoint = Anchor.getAnchorPoint(tipObject, anchor);
-//        AbstractTippableObject resul = new TippableObject(shape, tipObject, anchorPoint, location);
-//        return resul;
-//    }
-    protected TippableObject(Shape shape, MathObject tipObject, Point anchorPoint, double location) {
-        super(shape, tipObject, anchorPoint, location);
     }
 
     @Override

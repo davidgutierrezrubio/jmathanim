@@ -41,7 +41,7 @@ public abstract class Scene2D extends JMathAnimScene {
 	protected void createRenderer() {
 		fps = getConfig().fps;
 		dt = 1. / fps;
-		timeMillisPerFrame= (long) (dt*1000);
+		timeMillisPerFrame= (long) (1000d/fps);
 		try {
 			renderer = new JavaFXRenderer(this);
                         renderer.initialize();

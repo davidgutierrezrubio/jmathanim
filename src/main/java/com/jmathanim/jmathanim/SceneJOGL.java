@@ -37,6 +37,7 @@ public abstract class SceneJOGL extends JMathAnimScene {
 	void createRenderer() {
 		fps = getConfig().fps;
 		dt = 1. / fps;
+		timeMillisPerFrame= (long) (1000d/fps);
 //		try {
 			renderer = new JOGLRenderer(this);
                         renderer.initialize();

@@ -160,7 +160,7 @@ public class UsefulLambdas {
      * @return The lambda function
      */
     public static DoubleUnaryOperator smooth() {
-        return smooth(.5d);
+        return smooth(.7d);
     }
 
     /**

@@ -95,7 +95,7 @@ public abstract class AbstractLaTeXMathObject extends SVGMathObject {
 
 
     public void setLatexStyle(LatexStyle latexStyle) {
-        this.getMp().getFirstMP().setLatexStyle(latexStyle);
+        this.getMp().setLatexStyle(latexStyle);
         if (latexStyle != null) {
             latexStyle.apply(this);
         }

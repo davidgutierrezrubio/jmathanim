@@ -26,7 +26,6 @@ import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.Point;
 import com.jmathanim.mathobjects.Shape;
-import com.jmathanim.mathobjects.Text.LaTeXMathObject;
 import com.jmathanim.mathobjects.hasScalarParameter;
 
 import static com.jmathanim.jmathanim.JMathAnimScene.PI;
@@ -46,7 +45,7 @@ public abstract class AbstractTippableObject extends Constructible implements ha
 
     public double rotationAngle;
     protected double correctionAngle;
-    private boolean fixed;
+    private boolean fixedRotation;
 
     public final Point markPoint;
     public final Point locationPoint;
@@ -66,8 +65,9 @@ public abstract class AbstractTippableObject extends Constructible implements ha
         this.refMathObject = tipObject;
         this.pivotPointRefMathObject = anchorPoint;
         this.locationParameterOnShape = location;
+        this.slopeDirectionType=SlopeDirectionType.POSITIVE;
         distanceToShape = 0;
-        fixed = false;
+        fixedRotation = false;
         rotationAngle = 0;
         markPoint = Point.origin();
         locationPoint = Point.origin().visible(false);
@@ -79,45 +79,46 @@ public abstract class AbstractTippableObject extends Constructible implements ha
         mpArray.copyFrom(refMathObject.getMp());
     }
 
-    public AbstractTippableObject setAnchor(Anchor.Type anchor) {
+    public <T extends AbstractTippableObject> T setAnchor(Anchor.Type anchor) {
         this.pivotPointRefMathObject.v.copyFrom(Anchor.getAnchorPoint(refMathObject, anchor).v);
         rebuildShape();
-        return this;
+        return (T) this;
     }
 
-    public AbstractTippableObject setAnchorPoint(Point anchorPoint) {
+    public <T extends AbstractTippableObject> T setAnchorPoint(Point anchorPoint) {
         this.pivotPointRefMathObject.v.copyFrom(anchorPoint.v);
         rebuildShape();
-        return this;
+        return (T) this;
     }
 
     public double getRotationAngle() {
         return rotationAngle;
     }
 
-    public AbstractTippableObject setRotationAngle(double rotationAngle) {
+    public <T extends AbstractTippableObject> T setRotationAngle(double rotationAngle) {
         this.rotationAngle = rotationAngle;
         rebuildShape();
-        return this;
+        return (T) this;
     }
 
-    public boolean isFixed() {
-        return fixed;
+    public boolean isFixedRotation() {
+        return fixedRotation;
     }
 
-    public AbstractTippableObject setFixedAngle(boolean fixed) {
-        this.fixed = fixed;
+    public <T extends AbstractTippableObject> T setFixedAngle(boolean fixed) {
+        this.fixedRotation = fixed;
         rebuildShape();
-        return this;
+        return (T) this;
     }
 
     public double getDistanceToShape() {
         return distanceToShape;
     }
 
-    public void setDistanceToShape(double distanceToShape) {
+    public <T extends AbstractTippableObject> T setDistanceToShape(double distanceToShape) {
         this.distanceToShape = distanceToShape;
         rebuildShape();
+        return (T) this;
     }
 
     @Override
@@ -155,7 +156,7 @@ public abstract class AbstractTippableObject extends Constructible implements ha
             this.pivotPointRefMathObject.copyStateFrom(nt.pivotPointRefMathObject);
             this.locationParameterOnShape = nt.locationParameterOnShape;
             this.distanceToShape = nt.distanceToShape;
-            this.fixed = nt.fixed;
+            this.fixedRotation = nt.fixedRotation;
             this.rotationAngle = nt.rotationAngle;
             this.markPoint.copyStateFrom(nt.markPoint);
             this.locationPoint.copyStateFrom(nt.locationPoint);
@@ -172,7 +173,8 @@ public abstract class AbstractTippableObject extends Constructible implements ha
         }
         if (shape.isEmpty()) return;
         //Reset. There may be a problem with scalars, as copyStateFrom overwrites scalars
-        LaTeXMathObject t= (LaTeXMathObject) mathobject;
+        //TODO: This is not efficient. Both refMathObject and mathobject have to be updated with this code
+        refMathObject.update(scene);//This is needed as text content must be recreated if scalars changed
         mathobject.copyStateFrom(refMathObject);
         mathobject.update(scene);//This is needed as text content must be recreated if scalars changed
         Vec tangent;
@@ -182,9 +184,9 @@ public abstract class AbstractTippableObject extends Constructible implements ha
             tangent = shape.getPath().getSlopeAt(locationParameterOnShape, slopeDirectionType == SlopeDirectionType.POSITIVE);
         }
 
-        Vec normal = Vec.to(-tangent.y, tangent.x).normalize();
+        Vec normal = Vec.to(-tangent.y, tangent.x).normalize();//Normal vec, rotated 90º counterclockwise
 
-        if (!fixed) {
+        if (!fixedRotation) {
             double angle = tangent.getAngle();
             angle += rotationAngle;
             angle -= correctionAngle;
@@ -219,10 +221,10 @@ public abstract class AbstractTippableObject extends Constructible implements ha
         return slopeDirectionType;
     }
 
-    public AbstractTippableObject setSlopeDirection(SlopeDirectionType slopeDirection) {
+    public <T extends AbstractTippableObject> T setSlopeDirection(SlopeDirectionType slopeDirection) {
         this.slopeDirectionType = slopeDirection;
         rebuildShape();
-        return this;
+        return (T) this;
     }
 
     @Override

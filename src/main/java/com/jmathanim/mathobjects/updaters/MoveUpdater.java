@@ -22,15 +22,15 @@ public class MoveUpdater extends Updater {
         instant = (speed <= 0);
     }
 
-    @Override
-    public void computeUpdateLevel() {
-        if (ref instanceof Updateable) {
-            Updateable obj = (Updateable) ref;
-            setUpdateLevel(Math.max(getMathObject().getUpdateLevel(), obj.getUpdateLevel()) + 1);
-        } else {
-            setUpdateLevel(getMathObject().getUpdateLevel() + 1);
-        }
-    }
+//    @Override
+//    public void computeUpdateLevel() {
+//        if (ref instanceof Updateable) {
+//            Updateable obj = (Updateable) ref;
+//            setUpdateLevel(Math.max(getMathObject().getUpdateLevel(), obj.getUpdateLevel()) + 1);
+//        } else {
+//            setUpdateLevel(getMathObject().getUpdateLevel() + 1);
+//        }
+//    }
 
     @Override
     public void update(JMathAnimScene scene) {

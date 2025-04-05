@@ -20,9 +20,9 @@ public abstract class Updater {
 
     public void setMathObject(MathObject mathObject) {
         this.mathObject = mathObject;
-        computeUpdateLevel();
+//        setUpdateLevel(computeUpdateLevel());
     }
-    public abstract  void computeUpdateLevel();
+//    public abstract  int computeUpdateLevel();
 
     public abstract void update(JMathAnimScene scene);
 

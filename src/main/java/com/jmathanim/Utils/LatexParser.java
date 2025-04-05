@@ -22,10 +22,7 @@ import org.scilab.forge.jlatexmath.*;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -38,32 +35,35 @@ import java.util.logging.Logger;
  */
 public class LatexParser implements Iterable<LatexToken> {
 
+    public final ArrayList<Box> boxes;
     private final ArrayList<LatexToken> assignedTokens;
+    private final AbstractLaTeXMathObject latex;
+    private final ArrayList<LatexToken> tokens;
+    public TeXIcon icon;
+    public List<MiddleAtom> list;
+    public boolean isMathMode;
+    public Modifier modifier;
     private int boxCounter;
     private int tokenCounter;
     private TeXFormula formula2;
-    public TeXIcon icon;
-    private final AbstractLaTeXMathObject latex;
     private TeXFormula formula;
-
     private boolean takesStyleFromNextFlag;
-
-    public List<MiddleAtom> list;
     private LatexToken previousToken;
     private Atom rootCopy;
-
-    public final ArrayList<LatexToken> tokens;
-    public final ArrayList<Box> boxes;
-
-    public enum Modifier {
-        NORMAL, //Normal math
-        TYPED,//A function name
-        RAW_TEXT//Raw, normal text
-    }
-    public boolean isMathMode;
     private Integer secondaryType;
-    public Modifier modifier;
     private int delimiterDepth;
+    /**
+     * If true, marks minus signs as NUMBER type when treated as number.
+     * For example 2-5=-3, the first minus sign will be marked as OPERATOR
+     * and the second one as NUMBER
+     */
+    private boolean configDistilleMinusSign = true;
+
+    /**
+     * If true, mark dot signs as NUMBER when part of a decimal number.
+     */
+    private boolean configDistilleDotSign = true;
+
 
     public LatexParser(AbstractLaTeXMathObject latex) {
         this.latex = latex;
@@ -75,6 +75,12 @@ public class LatexParser implements Iterable<LatexToken> {
         this.secondaryType = LatexToken.SEC_NORMAL;
         takesStyleFromNextFlag = false;
         delimiterDepth = 0;
+    }
+
+    //Boolean config flags
+
+    public ArrayList<LatexToken> getTokens() {
+        return tokens;
     }
 
     public TeXFormula getJLatexFormulaParser() {
@@ -92,7 +98,7 @@ public class LatexParser implements Iterable<LatexToken> {
             return;
         }
 
-        this.tokens.clear();
+        this.getTokens().clear();
         boxes.clear();
         this.assignedTokens.clear();
         delimiterDepth = 0;
@@ -134,19 +140,53 @@ public class LatexParser implements Iterable<LatexToken> {
 
     private void distilleTokens() {
 
+        if (configDistilleMinusSign) {
+            //If first token is a "minus" it should be treated always as part of a number
+            LatexToken firstToken = getTokens().get(0);
+            if ("minus".equals(firstToken.getString())) {
+                firstToken.setType(LatexToken.TokenType.NUMBER);
+            }
+        }
+
         //A dot followed by a number should be marked as number too
-        for (int i = 1; i < tokens.size(); i++) {
-            LatexToken token = tokens.get(i);
-            LatexToken prevToken = tokens.get(i - 1);
-            if (token.getType() == LatexToken.TokenType.NUMBER) {
-                if ("normaldot".equals(prevToken.getString())) {
-                    prevToken.setType(LatexToken.TokenType.NUMBER);
+        for (int i = 1; i < getTokens().size(); i++) {
+
+            LatexToken token = getTokens().get(i);
+            LatexToken prevToken = getTokens().get(i - 1);
+            if (configDistilleDotSign) {
+                if (token.getType() == LatexToken.TokenType.NUMBER) {
+                    if ("normaldot".equals(prevToken.getString())) {
+                        prevToken.setType(LatexToken.TokenType.NUMBER);
+                    }
+                }
+                //If a dot is next to a NON_MATH_CHAR, we assume it is also a non math char
+                if ("normaldot".equals(token.getString())) {
+                    if (prevToken.getType() == LatexToken.TokenType.NON_MATH_CHAR) {
+                        token.setType(LatexToken.TokenType.NON_MATH_CHAR);
+                    }
                 }
             }
-            //If a dot is next to a NON_MATH_CHAR, we assume it is also a non math char
-            if ("normaldot".equals(token.getString())) {
-                if (prevToken.getType() == LatexToken.TokenType.NON_MATH_CHAR) {
-                    token.setType(LatexToken.TokenType.NON_MATH_CHAR);
+            if (configDistilleMinusSign) {
+                //A "minus" character should be treated as a number if:
+                //preceded by a delimiter token
+                //preceded by "comma"
+                //preceded by relation token
+                //preceded by sqrt token
+                if ("minus".equals(token.getString())) {
+                    if ("comma".equals(prevToken.getString())) {
+                        token.setType(LatexToken.TokenType.NUMBER);
+                    }
+                    for (LatexToken.TokenType tokenType : Arrays.asList(
+                            LatexToken.TokenType.DELIMITER,
+                            LatexToken.TokenType.RELATION,
+                            LatexToken.TokenType.FRACTION_BAR,
+                            LatexToken.TokenType.SQRT,
+                            LatexToken.TokenType.ARROW
+                    )) {
+                        if (prevToken.getType() == tokenType) {
+                            token.setType(LatexToken.TokenType.NUMBER);
+                        }
+                    }
                 }
             }
 
@@ -411,7 +451,7 @@ public class LatexParser implements Iterable<LatexToken> {
             classField.setAccessible(true);
             boolean over = (boolean) classField.get(underOverArrowAtom);
 
-            //Determine type of arrow 
+            //Determine type of arrow
             //dble =true if double arrow
             //left=true if is left arrow
             classField = UnderOverArrowAtom.class.getDeclaredField("dble");
@@ -577,7 +617,7 @@ public class LatexParser implements Iterable<LatexToken> {
                 .setDelimiterDepth(this.delimiterDepth);
         token.activateSecondaryFlag(secondaryType);
         token.takesStyleFromNext = this.takesStyleFromNextFlag;
-        tokens.add(token);
+        getTokens().add(token);
         previousToken = token;
     }
 
@@ -649,8 +689,8 @@ public class LatexParser implements Iterable<LatexToken> {
 //        }
         boxCounter = 0;
         tokenCounter = 0;
-        while (tokenCounter < tokens.size()) {
-            LatexToken token = tokens.get(tokenCounter);
+        while (tokenCounter < getTokens().size()) {
+            LatexToken token = getTokens().get(tokenCounter);
             switch (token.getType()) {
                 case NON_MATH_CHAR:
                     int sizeLigature = checkLigatures(token);
@@ -732,9 +772,9 @@ public class LatexParser implements Iterable<LatexToken> {
         }
         LatexToken tok1;
         LatexToken tok2;
-        if (tokenCounter + 2 < tokens.size()) {//3 chars ligature
-            tok1 = tokens.get(tokenCounter + 1);
-            tok2 = tokens.get(tokenCounter + 2);
+        if (tokenCounter + 2 < getTokens().size()) {//3 chars ligature
+            tok1 = getTokens().get(tokenCounter + 1);
+            tok2 = getTokens().get(tokenCounter + 2);
             if (tokenIsNonMathChar(tok1, "f")) {
                 if (tokenIsNonMathChar(tok2, "i"))//ffi case
                 {
@@ -750,8 +790,8 @@ public class LatexParser implements Iterable<LatexToken> {
                 }
             }
         }
-        if (tokenCounter + 1 < tokens.size()) {//2 chars ligature
-            tok1 = tokens.get(tokenCounter + 1);
+        if (tokenCounter + 1 < getTokens().size()) {//2 chars ligature
+            tok1 = getTokens().get(tokenCounter + 1);
             if (tokenIsNonMathChar(tok1, "f"))//ff case
             {
                 token.setString("ff");
@@ -817,8 +857,8 @@ public class LatexParser implements Iterable<LatexToken> {
             case "lbrack":
                 this.delimiterDepth++;
                 scanBigDelimiter(token,
-                        18, 40, //Normal 
-                        1, 161, //\big 
+                        18, 40, //Normal
+                        1, 161, //\big
                         1, 179, //\Big
                         1, 195, //\Bigg
                         1, 181, //\Bigg4
@@ -1100,15 +1140,15 @@ public class LatexParser implements Iterable<LatexToken> {
     }
 
     protected void scanBigDelimiter(LatexToken token,
-            int cfSmall, int cSmall,
-            int cfBig1, int cBig1,
-            int cfBig2, int cBig2,
-            int cfBig3, int cBig3,
-            int cfBig4, int cBig4,
-            int cfExtensibleUpper, int cExtensibleUpper,
-            int cfExtensibleLower, int cExtensibleLower,
-            int cfExtensibleOverRight, int cExtensibleOverRight,
-            int cfExtensibleOverLeft, int cExtensibleOverLeft
+                                    int cfSmall, int cSmall,
+                                    int cfBig1, int cBig1,
+                                    int cfBig2, int cBig2,
+                                    int cfBig3, int cBig3,
+                                    int cfBig4, int cBig4,
+                                    int cfExtensibleUpper, int cExtensibleUpper,
+                                    int cfExtensibleLower, int cExtensibleLower,
+                                    int cfExtensibleOverRight, int cExtensibleOverRight,
+                                    int cfExtensibleOverLeft, int cExtensibleOverLeft
     ) {
         Box b = boxes.get(boxCounter);
 
@@ -1228,4 +1268,44 @@ public class LatexParser implements Iterable<LatexToken> {
         return assignedTokens.iterator();
     }
 
+    /**
+     * Returns the config distiller for minus sign.
+     *
+     * @return True if flag is set. False otherwise
+     */
+    public boolean isConfigDistilleMinusSign() {
+        return configDistilleMinusSign;
+    }
+
+    /**
+     * Sets the config distiller for minus sign.
+     * If true, marks minus signs as NUMBER type when treated as number.
+     * For example 2-5=-3, the first minus sign will be marked as OPERATOR
+     * and the second one as NUMBER
+     */
+    public void setConfigDistilleMinusSign(boolean configDistilleMinusSign) {
+        this.configDistilleMinusSign = configDistilleMinusSign;
+    }
+
+    /**
+     * Returns the dot distiller flag
+     * @return True if flag is set. False otherwise
+     */
+    public boolean isConfigDistilleDotSign() {
+        return configDistilleDotSign;
+    }
+
+    /**
+     * Sets the dot distiller flag
+     * If true, mark dot signs as NUMBER when part of a decimal number.
+     */
+    public void setConfigDistilleDotSign(boolean configDistilleDotSign) {
+        this.configDistilleDotSign = configDistilleDotSign;
+    }
+
+    public enum Modifier {
+        NORMAL, //Normal math
+        TYPED,//A function name
+        RAW_TEXT//Raw, normal text
+    }
 }

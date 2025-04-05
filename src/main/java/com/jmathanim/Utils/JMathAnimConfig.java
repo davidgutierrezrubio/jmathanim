@@ -415,10 +415,18 @@ public class JMathAnimConfig {
     }
 
 
+    /**
+     * Returns the limitFPS flag
+     * @return True if FPS are limited in display window. False otherwise
+     */
     public boolean isLimitFPS() {
         return limitFPS;
     }
 
+    /**
+     * Sets the limitFPS flag
+     * @param limitFPS True if FPS should be limited in display window. False otherwise
+     */
     public void setLimitFPS(boolean limitFPS) {
         this.limitFPS = limitFPS;
     }
