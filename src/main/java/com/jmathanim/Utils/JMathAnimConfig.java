@@ -26,6 +26,7 @@ import com.jmathanim.mathobjects.Point;
 
 import java.io.File;
 import java.net.URL;
+import java.util.function.DoubleUnaryOperator;
 
 /**
  * Stores all the data related to global configuration, to be accessed from any
@@ -41,6 +42,7 @@ public class JMathAnimConfig {
     private File resourcesDir;
     private File outputDir;
     private File saveFilePath;
+    private DoubleUnaryOperator defaultLambda;
 
     public File getSaveFilePath() {
         return saveFilePath;
@@ -186,6 +188,7 @@ public class JMathAnimConfig {
         ffmpegBinExecutable = "";
         soundsEnabled = true;
         limitFPS=false;
+        defaultLambda=UsefulLambdas.smooth();
     }
 
     public boolean isSoundsEnabled() {
@@ -429,5 +432,23 @@ public class JMathAnimConfig {
      */
     public void setLimitFPS(boolean limitFPS) {
         this.limitFPS = limitFPS;
+    }
+
+    /**
+     * Returns the default lambda used in animations. The lambda is a function from  interval 0,1 to
+     * to interval 0,1 that manages the behaviour of the animation as t goes from 0 to 1.
+     * @return The default lambda
+     */
+    public DoubleUnaryOperator getDefaultLambda() {
+        return defaultLambda;
+    }
+    /**
+     * Sets the default lambda used in animations. The lambda is a function from  interval 0,1 to
+     * to interval 0,1 that manages the behaviour of the animation as t goes from 0 to 1.
+     * The default value is a smooth function. To obtain linear animations by default, t->t lambda can be set.
+     * @param defaultLambda The default lambda
+     */
+    public void setDefaultLambda(DoubleUnaryOperator defaultLambda) {
+        this.defaultLambda = defaultLambda;
     }
 }

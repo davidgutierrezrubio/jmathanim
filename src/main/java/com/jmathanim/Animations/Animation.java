@@ -17,6 +17,7 @@
  */
 package com.jmathanim.Animations;
 
+import com.jmathanim.Utils.JMathAnimConfig;
 import com.jmathanim.Utils.UsefulLambdas;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.MathObject;
@@ -121,7 +122,7 @@ public abstract class Animation {
         this.shouldAddObjectsToScene = true;
         this.shouldResetAtReuse = true;
         this.shouldInterpolateStyles = true;
-        lambda = UsefulLambdas.smooth();
+        lambda = JMathAnimConfig.getConfig().getDefaultLambda();
         backups = new HashMap<>();
         addThisAtTheEnd = new ArrayList<>();
         removeThisAtTheEnd = new ArrayList<>();
@@ -257,12 +258,13 @@ public abstract class Animation {
     public final boolean initialize(JMathAnimScene scene) {
         this.scene = scene;
         if (status == Status.NOT_INITIALIZED) {
+            if (initRunnable != null) {
+                initRunnable.run();
+            }
             if (doInitialization()) {//If initialization returned sucess...
                 setFps(scene.getConfig().fps);
                 status = Status.INITIALIZED;
-                if (initRunnable != null) {
-                    initRunnable.run();
-                }
+
                 return true;
             } else {
                 JMathAnimScene.logger.error("Error initializating animation " + getDebugName());

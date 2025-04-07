@@ -25,27 +25,16 @@ import com.jmathanim.mathobjects.Point;
 import com.jmathanim.mathobjects.Shape;
 
 /**
- *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
 public class CTAngleMark extends Constructible {
-    
-    private boolean isRight;
-    
-    double radius;
+
     private final CTPoint center, A, B;
     private final Shape arcToDraw;
-    
-    public static CTAngleMark make(CTPoint center, CTPoint A, CTPoint B) {
-        CTAngleMark resul = new CTAngleMark(center, A, B);
-        resul.rebuildShape();
-        return resul;
-    }
-    
-    public static CTAngleMark make(Point center, Point A, Point B) {
-        return CTAngleMark.make(CTPoint.make(center), CTPoint.make(A), CTPoint.make(B));
-    }
-    
+    double radius;
+    private boolean isRight;
+    private double angle;
+
     public CTAngleMark(CTPoint center, CTPoint A, CTPoint B) {
         this.center = center;
         this.A = A;
@@ -55,14 +44,40 @@ public class CTAngleMark extends Constructible {
         arcToDraw.style("anglemarkdefault");
         isRight = false;
     }
-    
+
+    /**
+     * Creates a constructible angle mark. The angle is defined by its center and starting and ending points.
+     *
+     * @param center        Center of the angle
+     * @param startingPoint Starting point
+     * @param endingPoint   Ending point
+     * @return The CTAngle created
+     */
+    public static CTAngleMark make(CTPoint center, CTPoint startingPoint, CTPoint endingPoint) {
+        CTAngleMark resul = new CTAngleMark(center, startingPoint, endingPoint);
+        resul.rebuildShape();
+        return resul;
+    }
+
+    /**
+     * Creates a constructible angle mark. The angle is defined by its center and starting and ending points.
+     *
+     * @param center        Center of the angle
+     * @param startingPoint Starting point
+     * @param endingPoint   Ending point
+     * @return The CTAngle created
+     */
+    public static CTAngleMark make(Point center, Point startingPoint, Point endingPoint) {
+        return CTAngleMark.make(CTPoint.make(center), CTPoint.make(startingPoint), CTPoint.make(endingPoint));
+    }
+
     @Override
     public Constructible copy() {
         CTAngleMark copy = CTAngleMark.make(center.copy(), A.copy(), B.copy());
         copy.copyStateFrom(this);
         return copy;
     }
-    
+
     @Override
     public void copyStateFrom(MathObject obj) {
         super.copyStateFrom(obj);
@@ -73,17 +88,17 @@ public class CTAngleMark extends Constructible {
             this.getMp().copyFrom(ang.getMp());
         }
     }
-    
+
     @Override
     public Shape getMathObject() {
         return arcToDraw;
     }
-    
+
     public CTAngleMark setIsRight(boolean b) {
         isRight = b;
         return this;
     }
-    
+
     @Override
     public void rebuildShape() {
         if (isThisMathObjectFree()) {
@@ -104,7 +119,7 @@ public class CTAngleMark extends Constructible {
                     Point.at(center.v.add(v2.mult(radius)))
             );
         } else {
-            double angle = Math.acos(dotProduct);
+             angle = Math.acos(dotProduct);
             arc = Shape.arc(angle)
                     .scale(Point.origin(), radius)
                     .rotate(Point.origin(), v1.getAngle())
@@ -113,15 +128,18 @@ public class CTAngleMark extends Constructible {
         arcToDraw.merge(arc, true, true);
         arcToDraw.getPath().distille();
     }
-    
+
     public double getRadius() {
         return radius;
     }
-    
+
     public CTAngleMark setRadius(double radius) {
         this.radius = radius;
         rebuildShape();
         return this;
     }
-    
+
+    public double getAngle() {
+        return angle;
+    }
 }

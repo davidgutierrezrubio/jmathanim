@@ -175,10 +175,12 @@ public class Commands {
      * @return The animation, ready to play with the playAnim method
      */
     public static AnimationGroup twistAndScale(double runtime, double scale, double twistAngle, MathObject... mathObjects) {
+        HashMap<Constructible, Boolean> constructiblesFreeStatus = new HashMap<Constructible, Boolean>();
         Runnable initHook = () -> {
             for (MathObject obj : mathObjects) {
                 if (obj instanceof Constructible) {
                     Constructible cnstr = (Constructible) obj;
+                    constructiblesFreeStatus.put(cnstr, cnstr.isThisMathObjectFree());
                     cnstr.freeMathObject(true);
                 }
             }
@@ -188,7 +190,7 @@ public class Commands {
             for (MathObject obj : mathObjects) {
                 if (obj instanceof Constructible) {
                     Constructible cnstr = (Constructible) obj;
-                    cnstr.freeMathObject(false);
+                    cnstr.freeMathObject(constructiblesFreeStatus.get(cnstr));
                 }
             }
         };

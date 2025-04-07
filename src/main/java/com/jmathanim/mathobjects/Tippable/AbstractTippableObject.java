@@ -31,32 +31,23 @@ import com.jmathanim.mathobjects.hasScalarParameter;
 import static com.jmathanim.jmathanim.JMathAnimScene.PI;
 
 /**
- *
  * @author David Gutierrez Rubio davidgutierrezrubio@gmail.com
  */
 public abstract class AbstractTippableObject extends Constructible implements hasScalarParameter {
 
-    public Shape shape;
-    public MathObject mathobject, refMathObject;
     public final Point pivotPointRefMathObject;
-    public double locationParameterOnShape;
-
-    public double distanceToShape;
-
-    public double rotationAngle;
-    protected double correctionAngle;
-    private boolean fixedRotation;
-
     public final Point markPoint;
     public final Point locationPoint;
-
-    public boolean isParametrized;
     private final MODrawPropertiesArray mpArray;
-
-    public enum SlopeDirectionType {
-        NEGATIVE, POSITIVE
-    }
+    public Shape shape;
+    public MathObject mathobject, refMathObject;
+    public double locationParameterOnShape;
+    public Double distanceToShape;
+    public double rotationAngle;
+    public boolean isParametrized;
+    protected double correctionAngle;
     protected SlopeDirectionType slopeDirectionType;
+    private boolean fixedRotation;
 
     protected AbstractTippableObject(Shape shape, MathObject tipObject, Point anchorPoint, double location) {
         correctionAngle = PI / 2;
@@ -65,8 +56,8 @@ public abstract class AbstractTippableObject extends Constructible implements ha
         this.refMathObject = tipObject;
         this.pivotPointRefMathObject = anchorPoint;
         this.locationParameterOnShape = location;
-        this.slopeDirectionType=SlopeDirectionType.POSITIVE;
-        distanceToShape = 0;
+        this.slopeDirectionType = SlopeDirectionType.POSITIVE;
+        distanceToShape = null;
         fixedRotation = false;
         rotationAngle = 0;
         markPoint = Point.origin();
@@ -115,7 +106,7 @@ public abstract class AbstractTippableObject extends Constructible implements ha
         return distanceToShape;
     }
 
-    public <T extends AbstractTippableObject> T setDistanceToShape(double distanceToShape) {
+    public <T extends AbstractTippableObject> T setDistanceToShape(Double distanceToShape) {
         this.distanceToShape = distanceToShape;
         rebuildShape();
         return (T) this;
@@ -145,7 +136,7 @@ public abstract class AbstractTippableObject extends Constructible implements ha
 
     @Override
     public void copyStateFrom(MathObject obj) {
-         super.copyStateFrom(obj);
+        super.copyStateFrom(obj);
         super.copyStateFrom(obj);
         if (obj instanceof AbstractTippableObject) {
             AbstractTippableObject nt = (AbstractTippableObject) obj;
@@ -170,6 +161,7 @@ public abstract class AbstractTippableObject extends Constructible implements ha
     public void rebuildShape() {
         if (isThisMathObjectFree()) {
             return;
+
         }
         if (shape.isEmpty()) return;
         //Reset. There may be a problem with scalars, as copyStateFrom overwrites scalars
@@ -200,7 +192,11 @@ public abstract class AbstractTippableObject extends Constructible implements ha
         }
 
         locationPoint.v.copyFrom(markPoint.v);
-        locationPoint.v.addInSite(normal.multInSite(distanceToShape));
+
+        if (distanceToShape != null)
+            locationPoint.v.addInSite(normal.multInSite(distanceToShape));
+        else
+        locationPoint.v.addInSite(normal.multInSite(refMathObject.getHeight() * .5));
         Vec shiftVector = pivotPointRefMathObject.to(locationPoint);
         mathobject.shift(shiftVector);
 
@@ -243,5 +239,9 @@ public abstract class AbstractTippableObject extends Constructible implements ha
 
     public MathObject getRefMathObject() {
         return refMathObject;
+    }
+
+    public enum SlopeDirectionType {
+        NEGATIVE, POSITIVE
     }
 }

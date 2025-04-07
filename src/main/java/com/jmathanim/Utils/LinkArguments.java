@@ -19,9 +19,9 @@ package com.jmathanim.Utils;
 import com.jmathanim.Animations.Animation;
 import com.jmathanim.Animations.AnimationGroup;
 import com.jmathanim.Constructible.Lines.CTSegment;
+import com.jmathanim.Constructible.Others.CTAngleMark;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.*;
-import com.jmathanim.mathobjects.Text.LaTeXMathObject;
 
 import java.util.AbstractCollection;
 import java.util.function.DoubleUnaryOperator;
@@ -43,7 +43,7 @@ public final class LinkArguments extends Link {
     public LinkType originLinkType;
     public LinkType destinyLinkType;
     public Linkable destiny;
-    public DoubleUnaryOperator function;
+    public DoubleUnaryOperator lambda;
 
     public static LinkArguments make(Object origin, LinkType originLinkType, Linkable destiny, LinkType destinyLinkType) {
         return new LinkArguments(origin, originLinkType, destiny, destinyLinkType, t -> t);
@@ -58,7 +58,7 @@ public final class LinkArguments extends Link {
         this.originLinkType = originLinkType;
         this.destinyLinkType = destinyLinkType;
         this.destiny = destiny;
-        this.function = function;
+        this.lambda = function;
     }
 
   
@@ -67,7 +67,7 @@ public final class LinkArguments extends Link {
         try {
             //Get origin data
             double data = getLinkData();
-            data = function.applyAsDouble(data);
+            data = lambda.applyAsDouble(data);
 
             //Apply data
             //*********************************************************
@@ -132,7 +132,7 @@ public final class LinkArguments extends Link {
 
             //*********************************************************
             if (destiny instanceof hasArguments) {
-                LaTeXMathObject lat = (LaTeXMathObject) destiny;
+                hasArguments lat = (hasArguments) destiny;
                 double value = getValue(data);
                 switch (destinyLinkType) {
                     case ARG0:
@@ -332,6 +332,10 @@ public final class LinkArguments extends Link {
             CTSegment cts=(CTSegment) obj;
             return cts.getP1().to(cts.getP2()).norm();
         }
+
+        if (obj instanceof CTAngleMark) {
+            return ((CTAngleMark)obj).getAngle();
+        }
         if (obj instanceof Boxable) {
             Boxable boxable = (Boxable) obj;
             return boxable.getBoundingBox().getCenter().v.norm();
@@ -347,4 +351,12 @@ public final class LinkArguments extends Link {
         throw new JLinkException();
     }
 
+    public DoubleUnaryOperator getLambda() {
+        return lambda;
+    }
+
+    public LinkArguments setLambda(DoubleUnaryOperator lambda) {
+        this.lambda = lambda;
+        return this;
+    }
 }
