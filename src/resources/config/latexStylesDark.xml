@@ -121,7 +121,6 @@
                 <conditions>
                     <equals>
                         <type>CHAR</type>
-                        <string>e</string>
                     </equals>
                 </conditions>
                 <style>
@@ -138,6 +137,17 @@
                 </conditions>
                 <style>
                     <color>#AA4499</color>
+                </style>
+            </latexStyleItem>
+            <latexStyleItem>
+                <conditions>
+                    <equals>
+                        <type>CHAR</type>
+                        <string>e</string>
+                    </equals>
+                </conditions>
+                <style>
+                    <color>#CC66BB</color>
                 </style>
             </latexStyleItem>
         

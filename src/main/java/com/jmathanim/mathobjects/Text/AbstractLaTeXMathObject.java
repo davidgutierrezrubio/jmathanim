@@ -100,7 +100,12 @@ public abstract class AbstractLaTeXMathObject extends SVGMathObject {
             latexStyle.apply(this);
         }
     }
-
+    public void setLatexStyle(String latexStyleName) {
+        HashMapUpper<String, LatexStyle> latexStyles = JMathAnimConfig.getConfig().getLatexStyles();
+        if (latexStyles.containsKey(latexStyleName.toUpperCase())) {
+            setLatexStyle(latexStyles.get(latexStyleName));
+        }
+    }
 
 
 
