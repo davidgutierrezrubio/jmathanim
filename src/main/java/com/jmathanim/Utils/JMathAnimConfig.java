@@ -17,6 +17,7 @@
  */
 package com.jmathanim.Utils;
 
+import ch.qos.logback.classic.Level;
 import com.jmathanim.Cameras.Camera;
 import com.jmathanim.Renderers.Renderer;
 import com.jmathanim.Styling.*;
@@ -27,6 +28,8 @@ import com.jmathanim.mathobjects.Point;
 import java.io.File;
 import java.net.URL;
 import java.util.function.DoubleUnaryOperator;
+
+import static com.jmathanim.jmathanim.JMathAnimScene.logger;
 
 /**
  * Stores all the data related to global configuration, to be accessed from any
@@ -168,7 +171,7 @@ public class JMathAnimConfig {
     public void setBackGroundImage(String name) {
         ResourceLoader rl = new ResourceLoader();
         setBackGroundImage(rl.getResource(name, "images"));
-        JMathAnimScene.logger.info("Background image set to " + rl.getResource(name, "images"));
+        logger.info("Background image set to " + rl.getResource(name, "images"));
     }
 
     public void setBackGroundImage(URL backGroundImage) {
@@ -368,7 +371,7 @@ public class JMathAnimConfig {
     }
 
     public MODrawProperties createStyleFrom(Stylable mp, String styleName) {
-        JMathAnimScene.logger.info("Creating style {}", styleName.toUpperCase());
+        logger.info("Creating style {}", styleName.toUpperCase());
         MODrawProperties mpO = mp.getFirstMP();
         return styles.put(styleName.toUpperCase(), mpO);
     }
@@ -451,4 +454,31 @@ public class JMathAnimConfig {
     public void setDefaultLambda(DoubleUnaryOperator defaultLambda) {
         this.defaultLambda = defaultLambda;
     }
+
+    /**
+     * Sets the logging level from 0=OFF, to 4=DEBUG. The default level should be 3
+     * @param level  Debug level:  0=OFF, 1=Only errors, 2=Warnings, 3=Info messages, 4=Debug messages
+     */
+    public void setLoggingLevel(int level) {
+        switch(level) {
+            case 0:
+                logger.setLevel(Level.OFF);
+                break;
+            case 1:
+                logger.setLevel(Level.ERROR);
+                break;
+            case 2:
+                logger.setLevel(Level.WARN);
+                break;
+            case 3:
+                logger.setLevel(Level.INFO);
+                break;
+            case 4:
+                logger.setLevel(Level.DEBUG);
+                break;
+            default:
+                //Do nothing here
+        }
+    }
+
 }
