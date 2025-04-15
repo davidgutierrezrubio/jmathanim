@@ -139,7 +139,7 @@ public class LatexParser implements Iterable<LatexToken> {
     }
 
     private void distilleTokens() {
-
+        if (getTokens().isEmpty()) return;
         if (configDistilleMinusSign) {
             //If first token is a "minus" it should be treated always as part of a number
             LatexToken firstToken = getTokens().get(0);

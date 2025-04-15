@@ -782,7 +782,12 @@ public abstract class JMathAnimScene {
         for (Updateable upd : updateables) {
             unregisterUpdateable(upd);
         }
+        for (Link link: linksToBeDone)
+        {
+            unregisterLink(link);
+        }
         renderer.getCamera().reset();
+        renderer.getFixedCamera().reset();
     }
 
     public MODrawProperties getStyle(String name) {
@@ -882,7 +887,7 @@ public abstract class JMathAnimScene {
      * @param link LinkArguments to remove
      * @return True if link existed and was removed
      */
-    public boolean unregisterLink(LinkArguments link) {
+    public boolean unregisterLink(Link link) {
         return linksToBeDone.remove(link);
     }
 

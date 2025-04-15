@@ -46,6 +46,7 @@ public class JMathAnimConfig {
     private File outputDir;
     private File saveFilePath;
     private DoubleUnaryOperator defaultLambda;
+    private boolean isJavaFXRunning;
 
     public File getSaveFilePath() {
         return saveFilePath;
@@ -198,6 +199,7 @@ public class JMathAnimConfig {
         limitFPS=false;
         printProgressBar =false;
         defaultLambda=UsefulLambdas.smooth();
+        isJavaFXRunning=false;
 
     }
 
@@ -501,5 +503,13 @@ public class JMathAnimConfig {
      */
     public void setPrintProgressBar(boolean printProgressBar) {
         this.printProgressBar = printProgressBar;
+    }
+
+    public boolean isJavaFXRunning() {
+        return isJavaFXRunning;
+    }
+
+    public void setJavaFXRunning(boolean javaFXRunning) {
+        isJavaFXRunning = javaFXRunning;
     }
 }

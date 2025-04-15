@@ -23,6 +23,7 @@ import com.jmathanim.Renderers.MovieEncoders.VideoEncoder;
 import com.jmathanim.Renderers.MovieEncoders.XugglerVideoEncoder;
 import com.jmathanim.Renderers.Renderer;
 import com.jmathanim.Styling.RendererEffects;
+import com.jmathanim.Utils.JMathAnimConfig;
 import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.ResourceLoader;
 import com.jmathanim.Utils.Vec;
@@ -66,7 +67,6 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.FutureTask;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
 /**
  *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
@@ -102,7 +102,7 @@ public class JavaFXRenderer extends Renderer {
     protected VideoEncoder videoEncoder;
     protected File saveFilePath;
     public double correctionThickness;
-    
+
     public JavaFXRenderer(JMathAnimScene parentScene) throws Exception {
         super(parentScene);
         fxnodes = new ArrayList<>();
@@ -156,9 +156,12 @@ public class JavaFXRenderer extends Renderer {
         dropShadow.setColor(Color.color(0, 0, 0, config.shadowAlpha));
         
     }
-    
     public final void initializeJavaFXWindow() throws Exception {
-        new Thread(() -> Application.launch(StandaloneSnapshot.FXStarter.class)).start();
+           if (!JMathAnimConfig.getConfig().isJavaFXRunning()) {
+               new Thread(() -> Application.launch(StandaloneSnapshot.FXStarter.class)).start();
+
+               JMathAnimConfig.getConfig().setJavaFXRunning(true);
+           }
         // block until FX toolkit initialization is complete:
         StandaloneSnapshot.FXStarter.waitForInit();
         JavaFXRenderer r = this;
@@ -296,7 +299,7 @@ public class JavaFXRenderer extends Renderer {
             }
             
         }
-        endJavaFXEngine();
+//        endJavaFXEngine();
         
     }
     
