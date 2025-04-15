@@ -188,6 +188,7 @@ public abstract class JMathAnimScene {
         String sketchName = this.getClass().getName();
         LoggerContext loggerContext = (LoggerContext) LoggerFactory.getILoggerFactory();
         loggerContext.reset();
+
         JoranConfigurator configurator = new JoranConfigurator();
         configurator.setContext(loggerContext);
         try {
@@ -450,7 +451,11 @@ public abstract class JMathAnimScene {
         if (!animationIsDisabled) {
             renderer.clearAndPrepareCanvasForAnotherFrame();
         }
+
+        //This method performs all updates and drawings needed
         doDraws();
+
+
         if (!animationIsDisabled) {
             frameCount++;
             saveMPFrame();
@@ -623,6 +628,10 @@ public abstract class JMathAnimScene {
         int numFrames = (int) (time * fps);
         for (int n = 0; n < numFrames; n++) {
             try {
+                if (config.isPrintProgressBar())  {
+                    LogUtils.printProgressBar(1d*n/(numFrames-1));
+                }
+
                 advanceFrame();
 
             } catch (Exception ex) {

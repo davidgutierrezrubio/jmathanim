@@ -32,7 +32,7 @@
 <!ELEMENT background (color)*>
 
 
-<!ELEMENT video (size|createMovie|showPreviewWindow)*>
+<!ELEMENT video (size|createMovie|showPreviewWindow|limitFPS|printProgressBar)*>
 
 
 <!ELEMENT size (color)*>
@@ -40,6 +40,8 @@
 <!ATTLIST size height CDATA #REQUIRED>
 <!ATTLIST size fps CDATA #REQUIRED>
 <!ELEMENT createMovie (#PCDATA)>
+<!ELEMENT limitFPS (#PCDATA)>
+<!ELEMENT printProgressBar (#PCDATA)>
 <!ELEMENT showPreviewWindow (#PCDATA)>
 
 

@@ -1,6 +1,9 @@
-package com.jmathanim.jmathanim;
+package com.jmathanim.jmathanim.Groovy;
 
 import ch.qos.logback.classic.Level;
+import com.jmathanim.jmathanim.JMathAnimScene;
+import com.jmathanim.jmathanim.LogUtils;
+import com.jmathanim.jmathanim.Scene2D;
 import groovy.lang.Binding;
 import groovy.lang.GroovyShell;
 import groovy.lang.Script;
@@ -10,12 +13,16 @@ import java.lang.reflect.Method;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
+import static com.jmathanim.jmathanim.LogUtils.RESET;
+
 public class GroovyExecutor extends Scene2D {
 
-    private final String[] args;
-    private final Binding binding;
-    private final GroovyShell shell;
-    private Script script=null;
+    private  String[] args;
+    private  Binding binding;
+    private  GroovyShell shell;
+    private String userCodeWithoutImports;
+    private String userCode;
+    private Script script = null;
 
     public GroovyExecutor(String[] args) {
         super();
@@ -26,16 +33,31 @@ public class GroovyExecutor extends Scene2D {
         binding.setVariable("config", config);
         shell = new GroovyShell(binding);
 
+
         try {
             //TODO:add parse errors log
-            String userCode = new String(Files.readAllBytes(Paths.get(args[0])));
+//            userCode = new String(Files.readAllBytes(Paths.get(args[0])));
 
-            script = shell.parse(addImportsToSourceCode(userCode));
+            userCodeWithoutImports = new String(Files.readAllBytes(Paths.get(args[0])));
+            userCode = addImportsToSourceCode(userCodeWithoutImports);
+            script = shell.parse(userCode);
 
         } catch (IOException e) {
-            logger.error("File not found: "+args[0]);
+            logger.error("File not found: " + args[0]);
             System.exit(1);
         }
+    }
+
+
+    public static void main(String[] args) {
+//        JMathAnimScene tr = new AnimacionesFabrica();
+        if (args.length == 0) {
+            //print fancy help menu!
+            System.out.println("Usage: JMathAnim <groovy script files>");
+            System.exit(0);
+        }
+        JMathAnimScene tr = new GroovyExecutor(args);
+        tr.execute();
     }
 
     private String addImportsToSourceCode(String userCode) {
@@ -62,8 +84,6 @@ public class GroovyExecutor extends Scene2D {
 
     }
 
-
-
     @Override
     public void setupSketch() {
 
@@ -75,7 +95,13 @@ public class GroovyExecutor extends Scene2D {
             }
         }
         if (hasInit) {
-            script.invokeMethod("init", null);
+            try {
+                script.invokeMethod("init", null);
+            } catch (Exception e) {
+                System.out.println("Error parsing config script");
+                System.exit(1);
+            }
+
         } else {//no init
 
             logger.setLevel(Level.DEBUG);
@@ -87,26 +113,20 @@ public class GroovyExecutor extends Scene2D {
         }
     }
 
-        @Override
-        public void runSketch () throws Exception {
-            for (String a : args) {
-                System.out.println(a);
-            }
-           script.run();
-
+    @Override
+    public void runSketch() throws Exception {
+        for (String a : args) {
+            System.out.println(a);
         }
-
-    public static void main(String[] args) {
-//        JMathAnimScene tr = new AnimacionesFabrica();
-        if (args.length==0) {
-            //print fancy help menu!
-            System.out.println("Usage: JMathAnim <groovy script files>");
-            System.exit(0);
+        try {
+            script.run();
+        } catch (Exception e) {
+            logger.error(LogUtils.RED+"Error running Groovy Script"+RESET);
+//    GroovyExceptionInfo.processGroovyError(e,scriptText);
+            GroovyUtils.processGroovyError(e, userCode,userCodeWithoutImports);
         }
-        JMathAnimScene tr = new GroovyExecutor(args);
-        tr.execute();
-    }
 
     }
 
+}
 

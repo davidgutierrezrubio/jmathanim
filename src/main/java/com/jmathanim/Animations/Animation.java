@@ -20,6 +20,7 @@ package com.jmathanim.Animations;
 import com.jmathanim.Utils.JMathAnimConfig;
 import com.jmathanim.Utils.UsefulLambdas;
 import com.jmathanim.jmathanim.JMathAnimScene;
+import com.jmathanim.jmathanim.LogUtils;
 import com.jmathanim.mathobjects.MathObject;
 
 import java.util.ArrayList;
@@ -27,90 +28,57 @@ import java.util.HashMap;
 import java.util.function.DoubleUnaryOperator;
 
 /**
- * This abstract class stores an Animation, which can be played with the
- * playAnim method
+ * This abstract class stores an Animation, which can be played with the playAnim method
  *
  * @author David Gutierrez Rubio davidgutierrezrubio@gmail.com
  */
 public abstract class Animation {
 
     /**
-     * Animation status
-     */
-    public enum Status {
-        /**
-         * Animation is not initialized yet
-         */
-        NOT_INITIALIZED,
-        /**
-         * Animation initialized, ready to be played
-         */
-        INITIALIZED,
-        /**
-         * Animation is currently being played
-         */
-        RUNNING,
-        /**
-         * Animation is finished. Subsequent calls to processAnimation() makes
-         * no effect
-         */
-        FINISHED
-    }
-
-    protected double lastTComputed;
-
-    private String debugName;
-
-    private boolean shouldResetAtReuse;
-
-    private Status status;
-    /**
      * Default run time for animations, 1 second
      */
     public static final double DEFAULT_TIME = 1;
+    protected final ArrayList<MathObject> removeThisAtTheEnd;
+    protected final ArrayList<MathObject> addThisAtTheEnd;
+    private final JMathAnimConfig config;
+    private final HashMap<MathObject, MathObject> backups;
+    protected double lastTComputed;
     protected double t, dt;
-//    public final MathObject mobj;
+    protected boolean printProgressBar;
     /**
      * Time span of the animation, in seconds
      */
     protected double runTime;
+//    public final MathObject mobj;
     /**
-     * Frames per second. This will be needed to compute time step for each
-     * frame.
+     * Frames per second. This will be needed to compute time step for each frame.
      */
     protected double fps;
+    /**
+     * Scene where this animation belongs
+     */
+    protected JMathAnimScene scene;
 //    private int numFrames; //Number of frames of animation
 //    private int frame;
 //    private boolean isInitialized = false;
 //    private boolean isEnded = false;
     /**
-     * Scene where this animation belongs
-     */
-    protected JMathAnimScene scene;
-
-    /**
-     * Lambda smooth function, ideally a growing function that maps 0 into 0 and
-     * 1 into 1
+     * Lambda smooth function, ideally a growing function that maps 0 into 0 and 1 into 1
      */
     protected DoubleUnaryOperator lambda;
-
     protected Boolean useObjectState;
-
     protected Boolean shouldAddObjectsToScene;
     protected Boolean shouldInterpolateStyles;
-    private final HashMap<MathObject, MathObject> backups;
-    protected final ArrayList<MathObject> removeThisAtTheEnd;
-    protected final ArrayList<MathObject> addThisAtTheEnd;
-
     protected Runnable finishRunnable;
     protected Runnable initRunnable;
-
     protected double allocateStart;
     protected double allocateEnd;
-
+    private String debugName;
+    private boolean shouldResetAtReuse;
+    private Status status;
     /**
-     * Creates an empty animation, with specified run time.This constructor
-     * should be called only from implementing subclasses.
+     * Creates an empty animation, with specified run time.This constructor should be called only from implementing
+     * subclasses.
      *
      * @param runTime Duration of animation, in seconds
      */
@@ -128,12 +96,13 @@ public abstract class Animation {
         removeThisAtTheEnd = new ArrayList<>();
         allocateStart = 0d;
         allocateEnd = 1d;
+        config = JMathAnimConfig.getConfig();
+        printProgressBar=true;
     }
 
     /**
-     * Returns the interpolate styles flag. This flag controls whether the
-     * animation should perform any changes in the styles of the MathObject
-     * animated classes.
+     * Returns the interpolate styles flag. This flag controls whether the animation should perform any changes in the
+     * styles of the MathObject animated classes.
      *
      * @return True if should animate styles, false otherwise.
      */
@@ -142,9 +111,8 @@ public abstract class Animation {
     }
 
     /**
-     * Sets the interpolate styles flag.This flag controls whether the animation
-     * should perform any changes in the styles of the MathObject animated
-     * classes.
+     * Sets the interpolate styles flag.This flag controls whether the animation should perform any changes in the
+     * styles of the MathObject animated classes.
      *
      * @param interpolateStyles True if should animate styles, false otherwise.
      */
@@ -154,9 +122,8 @@ public abstract class Animation {
     }
 
     /**
-     * Returns the use object state flag. This flag controls whether the
-     * animation should restore the initial state of the object prior to do each
-     * frame of the animation.
+     * Returns the use object state flag. This flag controls whether the animation should restore the initial state of
+     * the object prior to do each frame of the animation.
      *
      * @return True if restore state, false otherwise
      */
@@ -165,13 +132,11 @@ public abstract class Animation {
     }
 
     /**
-     * Sets the use object state flag. This flag controls whether the animation
-     * should restore the initial state of the object prior to do each frame of
-     * the animation.By default is true,but it may be necessary to set to false
-     * when combining 2 animations. For example a shift and a rotation, should
-     * deactivate the flag in the second.
+     * Sets the use object state flag. This flag controls whether the animation should restore the initial state of the
+     * object prior to do each frame of the animation.By default is true,but it may be necessary to set to false when
+     * combining 2 animations. For example a shift and a rotation, should deactivate the flag in the second.
      *
-     * @param <T> Animation subclass that calls this method
+     * @param <T>             Animation subclass that calls this method
      * @param shouldSaveState True if restore state, false otherwise
      * @return This object
      */
@@ -181,12 +146,10 @@ public abstract class Animation {
     }
 
     /**
-     * Activates or deactivates whether this animation should automatically add
-     * needed objects to the scene
+     * Activates or deactivates whether this animation should automatically add needed objects to the scene
      *
-     * @param <T> Animation subclass that calls this method
-     * @param addToScene If true, objects will be added (to or removed from) the
-     * scene as needed.
+     * @param <T>        Animation subclass that calls this method
+     * @param addToScene If true, objects will be added (to or removed from) the scene as needed.
      * @return This object
      */
     public <T extends Animation> T setAddObjectsToScene(boolean addToScene) {
@@ -195,15 +158,7 @@ public abstract class Animation {
     }
 
     /**
-     * Creates an empty animation, with the default run time. This constructor
-     * should be called only from implementing subclasses.
-     */
-//    public Animation() {
-//        this(DEFAULT_TIME);
-//    }
-    /**
-     * Sets the frames per second. This value is automatically set by the
-     * initialize method
+     * Sets the frames per second. This value is automatically set by the initialize method
      *
      * @param fps Frames per second
      */
@@ -215,8 +170,15 @@ public abstract class Animation {
     }
 
     /**
-     * Process one frame of current animation If calling when finished, does
-     * nothing
+     * Creates an empty animation, with the default run time. This constructor
+     * should be called only from implementing subclasses.
+     */
+//    public Animation() {
+//        this(DEFAULT_TIME);
+//    }
+
+    /**
+     * Process one frame of current animation If calling when finished, does nothing
      *
      * @return True if animation has finished
      */
@@ -235,7 +197,7 @@ public abstract class Animation {
         boolean resul;
         if (t <= 1 && t >= 0) {
             this.doAnim(t);
-
+            if (printProgressBar && config.isPrintProgressBar()) LogUtils.printProgressBar(t);
             resul = false;
         } else {
             resul = true;
@@ -249,8 +211,7 @@ public abstract class Animation {
     }
 
     /**
-     * Initialize animation.This method should be called immediately before
-     * playing
+     * Initialize animation.This method should be called immediately before playing
      *
      * @param scene Scene where the animation is invoked from.
      * @return True if animation was successfully initializated
@@ -275,8 +236,8 @@ public abstract class Animation {
     }
 
     /**
-     * Do specific initialition methods. This method is called from initialize
-     * if animation is not previously initalizated
+     * Do specific initialition methods. This method is called from initialize if animation is not previously
+     * initalizated
      *
      * @return True if no problems were found initializating
      */
@@ -287,9 +248,8 @@ public abstract class Animation {
     /**
      * Executes one frame of the animation, given by the time t, from 0 to 1
      *
-     * @param t double between 0 and 1 0=start, 1=end. This value is passed as
-     * needed by some special animations. The lambda function should be used to
-     * smooth animation.
+     * @param t double between 0 and 1 0=start, 1=end. This value is passed as needed by some special animations. The
+     *          lambda function should be used to smooth animation.
      */
     public void doAnim(double t) {
         this.t = t;
@@ -313,17 +273,15 @@ public abstract class Animation {
     }
 
     /**
-     * Perform necessary cleaning operations after stopping the animation.
-     * Should perform adequate cleaning operations depending on the time the
-     * animation is stopped.
+     * Perform necessary cleaning operations after stopping the animation. Should perform adequate cleaning operations
+     * depending on the time the animation is stopped.
      *
      * @param t Time at which the animation is stopped.
      */
     public abstract void cleanAnimationAt(double t);
 
     /**
-     * Perform needed operations right before the animation starts. Usually
-     * adding or removing necessary objects
+     * Perform needed operations right before the animation starts. Usually adding or removing necessary objects
      *
      * @param t Time at which the animation starts
      */
@@ -352,10 +310,10 @@ public abstract class Animation {
     }
 
     /**
-     * Sets the lambda function to control the time behaviour of the animation.
-     * A proper lambda is a function with range from 0 to 1 and dominion 0 to 1.
+     * Sets the lambda function to control the time behaviour of the animation. A proper lambda is a function with range
+     * from 0 to 1 and dominion 0 to 1.
      *
-     * @param <T> Animation subclass
+     * @param <T>    Animation subclass
      * @param lambda A lambda operator with the new time function
      * @return The animation
      */
@@ -365,8 +323,7 @@ public abstract class Animation {
     }
 
     /**
-     * Save state of all given mathobjects.If the useObjectState flag is set to
-     * false, this method does nothing
+     * Save state of all given mathobjects.If the useObjectState flag is set to false, this method does nothing
      *
      * @param mathObjects MathObjects to save state (varargs)
      */
@@ -381,8 +338,7 @@ public abstract class Animation {
     }
 
     /**
-     * Restore state of all given mathobjects.If the useObjectState flag is set
-     * to false, this method does nothing
+     * Restore state of all given mathobjects.If the useObjectState flag is set to false, this method does nothing
      *
      * @param mathObjects MathObjects to restore state (varargs)
      */
@@ -395,8 +351,7 @@ public abstract class Animation {
     }
 
     /**
-     * Add the specified objects to the scene. Adding objects to the scene
-     * should be done through this method.
+     * Add the specified objects to the scene. Adding objects to the scene should be done through this method.
      *
      * @param mathObjects Objects to add (varargs)
      */
@@ -407,8 +362,7 @@ public abstract class Animation {
     }
 
     /**
-     * remove the specified objects from the scene. Removing objects from the
-     * scene should be done through this method.
+     * remove the specified objects from the scene. Removing objects from the scene should be done through this method.
      *
      * @param mathObjects Objects to add (varargs)
      */
@@ -427,11 +381,9 @@ public abstract class Animation {
     }
 
     /**
-     * Whether the objects should be added to the scene or not using this
-     * animation
+     * Whether the objects should be added to the scene or not using this animation
      *
-     * @return True if objects are automatically added to the scene when
-     * initialized, false otherwise
+     * @return True if objects are automatically added to the scene when initialized, false otherwise
      */
     public Boolean isShouldAddObjectsToScene() {
         return shouldAddObjectsToScene;
@@ -440,8 +392,7 @@ public abstract class Animation {
     /**
      * Returns the current status of the animation
      *
-     * @return A value of the enum Status, NOT_INITIALIZED, INITIALIZED,
-     * RUNNING, FINISHED
+     * @return A value of the enum Status, NOT_INITIALIZED, INITIALIZED, RUNNING, FINISHED
      */
     public Status getStatus() {
         return status;
@@ -450,16 +401,23 @@ public abstract class Animation {
     /**
      * Sets the current status of the animation
      *
-     * @param status A value of the enum Status: NOT_INITIALIZED, INITIALIZED,
-     * RUNNING, FINISHED
+     * @param status A value of the enum Status: NOT_INITIALIZED, INITIALIZED, RUNNING, FINISHED
      */
     public void setStatus(Status status) {
         this.status = status;
     }
 
     /**
-     * Sets the time parameter. A value or 0 means beginning of the animation
-     * and 1 the ending.
+     * Gets the current animation time
+     *
+     * @return A value from 0 to 1
+     */
+    public double getT() {
+        return t;
+    }
+
+    /**
+     * Sets the time parameter. A value or 0 means beginning of the animation and 1 the ending.
      *
      * @param time A value from 0 to 1
      */
@@ -468,19 +426,9 @@ public abstract class Animation {
     }
 
     /**
-     * Gets the current animation time
-     * @return A value from 0 to 1
-     */
-    public double getT() {
-        return t;
-    }
-
-    /**
-     * Copy basic parameters from this animation to another one. This method is
-     * used mainly when an Animation subclass contains another animation. Only
-     * copy non-null values for parameters. Some Animation subclasses, like
-     * AnimationGroup, can define null values for this parameter so they are not
-     * propagated to stored animations.
+     * Copy basic parameters from this animation to another one. This method is used mainly when an Animation subclass
+     * contains another animation. Only copy non-null values for parameters. Some Animation subclasses, like
+     * AnimationGroup, can define null values for this parameter so they are not propagated to stored animations.
      *
      * @param anim Animation to copy parameters
      */
@@ -508,8 +456,7 @@ public abstract class Animation {
     }
 
     /**
-     * .
-     * Returns the debug message. Used to show info when running
+     * . Returns the debug message. Used to show info when running
      *
      * @return A String with the debug message
      */
@@ -518,10 +465,9 @@ public abstract class Animation {
     }
 
     /**
-     * Sets the debug message. This message will be logged at INFO level when
-     * animation starts executing
+     * Sets the debug message. This message will be logged at INFO level when animation starts executing
      *
-     * @param <T> Calling class
+     * @param <T>       Calling class
      * @param debugName Debug message
      */
     public final <T extends Animation> T setDebugName(String debugName) {
@@ -539,10 +485,9 @@ public abstract class Animation {
     }
 
     /**
-     * Sets the runtime animation. This method should be called before
-     * initializing the animation.
+     * Sets the runtime animation. This method should be called before initializing the animation.
      *
-      * @param <T> Calling class
+     * @param <T>     Calling class
      * @param runTime The new runtime
      * @return This object
      */
@@ -557,19 +502,17 @@ public abstract class Animation {
     }
 
     /**
-     * Gets the intermediate object(s) used by the animation. For simple
-     * animations like shift or rotate this is the original object, but more
-     * complex animations like showcreation or transform need to create an
-     * auxiliar intermediate object. If the animation is stopped at a time
-     * between 0 and 1, this is the object that should be in the scene.
+     * Gets the intermediate object(s) used by the animation. For simple animations like shift or rotate this is the
+     * original object, but more complex animations like showcreation or transform need to create an auxiliar
+     * intermediate object. If the animation is stopped at a time between 0 and 1, this is the object that should be in
+     * the scene.
      *
      * @return The intermediate object
      */
     public abstract MathObject getIntermediateObject();
 
     /**
-     * Resets the animation so it can be reused with different initialization
-     * parameters.
+     * Resets the animation so it can be reused with different initialization parameters.
      */
     public void reset() {
         status = Status.NOT_INITIALIZED;
@@ -583,5 +526,29 @@ public abstract class Animation {
         this.shouldResetAtReuse = shouldResetAtFinish;
         return (T) this;
     }
+
+
+    /**
+     * Animation status
+     */
+    public enum Status {
+        /**
+         * Animation is not initialized yet
+         */
+        NOT_INITIALIZED,
+        /**
+         * Animation initialized, ready to be played
+         */
+        INITIALIZED,
+        /**
+         * Animation is currently being played
+         */
+        RUNNING,
+        /**
+         * Animation is finished. Subsequent calls to processAnimation() makes no effect
+         */
+        FINISHED
+    }
+
 
 }

@@ -34,6 +34,9 @@ import java.net.URL;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import static com.jmathanim.jmathanim.LogUtils.RESET;
+import static com.jmathanim.jmathanim.LogUtils.YELLOW;
+
 /**
  * The ConfigLoader class provides methods for loading and parsing XML configuration files
  * for the JMathAnim framework. It processes configuration details such as video settings,
@@ -60,7 +63,7 @@ public class ConfigLoader {
         try {
             JMathAnimConfig config = JMathAnimConfig.getConfig();
             URL configURL = resourceLoader.getResource(filename, "config");
-            JMathAnimScene.logger.info("Loading config file {}", filename);
+            JMathAnimScene.logger.info("Loading config file "+YELLOW+"{}"+RESET, filename);
             DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
             dbFactory.setValidating(false);
             dbFactory.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
@@ -157,6 +160,11 @@ public class ConfigLoader {
                     final boolean limitFPS = Boolean.parseBoolean(item.getTextContent());
                     config.setLimitFPS(limitFPS);
                     JMathAnimScene.logger.debug("Config read: Limit FPS {}", limitFPS);
+                    break;
+                case "printProgressBar":
+                    final boolean printProgressBar = Boolean.parseBoolean(item.getTextContent());
+                    config.setPrintProgressBar(printProgressBar);
+                    JMathAnimScene.logger.debug("Config read: Print progress bar {}", printProgressBar);
                     break;
                 case "outputDir":
                     config.setOutputDir(item.getTextContent());

@@ -77,6 +77,11 @@ public class JMathAnimConfig {
      */
     private boolean limitFPS;
 
+    /**
+     * If true, displays progress bar in the console. Deactivated in preview mode by default
+     */
+    private boolean printProgressBar;
+
     private static JMathAnimConfig singletonConfig;
     /**
      * The scene used
@@ -191,7 +196,9 @@ public class JMathAnimConfig {
         ffmpegBinExecutable = "";
         soundsEnabled = true;
         limitFPS=false;
+        printProgressBar =false;
         defaultLambda=UsefulLambdas.smooth();
+
     }
 
     public boolean isSoundsEnabled() {
@@ -481,4 +488,18 @@ public class JMathAnimConfig {
         }
     }
 
+    /**
+     * Returns the printProgressBar
+     * @return If true, a progress bar is printed in animations
+     */
+    public boolean isPrintProgressBar() {
+        return printProgressBar;
+    }
+    /**
+     * Sets the printProgressBar
+     * @param printProgressBar If true, a progress bar is printed in animations
+     */
+    public void setPrintProgressBar(boolean printProgressBar) {
+        this.printProgressBar = printProgressBar;
+    }
 }
