@@ -315,8 +315,8 @@ public class Shape extends MathObject {
             Point cp1 = p.add(v1);
             Point cp2 = p.add(v1.multInSite(-1));
             JMPathPoint jmp = JMPathPoint.curveTo(p);
-            jmp.cpExit.copyFrom(cp1);
-            jmp.cpEnter.copyFrom(cp2);
+            jmp.cpExit.v.copyFrom(cp1.v);
+            jmp.cpEnter.v.copyFrom(cp2.v);
             obj.jmpath.addJMPoint(jmp);
 
             alphaC += step;

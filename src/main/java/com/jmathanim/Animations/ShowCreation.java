@@ -111,8 +111,8 @@ public class ShowCreation extends Animation {
         try {
             if (creationStrategy instanceof CreationStrategy) {
                 CreationStrategy cs = (CreationStrategy) creationStrategy;
-                pencilPosition[0].copyFrom(cs.getPencilPosition()[0]);
-                pencilPosition[1].copyFrom(cs.getPencilPosition()[1]);
+                pencilPosition[0].v.copyFrom(cs.getPencilPosition()[0].v);
+                pencilPosition[1].v.copyFrom(cs.getPencilPosition()[1].v);
             }
         } catch (java.lang.NullPointerException e) {
             //do nothing

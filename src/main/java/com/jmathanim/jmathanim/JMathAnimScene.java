@@ -93,6 +93,7 @@ public abstract class JMathAnimScene {
      * A dictionary containing all loaded styles
      */
     private final HashMap<String, MODrawProperties> styles;
+    protected final JMathAnimScene scene;
     /**
      * Configuration
      */
@@ -146,6 +147,7 @@ public abstract class JMathAnimScene {
      * Creates a new Scene with default settings.
      */
     public JMathAnimScene() {
+        scene=this;
         sceneObjects = new ArrayList<>();
         objectsAlreadyDrawed = new HashSet<>();
         config = JMathAnimConfig.getConfig();
@@ -589,7 +591,7 @@ public abstract class JMathAnimScene {
             }
             anim.initialize(this);// Perform needed steps immediately before playing
             if (!"".equals(anim.getDebugName())) {
-                JMathAnimScene.logger.info("Begin animation: " + anim.getDebugName() + " [" + anim.getRunTime() + "s]");
+                JMathAnimScene.logger.info("Begin animation: " + LogUtils.CYAN+ anim.getDebugName() + LogUtils.RESET+" [" + LogUtils.GREEN+anim.getRunTime() + "s"+LogUtils.RESET+"]");
             }
 
             if (animationIsDisabled) {
@@ -624,7 +626,7 @@ public abstract class JMathAnimScene {
         if (animationIsDisabled) {
             return;
         }
-        JMathAnimScene.logger.info("Waiting " + time + " seconds");
+        JMathAnimScene.logger.info("Waiting " + LogUtils.GREEN+time + "s"+LogUtils.RESET);
         int numFrames = (int) (time * fps);
         for (int n = 0; n < numFrames; n++) {
             try {
@@ -899,4 +901,6 @@ public abstract class JMathAnimScene {
     public double getDt() {
         return dt;
     }
+
+
 }

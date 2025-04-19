@@ -207,9 +207,9 @@ public class JMPathPoint extends MathObject implements Updateable, Stateable {
     }
 
     public void copyFrom(JMPathPoint jmPoint) {
-        this.p.copyFrom(jmPoint.p);
-        this.cpExit.copyFrom(jmPoint.cpExit);
-        this.cpEnter.copyFrom(jmPoint.cpEnter);
+        this.p.v.copyFrom(jmPoint.p.v);
+        this.cpExit.v.copyFrom(jmPoint.cpExit.v);
+        this.cpEnter.v.copyFrom(jmPoint.cpEnter.v);
     }
 
     @Override

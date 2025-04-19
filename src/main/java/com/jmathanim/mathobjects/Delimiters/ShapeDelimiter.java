@@ -30,6 +30,7 @@ public class ShapeDelimiter extends Delimiter {
 
     private SVGMathObject body;
     private final Shape delimiterShape;
+    private final MathObjectGroup  delimiterShapeGroup;
 
     public static ShapeDelimiter make(Point A, Point B, Delimiter.Type type, double gap) {
         ShapeDelimiter resul = new ShapeDelimiter(A, B, type, gap);
@@ -57,6 +58,7 @@ public class ShapeDelimiter extends Delimiter {
         minimumWidthToShrink = .5;
         delimiterShape = new Shape();
         mpDelimiter.add(delimiterShape);
+        delimiterShapeGroup=MathObjectGroup.make(delimiterShape);
     }
 
     @Override
@@ -109,25 +111,27 @@ public class ShapeDelimiter extends Delimiter {
 
         labelMarkPoint.stackTo(delimiterShape, Anchor.Type.UPPER, labelMarkGap * amplitudeScale);
 
-        delimiterLabelToDraw = delimiterLabel.copy();
-        resul.add(delimiterLabelToDraw);
+        if (delimiterLabel!=null) {
+            delimiterLabelToDraw = delimiterLabel.copy();
+            resul.add(delimiterLabelToDraw);
 
-        delimiterLabelToDraw.scale(amplitudeScale);
+            delimiterLabelToDraw.scale(amplitudeScale);
 
-        //Manages rotation of label
-        switch (rotateLabel) {
-            case FIXED:
-                delimiterLabelToDraw.rotate(-angle);
-                break;
-            case ROTATE:
-                break;
-            case SMART:
+            //Manages rotation of label
+            switch (rotateLabel) {
+                case FIXED:
+                    delimiterLabelToDraw.rotate(-angle);
+                    break;
+                case ROTATE:
+                    break;
+                case SMART:
 //                delimiterLabelToDraw.rotate(-angle);
-                if ((angle > .5 * PI) && (angle < 1.5 * PI)) {
-                    delimiterLabelToDraw.rotate(PI);
-                }
+                    if ((angle > .5 * PI) && (angle < 1.5 * PI)) {
+                        delimiterLabelToDraw.rotate(PI);
+                    }
+            }
+            delimiterLabelToDraw.stackTo(Anchor.Type.LOWER, labelMarkPoint, Anchor.Type.UPPER, 0);
         }
-        delimiterLabelToDraw.stackTo(Anchor.Type.LOWER, labelMarkPoint, Anchor.Type.UPPER, 0);
         AffineJTransform tr = AffineJTransform.createDirect2DIsomorphic(bb.getDL(), bb.getDR(), scaledA, scaledB, 1);
 
         tr.applyTransform(resul);
@@ -136,4 +140,8 @@ public class ShapeDelimiter extends Delimiter {
         return resul;
     }
 
+    @Override
+    public MathObjectGroup getDelimiterShape() {
+        return delimiterShapeGroup;
+    }
 }

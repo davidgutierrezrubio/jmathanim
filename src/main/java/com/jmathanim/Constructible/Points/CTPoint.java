@@ -76,7 +76,7 @@ public class CTPoint extends Constructible {
     public CTPoint copy() {
         CTPoint copy = make(new Point(this.v));
         copy.freeMathObject(this.isThisMathObjectFree());
-        copy.getMathObject().copyFrom(this.getMathObject());
+        copy.getMathObject().copyStateFrom(this.getMathObject());
         copy.getMp().copyFrom(this.getMp());
         return copy;
     }
@@ -115,7 +115,7 @@ public class CTPoint extends Constructible {
     
     @Override
     public String toString() {
-        return this.getLabel() + ":" + String.format("CTPoint[%.2f, %.2f]", this.v.x, this.v.y);
+        return this.getObjectLabel() + ":" + String.format("CTPoint[%.2f, %.2f]", this.v.x, this.v.y);
     }
     
     public CTPoint dotStyle(Point.DotSyle dotStyle) {

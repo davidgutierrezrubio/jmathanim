@@ -140,7 +140,7 @@ public abstract class AbstractTippableObject extends Constructible implements ha
         super.copyStateFrom(obj);
         if (obj instanceof AbstractTippableObject) {
             AbstractTippableObject nt = (AbstractTippableObject) obj;
-            pivotPointRefMathObject.copyFrom(nt.pivotPointRefMathObject);
+            pivotPointRefMathObject.v.copyFrom(nt.pivotPointRefMathObject.v);
             correctionAngle = nt.correctionAngle;
             this.mathobject.copyStateFrom(nt.mathobject);
             this.refMathObject.copyStateFrom(nt.refMathObject);

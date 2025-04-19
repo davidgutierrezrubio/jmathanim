@@ -72,7 +72,7 @@ public class JMRadialGradient extends PaintStyle {
         }
         if (A instanceof JMRadialGradient) {
             JMRadialGradient jmrg = (JMRadialGradient) A;
-            this.center.copyFrom(jmrg.center);
+            this.center.v.copyFrom(jmrg.center.v);
             this.focusAngle = jmrg.focusAngle;
             this.focusDistance = jmrg.focusDistance;
             this.radius = jmrg.radius;
@@ -84,7 +84,7 @@ public class JMRadialGradient extends PaintStyle {
         //For a linear gradient, try to convert it to a radial one
         if (A instanceof JMLinearGradient) {
             JMLinearGradient jmlg = (JMLinearGradient) A;
-            this.center.copyFrom(jmlg.start);
+            this.center.v.copyFrom(jmlg.start.v);
             this.radius = jmlg.start.to(jmlg.end).norm();
             this.relativeToShape = jmlg.relativeToShape;
             this.cycleMethod = jmlg.cycleMethod;

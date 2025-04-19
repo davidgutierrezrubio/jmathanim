@@ -38,6 +38,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Objects;
 
 import static com.jmathanim.jmathanim.JMathAnimScene.DEGREES;
 import static com.jmathanim.jmathanim.JMathAnimScene.PI;
@@ -1240,11 +1241,14 @@ public class Commands {
      */
     public static Animation growIn(double runtime, double angle, OrientationType growType, MathObject... objects) {
         Animation anim = new Animation(runtime) {
-            final MathObject[] mathObjects = objects;
+             MathObject[] mathObjects = objects;
 
             @Override
             public boolean doInitialization() {
                 super.doInitialization();
+                this.mathObjects = Arrays.stream(objects)
+                        .filter(Objects::nonNull)
+                        .toArray(size -> Arrays.copyOf(objects, size));
                 saveStates(mathObjects);
                 for (MathObject obj : mathObjects) {
                     obj.visible(false);
@@ -1321,7 +1325,9 @@ public class Commands {
             @Override
             public boolean doInitialization() {
                 super.doInitialization();
-                this.mathObjects = objects;
+                this.mathObjects = Arrays.stream(objects)
+                        .filter(Objects::nonNull)
+                        .toArray(size -> Arrays.copyOf(objects, size));
                 saveStates(mathObjects);
                 for (MathObject obj : mathObjects) {
                     obj.visible(false);
@@ -1385,11 +1391,14 @@ public class Commands {
      */
     public static AnimationWithEffects fadeOut(double runtime, MathObject... objects) {
         AnimationWithEffects anim = new AnimationWithEffects(runtime) {
-            final MathObject[] mathObjects = objects;
+            MathObject[] mathObjects = objects;
 
             @Override
             public boolean doInitialization() {
                 super.doInitialization();
+                this.mathObjects = Arrays.stream(objects)
+                        .filter(Objects::nonNull)
+                        .toArray(size -> Arrays.copyOf(objects, size));
                 saveStates(mathObjects);
                 return true;
             }

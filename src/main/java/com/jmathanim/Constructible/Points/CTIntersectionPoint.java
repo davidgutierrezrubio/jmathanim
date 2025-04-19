@@ -262,7 +262,7 @@ public class CTIntersectionPoint extends CTPoint {
     public CTIntersectionPoint copy() {
         CTIntersectionPoint copy = make(c1.copy(), c2.copy());
         copy.getMp().copyFrom(this.getMp());
-        copy.getMathObject().copyFrom(this.getMathObject());
+        copy.getMathObject().copyStateFrom(this.getMathObject());
         copy.freeMathObject(this.isThisMathObjectFree());
         return copy;
     }

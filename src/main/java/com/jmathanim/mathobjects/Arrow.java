@@ -24,6 +24,8 @@ import com.jmathanim.Constructible.Lines.CTLine;
 import com.jmathanim.Constructible.Lines.CTPerpBisector;
 import com.jmathanim.Constructible.Points.CTIntersectionPoint;
 import com.jmathanim.Renderers.Renderer;
+import com.jmathanim.Styling.MODrawPropertiesArray;
+import com.jmathanim.Styling.Stylable;
 import com.jmathanim.Utils.*;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.Text.LaTeXMathObject;
@@ -40,10 +42,11 @@ import static com.jmathanim.jmathanim.JMathAnimScene.PI;
 public class Arrow extends Constructible {
 
     public final Shape labelArc;
+    protected final MODrawPropertiesArray mpArrow;
     private final Point Acopy, Bcopy;
     private final Shape shapeToDraw;
     private final Shape head1, head2;
-    public double distScale;
+    private double amplitudeScale;
     private double angle;
     private double baseHeight1;
     private double baseHeight2;
@@ -56,26 +59,37 @@ public class Arrow extends Constructible {
     private double arrowThickness;
     private ArrowType typeA, typeB;
     private LabelTip arrowLabel;
-    private int labelType;//0=normal, 1=distance, 2=coordinates
+    private enum labelTypeEnum {NORMAL, DISTANCE,COORDS}
+    private labelTypeEnum labelType;
+
+    private String stringFormat;
 
     private Arrow(Point A, Point B) {
         this.A = A;
         this.B = B;
-        labelType = 0;
+        labelType = labelTypeEnum.NORMAL;
         this.labelArc = new Shape();
         this.arrowLabel = null;
         head1 = new Shape();
         head2 = new Shape();
         arrowThickness = 20;//TODO: Default value. This should be in config file
-        distScale = 1d;
+        setAmplitudeScale(1d);
         headStartMultiplier = 1d;
         headEndMultiplier = 1d;
         shapeToDraw = new Shape();
         Acopy = A.copy();
         Bcopy = B.copy();
+        mpArrow = new MODrawPropertiesArray();
+        mpArrow.add(shapeToDraw);
         getMp().loadFromStyle("ARROWDEFAULT");
     }
 
+    /**
+     * Returns a shape for a given ArrowType
+     *
+     * @param type Arrow type, a value of enum ArrowType
+     * @return A Shape with the arrow head generated
+     */
     public static Shape buildArrowHead(ArrowType type) {
         Shape resul = loadHeadShape(type);
         resul.style("default");
@@ -157,6 +171,11 @@ public class Arrow extends Constructible {
     }
 
     @Override
+    public Stylable getMp() {
+        return mpArrow;
+    }
+
+    @Override
     public MathObject getMathObject() {
         return shapeToDraw;
     }
@@ -191,23 +210,25 @@ public class Arrow extends Constructible {
 
     @Override
     public void rebuildShape() {
-        if (isThisMathObjectFree()) return;
+//        if (isThisMathObjectFree()) return;
         if (scene == null) {
             return;
         }
         //The distScale manages which scale should be the arrow drawn. It is used mostly by ShowCreation animation
 
-        Acopy.v.copyFrom(A.v);
-        Bcopy.v.copyFrom(A.interpolate(B, distScale).v);
+        if (!isThisMathObjectFree()) {
+            Acopy.v.copyFrom(A.v);
+            Bcopy.v.copyFrom(A.interpolate(B, getAmplitudeScale()).v);
+        }
         Shape h1A = head1.copy();
         Shape h1B = head2.copy();
         double dist = Acopy.to(Bcopy).norm();
         if (arrowLabel != null)
-            arrowLabel.getMathObject().scale(arrowLabel.pivotPointRefMathObject,distScale);
+            arrowLabel.getMathObject().scale(arrowLabel.pivotPointRefMathObject, getAmplitudeScale());
 
 
         //Scale heads to adjust to thickness
-        double rThickness = scene.getRenderer().ThicknessToMathWidth(arrowThickness);
+        double rThickness = scene.getRenderer().ThicknessToMathWidth(arrowThickness * getAmplitudeScale());
 
         double hh = (baseRealHeight1 - gapA) / baseDist1 + (baseRealHeight2 - gapB) / baseDist2;
         rThickness = Math.min(rThickness, .75 * dist / hh);
@@ -235,8 +256,9 @@ public class Arrow extends Constructible {
             shapeToDraw.merge(h1B, true, true);
 
             labelArc.getPath().clear();
-            labelArc.getPath().addPoint(h1B.get(-1).p.copy());
             labelArc.getPath().addPoint(h1A.get(0).p.copy());
+            labelArc.getPath().addPoint(h1B.get(-1).p.copy());
+
             labelArc.get(0).isThisSegmentVisible = false;
 
         } else {
@@ -321,7 +343,15 @@ public class Arrow extends Constructible {
     @Override
     public Arrow copy() {
         Arrow copy = new Arrow(A.copy(), B.copy());
-        copy.copyStateFrom(this);
+        if (arrowLabel != null) {
+            if (labelType == labelTypeEnum.DISTANCE) {
+                copy.addLengthLabel(arrowLabel.distanceToShape, stringFormat);
+            }
+            if (labelType==labelTypeEnum.COORDS) {
+                copy.addVecLabel(arrowLabel.distanceToShape, stringFormat);
+            }
+            copy.copyStateFrom(this);
+        }
         return copy;
     }
 
@@ -333,7 +363,7 @@ public class Arrow extends Constructible {
             this.arrowThickness = ar.arrowThickness;
             this.angle = ar.angle;
             this.scene = ar.scene;
-            this.distScale = ar.distScale;
+            this.setAmplitudeScale(ar.getAmplitudeScale());
             this.baseHeight1 = ar.baseHeight1;
             this.baseHeight2 = ar.baseHeight2;
             this.baseRealHeight1 = ar.baseRealHeight1;
@@ -342,29 +372,36 @@ public class Arrow extends Constructible {
             this.headEndMultiplier = ar.headEndMultiplier;
             this.typeA = ar.typeA;
             this.typeB = ar.typeB;
-            this.A.copyFrom(ar.A);
-            this.B.copyFrom(ar.B);
-            this.Acopy.copyFrom(ar.Acopy);
-            this.Bcopy.copyFrom(ar.Bcopy);
+            this.A.copyStateFrom(ar.A);
+            this.B.copyStateFrom(ar.B);
+            this.Acopy.copyStateFrom(ar.Acopy);
+            this.Bcopy.copyStateFrom(ar.Bcopy);
             this.gapA = ar.gapA;
             this.gapB = ar.gapB;
             this.baseDist1 = ar.baseDist1;
             this.baseDist2 = ar.baseDist2;
             this.freeMathObject(ar.isThisMathObjectFree());
 
-            this.head2.getPath().clear();
-            this.head2.copyStateFrom(ar.head2);
 
+            JMPath copyPath = ar.head1.getPath().copy();
             this.head1.getPath().clear();
-            this.head1.copyStateFrom(ar.head1);
+            this.head1.getPath().addJMPointsFrom(copyPath);
 
+            copyPath = ar.head2.getPath().copy();
+            this.head2.getPath().clear();
+            this.head2.getPath().addJMPointsFrom(copyPath);
+
+
+            copyPath = ar.shapeToDraw.getPath().copy();
             this.shapeToDraw.getPath().clear();
-            this.shapeToDraw.copyStateFrom(ar.shapeToDraw);
+            this.shapeToDraw.getPath().addJMPointsFrom(copyPath);
 
-            this.shapeToDraw.getPath().clear();
-            this.shapeToDraw.copyStateFrom(ar.shapeToDraw);
-            this.getMp().copyFrom(ar.getMp());
+//            this.getMp().copyFrom(ar.getMp());
+            this.shapeToDraw.getMp().copyFrom(ar.shapeToDraw.getMp());
 
+            if (this.arrowLabel != null) {
+                this.arrowLabel.copyStateFrom(ar.arrowLabel);
+            }
         }
     }
 
@@ -554,6 +591,17 @@ public class Arrow extends Constructible {
         return this;
     }
 
+    public LabelTip getLabel() {
+        return arrowLabel;
+    }
+
+    public <T extends Arrow> T setLabel(LabelTip labelTip) {
+        arrowLabel = labelTip;
+        labelType = labelTypeEnum.NORMAL;
+        mpArrow.add(arrowLabel);
+        return (T) this;
+    }
+
     /**
      * Adds a label with the length.The points mark the beginning and end of the
      * delimiter.The delimiter lies at the "left" of vector AB.
@@ -563,11 +611,14 @@ public class Arrow extends Constructible {
      * @return The Label, a LatexMathObject
      */
     public LabelTip addLengthLabel(double gap,
-                                          String format) {
-        labelType = 1;
-        arrowLabel = LabelTip.makeLabelTip(labelArc, .5, "${#0}$");
-        arrowLabel.distanceToShape=gap;
-        arrowLabel.setAnchor(Anchor.Type.LOWER);
+                                   String format) {
+
+        LabelTip label = LabelTip.makeLabelTip(labelArc, .5, "${#0}$");
+        label.distanceToShape = gap;
+        label.setAnchor(Anchor.Type.LOWER);
+        setLabel(label);
+        labelType = labelTypeEnum.DISTANCE;
+        this.stringFormat = format;
 
         LaTeXMathObject t = (LaTeXMathObject) arrowLabel.getMathObject();
         t.setArgumentsFormat(format);
@@ -584,7 +635,7 @@ public class Arrow extends Constructible {
 
             }
         });
-        return arrowLabel;
+        return label;
     }
 
     /**
@@ -596,12 +647,12 @@ public class Arrow extends Constructible {
      * @return The Label, a LatexMathObject
      */
     public LabelTip addVecLabel(double gap, String format) {
-        labelType = 2;
-        arrowLabel = LabelTip.makeLabelTip(labelArc, .5, "$({#0},{#1})$");
-        arrowLabel.distanceToShape=gap;
-        arrowLabel.setAnchor(Anchor.Type.LOWER);
-        LaTeXMathObject t = (LaTeXMathObject) arrowLabel.getMathObject();
+        LabelTip label = LabelTip.makeLabelTip(labelArc, .5, "$({#0},{#1})$");
+        label.distanceToShape = gap;
+        label.setAnchor(Anchor.Type.LOWER);
+        LaTeXMathObject t = (LaTeXMathObject) label.getMathObject();
         t.setArgumentsFormat(format);
+        this.stringFormat = format;
         t.registerUpdater(new Updater() {
 //            @Override
 //            public void computeUpdateLevel() {
@@ -615,7 +666,10 @@ public class Arrow extends Constructible {
                 t.getArg(1).setScalar(vAB.y);
             }
         });
-        return arrowLabel;
+        setLabel(label);
+        labelType = labelTypeEnum.COORDS;
+
+        return label;
 //        return (LaTeXMathObject) arrowLabel.getRefMathObject();
     }
 
@@ -623,6 +677,49 @@ public class Arrow extends Constructible {
     public void draw(JMathAnimScene scene, Renderer r, Camera cam) {
         super.draw(scene, r, cam);
         if (arrowLabel != null) arrowLabel.draw(scene, r, cam);
+    }
+
+    /**
+     * Returns the arrow label if defined
+     *
+     * @return The arror label, a LabelTip object. null if none defined.
+     */
+    public LabelTip getArrowLabel() {
+        return arrowLabel;
+    }
+
+    /**
+     * Returns the scale of the amplitude of arrow. A value of 1 draws the
+     * arrow from one anchor point to another. Smaller values scales the
+     * arrow in the same proportion. This value is used mainly for
+     * showCreation animations-like.
+     *
+     * @return The amplitude scale. A value from 0 to 1
+     */
+    public double getAmplitudeScale() {
+        return amplitudeScale;
+    }
+
+    /**
+     * Sets the scale of the amplitude of arrow. A value of 1 draws the
+     * arrow from one anchor point to another. Smaller values scales the
+     * arrow in the same proportion. This value is used mainly for
+     * showCreation animations-like.
+     *
+     * @param amplitudeScale The delimiter scale, from 0 to 1. Values are automatically cropped to this interval.
+     */
+    public <T extends Arrow> T setAmplitudeScale(double amplitudeScale) {
+        this.amplitudeScale = Math.max(Math.min(amplitudeScale, 1), 0);
+        return (T) this;
+    }
+
+    /**
+     * Returns the shape of the arrow to draw
+     *
+     * @return A Shape object
+     */
+    public Shape getArrowShape() {
+        return shapeToDraw;
     }
 
     //TODO:
@@ -635,6 +732,4 @@ public class Arrow extends Constructible {
     public enum ArrowType {
         NONE_BUTT, NONE_ROUND, NONE_SQUARE, ARROW1, ARROW2, ARROW3, SQUARE, BULLET
     }
-
-
 }

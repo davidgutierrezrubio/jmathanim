@@ -189,6 +189,7 @@ public class LaTeXMathObject extends AbstractLaTeXMathObject implements hasArgum
         return df;
     }
 
+
     /**
      * Sets the decimal format for the arguments.
      *

@@ -27,7 +27,7 @@ public class GroovyExecutor extends Scene2D {
     private String groovyScriptFilename;
     private Binding binding;
     private GroovyShell shell;
-    private String userCodeWithoutImports;
+    private String userCodeOriginal;
     private String userCode;
     private Script script = null;
 
@@ -46,13 +46,12 @@ public class GroovyExecutor extends Scene2D {
 
         shell = new GroovyShell(binding);
 
-
         try {
             //TODO:add parse errors log
 //            userCode = new String(Files.readAllBytes(Paths.get(args[0])));
 
-            userCodeWithoutImports = new String(Files.readAllBytes(Paths.get(groovyScriptFileName)));
-            userCode = GroovyUtils.addImportsToSourceCode(userCodeWithoutImports);
+            userCodeOriginal = new String(Files.readAllBytes(Paths.get(groovyScriptFileName)));
+            userCode = GroovyUtils.processSourceCode(userCodeOriginal);
             script = shell.parse(userCode);
 
         } catch (IOException e) {
@@ -77,79 +76,20 @@ public class GroovyExecutor extends Scene2D {
         for (String arg : args) {
             logger.info("Running Groovy Script " + LogUtils.BLUE + arg + RESET);
             JMathAnimScene tr = new GroovyExecutor(arg);
+            tr.getConfig().setScriptMode(true);
             tr.execute();
             if (tr.getConfig().isJavaFXRunning()) {
                 isJavaFXRunning = true;
             }
         }
-        // Al finalizar todos los scripts, cerrar JavaFX y terminar
+        // This is tricky, as I cannot shutdown javafx and initialize it again in the same execution
+        //If I want to execute several consecutive scripts I must delegate this to the main class
         if (isJavaFXRunning)
-            Platform.exit(); // Cierra JavaFX Toolkit
-        System.exit(0);  // Termina la JVM
+            Platform.exit(); // Close JavaFX Toolkit
+        System.exit(0);
     }
 
-    private void createBindings() {
-        binding.setVariable("scene", scene);
 
-        binding.setVariable("PI", PI);
-        binding.setVariable("DEGREES", DEGREES);
-
-        binding.setVariable("play", play);
-        binding.setVariable("config", config);
-
-
-        //Creates Closure for add method
-        Closure<Void> addClosure = new Closure<Void>(this) {
-            public Void doCall(Object arg) {
-                if (arg instanceof MathObject) {
-                    scene.add((MathObject) arg);
-                } else if (arg instanceof MathObject[]) {
-                    scene.add((MathObject[]) arg);
-                } else if (arg instanceof GeogebraLoader) {
-                    scene.add((GeogebraLoader) arg);
-                } else {
-                    throw new IllegalArgumentException("Not supported for add(): " + arg.getClass());
-                }
-                return null;
-            }
-
-            public Void doCall(Object... args) {
-                if (args.length == 0) {
-                    throw new IllegalArgumentException("Se requiere al menos un argumento");
-                }
-                // Si todos los argumentos son MathObject, conviértelos a un array
-                if (Arrays.stream(args).allMatch(arg -> arg instanceof MathObject)) {
-                    MathObject[] objs = Arrays.stream(args)
-                            .map(arg -> (MathObject) arg)
-                            .toArray(MathObject[]::new);
-                    scene.add(objs);
-                } else {
-                    throw new IllegalArgumentException("Tipos no soportados en múltiples argumentos");
-                }
-                return null;
-            }
-
-            ;
-        };
-        binding.setVariable("add", addClosure);
-
-
-        Closure<Void> waitClosure = new Closure<Void>(this) {
-            public Void doCall(double time) {
-                scene.waitSeconds(time);
-                return null;
-            }
-        };
-        binding.setVariable("waitSeconds", waitClosure);
-
-        Closure<Void> advanceFrameClosure = new Closure<Void>(this) {
-            public Void doCall() {
-                scene.advanceFrame();
-                return null;
-            }
-        };
-        binding.setVariable("advanceFrame", advanceFrameClosure);
-    }
 
     @Override
     public void setupSketch() {
@@ -208,9 +148,75 @@ public class GroovyExecutor extends Scene2D {
         } catch (Exception e) {
             logger.error(LogUtils.RED + "Error running Groovy Script" + RESET);
 //    GroovyExceptionInfo.processGroovyError(e,scriptText);
-            GroovyUtils.processGroovyError(e, userCode, userCodeWithoutImports);
+            GroovyUtils.processGroovyError(e, userCode, userCodeOriginal);
         }
 
+    }
+
+
+
+
+    private void createBindings() {
+        binding.setVariable("scene", scene);
+
+        binding.setVariable("PI", PI);
+        binding.setVariable("DEGREES", DEGREES);
+
+        binding.setVariable("play", play);
+        binding.setVariable("config", config);
+
+
+        //Creates Closure for add method
+        Closure<Void> addClosure = new Closure<Void>(this) {
+            public Void doCall(Object arg) {
+                if (arg instanceof MathObject) {
+                    scene.add((MathObject) arg);
+                } else if (arg instanceof MathObject[]) {
+                    scene.add((MathObject[]) arg);
+                } else if (arg instanceof GeogebraLoader) {
+                    scene.add((GeogebraLoader) arg);
+                } else {
+                    throw new IllegalArgumentException("Not supported for add(): " + arg.getClass());
+                }
+                return null;
+            }
+
+            public Void doCall(Object... args) {
+                if (args.length == 0) {
+                    throw new IllegalArgumentException("Se requiere al menos un argumento");
+                }
+                // Si todos los argumentos son MathObject, conviértelos a un array
+                if (Arrays.stream(args).allMatch(arg -> arg instanceof MathObject)) {
+                    MathObject[] objs = Arrays.stream(args)
+                            .map(arg -> (MathObject) arg)
+                            .toArray(MathObject[]::new);
+                    scene.add(objs);
+                } else {
+                    throw new IllegalArgumentException("Tipos no soportados en múltiples argumentos");
+                }
+                return null;
+            }
+
+            ;
+        };
+//        binding.setVariable("add", addClosure);
+
+
+        Closure<Void> waitClosure = new Closure<Void>(this) {
+            public Void doCall(double time) {
+                scene.waitSeconds(time);
+                return null;
+            }
+        };
+//        binding.setVariable("waitSeconds", waitClosure);
+
+        Closure<Void> advanceFrameClosure = new Closure<Void>(this) {
+            public Void doCall() {
+                scene.advanceFrame();
+                return null;
+            }
+        };
+//        binding.setVariable("advanceFrame", advanceFrameClosure);
     }
 }
 

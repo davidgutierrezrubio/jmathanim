@@ -52,7 +52,7 @@ public class ArrowCreationAnimation extends AbstractCreationStrategy {
 //        Point scaleCenter = (obj.getArrowHead2().size() > 0 ? obj.getCenter() : obj.getBody().getPoint(0));
         Point scaleCenter = obj.getStart();
 //        obj.scale(scaleCenter, lt, lt);
-        obj.distScale = lt;
+        obj.setAmplitudeScale(lt);
 //        obj.setArrowThickness(obj.getArrowThickness() * lt);
 //        obj.scaleArrowHead1(lt * obj.getMp().getScaleArrowHead1());
 //        obj.scaleArrowHead2(lt * obj.getMp().getScaleArrowHead2());

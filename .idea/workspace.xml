@@ -4,30 +4,50 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="279d7506-6f86-4af3-881a-f21c3fbf3c30" name="Changes" comment="" />
+    <list default="true" id="279d7506-6f86-4af3-881a-f21c3fbf3c30" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/jmathanim/editor/JavaCodeEditorWithAutocomplete.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/jmathanim/Styling/ConfigLoader.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/jmathanim/Styling/ConfigLoader.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/jmathanim/Utils/JMathAnimConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/jmathanim/Utils/JMathAnimConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/jmathanim/jmathanim/Groovy/GroovyExecutor.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/jmathanim/jmathanim/Groovy/GroovyExecutor.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/jmathanim/jmathanim/Groovy/GroovyUtils.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/jmathanim/jmathanim/Groovy/GroovyUtils.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/jmathanim/jmathanim/JMathAnimScene.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/jmathanim/jmathanim/JMathAnimScene.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/jmathanim/mathobjects/Arrow.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/jmathanim/mathobjects/Arrow.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/jmathanim/mathobjects/Text/JMNumber.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/jmathanim/mathobjects/Text/JMNumber.java" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
+  <component name="CodeInsightWorkspaceSettings">
+    <option name="optimizeImportsOnTheFly" value="true" />
+  </component>
   <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="gh-pages" />
+      </map>
+    </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
-  <component name="GitHubPullRequestSearchHistory"><![CDATA[{
-  "lastFilter": {
-    "state": "OPEN",
-    "assignee": "davidgutierrezrubio"
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;davidgutierrezrubio&quot;
   }
-}]]></component>
-  <component name="GithubPullRequestsUISettings"><![CDATA[{
-  "selectedUrlAndAccountId": {
-    "url": "https://davidgutierrezrubio%40gmail.com@github.com/davidgutierrezrubio/jmathanim.git",
-    "accountId": "1e360e65-fbc8-402e-8fb1-8660db287033"
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://davidgutierrezrubio%40gmail.com@github.com/davidgutierrezrubio/jmathanim.git&quot;,
+    &quot;accountId&quot;: &quot;1e360e65-fbc8-402e-8fb1-8660db287033&quot;
   }
-}]]></component>
-  <component name="ProjectColorInfo"><![CDATA[{
-  "associatedIndex": 3
-}]]></component>
+}</component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 3
+}</component>
   <component name="ProjectId" id="2qaODDryAuwzlUlu1ijtIz93bsh" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
@@ -35,14 +55,34 @@
   </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
+    "Application.GroovyExec.executor": "Run",
+    "Application.GroovyExecutor.executor": "Run",
+    "Application.JavaCodeEditorWithAutocomplete.executor": "Run",
+    "Groovy.simple.executor": "Run",
+    "Maven.JMathAnim [package].executor": "Run",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.git.unshallow": "true",
     "git-widget-placeholder": "master",
+    "ignore.virus.scanning.warn.message": "true",
     "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "C:/Users/David/Documents/NetBeansProjects/jmathanim"
+    "last_opened_file_path": "C:/Users/David/Documents/NetBeansProjects/jmathanim/simple.groovy",
+    "settings.editor.selected.configurable": "editing.templates"
   }
 }]]></component>
+  <component name="RecentsManager">
+    <key name="CopyClassDialog.RECENTS_KEY">
+      <recent name="com.jmathanim.editor" />
+    </key>
+  </component>
   <component name="RunManager">
+    <configuration name="GroovyExec" type="Application" factoryName="Application">
+      <option name="MAIN_CLASS_NAME" value="com.jmathanim.jmathanim.Groovy.GroovyExecutor" />
+      <module name="JMathAnim" />
+      <option name="PROGRAM_PARAMETERS" value="simple.groovy" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <configuration default="true" type="JetRunConfigurationType">
       <module name="jmathanim" />
       <method v="2">

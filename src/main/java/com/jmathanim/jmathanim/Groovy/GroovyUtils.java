@@ -1,6 +1,9 @@
 package com.jmathanim.jmathanim.Groovy;
 
 import com.jmathanim.jmathanim.LogUtils;
+import org.jetbrains.annotations.NotNull;
+
+import java.util.stream.Collectors;
 
 import static com.jmathanim.jmathanim.JMathAnimScene.logger;
 import static com.jmathanim.jmathanim.LogUtils.RESET;
@@ -36,7 +39,15 @@ public class GroovyUtils {
         return  lines.length;
     }
 
-    public static String addImportsToSourceCode(String userCode) {
+    public static String processSourceCode(String userCode) {
+
+       String sourceCode= addImports(userCode);
+        return removeFieldLines(sourceCode);
+
+
+    }
+
+    private static @NotNull String addImports(String userCode) {
         StringBuilder fullScript = new StringBuilder();
         fullScript.append("import com.jmathanim.mathobjects.*\n");
         fullScript.append("import com.jmathanim.mathobjects.Axes.*\n");
@@ -57,6 +68,10 @@ public class GroovyUtils {
         fullScript.append("import com.jmathanim.Utils.Layouts.*\n");
         fullScript.append(userCode);
         return fullScript.toString();
-
+    }
+    public static String removeFieldLines(String script) {
+        return script.lines()
+                .filter(line -> !line.contains("@Field") && !line.contains("import groovy.transform.Field"))
+                .collect(Collectors.joining("\n"));
     }
 }

@@ -59,8 +59,8 @@ public class Camera3D extends Camera {
         Rect bb = getMathView();
         double x = bb.getCenter().v.x;
         double y = bb.getCenter().v.y;
-        eye.copyFrom(Point.at(x, y, getProperEyeHeight(bb)));
-        look.copyFrom(Point.at(x, y, 0));
+        eye.v.copyFrom(Vec.to(x, y, getProperEyeHeight(bb)));
+        look.v.copyFrom(Vec.to(x, y, 0));
     }
 
     public double getProperEyeHeight(Rect bb) {
@@ -77,8 +77,8 @@ public class Camera3D extends Camera {
     }
 
     public void lookAt(Point eye, Point look, Vec up) {
-        this.eye.copyFrom(eye);
-        this.look.copyFrom(look);
+        this.eye.v.copyFrom(eye.v);
+        this.look.v.copyFrom(look.v);
         this.up.copyFrom(up);
     }
 

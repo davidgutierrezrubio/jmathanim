@@ -47,6 +47,7 @@ public class JMathAnimConfig {
     private File saveFilePath;
     private DoubleUnaryOperator defaultLambda;
     private boolean isJavaFXRunning;
+    private boolean isScriptMode;
 
     public File getSaveFilePath() {
         return saveFilePath;
@@ -469,6 +470,8 @@ public class JMathAnimConfig {
      * @param level  Debug level:  0=OFF, 1=Only errors, 2=Warnings, 3=Info messages, 4=Debug messages
      */
     public void setLoggingLevel(int level) {
+        level=Math.min(level,4);
+        level=Math.max(level,0);
         switch(level) {
             case 0:
                 logger.setLevel(Level.OFF);
@@ -512,4 +515,22 @@ public class JMathAnimConfig {
     public void setJavaFXRunning(boolean javaFXRunning) {
         isJavaFXRunning = javaFXRunning;
     }
+
+    /**
+     * Returns the script mode flag. Tells JMathAnim is executing external scripts. For internal use.
+     * @return The script mode flag
+     */
+    public boolean isScriptMode() {
+        return isScriptMode;
+    }
+
+    /**
+     * Sets the script mode flag. Tells JMathAnim is executing external scripts. For internal use.
+     * @param scriptMode The script mode flag
+     */
+    public void setScriptMode(boolean scriptMode) {
+        isScriptMode = scriptMode;
+    }
+
+
 }

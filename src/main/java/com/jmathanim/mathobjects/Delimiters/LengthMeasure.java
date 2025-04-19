@@ -33,6 +33,7 @@ import static com.jmathanim.jmathanim.JMathAnimScene.PI;
 public class LengthMeasure extends Delimiter {
 
     private final double hgap;
+    private MathObjectGroup delimiterShapeGroup;
 
     public enum TYPE {
         ARROW, SIMPLE
@@ -48,6 +49,7 @@ public class LengthMeasure extends Delimiter {
         this.gap = gap;
         hgap = .05;
         minimumWidthToShrink = .5;
+        delimiterShapeGroup = MathObjectGroup.make();
 
     }
     @Override
@@ -62,7 +64,7 @@ public class LengthMeasure extends Delimiter {
         double gapToUse = hgap * realAmplitudeScale;
         delimiterLabelToDraw.scale(realAmplitudeScale);
         double vCenter = .025 * delimiterScale;
-        MathObjectGroup delShape = MathObjectGroup.make();
+         delimiterShapeGroup.clear();
 //        Shape verticalBar = Shape.segment(Point.at(0, 0), Point.at(0, 2 * vCenter));
         double xOffset = 0;
         switch (type) {
@@ -74,11 +76,11 @@ public class LengthMeasure extends Delimiter {
                 break;
         }
         Shape verticalBar = Shape.polyLine(Point.at(xOffset, -vCenter), Point.at(0, 0), Point.at(xOffset, vCenter));
-        delShape.add(verticalBar);
+        delimiterShapeGroup.add(verticalBar);
         double segmentLength = .5 * (width - delimiterLabelToDraw.getWidth()) - gapToUse;
 //        segmentLength*=amplitudeScale;
         final Shape segment = Shape.segment(Point.at(0, 0), Point.at(segmentLength, 0));
-        delShape.add(segment);
+        delimiterShapeGroup.add(segment);
 
         //Manages rotation of label
         switch (rotateLabel) {
@@ -95,20 +97,25 @@ public class LengthMeasure extends Delimiter {
 
         delimiterLabelToDraw.stackTo(segment, Anchor.Type.RIGHT, gapToUse);
 
-        labelMarkPoint.copyFrom(delimiterLabelToDraw.getCenter());
-        delShape.add(segment.copy().stackTo(delimiterLabelToDraw, Anchor.Type.RIGHT, gapToUse));
-        delShape.add(verticalBar.copy().scale(Point.at(0, 0), -1, 1).shift(width, 0));
-        delShape.shift(0, vCenter + gap * amplitudeScale);
+        labelMarkPoint.v.copyFrom(delimiterLabelToDraw.getCenter().v);
+        delimiterShapeGroup.add(segment.copy().stackTo(delimiterLabelToDraw, Anchor.Type.RIGHT, gapToUse));
+        delimiterShapeGroup.add(verticalBar.copy().scale(Point.at(0, 0), -1, 1).shift(width, 0));
+        delimiterShapeGroup.shift(0, vCenter + gap * amplitudeScale);
         delimiterLabelToDraw.shift(0, vCenter + gap * amplitudeScale);
         delimiterLabelToDraw.scale(amplitudeScale);
-        delShape.scale(amplitudeScale);
-        delShape.getMp().copyFrom(mpDelimiter);
+        delimiterShapeGroup.scale(amplitudeScale);
+        delimiterShapeGroup.getMp().copyFrom(mpDelimiter);
         AffineJTransform tr = AffineJTransform.createDirect2DIsomorphic(AA, BB, A, B, 1);
-        tr.applyTransform(delShape);
+        tr.applyTransform(delimiterShapeGroup);
         tr.applyTransform(delimiterLabelToDraw);
-        delShape.add(delimiterLabelToDraw);
+        delimiterShapeGroup.add(delimiterLabelToDraw);
 
-        return delShape;
+        return delimiterShapeGroup;
+    }
+
+    @Override
+    public MathObjectGroup getDelimiterShape() {
+        return delimiterShapeGroup;
     }
 
 }

@@ -42,50 +42,22 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- *
  * @author David Gutierrez Rubio davidgutierrezrubio@gmail.com
  */
 public abstract class AbstractLaTeXMathObject extends SVGMathObject {
-
-    protected Anchor.Type anchor;
-    protected LatexParser latexParser;
-
-    /**
-     * Determines how LaTeX shapes will be created
-     */
-    public enum CompileMode {
-        /**
-         * Uses JLaTexMath library, enclosing text in a mbox. JLaTexMath
-         * compiles by default in math mode so this is necessary in order to
-         * generate normal text by default. This is the default mode used when
-         * creating a LaTeXMathObject without arguments.
-         */
-        JLaTexMath,
-        /**
-         * Uses JLaTexMath library with the unaltered text. Default to math
-         * mode. by default in math mode.
-         */
-        RawJLaTexMath,
-        /**
-         * Invokes an external LaTeX system to compile file and dvisvg to
-         * generate a svg object to import it. This is used for compatibiliy
-         * reasons and in the rare cases JLaTeXMath cannot compile the LaTeX
-         * string.
-         */
-        CompileFile
-    }
 
     // Default scale for latex objects (relative to screen height)
     // This factor represents % of height relative to the screen that a "X"
     // character has
     public static final double DEFAULT_SCALE_FACTOR = .05;
     protected final AffineJTransform modelMatrix;
+    protected Anchor.Type anchor;
+    protected LatexParser latexParser;
     protected String text;
-    CompileMode mode = CompileMode.JLaTexMath;
     protected File latexFile;
     protected String baseFileName;
     protected File outputDir;
-
+    CompileMode mode = CompileMode.JLaTexMath;
     protected AbstractLaTeXMathObject(Anchor.Type anchor) {
         super();
         this.anchor = anchor;
@@ -93,21 +65,19 @@ public abstract class AbstractLaTeXMathObject extends SVGMathObject {
         this.latexParser = new LatexParser(this);
     }
 
-
     public void setLatexStyle(LatexStyle latexStyle) {
         this.getMp().setLatexStyle(latexStyle);
         if (latexStyle != null) {
             latexStyle.apply(this);
         }
     }
+
     public void setLatexStyle(String latexStyleName) {
         HashMapUpper<String, LatexStyle> latexStyles = JMathAnimConfig.getConfig().getLatexStyles();
         if (latexStyles.containsKey(latexStyleName.toUpperCase())) {
             setLatexStyle(latexStyles.get(latexStyleName));
         }
     }
-
-
 
     @Override
     public AbstractLaTeXMathObject applyAffineTransform(AffineJTransform transform) {
@@ -118,7 +88,7 @@ public abstract class AbstractLaTeXMathObject extends SVGMathObject {
     }
 
     protected void changeInnerLaTeX(String text) {
-
+        scene = JMathAnimConfig.getConfig().getScene();
         AffineJTransform modelMatrixBackup = modelMatrix.copy();
 //        if (text.equals(this.text)) {
 //            return;
@@ -395,7 +365,7 @@ public abstract class AbstractLaTeXMathObject extends SVGMathObject {
      * Changes both draw and fill colors
      *
      * @param str A string representing a color. May be a JavaFX color name like
-     * CYAN or a hexadecimal number like #F3A0CD
+     *            CYAN or a hexadecimal number like #F3A0CD
      * @return This object
      */
     public AbstractLaTeXMathObject setColor(String str) {
@@ -417,8 +387,8 @@ public abstract class AbstractLaTeXMathObject extends SVGMathObject {
     /**
      * Changes both draw and fill colors to the given glyphs
      *
-     * @param str A string representing a color. May be a JavaFX color name like
-     * CYAN or a hexadecimal number like #F3A0CD
+     * @param str     A string representing a color. May be a JavaFX color name like
+     *                CYAN or a hexadecimal number like #F3A0CD
      * @param indices Indices of glyps to change colors. 0 is the first glyph
      * @return This object
      */
@@ -429,18 +399,17 @@ public abstract class AbstractLaTeXMathObject extends SVGMathObject {
     /**
      * Changes both draw and fill colors to the given glyphs
      *
-     * @param col The JMColor
+     * @param col     The JMColor
      * @param indices Indices of glyps to change colors. 0 is the first glyph
      * @return This object
      */
     public AbstractLaTeXMathObject setColor(PaintStyle col, int... indices) {
         for (int i : indices) {
-            if ((i>=0)&&(i<size())) {
+            if ((i >= 0) && (i < size())) {
                 this.get(i).drawColor(col);
                 this.get(i).fillColor(col);
-            } else
-            {
-                JMathAnimScene.logger.warn("Index "+i+" out of bounds when applying setColor to LaTeX");
+            } else {
+                JMathAnimScene.logger.warn("Index " + i + " out of bounds when applying setColor to LaTeX");
             }
         }
         return this;
@@ -469,5 +438,30 @@ public abstract class AbstractLaTeXMathObject extends SVGMathObject {
 
     public AffineJTransform getModelMatrix() {
         return modelMatrix;
+    }
+
+    /**
+     * Determines how LaTeX shapes will be created
+     */
+    public enum CompileMode {
+        /**
+         * Uses JLaTexMath library, enclosing text in a mbox. JLaTexMath
+         * compiles by default in math mode so this is necessary in order to
+         * generate normal text by default. This is the default mode used when
+         * creating a LaTeXMathObject without arguments.
+         */
+        JLaTexMath,
+        /**
+         * Uses JLaTexMath library with the unaltered text. Default to math
+         * mode. by default in math mode.
+         */
+        RawJLaTexMath,
+        /**
+         * Invokes an external LaTeX system to compile file and dvisvg to
+         * generate a svg object to import it. This is used for compatibiliy
+         * reasons and in the rare cases JLaTeXMath cannot compile the LaTeX
+         * string.
+         */
+        CompileFile
     }
 }

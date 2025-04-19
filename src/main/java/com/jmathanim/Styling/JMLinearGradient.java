@@ -70,8 +70,8 @@ public class JMLinearGradient extends PaintStyle {
         }
         if (A instanceof JMLinearGradient) {
             JMLinearGradient jmlg = (JMLinearGradient) A;
-            this.start.copyFrom(jmlg.start);
-            this.end.copyFrom(jmlg.end);
+            this.start.v.copyFrom(jmlg.start.v);
+            this.end.v.copyFrom(jmlg.end.v);
             this.relativeToShape = jmlg.relativeToShape;
             this.cycleMethod = jmlg.cycleMethod;
             this.stops = jmlg.stops.copy();
@@ -80,8 +80,8 @@ public class JMLinearGradient extends PaintStyle {
         //Convert radial gradient into a linear one, horizontally
          if (A instanceof JMRadialGradient) {
             JMRadialGradient jmlg = (JMRadialGradient) A;
-            this.start.copyFrom(jmlg.center);
-            this.end.copyFrom(jmlg.center.add(Vec.to(jmlg.radius,0)));
+            this.start.v.copyFrom(jmlg.center.v);
+            this.end.v.copyFrom(jmlg.center.add(Vec.to(jmlg.radius,0)).v);
             this.relativeToShape = jmlg.relativeToShape;
             this.cycleMethod = jmlg.cycleMethod;
             this.stops = jmlg.stops.copy();

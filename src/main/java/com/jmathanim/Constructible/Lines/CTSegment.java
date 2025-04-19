@@ -116,7 +116,7 @@ public class CTSegment extends CTAbstractLine implements hasScalarParameter {
 
     @Override
     public String toString() {
-        return String.format("CTSegment[" + this.A.getLabel() + ", " + this.B.getLabel() + "]");
+        return String.format("CTSegment[" + this.A.getObjectLabel() + ", " + this.B.getObjectLabel() + "]");
     }
 
     @Override

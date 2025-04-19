@@ -76,6 +76,7 @@ public abstract class Animation {
     private String debugName;
     private boolean shouldResetAtReuse;
     private Status status;
+
     /**
      * Creates an empty animation, with specified run time.This constructor should be called only from implementing
      * subclasses.
@@ -97,7 +98,7 @@ public abstract class Animation {
         allocateStart = 0d;
         allocateEnd = 1d;
         config = JMathAnimConfig.getConfig();
-        printProgressBar=true;
+        printProgressBar = true;
     }
 
     /**

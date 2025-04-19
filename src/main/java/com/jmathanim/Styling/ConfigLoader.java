@@ -522,6 +522,8 @@ public class ConfigLoader {
                 case "scaleArrowHead2":
                     mp.setScaleArrowHead2(Double.valueOf(item.getTextContent()));
                     break;
+                case "#comment":
+                    break;
                 default:
                     JMathAnimScene.logger.warn("Tag {} not recognized", name);
 

@@ -19,6 +19,7 @@ package com.jmathanim.mathobjects.Delimiters;
 
 import com.jmathanim.Cameras.Camera;
 import com.jmathanim.Renderers.Renderer;
+import com.jmathanim.Styling.MODrawProperties;
 import com.jmathanim.Styling.MODrawPropertiesArray;
 import com.jmathanim.Styling.Stylable;
 import com.jmathanim.Utils.*;
@@ -28,8 +29,8 @@ import com.jmathanim.mathobjects.MathObjectGroup;
 import com.jmathanim.mathobjects.Point;
 import com.jmathanim.mathobjects.Shape;
 import com.jmathanim.mathobjects.Text.LaTeXMathObject;
-import com.jmathanim.mathobjects.Tippable.LabelTip;
 import com.jmathanim.mathobjects.updateableObjects.AnchoredMathObject;
+import com.jmathanim.mathobjects.updaters.Updater;
 
 /**
  * A extensible delimiter like braces or parenthesis
@@ -49,6 +50,7 @@ public abstract class Delimiter extends MathObject {
     protected MODrawPropertiesArray mpDelimiter;
     protected double labelMarkGap;
     protected Rotation rotateLabel;
+
     protected MathObjectGroup delimiterToDraw;
 
     protected double delimiterScale;
@@ -67,10 +69,11 @@ public abstract class Delimiter extends MathObject {
         this.type = type;
         this.gap = gap;
         //An invisible path with only a point (to properly stack and align)
-        this.delimiterLabel = Shape.polyLine(Point.at(0, 0)).visible(false);
+        this.delimiterLabel = null;//Shape.polyLine(Point.at(0, 0)).visible(false);
         this.mpDelimiter = new MODrawPropertiesArray();
         labelMarkPoint = Point.at(0, 0);
         this.rotateLabel = Rotation.SMART;
+        this.delimiterToDraw = MathObjectGroup.make();
 
         delimiterScale = 1;
         amplitudeScale = 1;
@@ -156,30 +159,29 @@ public abstract class Delimiter extends MathObject {
      * Adds a label with the length.The points mark the beginning and end of the
      * delimiter.The delimiter lies at the "left" of vector AB.
      *
-     * @param gap          Gap between control delimiter and label
+     * @param gap    Gap between control delimiter and label
      * @param format Format to print the length, for example "0.00"
      * @return The Label, a LatexMathObject
      */
     public LaTeXMathObject addLengthLabel(double gap,
-                                    String format) {
+                                          String format) {
         setLabel("${#0}$", .1);
         LaTeXMathObject t = (LaTeXMathObject) getLabel();
         t.setArgumentsFormat(format);
-        JMathAnimConfig
-                .getConfig()
-                .getScene()
-                .registerLink(
-                        new Link() {
-                            @Override
-                            public boolean apply() {
-                                t.getArg(0).setScalar(A.to(B).norm());
-                                return true;
-                            }
-                        }
-                );
+
+        Updater updater = new Updater() {
+            @Override
+            public void update(JMathAnimScene scene) {
+                t.getArg(0).setScalar(A.to(B).norm());
+
+            }
+        };
+        t.registerUpdater(updater);
+        t.update(JMathAnimConfig.getConfig().getScene());
 
         return (LaTeXMathObject) getLabel();
     }
+
     /**
      * Adds a label that displays the count of objects in a given MathObjectGroup.
      * The label is positioned based on the delimiter's label mark point.
@@ -188,25 +190,26 @@ public abstract class Delimiter extends MathObject {
      * size. The label will automatically update whenever the size of the group changes.</p>
      *
      * @param gap The gap between the delimiter and the label.
-     * @param mg The MathObjectGroup whose size will be counted and displayed in the label.
+     * @param mg  The MathObjectGroup whose size will be counted and displayed in the label.
      * @return The label as a LaTeXMathObject that shows the count of objects in the group.
      */
-    public LaTeXMathObject addCountLabel(double gap,MathObjectGroup mg) {
+    public LaTeXMathObject addCountLabel(double gap, MathObjectGroup mg) {
         setLabel("${#0}$", .1);
         LaTeXMathObject t = (LaTeXMathObject) getLabel();
         t.setArgumentsFormat("#");
-        JMathAnimConfig
-                .getConfig()
-                .getScene()
-                .registerLink(
-                        new Link() {
-                            @Override
-                            public boolean apply() {
-                                t.getArg(0).setScalar(mg.size());
-                                return true;
-                            }
-                        }
-                );
+        t.registerUpdater(new Updater() {
+//            @Override
+//            public int computeUpdateLevel() {
+//                return Math.max(A.getUpdateLevel(), B.getUpdateLevel()) + 1;
+//            }
+
+            @Override
+            public void update(JMathAnimScene scene) {
+                t.getArg(0).setScalar(mg.size());
+
+            }
+        });
+        t.update(JMathAnimConfig.getConfig().getScene());
         return (LaTeXMathObject) getLabel();
     }
 
@@ -215,28 +218,23 @@ public abstract class Delimiter extends MathObject {
      * Adds a label with the vector coordinates.The points mark the beginning and end of the
      * delimiter.The delimiter lies at the "left" of vector AB.
      *
-     * @param gap          Gap between control delimiter and label
+     * @param gap    Gap between control delimiter and label
      * @param format Format to print the numbers, for example "0.00"
      * @return The Label, a LatexMathObject
      */
     public LaTeXMathObject addVecLabel(double gap, String format) {
         setLabel("$({#0},{#1})$", .1);
         LaTeXMathObject t = (LaTeXMathObject) getLabel();
-//        t.setArgumentsFormat("#0.0");
-        JMathAnimConfig
-                .getConfig()
-                .getScene()
-                .registerLink(
-                        new Link() {
-                            @Override
-                            public boolean apply() {
-                                Vec v=A.to(B);
-                                t.getArg(0).setScalar(v.x);
-                                t.getArg(1).setScalar(v.y);
-                                return true;
-                            }
-                        }
-                );
+        t.registerUpdater(new Updater() {
+            @Override
+            public void update(JMathAnimScene scene) {
+                Vec v = A.to(B);
+                t.getArg(0).setScalar(v.x);
+                t.getArg(1).setScalar(v.y);
+
+            }
+        });
+        t.update(JMathAnimConfig.getConfig().getScene());
         return (LaTeXMathObject) getLabel();
     }
 
@@ -265,19 +263,37 @@ public abstract class Delimiter extends MathObject {
 
     @Override
     public void draw(JMathAnimScene scene, Renderer r, Camera cam) {
+        if (delimiterScale == 0) {
+            return;// Do nothing
+        }
+        rebuildShape(scene);
+
         if (isVisible()) {
-            if (delimiterScale == 0) {
-                return;// Do nothing
-            }
-            scaledA.v.copyFrom(A.interpolate(B, .5 * (1 - amplitudeScale)).v);
-            scaledB.v.copyFrom(B.interpolate(A, .5 * (1 - amplitudeScale)).v);
-            delimiterLabel.update(scene);
-            delimiterToDraw = buildDelimiterShape();
             for (MathObject d : delimiterToDraw) {
                 d.draw(scene, r, cam);
             }
-            delimiterToDraw.draw(scene, r, cam);
         }
+//            delimiterToDraw.draw(scene, r, cam);
+    }
+
+    private void rebuildShape(JMathAnimScene scene) {
+        scaledA.v.copyFrom(A.interpolate(B, .5 * (1 - amplitudeScale)).v);
+        scaledB.v.copyFrom(B.interpolate(A, .5 * (1 - amplitudeScale)).v);
+        MODrawProperties moDrawPropertiesArray=delimiterToDraw.getMp().copy();
+        delimiterToDraw = buildDelimiterShape();
+//        delimiterToDraw.getMp().copyFrom(moDrawPropertiesArray);
+        if (delimiterLabel != null)
+            delimiterLabel.update(scene);
+    }
+
+    @Override
+    public <T extends MathObject> T applyAffineTransform(AffineJTransform transform) {
+        A.applyAffineTransform(transform);
+        B.applyAffineTransform(transform);
+        delimiterToDraw.applyAffineTransform(transform);
+        if (delimiterLabel != null)
+            delimiterLabel.applyAffineTransform(transform);
+        return (T) this;
     }
 
     @Override
@@ -285,7 +301,12 @@ public abstract class Delimiter extends MathObject {
         if ((A.isEquivalentTo(B, 0) || (delimiterScale == 0))) {
             return new EmptyRect();
         }
-        return buildDelimiterShape().getBoundingBox();
+        rebuildShape(JMathAnimConfig.getConfig().getScene());
+        Rect bb = delimiterToDraw.getBoundingBox();
+        if (delimiterLabel != null) {
+            Rect boundingBox = delimiterLabel.getBoundingBox();
+            return Rect.union(bb, boundingBox);
+        } else return bb;
     }
 
     /**
@@ -294,16 +315,29 @@ public abstract class Delimiter extends MathObject {
      * delimiter in the same proportion. This value is used mainly for
      * showCreation animations-like.
      *
-     * @param delimiterScale The delimiter scale, from 0 to 1
+     * @param amplitudeScale The delimiter scale, from 0 to 1. Values are automatically cropped to this interval.
      */
-    public void setAmplitudeScale(double delimiterScale) {
-        this.amplitudeScale = delimiterScale;
+    public <T extends Delimiter> T setAmplitudeScale(double amplitudeScale) {
+        this.amplitudeScale = amplitudeScale;
+        return (T) this;
     }
-
+    /**
+     * Returns the scale of the amplitude of delimiter. A value of 1 draws the
+     * delimiter from one anchor point to another. Smaller values scales the
+     * delimiter in the same proportion. This value is used mainly for
+     * showCreation animations-like.
+     *
+     * @return The amplitude scale. A value from 0 to 1
+     */
+    public double getAmplitudeScale() {
+        return amplitudeScale;
+    }
     @Override
     public Delimiter copy() {
         Delimiter copy = make(A.copy(), B.copy(), type, gap);
         copy.getMp().copyFrom(this.getMp());
+        copy.getDelimiterShape().copyStateFrom(getDelimiterShape());
+
         if (delimiterLabel != null) {
             copy.setLabel(getLabel().copy(), labelMarkGap);
         }
@@ -319,7 +353,13 @@ public abstract class Delimiter extends MathObject {
             return;
         }
         Delimiter del = (Delimiter) obj;
+
+
+
+        this.A.copyStateFrom(del.A);
+        this.B.copyStateFrom(del.B);
         getMp().copyFrom(obj.getMp());
+        getDelimiterShape().copyStateFrom(del.getDelimiterShape());
         if (del.delimiterLabel != null) {
             setLabel(del.getLabel().copy(), del.labelMarkGap);
             getLabel().getMp().copyFrom(del.getLabel().getMp());
@@ -393,6 +433,11 @@ public abstract class Delimiter extends MathObject {
         return (T) this;
     }
 
+    /**
+     * Returns the delimiter Shape
+     * @return A MathObjectGroup containing one (or more) Shapes to be drawn as delimiter
+     */
+    public abstract MathObjectGroup getDelimiterShape();
     /**
      * Gets the label MathObject
      *

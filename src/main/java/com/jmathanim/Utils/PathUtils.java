@@ -126,13 +126,13 @@ public class PathUtils {
         if (!jp0.isThisSegmentVisible) {
             jp1 = path.jmPathPoints.get(1);
             v = jp0.p.to(jp1.cpEnter).multInSite(PathUtils.DEFAULT_TENSION);
-            jp0.cpExit.copyFrom(jp0.p.add(v));
+            jp0.cpExit.v.copyFrom(jp0.p.add(v).v);
 
             jp1 = path.jmPathPoints.get(numPoints - 2);
             jp0 = path.jmPathPoints.get(numPoints - 1);
 //            if (jp0.isCurved) {
             v = jp0.p.to(jp1.cpExit).multInSite(PathUtils.DEFAULT_TENSION);
-            jp0.cpEnter.copyFrom(jp0.p.add(v));
+            jp0.cpEnter.v.copyFrom(jp0.p.add(v).v);
 //            }
         }
     }

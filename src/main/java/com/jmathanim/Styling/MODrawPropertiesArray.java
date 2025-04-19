@@ -191,6 +191,11 @@ public class MODrawPropertiesArray implements Stylable, Stateable {
      */
     @Override
     public void copyFrom(Stylable prop) {
+        if (prop instanceof MODrawPropertiesArray) {
+            MODrawPropertiesArray moDrawPropertiesArray = (MODrawPropertiesArray) prop;
+            copyFrom(moDrawPropertiesArray);
+            return;
+        }
         for (MathObject obj : objects) {
             obj.getMp().copyFrom(prop);
         }

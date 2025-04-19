@@ -342,14 +342,6 @@ public class Point extends MathObject {
         this.v.restoreState();
     }
 
-    /**
-     * Copy coordinates from another point p
-     *
-     * @param p
-     */
-    public void copyFrom(Point p) {
-        this.v.copyFrom(p.v);
-    }
 
     /**
      * Copy full state form another point p
@@ -363,7 +355,7 @@ public class Point extends MathObject {
             return;
         }
         Point p2 = (Point) obj;
-        this.copyFrom(p2);//Copy coordinates
+        this.v.copyFrom(p2.v);//Copy coordinates
         this.getMp().copyFrom(p2.getMp());
         this.scene = obj.scene;
     }

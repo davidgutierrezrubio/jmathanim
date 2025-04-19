@@ -109,12 +109,12 @@ public class JMPath implements Stateable, Boxable, Iterable<JMPathPoint> {
 //            resul = H.interpolate(J, t); //Interpolation point
             resul = JMPathPoint.curveTo(H.interpolate(J, t));
 
-            resul.cpExit.copyFrom(J);
-            resul.cpEnter.copyFrom(H);
+            resul.cpExit.v.copyFrom(J.v);
+            resul.cpEnter.v.copyFrom(H.v);
         } else {
             resul = JMPathPoint.lineTo(v1.p.interpolate(v2.p, t));
-            resul.cpExit.copyFrom(v1.p);
-            resul.cpEnter.copyFrom(v2.p);
+            resul.cpExit.v.copyFrom(v1.p.v);
+            resul.cpEnter.v.copyFrom(v2.p.v);
         }
         return resul;
     }
@@ -860,7 +860,7 @@ public class JMPath implements Stateable, Boxable, Iterable<JMPathPoint> {
             JMPathPoint p1 = this.jmPathPoints.get(n);
             JMPathPoint p2 = this.jmPathPoints.get(n + 1);
             if (p1.p.isEquivalentTo(p2.p, epsilon)) {
-                p2.cpEnter.copyFrom(p1.cpEnter);
+                p2.cpEnter.v.copyFrom(p1.cpEnter.v);
                 p2.isThisSegmentVisible = p1.isThisSegmentVisible;
                 p2.isCurved = p1.isCurved;
                 this.jmPathPoints.remove(p1);
@@ -873,8 +873,8 @@ public class JMPath implements Stateable, Boxable, Iterable<JMPathPoint> {
             JMPathPoint p = jmPathPoints.get(i);
             JMPathPoint q = jmPathPoints.get(i - 1);
             if (!p.isCurved) {
-                p.cpEnter.copyFrom(p.p);
-                q.cpExit.copyFrom(q.p);
+                p.cpEnter.v.copyFrom(p.p.v);
+                q.cpExit.v.copyFrom(q.p.v);
             }
         }
         return this;

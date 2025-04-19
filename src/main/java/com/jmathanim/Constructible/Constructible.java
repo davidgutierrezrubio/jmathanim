@@ -131,7 +131,8 @@ public abstract class Constructible extends MathObject {
         getMathObject().draw(scene, r, cam);
     }
 
-    public String getLabel() {
+
+    public String getObjectLabel() {
         return label;
     }
 

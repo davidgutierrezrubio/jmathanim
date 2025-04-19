@@ -339,6 +339,7 @@ public abstract class MathObject implements Drawable, Updateable, Stateable, Box
      * @param obj The object to copy state from.
      */
     public void copyStateFrom(MathObject obj) {
+        if (obj==null) return;
         this.setCamera(obj.getCamera());
         this.getMp().copyFrom(obj.getMp());
         if (this.getRendererEffects() != null) {

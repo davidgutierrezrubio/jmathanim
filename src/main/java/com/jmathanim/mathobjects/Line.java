@@ -133,10 +133,10 @@ public class Line extends Shape implements HasDirection, shouldUdpateWithCamera 
             bp2.p.v.x = intersectLine[2];
             bp2.p.v.y = intersectLine[3];
         }
-        bp1.cpExit.copyFrom(bp1.p);
-        bp1.cpEnter.copyFrom(bp1.p);
-        bp2.cpExit.copyFrom(bp2.p);
-        bp2.cpEnter.copyFrom(bp2.p);
+        bp1.cpExit.v.copyFrom(bp1.p.v);
+        bp1.cpEnter.v.copyFrom(bp1.p.v);
+        bp2.cpExit.v.copyFrom(bp2.p.v);
+        bp2.cpEnter.v.copyFrom(bp2.p.v);
         bp1.isThisSegmentVisible = false;
     }
 
