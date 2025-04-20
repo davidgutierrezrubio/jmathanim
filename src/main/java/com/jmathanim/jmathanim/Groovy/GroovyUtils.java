@@ -1,7 +1,6 @@
 package com.jmathanim.jmathanim.Groovy;
 
 import com.jmathanim.jmathanim.LogUtils;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.stream.Collectors;
 
@@ -47,7 +46,7 @@ public class GroovyUtils {
 
     }
 
-    private static @NotNull String addImports(String userCode) {
+    private static  String addImports(String userCode) {
         StringBuilder fullScript = new StringBuilder();
         fullScript.append("import com.jmathanim.mathobjects.*\n");
         fullScript.append("import com.jmathanim.mathobjects.Axes.*\n");

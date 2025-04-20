@@ -34,10 +34,6 @@ import java.util.function.DoubleUnaryOperator;
  */
 public abstract class Animation {
 
-    /**
-     * Default run time for animations, 1 second
-     */
-    public static final double DEFAULT_TIME = 1;
     protected final ArrayList<MathObject> removeThisAtTheEnd;
     protected final ArrayList<MathObject> addThisAtTheEnd;
     private final JMathAnimConfig config;

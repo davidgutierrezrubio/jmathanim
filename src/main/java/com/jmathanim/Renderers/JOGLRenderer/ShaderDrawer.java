@@ -25,8 +25,6 @@ import com.jmathanim.Utils.Vec;
 import com.jmathanim.mathobjects.Shape;
 import com.jogamp.common.nio.Buffers;
 import com.jogamp.opengl.GL4;
-import org.jetbrains.annotations.NotNull;
-
 import java.nio.FloatBuffer;
 import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -270,7 +268,7 @@ public class ShaderDrawer {
 //        gl3.glDepthMask(true);
     }
 
-    private static @NotNull ArrayList<Float> getFloats(ArrayList<ArrayList<float[]>> pieces) {
+    private static  ArrayList<Float> getFloats(ArrayList<ArrayList<float[]>> pieces) {
         ArrayList<Float> coords = new ArrayList<>();
 
         //We are going to generate a triangle strip
@@ -358,7 +356,6 @@ public class ShaderDrawer {
      * Draw a thin contour line
      *
      * @param s Shape to draw
-     * @param pieces Rectified
      */
     void drawContour(Shape s) {
         ArrayList<ArrayList<float[]>> pieces = s.getPath().getPolygonalPieces();

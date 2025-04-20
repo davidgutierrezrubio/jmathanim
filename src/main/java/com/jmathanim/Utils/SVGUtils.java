@@ -21,7 +21,6 @@ import com.jmathanim.Styling.JMColor;
 import com.jmathanim.Styling.MODrawProperties;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.*;
-import org.jetbrains.annotations.NotNull;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -73,7 +72,7 @@ public class SVGUtils {
         this.height = 0;
     }
 
-    private static @NotNull String sanitizeTokens(String tok) {
+    private static String sanitizeTokens(String tok) {
         StringBuilder st = new StringBuilder(tok);
         String tok2 = tok;
         int index = st.indexOf(".");
@@ -101,7 +100,7 @@ public class SVGUtils {
                 .replaceAll("(\\d*\\.\\d+)(?=(\\.\\d+))", "$1 ");
     }
 
-    private static @NotNull String sanitizeString(String input) {
+    private static String sanitizeString(String input) {
         // Avoid errors with strings like "142.11998-.948884"
         // Avoid errors with numbers in scientific format
         // Avoid errors with numbers in scientific format

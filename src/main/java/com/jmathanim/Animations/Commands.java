@@ -33,7 +33,6 @@ import com.jmathanim.mathobjects.MathObjectGroup;
 import com.jmathanim.mathobjects.Point;
 import com.jmathanim.mathobjects.Shape;
 import javafx.scene.shape.StrokeLineCap;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -1202,7 +1201,7 @@ public class Commands {
     }// End of shrinkOut command
 
     /**
-     * Performs the inverse animation than {@link shrinkOut}, that its, scale
+     * Performs the inverse animation than shrinkOut, that its, scale
      * the size and alpha of the object from zero.
      *
      *
@@ -1215,7 +1214,7 @@ public class Commands {
     }
 
     /**
-     * Performs the inverse animation than {@link shrinkOut}, that its, scale
+     * Performs the inverse animation than shrinkOut, that its, scale
      * the size and alpha of the object from zero. An inverse rotation from
      * given angle to 0 is performed.
      *
@@ -1229,7 +1228,7 @@ public class Commands {
     }
 
     /**
-     * Performs the inverse animation than {@link shrinkOut}, that its, scale
+     * Performs the inverse animation than shrinkOut, that its, scale
      * the size and alpha of the object from zero. An inverse rotation from
      * given angle to 0 is performed.
      *
@@ -1475,7 +1474,7 @@ public class Commands {
         return resul;
     }
 
-    private static @NotNull ShiftAnimation getShiftAnimation(double runtime, MathObject[] mathobjects, HashMap<MathObject, Point> centers) {
+    private static ShiftAnimation getShiftAnimation(double runtime, MathObject[] mathobjects, HashMap<MathObject, Point> centers) {
         ShiftAnimation resul = new ShiftAnimation(runtime, mathobjects) {
             @Override
             public boolean doInitialization() {

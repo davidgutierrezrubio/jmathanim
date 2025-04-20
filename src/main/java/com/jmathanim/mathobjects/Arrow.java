@@ -303,7 +303,7 @@ public class Arrow extends Constructible {
                 shArc1.reverse();
             }
             labelArc.getPath().clear();
-            labelArc.getPath().copyStateFrom(shArc1.getPath());
+            labelArc.getPath().copyStateFrom(shArc2.getPath());
 
             //Build the shape, adding h1c and merging with h2cF
             shapeToDraw.getPath().addJMPointsFrom(h1A.getPath());

@@ -5,7 +5,9 @@
 <!--            <withJansi>true</withJansi>-->
         </encoder>
     </appender>
-
+    <logger name="com.sun.marlin" level="off"/>
+    <logger name="sun.misc.Unsafe" level="off"/>
+    <logger name="org.openjfx" level="off"/>
     <root level="DEBUG">
         <appender-ref ref="STDOUT" />
     </root>
