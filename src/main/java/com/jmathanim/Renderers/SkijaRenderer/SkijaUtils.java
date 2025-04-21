@@ -161,8 +161,7 @@ class SkijaUtils {
         float[] screenCoordinates = applyMatrix(cameraMatrixObject, coordOrig[0],coordOrig[1]);
         float[] coo = applyMatrix(inv, screenCoordinates[0], screenCoordinates[1]);
          Matrix33 resul = Matrix33.makeTranslate(coo[0] - coordOrig[0], coo[1] - coordOrig[1]);
-        resul= fixedCameraMatrix.makeConcat(resul);
+        resul= fixedCameraMatrix.makeConcat(resul);//First translate, second change of coordinates
         return resul;
-//        return cameraMatrixObject;//TODO: Need to compute this
     }
 }

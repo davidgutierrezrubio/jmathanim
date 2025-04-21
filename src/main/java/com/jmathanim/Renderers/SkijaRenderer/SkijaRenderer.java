@@ -62,8 +62,33 @@ public class SkijaRenderer extends Renderer {
     public void initialize() {
         JMathAnimScene.logger.debug("Initializing Skija renderer");
         this.surface = Surface.makeRasterN32Premul(config.mediaW, config.mediaH);
+        if (false) {
+
+            DirectContext context = DirectContext.makeGL();
+            try {
+                Thread.sleep(50000);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+            this.surface = Surface.makeRenderTarget(
+                    context,
+                    true,
+                    ImageInfo.makeN32Premul(config.mediaW, config.mediaH)
+            );
+            while (surface.getCanvas()==null) {
+                System.out.println("Wait for opengl...");
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        }
+
         cameraMatrix.put(camera,skijaUtils.createCameraView(camera));
         cameraMatrix.put(fixedCamera,skijaUtils.createCameraView(fixedCamera));
+
+        System.out.println("NOOOOOO");
         this.canvas = surface.getCanvas();
         preparePreviewWindow();
         try {
