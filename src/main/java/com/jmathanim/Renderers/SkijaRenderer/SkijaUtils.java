@@ -8,11 +8,15 @@ import com.jmathanim.mathobjects.JMPathPoint;
 import io.github.humbleui.skija.Matrix33;
 import io.github.humbleui.skija.Path;
 
+import java.util.HashMap;
+
 public class SkijaUtils {
     private final JMathAnimConfig config;
+    private final HashMap<JMPath,Path> paths;
 
     public SkijaUtils(JMathAnimConfig config) {
         this.config=config;
+        paths = new HashMap<>();
     }
     public Matrix33 createCameraView(Camera camera) {
         float width_math = 10f;
@@ -30,6 +34,10 @@ public class SkijaUtils {
     }
 
     public Path convertJMPathToSkijaPath(JMPath jmpath) {
+//        if (paths.containsKey(jmpath)) {
+//            return paths.get(jmpath);
+//        }
+
         Path path = new Path();
         Vec prev = jmpath.jmPathPoints.get(0).p.v.copy();
         path.moveTo((float) prev.x, (float) prev.y);
@@ -51,6 +59,7 @@ public class SkijaUtils {
             }
             prev.copyFrom(point);
         }
+//        paths.put(jmpath, path);
         return path;
     }
     protected  boolean isAbsEquiv(Vec a, Vec b, double epsilon) {

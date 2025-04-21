@@ -49,8 +49,10 @@ public class SkijaPreviewWindow {
             });
 
             frame.add(panel);
-            panel.setSize(width, height);
-            frame.setSize(width, height);
+//            panel.setSize(width, height);
+            panel.setPreferredSize(new Dimension(width, height));
+            frame.pack(); // ajusta el frame al tamaño preferido del contenido
+            frame.setLocationRelativeTo(null);
             frame.setVisible(true);
         }));
         swingThread.setDaemon(true);
