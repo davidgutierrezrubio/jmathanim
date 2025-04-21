@@ -122,6 +122,11 @@
             <artifactId>MathParser.org-mXparser</artifactId>
             <version>5.2.1</version>
         </dependency>
+        <dependency>
+            <groupId>io.github.humbleui</groupId>
+            <artifactId>skija-windows-x64</artifactId>
+            <version>0.116.4</version>
+        </dependency>
 <!--        <dependency>-->
 <!--            <groupId>org.jetbrains</groupId>-->
 <!--            <artifactId>annotations</artifactId>-->

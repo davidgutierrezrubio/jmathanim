@@ -323,9 +323,8 @@ public class JavaFXRenderer extends Renderer {
             mobj.setCamera(cam);
         }
         JMPath c = mobj.getPath();
-        int numPoints = c.size();
 
-        if (numPoints >= 2) {
+        if (c.size() >= 2) {
             Path path = FXPathUtils.createFXPathFromJMPath(c, cam);
             applyDrawingStyles(path, mobj);
             applyRendererEffects(path, mobj.getRendererEffects());

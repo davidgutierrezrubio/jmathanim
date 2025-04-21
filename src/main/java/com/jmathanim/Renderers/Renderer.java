@@ -123,6 +123,7 @@ public abstract class Renderer {
             File file = new File(config.getOutputDir().getCanonicalPath() + File.separator + filename);
             ImageIO.write(renderedImage, format, file);
         } catch (IOException ex) {
+            logger.error("Error saving png image "+filename);
             Logger.getLogger(JavaFXRenderer.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
