@@ -5,6 +5,7 @@ import com.jmathanim.Renderers.FXRenderer.JavaFXRenderer;
 import com.jmathanim.Renderers.MovieEncoders.SoundItem;
 import com.jmathanim.Renderers.MovieEncoders.XugglerVideoEncoder;
 import com.jmathanim.Renderers.Renderer;
+import com.jmathanim.Styling.PaintStyle;
 import com.jmathanim.Styling.RendererEffects;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
@@ -12,7 +13,6 @@ import com.jmathanim.mathobjects.AbstractJMImage;
 import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.Shape;
 import io.github.humbleui.skija.*;
-import io.github.humbleui.types.Rect;
 
 import javax.swing.*;
 import java.awt.image.BufferedImage;
@@ -49,7 +49,7 @@ public class SkijaRenderer extends Renderer {
         fixedCamera.initialize(XMIN_DEFAULT, XMAX_DEFAULT, 0);
         correctionThickness = config.mediaW * 1d / 1066;//Correction factor for thickness
         cameraMatrix = new HashMap<>();
-        skijaUtils = new SkijaUtils(config);
+        skijaUtils = new SkijaUtils(config,this);
 
     }
 
@@ -199,59 +199,61 @@ public class SkijaRenderer extends Renderer {
 
         canvas.save();
         //Check if transform is created for this camera in this frame...
-        if (cameraMatrix.containsKey(camera)) {
-            canvas.concat(cameraMatrix.get(camera));
-        }else{
-            transformCamera = skijaUtils.createCameraView(camera);
-            cameraMatrix.put(camera, transformCamera);
-            canvas.concat(transformCamera);
-        }
-        Path path = skijaUtils.convertJMPathToSkijaPath(mobj.getPath());
-        canvas.drawPath(path, new Paint().setColor(0xFF1976D2).setAntiAlias(true));
-//        canvas.drawCircle(0, 0,  1,
-//                new Paint().setColor(0xFF1976D2).setAntiAlias(true));
-//        drawSquareWithHole(canvas);
+        canvas.concat(retrieveCameraMatrix(camera));
+
+        applyPaintCommands(mobj);
         canvas.restore();
     }
 
-
-
-
-    void drawSquareWithHole(Canvas canvas) {
-        float outerSize = 200f;
-        float innerSize = 100f;
-        float cx = 150f; // centro x
-        float cy = 150f; // centro y
-
-        // Coordenadas de los cuadrados
-        float halfOuter = outerSize / 2;
-        float halfInner = innerSize / 2;
-
-        // Crear el path con la regla even-odd (para agujeros)
-        try (Path path = new Path();
-             Paint paint = new Paint().setColor(0xFF0017CC)) {
-
-            path.setFillMode(PathFillMode.EVEN_ODD); // importante para que el agujero funcione
-
-            // Cuadrado exterior (en sentido horario)
-            path.addRect(Rect.makeXYWH(cx - halfOuter, cy - halfOuter, outerSize, outerSize));
-
-            // Cuadrado interior (en sentido horario también)
-            path.addRect(Rect.makeXYWH(cx - halfInner, cy - halfInner, innerSize, innerSize));
-
-            // Dibujar el path
-            canvas.drawPath(path, paint);
+    private Matrix33 retrieveCameraMatrix(Camera camera) {
+        if (cameraMatrix.containsKey(camera)) {
+            return cameraMatrix.get(camera);
+        }else{
+            transformCamera = skijaUtils.createCameraView(camera);
+            cameraMatrix.put(camera, transformCamera);
+            return transformCamera;
         }
     }
 
+    /**
+     * Overloaded method for use with drawAbsoluteCopy
+     * @param mobj Shape to draw
+     * @param mat Transformation matrix
+     */
+    private void drawPath(Shape mobj,Matrix33 mat) {
+        canvas.save();
+        canvas.concat(mat);
+        applyPaintCommands(mobj);
+        canvas.restore();
+    }
+
+    private void applyPaintCommands(Shape mobj) {
+        PaintStyle drawStyle= mobj.getMp().getDrawColor();
+        PaintStyle fillStyle= mobj.getMp().getFillColor();
+        Path path = skijaUtils.convertJMPathToSkijaPath(mobj.getPath());
+        if (drawStyle.equals(fillStyle)) {
+            Paint paint=skijaUtils.createFillAndDrawPaint(mobj);
+            canvas.drawPath(path, paint);
+        }
+        else {
+            //Fill and draw contour
+            Paint paintFill=skijaUtils.createFillPaint(mobj);
+            canvas.drawPath(path, paintFill);
+            Paint paintStroke=skijaUtils.createDrawPaint(mobj);
+            canvas.drawPath(path, paintStroke);
+        }
+    }
 
 
 
     @Override
     public void drawAbsoluteCopy(Shape sh, Vec anchor) {
-        JMathAnimScene.logger.warn("drawAbsoluteCopy not implemented yet, sorry!");
+        Shape shape = sh.copy();
+        Matrix33 projecToCameraMat = skijaUtils.projectToCamera(retrieveCameraMatrix(sh.getCamera()),anchor,retrieveCameraMatrix(fixedCamera));
 
+        drawPath(sh, projecToCameraMat);
     }
+
 
     @Override
     public com.jmathanim.Utils.Rect createImage(InputStream stream) {
@@ -293,3 +295,4 @@ public class SkijaRenderer extends Renderer {
 
     }
 }
+

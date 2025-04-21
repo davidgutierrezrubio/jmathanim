@@ -34,11 +34,10 @@ import com.jmathanim.mathobjects.Text.LaTeXMathObject;
 import com.jmathanim.mathobjects.updateableObjects.Updateable;
 import org.slf4j.LoggerFactory;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.PrintStream;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.text.DecimalFormat;
 import java.util.*;
 import java.util.function.DoubleUnaryOperator;
 import java.util.logging.Level;
@@ -144,6 +143,7 @@ public abstract class JMathAnimScene {
      * If true, frames are not generated and animations are instantly processed
      */
     private boolean animationIsDisabled;
+    private long startTime;
 
     /**
      * Creates a new Scene with default settings.
@@ -189,6 +189,8 @@ public abstract class JMathAnimScene {
      */
     public final int execute() {
 
+        startTime = System.currentTimeMillis();
+
         String sketchName = this.getClass().getName();
         LoggerContext loggerContext = (LoggerContext) LoggerFactory.getILoggerFactory();
         loggerContext.reset();
@@ -225,7 +227,12 @@ public abstract class JMathAnimScene {
         } catch (Exception ex) {
             java.util.logging.Logger.getLogger(JMathAnimScene.class.getName()).log(Level.SEVERE, null, ex);
         }
-
+        double secondsElapsed = (System.currentTimeMillis()-startTime) * 1d / 1000d;
+        DecimalFormat df=new DecimalFormat("0.00");
+        logger.info("Elapsed time "+ df.format(secondsElapsed)
+                +" seconds ("
+                +df.format(frameCount*1d/secondsElapsed)
+                +" fps)");
         if (exitCode != 0) {
             logger.error("An error ocurred. Check the logs.");
         }
