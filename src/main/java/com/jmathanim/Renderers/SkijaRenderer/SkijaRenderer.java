@@ -5,22 +5,18 @@ import com.jmathanim.Renderers.FXRenderer.JavaFXRenderer;
 import com.jmathanim.Renderers.MovieEncoders.SoundItem;
 import com.jmathanim.Renderers.MovieEncoders.XugglerVideoEncoder;
 import com.jmathanim.Renderers.Renderer;
-import com.jmathanim.Styling.PaintStyle;
 import com.jmathanim.Styling.RendererEffects;
+import com.jmathanim.Utils.JMathAnimConfig;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.AbstractJMImage;
 import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.Shape;
-import io.github.humbleui.skija.*;
 
-import javax.swing.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.InputStream;
-import java.util.HashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicReference;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -31,15 +27,9 @@ public class SkijaRenderer extends Renderer {
     private final Camera camera;
     private final Camera fixedCamera;
     private final AtomicBoolean keepRunning = new AtomicBoolean(true);
+    private final SkijaHandler skijaHandler;
     private XugglerVideoEncoder videoEncoder;
     private File saveFilePath;
-    private SkijaPreviewWindow previewWindow;
-    private Surface surface;
-    private Canvas canvas;
-    AtomicReference<JFrame> frameRef = new AtomicReference<>();
-    private Matrix33 transformCamera;
-    private final HashMap<Camera,Matrix33> cameraMatrix;
-    private final SkijaUtils skijaUtils;
 
     public SkijaRenderer(JMathAnimScene parentScene) {
         super(parentScene);//super method initializes config object
@@ -48,8 +38,11 @@ public class SkijaRenderer extends Renderer {
         camera.initialize(XMIN_DEFAULT, XMAX_DEFAULT, 0);
         fixedCamera.initialize(XMIN_DEFAULT, XMAX_DEFAULT, 0);
         correctionThickness = config.mediaW * 1d / 1066;//Correction factor for thickness
-        cameraMatrix = new HashMap<>();
-        skijaUtils = new SkijaUtils(config,this);
+//        skijaHandler = new SkijaSwingHandler(JMathAnimConfig.getConfig(),keepRunning);
+        //Gl handler is slow??
+        skijaHandler = new SkijaGLHandler(JMathAnimConfig.getConfig(), keepRunning);
+        skijaHandler.setRenderer(this);
+
 
     }
 
@@ -60,37 +53,7 @@ public class SkijaRenderer extends Renderer {
 
     @Override
     public void initialize() {
-        JMathAnimScene.logger.debug("Initializing Skija renderer");
-        this.surface = Surface.makeRasterN32Premul(config.mediaW, config.mediaH);
-        if (false) {
-
-            DirectContext context = DirectContext.makeGL();
-            try {
-                Thread.sleep(50000);
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
-            this.surface = Surface.makeRenderTarget(
-                    context,
-                    true,
-                    ImageInfo.makeN32Premul(config.mediaW, config.mediaH)
-            );
-            while (surface.getCanvas()==null) {
-                System.out.println("Wait for opengl...");
-                try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException e) {
-                    throw new RuntimeException(e);
-                }
-            }
-        }
-
-        cameraMatrix.put(camera,skijaUtils.createCameraView(camera));
-        cameraMatrix.put(fixedCamera,skijaUtils.createCameraView(fixedCamera));
-
-        System.out.println("NOOOOOO");
-        this.canvas = surface.getCanvas();
-        preparePreviewWindow();
+        skijaHandler.initialize();
         try {
             prepareEncoder();
         } catch (Exception ex) {
@@ -99,17 +62,8 @@ public class SkijaRenderer extends Renderer {
         }
     }
 
-    private void preparePreviewWindow() {
-        if (config.isShowPreview()) { //Initialize preview window if flag config set, null otherwise
-            this.previewWindow = new SkijaPreviewWindow(config.mediaW, config.mediaH, keepRunning,frameRef);
-            previewWindow.show();
-        } else {
-            this.previewWindow = null;
-        }
-    }
 
-
-    public final void prepareEncoder() throws Exception {
+    private void prepareEncoder() throws Exception {
         if (config.isCreateMovie()) {
             JMathAnimScene.logger.debug("Preparing video encoder");
             videoEncoder = new XugglerVideoEncoder();
@@ -151,8 +105,8 @@ public class SkijaRenderer extends Renderer {
     @Override
     public void saveFrame(int frameCount) {
         BufferedImage renderedImage = getRenderedImage(frameCount);
-        if (config.isShowPreview() && previewWindow.isVisible()) {
-            previewWindow.updateImage(renderedImage);
+        if (config.isShowPreview() && skijaHandler.isPreviewWindowVisible()) {
+            skijaHandler.updateImagePreviewWindow(renderedImage);
         }
         if (config.isCreateMovie()) {
             videoEncoder.writeFrame(renderedImage, frameCount);
@@ -165,21 +119,10 @@ public class SkijaRenderer extends Renderer {
 
     @Override
     public void finish(int frameCount) {
-        if (config.isShowPreview()) {
-            JMathAnimScene.logger.debug("Closing preview window");
 
-            while (frameRef.get() == null) {
-                try {
-                    Thread.sleep(10);
-                } catch (InterruptedException e) {
-                    throw new RuntimeException(e);
-                }
-            }
-            JFrame frame = frameRef.get();
-                SwingUtilities.invokeLater(frame::dispose);
-        }
         JMathAnimScene.logger.info(
                 String.format("%d frames created, %.2fs total time", frameCount, (1.f * frameCount) / config.fps));
+
         if (config.isCreateMovie()) {
             /**
              * Encoders, like decoders, sometimes cache pictures so it can do
@@ -196,18 +139,18 @@ public class SkijaRenderer extends Renderer {
         }
 
 
-
+        skijaHandler.finish();
     }
 
     @Override
     protected BufferedImage getRenderedImage(int frameCount) {
-        return SkijaToBufferedImage.convertTo3ByteBGR(surface);
+        BufferedImage img = skijaHandler.getRenderedImage(frameCount);
+        return img;
     }
 
     @Override
     public void clearAndPrepareCanvasForAnotherFrame() {
-        canvas.clear(0xFFFFFFFF);//TODO: Add colors or background images
-        cameraMatrix.clear();//Clear transform matrices from all cameras
+        skijaHandler.clearAndPrepareCanvasForAnotherFrame();
     }
 
     @Override
@@ -221,62 +164,12 @@ public class SkijaRenderer extends Renderer {
 
     @Override
     public void drawPath(Shape mobj, Camera camera) {
-
-        canvas.save();
-        //Check if transform is created for this camera in this frame...
-        canvas.concat(retrieveCameraMatrix(camera));
-
-        applyPaintCommands(mobj);
-        canvas.restore();
+        skijaHandler.drawPath(mobj, camera);
     }
-
-    private Matrix33 retrieveCameraMatrix(Camera camera) {
-        if (cameraMatrix.containsKey(camera)) {
-            return cameraMatrix.get(camera);
-        }else{
-            transformCamera = skijaUtils.createCameraView(camera);
-            cameraMatrix.put(camera, transformCamera);
-            return transformCamera;
-        }
-    }
-
-    /**
-     * Overloaded method for use with drawAbsoluteCopy
-     * @param mobj Shape to draw
-     * @param mat Transformation matrix
-     */
-    private void drawPath(Shape mobj,Matrix33 mat) {
-        canvas.save();
-        canvas.concat(mat);
-        applyPaintCommands(mobj);
-        canvas.restore();
-    }
-
-    private void applyPaintCommands(Shape mobj) {
-        PaintStyle drawStyle= mobj.getMp().getDrawColor();
-        PaintStyle fillStyle= mobj.getMp().getFillColor();
-        Path path = skijaUtils.convertJMPathToSkijaPath(mobj.getPath());
-        if (drawStyle.equals(fillStyle)) {
-            Paint paint=skijaUtils.createFillAndDrawPaint(mobj);
-            canvas.drawPath(path, paint);
-        }
-        else {
-            //Fill and draw contour
-            Paint paintFill=skijaUtils.createFillPaint(mobj);
-            canvas.drawPath(path, paintFill);
-            Paint paintStroke=skijaUtils.createDrawPaint(mobj);
-            canvas.drawPath(path, paintStroke);
-        }
-    }
-
-
 
     @Override
     public void drawAbsoluteCopy(Shape sh, Vec anchor) {
-        Shape shape = sh.copy();
-        Matrix33 projecToCameraMat = skijaUtils.projectToCamera(retrieveCameraMatrix(sh.getCamera()),anchor,retrieveCameraMatrix(fixedCamera));
-
-        drawPath(sh, projecToCameraMat);
+        skijaHandler.drawAbsoluteCopy(sh, anchor, fixedCamera);
     }
 
 
@@ -300,18 +193,17 @@ public class SkijaRenderer extends Renderer {
 
     @Override
     public double MathWidthToThickness(double w) {
-        return w * 1066;
+        return skijaHandler.MathWidthToThickness(w);
     }
 
     @Override
     public double ThicknessToMathWidth(double th) {
-        return th / 1066;
+        return skijaHandler.ThicknessToMathWidth(th);
     }
 
     @Override
     public double ThicknessToMathWidth(MathObject obj) {
-        Camera cam = (obj.getMp().isAbsoluteThickness() ? fixedCamera : camera);
-        return obj.getMp().getThickness() / 1066 * 4 / cam.getMathView().getWidth();
+        return skijaHandler.ThicknessToMathWidth(obj);
     }
 
     @Override

@@ -1,15 +1,13 @@
 package com.jmathanim.Renderers.SkijaRenderer;
 
 
-import io.github.humbleui.skija.Bitmap;
-import io.github.humbleui.skija.Image;
-import io.github.humbleui.skija.ImageInfo;
-import io.github.humbleui.skija.Surface;
+import io.github.humbleui.skija.*;
 
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferByte;
 import java.awt.image.DataBufferInt;
 import java.nio.ByteBuffer;
+import java.nio.IntBuffer;
 
 public class SkijaToBufferedImage {
     /**
@@ -83,5 +81,30 @@ public class SkijaToBufferedImage {
 
         return image;
     }
+    public static BufferedImage convertGLtoBufferedImage(DirectContext context, Surface surface) {
+        // 1. Captura la imagen actual de la Surface
+        Image snapshot = surface.makeImageSnapshot();
 
+// 2. Prepara un Bitmap para copiar los datos
+        Bitmap bitmap = new Bitmap();
+        bitmap.allocN32Pixels(snapshot.getWidth(), snapshot.getHeight());
+
+// 3. Leer los píxeles
+        snapshot.readPixels(context, bitmap, 0, 0,true);
+
+// 4. Convertir el Bitmap a BufferedImage
+        BufferedImage bufferedImage = new BufferedImage(
+                bitmap.getWidth(),
+                bitmap.getHeight(),
+                BufferedImage.TYPE_INT_ARGB
+        );
+
+// Copiar píxeles manualmente
+        IntBuffer intBuffer = bitmap.peekPixels().asIntBuffer();
+        int[] pixels = new int[intBuffer.remaining()];
+        intBuffer.get(pixels);
+        bufferedImage.setRGB(0, 0, bitmap.getWidth(), bitmap.getHeight(), pixels, 0, bitmap.getWidth());
+
+        return bufferedImage;
+    }
 }

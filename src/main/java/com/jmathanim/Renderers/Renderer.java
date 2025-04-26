@@ -53,6 +53,7 @@ public abstract class Renderer {
     public Renderer(JMathAnimScene parentScene) {
         this.scene = parentScene;
         this.config = parentScene.getConfig();
+        config.setRenderer(this);
     }
 
     abstract public RendererEffects buildRendererEffects();

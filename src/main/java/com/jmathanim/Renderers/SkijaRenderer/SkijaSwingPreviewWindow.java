@@ -9,14 +9,14 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
 
-public class SkijaPreviewWindow {
+public class SkijaSwingPreviewWindow {
     private final AtomicReference<BufferedImage> currentImage = new AtomicReference<>();
     private final int width, height;
     private final AtomicBoolean keepRunning;
     private JFrame frame;
     private JPanel panel;
     AtomicReference<JFrame> frameRef;
-    public SkijaPreviewWindow(int width, int height, AtomicBoolean keepRunning, AtomicReference<JFrame> frameRef) {
+    public SkijaSwingPreviewWindow(int width, int height, AtomicBoolean keepRunning, AtomicReference<JFrame> frameRef) {
         this.width = width;
         this.height = height;
         this.keepRunning = keepRunning;

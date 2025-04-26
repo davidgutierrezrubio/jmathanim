@@ -3,11 +3,11 @@ package com.jmathanim.Renderers.SkijaRenderer;
 import com.jmathanim.Cameras.Camera;
 import com.jmathanim.Styling.JMColor;
 import com.jmathanim.Styling.PaintStyle;
+import com.jmathanim.Styling.Stylable;
 import com.jmathanim.Utils.JMathAnimConfig;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.mathobjects.JMPath;
 import com.jmathanim.mathobjects.JMPathPoint;
-import com.jmathanim.mathobjects.Shape;
 import io.github.humbleui.skija.*;
 
 import java.util.HashMap;
@@ -16,13 +16,27 @@ import java.util.HashMap;
 class SkijaUtils {
     private final JMathAnimConfig config;
     private final HashMap<JMPath, Path> paths;
-    private final SkijaRenderer renderer;
+    private final Canvas canvas;
+    private final SkijaHandler handler;
 
-    public SkijaUtils(JMathAnimConfig config, SkijaRenderer skijaRenderer) {
-        this.config = config;
-        renderer = skijaRenderer;
+    public SkijaUtils(SkijaHandler handler) {
+        this.config = handler.config;
+        this.canvas = handler.canvas;
+        this.handler = handler;
         paths = new HashMap<>();
     }
+
+    public void clearFrame() {
+            canvas.clear(0xFFFFFFFF);//TODO: set color to background config color
+    }
+
+
+    /**
+     * Computes matrix transform for given JMathAnim camera. This matrix will transform from math coordinates
+     * to screen coordinates.
+     * @param camera Camera
+     * @return The transform matrix
+     */
 
     protected Matrix33 createCameraView(Camera camera) {
         float width_math = 10f;
@@ -39,6 +53,11 @@ class SkijaUtils {
         return transform;
     }
 
+    /**
+     * Converts JMPath to format suitable to be drawn by Skija
+     * @param jmpath JMPath to transform
+     * @return Skija Path object
+     */
     protected Path convertJMPathToSkijaPath(JMPath jmpath) {
 //        if (paths.containsKey(jmpath)) {
 //            return paths.get(jmpath);
@@ -54,7 +73,7 @@ class SkijaUtils {
 
             if (jmpath.jmPathPoints.get(n).isThisSegmentVisible) {
                 JMPathPoint jp = jmpath.jmPathPoints.get(n);
-                //JavaFX has problems drawin CubicCurves when control points are equal than points
+                //Should remove this in Skija?
                 if ((!jp.isCurved) || ((isAbsEquiv(prev, cpoint1, .1)) && (isAbsEquiv(point, cpoint2, .0001)))) {
                     path.lineTo((float) point.x, (float) point.y);
                 } else {
@@ -74,34 +93,39 @@ class SkijaUtils {
         return nn < epsilon;
     }
 
-    protected Paint createDrawPaint(Shape mobj) {
+    /**
+     * Create skija paint parameters from JMathAnim style properties object
+     * @param style Shape object to get styles
+     * @return
+     */
+    protected Paint createDrawPaint(Stylable style) {
         Paint paint = new Paint();
         paint.setMode(PaintMode.STROKE);
-        setColor(paint, mobj.getMp().getDrawColor());
-        float th = mobj.getMp().getThickness().floatValue();
-        applyThickness(mobj, paint);
+        setColor(paint, style.getDrawColor());
+        float th=(float) handler.ThicknessToMathWidth(style.getThickness());
+        applyThickness(th, paint);
         return paint;
     }
 
-    protected Paint createFillPaint(Shape mobj) {
+    protected Paint createFillPaint(Stylable style) {
         Paint paint = new Paint();
         paint.setMode(PaintMode.FILL);
-        setColor(paint, mobj.getMp().getFillColor());
+        setColor(paint, style.getFillColor());
         return paint;
     }
 
-    protected Paint createFillAndDrawPaint(Shape mobj) {
+    protected Paint createFillAndDrawPaint(Stylable style) {
         Paint paint = new Paint();
         paint.setMode(PaintMode.STROKE_AND_FILL);
-        setColor(paint, mobj.getMp().getDrawColor());
-        float th = mobj.getMp().getThickness().floatValue();
+        setColor(paint, style.getDrawColor());
         //Stroke width 4=height of media???
-        applyThickness(mobj, paint);
+        float th=(float) handler.ThicknessToMathWidth(style.getThickness());
+        applyThickness(th, paint);
         return paint;
     }
 
-    private void applyThickness(Shape mobj, Paint paint) {
-        paint.setStrokeWidth((float) renderer.ThicknessToMathWidth(mobj.getMp().getThickness()));
+    private void applyThickness(float th, Paint paint) {
+        paint.setStrokeWidth(th);
     }
 
 
@@ -112,12 +136,22 @@ class SkijaUtils {
         }
     }
 
+    /**
+     * Convert JMatnAnim color object to Skija color object
+     * @param jmColor JMathAnim color object
+     * @return The equivalente Skija Color4f object
+     */
     public Color4f JMColorToColor4f(JMColor jmColor) {
         return new Color4f((float) jmColor.r, (float) jmColor.g, (float) jmColor.b, (float) jmColor.getAlpha());
     }
 
+    /**
+     * Computes inverse Skija matrix
+     * @param m Matrix
+     * @return inverse matrix
+     */
     public Matrix33 getInverseMatrix(Matrix33 m) {
-        float[] mat = m.getMat(); // matriz en orden de filas: 9 elementos
+        float[] mat = m.getMat();
         float a = mat[0], b = mat[1], c = mat[2];
         float d = mat[3], e = mat[4], f = mat[5];
         float g = mat[6], h = mat[7], i = mat[8];
@@ -126,7 +160,7 @@ class SkijaUtils {
                 b * (d * i - f * g) +
                 c * (d * h - e * g);
 
-        if (Math.abs(det) < 1e-6) return null; // No invertible
+        if (Math.abs(det) < 1e-6) return null;
 
         float invDet = 1.0f / det;
 
@@ -144,6 +178,13 @@ class SkijaUtils {
         return new Matrix33(inv);
     }
 
+    /**
+     * Apply transform matrix to a 2d point
+     * @param m Matrix
+     * @param x x coordinate
+     * @param y y coordinate
+     * @return a float[] with transformed coordinates
+     */
     public float[] applyMatrix(Matrix33 m, float x, float y) {
         float[] mat = m.getMat();
         float xNew = mat[0] * x + mat[1] * y + mat[2];
@@ -155,6 +196,13 @@ class SkijaUtils {
         return new float[]{xNew / w, yNew / w};
     }
 
+    /**
+     * Computes the appropriate projection camera for an object to be drawn with absolute size
+     * @param cameraMatrixObject Camera to project
+     * @param anchor Anchor point.
+     * @param fixedCameraMatrix Fixed camera, that determines the absolute object size
+     * @return The projection camera to be used to compute screen coordinates.
+     */
     public Matrix33 projectToCamera(Matrix33 cameraMatrixObject, Vec anchor, Matrix33 fixedCameraMatrix) {
         Matrix33 inv = getInverseMatrix(fixedCameraMatrix);
         float[] coordOrig = new float[]{(float) anchor.x, (float) anchor.y};
