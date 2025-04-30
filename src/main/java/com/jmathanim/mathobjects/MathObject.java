@@ -24,8 +24,6 @@ import com.jmathanim.Utils.Anchor.Type;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.updateableObjects.Updateable;
 import com.jmathanim.mathobjects.updaters.Updater;
-import javafx.scene.shape.StrokeLineCap;
-import javafx.scene.shape.StrokeLineJoin;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -511,13 +509,13 @@ public abstract class MathObject implements Drawable, Updateable, Stateable, Box
     }
 
     /**
-     * Sets the dashStyle, from one of the types defined in the enum MODrawProperties.DashStyle
+     * Sets the dashStyle, from one of the types defined in the enum StrokeStyle.Pattern
      *
      * @param <T>       Subclass of MathObject that calls the method
-     * @param dashStyle A value from enum MODrawProperties.DashStyle
+     * @param dashStyle A value from enum StrokeStyle.Pattern
      * @return This MathObject subclass
      */
-    public <T extends MathObject> T dashStyle(MODrawProperties.DashStyle dashStyle) {
+    public <T extends MathObject> T dashStyle(StrokeStyle.Pattern dashStyle) {
         getMp().setDashStyle(dashStyle);
         return (T) this;
     }
@@ -806,14 +804,14 @@ public abstract class MathObject implements Drawable, Updateable, Stateable, Box
     }
 
     /**
-     * Sets the linecap style, using one of the styles of StrokeLineCap
+     * Sets the linecap style, using one of the styles of StrokeStyle.Cap
      *
      * @param <T>           MathObject subclass
-     * @param strokeLineCap Style of linecap
+     * @param cap Style of linecap
      * @return The object
      */
-    public <T extends MathObject> T linecap(StrokeLineCap strokeLineCap) {
-        this.getMp().setLinecap(strokeLineCap);
+    public <T extends MathObject> T linecap(StrokeStyle.Cap cap) {
+        this.getMp().setLinecap(cap);
         return (T) this;
     }
 
@@ -1172,15 +1170,15 @@ public abstract class MathObject implements Drawable, Updateable, Stateable, Box
     }
 
     @Override
-    public void on_setDashStyle(MODrawProperties.DashStyle style) {
+    public void on_setDashStyle(StrokeStyle.Pattern style) {
     }
 
     @Override
-    public void on_setLineCap(StrokeLineCap linecap) {
+    public void on_setLineCap(StrokeStyle.Cap linecap) {
     }
 
     @Override
-    public void on_setLineJoin(StrokeLineJoin linejoin) {
+    public void on_setLineJoin(StrokeStyle.Join linejoin) {
     }
 
     @Override

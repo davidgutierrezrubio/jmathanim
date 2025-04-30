@@ -23,8 +23,6 @@ import com.jmathanim.Utils.Vec;
 import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.Point;
 import com.jmathanim.mathobjects.Stateable;
-import javafx.scene.shape.StrokeLineCap;
-import javafx.scene.shape.StrokeLineJoin;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -466,11 +464,11 @@ public class MODrawPropertiesArray implements Stylable, Stateable {
     /**
      * Retrieves the currently defined line cap style for the stroke.
      *
-     * @return The {@code StrokeLineCap} value representing the style of the line cap.
-     * This determines how the end of a line or path is rendered.
+     * @return The {@code StrokeStyle.Cap} value representing the style of the line cap. This determines how the end of a
+     * line or path is rendered.
      */
     @Override
-    public StrokeLineCap getLineCap() {
+    public StrokeStyle.Cap getLineCap() {
         return mpRef.getLineCap();
     }
 
@@ -480,17 +478,17 @@ public class MODrawPropertiesArray implements Stylable, Stateable {
      * @return the StrokeLineJoin value representing the line join style (e.g., MITER, BEVEL, ROUND).
      */
     @Override
-    public StrokeLineJoin getLineJoin() {
+    public StrokeStyle.Join getLineJoin() {
         return mpRef.getLineJoin();
     }
 
     /**
      * Sets the style of the line join for all contained MathObject instances and the reference drawing properties.
      *
-     * @param linejoin the {@link StrokeLineJoin} style to be applied to configure the way lines in shapes are joined.
+     * @param linejoin the {@link StrokeStyle.Join} style to be applied to configure the way lines in shapes are joined.
      */
     @Override
-    public void setLineJoin(StrokeLineJoin linejoin) {
+    public void setLineJoin(StrokeStyle.Join linejoin) {
         for (MathObject obj : objects) {
             obj.getMp().setLineJoin(linejoin);
         }
@@ -500,10 +498,10 @@ public class MODrawPropertiesArray implements Stylable, Stateable {
     /**
      * Sets the line cap style for the stroke in all objects within the array and the reference object.
      *
-     * @param linecap The {@link StrokeLineCap} style to be applied. Determines the shape used at the ends of open paths when stroked.
+     * @param linecap The {@link StrokeStyle.Cap} style to be applied. Determines the shape used at the ends of open paths when stroked.
      */
     @Override
-    public void setLinecap(StrokeLineCap linecap) {
+    public void setLinecap(StrokeStyle.Cap linecap) {
         for (MathObject obj : objects) {
             obj.getMp().setLinecap(linecap);
         }
@@ -559,10 +557,10 @@ public class MODrawPropertiesArray implements Stylable, Stateable {
     /**
      * Retrieves the dash style property from the referenced MODrawProperties.
      *
-     * @return The dash style of type {@link MODrawProperties.DashStyle}.
+     * @return The dash style of type {@link StrokeStyle.Pattern}.
      */
     @Override
-    public MODrawProperties.DashStyle getDashStyle() {
+    public StrokeStyle.Pattern getDashStyle() {
         return mpRef.getDashStyle();
     }
 
@@ -572,7 +570,7 @@ public class MODrawPropertiesArray implements Stylable, Stateable {
      * @param dashStyle The dash style to apply. This defines the pattern of dashes for drawing lines.
      */
     @Override
-    public void setDashStyle(MODrawProperties.DashStyle dashStyle) {
+    public void setDashStyle(StrokeStyle.Pattern dashStyle) {
         for (MathObject obj : objects) {
             obj.getMp().setDashStyle(dashStyle);
         }

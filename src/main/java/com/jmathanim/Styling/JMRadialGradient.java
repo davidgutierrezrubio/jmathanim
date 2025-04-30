@@ -17,12 +17,7 @@
  */
 package com.jmathanim.Styling;
 
-import com.jmathanim.Cameras.Camera;
-import com.jmathanim.Renderers.FXRenderer.JavaFXRenderer;
 import com.jmathanim.mathobjects.Point;
-import javafx.scene.paint.CycleMethod;
-import javafx.scene.paint.Paint;
-import javafx.scene.paint.RadialGradient;
 
 import java.util.Objects;
 import java.util.TreeMap;
@@ -31,7 +26,7 @@ import java.util.TreeMap;
  *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
-public class JMRadialGradient extends PaintStyle {
+public class JMRadialGradient extends JMGradient {
 
     protected Point center;
     protected double focusAngle;
@@ -99,22 +94,6 @@ public class JMRadialGradient extends PaintStyle {
             map.put(0d, jMColor);
         }
 
-    }
-
-    @Override
-    public Paint getFXPaint(JavaFXRenderer r, Camera cam) {
-        double[] cc;
-        double realRadius;
-        if (!relativeToShape) {
-            cc = cam.mathToScreenFX(center.v);
-            realRadius = cam.mathToScreen(this.radius);
-        } else {
-            cc = new double[]{center.v.x, 1 - center.v.y};
-            realRadius = this.radius;
-        }
-
-        return new RadialGradient(focusAngle, focusDistance, cc[0], cc[1], realRadius, relativeToShape, cycleMethod, stops.toFXStop(getAlpha()));
-//                cc[0], c[1], ee[0], ee[1], relativeToShape, this.cycleMethod, stops.toFXStop(alpha));
     }
 
     @Override

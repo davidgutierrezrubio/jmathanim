@@ -18,7 +18,6 @@
 package com.jmathanim.Renderers;
 
 import com.jmathanim.Cameras.Camera;
-import com.jmathanim.Renderers.FXRenderer.JavaFXRenderer;
 import com.jmathanim.Renderers.MovieEncoders.SoundItem;
 import com.jmathanim.Styling.RendererEffects;
 import com.jmathanim.Utils.JMathAnimConfig;
@@ -34,8 +33,6 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import static com.jmathanim.jmathanim.JMathAnimScene.logger;
 
@@ -125,7 +122,6 @@ public abstract class Renderer {
             ImageIO.write(renderedImage, format, file);
         } catch (IOException ex) {
             logger.error("Error saving png image "+filename);
-            Logger.getLogger(JavaFXRenderer.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 

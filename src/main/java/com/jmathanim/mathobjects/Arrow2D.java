@@ -20,10 +20,10 @@ package com.jmathanim.mathobjects;
 import com.jmathanim.Cameras.Camera;
 import com.jmathanim.Renderers.Renderer;
 import com.jmathanim.Styling.MODrawPropertiesArray;
+import com.jmathanim.Styling.StrokeStyle;
 import com.jmathanim.Styling.Stylable;
 import com.jmathanim.Utils.*;
 import com.jmathanim.jmathanim.JMathAnimScene;
-import javafx.scene.shape.StrokeLineCap;
 
 import java.net.URL;
 
@@ -128,7 +128,7 @@ public class Arrow2D extends MathObject {
         MultiShapeObject resul = Arrow2D.buildArrowHead(type);
         resul.getMp().copyFrom(getMp());
         resul.thickness(4);
-        resul.getMp().setLinecap(StrokeLineCap.SQUARE);
+        resul.getMp().setLinecap(StrokeStyle.Cap.SQUARE);
         return resul;
     }
     

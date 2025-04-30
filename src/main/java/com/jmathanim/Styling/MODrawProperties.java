@@ -23,8 +23,6 @@ import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.Point.DotSyle;
 import com.jmathanim.mathobjects.Stateable;
-import javafx.scene.shape.StrokeLineCap;
-import javafx.scene.shape.StrokeLineJoin;
 
 import java.awt.*;
 import java.util.HashMap;
@@ -82,13 +80,13 @@ public class MODrawProperties implements Stylable, Stateable {
      * Returns Dash Style, from its name, using reflection. Used when loading
      * config files.
      *
-     * @param textContent Name of the dash patterns
+     * @param str Name of the dash patterns
      * @return The dash style
      */
-    static DashStyle parseDashStyle(String str) {
-        DashStyle resul = DashStyle.SOLID; // default dash
+    static StrokeStyle.Pattern parseDashStyle(String str) {
+        StrokeStyle.Pattern resul = StrokeStyle.Pattern.SOLID; // default dash
         try {
-            resul = DashStyle.valueOf(str.toUpperCase());
+            resul = StrokeStyle.Pattern.valueOf(str.toUpperCase());
         } catch (IllegalArgumentException e) {
             JMathAnimScene.logger.error("Dash pattern {} not recognized, using default {}", str, resul);
         }
@@ -121,11 +119,11 @@ public class MODrawProperties implements Stylable, Stateable {
     // If false, thickness is computed to be a percentage of the width
     // to ensure zoom or resolution doesn't affect the result
     private Boolean absoluteThickness = true;
-    private StrokeLineJoin linejoin;
+    private StrokeStyle.Join linejoin;
     private MathObject parent;
 
     private Boolean visible = true;
-    private DashStyle dashStyle = DashStyle.SOLID;
+    private StrokeStyle.Pattern dashStyle = StrokeStyle.Pattern.SOLID;
     // Styles used for specified objects
     // Point
     private DotSyle dotStyle = DotSyle.CIRCLE;
@@ -133,7 +131,7 @@ public class MODrawProperties implements Stylable, Stateable {
     private PaintStyle drawColor;
     private PaintStyle fillColor;
     private Integer layer = null;
-    private StrokeLineCap linecap = StrokeLineCap.ROUND;
+    private StrokeStyle.Cap linecap = StrokeStyle.Cap.ROUND;
     private MODrawProperties mpBackup;
     private Double thickness = 1d;
     private Double scaleArrowHead1 = 1d;
@@ -223,12 +221,12 @@ public class MODrawProperties implements Stylable, Stateable {
     }
 
     @Override
-    public DashStyle getDashStyle() {
+    public StrokeStyle.Pattern getDashStyle() {
         return dashStyle;
     }
 
     @Override
-    public void setDashStyle(DashStyle dashStyle) {
+    public void setDashStyle(StrokeStyle.Pattern dashStyle) {
         this.dashStyle = dashStyle;
     }
 
@@ -322,17 +320,17 @@ public class MODrawProperties implements Stylable, Stateable {
     }
 
     @Override
-    public StrokeLineCap getLineCap() {
+    public StrokeStyle.Cap getLineCap() {
         return this.linecap;
     }
 
     @Override
-    public StrokeLineJoin getLineJoin() {
+    public StrokeStyle.Join getLineJoin() {
         return this.linejoin;
     }
 
     @Override
-    public void setLinecap(StrokeLineCap linecap) {
+    public void setLinecap(StrokeStyle.Cap linecap) {
         if (linecap == null) {
             return;
         }
@@ -344,7 +342,7 @@ public class MODrawProperties implements Stylable, Stateable {
         }
     }
 
-    public void setLineJoin(StrokeLineJoin linejoin) {
+    public void setLineJoin(StrokeStyle.Join linejoin) {
         if (linejoin == null) {
             return;
         }
@@ -499,9 +497,9 @@ public class MODrawProperties implements Stylable, Stateable {
         return scaleArrowHead2;
     }
 
-    public enum DashStyle {
-        SOLID, DASHED, DOTTED, DASHDOTTED
-    }
+//    public enum DashStyle {
+//        SOLID, DASHED, DOTTED, DASHDOTTED
+//    }
 
     /**
      * Returns a new MODrawProperties object with all values null except for

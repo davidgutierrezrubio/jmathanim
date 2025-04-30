@@ -303,7 +303,7 @@ public class JMathAnimConfig {
         defaultMP.setFillColor(JMColor.GRAY);
         defaultMP.setFillAlpha(0);// No filling by default
         defaultMP.setThickness(4d);
-        defaultMP.setDashStyle(MODrawProperties.DashStyle.SOLID);
+        defaultMP.setDashStyle(StrokeStyle.Pattern.SOLID);
         defaultMP.setAbsoluteThickness(false);
         styles.put("DEFAULT", defaultMP);
 

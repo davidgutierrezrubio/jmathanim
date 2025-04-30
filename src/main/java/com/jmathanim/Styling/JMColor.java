@@ -17,12 +17,6 @@
  */
 package com.jmathanim.Styling;
 
-import com.jmathanim.Cameras.Camera;
-import com.jmathanim.Renderers.FXRenderer.JavaFXRenderer;
-import com.jmathanim.jmathanim.JMathAnimScene;
-import javafx.scene.paint.Paint;
-
-import java.lang.reflect.Field;
 import java.util.Iterator;
 import java.util.TreeMap;
 
@@ -84,32 +78,7 @@ public class JMColor extends PaintStyle {
         return new java.awt.Color((float) r, (float) g, (float) b, (float) alpha);
     }
 
-    /**
-     * Return a {@link java.awt.Color} object representing the color.
-     *
-     * @return Color
-     */
-    public javafx.scene.paint.Color getFXColor() {
-        r = r < 0 ? 0 : r;
-        g = g < 0 ? 0 : g;
-        b = b < 0 ? 0 : b;
 
-        r = r > 1 ? 1 : r;
-        g = g > 1 ? 1 : g;
-        b = b > 1 ? 1 : b;
-        return new javafx.scene.paint.Color((float) r, (float) g, (float) b, (float) alpha);
-    }
-
-    /**
-     * Return a {@link java.awt.Color} object representing the color. Overloaded
-     * method with given alpha.
-     *
-     * @param alpha Alpha to apply to color
-     * @return Color
-     */
-    public javafx.scene.paint.Color getFXColor(double alpha) {
-        return new javafx.scene.paint.Color((float) r, (float) g, (float) b, (float) alpha);
-    }
 
     /**
      * Computes the inverse color
@@ -224,31 +193,33 @@ public class JMColor extends PaintStyle {
      * @return A new JMColor with given parameters.
      */
     public static JMColor parse(String str) {
-        javafx.scene.paint.Color col = javafx.scene.paint.Color.WHITE;// Default color
-        str = str.toUpperCase().trim();
-        JMColor colrgb = extractRGBValues(str);
-        if (colrgb != null) {//String is format "rgb(r,g,b) decimals or RGB(R,G,B) integers"
-            return colrgb;
-        }
-
-        if ("NONE".equals(str)) {
-            return new JMColor(0, 0, 0, 0);
-        }
-        if ("RANDOM".equals(str)) {
-            return JMColor.random();
-        }
-        if (str.startsWith("#"))// Hex
-        {
-            col = javafx.scene.paint.Color.valueOf(str);
-        } else {
-            try {
-                Field field = javafx.scene.paint.Color.class.getField(str.toUpperCase());
-                col = (javafx.scene.paint.Color) field.get(JMColor.class);
-            } catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException ex) {
-                JMathAnimScene.logger.warn("Color {} not recognized ", str);
-            }
-        }
-        return JMColor.fromFXColor(col);
+        //TODO: Skija implement this
+//        javafx.scene.paint.Color col = javafx.scene.paint.Color.WHITE;// Default color
+//        str = str.toUpperCase().trim();
+//        JMColor colrgb = extractRGBValues(str);
+//        if (colrgb != null) {//String is format "rgb(r,g,b) decimals or RGB(R,G,B) integers"
+//            return colrgb;
+//        }
+//
+//        if ("NONE".equals(str)) {
+//            return new JMColor(0, 0, 0, 0);
+//        }
+//        if ("RANDOM".equals(str)) {
+//            return JMColor.random();
+//        }
+//        if (str.startsWith("#"))// Hex
+//        {
+//            col = javafx.scene.paint.Color.valueOf(str);
+//        } else {
+//            try {
+//                Field field = javafx.scene.paint.Color.class.getField(str.toUpperCase());
+//                col = (javafx.scene.paint.Color) field.get(JMColor.class);
+//            } catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException ex) {
+//                JMathAnimScene.logger.warn("Color {} not recognized ", str);
+//            }
+//        }
+//        return JMColor.fromFXColor(col);
+        return new JMColor(.3, .6, .7,.1);//A random color
     }
 
     /**
@@ -301,24 +272,12 @@ public class JMColor extends PaintStyle {
         return null;
     }
 
-    public static JMColor fromFXColor(javafx.scene.paint.Color col) {
-        JMColor resul = new JMColor(1, 1, 1, 1);
-        resul.r = col.getRed();
-        resul.g = col.getGreen();
-        resul.b = col.getBlue();
-        resul.alpha = col.getOpacity();
-        return resul;
-    }
 
     @Override
     public String toString() {
         return "JMcolor(" + r + ", " + g + "," + b + ", " + alpha + ')';
     }
 
-    @Override
-    public Paint getFXPaint(JavaFXRenderer r, Camera cam) {
-        return getFXColor();
-    }
 
     @Override
     public double getAlpha() {

@@ -19,8 +19,6 @@ package com.jmathanim.Styling;
 
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.mathobjects.Point;
-import javafx.scene.shape.StrokeLineCap;
-import javafx.scene.shape.StrokeLineJoin;
 
 /**
  * The {@code Stylable} interface provides a contract for objects that
@@ -99,13 +97,13 @@ public interface Stylable {
 
     PaintStyle getFillColor();
 
-    StrokeLineCap getLineCap();
+    StrokeStyle.Cap getLineCap();
     
-    StrokeLineJoin getLineJoin();
+    StrokeStyle.Join getLineJoin();
 
-    void setLinecap(StrokeLineCap linecap);
+    void setLinecap(StrokeStyle.Cap linecap);
     
-    void setLineJoin(StrokeLineJoin linejoin);
+    void setLineJoin(StrokeStyle.Join linejoin);
 
     Double getThickness();
 
@@ -115,9 +113,9 @@ public interface Stylable {
 
     Point.DotSyle getDotStyle();
 
-    void setDashStyle(MODrawProperties.DashStyle dashStyle);
+    void setDashStyle(StrokeStyle.Pattern dashStyle);
 
-    MODrawProperties.DashStyle getDashStyle();
+    StrokeStyle.Pattern getDashStyle();
 
     Boolean isAbsoluteThickness();
 

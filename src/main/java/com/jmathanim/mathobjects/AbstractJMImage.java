@@ -22,7 +22,7 @@ import com.jmathanim.Renderers.Renderer;
 import com.jmathanim.Utils.AffineJTransform;
 import com.jmathanim.Utils.Rect;
 import com.jmathanim.jmathanim.JMathAnimScene;
-import javafx.scene.image.Image;
+import io.github.humbleui.skija.Image;
 
 /**
  *

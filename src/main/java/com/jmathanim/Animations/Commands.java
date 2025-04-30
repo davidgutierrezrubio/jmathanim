@@ -21,10 +21,7 @@ import com.jmathanim.Cameras.Camera;
 import com.jmathanim.Cameras.Camera3D;
 import com.jmathanim.Constructible.Constructible;
 import com.jmathanim.Renderers.Renderer;
-import com.jmathanim.Styling.JMColor;
-import com.jmathanim.Styling.MODrawProperties;
-import com.jmathanim.Styling.PaintStyle;
-import com.jmathanim.Styling.Stylable;
+import com.jmathanim.Styling.*;
 import com.jmathanim.Utils.*;
 import com.jmathanim.Utils.Layouts.GroupLayout;
 import com.jmathanim.jmathanim.JMathAnimScene;
@@ -32,7 +29,6 @@ import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.MathObjectGroup;
 import com.jmathanim.mathobjects.Point;
 import com.jmathanim.mathobjects.Shape;
-import javafx.scene.shape.StrokeLineCap;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -1806,9 +1802,9 @@ public class Commands {
      */
     public static Animation crossOut(double runtime, MathObject obj) {
         Rect bbox = obj.getBoundingBox();
-        Shape s1 = Shape.segment(bbox.getUL(), bbox.getDR()).scale(.75).linecap(StrokeLineCap.BUTT)
+        Shape s1 = Shape.segment(bbox.getUL(), bbox.getDR()).scale(.75).linecap(StrokeStyle.Cap.BUTT)
                 .drawColor(JMColor.RED).layer(Integer.MAX_VALUE);
-        Shape s2 = Shape.segment(bbox.getUR(), bbox.getDL()).scale(.75).linecap(StrokeLineCap.BUTT)
+        Shape s2 = Shape.segment(bbox.getUR(), bbox.getDL()).scale(.75).linecap(StrokeStyle.Cap.BUTT)
                 .drawColor(JMColor.RED).layer(Integer.MAX_VALUE);
         double longi = .25 * s1.getPoint(0).to(s1.getPoint(1)).norm();
         double width = JMathAnimConfig.getConfig().getRenderer().MathWidthToThickness(longi);
@@ -1829,7 +1825,7 @@ public class Commands {
         final Point b = bb.getDL();
         double width = JMathAnimConfig.getConfig().getRenderer().MathWidthToThickness(a.to(b).norm());
         Shape cross = Shape.segment(a, b).thickness(width * .25).drawColor("red");
-        cross.getMp().setLinecap(StrokeLineCap.SQUARE);
+        cross.getMp().setLinecap(StrokeStyle.Cap.SQUARE);
         //This tricky lambda is necessary due to the squared linecap
         resul.add(ShowCreation.make(1, cross).setLambda(UsefulLambdas.restrictTo(.1, 1)));
         resul.add(Commands.fadeOut(1, obj, cross));
@@ -1843,7 +1839,7 @@ public class Commands {
         final Point b = bb.getDL();
         double width = JMathAnimConfig.getConfig().getRenderer().MathWidthToThickness(a.to(b).norm());
         Shape cross = Shape.segment(a, b).thickness(width * .25).drawColor("red");
-        cross.getMp().setLinecap(StrokeLineCap.SQUARE);
+        cross.getMp().setLinecap(StrokeStyle.Cap.SQUARE);
         //This tricky lambda is necessary due to the squared linecap
         resul.add(ShowCreation.make(2, cross).setLambda(UsefulLambdas.restrictTo(.1, 1)));
         resul.add(Commands.shrinkOut(1, obj, cross));

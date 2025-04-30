@@ -16,10 +16,8 @@
  */
 package com.jmathanim.mathobjects;
 
-import com.jmathanim.Styling.MODrawProperties;
 import com.jmathanim.Styling.PaintStyle;
-import javafx.scene.shape.StrokeLineCap;
-import javafx.scene.shape.StrokeLineJoin;
+import com.jmathanim.Styling.StrokeStyle;
 
 /**
  *
@@ -74,9 +72,9 @@ public interface StyleHookable {
      *
      * @param style New dash style
      */
-    public void on_setDashStyle(MODrawProperties.DashStyle style);
+    public void on_setDashStyle(StrokeStyle.Pattern style);
 
-    public void on_setLineCap(StrokeLineCap linecap);
+    public void on_setLineCap(StrokeStyle.Cap linecap);
 
-    public void on_setLineJoin(StrokeLineJoin linejoin);
+    public void on_setLineJoin(StrokeStyle.Join linejoin);
 }

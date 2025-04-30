@@ -19,16 +19,9 @@ package com.jmathanim.mathobjects;
 
 import com.jmathanim.Utils.*;
 import com.jmathanim.jmathanim.JMathAnimScene;
-import javafx.application.Platform;
-import javafx.scene.image.Image;
-import javafx.scene.image.PixelWriter;
-import javafx.scene.image.WritableImage;
+import io.github.humbleui.skija.Image;
 
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.FutureTask;
 import java.util.function.BiFunction;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * This class represents a density plot in a specified area given by a Rect
@@ -39,7 +32,7 @@ import java.util.logging.Logger;
 public class DensityPlot extends AbstractJMImage implements hasScalarParameter {
 
     TriFunction<Double, Double, Double, Double> densityLambdaFunction;
-    WritableImage raster;
+    Image raster;
     double widthView, heightView;
     private int wRaster;
     private int hRaster;
@@ -116,35 +109,36 @@ public class DensityPlot extends AbstractJMImage implements hasScalarParameter {
             double[] xy2 = getCamera().mathToScreen(bbox.xmax, bbox.ymin);
             wRaster = (int) (xy2[0] - xy1[0]);
             hRaster = (int) (xy2[1] - xy1[1]);
-            raster = new WritableImage(wRaster, hRaster);
-            updatePixels();
+            //TODO: Skija fix this
+            raster = null;//new Image(wRaster, hRaster);
+
+//            updatePixels();
         }
     }
-
+    //TODO: Skija implement this
     private void updatePixels() {
-        if (raster == null) {
-            return;
-        }
-        FutureTask<Integer> task = new FutureTask<>(() -> {
-            createColorScale();
-            PixelWriter pixelWriter = raster.getPixelWriter();
-            for (int i = 0; i < wRaster; i++) {
-                for (int j = 0; j < hRaster; j++) {
-                    Point p = bbox.getRelPoint(i * 1d / wRaster, 1 - j * 1d / hRaster);
-                    double z = densityLambdaFunction.apply(p.v.x, p.v.y, getScalar());
-                    pixelWriter.setColor(i, j, colorScale.getColorValue(z).getFXColor());
-                }
-            }
-            
-            return 0;
-        });
-        Platform.runLater(task);
-        try {
-            task.get();
-        } catch (InterruptedException | ExecutionException ex) {
-            Logger.getLogger(DensityPlot.class.getName()).log(Level.SEVERE, null, ex);
-        }
-
+//        if (raster == null) {
+//            return;
+//        }
+//        FutureTask<Integer> task = new FutureTask<>(() -> {
+//            createColorScale();
+//            PixelWriter pixelWriter = raster.getPixelWriter();
+//            for (int i = 0; i < wRaster; i++) {
+//                for (int j = 0; j < hRaster; j++) {
+//                    Point p = bbox.getRelPoint(i * 1d / wRaster, 1 - j * 1d / hRaster);
+//                    double z = densityLambdaFunction.apply(p.v.x, p.v.y, getScalar());
+//                    pixelWriter.setColor(i, j, colorScale.getColorValue(z).getFXColor());
+//                }
+//            }
+//
+//            return 0;
+//        });
+//        Platform.runLater(task);
+//        try {
+//            task.get();
+//        } catch (InterruptedException | ExecutionException ex) {
+//            Logger.getLogger(DensityPlot.class.getName()).log(Level.SEVERE, null, ex);
+//        }
     }
 
     private void createColorScale() {

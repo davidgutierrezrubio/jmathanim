@@ -1,7 +1,6 @@
 package com.jmathanim.Renderers.SkijaRenderer;
 
 import com.jmathanim.Cameras.Camera;
-import com.jmathanim.Renderers.FXRenderer.JavaFXRenderer;
 import com.jmathanim.Renderers.MovieEncoders.SoundItem;
 import com.jmathanim.Renderers.MovieEncoders.XugglerVideoEncoder;
 import com.jmathanim.Renderers.Renderer;
@@ -17,8 +16,6 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.InputStream;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class SkijaRenderer extends Renderer {
     private static final double XMIN_DEFAULT = -2;
@@ -58,7 +55,6 @@ public class SkijaRenderer extends Renderer {
             prepareEncoder();
         } catch (Exception ex) {
             JMathAnimScene.logger.error("Error creating video encoder");
-            Logger.getLogger(JavaFXRenderer.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 

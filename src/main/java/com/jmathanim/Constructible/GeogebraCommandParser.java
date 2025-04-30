@@ -30,6 +30,7 @@ import com.jmathanim.Constructible.Transforms.CTRotatedPoint;
 import com.jmathanim.Constructible.Transforms.CTTranslatedPoint;
 import com.jmathanim.Styling.JMColor;
 import com.jmathanim.Styling.MODrawProperties;
+import com.jmathanim.Styling.StrokeStyle;
 import com.jmathanim.Utils.Anchor;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.*;
@@ -174,28 +175,28 @@ class GeogebraCommandParser {
             double thickness = Double.valueOf(lineStyle.getAttribute("thickness"));
             resul.setThickness(thickness);
             //Dash Style
-            //0 :         MODrawProperties.DashStyle.SOLID
-            //10,15:         MODrawProperties.DashStyle.DASHED
-            //20:        MODrawProperties.DashStyle.DOTTED
-            //30:         MODrawProperties.DashStyle.DASHDOTTED
-            MODrawProperties.DashStyle dashStyle;
+            //0 :         StrokeStyle.Pattern.SOLID
+            //10,15:         StrokeStyle.Pattern.DASHED
+            //20:        StrokeStyle.Pattern.DOTTED
+            //30:         StrokeStyle.Pattern.DASHDOTTED
+            StrokeStyle.Pattern dashStyle;
             int dashType = Integer.valueOf(lineStyle.getAttribute("type"));
             switch (dashType) {
                 case 0:
-                    dashStyle = MODrawProperties.DashStyle.SOLID;
+                    dashStyle = StrokeStyle.Pattern.SOLID;
                     break;
                 case 10:
                 case 15:
-                    dashStyle = MODrawProperties.DashStyle.DASHED;
+                    dashStyle = StrokeStyle.Pattern.DASHED;
                     break;
                 case 20:
-                    dashStyle = MODrawProperties.DashStyle.DOTTED;
+                    dashStyle = StrokeStyle.Pattern.DOTTED;
                     break;
                 case 30:
-                    dashStyle = MODrawProperties.DashStyle.DASHDOTTED;
+                    dashStyle = StrokeStyle.Pattern.DASHDOTTED;
                     break;
                 default:
-                    dashStyle = MODrawProperties.DashStyle.SOLID;
+                    dashStyle = StrokeStyle.Pattern.SOLID;
             }
             resul.setDashStyle(dashStyle);
         }

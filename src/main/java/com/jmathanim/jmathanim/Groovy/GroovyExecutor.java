@@ -10,7 +10,6 @@ import groovy.lang.Binding;
 import groovy.lang.Closure;
 import groovy.lang.GroovyShell;
 import groovy.lang.Script;
-import javafx.application.Platform;
 
 import java.io.File;
 import java.io.IOException;
@@ -84,8 +83,8 @@ public class GroovyExecutor extends Scene2D {
         }
         // This is tricky, as I cannot shutdown javafx and initialize it again in the same execution
         //If I want to execute several consecutive scripts I must delegate this to the main class
-        if (isJavaFXRunning)
-            Platform.exit(); // Close JavaFX Toolkit
+//        if (isJavaFXRunning)
+//            Platform.exit(); // Close JavaFX Toolkit
         System.exit(0);
     }
 

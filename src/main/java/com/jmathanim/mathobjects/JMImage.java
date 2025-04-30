@@ -17,13 +17,13 @@
  */
 package com.jmathanim.mathobjects;
 
-import com.jmathanim.Renderers.FXRenderer.JavaFXRenderer;
+import com.jmathanim.Renderers.Renderer;
 import com.jmathanim.Utils.AffineJTransform;
 import com.jmathanim.Utils.JMathAnimConfig;
 import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.ResourceLoader;
 import com.jmathanim.jmathanim.JMathAnimScene;
-import javafx.scene.image.Image;
+import io.github.humbleui.skija.Image;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -53,7 +53,7 @@ public class JMImage extends AbstractJMImage {
         return null;
     }
 
-    private final JavaFXRenderer renderer;
+    private final Renderer renderer;
     private final InputStream stream;
 
     public JMImage(InputStream stream) {
@@ -61,7 +61,7 @@ public class JMImage extends AbstractJMImage {
         this.stream = stream;
         setCached(true);
         this.filename = stream.toString();
-        renderer = (JavaFXRenderer) JMathAnimConfig.getConfig().getRenderer();
+        renderer = JMathAnimConfig.getConfig().getRenderer();
         this.bbox = renderer.createImage(stream);
         double sc = renderer.getMediaHeight() * 1d / 1080d;// Scales it taking as reference 1920x1080 production output
 //        this.scale(sc);
