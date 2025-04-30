@@ -20,7 +20,7 @@ public class LogUtils {
                 "=".repeat((int) (width * (percentage / 100))),
                 percentage
         );
-        System.out.print(bar);  // Usa print (no println) para evitar saltos de línea
-        if (t == 1) System.out.println();  // Salto final
+        System.out.print(bar);
+        if (t == 1) System.out.println();
     }
 }

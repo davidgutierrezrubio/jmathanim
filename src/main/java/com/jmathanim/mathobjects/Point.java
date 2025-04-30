@@ -25,8 +25,10 @@ import com.jmathanim.Utils.JMathAnimConfig;
 import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
-import org.apache.commons.math3.linear.Array2DRowRealMatrix;
-import org.apache.commons.math3.linear.RealMatrix;
+import org.hipparchus.linear.Array2DRowRealMatrix;
+import org.hipparchus.linear.RealMatrix;
+//import org.apache.commons.math3.linear.Array2DRowRealMatrix;
+//import org.apache.commons.math3.linear.RealMatrix;
 
 import java.text.DecimalFormat;
 

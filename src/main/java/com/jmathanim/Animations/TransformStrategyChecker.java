@@ -20,7 +20,6 @@ package com.jmathanim.Animations;
 import com.jmathanim.Utils.AffineJTransform;
 import com.jmathanim.mathobjects.Point;
 import com.jmathanim.mathobjects.Shape;
-import org.apache.commons.math3.linear.SingularMatrixException;
 
 /**
  *
@@ -46,12 +45,8 @@ public class TransformStrategyChecker {
             return false;
         }
         Point[] points = getIdealPoints(4, shORig, shDest);
-        try {
             AffineJTransform tr = AffineJTransform.createDirect2DIsomorphic(points[0], points[1], points[2], points[3], 1);
             return testTransform(shORig, shDest, tr, epsilon);
-        } catch (SingularMatrixException e) {
-            return false;
-        }
     }
 
     private static boolean checkMinimalPathRequirements(Shape shORig, int n1, Shape shDest, int n2) {
@@ -74,12 +69,8 @@ public class TransformStrategyChecker {
             return false;
         }
         Point[] p = getIdealPoints(6, shORig, shDest);
-        try {
             AffineJTransform tr = AffineJTransform.createAffineTransformation(p[0], p[1], p[2], p[3], p[4], p[5], 1);
             return testTransform(shORig, shDest, tr, epsilon);
-        } catch (SingularMatrixException e) {
-            return false;
-        }
     }
 
     /**
@@ -96,12 +87,8 @@ public class TransformStrategyChecker {
             return false;
         }
         Point[] p = getIdealPoints(6, shORig, shDest);
-        try {
             AffineJTransform tr = AffineJTransform.createRotateScaleXYTransformation(p[0], p[1], p[2], p[3], p[4], p[5], 1);
             return testTransform(shORig, shDest, tr, epsilon);
-        } catch (SingularMatrixException e) {
-            return false;
-        }
     }
 
     private static Point[] getIdealPoints(int numPoints, Shape shORig, Shape shDest) {

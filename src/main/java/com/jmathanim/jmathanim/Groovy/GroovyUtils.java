@@ -2,6 +2,8 @@ package com.jmathanim.jmathanim.Groovy;
 
 import com.jmathanim.jmathanim.LogUtils;
 
+import java.io.BufferedReader;
+import java.io.StringReader;
 import java.util.stream.Collectors;
 
 import static com.jmathanim.jmathanim.JMathAnimScene.logger;
