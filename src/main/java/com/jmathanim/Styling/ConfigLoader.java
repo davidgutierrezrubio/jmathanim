@@ -20,7 +20,6 @@ package com.jmathanim.Styling;
 import com.jmathanim.Utils.*;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.Point;
-import javafx.scene.paint.CycleMethod;
 import org.w3c.dom.*;
 import org.xml.sax.SAXException;
 
@@ -34,6 +33,7 @@ import java.net.URL;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import static com.jmathanim.Styling.JMGradient.CycleMethod;
 import static com.jmathanim.jmathanim.LogUtils.RESET;
 import static com.jmathanim.jmathanim.LogUtils.YELLOW;
 
@@ -623,19 +623,19 @@ public class ConfigLoader {
         String relativeText = gradientElement.getAttribute("relative");
         boolean relative = Boolean.parseBoolean(relativeText);//Default:false
         resul.setRelativeToShape(relative);
-        resul.setCycleMethod(CycleMethod.NO_CYCLE);
+        resul.setCycleMethod(JMGradient.CycleMethod.NO_CYCLE);
 
         //Cycle method: none, repeat, reflect
         String cycleMethod = gradientElement.getAttribute("cycle").trim().toUpperCase();
         switch (cycleMethod) {
             case "NONE":
-                resul.setCycleMethod(CycleMethod.NO_CYCLE);
+                resul.setCycleMethod(JMGradient.CycleMethod.NO_CYCLE);
                 break;
             case "REPEAT":
-                resul.setCycleMethod(CycleMethod.REPEAT);
+                resul.setCycleMethod(JMGradient.CycleMethod.REPEAT);
                 break;
             case "REFLECT":
-                resul.setCycleMethod(CycleMethod.REFLECT);
+                resul.setCycleMethod(JMGradient.CycleMethod.REFLECT);
                 break;
         }
         return resul;

@@ -18,7 +18,6 @@
 package com.jmathanim.Utils;
 
 import com.jmathanim.Cameras.Camera;
-import com.jmathanim.Cameras.Camera3D;
 import com.jmathanim.mathobjects.JMPath;
 import com.jmathanim.mathobjects.JMPathPoint;
 import com.jmathanim.mathobjects.JMPathPoint.JMPathPointType;
@@ -226,14 +225,14 @@ public class PathUtils {
 
     private int appropiateSubdivisionNumber(Vec v1, Vec v2, Camera cam) {
         double mathviewHeight;
-        if (cam instanceof Camera3D) {
-            Camera3D cam3D = (Camera3D) cam;
-
-            double zDepth = v1.interpolate(v2, .5).minus(cam3D.eye.v).norm();
-            mathviewHeight = cam3D.getMathViewHeight3D(zDepth);
-        } else {
+//        if (cam instanceof Camera3D) {
+//            Camera3D cam3D = (Camera3D) cam;
+//
+//            double zDepth = v1.interpolate(v2, .5).minus(cam3D.eye.v).norm();
+//            mathviewHeight = cam3D.getMathViewHeight3D(zDepth);
+//        } else {
             mathviewHeight = cam.getMathView().getHeight();
-        }
+//        }
 
         //An estimation of subdivision number, depending on the covered area
         double d = (Math.abs(v1.x - v2.x) + Math.abs(v1.y - v2.y) + Math.abs(v1.z - v2.z)) / mathviewHeight;

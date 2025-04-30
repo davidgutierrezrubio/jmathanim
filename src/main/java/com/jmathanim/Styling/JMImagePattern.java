@@ -17,11 +17,7 @@
  */
 package com.jmathanim.Styling;
 
-import com.jmathanim.Cameras.Camera;
-import com.jmathanim.Renderers.FXRenderer.JavaFXRenderer;
 import com.jmathanim.mathobjects.JMImage;
-import javafx.scene.paint.ImagePattern;
-import javafx.scene.paint.Paint;
 
 import java.util.Objects;
 
@@ -57,11 +53,6 @@ public class JMImagePattern extends PaintStyle {
         }
     }
 
-    @Override
-    public Paint getFXPaint(JavaFXRenderer r, Camera cam) {
-        return new ImagePattern(img.getImage(),0,0,img.getWidth(),img.getHeight(),true);
-//        return new ImagePattern(img);
-    }
 
     @Override
     public PaintStyle interpolate(PaintStyle p, double t) {

@@ -148,7 +148,7 @@ public class JMImage extends AbstractJMImage {
 
     @Override
     public Image getImage() {
-        return renderer.getImageFromCatalog(this);
+        return null;//renderer.getImageFromCatalog(this);
     }
 
 }

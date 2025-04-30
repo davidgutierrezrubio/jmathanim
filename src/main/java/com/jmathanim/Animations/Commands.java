@@ -18,7 +18,6 @@
 package com.jmathanim.Animations;
 
 import com.jmathanim.Cameras.Camera;
-import com.jmathanim.Cameras.Camera3D;
 import com.jmathanim.Constructible.Constructible;
 import com.jmathanim.Renderers.Renderer;
 import com.jmathanim.Styling.*;
@@ -981,16 +980,16 @@ public class Commands {
      */
     public static Animation cameraZoomToRect(double runtime, Camera camera, Rect rectToZoom) {
         Animation resul;
-        if (camera instanceof Camera3D) {
-            Camera3D camera3d = (Camera3D) camera;
-            Vec vecLook = camera3d.look.to(rectToZoom.getCenter());
-            Vec vecEye = camera3d.eye.to(rectToZoom.getCenter());
-            vecEye.addInSite(Vec.to(0, 0, camera3d.getProperEyeHeight(rectToZoom)));
-            resul = AnimationGroup.make(
-                    shift(runtime, vecEye, camera3d.eye),
-                    shift(runtime, vecLook, camera3d.look)
-            );
-        } else {
+//        if (camera instanceof Camera3D) {
+//            Camera3D camera3d = (Camera3D) camera;
+//            Vec vecLook = camera3d.look.to(rectToZoom.getCenter());
+//            Vec vecEye = camera3d.eye.to(rectToZoom.getCenter());
+//            vecEye.addInSite(Vec.to(0, 0, camera3d.getProperEyeHeight(rectToZoom)));
+//            resul = AnimationGroup.make(
+//                    shift(runtime, vecEye, camera3d.eye),
+//                    shift(runtime, vecLook, camera3d.look)
+//            );
+//        } else {
             resul = new Animation(runtime) {
                 final Camera cam = camera;
                 final Rect rDst = cam.getRectThatContains(rectToZoom);
@@ -1030,7 +1029,7 @@ public class Commands {
                 public void prepareForAnim(double t) {
                 }
             };
-        }
+//        }
         resul.setDebugName("cameraZoomToRect");
         return resul;
     }
@@ -1047,14 +1046,14 @@ public class Commands {
     public static Animation cameraShift(double runtime, Camera camera, Vec shiftVector) {
         Animation resul = null;
         if (camera != null) {
-            if (camera instanceof Camera3D) {
-                Camera3D camera3d = (Camera3D) camera;
-                resul = shift(runtime, shiftVector, camera3d.eye, camera3d.look);
-            } else {
+//            if (camera instanceof Camera3D) {
+//                Camera3D camera3d = (Camera3D) camera;
+//                resul = shift(runtime, shiftVector, camera3d.eye, camera3d.look);
+//            } else {
 
                 Rect r = camera.getMathView().shift(shiftVector);
                 resul = cameraZoomToRect(runtime, camera, r);
-            }
+//            }
             resul.setDebugName("cameraShift");
         }
         return resul;
@@ -1062,13 +1061,13 @@ public class Commands {
 
     public static Animation cameraScale(double runtime, Camera cam, double scale) {
         Animation resul;
-        if (cam instanceof Camera3D) {
-            Camera3D camera3d = (Camera3D) cam;
-            Vec shiftVector = camera3d.look.to(camera3d.eye).multInSite(scale - 1);
-            resul = shift(runtime, shiftVector, camera3d.eye);
-        } else {
+//        if (cam instanceof Camera3D) {
+//            Camera3D camera3d = (Camera3D) cam;
+//            Vec shiftVector = camera3d.look.to(camera3d.eye).multInSite(scale - 1);
+//            resul = shift(runtime, shiftVector, camera3d.eye);
+//        } else {
             resul = Commands.cameraZoomToRect(runtime, cam, cam.getMathView().scale(scale, scale));
-        }
+//        }
         resul.setDebugName("cameraScale");
         return resul;
     }
@@ -1076,19 +1075,19 @@ public class Commands {
     public enum Axis {
         X, Y, Z
     }
-
-    public static Animation camera3DRotate(double runtime, Camera3D cam, double angle) {
-        return camera3DRotate(runtime, cam, angle, Axis.Z);
-    }
-
-    public static Animation camera3DRotate(double runtime, Camera3D cam, double angle, Axis axis) {
-        double anglex = (axis == Axis.X ? angle : 0);
-        double angley = (axis == Axis.Y ? angle : 0);
-        double anglez = (axis == Axis.Z ? angle : 0);
-        Animation resul = Commands.rotate3d(runtime, cam.look, anglex, angley, anglez, cam.eye);
-        resul.setDebugName("camera3DRotate");
-        return resul;
-    }
+//
+//    public static Animation camera3DRotate(double runtime, Camera3D cam, double angle) {
+//        return camera3DRotate(runtime, cam, angle, Axis.Z);
+//    }
+//
+//    public static Animation camera3DRotate(double runtime, Camera3D cam, double angle, Axis axis) {
+//        double anglex = (axis == Axis.X ? angle : 0);
+//        double angley = (axis == Axis.Y ? angle : 0);
+//        double anglez = (axis == Axis.Z ? angle : 0);
+//        Animation resul = Commands.rotate3d(runtime, cam.look, anglex, angley, anglez, cam.eye);
+//        resul.setDebugName("camera3DRotate");
+//        return resul;
+//    }
 
     /**
      * Animation command that reduces the size and alpha of the MathObject.After

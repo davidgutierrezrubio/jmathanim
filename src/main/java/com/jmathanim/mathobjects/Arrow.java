@@ -17,7 +17,6 @@
 package com.jmathanim.mathobjects;
 
 import com.jmathanim.Cameras.Camera;
-import com.jmathanim.Cameras.Camera3D;
 import com.jmathanim.Constructible.Conics.CTCircleArc;
 import com.jmathanim.Constructible.Constructible;
 import com.jmathanim.Constructible.Lines.CTLine;
@@ -329,15 +328,15 @@ public class Arrow extends Constructible {
         shapeToDraw.getPath().applyAffineTransform(tr);
         labelArc.getPath().applyAffineTransform(tr);
         //Now, rotate to face camera3d..
-        if (scene.getCamera() instanceof Camera3D) {
-            Camera3D cam = (Camera3D) scene.getCamera();
-//            Point C = A.copy().shift(0, 0, 1);
-            v = cam.look.to(cam.eye);
-            Point C2 = Acopy.copy().shift(v);
-            tr = AffineJTransform.createDirect3DIsomorphic(Acopy, Bcopy, C, Acopy, Bcopy, C2, 1);
-            shapeToDraw.applyAffineTransform(tr);
-            labelArc.applyAffineTransform(tr);
-        }
+//        if (scene.getCamera() instanceof Camera3D) {
+//            Camera3D cam = (Camera3D) scene.getCamera();
+////            Point C = A.copy().shift(0, 0, 1);
+//            v = cam.look.to(cam.eye);
+//            Point C2 = Acopy.copy().shift(v);
+//            tr = AffineJTransform.createDirect3DIsomorphic(Acopy, Bcopy, C, Acopy, Bcopy, C2, 1);
+//            shapeToDraw.applyAffineTransform(tr);
+//            labelArc.applyAffineTransform(tr);
+//        }
     }
 
     @Override

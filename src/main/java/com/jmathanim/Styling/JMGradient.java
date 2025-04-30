@@ -1,28 +1,7 @@
 package com.jmathanim.Styling;
 
-public class JMGradient extends PaintStyle {
-    @Override
-    public void copyFrom(PaintStyle A) {
+public abstract class JMGradient extends PaintStyle {
+    protected CycleMethod cycleMethod;
 
-    }
-
-    @Override
-    public boolean equals(Object p) {
-        return false;
-    }
-
-    @Override
-    public int hashCode() {
-        return 0;
-    }
-
-    @Override
-    public PaintStyle copy() {
-        return null;
-    }
-
-    @Override
-    public PaintStyle interpolate(PaintStyle p, double t) {
-        return null;
-    }
+    public static enum CycleMethod {NO_CYCLE, REPEAT, REFLECT}
 }

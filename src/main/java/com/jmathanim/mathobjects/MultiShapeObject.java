@@ -21,8 +21,10 @@ import com.jmathanim.Cameras.Camera;
 import com.jmathanim.Renderers.Renderer;
 import com.jmathanim.Styling.MODrawPropertiesArray;
 import com.jmathanim.Styling.PaintStyle;
-import com.jmathanim.Styling.Stylable;
-import com.jmathanim.Utils.*;
+import com.jmathanim.Utils.AffineJTransform;
+import com.jmathanim.Utils.Anchor;
+import com.jmathanim.Utils.EmptyRect;
+import com.jmathanim.Utils.Rect;
 import com.jmathanim.jmathanim.JMathAnimScene;
 
 import java.util.ArrayList;
@@ -375,18 +377,18 @@ public class MultiShapeObject extends MathObject implements Iterable<Shape> {
         return mpMultiShape;
     }
 
-    public boolean containsPoint(Point p) {
-        return containsPoint(p.v);
-    }
+//    public boolean containsPoint(Point p) {
+//        return containsPoint(p.v);
+//    }
 
-    public boolean containsPoint(Vec v) {
-        for (Shape sh : shapes) {
-            if (sh.containsPoint(v)) {
-                return true;
-            }
-        }
-        return false;
-    }
+//    public boolean containsPoint(Vec v) {
+//        for (Shape sh : shapes) {
+//            if (sh.containsPoint(v)) {
+//                return true;
+//            }
+//        }
+//        return false;
+//    }
 
     /**
      * Returns an array of MathObject with the contents of the group.

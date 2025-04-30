@@ -17,13 +17,8 @@
  */
 package com.jmathanim.Styling;
 
-import com.jmathanim.Cameras.Camera;
-import com.jmathanim.Renderers.FXRenderer.JavaFXRenderer;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.mathobjects.Point;
-import javafx.scene.paint.CycleMethod;
-import javafx.scene.paint.LinearGradient;
-import javafx.scene.paint.Paint;
 
 import java.util.Objects;
 
@@ -32,12 +27,12 @@ import java.util.Objects;
  *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
-public class JMLinearGradient extends PaintStyle {
+public class JMLinearGradient extends JMGradient {
 
     protected Point start, end;
     protected GradientStop stops;
     protected boolean relativeToShape;
-    protected CycleMethod cycleMethod;
+
 
     /**
      * Creates a new linear gradient. Both points should be in math coordinates
@@ -89,18 +84,18 @@ public class JMLinearGradient extends PaintStyle {
         }
     }
 
-    @Override
-    public Paint getFXPaint(JavaFXRenderer r, Camera cam) {
-        double[] ss, ee;
-        if (!relativeToShape) {
-            ss = cam.mathToScreenFX(start.v);
-            ee = cam.mathToScreenFX(end.v);
-        } else {
-            ss = new double[]{start.v.x, 1 - start.v.y};
-            ee = new double[]{end.v.x, 1 - end.v.y};
-        }
-        return new LinearGradient(ss[0], ss[1], ee[0], ee[1], relativeToShape, this.cycleMethod, stops.toFXStop(getAlpha()));
-    }
+//    @Override
+//    public Paint getFXPaint(JavaFXRenderer r, Camera cam) {
+//        double[] ss, ee;
+//        if (!relativeToShape) {
+//            ss = cam.mathToScreenFX(start.v);
+//            ee = cam.mathToScreenFX(end.v);
+//        } else {
+//            ss = new double[]{start.v.x, 1 - start.v.y};
+//            ee = new double[]{end.v.x, 1 - end.v.y};
+//        }
+//        return new LinearGradient(ss[0], ss[1], ee[0], ee[1], relativeToShape, this.cycleMethod, stops.toFXStop(getAlpha()));
+//    }
 
     @Override
     public PaintStyle interpolate(PaintStyle p, double t) {
