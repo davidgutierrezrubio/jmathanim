@@ -38,9 +38,9 @@ public class SkijaRenderer extends Renderer {
         camera.initialize(XMIN_DEFAULT, XMAX_DEFAULT, 0);
         fixedCamera.initialize(XMIN_DEFAULT, XMAX_DEFAULT, 0);
         correctionThickness = config.mediaW * 1d / 1066;//Correction factor for thickness
-//        skijaHandler = new SkijaSwingHandler(JMathAnimConfig.getConfig(),keepRunning);
+        skijaHandler = new SkijaSwingHandler(JMathAnimConfig.getConfig(),keepRunning);
         //Gl handler is slow??
-        skijaHandler = new SkijaGLHandler(JMathAnimConfig.getConfig(), keepRunning);
+//        skijaHandler = new SkijaGLHandler(JMathAnimConfig.getConfig(), keepRunning);
         skijaHandler.setRenderer(this);
 
 
@@ -203,7 +203,7 @@ public class SkijaRenderer extends Renderer {
 
     @Override
     public double ThicknessToMathWidth(MathObject obj) {
-        return skijaHandler.ThicknessToMathWidth(obj);
+        return skijaHandler.ThicknessToMathWidth(obj.getMp());
     }
 
     @Override

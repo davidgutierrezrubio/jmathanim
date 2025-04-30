@@ -24,8 +24,8 @@ import javafx.scene.paint.CycleMethod;
 import javafx.scene.paint.Paint;
 import javafx.scene.paint.RadialGradient;
 
-import java.util.HashMap;
 import java.util.Objects;
+import java.util.TreeMap;
 
 /**
  *
@@ -94,7 +94,7 @@ public class JMRadialGradient extends PaintStyle {
         //For a single color, simply generate a trivial color stop
         if (A instanceof JMColor) {
             JMColor jMColor = (JMColor) A;
-            HashMap<Double, JMColor> map = this.stops.getColorHashMap();
+            TreeMap<Double, JMColor> map = this.stops.getColorTreeMap();
             map.clear();
             map.put(0d, jMColor);
         }
@@ -123,8 +123,8 @@ public class JMRadialGradient extends PaintStyle {
             JMColor pc = (JMColor) p;
             JMRadialGradient resul = this.copy();
             GradientStop interStops = resul.getStops();
-            for (double tt : interStops.getColorHashMap().keySet()) {
-                JMColor col = interStops.getColorHashMap().get(tt);
+            for (double tt : interStops.getColorTreeMap().keySet()) {
+                JMColor col = interStops.getColorTreeMap().get(tt);
                 interStops.add(tt, (JMColor) col.interpolate(pc, t));
             }
             resul.setAlpha((1 - t) * resul.getAlpha() + t * pc.getAlpha());
@@ -135,16 +135,16 @@ public class JMRadialGradient extends PaintStyle {
             //I need the 2 linear gradients to have same cycle method and relative flat to interpolate. If not, do nothing.
             if ((rp.cycleMethod == this.cycleMethod) && (rp.relativeToShape == this.relativeToShape)) {
                 JMRadialGradient resul = this.copy();
-                for (double tt : rp.stops.getColorHashMap().keySet()) {
+                for (double tt : rp.stops.getColorTreeMap().keySet()) {
                     resul.stops.addInterpolatedColor(tt);
                 }
-                for (double tt : resul.stops.getColorHashMap().keySet()) {
+                for (double tt : resul.stops.getColorTreeMap().keySet()) {
                     rp.stops.addInterpolatedColor(tt);
                 }
 
-                for (double tt : resul.stops.getColorHashMap().keySet()) {
-                    JMColor colA = resul.stops.getColorHashMap().get(tt);
-                    JMColor colB = rp.stops.getColorHashMap().get(tt);
+                for (double tt : resul.stops.getColorTreeMap().keySet()) {
+                    JMColor colA = resul.stops.getColorTreeMap().get(tt);
+                    JMColor colB = rp.stops.getColorTreeMap().get(tt);
                     resul.stops.add(tt, (JMColor) colA.interpolate(colB, t));
 
                 }
@@ -299,4 +299,19 @@ public class JMRadialGradient extends PaintStyle {
         return this.cycleMethod == other.cycleMethod;
     }
 
+    public Point getCenter() {
+        return center;
+    }
+
+    public double getFocusAngle() {
+        return focusAngle;
+    }
+
+    public double getFocusDistance() {
+        return focusDistance;
+    }
+
+    public double getRadius() {
+        return radius;
+    }
 }

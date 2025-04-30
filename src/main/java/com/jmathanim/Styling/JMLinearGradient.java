@@ -108,8 +108,8 @@ public class JMLinearGradient extends PaintStyle {
             JMColor pc = (JMColor) p;
             JMLinearGradient resul = this.copy();
             GradientStop interStops = resul.getStops();
-            for (double tt : interStops.getColorHashMap().keySet()) {
-                JMColor col = interStops.getColorHashMap().get(tt);
+            for (double tt : interStops.getColorTreeMap().keySet()) {
+                JMColor col = interStops.getColorTreeMap().get(tt);
                 interStops.add(tt, (JMColor) col.interpolate(pc, t));
             }
             resul.setAlpha((1 - t) * resul.getAlpha() + t * pc.getAlpha());
@@ -120,16 +120,16 @@ public class JMLinearGradient extends PaintStyle {
             //I need the 2 linear gradients to have same cycle method and relative flat to interpolate. If not, do nothing.
             if ((lp.cycleMethod == this.cycleMethod) && (lp.relativeToShape == this.relativeToShape)) {
                 JMLinearGradient resul = this.copy();
-                for (double tt : lp.stops.getColorHashMap().keySet()) {
+                for (double tt : lp.stops.getColorTreeMap().keySet()) {
                     resul.stops.addInterpolatedColor(tt);
                 }
-                for (double tt : resul.stops.getColorHashMap().keySet()) {
+                for (double tt : resul.stops.getColorTreeMap().keySet()) {
                     lp.stops.addInterpolatedColor(tt);
                 }
 
-                for (double tt : resul.stops.getColorHashMap().keySet()) {
-                    JMColor colA = resul.stops.getColorHashMap().get(tt);
-                    JMColor colB = lp.stops.getColorHashMap().get(tt);
+                for (double tt : resul.stops.getColorTreeMap().keySet()) {
+                    JMColor colA = resul.stops.getColorTreeMap().get(tt);
+                    JMColor colB = lp.stops.getColorTreeMap().get(tt);
                     resul.stops.add(tt, (JMColor) colA.interpolate(colB, t));
 
                 }
@@ -219,4 +219,11 @@ public class JMLinearGradient extends PaintStyle {
         return this.cycleMethod == other.cycleMethod;
     }
 
+    public Point getStart() {
+        return start;
+    }
+
+    public Point getEnd() {
+        return end;
+    }
 }

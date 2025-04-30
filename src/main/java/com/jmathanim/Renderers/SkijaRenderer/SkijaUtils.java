@@ -1,16 +1,17 @@
 package com.jmathanim.Renderers.SkijaRenderer;
 
 import com.jmathanim.Cameras.Camera;
-import com.jmathanim.Styling.JMColor;
-import com.jmathanim.Styling.PaintStyle;
-import com.jmathanim.Styling.Stylable;
+import com.jmathanim.Styling.*;
 import com.jmathanim.Utils.JMathAnimConfig;
+import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.mathobjects.JMPath;
 import com.jmathanim.mathobjects.JMPathPoint;
+import com.jmathanim.mathobjects.MathObject;
 import io.github.humbleui.skija.*;
 
 import java.util.HashMap;
+import java.util.Map;
 
 
 class SkijaUtils {
@@ -27,13 +28,14 @@ class SkijaUtils {
     }
 
     public void clearFrame() {
-            canvas.clear(0xFFFFFFFF);//TODO: set color to background config color
+        canvas.clear(0xFFFFFFFF);//TODO: set color to background config color
     }
 
 
     /**
-     * Computes matrix transform for given JMathAnim camera. This matrix will transform from math coordinates
-     * to screen coordinates.
+     * Computes matrix transform for given JMathAnim camera. This matrix will transform from math coordinates to screen
+     * coordinates.
+     *
      * @param camera Camera
      * @return The transform matrix
      */
@@ -55,6 +57,7 @@ class SkijaUtils {
 
     /**
      * Converts JMPath to format suitable to be drawn by Skija
+     *
      * @param jmpath JMPath to transform
      * @return Skija Path object
      */
@@ -95,31 +98,32 @@ class SkijaUtils {
 
     /**
      * Create skija paint parameters from JMathAnim style properties object
+     *
      * @param style Shape object to get styles
      * @return
      */
-    protected Paint createDrawPaint(Stylable style) {
+    protected Paint createDrawPaint(MathObject obj, Stylable style) {
         Paint paint = new Paint();
         paint.setMode(PaintMode.STROKE);
-        setColor(paint, style.getDrawColor());
-        float th=(float) handler.ThicknessToMathWidth(style.getThickness());
+        setColor(paint, obj, style.getDrawColor());
+        float th = (float) handler.ThicknessToMathWidth(style);
         applyThickness(th, paint);
         return paint;
     }
 
-    protected Paint createFillPaint(Stylable style) {
+    protected Paint createFillPaint(MathObject obj, Stylable style) {
         Paint paint = new Paint();
         paint.setMode(PaintMode.FILL);
-        setColor(paint, style.getFillColor());
+        setColor(paint, obj, style.getFillColor());
         return paint;
     }
 
-    protected Paint createFillAndDrawPaint(Stylable style) {
+    protected Paint createFillAndDrawPaint(MathObject obj, Stylable style) {
         Paint paint = new Paint();
         paint.setMode(PaintMode.STROKE_AND_FILL);
-        setColor(paint, style.getDrawColor());
+        setColor(paint, obj, style.getDrawColor());
         //Stroke width 4=height of media???
-        float th=(float) handler.ThicknessToMathWidth(style.getThickness());
+        float th = (float) handler.ThicknessToMathWidth(style);
         applyThickness(th, paint);
         return paint;
     }
@@ -129,15 +133,81 @@ class SkijaUtils {
     }
 
 
-    private void setColor(Paint paint, PaintStyle color) {
+    private void setColor(Paint paint, MathObject obj, PaintStyle color) {
         if (color instanceof JMColor) {
             JMColor jmColor = (JMColor) color;
             paint.setColor4f(new Color4f((float) jmColor.r, (float) jmColor.g, (float) jmColor.b, (float) jmColor.getAlpha()));
         }
+        if (color instanceof JMLinearGradient) {
+            paint.setShader(buildLinearGradient(obj, (JMLinearGradient) color));
+        }
+        if (color instanceof JMRadialGradient) {
+            paint.setShader(buildRadialGradient(obj, (JMRadialGradient) color));
+        }
     }
+
+    private Shader buildRadialGradient(MathObject obj, JMRadialGradient jmRadialGradient) {
+        Vec vCenter;
+        float radius;
+
+        if (jmRadialGradient.isRelativeToShape()) {
+            Rect bb=obj.getBoundingBox();
+             radius = (float) Math.max(bb.getHeight(), bb.getWidth());
+
+            vCenter=bb.getCenter().v;
+
+        } else {
+            vCenter=jmRadialGradient.getCenter().v;
+            radius= (float) jmRadialGradient.getRadius();
+        }
+
+
+
+
+
+        GradientStop stops = jmRadialGradient.getStops();
+        int[] colors = new int[stops.size()];
+        float[] stopsf = new float[stops.size()];
+
+        int i = 0;
+        for (Map.Entry<Double, JMColor> entry : stops.getColorTreeMap().entrySet()) {
+            colors[i] = jmColorToInt(entry.getValue());
+            stopsf[i] = entry.getKey().floatValue();
+            i++;
+        }
+
+        return Shader.makeRadialGradient((float) vCenter.x, (float) vCenter.y, radius, colors, stopsf);
+
+    }
+
+    private Shader buildLinearGradient(MathObject obj, JMLinearGradient jmLinearGradient) {
+        Vec vStart, vEnd;
+        if (jmLinearGradient.isRelativeToShape()) {
+            Rect bb=obj.getBoundingBox();
+            vStart = bb.getRelVec(jmLinearGradient.getStart().v);
+            vEnd = bb.getRelVec(jmLinearGradient.getEnd().v);
+
+        } else {
+            vStart = jmLinearGradient.getStart().v;
+            vEnd = jmLinearGradient.getEnd().v;
+        }
+        GradientStop stops = jmLinearGradient.getStops();
+        int[] colors = new int[stops.size()];
+        float[] stopsf = new float[stops.size()];
+
+        int i = 0;
+        for (Map.Entry<Double, JMColor> entry : stops.getColorTreeMap().entrySet()) {
+            colors[i] = jmColorToInt(entry.getValue());
+            stopsf[i] = entry.getKey().floatValue();
+            i++;
+        }
+        return Shader.makeLinearGradient((float) vStart.x, (float) vStart.y, (float) vEnd.x, (float) vEnd.y, colors, stopsf);
+    }
+
 
     /**
      * Convert JMatnAnim color object to Skija color object
+     *
      * @param jmColor JMathAnim color object
      * @return The equivalente Skija Color4f object
      */
@@ -145,8 +215,27 @@ class SkijaUtils {
         return new Color4f((float) jmColor.r, (float) jmColor.g, (float) jmColor.b, (float) jmColor.getAlpha());
     }
 
+    public int jmColorToInt(JMColor color) {
+        return doubleToSkijaColor(color.r, color.g, color.b, color.getAlpha());
+    }
+
+    private int doubleToSkijaColor(double r, double g, double b, double a) {
+        r = Math.max(0.0f, Math.min(1.0f, r));
+        g = Math.max(0.0f, Math.min(1.0f, g));
+        b = Math.max(0.0f, Math.min(1.0f, b));
+        a = Math.max(0.0f, Math.min(1.0f, a));
+
+        int aInt = (int) (a * 255) << 24;
+        int rInt = (int) (r * 255) << 16;
+        int gInt = (int) (g * 255) << 8;
+        int bInt = (int) (b * 255);
+        return aInt | rInt | gInt | bInt;
+    }
+
+
     /**
      * Computes inverse Skija matrix
+     *
      * @param m Matrix
      * @return inverse matrix
      */
@@ -180,6 +269,7 @@ class SkijaUtils {
 
     /**
      * Apply transform matrix to a 2d point
+     *
      * @param m Matrix
      * @param x x coordinate
      * @param y y coordinate
@@ -198,18 +288,19 @@ class SkijaUtils {
 
     /**
      * Computes the appropriate projection camera for an object to be drawn with absolute size
+     *
      * @param cameraMatrixObject Camera to project
-     * @param anchor Anchor point.
-     * @param fixedCameraMatrix Fixed camera, that determines the absolute object size
+     * @param anchor             Anchor point.
+     * @param fixedCameraMatrix  Fixed camera, that determines the absolute object size
      * @return The projection camera to be used to compute screen coordinates.
      */
     public Matrix33 projectToCamera(Matrix33 cameraMatrixObject, Vec anchor, Matrix33 fixedCameraMatrix) {
         Matrix33 inv = getInverseMatrix(fixedCameraMatrix);
         float[] coordOrig = new float[]{(float) anchor.x, (float) anchor.y};
-        float[] screenCoordinates = applyMatrix(cameraMatrixObject, coordOrig[0],coordOrig[1]);
+        float[] screenCoordinates = applyMatrix(cameraMatrixObject, coordOrig[0], coordOrig[1]);
         float[] coo = applyMatrix(inv, screenCoordinates[0], screenCoordinates[1]);
-         Matrix33 resul = Matrix33.makeTranslate(coo[0] - coordOrig[0], coo[1] - coordOrig[1]);
-        resul= fixedCameraMatrix.makeConcat(resul);//First translate, second change of coordinates
+        Matrix33 resul = Matrix33.makeTranslate(coo[0] - coordOrig[0], coo[1] - coordOrig[1]);
+        resul = fixedCameraMatrix.makeConcat(resul);//First translate, second change of coordinates
         return resul;
     }
 }

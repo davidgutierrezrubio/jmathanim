@@ -19,7 +19,7 @@ package com.jmathanim.Styling;
 
 import javafx.scene.paint.Stop;
 
-import java.util.HashMap;
+import java.util.TreeMap;
 
 /**
  * Holds a bunch of colors to define a linear or radial gradient
@@ -28,14 +28,14 @@ import java.util.HashMap;
  */
 public class GradientStop {
 
-    private final HashMap<Double, JMColor> colors;
+    private final TreeMap<Double, JMColor> colors;
     
 
     public GradientStop() {
-        this(new HashMap<>());
+        this(new TreeMap<>());
     }
 
-    public GradientStop(HashMap<Double, JMColor> colors) {
+    public GradientStop(TreeMap<Double, JMColor> colors) {
         this.colors = colors;
     }
 
@@ -96,7 +96,7 @@ public class GradientStop {
     
     
     
-    public HashMap<Double, JMColor> getColorHashMap() {
+    public TreeMap<Double, JMColor> getColorTreeMap() {
         return colors;
     }
     
@@ -108,4 +108,9 @@ public class GradientStop {
         
         return copy;
     }
+
+    public int size() {
+        return colors.size();
+    }
+
 }

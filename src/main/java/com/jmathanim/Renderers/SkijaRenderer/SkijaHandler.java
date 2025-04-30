@@ -2,9 +2,9 @@ package com.jmathanim.Renderers.SkijaRenderer;
 
 import com.jmathanim.Cameras.Camera;
 import com.jmathanim.Styling.PaintStyle;
+import com.jmathanim.Styling.Stylable;
 import com.jmathanim.Utils.JMathAnimConfig;
 import com.jmathanim.Utils.Vec;
-import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.Shape;
 import io.github.humbleui.skija.*;
 
@@ -59,13 +59,13 @@ public abstract class SkijaHandler {
         PaintStyle fillStyle = mobj.getMp().getFillColor();
         Path path = skijaUtils.convertJMPathToSkijaPath(mobj.getPath());
         if (drawStyle.equals(fillStyle)) {
-            Paint paint = skijaUtils.createFillAndDrawPaint(mobj.getMp());
+            Paint paint = skijaUtils.createFillAndDrawPaint(mobj,mobj.getMp());
             canvas.drawPath(path, paint);
         } else {
             //Fill and draw contour
-            Paint paintFill = skijaUtils.createFillPaint(mobj.getMp());
+            Paint paintFill = skijaUtils.createFillPaint(mobj,mobj.getMp());
             canvas.drawPath(path, paintFill);
-            Paint paintStroke = skijaUtils.createDrawPaint(mobj.getMp());
+            Paint paintStroke = skijaUtils.createDrawPaint(mobj,mobj.getMp());
             canvas.drawPath(path, paintStroke);
         }
     }
@@ -103,9 +103,9 @@ public abstract class SkijaHandler {
         return th / 1066;
     }
 
-    public double ThicknessToMathWidth(MathObject obj) {
-        Camera cam = (obj.getMp().isAbsoluteThickness() ? fixedCamera : camera);
-        return obj.getMp().getThickness() / 1066 * 4 / cam.getMathView().getWidth();
+    public double ThicknessToMathWidth(Stylable stylable) {
+        Camera cam = (stylable.isAbsoluteThickness() ? fixedCamera : camera);
+        return stylable.getThickness() / 1066 * 4 / cam.getMathView().getWidth();
     }
 //
 //    public void saveFrame(int frameCount) {

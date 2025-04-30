@@ -23,8 +23,8 @@ import com.jmathanim.jmathanim.JMathAnimScene;
 import javafx.scene.paint.Paint;
 
 import java.lang.reflect.Field;
-import java.util.HashMap;
 import java.util.Iterator;
+import java.util.TreeMap;
 
 /**
  * JMColor is a class representing a color with red (r), green (g), blue (b),
@@ -152,7 +152,7 @@ public class JMColor extends PaintStyle {
 
         if (ps instanceof JMLinearGradient) {
             JMLinearGradient jMLinearGradient = (JMLinearGradient) ps;
-            HashMap<Double, JMColor> stops = jMLinearGradient.getStops().getColorHashMap();
+            TreeMap<Double, JMColor> stops = jMLinearGradient.getStops().getColorTreeMap();
             if (stops.isEmpty()) {
                 return;
             }
@@ -162,7 +162,7 @@ public class JMColor extends PaintStyle {
         //The same for radial gradients
         if (ps instanceof JMRadialGradient) {
             JMRadialGradient jMRadialGradient = (JMRadialGradient) ps;
-            HashMap<Double, JMColor> stops = jMRadialGradient.getStops().getColorHashMap();
+            TreeMap<Double, JMColor> stops = jMRadialGradient.getStops().getColorTreeMap();
             if (stops.isEmpty()) {
                 return;
             }

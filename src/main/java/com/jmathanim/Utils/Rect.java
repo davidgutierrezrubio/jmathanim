@@ -581,7 +581,9 @@ public class Rect implements Stateable, Boxable {// TODO: Adjust this to 3D coor
     public Point getRelPoint(double relX, double relY) {
         return Point.at(xmin + relX * (xmax - xmin), ymin + relY * (ymax - ymin), 0);
     }
-
+    public Vec getRelVec(Vec v) {
+        return Vec.to(xmin + v.x * (xmax - xmin), ymin + v.y * (ymax - ymin), 0);
+    }
     /**
      * Gets the point inside the rect with the relative coordinates from 0 to 1.
      * The point (0,0) refers to the DL corner, the (1,1) the UR corner, and

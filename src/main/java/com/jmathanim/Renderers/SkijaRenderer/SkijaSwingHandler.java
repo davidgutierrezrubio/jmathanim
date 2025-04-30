@@ -73,7 +73,6 @@ public class SkijaSwingHandler extends SkijaHandler {
         canvas.save();
         //Check if transform is created for this camera in this frame...
         canvas.concat(retrieveCameraMatrix(camera));
-
         applyPaintCommands(mobj);
         canvas.restore();
     }
