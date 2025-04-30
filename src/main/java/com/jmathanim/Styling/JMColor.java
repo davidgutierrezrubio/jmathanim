@@ -219,7 +219,7 @@ public class JMColor extends PaintStyle {
 //            }
 //        }
 //        return JMColor.fromFXColor(col);
-        return new JMColor(.3, .6, .7,.1);//A random color
+        return new JMColor(.3, .6, .7,1);//A random color
     }
 
     /**
