@@ -39,23 +39,24 @@ import static com.jmathanim.jmathanim.JMathAnimScene.logger;
  */
 public class JMathAnimConfig {
 
-    private String outputFileName;
-    private String ffmpegBinExecutable;
-    private boolean soundsEnabled;
-    private File resourcesDir;
-    private File outputDir;
-    private File saveFilePath;
-    private DoubleUnaryOperator defaultLambda;
-    private boolean isJavaFXRunning;
-    private boolean isScriptMode;
+    private static JMathAnimConfig singletonConfig;
+    /**
+     * Color map with color definitions
+     */
+    private final ColorPalette colorPalette;
 
-    public File getSaveFilePath() {
-        return saveFilePath;
-    }
+    /**
+     * A dictionary of the styles to be used in the objects
+     */
+    private final HashMapUpper<String, MODrawProperties> styles;
 
-    public void setSaveFilePath(File saveFilePath) {
-        this.saveFilePath = saveFilePath;
-    }
+
+
+
+    /**
+     * A dictionary of the latexStyles to be used in LaTexMathObjects
+     */
+    private final HashMapUpper<String, LatexStyle> latexStyles;
     /**
      * Width of media screen. Typically 800 or 1920.
      */
@@ -64,77 +65,11 @@ public class JMathAnimConfig {
      * Height of media screen. Typically 600 or 1080.
      */
     public int mediaH = 600;
-
     /**
      * Frames per second to use in the video. Typically 30 or 60.
      */
     public int fps = 30;
-    /**
-     * Singleton pattern to ensure there is a common config class for whole
-     * execution
-     */
-
-    /**
-     * If true, FPS will be restricted in preview windows. If false, animation will be played at max speed possible.
-     */
-    private boolean limitFPS;
-
-    /**
-     * If true, displays progress bar in the console. Deactivated in preview mode by default
-     */
-    private boolean printProgressBar;
-
-    private static JMathAnimConfig singletonConfig;
-    /**
-     * The scene used
-     */
-    private JMathAnimScene scene;
-    /**
-     * The renderer used
-     */
-    private Renderer renderer;
-    /**
-     * If true, the current renderer should render the result into a movie
-     */
-    private boolean createMovie = false;
-
-    /**
-     * If true, the current renderer should save each frame onto a separate png
-     * file
-     */
-    private boolean saveToPNG = false;
-    /**
-     * If true, the current renderer should show a preview of the result
-     */
-    private boolean showPreview = true;
-    /**
-     * A dictionary of the styles to be used in the objects
-     */
-    private final HashMapUpper<String, MODrawProperties> styles;
-
-     /**
-     * A dictionary of the latexStyles to be used in LaTexMathObjects
-     */
-    private final HashMapUpper<String, LatexStyle> latexStyles;
-    
-    /**
-     * Returns the config, using the singleton pattern.
-     *
-     * @return The config object, global scope.
-     */
-    public static JMathAnimConfig getConfig() {
-        if (singletonConfig == null) {
-
-            singletonConfig = new JMathAnimConfig();
-        }
-        return singletonConfig;
-    }
-
-    // Background color, default black
-    private PaintStyle backgroundColor = JMColor.BLACK;
     public boolean delay = true;
-
-    // Shadow parameters
     /**
      * If true, draw a shadow of objects over the background image
      */
@@ -156,13 +91,95 @@ public class JMathAnimConfig {
      * alpha shadow multiplier. A value of .5 lets alpha shadow in 50%
      */
     public float shadowAlpha = .5f;
-    private URL backGroundImage = null;
-
     /**
      * If true, the frame number will be superimposed on screen, for debugging
      * purposes
      */
     public boolean showFrameNumbers = false;
+    private String outputFileName;
+    /**
+     * Singleton pattern to ensure there is a common config class for whole
+     * execution
+     */
+    private String ffmpegBinExecutable;
+    private boolean soundsEnabled;
+    private File resourcesDir;
+    private File outputDir;
+    private File saveFilePath;
+    private DoubleUnaryOperator defaultLambda;
+    private boolean isJavaFXRunning;
+    private boolean isScriptMode;
+    /**
+     * If true, FPS will be restricted in preview windows. If false, animation will be played at max speed possible.
+     */
+    private boolean limitFPS;
+    /**
+     * If true, displays progress bar in the console. Deactivated in preview mode by default
+     */
+    private boolean printProgressBar;
+    /**
+     * The scene used
+     */
+    private JMathAnimScene scene;
+    /**
+     * The renderer used
+     */
+    private Renderer renderer;
+    /**
+     * If true, the current renderer should render the result into a movie
+     */
+    private boolean createMovie = false;
+
+    // Shadow parameters
+    /**
+     * If true, the current renderer should save each frame onto a separate png
+     * file
+     */
+    private boolean saveToPNG = false;
+    /**
+     * If true, the current renderer should show a preview of the result
+     */
+    private boolean showPreview = true;
+    // Background color, default black
+    private PaintStyle backgroundColor = JMColor.BLACK;
+    private URL backGroundImage = null;
+    private JMathAnimConfig() {// Private constructor
+        styles = new HashMapUpper<>("styles");
+        colorPalette = new ColorPalette();
+        latexStyles = new HashMapUpper<>("latex styles");
+        setDefaultMP();// Load "default" drawing style in dictionary
+        resourcesDir = new File("." + File.separator + "resources");
+        outputDir = new File("." + File.separator + "media");
+        ffmpegBinExecutable = "";
+        soundsEnabled = true;
+        limitFPS = false;
+        printProgressBar = false;
+        defaultLambda = UsefulLambdas.smooth();
+        isJavaFXRunning = false;
+
+
+    }
+
+    /**
+     * Returns the config, using the singleton pattern.
+     *
+     * @return The config object, global scope.
+     */
+    public static JMathAnimConfig getConfig() {
+        if (singletonConfig == null) {
+
+            singletonConfig = new JMathAnimConfig();
+        }
+        return singletonConfig;
+    }
+
+    public File getSaveFilePath() {
+        return saveFilePath;
+    }
+
+    public void setSaveFilePath(File saveFilePath) {
+        this.saveFilePath = saveFilePath;
+    }
 
     public void setDrawShadow(boolean drawShadow) {
         this.drawShadow = drawShadow;
@@ -175,6 +192,10 @@ public class JMathAnimConfig {
         this.shadowAlpha = alpha;
     }
 
+    public URL getBackGroundImage() {
+        return backGroundImage;
+    }
+
     public void setBackGroundImage(String name) {
         ResourceLoader rl = new ResourceLoader();
         setBackGroundImage(rl.getResource(name, "images"));
@@ -183,25 +204,6 @@ public class JMathAnimConfig {
 
     public void setBackGroundImage(URL backGroundImage) {
         this.backGroundImage = backGroundImage;
-    }
-
-    public URL getBackGroundImage() {
-        return backGroundImage;
-    }
-
-    private JMathAnimConfig() {// Private constructor
-        styles = new HashMapUpper<>("styles");
-        latexStyles = new HashMapUpper<>("latex styles");
-        setDefaultMP();// Load "default" drawing style in dictionary
-        resourcesDir = new File("." + File.separator + "resources");
-        outputDir = new File("." + File.separator + "media");
-        ffmpegBinExecutable = "";
-        soundsEnabled = true;
-        limitFPS=false;
-        printProgressBar =false;
-        defaultLambda=UsefulLambdas.smooth();
-        isJavaFXRunning=false;
-
     }
 
     public boolean isSoundsEnabled() {
@@ -283,15 +285,10 @@ public class JMathAnimConfig {
         this.backgroundColor = bakcgroundColor;
     }
 
-    public void setCreateMovie(boolean createMovie) {
-        this.createMovie = createMovie;
-    }
-
     public void setShowPreviewWindow(boolean showPreviewWindow) {
         this.showPreview = showPreviewWindow;
     }
 
-    // MathObjectDrawingProperties
     /**
      * Set default values, in case no xml config file is loaded
      */
@@ -325,6 +322,8 @@ public class JMathAnimConfig {
         defaultDotMP.setThickness(8d);
         styles.put("ARROWDEFAULT", defaultArrowMP);
     }
+
+    // MathObjectDrawingProperties
 
     public MODrawProperties getDefaultMP() {
         return styles.get("DEFAULT").copy();
@@ -367,13 +366,17 @@ public class JMathAnimConfig {
     public HashMapUpper<String, MODrawProperties> getStyles() {
         return styles;
     }
-    
+
     public HashMapUpper<String, LatexStyle> getLatexStyles() {
         return latexStyles;
     }
 
     public boolean isCreateMovie() {
         return createMovie;
+    }
+
+    public void setCreateMovie(boolean createMovie) {
+        this.createMovie = createMovie;
     }
 
     public boolean isShowPreview() {
@@ -420,7 +423,7 @@ public class JMathAnimConfig {
      * Sets the save to png flag
      *
      * @param saveToPNG True if the current renderer saves each frame to a png
-     * file, false otherwise.
+     *                  file, false otherwise.
      */
     public void setSaveToPNG(boolean saveToPNG) {
         this.saveToPNG = saveToPNG;
@@ -433,6 +436,7 @@ public class JMathAnimConfig {
 
     /**
      * Returns the limitFPS flag
+     *
      * @return True if FPS are limited in display window. False otherwise
      */
     public boolean isLimitFPS() {
@@ -441,6 +445,7 @@ public class JMathAnimConfig {
 
     /**
      * Sets the limitFPS flag
+     *
      * @param limitFPS True if FPS should be limited in display window. False otherwise
      */
     public void setLimitFPS(boolean limitFPS) {
@@ -450,15 +455,18 @@ public class JMathAnimConfig {
     /**
      * Returns the default lambda used in animations. The lambda is a function from  interval 0,1 to
      * to interval 0,1 that manages the behaviour of the animation as t goes from 0 to 1.
+     *
      * @return The default lambda
      */
     public DoubleUnaryOperator getDefaultLambda() {
         return defaultLambda;
     }
+
     /**
      * Sets the default lambda used in animations. The lambda is a function from  interval 0,1 to
      * to interval 0,1 that manages the behaviour of the animation as t goes from 0 to 1.
      * The default value is a smooth function. To obtain linear animations by default, t->t lambda can be set.
+     *
      * @param defaultLambda The default lambda
      */
     public void setDefaultLambda(DoubleUnaryOperator defaultLambda) {
@@ -467,12 +475,13 @@ public class JMathAnimConfig {
 
     /**
      * Sets the logging level from 0=OFF, to 4=DEBUG. The default level should be 3
-     * @param level  Debug level:  0=OFF, 1=Only errors, 2=Warnings, 3=Info messages, 4=Debug messages
+     *
+     * @param level Debug level:  0=OFF, 1=Only errors, 2=Warnings, 3=Info messages, 4=Debug messages
      */
     public void setLoggingLevel(int level) {
-        level=Math.min(level,4);
-        level=Math.max(level,0);
-        switch(level) {
+        level = Math.min(level, 4);
+        level = Math.max(level, 0);
+        switch (level) {
             case 0:
                 logger.setLevel(Level.OFF);
                 break;
@@ -495,13 +504,16 @@ public class JMathAnimConfig {
 
     /**
      * Returns the printProgressBar
+     *
      * @return If true, a progress bar is printed in animations
      */
     public boolean isPrintProgressBar() {
         return printProgressBar;
     }
+
     /**
      * Sets the printProgressBar
+     *
      * @param printProgressBar If true, a progress bar is printed in animations
      */
     public void setPrintProgressBar(boolean printProgressBar) {
@@ -518,6 +530,7 @@ public class JMathAnimConfig {
 
     /**
      * Returns the script mode flag. Tells JMathAnim is executing external scripts. For internal use.
+     *
      * @return The script mode flag
      */
     public boolean isScriptMode() {
@@ -526,6 +539,7 @@ public class JMathAnimConfig {
 
     /**
      * Sets the script mode flag. Tells JMathAnim is executing external scripts. For internal use.
+     *
      * @param scriptMode The script mode flag
      */
     public void setScriptMode(boolean scriptMode) {
@@ -533,4 +547,11 @@ public class JMathAnimConfig {
     }
 
 
+    /**
+     * Returns the color palette. This object stores color definitions
+     * @return The color palette object
+     */
+    public ColorPalette getColorPalette() {
+        return colorPalette;
+    }
 }

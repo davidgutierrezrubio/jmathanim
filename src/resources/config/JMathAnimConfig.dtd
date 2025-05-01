@@ -1,156 +1,157 @@
 <?xml version='1.0' encoding='UTF-8'?>
 
-<!--
-    TODO define vocabulary identification
-    PUBLIC ID: -//vendor//vocabulary//EN
-    SYSTEM ID: http://server/path/light.dtd
+        <!--
+            TODO define vocabulary identification
+            PUBLIC ID: -//vendor//vocabulary//EN
+            SYSTEM ID: http://server/path/light.dtd
 
--->
+        -->
 
-<!--
-    An example how to use this DTD from your XML document:
+        <!--
+            An example how to use this DTD from your XML document:
 
-    <?xml version="1.0"?>
+            <?xml version="1.0"?>
 
-    <!DOCTYPE JMathAnimConfig SYSTEM "light.dtd">
+            <!DOCTYPE JMathAnimConfig SYSTEM "light.dtd">
 
-    <JMathAnimConfig>
-    ...
-    </JMathAnimConfig>
--->
+            <JMathAnimConfig>
+            ...
+            </JMathAnimConfig>
+        -->
 
-<!--- Entities -->
-<!--- LatexToken types -->
+        <!--- Entities -->
+        <!--- LatexToken types -->
 
-<!--- Put your DTDDoc comment here. -->
-<!ELEMENT JMathAnimConfig (include|video|background|styles|latexStyles)*>
+        <!--- Put your DTDDoc comment here. -->
+        <!ELEMENT JMathAnimConfig (include|video|background|styles|latexStyles|colorMap)*>
 
-<!--- Put your DTDDoc comment here. -->
-<!ELEMENT include (#PCDATA)>
+        <!--- Put your DTDDoc comment here. -->
+        <!ELEMENT include (#PCDATA)>
 
-<!--- Put your DTDDoc comment here. -->
-<!ELEMENT background (color)*>
-
-
-<!ELEMENT video (size|createMovie|showPreviewWindow|limitFPS|printProgressBar)*>
+        <!--- Put your DTDDoc comment here. -->
+        <!ELEMENT background (color)*>
 
 
-<!ELEMENT size (color)*>
-<!ATTLIST size width CDATA #REQUIRED>
-<!ATTLIST size height CDATA #REQUIRED>
-<!ATTLIST size fps CDATA #REQUIRED>
-<!ELEMENT createMovie (#PCDATA)>
-<!ELEMENT limitFPS (#PCDATA)>
-<!ELEMENT printProgressBar (#PCDATA)>
-<!ELEMENT showPreviewWindow (#PCDATA)>
+        <!ELEMENT video (size|createMovie|showPreviewWindow|limitFPS|printProgressBar)*>
 
 
-<!--- Put your DTDDoc comment here. -->
-
-<!ELEMENT color (#PCDATA)>
-
-<!--- Put your DTDDoc comment here. -->
-<!ELEMENT styles (style)*>
-
-<!--- Put your DTDDoc comment here. -->
-<!ELEMENT style (color|drawColor|fillColor|thickness|scaleArrowHead1|scaleArrowHead2|dotStyle|dashStyle)*>
-<!ATTLIST style
-    name CDATA #IMPLIED
-  >
-
-<!--- Put your DTDDoc comment here. -->
-<!ELEMENT drawColor (#PCDATA|linearGradient|radialGradient|getDrawColor|getFillColor)*>
-
-<!--- Put your DTDDoc comment here. -->
-<!ELEMENT fillColor (#PCDATA|linearGradient|radialGradient|getDrawColor|getFillColor)*>
-
-<!--- Put your DTDDoc comment here. -->
-<!ELEMENT thickness (#PCDATA)>
-
-<!--- Put your DTDDoc comment here. -->
-<!ELEMENT scaleArrowHead1 (#PCDATA)>
-
-<!--- Put your DTDDoc comment here. -->
-<!ELEMENT scaleArrowHead2 (#PCDATA)>
-
-<!--- Put your DTDDoc comment here. -->
-<!ELEMENT dotStyle (#PCDATA)>
-
-<!--- Put your DTDDoc comment here. -->
-<!ELEMENT dashStyle (#PCDATA)>
-
-<!ELEMENT getFillColor (#PCDATA)>
-<!ATTLIST getFillColor
-    style CDATA #IMPLIED
-  >
-
-<!ELEMENT getDrawColor (#PCDATA)>
-<!ATTLIST getDrawColor
-    style CDATA #IMPLIED
-  >
+        <!ELEMENT size (color)*>
+        <!ATTLIST size width CDATA #REQUIRED>
+        <!ATTLIST size height CDATA #REQUIRED>
+        <!ATTLIST size fps CDATA #REQUIRED>
+        <!ELEMENT createMovie (#PCDATA)>
+        <!ELEMENT limitFPS (#PCDATA)>
+        <!ELEMENT printProgressBar (#PCDATA)>
+        <!ELEMENT showPreviewWindow (#PCDATA)>
 
 
+        <!--- Put your DTDDoc comment here. -->
 
-<!ELEMENT linearGradient (start|end|stops)*>
-<!ATTLIST linearGradient
-    cycle CDATA #IMPLIED
-    relative CDATA #IMPLIED
-  >
+        <!ELEMENT color (#PCDATA)>
 
-<!ELEMENT radialGradient (center|radius|stops)*>
-<!ATTLIST radialGradient
-    cycle CDATA #IMPLIED
-    relative CDATA #IMPLIED
-  >
+        <!--- Put your DTDDoc comment here. -->
+        <!ELEMENT styles (style)*>
 
-<!ELEMENT center (#PCDATA)>
-<!ATTLIST center
-    x CDATA #IMPLIED
-    y CDATA #IMPLIED
-  >
-<!ELEMENT radius (#PCDATA)>
+        <!--- Put your DTDDoc comment here. -->
+        <!ELEMENT style (color|drawColor|fillColor|thickness|scaleArrowHead1|scaleArrowHead2|dotStyle|dashStyle)*>
+        <!ATTLIST style
+                name CDATA #IMPLIED
+                >
 
+        <!--- Put your DTDDoc comment here. -->
+        <!ELEMENT drawColor (#PCDATA|linearGradient|radialGradient|getDrawColor|getFillColor)*>
 
-<!ELEMENT start (#PCDATA)>
-<!ATTLIST start
-    x CDATA #IMPLIED
-    y CDATA #IMPLIED
-  >
-<!ELEMENT end (#PCDATA)>
-<!ATTLIST end
-    x CDATA #IMPLIED
-    y CDATA #IMPLIED
-  >
+        <!--- Put your DTDDoc comment here. -->
+        <!ELEMENT fillColor (#PCDATA|linearGradient|radialGradient|getDrawColor|getFillColor)*>
 
-<!ELEMENT stops (stop)*>
-<!ELEMENT stop (#PCDATA)>
-<!ATTLIST stop
-    t CDATA #IMPLIED
-  >
+        <!--- Put your DTDDoc comment here. -->
+        <!ELEMENT thickness (#PCDATA)>
 
+        <!--- Put your DTDDoc comment here. -->
+        <!ELEMENT scaleArrowHead1 (#PCDATA)>
 
-<!--- LatexStyles -->
-<!ELEMENT latexStyles (latexStyle)*>
+        <!--- Put your DTDDoc comment here. -->
+        <!ELEMENT scaleArrowHead2 (#PCDATA)>
 
-<!ELEMENT latexStyle (latexStyleItem)*>
-<!ATTLIST latexStyle
-    name CDATA #IMPLIED
-  >
+        <!--- Put your DTDDoc comment here. -->
+        <!ELEMENT dotStyle (#PCDATA)>
+
+        <!--- Put your DTDDoc comment here. -->
+        <!ELEMENT dashStyle (#PCDATA)>
+
+        <!ELEMENT getFillColor (#PCDATA)>
+        <!ATTLIST getFillColor
+                style CDATA #IMPLIED
+                >
+
+        <!ELEMENT getDrawColor (#PCDATA)>
+        <!ATTLIST getDrawColor
+                style CDATA #IMPLIED
+                >
 
 
-<!ELEMENT latexStyleItem (conditions|style)*>
+        <!ELEMENT linearGradient (start|end|stops)*>
+        <!ATTLIST linearGradient
+                cycle CDATA #IMPLIED
+                relative CDATA #IMPLIED
+                >
 
-<!ELEMENT conditions (equals|equalsPrev|equalsAfter|differs|differsPrev|differsAfter)*>
+        <!ELEMENT radialGradient (center|radius|stops)*>
+        <!ATTLIST radialGradient
+                cycle CDATA #IMPLIED
+                relative CDATA #IMPLIED
+                >
 
-<!ELEMENT equals (type|subtype|string)*>
-<!ELEMENT equalsPrev (type|subtype|string)*>
-<!ELEMENT equalsAfter (type|subtype|string)*>
-<!ELEMENT differs (type|subtype|string)*>
-<!ELEMENT differsPrev (type|subtype|string)*>
-<!ELEMENT differsAfter (type|subtype|string)*>
+        <!ELEMENT center (#PCDATA)>
+        <!ATTLIST center
+                x CDATA #IMPLIED
+                y CDATA #IMPLIED
+                >
+        <!ELEMENT radius (#PCDATA)>
 
-<!ELEMENT type (#PCDATA)>
-<!ELEMENT subtype (#PCDATA)>
-<!ELEMENT string (#PCDATA)>
+
+        <!ELEMENT start (#PCDATA)>
+        <!ATTLIST start
+                x CDATA #IMPLIED
+                y CDATA #IMPLIED
+                >
+        <!ELEMENT end (#PCDATA)>
+        <!ATTLIST end
+                x CDATA #IMPLIED
+                y CDATA #IMPLIED
+                >
+
+        <!ELEMENT stops (stop)*>
+        <!ELEMENT stop (#PCDATA)>
+        <!ATTLIST stop
+                t CDATA #IMPLIED
+                >
+
+
+        <!--Colormaps-->
+        <!ELEMENT colorMap (colorMapItem)*>
+        <!ELEMENT colorMapItem (name|colorDef)*>
+        <!ELEMENT name (#PCDATA)>
+        <!ELEMENT colorDef (#PCDATA)>
+
+        <!--- LatexStyles -->
+        <!ELEMENT latexStyles (latexStyle)*>
+        <!ELEMENT latexStyle (latexStyleItem)*>
+        <!ATTLIST latexStyle
+                name CDATA #IMPLIED
+                >
+        <!ELEMENT latexStyleItem (conditions|style)*>
+        <!ELEMENT conditions (equals|equalsPrev|equalsAfter|differs|differsPrev|differsAfter)*>
+        <!ELEMENT equals (type|subtype|string)*>
+        <!ELEMENT equalsPrev (type|subtype|string)*>
+        <!ELEMENT equalsAfter (type|subtype|string)*>
+        <!ELEMENT differs (type|subtype|string)*>
+        <!ELEMENT differsPrev (type|subtype|string)*>
+        <!ELEMENT differsAfter (type|subtype|string)*>
+
+        <!ELEMENT type (#PCDATA)>
+        <!ELEMENT subtype (#PCDATA)>
+        <!ELEMENT string (#PCDATA)>
+
 
 

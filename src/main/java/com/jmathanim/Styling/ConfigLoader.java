@@ -100,6 +100,8 @@ public class ConfigLoader {
                         case "background":
                             parseBackgroundOptions(config, element);
                             break;
+                        case "colorMap":
+                            parseColorMap(config,element);
                         case "styles":
                             parseStyles(config, element);
                             break;
@@ -247,6 +249,39 @@ public class ConfigLoader {
 
         }
     }
+    private static void parseColorMap(JMathAnimConfig config, Element styles) {
+        NodeList templChilds = styles.getElementsByTagName("colorMapItem");
+        for (int n = 0; n < templChilds.getLength(); n++) {
+            Node item = templChilds.item(n);
+            if (item.getNodeType() == Node.ELEMENT_NODE) {
+                Element el = (Element) item;
+                parseColorMapItem(config,el);
+//                JMathAnimScene.logger.debug("Parsed style " + styleName);
+            }
+
+        }
+    }
+    private static void parseColorMapItem(JMathAnimConfig config,Element el) {
+        Element nameElement = getFirstChildElementWithName(el, "name");
+        if (nameElement==null) {
+            JMathAnimScene.logger.warn("ColorMap item without name");
+            return;
+        }
+        Element colorElement = getFirstChildElementWithName(el, "colorDef");
+        if (colorElement==null) {
+            JMathAnimScene.logger.warn("ColorMap item "+nameElement.getTextContent()+" without color definition");
+            return;
+        }
+        JMColor color = JMColor.parse(colorElement.getTextContent());
+        if (color==null) {
+            JMathAnimScene.logger.warn("ColorMap item "+nameElement.getTextContent()+" with invalid color definition "+colorElement.getTextContent());
+            return;
+        }
+        String colorName=config.getColorPalette().addColor(nameElement.getTextContent(),color);
+        JMathAnimScene.logger.debug("ColorMap item "+colorName+" read: "+colorElement.getTextContent());
+
+    }
+
 
     /**
      * Parses LaTeX style elements from the provided XML configuration and maps them to

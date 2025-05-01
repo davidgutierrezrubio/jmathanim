@@ -17,6 +17,9 @@
  */
 package com.jmathanim.Styling;
 
+import com.jmathanim.Utils.JMathAnimConfig;
+import com.jmathanim.jmathanim.JMathAnimScene;
+
 import java.util.Iterator;
 import java.util.TreeMap;
 
@@ -43,9 +46,9 @@ public class JMColor extends PaintStyle {
      * Creates a new JMColor with the specified red, green, blue, and alpha
      * components, from 0 to 1.
      *
-     * @param r Red component 0-1
-     * @param g Green component 0-1
-     * @param b Blue component 0-1
+     * @param r     Red component 0-1
+     * @param g     Green component 0-1
+     * @param b     Blue component 0-1
      * @param alpha Alpha component 0-1
      */
     public JMColor(double r, double g, double b, double alpha) {
@@ -59,14 +62,156 @@ public class JMColor extends PaintStyle {
      * Creates a new JMColor with the specified red, green, blue, and alha
      * components, from 0 to 256.
      *
-     * @param r Red component 0-255
-     * @param g Green component 0-255
-     * @param b Blue component 0-255
+     * @param r     Red component 0-255
+     * @param g     Green component 0-255
+     * @param b     Blue component 0-255
      * @param alpha Alpha component 0-255
      * @return The new JMcolor
      */
     public static JMColor rgbInt(int r, int g, int b, int alpha) {
         return new JMColor(r * 1.f / 255, g * 1.f / 255, b * 1.f / 255, alpha * 1.f / 255);
+    }
+
+    /**
+     * Returns a new JMColor with random r,g,b components. Alpha component is 1.
+     *
+     * @return The new JMColor
+     */
+    public static JMColor random() {
+        return new JMColor(Math.random(), Math.random(), Math.random(), 1);
+    }
+
+    /**
+     * Parse a string with color information and returns the JMColor associated.
+     * If the string begins with "#" parses hexadecimal numbers in 3, 6 or 8
+     * digits. If the string equals one of the defined JavaFX color names
+     * ("white", "blue", etc.), returns this color. The names are
+     * case-insensitive.
+     *
+     * @param str The string with the hex digits or the color name
+     * @return A new JMColor with given parameters.
+     */
+    public static JMColor parse(String str) {
+        //TODO: Skija implement this
+//        javafx.scene.paint.Color col = javafx.scene.paint.Color.WHITE;// Default color
+        str = str.toUpperCase().trim();
+        JMColor colrgb = extractRGBValues(str);
+        if (colrgb != null) {//String is format "rgb(r,g,b) decimals or RGB(R,G,B) integers"
+            return colrgb;
+        }
+
+        if ("NONE".equals(str)) {
+            return new JMColor(0, 0, 0, 0);
+        }
+        if ("RANDOM".equals(str)) {
+            return JMColor.random();
+        }
+        //Try to parse formats like #FFFFFFFF or #FFF or ....
+        JMColor resul = parseColor(str);
+        if (resul != null) return resul;
+
+        JMathAnimScene.logger.warn("Color " + str + " not recognized, switching to GRAY");
+        return JMColor.GRAY;
+
+    }
+
+    private static JMColor parseColor(String input) {
+
+        String s = input.trim();
+
+        //First, look for known colors in palette
+        JMColor colorFromPalette=JMathAnimConfig.getConfig().getColorPalette().get(s);
+
+        if (colorFromPalette!=null) return colorFromPalette;
+
+
+
+        if (s.startsWith("#")) {
+            s = s.substring(1);
+        } else if (s.startsWith("0x") || s.startsWith("0X")) {
+            s = s.substring(2);
+        } else return null;//Not a valid HEX format, returning null
+
+        int r, g, b, a;
+
+        if (s.length() == 3) {
+            // Short form like "00F"
+            r = Integer.parseInt(s.substring(0, 1) + s.substring(0, 1), 16);
+            g = Integer.parseInt(s.substring(1, 2) + s.substring(1, 2), 16);
+            b = Integer.parseInt(s.substring(2, 3) + s.substring(2, 3), 16);
+            a = 255;
+        } else if (s.length() == 6) {
+            // Full form like "0000FF"
+            r = Integer.parseInt(s.substring(0, 2), 16);
+            g = Integer.parseInt(s.substring(2, 4), 16);
+            b = Integer.parseInt(s.substring(4, 6), 16);
+            a = 255;
+        } else if (s.length() == 8) {
+            // Full form like "0000FFCC" where CC=alpha
+            r = Integer.parseInt(s.substring(0, 2), 16);
+            g = Integer.parseInt(s.substring(2, 4), 16);
+            b = Integer.parseInt(s.substring(4, 6), 16);
+            a = Integer.parseInt(s.substring(6, 8), 16);
+        } else {
+            return null;//Not a valid color
+        }
+
+        double rNorm = r / 255.0;
+        double gNorm = g / 255.0;
+        double bNorm = b / 255.0;
+        double aNorm = a / 255.0;
+
+        return new JMColor(rNorm, gNorm, bNorm, aNorm);
+    }
+
+    /**
+     * Parse SVG strings rgb(R,G,B) and returns the generated color
+     *
+     * @param input A String with format rgb(R,G,B)
+     * @return The color. If the String has no valid format, returns null
+     */
+    private static JMColor extractRGBValues(String input) {
+//        // Verifica si la cadena comienza con "rgb(" y termina con ")"
+        if (input.startsWith("RGB(") && input.endsWith(")")) {
+            // Elimina los caracteres "rgb(" al principio y ")" al final
+            String valuesString = input.substring(4, input.length() - 1);
+
+            // Divide la cadena en partes utilizando la coma como separador
+            String[] valuesArray = valuesString.split(",");
+
+            try {
+                // Convierte las partes a números enteros
+                int red = Integer.parseInt(valuesArray[0].trim());
+                int green = Integer.parseInt(valuesArray[1].trim());
+                int blue = Integer.parseInt(valuesArray[2].trim());
+                int alpha;
+                if (valuesArray.length == 4) {
+                    alpha = Integer.parseInt(valuesArray[3].trim());
+                } else {
+                    alpha = 255;
+                }
+
+                return JMColor.rgbInt(red, green, blue, alpha);
+            } catch (NumberFormatException | ArrayIndexOutOfBoundsException e) {
+                //Try to parse double values
+                try {
+                    // Convierte las partes a números enteros
+                    float red = Float.parseFloat(valuesArray[0].trim());
+                    float green = Float.parseFloat(valuesArray[1].trim());
+                    float blue = Float.parseFloat(valuesArray[2].trim());
+                    float alpha;
+                    if (valuesArray.length == 4) {
+                        alpha = Float.parseFloat(valuesArray[3].trim());
+                    } else {
+                        alpha = 1;
+                    }
+                    return new JMColor(red, green, blue, alpha);
+                } catch (NumberFormatException | ArrayIndexOutOfBoundsException e2) {
+                    return null;
+                }
+            }
+        }
+        return null;
     }
 
     /**
@@ -78,7 +223,7 @@ public class JMColor extends PaintStyle {
         return new java.awt.Color((float) r, (float) g, (float) b, (float) alpha);
     }
 
-
+    // Static methods
 
     /**
      * Computes the inverse color
@@ -147,7 +292,7 @@ public class JMColor extends PaintStyle {
      *
      * @param p PaintStyle to interpolate
      * @param t Interpolation parameter. 0 means this object, 1 means the given
-     * color
+     *          color
      * @return A JMcolor with components interpolated
      */
     @Override
@@ -171,107 +316,6 @@ public class JMColor extends PaintStyle {
         }
         return this.copy();//I don't know what to do here, so I return the same.
     }
-
-    // Static methods
-    /**
-     * Returns a new JMColor with random r,g,b components. Alpha component is 1.
-     *
-     * @return The new JMColor
-     */
-    public static JMColor random() {
-        return new JMColor(Math.random(), Math.random(), Math.random(), 1);
-    }
-
-    /**
-     * Parse a string with color information and returns the JMColor associated.
-     * If the string begins with "#" parses hexadecimal numbers in 3, 6 or 8
-     * digits. If the string equals one of the defined JavaFX color names
-     * ("white", "blue", etc.), returns this color. The names are
-     * case-insensitive.
-     *
-     * @param str The string with the hex digits or the color name
-     * @return A new JMColor with given parameters.
-     */
-    public static JMColor parse(String str) {
-        //TODO: Skija implement this
-//        javafx.scene.paint.Color col = javafx.scene.paint.Color.WHITE;// Default color
-//        str = str.toUpperCase().trim();
-//        JMColor colrgb = extractRGBValues(str);
-//        if (colrgb != null) {//String is format "rgb(r,g,b) decimals or RGB(R,G,B) integers"
-//            return colrgb;
-//        }
-//
-//        if ("NONE".equals(str)) {
-//            return new JMColor(0, 0, 0, 0);
-//        }
-//        if ("RANDOM".equals(str)) {
-//            return JMColor.random();
-//        }
-//        if (str.startsWith("#"))// Hex
-//        {
-//            col = javafx.scene.paint.Color.valueOf(str);
-//        } else {
-//            try {
-//                Field field = javafx.scene.paint.Color.class.getField(str.toUpperCase());
-//                col = (javafx.scene.paint.Color) field.get(JMColor.class);
-//            } catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException ex) {
-//                JMathAnimScene.logger.warn("Color {} not recognized ", str);
-//            }
-//        }
-//        return JMColor.fromFXColor(col);
-        return new JMColor(.3, .6, .7,1);//A random color
-    }
-
-    /**
-     * Parse SVG strings rgb(R,G,B) and returns the generated color
-     *
-     * @param input A String with format rgb(R,G,B)
-     * @return The color. If the String has no valid format, returns null
-     */
-    private static JMColor extractRGBValues(String input) {
-//        // Verifica si la cadena comienza con "rgb(" y termina con ")"
-        if (input.startsWith("RGB(") && input.endsWith(")")) {
-            // Elimina los caracteres "rgb(" al principio y ")" al final
-            String valuesString = input.substring(4, input.length() - 1);
-
-            // Divide la cadena en partes utilizando la coma como separador
-            String[] valuesArray = valuesString.split(",");
-
-            try {
-                // Convierte las partes a números enteros
-                int red = Integer.parseInt(valuesArray[0].trim());
-                int green = Integer.parseInt(valuesArray[1].trim());
-                int blue = Integer.parseInt(valuesArray[2].trim());
-                int alpha;
-                if (valuesArray.length == 4) {
-                    alpha = Integer.parseInt(valuesArray[3].trim());
-                } else {
-                    alpha = 255;
-                }
-
-                return JMColor.rgbInt(red, green, blue, alpha);
-            } catch (NumberFormatException | ArrayIndexOutOfBoundsException e) {
-                //Try to parse double values
-                try {
-                    // Convierte las partes a números enteros
-                    float red = Float.parseFloat(valuesArray[0].trim());
-                    float green = Float.parseFloat(valuesArray[1].trim());
-                    float blue = Float.parseFloat(valuesArray[2].trim());
-                    float alpha;
-                    if (valuesArray.length == 4) {
-                        alpha = Float.parseFloat(valuesArray[3].trim());
-                    } else {
-                        alpha = 1;
-                    }
-                    return new JMColor(red, green, blue, alpha);
-                } catch (NumberFormatException | ArrayIndexOutOfBoundsException e2) {
-                    return null;
-                }
-            }
-        }
-        return null;
-    }
-
 
     @Override
     public String toString() {

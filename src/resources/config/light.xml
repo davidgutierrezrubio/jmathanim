@@ -3,6 +3,7 @@
 <JMathAnimConfig>
     <include>#axes_and_functions_light.xml</include>
     <include>#dots.xml</include>
+    <include>#ColorMap_JavaFX.xml</include>
     <background>
         <color>#FDFDFD</color>
     </background>
