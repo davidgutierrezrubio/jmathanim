@@ -151,6 +151,7 @@ public class Point extends MathObject {
         this.v = new Vec(x, y, z);
         this.getMp().loadFromStyle("dotdefault");
         this.getMp().setAbsoluteThickness(true);
+        this.setAbsoluteSize();
     }
 
     /**

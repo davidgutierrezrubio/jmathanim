@@ -35,77 +35,71 @@ import java.util.ArrayList;
 public class Camera implements Boxable {
 
     private final ArrayList<shouldUdpateWithCamera> updateableObjects;
+    private final JMathAnimScene scene;
     public boolean perspective;
-
     /**
      * Screen width size to be displayed 800x600, 1920x1280, etc.
      */
     public int screenWidth;
-
     /**
      * Screen height size to be displayed 800x600, 1920x1280, etc.
      */
     public int screenHeight;
-
-    
     public int upperLeftX;
     public int upperLeftY;
-    
-    
     /**
      * Boundaries of the view in the math world
      */
     protected double xmin, xmax, ymin, ymax;
-
     /**
      * Values to reset the camera
      */
     protected double[] resetValues;
-
     /**
      * Gaps to add when adjusting view to an object or Rect
      */
     protected double hgap = .1, vgap = .1;
-
-    private final JMathAnimScene scene;
     private double xminB, xmaxB, yminB, ymaxB;// Backup values for saveState()
+
+    public Camera(JMathAnimScene scene, int screenWidth, int screenHeight) {
+        this.screenWidth = screenWidth;
+        this.screenHeight = screenHeight;
+        this.upperLeftX = 0;
+        this.upperLeftY = 0;
+        this.scene = scene;
+        this.updateableObjects = new ArrayList<>();
+
+    }
 
     /**
      * Copy all parameters from another camera.
+     *
      * @param cam Camera to copy from
      * @return This object
      */
     public Camera copyStateFrom(Camera cam) {
-        this.screenHeight=cam.screenHeight;
-        this.screenWidth=cam.screenWidth;
-        this.hgap=cam.hgap;
-        this.vgap=cam.vgap;
-        this.perspective=cam.perspective;
-        this.resetValues=cam.resetValues;
-        this.xmax=cam.xmax;
-        this.ymax=cam.ymax;
-        this.xmin=cam.xmin;
-        this.ymin=cam.ymin;
+        this.screenHeight = cam.screenHeight;
+        this.screenWidth = cam.screenWidth;
+        this.hgap = cam.hgap;
+        this.vgap = cam.vgap;
+        this.perspective = cam.perspective;
+        this.resetValues = cam.resetValues;
+        this.xmax = cam.xmax;
+        this.ymax = cam.ymax;
+        this.xmin = cam.xmin;
+        this.ymin = cam.ymin;
         return this;
     }
+
     /**
      * Makes a copy of the camera
+     *
      * @return A new camera con same parameters, except its list of registered updateableobjects
      */
     public Camera copy() {
-        Camera copy=new Camera(scene,screenWidth,screenHeight);
+        Camera copy = new Camera(scene, screenWidth, screenHeight);
         copy.copyStateFrom(this);
         return copy;
-    }
-    
-    public Camera(JMathAnimScene scene, int screenWidth, int screenHeight) {
-        this.screenWidth = screenWidth;
-        this.screenHeight = screenHeight;
-        this.upperLeftX=0;
-        this.upperLeftY=0;
-        this.scene = scene;
-        this.updateableObjects = new ArrayList<>();
-
     }
 
     @Override
@@ -121,7 +115,7 @@ public class Camera implements Boxable {
     public void updateDependentObjectsFromThisCamera() {
         for (int i = 0; i < updateableObjects.size(); i++) {
             shouldUdpateWithCamera updateableObject = updateableObjects.get(i);
-                 updateableObject.updateWithCamera(this);
+            updateableObject.updateWithCamera(this);
         }
 //        for (shouldUdpateWithCamera updateableObject : updateableObjects) {
 //            updateableObject.updateWithCamera(this);
@@ -158,8 +152,8 @@ public class Camera implements Boxable {
      * xmin and xmax. ymin and ymax are automatically computed Rectangle
      * (xmin,ymin) to (xmax, ymax) vertically centered at ycenter
      *
-     * @param xmin Left x-coordinate
-     * @param xmax Right x-coordinate
+     * @param xmin    Left x-coordinate
+     * @param xmax    Right x-coordinate
      * @param ycenter y-center coordinate
      */
     public Camera setMathXY(double xmin, double xmax, double ycenter) {
@@ -191,7 +185,7 @@ public class Camera implements Boxable {
         double x, y;
         x = (mathX - xmin) * screenWidth / (xmax - xmin);
         y = (ymax - mathY) * screenHeight / (ymax - ymin);
-        return new double[]{x+upperLeftX, y+upperLeftY};
+        return new double[]{x + upperLeftX, y + upperLeftY};
     }
 
     public double[] screenToMath(double x, double y) {
@@ -224,11 +218,7 @@ public class Camera implements Boxable {
         updateDependentObjectsFromThisCamera();
     }
 
-    public void setWidth(double d) {
-        scale(d / getMathView().getWidth());
-    }
-
-//    /**
+    //    /**
 //     * Set size of the screen to which the camera will compute coordinates
 //     * Screen size usually is 800x600, 1920x1080, etc.
 //     *
@@ -244,11 +234,6 @@ public class Camera implements Boxable {
         hgap = h;
         vgap = v;
         updateDependentObjectsFromThisCamera();
-    }
-
-    public Camera setMathView(Rect r) {
-        setMathXY(r.xmin, r.xmax, .5 * (r.ymin + r.ymax));
-        return this;
     }
 
     public void shift(Vec v) {
@@ -377,7 +362,7 @@ public class Camera implements Boxable {
      * Scales the visible area with the given factor.
      *
      * @param scale Scale factor. A value of 1 does nothing. A value of 0.5
-     * applies a 2x zoom.
+     *              applies a 2x zoom.
      * @return This object
      */
     public Camera scale(double scale) {
@@ -400,7 +385,7 @@ public class Camera implements Boxable {
 
         if (ratio <= ratioR) // If R is wider than the screen...
         {
-//            
+//
             double camHeight = (r.ymax - r.ymin) / ratio;
             double minY = .5 * ((r.ymin + r.ymax) - camHeight);
             double maxY = .5 * ((r.ymin + r.ymax) + camHeight);
@@ -430,6 +415,19 @@ public class Camera implements Boxable {
      */
     public Rect getMathView() {
         return new Rect(xmin, ymin, xmax, ymax);
+    }
+
+    public Camera setMathView(Rect r) {
+        setMathXY(r.xmin, r.xmax, .5 * (r.ymin + r.ymax));
+        return this;
+    }
+
+    public double getWidth() {
+        return xmax - xmin;
+    }
+
+    public void setWidth(double d) {
+        scale(d / getMathView().getWidth());
     }
 
     public Vec getGaps() {

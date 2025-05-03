@@ -87,6 +87,7 @@ class SkijaUtils {
             }
             prev.copyFrom(point);
         }
+        if (jmpath.get(0).isThisSegmentVisible) path.closePath();
 //        paths.put(jmpath, path);
         return path;
     }
@@ -97,39 +98,34 @@ class SkijaUtils {
     }
 
     /**
-     * Create skija paint parameters from JMathAnim style properties object
-     *
-     * @param style Shape object to get styles
-     * @return
+     * Create skija paint parameters from given MathObject
+     * @param obj MathObject to obtain draw-paint parameters
+     * @return a Skija Paint object
      */
-    protected Paint createDrawPaint(MathObject obj, Stylable style) {
+    protected Paint createDrawPaint(MathObject obj) {
         Paint paint = new Paint();
         paint.setMode(PaintMode.STROKE);
-        setColor(paint, obj, style.getDrawColor());
-        float th = (float) handler.ThicknessToMathWidth(style);
-        applyThickness(th, paint);
+        setColor(paint, obj, obj.getMp().getDrawColor());
+        float th = (float) handler.ThicknessToMathWidth(obj);
+        paint.setStrokeWidth(th);
         return paint;
     }
 
-    protected Paint createFillPaint(MathObject obj, Stylable style) {
+    protected Paint createFillPaint(MathObject obj) {
         Paint paint = new Paint();
         paint.setMode(PaintMode.FILL);
-        setColor(paint, obj, style.getFillColor());
+        setColor(paint, obj, obj.getMp().getFillColor());
         return paint;
     }
 
-    protected Paint createFillAndDrawPaint(MathObject obj, Stylable style) {
+    protected Paint createFillAndDrawPaint(MathObject obj) {
         Paint paint = new Paint();
         paint.setMode(PaintMode.STROKE_AND_FILL);
-        setColor(paint, obj, style.getDrawColor());
+        setColor(paint, obj, obj.getMp().getDrawColor());
         //Stroke width 4=height of media???
-        float th = (float) handler.ThicknessToMathWidth(style);
-        applyThickness(th, paint);
-        return paint;
-    }
-
-    private void applyThickness(float th, Paint paint) {
+        float th = (float) handler.ThicknessToMathWidth(obj);
         paint.setStrokeWidth(th);
+        return paint;
     }
 
 

@@ -541,6 +541,10 @@ public abstract class MathObject implements Drawable, Updateable, Stateable, Box
         return absoluteAnchorPoint;
     }
 
+    public boolean isAbsoluteSize() {
+        return absoluteSize;
+    }
+
     /**
      * Marks this object with the absolute size flag.In this case, it will be drawn using a fixed camera, so that it
      * will appear with the same size regardless of the zoom applied to the camera. The given point will be used as
@@ -759,7 +763,6 @@ public abstract class MathObject implements Drawable, Updateable, Stateable, Box
     public <T extends MathObject> T setAbsoluteSize(Type anchorType) {
         absoluteSize = true;
         absoluteAnchorType = anchorType;
-        absoluteSize = true;
         return (T) this;
     }
 

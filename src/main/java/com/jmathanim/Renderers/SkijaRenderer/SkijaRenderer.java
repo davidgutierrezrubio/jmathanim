@@ -194,12 +194,13 @@ public class SkijaRenderer extends Renderer {
 
     @Override
     public double ThicknessToMathWidth(double th) {
-        return skijaHandler.ThicknessToMathWidth(th);
+        System.out.println("ThicknessToMathWidth(double th)  ");
+        return 0;//skijaHandler.ThicknessToMathWidth(th);
     }
 
     @Override
     public double ThicknessToMathWidth(MathObject obj) {
-        return skijaHandler.ThicknessToMathWidth(obj.getMp());
+        return skijaHandler.ThicknessToMathWidth(obj);
     }
 
     @Override
