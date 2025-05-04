@@ -4,15 +4,13 @@ import com.jmathanim.Cameras.Camera;
 import com.jmathanim.Styling.JMColor;
 import com.jmathanim.Styling.JMGradient;
 import com.jmathanim.Styling.PaintStyle;
-import com.jmathanim.Styling.Stylable;
 import com.jmathanim.Utils.JMathAnimConfig;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
+import com.jmathanim.mathobjects.AbstractJMImage;
 import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.Shape;
 import io.github.humbleui.skija.*;
-import org.apache.tools.ant.types.selectors.SelectSelector;
-import org.slf4j.ILoggerFactory;
 
 import java.awt.image.BufferedImage;
 import java.util.HashMap;
@@ -20,8 +18,18 @@ import java.util.HashMap;
 public abstract class SkijaHandler {
     protected final JMathAnimConfig config;
     protected final HashMap<Camera, Matrix33> cameraMatrix;
-    protected Surface surface;
-    protected Canvas canvas;
+    protected Surface backgroundSurface;
+    protected Canvas backgroundCanvas;
+
+    protected Surface shadowSurface;
+    protected Canvas shadowCanvas;
+
+    protected Surface objectsSurface;
+    protected Canvas objectsCanvas;
+
+    protected Surface debugSurface;
+    protected Canvas debugCanvas;
+
     protected SkijaUtils skijaUtils;
     protected Matrix33 transformCamera;
     protected Camera camera;
@@ -43,10 +51,10 @@ public abstract class SkijaHandler {
      * @param mat  Transformation matrix
      */
     protected void drawPath(Shape mobj, Matrix33 mat) {
-        canvas.save();
-        canvas.concat(mat);
+        objectsCanvas.save();
+        objectsCanvas.concat(mat);
         applyPaintCommands(mobj);
-        canvas.restore();
+        objectsCanvas.restore();
     }
 
 
@@ -68,16 +76,16 @@ public abstract class SkijaHandler {
 
         if (drawStyle.equals(fillStyle)) {
             Paint paint = skijaUtils.createFillAndDrawPaint(mobj);
-            canvas.drawPath(path, paint);
+            objectsCanvas.drawPath(path, paint);
         } else {
             //Fill and draw contour
             if (fill) {
                 Paint paintFill = skijaUtils.createFillPaint(mobj);
-                canvas.drawPath(path, paintFill);
+                objectsCanvas.drawPath(path, paintFill);
             }
             if (draw) {
                 Paint paintStroke = skijaUtils.createDrawPaint(mobj);
-                canvas.drawPath(path, paintStroke);
+                objectsCanvas.drawPath(path, paintStroke);
             }
         }
     }
@@ -116,13 +124,12 @@ public abstract class SkijaHandler {
 
         Double thickness = obj.getMp().getThickness();
         if (obj.getMp().isAbsoluteThickness()) {
-            double l=camera.getWidth()/fixedCamera.getWidth();
+            double l = camera.getWidth() / fixedCamera.getWidth();
             double th = thickness / 250d / fixedCamera.getWidth();
 //            return th*l;
-            return (obj.isAbsoluteSize() ? th : th *l);
-        }
-        else {
-            return  thickness/250d / camera.getWidth();
+            return (obj.isAbsoluteSize() ? th : th * l);
+        } else {
+            return thickness / 250d / camera.getWidth();
         }
 
 //        double a = thickness*250d / cam.getWidth();
@@ -147,13 +154,24 @@ public abstract class SkijaHandler {
 //    }
     protected abstract BufferedImage getRenderedImage(int frameCount);
 
+    protected abstract void drawImage(AbstractJMImage image, Camera cam,Image img);
 
     protected void clearAndPrepareCanvasForAnotherFrame() {
-        //This should be done in Skija Thread
+        if (config.isDrawShadow()) {
+            shadowCanvas.clear(0x00000000);
+        }
+
+        objectsCanvas.clear(0x00000000);
+
+        if (!config.isDebugLayerDisabled()) {
+            debugCanvas.clear(0x00000000);
+        }
+
         PaintStyle color = config.getBackgroundColor();
         if (color instanceof JMColor) {
             JMColor jmColor = (JMColor) color;
-            canvas.clear(skijaUtils.jmColorToInt(jmColor));
+            backgroundCanvas.clear(skijaUtils.jmColorToInt(jmColor));
+
         }
         if (color instanceof JMGradient) {
             JMGradient jmGradient = (JMGradient) color;

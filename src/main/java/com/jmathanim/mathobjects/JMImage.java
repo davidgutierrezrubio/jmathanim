@@ -62,14 +62,14 @@ public class JMImage extends AbstractJMImage {
         setCached(true);
         this.filename = stream.toString();
         renderer = JMathAnimConfig.getConfig().getRenderer();
-        this.bbox = renderer.createImage(stream);
+        this.bbox = renderer.createImage(this,stream);
         double sc = renderer.getMediaHeight() * 1d / 1080d;// Scales it taking as reference 1920x1080 production output
 //        this.scale(sc);
     }
 
     public void setImage(String fn) {
         try {
-            Rect bb = renderer.createImage(new URL(fn).openStream());
+            Rect bb = renderer.createImage(this,new URL(fn).openStream());
             bb.centerAt(this.bbox.getCenter());
             this.filename = fn;
         } catch (MalformedURLException ex) {

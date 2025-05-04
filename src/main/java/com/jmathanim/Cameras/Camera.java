@@ -425,6 +425,9 @@ public class Camera implements Boxable {
     public double getWidth() {
         return xmax - xmin;
     }
+    public double getHeight() {
+        return ymax - ymin;
+    }
 
     public void setWidth(double d) {
         scale(d / getMathView().getWidth());

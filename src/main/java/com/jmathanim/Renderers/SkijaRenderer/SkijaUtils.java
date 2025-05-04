@@ -17,19 +17,23 @@ import java.util.Map;
 class SkijaUtils {
     private final JMathAnimConfig config;
     private final HashMap<JMPath, Path> paths;
-    private final Canvas canvas;
+    private final Canvas backgroundcanvas;
+    private final Canvas objectsCanvas;
+    private final Canvas debugCanvas;
     private final SkijaHandler handler;
 
     public SkijaUtils(SkijaHandler handler) {
         this.config = handler.config;
-        this.canvas = handler.canvas;
+        this.backgroundcanvas = handler.backgroundCanvas;
+        this.objectsCanvas = handler.objectsCanvas;
+        this.debugCanvas = handler.debugCanvas;
         this.handler = handler;
         paths = new HashMap<>();
     }
 
-    public void clearFrame() {
-        canvas.clear(0xFFFFFFFF);//TODO: set color to background config color
-    }
+//    public void clearFrame() {
+//        backgroundcanvas.clear(0xFFFFFFFF);//TODO: set color to background config color
+//    }
 
 
     /**
@@ -299,4 +303,40 @@ class SkijaUtils {
         resul = fixedCameraMatrix.makeConcat(resul);//First translate, second change of coordinates
         return resul;
     }
+
+
+    public void drawDebugText(float x, float y,  String text) {
+        Font font = new Font(Typeface.makeDefault(), 24);
+        float margin=2;
+        TextLine line = TextLine.make(text, font);
+        float textWidth = line.getWidth();
+        float textHeight = line.getHeight();
+
+        // Calcular rectángulo con margen
+        float boxX = x;
+        float boxY = y;
+        float boxWidth = textWidth + 2 * margin;
+        float boxHeight = textHeight + 2 * margin;
+
+        boxX-=.5*boxWidth;
+        boxY-=.5*boxHeight;
+        // Fondo cyan
+        Paint fillPaint = new Paint().setColor(0xFF00FFFF); // cyan
+        debugCanvas.drawRect(io.github.humbleui.types.Rect.makeXYWH(boxX, boxY, boxWidth, boxHeight), fillPaint);
+
+        // Borde negro
+        Paint strokePaint = new Paint()
+                .setColor(0xFF000000)
+                .setMode(PaintMode.STROKE)
+                .setStrokeWidth(2);
+        debugCanvas.drawRect(io.github.humbleui.types.Rect.makeXYWH(boxX, boxY, boxWidth, boxHeight), strokePaint);
+
+        // Dibujar texto centrado dentro del rectángulo
+        Paint textPaint = new Paint().setColor(0xFF000000); // negro
+        float textX = boxX + margin;
+        float textY = boxY + margin + .75f*line.getHeight();
+        debugCanvas.drawTextLine(line, textX, textY, textPaint);
+    }
+
+
 }

@@ -203,13 +203,13 @@ public class ConfigLoader {
                     JMathAnimScene.logger.debug("Config read: Background color set to {}", colorId);
                     break;
                 case "shadows":
-                    config.drawShadow = Boolean.parseBoolean(item.getTextContent());
+                    config.setDrawShadow(Boolean.parseBoolean(item.getTextContent()));
                     Element el = (Element) item;
                     config.shadowKernelSize = Integer.parseInt(el.getAttribute("kernelSize"));
                     config.shadowOffsetX = Integer.parseInt(el.getAttribute("offsetX"));
                     config.shadowOffsetY = Integer.parseInt(el.getAttribute("offsetY"));
                     config.shadowAlpha = Float.parseFloat(el.getAttribute("alpha"));
-                    JMathAnimScene.logger.debug("Config read: Draw shadows set to {}", config.drawShadow);
+                    JMathAnimScene.logger.debug("Config read: Draw shadows set to {}", config.isDrawShadow());
                     break;
                 case "image":
                     String backgroundFilename = item.getTextContent();

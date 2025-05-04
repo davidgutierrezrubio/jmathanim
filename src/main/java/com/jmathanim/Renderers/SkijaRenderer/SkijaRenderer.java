@@ -5,16 +5,24 @@ import com.jmathanim.Renderers.MovieEncoders.SoundItem;
 import com.jmathanim.Renderers.MovieEncoders.XugglerVideoEncoder;
 import com.jmathanim.Renderers.Renderer;
 import com.jmathanim.Styling.RendererEffects;
+import com.jmathanim.Utils.EmptyRect;
 import com.jmathanim.Utils.JMathAnimConfig;
+import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.AbstractJMImage;
+import com.jmathanim.mathobjects.JMImage;
 import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.Shape;
+import io.github.humbleui.skija.Image;
+import io.github.humbleui.skija.ImageInfo;
+import io.github.humbleui.skija.Matrix33;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
+import java.util.HashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class SkijaRenderer extends Renderer {
@@ -25,6 +33,7 @@ public class SkijaRenderer extends Renderer {
     private final Camera fixedCamera;
     private final AtomicBoolean keepRunning = new AtomicBoolean(true);
     private final SkijaHandler skijaHandler;
+    private final HashMap<String, Image> imageDictionary;
     private XugglerVideoEncoder videoEncoder;
     private File saveFilePath;
 
@@ -35,10 +44,11 @@ public class SkijaRenderer extends Renderer {
         camera.initialize(XMIN_DEFAULT, XMAX_DEFAULT, 0);
         fixedCamera.initialize(XMIN_DEFAULT, XMAX_DEFAULT, 0);
         correctionThickness = config.mediaW * 1d / 1066;//Correction factor for thickness
-        skijaHandler = new SkijaSwingHandler(JMathAnimConfig.getConfig(),keepRunning);
+        skijaHandler = new SkijaSwingHandler(JMathAnimConfig.getConfig(), keepRunning);
         //Gl handler is slow??
 //        skijaHandler = new SkijaGLHandler(JMathAnimConfig.getConfig(), keepRunning);
         skijaHandler.setRenderer(this);
+        imageDictionary = new HashMap<>();
 
 
     }
@@ -71,20 +81,6 @@ public class SkijaRenderer extends Renderer {
             config.setSaveFilePath(saveFilePath);
             videoEncoder.createEncoder(config);
         }
-//        if (config.drawShadow) {
-//            dropShadow = new DropShadow();
-//            dropShadow.setRadius(config.shadowKernelSize);
-//            dropShadow.setOffsetX(config.shadowOffsetX);
-//            dropShadow.setOffsetY(config.shadowOffsetY);
-//            dropShadow.setColor(Color.color(0, 0, 0, config.shadowAlpha));
-//        }
-//
-//        dropShadow = new DropShadow();
-//        dropShadow.setRadius(config.shadowKernelSize);
-//        dropShadow.setOffsetX(config.shadowOffsetX);
-//        dropShadow.setOffsetY(config.shadowOffsetY);
-//        dropShadow.setColor(Color.color(0, 0, 0, config.shadowAlpha));
-
     }
 
 
@@ -170,20 +166,34 @@ public class SkijaRenderer extends Renderer {
 
 
     @Override
-    public com.jmathanim.Utils.Rect createImage(InputStream stream) {
-        JMathAnimScene.logger.warn("createImage not implemented yet, sorry!");
-        return null;
+    public com.jmathanim.Utils.Rect createImage(AbstractJMImage jImage,InputStream stream) {
+        Image img = null;
+        try {
+            if (imageDictionary.containsKey(jImage.getId())) {
+                img = imageDictionary.get(jImage.getId());
+            }else
+            img = Image.makeDeferredFromEncodedBytes(stream.readAllBytes());
+        } catch (IOException e) {
+            JMathAnimScene.logger.error("Image " + stream.toString() + " not found");
+            return new EmptyRect();
+        }
+        //Saves image into dictionary
+        imageDictionary.put(jImage.getId(), img);
+        ImageInfo info = img.getImageInfo();
+        double w = camera.getWidth() * info.getWidth() / getMediaWidth();
+        double h = camera.getHeight() * info.getHeight() / getMediaHeight();
+        return Rect.centeredUnitCube().scale(w, h);
     }
 
     @Override
     public void drawImage(AbstractJMImage obj, Camera cam) {
-        JMathAnimScene.logger.warn("drawImage not implemented yet, sorry!");
-
+        skijaHandler.drawImage(obj, cam,imageDictionary.getOrDefault(obj.getId(),null));
     }
 
     @Override
     public void debugText(String text, Vec loc) {
-        JMathAnimScene.logger.warn("debugText not implemented yet, sorry!");
+        float[] coords = mathCoordinatesToScreenCoordinates(camera, (float) loc.x, (float) loc.y);
+        skijaHandler.skijaUtils.drawDebugText(coords[0], coords[1], text);
 
     }
 
@@ -206,7 +216,12 @@ public class SkijaRenderer extends Renderer {
     @Override
     public void addSound(SoundItem soundItem) {
         JMathAnimScene.logger.warn("addSound not implemented yet, sorry!");
-
     }
+
+    float[] mathCoordinatesToScreenCoordinates(Camera cam, float x, float y) {
+        Matrix33 matrix = skijaHandler.retrieveCameraMatrix(cam);
+        return skijaHandler.skijaUtils.applyMatrix(matrix, x, y);
+    }
+
 }
 

@@ -32,7 +32,9 @@ import static java.lang.Math.sqrt;
  */
 public class Vec implements Stateable, HasDirection {
 
-    public double x, y, z;
+    public double x;
+    public double y;
+    public double z;
     public double xState, yState, zState;
     public static final double PI2 = 2 * PI;
 

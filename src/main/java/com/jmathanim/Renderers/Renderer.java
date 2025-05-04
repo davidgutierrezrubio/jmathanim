@@ -54,7 +54,7 @@ public abstract class Renderer {
     }
 
     abstract public RendererEffects buildRendererEffects();
-    
+
     abstract public void initialize();
 
     abstract public <T extends Camera> T getCamera();
@@ -99,7 +99,7 @@ public abstract class Renderer {
      * Gets the rendered frame
      *
      * @param frameCount Frame number. Neeed for superimposing it and in case of
-     * saving a screenshot
+     *                   saving a screenshot
      * @return A BufferedImage object with the drawn frame.
      */
     abstract protected BufferedImage getRenderedImage(int frameCount);
@@ -121,7 +121,7 @@ public abstract class Renderer {
             File file = new File(config.getOutputDir().getCanonicalPath() + File.separator + filename);
             ImageIO.write(renderedImage, format, file);
         } catch (IOException ex) {
-            logger.error("Error saving png image "+filename);
+            logger.error("Error saving png image " + filename);
         }
     }
 
@@ -142,9 +142,9 @@ public abstract class Renderer {
 
     abstract public void drawAbsoluteCopy(Shape sh, Vec anchor);
 
-    abstract public Rect createImage(InputStream stream);
+    abstract public Rect createImage(AbstractJMImage img,InputStream stream);
 
-    abstract public void drawImage(AbstractJMImage obj,Camera cam);
+    abstract public void drawImage(AbstractJMImage obj, Camera cam);
 
     abstract public void debugText(String text, Vec loc);
 

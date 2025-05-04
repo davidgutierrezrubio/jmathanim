@@ -70,10 +70,11 @@ public class JMathAnimConfig {
      */
     public int fps = 30;
     public boolean delay = true;
+
     /**
-     * If true, draw a shadow of objects over the background image
+     * If true, draw shadow objects. This feature is renderer-dependent
      */
-    public boolean drawShadow = false;
+    private boolean drawShadow = false;
     /**
      * Amount of blurring. Bigger es more blurred (and more cpu expensive) a
      * value of 0 means no blurring
@@ -143,6 +144,10 @@ public class JMathAnimConfig {
     // Background color, default black
     private PaintStyle backgroundColor = JMColor.BLACK;
     private URL backGroundImage = null;
+
+
+    private boolean debugLayerDisabled=false;
+
     private JMathAnimConfig() {// Private constructor
         styles = new HashMapUpper<>("styles");
         colorPalette = new ColorPalette();
@@ -553,5 +558,19 @@ public class JMathAnimConfig {
      */
     public ColorPalette getColorPalette() {
         return colorPalette;
+    }
+
+    /**
+     * If true, draw a shadow of objects over the background image
+     */
+    public boolean isDrawShadow() {
+        return drawShadow;
+    }
+    
+    public boolean isDebugLayerDisabled() {
+        return debugLayerDisabled;
+    }
+    public void setDebugLayerDisabled(boolean debugLayerDisabled) {
+        this.debugLayerDisabled = debugLayerDisabled;
     }
 }
