@@ -80,9 +80,8 @@ public class Shape extends MathObject {
     }
 
     /**
-     * Creates a segment shape between 2 given points. The parameters points
-     * will be referenced to create the segment, so moving them will modify the
-     * segment.
+     * Creates a segment shape between 2 given points. The parameters points will be referenced to create the segment,
+     * so moving them will modify the segment.
      *
      * @param A First point
      * @param B Second point
@@ -119,8 +118,8 @@ public class Shape extends MathObject {
      * Creates a rectangle shape from 3 consecutive points.
      *
      * @param A First point
-     * @param B Second point. The fourth point will be the opposite of this
-     *          point. This will be the point with index 0 in the path.
+     * @param B Second point. The fourth point will be the opposite of this point. This will be the point with index 0
+     *          in the path.
      * @param C Third point
      * @return The rectangle
      */
@@ -175,8 +174,8 @@ public class Shape extends MathObject {
     }
 
     /**
-     * Generates a regular polygon shape inscribed in a unit circle. The first
-     * point of the shape lies in the coordinates (1,0)
+     * Generates a regular polygon shape inscribed in a unit circle. The first point of the shape lies in the
+     * coordinates (1,0)
      *
      * @param numSides Number of sides
      * @return The generated Shape
@@ -210,23 +209,7 @@ public class Shape extends MathObject {
     }
 
     /**
-     * Creates an arc shape with radius 1 and center origin. First point is
-     * (1,0)
-     *
-     * @param angle       Angle in radians of the arc
-     * @param numSegments Number of segments
-     * @return The created arc
-     */
-    public static Shape arc(double angle, int numSegments) {
-        double c = 0.15915494309189533576888376d;//0.5/PI
-        Shape obj = Shape.circle(32).getSubShape(0, c * angle);
-        obj.objectLabel = "arc";
-        return obj;
-    }
-
-    /**
-     * Creates an arc shape with radius 1 and center origin. First point is
-     * (1,0). Default value of 32 segments.
+     * Creates an arc shape with radius 1 and center origin. First point is (1,0). Default value of 32 segments.
      *
      * @param angle Angle in radians of the arc
      * @return The created arc
@@ -236,9 +219,8 @@ public class Shape extends MathObject {
     }
 
     /**
-     * Creates an arch Shape from A to B with given radius. The arc can be drawn
-     * counterclockwise or clockwise depending on the boolean parameter.
-     * If the radius is too small to draw an arc, an straight segment is drawn instead.
+     * Creates an arch Shape from A to B with given radius. The arc can be drawn counterclockwise or clockwise depending
+     * on the boolean parameter. If the radius is too small to draw an arc, an straight segment is drawn instead.
      *
      * @param startPoint         Starting point
      * @param endPoint           Ending point
@@ -350,6 +332,31 @@ public class Shape extends MathObject {
     }
 
     /**
+     * Creates an arc shape with radius 1 and center origin. First point is (1,0)
+     *
+     * @param angle     Angle in radians of the arc
+     * @param numPoints Number of points
+     * @return The created arc
+     */
+    public static Shape arc(double angle, int numPoints) {
+        double rotationStep = angle / (numPoints - 1);
+        double controlPointsModulus = 4d / 3 * Math.tan(.25 * rotationStep);
+        JMPath path = new JMPath();
+        JMPathPoint jmp = new JMPathPoint(Point.at(1, 0), true, JMPathPoint.JMPathPointType.VERTEX);
+        jmp.cpEnter.v.x = 1;
+        jmp.cpEnter.v.y = -controlPointsModulus;
+        jmp.cpExit.v.x = 1;
+        jmp.cpExit.v.y = controlPointsModulus;
+        jmp.isCurved = true;
+        for (int i = 0; i < numPoints; i++) {
+            path.addJMPoint(jmp.copy());
+            jmp.rotate(Point.origin(), rotationStep);
+        }
+        path.get(0).isThisSegmentVisible = false;
+        return new Shape(path);
+    }
+
+    /**
      * Returns a new Point object lying in the Shape, at the given position
      *
      * @param t Position parameter, from 0 (beginning) to 1 (end)
@@ -360,8 +367,8 @@ public class Shape extends MathObject {
     }
 
     /**
-     * Returns a new Point object lying in the Shape, at the given parametrized
-     * position, considering the arclentgh of the curve.
+     * Returns a new Point object lying in the Shape, at the given parametrized position, considering the arclentgh of
+     * the curve.
      *
      * @param t Position parameter, from 0 (beginning) to 1 (end)
      * @return a new Point object at the specified position of the shape.
@@ -371,7 +378,7 @@ public class Shape extends MathObject {
     }
 
     public Point getCentroid() {
-      return getPath().getCentroid();
+        return getPath().getCentroid();
     }
 
     @Override
@@ -475,8 +482,7 @@ public class Shape extends MathObject {
     /**
      * Returns the n-th JMPathPoint of path.
      *
-     * @param n index. A cyclic index, so that 0 means the first point and -1
-     *          the last one
+     * @param n index. A cyclic index, so that 0 means the first point and -1 the last one
      * @return The JMPathPoint
      */
     public JMPathPoint get(int n) {
@@ -484,11 +490,9 @@ public class Shape extends MathObject {
     }
 
     /**
-     * Returns a reference to the point at position n This is equivalent to
-     * get(n).p
+     * Returns a reference to the point at position n This is equivalent to get(n).p
      *
-     * @param n Point number. A cyclic index, so that 0 means the first point
-     *          and -1 the last one
+     * @param n Point number. A cyclic index, so that 0 means the first point and -1 the last one
      * @return The point
      */
     public Point getPoint(int n) {
@@ -634,9 +638,8 @@ public class Shape extends MathObject {
 //    }
 
     /**
-     * Check if the current object is empty (for example: a MultiShape with no
-     * objects). A empty object case should be considered as they return null
-     * bounding boxes.
+     * Check if the current object is empty (for example: a MultiShape with no objects). A empty object case should be
+     * considered as they return null bounding boxes.
      *
      * @return True if object is empty, false otherwise
      */
@@ -646,9 +649,8 @@ public class Shape extends MathObject {
     }
 
     /**
-     * Returns the convex flag for this shape. This flag is false by default but
-     * can be manually changed. Convex shapes can be drawed using simpler,
-     * faster algorithms.
+     * Returns the convex flag for this shape. This flag is false by default but can be manually changed. Convex shapes
+     * can be drawed using simpler, faster algorithms.
      *
      * @return True if the shape is convex, false if it is concave.
      */
@@ -657,8 +659,7 @@ public class Shape extends MathObject {
     }
 
     /**
-     * Mark this shape as convex. If convex, a simpler and faster algorithm to
-     * draw it can be used.
+     * Mark this shape as convex. If convex, a simpler and faster algorithm to draw it can be used.
      *
      * @param isConvex True if the shape is convex, false if it is concave.
      */
@@ -669,16 +670,15 @@ public class Shape extends MathObject {
     /**
      * Return the value of boolean flag showDebugPoints
      *
-     * @return If true, the point number will be superimposed on screen when
-     * drawing this shape
+     * @return If true, the point number will be superimposed on screen when drawing this shape
      */
     public boolean isShowDebugPoints() {
         return showDebugPoints;
     }
 
     /**
-     * Sets the vaue of boolean flag showDebugPoints. If true, the point number
-     * will be superimposed on screen when drawing this shape
+     * Sets the vaue of boolean flag showDebugPoints. If true, the point number will be superimposed on screen when
+     * drawing this shape
      *
      * @param showDebugPoints
      * @return This object
@@ -712,8 +712,7 @@ public class Shape extends MathObject {
     }
 
     /**
-     * Reverse the points of the path. First point becomes last. The object is
-     * altered
+     * Reverse the points of the path. First point becomes last. The object is altered
      *
      * @param <T> Calling class
      * @return This object
@@ -753,18 +752,14 @@ public class Shape extends MathObject {
     }
 
     /**
-     * Merges with the given Shape, adding all their jmpathpoints.If the shapes
-     * were disconnected they will remain so unless the connect parameter is set
-     * to true. In such case, the shapes will be connected by a straight line
-     * from the last point of the calling object to the first point of the given
-     * one.
+     * Merges with the given Shape, adding all their jmpathpoints.If the shapes were disconnected they will remain so
+     * unless the connect parameter is set to true. In such case, the shapes will be connected by a straight line from
+     * the last point of the calling object to the first point of the given one.
      *
      * @param <T>         Calling Shape subclass
      * @param sh          Shape to merge
-     * @param connectAtoB If true, the end of path A will be connected to the
-     *                    beginning of path B by a straight line
-     * @param connectBtoA If true, the end of path B will be connected to the
-     *                    beginning of path A by a straight line
+     * @param connectAtoB If true, the end of path A will be connected to the beginning of path B by a straight line
+     * @param connectBtoA If true, the end of path B will be connected to the beginning of path A by a straight line
      * @return This object
      */
     public <T extends Shape> T merge(Shape sh, boolean connectAtoB, boolean connectBtoA) {
