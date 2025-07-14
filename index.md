@@ -6,8 +6,7 @@ mathematical animations. The current version is 0.9.11.
 If you use it and find a bug/missing feature, feel free to fill an issue
 [here](https://github.com/davidgutierrezrubio/jmathanim/issues). For any other questions, you can contact me at davidgutierrezrubio@gmail.com.
 
-You can also follow my Youtube channel [here](https://www.youtube.com/@EltaxistadeHardy1729) where I occasionally upload math videos (spanish with english subtitles) using this library, and my
-[Twitter](https://twitter.com/DavidCalculin) account (mostly in Spanish).
+You can also follow my Youtube channel [here](https://www.youtube.com/@EltaxistadeHardy1729) where I occasionally upload math videos (spanish with english subtitles) using this library, and my ~~Twitter~~ ~~X~~  [BlueSky](https://bsky.app/profile/davidcalculin.bsky.social) (mostly in Spanish).
 
 Gallery
 =======

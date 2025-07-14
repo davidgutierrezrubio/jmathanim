@@ -182,7 +182,7 @@ for (double t = 0; t < time; t += dt) {
     pointOnCurve.moveTo(new Point(v));
     Vec deriv = trifolium.getTangentVector(t0, 1).normalize();
     Vec normal = deriv.copy().rotate(-90 * DEGREES);
-    pointToTrail.copyFrom(pointOnCurve.add(normal));
+    pointToTrail.copyStateFrom(pointOnCurve.add(normal));
     advanceFrame();
 }
 waitSeconds(3);
