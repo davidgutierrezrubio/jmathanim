@@ -2,6 +2,7 @@ package com.jmathanim.Renderers.SkijaRenderer;
 
 import com.jmathanim.Cameras.Camera;
 import com.jmathanim.Styling.*;
+import com.jmathanim.Utils.AffineJTransform;
 import com.jmathanim.Utils.JMathAnimConfig;
 import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.Vec;
@@ -59,6 +60,15 @@ class SkijaUtils {
         return transform;
     }
 
+    public Matrix33 convertAffineJTransformToSkijaMatrix(AffineJTransform tr) {
+        double[][] data = tr.matrix.getData();
+        double[] imgOrigin = tr.matrix.getRow(0);
+        double[] imgV1 = tr.matrix.getRow(1);
+        double[] imgV2 = tr.matrix.getRow(2);
+        return new Matrix33((float) imgV1[1], (float) imgV1[2], (float) imgOrigin[1], (float) imgV2[1], (float) imgV2[2], (float) imgOrigin[2], 0, 0, 1);
+    }
+
+
     /**
      * Converts JMPath to format suitable to be drawn by Skija
      *
@@ -103,6 +113,7 @@ class SkijaUtils {
 
     /**
      * Create skija paint parameters from given MathObject
+     *
      * @param obj MathObject to obtain draw-paint parameters
      * @return a Skija Paint object
      */
@@ -151,18 +162,15 @@ class SkijaUtils {
         float radius;
 
         if (jmRadialGradient.isRelativeToShape()) {
-            Rect bb=obj.getBoundingBox();
-             radius = (float) Math.max(bb.getHeight(), bb.getWidth());
+            Rect bb = obj.getBoundingBox();
+            radius = (float) Math.max(bb.getHeight(), bb.getWidth());
 
-            vCenter=bb.getCenter().v;
+            vCenter = bb.getCenter().v;
 
         } else {
-            vCenter=jmRadialGradient.getCenter().v;
-            radius= (float) jmRadialGradient.getRadius();
+            vCenter = jmRadialGradient.getCenter().v;
+            radius = (float) jmRadialGradient.getRadius();
         }
-
-
-
 
 
         GradientStop stops = jmRadialGradient.getStops();
@@ -183,7 +191,7 @@ class SkijaUtils {
     private Shader buildLinearGradient(MathObject obj, JMLinearGradient jmLinearGradient) {
         Vec vStart, vEnd;
         if (jmLinearGradient.isRelativeToShape()) {
-            Rect bb=obj.getBoundingBox();
+            Rect bb = obj.getBoundingBox();
             vStart = bb.getRelVec(jmLinearGradient.getStart().v);
             vEnd = bb.getRelVec(jmLinearGradient.getEnd().v);
 
@@ -305,9 +313,9 @@ class SkijaUtils {
     }
 
 
-    public void drawDebugText(float x, float y,  String text) {
+    public void drawDebugText(float x, float y, String text) {
         Font font = new Font(Typeface.makeDefault(), 24);
-        float margin=2;
+        float margin = 2;
         TextLine line = TextLine.make(text, font);
         float textWidth = line.getWidth();
         float textHeight = line.getHeight();
@@ -318,8 +326,8 @@ class SkijaUtils {
         float boxWidth = textWidth + 2 * margin;
         float boxHeight = textHeight + 2 * margin;
 
-        boxX-=.5*boxWidth;
-        boxY-=.5*boxHeight;
+        boxX -= .5 * boxWidth;
+        boxY -= .5 * boxHeight;
         // Fondo cyan
         Paint fillPaint = new Paint().setColor(0xFF00FFFF); // cyan
         debugCanvas.drawRect(io.github.humbleui.types.Rect.makeXYWH(boxX, boxY, boxWidth, boxHeight), fillPaint);
@@ -334,7 +342,7 @@ class SkijaUtils {
         // Dibujar texto centrado dentro del rectángulo
         Paint textPaint = new Paint().setColor(0xFF000000); // negro
         float textX = boxX + margin;
-        float textY = boxY + margin + .75f*line.getHeight();
+        float textY = boxY + margin + .75f * line.getHeight();
         debugCanvas.drawTextLine(line, textX, textY, textPaint);
     }
 

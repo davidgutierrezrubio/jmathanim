@@ -63,7 +63,7 @@ public class JMImage extends AbstractJMImage {
         this.filename = stream.toString();
         renderer = JMathAnimConfig.getConfig().getRenderer();
         this.bbox = renderer.createImage(this,stream);
-        double sc = renderer.getMediaHeight() * 1d / 1080d;// Scales it taking as reference 1920x1080 production output
+//        double sc = renderer.getMediaHeight() * 1d / 1080d;// Scales it taking as reference 1920x1080 production output
 //        this.scale(sc);
     }
 

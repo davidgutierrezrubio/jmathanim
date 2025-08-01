@@ -5,10 +5,7 @@ import com.jmathanim.Renderers.MovieEncoders.SoundItem;
 import com.jmathanim.Renderers.MovieEncoders.XugglerVideoEncoder;
 import com.jmathanim.Renderers.Renderer;
 import com.jmathanim.Styling.RendererEffects;
-import com.jmathanim.Utils.EmptyRect;
-import com.jmathanim.Utils.JMathAnimConfig;
-import com.jmathanim.Utils.Rect;
-import com.jmathanim.Utils.Vec;
+import com.jmathanim.Utils.*;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.AbstractJMImage;
 import com.jmathanim.mathobjects.JMImage;
@@ -166,7 +163,7 @@ public class SkijaRenderer extends Renderer {
 
 
     @Override
-    public com.jmathanim.Utils.Rect createImage(AbstractJMImage jImage,InputStream stream) {
+    public com.jmathanim.Utils.Rect createImage(JMImage jImage,InputStream stream) {
         Image img = null;
         try {
             if (imageDictionary.containsKey(jImage.getId())) {
@@ -187,6 +184,8 @@ public class SkijaRenderer extends Renderer {
 
     @Override
     public void drawImage(AbstractJMImage obj, Camera cam) {
+        AffineJTransform tr = obj.getCurrentViewTransform();
+
         skijaHandler.drawImage(obj, cam,imageDictionary.getOrDefault(obj.getId(),null));
     }
 

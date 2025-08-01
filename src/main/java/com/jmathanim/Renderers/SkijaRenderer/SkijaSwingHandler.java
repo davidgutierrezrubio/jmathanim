@@ -175,7 +175,8 @@ public class SkijaSwingHandler extends SkijaHandler {
         objectsCanvas.save();
         //Check if transform is created for this camera in this frame...
         objectsCanvas.concat(retrieveCameraMatrix(camera));
-        objectsCanvas.scale((float) (bb.getWidth() / info.getWidth()), -(float) (bb.getHeight() / info.getHeight()));
+        objectsCanvas.concat(skijaUtils.convertAffineJTransformToSkijaMatrix(image.getCurrentViewTransform()));
+//        objectsCanvas.scale((float) (bb.getWidth() / info.getWidth()), -(float) (bb.getHeight() / info.getHeight()));
 //        objectsCanvas.translate(-)
 //        objectsCanvas.drawImage(img, 300,300);
         objectsCanvas.drawImage(img, (float) v.x, (float) v.y);
