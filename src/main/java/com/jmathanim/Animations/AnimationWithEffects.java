@@ -79,4 +79,5 @@ public abstract class AnimationWithEffects extends Animation {
         anim.copyEffectParametersFrom(this);
     }
 
+    public abstract <T extends MathObject> T getIntermediateObject();
 }

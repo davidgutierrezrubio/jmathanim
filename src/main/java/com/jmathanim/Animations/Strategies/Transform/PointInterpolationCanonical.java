@@ -52,23 +52,23 @@ public class PointInterpolationCanonical extends TransformStrategy {
      */
     public PointInterpolationCanonical(double runtime, Shape origin, Shape destiny) {
         super(runtime);
-        this.origin = origin;
-        this.intermediate = new Shape();
-        this.destiny = destiny;
+        this.setOrigin(origin);
+        this.setIntermediate(new Shape());
+        this.setDestiny(destiny);
         this.destinyCopy = new Shape();
         this.shOrigin = origin;
         this.shDestiny = destiny;
-        this.shIntermediate = (Shape) intermediate;
+        this.shIntermediate = (Shape) getIntermediateObject();
         this.addedAuxiliaryObjectsToScene = new ArrayList<>();
     }
 
     @Override
     public boolean doInitialization() {
         super.doInitialization();
-        originWasAddedAtFirst = scene.isInScene(origin);
-        destinyWasAddedAtFirst = scene.isInScene(destiny);
-        intermediate.copyStateFrom(origin);
-        destinyCopy.copyStateFrom(destiny);
+        originWasAddedAtFirst = scene.isInScene(getOriginObject());
+        destinyWasAddedAtFirst = scene.isInScene(getDestinyObject());
+        getIntermediateObject().copyStateFrom(getOriginObject());
+        destinyCopy.copyStateFrom(getDestinyObject());
         // This is the initialization for the point-to-point interpolation
         // Prepare paths.
         // First, if any of the shapes is empty, do nothing
@@ -104,9 +104,9 @@ public class PointInterpolationCanonical extends TransformStrategy {
         shIntermediate.getPath().addJMPointsFrom(connectedOrigin.toJMPath());
 
         // Jump paths
-        Point origCenter = this.origin.getCenter();
-        Point dstCenter = this.destiny.getCenter();
-        prepareJumpPath(origCenter, dstCenter, intermediate);
+        Point origCenter = this.getOriginObject().getCenter();
+        Point dstCenter = this.getDestinyObject().getCenter();
+        prepareJumpPath(origCenter, dstCenter, getIntermediateObject());
         return true;
     }
 
@@ -147,11 +147,11 @@ public class PointInterpolationCanonical extends TransformStrategy {
 
         }
         if (isShouldInterpolateStyles()) {
-            intermediate.getMp().interpolateFrom(origin.getMp(), destiny.getMp(), lt);
+            getIntermediateObject().getMp().interpolateFrom(getOriginObject().getMp(), getOriginObject().getMp(), lt);
         }
 
         // Transform effects
-        applyAnimationEffects(lt, intermediate);
+        applyAnimationEffects(lt, getIntermediateObject());
 
     }
 

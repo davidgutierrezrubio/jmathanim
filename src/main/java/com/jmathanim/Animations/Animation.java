@@ -506,7 +506,7 @@ public abstract class Animation {
      *
      * @return The intermediate object
      */
-    public abstract MathObject getIntermediateObject();
+    public abstract <T extends MathObject> T getIntermediateObject();
 
     /**
      * Resets the animation so it can be reused with different initialization parameters.

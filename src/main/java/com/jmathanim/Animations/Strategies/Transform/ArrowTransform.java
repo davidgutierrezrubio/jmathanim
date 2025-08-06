@@ -35,20 +35,20 @@ public class ArrowTransform extends TransformStrategy {
 
     public ArrowTransform(double runTime, Arrow origin, Arrow destiny) {
         super(runTime);
-        this.origin = origin;
-        this.destiny = destiny;
-        intermediate = this.origin.copy();
+        this.setOrigin(origin);
+        this.setDestiny(destiny);
+        setIntermediate(this.getOriginObject().copy());
     }
 
     @Override
     public boolean doInitialization() {
         super.doInitialization();
-        Point a = ((Arrow) origin).getStart().copy();
-        Point b = ((Arrow) origin).getEnd().copy();
-        Point c = ((Arrow) destiny).getStart().copy();
-        Point d = ((Arrow) destiny).getEnd().copy();
-        intermediate.copyStateFrom(this.origin);
-        anim = Commands.isomorphism(runTime, a, b, c, d, intermediate);
+        Point a = ((Arrow) getOriginObject()).getStart().copy();
+        Point b = ((Arrow) getOriginObject()).getEnd().copy();
+        Point c = ((Arrow) getOriginObject()).getStart().copy();
+        Point d = ((Arrow) getDestinyObject()).getEnd().copy();
+        getIntermediateObject().copyStateFrom(this.getOriginObject());
+        anim = Commands.isomorphism(runTime, a, b, c, d, getIntermediateObject());
         this.copyEffectParametersTo(anim);
         this.copyAnimationParametersTo(anim);
         anim.setLambda(getTotalLambda());

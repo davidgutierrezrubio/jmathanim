@@ -37,22 +37,22 @@ public class PointInterpolationSimpleShapeTransform extends TransformStrategy {
 
     public PointInterpolationSimpleShapeTransform(double runtime, Shape origin, Shape destiny) {
         super(runtime);
-        this.origin = origin;
-        this.intermediate = new Shape();
-        this.destiny = destiny;
+        this.setOrigin(origin);
+        this.setIntermediate(new Shape());
+        this.setDestiny(destiny);
         //Cast variables
         this.shDestiny = destiny;
-        this.shIntermediate = (Shape) intermediate;
+        this.shIntermediate = (Shape) getIntermediateObject();
 
-        origCenter = this.origin.getCenter();
-        dstCenter = this.destiny.getCenter();
+        origCenter = this.getOriginObject().getCenter();
+        dstCenter = this.getDestinyObject().getCenter();
 
     }
 
     @Override
     public boolean doInitialization() {
         super.doInitialization();
-        shIntermediate.copyStateFrom(origin);
+        shIntermediate.copyStateFrom(getOriginObject());
         shIntermediate.getPath().distille();//Clean paths before transform
         shDestiny.getPath().distille();
         if (optimizeStrategy == null) {
@@ -65,9 +65,9 @@ public class PointInterpolationSimpleShapeTransform extends TransformStrategy {
         for (JMPathPoint jmp : shIntermediate.getPath().jmPathPoints) {
             jmp.isCurved = true;
         }
-        originBase = intermediate.copy();
+        originBase = getIntermediateObject().copy();
 
-        prepareJumpPath(origCenter, dstCenter, intermediate);
+        prepareJumpPath(origCenter, dstCenter, getIntermediateObject());
         return true;
     }
 
@@ -98,10 +98,10 @@ public class PointInterpolationSimpleShapeTransform extends TransformStrategy {
         }
         if (isShouldInterpolateStyles()) {
             // Style interpolation
-            intermediate.getMp().interpolateFrom(origin.getMp(), destiny.getMp(), lt);
+            getIntermediateObject().getMp().interpolateFrom(getOriginObject().getMp(), getDestinyObject().getMp(), lt);
         }
         // Transform effects
-        applyAnimationEffects(lt, intermediate);
+        applyAnimationEffects(lt, getIntermediateObject());
 
     }
 

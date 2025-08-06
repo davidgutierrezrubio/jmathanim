@@ -42,9 +42,9 @@ public class MultiShapeTransform extends TransformStrategy {
 
     public MultiShapeTransform(double runtime, MultiShapeObject origin, MultiShapeObject destiny) {
         super(runtime);
-        this.destiny = destiny;
-        this.origin = origin;
-        this.intermediate = MultiShapeObject.make();
+        this.setDestiny(destiny);
+        this.setOrigin(origin);
+        this.setIntermediate(MultiShapeObject.make());
         this.mshOrigin = origin;
         this.mshDestiny = destiny;
         anim = new AnimationGroup();

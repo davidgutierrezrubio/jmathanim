@@ -20,6 +20,7 @@ package com.jmathanim.Animations.Strategies.Transform;
 import com.jmathanim.Animations.AnimationWithEffects;
 import com.jmathanim.Animations.Strategies.Transform.Optimizers.OptimizePathsStrategy;
 import com.jmathanim.mathobjects.MathObject;
+import com.jmathanim.mathobjects.Shape;
 
 /**
  *
@@ -28,9 +29,9 @@ import com.jmathanim.mathobjects.MathObject;
 public abstract class TransformStrategy extends AnimationWithEffects {
 
     OptimizePathsStrategy optimizeStrategy = null;
-    protected MathObject origin;
-    protected MathObject destiny;
-    protected MathObject intermediate;
+    private MathObject origin;
+    private MathObject destiny;
+    private MathObject intermediate;
     private boolean destinyWasAddedAtFirst, originWasAddedAtFirst;
 
     public TransformStrategy(double runTime) {
@@ -38,16 +39,28 @@ public abstract class TransformStrategy extends AnimationWithEffects {
     }
 
     @Override
-    public MathObject getIntermediateObject() {
-        return intermediate;
+    public <T extends MathObject> T getIntermediateObject() {
+        return (T) intermediate;
     }
 
-    public MathObject getOriginObject() {
-        return origin;
+    public <T extends MathObject> T  getOriginObject() {
+        return (T) origin;
     }
 
-    public MathObject getDestinyObject() {
-        return destiny;
+    public <T extends MathObject> T  getDestinyObject() {
+        return (T) destiny;
+    }
+
+    public void setOrigin(MathObject origin) {
+        this.origin = origin;
+    }
+
+    public void setDestiny(MathObject destiny) {
+        this.destiny = destiny;
+    }
+
+    public void setIntermediate(MathObject intermediate) {
+        this.intermediate = intermediate;
     }
 
     /**
@@ -65,8 +78,8 @@ public abstract class TransformStrategy extends AnimationWithEffects {
     @Override
     public boolean doInitialization() {
         super.doInitialization();
-        destinyWasAddedAtFirst = scene.isInScene(destiny);
-        originWasAddedAtFirst = scene.isInScene(origin);
+        destinyWasAddedAtFirst = scene.isInScene(getDestinyObject());
+        originWasAddedAtFirst = scene.isInScene(getOriginObject());
         return true;
     }
 
@@ -74,31 +87,31 @@ public abstract class TransformStrategy extends AnimationWithEffects {
     public void cleanAnimationAt(double t) {
         double lt = getLT(t);
         if (lt == 0) {
-            removeObjectsFromScene(intermediate, destiny);
+            removeObjectsFromScene(getIntermediateObject(), getDestinyObject());
             if (originWasAddedAtFirst) {
-                addObjectsToscene(origin);
+                addObjectsToscene(getOriginObject());
             } else {
-                removeObjectsFromScene(origin);
+                removeObjectsFromScene(getOriginObject());
             }
             return;
         }
         if (lt == 1) {
-            removeObjectsFromScene(intermediate, origin);
-            addObjectsToscene(destiny);
+            removeObjectsFromScene(getIntermediateObject(), getOriginObject());
+            addObjectsToscene(getDestinyObject());
             return;
         }
-        removeObjectsFromScene(destiny, origin);
-        addObjectsToscene(intermediate);
+        removeObjectsFromScene(getDestinyObject(), getOriginObject());
+        addObjectsToscene(getIntermediateObject());
     }
 
     @Override
     public void prepareForAnim(double t) {
-        removeObjectsFromScene(origin);
-        addObjectsToscene(intermediate);
+        removeObjectsFromScene(getOriginObject());
+        addObjectsToscene(getIntermediateObject());
         if (destinyWasAddedAtFirst) {
-            addObjectsToscene(destiny);
+            addObjectsToscene(getDestinyObject());
         } else {
-            removeObjectsFromScene(destiny);
+            removeObjectsFromScene(getDestinyObject());
         }
     }
 

@@ -39,14 +39,14 @@ public abstract class AffineTransformStrategy extends TransformStrategy {
 
     public AffineTransformStrategy(double runTime, Shape origin, Shape destiny) {
         super(runTime);
-        this.destiny = destiny;
-        this.origin = origin;
-        this.shOrigin=origin;
-        this.shDestiny=destiny;
-        this.intermediate = origin.copy();
+        this.setDestiny(destiny);
+        this.setOrigin(origin);
+        this.shOrigin = origin;
+        this.shDestiny = destiny;
+        this.setIntermediate(origin.copy());
     }
 
-      @Override
+    @Override
     public boolean doInitialization() {
         super.doInitialization();
         A = shOrigin.getPoint(0).copy();
@@ -55,9 +55,10 @@ public abstract class AffineTransformStrategy extends TransformStrategy {
         D = shDestiny.getPoint(0).copy();
         E = shDestiny.getPoint(1).copy();
         F = shDestiny.getPoint(2).copy();
-        saveStates(intermediate);
+        saveStates(getIntermediateObject());
         AffineJTransform tr = createIntermediateTransform(1);
-        prepareJumpPath(intermediate.getCenter(), tr.getTransformedObject(intermediate.getCenter()), intermediate);
+        Point center = getIntermediateObject().getCenter();
+        prepareJumpPath(center, tr.getTransformedObject(center), getIntermediateObject());
         return true;
     }
 
@@ -65,14 +66,14 @@ public abstract class AffineTransformStrategy extends TransformStrategy {
     public void doAnim(double t) {
         super.doAnim(t);
         double lt = getLT(t);
-        restoreStates(intermediate);
+        restoreStates(getIntermediateObject());
         AffineJTransform tr = createIntermediateTransform(lt);
-        tr.applyTransform(intermediate);
+        tr.applyTransform(getIntermediateObject());
         if (isShouldInterpolateStyles()) {
-            intermediate.getMp().interpolateFrom(origin.getMp(), destiny.getMp(), lt);
+            getIntermediateObject().getMp().interpolateFrom(getOriginObject().getMp(), getDestinyObject().getMp(), lt);
         }
         // Transform effects
-        applyAnimationEffects(lt, intermediate);
+        applyAnimationEffects(lt, getIntermediateObject());
     }
 
     protected abstract AffineJTransform createIntermediateTransform(double lt);
