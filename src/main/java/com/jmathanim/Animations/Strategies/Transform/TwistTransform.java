@@ -48,21 +48,14 @@ public class TwistTransform extends TransformShape2ShapeStrategy {
     @Override
     public boolean doInitialization() {
         super.doInitialization();
-        vShift = getOriginObject().get(numPivotalSegment).p.to(getDestinyObject().get(numPivotalSegment).p);
+
         setIntermediate(getOriginObject().copy());
-        getIntermediateObject().drawColor("red");
+        getIntermediateObject().getPath().openPath();
         getIntermediateObject().setObjectLabel("intermediate");
-        getOriginObject().setObjectLabel("origin");
-        getDestinyObject().setObjectLabel("destiny");
         saveStates(getIntermediateObject());
 
-        //DEBUG, to delete
-        for (int i = 0; i < getIntermediateObject().size(); i++) {
-            scene.add((getIntermediateObject().get(i).p).drawColor("blue"));
-        }
-
-        //Calcular angulos
-        int size = getOriginObject().size();
+        vShift = getIntermediateObject().get(numPivotalSegment).p.to(getDestinyObject().get(numPivotalSegment).p);
+        int size = getIntermediateObject().size();
         originAngles = new double[size];
         destinyAngles = new double[size];
         ratioLengths = new double[size - 1];
@@ -72,7 +65,7 @@ public class TwistTransform extends TransformShape2ShapeStrategy {
 
 
         for (int i = 0; i < size - 1; i++) {
-            Vec v1 = getOriginObject().get(i).p.to(getOriginObject().get(i + 1).p);
+            Vec v1 = getIntermediateObject().get(i).p.to(getIntermediateObject().get(i + 1).p);
             tempOrigAngles[i] = v1.getAngle();
             Vec v2 = getDestinyObject().get(i).p.to(getDestinyObject().get(i + 1).p);
             tempDestinyAngles[i] = v2.getAngle();
@@ -113,12 +106,8 @@ public class TwistTransform extends TransformShape2ShapeStrategy {
         double ltf = (lambdaForward == null ? lt : lambdaForward.applyAsDouble(rt));
         double ltb = (lambdaBackward == null ? lt : lambdaBackward.applyAsDouble(rt));
 
-
-
         Shape intermediateObject = getIntermediateObject();
         restoreStates(intermediateObject);
-
-
         int numPoint = 1;
         applyTransformToPivotalSegment(numPivotalSegment, lt);
         applyTransformForwardPoints(numPivotalSegment, ltf);
@@ -157,7 +146,7 @@ public class TwistTransform extends TransformShape2ShapeStrategy {
     }
 
     private void applyTransformForwardPoints(int numPivotalSegment, double lt) {
-        int size = getOriginObject().size();
+        int size = getIntermediateObject().size();
         if (numPivotalSegment==size-1) return; //No forward points
         for (int i = numPivotalSegment+1; i < size - 1; i++) {
             MathObjectGroup mg=subPath(i,true);
