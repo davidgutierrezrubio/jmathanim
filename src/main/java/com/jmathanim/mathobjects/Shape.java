@@ -83,22 +83,35 @@ public class Shape extends MathObject {
     }
 
     /**
-     * Creates a segment shape between 2 given points. The parameters points
-     * will be referenced to create the segment, so moving them will modify the
-     * segment.
+     * Creates a segment shape between 2 given points. The parameters points will be referenced to create the segment,
+     * so moving them will modify the segment.
      *
      * @param A First point
      * @param B Second point
      * @return The created segment.
      */
     public static Shape segment(Point A, Point B) {
-        Shape obj = new Shape();
-        JMathAnimConfig.getConfig().getScene();
-        JMPathPoint p1 = JMPathPoint.lineTo(A);
-        p1.isThisSegmentVisible = false;
-        JMPathPoint p2 = JMPathPoint.lineTo(B);
-        obj.jmpath.addJMPoint(p1, p2);
-        return obj;
+        return segment(A, B, 2);
+    }
+
+    /**
+     * Creates a segment shape between 2 given points. The parameters points will be referenced to create the segment,
+     * so moving them will modify the segment. The Shape will contain also numPoints-2 intermediate points equally
+     * distributed.
+     *
+     * @param A         First point
+     * @param B         Second point
+     * @param numPoints Number of points. A number greater or equal than 2
+     * @return The created segment.
+     */
+    public static Shape segment(Point A, Point B, int numPoints) {
+        Point[] points=new Point[numPoints];
+        points[0]=A;
+        points[numPoints-1]=B;
+        for (int i = 1; i < numPoints-1; i++) {
+            points[i]=A.interpolate(B,1d*i/(numPoints-1));
+        }
+        return polyLine(points);
     }
 
     /**
@@ -122,8 +135,8 @@ public class Shape extends MathObject {
      * Creates a rectangle shape from 3 consecutive points.
      *
      * @param A First point
-     * @param B Second point. The fourth point will be the opposite of this
-     *          point. This will be the point with index 0 in the path.
+     * @param B Second point. The fourth point will be the opposite of this point. This will be the point with index 0
+     *          in the path.
      * @param C Third point
      * @return The rectangle
      */
@@ -178,8 +191,8 @@ public class Shape extends MathObject {
     }
 
     /**
-     * Generates a regular polygon shape inscribed in a unit circle. The first
-     * point of the shape lies in the coordinates (1,0)
+     * Generates a regular polygon shape inscribed in a unit circle. The first point of the shape lies in the
+     * coordinates (1,0)
      *
      * @param numSides Number of sides
      * @return The generated Shape
@@ -213,23 +226,33 @@ public class Shape extends MathObject {
     }
 
     /**
-     * Creates an arc shape with radius 1 and center origin. First point is
-     * (1,0)
+     * Creates an arc shape with radius 1 and center origin. First point is (1,0)
      *
      * @param angle       Angle in radians of the arc
      * @param numSegments Number of segments
      * @return The created arc
      */
     public static Shape arc(double angle, int numSegments) {
-        double c = 0.15915494309189533576888376d;//0.5/PI
-        Shape obj = Shape.circle(32).getSubShape(0, c * angle);
-        obj.objectLabel = "arc";
+        JMPath path = new JMPath();
+
+        double x1, y1;
+        double step = angle  / (numSegments-1);
+        double cte = 4d / 3 * Math.tan(angle / (numSegments-1));
+        double alphaC = 0;
+        JMPathPoint jmp = JMPathPoint.make(1, 0, 1, -cte, 1, cte);
+        for (int k = 0; k < numSegments; k++) {
+            path.addJMPoint(jmp.copy().rotate(Point.origin(),k*step));
+        }
+        path.get(0).isThisSegmentVisible=false;
+        path.get(0).cpEnter.v.copyFrom(path.get(0).p.v);
+        path.get(-1).cpExit.v.copyFrom(path.get(-1).p.v);
+        Shape obj = new Shape(path);
+        obj.objectLabel = "circle";
         return obj;
     }
 
     /**
-     * Creates an arc shape with radius 1 and center origin. First point is
-     * (1,0). Default value of 32 segments.
+     * Creates an arc shape with radius 1 and center origin. First point is (1,0). Default value of 32 segments.
      *
      * @param angle Angle in radians of the arc
      * @return The created arc
@@ -239,9 +262,8 @@ public class Shape extends MathObject {
     }
 
     /**
-     * Creates an arch Shape from A to B with given radius. The arc can be drawn
-     * counterclockwise or clockwise depending on the boolean parameter.
-     * If the radius is too small to draw an arc, an straight segment is drawn instead.
+     * Creates an arch Shape from A to B with given radius. The arc can be drawn counterclockwise or clockwise depending
+     * on the boolean parameter. If the radius is too small to draw an arc, an straight segment is drawn instead.
      *
      * @param startPoint         Starting point
      * @param endPoint           Ending point
@@ -299,30 +321,27 @@ public class Shape extends MathObject {
      * @return The created circle
      */
     public static Shape circle(int numSegments) {
-        Shape obj = new Shape();
-        obj.objectLabel = "circle";
+        JMPath path = new JMPath();
+
         double x1, y1;
         double step = Math.PI * 2 / numSegments;
         double cte = 4d / 3 * Math.tan(.5 * Math.PI / numSegments);
         double alphaC = 0;
+        JMPathPoint jmp = JMPathPoint.make(1, 0, 1, -cte, 1, cte);
         for (int k = 0; k < numSegments; k++) {
-            x1 = Math.cos(alphaC);
-            y1 = Math.sin(alphaC);
-            Point p = new Point(x1, y1);
-            Vec v1 = new Vec(-y1, x1);//This vector is already normalized
-
-            v1.multInSite(cte);
-            Point cp1 = p.add(v1);
-            Point cp2 = p.add(v1.multInSite(-1));
-            JMPathPoint jmp = JMPathPoint.curveTo(p);
-            jmp.cpExit.v.copyFrom(cp1.v);
-            jmp.cpEnter.v.copyFrom(cp2.v);
-            obj.jmpath.addJMPoint(jmp);
-
-            alphaC += step;
+            path.addJMPoint(jmp.copy());
+            jmp.rotate(Point.origin(), step);
         }
+        Shape obj = new Shape(path);
+        obj.objectLabel = "circle";
         return obj;
     }
+
+
+
+
+
+
 
     /**
      * Creates an annulus with the given min and max radius
@@ -363,8 +382,8 @@ public class Shape extends MathObject {
     }
 
     /**
-     * Returns a new Point object lying in the Shape, at the given parametrized
-     * position, considering the arclentgh of the curve.
+     * Returns a new Point object lying in the Shape, at the given parametrized position, considering the arclentgh of
+     * the curve.
      *
      * @param t Position parameter, from 0 (beginning) to 1 (end)
      * @return a new Point object at the specified position of the shape.
@@ -374,7 +393,7 @@ public class Shape extends MathObject {
     }
 
     public Point getCentroid() {
-      return getPath().getCentroid();
+        return getPath().getCentroid();
     }
 
     @Override
@@ -439,8 +458,7 @@ public class Shape extends MathObject {
      * Overloaded method. Check if a given point is inside the shape
      *
      * @param p Point to check
-     * @return True if p lies inside of the shape (regardless of being filled or
-     * not). False otherwise.
+     * @return True if p lies inside of the shape (regardless of being filled or not). False otherwise.
      */
     public boolean containsPoint(Point p) {
         return containsPoint(p.v);
@@ -450,8 +468,7 @@ public class Shape extends MathObject {
      * Check if a given vector is inside the shape
      *
      * @param v Vector to check
-     * @return True if v lies inside of the shape (regardless of being filled or
-     * not). False otherwise.
+     * @return True if v lies inside of the shape (regardless of being filled or not). False otherwise.
      */
     public boolean containsPoint(Vec v) {
         Camera dummyCamera = JMathAnimConfig.getConfig().getCamera();
@@ -489,8 +506,7 @@ public class Shape extends MathObject {
     /**
      * Returns the n-th JMPathPoint of path.
      *
-     * @param n index. A cyclic index, so that 0 means the first point and -1
-     *          the last one
+     * @param n index. A cyclic index, so that 0 means the first point and -1 the last one
      * @return The JMPathPoint
      */
     public JMPathPoint get(int n) {
@@ -498,11 +514,9 @@ public class Shape extends MathObject {
     }
 
     /**
-     * Returns a reference to the point at position n This is equivalent to
-     * get(n).p
+     * Returns a reference to the point at position n This is equivalent to get(n).p
      *
-     * @param n Point number. A cyclic index, so that 0 means the first point
-     *          and -1 the last one
+     * @param n Point number. A cyclic index, so that 0 means the first point and -1 the last one
      * @return The point
      */
     public Point getPoint(int n) {
@@ -604,9 +618,8 @@ public class Shape extends MathObject {
     }
 
     /**
-     * Creates a new Shape object with the intersection of this Shape and
-     * another one. Styling properties of the new Shape are copied from calling
-     * object.
+     * Creates a new Shape object with the intersection of this Shape and another one. Styling properties of the new
+     * Shape are copied from calling object.
      *
      * @param <T> Calling class
      * @param s2  Shape to intersect with
@@ -619,8 +632,8 @@ public class Shape extends MathObject {
     }
 
     /**
-     * Creates a new Shape object with the union of this Shape and another one.
-     * Styling properties of the new Shape are copied from calling object.
+     * Creates a new Shape object with the union of this Shape and another one. Styling properties of the new Shape are
+     * copied from calling object.
      *
      * @param <T> Calling class
      * @param s2  Shape to compute the union
@@ -633,9 +646,8 @@ public class Shape extends MathObject {
     }
 
     /**
-     * Creates a new Shape object with the substraction of this Shape with
-     * another one. Styling properties of the new Shape are copied from calling
-     * object.
+     * Creates a new Shape object with the substraction of this Shape with another one. Styling properties of the new
+     * Shape are copied from calling object.
      *
      * @param <T> Calling class
      * @param s2  Shape to substract
@@ -648,9 +660,8 @@ public class Shape extends MathObject {
     }
 
     /**
-     * Check if the current object is empty (for example: a MultiShape with no
-     * objects). A empty object case should be considered as they return null
-     * bounding boxes.
+     * Check if the current object is empty (for example: a MultiShape with no objects). A empty object case should be
+     * considered as they return null bounding boxes.
      *
      * @return True if object is empty, false otherwise
      */
@@ -660,9 +671,8 @@ public class Shape extends MathObject {
     }
 
     /**
-     * Returns the convex flag for this shape. This flag is false by default but
-     * can be manually changed. Convex shapes can be drawed using simpler,
-     * faster algorithms.
+     * Returns the convex flag for this shape. This flag is false by default but can be manually changed. Convex shapes
+     * can be drawed using simpler, faster algorithms.
      *
      * @return True if the shape is convex, false if it is concave.
      */
@@ -671,8 +681,7 @@ public class Shape extends MathObject {
     }
 
     /**
-     * Mark this shape as convex. If convex, a simpler and faster algorithm to
-     * draw it can be used.
+     * Mark this shape as convex. If convex, a simpler and faster algorithm to draw it can be used.
      *
      * @param isConvex True if the shape is convex, false if it is concave.
      */
@@ -683,16 +692,15 @@ public class Shape extends MathObject {
     /**
      * Return the value of boolean flag showDebugPoints
      *
-     * @return If true, the point number will be superimposed on screen when
-     * drawing this shape
+     * @return If true, the point number will be superimposed on screen when drawing this shape
      */
     public boolean isShowDebugPoints() {
         return showDebugPoints;
     }
 
     /**
-     * Sets the vaue of boolean flag showDebugPoints. If true, the point number
-     * will be superimposed on screen when drawing this shape
+     * Sets the vaue of boolean flag showDebugPoints. If true, the point number will be superimposed on screen when
+     * drawing this shape
      *
      * @param showDebugPoints
      * @return This object
@@ -726,8 +734,7 @@ public class Shape extends MathObject {
     }
 
     /**
-     * Reverse the points of the path. First point becomes last. The object is
-     * altered
+     * Reverse the points of the path. First point becomes last. The object is altered
      *
      * @param <T> Calling class
      * @return This object
@@ -767,18 +774,14 @@ public class Shape extends MathObject {
     }
 
     /**
-     * Merges with the given Shape, adding all their jmpathpoints.If the shapes
-     * were disconnected they will remain so unless the connect parameter is set
-     * to true. In such case, the shapes will be connected by a straight line
-     * from the last point of the calling object to the first point of the given
-     * one.
+     * Merges with the given Shape, adding all their jmpathpoints.If the shapes were disconnected they will remain so
+     * unless the connect parameter is set to true. In such case, the shapes will be connected by a straight line from
+     * the last point of the calling object to the first point of the given one.
      *
      * @param <T>         Calling Shape subclass
      * @param sh          Shape to merge
-     * @param connectAtoB If true, the end of path A will be connected to the
-     *                    beginning of path B by a straight line
-     * @param connectBtoA If true, the end of path B will be connected to the
-     *                    beginning of path A by a straight line
+     * @param connectAtoB If true, the end of path A will be connected to the beginning of path B by a straight line
+     * @param connectBtoA If true, the end of path B will be connected to the beginning of path A by a straight line
      * @return This object
      */
     public <T extends Shape> T merge(Shape sh, boolean connectAtoB, boolean connectBtoA) {

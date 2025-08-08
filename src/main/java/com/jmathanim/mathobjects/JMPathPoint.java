@@ -58,18 +58,18 @@ public class JMPathPoint extends MathObject implements Updateable, Stateable {
      *
      * @param x1 x-coordinate of vertex
      * @param y1 y-coordinate of vertex
-     * @param x2 x-coordinate of enter control point
-     * @param y2 y-coordinate of enter control point
-     * @param x3 x-coordinate of exit control point
-     * @param y3 y-coordinate of exit control point
+     * @param enterx x-coordinate of enter control point
+     * @param entery y-coordinate of enter control point
+     * @param exitx x-coordinate of exit control point
+     * @param exity y-coordinate of exit control point
      * @return The new jmpathpoint created
      */
-    public static JMPathPoint make(double x1, double y1, double x2, double y2, double x3, double y3) {
+    public static JMPathPoint make(double x1, double y1, double enterx, double entery, double exitx, double exity) {
         JMPathPoint resul = curveTo(Point.at(x1, y1));
-        resul.cpEnter.v.x = x2;
-        resul.cpEnter.v.y = y2;
-        resul.cpExit.v.x = x3;
-        resul.cpExit.v.y = y3;
+        resul.cpEnter.v.x = enterx;
+        resul.cpEnter.v.y = entery;
+        resul.cpExit.v.x = exitx;
+        resul.cpExit.v.y = exity;
         return resul;
     }
 

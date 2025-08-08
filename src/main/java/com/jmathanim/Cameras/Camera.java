@@ -27,85 +27,79 @@ import com.jmathanim.mathobjects.shouldUdpateWithCamera;
 import java.util.ArrayList;
 
 /**
- * This class converts math coordinates to screen cordinates. Screen coordinates
- * are always (0,0)-(w,h) where (0,0) is upper left corner
+ * This class converts math coordinates to screen cordinates. Screen coordinates are always (0,0)-(w,h) where (0,0) is
+ * upper left corner
  *
  * @author David Gutierrez Rubio davidgutierrezrubio@gmail.com
  */
 public class Camera implements Boxable {
 
     private final ArrayList<shouldUdpateWithCamera> updateableObjects;
+    private final JMathAnimScene scene;
     public boolean perspective;
-
     /**
      * Screen width size to be displayed 800x600, 1920x1280, etc.
      */
     public int screenWidth;
-
     /**
      * Screen height size to be displayed 800x600, 1920x1280, etc.
      */
     public int screenHeight;
-
-    
     public int upperLeftX;
     public int upperLeftY;
-    
-    
     /**
      * Boundaries of the view in the math world
      */
     protected double xmin, xmax, ymin, ymax;
-
     /**
      * Values to reset the camera
      */
     protected double[] resetValues;
-
     /**
      * Gaps to add when adjusting view to an object or Rect
      */
     protected double hgap = .1, vgap = .1;
-
-    private final JMathAnimScene scene;
     private double xminB, xmaxB, yminB, ymaxB;// Backup values for saveState()
+
+    public Camera(JMathAnimScene scene, int screenWidth, int screenHeight) {
+        this.screenWidth = screenWidth;
+        this.screenHeight = screenHeight;
+        this.upperLeftX = 0;
+        this.upperLeftY = 0;
+        this.scene = scene;
+        this.updateableObjects = new ArrayList<>();
+
+    }
 
     /**
      * Copy all parameters from another camera.
+     *
      * @param cam Camera to copy from
      * @return This object
      */
     public Camera copyStateFrom(Camera cam) {
-        this.screenHeight=cam.screenHeight;
-        this.screenWidth=cam.screenWidth;
-        this.hgap=cam.hgap;
-        this.vgap=cam.vgap;
-        this.perspective=cam.perspective;
-        this.resetValues=cam.resetValues;
-        this.xmax=cam.xmax;
-        this.ymax=cam.ymax;
-        this.xmin=cam.xmin;
-        this.ymin=cam.ymin;
+        this.screenHeight = cam.screenHeight;
+        this.screenWidth = cam.screenWidth;
+        this.hgap = cam.hgap;
+        this.vgap = cam.vgap;
+        this.perspective = cam.perspective;
+        this.resetValues = cam.resetValues;
+        this.xmax = cam.xmax;
+        this.ymax = cam.ymax;
+        this.xmin = cam.xmin;
+        this.ymin = cam.ymin;
         return this;
     }
+
     /**
      * Makes a copy of the camera
+     *
      * @return A new camera con same parameters, except its list of registered updateableobjects
      */
     public Camera copy() {
-        Camera copy=new Camera(scene,screenWidth,screenHeight);
+        Camera copy = new Camera(scene, screenWidth, screenHeight);
         copy.copyStateFrom(this);
         return copy;
-    }
-    
-    public Camera(JMathAnimScene scene, int screenWidth, int screenHeight) {
-        this.screenWidth = screenWidth;
-        this.screenHeight = screenHeight;
-        this.upperLeftX=0;
-        this.upperLeftY=0;
-        this.scene = scene;
-        this.updateableObjects = new ArrayList<>();
-
     }
 
     @Override
@@ -121,7 +115,7 @@ public class Camera implements Boxable {
     public void updateDependentObjectsFromThisCamera() {
         for (int i = 0; i < updateableObjects.size(); i++) {
             shouldUdpateWithCamera updateableObject = updateableObjects.get(i);
-                 updateableObject.updateWithCamera(this);
+            updateableObject.updateWithCamera(this);
         }
 //        for (shouldUdpateWithCamera updateableObject : updateableObjects) {
 //            updateableObject.updateWithCamera(this);
@@ -154,12 +148,11 @@ public class Camera implements Boxable {
     }
 
     /**
-     * Set the boundaries of the math region displayed in the screen given by
-     * xmin and xmax. ymin and ymax are automatically computed Rectangle
-     * (xmin,ymin) to (xmax, ymax) vertically centered at ycenter
+     * Set the boundaries of the math region displayed in the screen given by xmin and xmax. ymin and ymax are
+     * automatically computed Rectangle (xmin,ymin) to (xmax, ymax) vertically centered at ycenter
      *
-     * @param xmin Left x-coordinate
-     * @param xmax Right x-coordinate
+     * @param xmin    Left x-coordinate
+     * @param xmax    Right x-coordinate
      * @param ycenter y-center coordinate
      */
     public Camera setMathXY(double xmin, double xmax, double ycenter) {
@@ -191,7 +184,7 @@ public class Camera implements Boxable {
         double x, y;
         x = (mathX - xmin) * screenWidth / (xmax - xmin);
         y = (ymax - mathY) * screenHeight / (ymax - ymin);
-        return new double[]{x+upperLeftX, y+upperLeftY};
+        return new double[]{x + upperLeftX, y + upperLeftY};
     }
 
     public double[] screenToMath(double x, double y) {
@@ -228,7 +221,7 @@ public class Camera implements Boxable {
         scale(d / getMathView().getWidth());
     }
 
-//    /**
+    //    /**
 //     * Set size of the screen to which the camera will compute coordinates
 //     * Screen size usually is 800x600, 1920x1080, etc.
 //     *
@@ -246,11 +239,6 @@ public class Camera implements Boxable {
         updateDependentObjectsFromThisCamera();
     }
 
-    public Camera setMathView(Rect r) {
-        setMathXY(r.xmin, r.xmax, .5 * (r.ymin + r.ymax));
-        return this;
-    }
-
     public void shift(Vec v) {
         shift(v.x, v.y);
     }
@@ -260,9 +248,8 @@ public class Camera implements Boxable {
     }
 
     /**
-     * Adjust the view so that if contains the area given by a Rect object.The
-     * view is the minimal bounding box that contains r, with the proportions of
-     * the screen.
+     * Adjust the view so that if contains the area given by a Rect object.The view is the minimal bounding box that
+     * contains r, with the proportions of the screen.
      *
      * @param rAdjust Rectangle to adjust
      * @return This camera
@@ -274,10 +261,9 @@ public class Camera implements Boxable {
     }
 
     /**
-     * Adjust the camera view so that all objects in the scene are visible,
-     * zooming out as necessary. The difference with the zoom methods is that a
-     * zoom in is not applied in this case. The setGaps method can be called
-     * before to set the gaps between the view and the objects.
+     * Adjust the camera view so that all objects in the scene are visible, zooming out as necessary. The difference
+     * with the zoom methods is that a zoom in is not applied in this case. The setGaps method can be called before to
+     * set the gaps between the view and the objects.
      *
      * @return This object
      */
@@ -290,16 +276,18 @@ public class Camera implements Boxable {
     }
 
     /**
-     * Adjust the camera view so that the specified objects are visible (objects
-     * don't need to be added to the scene), zooming out as necessary. The
-     * difference with the zoom methods is that a zoom in is not applied in this
-     * case. The setGaps method can be called before to set the gaps between the
-     * view and the objects.
+     * Adjust the camera view so that the specified objects are visible (objects don't need to be added to the scene),
+     * zooming out as necessary. The difference with the zoom methods is that a zoom in is not applied in this case. The
+     * setGaps method can be called before to set the gaps between the view and the objects. If none passed, camera will
+     * be adjusted at all objects added to the scene.
      *
      * @param objs Objects to zoom in
      * @return This object
      */
     public Camera adjustToObjects(Boxable... objs) {
+        if (objs.length == 0) {
+            return adjustToAllObjects();
+        }
         Rect r = getMathView();
         for (Boxable obj : objs) {
             r = Rect.union(r, obj.getBoundingBox());
@@ -309,13 +297,16 @@ public class Camera implements Boxable {
     }
 
     /**
-     * Center the camera around the given set of Boxable objects (MathObject or
-     * Rect) and adjusts the zoom so that objects are visible.
+     * Center the camera around the given set of Boxable objects (MathObject or Rect) and adjusts the zoom so that
+     * objects are visible. If none passed, camera will be centered at all objects added to the scene.
      *
      * @param objs Boxable objects to compute center, varargs.
      * @return This camera.
      */
     public Camera centerAtObjects(Boxable... objs) {
+        if (objs.length == 0) {
+            return centerAtAllObjects();
+        }
         Rect r = objs[0].getBoundingBox();
         for (Boxable obj : objs) {
             r = Rect.union(r, obj.getBoundingBox());
@@ -328,8 +319,8 @@ public class Camera implements Boxable {
     }
 
     /**
-     * Center the camera around all current objects added to scene (including
-     * invisible ones) and adjusts the zoom so that objects are visible.
+     * Center the camera around all current objects added to scene (including invisible ones) and adjusts the zoom so
+     * that objects are visible.
      *
      * @return This camera.
      */
@@ -343,13 +334,15 @@ public class Camera implements Boxable {
     }
 
     /**
-     * Zoom the camera so that the specified objects are visible (objects don't
-     * need to be added to the scene). The setGaps method can be called before
-     * to set the gaps between the view and the objects.
+     * Zoom the camera so that the specified objects are visible (objects don't need to be added to the scene). The
+     * setGaps method can be called before to set the gaps between the view and the objects.
      *
      * @return This object
      */
     public Camera zoomToObjects(Boxable... objs) {
+        if (objs.length == 0) {
+            return zoomToAllObjects();
+        }
         Rect r = objs[0].getBoundingBox();
         for (Boxable obj : objs) {
             r = Rect.union(r, obj.getBoundingBox());
@@ -359,9 +352,8 @@ public class Camera implements Boxable {
     }
 
     /**
-     * Zoom the camera so that all objects in the scene are visible. The setGaps
-     * method can be called before to set the gaps between the view and the
-     * objects.
+     * Zoom the camera so that all objects in the scene are visible. The setGaps method can be called before to set the
+     * gaps between the view and the objects.
      *
      * @return This object
      */
@@ -376,8 +368,7 @@ public class Camera implements Boxable {
     /**
      * Scales the visible area with the given factor.
      *
-     * @param scale Scale factor. A value of 1 does nothing. A value of 0.5
-     * applies a 2x zoom.
+     * @param scale Scale factor. A value of 1 does nothing. A value of 0.5 applies a 2x zoom.
      * @return This object
      */
     public Camera scale(double scale) {
@@ -386,8 +377,7 @@ public class Camera implements Boxable {
     }
 
     /**
-     * Returns the smallest rectangle which contains a given one, with the
-     * proportions of the screen view
+     * Returns the smallest rectangle which contains a given one, with the proportions of the screen view
      *
      * @param r A Rect object, rectangle to contain
      * @return The rectangle which contains r, with the screen proportions
@@ -400,7 +390,7 @@ public class Camera implements Boxable {
 
         if (ratio <= ratioR) // If R is wider than the screen...
         {
-//            
+//
             double camHeight = (r.ymax - r.ymin) / ratio;
             double minY = .5 * ((r.ymin + r.ymax) - camHeight);
             double maxY = .5 * ((r.ymin + r.ymax) + camHeight);
@@ -430,6 +420,11 @@ public class Camera implements Boxable {
      */
     public Rect getMathView() {
         return new Rect(xmin, ymin, xmax, ymax);
+    }
+
+    public Camera setMathView(Rect r) {
+        setMathXY(r.xmin, r.xmax, .5 * (r.ymin + r.ymax));
+        return this;
     }
 
     public Vec getGaps() {

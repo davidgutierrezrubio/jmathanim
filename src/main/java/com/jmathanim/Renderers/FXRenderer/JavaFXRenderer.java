@@ -28,6 +28,7 @@ import com.jmathanim.Utils.Rect;
 import com.jmathanim.Utils.ResourceLoader;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
+import com.jmathanim.jmathanim.LogUtils;
 import com.jmathanim.mathobjects.AbstractJMImage;
 import com.jmathanim.mathobjects.JMPath;
 import com.jmathanim.mathobjects.MathObject;
@@ -279,8 +280,9 @@ public class JavaFXRenderer extends Renderer {
 
     @Override
     public void finish(int frameCount) {
+
         JMathAnimScene.logger.info(
-                String.format("%d frames created, %.2fs total time", frameCount, (1.f * frameCount) / config.fps));
+                String.format("%d frames created, "+LogUtils.GREEN+"%.2fs"+ LogUtils.RESET+" total time", frameCount, (1.f * frameCount) / config.fps));
         if (config.isCreateMovie()) {
             /**
              * Encoders, like decoders, sometimes cache pictures so it can do
