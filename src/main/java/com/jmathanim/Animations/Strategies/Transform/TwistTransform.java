@@ -105,8 +105,7 @@ public class TwistTransform extends TransformShape2ShapeStrategy {
      * @return A new TwistTransform instance.
      */
     public static TwistTransform make(double runTime, Shape origin, Shape destiny, int numPivotalSegment) {
-        TwistTransform tr = new TwistTransform(runTime, origin, destiny, numPivotalSegment);
-        return tr;
+        return new TwistTransform(runTime, origin, destiny, numPivotalSegment);
     }
 
     /**
@@ -123,8 +122,7 @@ public class TwistTransform extends TransformShape2ShapeStrategy {
      * @return A new TwistTransform instance.
      */
     public static TwistTransform make(double runTime, Shape origin, Shape destiny) {
-        TwistTransform tr = new TwistTransform(runTime, origin, destiny, origin.size() / 2);
-        return tr;
+        return new TwistTransform(runTime, origin, destiny, origin.size() / 2);
     }
 
     public DoubleUnaryOperator getLambdaShiftPivotal() {
@@ -185,16 +183,12 @@ public class TwistTransform extends TransformShape2ShapeStrategy {
 
         //Check that the pivotal segment number is appropiate
         int sizeIntermediate = getIntermediateObject().size();
-        if ((numPivotalSegment < 0) || (numPivotalSegment > sizeIntermediate)) {
-            int n = numPivotalSegment;
-            while (numPivotalSegment < 0) {
-                numPivotalSegment += sizeIntermediate;
-            }
-            while (numPivotalSegment >= sizeIntermediate) {
-                numPivotalSegment -= sizeIntermediate;
-            }
-
-            JMathAnimScene.logger.warn("Pivotal segment " + n + " out of range. Reallocating to " + numPivotalSegment);
+        if (numPivotalSegment < 0 || numPivotalSegment >= sizeIntermediate) {
+            int oldN = numPivotalSegment;
+            // The modulo operator can be negative in Java, so we add the size and take the modulo again
+            // to ensure the result is always in the range [0, sizeIntermediate - 1].
+            this.numPivotalSegment = (numPivotalSegment % sizeIntermediate + sizeIntermediate) % sizeIntermediate;
+            JMathAnimScene.logger.warn("Pivotal segment " + oldN + " out of range. Reallocating to " + this.numPivotalSegment);
         }
 
 
@@ -272,8 +266,9 @@ public class TwistTransform extends TransformShape2ShapeStrategy {
         restoreStates(intermediateObject);
 
         // Apply transformations in a specific order, starting from the pivotal segment.
-        applyMoveToPivotalSegment(numPivotalSegment, ltshiftPivotal);
-        applyScaleToPivotalSegment(numPivotalSegment, ltscPivotal);
+        Point pivotPoint = intermediateObject.get(numPivotalSegment).p;
+        applyPivotalAlign(pivotPoint, ltshiftPivotal);
+        applyPivotalScale(pivotPoint, ltscPivotal);
         applyTransformForwardPoints(numPivotalSegment, ltf);
         applyTransformBackwardPoints(numPivotalSegment, ltb);
 
@@ -287,27 +282,27 @@ public class TwistTransform extends TransformShape2ShapeStrategy {
     }
 
     /**
-     * Applies the transformation to the pivotal segment. This includes the main translation of the whole shape, the
-     * rotation of the pivotal segment, and the scaling of the pivotal segment (which is applied as a shift to all
-     * subsequent points).
+     * Applies the alignment (translation and rotation) to the entire shape based on the pivotal segment.
      *
-     * @param numPivotalSegment The index of the point starting the pivotal segment.
-     * @param lt                The interpolated time, from 0 to 1.
+     * @param pivotPoint The point around which transformations occur.
+     * @param lt         The interpolated time, from 0 to 1.
      */
-    private void applyMoveToPivotalSegment(int numPivotalSegment, double lt) {
+    private void applyPivotalAlign(Point pivotPoint, double lt) {
         Shape inter = getIntermediateObject();
         // 1. Translate the whole shape to align the pivotal points.
         inter.shift(vShift.mult(lt));
 
         // 2. Rotate the whole shape around the pivotal point to align the pivotal segment's angle.
-        Point pivotPoint = inter.get(numPivotalSegment).p;
         inter.rotate(pivotPoint, pivotalAngle * lt);
-
     }
 
-    private void applyScaleToPivotalSegment(int numPivotalSegment, double lt) {
+    /**
+     * Applies scaling to the pivotal segment by shifting all subsequent points.
+     * @param pivotPoint The point that starts the pivotal segment.
+     * @param lt The interpolated time, from 0 to 1.
+     */
+    private void applyPivotalScale(Point pivotPoint, double lt) {
         Shape inter = getIntermediateObject();
-        Point pivotPoint = inter.get(numPivotalSegment).p;
 
         // 3. Scale the pivotal segment by shifting all subsequent points.
         // This moves the "end" of the pivotal segment, effectively stretching/shrinking it.
@@ -320,10 +315,12 @@ public class TwistTransform extends TransformShape2ShapeStrategy {
                 inter.get(i).p.shift(shiftVector);
             }
         }
-        }
+    }
+
     /**
-     * Iteratively applies transformations to the points *after* the pivotal segment. For each vertex, it applies a
-     * rotation and a scaling (as a shift) to all subsequent points.
+     * Iteratively applies transformations to the points *after* the pivotal segment.
+     * For each vertex `i`, it applies a rotation and a scaling (as a shift) to all subsequent points `j > i`.
+     * This method has a time complexity of O(N^2) per frame, which may be slow for shapes with many points.
      *
      * @param numPivotalSegment The index of the point starting the pivotal segment.
      * @param lt                The interpolated time, from 0 to 1.
@@ -359,8 +356,9 @@ public class TwistTransform extends TransformShape2ShapeStrategy {
     }
 
     /**
-     * Iteratively applies transformations to the points *before* the pivotal segment. For each vertex, it applies a
-     * rotation and a scaling (as a shift) to all preceding points.
+     * Iteratively applies transformations to the points *before* the pivotal segment.
+     * For each vertex `i`, it applies a rotation and a scaling (as a shift) to all preceding points `j < i`.
+     * This method has a time complexity of O(N^2) per frame.
      *
      * @param numPivotalSegment The index of the point starting the pivotal segment.
      * @param lt                The interpolated time, from 0 to 1.

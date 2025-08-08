@@ -3,16 +3,15 @@ package com.jmathanim.mathobjects.updaters;
 import com.jmathanim.Utils.Boxable;
 import com.jmathanim.Utils.Vec;
 import com.jmathanim.jmathanim.JMathAnimScene;
-import com.jmathanim.mathobjects.updateableObjects.Updateable;
 
 public class MoveUpdater extends Updater {
     private final Boxable ref;
     private final Type moveType;
     private double speedt;
     private double speedt2;
-    private double speed;
+    private final double speed;
     private boolean speedsNotComputed;
-    private boolean instant;
+    private final boolean instant;
 
     public MoveUpdater(Boxable ref, Type moveType, double speed) {
         this.ref = ref;

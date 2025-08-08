@@ -20,8 +20,11 @@ import com.jmathanim.Styling.Stylable;
 import com.jmathanim.Utils.Anchor;
 import com.jmathanim.Utils.LatexStyle;
 import com.jmathanim.jmathanim.JMathAnimScene;
-import com.jmathanim.mathobjects.*;
+import com.jmathanim.mathobjects.Point;
+import com.jmathanim.mathobjects.Scalar;
+import com.jmathanim.mathobjects.Shape;
 import com.jmathanim.mathobjects.Text.LaTeXMathObject;
+import com.jmathanim.mathobjects.hasArguments;
 import com.jmathanim.mathobjects.updaters.Updater;
 
 import static com.jmathanim.jmathanim.JMathAnimScene.PI;
@@ -34,7 +37,7 @@ import static com.jmathanim.jmathanim.JMathAnimScene.PI;
 public class LabelTip extends AbstractTippableObject implements hasArguments {
 
 
-    private LaTeXMathObject laTeXMathObject;
+    private final LaTeXMathObject laTeXMathObject;
 
     protected LabelTip(Shape shape, LaTeXMathObject tipLabel, Anchor.Type anchor, double locationParameter) {
         super(shape, tipLabel, Anchor.getAnchorPoint(tipLabel, anchor), locationParameter);

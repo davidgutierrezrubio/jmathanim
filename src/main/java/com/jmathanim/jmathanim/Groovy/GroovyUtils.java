@@ -47,26 +47,25 @@ public class GroovyUtils {
     }
 
     private static  String addImports(String userCode) {
-        StringBuilder fullScript = new StringBuilder();
-        fullScript.append("import com.jmathanim.mathobjects.*\n");
-        fullScript.append("import com.jmathanim.mathobjects.Axes.*\n");
-        fullScript.append("import com.jmathanim.mathobjects.Delimiters.*\n");
-        fullScript.append("import com.jmathanim.mathobjects.Text.*\n");
-        fullScript.append("import com.jmathanim.mathobjects.Tippable.*\n");
-        fullScript.append("import com.jmathanim.mathobjects.updaters.*\n");
-        fullScript.append("import com.jmathanim.Animations.*\n");
-        fullScript.append("import com.jmathanim.Animations.MathTransform.*\n");
-        fullScript.append("import com.jmathanim.Animations.Strategies.*\n");
-        fullScript.append("import com.jmathanim.Animations.Strategies.ShowCreation.*\n");
-        fullScript.append("import com.jmathanim.Animations.Strategies.Transform.*\n");
-        fullScript.append("import com.jmathanim.Animations.Strategies.Transform.Optimizers.*\n");
-        fullScript.append("import com.jmathanim.Cameras.*\n");
-        fullScript.append("import com.jmathanim.Constructible.*\n");
-        fullScript.append("import com.jmathanim.Styling.*\n");
-        fullScript.append("import com.jmathanim.Utils.*\n");
-        fullScript.append("import com.jmathanim.Utils.Layouts.*\n");
-        fullScript.append(userCode);
-        return fullScript.toString();
+        String fullScript = "import com.jmathanim.mathobjects.*\n" +
+                "import com.jmathanim.mathobjects.Axes.*\n" +
+                "import com.jmathanim.mathobjects.Delimiters.*\n" +
+                "import com.jmathanim.mathobjects.Text.*\n" +
+                "import com.jmathanim.mathobjects.Tippable.*\n" +
+                "import com.jmathanim.mathobjects.updaters.*\n" +
+                "import com.jmathanim.Animations.*\n" +
+                "import com.jmathanim.Animations.MathTransform.*\n" +
+                "import com.jmathanim.Animations.Strategies.*\n" +
+                "import com.jmathanim.Animations.Strategies.ShowCreation.*\n" +
+                "import com.jmathanim.Animations.Strategies.Transform.*\n" +
+                "import com.jmathanim.Animations.Strategies.Transform.Optimizers.*\n" +
+                "import com.jmathanim.Cameras.*\n" +
+                "import com.jmathanim.Constructible.*\n" +
+                "import com.jmathanim.Styling.*\n" +
+                "import com.jmathanim.Utils.*\n" +
+                "import com.jmathanim.Utils.Layouts.*\n" +
+                userCode;
+        return fullScript;
     }
     public static String removeFieldLines(String script) {
         return script.lines()

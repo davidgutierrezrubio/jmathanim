@@ -31,9 +31,9 @@ import com.jmathanim.mathobjects.Point;
  */
 public final class CTTangentPointCircle extends CTAbstractLine {
 
-    private CTPoint A;
-    private Line lineToDraw;
-    private CTAbstractCircle C;
+    private final CTPoint A;
+    private final Line lineToDraw;
+    private final CTAbstractCircle C;
     int numTangent;
 
     /**

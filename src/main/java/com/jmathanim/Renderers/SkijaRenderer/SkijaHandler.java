@@ -128,7 +128,7 @@ public abstract class SkijaHandler {
         //This should be done in Skija Thread
         canvas.clear(0xFFFFFFFF);//TODO: Add colors or background images
         cameraMatrix.clear();//Clear transform matrices from all cameras
-    };
+    }
 
     protected abstract boolean isPreviewWindowVisible();
 

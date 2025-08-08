@@ -33,7 +33,7 @@ import static com.jmathanim.jmathanim.JMathAnimScene.PI;
 public class LengthMeasure extends Delimiter {
 
     private final double hgap;
-    private MathObjectGroup delimiterShapeGroup;
+    private final MathObjectGroup delimiterShapeGroup;
 
     public enum TYPE {
         ARROW, SIMPLE

@@ -24,9 +24,9 @@ import static com.jmathanim.jmathanim.LogUtils.RESET;
 public class GroovyExecutor extends Scene2D {
 
     private final GroovyExecutor scene;
-    private String groovyScriptFilename;
-    private Binding binding;
-    private GroovyShell shell;
+    private final String groovyScriptFilename;
+    private final Binding binding;
+    private final GroovyShell shell;
     private String userCodeOriginal;
     private String userCode;
     private Script script = null;
@@ -197,7 +197,6 @@ public class GroovyExecutor extends Scene2D {
                 return null;
             }
 
-            ;
         };
 //        binding.setVariable("add", addClosure);
 

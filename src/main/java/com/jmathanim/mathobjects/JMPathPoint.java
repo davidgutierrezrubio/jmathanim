@@ -37,12 +37,12 @@ public class JMPathPoint extends MathObject implements Updateable, Stateable {
         VERTEX, INTERPOLATION_POINT
     }
 
-    public final Point p;
-    public final Point cpExit, cpEnter; // Entering control point (cpFrom) and exit control point (cpTo)
+    public final Point p; // The vertex point
+    public final Point cpExit, cpEnter; // Exit and Enter control points for Bezier curves
     public Vec cpExitvBackup, cpEntervBackup;// Backup values, to restore after removing interpolation points
 
     /**
-     * If false, segment ending in this point is not visible
+     * If false, the segment from the previous point to this one is not visible.
      */
     public boolean isThisSegmentVisible;
     public boolean isCurved;
@@ -150,6 +150,13 @@ public class JMPathPoint extends MathObject implements Updateable, Stateable {
         return resul;
     }
 
+    public boolean isSegmentToThisPointVisible() {
+        return isThisSegmentVisible;
+    }
+
+    public void setSegmentToThisPointVisible(boolean segmentToThisPointVisible) {
+        isThisSegmentVisible = segmentToThisPointVisible;
+    }
 
     @Override
     public void saveState() {
@@ -169,6 +176,14 @@ public class JMPathPoint extends MathObject implements Updateable, Stateable {
         pState.isThisSegmentVisible = this.isThisSegmentVisible;
         pState.isCurved = this.isCurved;
         pState.type = this.type;
+    }
+
+    public boolean isSegmentToThisPointCurved() {
+        return isCurved;
+    }
+
+    public void setSegmentToThisPointCurved(boolean curved) {
+        isCurved = curved;
     }
 
     @Override

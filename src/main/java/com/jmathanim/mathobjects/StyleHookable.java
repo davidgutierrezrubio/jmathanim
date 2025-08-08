@@ -32,51 +32,51 @@ public interface StyleHookable {
      *
      * @param color New color
      */
-    public void on_setDrawColor(PaintStyle color);
+    void on_setDrawColor(PaintStyle color);
 
     /**
      * Called when fill color is changed
      *
      * @param color New color
      */
-    public void on_setFillColor(PaintStyle color);
+    void on_setFillColor(PaintStyle color);
 
     /**
      * Called when draw alpha is changed
      *
      * @param alpha New alpha value
      */
-    public void on_setDrawAlpha(double alpha);
+    void on_setDrawAlpha(double alpha);
 
     /**
      * Called when fill alpha is changed
      *
      * @param alpha New alpha value
      */
-    public void on_setFillAlpha(double alpha);
+    void on_setFillAlpha(double alpha);
 
     /**
      * Called when thickness is changed.
      *
      * @param thickness New thickness value
      */
-    public void on_setThickness(double thickness);
+    void on_setThickness(double thickness);
 
     /**
      * Called when visible flag is changed
      *
      * @param visible The new visible flag value
      */
-    public void on_setVisible(boolean visible);
+    void on_setVisible(boolean visible);
 
     /**
      * Called when dash style is changed
      *
      * @param style New dash style
      */
-    public void on_setDashStyle(MODrawProperties.DashStyle style);
+    void on_setDashStyle(MODrawProperties.DashStyle style);
 
-    public void on_setLineCap(StrokeLineCap linecap);
+    void on_setLineCap(StrokeLineCap linecap);
 
-    public void on_setLineJoin(StrokeLineJoin linejoin);
+    void on_setLineJoin(StrokeLineJoin linejoin);
 }

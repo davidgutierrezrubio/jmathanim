@@ -105,6 +105,9 @@ public class Shape extends MathObject {
      * @return The created segment.
      */
     public static Shape segment(Point A, Point B, int numPoints) {
+       if (numPoints<2) {
+           numPoints=2;
+       }
         Point[] points=new Point[numPoints];
         points[0]=A;
         points[numPoints-1]=B;
@@ -243,7 +246,7 @@ public class Shape extends MathObject {
         for (int k = 0; k < numSegments; k++) {
             path.addJMPoint(jmp.copy().rotate(Point.origin(),k*step));
         }
-        path.get(0).isThisSegmentVisible=false;
+        path.get(0).isThisSegmentVisible =false;
         path.get(0).cpEnter.v.copyFrom(path.get(0).p.v);
         path.get(-1).cpExit.v.copyFrom(path.get(-1).p.v);
         Shape obj = new Shape(path);
@@ -471,7 +474,7 @@ public class Shape extends MathObject {
      * @return True if v lies inside of the shape (regardless of being filled or not). False otherwise.
      */
     public boolean containsPoint(Vec v) {
-        Camera dummyCamera = JMathAnimConfig.getConfig().getCamera();
+        Camera dummyCamera = JMathAnimConfig.getConfig().getFixedCamera();
         Path path = FXPathUtils.createFXPathFromJMPath(jmpath, dummyCamera);
         path.setFill(JMColor.parse("black").getFXColor()); // It's necessary that the javafx path is filled to work
         double[] xy = dummyCamera.mathToScreenFX(v);

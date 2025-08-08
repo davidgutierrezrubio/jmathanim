@@ -21,7 +21,10 @@ import com.jmathanim.Cameras.Camera3D;
 import com.jmathanim.Utils.AffineJTransform;
 import com.jmathanim.Utils.Anchor;
 import com.jmathanim.jmathanim.JMathAnimScene;
-import com.jmathanim.mathobjects.*;
+import com.jmathanim.mathobjects.MathObject;
+import com.jmathanim.mathobjects.Point;
+import com.jmathanim.mathobjects.Scalar;
+import com.jmathanim.mathobjects.hasArguments;
 
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
@@ -144,7 +147,7 @@ public class LaTeXMathObject extends AbstractLaTeXMathObject implements hasArgum
             //copy all variable values
             for (Map.Entry<Integer,Scalar> pair : copy.variables.entrySet()) {
                 variables.get(pair.getKey()).setScalar(pair.getValue().value);
-            };
+            }
         }
         
     }
