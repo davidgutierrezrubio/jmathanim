@@ -88,6 +88,7 @@ public class TwistTransform extends TransformShape2ShapeStrategy {
         lambdaForward = null;
         lambdaScalePivotal = null;
         lambdaShiftPivotal = null;
+        setDebugName("TwistTransform");
     }
 
     /**
@@ -182,12 +183,12 @@ public class TwistTransform extends TransformShape2ShapeStrategy {
         saveStates(getIntermediateObject());
 
         //Check that the pivotal segment number is appropiate
-        int sizeIntermediate = getIntermediateObject().size();
-        if (numPivotalSegment < 0 || numPivotalSegment >= sizeIntermediate) {
+        int pivotRange = getIntermediateObject().size()-1;
+        if (numPivotalSegment < 0 || numPivotalSegment >= pivotRange) {
             int oldN = numPivotalSegment;
             // The modulo operator can be negative in Java, so we add the size and take the modulo again
             // to ensure the result is always in the range [0, sizeIntermediate - 1].
-            this.numPivotalSegment = (numPivotalSegment % sizeIntermediate + sizeIntermediate) % sizeIntermediate;
+            this.numPivotalSegment = (numPivotalSegment % pivotRange + pivotRange) % pivotRange;
             JMathAnimScene.logger.warn("Pivotal segment " + oldN + " out of range. Reallocating to " + this.numPivotalSegment);
         }
 
