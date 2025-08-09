@@ -701,6 +701,68 @@ Animation anim = Commands.inverseIsomorphism(3, A, B, C, D, triangle);
 
 
 
+# TwistTransform
+Until now, the animations presented have sought to generate intermediate steps that are as natural as possible to transform object A into object B. The problem arises when you want to convert one object into another while respecting the measurements of the objects. For example, consider the classic problem of rectifying an arc of a circle. If we want to animate the process, it is natural that the total length of the arc should not vary as it is transformed into a straight segment. This cannot be achieved using point-to-point interpolation between the figures. That is why the TwistTransform animation was created.
+
+This animation, available from version 0.9.13, is designed to create a "realistic transform" of a `Shape` object `A` onto another `Shape` object `B`. Some limitations apply:
+* Both `A` and `B` must be shapes with straight segments.
+* They must have the same number of vertices
+* `A`or `B` must be open paths (more specifically, `A` and `B` can be closed, but the animation that is generated does not guarantee that the intermediate steps will show a closed figure).
+* Vertices from `A` and `B` must be properly "aligned" in the sense that first vertex of `A` will go to first vertex of `B`, etc.
+First, let's look at a simple example. We are going to convert a square into a segment. To do this, we will create a segment that has 5 points (the square will contain 5 points when opened) and the same measurements as the sides of the square. Point 0 of the segment and the square are located at the origin.
+```java
+Shape sq=Shape.square().drawColor("steelblue");
+Shape seg=Shape.segment(Point.at(0,0),Point.at(4,0),5)
+		.drawColor("firebrick");
+
+camera.centerAtObjects(sq, seg);
+camera.adjustToObjects(sq,seg);
+
+//Twist transform, 5 seconds, from sq to sqe, using point 0 as pivot point
+TwistTransform tr=TwistTransform.make(5,sq,seg,0);
+playAnimation(tr);
+```
+
+We will obtain an animation where a square unfolds into a segment. Lengths of sides are preserved.
+
+![twist01](twist01.gif)
+
+The last parameter of the animation, pivot point, is important, and choosing one or the other results in different effects.
+The animation consists of the following actions:
+
+* A shift animation is performed from the pivotal point of the source figure to the destination figure. In the case of the example, point 0 (lower left corner of the cube and left point of the segment, both in the same position).
+* The angles formed by the segments from the pivot point are progressively modified to match the angles of the destination figure. If lengths differ, each segment will be progressively adjust it size to the corresponding destiny segment.
+* The same is done with the segments before the pivot point.
+
+You can create a `TwistTransform` without specifying the pivotal point parameter, in which case an approximation of the midpoint `size()/2` will be used.
+
+All these 3 processes can be controlled exhaustively using lambdas. An example of this is shown in next section.
+
+Here is another example, where a semicircle is rectified. Note that the semicircle in this case is not formed by Bézier curves, but is a polygonal approximation generated with enough points to make it look curved (50 points).
+
+```java
+Shape semiCirc = Shape.arc(PI, 50);//Semicircunference with 50 points
+PathUtils.rectifyPath(semiCirc.getPath());//Delete all curvature
+
+//Note the segment goes from (0,0) to (-PI,0)
+//That is so first point of segment is in the right side, as the arc
+//If you use (PI,0) instead, the arc will "turn around" to match ending points
+Shape seg = Shape.segment(Point.at(0, 0), Point.at(-PI, 0), 50)
+    .drawColor("firebrick");
+
+//Put the segment under the arc, slightly apart
+seg.stackTo(semiCirc, Anchor.Type.LOWER, .25);
+
+camera.centerAtObjects(semiCirc, seg);
+camera.adjustToObjects(semiCirc, seg);
+
+TwistTransform tr = TwistTransform.make(5, semiCirc, seg);
+playAnimation(tr);
+```
+
+We obtain the following animation:
+
+![twist02](twist02.gif)
 
 # Transforming math expressions
 
