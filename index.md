@@ -21,8 +21,12 @@ Manual
 What's new?
 ===========
 
-Version 0.9.12-SNAPSHOT (07/04/2025) 
+Version 0.9.12 (09/08/2025) 
 
+* Project moved from OSSRH to Maven Central. See [here](manual/00_Installing/Installing.html) to update your maven file
+* Added `TwistTransform` animation intended to achieve distance-preserving transforms
+* Added optional parameter for `Shape.segment` to generate segments with a given number of points.
+* Improved arc/circle Shape creation.
 * Improved handling of `LabelTip`objects.
 * Fixed bugs for `Constructible`objects in `TwistAndScale` animation.
 * Added `addLengthLabel`and `addVecLabel` static build methods to `Delimiter`class that automatically create delimiters with length or vector coordinates that update automatically.
