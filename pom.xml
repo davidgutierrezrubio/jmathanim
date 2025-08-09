@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.github.davidgutierrezrubio</groupId>
     <artifactId>JMathAnim</artifactId>
-    <version>0.9.12-SNAPSHOT</version>
+    <version>0.9.13-SNAPSHOT</version>
     <packaging>jar</packaging>
     <name>JMathAnim</name>
     <description>A Java library to write mathematical animations</description>
@@ -12,7 +12,6 @@
         <connection>scm:git:git://github.com/davidgutierrezrubio/jmathanim.git</connection>
         <url>https://github.com/davidgutierrezrubio/jmathanim</url>
     </scm>
-    
     <licenses>
         <license>
             <name>General Public License 3.0</name>
@@ -625,6 +624,17 @@
                 <artifactId>maven-release-plugin</artifactId>
                 <version>3.0.1</version>
             </plugin>
+            <plugin>
+                <groupId>org.sonatype.central</groupId>
+                <artifactId>central-publishing-maven-plugin</artifactId>
+                <version>0.8.0</version>
+                <extensions>true</extensions>
+                <configuration>
+                    <publishingServerId>central</publishingServerId>
+                </configuration>
+            </plugin>
+
+
 <!--            <plugin>-->
 <!--                <groupId>org.apache.maven.plugins</groupId>-->
 <!--                <artifactId>maven-shade-plugin</artifactId>-->
@@ -651,15 +661,15 @@
         </plugins>
 
     </build>
-    <distributionManagement>
-        <snapshotRepository>
-            <id>ossrh</id>
-            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
-        </snapshotRepository>
-        <repository>
-            <id>ossrh</id>
-            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
-        </repository>
-    </distributionManagement>
+<!--    <distributionManagement>-->
+<!--        <snapshotRepository>-->
+<!--            <id>ossrh</id>-->
+<!--            <url>https://central.sonatype.org/content/repositories/snapshots</url>-->
+<!--        </snapshotRepository>-->
+<!--        <repository>-->
+<!--            <id>ossrh</id>-->
+<!--            <url>https://central.sonatype.org/service/local/staging/deploy/maven2/</url>-->
+<!--        </repository>-->
+<!--    </distributionManagement>-->
 
 </project>
