@@ -423,36 +423,44 @@ The exact flow of any animation is as follows:
 
 2) Initialization. In this method the states of all objects involved in the animation are stored (state at t=0)
 
-3) For each value of t, namely t', the `doAnim(t)` computes the actual frame of the animation. To do this:
+3) For each value of time parameter `t` from 0 to 1, the `doAnim(t)` computes the actual frame of the animation. To do this:
 
-   1) Restore all objects to its initial state t=0.
-   2) Apply the required transformations to recreate the animation at time t=t'.
+   1) Restore all objects to its initial state `t=0`.
+   2) Apply the required transformations to recreate the animation at time `t`.
 
 4) At the exit of the animation, the method `cleanAnimationAt(t)` performs the necessary cleaning operations, depending on the moment of the animation that we want to exit. For example, most transformation or creation animations use intermediate, auxiliary objects that should be deleted when exiting at the beginning or end.
 
 We recall specially the point 3). If we want to reuse the created animation in other context, the animation should be reinitializated, otherwise it will use the old object states from previous run. For example, suppose we have a rectangle we want to rotate 45 degrees and then rotate it back to its initial position. Suppose we want to simply use the same animation but using the lambda `reverse()` which plays backwards in time.
 ```java
 Shape sq=Shape.square().scale(2,1).center().style("solidgreen");
+LaTeXMathObject text = LaTeXMathObject.make("Forward...").stackToScreen(Anchor.Type.RLOWER, .1,.1);
+add(text);
 Animation rotate=Commands.rotate(2, 45*DEGREES, sq).setLambda(t->t);
 playAnimation(rotate);
 waitSeconds(1);
+text.setLaTeX("Reverse...");
 playAnimation(rotate.setLambda(UsefulLambdas.reverse()));
+text.setLaTeX("End");
 waitSeconds(1);
 ````
 The animation we got looks like this, which is not that we expected:
 
 ![resettingAnimations1](resettingAnimations1.gif)
 
-The problem lies in the second call to the `rotate` animation. After being called again, the animation reinitialises and saves the states of the animated objects (in this case the rectangle) according to its current state.
+The problem lies in the second call to the `rotate` animation. After being called again, the animation reinitializes and saves the states of the animated objects (in this case the rectangle) according to its current state.
 
-We can avoid the automatic reinitialisation of animations by simply setting the flag `setShouldResetAtFinish` to `false`
+We can avoid the automatic reinitialization of animations by simply setting the flag `setShouldResetAtFinish` to `false`
 ```java
 Shape sq=Shape.square().scale(2,1).center().style("solidgreen");
+LaTeXMathObject text = LaTeXMathObject.make("Forward...").stackToScreen(Anchor.Type.RLOWER, .1,.1);
+add(text);
 Animation rotate=Commands.rotate(2, 45*DEGREES, sq).setLambda(t->t);
 rotate.setShouldResetAtFinish(false);
 playAnimation(rotate);
 waitSeconds(1);
+text.setLaTeX("Reverse...");
 playAnimation(rotate.setLambda(UsefulLambdas.reverse()));
+text.setLaTeX("End");
 waitSeconds(1);
 ````
 The result is much better now, except for one small detail at the end...
@@ -463,12 +471,15 @@ The rectangle disappears at the end! Why does this happen? Well, sometimes JMath
 
 ```java
 Shape sq=Shape.square().scale(2,1).center().style("solidgreen");
-add(sq);
+LaTeXMathObject text = LaTeXMathObject.make("Forward...").stackToScreen(Anchor.Type.RLOWER, .1,.1);
+add(sq,text);
 Animation rotate=Commands.rotate(2, 45*DEGREES, sq).setLambda(t->t);
 rotate.setShouldResetAtFinish(false);
 playAnimation(rotate);
 waitSeconds(1);
+text.setLaTeX("Reverse...");
 playAnimation(rotate.setLambda(UsefulLambdas.reverse()));
+text.setLaTeX("End");
 waitSeconds(1);
 ````
 ![resettingAnimations1](resettingAnimations3.gif)
