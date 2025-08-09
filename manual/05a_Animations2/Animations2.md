@@ -370,6 +370,8 @@ public void runSketch() {
 
 ![lambdas04](lambdas04.gif)
 
+
+
 # Making procedural animations
 
 For procedural animations, we mean animations made "manually" by performing the modifications to the objects and advancing a frame, much like a stop motion artist would do. This method is needed for complex movements that cannot be done with the predefined animations. For this, the `JMathAnimScene`class has a protected variable, `dt`, that holds the time step for each frame. The `advanceFrame()`method does all the necessary procedures to create the frame and save it. For example, let's make a program that moves a point with uniformly random steps:

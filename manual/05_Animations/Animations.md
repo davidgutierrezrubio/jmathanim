@@ -704,11 +704,16 @@ Animation anim = Commands.inverseIsomorphism(3, A, B, C, D, triangle);
 # TwistTransform
 Until now, the animations presented have sought to generate intermediate steps that are as natural as possible to transform object A into object B. The problem arises when you want to convert one object into another while respecting the measurements of the objects. For example, consider the classic problem of rectifying an arc of a circle. If we want to animate the process, it is natural that the total length of the arc should not vary as it is transformed into a straight segment. This cannot be achieved using point-to-point interpolation between the figures. That is why the TwistTransform animation was created.
 
-This animation, available from version 0.9.13, is designed to create a "realistic transform" of a `Shape` object `A` onto another `Shape` object `B`. Some limitations apply:
+This animation, available from version 0.9.12, is designed to create a "realistic transform" of a `Shape` object `A` onto another `Shape` object `B`. Some limitations apply:
 * Both `A` and `B` must be shapes with straight segments.
+
 * They must have the same number of vertices
+
 * `A`or `B` must be open paths (more specifically, `A` and `B` can be closed, but the animation that is generated does not guarantee that the intermediate steps will show a closed figure).
+
 * Vertices from `A` and `B` must be properly "aligned" in the sense that first vertex of `A` will go to first vertex of `B`, etc.
+
+
 First, let's look at a simple example. We are going to convert a square into a segment. To do this, we will create a segment that has 5 points (the square will contain 5 points when opened) and the same measurements as the sides of the square. Point 0 of the segment and the square are located at the origin.
 ```java
 Shape sq=Shape.square().drawColor("steelblue");
