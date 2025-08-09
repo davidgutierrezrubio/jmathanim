@@ -285,4 +285,15 @@ public class PathUtils {
         return resul;
     }
 
+    /**
+     * Rectify given path, removing curvature flag and settings control points to curve points
+     * @param path Path to rectify
+     */
+    public static void rectifyPath(JMPath path) {
+        for (JMPathPoint jmp: path) {
+            jmp.isCurved=false;
+            jmp.cpEnter.v.copyFrom(jmp.p.v);
+            jmp.cpExit.v.copyFrom(jmp.p.v);
+        }
+    }
 }

@@ -55,6 +55,8 @@ public class TwistTransform extends TransformShape2ShapeStrategy {
      * indices). If null, the default animation timing is used.
      */
     private DoubleUnaryOperator lambdaForward;
+
+
     /**
      * A timing function to control the scaling (stretch/shrink) of the pivotal segment.
      * If null, the default animation timing is used.
@@ -171,9 +173,7 @@ public class TwistTransform extends TransformShape2ShapeStrategy {
     public boolean doInitialization() {
         super.doInitialization();
 
-        if (getOriginObject().size() != getDestinyObject().size()) {
-            JMathAnimScene.logger.warn("Origin path size is " + getOriginObject().size() + " and destiny path size is " + getDestinyObject().size() + ". Animation will be distorted");
-        }
+
 
 
         // The intermediate object is a copy of the origin that will be modified during the animation.
@@ -181,6 +181,11 @@ public class TwistTransform extends TransformShape2ShapeStrategy {
         getIntermediateObject().getPath().openPath(); // Open path to allow independent segment manipulation
         getIntermediateObject().setObjectLabel("intermediate");
         saveStates(getIntermediateObject());
+
+        if (getIntermediateObject().size() != getDestinyObject().size()) {
+            JMathAnimScene.logger.warn("Origin path size is " + getOriginObject().size() + " and destiny path size is " + getDestinyObject().size() + ". Animation will be distorted");
+        }
+
 
         //Check that the pivotal segment number is appropiate
         int pivotRange = getIntermediateObject().size()-1;
