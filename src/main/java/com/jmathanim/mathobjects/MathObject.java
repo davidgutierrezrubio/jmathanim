@@ -86,6 +86,8 @@ public abstract class MathObject implements Drawable, Updateable, Stateable, Box
         updaters = new ArrayList<>();
     }
 
+
+
     public Camera getCamera() {
         return camera;
     }
@@ -339,7 +341,7 @@ public abstract class MathObject implements Drawable, Updateable, Stateable, Box
      * @param obj The object to copy state from.
      */
     public void copyStateFrom(MathObject obj) {
-        if (obj==null) return;
+        if (obj == null) return;
         this.setCamera(obj.getCamera());
         this.getMp().copyFrom(obj.getMp());
         if (this.getRendererEffects() != null) {
@@ -817,7 +819,6 @@ public abstract class MathObject implements Drawable, Updateable, Stateable, Box
         return (T) this;
     }
 
-
     /**
      * Registers an updater for the current MathObject instance.
      * <p>
@@ -834,7 +835,6 @@ public abstract class MathObject implements Drawable, Updateable, Stateable, Box
         setUpdateLevel(getUpdateLevel());//Refresh update level (TODO: check possible infinite recursion problems)
         return (T) this;
     }
-
 
     // Updateable methods
     @Override

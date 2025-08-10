@@ -140,8 +140,8 @@ public class AnimationGroup extends AnimationWithEffects implements Linkable {
     public boolean doInitialization() {
 
         int size = animations.size();
-        if (!"".equals(getDebugName())) {
-            setDebugName("Animation group with " + size + " animations");
+        if ("".equals(getDebugName())) {
+            setDebugName("AnimationGroup with " + size + " animations");
         }
         int k = 0;
 

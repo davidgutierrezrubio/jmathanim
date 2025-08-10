@@ -173,9 +173,6 @@ public class TwistTransform extends TransformShape2ShapeStrategy {
     public boolean doInitialization() {
         super.doInitialization();
 
-
-
-
         // The intermediate object is a copy of the origin that will be modified during the animation.
         setIntermediate(getOriginObject().copy());
         getIntermediateObject().getPath().openPath(); // Open path to allow independent segment manipulation
@@ -183,7 +180,7 @@ public class TwistTransform extends TransformShape2ShapeStrategy {
         saveStates(getIntermediateObject());
 
         if (getIntermediateObject().size() != getDestinyObject().size()) {
-            JMathAnimScene.logger.warn("Origin path size is " + getOriginObject().size() + " and destiny path size is " + getDestinyObject().size() + ". Animation will be distorted");
+            JMathAnimScene.logger.warn("Origin path size is " + getIntermediateObject().size() + " and destiny path size is " + getDestinyObject().size() + ". Animation will be distorted");
         }
 
 

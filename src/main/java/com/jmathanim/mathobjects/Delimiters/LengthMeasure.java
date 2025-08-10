@@ -20,9 +20,7 @@ package com.jmathanim.mathobjects.Delimiters;
 import com.jmathanim.Utils.AffineJTransform;
 import com.jmathanim.Utils.Anchor;
 import com.jmathanim.Utils.UsefulLambdas;
-import com.jmathanim.mathobjects.MathObjectGroup;
-import com.jmathanim.mathobjects.Point;
-import com.jmathanim.mathobjects.Shape;
+import com.jmathanim.mathobjects.*;
 
 import static com.jmathanim.jmathanim.JMathAnimScene.PI;
 
@@ -54,7 +52,7 @@ public class LengthMeasure extends Delimiter {
     }
     @Override
     protected MathObjectGroup buildDelimiterShape() {
-        delimiterLabelToDraw = delimiterLabel.copy();
+        delimiterLabelToDraw = MathObjectUtils.getSafeCopyOf(delimiterLabel);
         double width = A.to(B).norm();
         double angle = A.to(B).getAngle();
         Point AA = Point.at(0, 0);
@@ -77,32 +75,40 @@ public class LengthMeasure extends Delimiter {
         }
         Shape verticalBar = Shape.polyLine(Point.at(xOffset, -vCenter), Point.at(0, 0), Point.at(xOffset, vCenter));
         delimiterShapeGroup.add(verticalBar);
-        double segmentLength = .5 * (width - delimiterLabelToDraw.getWidth()) - gapToUse;
-//        segmentLength*=amplitudeScale;
-        final Shape segment = Shape.segment(Point.at(0, 0), Point.at(segmentLength, 0));
-        delimiterShapeGroup.add(segment);
 
-        //Manages rotation of label
-        switch (rotateLabel) {
-            case FIXED:
-                delimiterLabelToDraw.rotate(-angle);
-                break;
-            case ROTATE:
-                break;
-            case SMART:
-                if ((angle > .5 * PI) && (angle < 1.5 * PI)) {
-                    delimiterLabelToDraw.rotate(PI);
-                }
+        if (delimiterLabelToDraw instanceof  NullMathObject) {
+            final Shape segment = Shape.segment(Point.at(0, 0), Point.at(width, 0));
+            delimiterShapeGroup.add(segment);
         }
+        else {
+            double segmentLength = .5 * (width - delimiterLabelToDraw.getWidth()) - gapToUse;
+//        segmentLength*=amplitudeScale;
+            final Shape segment = Shape.segment(Point.at(0, 0), Point.at(segmentLength, 0));
+            delimiterShapeGroup.add(segment);
 
-        delimiterLabelToDraw.stackTo(segment, Anchor.Type.RIGHT, gapToUse);
+            //Manages rotation of label
+            switch (rotateLabel) {
+                case FIXED:
+                    delimiterLabelToDraw.rotate(-angle);
+                    break;
+                case ROTATE:
+                    break;
+                case SMART:
+                    if ((angle > .5 * PI) && (angle < 1.5 * PI)) {
+                        delimiterLabelToDraw.rotate(PI);
+                    }
+            }
 
-        labelMarkPoint.v.copyFrom(delimiterLabelToDraw.getCenter().v);
-        delimiterShapeGroup.add(segment.copy().stackTo(delimiterLabelToDraw, Anchor.Type.RIGHT, gapToUse));
+            delimiterLabelToDraw.stackTo(segment, Anchor.Type.RIGHT, gapToUse);
+
+            labelMarkPoint.v.copyFrom(delimiterLabelToDraw.getCenter().v);
+            delimiterShapeGroup.add(segment.copy().stackTo(BB, Anchor.Type.LEFT));
+            delimiterLabelToDraw.shift(0, +gap * amplitudeScale);
+            delimiterLabelToDraw.scale(amplitudeScale);
+        }
         delimiterShapeGroup.add(verticalBar.copy().scale(Point.at(0, 0), -1, 1).shift(width, 0));
-        delimiterShapeGroup.shift(0, vCenter + gap * amplitudeScale);
-        delimiterLabelToDraw.shift(0, vCenter + gap * amplitudeScale);
-        delimiterLabelToDraw.scale(amplitudeScale);
+        delimiterShapeGroup.shift(0, +gap * amplitudeScale);
+
         delimiterShapeGroup.scale(amplitudeScale);
         delimiterShapeGroup.getMp().copyFrom(mpDelimiter);
         AffineJTransform tr = AffineJTransform.createDirect2DIsomorphic(AA, BB, A, B, 1);
