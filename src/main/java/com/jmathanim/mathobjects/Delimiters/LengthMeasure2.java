@@ -90,23 +90,22 @@ public class LengthMeasure2 extends Delimiter2 {
             Shape segCopy = segment.copy().stackTo(BB, Anchor.Type.LEFT);
             delimiterShapeToDraw.getPath().addJMPointsFrom(segCopy.getPath());
             delimiterLabelToDraw.shift(0, +gap * amplitudeScale);
-            delimiterLabelToDraw.scale(amplitudeScale);
+
             delimiterLabelToDraw.getMp().copyFrom(mpDelimiter.get(1));
         }
         Shape vertCopy = verticalBar.copy().scale(Point.at(0, 0), -1, 1).shift(width, 0);
         delimiterShapeToDraw.getPath().addJMPointsFrom(vertCopy.getPath());
         delimiterShapeToDraw.shift(0, +gap * amplitudeScale);
 
-        delimiterShapeToDraw.scale(amplitudeScale);
 
-        delimiterShapeToDraw.getMp().copyFrom(mpDelimiterShape);
+//        delimiterShapeToDraw.getMp().copyFrom(mpDelimiterShape);
 
-        if (amplitudeScale!=1) {
-
+        if (amplitudeScale != 1) {
+            delimiterShapeToDraw.scale(amplitudeScale);
+            delimiterLabelToDraw.scale(amplitudeScale);
             delimiterShapeToDraw.thickness(thicknessShape * amplitudeScale);
-        }else
-        {
-            thicknessShape=mpDelimiterShape.getThickness();
+        } else {
+            thicknessShape = mpDelimiterShape.getThickness();
         }
         delimiterShapeToDraw.fillAlpha(0);
         AffineJTransform tr = AffineJTransform.createDirect2DIsomorphic(AA, BB, A, B, 1);
