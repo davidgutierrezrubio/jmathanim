@@ -50,7 +50,7 @@ public class CTPointOnObject extends CTPoint {
     public void rebuildShape() {
         Vec projectionPointCoordinates= owner.getHoldCoordinates(this.v);
         this.v.copyFrom(projectionPointCoordinates);
-        if (!isThisMathObjectFree()) {
+        if (!isFreeMathObject()) {
             p.v.copyFrom(projectionPointCoordinates);
         }
     }

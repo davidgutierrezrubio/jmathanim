@@ -8,28 +8,35 @@ import com.jmathanim.Utils.JMathAnimConfig;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.*;
 import com.jmathanim.mathobjects.Text.LaTeXMathObject;
+import com.jmathanim.mathobjects.Text.TextUpdaters.CountUpdaterFactory;
+import com.jmathanim.mathobjects.Text.TextUpdaters.LengthUpdaterFactory;
+import com.jmathanim.mathobjects.Text.TextUpdaters.TextUpdaterFactory;
 import com.jmathanim.mathobjects.updaters.Updater;
 
 public abstract class Delimiter2 extends Constructible {
     public final Point labelMarkPoint;
     protected final Point A;
     protected final Point B;
-
-    protected double amplitudeScale;
-    protected MathObject delimiterLabel;
-    protected MathObject delimiterLabelToDraw;
     protected final Shape delimiterShapeToDraw;
-
     protected final MODrawProperties mpDelimiterShape;
     protected final MODrawPropertiesArrayMP mpDelimiter;
-
+    /**
+     * Elements created to be sent to the renderer.
+     * Usually one Shape (delimiter) and optionally a MathObject as Label
+     */
+    protected final MathObjectGroup groupElementsToBeDrawn;
+    public MathObject delimiterLabelToDraw;
+    protected double amplitudeScale;
+    protected MathObject delimiterLabel;
+    protected TextUpdaterFactory textUpdaterFactory;
     protected double labelMarkGap;
     protected Delimiter.Rotation rotateLabel;
-
-    protected final MathObjectGroup delimiterGroupElements;
-
     protected double delimiterScale;
     protected double minimumWidthToShrink;
+
+    /**
+     * Type of delimiter to draw (bracket, parenthesis, length_arrow, etc.)
+     */
     protected Delimiter2.Type type;
     /**
      * Gap to apply between control points and delimiter
@@ -44,15 +51,14 @@ public abstract class Delimiter2 extends Constructible {
         this.type = type;
         this.gap = gap;
 
-        this.delimiterShapeToDraw =new Shape();
+        this.delimiterShapeToDraw = new Shape();
         this.mpDelimiterShape = (MODrawProperties) this.delimiterShapeToDraw.getMp();
 
 
-        this.mpDelimiter=new MODrawPropertiesArrayMP();
+        this.mpDelimiter = new MODrawPropertiesArrayMP();
         this.mpDelimiter.add(mpDelimiterShape);
 
         this.mpDelimiter.loadFromStyle("DEFAULT");
-
 
 
         labelMarkPoint = Point.at(0, 0);
@@ -60,7 +66,8 @@ public abstract class Delimiter2 extends Constructible {
         this.delimiterLabel = new NullMathObject();
 
 
-        delimiterGroupElements =MathObjectGroup.make(this.delimiterShapeToDraw);
+        groupElementsToBeDrawn = MathObjectGroup.make();
+        groupElementsToBeDrawn.addWithKey("shape", this.delimiterShapeToDraw);
 
         delimiterScale = 1;
         amplitudeScale = 1;
@@ -106,7 +113,7 @@ public abstract class Delimiter2 extends Constructible {
 
     @Override
     public MathObject getMathObject() {
-        return delimiterGroupElements;
+        return groupElementsToBeDrawn;
     }
 
     @Override
@@ -150,6 +157,7 @@ public abstract class Delimiter2 extends Constructible {
      */
     public <T extends Delimiter2> T setAmplitudeScale(double amplitudeScale) {
         this.amplitudeScale = amplitudeScale;
+        this.buildDelimiterShape();
         return (T) this;
     }
 
@@ -166,11 +174,23 @@ public abstract class Delimiter2 extends Constructible {
         getMp().copyFrom(obj.getMp());
         this.labelMarkGap = del.labelMarkGap;
         this.mpDelimiter.copyFrom(del.mpDelimiter);
-         delimiterShapeToDraw.copyStateFrom(del.delimiterShapeToDraw);
+        delimiterShapeToDraw.copyStateFrom(del.delimiterShapeToDraw);
+        delimiterLabelToDraw = del.delimiterLabelToDraw.copy();
         if (del.delimiterLabel != null) {
-            setLabel(del.getLabel().copy(), del.labelMarkGap);
+
+            if (del.textUpdaterFactory instanceof LengthUpdaterFactory) {
+                addLengthLabel(del.labelMarkGap, del.textUpdaterFactory.getFormat());
+            } else if (del.textUpdaterFactory instanceof CountUpdaterFactory) {
+                addCountLabel(del.labelMarkGap,((CountUpdaterFactory)del.textUpdaterFactory).getObjectToCount());
+            }
+            else
+            {
+                setLabel(del.getLabel().copy(), del.labelMarkGap);
+            }
             getLabel().getMp().copyFrom(del.getLabel().getMp());
         }
+        rotateLabel = del.rotateLabel;
+        minimumWidthToShrink = del.minimumWidthToShrink;
         amplitudeScale = del.amplitudeScale;
         delimiterScale = del.delimiterScale;
     }
@@ -178,12 +198,22 @@ public abstract class Delimiter2 extends Constructible {
 
     @Override
     public void rebuildShape() {
-        if (!isThisMathObjectFree()) {
+        if (!isFreeMathObject()) {
             buildDelimiterShape();
         }
     }
 
     protected abstract void buildDelimiterShape();
+
+    public void debugInfo() {
+//    System.out.println(this.getObjectLabel()+":  groupElementsToBeDrawn size: "+groupElementsToBeDrawn.size());
+//    System.out.println(this.getObjectLabel()+":  is Label a NullMathObject: "+(groupElementsToBeDrawn.get(1) instanceof  NullMathObject));
+//    System.out.println(this.getObjectLabel()+":  is FreeMathObject: "+this.isFreeMathObject());
+//    for (MathObject o: groupElementsToBeDrawn) {
+//        System.out.println(this.getObjectLabel()+":  groupElementsToBeDrawn elements: "+o);
+//    }
+        System.out.println(this.delimiterShapeToDraw.getMp() + " " + this.mpDelimiterShape);
+    }
 
 
     public Delimiter2 setLabel(String text, double labelGap) {
@@ -194,11 +224,14 @@ public abstract class Delimiter2 extends Constructible {
         this.labelMarkGap = labelGap;
         this.delimiterLabel = label;
 
-        if (this.mpDelimiter.size()==2) {
+        if (this.mpDelimiter.size() == 2) {
             this.mpDelimiter.getMpArray().remove(1);
         }
         this.mpDelimiter.add(label.getMp());
 
+
+        groupElementsToBeDrawn.clear();
+        groupElementsToBeDrawn.add(delimiterLabelToDraw, delimiterShapeToDraw);
         return (T) this;
     }
 
@@ -212,18 +245,12 @@ public abstract class Delimiter2 extends Constructible {
      */
     public LaTeXMathObject addLengthLabel(double gap,
                                           String format) {
-        setLabel("${#0}$", .1);
+        setLabel("${#0}$", gap);
         LaTeXMathObject t = (LaTeXMathObject) getLabel();
         t.setArgumentsFormat(format);
 
-        Updater updater = new Updater() {
-            @Override
-            public void update(JMathAnimScene scene) {
-                t.getArg(0).setScalar(A.to(B).norm());
-
-            }
-        };
-        t.registerUpdater(updater);
+        textUpdaterFactory = new LengthUpdaterFactory(scene, t, A, B, format);
+        t.registerUpdater(textUpdaterFactory.getUpdater());
         JMathAnimScene scene = JMathAnimConfig.getConfig().getScene();
         t.update(scene);
         rebuildShape();
@@ -242,22 +269,12 @@ public abstract class Delimiter2 extends Constructible {
      * @param mg  The MathObjectGroup whose size will be counted and displayed in the label.
      * @return The label as a LaTeXMathObject that shows the count of objects in the group.
      */
-    public LaTeXMathObject addCountLabel(double gap, MathObjectGroup mg) {
+    public LaTeXMathObject addCountLabel(double gap, Object objectToCount) {
         setLabel("${#0}$", .1);
         LaTeXMathObject t = (LaTeXMathObject) getLabel();
         t.setArgumentsFormat("#");
-        t.registerUpdater(new Updater() {
-//            @Override
-//            public int computeUpdateLevel() {
-//                return Math.max(A.getUpdateLevel(), B.getUpdateLevel()) + 1;
-//            }
-
-            @Override
-            public void update(JMathAnimScene scene) {
-                t.getArg(0).setScalar(mg.size());
-
-            }
-        });
+        textUpdaterFactory=new CountUpdaterFactory(scene,t,objectToCount,"#");
+        t.registerUpdater(textUpdaterFactory.getUpdater());
         t.update(JMathAnimConfig.getConfig().getScene());
         return (LaTeXMathObject) getLabel();
     }

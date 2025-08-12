@@ -65,7 +65,7 @@ public class CTLaTeX extends Constructible {
 
     @Override
     public void rebuildShape() {
-        if (!isThisMathObjectFree()) {
+        if (!isFreeMathObject()) {
             if (anchor.v.isNaN()) {
                 //If anchor is NaN point, to prevent the shape to be completely NaN
                 //we made it invisible

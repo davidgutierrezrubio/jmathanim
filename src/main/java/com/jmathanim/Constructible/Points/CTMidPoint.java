@@ -112,7 +112,7 @@ public class CTMidPoint extends CTPoint {
                 v.z = .5 * (A.v.z + B.v.z);
                 break;
         }
-        if (!isThisMathObjectFree()) {
+        if (!isFreeMathObject()) {
             p.v.copyFrom(v);
         }
     }

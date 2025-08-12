@@ -146,7 +146,7 @@ public class CTLine extends CTAbstractLine {
                 P1.v.copyFrom(A.v);
                 P2.v.copyFrom(A.v.add(dir.getDirection()));
         }
-        if (!isThisMathObjectFree()) {
+        if (!isFreeMathObject()) {
             lineToDraw.getP1().v.copyFrom(P1.v);
             lineToDraw.getP2().v.copyFrom(P2.v);
         }

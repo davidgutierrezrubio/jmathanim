@@ -215,7 +215,7 @@ public class Point extends MathObject {
         if (isVisible()) {
             dotShape.draw(scene, r, cam);
         }
-        scene.markAsAlreadyDrawed(this);
+        scene.markAsAlreadydrawn(this);
 
     }
 

@@ -85,7 +85,7 @@ public abstract class JMathAnimScene {
      * List of sceneObjects which needs to be drawn on the screen
      */
     private final ArrayList<MathObject> sceneObjects;
-    private final HashSet<MathObject> objectsAlreadyDrawed;
+    private final HashSet<MathObject> objectsAlreadydrawn;
     /**
      * Links to be executed, right before the updates
      */
@@ -151,7 +151,7 @@ public abstract class JMathAnimScene {
     public JMathAnimScene() {
         scene=this;
         sceneObjects = new ArrayList<>();
-        objectsAlreadyDrawed = new HashSet<>();
+        objectsAlreadydrawn = new HashSet<>();
         config = JMathAnimConfig.getConfig();
         config.setLowQuality();
         linksToBeDone = new ArrayList<>();
@@ -404,7 +404,7 @@ public abstract class JMathAnimScene {
      * Objects are sorted by layer, so that lower layers means drawing under.
      */
     protected final void doDraws() {
-        objectsAlreadyDrawed.clear();
+        objectsAlreadydrawn.clear();
         doUpdates();
         doLinks();
 
@@ -413,9 +413,9 @@ public abstract class JMathAnimScene {
             sceneObjects.sort((MathObject o1, MathObject o2) -> o1.getLayer().compareTo(o2.getLayer()));
             for (MathObject obj : sceneObjects) {
                 if (obj.isVisible()) {
-                    if (!isAlreadyDrawed(obj)) {
+                    if (!isAlreadydrawn(obj)) {
                         obj.draw(this, renderer, obj.getCamera());
-                        markAsAlreadyDrawed(obj);
+                        markAsAlreadydrawn(obj);
                     }
                 }
             }
@@ -761,22 +761,22 @@ public abstract class JMathAnimScene {
     }
 
     /**
-     * Check if a MathObject is already drawed in the current frame
+     * Check if a MathObject is already drawn in the current frame
      *
      * @param obj MathObject to check
-     * @return True if is already drawed, false otherwise
+     * @return True if is already drawn, false otherwise
      */
-    public boolean isAlreadyDrawed(MathObject obj) {
-        return objectsAlreadyDrawed.contains(obj);
+    public boolean isAlreadydrawn(MathObject obj) {
+        return objectsAlreadydrawn.contains(obj);
     }
 
     /**
-     * Mark a MathObject as drawed in the current frame
+     * Mark a MathObject as drawn in the current frame
      *
      * @param obj MathObject to mark
      */
-    public void markAsAlreadyDrawed(MathObject obj) {
-        objectsAlreadyDrawed.add(obj);
+    public void markAsAlreadydrawn(MathObject obj) {
+        objectsAlreadydrawn.add(obj);
     }
 
     /**

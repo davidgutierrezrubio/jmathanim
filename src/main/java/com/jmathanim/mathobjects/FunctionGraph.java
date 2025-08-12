@@ -301,7 +301,7 @@ public class FunctionGraph extends Shape implements hasScalarParameter, shouldUd
     }
 
     /**
-     * Adds an abscise value to be explicitely drawed in the graph. This may
+     * Adds an abscise value to be explicitely drawn in the graph. This may
      * prevent distorst of the graph when a singular point is not evaluated. For
      * example abs(x-PI) has a singular point at PI that needs to be evaluated
      * in order to avoid "rounded corners".

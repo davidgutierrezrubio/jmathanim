@@ -232,7 +232,7 @@ public class CTCircle extends CTAbstractCircle {
 //        circleToDraw.getPath().jmPathPoints.clear();
 //        circleToDraw.getPath().addJMPointsFrom(originalCircle.copy().getPath());
 
-        if (!isThisMathObjectFree()) {
+        if (!isFreeMathObject()) {
             for (int i = 0; i < circleToDraw.size(); i++) {
                 JMPathPoint get = circleToDraw.get(i);
                 get.copyFrom(originalCircle.get(i));

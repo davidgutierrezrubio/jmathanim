@@ -87,4 +87,9 @@ public class NullMathObject extends Constructible {
     public boolean isVisible() {
         return false;
     }
+
+    @Override
+    public String toString() {
+        return "NullMathObject()";
+    }
 }

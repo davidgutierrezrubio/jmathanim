@@ -123,7 +123,7 @@ public class CTRegularPolygon extends Constructible {
             generatedPoints.get(k).v.copyFrom(origPolygon.get(k).p.v.copy().applyAffineTransform(tr));
         }
 
-        if (!isThisMathObjectFree()) {
+        if (!isFreeMathObject()) {
             for (int k = 0; k < nSides; k++) {
                 poligonToView.get(k).p.v.copyFrom(generatedPoints.get(k).v);
             }

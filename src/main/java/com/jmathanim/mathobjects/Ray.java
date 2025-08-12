@@ -174,7 +174,7 @@ public class Ray extends Shape implements HasDirection {
         if (isVisible()) {
             visiblePiece.draw(scene, r,cam);
         }
-        scene.markAsAlreadyDrawed(this);
+        scene.markAsAlreadydrawn(this);
     }
 
     /**

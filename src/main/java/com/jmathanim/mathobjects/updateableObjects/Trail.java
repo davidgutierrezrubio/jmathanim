@@ -23,7 +23,7 @@ import com.jmathanim.mathobjects.MathObject;
 import com.jmathanim.mathobjects.Shape;
 
 /**
- * Shape representing the trail drawed by a moving a point
+ * Shape representing the trail drawn by a moving a point
  *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */

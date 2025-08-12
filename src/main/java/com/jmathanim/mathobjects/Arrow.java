@@ -216,7 +216,7 @@ public class Arrow extends Constructible {
         }
         //The distScale manages which scale should be the arrow drawn. It is used mostly by ShowCreation animation
 
-        if (!isThisMathObjectFree()) {
+        if (!isFreeMathObject()) {
             Acopy.v.copyFrom(A.v);
             Bcopy.v.copyFrom(A.interpolate(B, getAmplitudeScale()).v);
         }
@@ -380,7 +380,7 @@ public class Arrow extends Constructible {
             this.gapB = ar.gapB;
             this.baseDist1 = ar.baseDist1;
             this.baseDist2 = ar.baseDist2;
-            this.freeMathObject(ar.isThisMathObjectFree());
+            this.setFreeMathObject(ar.isFreeMathObject());
 
 
             JMPath copyPath = ar.head1.getPath().copy();
@@ -484,7 +484,7 @@ public class Arrow extends Constructible {
 
         Acopy.applyAffineTransform(tr);
         Bcopy.applyAffineTransform(tr);
-        if (!isThisMathObjectFree()) {
+        if (!isFreeMathObject()) {
             A.applyAffineTransform(tr);
             B.applyAffineTransform(tr);
         }

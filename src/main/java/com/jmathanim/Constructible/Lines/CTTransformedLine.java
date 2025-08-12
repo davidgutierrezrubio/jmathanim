@@ -126,7 +126,7 @@ public class CTTransformedLine extends CTAbstractLine {
         getP2().v.copyFrom(lineToTransform.getP2().v);
         getP1().v.applyAffineTransform(tr);
         getP2().v.applyAffineTransform(tr);
-        if (!isThisMathObjectFree()) {
+        if (!isFreeMathObject()) {
             lineToDraw.getP1().v.copyFrom(getP1().v);
             lineToDraw.getP2().v.copyFrom(getP2().v);
         }

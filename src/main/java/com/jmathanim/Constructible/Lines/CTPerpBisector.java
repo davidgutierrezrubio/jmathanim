@@ -71,7 +71,7 @@ public class CTPerpBisector extends CTAbstractLine {
         getP1().v.copyFrom(A.v.interpolate(B.v, .5));
         Vec v = A.to(B);
         getP2().v.copyFrom(Vec.to(getP1().v.x - v.y, getP1().v.y + v.x));
-        if (!isThisMathObjectFree()) {
+        if (!isFreeMathObject()) {
             lineToDraw.getP1().v.copyFrom(P1.v);
             lineToDraw.getP2().v.copyFrom(P2.v);
         }

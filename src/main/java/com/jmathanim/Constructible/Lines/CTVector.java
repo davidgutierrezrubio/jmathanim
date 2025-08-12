@@ -99,7 +99,7 @@ public class CTVector extends CTAbstractLine {
     public void rebuildShape() {
         this.P1.v.copyFrom(this.A.v);
         this.P2.v.copyFrom(this.B.v);
-        if (!isThisMathObjectFree()) {
+        if (!isFreeMathObject()) {
             arrowToDraw.getStart().v.copyFrom(this.P1.v);
             arrowToDraw.getEnd().v.copyFrom(this.P2.v);
         }

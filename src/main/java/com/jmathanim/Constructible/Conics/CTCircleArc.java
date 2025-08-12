@@ -116,7 +116,7 @@ public class CTCircleArc extends CTAbstractCircle {
         Vec v1 = center.to(A);
         Vec v2 = center.to(B);
 
-        if (!isThisMathObjectFree()) {
+        if (!isFreeMathObject()) {
             double angle = v2.getAngle() - v1.getAngle();
             if (angle < 0) {
                 angle += 2 * PI;

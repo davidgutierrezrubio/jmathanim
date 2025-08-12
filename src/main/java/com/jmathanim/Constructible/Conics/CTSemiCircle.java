@@ -117,7 +117,7 @@ public class CTSemiCircle extends CTAbstractCircle{
     @Override
     public void rebuildShape() {
         AffineJTransform tr = AffineJTransform.createDirect2DIsomorphic(Point.at(-1, 0), Point.at(1, 0), new Point(A.v), new Point(B.v), 1);
-        if (!isThisMathObjectFree()) {
+        if (!isFreeMathObject()) {
             for (int i = 0; i < arcTODraw.size(); i++) {
                 arcTODraw.get(i).copyFrom(arcTODrawOrig.get(i));
             }

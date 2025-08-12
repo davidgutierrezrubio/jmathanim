@@ -675,7 +675,7 @@ public class Shape extends MathObject {
 
     /**
      * Returns the convex flag for this shape. This flag is false by default but can be manually changed. Convex shapes
-     * can be drawed using simpler, faster algorithms.
+     * can be drawn using simpler, faster algorithms.
      *
      * @return True if the shape is convex, false if it is concave.
      */

@@ -150,7 +150,7 @@ public class CTTransformedCircle extends CTCircle {
         getCircleCenter().v.copyFrom(vv);
         this.radius.setScalar(circleToTransform.radius.getScalar());
         getCircleCenter().v.applyAffineTransform(tr);
-        if (!isThisMathObjectFree()) {
+        if (!isFreeMathObject()) {
             for (int i = 0; i < circleToDraw.size(); i++) {
                 JMPathPoint get = circleToDraw.get(i);
                 get.copyFrom(originalCircle.get(i));

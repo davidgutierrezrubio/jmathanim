@@ -117,7 +117,7 @@ public class CTMirrorPoint extends CTPoint {
         }
         this.v.copyFrom(originalPoint.v);
         this.v.applyAffineTransform(tr);
-        if (!isThisMathObjectFree()) {
+        if (!isFreeMathObject()) {
             p.v.copyFrom(v);
         }
     }

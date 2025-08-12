@@ -103,7 +103,7 @@ public class CTSegment extends CTAbstractLine implements hasScalarParameter {
     public void rebuildShape() {
         this.P1.v.copyFrom(this.A.v);
         this.P2.v.copyFrom(this.B.v);
-        if (!isThisMathObjectFree()) {
+        if (!isFreeMathObject()) {
             segmentToDraw.get(0).p.v.copyFrom(this.P1.v);
             segmentToDraw.get(1).p.v.copyFrom(this.P2.v);
         }

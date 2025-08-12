@@ -114,7 +114,7 @@ public abstract class AbstractTippableObject extends Constructible implements ha
 
     @Override
     public Constructible applyAffineTransform(AffineJTransform transform) {
-        if (isThisMathObjectFree()) {
+        if (isFreeMathObject()) {
             getMathObject().applyAffineTransform(transform);
         } else {
             refMathObject.applyAffineTransform(transform);
@@ -159,7 +159,7 @@ public abstract class AbstractTippableObject extends Constructible implements ha
 
     @Override
     public void rebuildShape() {
-        if (isThisMathObjectFree()) {
+        if (isFreeMathObject()) {
             return;
 
         }
