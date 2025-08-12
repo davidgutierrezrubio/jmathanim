@@ -143,6 +143,7 @@ public class MODrawProperties implements Stylable, Stateable {
         drawColor = new JMColor(1, 1, 1, 1);
         fillColor = new JMColor(0, 0, 0, 0);
         faceToCamera = false;
+        setVisible(true);
     }
 
     /**

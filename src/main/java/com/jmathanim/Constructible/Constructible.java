@@ -25,13 +25,12 @@ import com.jmathanim.Utils.AffineJTransform;
 import com.jmathanim.Utils.Rect;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.MathObject;
+import com.jmathanim.mathobjects.MathObjectGroup;
 
 /**
- * This class representas a constructible object, derived from another ones. For
- * example a circle that pass for 3 points is a constructible object. It cannot
- * be transformed nor animated by itself, only changing the objects from which
- * depend. It acts as a container of a MathObject that will be updated and
- * drawed every frame.
+ * This class representas a constructible object, derived from another ones. For example a circle that pass for 3 points
+ * is a constructible object. It cannot be transformed nor animated by itself, only changing the objects from which
+ * depend. It acts as a container of a MathObject that will be updated and drawed every frame.
  *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
@@ -45,8 +44,8 @@ public abstract class Constructible extends MathObject {
     }
 
     /**
-     * Returns the free object flag value. If this flag is set to true,
-     * MathObject is not updated and can be freely transformed.
+     * Returns the free object flag value. If this flag is set to true, MathObject is not updated and can be freely
+     * transformed.
      *
      * @return True if drawed MathObject is not updated. False otherwise.
      */
@@ -55,14 +54,13 @@ public abstract class Constructible extends MathObject {
     }
 
     /**
-     * Sets the behaviour of the graphical representation of this Constructible
-     * object. If true, drawed MathObject will not be updated and can be freely
-     * animated. Altering the drawed MathObject does not affect the
-     * Constructible parameters.
+     * Sets the behaviour of the graphical representation of this Constructible object. If true, drawed MathObject will
+     * not be updated and can be freely animated. Altering the drawed MathObject does not affect the Constructible
+     * parameters.
      *
-     * @param <T> Class object
-     * @param isMathObjectFree Boolean flag. True if drawed MathObject is no
-     * longer to be updated with constructible parameters.
+     * @param <T>              Class object
+     * @param isMathObjectFree Boolean flag. True if drawed MathObject is no longer to be updated with constructible
+     *                         parameters.
      * @return This object
      */
     public <T extends Constructible> T freeMathObject(boolean isMathObjectFree) {
@@ -128,7 +126,24 @@ public abstract class Constructible extends MathObject {
 
     @Override
     public void draw(JMathAnimScene scene, Renderer r, Camera cam) {
-        getMathObject().draw(scene, r, cam);
+        MathObject obj = getMathObject();
+
+        //As MathObjectGroup does not have a draw method implemented by design, do a recursive search
+        if (obj instanceof MathObjectGroup) {
+            processDrawMathObjectGroup((MathObjectGroup) obj, scene, r, cam);
+        } else {
+            obj.draw(scene, r, cam);
+        }
+    }
+
+    private void processDrawMathObjectGroup(MathObjectGroup group, JMathAnimScene scene, Renderer r, Camera cam) {
+        for (MathObject obj: group) {
+            if (obj instanceof MathObjectGroup) {
+                processDrawMathObjectGroup((MathObjectGroup) obj, scene, r, cam);
+            } else {
+                obj.draw(scene, r, cam);
+            }
+        }
     }
 
 

@@ -225,10 +225,19 @@ public class MathObjectGroup extends MathObject implements Iterable<MathObject> 
         MathObjectGroup mg = (MathObjectGroup) obj;
 
         this.getMp().copyFrom(mg.getMp());
-        int n = 0;
-        for (MathObject o : getObjects()) {
-            o.copyStateFrom(mg.get(n));
-            n++;
+
+        if (mg.size()==size()) {
+            int n = 0;
+            for (MathObject o : getObjects()) {
+                o.copyStateFrom(mg.get(n));
+                n++;
+            }
+        }
+        else {
+            clear();
+            for (MathObject o : mg.getObjects()) {
+                add(o.copy());
+            }
         }
     }
 

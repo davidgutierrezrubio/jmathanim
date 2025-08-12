@@ -62,6 +62,7 @@ public abstract class Delimiter extends MathObject {
     protected double gap;
 
     public Delimiter(Point A, Point B, Type type, double gap) {
+        super();
         this.A = A;
         this.B = B;
         this.scaledA = A.copy();
@@ -177,7 +178,9 @@ public abstract class Delimiter extends MathObject {
             }
         };
         t.registerUpdater(updater);
-        t.update(JMathAnimConfig.getConfig().getScene());
+        JMathAnimScene scene = JMathAnimConfig.getConfig().getScene();
+        t.update(scene);
+        rebuildShape(scene);
 
         return (LaTeXMathObject) getLabel();
     }
@@ -354,12 +357,12 @@ public abstract class Delimiter extends MathObject {
         }
         Delimiter del = (Delimiter) obj;
 
-
-
         this.A.copyStateFrom(del.A);
         this.B.copyStateFrom(del.B);
         getMp().copyFrom(obj.getMp());
-        getDelimiterShape().copyStateFrom(del.getDelimiterShape());
+        MathObjectGroup delimiterShape = getDelimiterShape();
+        MathObjectGroup delimiterShapeCopy = del.getDelimiterShape();
+        delimiterShape.copyStateFrom(delimiterShapeCopy);
         if (del.delimiterLabel != null) {
             setLabel(del.getLabel().copy(), del.labelMarkGap);
             getLabel().getMp().copyFrom(del.getLabel().getMp());

@@ -28,7 +28,7 @@ import static com.jmathanim.jmathanim.JMathAnimScene.PI;
  *
  * @author David
  */
-public class LengthMeasure extends Delimiter {
+ class LengthMeasure extends Delimiter {
 
     private final double hgap;
     private final MathObjectGroup delimiterShapeGroup;
@@ -39,6 +39,7 @@ public class LengthMeasure extends Delimiter {
 
     public static LengthMeasure make(Point A, Point B, Delimiter.Type type, double gap) {
         LengthMeasure resul = new LengthMeasure(A, B, type, gap);
+        resul.buildDelimiterShape();
         return resul;
     }
 

@@ -154,7 +154,7 @@ public class Arrow2D extends MathObject {
             try {
 //            baseFileName = outputDir.getCanonicalPath() + File.separator + "arrows" + File.separator + name;
                 ResourceLoader rl = new ResourceLoader();
-                URL arrowUrl = rl.getResource(name, "arrows");
+                URL arrowUrl = rl.getResource(name, "svgResources/svg/arrows");
                 head = new SVGMathObject(arrowUrl);
                 
             } catch (NullPointerException ex) {

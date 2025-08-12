@@ -49,6 +49,11 @@ public class NullMathObject extends Constructible {
     }
 
     @Override
+    public void copyStateFrom(MathObject obj) {
+
+    }
+
+    @Override
     public Rect computeBoundingBox() {
         return new EmptyRect();
     }
@@ -76,6 +81,7 @@ public class NullMathObject extends Constructible {
     public void addToSceneHook(JMathAnimScene scene) {
         //Do nothing
     }
+
 
     @Override
     public boolean isVisible() {

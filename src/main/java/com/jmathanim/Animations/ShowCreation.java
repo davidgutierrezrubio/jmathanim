@@ -22,7 +22,7 @@ import com.jmathanim.Constructible.Constructible;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.*;
 import com.jmathanim.mathobjects.Axes.Axes;
-import com.jmathanim.mathobjects.Delimiters.Delimiter;
+import com.jmathanim.mathobjects.Delimiters.Delimiter2;
 import com.jmathanim.mathobjects.Text.LaTeXMathObject;
 
 import java.util.function.DoubleUnaryOperator;
@@ -71,8 +71,12 @@ public class ShowCreation extends Animation {
         super(runtime);
         setDebugName("showCreation");
 
+        if (mobj instanceof Delimiter2) {
+            this.mobj = mobj;
+            addThisAtTheEnd.add(mobj);
+        }
         // If the object is a constructible one, get its visible object to animate
-        if (mobj instanceof Constructible) {
+        else if (mobj instanceof Constructible) {
             origObj = (Constructible) mobj;
             this.mobj = origObj.getMathObject();
             removeThisAtTheEnd.add(this.mobj);
@@ -170,7 +174,7 @@ public class ShowCreation extends Animation {
             this.strategyType = ShowCreationStrategy.ARROW_CREATION;
             return;
         }
-        if (mobj instanceof Delimiter) {
+        if (mobj instanceof Delimiter2) {
             this.strategyType = ShowCreationStrategy.DELIMITER_CREATION;
             return;
         }
@@ -238,7 +242,7 @@ public class ShowCreation extends Animation {
                 JMathAnimScene.logger.debug("ShowCreation method: ArrowCreationStrategy");
                 break;
             case DELIMITER_CREATION:
-                Delimiter del = (Delimiter) mobj;
+                Delimiter2 del = (Delimiter2) mobj;
                 creationStrategy = new AbstractCreationStrategy(runTime) {
                     @Override
                     public MathObject getIntermediateObject() {

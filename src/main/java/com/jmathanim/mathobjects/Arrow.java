@@ -142,16 +142,16 @@ public class Arrow extends Constructible {
             case NONE_SQUARE:
                 return Shape.segment(Point.at(1, 0), Point.at(0, 0));
             case ARROW1:
-                arrowUrl = rl.getResource("#arrow1.svg", "arrows");
+                arrowUrl = rl.getResource("#arrow1.svg", "shapeResources/arrows");
                 return new SVGMathObject(arrowUrl).get(0);
             case ARROW2:
-                arrowUrl = rl.getResource("#arrow2.svg", "arrows");
+                arrowUrl = rl.getResource("#arrow2.svg", "shapeResources/arrows");
                 return new SVGMathObject(arrowUrl).get(0);
             case ARROW3:
-                arrowUrl = rl.getResource("#arrow3.svg", "arrows");
+                arrowUrl = rl.getResource("#arrow3.svg", "shapeResources/arrows");
                 return new SVGMathObject(arrowUrl).get(0);
             case SQUARE:
-                arrowUrl = rl.getResource("#ArrowSquare.svg", "arrows");
+                arrowUrl = rl.getResource("#ArrowSquare.svg", "shapeResources/arrows");
                 resul = new SVGMathObject(arrowUrl).get(0);
                 resul.setProperty("gap", -resul.getHeight() * .5);
                 return resul;

@@ -26,7 +26,7 @@ import static com.jmathanim.jmathanim.JMathAnimScene.PI;
  *
  * @author David
  */
-public class ShapeDelimiter extends Delimiter {
+ class ShapeDelimiter extends Delimiter {
 
     private SVGMathObject body;
     private final Shape delimiterShape;
@@ -47,7 +47,7 @@ public class ShapeDelimiter extends Delimiter {
                 name = "#braces.svg";
                 break;
         }
-        resul.body = new SVGMathObject(rl.getResource(name, "delimiters"));
+        resul.body = new SVGMathObject(rl.getResource(name, "shapeResources/delimiters"));
         resul.mpDelimiter.add(resul.body);
         resul.style("latexdefault");
         return resul;
@@ -131,13 +131,15 @@ public class ShapeDelimiter extends Delimiter {
                     }
             }
             delimiterLabelToDraw.stackTo(Anchor.Type.LOWER, labelMarkPoint, Anchor.Type.UPPER, 0);
+
         }
+//        delimiterToDraw.getMp().copyFrom(delimiterShape.getMp());
         AffineJTransform tr = AffineJTransform.createDirect2DIsomorphic(bb.getDL(), bb.getDR(), scaledA, scaledB, 1);
 
-        tr.applyTransform(resul);
+        tr.applyTransform(delimiterToDraw);
 //        tr.applyTransform(labelMarkPoint);
 
-        return resul;
+        return delimiterToDraw;
     }
 
     @Override
