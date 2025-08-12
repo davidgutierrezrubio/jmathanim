@@ -132,7 +132,7 @@ public class CTIntersectionPoint extends CTPoint {
         Vec inter=Vec.to(Double.NaN, Double.NaN);//Default result: no point at all
         if (intersectionType == null) {
             this.v.copyFrom(inter);
-            if (!isThisMathObjectFree()) {
+            if (!isFreeMathObject()) {
                 getMathObject().v.copyFrom(this.v);
                 return;
             }
@@ -227,7 +227,7 @@ public class CTIntersectionPoint extends CTPoint {
             case CIRCLE_CONIC:
             //Not implemented yet. Returns a NaN point
         }
-        if (!isThisMathObjectFree()) {
+        if (!isFreeMathObject()) {
             p.v.copyFrom(this.v);
         }
 
@@ -263,7 +263,7 @@ public class CTIntersectionPoint extends CTPoint {
         CTIntersectionPoint copy = make(c1.copy(), c2.copy());
         copy.getMp().copyFrom(this.getMp());
         copy.getMathObject().copyStateFrom(this.getMathObject());
-        copy.freeMathObject(this.isThisMathObjectFree());
+        copy.setFreeMathObject(this.isFreeMathObject());
         return copy;
     }
 

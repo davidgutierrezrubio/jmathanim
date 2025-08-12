@@ -247,16 +247,16 @@ public class MathObjectGroup extends MathObject implements Iterable<MathObject> 
 //            for (MathObject obj : this.getObjects()) {
 //                // As a MathObject can belong to many MathObjectGroups, we must prevent to draw
 //                // it twice
-//                if (!scene.isAlreadyDrawed(obj)) {
+//                if (!scene.isAlreadydrawn(obj)) {
 //                    obj.draw(scene, r);
 //                }
 //            }
 //        }
-//        scene.markAsAlreadyDrawed(this);
+//        scene.markAsAlreadydrawn(this);
 //    }
     @Override
     public void draw(JMathAnimScene scene, Renderer r, Camera cam) {
-        scene.markAsAlreadyDrawed(this);
+        scene.markAsAlreadydrawn(this);
     }
 
     @Override

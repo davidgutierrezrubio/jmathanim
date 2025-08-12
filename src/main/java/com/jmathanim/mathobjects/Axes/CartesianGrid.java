@@ -36,7 +36,7 @@ public class CartesianGrid extends MultiShapeObject implements shouldUdpateWithC
 
     /**
      * Creates a new cartesian grid located at a given reference point with
-     * given horizontal and vertical spaces between lines. Grid with be drawed
+     * given horizontal and vertical spaces between lines. Grid with be drawn
      * using the style gridPrimaryDefault, if available.
      *
      * @param centerX x coordinate of reference point
@@ -59,7 +59,7 @@ public class CartesianGrid extends MultiShapeObject implements shouldUdpateWithC
     /**
      * Creates a new cartesian grid with primary and secondary lines located at
      * a given reference point with given horizontal and vertical spaces between
-     * lines. Grid with be drawed using the style gridPrimaryDefault and
+     * lines. Grid with be drawn using the style gridPrimaryDefault and
      * gridSecondaryDefault, if availables.
      *
      * @param centerX x coordinate of reference point

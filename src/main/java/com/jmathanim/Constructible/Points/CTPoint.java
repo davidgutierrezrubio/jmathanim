@@ -67,7 +67,7 @@ public class CTPoint extends Constructible {
     
     @Override
     public void rebuildShape() {
-        if (!isThisMathObjectFree()) {
+        if (!isFreeMathObject()) {
             this.p.v.copyFrom(this.v);
         }
     }
@@ -75,7 +75,7 @@ public class CTPoint extends Constructible {
     @Override
     public CTPoint copy() {
         CTPoint copy = make(new Point(this.v));
-        copy.freeMathObject(this.isThisMathObjectFree());
+        copy.setFreeMathObject(this.isFreeMathObject());
         copy.getMathObject().copyStateFrom(this.getMathObject());
         copy.getMp().copyFrom(this.getMp());
         return copy;
@@ -87,7 +87,7 @@ public class CTPoint extends Constructible {
             CTPoint cnst = (CTPoint) obj;
             this.v.copyFrom(cnst.v);
             this.getMathObject().copyStateFrom(cnst.getMathObject());
-            this.freeMathObject(cnst.isThisMathObjectFree());
+            this.setFreeMathObject(cnst.isFreeMathObject());
         }
         super.copyStateFrom(obj);
     }
@@ -126,7 +126,7 @@ public class CTPoint extends Constructible {
     @Override
     public Constructible applyAffineTransform(AffineJTransform transform) {
         p.applyAffineTransform(transform);
-        if (!isThisMathObjectFree()) {
+        if (!isFreeMathObject()) {
             this.v.copyFrom(p.v);
         }
         rebuildShape();

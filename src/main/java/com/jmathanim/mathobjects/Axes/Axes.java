@@ -216,7 +216,7 @@ public class Axes extends MathObject {
                 ytick.draw(scene, r, cam);
             }
         }
-        scene.markAsAlreadyDrawed(this);
+        scene.markAsAlreadydrawn(this);
     }
 
 

@@ -53,7 +53,7 @@ public class CTTranslatedPoint extends CTPoint {
         AffineJTransform tr = AffineJTransform.createTranslationTransform(translationVector.getDirection());
         this.v.copyFrom(this.pointToTranslate.v);
         this.v.applyAffineTransform(tr);
-        if (!isThisMathObjectFree()) {
+        if (!isFreeMathObject()) {
             p.v.copyFrom(v);
         }
     }

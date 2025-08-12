@@ -128,7 +128,7 @@ public class TickAxes extends MathObject {
                 tick.draw(scene, r, cam);
             }
         }
-        scene.markAsAlreadyDrawed(this);
+        scene.markAsAlreadydrawn(this);
 
     }
 

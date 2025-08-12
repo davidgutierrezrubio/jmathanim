@@ -239,7 +239,7 @@ public class ShaderDrawer {
         gl4.glStencilMask(0b00000001);//Last bit for filling
 
         // set stencil buffer to invert value on draw, 0 to 1 and 1 to 0
-        //Pass the stencil test if the pixel doesnt belong to the drawed contour
+        //Pass the stencil test if the pixel doesnt belong to the drawn contour
         gl4.glStencilFunc(GL4.GL_EQUAL, 0, 2);
 //        if (!s.isIsConvex()) {
         gl4.glStencilOp(GL4.GL_INVERT, GL4.GL_INVERT, GL4.GL_INVERT);
@@ -251,7 +251,7 @@ public class ShaderDrawer {
         gl4.glDrawArrays(GL4.GL_TRIANGLE_FAN, 0, fbVertices.limit() / 4);
         gl4.glDepthMask(true);
         // set stencil buffer to only keep pixels when value in buffer is 1
-        //Bit 2 is set to 1 if the contour is drawed in that fragment, so stencil
+        //Bit 2 is set to 1 if the contour is drawn in that fragment, so stencil
         //mask has to be 01 in order to draw fill
         //00->No contour, no fill
         //10->Contour, no fill

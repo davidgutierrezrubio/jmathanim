@@ -57,7 +57,7 @@ public abstract class AbstractJMImage extends MathObject {
         if (isVisible()) {
             r.drawImage(this,cam);
         }
-        scene.markAsAlreadyDrawed(this);
+        scene.markAsAlreadydrawn(this);
     }
 
     public boolean isCached() {

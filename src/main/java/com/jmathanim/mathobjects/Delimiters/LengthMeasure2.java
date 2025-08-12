@@ -13,6 +13,7 @@ import static com.jmathanim.jmathanim.JMathAnimScene.PI;
 public class LengthMeasure2 extends Delimiter2 {
 
     private final double hgap;
+    private Double thicknessShape;
 
     public LengthMeasure2(Point A, Point B, Delimiter2.Type type, double gap) {
         super(A, B, type, gap);
@@ -29,6 +30,7 @@ public class LengthMeasure2 extends Delimiter2 {
 
     @Override
     protected void buildDelimiterShape() {
+        delimiterLabel.update(scene);
         delimiterLabelToDraw = MathObjectUtils.getSafeCopyOf(delimiterLabel);
         double width = A.to(B).norm();
         double angle = A.to(B).getAngle();
@@ -36,8 +38,8 @@ public class LengthMeasure2 extends Delimiter2 {
         Point BB = Point.at(width, 0);
 
         delimiterShapeToDraw.getPath().clear();
-        delimiterGroupElements.clear();
-        delimiterGroupElements.add(delimiterLabelToDraw, delimiterShapeToDraw);
+        groupElementsToBeDrawn.clear();
+        groupElementsToBeDrawn.add(delimiterLabelToDraw, delimiterShapeToDraw);
 
         double vCenter = .025 * delimiterScale;
 //        Shape verticalBar = Shape.segment(Point.at(0, 0), Point.at(0, 2 * vCenter));
@@ -97,9 +99,16 @@ public class LengthMeasure2 extends Delimiter2 {
 
         delimiterShapeToDraw.scale(amplitudeScale);
 
-        mpDelimiterShape.setFillAlpha(0);//Ensure that Shape is not filled never
+        delimiterShapeToDraw.getMp().copyFrom(mpDelimiterShape);
 
-        delimiterShapeToDraw.thickness(mpDelimiterShape.getThickness() * amplitudeScale);
+        if (amplitudeScale!=1) {
+
+            delimiterShapeToDraw.thickness(thicknessShape * amplitudeScale);
+        }else
+        {
+            thicknessShape=mpDelimiterShape.getThickness();
+        }
+        delimiterShapeToDraw.fillAlpha(0);
         AffineJTransform tr = AffineJTransform.createDirect2DIsomorphic(AA, BB, A, B, 1);
         tr.applyTransform(delimiterShapeToDraw);
         tr.applyTransform(delimiterLabelToDraw);

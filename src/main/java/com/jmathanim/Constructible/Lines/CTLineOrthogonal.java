@@ -104,7 +104,7 @@ public class CTLineOrthogonal extends CTAbstractLine {
 
         P2.v.x = v.x - direction.y;
         P2.v.y = v.y + direction.x;
-        if (!isThisMathObjectFree()) {
+        if (!isFreeMathObject()) {
             lineToDraw.getP1().v.copyFrom(P1.v);
             lineToDraw.getP2().v.copyFrom(P2.v);
         }

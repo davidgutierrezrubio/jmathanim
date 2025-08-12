@@ -116,7 +116,7 @@ public class CTRay extends CTAbstractLine {
             case PointVector:
                 this.P2.v.copyFrom(this.P1.v.add(dir.getDirection()));
         }
-        if (!isThisMathObjectFree()) {
+        if (!isFreeMathObject()) {
             rayToDraw.getP1().v.copyFrom(this.P1.v);
             rayToDraw.getP2().v.copyFrom(this.P2.v);
         }

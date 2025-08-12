@@ -265,7 +265,7 @@ public class Arrow2D extends MathObject {
             arrowHeadToDraw1.draw(scene, r, cam);
             arrowHeadToDraw2.draw(scene, r, cam);
         }
-        scene.markAsAlreadyDrawed(this);
+        scene.markAsAlreadydrawn(this);
     }
     
     @Override

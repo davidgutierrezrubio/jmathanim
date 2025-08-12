@@ -30,7 +30,7 @@ import com.jmathanim.mathobjects.MathObjectGroup;
 /**
  * This class representas a constructible object, derived from another ones. For example a circle that pass for 3 points
  * is a constructible object. It cannot be transformed nor animated by itself, only changing the objects from which
- * depend. It acts as a container of a MathObject that will be updated and drawed every frame.
+ * depend. It acts as a container of a MathObject that will be updated and drawn every frame.
  *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
@@ -47,23 +47,23 @@ public abstract class Constructible extends MathObject {
      * Returns the free object flag value. If this flag is set to true, MathObject is not updated and can be freely
      * transformed.
      *
-     * @return True if drawed MathObject is not updated. False otherwise.
+     * @return True if drawn MathObject is not updated. False otherwise.
      */
-    public boolean isThisMathObjectFree() {
+    public boolean isFreeMathObject() {
         return isMathObjectFree;
     }
 
     /**
-     * Sets the behaviour of the graphical representation of this Constructible object. If true, drawed MathObject will
-     * not be updated and can be freely animated. Altering the drawed MathObject does not affect the Constructible
+     * Sets the behaviour of the graphical representation of this Constructible object. If true, drawn MathObject will
+     * not be updated and can be freely animated. Altering the drawn MathObject does not affect the Constructible
      * parameters.
      *
      * @param <T>              Class object
-     * @param isMathObjectFree Boolean flag. True if drawed MathObject is no longer to be updated with constructible
+     * @param isMathObjectFree Boolean flag. True if drawn MathObject is no longer to be updated with constructible
      *                         parameters.
      * @return This object
      */
-    public <T extends Constructible> T freeMathObject(boolean isMathObjectFree) {
+    public <T extends Constructible> T setFreeMathObject(boolean isMathObjectFree) {
         if (!isMathObjectFree) {
             if (this.isMathObjectFree) {
                 rebuildShape();
@@ -117,7 +117,7 @@ public abstract class Constructible extends MathObject {
         if (obj instanceof Constructible) {
             Constructible cnst = (Constructible) obj;
             getMathObject().copyStateFrom(cnst.getMathObject());
-            this.freeMathObject(cnst.isThisMathObjectFree());
+            this.setFreeMathObject(cnst.isFreeMathObject());
         } else {
             getMathObject().copyStateFrom(obj);
         }

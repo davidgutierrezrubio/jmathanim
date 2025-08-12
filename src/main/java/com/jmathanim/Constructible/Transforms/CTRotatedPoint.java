@@ -56,7 +56,7 @@ public class CTRotatedPoint extends CTPoint {
         AffineJTransform tr = AffineJTransform.create2DRotationTransform(this.protationCenter, angle.value);
         this.v.copyFrom(this.pointToRotate.v);
         this.v.applyAffineTransform(tr);
-        if (!isThisMathObjectFree()) {
+        if (!isFreeMathObject()) {
             p.v.copyFrom(v);
         }
     }

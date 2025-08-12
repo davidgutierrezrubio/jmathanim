@@ -23,7 +23,7 @@ import com.jmathanim.Styling.RendererEffects;
 import com.jmathanim.jmathanim.JMathAnimScene;
 
 /**
- * Anything that can be drawed in the canvas
+ * Anything that can be drawn in the canvas
  *
  * @author David Gutierrez Rubio davidgutierrezrubio@gmail.com
  */

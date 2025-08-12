@@ -173,7 +173,7 @@ public class MultiShapeObject extends MathObject implements Iterable<Shape> {
         if (isVisible()) {
             for (Shape jmp : shapes) {
                 //Store camera and temporary use MultiShapeObject camera
-                if ((jmp.isVisible()) && (!scene.isAlreadyDrawed(jmp))) {
+                if ((jmp.isVisible()) && (!scene.isAlreadydrawn(jmp))) {
                     if (absoluteSize) {
                         r.drawAbsoluteCopy(jmp, getAbsoluteAnchor().v);// TODO: This doesnt work for overrided methods
                         // (e.g.: line)
@@ -186,7 +186,7 @@ public class MultiShapeObject extends MathObject implements Iterable<Shape> {
                 }
             }
         }
-        scene.markAsAlreadyDrawed(this);
+        scene.markAsAlreadydrawn(this);
     }
 
     public <T extends MultiShapeObject> T setShowDebugIndices(boolean value) {

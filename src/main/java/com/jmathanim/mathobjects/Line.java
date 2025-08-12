@@ -154,7 +154,7 @@ public class Line extends Shape implements HasDirection, shouldUdpateWithCamera 
         if (isVisible()) {
             visiblePiece.draw(scene, r,cam);
         }
-        scene.markAsAlreadyDrawed(this);
+        scene.markAsAlreadydrawn(this);
     }
 
     /**

@@ -31,13 +31,13 @@ public class myFirstScene extends Scene2D {
     }
 }
 ```
-If you run this program, a window will open showing an animation where a white square is drawed, then rotated, and a few seconds (maybe 5 or more), the windows is closed.
+If you run this program, a window will open showing an animation where a white square is drawn, then rotated, and a few seconds (maybe 5 or more), the windows is closed.
 The core of animation lies in the `myFirstScene` class, which is an extension of `Scene2D` class. This class has two methods, `setupSketch`, which manages the basic configuration of the animation, like fps, size, output, etc. and `runSketch`, which performs the animation itself.
 In this example, the `setupSketch` method is empty, so the default configuration is loaded. In the `runSketch` method we have the first command:
 ```java
 Shape s = Shape.square();
 ```
-This command creates a `Shape` object which represents a 2D figure, closed or not. This class has several static, convenience methods to easily create most common shapes. With the method `square`, we create an unit square with lower left corner at (0,0). Note that defining this doesn't add the square to the scene, so for now it won't be drawed.
+This command creates a `Shape` object which represents a 2D figure, closed or not. This class has several static, convenience methods to easily create most common shapes. With the method `square`, we create an unit square with lower left corner at (0,0). Note that defining this doesn't add the square to the scene, so for now it won't be drawn.
 The following method performs most of what is shown when running the program:
 ```java
 play.showCreation(s);

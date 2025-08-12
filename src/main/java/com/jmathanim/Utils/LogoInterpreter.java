@@ -76,7 +76,7 @@ public class LogoInterpreter {
     }
 
     /**
-     * Resets the drawed path, to generate another from scratch
+     * Resets the drawn path, to generate another from scratch
      */
     public final void reset() {
         x = 0;

@@ -64,7 +64,7 @@ public class CTPolygon extends Constructible {
 
     @Override
     public void rebuildShape() {
-        if (!isThisMathObjectFree()) {
+        if (!isFreeMathObject()) {
             for (int i = 0; i < points.length; i++) {
                 CTPoint point = points[i];
                 shapeToDraw.get(i).p.v.copyFrom(point.v);

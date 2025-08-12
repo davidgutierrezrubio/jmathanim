@@ -83,7 +83,7 @@ public class CTAngleMark extends Constructible {
         super.copyStateFrom(obj);
         if (obj instanceof CTAngleMark) {
             CTAngleMark ang = (CTAngleMark) obj;
-            this.freeMathObject(ang.isThisMathObjectFree());
+            this.setFreeMathObject(ang.isFreeMathObject());
             this.getMathObject().copyStateFrom(ang.getMathObject());
             this.getMp().copyFrom(ang.getMp());
         }
@@ -101,7 +101,7 @@ public class CTAngleMark extends Constructible {
 
     @Override
     public void rebuildShape() {
-        if (isThisMathObjectFree()) {
+        if (isFreeMathObject()) {
             return;
         }
         Shape arc;

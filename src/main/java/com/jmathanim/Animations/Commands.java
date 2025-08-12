@@ -123,7 +123,7 @@ public class Commands {
             for (MathObject obj : mathObjects) {
                 if (obj instanceof Constructible) {
                     Constructible cnstr = (Constructible) obj;
-                    cnstr.freeMathObject(true);
+                    cnstr.setFreeMathObject(true);
                 }
             }
         };
@@ -132,7 +132,7 @@ public class Commands {
             for (MathObject obj : mathObjects) {
                 if (obj instanceof Constructible) {
                     Constructible cnstr = (Constructible) obj;
-                    cnstr.freeMathObject(false);
+                    cnstr.setFreeMathObject(false);
                 }
             }
         };
@@ -180,8 +180,8 @@ public class Commands {
             for (MathObject obj : mathObjects) {
                 if (obj instanceof Constructible) {
                     Constructible cnstr = (Constructible) obj;
-                    constructiblesFreeStatus.put(cnstr, cnstr.isThisMathObjectFree());
-                    cnstr.freeMathObject(true);
+                    constructiblesFreeStatus.put(cnstr, cnstr.isFreeMathObject());
+                    cnstr.setFreeMathObject(true);
                 }
             }
         };
@@ -190,7 +190,7 @@ public class Commands {
             for (MathObject obj : mathObjects) {
                 if (obj instanceof Constructible) {
                     Constructible cnstr = (Constructible) obj;
-                    cnstr.freeMathObject(constructiblesFreeStatus.get(cnstr));
+                    cnstr.setFreeMathObject(constructiblesFreeStatus.get(cnstr));
                 }
             }
         };
@@ -1142,7 +1142,7 @@ public class Commands {
                 for (MathObject obj : mathObjects) {
                     if (obj instanceof Constructible) {
                         Constructible cnstr = (Constructible) obj;
-                        cnstr.freeMathObject(true);
+                        cnstr.setFreeMathObject(true);
                     }
                 }
                 return true;
@@ -1177,7 +1177,7 @@ public class Commands {
                 for (MathObject obj : mathObjects) {
                     if (obj instanceof Constructible) {
                         Constructible cnstr = (Constructible) obj;
-                        cnstr.freeMathObject(false);
+                        cnstr.setFreeMathObject(false);
                     }
                 }
             }
@@ -1253,7 +1253,7 @@ public class Commands {
                     obj.visible(false);
                     if (obj instanceof Constructible) {
                         Constructible cnstr = (Constructible) obj;
-                        cnstr.freeMathObject(true);
+                        cnstr.setFreeMathObject(true);
                     }
                 }
                 return true;
@@ -1286,7 +1286,7 @@ public class Commands {
                 for (MathObject obj : mathObjects) {
                     if (obj instanceof Constructible) {
                         Constructible cnstr = (Constructible) obj;
-                        cnstr.freeMathObject(false);
+                        cnstr.setFreeMathObject(false);
                     }
                 }
             }
@@ -1601,7 +1601,7 @@ public class Commands {
                 for (MathObject obj : mathObjects) {
                     if (obj instanceof Constructible) {
                         Constructible cnstr = (Constructible) obj;
-                        cnstr.freeMathObject(true);
+                        cnstr.setFreeMathObject(true);
                     }
                 }
                 JMathAnimScene.logger.debug("Initialized moveOut animation");
@@ -1637,7 +1637,7 @@ public class Commands {
                     }
                     if (obj instanceof Constructible) {
                         Constructible cnstr = (Constructible) obj;
-                        cnstr.freeMathObject(false);
+                        cnstr.setFreeMathObject(false);
                     }
                 }
             }
@@ -1664,7 +1664,7 @@ public class Commands {
         for (MathObject obj : mathObjects) {
             if (obj instanceof Constructible) {
                 Constructible cnstr = (Constructible) obj;
-                cnstr.freeMathObject(true);
+                cnstr.setFreeMathObject(true);
             }
             toAnimateArrayList.add(obj);
         }
@@ -1711,7 +1711,7 @@ public class Commands {
                 for (MathObject obj : mathObjects) {
                     if (obj instanceof Constructible) {
                         Constructible cnstr = (Constructible) obj;
-                        cnstr.freeMathObject(false);
+                        cnstr.setFreeMathObject(false);
                     }
                 }
             }

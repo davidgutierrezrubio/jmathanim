@@ -33,7 +33,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 
 /**
- * This class represents a mathematical object that can be drawed on screen, transformed or animated. All math objects
+ * This class represents a mathematical object that can be drawn on screen, transformed or animated. All math objects
  * subclass from here.
  *
  * @author David Gutierrez Rubio davidgutierrezrubio@gmail.com
@@ -94,7 +94,7 @@ public abstract class MathObject implements Drawable, Updateable, Stateable, Box
 
     /**
      * Set the associated camera to this object. The camera is used to compute the screen coordinates where it will be
-     * drawed. If not camera is set, default camera is associated when added to the scene.
+     * drawn. If not camera is set, default camera is associated when added to the scene.
      *
      * @param <T>    Calling subclass
      * @param camera Camera
@@ -773,7 +773,7 @@ public abstract class MathObject implements Drawable, Updateable, Stateable, Box
     }
 
     /**
-     * Sets the layer where this object belongs. Lower layers means that the object will be drawed first and appear
+     * Sets the layer where this object belongs. Lower layers means that the object will be drawn first and appear
      * under other objects. The number can be any integer
      *
      * @param <T>   MathObject subclass
@@ -872,7 +872,7 @@ public abstract class MathObject implements Drawable, Updateable, Stateable, Box
     }
 
     /**
-     * Returns the visibility status of the object. If false, object will not be drawed, even if it is added to the
+     * Returns the visibility status of the object. If false, object will not be drawn, even if it is added to the
      * scene. It will be updated, though.
      *
      * @return True if visible, false otherwise
