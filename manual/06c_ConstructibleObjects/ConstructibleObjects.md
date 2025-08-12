@@ -149,7 +149,7 @@ The imported document will look like this:
 
 <img src="03ImportedGeogebra.png" alt="03ImportedGeogebra" style="zoom:50%;" />
 
-Not bad, right? Note that axis and object labels are not imported. And that's it! Well, not really. If you want to animate elements or simply access them, you can use the original names that these objects had in Geogebra. For example, to access point A, you can use the command
+Not bad, right? Note that axis and object labels are not imported. And that's it! Well, not really. If you want to animate elements or simply access to them, you can use the original names that these objects had in Geogebra. For example, to access point A, you can use the command
 
 ```java
 gl.get("A");
