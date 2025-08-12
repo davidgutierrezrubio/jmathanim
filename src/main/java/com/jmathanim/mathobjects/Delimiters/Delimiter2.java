@@ -175,9 +175,9 @@ public abstract class Delimiter2 extends Constructible {
         this.labelMarkGap = del.labelMarkGap;
         this.mpDelimiter.copyFrom(del.mpDelimiter);
         delimiterShapeToDraw.copyStateFrom(del.delimiterShapeToDraw);
-        delimiterLabelToDraw = del.delimiterLabelToDraw.copy();
-        if (del.delimiterLabel != null) {
 
+        if (del.delimiterLabel != null) {
+            delimiterLabelToDraw = MathObjectUtils.getSafeCopyOf(del.delimiterLabelToDraw);
             if (del.textUpdaterFactory instanceof LengthUpdaterFactory) {
                 addLengthLabel(del.labelMarkGap, del.textUpdaterFactory.getFormat());
             } else if (del.textUpdaterFactory instanceof CountUpdaterFactory) {

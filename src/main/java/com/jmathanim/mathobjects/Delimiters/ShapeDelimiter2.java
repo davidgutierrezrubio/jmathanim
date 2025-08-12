@@ -46,6 +46,8 @@ public class ShapeDelimiter2 extends Delimiter2 {
 
         double width = A.to(B).norm() * amplitudeScale;//The final width of the delimiter
         double angle = A.to(B).getAngle();
+        Point AA=A.interpolate(B,.5*(1-amplitudeScale));
+        Point BB=A.interpolate(B,.5*(1+amplitudeScale));
         MultiShapeObject bodyCopy = body.copy();
         delimiterShapeToDraw.getPath().clear();
 
@@ -93,6 +95,10 @@ public class ShapeDelimiter2 extends Delimiter2 {
 
             delimiterLabelToDraw = delimiterLabel.copy();
 
+            double labelAmplitudeScale = UsefulLambdas.allocateTo(0, delimiterLabelToDraw.getWidth() * 1.5).applyAsDouble(width);
+
+//            double gapToUse = hgap * realAmplitudeScale;
+            delimiterLabelToDraw.scale(labelAmplitudeScale);
 
             //Manages rotation of label
             switch (rotateLabel) {
@@ -109,14 +115,16 @@ public class ShapeDelimiter2 extends Delimiter2 {
             }
             delimiterLabelToDraw.stackTo(Anchor.Type.LOWER, labelMarkPoint, Anchor.Type.UPPER, 0);
             groupElementsToBeDrawn.add(delimiterLabelToDraw);
-            delimiterLabelToDraw.scale(this.amplitudeScale);
+//            if (amplitudeScale != 1)
+//                delimiterLabelToDraw.scale(this.amplitudeScale);
         }
 
-        AffineJTransform tr = AffineJTransform.createDirect2DIsomorphic(bb.getDL(), bb.getDR(), A, B, 1);
-        tr.applyTransform(groupElementsToBeDrawn);
+        AffineJTransform tr = AffineJTransform.createDirect2DIsomorphic(bb.getDL(), bb.getDR(), AA, BB, 1);
 
-        if (amplitudeScale != 1)
-            groupElementsToBeDrawn.scale(this.amplitudeScale);
+
+//        if (amplitudeScale != 1)
+//            groupElementsToBeDrawn.scale(this.amplitudeScale);
+        tr.applyTransform(groupElementsToBeDrawn);
     }
 
 }
