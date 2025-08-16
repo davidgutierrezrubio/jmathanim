@@ -3,6 +3,7 @@ package com.jmathanim.mathobjects.Delimiters;
 import com.jmathanim.Constructible.Constructible;
 import com.jmathanim.Styling.MODrawPropertiesArray;
 import com.jmathanim.Styling.Stylable;
+import com.jmathanim.Utils.Anchor;
 import com.jmathanim.Utils.JMathAnimConfig;
 import com.jmathanim.jmathanim.JMathAnimScene;
 import com.jmathanim.mathobjects.*;
@@ -10,6 +11,7 @@ import com.jmathanim.mathobjects.Text.LaTeXMathObject;
 import com.jmathanim.mathobjects.Text.TextUpdaters.CountUpdaterFactory;
 import com.jmathanim.mathobjects.Text.TextUpdaters.LengthUpdaterFactory;
 import com.jmathanim.mathobjects.Text.TextUpdaters.TextUpdaterFactory;
+import com.jmathanim.mathobjects.updateableObjects.AnchoredMathObject;
 
 public abstract class Delimiter extends Constructible {
     public final Point labelMarkPoint;
@@ -102,6 +104,54 @@ public abstract class Delimiter extends Constructible {
         return resul;
     }
 
+    /**
+     * Creates a delimiter that is permanently stacked to a given MathObject.
+     * Note that this delimiters always stack to the appropiate rect boundaryBox
+     * points. Thus for example, delimiters will not rotate if the mathobject is
+     * being rotated.
+     *
+     * @param obj
+     * @param anchorType    Anchor to use. Currently UPPER, LOWER, RIGHT and LEFT
+     *                      are allowed. Other anchors return a null object and an error message.
+     * @param delimiterType Delimiter type
+     * @param gap           Gap to put between anchor points and delimiter
+     * @return The delimiter
+     */
+    public static Delimiter makeStacked(MathObject obj, Anchor.Type anchorType, Type delimiterType, double gap) {
+        JMathAnimScene sce = JMathAnimConfig.getConfig().getScene();//This should be better implemented, avoid static singletons
+        Anchor.Type anchorA, anchorB;
+        switch (anchorType) {
+            case UPPER:
+                anchorA = Anchor.Type.ULEFT;
+                anchorB = Anchor.Type.URIGHT;
+                break;
+            case LOWER:
+                anchorA = Anchor.Type.DRIGHT;
+                anchorB = Anchor.Type.DLEFT;
+                break;
+            case RIGHT:
+                anchorA = Anchor.Type.URIGHT;
+                anchorB = Anchor.Type.DRIGHT;
+                break;
+            case LEFT:
+                anchorA = Anchor.Type.DLEFT;
+                anchorB = Anchor.Type.ULEFT;
+                break;
+            default:
+                JMathAnimScene.logger.error("Invalid anchor for delimiter object " + anchorType.name());
+                return null;
+        }
+        Point A = Anchor.getAnchorPoint(obj, anchorA);
+        Point B = Anchor.getAnchorPoint(obj, anchorB);
+        //Register points A and B as updateable
+        sce.registerUpdateable(new AnchoredMathObject(A, Anchor.Type.CENTER, obj, anchorA));
+        sce.registerUpdateable(new AnchoredMathObject(B, Anchor.Type.CENTER, obj, anchorB));
+
+        Delimiter resul = Delimiter.make(A, B, delimiterType, gap);
+        return resul;
+    }
+
+
 
     public Point getA() {
         return A;
@@ -159,6 +209,43 @@ public abstract class Delimiter extends Constructible {
         this.buildDelimiterShape();
         return (T) this;
     }
+
+    /**
+     * Sets the rotate flag. If true, label will be rotated according to
+     * delimiter.
+     *
+     * @param rotateLabel True if label should be rotated, false otherwise.
+     * @return This object
+     */
+    public <T extends Delimiter> T setRotationType(Rotation rotateLabel) {
+        this.rotateLabel = rotateLabel;
+        return (T) this;
+    }
+
+
+    /**
+     * Returns the delimiter scale. Higher values will result in thicker shapes.
+     *
+     * @return The actual scale.
+     */
+    public double getDelimiterScale() {
+        return delimiterScale;
+    }
+
+    /**
+     * Sets the scale of the delimiter. Higher values will result in thicker
+     * shapes
+     *
+     * @param <T>            Subclass
+     * @param delimiterScale Scale. Default value is 1.
+     * @return This object
+     */
+    public <T extends Delimiter> T setDelimiterScale(double delimiterScale) {
+        this.delimiterScale = delimiterScale;
+        return (T) this;
+    }
+
+
 
     @Override
     public void copyStateFrom(MathObject obj) {
