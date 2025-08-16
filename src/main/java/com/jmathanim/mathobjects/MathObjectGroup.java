@@ -33,9 +33,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * A class that manages sets of MathObjects. The objectes are not added to the
- * scene when you add this object to the scene. It acts as a container to
- * perform easily bulk-operations
+ * A class that manages sets of MathObjects. The objectes are not added to the scene when you add this object to the
+ * scene. It acts as a container to perform easily bulk-operations
  *
  * @author David Gutiérrez Rubio davidgutierrezrubio@gmail.com
  */
@@ -71,15 +70,13 @@ public class MathObjectGroup extends MathObject implements Iterable<MathObject> 
     }
 
     /**
-     * Computes a MathObjectgroup with the same elements, divided en equally
-     * sized subgroups. The current group is unaltered.
+     * Computes a MathObjectgroup with the same elements, divided en equally sized subgroups. The current group is
+     * unaltered.
      *
-     * @param size Size of subgroups. Last subgroup created may have less than
-     *             this number. For example a group with 17 elements with the division
-     *             parameter 5 will return 3 subgroups of 5 elements and 1 subgroup of 2
+     * @param size Size of subgroups. Last subgroup created may have less than this number. For example a group with 17
+     *             elements with the division parameter 5 will return 3 subgroups of 5 elements and 1 subgroup of 2
      *             elements.
-     * @return A new MathObjectGroup contanining other MathObjectGroup instance
-     * with the divided objects.
+     * @return A new MathObjectGroup contanining other MathObjectGroup instance with the divided objects.
      */
     public MathObjectGroup divide(int size) {
         MathObjectGroup dividedGroup = MathObjectGroup.make();
@@ -95,9 +92,8 @@ public class MathObjectGroup extends MathObject implements Iterable<MathObject> 
     }
 
     /**
-     * Returns the MathObjectGroup flattened. If the group contains other group
-     * in nested levels, it flattens all elements in one single group. The
-     * current group is unaltered.
+     * Returns the MathObjectGroup flattened. If the group contains other group in nested levels, it flattens all
+     * elements in one single group. The current group is unaltered.
      *
      * @return A new group with the elements flattened
      */
@@ -135,8 +131,8 @@ public class MathObjectGroup extends MathObject implements Iterable<MathObject> 
     }
 
     /**
-     * Add a object to the group and register it as a property with a given key,
-     * so it can be retrieved with getProperty
+     * Add a object to the group and register it as a property with a given key, so it can be retrieved with
+     * getProperty
      *
      * @param key Key Name
      * @param obj Object to add
@@ -256,9 +252,8 @@ public class MathObjectGroup extends MathObject implements Iterable<MathObject> 
     }
 
     /**
-     * Overloaded method. Distribute evenly spaced objects in the group,
-     * horizontally or vertically. x-order or y-order of objects is respected.
-     * Order of objects in MathObjectGroup is unaltered.
+     * Overloaded method. Distribute evenly spaced objects in the group, horizontally or vertically. x-order or y-order
+     * of objects is respected. Order of objects in MathObjectGroup is unaltered.
      *
      * @param <T>         Calling subclass
      * @param orientation A value of enum Orientation (HORIZONTAL or VERTICAL)
@@ -268,15 +263,13 @@ public class MathObjectGroup extends MathObject implements Iterable<MathObject> 
     }
 
     /**
-     * Distribute evenly spaced objects in the group, horizontally or
-     * vertically.
+     * Distribute evenly spaced objects in the group, horizontally or vertically.
      *
      * @param <T>          Calling subclass
      * @param orientation  A value of enum Orientation (HORIZONTAL or VERTICAL)
-     * @param respectOrder If true, current x-order or y-order of objects is
-     *                     respected. Position of objects in the MathObjectGroup is unaltered. A
-     *                     value of false in a horizontal distribute por example, always puts the
-     *                     first element of the group in the left extreme.
+     * @param respectOrder If true, current x-order or y-order of objects is respected. Position of objects in the
+     *                     MathObjectGroup is unaltered. A value of false in a horizontal distribute por example, always
+     *                     puts the first element of the group in the left extreme.
      * @return This object
      */
     public <T extends MathObjectGroup> T distribute(Orientation orientation, boolean respectOrder) {
@@ -535,12 +528,10 @@ public class MathObjectGroup extends MathObject implements Iterable<MathObject> 
     }
 
     /**
-     * Adjust gaps of all object so that bounding boxes are equal. Additional
-     * gaps are passed as parameters. Size of the bounding box (before adding
-     * gaps) is computed as the maximum of the bounding boxes of group elements.
+     * Adjust gaps of all object so that bounding boxes are equal. Additional gaps are passed as parameters. Size of the
+     * bounding box (before adding gaps) is computed as the maximum of the bounding boxes of group elements.
      *
-     * @param anchorType How to align previous bounding box into the new one
-     *                   (CENTER, UPPER...)
+     * @param anchorType How to align previous bounding box into the new one (CENTER, UPPER...)
      * @param rightGap   Right Gap to add.
      * @param upperGap   Upper Gap to add.
      * @param leftGap    Left Gap to add.
@@ -563,11 +554,9 @@ public class MathObjectGroup extends MathObject implements Iterable<MathObject> 
     }
 
     /**
-     * Add gaps (negative if necessary) to every object so that all have the
-     * same width and height
+     * Add gaps (negative if necessary) to every object so that all have the same width and height
      *
-     * @param anchorType How to align previous bounding box into the new one
-     *                   (CENTER, UPPER...)
+     * @param anchorType How to align previous bounding box into the new one (CENTER, UPPER...)
      * @param width      Desired width
      * @param height     Desired height
      * @param upperGap   Upper Gap to add.
@@ -643,6 +632,17 @@ public class MathObjectGroup extends MathObject implements Iterable<MathObject> 
         return (T) this;
     }
 
+    @Override
+    public String toString() {
+        String toString = "MathObjectGroup[" + size() + "] ";
+        if (size() < 5) {
+            for (MathObject obj : objects) {
+                toString += "[" + obj.toString() + "] ";
+            }
+        }
+        return toString;
+    }
+
     /**
      * Simpe layouts to apply to the group
      */
@@ -658,5 +658,4 @@ public class MathObjectGroup extends MathObject implements Iterable<MathObject> 
         VERTICAL,
         HORIZONTAL
     }
-
 }

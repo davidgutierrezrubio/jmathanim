@@ -749,7 +749,7 @@ public class Shape extends MathObject {
 
     @Override
     public String toString() {
-        return objectLabel + ":" + jmpath.toString();
+        return "Shape "+objectLabel + ": " + jmpath.toString();
     }
 
     @Override

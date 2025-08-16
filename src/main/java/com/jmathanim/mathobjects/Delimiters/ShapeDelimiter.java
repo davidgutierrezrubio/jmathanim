@@ -1,36 +1,22 @@
-/*
- * Copyright (C) 2021 David
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- */
 package com.jmathanim.mathobjects.Delimiters;
 
 import com.jmathanim.Utils.*;
-import com.jmathanim.mathobjects.*;
+import com.jmathanim.mathobjects.MultiShapeObject;
+import com.jmathanim.mathobjects.NullMathObject;
+import com.jmathanim.mathobjects.Point;
+import com.jmathanim.mathobjects.SVGMathObject;
 
 import static com.jmathanim.jmathanim.JMathAnimScene.PI;
 
-/**
- *
- * @author David
- */
- class ShapeDelimiter extends Delimiter {
+public class ShapeDelimiter extends Delimiter {
 
     private SVGMathObject body;
-    private final Shape delimiterShape;
-    private final MathObjectGroup  delimiterShapeGroup;
+
+
+    protected ShapeDelimiter(Point A, Point B, Type type, double gap) {
+        super(A, B, type, gap);
+        minimumWidthToShrink = .5;
+    }
 
     public static ShapeDelimiter make(Point A, Point B, Delimiter.Type type, double gap) {
         ShapeDelimiter resul = new ShapeDelimiter(A, B, type, gap);
@@ -48,102 +34,98 @@ import static com.jmathanim.jmathanim.JMathAnimScene.PI;
                 break;
         }
         resul.body = new SVGMathObject(rl.getResource(name, "shapeResources/delimiters"));
-        resul.mpDelimiter.add(resul.body);
+//        resul.mpDelimiter.add(resul.body);
         resul.style("latexdefault");
         return resul;
     }
 
-    private ShapeDelimiter(Point A, Point B, Delimiter.Type type, double gap) {
-        super(A, B, type, gap);
-        minimumWidthToShrink = .5;
-        delimiterShape = new Shape();
-        mpDelimiter.add(delimiterShape);
-        delimiterShapeGroup=MathObjectGroup.make(delimiterShape);
-    }
 
     @Override
-    protected MathObjectGroup buildDelimiterShape() {
+    protected void buildDelimiterShape() {
 
         if (amplitudeScale == 0) {
-            return MathObjectGroup.make();//Nothing
+            return;//Nothing
         }
 
-        double width = scaledA.to(scaledB).norm();//The final width of the delimiter
+        double width = A.to(B).norm() * amplitudeScale;//The final width of the delimiter
         double angle = A.to(B).getAngle();
+        Point AA = A.interpolate(B, .5 * (1 - amplitudeScale));
+        Point BB = A.interpolate(B, .5 * (1 + amplitudeScale));
         MultiShapeObject bodyCopy = body.copy();
-        delimiterShape.getPath().clear();
+        delimiterShapeToDraw.getPath().clear();
 
-        if (type == Type.BRACE) {
+        if (type == Delimiter.Type.BRACE) {
             minimumWidthToShrink = .5;
             double wr = .25 * delimiterScale * UsefulLambdas.allocateTo(0, minimumWidthToShrink).applyAsDouble(width);
             bodyCopy.setWidth(wr);
             double hasToGrow = Math.max(0, width - wr);
             // 0,1,2,3,4,5 shapes Shapes 1 and 4 are extensible
             double wSpace = .5 * (hasToGrow);
-            delimiterShape.getPath().jmPathPoints.addAll(bodyCopy.get(0).getPath().jmPathPoints);
-            delimiterShape.merge(bodyCopy.get(2).shift(wSpace, 0), true, false)
+            delimiterShapeToDraw.getPath().jmPathPoints.addAll(bodyCopy.get(0).getPath().jmPathPoints);
+            delimiterShapeToDraw.merge(bodyCopy.get(2).shift(wSpace, 0), true, false)
                     .merge(bodyCopy.get(1).shift(2 * wSpace, 0), true, false)
                     .merge(bodyCopy.get(3).shift(wSpace, 0), true, true);
         }
-        if (type == Type.BRACKET) {
+        if (type == Delimiter.Type.BRACKET) {
             minimumWidthToShrink = .5;
             double wr = .8 * delimiterScale * UsefulLambdas.allocateTo(0, minimumWidthToShrink).applyAsDouble(width);
             bodyCopy.setWidth(wr);
             double hasToGrow = Math.max(0, width - wr);
             double wSpace = hasToGrow;
-            delimiterShape.merge(bodyCopy.get(0), false, false);
-            delimiterShape.merge(bodyCopy.get(1).shift(wSpace, 0), true, true);
+            delimiterShapeToDraw.merge(bodyCopy.get(0), false, false);
+            delimiterShapeToDraw.merge(bodyCopy.get(1).shift(wSpace, 0), true, true);
         }
-        if (type == Type.PARENTHESIS) {
+        if (type == Delimiter.Type.PARENTHESIS) {
             minimumWidthToShrink = .5;
             double wr = 0.48 * delimiterScale * UsefulLambdas.allocateTo(0, minimumWidthToShrink).applyAsDouble(width);
             bodyCopy.setWidth(wr);
             double hasToGrow = Math.max(0, width - wr);
             double wSpace = hasToGrow;
-            delimiterShape.merge(bodyCopy.get(0), false, false);
-            delimiterShape.merge(bodyCopy.get(1).shift(wSpace, 0), true, true);
+            delimiterShapeToDraw.merge(bodyCopy.get(0), false, false);
+            delimiterShapeToDraw.merge(bodyCopy.get(1).shift(wSpace, 0), true, true);
         }
 
-        MathObjectGroup resul = MathObjectGroup.make(delimiterShape);
 
-        Rect bb = delimiterShape.getBoundingBox();
-        delimiterShape.shift(0, gap * amplitudeScale);
+        Rect bb = delimiterShapeToDraw.getBoundingBox();
+        delimiterShapeToDraw.shift(0, gap * amplitudeScale);
 
-        labelMarkPoint.stackTo(delimiterShape, Anchor.Type.UPPER, labelMarkGap * amplitudeScale);
+        labelMarkPoint.stackTo(delimiterShapeToDraw, Anchor.Type.UPPER, labelMarkGap * amplitudeScale);
 
-        if (delimiterLabel!=null) {
-            delimiterLabelToDraw = delimiterLabel.copy();
-            resul.add(delimiterLabelToDraw);
 
-            delimiterLabelToDraw.scale(amplitudeScale);
+        if (!(getLabel() instanceof NullMathObject)) {
+
+            delimiterLabelRigidBox.resetMatrix();
+            getLabel().update(scene);
+            double labelAmplitudeScale = UsefulLambdas.allocateTo(0, getLabel().getWidth() * 1.5).applyAsDouble(width);
+
+//            double gapToUse = hgap * realAmplitudeScale;
+            delimiterLabelRigidBox.scale(labelAmplitudeScale);
 
             //Manages rotation of label
             switch (rotateLabel) {
                 case FIXED:
-                    delimiterLabelToDraw.rotate(-angle);
+                    delimiterLabelRigidBox.rotate(-angle);
                     break;
                 case ROTATE:
                     break;
                 case SMART:
 //                delimiterLabelToDraw.rotate(-angle);
                     if ((angle > .5 * PI) && (angle < 1.5 * PI)) {
-                        delimiterLabelToDraw.rotate(PI);
+                        delimiterLabelRigidBox.rotate(PI);
                     }
             }
-            delimiterLabelToDraw.stackTo(Anchor.Type.LOWER, labelMarkPoint, Anchor.Type.UPPER, 0);
-
+            delimiterLabelRigidBox.stackTo(Anchor.Type.LOWER, labelMarkPoint, Anchor.Type.UPPER, 0);
+//            groupElementsToBeDrawn.add(getLabel());
+//            if (amplitudeScale != 1)
+//                delimiterLabelToDraw.scale(this.amplitudeScale);
         }
-//        delimiterToDraw.getMp().copyFrom(delimiterShape.getMp());
-        AffineJTransform tr = AffineJTransform.createDirect2DIsomorphic(bb.getDL(), bb.getDR(), scaledA, scaledB, 1);
 
-        tr.applyTransform(delimiterToDraw);
-//        tr.applyTransform(labelMarkPoint);
+        AffineJTransform tr = AffineJTransform.createDirect2DIsomorphic(bb.getDL(), bb.getDR(), AA, BB, 1);
 
-        return delimiterToDraw;
+
+//        if (amplitudeScale != 1)
+//            groupElementsToBeDrawn.scale(this.amplitudeScale);
+        tr.applyTransform(groupElementsToBeDrawn);
     }
 
-    @Override
-    public MathObjectGroup getDelimiterShape() {
-        return delimiterShapeGroup;
-    }
 }

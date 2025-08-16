@@ -268,14 +268,19 @@ public class JMPath implements Stateable, Boxable, Iterable<JMPathPoint> {
 //    }
     @Override
     public String toString() {
-        String resul = "#" + jmPathPoints.size() + ":  ";
-        int counter = 0;
-        for (JMPathPoint p : jmPathPoints) {
-            resul += "< " + counter + " " + p.toString() + "> ";
-            counter++;
+        if (size()<5) {
+            String resul = "#" + jmPathPoints.size() + ":  ";
+            int counter = 0;
+            for (JMPathPoint p : jmPathPoints) {
+                resul += "< " + counter + " " + p.toString() + "> ";
+                counter++;
 
+            }
+            return resul;
         }
-        return resul;
+        else {
+            return size()+" points";
+        }
     }
 
     /**

@@ -12,6 +12,7 @@ public class RigidBox extends MathObject {
 
     public RigidBox(MathObject mathObject) {
         this.mathObject = mathObject;
+        setObjectLabel("rigidbox");
     }
 
     @Override
@@ -24,19 +25,27 @@ public class RigidBox extends MathObject {
     }
 
     public void setMathObject(MathObject mathObject) {
-        this.mathObject = mathObject;
+
+        this.mathObject = (mathObject == null ? new NullMathObject() : mathObject);
     }
 
     @Override
     public RigidBox copy() {
         RigidBox copy = new RigidBox(mathObject);
+        copy.setObjectLabel(this.objectLabel + "_copy");
         copy.copyStateFrom(this);
         return copy;
     }
 
     @Override
     public void copyStateFrom(MathObject obj) {
-        super.copyStateFrom(obj);
+
+//        super.copyStateFrom(obj);
+        if (obj instanceof RigidBox) {
+            RigidBox rigidBox = (RigidBox) obj;
+            modelMatrix.copyFrom(rigidBox.modelMatrix);
+        }
+
     }
 
     @Override
@@ -46,7 +55,7 @@ public class RigidBox extends MathObject {
 
     @Override
     public void draw(JMathAnimScene scene, Renderer r, Camera camera) {
-        mathObject.copy().applyAffineTransform(modelMatrix).draw(scene, r, camera);
+            mathObject.copy().applyAffineTransform(modelMatrix).draw(scene, r, camera);
     }
 
     public <T extends MathObject> T applyAffineTransform(AffineJTransform transform) {
@@ -54,9 +63,19 @@ public class RigidBox extends MathObject {
         modelMatrix.copyFrom(compose);
         return (T) this;// By default does nothing
     }
+
     public void resetMatrix() {
         modelMatrix.copyFrom(new AffineJTransform());
     }
 
+    @Override
+    public void update(JMathAnimScene scene) {
+        super.update(scene);
+        mathObject.update(scene);
+    }
 
+    @Override
+    public String toString() {
+        return "RigidBox[" + mathObject + ']';
+    }
 }
